@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 
-import { SafeLocalStorage } from '../src/utils/SafeLocalStorage'
+import { SafeLocalStorage, type SafeLocalStorageItems } from '../src/utils/SafeLocalStorage'
 
 const previousLocalStorage = globalThis.localStorage
 const previousWindow = globalThis.window
@@ -15,10 +15,10 @@ describe('SafeLocalStorage unsafe', () => {
   })
 
   it('should not setItem', () => {
-    const key = '@appkit/wallet_id'
+    const key = '@w3m/wallet_id' as keyof SafeLocalStorageItems
 
     expect(SafeLocalStorage.setItem(key, '1')).toBe(undefined)
-    expect(SafeLocalStorage.getItem(key)).toBe(undefined)
+    expect(SafeLocalStorage.getItem(key)).toBe(null)
     expect(SafeLocalStorage.removeItem(key)).toBe(undefined)
   })
 })
@@ -36,12 +36,6 @@ describe('SafeLocalStorage safe', () => {
 
   beforeAll(() => {
     Object.assign(globalThis, { window: {}, localStorage: { getItem, setItem, removeItem } })
-  })
-
-  afterAll(() => {
-    getItem.mockClear()
-    setItem.mockClear()
-    removeItem.mockClear()
   })
 
   it('should setItem', () => {

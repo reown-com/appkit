@@ -234,6 +234,10 @@ export class WagmiAdapter implements ChainAdapter {
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
+        SafeLocalStorage.setItem(
+          SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID,
+          JSON.stringify(caipNetwork)
+        )
         const chainId = Number(NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id))
 
         if (chainId && this.wagmiConfig) {
@@ -602,7 +606,7 @@ export class WagmiAdapter implements ChainAdapter {
   >) {
     const isConnected = ChainController.state.activeCaipAddress
 
-    if (status === 'disconnected' && !isConnected) {
+    if (status === 'disconnected' && isConnected) {
       this.appKit?.resetAccount(this.chainNamespace)
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork()

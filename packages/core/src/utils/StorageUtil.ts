@@ -1,7 +1,14 @@
 /* eslint-disable no-console */
-import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 import type { WcWallet, ConnectorType, SocialProvider } from './TypeUtil.js'
 import { ChainController } from '../controllers/ChainController.js'
+import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
+
+// -- Helpers -----------------------------------------------------------------
+const WC_DEEPLINK = 'WALLETCONNECT_DEEPLINK_CHOICE'
+const W3M_RECENT = '@w3m/recent'
+const W3M_CONNECTED_CONNECTOR = '@w3m/connected_connector'
+const W3M_CONNECTED_SOCIAL = '@w3m/connected_social'
+const W3M_CONNECTED_SOCIAL_USERNAME = '@w3m-storage/SOCIAL_USERNAME'
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
@@ -15,9 +22,9 @@ export const StorageUtil = {
 
   getWalletConnectDeepLink() {
     try {
-      const deepLink = SafeLocalStorage.getItem(SafeLocalStorageKeys.DEEPLINK_CHOICE)
+      const deepLink = localStorage.getItem(WC_DEEPLINK)
       if (deepLink) {
-        return deepLink
+        return JSON.parse(deepLink)
       }
     } catch {
       console.info('Unable to get WalletConnect deep link')
@@ -28,7 +35,7 @@ export const StorageUtil = {
 
   deleteWalletConnectDeepLink() {
     try {
-      SafeLocalStorage.removeItem(SafeLocalStorageKeys.DEEPLINK_CHOICE)
+      localStorage.removeItem(WC_DEEPLINK)
     } catch {
       console.info('Unable to delete WalletConnect deep link')
     }
@@ -43,7 +50,7 @@ export const StorageUtil = {
         if (recentWallets.length > 2) {
           recentWallets.pop()
         }
-        SafeLocalStorage.setItem(SafeLocalStorageKeys.RECENT_WALLETS, JSON.stringify(recentWallets))
+        localStorage.setItem(W3M_RECENT, JSON.stringify(recentWallets))
       }
     } catch {
       console.info('Unable to set AppKit recent')
@@ -52,7 +59,7 @@ export const StorageUtil = {
 
   getRecentWallets(): WcWallet[] {
     try {
-      const recent = SafeLocalStorage.getItem(SafeLocalStorageKeys.RECENT_WALLETS)
+      const recent = localStorage.getItem(W3M_RECENT)
 
       return recent ? JSON.parse(recent) : []
     } catch {
@@ -64,7 +71,7 @@ export const StorageUtil = {
 
   setConnectedConnector(connectorType: ConnectorType) {
     try {
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR, connectorType)
+      localStorage.setItem(W3M_CONNECTED_CONNECTOR, connectorType)
     } catch {
       console.info('Unable to set Connected Connector')
     }
@@ -72,7 +79,7 @@ export const StorageUtil = {
 
   getConnectedConnector() {
     try {
-      return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR) as ConnectorType
+      return localStorage.getItem(W3M_CONNECTED_CONNECTOR) as ConnectorType
     } catch {
       console.info('Unable to get Connected Connector')
     }
@@ -82,7 +89,7 @@ export const StorageUtil = {
 
   setConnectedSocialProvider(socialProvider: SocialProvider) {
     try {
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_SOCIAL, socialProvider)
+      localStorage.setItem(W3M_CONNECTED_SOCIAL, socialProvider)
     } catch {
       console.info('Unable to set Connected Social Provider')
     }
@@ -90,7 +97,7 @@ export const StorageUtil = {
 
   getConnectedSocialProvider() {
     try {
-      return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_SOCIAL)
+      return localStorage.getItem(W3M_CONNECTED_SOCIAL)
     } catch {
       console.info('Unable to get Connected Social Provider')
     }
@@ -100,7 +107,7 @@ export const StorageUtil = {
 
   getConnectedSocialUsername() {
     try {
-      return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_SOCIAL_USERNAME)
+      return localStorage.getItem(W3M_CONNECTED_SOCIAL_USERNAME)
     } catch {
       console.info('Unable to get Connected Social Username')
     }

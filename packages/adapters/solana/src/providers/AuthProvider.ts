@@ -57,8 +57,8 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
 
   get publicKey(): PublicKey | undefined {
     const session = this.getSession()
-    const namespace = this.getActiveNamespace()
-    if (session && namespace === 'solana') {
+
+    if (session) {
       return new PublicKey(session.address)
     }
 
@@ -201,8 +201,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     required?: Required
   ): Required extends true ? PublicKey : PublicKey | undefined {
     const session = this.getSession()
-    const namespace = this.getActiveNamespace()
-    if (!session || namespace !== 'solana') {
+    if (!session) {
       if (required) {
         throw new Error('Account is required')
       }

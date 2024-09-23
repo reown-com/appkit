@@ -133,10 +133,14 @@ export class SolanaAdapter implements ChainAdapter {
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
         if (caipNetwork) {
+          SafeLocalStorage.setItem(
+            SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID,
+            JSON.stringify(caipNetwork)
+          )
           try {
             await this.switchNetwork(caipNetwork)
           } catch (error) {
-            console.warn('Error switching network', error)
+            // SolStoreUtil.setError(error)
           }
         }
       },

@@ -605,7 +605,7 @@ describe('EthersAdapter', () => {
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation(key => {
         if (key === SafeLocalStorageKeys.WALLET_ID) return ConstantsUtil.INJECTED_CONNECTOR_ID
         if (key === SafeLocalStorageKeys.WALLET_NAME) return 'MetaMask'
-        return undefined
+        return null
       })
 
       vi.spyOn(client as any, 'setProvider').mockImplementation(() => Promise.resolve())
@@ -633,7 +633,7 @@ describe('EthersAdapter', () => {
     })
 
     it('should not set provider when wallet ID is not found', () => {
-      vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValue(undefined)
+      vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValue(null)
 
       const mockConfig = {
         injected: mockInjectedProvider,

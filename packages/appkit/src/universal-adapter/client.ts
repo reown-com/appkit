@@ -95,6 +95,10 @@ export class UniversalAdapterClient {
       // @ts-expect-error switchCaipNetwork is async for some adapter but not for this adapter
       switchCaipNetwork: caipNetwork => {
         if (caipNetwork) {
+          SafeLocalStorage.setItem(
+            SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID,
+            JSON.stringify(caipNetwork)
+          )
           try {
             this.switchNetwork(caipNetwork)
           } catch (error) {
@@ -398,20 +402,27 @@ export class UniversalAdapterClient {
       const storedCaipNetwork = StorageUtil.getStoredActiveCaipNetwork()
       const activeCaipNetwork = ChainController.state.activeCaipNetwork
 
-      try {
-        if (storedCaipNetwork) {
-          NetworkController.setActiveCaipNetwork(storedCaipNetwork)
-        } else if (!activeCaipNetwork) {
-          this.setDefaultNetwork(nameSpaces)
-        } else if (
-          !NetworkController.state.approvedCaipNetworkIds?.includes(activeCaipNetwork.id)
-        ) {
-          this.setDefaultNetwork(nameSpaces)
+      if (storedCaipNetwork) {
+        try {
+          if (storedCaipNetwork) {
+            NetworkController.setActiveCaipNetwork(storedCaipNetwork)
+          }
+        } catch (error) {
+          console.warn('>>> Error setting active caip network', error)
         }
-      } catch (error) {
-        console.warn('>>> Error setting active caip network', error)
+      } else if (!activeCaipNetwork) {
+        this.setDefaultNetwork(nameSpaces)
+      } else if (!NetworkController.state.approvedCaipNetworkIds?.includes(activeCaipNetwork.id)) {
+        this.setDefaultNetwork(nameSpaces)
       }
     }
+
+    const caipNetwork = this.appKit?.getCaipNetwork()
+    if (!caipNetwork) {
+      return
+    }
+
+    SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetwork.id)
 
     this.syncAccount()
     this.watchWalletConnect()

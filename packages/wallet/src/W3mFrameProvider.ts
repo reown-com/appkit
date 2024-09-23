@@ -472,13 +472,7 @@ export class W3mFrameProvider {
         }
       })
 
-      function handler(framEvent: W3mFrameTypes.FrameEvent, logger: W3mFrameLogger) {
-        if (framEvent.id !== id) {
-          return
-        }
-
-        logger.logger.info?.({ framEvent, id }, 'Received frame response')
-
+      function handler(framEvent: W3mFrameTypes.FrameEvent) {
         if (framEvent.type === `@w3m-frame/${type}_SUCCESS`) {
           if ('payload' in framEvent) {
             resolve(framEvent.payload)
@@ -491,11 +485,7 @@ export class W3mFrameProvider {
           reject(new Error('An error occurred'))
         }
       }
-      this.w3mFrame.events.registerFrameEventHandler(
-        id,
-        frameEvent => handler(frameEvent, this.w3mLogger),
-        abortController.signal
-      )
+      this.w3mFrame.events.registerFrameEventHandler(id, handler, abortController.signal)
     })
   }
 
@@ -521,6 +511,7 @@ export class W3mFrameProvider {
     W3mFrameStorage.delete(W3mFrameConstants.EMAIL)
     W3mFrameStorage.delete(W3mFrameConstants.LAST_USED_CHAIN_KEY)
     W3mFrameStorage.delete(W3mFrameConstants.SOCIAL_USERNAME)
+    W3mFrameStorage.delete(W3mFrameConstants.SOCIAL, true)
   }
 
   private setLastUsedChainId(chainId: string | number) {

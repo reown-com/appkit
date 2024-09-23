@@ -33,23 +33,16 @@ export const SafeLocalStorage = {
       localStorage.setItem(key, value)
     }
   },
-  getItem<Key extends keyof SafeLocalStorageItems>(
-    key: Key
-  ): SafeLocalStorageItems[Key] | undefined {
+  getItem<Key extends keyof SafeLocalStorageItems>(key: Key): SafeLocalStorageItems[Key] | null {
     if (isSafe()) {
-      return localStorage.getItem(key) || undefined
+      return localStorage.getItem(key) || null
     }
 
-    return undefined
+    return null
   },
   removeItem<Key extends keyof SafeLocalStorageItems>(key: Key): void {
     if (isSafe()) {
       localStorage.removeItem(key)
-    }
-  },
-  clear(): void {
-    if (isSafe()) {
-      localStorage.clear()
     }
   }
 }

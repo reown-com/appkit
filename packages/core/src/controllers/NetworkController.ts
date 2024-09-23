@@ -4,6 +4,8 @@ import { ModalController } from './ModalController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import {
   NetworkUtil,
+  SafeLocalStorage,
+  SafeLocalStorageKeys,
   type CaipNetwork,
   type CaipNetworkId,
   type ChainNamespace
@@ -162,7 +164,29 @@ export const NetworkController = {
   },
 
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
-    const networkControllerClient = ChainController.getNetworkControllerClient()
+    const sameNamespace = network?.chainNamespace === ChainController.state.activeChain
+
+    let networkControllerClient: NetworkControllerState['_client'] = undefined
+    const isWcConnector =
+      SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_ID) === 'walletConnect'
+    const hasWagmiAdapter = ChainController.state.chains.get('eip155')?.adapterType === 'wagmi'
+
+    if (isWcConnector && network?.chainNamespace === 'solana') {
+      if (hasWagmiAdapter) {
+        networkControllerClient = ChainController.state.chains.get(network.chainNamespace)
+          ?.networkControllerClient
+      } else {
+        networkControllerClient = ChainController.state.universalAdapter.networkControllerClient
+      }
+    } else if (isWcConnector && !hasWagmiAdapter) {
+      networkControllerClient = ChainController.state.universalAdapter.networkControllerClient
+    } else if (sameNamespace) {
+      networkControllerClient = ChainController.getNetworkControllerClient()
+    } else {
+      networkControllerClient = network
+        ? ChainController.state.chains.get(network.chainNamespace)?.networkControllerClient
+        : undefined
+    }
 
     await networkControllerClient?.switchCaipNetwork(network)
     ChainController.setActiveCaipNetwork(network)

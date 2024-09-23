@@ -129,7 +129,6 @@ export const ChainController = {
 
     if (adapters.length === 0) {
       const storedCaipNetwork = StorageUtil.getStoredActiveCaipNetwork()
-
       try {
         if (storedCaipNetwork) {
           state.activeChain = storedCaipNetwork.chainNamespace
@@ -137,9 +136,13 @@ export const ChainController = {
           state.activeChain =
             adapter?.defaultNetwork?.chainNamespace ?? adapter.caipNetworks[0]?.chainNamespace
         }
-      } catch (error) {
-        console.warn('>>> Error setting active caip network', error)
+      } catch (e) {
+        console.warn('Error while setting active chain', e)
       }
+    } else {
+      state.activeChain =
+        adapter?.defaultNetwork?.chainNamespace ?? adapter.caipNetworks[0]?.chainNamespace
+      this.setActiveCaipNetwork(adapter?.defaultNetwork ?? adapter.caipNetworks[0])
     }
 
     const chains = [...new Set(adapter.caipNetworks.map(caipNetwork => caipNetwork.chainNamespace))]
@@ -308,8 +311,9 @@ export const ChainController = {
     const chain = state.activeChain
     const isWcConnector = walletId === 'walletConnect'
     const universalNetworkControllerClient = state.universalAdapter.networkControllerClient
+    const hasWagmiAdapter = state.chains.get('eip155')?.adapterType === 'wagmi'
 
-    const shouldUseUniversalAdapter = isWcConnector || state.noAdapters
+    const shouldUseUniversalAdapter = (isWcConnector && !hasWagmiAdapter) || state.noAdapters
 
     if (shouldUseUniversalAdapter) {
       if (!universalNetworkControllerClient) {
