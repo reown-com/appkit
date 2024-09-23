@@ -221,35 +221,19 @@ export const ChainController = {
     )
   },
 
-  setActiveNamespace(
-    chain: ChainNamespace | undefined,
-    caipNetwork?: NetworkControllerState['caipNetwork']
-  ) {
-    if (caipNetwork?.chainNamespace) {
-      const newAdapter = chain ? state.chains.get(caipNetwork.chainNamespace) : undefined
-      const newNamespace = newAdapter?.chainNamespace !== state.activeChain
+  setActiveNamespace(chain: ChainNamespace | undefined) {
+    state.activeChain = chain
 
-      if (newAdapter && newNamespace) {
-        state.activeChain = newAdapter.chainNamespace
-        state.activeCaipNetwork = caipNetwork
-        state.activeCaipAddress = newAdapter.accountState?.caipAddress
-        SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetwork.id)
+    const newAdapter = chain ? state.chains.get(chain) : undefined
+    const caipNetwork = newAdapter?.networkState?.caipNetwork
 
-        NetworkController.replaceState(newAdapter.networkState)
-        AccountController.replaceState(newAdapter.accountState)
-
-        PublicStateController.set({
-          activeChain: chain,
-          selectedNetworkId: newAdapter.networkState?.caipNetwork?.id
-        })
-      }
-    } else {
-      state.activeChain = chain
-      const caipNetworks = chain ? state.chains.get(chain)?.caipNetworks : []
-      state.activeCaipNetwork = caipNetworks?.[0]
+    if (caipNetwork?.id) {
+      state.activeCaipAddress = newAdapter?.accountState?.caipAddress
+      state.activeCaipNetwork = caipNetwork
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetwork?.id)
       PublicStateController.set({
         activeChain: chain,
-        selectedNetworkId: state.activeCaipNetwork?.id
+        selectedNetworkId: caipNetwork?.id
       })
     }
   },
@@ -259,19 +243,21 @@ export const ChainController = {
       return
     }
 
-    const sameNamespace = caipNetwork.chainNamespace === state.activeChain
+    const newAdapter = state.chains.get(caipNetwork.chainNamespace)
+    state.activeChain = caipNetwork.chainNamespace
+    state.activeCaipNetwork = caipNetwork
+    state.activeCaipAddress = newAdapter?.accountState?.caipAddress
 
-    if (sameNamespace) {
-      state.activeChain = caipNetwork.chainNamespace
-      state.activeCaipNetwork = caipNetwork
-      PublicStateController.set({
-        activeChain: state.activeChain,
-        selectedNetworkId: state.activeCaipNetwork?.id
-      })
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetwork.id)
-    } else {
-      this.setActiveNamespace(caipNetwork.chainNamespace, caipNetwork)
+    if (newAdapter) {
+      NetworkController.replaceState(newAdapter.networkState)
+      AccountController.replaceState(newAdapter.accountState)
     }
+
+    PublicStateController.set({
+      activeChain: state.activeChain,
+      selectedNetworkId: state.activeCaipNetwork?.id
+    })
+    SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetwork.id)
   },
 
   /**
@@ -302,9 +288,9 @@ export const ChainController = {
     }
   },
 
-  getNetworkControllerClient() {
+  getNetworkControllerClient(chainNamespace?: ChainNamespace) {
     const walletId = SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_ID)
-    const chain = state.activeChain
+    const chain = chainNamespace || state.activeChain
     const isWcConnector = walletId === 'walletConnect'
     const universalNetworkControllerClient = state.universalAdapter.networkControllerClient
 
