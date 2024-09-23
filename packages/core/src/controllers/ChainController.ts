@@ -39,7 +39,6 @@ type ChainsInitializerAdapter = Pick<
 
 // -- Constants ----------------------------------------- //
 const accountState: AccountControllerState = {
-  isConnected: false,
   currentTab: 0,
   tokenBalance: [],
   smartAccountDeployed: false,
@@ -435,7 +434,6 @@ export const ChainController = {
     this.setChainAccountData(
       chainToWrite,
       ref({
-        isConnected: false,
         smartAccountDeployed: false,
         currentTab: 0,
         caipAddress: undefined,

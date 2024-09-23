@@ -110,10 +110,6 @@ export class AppKit {
     return NetworkController.switchActiveNetwork(caipNetwork)
   }
 
-  public getIsConnected() {
-    return AccountController.state.isConnected
-  }
-
   public getWalletProvider() {
     return ChainController.state.activeChain
       ? ProviderUtil.state.providers[ChainController.state.activeChain]
@@ -218,15 +214,11 @@ export class AppKit {
     ]?.replace
   }
 
-  public setIsConnected: (typeof AccountController)['setIsConnected'] = (isConnected, chain) => {
-    AccountController.setIsConnected(isConnected, chain)
-  }
-
   public setStatus: (typeof AccountController)['setStatus'] = (status, chain) => {
     AccountController.setStatus(status, chain)
   }
 
-  public getIsConnectedState = () => AccountController.state.isConnected
+  public getIsConnectedState = () => Boolean(ChainController.state.activeCaipAddress)
 
   public setAllAccounts: (typeof AccountController)['setAllAccounts'] = (addresses, chain) => {
     AccountController.setAllAccounts(addresses, chain)
