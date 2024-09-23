@@ -16,7 +16,6 @@ import { ModalController } from './ModalController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import type { ChainNamespace } from '@reown/appkit-common'
-import { RouterController } from './RouterController.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {

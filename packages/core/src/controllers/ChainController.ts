@@ -303,9 +303,9 @@ export const ChainController = {
     }
   },
 
-  getNetworkControllerClient() {
+  getNetworkControllerClient(chainNamespace?: ChainNamespace) {
     const walletId = SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_ID)
-    const chain = state.activeChain
+    const chain = chainNamespace || state.activeChain
     const isWcConnector = walletId === 'walletConnect'
     const universalNetworkControllerClient = state.universalAdapter.networkControllerClient
 
