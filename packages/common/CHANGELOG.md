@@ -1,5 +1,11 @@
 # @web3modal/common
 
+## 5.1.9
+
+### Patch Changes
+
+- Fixes issue where non injected/announced connectors would be filtered as duplicates in featured walelts
+
 ## 5.1.8
 
 ### Patch Changes

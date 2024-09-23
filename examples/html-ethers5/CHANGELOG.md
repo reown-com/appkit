@@ -1,5 +1,14 @@
 # @examples/html-ethers5
 
+## 5.1.9
+
+### Patch Changes
+
+- Fixes issue where non injected/announced connectors would be filtered as duplicates in featured walelts
+
+- Updated dependencies []:
+  - @web3modal/ethers5@5.1.9
+
 ## 5.1.8
 
 ### Patch Changes

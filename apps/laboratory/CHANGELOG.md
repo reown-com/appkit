@@ -1,5 +1,20 @@
 # @apps/laboratory
 
+## 5.1.9
+
+### Patch Changes
+
+- Fixes issue where non injected/announced connectors would be filtered as duplicates in featured walelts
+
+- Updated dependencies []:
+  - @web3modal/base@5.1.9
+  - @web3modal/ethers@5.1.9
+  - @web3modal/ethers5@5.1.9
+  - @web3modal/siwe@5.1.9
+  - @web3modal/solana@5.1.9
+  - @web3modal/wagmi@5.1.9
+  - @web3modal/wallet@5.1.9
+
 ## 5.1.8
 
 ### Patch Changes
