@@ -8,7 +8,10 @@ export type SafeLocalStorageItems = {
   '@appkit/connected_social': string
   '@appkit/connected_social_username': string
   '@appkit/recent_wallets': string
-  // Hardcoding the value since @walletconnect/universal-provider package uses it
+  /*
+   * DO NOT CHANGE: @walletconnect/universal-provider requires us to set this specific key
+   *  This value is a stringified version of { href: stiring; name: string }
+   */
   WALLETCONNECT_DEEPLINK_CHOICE: string
 }
 
