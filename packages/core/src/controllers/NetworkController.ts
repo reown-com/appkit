@@ -166,12 +166,7 @@ export const NetworkController = {
       network?.chainNamespace
     )
 
-    const namespace = network?.chainNamespace
-    const caipAddress = namespace
-      ? ChainController.state.chains.get(namespace)?.accountState?.caipAddress
-      : undefined
-
-    if (caipAddress && networkControllerClient) {
+    if (networkControllerClient) {
       await networkControllerClient.switchCaipNetwork(network)
     }
 
