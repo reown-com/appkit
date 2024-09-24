@@ -1,5 +1,49 @@
 # @apps/laboratory
 
+## 1.0.4
+
+### Patch Changes
+
+- [#2907](https://github.com/reown-com/appkit/pull/2907) [`b35af73`](https://github.com/reown-com/appkit/commit/b35af73dde9c46142741bd153e9e7105c077cfbd) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where featured wallet ids were being filtered out if their connector was present but not displayed. eg. SDK Connectors.
+
+- [#2882](https://github.com/reown-com/appkit/pull/2882) [`aaa22cf`](https://github.com/reown-com/appkit/commit/aaa22cfdb620d44da52466c1cc9270ad88f4c81b) Thanks [@magiziz](https://github.com/magiziz)! - Fixed deep link not working after connecting a wallet
+
+- Updated dependencies [[`b35af73`](https://github.com/reown-com/appkit/commit/b35af73dde9c46142741bd153e9e7105c077cfbd), [`aaa22cf`](https://github.com/reown-com/appkit/commit/aaa22cfdb620d44da52466c1cc9270ad88f4c81b)]:
+  - @reown/appkit-adapter-ethers@1.0.4
+  - @reown/appkit-adapter-ethers5@1.0.4
+  - @reown/appkit-adapter-solana@1.0.4
+  - @reown/appkit-adapter-wagmi@1.0.4
+  - @reown/appkit@1.0.4
+  - @reown/appkit-ethers@1.0.4
+  - @reown/appkit-ethers5@1.0.4
+  - @reown/appkit-siwe@1.0.4
+  - @reown/appkit-solana@1.0.4
+  - @reown/appkit-wagmi@1.0.4
+  - @reown/appkit-wallet@1.0.4
+
+## 1.0.3
+
+### Patch Changes
+
+- [#2897](https://github.com/reown-com/appkit/pull/2897) [`fb20e46`](https://github.com/reown-com/appkit/commit/fb20e461ee6745b83d9cdf5051fc4c674e0d793d) Thanks [@tomiir](https://github.com/tomiir)! - Makes SDKType param optional
+
+- [#2889](https://github.com/reown-com/appkit/pull/2889) [`dc7b895`](https://github.com/reown-com/appkit/commit/dc7b89527e4dd3c4602db69491be5bc03a9c52d3) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Update siweParams with AppKit chains
+
+- [#2888](https://github.com/reown-com/appkit/pull/2888) [`1086727`](https://github.com/reown-com/appkit/commit/1086727e024bafbbebe0059635c4d8728a7fb6b9) Thanks [@enesozturk](https://github.com/enesozturk)! - Updates active network state management and local storage controls
+
+- Updated dependencies [[`fb20e46`](https://github.com/reown-com/appkit/commit/fb20e461ee6745b83d9cdf5051fc4c674e0d793d), [`dc7b895`](https://github.com/reown-com/appkit/commit/dc7b89527e4dd3c4602db69491be5bc03a9c52d3), [`1086727`](https://github.com/reown-com/appkit/commit/1086727e024bafbbebe0059635c4d8728a7fb6b9)]:
+  - @reown/appkit-wallet@1.0.3
+  - @reown/appkit-adapter-ethers@1.0.3
+  - @reown/appkit-adapter-ethers5@1.0.3
+  - @reown/appkit-adapter-solana@1.0.3
+  - @reown/appkit-adapter-wagmi@1.0.3
+  - @reown/appkit@1.0.3
+  - @reown/appkit-ethers@1.0.3
+  - @reown/appkit-ethers5@1.0.3
+  - @reown/appkit-siwe@1.0.3
+  - @reown/appkit-solana@1.0.3
+  - @reown/appkit-wagmi@1.0.3
+
 ## 1.0.2
 
 ### Patch Changes

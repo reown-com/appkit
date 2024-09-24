@@ -623,12 +623,10 @@ export class EthersAdapter {
       if (provider) {
         const { addresses, chainId } = await EthersHelpersUtil.getUserInfo(provider)
         const firstAddress = addresses?.[0]
-        const caipNetwork = this.caipNetworks.find(c => c.chainId === chainId)
         const caipAddress = `${this.chainNamespace}:${chainId}:${firstAddress}` as CaipAddress
 
-        if (firstAddress && chainId && caipNetwork) {
+        if (firstAddress && chainId) {
           this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
-          this.appKit?.setCaipNetwork(caipNetwork)
           ProviderUtil.setProviderId('eip155', providerId)
           ProviderUtil.setProvider<Provider>('eip155', provider)
           this.appKit?.setStatus('connected', this.chainNamespace)
@@ -670,8 +668,6 @@ export class EthersAdapter {
             : [{ address, type: preferredAccountType as 'eoa' | 'smartAccount' }],
           this.chainNamespace
         )
-        const caipNetwork = this.caipNetworks.find(c => c.chainId === chainId)
-        this.appKit?.setCaipNetwork(caipNetwork)
         this.appKit?.setStatus('connected', this.chainNamespace)
         this.appKit?.setCaipAddress(
           `${this.chainNamespace}:${chainId}:${address}`,
@@ -727,13 +723,13 @@ export class EthersAdapter {
       }
     }
 
-    const chainChangedHandler = (networkId: string) => {
-      if (networkId) {
-        const networkIdNumber =
-          typeof networkId === 'string'
-            ? EthersHelpersUtil.hexStringToNumber(networkId)
-            : Number(networkId)
-        const caipNetwork = this.caipNetworks.find(c => c.chainId === networkIdNumber)
+    const chainChangedHandler = (chainId: string) => {
+      const chainIdNumber =
+        typeof chainId === 'string' ? EthersHelpersUtil.hexStringToNumber(chainId) : Number(chainId)
+      const caipNetwork = this.caipNetworks.find(c => c.chainId === chainIdNumber)
+      const currentCaipNetwork = this.appKit?.getCaipNetwork()
+
+      if (!currentCaipNetwork || currentCaipNetwork?.id !== caipNetwork?.id) {
         this.appKit?.setCaipNetwork(caipNetwork)
       }
     }
@@ -846,10 +842,7 @@ export class EthersAdapter {
 
     this.appKit?.setLoading(true)
     const chainId = NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
-    const caipNetwork = this.caipNetworks.find(c => c.chainId === chainId)
-
     this.appKit?.setCaipAddress(`eip155:${chainId}:${address}`, this.chainNamespace)
-    this.appKit?.setCaipNetwork(caipNetwork)
     this.appKit?.setStatus('connected', this.chainNamespace)
     this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chainNamespace)
 
@@ -1024,13 +1017,12 @@ export class EthersAdapter {
   }
 
   public async switchNetwork(caipNetwork: CaipNetwork) {
-    const requestSwitchNetwork = async (provider: Provider) => {
+    async function requestSwitchNetwork(provider: Provider) {
       try {
         await provider.request({
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: EthersHelpersUtil.numberToHexString(caipNetwork.chainId) }]
         })
-        this.appKit?.setCaipNetwork(caipNetwork)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (switchError: any) {
         if (

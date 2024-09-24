@@ -727,6 +727,16 @@ export type Event =
         amount: number
       }
     }
+  | {
+      type: 'track'
+      event: 'CONNECT_PROXY_ERROR'
+      properties: {
+        message: string
+        uri: string
+        mobile_link: string
+        name: string
+      }
+    }
 // Onramp Types
 export type DestinationWallet = {
   address: string

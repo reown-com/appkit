@@ -62,7 +62,6 @@ describe('ChainController', () => {
 
   it('should reset account as expected', () => {
     ChainController.resetAccount(ChainController.state.activeChain)
-    expect(ChainController.getAccountProp('isConnected')).toEqual(false)
     expect(ChainController.getAccountProp('smartAccountDeployed')).toEqual(false)
     expect(ChainController.getAccountProp('currentTab')).toEqual(0)
     expect(ChainController.getAccountProp('caipAddress')).toEqual(undefined)

@@ -13,9 +13,9 @@ export function WagmiModalInfo() {
   async function getClientId() {
     if (connector?.type === 'walletConnect') {
       const provider = await connector?.getProvider?.()
-      const ethereumProvider = provider as UniversalProvider
+      const universalProvider = provider as UniversalProvider
 
-      return ethereumProvider.client?.core?.crypto?.getClientId()
+      return universalProvider?.client?.core?.crypto?.getClientId()
     }
 
     return null

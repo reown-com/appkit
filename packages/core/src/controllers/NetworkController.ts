@@ -9,7 +9,6 @@ import {
   type ChainNamespace
 } from '@reown/appkit-common'
 import { ChainController } from './ChainController.js'
-import { PublicStateController } from './PublicStateController.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
 // -- Types --------------------------------------------- //
@@ -23,7 +22,6 @@ export interface NetworkControllerClient {
 
 export interface NetworkControllerState {
   supportsAllNetworks: boolean
-  isDefaultCaipNetwork: boolean
   isUnsupportedChain?: boolean
   _client?: NetworkControllerClient
   caipNetwork?: CaipNetwork
@@ -36,7 +34,6 @@ export interface NetworkControllerState {
 // -- State --------------------------------------------- //
 const state = proxy<NetworkControllerState>({
   supportsAllNetworks: true,
-  isDefaultCaipNetwork: false,
   smartAccountEnabledNetworks: []
 })
 
@@ -71,24 +68,6 @@ export const NetworkController = {
 
   _getClient() {
     return ChainController.getNetworkControllerClient()
-  },
-
-  initializeDefaultNetwork() {
-    const networks = this.getRequestedCaipNetworks()
-
-    if (networks.length > 0) {
-      this.setCaipNetwork(networks[0])
-    }
-  },
-
-  setDefaultCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
-    if (caipNetwork) {
-      ChainController.setCaipNetwork(caipNetwork.chainNamespace, caipNetwork)
-      ChainController.setChainNetworkData(caipNetwork.chainNamespace, {
-        isDefaultCaipNetwork: true
-      })
-      PublicStateController.set({ selectedNetworkId: caipNetwork.id })
-    }
   },
 
   setActiveCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
@@ -183,9 +162,14 @@ export const NetworkController = {
   },
 
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
-    const networkControllerClient = ChainController.getNetworkControllerClient()
+    const networkControllerClient = ChainController.getNetworkControllerClient(
+      network?.chainNamespace
+    )
 
-    await networkControllerClient?.switchCaipNetwork(network)
+    if (networkControllerClient) {
+      await networkControllerClient.switchCaipNetwork(network)
+    }
+
     ChainController.setActiveCaipNetwork(network)
 
     if (network) {
@@ -275,10 +259,6 @@ export const NetworkController = {
 
     if (!chain) {
       throw new Error('chain is required to reset network')
-    }
-
-    if (!ChainController.state.chains.get(chain)?.networkState?.isDefaultCaipNetwork) {
-      ChainController.setChainNetworkData(chain, { caipNetwork: undefined })
     }
 
     ChainController.setChainNetworkData(chain, {

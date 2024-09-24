@@ -2,7 +2,6 @@ import { Connection } from '@solana/web3.js'
 import {
   AccountController,
   ApiController,
-  AssetController,
   ChainController,
   CoreHelperUtil,
   EventsController
@@ -312,10 +311,6 @@ export class SolanaAdapter implements ChainAdapter {
     })
 
     this.syncRequestedNetworks(this.caipNetworks)
-
-    AssetController.subscribeNetworkImages(() => {
-      this.syncNetwork()
-    })
 
     ChainController.subscribeKey('activeCaipNetwork', (newCaipNetwork: CaipNetwork | undefined) => {
       const newChain = this.caipNetworks.find(
