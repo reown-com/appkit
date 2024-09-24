@@ -1,5 +1,15 @@
 # @web3modal/cdn
 
+## 5.1.7-9fc6442bc.6
+
+### Patch Changes
+
+- Always fetch nonce
+- Updated dependencies
+  - @web3modal/ethers5@5.1.7-9fc6442bc.6
+  - @web3modal/ethers@5.1.7-9fc6442bc.6
+  - @web3modal/wagmi@5.1.7-9fc6442bc.6
+
 ## 5.1.7-a869e5cdc.5
 
 ### Patch Changes

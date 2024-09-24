@@ -1,5 +1,18 @@
 # @web3modal/solana
 
+## 5.1.7-9fc6442bc.6
+
+### Patch Changes
+
+- Always fetch nonce
+- Updated dependencies
+  - @web3modal/scaffold-utils@5.1.7-9fc6442bc.6
+  - @web3modal/polyfills@5.1.7-9fc6442bc.6
+  - @web3modal/common@5.1.7-9fc6442bc.6
+  - @web3modal/wallet@5.1.7-9fc6442bc.6
+  - @web3modal/base@5.1.7-9fc6442bc.6
+  - @web3modal/core@5.1.7-9fc6442bc.6
+
 ## 5.1.7-a869e5cdc.5
 
 ### Patch Changes
