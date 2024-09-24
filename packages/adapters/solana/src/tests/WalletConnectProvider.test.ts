@@ -4,6 +4,7 @@ import { WalletConnectProvider } from '../providers/WalletConnectProvider.js'
 import { TestConstants } from './util/TestConstants.js'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
 import type { CaipNetwork } from '@reown/appkit-common'
+import { WalletConnectMethodNotSupportedError } from '../providers/shared/Errors.js'
 
 describe('WalletConnectProvider specific tests', () => {
   let provider = mockUniversalProvider()
@@ -315,5 +316,142 @@ describe('WalletConnectProvider specific tests', () => {
     await walletConnectProvider.connect()
 
     expect(walletConnectProvider.chains).toEqual([TestConstants.chains[0]])
+  })
+
+  it('should throw an error if the wallet does not support the signMessage method', async () => {
+    vi.spyOn(provider, 'connect').mockImplementationOnce(() =>
+      Promise.resolve(
+        mockUniversalProviderSession({
+          namespaces: {
+            solana: {
+              chains: undefined,
+              methods: [],
+              events: [],
+              accounts: [
+                `solana:${TestConstants.chains[0]?.chainId}:${TestConstants.accounts[0].address}`
+              ]
+            }
+          }
+        })
+      )
+    )
+
+    await walletConnectProvider.connect()
+
+    await expect(() =>
+      walletConnectProvider.signMessage(new Uint8Array([1, 2, 3, 4, 5]))
+    ).rejects.toThrow(WalletConnectMethodNotSupportedError)
+  })
+
+  it('should throw an error if the wallet does not support the signTransaction method', async () => {
+    vi.spyOn(provider, 'connect').mockImplementationOnce(() =>
+      Promise.resolve(
+        mockUniversalProviderSession({
+          namespaces: {
+            solana: {
+              chains: undefined,
+              methods: ['solana_signMessage'],
+              events: [],
+              accounts: [
+                `solana:${TestConstants.chains[0]?.chainId}:${TestConstants.accounts[0].address}`
+              ]
+            }
+          }
+        })
+      )
+    )
+
+    await walletConnectProvider.connect()
+
+    await expect(() =>
+      walletConnectProvider.signTransaction(mockLegacyTransaction())
+    ).rejects.toThrow(WalletConnectMethodNotSupportedError)
+  })
+
+  it('should throw an error if the wallet does not support the signAndSendTransaction method', async () => {
+    vi.spyOn(provider, 'connect').mockImplementationOnce(() =>
+      Promise.resolve(
+        mockUniversalProviderSession({
+          namespaces: {
+            solana: {
+              chains: undefined,
+              methods: ['solana_signMessage'],
+              events: [],
+              accounts: [
+                `solana:${TestConstants.chains[0]?.chainId}:${TestConstants.accounts[0].address}`
+              ]
+            }
+          }
+        })
+      )
+    )
+
+    await walletConnectProvider.connect()
+
+    await expect(() =>
+      walletConnectProvider.signAndSendTransaction(mockLegacyTransaction())
+    ).rejects.toThrow(WalletConnectMethodNotSupportedError)
+  })
+
+  it('should throw an error if the wallet does not support the signAllTransactions method', async () => {
+    vi.spyOn(provider, 'connect').mockImplementationOnce(() =>
+      Promise.resolve(
+        mockUniversalProviderSession({
+          namespaces: {
+            solana: {
+              chains: undefined,
+              methods: ['solana_signMessage'],
+              events: [],
+              accounts: [
+                `solana:${TestConstants.chains[0]?.chainId}:${TestConstants.accounts[0].address}`
+              ]
+            }
+          }
+        })
+      )
+    )
+
+    await walletConnectProvider.connect()
+
+    await expect(() =>
+      walletConnectProvider.signAllTransactions([mockLegacyTransaction()])
+    ).rejects.toThrow(WalletConnectMethodNotSupportedError)
+  })
+
+  it('should request signAllTransactions with batched transactions', async () => {
+    vi.spyOn(provider, 'connect').mockImplementationOnce(() =>
+      Promise.resolve(
+        mockUniversalProviderSession({
+          namespaces: {
+            solana: {
+              chains: undefined,
+              methods: ['solana_signAllTransactions'],
+              events: [],
+              accounts: [
+                `solana:${TestConstants.chains[0]?.chainId}:${TestConstants.accounts[0].address}`
+              ]
+            }
+          }
+        })
+      )
+    )
+
+    await walletConnectProvider.connect()
+
+    const transactions = [mockLegacyTransaction(), mockVersionedTransaction()]
+    await walletConnectProvider.signAllTransactions(transactions)
+
+    expect(provider.request).toHaveBeenCalledWith(
+      {
+        method: 'solana_signAllTransactions',
+        params: {
+          transactions: [
+            'AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAECFj6WhBP/eepC4T4bDgYuJMiSVXNh9IvPWv1ZDUV52gYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMmaU6FiJxS/swxct+H8Iree7FERP/8vrGuAdF90ANelAQECAAAMAgAAAICWmAAAAAAA',
+            'AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQABAhY+loQT/3nqQuE+Gw4GLiTIklVzYfSLz1r9WQ1FedoGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADJmlOhYicUv7MMXLfh/CK3nuxRET//L6xrgHRfdADXpQEBAgAADAIAAACAlpgAAAAAAAA='
+          ]
+        }
+      },
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+    )
   })
 })
