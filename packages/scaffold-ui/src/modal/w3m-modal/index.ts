@@ -31,13 +31,12 @@ export class W3mModal extends LitElement {
   @state() private open = ModalController.state.open
 
   @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
-  
+
   @state() private is1ClickAuthenticating = AccountController.state.is1ClickAuthenticating
 
   @state() private connected = AccountController.state.isConnected
 
   @state() private loading = ModalController.state.loading
-
 
   @state() private shake = ModalController.state.shake
 
@@ -186,6 +185,10 @@ export class W3mModal extends LitElement {
 
   private async onNewAddress(caipAddress?: CaipAddress) {
     if (!this.connected || this.loading) {
+      if (!this.connected && RouterController.state.view === 'ConnectingSiwe') {
+        RouterController.push('ConnectWallets')
+      }
+
       return
     }
 
@@ -197,8 +200,6 @@ export class W3mModal extends LitElement {
       if (!SIWEController.state._client && OptionsController.state.enableAuth) {
         SIWEController.setSIWEClient(appKitAuthConfig)
       }
-
-  
 
       const session = (await SIWEController.getSession()) ?? undefined
       if (session?.address && session?.chainId) {

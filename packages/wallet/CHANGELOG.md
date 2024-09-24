@@ -1,5 +1,14 @@
 # @web3modal/wallet
 
+## 5.1.7-a869e5cdc.5
+
+### Patch Changes
+
+- Update profiles API url
+- Updated dependencies
+  - @web3modal/polyfills@5.1.7-a869e5cdc.5
+  - @web3modal/common@5.1.7-a869e5cdc.5
+
 ## 5.1.7-a1740ab9a.4
 
 ### Patch Changes

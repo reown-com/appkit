@@ -31,14 +31,16 @@ import {
 } from '@web3modal/common'
 import type {
   CaipAddress,
-  CaipNetwork, ChainAdapter, ConnectionControllerClient,
+  CaipNetwork,
+  ChainAdapter,
+  ConnectionControllerClient,
   Connector,
   NetworkControllerClient,
   OptionsControllerState,
   PublicStateControllerState,
   SendTransactionArgs,
   SocialProvider,
-  WriteContractArgs,
+  WriteContractArgs
 } from '@web3modal/core'
 import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@web3modal/scaffold-utils'
 import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
@@ -158,7 +160,8 @@ export class EVMWagmiClient implements ChainAdapter {
         let address: string | undefined = undefined
         let isSuccessful1CA = false
 
-        const supports1ClickAuth = this.appKit?.getIsSiweEnabled() && typeof provider?.authenticate === 'function'
+        const supports1ClickAuth =
+          this.appKit?.getIsSiweEnabled() && typeof provider?.authenticate === 'function'
         // Make sure client uses ethereum provider version that supports `authenticate`
         if (supports1ClickAuth) {
           const { SIWEController, getDidChainId, getDidAddress } = await import('@web3modal/siwe')
@@ -220,7 +223,6 @@ export class EVMWagmiClient implements ChainAdapter {
                 clientId
               })
               isSuccessful1CA = true
-
             } catch (error) {
               isSuccessful1CA = false
               SIWEController.setIs1ClickAuthenticating(false)
@@ -228,7 +230,6 @@ export class EVMWagmiClient implements ChainAdapter {
               console.error('Error verifying message', error)
               await provider.disconnect().catch(console.error)
               await this.connectionControllerClient.disconnect().catch(console.error)
-
               SIWEController.setStatus('error')
               throw error
             }
@@ -240,13 +241,13 @@ export class EVMWagmiClient implements ChainAdapter {
            */
           this.wagmiConfig.setState(x => ({
             ...x,
-            current: null,
+            current: null
           }))
           SIWEController.setIs1ClickAuthenticating(false)
         }
         await connect(this.wagmiConfig, { connector, chainId })
         const { SIWEController } = await import('@web3modal/siwe')
-        if(supports1ClickAuth && address && chainId && isSuccessful1CA){
+        if (supports1ClickAuth && address && chainId && isSuccessful1CA) {
           SIWEController.setStatus('authenticating')
           await SIWEController.onSignIn?.({
             address,
