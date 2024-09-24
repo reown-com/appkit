@@ -1,4 +1,4 @@
-import { Button, Stack, Text, Input, Tooltip } from '@chakra-ui/react'
+import { Button, Stack, Text, Input, Tooltip, Flex } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 import { UniversalProvider } from '@walletconnect/universal-provider'
@@ -12,6 +12,8 @@ import {
   getCapabilitySupportedChainInfo
 } from '../../utils/EIP5792Utils'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
+import { abi, address as donutAddress } from '../../utils/DonutContract'
+import { ethers } from 'ethers5'
 
 export function EthersSendCallsWithPaymasterServiceTest() {
   const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')
@@ -49,7 +51,7 @@ export function EthersSendCallsWithPaymasterServiceTest() {
   const currentChainsInfo = paymasterServiceSupportedChains.find(
     chainInfo => chainInfo.chainId === Number(chainId)
   )
-  async function onSendCalls() {
+  async function onSendCalls(donut?: boolean) {
     try {
       setLoading(true)
       if (!walletProvider || !address) {
@@ -64,16 +66,30 @@ export function EthersSendCallsWithPaymasterServiceTest() {
       }
       const provider = new BrowserProvider(walletProvider, chainId)
       const amountToSend = parseGwei('0.001').toString(16)
-      const calls = [
-        {
-          to: vitalikEthAddress,
-          value: `0x${amountToSend}`
-        },
-        {
-          to: vitalikEthAddress,
-          data: '0xdeadbeef'
-        }
-      ]
+
+      const donutIntrerface = new ethers.utils.Interface(abi)
+      const encodedCallData = donutIntrerface.encodeFunctionData('getBalance')
+
+      // @ts-expect-error ethers types are correct
+      const tx = await contract.getBalance()
+
+      const calls = donut
+        ? [
+            {
+              to: donutAddress,
+              callData: encodedCallData
+            }
+          ]
+        : [
+            {
+              to: vitalikEthAddress,
+              value: `0x${amountToSend}`
+            },
+            {
+              to: vitalikEthAddress,
+              data: '0xdeadbeef'
+            }
+          ]
       const sendCallsParams = {
         version: '1.0',
         chainId: `0x${BigInt(chainId).toString(16)}`,
@@ -85,6 +101,7 @@ export function EthersSendCallsWithPaymasterServiceTest() {
           }
         }
       }
+
       const batchCallHash = await provider.send(EIP_5792_RPC_METHODS.WALLET_SEND_CALLS, [
         sendCallsParams
       ])
@@ -151,14 +168,25 @@ export function EthersSendCallsWithPaymasterServiceTest() {
           textOverflow="ellipsis"
         />
       </Tooltip>
-      <Button
-        width={'fit-content'}
-        data-testid="send-calls-paymaster-service-button"
-        onClick={onSendCalls}
-        isDisabled={isLoading || !paymasterServiceUrl}
-      >
-        SendCalls w/ Paymaster Service
-      </Button>
+      <Flex dir="col">
+        <Button
+          width={'fit-content'}
+          data-testid="send-calls-paymaster-service-button"
+          onClick={() => onSendCalls()}
+          isDisabled={isLoading || !paymasterServiceUrl}
+        >
+          SendCalls w/ Paymaster Service
+        </Button>
+
+        <Button
+          width={'fit-content'}
+          data-testid="send-calls-paymaster-service-button"
+          onClick={() => onSendCalls(true)}
+          isDisabled={isLoading || !paymasterServiceUrl}
+        >
+          Send Donut Calls w/ Paymaster Service
+        </Button>
+      </Flex>
     </Stack>
   ) : (
     <Text fontSize="md" color="yellow">
