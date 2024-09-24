@@ -15,7 +15,7 @@ import { SiweData } from '../../components/Siwe/SiweData'
 
 const queryClient = new QueryClient()
 
-const networks = [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.SolanaNetworks]
+const networks = ConstantsUtil.AllNetworks
 
 const wagmiAdapter = new WagmiAdapter({
   ssr: true,

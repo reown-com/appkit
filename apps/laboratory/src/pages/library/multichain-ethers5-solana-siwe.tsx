@@ -10,7 +10,7 @@ import { siweConfig } from '../../utils/SiweUtils'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { mainnet } from '@reown/appkit/networks'
 
-const networks = [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.SolanaNetworks]
+const networks = ConstantsUtil.AllNetworks
 
 const etherAdapter = new EthersAdapter()
 

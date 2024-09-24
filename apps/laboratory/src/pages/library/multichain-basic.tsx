@@ -6,7 +6,7 @@ import { mainnet } from '@reown/appkit/networks'
 import { MultiChainInfo } from '../../components/MultiChainInfo'
 import { UpaTests } from '../../components/UPA/UpaTests'
 
-const networks = [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.SolanaNetworks]
+const networks = ConstantsUtil.AllNetworks
 
 const modal = createAppKit({
   networks,

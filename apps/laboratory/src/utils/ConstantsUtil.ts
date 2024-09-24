@@ -48,6 +48,9 @@ if (typeof window !== 'undefined') {
 
 const customWallet = storedCustomWallet ? [JSON.parse(storedCustomWallet)] : []
 
+const EvmNetworks = [mainnet, optimism, polygon, zkSync, arbitrum, base, sepolia]
+const SolanaNetworks = [solana, solanaTestnet, solanaDevnet]
+
 export const ConstantsUtil = {
   SigningSucceededToastTitle: 'Signing Succeeded',
   SigningFailedToastTitle: 'Signing Failed',
@@ -100,6 +103,7 @@ export const ConstantsUtil = {
     }
   ],
   ProjectId: projectId,
-  EvmNetworks: [mainnet, optimism, polygon, zkSync, arbitrum, base, sepolia],
-  SolanaNetworks: [solana, solanaTestnet, solanaDevnet]
+  EvmNetworks,
+  SolanaNetworks,
+  AllNetworks: [...EvmNetworks, ...SolanaNetworks]
 }

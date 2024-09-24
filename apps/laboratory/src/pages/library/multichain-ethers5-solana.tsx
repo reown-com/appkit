@@ -8,7 +8,7 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsEthersSolana } from '../../components/MultiChainTestsEthersSolana'
 
-const networks = [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.SolanaNetworks]
+const networks = ConstantsUtil.AllNetworks
 
 const etherAdapter = new EthersAdapter()
 
