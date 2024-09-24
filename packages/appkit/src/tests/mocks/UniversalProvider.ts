@@ -24,6 +24,7 @@ export const mockProvider = {
         'wallet_sendCalls',
         'wallet_showCallsStatus',
         'wallet_getCallsStatus',
+        'wallet_grantPermissions',
         'wallet_switchEthereumChain'
       ],
       rpcMap: {
