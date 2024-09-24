@@ -146,48 +146,15 @@ export class W3mNetworksView extends LitElement {
     return !approvedCaipNetworkIds?.includes(network.id)
   }
 
-  private async onSwitchNetwork(network: CaipNetwork) {
-    const isCurrentNamespaceConnected = AccountController.state.caipAddress
-    const isNamespaceConnected = AccountController.getCaipAddress(network.chainNamespace)
-    const isSameNetwork = network.id === this.network?.id
-
-    const supportsAllNetworks = NetworkController.state.supportsAllNetworks
+  private onSwitchNetwork(network: CaipNetwork) {
     const routerData = RouterController.state.data
-
-    const type = StorageUtil.getConnectedConnector()
-    const authConnector = ConnectorController.getAuthConnector()
-    const isConnectedWithAuth = type === 'AUTH' && authConnector
+    const isSameNetwork = network.id === this.network?.id
 
     if (isSameNetwork) {
       return
     }
 
-    if (isNamespaceConnected) {
-      if (supportsAllNetworks || isConnectedWithAuth) {
-        RouterController.push('SwitchNetwork', { ...routerData, network })
-      } else {
-        await NetworkController.switchActiveNetwork(network)
-      }
-    } else {
-      // eslint-disable-next-line no-lonely-if
-      if (ChainController.state.noAdapters) {
-        RouterController.push('ConnectingWalletConnect')
-      } else if (isConnectedWithAuth) {
-        RouterController.push('SwitchNetwork', { ...routerData, network })
-      } else {
-        // eslint-disable-next-line no-lonely-if
-        if (isCurrentNamespaceConnected) {
-          RouterController.push('SwitchActiveChain', {
-            switchToChain: network.chainNamespace,
-            navigateTo: 'Connect',
-            navigateWithReplace: true,
-            network
-          })
-        } else {
-          NetworkController.setActiveCaipNetwork(network)
-        }
-      }
-    }
+    RouterController.push('SwitchNetwork', { ...routerData, network })
   }
 }
 
