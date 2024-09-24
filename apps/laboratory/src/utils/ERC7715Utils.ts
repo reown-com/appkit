@@ -1,6 +1,6 @@
 import type { GrantPermissionsReturnType } from 'viem/experimental'
 import { abi as donutContractAbi, address as donutContractAddress } from './DonutContract'
-import { encodeAbiParameters, hashMessage, parseEther, toFunctionSelector, type Chain } from 'viem'
+import { encodeAbiParameters, hashMessage, toFunctionSelector, type Chain } from 'viem'
 import { WalletConnectCosigner } from './WalletConnectCosignerUtils'
 import { buildUserOp, type Call, type FillUserOpResponse } from './UserOpBuilderServiceUtils'
 import { signMessage } from 'viem/accounts'
@@ -26,8 +26,6 @@ export function getPurchaseDonutPermissions(): Omit<
         data: {
           address: donutContractAddress,
           abi: donutContractAbi,
-          // valueLimit: parseEther('10').toString(),
-          // functionName: 'purchase(uint256)',
           functionSelector: toFunctionSelector('purchase(uint256)')
         }
       }
