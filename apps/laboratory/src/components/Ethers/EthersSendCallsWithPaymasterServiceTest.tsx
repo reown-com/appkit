@@ -67,17 +67,18 @@ export function EthersSendCallsWithPaymasterServiceTest() {
       const provider = new BrowserProvider(walletProvider, chainId)
       const amountToSend = parseGwei('0.001').toString(16)
 
+      console.log('>>> preinterface')
       const donutIntrerface = new ethers.utils.Interface(abi)
-      const encodedCallData = donutIntrerface.encodeFunctionData('getBalance')
+      console.log('>>> donutinterface', donutIntrerface)
+      const encodedCallData = donutIntrerface.encodeFunctionData('getBalance', [address])
 
-      // @ts-expect-error ethers types are correct
-      const tx = await contract.getBalance()
+      console.log('>>> encoded', encodedCallData)
 
       const calls = donut
         ? [
             {
               to: donutAddress,
-              callData: encodedCallData
+              data: encodedCallData
             }
           ]
         : [
