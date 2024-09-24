@@ -127,6 +127,11 @@ export class ModalValidator {
     await expect(socialList).toBeHidden()
   }
 
+  async expectAlertBarText(text: string) {
+    const alertBarText = this.page.getByTestId('wui-alertbar-text')
+    await expect(alertBarText).toHaveText(text)
+  }
+
   async expectEmailLogin() {
     const emailInput = this.page.getByTestId('wui-email-input')
     await expect(emailInput).toBeVisible()

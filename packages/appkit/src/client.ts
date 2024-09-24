@@ -25,7 +25,8 @@ import {
   OptionsController,
   NetworkController,
   AssetUtil,
-  ApiController
+  ApiController,
+  AlertController
 } from '@reown/appkit-core'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
 import {
@@ -416,8 +417,17 @@ export class AppKit {
       sdkVersion: SdkVersion
     }
   ) {
+    OptionsController.setDebug(options.debug)
     OptionsController.setProjectId(options.projectId)
     OptionsController.setSdkVersion(options.sdkVersion)
+
+    if (!options.projectId) {
+      AlertController.open('Project ID Not Configured', 'error')
+      // eslint-disable-next-line no-console
+      console.error('Project ID Not Configured - update configuration')
+
+      return
+    }
 
     this.adapters = options.adapters
 

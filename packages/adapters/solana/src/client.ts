@@ -4,7 +4,8 @@ import {
   ApiController,
   ChainController,
   CoreHelperUtil,
-  EventsController
+  EventsController,
+  AlertController
 } from '@reown/appkit-core'
 import {
   ConstantsUtil as CommonConstantsUtil,
@@ -43,7 +44,7 @@ import type { AppKit } from '@reown/appkit'
 import type { AppKitOptions as CoreOptions } from '@reown/appkit'
 import { ProviderUtil } from '@reown/appkit/store'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
-import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
+import { ConstantsUtil, ErrorUtil, PresetsUtil } from '@reown/appkit-utils'
 import { createSendTransaction } from './utils/createSendTransaction.js'
 import { CoinbaseWalletProvider } from './providers/CoinbaseWalletProvider.js'
 
@@ -113,10 +114,6 @@ export class SolanaAdapter implements ChainAdapter {
 
   public construct(appKit: AppKit, options: CoreOptions) {
     const { projectId } = options
-
-    if (!options) {
-      throw new Error('Solana:construct - options is undefined')
-    }
 
     this.appKit = appKit
     this.options = options
@@ -600,10 +597,21 @@ export class SolanaAdapter implements ChainAdapter {
         : CoreConstantsUtil.DEFAULT_FEATURES.socials
 
       if (emailEnabled || socialsEnabled) {
-        this.w3mFrameProvider = W3mFrameProviderSingleton.getInstance(
-          opts.projectId,
-          withSolanaNamespace(this.appKit?.getCaipNetwork(this.chainNamespace)?.chainId)
-        )
+        this.w3mFrameProvider = W3mFrameProviderSingleton.getInstance({
+          projectId: opts.projectId,
+          chainId: withSolanaNamespace(this.appKit?.getCaipNetwork(this.chainNamespace)?.chainId),
+          onTimeout: () => {
+            AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
+            // eslint-disable-next-line no-console
+            console.error(
+              ErrorUtil.ALERT_ERRORS.ORIGIN_NOT_WHITELISTED_SOCIALS.replace(
+                '{{origin}}',
+                window.origin
+              )
+            )
+          }
+        })
+
         this.authProvider = new AuthProvider({
           getProvider: () => this.w3mFrameProvider as W3mFrameProvider,
           getActiveChain: () => this.appKit?.getCaipNetwork(this.chainNamespace),

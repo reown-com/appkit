@@ -15,6 +15,7 @@ const maliciousUrl = 'https://malicious-app-verify-simulation.vercel.app'
 export type ModalFlavor =
   | 'default'
   | 'external'
+  | 'debug-mode'
   | 'verify-valid'
   | 'verify-domain-mismatch'
   | 'verify-evil'
