@@ -1,7 +1,7 @@
 import { expect, test, type BrowserContext, type Page } from '@playwright/test'
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
-import { Email } from './shared/utils/email'
 import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
+import { Email } from './shared/utils/email'
 import { SECURE_WEBSITE_URL } from './shared/constants'
 
 /* eslint-disable init-declarations */
@@ -19,7 +19,6 @@ const emailTest = test.extend<{ library: string }>({
 emailTest.describe.configure({ mode: 'serial' })
 
 emailTest.beforeAll(async ({ browser, library }) => {
-  emailTest.setTimeout(300000)
   context = await browser.newContext()
   browserPage = await context.newPage()
 
@@ -63,20 +62,18 @@ emailTest('it should reject sign', async () => {
   await validator.expectRejectedSign()
 })
 
-emailTest('it should switch network and sign', async () => {
-  let targetChain = 'Polygon'
-  await page.goToSettings()
+emailTest('it should switch network and sign', async ({ library }) => {
+  let targetChain = library === 'solana' ? 'Solana Testnet' : 'Polygon'
   await page.switchNetwork(targetChain)
-  await validator.expectSwitchedNetwork(targetChain)
+  await validator.expectSwitchedNetworkOnNetworksView(targetChain)
   await page.closeModal()
   await page.sign()
   await page.approveSign()
   await validator.expectAcceptedSign()
 
-  targetChain = 'Ethereum'
-  await page.goToSettings()
+  targetChain = library === 'solana' ? 'Solana' : 'Ethereum'
   await page.switchNetwork(targetChain)
-  await validator.expectSwitchedNetwork(targetChain)
+  await validator.expectSwitchedNetworkOnNetworksView(targetChain)
   await page.closeModal()
   await page.sign()
   await page.approveSign()

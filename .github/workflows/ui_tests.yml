@@ -9,7 +9,7 @@ on:
         required: false
         type: string
       base-url:
-        description: 'The web3modal lab url'
+        description: 'The AppKit lab url'
         default: 'http://localhost:3000/'
         required: false
         type: string
@@ -36,6 +36,10 @@ on:
     secrets:
       NEXT_PUBLIC_PROJECT_ID:
         required: true
+      RELEASE_TOKEN_V2:
+        required: true
+      TFC_INFRA_TOKEN:
+        required: true
       TESTS_NEXTAUTH_SECRET:
         required: false
       TESTS_MAILSAC_API_KEY:
@@ -54,7 +58,7 @@ jobs:
       labels: playwright
       count: 5
     secrets:
-      GITHUB_PAT: ${{ secrets.RELEASE_TOKEN }}
+      GITHUB_PAT: ${{ secrets.RELEASE_TOKEN_V2 }}
       TF_API_TOKEN: ${{ secrets.TFC_INFRA_TOKEN }}
 
   ui_tests:

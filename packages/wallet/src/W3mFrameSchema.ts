@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
+import type { AdapterType, AppKitSdkVersion, SdkFramework } from '@reown/appkit-common'
 
 // -- Helpers ----------------------------------------------------------------
 const zError = z.object({ message: z.string() })
@@ -7,6 +8,10 @@ const zError = z.object({ message: z.string() })
 function zType<K extends keyof typeof W3mFrameConstants>(key: K) {
   return z.literal(W3mFrameConstants[key])
 }
+
+// -- Custom Types -----------------------------------------------------------
+type SdkType = 'w3m' | 'appkit'
+type SdkVersion = `${SdkFramework}-${AdapterType}-${string}` | AppKitSdkVersion | undefined
 
 // -- Responses --------------------------------------------------------------
 export const GetTransactionByHashResponse = z.object({
@@ -57,13 +62,8 @@ export const AppSyncDappDataRequest = z.object({
       icons: z.array(z.string())
     })
     .optional(),
-  sdkVersion: z.string() as z.ZodType<
-    | `${'html' | 'react' | 'vue'}-wagmi-${string}`
-    | `${'html' | 'react' | 'vue'}-ethers5-${string}`
-    | `${'html' | 'react' | 'vue'}-ethers-${string}`
-    | `${'html' | 'react' | 'vue'}-solana-${string}`
-    | `${'html' | 'react' | 'vue'}-multichain-${string}`
-  >,
+  sdkVersion: z.string().optional() as z.ZodType<SdkVersion>,
+  sdkType: (z.string() as z.ZodType<SdkType>).optional(),
   projectId: z.string()
 })
 export const AppSetPreferredAccountRequest = z.object({ type: z.string() })

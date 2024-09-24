@@ -1,17 +1,19 @@
-import type { BaseError } from '@web3modal/core'
+import type { BaseError } from '@reown/appkit-core'
 import {
+  ChainController,
   ConnectionController,
   EventsController,
-  ModalController,
-  OptionsController,
-  RouterController
-} from '@web3modal/core'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import { customElement } from '@web3modal/ui'
+  ModalController
+} from '@reown/appkit-core'
+import { ConstantsUtil } from '@reown/appkit-utils'
+import { customElement } from '@reown/appkit-ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-external-view')
 export class W3mConnectingExternalView extends W3mConnectingWidget {
+  // -- Members ------------------------------------------- //
+  private externalViewUnsubscribe: (() => void)[] = []
+
   public constructor() {
     super()
     if (!this.connector) {
@@ -29,6 +31,17 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
     this.onConnect = this.onConnectProxy.bind(this)
     this.onAutoConnect = this.onConnectProxy.bind(this)
     this.isWalletConnect = false
+    this.externalViewUnsubscribe.push(
+      ChainController.subscribeKey('activeCaipAddress', val => {
+        if (val) {
+          ModalController.close()
+        }
+      })
+    )
+  }
+
+  public override disconnectedCallback() {
+    this.externalViewUnsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
   // -- Private ------------------------------------------- //
@@ -43,12 +56,6 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
          */
         if (this.connector.id !== ConstantsUtil.COINBASE_SDK_CONNECTOR_ID || !this.error) {
           await ConnectionController.connectExternal(this.connector, this.connector.chain)
-
-          if (OptionsController.state.isSiweEnabled) {
-            RouterController.push('ConnectingSiwe')
-          } else {
-            ModalController.close()
-          }
 
           EventsController.sendEvent({
             type: 'track',

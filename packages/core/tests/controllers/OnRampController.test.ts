@@ -6,7 +6,7 @@ import {
   type OnRampProvider,
   type PaymentCurrency,
   type PurchaseCurrency
-} from '../../index.js'
+} from '../../exports/index.js'
 import { ONRAMP_PROVIDERS } from '../../src/utils/ConstantsUtil.js'
 import {
   USDC_CURRENCY_DEFAULT,

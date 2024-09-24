@@ -1,6 +1,6 @@
 {
-  "name": "@web3modal/common",
-  "version": "5.1.6",
+  "name": "@reown/appkit-common",
+  "version": "1.0.4",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -21,23 +21,23 @@
     "dayjs": "1.11.10"
   },
   "devDependencies": {
-    "vitest": "2.0.3",
+    "vitest": "2.0.5",
     "@vitest/coverage-v8": "2.0.5"
   },
   "keywords": [
     "utils",
     "types",
     "web3",
-    "web3modal"
+    "appkit"
   ],
-  "author": "WalletConnect <walletconnect.com>",
+  "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/web3modal/web3modal",
+  "homepage": "https://github.com/WalletConnect/web3modal",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/web3modal/web3modal.git"
+    "url": "git+https://github.com/WalletConnect/web3modal.git"
   },
   "bugs": {
-    "url": "https://github.com/web3modal/web3modal/issues"
+    "url": "https://github.com/WalletConnect/web3modal/issues"
   }
 }

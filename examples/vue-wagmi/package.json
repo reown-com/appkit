@@ -1,15 +1,16 @@
 {
   "name": "@examples/vue-wagmi",
   "private": true,
-  "version": "5.1.6",
+  "version": "1.0.4",
   "scripts": {
     "dev": "vite --port 3003",
     "build": "vite build"
   },
   "dependencies": {
-    "@wagmi/connectors": "5.1.5",
+    "@wagmi/connectors": "5.1.9",
     "@wagmi/core": "2.13.4",
-    "@web3modal/wagmi": "workspace:*",
+    "@reown/appkit-adapter-wagmi": "workspace:*",
+    "@reown/appkit": "workspace:*",
     "vue": "3.4.3"
   },
   "devDependencies": {

@@ -1,5 +1,15 @@
-import type { W3mFrameProvider, W3mFrameTypes } from '@web3modal/wallet'
-import type { Balance, Transaction, Chain } from '@web3modal/common'
+import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
+import type {
+  Balance,
+  Transaction,
+  CaipNetworkId,
+  CaipNetwork,
+  ChainNamespace,
+  CaipAddress,
+  AdapterType,
+  SdkFramework,
+  AppKitSdkVersion
+} from '@reown/appkit-common'
 import type {
   NetworkControllerClient,
   NetworkControllerState
@@ -7,10 +17,8 @@ import type {
 import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
 import type { AccountControllerState } from '../controllers/AccountController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
-
-export type CaipAddress = `${string}:${string}:${string}`
-
-export type CaipNetworkId = `${string}:${string}`
+import type { ConstantsUtil } from './ConstantsUtil.js'
+import type { ReownName } from '../controllers/EnsController.js'
 
 export type CaipNetworkCoinbaseNetwork =
   | 'Ethereum'
@@ -19,14 +27,6 @@ export type CaipNetworkCoinbaseNetwork =
   | 'Avalanche'
   | 'OP Mainnet'
   | 'Celo'
-
-export interface CaipNetwork {
-  id: CaipNetworkId
-  name?: string
-  imageId?: string
-  imageUrl?: string
-  chain: Chain
-}
 
 export type ConnectedWalletInfo =
   | {
@@ -76,12 +76,8 @@ export type Connector = {
     rdns?: string
   }
   provider?: unknown
-  email?: boolean
-  socials?: SocialProvider[]
-  showWallets?: boolean
-  walletFeatures?: boolean
-  chain: Chain
-  providers?: Connector[]
+  chain: ChainNamespace
+  connectors?: Connector[]
 }
 
 export interface AuthConnector extends Connector {
@@ -99,12 +95,7 @@ export type CaipNamespaces = Record<
   }
 >
 
-export type SdkVersion =
-  | `${'html' | 'react' | 'vue'}-wagmi-${string}`
-  | `${'html' | 'react' | 'vue'}-ethers5-${string}`
-  | `${'html' | 'react' | 'vue'}-ethers-${string}`
-  | `${'html' | 'react' | 'vue'}-solana-${string}`
-  | `${'html' | 'react' | 'vue'}-multichain-${string}`
+export type SdkVersion = `${SdkFramework}-${AdapterType}-${string}` | AppKitSdkVersion
 
 export interface BaseError {
   message?: string
@@ -198,7 +189,7 @@ export interface BlockchainApiTransactionsResponse {
 export type SwapToken = {
   name: string
   symbol: string
-  address: `${string}:${string}:${string}`
+  address: CaipAddress
   decimals: number
   logoUri: string
   eip2612?: boolean
@@ -292,8 +283,8 @@ export interface BlockchainApiGenerateSwapCalldataRequest {
 
 export interface BlockchainApiGenerateSwapCalldataResponse {
   tx: {
-    from: `${string}:${string}:${string}`
-    to: `${string}:${string}:${string}`
+    from: CaipAddress
+    to: CaipAddress
     data: `0x${string}`
     amount: string
     eip155: {
@@ -313,8 +304,8 @@ export interface BlockchainApiGenerateApproveCalldataRequest {
 
 export interface BlockchainApiGenerateApproveCalldataResponse {
   tx: {
-    from: `${string}:${string}:${string}`
-    to: `${string}:${string}:${string}`
+    from: CaipAddress
+    to: CaipAddress
     data: `0x${string}`
     value: string
     eip155: {
@@ -329,7 +320,7 @@ export interface BlockchainApiBalanceResponse {
 }
 
 export interface BlockchainApiLookupEnsName {
-  name: string
+  name: ReownName
   registered: number
   updated: number
   addresses: Record<
@@ -736,6 +727,16 @@ export type Event =
         amount: number
       }
     }
+  | {
+      type: 'track'
+      event: 'CONNECT_PROXY_ERROR'
+      properties: {
+        message: string
+        uri: string
+        mobile_link: string
+        name: string
+      }
+    }
 // Onramp Types
 export type DestinationWallet = {
   address: string
@@ -801,20 +802,28 @@ export type AccountType = {
   type: 'eoa' | 'smartAccount'
 }
 
-export interface SendTransactionArgs {
-  to: `0x${string}`
-  data: `0x${string}`
-  value: bigint
-  gas?: bigint
-  gasPrice: bigint
-  address: `0x${string}`
-}
+export type SendTransactionArgs =
+  | {
+      chainNamespace?: undefined | 'eip155'
+      to: `0x${string}`
+      data: `0x${string}`
+      value: bigint
+      gas?: bigint
+      gasPrice: bigint
+      address: `0x${string}`
+    }
+  | { chainNamespace: 'solana'; to: string; value: number }
 
-export interface EstimateGasTransactionArgs {
-  address: `0x${string}`
-  to: `0x${string}`
-  data: `0x${string}`
-}
+export type EstimateGasTransactionArgs =
+  | {
+      chainNamespace?: undefined | 'eip155'
+      address: `0x${string}`
+      to: `0x${string}`
+      data: `0x${string}`
+    }
+  | {
+      chainNamespace: 'solana'
+    }
 
 export interface WriteContractArgs {
   receiverAddress: `0x${string}`
@@ -826,19 +835,101 @@ export interface WriteContractArgs {
   abi: any
 }
 
-export type ChainAdapter<StoreState = unknown, SwitchNetworkParam = number> = {
+export type ChainAdapter = {
   connectionControllerClient?: ConnectionControllerClient
   networkControllerClient?: NetworkControllerClient
   accountState?: AccountControllerState
   networkState?: NetworkControllerState
-  defaultChain?: CaipNetwork
-  chain: Chain
+  defaultNetwork?: CaipNetwork
+  chainNamespace: ChainNamespace
+  isUniversalAdapterClient?: boolean
+  adapterType?: AdapterType
+  caipNetworks: CaipNetwork[]
   getAddress?: () => string | undefined
   getError?: () => unknown
   getChainId?: () => number | string | undefined
-  switchNetwork?: ((chainId: SwitchNetworkParam) => void) | undefined
+  switchNetwork?: ((caipNetwork: CaipNetwork) => void) | undefined
   getIsConnected?: () => boolean | undefined
   getWalletProvider?: () => unknown
   getWalletProviderType?: () => string | undefined
-  subscribeProvider?: (callback: (newState: StoreState) => void) => void
+  subscribeProvider?: (callback: (newState: unknown) => void) => void
 }
+
+type ProviderEventListener = {
+  connect: (connectParams: { chainId: number }) => void
+  disconnect: (error: Error) => void
+  chainChanged: (chainId: string) => void
+  accountsChanged: (accounts: string[]) => void
+  message: (message: { type: string; data: unknown }) => void
+}
+
+export interface RequestArguments {
+  readonly method: string
+  readonly params?: readonly unknown[] | object
+}
+
+export interface Provider {
+  request: <T>(args: RequestArguments) => Promise<T>
+  on<T extends keyof ProviderEventListener>(event: T, listener: ProviderEventListener[T]): void
+  removeListener: <T>(event: string, listener: (data: T) => void) => void
+  emit: (event: string) => void
+}
+
+export type CombinedProvider = W3mFrameProvider & Provider
+
+export type CoinbasePaySDKChainNameValues =
+  keyof typeof ConstantsUtil.WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP
+
+export type FeaturesSocials =
+  | 'google'
+  | 'x'
+  | 'discord'
+  | 'farcaster'
+  | 'github'
+  | 'apple'
+  | 'facebook'
+
+export type Features = {
+  /**
+   * @description Enable or disable the swaps feature. Enabled by default.
+   * @type {boolean}
+   */
+  swaps?: boolean
+  /**
+   * @description Enable or disable the onramp feature. Enabled by default.
+   * @type {boolean}
+   */
+  onramp?: boolean
+  /**
+   * @description Enable or disable the email feature. Enabled by default.
+   * @type {boolean}
+   */
+  email?: boolean
+  /**
+   * @description Show or hide the regular wallet options when email is enabled. Enabled by default.
+   * @type {boolean}
+   */
+  emailShowWallets?: boolean
+  /**
+   * @description Enable or disable the socials feature. Enabled by default.
+   * @type {FeaturesSocials[]}
+   */
+  socials?: FeaturesSocials[] | false
+  /**
+   * @description Enable or disable the history feature. Enabled by default.
+   * @type {boolean}
+   */
+  history?: boolean
+  /**
+   * @description Enable or disable the analytics feature. Enabled by default.
+   * @type {boolean}
+   */
+  analytics?: boolean
+  /**
+   * @description Enable or disable the all wallets feature. Enabled by default.
+   * @type {boolean}
+   */
+  allWallets?: boolean
+}
+
+export type FeaturesKeys = keyof Features

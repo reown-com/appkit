@@ -1,1 +1,2 @@
-export * as Web3modal from '@web3modal/ethers5'
+import '@reown/appkit-polyfills'
+export * as AppKit from '@reown/appkit-ethers5'

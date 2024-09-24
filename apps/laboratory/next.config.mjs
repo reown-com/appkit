@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const SHAKRA_UI = `'sha256-e7MRMmTzLsLQvIy1iizO1lXf7VWYoQ6ysj5fuUzvRwE='`
 /*
- * Keep in-sync with https://docs.walletconnect.com/advanced/security/content-security-policy
+ * Keep in-sync with https://docs.reown.com/advanced/security/content-security-policy
  * DO NOT use `unsafe-inline` or `unsafe-eval` for `script-src` or `default-src` in production as this
  * is against CSP best practices
  */
@@ -9,10 +9,12 @@ const cspHeader = `
   default-src 'self';
   script-src 'self' ${SHAKRA_UI} ${process.env.NODE_ENV === 'production' ? '' : "'unsafe-eval'"};
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-  img-src * 'self' data: blob: https://walletconnect.org https://walletconnect.com https://secure.walletconnect.com https://secure.walletconnect.org https://tokens-data.1inch.io https://tokens.1inch.io https://ipfs.io https://lab.web3modal.com;
+  img-src * 'self' data: blob: https://walletconnect.org https://walletconnect.com https://secure.walletconnect.com https://secure.walletconnect.org https://tokens-data.1inch.io https://tokens.1inch.io https://ipfs.io https://appkit-lab.reown.org;
   font-src 'self' https://fonts.gstatic.com;
-  connect-src 'self' https://react-wallet.walletconnect.com https://rpc.walletconnect.com https://rpc.walletconnect.org https://relay.walletconnect.com https://relay.walletconnect.org wss://relay.walletconnect.com wss://relay.walletconnect.org https://pulse.walletconnect.com https://pulse.walletconnect.org https://api.web3modal.com https://api.web3modal.org wss://www.walletlink.org https://o1095249.ingest.sentry.io;
-  frame-src 'self' https://verify.walletconnect.com https://verify.walletconnect.org https://secure.walletconnect.com https://secure.walletconnect.org https://secure-web3modal-git-feat-erc20-approval-4b32d6-walletconnect1.vercel.app;
+  connect-src 'self' https://react-wallet.walletconnect.com https://rpc.walletconnect.com https://rpc.walletconnect.org https://relay.walletconnect.com https://relay.walletconnect.org wss://relay.walletconnect.com wss://relay.walletconnect.org https://pulse.walletconnect.com https://pulse.walletconnect.org https://api.web3modal.com https://api.web3modal.org wss://www.walletlink.org https://o1095249.ingest.sentry.io https://quote-api.jup.ag;
+  frame-src 'self' https://verify.walletconnect.com https://verify.walletconnect.org https://secure.walletconnect.com https://secure.walletconnect.org ${
+    process.env.NEXT_PUBLIC_SECURE_SITE_SDK_URL || ''
+  } https://widget.solflare.com/ https://secure-web3modal-git-feat-erc20-approval-4b32d6-walletconnect1.vercel.app;
   object-src 'none';
   base-uri 'self';
   form-action 'self';

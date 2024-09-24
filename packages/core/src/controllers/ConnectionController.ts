@@ -11,12 +11,11 @@ import type {
 } from '../utils/TypeUtil.js'
 import { TransactionsController } from './TransactionsController.js'
 import { ChainController } from './ChainController.js'
-import { type W3mFrameTypes } from '@web3modal/wallet'
+import { type W3mFrameTypes } from '@reown/appkit-wallet'
 import { ModalController } from './ModalController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
-import type { Chain } from '@web3modal/common'
-import { NetworkController } from './NetworkController.js'
+import type { ChainNamespace } from '@reown/appkit-common'
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -27,10 +26,10 @@ export interface ConnectExternalOptions {
 }
 
 export interface ConnectionControllerClient {
-  connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>
+  connectWalletConnect?: (onUri: (uri: string) => void) => Promise<void>
   disconnect: () => Promise<void>
   signMessage: (message: string) => Promise<string>
-  sendTransaction: (args: SendTransactionArgs) => Promise<`0x${string}` | null>
+  sendTransaction: (args: SendTransactionArgs) => Promise<string | null>
   estimateGas: (args: EstimateGasTransactionArgs) => Promise<bigint>
   parseUnits: (value: string, decimals: number) => bigint
   formatUnits: (value: bigint, decimals: number) => string
@@ -53,6 +52,7 @@ export interface ConnectionControllerState {
   wcError?: boolean
   recentWallet?: WcWallet
   buffering: boolean
+  status?: 'connecting' | 'connected' | 'disconnected'
 }
 
 type StateKey = keyof ConnectionControllerState
@@ -60,7 +60,8 @@ type StateKey = keyof ConnectionControllerState
 // -- State --------------------------------------------- //
 const state = proxy<ConnectionControllerState>({
   wcError: false,
-  buffering: false
+  buffering: false,
+  status: 'disconnected'
 })
 
 // -- Controller ---------------------------------------- //
@@ -74,7 +75,7 @@ export const ConnectionController = {
     return subKey(state, key, callback)
   },
 
-  _getClient(chain?: Chain) {
+  _getClient(chain?: ChainNamespace) {
     return ChainController.getConnectionControllerClient(chain)
   },
 
@@ -84,16 +85,21 @@ export const ConnectionController = {
 
   async connectWalletConnect() {
     StorageUtil.setConnectedConnector('WALLET_CONNECT')
-    await this._getClient().connectWalletConnect(uri => {
-      state.wcUri = uri
-      state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
-    })
+
+    await ChainController.state?.universalAdapter?.connectionControllerClient?.connectWalletConnect?.(
+      uri => {
+        state.wcUri = uri
+        state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
+      }
+    )
   },
 
-  async connectExternal(options: ConnectExternalOptions, chain: Chain) {
+  async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
     await this._getClient(chain).connectExternal?.(options)
-    ChainController.setActiveChain(chain)
-    StorageUtil.setConnectedConnector(options.type)
+    if (setChain) {
+      ChainController.setActiveNamespace(chain)
+      StorageUtil.setConnectedConnector(options.type)
+    }
   },
 
   async reconnectExternal(options: ConnectExternalOptions) {
@@ -113,7 +119,7 @@ export const ConnectionController = {
     EventsController.sendEvent({
       type: 'track',
       event: 'SET_PREFERRED_ACCOUNT_TYPE',
-      properties: { accountType, network: NetworkController.state.caipNetwork?.id || '' }
+      properties: { accountType, network: ChainController.state.activeCaipNetwork?.id || '' }
     })
   },
 
@@ -149,7 +155,7 @@ export const ConnectionController = {
     return this._getClient().getEnsAvatar(value)
   },
 
-  checkInstalled(ids?: string[], chain?: Chain) {
+  checkInstalled(ids?: string[], chain?: ChainNamespace) {
     return this._getClient(chain).checkInstalled?.(ids) || false
   },
 
@@ -179,11 +185,15 @@ export const ConnectionController = {
     state.buffering = buffering
   },
 
+  setStatus(status: ConnectionControllerState['status']) {
+    state.status = status
+  },
+
   async disconnect() {
-    const client = this._getClient()
+    const connectionControllerClient = this._getClient()
 
     try {
-      await client.disconnect()
+      await connectionControllerClient?.disconnect()
       this.resetWcConnection()
     } catch (error) {
       throw new Error('Failed to disconnect')

@@ -1,7 +1,13 @@
-import { customElement } from '@web3modal/ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { SwapController, CoreHelperUtil, RouterController, SendController } from '@web3modal/core'
+import {
+  SwapController,
+  CoreHelperUtil,
+  RouterController,
+  SendController,
+  ChainController
+} from '@reown/appkit-core'
 import { state } from 'lit/decorators.js'
 
 @customElement('w3m-wallet-send-view')
@@ -23,6 +29,8 @@ export class W3mWalletSendView extends LitElement {
   @state() private loading = SendController.state.loading
 
   @state() private gasPriceInUSD = SendController.state.gasPriceInUSD
+
+  @state() private gasPrice = SendController.state.gasPrice
 
   @state() private message:
     | 'Preview Send'
@@ -64,6 +72,7 @@ export class W3mWalletSendView extends LitElement {
           .token=${this.token}
           .sendTokenAmount=${this.sendTokenAmount}
           .gasPriceInUSD=${this.gasPriceInUSD}
+          .gasPrice=${this.gasPrice}
         ></w3m-input-token>
         <wui-icon-box
           size="inherit"
@@ -111,7 +120,10 @@ export class W3mWalletSendView extends LitElement {
   private getMessage() {
     this.message = 'Preview Send'
 
-    if (this.receiverAddress && !CoreHelperUtil.isAddress(this.receiverAddress)) {
+    if (
+      this.receiverAddress &&
+      !CoreHelperUtil.isAddress(this.receiverAddress, ChainController.state.activeChain)
+    ) {
       this.message = 'Invalid Address'
     }
 

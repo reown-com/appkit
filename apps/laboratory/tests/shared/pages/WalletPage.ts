@@ -27,6 +27,7 @@ export class WalletPage {
   /**
    * Connect by inserting provided URI into the input element
    */
+
   async connectWithUri(uri: string) {
     const isVercelPreview = (await this.vercelPreview.count()) > 0
     if (isVercelPreview) {
@@ -98,5 +99,18 @@ export class WalletPage {
     const switchNetworkButton = this.page.getByTestId(`chain-switch-button${network}`)
     await switchNetworkButton.click()
     await expect(switchNetworkButton).toHaveText('✅')
+  }
+
+  /**
+   * Disconnects the current connection in the wallet
+   */
+  async disconnectConnection() {
+    await this.page.waitForLoadState()
+    const sessionsButton = this.page.getByTestId('sessions')
+    await sessionsButton.click()
+    const sessionCard = this.page.getByTestId(`session-card`)
+    await sessionCard.click()
+    const disconnectButton = this.page.getByText('Delete')
+    await disconnectButton.click()
   }
 }

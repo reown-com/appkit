@@ -1,0 +1,141 @@
+{
+  "name": "@reown/appkit",
+  "version": "1.0.4",
+  "type": "module",
+  "main": "./dist/esm/exports/index.js",
+  "types": "./dist/types/exports/index.d.ts",
+  "files": [
+    "dist",
+    "!tsconfig.tsbuildinfo"
+  ],
+  "scripts": {
+    "build:clean": "rm -rf dist",
+    "build": "tsc --build tsconfig.build.json",
+    "watch": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "test": "vitest run --coverage.enabled=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/types/exports/index.d.ts",
+      "import": "./dist/esm/exports/index.js",
+      "default": "./dist/esm/exports/index.js"
+    },
+    "./react": {
+      "types": "./dist/types/exports/react.d.ts",
+      "import": "./dist/esm/exports/react.js",
+      "default": "./dist/esm/exports/react.js"
+    },
+    "./vue": {
+      "types": "./dist/types/exports/vue.d.ts",
+      "import": "./dist/esm/exports/vue.js",
+      "default": "./dist/esm/exports/vue.js"
+    },
+    "./library/react": {
+      "types": "./dist/types/exports/library/react.d.ts",
+      "import": "./dist/esm/exports/library/react.js",
+      "default": "./dist/esm/exports/library/react.js"
+    },
+    "./library/vue": {
+      "types": "./dist/types/exports/library/vue.d.ts",
+      "import": "./dist/esm/exports/library/vue.js",
+      "default": "./dist/esm/exports/library/vue.js"
+    },
+    "./store": {
+      "types": "./dist/types/exports/store.d.ts",
+      "import": "./dist/esm/exports/store.js",
+      "default": "./dist/esm/exports/store.js"
+    },
+    "./utils": {
+      "types": "./dist/types/exports/utils.d.ts",
+      "import": "./dist/esm/exports/utils.js",
+      "default": "./dist/esm/exports/utils.js"
+    },
+    "./networks": {
+      "types": "./dist/types/exports/networks.d.ts",
+      "import": "./dist/esm/exports/networks.js",
+      "default": "./dist/esm/exports/networks.js"
+    },
+    "./auth-provider": {
+      "types": "./dist/types/exports/auth-provider.d.ts",
+      "import": "./dist/esm/exports/auth-provider.js",
+      "default": "./dist/esm/exports/auth-provider.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "react": [
+        "./dist/types/exports/react.d.ts"
+      ],
+      "vue": [
+        "./dist/types/exports/vue.d.ts"
+      ],
+      "library/react": [
+        "./dist/types/exports/library/react.d.ts"
+      ],
+      "library/vue": [
+        "./dist/types/exports/library/vue.d.ts"
+      ],
+      "store": [
+        "./dist/types/exports/store.d.ts"
+      ],
+      "networks": [
+        "./dist/types/exports/networks.d.ts"
+      ],
+      "auth-provider": [
+        "./dist/types/exports/auth-provider.d.ts"
+      ]
+    }
+  },
+  "dependencies": {
+    "@walletconnect/universal-provider": "2.16.1",
+    "@reown/appkit-common": "workspace:*",
+    "@reown/appkit-core": "workspace:*",
+    "@reown/appkit-polyfills": "workspace:*",
+    "@reown/appkit-scaffold-ui": "workspace:*",
+    "@reown/appkit-utils": "workspace:*",
+    "@reown/appkit-siwe": "workspace:*",
+    "@reown/appkit-ui": "workspace:*",
+    "@reown/appkit-wallet": "workspace:*",
+    "@walletconnect/types": "2.16.1",
+    "@walletconnect/utils": "2.16.1",
+    "valtio": "1.11.2"
+  },
+  "optionalDependencies": {
+    "borsh": "0.7.0",
+    "bs58": "5.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "18.2.0",
+    "@types/react-dom": "18.2.0",
+    "@vitest/coverage-v8": "2.0.5",
+    "@vue/runtime-core": "3.4.3",
+    "@wagmi/connectors": "5.1.9",
+    "@wagmi/core": "2.13.4",
+    "@wallet-standard/app": "1.0.1",
+    "@wallet-standard/base": "1.0.1",
+    "@wallet-standard/features": "1.0.3",
+    "@wallet-standard/wallet": "1.0.1",
+    "@walletconnect/types": "2.13.3",
+    "@walletconnect/universal-provider": "2.16.1",
+    "ethers": "6.13.2",
+    "ethers5": "npm:ethers@5.7.2",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "viem": "2.21.4",
+    "vitest": "2.0.5",
+    "vue": "3.4.3",
+    "wagmi": "2.12.9"
+  },
+  "author": "Reown <support@reown.com> (https://reown.com)",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/WalletConnect/web3modal",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WalletConnect/web3modal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/WalletConnect/web3modal/issues"
+  }
+}

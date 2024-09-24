@@ -1,5 +1,5 @@
 import { Button } from '@chakra-ui/react'
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
+import { useAppKitAccount, useAppKitProvider, type Provider } from '@reown/appkit/react'
 import { BrowserProvider, JsonRpcSigner } from 'ethers'
 import type { TypedDataField } from 'ethers'
 import { useChakraToast } from '../Toast'
@@ -30,20 +30,20 @@ const message = {
 
 export function EthersSignTypedDataTest() {
   const toast = useChakraToast()
-  const { address, chainId } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider()
+  const { address } = useAppKitAccount()
+  const { walletProvider } = useAppKitProvider<Provider>('eip155')
 
   async function onSignTypedData() {
     try {
       if (!walletProvider || !address) {
         throw Error('user is disconnected')
       }
-      const provider = new BrowserProvider(walletProvider, chainId)
+      const provider = new BrowserProvider(walletProvider, 1)
       const signer = new JsonRpcSigner(provider, address)
       const domain = {
         name: 'Ether Mail',
         version: '1',
-        chainId,
+        chainId: 1,
         verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
       } as const
 

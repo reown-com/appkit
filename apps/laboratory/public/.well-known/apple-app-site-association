@@ -21,27 +21,27 @@
         ]
       },
       {
-        "appID": "W5R8AG9K22.com.walletconnect.web3modal.rnsample",
-        "paths": [
-          "/rn_appkit*"
-        ]
-      },
-      {
         "appID": "W5R8AG9K22.com.walletconnect.web3modal.rnsample.internal",
         "paths": [
-          "/rn_appkit*"
+          "/rn_appkit_internal/*"
         ]
       },
       {
-        "appID": "W5R8AG9K22.com.walletconnect.web3wallet.rnsample",
+        "appID": "W5R8AG9K22.com.walletconnect.web3modal.rnsample",
         "paths": [
-          "/rn_walletkit*"
+          "/rn_appkit/*"
         ]
       },
       {
         "appID": "W5R8AG9K22.com.walletconnect.web3wallet.rnsample.internal",
         "paths": [
-          "/rn_walletkit*"
+          "/rn_walletkit_internal/*"
+        ]
+      },
+      {
+        "appID": "W5R8AG9K22.com.walletconnect.web3wallet.rnsample",
+        "paths": [
+          "/rn_walletkit/*"
         ]
       },
       {

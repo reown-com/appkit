@@ -1,6 +1,7 @@
 import {
   AccountController,
   AssetUtil,
+  ChainController,
   ConnectionController,
   ConstantsUtil,
   CoreHelperUtil,
@@ -9,15 +10,13 @@ import {
   NetworkController,
   RouterController,
   SnackController
-} from '@web3modal/core'
-
-import type { CaipNetwork } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import type { CaipNetwork } from '@reown/appkit-common'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
-import { NetworkUtil } from '../../utils/NetworkUtil.js'
 
 @customElement('w3m-unsupported-chain-view')
 export class W3mUnsupportedChainView extends LitElement {
@@ -126,20 +125,19 @@ export class W3mUnsupportedChainView extends LitElement {
   }
 
   private async onSwitchNetwork(network: CaipNetwork) {
-    const isConnected = AccountController.state.isConnected
+    const caipAddress = AccountController.state.caipAddress
     const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
     const supportsAllNetworks = NetworkController.state.supportsAllNetworks
-    const caipNetwork = NetworkController.state.caipNetwork
+    const caipNetwork = ChainController.state.activeCaipNetwork
     const routerData = RouterController.state.data
 
-    if (isConnected && caipNetwork?.id !== network.id) {
+    if (caipAddress && caipNetwork?.id !== network.id) {
       if (approvedCaipNetworkIds?.includes(network.id)) {
         await NetworkController.switchActiveNetwork(network)
-        await NetworkUtil.onNetworkChange()
       } else if (supportsAllNetworks) {
         RouterController.push('SwitchNetwork', { ...routerData, network })
       }
-    } else if (!isConnected) {
+    } else if (!caipAddress) {
       NetworkController.setActiveCaipNetwork(network)
       RouterController.push('Connect')
     }

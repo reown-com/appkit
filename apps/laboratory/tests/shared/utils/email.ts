@@ -85,7 +85,6 @@ export class Email {
 
     const email = `w3m-w${id}@${domain}`
     // eslint-disable-next-line no-console
-    console.log(`allocating email: ${email}`)
 
     return email
   }

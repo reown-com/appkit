@@ -1,6 +1,6 @@
 {
-  "name": "@web3modal/ethers5",
-  "version": "5.1.6",
+  "name": "@reown/appkit-ethers5",
+  "version": "1.0.4",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -44,14 +44,14 @@
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "4.0.3",
-    "@walletconnect/ethereum-provider": "2.15.2",
-    "@walletconnect/utils": "2.15.2",
-    "@web3modal/base": "workspace:*",
-    "@web3modal/common": "workspace:*",
-    "@web3modal/wallet": "workspace:*",
-    "@web3modal/polyfills": "workspace:*",
-    "@web3modal/scaffold-utils": "workspace:*",
-    "@web3modal/siwe": "workspace:*",
+    "@walletconnect/utils": "2.16.1",
+    "@reown/appkit": "workspace:*",
+    "@reown/appkit-common": "workspace:*",
+    "@reown/appkit-wallet": "workspace:*",
+    "@reown/appkit-polyfills": "workspace:*",
+    "@reown/appkit-utils": "workspace:*",
+    "@reown/appkit-adapter-ethers5": "workspace:*",
+    "@reown/appkit-siwe": "workspace:*",
     "valtio": "1.11.2"
   },
   "devDependencies": {
@@ -77,23 +77,14 @@
       "optional": true
     }
   },
-  "keywords": [
-    "web3",
-    "crypto",
-    "ethereum",
-    "web3modal",
-    "walletconnect",
-    "lit",
-    "webcomponents"
-  ],
-  "author": "WalletConnect <walletconnect.com>",
+  "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/web3modal/web3modal",
+  "homepage": "https://github.com/WalletConnect/web3modal",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/web3modal/web3modal.git"
+    "url": "git+https://github.com/WalletConnect/web3modal.git"
   },
   "bugs": {
-    "url": "https://github.com/web3modal/web3modal/issues"
+    "url": "https://github.com/WalletConnect/web3modal/issues"
   }
 }

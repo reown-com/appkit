@@ -1,6 +1,6 @@
 {
   "name": "@examples/next-wagmi",
-  "version": "5.1.6",
+  "version": "1.0.4",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,12 +10,15 @@
   },
   "dependencies": {
     "@tanstack/react-query": "5.24.8",
-    "@web3modal/wagmi": "workspace:*",
+    "@reown/appkit-adapter-wagmi": "workspace:*",
+    "@reown/appkit": "workspace:*",
+    "@wagmi/connectors": "5.1.9",
+    "@wagmi/core": "2.13.4",
     "next": "14.2.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "viem": "2.19.6",
-    "wagmi": "2.12.5"
+    "viem": "2.21.4",
+    "wagmi": "2.12.9"
   },
   "devDependencies": {
     "@types/react": "18.2.62",

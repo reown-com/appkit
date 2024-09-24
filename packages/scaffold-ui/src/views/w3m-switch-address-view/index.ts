@@ -3,16 +3,16 @@ import {
   BlockchainApiController,
   ChainController,
   ModalController,
-  NetworkController,
   OptionsController,
   StorageUtil,
   type AccountType
-} from '@web3modal/core'
-import { UiHelperUtil, customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+import type { CaipAddress } from '@reown/appkit-common'
 
 @customElement('w3m-switch-address-view')
 export class W3mSwitchAddressView extends LitElement {
@@ -33,7 +33,7 @@ export class W3mSwitchAddressView extends LitElement {
   // Only show icon for AUTH accounts
   private shouldShowIcon = this.connectedConnector === 'AUTH'
 
-  private caipNetwork = NetworkController.state.caipNetwork
+  private caipNetwork = ChainController.state.activeCaipNetwork
 
   constructor() {
     super()
@@ -140,7 +140,10 @@ export class W3mSwitchAddressView extends LitElement {
   }
 
   private onSwitchAddress(address: string) {
-    AccountController.setShouldUpdateToAddress(address, ChainController.state.activeChain)
+    const caipNetwork = ChainController.state.activeCaipNetwork
+    const activeChainNamespace = caipNetwork?.chainNamespace
+    const caipAddress = `${activeChainNamespace}:${caipNetwork?.chainId}:${address}` as CaipAddress
+    AccountController.setCaipAddress(caipAddress, activeChainNamespace)
     ModalController.close()
   }
 }

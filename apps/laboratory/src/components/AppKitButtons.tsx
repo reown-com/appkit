@@ -1,9 +1,4 @@
-import { useRouter } from 'next/router'
-
-import { useWeb3Modal as useWeb3ModalEthers } from '@web3modal/ethers/react'
-import { useWeb3Modal as useWeb3ModalSolana } from '@web3modal/solana/react'
-import { useWeb3Modal as useWeb3ModalEthers5 } from '@web3modal/ethers5/react'
-import { useWeb3Modal as useWeb3ModalWagmi } from '@web3modal/wagmi/react'
+import { useAppKit } from '@reown/appkit/react'
 import {
   Stack,
   Card,
@@ -16,23 +11,7 @@ import {
 } from '@chakra-ui/react'
 
 export function AppKitButtons() {
-  const { pathname } = useRouter()
-  const { open: openEthers } = useWeb3ModalEthers()
-  const { open: openSolana } = useWeb3ModalSolana()
-  const { open: openEthers5 } = useWeb3ModalEthers5()
-  const { open: openWagmi } = useWeb3ModalWagmi()
-
-  function openModalWithHook() {
-    if (pathname.includes('/solana')) {
-      openEthers()
-    } else if (pathname.includes('/ethers5')) {
-      openEthers5()
-    } else if (pathname.includes('/wagmi')) {
-      openWagmi()
-    } else if (pathname.includes('/ethers')) {
-      openSolana()
-    }
-  }
+  const { open } = useAppKit()
 
   return (
     <Card marginTop={10}>
@@ -58,7 +37,7 @@ export function AppKitButtons() {
             <Heading size="xs" textTransform="uppercase" pb="2">
               Hooks Interactions
             </Heading>
-            <Button data-testid="w3m-open-hook-button" onClick={openModalWithHook}>
+            <Button data-testid="w3m-open-hook-button" onClick={() => open()}>
               Open
             </Button>
           </Box>
