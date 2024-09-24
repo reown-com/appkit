@@ -74,7 +74,7 @@ function ConnectedTestContent({
         signer: {
           type: 'key',
           data: {
-            type: 'secp256r1',
+            type: 'secp256k1',
             publicKey: signer.publicKey
           }
         },
