@@ -177,19 +177,9 @@ describe('Base', () => {
       expect(appKit.isTransactionShouldReplaceView()).toBe(true)
     })
 
-    it('should set is connected', () => {
-      appKit.setIsConnected(true, 'eip155')
-      expect(AccountController.setIsConnected).toHaveBeenCalledWith(true, 'eip155')
-    })
-
     it('should set status', () => {
       appKit.setStatus('connected', 'eip155')
       expect(AccountController.setStatus).toHaveBeenCalledWith('connected', 'eip155')
-    })
-
-    it('should get is connected state', () => {
-      vi.mocked(AccountController).state = { isConnected: true } as any
-      expect(appKit.getIsConnectedState()).toBe(true)
     })
 
     it('should set all accounts', () => {
@@ -239,6 +229,7 @@ describe('Base', () => {
 
     it('should set CAIP address', () => {
       appKit.setCaipAddress('eip155:1:0x123', 'eip155')
+      expect(appKit.getIsConnectedState()).toBe(true)
       expect(AccountController.setCaipAddress).toHaveBeenCalledWith('eip155:1:0x123', 'eip155')
     })
 

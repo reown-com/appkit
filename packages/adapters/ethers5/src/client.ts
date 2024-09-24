@@ -829,7 +829,6 @@ export class Ethers5Adapter {
       return
     }
 
-    this.appKit?.setIsConnected(true, this.chainNamespace)
     this.appKit?.setPreferredAccountType(
       preferredAccountType as W3mFrameTypes.AccountType,
       this.chainNamespace

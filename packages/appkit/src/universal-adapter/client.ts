@@ -515,9 +515,10 @@ export class UniversalAdapterClient {
           this.appKit?.setPreferredAccountType(preferredAccountType, chainNamespace)
           this.appKit?.setCaipAddress(address, chainNamespace)
           this.syncConnectedWalletInfo()
-          this.syncAccounts()
           await Promise.all([this.appKit?.setApprovedCaipNetworksData(chainNamespace)])
         }
+
+        this.syncAccounts()
       })
     } else {
       this.appKit?.resetWcConnection()

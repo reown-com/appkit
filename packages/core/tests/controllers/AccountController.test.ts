@@ -24,18 +24,12 @@ beforeAll(() => {
 describe('AccountController', () => {
   it('should have valid default state', () => {
     expect(AccountController.state).toEqual({
-      isConnected: false,
       smartAccountDeployed: false,
       currentTab: 0,
       tokenBalance: [],
       allAccounts: [],
       addressLabels: new Map<string, string>()
     })
-  })
-
-  it('should update state correctly on setIsConnected()', () => {
-    AccountController.setIsConnected(true, chain)
-    expect(AccountController.state.isConnected).toEqual(true)
   })
 
   it('should update state correctly on setCaipAddress()', () => {
@@ -81,7 +75,6 @@ describe('AccountController', () => {
   it('should update state correctly on resetAccount()', () => {
     AccountController.resetAccount(chain)
     expect(AccountController.state).toEqual({
-      isConnected: false,
       smartAccountDeployed: false,
       currentTab: 0,
       caipAddress: undefined,
