@@ -6,7 +6,8 @@ import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
+import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { mainnet } from '@reown/appkit/networks'
 
 const metadata = {
   name: 'AppKit',
@@ -34,6 +35,7 @@ const modal = createAppKit({
   adapters: [wagmiAdapter],
   networks,
   projectId,
+  defaultNetwork: mainnet,
   metadata,
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy'

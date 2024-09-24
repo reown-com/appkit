@@ -7,7 +7,7 @@ import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
+import { mainnet } from '@reown/appkit/networks'
 
 const queryClient = new QueryClient()
 

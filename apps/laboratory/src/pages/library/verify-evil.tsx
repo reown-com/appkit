@@ -5,8 +5,9 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { mainnet } from '@reown/appkit/networks'
 
 const metadata = {
   name: 'Evil AppKit',
@@ -32,6 +33,7 @@ const wagmiAdapter = new WagmiAdapter({
 const modal = createAppKit({
   adapters: [wagmiAdapter],
   networks,
+  defaultNetwork: mainnet,
   projectId,
   metadata,
   termsConditionsUrl: 'https://reown.com/terms-of-service',

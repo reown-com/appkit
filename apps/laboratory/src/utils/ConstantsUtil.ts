@@ -7,7 +7,8 @@ import {
   sepolia,
   solana,
   solanaTestnet,
-  solanaDevnet
+  solanaDevnet,
+  base
 } from '@reown/appkit/networks'
 import { getLocalStorageItem } from './LocalStorage'
 
@@ -99,6 +100,6 @@ export const ConstantsUtil = {
     }
   ],
   ProjectId: projectId,
-  EvmNetworks: [mainnet, optimism, polygon, zkSync, arbitrum, sepolia],
+  EvmNetworks: [mainnet, optimism, polygon, zkSync, arbitrum, base, sepolia],
   SolanaNetworks: [solana, solanaTestnet, solanaDevnet]
 }

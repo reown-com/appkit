@@ -8,8 +8,8 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { siweConfig } from '../../utils/SiweUtils'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { mainnet } from '@reown/appkit/networks'
 
 const queryClient = new QueryClient()
 
