@@ -15,5 +15,6 @@ export const ConstantsUtil = {
     eip155: 'Ethereum',
     solana: 'Solana',
     polkadot: 'Polkadot'
-  } as const satisfies Record<ChainNamespace, string>
+  } as const satisfies Record<ChainNamespace, string>,
+  USDT_CONTRACT_ADDRESS: '0xdac17f958d2ee523a2206206994597c13d831ec7'
 } as const
