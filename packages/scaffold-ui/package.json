@@ -25,16 +25,17 @@
     "build": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "test": "vitest run"
   },
   "dependencies": {
     "@reown/appkit-common": "workspace:*",
-    "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-core": "workspace:*",
-    "@reown/appkit-ui": "workspace:*",
-    "lit": "3.1.0",
     "@reown/appkit-siwe": "workspace:*",
-    "@reown/appkit-wallet": "workspace:*"
+    "@reown/appkit-ui": "workspace:*",
+    "@reown/appkit-utils": "workspace:*",
+    "@reown/appkit-wallet": "workspace:*",
+    "lit": "3.1.0"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
@@ -45,5 +46,8 @@
   },
   "bugs": {
     "url": "https://github.com/WalletConnect/web3modal/issues"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "2"
   }
 }
