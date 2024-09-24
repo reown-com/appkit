@@ -135,8 +135,8 @@ export class W3mSelectAddressesView extends LitElement {
   }
 
   private async onCancel() {
-    const { isConnected } = AccountController.state
-    if (isConnected) {
+    const { activeCaipAddress } = ChainController.state
+    if (activeCaipAddress) {
       await ConnectionController.disconnect()
       ModalController.close()
     } else {
