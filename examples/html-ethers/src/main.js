@@ -14,7 +14,7 @@ const ethersAdapter = new EthersAdapter()
 // Instantiate AppKit
 const modal = createAppKit({
   adapters: [ethersAdapter],
-  networks,,
+  networks: [arbitrum, mainnet, optimism, polygon, zkSync, sepolia],
   projectId
 })
 
