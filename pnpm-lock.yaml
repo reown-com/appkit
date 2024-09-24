@@ -1322,14 +1322,14 @@ importers:
         version: 1.7.2
       valtio:
         specifier: 1.11.2
-        version: 1.11.2(@types/react@18.2.62)(react@18.2.0)
+        version: 1.11.2(@types/react@18.2.0)(react@18.2.0)
     devDependencies:
       '@types/axios-mock-adapter':
         specifier: 1.10.0
         version: 1.10.0(axios@1.7.2)
       '@types/react':
-        specifier: ^18.2.62
-        version: 18.2.62
+        specifier: 18.2.0
+        version: 18.2.0
       '@vitest/coverage-v8':
         specifier: 2.0.5
         version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.32.0))

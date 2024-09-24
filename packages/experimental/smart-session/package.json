@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@types/axios-mock-adapter": "1.10.0",
-    "@types/react": "^18.2.62",
+    "@types/react": "18.2.0",
     "@vitest/coverage-v8": "2.0.5",
     "axios-mock-adapter": "2.0.0",
     "react": "18.2.0",
