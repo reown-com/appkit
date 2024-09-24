@@ -67,12 +67,8 @@ export function EthersSendCallsWithPaymasterServiceTest() {
       const provider = new BrowserProvider(walletProvider, chainId)
       const amountToSend = parseGwei('0.001').toString(16)
 
-      console.log('>>> preinterface')
       const donutIntrerface = new ethers.utils.Interface(abi)
-      console.log('>>> donutinterface', donutIntrerface)
       const encodedCallData = donutIntrerface.encodeFunctionData('getBalance', [address])
-
-      console.log('>>> encoded', encodedCallData)
 
       const calls = donut
         ? [
