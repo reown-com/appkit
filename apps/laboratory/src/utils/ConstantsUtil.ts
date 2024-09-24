@@ -1,3 +1,14 @@
+import {
+  arbitrum,
+  mainnet,
+  optimism,
+  polygon,
+  zkSync,
+  sepolia,
+  solana,
+  solanaTestnet,
+  solanaDevnet
+} from '@reown/appkit/networks'
 import { getLocalStorageItem } from './LocalStorage'
 
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
@@ -87,5 +98,7 @@ export const ConstantsUtil = {
       image_url: '/sample-wallets/react-native.svg'
     }
   ],
-  ProjectId: projectId
+  ProjectId: projectId,
+  EvmNetworks: [mainnet, optimism, polygon, zkSync, arbitrum, sepolia],
+  SolanaNetworks: [solana, solanaTestnet, solanaDevnet]
 }

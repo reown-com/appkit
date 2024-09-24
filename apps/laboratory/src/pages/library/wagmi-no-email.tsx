@@ -11,7 +11,7 @@ import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/ap
 
 const queryClient = new QueryClient()
 
-const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
+const networks = ConstantsUtil.EvmNetworks
 
 const wagmiAdapter = new WagmiAdapter({
   ssr: true,

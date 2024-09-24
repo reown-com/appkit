@@ -6,22 +6,14 @@ import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
-import {
-  mainnet,
-  polygon,
-  solana,
-  arbitrum,
-  optimism,
-  solanaTestnet,
-  solanaDevnet
-} from '@reown/appkit/networks'
+import { mainnet } from '@reown/appkit/networks'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsWagmiSolana } from '../../components/MultiChainTestsWagmiSolana'
 
 const queryClient = new QueryClient()
 
-const networks = [mainnet, polygon, solana, arbitrum, optimism, solanaTestnet, solanaDevnet]
+const networks = [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.SolanaNetworks]
 
 const wagmiAdapter = new WagmiAdapter({
   ssr: true,
