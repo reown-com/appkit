@@ -3,7 +3,7 @@ import { usdtABI } from '../contracts/usdt.js'
 import { ConstantsUtil } from './ConstantsUtil.js'
 
 export const ContractUtil = {
-  getABI: (tokenAddress: string) => {
+  getERC20Abi: (tokenAddress: string) => {
     switch (tokenAddress) {
       case ConstantsUtil.USDT_CONTRACT_ADDRESS:
         return usdtABI

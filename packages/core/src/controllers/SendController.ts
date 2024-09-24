@@ -235,7 +235,7 @@ export const SendController = {
           receiverAddress: params.receiverAddress as `0x${string}`,
           tokenAmount: amount,
           method: 'transfer',
-          abi: ContractUtil.getABI(tokenAddress)
+          abi: ContractUtil.getERC20Abi(tokenAddress)
         })
         SnackController.showSuccess('Transaction started')
         this.resetSend()
