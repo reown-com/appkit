@@ -4,11 +4,11 @@ import { ConstantsUtil } from './ConstantsUtil.js'
 
 export const ContractUtil = {
   getERC20Abi: (tokenAddress: string) => {
-    switch (tokenAddress) {
-      case ConstantsUtil.USDT_CONTRACT_ADDRESS:
-        return usdtABI
-      default:
-        return erc20ABI
+    // @ts-expect-error Check if the address is a USDT contract
+    if (ConstantsUtil.USDT_CONTRACT_ADDRESSES.includes(tokenAddress)) {
+      return usdtABI
     }
+
+    return erc20ABI
   }
 }
