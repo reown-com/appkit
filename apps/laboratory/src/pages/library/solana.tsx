@@ -6,6 +6,7 @@ import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit/networks'
 
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { AppKitButtons } from '../../components/AppKitButtons'
+import { SolanaModalInfo } from '../../components/Solana/SolanaModalInfo'
 import { SolanaTests } from '../../components/Solana/SolanaTests'
 
 const solanaWeb3JsAdapter = new SolanaAdapter({
@@ -40,6 +41,7 @@ export default function MultiChainSolanaAdapterOnly() {
   return (
     <>
       <AppKitButtons />
+      <SolanaModalInfo />
       <SolanaTests />
     </>
   )
