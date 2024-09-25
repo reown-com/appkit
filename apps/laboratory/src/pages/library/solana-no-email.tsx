@@ -5,8 +5,10 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SolanaTests } from '../../components/Solana/SolanaTests'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
-import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit/networks'
+import { solana } from '@reown/appkit/networks'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
+
+const networks = ConstantsUtil.SolanaNetworks
 
 const solanaWeb3JsAdapter = new SolanaAdapter({
   wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
@@ -15,7 +17,7 @@ const solanaWeb3JsAdapter = new SolanaAdapter({
 const modal = createAppKit({
   adapters: [solanaWeb3JsAdapter],
   projectId: ConstantsUtil.ProjectId,
-  networks: [solana, solanaTestnet, solanaDevnet],
+  networks,
   defaultNetwork: solana,
   features: {
     analytics: false,
