@@ -2,12 +2,13 @@ import { createAppKit, type CaipNetwork } from '@reown/appkit/react'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit/networks'
 
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { SolanaModalInfo } from '../../components/Solana/SolanaModalInfo'
 import { SolanaTests } from '../../components/Solana/SolanaTests'
+
+const networks = ConstantsUtil.SolanaNetworks
 
 const solanaWeb3JsAdapter = new SolanaAdapter({
   wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
@@ -25,7 +26,7 @@ export const solanaNotExist = {
 
 const modal = createAppKit({
   adapters: [solanaWeb3JsAdapter],
-  networks: [solana, solanaTestnet, solanaDevnet, solanaNotExist],
+  networks,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,

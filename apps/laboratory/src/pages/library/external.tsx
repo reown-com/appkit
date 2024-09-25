@@ -7,13 +7,13 @@ import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
 import { externalTestConnector } from '../../utils/ConnectorUtil'
+import { mainnet } from '@reown/appkit/networks'
 
 const queryClient = new QueryClient()
 
 const connectors = [externalTestConnector()]
-const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
+const networks = ConstantsUtil.EvmNetworks
 
 const wagmiAdapter = new WagmiAdapter({
   ssr: true,
@@ -25,6 +25,7 @@ const wagmiAdapter = new WagmiAdapter({
 const modal = createAppKit({
   adapters: [wagmiAdapter],
   networks,
+  defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true
