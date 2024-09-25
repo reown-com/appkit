@@ -10,7 +10,8 @@ import {
   SnackController,
   ConstantsUtil as CommonConstantsUtil,
   OptionsController,
-  ChainController
+  ChainController,
+  type AccountType
 } from '@reown/appkit-core'
 import { customElement, UiHelperUtil } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
@@ -32,6 +33,8 @@ export class W3mAccountDefaultWidget extends LitElement {
   @state() public caipAddress = AccountController.state.caipAddress
 
   @state() public address = CoreHelperUtil.getPlainAddress(AccountController.state.caipAddress)
+
+  @state() public allAccounts: AccountType[] = AccountController.state.allAccounts
 
   @state() private profileImage = AccountController.state.profileImage
 
@@ -57,7 +60,10 @@ export class W3mAccountDefaultWidget extends LitElement {
         AccountController.subscribeKey('balanceSymbol', val => (this.balanceSymbol = val)),
         AccountController.subscribeKey('profileName', val => (this.profileName = val)),
         AccountController.subscribeKey('profileImage', val => (this.profileImage = val)),
-        OptionsController.subscribeKey('features', val => (this.features = val))
+        OptionsController.subscribeKey('features', val => (this.features = val)),
+        AccountController.subscribeKey('allAccounts', allAccounts => {
+          this.allAccounts = allAccounts
+        })
       ]
     )
   }
@@ -78,7 +84,8 @@ export class W3mAccountDefaultWidget extends LitElement {
         alignItems="center"
         gap="l"
       >
-        ${ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
+        ${ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM &&
+        this.allAccounts.length > 1
           ? this.multiAccountTemplate()
           : this.singleAccountTemplate()}
         <wui-flex flexDirection="column" alignItems="center">
@@ -249,7 +256,7 @@ export class W3mAccountDefaultWidget extends LitElement {
       throw new Error('w3m-account-view: No account provided')
     }
 
-    const account = AccountController.state.allAccounts?.find(acc => acc.address === this.address)
+    const account = this.allAccounts.find(acc => acc.address === this.address)
     const label = AccountController.state.addressLabels.get(this.address)
 
     return html`
