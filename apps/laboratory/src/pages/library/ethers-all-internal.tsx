@@ -7,13 +7,15 @@ import { siweConfig } from '../../utils/SiweUtils'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
-import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
+import { mainnet } from '@reown/appkit/networks'
+
+const networks = ConstantsUtil.EvmNetworks
 
 const ethersAdapter = new EthersAdapter()
 
 const modal = createAppKit({
   adapters: [ethersAdapter],
-  networks: [arbitrum, mainnet, optimism, polygon, zkSync, sepolia],
+  networks,
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
