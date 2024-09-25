@@ -22,7 +22,11 @@ import {
   createConfig,
   getConnectors
 } from '@wagmi/core'
-import { ChainController, ConstantsUtil as CoreConstantsUtil } from '@reown/appkit-core'
+import {
+  ChainController,
+  ConstantsUtil as CoreConstantsUtil,
+  StorageUtil
+} from '@reown/appkit-core'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type { ChainAdapter } from '@reown/appkit-core'
 import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
@@ -230,10 +234,6 @@ export class WagmiAdapter implements ChainAdapter {
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        SafeLocalStorage.setItem(
-          SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK,
-          JSON.stringify(caipNetwork)
-        )
         const chainId = Number(NetworkUtil.caipNetworkIdToNumber(caipNetwork?.id))
 
         if (chainId && this.wagmiConfig) {
@@ -283,68 +283,68 @@ export class WagmiAdapter implements ChainAdapter {
         >
 
         const siweParams = await this.options?.siweConfig?.getMessageParams?.()
+
         const isSiweEnabled = this.options?.siweConfig?.options?.enabled
         const isProviderSupported = typeof provider?.authenticate === 'function'
         const isSiweParamsValid = siweParams && Object.keys(siweParams || {}).length > 0
+        const siweConfig = this.options?.siweConfig
 
-        if (isSiweEnabled && isProviderSupported && isSiweParamsValid) {
+        if (isSiweEnabled && isProviderSupported && isSiweParamsValid && siweConfig) {
           // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called because it things chains are stale
           await connector.setRequestedChainsIds(siweParams.chains)
 
-          const siweConfig = this.options?.siweConfig
+          const { SIWEController, getDidChainId, getDidAddress } = await import(
+            '@reown/appkit-siwe'
+          )
 
-          const params = await siweConfig?.getMessageParams?.()
+          const chains = this.caipNetworks
+            ?.filter(network => network.chainNamespace === 'eip155')
+            .map(chain => chain.id) as string[]
 
-          if (siweConfig?.options?.enabled && params && Object.keys(params || {}).length > 0) {
-            const { SIWEController, getDidChainId, getDidAddress } = await import(
-              '@reown/appkit-siwe'
-            )
+          siweParams.chains = this.caipNetworks
+            ?.filter(network => network.chainNamespace === 'eip155')
+            .map(chain => chain.chainId) as number[]
 
-            const chains = this.caipNetworks
-              ?.filter(network => network.chainNamespace === 'eip155')
-              .map(chain => chain.id) as string[]
+          const result = await provider.authenticate({
+            nonce: await siweConfig.getNonce(),
+            methods: [...OPTIONAL_METHODS],
+            ...siweParams,
+            chains
+          })
+          // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
+          const signedCacao = result?.auths?.[0]
 
-            const result = await provider.authenticate({
-              nonce: await siweConfig.getNonce(),
-              methods: [...OPTIONAL_METHODS],
-              ...params,
-              chains
-            })
-            // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
-            const signedCacao = result?.auths?.[0]
+          if (signedCacao) {
+            const { p, s } = signedCacao
+            const cacaoChainId = getDidChainId(p.iss)
+            const address = getDidAddress(p.iss)
+            if (address && cacaoChainId) {
+              SIWEController.setSession({
+                address,
+                chainId: parseInt(cacaoChainId, 10)
+              })
+            }
 
-            if (signedCacao) {
-              const { p, s } = signedCacao
-              const cacaoChainId = getDidChainId(p.iss)
-              const address = getDidAddress(p.iss)
-              if (address && cacaoChainId) {
-                SIWEController.setSession({
-                  address,
-                  chainId: parseInt(cacaoChainId, 10)
-                })
-              }
+            try {
+              // Kicks off verifyMessage and populates external states
+              const message = provider.client.formatAuthMessage({
+                request: p,
+                iss: p.iss
+              })
 
-              try {
-                // Kicks off verifyMessage and populates external states
-                const message = provider.client.formatAuthMessage({
-                  request: p,
-                  iss: p.iss
-                })
-
-                await SIWEController.verifyMessage({
-                  message,
-                  signature: s.s,
-                  cacao: signedCacao
-                })
-              } catch (error) {
-                // eslint-disable-next-line no-console
-                console.error('Error verifying message', error)
-                // eslint-disable-next-line no-console
-                await provider.disconnect().catch(console.error)
-                // eslint-disable-next-line no-console
-                await SIWEController.signOut().catch(console.error)
-                throw error
-              }
+              await SIWEController.verifyMessage({
+                message,
+                signature: s.s,
+                cacao: signedCacao
+              })
+            } catch (error) {
+              // eslint-disable-next-line no-console
+              console.error('Error verifying message', error)
+              // eslint-disable-next-line no-console
+              await provider.disconnect().catch(console.error)
+              // eslint-disable-next-line no-console
+              await SIWEController.signOut().catch(console.error)
+              throw error
             }
           }
         }
@@ -394,7 +394,6 @@ export class WagmiAdapter implements ChainAdapter {
           await SIWEController.signOut()
         }
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
-        SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_NAME)
         this.appKit?.setClientId(null)
@@ -603,13 +602,12 @@ export class WagmiAdapter implements ChainAdapter {
   >) {
     const isConnected = ChainController.state.activeCaipAddress
 
-    if (status === 'disconnected' && isConnected) {
+    if (status === 'disconnected' && !isConnected) {
       this.appKit?.resetAccount(this.chainNamespace)
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork()
       this.appKit?.setAllAccounts([], this.chainNamespace)
       SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
-      SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
 
       return
     }
@@ -647,7 +645,6 @@ export class WagmiAdapter implements ChainAdapter {
           }
         } else if (status === 'connected' && address && chainId) {
           const caipAddress = `eip155:${chainId}:${address}` as CaipAddress
-          this.appKit?.resetAccount(this.chainNamespace)
           this.syncNetwork(address, chainId, true)
           this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
           await Promise.all([
@@ -863,7 +860,7 @@ export class WagmiAdapter implements ChainAdapter {
       this.appKit?.addConnector({
         id: ConstantsUtil.AUTH_CONNECTOR_ID,
         type: 'AUTH',
-        name: 'Auth',
+        name: 'w3mAuth',
         provider,
         chain: this.chainNamespace
       })
@@ -947,24 +944,32 @@ export class WagmiAdapter implements ChainAdapter {
         }
       })
 
-      provider.onIsConnected(req => {
-        const caipAddress = `eip155:${req.chainId}:${req.address}` as CaipAddress
+      provider.onIsConnected(() => {
+        provider.connect()
+      })
+
+      provider.onConnect(user => {
+        const caipAddress = `eip155:${user.chainId}:${user.address}` as CaipAddress
         this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
-        this.appKit?.setSmartAccountDeployed(Boolean(req.smartAccountDeployed), this.chainNamespace)
-        this.appKit?.setPreferredAccountType(
-          req.preferredAccountType as W3mFrameTypes.AccountType,
+        this.appKit?.setSmartAccountDeployed(
+          Boolean(user.smartAccountDeployed),
           this.chainNamespace
         )
-        this.appKit?.setLoading(false)
+        this.appKit?.setPreferredAccountType(
+          user.preferredAccountType as W3mFrameTypes.AccountType,
+          this.chainNamespace
+        )
         this.appKit?.setAllAccounts(
-          req.accounts || [
+          user.accounts || [
             {
-              address: req.address,
-              type: (req.preferredAccountType || 'eoa') as W3mFrameTypes.AccountType
+              address: user.address,
+              type: (user.preferredAccountType || 'eoa') as W3mFrameTypes.AccountType
             }
           ],
           this.chainNamespace
         )
+        StorageUtil.setConnectedConnector('AUTH')
+        this.appKit?.setLoading(false)
       })
 
       provider.onGetSmartAccountEnabledNetworks(networks => {

@@ -1,7 +1,7 @@
 {
   "name": "@examples/vue-solana",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.4",
   "scripts": {
     "dev": "vite --port 3013"
   },

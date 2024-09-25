@@ -4,14 +4,11 @@ import { ModalController } from './ModalController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import {
   NetworkUtil,
-  SafeLocalStorage,
-  SafeLocalStorageKeys,
   type CaipNetwork,
   type CaipNetworkId,
   type ChainNamespace
 } from '@reown/appkit-common'
 import { ChainController } from './ChainController.js'
-import { PublicStateController } from './PublicStateController.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
 // -- Types --------------------------------------------- //
@@ -25,7 +22,6 @@ export interface NetworkControllerClient {
 
 export interface NetworkControllerState {
   supportsAllNetworks: boolean
-  isDefaultCaipNetwork: boolean
   isUnsupportedChain?: boolean
   _client?: NetworkControllerClient
   caipNetwork?: CaipNetwork
@@ -38,7 +34,6 @@ export interface NetworkControllerState {
 // -- State --------------------------------------------- //
 const state = proxy<NetworkControllerState>({
   supportsAllNetworks: true,
-  isDefaultCaipNetwork: false,
   smartAccountEnabledNetworks: []
 })
 
@@ -73,24 +68,6 @@ export const NetworkController = {
 
   _getClient() {
     return ChainController.getNetworkControllerClient()
-  },
-
-  initializeDefaultNetwork() {
-    const networks = this.getRequestedCaipNetworks()
-
-    if (networks.length > 0) {
-      this.setCaipNetwork(networks[0])
-    }
-  },
-
-  setDefaultCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
-    if (caipNetwork) {
-      ChainController.setCaipNetwork(caipNetwork.chainNamespace, caipNetwork)
-      ChainController.setChainNetworkData(caipNetwork.chainNamespace, {
-        isDefaultCaipNetwork: true
-      })
-      PublicStateController.set({ selectedNetworkId: caipNetwork.id })
-    }
   },
 
   setActiveCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
@@ -185,31 +162,14 @@ export const NetworkController = {
   },
 
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
-    const sameNamespace = network?.chainNamespace === ChainController.state.activeChain
+    const networkControllerClient = ChainController.getNetworkControllerClient(
+      network?.chainNamespace
+    )
 
-    let networkControllerClient: NetworkControllerState['_client'] = undefined
-    const isWcConnector =
-      SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_ID) === 'walletConnect'
-    const hasWagmiAdapter = ChainController.state.chains.get('eip155')?.adapterType === 'wagmi'
-
-    if (isWcConnector && network?.chainNamespace === 'solana') {
-      if (hasWagmiAdapter) {
-        networkControllerClient = ChainController.state.chains.get(network.chainNamespace)
-          ?.networkControllerClient
-      } else {
-        networkControllerClient = ChainController.state.universalAdapter.networkControllerClient
-      }
-    } else if (isWcConnector && !hasWagmiAdapter) {
-      networkControllerClient = ChainController.state.universalAdapter.networkControllerClient
-    } else if (sameNamespace) {
-      networkControllerClient = ChainController.getNetworkControllerClient()
-    } else {
-      networkControllerClient = network
-        ? ChainController.state.chains.get(network.chainNamespace)?.networkControllerClient
-        : undefined
+    if (networkControllerClient) {
+      await networkControllerClient.switchCaipNetwork(network)
     }
 
-    await networkControllerClient?.switchCaipNetwork(network)
     ChainController.setActiveCaipNetwork(network)
 
     if (network) {
@@ -299,10 +259,6 @@ export const NetworkController = {
 
     if (!chain) {
       throw new Error('chain is required to reset network')
-    }
-
-    if (!ChainController.state.chains.get(chain)?.networkState?.isDefaultCaipNetwork) {
-      ChainController.setChainNetworkData(chain, { caipNetwork: undefined })
     }
 
     ChainController.setChainNetworkData(chain, {

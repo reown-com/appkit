@@ -16,7 +16,6 @@ import { ModalController } from './ModalController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import type { ChainNamespace } from '@reown/appkit-common'
-import { RouterController } from './RouterController.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -98,7 +97,7 @@ export const ConnectionController = {
   async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
     await this._getClient(chain).connectExternal?.(options)
     if (setChain) {
-      ChainController.setActiveChain(chain)
+      ChainController.setActiveNamespace(chain)
       StorageUtil.setConnectedConnector(options.type)
     }
   },
@@ -167,10 +166,6 @@ export const ConnectionController = {
     state.recentWallet = undefined
     TransactionsController.resetTransactions()
     StorageUtil.deleteWalletConnectDeepLink()
-    if (ModalController.state.open) {
-      ModalController.close()
-      RouterController.reset('Connect')
-    }
   },
 
   setWcLinking(wcLinking: ConnectionControllerState['wcLinking']) {

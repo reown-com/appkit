@@ -722,13 +722,13 @@ export class Ethers5Adapter {
       }
     }
 
-    const chainChangedHandler = (networkId: string) => {
-      if (networkId) {
-        const networkIdNumber =
-          typeof networkId === 'string'
-            ? EthersHelpersUtil.hexStringToNumber(networkId)
-            : Number(networkId)
-        const caipNetwork = this.caipNetworks.find(c => c.chainId === networkIdNumber)
+    const chainChangedHandler = (chainId: string) => {
+      const chainIdNumber =
+        typeof chainId === 'string' ? EthersHelpersUtil.hexStringToNumber(chainId) : Number(chainId)
+      const caipNetwork = this.caipNetworks.find(c => c.chainId === chainIdNumber)
+      const currentCaipNetwork = this.appKit?.getCaipNetwork()
+
+      if (!currentCaipNetwork || currentCaipNetwork?.id !== caipNetwork?.id) {
         this.appKit?.setCaipNetwork(caipNetwork)
       }
     }
@@ -777,7 +777,7 @@ export class Ethers5Adapter {
     authProvider.onRpcError(() => this.handleAuthRpcError())
     authProvider.onRpcSuccess((_, request) => this.handleAuthRpcSuccess(_, request))
     authProvider.onNotConnected(() => this.handleAuthNotConnected())
-    authProvider.onIsConnected(({ preferredAccountType }) =>
+    authProvider.onConnect(({ preferredAccountType }) =>
       this.handleAuthIsConnected(preferredAccountType)
     )
     authProvider.onSetPreferredAccount(({ address, type }) => {
@@ -829,7 +829,6 @@ export class Ethers5Adapter {
       return
     }
 
-    this.appKit?.setIsConnected(true, this.chainNamespace)
     this.appKit?.setPreferredAccountType(
       preferredAccountType as W3mFrameTypes.AccountType,
       this.chainNamespace

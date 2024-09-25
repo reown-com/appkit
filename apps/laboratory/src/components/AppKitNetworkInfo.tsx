@@ -27,7 +27,7 @@ export function AppKitNetworkInfo() {
             <Heading size="xs" textTransform="uppercase" pb="2">
               Address
             </Heading>
-            <Text data-testid="w3m-address">{address}</Text>
+            <Text data-testid="w3m-address">{address || '-'}</Text>
           </Box>
 
           <Box>

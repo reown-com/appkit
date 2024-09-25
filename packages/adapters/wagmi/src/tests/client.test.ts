@@ -413,7 +413,7 @@ describe('Wagmi Client', () => {
       expect(mockAppKit.addConnector).toHaveBeenCalledWith({
         id: ConstantsUtil.AUTH_CONNECTOR_ID,
         type: 'AUTH',
-        name: 'Auth',
+        name: 'w3mAuth',
         provider: 'mockProvider',
         chain: 'eip155'
       })
@@ -438,7 +438,8 @@ describe('Wagmi Client', () => {
         onIsConnected: vi.fn(),
         onGetSmartAccountEnabledNetworks: vi.fn(),
         onSetPreferredAccount: vi.fn(),
-        rejectRpcRequests: vi.fn()
+        rejectRpcRequests: vi.fn(),
+        onConnect: vi.fn()
       }
       mockConnector = {
         getProvider: vi.fn().mockResolvedValue(mockProvider)

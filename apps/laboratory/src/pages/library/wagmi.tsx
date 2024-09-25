@@ -5,23 +5,20 @@ import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { createAppKit } from '@reown/appkit/react'
-import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { ThemeStore } from '../../utils/StoreUtil'
 
 const queryClient = new QueryClient()
 
-const networks = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
-
 const wagmiAdapter = new WagmiAdapter({
   ssr: true,
-  networks,
+  networks: ConstantsUtil.EvmNetworks,
   projectId: ConstantsUtil.ProjectId
 })
 
 const modal = createAppKit({
   adapters: [wagmiAdapter],
-  networks,
+  networks: ConstantsUtil.EvmNetworks,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,
