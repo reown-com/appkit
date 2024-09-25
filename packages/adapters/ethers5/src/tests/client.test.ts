@@ -760,7 +760,9 @@ describe('EthersAdapter', () => {
       const mockJsonRpcProvider = {
         getBalance: vi.fn().mockResolvedValue(BigInt(1000000000000000000)) // 1 ETH in wei
       }
-      vi.mocked(JsonRpcProvider).mockImplementation(() => mockJsonRpcProvider as any)
+      vi.mocked(ethers.providers.JsonRpcProvider).mockImplementation(
+        () => mockJsonRpcProvider as any
+      )
 
       await client['syncBalance'](mockAddress, mainnet)
 
