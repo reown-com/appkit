@@ -580,7 +580,7 @@ describe('EthersAdapter', () => {
       const chainChangedHandler = mockProvider.on.mock.calls.find(
         (call: string[]) => call[0] === 'chainChanged'
       )[1]
-      await chainChangedHandler('0x137')
+      await chainChangedHandler('0x10')
 
       expect(mockAppKit.setCaipNetwork).toHaveBeenCalled()
     })

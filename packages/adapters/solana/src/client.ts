@@ -93,8 +93,15 @@ export class SolanaAdapter implements ChainAdapter {
     this.connectionSettings = connectionSettings
 
     ChainController.subscribeKey('activeCaipNetwork', caipNetwork => {
-      if (caipNetwork?.chainNamespace === 'solana') {
-        this.syncAccount()
+      const caipAddress = this.appKit?.getCaipAddress(this.chainNamespace)
+      const isSolanaAddress = caipAddress?.startsWith('solana:')
+      const isSolanaNetwork = caipNetwork?.chainNamespace === this.chainNamespace
+
+      if (caipAddress && isSolanaAddress && isSolanaNetwork) {
+        this.syncAccount({
+          address: CoreHelperUtil.getPlainAddress(caipAddress),
+          caipNetwork
+        })
       }
     })
 
@@ -102,9 +109,14 @@ export class SolanaAdapter implements ChainAdapter {
       'caipAddress',
       caipAddress => {
         const isSolanaAddress = caipAddress?.startsWith('solana:')
+        const caipNetwork = ChainController.state.activeCaipNetwork
+        const isSolanaNetwork = caipNetwork?.chainNamespace === this.chainNamespace
 
-        if (isSolanaAddress) {
-          this.syncAccount()
+        if (caipAddress && isSolanaAddress && isSolanaNetwork) {
+          this.syncAccount({
+            address: CoreHelperUtil.getPlainAddress(caipAddress),
+            caipNetwork
+          })
         }
       },
       this.chainNamespace
@@ -352,12 +364,22 @@ export class SolanaAdapter implements ChainAdapter {
   }
 
   // -- Private -----------------------------------------------------------------
-  private async syncAccount(address = this.appKit?.getAddress(this.chainNamespace)) {
-    const caipNetwork = this.appKit?.getCaipNetwork(this.chainNamespace)
+  private async syncAccount({
+    address,
+    caipNetwork
+  }: {
+    address: string | undefined
+    caipNetwork: CaipNetwork | undefined
+  }) {
+    const caipNetworkId = caipNetwork?.id
 
     if (address && caipNetwork) {
       SolStoreUtil.setConnection(new Connection(caipNetwork.rpcUrl, this.connectionSettings))
       this.appKit?.setAllAccounts([{ address, type: 'eoa' }], this.chainNamespace)
+      this.appKit?.setCaipAddress(
+        `${caipNetworkId as CaipNetworkId}:${address}`,
+        this.chainNamespace
+      )
       await this.syncNetwork(address)
     } else {
       this.appKit?.resetWcConnection()
@@ -422,17 +444,23 @@ export class SolanaAdapter implements ChainAdapter {
         ProviderUtil.setProvider(this.chainNamespace, this.authProvider)
         ProviderUtil.setProviderId(this.chainNamespace, 'walletConnect')
         this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
-        this.syncAccount(user.address)
+        this.syncAccount({
+          address: user.address,
+          caipNetwork
+        })
       }
     } else {
       this.appKit?.setCaipNetwork(caipNetwork)
 
       const address = this.appKit?.getAddress(this.chainNamespace) as string
-      await this.syncAccount(address)
+      await this.syncAccount({
+        address,
+        caipNetwork
+      })
     }
   }
 
-  private async syncNetwork(address = this.appKit?.getAddress(this.chainNamespace)) {
+  private async syncNetwork(address: string | undefined) {
     const caipNetwork = this.appKit?.getCaipNetwork(this.chainNamespace)
     const connection = SolStoreUtil.state.connection
 
