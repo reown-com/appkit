@@ -13,6 +13,7 @@ import {
   AccountController,
   ChainController,
   CoreHelperUtil,
+  AlertController,
   type CombinedProvider,
   type Connector
 } from '@reown/appkit-core'
@@ -31,7 +32,7 @@ import {
   type W3mFrameTypes
 } from '@reown/appkit-wallet'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
+import { ConstantsUtil, ErrorUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { ConnectionControllerClient, NetworkControllerClient } from '@reown/appkit-core'
 import { ConstantsUtil as CoreConstantsUtil } from '@reown/appkit-core'
@@ -218,10 +219,6 @@ export class Ethers5Adapter {
   }
 
   public construct(appKit: AppKit, options: AppKitOptions) {
-    if (!options.projectId) {
-      throw new Error('appkit:ethers-client:initialize - projectId is undefined')
-    }
-
     this.appKit = appKit
     this.options = options
     this.caipNetworks = options.networks
@@ -1124,7 +1121,14 @@ export class Ethers5Adapter {
 
   private async syncAuthConnector(projectId: string, bypassWindowCheck = false) {
     if (bypassWindowCheck || typeof window !== 'undefined') {
-      this.authProvider = W3mFrameProviderSingleton.getInstance(projectId)
+      this.authProvider = W3mFrameProviderSingleton.getInstance({
+        projectId,
+        onTimeout: () => {
+          AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
+          // eslint-disable-next-line no-console
+          console.error(ErrorUtil.ALERT_ERRORS.originNotWhitelistedSocials(window.origin))
+        }
+      })
 
       this.appKit?.addConnector({
         id: ConstantsUtil.AUTH_CONNECTOR_ID,

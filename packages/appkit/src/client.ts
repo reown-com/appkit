@@ -25,7 +25,8 @@ import {
   OptionsController,
   NetworkController,
   AssetUtil,
-  ApiController
+  ApiController,
+  AlertController
 } from '@reown/appkit-core'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
 import {
@@ -38,7 +39,7 @@ import {
 } from '@reown/appkit-common'
 import type { AppKitOptions } from './utils/TypesUtil.js'
 import { UniversalAdapterClient } from './universal-adapter/client.js'
-import { PresetsUtil } from '@reown/appkit-utils'
+import { ErrorUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { ProviderUtil } from './store/ProviderUtil.js'
 
@@ -416,8 +417,17 @@ export class AppKit {
       sdkVersion: SdkVersion
     }
   ) {
+    OptionsController.setDebug(options.debug)
     OptionsController.setProjectId(options.projectId)
     OptionsController.setSdkVersion(options.sdkVersion)
+
+    if (!options.projectId) {
+      AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+      // eslint-disable-next-line no-console
+      console.error(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED_UPDATE_CONFIGURATION)
+
+      return
+    }
 
     this.adapters = options.adapters
 
