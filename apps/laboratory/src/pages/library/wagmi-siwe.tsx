@@ -22,13 +22,15 @@ const wagmiAdapter = new WagmiAdapter({
 const modal = createAppKit({
   adapters: [wagmiAdapter],
   networks: ConstantsUtil.EvmNetworks,
+  featuredWalletIds: [
+    'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa' // Coinbase Wallet
+  ],
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true
   },
-  siweConfig,
-  customWallets: ConstantsUtil.CustomWallets
+  siweConfig
 })
 
 ThemeStore.setModal(modal)
@@ -37,6 +39,7 @@ export default function Wagmi() {
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
+      <h1>Wagmi</h1>
         <AppKitButtons />
         <WagmiModalInfo />
         <SiweData />
