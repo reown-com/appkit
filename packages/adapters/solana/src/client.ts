@@ -95,8 +95,9 @@ export class SolanaAdapter implements ChainAdapter {
     ChainController.subscribeKey('activeCaipNetwork', caipNetwork => {
       const caipAddress = this.appKit?.getCaipAddress(this.chainNamespace)
       const isSolanaAddress = caipAddress?.startsWith('solana:')
+      const isSolanaNetwork = caipNetwork?.chainNamespace === this.chainNamespace
 
-      if (isSolanaAddress && isSolanaAddress && caipAddress) {
+      if (caipAddress && isSolanaAddress && isSolanaNetwork) {
         this.syncAccount({
           address: CoreHelperUtil.getPlainAddress(caipAddress),
           caipNetwork
@@ -111,7 +112,7 @@ export class SolanaAdapter implements ChainAdapter {
         const caipNetwork = ChainController.state.activeCaipNetwork
         const isSolanaNetwork = caipNetwork?.chainNamespace === this.chainNamespace
 
-        if (isSolanaAddress && isSolanaNetwork && caipAddress) {
+        if (caipAddress && isSolanaAddress && isSolanaNetwork) {
           this.syncAccount({
             address: CoreHelperUtil.getPlainAddress(caipAddress),
             caipNetwork
