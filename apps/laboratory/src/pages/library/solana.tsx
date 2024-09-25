@@ -20,7 +20,6 @@ const modal = createWeb3Modal({
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata,
   chains,
-  enableAnalytics: false,
   termsConditionsUrl: 'https://walletconnect.com/terms',
   privacyPolicyUrl: 'https://walletconnect.com/privacy',
   customWallets: ConstantsUtil.CustomWallets,
