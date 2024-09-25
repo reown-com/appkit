@@ -154,7 +154,23 @@ export class W3mNetworksView extends LitElement {
       return
     }
 
-    RouterController.push('SwitchNetwork', { ...routerData, network })
+    const isDifferentNamespace = network.chainNamespace !== ChainController.state.activeChain
+    const isNewNetworkConnected = ChainController.getAccountProp(
+      'caipAddress',
+      network.chainNamespace
+    )
+    const isCurrentNetworkConnected = AccountController.state.caipAddress
+
+    if (isDifferentNamespace && !isNewNetworkConnected && isCurrentNetworkConnected) {
+      RouterController.push('SwitchActiveChain', {
+        switchToChain: network.chainNamespace,
+        navigateTo: 'Connect',
+        navigateWithReplace: true,
+        network
+      })
+    } else {
+      RouterController.push('SwitchNetwork', { ...routerData, network })
+    }
   }
 }
 

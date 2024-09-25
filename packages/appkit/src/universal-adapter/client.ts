@@ -149,7 +149,8 @@ export class UniversalAdapterClient {
             isSiweEnabled &&
             siweParams &&
             isProviderSupported &&
-            isSiweParamsValid
+            isSiweParamsValid &&
+            ChainController.state.activeChain === 'eip155'
           ) {
             const { SIWEController, getDidChainId, getDidAddress } = await import(
               '@reown/appkit-siwe'
