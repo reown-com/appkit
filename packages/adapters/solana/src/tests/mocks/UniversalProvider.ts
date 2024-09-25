@@ -30,6 +30,13 @@ export function mockUniversalProvider() {
           signature:
             '2Lb1KQHWfbV3pWMqXZveFWqneSyhH95YsgCENRWnArSkLydjN1M42oB82zSd6BBdGkM9pE6sQLQf1gyBh8KWM2c4'
         } satisfies WalletConnectProvider.RequestMethods['solana_signAndSendTransaction']['returns'])
+      case 'solana_signAllTransactions':
+        return Promise.resolve({
+          transactions: [
+            '4zZMC2ddAFY1YHcA2uFCqbuTHmD1xvB5QLzgNnT3dMb4aQT98md8jVm1YRGUsKJkYkLPYarnkobvESUpjqEUnDmoG76e9cgNJzLuFXBW1i6njs2Sy1Lnr9TZmLnhif5CYjh1agVJEvjfYpTq1QbTnLS3rBt4yKVjQ6FcV3x22Vm3XBPqodTXz17o1YcHMcvYQbHZfVUyikQ3Nmv6ktZzWe36D6ceKCVBV88VvYkkFhwWUWkA5ErPvsHWQU64VvbtENaJXFUUnuqTFSX4q3ccHuHdmtnhWQ7Mv8Xkb',
+            '4zZMC2ddAFY1YHcA2uFCqbuTHmD1xvB5QLzgNnT3dMb4aQT98md8jVm1YRGUsKJkYkLPYarnkobvESUpjqEUnDmoG76e9cgNJzLuFXBW1i6njs2Sy1Lnr9TZmLnhif5CYjh1agVJEvjfYpTq1QbTnLS3rBt4yKVjQ6FcV3x22Vm3XBPqodTXz17o1YcHMcvYQbHZfVUyikQ3Nmv6ktZzWe36D6ceKCVBV88VvYkkFhwWUWkA5ErPvsHWQU64VvbtENaJXFUUnuqTFSX4q3ccHuHdmtnhWQ7Mv8Xkb'
+          ]
+        })
       default:
         return Promise.reject(new Error('not implemented'))
     }
