@@ -122,7 +122,10 @@ describe('SolanaAdapter', () => {
       vi.spyOn(mockAppKit, 'getIsConnectedState').mockReturnValue(true)
       vi.spyOn(client as any, 'syncBalance').mockResolvedValue(undefined)
 
-      await client['syncAccount'](mockAddress)
+      await client['syncAccount']({
+        address: mockAddress,
+        caipNetwork: solana
+      })
 
       expect(SolStoreUtil.setConnection).toHaveBeenCalled()
       expect(client['syncBalance']).toHaveBeenCalledWith(mockAddress)
