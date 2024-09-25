@@ -267,7 +267,7 @@ export const ApiController = {
       ApiController.fetchNetworkImages(),
       ApiController.fetchConnectorImages()
     ]
-    if (OptionsController.state.enableAnalytics === undefined) {
+    if (OptionsController.state.enableAnalytics) {
       promises.push(ApiController.fetchAnalyticsConfig())
     }
     state.prefetchPromise = Promise.race([Promise.allSettled(promises)])

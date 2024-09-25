@@ -566,7 +566,7 @@ describe('ApiController', () => {
   })
 
   it('should prefetch with analytics', () => {
-    OptionsController.state.enableAnalytics = undefined
+    OptionsController.state.enableAnalytics = true
     const fetchSpy = vi.spyOn(ApiController, 'fetchFeaturedWallets').mockResolvedValue()
     const fetchNetworkImagesSpy = vi.spyOn(ApiController, 'fetchNetworkImages').mockResolvedValue()
     const recommendedWalletsSpy = vi
