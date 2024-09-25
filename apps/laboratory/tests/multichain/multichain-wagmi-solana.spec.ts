@@ -40,7 +40,7 @@ test('it should fetch balance as expected', async () => {
 })
 
 test('it should show disabled networks', async () => {
-  const disabledNetworks = 'Arbitrum'
+  const disabledNetworks = 'Gnosis'
 
   await modalPage.openModal()
   await modalPage.openNetworks()

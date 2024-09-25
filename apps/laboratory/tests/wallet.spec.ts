@@ -43,8 +43,8 @@ sampleWalletTest('it should fetch balance as expected', async ({ library }) => {
   await modalValidator.expectBalanceFetched(library === 'solana' ? 'SOL' : 'ETH')
 })
 
-sampleWalletTest('it should show disabled networks', async ({ library }) => {
-  const disabledNetworks = library === 'solana' ? 'Solana Unsupported' : 'Arbitrum'
+sampleWalletTest('it should show disabled networks', async () => {
+  const disabledNetworks = 'Gnosis'
 
   await modalPage.openModal()
   await modalPage.openNetworks()
