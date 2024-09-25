@@ -417,7 +417,9 @@ export class AppKit {
     }
   ) {
     OptionsController.setProjectId(options.projectId)
-    OptionsController.setSdkVersion(options.sdkVersion)
+    if (options.sdkVersion) {
+      OptionsController.setSdkVersion(options.sdkVersion)
+    }
 
     this.adapters = options.adapters
 
