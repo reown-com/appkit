@@ -41,7 +41,17 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
         ConnectionController.setWcLinking({ name, href })
         ConnectionController.setRecentWallet(this.wallet)
         CoreHelperUtil.openHref(redirect, '_self')
-      } catch {
+      } catch (e) {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'CONNECT_PROXY_ERROR',
+          properties: {
+            message: e instanceof Error ? e.message : 'Error parsing the deeplink',
+            uri: this.uri,
+            mobile_link: this.wallet.mobile_link,
+            name: this.wallet.name
+          }
+        })
         this.error = true
       }
     }

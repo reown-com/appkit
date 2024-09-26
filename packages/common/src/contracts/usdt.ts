@@ -1,24 +1,19 @@
-export const erc20ABI = [
+export const usdtABI = [
   {
     type: 'function',
     name: 'transfer',
     stateMutability: 'nonpayable',
     inputs: [
       {
-        name: '_to',
+        name: 'recipient',
         type: 'address'
       },
       {
-        name: '_value',
+        name: 'amount',
         type: 'uint256'
       }
     ],
-    outputs: [
-      {
-        name: '',
-        type: 'bool'
-      }
-    ]
+    outputs: []
   },
   {
     type: 'function',
@@ -26,15 +21,15 @@ export const erc20ABI = [
     stateMutability: 'nonpayable',
     inputs: [
       {
-        name: '_from',
+        name: 'sender',
         type: 'address'
       },
       {
-        name: '_to',
+        name: 'recipient',
         type: 'address'
       },
       {
-        name: '_value',
+        name: 'amount',
         type: 'uint256'
       }
     ],
