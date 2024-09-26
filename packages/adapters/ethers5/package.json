@@ -33,7 +33,7 @@
   "peerDependencies": {
     "@ethersproject/sha2": "5.7.0",
     "@coinbase/wallet-sdk": "4.0.3",
-    "ethers": "5.7.2"
+    "ethers": ">=4.1 <6.0.0"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "2.0.5",

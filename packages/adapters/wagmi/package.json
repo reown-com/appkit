@@ -32,10 +32,10 @@
   },
   "peerDependencies": {
     "@coinbase/wallet-sdk": "4.0.3",
-    "@wagmi/connectors": "5.1.9",
-    "@wagmi/core": "2.13.4",
-    "viem": "2.21.4",
-    "wagmi": "2.12.9"
+    "@wagmi/connectors": ">=5.1",
+    "@wagmi/core": ">=2.13",
+    "viem": "2.x",
+    "wagmi": ">=2.12"
   },
   "devDependencies": {
     "@types/react": "18.2.0",
