@@ -5,12 +5,12 @@ import {
   sendCoSignerRequest,
   CoSignerApiError,
   WalletConnectCosigner
-} from '../src/core/utils/WalletConnectCosigner'
-import { ConstantsUtil } from '../src/core/utils/ConstantUtils'
+} from '../../src/smart-session/utils/WalletConnectCosigner'
+import { ConstantsUtil } from '../../src/smart-session/utils/ConstantUtils'
 import type {
   SmartSessionGrantPermissionsRequest,
   ActivatePermissionsRequest
-} from '../src/core/utils/TypeUtils'
+} from '../../src/smart-session/utils/TypeUtils'
 
 // Setup mock adapter for axios
 const mock = new MockAdapter(axios)
@@ -119,7 +119,7 @@ describe('CoSigner API Tests', () => {
       it('should activate permissions successfully', async () => {
         mock
           .onPost(
-            `${ConstantsUtil.WC_COSIGNER_BASE_URL}/${encodeURIComponent(mockAddress)}/context`
+            `${ConstantsUtil.WC_COSIGNER_BASE_URL}/${encodeURIComponent(mockAddress)}/activate`
           )
           .reply(200)
 

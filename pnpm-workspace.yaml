@@ -14,7 +14,7 @@ packages:
   - 'packages/ethers5'
   - 'packages/solana'
   - 'packages/cdn'
-  - 'packages/experimental/*'
+  - 'packages/experimental'
   - 'apps/*'
   - 'examples/*'
   - 'services/*'

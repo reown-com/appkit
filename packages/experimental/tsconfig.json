@@ -4,6 +4,6 @@
     "outDir": "./dist/esm",
     "declarationDir": "./dist/types"
   },
-  "extends": "../../../tsconfig.json",
+  "extends": "../../tsconfig.json",
   "include": ["src/**/*.ts", "tests", "exports"]
 }

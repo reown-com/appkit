@@ -2,7 +2,7 @@
 
 #### 🔗 [Website](https://reown.com/appkit)
 
-# AppKit Smart Session
+# AppKit Experimental
 
 TODO: Add description
 

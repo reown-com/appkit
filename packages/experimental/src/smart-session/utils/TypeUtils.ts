@@ -88,7 +88,10 @@ export type AddPermissionRequest = SmartSessionGrantPermissionsRequest
 
 export type AddPermissionResponse = {
   pci: string
-  key: `0x${string}`
+  key: {
+    type: KeyType
+    publicKey: `0x${string}`
+  }
 }
 
 export type ActivatePermissionsRequest = {

@@ -1,5 +1,5 @@
 {
-  "name": "@reown/appkit-experimental-smart-session",
+  "name": "@reown/appkit-experimental",
   "version": "1.0.0",
   "type": "module",
   "main": "./dist/esm/exports/index.js",

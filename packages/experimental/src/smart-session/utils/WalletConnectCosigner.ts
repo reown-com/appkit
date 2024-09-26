@@ -92,7 +92,7 @@ export class WalletConnectCosigner {
     address: string,
     updateData: ActivatePermissionsRequest
   ): Promise<void> {
-    const url = `${this.baseUrl}/${encodeURIComponent(address)}/context`
+    const url = `${this.baseUrl}/${encodeURIComponent(address)}/activate`
     await sendCoSignerRequest<ActivatePermissionsRequest, never, { projectId: string }>({
       url,
       request: updateData,
