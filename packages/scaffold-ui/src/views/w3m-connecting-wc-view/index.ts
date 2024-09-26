@@ -55,8 +55,8 @@ export class W3mConnectingWcView extends LitElement {
   // -- Private ------------------------------------------- //
   private async initializeConnection(retry = false) {
     try {
-      const { wcPairingExpiry } = ConnectionController.state
-      if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
+      const { wcPairingExpiry, status } = ConnectionController.state
+      if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry) || status === 'connecting') {
         await ConnectionController.connectWalletConnect()
         this.finalizeConnection()
 

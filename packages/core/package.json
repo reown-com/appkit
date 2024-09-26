@@ -31,7 +31,7 @@
   "dependencies": {
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@walletconnect/universal-provider": "2.16.1",
+    "@walletconnect/universal-provider": "2.16.2-canary-tma-3",
     "valtio": "1.11.2"
   },
   "devDependencies": {

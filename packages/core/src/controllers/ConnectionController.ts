@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
@@ -63,11 +64,10 @@ const state = proxy<ConnectionControllerState>({
   buffering: false,
   status: 'disconnected'
 })
-
+let wcConnectionPromise: Promise<void> | undefined
 // -- Controller ---------------------------------------- //
 export const ConnectionController = {
   state,
-
   subscribeKey<K extends StateKey>(
     key: K,
     callback: (value: ConnectionControllerState[K]) => void
@@ -84,14 +84,47 @@ export const ConnectionController = {
   },
 
   async connectWalletConnect() {
-    StorageUtil.setConnectedConnector('WALLET_CONNECT')
+    if (state.status === 'connected') {
+      return
+    }
 
-    await ChainController.state?.universalAdapter?.connectionControllerClient?.connectWalletConnect?.(
-      uri => {
-        state.wcUri = uri
-        state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
-      }
-    )
+    StorageUtil.setConnectedConnector('WALLET_CONNECT')
+    console.log('connectWalletConnect', {
+      pairingExpiry: state.wcPairingExpiry
+    })
+
+    if (wcConnectionPromise) {
+      console.log('Waiting for existing connection')
+      await wcConnectionPromise
+
+      console.log('Waiting for existing connection: done')
+
+      return
+    }
+
+    if (Date.now() < (state?.wcPairingExpiry || 0)) {
+      console.log('Pairing still valid')
+      const link = state.wcUri
+      state.wcUri = link
+
+      return
+    }
+    wcConnectionPromise = new Promise(async resolve => {
+      await ChainController.state?.universalAdapter?.connectionControllerClient?.connectWalletConnect?.(
+        uri => {
+          state.wcUri = uri
+          state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
+        }
+      )
+      resolve()
+    })
+    console.log('starting connection')
+    this.state.status = 'connecting'
+    await wcConnectionPromise
+    console.log('connection complete')
+    wcConnectionPromise = undefined
+    state.wcPairingExpiry = undefined
+    this.state.status = 'connected'
   },
 
   async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
@@ -164,6 +197,7 @@ export const ConnectionController = {
     state.wcPairingExpiry = undefined
     state.wcLinking = undefined
     state.recentWallet = undefined
+    state.status = 'disconnected'
     TransactionsController.resetTransactions()
     StorageUtil.deleteWalletConnectDeepLink()
   },
