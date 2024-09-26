@@ -78,16 +78,17 @@ export class W3mAccountDefaultWidget extends LitElement {
       throw new Error('w3m-account-view: No account provided')
     }
 
+    const shouldShowMultiAccount =
+      ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM && this.allAccounts.length > 1
+
     return html`<wui-flex
         flexDirection="column"
         .padding=${['0', 'xl', 'm', 'xl'] as const}
         alignItems="center"
         gap="l"
+        data-testid=${shouldShowMultiAccount ? 'multi-account-widget' : 'single-account-widget'}
       >
-        ${ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM &&
-        this.allAccounts.length > 1
-          ? this.multiAccountTemplate()
-          : this.singleAccountTemplate()}
+        ${shouldShowMultiAccount ? this.multiAccountTemplate() : this.singleAccountTemplate()}
         <wui-flex flexDirection="column" alignItems="center">
           <wui-text variant="paragraph-500" color="fg-200">
             ${CoreHelperUtil.formatBalance(this.balance, this.balanceSymbol)}
