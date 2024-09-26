@@ -68,7 +68,7 @@
   },
   "dependencies": {
     "@chakra-ui/icons": "2.1.1",
-    "@chakra-ui/react": "2.8.1",
+    "@chakra-ui/react": "2.8.2",
     "@emotion/react": "11.11.3",
     "@emotion/styled": "11.11.0",
     "@reown/appkit": "workspace:*",
@@ -78,7 +78,7 @@
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@reown/appkit-ethers": "workspace:*",
     "@reown/appkit-ethers5": "workspace:*",
-    "@reown/appkit-experimental-smart-session": "workspace:*",
+    "@reown/appkit-experimental": "workspace:*",
     "@reown/appkit-siwe": "workspace:*",
     "@reown/appkit-solana": "workspace:*",
     "@reown/appkit-wagmi": "workspace:*",
