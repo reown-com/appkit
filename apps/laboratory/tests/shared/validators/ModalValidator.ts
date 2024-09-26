@@ -63,7 +63,7 @@ export class ModalValidator {
 
   async expectSingleAccount() {
     await expect(
-      this.page.getByTestId('single-account-widget'),
+      this.page.getByTestId('single-account-avatar'),
       'Single account widget should be present'
     ).toBeVisible({
       timeout: MAX_WAIT

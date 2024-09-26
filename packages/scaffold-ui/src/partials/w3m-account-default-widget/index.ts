@@ -86,7 +86,6 @@ export class W3mAccountDefaultWidget extends LitElement {
         .padding=${['0', 'xl', 'm', 'xl'] as const}
         alignItems="center"
         gap="l"
-        data-testid=${shouldShowMultiAccount ? 'multi-account-widget' : 'single-account-widget'}
       >
         ${shouldShowMultiAccount ? this.multiAccountTemplate() : this.singleAccountTemplate()}
         <wui-flex flexDirection="column" alignItems="center">
@@ -224,6 +223,7 @@ export class W3mAccountDefaultWidget extends LitElement {
         alt=${ifDefined(this.caipAddress)}
         address=${ifDefined(CoreHelperUtil.getPlainAddress(this.caipAddress))}
         imageSrc=${ifDefined(this.profileImage === null ? undefined : this.profileImage)}
+        data-testid="single-account-avatar"
       ></wui-avatar>
       <wui-flex flexDirection="column" alignItems="center">
         <wui-flex gap="3xs" alignItems="center" justifyContent="center">
@@ -271,6 +271,7 @@ export class W3mAccountDefaultWidget extends LitElement {
         avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
         profileName=${ifDefined(label ? label : this.profileName)}
         .onCopyClick=${this.onCopyAddress.bind(this)}
+        data-testid="multi-account-profile-button"
       ></wui-profile-button-v2>
     `
   }
