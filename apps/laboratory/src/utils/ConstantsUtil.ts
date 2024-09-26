@@ -55,6 +55,8 @@ export const ConstantsUtil = {
   SigningSucceededToastTitle: 'Signing Succeeded',
   SigningFailedToastTitle: 'Signing Failed',
   TestIdSiweAuthenticationStatus: 'w3m-authentication-status',
+  DisconnectingSuccessToastTitle: 'Disconnecting Succeeded',
+  DisconnectingFailedToastTitle: 'Disconnecting Failed',
   Metadata: {
     name: 'AppKit Lab',
     description: 'Laboratory environment for AppKit testing',
