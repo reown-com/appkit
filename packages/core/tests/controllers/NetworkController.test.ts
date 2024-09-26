@@ -37,19 +37,6 @@ const client: NetworkControllerClient = {
 
 // -- Tests --------------------------------------------------------------------
 describe('NetworkController', () => {
-  it('should throw if client not set', () => {
-    expect(NetworkController._getClient).toThrow(
-      'Chain is required to get network controller client'
-    )
-    ChainController.initialize([
-      {
-        chainNamespace: ConstantsUtil.CHAIN.EVM,
-        caipNetworks: []
-      }
-    ])
-    expect(NetworkController._getClient).toThrow('NetworkController client not set')
-  })
-
   it('should have valid default state', () => {
     ChainController.initialize([
       {
@@ -66,19 +53,19 @@ describe('NetworkController', () => {
   })
 
   it('should update state correctly on setCaipNetwork()', () => {
-    NetworkController.setActiveCaipNetwork(caipNetwork)
+    ChainController.setActiveCaipNetwork(caipNetwork)
     expect(ChainController.state.activeCaipNetwork).toEqual(caipNetwork)
   })
 
   it('should check correctly if smart accounts are enabled on the network', () => {
-    NetworkController.setActiveCaipNetwork(caipNetwork)
+    ChainController.setActiveCaipNetwork(caipNetwork)
     ChainController.setSmartAccountEnabledNetworks([1], chain)
     expect(ChainController.checkIfSmartAccountEnabled()).toEqual(true)
     ChainController.setSmartAccountEnabledNetworks([], chain)
     expect(ChainController.checkIfSmartAccountEnabled()).toEqual(false)
     ChainController.setSmartAccountEnabledNetworks([2], chain)
     expect(ChainController.checkIfSmartAccountEnabled()).toEqual(false)
-    NetworkController.setActiveCaipNetwork({
+    ChainController.setActiveCaipNetwork({
       id: 'eip155:2',
       name: 'Ethereum',
       chainNamespace: ConstantsUtil.CHAIN.EVM,
@@ -93,17 +80,17 @@ describe('NetworkController', () => {
     let mock = vi
       .spyOn(ChainController.state, 'activeCaipNetwork', 'get')
       .mockReturnValue(undefined)
-    expect(NetworkController.getActiveNetworkTokenAddress()).toEqual(
+    expect(ChainController.getActiveNetworkTokenAddress()).toEqual(
       'eip155:1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
     )
 
     mock.mockReturnValue(caipNetwork)
-    expect(NetworkController.getActiveNetworkTokenAddress()).toEqual(
+    expect(ChainController.getActiveNetworkTokenAddress()).toEqual(
       'eip155:1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
     )
 
     mock.mockReturnValue(solanaCaipNetwork)
-    expect(NetworkController.getActiveNetworkTokenAddress()).toEqual(
+    expect(ChainController.getActiveNetworkTokenAddress()).toEqual(
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:So11111111111111111111111111111111111111111'
     )
 

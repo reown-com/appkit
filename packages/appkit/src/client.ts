@@ -285,7 +285,7 @@ export class AppKit {
     AccountController.resetAccount(chain)
   }
 
-  public setCaipNetwork: (typeof NetworkController)['setCaipNetwork'] = caipNetwork => {
+  public setCaipNetwork: (typeof ChainController)['setActiveCaipNetwork'] = caipNetwork => {
     ChainController.setActiveCaipNetwork(caipNetwork)
   }
 

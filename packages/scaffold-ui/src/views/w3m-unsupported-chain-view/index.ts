@@ -138,7 +138,7 @@ export class W3mUnsupportedChainView extends LitElement {
         RouterController.push('SwitchNetwork', { ...routerData, network })
       }
     } else if (!caipAddress) {
-      NetworkController.setActiveCaipNetwork(network)
+      ChainController.setActiveCaipNetwork(network)
       RouterController.push('Connect')
     }
   }
