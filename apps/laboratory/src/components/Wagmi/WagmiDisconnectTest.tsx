@@ -55,7 +55,7 @@ export function WagmiDisconnectTest() {
   return (
     <>
       <Button
-        data-testid="sign-message-button"
+        data-testid="disconnect-button"
         onClick={onDisconnect}
         isDisabled={!isConnected || isPending}
         isLoading={isPending}
