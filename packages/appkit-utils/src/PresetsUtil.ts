@@ -133,6 +133,8 @@ export const PresetsUtil = {
     // ZkSync Era Mainnet
     324,
     // ZkSync Era Testnet
-    280
+    280,
+    // Fantom
+    250
   ]
 }

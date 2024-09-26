@@ -174,6 +174,16 @@ export const solanaDevnet: CaipNetwork = {
   chainNamespace: 'solana'
 }
 
+export const fantom: CaipNetwork = {
+  id: 'eip155:250',
+  chainId: 250,
+  name: 'Fantom',
+  currency: 'FTM',
+  explorerUrl: 'https://ftmscan.com',
+  rpcUrl: getBlockchainApiRpcUrl(250, 'eip155'),
+  chainNamespace: 'eip155'
+}
+
 export const allChains = [
   mainnet,
   arbitrum,
@@ -191,5 +201,6 @@ export const allChains = [
   baseSepolia,
   solana,
   solanaTestnet,
-  solanaDevnet
+  solanaDevnet,
+  fantom,
 ]
