@@ -813,12 +813,15 @@ export const SwapController = {
       sourceTokenAddress,
       state.myTokensWithBalance
     )
-    const insufficientNetworkTokenForGas = SwapCalculationUtil.isInsufficientNetworkTokenForGas(
-      state.networkBalanceInUSD,
-      state.gasPriceInUSD
-    )
 
-    return insufficientNetworkTokenForGas || isInsufficientSourceTokenForSwap
+    if (
+      AccountController.state.preferredAccountType ===
+      W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+    ) {
+      return true
+    }
+
+    return isInsufficientSourceTokenForSwap
   },
 
   // -- Calculations -------------------------------------- //
