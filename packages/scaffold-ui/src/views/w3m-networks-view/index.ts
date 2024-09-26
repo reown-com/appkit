@@ -25,7 +25,7 @@ export class W3mNetworksView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() public network = ChainController.state.activeCaipNetwork
 
-  @state() public requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+  @state() public requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
 
   @state() private filteredNetworks?: CaipNetwork[]
 
@@ -99,8 +99,8 @@ export class W3mNetworksView extends LitElement {
   }
 
   private networksTemplate() {
-    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
-    const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
+    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworks()
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
       requestedCaipNetworks

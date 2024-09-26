@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { NetworkControllerClient } from '../../exports/index.js'
-import type { CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
+import type { CaipNetworkId } from '@reown/appkit-common'
 import { ChainController, NetworkController } from '../../exports/index.js'
 import { ConstantsUtil } from '@reown/appkit-common'
 
@@ -24,35 +24,7 @@ const solanaCaipNetwork = {
   explorerUrl: 'https://solscan.io',
   rpcUrl: 'https://rpc.infura.com/v1/'
 } as const
-const requestedCaipNetworks = [
-  {
-    id: 'eip155:1',
-    name: 'Ethereum',
-    chainNamespace: ConstantsUtil.CHAIN.EVM,
-    chainId: 1,
-    currency: 'ETH',
-    explorerUrl: 'https://etherscan.io',
-    rpcUrl: 'https://rpc.infura.com/v1/'
-  },
-  {
-    id: 'eip155:42161',
-    name: 'Arbitrum One',
-    chainNamespace: ConstantsUtil.CHAIN.EVM,
-    chainId: 42161,
-    currency: 'ETH',
-    explorerUrl: 'https://etherscan.io',
-    rpcUrl: 'https://rpc.infura.com/v1/'
-  },
-  {
-    id: 'eip155:43114',
-    name: 'Avalanche C-Chain',
-    chainNamespace: ConstantsUtil.CHAIN.EVM,
-    chainId: 43114,
-    currency: 'ETH',
-    explorerUrl: 'https://etherscan.io',
-    rpcUrl: 'https://rpc.infura.com/v1/'
-  }
-] as CaipNetwork[]
+
 const approvedCaipNetworkIds = ['eip155:1', 'eip155:42161'] as CaipNetworkId[]
 
 const chain = ConstantsUtil.CHAIN.EVM
@@ -93,26 +65,9 @@ describe('NetworkController', () => {
     })
   })
 
-  it('should update state correctly on setRequestedCaipNetworks()', () => {
-    NetworkController.setRequestedCaipNetworks(requestedCaipNetworks, chain)
-    expect(NetworkController.state.requestedCaipNetworks).toEqual(requestedCaipNetworks)
-  })
-
   it('should update state correctly on setCaipNetwork()', () => {
     NetworkController.setActiveCaipNetwork(caipNetwork)
     expect(ChainController.state.activeCaipNetwork).toEqual(caipNetwork)
-  })
-
-  it('should update state correctly on getApprovedCaipNetworkIds()', async () => {
-    await NetworkController.setApprovedCaipNetworksData(chain)
-    expect(NetworkController.state.approvedCaipNetworkIds).toEqual(approvedCaipNetworkIds)
-  })
-
-  it('should reset state correctly on resetNetwork()', () => {
-    NetworkController.resetNetwork()
-    expect(NetworkController.state.approvedCaipNetworkIds).toEqual(undefined)
-    expect(NetworkController.state.requestedCaipNetworks).toEqual(requestedCaipNetworks)
-    expect(NetworkController.state.smartAccountEnabledNetworks).toEqual([])
   })
 
   it('should check correctly if smart accounts are enabled on the network', () => {

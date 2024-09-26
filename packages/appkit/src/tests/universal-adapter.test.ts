@@ -66,8 +66,6 @@ describe('UniversalAdapter', () => {
     it('should call setDefaultNetwork and set first caipNetwork on setActiveCaipNetwork when there is no active caipNetwork', async () => {
       vi.spyOn(NetworkController, 'state', 'get').mockReturnValue({
         caipNetwork: undefined,
-        requestedCaipNetworks: [mainnet, solana],
-        approvedCaipNetworkIds: [],
         supportsAllNetworks: true
       })
 

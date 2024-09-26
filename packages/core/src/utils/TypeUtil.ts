@@ -10,10 +10,7 @@ import type {
   SdkFramework,
   AppKitSdkVersion
 } from '@reown/appkit-common'
-import type {
-  NetworkControllerClient,
-  NetworkControllerState
-} from '../controllers/NetworkController.js'
+import type { NetworkControllerClient } from '../controllers/NetworkController.js'
 import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
 import type { AccountControllerState } from '../controllers/AccountController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
@@ -835,11 +832,45 @@ export interface WriteContractArgs {
   abi: any
 }
 
+export type AdapterNetworkState = {
+  supportsAllNetworks: boolean
+  isUnsupportedChain?: boolean
+  _client?: NetworkControllerClient
+  caipNetwork?: CaipNetwork
+  requestedCaipNetworks?: CaipNetwork[]
+  approvedCaipNetworkIds?: CaipNetworkId[]
+  allowUnsupportedCaipNetwork?: boolean
+  smartAccountEnabledNetworks?: number[]
+}
+
+export type AdapterAccountState = {
+  currentTab: number
+  caipAddress?: CaipAddress
+  address?: string
+  addressLabels: Map<string, string>
+  allAccounts: AccountType[]
+  balance?: string
+  balanceSymbol?: string
+  profileName?: string | null
+  profileImage?: string | null
+  addressExplorerUrl?: string
+  smartAccountDeployed?: boolean
+  socialProvider?: SocialProvider
+  tokenBalance?: Balance[]
+  shouldUpdateToAddress?: string
+  connectedWalletInfo?: ConnectedWalletInfo
+  preferredAccountType?: W3mFrameTypes.AccountType
+  socialWindow?: Window
+  farcasterUrl?: string
+  status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
+  siweStatus?: 'uninitialized' | 'ready' | 'loading' | 'success' | 'rejected' | 'error'
+}
+
 export type ChainAdapter = {
   connectionControllerClient?: ConnectionControllerClient
   networkControllerClient?: NetworkControllerClient
   accountState?: AccountControllerState
-  networkState?: NetworkControllerState
+  networkState?: AdapterNetworkState
   defaultNetwork?: CaipNetwork
   chainNamespace: ChainNamespace
   isUniversalAdapterClient?: boolean

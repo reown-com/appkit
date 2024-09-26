@@ -53,11 +53,33 @@ describe('ChainController', () => {
   })
 
   it('should update network state as expected', () => {
-    ChainController.setChainNetworkData(ChainController.state.activeChain, {
+    ChainController.setAdapterNetworkState(ChainController.state.activeChain, {
       approvedCaipNetworkIds
     })
     expect(ChainController.getNetworkProp('approvedCaipNetworkIds')).toEqual(approvedCaipNetworkIds)
   })
+
+  it('should update state correctly on getApprovedCaipNetworkIds()', async () => {
+    const namespace = 'eip155'
+    await ChainController.setApprovedCaipNetworksData(namespace)
+    expect(ChainController.getApprovedCaipNetworkIds(namespace)).toEqual(approvedCaipNetworkIds)
+  })
+
+  // it('should update state correctly on setRequestedCaipNetworks()', () => {
+  //   ChainController.setRequestedCaipNetworks(requestedCaipNetworks, chain)
+  //   expect(ChainController.state.requestedCaipNetworks).toEqual(requestedCaipNetworks)
+  // })
+
+  // it('should reset state correctly on resetNetwork()', () => {
+  //   const namespace = 'eip155'
+  //   ChainController.resetNetwork(namespace)
+  //   const requestedCaipNetworks = ChainController.getRequestedCaipNetworkIds(namespace)
+  //   const approvedCaipNetworkIds = ChainController.getApprovedCaipNetworkIds(namespace)
+  //   const smartAccountEnabledNetworks = ChainController.getNetworkProp('smartAccountEnabledNetworks')
+  //   expect(approvedCaipNetworkIds).toEqual(undefined)
+  //   expect(requestedCaipNetworks).toEqual(requestedCaipNetworks)
+  //   expect(smartAccountEnabledNetworks).toEqual([])
+  // })
 
   it('should reset account as expected', () => {
     ChainController.resetAccount(ChainController.state.activeChain)

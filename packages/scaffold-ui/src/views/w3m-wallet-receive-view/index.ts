@@ -106,7 +106,7 @@ export class W3mWalletReceiveView extends LitElement {
 
   // -- Private ------------------------------------------- //
   networkTemplate() {
-    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
     const isNetworkEnabledForSmartAccounts = NetworkController.checkIfSmartAccountEnabled()
     const caipNetwork = ChainController.state.activeCaipNetwork
 
@@ -124,7 +124,9 @@ export class W3mWalletReceiveView extends LitElement {
         .networkImages=${[AssetUtil.getNetworkImage(caipNetwork) ?? '']}
       ></wui-compatible-network>`
     }
-    const slicedNetworks = requestedCaipNetworks?.filter(network => network?.imageId)?.slice(0, 5)
+    const slicedNetworks = requestedCaipNetworks
+      ?.filter(network => (caipNetwork?.id === network.id ? network?.imageId : null))
+      ?.slice(0, 5)
     const imagesArray = slicedNetworks.map(AssetUtil.getNetworkImage).filter(Boolean) as string[]
 
     return html`<wui-compatible-network

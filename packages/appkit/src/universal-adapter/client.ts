@@ -108,7 +108,7 @@ export class UniversalAdapterClient {
 
         return new Promise(resolve => {
           const ns = this.walletConnectProvider?.session?.namespaces
-          const nsChains: CaipNetworkId[] | undefined = []
+          const nsChains: CaipNetworkId[] = []
 
           if (ns) {
             Object.keys(ns).forEach(key => {
@@ -121,7 +121,7 @@ export class UniversalAdapterClient {
 
           const result = {
             supportsAllNetworks: true,
-            approvedCaipNetworkIds: nsChains as CaipNetworkId[] | undefined
+            approvedCaipNetworkIds: nsChains
           }
 
           resolve(result)
@@ -397,14 +397,15 @@ export class UniversalAdapterClient {
 
       const storedCaipNetwork = StorageUtil.getStoredActiveCaipNetwork()
       const activeCaipNetwork = ChainController.state.activeCaipNetwork
-
       try {
         if (storedCaipNetwork) {
           NetworkController.setActiveCaipNetwork(storedCaipNetwork)
         } else if (!activeCaipNetwork) {
           this.setDefaultNetwork(nameSpaces)
         } else if (
-          !NetworkController.state.approvedCaipNetworkIds?.includes(activeCaipNetwork.id)
+          !ChainController.getApprovedCaipNetworkIds(activeCaipNetwork.chainNamespace).includes(
+            activeCaipNetwork.id
+          )
         ) {
           this.setDefaultNetwork(nameSpaces)
         }
@@ -427,7 +428,7 @@ export class UniversalAdapterClient {
         const chainId = namespace.chains[0]
 
         if (chainId) {
-          const requestedCaipNetworks = NetworkController.state?.requestedCaipNetworks
+          const requestedCaipNetworks = ChainController.getRequestedCaipNetworks(chainNamespace)
 
           if (requestedCaipNetworks) {
             const network = requestedCaipNetworks.find(c => c.id === chainId)

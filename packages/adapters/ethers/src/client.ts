@@ -936,7 +936,7 @@ export class EthersAdapter {
 
   private async syncBalance(address: Address, caipNetwork: CaipNetwork) {
     const isExistingNetwork = this.appKit
-      ?.getCaipNetworks()
+      ?.getCaipNetworks(caipNetwork.chainNamespace)
       .find(network => network.id === caipNetwork.id)
     const isEVMNetwork = caipNetwork.chainNamespace === CommonConstantsUtil.CHAIN.EVM
 

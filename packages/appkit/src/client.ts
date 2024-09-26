@@ -291,7 +291,7 @@ export class AppKit {
 
   public getCaipNetwork = (chainNamespace?: ChainNamespace) => {
     if (chainNamespace) {
-      return NetworkController.getRequestedCaipNetworks().filter(
+      return ChainController.getRequestedCaipNetworks(chainNamespace).filter(
         c => c.chainNamespace === chainNamespace
       )?.[0]
     }
@@ -299,7 +299,8 @@ export class AppKit {
     return ChainController.state.activeCaipNetwork
   }
 
-  public getCaipNetworks = () => NetworkController.getRequestedCaipNetworks()
+  public getCaipNetworks = (namespace: ChainNamespace) =>
+    ChainController.getRequestedCaipNetworks(namespace)
 
   public getActiveChainNamespace = () => ChainController.state.activeChain
 
@@ -310,11 +311,11 @@ export class AppKit {
     NetworkController.setRequestedCaipNetworks(requestedCaipNetworks, chain)
   }
 
-  public getApprovedCaipNetworkIds: (typeof NetworkController)['getApprovedCaipNetworkIds'] = () =>
-    NetworkController.getApprovedCaipNetworkIds()
+  public getApprovedCaipNetworkIds: (typeof ChainController)['getAllApprovedCaipNetworks'] = () =>
+    ChainController.getAllApprovedCaipNetworks()
 
-  public setApprovedCaipNetworksData: (typeof NetworkController)['setApprovedCaipNetworksData'] =
-    chain => NetworkController.setApprovedCaipNetworksData(chain)
+  public setApprovedCaipNetworksData: (typeof ChainController)['setApprovedCaipNetworksData'] =
+    namespace => ChainController.setApprovedCaipNetworksData(namespace)
 
   public resetNetwork: (typeof NetworkController)['resetNetwork'] = () => {
     NetworkController.resetNetwork()

@@ -6,7 +6,6 @@ import {
   ConnectorController,
   EventsController,
   ModalController,
-  NetworkController,
   OptionsController,
   RouterController
 } from '@reown/appkit-core'
@@ -244,7 +243,7 @@ export class W3mHeader extends LitElement {
   }
 
   private isAllowedNetworkSwitch() {
-    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
     const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 

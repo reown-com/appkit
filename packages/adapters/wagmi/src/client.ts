@@ -258,7 +258,7 @@ export class WagmiAdapter implements ChainAdapter {
             )
             resolve(getWalletConnectCaipNetworks(connector))
           }
-          resolve({ approvedCaipNetworkIds: undefined, supportsAllNetworks: true })
+          resolve({ approvedCaipNetworkIds: [], supportsAllNetworks: true })
         })
       }
     }
