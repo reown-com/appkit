@@ -38,7 +38,7 @@ type ChainsInitializerAdapter = Pick<
 >
 
 // -- Constants ----------------------------------------- //
-const accountState: AccountControllerState = {
+export const accountState: AccountControllerState = {
   isConnected: false,
   currentTab: 0,
   tokenBalance: [],
@@ -47,7 +47,7 @@ const accountState: AccountControllerState = {
   allAccounts: []
 }
 
-const networkState: NetworkControllerState = {
+export const networkState: NetworkControllerState = {
   supportsAllNetworks: true,
   smartAccountEnabledNetworks: []
 }
@@ -98,15 +98,12 @@ export const ChainController = {
 
   initialize(adapters: ChainsInitializerAdapter[]) {
     const adapterToActivate = adapters?.[0]
-
     if (adapters?.length === 0) {
       state.noAdapters = true
     }
-
     if (!state.noAdapters) {
       state.activeChain = adapterToActivate?.chainNamespace
       PublicStateController.set({ activeChain: adapterToActivate?.chainNamespace })
-
       adapters.forEach((adapter: ChainsInitializerAdapter) => {
         state.chains.set(adapter.chainNamespace, {
           chainNamespace: adapter.chainNamespace,
@@ -125,35 +122,32 @@ export const ChainController = {
     adapter: ChainsInitializerAdapter,
     adapters: ChainsInitializerAdapter[]
   ) {
-    state.universalAdapter = adapter
-
-    if (adapters.length === 0) {
-      const storedCaipNetwork = StorageUtil.getStoredActiveCaipNetwork()
-
-      try {
-        if (storedCaipNetwork) {
-          state.activeChain = storedCaipNetwork.chainNamespace
-        } else {
-          state.activeChain =
-            adapter?.defaultNetwork?.chainNamespace ?? adapter.caipNetworks[0]?.chainNamespace
-        }
-      } catch (error) {
-        console.warn('>>> Error setting active caip network', error)
-      }
-    }
-
-    const chains = [...new Set(adapter.caipNetworks.map(caipNetwork => caipNetwork.chainNamespace))]
-    chains.forEach((chain: ChainNamespace) => {
-      state.chains.set(chain, {
-        chainNamespace: chain,
-        connectionControllerClient: undefined,
-        networkControllerClient: undefined,
-        adapterType: adapter.adapterType,
-        accountState,
-        networkState,
-        caipNetworks: adapter.caipNetworks
-      })
-    })
+    // state.universalAdapter = adapter
+    // if (adapters.length === 0) {
+    //   const storedCaipNetwork = StorageUtil.getStoredActiveCaipNetwork()
+    //   try {
+    //     if (storedCaipNetwork) {
+    //       state.activeChain = storedCaipNetwork.chainNamespace
+    //     } else {
+    //       state.activeChain =
+    //         adapter?.defaultNetwork?.chainNamespace ?? adapter.caipNetworks[0]?.chainNamespace
+    //     }
+    //   } catch (error) {
+    //     console.warn('>>> Error setting active caip network', error)
+    //   }
+    // }
+    // const chains = [...new Set(adapter.caipNetworks.map(caipNetwork => caipNetwork.chainNamespace))]
+    // chains.forEach((chain: ChainNamespace) => {
+    //   state.chains.set(chain, {
+    //     chainNamespace: chain,
+    //     connectionControllerClient: undefined,
+    //     networkControllerClient: undefined,
+    //     adapterType: adapter.adapterType,
+    //     accountState,
+    //     networkState,
+    //     caipNetworks: adapter.caipNetworks
+    //   })
+    // })
   },
 
   setChainNetworkData(
@@ -271,6 +265,8 @@ export const ChainController = {
       })
       SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetwork.id)
     } else {
+      state.activeChain = caipNetwork.chainNamespace
+      state.activeCaipNetwork = caipNetwork
       this.setActiveNamespace(caipNetwork.chainNamespace, caipNetwork)
     }
   },

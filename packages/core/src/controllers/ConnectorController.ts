@@ -44,7 +44,7 @@ export const ConnectorController = {
     )
 
     state.allConnectors = [...state.connectors, ...newConnectors]
-    state.connectors = this.mergeMultiChainConnectors(state.allConnectors)
+    state.connectors = state.allConnectors
   },
 
   mergeMultiChainConnectors(connectors: Connector[]) {

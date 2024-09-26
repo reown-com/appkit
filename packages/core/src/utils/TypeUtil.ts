@@ -19,6 +19,7 @@ import type { AccountControllerState } from '../controllers/AccountController.js
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
 import type { ConstantsUtil } from './ConstantsUtil.js'
 import type { ReownName } from '../controllers/EnsController.js'
+import type UniversalProvider from '@walletconnect/universal-provider'
 
 export type CaipNetworkCoinbaseNetwork =
   | 'Ethereum'
@@ -75,7 +76,7 @@ export type Connector = {
     icon?: string
     rdns?: string
   }
-  provider?: unknown
+  provider: Provider | W3mFrameProvider | UniversalProvider
   chain: ChainNamespace
   connectors?: Connector[]
 }
@@ -848,6 +849,7 @@ export type ChainAdapter = {
 type ProviderEventListener = {
   connect: (connectParams: { chainId: number }) => void
   disconnect: (error: Error) => void
+  display_uri: (uri: string) => void
   chainChanged: (chainId: string) => void
   accountsChanged: (accounts: string[]) => void
   message: (message: { type: string; data: unknown }) => void
@@ -859,6 +861,8 @@ export interface RequestArguments {
 }
 
 export interface Provider {
+  connect: (params?: { onUri?: (uri: string) => void }) => Promise<string>
+  disconnect: () => Promise<void>
   request: <T>(args: RequestArguments) => Promise<T>
   on<T extends keyof ProviderEventListener>(event: T, listener: ProviderEventListener[T]): void
   removeListener: <T>(event: string, listener: (data: T) => void) => void

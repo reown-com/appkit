@@ -76,8 +76,8 @@ export const ConnectionController = {
     return subKey(state, key, callback)
   },
 
-  _getClient(chain?: ChainNamespace) {
-    return ChainController.getConnectionControllerClient(chain)
+  _getClient() {
+    return state._client
   },
 
   setClient(client: ConnectionControllerClient) {
@@ -87,16 +87,14 @@ export const ConnectionController = {
   async connectWalletConnect() {
     StorageUtil.setConnectedConnector('WALLET_CONNECT')
 
-    await ChainController.state?.universalAdapter?.connectionControllerClient?.connectWalletConnect?.(
-      uri => {
-        state.wcUri = uri
-        state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
-      }
-    )
+    await this._getClient()?.connectWalletConnect?.(uri => {
+      state.wcUri = uri
+      state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
+    })
   },
 
   async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
-    await this._getClient(chain).connectExternal?.(options)
+    await this._getClient()?.connectExternal?.(options)
     if (setChain) {
       ChainController.setActiveNamespace(chain)
       StorageUtil.setConnectedConnector(options.type)
@@ -104,7 +102,7 @@ export const ConnectionController = {
   },
 
   async reconnectExternal(options: ConnectExternalOptions) {
-    await this._getClient().reconnectExternal?.(options)
+    await this._getClient()?.reconnectExternal?.(options)
     StorageUtil.setConnectedConnector(options.type)
   },
 
@@ -115,7 +113,7 @@ export const ConnectionController = {
       return
     }
     await authConnector?.provider.setPreferredAccount(accountType)
-    await this.reconnectExternal(authConnector)
+    await this._getClient()?.reconnectExternal?.(authConnector)
     ModalController.setLoading(false)
     EventsController.sendEvent({
       type: 'track',
@@ -125,39 +123,39 @@ export const ConnectionController = {
   },
 
   async signMessage(message: string) {
-    return this._getClient().signMessage(message)
+    return this._getClient()?.signMessage(message)
   },
 
   parseUnits(value: string, decimals: number) {
-    return this._getClient().parseUnits(value, decimals)
+    return this._getClient()?.parseUnits(value, decimals)
   },
 
   formatUnits(value: bigint, decimals: number) {
-    return this._getClient().formatUnits(value, decimals)
+    return this._getClient()?.formatUnits(value, decimals)
   },
 
   async sendTransaction(args: SendTransactionArgs) {
-    return this._getClient().sendTransaction(args)
+    return this._getClient()?.sendTransaction(args)
   },
 
   async estimateGas(args: EstimateGasTransactionArgs) {
-    return this._getClient().estimateGas(args)
+    return this._getClient()?.estimateGas(args)
   },
 
   async writeContract(args: WriteContractArgs) {
-    return this._getClient().writeContract(args)
+    return this._getClient()?.writeContract(args)
   },
 
   async getEnsAddress(value: string) {
-    return this._getClient().getEnsAddress(value)
+    return this._getClient()?.getEnsAddress(value)
   },
 
   async getEnsAvatar(value: string) {
-    return this._getClient().getEnsAvatar(value)
+    return this._getClient()?.getEnsAvatar(value)
   },
 
   checkInstalled(ids?: string[], chain?: ChainNamespace) {
-    return this._getClient(chain).checkInstalled?.(ids) || false
+    return this._getClient()?.checkInstalled?.(ids) || false
   },
 
   resetWcConnection() {
