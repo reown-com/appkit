@@ -863,10 +863,12 @@ export class EthersAdapter {
     const currentCaipNetwork = caipNetwork || this.appKit?.getCaipNetwork()
     const preferredAccountType = this.appKit?.getPreferredAccountType()
     const isEipNetwork = currentCaipNetwork?.chainNamespace === CommonConstantsUtil.CHAIN.EVM
+    const caipNetworkId = currentCaipNetwork?.id as CaipNetworkId
 
     if (address) {
       if (isEipNetwork) {
         this.appKit?.setPreferredAccountType(preferredAccountType, this.chainNamespace)
+        this.appKit?.setCaipAddress(`${caipNetworkId}:${address}`, this.chainNamespace)
 
         this.syncConnectedWalletInfo()
         if (this.ethersConfig) {

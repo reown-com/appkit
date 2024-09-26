@@ -23,7 +23,7 @@ export function mockUniversalProvider() {
       case 'solana_signTransaction':
         return Promise.resolve({
           transaction:
-            '4zZMC2ddAFY1YHcA2uFCqbuTHmD1xvB5QLzgNnT3dMb4aQT98md8jVm1YRGUsKJkYkLPYarnkobvESUpjqEUnDmoG76e9cgNJzLuFXBW1i6njs2Sy1Lnr9TZmLnhif5CYjh1agVJEvjfYpTq1QbTnLS3rBt4yKVjQ6FcV3x22Vm3XBPqodTXz17o1YcHMcvYQbHZfVUyikQ3Nmv6ktZzWe36D6ceKCVBV88VvYkkFhwWUWkA5ErPvsHWQU64VvbtENaJXFUUnuqTFSX4q3ccHuHdmtnhWQ7Mv8Xkb'
+            'AbtgOVOy/IOH3BOPyZ8/hu1pi0NQqO1mV13HnoWEvRDCpGKO6/8yTfuJmDgQet+S1iFeIos+2EQLJNee0l561AEBAAEDEYu60W1iZPqZxekvWxHW9/B92on2Sa8LAUEGjV1el9d1oyGFaAZ/9w4srgx9KoqiHtPM6Vur7h4D6XVoSgrEhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAyVZNp39crMNo5bEpnmL7eM8r98bZA5VoGNHFLu7CvL4BAgIAAQwCAAAAQEIPAAAAAAA='
         } satisfies WalletConnectProvider.RequestMethods['solana_signTransaction']['returns'])
       case 'solana_signAndSendTransaction':
         return Promise.resolve({
@@ -33,8 +33,8 @@ export function mockUniversalProvider() {
       case 'solana_signAllTransactions':
         return Promise.resolve({
           transactions: [
-            '4zZMC2ddAFY1YHcA2uFCqbuTHmD1xvB5QLzgNnT3dMb4aQT98md8jVm1YRGUsKJkYkLPYarnkobvESUpjqEUnDmoG76e9cgNJzLuFXBW1i6njs2Sy1Lnr9TZmLnhif5CYjh1agVJEvjfYpTq1QbTnLS3rBt4yKVjQ6FcV3x22Vm3XBPqodTXz17o1YcHMcvYQbHZfVUyikQ3Nmv6ktZzWe36D6ceKCVBV88VvYkkFhwWUWkA5ErPvsHWQU64VvbtENaJXFUUnuqTFSX4q3ccHuHdmtnhWQ7Mv8Xkb',
-            '4zZMC2ddAFY1YHcA2uFCqbuTHmD1xvB5QLzgNnT3dMb4aQT98md8jVm1YRGUsKJkYkLPYarnkobvESUpjqEUnDmoG76e9cgNJzLuFXBW1i6njs2Sy1Lnr9TZmLnhif5CYjh1agVJEvjfYpTq1QbTnLS3rBt4yKVjQ6FcV3x22Vm3XBPqodTXz17o1YcHMcvYQbHZfVUyikQ3Nmv6ktZzWe36D6ceKCVBV88VvYkkFhwWUWkA5ErPvsHWQU64VvbtENaJXFUUnuqTFSX4q3ccHuHdmtnhWQ7Mv8Xkb'
+            'AbtgOVOy/IOH3BOPyZ8/hu1pi0NQqO1mV13HnoWEvRDCpGKO6/8yTfuJmDgQet+S1iFeIos+2EQLJNee0l561AEBAAEDEYu60W1iZPqZxekvWxHW9/B92on2Sa8LAUEGjV1el9d1oyGFaAZ/9w4srgx9KoqiHtPM6Vur7h4D6XVoSgrEhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAyVZNp39crMNo5bEpnmL7eM8r98bZA5VoGNHFLu7CvL4BAgIAAQwCAAAAQEIPAAAAAAA=',
+            'AYDXAnLcl7IT+zEK9L+oOT/dY9etmSEznxAHfo4EZbdeJ/COPqARQCAfu+5Lbbrc26g3qWGRd4YHL8Uf2KDoAgqAAQABAxGLutFtYmT6mcXpL1sR1vfwfdqJ9kmvCwFBBo1dXpfXdaMhhWgGf/cOLK4MfSqKoh7TzOlbq+4eA+l1aEoKxIQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALKkO9Sy+d4Zr/s5Vn5b6BI7ltSc5at4aMPQjxrk+ibOAQICAAEMAgAAAEBCDwAAAAAAAA=='
           ]
         })
       default:
