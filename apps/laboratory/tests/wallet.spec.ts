@@ -46,12 +46,7 @@ sampleWalletTest('it should fetch balance as expected', async ({ library }) => {
 })
 
 sampleWalletTest('it should show disabled networks', async ({ library }) => {
-  if (library === 'solana') {
-    // Solana doesn't have disabled networks
-    return
-  }
-
-  const disabledNetworks = 'Gnosis'
+  const disabledNetworks = library === 'solana' ? 'Solana Unsupported' : 'Gnosis'
 
   await modalPage.openModal()
   await modalPage.openNetworks()
