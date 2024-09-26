@@ -11,12 +11,13 @@ import {
 } from '@chakra-ui/react'
 
 type AppKitInfoProps = {
+  caipAddress?: string
   address?: string
   chainId?: number | string
   clientId?: string
 }
 
-export function AppKitInfo({ address, chainId, clientId }: AppKitInfoProps) {
+export function AppKitInfo({ caipAddress, address, chainId, clientId }: AppKitInfoProps) {
   return (
     <Card marginTop={10} marginBottom={10}>
       <CardHeader>
@@ -25,6 +26,13 @@ export function AppKitInfo({ address, chainId, clientId }: AppKitInfoProps) {
 
       <CardBody>
         <Stack divider={<StackDivider />} spacing="4">
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              CAIP Address
+            </Heading>
+            <Text data-testid="appkit-caip-address">{caipAddress}</Text>
+          </Box>
+
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Address
