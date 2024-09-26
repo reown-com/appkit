@@ -6,7 +6,6 @@ import type {
   Connector,
   EstimateGasTransactionArgs,
   SendTransactionArgs,
-  SmartSessionGrantPermissionsRequest,
   WcWallet,
   WriteContractArgs
 } from '../utils/TypeUtil.js'
@@ -40,7 +39,7 @@ export interface ConnectionControllerClient {
   writeContract: (args: WriteContractArgs) => Promise<`0x${string}` | null>
   getEnsAddress: (value: string) => Promise<false | string>
   getEnsAvatar: (value: string) => Promise<false | string>
-  grantPermissions: (params: SmartSessionGrantPermissionsRequest) => Promise<unknown>
+  grantPermissions: (params: object) => Promise<unknown>
 }
 
 export interface ConnectionControllerState {
@@ -141,7 +140,7 @@ export const ConnectionController = {
     return this._getClient().sendTransaction(args)
   },
 
-  async grantPermissions(params: SmartSessionGrantPermissionsRequest) {
+  async grantPermissions(params: object) {
     return this._getClient().grantPermissions(params)
   },
 

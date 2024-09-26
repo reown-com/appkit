@@ -91,7 +91,6 @@
   "dependencies": {
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-core": "workspace:*",
-    "@reown/appkit-experimental-smart-session": "workspace:*",
     "@reown/appkit-polyfills": "workspace:*",
     "@reown/appkit-scaffold-ui": "workspace:*",
     "@reown/appkit-siwe": "workspace:*",

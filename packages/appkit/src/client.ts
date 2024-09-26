@@ -441,7 +441,6 @@ export class AppKit {
     OptionsController.setFeatures(options.features)
     OptionsController.setEnableWalletConnect(options.enableWalletConnect !== false)
     OptionsController.setEnableWallets(options.enableWallets !== false)
-    OptionsController.setEnableSmartSession(options.enableSmartSession !== false)
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)
@@ -468,9 +467,6 @@ export class AppKit {
       if (options.siweConfig) {
         const { SIWEController } = await import('@reown/appkit-siwe')
         SIWEController.setSIWEClient(options.siweConfig)
-      }
-      if (options.enableSmartSession) {
-        await import('@reown/appkit-experimental-smart-session')
       }
     }
   }

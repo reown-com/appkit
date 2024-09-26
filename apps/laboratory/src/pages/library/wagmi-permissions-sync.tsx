@@ -28,7 +28,6 @@ const modal = createAppKit({
   features: {
     analytics: true
   },
-  enableSmartSession: true,
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy'
 })
