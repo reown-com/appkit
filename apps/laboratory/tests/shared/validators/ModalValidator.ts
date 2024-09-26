@@ -60,6 +60,15 @@ export class ModalValidator {
     })
   }
 
+  async expectSingleAccount() {
+    await expect(
+      this.page.getByTestId('single-account-widget'),
+      'Single account widget should be present'
+    ).toBeVisible({
+      timeout: MAX_WAIT
+    })
+  }
+
   async expectConnectScreen() {
     await expect(this.page.getByText('Connect Wallet')).toBeVisible({
       timeout: MAX_WAIT
