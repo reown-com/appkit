@@ -39,8 +39,8 @@ test('it should fetch balance as expected', async () => {
   await modalValidator.expectBalanceFetched('ETH')
 })
 
-test.skip('it should show disabled networks', async () => {
-  const disabledNetworks = 'Arbitrum'
+test('it should show disabled networks', async () => {
+  const disabledNetworks = 'Gnosis'
 
   await modalPage.openModal()
   await modalPage.openNetworks()

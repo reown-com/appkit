@@ -55,7 +55,7 @@ describe('UniversalAdapter', () => {
         await universalAdapter.networkControllerClient.getApprovedCaipNetworksData()
 
       expect(approvedCaipNetworksData).toMatchObject({
-        supportsAllNetworks: true,
+        supportsAllNetworks: false,
         approvedCaipNetworkIds: [
           mockProvider.session?.namespaces['eip155']?.chains?.[0],
           mockProvider.session?.namespaces['solana']?.chains?.[0]
@@ -133,6 +133,14 @@ describe('UniversalAdapter', () => {
       expect(providerSpy).toHaveBeenCalled()
       expect(mockAppKit.resetAccount).toHaveBeenCalledWith('eip155')
       expect(mockAppKit.resetAccount).toHaveBeenCalledWith('solana')
+    })
+
+    it('should set the ApprovedCaipNetworksData', async () => {
+      const mockOnUri = vi.fn()
+      await universalAdapter?.connectionControllerClient?.connectWalletConnect?.(mockOnUri)
+
+      expect(mockAppKit.setApprovedCaipNetworksData).toHaveBeenCalledWith('eip155')
+      expect(mockAppKit.setApprovedCaipNetworksData).toHaveBeenCalledWith('solana')
     })
   })
 
