@@ -5,15 +5,26 @@ import { USEROP_BUILDER_SERVICE_BASE_URL } from './ConstantsUtil'
 
 export type Call = { to: Address; value: bigint; data: Hex }
 
-export type BuildUserOpRequestArguments = {
-  account: Address
-  chainId: number
-  calls: Call[]
-  capabilities: {
-    paymasterService?: { url: string }
-    permissions?: { context: Hex }
-  }
+export type UserOperationWithBigIntAsHex = {
+  sender: Address
+  nonce: Hex
+  factory: Address | undefined
+  factoryData: Hex | undefined
+  callData: Hex
+  callGasLimit: Hex
+  verificationGasLimit: Hex
+  preVerificationGas: Hex
+  maxFeePerGas: Hex
+  maxPriorityFeePerGas: Hex
+  paymaster: Address | undefined
+  paymasterVerificationGasLimit: Hex | undefined
+  paymasterPostOpGasLimit: Hex | undefined
+  paymasterData: Hex | undefined
+  signature: Hex
+  initCode?: never
+  paymasterAndData?: never
 }
+
 /**
  * UserOperation v0.7
  */
@@ -37,25 +48,45 @@ export type UserOperation = {
   paymasterAndData?: never
 }
 
-export type FillUserOpResponse = {
-  userOp: UserOperation
-  hash: Hex
-}
-
 export type ErrorResponse = {
   message: string
   error: string
 }
 
-export type SendUserOpWithSignatureParams = {
-  chainId: number
-  userOp: UserOperation
-  signature: Hex
-  permissionsContext?: Hex
+export type PrepareCallsParams = {
+  from: `0x${string}`
+  chainId: `0x${string}`
+  calls: {
+    to: `0x${string}`
+    data: `0x${string}`
+    value: `0x${string}`
+  }[]
+  capabilities: Record<string, unknown>
 }
-export type SendUserOpWithSignatureResponse = {
-  receipt: Hex
+
+export type PrepareCallsReturnValue = {
+  preparedCalls: {
+    type: string
+    data: unknown
+    chainId: `0x${string}`
+  }
+  signatureRequest: {
+    hash: `0x${string}`
+  }
+  context: string
 }
+
+export type SendPreparedCallsParams = {
+  preparedCalls: {
+    type: string
+    data: unknown
+    chainId: `0x${string}`
+  }
+  signature: `0x${string}`
+  context: string
+}
+
+export type SendPreparedCallsReturnValue = `0x${string}`
 
 // Define a custom error type
 export class UserOpBuilderApiError extends Error {
@@ -71,7 +102,7 @@ export class UserOpBuilderApiError extends Error {
 // Function to send requests to the CoSigner API
 async function sendUserOpBuilderRequest<
   TRequest,
-  TResponse extends object,
+  TResponse extends object | string,
   TQueryParams extends Record<string, string> = Record<string, never>
 >(args: {
   url: string
@@ -89,7 +120,8 @@ async function sendUserOpBuilderRequest<
       headers
     })
 
-    if ('error' in response.data) {
+    // Check for error inside response data in case of custom error shape
+    if (typeof response.data === 'object' && 'error' in response.data) {
       throw new Error(response.data.error)
     }
 
@@ -111,10 +143,10 @@ async function sendUserOpBuilderRequest<
   }
 }
 
-export async function buildUserOp(args: BuildUserOpRequestArguments): Promise<FillUserOpResponse> {
-  const response = await sendUserOpBuilderRequest<BuildUserOpRequestArguments, FillUserOpResponse>({
+export async function prepareCalls(args: PrepareCallsParams): Promise<PrepareCallsReturnValue[]> {
+  const response = await sendUserOpBuilderRequest<PrepareCallsParams[], PrepareCallsReturnValue[]>({
     url: `${USEROP_BUILDER_SERVICE_BASE_URL}/build`,
-    data: args,
+    data: [args],
     headers: {
       'Content-Type': 'application/json'
     },
@@ -124,13 +156,19 @@ export async function buildUserOp(args: BuildUserOpRequestArguments): Promise<Fi
   return response
 }
 
-export async function sendUserOp(args: SendUserOpWithSignatureParams) {
+export async function sendPreparedCalls(
+  args: SendPreparedCallsParams
+): Promise<SendPreparedCallsReturnValue> {
+  const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
+  if (!projectId) {
+    throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
+  }
   const response = await sendUserOpBuilderRequest<
-    SendUserOpWithSignatureParams,
-    SendUserOpWithSignatureResponse
+    SendPreparedCallsParams[],
+    SendPreparedCallsReturnValue
   >({
-    url: `${USEROP_BUILDER_SERVICE_BASE_URL}/sendUserOp`,
-    data: args,
+    url: `${USEROP_BUILDER_SERVICE_BASE_URL}/sendUserOp?projectId=${projectId}`,
+    data: [args],
     headers: {
       'Content-Type': 'application/json'
     },
