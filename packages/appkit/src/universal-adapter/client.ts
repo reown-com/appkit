@@ -390,12 +390,9 @@ export class UniversalAdapterClient {
       try {
         if (storedCaipNetwork) {
           NetworkController.setActiveCaipNetwork(storedCaipNetwork)
-        } else if (!activeCaipNetwork) {
-          this.setDefaultNetwork(nameSpaces)
         } else if (
-          !ChainController.getApprovedCaipNetworkIds(activeCaipNetwork.chainNamespace).includes(
-            activeCaipNetwork.id
-          )
+          !activeCaipNetwork ||
+          !ChainController.getAllApprovedCaipNetworks().includes(activeCaipNetwork.id)
         ) {
           this.setDefaultNetwork(nameSpaces)
         }
@@ -410,7 +407,6 @@ export class UniversalAdapterClient {
 
   private setDefaultNetwork(nameSpaces: SessionTypes.Namespaces) {
     const chainNamespace = this.caipNetworks[0]?.chainNamespace
-
     if (chainNamespace) {
       const namespace = nameSpaces?.[chainNamespace]
 

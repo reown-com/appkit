@@ -1,12 +1,7 @@
 import { proxy, ref } from 'valtio/vanilla'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
-import {
-  NetworkUtil,
-  type CaipNetwork,
-  type CaipNetworkId,
-  type ChainNamespace
-} from '@reown/appkit-common'
+import { type CaipNetwork, type CaipNetworkId, type ChainNamespace } from '@reown/appkit-common'
 import { ChainController } from './ChainController.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
@@ -93,24 +88,13 @@ export const NetworkController = {
     ChainController.setCaipNetwork(caipNetwork?.chainNamespace, caipNetwork)
   },
 
-  setRequestedCaipNetworks(requestedNetworks: CaipNetwork[], chain: ChainNamespace | undefined) {
-    ChainController.setAdapterNetworkState(chain, { requestedCaipNetworks: requestedNetworks })
-  },
-
   setAllowUnsupportedChain(
     allowUnsupportedCaipNetwork: NetworkControllerState['allowUnsupportedCaipNetwork'],
-    chain: ChainNamespace | undefined
+    chain: ChainNamespace
   ) {
-    ChainController.setAdapterNetworkState(chain || ChainController.state.activeChain, {
+    ChainController.setAdapterNetworkState(chain, {
       allowUnsupportedCaipNetwork
     })
-  },
-
-  setSmartAccountEnabledNetworks(
-    smartAccountEnabledNetworks: NetworkControllerState['smartAccountEnabledNetworks'],
-    chain: ChainNamespace | undefined
-  ) {
-    ChainController.setAdapterNetworkState(chain, { smartAccountEnabledNetworks })
   },
 
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
@@ -148,25 +132,6 @@ export const NetworkController = {
     }
 
     return requestedCaipNetworks?.some(network => network.id === activeCaipNetwork?.id)
-  },
-
-  checkIfSmartAccountEnabled() {
-    const networkId = NetworkUtil.caipNetworkIdToNumber(ChainController.state.activeCaipNetwork?.id)
-    const activeChain = ChainController.state.activeChain
-
-    if (!activeChain) {
-      throw new Error('activeChain is required to check if smart account is enabled')
-    }
-
-    if (!networkId) {
-      return false
-    }
-
-    const smartAccountEnabledNetworks = ChainController.getNetworkProp(
-      'smartAccountEnabledNetworks'
-    )
-
-    return Boolean(smartAccountEnabledNetworks?.includes(Number(networkId)))
   },
 
   resetNetwork() {

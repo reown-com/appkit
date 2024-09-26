@@ -1,7 +1,6 @@
 import {
   AccountController,
   ModalController,
-  NetworkController,
   AssetUtil,
   RouterController,
   CoreHelperUtil,
@@ -197,7 +196,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private activateAccountTemplate() {
-    const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
+    const smartAccountEnabled = ChainController.checkIfSmartAccountEnabled()
 
     if (
       !smartAccountEnabled ||

@@ -280,7 +280,7 @@ describe('Base', () => {
     it('should set requested CAIP networks', () => {
       const requestedNetworks = [{ id: 'eip155:1', name: 'Ethereum' }] as unknown as CaipNetwork[]
       appKit.setRequestedCaipNetworks(requestedNetworks, 'eip155')
-      expect(NetworkController.setRequestedCaipNetworks).toHaveBeenCalledWith(
+      expect(ChainController.setRequestedCaipNetworks).toHaveBeenCalledWith(
         requestedNetworks,
         'eip155'
       )
@@ -374,7 +374,7 @@ describe('Base', () => {
     it('should set smart account enabled networks', () => {
       const networks = [1, 137]
       appKit.setSmartAccountEnabledNetworks(networks, 'eip155')
-      expect(NetworkController.setSmartAccountEnabledNetworks).toHaveBeenCalledWith(
+      expect(ChainController.setSmartAccountEnabledNetworks).toHaveBeenCalledWith(
         networks,
         'eip155'
       )

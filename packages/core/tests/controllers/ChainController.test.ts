@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 import { ConstantsUtil, type CaipNetworkId, type ChainNamespace } from '@reown/appkit-common'
 import { ChainController } from '../../src/controllers/ChainController.js'
 import { type ConnectionControllerClient } from '../../src/controllers/ConnectionController.js'
@@ -53,16 +53,36 @@ describe('ChainController', () => {
   })
 
   it('should update network state as expected', () => {
-    ChainController.setAdapterNetworkState(ChainController.state.activeChain, {
+    ChainController.setAdapterNetworkState(ConstantsUtil.CHAIN.EVM, {
       approvedCaipNetworkIds
     })
-    expect(ChainController.getNetworkProp('approvedCaipNetworkIds')).toEqual(approvedCaipNetworkIds)
+    expect(
+      ChainController.getNetworkProp('approvedCaipNetworkIds', ConstantsUtil.CHAIN.EVM)
+    ).toEqual(approvedCaipNetworkIds)
   })
 
   it('should update state correctly on getApprovedCaipNetworkIds()', async () => {
     const namespace = 'eip155'
+    const networkController = { ...networkControllerClient }
+    const networkControllerSpy = vi
+      .spyOn(networkController, 'getApprovedCaipNetworksData')
+      .mockResolvedValue({
+        approvedCaipNetworkIds,
+        supportsAllNetworks: false
+      })
+    const evmAdapter = {
+      chainNamespace,
+      connectionControllerClient,
+      networkControllerClient: networkController,
+      caipNetworks: []
+    }
+
+    // Need to re-initialize to set the spy properly
+    ChainController.initialize([evmAdapter])
     await ChainController.setApprovedCaipNetworksData(namespace)
+
     expect(ChainController.getApprovedCaipNetworkIds(namespace)).toEqual(approvedCaipNetworkIds)
+    expect(networkControllerSpy).toHaveBeenCalled()
   })
 
   // it('should update state correctly on setRequestedCaipNetworks()', () => {

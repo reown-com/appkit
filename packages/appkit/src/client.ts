@@ -304,11 +304,11 @@ export class AppKit {
 
   public getActiveChainNamespace = () => ChainController.state.activeChain
 
-  public setRequestedCaipNetworks: (typeof NetworkController)['setRequestedCaipNetworks'] = (
+  public setRequestedCaipNetworks: (typeof ChainController)['setRequestedCaipNetworks'] = (
     requestedCaipNetworks,
     chain: ChainNamespace
   ) => {
-    NetworkController.setRequestedCaipNetworks(requestedCaipNetworks, chain)
+    ChainController.setRequestedCaipNetworks(requestedCaipNetworks, chain)
   }
 
   public getApprovedCaipNetworkIds: (typeof ChainController)['getAllApprovedCaipNetworks'] = () =>
@@ -361,9 +361,9 @@ export class AppKit {
     AccountController.setConnectedWalletInfo(connectedWalletInfo, chain)
   }
 
-  public setSmartAccountEnabledNetworks: (typeof NetworkController)['setSmartAccountEnabledNetworks'] =
+  public setSmartAccountEnabledNetworks: (typeof ChainController)['setSmartAccountEnabledNetworks'] =
     (smartAccountEnabledNetworks, chain) => {
-      NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks, chain)
+      ChainController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks, chain)
     }
 
   public setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] = (

@@ -5,8 +5,7 @@ import {
   ChainController,
   RouterController,
   SnackController,
-  ThemeController,
-  NetworkController
+  ThemeController
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
@@ -107,7 +106,7 @@ export class W3mWalletReceiveView extends LitElement {
   // -- Private ------------------------------------------- //
   networkTemplate() {
     const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
-    const isNetworkEnabledForSmartAccounts = NetworkController.checkIfSmartAccountEnabled()
+    const isNetworkEnabledForSmartAccounts = ChainController.checkIfSmartAccountEnabled()
     const caipNetwork = ChainController.state.activeCaipNetwork
 
     if (
