@@ -271,7 +271,6 @@ export class W3mAccountDefaultWidget extends LitElement {
         avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
         profileName=${ifDefined(label ? label : this.profileName)}
         .onCopyClick=${this.onCopyAddress.bind(this)}
-        data-testid="multi-account-profile-button"
       ></wui-profile-button-v2>
     `
   }
