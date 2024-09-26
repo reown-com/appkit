@@ -9,7 +9,7 @@ export function Ethers5ModalInfo() {
   const [clientId, setClientId] = React.useState<string | undefined>(undefined)
 
   const { chainId } = useAppKitNetwork()
-  const { isConnected, address } = useAppKitAccount()
+  const { isConnected, address, caipAddress } = useAppKitAccount()
   const { walletProvider, walletProviderType } = useAppKitProvider<UniversalProvider>('eip155')
 
   async function getClientId() {
@@ -29,6 +29,11 @@ export function Ethers5ModalInfo() {
   }, [])
 
   return ready && isConnected ? (
-    <AppKitInfo address={address} chainId={Number(chainId)} clientId={clientId} />
+    <AppKitInfo
+      caipAddress={caipAddress}
+      address={address}
+      chainId={Number(chainId)}
+      clientId={clientId}
+    />
   ) : null
 }

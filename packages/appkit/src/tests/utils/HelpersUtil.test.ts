@@ -41,7 +41,9 @@ describe('WcHelpersUtil', () => {
         'solana_signMessage',
         'solana_signTransaction',
         'solana_requestAccounts',
-        'solana_getAccounts'
+        'solana_getAccounts',
+        'solana_signAllTransactions',
+        'solana_signAndSendTransaction'
       ])
     })
 
@@ -109,7 +111,9 @@ describe('WcHelpersUtil', () => {
             'solana_signMessage',
             'solana_signTransaction',
             'solana_requestAccounts',
-            'solana_getAccounts'
+            'solana_getAccounts',
+            'solana_signAllTransactions',
+            'solana_signAndSendTransaction'
           ],
           events: ['accountsChanged', 'chainChanged'],
           chains: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],

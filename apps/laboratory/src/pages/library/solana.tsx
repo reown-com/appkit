@@ -5,6 +5,7 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { AppKitButtons } from '../../components/AppKitButtons'
+import { SolanaModalInfo } from '../../components/Solana/SolanaModalInfo'
 import { SolanaTests } from '../../components/Solana/SolanaTests'
 
 const networks = ConstantsUtil.SolanaNetworks
@@ -41,6 +42,7 @@ export default function MultiChainSolanaAdapterOnly() {
   return (
     <>
       <AppKitButtons />
+      <SolanaModalInfo />
       <SolanaTests />
     </>
   )

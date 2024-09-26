@@ -17,6 +17,7 @@ export function useAppKitAccount() {
   const { activeCaipAddress } = useSnapshot(ChainController.state)
 
   return {
+    caipAddress: activeCaipAddress,
     address: CoreHelperUtil.getPlainAddress(activeCaipAddress),
     isConnected: Boolean(activeCaipAddress),
     status

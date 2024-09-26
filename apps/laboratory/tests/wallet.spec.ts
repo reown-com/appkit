@@ -4,6 +4,8 @@ import { WalletPage } from './shared/pages/WalletPage'
 import { WalletValidator } from './shared/validators/WalletValidator'
 import { ModalPage } from './shared/pages/ModalPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
+import { mainnet, polygon, solana, solanaTestnet } from '@reown/appkit/networks'
+import type { CaipNetworkId } from '@reown/appkit'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage
@@ -54,6 +56,8 @@ sampleWalletTest('it should show disabled networks', async () => {
 
 sampleWalletTest('it should switch networks and sign', async ({ library }) => {
   const chains = library === 'solana' ? ['Solana Testnet', 'Solana'] : ['Polygon', 'Ethereum']
+  const caipNetworkId =
+    library === 'solana' ? [solanaTestnet.id, solana.id] : [polygon.id, mainnet.id]
 
   async function processChain(index: number) {
     if (index >= chains.length) {
@@ -67,6 +71,9 @@ sampleWalletTest('it should switch networks and sign', async ({ library }) => {
     await modalPage.switchNetwork(chainName)
     await modalValidator.expectSwitchedNetwork(chainName)
     await modalPage.closeModal()
+    await modalValidator.expectCaipAddressHaveCorrectNetworkId(
+      caipNetworkId[index] as CaipNetworkId
+    )
 
     // -- Sign ------------------------------------------------------------------
     await modalPage.sign()
