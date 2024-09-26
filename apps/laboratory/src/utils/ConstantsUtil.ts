@@ -1,4 +1,18 @@
+import {
+  arbitrum,
+  mainnet,
+  optimism,
+  polygon,
+  zkSync,
+  sepolia,
+  solana,
+  solanaTestnet,
+  solanaDevnet,
+  base,
+  gnosis
+} from '@reown/appkit/networks'
 import { getLocalStorageItem } from './LocalStorage'
+import type { CaipNetwork } from '@reown/appkit'
 
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 if (!projectId) {
@@ -35,6 +49,20 @@ if (typeof window !== 'undefined') {
 }
 
 const customWallet = storedCustomWallet ? [JSON.parse(storedCustomWallet)] : []
+
+const EvmNetworks = [mainnet, optimism, polygon, zkSync, arbitrum, base, sepolia, gnosis]
+
+export const solanaNotExist = {
+  id: 'solana:chaindoesntexist',
+  chainId: 'chaindoesntexist',
+  name: 'Solana Unsupported',
+  currency: 'SOL',
+  explorerUrl: 'https://explorer.solana.com/?cluster=unsupported',
+  rpcUrl: 'https://api.unsupported.solana.com',
+  chainNamespace: 'solana'
+} as CaipNetwork
+
+const SolanaNetworks = [solana, solanaTestnet, solanaDevnet, solanaNotExist]
 
 export const ConstantsUtil = {
   SigningSucceededToastTitle: 'Signing Succeeded',
@@ -87,5 +115,8 @@ export const ConstantsUtil = {
       image_url: '/sample-wallets/react-native.svg'
     }
   ],
-  ProjectId: projectId
+  ProjectId: projectId,
+  EvmNetworks,
+  SolanaNetworks,
+  AllNetworks: [...EvmNetworks, ...SolanaNetworks]
 }

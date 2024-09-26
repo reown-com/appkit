@@ -16,13 +16,7 @@ import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
 import { WcHelpersUtil } from '../utils/HelpersUtil.js'
 import type { AppKit } from '../client.js'
 import type { SessionTypes } from '@walletconnect/types'
-import type {
-  CaipNetwork,
-  CaipNetworkId,
-  CaipAddress,
-  ChainNamespace,
-  AdapterType
-} from '@reown/appkit-common'
+import type { CaipNetwork, CaipAddress, ChainNamespace, AdapterType } from '@reown/appkit-common'
 import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 import { ProviderUtil } from '../store/index.js'
 import type { AppKitOptions } from '../utils/TypesUtil.js'
@@ -110,27 +104,22 @@ export class UniversalAdapterClient {
       },
 
       getApprovedCaipNetworksData: async () => {
-        await this.getWalletConnectProvider()
+        const provider = await this.getWalletConnectProvider()
 
-        return new Promise(resolve => {
-          const ns = this.walletConnectProvider?.session?.namespaces
-          const nsChains: CaipNetworkId[] | undefined = []
+        if (!provider) {
+          return Promise.resolve({
+            supportsAllNetworks: false,
+            approvedCaipNetworkIds: []
+          })
+        }
 
-          if (ns) {
-            Object.keys(ns).forEach(key => {
-              const chains = ns?.[key]?.chains
-              if (chains) {
-                nsChains.push(...(chains as CaipNetworkId[]))
-              }
-            })
-          }
+        const approvedCaipNetworkIds = WcHelpersUtil.getChainsFromNamespaces(
+          provider.session?.namespaces
+        )
 
-          const result = {
-            supportsAllNetworks: true,
-            approvedCaipNetworkIds: nsChains as CaipNetworkId[] | undefined
-          }
-
-          resolve(result)
+        return Promise.resolve({
+          supportsAllNetworks: false,
+          approvedCaipNetworkIds
         })
       }
     }
@@ -166,7 +155,8 @@ export class UniversalAdapterClient {
             isSiweEnabled &&
             siweParams &&
             isProviderSupported &&
-            isSiweParamsValid
+            isSiweParamsValid &&
+            ChainController.state.activeChain === 'eip155'
           ) {
             const { SIWEController, getDidChainId, getDidAddress } = await import(
               '@reown/appkit-siwe'
@@ -390,18 +380,18 @@ export class UniversalAdapterClient {
     const nameSpaces = this.walletConnectProvider?.session?.namespaces
 
     if (nameSpaces) {
-      Object.keys(nameSpaces)
-        .reverse()
-        .forEach(key => {
-          const caipAddress = nameSpaces?.[key]?.accounts[0] as CaipAddress
+      const reversedChainNamespaces = Object.keys(nameSpaces).reverse() as ChainNamespace[]
+      reversedChainNamespaces.forEach(chainNamespace => {
+        const caipAddress = nameSpaces?.[chainNamespace]?.accounts[0] as CaipAddress | undefined
 
-          ProviderUtil.setProvider(key as ChainNamespace, this.walletConnectProvider)
-          ProviderUtil.setProviderId(key as ChainNamespace, 'walletConnect')
+        ProviderUtil.setProvider(chainNamespace, this.walletConnectProvider)
+        ProviderUtil.setProviderId(chainNamespace, 'walletConnect')
+        this.appKit?.setApprovedCaipNetworksData(chainNamespace)
 
-          if (caipAddress) {
-            this.appKit?.setCaipAddress(caipAddress, key as ChainNamespace)
-          }
-        })
+        if (caipAddress) {
+          this.appKit?.setCaipAddress(caipAddress, chainNamespace)
+        }
+      })
 
       const storedCaipNetwork = StorageUtil.getStoredActiveCaipNetwork()
       const activeCaipNetwork = ChainController.state.activeCaipNetwork

@@ -3,6 +3,7 @@ import type { Page } from '@playwright/test'
 import { ConstantsUtil } from '../../../src/utils/ConstantsUtil'
 import { getMaximumWaitConnections } from '../utils/timeouts'
 import { verifySignature } from '../../../src/utils/SignatureUtil'
+import type { CaipNetworkId } from '@reown/appkit'
 
 const MAX_WAIT = getMaximumWaitConnections()
 
@@ -60,6 +61,15 @@ export class ModalValidator {
     })
   }
 
+  async expectSingleAccount() {
+    await expect(
+      this.page.getByTestId('single-account-avatar'),
+      'Single account widget should be present'
+    ).toBeVisible({
+      timeout: MAX_WAIT
+    })
+  }
+
   async expectConnectScreen() {
     await expect(this.page.getByText('Connect Wallet')).toBeVisible({
       timeout: MAX_WAIT
@@ -70,6 +80,11 @@ export class ModalValidator {
     const address = this.page.getByTestId('w3m-address')
 
     await expect(address, 'Correct address should be present').toHaveText(expectedAddress)
+  }
+
+  async expectCaipAddressHaveCorrectNetworkId(caipNetworkId: CaipNetworkId) {
+    const address = this.page.getByTestId('appkit-caip-address')
+    await expect(address, 'Correct CAIP address should be present').toContainText(caipNetworkId)
   }
 
   async expectNetwork(network: string) {
