@@ -1,5 +1,7 @@
+/* eslint-disable multiline-comment-style */
+/* eslint-disable capitalized-comments */
 import { Button, Flex, Stack, Text } from '@chakra-ui/react'
-import { useReadContract } from 'wagmi'
+import { useAccount, useReadContract } from 'wagmi'
 import { useState } from 'react'
 import { useChakraToast } from '../Toast'
 import { encodeFunctionData, parseEther } from 'viem'
@@ -8,11 +10,12 @@ import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
 import { usePasskey } from '../../context/PasskeyContext'
 import { sepolia } from 'viem/chains'
 import { executeActionsWithPasskeyAndCosignerPermissions } from '../../utils/ERC7715Utils'
+import { getChain } from '../../utils/NetworksUtil'
 
 export function WagmiPurchaseDonutSyncPermissionsTest() {
   const { passkeyId } = usePasskey()
-  const { grantedPermissions, pci } = useERC7715Permissions()
-
+  const { smartSessionResponse } = useERC7715Permissions()
+  const { address } = useAccount()
   const {
     data: donutsOwned,
     refetch: fetchDonutsOwned,
@@ -22,7 +25,7 @@ export function WagmiPurchaseDonutSyncPermissionsTest() {
     abi: donutContractAbi,
     address: donutContractaddress,
     functionName: 'getBalance',
-    args: [grantedPermissions?.signerData?.submitToAddress || '0x']
+    args: [address || '0x']
   })
 
   const [isTransactionPending, setTransactionPending] = useState<boolean>(false)
@@ -31,12 +34,20 @@ export function WagmiPurchaseDonutSyncPermissionsTest() {
   async function onPurchaseDonutWithPermissions() {
     setTransactionPending(true)
     try {
-      if (!grantedPermissions) {
+      const chainId = smartSessionResponse?.chainId
+      if (!chainId) {
+        throw new Error('Chain ID not available for granted permissions')
+      }
+      const chain = getChain(chainId)
+      if (!chain) {
+        throw new Error('Invalid chain')
+      }
+      if (!smartSessionResponse) {
         throw Error('No permissions available')
       }
-      if (!pci) {
-        throw Error('No WC cosigner data(PCI) available')
-      }
+      // if (!pci) {
+      //   throw Error('No WC cosigner data(PCI) available')
+      // }
 
       const purchaseDonutCallData = encodeFunctionData({
         abi: donutContractAbi,
@@ -54,8 +65,9 @@ export function WagmiPurchaseDonutSyncPermissionsTest() {
         actions: purchaseDonutCallDataExecution,
         chain: sepolia,
         passkeyId,
-        permissions: grantedPermissions,
-        pci
+        accountAddress: address as `0x${string}`,
+        permissionsContext: (smartSessionResponse?.response?.context || '') as `0x${string}`,
+        pci: '0x'
       })
       if (txHash) {
         toast({
@@ -75,7 +87,7 @@ export function WagmiPurchaseDonutSyncPermissionsTest() {
     setTransactionPending(false)
   }
 
-  if (!grantedPermissions) {
+  if (!smartSessionResponse) {
     return (
       <Text fontSize="md" color="yellow">
         Dapp does not have the permissions
@@ -86,7 +98,7 @@ export function WagmiPurchaseDonutSyncPermissionsTest() {
   return (
     <Stack direction={['column', 'column', 'row']}>
       <Button
-        isDisabled={!grantedPermissions}
+        isDisabled={!smartSessionResponse}
         isLoading={isTransactionPending}
         onClick={onPurchaseDonutWithPermissions}
       >

@@ -15,9 +15,9 @@ import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
 import { serializePublicKey, type P256Credential } from 'webauthn-p256'
 import { useAppKitAccount } from '@reown/appkit/react'
 import {
-  useSmartSession,
+  grantPermissions,
   type SmartSessionGrantPermissionsRequest
-} from '@reown/appkit-experimental-smart-session'
+} from '@reown/appkit-experimental'
 
 export function WagmiRequestPermissionsSyncTest() {
   const { provider, supported } = useWagmiAvailableCapabilities({
@@ -53,10 +53,9 @@ function ConnectedTestContent({
   provider: Provider
   address: Address | undefined
 }) {
-  const { grantPermissions } = useSmartSession()
   const [isRequestPermissionLoading, setRequestPermissionLoading] = useState<boolean>(false)
   const { passkey } = usePasskey()
-  const { grantedPermissions, clearGrantedPermissions } = useERC7715Permissions()
+  const { smartSessionResponse, clearSmartSessionResponse } = useERC7715Permissions()
   const toast = useChakraToast()
 
   const onRequestPermissions = useCallback(async () => {
@@ -116,15 +115,15 @@ function ConnectedTestContent({
       <Button
         data-testid="request-permissions-button"
         onClick={onRequestPermissions}
-        isDisabled={Boolean(isRequestPermissionLoading || Boolean(grantedPermissions))}
+        isDisabled={Boolean(isRequestPermissionLoading || Boolean(smartSessionResponse))}
         isLoading={isRequestPermissionLoading}
       >
         Request Permissions
       </Button>
       <Button
         data-test-id="clear-permissions-button"
-        onClick={clearGrantedPermissions}
-        isDisabled={!grantedPermissions}
+        onClick={clearSmartSessionResponse}
+        isDisabled={!smartSessionResponse}
       >
         Clear Permissions
       </Button>

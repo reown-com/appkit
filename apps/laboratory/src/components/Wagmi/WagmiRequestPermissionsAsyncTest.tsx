@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Button, Stack, Text } from '@chakra-ui/react'
 import { useAccount } from 'wagmi'
 import { useCallback, useState } from 'react'
@@ -14,9 +15,9 @@ import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
 import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
 import { useAppKitAccount } from '@reown/appkit/react'
 import {
-  useSmartSession,
+  grantPermissions,
   type SmartSessionGrantPermissionsRequest
-} from '@reown/appkit-experimental-smart-session'
+} from '@reown/appkit-experimental'
 
 export function WagmiRequestPermissionsAsyncTest() {
   const { provider, supported } = useWagmiAvailableCapabilities({
@@ -53,12 +54,11 @@ function ConnectedTestContent({
   provider: Provider
   address: Address
 }) {
-  const { grantPermissions } = useSmartSession()
-  const { grantedPermissions, clearGrantedPermissions } = useERC7715Permissions()
+  const { clearSmartSessionResponse, setSmartSessionResponse, smartSessionResponse } =
+    useERC7715Permissions()
   const { signer } = useLocalEcdsaKey()
   const [isRequestPermissionLoading, setRequestPermissionLoading] = useState<boolean>(false)
   const toast = useChakraToast()
-
   const onRequestPermissions = useCallback(async () => {
     setRequestPermissionLoading(true)
     try {
@@ -78,10 +78,14 @@ function ConnectedTestContent({
             publicKey: signer.publicKey
           }
         },
-        ...purchaseDonutPermissions
+        permissions: purchaseDonutPermissions['permissions'],
+        policies: purchaseDonutPermissions['policies'] || []
       }
       const response = await grantPermissions(grantPurchaseDonutPermissions)
-
+      setSmartSessionResponse({
+        chainId: chain.id,
+        response
+      })
       toast({
         type: 'success',
         title: 'Permissions Granted',
@@ -103,15 +107,15 @@ function ConnectedTestContent({
       <Button
         data-test-id="request-permissions-button"
         onClick={onRequestPermissions}
-        isDisabled={Boolean(isRequestPermissionLoading || Boolean(grantedPermissions))}
+        isDisabled={Boolean(isRequestPermissionLoading || Boolean(smartSessionResponse))}
         isLoading={isRequestPermissionLoading}
       >
         Request Permissions
       </Button>
       <Button
         data-test-id="clear-permissions-button"
-        onClick={clearGrantedPermissions}
-        isDisabled={!grantedPermissions}
+        onClick={clearSmartSessionResponse}
+        isDisabled={!smartSessionResponse}
       >
         Clear Permissions
       </Button>
