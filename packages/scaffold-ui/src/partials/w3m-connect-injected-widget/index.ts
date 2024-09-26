@@ -54,14 +54,18 @@ export class W3mConnectInjectedWidget extends LitElement {
             return null
           }
 
-          if (!connector.info && !ConnectionController.checkInstalled(undefined, connector.chain)) {
+          const isEIP6963 = connector.info?.rdns
+            
+          if (!isEIP6963 && !ConnectionController.checkInstalled(undefined, connector.chain)) {
             this.style.cssText = `display: none`
 
             return null
           }
 
-          if (connector.info?.rdns && ApiController.state.excludedRDNS) {
-            if (ApiController.state.excludedRDNS.includes(connector?.info?.rdns)) {
+          if (isEIP6963 && ApiController.state.excludedRDNS) {
+            // Ignoring the 'no-non-null-assertion' eslint rule because `connector.info.rdns` is ensured by the `isEIP6963` flag.
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            if (ApiController.state.excludedRDNS.includes(connector.info!.rdns!)) {
               return null
             }
           }
