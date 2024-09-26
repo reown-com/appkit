@@ -49,7 +49,8 @@ import type {
 } from '@reown/appkit-core'
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
-import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@reown/appkit-utils'
+import { AlertController } from '@reown/appkit-core'
+import { ConstantsUtil, PresetsUtil, HelpersUtil, ErrorUtil } from '@reown/appkit-utils'
 import {
   CaipNetworksUtil,
   isReownName,
@@ -217,6 +218,14 @@ export class WagmiAdapter implements ChainAdapter {
   }
 
   public construct(appKit: AppKit, options: AppKitOptions) {
+    if (!options.projectId) {
+      AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+      // eslint-disable-next-line no-console
+      console.error(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED_UPDATE_CONFIGURATION)
+
+      return
+    }
+
     this.appKit = appKit
     this.options = options
     this.caipNetworks = options.networks
