@@ -4,10 +4,9 @@ export default css`
   :host {
     display: block;
     position: absolute;
-    opacity: 1;
-    top: 11px;
-    left: 16px;
-    right: 16px;
+    top: var(--wui-spacing-s);
+    left: var(--wui-spacing-l);
+    right: var(--wui-spacing-l);
     opacity: 0;
     pointer-events: none;
   }
