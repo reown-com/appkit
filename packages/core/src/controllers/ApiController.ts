@@ -153,14 +153,14 @@ export const ApiController = {
 
   async fetchRecommendedWallets() {
     try {
-      const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
+      const { includeWalletIds, excludeWalletIds, featuredWalletIds, allEthWallets } = OptionsController.state
       const exclude = [...(excludeWalletIds ?? []), ...(featuredWalletIds ?? [])].filter(Boolean)
       const { data, count } = await api.get<ApiGetWalletsResponse>({
         path: '/getWallets',
         headers: ApiController._getApiHeaders(),
         params: {
           page: '1',
-          chains: ChainController.state.activeCaipNetwork?.id,
+          chains: ChainController.state.activeCaipNetwork?.id.includes("eip155") && allEthWallets ? "eip155:1" : ChainController.state.activeCaipNetwork?.id,
           entries: recommendedEntries,
           include: includeWalletIds?.join(','),
           exclude: exclude?.join(',')
@@ -221,7 +221,6 @@ export const ApiController = {
       params: {
         page: '1',
         entries: String(ids.length),
-        chains: ChainController.state.activeCaipNetwork?.id,
         include: ids?.join(',')
       }
     })
@@ -236,7 +235,7 @@ export const ApiController = {
   },
 
   async searchWallet({ search }: Pick<ApiGetWalletsRequest, 'search'>) {
-    const { includeWalletIds, excludeWalletIds } = OptionsController.state
+    const { includeWalletIds, excludeWalletIds, allEthWallets } = OptionsController.state
     state.search = []
     const { data } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
@@ -245,7 +244,7 @@ export const ApiController = {
         page: '1',
         entries: '100',
         search: search?.trim(),
-        chains: ChainController.state.activeCaipNetwork?.id,
+        chains: ChainController.state.activeCaipNetwork?.id.includes("eip155") && allEthWallets ? "eip155:1" : ChainController.state.activeCaipNetwork?.id,
         include: includeWalletIds?.join(','),
         exclude: excludeWalletIds?.join(',')
       }

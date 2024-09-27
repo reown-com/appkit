@@ -428,6 +428,7 @@ export class AppKit {
     this.setDefaultNetwork(options)
 
     OptionsController.setAllWallets(options.allWallets)
+    OptionsController.setAllEthWallets(options.allEthWallets)
     OptionsController.setIncludeWalletIds(options.includeWalletIds)
     OptionsController.setExcludeWalletIds(options.excludeWalletIds)
     if (options.excludeWalletIds) {
