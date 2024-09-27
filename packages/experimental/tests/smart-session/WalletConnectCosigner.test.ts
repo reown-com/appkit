@@ -33,11 +33,11 @@ describe('CoSigner API Tests', () => {
     chainId: '0x1',
     expiry: Math.floor(Date.now() / 1000) + 3600,
     signer: {
-      type: 'wallet',
-      data: {}
+      type: 'key',
+      data: { type: 'secp256k1', publicKey: '0x123456' }
     },
     permissions: [{ type: 'example', data: {} }],
-    policies: [{ type: 'example', data: {} }]
+    policies: []
   }
 
   const mockActivatePermissionsRequest: ActivatePermissionsRequest = {
@@ -131,7 +131,7 @@ describe('CoSigner API Tests', () => {
       it('should handle activatePermissions error and throw CoSignerApiError', async () => {
         mock
           .onPost(
-            `${ConstantsUtil.WC_COSIGNER_BASE_URL}/${encodeURIComponent(mockAddress)}/context`
+            `${ConstantsUtil.WC_COSIGNER_BASE_URL}/${encodeURIComponent(mockAddress)}/activate`
           )
           .reply(400, { error: 'Bad Request' })
 
