@@ -81,7 +81,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
       return acc
     }, {})
 
-    if (this.provider.session) {
+    if (this.provider.session?.namespaces['solana']) {
       this.session = this.provider.session
     } else {
       this.provider.on('display_uri', this.onUri)
