@@ -153,14 +153,18 @@ export const ApiController = {
 
   async fetchRecommendedWallets() {
     try {
-      const { includeWalletIds, excludeWalletIds, featuredWalletIds, allEthWallets } = OptionsController.state
+      const { includeWalletIds, excludeWalletIds, featuredWalletIds, allEthWallets } =
+        OptionsController.state
       const exclude = [...(excludeWalletIds ?? []), ...(featuredWalletIds ?? [])].filter(Boolean)
       const { data, count } = await api.get<ApiGetWalletsResponse>({
         path: '/getWallets',
         headers: ApiController._getApiHeaders(),
         params: {
           page: '1',
-          chains: ChainController.state.activeCaipNetwork?.id.includes("eip155") && allEthWallets ? "eip155:1" : ChainController.state.activeCaipNetwork?.id,
+          chains:
+            ChainController.state.activeCaipNetwork?.id.includes('eip155') && allEthWallets
+              ? 'eip155:1'
+              : ChainController.state.activeCaipNetwork?.id,
           entries: recommendedEntries,
           include: includeWalletIds?.join(','),
           exclude: exclude?.join(',')
@@ -182,7 +186,8 @@ export const ApiController = {
   },
 
   async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
-    const { includeWalletIds, excludeWalletIds, featuredWalletIds, allEthWallets } = OptionsController.state
+    const { includeWalletIds, excludeWalletIds, featuredWalletIds, allEthWallets } =
+      OptionsController.state
 
     const exclude = [
       ...state.recommended.map(({ id }) => id),
@@ -195,7 +200,10 @@ export const ApiController = {
       params: {
         page: String(page),
         entries,
-        chains: ChainController.state.activeCaipNetwork?.id.includes("eip155") && allEthWallets ? "eip155:1" : ChainController.state.activeCaipNetwork?.id,
+        chains:
+          ChainController.state.activeCaipNetwork?.id.includes('eip155') && allEthWallets
+            ? 'eip155:1'
+            : ChainController.state.activeCaipNetwork?.id,
         include: includeWalletIds?.join(','),
         exclude: exclude.join(',')
       }
@@ -244,7 +252,10 @@ export const ApiController = {
         page: '1',
         entries: '100',
         search: search?.trim(),
-        chains: ChainController.state.activeCaipNetwork?.id.includes("eip155") && allEthWallets ? "eip155:1" : ChainController.state.activeCaipNetwork?.id,
+        chains:
+          ChainController.state.activeCaipNetwork?.id.includes('eip155') && allEthWallets
+            ? 'eip155:1'
+            : ChainController.state.activeCaipNetwork?.id,
         include: includeWalletIds?.join(','),
         exclude: excludeWalletIds?.join(',')
       }

@@ -13,7 +13,7 @@ import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 // -- Types --------------------------------------------- //
 export interface OptionsControllerStatePublic {
   /**
-   * A boolean that forces the loading of all Ethereum wallets from the API.  
+   * A boolean that forces the loading of all Ethereum wallets from the API.
    * Forces the chain ID to 1.
    * @default false
    */
