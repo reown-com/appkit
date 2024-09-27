@@ -10,7 +10,6 @@ import type {
   SdkFramework,
   AppKitSdkVersion
 } from '@reown/appkit-common'
-import type { NetworkControllerClient } from '../controllers/NetworkController.js'
 import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
 import type { AccountControllerState } from '../controllers/AccountController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
@@ -830,6 +829,14 @@ export interface WriteContractArgs {
   method: 'send' | 'transfer' | 'call'
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   abi: any
+}
+
+export interface NetworkControllerClient {
+  switchCaipNetwork: (network: CaipNetwork) => Promise<void>
+  getApprovedCaipNetworksData: () => Promise<{
+    approvedCaipNetworkIds: CaipNetworkId[]
+    supportsAllNetworks: boolean
+  }>
 }
 
 export type AdapterNetworkState = {

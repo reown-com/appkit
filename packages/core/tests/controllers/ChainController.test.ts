@@ -2,12 +2,32 @@ import { beforeAll, describe, expect, it, vi } from 'vitest'
 import { ConstantsUtil, type CaipNetworkId, type ChainNamespace } from '@reown/appkit-common'
 import { ChainController } from '../../src/controllers/ChainController.js'
 import { type ConnectionControllerClient } from '../../src/controllers/ConnectionController.js'
-import { type NetworkControllerClient } from '../../src/controllers/NetworkController.js'
+import type { NetworkControllerClient } from '../../exports/index.js'
 
 // -- Setup --------------------------------------------------------------------
 const chainNamespace = 'eip155' as ChainNamespace
 const caipAddress = 'eip155:1:0x123'
 const approvedCaipNetworkIds = ['eip155:1', 'eip155:4'] as CaipNetworkId[]
+
+const caipNetwork = {
+  id: 'eip155:1',
+  name: 'Ethereum',
+  chainNamespace: ConstantsUtil.CHAIN.EVM,
+  chainId: 1,
+  currency: 'ETH',
+  explorerUrl: 'https://etherscan.io',
+  rpcUrl: 'https://rpc.infura.com/v1/'
+} as const
+
+const solanaCaipNetwork = {
+  id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  name: 'Solana',
+  chainNamespace: ConstantsUtil.CHAIN.SOLANA,
+  chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  currency: 'SOL',
+  explorerUrl: 'https://solscan.io',
+  rpcUrl: 'https://rpc.infura.com/v1/'
+} as const
 
 const connectionControllerClient: ConnectionControllerClient = {
   connectWalletConnect: async () => Promise.resolve(),
@@ -83,6 +103,51 @@ describe('ChainController', () => {
 
     expect(ChainController.getApprovedCaipNetworkIds(namespace)).toEqual(approvedCaipNetworkIds)
     expect(networkControllerSpy).toHaveBeenCalled()
+  })
+
+  it('should update state correctly on setCaipNetwork()', () => {
+    ChainController.setActiveCaipNetwork(caipNetwork)
+    expect(ChainController.state.activeCaipNetwork).toEqual(caipNetwork)
+  })
+
+  it('should check correctly if smart accounts are enabled on the network', () => {
+    ChainController.setActiveCaipNetwork(caipNetwork)
+    ChainController.setSmartAccountEnabledNetworks([1], chainNamespace)
+    expect(ChainController.checkIfSmartAccountEnabled()).toEqual(true)
+    ChainController.setSmartAccountEnabledNetworks([], chainNamespace)
+    expect(ChainController.checkIfSmartAccountEnabled()).toEqual(false)
+    ChainController.setSmartAccountEnabledNetworks([2], chainNamespace)
+    expect(ChainController.checkIfSmartAccountEnabled()).toEqual(false)
+    ChainController.setActiveCaipNetwork({
+      id: 'eip155:2',
+      name: 'Ethereum',
+      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      chainId: 2,
+      currency: 'ETH',
+      explorerUrl: 'https://etherscan.io',
+      rpcUrl: 'https://rpc.infura.com/v1/'
+    })
+  })
+
+  it('should get correct active network token address', () => {
+    let mock = vi
+      .spyOn(ChainController.state, 'activeCaipNetwork', 'get')
+      .mockReturnValue(undefined)
+    expect(ChainController.getActiveNetworkTokenAddress()).toEqual(
+      'eip155:1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+    )
+
+    mock.mockReturnValue(caipNetwork)
+    expect(ChainController.getActiveNetworkTokenAddress()).toEqual(
+      'eip155:1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+    )
+
+    mock.mockReturnValue(solanaCaipNetwork)
+    expect(ChainController.getActiveNetworkTokenAddress()).toEqual(
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:So11111111111111111111111111111111111111111'
+    )
+
+    mock.mockClear()
   })
 
   // it('should update state correctly on setRequestedCaipNetworks()', () => {

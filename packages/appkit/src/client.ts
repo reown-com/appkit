@@ -23,7 +23,6 @@ import {
   RouterController,
   EnsController,
   OptionsController,
-  NetworkController,
   AssetUtil,
   ApiController
 } from '@reown/appkit-core'
@@ -43,7 +42,7 @@ import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { ProviderUtil } from './store/ProviderUtil.js'
 
 // -- Export Controllers -------------------------------------------------------
-export { AccountController, NetworkController }
+export { AccountController }
 
 // -- Types --------------------------------------------------------------------
 export interface OpenOptions {
@@ -107,7 +106,7 @@ export class AppKit {
   }
 
   public switchNetwork(caipNetwork: CaipNetwork) {
-    return NetworkController.switchActiveNetwork(caipNetwork)
+    return ChainController.switchActiveNetwork(caipNetwork)
   }
 
   public getWalletProvider() {
@@ -161,7 +160,7 @@ export class AppKit {
   }
 
   public subscribeCaipNetworkChange(callback: (newState?: CaipNetwork) => void) {
-    NetworkController.subscribeKey('caipNetwork', callback)
+    ChainController.subscribeKey('activeCaipNetwork', callback)
   }
 
   public getState() {
@@ -317,8 +316,8 @@ export class AppKit {
   public setApprovedCaipNetworksData: (typeof ChainController)['setApprovedCaipNetworksData'] =
     namespace => ChainController.setApprovedCaipNetworksData(namespace)
 
-  public resetNetwork: (typeof NetworkController)['resetNetwork'] = () => {
-    NetworkController.resetNetwork()
+  public resetNetwork: (typeof ChainController)['resetNetwork'] = (namespace: ChainNamespace) => {
+    ChainController.resetNetwork(namespace)
   }
 
   public setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {

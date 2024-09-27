@@ -7,7 +7,6 @@ import {
   CoreHelperUtil,
   EventsController,
   ModalController,
-  NetworkController,
   RouterController,
   SnackController
 } from '@reown/appkit-core'
@@ -127,13 +126,16 @@ export class W3mUnsupportedChainView extends LitElement {
   private async onSwitchNetwork(network: CaipNetwork) {
     const caipAddress = AccountController.state.caipAddress
     const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworks()
-    const supportsAllNetworks = NetworkController.state.supportsAllNetworks
+    const supportsAllNetworks = ChainController.getNetworkProp(
+      'supportsAllNetworks',
+      network.chainNamespace
+    )
     const caipNetwork = ChainController.state.activeCaipNetwork
     const routerData = RouterController.state.data
 
     if (caipAddress && caipNetwork?.id !== network.id) {
       if (approvedCaipNetworkIds?.includes(network.id)) {
-        await NetworkController.switchActiveNetwork(network)
+        await ChainController.switchActiveNetwork(network)
       } else if (supportsAllNetworks) {
         RouterController.push('SwitchNetwork', { ...routerData, network })
       }

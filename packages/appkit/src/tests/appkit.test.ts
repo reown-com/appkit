@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { AppKit } from '../client'
 import {
   AccountController,
-  NetworkController,
   ModalController,
   ThemeController,
   PublicStateController,
@@ -112,7 +111,7 @@ describe('Base', () => {
     it('should subscribe to CAIP network changes', () => {
       const callback = vi.fn()
       appKit.subscribeCaipNetworkChange(callback)
-      expect(NetworkController.subscribeKey).toHaveBeenCalledWith('caipNetwork', callback)
+      expect(ChainController.subscribeKey).toHaveBeenCalledWith('activeCaipNetwork', callback)
     })
 
     it('should get state', () => {
@@ -332,8 +331,8 @@ describe('Base', () => {
     })
 
     it('should reset network', () => {
-      appKit.resetNetwork()
-      expect(NetworkController.resetNetwork).toHaveBeenCalled()
+      appKit.resetNetwork('eip155')
+      expect(ChainController.resetNetwork).toHaveBeenCalled()
     })
 
     it('should reset WC connection', () => {

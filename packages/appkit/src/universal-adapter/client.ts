@@ -519,7 +519,7 @@ export class UniversalAdapterClient {
       })
     } else {
       this.appKit?.resetWcConnection()
-      this.appKit?.resetNetwork()
+      this.appKit?.resetNetwork(this.chainNamespace)
       this.syncAccounts(true)
     }
   }

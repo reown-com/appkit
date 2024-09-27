@@ -17,6 +17,7 @@ import { StorageUtil } from '../utils/StorageUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { ModalController } from './ModalController.js'
+import { EventsController } from './EventsController.js'
 
 // -- Types --------------------------------------------- //
 export interface ChainControllerState {
@@ -258,22 +259,22 @@ export const ChainController = {
     }
   },
 
-  /**
-   * The setCaipNetwork function is being called for different purposes and it needs to be controlled if it should replace the NetworkController state or not.
-   * While we initializing the adapters, we need to set the caipNetwork without replacing the state.
-   * But when we switch the network, we need to replace the state.
-   * @param chain
-   * @param caipNetwork
-   * @param shouldReplace - if true, it will replace the NetworkController state
-   */
-  setCaipNetwork(chain: ChainNamespace, caipNetwork: AdapterNetworkState['caipNetwork']) {
-    state.activeChain = caipNetwork?.chainNamespace
-    state.activeCaipNetwork = caipNetwork
-    PublicStateController.set({
-      activeChain: state.activeChain,
-      selectedNetworkId: state.activeCaipNetwork?.id
-    })
-    this.setAdapterNetworkState(chain, { caipNetwork })
+  async switchActiveNetwork(network: CaipNetwork) {
+    const networkControllerClient = this.getNetworkControllerClient(network.chainNamespace)
+
+    if (networkControllerClient) {
+      await networkControllerClient.switchCaipNetwork(network)
+    }
+
+    this.setActiveCaipNetwork(network)
+
+    if (network) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SWITCH_NETWORK',
+        properties: { network: network.id }
+      })
+    }
   },
 
   setActiveConnector(connector: ChainControllerState['activeConnector']) {
@@ -483,6 +484,14 @@ export const ChainController = {
     setTimeout(() => {
       ModalController.open({ view: 'UnsupportedChain' })
     }, 300)
+  },
+
+  resetNetwork(namespace: ChainNamespace) {
+    ChainController.setAdapterNetworkState(namespace, {
+      approvedCaipNetworkIds: undefined,
+      supportsAllNetworks: true,
+      smartAccountEnabledNetworks: []
+    })
   },
 
   resetAccount(chain: ChainNamespace | undefined) {

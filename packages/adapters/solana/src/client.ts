@@ -365,7 +365,7 @@ export class SolanaAdapter implements ChainAdapter {
       await this.syncNetwork(address)
     } else {
       this.appKit?.resetWcConnection()
-      this.appKit?.resetNetwork()
+      this.appKit?.resetNetwork(this.chainNamespace)
       this.appKit?.resetAccount(this.chainNamespace)
     }
   }
