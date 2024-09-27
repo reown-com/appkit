@@ -119,7 +119,10 @@ export class W3mConnectingWcView extends LitElement {
 
   private determinePlatforms() {
     if (!this.wallet) {
-      throw new Error('w3m-connecting-wc-view:determinePlatforms No wallet')
+      this.platforms.push('qrcode')
+      this.platform = 'qrcode'
+
+      return
     }
 
     if (this.platform) {
