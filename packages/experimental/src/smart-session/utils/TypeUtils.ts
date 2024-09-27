@@ -76,6 +76,9 @@ export type WalletGrantPermissionsResponse = SmartSessionGrantPermissionsRequest
 }
 
 export type SmartSessionGrantPermissionsResponse = {
+  chainId: `0x${string}`
+  address: `0x${string}`
+  expiry: number
   permissions: {
     type: string
     data: Record<string, unknown>
