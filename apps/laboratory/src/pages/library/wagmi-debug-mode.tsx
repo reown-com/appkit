@@ -16,7 +16,7 @@ const networks = ConstantsUtil.EvmNetworks
 const wagmiAdapter = new WagmiAdapter({
   ssr: true,
   networks,
-  projectId: ''
+  projectId: ConstantsUtil.ProjectId
 })
 
 const modal = createAppKit({
