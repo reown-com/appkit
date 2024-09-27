@@ -11,6 +11,11 @@ export interface AlertControllerState {
 
 type StateKey = keyof AlertControllerState
 
+interface OpenMessageParameters {
+  shortMessage: string
+  longMessage?: string | (() => void)
+}
+
 // -- State --------------------------------------------- //
 const state = proxy<AlertControllerState>({
   message: '',
@@ -26,13 +31,20 @@ export const AlertController = {
     return subKey(state, key, callback)
   },
 
-  open(message: AlertControllerState['message'], variant: AlertControllerState['variant']) {
+  open(message: OpenMessageParameters, variant: AlertControllerState['variant']) {
     const { debug } = OptionsController.state
 
+    const { shortMessage, longMessage } = message
+
     if (debug) {
-      state.message = message
+      state.message = shortMessage
       state.variant = variant
       state.open = true
+    }
+
+    if (longMessage) {
+      // eslint-disable-next-line no-console
+      console.error(typeof longMessage === 'function' ? longMessage() : longMessage)
     }
   },
 

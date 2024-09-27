@@ -145,7 +145,7 @@ export class WagmiAdapter implements ChainAdapter {
     }
   ) {
     if (!configParams.projectId) {
-      console.error(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED_UPDATE_CONFIGURATION)
+      throw new Error(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED.shortMessage)
     }
 
     this.caipNetworks = configParams.networks.map(caipNetwork => ({
@@ -221,10 +221,6 @@ export class WagmiAdapter implements ChainAdapter {
   }
 
   public construct(appKit: AppKit, options: AppKitOptions) {
-    if (!options.projectId) {
-      return
-    }
-
     this.appKit = appKit
     this.options = options
     this.caipNetworks = options.networks

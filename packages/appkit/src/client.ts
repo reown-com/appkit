@@ -423,8 +423,6 @@ export class AppKit {
 
     if (!options.projectId) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
-      // eslint-disable-next-line no-console
-      console.error(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED_UPDATE_CONFIGURATION)
 
       return
     }

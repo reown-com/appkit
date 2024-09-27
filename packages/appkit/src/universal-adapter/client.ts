@@ -329,8 +329,6 @@ export class UniversalAdapterClient {
           AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
           this.reportErrors = false
         }
-        // eslint-disable-next-line no-console
-        console.error(ErrorUtil.ALERT_ERRORS.originNotWhitelisted(window.origin))
 
         return
       }

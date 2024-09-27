@@ -7,7 +7,7 @@ OptionsController.state.debug = true
 // -- Tests --------------------------------------------------------------------
 describe('AlertController', () => {
   it('should show info state', () => {
-    AlertController.open('Info message', 'info')
+    AlertController.open({ shortMessage: 'Info message' }, 'info')
     expect(AlertController.state).toStrictEqual({
       message: 'Info message',
       variant: 'info',
@@ -16,7 +16,7 @@ describe('AlertController', () => {
   })
 
   it('should show success state', () => {
-    AlertController.open('Success message', 'success')
+    AlertController.open({ shortMessage: 'Success message' }, 'success')
     expect(AlertController.state).toStrictEqual({
       message: 'Success message',
       variant: 'success',
@@ -25,7 +25,7 @@ describe('AlertController', () => {
   })
 
   it('should show warning state', () => {
-    AlertController.open('Warning message', 'warning')
+    AlertController.open({ shortMessage: 'Warning message' }, 'warning')
     expect(AlertController.state).toStrictEqual({
       message: 'Warning message',
       variant: 'warning',
@@ -34,7 +34,7 @@ describe('AlertController', () => {
   })
 
   it('should show error state', () => {
-    AlertController.open('Error message', 'error')
+    AlertController.open({ shortMessage: 'Error message' }, 'error')
     expect(AlertController.state).toStrictEqual({
       message: 'Error message',
       variant: 'error',

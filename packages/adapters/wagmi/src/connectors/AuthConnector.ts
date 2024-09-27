@@ -80,9 +80,7 @@ export function authConnector(parameters: AuthParameters) {
         this.provider = W3mFrameProviderSingleton.getInstance({
           projectId: parameters.options.projectId,
           onTimeout: () => {
-            AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
-            // eslint-disable-next-line no-console
-            console.error(ErrorUtil.ALERT_ERRORS.originNotWhitelistedSocials(window.origin))
+            AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION_SOCIALS, 'error')
           }
         })
       }

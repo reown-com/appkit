@@ -616,9 +616,7 @@ export class SolanaAdapter implements ChainAdapter {
           projectId: opts.projectId,
           chainId: withSolanaNamespace(this.appKit?.getCaipNetwork(this.chainNamespace)?.chainId),
           onTimeout: () => {
-            AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
-            // eslint-disable-next-line no-console
-            console.error(ErrorUtil.ALERT_ERRORS.originNotWhitelistedSocials(window.origin))
+            AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION_SOCIALS, 'error')
           }
         })
 
