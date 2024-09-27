@@ -29,10 +29,10 @@ VITE_PROJECT_ID="your_project_id"
 4. Run gallery, laboratory or examples in a separate tab i.e. `pnpm laboratory`
 
 # Releasing new versions
+> [!NOTE] 
+> If you need to release a canary/alpha/beta, you need to enter prelease mode first.
 
 ### Enter prelease mode [Optional]
-
-If you need to release a canary/alpha/beta you need to enter prelease mode first
 
 ```sh
 pnpm changeset:pre <release tag>
@@ -42,7 +42,6 @@ For example: `pnpm changeset:pre a123bas2`
 
 ### Generate changeset
 
-If you need to release a canary/alpha/beta you need to enter prelease mode first
 
 ```sh
 pnpm changeset
