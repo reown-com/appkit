@@ -1,14 +1,5 @@
-/*
- * A wallet is the signer for these permissions
- * `data` is not necessary for this signer type as the wallet is both the signer and grantor of these permissions
- */
-export type WalletSigner = {
-  type: 'wallet'
-  data: Record<string, unknown>
-}
-
 // The types of keys that are supported for the following `key` and `keys` signer types.
-export type KeyType = 'secp256r1' | 'secp256k1' | 'ed25519' | 'schnorr'
+export type KeyType = 'secp256r1' | 'secp256k1'
 
 /*
  * A signer representing a single key.
@@ -36,15 +27,7 @@ export type MultiKeySigner = {
   }
 }
 
-// An account that can be granted with permissions as in ERC-7710.
-export type AccountSigner = {
-  type: 'account'
-  data: {
-    address: `0x${string}`
-  }
-}
-
-export type Signer = WalletSigner | KeySigner | MultiKeySigner | AccountSigner
+export type Signer = KeySigner | MultiKeySigner
 
 export type SmartSessionGrantPermissionsRequest = {
   chainId: `0x${string}`
