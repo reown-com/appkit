@@ -218,6 +218,7 @@ export class W3mModal extends LitElement {
   private async onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {
     if (!this.caipAddress) {
       this.caipNetwork = nextCaipNetwork
+      RouterController.goBack()
 
       return
     }

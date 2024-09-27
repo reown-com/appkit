@@ -38,7 +38,7 @@ export class W3mConnectWalletConnectWidget extends LitElement {
       return null
     }
 
-    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
+    const connector = this.connectors.find(c => c.id === 'walletConnect')
 
     if (!connector) {
       this.style.cssText = `display: none`

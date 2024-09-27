@@ -44,6 +44,7 @@ test('it should switch networks and sign', async () => {
   const chainName = 'Polygon'
 
   await page.switchNetwork(chainName)
+  await validator.expectUnauthenticated()
   await page.promptSiwe()
   await page.approveSign()
 

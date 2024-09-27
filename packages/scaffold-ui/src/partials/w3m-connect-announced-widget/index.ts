@@ -68,7 +68,7 @@ export class W3mConnectAnnouncedWidget extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
-    if (connector.type === 'WALLET_CONNECT') {
+    if (connector.id === 'walletConnect') {
       if (CoreHelperUtil.isMobile()) {
         RouterController.push('AllWallets')
       } else {
