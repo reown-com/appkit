@@ -2,7 +2,7 @@
 /* eslint-disable multiline-comment-style */
 /* eslint-disable capitalized-comments */
 import { abi as donutContractAbi, address as donutContractAddress } from './DonutContract'
-import { encodeAbiParameters, hashMessage, parseEther, toHex, type Chain } from 'viem'
+import { encodeAbiParameters, hashMessage, toHex, type Chain } from 'viem'
 import { prepareCalls, sendPreparedCalls, type Call } from './UserOpBuilderServiceUtils'
 import { signMessage } from 'viem/accounts'
 import { sign as signWithPasskey } from 'webauthn-p256'
@@ -28,9 +28,7 @@ export function getPurchaseDonutPermissions(): Omit<
           abi: donutContractAbi,
           functions: [
             {
-              functionName: 'purchase',
-              arguments: [],
-              valueLimit: parseEther('0.01').toString(16)
+              functionName: 'purchase'
             }
           ]
         }
