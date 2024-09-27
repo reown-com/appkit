@@ -17,6 +17,7 @@ import {
 } from '@solana/web3.js'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
 import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
+import { WalletConnectMethodNotSupportedError } from './shared/Errors.js'
 
 export type WalletConnectProviderConfig = {
   provider: UniversalProvider
@@ -80,7 +81,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
       return acc
     }, {})
 
-    if (this.provider.session) {
+    if (this.provider.session?.namespaces['solana']) {
       this.session = this.provider.session
     } else {
       this.provider.on('display_uri', this.onUri)
@@ -91,7 +92,8 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
             methods: [
               'solana_signMessage',
               'solana_signTransaction',
-              'solana_signAndSendTransaction'
+              'solana_signAndSendTransaction',
+              'solana_signAllTransactions'
             ],
             events: [],
             rpcMap
@@ -114,6 +116,8 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
   }
 
   public async signMessage(message: Uint8Array) {
+    this.checkIfMethodIsSupported('solana_signMessage')
+
     const signedMessage = await this.request('solana_signMessage', {
       message: base58.encode(message),
       pubkey: this.getAccount(true).address
@@ -123,6 +127,8 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
   }
 
   public async signTransaction<T extends AnyTransaction>(transaction: T) {
+    this.checkIfMethodIsSupported('solana_signTransaction')
+
     const serializedTransaction = this.serializeTransaction(transaction)
 
     const result = await this.request('solana_signTransaction', {
@@ -141,7 +147,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
       return transaction
     }
 
-    const decodedTransaction = base58.decode(result.transaction)
+    const decodedTransaction = Buffer.from(result.transaction, 'base64')
 
     if (isVersionedTransaction(transaction)) {
       return VersionedTransaction.deserialize(decodedTransaction) as T
@@ -154,6 +160,8 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     transaction: T,
     sendOptions?: SendOptions
   ) {
+    this.checkIfMethodIsSupported('solana_signAndSendTransaction')
+
     const serializedTransaction = this.serializeTransaction(transaction)
 
     const result = await this.request('solana_signAndSendTransaction', {
@@ -177,9 +185,42 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
   }
 
   public async signAllTransactions<T extends AnyTransaction[]>(transactions: T): Promise<T> {
-    return (await Promise.all(
-      transactions.map(transaction => this.signTransaction(transaction))
-    )) as T
+    try {
+      this.checkIfMethodIsSupported('solana_signAllTransactions')
+
+      const result = await this.request('solana_signAllTransactions', {
+        transactions: transactions.map(transaction => this.serializeTransaction(transaction))
+      })
+
+      return result.transactions.map((serializedTransaction, index) => {
+        const transaction = transactions[index]
+
+        if (!transaction) {
+          throw new Error('Invalid transactions response')
+        }
+
+        const decodedTransaction = Buffer.from(serializedTransaction, 'base64')
+
+        if (isVersionedTransaction(transaction)) {
+          return VersionedTransaction.deserialize(decodedTransaction)
+        }
+
+        return Transaction.from(decodedTransaction)
+      }) as T
+    } catch (error) {
+      if (error instanceof WalletConnectMethodNotSupportedError) {
+        const signedTransactions = [] as AnyTransaction[] as T
+
+        for (const transaction of transactions) {
+          // eslint-disable-next-line no-await-in-loop
+          signedTransactions.push(await this.signTransaction(transaction))
+        }
+
+        return signedTransactions
+      }
+
+      throw error
+    }
   }
 
   // -- Private ------------------------------------------ //
@@ -315,6 +356,12 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
       recentBlockhash: transaction.recentBlockhash ?? ''
     }
   }
+
+  private checkIfMethodIsSupported(method: WalletConnectProvider.RequestMethod) {
+    if (!this.session?.namespaces['solana']?.methods.includes(method)) {
+      throw new WalletConnectMethodNotSupportedError(method)
+    }
+  }
 }
 
 export namespace WalletConnectProvider {
@@ -333,6 +380,7 @@ export namespace WalletConnectProvider {
       { transaction: string; pubkey: string; sendOptions?: SendOptions },
       { signature: string }
     >
+    solana_signAllTransactions: Request<{ transactions: string[] }, { transactions: string[] }>
   }
 
   export type RequestMethod = keyof RequestMethods
