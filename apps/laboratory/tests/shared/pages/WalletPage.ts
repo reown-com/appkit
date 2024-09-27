@@ -9,6 +9,8 @@ export class WalletPage {
   private gotoHome: Locator
   private vercelPreview: Locator
 
+  public connectToSingleAccount = false
+
   constructor(public page: Page) {
     this.gotoHome = this.page.getByTestId('wc-connect')
     this.vercelPreview = this.page.locator('css=vercel-live-feedback')
@@ -33,7 +35,15 @@ export class WalletPage {
     if (isVercelPreview) {
       await this.vercelPreview.evaluate((iframe: HTMLIFrameElement) => iframe.remove())
     }
-    await this.gotoHome.click()
+    /*
+     * If connecting to a single account manually navigate.
+     * Otherwise click the home button.
+     */
+    if (this.connectToSingleAccount) {
+      await this.page.goto(`${this.baseURL}/walletconnect?addressesToApprove=1`)
+    } else {
+      await this.gotoHome.click()
+    }
     const input = this.page.getByTestId('uri-input')
     await input.waitFor({
       state: 'visible',
@@ -112,5 +122,13 @@ export class WalletPage {
     await sessionCard.click()
     const disconnectButton = this.page.getByText('Delete')
     await disconnectButton.click()
+  }
+
+  /**
+   * Sets a flag to indicate whether to connect to a single account
+   * @param connectToSingleAccount boolean flag to set
+   */
+  setConnectToSingleAccount(connectToSingleAccount: boolean) {
+    this.connectToSingleAccount = connectToSingleAccount
   }
 }
