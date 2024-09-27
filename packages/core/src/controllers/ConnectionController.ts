@@ -39,7 +39,7 @@ export interface ConnectionControllerClient {
   writeContract: (args: WriteContractArgs) => Promise<`0x${string}` | null>
   getEnsAddress: (value: string) => Promise<false | string>
   getEnsAvatar: (value: string) => Promise<false | string>
-  grantPermissions: (params: object) => Promise<unknown>
+  grantPermissions: (params: readonly unknown[] | object) => Promise<unknown>
 }
 
 export interface ConnectionControllerState {
