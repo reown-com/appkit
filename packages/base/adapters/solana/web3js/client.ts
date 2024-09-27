@@ -261,8 +261,11 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
 
       formatUnits: () => '',
 
-      checkInstalled: (ids: string[] = []) =>
-        ids.some(id => this.availableProviders.some(provider => provider.name === id))
+      checkInstalled: (ids: string[] = []) => {
+        const availableIds = new Set(this.availableProviders.map(provider => provider.name))
+
+        return ids.some(id => availableIds.has(id))
+      }
     }
   }
 
