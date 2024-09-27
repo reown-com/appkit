@@ -57,7 +57,6 @@ import {
   SafeLocalStorageKeys
 } from '@reown/appkit-common'
 import {
-  convertToAppKitChains,
   getEmailCaipNetworks,
   getTransport,
   getWalletConnectCaipNetworks,
@@ -75,6 +74,7 @@ import { walletConnect } from './connectors/UniversalConnector.js'
 import { coinbaseWallet } from '@wagmi/connectors'
 import { authConnector } from './connectors/AuthConnector.js'
 import { ProviderUtil } from '@reown/appkit/store'
+import { ChainsUtil } from './utils/chains.js'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions<C extends Config>
@@ -140,16 +140,22 @@ export class WagmiAdapter implements ChainAdapter {
 
   public constructor(
     configParams: Partial<CreateConfigParameters> & {
-      networks: CaipNetwork[]
+      networks: (CaipNetwork | Chain)[]
       projectId: string
     }
   ) {
-    this.caipNetworks = configParams.networks.map(caipNetwork => ({
-      ...caipNetwork,
-      rpcUrl: CaipNetworksUtil.extendRpcUrlWithProjectId(caipNetwork.rpcUrl, configParams.projectId)
-    }))
+    this.caipNetworks = configParams.networks.map(network => {
+      if ('chainNamespace' in network) {
+        return {
+          ...network,
+          rpcUrl: CaipNetworksUtil.extendRpcUrlWithProjectId(network.rpcUrl, configParams.projectId)
+        }
+      }
 
-    this.wagmiChains = convertToAppKitChains(
+      return ChainsUtil.convertViemChainToCaipNetwork(network)
+    })
+
+    this.wagmiChains = ChainsUtil.convertCaipNetworksToViemChains(
       this.caipNetworks.filter(
         caipNetwork => caipNetwork.chainNamespace === CommonConstantsUtil.CHAIN.EVM
       )

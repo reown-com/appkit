@@ -22,7 +22,7 @@ import { WcHelpersUtil } from '@reown/appkit'
 import { StorageUtil } from '@reown/appkit-core'
 import type { AppKitOptions } from '@reown/appkit'
 import type { AppKit } from '@reown/appkit'
-import { convertToAppKitChains } from '../utils/helpers.js'
+import { ChainsUtil } from '../utils/chains.js'
 
 type UniversalConnector = Connector & {
   onDisplayUri(uri: string): void
@@ -287,7 +287,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       }
 
       const chain = parameters.networks.find(x => x.chainId === chainId)
-      const [wagmiChain] = chain ? convertToAppKitChains([chain]) : []
+      const [wagmiChain] = chain ? ChainsUtil.convertCaipNetworksToViemChains([chain]) : []
 
       if (!wagmiChain) {
         throw new SwitchChainError(new ChainNotConfiguredError())

@@ -7,18 +7,19 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { createAppKit } from '@reown/appkit/react'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { ThemeStore } from '../../utils/StoreUtil'
+import { acala, beam } from 'viem/chains'
 
 const queryClient = new QueryClient()
 
 const wagmiAdapter = new WagmiAdapter({
   ssr: true,
-  networks: ConstantsUtil.EvmNetworks,
+  networks: [...ConstantsUtil.EvmNetworks, acala, beam],
   projectId: ConstantsUtil.ProjectId
 })
 
 const modal = createAppKit({
   adapters: [wagmiAdapter],
-  networks: ConstantsUtil.EvmNetworks,
+  networks: wagmiAdapter.caipNetworks,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,
