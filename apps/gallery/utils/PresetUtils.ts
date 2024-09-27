@@ -27,8 +27,8 @@ import type {
   ThemeType,
   TransactionType,
   VisualType
-} from '@web3modal/ui/src/utils/TypeUtil'
-import type { TransactionStatus, TransactionDirection } from '@web3modal/common'
+} from '@reown/appkit-ui/src/utils/TypeUtil'
+import type { TransactionStatus, TransactionDirection } from '@reown/appkit-common'
 
 export const colorOptions: ColorType[] = [
   'accent-100',

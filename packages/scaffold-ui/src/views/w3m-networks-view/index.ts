@@ -1,18 +1,20 @@
-import type { CaipNetwork } from '@web3modal/core'
+import { type CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
   AssetUtil,
+  ChainController,
+  ConnectorController,
   CoreHelperUtil,
   EventsController,
   NetworkController,
-  RouterController
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+  RouterController,
+  StorageUtil
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
-import { NetworkUtil } from '../../utils/NetworkUtil.js'
 
 @customElement('w3m-networks-view')
 export class W3mNetworksView extends LitElement {
@@ -21,12 +23,19 @@ export class W3mNetworksView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public caipNetwork = NetworkController.state.caipNetwork
+  @state() public network = ChainController.state.activeCaipNetwork
 
+  @state() public requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+
+  @state() private filteredNetworks?: CaipNetwork[]
+
+  @state() private search = ''
+
+  // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
     this.unsubscribe.push(
-      NetworkController.subscribeKey('caipNetwork', val => (this.caipNetwork = val))
+      ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val))
     )
   }
 
@@ -37,9 +46,15 @@ export class W3mNetworksView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-grid padding="s" gridTemplateColumns="repeat(4, 1fr)" rowGap="l" columnGap="xs">
+      ${this.templateSearchInput()}
+      <wui-flex
+        class="container"
+        .padding=${['0', 's', 's', 's'] as const}
+        flexDirection="column"
+        gap="xs"
+      >
         ${this.networksTemplate()}
-      </wui-grid>
+      </wui-flex>
 
       <wui-separator></wui-separator>
 
@@ -56,49 +71,111 @@ export class W3mNetworksView extends LitElement {
   }
 
   // Private Methods ------------------------------------- //
+  private templateSearchInput() {
+    return html`
+      <wui-flex gap="xs" .padding=${['0', 's', 's', 's'] as const}>
+        <wui-input-text
+          @inputChange=${this.onInputChange.bind(this)}
+          class="network-search-input"
+          size="md"
+          placeholder="Search network"
+          icon="search"
+        ></wui-input-text>
+      </wui-flex>
+    `
+  }
+
+  private onInputChange(event: CustomEvent<string>) {
+    this.onDebouncedSearch(event.detail)
+  }
+
+  private onDebouncedSearch = CoreHelperUtil.debounce((value: string) => {
+    this.search = value
+  }, 100)
+
   private onNetworkHelp() {
     EventsController.sendEvent({ type: 'track', event: 'CLICK_NETWORK_HELP' })
     RouterController.push('WhatIsANetwork')
   }
 
   private networksTemplate() {
-    const { approvedCaipNetworkIds, requestedCaipNetworks, supportsAllNetworks } =
-      NetworkController.state
-
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+    const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
       requestedCaipNetworks
     )
 
-    return sortedNetworks?.map(
+    if (this.search) {
+      this.filteredNetworks = sortedNetworks?.filter(
+        network => network?.name?.toLowerCase().includes(this.search.toLowerCase())
+      )
+    } else {
+      this.filteredNetworks = sortedNetworks
+    }
+
+    return this.filteredNetworks?.map(
       network => html`
-        <wui-card-select
-          .selected=${this.caipNetwork?.id === network.id}
+        <wui-list-network
+          .selected=${this.network?.id === network.id}
           imageSrc=${ifDefined(AssetUtil.getNetworkImage(network))}
           type="network"
           name=${network.name ?? network.id}
           @click=${() => this.onSwitchNetwork(network)}
-          .disabled=${!supportsAllNetworks && !approvedCaipNetworkIds?.includes(network.id)}
+          .disabled=${this.getNetworkDisabled(network)}
           data-testid=${`w3m-network-switch-${network.name ?? network.id}`}
-        ></wui-card-select>
+        ></wui-list-network>
       `
     )
   }
 
-  private async onSwitchNetwork(network: CaipNetwork) {
-    const { isConnected } = AccountController.state
-    const { approvedCaipNetworkIds, supportsAllNetworks, caipNetwork } = NetworkController.state
-    const { data } = RouterController.state
-    if (isConnected && caipNetwork?.id !== network.id) {
-      if (approvedCaipNetworkIds?.includes(network.id)) {
-        await NetworkController.switchActiveNetwork(network)
-        await NetworkUtil.onNetworkChange()
-      } else if (supportsAllNetworks) {
-        RouterController.push('SwitchNetwork', { ...data, network })
-      }
-    } else if (!isConnected) {
-      NetworkController.setCaipNetwork(network)
-      RouterController.push('Connect')
+  private getNetworkDisabled(network: CaipNetwork) {
+    const networkNamespace = network.chainNamespace
+    const isNamespaceConnected = AccountController.getCaipAddress(networkNamespace)
+    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworks()
+    const supportsAllNetworks =
+      ChainController.getNetworkProp('supportsAllNetworks', networkNamespace) !== false
+    const type = StorageUtil.getConnectedConnector()
+    const authConnector = ConnectorController.getAuthConnector()
+    const isConnectedWithAuth = type === 'AUTH' && authConnector
+
+    if (!isNamespaceConnected || supportsAllNetworks || isConnectedWithAuth) {
+      return false
+    }
+
+    return !approvedCaipNetworkIds?.includes(network.id)
+  }
+
+  private onSwitchNetwork(network: CaipNetwork) {
+    const routerData = RouterController.state.data
+    const isSameNetwork = network.id === this.network?.id
+
+    if (isSameNetwork) {
+      return
+    }
+
+    const isDifferentNamespace = network.chainNamespace !== ChainController.state.activeChain
+    const isNewNetworkConnected = ChainController.getAccountProp(
+      'caipAddress',
+      network.chainNamespace
+    )
+    const isCurrentNetworkConnected = AccountController.state.caipAddress
+    const isAuthConnected = StorageUtil.getConnectedConnector() === 'AUTH'
+
+    if (
+      isDifferentNamespace &&
+      isCurrentNetworkConnected &&
+      !isNewNetworkConnected &&
+      !isAuthConnected
+    ) {
+      RouterController.push('SwitchActiveChain', {
+        switchToChain: network.chainNamespace,
+        navigateTo: 'Connect',
+        navigateWithReplace: true,
+        network
+      })
+    } else {
+      RouterController.push('SwitchNetwork', { ...routerData, network })
     }
   }
 }

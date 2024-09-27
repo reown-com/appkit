@@ -1,5 +1,5 @@
 export const SECURE_SITE_SDK =
-  process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL'] || 'https://secure.walletconnect.com/sdk'
+  process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL'] || 'https://secure.walletconnect.org/sdk'
 
 export const DEFAULT_LOG_LEVEL = process.env['NEXT_PUBLIC_DEFAULT_LOG_LEVEL'] || 'error'
 
@@ -7,7 +7,7 @@ export const W3mFrameConstants = {
   APP_EVENT_KEY: '@w3m-app/',
   FRAME_EVENT_KEY: '@w3m-frame/',
   RPC_METHOD_KEY: 'RPC_',
-  STORAGE_KEY: '@w3m-storage/',
+  STORAGE_KEY: '@appkit-wallet/',
 
   SESSION_TOKEN_KEY: 'SESSION_TOKEN_KEY',
   EMAIL_LOGIN_USED_KEY: 'EMAIL_LOGIN_USED_KEY',
@@ -18,7 +18,6 @@ export const W3mFrameConstants = {
   SMART_ACCOUNT_ENABLED: 'SMART_ACCOUNT_ENABLED',
   SMART_ACCOUNT_ENABLED_NETWORKS: 'SMART_ACCOUNT_ENABLED_NETWORKS',
   SOCIAL_USERNAME: 'SOCIAL_USERNAME',
-  SOCIAL: '@w3m/connected_social',
 
   APP_SWITCH_NETWORK: '@w3m-app/SWITCH_NETWORK',
   APP_CONNECT_EMAIL: '@w3m-app/CONNECT_EMAIL',
@@ -40,6 +39,8 @@ export const W3mFrameConstants = {
   APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS: '@w3m-app/GET_SMART_ACCOUNT_ENABLED_NETWORKS',
   APP_INIT_SMART_ACCOUNT: '@w3m-app/INIT_SMART_ACCOUNT',
   APP_SET_PREFERRED_ACCOUNT: '@w3m-app/SET_PREFERRED_ACCOUNT',
+  APP_CONNECT_FARCASTER: '@w3m-app/CONNECT_FARCASTER',
+  APP_GET_FARCASTER_URI: '@w3m-app/GET_FARCASTER_URI',
 
   FRAME_SWITCH_NETWORK_ERROR: '@w3m-frame/SWITCH_NETWORK_ERROR',
   FRAME_SWITCH_NETWORK_SUCCESS: '@w3m-frame/SWITCH_NETWORK_SUCCESS',
@@ -51,6 +52,11 @@ export const W3mFrameConstants = {
   FRAME_CONNECT_OTP_ERROR: '@w3m-frame/CONNECT_OTP_ERROR',
   FRAME_CONNECT_SOCIAL_SUCCESS: '@w3m-frame/CONNECT_SOCIAL_SUCCESS',
   FRAME_CONNECT_SOCIAL_ERROR: '@w3m-frame/CONNECT_SOCIAL_ERROR',
+  FRAME_CONNECT_FARCASTER_SUCCESS: '@w3m-frame/CONNECT_FARCASTER_SUCCESS',
+  FRAME_CONNECT_FARCASTER_ERROR: '@w3m-frame/CONNECT_FARCASTER_ERROR',
+  FRAME_GET_FARCASTER_URI_SUCCESS: '@w3m-frame/GET_FARCASTER_URI_SUCCESS',
+  FRAME_GET_FARCASTER_URI_ERROR: '@w3m-frame/GET_FARCASTER_URI_ERROR',
+
   FRAME_GET_SOCIAL_REDIRECT_URI_SUCCESS: '@w3m-frame/GET_SOCIAL_REDIRECT_URI_SUCCESS',
   FRAME_GET_SOCIAL_REDIRECT_URI_ERROR: '@w3m-frame/GET_SOCIAL_REDIRECT_URI_ERROR',
   FRAME_GET_USER_SUCCESS: '@w3m-frame/GET_USER_SUCCESS',
@@ -125,9 +131,26 @@ export const W3mFrameRpcConstants = {
     'eth_newPendingTransactionFilter',
     'eth_sendRawTransaction',
     'eth_syncing',
-    'eth_uninstallFilter'
+    'eth_uninstallFilter',
+    'wallet_getCapabilities',
+    'wallet_getCallsStatus',
+    'eth_getUserOperationReceipt',
+    'eth_estimateUserOperationGas',
+    'eth_getUserOperationByHash',
+    'eth_supportedEntryPoints'
   ],
-  NOT_SAFE_RPC_METHODS: ['personal_sign', 'eth_signTypedData_v4', 'eth_sendTransaction'],
+  NOT_SAFE_RPC_METHODS: [
+    'personal_sign',
+    'eth_signTypedData_v4',
+    'eth_sendTransaction',
+    'solana_signMessage',
+    'solana_signTransaction',
+    'solana_signAllTransactions',
+    'solana_signAndSendTransaction',
+    'wallet_sendCalls',
+    'wallet_grantPermissions',
+    'eth_sendUserOperation'
+  ],
   GET_CHAIN_ID: 'eth_chainId',
   RPC_METHOD_NOT_ALLOWED_MESSAGE: 'Requested RPC call is not allowed',
   RPC_METHOD_NOT_ALLOWED_UI_MESSAGE: 'Action not allowed',

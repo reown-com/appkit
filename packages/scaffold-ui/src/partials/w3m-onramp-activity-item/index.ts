@@ -1,8 +1,7 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
-import { customElement } from '@web3modal/ui'
-import type { ColorType } from '@web3modal/ui/src/utils/TypeUtil.js'
-import { ApiController } from '@web3modal/core'
+import { customElement, type ColorType } from '@reown/appkit-ui'
+import { ApiController } from '@reown/appkit-core'
 import styles from './styles.js'
 
 @customElement('w3m-onramp-activity-item')

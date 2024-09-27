@@ -1,169 +1,107 @@
-# @examples/react-ethers5
+# @examples/react-ethers
 
-## 5.0.3
-
-### Patch Changes
-
-- fix: ethers5 coinbase issues. Turbo build issues. Upate cb connector.
-
-- Updated dependencies []:
-  - @web3modal/ethers@5.0.3
-
-## 5.0.2
+## 1.0.4
 
 ### Patch Changes
 
-- fix: siwe signOutOnNetwork change issue. fix: wallets filtered by rdns matched from explorer api. fix: solana network id issue
+- [#2907](https://github.com/reown-com/appkit/pull/2907) [`b35af73`](https://github.com/reown-com/appkit/commit/b35af73dde9c46142741bd153e9e7105c077cfbd) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where featured wallet ids were being filtered out if their connector was present but not displayed. eg. SDK Connectors.
 
-- Updated dependencies []:
-  - @web3modal/ethers@5.0.2
+- [#2882](https://github.com/reown-com/appkit/pull/2882) [`aaa22cf`](https://github.com/reown-com/appkit/commit/aaa22cfdb620d44da52466c1cc9270ad88f4c81b) Thanks [@magiziz](https://github.com/magiziz)! - Fixed deep link not working after connecting a wallet
 
-## 5.0.1
+- Updated dependencies [[`b35af73`](https://github.com/reown-com/appkit/commit/b35af73dde9c46142741bd153e9e7105c077cfbd), [`aaa22cf`](https://github.com/reown-com/appkit/commit/aaa22cfdb620d44da52466c1cc9270ad88f4c81b)]:
+  - @reown/appkit-adapter-ethers@1.0.4
+  - @reown/appkit@1.0.4
+
+## 1.0.3
 
 ### Patch Changes
 
-- fix: remove walletconnect restriction on names
+- [#2897](https://github.com/reown-com/appkit/pull/2897) [`fb20e46`](https://github.com/reown-com/appkit/commit/fb20e461ee6745b83d9cdf5051fc4c674e0d793d) Thanks [@tomiir](https://github.com/tomiir)! - Makes SDKType param optional
 
-- Updated dependencies []:
-  - @web3modal/ethers@5.0.1
+- [#2889](https://github.com/reown-com/appkit/pull/2889) [`dc7b895`](https://github.com/reown-com/appkit/commit/dc7b89527e4dd3c4602db69491be5bc03a9c52d3) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Update siweParams with AppKit chains
 
-## 5.0.0
+- [#2888](https://github.com/reown-com/appkit/pull/2888) [`1086727`](https://github.com/reown-com/appkit/commit/1086727e024bafbbebe0059635c4d8728a7fb6b9) Thanks [@enesozturk](https://github.com/enesozturk)! - Updates active network state management and local storage controls
+
+- Updated dependencies [[`fb20e46`](https://github.com/reown-com/appkit/commit/fb20e461ee6745b83d9cdf5051fc4c674e0d793d), [`dc7b895`](https://github.com/reown-com/appkit/commit/dc7b89527e4dd3c4602db69491be5bc03a9c52d3), [`1086727`](https://github.com/reown-com/appkit/commit/1086727e024bafbbebe0059635c4d8728a7fb6b9)]:
+  - @reown/appkit-adapter-ethers@1.0.3
+  - @reown/appkit@1.0.3
+
+## 1.0.2
+
+### Patch Changes
+
+- [#2881](https://github.com/reown-com/appkit/pull/2881) [`a632159`](https://github.com/reown-com/appkit/commit/a6321595e4c910215e552119be69dc1486efb240) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where wagmi would not reconnect on an active session
+
+- [#2867](https://github.com/reown-com/appkit/pull/2867) [`48ad644`](https://github.com/reown-com/appkit/commit/48ad6444ca8f5a53cc2669e961492e62f32c0687) Thanks [@zoruka](https://github.com/zoruka)! - Refactors solana network and account syncing logic to clean up the code and fix missing project id for solana connection
+
+- [#2879](https://github.com/reown-com/appkit/pull/2879) [`babb413`](https://github.com/reown-com/appkit/commit/babb4133ddff939061b788c3115b9d988b6e3ce2) Thanks [@zoruka](https://github.com/zoruka)! - Add Solana CoinbaseWalletProvider to allow connecting with coinbase extension
+
+- [#2881](https://github.com/reown-com/appkit/pull/2881) [`a632159`](https://github.com/reown-com/appkit/commit/a6321595e4c910215e552119be69dc1486efb240) Thanks [@tomiir](https://github.com/tomiir)! - Fixes wrong wagmi authConnector name causing issues when merging multiple authConnectors
+
+- [#2861](https://github.com/reown-com/appkit/pull/2861) [`a181a19`](https://github.com/reown-com/appkit/commit/a181a19a017053df646e9ae6e1ffa77b1deac1d1) Thanks [@enesozturk](https://github.com/enesozturk)! - Updates the localstorage keys
+
+- Updated dependencies [[`a632159`](https://github.com/reown-com/appkit/commit/a6321595e4c910215e552119be69dc1486efb240), [`48ad644`](https://github.com/reown-com/appkit/commit/48ad6444ca8f5a53cc2669e961492e62f32c0687), [`babb413`](https://github.com/reown-com/appkit/commit/babb4133ddff939061b788c3115b9d988b6e3ce2), [`a632159`](https://github.com/reown-com/appkit/commit/a6321595e4c910215e552119be69dc1486efb240), [`a181a19`](https://github.com/reown-com/appkit/commit/a181a19a017053df646e9ae6e1ffa77b1deac1d1)]:
+  - @reown/appkit-adapter-ethers@1.0.2
+  - @reown/appkit@1.0.2
+
+## 1.0.1
+
+### Patch Changes
+
+- [#54](https://github.com/WalletConnect/web3modal/pull/54) [`dc6dd8d`](https://github.com/WalletConnect/web3modal/commit/dc6dd8d37cbe79ae3b0bcaf7bdace1fe6ad11b09) Thanks [@tomiir](https://github.com/tomiir)! - Makes packages public
+
+- Updated dependencies [[`dc6dd8d`](https://github.com/WalletConnect/web3modal/commit/dc6dd8d37cbe79ae3b0bcaf7bdace1fe6ad11b09)]:
+  - @reown/appkit-adapter-ethers@1.0.1
+  - @reown/appkit@1.0.1
+
+## 1.0.0
 
 ### Major Changes
 
-- Release V5
+- [#53](https://github.com/WalletConnect/web3modal/pull/53) [`f4a378d`](https://github.com/WalletConnect/web3modal/commit/f4a378de8bf67f296ab5cc2d730533e7362ba36a) Thanks [@tomiir](https://github.com/tomiir)! - Reown v1.0.0
 
 ### Patch Changes
 
-- Updated dependencies []:
-  - @web3modal/ethers@5.0.0
+- [#49](https://github.com/WalletConnect/web3modal/pull/49) [`e678965`](https://github.com/WalletConnect/web3modal/commit/e67896504762ea2220aaedb3202077eec83fdc7f) Thanks [@enesozturk](https://github.com/enesozturk)! - Updates prop names, adapter names, network exported path name
 
-## 5.0.0-cn-v5.0
+- [#52](https://github.com/WalletConnect/web3modal/pull/52) [`3d62df8`](https://github.com/WalletConnect/web3modal/commit/3d62df8e0f29977ee82f96f17fbbac66f39ae6a6) Thanks [@zoruka](https://github.com/zoruka)! - Fix network availability and wagmi reconnect
 
-### Major Changes
+- Updated dependencies [[`e678965`](https://github.com/WalletConnect/web3modal/commit/e67896504762ea2220aaedb3202077eec83fdc7f), [`3d62df8`](https://github.com/WalletConnect/web3modal/commit/3d62df8e0f29977ee82f96f17fbbac66f39ae6a6), [`f4a378d`](https://github.com/WalletConnect/web3modal/commit/f4a378de8bf67f296ab5cc2d730533e7362ba36a)]:
+  - @reown/appkit-adapter-ethers@1.0.0
+  - @reown/appkit@1.0.0
 
-- Test V5
-
-### Patch Changes
-
-- Updated dependencies []:
-  - @web3modal/ethers@5.0.0-cn-v5.0
-
-## 4.2.3
+## 0.0.5
 
 ### Patch Changes
 
-- feat: - feat: restricted ens names. fix: iat set automatically if not present in messageParams. Adds siwe config handlers
+- [#45](https://github.com/WalletConnect/web3modal/pull/45) [`395398c`](https://github.com/WalletConnect/web3modal/commit/395398c7c943142776da2ea8011205e600d8ab86) Thanks [@enesozturk](https://github.com/enesozturk)! - Updates RPC urls project id query params dynamically
 
-- Updated dependencies []:
-  - @web3modal/ethers@4.2.3
+- [#46](https://github.com/WalletConnect/web3modal/pull/46) [`756ab0d`](https://github.com/WalletConnect/web3modal/commit/756ab0d9f7b86abc6b1a4831197058176618d9ef) Thanks [@enesozturk](https://github.com/enesozturk)! - Updates sdk type and sdk version values
 
-## 4.2.3-alpha.0
+- [#42](https://github.com/WalletConnect/web3modal/pull/42) [`8c90093`](https://github.com/WalletConnect/web3modal/commit/8c90093f724dc1ba4e86f7101fac8772b58fae04) Thanks [@tomiir](https://github.com/tomiir)! - Fix circular dependency in OptionsController
 
-### Patch Changes
+- Updated dependencies [[`395398c`](https://github.com/WalletConnect/web3modal/commit/395398c7c943142776da2ea8011205e600d8ab86), [`756ab0d`](https://github.com/WalletConnect/web3modal/commit/756ab0d9f7b86abc6b1a4831197058176618d9ef), [`8c90093`](https://github.com/WalletConnect/web3modal/commit/8c90093f724dc1ba4e86f7101fac8772b58fae04)]:
+  - @reown/appkit@0.0.5
+  - @reown/appkit-adapter-ethers@0.0.5
 
-- feat: add support for coinbase smart accounts
-
-- Updated dependencies []:
-  - @web3modal/ethers@4.2.3-alpha.0
-
-## 4.1.2
+## 0.0.4
 
 ### Patch Changes
 
-- feat: social login refactor. wagmi sendCalls support. refactor theme variables
+- [#38](https://github.com/WalletConnect/web3modal/pull/38) [`89fb054`](https://github.com/WalletConnect/web3modal/commit/89fb054d7e2513b80940c73101dc395e7ea2694b) Thanks [@tomiir](https://github.com/tomiir)! - Base reown package rename setup.
 
-- Updated dependencies []:
-  - @web3modal/ethers@4.2.2
+- Updated dependencies [[`89fb054`](https://github.com/WalletConnect/web3modal/commit/89fb054d7e2513b80940c73101dc395e7ea2694b)]:
+  - @reown/appkit-adapter-ethers@0.0.4
+  - @reown/appkit@0.0.4
 
-## 4.1.1
-
-### Patch Changes
-
-- Hotfix to support injected and announced wallets in in app browsers
-
-- Updated dependencies []:
-  - @web3modal/ethers@4.2.1
-
-## 4.1.0
+## 0.0.3
 
 ### Patch Changes
 
-- release: 4.2.0 version release
+- [#28](https://github.com/WalletConnect/web3modal/pull/28) [`91d0296`](https://github.com/WalletConnect/web3modal/commit/91d02963cbe3c2d06b74801b519ce23dd30ff797) Thanks [@tomiir](https://github.com/tomiir)! - Package setup. Reset Changelogs
 
-- Updated dependencies []:
-  - @web3modal/ethers@4.2.0
+- [#12](https://github.com/WalletConnect/web3modal/pull/12) [`51eff9f`](https://github.com/WalletConnect/web3modal/commit/51eff9f82c296b0ba2b5ab33af92a1fa54a77f7a) Thanks [@tomiir](https://github.com/tomiir)! - Adds test vitest.workspace file
 
-## 4.1.0-alpha.2
-
-### Patch Changes
-
-- feat: 4.2.0-alpha release
-
-- Updated dependencies []:
-  - @web3modal/ethers@4.2.0-alpha.0
-
-## 4.1.0-03e4f4a8.1
-
-### Patch Changes
-
-- fix: Issue with SIWE + Wagmi sign out. Fixes issue where signature verification fail resulted in empty open modal'
-
-- Updated dependencies []:
-  - @web3modal/ethers@4.2.0-03e4f4a8.2
-
-## 4.1.0-448f7f4.0
-
-### Minor Changes
-
-- refactor: improvements to all features (siwe, send, swaps, ui and ux)
-
-### Patch Changes
-
-- Updated dependencies []:
-  - @web3modal/ethers@4.2.0-448f7f4.1
-
-## 4.0.5
-
-### Patch Changes
-
-- [#1917](https://github.com/WalletConnect/web3modal/pull/1917) [`f79566c`](https://github.com/WalletConnect/web3modal/commit/f79566ca5119fa12795dd49fce01aea8e1a05d97) Thanks [@tomiir](https://github.com/tomiir)! - Replaces public url with blockchain api for supported networks
-
-- Updated dependencies [[`f79566c`](https://github.com/WalletConnect/web3modal/commit/f79566ca5119fa12795dd49fce01aea8e1a05d97)]:
-  - @web3modal/ethers5@4.0.5
-
-## 4.0.4
-
-### Patch Changes
-
-- Fix theming issue for email
-
-- Updated dependencies []:
-  - @web3modal/ethers5@4.0.4
-
-## 4.0.3
-
-### Patch Changes
-
-- Tag email beta, Sync Theme For Secure Wallet, Use manual version in constants
-
-- Updated dependencies []:
-  - @web3modal/ethers5@4.0.3
-
-## 4.0.2
-
-### Patch Changes
-
-- [#1899](https://github.com/WalletConnect/web3modal/pull/1899) [`42e97a0`](https://github.com/WalletConnect/web3modal/commit/42e97a04eb60090a821019ae80d62acacf35fc66) Thanks [@xzilja](https://github.com/xzilja)! - Reverted change that removed email update flow from account view
-
-- Updated dependencies [[`42e97a0`](https://github.com/WalletConnect/web3modal/commit/42e97a04eb60090a821019ae80d62acacf35fc66)]:
-  - @web3modal/ethers5@4.0.2
-
-## 4.0.1
-
-### Patch Changes
-
-- [#1879](https://github.com/WalletConnect/web3modal/pull/1879) [`e3fa353`](https://github.com/WalletConnect/web3modal/commit/e3fa35396e3d2b1153d12bfaf92738bc67b46640) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix various issues on ethers/ethers5 package
-
-- Updated dependencies [[`e3fa353`](https://github.com/WalletConnect/web3modal/commit/e3fa35396e3d2b1153d12bfaf92738bc67b46640)]:
-  - @web3modal/ethers5@4.0.1
+- Updated dependencies [[`91d0296`](https://github.com/WalletConnect/web3modal/commit/91d02963cbe3c2d06b74801b519ce23dd30ff797), [`51eff9f`](https://github.com/WalletConnect/web3modal/commit/51eff9f82c296b0ba2b5ab33af92a1fa54a77f7a)]:
+  - @reown/appkit-adapter-ethers@0.0.3
+  - @reown/appkit@0.0.3

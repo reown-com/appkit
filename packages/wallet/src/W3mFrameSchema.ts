@@ -1,5 +1,6 @@
 import { z } from 'zod'
-import { W3mFrameConstants } from './W3mFrameConstants.js'
+import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
+import type { AdapterType, AppKitSdkVersion, SdkFramework } from '@reown/appkit-common'
 
 // -- Helpers ----------------------------------------------------------------
 const zError = z.object({ message: z.string() })
@@ -8,12 +9,16 @@ function zType<K extends keyof typeof W3mFrameConstants>(key: K) {
   return z.literal(W3mFrameConstants[key])
 }
 
+// -- Custom Types -----------------------------------------------------------
+type SdkType = 'w3m' | 'appkit'
+type SdkVersion = `${SdkFramework}-${AdapterType}-${string}` | AppKitSdkVersion | undefined
+
 // -- Responses --------------------------------------------------------------
 export const GetTransactionByHashResponse = z.object({
   accessList: z.array(z.string()),
   blockHash: z.string().nullable(),
   blockNumber: z.string().nullable(),
-  chainId: z.string(),
+  chainId: z.string().or(z.number()),
   from: z.string(),
   gas: z.string(),
   hash: z.string(),
@@ -29,12 +34,12 @@ export const GetTransactionByHashResponse = z.object({
   v: z.string(),
   value: z.string()
 })
-export const AppSwitchNetworkRequest = z.object({ chainId: z.number() })
+export const AppSwitchNetworkRequest = z.object({ chainId: z.string().or(z.number()) })
 export const AppConnectEmailRequest = z.object({ email: z.string().email() })
 export const AppConnectOtpRequest = z.object({ otp: z.string() })
 export const AppConnectSocialRequest = z.object({ uri: z.string() })
 export const AppGetUserRequest = z.object({
-  chainId: z.optional(z.number()),
+  chainId: z.optional(z.string().or(z.number())),
   preferredAccountType: z.optional(z.string())
 })
 export const AppGetSocialRedirectUriRequest = z.object({
@@ -57,12 +62,8 @@ export const AppSyncDappDataRequest = z.object({
       icons: z.array(z.string())
     })
     .optional(),
-  sdkVersion: z.string() as z.ZodType<
-    | `${'html' | 'react' | 'vue'}-wagmi-${string}`
-    | `${'html' | 'react' | 'vue'}-ethers5-${string}`
-    | `${'html' | 'react' | 'vue'}-ethers-${string}`
-    | `${'html' | 'react' | 'vue'}-solana-${string}`
-  >,
+  sdkVersion: z.string().optional() as z.ZodType<SdkVersion>,
+  sdkType: (z.string() as z.ZodType<SdkType>).optional(),
   projectId: z.string()
 })
 export const AppSetPreferredAccountRequest = z.object({ type: z.string() })
@@ -70,27 +71,58 @@ export const AppSetPreferredAccountRequest = z.object({ type: z.string() })
 export const FrameConnectEmailResponse = z.object({
   action: z.enum(['VERIFY_DEVICE', 'VERIFY_OTP'])
 })
+
+export const FrameGetFarcasterUriResponse = z.object({
+  url: z.string()
+})
+
+export const FrameConnectFarcasterResponse = z.object({
+  userName: z.string()
+})
+
 export const FrameConnectSocialResponse = z.object({
   email: z.string(),
   address: z.string(),
-  chainId: z.number(),
+  chainId: z.string().or(z.number()),
+  accounts: z
+    .array(
+      z.object({
+        address: z.string(),
+        type: z.enum([
+          W3mFrameRpcConstants.ACCOUNT_TYPES.EOA,
+          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        ])
+      })
+    )
+    .optional(),
   userName: z.string().optional()
 })
 export const FrameUpdateEmailResponse = z.object({
   action: z.enum(['VERIFY_PRIMARY_OTP', 'VERIFY_SECONDARY_OTP'])
 })
 export const FrameGetUserResponse = z.object({
-  email: z.string().email(),
+  email: z.string().email().optional().nullable(),
   address: z.string(),
-  chainId: z.number(),
+  chainId: z.string().or(z.number()),
   smartAccountDeployed: z.optional(z.boolean()),
+  accounts: z
+    .array(
+      z.object({
+        address: z.string(),
+        type: z.enum([
+          W3mFrameRpcConstants.ACCOUNT_TYPES.EOA,
+          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        ])
+      })
+    )
+    .optional(),
   preferredAccountType: z.optional(z.string())
 })
 export const FrameGetSocialRedirectUriResponse = z.object({ uri: z.string() })
 export const FrameIsConnectedResponse = z.object({ isConnected: z.boolean() })
-export const FrameGetChainIdResponse = z.object({ chainId: z.number() })
-export const FrameSwitchNetworkResponse = z.object({ chainId: z.number() })
-export const FrameUpdateEmailSecondaryOtpResolver = z.object({ newEmail: z.string().email() })
+export const FrameGetChainIdResponse = z.object({ chainId: z.string().or(z.number()) })
+export const FrameSwitchNetworkResponse = z.object({ chainId: z.string().or(z.number()) })
+export const FrameUpdateEmailSecondaryOtpResponse = z.object({ newEmail: z.string().email() })
 export const FrameGetSmartAccountEnabledNetworksResponse = z.object({
   smartAccountEnabledNetworks: z.array(z.number())
 })
@@ -279,49 +311,164 @@ export const RpcEthSendTransactionRequest = z.object({
   params: z.array(z.any())
 })
 
+export const RpcSolanaSignMessageRequest = z.object({
+  method: z.literal('solana_signMessage'),
+  params: z.object({
+    message: z.string(),
+    pubkey: z.string()
+  })
+})
+
+export const RpcSolanaSignTransactionRequest = z.object({
+  method: z.literal('solana_signTransaction'),
+  params: z.object({
+    transaction: z.string()
+  })
+})
+
+export const RpcSolanaSignAllTransactionsRequest = z.object({
+  method: z.literal('solana_signAllTransactions'),
+  params: z.object({
+    transactions: z.array(z.string())
+  })
+})
+
+export const RpcSolanaSignAndSendTransactionRequest = z.object({
+  method: z.literal('solana_signAndSendTransaction'),
+  params: z.object({
+    transaction: z.string(),
+    // Options should match https://solana-labs.github.io/solana-web3.js/types/SendOptions.html
+    options: z
+      .object({
+        skipPreflight: z.boolean().optional(),
+        preflightCommitment: z
+          .enum([
+            'processed',
+            'confirmed',
+            'finalized',
+            'recent',
+            'single',
+            'singleGossip',
+            'root',
+            'max'
+          ])
+          .optional(),
+        maxRetries: z.number().optional(),
+        minContextSlot: z.number().optional()
+      })
+      .optional()
+  })
+})
+
+export const WalletSendCallsRequest = z.object({
+  method: z.literal('wallet_sendCalls'),
+  params: z.array(
+    z.object({
+      chainId: z.string().or(z.number()).optional(),
+      from: z.string().optional(),
+      version: z.string().optional(),
+      capabilities: z.any().optional(),
+      calls: z.array(
+        z.object({
+          to: z.string().startsWith('0x'),
+          data: z.string().startsWith('0x').optional(),
+          value: z.string().optional()
+        })
+      )
+    })
+  )
+})
+
+export const WalletGetCallsReceiptRequest = z.object({
+  method: z.literal('wallet_getCallsStatus'),
+  params: z.array(z.string())
+})
+
+export const WalletGetCapabilitiesRequest = z.object({
+  method: z.literal('wallet_getCapabilities')
+})
+export const WalletGrantPermissionsRequest = z.object({
+  method: z.literal('wallet_grantPermissions'),
+  params: z.array(z.any())
+})
+
 export const FrameSession = z.object({
   token: z.string()
+})
+
+export const EventSchema = z.object({
+  // Remove optional once all packages are updated
+  id: z.string().optional()
 })
 
 export const W3mFrameSchema = {
   // -- App Events -----------------------------------------------------------
 
-  appEvent: z
-    .object({ type: zType('APP_SWITCH_NETWORK'), payload: AppSwitchNetworkRequest })
-
-    .or(z.object({ type: zType('APP_CONNECT_EMAIL'), payload: AppConnectEmailRequest }))
-
-    .or(z.object({ type: zType('APP_CONNECT_DEVICE') }))
-
-    .or(z.object({ type: zType('APP_CONNECT_OTP'), payload: AppConnectOtpRequest }))
-
-    .or(z.object({ type: zType('APP_CONNECT_SOCIAL'), payload: AppConnectSocialRequest }))
-
-    .or(z.object({ type: zType('APP_GET_USER'), payload: z.optional(AppGetUserRequest) }))
+  appEvent: EventSchema.extend({
+    type: zType('APP_SWITCH_NETWORK'),
+    payload: AppSwitchNetworkRequest
+  })
 
     .or(
-      z.object({
+      EventSchema.extend({
+        type: zType('APP_CONNECT_EMAIL'),
+        payload: AppConnectEmailRequest
+      })
+    )
+
+    .or(EventSchema.extend({ type: zType('APP_CONNECT_DEVICE') }))
+
+    .or(EventSchema.extend({ type: zType('APP_CONNECT_OTP'), payload: AppConnectOtpRequest }))
+
+    .or(
+      EventSchema.extend({
+        type: zType('APP_CONNECT_SOCIAL'),
+        payload: AppConnectSocialRequest
+      })
+    )
+
+    .or(EventSchema.extend({ type: zType('APP_GET_FARCASTER_URI') }))
+
+    .or(EventSchema.extend({ type: zType('APP_CONNECT_FARCASTER') }))
+
+    .or(
+      EventSchema.extend({
+        type: zType('APP_GET_USER'),
+        payload: z.optional(AppGetUserRequest)
+      })
+    )
+
+    .or(
+      EventSchema.extend({
         type: zType('APP_GET_SOCIAL_REDIRECT_URI'),
         payload: AppGetSocialRedirectUriRequest
       })
     )
 
-    .or(z.object({ type: zType('APP_SIGN_OUT') }))
-
-    .or(z.object({ type: zType('APP_IS_CONNECTED'), payload: z.optional(FrameSession) }))
-
-    .or(z.object({ type: zType('APP_GET_CHAIN_ID') }))
-
-    .or(z.object({ type: zType('APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS') }))
-
-    .or(z.object({ type: zType('APP_INIT_SMART_ACCOUNT') }))
+    .or(EventSchema.extend({ type: zType('APP_SIGN_OUT') }))
 
     .or(
-      z.object({ type: zType('APP_SET_PREFERRED_ACCOUNT'), payload: AppSetPreferredAccountRequest })
+      EventSchema.extend({
+        type: zType('APP_IS_CONNECTED'),
+        payload: z.optional(FrameSession)
+      })
+    )
+
+    .or(EventSchema.extend({ type: zType('APP_GET_CHAIN_ID') }))
+
+    .or(EventSchema.extend({ type: zType('APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS') }))
+
+    .or(EventSchema.extend({ type: zType('APP_INIT_SMART_ACCOUNT') }))
+
+    .or(
+      EventSchema.extend({
+        type: zType('APP_SET_PREFERRED_ACCOUNT'),
+        payload: AppSetPreferredAccountRequest
+      })
     )
 
     .or(
-      z.object({
+      EventSchema.extend({
         type: zType('APP_RPC_REQUEST'),
         payload: RpcPersonalSignRequest.or(RpcEthSendTransactionRequest)
           .or(RpcEthAccountsRequest)
@@ -361,139 +508,215 @@ export const W3mFrameSchema = {
           .or(RpcPersonalSignRequest)
           .or(RpcEthSignTypedDataV4)
           .or(RpcEthSendTransactionRequest)
+          .or(RpcSolanaSignMessageRequest)
+          .or(RpcSolanaSignTransactionRequest)
+          .or(RpcSolanaSignAllTransactionsRequest)
+          .or(RpcSolanaSignAndSendTransactionRequest)
+          .or(WalletGetCallsReceiptRequest)
+          .or(WalletSendCallsRequest)
+          .or(WalletGetCapabilitiesRequest)
+          .or(WalletGrantPermissionsRequest)
       })
     )
 
-    .or(z.object({ type: zType('APP_UPDATE_EMAIL'), payload: AppUpdateEmailRequest }))
+    .or(EventSchema.extend({ type: zType('APP_UPDATE_EMAIL'), payload: AppUpdateEmailRequest }))
 
     .or(
-      z.object({
+      EventSchema.extend({
         type: zType('APP_UPDATE_EMAIL_PRIMARY_OTP'),
         payload: AppUpdateEmailPrimaryOtpRequest
       })
     )
 
     .or(
-      z.object({
+      EventSchema.extend({
         type: zType('APP_UPDATE_EMAIL_SECONDARY_OTP'),
         payload: AppUpdateEmailSecondaryOtpRequest
       })
     )
 
-    .or(z.object({ type: zType('APP_SYNC_THEME'), payload: AppSyncThemeRequest }))
+    .or(EventSchema.extend({ type: zType('APP_SYNC_THEME'), payload: AppSyncThemeRequest }))
 
-    .or(z.object({ type: zType('APP_SYNC_DAPP_DATA'), payload: AppSyncDappDataRequest })),
+    .or(
+      EventSchema.extend({
+        type: zType('APP_SYNC_DAPP_DATA'),
+        payload: AppSyncDappDataRequest
+      })
+    ),
 
   // -- Frame Events ---------------------------------------------------------
-  frameEvent: z
-    .object({ type: zType('FRAME_SWITCH_NETWORK_ERROR'), payload: zError })
+  frameEvent: EventSchema.extend({ type: zType('FRAME_SWITCH_NETWORK_ERROR'), payload: zError })
 
     .or(
-      z.object({ type: zType('FRAME_SWITCH_NETWORK_SUCCESS'), payload: FrameSwitchNetworkResponse })
+      EventSchema.extend({
+        type: zType('FRAME_SWITCH_NETWORK_SUCCESS'),
+        payload: FrameSwitchNetworkResponse
+      })
     )
 
-    .or(z.object({ type: zType('FRAME_CONNECT_EMAIL_ERROR'), payload: zError }))
-
     .or(
-      z.object({ type: zType('FRAME_CONNECT_EMAIL_SUCCESS'), payload: FrameConnectEmailResponse })
+      EventSchema.extend({
+        type: zType('FRAME_CONNECT_EMAIL_SUCCESS'),
+        payload: FrameConnectEmailResponse
+      })
     )
 
-    .or(z.object({ type: zType('FRAME_CONNECT_OTP_ERROR'), payload: zError }))
-
-    .or(z.object({ type: zType('FRAME_CONNECT_OTP_SUCCESS') }))
-
-    .or(z.object({ type: zType('FRAME_CONNECT_DEVICE_ERROR'), payload: zError }))
-
-    .or(z.object({ type: zType('FRAME_CONNECT_DEVICE_SUCCESS') }))
+    .or(EventSchema.extend({ type: zType('FRAME_CONNECT_EMAIL_ERROR'), payload: zError }))
 
     .or(
-      z.object({
+      EventSchema.extend({
+        type: zType('FRAME_GET_FARCASTER_URI_SUCCESS'),
+        payload: FrameGetFarcasterUriResponse
+      })
+    )
+
+    .or(EventSchema.extend({ type: zType('FRAME_GET_FARCASTER_URI_ERROR'), payload: zError }))
+
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_CONNECT_FARCASTER_SUCCESS'),
+        payload: FrameConnectFarcasterResponse
+      })
+    )
+
+    .or(EventSchema.extend({ type: zType('FRAME_CONNECT_FARCASTER_ERROR'), payload: zError }))
+
+    .or(EventSchema.extend({ type: zType('FRAME_CONNECT_OTP_ERROR'), payload: zError }))
+
+    .or(EventSchema.extend({ type: zType('FRAME_CONNECT_OTP_SUCCESS') }))
+
+    .or(EventSchema.extend({ type: zType('FRAME_CONNECT_DEVICE_ERROR'), payload: zError }))
+
+    .or(EventSchema.extend({ type: zType('FRAME_CONNECT_DEVICE_SUCCESS') }))
+
+    .or(
+      EventSchema.extend({
         type: zType('FRAME_CONNECT_SOCIAL_SUCCESS'),
         payload: FrameConnectSocialResponse
       })
     )
     .or(
-      z.object({
+      EventSchema.extend({
         type: zType('FRAME_CONNECT_SOCIAL_ERROR'),
         payload: zError
       })
     )
 
-    .or(z.object({ type: zType('FRAME_GET_USER_ERROR'), payload: zError }))
-
-    .or(z.object({ type: zType('FRAME_GET_USER_SUCCESS'), payload: FrameGetUserResponse }))
-
-    .or(z.object({ type: zType('FRAME_GET_SOCIAL_REDIRECT_URI_ERROR'), payload: zError }))
+    .or(EventSchema.extend({ type: zType('FRAME_GET_USER_ERROR'), payload: zError }))
 
     .or(
-      z.object({
+      EventSchema.extend({
+        type: zType('FRAME_GET_USER_SUCCESS'),
+        payload: FrameGetUserResponse
+      })
+    )
+
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_GET_SOCIAL_REDIRECT_URI_ERROR'),
+        payload: zError
+      })
+    )
+
+    .or(
+      EventSchema.extend({
         type: zType('FRAME_GET_SOCIAL_REDIRECT_URI_SUCCESS'),
         payload: FrameGetSocialRedirectUriResponse
       })
     )
 
-    .or(z.object({ type: zType('FRAME_SIGN_OUT_ERROR'), payload: zError }))
+    .or(EventSchema.extend({ type: zType('FRAME_SIGN_OUT_ERROR'), payload: zError }))
 
-    .or(z.object({ type: zType('FRAME_SIGN_OUT_SUCCESS') }))
+    .or(EventSchema.extend({ type: zType('FRAME_SIGN_OUT_SUCCESS') }))
 
-    .or(z.object({ type: zType('FRAME_IS_CONNECTED_ERROR'), payload: zError }))
-
-    .or(z.object({ type: zType('FRAME_IS_CONNECTED_SUCCESS'), payload: FrameIsConnectedResponse }))
-
-    .or(z.object({ type: zType('FRAME_GET_CHAIN_ID_ERROR'), payload: zError }))
-
-    .or(z.object({ type: zType('FRAME_GET_CHAIN_ID_SUCCESS'), payload: FrameGetChainIdResponse }))
-
-    .or(z.object({ type: zType('FRAME_RPC_REQUEST_ERROR'), payload: zError }))
-
-    .or(z.object({ type: zType('FRAME_RPC_REQUEST_SUCCESS'), payload: RpcResponse }))
-
-    .or(z.object({ type: zType('FRAME_SESSION_UPDATE'), payload: FrameSession }))
-
-    .or(z.object({ type: zType('FRAME_UPDATE_EMAIL_ERROR'), payload: zError }))
-
-    .or(z.object({ type: zType('FRAME_UPDATE_EMAIL_SUCCESS'), payload: FrameUpdateEmailResponse }))
-
-    .or(z.object({ type: zType('FRAME_UPDATE_EMAIL_PRIMARY_OTP_ERROR'), payload: zError }))
-
-    .or(z.object({ type: zType('FRAME_UPDATE_EMAIL_PRIMARY_OTP_SUCCESS') }))
-
-    .or(z.object({ type: zType('FRAME_UPDATE_EMAIL_SECONDARY_OTP_ERROR'), payload: zError }))
+    .or(EventSchema.extend({ type: zType('FRAME_IS_CONNECTED_ERROR'), payload: zError }))
 
     .or(
-      z.object({
-        type: zType('FRAME_UPDATE_EMAIL_SECONDARY_OTP_SUCCESS'),
-        payload: FrameUpdateEmailSecondaryOtpResolver
+      EventSchema.extend({
+        type: zType('FRAME_IS_CONNECTED_SUCCESS'),
+        payload: FrameIsConnectedResponse
       })
     )
 
-    .or(z.object({ type: zType('FRAME_SYNC_THEME_ERROR'), payload: zError }))
-
-    .or(z.object({ type: zType('FRAME_SYNC_THEME_SUCCESS') }))
-
-    .or(z.object({ type: zType('FRAME_SYNC_DAPP_DATA_ERROR'), payload: zError }))
-
-    .or(z.object({ type: zType('FRAME_SYNC_DAPP_DATA_SUCCESS') }))
+    .or(EventSchema.extend({ type: zType('FRAME_GET_CHAIN_ID_ERROR'), payload: zError }))
 
     .or(
-      z.object({
+      EventSchema.extend({
+        type: zType('FRAME_GET_CHAIN_ID_SUCCESS'),
+        payload: FrameGetChainIdResponse
+      })
+    )
+
+    .or(EventSchema.extend({ type: zType('FRAME_RPC_REQUEST_ERROR'), payload: zError }))
+
+    .or(EventSchema.extend({ type: zType('FRAME_RPC_REQUEST_SUCCESS'), payload: RpcResponse }))
+
+    .or(EventSchema.extend({ type: zType('FRAME_SESSION_UPDATE'), payload: FrameSession }))
+
+    .or(EventSchema.extend({ type: zType('FRAME_UPDATE_EMAIL_ERROR'), payload: zError }))
+
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_UPDATE_EMAIL_SUCCESS'),
+        payload: FrameUpdateEmailResponse
+      })
+    )
+
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_UPDATE_EMAIL_PRIMARY_OTP_ERROR'),
+        payload: zError
+      })
+    )
+
+    .or(EventSchema.extend({ type: zType('FRAME_UPDATE_EMAIL_PRIMARY_OTP_SUCCESS') }))
+
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_UPDATE_EMAIL_SECONDARY_OTP_ERROR'),
+        payload: zError
+      })
+    )
+
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_UPDATE_EMAIL_SECONDARY_OTP_SUCCESS'),
+        payload: FrameUpdateEmailSecondaryOtpResponse
+      })
+    )
+
+    .or(EventSchema.extend({ type: zType('FRAME_SYNC_THEME_ERROR'), payload: zError }))
+
+    .or(EventSchema.extend({ type: zType('FRAME_SYNC_THEME_SUCCESS') }))
+
+    .or(EventSchema.extend({ type: zType('FRAME_SYNC_DAPP_DATA_ERROR'), payload: zError }))
+
+    .or(EventSchema.extend({ type: zType('FRAME_SYNC_DAPP_DATA_SUCCESS') }))
+
+    .or(
+      EventSchema.extend({
         type: zType('FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_SUCCESS'),
         payload: FrameGetSmartAccountEnabledNetworksResponse
       })
     )
 
     .or(
-      z.object({
+      EventSchema.extend({
         type: zType('FRAME_GET_SMART_ACCOUNT_ENABLED_NETWORKS_ERROR'),
         payload: zError
       })
     )
-    .or(z.object({ type: zType('FRAME_INIT_SMART_ACCOUNT_ERROR'), payload: zError }))
+    .or(EventSchema.extend({ type: zType('FRAME_INIT_SMART_ACCOUNT_ERROR'), payload: zError }))
     .or(
-      z.object({
+      EventSchema.extend({
         type: zType('FRAME_SET_PREFERRED_ACCOUNT_SUCCESS'),
         payload: FrameSetPreferredAccountResponse
       })
     )
-    .or(z.object({ type: zType('FRAME_SET_PREFERRED_ACCOUNT_ERROR'), payload: zError }))
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_SET_PREFERRED_ACCOUNT_ERROR'),
+        payload: zError
+      })
+    )
 }

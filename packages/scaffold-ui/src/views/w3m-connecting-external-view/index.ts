@@ -1,18 +1,19 @@
-import type { BaseError } from '@web3modal/core'
+import type { BaseError } from '@reown/appkit-core'
 import {
+  ChainController,
   ConnectionController,
   EventsController,
-  ModalController,
-  OptionsController,
-  RouterController,
-  StorageUtil
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+  ModalController
+} from '@reown/appkit-core'
+import { ConstantsUtil } from '@reown/appkit-utils'
+import { customElement } from '@reown/appkit-ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
 
 @customElement('w3m-connecting-external-view')
 export class W3mConnectingExternalView extends W3mConnectingWidget {
+  // -- Members ------------------------------------------- //
+  private externalViewUnsubscribe: (() => void)[] = []
+
   public constructor() {
     super()
     if (!this.connector) {
@@ -30,6 +31,17 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
     this.onConnect = this.onConnectProxy.bind(this)
     this.onAutoConnect = this.onConnectProxy.bind(this)
     this.isWalletConnect = false
+    this.externalViewUnsubscribe.push(
+      ChainController.subscribeKey('activeCaipAddress', val => {
+        if (val) {
+          ModalController.close()
+        }
+      })
+    )
+  }
+
+  public override disconnectedCallback() {
+    this.externalViewUnsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
   // -- Private ------------------------------------------- //
@@ -37,22 +49,13 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
     try {
       this.error = false
       if (this.connector) {
-        if (this.connector.imageUrl) {
-          StorageUtil.setConnectedWalletImageUrl(this.connector.imageUrl)
-        }
         /**
          * Coinbase SDK works with popups and popups requires user interaction to be opened since modern browsers block popups which triggered programmatically.
          * Instead of opening a popup in first render for `W3mConnectingWidget`, we need to trigger connection for Coinbase connector specifically when users select it.
          * And if there is an error, this condition will be skipped and the connection will be triggered as usual because we have `Try again` button in this view which is a user interaction as well.
          */
         if (this.connector.id !== ConstantsUtil.COINBASE_SDK_CONNECTOR_ID || !this.error) {
-          await ConnectionController.connectExternal(this.connector)
-
-          if (OptionsController.state.isSiweEnabled) {
-            RouterController.push('ConnectingSiwe')
-          } else {
-            ModalController.close()
-          }
+          await ConnectionController.connectExternal(this.connector, this.connector.chain)
 
           EventsController.sendEvent({
             type: 'track',

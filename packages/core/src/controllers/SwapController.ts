@@ -1,4 +1,4 @@
-import { subscribeKey as subKey } from 'valtio/utils'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { AccountController } from './AccountController.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
@@ -6,15 +6,17 @@ import { ConnectionController } from './ConnectionController.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import { SnackController } from './SnackController.js'
 import { RouterController } from './RouterController.js'
-import { NumberUtil } from '@web3modal/common'
+import { NumberUtil } from '@reown/appkit-common'
 import type { SwapTokenWithBalance } from '../utils/TypeUtil.js'
-import { NetworkController } from './NetworkController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { OptionsController } from './OptionsController.js'
 import { SwapCalculationUtil } from '../utils/SwapCalculationUtil.js'
 import { EventsController } from './EventsController.js'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { StorageUtil } from '../utils/StorageUtil.js'
+import { ChainController } from './ChainController.js'
+import { NetworkController } from './NetworkController.js'
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000
@@ -170,14 +172,15 @@ export const SwapController = {
   },
 
   getParams() {
-    const { address } = AccountController.state
-    const networkAddress = `${NetworkController.state.caipNetwork?.id}:${ConstantsUtil.NATIVE_TOKEN_ADDRESS}`
+    const caipAddress = ChainController.state.activeCaipAddress
+    const address = CoreHelperUtil.getPlainAddress(caipAddress)
+    const networkAddress = NetworkController.getActiveNetworkTokenAddress()
+    const type = StorageUtil.getConnectedConnector()
 
     if (!address) {
       throw new Error('No address found to swap the tokens from.')
     }
 
-    const caipAddress = AccountController.state.caipAddress
     const invalidToToken = !state.toToken?.address || !state.toToken?.decimals
     const invalidSourceToken =
       !state.sourceToken?.address ||
@@ -188,7 +191,7 @@ export const SwapController = {
     return {
       networkAddress,
       fromAddress: address,
-      fromCaipAddress: AccountController.state.caipAddress,
+      fromCaipAddress: caipAddress,
       sourceTokenAddress: state.sourceToken?.address,
       toTokenAddress: state.toToken?.address,
       toTokenAmount: state.toTokenAmount,
@@ -199,7 +202,8 @@ export const SwapController = {
       invalidSourceToken,
       invalidSourceTokenAmount,
       availableToSwap:
-        caipAddress && !invalidToToken && !invalidSourceToken && !invalidSourceTokenAmount
+        caipAddress && !invalidToToken && !invalidSourceToken && !invalidSourceTokenAmount,
+      isAuthConnector: type === 'AUTH'
     }
   },
 
@@ -398,6 +402,10 @@ export const SwapController = {
     const response = await BlockchainApiController.fetchTokenPrice({
       projectId: OptionsController.state.projectId,
       addresses: [networkAddress]
+    }).catch(() => {
+      SnackController.showError('Failed to fetch network token price')
+
+      return { fungibles: [] }
     })
     const token = response.fungibles?.[0]
     const price = token?.price.toString() || '0'
@@ -419,7 +427,7 @@ export const SwapController = {
 
   setBalances(balances: SwapTokenWithBalance[]) {
     const { networkAddress } = this.getParams()
-    const caipNetwork = NetworkController.state.caipNetwork
+    const caipNetwork = ChainController.state.activeCaipNetwork
 
     if (!caipNetwork) {
       return
@@ -440,18 +448,37 @@ export const SwapController = {
     const res = await SwapApiUtil.fetchGasPrice()
 
     if (!res) {
-      return { gasPrice: null, gasPriceInUsd: null }
+      return { gasPrice: null, gasPriceInUSD: null }
     }
 
-    const value = res.standard
-    const gasFee = BigInt(value)
-    const gasLimit = BigInt(INITIAL_GAS_LIMIT)
-    const gasPrice = SwapCalculationUtil.getGasPriceInUSD(state.networkPrice, gasLimit, gasFee)
+    switch (ChainController.state?.activeCaipNetwork?.chainNamespace) {
+      case 'solana':
+        state.gasFee = res.standard
+        state.gasPriceInUSD = NumberUtil.multiply(res.standard, state.networkPrice)
+          .dividedBy(1e9)
+          .toNumber()
 
-    state.gasFee = value
-    state.gasPriceInUSD = gasPrice
+        return {
+          gasPrice: BigInt(state.gasFee),
+          gasPriceInUSD: Number(state.gasPriceInUSD)
+        }
 
-    return { gasPrice: gasFee, gasPriceInUSD: state.gasPriceInUSD }
+      case 'eip155':
+      default:
+        // eslint-disable-next-line no-case-declarations
+        const value = res.standard
+        // eslint-disable-next-line no-case-declarations
+        const gasFee = BigInt(value)
+        // eslint-disable-next-line no-case-declarations
+        const gasLimit = BigInt(INITIAL_GAS_LIMIT)
+        // eslint-disable-next-line no-case-declarations
+        const gasPrice = SwapCalculationUtil.getGasPriceInUSD(state.networkPrice, gasLimit, gasFee)
+
+        state.gasFee = value
+        state.gasPriceInUSD = gasPrice
+
+        return { gasPrice: gasFee, gasPriceInUSD: gasPrice }
+    }
   },
 
   // -- Swap -------------------------------------- //
@@ -467,9 +494,9 @@ export const SwapController = {
 
     state.loadingQuote = true
 
-    const amountDecimal = NumberUtil.bigNumber(state.sourceTokenAmount).multipliedBy(
-      10 ** sourceToken.decimals
-    )
+    const amountDecimal = NumberUtil.bigNumber(state.sourceTokenAmount)
+      .multipliedBy(10 ** sourceToken.decimals)
+      .integerValue()
 
     const quoteResponse = await BlockchainApiController.fetchSwapQuote({
       userAddress: address,
@@ -558,7 +585,7 @@ export const SwapController = {
     }
 
     if (!sourceTokenAddress) {
-      throw new Error('>>> createAllowanceTransaction - No source token address found.')
+      throw new Error('createAllowanceTransaction - No source token address found.')
     }
 
     try {
@@ -654,16 +681,22 @@ export const SwapController = {
 
   // -- Send Transactions --------------------------------- //
   async sendTransactionForApproval(data: TransactionParams) {
-    const { fromAddress } = this.getParams()
+    const { fromAddress, isAuthConnector } = this.getParams()
 
     state.loadingApprovalTransaction = true
-    RouterController.pushTransactionStack({
-      view: null,
-      goBack: true,
-      onSuccess() {
-        SnackController.showLoading('Approving transaction...')
-      }
-    })
+    const approveLimitMessage = `Approve limit increase in your wallet`
+
+    if (isAuthConnector) {
+      RouterController.pushTransactionStack({
+        view: null,
+        goBack: true,
+        onSuccess() {
+          SnackController.showLoading(approveLimitMessage)
+        }
+      })
+    } else {
+      SnackController.showLoading(approveLimitMessage)
+    }
 
     try {
       await ConnectionController.sendTransaction({
@@ -681,7 +714,8 @@ export const SwapController = {
     } catch (err) {
       const error = err as TransactionError
       state.transactionError = error?.shortMessage as unknown as string
-      state.loadingTransaction = false
+      state.loadingApprovalTransaction = false
+      SnackController.showError(error?.shortMessage || 'Transaction error')
     }
   },
 
@@ -690,7 +724,7 @@ export const SwapController = {
       return undefined
     }
 
-    const { fromAddress, toTokenAmount } = this.getParams()
+    const { fromAddress, toTokenAmount, isAuthConnector } = this.getParams()
 
     state.loadingTransaction = true
 
@@ -701,14 +735,18 @@ export const SwapController = {
       ?.symbol} to ${NumberUtil.formatNumberToLocalString(toTokenAmount, 3)} ${state.toToken
       ?.symbol}`
 
-    RouterController.pushTransactionStack({
-      view: 'Account',
-      goBack: false,
-      onSuccess() {
-        SnackController.showLoading(snackbarPendingMessage)
-        SwapController.resetState()
-      }
-    })
+    if (isAuthConnector) {
+      RouterController.pushTransactionStack({
+        view: 'Account',
+        goBack: false,
+        onSuccess() {
+          SnackController.showLoading(snackbarPendingMessage)
+          SwapController.resetState()
+        }
+      })
+    } else {
+      SnackController.showLoading('Confirm transaction in your wallet')
+    }
 
     try {
       const forceUpdateAddresses = [state.sourceToken?.address, state.toToken?.address].join(',')
@@ -727,10 +765,10 @@ export const SwapController = {
         type: 'track',
         event: 'SWAP_SUCCESS',
         properties: {
-          network: NetworkController.state.caipNetwork?.id || '',
+          network: ChainController.state.activeCaipNetwork?.id || '',
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',
-          swapfromAmount: this.state.sourceTokenAmount || '',
+          swapFromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
           isSmartAccount:
             AccountController.state.preferredAccountType ===
@@ -738,6 +776,9 @@ export const SwapController = {
         }
       })
       SwapController.resetState()
+      if (!isAuthConnector) {
+        RouterController.replace('Account')
+      }
       SwapController.getMyTokensWithBalance(forceUpdateAddresses)
 
       return transactionHash
@@ -750,10 +791,10 @@ export const SwapController = {
         type: 'track',
         event: 'SWAP_ERROR',
         properties: {
-          network: NetworkController.state.caipNetwork?.id || '',
+          network: ChainController.state.activeCaipNetwork?.id || '',
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',
-          swapfromAmount: this.state.sourceTokenAmount || '',
+          swapFromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
           isSmartAccount:
             AccountController.state.preferredAccountType ===

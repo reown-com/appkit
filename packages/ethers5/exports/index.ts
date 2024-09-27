@@ -1,10 +1,21 @@
-import type { Web3ModalOptions } from '../src/client.js'
-import { Web3Modal } from '../src/client.js'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
+import { AppKit } from '@reown/appkit'
+import type { AppKitOptions } from '@reown/appkit'
+import { Ethers5Adapter, type AdapterOptions } from '@reown/appkit-adapter-ethers5'
+import packageJson from '../package.json' assert { type: 'json' }
 
-export type { Web3Modal, Web3ModalOptions } from '../src/client.js'
-export { defaultConfig } from '../src/utils/defaultConfig.js'
+// -- Types -------------------------------------------------------------
+export type { AdapterOptions } from '@reown/appkit-adapter-ethers5'
 
-export function createWeb3Modal(options: Web3ModalOptions) {
-  return new Web3Modal({ ...options, _sdkVersion: `html-ethers5-${ConstantsUtil.VERSION}` })
+// -- Setup -------------------------------------------------------------
+type EthersAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
+  AdapterOptions
+
+export function createAppKit(options: EthersAppKitOptions) {
+  const ethers5Adapter = new Ethers5Adapter()
+
+  return new AppKit({
+    ...options,
+    sdkVersion: `html-ethers5-${packageJson.version}`,
+    adapters: [ethers5Adapter]
+  })
 }

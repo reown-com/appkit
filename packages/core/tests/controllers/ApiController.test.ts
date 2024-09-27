@@ -1,14 +1,28 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 import {
   ApiController,
   AssetController,
+  ChainController,
   ConnectorController,
   NetworkController,
   OptionsController
-} from '../../index.js'
+} from '../../exports/index.js'
 import { api } from '../../src/controllers/ApiController.js'
+import { ConstantsUtil } from '@reown/appkit-common'
+
+// -- Constants ----------------------------------------------------------------
+const chain = ConstantsUtil.CHAIN.EVM
 
 // -- Tests --------------------------------------------------------------------
+beforeAll(() => {
+  ChainController.initialize([
+    {
+      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      caipNetworks: []
+    }
+  ])
+})
+
 describe('ApiController', () => {
   it('should have valid default state', () => {
     expect(ApiController.state).toEqual({
@@ -104,22 +118,40 @@ describe('ApiController', () => {
   })
 
   it('should fetch network images ', async () => {
-    NetworkController.setRequestedCaipNetworks([
-      {
-        id: '155:1',
-        name: 'Ethereum Mainnet',
-        imageId: '12341'
-      },
-      {
-        id: '155:4',
-        name: 'Ethereum Rinkeby',
-        imageId: '12342'
-      },
-      {
-        id: '155:42',
-        name: 'Ethereum Kovan'
-      }
-    ])
+    NetworkController.setRequestedCaipNetworks(
+      [
+        {
+          id: 'eip155:1',
+          name: 'Ethereum Mainnet',
+          imageId: '12341',
+          chainNamespace: chain,
+          chainId: '1',
+          currency: 'ETH',
+          explorerUrl: 'https://explorer.ethereum.org',
+          rpcUrl: 'https://rpc.ethereum.org'
+        },
+        {
+          id: 'eip155:4',
+          name: 'Ethereum Rinkeby',
+          imageId: '12342',
+          chainNamespace: chain,
+          chainId: '4',
+          currency: 'ETH',
+          explorerUrl: 'https://explorer.ethereum.org',
+          rpcUrl: 'https://rpc.ethereum.org'
+        },
+        {
+          id: 'eip155:42',
+          name: 'Ethereum Kovan',
+          chainNamespace: chain,
+          chainId: '42',
+          currency: 'ETH',
+          explorerUrl: 'https://explorer.ethereum.org',
+          rpcUrl: 'https://rpc.ethereum.org'
+        }
+      ],
+      chain
+    )
     const fetchSpy = vi.spyOn(ApiController, '_fetchNetworkImage').mockResolvedValue()
     await ApiController.fetchNetworkImages()
 
@@ -128,23 +160,40 @@ describe('ApiController', () => {
   })
 
   it('should only fetch network images for networks with imageIds', async () => {
-    NetworkController.setRequestedCaipNetworks([
-      {
-        id: '155:1',
-        name: 'Ethereum Mainnet',
-        imageId: '12341'
-      },
-      {
-        id: '155:4',
-        name: 'Ethereum Rinkeby',
-        imageId: '12342'
-      },
-      // Should not fetch this
-      {
-        id: '155:42',
-        name: 'Ethereum Kovan'
-      }
-    ])
+    NetworkController.setRequestedCaipNetworks(
+      [
+        {
+          id: 'eip155:1',
+          name: 'Ethereum Mainnet',
+          imageId: '12341',
+          chainNamespace: chain,
+          chainId: '1',
+          currency: 'ETH',
+          explorerUrl: 'https://explorer.ethereum.org',
+          rpcUrl: 'https://rpc.ethereum.org'
+        },
+        {
+          id: 'eip155:4',
+          name: 'Ethereum Rinkeby',
+          imageId: '12342',
+          chainNamespace: chain,
+          chainId: '4',
+          currency: 'ETH',
+          explorerUrl: 'https://explorer.ethereum.org',
+          rpcUrl: 'https://rpc.ethereum.org'
+        },
+        {
+          id: 'eip155:42',
+          name: 'Ethereum Kovan',
+          chainNamespace: chain,
+          chainId: '42',
+          currency: 'ETH',
+          explorerUrl: 'https://explorer.ethereum.org',
+          rpcUrl: 'https://rpc.ethereum.org'
+        }
+      ],
+      chain
+    )
     const fetchSpy = vi.spyOn(ApiController, '_fetchNetworkImage').mockResolvedValue()
     await ApiController.fetchNetworkImages()
 
@@ -158,12 +207,14 @@ describe('ApiController', () => {
         id: '12341',
         name: 'MetaMask',
         imageId: '12341',
-        type: 'INJECTED'
+        type: 'INJECTED',
+        chain: ConstantsUtil.CHAIN.EVM
       },
       {
         id: '12341',
         name: 'RandomConnector',
-        type: 'INJECTED'
+        type: 'INJECTED',
+        chain: ConstantsUtil.CHAIN.EVM
       }
     ])
     const fetchSpy = vi.spyOn(ApiController, '_fetchConnectorImage').mockResolvedValue()
@@ -521,7 +572,7 @@ describe('ApiController', () => {
 
   // Prefetch
   it('should prefetch without analytics', () => {
-    OptionsController.state.enableAnalytics = false
+    OptionsController.setFeatures({ analytics: false })
     const fetchFeaturedSpy = vi.spyOn(ApiController, 'fetchFeaturedWallets').mockResolvedValue()
     const fetchNetworkImagesSpy = vi.spyOn(ApiController, 'fetchNetworkImages').mockResolvedValue()
     const recommendedWalletsSpy = vi
@@ -543,7 +594,7 @@ describe('ApiController', () => {
   })
 
   it('should prefetch with analytics', () => {
-    OptionsController.state.enableAnalytics = undefined
+    OptionsController.setFeatures({ analytics: true })
     const fetchSpy = vi.spyOn(ApiController, 'fetchFeaturedWallets').mockResolvedValue()
     const fetchNetworkImagesSpy = vi.spyOn(ApiController, 'fetchNetworkImages').mockResolvedValue()
     const recommendedWalletsSpy = vi

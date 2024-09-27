@@ -1,6 +1,7 @@
 /* eslint-disable max-depth */
 import {
   AccountController,
+  ChainController,
   ConnectionController,
   ConnectorController,
   EventsController,
@@ -9,8 +10,8 @@ import {
   SnackController,
   StorageUtil,
   ThemeController
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -119,7 +120,7 @@ export class W3mConnectingSocialView extends LitElement {
           if (this.authConnector && !this.connecting) {
             if (this.socialWindow) {
               this.socialWindow.close()
-              AccountController.setSocialWindow(undefined)
+              AccountController.setSocialWindow(undefined, ChainController.state.activeChain)
             }
             this.connecting = true
             this.updateMessage()
@@ -129,7 +130,10 @@ export class W3mConnectingSocialView extends LitElement {
 
             if (this.socialProvider) {
               StorageUtil.setConnectedSocialProvider(this.socialProvider)
-              await ConnectionController.connectExternal(this.authConnector)
+              await ConnectionController.connectExternal(
+                this.authConnector,
+                this.authConnector.chain
+              )
               EventsController.sendEvent({
                 type: 'track',
                 event: 'SOCIAL_LOGIN_SUCCESS',

@@ -1,18 +1,21 @@
-import { DateUtil } from '@web3modal/common'
-import type { Transaction, TransactionImage } from '@web3modal/common'
+import { DateUtil } from '@reown/appkit-common'
+import type { Transaction, TransactionImage } from '@reown/appkit-common'
 import {
   AccountController,
+  ChainController,
+  CoreHelperUtil,
   EventsController,
   OptionsController,
   RouterController,
   TransactionsController
-} from '@web3modal/core'
-import { TransactionUtil, customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { TransactionUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import type { TransactionType } from '@web3modal/ui/src/utils/TypeUtil.js'
+import type { TransactionType } from '@reown/appkit-ui'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+
 import styles from './styles.js'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
 
 // -- Helpers --------------------------------------------- //
 const PAGINATOR_ID = 'last-transaction'
@@ -30,7 +33,7 @@ export class W3mActivityList extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public page: 'account' | 'activity' = 'activity'
 
-  @state() private address: string | undefined = AccountController.state.address
+  @state() private caipAddress = ChainController.state.activeCaipAddress
 
   @state() private transactionsByYear = TransactionsController.state.transactionsByYear
 
@@ -46,14 +49,17 @@ export class W3mActivityList extends LitElement {
     TransactionsController.clearCursor()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribe(val => {
-          if (val.isConnected) {
-            if (this.address !== val.address) {
-              this.address = val.address
+        ChainController.subscribeKey('activeCaipAddress', val => {
+          if (val) {
+            if (this.caipAddress !== val) {
               TransactionsController.resetTransactions()
-              TransactionsController.fetchTransactions(val.address)
+              TransactionsController.fetchTransactions(val)
             }
           }
+          this.caipAddress = val
+        }),
+        ChainController.subscribeKey('activeCaipNetwork', () => {
+          this.updateTransactionView()
         }),
         TransactionsController.subscribe(val => {
           this.transactionsByYear = val.transactionsByYear
@@ -66,7 +72,7 @@ export class W3mActivityList extends LitElement {
   }
 
   public override firstUpdated() {
-    TransactionsController.fetchTransactions(this.address)
+    this.updateTransactionView()
     this.createPaginationObserver()
   }
 
@@ -86,28 +92,52 @@ export class W3mActivityList extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private updateTransactionView() {
+    const currentNetwork = ChainController.state.activeCaipNetwork?.id
+    const lastNetworkInView = TransactionsController.state.lastNetworkInView
+
+    if (lastNetworkInView !== currentNetwork) {
+      TransactionsController.resetTransactions()
+      if (this.caipAddress) {
+        TransactionsController.fetchTransactions(CoreHelperUtil.getPlainAddress(this.caipAddress))
+      }
+    }
+    TransactionsController.setLastNetworkInView(currentNetwork)
+  }
+
   private templateTransactionsByYear() {
     const sortedYearKeys = Object.keys(this.transactionsByYear).sort().reverse()
 
-    return sortedYearKeys.map((year, index) => {
-      const isLastGroup = index === sortedYearKeys.length - 1
+    return sortedYearKeys.map(year => {
       const yearInt = parseInt(year, 10)
 
       const sortedMonthIndexes = new Array(12)
         .fill(null)
-        .map((_, idx) => idx)
+        .map((_, idx) => {
+          const groupTitle = TransactionUtil.getTransactionGroupTitle(yearInt, idx)
+          const transactions = this.transactionsByYear[yearInt]?.[idx]
+
+          return {
+            groupTitle,
+            transactions
+          }
+        })
+        .filter(({ transactions }) => transactions)
         .reverse()
 
-      return sortedMonthIndexes.map(month => {
-        const groupTitle = TransactionUtil.getTransactionGroupTitle(yearInt, month)
-        const transactions = this.transactionsByYear[yearInt]?.[month]
+      return sortedMonthIndexes.map(({ groupTitle, transactions }, index) => {
+        const isLastGroup = index === sortedMonthIndexes.length - 1
 
         if (!transactions) {
           return null
         }
 
         return html`
-          <wui-flex flexDirection="column">
+          <wui-flex
+            flexDirection="column"
+            class="group-container"
+            last-group="${isLastGroup ? 'true' : 'false'}"
+          >
             <wui-flex
               alignItems="center"
               flexDirection="row"
@@ -289,12 +319,12 @@ export class W3mActivityList extends LitElement {
 
     this.paginationObserver = new IntersectionObserver(([element]) => {
       if (element?.isIntersecting && !this.loading) {
-        TransactionsController.fetchTransactions(this.address)
+        TransactionsController.fetchTransactions(CoreHelperUtil.getPlainAddress(this.caipAddress))
         EventsController.sendEvent({
           type: 'track',
           event: 'LOAD_MORE_TRANSACTIONS',
           properties: {
-            address: this.address,
+            address: CoreHelperUtil.getPlainAddress(this.caipAddress),
             projectId,
             cursor: this.next,
             isSmartAccount:

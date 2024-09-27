@@ -4,29 +4,32 @@ import {
   SystemProgram,
   PublicKey,
   Keypair,
-  Transaction,
   TransactionInstruction,
-  LAMPORTS_PER_SOL
+  LAMPORTS_PER_SOL,
+  VersionedTransaction,
+  TransactionMessage
 } from '@solana/web3.js'
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
+import { useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 
 import { COUNTER_ACCOUNT_SIZE } from '../../utils/SolanaConstants'
 import { deserializeCounterAccount, detectProgramId } from '../../utils/SolanaUtil'
 import { useChakraToast } from '../Toast'
+import { useAppKitConnection, type Provider } from '@reown/appkit-adapter-solana/react'
 
 export function SolanaWriteContractTest() {
   const toast = useChakraToast()
-  const { address, currentChain } = useWeb3ModalAccount()
-  const { walletProvider, connection } = useWeb3ModalProvider()
+  const { caipNetwork } = useAppKitNetwork()
+  const { walletProvider } = useAppKitProvider<Provider>('solana')
+  const { connection } = useAppKitConnection()
   const [loading, setLoading] = useState(false)
 
   async function onIncrementCounter() {
     setLoading(true)
 
-    const PROGRAM_ID = new PublicKey(detectProgramId(currentChain?.chainId ?? ''))
+    const PROGRAM_ID = new PublicKey(detectProgramId(caipNetwork?.chainId?.toString() ?? ''))
 
     try {
-      if (!walletProvider || !address) {
+      if (!walletProvider?.publicKey) {
         throw new Error('User is disconnected')
       }
 
@@ -42,7 +45,7 @@ export function SolanaWriteContractTest() {
         throw Error('Not enough SOL in wallet')
       }
 
-      const allocIx: TransactionInstruction = SystemProgram.createAccount({
+      const allocIx = SystemProgram.createAccount({
         fromPubkey: walletProvider.publicKey,
         newAccountPubkey: counter,
         lamports: await connection.getMinimumBalanceForRentExemption(COUNTER_ACCOUNT_SIZE),
@@ -50,7 +53,7 @@ export function SolanaWriteContractTest() {
         programId: PROGRAM_ID
       })
 
-      const incrementIx: TransactionInstruction = new TransactionInstruction({
+      const incrementIx = new TransactionInstruction({
         programId: PROGRAM_ID,
         keys: [
           {
@@ -62,12 +65,33 @@ export function SolanaWriteContractTest() {
         data: Buffer.from([0x0])
       })
 
-      const tx = new Transaction().add(allocIx).add(incrementIx)
+      const latestBlockhash = await connection.getLatestBlockhash()
 
-      tx.feePayer = walletProvider.publicKey
-      tx.recentBlockhash = (await connection.getLatestBlockhash('confirmed')).blockhash
+      const transaction = new VersionedTransaction(
+        new TransactionMessage({
+          payerKey: walletProvider.publicKey,
+          instructions: [allocIx, incrementIx],
+          recentBlockhash: latestBlockhash.blockhash
+        }).compileToV0Message()
+      )
 
-      await walletProvider.signAndSendTransaction(tx, [counterKeypair])
+      transaction.sign([counterKeypair])
+
+      const transactionId = await walletProvider.sendTransaction(transaction, connection, {
+        preflightCommitment: 'confirmed'
+      })
+
+      // We should consider using `connection.confirmTransaction` instead of polling when websocket support is added
+      await new Promise<void>(resolve => {
+        const interval = setInterval(async () => {
+          const status = await connection.getSignatureStatus(transactionId)
+
+          if (status?.value) {
+            clearInterval(interval)
+            resolve()
+          }
+        }, 1000)
+      })
 
       const counterAccountInfo = await connection.getAccountInfo(counter, {
         commitment: 'confirmed'
@@ -77,7 +101,7 @@ export function SolanaWriteContractTest() {
         throw new Error('Expected counter account to have been created')
       }
 
-      const counterAccount = deserializeCounterAccount(counterAccountInfo?.data)
+      const counterAccount = deserializeCounterAccount(counterAccountInfo.data)
 
       if (counterAccount.count !== 1) {
         throw new Error('Expected count to have been 1')

@@ -31,6 +31,7 @@ export default css`
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
+    z-index: 2;
   }
 
   .paste {

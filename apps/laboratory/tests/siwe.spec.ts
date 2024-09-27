@@ -1,52 +1,79 @@
-import { DEFAULT_SESSION_PARAMS } from './shared/constants'
-import { testMWSiwe } from './shared/fixtures/w3m-wallet-fixture'
+import { test, type BrowserContext, type Page } from '@playwright/test'
+import { ModalPage } from './shared/pages/ModalPage'
+import { WalletPage } from './shared/pages/WalletPage'
+import { ModalValidator } from './shared/validators/ModalValidator'
+import { WalletValidator } from './shared/validators/WalletValidator'
 
-// Cleanup
-testMWSiwe.afterEach(async ({ modalValidator, walletValidator, browserName }) => {
-  if (browserName === 'firefox') {
-    return
-  }
-  await modalValidator.expectDisconnected()
-  await walletValidator.expectDisconnected()
+/* eslint-disable init-declarations */
+let modalPage: ModalPage
+let modalValidator: ModalValidator
+let walletPage: WalletPage
+let walletValidator: WalletValidator
+let context: BrowserContext
+let browserPage: Page
+/* eslint-enable init-declarations */
+
+// -- Setup --------------------------------------------------------------------
+const siweWalletTest = test.extend<{ library: string }>({
+  library: ['wagmi', { option: true }]
 })
 
-testMWSiwe(
-  'it should sign in with ethereum',
-  async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
-    const uri = await modalPage.getConnectUri()
-    await walletPage.connectWithUri(uri)
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
-    await modalValidator.expectAuthenticated()
-    await modalValidator.expectConnected()
-    await walletValidator.expectConnected()
-    await modalPage.disconnect()
-  }
-)
+siweWalletTest.describe.configure({ mode: 'serial' })
 
-testMWSiwe(
-  'it should reject sign in with ethereum',
-  async ({ modalPage, walletPage, modalValidator }) => {
-    const uri = await modalPage.getConnectUri()
-    await walletPage.connectWithUri(uri)
-    await walletPage.handleRequest({ accept: false })
-    await modalValidator.expectUnauthenticated()
-  }
-)
+siweWalletTest.beforeAll(async ({ browser, library }) => {
+  context = await browser.newContext()
+  browserPage = await context.newPage()
 
-testMWSiwe(
-  'it should require re-authentication when switching networks',
-  async ({ modalPage, walletPage, modalValidator, walletValidator }) => {
-    const uri = await modalPage.getConnectUri()
-    await walletPage.connectWithUri(uri)
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
-    await modalValidator.expectAuthenticated()
-    await modalValidator.expectConnected()
-    await walletValidator.expectConnected()
-    await modalPage.switchNetwork('Polygon')
+  modalPage = new ModalPage(browserPage, library, 'siwe')
+  walletPage = new WalletPage(await context.newPage())
+  walletValidator = new WalletValidator(walletPage.page)
+  modalValidator = new ModalValidator(browserPage)
 
-    // Re-authentication required
-    await modalValidator.expectUnauthenticated()
-    await modalPage.closeModal()
-    await modalValidator.expectDisconnected()
-  }
-)
+  await modalPage.load()
+})
+
+siweWalletTest.afterAll(async () => {
+  await modalPage.page.close()
+})
+
+// -- Tests --------------------------------------------------------------------
+siweWalletTest('it should be authenticated', async () => {
+  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalValidator.expectConnected()
+  await modalValidator.expectAuthenticated()
+})
+
+siweWalletTest('it should require re-authentication when switching networks', async () => {
+  await modalPage.switchNetwork('ZkSync')
+  await modalValidator.expectUnauthenticated()
+  await modalPage.promptSiwe()
+  await walletPage.handleRequest({ accept: true })
+  await modalValidator.expectAuthenticated()
+})
+
+siweWalletTest('it should disconnect when cancel siwe from AppKit', async () => {
+  await modalPage.switchNetwork('Ethereum')
+  await modalValidator.expectUnauthenticated()
+  await modalPage.cancelSiwe()
+  await modalValidator.expectDisconnected()
+  await modalValidator.expectUnauthenticated()
+  await walletValidator.expectSessionCard({ visible: false })
+})
+
+// WARNING: refreshing on wagmi-siwe doesn't auto connect
+siweWalletTest.skip('it should be authenticated when refresh page', async () => {
+  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalValidator.expectConnected()
+  await modalPage.page.reload()
+  await modalValidator.expectConnected()
+  await modalValidator.expectAuthenticated()
+})
+
+siweWalletTest('it should be unauthenticated when disconnect', async () => {
+  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalValidator.expectConnected()
+  await modalPage.disconnect()
+  await modalValidator.expectDisconnected()
+  await modalValidator.expectUnauthenticated()
+  await walletValidator.expectSessionCard({ visible: false })
+})

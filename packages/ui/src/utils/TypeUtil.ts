@@ -21,6 +21,7 @@ export type TextType =
   | 'medium-600'
   | 'medium-title-600'
   | 'micro-600'
+  | 'title-6-600'
   | 'micro-700'
   | 'mini-700'
   | 'paragraph-400'
@@ -131,6 +132,7 @@ export type IconType =
   | 'extension'
   | 'externalLink'
   | 'facebook'
+  | 'farcaster'
   | 'filters'
   | 'github'
   | 'google'
@@ -138,6 +140,7 @@ export type IconType =
   | 'image'
   | 'id'
   | 'infoCircle'
+  | 'lightbulb'
   | 'mail'
   | 'mobile'
   | 'more'
@@ -157,6 +160,7 @@ export type IconType =
   | 'swapHorizontalRoundedBold'
   | 'swapVertical'
   | 'telegram'
+  | 'threeDots'
   | 'twitch'
   | 'twitter'
   | 'twitterIcon'
@@ -171,6 +175,7 @@ export type IconType =
 
 export type VisualType =
   | 'browser'
+  | 'meld'
   | 'coinbase'
   | 'dao'
   | 'defi'
@@ -191,6 +196,7 @@ export type VisualType =
   | 'stripe'
   | 'paypal'
   | 'pencil'
+  | 'solana'
 
 export type VisualSize = 'sm' | 'md' | 'lg'
 
@@ -204,6 +210,7 @@ export type LogoType =
   | 'telegram'
   | 'twitch'
   | 'x'
+  | 'farcaster'
 
 export type PlacementType = 'bottom' | 'left' | 'right' | 'top'
 

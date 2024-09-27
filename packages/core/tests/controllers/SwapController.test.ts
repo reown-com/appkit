@@ -3,12 +3,13 @@ import { parseUnits } from 'viem'
 import {
   AccountController,
   BlockchainApiController,
+  ChainController,
   ConnectionController,
   NetworkController,
   SwapController,
-  type CaipNetworkId,
   type NetworkControllerClient
-} from '../../index.js'
+} from '../../exports/index.js'
+import type { CaipNetworkId, CaipNetwork } from '@reown/appkit-common'
 import {
   allowanceResponse,
   balanceResponse,
@@ -19,15 +20,25 @@ import {
   tokensResponse
 } from '../mocks/SwapController.js'
 import { SwapApiUtil } from '../../src/utils/SwapApiUtil.js'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 // - Mocks ---------------------------------------------------------------------
-const caipNetwork = { id: 'eip155:137', name: 'Polygon' } as const
+const caipNetwork = {
+  id: 'eip155:137',
+  name: 'Polygon',
+  chainNamespace: ConstantsUtil.CHAIN.EVM,
+  chainId: 137,
+  currency: 'ETH',
+  explorerUrl: 'https://etherscan.io',
+  rpcUrl: 'https://rpc.infura.com/v1/'
+} as CaipNetwork
 const approvedCaipNetworkIds = ['eip155:1', 'eip155:137'] as CaipNetworkId[]
 const client: NetworkControllerClient = {
   switchCaipNetwork: async _caipNetwork => Promise.resolve(),
   getApprovedCaipNetworksData: async () =>
     Promise.resolve({ approvedCaipNetworkIds, supportsAllNetworks: false })
 }
+const chain = ConstantsUtil.CHAIN.EVM
 const caipAddress = 'eip155:1:0x123'
 // MATIC
 const networkTokenAddress = 'eip155:137:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
@@ -37,9 +48,16 @@ const toTokenAddress = 'eip155:137:0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b'
 // - Setup ---------------------------------------------------------------------
 beforeAll(async () => {
   //  -- Set Account and
-  NetworkController.setClient(client)
-  await NetworkController.switchActiveNetwork(caipNetwork)
-  AccountController.setCaipAddress(caipAddress)
+  ChainController.initialize([
+    {
+      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      networkControllerClient: client,
+      caipNetworks: []
+    }
+  ])
+
+  NetworkController.setCaipNetwork(caipNetwork)
+  AccountController.setCaipAddress(caipAddress, chain)
 
   vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValue(tokensResponse)
   vi.spyOn(BlockchainApiController, 'getBalance').mockResolvedValue(balanceResponse)

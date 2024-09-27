@@ -4,7 +4,7 @@ import {
   OptionsController,
   StorageUtil,
   type WcWallet
-} from '@web3modal/core'
+} from '@reown/appkit-core'
 
 export const WalletUtil = {
   filterOutDuplicatesByRDNS(wallets: WcWallet[]) {
@@ -29,7 +29,9 @@ export const WalletUtil = {
   },
 
   filterOutDuplicatesByIds(wallets: WcWallet[]) {
-    const connectors = ConnectorController.state.connectors
+    const connectors = ConnectorController.state.connectors.filter(
+      connector => connector.type === 'ANNOUNCED' || connector.type === 'INJECTED'
+    )
     const recent = StorageUtil.getRecentWallets()
 
     const connectorIds = connectors.map(connector => connector.explorerId)

@@ -8,6 +8,7 @@ export default css`
     padding: var(--wui-spacing-3xs);
     position: relative;
     height: 36px;
+    min-height: 36px;
     overflow: hidden;
   }
 
@@ -97,11 +98,13 @@ export default css`
 
   button:hover:enabled > wui-icon,
   button:active:enabled > wui-icon {
+    transition: all var(--wui-ease-out-power-1) var(--wui-duration-lg);
     color: var(--wui-color-fg-125);
   }
 
   button:hover:enabled > wui-text,
   button:active:enabled > wui-text {
+    transition: all var(--wui-ease-out-power-1) var(--wui-duration-lg);
     color: var(--wui-color-fg-125);
   }
 

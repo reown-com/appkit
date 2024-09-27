@@ -1,8 +1,6 @@
-import type { BaseError, Platform } from '@web3modal/core'
+import type { BaseError, Platform } from '@reown/appkit-core'
 import {
-  AssetUtil,
   ConnectionController,
-  ConnectorController,
   ConstantsUtil,
   CoreHelperUtil,
   EventsController,
@@ -11,8 +9,8 @@ import {
   RouterController,
   SnackController,
   StorageUtil
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
@@ -59,30 +57,14 @@ export class W3mConnectingWcView extends LitElement {
     try {
       const { wcPairingExpiry } = ConnectionController.state
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
-        ConnectionController.connectWalletConnect()
-        if (this.wallet) {
-          const url = AssetUtil.getWalletImage(this.wallet)
-          if (url) {
-            StorageUtil.setConnectedWalletImageUrl(url)
-          }
-        } else {
-          const connectors = ConnectorController.state.connectors
-          const connector = connectors.find(c => c.type === 'WALLET_CONNECT')
-          const url = AssetUtil.getConnectorImage(connector)
-          if (url) {
-            StorageUtil.setConnectedWalletImageUrl(url)
-          }
-        }
-
-        await ConnectionController.state.wcPromise
+        await ConnectionController.connectWalletConnect()
         this.finalizeConnection()
-        if (OptionsController.state.isSiweEnabled) {
-          const { SIWEController } = await import('@web3modal/siwe')
-          if (SIWEController.state.status === 'success') {
-            ModalController.close()
-          } else {
-            RouterController.push('ConnectingSiwe')
-          }
+
+        if (
+          StorageUtil.getConnectedConnector() === 'AUTH' &&
+          OptionsController.state.hasMultipleAddresses
+        ) {
+          RouterController.push('SelectAddresses')
         } else {
           ModalController.close()
         }
@@ -109,7 +91,7 @@ export class W3mConnectingWcView extends LitElement {
       StorageUtil.setWalletConnectDeepLink(wcLinking)
     }
     if (recentWallet) {
-      StorageUtil.setWeb3ModalRecent(recentWallet)
+      StorageUtil.setAppKitRecent(recentWallet)
     }
 
     EventsController.sendEvent({
@@ -134,7 +116,7 @@ export class W3mConnectingWcView extends LitElement {
     const { mobile_link, desktop_link, webapp_link, injected, rdns } = this.wallet
     const injectedIds = injected?.map(({ injected_id }) => injected_id).filter(Boolean) as string[]
     const browserIds = rdns ? [rdns] : injectedIds ?? []
-    const isBrowser = browserIds.length
+    const isBrowser = OptionsController.state.isUniversalProvider ? false : browserIds.length
     const isMobileWc = mobile_link
     const isWebWc = webapp_link
     const isBrowserInstalled = ConnectionController.checkInstalled(browserIds)

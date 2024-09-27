@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ThemeController } from '../../index.js'
+import { ThemeController } from '../../exports/index.js'
 
 // -- Tests --------------------------------------------------------------------
 describe('ThemeController', () => {

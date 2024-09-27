@@ -12,18 +12,16 @@ import {
   ConnectorController,
   SendController,
   ConstantsUtil
-} from '@web3modal/core'
-import { UiHelperUtil, customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import styles from './styles.js'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { ChainController } from '@reown/appkit-core'
 
 @customElement('w3m-account-settings-view')
 export class W3mAccountSettingsView extends LitElement {
-  public static override styles = styles
-
   // -- Members -------------------------------------------- //
   private usubscribe: (() => void)[] = []
 
@@ -36,7 +34,7 @@ export class W3mAccountSettingsView extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private network = NetworkController.state.caipNetwork
+  @state() private network = ChainController.state.activeCaipNetwork
 
   @state() private preferredAccountType = AccountController.state.preferredAccountType
 
@@ -62,7 +60,11 @@ export class W3mAccountSettingsView extends LitElement {
             ModalController.close()
           }
         }),
-        NetworkController.subscribeKey('caipNetwork', val => {
+        AccountController.subscribeKey(
+          'preferredAccountType',
+          val => (this.preferredAccountType = val)
+        ),
+        ChainController.subscribeKey('activeCaipNetwork', val => {
           if (val?.id) {
             this.network = val
           }
@@ -86,18 +88,19 @@ export class W3mAccountSettingsView extends LitElement {
     return html`
       <wui-flex
         flexDirection="column"
-        .padding=${['0', 'xl', 'm', 'xl'] as const}
         alignItems="center"
         gap="l"
+        .padding=${['0', 'xl', 'm', 'xl'] as const}
       >
         <wui-avatar
           alt=${this.address}
           address=${this.address}
-          .imageSrc=${this.profileImage || ''}
+          imageSrc=${ifDefined(this.profileImage)}
+          size="2lg"
         ></wui-avatar>
         <wui-flex flexDirection="column" alignItems="center">
           <wui-flex gap="3xs" alignItems="center" justifyContent="center">
-            <wui-text variant="large-600" color="fg-100" data-testid="account-settings-address">
+            <wui-text variant="title-6-600" color="fg-100" data-testid="account-settings-address">
               ${UiHelperUtil.getTruncateString({
                 string: this.address,
                 charsStart: 4,
@@ -114,7 +117,6 @@ export class W3mAccountSettingsView extends LitElement {
           </wui-flex>
         </wui-flex>
       </wui-flex>
-
       <wui-flex flexDirection="column" gap="m">
         <wui-flex flexDirection="column" gap="xs" .padding=${['0', 'l', 'm', 'l'] as const}>
           ${this.authCardTemplate()}
@@ -192,7 +194,7 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private isAllowedNetworkSwitch() {
-    const { requestedCaipNetworks } = NetworkController.state
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
     const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 

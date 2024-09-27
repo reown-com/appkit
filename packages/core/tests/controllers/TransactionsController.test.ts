@@ -1,10 +1,15 @@
 import { describe, expect, it, vi } from 'vitest'
-import { BlockchainApiController, OptionsController, TransactionsController } from '../../index.js'
+import {
+  BlockchainApiController,
+  ChainController,
+  OptionsController,
+  TransactionsController
+} from '../../exports/index.js'
 import {
   ONRAMP_TRANSACTIONS_RESPONSES_FEB,
   ONRAMP_TRANSACTIONS_RESPONSES_JAN
 } from '../constants/OnrampTransactions.js'
-import type { Transaction } from '@web3modal/common'
+import type { Transaction } from '@reown/appkit-common'
 
 // -- Constants ----------------------------------------------------------------
 const projectId = '123'
@@ -45,7 +50,8 @@ describe('TransactionsController', () => {
       account: accountAddress,
       projectId,
       onramp: 'coinbase',
-      cursor: undefined
+      cursor: undefined,
+      cache: 'no-cache'
     })
 
     expect(TransactionsController.state.transactions).toEqual([])
@@ -80,7 +86,8 @@ describe('TransactionsController', () => {
       account: accountAddress,
       projectId,
       onramp: 'coinbase',
-      cursor: undefined
+      cursor: undefined,
+      cache: 'no-cache'
     })
 
     expect(TransactionsController.state.transactions).toEqual([])
@@ -105,7 +112,8 @@ describe('TransactionsController', () => {
       account: accountAddress,
       projectId,
       onramp: 'coinbase',
-      cursor: undefined
+      cursor: undefined,
+      cache: 'no-cache'
     })
 
     // Transaction should be replaced
@@ -140,7 +148,8 @@ describe('TransactionsController', () => {
       account: accountAddress,
       projectId,
       onramp: 'coinbase',
-      cursor: undefined
+      cursor: undefined,
+      cache: 'no-cache'
     })
 
     expect(TransactionsController.state.transactions).toEqual([])
@@ -165,7 +174,8 @@ describe('TransactionsController', () => {
       account: accountAddress,
       projectId,
       onramp: 'coinbase',
-      cursor: undefined
+      cursor: undefined,
+      cache: 'no-cache'
     })
 
     // Transaction should be replaced
@@ -200,7 +210,8 @@ describe('TransactionsController', () => {
       account: accountAddress,
       projectId,
       onramp: 'coinbase',
-      cursor: undefined
+      cursor: undefined,
+      cache: 'no-cache'
     })
 
     expect(TransactionsController.state.transactions).toEqual([])
@@ -225,7 +236,8 @@ describe('TransactionsController', () => {
       account: accountAddress,
       projectId,
       onramp: 'coinbase',
-      cursor: undefined
+      cursor: undefined,
+      cache: 'no-cache'
     })
 
     // Transaction should be replaced
@@ -261,8 +273,34 @@ describe('TransactionsController', () => {
       account: '0x123',
       projectId,
       cursor: undefined,
-      onramp: undefined
+      onramp: undefined,
+      cache: undefined
     })
     expect(TransactionsController.state.next).toBe('cursor')
+  })
+
+  it('should call fetchTransactions with chainId', async () => {
+    const fetchTransactions = vi
+      .spyOn(BlockchainApiController, 'fetchTransactions')
+      .mockResolvedValue({
+        data: [],
+        next: 'cursor'
+      })
+
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      activeCaipNetwork: {
+        id: 'eip155:1'
+      }
+    } as any)
+
+    await TransactionsController.fetchTransactions('0x123', 'coinbase')
+    expect(fetchTransactions).toHaveBeenCalledWith({
+      account: '0x123',
+      projectId,
+      cursor: 'cursor',
+      onramp: 'coinbase',
+      cache: 'no-cache',
+      chainId: 'eip155:1'
+    })
   })
 })

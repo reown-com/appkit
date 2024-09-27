@@ -1,60 +1,101 @@
-import { expect } from '@playwright/test'
-import { testMEmail } from './shared/fixtures/w3m-email-fixture'
+import { expect, test, type BrowserContext, type Page } from '@playwright/test'
+import { ModalWalletPage } from './shared/pages/ModalWalletPage'
+import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
+import { Email } from './shared/utils/email'
 import { SECURE_WEBSITE_URL } from './shared/constants'
-import type { ModalWalletPage } from './shared/pages/ModalWalletPage'
-import type { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
+import { mainnet, polygon, solana, solanaTestnet } from '@reown/appkit/networks'
+import type { CaipNetworkId } from '@reown/appkit'
 
-testMEmail.beforeEach(async ({ modalValidator }) => {
-  await modalValidator.expectConnected()
+/* eslint-disable init-declarations */
+let page: ModalWalletPage
+let validator: ModalWalletValidator
+let context: BrowserContext
+let browserPage: Page
+/* eslint-enable init-declarations */
+
+// -- Setup --------------------------------------------------------------------
+const emailTest = test.extend<{ library: string }>({
+  library: ['wagmi', { option: true }]
 })
 
-testMEmail('it should sign', async ({ modalPage, modalValidator }) => {
-  await modalPage.sign()
-  await modalPage.approveSign()
-  await modalValidator.expectAcceptedSign()
+emailTest.describe.configure({ mode: 'serial' })
+
+emailTest.beforeAll(async ({ browser, library }) => {
+  context = await browser.newContext()
+  browserPage = await context.newPage()
+
+  page = new ModalWalletPage(browserPage, library, 'default')
+  validator = new ModalWalletValidator(browserPage)
+
+  await page.load()
+
+  const mailsacApiKey = process.env['MAILSAC_API_KEY']
+  if (!mailsacApiKey) {
+    throw new Error('MAILSAC_API_KEY is not set')
+  }
+  const email = new Email(mailsacApiKey)
+  const tempEmail = await email.getEmailAddressToUse()
+  await page.emailFlow(tempEmail, context, mailsacApiKey)
+
+  await validator.expectConnected()
 })
 
-testMEmail('it should upgrade wallet', async ({ modalPage, context }) => {
-  const page = await modalPage.clickWalletUpgradeCard(context)
-  expect(page.url()).toContain(SECURE_WEBSITE_URL)
-  await page.close()
+emailTest.afterAll(async () => {
+  await page.page.close()
 })
 
-testMEmail('it should reject sign', async ({ modalPage, modalValidator }) => {
-  await modalPage.sign()
-  await modalPage.rejectSign()
-  await modalValidator.expectRejectedSign()
+// -- Tests --------------------------------------------------------------------
+emailTest('it should sign', async () => {
+  await page.sign()
+  await page.approveSign()
+  await validator.expectAcceptedSign()
 })
 
-testMEmail('it should switch network and sign', async ({ modalPage, modalValidator }) => {
-  let targetChain = 'Polygon'
-  const walletModalPage = modalPage as ModalWalletPage
-  const walletModalValidator = modalValidator as ModalWalletValidator
-  await walletModalPage.openAccount()
-  await walletModalPage.openSettings()
-  await walletModalPage.switchNetwork(targetChain)
-  await walletModalValidator.expectSwitchedNetwork(targetChain)
-  await walletModalPage.closeModal()
-  await walletModalPage.sign()
-  await walletModalPage.approveSign()
-  await walletModalValidator.expectAcceptedSign()
-
-  targetChain = 'Ethereum'
-  await walletModalPage.openAccount()
-  await walletModalPage.openSettings()
-  await walletModalPage.switchNetwork(targetChain)
-  await walletModalValidator.expectSwitchedNetwork(targetChain)
-  await walletModalPage.closeModal()
-  await walletModalPage.sign()
-  await walletModalPage.approveSign()
-  await walletModalValidator.expectAcceptedSign()
+emailTest('it should upgrade wallet', async () => {
+  const walletUpgradePage = await page.clickWalletUpgradeCard(context)
+  expect(walletUpgradePage.url()).toContain(SECURE_WEBSITE_URL)
+  await walletUpgradePage.close()
+  await page.closeModal()
 })
 
-testMEmail('it should disconnect correctly', async ({ modalPage, modalValidator }) => {
-  const walletModalPage = modalPage as ModalWalletPage
-  const walletModalValidator = modalValidator as ModalWalletValidator
-  await walletModalPage.openAccount()
-  await walletModalPage.openSettings()
-  await walletModalPage.disconnect()
-  await walletModalValidator.expectDisconnected()
+emailTest('it should reject sign', async () => {
+  await page.sign()
+  await page.rejectSign()
+  await validator.expectRejectedSign()
+})
+
+emailTest('it should switch network and sign', async ({ library }) => {
+  let targetChain = library === 'solana' ? 'Solana Testnet' : 'Polygon'
+  let caipNetworkId = library === 'solana' ? solanaTestnet.id : polygon.id
+
+  await page.switchNetwork(targetChain)
+  await validator.expectSwitchedNetworkOnNetworksView(targetChain)
+  await page.closeModal()
+  await validator.expectCaipAddressHaveCorrectNetworkId(caipNetworkId as CaipNetworkId)
+
+  await page.sign()
+  await page.approveSign()
+  await validator.expectAcceptedSign()
+
+  targetChain = library === 'solana' ? 'Solana' : 'Ethereum'
+  caipNetworkId = library === 'solana' ? solana.id : mainnet.id
+  await page.switchNetwork(targetChain)
+  await validator.expectSwitchedNetworkOnNetworksView(targetChain)
+  await page.closeModal()
+  await validator.expectCaipAddressHaveCorrectNetworkId(caipNetworkId as CaipNetworkId)
+
+  await page.sign()
+  await page.approveSign()
+  await validator.expectAcceptedSign()
+})
+
+emailTest('it should show loading on page refresh', async () => {
+  await page.page.reload()
+  await validator.expectConnectButtonLoading()
+})
+
+emailTest('it should disconnect correctly', async () => {
+  await page.goToSettings()
+  await page.disconnect()
+  await validator.expectDisconnected()
 })

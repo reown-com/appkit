@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { AssetController } from '../../index.js'
+import { AssetController } from '../../exports/index.js'
 
 // -- Constants ----------------------------------------------------------------
 const walletImage = 'w3mWallet.png'
@@ -28,6 +28,7 @@ const currency2 = 'EUR'
 describe('AssetController', () => {
   it('should have valid default state', () => {
     expect(AssetController.state).toEqual({
+      chainImages: {},
       walletImages: {},
       networkImages: {},
       connectorImages: {},

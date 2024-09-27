@@ -1,26 +1,26 @@
+import { SIWEController, type SIWEControllerClient } from '../core/controller/SIWEController.js'
 import type {
-  SIWECreateMessageArgs,
-  SIWEVerifyMessageArgs,
-  SIWEConfig,
   SIWEClientMethods,
-  SIWESession
+  SIWEConfig,
+  SIWECreateMessageArgs,
+  SIWEMessageArgs,
+  SIWESession,
+  SIWEVerifyMessageArgs
 } from '../core/utils/TypeUtils.js'
-import type { SIWEControllerClient } from '../core/controller/SIWEController.js'
 
 import {
-  AccountController,
-  NetworkController,
+  ChainController,
   ConnectionController,
-  RouterUtil,
   RouterController,
-  StorageUtil
-} from '@web3modal/core'
-
-import { NetworkUtil } from '@web3modal/common'
+  StorageUtil,
+  ModalController,
+  CoreHelperUtil
+} from '@reown/appkit-core'
+import { NetworkUtil, type CaipAddress } from '@reown/appkit-common'
 import { ConstantsUtil } from '../core/utils/ConstantsUtil.js'
 
 // -- Client -------------------------------------------------------------------- //
-export class Web3ModalSIWEClient {
+export class AppKitSIWEClient {
   public options: SIWEControllerClient['options']
 
   public methods: SIWEClientMethods
@@ -58,10 +58,8 @@ export class Web3ModalSIWEClient {
     return nonce
   }
 
-  async getMessageParams() {
-    const params = await this.methods.getMessageParams()
-
-    return params || {}
+  async getMessageParams?() {
+    return ((await this.methods.getMessageParams?.()) || {}) as SIWEMessageArgs
   }
 
   createMessage(args: SIWECreateMessageArgs) {
@@ -90,50 +88,81 @@ export class Web3ModalSIWEClient {
   }
 
   async signIn(): Promise<SIWESession> {
-    const { address } = AccountController.state
+    if (!SIWEController.state._client) {
+      throw new Error('SIWE client needs to be initialized before calling signIn')
+    }
+
+    const caipAddress = ChainController.state.activeCaipAddress
+    const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : ''
+
     const nonce = await this.methods.getNonce(address)
     if (!address) {
       throw new Error('An address is required to create a SIWE message.')
     }
-    const chainId = NetworkUtil.caipNetworkIdToNumber(NetworkController.state.caipNetwork?.id)
+
+    const caipNetwork = ChainController.state.activeCaipNetwork
+
+    if (!caipNetwork?.id) {
+      throw new Error('A chainId is required to create a SIWE message.')
+    }
+
+    const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork.id)
+
     if (!chainId) {
       throw new Error('A chainId is required to create a SIWE message.')
     }
-    const messageParams = await this.getMessageParams()
+
+    const signOutOnNetworkChange = SIWEController.state._client?.options.signOutOnNetworkChange
+    // Sign out if signOutOnNetworkChange is enabled to avoid re-prompting the user for a signature
+    if (signOutOnNetworkChange) {
+      SIWEController.state._client.options.signOutOnNetworkChange = false
+      await this.signOut()
+    }
+
+    // Enable the signOutOnNetworkChange option if it was previously enabled
+    if (signOutOnNetworkChange) {
+      SIWEController.state._client.options.signOutOnNetworkChange = true
+    }
+
+    const messageParams = await this.getMessageParams?.()
     const message = this.methods.createMessage({
-      address: `eip155:${chainId}:${address}`,
-      chainId,
+      address: caipAddress as CaipAddress,
+      chainId: Number(chainId),
       nonce,
       version: '1',
-      iat: messageParams.iat || new Date().toISOString(),
-      ...messageParams
+      iat: messageParams?.iat || new Date().toISOString(),
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      ...messageParams!
     })
     const type = StorageUtil.getConnectedConnector()
+
     if (type === 'AUTH') {
       RouterController.pushTransactionStack({
         view: null,
         goBack: false,
         replace: true,
-        onCancel() {
-          RouterController.replace('ConnectingSiwe')
+        onSuccess() {
+          ModalController.close()
         }
       })
     }
+
     const signature = await ConnectionController.signMessage(message)
+
     const isValid = await this.methods.verifyMessage({ message, signature })
     if (!isValid) {
       throw new Error('Error verifying SIWE signature')
     }
 
     const session = await this.methods.getSession()
+
     if (!session) {
       throw new Error('Error verifying SIWE signature')
     }
+
     if (this.methods.onSignIn) {
       this.methods.onSignIn(session)
     }
-
-    RouterUtil.navigateAfterNetworkSwitch()
 
     return session
   }

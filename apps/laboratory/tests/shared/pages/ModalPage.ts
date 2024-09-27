@@ -1,18 +1,35 @@
 /* eslint-disable no-await-in-loop */
 import type { BrowserContext, Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
-import { BASE_URL } from '../constants'
+import { BASE_URL, DEFAULT_SESSION_PARAMS } from '../constants'
 import { doActionAndWaitForNewPage } from '../utils/actions'
 import { Email } from '../utils/email'
 import { DeviceRegistrationPage } from './DeviceRegistrationPage'
 import type { TimingRecords } from '../fixtures/timing-fixture'
+import { WalletPage } from './WalletPage'
+import { WalletValidator } from '../validators/WalletValidator'
+import { routeInterceptUrl } from '../utils/verify'
 
-export type ModalFlavor = 'default' | 'siwe' | 'email' | 'wallet' | 'external' | 'all'
+const maliciousUrl = 'https://malicious-app-verify-simulation.vercel.app'
+
+export type ModalFlavor =
+  | 'default'
+  | 'external'
+  | 'verify-valid'
+  | 'verify-domain-mismatch'
+  | 'verify-evil'
+  | 'no-email'
+  | 'no-socials'
+  | 'siwe'
+  | 'all'
 
 function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
   const urlsByFlavor: Partial<Record<ModalFlavor, string>> = {
     default: `${baseUrl}library/${library}/`,
-    external: `${baseUrl}library/external/`
+    external: `${baseUrl}library/external/`,
+    'verify-valid': `${baseUrl}library/verify-valid/`,
+    'verify-domain-mismatch': `${baseUrl}library/verify-domain-mismatch/`,
+    'verify-evil': maliciousUrl
   }
 
   return urlsByFlavor[flavor] || `${baseUrl}library/${library}-${flavor}/`
@@ -31,10 +48,18 @@ export class ModalPage {
     public readonly flavor: ModalFlavor
   ) {
     this.connectButton = this.page.getByTestId('connect-button')
-    this.url = getUrlByFlavor(this.baseURL, library, flavor)
+    if (library === 'multichain-ethers-solana') {
+      this.url = `${this.baseURL}library/multichain-ethers-solana/`
+    } else {
+      this.url = getUrlByFlavor(this.baseURL, library, flavor)
+    }
   }
 
   async load() {
+    if (this.flavor === 'verify-evil') {
+      await routeInterceptUrl(this.page, maliciousUrl, this.baseURL, '/library/verify-evil/')
+    }
+
     await this.page.goto(this.url)
   }
 
@@ -46,7 +71,6 @@ export class ModalPage {
   }
 
   async getConnectUri(timingRecords?: TimingRecords): Promise<string> {
-    await this.page.goto(this.url)
     await this.connectButton.click()
     const connect = this.page.getByTestId('wallet-selector-walletconnect')
     await connect.waitFor({
@@ -72,6 +96,42 @@ export class ModalPage {
     return uri
   }
 
+  async getImmidiateConnectUri(timingRecords?: TimingRecords): Promise<string> {
+    await this.connectButton.click()
+    const qrLoadInitiatedTime = new Date()
+
+    // Using getByTestId() doesn't work on my machine, I'm guessing because this element is inside of a <slot>
+    const qrCode = this.page.locator('wui-qr-code')
+    await expect(qrCode).toBeVisible()
+
+    const uri = this.assertDefined(await qrCode.getAttribute('uri'))
+    const qrLoadedTime = new Date()
+    if (timingRecords) {
+      timingRecords.push({
+        item: 'qrLoad',
+        timeMs: qrLoadedTime.getTime() - qrLoadInitiatedTime.getTime()
+      })
+    }
+
+    return uri
+  }
+
+  async qrCodeFlow(page: ModalPage, walletPage: WalletPage, immediate?: boolean): Promise<void> {
+    // eslint-disable-next-line init-declarations
+    let uri: string
+    await walletPage.load()
+    if (immediate) {
+      uri = await page.getImmidiateConnectUri()
+    } else {
+      uri = await page.getConnectUri()
+    }
+    await walletPage.connectWithUri(uri)
+
+    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+    const walletValidator = new WalletValidator(walletPage.page)
+    await walletValidator.expectConnected()
+  }
+
   async emailFlow(
     emailAddress: string,
     context: BrowserContext,
@@ -84,15 +144,15 @@ export class ModalPage {
     await email.deleteAllMessages(emailAddress)
     await this.loginWithEmail(emailAddress)
 
-    let messageId = await email.getLatestMessageId(emailAddress)
-
-    if (!messageId) {
+    const firstMessageId = await email.getLatestMessageId(emailAddress)
+    if (!firstMessageId) {
       throw new Error('No messageId found')
     }
-    let emailBody = await email.getEmailBody(emailAddress, messageId)
+
+    const firstEmailBody = await email.getEmailBody(emailAddress, firstMessageId)
     let otp = ''
-    if (email.isApproveEmail(emailBody)) {
-      const url = email.getApproveUrlFromBody(emailBody)
+    if (email.isApproveEmail(firstEmailBody)) {
+      const url = email.getApproveUrlFromBody(firstEmailBody)
 
       await email.deleteAllMessages(emailAddress)
 
@@ -101,16 +161,18 @@ export class ModalPage {
       await drp.approveDevice()
       await drp.close()
 
-      messageId = await email.getLatestMessageId(emailAddress)
-
-      emailBody = await email.getEmailBody(emailAddress, messageId)
-      if (!email.isApproveEmail(emailBody)) {
-        otp = email.getOtpCodeFromBody(emailBody)
+      const secondMessageId = await email.getLatestMessageId(emailAddress)
+      if (!secondMessageId) {
+        throw new Error('No messageId found')
       }
-    }
 
-    if (otp === '') {
-      otp = email.getOtpCodeFromBody(emailBody)
+      const secondEmailBody = await email.getEmailBody(emailAddress, secondMessageId)
+      if (email.isApproveEmail(secondEmailBody)) {
+        throw new Error('Unexpected approve email after already approved')
+      }
+      otp = email.getOtpCodeFromBody(secondEmailBody)
+    } else {
+      otp = email.getOtpCodeFromBody(firstEmailBody)
     }
 
     await this.enterOTP(otp)
@@ -133,21 +195,38 @@ export class ModalPage {
     })
   }
 
-  async loginWithSocial(socialMail: string, socialPass: string) {
-    const authFile = 'playwright/.auth/user.json'
+  async loginWithSocial(socialOption: 'github', socialMail: string, socialPass: string) {
     await this.page
       .getByTestId('connect-button')
       .getByRole('button', { name: 'Connect Wallet' })
       .click()
-    const discordPopupPromise = this.page.waitForEvent('popup')
-    await this.page.getByTestId('social-selector-discord').click()
-    const discordPopup = await discordPopupPromise
-    await discordPopup.fill('#uid_8', socialMail)
-    await discordPopup.fill('#uid_10', socialPass)
-    await discordPopup.locator('[type=submit]').click()
-    await discordPopup.locator('.footer_b96583 button:nth-child(2)').click()
-    await discordPopup.context().storageState({ path: authFile })
-    await discordPopup.waitForEvent('close')
+
+    switch (socialOption) {
+      case 'github':
+        await this.loginWithGitHub(socialMail, socialPass)
+        break
+      default:
+        throw new Error(`Unknown social option: ${socialOption}`)
+    }
+  }
+
+  async loginWithGitHub(socialMail: string, socialPass: string) {
+    const socialPopupPromise = this.page.waitForEvent('popup')
+    await this.page.getByTestId(`social-selector-github`).click()
+    const socialPopup = await socialPopupPromise
+    await socialPopup.waitForLoadState()
+    await socialPopup.fill('#login_field.form-control.input-block.js-login-field', socialMail)
+    await socialPopup.fill(
+      '#password.form-control.form-control.input-block.js-password-field',
+      socialPass
+    )
+    await socialPopup.locator('[type=submit]').click()
+
+    if (await socialPopup.locator('h1').getByText('Reauthorization required').isVisible()) {
+      await socialPopup.locator('button').getByText('Authorize WalletConnect').click()
+    }
+
+    await socialPopup.waitForEvent('close')
   }
 
   async enterOTP(otp: string, headerTitle = 'Confirm Email') {
@@ -198,34 +277,43 @@ export class ModalPage {
     await signButton.click()
   }
 
-  async signatureRequestFrameShouldVisible() {
+  async signatureRequestFrameShouldVisible(headerText: string) {
     await expect(
-      this.page.frameLocator('#w3m-iframe').getByText('requests a signature'),
-      'Web3Modal iframe should be visible'
+      this.page.frameLocator('#w3m-iframe').getByText(headerText),
+      'AppKit iframe should be visible'
     ).toBeVisible({
       timeout: 10000
     })
-    await this.page.waitForTimeout(2000)
+    await this.page.waitForTimeout(500)
   }
 
   async clickSignatureRequestButton(name: string) {
+    const signatureHeader = this.page.getByText('Approve Transaction')
     await this.page.frameLocator('#w3m-iframe').getByRole('button', { name, exact: true }).click()
+    await expect(signatureHeader, 'Signature request should be closed').not.toBeVisible()
+    await this.page.waitForTimeout(300)
   }
 
   async approveSign() {
-    await this.signatureRequestFrameShouldVisible()
+    await this.signatureRequestFrameShouldVisible('requests a signature')
     await this.clickSignatureRequestButton('Sign')
   }
 
   async rejectSign() {
-    await this.signatureRequestFrameShouldVisible()
+    await this.signatureRequestFrameShouldVisible('requests a signature')
     await this.clickSignatureRequestButton('Cancel')
+  }
+
+  async approveMultipleTransactions() {
+    await this.signatureRequestFrameShouldVisible('requests multiple transactions')
+    await this.clickSignatureRequestButton('Approve')
   }
 
   async clickWalletUpgradeCard(context: BrowserContext) {
     await this.page.getByTestId('account-button').click()
 
     await this.page.getByTestId('w3m-profile-button').click()
+    await this.page.getByTestId('account-settings-button').click()
     await this.page.getByTestId('w3m-wallet-upgrade-card').click()
 
     const page = await doActionAndWaitForNewPage(
@@ -253,6 +341,8 @@ export class ModalPage {
     await this.page.getByTestId('account-button').click()
     await this.page.getByTestId('w3m-account-select-network').click()
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
+    // The state is chaing too fast and test runner doesn't wait the loading page. It's fastly checking the network selection button and detect that it's switched already.
+    await this.page.waitForTimeout(300)
   }
 
   async clickWalletDeeplink() {
@@ -262,7 +352,14 @@ export class ModalPage {
   }
 
   async openAccount() {
+    expect(this.page.getByTestId('w3m-modal-card')).not.toBeVisible()
+    expect(this.page.getByTestId('w3m-modal-overlay')).not.toBeVisible()
+    this.page.waitForTimeout(300)
     await this.page.getByTestId('account-button').click()
+  }
+
+  async openConnectModal() {
+    await this.page.getByTestId('connect-button').click()
   }
 
   async closeModal() {
@@ -271,9 +368,9 @@ export class ModalPage {
     await this.page.waitForTimeout(300)
   }
 
-  async updateEmail(mailsacApiKey: string, index: number) {
+  async updateEmail(mailsacApiKey: string) {
     const email = new Email(mailsacApiKey)
-    const newEmailAddress = email.getEmailAddressToUse(index)
+    const newEmailAddress = await email.getEmailAddressToUse()
 
     await this.page.getByTestId('account-button').click()
     await this.page.getByTestId('w3m-account-email-update').click()
@@ -315,5 +412,74 @@ export class ModalPage {
     const otp = email.getOtpCodeFromBody(emailBody)
 
     await this.enterOTP(otp, headerTitle)
+  }
+
+  async switchNetworkWithNetworkButton(networkName: string) {
+    const networkButton = this.page.getByTestId('w3m-network-button')
+    await networkButton.click()
+
+    const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${networkName}`)
+    await networkToSwitchButton.click()
+  }
+
+  async openModal() {
+    await this.page.getByTestId('account-button').click()
+  }
+
+  async openNetworks() {
+    await this.page.getByTestId('w3m-account-select-network').click()
+    await expect(this.page.getByText('Choose Network')).toBeVisible()
+  }
+
+  async openProfileView() {
+    await this.page.getByTestId('wui-profile-button').click()
+  }
+
+  async getWalletFeaturesButton(feature: 'onramp' | 'swap' | 'receive' | 'send') {
+    const walletFeatureButton = this.page.getByTestId(`wallet-features-${feature}-button`)
+    await expect(walletFeatureButton).toBeVisible()
+
+    return walletFeatureButton
+  }
+
+  async sendCalls() {
+    const sendCallsButton = this.page.getByTestId('send-calls-button')
+    await sendCallsButton.isVisible()
+    await sendCallsButton.click()
+  }
+  async getCallsStatus(batchCallId: string) {
+    const sendCallsInput = this.page.getByTestId('get-calls-id-input')
+    const sendCallsButton = this.page.getByTestId('get-calls-status-button')
+    await sendCallsButton.scrollIntoViewIfNeeded()
+
+    await sendCallsInput.fill(batchCallId)
+    await sendCallsButton.click()
+  }
+
+  async switchAccount() {
+    const switchAccountButton1 = this.page.getByTestId('w3m-switch-address-button-1')
+    await expect(switchAccountButton1).toBeVisible()
+    await switchAccountButton1.click()
+  }
+
+  async getAddress(): Promise<`0x${string}`> {
+    const address = await this.page.getByTestId('w3m-address').textContent()
+    expect(address, 'Address should be present').toBeTruthy()
+
+    return address as `0x${string}`
+  }
+
+  async getChainId(): Promise<number> {
+    const chainId = await this.page.getByTestId('w3m-chain-id').textContent()
+    expect(chainId, 'Chain ID should be present').toBeTruthy()
+
+    return Number(chainId)
+  }
+
+  async getSignature(): Promise<`0x${string}`> {
+    const signature = await this.page.getByTestId('w3m-signature').textContent()
+    expect(signature, 'Signature should be present').toBeTruthy()
+
+    return signature as `0x${string}`
   }
 }

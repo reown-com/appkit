@@ -1,17 +1,21 @@
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
+import { AppKit } from '@reown/appkit'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana'
+import type { SolanaAppKitOptions } from './options'
+import type { Provider } from '@reown/appkit-adapter-solana'
+import packageJson from '../package.json' assert { type: 'json' }
 
-import { Web3Modal } from '../src/client.js'
+// -- Types -------------------------------------------------------------
+export type { SolanaAppKitOptions, Provider }
 
-import type { Web3ModalOptions } from '../src/client.js'
+// -- Setup -------------------------------------------------------------
+export function createAppKit(options: SolanaAppKitOptions) {
+  const solanaAdapter = new SolanaAdapter({
+    wallets: options.wallets
+  })
 
-export type { Web3Modal, Web3ModalOptions } from '../src/client.js'
-
-export { defaultSolanaConfig } from '../src/utils/defaultConfig.js'
-
-export function createWeb3Modal(options: Web3ModalOptions) {
-  return new Web3Modal({
+  return new AppKit({
     ...options,
-    defaultChain: undefined,
-    _sdkVersion: `html-solana-${ConstantsUtil.VERSION}`
+    sdkVersion: `html-solana-${packageJson.version}`,
+    adapters: [solanaAdapter]
   })
 }

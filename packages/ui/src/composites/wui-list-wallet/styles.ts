@@ -15,10 +15,6 @@ export default css`
     flex: 1;
   }
 
-  button:hover:enabled {
-    background-color: var(--wui-color-gray-glass-005);
-  }
-
   button:disabled {
     background-color: var(--wui-color-gray-glass-015);
     color: var(--wui-color-gray-glass-015);

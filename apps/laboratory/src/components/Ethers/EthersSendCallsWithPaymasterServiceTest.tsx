@@ -1,33 +1,48 @@
 import { Button, Stack, Text, Input, Tooltip } from '@chakra-ui/react'
-import { useState } from 'react'
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react'
-import { EthereumProvider } from '@walletconnect/ethereum-provider'
+import { useState, useEffect } from 'react'
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+import { UniversalProvider } from '@walletconnect/universal-provider'
 import { useChakraToast } from '../Toast'
 import { parseGwei } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
-import { BrowserProvider } from 'ethers'
+import { BrowserProvider, type Eip1193Provider } from 'ethers'
 import {
   EIP_5792_RPC_METHODS,
   WALLET_CAPABILITIES,
   getCapabilitySupportedChainInfo
 } from '../../utils/EIP5792Utils'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 export function EthersSendCallsWithPaymasterServiceTest() {
   const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')
   const [isLoading, setLoading] = useState(false)
 
-  const { address, chainId, isConnected } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider()
+  const { chainId } = useAppKitNetwork()
+  const { address, isConnected } = useAppKitAccount()
+  const { walletProvider } = useAppKitProvider<Eip1193Provider>('eip155')
   const toast = useChakraToast()
 
-  const paymasterServiceSupportedChains =
-    address && walletProvider instanceof EthereumProvider
-      ? getCapabilitySupportedChainInfo(
-          WALLET_CAPABILITIES.PAYMASTER_SERVICE,
-          walletProvider,
-          address
-        )
-      : []
+  const [paymasterServiceSupportedChains, setPaymasterServiceSupportedChains] = useState<
+    Awaited<ReturnType<typeof getCapabilitySupportedChainInfo>>
+  >([])
+
+  useEffect(() => {
+    if (
+      address &&
+      (walletProvider instanceof UniversalProvider || walletProvider instanceof W3mFrameProvider)
+    ) {
+      getCapabilitySupportedChainInfo(
+        WALLET_CAPABILITIES.PAYMASTER_SERVICE,
+        walletProvider,
+        address
+      ).then(capabilities => {
+        setPaymasterServiceSupportedChains(capabilities)
+      })
+    } else {
+      setPaymasterServiceSupportedChains([])
+    }
+  }, [address, walletProvider])
+
   const paymasterServiceSupportedChainNames = paymasterServiceSupportedChains
     .map(ci => ci.chainName)
     .join(', ')
@@ -90,15 +105,16 @@ export function EthersSendCallsWithPaymasterServiceTest() {
   }
 
   function isSendCallsSupported(): boolean {
-    if (walletProvider instanceof EthereumProvider) {
+    // We are currently checking capabilities above. We should use those capabilities instead of this check.
+    if (walletProvider instanceof UniversalProvider) {
       return Boolean(
-        walletProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
+        walletProvider?.session?.namespaces?.['eip155']?.methods?.includes(
           EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
         )
       )
     }
 
-    return false
+    return walletProvider instanceof W3mFrameProvider
   }
 
   if (!isConnected || !walletProvider || !address) {
@@ -137,7 +153,7 @@ export function EthersSendCallsWithPaymasterServiceTest() {
       </Tooltip>
       <Button
         width={'fit-content'}
-        data-test-id="send-calls-paymaster-service-button"
+        data-testid="send-calls-paymaster-service-button"
         onClick={onSendCalls}
         isDisabled={isLoading || !paymasterServiceUrl}
       >

@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/components/wui-text'
-import type { WuiText } from '@web3modal/ui/src/components/wui-text'
+import '@reown/appkit-ui/src/components/wui-text'
+import type { WuiText } from '@reown/appkit-ui/src/components/wui-text'
 import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { colorOptions, textAlignOptions, textOptions } from '../../utils/PresetUtils'
@@ -34,5 +34,21 @@ export const Default: Component = {
     <wui-text variant=${args.variant} color=${args.color} align=${ifDefined(args.align)}>
       The fox jumped over the lazy dog
     </wui-text>
+  `
+}
+
+export const LineClamp: Component = {
+  render: args => html`
+    <div style="max-width:300px">
+      <wui-text
+        variant=${args.variant}
+        color=${args.color}
+        align=${ifDefined(args.align)}
+        lineClamp="1"
+      >
+        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
+        been the industry's standard dummy text ever since the 1500s.
+      </wui-text>
+    </div>
   `
 }

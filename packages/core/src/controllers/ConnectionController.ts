@@ -10,11 +10,12 @@ import type {
   WriteContractArgs
 } from '../utils/TypeUtil.js'
 import { TransactionsController } from './TransactionsController.js'
-import { type W3mFrameTypes } from '@web3modal/wallet'
+import { ChainController } from './ChainController.js'
+import { type W3mFrameTypes } from '@reown/appkit-wallet'
 import { ModalController } from './ModalController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
-import { NetworkController } from './NetworkController.js'
+import type { ChainNamespace } from '@reown/appkit-common'
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -25,10 +26,10 @@ export interface ConnectExternalOptions {
 }
 
 export interface ConnectionControllerClient {
-  connectWalletConnect: (onUri: (uri: string) => void) => Promise<void>
+  connectWalletConnect?: (onUri: (uri: string) => void) => Promise<void>
   disconnect: () => Promise<void>
   signMessage: (message: string) => Promise<string>
-  sendTransaction: (args: SendTransactionArgs) => Promise<`0x${string}` | null>
+  sendTransaction: (args: SendTransactionArgs) => Promise<string | null>
   estimateGas: (args: EstimateGasTransactionArgs) => Promise<bigint>
   parseUnits: (value: string, decimals: number) => bigint
   formatUnits: (value: bigint, decimals: number) => string
@@ -44,7 +45,6 @@ export interface ConnectionControllerClient {
 export interface ConnectionControllerState {
   _client?: ConnectionControllerClient
   wcUri?: string
-  wcPromise?: Promise<void>
   wcPairingExpiry?: number
   wcLinking?: {
     href: string
@@ -53,6 +53,7 @@ export interface ConnectionControllerState {
   wcError?: boolean
   recentWallet?: WcWallet
   buffering: boolean
+  status?: 'connecting' | 'connected' | 'disconnected'
 }
 
 type StateKey = keyof ConnectionControllerState
@@ -60,7 +61,8 @@ type StateKey = keyof ConnectionControllerState
 // -- State --------------------------------------------- //
 const state = proxy<ConnectionControllerState>({
   wcError: false,
-  buffering: false
+  buffering: false,
+  status: 'disconnected'
 })
 
 // -- Controller ---------------------------------------- //
@@ -74,29 +76,31 @@ export const ConnectionController = {
     return subKey(state, key, callback)
   },
 
-  _getClient() {
-    if (!state._client) {
-      throw new Error('ConnectionController client not set')
-    }
-
-    return state._client
+  _getClient(chain?: ChainNamespace) {
+    return ChainController.getConnectionControllerClient(chain)
   },
 
   setClient(client: ConnectionControllerClient) {
     state._client = ref(client)
   },
 
-  connectWalletConnect() {
-    state.wcPromise = this._getClient().connectWalletConnect(uri => {
-      state.wcUri = uri
-      state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
-    })
+  async connectWalletConnect() {
     StorageUtil.setConnectedConnector('WALLET_CONNECT')
+
+    await ChainController.state?.universalAdapter?.connectionControllerClient?.connectWalletConnect?.(
+      uri => {
+        state.wcUri = uri
+        state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
+      }
+    )
   },
 
-  async connectExternal(options: ConnectExternalOptions) {
-    await this._getClient().connectExternal?.(options)
-    StorageUtil.setConnectedConnector(options.type)
+  async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
+    await this._getClient(chain).connectExternal?.(options)
+    if (setChain) {
+      ChainController.setActiveNamespace(chain)
+      StorageUtil.setConnectedConnector(options.type)
+    }
   },
 
   async reconnectExternal(options: ConnectExternalOptions) {
@@ -116,7 +120,7 @@ export const ConnectionController = {
     EventsController.sendEvent({
       type: 'track',
       event: 'SET_PREFERRED_ACCOUNT_TYPE',
-      properties: { accountType, network: NetworkController.state.caipNetwork?.id || '' }
+      properties: { accountType, network: ChainController.state.activeCaipNetwork?.id || '' }
     })
   },
 
@@ -156,14 +160,13 @@ export const ConnectionController = {
     return this._getClient().getEnsAvatar(value)
   },
 
-  checkInstalled(ids?: string[]) {
-    return this._getClient().checkInstalled?.(ids)
+  checkInstalled(ids?: string[], chain?: ChainNamespace) {
+    return this._getClient(chain).checkInstalled?.(ids) || false
   },
 
   resetWcConnection() {
     state.wcUri = undefined
     state.wcPairingExpiry = undefined
-    state.wcPromise = undefined
     state.wcLinking = undefined
     state.recentWallet = undefined
     TransactionsController.resetTransactions()
@@ -187,11 +190,19 @@ export const ConnectionController = {
     state.buffering = buffering
   },
 
-  async disconnect() {
-    await this._getClient().disconnect()
-    StorageUtil.removeConnectedWalletImageUrl()
+  setStatus(status: ConnectionControllerState['status']) {
+    state.status = status
+  },
 
-    this.resetWcConnection()
+  async disconnect() {
+    const connectionControllerClient = this._getClient()
+
+    try {
+      await connectionControllerClient?.disconnect()
+      this.resetWcConnection()
+    } catch (error) {
+      throw new Error('Failed to disconnect')
+    }
   }
 
 }

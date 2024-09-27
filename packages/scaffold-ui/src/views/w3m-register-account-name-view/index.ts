@@ -1,4 +1,4 @@
-import { customElement } from '@web3modal/ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -9,8 +9,9 @@ import {
   EnsController,
   EventsController,
   AccountController
-} from '@web3modal/core'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+} from '@reown/appkit-core'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 @customElement('w3m-register-account-name-view')
 export class W3mRegisterAccountNameView extends LitElement {
@@ -33,6 +34,8 @@ export class W3mRegisterAccountNameView extends LitElement {
 
   @state() private registered = false
 
+  @state() private profileName = AccountController.state.profileName
+
   public constructor() {
     super()
     this.usubscribe.push(
@@ -40,6 +43,12 @@ export class W3mRegisterAccountNameView extends LitElement {
         EnsController.subscribe(val => {
           this.suggestions = val.suggestions
           this.loading = val.loading
+        }),
+        AccountController.subscribeKey('profileName', val => {
+          this.profileName = val
+          if (val) {
+            this.error = 'You already own a name'
+          }
         })
       ]
     )
@@ -143,6 +152,7 @@ export class W3mRegisterAccountNameView extends LitElement {
 
     return html`<wui-flex flexDirection="column" gap="xxs" alignItems="center">
       <wui-flex
+        data-testid="account-name-suggestion"
         .padding=${['m', 'm', 'm', 'm'] as const}
         justifyContent="space-between"
         class="suggestion"
@@ -157,6 +167,7 @@ export class W3mRegisterAccountNameView extends LitElement {
 
   private availableNameTemplate(suggestion: string) {
     return html` <wui-flex
+      data-testid="account-name-suggestion"
       .padding=${['m', 'm', 'm', 'm'] as const}
       justifyContent="space-between"
       class="suggestion"
@@ -170,7 +181,13 @@ export class W3mRegisterAccountNameView extends LitElement {
   }
 
   private isAllowedToSubmit() {
-    return !this.loading && !this.registered && !this.error && EnsController.validateName(this.name)
+    return (
+      !this.loading &&
+      !this.registered &&
+      !this.error &&
+      !this.profileName &&
+      EnsController.validateName(this.name)
+    )
   }
 
   private async onSubmitName() {
@@ -178,6 +195,7 @@ export class W3mRegisterAccountNameView extends LitElement {
       if (!this.isAllowedToSubmit()) {
         return
       }
+      const ensName = `${this.name}${ConstantsUtil.WC_NAME_SUFFIX}` as const
       EventsController.sendEvent({
         type: 'track',
         event: 'REGISTER_NAME_INITIATED',
@@ -185,10 +203,10 @@ export class W3mRegisterAccountNameView extends LitElement {
           isSmartAccount:
             AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-          ensName: this.name
+          ensName
         }
       })
-      await EnsController.registerName(this.name)
+      await EnsController.registerName(ensName)
       EventsController.sendEvent({
         type: 'track',
         event: 'REGISTER_NAME_SUCCESS',
@@ -196,7 +214,7 @@ export class W3mRegisterAccountNameView extends LitElement {
           isSmartAccount:
             AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-          ensName: this.name
+          ensName
         }
       })
     } catch (error) {
@@ -208,7 +226,7 @@ export class W3mRegisterAccountNameView extends LitElement {
           isSmartAccount:
             AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
-          ensName: this.name,
+          ensName: `${this.name}${ConstantsUtil.WC_NAME_SUFFIX}`,
           error: (error as Error)?.message || 'Unknown error'
         }
       })

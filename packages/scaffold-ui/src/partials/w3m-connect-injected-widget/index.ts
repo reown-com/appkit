@@ -1,13 +1,14 @@
-import type { Connector } from '@web3modal/core'
+import type { Connector } from '@reown/appkit-core'
 import {
   ApiController,
   AssetUtil,
+  ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   RouterController
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -53,7 +54,9 @@ export class W3mConnectInjectedWidget extends LitElement {
             return null
           }
 
-          if (!ConnectionController.checkInstalled()) {
+          if (!ConnectionController.checkInstalled(undefined, connector.chain)) {
+            this.style.cssText = `display: none`
+
             return null
           }
 
@@ -82,6 +85,7 @@ export class W3mConnectInjectedWidget extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
+    ChainController.setActiveConnector(connector)
     RouterController.push('ConnectingExternal', { connector })
   }
 }

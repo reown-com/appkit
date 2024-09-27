@@ -1,6 +1,6 @@
 {
-  "name": "@web3modal/wagmi",
-  "version": "5.0.3",
+  "name": "@reown/appkit-wagmi",
+  "version": "1.0.4",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -45,27 +45,30 @@
   },
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build:client": "tsc --build",
+    "build": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@walletconnect/ethereum-provider": "2.13.0",
-    "@web3modal/polyfills": "5.0.3",
-    "@web3modal/scaffold": "5.0.3",
-    "@web3modal/scaffold-react": "5.0.3",
-    "@web3modal/scaffold-utils": "5.0.3",
-    "@web3modal/scaffold-vue": "5.0.3",
-    "@web3modal/siwe": "5.0.3"
+    "@walletconnect/utils": "2.16.1",
+    "@reown/appkit-polyfills": "workspace:*",
+    "@reown/appkit-adapter-wagmi": "workspace:*",
+    "@reown/appkit": "workspace:*",
+    "@reown/appkit-wallet": "workspace:*",
+    "@reown/appkit-common": "workspace:*",
+    "@reown/appkit-utils": "workspace:*",
+    "@reown/appkit-siwe": "workspace:*"
   },
   "devDependencies": {
-    "@wagmi/connectors": "5.0.8",
-    "@wagmi/core": "2.10.5",
+    "@wagmi/connectors": "5.1.9",
+    "@wagmi/core": "2.13.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "viem": "2.10.3",
-    "vue": "3.4.3"
+    "viem": "2.21.4",
+    "vue": "3.4.3",
+    "wagmi": "2.12.9",
+    "vitest": "2.0.5"
   },
   "peerDependencies": {
     "@wagmi/connectors": ">=4",
@@ -73,7 +76,8 @@
     "react": ">=17",
     "react-dom": ">=17",
     "viem": ">=2.0.0",
-    "vue": ">=3"
+    "vue": ">=3",
+    "wagmi": ">=2.0.0"
   },
   "peerDependenciesMeta": {
     "react": {
@@ -86,23 +90,14 @@
       "optional": true
     }
   },
-  "keywords": [
-    "web3",
-    "crypto",
-    "ethereum",
-    "web3modal",
-    "walletconnect",
-    "lit",
-    "webcomponents"
-  ],
-  "author": "WalletConnect <walletconnect.com>",
+  "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/web3modal/web3modal",
+  "homepage": "https://github.com/WalletConnect/web3modal",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/web3modal/web3modal.git"
+    "url": "git+https://github.com/WalletConnect/web3modal.git"
   },
   "bugs": {
-    "url": "https://github.com/web3modal/web3modal/issues"
+    "url": "https://github.com/WalletConnect/web3modal/issues"
   }
 }

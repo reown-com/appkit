@@ -1,5 +1,6 @@
-import { describe, expect, it } from 'vitest'
-import { AccountController } from '../../index.js'
+import { beforeAll, describe, expect, it } from 'vitest'
+import { AccountController, ChainController } from '../../exports/index.js'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 // -- Setup --------------------------------------------------------------------
 const caipAddress = 'eip155:1:0x123'
@@ -8,67 +9,72 @@ const balanceSymbol = 'ETH'
 const profileName = 'john.eth'
 const profileImage = 'https://ipfs.com/0x123.png'
 const explorerUrl = 'https://some.explorer.com/explore'
+const chain = ConstantsUtil.CHAIN.EVM
 
 // -- Tests --------------------------------------------------------------------
+beforeAll(() => {
+  ChainController.initialize([
+    {
+      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      caipNetworks: []
+    }
+  ])
+})
+
 describe('AccountController', () => {
   it('should have valid default state', () => {
     expect(AccountController.state).toEqual({
-      isConnected: false,
       smartAccountDeployed: false,
       currentTab: 0,
-      tokenBalance: []
+      tokenBalance: [],
+      allAccounts: [],
+      addressLabels: new Map<string, string>()
     })
   })
 
-  it('should update state correctly on setIsConnected()', () => {
-    AccountController.setIsConnected(true)
-    expect(AccountController.state.isConnected).toEqual(true)
-  })
-
   it('should update state correctly on setCaipAddress()', () => {
-    AccountController.setCaipAddress(caipAddress)
+    AccountController.setCaipAddress(caipAddress, chain)
     expect(AccountController.state.caipAddress).toEqual(caipAddress)
     expect(AccountController.state.address).toEqual('0x123')
   })
 
   it('should update state correctly on setBalance()', () => {
-    AccountController.setBalance(balance, balanceSymbol)
+    AccountController.setBalance(balance, balanceSymbol, chain)
     expect(AccountController.state.balance).toEqual(balance)
     expect(AccountController.state.balanceSymbol).toEqual(balanceSymbol)
   })
 
   it('should update state correctly on setProfileName()', () => {
-    AccountController.setProfileName(profileName)
+    AccountController.setProfileName(profileName, chain)
     expect(AccountController.state.profileName).toEqual(profileName)
   })
 
   it('should update state correctly on setProfileImage()', () => {
-    AccountController.setProfileImage(profileImage)
+    AccountController.setProfileImage(profileImage, chain)
     expect(AccountController.state.profileImage).toEqual(profileImage)
   })
 
   it('should update state correctly on setAddressExplorerUrl()', () => {
-    AccountController.setAddressExplorerUrl(explorerUrl)
+    AccountController.setAddressExplorerUrl(explorerUrl, chain)
     expect(AccountController.state.addressExplorerUrl).toEqual(explorerUrl)
   })
 
   it('shuold update state correctly on setSmartAccountDeployed()', () => {
-    AccountController.setSmartAccountDeployed(true)
+    AccountController.setSmartAccountDeployed(true, chain)
     expect(AccountController.state.smartAccountDeployed).toEqual(true)
   })
 
   it('should update state correctly on setPreferredAccountType()', () => {
-    AccountController.setPreferredAccountType('eoa')
+    AccountController.setPreferredAccountType('eoa', chain)
     expect(AccountController.state.preferredAccountType).toEqual('eoa')
 
-    AccountController.setPreferredAccountType('smartAccount')
+    AccountController.setPreferredAccountType('smartAccount', chain)
     expect(AccountController.state.preferredAccountType).toEqual('smartAccount')
   })
 
   it('should update state correctly on resetAccount()', () => {
-    AccountController.resetAccount()
+    AccountController.resetAccount(chain)
     expect(AccountController.state).toEqual({
-      isConnected: false,
       smartAccountDeployed: false,
       currentTab: 0,
       caipAddress: undefined,
@@ -78,7 +84,9 @@ describe('AccountController', () => {
       profileName: undefined,
       profileImage: undefined,
       addressExplorerUrl: undefined,
-      tokenBalance: []
+      tokenBalance: [],
+      allAccounts: [],
+      addressLabels: new Map<string, string>()
     })
   })
 })

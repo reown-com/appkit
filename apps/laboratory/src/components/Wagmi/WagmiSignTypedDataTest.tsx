@@ -1,6 +1,7 @@
 import { Button } from '@chakra-ui/react'
 import { useAccount, useSignTypedData } from 'wagmi'
 import { useChakraToast } from '../Toast'
+import { useAppKitAccount } from '@reown/appkit/react'
 
 // Example data
 const types = {
@@ -29,16 +30,16 @@ const message = {
 
 export function WagmiSignTypedDataTest() {
   const toast = useChakraToast()
-  const { chain, status } = useAccount()
+  const { isConnected } = useAppKitAccount()
+  const { chain } = useAccount()
   const domain = {
     name: 'Ether Mail',
     version: '1',
     chainId: chain?.id,
     verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
   } as const
-  const isConnected = status === 'connected'
 
-  const { signTypedDataAsync } = useSignTypedData()
+  const { signTypedDataAsync, isPending } = useSignTypedData()
 
   async function onSignTypedData() {
     try {
@@ -66,7 +67,8 @@ export function WagmiSignTypedDataTest() {
     <Button
       data-testid="sign-typed-data-button"
       onClick={onSignTypedData}
-      isDisabled={!isConnected}
+      isDisabled={!isConnected || isPending}
+      isLoading={isPending}
     >
       Sign Typed Data
     </Button>

@@ -84,6 +84,22 @@ export default css`
       background-color: var(--wui-color-accent-090);
     }
 
+    button[data-variant='main']:hover:enabled {
+      background-color: var(--wui-color-accent-090);
+    }
+
+    button[data-variant='main']:active:enabled {
+      background-color: var(--wui-color-accent-080);
+    }
+
+    button[data-variant='accent']:hover:enabled {
+      background-color: var(--wui-color-accent-glass-015);
+    }
+
+    button[data-variant='accent']:active:enabled {
+      background-color: var(--wui-color-accent-glass-020);
+    }
+
     button[data-variant='shade']:focus-visible,
     button[data-variant='gray']:focus-visible,
     button[data-variant='shade']:hover,

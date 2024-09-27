@@ -1,6 +1,6 @@
 {
-  "name": "@web3modal/scaffold-ui",
-  "version": "5.0.3",
+  "name": "@reown/appkit-scaffold-ui",
+  "version": "1.0.4",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -22,37 +22,28 @@
   },
   "scripts": {
     "build:clean": "rm -rf dist",
-    "build:scaffold-ui": "tsc --build",
+    "build": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@web3modal/common": "5.0.3",
-    "@web3modal/scaffold-utils": "5.0.3",
-    "@web3modal/core": "5.0.3",
-    "@web3modal/ui": "5.0.3",
+    "@reown/appkit-common": "workspace:*",
+    "@reown/appkit-utils": "workspace:*",
+    "@reown/appkit-core": "workspace:*",
+    "@reown/appkit-ui": "workspace:*",
     "lit": "3.1.0",
-    "@web3modal/siwe": "5.0.3",
-    "@web3modal/wallet": "5.0.3"
+    "@reown/appkit-siwe": "workspace:*",
+    "@reown/appkit-wallet": "workspace:*"
   },
-  "keywords": [
-    "web3",
-    "crypto",
-    "ethereum",
-    "web3modal",
-    "walletconnect",
-    "lit",
-    "webcomponents"
-  ],
-  "author": "WalletConnect <walletconnect.com>",
+  "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/web3modal/web3modal",
+  "homepage": "https://github.com/WalletConnect/web3modal",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/web3modal/web3modal.git"
+    "url": "git+https://github.com/WalletConnect/web3modal.git"
   },
   "bugs": {
-    "url": "https://github.com/web3modal/web3modal/issues"
+    "url": "https://github.com/WalletConnect/web3modal/issues"
   }
 }

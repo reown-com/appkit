@@ -45,10 +45,12 @@ import {
   RcpEthGetBlockTransactionCountByNumber,
   RcpEthGetBlockTransactionCountByHash,
   RpcEthGetBlockReceipts,
+  WalletSendCallsRequest,
+  WalletGetCallsReceiptRequest,
   FrameSession,
   AppGetUserRequest,
   AppUpdateEmailRequest,
-  FrameUpdateEmailSecondaryOtpResolver,
+  FrameUpdateEmailSecondaryOtpResponse,
   AppUpdateEmailPrimaryOtpRequest,
   AppUpdateEmailSecondaryOtpRequest,
   AppSyncThemeRequest,
@@ -59,9 +61,21 @@ import {
   FrameUpdateEmailResponse,
   AppGetSocialRedirectUriRequest,
   FrameGetSocialRedirectUriResponse,
-  FrameConnectSocialResponse
+  FrameConnectSocialResponse,
+  FrameConnectFarcasterResponse,
+  FrameGetFarcasterUriResponse,
+  AppConnectSocialRequest,
+  AppSetPreferredAccountRequest,
+  FrameSetPreferredAccountResponse,
+  WalletGetCapabilitiesRequest,
+  WalletGrantPermissionsRequest,
+  RpcSolanaSignMessageRequest,
+  RpcSolanaSignTransactionRequest,
+  RpcSolanaSignAndSendTransactionRequest,
+  RpcSolanaSignAllTransactionsRequest
 } from './W3mFrameSchema.js'
 import type { W3mFrameRpcConstants } from './W3mFrameConstants.js'
+import type { CaipNetworkId } from '@reown/appkit-common'
 
 export namespace W3mFrameTypes {
   export type AppEvent = z.infer<typeof W3mFrameSchema.appEvent>
@@ -71,34 +85,54 @@ export namespace W3mFrameTypes {
   export interface Requests {
     AppConnectEmailRequest: z.infer<typeof AppConnectEmailRequest>
     AppConnectOtpRequest: z.infer<typeof AppConnectOtpRequest>
-    AppGetSocialRedirectUriRequest: z.infer<typeof AppGetSocialRedirectUriRequest>
-    AppSwitchNetworkRequest: z.infer<typeof AppSwitchNetworkRequest>
     AppGetUserRequest: z.infer<typeof AppGetUserRequest>
-    AppUpdateEmailRequest: z.infer<typeof AppUpdateEmailRequest>
+    AppSwitchNetworkRequest: z.infer<typeof AppSwitchNetworkRequest>
     AppSyncThemeRequest: z.infer<typeof AppSyncThemeRequest>
     AppSyncDappDataRequest: z.infer<typeof AppSyncDappDataRequest>
+    AppUpdateEmailRequest: z.infer<typeof AppUpdateEmailRequest>
     AppUpdateEmailPrimaryOtpRequest: z.infer<typeof AppUpdateEmailPrimaryOtpRequest>
     AppUpdateEmailSecondaryOtpRequest: z.infer<typeof AppUpdateEmailSecondaryOtpRequest>
+    AppGetSocialRedirectUriRequest: z.infer<typeof AppGetSocialRedirectUriRequest>
+    AppSetPreferredAccountRequest: z.infer<typeof AppSetPreferredAccountRequest>
+    AppConnectSocialRequest: z.infer<typeof AppConnectSocialRequest>
+    AppGetSmartAccountEnabledNetworksRequest: undefined
+    AppGetChainIdRequest: undefined
+    AppIsConnectedRequest: undefined
+    AppConnectDeviceRequest: undefined
+    AppSignOutRequest: undefined
+    AppRpcRequest: RPCRequest
+    AppGetFarcasterUriRequest: undefined
+    AppConnectFarcasterRequest: undefined
   }
 
   export interface Responses {
     FrameConnectEmailResponse: z.infer<typeof FrameConnectEmailResponse>
-    FrameGetChainIdResponse: z.infer<typeof FrameGetChainIdResponse>
+    FrameConnectOtpResponse: undefined
     FrameGetUserResponse: z.infer<typeof FrameGetUserResponse>
-    FrameIsConnectedResponse: z.infer<typeof FrameIsConnectedResponse>
-    FrameUpdateEmailSecondaryOtpResolver: z.infer<typeof FrameUpdateEmailSecondaryOtpResolver>
     FrameSwitchNetworkResponse: z.infer<typeof FrameSwitchNetworkResponse>
+    FrameGetChainIdResponse: z.infer<typeof FrameGetChainIdResponse>
+    FrameIsConnectedResponse: z.infer<typeof FrameIsConnectedResponse>
     FrameGetSmartAccountEnabledNetworksResponse: z.infer<
       typeof FrameGetSmartAccountEnabledNetworksResponse
     >
     FrameUpdateEmailResponse: z.infer<typeof FrameUpdateEmailResponse>
     FrameGetSocialRedirectUriResponse: z.infer<typeof FrameGetSocialRedirectUriResponse>
     FrameConnectSocialResponse: z.infer<typeof FrameConnectSocialResponse>
+    FrameGetFarcasterUriResponse: z.infer<typeof FrameGetFarcasterUriResponse>
+    FrameConnectFarcasterResponse: z.infer<typeof FrameConnectFarcasterResponse>
+    FrameSyncThemeResponse: undefined
+    FrameSyncDappDataResponse: undefined
+    FrameUpdateEmailPrimaryOtpResponse: undefined
+    FrameUpdateEmailSecondaryOtpResponse: z.infer<typeof FrameUpdateEmailSecondaryOtpResponse>
+    FrameConnectDeviceResponse: undefined
+    FrameSetPreferredAccountResponse: z.infer<typeof FrameSetPreferredAccountResponse>
+    FrameSignOutResponse: undefined
+    FrameRpcResponse: RPCResponse
   }
 
   export interface Network {
     rpcUrl: string
-    chainId: number
+    chainId: number | CaipNetworkId
   }
 
   export type RPCRequest =
@@ -139,6 +173,14 @@ export namespace W3mFrameTypes {
     | z.infer<typeof RpcPersonalSignRequest>
     | z.infer<typeof RpcEthSignTypedDataV4>
     | z.infer<typeof RpcEthSendTransactionRequest>
+    | z.infer<typeof RpcSolanaSignMessageRequest>
+    | z.infer<typeof RpcSolanaSignTransactionRequest>
+    | z.infer<typeof RpcSolanaSignAllTransactionsRequest>
+    | z.infer<typeof RpcSolanaSignAndSendTransactionRequest>
+    | z.infer<typeof WalletSendCallsRequest>
+    | z.infer<typeof WalletGetCallsReceiptRequest>
+    | z.infer<typeof WalletGetCapabilitiesRequest>
+    | z.infer<typeof WalletGrantPermissionsRequest>
 
   export type RPCResponse = z.infer<typeof RpcResponse>
 
@@ -147,4 +189,29 @@ export namespace W3mFrameTypes {
     (typeof W3mFrameRpcConstants.ACCOUNT_TYPES)[keyof typeof W3mFrameRpcConstants.ACCOUNT_TYPES]
 
   export type SocialProvider = 'google' | 'github' | 'apple' | 'facebook' | 'x' | 'discord'
+
+  export type ProviderRequestType =
+    | 'ConnectEmail'
+    | 'ConnectOtp'
+    | 'GetUser'
+    | 'SwitchNetwork'
+    | 'GetChainId'
+    | 'IsConnected'
+    | 'GetSmartAccountEnabledNetworks'
+    | 'UpdateEmail'
+    | 'GetSocialRedirectUri'
+    | 'ConnectSocial'
+    | 'GetFarcasterUri'
+    | 'ConnectFarcaster'
+    | 'SyncTheme'
+    | 'SyncDappData'
+    | 'UpdateEmailPrimaryOtp'
+    | 'UpdateEmailSecondaryOtp'
+    | 'ConnectDevice'
+    | 'SetPreferredAccount'
+    | 'SignOut'
+    | 'Rpc'
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  export type WalletCapabilities = Record<string, any>
 }

@@ -1,12 +1,13 @@
 <script lang="ts" setup>
+import { Ethers5Adapter } from '@reown/appkit-adapter-ethers5'
 import {
-  createWeb3Modal,
-  defaultConfig,
-  useWeb3Modal,
-  useWeb3ModalEvents,
-  useWeb3ModalState,
-  useWeb3ModalTheme
-} from '@web3modal/ethers5/vue'
+  createAppKit,
+  useAppKit,
+  useAppKitEvents,
+  useAppKitState,
+  useAppKitTheme
+} from '@reown/appkit/vue'
+import { mainnet, arbitrum } from '@reown/appkit/networks'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -14,40 +15,24 @@ if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
 }
 
-// 2. Set chains
-const chains = [
-  {
-    chainId: 1,
-    name: 'Ethereum',
-    currency: 'ETH',
-    explorerUrl: 'https://etherscan.io',
-    rpcUrl: 'https://cloudflare-eth.com'
-  },
-  {
-    chainId: 42161,
-    name: 'Arbitrum',
-    currency: 'ETH',
-    explorerUrl: 'https://arbiscan.io',
-    rpcUrl: 'https://arb1.arbitrum.io/rpc'
-  }
-]
+function getBlockchainApiRpcUrl(chainId) {
+  return `https://rpc.walletconnect.org/v1/?chainId=eip155:${chainId}&projectId=${projectId}`
+}
 
-const ethersConfig = defaultConfig({
-  metadata: {
-    name: 'Web3Modal',
-    description: 'Web3Modal Laboratory',
-    url: 'https://web3modal.com',
-    icons: ['https://avatars.githubusercontent.com/u/37784886']
-  },
-  defaultChainId: 1,
-  rpcUrl: 'https://cloudflare-eth.com'
-})
+// 2. Set Ethers adapter
+const ethersAdapter = new Ethers5Adapter()
 
 // 3. Create modal
-createWeb3Modal({
+createAppKit({
   ethersConfig,
   projectId,
-  chains,
+  metadata: {
+    name: 'AppKit',
+    description: 'AppKit Laboratory',
+    url: 'https://example.com',
+    icons: ['https://avatars.githubusercontent.com/u/37784886']
+  },
+  networks: [mainnet, arbitrum],
   themeMode: 'light',
   themeVariables: {
     '--w3m-color-mix': '#00BB7F',
@@ -56,10 +41,10 @@ createWeb3Modal({
 })
 
 // 4. Use modal composable
-const modal = useWeb3Modal()
-const state = useWeb3ModalState()
-const { setThemeMode, themeMode, themeVariables } = useWeb3ModalTheme()
-const events = useWeb3ModalEvents()
+const modal = useAppKit()
+const state = useAppKitState()
+const { setThemeMode, themeMode, themeVariables } = useAppKitTheme()
+const events = useAppKitEvents()
 </script>
 
 <template>

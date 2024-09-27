@@ -1,5 +1,5 @@
-import { ConnectionController, CoreHelperUtil, EventsController } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import { ConnectionController, CoreHelperUtil, EventsController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-wc-desktop')
@@ -22,9 +22,7 @@ export class W3mConnectingWcDesktop extends W3mConnectingWidget {
   private onRenderProxy() {
     if (!this.ready && this.uri) {
       this.ready = true
-      this.timeout = setTimeout(() => {
-        this.onConnect?.()
-      }, 200)
+      this.onConnect?.()
     }
   }
 

@@ -5,8 +5,8 @@ import {
   EventsController,
   OptionsController,
   RouterController
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
@@ -33,10 +33,10 @@ export class W3mAllWalletsWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
+    const wcConnector = this.connectors.find(c => c.id === 'walletConnect')
     const { allWallets } = OptionsController.state
 
-    if (!connector || allWallets === 'HIDE') {
+    if (!wcConnector || allWallets === 'HIDE') {
       return null
     }
 

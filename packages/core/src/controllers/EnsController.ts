@@ -1,4 +1,4 @@
-import { subscribeKey as subKey } from 'valtio/utils'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import type { BlockchainApiEnsError } from '../utils/TypeUtil.js'
@@ -6,16 +6,17 @@ import { AccountController } from './AccountController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { RouterController } from './RouterController.js'
 import { ConnectionController } from './ConnectionController.js'
-import { NetworkController } from './NetworkController.js'
-import { NetworkUtil } from '@web3modal/common'
+import { NetworkUtil } from '@reown/appkit-common'
 import { EnsUtil } from '../utils/EnsUtil.js'
-import { ConstantsUtil } from '@web3modal/common'
+import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 type Suggestion = {
   name: string
   registered: boolean
 }
+
+export type ReownName = `${string}.reown.id` | `${string}.wcn.id`
 
 export interface EnsControllerState {
   suggestions: Suggestion[]
@@ -61,15 +62,15 @@ export const EnsController = {
     }
   },
 
-  async getSuggestions(name: string) {
+  async getSuggestions(value: string) {
     try {
       state.loading = true
       state.suggestions = []
-      const response = await BlockchainApiController.getEnsNameSuggestions(name)
+      const response = await BlockchainApiController.getEnsNameSuggestions(value)
       state.suggestions =
         response.suggestions.map(suggestion => ({
           ...suggestion,
-          name: suggestion.name.replace(ConstantsUtil.WC_NAME_SUFFIX, '')
+          name: suggestion.name
         })) || []
 
       return state.suggestions
@@ -83,7 +84,7 @@ export const EnsController = {
 
   async getNamesForAddress(address: string) {
     try {
-      const network = NetworkController.state.caipNetwork
+      const network = ChainController.state.activeCaipNetwork
       if (!network) {
         return []
       }
@@ -97,8 +98,8 @@ export const EnsController = {
     }
   },
 
-  async registerName(name: string) {
-    const network = NetworkController.state.caipNetwork
+  async registerName(name: ReownName) {
+    const network = ChainController.state.activeCaipNetwork
     if (!network) {
       throw new Error('Network not found')
     }
@@ -113,9 +114,9 @@ export const EnsController = {
 
     try {
       const message = JSON.stringify({
-        name: `${name}${ConstantsUtil.WC_NAME_SUFFIX}`,
+        name,
         attributes: {},
-        timestamp: Math.floor(Date.now() / 1000)
+        timestamp: Math.floor(Date.now())
       })
 
       RouterController.pushTransactionStack({
@@ -134,7 +135,7 @@ export const EnsController = {
         throw new Error('Network not found')
       }
 
-      const coinType = EnsUtil.convertEVMChainIdToCoinType(networkId)
+      const coinType = EnsUtil.convertEVMChainIdToCoinType(Number(networkId))
       await BlockchainApiController.registerEnsName({
         coinType,
         address: address as `0x${string}`,
@@ -142,7 +143,7 @@ export const EnsController = {
         message
       })
 
-      AccountController.setProfileName(`${name}${ConstantsUtil.WC_NAME_SUFFIX}`)
+      AccountController.setProfileName(name, network.chainNamespace)
       RouterController.replace('RegisterAccountNameSuccess')
     } catch (e) {
       const errorMessage = this.parseEnsApiError(e, `Error registering name ${name}`)

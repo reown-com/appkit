@@ -1,9 +1,15 @@
-import { AccountController, AssetUtil, CoreHelperUtil, NetworkController } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import {
+  AccountController,
+  AssetUtil,
+  ChainController,
+  CoreHelperUtil,
+  NetworkController
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 import { state } from 'lit/decorators.js'
 
 @customElement('w3m-wallet-compatible-networks-view')
@@ -46,7 +52,9 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
 
   // -- Private ------------------------------------------- //
   networkTemplate() {
-    const { approvedCaipNetworkIds, requestedCaipNetworks, caipNetwork } = NetworkController.state
+    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+    const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
+    const caipNetwork = ChainController.state.activeCaipNetwork
     const isNetworkEnabledForSmartAccounts = NetworkController.checkIfSmartAccountEnabled()
 
     let sortedNetworks = CoreHelperUtil.sortRequestedNetworks(

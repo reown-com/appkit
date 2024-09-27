@@ -8,24 +8,43 @@
     ":semanticCommitScope(deps)"
   ],
   "rebaseWhen": "conflicted",
+  "ignorePaths": [
+    "**/node_modules/**",
+    "**/bower_components/**",
+    "**/vendor/**",
+    "**/__tests__/**",
+    "**/test/**",
+    "**/tests/**",
+    "**/__fixtures__/**"
+  ],
   "packageRules": [
     {
-      "matchPackagePatterns": ["*"],
-      "enabled": false
+      "enabled": false,
+      "matchPackageNames": ["*"]
     },
     {
-      "matchFileNames": ["apps/laboratory/package.json"],
       "enabled": true,
       "matchPackageNames": [
+        "@walletconnect/universal-provider",
         "@walletconnect/utils",
-        "wagmi",
-        "@wagmi/connectors",
-        "viem",
-        "ethers",
-        "@solana/web3.js"
+        "@reown/{/,}**"
       ],
-      "matchPackagePrefixes": ["@web3modal/"],
+      "groupName": "walletconnect",
       "prPriority": 10
+    },
+    {
+      "enabled": true,
+      "matchPackageNames": ["viem", "@wagmi/core", "wagmi", "@wagmi/connectors"],
+      "groupName": "wagmi"
+    },
+    {
+      "enabled": true,
+      "matchPackageNames": ["ethers"],
+      "matchCurrentVersion": ">=6.0.0"
+    },
+    {
+      "enabled": true,
+      "matchPackageNames": ["@solana/web3.js"]
     }
   ]
 }

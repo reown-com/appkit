@@ -1,1 +1,1 @@
-export { solana, solanaDevnet, solanaTestnet } from '../src/utils/chains.js'
+export { solana, solanaDevnet, solanaTestnet } from '@reown/appkit-adapter-solana'

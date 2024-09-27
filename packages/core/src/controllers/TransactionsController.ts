@@ -1,11 +1,11 @@
-import type { Transaction } from '@web3modal/common'
+import type { Transaction } from '@reown/appkit-common'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { OptionsController } from './OptionsController.js'
 import { EventsController } from './EventsController.js'
 import { SnackController } from './SnackController.js'
+import type { CaipNetworkId } from '@reown/appkit-common'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { AccountController } from './AccountController.js'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
 import {
   PEANUT_CONTRACTS,
   getContract,
@@ -13,6 +13,8 @@ import {
   getDepositIdxs,
   getTxReceiptFromHash
 } from '@squirrel-labs/peanut-sdk'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 type TransactionByMonthMap = Record<number, Transaction[]>
@@ -22,6 +24,7 @@ export interface TransactionsControllerState {
   transactions: Transaction[]
   coinbaseTransactions: TransactionByYearMap
   transactionsByYear: TransactionByYearMap
+  lastNetworkInView: CaipNetworkId | undefined
   loading: boolean
   empty: boolean
   next: string | undefined
@@ -32,6 +35,7 @@ const state = proxy<TransactionsControllerState>({
   transactions: [],
   coinbaseTransactions: {},
   transactionsByYear: {},
+  lastNetworkInView: undefined,
   loading: false,
   empty: false,
   next: undefined
@@ -43,6 +47,10 @@ export const TransactionsController = {
 
   subscribe(callback: (newState: TransactionsControllerState) => void) {
     return sub(state, () => callback(state))
+  },
+
+  setLastNetworkInView(lastNetworkInView: TransactionsControllerState['lastNetworkInView']) {
+    state.lastNetworkInView = lastNetworkInView
   },
 
   async fetchTransactions(accountAddress?: string, onramp?: 'coinbase') {
@@ -59,7 +67,10 @@ export const TransactionsController = {
         account: accountAddress,
         projectId,
         cursor: state.next,
-        onramp
+        onramp,
+        // Coinbase transaction history state updates require the latest data
+        cache: onramp === 'coinbase' ? 'no-cache' : undefined,
+        chainId: ChainController.state.activeCaipNetwork?.id
       })
 
       response.data = response.data.map((tx: any) => {
@@ -84,7 +95,8 @@ export const TransactionsController = {
       })
 
       const nonSpamTransactions = this.filterSpamTransactions(response.data)
-      const filteredTransactions = [...state.transactions, ...nonSpamTransactions]
+      const sameChainTransactions = this.filterByConnectedChain(nonSpamTransactions)
+      const filteredTransactions = [...state.transactions, ...sameChainTransactions]
 
       state.loading = false
 
@@ -97,7 +109,7 @@ export const TransactionsController = {
         state.transactions = filteredTransactions
         state.transactionsByYear = this.groupTransactionsByYearAndMonth(
           state.transactionsByYear,
-          nonSpamTransactions
+          sameChainTransactions
         )
       }
 
@@ -159,6 +171,15 @@ export const TransactionsController = {
     })
   },
 
+  filterByConnectedChain(transactions: Transaction[]) {
+    const chainId = ChainController.state.activeCaipNetwork?.id
+    const filteredTransactions = transactions.filter(
+      transaction => transaction.metadata.chain === chainId
+    )
+
+    return filteredTransactions
+  },
+
   clearCursor() {
     state.next = undefined
   },
@@ -205,6 +226,7 @@ export const TransactionsController = {
   resetTransactions() {
     state.transactions = []
     state.transactionsByYear = {}
+    state.lastNetworkInView = undefined
     state.loading = false
     state.empty = false
     state.next = undefined

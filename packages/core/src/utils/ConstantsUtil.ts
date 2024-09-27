@@ -1,13 +1,27 @@
-const SECURE_SITE = 'https://secure.walletconnect.com'
+import type { Features } from './TypeUtil.js'
+import type { ChainNamespace } from '@reown/appkit-common'
+
+const SECURE_SITE = 'https://secure.walletconnect.org'
 
 export const ONRAMP_PROVIDERS = [
   {
     label: 'Coinbase',
     name: 'coinbase',
     feeRange: '1-2%',
-    url: ''
+    url: '',
+    supportedChains: ['eip155']
+  },
+  {
+    label: 'Meld.io',
+    name: 'meld',
+    feeRange: '1-2%',
+    url: 'https://meldcrypto.com',
+    supportedChains: ['eip155', 'solana']
   }
 ]
+
+export const MELD_DEV_PUBLIC_KEY = 'WXETMsajb7XcQBm7mcxAab:q3MtzJpiEMtXVNXsqYkAnAaBkgStybGVtZ'
+export const MELD_PROD_PUBLIC_KEY = 'WXETMuFUQmqqybHuRkSgxv:25B8LJHSfpG6LVjR2ytU5Cwh7Z4Sch2ocoU'
 
 export const ConstantsUtil = {
   FOUR_MINUTES_MS: 240_000,
@@ -181,10 +195,22 @@ export const ConstantsUtil = {
     'eip155:1313161554'
   ],
 
-  NATIVE_TOKEN_ADDRESS: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+  NATIVE_TOKEN_ADDRESS: {
+    eip155: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    solana: 'So11111111111111111111111111111111111111111',
+    polkadot: '0x'
+  } as const satisfies Record<ChainNamespace, string>,
 
-  CONVERT_SLIPPAGE_TOLERANCE: 1
+  CONVERT_SLIPPAGE_TOLERANCE: 1,
+
+  DEFAULT_FEATURES: {
+    swaps: true,
+    onramp: true,
+    email: true,
+    emailShowWallets: true,
+    socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'],
+    history: true,
+    analytics: true,
+    allWallets: true
+  } as Features
 }
-
-export type CoinbasePaySDKChainNameValues =
-  keyof typeof ConstantsUtil.WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP

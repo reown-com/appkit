@@ -1,5 +1,5 @@
-import { ConnectorController, StorageUtil } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import { ConnectorController, StorageUtil } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 
 @customElement('w3m-account-view')
@@ -7,11 +7,11 @@ export class W3mAccountView extends LitElement {
   // -- Render -------------------------------------------- //
 
   public override render() {
-    const type = StorageUtil.getConnectedConnector()
+    const connectedConnectorType = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
 
     return html`
-      ${authConnector?.walletFeatures && type === 'AUTH'
+      ${authConnector && connectedConnectorType === 'AUTH'
         ? this.walletFeaturesTemplate()
         : this.defaultTemplate()}
     `

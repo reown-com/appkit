@@ -1,37 +1,40 @@
 'use client'
 
-import type { Web3ModalOptions } from '../src/client.js'
-import { Web3Modal } from '../src/client.js'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import { EthersStoreUtil } from '@web3modal/scaffold-utils/ethers'
-import { getWeb3Modal } from '@web3modal/scaffold-react'
+import { AppKit } from '@reown/appkit'
+import type { AppKitOptions } from '@reown/appkit'
+import type { CaipNetwork } from '@reown/appkit-common'
+import { ProviderUtil } from '@reown/appkit/store'
+import { Ethers5Adapter, type AdapterOptions } from '@reown/appkit-adapter-ethers5'
+import { getAppKit } from '@reown/appkit/library/react'
 import { useSnapshot } from 'valtio'
 import { ethers } from 'ethers'
-
-// -- Types -------------------------------------------------------------------
-export type { Web3ModalOptions } from '../src/client.js'
+import packageJson from '../package.json' assert { type: 'json' }
 
 // -- Setup -------------------------------------------------------------------
-let modal: Web3Modal | undefined = undefined
+let appkit: AppKit | undefined = undefined
+let ethersAdapter: Ethers5Adapter | undefined = undefined
 
-export function createWeb3Modal(options: Web3ModalOptions) {
-  if (!modal) {
-    modal = new Web3Modal({
-      ...options,
-      _sdkVersion: `react-ethers5-${ConstantsUtil.VERSION}`
-    })
-  }
-  getWeb3Modal(modal)
+export type Ethers5AppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
+  AdapterOptions
 
-  return modal
+export function createAppKit(options: Ethers5AppKitOptions) {
+  ethersAdapter = new Ethers5Adapter()
+  appkit = new AppKit({
+    ...options,
+    sdkVersion: `react-ethers5-${packageJson.version}`,
+    adapters: [ethersAdapter]
+  })
+  getAppKit(appkit)
+
+  return appkit
 }
 
 // -- Hooks -------------------------------------------------------------------
-export function useWeb3ModalProvider() {
-  const { provider, providerType } = useSnapshot(EthersStoreUtil.state)
+export function useAppKitProvider() {
+  const { providers, providerIds } = useSnapshot(ProviderUtil.state)
 
-  const walletProvider = provider as ethers.providers.ExternalProvider | undefined
-  const walletProviderType = providerType
+  const walletProvider = providers['eip155'] as ethers.providers.ExternalProvider | undefined
+  const walletProviderType = providerIds['eip155']
 
   return {
     walletProvider,
@@ -41,7 +44,7 @@ export function useWeb3ModalProvider() {
 
 export function useDisconnect() {
   async function disconnect() {
-    await modal?.disconnect()
+    await ethersAdapter?.disconnect()
   }
 
   return {
@@ -50,8 +53,9 @@ export function useDisconnect() {
 }
 
 export function useSwitchNetwork() {
-  async function switchNetwork(chainId: number) {
-    await modal?.switchNetwork(chainId)
+  // Breaking change
+  async function switchNetwork(caipNetwork: CaipNetwork) {
+    await ethersAdapter?.switchNetwork(caipNetwork)
   }
 
   return {
@@ -59,32 +63,10 @@ export function useSwitchNetwork() {
   }
 }
 
-export function useWeb3ModalAccount() {
-  const { address, isConnected, chainId, status } = useSnapshot(EthersStoreUtil.state)
-
-  return {
-    address,
-    isConnected,
-    chainId,
-    status
-  }
-}
-
-export function useWeb3ModalError() {
-  const { error } = useSnapshot(EthersStoreUtil.state)
-
-  return {
-    error
-  }
-}
-
 export {
-  useWeb3ModalTheme,
-  useWeb3Modal,
-  useWeb3ModalState,
-  useWeb3ModalEvents,
+  useAppKitTheme,
+  useAppKit,
+  useAppKitState,
+  useAppKitEvents,
   useWalletInfo
-} from '@web3modal/scaffold-react'
-
-// -- Universal Exports -------------------------------------------------------
-export { defaultConfig } from '../src/utils/defaultConfig.js'
+} from '@reown/appkit/library/react'
