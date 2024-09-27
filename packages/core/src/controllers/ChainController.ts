@@ -473,9 +473,10 @@ export const ChainController = {
 
   getActiveNetworkTokenAddress() {
     const namespace = this.state.activeCaipNetwork?.chainNamespace || 'eip155'
+    const chainId = this.state.activeCaipNetwork?.chainId || 1
     const address = ConstantsUtil.NATIVE_TOKEN_ADDRESS[namespace]
 
-    return `${namespace}:${address}`
+    return `${namespace}:${chainId}:${address}`
   },
 
   showUnsupportedChainUI() {

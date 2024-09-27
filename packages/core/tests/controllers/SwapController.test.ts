@@ -51,7 +51,7 @@ beforeAll(async () => {
     {
       chainNamespace: ConstantsUtil.CHAIN.EVM,
       networkControllerClient: client,
-      caipNetworks: []
+      caipNetworks: [caipNetwork]
     }
   ])
 
