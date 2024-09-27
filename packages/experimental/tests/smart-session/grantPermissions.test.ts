@@ -14,6 +14,7 @@ import {
   assertWalletGrantPermissionsResponse,
   ERROR_MESSAGES
 } from '../../src/smart-session/helper/index.js'
+import { donutContractAbi } from '../data/abi'
 
 vi.mock('@reown/appkit-core')
 vi.mock('../../src/smart-session/utils/WalletConnectCosigner')
@@ -27,7 +28,20 @@ describe('grantPermissions', () => {
       chainId: '0x1',
       expiry: 1234567890,
       signer: { type: 'key', data: { type: 'secp256k1', publicKey: '0x123456' } },
-      permissions: [{ type: 'test', data: {} }],
+      permissions: [
+        {
+          type: 'contract-call',
+          data: {
+            address: '0x2E65BAfA07238666c3b239E94F32DaD3cDD6498D',
+            abi: donutContractAbi,
+            functions: [
+              {
+                functionName: 'purchase'
+              }
+            ]
+          }
+        }
+      ],
       policies: []
     }
 
@@ -46,7 +60,20 @@ describe('grantPermissions', () => {
 
     vi.mocked(ConnectionController._getClient).mockReturnValue({
       grantPermissions: vi.fn().mockResolvedValue({
-        permissions: [{ type: 'test', data: {} }],
+        permissions: [
+          {
+            type: 'contract-call',
+            data: {
+              address: '0x2E65BAfA07238666c3b239E94F32DaD3cDD6498D',
+              abi: donutContractAbi,
+              functions: [
+                {
+                  functionName: 'purchase'
+                }
+              ]
+            }
+          }
+        ],
         signer: {
           type: 'keys',
           data: {
@@ -70,7 +97,20 @@ describe('grantPermissions', () => {
     const result = await grantPermissions(mockRequest)
 
     expect(result).toEqual({
-      permissions: [{ type: 'test', data: {} }],
+      permissions: [
+        {
+          type: 'contract-call',
+          data: {
+            address: '0x2E65BAfA07238666c3b239E94F32DaD3cDD6498D',
+            abi: donutContractAbi,
+            functions: [
+              {
+                functionName: 'purchase'
+              }
+            ]
+          }
+        }
+      ],
       context: 'test-pci',
       expiry: 1234567890,
       address: '0x1234567890123456789012345678901234567890',

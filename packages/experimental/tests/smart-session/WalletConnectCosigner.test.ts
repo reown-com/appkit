@@ -36,7 +36,16 @@ describe('CoSigner API Tests', () => {
       type: 'key',
       data: { type: 'secp256k1', publicKey: '0x123456' }
     },
-    permissions: [{ type: 'example', data: {} }],
+    permissions: [
+      {
+        type: 'contract-call',
+        data: {
+          address: '0x2E65BAfA07238666c3b239E94F32DaD3cDD6498D',
+          abi: [],
+          functions: []
+        }
+      }
+    ],
     policies: []
   }
 

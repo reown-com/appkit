@@ -8,6 +8,7 @@ import {
   validateRequest,
   validateSigner
 } from '../../src/smart-session/helper/index.js'
+import { donutContractAbi } from '../data/abi.js'
 
 describe('smart-session/helper', () => {
   let mockRequest: SmartSessionGrantPermissionsRequest
@@ -17,7 +18,20 @@ describe('smart-session/helper', () => {
       chainId: '0x1',
       expiry: 1234567890,
       signer: { type: 'key', data: { type: 'secp256k1', publicKey: '0x123456' } },
-      permissions: [{ type: 'test', data: {} }],
+      permissions: [
+        {
+          type: 'contract-call',
+          data: {
+            address: '0x2E65BAfA07238666c3b239E94F32DaD3cDD6498D',
+            abi: donutContractAbi,
+            functions: [
+              {
+                functionName: 'purchase'
+              }
+            ]
+          }
+        }
+      ],
       policies: []
     }
   })
