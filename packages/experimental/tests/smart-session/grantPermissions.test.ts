@@ -8,7 +8,12 @@ import {
 } from '@reown/appkit-core'
 import { WalletConnectCosigner } from '../../src/smart-session/utils/WalletConnectCosigner'
 import type { SmartSessionGrantPermissionsRequest } from '../../src/smart-session/utils/TypeUtils.js'
-import { ERROR_MESSAGES } from '../../src/smart-session/helper/index.js'
+import {
+  extractAddress,
+  isValidSupportedCaipAddress,
+  assertWalletGrantPermissionsResponse,
+  ERROR_MESSAGES
+} from '../../src/smart-session/helper/index.js'
 
 vi.mock('@reown/appkit-core')
 vi.mock('../../src/smart-session/utils/WalletConnectCosigner')
@@ -18,9 +23,10 @@ describe('grantPermissions', () => {
 
   beforeEach(() => {
     mockRequest = {
+      address: '0x1234567890123456789012345678901234567890',
       chainId: '0x1',
       expiry: 1234567890,
-      signer: { type: 'wallet', data: {} },
+      signer: { type: 'key', data: { type: 'secp256k1', publicKey: '0x123456' } },
       permissions: [{ type: 'test', data: {} }],
       policies: []
     }
@@ -30,13 +36,6 @@ describe('grantPermissions', () => {
     vi.mocked(ChainController.state).activeCaipAddress =
       'eip155:1:0x1234567890123456789012345678901234567890'
 
-    vi.mocked(ConnectionController._getClient).mockReturnValue({
-      grantPermissions: vi.fn().mockResolvedValue({
-        permissions: [{ type: 'test', data: {} }],
-        context: '0xcontext'
-      })
-    } as unknown as ConnectionControllerClient)
-
     vi.mocked(WalletConnectCosigner.prototype.addPermission).mockResolvedValue({
       pci: 'test-pci',
       key: {
@@ -44,6 +43,26 @@ describe('grantPermissions', () => {
         publicKey: '0xtest-key'
       }
     })
+
+    vi.mocked(ConnectionController._getClient).mockReturnValue({
+      grantPermissions: vi.fn().mockResolvedValue({
+        permissions: [{ type: 'test', data: {} }],
+        signer: {
+          type: 'keys',
+          data: {
+            keys: [
+              { type: 'secp256k1', publicKey: '0xtest-key' },
+              { type: 'secp256k1', publicKey: '0x123456' }
+            ]
+          }
+        },
+        context: '0xcontext',
+        expiry: 1234567890,
+        address: '0x1234567890123456789012345678901234567890',
+        chainId: '0x1'
+      })
+    } as unknown as ConnectionControllerClient)
+
     vi.mocked(WalletConnectCosigner.prototype.activatePermissions).mockResolvedValue(undefined)
   })
 
@@ -52,7 +71,10 @@ describe('grantPermissions', () => {
 
     expect(result).toEqual({
       permissions: [{ type: 'test', data: {} }],
-      context: 'test-pci'
+      context: 'test-pci',
+      expiry: 1234567890,
+      address: '0x1234567890123456789012345678901234567890',
+      chainId: '0x1'
     })
     expect(WalletConnectCosigner.prototype.addPermission).toHaveBeenCalledWith(
       'eip155:1:0x1234567890123456789012345678901234567890',
@@ -116,6 +138,82 @@ describe('grantPermissions', () => {
     const invalidRequest = { ...mockRequest, signer: { type: {}, data: {} } as any }
     await expect(grantPermissions(invalidRequest)).rejects.toThrow(
       ERROR_MESSAGES.INVALID_SIGNER_TYPE
+    )
+  })
+
+  it('should successfully update the signer in request for valid key signer', async () => {
+    await grantPermissions(mockRequest)
+    expect(mockRequest.signer).toEqual({
+      type: 'keys',
+      data: {
+        keys: [
+          { type: 'secp256k1', publicKey: '0xtest-key' },
+          { type: 'secp256k1', publicKey: '0x123456' }
+        ]
+      }
+    })
+  })
+
+  it('should not modify the signer in request if signer type is already "keys"', async () => {
+    mockRequest.signer = {
+      type: 'keys',
+      data: { keys: [{ type: 'secp256k1', publicKey: '0xexisting-key' }] }
+    }
+    await grantPermissions(mockRequest)
+    expect(mockRequest.signer).toEqual({
+      type: 'keys',
+      data: {
+        keys: [
+          { type: 'secp256k1', publicKey: '0xtest-key' },
+          { type: 'secp256k1', publicKey: '0xexisting-key' }
+        ]
+      }
+    })
+  })
+
+  it('should throw an error when WalletConnectCosigner addPermission fails', async () => {
+    vi.mocked(WalletConnectCosigner.prototype.addPermission).mockRejectedValue(
+      new Error('Cosigner error')
+    )
+    await expect(grantPermissions(mockRequest)).rejects.toThrow('Cosigner error')
+  })
+
+  it('should throw an error when ConnectionController grantPermissions fails', async () => {
+    vi.mocked(ConnectionController._getClient).mockReturnValueOnce({
+      grantPermissions: vi.fn().mockRejectedValue(new Error('Connection error'))
+    } as unknown as ConnectionControllerClient)
+
+    await expect(grantPermissions(mockRequest)).rejects.toThrow('Connection error')
+  })
+
+  it('should return undefined for an invalid address in extractAddress', () => {
+    const invalidCaipAddress = 'eip155:1:invalid-address'
+    const result = extractAddress(invalidCaipAddress)
+    expect(result).toBeUndefined()
+  })
+
+  it('should return a valid 0x-prefixed address from extractAddress', () => {
+    const validCaipAddress = 'eip155:1:0x1234567890123456789012345678901234567890'
+    const result = extractAddress(validCaipAddress)
+    expect(result).toEqual('0x1234567890123456789012345678901234567890')
+  })
+
+  it('should return true for a valid CAIP address in isValidSupportedCaipAddress', () => {
+    const validCaipAddress = 'eip155:1:0x1234567890123456789012345678901234567890'
+    const isValid = isValidSupportedCaipAddress(validCaipAddress)
+    expect(isValid).toBe(true)
+  })
+
+  it('should return false for an invalid CAIP address in isValidSupportedCaipAddress', () => {
+    const invalidCaipAddress = 'invalid:namespace:0x1234567890123456789012345678901234567890'
+    const isValid = isValidSupportedCaipAddress(invalidCaipAddress)
+    expect(isValid).toBe(false)
+  })
+
+  it('should throw an error for an invalid response in assertWalletGrantPermissionsResponse', () => {
+    const invalidResponse = { invalid: 'data' }
+    expect(() => assertWalletGrantPermissionsResponse(invalidResponse)).toThrow(
+      ERROR_MESSAGES.INVALID_GRANT_PERMISSIONS_RESPONSE
     )
   })
 })
