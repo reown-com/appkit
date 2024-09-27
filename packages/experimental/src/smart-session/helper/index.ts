@@ -1,8 +1,13 @@
-import type {
-  KeyType,
-  Signer,
-  SmartSessionGrantPermissionsRequest,
-  WalletGrantPermissionsResponse
+import {
+  ParamOperator,
+  type ArgumentCondition,
+  type ContractCallPermission,
+  type FunctionPermission,
+  type KeyType,
+  type Permission,
+  type Signer,
+  type SmartSessionGrantPermissionsRequest,
+  type WalletGrantPermissionsResponse
 } from '../utils/TypeUtils.js'
 
 export const ERROR_MESSAGES = {
@@ -24,7 +29,21 @@ export const ERROR_MESSAGES = {
   INVALID_PUBLIC_KEY_FORMAT: 'Invalid public key: must start with "0x"',
   // GrantPermissions response errors
   INVALID_GRANT_PERMISSIONS_RESPONSE: 'Invalid grantPermissions response',
-  INVALID_ADDRESS: 'Invalid address: must be a string starting with "0x"'
+  INVALID_ADDRESS: 'Invalid address: must be a string starting with "0x"',
+
+  unsupportedPermissionType: (type: string) =>
+    `Unsupported permission type ${type}: Only 'contract-call' is supported`
+}
+
+export const CONTRACT_CALL_PERMISSION_ERROR_MESSAGES = {
+  INVALID_PERMISSION_ADDRESS: 'Invalid permission address: Address should start with "0x"',
+  INVALID_PERMISSION_ABI: 'Invalid permission ABI: ABI should be an array of objects',
+  INVALID_FUNCTION_NAME: 'Invalid function name: Function name should be a string',
+  INVALID_FUNCTION_ARGS:
+    'Invalid function arguments: Args should be an array of argument conditions',
+  INVALID_ARGUMENT_CONDITION:
+    'Invalid argument condition: Argument condition should have a valid operator and value',
+  INVALID_VALUE_LIMIT: 'Invalid value limit: Value limit should be a hex string starting with "0x"'
 }
 
 export function validateRequest(request: SmartSessionGrantPermissionsRequest) {
@@ -63,6 +82,7 @@ export function validateRequest(request: SmartSessionGrantPermissionsRequest) {
     throw new Error(ERROR_MESSAGES.UNSUPPORTED_SIGNER_TYPE)
   }
   validateSigner(request.signer)
+  validatePermissions(request.permissions)
 }
 
 export function validateSigner(signer: Signer) {
@@ -71,7 +91,7 @@ export function validateSigner(signer: Signer) {
       validateKey(signer.data)
       break
     case 'keys':
-      if (!signer.data.keys || signer.data.keys.length === 0) {
+      if (!signer.data.keys?.length) {
         throw new Error(ERROR_MESSAGES.INVALID_KEYS_SIGNER)
       }
       signer.data.keys.forEach(validateKey)
@@ -93,6 +113,64 @@ export function validateKey(key: { type: string; publicKey: string }) {
   }
   if (!key.publicKey.startsWith('0x')) {
     throw new Error(ERROR_MESSAGES.INVALID_PUBLIC_KEY_FORMAT)
+  }
+}
+
+// Validate each permission in the permissions array
+function validatePermissions(permissions: Permission[]) {
+  permissions.forEach(permission => {
+    switch (permission.type) {
+      case 'contract-call':
+        validateContractCallPermission(permission)
+        break
+      default:
+        throw new Error(ERROR_MESSAGES.unsupportedPermissionType(permission.type))
+    }
+  })
+}
+
+// Validate contract call permission fields
+function validateContractCallPermission(permission: ContractCallPermission) {
+  if (!permission.data.address || !permission.data.address.startsWith('0x')) {
+    throw new Error(CONTRACT_CALL_PERMISSION_ERROR_MESSAGES.INVALID_PERMISSION_ADDRESS)
+  }
+
+  if (!Array.isArray(permission.data.abi) || permission.data.abi.length === 0) {
+    throw new Error(CONTRACT_CALL_PERMISSION_ERROR_MESSAGES.INVALID_PERMISSION_ABI)
+  }
+
+  if (!Array.isArray(permission.data.functions) || permission.data.functions.length === 0) {
+    throw new Error(CONTRACT_CALL_PERMISSION_ERROR_MESSAGES.INVALID_FUNCTION_ARGS)
+  }
+
+  permission.data.functions.forEach(validateFunctionPermission)
+}
+
+// Validate each function's permissions
+function validateFunctionPermission(functionPermission: FunctionPermission) {
+  if (typeof functionPermission.functionName !== 'string') {
+    throw new Error(CONTRACT_CALL_PERMISSION_ERROR_MESSAGES.INVALID_FUNCTION_NAME)
+  }
+  if (functionPermission.args) {
+    if (!Array.isArray(functionPermission.args)) {
+      throw new Error(CONTRACT_CALL_PERMISSION_ERROR_MESSAGES.INVALID_FUNCTION_ARGS)
+    }
+
+    functionPermission.args.forEach(validateArgumentCondition)
+  }
+  if (functionPermission.valueLimit && typeof functionPermission.valueLimit !== 'string') {
+    throw new Error(CONTRACT_CALL_PERMISSION_ERROR_MESSAGES.INVALID_VALUE_LIMIT)
+  }
+}
+
+// Validate the argument conditions for each function permission
+function validateArgumentCondition(condition: ArgumentCondition) {
+  if (typeof condition !== 'object' || condition === null) {
+    throw new Error(CONTRACT_CALL_PERMISSION_ERROR_MESSAGES.INVALID_ARGUMENT_CONDITION)
+  }
+
+  if (!Object.values(ParamOperator).includes(condition.operator)) {
+    throw new Error(CONTRACT_CALL_PERMISSION_ERROR_MESSAGES.INVALID_ARGUMENT_CONDITION)
   }
 }
 

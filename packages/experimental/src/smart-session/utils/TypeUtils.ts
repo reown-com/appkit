@@ -34,10 +34,7 @@ export type SmartSessionGrantPermissionsRequest = {
   address?: `0x${string}`
   expiry: number
   signer: Signer
-  permissions: {
-    type: string
-    data: Record<string, unknown>
-  }[]
+  permissions: Permission[]
   policies: {
     type: string
     data: Record<string, unknown>
@@ -62,13 +59,55 @@ export type SmartSessionGrantPermissionsResponse = {
   chainId: `0x${string}`
   address: `0x${string}`
   expiry: number
-  permissions: {
-    type: string
-    data: Record<string, unknown>
-  }[]
+  permissions: Permission[]
   // Context is set to `pci`
   context: string
 }
+
+// Enum for parameter operators
+// eslint-disable-next-line no-shadow
+export enum ParamOperator {
+  EQUAL = 'EQUAL',
+  GREATER_THAN = 'GREATER_THAN',
+  LESS_THAN = 'LESS_THAN'
+}
+
+// Enum for operation types
+// eslint-disable-next-line no-shadow
+export enum Operation {
+  Call = 'Call',
+  DelegateCall = 'DelegateCall'
+}
+
+// Type for a single argument condition
+export type ArgumentCondition = {
+  operator: ParamOperator
+  value: `0x${string}`
+}
+
+// Type for a single function permission
+export type FunctionPermission = {
+  // Function name
+  functionName: string
+  // An array of conditions, each corresponding to an argument for the function
+  args?: ArgumentCondition[]
+  // Maximum value that can be transferred for this specific function call
+  valueLimit?: `0x${string}`
+  // (optional) whether this is a call or a delegatecall. Defaults to call
+  operation?: Operation
+}
+export type ContractCallPermission = {
+  type: 'contract-call'
+  data: {
+    address: `0x${string}`
+    abi: Record<string, unknown>[]
+    functions: FunctionPermission[]
+  }
+}
+
+// Union type for all possible permissions
+export type Permission = ContractCallPermission
+
 //--Cosigner Types----------------------------------------------------------------------- //
 export type AddPermissionRequest = SmartSessionGrantPermissionsRequest
 
