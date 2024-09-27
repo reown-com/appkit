@@ -57,6 +57,7 @@ export class W3mConnectingWcView extends LitElement {
     try {
       const { wcPairingExpiry } = ConnectionController.state
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
+        StorageUtil.deleteWalletConnectDeepLink()
         await ConnectionController.connectWalletConnect()
         this.finalizeConnection()
 
