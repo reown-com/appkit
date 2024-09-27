@@ -14,6 +14,7 @@ import {
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
 import type { CaipNetwork, ChainId } from '@reown/appkit-common'
 import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
+import { WcHelpersUtil } from '@reown/appkit'
 import { WalletConnectMethodNotSupportedError } from './shared/Errors.js'
 
 export type WalletConnectProviderConfig = {
@@ -261,20 +262,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
   }
 
   private get sessionChains() {
-    const solanaNamespace = this.session?.namespaces['solana']
-
-    if (!solanaNamespace) {
-      return []
-    }
-
-    const chains = solanaNamespace.chains || []
-    const accountsChains = solanaNamespace.accounts.map(account => {
-      const [chainNamespace, chainId] = account.split(':')
-
-      return `${chainNamespace}:${chainId}`
-    })
-
-    return Array.from(new Set([...chains, ...accountsChains]))
+    return WcHelpersUtil.getChainsFromNamespaces(this.session?.namespaces)
   }
 
   private serializeTransaction(transaction: AnyTransaction) {

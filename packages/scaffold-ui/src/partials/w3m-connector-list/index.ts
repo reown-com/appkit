@@ -37,6 +37,7 @@ export class W3mConnectorList extends LitElement {
   public override render() {
     const { custom, recent, announced, injected, multiChain, recommended, featured, external } =
       this.getConnectorsByType()
+
     const enableWalletConnect = OptionsController.state.enableWalletConnect
 
     return html`
