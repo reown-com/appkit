@@ -1,4 +1,4 @@
-import { createAppKit, type CaipNetwork } from '@reown/appkit/react'
+import { createAppKit } from '@reown/appkit/react'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
@@ -13,16 +13,6 @@ const networks = ConstantsUtil.SolanaNetworks
 const solanaWeb3JsAdapter = new SolanaAdapter({
   wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
-
-export const solanaNotExist = {
-  id: 'solana:chaindoesntexist',
-  chainId: 'chaindoesntexist',
-  name: 'Solana Unsupported',
-  currency: 'SOL',
-  explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
-  rpcUrl: '',
-  chainNamespace: 'solana'
-} as CaipNetwork
 
 const modal = createAppKit({
   adapters: [solanaWeb3JsAdapter],
