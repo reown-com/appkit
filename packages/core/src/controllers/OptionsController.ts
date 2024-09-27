@@ -13,6 +13,12 @@ import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 // -- Types --------------------------------------------- //
 export interface OptionsControllerStatePublic {
   /**
+   * A boolean that forces the loading of all Ethereum wallets from the API.  
+   * Forces the chain ID to 1.
+   * @default false
+   */
+  allEthWallets?: boolean
+  /**
    * A boolean that allows you to add or remove the "All Wallets" button on the modal
    * @default 'SHOW'
    * @see https://docs.reown.com/appkit/react/core/options#allwallets
@@ -159,6 +165,10 @@ export const OptionsController = {
 
   setAllWallets(allWallets: OptionsControllerState['allWallets']) {
     state.allWallets = allWallets
+  },
+
+  setAllEthWallets(allEthWallets: OptionsControllerState['allEthWallets']) {
+    state.allEthWallets = allEthWallets
   },
 
   setIncludeWalletIds(includeWalletIds: OptionsControllerState['includeWalletIds']) {
