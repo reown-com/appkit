@@ -20,7 +20,7 @@ if (!projectId) {
 }
 export const WALLET_URL = process.env['WALLET_URL'] || 'https://react-wallet.walletconnect.com/'
 export const USEROP_BUILDER_SERVICE_BASE_URL =
-  'https://react-wallet-v2-2oosraguo-reown-com.vercel.app/api'
+  'https://react-wallet-v2-bjjmj97yf-reown-com.vercel.app/api'
 
 export const GALLERY_URL = 'https://appkit-gallery.reown.com/'
 export const DOCS_URL = 'https://docs.reown.com/appkit/overview'
