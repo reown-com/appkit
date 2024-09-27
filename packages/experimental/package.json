@@ -8,6 +8,25 @@
     "dist",
     "!tsconfig.tsbuildinfo"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/exports/index.d.ts",
+      "import": "./dist/esm/exports/index.js",
+      "default": "./dist/esm/exports/index.js"
+    },
+    "./smart-session": {
+      "types": "./dist/types/exports/smart-session/index.d.ts",
+      "import": "./dist/esm/exports/smart-session/index.js",
+      "default": "./dist/esm/exports/smart-session/index.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "smart-session": [
+        "./dist/types/exports/smart-session/index.d.ts"
+      ]
+    }
+  },
   "scripts": {
     "build:clean": "rm -rf dist",
     "build": "tsc --build",

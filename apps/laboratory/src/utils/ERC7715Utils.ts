@@ -6,7 +6,7 @@ import { encodeAbiParameters, hashMessage, parseEther, toHex, type Chain } from 
 import { prepareCalls, sendPreparedCalls, type Call } from './UserOpBuilderServiceUtils'
 import { signMessage } from 'viem/accounts'
 import { sign as signWithPasskey } from 'webauthn-p256'
-import type { SmartSessionGrantPermissionsRequest } from '@reown/appkit-experimental'
+import type { SmartSessionGrantPermissionsRequest } from '@reown/appkit-experimental/smart-session'
 
 export type MultikeySigner = {
   type: 'keys'

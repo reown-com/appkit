@@ -17,7 +17,7 @@ import { useAppKitAccount } from '@reown/appkit/react'
 import {
   grantPermissions,
   type SmartSessionGrantPermissionsRequest
-} from '@reown/appkit-experimental'
+} from '@reown/appkit-experimental/smart-session'
 
 export function WagmiRequestPermissionsSyncTest() {
   const { provider, supported } = useWagmiAvailableCapabilities({

@@ -3,7 +3,7 @@ import React, { type ReactNode } from 'react'
 import { createContext } from 'react'
 import { GRANTED_PERMISSIONS_KEY, removeLocalStorageItem } from '../utils/LocalStorage'
 import { useLocalStorageState } from '../hooks/useLocalStorageState'
-import type { SmartSessionGrantPermissionsResponse } from '@reown/appkit-experimental'
+import type { SmartSessionGrantPermissionsResponse } from '@reown/appkit-experimental/smart-session'
 
 export type ERC7715PermissionsContextType = {
   projectId: string
