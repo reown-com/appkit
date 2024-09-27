@@ -65,17 +65,16 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
 
   // -- Public ------------------------------------------- //
   public get name() {
+    if (this.wallet.name === 'Trust') {
+      // The wallets from our list of wallets have not matching with the extension name
+      return 'Trust Wallet'
+    }
+
     return this.wallet.name
   }
 
   public get type() {
-    const FILTER_OUT_ADAPTERS = ['Trust']
-
-    if (FILTER_OUT_ADAPTERS.includes(this.wallet.name)) {
-      return 'EXTERNAL'
-    }
-
-    return 'ANNOUNCED'
+    return 'ANNOUNCED' as const
   }
 
   public get publicKey() {
