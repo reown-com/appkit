@@ -81,6 +81,7 @@ export class W3mModal extends LitElement {
               <w3m-header></w3m-header>
               <w3m-router></w3m-router>
               <w3m-snackbar></w3m-snackbar>
+              <w3m-alertbar></w3m-alertbar>
             </wui-card>
           </wui-flex>
           <w3m-tooltip></w3m-tooltip>
