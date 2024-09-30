@@ -171,6 +171,8 @@ export type IconType =
   | 'walletPlaceholder'
   | 'warningCircle'
   | 'x'
+  | 'info'
+  | 'exclamationTriangle'
 
 export type VisualType =
   | 'browser'
