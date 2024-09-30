@@ -600,14 +600,16 @@ export class WagmiAdapter implements ChainAdapter {
       | 'status'
     >
   >) {
-    const isConnected = ChainController.state.activeCaipAddress
-
-    if (status === 'disconnected' && !isConnected) {
+    const isAuthConnector = connector?.id === ConstantsUtil.AUTH_CONNECTOR_ID
+    if (status === 'disconnected') {
       this.appKit?.resetAccount(this.chainNamespace)
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork()
       this.appKit?.setAllAccounts([], this.chainNamespace)
       SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
+      if (isAuthConnector) {
+        await connector.disconnect()
+      }
 
       return
     }
@@ -658,7 +660,6 @@ export class WagmiAdapter implements ChainAdapter {
           }
 
           // Set by authConnector.onIsConnectedHandler as we need the account type
-          const isAuthConnector = connector?.id === ConstantsUtil.AUTH_CONNECTOR_ID
           if (!isAuthConnector && addresses?.length) {
             this.appKit?.setAllAccounts(
               addresses.map(addr => ({ address: addr, type: 'eoa' })),
