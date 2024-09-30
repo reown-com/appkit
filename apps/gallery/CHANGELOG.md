@@ -1,5 +1,15 @@
 # @apps/gallery
 
+## 5.1.10
+
+### Patch Changes
+
+- Fixes issue where non announced connectors would be filtered in the featured wallets
+
+- Updated dependencies []:
+  - @web3modal/common@5.1.10
+  - @web3modal/ui@5.1.10
+
 ## 5.1.9
 
 ### Patch Changes

@@ -81,7 +81,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
       return acc
     }, {})
 
-    if (this.provider.session) {
+    if (this.provider.session?.namespaces['solana']) {
       this.session = this.provider.session
     } else {
       this.provider.on('display_uri', this.onUri)
@@ -147,7 +147,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
       return transaction
     }
 
-    const decodedTransaction = base58.decode(result.transaction)
+    const decodedTransaction = Buffer.from(result.transaction, 'base64')
 
     if (isVersionedTransaction(transaction)) {
       return VersionedTransaction.deserialize(decodedTransaction) as T
@@ -199,7 +199,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
           throw new Error('Invalid transactions response')
         }
 
-        const decodedTransaction = base58.decode(serializedTransaction)
+        const decodedTransaction = Buffer.from(serializedTransaction, 'base64')
 
         if (isVersionedTransaction(transaction)) {
           return VersionedTransaction.deserialize(decodedTransaction)

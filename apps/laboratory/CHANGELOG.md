@@ -1,5 +1,20 @@
 # @apps/laboratory
 
+## 5.1.10
+
+### Patch Changes
+
+- Fixes issue where non announced connectors would be filtered in the featured wallets
+
+- Updated dependencies []:
+  - @web3modal/ethers5@5.1.10
+  - @web3modal/ethers@5.1.10
+  - @web3modal/solana@5.1.10
+  - @web3modal/wallet@5.1.10
+  - @web3modal/wagmi@5.1.10
+  - @web3modal/base@5.1.10
+  - @web3modal/siwe@5.1.10
+
 ## 5.1.9
 
 ### Patch Changes
