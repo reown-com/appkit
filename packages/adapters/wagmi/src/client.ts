@@ -50,12 +50,7 @@ import type {
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
 import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@reown/appkit-utils'
-import {
-  CaipNetworksUtil,
-  isReownName,
-  SafeLocalStorage,
-  SafeLocalStorageKeys
-} from '@reown/appkit-common'
+import { isReownName, SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 import {
   getEmailCaipNetworks,
   getTransport,
@@ -67,7 +62,15 @@ import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 import { NetworkUtil } from '@reown/appkit-common'
 import { normalize } from 'viem/ens'
 import type { AppKitOptions } from '@reown/appkit'
-import type { CaipAddress, CaipNetwork, ChainNamespace, AdapterType } from '@reown/appkit-common'
+import type {
+  CaipAddress,
+  BaseChain,
+  BaseNetwork,
+  CaipNetwork,
+  ChainNamespace,
+  AdapterType,
+  CaipNetworkNew
+} from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { AppKit } from '@reown/appkit'
 import { walletConnect } from './connectors/UniversalConnector.js'
@@ -120,7 +123,7 @@ export class WagmiAdapter implements ChainAdapter {
 
   public chainNamespace: ChainNamespace = CommonConstantsUtil.CHAIN.EVM
 
-  public caipNetworks: CaipNetwork[]
+  public caipNetworks: [CaipNetworkNew, ...CaipNetworkNew[]]
 
   public wagmiChains: readonly [Chain, ...Chain[]]
 
@@ -140,26 +143,19 @@ export class WagmiAdapter implements ChainAdapter {
 
   public constructor(
     configParams: Partial<CreateConfigParameters> & {
-      networks: (CaipNetwork | Chain)[]
+      networks: [BaseChain, ...BaseChain[]]
       projectId: string
     }
   ) {
-    this.caipNetworks = configParams.networks.map(network => {
-      if ('chainNamespace' in network) {
-        return {
-          ...network,
-          rpcUrl: CaipNetworksUtil.extendRpcUrlWithProjectId(network.rpcUrl, configParams.projectId)
-        }
-      }
+    this.caipNetworks = configParams.networks.map((caipNetwork: BaseChain) => ({
+      ...caipNetwork,
+      chainNamespace: 'eip155',
+      caipNetworkId: `${this.chainNamespace}:${caipNetwork.id}`
+    })) as [CaipNetworkNew, ...CaipNetworkNew[]]
 
-      return ChainsUtil.convertViemChainToCaipNetwork(network)
-    })
-
-    this.wagmiChains = ChainsUtil.convertCaipNetworksToViemChains(
-      this.caipNetworks.filter(
-        caipNetwork => caipNetwork.chainNamespace === CommonConstantsUtil.CHAIN.EVM
-      )
-    )
+    this.wagmiChains = this.caipNetworks.filter(
+      caipNetwork => caipNetwork.chainNamespace === 'eip155'
+    ) as [BaseChain, ...BaseChain[]]
 
     const transportsArr = this.wagmiChains.map(chain => [
       chain.id,

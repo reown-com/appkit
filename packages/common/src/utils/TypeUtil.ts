@@ -1,3 +1,24 @@
+import type { Chain as BaseChain } from 'viem/chains'
+import type { ChainFormatters } from 'viem'
+
+export type { BaseChain }
+
+export type BaseNetwork<
+  formatters extends ChainFormatters | undefined = ChainFormatters | undefined,
+  custom extends Record<string, unknown> | undefined = Record<string, unknown> | undefined
+> = Omit<BaseChain<formatters, custom>, 'id'> & {
+  id: number | string
+}
+
+export type CaipNetworkNew<
+  formatters extends ChainFormatters | undefined = ChainFormatters | undefined,
+  custom extends Record<string, unknown> | undefined = Record<string, unknown> | undefined
+> = Omit<BaseChain<formatters, custom>, 'id'> & {
+  id: number | string
+  chainNamespace: ChainNamespace
+  caipNetworkId: CaipNetworkId
+}
+
 export type CaipNetworkId = `${ChainNamespace}:${ChainId}`
 
 export type CaipAddress = `${ChainNamespace}:${ChainId}:${string}`
