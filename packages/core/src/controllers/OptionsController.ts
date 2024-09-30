@@ -2,6 +2,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
 import type { CustomWallet, Metadata, ProjectId, SdkVersion, Tokens } from '../utils/TypeUtil.js'
 import { ApiController } from './ApiController.js'
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerState {
@@ -62,7 +63,7 @@ export interface OptionsControllerState {
   isSiweEnabled?: boolean
   /**
    * Enable analytics to get more insights on your users activity within your WalletConnect Cloud's dashboard.
-   * @default false
+   * @default true
    * @see https://cloud.walletconnect.com/
    */
   enableAnalytics?: boolean
@@ -102,7 +103,13 @@ type StateKey = keyof OptionsControllerState
 const state = proxy<OptionsControllerState>({
   projectId: '',
   sdkType: 'w3m',
-  sdkVersion: 'html-wagmi-undefined'
+  sdkVersion: 'html-wagmi-undefined',
+  enableAnalytics: ConstantsUtil.DEFAULT_FEATURES.analytics,
+  enableOnramp: ConstantsUtil.DEFAULT_FEATURES.onramp,
+  enableSwaps: ConstantsUtil.DEFAULT_FEATURES.swaps,
+  allWallets: ConstantsUtil.DEFAULT_FEATURES.allWallets,
+  disableAppend: ConstantsUtil.DEFAULT_FEATURES.disableAppend,
+  enableEIP6963: ConstantsUtil.DEFAULT_FEATURES.enableEIP6963
 })
 
 // -- Controller ---------------------------------------- //
@@ -121,7 +128,9 @@ export const OptionsController = {
     state.projectId = projectId
   },
 
-  setAllWallets(allWallets: OptionsControllerState['allWallets']) {
+  setAllWallets(
+    allWallets: OptionsControllerState['allWallets'] = ConstantsUtil.DEFAULT_FEATURES.allWallets
+  ) {
     state.allWallets = allWallets
   },
 
@@ -164,7 +173,10 @@ export const OptionsController = {
     state.isUniversalProvider = isUniversalProvider
   },
 
-  setEnableAnalytics(enableAnalytics: OptionsControllerState['enableAnalytics']) {
+  setEnableAnalytics(
+    enableAnalytics: OptionsControllerState['enableAnalytics'] = ConstantsUtil.DEFAULT_FEATURES
+      .analytics
+  ) {
     state.enableAnalytics = enableAnalytics
   },
 
@@ -176,15 +188,23 @@ export const OptionsController = {
     state.metadata = metadata
   },
 
-  setOnrampEnabled(enableOnramp: OptionsControllerState['enableOnramp']) {
+  setOnrampEnabled(
+    enableOnramp: OptionsControllerState['enableOnramp'] = ConstantsUtil.DEFAULT_FEATURES.onramp
+  ) {
     state.enableOnramp = enableOnramp
   },
 
-  setDisableAppend(disableAppend: OptionsControllerState['disableAppend']) {
+  setDisableAppend(
+    disableAppend: OptionsControllerState['disableAppend'] = ConstantsUtil.DEFAULT_FEATURES
+      .disableAppend
+  ) {
     state.disableAppend = disableAppend
   },
 
-  setEIP6963Enabled(enableEIP6963: OptionsControllerState['enableEIP6963']) {
+  setEIP6963Enabled(
+    enableEIP6963: OptionsControllerState['enableEIP6963'] = ConstantsUtil.DEFAULT_FEATURES
+      .enableEIP6963
+  ) {
     state.enableEIP6963 = enableEIP6963
   },
 
@@ -192,7 +212,9 @@ export const OptionsController = {
     state.hasMultipleAddresses = hasMultipleAddresses
   },
 
-  setEnableSwaps(enableSwaps: OptionsControllerState['enableSwaps']) {
+  setEnableSwaps(
+    enableSwaps: OptionsControllerState['enableSwaps'] = ConstantsUtil.DEFAULT_FEATURES.swaps
+  ) {
     state.enableSwaps = enableSwaps
   }
 }

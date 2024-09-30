@@ -390,8 +390,8 @@ export class AppKit<AdapterStoreState = unknown, SwitchNetworkParam = unknown> {
     OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
     OptionsController.setCustomWallets(options.customWallets)
     OptionsController.setEnableAnalytics(options.enableAnalytics)
-    OptionsController.setOnrampEnabled(options.enableOnramp !== false)
-    OptionsController.setEnableSwaps(options.enableSwaps !== false)
+    OptionsController.setOnrampEnabled(options.enableOnramp)
+    OptionsController.setEnableSwaps(options.enableSwaps)
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)

@@ -199,7 +199,16 @@ export const ConstantsUtil = {
     solana: 'So11111111111111111111111111111111111111111'
   } as const satisfies Record<Chain, string>,
 
-  CONVERT_SLIPPAGE_TOLERANCE: 1
+  CONVERT_SLIPPAGE_TOLERANCE: 1,
+
+  DEFAULT_FEATURES: {
+    swaps: true,
+    onramp: true,
+    analytics: true,
+    allWallets: 'SHOW',
+    disableAppend: false,
+    enableEIP6963: false
+  } as const
 }
 
 export type CoinbasePaySDKChainNameValues =
