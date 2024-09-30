@@ -4,7 +4,8 @@ import {
   ApiController,
   ChainController,
   CoreHelperUtil,
-  EventsController
+  EventsController,
+  AlertController
 } from '@reown/appkit-core'
 import {
   ConstantsUtil as CommonConstantsUtil,
@@ -43,7 +44,7 @@ import type { AppKit } from '@reown/appkit'
 import type { AppKitOptions as CoreOptions } from '@reown/appkit'
 import { ProviderUtil } from '@reown/appkit/store'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
-import { ConstantsUtil } from '@reown/appkit-utils'
+import { ConstantsUtil, ErrorUtil } from '@reown/appkit-utils'
 import { createSendTransaction } from './utils/createSendTransaction.js'
 import { CoinbaseWalletProvider } from './providers/CoinbaseWalletProvider.js'
 
@@ -125,10 +126,6 @@ export class SolanaAdapter implements ChainAdapter {
 
   public construct(appKit: AppKit, options: CoreOptions) {
     const { projectId } = options
-
-    if (!options) {
-      throw new Error('Solana:construct - options is undefined')
-    }
 
     this.appKit = appKit
     this.options = options
@@ -279,7 +276,13 @@ export class SolanaAdapter implements ChainAdapter {
 
       parseUnits: () => BigInt(0),
 
-      formatUnits: () => ''
+      formatUnits: () => '',
+
+      checkInstalled: (ids: string[] = []) => {
+        const availableIds = new Set(this.availableProviders.map(provider => provider.name))
+
+        return ids.some(id => availableIds.has(id))
+      }
     }
 
     ChainController.state.chains.set(this.chainNamespace, {
@@ -615,10 +618,14 @@ export class SolanaAdapter implements ChainAdapter {
         : CoreConstantsUtil.DEFAULT_FEATURES.socials
 
       if (emailEnabled || socialsEnabled) {
-        this.w3mFrameProvider = W3mFrameProviderSingleton.getInstance(
-          opts.projectId,
-          withSolanaNamespace(this.appKit?.getCaipNetwork(this.chainNamespace)?.chainId)
-        )
+        this.w3mFrameProvider = W3mFrameProviderSingleton.getInstance({
+          projectId: opts.projectId,
+          chainId: withSolanaNamespace(this.appKit?.getCaipNetwork(this.chainNamespace)?.chainId),
+          onTimeout: () => {
+            AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION_SOCIALS, 'error')
+          }
+        })
+
         this.authProvider = new AuthProvider({
           getProvider: () => this.w3mFrameProvider as W3mFrameProvider,
           getActiveChain: () => this.appKit?.getCaipNetwork(this.chainNamespace),

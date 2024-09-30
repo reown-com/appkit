@@ -49,7 +49,7 @@ import type {
 } from '@reown/appkit-core'
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
-import { ConstantsUtil, PresetsUtil, HelpersUtil } from '@reown/appkit-utils'
+import { ConstantsUtil, PresetsUtil, HelpersUtil, ErrorUtil } from '@reown/appkit-utils'
 import {
   CaipNetworksUtil,
   isReownName,
@@ -144,6 +144,10 @@ export class WagmiAdapter implements ChainAdapter {
       projectId: string
     }
   ) {
+    if (!configParams.projectId) {
+      throw new Error(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED.shortMessage)
+    }
+
     this.caipNetworks = configParams.networks.map(caipNetwork => ({
       ...caipNetwork,
       rpcUrl: CaipNetworksUtil.extendRpcUrlWithProjectId(caipNetwork.rpcUrl, configParams.projectId)
@@ -217,10 +221,6 @@ export class WagmiAdapter implements ChainAdapter {
   }
 
   public construct(appKit: AppKit, options: AppKitOptions) {
-    if (!options.projectId) {
-      throw new Error('appkit:initialize - projectId is undefined')
-    }
-
     this.appKit = appKit
     this.options = options
     this.caipNetworks = options.networks
@@ -600,14 +600,16 @@ export class WagmiAdapter implements ChainAdapter {
       | 'status'
     >
   >) {
-    const isConnected = ChainController.state.activeCaipAddress
-
-    if (status === 'disconnected' && !isConnected) {
+    const isAuthConnector = connector?.id === ConstantsUtil.AUTH_CONNECTOR_ID
+    if (status === 'disconnected') {
       this.appKit?.resetAccount(this.chainNamespace)
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork(this.chainNamespace)
       this.appKit?.setAllAccounts([], this.chainNamespace)
       SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
+      if (isAuthConnector) {
+        await connector.disconnect()
+      }
 
       return
     }
@@ -658,7 +660,6 @@ export class WagmiAdapter implements ChainAdapter {
           }
 
           // Set by authConnector.onIsConnectedHandler as we need the account type
-          const isAuthConnector = connector?.id === ConstantsUtil.AUTH_CONNECTOR_ID
           if (!isAuthConnector && addresses?.length) {
             this.appKit?.setAllAccounts(
               addresses.map(addr => ({ address: addr, type: 'eoa' })),

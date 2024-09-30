@@ -64,6 +64,9 @@ export type { TooltipControllerState } from '../src/controllers/TooltipControlle
 export { EnsController } from '../src/controllers/EnsController.js'
 export type { EnsControllerState } from '../src/controllers/EnsController.js'
 
+export { AlertController } from '../src/controllers/AlertController.js'
+export type { AlertControllerState } from '../src/controllers/AlertController.js'
+
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from '../src/utils/AssetUtil.js'
 export { ConstantsUtil } from '../src/utils/ConstantsUtil.js'

@@ -7,9 +7,10 @@ import {
   StorageUtil,
   type ConnectionControllerClient,
   type Connector,
-  type NetworkControllerClient
+  type NetworkControllerClient,
+  AlertController
 } from '@reown/appkit-core'
-import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
+import { ConstantsUtil, ErrorUtil, LoggerUtil, PresetsUtil } from '@reown/appkit-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
 import { WcHelpersUtil } from '../utils/HelpersUtil.js'
@@ -72,6 +73,8 @@ export class UniversalAdapterClient {
   public options: AppKitOptions | undefined = undefined
 
   public adapterType: AdapterType = 'universal'
+
+  public reportErrors = true
 
   public constructor(options: AppKitOptions) {
     const { siweConfig, metadata } = options
@@ -267,9 +270,6 @@ export class UniversalAdapterClient {
 
   // -- Public ------------------------------------------------------------------
   public construct(appkit: AppKit, options: AppKitOptions) {
-    if (!options.projectId) {
-      throw new Error('Solana:construct - projectId is undefined')
-    }
     this.appKit = appkit
     this.options = options
 
@@ -322,6 +322,20 @@ export class UniversalAdapterClient {
   }
 
   private async initWalletConnectProvider(projectId: string) {
+    const logger = LoggerUtil.createLogger((err, ...args) => {
+      if (err.message.includes(ErrorUtil.UniversalProviderErrors.UNAUTHORIZED_DOMAIN_NOT_ALLOWED)) {
+        if (this.reportErrors) {
+          AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
+          this.reportErrors = false
+        }
+
+        return
+      }
+
+      // eslint-disable-next-line no-console
+      console.error(...args)
+    })
+
     const walletConnectProviderOptions: UniversalProviderOpts = {
       projectId,
       metadata: {
@@ -329,7 +343,8 @@ export class UniversalAdapterClient {
         description: this.metadata ? this.metadata.description : '',
         url: this.metadata ? this.metadata.url : '',
         icons: this.metadata ? this.metadata.icons : ['']
-      }
+      },
+      logger
     }
 
     this.walletConnectProvider = await UniversalProvider.init(walletConnectProviderOptions)
