@@ -814,6 +814,7 @@ export const SwapController = {
       state.myTokensWithBalance
     )
 
+    // Smart Accounts may pay gas in any ERC20 token
     if (
       AccountController.state.preferredAccountType ===
       W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
