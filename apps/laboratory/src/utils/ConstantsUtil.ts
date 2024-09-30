@@ -9,7 +9,8 @@ import {
   solanaTestnet,
   solanaDevnet,
   base,
-  gnosis
+  gnosis,
+  baseSepolia
 } from '@reown/appkit/networks'
 import { getLocalStorageItem } from './LocalStorage'
 import type { CaipNetwork } from '@reown/appkit'
@@ -50,7 +51,17 @@ if (typeof window !== 'undefined') {
 
 const customWallet = storedCustomWallet ? [JSON.parse(storedCustomWallet)] : []
 
-const EvmNetworks = [mainnet, optimism, polygon, zkSync, arbitrum, base, sepolia, gnosis]
+const EvmNetworks = [
+  mainnet,
+  optimism,
+  polygon,
+  zkSync,
+  arbitrum,
+  base,
+  sepolia,
+  gnosis,
+  baseSepolia
+]
 
 export const solanaNotExist = {
   id: 'solana:chaindoesntexist',
