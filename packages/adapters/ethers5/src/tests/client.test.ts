@@ -11,7 +11,7 @@ import { arbitrum, mainnet, polygon } from '@reown/appkit/networks'
 import { ProviderUtil } from '@reown/appkit/store'
 import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 import { type BlockchainApiLookupEnsName } from '@reown/appkit'
-import { ethers } from 'ethers5'
+import { ethers } from 'ethers'
 
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 
@@ -81,7 +81,7 @@ vi.mock('@reown/appkit/store', () => ({
   }
 }))
 
-vi.mock('ethers5', async () => {
+vi.mock('ethers', async () => {
   return {
     ethers: {
       providers: {
