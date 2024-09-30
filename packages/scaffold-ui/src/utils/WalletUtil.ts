@@ -6,6 +6,10 @@ import {
 } from '@reown/appkit-core'
 import type { WcWallet } from '@reown/appkit-core'
 
+interface AppKitWallet extends WcWallet {
+  installed: boolean
+}
+
 export const WalletUtil = {
   filterOutDuplicatesByRDNS(wallets: WcWallet[]) {
     const connectors = OptionsController.state.enableEIP6963
@@ -65,7 +69,7 @@ export const WalletUtil = {
         return acum
       }, {})
 
-    const walletsWithInstalled: (WcWallet & { installed: boolean })[] = wallets.map(wallet => ({
+    const walletsWithInstalled: AppKitWallet[] = wallets.map(wallet => ({
       ...wallet,
       installed: Boolean(wallet.rdns) && Boolean(installedConnectors[wallet.rdns ?? ''])
     }))

@@ -63,9 +63,6 @@ describe('WalletUtil', () => {
       vi.spyOn(StorageUtil, 'getRecentWallets').mockReturnValue(mockRecentWallets)
       vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
 
-      console.log('>> ConnectorController.connectors', ConnectorController.state.connectors)
-      console.log('>> StorageUtil.getRecentWallets', StorageUtil.getRecentWallets())
-
       const filteredWallets = WalletUtil.filterOutDuplicatesByRDNS(mockWallets)
 
       expect(filteredWallets).toEqual([]) // All RDNS wallets should be filtered out
