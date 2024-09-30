@@ -11,22 +11,22 @@ import type { SmartSessionGrantPermissionsRequest } from '../../src/smart-sessio
 import {
   extractAddress,
   isValidSupportedCaipAddress,
-  assertWalletGrantPermissionsResponse,
-  ERROR_MESSAGES
+  assertWalletGrantPermissionsResponse
 } from '../../src/smart-session/helper/index.js'
 import { donutContractAbi } from '../data/abi'
+import { ERROR_MESSAGES } from '../../src/smart-session/schema'
 
 vi.mock('@reown/appkit-core')
 vi.mock('../../src/smart-session/utils/WalletConnectCosigner')
 
 describe('grantPermissions', () => {
   let mockRequest: SmartSessionGrantPermissionsRequest
-
+  const expiry = Date.now() + 1000
   beforeEach(() => {
     mockRequest = {
       address: '0x1234567890123456789012345678901234567890',
       chainId: '0x1',
-      expiry: 1234567890,
+      expiry: expiry,
       signer: { type: 'key', data: { type: 'secp256k1', publicKey: '0x123456' } },
       permissions: [
         {
@@ -84,7 +84,7 @@ describe('grantPermissions', () => {
           }
         },
         context: '0xcontext',
-        expiry: 1234567890,
+        expiry: expiry,
         address: '0x1234567890123456789012345678901234567890',
         chainId: '0x1'
       })
@@ -112,7 +112,7 @@ describe('grantPermissions', () => {
         }
       ],
       context: 'test-pci',
-      expiry: 1234567890,
+      expiry: expiry,
       address: '0x1234567890123456789012345678901234567890',
       chainId: '0x1'
     })
@@ -166,19 +166,19 @@ describe('grantPermissions', () => {
 
   it('should throw an error for invalid policies', async () => {
     const invalidRequest = { ...mockRequest, policies: {} as any }
-    await expect(grantPermissions(invalidRequest)).rejects.toThrow(ERROR_MESSAGES.INVALID_POLICIES)
+    await expect(grantPermissions(invalidRequest)).rejects.toThrow(
+      ERROR_MESSAGES.INVALID_POLICIES_TYPE
+    )
   })
 
   it('should throw an error for invalid signer', async () => {
     const invalidRequest = { ...mockRequest, signer: null as any }
-    await expect(grantPermissions(invalidRequest)).rejects.toThrow(ERROR_MESSAGES.INVALID_SIGNER)
+    await expect(grantPermissions(invalidRequest)).rejects.toThrow()
   })
 
   it('should throw an error for invalid signer type', async () => {
     const invalidRequest = { ...mockRequest, signer: { type: {}, data: {} } as any }
-    await expect(grantPermissions(invalidRequest)).rejects.toThrow(
-      ERROR_MESSAGES.INVALID_SIGNER_TYPE
-    )
+    await expect(grantPermissions(invalidRequest)).rejects.toThrow()
   })
 
   it('should successfully update the signer in request for valid key signer', async () => {

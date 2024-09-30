@@ -5,12 +5,12 @@ import type {
 } from './utils/TypeUtils.js'
 import {
   assertWalletGrantPermissionsResponse,
-  ERROR_MESSAGES,
   extractAddress,
   updateRequestSigner,
   validateRequest
 } from './helper/index.js'
 import { WalletConnectCosigner } from './utils/WalletConnectCosigner.js'
+import { ERROR_MESSAGES } from './schema/index.js'
 
 /**
  * Grants permissions to a user's wallet.
