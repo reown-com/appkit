@@ -520,7 +520,9 @@ export class SolanaWeb3JsClient implements ChainAdapter<SolStoreUtilState, CaipN
 
   private async setProvider(provider: Provider) {
     try {
-      this.appKit?.setLoading(true)
+      if (provider.type === 'AUTH') {
+        this.appKit?.setLoading(true)
+      }
       const address = await provider.connect()
 
       // Check if the provider supports the current chain or switch to the first supported chain
