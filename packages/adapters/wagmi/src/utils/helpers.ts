@@ -6,6 +6,7 @@ import { fallback, http, type Hex } from 'viem'
 import type { Chain } from '@wagmi/core/chains'
 import type { Connector } from '@wagmi/core'
 import { CoreHelperUtil } from '@reown/appkit-core'
+import { WcHelpersUtil } from '@reown/appkit'
 
 export async function getWalletConnectCaipNetworks(connector?: Connector) {
   if (!connector) {
@@ -15,22 +16,13 @@ export async function getWalletConnectCaipNetworks(connector?: Connector) {
     ReturnType<(typeof UniversalProvider)['init']>
   >
 
-  const ns = provider?.session?.namespaces
-
-  const nsChains: CaipNetworkId[] | undefined = []
-
-  if (ns) {
-    Object.keys(ns).forEach(key => {
-      const chains = ns?.[key]?.chains
-      if (chains) {
-        nsChains.push(...(chains as CaipNetworkId[]))
-      }
-    })
-  }
+  const approvedCaipNetworkIds = WcHelpersUtil.getChainsFromNamespaces(
+    provider?.session?.namespaces
+  )
 
   return {
-    supportsAllNetworks: true,
-    approvedCaipNetworkIds: nsChains
+    supportsAllNetworks: false,
+    approvedCaipNetworkIds
   }
 }
 

@@ -1,7 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { type Balance, type CaipAddress } from '@reown/appkit-common'
-import { erc20ABI } from '@reown/appkit-common'
+import { ContractUtil } from '@reown/appkit-common'
 import { RouterController } from './RouterController.js'
 import { AccountController } from './AccountController.js'
 import { ConnectionController } from './ConnectionController.js'
@@ -225,15 +225,17 @@ export const SendController = {
         params.receiverAddress &&
         params.tokenAddress
       ) {
+        const tokenAddress = CoreHelperUtil.getPlainAddress(
+          params.tokenAddress as CaipAddress
+        ) as `0x${string}`
+
         await ConnectionController.writeContract({
           fromAddress: AccountController.state.address as `0x${string}`,
-          tokenAddress: CoreHelperUtil.getPlainAddress(
-            params.tokenAddress as CaipAddress
-          ) as `0x${string}`,
+          tokenAddress,
           receiverAddress: params.receiverAddress as `0x${string}`,
           tokenAmount: amount,
           method: 'transfer',
-          abi: erc20ABI
+          abi: ContractUtil.getERC20Abi(tokenAddress)
         })
         SnackController.showSuccess('Transaction started')
         this.resetSend()
