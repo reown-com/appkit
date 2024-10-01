@@ -9,7 +9,7 @@ import {
   updateRequestSigner,
   validateRequest
 } from './helper/index.js'
-import { WalletConnectCosigner } from './utils/WalletConnectCosigner.js'
+import { CosignerService } from './utils/CosignerService.js'
 import { ERROR_MESSAGES } from './schema/index.js'
 
 /**
@@ -33,12 +33,9 @@ export async function grantPermissions(
     throw new Error(ERROR_MESSAGES.INVALID_ADDRESS)
   }
 
-  // Instantiate WalletConnectCosigner and process permissions
-  const walletConnectCosigner = new WalletConnectCosigner(projectId)
-  const addPermissionResponse = await walletConnectCosigner.addPermission(
-    activeCaipAddress,
-    request
-  )
+  // Instantiate CosignerService and process permissions
+  const cosignerService = new CosignerService(projectId)
+  const addPermissionResponse = await cosignerService.addPermission(activeCaipAddress, request)
 
   // Update request signer with the cosigner key
   updateRequestSigner(request, {
@@ -53,8 +50,8 @@ export async function grantPermissions(
   // Validate and type guard the response
   const response = assertWalletGrantPermissionsResponse(rawResponse)
 
-  // Activate the permissions using WalletConnectCosigner
-  await walletConnectCosigner.activatePermissions(activeCaipAddress, {
+  // Activate the permissions using CosignerService
+  await cosignerService.activatePermissions(activeCaipAddress, {
     pci: addPermissionResponse.pci,
     ...response
   })

@@ -60,13 +60,13 @@ export async function sendCoSignerRequest<
   }
 }
 
-// -- WalletConnectCosigner Class ------------------------------------------ //
-export class WalletConnectCosigner {
+// -- CosignerService Class ------------------------------------------ //
+export class CosignerService {
   private baseUrl: string
   private projectId: string
 
   constructor(projectId: string) {
-    this.baseUrl = ConstantsUtil.WC_COSIGNER_BASE_URL
+    this.baseUrl = ConstantsUtil.COSIGNER_BASE_URL
     if (!projectId) {
       throw new Error('Project ID must be provided')
     }

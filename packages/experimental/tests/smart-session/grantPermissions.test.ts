@@ -6,7 +6,7 @@ import {
   OptionsController,
   type ConnectionControllerClient
 } from '@reown/appkit-core'
-import { WalletConnectCosigner } from '../../src/smart-session/utils/WalletConnectCosigner'
+import { CosignerService } from '../../src/smart-session/utils/CosignerService'
 import type { SmartSessionGrantPermissionsRequest } from '../../src/smart-session/utils/TypeUtils.js'
 import {
   extractAddress,
@@ -17,7 +17,7 @@ import { donutContractAbi } from '../data/abi'
 import { ERROR_MESSAGES } from '../../src/smart-session/schema'
 
 vi.mock('@reown/appkit-core')
-vi.mock('../../src/smart-session/utils/WalletConnectCosigner')
+vi.mock('../../src/smart-session/utils/CosignerService')
 
 describe('grantPermissions', () => {
   let mockRequest: SmartSessionGrantPermissionsRequest
@@ -50,7 +50,7 @@ describe('grantPermissions', () => {
     vi.mocked(ChainController.state).activeCaipAddress =
       'eip155:1:0x1234567890123456789012345678901234567890'
 
-    vi.mocked(WalletConnectCosigner.prototype.addPermission).mockResolvedValue({
+    vi.mocked(CosignerService.prototype.addPermission).mockResolvedValue({
       pci: 'test-pci',
       key: {
         type: 'secp256k1',
@@ -90,7 +90,7 @@ describe('grantPermissions', () => {
       })
     } as unknown as ConnectionControllerClient)
 
-    vi.mocked(WalletConnectCosigner.prototype.activatePermissions).mockResolvedValue(undefined)
+    vi.mocked(CosignerService.prototype.activatePermissions).mockResolvedValue(undefined)
   })
 
   it('should successfully grant permissions and invoke required methods', async () => {
@@ -116,11 +116,11 @@ describe('grantPermissions', () => {
       address: '0x1234567890123456789012345678901234567890',
       chainId: '0x1'
     })
-    expect(WalletConnectCosigner.prototype.addPermission).toHaveBeenCalledWith(
+    expect(CosignerService.prototype.addPermission).toHaveBeenCalledWith(
       'eip155:1:0x1234567890123456789012345678901234567890',
       mockRequest
     )
-    expect(WalletConnectCosigner.prototype.activatePermissions).toHaveBeenCalled()
+    expect(CosignerService.prototype.activatePermissions).toHaveBeenCalled()
   })
 
   it('should throw an error for unsupported namespace', async () => {
@@ -139,9 +139,7 @@ describe('grantPermissions', () => {
   })
 
   it('should handle network errors', async () => {
-    vi.mocked(WalletConnectCosigner.prototype.addPermission).mockRejectedValue(
-      new Error('Network error')
-    )
+    vi.mocked(CosignerService.prototype.addPermission).mockRejectedValue(new Error('Network error'))
     await expect(grantPermissions(mockRequest)).rejects.toThrow('Network error')
   })
 
@@ -211,8 +209,8 @@ describe('grantPermissions', () => {
     })
   })
 
-  it('should throw an error when WalletConnectCosigner addPermission fails', async () => {
-    vi.mocked(WalletConnectCosigner.prototype.addPermission).mockRejectedValue(
+  it('should throw an error when CosignerService addPermission fails', async () => {
+    vi.mocked(CosignerService.prototype.addPermission).mockRejectedValue(
       new Error('Cosigner error')
     )
     await expect(grantPermissions(mockRequest)).rejects.toThrow('Cosigner error')
