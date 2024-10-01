@@ -152,6 +152,11 @@ export class ModalValidator {
     await expect(emailInput).toBeVisible()
   }
 
+  async expectEmailLineSeparator() {
+    const emailInput = this.page.getByTestId('w3m-email-login-or-separator')
+    await expect(emailInput).toBeVisible()
+  }
+
   async expectValidSignature(signature: `0x${string}`, address: `0x${string}`, chainId: number) {
     const isVerified = await verifySignature({
       address,
