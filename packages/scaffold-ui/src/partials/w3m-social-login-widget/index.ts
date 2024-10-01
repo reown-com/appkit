@@ -149,7 +149,7 @@ export class W3mSocialLoginWidget extends LitElement {
   }
 
   private separatorTemplate() {
-    const walletConnectConnector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
+    const walletConnectConnector = this.connectors.find(c => c.id === 'walletConnect')
     const enableWallets = OptionsController.state.enableWallets
 
     if (walletConnectConnector && enableWallets) {

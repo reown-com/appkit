@@ -154,10 +154,7 @@ ${this.value ?? ''}</textarea
       SendController.setReceiverProfileName(value)
       SendController.setReceiverAddress(address)
       const avatar = await ConnectionController.getEnsAvatar(value)
-
-      if (avatar) {
-        SendController.setReceiverProfileImageUrl(avatar)
-      }
+      SendController.setReceiverProfileImageUrl(avatar || undefined)
     } else {
       SendController.setReceiverAddress(value)
       SendController.setReceiverProfileName(undefined)

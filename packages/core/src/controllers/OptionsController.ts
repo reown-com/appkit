@@ -100,6 +100,11 @@ export interface OptionsControllerStatePublic {
    */
   enableWalletConnect?: boolean
   /**
+   * Enable or disable debug mode in your AppKit. This is useful if you want to see UI alerts when debugging.
+   * @default false
+   */
+  debug?: boolean
+  /**
    * Features configuration object.
    * @default { swaps: true, onramp: true, email: true, socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'], history: true, analytics: true, allWallets: true }
    * @see https://docs.reown.com/appkit/react/core/options#features
@@ -211,6 +216,10 @@ export const OptionsController = {
 
   setEIP6963Enabled(enableEIP6963: OptionsControllerState['enableEIP6963']) {
     state.enableEIP6963 = enableEIP6963
+  },
+
+  setDebug(debug: OptionsControllerState['debug']) {
+    state.debug = debug
   },
 
   setEnableWalletConnect(enableWalletConnect: OptionsControllerState['enableWalletConnect']) {

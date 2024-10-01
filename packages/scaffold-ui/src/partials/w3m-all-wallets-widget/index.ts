@@ -33,7 +33,7 @@ export class W3mAllWalletsWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const wcConnector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
+    const wcConnector = this.connectors.find(c => c.id === 'walletConnect')
     const { allWallets } = OptionsController.state
 
     if (!wcConnector || allWallets === 'HIDE') {

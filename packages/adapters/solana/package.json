@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-adapter-solana",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "type": "module",
   "main": "./dist/esm/src/index.js",
   "types": "./dist/types/src/index.d.ts",
@@ -48,9 +48,9 @@
     "@solana/wallet-standard-features": "1.2.0",
     "@solana/wallet-standard-util": "1.1.1",
     "@solana/web3.js": "1.95.2",
-    "@walletconnect/utils": "2.16.2-canary-tma-3",
-    "@walletconnect/types": "2.16.2-canary-tma-3",
-    "@walletconnect/universal-provider": "2.16.2-canary-tma-3",
+    "@walletconnect/utils": "2.17.0",
+    "@walletconnect/types": "2.17.0",
+    "@walletconnect/universal-provider": "2.17.0",
     "@wallet-standard/app": "1.0.1",
     "@wallet-standard/base": "1.0.1",
     "@wallet-standard/features": "1.0.3",
@@ -69,9 +69,6 @@
   "optionalDependencies": {
     "borsh": "0.7.0",
     "bs58": "5.0.0"
-  },
-  "peerDependencies": {
-    "valtio": "1.11.2"
   },
   "devDependencies": {
     "@types/react": "18.2.0",

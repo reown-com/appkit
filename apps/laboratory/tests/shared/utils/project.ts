@@ -42,6 +42,7 @@ const SINGLE_ADAPTER_EVM_TESTS = [
   'email.spec.ts',
   'no-email.spec.ts',
   'no-socials.spec.ts',
+  'debug-mode.spec.ts',
   'siwe-email.spec.ts',
   'siwe-sa.spec.ts',
   'siwe.spec.ts',
@@ -55,6 +56,7 @@ const SINGLE_ADAPTER_SOLANA_TESTS = [
   'email.spec.ts',
   'no-email.spec.ts',
   'no-socials.spec.ts',
+  'debug-mode.spec.ts',
   'wallet.spec.ts'
 ]
 
