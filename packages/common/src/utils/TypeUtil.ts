@@ -6,9 +6,7 @@ export type { BaseChain }
 export type BaseNetwork<
   formatters extends ChainFormatters | undefined = ChainFormatters | undefined,
   custom extends Record<string, unknown> | undefined = Record<string, unknown> | undefined
-> = Omit<BaseChain<formatters, custom>, 'id'> & {
-  id: number | string
-}
+> = BaseChain<formatters, custom>
 
 export type CaipNetworkNew<
   formatters extends ChainFormatters | undefined = ChainFormatters | undefined,
@@ -17,6 +15,10 @@ export type CaipNetworkNew<
   id: number | string
   chainNamespace: ChainNamespace
   caipNetworkId: CaipNetworkId
+  assets: {
+    imageId: string
+    imageUrl: string
+  }
 }
 
 export type CaipNetworkId = `${ChainNamespace}:${ChainId}`

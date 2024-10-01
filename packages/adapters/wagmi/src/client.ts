@@ -64,12 +64,12 @@ import { normalize } from 'viem/ens'
 import type { AppKitOptions } from '@reown/appkit'
 import type {
   CaipAddress,
-  BaseChain,
   BaseNetwork,
   CaipNetwork,
   ChainNamespace,
   AdapterType,
-  CaipNetworkNew
+  CaipNetworkNew,
+  CaipNetworkId
 } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { AppKit } from '@reown/appkit'
@@ -77,7 +77,6 @@ import { walletConnect } from './connectors/UniversalConnector.js'
 import { coinbaseWallet } from '@wagmi/connectors'
 import { authConnector } from './connectors/AuthConnector.js'
 import { ProviderUtil } from '@reown/appkit/store'
-import { ChainsUtil } from './utils/chains.js'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions<C extends Config>
@@ -125,7 +124,7 @@ export class WagmiAdapter implements ChainAdapter {
 
   public caipNetworks: [CaipNetworkNew, ...CaipNetworkNew[]]
 
-  public wagmiChains: readonly [Chain, ...Chain[]]
+  public wagmiChains: readonly [BaseNetwork, ...BaseNetwork[]]
 
   public wagmiConfig: AdapterOptions<Config>['wagmiConfig']
 
@@ -143,23 +142,28 @@ export class WagmiAdapter implements ChainAdapter {
 
   public constructor(
     configParams: Partial<CreateConfigParameters> & {
-      networks: [BaseChain, ...BaseChain[]]
+      networks: [CaipNetworkNew, ...CaipNetworkNew[]]
       projectId: string
     }
   ) {
-    this.caipNetworks = configParams.networks.map((caipNetwork: BaseChain) => ({
+    this.caipNetworks = configParams.networks.map((caipNetwork: CaipNetworkNew) => ({
       ...caipNetwork,
-      chainNamespace: 'eip155',
-      caipNetworkId: `${this.chainNamespace}:${caipNetwork.id}`
+      id: caipNetwork.id as number | string,
+      chainNamespace: 'eip155' as ChainNamespace,
+      caipNetworkId: `${this.chainNamespace}:${caipNetwork.id}` as CaipNetworkId,
+      assets: {
+        imageId: '',
+        imageUrl: ''
+      }
     })) as [CaipNetworkNew, ...CaipNetworkNew[]]
 
     this.wagmiChains = this.caipNetworks.filter(
-      caipNetwork => caipNetwork.chainNamespace === 'eip155'
-    ) as [BaseChain, ...BaseChain[]]
+      caipNetwork => caipNetwork.chainNamespace === CommonConstantsUtil.CHAIN.EVM
+    ) as unknown as [BaseNetwork, ...BaseNetwork[]]
 
     const transportsArr = this.wagmiChains.map(chain => [
       chain.id,
-      getTransport({ chain, projectId: configParams.projectId })
+      getTransport({ chain: chain as Chain, projectId: configParams.projectId })
     ])
 
     const transports = Object.fromEntries(transportsArr)
@@ -225,7 +229,6 @@ export class WagmiAdapter implements ChainAdapter {
 
     this.appKit = appKit
     this.options = options
-    this.caipNetworks = options.networks
     this.defaultCaipNetwork = options.defaultNetwork || options.networks[0]
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
     this.setCustomConnectors(options, appKit)
@@ -305,7 +308,7 @@ export class WagmiAdapter implements ChainAdapter {
 
           siweParams.chains = this.caipNetworks
             ?.filter(network => network.chainNamespace === 'eip155')
-            .map(chain => chain.chainId) as number[]
+            .map(chain => chain.id) as number[]
 
           const result = await provider.authenticate({
             nonce: await siweConfig.getNonce(),

@@ -522,7 +522,7 @@ export class AppKit {
       : undefined
 
     const network = caipNetwork ?? extendedDefaultNetwork ?? options.networks[0]
-    ChainController.setActiveCaipNetwork(network)
+    ChainController.setActiveCaipNetwork(network as CaipNetwork)
   }
 
   private async initOrContinue() {
