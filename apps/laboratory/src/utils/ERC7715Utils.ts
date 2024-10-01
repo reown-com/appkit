@@ -103,7 +103,6 @@ export async function executeActionsWithPasskeyAndCosignerPermissions(args: {
       permissions: { context: permissionsContext }
     }
   })
-  console.log(prepareCallsResponse)
   if (prepareCallsResponse.length !== 1 && prepareCallsResponse[0]) {
     throw new Error('Invalid response type')
   }
@@ -157,7 +156,6 @@ export async function executeActionsWithECDSAAndCosignerPermissions(args: {
       permissions: { context: permissionsContext }
     }
   })
-  console.log(prepareCallsResponse)
   if (prepareCallsResponse.length !== 1 && prepareCallsResponse[0]) {
     throw new Error('Invalid response type')
   }
