@@ -129,10 +129,6 @@ export class UniversalAdapterClient {
           throw new Error('connectionControllerClient:getWalletConnectUri - provider is undefined')
         }
 
-        if (WalletConnectProvider?.session) {
-          return
-        }
-
         WalletConnectProvider.on('display_uri', (uri: string) => {
           onUri(uri)
         })

@@ -87,37 +87,46 @@ export const ConnectionController = {
   async connectWalletConnect() {
     StorageUtil.setConnectedConnector('WALLET_CONNECT')
 
-    if (wcConnectionPromise) {
-      try {
-        await wcConnectionPromise
-      } catch (error) {
-        /* Empty */
+    if (CoreHelperUtil.isTelegram()) {
+      if (wcConnectionPromise) {
+        try {
+          await wcConnectionPromise
+        } catch (error) {
+          /* Empty */
+        }
+        wcConnectionPromise = undefined
+
+        return
       }
+
+      if (Date.now() < (state?.wcPairingExpiry || 0)) {
+        const link = state.wcUri
+        state.wcUri = link
+
+        return
+      }
+      wcConnectionPromise = new Promise(async (resolve, reject) => {
+        await ChainController.state?.universalAdapter?.connectionControllerClient
+          ?.connectWalletConnect?.(uri => {
+            state.wcUri = uri
+            state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
+          })
+          .catch(reject)
+        resolve()
+      })
+      this.state.status = 'connecting'
+      await wcConnectionPromise
       wcConnectionPromise = undefined
-
-      return
-    }
-
-    if (Date.now() < (state?.wcPairingExpiry || 0)) {
-      const link = state.wcUri
-      state.wcUri = link
-
-      return
-    }
-    wcConnectionPromise = new Promise(async (resolve, reject) => {
-      await ChainController.state?.universalAdapter?.connectionControllerClient
-        ?.connectWalletConnect?.(uri => {
+      state.wcPairingExpiry = undefined
+      this.state.status = 'connected'
+    } else {
+      await ChainController.state?.universalAdapter?.connectionControllerClient?.connectWalletConnect?.(
+        uri => {
           state.wcUri = uri
           state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
-        })
-        .catch(reject)
-      resolve()
-    })
-    this.state.status = 'connecting'
-    await wcConnectionPromise
-    wcConnectionPromise = undefined
-    state.wcPairingExpiry = undefined
-    this.state.status = 'connected'
+        }
+      )
+    }
   },
 
   async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
