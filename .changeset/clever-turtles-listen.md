@@ -40,21 +40,20 @@ Introduced debug mode. This is useful for seeing UI alerts while debugging.
 **Example usage**
 
 ```ts
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { createAppKit } from '@reown/appkit/react'
+import { mainnet } from '@reown/appkit/networks'
+
 const wagmiAdapter = new WagmiAdapter({
   ssr: true,
-  networks: ConstantsUtil.EvmNetworks,
-  projectId: ConstantsUtil.ProjectId
+  networks: [mainnet],
+  projectId: 'YOUR_PROJECT_ID'
 })
 
 const modal = createAppKit({
   adapters: [wagmiAdapter],
-  networks: ConstantsUtil.EvmNetworks,
-  projectId: ConstantsUtil.ProjectId,
-  features: {
-    analytics: true,
-    email: true,
-    socials: ['google', 'github', 'apple', 'discord']
-  },
+  networks: [mainnet],
+  projectId: 'YOUR_PROJECT_ID',
   debug: true // Optional - defaults to false
 })
 ```
