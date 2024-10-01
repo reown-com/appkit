@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { PublicStateController } from '../../index.js'
+import { PublicStateController } from '../../exports/index.js'
 
 // -- Tests --------------------------------------------------------------------
 describe('PublicStateController', () => {

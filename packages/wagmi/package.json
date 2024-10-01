@@ -1,6 +1,6 @@
 {
-  "name": "@web3modal/wagmi",
-  "version": "5.1.7-9fc6442bc.6",
+  "name": "@reown/appkit-wagmi",
+  "version": "1.0.5",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -48,18 +48,17 @@
     "build": "tsc --build",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "test": "vitest run --dir tests"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@walletconnect/ethereum-provider": "2.16.1",
     "@walletconnect/utils": "2.16.1",
-    "@web3modal/polyfills": "workspace:*",
-    "@web3modal/base": "workspace:*",
-    "@web3modal/wallet": "workspace:*",
-    "@web3modal/common": "workspace:*",
-    "@web3modal/scaffold-utils": "workspace:*",
-    "@web3modal/siwe": "workspace:*"
+    "@reown/appkit-polyfills": "workspace:*",
+    "@reown/appkit-adapter-wagmi": "workspace:*",
+    "@reown/appkit": "workspace:*",
+    "@reown/appkit-wallet": "workspace:*",
+    "@reown/appkit-common": "workspace:*",
+    "@reown/appkit-utils": "workspace:*",
+    "@reown/appkit-siwe": "workspace:*"
   },
   "devDependencies": {
     "@wagmi/connectors": "5.1.9",
@@ -69,7 +68,7 @@
     "viem": "2.21.4",
     "vue": "3.4.3",
     "wagmi": "2.12.9",
-    "vitest": "2.0.3"
+    "vitest": "2.0.5"
   },
   "peerDependencies": {
     "@wagmi/connectors": ">=4",
@@ -91,23 +90,14 @@
       "optional": true
     }
   },
-  "keywords": [
-    "web3",
-    "crypto",
-    "ethereum",
-    "web3modal",
-    "walletconnect",
-    "lit",
-    "webcomponents"
-  ],
-  "author": "WalletConnect <walletconnect.com>",
+  "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/web3modal/web3modal",
+  "homepage": "https://github.com/WalletConnect/web3modal",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/web3modal/web3modal.git"
+    "url": "git+https://github.com/WalletConnect/web3modal.git"
   },
   "bugs": {
-    "url": "https://github.com/web3modal/web3modal/issues"
+    "url": "https://github.com/WalletConnect/web3modal/issues"
   }
 }

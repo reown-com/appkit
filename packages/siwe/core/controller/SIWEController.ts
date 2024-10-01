@@ -1,4 +1,5 @@
-import { AccountController, OptionsController } from '@web3modal/core'
+import type { SIWEStatus } from '@reown/appkit-common'
+import { ChainController, OptionsController } from '@reown/appkit-core'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import type {
@@ -26,21 +27,14 @@ export interface SIWEControllerClientState {
   nonce?: string
   session?: SIWESession
   message?: string
-  status:
-    | 'uninitialized'
-    | 'ready'
-    | 'loading'
-    | 'success'
-    | 'rejected'
-    | 'error'
-    | 'authenticating'
+  status: SIWEStatus
 }
 
 type StateKey = keyof SIWEControllerClientState
 
 // -- State --------------------------------------------- //
 const state = proxy<SIWEControllerClientState>({
-  status: 'uninitialized',
+  status: 'uninitialized'
 })
 
 // -- Controller ---------------------------------------- //
@@ -84,7 +78,7 @@ export const SIWEController = {
         this.setSession(undefined)
       }
 
-      return session
+      return session || undefined
     } catch {
       return undefined
     }
@@ -138,9 +132,11 @@ export const SIWEController = {
     client.onSignOut?.()
   },
 
-  setSIWEClient(client: SIWEControllerClient) {
+  async setSIWEClient(client: SIWEControllerClient) {
     state._client = ref(client)
-    state.status = 'ready'
+    state.session = await this.getSession()
+    state.status = state.session ? 'success' : 'ready'
+    ChainController.setAccountProp('siweStatus', state.status, 'eip155')
     OptionsController.setIsSiweEnabled(client.options.enabled)
   },
 
@@ -150,7 +146,7 @@ export const SIWEController = {
 
   setStatus(status: SIWEControllerClientState['status']) {
     state.status = status
-    AccountController.setSiweStatus(status)
+    ChainController.setAccountProp('siweStatus', state.status, 'eip155')
   },
 
   setMessage(message: SIWEControllerClientState['message']) {
@@ -159,11 +155,11 @@ export const SIWEController = {
 
   setSession(session: SIWEControllerClientState['session']) {
     state.session = session
-
     this.setStatus(session?.address && session?.chainId ? 'success' : 'ready')
+    ChainController.setAccountProp('siweStatus', state.status, 'eip155')
   },
 
   setIs1ClickAuthenticating(is1ClickAuthenticating: boolean) {
-    AccountController.setIs1ClickAuthenticating(is1ClickAuthenticating)
+    ChainController.setAccountProp('is1ClickAuthenticating', is1ClickAuthenticating, 'eip155')
   }
 }

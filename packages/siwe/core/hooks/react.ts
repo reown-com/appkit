@@ -1,6 +1,6 @@
+import { OptionsController } from '@reown/appkit-core'
 import { useEffect, useState } from 'react'
 import { SIWEController } from '../controller/SIWEController.js'
-import { OptionsController } from '@web3modal/core'
 
 export function useSiweSession() {
   if (

@@ -1,4 +1,6 @@
-import { createWeb3Modal, defaultConfig } from '@web3modal/ethers'
+import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
+import { createAppKit } from '@reown/appkit'
+import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -6,51 +8,17 @@ if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
 }
 
-function getBlockchainApiRpcUrl(chainId) {
-  return `https://rpc.walletconnect.org/v1/?chainId=eip155:${chainId}&projectId=${projectId}`
-}
+// Create adapter
+const ethersAdapter = new EthersAdapter()
 
-// 2. Create wagmiConfig
-const chains = [
-  {
-    chainId: 1,
-    name: 'Ethereum',
-    currency: 'ETH',
-    explorerUrl: 'https://etherscan.io',
-    rpcUrl: getBlockchainApiRpcUrl(1)
-  },
-  {
-    chainId: 42161,
-    name: 'Arbitrum',
-    currency: 'ETH',
-    explorerUrl: 'https://arbiscan.io',
-    rpcUrl: getBlockchainApiRpcUrl(42161)
-  }
-]
-
-const metadata = {
-  name: 'AppKit',
-  description: 'AppKit HTML + Ethers Example',
-  url: 'https://lab.web3modal.com',
-  icons: ['https://avatars.githubusercontent.com/u/37784886']
-}
-
-const ethersConfig = defaultConfig({
-  metadata,
-  chains,
-  defaultChainId: 1
+// Instantiate AppKit
+const modal = createAppKit({
+  adapters: [ethersAdapter],
+  networks: [arbitrum, mainnet, optimism, polygon, zkSync, sepolia],
+  projectId
 })
 
-// 3. Create modal
-const modal = createWeb3Modal({
-  ethersConfig: { ...ethersConfig, email: true },
-  projectId,
-  metadata,
-  chains,
-  themeMode: 'light'
-})
-
-// 4. Trigger modal programaticaly
+// Trigger modal programaticaly
 const openConnectModalBtn = document.getElementById('open-connect-modal')
 const openNetworkModalBtn = document.getElementById('open-network-modal')
 

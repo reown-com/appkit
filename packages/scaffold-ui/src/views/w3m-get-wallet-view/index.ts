@@ -1,5 +1,5 @@
-import { ApiController, AssetUtil, CoreHelperUtil, OptionsController } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import { ApiController, AssetUtil, CoreHelperUtil, OptionsController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 

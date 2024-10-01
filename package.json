@@ -1,13 +1,13 @@
 {
-  "name": "web3modal",
-  "version": "5.1.6",
+  "name": "shadow-test-apkt",
+  "version": "0.0.4",
   "private": true,
   "type": "module",
   "scripts": {
     "build:clean": "turbo run build:clean --filter={./packages/*}",
     "build:sample-apps": "turbo run build --filter={./examples/*}",
     "build": "turbo run build --filter={./packages/*} --concurrency=31",
-    "watch": "turbo run watch --filter={./packages/*} --concurrency=50 --continue",
+    "watch": "turbo run watch --filter={./packages/*,./packages/adapters/*} --concurrency=50 --continue",
     "gallery": "turbo run dev --filter={./apps/gallery}",
     "laboratory": "pnpm --filter @apps/laboratory dev",
     "demo": "turbo run dev --filter={./apps/demo}",
@@ -30,6 +30,7 @@
     "changeset:pre:exit": "changeset pre exit",
     "changeset": "changeset",
     "changeset:version": "changeset version",
+    "changeset:publish": "pnpm publish:latest",
     "publish:latest": "pnpm install; pnpm build; changeset publish",
     "publish:alpha": "pnpm install; pnpm build; changeset publish --tag alpha",
     "publish:beta": "pnpm install; pnpm build; changeset publish --tag beta",
@@ -53,7 +54,7 @@
     "turbo": "2.0.6-canary.0",
     "typescript": "5.3.3",
     "vite": "5.2.11",
-    "vitest": "2.0.3",
+    "vitest": "2.0.5",
     "vite-plugin-node-polyfills": "0.22.0",
     "pino": "7.11.0"
   },

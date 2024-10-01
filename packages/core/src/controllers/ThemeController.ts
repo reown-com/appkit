@@ -1,8 +1,8 @@
 import { proxy, subscribe as sub, snapshot } from 'valtio/vanilla'
 import type { ThemeMode, ThemeVariables } from '../utils/TypeUtil.js'
 import { ConnectorController } from './ConnectorController.js'
-import { getW3mThemeVariables } from '@web3modal/common'
-import type { W3mThemeVariables } from '@web3modal/common'
+import { getW3mThemeVariables } from '@reown/appkit-common'
+import type { W3mThemeVariables } from '@reown/appkit-common'
 
 // -- Types --------------------------------------------- //
 export interface ThemeControllerState {

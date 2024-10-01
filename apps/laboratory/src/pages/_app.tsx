@@ -18,6 +18,10 @@ export default function App({
     <ChakraProvider>
       <Head>
         <title>AppKit Lab</title>
+        <meta
+          property="og:description"
+          content="Explore the AppKit Lab to test the latest AppKit features."
+        />
         <link rel="icon" href="/favicon.svg" />
       </Head>
       <Layout>

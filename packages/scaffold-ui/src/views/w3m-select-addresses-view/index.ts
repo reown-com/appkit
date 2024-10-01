@@ -6,8 +6,8 @@ import {
   OptionsController,
   RouterController,
   type AccountType
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -135,8 +135,8 @@ export class W3mSelectAddressesView extends LitElement {
   }
 
   private async onCancel() {
-    const { isConnected } = AccountController.state
-    if (isConnected) {
+    const { activeCaipAddress } = ChainController.state
+    if (activeCaipAddress) {
       await ConnectionController.disconnect()
       ModalController.close()
     } else {

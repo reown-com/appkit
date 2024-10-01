@@ -1,53 +1,40 @@
 'use client'
 
-import { AppKit } from '@web3modal/base'
-import type { AppKitOptions } from '@web3modal/base'
-import { EVMEthers5Client, type AdapterOptions } from '@web3modal/base/adapters/evm/ethers5'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import { EthersStoreUtil, type EthersStoreUtilState } from '@web3modal/scaffold-utils/ethers'
-import { getWeb3Modal } from '@web3modal/base/utils/library/react'
+import { AppKit } from '@reown/appkit'
+import type { AppKitOptions } from '@reown/appkit'
+import type { CaipNetwork } from '@reown/appkit-common'
+import { ProviderUtil } from '@reown/appkit/store'
+import { Ethers5Adapter, type AdapterOptions } from '@reown/appkit-adapter-ethers5'
+import { getAppKit } from '@reown/appkit/library/react'
 import { useSnapshot } from 'valtio'
 import { ethers } from 'ethers'
-import { type Chain } from '@web3modal/scaffold-utils/ethers'
-
-// -- Configs -----------------------------------------------------------
-export { defaultConfig } from '@web3modal/base/adapters/evm/ethers5'
+import packageJson from '../package.json' assert { type: 'json' }
 
 // -- Setup -------------------------------------------------------------------
-let appkit: AppKit<EthersStoreUtilState, number> | undefined = undefined
-let ethersAdapter: EVMEthers5Client | undefined = undefined
+let appkit: AppKit | undefined = undefined
+let ethersAdapter: Ethers5Adapter | undefined = undefined
 
-export type Ethers5AppKitOptions = Omit<
-  AppKitOptions<Chain>,
-  'adapters' | 'sdkType' | 'sdkVersion'
-> &
+export type Ethers5AppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
   AdapterOptions
 
-export function createWeb3Modal(options: Ethers5AppKitOptions) {
-  ethersAdapter = new EVMEthers5Client({
-    ethersConfig: options.ethersConfig,
-    siweConfig: options.siweConfig,
-    chains: options.chains,
-    defaultChain: options.defaultChain
-  })
-  appkit = new AppKit<EthersStoreUtilState, number>({
+export function createAppKit(options: Ethers5AppKitOptions) {
+  ethersAdapter = new Ethers5Adapter()
+  appkit = new AppKit({
     ...options,
-    defaultChain: ethersAdapter.defaultChain,
-    adapters: [ethersAdapter],
-    sdkType: 'w3m',
-    sdkVersion: `react-ethers5-${ConstantsUtil.VERSION}`
+    sdkVersion: `react-ethers5-${packageJson.version}`,
+    adapters: [ethersAdapter]
   })
-  getWeb3Modal(appkit)
+  getAppKit(appkit)
 
   return appkit
 }
 
 // -- Hooks -------------------------------------------------------------------
-export function useWeb3ModalProvider() {
-  const { provider, providerType } = useSnapshot(EthersStoreUtil.state)
+export function useAppKitProvider() {
+  const { providers, providerIds } = useSnapshot(ProviderUtil.state)
 
-  const walletProvider = provider as ethers.providers.ExternalProvider | undefined
-  const walletProviderType = providerType
+  const walletProvider = providers['eip155'] as ethers.providers.ExternalProvider | undefined
+  const walletProviderType = providerIds['eip155']
 
   return {
     walletProvider,
@@ -66,8 +53,9 @@ export function useDisconnect() {
 }
 
 export function useSwitchNetwork() {
-  async function switchNetwork(chainId: number) {
-    await ethersAdapter?.switchNetwork(chainId)
+  // Breaking change
+  async function switchNetwork(caipNetwork: CaipNetwork) {
+    await ethersAdapter?.switchNetwork(caipNetwork)
   }
 
   return {
@@ -75,29 +63,10 @@ export function useSwitchNetwork() {
   }
 }
 
-export function useWeb3ModalAccount() {
-  const { address, isConnected, chainId, status } = useSnapshot(EthersStoreUtil.state)
-
-  return {
-    address,
-    isConnected,
-    chainId,
-    status
-  }
-}
-
-export function useWeb3ModalError() {
-  const { error } = useSnapshot(EthersStoreUtil.state)
-
-  return {
-    error
-  }
-}
-
 export {
-  useWeb3ModalTheme,
-  useWeb3Modal,
-  useWeb3ModalState,
-  useWeb3ModalEvents,
+  useAppKitTheme,
+  useAppKit,
+  useAppKitState,
+  useAppKitEvents,
   useWalletInfo
-} from '@web3modal/base/utils/library/react'
+} from '@reown/appkit/library/react'

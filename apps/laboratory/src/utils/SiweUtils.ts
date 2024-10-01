@@ -1,5 +1,5 @@
-import type { SIWECreateMessageArgs, SIWESession, SIWEVerifyMessageArgs } from '@web3modal/siwe'
-import { createSIWEConfig, formatMessage } from '@web3modal/siwe'
+import type { SIWECreateMessageArgs, SIWESession, SIWEVerifyMessageArgs } from '@reown/appkit-siwe'
+import { createSIWEConfig, formatMessage } from '@reown/appkit-siwe'
 import { getCsrfToken, getSession, signIn, signOut } from 'next-auth/react'
 
 export const siweConfig = createSIWEConfig({

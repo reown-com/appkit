@@ -25,10 +25,9 @@
     {
       "enabled": true,
       "matchPackageNames": [
-        "@walletconnect/ethereum-provider",
         "@walletconnect/universal-provider",
         "@walletconnect/utils",
-        "@web3modal/{/,}**"
+        "@reown/{/,}**"
       ],
       "groupName": "walletconnect",
       "prPriority": 10

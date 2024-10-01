@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/composites/wui-ens-input'
-import type { WuiEnsInput } from '@web3modal/ui'
+import '@reown/appkit-ui/src/composites/wui-ens-input'
+import type { WuiEnsInput } from '@reown/appkit-ui'
 import { html } from 'lit'
 import '../../components/gallery-container'
 

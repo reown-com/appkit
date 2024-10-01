@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
+import { ConstantsUtil } from '@reown/appkit-common'
+import { ApiController } from '@reown/appkit-core'
 import { formatMessage } from '@walletconnect/utils'
-import { ConstantsUtil } from '@web3modal/common'
-import { ApiController } from '@web3modal/core'
-import { Web3ModalSIWEClient } from '../../src/client.js'
+import { AppKitSIWEClient } from '../../src/client.js'
 import type { SIWECreateMessageArgs, SIWESession, SIWEVerifyMessageArgs } from './TypeUtils.js'
 
 const headers = {
@@ -11,7 +11,7 @@ const headers = {
 }
 export async function getNonce() {
   try {
-    const res = await fetch(`${ConstantsUtil.DEV_W3M_API_URL}/auth/v1/nonce`, {
+    const res = await fetch(`${ConstantsUtil.W3M_API_URL}/auth/v1/nonce`, {
       method: 'GET',
       headers,
       credentials: 'include'
@@ -34,7 +34,7 @@ export async function getNonce() {
 
 export async function getAppKitAuthSession() {
   try {
-    const res = await fetch(`${ConstantsUtil.DEV_W3M_API_URL}/auth/v1/me`, {
+    const res = await fetch(`${ConstantsUtil.W3M_API_URL}/auth/v1/me`, {
       method: 'GET',
       headers,
       credentials: 'include'
@@ -61,7 +61,7 @@ export async function authenticate(payload: {
   clientId?: string | null
 }) {
   try {
-    const res = await fetch(`${ConstantsUtil.DEV_W3M_API_URL}/auth/v1/authenticate`, {
+    const res = await fetch(`${ConstantsUtil.W3M_API_URL}/auth/v1/authenticate`, {
       method: 'POST',
       headers,
       body: JSON.stringify(payload),
@@ -85,7 +85,7 @@ export async function authenticate(payload: {
 
 export async function updateUserMetadata(metadata: Record<string, unknown>) {
   try {
-    const res = await fetch(`${ConstantsUtil.DEV_W3M_API_URL}/auth/v1/update-user-metadata`, {
+    const res = await fetch(`${ConstantsUtil.W3M_API_URL}/auth/v1/update-user-metadata`, {
       method: 'PATCH',
       headers,
       body: JSON.stringify({ metadata }),
@@ -109,7 +109,7 @@ export async function updateUserMetadata(metadata: Record<string, unknown>) {
 
 export async function appKitAuthSignOut() {
   try {
-    const res = await fetch(`${ConstantsUtil.DEV_W3M_API_URL}/auth/v1/sign-out`, {
+    const res = await fetch(`${ConstantsUtil.W3M_API_URL}/auth/v1/sign-out`, {
       method: 'POST',
       headers,
       credentials: 'include'
@@ -126,7 +126,7 @@ export async function appKitAuthSignOut() {
   }
 }
 
-export const appKitAuthConfig = new Web3ModalSIWEClient({
+export const appKitAuthConfig = new AppKitSIWEClient({
   signOutOnAccountChange: true,
   signOutOnNetworkChange: true,
   // We don't require any async action to populate params but other apps might

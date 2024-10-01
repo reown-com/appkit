@@ -1,5 +1,5 @@
-import { ConnectionController, CoreHelperUtil, EventsController } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import { ConnectionController, CoreHelperUtil, EventsController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-wc-mobile')
@@ -41,7 +41,17 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
         ConnectionController.setWcLinking({ name, href })
         ConnectionController.setRecentWallet(this.wallet)
         CoreHelperUtil.openHref(redirect, '_self')
-      } catch {
+      } catch (e) {
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'CONNECT_PROXY_ERROR',
+          properties: {
+            message: e instanceof Error ? e.message : 'Error parsing the deeplink',
+            uri: this.uri,
+            mobile_link: this.wallet.mobile_link,
+            name: this.wallet.name
+          }
+        })
         this.error = true
       }
     }

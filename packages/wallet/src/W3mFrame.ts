@@ -2,7 +2,7 @@ import { SECURE_SITE_SDK, W3mFrameConstants } from './W3mFrameConstants.js'
 import { W3mFrameSchema } from './W3mFrameSchema.js'
 import { W3mFrameHelpers } from './W3mFrameHelpers.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
-import { ConstantsUtil } from '@web3modal/common'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 // -- Sdk --------------------------------------------------------------------
 export class W3mFrame {
@@ -31,7 +31,7 @@ export class W3mFrame {
       this.frameLoadPromiseResolver = { resolve, reject }
     })
 
-    // Create iframe only when sdk is initialised from dapp / web3modal
+    // Create iframe only when sdk is initialised from dapp / appkit
     if (isAppClient) {
       this.frameLoadPromise = new Promise((resolve, reject) => {
         this.frameLoadPromiseResolver = { resolve, reject }
@@ -83,6 +83,7 @@ export class W3mFrame {
       'eip155:100',
       'eip155:8453',
       'eip155:84531',
+      'eip155:84532',
       'eip155:7777777',
       'eip155:999',
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',

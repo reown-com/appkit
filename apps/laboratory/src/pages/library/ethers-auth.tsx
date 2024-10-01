@@ -1,27 +1,28 @@
+import { createAppKit } from '@reown/appkit/react'
+import { ThemeStore } from '../../utils/StoreUtil'
+import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { EthersTests } from '../../components/Ethers/EthersTests'
 import { AppKitButtons } from '../../components/AppKitButtons'
-import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
-import { ThemeStore } from '../../utils/StoreUtil'
-import { EthersConstants } from '../../utils/EthersConstants'
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { SiweData } from '../../components/Siwe/SiweData'
 import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
-import { AppKitAuthInfo } from '../../components/AppKitAuthInfo'
+import { EthersAdapter } from '@reown/appkit-adapter-ethers'
+import { mainnet } from '@reown/appkit/networks'
 
-const modal = createWeb3Modal({
-  ethersConfig: defaultConfig({
-    metadata: ConstantsUtil.Metadata,
-    defaultChainId: 1,
-    rpcUrl: 'https://cloudflare-eth.com',
-    chains: EthersConstants.chains,
-    coinbasePreference: 'smartWalletOnly'
-  }),
-  chains: EthersConstants.chains,
+const networks = ConstantsUtil.EvmNetworks
+
+const ethersAdapter = new EthersAdapter()
+
+const modal = createAppKit({
+  adapters: [ethersAdapter],
+  networks,
+  defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
-  enableAnalytics: true,
-  metadata: ConstantsUtil.Metadata,
-  termsConditionsUrl: 'https://walletconnect.com/terms',
-  privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  customWallets: ConstantsUtil.CustomWallets,
+  features: {
+    analytics: true,
+    socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook']
+  },
+  termsConditionsUrl: 'https://reown.com/terms-of-service',
+  privacyPolicyUrl: 'https://reown.com/privacy-policy',
   enableAuth: true
 })
 
@@ -32,7 +33,7 @@ export default function Ethers() {
     <>
       <AppKitButtons />
       <EthersModalInfo />
-      <AppKitAuthInfo />
+      <SiweData />
       <EthersTests />
     </>
   )

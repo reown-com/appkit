@@ -16,9 +16,16 @@ export const colors = [
   '#414796'
 ]
 
+export type SdkOption = {
+  title: string
+  link: string
+  description: string
+  randomLinks?: string[]
+}
+
 export const vitalikEthAddress = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045'
 
-export const wagmiSdkOptions = [
+export const wagmiSdkOptions: SdkOption[] = [
   {
     title: 'Default',
     link: '/library/wagmi',
@@ -62,7 +69,7 @@ export const wagmiSdkOptions = [
   }
 ]
 
-export const ethersSdkOptions = [
+export const ethersSdkOptions: SdkOption[] = [
   {
     title: 'Default',
     link: '/library/ethers',
@@ -91,7 +98,7 @@ export const ethersSdkOptions = [
   }
 ]
 
-export const ethers5SdkOptions = [
+export const ethers5SdkOptions: SdkOption[] = [
   {
     title: 'Default',
     link: '/library/ethers5',
@@ -109,7 +116,7 @@ export const ethers5SdkOptions = [
   }
 ]
 
-export const solanaSdkOptions = [
+export const solanaSdkOptions: SdkOption[] = [
   {
     title: 'Default',
     link: '/library/solana',
@@ -124,5 +131,62 @@ export const solanaSdkOptions = [
     title: 'Without Socials',
     link: '/library/solana-no-socials/',
     description: 'Configuration using ethers without socials'
+  }
+]
+
+export const multichainSdkOptions: SdkOption[] = [
+  {
+    title: 'Wagmi + Solana',
+    link: '/library/multichain-wagmi-solana',
+    description: 'Configuration with Wagmi and Solana adapters enabled for AppKit'
+  },
+  {
+    title: 'Ethers + Solana',
+    link: '/library/multichain-ethers-solana',
+    description: 'Configuration with Ethers and Solana adapters enabled for AppKit'
+  },
+  {
+    title: 'Ethers5 + Solana',
+    link: '/library/multichain-ethers5-solana',
+    description: 'Configuration with Ethers 5 and Solana adapters enabled for AppKit'
+  },
+  {
+    title: 'Basic',
+    link: '/library/multichain-basic',
+    description: 'Configuration with no adapters enabled for AppKit'
+  }
+]
+
+export const testingSdkOptions: SdkOption[] = [
+  {
+    title: 'Demo',
+    link: '',
+    description: 'All features enabled and randomly using ethers or wagmi',
+    randomLinks: ['/library/wagmi-all', '/library/ethers-all']
+  },
+  {
+    title: 'Demo w/ Sample Wallets',
+    link: '',
+    description:
+      'All features enabled, with sample wallet links, and randomly using ethers or wagmi',
+    randomLinks: ['/library/wagmi-all-internal', '/library/ethers-all-internal']
+  }
+]
+
+export const featuredSdkOptions: SdkOption[] = [
+  {
+    title: 'Default',
+    link: '/library/wagmi',
+    description: 'Basic configuration using wagmi as a driving library'
+  },
+  {
+    title: 'Multichain',
+    link: '/library/multichain-wagmi-solana',
+    description: 'Configuration with Wagmi and Solana adapters enabled for AppKit'
+  },
+  {
+    title: 'Basic',
+    link: '/library/multichain-basic',
+    description: 'Configuration with no adapters enabled for AppKit'
   }
 ]

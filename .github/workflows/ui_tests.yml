@@ -9,7 +9,7 @@ on:
         required: false
         type: string
       base-url:
-        description: 'The web3modal lab url'
+        description: 'The AppKit lab url'
         default: 'http://localhost:3000/'
         required: false
         type: string

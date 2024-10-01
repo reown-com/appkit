@@ -1,9 +1,9 @@
 import { html, LitElement } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { UiHelperUtil, customElement } from '@web3modal/ui'
-import { NumberUtil } from '@web3modal/common'
-import { ConstantsUtil, NetworkController, SwapController } from '@web3modal/core'
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+import { NumberUtil } from '@reown/appkit-common'
+import { ConstantsUtil, ChainController, SwapController } from '@reown/appkit-core'
 
 // -- Constants ----------------------------------------- //
 const slippageRate = ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE
@@ -15,7 +15,7 @@ export class WuiSwapDetails extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public networkName = NetworkController.state.caipNetwork?.name
+  @state() public networkName = ChainController.state.activeCaipNetwork?.name
 
   @property() public detailsOpen = false
 

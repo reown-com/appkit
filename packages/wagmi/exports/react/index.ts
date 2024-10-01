@@ -1,44 +1,40 @@
-import { AppKit } from '@web3modal/base'
-import type { AppKitOptions } from '@web3modal/base'
-import { EVMWagmiClient, type AdapterOptions } from '@web3modal/base/adapters/evm/wagmi'
-import { getWeb3Modal } from '@web3modal/base/utils/library/react'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import type { Chain } from 'viem'
-import type { Config } from 'wagmi'
-
-// -- Configs -----------------------------------------------------------
-export { defaultWagmiConfig } from '@web3modal/base/adapters/evm/wagmi'
+import { AppKit } from '@reown/appkit'
+import type { AppKitOptions } from '@reown/appkit'
+import { WagmiAdapter, type AdapterOptions } from '@reown/appkit-adapter-wagmi'
+import { getAppKit } from '@reown/appkit/library/react'
+import { type Config, type CreateConfigParameters } from 'wagmi'
+import packageJson from '../../package.json' assert { type: 'json' }
 
 // -- Setup -------------------------------------------------------------------
 let appkit: AppKit | undefined = undefined
-let wagmiAdapter: EVMWagmiClient | undefined = undefined
 
-export type WagmiAppKitOptions = Omit<AppKitOptions<Chain>, 'adapters' | 'sdkType' | 'sdkVersion'> &
-  AdapterOptions<Config>
+export type WagmiAppKitOptions = Omit<AppKitOptions, 'adapters' | 'sdkType' | 'sdkVersion'> &
+  AdapterOptions<Config> & {
+    wagmiConfig?: CreateConfigParameters
+  }
 
-export function createWeb3Modal(options: WagmiAppKitOptions) {
-  wagmiAdapter = new EVMWagmiClient({
-    wagmiConfig: options.wagmiConfig,
-    siweConfig: options.siweConfig,
-    defaultChain: options.defaultChain
+export function createAppKit(options: WagmiAppKitOptions) {
+  const wagmiAdapter = new WagmiAdapter({
+    ...options.wagmiConfig,
+    networks: options.networks,
+    projectId: options.projectId
   })
+
   appkit = new AppKit({
     ...options,
-    defaultChain: wagmiAdapter.defaultChain,
-    adapters: [wagmiAdapter],
-    sdkType: 'w3m',
-    sdkVersion: `react-wagmi-${ConstantsUtil.VERSION}`
+    sdkVersion: `react-wagmi-${packageJson.version}`,
+    adapters: [wagmiAdapter]
   })
-  getWeb3Modal(appkit)
+  getAppKit(appkit)
 
   return appkit
 }
 
 // -- Hooks -------------------------------------------------------------------
 export {
-  useWeb3ModalTheme,
-  useWeb3Modal,
-  useWeb3ModalState,
-  useWeb3ModalEvents,
+  useAppKitTheme,
+  useAppKit,
+  useAppKitState,
+  useAppKitEvents,
   useWalletInfo
-} from '@web3modal/base/utils/library/react'
+} from '@reown/appkit/library/react'

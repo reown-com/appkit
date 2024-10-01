@@ -1,13 +1,14 @@
-import { createWeb3Modal } from '@web3modal/wagmi/react'
+import { createAppKit } from '@reown/appkit/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { ThemeStore } from '../../utils/StoreUtil'
-import { getWagmiConfig } from '../../utils/WagmiConstants'
+import { SiweData } from '../../components/Siwe/SiweData'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { AppKitAuthInfo } from '../../components/AppKitAuthInfo'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { mainnet } from '@reown/appkit/networks'
 import {
   deleteProfile,
   getProfile,
@@ -15,7 +16,6 @@ import {
   unlinkAccountFromProfile,
   updateMainAccount
 } from '../../utils/ProfilesUtil'
-import { useProxy } from 'valtio/utils'
 import { ProfileStore } from '../../utils/ProfileStoreUtil'
 import {
   Button,
@@ -28,21 +28,27 @@ import {
   Text,
   useToast
 } from '@chakra-ui/react'
+import { useProxy } from 'valtio/utils'
 import { IoRefresh } from 'react-icons/io5'
 
 const queryClient = new QueryClient()
 
-const wagmiConfig = getWagmiConfig('default')
+const wagmiAdapter = new WagmiAdapter({
+  ssr: true,
+  networks: ConstantsUtil.EvmNetworks,
+  projectId: ConstantsUtil.ProjectId
+})
 
-const modal = createWeb3Modal({
-  wagmiConfig,
+const modal = createAppKit({
+  adapters: [wagmiAdapter],
+  networks: ConstantsUtil.EvmNetworks,
+  defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
-  enableAnalytics: true,
-  metadata: ConstantsUtil.Metadata,
-  termsConditionsUrl: 'https://walletconnect.com/terms',
-  privacyPolicyUrl: 'https://walletconnect.com/privacy',
-  customWallets: ConstantsUtil.CustomWallets,
-  siweConfig: siweProfilesConfig(wagmiConfig)
+  features: {
+    analytics: true
+  },
+  siweConfig: siweProfilesConfig(wagmiAdapter.wagmiConfig),
+  customWallets: ConstantsUtil.CustomWallets
 })
 
 ThemeStore.setModal(modal)
@@ -105,11 +111,12 @@ export default function WagmiProfiles() {
   }
 
   return (
-    <WagmiProvider config={wagmiConfig}>
+    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtons />
         <WagmiModalInfo />
-        <AppKitAuthInfo />
+        <SiweData />
+
         <Card>
           <CardHeader as={Flex} justifyContent="space-between">
             <Heading size="md">Profile</Heading>

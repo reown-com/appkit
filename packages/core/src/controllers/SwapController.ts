@@ -1,5 +1,5 @@
-import { NumberUtil } from '@web3modal/common'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { NumberUtil } from '@reown/appkit-common'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
@@ -10,8 +10,8 @@ import { SwapCalculationUtil } from '../utils/SwapCalculationUtil.js'
 import type { SwapTokenWithBalance } from '../utils/TypeUtil.js'
 import { AccountController } from './AccountController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
+import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
-import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { NetworkController } from './NetworkController.js'
 import { OptionsController } from './OptionsController.js'
@@ -172,17 +172,15 @@ export const SwapController = {
   },
 
   getParams() {
-    const caipNetwork = NetworkController.state.caipNetwork
-    const address = AccountController.state.address
-    const networkAddress = `${caipNetwork?.id}:${ConstantsUtil.NATIVE_TOKEN_ADDRESS}`
+    const caipAddress = ChainController.state.activeCaipAddress
+    const address = CoreHelperUtil.getPlainAddress(caipAddress)
+    const networkAddress = NetworkController.getActiveNetworkTokenAddress()
     const type = StorageUtil.getConnectedConnector()
-    const authConnector = ConnectorController.getAuthConnector()
 
     if (!address) {
       throw new Error('No address found to swap the tokens from.')
     }
 
-    const caipAddress = AccountController.state.caipAddress
     const invalidToToken = !state.toToken?.address || !state.toToken?.decimals
     const invalidSourceToken =
       !state.sourceToken?.address ||
@@ -193,7 +191,7 @@ export const SwapController = {
     return {
       networkAddress,
       fromAddress: address,
-      fromCaipAddress: AccountController.state.caipAddress,
+      fromCaipAddress: caipAddress,
       sourceTokenAddress: state.sourceToken?.address,
       toTokenAddress: state.toToken?.address,
       toTokenAmount: state.toTokenAmount,
@@ -205,7 +203,7 @@ export const SwapController = {
       invalidSourceTokenAmount,
       availableToSwap:
         caipAddress && !invalidToToken && !invalidSourceToken && !invalidSourceTokenAmount,
-      isAuthConnector: authConnector?.walletFeatures && type === 'AUTH'
+      isAuthConnector: type === 'AUTH'
     }
   },
 
@@ -404,6 +402,10 @@ export const SwapController = {
     const response = await BlockchainApiController.fetchTokenPrice({
       projectId: OptionsController.state.projectId,
       addresses: [networkAddress]
+    }).catch(() => {
+      SnackController.showError('Failed to fetch network token price')
+
+      return { fungibles: [] }
     })
     const token = response.fungibles?.[0]
     const price = token?.price.toString() || '0'
@@ -425,7 +427,7 @@ export const SwapController = {
 
   setBalances(balances: SwapTokenWithBalance[]) {
     const { networkAddress } = this.getParams()
-    const caipNetwork = NetworkController.state.caipNetwork
+    const caipNetwork = ChainController.state.activeCaipNetwork
 
     if (!caipNetwork) {
       return
@@ -446,18 +448,37 @@ export const SwapController = {
     const res = await SwapApiUtil.fetchGasPrice()
 
     if (!res) {
-      return { gasPrice: null, gasPriceInUsd: null }
+      return { gasPrice: null, gasPriceInUSD: null }
     }
 
-    const value = res.standard
-    const gasFee = BigInt(value)
-    const gasLimit = BigInt(INITIAL_GAS_LIMIT)
-    const gasPrice = SwapCalculationUtil.getGasPriceInUSD(state.networkPrice, gasLimit, gasFee)
+    switch (ChainController.state?.activeCaipNetwork?.chainNamespace) {
+      case 'solana':
+        state.gasFee = res.standard
+        state.gasPriceInUSD = NumberUtil.multiply(res.standard, state.networkPrice)
+          .dividedBy(1e9)
+          .toNumber()
 
-    state.gasFee = value
-    state.gasPriceInUSD = gasPrice
+        return {
+          gasPrice: BigInt(state.gasFee),
+          gasPriceInUSD: Number(state.gasPriceInUSD)
+        }
 
-    return { gasPrice: gasFee, gasPriceInUSD: state.gasPriceInUSD }
+      case 'eip155':
+      default:
+        // eslint-disable-next-line no-case-declarations
+        const value = res.standard
+        // eslint-disable-next-line no-case-declarations
+        const gasFee = BigInt(value)
+        // eslint-disable-next-line no-case-declarations
+        const gasLimit = BigInt(INITIAL_GAS_LIMIT)
+        // eslint-disable-next-line no-case-declarations
+        const gasPrice = SwapCalculationUtil.getGasPriceInUSD(state.networkPrice, gasLimit, gasFee)
+
+        state.gasFee = value
+        state.gasPriceInUSD = gasPrice
+
+        return { gasPrice: gasFee, gasPriceInUSD: gasPrice }
+    }
   },
 
   // -- Swap -------------------------------------- //
@@ -473,9 +494,9 @@ export const SwapController = {
 
     state.loadingQuote = true
 
-    const amountDecimal = NumberUtil.bigNumber(state.sourceTokenAmount).multipliedBy(
-      10 ** sourceToken.decimals
-    )
+    const amountDecimal = NumberUtil.bigNumber(state.sourceTokenAmount)
+      .multipliedBy(10 ** sourceToken.decimals)
+      .integerValue()
 
     const quoteResponse = await BlockchainApiController.fetchSwapQuote({
       userAddress: address,
@@ -744,7 +765,7 @@ export const SwapController = {
         type: 'track',
         event: 'SWAP_SUCCESS',
         properties: {
-          network: NetworkController.state.caipNetwork?.id || '',
+          network: ChainController.state.activeCaipNetwork?.id || '',
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',
           swapFromAmount: this.state.sourceTokenAmount || '',
@@ -770,7 +791,7 @@ export const SwapController = {
         type: 'track',
         event: 'SWAP_ERROR',
         properties: {
-          network: NetworkController.state.caipNetwork?.id || '',
+          network: ChainController.state.activeCaipNetwork?.id || '',
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',
           swapFromAmount: this.state.sourceTokenAmount || '',
@@ -792,6 +813,15 @@ export const SwapController = {
       sourceTokenAddress,
       state.myTokensWithBalance
     )
+
+    // Smart Accounts may pay gas in any ERC20 token
+    if (
+      AccountController.state.preferredAccountType ===
+      W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+    ) {
+      return true
+    }
+
     const insufficientNetworkTokenForGas = SwapCalculationUtil.isInsufficientNetworkTokenForGas(
       state.networkBalanceInUSD,
       state.gasPriceInUSD

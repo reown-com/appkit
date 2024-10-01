@@ -8,17 +8,15 @@ import {
   type SIWECreateMessageArgs,
   type SIWESession,
   type SIWEVerifyMessageArgs
-} from '@web3modal/siwe'
-
-import { ConnectionController } from '@web3modal/core'
+} from '@reown/appkit-siwe'
 
 import { type Config, disconnect } from '@wagmi/core'
 import { ProfileStore } from './ProfileStoreUtil'
 const queryParams = `projectId=24970167f11c121f6eb40b558edb9691&st=w3m&sv=5.0.0`
 
-const devProfileApiUrl = 'http://localhost:8787'
+const profilesApiUrl = 'https://api-web3modal-staging.walletconnect-v1-bridge.workers.dev'
 
-export async function addCurrentAccountToProfile(baseUrl = devProfileApiUrl) {
+export async function addCurrentAccountToProfile(baseUrl = profilesApiUrl) {
   try {
     const res = await fetch(`${baseUrl}/profiles/v1/add-account?${queryParams}`, {
       method: 'POST',
@@ -44,7 +42,7 @@ export async function addCurrentAccountToProfile(baseUrl = devProfileApiUrl) {
   }
 }
 
-export async function getProfile(baseUrl = devProfileApiUrl) {
+export async function getProfile(baseUrl = profilesApiUrl) {
   try {
     const res = await fetch(`${baseUrl}/profiles/v1?${queryParams}`, {
       method: 'GET',
@@ -65,7 +63,7 @@ export async function getProfile(baseUrl = devProfileApiUrl) {
   }
 }
 
-export async function unlinkAccountFromProfile(accountUuid: string, baseUrl = devProfileApiUrl) {
+export async function unlinkAccountFromProfile(accountUuid: string, baseUrl = profilesApiUrl) {
   try {
     const res = await fetch(`${baseUrl}/profiles/v1/${accountUuid}?${queryParams}`, {
       method: 'DELETE',
@@ -89,7 +87,7 @@ export async function unlinkAccountFromProfile(accountUuid: string, baseUrl = de
   }
 }
 
-export async function deleteProfile(baseUrl = devProfileApiUrl) {
+export async function deleteProfile(baseUrl = profilesApiUrl) {
   try {
     const res = await fetch(`${baseUrl}/profiles/v1?${queryParams}`, {
       method: 'DELETE',
@@ -104,7 +102,7 @@ export async function deleteProfile(baseUrl = devProfileApiUrl) {
   }
 }
 
-export async function updateMainAccount(accountUuid: string, baseUrl = devProfileApiUrl) {
+export async function updateMainAccount(accountUuid: string, baseUrl = profilesApiUrl) {
   try {
     const res = await fetch(`${baseUrl}/profiles/v1/main-account/${accountUuid}?${queryParams}`, {
       method: 'PATCH',
@@ -119,7 +117,7 @@ export async function updateMainAccount(accountUuid: string, baseUrl = devProfil
   }
 }
 
-export async function sendOtp(baseUrl = devProfileApiUrl) {
+export async function sendOtp(baseUrl = profilesApiUrl) {
   try {
     const res = await fetch(`${baseUrl}/profiles/v1/otp?${queryParams}`, {
       method: 'POST',
@@ -139,7 +137,7 @@ export async function sendOtp(baseUrl = devProfileApiUrl) {
   }
 }
 
-export async function verifyOtp(baseUrl = devProfileApiUrl) {
+export async function verifyOtp(baseUrl = profilesApiUrl) {
   try {
     const res = await fetch(`${baseUrl}/profiles/v1/otp/verify?${queryParams}`, {
       method: 'POST',
@@ -232,7 +230,6 @@ export function siweProfilesConfig(wagmiConfig: Config) {
     },
     onSignIn: async () => {
       await disconnect(wagmiConfig)
-      await ConnectionController.disconnect()
     }
   })
 }

@@ -1,7 +1,12 @@
 import { Button, Stack, Text, Input, Tooltip } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react'
-import { EthereumProvider } from '@walletconnect/ethereum-provider'
+import {
+  useAppKitAccount,
+  useAppKitNetwork,
+  useAppKitProvider,
+  type Provider
+} from '@reown/appkit/react'
+import { UniversalProvider } from '@walletconnect/universal-provider'
 import { useChakraToast } from '../Toast'
 import { parseGwei } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
@@ -11,14 +16,15 @@ import {
   WALLET_CAPABILITIES,
   getCapabilitySupportedChainInfo
 } from '../../utils/EIP5792Utils'
-import { W3mFrameProvider } from '@web3modal/wallet'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 export function Ethers5SendCallsWithPaymasterServiceTest() {
   const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')
   const [isLoading, setLoading] = useState(false)
 
-  const { address, chainId, isConnected } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider()
+  const { chainId } = useAppKitNetwork()
+  const { address, isConnected } = useAppKitAccount()
+  const { walletProvider } = useAppKitProvider<Provider>('eip155')
   const toast = useChakraToast()
 
   const [paymasterServiceSupportedChains, setPaymasterServiceSupportedChains] = useState<
@@ -28,7 +34,7 @@ export function Ethers5SendCallsWithPaymasterServiceTest() {
   useEffect(() => {
     if (
       address &&
-      (walletProvider instanceof EthereumProvider || walletProvider instanceof W3mFrameProvider)
+      (walletProvider instanceof UniversalProvider || walletProvider instanceof W3mFrameProvider)
     ) {
       getCapabilitySupportedChainInfo(
         WALLET_CAPABILITIES.PAYMASTER_SERVICE,
@@ -105,9 +111,9 @@ export function Ethers5SendCallsWithPaymasterServiceTest() {
 
   function isSendCallsSupported(): boolean {
     // We are currently checking capabilities above. We should use those capabilities instead of this check.
-    if (walletProvider instanceof EthereumProvider) {
+    if (walletProvider instanceof UniversalProvider) {
       return Boolean(
-        walletProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
+        walletProvider?.session?.namespaces['eip155']?.methods?.includes(
           EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
         )
       )

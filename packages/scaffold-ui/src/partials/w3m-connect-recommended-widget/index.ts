@@ -1,4 +1,4 @@
-import type { WcWallet } from '@web3modal/core'
+import type { WcWallet } from '@reown/appkit-core'
 import {
   ApiController,
   AssetUtil,
@@ -6,8 +6,8 @@ import {
   OptionsController,
   RouterController,
   StorageUtil
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -34,7 +34,7 @@ export class W3mConnectRecommendedWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
+    const connector = this.connectors.find(c => c.id === 'walletConnect')
     if (!connector) {
       return null
     }
@@ -43,7 +43,10 @@ export class W3mConnectRecommendedWidget extends LitElement {
     const { connectors } = ConnectorController.state
     const recent = StorageUtil.getRecentWallets()
 
-    const injected = connectors.filter(c => c.type === 'INJECTED' || c.type === 'ANNOUNCED')
+    const injected = connectors.filter(
+      c => c.type === 'INJECTED' || c.type === 'ANNOUNCED' || c.type === 'MULTI_CHAIN'
+    )
+
     const injectedWallets = injected.filter(i => i.name !== 'Browser Wallet')
 
     if (featuredWalletIds || customWallets || !recommended.length) {
@@ -56,6 +59,7 @@ export class W3mConnectRecommendedWidget extends LitElement {
 
     const maxRecommended = Math.max(0, 2 - overrideLength)
     const wallets = WalletUtil.filterOutDuplicateWallets(recommended).slice(0, maxRecommended)
+
     if (!wallets.length) {
       this.style.cssText = `display: none`
 

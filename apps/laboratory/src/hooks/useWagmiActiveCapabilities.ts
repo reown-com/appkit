@@ -1,7 +1,7 @@
-import { EthereumProvider } from '@walletconnect/ethereum-provider'
+import { UniversalProvider } from '@walletconnect/universal-provider'
 import { useAccount, type Connector } from 'wagmi'
 import { useState, useEffect, useMemo } from 'react'
-import { type WalletCapabilities } from 'viem'
+import { type Address, type WalletCapabilities } from 'viem'
 import { type Chain } from 'wagmi/chains'
 import {
   EIP_5792_RPC_METHODS,
@@ -9,14 +9,15 @@ import {
   getFilteredCapabilitySupportedChainInfo,
   getProviderCachedCapabilities
 } from '../utils/EIP5792Utils'
-import { W3mFrameProvider } from '@web3modal/wallet'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
+import { useAppKitAccount } from '@reown/appkit/react'
 
 type UseWagmiAvailableCapabilitiesParams = {
   capability?: string
   method: string
 }
 
-export type Provider = Awaited<ReturnType<(typeof EthereumProvider)['init']>> | W3mFrameProvider
+export type Provider = Awaited<ReturnType<(typeof UniversalProvider)['init']>> | W3mFrameProvider
 
 export function useWagmiAvailableCapabilities({
   capability,
@@ -29,7 +30,8 @@ export function useWagmiAvailableCapabilities({
     Record<number, WalletCapabilities> | undefined
   >()
 
-  const { chain, address, connector, isConnected } = useAccount()
+  const { address, isConnected } = useAppKitAccount()
+  const { chain, connector } = useAccount()
 
   const supportedChains = useMemo(
     () =>
@@ -51,7 +53,7 @@ export function useWagmiAvailableCapabilities({
 
   useEffect(() => {
     if (isConnected && connector && address && chain) {
-      fetchProviderAndAccountCapabilities(address, connector, chain)
+      fetchProviderAndAccountCapabilities(address as Address, connector, chain)
     }
   }, [connector, address, chain, isConnected])
 
@@ -83,7 +85,7 @@ export function useWagmiAvailableCapabilities({
       return supportedMethods.includes(method)
     }
 
-    return Boolean(provider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(method))
+    return Boolean(provider?.session?.namespaces?.['eip155']?.methods?.includes(method))
   }
 
   useEffect(() => {

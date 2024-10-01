@@ -71,6 +71,7 @@ import type { WuiWalletImage } from '../composites/wui-wallet-image/index.js'
 import type { WuiFlex } from '../layout/wui-flex/index.js'
 import type { WuiGrid } from '../layout/wui-grid/index.js'
 import type { WuiSeparator } from '../layout/wui-separator/index.js'
+import type { WuiAlertBar } from '../composites/wui-alertbar/index.js'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type CustomElement<E> = Partial<E & { children?: any; onClick: any }>
@@ -136,6 +137,7 @@ declare global {
       'wui-search-bar': CustomElement<WuiSearchBar>
       'wui-select': CustomElement<WuiSelect>
       'wui-snackbar': CustomElement<WuiSnackbar>
+      'wui-alertbar': CustomElement<WuiAlertBar>
       'wui-tabs': CustomElement<WuiTabs>
       'wui-tag': CustomElement<WuiTag>
       'wui-token-button': CustomElement<WuiTokenButton>

@@ -5,7 +5,7 @@ import type {
   SIWESession,
   SIWEVerifyMessageArgs
 } from '../core/utils/TypeUtils.js'
-import { Web3ModalSIWEClient } from '../src/client.js'
+import { AppKitSIWEClient } from '../src/client.js'
 export {
   getAddressFromMessage,
   getChainIdFromMessage,
@@ -18,17 +18,17 @@ export { formatMessage, getDidAddress, getDidChainId } from '@walletconnect/util
 export { SIWEController, type SIWEControllerClient } from '../core/controller/SIWEController.js'
 export * from '../core/utils/TypeUtils.js'
 export type {
+  AppKitSIWEClient,
   SIWEClientMethods,
   SIWEConfig,
   SIWECreateMessageArgs,
   SIWESession,
-  SIWEVerifyMessageArgs,
-  Web3ModalSIWEClient
+  SIWEVerifyMessageArgs
 }
 
 export * from '../scaffold/partials/w3m-connecting-siwe/index.js'
 export * from '../scaffold/views/w3m-connecting-siwe-view/index.js'
 
 export function createSIWEConfig(siweConfig: SIWEConfig) {
-  return new Web3ModalSIWEClient(siweConfig)
+  return new AppKitSIWEClient(siweConfig)
 }

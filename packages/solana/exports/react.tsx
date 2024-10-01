@@ -1,67 +1,40 @@
 'use client'
 
-import { useSnapshot } from 'valtio'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
-import { getWeb3Modal } from '@web3modal/base/utils/library/react'
-import { AppKit, type CaipNetwork } from '@web3modal/base'
-import { SolanaWeb3JsClient } from '@web3modal/base/adapters/solana/web3js'
-import { SolStoreUtil } from '@web3modal/scaffold-utils/solana'
-import type {
-  Connection,
-  Provider,
-  SolStoreUtilState
-} from '@web3modal/base/adapters/solana/web3js'
-import type { SolanaAppKitOptions } from './options'
-
-// -- Configs -----------------------------------------------------------
-export { defaultSolanaConfig } from '@web3modal/base/adapters/solana/web3js'
+import { AppKit } from '@reown/appkit'
+import {
+  SolanaAdapter,
+  type Provider,
+  useAppKitConnection
+} from '@reown/appkit-adapter-solana/react'
+import { getAppKit } from '@reown/appkit/library/react'
+import type { SolanaAppKitOptions } from './options.js'
+import packageJson from '../package.json' assert { type: 'json' }
 
 // -- Types -------------------------------------------------------------------
 export type { SolanaAppKitOptions, Provider }
 
 // -- Setup -------------------------------------------------------------
-let appkit: AppKit<SolStoreUtilState, CaipNetwork> | undefined = undefined
-let solanaAdapter: SolanaWeb3JsClient | undefined = undefined
+let appkit: AppKit | undefined = undefined
+let solanaAdapter: SolanaAdapter | undefined = undefined
 
-export function createWeb3Modal(options: SolanaAppKitOptions) {
-  solanaAdapter = new SolanaWeb3JsClient({
-    solanaConfig: options.solanaConfig,
-    chains: options.chains,
-    wallets: options.wallets,
-    projectId: options.projectId,
-    defaultChain: options.defaultChain
+export function createAppKit(options: SolanaAppKitOptions) {
+  solanaAdapter = new SolanaAdapter({
+    wallets: options.wallets
   })
-  appkit = new AppKit<SolStoreUtilState, CaipNetwork>({
+  appkit = new AppKit({
     ...options,
-    defaultChain: solanaAdapter.defaultChain,
-    adapters: [solanaAdapter],
-    sdkType: 'w3m',
-    sdkVersion: `react-solana-${ConstantsUtil.VERSION}`
+    sdkVersion: `react-solana-${packageJson.version}`,
+    adapters: [solanaAdapter]
   })
-  getWeb3Modal(appkit)
+  getAppKit(appkit)
 
   return appkit
 }
 
 // -- Hooks -------------------------------------------------------------------
-export function useWeb3ModalProvider(): {
-  walletProvider: Provider | undefined
-  connection: Connection | undefined
-} {
-  const state = useSnapshot(SolStoreUtil.state)
-
-  return {
-    walletProvider: state.provider,
-    connection: state.connection
-  } as {
-    walletProvider: Provider | undefined
-    connection: Connection | undefined
-  }
-}
-
 export function useDisconnect() {
-  function disconnect() {
-    solanaAdapter?.disconnect()
+  async function disconnect() {
+    await solanaAdapter?.connectionControllerClient?.disconnect()
   }
 
   return {
@@ -69,20 +42,10 @@ export function useDisconnect() {
   }
 }
 
-export function useWeb3ModalAccount() {
-  const { address, isConnected, chainId, currentChain } = useSnapshot(SolStoreUtil.state)
-
-  return {
-    address,
-    isConnected,
-    currentChain,
-    chainId
-  }
-}
-
 export {
-  useWeb3ModalTheme,
-  useWeb3Modal,
-  useWeb3ModalState,
-  useWeb3ModalEvents
-} from '@web3modal/base/utils/library/react'
+  useAppKitTheme,
+  useAppKit,
+  useAppKitState,
+  useAppKitEvents
+} from '@reown/appkit/library/react'
+export { useAppKitConnection }

@@ -7,15 +7,16 @@ import {
   CoreHelperUtil,
   ConstantsUtil as CoreConstantsUtil,
   EventsController,
-  OptionsController
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+  OptionsController,
+  ChainController
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 const TABS = 3
 const TABS_PADDING = 48
@@ -39,13 +40,15 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private smartAccountDeployed = AccountController.state.smartAccountDeployed
 
-  @state() private network = NetworkController.state.caipNetwork
+  @state() private network = ChainController.state.activeCaipNetwork
 
   @state() private currentTab = AccountController.state.currentTab
 
   @state() private tokenBalance = AccountController.state.tokenBalance
 
   @state() private preferredAccountType = AccountController.state.preferredAccountType
+
+  @state() private features = OptionsController.state.features
 
   public constructor() {
     super()
@@ -65,9 +68,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           }
         })
       ],
-      NetworkController.subscribeKey('caipNetwork', val => {
-        this.network = val
-      })
+      ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val)),
+      OptionsController.subscribeKey('features', val => (this.features = val))
     )
     this.watchSwapValues()
   }
@@ -147,9 +149,9 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   // -- Private ------------------------------------------- //
   private swapsTemplate() {
-    const { enableSwaps } = OptionsController.state
+    const swaps = this.features?.swaps
 
-    if (!enableSwaps) {
+    if (!swaps) {
       return null
     }
 

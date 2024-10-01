@@ -1,5 +1,10 @@
-import { AssetUtil, ConnectionController, EventsController, ThemeController } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import {
+  AssetUtil,
+  ConnectionController,
+  EventsController,
+  ThemeController
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
@@ -53,7 +58,7 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
       // This setTimeout needed to avoid the beginning of the animation from not starting to resize immediately and some weird svg errors
       this.timeout = setTimeout(() => {
         this.ready = true
-      }, 0)
+      }, 200)
     }
   }
 
