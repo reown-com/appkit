@@ -6,6 +6,7 @@ import type {
   AddPermissionRequest,
   AddPermissionResponse
 } from './TypeUtils.js'
+import { assertAddPermissionResponse } from '../helper/index.js'
 
 // -- Custom Error Class --------------------------------------------------- //
 export class CoSignerApiError extends Error {
@@ -76,7 +77,7 @@ export class CosignerService {
   async addPermission(address: string, data: AddPermissionRequest): Promise<AddPermissionResponse> {
     const url = `${this.baseUrl}/${encodeURIComponent(address)}`
 
-    return await sendCoSignerRequest<
+    const response = await sendCoSignerRequest<
       AddPermissionRequest,
       AddPermissionResponse,
       { projectId: string }
@@ -86,6 +87,9 @@ export class CosignerService {
       queryParams: { projectId: this.projectId },
       headers: { 'Content-Type': 'application/json' }
     })
+    assertAddPermissionResponse(response)
+
+    return response
   }
 
   async activatePermissions(

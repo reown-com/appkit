@@ -50,11 +50,11 @@ function ConnectedTestContent({
     try {
       const chainId = parseInt(grantedPermissions.chainId, 16)
       if (!chainId) {
-        throw new Error('Chain ID not available for granted permissions')
+        throw new Error('Chain ID not available in granted permissions')
       }
       const chain = getChain(chainId)
       if (!chain) {
-        throw new Error('Invalid chain')
+        throw new Error('Unknown chainId')
       }
       if (!privateKey) {
         throw new Error(`Unable to get dApp private key`)

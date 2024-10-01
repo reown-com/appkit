@@ -49,7 +49,7 @@ function ConnectedTestContent({
     try {
       const chainId = parseInt(grantedPermissions.chainId, 16)
       if (!chainId) {
-        throw new Error('Chain ID not available for granted permissions')
+        throw new Error('Chain ID not available in granted permissions')
       }
       const chain = getChain(chainId)
       if (!chain) {

@@ -1,6 +1,7 @@
 import { ZodError } from 'zod'
 import { ERROR_MESSAGES, SmartSessionGrantPermissionsRequestSchema } from '../schema/index.js'
 import {
+  type AddPermissionResponse,
   type KeyType,
   type SmartSessionGrantPermissionsRequest,
   type WalletGrantPermissionsResponse
@@ -118,5 +119,49 @@ export function updateRequestSigner(
 
     default:
       throw new Error(ERROR_MESSAGES.UNSUPPORTED_SIGNER_TYPE)
+  }
+}
+
+/**
+ * Asserts that the given response is of type AddPermissionResponse.
+ *
+ * This function performs runtime checks to ensure that the response
+ * matches the expected structure. It verifies that:
+ * - The response is an object and not null.
+ * - The `pci` property is a string.
+ * - The `key` property is an object containing:
+ *   - `type`: A valid KeyType ('secp256k1' or 'secp256r1').
+ *   - `publicKey`: A string that starts with '0x'.
+ *
+ * If any of these checks fail, an error is thrown with a descriptive message.
+ *
+ * @param response - The response object to validate.
+ * @throws {Error} If the response does not match the expected structure.
+ */
+export function assertAddPermissionResponse(
+  response: unknown
+): asserts response is AddPermissionResponse {
+  if (typeof response !== 'object' || response === null) {
+    throw new Error('Response is not an object')
+  }
+
+  const { pci, key } = response as Record<string, unknown>
+
+  if (typeof pci !== 'string') {
+    throw new Error('pci is not a string')
+  }
+
+  if (typeof key !== 'object' || key === null) {
+    throw new Error('key is not an object')
+  }
+
+  const { type, publicKey } = key as Record<string, unknown>
+
+  if (type !== 'secp256k1' && type !== 'secp256r1') {
+    throw new Error('Invalid key type')
+  }
+
+  if (typeof publicKey !== 'string' || !publicKey.startsWith('0x')) {
+    throw new Error('Invalid public key format')
   }
 }

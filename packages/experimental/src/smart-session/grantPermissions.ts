@@ -38,10 +38,7 @@ export async function grantPermissions(
   const addPermissionResponse = await cosignerService.addPermission(activeCaipAddress, request)
 
   // Update request signer with the cosigner key
-  updateRequestSigner(request, {
-    type: 'secp256k1',
-    publicKey: addPermissionResponse.key.publicKey
-  })
+  updateRequestSigner(request, addPermissionResponse.key)
 
   // Fetch the ConnectionController client and grant permissions
   const connectionControllerClient = ConnectionController._getClient('eip155')

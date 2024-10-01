@@ -60,7 +60,13 @@ describe('CoSigner API Tests', () => {
     const mockHeaders = { 'Content-Type': 'application/json' }
 
     it('should successfully send a request and return the response', async () => {
-      const mockResponse = { pci: 'test-pci', key: '0xtest-key' }
+      const mockResponse = {
+        pci: 'test-pci',
+        key: {
+          type: 'secp256k1',
+          publicKey: '0xtest-key'
+        }
+      }
       mock.onPost(mockUrl).reply(200, mockResponse)
 
       const response = await sendCoSignerRequest({
@@ -103,7 +109,13 @@ describe('CoSigner API Tests', () => {
   describe('CosignerService', () => {
     describe('addPermission', () => {
       it('should successfully add a permission', async () => {
-        const mockResponse = { pci: 'test-pci', key: '0xtest-key' }
+        const mockResponse = {
+          pci: 'test-pci',
+          key: {
+            type: 'secp256k1',
+            publicKey: '0xtest-key'
+          }
+        }
         mock
           .onPost(`${ConstantsUtil.COSIGNER_BASE_URL}/${encodeURIComponent(mockAddress)}`)
           .reply(200, mockResponse)
