@@ -50,7 +50,6 @@ async function signUserOperationWithPasskey(args: {
   const authenticatorData = usersPasskeySignature.webauthn.authenticatorData
   const clientDataJSON = usersPasskeySignature.webauthn.clientDataJSON
   const responseTypeLocation = usersPasskeySignature.webauthn.typeIndex
-  // Const userVerificationRequired = usersPasskeySignature.webauthn.userVerificationRequired
   const r = usersPasskeySignature.signature.r
   const s = usersPasskeySignature.signature.s
 
@@ -69,13 +68,13 @@ async function signUserOperationWithPasskey(args: {
   return passkeySignature
 }
 
-export async function executeActionsWithPasskeyAndCosignerPermissions(args: {
+export async function executeActionsWithPasskey(args: {
   actions: Call[]
   passkeyId: string
   chain: Chain
   accountAddress: `0x${string}`
   permissionsContext: string
-}): Promise<`0x${string}`> {
+}): Promise<string[]> {
   const { actions, passkeyId, chain, accountAddress, permissionsContext } = args
 
   if (!permissionsContext) {
@@ -119,13 +118,13 @@ export async function executeActionsWithPasskeyAndCosignerPermissions(args: {
   return sendUserOpResponse
 }
 
-export async function executeActionsWithECDSAAndCosignerPermissions(args: {
+export async function executeActionsWithECDSAKey(args: {
   actions: Call[]
   ecdsaPrivateKey: `0x${string}`
   chain: Chain
   accountAddress: `0x${string}`
   permissionsContext: string
-}): Promise<`0x${string}`> {
+}): Promise<string[]> {
   const { ecdsaPrivateKey, actions, chain, accountAddress, permissionsContext } = args
   if (!permissionsContext) {
     throw new Error('No permissions available')

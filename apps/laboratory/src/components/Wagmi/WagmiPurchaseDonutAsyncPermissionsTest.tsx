@@ -1,18 +1,38 @@
 import { Button, Flex, Stack, Text } from '@chakra-ui/react'
-import { useAccount, useReadContract } from 'wagmi'
+import { useReadContract } from 'wagmi'
 import { useState } from 'react'
 import { useChakraToast } from '../Toast'
 import { encodeFunctionData, parseEther } from 'viem'
 import { abi as donutContractAbi, address as donutContractaddress } from '../../utils/DonutContract'
 import { useLocalEcdsaKey } from '../../context/LocalEcdsaKeyContext'
 import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
-import { executeActionsWithECDSAAndCosignerPermissions } from '../../utils/ERC7715Utils'
+import { executeActionsWithECDSAKey } from '../../utils/ERC7715Utils'
 import { getChain } from '../../utils/NetworksUtil'
+import type { SmartSessionGrantPermissionsResponse } from '@reown/appkit-experimental/smart-session'
 
 export function WagmiPurchaseDonutAsyncPermissionsTest() {
+  const { smartSession } = useERC7715Permissions()
+
+  if (smartSession?.type !== 'async' || !smartSession.grantedPermissions?.context) {
+    return (
+      <Text fontSize="md" color="yellow">
+        Dapp does not have the permissions
+      </Text>
+    )
+  }
+
+  return <ConnectedTestContent grantedPermissions={smartSession.grantedPermissions} />
+}
+
+function ConnectedTestContent({
+  grantedPermissions
+}: {
+  grantedPermissions: SmartSessionGrantPermissionsResponse
+}) {
   const { privateKey } = useLocalEcdsaKey()
-  const { smartSessionResponse } = useERC7715Permissions()
-  const { address } = useAccount()
+  const toast = useChakraToast()
+  const [isTransactionPending, setTransactionPending] = useState<boolean>(false)
+
   const {
     data: donutsOwned,
     refetch: fetchDonutsOwned,
@@ -22,16 +42,13 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
     abi: donutContractAbi,
     address: donutContractaddress,
     functionName: 'getBalance',
-    args: [address || '0x']
+    args: [grantedPermissions.address]
   })
-
-  const [isTransactionPending, setTransactionPending] = useState<boolean>(false)
-  const toast = useChakraToast()
 
   async function onPurchaseDonutWithPermissions() {
     setTransactionPending(true)
     try {
-      const chainId = smartSessionResponse?.chainId
+      const chainId = parseInt(grantedPermissions.chainId, 16)
       if (!chainId) {
         throw new Error('Chain ID not available for granted permissions')
       }
@@ -41,9 +58,6 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
       }
       if (!privateKey) {
         throw new Error(`Unable to get dApp private key`)
-      }
-      if (!smartSessionResponse?.response?.context) {
-        throw Error('No permissions context available')
       }
 
       const purchaseDonutCallData = encodeFunctionData({
@@ -58,12 +72,12 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
           data: purchaseDonutCallData
         }
       ]
-      const txHash = await executeActionsWithECDSAAndCosignerPermissions({
+      const txHash = await executeActionsWithECDSAKey({
         actions: purchaseDonutCallDataExecution,
         chain,
         ecdsaPrivateKey: privateKey as `0x${string}`,
-        accountAddress: address as `0x${string}`,
-        permissionsContext: smartSessionResponse.response.context
+        accountAddress: grantedPermissions.address,
+        permissionsContext: grantedPermissions.context
       })
       if (txHash) {
         toast({
@@ -82,18 +96,11 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
     }
     setTransactionPending(false)
   }
-  if (!smartSessionResponse) {
-    return (
-      <Text fontSize="md" color="yellow">
-        Dapp does not have the permissions
-      </Text>
-    )
-  }
 
   return (
-    <Stack direction={['column', 'column', 'row']}>
+    <Stack direction={['column']}>
       <Button
-        isDisabled={!smartSessionResponse}
+        isDisabled={!grantedPermissions}
         isLoading={isTransactionPending}
         onClick={onPurchaseDonutWithPermissions}
       >
@@ -104,7 +111,7 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
           <Text>Fetching donuts...</Text>
         ) : (
           <>
-            <Text marginRight="5px">Crypto donuts left:</Text>
+            <Text marginRight="5px">Crypto donuts purchased:</Text>
             <Text>{donutsOwned?.toString()}</Text>
           </>
         )}

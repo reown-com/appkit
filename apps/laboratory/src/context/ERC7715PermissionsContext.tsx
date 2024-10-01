@@ -1,37 +1,37 @@
 /* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 import React, { type ReactNode } from 'react'
 import { createContext } from 'react'
-import { GRANTED_PERMISSIONS_KEY, removeLocalStorageItem } from '../utils/LocalStorage'
+import { SMART_SESSION_KEY, removeLocalStorageItem } from '../utils/LocalStorage'
 import { useLocalStorageState } from '../hooks/useLocalStorageState'
 import type { SmartSessionGrantPermissionsResponse } from '@reown/appkit-experimental/smart-session'
 
 export type ERC7715PermissionsContextType = {
   projectId: string
-  smartSessionResponse:
+  smartSession:
     | {
-        response: SmartSessionGrantPermissionsResponse | undefined
-        chainId: number | undefined
+        grantedPermissions: SmartSessionGrantPermissionsResponse
+        type: 'async' | 'sync'
       }
     | undefined
-  setSmartSessionResponse: React.Dispatch<
+  setSmartSession: React.Dispatch<
     React.SetStateAction<
       | {
-          response: SmartSessionGrantPermissionsResponse | undefined
-          chainId: number | undefined
+          grantedPermissions: SmartSessionGrantPermissionsResponse
+          type: 'async' | 'sync'
         }
       | undefined
     >
   >
-  clearSmartSessionResponse: () => void
+  clearSmartSession: () => void
 }
 function noop() {
   console.warn('WagmiPermissionsAsyncContext used outside of provider')
 }
 export const ERC7715PermissionsContext = createContext<ERC7715PermissionsContextType>({
   projectId: '',
-  clearSmartSessionResponse: noop,
-  smartSessionResponse: undefined,
-  setSmartSessionResponse: noop
+  clearSmartSession: noop,
+  smartSession: undefined,
+  setSmartSession: noop
 })
 
 interface ERC7715PermissionsProviderProps {
@@ -43,25 +43,25 @@ export function ERC7715PermissionsProvider({ children }: ERC7715PermissionsProvi
   if (!projectId) {
     throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
   }
-  const [smartSessionResponse, setSmartSessionResponse] = useLocalStorageState<
+  const [smartSession, setSmartSession] = useLocalStorageState<
     | {
-        response: SmartSessionGrantPermissionsResponse | undefined
-        chainId: number | undefined
+        grantedPermissions: SmartSessionGrantPermissionsResponse
+        type: 'async' | 'sync'
       }
     | undefined
-  >(GRANTED_PERMISSIONS_KEY, undefined)
-  function clearSmartSessionResponse() {
-    removeLocalStorageItem(GRANTED_PERMISSIONS_KEY)
-    setSmartSessionResponse(undefined)
+  >(SMART_SESSION_KEY, undefined)
+  function clearSmartSession() {
+    removeLocalStorageItem(SMART_SESSION_KEY)
+    setSmartSession(undefined)
   }
 
   return (
     <ERC7715PermissionsContext.Provider
       value={{
         projectId,
-        smartSessionResponse,
-        setSmartSessionResponse,
-        clearSmartSessionResponse
+        smartSession,
+        setSmartSession,
+        clearSmartSession
       }}
     >
       {children}

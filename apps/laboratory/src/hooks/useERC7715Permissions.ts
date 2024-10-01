@@ -8,11 +8,11 @@ export function useERC7715Permissions() {
     throw new Error('useERC7715Permissions must be used within a ERC7715PermissionsProvider')
   }
 
-  const { smartSessionResponse, setSmartSessionResponse, clearSmartSessionResponse } = context
+  const { smartSession, setSmartSession, clearSmartSession } = context
 
   return {
-    clearSmartSessionResponse,
-    smartSessionResponse,
-    setSmartSessionResponse
+    clearSmartSession,
+    smartSession,
+    setSmartSession
   }
 }

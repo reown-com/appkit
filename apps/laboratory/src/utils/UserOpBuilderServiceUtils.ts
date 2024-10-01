@@ -1,4 +1,3 @@
-import axios, { AxiosError } from 'axios'
 import { bigIntReplacer } from '../utils/CommonUtils'
 import type { Address, Hex } from 'viem'
 import { USEROP_BUILDER_SERVICE_BASE_URL } from './ConstantsUtil'
@@ -86,7 +85,7 @@ export type SendPreparedCallsParams = {
   context: string
 }
 
-export type SendPreparedCallsReturnValue = `0x${string}`
+export type SendPreparedCallsReturnValue = string
 
 // Define a custom error type
 export class UserOpBuilderApiError extends Error {
@@ -99,48 +98,38 @@ export class UserOpBuilderApiError extends Error {
   }
 }
 
-// Function to send requests to the CoSigner API
-async function sendUserOpBuilderRequest<
-  TRequest,
-  TResponse extends object | string,
-  TQueryParams extends Record<string, string> = Record<string, never>
->(args: {
+async function jsonRpcRequest<TParams, TResult>(
+  method: string,
+  params: TParams,
   url: string
-  headers: Record<string, string>
-  data: TRequest
-  queryParams?: TQueryParams
-  transformRequest?: (data: TRequest) => unknown
-}): Promise<TResponse> {
-  const { url, data, queryParams, headers, transformRequest } = args
-  const transformedData = transformRequest ? transformRequest(data) : data
+): Promise<TResult> {
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(
+      {
+        jsonrpc: '2.0',
+        id: '1',
+        method,
+        params
+      },
+      bigIntReplacer
+    )
+  })
 
-  try {
-    const response = await axios.post<TResponse | ErrorResponse>(url, transformedData, {
-      params: queryParams,
-      headers
-    })
-
-    // Check for error inside response data in case of custom error shape
-    if (typeof response.data === 'object' && 'error' in response.data) {
-      throw new Error(response.data.error)
-    }
-
-    return response.data
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      const axiosError = error as AxiosError
-      if (axiosError.response) {
-        throw new UserOpBuilderApiError(
-          axiosError.response.status,
-          JSON.stringify(axiosError.response.data)
-        )
-      } else {
-        throw new UserOpBuilderApiError(500, 'Network error')
-      }
-    }
-    // Re-throw if it's not an Axios error
-    throw error
+  if (!response.ok) {
+    throw new UserOpBuilderApiError(response.status, await response.text())
   }
+
+  const data = await response.json()
+
+  if ('error' in data) {
+    throw new UserOpBuilderApiError(500, JSON.stringify(data.error))
+  }
+
+  return data.result
 }
 
 export async function prepareCalls(args: PrepareCallsParams): Promise<PrepareCallsReturnValue[]> {
@@ -148,37 +137,29 @@ export async function prepareCalls(args: PrepareCallsParams): Promise<PrepareCal
   if (!projectId) {
     throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
   }
-  const response = await sendUserOpBuilderRequest<PrepareCallsParams[], PrepareCallsReturnValue[]>({
-    url: `${USEROP_BUILDER_SERVICE_BASE_URL}/prepareCalls?projectId=${projectId}`,
-    data: [args],
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    transformRequest: data => JSON.stringify(data, bigIntReplacer)
-  })
 
-  return response
+  const url = `${USEROP_BUILDER_SERVICE_BASE_URL}?projectId=${projectId}`
+
+  return jsonRpcRequest<PrepareCallsParams[], PrepareCallsReturnValue[]>(
+    'wallet_prepareCalls',
+    [args],
+    url
+  )
 }
 
 export async function sendPreparedCalls(
   args: SendPreparedCallsParams
-): Promise<SendPreparedCallsReturnValue> {
+): Promise<SendPreparedCallsReturnValue[]> {
   const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
   if (!projectId) {
     throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
   }
 
-  const response = await sendUserOpBuilderRequest<
-    SendPreparedCallsParams[],
-    SendPreparedCallsReturnValue
-  >({
-    url: `${USEROP_BUILDER_SERVICE_BASE_URL}/sendPreparedCalls?projectId=${projectId}`,
-    data: [args],
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    transformRequest: data => JSON.stringify(data, bigIntReplacer)
-  })
+  const url = `${USEROP_BUILDER_SERVICE_BASE_URL}?projectId=${projectId}`
 
-  return response
+  return jsonRpcRequest<SendPreparedCallsParams[], SendPreparedCallsReturnValue[]>(
+    'wallet_sendPreparedCalls',
+    [args],
+    url
+  )
 }

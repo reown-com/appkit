@@ -54,8 +54,7 @@ function ConnectedTestContent({
 }) {
   const [isRequestPermissionLoading, setRequestPermissionLoading] = useState<boolean>(false)
   const { passkey } = usePasskey()
-  const { clearSmartSessionResponse, setSmartSessionResponse, smartSessionResponse } =
-    useERC7715Permissions()
+  const { clearSmartSession, setSmartSession, smartSession } = useERC7715Permissions()
   const toast = useChakraToast()
 
   const onRequestPermissions = useCallback(async () => {
@@ -93,9 +92,9 @@ function ConnectedTestContent({
         ...purchaseDonutPermissions
       }
       const response = await grantPermissions(grantPurchaseDonutPermissions)
-      setSmartSessionResponse({
-        chainId: parseInt(chainId.toString(), 10),
-        response
+      setSmartSession({
+        type: 'sync',
+        grantedPermissions: response
       })
       toast({
         type: 'success',
@@ -118,15 +117,15 @@ function ConnectedTestContent({
       <Button
         data-testid="request-permissions-button"
         onClick={onRequestPermissions}
-        isDisabled={Boolean(isRequestPermissionLoading || Boolean(smartSessionResponse))}
+        isDisabled={Boolean(isRequestPermissionLoading || Boolean(smartSession))}
         isLoading={isRequestPermissionLoading}
       >
         Request Permissions
       </Button>
       <Button
-        data-test-id="clear-permissions-button"
-        onClick={clearSmartSessionResponse}
-        isDisabled={!smartSessionResponse}
+        data-test-id="clear-smart-session-button"
+        onClick={clearSmartSession}
+        isDisabled={!smartSession}
       >
         Clear Permissions
       </Button>

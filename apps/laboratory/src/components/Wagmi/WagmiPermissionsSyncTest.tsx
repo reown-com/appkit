@@ -2,6 +2,7 @@ import { Box, Card, CardBody, CardHeader, Heading, Stack, StackDivider } from '@
 import { WagmiRequestPermissionsSyncTest } from './WagmiRequestPermissionsSyncTest'
 import { WagmiPurchaseDonutSyncPermissionsTest } from './WagmiPurchaseDonutSyncPermissionsTest'
 import { WagmiCreatePasskeySignerTest } from './WagmiCreatePasskeySignerTest'
+import { SmartSessionGrantedPermissionsInfo } from '../SmartSessionGrantedPermissionsInfo'
 
 export function WagmiPermissionsSyncTest() {
   return (
@@ -11,6 +12,12 @@ export function WagmiPermissionsSyncTest() {
       </CardHeader>
       <CardBody>
         <Stack divider={<StackDivider />} spacing="4">
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Existing Session Information
+            </Heading>
+            <SmartSessionGrantedPermissionsInfo />
+          </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               New Passkey

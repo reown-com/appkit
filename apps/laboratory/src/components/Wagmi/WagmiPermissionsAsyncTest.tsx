@@ -1,6 +1,7 @@
 import { Box, Card, CardBody, CardHeader, Heading, Stack, StackDivider } from '@chakra-ui/react'
 import { WagmiRequestPermissionsAsyncTest } from './WagmiRequestPermissionsAsyncTest'
 import { WagmiPurchaseDonutAsyncPermissionsTest } from './WagmiPurchaseDonutAsyncPermissionsTest'
+import { SmartSessionGrantedPermissionsInfo } from '../SmartSessionGrantedPermissionsInfo'
 
 export function WagmiPermissionsAsyncTest() {
   return (
@@ -10,6 +11,12 @@ export function WagmiPermissionsAsyncTest() {
       </CardHeader>
       <CardBody>
         <Stack divider={<StackDivider />} spacing="4">
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Existing Session Information
+            </Heading>
+            <SmartSessionGrantedPermissionsInfo />
+          </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Request Permissions
