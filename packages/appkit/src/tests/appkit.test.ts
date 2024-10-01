@@ -1,26 +1,26 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { AppKit } from '../client'
+import type { CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
-  NetworkController,
-  ModalController,
-  ThemeController,
-  PublicStateController,
-  SnackController,
-  RouterController,
-  OptionsController,
+  AssetUtil,
   BlockchainApiController,
+  ChainController,
   ConnectionController,
+  ConnectorController,
   EnsController,
   EventsController,
+  ModalController,
+  NetworkController,
+  OptionsController,
+  PublicStateController,
+  RouterController,
+  SnackController,
+  ThemeController,
   type AccountType,
   type CombinedProvider,
-  AssetUtil,
-  ConnectorController,
-  ChainController,
   type Connector
 } from '@reown/appkit-core'
-import type { CaipNetwork } from '@reown/appkit-common'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { AppKit } from '../client'
 import { mockOptions } from './mocks/Options'
 
 // Mock all controllers and UniversalAdapterClient

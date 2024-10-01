@@ -1,3 +1,4 @@
+import { ConstantsUtil } from '@reown/appkit-common'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 import {
   ApiController,
@@ -8,7 +9,6 @@ import {
   OptionsController
 } from '../../exports/index.js'
 import { api } from '../../src/controllers/ApiController.js'
-import { ConstantsUtil } from '@reown/appkit-common'
 
 // -- Constants ----------------------------------------------------------------
 const chain = ConstantsUtil.CHAIN.EVM
@@ -582,11 +582,14 @@ describe('ApiController', () => {
       .spyOn(ApiController, 'fetchConnectorImages')
       .mockResolvedValue()
 
-    const fetchAnalyticsSpy = vi.spyOn(ApiController, 'fetchProjectConfig')
+    const fetchProjectConfigSpy = vi.spyOn(ApiController, 'fetchProjectConfig').mockResolvedValue({
+      isAnalyticsEnabled: true,
+      isAppKitAuthEnabled: false
+    })
 
     ApiController.prefetch()
 
-    expect(fetchAnalyticsSpy).not.toHaveBeenCalled()
+    expect(fetchProjectConfigSpy).not.toHaveBeenCalled()
     expect(fetchFeaturedSpy).toHaveBeenCalledOnce()
     expect(fetchNetworkImagesSpy).toHaveBeenCalledOnce()
     expect(recommendedWalletsSpy).toHaveBeenCalledOnce()
@@ -604,14 +607,14 @@ describe('ApiController', () => {
       .spyOn(ApiController, 'fetchConnectorImages')
       .mockResolvedValue()
 
-    const fetchAnalyticsSpy = vi.spyOn(ApiController, 'fetchProjectConfig').mockResolvedValue({
+    const fetchProjectConfigSpy = vi.spyOn(ApiController, 'fetchProjectConfig').mockResolvedValue({
       isAnalyticsEnabled: true,
       isAppKitAuthEnabled: false
     })
 
     ApiController.prefetch()
 
-    expect(fetchAnalyticsSpy).toHaveBeenCalledOnce()
+    expect(fetchProjectConfigSpy).toHaveBeenCalledOnce()
     expect(fetchSpy).toHaveBeenCalledOnce()
     expect(fetchNetworkImagesSpy).toHaveBeenCalledOnce()
     expect(recommendedWalletsSpy).toHaveBeenCalledOnce()

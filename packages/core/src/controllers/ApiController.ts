@@ -278,7 +278,7 @@ export const ApiController = {
 
   async fetchProjectConfig() {
     const { isAnalyticsEnabled, isAppKitAuthEnabled } = await api.get<ApiGetProjectConfigResponse>({
-      path: '/getAnalyticsConfig',
+      path: '/getProjectConfig',
       headers: ApiController._getApiHeaders()
     })
 
