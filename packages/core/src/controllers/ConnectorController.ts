@@ -38,10 +38,16 @@ export const ConnectorController = {
        * Check more about this issue on https://valtio.dev/docs/api/basic/proxy#Gotchas
        */
       try {
-        return Boolean(proxy(connector))
+        const canProxyConnector = Boolean(proxy(connector))
+
+        if (!canProxyConnector) {
+          throw new Error('Connector is not available')
+        }
+
+        return true
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error('ConnectorController.setConnectors: Not possible to use connector', {
+        console.error('ConnectorController.setConnectors: Not possible to add connector', {
           connector,
           error
         })
