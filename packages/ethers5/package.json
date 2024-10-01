@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-ethers5",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
