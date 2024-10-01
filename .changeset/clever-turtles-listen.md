@@ -40,8 +40,8 @@ Introduced debug mode. This is useful for seeing UI alerts while debugging.
 **Example usage**
 
 ```ts
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { createAppKit } from '@reown/appkit/react'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { mainnet } from '@reown/appkit/networks'
 
 const wagmiAdapter = new WagmiAdapter({
