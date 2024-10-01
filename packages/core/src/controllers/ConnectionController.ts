@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref } from 'valtio/vanilla'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
