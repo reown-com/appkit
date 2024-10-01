@@ -144,8 +144,12 @@ async function sendUserOpBuilderRequest<
 }
 
 export async function prepareCalls(args: PrepareCallsParams): Promise<PrepareCallsReturnValue[]> {
+  const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
+  if (!projectId) {
+    throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
+  }
   const response = await sendUserOpBuilderRequest<PrepareCallsParams[], PrepareCallsReturnValue[]>({
-    url: `${USEROP_BUILDER_SERVICE_BASE_URL}/build`,
+    url: `${USEROP_BUILDER_SERVICE_BASE_URL}/prepareCalls?projectId=${projectId}`,
     data: [args],
     headers: {
       'Content-Type': 'application/json'
@@ -163,11 +167,12 @@ export async function sendPreparedCalls(
   if (!projectId) {
     throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
   }
+
   const response = await sendUserOpBuilderRequest<
     SendPreparedCallsParams[],
     SendPreparedCallsReturnValue
   >({
-    url: `${USEROP_BUILDER_SERVICE_BASE_URL}/sendUserOp?projectId=${projectId}`,
+    url: `${USEROP_BUILDER_SERVICE_BASE_URL}/sendPreparedCalls?projectId=${projectId}`,
     data: [args],
     headers: {
       'Content-Type': 'application/json'
