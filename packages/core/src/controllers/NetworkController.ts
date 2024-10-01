@@ -7,6 +7,7 @@ import { NetworkUtil, type Chain } from '@web3modal/common'
 import { ChainController } from './ChainController.js'
 import { PublicStateController } from './PublicStateController.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
+import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 
 // -- Types --------------------------------------------- //
 export interface NetworkControllerClient {
@@ -283,6 +284,19 @@ export const NetworkController = {
     )
 
     return Boolean(smartAccountEnabledNetworks?.includes(networkId))
+  },
+
+  checkIfNamesSupported() {
+    const chain = ChainController.state.activeChain
+
+    if (!chain) {
+      return false
+    }
+
+    const activeCaipNetwork = ChainController.state.chains.get(chain)?.networkState?.caipNetwork
+
+    // Names are only supported on EVM networks
+    return activeCaipNetwork?.chain === CommonConstantsUtil.CHAIN.EVM
   },
 
   resetNetwork() {

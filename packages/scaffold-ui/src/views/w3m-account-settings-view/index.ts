@@ -162,7 +162,8 @@ export class W3mAccountSettingsView extends LitElement {
   private chooseNameButtonTemplate() {
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
-    if (!authConnector || type !== 'AUTH' || this.profileName) {
+    const hasNetworkSupport = NetworkController.checkIfNamesSupported()
+    if (!hasNetworkSupport || !authConnector || type !== 'AUTH' || this.profileName) {
       return null
     }
 
