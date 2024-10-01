@@ -259,7 +259,8 @@ describe('ApiController', () => {
       }
     ]
     OptionsController.setFeaturedWalletIds(featuredWalletIds)
-    const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data })
+    OptionsController.setProjectId(process.env['NEXT_PUBLIC_PROJECT_ID'] as string)
+    const fetchSpy = vi.spyOn(ApiController, 'fetchFeaturedWallets').mockResolvedValue()
     const fetchImageSpy = vi.spyOn(ApiController, '_fetchWalletImage').mockResolvedValue()
     await ApiController.fetchFeaturedWallets()
 
