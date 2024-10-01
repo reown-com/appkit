@@ -83,7 +83,10 @@ export class W3mEmailLoginWidget extends LitElement {
 
       ${(socials && socials.length) || emailShowWallets || !multipleConnectors || !enableWallets
         ? null
-        : html`<wui-flex data-testid="w3m-email-login-or-separator" .padding=${['xxs', '0', '0', '0'] as const}>
+        : html`<wui-flex
+            data-testid="w3m-email-login-or-separator"
+            .padding=${['xxs', '0', '0', '0'] as const}
+          >
             <wui-separator text="or"></wui-separator>
           </wui-flex>`}
     `
