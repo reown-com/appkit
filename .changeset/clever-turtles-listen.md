@@ -35,7 +35,7 @@
 '@reown/appkit-wallet': patch
 ---
 
-Introduced debug mode. This is useful for seeing UI alerts while debugging.
+Introducing debug mode. This is useful for seeing UI alerts while debugging.
 
 **Example usage**
 
