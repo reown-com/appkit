@@ -32,7 +32,23 @@ export const ConnectorController = {
 
   setConnectors(connectors: ConnectorControllerState['connectors']) {
     connectors.forEach(this.syncIfAuthConnector)
-    state.unMergedConnectors = [...state.unMergedConnectors, ...connectors]
+    state.unMergedConnectors = [...state.unMergedConnectors, ...connectors].filter(connector => {
+      /**
+       * This is a fix for non-serializable objects that may prevent all the connectors in the list from being displayed
+       * Check more about this issue on https://valtio.dev/docs/api/basic/proxy#Gotchas
+       */
+      try {
+        return Boolean(proxy(connector))
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('ConnectorController.setConnectors: Not possible to use connector', {
+          connector,
+          error
+        })
+
+        return false
+      }
+    })
     state.connectors = this.mergeMultiChainConnectors(state.unMergedConnectors)
   },
 
