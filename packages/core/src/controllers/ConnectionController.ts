@@ -64,6 +64,8 @@ const state = proxy<ConnectionControllerState>({
   buffering: false,
   status: 'disconnected'
 })
+
+// eslint-disable-next-line init-declarations
 let wcConnectionPromise: Promise<void> | undefined
 // -- Controller ---------------------------------------- //
 export const ConnectionController = {
@@ -84,44 +86,36 @@ export const ConnectionController = {
   },
 
   async connectWalletConnect() {
-    if (state.status === 'connected') {
-      return
-    }
-
     StorageUtil.setConnectedConnector('WALLET_CONNECT')
-    console.log('connectWalletConnect', {
-      pairingExpiry: state.wcPairingExpiry
-    })
 
     if (wcConnectionPromise) {
-      console.log('Waiting for existing connection')
-      await wcConnectionPromise
-
-      console.log('Waiting for existing connection: done')
+      try {
+        await wcConnectionPromise
+      } catch (error) {
+        /* Empty */
+      }
+      wcConnectionPromise = undefined
 
       return
     }
 
     if (Date.now() < (state?.wcPairingExpiry || 0)) {
-      console.log('Pairing still valid')
       const link = state.wcUri
       state.wcUri = link
 
       return
     }
-    wcConnectionPromise = new Promise(async resolve => {
-      await ChainController.state?.universalAdapter?.connectionControllerClient?.connectWalletConnect?.(
-        uri => {
+    wcConnectionPromise = new Promise(async (resolve, reject) => {
+      await ChainController.state?.universalAdapter?.connectionControllerClient
+        ?.connectWalletConnect?.(uri => {
           state.wcUri = uri
           state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
-        }
-      )
+        })
+        .catch(reject)
       resolve()
     })
-    console.log('starting connection')
     this.state.status = 'connecting'
     await wcConnectionPromise
-    console.log('connection complete')
     wcConnectionPromise = undefined
     state.wcPairingExpiry = undefined
     this.state.status = 'connected'
