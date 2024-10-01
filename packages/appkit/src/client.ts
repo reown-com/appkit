@@ -474,18 +474,22 @@ export class AppKit {
       adapter => adapter.chainNamespace === ConstantsUtil.CHAIN.EVM
     )
 
-    const { isAnalyticsEnabled, isAppKitAuthEnabled } = await ApiController.fetchProjectConfig()
-
     // Only set the analytics state if it's not already set through the SDK config
     if (options.features?.analytics === undefined) {
-      OptionsController.setFeatures({ analytics: isAnalyticsEnabled })
+      const projectCloudConfig = await ApiController.fetchProjectConfig()
+      OptionsController.setFeatures({ analytics: projectCloudConfig?.isAppKitAuthEnabled })
+
+      if (options.enableAuth === undefined) {
+        OptionsController.setEnableAuth(projectCloudConfig?.isAnalyticsEnabled)
+      }
     }
 
     // Set the SIWE client for EVM chains
     if (evmAdapter) {
-      // Only set the AppKit Auth state if it's not already set through the SDK config
-      if (options.enableAuth === undefined) {
-        OptionsController.setEnableAuth(isAppKitAuthEnabled)
+      // Only set the AppKit Auth state if it's not already set through the SDK config or while fetching the project config
+      if (options.enableAuth === undefined && OptionsController.state.enableAuth === undefined) {
+        const projectCloudConfig = await ApiController.fetchProjectConfig()
+        OptionsController.setEnableAuth(projectCloudConfig?.isAppKitAuthEnabled)
       }
 
       if (options.siweConfig || OptionsController.state.enableAuth) {

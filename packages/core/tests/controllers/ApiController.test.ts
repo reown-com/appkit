@@ -571,33 +571,7 @@ describe('ApiController', () => {
   })
 
   // Prefetch
-  it('should prefetch without analytics', () => {
-    OptionsController.setFeatures({ analytics: false })
-    const fetchFeaturedSpy = vi.spyOn(ApiController, 'fetchFeaturedWallets').mockResolvedValue()
-    const fetchNetworkImagesSpy = vi.spyOn(ApiController, 'fetchNetworkImages').mockResolvedValue()
-    const recommendedWalletsSpy = vi
-      .spyOn(ApiController, 'fetchRecommendedWallets')
-      .mockResolvedValue()
-    const fetchConnectorImagesSpy = vi
-      .spyOn(ApiController, 'fetchConnectorImages')
-      .mockResolvedValue()
-
-    const fetchProjectConfigSpy = vi.spyOn(ApiController, 'fetchProjectConfig').mockResolvedValue({
-      isAnalyticsEnabled: true,
-      isAppKitAuthEnabled: false
-    })
-
-    ApiController.prefetch()
-
-    expect(fetchProjectConfigSpy).not.toHaveBeenCalled()
-    expect(fetchFeaturedSpy).toHaveBeenCalledOnce()
-    expect(fetchNetworkImagesSpy).toHaveBeenCalledOnce()
-    expect(recommendedWalletsSpy).toHaveBeenCalledOnce()
-    expect(fetchConnectorImagesSpy).toHaveBeenCalledOnce()
-  })
-
-  it('should prefetch with analytics', () => {
-    OptionsController.setFeatures({ analytics: true })
+  it('should prefetch', () => {
     const fetchSpy = vi.spyOn(ApiController, 'fetchFeaturedWallets').mockResolvedValue()
     const fetchNetworkImagesSpy = vi.spyOn(ApiController, 'fetchNetworkImages').mockResolvedValue()
     const recommendedWalletsSpy = vi
@@ -607,28 +581,21 @@ describe('ApiController', () => {
       .spyOn(ApiController, 'fetchConnectorImages')
       .mockResolvedValue()
 
-    const fetchProjectConfigSpy = vi.spyOn(ApiController, 'fetchProjectConfig').mockResolvedValue({
-      isAnalyticsEnabled: true,
-      isAppKitAuthEnabled: false
-    })
-
-    ApiController.prefetch()
-
-    expect(fetchProjectConfigSpy).toHaveBeenCalledOnce()
     expect(fetchSpy).toHaveBeenCalledOnce()
     expect(fetchNetworkImagesSpy).toHaveBeenCalledOnce()
     expect(recommendedWalletsSpy).toHaveBeenCalledOnce()
     expect(fetchConnectorImagesSpy).toHaveBeenCalledOnce()
   })
 
-  // Fetch analytics config - somehow this is failing
-  it.skip('should fetch analytics config', async () => {
-    const data = { isAnalyticsEnabled: true }
-    const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data })
+  it('should fetch analytics config', async () => {
+    const fetchProjectConfigSpy = vi.spyOn(ApiController, 'fetchProjectConfig').mockResolvedValue({
+      isAnalyticsEnabled: true,
+      isAppKitAuthEnabled: false
+    })
 
     await ApiController.fetchProjectConfig()
 
-    expect(fetchSpy).toHaveBeenCalledWith({
+    expect(fetchProjectConfigSpy).toHaveBeenCalledWith({
       path: '/getProjectConfig',
       headers: ApiController._getApiHeaders()
     })
