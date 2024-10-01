@@ -1,5 +1,3 @@
-/* eslint-disable capitalized-comments */
-/* eslint-disable multiline-comment-style */
 import { Button, Flex, Stack, Text } from '@chakra-ui/react'
 import { useAccount, useReadContract } from 'wagmi'
 import { useState } from 'react'
@@ -44,12 +42,10 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
       if (!privateKey) {
         throw new Error(`Unable to get dApp private key`)
       }
-      if (!smartSessionResponse) {
-        throw Error('No permissions available')
+      if (!smartSessionResponse?.response?.context) {
+        throw Error('No permissions context available')
       }
-      // if (!pci) {
-      //   throw Error('No WC cosigner data(PCI) available')
-      // }
+
       const purchaseDonutCallData = encodeFunctionData({
         abi: donutContractAbi,
         functionName: 'purchase',
@@ -62,13 +58,19 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
           data: purchaseDonutCallData
         }
       ]
+      const sendEthCallData = [
+        {
+          to: '0xF892dc5bBef591D61dD6d75Dfc963c371E723bA4' as `0x${string}`,
+          value: parseEther('0.00000001'),
+          data: '0x' as `0x${string}`
+        }
+      ]
       const txHash = await executeActionsWithECDSAAndCosignerPermissions({
-        actions: purchaseDonutCallDataExecution,
+        actions: sendEthCallData,
         chain,
         ecdsaPrivateKey: privateKey as `0x${string}`,
         accountAddress: address as `0x${string}`,
-        permissionsContext: (smartSessionResponse?.response?.context || '') as `0x${string}`,
-        pci: '0x'
+        permissionsContext: smartSessionResponse.response.context
       })
       if (txHash) {
         toast({

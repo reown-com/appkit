@@ -1,6 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable multiline-comment-style */
-/* eslint-disable capitalized-comments */
 import { abi as donutContractAbi, address as donutContractAddress } from './DonutContract'
 import { encodeAbiParameters, hashMessage, toHex, type Chain } from 'viem'
 import { prepareCalls, sendPreparedCalls, type Call } from './UserOpBuilderServiceUtils'
@@ -77,13 +74,10 @@ export async function executeActionsWithPasskeyAndCosignerPermissions(args: {
   passkeyId: string
   chain: Chain
   accountAddress: `0x${string}`
-  permissionsContext: `0x${string}`
-  pci: string
+  permissionsContext: string
 }): Promise<`0x${string}`> {
-  const { actions, passkeyId, chain, accountAddress, permissionsContext, pci } = args
-  if (!pci) {
-    throw new Error('No WC_COSIGNER PCI data available')
-  }
+  const { actions, passkeyId, chain, accountAddress, permissionsContext } = args
+
   if (!permissionsContext) {
     throw new Error('No permissions available')
   }
@@ -130,13 +124,9 @@ export async function executeActionsWithECDSAAndCosignerPermissions(args: {
   ecdsaPrivateKey: `0x${string}`
   chain: Chain
   accountAddress: `0x${string}`
-  permissionsContext: `0x${string}`
-  pci: string
+  permissionsContext: string
 }): Promise<`0x${string}`> {
-  const { ecdsaPrivateKey, actions, chain, accountAddress, permissionsContext, pci } = args
-  if (!pci) {
-    throw new Error('No WC_COSIGNER PCI data available')
-  }
+  const { ecdsaPrivateKey, actions, chain, accountAddress, permissionsContext } = args
   if (!permissionsContext) {
     throw new Error('No permissions available')
   }

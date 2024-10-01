@@ -1,9 +1,7 @@
-/* eslint-disable no-console */
 import { Button, Stack, Text } from '@chakra-ui/react'
-import { useAccount } from 'wagmi'
 import { useCallback, useState } from 'react'
 import { useChakraToast } from '../Toast'
-import { toHex, type Address, type Chain } from 'viem'
+import { toHex, type Address } from 'viem'
 import { EIP_7715_RPC_METHODS } from '../../utils/EIP5792Utils'
 import {
   useWagmiAvailableCapabilities,
@@ -13,7 +11,7 @@ import { useLocalEcdsaKey } from '../../context/LocalEcdsaKeyContext'
 import { bigIntReplacer } from '../../utils/CommonUtils'
 import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
 import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
-import { useAppKitAccount } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 import {
   grantPermissions,
   type SmartSessionGrantPermissionsRequest
@@ -25,9 +23,9 @@ export function WagmiRequestPermissionsAsyncTest() {
   })
   const { address, isConnected } = useAppKitAccount()
 
-  const { chain } = useAccount()
+  const { chainId } = useAppKitNetwork()
 
-  if (!isConnected || !provider || !address || !chain) {
+  if (!isConnected || !provider || !address || !chainId) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet not connected
@@ -42,15 +40,15 @@ export function WagmiRequestPermissionsAsyncTest() {
     )
   }
 
-  return <ConnectedTestContent chain={chain} provider={provider} address={address as Address} />
+  return <ConnectedTestContent chainId={chainId} provider={provider} address={address as Address} />
 }
 
 function ConnectedTestContent({
-  chain,
+  chainId,
   provider,
   address
 }: {
-  chain: Chain
+  chainId: string | number
   provider: Provider
   address: Address
 }) {
@@ -69,7 +67,7 @@ function ConnectedTestContent({
       const grantPurchaseDonutPermissions: SmartSessionGrantPermissionsRequest = {
         // Adding 24 hours to the current time
         expiry: Math.floor(Date.now() / 1000) + 24 * 60 * 60,
-        chainId: toHex(chain.id),
+        chainId: toHex(chainId),
         address,
         signer: {
           type: 'key',
@@ -83,7 +81,7 @@ function ConnectedTestContent({
       }
       const response = await grantPermissions(grantPurchaseDonutPermissions)
       setSmartSessionResponse({
-        chainId: chain.id,
+        chainId: parseInt(chainId.toString(), 10),
         response
       })
       toast({
@@ -100,7 +98,7 @@ function ConnectedTestContent({
     } finally {
       setRequestPermissionLoading(false)
     }
-  }, [signer, provider, address, chain, grantPermissions, toast])
+  }, [signer, provider, address, chainId, grantPermissions, toast])
 
   return (
     <Stack direction={['column', 'column', 'row']}>

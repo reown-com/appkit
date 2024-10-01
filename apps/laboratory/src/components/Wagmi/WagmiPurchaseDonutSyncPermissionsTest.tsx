@@ -1,5 +1,3 @@
-/* eslint-disable multiline-comment-style */
-/* eslint-disable capitalized-comments */
 import { Button, Flex, Stack, Text } from '@chakra-ui/react'
 import { useAccount, useReadContract } from 'wagmi'
 import { useState } from 'react'
@@ -8,7 +6,6 @@ import { encodeFunctionData, parseEther } from 'viem'
 import { abi as donutContractAbi, address as donutContractaddress } from '../../utils/DonutContract'
 import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
 import { usePasskey } from '../../context/PasskeyContext'
-import { sepolia } from 'viem/chains'
 import { executeActionsWithPasskeyAndCosignerPermissions } from '../../utils/ERC7715Utils'
 import { getChain } from '../../utils/NetworksUtil'
 
@@ -42,12 +39,9 @@ export function WagmiPurchaseDonutSyncPermissionsTest() {
       if (!chain) {
         throw new Error('Invalid chain')
       }
-      if (!smartSessionResponse) {
-        throw Error('No permissions available')
+      if (!smartSessionResponse?.response?.context) {
+        throw Error('No permissions context available')
       }
-      // if (!pci) {
-      //   throw Error('No WC cosigner data(PCI) available')
-      // }
 
       const purchaseDonutCallData = encodeFunctionData({
         abi: donutContractAbi,
@@ -63,11 +57,10 @@ export function WagmiPurchaseDonutSyncPermissionsTest() {
       ]
       const txHash = await executeActionsWithPasskeyAndCosignerPermissions({
         actions: purchaseDonutCallDataExecution,
-        chain: sepolia,
+        chain,
         passkeyId,
         accountAddress: address as `0x${string}`,
-        permissionsContext: (smartSessionResponse?.response?.context || '') as `0x${string}`,
-        pci: '0x'
+        permissionsContext: smartSessionResponse.response.context
       })
       if (txHash) {
         toast({
