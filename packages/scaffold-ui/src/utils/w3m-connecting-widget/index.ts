@@ -75,6 +75,10 @@ export class W3mConnectingWidget extends LitElement {
         ConnectionController.subscribeKey('buffering', val => (this.buffering = val))
       ]
     )
+    // The uri should be preloaded in the tg ios context so we can safely init as the subscribeKey won't trigger
+    if (CoreHelperUtil.isTelegram() && CoreHelperUtil.isIos() && ConnectionController.state.wcUri) {
+      this.onConnect?.()
+    }
   }
 
   public override firstUpdated() {
