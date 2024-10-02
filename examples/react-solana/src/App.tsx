@@ -1,17 +1,17 @@
-import { defaultSolanaConfig } from '@web3modal/solana/react'
 import {
-  createWeb3Modal,
-  useWeb3Modal,
-  useWeb3ModalEvents,
-  useWeb3ModalState,
-  useWeb3ModalTheme
-} from '@web3modal/solana/react'
+  createAppKit,
+  useAppKit,
+  useAppKitEvents,
+  useAppKitState,
+  useAppKitTheme
+} from '@reown/appkit-solana/react'
 import {
   PhantomWalletAdapter,
   HuobiWalletAdapter,
   SolflareWalletAdapter,
   TrustWalletAdapter
 } from '@solana/wallet-adapter-wallets'
+import { solana, solanaTestnet, solanaDevnet } from '@reown/appkit/networks'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -19,48 +19,19 @@ if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
 }
 
-const chains = [
-  {
-    chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-    name: 'Solana',
-    currency: 'SOL',
-    explorerUrl: 'https://solscan.io',
-    rpcUrl: 'https://rpc.walletconnect.org/v1'
-  },
-  {
-    chainId: '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
-    name: 'Solana Testnet',
-    currency: 'SOL',
-    explorerUrl: 'https://explorer.solana.com/?cluster=testnet',
-    rpcUrl: 'https://rpc.walletconnect.org/v1'
-  },
-  {
-    chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
-    name: 'Solana Devnet',
-    currency: 'SOL',
-    explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
-    rpcUrl: 'https://rpc.walletconnect.org/v1'
-  }
-]
+const networks = [solana, solanaTestnet, solanaDevnet]
 
-// 2. Create solanaConfig
-const solanaConfig = defaultSolanaConfig({
-  chains: chains,
-  projectId,
+// 3. Create modal
+createAppKit({
+  networks,
   metadata: {
     name: 'AppKit React Example',
     description: 'AppKit React Example',
     url: '',
     icons: []
-  }
-})
-
-// 3. Create modal
-createWeb3Modal({
-  solanaConfig,
+  },
   projectId,
   themeMode: 'light',
-  chains,
   wallets: [
     new HuobiWalletAdapter(),
     new PhantomWalletAdapter(),
@@ -75,10 +46,10 @@ createWeb3Modal({
 
 export default function App() {
   // 4. Use modal hook
-  const modal = useWeb3Modal()
-  const state = useWeb3ModalState()
-  const { themeMode, themeVariables, setThemeMode } = useWeb3ModalTheme()
-  const events = useWeb3ModalEvents()
+  const modal = useAppKit()
+  const state = useAppKitState()
+  const { themeMode, themeVariables, setThemeMode } = useAppKitTheme()
+  const events = useAppKitEvents()
 
   return (
     <>

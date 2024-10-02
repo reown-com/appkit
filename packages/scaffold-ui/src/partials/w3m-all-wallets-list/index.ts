@@ -1,11 +1,11 @@
-import type { WcWallet } from '@web3modal/core'
-import { ApiController, ConnectorController, RouterController } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import type { WcWallet } from '@reown/appkit-core'
+import { ApiController, ConnectorController, RouterController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
-import { markWalletsAsInstalled } from '../../utils/markWalletsAsInstalled.js'
+import { WalletUtil } from '../../utils/WalletUtil.js'
 
 // -- Helpers --------------------------------------------- //
 const PAGINATOR_ID = 'local-paginator'
@@ -94,7 +94,7 @@ export class W3mAllWalletsList extends LitElement {
 
   private walletsTemplate() {
     const wallets = [...this.featured, ...this.recommended, ...this.wallets]
-    const walletsWithInstalled = markWalletsAsInstalled(wallets)
+    const walletsWithInstalled = WalletUtil.markWalletsAsInstalled(wallets)
 
     return walletsWithInstalled.map(
       wallet => html`

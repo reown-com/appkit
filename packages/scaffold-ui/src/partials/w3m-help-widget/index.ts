@@ -1,5 +1,5 @@
-import type { VisualType } from '@web3modal/ui'
-import { customElement } from '@web3modal/ui'
+import type { VisualType } from '@reown/appkit-ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 

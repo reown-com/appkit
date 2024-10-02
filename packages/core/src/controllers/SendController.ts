@@ -1,15 +1,15 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
-import { type Balance } from '@web3modal/common'
-import { erc20ABI } from '@web3modal/common'
+import { type Balance, type CaipAddress } from '@reown/appkit-common'
+import { ContractUtil } from '@reown/appkit-common'
 import { RouterController } from './RouterController.js'
 import { AccountController } from './AccountController.js'
 import { ConnectionController } from './ConnectionController.js'
 import { SnackController } from './SnackController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { EventsController } from './EventsController.js'
-import { NetworkController } from './NetworkController.js'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 
@@ -93,6 +93,21 @@ export const SendController = {
   },
 
   sendToken() {
+    switch (ChainController.state.activeCaipNetwork?.chainNamespace) {
+      case 'eip155':
+        this.sendEvmToken()
+
+        return
+      case 'solana':
+        this.sendSolanaToken()
+
+        return
+      default:
+        throw new Error('Unsupported chain')
+    }
+  },
+
+  sendEvmToken() {
     if (this.state.token?.address && this.state.sendTokenAmount && this.state.receiverAddress) {
       EventsController.sendEvent({
         type: 'track',
@@ -103,7 +118,7 @@ export const SendController = {
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token.address,
           amount: this.state.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
+          network: ChainController.state.activeCaipNetwork?.id || ''
         }
       })
       this.sendERC20Token({
@@ -127,7 +142,7 @@ export const SendController = {
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol,
           amount: this.state.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
+          network: ChainController.state.activeCaipNetwork?.id || ''
         }
       })
       this.sendNativeToken({
@@ -171,7 +186,7 @@ export const SendController = {
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
+          network: ChainController.state.activeCaipNetwork?.id || ''
         }
       })
       this.resetSend()
@@ -185,7 +200,7 @@ export const SendController = {
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
-          network: NetworkController.state.caipNetwork?.id || ''
+          network: ChainController.state.activeCaipNetwork?.id || ''
         }
       })
       SnackController.showError('Something went wrong')
@@ -210,15 +225,17 @@ export const SendController = {
         params.receiverAddress &&
         params.tokenAddress
       ) {
+        const tokenAddress = CoreHelperUtil.getPlainAddress(
+          params.tokenAddress as CaipAddress
+        ) as `0x${string}`
+
         await ConnectionController.writeContract({
           fromAddress: AccountController.state.address as `0x${string}`,
-          tokenAddress: CoreHelperUtil.getPlainAddress(
-            params.tokenAddress as `${string}:${string}:${string}`
-          ) as `0x${string}`,
+          tokenAddress,
           receiverAddress: params.receiverAddress as `0x${string}`,
           tokenAmount: amount,
           method: 'transfer',
-          abi: erc20ABI
+          abi: ContractUtil.getERC20Abi(tokenAddress)
         })
         SnackController.showSuccess('Transaction started')
         this.resetSend()
@@ -226,6 +243,34 @@ export const SendController = {
     } catch (error) {
       SnackController.showError('Something went wrong')
     }
+  },
+
+  sendSolanaToken() {
+    if (!this.state.sendTokenAmount || !this.state.receiverAddress) {
+      SnackController.showError('Please enter a valid amount and receiver address')
+
+      return
+    }
+
+    RouterController.pushTransactionStack({
+      view: 'Account',
+      goBack: false
+    })
+
+    ConnectionController.sendTransaction({
+      chainNamespace: 'solana',
+      to: this.state.receiverAddress,
+      value: this.state.sendTokenAmount
+    })
+      .then(() => {
+        this.resetSend()
+        AccountController.fetchTokenBalance()
+      })
+      .catch(error => {
+        SnackController.showError('Failed to send transaction. Please try again.')
+        // eslint-disable-next-line no-console
+        console.error('SendController:sendToken - failed to send solana transaction', error)
+      })
   },
 
   resetSend() {

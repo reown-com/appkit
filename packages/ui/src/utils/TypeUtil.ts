@@ -171,9 +171,12 @@ export type IconType =
   | 'walletPlaceholder'
   | 'warningCircle'
   | 'x'
+  | 'info'
+  | 'exclamationTriangle'
 
 export type VisualType =
   | 'browser'
+  | 'meld'
   | 'coinbase'
   | 'dao'
   | 'defi'
@@ -194,6 +197,7 @@ export type VisualType =
   | 'stripe'
   | 'paypal'
   | 'pencil'
+  | 'solana'
 
 export type VisualSize = 'sm' | 'md' | 'lg'
 

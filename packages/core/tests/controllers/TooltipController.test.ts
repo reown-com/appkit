@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { TooltipController } from '../../index.js'
+import { TooltipController } from '../../exports/index.js'
 
 // -- Constants ----------------------------------------------------------------
 const mockTriggerRect = {

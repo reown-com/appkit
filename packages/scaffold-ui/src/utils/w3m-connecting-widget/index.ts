@@ -5,8 +5,8 @@ import {
   RouterController,
   SnackController,
   ThemeController
-} from '@web3modal/core'
-import type { IconType } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import type { IconType } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -75,6 +75,10 @@ export class W3mConnectingWidget extends LitElement {
         ConnectionController.subscribeKey('buffering', val => (this.buffering = val))
       ]
     )
+    // The uri should be preloaded in the tg ios context so we can safely init as the subscribeKey won't trigger
+    if (CoreHelperUtil.isTelegram() && CoreHelperUtil.isIos() && ConnectionController.state.wcUri) {
+      this.onConnect?.()
+    }
   }
 
   public override firstUpdated() {

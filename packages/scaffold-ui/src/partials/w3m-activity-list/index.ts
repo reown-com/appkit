@@ -1,20 +1,19 @@
-import { DateUtil } from '@web3modal/common'
-import type { Transaction, TransactionImage } from '@web3modal/common'
+import { DateUtil } from '@reown/appkit-common'
+import type { Transaction, TransactionImage } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
+  CoreHelperUtil,
   EventsController,
-  NetworkController,
   OptionsController,
   RouterController,
   TransactionsController
-} from '@web3modal/core'
-import { TransactionUtil, customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { TransactionUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import type { TransactionType } from '@web3modal/ui'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
-import { ConstantsUtil } from '@web3modal/common'
+import type { TransactionType } from '@reown/appkit-ui'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 import styles from './styles.js'
 
@@ -34,9 +33,7 @@ export class W3mActivityList extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public page: 'account' | 'activity' = 'activity'
 
-  @state() private isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
-
-  @state() private address: string | undefined = AccountController.state.address
+  @state() private caipAddress = ChainController.state.activeCaipAddress
 
   @state() private transactionsByYear = TransactionsController.state.transactionsByYear
 
@@ -52,19 +49,16 @@ export class W3mActivityList extends LitElement {
     TransactionsController.clearCursor()
     this.unsubscribe.push(
       ...[
-        ChainController.subscribeKey('activeChain', activeChain => {
-          this.isSolana = activeChain === ConstantsUtil.CHAIN.SOLANA
-        }),
-        AccountController.subscribe(val => {
-          if (val.isConnected) {
-            if (this.address !== val.address) {
-              this.address = val.address
+        ChainController.subscribeKey('activeCaipAddress', val => {
+          if (val) {
+            if (this.caipAddress !== val) {
               TransactionsController.resetTransactions()
-              TransactionsController.fetchTransactions(val.address)
+              TransactionsController.fetchTransactions(val)
             }
           }
+          this.caipAddress = val
         }),
-        NetworkController.subscribeKey('caipNetwork', () => {
+        ChainController.subscribeKey('activeCaipNetwork', () => {
           this.updateTransactionView()
         }),
         TransactionsController.subscribe(val => {
@@ -78,13 +72,6 @@ export class W3mActivityList extends LitElement {
   }
 
   public override firstUpdated() {
-    if (this.isSolana) {
-      this.loading = false
-      this.empty = true
-
-      return
-    }
-
     this.updateTransactionView()
     this.createPaginationObserver()
   }
@@ -106,12 +93,14 @@ export class W3mActivityList extends LitElement {
 
   // -- Private ------------------------------------------- //
   private updateTransactionView() {
-    const currentNetwork = NetworkController.state.caipNetwork?.id
+    const currentNetwork = ChainController.state.activeCaipNetwork?.id
     const lastNetworkInView = TransactionsController.state.lastNetworkInView
 
     if (lastNetworkInView !== currentNetwork) {
       TransactionsController.resetTransactions()
-      TransactionsController.fetchTransactions(this.address)
+      if (this.caipAddress) {
+        TransactionsController.fetchTransactions(CoreHelperUtil.getPlainAddress(this.caipAddress))
+      }
     }
     TransactionsController.setLastNetworkInView(currentNetwork)
   }
@@ -225,19 +214,6 @@ export class W3mActivityList extends LitElement {
   }
 
   private emptyStateActivity() {
-    const comingSoon = html`
-      <wui-text align="center" variant="paragraph-500" color="fg-100"
-        >Transaction history is coming soon!</wui-text
-      >
-    `
-    const empty = html` <wui-text align="center" variant="paragraph-500" color="fg-100"
-        >No Transactions yet</wui-text
-      >
-      <wui-text align="center" variant="small-500" color="fg-200"
-        >Start trading on dApps <br />
-        to grow your wallet!</wui-text
-      >`
-
     return html`<wui-flex
       class="emptyContainer"
       flexGrow="1"
@@ -257,24 +233,18 @@ export class W3mActivityList extends LitElement {
         borderColor="wui-color-bg-125"
       ></wui-icon-box>
       <wui-flex flexDirection="column" alignItems="center" gap="xs">
-        ${this.isSolana ? comingSoon : empty}
+        <wui-text align="center" variant="paragraph-500" color="fg-100"
+          >No Transactions yet</wui-text
+        >
+        <wui-text align="center" variant="small-500" color="fg-200"
+          >Start trading on dApps <br />
+          to grow your wallet!</wui-text
+        >
       </wui-flex>
     </wui-flex>`
   }
 
   private emptyStateAccount() {
-    const comingSoon = html`
-      <wui-text variant="paragraph-500" align="center" color="fg-100"
-        >Transaction history is coming soon!</wui-text
-      >
-    `
-    const empty = html` <wui-text variant="paragraph-500" align="center" color="fg-100"
-        >No activity yet</wui-text
-      >
-      <wui-text variant="small-400" align="center" color="fg-200"
-        >Your next transactions will appear here</wui-text
-      >`
-
     return html`<wui-flex
       class="contentContainer"
       alignItems="center"
@@ -296,7 +266,10 @@ export class W3mActivityList extends LitElement {
         justifyContent="center"
         flexDirection="column"
       >
-        ${this.isSolana ? comingSoon : empty}
+        <wui-text variant="paragraph-500" align="center" color="fg-100">No activity yet</wui-text>
+        <wui-text variant="small-400" align="center" color="fg-200"
+          >Your next transactions will appear here</wui-text
+        >
       </wui-flex>
       <wui-link @click=${this.onReceiveClick.bind(this)}>Trade</wui-link>
     </wui-flex>`
@@ -329,12 +302,12 @@ export class W3mActivityList extends LitElement {
 
     this.paginationObserver = new IntersectionObserver(([element]) => {
       if (element?.isIntersecting && !this.loading) {
-        TransactionsController.fetchTransactions(this.address)
+        TransactionsController.fetchTransactions(CoreHelperUtil.getPlainAddress(this.caipAddress))
         EventsController.sendEvent({
           type: 'track',
           event: 'LOAD_MORE_TRANSACTIONS',
           properties: {
-            address: this.address,
+            address: CoreHelperUtil.getPlainAddress(this.caipAddress),
             projectId,
             cursor: this.next,
             isSmartAccount:

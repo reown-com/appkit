@@ -1,7 +1,13 @@
-import { customElement } from '@web3modal/ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
-import { ConnectorController, RouterController } from '@web3modal/core'
+import {
+  ConnectionController,
+  ConnectorController,
+  CoreHelperUtil,
+  OptionsController,
+  RouterController
+} from '@reown/appkit-core'
 import { state } from 'lit/decorators/state.js'
 
 @customElement('w3m-connect-view')
@@ -14,10 +20,18 @@ export class W3mConnectView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private connectors = ConnectorController.state.connectors
 
+  @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
+
+  @state() private features = OptionsController.state.features
+
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
+      ConnectorController.subscribeKey('connectors', val => {
+        this.connectors = val
+        this.authConnector = this.connectors.find(c => c.type === 'AUTH')
+      }),
+      OptionsController.subscribeKey('features', val => (this.features = val))
     )
   }
 
@@ -39,10 +53,20 @@ export class W3mConnectView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private walletListTemplate() {
-    const authConnector = this.connectors.find(c => c.type === 'AUTH')
+    const socials = this.features?.socials
+    const emailShowWallets = this.features?.emailShowWallets
+    const enableWallets = OptionsController.state.enableWallets
 
-    if (authConnector?.socials) {
-      if (authConnector?.showWallets) {
+    if (!enableWallets) {
+      return null
+    }
+    // In tg ios context, we have to preload the connection uri so we can use it to deeplink on user click
+    if (CoreHelperUtil.isTelegram() && CoreHelperUtil.isIos()) {
+      ConnectionController.connectWalletConnect().catch(_e => ({}))
+    }
+
+    if (this.authConnector && socials) {
+      if (this.authConnector && emailShowWallets) {
         return html`
           <wui-flex flexDirection="column" gap="xs" .margin=${['xs', '0', '0', '0'] as const}>
             <w3m-connector-list></w3m-connector-list>

@@ -1,4 +1,4 @@
-import { customElement } from '@web3modal/ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 
 import styles from './styles.js'
@@ -8,10 +8,9 @@ import {
   ConnectorController,
   OptionsController,
   StorageUtil
-} from '@web3modal/core'
-import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
+} from '@reown/appkit-core'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { state } from 'lit/decorators.js'
-import { ConstantsUtil } from '@web3modal/scaffold-utils'
 import { WalletUtil } from '../../utils/WalletUtil.js'
 @customElement('w3m-connector-list')
 export class W3mConnectorList extends LitElement {
@@ -36,21 +35,16 @@ export class W3mConnectorList extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const {
-      custom,
-      recent,
-      announced,
-      coinbase,
-      injected,
-      multiChain,
-      recommended,
-      featured,
-      external
-    } = this.getConnectorsByType()
+    const { custom, recent, announced, injected, multiChain, recommended, featured, external } =
+      this.getConnectorsByType()
+
+    const enableWalletConnect = OptionsController.state.enableWalletConnect
 
     return html`
       <wui-flex flexDirection="column" gap="xs">
-        <w3m-connect-walletconnect-widget></w3m-connect-walletconnect-widget>
+        ${enableWalletConnect
+          ? html`<w3m-connect-walletconnect-widget></w3m-connect-walletconnect-widget>`
+          : null}
         ${recent.length ? html`<w3m-connect-recent-widget></w3m-connect-recent-widget>` : null}
         ${multiChain.length
           ? html`<w3m-connect-multi-chain-widget></w3m-connect-multi-chain-widget>`
@@ -65,7 +59,6 @@ export class W3mConnectorList extends LitElement {
           ? html`<w3m-connect-featured-widget></w3m-connect-featured-widget>`
           : null}
         ${custom?.length ? html`<w3m-connect-custom-widget></w3m-connect-custom-widget>` : null}
-        ${coinbase ? html`<w3m-connect-coinbase-widget></w3m-connect-coinbase-widget>` : null}
         ${external.length
           ? html`<w3m-connect-external-widget></w3m-connect-external-widget>`
           : null}
@@ -88,16 +81,12 @@ export class W3mConnectorList extends LitElement {
     const announced = this.connectors.filter(connector => connector.type === 'ANNOUNCED')
     const injected = this.connectors.filter(connector => connector.type === 'INJECTED')
     const external = this.connectors.filter(connector => connector.type === 'EXTERNAL')
-    const coinbase = this.connectors.find(
-      connector => connector.id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
-    )
     const isEVM = ChainController.state.activeChain === CommonConstantsUtil.CHAIN.EVM
     const includeAnnouncedAndInjected = isEVM ? OptionsController.state.enableEIP6963 : true
 
     return {
       custom,
       recent,
-      coinbase,
       external,
       multiChain,
       announced: includeAnnouncedAndInjected ? announced : [],

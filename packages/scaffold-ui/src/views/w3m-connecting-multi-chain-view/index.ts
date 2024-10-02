@@ -5,13 +5,14 @@ import {
   RouterController,
   SnackController,
   type Connector
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 
 import { html, LitElement } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 @customElement('w3m-connecting-multi-chain-view')
 export class W3mConnectingMultiChainView extends LitElement {
@@ -77,20 +78,21 @@ export class W3mConnectingMultiChainView extends LitElement {
 
   // Private Methods ------------------------------------- //
   private networksTemplate() {
-    return this.activeConnector?.providers?.map(
-      provider => html`
-        <wui-list-wallet
-          imageSrc=${ifDefined(AssetUtil.getChainImage(provider.chain))}
-          name=${provider.name}
-          @click=${() => this.onConnector(provider)}
-        ></wui-list-wallet>
-      `
+    return this.activeConnector?.connectors?.map(connector =>
+      connector.name
+        ? html`
+            <wui-list-wallet
+              imageSrc=${ifDefined(AssetUtil.getChainImage(connector.chain))}
+              name=${ConstantsUtil.CHAIN_NAME_MAP[connector.chain]}
+              @click=${() => this.onConnector(connector)}
+            ></wui-list-wallet>
+          `
+        : null
     )
   }
 
   private onConnector(provider: Connector) {
-    ChainController.setActiveChain(provider.chain)
-    const connector = this.activeConnector?.providers?.find(p => p.chain === provider.chain)
+    const connector = this.activeConnector?.connectors?.find(p => p.chain === provider.chain)
 
     if (!connector) {
       SnackController.showError('Failed to find connector')
@@ -98,14 +100,16 @@ export class W3mConnectingMultiChainView extends LitElement {
       return
     }
 
-    if (connector.type === 'WALLET_CONNECT') {
+    if (connector.id === 'walletConnect') {
       if (CoreHelperUtil.isMobile()) {
         RouterController.push('AllWallets')
       } else {
         RouterController.push('ConnectingWalletConnect')
       }
     } else {
-      RouterController.push('ConnectingExternal', { connector })
+      RouterController.push('ConnectingExternal', {
+        connector
+      })
     }
   }
 }

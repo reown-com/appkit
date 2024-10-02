@@ -1,14 +1,20 @@
-import { OptionsController, RouterUtil } from '@web3modal/core'
+import { ConstantsUtil } from '@reown/appkit-common'
+import { ChainController, OptionsController, RouterUtil } from '@reown/appkit-core'
 
 export const NetworkUtil = {
   onNetworkChange: async () => {
+    const isEIP155Namespace = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
+
     if (OptionsController.state.isSiweEnabled) {
-      const { SIWEController } = await import('@web3modal/siwe')
-      if (SIWEController.state._client?.options?.signOutOnNetworkChange) {
+      const { SIWEController } = await import('@reown/appkit-siwe')
+      const shouldSignOut =
+        SIWEController.state._client?.options?.signOutOnNetworkChange && isEIP155Namespace
+
+      if (shouldSignOut) {
         await SIWEController.signOut()
-      } else {
-        RouterUtil.navigateAfterNetworkSwitch()
       }
+
+      RouterUtil.navigateAfterNetworkSwitch()
     } else {
       RouterUtil.navigateAfterNetworkSwitch()
     }

@@ -22,7 +22,7 @@ emailSiweTest.beforeAll(async ({ browser, library }) => {
   context = await browser.newContext()
   const browserPage = await context.newPage()
 
-  page = new ModalWalletPage(browserPage, library, 'all')
+  page = new ModalWalletPage(browserPage, library, 'siwe')
   validator = new ModalWalletValidator(browserPage)
 
   await page.load()
@@ -65,31 +65,23 @@ emailSiweTest('it should reject sign', async () => {
   await validator.expectRejectedSign()
 })
 
-emailSiweTest('it should switch network and sign', async ({ library }) => {
+emailSiweTest('it should switch network and sign', async () => {
   let targetChain = 'Polygon'
-  await page.goToSettings()
   await page.switchNetwork(targetChain)
+  await validator.expectUnauthenticated()
   await page.promptSiwe()
   await page.approveSign()
-  if (library === 'wagmi') {
-    await page.goToSettings()
-  }
-  await validator.expectSwitchedNetwork(targetChain)
-  await page.closeModal()
+
   await page.sign()
   await page.approveSign()
   await validator.expectAcceptedSign()
 
   targetChain = 'Ethereum'
-  await page.goToSettings()
   await page.switchNetwork(targetChain)
+  await validator.expectUnauthenticated()
   await page.promptSiwe()
   await page.approveSign()
-  if (library === 'wagmi') {
-    await page.goToSettings()
-  }
-  await validator.expectSwitchedNetwork(targetChain)
-  await page.closeModal()
+
   await page.sign()
   await page.approveSign()
   await validator.expectAcceptedSign()

@@ -1,30 +1,63 @@
-import { testMExternal } from './shared/fixtures/w3m-external-fixture'
-import { testM, expect } from './shared/fixtures/w3m-fixture'
+import { test, type BrowserContext, type Page } from '@playwright/test'
+import { expect } from './shared/fixtures/w3m-fixture'
+import { ModalPage } from './shared/pages/ModalPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
+import { BASE_URL } from './shared/constants'
 
-testM.describe('Modal only tests', () => {
-  testM('Should be able to open modal', async ({ modalPage }) => {
-    await modalPage.page.getByTestId('connect-button').click()
-    await expect(modalPage.page.getByTestId('all-wallets')).toBeVisible()
-  })
+/* eslint-disable init-declarations */
+let modalPage: ModalPage
+let modalValidator: ModalValidator
+let context: BrowserContext
+let browserPage: Page
+/* eslint-enable init-declarations */
 
-  testM('Should be able to open modal with the open hook', async ({ modalPage }) => {
-    const openHookButton = modalPage.page.getByTestId('w3m-open-hook-button')
-    await openHookButton.click()
-    await expect(modalPage.page.getByTestId('all-wallets')).toBeVisible()
-  })
-
-  testM('Should show socials enabled by default', async ({ modalPage }) => {
-    const modalValidator = new ModalValidator(modalPage.page)
-    await modalPage.page.getByTestId('connect-button').click()
-    await modalValidator.expectSocialsVisible()
-  })
+// -- Setup --------------------------------------------------------------------
+const basicTest = test.extend<{ library: string }>({
+  library: ['wagmi', { option: true }]
 })
 
-testMExternal.describe('External connectors tests', () => {
-  testMExternal('Should show external connectors', async ({ modalPage }) => {
-    const modalValidator = new ModalValidator(modalPage.page)
-    await modalPage.page.getByTestId('connect-button').click()
-    await modalValidator.expectExternalVisible()
-  })
+basicTest.describe.configure({ mode: 'serial' })
+
+basicTest.beforeAll(async ({ browser, library }) => {
+  context = await browser.newContext()
+  browserPage = await context.newPage()
+
+  modalPage = new ModalPage(browserPage, library, 'default')
+  modalValidator = new ModalValidator(modalPage.page)
+
+  await modalPage.load()
+})
+
+basicTest.afterAll(async () => {
+  await modalPage.page.close()
+})
+
+// -- Tests --------------------------------------------------------------------
+basicTest('Should be able to open modal', async () => {
+  await modalPage.page.getByTestId('connect-button').click()
+  await expect(modalPage.page.getByTestId('all-wallets')).toBeVisible()
+  await modalPage.closeModal()
+})
+
+basicTest('Should be able to open modal with the open hook', async () => {
+  const openHookButton = modalPage.page.getByTestId('w3m-open-hook-button')
+  await openHookButton.click()
+  await expect(modalPage.page.getByTestId('all-wallets')).toBeVisible()
+  await modalPage.closeModal()
+})
+
+basicTest('Should show socials enabled by default', async () => {
+  await modalPage.page.getByTestId('connect-button').click()
+  await modalValidator.expectSocialsVisible()
+  await modalPage.closeModal()
+})
+
+basicTest('Should show external connectors', async ({ library }) => {
+  if (library !== 'wagmi') {
+    return
+  }
+
+  await modalPage.page.goto(`${BASE_URL}/library/external/`)
+  await modalPage.page.getByTestId('connect-button').click()
+  await modalValidator.expectExternalVisible()
 })

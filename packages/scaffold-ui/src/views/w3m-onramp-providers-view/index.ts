@@ -5,15 +5,15 @@ import {
   OnRampController,
   type OnRampProvider,
   RouterController,
-  NetworkController,
   BlockchainApiController,
-  EventsController
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+  EventsController,
+  ChainController
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
-import type { CoinbasePaySDKChainNameValues } from '@web3modal/core/src/utils/ConstantsUtil'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import type { CoinbasePaySDKChainNameValues } from '@reown/appkit-core'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 @customElement('w3m-onramp-providers-view')
 export class W3mOnRampProvidersView extends LitElement {
@@ -61,19 +61,23 @@ export class W3mOnRampProvidersView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onRampProvidersTemplate() {
-    return this.providers.map(
-      provider => html`
-        <w3m-onramp-provider-item
-          label=${provider.label}
-          name=${provider.name}
-          feeRange=${provider.feeRange}
-          @click=${() => {
-            this.onClickProvider(provider)
-          }}
-          ?disabled=${!provider.url}
-        ></w3m-onramp-provider-item>
-      `
-    )
+    return this.providers
+      .filter(provider =>
+        provider.supportedChains.includes(ChainController.state.activeChain ?? 'eip155')
+      )
+      .map(
+        provider => html`
+          <w3m-onramp-provider-item
+            label=${provider.label}
+            name=${provider.name}
+            feeRange=${provider.feeRange}
+            @click=${() => {
+              this.onClickProvider(provider)
+            }}
+            ?disabled=${!provider.url}
+          ></w3m-onramp-provider-item>
+        `
+      )
   }
 
   private onClickProvider(provider: OnRampProvider) {
@@ -94,7 +98,7 @@ export class W3mOnRampProvidersView extends LitElement {
 
   private async getCoinbaseOnRampURL() {
     const address = AccountController.state.address
-    const network = NetworkController.state.caipNetwork
+    const network = ChainController.state.activeCaipNetwork
 
     if (!address) {
       throw new Error('No address found')

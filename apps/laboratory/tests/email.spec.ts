@@ -1,8 +1,10 @@
 import { expect, test, type BrowserContext, type Page } from '@playwright/test'
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
-import { Email } from './shared/utils/email'
 import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
+import { Email } from './shared/utils/email'
 import { SECURE_WEBSITE_URL } from './shared/constants'
+import { mainnet, polygon, solana, solanaTestnet } from '@reown/appkit/networks'
+import type { CaipNetworkId } from '@reown/appkit'
 
 /* eslint-disable init-declarations */
 let page: ModalWalletPage
@@ -19,7 +21,6 @@ const emailTest = test.extend<{ library: string }>({
 emailTest.describe.configure({ mode: 'serial' })
 
 emailTest.beforeAll(async ({ browser, library }) => {
-  emailTest.setTimeout(300000)
   context = await browser.newContext()
   browserPage = await context.newPage()
 
@@ -64,27 +65,25 @@ emailTest('it should reject sign', async () => {
 })
 
 emailTest('it should switch network and sign', async ({ library }) => {
-  let targetChain = 'Polygon'
-  await page.goToSettings()
+  let targetChain = library === 'solana' ? 'Solana Testnet' : 'Polygon'
+  let caipNetworkId = library === 'solana' ? solanaTestnet.id : polygon.id
+
   await page.switchNetwork(targetChain)
-  if (library === 'wagmi') {
-    // In wagmi, after switching network, it closes the modal
-    await page.goToSettings()
-  }
-  await validator.expectSwitchedNetwork(targetChain)
+  await validator.expectSwitchedNetworkOnNetworksView(targetChain)
   await page.closeModal()
+  await validator.expectCaipAddressHaveCorrectNetworkId(caipNetworkId as CaipNetworkId)
+
   await page.sign()
   await page.approveSign()
   await validator.expectAcceptedSign()
 
-  targetChain = 'Ethereum'
-  await page.goToSettings()
+  targetChain = library === 'solana' ? 'Solana' : 'Ethereum'
+  caipNetworkId = library === 'solana' ? solana.id : mainnet.id
   await page.switchNetwork(targetChain)
-  // After switching network, it closes the modal
-  await page.goToSettings()
-
-  await validator.expectSwitchedNetwork(targetChain)
+  await validator.expectSwitchedNetworkOnNetworksView(targetChain)
   await page.closeModal()
+  await validator.expectCaipAddressHaveCorrectNetworkId(caipNetworkId as CaipNetworkId)
+
   await page.sign()
   await page.approveSign()
   await validator.expectAcceptedSign()

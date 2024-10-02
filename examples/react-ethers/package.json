@@ -1,14 +1,15 @@
 {
   "name": "@examples/react-ethers",
   "private": true,
-  "version": "5.1.4",
+  "version": "1.0.5",
   "scripts": {
     "dev": "vite --port 3012",
     "build": "vite build"
   },
   "dependencies": {
-    "@web3modal/ethers": "workspace:*",
-    "ethers": "6.9.0",
+    "@reown/appkit-adapter-ethers": "workspace:*",
+    "@reown/appkit": "workspace:*",
+    "ethers": "6.13.2",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },

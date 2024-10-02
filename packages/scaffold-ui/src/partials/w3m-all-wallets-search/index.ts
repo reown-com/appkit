@@ -1,10 +1,10 @@
-import type { WcWallet } from '@web3modal/core'
-import { ApiController, ConnectorController, RouterController } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import type { WcWallet } from '@reown/appkit-core'
+import { ApiController, ConnectorController, RouterController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { markWalletsAsInstalled } from '../../utils/markWalletsAsInstalled.js'
+import { WalletUtil } from '../../utils/WalletUtil.js'
 
 @customElement('w3m-all-wallets-search')
 export class W3mAllWalletsSearch extends LitElement {
@@ -39,7 +39,7 @@ export class W3mAllWalletsSearch extends LitElement {
 
   private walletsTemplate() {
     const { search } = ApiController.state
-    const wallets = markWalletsAsInstalled(search)
+    const wallets = WalletUtil.markWalletsAsInstalled(search)
 
     if (!search.length) {
       return html`

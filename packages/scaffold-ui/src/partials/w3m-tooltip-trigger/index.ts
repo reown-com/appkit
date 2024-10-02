@@ -1,8 +1,8 @@
 import { html, LitElement } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import { customElement } from '@web3modal/ui'
+import { customElement } from '@reown/appkit-ui'
 import styles from './styles.js'
-import { ModalController, RouterController, TooltipController } from '@web3modal/core'
+import { ModalController, RouterController, TooltipController } from '@reown/appkit-core'
 
 @customElement('w3m-tooltip-trigger')
 export class WuiTooltipTrigger extends LitElement {

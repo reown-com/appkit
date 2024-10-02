@@ -1,6 +1,6 @@
 import { Mailsac } from '@mailsac/api'
 const EMAIL_CHECK_INTERVAL = 2500
-const MAX_EMAIL_CHECK = 48
+const MAX_EMAIL_CHECK = 96
 const EMAIL_APPROVE_BUTTON_TEXT = 'Approve this login'
 const APPROVE_URL_REGEX = /https:\/\/register.*/u
 const OTP_CODE_REGEX = /\d{3}\s?\d{3}/u
@@ -85,7 +85,6 @@ export class Email {
 
     const email = `w3m-w${id}@${domain}`
     // eslint-disable-next-line no-console
-    console.log(`allocating email: ${email}`)
 
     return email
   }

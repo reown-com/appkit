@@ -1,19 +1,20 @@
-import type { CaipNetwork } from '@web3modal/core'
+import { type CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
   AssetUtil,
   ChainController,
+  ConnectorController,
   CoreHelperUtil,
   EventsController,
   NetworkController,
-  RouterController
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+  RouterController,
+  StorageUtil
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
-import { NetworkUtil } from '../../utils/NetworkUtil.js'
 
 @customElement('w3m-networks-view')
 export class W3mNetworksView extends LitElement {
@@ -22,7 +23,7 @@ export class W3mNetworksView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public network = NetworkController.state.caipNetwork
+  @state() public network = ChainController.state.activeCaipNetwork
 
   @state() public requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
 
@@ -34,7 +35,7 @@ export class W3mNetworksView extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
-      NetworkController.subscribeKey('caipNetwork', val => (this.network = val))
+      ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val))
     )
   }
 
@@ -100,8 +101,6 @@ export class W3mNetworksView extends LitElement {
   private networksTemplate() {
     const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
     const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
-    const supportsAllNetworks = NetworkController.state.supportsAllNetworks
-
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
       requestedCaipNetworks
@@ -123,44 +122,60 @@ export class W3mNetworksView extends LitElement {
           type="network"
           name=${network.name ?? network.id}
           @click=${() => this.onSwitchNetwork(network)}
-          .disabled=${!supportsAllNetworks &&
-          !approvedCaipNetworkIds?.includes(network.id) &&
-          network.chain === ChainController.state.activeChain}
+          .disabled=${this.getNetworkDisabled(network)}
           data-testid=${`w3m-network-switch-${network.name ?? network.id}`}
         ></wui-list-network>
       `
     )
   }
 
-  private async onSwitchNetwork(network: CaipNetwork) {
-    const isConnected = AccountController.state.isConnected
-    const isNetworkChainConnected = AccountController.getChainIsConnected(network.chain)
-    const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
-    const supportsAllNetworks = NetworkController.state.supportsAllNetworks
-    const caipNetwork = NetworkController.state.caipNetwork
+  private getNetworkDisabled(network: CaipNetwork) {
+    const networkNamespace = network.chainNamespace
+    const isNamespaceConnected = AccountController.getCaipAddress(networkNamespace)
+    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworks()
+    const supportsAllNetworks =
+      ChainController.getNetworkProp('supportsAllNetworks', networkNamespace) !== false
+    const type = StorageUtil.getConnectedConnector()
+    const authConnector = ConnectorController.getAuthConnector()
+    const isConnectedWithAuth = type === 'AUTH' && authConnector
+
+    if (!isNamespaceConnected || supportsAllNetworks || isConnectedWithAuth) {
+      return false
+    }
+
+    return !approvedCaipNetworkIds?.includes(network.id)
+  }
+
+  private onSwitchNetwork(network: CaipNetwork) {
     const routerData = RouterController.state.data
+    const isSameNetwork = network.id === this.network?.id
 
-    if (isConnected && caipNetwork?.id !== network.id) {
-      if (!isNetworkChainConnected) {
-        RouterController.push('SwitchActiveChain', {
-          switchToChain: network.chain,
-          navigateTo: 'Connect',
-          navigateWithReplace: true
-        })
+    if (isSameNetwork) {
+      return
+    }
 
-        return
-      }
-      if (approvedCaipNetworkIds?.includes(network.id)) {
-        await NetworkController.switchActiveNetwork(network)
-        await NetworkUtil.onNetworkChange()
-      } else if (supportsAllNetworks) {
-        RouterController.push('SwitchNetwork', { ...routerData, network })
-      }
-    } else if (!isConnected) {
-      NetworkController.setActiveCaipNetwork(network)
-      if (!isNetworkChainConnected) {
-        RouterController.push('Connect')
-      }
+    const isDifferentNamespace = network.chainNamespace !== ChainController.state.activeChain
+    const isNewNetworkConnected = ChainController.getAccountProp(
+      'caipAddress',
+      network.chainNamespace
+    )
+    const isCurrentNetworkConnected = AccountController.state.caipAddress
+    const isAuthConnected = StorageUtil.getConnectedConnector() === 'AUTH'
+
+    if (
+      isDifferentNamespace &&
+      isCurrentNetworkConnected &&
+      !isNewNetworkConnected &&
+      !isAuthConnected
+    ) {
+      RouterController.push('SwitchActiveChain', {
+        switchToChain: network.chainNamespace,
+        navigateTo: 'Connect',
+        navigateWithReplace: true,
+        network
+      })
+    } else {
+      RouterController.push('SwitchNetwork', { ...routerData, network })
     }
   }
 }

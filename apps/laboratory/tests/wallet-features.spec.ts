@@ -65,14 +65,8 @@ walletFeaturesTest('it should initialize onramp as expected', async () => {
   await page.closeModal()
 })
 
-walletFeaturesTest('it should find account name as expected', async ({ library }) => {
+walletFeaturesTest('it should find account name as expected', async () => {
   await page.goToSettings()
-  await page.switchNetwork('Polygon')
-  if (library === 'wagmi') {
-    await page.goToSettings()
-  }
-  await validator.expectSwitchedNetwork('Polygon')
-
   await page.openChooseNameIntro()
   await page.openChooseName()
   await page.typeName('test-ens-check')

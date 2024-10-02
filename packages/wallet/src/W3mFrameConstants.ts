@@ -7,7 +7,7 @@ export const W3mFrameConstants = {
   APP_EVENT_KEY: '@w3m-app/',
   FRAME_EVENT_KEY: '@w3m-frame/',
   RPC_METHOD_KEY: 'RPC_',
-  STORAGE_KEY: '@w3m-storage/',
+  STORAGE_KEY: '@appkit-wallet/',
 
   SESSION_TOKEN_KEY: 'SESSION_TOKEN_KEY',
   EMAIL_LOGIN_USED_KEY: 'EMAIL_LOGIN_USED_KEY',
@@ -18,7 +18,6 @@ export const W3mFrameConstants = {
   SMART_ACCOUNT_ENABLED: 'SMART_ACCOUNT_ENABLED',
   SMART_ACCOUNT_ENABLED_NETWORKS: 'SMART_ACCOUNT_ENABLED_NETWORKS',
   SOCIAL_USERNAME: 'SOCIAL_USERNAME',
-  SOCIAL: '@w3m/connected_social',
 
   APP_SWITCH_NETWORK: '@w3m-app/SWITCH_NETWORK',
   APP_CONNECT_EMAIL: '@w3m-app/CONNECT_EMAIL',
@@ -134,7 +133,11 @@ export const W3mFrameRpcConstants = {
     'eth_syncing',
     'eth_uninstallFilter',
     'wallet_getCapabilities',
-    'wallet_getCallsStatus'
+    'wallet_getCallsStatus',
+    'eth_getUserOperationReceipt',
+    'eth_estimateUserOperationGas',
+    'eth_getUserOperationByHash',
+    'eth_supportedEntryPoints'
   ],
   NOT_SAFE_RPC_METHODS: [
     'personal_sign',
@@ -145,7 +148,8 @@ export const W3mFrameRpcConstants = {
     'solana_signAllTransactions',
     'solana_signAndSendTransaction',
     'wallet_sendCalls',
-    'wallet_grantPermissions'
+    'wallet_grantPermissions',
+    'eth_sendUserOperation'
   ],
   GET_CHAIN_ID: 'eth_chainId',
   RPC_METHOD_NOT_ALLOWED_MESSAGE: 'Requested RPC call is not allowed',

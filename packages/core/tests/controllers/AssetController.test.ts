@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { AssetController } from '../../index.js'
+import { AssetController } from '../../exports/index.js'
 
 // -- Constants ----------------------------------------------------------------
 const walletImage = 'w3mWallet.png'

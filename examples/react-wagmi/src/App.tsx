@@ -1,14 +1,15 @@
-import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 import {
-  createWeb3Modal,
-  useWeb3Modal,
-  useWeb3ModalEvents,
-  useWeb3ModalState,
-  useWeb3ModalTheme
-} from '@web3modal/wagmi/react'
+  createAppKit,
+  useAppKit,
+  useAppKitEvents,
+  useAppKitState,
+  useAppKitTheme
+} from '@reown/appkit/react'
+import { mainnet, polygon } from '@reown/appkit/networks'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { WagmiProvider } from 'wagmi'
-import { arbitrum, mainnet } from 'wagmi/chains'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { WagmiHooks } from './WagmiHooks'
 
 // 0. Setup queryClient for WAGMIv2
 const queryClient = new QueryClient()
@@ -19,21 +20,22 @@ if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
 }
 
-// 2. Create wagmiConfig
-const wagmiConfig = defaultWagmiConfig({
-  chains: [mainnet, arbitrum],
+// 2. Setup wagmi adapter
+const wagmiAdapter = new WagmiAdapter({
   projectId,
-  metadata: {
-    name: 'AppKit React Example',
-    description: 'AppKit React Example',
-    url: '',
-    icons: []
-  }
+  networks: [mainnet, polygon]
 })
 
 // 3. Create modal
-createWeb3Modal({
-  wagmiConfig,
+createAppKit({
+  adapters: [wagmiAdapter],
+  networks: [mainnet, polygon],
+  metadata: {
+    name: 'AppKit',
+    description: 'AppKit React Wagmi Example',
+    url: '',
+    icons: []
+  },
   projectId,
   themeMode: 'light',
   themeVariables: {
@@ -44,13 +46,13 @@ createWeb3Modal({
 
 export default function App() {
   // 4. Use modal hook
-  const modal = useWeb3Modal()
-  const state = useWeb3ModalState()
-  const { themeMode, themeVariables, setThemeMode } = useWeb3ModalTheme()
-  const events = useWeb3ModalEvents()
+  const modal = useAppKit()
+  const state = useAppKitState()
+  const { themeMode, themeVariables, setThemeMode } = useAppKitTheme()
+  const events = useAppKitEvents()
 
   return (
-    <WagmiProvider config={wagmiConfig}>
+    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <w3m-button />
         <w3m-network-button />
@@ -62,6 +64,7 @@ export default function App() {
         <button onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')}>
           Toggle Theme Mode
         </button>
+        <WagmiHooks />
         <pre>{JSON.stringify(state, null, 2)}</pre>
         <pre>{JSON.stringify({ themeMode, themeVariables }, null, 2)}</pre>
         <pre>{JSON.stringify(events, null, 2)}</pre>

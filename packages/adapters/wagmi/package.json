@@ -1,0 +1,57 @@
+{
+  "name": "@reown/appkit-adapter-wagmi",
+  "version": "1.0.5",
+  "type": "module",
+  "main": "./dist/esm/src/index.js",
+  "types": "./dist/types/src/index.d.ts",
+  "files": [
+    "dist",
+    "!tsconfig.tsbuildinfo"
+  ],
+  "scripts": {
+    "build:clean": "rm -rf dist",
+    "build": "tsc --build tsconfig.build.json",
+    "watch": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "test": "vitest run --coverage.enabled=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true"
+  },
+  "dependencies": {
+    "@reown/appkit": "workspace:*",
+    "@reown/appkit-common": "workspace:*",
+    "@reown/appkit-core": "workspace:*",
+    "@reown/appkit-polyfills": "workspace:*",
+    "@reown/appkit-scaffold-ui": "workspace:*",
+    "@reown/appkit-utils": "workspace:*",
+    "@reown/appkit-siwe": "workspace:*",
+    "@reown/appkit-ui": "workspace:*",
+    "@reown/appkit-wallet": "workspace:*",
+    "@walletconnect/utils": "2.17.0",
+    "@walletconnect/universal-provider": "2.17.0",
+    "valtio": "1.11.2"
+  },
+  "peerDependencies": {
+    "@coinbase/wallet-sdk": "4.0.3",
+    "@wagmi/connectors": ">=5.1",
+    "@wagmi/core": ">=2.13",
+    "viem": "2.x",
+    "wagmi": ">=2.12"
+  },
+  "devDependencies": {
+    "@types/react": "18.2.0",
+    "@types/react-dom": "18.2.0",
+    "@vitest/coverage-v8": "2.0.5",
+    "@walletconnect/types": "2.17.0",
+    "vitest": "2.0.5"
+  },
+  "author": "Reown <support@reown.com> (https://reown.com)",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/WalletConnect/web3modal",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WalletConnect/web3modal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/WalletConnect/web3modal/issues"
+  }
+}
