@@ -32,12 +32,6 @@ export function SmartSessionGrantedPermissionsInfo({
       </Box>
       <Box>
         <Heading size="xs" textTransform="uppercase" pb="2">
-          Account Address
-        </Heading>
-        <Text>{address}</Text>
-      </Box>
-      <Box>
-        <Heading size="xs" textTransform="uppercase" pb="2">
           Chain Id
         </Heading>
         <Text>{chain?.name || chainId}</Text>

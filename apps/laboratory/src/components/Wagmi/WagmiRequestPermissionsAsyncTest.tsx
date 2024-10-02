@@ -104,7 +104,7 @@ function ConnectedTestContent({
       <Button
         data-test-id="request-permissions-button"
         onClick={onRequestPermissions}
-        isDisabled={Boolean(isRequestPermissionLoading || Boolean(smartSession))}
+        isDisabled={Boolean(isRequestPermissionLoading || Boolean(smartSession?.type === 'async'))}
         isLoading={isRequestPermissionLoading}
       >
         Request Permissions
@@ -112,7 +112,7 @@ function ConnectedTestContent({
       <Button
         data-test-id="clear-permissions-button"
         onClick={clearSmartSession}
-        isDisabled={!smartSession}
+        isDisabled={!smartSession || smartSession.type !== 'async'}
       >
         Clear Permissions
       </Button>
