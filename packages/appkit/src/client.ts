@@ -37,7 +37,8 @@ import {
   CaipNetworksUtil,
   SafeLocalStorage,
   SafeLocalStorageKeys,
-  type CaipAddress
+  type CaipAddress,
+  type CaipNetworkId
 } from '@reown/appkit-common'
 import { ConstantsUtil as IdConstantsUtil } from '@reown/appkit-utils'
 import type { AppKitOptions } from './utils/TypesUtil.js'
@@ -49,6 +50,8 @@ import type { AdapterBlueprint } from './adapters/ChainAdapterBlueprint.js'
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
 import { W3mFrameProviderSingleton } from './auth-provider/W3MFrameProviderSingleton.js'
+import { WcHelpersUtil } from './utils/HelpersUtil.js'
+import type { SessionTypes } from '@walletconnect/types'
 
 // -- Export Controllers -------------------------------------------------------
 export { AccountController, NetworkController }
@@ -116,14 +119,14 @@ export class AppKit {
       sdkVersion: SdkVersion
     }
   ) {
-    this.initOrContinue()
-    this.syncRequestedNetworks()
+    this.extendCaipNetworks(options)
     this.createAuthProvider()
-
     await this.createUniversalProvider()
-    this.initControllers(options)
-    this.chainAdapters = await this.createAdapters()
     this.createClients()
+    this.chainAdapters = await this.createAdapters()
+    this.syncRequestedNetworks()
+    this.initControllers(options)
+    await this.initOrContinue()
   }
 
   // -- Public -------------------------------------------------------------------
@@ -477,7 +480,7 @@ export class AppKit {
     )
 
     this.setMetadata(options)
-    this.extendCaipNetworks(options)
+
     this.setDefaultNetwork(options)
 
     OptionsController.setAllWallets(options.allWallets)
@@ -543,6 +546,7 @@ export class AppKit {
       projectId: options.projectId
     })
     options.defaultNetwork = options.networks.find(n => n.id === options.defaultNetwork?.id)
+    this.options = options
   }
 
   private setDefaultNetwork(options: AppKitOptions) {
@@ -579,7 +583,45 @@ export class AppKit {
       // getTransactionReceipt: () => {}
     }
     ConnectionController.setClient(this.connectionControllerClient)
-    // this.networkControllerClient = new NetworkControllerClient()
+
+    this.networkControllerClient = {
+      switchCaipNetwork: async caipNetwork => {
+        if (!caipNetwork) {
+          return
+        }
+
+        const adapter = this.getAdapter(ChainController.state.activeChain)
+        await adapter?.switchNetwork(caipNetwork, this.universalProvider)
+      },
+      getApprovedCaipNetworksData: async () => {
+        const providerType = ProviderUtil.state.providerIds[ChainController.state.activeChain]
+
+        if (providerType === 'walletConnect') {
+          const namespaces = this.universalProvider?.session?.namespaces
+
+          return {
+            supportsAllNetworks: false,
+            approvedCaipNetworkIds: this.getChainsFromNamespaces(namespaces)
+          }
+        }
+
+        return { supportsAllNetworks: true, approvedCaipNetworkIds: [] }
+      }
+    }
+    NetworkController.setClient(this.networkControllerClient)
+  }
+
+  private getChainsFromNamespaces(namespaces: SessionTypes.Namespaces = {}): CaipNetworkId[] {
+    return Object.values(namespaces).flatMap<CaipNetworkId>(namespace => {
+      const chains = (namespace.chains || []) as CaipNetworkId[]
+      const accountsChains = namespace.accounts.map(account => {
+        const [chainNamespace, chainId] = account.split(':')
+
+        return `${chainNamespace}:${chainId}` as CaipNetworkId
+      })
+
+      return Array.from(new Set([...chains, ...accountsChains]))
+    })
   }
 
   private syncWalletConnectAccount() {
@@ -590,7 +632,9 @@ export class AppKit {
       this.setPreferredAccountType('eoa', chainNamespace)
       this.setCaipAddress(address, chainNamespace)
       // this.syncConnectedWalletInfo()
-      // await Promise.all([this.appKit?.setApprovedCaipNetworksData(chainNamespace)])
+      ProviderUtil.setProviderId(chainNamespace, 'walletConnect')
+      ProviderUtil.setProvider(chainNamespace, this.universalProvider)
+      await Promise.all([this.setApprovedCaipNetworksData(chainNamespace)])
     })
   }
 

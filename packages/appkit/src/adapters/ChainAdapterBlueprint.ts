@@ -14,6 +14,7 @@ export abstract class AdapterBlueprint<
 
   protected avaiableConnectors: Connector[] = []
   protected connector?: Connector
+  protected provider?: Connector['provider']
 
   constructor(params: AdapterBlueprint.Params) {
     this.namespace = params.namespace
@@ -55,6 +56,11 @@ export abstract class AdapterBlueprint<
   public abstract connectWalletConnect(onUri: (uri: string) => void): Promise<void>
 
   public abstract connect(id: Connector['id']): Promise<string>
+
+  public abstract switchNetwork(
+    caipNetwork: CaipNetwork,
+    provider?: Connector['provider']
+  ): Promise<void>
 
   public abstract disconnect(): Promise<void>
 

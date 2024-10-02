@@ -66,8 +66,12 @@ export const NetworkController = {
     })
   },
 
+  setClient(client: NetworkControllerClient) {
+    state._client = client
+  },
+
   _getClient() {
-    return ChainController.getNetworkControllerClient()
+    return state._client
   },
 
   setActiveCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
@@ -162,10 +166,10 @@ export const NetworkController = {
   },
 
   async switchActiveNetwork(network: NetworkControllerState['caipNetwork']) {
-    const networkControllerClient = ChainController.getNetworkControllerClient()
+    ChainController.setActiveCaipNetwork(network)
+    const networkControllerClient = this._getClient()
 
     await networkControllerClient?.switchCaipNetwork(network)
-    ChainController.setActiveCaipNetwork(network)
 
     if (network) {
       EventsController.sendEvent({
@@ -199,7 +203,7 @@ export const NetworkController = {
   },
 
   async setApprovedCaipNetworksData(chain: ChainNamespace | undefined) {
-    const networkControllerClient = ChainController.getNetworkControllerClient()
+    const networkControllerClient = this._getClient()
 
     const data = await networkControllerClient?.getApprovedCaipNetworksData()
 

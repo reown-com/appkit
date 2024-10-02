@@ -224,7 +224,10 @@ export const ChainController = {
       const newAdapter = chain ? state.chains.get(caipNetwork.chainNamespace) : undefined
       const newNamespace = newAdapter?.chainNamespace !== state.activeChain
 
-      if (newAdapter && newNamespace) {
+      console.log('NEW ADAPTER', newAdapter)
+      console.log('NEW NAMESPACE', newNamespace)
+
+      if (newAdapter) {
         state.activeChain = newAdapter.chainNamespace
         state.activeCaipNetwork = caipNetwork
         state.activeCaipAddress = newAdapter.accountState?.caipAddress
@@ -250,6 +253,8 @@ export const ChainController = {
   },
 
   setActiveCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
+    console.log('SET ACTIVE CAIP NETWORK', caipNetwork)
+
     if (!caipNetwork) {
       return
     }
