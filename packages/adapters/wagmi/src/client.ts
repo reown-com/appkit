@@ -445,15 +445,13 @@ export class WagmiAdapter implements ChainAdapter {
           throw new Error('connectionControllerClient:grantPermissions - connector is undefined')
         }
 
-        const provider = (await connection.connector.getProvider()) as Awaited<
-          ReturnType<(typeof UniversalProvider)['init']>
-        >
+        const provider = (await connection.connector.getProvider()) as UniversalProvider
 
         if (!provider) {
           throw new Error('connectionControllerClient:grantPermissions - provider is undefined')
         }
 
-        return provider.request({ method: 'wallet_grantPermissions', params: [params] })
+        return provider.request({ method: 'wallet_grantPermissions', params })
       },
 
       sendTransaction: async (data: SendTransactionArgs) => {

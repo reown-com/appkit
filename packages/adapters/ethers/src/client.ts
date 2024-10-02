@@ -410,7 +410,7 @@ export class EthersAdapter {
       },
 
       grantPermissions: async params => {
-        const provider = ProviderUtil.getProvider<Provider>('eip155')
+        const provider = ProviderUtil.getProvider<Provider>(CommonConstantsUtil.CHAIN.EVM)
 
         if (!provider) {
           throw new Error('Provider is undefined')

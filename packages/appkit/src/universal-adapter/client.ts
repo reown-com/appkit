@@ -264,7 +264,14 @@ export class UniversalAdapterClient {
 
       writeContract: async () => await Promise.resolve('0x'),
 
-      grantPermissions: async () => await Promise.resolve('0x'),
+      grantPermissions: async (params: object | readonly unknown[]) => {
+        const provider = await this.getWalletConnectProvider()
+        if (!provider) {
+          throw new Error('connectionControllerClient:grantPermissions - provider is undefined')
+        }
+
+        return provider.request({ method: 'wallet_grantPermissions', params })
+      },
 
       sendTransaction: async () => await Promise.resolve('0x'),
 
