@@ -1,5 +1,5 @@
 {
-  "mode": "pre",
+  "mode": "exit",
   "tag": "2c9217964",
   "initialVersions": {
     "@apps/demo": "1.0.6-2c9217964.0",

@@ -40,8 +40,8 @@ jobs:
       - name: PR or publish
         uses: changesets/action@v1
         with:
-          title: 'chore: version packages'
-          commit: 'chore: version packages'
+          title: 'chore: version canary packages'
+          commit: 'chore: version canary packages'
           createGithubReleases: ${{ github.ref == 'refs/heads/main' }}
           publish: pnpm publish:canary
           version: pnpm changeset:version
