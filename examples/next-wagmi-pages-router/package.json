@@ -1,5 +1,5 @@
 {
-  "name": "@examples/next-wagmi-ssr",
+  "name": "@examples/next-wagmi-pages-router",
   "version": "1.0.5",
   "private": true,
   "scripts": {
