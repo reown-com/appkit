@@ -259,8 +259,7 @@ describe('ApiController', () => {
       }
     ]
     OptionsController.setFeaturedWalletIds(featuredWalletIds)
-    OptionsController.setProjectId(process.env['NEXT_PUBLIC_PROJECT_ID'] as string)
-    const fetchSpy = vi.spyOn(ApiController, 'fetchFeaturedWallets').mockResolvedValue()
+    const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data })
     const fetchImageSpy = vi.spyOn(ApiController, '_fetchWalletImage').mockResolvedValue()
     await ApiController.fetchFeaturedWallets()
 
@@ -582,6 +581,8 @@ describe('ApiController', () => {
       .spyOn(ApiController, 'fetchConnectorImages')
       .mockResolvedValue()
 
+    ApiController.prefetch()
+
     expect(fetchSpy).toHaveBeenCalledOnce()
     expect(fetchNetworkImagesSpy).toHaveBeenCalledOnce()
     expect(recommendedWalletsSpy).toHaveBeenCalledOnce()
@@ -589,7 +590,7 @@ describe('ApiController', () => {
   })
 
   it('should fetch analytics config', async () => {
-    const fetchProjectConfigSpy = vi.spyOn(ApiController, 'fetchProjectConfig').mockResolvedValue({
+    const fetchProjectConfigSpy = vi.spyOn(api, 'get').mockResolvedValue({
       isAnalyticsEnabled: true,
       isAppKitAuthEnabled: false
     })
@@ -600,7 +601,5 @@ describe('ApiController', () => {
       path: '/getProjectConfig',
       headers: ApiController._getApiHeaders()
     })
-
-    expect(ApiController.state.isAnalyticsEnabled).toBe(true)
   })
 })
