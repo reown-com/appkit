@@ -2,7 +2,9 @@ import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import {
+  ConnectionController,
   ConnectorController,
+  CoreHelperUtil,
   OptionsController,
   RouterController,
   type WalletGuideType
@@ -73,6 +75,10 @@ export class W3mConnectView extends LitElement {
 
     if (!enableWallets) {
       return null
+    }
+    // In tg ios context, we have to preload the connection uri so we can use it to deeplink on user click
+    if (CoreHelperUtil.isTelegram() && CoreHelperUtil.isIos()) {
+      ConnectionController.connectWalletConnect().catch(_e => ({}))
     }
 
     if (this.walletGuide === 'explore') {
