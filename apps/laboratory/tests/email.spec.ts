@@ -99,3 +99,8 @@ emailTest('it should disconnect correctly', async () => {
   await page.disconnect()
   await validator.expectDisconnected()
 })
+
+emailTest.only('it should show names feature only for EVM networks', async ({ library }) => {
+  await page.goToSettings()
+  await validator.expectNamesFeatureVisible(library !== 'solana')
+})

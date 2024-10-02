@@ -55,4 +55,13 @@ export class ModalWalletValidator extends ModalValidator {
       `${chainName} should be visible on approve transaction page`
     ).toBeTruthy()
   }
+
+  async expectNamesFeatureVisible(visible: boolean) {
+    const namesFeature = this.page.getByTestId('account-choose-name-button')
+    if (visible) {
+      await expect(namesFeature, 'Names feature should be present').toBeVisible()
+    } else {
+      await expect(namesFeature, 'Names feature should not be present').toBeHidden()
+    }
+  }
 }
