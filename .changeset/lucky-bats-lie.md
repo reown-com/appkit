@@ -35,4 +35,4 @@
 '@reown/appkit-wallet': patch
 ---
 
-Refactored logger imports which caused webpack bundlers to throw an error.
+Changed logger imports to not cause the webpack bundler to throw a CommonJS module error.
