@@ -1,0 +1,43 @@
+{
+  "mode": "pre",
+  "tag": "410rx1",
+  "initialVersions": {
+    "@apps/demo": "1.0.5",
+    "@apps/gallery": "1.0.5",
+    "@apps/laboratory": "1.0.5",
+    "@examples/html-ethers": "1.0.5",
+    "@examples/html-ethers5": "1.0.5",
+    "@examples/html-wagmi": "1.0.5",
+    "@examples/next-ethers": "1.0.5",
+    "@examples/next-wagmi": "1.0.5",
+    "@examples/react-ethers": "1.0.5",
+    "@examples/react-ethers5": "1.0.5",
+    "@examples/react-solana": "1.0.5",
+    "@examples/react-wagmi": "1.0.5",
+    "@examples/vue-ethers5": "1.0.5",
+    "@examples/vue-solana": "1.0.5",
+    "@examples/vue-wagmi": "1.0.5",
+    "@reown/appkit-adapter-ethers": "1.0.5",
+    "@reown/appkit-adapter-ethers5": "1.0.5",
+    "@reown/appkit-adapter-polkadot": "1.0.5",
+    "@reown/appkit-adapter-solana": "1.0.5",
+    "@reown/appkit-adapter-wagmi": "1.0.5",
+    "@reown/appkit": "1.0.5",
+    "@reown/appkit-utils": "1.0.5",
+    "@reown/appkit-cdn": "1.0.5",
+    "@reown/appkit-common": "1.0.5",
+    "@reown/appkit-core": "1.0.5",
+    "@reown/appkit-ethers": "1.0.5",
+    "@reown/appkit-ethers5": "1.0.5",
+    "@reown/appkit-polyfills": "1.0.5",
+    "@reown/appkit-scaffold-ui": "1.0.5",
+    "@reown/appkit-siwe": "1.0.5",
+    "@reown/appkit-solana": "1.0.5",
+    "@reown/appkit-ui": "1.0.5",
+    "@reown/appkit-wagmi": "1.0.5",
+    "@reown/appkit-wallet": "1.0.5"
+  },
+  "changesets": [
+    "clever-turtles-listen"
+  ]
+}
