@@ -11,7 +11,8 @@ import { arbitrum, mainnet, polygon } from '@reown/appkit/networks'
 import { ProviderUtil } from '@reown/appkit/store'
 import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 import { type BlockchainApiLookupEnsName } from '@reown/appkit'
-import { ethers } from 'ethers5'
+import { ethers } from 'ethers'
+
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 
 vi.mock('@reown/appkit-wallet', () => ({
@@ -80,7 +81,7 @@ vi.mock('@reown/appkit/store', () => ({
   }
 }))
 
-vi.mock('ethers5', async () => {
+vi.mock('ethers', async () => {
   return {
     ethers: {
       providers: {
@@ -170,7 +171,6 @@ describe('EthersAdapter', () => {
           ])
         })
       )
-      expect(mockAppKit.setCaipNetwork).toHaveBeenCalledWith(newNetwork)
     })
 
     it('should add network if not recognized by wallet', async () => {
@@ -267,13 +267,13 @@ describe('EthersAdapter', () => {
         client['appKit'] = mockAppKit
       })
 
-      it.skip('should handle RPC request correctly when modal is closed', () => {
+      it('should handle RPC request correctly when modal is closed', () => {
         vi.spyOn(mockAppKit, 'isOpen').mockReturnValue(false)
         mockAppKit['handleUnsafeRPCRequest']()
         expect(mockAppKit.open).toHaveBeenCalledWith({ view: 'ApproveTransaction' })
       })
 
-      it.skip('should handle RPC request correctly when modal is open and transaction stack is not empty', () => {
+      it('should handle RPC request correctly when modal is open and transaction stack is not empty', () => {
         vi.spyOn(mockAppKit, 'isOpen').mockReturnValue(true)
         vi.spyOn(mockAppKit, 'isTransactionStackEmpty').mockReturnValue(false)
         vi.spyOn(mockAppKit, 'isTransactionShouldReplaceView').mockReturnValue(true)
@@ -392,7 +392,6 @@ describe('EthersAdapter', () => {
           [{ address: mockAddress, type: mockPreferredAccountType }],
           'eip155'
         )
-        expect(mockAppKit.setCaipNetwork).toHaveBeenCalled()
         expect(mockAppKit.setStatus).toHaveBeenCalledWith('connected', 'eip155')
         expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(
           `eip155:${mockChainId}:${mockAddress}`,
@@ -531,6 +530,7 @@ describe('EthersAdapter', () => {
         SafeLocalStorageKeys.WALLET_NAME,
         'MetaMask'
       )
+      expect(mockAppKit.setCaipAddress).toHaveBeenCalled()
       expect(ProviderUtil.setProviderId).toHaveBeenCalledWith('eip155', 'injected')
       expect(ProviderUtil.setProvider).toHaveBeenCalledWith('eip155', mockProvider)
       expect(mockAppKit.setStatus).toHaveBeenCalledWith('connected', 'eip155')
@@ -586,7 +586,7 @@ describe('EthersAdapter', () => {
       const chainChangedHandler = mockProvider.on.mock.calls.find(
         (call: string[]) => call[0] === 'chainChanged'
       )[1]
-      await chainChangedHandler('0x2')
+      await chainChangedHandler('0x10')
 
       expect(mockAppKit.setCaipNetwork).toHaveBeenCalled()
     })

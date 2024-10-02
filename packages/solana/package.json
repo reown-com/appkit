@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-solana",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -61,7 +61,7 @@
     "@wallet-standard/features": "1.0.3",
     "@wallet-standard/wallet": "1.0.1",
     "@reown/appkit-adapter-solana": "workspace:*",
-    "@walletconnect/universal-provider": "2.16.2",
+    "@walletconnect/universal-provider": "2.17.0",
     "@reown/appkit": "workspace:*",
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-core": "workspace:*",
@@ -77,7 +77,7 @@
   "devDependencies": {
     "@types/bn.js": "5.1.5",
     "@vitest/coverage-v8": "2.0.5",
-    "@walletconnect/types": "2.16.2",
+    "@walletconnect/types": "2.17.0",
     "vitest": "2.0.5"
   },
   "peerDependencies": {

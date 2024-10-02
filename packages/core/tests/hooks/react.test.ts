@@ -58,6 +58,7 @@ describe('useAppKitAccount', () => {
 
     expect(result).toEqual({
       address: mockPlainAddress,
+      caipAddress: mockCaipAddress,
       isConnected: true,
       status: 'connected'
     })
@@ -76,6 +77,7 @@ describe('useAppKitAccount', () => {
 
     expect(result).toEqual({
       address: undefined,
+      caipAddress: undefined,
       isConnected: false,
       status: 'disconnected'
     })

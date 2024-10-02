@@ -122,7 +122,10 @@ describe('SolanaAdapter', () => {
       vi.spyOn(mockAppKit, 'getIsConnectedState').mockReturnValue(true)
       vi.spyOn(client as any, 'syncBalance').mockResolvedValue(undefined)
 
-      await client['syncAccount'](mockAddress)
+      await client['syncAccount']({
+        address: mockAddress,
+        caipNetwork: solana
+      })
 
       expect(SolStoreUtil.setConnection).toHaveBeenCalled()
       expect(client['syncBalance']).toHaveBeenCalledWith(mockAddress)
@@ -147,7 +150,8 @@ describe('SolanaAdapter', () => {
       const mockProvider = {
         connect: vi.fn().mockResolvedValue('DjPi1LtwrXJMAh2AUvuUMajCpMJEKg8N1J1PbLGjCH5B'),
         name: 'MockProvider',
-        on: vi.fn()
+        on: vi.fn(),
+        chains: [{ chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' }]
       }
       vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValue(
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
@@ -161,11 +165,16 @@ describe('SolanaAdapter', () => {
         'solana'
       )
       expect(ProviderUtil.setProvider).toHaveBeenCalledWith('solana', mockProvider)
-      expect(ProviderUtil.setProviderId).toHaveBeenCalledWith('solana', 'walletConnect')
+      expect(ProviderUtil.setProviderId).toHaveBeenCalledWith('solana', 'injected')
     })
 
     it('should add provider', () => {
-      const mockProvider = { name: 'MockProvider', type: 'INJECTED', icon: 'mock-icon' }
+      const mockProvider = {
+        name: 'MockProvider',
+        type: 'INJECTED',
+        icon: 'mock-icon',
+        chains: [{ chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' }]
+      }
       client['addProvider'](mockProvider as any)
 
       expect(client['availableProviders']).toContain(mockProvider)

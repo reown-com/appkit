@@ -8,9 +8,11 @@ import {
   solana,
   solanaTestnet,
   solanaDevnet,
-  base
+  base,
+  gnosis
 } from '@reown/appkit/networks'
 import { getLocalStorageItem } from './LocalStorage'
+import type { CaipNetwork } from '@reown/appkit'
 
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 if (!projectId) {
@@ -48,13 +50,26 @@ if (typeof window !== 'undefined') {
 
 const customWallet = storedCustomWallet ? [JSON.parse(storedCustomWallet)] : []
 
-const EvmNetworks = [mainnet, optimism, polygon, zkSync, arbitrum, base, sepolia]
-const SolanaNetworks = [solana, solanaTestnet, solanaDevnet]
+const EvmNetworks = [mainnet, optimism, polygon, zkSync, arbitrum, base, sepolia, gnosis]
+
+export const solanaNotExist = {
+  id: 'solana:chaindoesntexist',
+  chainId: 'chaindoesntexist',
+  name: 'Solana Unsupported',
+  currency: 'SOL',
+  explorerUrl: 'https://explorer.solana.com/?cluster=unsupported',
+  rpcUrl: 'https://api.unsupported.solana.com',
+  chainNamespace: 'solana'
+} as CaipNetwork
+
+const SolanaNetworks = [solana, solanaTestnet, solanaDevnet, solanaNotExist]
 
 export const ConstantsUtil = {
   SigningSucceededToastTitle: 'Signing Succeeded',
   SigningFailedToastTitle: 'Signing Failed',
   TestIdSiweAuthenticationStatus: 'w3m-authentication-status',
+  DisconnectingSuccessToastTitle: 'Disconnecting Succeeded',
+  DisconnectingFailedToastTitle: 'Disconnecting Failed',
   Metadata: {
     name: 'AppKit Lab',
     description: 'Laboratory environment for AppKit testing',

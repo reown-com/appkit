@@ -35,4 +35,25 @@
 '@reown/appkit-wallet': patch
 ---
 
-Adds batched call for solana_signAllTransactions RPC call on Solana WalletConnectProvider
+Introducing debug mode. This is useful for seeing UI alerts while debugging.
+
+**Example usage**
+
+```ts
+import { createAppKit } from '@reown/appkit/react'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { mainnet } from '@reown/appkit/networks'
+
+const wagmiAdapter = new WagmiAdapter({
+  ssr: true,
+  networks: [mainnet],
+  projectId: 'YOUR_PROJECT_ID'
+})
+
+const modal = createAppKit({
+  adapters: [wagmiAdapter],
+  networks: [mainnet],
+  projectId: 'YOUR_PROJECT_ID',
+  debug: true // Optional - defaults to false
+})
+```

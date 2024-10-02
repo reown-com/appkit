@@ -204,18 +204,14 @@ export const NetworkController = {
   },
 
   async setApprovedCaipNetworksData(chain: ChainNamespace | undefined) {
-    const networkControllerClient = ChainController.getNetworkControllerClient()
-
-    const data = await networkControllerClient?.getApprovedCaipNetworksData()
-
     if (!chain) {
       throw new Error('chain is required to set approved network data')
     }
 
-    ChainController.setChainNetworkData(chain, {
-      approvedCaipNetworkIds: data?.approvedCaipNetworkIds,
-      supportsAllNetworks: data?.supportsAllNetworks
-    })
+    const networkControllerClient = ChainController.getNetworkControllerClient()
+    const data = await networkControllerClient?.getApprovedCaipNetworksData()
+
+    ChainController.setChainNetworkData(chain, data)
   },
 
   checkIfSupportedNetwork() {

@@ -494,9 +494,9 @@ export const SwapController = {
 
     state.loadingQuote = true
 
-    const amountDecimal = NumberUtil.bigNumber(state.sourceTokenAmount).multipliedBy(
-      10 ** sourceToken.decimals
-    )
+    const amountDecimal = NumberUtil.bigNumber(state.sourceTokenAmount)
+      .multipliedBy(10 ** sourceToken.decimals)
+      .integerValue()
 
     const quoteResponse = await BlockchainApiController.fetchSwapQuote({
       userAddress: address,
@@ -813,6 +813,15 @@ export const SwapController = {
       sourceTokenAddress,
       state.myTokensWithBalance
     )
+
+    // Smart Accounts may pay gas in any ERC20 token
+    if (
+      AccountController.state.preferredAccountType ===
+      W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+    ) {
+      return true
+    }
+
     const insufficientNetworkTokenForGas = SwapCalculationUtil.isInsufficientNetworkTokenForGas(
       state.networkBalanceInUSD,
       state.gasPriceInUSD
