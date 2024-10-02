@@ -99,7 +99,7 @@ export const ConnectionController = {
         return
       }
 
-      if (Date.now() < (state?.wcPairingExpiry || 0)) {
+      if (!CoreHelperUtil.isPairingExpired(state?.wcPairingExpiry)) {
         const link = state.wcUri
         state.wcUri = link
 
