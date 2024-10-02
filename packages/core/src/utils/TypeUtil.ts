@@ -933,3 +933,5 @@ export type Features = {
 }
 
 export type FeaturesKeys = keyof Features
+
+export type WalletGuideType = 'get-started' | 'explore'
