@@ -1,5 +1,4 @@
 ---
-'@reown/appkit-core': patch
 '@apps/demo': patch
 '@apps/gallery': patch
 '@apps/laboratory': patch
@@ -24,6 +23,7 @@
 '@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-common': patch
+'@reown/appkit-core': patch
 '@reown/appkit-ethers': patch
 '@reown/appkit-ethers5': patch
 '@reown/appkit-polyfills': patch
@@ -35,4 +35,25 @@
 '@reown/appkit-wallet': patch
 ---
 
-Fixes swap amount calculation to prevent floating numbers
+Introducing debug mode. This is useful for seeing UI alerts while debugging.
+
+**Example usage**
+
+```ts
+import { createAppKit } from '@reown/appkit/react'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { mainnet } from '@reown/appkit/networks'
+
+const wagmiAdapter = new WagmiAdapter({
+  ssr: true,
+  networks: [mainnet],
+  projectId: 'YOUR_PROJECT_ID'
+})
+
+const modal = createAppKit({
+  adapters: [wagmiAdapter],
+  networks: [mainnet],
+  projectId: 'YOUR_PROJECT_ID',
+  debug: true // Optional - defaults to false
+})
+```

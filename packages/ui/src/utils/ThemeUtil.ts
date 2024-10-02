@@ -249,8 +249,12 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-accent-080: var(--wui-color-accent-base-080);
 
         --wui-color-success-100: var(--wui-color-success-base-100);
+        --wui-color-success-125: var(--wui-color-success-base-125);
+
+        --wui-color-warning-100: var(--wui-color-warning-base-100);
 
         --wui-color-error-100: var(--wui-color-error-base-100);
+        --wui-color-error-125: var(--wui-color-error-base-125);
 
         --wui-icon-box-bg-error-100: var(--wui-icon-box-bg-error-base-100);
         --wui-icon-box-bg-blue-100: var(--wui-icon-box-bg-blue-base-100);
@@ -372,6 +376,16 @@ function createRootStyles(themeVariables?: ThemeVariables) {
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
             var(--wui-color-fg-300)
           );
+          --wui-color-fg-325: color-mix(
+            in srgb,
+            var(--w3m-color-mix) var(--w3m-color-mix-strength),
+            var(--wui-color-fg-325)
+          );
+          --wui-color-fg-350: color-mix(
+            in srgb,
+            var(--w3m-color-mix) var(--w3m-color-mix-strength),
+            var(--wui-color-fg-350)
+          );
 
           --wui-color-bg-100: color-mix(
             in srgb,
@@ -418,16 +432,43 @@ function createRootStyles(themeVariables?: ThemeVariables) {
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
             var(--wui-color-bg-300)
           );
+          --wui-color-bg-325: color-mix(
+            in srgb,
+            var(--w3m-color-mix) var(--w3m-color-mix-strength),
+            var(--wui-color-bg-325)
+          );
+          --wui-color-bg-350: color-mix(
+            in srgb,
+            var(--w3m-color-mix) var(--w3m-color-mix-strength),
+            var(--wui-color-bg-350)
+          );
 
           --wui-color-success-100: color-mix(
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
             var(--wui-color-success-base-100)
           );
+          --wui-color-success-125: color-mix(
+            in srgb,
+            var(--w3m-color-mix) var(--w3m-color-mix-strength),
+            var(--wui-color-success-base-125)
+          );
+
+          --wui-color-warning-100: color-mix(
+            in srgb,
+            var(--w3m-color-mix) var(--w3m-color-mix-strength),
+            var(--wui-color-warning-base-100)
+          );
+
           --wui-color-error-100: color-mix(
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
             var(--wui-color-error-base-100)
+          );
+          --wui-color-error-125: color-mix(
+            in srgb,
+            var(--w3m-color-mix) var(--w3m-color-mix-strength),
+            var(--wui-color-error-base-125)
           );
 
           --wui-icon-box-bg-error-100: color-mix(
@@ -496,6 +537,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-fg-250: #788080;
         --wui-color-fg-275: #788181;
         --wui-color-fg-300: #6e7777;
+        --wui-color-fg-325: #9a9a9a;
+        --wui-color-fg-350: #363636;
 
         --wui-color-bg-100: #141414;
         --wui-color-bg-125: #191a1a;
@@ -506,9 +549,16 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-bg-250: #313535;
         --wui-color-bg-275: #363b3b;
         --wui-color-bg-300: #3b4040;
+        --wui-color-bg-325: #252525;
+        --wui-color-bg-350: #ffffff;
 
         --wui-color-success-base-100: #26d962;
+        --wui-color-success-base-125: #30a46b;
+
+        --wui-color-warning-base-100: #f3a13f;
+
         --wui-color-error-base-100: #f25a67;
+        --wui-color-error-base-125: #df4a34;
 
         --wui-color-success-glass-001: rgba(38, 217, 98, 0.01);
         --wui-color-success-glass-002: rgba(38, 217, 98, 0.02);
@@ -521,6 +571,10 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-success-glass-060: rgba(38, 217, 98, 0.6);
         --wui-color-success-glass-080: rgba(38, 217, 98, 0.8);
 
+        --wui-color-success-glass-reown-020: rgba(48, 164, 107, 0.2);
+
+        --wui-color-warning-glass-reown-020: rgba(243, 161, 63, 0.2);
+
         --wui-color-error-glass-001: rgba(242, 90, 103, 0.01);
         --wui-color-error-glass-002: rgba(242, 90, 103, 0.02);
         --wui-color-error-glass-005: rgba(242, 90, 103, 0.05);
@@ -531,6 +585,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-error-glass-030: rgba(242, 90, 103, 0.3);
         --wui-color-error-glass-060: rgba(242, 90, 103, 0.6);
         --wui-color-error-glass-080: rgba(242, 90, 103, 0.8);
+
+        --wui-color-error-glass-reown-020: rgba(223, 74, 52, 0.2);
 
         --wui-color-gray-glass-001: rgba(255, 255, 255, 0.01);
         --wui-color-gray-glass-002: rgba(255, 255, 255, 0.02);
@@ -543,6 +599,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-gray-glass-060: rgba(255, 255, 255, 0.6);
         --wui-color-gray-glass-080: rgba(255, 255, 255, 0.8);
         --wui-color-gray-glass-090: rgba(255, 255, 255, 0.9);
+
+        --wui-color-dark-glass-100: rgba(42, 42, 42, 1);
 
         --wui-icon-box-bg-error-base-100: #3c2426;
         --wui-icon-box-bg-blue-base-100: #20303f;
@@ -580,6 +638,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-fg-250: #8b9797;
         --wui-color-fg-275: #95a0a0;
         --wui-color-fg-300: #9ea9a9;
+        --wui-color-fg-325: #9a9a9a;
+        --wui-color-fg-350: #d0d0d0;
 
         --wui-color-bg-100: #ffffff;
         --wui-color-bg-125: #f5fafa;
@@ -590,9 +650,16 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-bg-250: #e1e9e9;
         --wui-color-bg-275: #dce7e7;
         --wui-color-bg-300: #d8e3e3;
+        --wui-color-bg-325: #f3f3f3;
+        --wui-color-bg-350: #202020;
 
         --wui-color-success-base-100: #26b562;
+        --wui-color-success-base-125: #30a46b;
+
+        --wui-color-warning-base-100: #f3a13f;
+
         --wui-color-error-base-100: #f05142;
+        --wui-color-error-base-125: #df4a34;
 
         --wui-color-success-glass-001: rgba(38, 181, 98, 0.01);
         --wui-color-success-glass-002: rgba(38, 181, 98, 0.02);
@@ -605,6 +672,10 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-success-glass-060: rgba(38, 181, 98, 0.6);
         --wui-color-success-glass-080: rgba(38, 181, 98, 0.8);
 
+        --wui-color-success-glass-reown-020: rgba(48, 164, 107, 0.2);
+
+        --wui-color-warning-glass-reown-020: rgba(243, 161, 63, 0.2);
+
         --wui-color-error-glass-001: rgba(240, 81, 66, 0.01);
         --wui-color-error-glass-002: rgba(240, 81, 66, 0.02);
         --wui-color-error-glass-005: rgba(240, 81, 66, 0.05);
@@ -615,6 +686,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-error-glass-030: rgba(240, 81, 66, 0.3);
         --wui-color-error-glass-060: rgba(240, 81, 66, 0.6);
         --wui-color-error-glass-080: rgba(240, 81, 66, 0.8);
+
+        --wui-color-error-glass-reown-020: rgba(223, 74, 52, 0.2);
 
         --wui-icon-box-bg-error-base-100: #f4dfdd;
         --wui-icon-box-bg-blue-base-100: #d9ecfb;
@@ -638,6 +711,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-gray-glass-060: rgba(0, 0, 0, 0.6);
         --wui-color-gray-glass-080: rgba(0, 0, 0, 0.8);
         --wui-color-gray-glass-090: rgba(0, 0, 0, 0.9);
+
+        --wui-color-dark-glass-100: rgba(233, 233, 233, 1);
       }
     `
   }
@@ -726,8 +801,16 @@ export const colorStyles = css`
     color: var(--wui-color-error-100);
   }
 
+  .wui-color-error-125 {
+    color: var(--wui-color-error-125);
+  }
+
   .wui-color-success-100 {
     color: var(--wui-color-success-100);
+  }
+
+  .wui-color-success-125 {
+    color: var(--wui-color-success-125);
   }
 
   .wui-color-inverse-100 {
@@ -750,6 +833,14 @@ export const colorStyles = css`
     color: var(--wui-color-fg-300);
   }
 
+  .wui-color-fg-325 {
+    color: var(--wui-color-fg-325);
+  }
+
+  .wui-color-fg-350 {
+    color: var(--wui-color-fg-350);
+  }
+
   .wui-bg-color-inherit {
     background-color: var(--wui-color-inherit);
   }
@@ -762,7 +853,15 @@ export const colorStyles = css`
     background-color: var(--wui-color-error-100);
   }
 
+  .wui-bg-color-error-125 {
+    background-color: var(--wui-color-error-125);
+  }
+
   .wui-bg-color-success-100 {
+    background-color: var(--wui-color-success-100);
+  }
+
+  .wui-bg-color-success-125 {
     background-color: var(--wui-color-success-100);
   }
 
@@ -784,5 +883,13 @@ export const colorStyles = css`
 
   .wui-bg-color-fg-300 {
     background-color: var(--wui-color-fg-300);
+  }
+
+  .wui-color-fg-325 {
+    background-color: var(--wui-color-fg-325);
+  }
+
+  .wui-color-fg-350 {
+    background-color: var(--wui-color-fg-350);
   }
 `
