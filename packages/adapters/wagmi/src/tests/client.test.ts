@@ -1,5 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { ConstantsUtil } from '@reown/appkit-utils'
+import { arbitrum, mainnet } from '@reown/appkit/networks'
+import { connect, disconnect, getAccount, getBalance, getChainId, getEnsName } from '@wagmi/core'
 import {
   mockAccount,
   mockAppKit,
@@ -7,9 +10,6 @@ import {
   mockOptions,
   mockWagmiClient
 } from './mocks/adapter.mock'
-import { arbitrum, mainnet } from '@reown/appkit/networks'
-import { connect, disconnect, getAccount, getChainId, getEnsName, getBalance } from '@wagmi/core'
-import { ConstantsUtil } from '@reown/appkit-utils'
 
 vi.mock('@wagmi/core', async () => {
   const actual = await vi.importActual('@wagmi/core')

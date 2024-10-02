@@ -277,11 +277,17 @@ export const ApiController = {
   },
 
   async fetchProjectConfig() {
-    const { isAnalyticsEnabled, isAppKitAuthEnabled } = await api.get<ApiGetProjectConfigResponse>({
-      path: '/getProjectConfig',
-      headers: ApiController._getApiHeaders()
-    })
+    try {
+      const { isAnalyticsEnabled, isAppKitAuthEnabled } =
+        await api.get<ApiGetProjectConfigResponse>({
+          path: '/getProjectConfig',
+          headers: ApiController._getApiHeaders()
+        })
 
-    return { isAnalyticsEnabled, isAppKitAuthEnabled }
+      return { isAnalyticsEnabled, isAppKitAuthEnabled }
+    } catch (error) {
+      // Catch silently and return default values
+      return { isAnalyticsEnabled: false, isAppKitAuthEnabled: false }
+    }
   }
 }
