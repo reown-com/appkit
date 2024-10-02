@@ -1,0 +1,33 @@
+{
+  "name": "vite-svelte-ts-starter",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node server",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "vite build --ssrManifest --outDir dist/client",
+    "build:server": "vite build --ssr src/entry-server.ts --outDir dist/server",
+    "preview": "cross-env NODE_ENV=production node server"
+  },
+  "dependencies": {
+    "compression": "^1.7.4",
+    "express": "^4.19.2",
+    "sirv": "^2.0.4",
+    "@web3modal/wagmi": "workspace:*",
+    "@web3modal/siwe": "workspace:*",
+    "wagmi": "2.12.9"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^3.1.0",
+    "@tsconfig/svelte": "^5.0.4",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.12.7",
+    "cross-env": "^7.0.3",
+    "svelte": "^4.2.15",
+    "svelte-check": "^3.6.9",
+    "tslib": "^2.6.2",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.10"
+  }
+}
