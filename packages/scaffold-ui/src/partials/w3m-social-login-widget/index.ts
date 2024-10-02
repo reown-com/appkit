@@ -203,7 +203,8 @@ export class W3mSocialLoginWidget extends LitElement {
       try {
         if (authConnector && socialProvider) {
           const { uri } = await authConnector.provider.getSocialRedirectUri({
-            provider: socialProvider
+            provider: socialProvider,
+            schema: '://myapp.test.app'
           })
 
           if (this.popupWindow && uri) {

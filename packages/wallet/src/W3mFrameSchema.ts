@@ -43,7 +43,8 @@ export const AppGetUserRequest = z.object({
   preferredAccountType: z.optional(z.string())
 })
 export const AppGetSocialRedirectUriRequest = z.object({
-  provider: z.enum(['google', 'github', 'apple', 'facebook', 'x', 'discord'])
+  provider: z.enum(['google', 'github', 'apple', 'facebook', 'x', 'discord']),
+  schema: z.string().optional()
 })
 export const AppUpdateEmailRequest = z.object({ email: z.string().email() })
 export const AppUpdateEmailPrimaryOtpRequest = z.object({ otp: z.string() })
