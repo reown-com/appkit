@@ -7,21 +7,7 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": [
-    "@examples/react-ethers5",
-    "@examples/html-ethers5",
-    "@examples/react-ethers",
-    "@examples/react-solana",
-    "@examples/react-wagmi",
-    "@examples/vue-ethers5",
-    "@examples/html-wagmi",
-    "@examples/next-wagmi",
-    "@examples/vue-solana",
-    "@examples/vue-wagmi",
-    "@apps/laboratory",
-    "@apps/gallery",
-    "@apps/demo"
-  ],
+  "ignore": [],
   "snapshot": {
     "useCalculatedVersion": true
   }
