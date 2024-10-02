@@ -10,7 +10,7 @@ import {
   ModalHeader,
   ModalOverlay
 } from '@chakra-ui/react'
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 import { ethers } from 'ethers'
 import { useChakraToast } from './Toast'
 
@@ -19,12 +19,11 @@ type IAddTransactionModalProps = {
   onClose: () => void
   onSubmit: (params: { eth: string; to: string }) => void
 }
-export function AddTransactionModal(props: IAddTransactionModalProps) {
+export function AddTransactionModal({ isOpen, onClose, onSubmit }: IAddTransactionModalProps) {
   const toast = useChakraToast()
-  const { isOpen, onClose, onSubmit } = props
   const [eth, setEth] = useState(0)
   const [to, setTo] = useState('')
-  const onAddTransaction = useCallback(() => {
+  function onAddTransaction() {
     if (!ethers.isAddress(to)) {
       toast({
         title: 'Error',
@@ -46,12 +45,12 @@ export function AddTransactionModal(props: IAddTransactionModalProps) {
     onSubmit({ eth: eth.toString(), to })
     reset()
     onClose()
-  }, [eth, to])
+  }
 
-  const reset = useCallback(() => {
+  function reset() {
     setEth(0)
     setTo('')
-  }, [])
+  }
 
   return (
     <>
@@ -67,7 +66,7 @@ export function AddTransactionModal(props: IAddTransactionModalProps) {
               <Input
                 placeholder="0.001"
                 type="number"
-                onChange={event => setEth(parseFloat(event.target.value))}
+                onChange={event => setEth(event.target.valueAsNumber)}
               />
             </Box>
             <Box mt={4}>

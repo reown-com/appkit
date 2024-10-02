@@ -8,7 +8,7 @@ import {
   Card,
   CardBody
 } from '@chakra-ui/react'
-import { useCallback, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Button, Stack, Text, Spacer, Heading } from '@chakra-ui/react'
 import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 import { UniversalProvider } from '@walletconnect/universal-provider'
@@ -26,9 +26,7 @@ import { AddTransactionModal } from '../AddTransactionModal'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 type Provider = W3mFrameProvider | Awaited<ReturnType<(typeof UniversalProvider)['init']>>
 
-export function EthersSendCallsTest(params: { onCallsHash: (hash: string) => void }) {
-  const { onCallsHash } = params
-
+export function EthersSendCallsTest({ onCallsHash }: { onCallsHash: (hash: string) => void }) {
   const [loading, setLoading] = useState(false)
 
   const { chainId } = useAppKitNetwork()
@@ -40,21 +38,21 @@ export function EthersSendCallsTest(params: { onCallsHash: (hash: string) => voi
   const toast = useChakraToast()
 
   const [isOpen, setIsOpen] = useState(false)
-  const onSubmit = useCallback(
-    (args: { to: string; eth: string }) => {
-      setLastCallsBatchId(null)
-      setTransactionsToBatch(prev => [
-        ...prev,
-        {
-          to: args.to as `0x${string}`,
-          data: '0x' as `0x${string}`,
-          value: `0x${parseGwei(args.eth).toString(16)}`
-        }
-      ])
-    },
-    [transactionsToBatch]
-  )
-  const onClose = useCallback(() => setIsOpen(false), [])
+  function onSubmit(args: { to: string; eth: string }) {
+    setLastCallsBatchId(null)
+    setTransactionsToBatch(prev => [
+      ...prev,
+      {
+        to: args.to as `0x${string}`,
+        data: '0x' as `0x${string}`,
+        value: `0x${parseGwei(args.eth).toString(16)}`
+      }
+    ])
+  }
+
+  function onClose() {
+    setIsOpen(false)
+  }
 
   const [atomicBatchSupportedChains, setAtomicBatchSupportedChains] = useState<
     Awaited<ReturnType<typeof getCapabilitySupportedChainInfo>>
@@ -81,13 +79,13 @@ export function EthersSendCallsTest(params: { onCallsHash: (hash: string) => voi
     chainInfo => chainInfo.chainId === Number(chainId)
   )
 
-  const onAddTransactionButtonClick = useCallback(() => {
+  function onAddTransactionButtonClick() {
     setIsOpen(true)
-  }, [])
+  }
 
-  const onRemoveTransaction = useCallback((index: number) => {
+  function onRemoveTransaction(index: number) {
     setTransactionsToBatch(prev => prev.filter((_, i) => i !== index))
-  }, [])
+  }
 
   async function onSendCalls() {
     try {

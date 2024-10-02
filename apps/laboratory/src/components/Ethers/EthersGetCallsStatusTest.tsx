@@ -13,8 +13,7 @@ import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { type GetCallsStatusParams } from '../../types/EIP5792'
 import { EIP_5792_RPC_METHODS } from '../../utils/EIP5792Utils'
 
-export function EthersGetCallsStatusTest(params: { callsHash: string }) {
-  const callsHash = params.callsHash
+export function EthersGetCallsStatusTest({ callsHash }: { callsHash: string }) {
   const [isLoading, setLoading] = useState(false)
   const [batchCallId, setBatchCallId] = useState(callsHash)
 
