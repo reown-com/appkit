@@ -122,6 +122,16 @@ describe('NetworkController', () => {
       'solana:mainnet:So11111111111111111111111111111111111111111'
     )
 
-    mock.mockClear()
+    mock.mockRestore()
+  })
+
+  it('should check if network supports names feature', () => {
+    expect(NetworkController.checkIfNamesSupported()).toEqual(true)
+    NetworkController.setActiveCaipNetwork({
+      id: 'solana:mainnet',
+      name: 'Solana',
+      chain: ConstantsUtil.CHAIN.SOLANA
+    })
+    expect(NetworkController.checkIfNamesSupported()).toEqual(false)
   })
 })
