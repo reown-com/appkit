@@ -65,10 +65,11 @@ const state = proxy<ConnectionControllerState>({
   status: 'disconnected'
 })
 
+// eslint-disable-next-line init-declarations
+let wcConnectionPromise: Promise<void> | undefined
 // -- Controller ---------------------------------------- //
 export const ConnectionController = {
   state,
-
   subscribeKey<K extends StateKey>(
     key: K,
     callback: (value: ConnectionControllerState[K]) => void
@@ -87,12 +88,46 @@ export const ConnectionController = {
   async connectWalletConnect() {
     StorageUtil.setConnectedConnector('WALLET_CONNECT')
 
-    await ChainController.state?.universalAdapter?.connectionControllerClient?.connectWalletConnect?.(
-      uri => {
-        state.wcUri = uri
-        state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
+    if (CoreHelperUtil.isTelegram()) {
+      if (wcConnectionPromise) {
+        try {
+          await wcConnectionPromise
+        } catch (error) {
+          /* Empty */
+        }
+        wcConnectionPromise = undefined
+
+        return
       }
-    )
+
+      if (!CoreHelperUtil.isPairingExpired(state?.wcPairingExpiry)) {
+        const link = state.wcUri
+        state.wcUri = link
+
+        return
+      }
+      wcConnectionPromise = new Promise(async (resolve, reject) => {
+        await ChainController.state?.universalAdapter?.connectionControllerClient
+          ?.connectWalletConnect?.(uri => {
+            state.wcUri = uri
+            state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
+          })
+          .catch(reject)
+        resolve()
+      })
+      this.state.status = 'connecting'
+      await wcConnectionPromise
+      wcConnectionPromise = undefined
+      state.wcPairingExpiry = undefined
+      this.state.status = 'connected'
+    } else {
+      await ChainController.state?.universalAdapter?.connectionControllerClient?.connectWalletConnect?.(
+        uri => {
+          state.wcUri = uri
+          state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
+        }
+      )
+    }
   },
 
   async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
@@ -165,6 +200,7 @@ export const ConnectionController = {
     state.wcPairingExpiry = undefined
     state.wcLinking = undefined
     state.recentWallet = undefined
+    state.status = 'disconnected'
     TransactionsController.resetTransactions()
     StorageUtil.deleteWalletConnectDeepLink()
   },

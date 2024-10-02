@@ -28,7 +28,8 @@ describe('AccountController', () => {
       currentTab: 0,
       tokenBalance: [],
       allAccounts: [],
-      addressLabels: new Map<string, string>()
+      addressLabels: new Map<string, string>(),
+      is1ClickAuthenticating: false
     })
   })
 

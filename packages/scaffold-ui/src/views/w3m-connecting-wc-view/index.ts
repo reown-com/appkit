@@ -82,8 +82,8 @@ export class W3mConnectingWcView extends LitElement {
     }
 
     try {
-      const { wcPairingExpiry } = ConnectionController.state
-      if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
+      const { wcPairingExpiry, status } = ConnectionController.state
+      if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry) || status === 'connecting') {
         await ConnectionController.connectWalletConnect()
         this.finalizeConnection()
 
@@ -94,10 +94,10 @@ export class W3mConnectingWcView extends LitElement {
           RouterController.push('SelectAddresses')
         } else if (OptionsController.state.isSiweEnabled) {
           const { SIWEController } = await import('@reown/appkit-siwe')
-          const { status } = SIWEController.state
-          if (status === 'success') {
+          const { status: siweStatus } = SIWEController.state
+          if (siweStatus === 'success') {
             SnackController.hide()
-          } else if (status === 'ready') {
+          } else if (siweStatus === 'ready') {
             SnackController.hide()
           } else {
             RouterController.push('ConnectingSiwe')

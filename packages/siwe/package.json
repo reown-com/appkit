@@ -16,7 +16,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@walletconnect/utils": "2.16.1",
+    "@walletconnect/utils": "2.17.0",
     "@reown/appkit-core": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-common": "workspace:*",
