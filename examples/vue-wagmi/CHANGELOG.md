@@ -1,5 +1,17 @@
 # @examples/vue-wagmi
 
+## 5.1.11
+
+### Patch Changes
+
+- - fix: v5 default options by @zoruka in https://github.com/reown-com/appkit/pull/2935
+  - chore: v5 add solflare widget csp rule by @zoruka in https://github.com/reown-com/appkit/pull/2966
+  - fix: v5 connectors not appearing on solana by @zoruka in https://github.com/reown-com/appkit/pull/2979
+  - fix: v5 remove names flow for solana by @zoruka in https://github.com/reown-com/appkit/pull/2973
+  - fix: v5 solana connect loading by @zoruka in https://github.com/reown-com/appkit/pull/2968
+- Updated dependencies []:
+  - @web3modal/wagmi@5.1.11
+
 ## 5.1.10
 
 ### Patch Changes
