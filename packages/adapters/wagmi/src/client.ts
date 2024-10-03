@@ -49,7 +49,13 @@ import type {
 } from '@reown/appkit-core'
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
-import { ConstantsUtil, PresetsUtil, HelpersUtil, ErrorUtil } from '@reown/appkit-utils'
+import {
+  ConstantsUtil,
+  PresetsUtil,
+  HelpersUtil,
+  ErrorUtil,
+  CaipNetworksUtil
+} from '@reown/appkit-utils'
 import { isReownName, SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 import {
   getEmailCaipNetworks,
@@ -147,11 +153,10 @@ export class WagmiAdapter implements ChainAdapter {
       throw new Error(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED.shortMessage)
     }
 
-    this.caipNetworks = configParams.networks.map((caipNetwork: BaseNetwork | CaipNetwork) => ({
-      ...caipNetwork,
-      chainNamespace: CommonConstantsUtil.CHAIN.EVM,
-      caipNetworkId: `${this.chainNamespace}:${caipNetwork.id}`
-    })) as [CaipNetwork, ...CaipNetwork[]]
+    this.caipNetworks = CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
+      projectId: configParams.projectId,
+      customNetworkImageUrls: {}
+    }) as [CaipNetwork, ...CaipNetwork[]]
 
     this.wagmiChains = this.caipNetworks.filter(
       caipNetwork => caipNetwork.chainNamespace === CommonConstantsUtil.CHAIN.EVM
@@ -222,13 +227,12 @@ export class WagmiAdapter implements ChainAdapter {
     appKit: AppKit,
     options: Omit<AppKitOptions, 'defaultNetwork' | 'networks'> & {
       defaultNetwork: CaipNetwork
-      networks: CaipNetwork[]
+      networks: [CaipNetwork, ...CaipNetwork[]]
     }
   ) {
     this.appKit = appKit
     this.options = options
     this.defaultCaipNetwork = options.defaultNetwork || options.networks?.[0]
-    console.log('>>> setDefaultNetwork', this.defaultCaipNetwork)
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
     this.setCustomConnectors(options, appKit)
 
@@ -240,7 +244,6 @@ export class WagmiAdapter implements ChainAdapter {
       switchCaipNetwork: async caipNetwork => {
         const chainId = caipNetwork?.id as number | undefined
 
-        console.log('>>> switchCaipNetwork', chainId)
         if (chainId && this.wagmiConfig) {
           await switchChain(this.wagmiConfig, { chainId })
         }

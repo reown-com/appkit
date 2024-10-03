@@ -282,7 +282,6 @@ export const ChainController = {
     caipNetwork: NetworkControllerState['caipNetwork'],
     shouldReplace = false
   ) {
-    console.trace('>>> setCaipNetwork', chain, caipNetwork, shouldReplace)
     state.activeChain = caipNetwork?.chainNamespace
     state.activeCaipNetwork = caipNetwork
     PublicStateController.set({

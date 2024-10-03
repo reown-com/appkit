@@ -47,7 +47,7 @@ export type AppKitOptions = {
    * You can set the desired caipnetworks for the app:
    * @see https://docs.reown.com/appkit/react/core/options#defaultchain
    */
-  networks: BaseOrCaipNetwork[]
+  networks: [BaseOrCaipNetwork, ...BaseOrCaipNetwork[]]
   /**
    * You can set a desired caipnetwork for the initial connection:
    * @see https://docs.reown.com/appkit/react/core/options#defaultchain

@@ -65,7 +65,7 @@ export class AppKit {
 
   private initPromise?: Promise<void> = undefined
 
-  private caipNetworks: CaipNetwork[]
+  private caipNetworks: [CaipNetwork, ...CaipNetwork[]]
 
   private defaultCaipNetwork?: CaipNetwork
 
@@ -515,12 +515,15 @@ export class AppKit {
     })
     options.networks = extendedNetworks
     options.defaultNetwork = extendedDefaultNetwork
-    this.caipNetworks = extendedNetworks as CaipNetwork[]
+    this.caipNetworks = extendedNetworks as [CaipNetwork, ...CaipNetwork[]]
     this.defaultCaipNetwork = extendedDefaultNetwork as CaipNetwork
   }
 
   private initializeUniversalAdapter(options: AppKitOptions) {
-    this.universalAdapter = new UniversalAdapterClient(options, this.caipNetworks)
+    this.universalAdapter = new UniversalAdapterClient(
+      options,
+      this.caipNetworks as [CaipNetwork, ...CaipNetwork[]]
+    )
     ChainController.initializeUniversalAdapter(this.universalAdapter, options.adapters || [])
     this.universalAdapter.construct?.(this, options)
   }
@@ -540,7 +543,7 @@ export class AppKit {
       : undefined
 
     const network = caipNetwork || this.defaultCaipNetwork || this.caipNetworks[0]
-    ChainController.setActiveCaipNetwork(network as CaipNetwork)
+    ChainController.setActiveCaipNetwork(network)
   }
 
   private async initOrContinue() {
