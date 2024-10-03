@@ -200,6 +200,13 @@ export class ModalValidator {
     await expect(onrampButton).toBeVisible()
   }
 
+  async expectWalletGuide(_library: string, guide: 'get-started' | 'explore') {
+    const walletGuide = this.page.getByTestId(
+      guide === 'explore' ? 'w3m-wallet-guide-explore' : 'w3m-wallet-guide-get-started'
+    )
+    await expect(walletGuide).toBeVisible()
+  }
+
   async expectAccountNameFound(name: string) {
     const suggestion = this.page.getByTestId('account-name-suggestion').getByText(name)
     await expect(suggestion).toBeVisible()

@@ -251,6 +251,15 @@ export const NetworkController = {
     return Boolean(smartAccountEnabledNetworks?.includes(Number(networkId)))
   },
 
+  checkIfNamesSupported() {
+    const activeCaipNetwork = ChainController.state.activeCaipNetwork
+
+    return (
+      activeCaipNetwork?.chainNamespace &&
+      ConstantsUtil.NAMES_SUPPORTED_CHAIN_NAMESPACES.includes(activeCaipNetwork.chainNamespace)
+    )
+  },
+
   resetNetwork() {
     const chain = ChainController.state.activeChain
 

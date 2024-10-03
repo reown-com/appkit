@@ -121,8 +121,6 @@ export class WagmiAdapter implements ChainAdapter {
   // -- Private variables -------------------------------------------------------
   private appKit: AppKit | undefined = undefined
 
-  private createConfigParams?: Partial<CreateConfigParameters>
-
   // -- Public variables --------------------------------------------------------
   public options: AppKitOptions | undefined = undefined
 
@@ -175,10 +173,10 @@ export class WagmiAdapter implements ChainAdapter {
     const connectors: CreateConnectorFn[] = [...(configParams.connectors ?? [])]
 
     this.wagmiConfig = createConfig({
-      ...this.createConfigParams,
+      ...configParams,
       chains: this.wagmiChains,
       transports,
-      connectors: [...connectors, ...(this.createConfigParams?.connectors ?? [])]
+      connectors: [...connectors, ...(configParams?.connectors ?? [])]
     })
   }
 
