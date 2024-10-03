@@ -25,7 +25,7 @@ export const SwapApiUtil = {
   async getTokenList() {
     const caipNetwork = ChainController.state.activeCaipNetwork
     const response = await BlockchainApiController.fetchSwapTokens({
-      chainId: caipNetwork?.id,
+      chainId: caipNetwork?.caipNetworkId,
       projectId: OptionsController.state.projectId
     })
     const tokens =
@@ -72,7 +72,7 @@ export const SwapApiUtil = {
         default:
           return await BlockchainApiController.fetchGasPrice({
             projectId,
-            chainId: caipNetwork.id
+            chainId: caipNetwork.caipNetworkId
           })
       }
     } catch {
@@ -116,7 +116,11 @@ export const SwapApiUtil = {
       return []
     }
 
-    const response = await BlockchainApiController.getBalance(address, caipNetwork.id, forceUpdate)
+    const response = await BlockchainApiController.getBalance(
+      address,
+      caipNetwork.caipNetworkId,
+      forceUpdate
+    )
     const balances = response.balances.filter(balance => balance.quantity.decimals !== '0')
 
     AccountController.setTokenBalance(balances, ChainController.state.activeChain)

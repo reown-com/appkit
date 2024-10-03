@@ -6,14 +6,26 @@ import { mockCreateEthersConfig } from './mocks/EthersConfig'
 import mockAppKit from './mocks/AppKit'
 import { mockAuthConnector } from './mocks/AuthConnector'
 import { EthersHelpersUtil, type ProviderId, type ProviderType } from '@reown/appkit-utils/ethers'
-import { ConstantsUtil } from '@reown/appkit-utils'
-import { arbitrum, mainnet, polygon } from '@reown/appkit/networks'
+import { CaipNetworksUtil, ConstantsUtil } from '@reown/appkit-utils'
+import {
+  arbitrum as AppkitArbitrum,
+  mainnet as AppkitMainnet,
+  polygon as AppkitPolygon
+} from '@reown/appkit/networks'
 import { ProviderUtil } from '@reown/appkit/store'
 import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 import { type BlockchainApiLookupEnsName } from '@reown/appkit'
 import { InfuraProvider, JsonRpcProvider } from 'ethers'
 
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+
+const [mainnet, arbitrum, polygon] = CaipNetworksUtil.extendCaipNetworks(
+  [AppkitMainnet, AppkitArbitrum, AppkitPolygon],
+  {
+    customNetworkImageUrls: {},
+    projectId: '1234'
+  }
+) as [CaipNetwork, CaipNetwork, CaipNetwork]
 
 vi.mock('@reown/appkit-wallet', () => ({
   W3mFrameProvider: vi.fn().mockImplementation(() => mockAuthConnector),
@@ -101,7 +113,7 @@ describe('EthersAdapter', () => {
       ...mockOptions,
       ethersConfig: mockCreateEthersConfig()
     }
-    client.construct(mockAppKit, optionsWithEthersConfig)
+    client.construct(mockAppKit, optionsWithEthersConfig, [mainnet, arbitrum, polygon])
   })
 
   afterEach(() => {
@@ -145,10 +157,21 @@ describe('EthersAdapter', () => {
 
     it('should switch network for injected provider', async () => {
       const newNetwork = {
-        id: 'eip155:137',
+        id: 137,
+        caipNetworkId: 'eip155:137',
+        chainNamespace: 'eip155',
         name: 'Polygon',
-        chainId: '137',
-        rpcUrl: 'https://polygon-rpc.com'
+        network: 'polygon',
+        nativeCurrency: {
+          name: 'MATIC',
+          symbol: 'MATIC',
+          decimals: 18
+        },
+        rpcUrls: {
+          default: {
+            http: ['https://polygon-rpc.com']
+          }
+        }
       } as unknown as CaipNetwork
 
       mockProvider.request.mockResolvedValueOnce(null)
@@ -758,7 +781,7 @@ describe('EthersAdapter', () => {
 
       await client['syncBalance'](mockAddress, mainnet)
 
-      expect(JsonRpcProvider).toHaveBeenCalledWith(mainnet.rpcUrl, {
+      expect(JsonRpcProvider).toHaveBeenCalledWith(mainnet.rpcUrls.default.http[0], {
         chainId: 1,
         name: 'Ethereum'
       })

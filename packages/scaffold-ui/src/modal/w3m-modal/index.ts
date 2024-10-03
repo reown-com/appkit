@@ -224,8 +224,8 @@ export class W3mModal extends LitElement {
       return
     }
 
-    const prevCaipNetworkId = this.caipNetwork?.id?.toString()
-    const nextNetworkId = nextCaipNetwork?.id?.toString()
+    const prevCaipNetworkId = this.caipNetwork?.caipNetworkId?.toString()
+    const nextNetworkId = nextCaipNetwork?.caipNetworkId?.toString()
 
     if (prevCaipNetworkId && nextNetworkId && prevCaipNetworkId !== nextNetworkId) {
       if (this.isSiweEnabled) {

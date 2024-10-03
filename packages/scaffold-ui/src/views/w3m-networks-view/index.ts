@@ -143,7 +143,7 @@ export class W3mNetworksView extends LitElement {
       return false
     }
 
-    return !approvedCaipNetworkIds?.includes(network.id)
+    return !approvedCaipNetworkIds?.includes(network.caipNetworkId)
   }
 
   private onSwitchNetwork(network: CaipNetwork) {

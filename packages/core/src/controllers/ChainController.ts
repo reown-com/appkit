@@ -230,10 +230,13 @@ export const ChainController = {
     if (caipNetwork?.id) {
       state.activeCaipAddress = newAdapter?.accountState?.caipAddress
       state.activeCaipNetwork = caipNetwork
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetwork?.id)
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID,
+        caipNetwork?.caipNetworkId
+      )
       PublicStateController.set({
         activeChain: chain,
-        selectedNetworkId: caipNetwork?.id
+        selectedNetworkId: caipNetwork?.caipNetworkId
       })
     }
   },
@@ -255,9 +258,9 @@ export const ChainController = {
 
     PublicStateController.set({
       activeChain: state.activeChain,
-      selectedNetworkId: state.activeCaipNetwork?.id
+      selectedNetworkId: state.activeCaipNetwork?.caipNetworkId
     })
-    SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetwork.id)
+    SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetwork.caipNetworkId)
   },
 
   /**
@@ -277,7 +280,7 @@ export const ChainController = {
     state.activeCaipNetwork = caipNetwork
     PublicStateController.set({
       activeChain: state.activeChain,
-      selectedNetworkId: state.activeCaipNetwork?.id
+      selectedNetworkId: state.activeCaipNetwork?.caipNetworkId
     })
     this.setChainNetworkData(chain, { caipNetwork }, shouldReplace)
   },

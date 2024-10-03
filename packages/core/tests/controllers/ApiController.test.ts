@@ -8,7 +8,7 @@ import {
   OptionsController
 } from '../../exports/index.js'
 import { api } from '../../src/controllers/ApiController.js'
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
 
 // -- Constants ----------------------------------------------------------------
 const chain = ConstantsUtil.CHAIN.EVM
@@ -121,34 +121,61 @@ describe('ApiController', () => {
     NetworkController.setRequestedCaipNetworks(
       [
         {
-          id: 'eip155:1',
+          caipNetworkId: 'eip155:1',
+          id: 1,
           name: 'Ethereum Mainnet',
-          imageId: '12341',
+          assets: {
+            imageId: '12341',
+            imageUrl: ''
+          },
           chainNamespace: chain,
-          chainId: '1',
-          currency: 'ETH',
-          explorerUrl: 'https://explorer.ethereum.org',
-          rpcUrl: 'https://rpc.ethereum.org'
-        },
+          nativeCurrency: {
+            name: 'Ethereum',
+            decimals: 18,
+            symbol: 'ETH'
+          },
+          rpcUrls: {
+            default: {
+              http: ['']
+            }
+          }
+        } as CaipNetwork,
         {
-          id: 'eip155:4',
+          caipNetworkId: 'eip155:4',
+          id: 4,
           name: 'Ethereum Rinkeby',
-          imageId: '12342',
+          assets: {
+            imageId: '12342',
+            imageUrl: ''
+          },
           chainNamespace: chain,
-          chainId: '4',
-          currency: 'ETH',
-          explorerUrl: 'https://explorer.ethereum.org',
-          rpcUrl: 'https://rpc.ethereum.org'
-        },
+          nativeCurrency: {
+            name: 'Ethereum',
+            decimals: 18,
+            symbol: 'ETH'
+          },
+          rpcUrls: {
+            default: {
+              http: ['']
+            }
+          }
+        } as CaipNetwork,
         {
-          id: 'eip155:42',
+          caipNetworkId: 'eip155:42',
+          id: 42,
           name: 'Ethereum Kovan',
           chainNamespace: chain,
-          chainId: '42',
-          currency: 'ETH',
-          explorerUrl: 'https://explorer.ethereum.org',
-          rpcUrl: 'https://rpc.ethereum.org'
-        }
+          nativeCurrency: {
+            name: 'Ethereum',
+            decimals: 18,
+            symbol: 'ETH'
+          },
+          rpcUrls: {
+            default: {
+              http: ['']
+            }
+          }
+        } as CaipNetwork
       ],
       chain
     )
@@ -163,33 +190,60 @@ describe('ApiController', () => {
     NetworkController.setRequestedCaipNetworks(
       [
         {
-          id: 'eip155:1',
+          caipNetworkId: 'eip155:1',
+          id: 1,
           name: 'Ethereum Mainnet',
-          imageId: '12341',
+          assets: {
+            imageId: '12341',
+            imageUrl: ''
+          },
           chainNamespace: chain,
-          chainId: '1',
-          currency: 'ETH',
-          explorerUrl: 'https://explorer.ethereum.org',
-          rpcUrl: 'https://rpc.ethereum.org'
+          nativeCurrency: {
+            name: 'Ethereum',
+            decimals: 18,
+            symbol: 'ETH'
+          },
+          rpcUrls: {
+            default: {
+              http: ['']
+            }
+          }
         },
         {
-          id: 'eip155:4',
+          caipNetworkId: 'eip155:4',
+          id: 4,
           name: 'Ethereum Rinkeby',
-          imageId: '12342',
+          assets: {
+            imageId: '12342',
+            imageUrl: ''
+          },
           chainNamespace: chain,
-          chainId: '4',
-          currency: 'ETH',
-          explorerUrl: 'https://explorer.ethereum.org',
-          rpcUrl: 'https://rpc.ethereum.org'
+          nativeCurrency: {
+            name: 'Ethereum',
+            decimals: 18,
+            symbol: 'ETH'
+          },
+          rpcUrls: {
+            default: {
+              http: ['']
+            }
+          }
         },
         {
-          id: 'eip155:42',
+          caipNetworkId: 'eip155:42',
+          id: 42,
           name: 'Ethereum Kovan',
           chainNamespace: chain,
-          chainId: '42',
-          currency: 'ETH',
-          explorerUrl: 'https://explorer.ethereum.org',
-          rpcUrl: 'https://rpc.ethereum.org'
+          nativeCurrency: {
+            name: 'Ethereum',
+            decimals: 18,
+            symbol: 'ETH'
+          },
+          rpcUrls: {
+            default: {
+              http: ['']
+            }
+          }
         }
       ],
       chain
@@ -244,17 +298,20 @@ describe('ApiController', () => {
     const featuredWalletIds = ['12341', '12342']
     const data = [
       {
-        id: '12341',
+        caipNetworkId: '12341',
+        id: 12341,
         name: 'MetaMask',
         image_id: '12341'
       },
       {
-        id: '12342',
+        caipNetworkId: '12342',
+        id: 12342,
         name: 'RandomWallet',
         image_id: '12342'
       },
       {
-        id: '12343',
+        caipNetworkId: '12343',
+        id: 12343,
         name: 'RandomWallet'
       }
     ]
@@ -295,17 +352,20 @@ describe('ApiController', () => {
     const featuredWalletIds = ['12344']
     const data = [
       {
-        id: '12341',
+        caipNetworkId: '12341',
+        id: 12341,
         name: 'MetaMask',
         image_id: '12341'
       },
       {
-        id: '12342',
+        caipNetworkId: '12342',
+        id: 12342,
         name: 'RandomWallet',
         image_id: '12342'
       },
       {
-        id: '12343',
+        caipNetworkId: '12343',
+        id: 12343,
         name: 'RandomWallet'
       }
     ]
@@ -366,12 +426,14 @@ describe('ApiController', () => {
     const featuredWalletIds = ['12344']
     const data = [
       {
-        id: '12341',
+        caipNetworkId: '12341',
+        id: 12341,
         name: 'MetaMask',
         image_id: '12341'
       },
       {
-        id: '12342',
+        caipNetworkId: '12342',
+        id: 12342,
         name: 'RandomWallet',
         image_id: '12342'
       }
@@ -409,12 +471,14 @@ describe('ApiController', () => {
     const filteredWallet = [{ name: 'Rainbow', rdns: 'me.rainbow' }]
     const data = [
       {
-        id: '12345',
+        caipNetworkId: '12345',
+        id: 12345,
         name: 'MetaMask',
         rdns: 'io.metamask'
       },
       {
-        id: '12346',
+        caipNetworkId: '12346',
+        id: 12346,
         name: 'Phantom',
         rdns: 'app.phantom'
       }
@@ -451,7 +515,8 @@ describe('ApiController', () => {
     const excludeWalletIds = ['12343']
     const data = [
       {
-        id: '12341',
+        caipNetworkId: '12341',
+        id: 12341,
         name: 'MetaMask',
         image_id: '12341'
       }
@@ -486,7 +551,8 @@ describe('ApiController', () => {
     const excludeWalletIds = ['12343']
     let data = [
       {
-        id: '12341',
+        caipNetworkId: '12341',
+        id: 12341,
         name: 'MetaMask',
         image_id: '12341'
       }
@@ -548,7 +614,8 @@ describe('ApiController', () => {
 
     data = [
       {
-        id: '12341',
+        caipNetworkId: '12341',
+        id: 12341,
         name: 'Safe Wallet',
         image_id: '12341'
       }

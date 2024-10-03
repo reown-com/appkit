@@ -9,7 +9,7 @@ export function useAppKitNetwork() {
 
   return {
     caipNetwork: activeCaipNetwork,
-    chainId: activeCaipNetwork?.chainId
+    chainId: activeCaipNetwork?.caipNetworkId
   }
 }
 export function useAppKitAccount() {

@@ -438,7 +438,9 @@ export const SwapController = {
     balances.forEach(token => {
       state.tokensPriceMap[token.address] = token.price || 0
     })
-    state.myTokensWithBalance = balances.filter(token => token.address.startsWith(caipNetwork.id))
+    state.myTokensWithBalance = balances.filter(token =>
+      token.address.startsWith(caipNetwork.caipNetworkId)
+    )
     state.networkBalanceInUSD = networkToken
       ? NumberUtil.multiply(networkToken.quantity.numeric, networkToken.price).toString()
       : '0'
@@ -765,7 +767,7 @@ export const SwapController = {
         type: 'track',
         event: 'SWAP_SUCCESS',
         properties: {
-          network: ChainController.state.activeCaipNetwork?.id || '',
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',
           swapFromAmount: this.state.sourceTokenAmount || '',
@@ -791,7 +793,7 @@ export const SwapController = {
         type: 'track',
         event: 'SWAP_ERROR',
         properties: {
-          network: ChainController.state.activeCaipNetwork?.id || '',
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',
           swapFromAmount: this.state.sourceTokenAmount || '',

@@ -137,13 +137,20 @@ describe('EnsController', () => {
     const result = await EnsController.getNamesForAddress('0x123')
     expect(result).toEqual([])
     NetworkController.setActiveCaipNetwork({
-      id: 'eip155:1',
+      caipNetworkId: 'eip155:1',
       chainNamespace: ConstantsUtil.CHAIN.EVM,
-      chainId: 1,
+      id: 1,
       name: 'Ethereum',
-      currency: 'ETH',
-      explorerUrl: 'https://etherscan.io',
-      rpcUrl: 'https://rpc.infura.com/v1/'
+      nativeCurrency: {
+        name: 'Ethereum',
+        decimals: 18,
+        symbol: 'ETH'
+      },
+      rpcUrls: {
+        default: {
+          http: ['']
+        }
+      }
     })
     const resultWithNetwork = await EnsController.getNamesForAddress('0x123')
     expect(resultWithNetwork).toEqual([TEST_NAME])
@@ -155,13 +162,20 @@ describe('EnsController', () => {
   it('should register name', async () => {
     // Setup
     NetworkController.setActiveCaipNetwork({
-      id: 'eip155:137',
+      caipNetworkId: 'eip155:137',
       chainNamespace: ConstantsUtil.CHAIN.EVM,
-      chainId: 137,
-      currency: 'ETH',
-      explorerUrl: 'https://etherscan.io',
-      rpcUrl: 'https://rpc.infura.com/v1/',
-      name: 'Polygon'
+      id: 137,
+      name: 'Polygon',
+      nativeCurrency: {
+        name: 'Polygon',
+        decimals: 18,
+        symbol: 'MATIC'
+      },
+      rpcUrls: {
+        default: {
+          http: ['']
+        }
+      }
     })
     AccountController.setCaipAddress('eip155:1:0x123', chain)
     const getAuthConnectorSpy = vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({

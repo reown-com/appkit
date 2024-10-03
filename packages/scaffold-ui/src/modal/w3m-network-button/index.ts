@@ -41,7 +41,7 @@ export class W3mNetworkButton extends LitElement {
     this.unsubscribe.push(
       ...[
         AssetController.subscribeNetworkImages(() => {
-          this.networkImage = this.network?.imageId
+          this.networkImage = this.network?.assets?.imageId
             ? AssetUtil.getNetworkImage(this.network)
             : undefined
         }),
@@ -50,7 +50,7 @@ export class W3mNetworkButton extends LitElement {
         }),
         ChainController.subscribeKey('activeCaipNetwork', val => {
           this.network = val
-          this.networkImage = val?.imageId ? AssetUtil.getNetworkImage(val) : undefined
+          this.networkImage = val?.assets?.imageId ? AssetUtil.getNetworkImage(val) : undefined
         }),
         ModalController.subscribeKey('loading', val => (this.loading = val)),
         NetworkController.subscribeKey('isUnsupportedChain', val => (this.isUnsupportedChain = val))

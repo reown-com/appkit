@@ -1,7 +1,7 @@
 import { type AnyTransaction, type Provider } from '@reown/appkit-utils/solana'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 import type { Connection, PublicKey, SendOptions } from '@solana/web3.js'
-import { solana } from '../utils/chains.js'
+import { solana } from '@reown/appkit/networks'
 import type { CaipNetwork } from '@reown/appkit-common'
 
 export type SolanaCoinbaseWallet = {
@@ -41,7 +41,7 @@ export class CoinbaseWalletProvider extends ProviderEventEmitter implements Prov
 
   public get chains() {
     // For Coinbase Wallet, we only support the Solana mainnet
-    return this.requestedChains.filter(chain => chain.chainId === solana.chainId)
+    return this.requestedChains.filter(chain => chain.id === solana.id)
   }
 
   public get publicKey() {

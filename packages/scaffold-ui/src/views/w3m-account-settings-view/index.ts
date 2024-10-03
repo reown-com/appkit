@@ -83,7 +83,7 @@ export class W3mAccountSettingsView extends LitElement {
       throw new Error('w3m-account-settings-view: No account provided')
     }
 
-    const networkImage = this.networkImages[this.network?.imageId ?? '']
+    const networkImage = this.networkImages[this.network?.assets?.imageId ?? '']
 
     return html`
       <wui-flex

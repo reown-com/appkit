@@ -1,9 +1,9 @@
-import type { CaipNetwork } from './TypeUtil.js'
+import { ConstantsUtil, type BaseOrCaipNetwork, type CaipNetwork } from '@reown/appkit-common'
+import { PresetsUtil } from './PresetsUtil'
 
 const RPC_URL_HOST = 'rpc.walletconnect.org'
 
 type ExtendCaipNetworkParams = {
-  networkImageIds: Record<number | string, string>
   customNetworkImageUrls: Record<number | string, string> | undefined
   projectId: string
 }
@@ -40,14 +40,25 @@ export const CaipNetworksUtil = {
    * @returns The extended array of CaipNetwork objects
    */
   extendCaipNetwork(
-    caipNetwork: CaipNetwork,
-    { networkImageIds, customNetworkImageUrls, projectId }: ExtendCaipNetworkParams
+    caipNetwork: BaseOrCaipNetwork,
+    { customNetworkImageUrls }: ExtendCaipNetworkParams
   ): CaipNetwork {
+    const isCaipNetwork = (network: BaseOrCaipNetwork): network is CaipNetwork => {
+      return 'chainNamespace' in network && 'caipNetworkId' in network
+    }
+
     return {
       ...caipNetwork,
-      imageId: networkImageIds[caipNetwork.chainId],
-      imageUrl: customNetworkImageUrls?.[caipNetwork.chainId],
-      rpcUrl: CaipNetworksUtil.extendRpcUrlWithProjectId(caipNetwork.rpcUrl, projectId)
+      chainNamespace: isCaipNetwork(caipNetwork)
+        ? caipNetwork.chainNamespace
+        : ConstantsUtil.CHAIN.EVM,
+      caipNetworkId: isCaipNetwork(caipNetwork)
+        ? caipNetwork.caipNetworkId
+        : `${ConstantsUtil.CHAIN.EVM}:${caipNetwork.id}`,
+      assets: {
+        imageId: PresetsUtil.NetworkImageIds[caipNetwork.id],
+        imageUrl: customNetworkImageUrls?.[caipNetwork.id]
+      }
     }
   },
 
@@ -61,15 +72,14 @@ export const CaipNetworksUtil = {
    * @returns The extended array of CaipNetwork objects
    */
   extendCaipNetworks(
-    caipNetworks: CaipNetwork[],
-    { networkImageIds, customNetworkImageUrls, projectId }: ExtendCaipNetworkParams
-  ): CaipNetwork[] {
+    caipNetworks: BaseOrCaipNetwork[],
+    { customNetworkImageUrls, projectId }: ExtendCaipNetworkParams
+  ) {
     return caipNetworks.map(caipNetwork =>
       CaipNetworksUtil.extendCaipNetwork(caipNetwork, {
-        networkImageIds,
         customNetworkImageUrls,
         projectId
       })
-    )
+    ) as [CaipNetwork, ...CaipNetwork[]]
   }
 }

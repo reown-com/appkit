@@ -1,6 +1,5 @@
 import type { AppKitOptions } from '@reown/appkit'
 import {
-  NetworkUtil,
   SafeLocalStorage,
   SafeLocalStorageKeys,
   type AdapterType,
@@ -33,7 +32,13 @@ import {
 } from '@reown/appkit-wallet'
 import { ConstantsUtil as CoreConstantsUtil } from '@reown/appkit-core'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { ConstantsUtil, ErrorUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
+import {
+  CaipNetworksUtil,
+  ConstantsUtil,
+  ErrorUtil,
+  HelpersUtil,
+  PresetsUtil
+} from '@reown/appkit-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { ConnectionControllerClient, NetworkControllerClient } from '@reown/appkit-core'
 import { WcConstantsUtil } from '@reown/appkit'
@@ -146,9 +151,7 @@ export class Ethers5Adapter {
       const coinbaseWallet = new CoinbaseWalletSDK({
         appName: options?.metadata?.name,
         appLogoUrl: options?.metadata?.icons[0],
-        appChainIds: options.networks?.map(caipNetwork => caipNetwork.chainId as number) || [
-          1, 84532
-        ]
+        appChainIds: options.networks?.map(caipNetwork => caipNetwork.id as number) || [1, 84532]
       })
 
       coinbaseProvider = coinbaseWallet.makeWeb3Provider({
@@ -214,17 +217,26 @@ export class Ethers5Adapter {
     )
   }
 
-  public construct(appKit: AppKit, options: AppKitOptions) {
+  public construct(
+    appKit: AppKit,
+    options: AppKitOptions,
+    caipNetworks: [CaipNetwork, ...CaipNetwork[]]
+  ) {
     this.appKit = appKit
     this.options = options
-    this.caipNetworks = options.networks
-    this.defaultCaipNetwork = options.defaultNetwork || options.networks[0]
+    this.caipNetworks = caipNetworks
+    this.defaultCaipNetwork = options.defaultNetwork
+      ? CaipNetworksUtil.extendCaipNetwork(options.defaultNetwork, {
+          customNetworkImageUrls: options.chainImages,
+          projectId: options.projectId
+        })
+      : this.caipNetworks[0]
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
     this.ethersConfig = this.createEthersConfig(options)
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
-        if (caipNetwork?.chainId) {
+        if (caipNetwork?.id) {
           try {
             await this.switchNetwork(caipNetwork)
           } catch (error) {
@@ -398,12 +410,7 @@ export class Ethers5Adapter {
           throw new Error('Provider is undefined')
         }
 
-        return await Ethers5Methods.estimateGas(
-          data,
-          provider,
-          address,
-          Number(caipNetwork?.chainId)
-        )
+        return await Ethers5Methods.estimateGas(data, provider, address, Number(caipNetwork?.id))
       },
 
       sendTransaction: async data => {
@@ -427,7 +434,7 @@ export class Ethers5Adapter {
           data,
           provider,
           address,
-          Number(caipNetwork?.chainId)
+          Number(caipNetwork?.id)
         )
       },
 
@@ -445,12 +452,7 @@ export class Ethers5Adapter {
           throw new Error('Provider is undefined')
         }
 
-        return await Ethers5Methods.writeContract(
-          data,
-          provider,
-          address,
-          Number(caipNetwork?.chainId)
-        )
+        return await Ethers5Methods.writeContract(data, provider, address, Number(caipNetwork?.id))
       },
 
       getEnsAddress: async (value: string) => {
@@ -464,7 +466,7 @@ export class Ethers5Adapter {
       getEnsAvatar: async (value: string) => {
         const caipNetwork = this.appKit?.getCaipNetwork()
 
-        return await Ethers5Methods.getEnsAvatar(value, Number(caipNetwork?.chainId))
+        return await Ethers5Methods.getEnsAvatar(value, Number(caipNetwork?.id))
       }
     }
 
@@ -638,10 +640,7 @@ export class Ethers5Adapter {
         preferredAccountType,
         accounts = []
       } = await this.authProvider.connect({
-        chainId: Number(
-          NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id) ??
-            this.caipNetworks[0]?.chainId
-        )
+        chainId: Number(this.appKit?.getCaipNetwork()?.id || this.caipNetworks[0]?.id)
       })
 
       const { smartAccountEnabledNetworks } =
@@ -713,7 +712,7 @@ export class Ethers5Adapter {
     const chainChangedHandler = (chainId: string) => {
       const chainIdNumber =
         typeof chainId === 'string' ? EthersHelpersUtil.hexStringToNumber(chainId) : Number(chainId)
-      const caipNetwork = this.caipNetworks.find(c => c.chainId === chainIdNumber)
+      const caipNetwork = this.caipNetworks.find(c => c.id === chainIdNumber)
       const currentCaipNetwork = this.appKit?.getCaipNetwork()
 
       if (!currentCaipNetwork || currentCaipNetwork?.id !== caipNetwork?.id) {
@@ -828,7 +827,7 @@ export class Ethers5Adapter {
     }
 
     this.appKit?.setLoading(true)
-    const chainId = NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
+    const chainId = this.appKit?.getCaipNetwork()?.id
     this.appKit?.setCaipAddress(`eip155:${chainId}:${address}`, this.chainNamespace)
     this.appKit?.setStatus('connected', this.chainNamespace)
     this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chainNamespace)
@@ -875,9 +874,9 @@ export class Ethers5Adapter {
           this.checkActiveProviders(this.ethersConfig)
         }
 
-        if (currentCaipNetwork?.explorerUrl) {
+        if (currentCaipNetwork?.blockExplorers) {
           this.appKit?.setAddressExplorerUrl(
-            `${currentCaipNetwork.explorerUrl}/address/${address}`,
+            `${currentCaipNetwork.blockExplorers.default.url}/address/${address}`,
             this.chainNamespace
           )
         }
@@ -911,7 +910,7 @@ export class Ethers5Adapter {
         await this.syncReownName(address)
       }
     } catch {
-      if (caipNetwork?.chainId === 1) {
+      if (caipNetwork?.id === 1) {
         const ensProvider = new ethers.providers.InfuraProvider('mainnet')
         const name = await ensProvider.lookupAddress(address)
         const avatar = await ensProvider.getAvatar(address)
@@ -938,16 +937,23 @@ export class Ethers5Adapter {
     const isEVMNetwork = caipNetwork.chainNamespace === CommonConstantsUtil.CHAIN.EVM
 
     if (caipNetwork && isExistingNetwork && isEVMNetwork) {
-      const jsonRpcProvider = new ethers.providers.JsonRpcProvider(caipNetwork.rpcUrl, {
-        chainId: caipNetwork.chainId as number,
-        name: caipNetwork.name
-      })
+      const jsonRpcProvider = new ethers.providers.JsonRpcProvider(
+        caipNetwork.rpcUrls.default.http[0],
+        {
+          chainId: caipNetwork.id as number,
+          name: caipNetwork.name
+        }
+      )
 
       if (jsonRpcProvider) {
         const balance = await jsonRpcProvider.getBalance(address)
         const formattedBalance = ethers.utils.formatEther(balance)
 
-        this.appKit?.setBalance(formattedBalance, caipNetwork.currency, this.chainNamespace)
+        this.appKit?.setBalance(
+          formattedBalance,
+          caipNetwork.nativeCurrency.symbol,
+          this.chainNamespace
+        )
       }
     }
   }
@@ -1010,7 +1016,7 @@ export class Ethers5Adapter {
       try {
         await provider.request({
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: EthersHelpersUtil.numberToHexString(caipNetwork.chainId) }]
+          params: [{ chainId: EthersHelpersUtil.numberToHexString(caipNetwork.id) }]
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (switchError: any) {
@@ -1046,11 +1052,9 @@ export class Ethers5Adapter {
           if (this.authProvider) {
             try {
               this.appKit?.setLoading(true)
-              const { chainId } = await this.authProvider.switchNetwork(
-                caipNetwork.chainId as number
-              )
+              const { chainId } = await this.authProvider.switchNetwork(caipNetwork.id as number)
               const { address, preferredAccountType } = await this.authProvider.connect({
-                chainId: caipNetwork.chainId as number | undefined
+                chainId: caipNetwork.id as number | undefined
               })
               const caipAddress = `${this.chainNamespace}:${chainId}:${address}`
 

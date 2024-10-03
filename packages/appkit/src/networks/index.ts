@@ -1,4 +1,4 @@
-import type { CaipNetworkNew } from '@reown/appkit-common'
+import type { CaipNetwork } from '@reown/appkit-common'
 import type { Assign, Prettify, ChainFormatters } from 'viem'
 
 import type { ChainNamespace } from '@reown/appkit-common'
@@ -11,14 +11,14 @@ export function getBlockchainApiRpcUrl(chainId: number | string, namespace: Chai
 
 export function defineChain<
   formatters extends ChainFormatters,
-  const chain extends CaipNetworkNew<formatters>
->(chain: chain): Prettify<Assign<CaipNetworkNew<undefined>, chain>> {
+  const chain extends CaipNetwork<formatters>
+>(chain: chain): Prettify<Assign<CaipNetwork<undefined>, chain>> {
   return {
     formatters: undefined,
     fees: undefined,
     serializers: undefined,
     ...chain
-  } as Assign<CaipNetworkNew<undefined>, chain>
+  } as Assign<CaipNetwork<undefined>, chain>
 }
 
 export const solana = defineChain({

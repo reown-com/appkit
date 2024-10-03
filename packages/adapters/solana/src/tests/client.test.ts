@@ -65,7 +65,7 @@ describe('SolanaAdapter', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     client = new SolanaAdapter({})
-    client.construct(mockAppKit, mockOptions)
+    client.construct(mockAppKit, mockOptions, [solana])
   })
 
   afterEach(() => {
@@ -107,7 +107,7 @@ describe('SolanaAdapter', () => {
       await client['syncNetwork'](mockAddress)
 
       expect(mockAppKit.setAddressExplorerUrl).toHaveBeenCalledWith(
-        `${solana.explorerUrl}/account/${mockAddress}`,
+        `${solana.blockExplorers.default.url}/account/${mockAddress}`,
         'solana'
       )
       expect(client['syncBalance']).toHaveBeenCalledWith(mockAddress)

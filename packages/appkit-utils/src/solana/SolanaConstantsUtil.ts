@@ -22,13 +22,26 @@ export const SolConstantsUtil = {
   ERROR_CODE_UNRECOGNIZED_CHAIN_ID: 4902,
   ERROR_CODE_DEFAULT: 5000,
   DEFAULT_CHAIN: {
-    id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-    chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    id: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    caipNetworkId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
     name: 'Solana',
     chainNamespace: ConstantsUtil.CHAIN.SOLANA,
-    currency: 'SOL',
-    explorerUrl: 'https://solscan.io',
-    rpcUrl: `${ConstantsUtil.BLOCKCHAIN_API_RPC_URL}/v1`
+    nativeCurrency: {
+      name: 'Solana',
+      decimals: 9,
+      symbol: 'SOL'
+    },
+    blockExplorers: {
+      default: {
+        name: 'Solscan',
+        url: 'https://solscan.io'
+      }
+    },
+    rpcUrls: {
+      default: {
+        http: [`${ConstantsUtil.BLOCKCHAIN_API_RPC_URL}/v1`]
+      }
+    }
   } as CaipNetwork,
   CHAIN_IDS: {
     Mainnet: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',

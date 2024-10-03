@@ -8,17 +8,25 @@ export type BaseNetwork<
   custom extends Record<string, unknown> | undefined = Record<string, unknown> | undefined
 > = BaseChain<formatters, custom>
 
-export type CaipNetworkNew<
+export type CaipNetwork<
   formatters extends ChainFormatters | undefined = ChainFormatters | undefined,
   custom extends Record<string, unknown> | undefined = Record<string, unknown> | undefined
 > = Omit<BaseChain<formatters, custom>, 'id'> & {
   id: number | string
   chainNamespace: ChainNamespace
   caipNetworkId: CaipNetworkId
-  assets: {
-    imageId: string
-    imageUrl: string
+  assets?: {
+    imageId: string | undefined
+    imageUrl: string | undefined
   }
+}
+
+export type BaseOrCaipNetwork = BaseChain | CaipNetwork
+
+export type BaseNetworkWithOptionalCaipFields = BaseNetwork & {
+  id: number | string
+  chainNamespace: ChainNamespace
+  caipNetworkId: CaipNetworkId
 }
 
 export type CaipNetworkId = `${ChainNamespace}:${ChainId}`
@@ -29,7 +37,7 @@ export type ChainId = string | number
 
 export type ChainNamespace = 'eip155' | 'solana' | 'polkadot'
 
-export type CaipNetwork = {
+export type CaipNetworkLegacy = {
   id: CaipNetworkId
   chainId: ChainId
   chainNamespace: ChainNamespace

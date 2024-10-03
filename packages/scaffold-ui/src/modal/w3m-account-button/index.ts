@@ -50,7 +50,7 @@ export class W3mAccountButton extends LitElement {
     this.unsubscribe.push(
       ...[
         AssetController.subscribeNetworkImages(() => {
-          this.networkImage = this.network?.imageId
+          this.networkImage = this.network?.assets?.imageId
             ? AssetUtil.getNetworkImage(this.network)
             : undefined
         }),
@@ -61,7 +61,7 @@ export class W3mAccountButton extends LitElement {
         AccountController.subscribeKey('profileImage', val => (this.profileImage = val)),
         ChainController.subscribeKey('activeCaipNetwork', val => {
           this.network = val
-          this.networkImage = val?.imageId ? AssetUtil.getNetworkImage(val) : undefined
+          this.networkImage = val?.assets?.imageId ? AssetUtil.getNetworkImage(val) : undefined
         }),
         NetworkController.subscribeKey('isUnsupportedChain', val => {
           this.isUnsupportedChain = val

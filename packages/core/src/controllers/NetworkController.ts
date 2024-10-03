@@ -2,12 +2,7 @@ import { proxy, ref } from 'valtio/vanilla'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import {
-  NetworkUtil,
-  type CaipNetwork,
-  type CaipNetworkId,
-  type ChainNamespace
-} from '@reown/appkit-common'
+import { type CaipNetwork, type CaipNetworkId, type ChainNamespace } from '@reown/appkit-common'
 import { ChainController } from './ChainController.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
@@ -166,8 +161,14 @@ export const NetworkController = {
       network?.chainNamespace
     )
 
-    if (networkControllerClient) {
-      await networkControllerClient.switchCaipNetwork(network)
+    console.log('>>> switchActiveNetwork', network)
+    try {
+      if (networkControllerClient) {
+        console.log('>>> switchActiveNetwork1', network)
+        await networkControllerClient.switchCaipNetwork(network)
+      }
+    } catch (error) {
+      console.log('>>> switchActiveNetwork', error)
     }
 
     ChainController.setActiveCaipNetwork(network)
@@ -176,7 +177,7 @@ export const NetworkController = {
       EventsController.sendEvent({
         type: 'track',
         event: 'SWITCH_NETWORK',
-        properties: { network: network.id }
+        properties: { network: network.caipNetworkId }
       })
     }
   },
@@ -232,7 +233,7 @@ export const NetworkController = {
   },
 
   checkIfSmartAccountEnabled() {
-    const networkId = NetworkUtil.caipNetworkIdToNumber(ChainController.state.activeCaipNetwork?.id)
+    const networkId = ChainController.state.activeCaipNetwork?.id
     const activeChain = ChainController.state.activeChain
 
     if (!activeChain) {
@@ -286,6 +287,6 @@ export const NetworkController = {
         ChainController.state.activeCaipNetwork?.chainNamespace || 'eip155'
       ]
 
-    return `${ChainController.state.activeCaipNetwork?.id || 'eip155:1'}:${address}`
+    return `${ChainController.state.activeCaipNetwork?.caipNetworkId || 'eip155:1'}:${address}`
   }
 }

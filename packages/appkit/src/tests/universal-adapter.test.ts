@@ -6,14 +6,19 @@ import mockProvider from './mocks/UniversalProvider'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { NetworkController } from '@reown/appkit-core'
 import { ProviderUtil } from '../store/index.js'
-import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import mockAppKit from './mocks/AppKit'
+
+const mockCaipNetworks = CaipNetworksUtil.extendCaipNetworks([mainnet, solana], {
+  customNetworkImageUrls: {},
+  projectId: 'test-project-id'
+})
 
 describe('UniversalAdapter', () => {
   let universalAdapter: UniversalAdapterClient
 
   beforeEach(() => {
-    universalAdapter = new UniversalAdapterClient(mockOptions)
+    universalAdapter = new UniversalAdapterClient(mockOptions, mockCaipNetworks)
     universalAdapter.walletConnectProvider = mockProvider
     universalAdapter.construct(mockAppKit, mockOptions)
   })
@@ -27,10 +32,6 @@ describe('UniversalAdapter', () => {
       expect(universalAdapter?.caipNetworks).toEqual(mockOptions.networks)
     })
 
-    it('should set defaultNetwork to first caipNetwork option', () => {
-      expect(universalAdapter?.defaultNetwork).toEqual(mockOptions.networks[0])
-    })
-
     it('should set metadata to metadata options', () => {
       expect((universalAdapter as any).appKit).toEqual(mockAppKit)
     })
@@ -39,6 +40,7 @@ describe('UniversalAdapter', () => {
   describe('UniversalAdapter - Public Methods', () => {
     it('should return walletConnectProvider when getWalletConnectProvider is invoked', async () => {
       const switchNetworkSpy = vi.spyOn(universalAdapter, 'switchNetwork')
+      const mainnet = universalAdapter.caipNetworks[0]
       await universalAdapter.networkControllerClient.switchCaipNetwork(mainnet)
       expect(switchNetworkSpy).toHaveBeenCalledWith(mainnet)
     })
@@ -64,6 +66,7 @@ describe('UniversalAdapter', () => {
     })
 
     it('should call setDefaultNetwork and set first caipNetwork on setActiveCaipNetwork when there is no active caipNetwork', async () => {
+      const mainnet = universalAdapter.caipNetworks[0]
       vi.spyOn(NetworkController, 'state', 'get').mockReturnValue({
         caipNetwork: undefined,
         requestedCaipNetworks: [mainnet, solana],
@@ -83,6 +86,7 @@ describe('UniversalAdapter', () => {
 
     it('should set correct requestedCaipNetworks in AppKit when syncRequestedNetworks has been called', () => {
       ;(universalAdapter as any).syncRequestedNetworks(mockOptions.networks)
+      const mainnet = universalAdapter.caipNetworks[0]
       expect(mockAppKit.setRequestedCaipNetworks).toHaveBeenCalledWith([mainnet], 'eip155')
       expect(mockAppKit.setRequestedCaipNetworks).toHaveBeenCalledWith([solana], 'solana')
     })

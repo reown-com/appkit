@@ -1,4 +1,4 @@
-import type { CaipNetworkNew, ThemeVariables } from '@reown/appkit-common'
+import type { BaseOrCaipNetwork, ThemeVariables } from '@reown/appkit-common'
 import type {
   ChainAdapter,
   Metadata,
@@ -47,12 +47,12 @@ export type AppKitOptions = {
    * You can set the desired caipnetworks for the app:
    * @see https://docs.reown.com/appkit/react/core/options#defaultchain
    */
-  networks: readonly [CaipNetworkNew, ...CaipNetworkNew[]]
+  networks: BaseOrCaipNetwork[]
   /**
    * You can set a desired caipnetwork for the initial connection:
    * @see https://docs.reown.com/appkit/react/core/options#defaultchain
    */
-  defaultNetwork?: NetworkControllerState['caipNetwork']
+  defaultNetwork?: BaseOrCaipNetwork
   /**
    * Add or override the modal's network images.
    * @see https://docs.reown.com/appkit/react/core/options#chainimages

@@ -37,7 +37,8 @@ export const WcHelpersUtil = {
 
   createNamespaces(caipNetworks: CaipNetwork[]): NamespaceConfig {
     return caipNetworks.reduce<NamespaceConfig>((acc, chain) => {
-      const { chainId, chainNamespace, rpcUrl } = chain
+      const { id, chainNamespace, rpcUrls } = chain
+      const rpcUrl = rpcUrls.default.http[0]
 
       const methods = this.getMethodsByChainNamespace(chainNamespace)
 
@@ -50,15 +51,15 @@ export const WcHelpersUtil = {
         } satisfies Namespace
       }
 
-      const fullChainId = `${chainNamespace}:${chainId}`
+      const fullChainId = `${chainNamespace}:${id}`
 
       // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
       const namespace = acc[chainNamespace] as Namespace
 
       namespace.chains.push(fullChainId)
 
-      if (namespace?.rpcMap) {
-        namespace.rpcMap[chainId] = rpcUrl
+      if (namespace?.rpcMap && rpcUrl) {
+        namespace.rpcMap[id] = rpcUrl
       }
 
       return acc

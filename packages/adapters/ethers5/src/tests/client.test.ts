@@ -6,14 +6,23 @@ import { mockCreateEthersConfig } from './mocks/EthersConfig'
 import mockAppKit from './mocks/AppKit'
 import { mockAuthConnector } from './mocks/AuthConnector'
 import { EthersHelpersUtil, type ProviderId, type ProviderType } from '@reown/appkit-utils/ethers'
-import { ConstantsUtil } from '@reown/appkit-utils'
-import { arbitrum, mainnet, polygon } from '@reown/appkit/networks'
+import { CaipNetworksUtil, ConstantsUtil } from '@reown/appkit-utils'
+import {
+  arbitrum as AppkitArbitrum,
+  mainnet as AppkitMainnet,
+  polygon as AppkitPolygon
+} from '@reown/appkit/networks'
 import { ProviderUtil } from '@reown/appkit/store'
 import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 import { type BlockchainApiLookupEnsName } from '@reown/appkit'
 import { ethers } from 'ethers'
 
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+
+const [mainnet, arbitrum, polygon] = CaipNetworksUtil.extendCaipNetworks(
+  [AppkitMainnet, AppkitArbitrum, AppkitPolygon],
+  { customNetworkImageUrls: {}, projectId: '1234' }
+) as [CaipNetwork, CaipNetwork, CaipNetwork]
 
 vi.mock('@reown/appkit-wallet', () => ({
   W3mFrameProvider: vi.fn().mockImplementation(() => mockAuthConnector),
@@ -107,7 +116,7 @@ describe('EthersAdapter', () => {
       ...mockOptions,
       ethersConfig: mockCreateEthersConfig()
     }
-    client.construct(mockAppKit, optionsWithEthersConfig)
+    client.construct(mockAppKit, optionsWithEthersConfig, [mainnet, arbitrum, polygon])
   })
 
   afterEach(() => {
@@ -766,10 +775,13 @@ describe('EthersAdapter', () => {
 
       await client['syncBalance'](mockAddress, mainnet)
 
-      expect(ethers.providers.JsonRpcProvider).toHaveBeenCalledWith(mainnet.rpcUrl, {
-        chainId: 1,
-        name: 'Ethereum'
-      })
+      expect(ethers.providers.JsonRpcProvider).toHaveBeenCalledWith(
+        mainnet.rpcUrls.default.http[0],
+        {
+          chainId: 1,
+          name: 'Ethereum'
+        }
+      )
       expect(mockJsonRpcProvider.getBalance).toHaveBeenCalledWith(mockAddress)
       expect(mockAppKit.setBalance).toHaveBeenCalledWith('1.0', 'ETH', 'eip155')
     })

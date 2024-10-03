@@ -92,7 +92,9 @@ export class W3mUnsupportedChainView extends LitElement {
     )
 
     const filteredNetworks = this.swapUnsupportedChain
-      ? sortedNetworks.filter(network => ConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(network.id))
+      ? sortedNetworks.filter(network =>
+          ConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(network.caipNetworkId)
+        )
       : sortedNetworks
 
     return filteredNetworks.map(
@@ -131,8 +133,8 @@ export class W3mUnsupportedChainView extends LitElement {
     const caipNetwork = ChainController.state.activeCaipNetwork
     const routerData = RouterController.state.data
 
-    if (caipAddress && caipNetwork?.id !== network.id) {
-      if (approvedCaipNetworkIds?.includes(network.id)) {
+    if (caipAddress && caipNetwork?.caipNetworkId !== network.caipNetworkId) {
+      if (approvedCaipNetworkIds?.includes(network.caipNetworkId)) {
         await NetworkController.switchActiveNetwork(network)
       } else if (supportsAllNetworks) {
         RouterController.push('SwitchNetwork', { ...routerData, network })
