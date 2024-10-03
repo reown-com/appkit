@@ -33,6 +33,16 @@
       "default": "./dist/esm/exports/vue.js"
     }
   },
+  "typesVersions": {
+    "*": {
+      "react": [
+        "./dist/types/exports/react.d.ts"
+      ],
+      "vue": [
+        "./dist/types/exports/vue.d.ts"
+      ]
+    }
+  },
   "dependencies": {
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
@@ -44,7 +54,8 @@
   },
   "devDependencies": {
     "vitest": "2.0.5",
-    "@vitest/coverage-v8": "2.0.5"
+    "@vitest/coverage-v8": "2.0.5",
+    "vue": "3.x"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",

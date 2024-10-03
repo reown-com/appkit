@@ -115,7 +115,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "vitest": "2.0.5",
-    "vue": "3.4.3"
+    "vue": "3.x"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
