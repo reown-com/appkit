@@ -183,7 +183,7 @@ export class W3mConnectingWidget extends LitElement {
   private onTryAgain() {
     if (!this.buffering) {
       ConnectionController.setWcError(false)
-      if (this.onRetry) {
+      if (!this.wallet?.webapp_link && this.onRetry) {
         this.isRetrying = true
         this.onRetry?.()
       } else {
