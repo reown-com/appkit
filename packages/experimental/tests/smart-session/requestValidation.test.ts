@@ -191,8 +191,8 @@ describe('smart-session/schema', () => {
         )
       })
 
-      it('should pass for an expiry 1 second in the future', () => {
-        const request = { ...mockRequest, expiry: currentTimestamp + 1 }
+      it('should pass for an expiry 1 hour in the future', () => {
+        const request = { ...mockRequest, expiry: currentTimestamp + 3600 }
         expect(() => validateRequest(request)).not.toThrow()
       })
     })
