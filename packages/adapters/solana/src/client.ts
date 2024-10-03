@@ -361,15 +361,13 @@ export class SolanaAdapter implements ChainAdapter {
     address: string | undefined
     caipNetwork: CaipNetwork | undefined
   }) {
-    const caipNetworkId = caipNetwork?.id
-
     if (address && caipNetwork) {
       SolStoreUtil.setConnection(
         new Connection(caipNetwork.rpcUrls.default.http?.[0] as string, this.connectionSettings)
       )
       this.appKit?.setAllAccounts([{ address, type: 'eoa' }], this.chainNamespace)
       this.appKit?.setCaipAddress(
-        `${this.chainNamespace}:${caipNetworkId}:${address}` as CaipAddress,
+        `${this.chainNamespace}:${caipNetwork.id}:${address}` as CaipAddress,
         this.chainNamespace
       )
       await this.syncNetwork(address)
@@ -618,6 +616,8 @@ export class SolanaAdapter implements ChainAdapter {
         throw new Error('projectId is required for AuthProvider')
       }
 
+      const getActiveChain = () => this.appKit?.getCaipNetwork(this.chainNamespace)
+
       const emailEnabled =
         this.options?.features?.email === undefined
           ? CoreConstantsUtil.DEFAULT_FEATURES.email
@@ -637,7 +637,7 @@ export class SolanaAdapter implements ChainAdapter {
 
         this.authProvider = new AuthProvider({
           getProvider: () => this.w3mFrameProvider as W3mFrameProvider,
-          getActiveChain: () => this.appKit?.getCaipNetwork(this.chainNamespace),
+          getActiveChain,
           getActiveNamespace: () => this.appKit?.getActiveChainNamespace(),
           getSession: () => this.getAuthSession(),
           setSession: (session: AuthProvider.Session | undefined) => {
@@ -654,16 +654,12 @@ export class SolanaAdapter implements ChainAdapter {
             // @ts-expect-error - window is not typed
             provider: window.coinbaseSolana,
             chains: this.caipNetworks,
-            getActiveChain: () => this.appKit?.getCaipNetwork(this.chainNamespace)
+            getActiveChain
           })
         )
       }
 
-      if (this.appKit && this.caipNetworks[0]) {
-        watchStandard(this.appKit, this.caipNetworks[0], standardAdapters =>
-          this.addProvider.bind(this)(...standardAdapters)
-        )
-      }
+      watchStandard(this.caipNetworks, getActiveChain, this.addProvider.bind(this))
     }
   }
 
