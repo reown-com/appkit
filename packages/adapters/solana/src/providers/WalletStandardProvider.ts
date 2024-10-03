@@ -95,7 +95,7 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
     return this.wallet.chains
       .map(chainId =>
         this.requestedChains.find(
-          chain => chain.chainId === chainId || chain.chainId === solanaChains[chainId]?.chainId
+          chain => chain.id === chainId || chain.id === solanaChains[chainId]?.id
         )
       )
       .filter(Boolean) as CaipNetwork[]
