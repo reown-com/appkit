@@ -207,18 +207,11 @@ describe('EthersAdapter', () => {
         polkadot: undefined
       })
 
-      const newNetwork = {
-        id: 'eip155:10',
-        name: 'Optimism',
-        chainId: '10',
-        rpcUrl: 'https://mainnet.optimism.io'
-      } as unknown as CaipNetwork
-
-      await client.switchNetwork(newNetwork)
+      await client.switchNetwork(optimism)
 
       expect(
         mockAppKit.universalAdapter?.networkControllerClient.switchCaipNetwork
-      ).toHaveBeenCalledWith(newNetwork)
+      ).toHaveBeenCalledWith(optimism)
     })
 
     it('should set requested CAIP networks for each unique chain namespace', () => {
