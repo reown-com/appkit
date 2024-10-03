@@ -1,12 +1,7 @@
 import { Button, Stack, Text } from '@chakra-ui/react'
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useChakraToast } from '../Toast'
 import { toHex, type Address } from 'viem'
-import { EIP_7715_RPC_METHODS } from '../../utils/EIP5792Utils'
-import {
-  useWagmiAvailableCapabilities,
-  type Provider
-} from '../../hooks/useWagmiActiveCapabilities'
 import { useLocalEcdsaKey } from '../../context/LocalEcdsaKeyContext'
 import { bigIntReplacer } from '../../utils/CommonUtils'
 import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
@@ -14,25 +9,24 @@ import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 import {
   grantPermissions,
+  isSmartSessionSupported,
   type SmartSessionGrantPermissionsRequest
 } from '@reown/appkit-experimental/smart-session'
 
 export function WagmiRequestPermissionsAsyncTest() {
-  const { provider, supported } = useWagmiAvailableCapabilities({
-    method: EIP_7715_RPC_METHODS.WALLET_GRANT_PERMISSIONS
-  })
   const { address, isConnected } = useAppKitAccount()
 
   const { chainId } = useAppKitNetwork()
+  const isSupported = useMemo(() => isSmartSessionSupported(), [address])
 
-  if (!isConnected || !provider || !address || !chainId) {
+  if (!isConnected || !address || !chainId) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet not connected
       </Text>
     )
   }
-  if (!supported) {
+  if (!isSupported) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet does not support wallet_grantPermissions rpc method
@@ -40,16 +34,14 @@ export function WagmiRequestPermissionsAsyncTest() {
     )
   }
 
-  return <ConnectedTestContent chainId={chainId} provider={provider} address={address as Address} />
+  return <ConnectedTestContent chainId={chainId} address={address as Address} />
 }
 
 function ConnectedTestContent({
   chainId,
-  provider,
   address
 }: {
   chainId: string | number
-  provider: Provider
   address: Address
 }) {
   const { clearSmartSession, setSmartSession, smartSession } = useERC7715Permissions()
@@ -69,10 +61,14 @@ function ConnectedTestContent({
         chainId: toHex(chainId),
         address,
         signer: {
-          type: 'key',
+          type: 'keys',
           data: {
-            type: 'secp256k1',
-            publicKey: signer.publicKey
+            keys: [
+              {
+                type: 'secp256k1',
+                publicKey: signer.publicKey
+              }
+            ]
           }
         },
         permissions: purchaseDonutPermissions['permissions'],
@@ -97,7 +93,7 @@ function ConnectedTestContent({
     } finally {
       setRequestPermissionLoading(false)
     }
-  }, [signer, provider, address, chainId, grantPermissions, toast])
+  }, [signer, address, chainId, grantPermissions, toast])
 
   return (
     <Stack direction={['column', 'column', 'row']}>
