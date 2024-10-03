@@ -6,10 +6,11 @@ import {
   OptionsController,
   type ConnectionControllerClient
 } from '@reown/appkit-core'
+import { ProviderUtil } from '@reown/appkit/store'
 import { CosignerService } from '../../src/smart-session/utils/CosignerService'
 import type { SmartSessionGrantPermissionsRequest } from '../../src/smart-session/utils/TypeUtils.js'
 import {
-  extractAddress,
+  extractChainAndAddress,
   isValidSupportedCaipAddress,
   assertWalletGrantPermissionsResponse
 } from '../../src/smart-session/helper/index.js'
@@ -17,17 +18,23 @@ import { donutContractAbi } from '../data/abi'
 import { ERROR_MESSAGES } from '../../src/smart-session/schema'
 
 vi.mock('@reown/appkit-core')
+vi.mock('@reown/appkit/store')
 vi.mock('../../src/smart-session/utils/CosignerService')
 
 describe('grantPermissions', () => {
   let mockRequest: SmartSessionGrantPermissionsRequest
   const expiry = Date.now() + 1000
   beforeEach(() => {
-    mockRequest = {
+    ;(mockRequest = {
       address: '0x1234567890123456789012345678901234567890',
       chainId: '0x1',
       expiry: expiry,
-      signer: { type: 'key', data: { type: 'secp256k1', publicKey: '0x123456' } },
+      signer: {
+        type: 'keys',
+        data: {
+          keys: [{ type: 'secp256k1', publicKey: '0x123456' }]
+        }
+      },
       permissions: [
         {
           type: 'contract-call',
@@ -43,13 +50,20 @@ describe('grantPermissions', () => {
         }
       ],
       policies: []
-    }
-
-    vi.resetAllMocks()
+    }),
+      vi.resetAllMocks()
     vi.mocked(OptionsController.state).projectId = 'test-project-id'
     vi.mocked(ChainController.state).activeCaipAddress =
       'eip155:1:0x1234567890123456789012345678901234567890'
-
+    vi.mocked(ProviderUtil).getProvider = vi.fn().mockReturnValue({
+      session: {
+        namespaces: {
+          eip155: {
+            methods: ['wallet_grantPermissions']
+          }
+        }
+      }
+    })
     vi.mocked(CosignerService.prototype.addPermission).mockResolvedValue({
       pci: 'test-pci',
       key: {
@@ -59,6 +73,16 @@ describe('grantPermissions', () => {
     })
 
     vi.mocked(ConnectionController._getClient).mockReturnValue({
+      getCapabilities: vi.fn().mockResolvedValue({
+        '0x1': {
+          permissions: {
+            supported: true,
+            permissionTypes: ['contract-call'],
+            signerTypes: ['keys'],
+            policyTypes: []
+          }
+        }
+      }),
       grantPermissions: vi.fn().mockResolvedValue({
         permissions: [
           {
@@ -132,6 +156,16 @@ describe('grantPermissions', () => {
 
   it('should throw an error when grantPermissions returns null', async () => {
     vi.mocked(ConnectionController._getClient).mockReturnValueOnce({
+      getCapabilities: vi.fn().mockResolvedValue({
+        '0x1': {
+          permissions: {
+            supported: true,
+            permissionTypes: ['contract-call'],
+            signerTypes: ['keys'],
+            policyTypes: []
+          }
+        }
+      }),
       grantPermissions: vi.fn().mockResolvedValue(null)
     } as unknown as ConnectionControllerClient)
 
@@ -218,6 +252,16 @@ describe('grantPermissions', () => {
 
   it('should throw an error when ConnectionController grantPermissions fails', async () => {
     vi.mocked(ConnectionController._getClient).mockReturnValueOnce({
+      getCapabilities: vi.fn().mockResolvedValue({
+        '0x1': {
+          permissions: {
+            supported: true,
+            permissionTypes: ['contract-call'],
+            signerTypes: ['keys'],
+            policyTypes: []
+          }
+        }
+      }),
       grantPermissions: vi.fn().mockRejectedValue(new Error('Connection error'))
     } as unknown as ConnectionControllerClient)
 
@@ -226,14 +270,14 @@ describe('grantPermissions', () => {
 
   it('should return undefined for an invalid address in extractAddress', () => {
     const invalidCaipAddress = 'eip155:1:invalid-address'
-    const result = extractAddress(invalidCaipAddress)
+    const result = extractChainAndAddress(invalidCaipAddress)
     expect(result).toBeUndefined()
   })
 
   it('should return a valid 0x-prefixed address from extractAddress', () => {
     const validCaipAddress = 'eip155:1:0x1234567890123456789012345678901234567890'
-    const result = extractAddress(validCaipAddress)
-    expect(result).toEqual('0x1234567890123456789012345678901234567890')
+    const result = extractChainAndAddress(validCaipAddress)
+    expect(result?.address).toEqual('0x1234567890123456789012345678901234567890')
   })
 
   it('should return true for a valid CAIP address in isValidSupportedCaipAddress', () => {

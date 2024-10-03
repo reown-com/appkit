@@ -1,7 +1,6 @@
 import { describe, expect, it, beforeEach } from 'vitest'
 import type {
   ContractCallPermission,
-  KeySigner,
   MultiKeySigner,
   SmartSessionGrantPermissionsRequest
 } from '../../src/smart-session/utils/TypeUtils.js'
@@ -16,7 +15,12 @@ describe('smart-session/schema', () => {
     mockRequest = {
       chainId: '0x1',
       expiry: Date.now() + 10000,
-      signer: { type: 'key', data: { type: 'secp256k1', publicKey: '0x123456' } },
+      signer: {
+        type: 'keys',
+        data: {
+          keys: [{ type: 'secp256k1', publicKey: '0x123456' }]
+        }
+      },
       permissions: [
         {
           type: 'contract-call',
@@ -36,6 +40,17 @@ describe('smart-session/schema', () => {
   })
 
   describe('validateRequest', () => {
+    describe('request object validation', () => {
+      it('should pass for valid request', () => {
+        expect(() => validateRequest(mockRequest)).not.toThrow()
+      })
+      it('should fail for missing chainId', () => {
+        const { chainId, ...requestWithoutChainId } = mockRequest
+        expect(() => validateRequest(requestWithoutChainId as any)).toThrow(
+          'Invalid chainId: Required'
+        )
+      })
+    })
     describe('ChainIdSchema Validation', () => {
       it('should pass for valid chainId', () => {
         const request = { ...mockRequest, chainId: '0x1' as `0x${string}` }
@@ -56,9 +71,7 @@ describe('smart-session/schema', () => {
         const request = { ...mockRequest, chainId }
         if (chainId === undefined) {
           const { chainId, ...requestWithoutChainId } = request
-          expect(() => validateRequest(requestWithoutChainId as any)).toThrow(
-            ERROR_MESSAGES.INVALID_CHAIN_ID_TYPE
-          )
+          expect(() => validateRequest(requestWithoutChainId as any)).toThrow(/Invalid chainId/)
         } else {
           expect(() => validateRequest(request as any)).toThrow(/Invalid chainId/)
         }
@@ -185,15 +198,15 @@ describe('smart-session/schema', () => {
     })
 
     describe('Signer field validation', () => {
-      it('should pass for valid single key signer', () => {
+      it('should fail for unsupported signer', () => {
         const request = {
           ...mockRequest,
           signer: {
             type: 'key',
             data: { type: 'secp256k1', publicKey: '0x1234567890abcdef' as `0x${string}` }
-          } as KeySigner
+          } as any
         }
-        expect(() => validateRequest(request)).not.toThrow()
+        expect(() => validateRequest(request)).toThrow()
       })
 
       it('should pass for valid multi-key signer', () => {
@@ -212,14 +225,6 @@ describe('smart-session/schema', () => {
         expect(() => validateRequest(request)).not.toThrow()
       })
 
-      it('should fail for unsupported signer type', () => {
-        const request = {
-          ...mockRequest,
-          signer: { type: 'unsupported', data: {} } as any
-        }
-        expect(() => validateRequest(request)).toThrow(ERROR_MESSAGES.UNSUPPORTED_SIGNER_TYPE)
-      })
-
       it('should fail for empty keys array in multi-key signer', () => {
         const request = {
           ...mockRequest,
@@ -228,10 +233,10 @@ describe('smart-session/schema', () => {
         expect(() => validateRequest(request)).toThrow(ERROR_MESSAGES.INVALID_KEYS_SIGNER)
       })
 
-      it('should fail for missing data in single key signer', () => {
+      it('should fail for missing data in multi-key signer', () => {
         const request = {
           ...mockRequest,
-          signer: { type: 'key' } as any
+          signer: { type: 'keys' } as any
         }
         expect(() => validateRequest(request)).toThrow('Invalid signer.data: Required')
       })
@@ -268,9 +273,11 @@ describe('smart-session/schema', () => {
         const request = {
           ...mockRequest,
           signer: {
-            type: 'key',
-            data: { type: 'invalid' as any, publicKey: '0x1234567890abcdef' }
-          } as KeySigner
+            type: 'keys',
+            data: {
+              keys: [{ type: 'invalid', publicKey: '0x1234567890abcdef' as `0x${string}` }]
+            }
+          } as any
         }
         expect(() => validateRequest(request)).toThrow(ERROR_MESSAGES.UNSUPPORTED_KEY_TYPE)
       })
@@ -279,9 +286,11 @@ describe('smart-session/schema', () => {
         const request = {
           ...mockRequest,
           signer: {
-            type: 'key',
-            data: { type: 'secp256k1', publicKey: 'invalid' as any }
-          } as KeySigner
+            type: 'keys',
+            data: {
+              keys: [{ type: 'secp256k1', publicKey: 'invalid' as `0x${string}` }]
+            }
+          } as MultiKeySigner
         }
         expect(() => validateRequest(request)).toThrow(ERROR_MESSAGES.INVALID_PUBLIC_KEY_FORMAT)
       })
@@ -439,7 +448,7 @@ describe('smart-session/schema', () => {
         const request = {
           ...mockRequest,
           policies: [
-            { type: 'someType', data: { key: 'value' } },
+            { type: 'someType', data: { someKey: 'someValue' } },
             { type: 'anotherType', data: { anotherKey: 'anotherValue' } }
           ]
         }

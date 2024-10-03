@@ -33,8 +33,10 @@ describe('CoSigner API Tests', () => {
     chainId: '0x1',
     expiry: Math.floor(Date.now() / 1000) + 3600,
     signer: {
-      type: 'key',
-      data: { type: 'secp256k1', publicKey: '0x123456' }
+      type: 'keys',
+      data: {
+        keys: [{ type: 'secp256k1', publicKey: '0x123456' }]
+      }
     },
     permissions: [
       {
