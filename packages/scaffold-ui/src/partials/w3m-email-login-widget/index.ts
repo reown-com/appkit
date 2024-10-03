@@ -118,7 +118,10 @@ export class W3mEmailLoginWidget extends LitElement {
     }
 
     return html`
-      <wui-flex .padding=${['xxs', '0', '0', '0'] as const}>
+      <wui-flex
+        data-testid="w3m-email-login-or-separator"
+        .padding=${['xxs', '0', '0', '0'] as const}
+      >
         <wui-separator text="or"></wui-separator>
       </wui-flex>
     `
