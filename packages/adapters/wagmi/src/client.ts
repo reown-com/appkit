@@ -307,7 +307,7 @@ export class WagmiAdapter implements ChainAdapter {
 
           const chains = this.caipNetworks
             ?.filter(network => network.chainNamespace === 'eip155')
-            .map(chain => chain.id) as string[]
+            .map(chain => chain.caipNetworkId) as string[]
 
           siweParams.chains = this.caipNetworks
             ?.filter(network => network.chainNamespace === 'eip155')

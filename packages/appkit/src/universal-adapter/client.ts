@@ -157,7 +157,7 @@ export class UniversalAdapterClient {
 
             const chains = this.caipNetworks
               ?.filter(network => network.chainNamespace === CommonConstantsUtil.CHAIN.EVM)
-              .map(chain => chain.id) as string[]
+              .map(chain => chain.caipNetworkId) as string[]
 
             siweParams.chains = this.caipNetworks
               ?.filter(network => network.chainNamespace === CommonConstantsUtil.CHAIN.EVM)
