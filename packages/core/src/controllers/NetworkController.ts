@@ -204,18 +204,14 @@ export const NetworkController = {
   },
 
   async setApprovedCaipNetworksData(chain: ChainNamespace | undefined) {
-    const networkControllerClient = ChainController.getNetworkControllerClient()
-
-    const data = await networkControllerClient?.getApprovedCaipNetworksData()
-
     if (!chain) {
       throw new Error('chain is required to set approved network data')
     }
 
-    ChainController.setChainNetworkData(chain, {
-      approvedCaipNetworkIds: data?.approvedCaipNetworkIds,
-      supportsAllNetworks: data?.supportsAllNetworks
-    })
+    const networkControllerClient = ChainController.getNetworkControllerClient()
+    const data = await networkControllerClient?.getApprovedCaipNetworksData()
+
+    ChainController.setChainNetworkData(chain, data)
   },
 
   checkIfSupportedNetwork() {
@@ -252,6 +248,15 @@ export const NetworkController = {
     )
 
     return Boolean(smartAccountEnabledNetworks?.includes(Number(networkId)))
+  },
+
+  checkIfNamesSupported() {
+    const activeCaipNetwork = ChainController.state.activeCaipNetwork
+
+    return (
+      activeCaipNetwork?.chainNamespace &&
+      ConstantsUtil.NAMES_SUPPORTED_CHAIN_NAMESPACES.includes(activeCaipNetwork.chainNamespace)
+    )
   },
 
   resetNetwork() {

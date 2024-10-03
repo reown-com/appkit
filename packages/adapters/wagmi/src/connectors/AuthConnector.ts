@@ -3,9 +3,10 @@ import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { SwitchChainError, getAddress } from 'viem'
 import type { Address, Hex } from 'viem'
-import { ConstantsUtil } from '@reown/appkit-utils'
+import { ConstantsUtil, ErrorUtil } from '@reown/appkit-utils'
 import { NetworkUtil } from '@reown/appkit-common'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
+import { AlertController } from '@reown/appkit-core'
 
 // -- Types ----------------------------------------------------------------------------------------
 interface W3mFrameProviderOptions {
@@ -76,7 +77,12 @@ export function authConnector(parameters: AuthParameters) {
 
     async getProvider() {
       if (!this.provider) {
-        this.provider = W3mFrameProviderSingleton.getInstance(parameters.options.projectId)
+        this.provider = W3mFrameProviderSingleton.getInstance({
+          projectId: parameters.options.projectId,
+          onTimeout: () => {
+            AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION_SOCIALS, 'error')
+          }
+        })
       }
 
       return Promise.resolve(this.provider)

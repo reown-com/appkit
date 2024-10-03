@@ -113,15 +113,22 @@ describe('Wagmi Client', () => {
       expect(connectedWagmiAccount.status).toBe('connected')
       expect(connectedWagmiAccount.address).toBe(mockAccount.address)
 
+      const resetAccountSpy = vi.spyOn(mockAppKit, 'resetAccount')
+      const resetWcSpy = vi.spyOn(mockAppKit, 'resetWcConnection')
+      const resetNetworkSpy = vi.spyOn(mockAppKit, 'resetNetwork')
+      const setAllAccountsSpy = vi.spyOn(mockAppKit, 'setAllAccounts')
+
       await disconnect(mockWagmiClient.wagmiConfig)
 
       const disconnectedWagmiAccount = getAccount(mockWagmiClient.wagmiConfig)
 
       expect(disconnectedWagmiAccount.status).toBe('disconnected')
       expect(disconnectedWagmiAccount.address).toBeUndefined()
+      expect(resetAccountSpy).toHaveBeenCalledOnce()
+      expect(resetWcSpy).toHaveBeenCalledOnce()
+      expect(resetNetworkSpy).toHaveBeenCalledOnce()
+      expect(setAllAccountsSpy).toHaveBeenCalledOnce()
     })
-
-    it('should disconnect from client', async () => {})
   })
 
   describe('Wagmi Client - Sync Account', () => {
