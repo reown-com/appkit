@@ -124,15 +124,21 @@ export function validateRequestForSupportedPermissionsCapability(
   })
 }
 
-export function isSmartSessionSupported() {
+export function isSmartSessionSupported(): boolean {
   const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
+
   if (!provider) {
-    throw new Error('Wallet not connected')
+    return false
   }
 
-  return Boolean(
-    provider?.session?.namespaces?.[CommonConstantsUtil.CHAIN.EVM]?.methods?.includes(
-      ERC7715_METHOD
-    )
-  )
+  // If it's not a WalletConnect provider, assume smart session is supported
+  if (!provider.isWalletConnect) {
+    return true
+  }
+
+  // Check if the ERC7715 method is supported in the WalletConnect session
+  const evmNamespace = provider.session?.namespaces?.[CommonConstantsUtil.CHAIN.EVM]
+  const supportedMethods = evmNamespace?.methods || []
+
+  return supportedMethods.includes(ERC7715_METHOD)
 }
