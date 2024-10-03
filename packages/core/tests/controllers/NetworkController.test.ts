@@ -134,6 +134,14 @@ describe('NetworkController', () => {
     })
   })
 
+  it('should check if network supports names feature', () => {
+    NetworkController.resetNetwork()
+    NetworkController.setActiveCaipNetwork(caipNetwork)
+    expect(NetworkController.checkIfNamesSupported()).toEqual(true)
+    NetworkController.setActiveCaipNetwork(solanaCaipNetwork)
+    expect(NetworkController.checkIfNamesSupported()).toEqual(false)
+  })
+
   it('should get correct active network token address', () => {
     let mock = vi
       .spyOn(ChainController.state, 'activeCaipNetwork', 'get')
@@ -152,6 +160,6 @@ describe('NetworkController', () => {
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:So11111111111111111111111111111111111111111'
     )
 
-    mock.mockClear()
+    mock.mockRestore()
   })
 })

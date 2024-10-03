@@ -89,6 +89,12 @@ emailTest('it should switch network and sign', async ({ library }) => {
   await validator.expectAcceptedSign()
 })
 
+emailTest('it should show names feature only for EVM networks', async ({ library }) => {
+  await page.goToSettings()
+  await validator.expectNamesFeatureVisible(library !== 'solana')
+  await page.closeModal()
+})
+
 emailTest('it should show loading on page refresh', async () => {
   await page.page.reload()
   await validator.expectConnectButtonLoading()
