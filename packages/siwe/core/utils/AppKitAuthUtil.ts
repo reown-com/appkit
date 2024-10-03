@@ -72,9 +72,7 @@ export async function authenticate(payload: {
       return undefined
     }
 
-    const authenticateRes = await res.json()
-
-    return authenticateRes
+    return { success: res.status === 204 }
   } catch (error) {
     console.error(error)
     throw new Error('Failed to authenticate', {
@@ -169,9 +167,9 @@ export const appKitAuthConfig = new AppKitSIWEClient({
       if (cacao) {
         // Do something
       }
-      const { token } = await authenticate({ message, signature, clientId })
+      await authenticate({ message, signature, clientId })
 
-      return Boolean(token)
+      return true
     } catch (error) {
       return false
     }

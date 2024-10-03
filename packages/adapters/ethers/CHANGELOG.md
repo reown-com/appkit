@@ -1,5 +1,21 @@
 # @reown/appkit-adapter-ethers
 
+## 1.0.6-6594e108a.0
+
+### Patch Changes
+
+- AppKit Auth
+- Updated dependencies
+  - @reown/appkit-utils@1.0.6-6594e108a.0
+  - @reown/appkit-scaffold-ui@1.0.6-6594e108a.0
+  - @reown/appkit-polyfills@1.0.6-6594e108a.0
+  - @reown/appkit@1.0.6-6594e108a.0
+  - @reown/appkit-common@1.0.6-6594e108a.0
+  - @reown/appkit-wallet@1.0.6-6594e108a.0
+  - @reown/appkit-core@1.0.6-6594e108a.0
+  - @reown/appkit-siwe@1.0.6-6594e108a.0
+  - @reown/appkit-ui@1.0.6-6594e108a.0
+
 ## 1.0.5
 
 ### Patch Changes

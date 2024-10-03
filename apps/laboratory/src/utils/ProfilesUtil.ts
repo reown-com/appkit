@@ -203,7 +203,7 @@ export function siweProfilesConfig(wagmiConfig: Config) {
       if (cacao) {
         // Do something
       }
-      const { token } = await authenticate({
+      await authenticate({
         message,
         signature,
         clientId
@@ -217,7 +217,7 @@ export function siweProfilesConfig(wagmiConfig: Config) {
       const profile = await getProfile()
       ProfileStore.setProfile(profile.accounts)
 
-      return Boolean(profileUuid && token)
+      return Boolean(profileUuid)
     },
     signOut: async () => {
       try {

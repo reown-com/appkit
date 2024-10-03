@@ -1,5 +1,16 @@
 # @reown/appkit-utils
 
+## 1.0.6-6594e108a.0
+
+### Patch Changes
+
+- AppKit Auth
+- Updated dependencies
+  - @reown/appkit-polyfills@1.0.6-6594e108a.0
+  - @reown/appkit-common@1.0.6-6594e108a.0
+  - @reown/appkit-wallet@1.0.6-6594e108a.0
+  - @reown/appkit-core@1.0.6-6594e108a.0
+
 ## 1.0.5
 
 ### Patch Changes

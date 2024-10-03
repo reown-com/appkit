@@ -1,5 +1,11 @@
 # @reown/appkit-polyfills
 
+## 1.0.6-6594e108a.0
+
+### Patch Changes
+
+- AppKit Auth
+
 ## 1.0.5
 
 ### Patch Changes

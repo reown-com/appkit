@@ -1,5 +1,13 @@
 # @apps/gallery
 
+## 1.0.6-6594e108a.0
+
+### Patch Changes
+
+- Updated dependencies
+  - @reown/appkit-common@1.0.6-6594e108a.0
+  - @reown/appkit-ui@1.0.6-6594e108a.0
+
 ## 1.0.5
 
 ### Patch Changes

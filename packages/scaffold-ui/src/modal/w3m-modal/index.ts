@@ -263,13 +263,9 @@ export class W3mModal extends LitElement {
     const authenticated = AccountController.state.siweStatus === 'success'
 
     if (!authenticated && isEIP155Namespace) {
-      if (this.open) {
-        RouterController.replace('ConnectingSiwe')
-      } else {
-        ModalController.open({
-          view: 'ConnectingSiwe'
-        })
-      }
+      ModalController.open({
+        view: 'ConnectingSiwe'
+      })
     } else {
       RouterController.goBack()
     }

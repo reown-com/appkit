@@ -1,5 +1,13 @@
 # @examples/react-ethers
 
+## 1.0.6-6594e108a.0
+
+### Patch Changes
+
+- Updated dependencies
+  - @reown/appkit-adapter-ethers@1.0.6-6594e108a.0
+  - @reown/appkit@1.0.6-6594e108a.0
+
 ## 1.0.5
 
 ### Patch Changes
