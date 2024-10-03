@@ -49,13 +49,7 @@ import type {
 } from '@reown/appkit-core'
 import { formatUnits, parseUnits } from 'viem'
 import type { Hex } from 'viem'
-import {
-  ConstantsUtil,
-  PresetsUtil,
-  HelpersUtil,
-  ErrorUtil,
-  CaipNetworksUtil
-} from '@reown/appkit-utils'
+import { ConstantsUtil, PresetsUtil, HelpersUtil, ErrorUtil } from '@reown/appkit-utils'
 import { isReownName, SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 import {
   getEmailCaipNetworks,
