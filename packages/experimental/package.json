@@ -36,6 +36,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@reown/appkit": "workspace:*",
     "@reown/appkit-core": "workspace:*",
     "@reown/appkit-common": "workspace:*",
     "axios": "1.7.2",

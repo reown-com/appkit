@@ -1314,6 +1314,9 @@ importers:
 
   packages/experimental:
     dependencies:
+      '@reown/appkit':
+        specifier: workspace:*
+        version: link:../appkit
       '@reown/appkit-common':
         specifier: workspace:*
         version: link:../common

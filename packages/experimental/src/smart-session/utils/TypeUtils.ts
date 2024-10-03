@@ -2,18 +2,6 @@
 export type KeyType = 'secp256r1' | 'secp256k1'
 
 /*
- * A signer representing a single key.
- * "Key" types are explicitly secp256r1 (p256) or secp256k1, and the public keys are hex-encoded.
- */
-export type KeySigner = {
-  type: 'key'
-  data: {
-    type: KeyType
-    publicKey: `0x${string}`
-  }
-}
-
-/*
  * A signer representing a multisig signer.
  * Each element of `publicKeys` are all explicitly the same `KeyType`, and the public keys are hex-encoded.
  */
@@ -27,7 +15,7 @@ export type MultiKeySigner = {
   }
 }
 
-export type Signer = KeySigner | MultiKeySigner
+export type Signer = MultiKeySigner
 
 export type SmartSessionGrantPermissionsRequest = {
   chainId: `0x${string}`

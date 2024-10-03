@@ -7,7 +7,6 @@ export const ERROR_MESSAGES = {
   NO_RESPONSE_RECEIVED: 'No response received from grantPermissions',
   INVALID_REQUEST: 'Invalid request structure',
   // GrantPermissionsRequest.chainId field
-  INVALID_CHAIN_ID_TYPE: 'Invalid chainId: type, expected string starting with "0x"',
   INVALID_CHAIN_ID_FORMAT: 'Invalid chainId: must start with "0x"',
   INVALID_CHAIN_ID_DATA: 'Invalid chainId format: Must be a hexadecimal string starting with "0x"',
   // GrantPermissionsRequest.address field
@@ -17,8 +16,7 @@ export const ERROR_MESSAGES = {
 
   // GrantPermissionsRequest.signer field -  SignerSchema
   INVALID_KEYS_SIGNER: 'A set of public keys is required for multiKey signers',
-  UNSUPPORTED_SIGNER_TYPE:
-    "Invalid signer.type: Invalid discriminator value. Expected 'key' | 'keys'",
+  UNSUPPORTED_SIGNER_TYPE: 'Unsupported signer type',
   UNSUPPORTED_KEY_TYPE: 'Unsupported key type: must be secp256r1 or secp256k1',
   INVALID_PUBLIC_KEY_FORMAT: 'Invalid public key: must start with "0x"',
   //PermissionSchema
@@ -34,9 +32,7 @@ export const ERROR_MESSAGES = {
 
 // ChainId Schema
 const ChainIdSchema = z
-  .string({
-    invalid_type_error: ERROR_MESSAGES.INVALID_CHAIN_ID_TYPE
-  })
+  .string()
   .refine(val => val.startsWith('0x'), {
     message: ERROR_MESSAGES.INVALID_CHAIN_ID_FORMAT
   })
@@ -47,7 +43,6 @@ const ChainIdSchema = z
 // Address Schema
 const AddressSchema = z
   .string({
-    required_error: ERROR_MESSAGES.INVALID_ADDRESS,
     invalid_type_error: ERROR_MESSAGES.INVALID_ADDRESS
   })
   .startsWith('0x', { message: ERROR_MESSAGES.INVALID_ADDRESS })
@@ -72,43 +67,12 @@ const KeySchema = z.object({
 })
 
 // Signer Schema
-const SignerSchema = z
-  .discriminatedUnion('type', [
-    z.object({
-      type: z.literal('key'),
-      data: KeySchema
-    }),
-    z.object({
-      type: z.literal('keys'),
-      data: z.object({
-        keys: z.array(KeySchema).min(1, { message: ERROR_MESSAGES.INVALID_KEYS_SIGNER })
-      })
-    })
-  ])
-  .refine(
-    (
-      data
-    ): data is
-      | {
-          type: 'key'
-          data: { type: 'secp256r1' | 'secp256k1'; publicKey: string }
-        }
-      | {
-          type: 'keys'
-          data: { keys: { type: 'secp256r1' | 'secp256k1'; publicKey: string }[] }
-        } => {
-      if (data.type === 'key') {
-        return 'data' in data && 'type' in data.data && 'publicKey' in data.data
-      } else if (data.type === 'keys') {
-        return 'data' in data && 'keys' in data.data && Array.isArray(data.data.keys)
-      }
-
-      return false
-    },
-    {
-      message: ERROR_MESSAGES.UNSUPPORTED_SIGNER_TYPE
-    }
-  )
+const SignerSchema = z.object({
+  type: z.literal('keys'),
+  data: z.object({
+    keys: z.array(KeySchema).min(1, { message: ERROR_MESSAGES.INVALID_KEYS_SIGNER })
+  })
+})
 
 // Argument Condition Schema
 const ArgumentConditionSchema = z.object({
