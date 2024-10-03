@@ -7,6 +7,7 @@ import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapte
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { SolanaModalInfo } from '../../components/Solana/SolanaModalInfo'
 import { SolanaTests } from '../../components/Solana/SolanaTests'
+import { updateSentryEnvironment } from '../../utils/SentryUtil'
 
 const networks = ConstantsUtil.SolanaNetworks
 
@@ -27,6 +28,7 @@ const modal = createAppKit({
 })
 
 ThemeStore.setModal(modal)
+updateSentryEnvironment(modal)
 
 export default function MultiChainSolanaAdapterOnly() {
   return (

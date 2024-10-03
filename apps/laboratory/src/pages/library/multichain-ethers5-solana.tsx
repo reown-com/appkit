@@ -7,6 +7,7 @@ import { mainnet } from '@reown/appkit/networks'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsEthersSolana } from '../../components/MultiChainTestsEthersSolana'
+import { updateSentryEnvironment } from '../../utils/SentryUtil'
 
 const networks = ConstantsUtil.AllNetworks
 
@@ -29,6 +30,7 @@ const modal = createAppKit({
 })
 
 ThemeStore.setModal(modal)
+updateSentryEnvironment(modal)
 
 export default function MultiChainEthers5Solana() {
   return (

@@ -10,6 +10,7 @@ import { mainnet } from '@reown/appkit/networks'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsWagmiSolana } from '../../components/MultiChainTestsWagmiSolana'
+import { updateSentryEnvironment } from '../../utils/SentryUtil'
 
 const queryClient = new QueryClient()
 
@@ -37,6 +38,7 @@ const modal = createAppKit({
 })
 
 ThemeStore.setModal(modal)
+updateSentryEnvironment(modal)
 
 export default function MultiChainWagmiSolana() {
   return (

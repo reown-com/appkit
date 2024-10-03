@@ -9,6 +9,7 @@ import { MultiChainTestsEthersSolana } from '../../components/MultiChainTestsEth
 import { siweConfig } from '../../utils/SiweUtils'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { mainnet } from '@reown/appkit/networks'
+import { updateSentryEnvironment } from '../../utils/SentryUtil'
 
 const networks = ConstantsUtil.AllNetworks
 
@@ -32,6 +33,7 @@ const modal = createAppKit({
 })
 
 ThemeStore.setModal(modal)
+updateSentryEnvironment(modal)
 
 export default function MultiChainEthers5Solana() {
   return (

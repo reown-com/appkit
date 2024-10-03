@@ -9,6 +9,7 @@ import { mainnet } from '@reown/appkit/networks'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { PasskeyProvider } from '../../context/PasskeyContext'
 import { ERC7715PermissionsProvider } from '../../context/ERC7715PermissionsContext'
+import { updateSentryEnvironment } from '../../utils/SentryUtil'
 
 const queryClient = new QueryClient()
 
@@ -33,6 +34,7 @@ const modal = createAppKit({
 })
 
 ThemeStore.setModal(modal)
+updateSentryEnvironment(modal)
 
 export default function Wagmi() {
   return (

@@ -8,6 +8,7 @@ import { ThemeStore } from '../../utils/StoreUtil'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { mainnet } from '@reown/appkit/networks'
+import { updateSentryEnvironment } from '../../utils/SentryUtil'
 
 // Special project ID with verify enabled on localhost
 const projectId = 'e4eae1aad4503db9966a04fd045a7e4d'
@@ -32,6 +33,7 @@ const modal = createAppKit({
 })
 
 ThemeStore.setModal(modal)
+updateSentryEnvironment(modal)
 
 export default function Wagmi() {
   return (

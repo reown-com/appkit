@@ -12,6 +12,7 @@ import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapte
 import { MultiChainTestsWagmiSolana } from '../../components/MultiChainTestsWagmiSolana'
 import { siweConfig } from '../../utils/SiweUtils'
 import { SiweData } from '../../components/Siwe/SiweData'
+import { updateSentryEnvironment } from '../../utils/SentryUtil'
 
 const queryClient = new QueryClient()
 
@@ -40,6 +41,7 @@ const modal = createAppKit({
 })
 
 ThemeStore.setModal(modal)
+updateSentryEnvironment(modal)
 
 export default function MultiChainWagmiSolana() {
   return (

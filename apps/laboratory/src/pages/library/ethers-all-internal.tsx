@@ -8,6 +8,7 @@ import { SiweData } from '../../components/Siwe/SiweData'
 import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { mainnet } from '@reown/appkit/networks'
+import { updateSentryEnvironment } from '../../utils/SentryUtil'
 
 const networks = ConstantsUtil.EvmNetworks
 
@@ -29,6 +30,7 @@ const modal = createAppKit({
 })
 
 ThemeStore.setModal(modal)
+updateSentryEnvironment(modal)
 
 export default function Ethers() {
   return (

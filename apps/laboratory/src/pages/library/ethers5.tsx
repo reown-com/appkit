@@ -6,6 +6,7 @@ import { Ethers5ModalInfo } from '../../components/Ethers/Ethers5ModalInfo'
 import { Ethers5Tests } from '../../components/Ethers/Ethers5Tests'
 import { Ethers5Adapter } from '@reown/appkit-adapter-ethers5'
 import { mainnet } from '@reown/appkit/networks'
+import { updateSentryEnvironment } from '../../utils/SentryUtil'
 
 const networks = ConstantsUtil.EvmNetworks
 
@@ -27,6 +28,7 @@ const modal = createAppKit({
 })
 
 ThemeStore.setModal(modal)
+updateSentryEnvironment(modal)
 
 export default function Ethers() {
   return (

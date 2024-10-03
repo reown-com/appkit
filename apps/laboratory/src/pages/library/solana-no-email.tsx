@@ -7,6 +7,7 @@ import { SolanaTests } from '../../components/Solana/SolanaTests'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { solana } from '@reown/appkit/networks'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
+import { updateSentryEnvironment } from '../../utils/SentryUtil'
 
 const networks = ConstantsUtil.SolanaNetworks
 
@@ -28,6 +29,7 @@ const modal = createAppKit({
 })
 
 ThemeStore.setModal(modal)
+updateSentryEnvironment(modal)
 
 export default function Solana() {
   return (

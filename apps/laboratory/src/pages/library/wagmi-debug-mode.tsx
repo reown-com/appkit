@@ -8,6 +8,7 @@ import { mainnet } from '@reown/appkit/networks'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { updateSentryEnvironment } from '../../utils/SentryUtil'
 
 const queryClient = new QueryClient()
 
@@ -32,6 +33,7 @@ const modal = createAppKit({
 })
 
 ThemeStore.setModal(modal)
+updateSentryEnvironment(modal)
 
 export default function Wagmi() {
   return (

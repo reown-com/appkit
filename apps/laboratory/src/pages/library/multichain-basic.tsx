@@ -5,6 +5,7 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { mainnet } from '@reown/appkit/networks'
 import { MultiChainInfo } from '../../components/MultiChainInfo'
 import { UpaTests } from '../../components/UPA/UpaTests'
+import { updateSentryEnvironment } from '../../utils/SentryUtil'
 
 const networks = ConstantsUtil.AllNetworks
 
@@ -16,6 +17,7 @@ const modal = createAppKit({
 })
 
 ThemeStore.setModal(modal)
+updateSentryEnvironment(modal)
 
 export default function MultiChainWagmiAdapterOnly() {
   return (
