@@ -368,7 +368,10 @@ export class SolanaAdapter implements ChainAdapter {
         new Connection(caipNetwork.rpcUrls.default.http?.[0] as string, this.connectionSettings)
       )
       this.appKit?.setAllAccounts([{ address, type: 'eoa' }], this.chainNamespace)
-      this.appKit?.setCaipAddress(`${caipNetworkId}:${address}` as CaipAddress, this.chainNamespace)
+      this.appKit?.setCaipAddress(
+        `${this.chainNamespace}:${caipNetworkId}:${address}` as CaipAddress,
+        this.chainNamespace
+      )
       await this.syncNetwork(address)
     } else {
       this.appKit?.resetWcConnection()

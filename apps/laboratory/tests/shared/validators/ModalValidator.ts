@@ -84,7 +84,9 @@ export class ModalValidator {
 
   async expectCaipAddressHaveCorrectNetworkId(caipNetworkId: CaipNetworkId) {
     const address = this.page.getByTestId('appkit-caip-address')
-    await expect(address, 'Correct CAIP address should be present').toContainText(caipNetworkId)
+    await expect(address, 'Correct CAIP address should be present').toContainText(
+      caipNetworkId.toString()
+    )
   }
 
   async expectNetwork(network: string) {

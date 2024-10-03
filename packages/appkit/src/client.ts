@@ -65,7 +65,9 @@ export class AppKit {
 
   private initPromise?: Promise<void> = undefined
 
-  private caipNetworks: [CaipNetwork, ...CaipNetwork[]]
+  private caipNetworks: CaipNetwork[]
+
+  private defaultCaipNetwork?: CaipNetwork
 
   public constructor(
     options: AppKitOptions & {
@@ -438,7 +440,7 @@ export class AppKit {
     this.extendCaipNetworks(options)
     this.initializeUniversalAdapter(options)
     this.initializeAdapters(options)
-    this.setDefaultNetwork(options)
+    this.setDefaultNetwork()
 
     OptionsController.setAllWallets(options.allWallets)
     OptionsController.setIncludeWalletIds(options.includeWalletIds)
@@ -499,11 +501,22 @@ export class AppKit {
   }
 
   private extendCaipNetworks(options: AppKitOptions) {
-    options.networks = CaipNetworksUtil.extendCaipNetworks(options.networks, {
+    const defaultNetwork = options.networks.find(n => n.id === options.defaultNetwork?.id)
+    const extendedDefaultNetwork = defaultNetwork
+      ? CaipNetworksUtil.extendCaipNetwork(defaultNetwork, {
+          customNetworkImageUrls: options.chainImages,
+          projectId: options.projectId
+        })
+      : undefined
+
+    const extendedNetworks = CaipNetworksUtil.extendCaipNetworks(options.networks, {
       customNetworkImageUrls: options.chainImages,
       projectId: options.projectId
-    }) as [CaipNetwork, ...CaipNetwork[]]
-    options.defaultNetwork = options.networks.find(n => n.id === options.defaultNetwork?.id)
+    })
+    options.networks = extendedNetworks
+    options.defaultNetwork = extendedDefaultNetwork
+    this.caipNetworks = extendedNetworks as CaipNetwork[]
+    this.defaultCaipNetwork = extendedDefaultNetwork as CaipNetwork
   }
 
   private initializeUniversalAdapter(options: AppKitOptions) {
@@ -520,19 +533,13 @@ export class AppKit {
     })
   }
 
-  private setDefaultNetwork(options: AppKitOptions) {
-    options.defaultNetwork = options.defaultNetwork
-      ? CaipNetworksUtil.extendCaipNetwork(options.defaultNetwork, {
-          customNetworkImageUrls: options.chainImages,
-          projectId: options.projectId
-        })
-      : undefined
+  private setDefaultNetwork() {
     const previousNetwork = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
     const caipNetwork = previousNetwork
-      ? options.networks.find(n => n.id === previousNetwork)
+      ? this.caipNetworks.find(n => n.caipNetworkId === previousNetwork)
       : undefined
 
-    const network = caipNetwork ?? options.defaultNetwork ?? options.networks[0]
+    const network = caipNetwork || this.defaultCaipNetwork || this.caipNetworks[0]
     ChainController.setActiveCaipNetwork(network as CaipNetwork)
   }
 

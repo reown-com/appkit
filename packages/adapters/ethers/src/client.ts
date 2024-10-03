@@ -823,7 +823,7 @@ export class EthersAdapter {
 
     this.appKit?.setLoading(true)
     const chainId = this.appKit?.getCaipNetwork()?.id
-    this.appKit?.setCaipAddress(`eip155:${chainId}:${address}`, this.chainNamespace)
+    this.appKit?.setCaipAddress(`${this.chainNamespace}:${chainId}:${address}`, this.chainNamespace)
     this.appKit?.setStatus('connected', this.chainNamespace)
     this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chainNamespace)
 
@@ -862,7 +862,10 @@ export class EthersAdapter {
     if (address) {
       if (isEipNetwork) {
         this.appKit?.setPreferredAccountType(preferredAccountType, this.chainNamespace)
-        this.appKit?.setCaipAddress(`${caipNetworkId}:${address}`, this.chainNamespace)
+        this.appKit?.setCaipAddress(
+          `${this.chainNamespace}:${caipNetworkId}:${address}`,
+          this.chainNamespace
+        )
 
         this.syncConnectedWalletInfo()
         if (this.ethersConfig) {

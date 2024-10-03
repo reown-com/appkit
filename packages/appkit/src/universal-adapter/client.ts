@@ -59,7 +59,7 @@ export class UniversalAdapterClient {
 
   private appKit: AppKit | undefined = undefined
 
-  public caipNetworks: [CaipNetwork, ...CaipNetwork[]]
+  public caipNetworks: CaipNetwork[]
 
   public walletConnectProvider?: UniversalProvider
 
@@ -79,7 +79,7 @@ export class UniversalAdapterClient {
 
   public reportErrors = true
 
-  public constructor(options: AppKitOptions, caipNetworks: [CaipNetwork, ...CaipNetwork[]]) {
+  public constructor(options: AppKitOptions, caipNetworks: CaipNetwork[]) {
     const { siweConfig, metadata } = options
 
     this.caipNetworks = caipNetworks
