@@ -10,7 +10,9 @@ import { CaipNetworksUtil, ConstantsUtil } from '@reown/appkit-utils'
 import {
   arbitrum as AppkitArbitrum,
   mainnet as AppkitMainnet,
-  polygon as AppkitPolygon
+  polygon as AppkitPolygon,
+  optimism as AppkitOptimism,
+  bsc as AppkitBsc
 } from '@reown/appkit/networks'
 import { ProviderUtil } from '@reown/appkit/store'
 import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
@@ -19,10 +21,10 @@ import { ethers } from 'ethers'
 
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 
-const [mainnet, arbitrum, polygon] = CaipNetworksUtil.extendCaipNetworks(
-  [AppkitMainnet, AppkitArbitrum, AppkitPolygon],
+const [mainnet, arbitrum, polygon, optimism, bsc] = CaipNetworksUtil.extendCaipNetworks(
+  [AppkitMainnet, AppkitArbitrum, AppkitPolygon, AppkitOptimism, AppkitBsc],
   { customNetworkImageUrls: {}, projectId: '1234' }
-) as [CaipNetwork, CaipNetwork, CaipNetwork]
+) as [CaipNetwork, CaipNetwork, CaipNetwork, CaipNetwork, CaipNetwork]
 
 vi.mock('@reown/appkit-wallet', () => ({
   W3mFrameProvider: vi.fn().mockImplementation(() => mockAuthConnector),
@@ -35,13 +37,16 @@ vi.mock('@reown/appkit-wallet', () => ({
   }
 }))
 
-vi.mock('@reown/appkit-utils', () => {
+vi.mock('@reown/appkit-utils', async importOriginal => {
+  const actual = await importOriginal()
   const INJECTED_CONNECTOR_ID = 'injected'
   const COINBASE_SDK_CONNECTOR_ID = 'coinbaseWallet'
   const EIP6963_CONNECTOR_ID = 'eip6963'
   const WALLET_CONNECT_CONNECTOR_ID = 'walletConnect'
   const AUTH_CONNECTOR_ID = 'w3mAuth'
   return {
+    // @ts-expect-error - actual is not typed
+    ...actual,
     PresetsUtil: {
       ConnectorTypesMap: {
         [INJECTED_CONNECTOR_ID]: 'INJECTED',
@@ -130,11 +135,11 @@ describe('EthersAdapter', () => {
     })
 
     it('should set caipNetworks to provided caipNetworks options', () => {
-      expect(client.caipNetworks).toEqual(mockOptions.networks)
+      expect(client.caipNetworks).toEqual([mainnet, arbitrum, polygon])
     })
 
     it('should set defaultNetwork to first caipNetwork option', () => {
-      expect(client.defaultCaipNetwork).toEqual(mockOptions.networks[0])
+      expect(client.defaultCaipNetwork).toEqual(mainnet)
     })
 
     it('should create ethers config', () => {
@@ -159,16 +164,9 @@ describe('EthersAdapter', () => {
     })
 
     it('should switch network for injected provider', async () => {
-      const newNetwork = {
-        id: 'eip155:137',
-        name: 'Polygon',
-        chainId: '137',
-        rpcUrl: 'https://polygon-rpc.com'
-      } as unknown as CaipNetwork
-
       mockProvider.request.mockResolvedValueOnce(null)
 
-      await client.switchNetwork(newNetwork)
+      await client.switchNetwork(polygon)
 
       expect(mockProvider.request).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -183,18 +181,11 @@ describe('EthersAdapter', () => {
     })
 
     it('should add network if not recognized by wallet', async () => {
-      const newNetwork = {
-        id: 'eip155:42161',
-        name: 'Arbitrum One',
-        chainId: '42161',
-        rpcUrl: 'https://arb1.arbitrum.io/rpc'
-      } as unknown as CaipNetwork
-
       const switchError = { code: 4902 }
       mockProvider.request.mockRejectedValueOnce(switchError)
       mockProvider.request.mockResolvedValueOnce(null)
 
-      await client.switchNetwork(newNetwork)
+      await client.switchNetwork(arbitrum)
 
       expect(mockProvider.request).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -209,17 +200,10 @@ describe('EthersAdapter', () => {
     })
 
     it('should throw error if switching fails', async () => {
-      const newNetwork = {
-        id: 'eip155:56',
-        name: 'Binance Smart Chain',
-        chainId: '56',
-        rpcUrl: 'https://bsc-dataseed.binance.org'
-      } as unknown as CaipNetwork
-
       const switchError = new Error('User rejected the request')
       mockProvider.request.mockRejectedValueOnce(switchError)
 
-      await expect(client.switchNetwork(newNetwork)).rejects.toThrow('Chain is not supported')
+      await expect(client.switchNetwork(bsc)).rejects.toThrow('Chain is not supported')
     })
 
     it('should use universal adapter for WalletConnect', async () => {
@@ -229,18 +213,11 @@ describe('EthersAdapter', () => {
         polkadot: undefined
       })
 
-      const newNetwork = {
-        id: 'eip155:10',
-        name: 'Optimism',
-        chainId: '10',
-        rpcUrl: 'https://mainnet.optimism.io'
-      } as unknown as CaipNetwork
-
-      await client.switchNetwork(newNetwork)
+      await client.switchNetwork(optimism)
 
       expect(
         mockAppKit.universalAdapter?.networkControllerClient.switchCaipNetwork
-      ).toHaveBeenCalledWith(newNetwork)
+      ).toHaveBeenCalledWith(optimism)
     })
 
     it('should set requested CAIP networks for each unique chain namespace', () => {

@@ -10,7 +10,7 @@ import { SolHelpersUtil } from '@reown/appkit-utils/solana'
 import { SolStoreUtil } from '../utils/SolanaStoreUtil.js'
 import { WalletConnectProvider } from '../providers/WalletConnectProvider'
 import UniversalProvider from '@walletconnect/universal-provider'
-import { solana } from '@reown/appkit/networks'
+import { solana, solanaTestnet } from '@reown/appkit/networks'
 
 vi.mock('@solana/web3.js', () => ({
   Connection: vi.fn(),
@@ -151,7 +151,7 @@ describe('SolanaAdapter', () => {
         connect: vi.fn().mockResolvedValue('DjPi1LtwrXJMAh2AUvuUMajCpMJEKg8N1J1PbLGjCH5B'),
         name: 'MockProvider',
         on: vi.fn(),
-        chains: [{ chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' }]
+        chains: [solana, solanaTestnet]
       }
       vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValue(
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'

@@ -24,12 +24,12 @@ const caipNetwork = {
 
 const solanaCaipNetwork = {
   id: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-  caipNetworkId: 'eip155:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  caipNetworkId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
   name: 'Solana',
-  chainNamespace: ConstantsUtil.CHAIN.EVM,
+  chainNamespace: ConstantsUtil.CHAIN.SOLANA,
   nativeCurrency: {
     name: 'Solana',
-    decimals: 18,
+    decimals: 9,
     symbol: 'SOL'
   },
   rpcUrls: {

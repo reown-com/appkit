@@ -74,7 +74,6 @@ import type {
   ChainNamespace,
   AdapterType,
   CaipNetwork,
-  CaipNetworkId,
   BaseOrCaipNetwork
 } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
@@ -157,7 +156,7 @@ export class WagmiAdapter implements ChainAdapter {
     this.caipNetworks = configParams.networks.map((caipNetwork: BaseNetwork | CaipNetwork) => ({
       ...caipNetwork,
       chainNamespace: CommonConstantsUtil.CHAIN.EVM,
-      caipNetworkId: `${this.chainNamespace}:${caipNetwork.id}` as CaipNetworkId
+      caipNetworkId: `${this.chainNamespace}:${caipNetwork.id}`
     })) as [CaipNetwork, ...CaipNetwork[]]
 
     this.wagmiChains = this.caipNetworks.filter(
@@ -225,15 +224,17 @@ export class WagmiAdapter implements ChainAdapter {
     })
   }
 
-  public construct(appKit: AppKit, options: AppKitOptions) {
+  public construct(
+    appKit: AppKit,
+    options: Omit<AppKitOptions, 'defaultNetwork' | 'networks'> & {
+      defaultNetwork: CaipNetwork
+      networks: CaipNetwork[]
+    }
+  ) {
     this.appKit = appKit
     this.options = options
-    this.defaultCaipNetwork = options.defaultNetwork
-      ? CaipNetworksUtil.extendCaipNetwork(options.defaultNetwork, {
-          customNetworkImageUrls: options.chainImages,
-          projectId: options.projectId
-        })
-      : undefined
+    this.defaultCaipNetwork = options.defaultNetwork || options.networks?.[0]
+    console.log('>>> setDefaultNetwork', this.defaultCaipNetwork)
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
     this.setCustomConnectors(options, appKit)
 

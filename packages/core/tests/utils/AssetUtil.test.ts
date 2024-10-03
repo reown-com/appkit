@@ -20,9 +20,11 @@ const network: Partial<CaipNetwork> = {
     imageId: 'ethereum'
   }
 }
-const networkWithImageUrl: Partial<Connector> = {
-  imageUrl: 'ethereum-logo-src',
-  imageId: 'ethereum'
+const networkWithImageUrl: Partial<CaipNetwork> = {
+  assets: {
+    imageUrl: 'ethereum-logo-src',
+    imageId: 'ethereum'
+  }
 }
 const wallet: Partial<WcWallet> = {
   image_url: undefined,

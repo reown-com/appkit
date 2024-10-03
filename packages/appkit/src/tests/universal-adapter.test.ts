@@ -29,7 +29,7 @@ describe('UniversalAdapter', () => {
 
   describe('UniversalAdapter - Initialization', () => {
     it('should set caipNetworks to provided caipNetworks options', () => {
-      expect(universalAdapter?.caipNetworks).toEqual(mockOptions.networks)
+      expect(universalAdapter?.caipNetworks).toEqual(mockCaipNetworks)
     })
 
     it('should set metadata to metadata options', () => {
@@ -74,14 +74,14 @@ describe('UniversalAdapter', () => {
         supportsAllNetworks: true
       })
 
-      const adapterSpy = vi.spyOn(universalAdapter as any, 'setDefaultNetwork')
-      const networkControllerSpy = vi.spyOn(NetworkController, 'setActiveCaipNetwork')
+      const setDefaultNetworkSpy = vi.spyOn(universalAdapter as any, 'setDefaultNetwork')
+      const setActiveCaipNetworkSpy = vi.spyOn(NetworkController, 'setActiveCaipNetwork')
 
       const mockOnUri = vi.fn()
       await universalAdapter?.connectionControllerClient?.connectWalletConnect?.(mockOnUri)
 
-      expect(adapterSpy).toHaveBeenCalledWith(mockProvider.session?.namespaces)
-      expect(networkControllerSpy).toHaveBeenCalledWith(mainnet)
+      expect(setDefaultNetworkSpy).toHaveBeenCalledWith(mockProvider.session?.namespaces)
+      expect(setActiveCaipNetworkSpy).toHaveBeenCalledWith(mainnet)
     })
 
     it('should set correct requestedCaipNetworks in AppKit when syncRequestedNetworks has been called', () => {

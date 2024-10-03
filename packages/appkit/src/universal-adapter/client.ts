@@ -276,14 +276,10 @@ export class UniversalAdapterClient {
   }
 
   public switchNetwork(caipNetwork: CaipNetwork) {
-    try {
-      if (caipNetwork) {
-        if (this.walletConnectProvider) {
-          this.walletConnectProvider.setDefaultChain(caipNetwork.caipNetworkId)
-        }
+    if (caipNetwork) {
+      if (this.walletConnectProvider) {
+        this.walletConnectProvider.setDefaultChain(caipNetwork.caipNetworkId)
       }
-    } catch (error) {
-      console.log('>>> UPA.switchNetwork', error)
     }
   }
 
@@ -355,7 +351,7 @@ export class UniversalAdapterClient {
 
   private syncRequestedNetworks(caipNetworks: CaipNetwork[]) {
     const uniqueChainNamespaces = [
-      ...new Set((caipNetworks as CaipNetwork[]).map(caipNetwork => caipNetwork.chainNamespace))
+      ...new Set(caipNetworks.map(caipNetwork => caipNetwork.chainNamespace))
     ]
     uniqueChainNamespaces
       .filter(c => Boolean(c))
@@ -435,7 +431,7 @@ export class UniversalAdapterClient {
           const requestedCaipNetworks = NetworkController.state?.requestedCaipNetworks
 
           if (requestedCaipNetworks) {
-            const network = requestedCaipNetworks.find(c => c.id === chainId)
+            const network = requestedCaipNetworks.find(c => c.caipNetworkId === chainId)
 
             if (network) {
               NetworkController.setActiveCaipNetwork(network as unknown as CaipNetwork)

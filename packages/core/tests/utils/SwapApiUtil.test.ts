@@ -23,7 +23,7 @@ const mockSolanaNetwork = {
   name: 'Solana',
   nativeCurrency: {
     name: 'Solana',
-    decimals: 18,
+    decimals: 9,
     symbol: 'SOL'
   },
   rpcUrls: {

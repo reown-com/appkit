@@ -31,7 +31,7 @@
     "@reown/appkit-polyfills": "workspace:*",
     "@wagmi/connectors": "5.1.9",
     "@wagmi/core": "2.13.4",
-    "viem": "2.21.4",
+    "viem": "2.x",
     "vite": "5.2.11",
     "wagmi": "2.12.9"
   }

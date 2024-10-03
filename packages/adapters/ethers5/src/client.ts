@@ -1020,6 +1020,7 @@ export class Ethers5Adapter {
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (switchError: any) {
+        console.log('>>> switchError', switchError)
         if (
           switchError.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
           switchError.code === WcConstantsUtil.ERROR_CODE_DEFAULT ||

@@ -1,7 +1,54 @@
-import { ConstantsUtil, type BaseOrCaipNetwork, type CaipNetwork } from '@reown/appkit-common'
-import { PresetsUtil } from './PresetsUtil'
+import {
+  ConstantsUtil,
+  type BaseOrCaipNetwork,
+  type CaipNetwork,
+  type CaipNetworkId
+} from '@reown/appkit-common'
+import { PresetsUtil } from './PresetsUtil.js'
 
 const RPC_URL_HOST = 'rpc.walletconnect.org'
+
+export function getBlockchainApiRpcUrl(caipNetworkId: CaipNetworkId, projectId: string) {
+  return `https://rpc.walletconnect.org/v1/?chainId=${caipNetworkId}&projectId=${projectId}`
+}
+
+const WC_HTTP_RPC_SUPPORTED_CHAINS = [
+  'near:mainnet',
+  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  'eip155:1101',
+  'eip155:56',
+  'eip155:42161',
+  'eip155:7777777',
+  'eip155:59144',
+  'eip155:324',
+  'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
+  'eip155:5000',
+  'solana:4sgjmw1sunhzsxgspuhpqldx6wiyjntz',
+  'eip155:80084',
+  'eip155:5003',
+  'eip155:100',
+  'eip155:8453',
+  'eip155:42220',
+  'eip155:1313161555',
+  'eip155:17000',
+  'eip155:1',
+  'eip155:300',
+  'eip155:1313161554',
+  'eip155:1329',
+  'eip155:84532',
+  'eip155:421614',
+  'eip155:11155111',
+  'eip155:8217',
+  'eip155:43114',
+  'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
+  'eip155:999999999',
+  'eip155:11155420',
+  'eip155:80002',
+  'eip155:97',
+  'eip155:43113',
+  'eip155:137',
+  'eip155:10'
+]
 
 type ExtendCaipNetworkParams = {
   customNetworkImageUrls: Record<number | string, string> | undefined
@@ -30,6 +77,36 @@ export const CaipNetworksUtil = {
     return rpcUrl
   },
 
+  isCaipNetwork(network: BaseOrCaipNetwork): network is CaipNetwork {
+    return 'chainNamespace' in network && 'caipNetworkId' in network
+  },
+
+  getChainNamespace(network: BaseOrCaipNetwork) {
+    if (this.isCaipNetwork(network)) {
+      return network.chainNamespace
+    }
+
+    return ConstantsUtil.CHAIN.EVM
+  },
+
+  getCaipNetworkId(network: BaseOrCaipNetwork) {
+    if (this.isCaipNetwork(network)) {
+      return network.caipNetworkId
+    }
+
+    return `${ConstantsUtil.CHAIN.EVM}:${network.id}` as CaipNetworkId
+  },
+
+  getRpcUrl(caipNetwork: BaseOrCaipNetwork, caipNetworkId: CaipNetworkId, projectId: string) {
+    const defaultRpcUrl = caipNetwork.rpcUrls?.default?.http?.[0]
+
+    if (WC_HTTP_RPC_SUPPORTED_CHAINS.includes(caipNetworkId)) {
+      return getBlockchainApiRpcUrl(caipNetworkId, projectId)
+    }
+
+    return defaultRpcUrl || ''
+  },
+
   /**
    * Extends the CaipNetwork object with the image ID and image URL if the image ID is not provided
    * @param params - The parameters object
@@ -41,23 +118,25 @@ export const CaipNetworksUtil = {
    */
   extendCaipNetwork(
     caipNetwork: BaseOrCaipNetwork,
-    { customNetworkImageUrls }: ExtendCaipNetworkParams
+    { customNetworkImageUrls, projectId }: ExtendCaipNetworkParams
   ): CaipNetwork {
-    const isCaipNetwork = (network: BaseOrCaipNetwork): network is CaipNetwork => {
-      return 'chainNamespace' in network && 'caipNetworkId' in network
-    }
+    const caipNetworkId = this.getCaipNetworkId(caipNetwork)
+    const chainNamespace = this.getChainNamespace(caipNetwork)
+    const rpcUrl = this.getRpcUrl(caipNetwork, caipNetworkId, projectId)
 
     return {
       ...caipNetwork,
-      chainNamespace: isCaipNetwork(caipNetwork)
-        ? caipNetwork.chainNamespace
-        : ConstantsUtil.CHAIN.EVM,
-      caipNetworkId: isCaipNetwork(caipNetwork)
-        ? caipNetwork.caipNetworkId
-        : `${ConstantsUtil.CHAIN.EVM}:${caipNetwork.id}`,
+      chainNamespace,
+      caipNetworkId,
       assets: {
         imageId: PresetsUtil.NetworkImageIds[caipNetwork.id],
         imageUrl: customNetworkImageUrls?.[caipNetwork.id]
+      },
+      rpcUrls: {
+        ...caipNetwork.rpcUrls,
+        default: {
+          http: [rpcUrl]
+        }
       }
     }
   },

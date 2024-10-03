@@ -68,6 +68,12 @@ const state = proxy<ChainControllerState>({
 export const ChainController = {
   state,
 
+  subscribe(callback: (value: ChainControllerState) => void) {
+    return sub(state, () => {
+      callback(state)
+    })
+  },
+
   subscribeKey<K extends ChainControllerStateKey>(
     key: K,
     callback: (value: ChainControllerState[K]) => void
@@ -424,6 +430,14 @@ export const ChainController = {
     })
 
     return approvedCaipNetworkIds
+  },
+
+  getActiveCaipNetwork() {
+    return state.activeCaipNetwork
+  },
+
+  getActiveCaipAddress() {
+    return state.activeCaipAddress
   },
 
   resetAccount(chain: ChainNamespace | undefined) {

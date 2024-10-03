@@ -102,6 +102,9 @@
     "@walletconnect/universal-provider": "2.17.0",
     "valtio": "1.11.2"
   },
+  "peerDependencies": {
+    "viem": "2.x"
+  },
   "devDependencies": {
     "@types/react": "18.2.0",
     "@types/react-dom": "18.2.0",
@@ -111,7 +114,6 @@
     "@walletconnect/universal-provider": "2.17.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "viem": "2.21.4",
     "vitest": "2.0.5",
     "vue": "3.4.3"
   },

@@ -365,7 +365,7 @@ export class SolanaAdapter implements ChainAdapter {
 
     if (address && caipNetwork) {
       SolStoreUtil.setConnection(
-        new Connection(caipNetwork.rpcUrls.default.http[0] as string, this.connectionSettings)
+        new Connection(caipNetwork.rpcUrls.default.http?.[0] as string, this.connectionSettings)
       )
       this.appKit?.setAllAccounts([{ address, type: 'eoa' }], this.chainNamespace)
       this.appKit?.setCaipAddress(`${caipNetworkId}:${address}` as CaipAddress, this.chainNamespace)
@@ -429,10 +429,10 @@ export class SolanaAdapter implements ChainAdapter {
       })
       this.authSession = user
       if (user) {
-        const caipAddress = `${caipNetwork.caipNetworkId}:${user.address}` as CaipAddress
+        const caipAddress = `${caipNetwork.caipNetworkId}:${user.address}`
         ProviderUtil.setProvider(this.chainNamespace, this.authProvider)
         ProviderUtil.setProviderId(this.chainNamespace, 'walletConnect')
-        this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
+        this.appKit?.setCaipAddress(caipAddress as CaipAddress, this.chainNamespace)
         this.syncAccount({
           address: user.address,
           caipNetwork
@@ -470,10 +470,10 @@ export class SolanaAdapter implements ChainAdapter {
     try {
       this.appKit?.setLoading(true)
       const address = await provider.connect()
-      const caipChainId = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
+      const caipNetworkId = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
 
       const connectionChain =
-        provider.chains.find(chain => chain.id === caipChainId) || provider.chains[0]
+        provider.chains.find(chain => chain.caipNetworkId === caipNetworkId) || provider.chains[0]
 
       if (connectionChain) {
         const caipAddress = `${connectionChain.caipNetworkId}:${address}` as const
