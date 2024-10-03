@@ -9,7 +9,8 @@ import {
   solanaTestnet,
   solanaDevnet,
   base,
-  gnosis
+  gnosis,
+  type AppKitNetwork
 } from '@reown/appkit/networks'
 import { getLocalStorageItem } from './LocalStorage'
 import type { CaipNetwork } from '@reown/appkit'
@@ -50,7 +51,10 @@ if (typeof window !== 'undefined') {
 
 const customWallet = storedCustomWallet ? [JSON.parse(storedCustomWallet)] : []
 
-const EvmNetworks = [mainnet, optimism, polygon, zkSync, arbitrum, base, sepolia, gnosis]
+const EvmNetworks = [mainnet, optimism, polygon, zkSync, arbitrum, base, sepolia, gnosis] as [
+  AppKitNetwork,
+  ...AppKitNetwork[]
+]
 
 export const solanaNotExist = {
   id: 'chaindoesntexist',
@@ -64,7 +68,10 @@ export const solanaNotExist = {
   rpcUrls: { default: { http: ['https://api.unsupported.solana.com'] } }
 } as CaipNetwork
 
-const SolanaNetworks = [solana, solanaTestnet, solanaDevnet, solanaNotExist]
+const SolanaNetworks = [solana, solanaTestnet, solanaDevnet, solanaNotExist] as [
+  AppKitNetwork,
+  ...AppKitNetwork[]
+]
 
 export const ConstantsUtil = {
   SigningSucceededToastTitle: 'Signing Succeeded',
@@ -122,5 +129,5 @@ export const ConstantsUtil = {
   ProjectId: projectId,
   EvmNetworks,
   SolanaNetworks,
-  AllNetworks: [...EvmNetworks, ...SolanaNetworks]
+  AllNetworks: [...EvmNetworks, ...SolanaNetworks] as [AppKitNetwork, ...AppKitNetwork[]]
 }

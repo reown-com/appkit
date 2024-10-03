@@ -1,6 +1,6 @@
 import {
   ConstantsUtil,
-  type BaseOrCaipNetwork,
+  type AppKitNetwork,
   type CaipNetwork,
   type CaipNetworkId
 } from '@reown/appkit-common'
@@ -83,11 +83,11 @@ export const CaipNetworksUtil = {
     return rpcUrl
   },
 
-  isCaipNetwork(network: BaseOrCaipNetwork): network is CaipNetwork {
+  isCaipNetwork(network: AppKitNetwork): network is CaipNetwork {
     return 'chainNamespace' in network && 'caipNetworkId' in network
   },
 
-  getChainNamespace(network: BaseOrCaipNetwork) {
+  getChainNamespace(network: AppKitNetwork) {
     if (this.isCaipNetwork(network)) {
       return network.chainNamespace
     }
@@ -95,7 +95,7 @@ export const CaipNetworksUtil = {
     return ConstantsUtil.CHAIN.EVM
   },
 
-  getCaipNetworkId(network: BaseOrCaipNetwork) {
+  getCaipNetworkId(network: AppKitNetwork) {
     if (this.isCaipNetwork(network)) {
       return network.caipNetworkId
     }
@@ -103,7 +103,7 @@ export const CaipNetworksUtil = {
     return `${ConstantsUtil.CHAIN.EVM}:${network.id}` as CaipNetworkId
   },
 
-  getRpcUrl(caipNetwork: BaseOrCaipNetwork, caipNetworkId: CaipNetworkId, projectId: string) {
+  getRpcUrl(caipNetwork: AppKitNetwork, caipNetworkId: CaipNetworkId, projectId: string) {
     const defaultRpcUrl = caipNetwork.rpcUrls?.default?.http?.[0]
 
     if (WC_HTTP_RPC_SUPPORTED_CHAINS.includes(caipNetworkId)) {
@@ -123,7 +123,7 @@ export const CaipNetworksUtil = {
    * @returns The extended array of CaipNetwork objects
    */
   extendCaipNetwork(
-    caipNetwork: BaseOrCaipNetwork,
+    caipNetwork: AppKitNetwork,
     { customNetworkImageUrls, projectId }: ExtendCaipNetworkParams
   ): CaipNetwork {
     const caipNetworkId = this.getCaipNetworkId(caipNetwork)
@@ -157,7 +157,7 @@ export const CaipNetworksUtil = {
    * @returns The extended array of CaipNetwork objects
    */
   extendCaipNetworks(
-    caipNetworks: BaseOrCaipNetwork[],
+    caipNetworks: AppKitNetwork[],
     { customNetworkImageUrls, projectId }: ExtendCaipNetworkParams
   ) {
     return caipNetworks.map(caipNetwork =>

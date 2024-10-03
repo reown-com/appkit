@@ -21,13 +21,7 @@ export type CaipNetwork<
   }
 }
 
-export type BaseOrCaipNetwork = BaseChain | CaipNetwork
-
-export type BaseNetworkWithOptionalCaipFields = BaseNetwork & {
-  id: number | string
-  chainNamespace: ChainNamespace
-  caipNetworkId: CaipNetworkId
-}
+export type AppKitNetwork = BaseNetwork | CaipNetwork
 
 export type CaipNetworkId = `${ChainNamespace}:${ChainId}`
 

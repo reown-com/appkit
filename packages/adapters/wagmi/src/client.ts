@@ -74,7 +74,7 @@ import type {
   ChainNamespace,
   AdapterType,
   CaipNetwork,
-  BaseOrCaipNetwork
+  AppKitNetwork
 } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { AppKit } from '@reown/appkit'
@@ -145,7 +145,7 @@ export class WagmiAdapter implements ChainAdapter {
 
   public constructor(
     configParams: Partial<CreateConfigParameters> & {
-      networks: BaseOrCaipNetwork[]
+      networks: AppKitNetwork[]
       projectId: string
     }
   ) {
