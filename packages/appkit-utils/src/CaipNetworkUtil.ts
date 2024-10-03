@@ -63,7 +63,13 @@ export const CaipNetworksUtil = {
    * @returns The extended RPC URL
    */
   extendRpcUrlWithProjectId(rpcUrl: string, projectId: string) {
-    const isReownUrl = rpcUrl.includes(RPC_URL_HOST)
+    let isReownUrl = false
+    try {
+      const url = new URL(rpcUrl)
+      isReownUrl = url.host === RPC_URL_HOST
+    } catch (e) {
+      isReownUrl = false
+    }
 
     if (isReownUrl) {
       const url = new URL(rpcUrl)
