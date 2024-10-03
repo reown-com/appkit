@@ -35,6 +35,7 @@ const client: ConnectionControllerClient = {
   writeContract: () => Promise.resolve('0x'),
   getEnsAddress: async (value: string) => Promise.resolve(value),
   getEnsAvatar: async (value: string) => Promise.resolve(value),
+  getCapabilities: async () => Promise.resolve(''),
   grantPermissions: async () => Promise.resolve('0x')
 }
 
@@ -53,6 +54,7 @@ const partialClient: ConnectionControllerClient = {
   writeContract: () => Promise.resolve('0x'),
   getEnsAddress: async (value: string) => Promise.resolve(value),
   getEnsAvatar: async (value: string) => Promise.resolve(value),
+  getCapabilities: async () => Promise.resolve(''),
   grantPermissions: async () => Promise.resolve('0x')
 }
 

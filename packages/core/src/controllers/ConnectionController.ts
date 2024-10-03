@@ -40,6 +40,7 @@ export interface ConnectionControllerClient {
   getEnsAddress: (value: string) => Promise<false | string>
   getEnsAvatar: (value: string) => Promise<false | string>
   grantPermissions: (params: readonly unknown[] | object) => Promise<unknown>
+  getCapabilities: (params: string) => Promise<unknown>
 }
 
 export interface ConnectionControllerState {
@@ -140,7 +141,11 @@ export const ConnectionController = {
     return this._getClient().sendTransaction(args)
   },
 
-  async grantPermissions(params: object) {
+  async getCapabilities(params: string) {
+    return this._getClient().getCapabilities(params)
+  },
+
+  async grantPermissions(params: object | readonly unknown[]) {
     return this._getClient().grantPermissions(params)
   },
 

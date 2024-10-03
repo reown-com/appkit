@@ -61,6 +61,7 @@ import {
   getEmailCaipNetworks,
   getTransport,
   getWalletConnectCaipNetworks,
+  parseWalletCapabilities,
   requireCaipAddress
 } from './utils/helpers.js'
 import { W3mFrameHelpers, W3mFrameRpcConstants } from '@reown/appkit-wallet'
@@ -431,6 +432,36 @@ export class WagmiAdapter implements ChainAdapter {
         } catch (error) {
           return BigInt(0)
         }
+      },
+
+      getCapabilities: async (params: string) => {
+        if (!this.wagmiConfig) {
+          throw new Error('connectionControllerClient:getCapabilities - wagmiConfig is undefined')
+        }
+
+        const connections = getConnections(this.wagmiConfig)
+        const connection = connections[0]
+
+        if (!connection?.connector) {
+          throw new Error('connectionControllerClient:getCapabilities - connector is undefined')
+        }
+
+        const provider = (await connection.connector.getProvider()) as UniversalProvider
+
+        if (!provider) {
+          throw new Error('connectionControllerClient:getCapabilities - provider is undefined')
+        }
+
+        const walletCapabilitiesString = provider.session?.sessionProperties?.['capabilities']
+        if (walletCapabilitiesString) {
+          const walletCapabilities = parseWalletCapabilities(walletCapabilitiesString)
+          const accountCapabilities = walletCapabilities[params]
+          if (accountCapabilities) {
+            return accountCapabilities
+          }
+        }
+
+        return await provider.request({ method: 'wallet_getCapabilities', params: [params] })
       },
 
       grantPermissions: async params => {

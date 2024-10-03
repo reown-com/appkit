@@ -409,6 +409,25 @@ export class EthersAdapter {
         )
       },
 
+      getCapabilities: async (params: string) => {
+        const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
+
+        if (!provider) {
+          throw new Error('Provider is undefined')
+        }
+
+        const walletCapabilitiesString = provider.session?.sessionProperties?.['capabilities']
+        if (walletCapabilitiesString) {
+          const walletCapabilities = EthersMethods.parseWalletCapabilities(walletCapabilitiesString)
+          const accountCapabilities = walletCapabilities[params]
+          if (accountCapabilities) {
+            return accountCapabilities
+          }
+        }
+
+        return await provider.request({ method: 'wallet_getCapabilities', params: [params] })
+      },
+
       grantPermissions: async params => {
         const provider = ProviderUtil.getProvider<Provider>(CommonConstantsUtil.CHAIN.EVM)
 

@@ -20,7 +20,8 @@ const connectionControllerClient: ConnectionControllerClient = {
   writeContract: () => Promise.resolve('0x'),
   getEnsAddress: async (value: string) => Promise.resolve(value),
   getEnsAvatar: async (value: string) => Promise.resolve(value),
-  grantPermissions: async () => Promise.resolve('0x')
+  getCapabilities: async () => Promise.resolve(''),
+  grantPermissions: async () => Promise.resolve('')
 }
 
 const networkControllerClient: NetworkControllerClient = {

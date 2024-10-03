@@ -264,6 +264,25 @@ export class UniversalAdapterClient {
 
       writeContract: async () => await Promise.resolve('0x'),
 
+      getCapabilities: async (params: string) => {
+        const provider = await this.getWalletConnectProvider()
+
+        if (!provider) {
+          throw new Error('connectionControllerClient:getCapabilities - provider is undefined')
+        }
+
+        const walletCapabilitiesString = provider.session?.sessionProperties?.['capabilities']
+        if (walletCapabilitiesString) {
+          const walletCapabilities = this.parseWalletCapabilities(walletCapabilitiesString)
+          const accountCapabilities = walletCapabilities[params]
+          if (accountCapabilities) {
+            return accountCapabilities
+          }
+        }
+
+        return await provider.request({ method: 'wallet_getCapabilities', params: [params] })
+      },
+
       grantPermissions: async (params: object | readonly unknown[]) => {
         const provider = await this.getWalletConnectProvider()
         if (!provider) {
@@ -604,5 +623,14 @@ export class UniversalAdapterClient {
     })
 
     this.appKit?.setConnectors(w3mConnectors)
+  }
+  private parseWalletCapabilities(walletCapabilitiesString: string) {
+    try {
+      const walletCapabilities = JSON.parse(walletCapabilitiesString)
+
+      return walletCapabilities
+    } catch (error) {
+      throw new Error('Error parsing wallet capabilities')
+    }
   }
 }
