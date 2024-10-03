@@ -53,13 +53,15 @@ const customWallet = storedCustomWallet ? [JSON.parse(storedCustomWallet)] : []
 const EvmNetworks = [mainnet, optimism, polygon, zkSync, arbitrum, base, sepolia, gnosis]
 
 export const solanaNotExist = {
-  id: 'solana:chaindoesntexist',
-  chainId: 'chaindoesntexist',
+  id: 'chaindoesntexist',
+  caipNetworkId: 'solana:chaindoesntexist',
+  chainNamespace: 'solana',
   name: 'Solana Unsupported',
-  currency: 'SOL',
-  explorerUrl: 'https://explorer.solana.com/?cluster=unsupported',
-  rpcUrl: 'https://api.unsupported.solana.com',
-  chainNamespace: 'solana'
+  nativeCurrency: { name: 'Solana', symbol: 'SOL', decimals: 9 },
+  blockExplorers: {
+    default: { name: 'Solscan', url: 'https://explorer.solana.com/?cluster=unsupported' }
+  },
+  rpcUrls: { default: { http: ['https://api.unsupported.solana.com'] } }
 } as CaipNetwork
 
 const SolanaNetworks = [solana, solanaTestnet, solanaDevnet, solanaNotExist]
