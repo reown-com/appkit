@@ -36,6 +36,7 @@ import type { CaipNetwork } from '@reown/appkit-common'
 export interface WalletStandardProviderConfig {
   wallet: Wallet
   getActiveChain: GetActiveChain
+  requestedChains: CaipNetwork[]
 }
 
 type AvailableFeatures = StandardConnectFeature &
@@ -50,11 +51,14 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
   readonly wallet: Wallet
   readonly getActiveChain: WalletStandardProviderConfig['getActiveChain']
 
-  constructor({ wallet, getActiveChain }: WalletStandardProviderConfig) {
+  private readonly requestedChains: WalletStandardProviderConfig['requestedChains']
+
+  constructor({ wallet, getActiveChain, requestedChains }: WalletStandardProviderConfig) {
     super()
 
     this.wallet = wallet
     this.getActiveChain = getActiveChain
+    this.requestedChains = requestedChains
 
     this.bindEvents()
   }
@@ -88,7 +92,13 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
   }
 
   public get chains() {
-    return this.wallet.chains.map(chainId => solanaChains[chainId]).filter(Boolean) as CaipNetwork[]
+    return this.wallet.chains
+      .map(chainId =>
+        this.requestedChains.find(
+          chain => chain.chainId === chainId || chain.chainId === solanaChains[chainId]?.chainId
+        )
+      )
+      .filter(Boolean) as CaipNetwork[]
   }
 
   public async connect(): Promise<string> {
