@@ -29,15 +29,20 @@ export class W3mConnectingWcBrowser extends W3mConnectingWidget {
     try {
       this.error = false
       const { connectors } = ConnectorController.state
-      const announcedConnector = connectors.find(
-        c => c.type === 'ANNOUNCED' && c.info?.rdns === this.wallet?.rdns
+
+      const connector = connectors.find(
+        c =>
+          (c.type === 'ANNOUNCED' && c.info?.rdns === this.wallet?.rdns) ||
+          c.type === 'INJECTED' ||
+          c.name === this.wallet?.name
       )
-      const injectedConnector = connectors.find(c => c.type === 'INJECTED')
-      if (announcedConnector) {
-        await ConnectionController.connectExternal(announcedConnector, announcedConnector.chain)
-      } else if (injectedConnector) {
-        await ConnectionController.connectExternal(injectedConnector, injectedConnector.chain)
+
+      if (connector) {
+        await ConnectionController.connectExternal(connector, connector.chain)
+      } else {
+        throw new Error('w3m-connecting-wc-browser: No connector found')
       }
+
       ModalController.close()
 
       EventsController.sendEvent({

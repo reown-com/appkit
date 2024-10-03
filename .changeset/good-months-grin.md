@@ -1,8 +1,8 @@
 ---
 '@reown/appkit-scaffold-ui': patch
+'@apps/laboratory': patch
 '@apps/demo': patch
 '@apps/gallery': patch
-'@apps/laboratory': patch
 '@examples/html-ethers': patch
 '@examples/html-ethers5': patch
 '@examples/html-wagmi': patch
@@ -35,4 +35,4 @@
 '@reown/appkit-wallet': patch
 ---
 
-fix: override ens profile picture if resolved
+Fixed an issue where email line separator was not showing when social logins were disabled and `emailShowWallets` was set to false.

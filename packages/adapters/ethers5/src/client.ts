@@ -13,6 +13,7 @@ import {
   AccountController,
   ChainController,
   CoreHelperUtil,
+  AlertController,
   type CombinedProvider,
   type Connector
 } from '@reown/appkit-core'
@@ -32,12 +33,12 @@ import {
 } from '@reown/appkit-wallet'
 import { ConstantsUtil as CoreConstantsUtil } from '@reown/appkit-core'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
+import { ConstantsUtil, ErrorUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { ConnectionControllerClient, NetworkControllerClient } from '@reown/appkit-core'
 import { WcConstantsUtil } from '@reown/appkit'
 import { Ethers5Methods } from './utils/Ethers5Methods.js'
-import { ethers } from 'ethers5'
+import { ethers } from 'ethers'
 import type { PublicStateControllerState } from '@reown/appkit-core'
 import { ProviderUtil } from '@reown/appkit/store'
 import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
@@ -214,10 +215,6 @@ export class Ethers5Adapter {
   }
 
   public construct(appKit: AppKit, options: AppKitOptions) {
-    if (!options.projectId) {
-      throw new Error('appkit:ethers-client:initialize - projectId is undefined')
-    }
-
     this.appKit = appKit
     this.options = options
     this.caipNetworks = options.networks
@@ -1114,7 +1111,12 @@ export class Ethers5Adapter {
 
   private async syncAuthConnector(projectId: string, bypassWindowCheck = false) {
     if (bypassWindowCheck || typeof window !== 'undefined') {
-      this.authProvider = W3mFrameProviderSingleton.getInstance(projectId)
+      this.authProvider = W3mFrameProviderSingleton.getInstance({
+        projectId,
+        onTimeout: () => {
+          AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION_SOCIALS, 'error')
+        }
+      })
 
       this.appKit?.addConnector({
         id: ConstantsUtil.AUTH_CONNECTOR_ID,

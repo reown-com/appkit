@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-utils",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -49,7 +49,7 @@
     "@reown/appkit-polyfills": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/logger": "2.1.2",
-    "@walletconnect/universal-provider": "2.16.1",
+    "@walletconnect/universal-provider": "2.17.0",
     "valtio": "1.11.2"
   },
   "devDependencies": {

@@ -1,10 +1,5 @@
 ---
-'@reown/appkit-adapter-ethers5': patch
-'@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-solana': patch
-'@reown/appkit-adapter-wagmi': patch
-'@reown/appkit': patch
-'@reown/appkit-wallet': patch
 '@reown/appkit-core': patch
 '@apps/demo': patch
 '@apps/gallery': patch
@@ -21,7 +16,11 @@
 '@examples/vue-ethers5': patch
 '@examples/vue-solana': patch
 '@examples/vue-wagmi': patch
+'@reown/appkit-adapter-ethers': patch
+'@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-polkadot': patch
+'@reown/appkit-adapter-wagmi': patch
+'@reown/appkit': patch
 '@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-common': patch
@@ -33,6 +32,7 @@
 '@reown/appkit-solana': patch
 '@reown/appkit-ui': patch
 '@reown/appkit-wagmi': patch
+'@reown/appkit-wallet': patch
 ---
 
-Implement the correct logic for getting available networks when using universal provider
+Fixes external connectors not appearing when using Solana adapter

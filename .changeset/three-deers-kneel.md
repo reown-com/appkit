@@ -1,8 +1,9 @@
 ---
+'@reown/appkit-scaffold-ui': patch
+'@apps/laboratory': patch
 '@reown/appkit-core': patch
 '@apps/demo': patch
 '@apps/gallery': patch
-'@apps/laboratory': patch
 '@examples/html-ethers': patch
 '@examples/html-ethers5': patch
 '@examples/html-wagmi': patch
@@ -27,7 +28,6 @@
 '@reown/appkit-ethers': patch
 '@reown/appkit-ethers5': patch
 '@reown/appkit-polyfills': patch
-'@reown/appkit-scaffold-ui': patch
 '@reown/appkit-siwe': patch
 '@reown/appkit-solana': patch
 '@reown/appkit-ui': patch
@@ -35,4 +35,4 @@
 '@reown/appkit-wallet': patch
 ---
 
-Fixes swap amount calculation to prevent floating numbers
+Disable names feature flow for Solana networks
