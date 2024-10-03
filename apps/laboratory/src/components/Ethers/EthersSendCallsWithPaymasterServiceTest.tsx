@@ -5,7 +5,7 @@ import { UniversalProvider } from '@walletconnect/universal-provider'
 import { useChakraToast } from '../Toast'
 import { parseGwei } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
-import { BrowserProvider, type Eip1193Provider } from 'ethers'
+import { BrowserProvider, type Eip1193Provider, Interface } from 'ethers'
 import {
   EIP_5792_RPC_METHODS,
   WALLET_CAPABILITIES,
@@ -13,7 +13,6 @@ import {
 } from '../../utils/EIP5792Utils'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { abi, address as donutAddress } from '../../utils/DonutContract'
-import { ethers } from 'ethers5'
 
 export function EthersSendCallsWithPaymasterServiceTest() {
   const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')
@@ -67,7 +66,7 @@ export function EthersSendCallsWithPaymasterServiceTest() {
       const provider = new BrowserProvider(walletProvider, chainId)
       const amountToSend = parseGwei('0.001').toString(16)
 
-      const donutIntrerface = new ethers.utils.Interface(abi)
+      const donutIntrerface = new Interface(abi)
       const encodedCallData = donutIntrerface.encodeFunctionData('getBalance', [address])
 
       const calls = donut
