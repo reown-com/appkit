@@ -237,6 +237,8 @@ export class SolanaAdapter implements ChainAdapter {
 
       writeContract: async () => await Promise.resolve('0x'),
 
+      getCapabilities: async () => await Promise.resolve('0x'),
+
       grantPermissions: async () => await Promise.resolve('0x'),
 
       sendTransaction: async params => {
