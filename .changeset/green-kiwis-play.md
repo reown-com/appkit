@@ -1,4 +1,6 @@
 ---
+'@reown/appkit-adapter-solana': patch
+'@reown/appkit-core': patch
 '@apps/demo': patch
 '@apps/gallery': patch
 '@apps/laboratory': patch
@@ -17,13 +19,11 @@
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-polkadot': patch
-'@reown/appkit-adapter-solana': patch
 '@reown/appkit-adapter-wagmi': patch
 '@reown/appkit': patch
 '@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-common': patch
-'@reown/appkit-core': patch
 '@reown/appkit-ethers': patch
 '@reown/appkit-ethers5': patch
 '@reown/appkit-polyfills': patch
@@ -35,25 +35,4 @@
 '@reown/appkit-wallet': patch
 ---
 
-Introducing debug mode. This is useful for seeing UI alerts while debugging.
-
-**Example usage**
-
-```ts
-import { createAppKit } from '@reown/appkit/react'
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { mainnet } from '@reown/appkit/networks'
-
-const wagmiAdapter = new WagmiAdapter({
-  ssr: true,
-  networks: [mainnet],
-  projectId: 'YOUR_PROJECT_ID'
-})
-
-const modal = createAppKit({
-  adapters: [wagmiAdapter],
-  networks: [mainnet],
-  projectId: 'YOUR_PROJECT_ID',
-  debug: true // Optional - defaults to false
-})
-```
+Fixes external connectors not appearing when using Solana adapter

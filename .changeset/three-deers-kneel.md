@@ -1,8 +1,9 @@
 ---
-'@reown/appkit-utils': patch
+'@reown/appkit-scaffold-ui': patch
+'@apps/laboratory': patch
+'@reown/appkit-core': patch
 '@apps/demo': patch
 '@apps/gallery': patch
-'@apps/laboratory': patch
 '@examples/html-ethers': patch
 '@examples/html-ethers5': patch
 '@examples/html-wagmi': patch
@@ -21,13 +22,12 @@
 '@reown/appkit-adapter-solana': patch
 '@reown/appkit-adapter-wagmi': patch
 '@reown/appkit': patch
+'@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-common': patch
-'@reown/appkit-core': patch
 '@reown/appkit-ethers': patch
 '@reown/appkit-ethers5': patch
 '@reown/appkit-polyfills': patch
-'@reown/appkit-scaffold-ui': patch
 '@reown/appkit-siwe': patch
 '@reown/appkit-solana': patch
 '@reown/appkit-ui': patch
@@ -35,4 +35,4 @@
 '@reown/appkit-wallet': patch
 ---
 
-Changed logger imports to not cause the webpack bundler to throw a CommonJS module error.
+Disable names feature flow for Solana networks

@@ -681,7 +681,11 @@ export class SolanaAdapter implements ChainAdapter {
       type: provider.type,
       imageUrl: provider.icon,
       name: provider.name,
-      provider,
+      /**
+       * When the provider is different from 'AUTH', we don't need to pass it to the connector.
+       * This avoids issues with the valtio proxy and non-serializable state and follows same logic from other clients.
+       */
+      provider: provider.type === 'AUTH' ? provider : undefined,
       chain: CommonConstantsUtil.CHAIN.SOLANA
     }))
 
