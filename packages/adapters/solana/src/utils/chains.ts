@@ -1,12 +1,14 @@
 import { ConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
 
+const RPC_URL = `${ConstantsUtil.BLOCKCHAIN_API_RPC_URL}/v1`
+
 export const solana = {
   id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
   chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
   name: 'Solana',
   currency: 'SOL',
   explorerUrl: 'https://solscan.io',
-  rpcUrl: 'https://rpc.walletconnect.com/v1',
+  rpcUrl: RPC_URL,
   chainNamespace: ConstantsUtil.CHAIN.SOLANA
 } as CaipNetwork
 
@@ -16,7 +18,7 @@ export const solanaTestnet = {
   name: 'Solana Testnet',
   currency: 'SOL',
   explorerUrl: 'https://explorer.solana.com/?cluster=testnet',
-  rpcUrl: 'https://rpc.walletconnect.org/v1',
+  rpcUrl: RPC_URL,
   chainNamespace: ConstantsUtil.CHAIN.SOLANA
 } as CaipNetwork
 
@@ -26,7 +28,7 @@ export const solanaDevnet = {
   name: 'Solana Devnet',
   currency: 'SOL',
   explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
-  rpcUrl: 'https://rpc.walletconnect.org/v1',
+  rpcUrl: RPC_URL,
   chainNamespace: ConstantsUtil.CHAIN.SOLANA
 } as CaipNetwork
 
