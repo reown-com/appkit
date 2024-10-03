@@ -11,16 +11,7 @@ export default function Page2({ data }: Props) {
   const { open } = useAppKit()
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: '1rem',
-        height: '100vh'
-      }}
-    >
+    <div className="page-container">
       <span>Address: {address}</span>
       <span>Server side data: {data}</span>
       <button onClick={() => open()}>Open AppKit</button>
@@ -30,11 +21,9 @@ export default function Page2({ data }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async context => {
-  console.log(context)
-
   return {
     props: {
-      data: '1111'
+      data: 'Example data from the server side'
     }
   }
 }

@@ -7,16 +7,7 @@ export default function Home() {
   const { open } = useAppKit()
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: '1rem',
-        height: '100vh'
-      }}
-    >
+    <div className="page-container">
       <span>Address: {address}</span>
       <button onClick={() => open()}>Open AppKit</button>
 

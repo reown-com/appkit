@@ -15,7 +15,7 @@ export const ConnectButton = () => {
   const compactAddressWagmi = compactHash(wagmiAccount.address || '')
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+    <div className="column">
       <span className="text-black">useAppKitAccount: {compactAddress}</span>
       <span className="text-black">useAccount (wagmi): {compactAddressWagmi}</span>
       <w3m-button />
