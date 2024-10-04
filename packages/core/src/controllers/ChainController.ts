@@ -413,7 +413,7 @@ export const ChainController = {
     this.setAdapterNetworkState(chain, { requestedCaipNetworks: requestedNetworks })
   },
 
-  getAllApprovedCaipNetworks(): CaipNetworkId[] {
+  getAllApprovedCaipNetworkIds(): CaipNetworkId[] {
     const approvedCaipNetworkIds: CaipNetworkId[] = []
 
     state.chains.forEach(chainAdapter => {

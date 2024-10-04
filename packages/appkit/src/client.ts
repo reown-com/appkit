@@ -314,8 +314,8 @@ export class AppKit {
     ChainController.setRequestedCaipNetworks(requestedCaipNetworks, chain)
   }
 
-  public getApprovedCaipNetworkIds: (typeof ChainController)['getAllApprovedCaipNetworks'] = () =>
-    ChainController.getAllApprovedCaipNetworks()
+  public getApprovedCaipNetworkIds: (typeof ChainController)['getAllApprovedCaipNetworkIds'] = () =>
+    ChainController.getAllApprovedCaipNetworkIds()
 
   public setApprovedCaipNetworksData: (typeof ChainController)['setApprovedCaipNetworksData'] =
     namespace => ChainController.setApprovedCaipNetworksData(namespace)

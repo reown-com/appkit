@@ -99,7 +99,7 @@ export class W3mNetworksView extends LitElement {
 
   private networksTemplate() {
     const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
-    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworks()
+    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
       requestedCaipNetworks
@@ -131,7 +131,7 @@ export class W3mNetworksView extends LitElement {
   private getNetworkDisabled(network: CaipNetwork) {
     const networkNamespace = network.chainNamespace
     const isNamespaceConnected = AccountController.getCaipAddress(networkNamespace)
-    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworks()
+    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
     const supportsAllNetworks =
       ChainController.getNetworkProp('supportsAllNetworks', networkNamespace) !== false
     const type = StorageUtil.getConnectedConnector()

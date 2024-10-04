@@ -83,7 +83,7 @@ export class W3mUnsupportedChainView extends LitElement {
 
   private networksTemplate() {
     const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
-    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworks()
+    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
 
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
@@ -125,7 +125,7 @@ export class W3mUnsupportedChainView extends LitElement {
 
   private async onSwitchNetwork(network: CaipNetwork) {
     const caipAddress = AccountController.state.caipAddress
-    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworks()
+    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
     const supportsAllNetworks = ChainController.getNetworkProp(
       'supportsAllNetworks',
       network.chainNamespace

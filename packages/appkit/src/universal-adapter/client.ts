@@ -406,7 +406,7 @@ export class UniversalAdapterClient {
           ChainController.setActiveCaipNetwork(storedCaipNetwork)
         } else if (
           !activeCaipNetwork ||
-          !ChainController.getAllApprovedCaipNetworks().includes(activeCaipNetwork.id)
+          !ChainController.getAllApprovedCaipNetworkIds().includes(activeCaipNetwork.id)
         ) {
           this.setDefaultNetwork(nameSpaces)
         }

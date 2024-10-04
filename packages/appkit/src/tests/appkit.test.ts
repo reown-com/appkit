@@ -321,7 +321,7 @@ describe('Base', () => {
     })
 
     it('should get approved CAIP network IDs', () => {
-      vi.mocked(ChainController.getAllApprovedCaipNetworks).mockReturnValue(['eip155:1'])
+      vi.mocked(ChainController.getAllApprovedCaipNetworkIds).mockReturnValue(['eip155:1'])
       expect(appKit.getApprovedCaipNetworkIds()).toEqual(['eip155:1'])
     })
 
