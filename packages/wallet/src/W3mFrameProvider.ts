@@ -15,6 +15,7 @@ interface W3mFrameProviderConfig {
 
 // -- Provider --------------------------------------------------------
 export class W3mFrameProvider {
+  private ready = false
   public w3mLogger: W3mFrameLogger
   private w3mFrame: W3mFrame
   private openRpcRequests: Array<W3mFrameTypes.RPCRequest & { abortController: AbortController }> =
@@ -33,6 +34,20 @@ export class W3mFrameProvider {
     this.w3mLogger = new W3mFrameLogger(projectId)
     this.w3mFrame = new W3mFrame(projectId, true, chainId)
     this.onTimeout = onTimeout
+
+    this.w3mFrame.events.onFrameEvent(event => {
+      if (event.type === W3mFrameConstants.FRAME_READY) {
+        this.ready = true
+      }
+    })
+
+    setTimeout(() => {
+      if (!this.ready) {
+        this.w3mLogger.logger.error(
+          'W3mFrame could not be mounted. Please review your configuration.'
+        )
+      }
+    }, 10_000)
   }
 
   // -- Extended Methods ------------------------------------------------
