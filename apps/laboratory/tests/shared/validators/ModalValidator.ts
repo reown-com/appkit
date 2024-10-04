@@ -152,6 +152,11 @@ export class ModalValidator {
     await expect(emailInput).toBeVisible()
   }
 
+  async expectEmailLineSeparator() {
+    const emailInput = this.page.getByTestId('w3m-email-login-or-separator')
+    await expect(emailInput).toBeVisible()
+  }
+
   async expectValidSignature(signature: `0x${string}`, address: `0x${string}`, chainId: number) {
     const isVerified = await verifySignature({
       address,
@@ -198,6 +203,13 @@ export class ModalValidator {
   async expectOnrampButton() {
     const onrampButton = this.page.getByTestId('w3m-account-default-onramp-button')
     await expect(onrampButton).toBeVisible()
+  }
+
+  async expectWalletGuide(_library: string, guide: 'get-started' | 'explore') {
+    const walletGuide = this.page.getByTestId(
+      guide === 'explore' ? 'w3m-wallet-guide-explore' : 'w3m-wallet-guide-get-started'
+    )
+    await expect(walletGuide).toBeVisible()
   }
 
   async expectAccountNameFound(name: string) {

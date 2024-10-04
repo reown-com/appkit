@@ -39,6 +39,7 @@ export interface RouterControllerState {
     | 'WalletCompatibleNetworks'
     | 'ChooseAccountName'
     | 'Connect'
+    | 'Create'
     | 'ConnectingExternal'
     | 'ConnectingFarcaster'
     | 'ConnectingWalletConnect'

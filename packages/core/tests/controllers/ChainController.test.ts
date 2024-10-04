@@ -1,5 +1,10 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest'
-import { ConstantsUtil, type CaipNetworkId, type ChainNamespace } from '@reown/appkit-common'
+import {
+  ConstantsUtil,
+  type CaipNetwork,
+  type CaipNetworkId,
+  type ChainNamespace
+} from '@reown/appkit-common'
 import { ChainController } from '../../src/controllers/ChainController.js'
 import { type ConnectionControllerClient } from '../../src/controllers/ConnectionController.js'
 import type { NetworkControllerClient } from '../../exports/index.js'
@@ -8,6 +13,36 @@ import type { NetworkControllerClient } from '../../exports/index.js'
 const chainNamespace = 'eip155' as ChainNamespace
 const caipAddress = 'eip155:1:0x123'
 const approvedCaipNetworkIds = ['eip155:1', 'eip155:4'] as CaipNetworkId[]
+
+const requestedCaipNetworks = [
+  {
+    id: 'eip155:1',
+    name: 'Ethereum',
+    chainNamespace: ConstantsUtil.CHAIN.EVM,
+    chainId: 1,
+    currency: 'ETH',
+    explorerUrl: 'https://etherscan.io',
+    rpcUrl: 'https://rpc.infura.com/v1/'
+  },
+  {
+    id: 'eip155:42161',
+    name: 'Arbitrum One',
+    chainNamespace: ConstantsUtil.CHAIN.EVM,
+    chainId: 42161,
+    currency: 'ETH',
+    explorerUrl: 'https://etherscan.io',
+    rpcUrl: 'https://rpc.infura.com/v1/'
+  },
+  {
+    id: 'eip155:43114',
+    name: 'Avalanche C-Chain',
+    chainNamespace: ConstantsUtil.CHAIN.EVM,
+    chainId: 43114,
+    currency: 'ETH',
+    explorerUrl: 'https://etherscan.io',
+    rpcUrl: 'https://rpc.infura.com/v1/'
+  }
+] as CaipNetwork[]
 
 const caipNetwork = {
   id: 'eip155:1',
@@ -94,7 +129,7 @@ describe('ChainController', () => {
       chainNamespace,
       connectionControllerClient,
       networkControllerClient: networkController,
-      caipNetworks: []
+      caipNetworks: [] as CaipNetwork[]
     }
 
     // Need to re-initialize to set the spy properly
@@ -129,6 +164,13 @@ describe('ChainController', () => {
     })
   })
 
+  it('should check if network supports names feature', () => {
+    ChainController.setActiveCaipNetwork(caipNetwork)
+    expect(ChainController.checkIfNamesSupported()).toEqual(true)
+    ChainController.setActiveCaipNetwork(solanaCaipNetwork)
+    expect(ChainController.checkIfNamesSupported()).toEqual(false)
+  })
+
   it('should get correct active network token address', () => {
     let mock = vi
       .spyOn(ChainController.state, 'activeCaipNetwork', 'get')
@@ -150,37 +192,43 @@ describe('ChainController', () => {
     mock.mockClear()
   })
 
-  // it('should update state correctly on setRequestedCaipNetworks()', () => {
-  //   ChainController.setRequestedCaipNetworks(requestedCaipNetworks, chain)
-  //   expect(ChainController.state.requestedCaipNetworks).toEqual(requestedCaipNetworks)
-  // })
+  it('should update state correctly on setRequestedCaipNetworks()', () => {
+    ChainController.setRequestedCaipNetworks(requestedCaipNetworks, chainNamespace)
+    const requestedNetworks = ChainController.getRequestedCaipNetworks(chainNamespace)
+    expect(requestedNetworks).toEqual(requestedCaipNetworks)
+  })
 
-  // it('should reset state correctly on resetNetwork()', () => {
-  //   const namespace = 'eip155'
-  //   ChainController.resetNetwork(namespace)
-  //   const requestedCaipNetworks = ChainController.getRequestedCaipNetworkIds(namespace)
-  //   const approvedCaipNetworkIds = ChainController.getApprovedCaipNetworkIds(namespace)
-  //   const smartAccountEnabledNetworks = ChainController.getNetworkProp('smartAccountEnabledNetworks')
-  //   expect(approvedCaipNetworkIds).toEqual(undefined)
-  //   expect(requestedCaipNetworks).toEqual(requestedCaipNetworks)
-  //   expect(smartAccountEnabledNetworks).toEqual([])
-  // })
+  it('should reset state correctly on resetNetwork()', () => {
+    const namespace = 'eip155'
+    ChainController.resetNetwork(namespace)
+    const requestedCaipNetworks = ChainController.getRequestedCaipNetworks(namespace)
+    const approvedCaipNetworkIds = ChainController.getApprovedCaipNetworkIds(namespace)
+    const smartAccountEnabledNetworks = ChainController.getNetworkProp(
+      'smartAccountEnabledNetworks',
+      chainNamespace
+    )
+    expect(approvedCaipNetworkIds).toEqual([])
+    expect(requestedCaipNetworks).toEqual(requestedCaipNetworks)
+    expect(smartAccountEnabledNetworks).toEqual([])
+  })
 
   it('should reset account as expected', () => {
-    ChainController.resetAccount(ChainController.state.activeChain)
-    expect(ChainController.getAccountProp('smartAccountDeployed')).toEqual(false)
-    expect(ChainController.getAccountProp('currentTab')).toEqual(0)
-    expect(ChainController.getAccountProp('caipAddress')).toEqual(undefined)
-    expect(ChainController.getAccountProp('address')).toEqual(undefined)
-    expect(ChainController.getAccountProp('balance')).toEqual(undefined)
-    expect(ChainController.getAccountProp('balanceSymbol')).toEqual(undefined)
-    expect(ChainController.getAccountProp('profileName')).toEqual(undefined)
-    expect(ChainController.getAccountProp('profileImage')).toEqual(undefined)
-    expect(ChainController.getAccountProp('addressExplorerUrl')).toEqual(undefined)
-    expect(ChainController.getAccountProp('tokenBalance')).toEqual([])
-    expect(ChainController.getAccountProp('connectedWalletInfo')).toEqual(undefined)
-    expect(ChainController.getAccountProp('preferredAccountType')).toEqual(undefined)
-    expect(ChainController.getAccountProp('socialProvider')).toEqual(undefined)
-    expect(ChainController.getAccountProp('socialWindow')).toEqual(undefined)
+    ChainController.resetAccount(chainNamespace)
+    expect(ChainController.getAccountProp('smartAccountDeployed', chainNamespace)).toEqual(false)
+    expect(ChainController.getAccountProp('currentTab', chainNamespace)).toEqual(0)
+    expect(ChainController.getAccountProp('caipAddress', chainNamespace)).toEqual(undefined)
+    expect(ChainController.getAccountProp('address', chainNamespace)).toEqual(undefined)
+    expect(ChainController.getAccountProp('balance', chainNamespace)).toEqual(undefined)
+    expect(ChainController.getAccountProp('balanceSymbol', chainNamespace)).toEqual(undefined)
+    expect(ChainController.getAccountProp('profileName', chainNamespace)).toEqual(undefined)
+    expect(ChainController.getAccountProp('profileImage', chainNamespace)).toEqual(undefined)
+    expect(ChainController.getAccountProp('addressExplorerUrl', chainNamespace)).toEqual(undefined)
+    expect(ChainController.getAccountProp('tokenBalance', chainNamespace)).toEqual([])
+    expect(ChainController.getAccountProp('connectedWalletInfo', chainNamespace)).toEqual(undefined)
+    expect(ChainController.getAccountProp('preferredAccountType', chainNamespace)).toEqual(
+      undefined
+    )
+    expect(ChainController.getAccountProp('socialProvider', chainNamespace)).toEqual(undefined)
+    expect(ChainController.getAccountProp('socialWindow', chainNamespace)).toEqual(undefined)
   })
 })

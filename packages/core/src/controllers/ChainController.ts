@@ -486,8 +486,17 @@ export const ChainController = {
     }, 300)
   },
 
+  checkIfNamesSupported(): boolean {
+    const activeCaipNetwork = state.activeCaipNetwork
+
+    return Boolean(
+      activeCaipNetwork?.chainNamespace &&
+        ConstantsUtil.NAMES_SUPPORTED_CHAIN_NAMESPACES.includes(activeCaipNetwork.chainNamespace)
+    )
+  },
+
   resetNetwork(namespace: ChainNamespace) {
-    ChainController.setAdapterNetworkState(namespace, {
+    this.setAdapterNetworkState(namespace, {
       approvedCaipNetworkIds: undefined,
       supportsAllNetworks: true,
       smartAccountEnabledNetworks: []

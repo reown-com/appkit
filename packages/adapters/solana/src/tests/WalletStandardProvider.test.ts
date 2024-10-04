@@ -10,20 +10,24 @@ import {
 import { TestConstants } from './util/TestConstants'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
 import { WalletStandardFeatureNotSupportedError } from '../providers/shared/Errors.js'
+import { solanaChains } from '../utils/chains'
 
 describe('WalletStandardProvider specific tests', () => {
   let wallet = mockWalletStandard()
   let getActiveChain = vi.fn(() => TestConstants.chains[0])
+  let requestedChains = vi.mocked(structuredClone(TestConstants.chains))
   let walletStandardProvider = new WalletStandardProvider({
     wallet,
-    getActiveChain
+    getActiveChain,
+    requestedChains
   })
 
   beforeEach(() => {
     wallet = mockWalletStandard()
     walletStandardProvider = new WalletStandardProvider({
       wallet,
-      getActiveChain
+      getActiveChain,
+      requestedChains
     })
   })
 
@@ -137,5 +141,16 @@ describe('WalletStandardProvider specific tests', () => {
         chain: 'solana:mainnet'
       }))
     )
+  })
+
+  it('should use the same requestedChains to return chains', () => {
+    const testingChainIndex = 2
+    const chainId = Object.keys(solanaChains)[testingChainIndex] as `solana:${string}`
+
+    vi.spyOn(wallet, 'chains', 'get').mockReturnValue([chainId])
+
+    expect(walletStandardProvider.chains).toHaveLength(1)
+    // should be the exact same object guaranteeing usage of requestedChains object
+    expect(walletStandardProvider.chains[0]).toBe(requestedChains[testingChainIndex])
   })
 })

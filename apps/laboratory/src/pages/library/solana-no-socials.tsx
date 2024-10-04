@@ -21,7 +21,8 @@ const modal = createAppKit({
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata,
   features: {
-    socials: []
+    socials: [],
+    emailShowWallets: false
   }
 })
 

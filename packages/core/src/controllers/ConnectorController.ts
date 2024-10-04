@@ -32,16 +32,31 @@ export const ConnectorController = {
   },
 
   setConnectors(connectors: ConnectorControllerState['connectors']) {
-    const newConnectors = connectors.filter(
-      newConnector =>
-        !state.allConnectors.some(
-          existingConnector =>
-            existingConnector.id === newConnector.id &&
-            this.getConnectorName(existingConnector.name) ===
-              this.getConnectorName(newConnector.name) &&
-            existingConnector.chain === newConnector.chain
-        )
-    )
+    const newConnectors = connectors.filter(newConnector => {
+      try {
+        /**
+         * This is a fix for non-serializable objects that may prevent all the connectors in the list from being displayed
+         * Check more about this issue on https://valtio.dev/docs/api/basic/proxy#Gotchas
+         */
+        proxy(newConnector)
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('ConnectorController.setConnectors: Not possible to add connector', {
+          newConnector,
+          error
+        })
+
+        return false
+      }
+
+      return !state.allConnectors.some(
+        existingConnector =>
+          existingConnector.id === newConnector.id &&
+          this.getConnectorName(existingConnector.name) ===
+            this.getConnectorName(newConnector.name) &&
+          existingConnector.chain === newConnector.chain
+      )
+    })
 
     state.allConnectors = [...state.connectors, ...newConnectors]
     state.connectors = this.mergeMultiChainConnectors(state.allConnectors)
