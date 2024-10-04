@@ -1,5 +1,5 @@
 /* eslint-disable max-params */
-import { ethers, Contract } from 'ethers5'
+import { ethers, Contract } from 'ethers'
 import { type Provider } from '@reown/appkit-utils/ethers'
 import type {
   EstimateGasTransactionArgs,

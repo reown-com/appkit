@@ -6,18 +6,21 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { siweConfig } from '../../utils/SiweUtils'
-import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
+import { mainnet } from '@reown/appkit/networks'
+
+const networks = ConstantsUtil.EvmNetworks
 
 const ethersAdapter = new EthersAdapter()
 
 const modal = createAppKit({
   adapters: [ethersAdapter],
-  networks: [arbitrum, mainnet, optimism, polygon, zkSync, sepolia],
+  networks,
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,
-    socials: []
+    socials: [],
+    emailShowWallets: false
   },
   siweConfig
 })

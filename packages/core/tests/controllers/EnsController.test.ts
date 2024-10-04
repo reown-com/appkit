@@ -4,8 +4,7 @@ import {
   ChainController,
   ConnectionController,
   ConnectorController,
-  EnsController,
-  NetworkController
+  EnsController
 } from '../../exports/index.js'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { ConstantsUtil } from '@reown/appkit-common'
@@ -136,7 +135,7 @@ describe('EnsController', () => {
     // No network set
     const result = await EnsController.getNamesForAddress('0x123')
     expect(result).toEqual([])
-    NetworkController.setActiveCaipNetwork({
+    ChainController.setActiveCaipNetwork({
       id: 'eip155:1',
       chainNamespace: ConstantsUtil.CHAIN.EVM,
       chainId: 1,
@@ -154,7 +153,7 @@ describe('EnsController', () => {
 
   it('should register name', async () => {
     // Setup
-    NetworkController.setActiveCaipNetwork({
+    ChainController.setActiveCaipNetwork({
       id: 'eip155:137',
       chainNamespace: ConstantsUtil.CHAIN.EVM,
       chainId: 137,

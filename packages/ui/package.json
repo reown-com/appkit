@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-ui",
-  "version": "1.0.3",
+  "version": "1.0.7",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -32,12 +32,12 @@
   },
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/WalletConnect/web3modal",
+  "homepage": "https://github.com/reown-com/appkit",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/WalletConnect/web3modal.git"
+    "url": "git+https://github.com/reown-com/appkit.git"
   },
   "bugs": {
-    "url": "https://github.com/WalletConnect/web3modal/issues"
+    "url": "https://github.com/reown-com/appkit/issues"
   }
 }

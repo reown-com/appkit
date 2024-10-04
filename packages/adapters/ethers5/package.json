@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-adapter-ethers5",
-  "version": "1.0.3",
+  "version": "1.0.7",
   "type": "module",
   "main": "./dist/esm/src/index.js",
   "types": "./dist/types/src/index.d.ts",
@@ -17,8 +17,6 @@
     "test": "vitest run --coverage.enabled=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true"
   },
   "dependencies": {
-    "@walletconnect/utils": "2.16.1",
-    "@walletconnect/universal-provider": "2.16.1",
     "@reown/appkit": "workspace:*",
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-core": "workspace:*",
@@ -28,25 +26,28 @@
     "@reown/appkit-siwe": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
+    "@walletconnect/utils": "2.17.0",
+    "@walletconnect/universal-provider": "2.17.0",
     "valtio": "1.11.2"
   },
-  "devDependencies": {
-    "@coinbase/wallet-sdk": "4.0.3",
+  "peerDependencies": {
     "@ethersproject/sha2": "5.7.0",
+    "@coinbase/wallet-sdk": "4.0.3",
+    "ethers": ">=4.1 <6.0.0"
+  },
+  "devDependencies": {
     "@vitest/coverage-v8": "2.0.5",
-    "@walletconnect/types": "2.16.1",
-    "@walletconnect/universal-provider": "2.16.1",
-    "ethers5": "npm:ethers@5.7.2",
+    "@walletconnect/types": "2.17.0",
     "vitest": "2.0.5"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/WalletConnect/web3modal",
+  "homepage": "https://github.com/reown-com/appkit",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/WalletConnect/web3modal.git"
+    "url": "git+https://github.com/reown-com/appkit.git"
   },
   "bugs": {
-    "url": "https://github.com/WalletConnect/web3modal/issues"
+    "url": "https://github.com/reown-com/appkit/issues"
   }
 }

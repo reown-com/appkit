@@ -5,6 +5,14 @@ import { W3mFrameStorage } from './W3mFrameStorage.js'
 import { W3mFrameHelpers } from './W3mFrameHelpers.js'
 import { W3mFrameLogger } from './W3mFrameLogger.js'
 
+type AppEventType = Omit<W3mFrameTypes.AppEvent, 'id'>
+
+interface W3mFrameProviderConfig {
+  projectId: string
+  chainId?: W3mFrameTypes.Network['chainId']
+  onTimeout?: () => void
+}
+
 // -- Provider --------------------------------------------------------
 export class W3mFrameProvider {
   public w3mLogger: W3mFrameLogger
@@ -19,9 +27,12 @@ export class W3mFrameProvider {
   ) => void
   private rpcErrorHandler?: (error: Error, request: W3mFrameTypes.RPCRequest) => void
 
-  public constructor(projectId: string, chainId?: W3mFrameTypes.Network['chainId']) {
+  public onTimeout?: () => void
+
+  public constructor({ projectId, chainId, onTimeout }: W3mFrameProviderConfig) {
     this.w3mLogger = new W3mFrameLogger(projectId)
     this.w3mFrame = new W3mFrame(projectId, true, chainId)
+    this.onTimeout = onTimeout
   }
 
   // -- Extended Methods ------------------------------------------------
@@ -451,15 +462,36 @@ export class W3mFrameProvider {
   }
 
   private async appEvent<T extends W3mFrameTypes.ProviderRequestType>(
-    event: Omit<W3mFrameTypes.AppEvent, 'id'>
+    event: AppEventType
   ): Promise<W3mFrameTypes.Responses[`Frame${T}Response`]> {
     await this.w3mFrame.frameLoadPromise
-    const type = event.type.replace('@w3m-app/', '')
+    let timer: ReturnType<typeof setTimeout> | undefined = undefined
+
+    function replaceEventType(type: AppEventType['type']) {
+      return type.replace('@w3m-app/', '')
+    }
+
+    const type = replaceEventType(event.type)
+
+    const shouldCheckForTimeout = [
+      W3mFrameConstants.APP_CONNECT_EMAIL,
+      W3mFrameConstants.APP_CONNECT_DEVICE,
+      W3mFrameConstants.APP_CONNECT_OTP,
+      W3mFrameConstants.APP_CONNECT_SOCIAL,
+      W3mFrameConstants.APP_GET_SOCIAL_REDIRECT_URI,
+      W3mFrameConstants.APP_GET_FARCASTER_URI
+    ]
+      .map(replaceEventType)
+      .includes(type)
+
+    if (shouldCheckForTimeout && this.onTimeout) {
+      // 15 seconds timeout
+      timer = setTimeout(this.onTimeout, 15_000)
+    }
 
     return new Promise((resolve, reject) => {
       const id = Math.random().toString(36).substring(7)
       this.w3mLogger.logger.info?.({ event, id }, 'Sending app event')
-
       this.w3mFrame.events.postAppEvent({ ...event, id } as W3mFrameTypes.AppEvent)
       const abortController = new AbortController()
       if (type === 'RPC_REQUEST') {
@@ -480,6 +512,9 @@ export class W3mFrameProvider {
         logger.logger.info?.({ framEvent, id }, 'Received frame response')
 
         if (framEvent.type === `@w3m-frame/${type}_SUCCESS`) {
+          if (timer) {
+            clearTimeout(timer)
+          }
           if ('payload' in framEvent) {
             resolve(framEvent.payload)
           }

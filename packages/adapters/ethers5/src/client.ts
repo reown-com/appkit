@@ -13,6 +13,7 @@ import {
   AccountController,
   ChainController,
   CoreHelperUtil,
+  AlertController,
   type CombinedProvider,
   type Connector
 } from '@reown/appkit-core'
@@ -30,14 +31,14 @@ import {
   W3mFrameRpcConstants,
   type W3mFrameTypes
 } from '@reown/appkit-wallet'
+import { ConstantsUtil as CoreConstantsUtil } from '@reown/appkit-core'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
+import { ConstantsUtil, ErrorUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { ConnectionControllerClient, NetworkControllerClient } from '@reown/appkit-core'
-import { ConstantsUtil as CoreConstantsUtil } from '@reown/appkit-core'
 import { WcConstantsUtil } from '@reown/appkit'
 import { Ethers5Methods } from './utils/Ethers5Methods.js'
-import { ethers } from 'ethers5'
+import { ethers } from 'ethers'
 import type { PublicStateControllerState } from '@reown/appkit-core'
 import { ProviderUtil } from '@reown/appkit/store'
 import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
@@ -188,22 +189,18 @@ export class Ethers5Adapter {
         })
       }
     })
-    AccountController.subscribeKey(
-      'caipAddress',
-      val => {
-        const isEVMAddress = val?.startsWith('eip155:')
-        const caipNetwork = ChainController.state.activeCaipNetwork
-        const isEVMNetwork = caipNetwork?.chainNamespace === this.chainNamespace
+    ChainController.subscribeKey('activeCaipAddress', val => {
+      const isEVMAddress = val?.startsWith('eip155:')
+      const caipNetwork = ChainController.state.activeCaipNetwork
+      const isEVMNetwork = caipNetwork?.chainNamespace === this.chainNamespace
 
-        if (isEVMAddress) {
-          if (isEVMNetwork) {
-            this.syncBalance(CoreHelperUtil.getPlainAddress(val) as Address, caipNetwork)
-          }
-          this.syncAccount({ address: CoreHelperUtil.getPlainAddress(val) as Address })
+      if (isEVMAddress) {
+        if (isEVMNetwork) {
+          this.syncBalance(CoreHelperUtil.getPlainAddress(val) as Address, caipNetwork)
         }
-      },
-      this.chainNamespace
-    )
+        this.syncAccount({ address: CoreHelperUtil.getPlainAddress(val) as Address })
+      }
+    })
     AccountController.subscribeKey(
       'shouldUpdateToAddress',
       newAddress => {
@@ -218,10 +215,6 @@ export class Ethers5Adapter {
   }
 
   public construct(appKit: AppKit, options: AppKitOptions) {
-    if (!options.projectId) {
-      throw new Error('appkit:ethers-client:initialize - projectId is undefined')
-    }
-
     this.appKit = appKit
     this.options = options
     this.caipNetworks = options.networks
@@ -295,7 +288,6 @@ export class Ethers5Adapter {
         }
 
         try {
-          // WcStoreUtil.setError(undefined)
           if (selectedProvider && id !== ConstantsUtil.AUTH_CONNECTOR_ID) {
             await selectedProvider.request({ method: 'eth_requestAccounts' })
           }
@@ -305,7 +297,6 @@ export class Ethers5Adapter {
             info?.name
           )
         } catch (error) {
-          // WcStoreUtil.setError(error)
           if (id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID) {
             throw new Error((error as CoinbaseProviderError).message)
           }
@@ -331,7 +322,6 @@ export class Ethers5Adapter {
         const providerId = ProviderUtil.state.providerIds['eip155']
 
         this.appKit?.setClientId(null)
-
         if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
           const { SIWEController } = await import('@reown/appkit-siwe')
           await SIWEController.signOut()
@@ -350,7 +340,6 @@ export class Ethers5Adapter {
 
           [ConstantsUtil.EIP6963_CONNECTOR_ID]: async () => {
             if (provider) {
-              ;(provider as Provider).emit('disconnect')
               await this.revokeProviderPermissions(provider as Provider)
             }
           },
@@ -612,18 +601,19 @@ export class Ethers5Adapter {
       this.setAuthProvider()
     } else {
       const walletId = providerId
-
       SafeLocalStorage.setItem(SafeLocalStorageKeys.WALLET_ID, walletId)
+
       if (name) {
         SafeLocalStorage.setItem(SafeLocalStorageKeys.WALLET_NAME, name)
       }
 
       if (provider) {
         const { addresses, chainId } = await EthersHelpersUtil.getUserInfo(provider)
-        const caipNetwork = this.caipNetworks.find(c => c.chainId === chainId)
+        const firstAddress = addresses?.[0]
+        const caipAddress = `${this.chainNamespace}:${chainId}:${firstAddress}` as CaipAddress
 
-        if (addresses?.[0] && chainId && caipNetwork) {
-          this.appKit?.setCaipNetwork(caipNetwork)
+        if (firstAddress && chainId) {
+          this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
           ProviderUtil.setProviderId('eip155', providerId)
           ProviderUtil.setProvider<Provider>('eip155', provider)
           this.appKit?.setStatus('connected', this.chainNamespace)
@@ -665,8 +655,6 @@ export class Ethers5Adapter {
             : [{ address, type: preferredAccountType as 'eoa' | 'smartAccount' }],
           this.chainNamespace
         )
-        const caipNetwork = this.caipNetworks.find(c => c.chainId === chainId)
-        this.appKit?.setCaipNetwork(caipNetwork)
         this.appKit?.setStatus('connected', this.chainNamespace)
         this.appKit?.setCaipAddress(
           `${this.chainNamespace}:${chainId}:${address}`,
@@ -806,7 +794,6 @@ export class Ethers5Adapter {
 
   private handleAuthRpcSuccess(_: W3mFrameTypes.FrameEvent, request: W3mFrameTypes.RPCRequest) {
     const isSafeRequest = W3mFrameHelpers.checkIfRequestIsSafe(request)
-
     if (isSafeRequest) {
       return
     }
@@ -829,7 +816,6 @@ export class Ethers5Adapter {
       return
     }
 
-    this.appKit?.setIsConnected(true, this.chainNamespace)
     this.appKit?.setPreferredAccountType(
       preferredAccountType as W3mFrameTypes.AccountType,
       this.chainNamespace
@@ -843,11 +829,10 @@ export class Ethers5Adapter {
 
     this.appKit?.setLoading(true)
     const chainId = NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id)
-    const caipNetwork = this.caipNetworks.find(c => c.chainId === chainId)
     this.appKit?.setCaipAddress(`eip155:${chainId}:${address}`, this.chainNamespace)
-    this.appKit?.setCaipNetwork(caipNetwork)
     this.appKit?.setStatus('connected', this.chainNamespace)
     this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chainNamespace)
+
     this.syncAccount({
       address: address as Address
     }).then(() => this.appKit?.setLoading(false))
@@ -878,10 +863,12 @@ export class Ethers5Adapter {
     const currentCaipNetwork = caipNetwork || this.appKit?.getCaipNetwork()
     const preferredAccountType = this.appKit?.getPreferredAccountType()
     const isEipNetwork = currentCaipNetwork?.chainNamespace === CommonConstantsUtil.CHAIN.EVM
+    const caipNetworkId = currentCaipNetwork?.id as CaipNetworkId
 
     if (address) {
       if (isEipNetwork) {
         this.appKit?.setPreferredAccountType(preferredAccountType, this.chainNamespace)
+        this.appKit?.setCaipAddress(`${caipNetworkId}:${address}`, this.chainNamespace)
 
         this.syncConnectedWalletInfo()
         if (this.ethersConfig) {
@@ -902,7 +889,7 @@ export class Ethers5Adapter {
       }
     } else {
       this.appKit?.resetWcConnection()
-      this.appKit?.resetNetwork()
+      this.appKit?.resetNetwork(this.chainNamespace)
       this.appKit?.setAllAccounts([], this.chainNamespace)
     }
   }
@@ -946,7 +933,7 @@ export class Ethers5Adapter {
 
   private async syncBalance(address: Address, caipNetwork: CaipNetwork) {
     const isExistingNetwork = this.appKit
-      ?.getCaipNetworks()
+      ?.getCaipNetworks(caipNetwork.chainNamespace)
       .find(network => network.id === caipNetwork.id)
     const isEVMNetwork = caipNetwork.chainNamespace === CommonConstantsUtil.CHAIN.EVM
 
@@ -1019,13 +1006,12 @@ export class Ethers5Adapter {
   }
 
   public async switchNetwork(caipNetwork: CaipNetwork) {
-    const requestSwitchNetwork = async (provider: Provider) => {
+    async function requestSwitchNetwork(provider: Provider) {
       try {
         await provider.request({
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: EthersHelpersUtil.numberToHexString(caipNetwork.chainId) }]
         })
-        this.appKit?.setCaipNetwork(caipNetwork)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (switchError: any) {
         if (
@@ -1125,7 +1111,12 @@ export class Ethers5Adapter {
 
   private async syncAuthConnector(projectId: string, bypassWindowCheck = false) {
     if (bypassWindowCheck || typeof window !== 'undefined') {
-      this.authProvider = W3mFrameProviderSingleton.getInstance(projectId)
+      this.authProvider = W3mFrameProviderSingleton.getInstance({
+        projectId,
+        onTimeout: () => {
+          AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION_SOCIALS, 'error')
+        }
+      })
 
       this.appKit?.addConnector({
         id: ConstantsUtil.AUTH_CONNECTOR_ID,

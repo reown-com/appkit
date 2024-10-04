@@ -5,8 +5,7 @@ import {
   ChainController,
   RouterController,
   SnackController,
-  ThemeController,
-  NetworkController
+  ThemeController
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
@@ -106,8 +105,8 @@ export class W3mWalletReceiveView extends LitElement {
 
   // -- Private ------------------------------------------- //
   networkTemplate() {
-    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
-    const isNetworkEnabledForSmartAccounts = NetworkController.checkIfSmartAccountEnabled()
+    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+    const isNetworkEnabledForSmartAccounts = ChainController.checkIfSmartAccountEnabled()
     const caipNetwork = ChainController.state.activeCaipNetwork
 
     if (
@@ -124,7 +123,9 @@ export class W3mWalletReceiveView extends LitElement {
         .networkImages=${[AssetUtil.getNetworkImage(caipNetwork) ?? '']}
       ></wui-compatible-network>`
     }
-    const slicedNetworks = requestedCaipNetworks?.filter(network => network?.imageId)?.slice(0, 5)
+    const slicedNetworks = requestedCaipNetworks
+      ?.filter(network => (caipNetwork?.id === network.id ? network?.imageId : null))
+      ?.slice(0, 5)
     const imagesArray = slicedNetworks.map(AssetUtil.getNetworkImage).filter(Boolean) as string[]
 
     return html`<wui-compatible-network

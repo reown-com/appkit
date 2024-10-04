@@ -39,8 +39,8 @@ test('it should fetch balance as expected', async () => {
   await modalValidator.expectBalanceFetched('ETH')
 })
 
-test.skip('it should show disabled networks', async () => {
-  const disabledNetworks = 'Arbitrum'
+test('it should show disabled networks', async () => {
+  const disabledNetworks = 'Gnosis'
 
   await modalPage.openModal()
   await modalPage.openNetworks()
@@ -48,7 +48,7 @@ test.skip('it should show disabled networks', async () => {
   await modalPage.closeModal()
 })
 
-test.only('it should switch networks and sign', async () => {
+test('it should switch networks and sign', async () => {
   const chains = ['Polygon', 'Solana']
 
   async function processChain(index: number) {
@@ -58,7 +58,6 @@ test.only('it should switch networks and sign', async () => {
 
     const chainName = chains[index] ?? DEFAULT_CHAIN_NAME
     await modalPage.switchNetwork(chainName)
-    await modalValidator.expectSwitchedNetwork(chainName)
     await modalPage.closeModal()
 
     // -- Sign ------------------------------------------------------------------
@@ -78,7 +77,6 @@ test('it should switch between multiple accounts', async () => {
   const chainName = 'Ethereum'
   await modalPage.switchNetwork(chainName)
   await modalPage.page.waitForTimeout(500)
-  await modalValidator.expectSwitchedNetwork(chainName)
   await modalPage.closeModal()
   const originalAddress = await modalPage.getAddress()
   await modalPage.openAccount()

@@ -10,7 +10,7 @@ export * from '@reown/appkit-scaffold-ui'
 export * from '../src/utils/index.js'
 export type * from '@reown/appkit-core'
 export type { CaipNetwork, CaipAddress, CaipNetworkId } from '@reown/appkit-common'
-export { CoreHelperUtil, AccountController, NetworkController } from '@reown/appkit-core'
+export { CoreHelperUtil, AccountController } from '@reown/appkit-core'
 
 type CreateAppKit = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
 

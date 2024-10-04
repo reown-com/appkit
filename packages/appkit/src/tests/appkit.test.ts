@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { AppKit } from '../client'
 import {
   AccountController,
-  NetworkController,
   ModalController,
   ThemeController,
   PublicStateController,
@@ -112,7 +111,7 @@ describe('Base', () => {
     it('should subscribe to CAIP network changes', () => {
       const callback = vi.fn()
       appKit.subscribeCaipNetworkChange(callback)
-      expect(NetworkController.subscribeKey).toHaveBeenCalledWith('caipNetwork', callback)
+      expect(ChainController.subscribeKey).toHaveBeenCalledWith('activeCaipNetwork', callback)
     })
 
     it('should get state', () => {
@@ -177,19 +176,9 @@ describe('Base', () => {
       expect(appKit.isTransactionShouldReplaceView()).toBe(true)
     })
 
-    it('should set is connected', () => {
-      appKit.setIsConnected(true, 'eip155')
-      expect(AccountController.setIsConnected).toHaveBeenCalledWith(true, 'eip155')
-    })
-
     it('should set status', () => {
       appKit.setStatus('connected', 'eip155')
       expect(AccountController.setStatus).toHaveBeenCalledWith('connected', 'eip155')
-    })
-
-    it('should get is connected state', () => {
-      vi.mocked(AccountController).state = { isConnected: true } as any
-      expect(appKit.getIsConnectedState()).toBe(true)
     })
 
     it('should set all accounts', () => {
@@ -239,6 +228,7 @@ describe('Base', () => {
 
     it('should set CAIP address', () => {
       appKit.setCaipAddress('eip155:1:0x123', 'eip155')
+      expect(appKit.getIsConnectedState()).toBe(true)
       expect(AccountController.setCaipAddress).toHaveBeenCalledWith('eip155:1:0x123', 'eip155')
     })
 
@@ -289,7 +279,7 @@ describe('Base', () => {
     it('should set requested CAIP networks', () => {
       const requestedNetworks = [{ id: 'eip155:1', name: 'Ethereum' }] as unknown as CaipNetwork[]
       appKit.setRequestedCaipNetworks(requestedNetworks, 'eip155')
-      expect(NetworkController.setRequestedCaipNetworks).toHaveBeenCalledWith(
+      expect(ChainController.setRequestedCaipNetworks).toHaveBeenCalledWith(
         requestedNetworks,
         'eip155'
       )
@@ -331,18 +321,18 @@ describe('Base', () => {
     })
 
     it('should get approved CAIP network IDs', () => {
-      vi.mocked(NetworkController.getApprovedCaipNetworkIds).mockReturnValue(['eip155:1'])
+      vi.mocked(ChainController.getAllApprovedCaipNetworkIds).mockReturnValue(['eip155:1'])
       expect(appKit.getApprovedCaipNetworkIds()).toEqual(['eip155:1'])
     })
 
     it('should set approved CAIP networks data', () => {
       appKit.setApprovedCaipNetworksData('eip155')
-      expect(NetworkController.setApprovedCaipNetworksData).toHaveBeenCalledWith('eip155')
+      expect(ChainController.setApprovedCaipNetworksData).toHaveBeenCalledWith('eip155')
     })
 
     it('should reset network', () => {
-      appKit.resetNetwork()
-      expect(NetworkController.resetNetwork).toHaveBeenCalled()
+      appKit.resetNetwork('eip155')
+      expect(ChainController.resetNetwork).toHaveBeenCalled()
     })
 
     it('should reset WC connection', () => {
@@ -383,7 +373,7 @@ describe('Base', () => {
     it('should set smart account enabled networks', () => {
       const networks = [1, 137]
       appKit.setSmartAccountEnabledNetworks(networks, 'eip155')
-      expect(NetworkController.setSmartAccountEnabledNetworks).toHaveBeenCalledWith(
+      expect(ChainController.setSmartAccountEnabledNetworks).toHaveBeenCalledWith(
         networks,
         'eip155'
       )

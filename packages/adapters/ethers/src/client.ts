@@ -13,6 +13,7 @@ import {
   AccountController,
   ChainController,
   CoreHelperUtil,
+  AlertController,
   type CombinedProvider,
   type Connector
 } from '@reown/appkit-core'
@@ -32,7 +33,7 @@ import {
 } from '@reown/appkit-wallet'
 import { ConstantsUtil as CoreConstantsUtil } from '@reown/appkit-core'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { ConstantsUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
+import { ConstantsUtil, ErrorUtil, HelpersUtil, PresetsUtil } from '@reown/appkit-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { ConnectionControllerClient, NetworkControllerClient } from '@reown/appkit-core'
 import { WcConstantsUtil } from '@reown/appkit'
@@ -214,10 +215,6 @@ export class EthersAdapter {
   }
 
   public construct(appKit: AppKit, options: AppKitOptions) {
-    if (!options.projectId) {
-      throw new Error('appkit:ethers-client:initialize - projectId is undefined')
-    }
-
     this.appKit = appKit
     this.options = options
     this.caipNetworks = options.networks
@@ -866,10 +863,12 @@ export class EthersAdapter {
     const currentCaipNetwork = caipNetwork || this.appKit?.getCaipNetwork()
     const preferredAccountType = this.appKit?.getPreferredAccountType()
     const isEipNetwork = currentCaipNetwork?.chainNamespace === CommonConstantsUtil.CHAIN.EVM
+    const caipNetworkId = currentCaipNetwork?.id as CaipNetworkId
 
     if (address) {
       if (isEipNetwork) {
         this.appKit?.setPreferredAccountType(preferredAccountType, this.chainNamespace)
+        this.appKit?.setCaipAddress(`${caipNetworkId}:${address}`, this.chainNamespace)
 
         this.syncConnectedWalletInfo()
         if (this.ethersConfig) {
@@ -890,7 +889,7 @@ export class EthersAdapter {
       }
     } else {
       this.appKit?.resetWcConnection()
-      this.appKit?.resetNetwork()
+      this.appKit?.resetNetwork(this.chainNamespace)
       this.appKit?.setAllAccounts([], this.chainNamespace)
     }
   }
@@ -934,7 +933,7 @@ export class EthersAdapter {
 
   private async syncBalance(address: Address, caipNetwork: CaipNetwork) {
     const isExistingNetwork = this.appKit
-      ?.getCaipNetworks()
+      ?.getCaipNetworks(caipNetwork.chainNamespace)
       .find(network => network.id === caipNetwork.id)
     const isEVMNetwork = caipNetwork.chainNamespace === CommonConstantsUtil.CHAIN.EVM
 
@@ -1112,7 +1111,12 @@ export class EthersAdapter {
 
   private async syncAuthConnector(projectId: string, bypassWindowCheck = false) {
     if (bypassWindowCheck || typeof window !== 'undefined') {
-      this.authProvider = W3mFrameProviderSingleton.getInstance(projectId)
+      this.authProvider = W3mFrameProviderSingleton.getInstance({
+        projectId,
+        onTimeout: () => {
+          AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION_SOCIALS, 'error')
+        }
+      })
 
       this.appKit?.addConnector({
         id: ConstantsUtil.AUTH_CONNECTOR_ID,

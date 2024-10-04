@@ -23,9 +23,9 @@ import {
   RouterController,
   EnsController,
   OptionsController,
-  NetworkController,
   AssetUtil,
-  ApiController
+  ApiController,
+  AlertController
 } from '@reown/appkit-core'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
 import {
@@ -38,12 +38,12 @@ import {
 } from '@reown/appkit-common'
 import type { AppKitOptions } from './utils/TypesUtil.js'
 import { UniversalAdapterClient } from './universal-adapter/client.js'
-import { PresetsUtil } from '@reown/appkit-utils'
+import { ErrorUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { ProviderUtil } from './store/ProviderUtil.js'
 
 // -- Export Controllers -------------------------------------------------------
-export { AccountController, NetworkController }
+export { AccountController }
 
 // -- Types --------------------------------------------------------------------
 export interface OpenOptions {
@@ -56,6 +56,8 @@ let isInitialized = false
 // -- Client --------------------------------------------------------------------
 export class AppKit {
   private static instance?: AppKit
+
+  public version: SdkVersion
 
   public adapter?: ChainAdapter
 
@@ -76,6 +78,7 @@ export class AppKit {
     this.adapter = options.adapters?.[0] as ChainAdapter
     this.initControllers(options)
     this.initOrContinue()
+    this.version = options.sdkVersion
   }
 
   public static getInstance() {
@@ -107,11 +110,7 @@ export class AppKit {
   }
 
   public switchNetwork(caipNetwork: CaipNetwork) {
-    return NetworkController.switchActiveNetwork(caipNetwork)
-  }
-
-  public getIsConnected() {
-    return AccountController.state.isConnected
+    return ChainController.switchActiveNetwork(caipNetwork)
   }
 
   public getWalletProvider() {
@@ -165,7 +164,7 @@ export class AppKit {
   }
 
   public subscribeCaipNetworkChange(callback: (newState?: CaipNetwork) => void) {
-    NetworkController.subscribeKey('caipNetwork', callback)
+    ChainController.subscribeKey('activeCaipNetwork', callback)
   }
 
   public getState() {
@@ -218,15 +217,11 @@ export class AppKit {
     ]?.replace
   }
 
-  public setIsConnected: (typeof AccountController)['setIsConnected'] = (isConnected, chain) => {
-    AccountController.setIsConnected(isConnected, chain)
-  }
-
   public setStatus: (typeof AccountController)['setStatus'] = (status, chain) => {
     AccountController.setStatus(status, chain)
   }
 
-  public getIsConnectedState = () => AccountController.state.isConnected
+  public getIsConnectedState = () => Boolean(ChainController.state.activeCaipAddress)
 
   public setAllAccounts: (typeof AccountController)['setAllAccounts'] = (addresses, chain) => {
     AccountController.setAllAccounts(addresses, chain)
@@ -293,13 +288,13 @@ export class AppKit {
     AccountController.resetAccount(chain)
   }
 
-  public setCaipNetwork: (typeof NetworkController)['setCaipNetwork'] = caipNetwork => {
+  public setCaipNetwork: (typeof ChainController)['setActiveCaipNetwork'] = caipNetwork => {
     ChainController.setActiveCaipNetwork(caipNetwork)
   }
 
   public getCaipNetwork = (chainNamespace?: ChainNamespace) => {
     if (chainNamespace) {
-      return NetworkController.getRequestedCaipNetworks().filter(
+      return ChainController.getRequestedCaipNetworks(chainNamespace).filter(
         c => c.chainNamespace === chainNamespace
       )?.[0]
     }
@@ -307,25 +302,26 @@ export class AppKit {
     return ChainController.state.activeCaipNetwork
   }
 
-  public getCaipNetworks = () => NetworkController.getRequestedCaipNetworks()
+  public getCaipNetworks = (namespace: ChainNamespace) =>
+    ChainController.getRequestedCaipNetworks(namespace)
 
   public getActiveChainNamespace = () => ChainController.state.activeChain
 
-  public setRequestedCaipNetworks: (typeof NetworkController)['setRequestedCaipNetworks'] = (
+  public setRequestedCaipNetworks: (typeof ChainController)['setRequestedCaipNetworks'] = (
     requestedCaipNetworks,
     chain: ChainNamespace
   ) => {
-    NetworkController.setRequestedCaipNetworks(requestedCaipNetworks, chain)
+    ChainController.setRequestedCaipNetworks(requestedCaipNetworks, chain)
   }
 
-  public getApprovedCaipNetworkIds: (typeof NetworkController)['getApprovedCaipNetworkIds'] = () =>
-    NetworkController.getApprovedCaipNetworkIds()
+  public getApprovedCaipNetworkIds: (typeof ChainController)['getAllApprovedCaipNetworkIds'] = () =>
+    ChainController.getAllApprovedCaipNetworkIds()
 
-  public setApprovedCaipNetworksData: (typeof NetworkController)['setApprovedCaipNetworksData'] =
-    chain => NetworkController.setApprovedCaipNetworksData(chain)
+  public setApprovedCaipNetworksData: (typeof ChainController)['setApprovedCaipNetworksData'] =
+    namespace => ChainController.setApprovedCaipNetworksData(namespace)
 
-  public resetNetwork: (typeof NetworkController)['resetNetwork'] = () => {
-    NetworkController.resetNetwork()
+  public resetNetwork: (typeof ChainController)['resetNetwork'] = (namespace: ChainNamespace) => {
+    ChainController.resetNetwork(namespace)
   }
 
   public setConnectors: (typeof ConnectorController)['setConnectors'] = connectors => {
@@ -368,9 +364,9 @@ export class AppKit {
     AccountController.setConnectedWalletInfo(connectedWalletInfo, chain)
   }
 
-  public setSmartAccountEnabledNetworks: (typeof NetworkController)['setSmartAccountEnabledNetworks'] =
+  public setSmartAccountEnabledNetworks: (typeof ChainController)['setSmartAccountEnabledNetworks'] =
     (smartAccountEnabledNetworks, chain) => {
-      NetworkController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks, chain)
+      ChainController.setSmartAccountEnabledNetworks(smartAccountEnabledNetworks, chain)
     }
 
   public setPreferredAccountType: (typeof AccountController)['setPreferredAccountType'] = (
@@ -424,8 +420,15 @@ export class AppKit {
       sdkVersion: SdkVersion
     }
   ) {
+    OptionsController.setDebug(options.debug)
     OptionsController.setProjectId(options.projectId)
     OptionsController.setSdkVersion(options.sdkVersion)
+
+    if (!options.projectId) {
+      AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+
+      return
+    }
 
     this.adapters = options.adapters
 
