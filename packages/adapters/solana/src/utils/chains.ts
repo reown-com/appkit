@@ -1,36 +1,5 @@
-import { ConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
-
-const RPC_URL = `${ConstantsUtil.BLOCKCHAIN_API_RPC_URL}/v1`
-
-export const solana = {
-  id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-  chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-  name: 'Solana',
-  currency: 'SOL',
-  explorerUrl: 'https://solscan.io',
-  rpcUrl: RPC_URL,
-  chainNamespace: ConstantsUtil.CHAIN.SOLANA
-} as CaipNetwork
-
-export const solanaTestnet = {
-  id: 'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
-  chainId: '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
-  name: 'Solana Testnet',
-  currency: 'SOL',
-  explorerUrl: 'https://explorer.solana.com/?cluster=testnet',
-  rpcUrl: RPC_URL,
-  chainNamespace: ConstantsUtil.CHAIN.SOLANA
-} as CaipNetwork
-
-export const solanaDevnet = {
-  id: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
-  chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
-  name: 'Solana Devnet',
-  currency: 'SOL',
-  explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
-  rpcUrl: RPC_URL,
-  chainNamespace: ConstantsUtil.CHAIN.SOLANA
-} as CaipNetwork
+import { type CaipNetwork } from '@reown/appkit-common'
+import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit/networks'
 
 export const solanaChains = {
   'solana:mainnet': solana,
