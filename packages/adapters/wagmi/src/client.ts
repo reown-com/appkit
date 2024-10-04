@@ -67,7 +67,7 @@ import { W3mFrameHelpers, W3mFrameRpcConstants } from '@reown/appkit-wallet'
 import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 import { NetworkUtil } from '@reown/appkit-common'
 import { normalize } from 'viem/ens'
-import type { AppKitOptions } from '@reown/appkit'
+import type { AppKitOptions, AppKitOptionsWithCaipNetworks } from '@reown/appkit'
 import type {
   CaipAddress,
   BaseNetwork,
@@ -223,13 +223,7 @@ export class WagmiAdapter implements ChainAdapter {
     })
   }
 
-  public construct(
-    appKit: AppKit,
-    options: Omit<AppKitOptions, 'defaultNetwork' | 'networks'> & {
-      defaultNetwork: CaipNetwork
-      networks: [CaipNetwork, ...CaipNetwork[]]
-    }
-  ) {
+  public construct(appKit: AppKit, options: AppKitOptionsWithCaipNetworks) {
     this.appKit = appKit
     this.options = options
     this.defaultCaipNetwork = options.defaultNetwork || options.networks?.[0]
@@ -357,8 +351,7 @@ export class WagmiAdapter implements ChainAdapter {
           }
         }
 
-        const activeCaipNetwork = this.appKit?.getCaipNetwork()
-        const chainId = activeCaipNetwork?.id as number | undefined
+        const chainId = this.appKit?.getCaipNetworkId<number>()
         await connect(this.wagmiConfig, { connector, chainId })
       },
       connectExternal: async ({ id, provider, info }) => {
@@ -376,8 +369,7 @@ export class WagmiAdapter implements ChainAdapter {
           // @ts-expect-error Exists on EIP6963Connector
           connector.setEip6963Wallet?.({ provider, info })
         }
-        const activeCaipNetwork = this.appKit?.getCaipNetwork()
-        const chainId = activeCaipNetwork?.id as number | undefined
+        const chainId = this.appKit?.getCaipNetworkId<number>()
         await connect(this.wagmiConfig, { connector, chainId })
       },
       checkInstalled: ids => {
@@ -462,8 +454,7 @@ export class WagmiAdapter implements ChainAdapter {
       writeContract: async (data: WriteContractArgs) => {
         const caipAddress = this.appKit?.getCaipAddress() || ''
         const account = requireCaipAddress(caipAddress)
-        const activeCaipNetwork = this.appKit?.getCaipNetwork()
-        const chainId = activeCaipNetwork?.id as number | undefined
+        const chainId = this.appKit?.getCaipNetworkId<number>()
 
         if (!chainId) {
           throw new Error('networkControllerClient:writeContract - chainId is undefined')
@@ -488,8 +479,7 @@ export class WagmiAdapter implements ChainAdapter {
               'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
             )
           }
-          const activeCaipNetwork = this.appKit?.getCaipNetwork()
-          const chainId = activeCaipNetwork?.id as number | undefined
+          const chainId = this.appKit?.getCaipNetworkId<number>()
 
           let ensName: boolean | GetEnsAddressReturnType = false
           let wcName: boolean | string = false
@@ -510,8 +500,7 @@ export class WagmiAdapter implements ChainAdapter {
         }
       },
       getEnsAvatar: async (value: string) => {
-        const activeCaipNetwork = this.appKit?.getCaipNetwork()
-        const chainId = activeCaipNetwork?.id as number | undefined
+        const chainId = this.appKit?.getCaipNetworkId<number>()
         if (chainId !== mainnet.id) {
           return false
         }

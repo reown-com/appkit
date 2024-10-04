@@ -26,6 +26,8 @@ const [mainnet, arbitrum, polygon, optimism, bsc] = CaipNetworksUtil.extendCaipN
   { customNetworkImageUrls: {}, projectId: '1234' }
 ) as [CaipNetwork, CaipNetwork, CaipNetwork, CaipNetwork, CaipNetwork]
 
+const caipNetworks = [mainnet, arbitrum, polygon] as [CaipNetwork, ...CaipNetwork[]]
+
 vi.mock('@reown/appkit-wallet', () => ({
   W3mFrameProvider: vi.fn().mockImplementation(() => mockAuthConnector),
   W3mFrameHelpers: {
@@ -113,9 +115,11 @@ describe('EthersAdapter', () => {
     client = new EthersAdapter()
     const optionsWithEthersConfig = {
       ...mockOptions,
+      networks: caipNetworks,
+      defaultNetwork: undefined,
       ethersConfig: mockCreateEthersConfig()
     }
-    client.construct(mockAppKit, optionsWithEthersConfig, [mainnet, arbitrum, polygon])
+    client.construct(mockAppKit, optionsWithEthersConfig)
   })
 
   afterEach(() => {
@@ -129,7 +133,7 @@ describe('EthersAdapter', () => {
     })
 
     it('should set caipNetworks to provided caipNetworks options', () => {
-      expect(client.caipNetworks).toEqual([mainnet, arbitrum, polygon])
+      expect(client.caipNetworks).toEqual(caipNetworks)
     })
 
     it('should set defaultNetwork to first caipNetwork option', () => {

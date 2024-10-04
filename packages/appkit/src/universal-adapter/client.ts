@@ -24,7 +24,7 @@ import {
   ConstantsUtil as CommonConstantsUtil
 } from '@reown/appkit-common'
 import { ProviderUtil } from '../store/index.js'
-import type { AppKitOptions } from '../utils/TypesUtil.js'
+import type { AppKitOptions, AppKitOptionsWithCaipNetworks } from '../utils/TypesUtil.js'
 
 type Metadata = {
   name: string
@@ -79,10 +79,10 @@ export class UniversalAdapterClient {
 
   public reportErrors = true
 
-  public constructor(options: AppKitOptions, caipNetworks: [CaipNetwork, ...CaipNetwork[]]) {
+  public constructor(options: AppKitOptionsWithCaipNetworks) {
     const { siweConfig, metadata } = options
 
-    this.caipNetworks = caipNetworks
+    this.caipNetworks = options.networks
 
     this.chainNamespace = CommonConstantsUtil.CHAIN.EVM
 
@@ -266,7 +266,7 @@ export class UniversalAdapterClient {
   }
 
   // -- Public ------------------------------------------------------------------
-  public construct(appkit: AppKit, options: AppKitOptions) {
+  public construct(appkit: AppKit, options: AppKitOptionsWithCaipNetworks) {
     this.appKit = appkit
     this.options = options
 

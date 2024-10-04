@@ -1,4 +1,4 @@
-import type { AppKitNetwork, ThemeVariables } from '@reown/appkit-common'
+import type { AppKitNetwork, CaipNetwork, ThemeVariables } from '@reown/appkit-common'
 import type {
   ChainAdapter,
   Metadata,
@@ -79,3 +79,8 @@ export type AppKitOptions = {
    */
   metadata?: Metadata
 } & OptionsControllerState
+
+export type AppKitOptionsWithCaipNetworks = Omit<AppKitOptions, 'defaultNetwork' | 'networks'> & {
+  defaultNetwork?: CaipNetwork
+  networks: [CaipNetwork, ...CaipNetwork[]]
+}

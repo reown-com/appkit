@@ -17,6 +17,12 @@ const [mainnet, arbitrum] = CaipNetworksUtil.extendCaipNetworks(
   { customNetworkImageUrls: {}, projectId: '1234' }
 ) as [CaipNetwork, CaipNetwork, CaipNetwork, CaipNetwork, CaipNetwork]
 
+const mockOptionsExtended = {
+  ...mockOptions,
+  networks: [mainnet, arbitrum] as [CaipNetwork, ...CaipNetwork[]],
+  defaultNetwork: mainnet
+}
+
 vi.mock('@wagmi/core', async () => {
   const actual = await vi.importActual('@wagmi/core')
   return {
@@ -50,7 +56,7 @@ describe('Wagmi Client', () => {
        * So there is not proper way to compare objects since imageId and imageUrl is added later.
        */
       mockWagmiClient.caipNetworks.forEach((network, index) => {
-        expect(network.name).toEqual(mockOptions.networks[index]?.name)
+        expect(network.name).toEqual(mockOptionsExtended.networks[index]?.name)
       })
     })
 
@@ -201,14 +207,11 @@ describe('Wagmi Client', () => {
       expect(syncBalanceSpy).toHaveBeenCalledWith(mockAddress, mainnet.id)
     })
 
-    it.skip('should not sync network if chain is not found', async () => {
+    it('should not sync network if chain is not found', async () => {
       const mockAddress = '0x1234567890123456789012345678901234567890'
       const mockChainId = 999
 
-      mockWagmiClient.options = {
-        ...mockOptions,
-        networks: [mainnet]
-      }
+      mockWagmiClient.options = mockOptionsExtended
       const setCaipNetworkSpy = vi.spyOn(mockAppKit, 'setCaipNetwork')
       const syncBalanceSpy = vi.spyOn(mockWagmiClient as any, 'syncBalance')
 

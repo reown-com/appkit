@@ -1,4 +1,4 @@
-import type { AppKitOptions } from '@reown/appkit'
+import type { AppKitOptions, AppKitOptionsWithCaipNetworks } from '@reown/appkit'
 import {
   SafeLocalStorage,
   SafeLocalStorageKeys,
@@ -217,14 +217,10 @@ export class Ethers5Adapter {
     )
   }
 
-  public construct(
-    appKit: AppKit,
-    options: AppKitOptions,
-    caipNetworks: [CaipNetwork, ...CaipNetwork[]]
-  ) {
+  public construct(appKit: AppKit, options: AppKitOptionsWithCaipNetworks) {
     this.appKit = appKit
     this.options = options
-    this.caipNetworks = caipNetworks
+    this.caipNetworks = options.networks
     this.defaultCaipNetwork = options.defaultNetwork
       ? CaipNetworksUtil.extendCaipNetwork(options.defaultNetwork, {
           customNetworkImageUrls: options.chainImages,

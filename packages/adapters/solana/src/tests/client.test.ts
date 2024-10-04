@@ -4,13 +4,31 @@ import { mockOptions } from './mocks/Options'
 import mockAppKit from './mocks/AppKit'
 import { mockAuthConnector } from './mocks/AuthConnector'
 import { Connection } from '@solana/web3.js'
-import { SafeLocalStorage } from '@reown/appkit-common'
+import { SafeLocalStorage, type CaipNetwork } from '@reown/appkit-common'
 import { ProviderUtil } from '@reown/appkit/store'
 import { SolHelpersUtil } from '@reown/appkit-utils/solana'
 import { SolStoreUtil } from '../utils/SolanaStoreUtil.js'
 import { WalletConnectProvider } from '../providers/WalletConnectProvider'
 import UniversalProvider from '@walletconnect/universal-provider'
-import { solana, solanaTestnet } from '@reown/appkit/networks'
+import {
+  solana as AppKitSolana,
+  solanaTestnet as AppKitSolanaTestnet
+} from '@reown/appkit/networks'
+import { CaipNetworksUtil } from '@reown/appkit-utils'
+
+const [solana, solanaTestnet] = CaipNetworksUtil.extendCaipNetworks(
+  [AppKitSolana, AppKitSolanaTestnet],
+  {
+    customNetworkImageUrls: {},
+    projectId: '1234'
+  }
+) as [CaipNetwork, CaipNetwork]
+
+const mockOptionsExtended = {
+  ...mockOptions,
+  networks: [solana, solanaTestnet] as [CaipNetwork, ...CaipNetwork[]],
+  defaultNetwork: solana
+}
 
 vi.mock('@solana/web3.js', () => ({
   Connection: vi.fn(),
@@ -65,7 +83,7 @@ describe('SolanaAdapter', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     client = new SolanaAdapter({})
-    client.construct(mockAppKit, mockOptions, [solana])
+    client.construct(mockAppKit, mockOptionsExtended)
   })
 
   afterEach(() => {
@@ -79,7 +97,7 @@ describe('SolanaAdapter', () => {
     })
 
     it('should set caipNetworks to provided caipNetworks options', () => {
-      expect(client['caipNetworks']).toEqual(mockOptions.networks)
+      expect(client['caipNetworks']).toEqual(mockOptionsExtended.networks)
     })
 
     it('should create network and connection controller clients', () => {
@@ -107,7 +125,7 @@ describe('SolanaAdapter', () => {
       await client['syncNetwork'](mockAddress)
 
       expect(mockAppKit.setAddressExplorerUrl).toHaveBeenCalledWith(
-        `${solana.blockExplorers.default.url}/account/${mockAddress}`,
+        `${solana.blockExplorers?.default.url}/account/${mockAddress}`,
         'solana'
       )
       expect(client['syncBalance']).toHaveBeenCalledWith(mockAddress)

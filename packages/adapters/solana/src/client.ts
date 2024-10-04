@@ -40,7 +40,7 @@ import {
 } from '@reown/appkit-wallet'
 import { ConstantsUtil as CoreConstantsUtil } from '@reown/appkit-core'
 import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
-import type { AppKit } from '@reown/appkit'
+import type { AppKit, AppKitOptionsWithCaipNetworks } from '@reown/appkit'
 import type { AppKitOptions as CoreOptions } from '@reown/appkit'
 import { ProviderUtil } from '@reown/appkit/store'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
@@ -124,18 +124,14 @@ export class SolanaAdapter implements ChainAdapter {
     )
   }
 
-  public construct(
-    appKit: AppKit,
-    options: CoreOptions,
-    caipNetworks: [CaipNetwork, ...CaipNetwork[]]
-  ) {
+  public construct(appKit: AppKit, options: AppKitOptionsWithCaipNetworks) {
     const { projectId } = options
 
     this.appKit = appKit
     this.options = options
-    this.caipNetworks = caipNetworks
+    this.caipNetworks = options.networks
     this.defaultCaipNetwork = SolHelpersUtil.getChainFromCaip(
-      caipNetworks,
+      options.networks,
       SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
     )
 

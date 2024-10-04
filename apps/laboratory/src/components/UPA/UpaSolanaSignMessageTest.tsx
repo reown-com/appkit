@@ -25,8 +25,8 @@ export function UpaSolanaSignMessageTest() {
           pubkey: address
         }
       }
-      const chain = caipNetwork?.id?.toString()
-      await walletProvider.request(payload, chain)
+
+      await walletProvider.request(payload, caipNetwork?.caipNetworkId)
 
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
