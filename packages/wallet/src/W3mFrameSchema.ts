@@ -130,6 +130,12 @@ export const FrameInitSmartAccountResponse = z.object({
   address: z.string(),
   isDeployed: z.boolean()
 })
+
+export const FrameReadyResponse = z.object({
+  // Placeholder for future data
+  version: z.string().optional()
+})
+
 export const FrameSetPreferredAccountResponse = z.object({ type: z.string(), address: z.string() })
 
 export const RpcResponse = z.any()
@@ -719,4 +725,5 @@ export const W3mFrameSchema = {
         payload: zError
       })
     )
+    .or(EventSchema.extend({ type: zType('FRAME_READY'), payload: FrameReadyResponse }))
 }

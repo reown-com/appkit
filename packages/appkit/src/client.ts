@@ -58,6 +58,8 @@ let isInitialized = false
 export class AppKit {
   private static instance?: AppKit
 
+  public version: SdkVersion
+
   public adapter?: ChainAdapter
 
   public adapters?: ChainAdapter[]
@@ -77,6 +79,7 @@ export class AppKit {
     this.adapter = options.adapters?.[0] as ChainAdapter
     this.initControllers(options)
     this.initOrContinue()
+    this.version = options.sdkVersion
   }
 
   public static getInstance() {
