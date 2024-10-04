@@ -204,7 +204,7 @@ export class SolanaAdapter implements ChainAdapter {
       },
 
       estimateGas: async params => {
-        if (params.chainNamespace !== this.chainNamespace) {
+        if (params.chainNamespace !== CommonConstantsUtil.CHAIN.SOLANA) {
           throw new Error('Chain namespace is not supported')
         }
 
@@ -238,7 +238,7 @@ export class SolanaAdapter implements ChainAdapter {
       writeContract: async () => await Promise.resolve('0x'),
 
       sendTransaction: async params => {
-        if (params.chainNamespace !== this.chainNamespace) {
+        if (params.chainNamespace !== CommonConstantsUtil.CHAIN.SOLANA) {
           throw new Error('Chain namespace is not supported')
         }
 
