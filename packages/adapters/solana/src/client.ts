@@ -204,7 +204,7 @@ export class SolanaAdapter implements ChainAdapter {
       },
 
       estimateGas: async params => {
-        if (params.chainNamespace !== 'solana') {
+        if (params.chainNamespace !== this.chainNamespace) {
           throw new Error('Chain namespace is not supported')
         }
 
@@ -238,7 +238,7 @@ export class SolanaAdapter implements ChainAdapter {
       writeContract: async () => await Promise.resolve('0x'),
 
       sendTransaction: async params => {
-        if (params.chainNamespace !== 'solana') {
+        if (params.chainNamespace !== this.chainNamespace) {
           throw new Error('Chain namespace is not supported')
         }
 
@@ -420,9 +420,9 @@ export class SolanaAdapter implements ChainAdapter {
 
     if (isConnectedWithAuth) {
       // If user is connected with auth provider, we need to switch the network on the auth provider and await the get user
-      await this.w3mFrameProvider?.switchNetwork(caipNetwork.id)
+      await this.w3mFrameProvider?.switchNetwork(caipNetwork.caipNetworkId)
       const user = await this.w3mFrameProvider?.getUser({
-        chainId: caipNetwork?.id
+        chainId: caipNetwork?.caipNetworkId
       })
       this.authSession = user
       if (user) {
