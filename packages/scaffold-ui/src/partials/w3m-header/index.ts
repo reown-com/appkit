@@ -31,6 +31,7 @@ function headings() {
 
   return {
     Connect: `Connect ${isEmail ? 'Email' : ''} Wallet`,
+    Create: 'Create Wallet',
     ChooseAccountName: undefined,
     Account: undefined,
     AccountSettings: undefined,

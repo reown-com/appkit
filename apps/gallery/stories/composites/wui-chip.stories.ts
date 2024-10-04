@@ -29,6 +29,14 @@ export default {
       options: iconOptions,
       control: { type: 'select' }
     },
+    imageIcon: {
+      options: iconOptions,
+      control: { type: 'select' }
+    },
+    imageIconSize: {
+      options: ['xxs', 'xs', 'sm', 'md', 'lg'],
+      control: { type: 'select' }
+    },
     disabled: {
       control: { type: 'boolean' }
     }
@@ -43,5 +51,7 @@ export const Default: Component = {
       href=${args.href}
       ?disabled=${args.disabled}
       .imageSrc=${args.imageSrc}
+      .imageIcon=${args.imageIcon}
+      .imageIconSize=${args.imageIconSize}
     ></wui-chip>`
 }

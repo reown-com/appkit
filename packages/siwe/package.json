@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-siwe",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -16,7 +16,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@walletconnect/utils": "2.16.1",
+    "@walletconnect/utils": "2.17.0",
     "@reown/appkit-core": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-common": "workspace:*",
