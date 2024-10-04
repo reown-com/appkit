@@ -45,6 +45,12 @@ sampleWalletTest('it should fetch balance as expected', async ({ library }) => {
   await modalValidator.expectBalanceFetched(library === 'solana' ? 'SOL' : 'ETH')
 })
 
+sampleWalletTest('it should show onramp button accordingly', async () => {
+  await modalPage.openModal()
+  await modalValidator.expectOnrampButton()
+  await modalPage.closeModal()
+})
+
 sampleWalletTest('it should show disabled networks', async ({ library }) => {
   const disabledNetworks = library === 'solana' ? 'Solana Unsupported' : 'Gnosis'
 
@@ -166,13 +172,6 @@ sampleWalletTest(
     await modalPage.closeModal()
   }
 )
-
-sampleWalletTest('it should not show onramp button accordingly', async ({ library }) => {
-  await modalPage.openModal()
-  await modalValidator.expectOnrampButton(library)
-  await modalPage.closeModal()
-})
-
 sampleWalletTest('it should disconnect and close modal when connecting from wallet', async () => {
   await modalPage.openModal()
   await walletPage.disconnectConnection()

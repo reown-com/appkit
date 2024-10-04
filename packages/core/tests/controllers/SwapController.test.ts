@@ -5,7 +5,6 @@ import {
   BlockchainApiController,
   ChainController,
   ConnectionController,
-  NetworkController,
   SwapController,
   type NetworkControllerClient
 } from '../../exports/index.js'
@@ -52,11 +51,11 @@ beforeAll(async () => {
     {
       chainNamespace: ConstantsUtil.CHAIN.EVM,
       networkControllerClient: client,
-      caipNetworks: []
+      caipNetworks: [caipNetwork]
     }
   ])
 
-  NetworkController.setCaipNetwork(caipNetwork)
+  ChainController.setActiveCaipNetwork(caipNetwork)
   AccountController.setCaipAddress(caipAddress, chain)
 
   vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValue(tokensResponse)

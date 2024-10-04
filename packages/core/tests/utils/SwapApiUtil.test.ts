@@ -5,7 +5,6 @@ import { BlockchainApiController } from '../../src/controllers/BlockchainApiCont
 import { OptionsController } from '../../src/controllers/OptionsController'
 import { ConnectionController } from '../../src/controllers/ConnectionController'
 import { AccountController } from '../../src/controllers/AccountController'
-import { NetworkController } from '../../src/controllers/NetworkController'
 import type { Balance } from '@reown/appkit-common'
 
 // Mock the controllers
@@ -14,7 +13,7 @@ vi.mock('../../src/controllers/BlockchainApiController')
 vi.mock('../../src/controllers/OptionsController')
 vi.mock('../../src/controllers/ConnectionController')
 vi.mock('../../src/controllers/AccountController')
-vi.mock('../../src/controllers/NetworkController')
+vi.mock('../../src/controllers/ChainController')
 
 const mockSolanaNetwork = {
   id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
@@ -168,7 +167,7 @@ describe('SwapApiUtil', () => {
       BlockchainApiController.getBalance = vi.fn().mockResolvedValue({
         balances: [{ address: '0x456', quantity: { decimals: '18', numeric: '1.5' } }]
       })
-      NetworkController.getActiveNetworkTokenAddress = vi.fn().mockReturnValue('0x789')
+      ChainController.getActiveNetworkTokenAddress = vi.fn().mockReturnValue('0x789')
 
       const result = await SwapApiUtil.getMyTokensWithBalance()
 
@@ -207,7 +206,7 @@ describe('SwapApiUtil', () => {
           iconUrl: 'https://example.com/icon.png'
         }
       ]
-      NetworkController.getActiveNetworkTokenAddress = vi.fn().mockReturnValue('0x789')
+      ChainController.getActiveNetworkTokenAddress = vi.fn().mockReturnValue('0x789')
 
       const result = SwapApiUtil.mapBalancesToSwapTokens(balances as Balance[])
 
@@ -225,7 +224,7 @@ describe('SwapApiUtil', () => {
 
     it('should use network token address if balance address is undefined', () => {
       const balances = [{ address: undefined, quantity: { decimals: '18', numeric: '1.5' } }]
-      NetworkController.getActiveNetworkTokenAddress = vi.fn().mockReturnValue('0x789')
+      ChainController.getActiveNetworkTokenAddress = vi.fn().mockReturnValue('0x789')
 
       const result = SwapApiUtil.mapBalancesToSwapTokens(balances as Balance[])
 
