@@ -31,18 +31,6 @@ export type ChainId = string | number
 
 export type ChainNamespace = 'eip155' | 'solana' | 'polkadot'
 
-export type CaipNetworkLegacy = {
-  id: CaipNetworkId
-  chainId: ChainId
-  chainNamespace: ChainNamespace
-  name: string
-  currency: string
-  explorerUrl: string
-  rpcUrl: string
-  imageUrl?: string
-  imageId?: string
-}
-
 export type AdapterType = 'solana' | 'wagmi' | 'ethers' | 'ethers5' | 'universal' | 'polkadot'
 
 export type CoinbaseTransactionStatus =

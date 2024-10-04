@@ -9,7 +9,11 @@ import { PresetsUtil } from './PresetsUtil.js'
 const RPC_URL_HOST = 'rpc.walletconnect.org'
 
 export function getBlockchainApiRpcUrl(caipNetworkId: CaipNetworkId, projectId: string) {
-  return `https://rpc.walletconnect.org/v1/?chainId=${caipNetworkId}&projectId=${projectId}`
+  const url = new URL('https://rpc.walletconnect.org/v1/')
+  url.searchParams.set('chainId', caipNetworkId)
+  url.searchParams.set('projectId', projectId)
+
+  return url.toString()
 }
 
 const WC_HTTP_RPC_SUPPORTED_CHAINS = [

@@ -20,10 +20,6 @@ const modal = createAppKit({
   adapters: [wagmiAdapter],
   networks: wagmiAdapter.caipNetworks,
   projectId: ConstantsUtil.ProjectId,
-  chainImages: {
-    787: 'https://imagedelivery.net/_aTEfDRm7z3tKgu9JhfeKA/59c89b74-8c5a-49e8-467b-607a2c0ac900/md',
-    4337: 'https://imagedelivery.net/_aTEfDRm7z3tKgu9JhfeKA/e8537239-736f-4db2-f941-07ff4eb7de00/md'
-  },
   features: {
     analytics: true,
     email: true,

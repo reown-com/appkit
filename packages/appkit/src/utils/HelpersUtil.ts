@@ -51,12 +51,12 @@ export const WcHelpersUtil = {
         } satisfies Namespace
       }
 
-      const fullChainId = `${chainNamespace}:${id}`
+      const caipNetworkId = `${chainNamespace}:${id}`
 
       // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
       const namespace = acc[chainNamespace] as Namespace
 
-      namespace.chains.push(fullChainId)
+      namespace.chains.push(caipNetworkId)
 
       if (namespace?.rpcMap && rpcUrl) {
         namespace.rpcMap[id] = rpcUrl

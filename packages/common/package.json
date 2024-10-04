@@ -18,9 +18,7 @@
   },
   "dependencies": {
     "bignumber.js": "9.1.2",
-    "dayjs": "1.11.10"
-  },
-  "peerDependencies": {
+    "dayjs": "1.11.10",
     "viem": "2.x"
   },
   "devDependencies": {

@@ -100,9 +100,7 @@
     "@walletconnect/types": "2.17.0",
     "@walletconnect/utils": "2.17.0",
     "@walletconnect/universal-provider": "2.17.0",
-    "valtio": "1.11.2"
-  },
-  "peerDependencies": {
+    "valtio": "1.11.2",
     "viem": "2.x"
   },
   "devDependencies": {

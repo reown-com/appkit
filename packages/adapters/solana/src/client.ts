@@ -363,7 +363,7 @@ export class SolanaAdapter implements ChainAdapter {
       )
       this.appKit?.setAllAccounts([{ address, type: 'eoa' }], this.chainNamespace)
       this.appKit?.setCaipAddress(
-        `${this.chainNamespace}:${caipNetwork.id}:${address}` as CaipAddress,
+        `${this.chainNamespace}:${caipNetwork.id}:${address}`,
         this.chainNamespace
       )
       await this.syncNetwork(address)

@@ -310,6 +310,7 @@ export class AppKit {
     if (network && typeof network?.id === typeof ({} as T)) {
       return network.id as T
     }
+
     return undefined
   }
 
