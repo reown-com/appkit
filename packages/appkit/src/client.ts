@@ -57,6 +57,8 @@ let isInitialized = false
 export class AppKit {
   private static instance?: AppKit
 
+  public version: SdkVersion
+
   public adapter?: ChainAdapter
 
   public adapters?: ChainAdapter[]
@@ -82,6 +84,7 @@ export class AppKit {
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
     this.initControllers(options)
     this.initOrContinue()
+    this.version = options.sdkVersion
   }
 
   public static getInstance() {

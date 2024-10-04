@@ -9,6 +9,7 @@ import {
   solanaTestnet,
   solanaDevnet,
   base,
+  baseSepolia,
   gnosis,
   type AppKitNetwork
 } from '@reown/appkit/networks'
@@ -51,10 +52,17 @@ if (typeof window !== 'undefined') {
 
 const customWallet = storedCustomWallet ? [JSON.parse(storedCustomWallet)] : []
 
-const EvmNetworks = [mainnet, optimism, polygon, zkSync, arbitrum, base, sepolia, gnosis] as [
-  AppKitNetwork,
-  ...AppKitNetwork[]
-]
+const EvmNetworks = [
+  mainnet,
+  optimism,
+  polygon,
+  zkSync,
+  arbitrum,
+  base,
+  baseSepolia,
+  sepolia,
+  gnosis
+] as [AppKitNetwork, ...AppKitNetwork[]]
 
 export const solanaNotExist = {
   id: 'chaindoesntexist',
