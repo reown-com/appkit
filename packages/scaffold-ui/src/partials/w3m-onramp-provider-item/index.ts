@@ -2,7 +2,7 @@ import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { customElement, type ColorType } from '@reown/appkit-ui'
-import { AssetUtil, NetworkController, type OnRampProvider } from '@reown/appkit-core'
+import { AssetUtil, ChainController, type OnRampProvider } from '@reown/appkit-core'
 import styles from './styles.js'
 
 @customElement('w3m-onramp-provider-item')
@@ -52,7 +52,7 @@ export class W3mOnRampProviderItem extends LitElement {
 
   // -- Private ------------------------------------------- //
   private networksTemplate() {
-    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
     const slicedNetworks = requestedCaipNetworks
       ?.filter(network => network?.assets?.imageId)
       ?.slice(0, 5)

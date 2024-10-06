@@ -3,8 +3,7 @@ import {
   AssetUtil,
   ChainController,
   EventsController,
-  ModalController,
-  NetworkController
+  ModalController
 } from '@reown/appkit-core'
 import type { WuiNetworkButton } from '@reown/appkit-ui'
 import { customElement } from '@reown/appkit-ui'
@@ -33,7 +32,7 @@ export class W3mNetworkButton extends LitElement {
 
   @state() private loading = ModalController.state.loading
 
-  @state() private isUnsupportedChain = NetworkController.state.isUnsupportedChain
+  @state() private isSupported = true
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -51,9 +50,11 @@ export class W3mNetworkButton extends LitElement {
         ChainController.subscribeKey('activeCaipNetwork', val => {
           this.network = val
           this.networkImage = val?.assets?.imageId ? AssetUtil.getNetworkImage(val) : undefined
+          this.isSupported = val?.chainNamespace
+            ? ChainController.checkIfSupportedNetwork(val.chainNamespace)
+            : true
         }),
-        ModalController.subscribeKey('loading', val => (this.loading = val)),
-        NetworkController.subscribeKey('isUnsupportedChain', val => (this.isUnsupportedChain = val))
+        ModalController.subscribeKey('loading', val => (this.loading = val))
       ]
     )
   }
@@ -64,11 +65,15 @@ export class W3mNetworkButton extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const isSupported = this.network
+      ? ChainController.checkIfSupportedNetwork(this.network.chainNamespace)
+      : true
+
     return html`
       <wui-network-button
         data-testid="wui-network-button"
         .disabled=${Boolean(this.disabled || this.loading)}
-        .isUnsupportedChain=${this.isUnsupportedChain}
+        .isUnsupportedChain=${!isSupported}
         imageSrc=${ifDefined(this.networkImage)}
         @click=${this.onClick.bind(this)}
       >
@@ -81,15 +86,15 @@ export class W3mNetworkButton extends LitElement {
   // -- Private ------------------------------------------- //
   private getLabel() {
     if (this.network) {
+      if (!this.isSupported) {
+        return 'Switch Network'
+      }
+
       return this.network.name
     }
 
     if (this.label) {
       return this.label
-    }
-
-    if (this.isUnsupportedChain) {
-      return 'Switch Network'
     }
 
     if (this.caipAddress) {

@@ -4,8 +4,7 @@ import {
   ChainController,
   ConnectionController,
   ConnectorController,
-  EnsController,
-  NetworkController
+  EnsController
 } from '../../exports/index.js'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { ConstantsUtil } from '@reown/appkit-common'
@@ -136,10 +135,10 @@ describe('EnsController', () => {
     // No network set
     const result = await EnsController.getNamesForAddress('0x123')
     expect(result).toEqual([])
-    NetworkController.setActiveCaipNetwork({
+    ChainController.setActiveCaipNetwork({
+      id: 1,
       caipNetworkId: 'eip155:1',
       chainNamespace: ConstantsUtil.CHAIN.EVM,
-      id: 1,
       name: 'Ethereum',
       nativeCurrency: {
         name: 'Ethereum',
@@ -161,10 +160,10 @@ describe('EnsController', () => {
 
   it('should register name', async () => {
     // Setup
-    NetworkController.setActiveCaipNetwork({
+    ChainController.setActiveCaipNetwork({
+      id: 137,
       caipNetworkId: 'eip155:137',
       chainNamespace: ConstantsUtil.CHAIN.EVM,
-      id: 137,
       name: 'Polygon',
       nativeCurrency: {
         name: 'Polygon',

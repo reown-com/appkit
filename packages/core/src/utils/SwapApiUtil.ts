@@ -5,7 +5,6 @@ import { OptionsController } from '../controllers/OptionsController.js'
 import type { BlockchainApiSwapAllowanceRequest, BlockchainApiBalanceResponse } from './TypeUtil.js'
 import { AccountController } from '../controllers/AccountController.js'
 import { ChainController } from '../controllers/ChainController.js'
-import { NetworkController } from '../controllers/NetworkController.js'
 
 // -- Types --------------------------------------------- //
 export type TokenInfo = {
@@ -136,7 +135,7 @@ export const SwapApiUtil = {
             ...token,
             address: token?.address
               ? token.address
-              : NetworkController.getActiveNetworkTokenAddress(),
+              : ChainController.getActiveNetworkTokenAddress(),
             decimals: parseInt(token.quantity.decimals, 10),
             logoUri: token.iconUrl,
             eip2612: false
