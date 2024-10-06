@@ -259,7 +259,7 @@ export const ChainController = {
       activeChain: state.activeChain,
       selectedNetworkId: state.activeCaipNetwork?.caipNetworkId
     })
-    SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetwork.id)
+    SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetwork.caipNetworkId)
 
     const isSupported = this.checkIfSupportedNetwork(caipNetwork.chainNamespace)
 
@@ -474,7 +474,7 @@ export const ChainController = {
   },
 
   checkIfSmartAccountEnabled() {
-    const networkId = NetworkUtil.caipNetworkIdToNumber(state.activeCaipNetwork?.id)
+    const networkId = NetworkUtil.caipNetworkIdToNumber(state.activeCaipNetwork?.caipNetworkId)
     const activeChain = this.state.activeChain
 
     if (!activeChain || !networkId) {
