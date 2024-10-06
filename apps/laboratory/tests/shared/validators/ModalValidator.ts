@@ -200,7 +200,7 @@ export class ModalValidator {
     await expect(switchNetworkButton).toBeVisible()
   }
 
-  async expectOnrampButton(_library: string) {
+  async expectOnrampButton() {
     const onrampButton = this.page.getByTestId('w3m-account-default-onramp-button')
     await expect(onrampButton).toBeVisible()
   }

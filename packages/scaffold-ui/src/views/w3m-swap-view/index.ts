@@ -11,8 +11,7 @@ import {
   type SwapInputTarget,
   EventsController,
   AccountController,
-  ChainController,
-  NetworkController
+  ChainController
 } from '@reown/appkit-core'
 import { NumberUtil } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
@@ -207,7 +206,7 @@ export class W3mSwapView extends LitElement {
 
   private onSetMaxValue(target: SwapInputTarget, balance: string | undefined) {
     const token = target === 'sourceToken' ? this.sourceToken : this.toToken
-    const isNetworkToken = token?.address === NetworkController.getActiveNetworkTokenAddress()
+    const isNetworkToken = token?.address === ChainController.getActiveNetworkTokenAddress()
     let value = '0'
 
     if (!balance) {
