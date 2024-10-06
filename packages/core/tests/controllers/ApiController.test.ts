@@ -4,7 +4,6 @@ import {
   AssetController,
   ChainController,
   ConnectorController,
-  NetworkController,
   OptionsController
 } from '../../exports/index.js'
 import { api } from '../../src/controllers/ApiController.js'
@@ -118,7 +117,7 @@ describe('ApiController', () => {
   })
 
   it('should fetch network images ', async () => {
-    NetworkController.setRequestedCaipNetworks(
+    ChainController.setRequestedCaipNetworks(
       [
         {
           id: 'eip155:1',
@@ -160,7 +159,7 @@ describe('ApiController', () => {
   })
 
   it('should only fetch network images for networks with imageIds', async () => {
-    NetworkController.setRequestedCaipNetworks(
+    ChainController.setRequestedCaipNetworks(
       [
         {
           id: 'eip155:1',
