@@ -7,7 +7,6 @@ import {
   CoreHelperUtil,
   EventsController,
   ModalController,
-  NetworkController,
   RouterController,
   SnackController
 } from '@reown/appkit-core'
@@ -83,8 +82,8 @@ export class W3mUnsupportedChainView extends LitElement {
   }
 
   private networksTemplate() {
-    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
-    const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
+    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
 
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
@@ -126,19 +125,22 @@ export class W3mUnsupportedChainView extends LitElement {
 
   private async onSwitchNetwork(network: CaipNetwork) {
     const caipAddress = AccountController.state.caipAddress
-    const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
-    const supportsAllNetworks = NetworkController.state.supportsAllNetworks
+    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
+    const supportsAllNetworks = ChainController.getNetworkProp(
+      'supportsAllNetworks',
+      network.chainNamespace
+    )
     const caipNetwork = ChainController.state.activeCaipNetwork
     const routerData = RouterController.state.data
 
     if (caipAddress && caipNetwork?.id !== network.id) {
       if (approvedCaipNetworkIds?.includes(network.id)) {
-        await NetworkController.switchActiveNetwork(network)
+        await ChainController.switchActiveNetwork(network)
       } else if (supportsAllNetworks) {
         RouterController.push('SwitchNetwork', { ...routerData, network })
       }
     } else if (!caipAddress) {
-      NetworkController.setActiveCaipNetwork(network)
+      ChainController.setActiveCaipNetwork(network)
       RouterController.push('Connect')
     }
   }

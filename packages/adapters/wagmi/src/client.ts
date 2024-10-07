@@ -261,7 +261,7 @@ export class WagmiAdapter implements ChainAdapter {
             )
             resolve(getWalletConnectCaipNetworks(connector))
           }
-          resolve({ approvedCaipNetworkIds: undefined, supportsAllNetworks: true })
+          resolve({ approvedCaipNetworkIds: [], supportsAllNetworks: true })
         })
       }
     }
@@ -659,7 +659,7 @@ export class WagmiAdapter implements ChainAdapter {
     if (status === 'disconnected') {
       this.appKit?.resetAccount(this.chainNamespace)
       this.appKit?.resetWcConnection()
-      this.appKit?.resetNetwork()
+      this.appKit?.resetNetwork(this.chainNamespace)
       this.appKit?.setAllAccounts([], this.chainNamespace)
       SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
       if (isAuthConnector) {

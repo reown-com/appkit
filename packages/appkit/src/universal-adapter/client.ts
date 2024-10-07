@@ -4,7 +4,6 @@ import {
   ChainController,
   ConnectionController,
   CoreHelperUtil,
-  NetworkController,
   StorageUtil,
   type ConnectionControllerClient,
   type Connector,
@@ -436,14 +435,12 @@ export class UniversalAdapterClient {
 
       const storedCaipNetwork = StorageUtil.getStoredActiveCaipNetwork()
       const activeCaipNetwork = ChainController.state.activeCaipNetwork
-
       try {
         if (storedCaipNetwork) {
-          NetworkController.setActiveCaipNetwork(storedCaipNetwork)
-        } else if (!activeCaipNetwork) {
-          this.setDefaultNetwork(nameSpaces)
+          ChainController.setActiveCaipNetwork(storedCaipNetwork)
         } else if (
-          !NetworkController.state.approvedCaipNetworkIds?.includes(activeCaipNetwork.id)
+          !activeCaipNetwork ||
+          !ChainController.getAllApprovedCaipNetworkIds().includes(activeCaipNetwork.id)
         ) {
           this.setDefaultNetwork(nameSpaces)
         }
@@ -458,7 +455,6 @@ export class UniversalAdapterClient {
 
   private setDefaultNetwork(nameSpaces: SessionTypes.Namespaces) {
     const chainNamespace = this.caipNetworks[0]?.chainNamespace
-
     if (chainNamespace) {
       const namespace = nameSpaces?.[chainNamespace]
 
@@ -466,13 +462,13 @@ export class UniversalAdapterClient {
         const chainId = namespace.chains[0]
 
         if (chainId) {
-          const requestedCaipNetworks = NetworkController.state?.requestedCaipNetworks
+          const requestedCaipNetworks = ChainController.getRequestedCaipNetworks(chainNamespace)
 
           if (requestedCaipNetworks) {
             const network = requestedCaipNetworks.find(c => c.id === chainId)
 
             if (network) {
-              NetworkController.setActiveCaipNetwork(network as unknown as CaipNetwork)
+              ChainController.setActiveCaipNetwork(network as unknown as CaipNetwork)
             }
           }
         }
@@ -508,7 +504,7 @@ export class UniversalAdapterClient {
       const currentCaipNetwork = this.appKit?.getCaipNetwork()
 
       if (!caipNetwork) {
-        NetworkController.setActiveCaipNetwork({
+        ChainController.setActiveCaipNetwork({
           chainId: Number(chainId),
           id: `eip155:${chainId}`,
           name: 'Unknown Network',
@@ -572,7 +568,7 @@ export class UniversalAdapterClient {
       })
     } else {
       this.appKit?.resetWcConnection()
-      this.appKit?.resetNetwork()
+      this.appKit?.resetNetwork(this.chainNamespace)
       this.syncAccounts(true)
     }
   }
