@@ -169,7 +169,7 @@ export const CoreHelperUtil = {
     )
   },
   formatTelegramSocialLoginUrl(url: string) {
-    const valueToInject = `-${encodeURIComponent(window.location.href)}`
+    const valueToInject = `--${encodeURIComponent(window.location.href)}`
     const paramToInject = 'state='
     const parsedUrl = new URL(url)
     if (parsedUrl.host === 'auth.magic.link') {
