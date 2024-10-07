@@ -128,7 +128,10 @@ export const CoreHelperUtil = {
       href: safeAppUrl
     }
   },
-  getOpenTargetForPlatform(target: string) {
+  getOpenTargetForPlatform(target: string, forceTarget = false) {
+    if (forceTarget) {
+      return target
+    }
     // Only '_blank' deeplinks work in Telegram context
     if (this.isTelegram()) {
       return '_blank'
@@ -136,16 +139,22 @@ export const CoreHelperUtil = {
 
     return target
   },
-  openHref(href: string, target: '_blank' | '_self' | 'popupWindow', features?: string) {
-    window.open(href, this.getOpenTargetForPlatform(target), features || 'noreferrer noopener')
+  openHref(
+    href: string,
+    target: '_blank' | '_self' | 'popupWindow',
+    features = 'noreferrer noopener',
+    forceTarget = false
+  ) {
+    window.open(href, this.getOpenTargetForPlatform(target, forceTarget), features)
   },
 
-  returnOpenHref(href: string, target: '_blank' | '_self' | 'popupWindow', features?: string) {
-    return window.open(
-      href,
-      this.getOpenTargetForPlatform(target),
-      features || 'noreferrer noopener'
-    )
+  returnOpenHref(
+    href: string,
+    target: '_blank' | '_self' | 'popupWindow',
+    features = 'noreferrer noopener',
+    forceTarget = false
+  ) {
+    return window.open(href, this.getOpenTargetForPlatform(target, forceTarget), features)
   },
 
   isTelegram() {
@@ -158,6 +167,52 @@ export const CoreHelperUtil = {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         Boolean((window as any).TelegramWebviewProxyProto))
     )
+  },
+  formatTelegramSocialLoginUrl(url: string) {
+    const valueToInject = `-${encodeURIComponent(window.location.href)}`
+    const paramToInject = 'state='
+    const parsedUrl = new URL(url)
+    if (parsedUrl.host === 'auth.magic.link') {
+      const providerParam = 'provider_authorization_url='
+      const providerUrl = url.substring(url.indexOf(providerParam) + providerParam.length)
+      const resultUrl = this.injectIntoUrl(
+        decodeURIComponent(providerUrl),
+        paramToInject,
+        valueToInject
+      )
+      console.log('resultUrl', resultUrl)
+      console.log('full parsedUrl', encodeURIComponent(resultUrl))
+
+      return url.replace(providerUrl, encodeURIComponent(resultUrl))
+    }
+
+    return this.injectIntoUrl(url, paramToInject, valueToInject)
+  },
+  injectIntoUrl(url: string, key: string, appendString: string) {
+    // Find the position of "key" e.g. "state=" in the URL
+    const keyIndex = url.indexOf(key)
+
+    if (keyIndex === -1) {
+      throw new Error(`${key} parameter not found in the URL: ${url}`)
+    }
+
+    // Find the position of the next "&" after "key"
+    const keyEndIndex = url.indexOf('&', keyIndex)
+    const keyLength = key.length
+    // If there is no "&" after key, it means "key" is the last parameter
+    const keyParamEnd = keyEndIndex !== -1 ? keyEndIndex : url.length
+    // Extract the part of the URL before the key value
+    const beforeKeyValue = url.substring(0, keyIndex + keyLength)
+    // Extract the current key value
+    const currentKeyValue = url.substring(keyIndex + keyLength, keyParamEnd)
+    // Extract the part of the URL after the key value
+    const afterKeyValue = url.substring(keyEndIndex)
+    // Append the new string to the key value
+    const newKeyValue = currentKeyValue + appendString
+    // Reconstruct the URL with the appended key value
+    const newUrl = beforeKeyValue + newKeyValue + afterKeyValue
+
+    return newUrl
   },
 
   async preloadImage(src: string) {

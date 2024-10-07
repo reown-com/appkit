@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import {
   AccountController,
   ChainController,
@@ -165,6 +166,7 @@ export class W3mSocialLoginWidget extends LitElement {
   }
 
   async onSocialClick(socialProvider?: SocialProvider) {
+    console.log('onSocialClick', socialProvider)
     if (socialProvider) {
       AccountController.setSocialProvider(socialProvider, ChainController.state.activeChain)
 
@@ -192,29 +194,37 @@ export class W3mSocialLoginWidget extends LitElement {
       }
     } else {
       RouterController.push('ConnectingSocial')
-
       const authConnector = ConnectorController.getAuthConnector()
       this.popupWindow = CoreHelperUtil.returnOpenHref(
         '',
         'popupWindow',
         'width=600,height=800,scrollbars=yes'
       )
-
+      console.log('popupWindow', this.popupWindow)
       try {
         if (authConnector && socialProvider) {
           const { uri } = await authConnector.provider.getSocialRedirectUri({
             provider: socialProvider
           })
-
           if (this.popupWindow && uri) {
             AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
             this.popupWindow.location.href = uri
+          } else if (CoreHelperUtil.isTelegram() && uri) {
+            console.log('plain uri', uri)
+
+            const parsedUri = CoreHelperUtil.formatTelegramSocialLoginUrl(uri)
+            console.log('parsedUri', parsedUri)
+
+            CoreHelperUtil.openHref(parsedUri, '_self', '', true)
+
+            localStorage.setItem('socialProvider', socialProvider)
           } else {
             this.popupWindow?.close()
             throw new Error('Something went wrong')
           }
         }
       } catch (error) {
+        console.error('onSocialClick error', error)
         this.popupWindow?.close()
         SnackController.showError('Something went wrong')
       }

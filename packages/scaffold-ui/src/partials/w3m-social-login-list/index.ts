@@ -109,10 +109,12 @@ export class W3mSocialLoginList extends LitElement {
           const { uri } = await authConnector.provider.getSocialRedirectUri({
             provider: socialProvider
           })
-
           if (this.popupWindow && uri) {
             AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
             this.popupWindow.location.href = uri
+          } else if (CoreHelperUtil.isTelegram() && uri) {
+            const parsedUri = CoreHelperUtil.formatTelegramSocialLoginUrl(uri)
+            CoreHelperUtil.openHref(parsedUri, '_self', '', true)
           } else {
             this.popupWindow?.close()
             throw new Error('Something went wrong')

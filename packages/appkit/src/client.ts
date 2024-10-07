@@ -6,7 +6,8 @@ import type {
   ConnectedWalletInfo,
   RouterControllerState,
   ChainAdapter,
-  SdkVersion
+  SdkVersion,
+  AccountControllerState
 } from '@reown/appkit-core'
 import {
   AccountController,
@@ -77,6 +78,7 @@ export class AppKit {
     this.adapter = options.adapters?.[0] as ChainAdapter
     this.initControllers(options)
     this.initOrContinue()
+    this.checkExistingConnection()
   }
 
   public static getInstance() {
@@ -550,5 +552,52 @@ export class AppKit {
     }
 
     return this.initPromise
+  }
+
+  private async checkExistingConnection() {
+    try {
+      console.log('checkExistingConnection...')
+      if (!CoreHelperUtil.isTelegram()) {
+        console.log('non Telegram env, returning..')
+      }
+      const socialProviderToConnect = localStorage.getItem(
+        'socialProvider'
+      ) as AccountControllerState['socialProvider']
+      if (!socialProviderToConnect) {
+        console.log('no socialProvider, returning..')
+
+        return
+      }
+      const url = new URL(window.location.href)
+      const resultUri = url.searchParams.get('result_uri')
+      if (!resultUri) {
+        console.log('no resultUri, returning..')
+
+        return
+      }
+      AccountController.setSocialProvider(
+        socialProviderToConnect,
+        ChainController.state.activeChain
+      )
+      const authConnector = ConnectorController.getAuthConnector()
+      console.log('socialProvider', socialProviderToConnect)
+      console.log('authConnector', authConnector)
+      if (socialProviderToConnect && authConnector) {
+        await authConnector.provider.connectSocial(resultUri)
+        await ConnectionController.connectExternal(authConnector, authConnector.chain)
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'SOCIAL_LOGIN_SUCCESS',
+          properties: { provider: socialProviderToConnect }
+        })
+      }
+    } catch (error) {
+      console.error('checkExistingConnection error', error)
+    }
+    const url = new URL(window.location.href)
+    // Remove the 'result_uri' parameter
+    url.searchParams.delete('result_uri')
+    // Update the URL without reloading the page
+    window.history.replaceState({}, document.title, url.toString())
   }
 }
