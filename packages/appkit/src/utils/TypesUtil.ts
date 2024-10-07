@@ -1,11 +1,5 @@
 import type { CaipNetwork, ThemeVariables } from '@reown/appkit-common'
-import type {
-  ChainAdapter,
-  Metadata,
-  NetworkControllerState,
-  OptionsControllerState,
-  ThemeMode
-} from '@reown/appkit-core'
+import type { ChainAdapter, Metadata, OptionsControllerState, ThemeMode } from '@reown/appkit-core'
 import type { AppKitSIWEClient } from '@reown/appkit-siwe'
 
 export type AppKitOptions = {
@@ -42,7 +36,7 @@ export type AppKitOptions = {
    * Allow users to switch to an unsupported chain.
    * @see https://docs.reown.com/appkit/react/core/options#allowunsupportedchain
    */
-  allowUnsupportedChain?: NetworkControllerState['allowUnsupportedCaipNetwork']
+  allowUnsupportedChain?: boolean
   /**
    * You can set the desired caipnetworks for the app:
    * @see https://docs.reown.com/appkit/react/core/options#defaultchain
@@ -52,7 +46,7 @@ export type AppKitOptions = {
    * You can set a desired caipnetwork for the initial connection:
    * @see https://docs.reown.com/appkit/react/core/options#defaultchain
    */
-  defaultNetwork?: NetworkControllerState['caipNetwork']
+  defaultNetwork?: CaipNetwork
   /**
    * Add or override the modal's network images.
    * @see https://docs.reown.com/appkit/react/core/options#chainimages
