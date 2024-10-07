@@ -309,7 +309,8 @@ export class AppKit {
 
   public getCaipNetworkId = <T extends number | string>(): T | undefined => {
     const network = this.getCaipNetwork()
-    if (network && typeof network?.id === typeof ({} as T)) {
+
+    if (network) {
       return network.id as T
     }
 
