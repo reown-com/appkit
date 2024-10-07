@@ -118,7 +118,7 @@ export function walletConnect(
             ...('pairingTopic' in rest ? { pairingTopic: rest.pairingTopic } : {})
           })
 
-          this.setRequestedChainsIds(parameters.networks.map(x => Number(x.id)))
+          this.setRequestedChainsIds(caipNetworks.map(x => Number(x.id)))
         }
 
         // If session exists and chains are authorized, enable provider for required chain
@@ -210,7 +210,7 @@ export function walletConnect(
     },
     async getProvider({ chainId } = {}) {
       async function initProvider() {
-        const optionalChains = parameters.networks.map(x => Number(x.id))
+        const optionalChains = caipNetworks.map(x => Number(x.id))
 
         if (!optionalChains.length) {
           return undefined
@@ -258,7 +258,7 @@ export function walletConnect(
       const provider = await this.getProvider()
       const chain = provider.session?.namespaces['eip155']?.chains?.[0]
 
-      const network = parameters.networks.find(c => c.id === chain)
+      const network = caipNetworks.find(c => c.id === chain)
 
       return network?.id as number
     },
@@ -291,15 +291,15 @@ export function walletConnect(
         throw new ProviderNotFoundError()
       }
 
-      const chainToSwitch = parameters.networks.find(x => x.id === chainId)
+      const chainToSwitch = caipNetworks.find(x => x.id === chainId)
 
       if (!chainToSwitch) {
         throw new SwitchChainError(new ChainNotConfiguredError())
       }
 
       try {
-        if (chainToSwitch?.id) {
-          provider.setDefaultChain(chainToSwitch?.id as string)
+        if (chainToSwitch?.caipNetworkId) {
+          provider.setDefaultChain(chainToSwitch?.caipNetworkId as string)
         }
 
         await provider.request({
