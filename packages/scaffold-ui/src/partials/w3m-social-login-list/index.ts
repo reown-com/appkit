@@ -98,12 +98,14 @@ export class W3mSocialLoginList extends LitElement {
       RouterController.push('ConnectingSocial')
 
       const authConnector = ConnectorController.getAuthConnector()
-      this.popupWindow = CoreHelperUtil.returnOpenHref(
-        '',
-        'popupWindow',
-        'width=600,height=800,scrollbars=yes',
-        true
-      )
+      if (!CoreHelperUtil.isTelegram()) {
+        this.popupWindow = CoreHelperUtil.returnOpenHref(
+          '',
+          'popupWindow',
+          'width=600,height=800,scrollbars=yes',
+          true
+        )
+      }
 
       try {
         if (authConnector && socialProvider) {
@@ -115,7 +117,7 @@ export class W3mSocialLoginList extends LitElement {
             this.popupWindow.location.href = uri
           } else if (CoreHelperUtil.isTelegram() && uri) {
             const parsedUri = CoreHelperUtil.formatTelegramSocialLoginUrl(uri)
-            CoreHelperUtil.openHref(parsedUri, '_self', '', true)
+            CoreHelperUtil.openHref(parsedUri, '_top', '', true)
           } else {
             this.popupWindow?.close()
             throw new Error('Something went wrong')
