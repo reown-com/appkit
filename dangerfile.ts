@@ -383,7 +383,7 @@ async function checkChangesetFiles() {
     const fileContent = await danger.github.utils.fileContents(f)
 
     if (fileContent.includes('@examples/')) {
-      fail(`Changeset file ${f} cannot include @examples/* packages as part of the changesets`)
+      fail(`Changeset file ${f} cannot include @examples/* packages as part of the changeset`)
     }
   }
 }
