@@ -61,6 +61,7 @@ import {
   getEmailCaipNetworks,
   getTransport,
   getWalletConnectCaipNetworks,
+  parseWalletCapabilities,
   requireCaipAddress
 } from './utils/helpers.js'
 import { W3mFrameHelpers, W3mFrameRpcConstants } from '@reown/appkit-wallet'
@@ -107,7 +108,11 @@ const OPTIONAL_METHODS = [
   'wallet_requestPermissions',
   'wallet_registerOnboarding',
   'wallet_watchAsset',
-  'wallet_scanQRCode'
+  'wallet_scanQRCode',
+  'wallet_getCallsStatus',
+  'wallet_sendCalls',
+  'wallet_getCapabilities',
+  'wallet_grantPermissions'
 ]
 
 // @ts-expect-error: Overridden state type is correct
@@ -430,6 +435,58 @@ export class WagmiAdapter implements ChainAdapter {
           return BigInt(0)
         }
       },
+
+      getCapabilities: async (params: string) => {
+        if (!this.wagmiConfig) {
+          throw new Error('connectionControllerClient:getCapabilities - wagmiConfig is undefined')
+        }
+
+        const connections = getConnections(this.wagmiConfig)
+        const connection = connections[0]
+
+        if (!connection?.connector) {
+          throw new Error('connectionControllerClient:getCapabilities - connector is undefined')
+        }
+
+        const provider = (await connection.connector.getProvider()) as UniversalProvider
+
+        if (!provider) {
+          throw new Error('connectionControllerClient:getCapabilities - provider is undefined')
+        }
+
+        const walletCapabilitiesString = provider.session?.sessionProperties?.['capabilities']
+        if (walletCapabilitiesString) {
+          const walletCapabilities = parseWalletCapabilities(walletCapabilitiesString)
+          const accountCapabilities = walletCapabilities[params]
+          if (accountCapabilities) {
+            return accountCapabilities
+          }
+        }
+
+        return await provider.request({ method: 'wallet_getCapabilities', params: [params] })
+      },
+
+      grantPermissions: async params => {
+        if (!this.wagmiConfig) {
+          throw new Error('connectionControllerClient:grantPermissions - wagmiConfig is undefined')
+        }
+
+        const connections = getConnections(this.wagmiConfig)
+        const connection = connections[0]
+
+        if (!connection?.connector) {
+          throw new Error('connectionControllerClient:grantPermissions - connector is undefined')
+        }
+
+        const provider = (await connection.connector.getProvider()) as UniversalProvider
+
+        if (!provider) {
+          throw new Error('connectionControllerClient:grantPermissions - provider is undefined')
+        }
+
+        return provider.request({ method: 'wallet_grantPermissions', params })
+      },
+
       sendTransaction: async (data: SendTransactionArgs) => {
         if (data.chainNamespace && data.chainNamespace !== 'eip155') {
           throw new Error(`Invalid chain namespace - Expected eip155, got ${data.chainNamespace}`)
