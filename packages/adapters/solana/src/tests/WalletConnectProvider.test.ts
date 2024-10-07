@@ -168,7 +168,7 @@ describe('WalletConnectProvider specific tests', () => {
   it('should use the correct chain id for requests', async () => {
     await walletConnectProvider.connect()
     getActiveChain.mockImplementation(
-      () => ({ chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1' }) as CaipNetwork
+      () => ({ id: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1' }) as CaipNetwork
     )
 
     await walletConnectProvider.signMessage(new Uint8Array([1, 2, 3, 4, 5]))
@@ -189,8 +189,8 @@ describe('WalletConnectProvider specific tests', () => {
     vi.spyOn(provider, 'connect').mockImplementation(() =>
       Promise.resolve(
         mockUniversalProviderSession({}, [
-          { chainId: '4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ' } as CaipNetwork,
-          { chainId: '8E9rvCKLFQia2Y35HXjjpWzj8weVo44K' } as CaipNetwork
+          { id: '4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ' } as CaipNetwork,
+          { id: '8E9rvCKLFQia2Y35HXjjpWzj8weVo44K' } as CaipNetwork
         ])
       )
     )
@@ -214,14 +214,14 @@ describe('WalletConnectProvider specific tests', () => {
     vi.spyOn(provider, 'connect').mockImplementation(() =>
       Promise.resolve(
         mockUniversalProviderSession({}, [
-          { chainId: '4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ' } as CaipNetwork,
-          { chainId: '8E9rvCKLFQia2Y35HXjjpWzj8weVo44K' } as CaipNetwork
+          { id: '4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ' } as CaipNetwork,
+          { id: '8E9rvCKLFQia2Y35HXjjpWzj8weVo44K' } as CaipNetwork
         ])
       )
     )
 
     getActiveChain.mockImplementation(
-      () => ({ chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1' }) as CaipNetwork
+      () => ({ id: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1' }) as CaipNetwork
     )
 
     await walletConnectProvider.connect()
@@ -305,7 +305,7 @@ describe('WalletConnectProvider specific tests', () => {
               ],
               events: [],
               accounts: [
-                `solana:${TestConstants.chains[0]?.chainId}:${TestConstants.accounts[0].address}`
+                `solana:${TestConstants.chains[0]?.id}:${TestConstants.accounts[0].address}`
               ]
             }
           }
@@ -328,7 +328,7 @@ describe('WalletConnectProvider specific tests', () => {
               methods: [],
               events: [],
               accounts: [
-                `solana:${TestConstants.chains[0]?.chainId}:${TestConstants.accounts[0].address}`
+                `solana:${TestConstants.chains[0]?.id}:${TestConstants.accounts[0].address}`
               ]
             }
           }
@@ -353,7 +353,7 @@ describe('WalletConnectProvider specific tests', () => {
               methods: ['solana_signMessage'],
               events: [],
               accounts: [
-                `solana:${TestConstants.chains[0]?.chainId}:${TestConstants.accounts[0].address}`
+                `solana:${TestConstants.chains[0]?.id}:${TestConstants.accounts[0].address}`
               ]
             }
           }
@@ -378,7 +378,7 @@ describe('WalletConnectProvider specific tests', () => {
               methods: ['solana_signMessage'],
               events: [],
               accounts: [
-                `solana:${TestConstants.chains[0]?.chainId}:${TestConstants.accounts[0].address}`
+                `solana:${TestConstants.chains[0]?.id}:${TestConstants.accounts[0].address}`
               ]
             }
           }
@@ -403,7 +403,7 @@ describe('WalletConnectProvider specific tests', () => {
               methods: ['solana_signMessage'],
               events: [],
               accounts: [
-                `solana:${TestConstants.chains[0]?.chainId}:${TestConstants.accounts[0].address}`
+                `solana:${TestConstants.chains[0]?.id}:${TestConstants.accounts[0].address}`
               ]
             }
           }
@@ -428,7 +428,7 @@ describe('WalletConnectProvider specific tests', () => {
               methods: ['solana_signAllTransactions'],
               events: [],
               accounts: [
-                `solana:${TestConstants.chains[0]?.chainId}:${TestConstants.accounts[0].address}`
+                `solana:${TestConstants.chains[0]?.id}:${TestConstants.accounts[0].address}`
               ]
             }
           }

@@ -37,6 +37,7 @@ export function authConnector(parameters: AuthParameters) {
     async connect(options = {}) {
       const provider = await this.getProvider()
       let chainId = options.chainId
+
       if (options.isReconnecting) {
         chainId = provider.getLastUsedChainId()
         if (!chainId) {

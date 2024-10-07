@@ -1140,6 +1140,9 @@ importers:
       valtio:
         specifier: 1.11.2
         version: 1.11.2(@types/react@18.2.0)(react@18.2.0)
+      viem:
+        specifier: 2.x
+        version: 2.21.4(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)
     devDependencies:
       '@types/react':
         specifier: 18.2.0
@@ -1163,7 +1166,7 @@ importers:
         specifier: 2.0.5
         version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.33.0)
       vue:
-        specifier: 3.4.3
+        specifier: 3.x
         version: 3.4.3(typescript@5.3.3)
 
   packages/appkit-utils:
@@ -1230,7 +1233,7 @@ importers:
         specifier: '>=5'
         version: 5.3.3
       viem:
-        specifier: 2.21.4
+        specifier: 2.x
         version: 2.21.4(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)
       vite:
         specifier: 5.2.11
@@ -1251,6 +1254,9 @@ importers:
       dayjs:
         specifier: 1.11.10
         version: 1.11.10
+      viem:
+        specifier: 2.x
+        version: 2.21.4(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.0.5
@@ -1273,16 +1279,19 @@ importers:
       valtio:
         specifier: 1.11.2
         version: 1.11.2(@types/react@18.2.62)(react@18.2.0)
+      viem:
+        specifier: 2.x
+        version: 2.21.4(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.0.5
         version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.33.0))
-      viem:
-        specifier: 2.21.4
-        version: 2.21.4(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)
       vitest:
         specifier: 2.0.5
         version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.33.0)
+      vue:
+        specifier: 3.x
+        version: 3.4.3(typescript@5.3.3)
 
   packages/ethers:
     dependencies:
@@ -1606,7 +1615,7 @@ importers:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
       viem:
-        specifier: 2.21.4
+        specifier: 2.x
         version: 2.21.4(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)
       vitest:
         specifier: 2.0.5
