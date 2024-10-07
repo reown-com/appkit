@@ -101,7 +101,8 @@ export class W3mSocialLoginList extends LitElement {
       this.popupWindow = CoreHelperUtil.returnOpenHref(
         '',
         'popupWindow',
-        'width=600,height=800,scrollbars=yes'
+        'width=600,height=800,scrollbars=yes',
+        true
       )
 
       try {
