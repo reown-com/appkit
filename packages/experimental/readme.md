@@ -2,10 +2,22 @@
 
 #### 🔗 [Website](https://reown.com/appkit)
 
-# AppKit Experimental
+# AppKit Experimental (@reown/appkit-experimental)
 
-TODO: Add description
+The @reown/appkit-experimental package provides a set of cutting-edge, experimental features for Web3 developers. This package serves as a testing ground for innovative concepts and implementations that are not yet widely adopted or standardized in the blockchain ecosystem.
 
-<p align="center">
-  <img src="./.github/assets/header.png" alt="" border="0">
-</p>
+## Key Characteristics
+
+- **Experimental Nature**: Features in this package are considered experimental and may undergo significant changes.
+- **EIP Implementation**: Includes implementations of non-finalized Ethereum Improvement Proposals (EIPs).
+- **Ecosystem Exploration**: Offers functionalities that are not yet widely adopted in the broader Web3 ecosystem.
+
+## Installation
+
+```bash
+npm install @reown/appkit-experimental
+```
+
+## Smart Session
+
+The `@reown/appkit-experimental/smart-session` allows developers to easily integrate session-based permission handling within their dApps. Using the `grantPermissions` method, dApps can send permission requests to connected wallets.
