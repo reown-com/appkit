@@ -374,14 +374,10 @@ async function checkDevelopmentConstants() {
 checkDevelopmentConstants()
 
 // -- Check changesets ------------------------------------------------------------
-async function checkChangesets() {
-  const changesetFiles = created_files
+async function checkChangesetFiles() {
+  const changesetFiles = updated_files
     .filter(f => f.startsWith('.changeset/'))
     .filter(f => f.endsWith('.md') && !f.startsWith('README.md'))
-
-  if (!changesetFiles) {
-    fail('No changeset files were created')
-  }
 
   for (const f of changesetFiles) {
     const fileContent = await danger.github.utils.fileContents(f)
@@ -391,4 +387,4 @@ async function checkChangesets() {
     }
   }
 }
-checkChangesets()
+checkChangesetFiles()
