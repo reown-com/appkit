@@ -1,22 +1,8 @@
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { CaipNetwork } from '@reown/appkit-common'
-import { ConstantsUtil } from '../ConstantsUtil.js'
 import { PresetsUtil } from '../PresetsUtil.js'
 import type { Provider } from './EthersTypesUtil.js'
 
 export const EthersHelpersUtil = {
-  getCaipDefaultChain(chain?: CaipNetwork) {
-    if (!chain) {
-      return undefined
-    }
-
-    return {
-      id: `${ConstantsUtil.EIP155}:${chain.chainId}`,
-      name: chain.name,
-      imageId: PresetsUtil.NetworkImageIds[chain.chainId],
-      chainNamespace: CommonConstantsUtil.CHAIN.EVM
-    } as CaipNetwork
-  },
   hexStringToNumber(value: string) {
     const string = value.startsWith('0x') ? value.slice(2) : value
     const number = parseInt(string, 16)
@@ -54,16 +40,12 @@ export const EthersHelpersUtil = {
       method: 'wallet_addEthereumChain',
       params: [
         {
-          chainId: EthersHelpersUtil.numberToHexString(caipNetwork.chainId),
-          rpcUrls: [caipNetwork.rpcUrl],
+          chainId: EthersHelpersUtil.numberToHexString(caipNetwork.id),
+          rpcUrls: caipNetwork.rpcUrls.default.http,
           chainName: caipNetwork.name,
-          nativeCurrency: {
-            name: caipNetwork.currency,
-            decimals: 18,
-            symbol: caipNetwork.currency
-          },
-          blockExplorerUrls: [caipNetwork.explorerUrl],
-          iconUrls: [PresetsUtil.NetworkImageIds[caipNetwork.chainId]]
+          nativeCurrency: caipNetwork.nativeCurrency,
+          blockExplorerUrls: caipNetwork.blockExplorers,
+          iconUrls: [PresetsUtil.NetworkImageIds[caipNetwork.id]]
         }
       ]
     })

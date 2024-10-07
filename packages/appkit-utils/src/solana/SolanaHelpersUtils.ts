@@ -12,15 +12,19 @@ const NetworkImageIds = {
 
 export const SolHelpersUtil = {
   detectRpcUrl(chain: CaipNetwork, projectId: string) {
-    if (chain.rpcUrl.includes(new URL(CommonConstantsUtil.BLOCKCHAIN_API_RPC_URL).hostname)) {
-      return `${chain.rpcUrl}?chainId=solana:${chain.chainId}&projectId=${projectId}`
+    if (
+      chain.rpcUrls.default.http[0]?.includes(
+        new URL(CommonConstantsUtil.BLOCKCHAIN_API_RPC_URL).hostname
+      )
+    ) {
+      return `${chain.rpcUrls.default.http[0]}?chainId=solana:${chain.id}&projectId=${projectId}`
     }
 
-    return chain.rpcUrl
+    return chain.rpcUrls.default.http[0]
   },
 
   getChain(chains: CaipNetwork[], chainId: string | null) {
-    const chain = chains.find(lChain => lChain.chainId === chainId)
+    const chain = chains.find(lChain => lChain.id === chainId)
 
     if (chain) {
       return chain
@@ -32,7 +36,7 @@ export const SolHelpersUtil = {
   getChainFromCaip(chains: CaipNetwork[], chainCaipId: string | undefined | null = ':') {
     const chainId: string = (chainCaipId?.split(':')[1] ?? '').replace(/\s/gu, '')
 
-    const selectedChain = chains.find(chain => chain.chainId === chainId)
+    const selectedChain = chains.find(chain => chain.id === chainId)
 
     if (selectedChain) {
       return {
@@ -47,19 +51,6 @@ export const SolHelpersUtil = {
       ...SolConstantsUtil.DEFAULT_CHAIN,
       id: `solana:${chainId}`,
       imageId: NetworkImageIds[chainId],
-      chainNamespace: CommonConstantsUtil.CHAIN.SOLANA
-    } as CaipNetwork
-  },
-
-  getCaipDefaultChain(chain?: CaipNetwork) {
-    if (!chain) {
-      return undefined
-    }
-
-    return {
-      id: `solana:${chain.chainId}`,
-      name: chain.name,
-      imageId: NetworkImageIds[chain.chainId],
       chainNamespace: CommonConstantsUtil.CHAIN.SOLANA
     } as CaipNetwork
   },

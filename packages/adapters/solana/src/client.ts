@@ -40,7 +40,7 @@ import {
 } from '@reown/appkit-wallet'
 import { ConstantsUtil as CoreConstantsUtil } from '@reown/appkit-core'
 import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
-import type { AppKit } from '@reown/appkit'
+import type { AppKit, AppKitOptionsWithCaipNetworks } from '@reown/appkit'
 import type { AppKitOptions as CoreOptions } from '@reown/appkit'
 import { ProviderUtil } from '@reown/appkit/store'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
@@ -124,7 +124,7 @@ export class SolanaAdapter implements ChainAdapter {
     )
   }
 
-  public construct(appKit: AppKit, options: CoreOptions) {
+  public construct(appKit: AppKit, options: AppKitOptionsWithCaipNetworks) {
     const { projectId } = options
 
     this.appKit = appKit
@@ -154,7 +154,7 @@ export class SolanaAdapter implements ChainAdapter {
         if (this.provider) {
           return Promise.resolve({
             supportsAllNetworks: false,
-            approvedCaipNetworkIds: this.provider.chains.map(chain => chain.id)
+            approvedCaipNetworkIds: this.provider.chains.map(chain => chain.caipNetworkId)
           })
         }
 
@@ -204,7 +204,7 @@ export class SolanaAdapter implements ChainAdapter {
       },
 
       estimateGas: async params => {
-        if (params.chainNamespace !== 'solana') {
+        if (params.chainNamespace !== CommonConstantsUtil.CHAIN.SOLANA) {
           throw new Error('Chain namespace is not supported')
         }
 
@@ -242,7 +242,7 @@ export class SolanaAdapter implements ChainAdapter {
       grantPermissions: async () => await Promise.resolve('0x'),
 
       sendTransaction: async params => {
-        if (params.chainNamespace !== 'solana') {
+        if (params.chainNamespace !== CommonConstantsUtil.CHAIN.SOLANA) {
           throw new Error('Chain namespace is not supported')
         }
 
@@ -315,9 +315,7 @@ export class SolanaAdapter implements ChainAdapter {
     this.syncRequestedNetworks(this.caipNetworks)
 
     ChainController.subscribeKey('activeCaipNetwork', (newCaipNetwork: CaipNetwork | undefined) => {
-      const newChain = this.caipNetworks.find(
-        _chain => _chain.chainId === newCaipNetwork?.id.split(':')[1]
-      )
+      const newChain = this.caipNetworks.find(_chain => _chain.id === newCaipNetwork?.id)
 
       if (!newChain) {
         return
@@ -364,9 +362,14 @@ export class SolanaAdapter implements ChainAdapter {
     caipNetwork: CaipNetwork | undefined
   }) {
     if (address && caipNetwork) {
-      SolStoreUtil.setConnection(new Connection(caipNetwork.rpcUrl, this.connectionSettings))
+      SolStoreUtil.setConnection(
+        new Connection(caipNetwork.rpcUrls.default.http?.[0] as string, this.connectionSettings)
+      )
       this.appKit?.setAllAccounts([{ address, type: 'eoa' }], this.chainNamespace)
-      this.appKit?.setCaipAddress(`${caipNetwork.id}:${address}` as const, this.chainNamespace)
+      this.appKit?.setCaipAddress(
+        `${this.chainNamespace}:${caipNetwork.id}:${address}`,
+        this.chainNamespace
+      )
       await this.syncNetwork(address)
     } else {
       this.appKit?.resetWcConnection()
@@ -394,7 +397,7 @@ export class SolanaAdapter implements ChainAdapter {
 
     this.appKit?.setBalance(
       balance.toString(),
-      this.appKit?.getCaipNetwork()?.currency,
+      this.appKit?.getCaipNetwork()?.nativeCurrency.symbol,
       this.chainNamespace
     )
   }
@@ -421,16 +424,16 @@ export class SolanaAdapter implements ChainAdapter {
 
     if (isConnectedWithAuth) {
       // If user is connected with auth provider, we need to switch the network on the auth provider and await the get user
-      await this.w3mFrameProvider?.switchNetwork(caipNetwork.id)
+      await this.w3mFrameProvider?.switchNetwork(caipNetwork.caipNetworkId)
       const user = await this.w3mFrameProvider?.getUser({
-        chainId: caipNetwork?.id
+        chainId: caipNetwork?.caipNetworkId
       })
       this.authSession = user
       if (user) {
-        const caipAddress = `solana:${caipNetwork.chainId}:${user.address}` as CaipAddress
+        const caipAddress = `${caipNetwork.caipNetworkId}:${user.address}`
         ProviderUtil.setProvider(this.chainNamespace, this.authProvider)
         ProviderUtil.setProviderId(this.chainNamespace, 'walletConnect')
-        this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
+        this.appKit?.setCaipAddress(caipAddress as CaipAddress, this.chainNamespace)
         this.syncAccount({
           address: user.address,
           caipNetwork
@@ -456,7 +459,9 @@ export class SolanaAdapter implements ChainAdapter {
     }
 
     this.appKit?.setAddressExplorerUrl(
-      caipNetwork.explorerUrl ? `${caipNetwork.explorerUrl}/account/${address}` : undefined,
+      caipNetwork.blockExplorers?.default.url
+        ? `${caipNetwork.blockExplorers.default.url}/account/${address}`
+        : undefined,
       this.chainNamespace
     )
     await this.syncBalance(address)
@@ -466,13 +471,13 @@ export class SolanaAdapter implements ChainAdapter {
     try {
       this.appKit?.setLoading(true)
       const address = await provider.connect()
-      const caipChainId = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
+      const caipNetworkId = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
 
       const connectionChain =
-        provider.chains.find(chain => chain.id === caipChainId) || provider.chains[0]
+        provider.chains.find(chain => chain.caipNetworkId === caipNetworkId) || provider.chains[0]
 
       if (connectionChain) {
-        const caipAddress = `solana:${connectionChain.chainId}:${address}` as const
+        const caipAddress = `${connectionChain.caipNetworkId}:${address}` as const
         this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
 
         await this.switchNetwork(connectionChain)
@@ -624,7 +629,7 @@ export class SolanaAdapter implements ChainAdapter {
       if (emailEnabled || socialsEnabled) {
         this.w3mFrameProvider = W3mFrameProviderSingleton.getInstance({
           projectId: opts.projectId,
-          chainId: withSolanaNamespace(this.appKit?.getCaipNetwork(this.chainNamespace)?.chainId),
+          chainId: withSolanaNamespace(this.appKit?.getCaipNetwork(this.chainNamespace)?.id),
           onTimeout: () => {
             AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION_SOCIALS, 'error')
           }

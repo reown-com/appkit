@@ -44,7 +44,7 @@ siweWalletTest('it should be authenticated', async () => {
 })
 
 siweWalletTest('it should require re-authentication when switching networks', async () => {
-  await modalPage.switchNetwork('ZkSync')
+  await modalPage.switchNetwork('Polygon')
   await modalValidator.expectUnauthenticated()
   await modalPage.promptSiwe()
   await walletPage.handleRequest({ accept: true })

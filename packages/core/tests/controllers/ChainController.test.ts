@@ -16,52 +16,76 @@ const approvedCaipNetworkIds = ['eip155:1', 'eip155:4'] as CaipNetworkId[]
 
 const requestedCaipNetworks = [
   {
-    id: 'eip155:1',
+    id: 1,
+    caipNetworkId: 'eip155:1',
     name: 'Ethereum',
     chainNamespace: ConstantsUtil.CHAIN.EVM,
-    chainId: 1,
-    currency: 'ETH',
-    explorerUrl: 'https://etherscan.io',
-    rpcUrl: 'https://rpc.infura.com/v1/'
+    nativeCurrency: {
+      name: 'Ethereum',
+      symbol: 'ETH',
+      decimals: 18
+    },
+    rpcUrls: {
+      default: { http: ['https://rpc.infura.com/v1/'] }
+    },
+    blockExplorers: {
+      default: { name: 'Etherscan', url: 'https://etherscan.io' }
+    }
   },
   {
-    id: 'eip155:42161',
+    id: 42161,
+    caipNetworkId: 'eip155:42161',
     name: 'Arbitrum One',
     chainNamespace: ConstantsUtil.CHAIN.EVM,
-    chainId: 42161,
-    currency: 'ETH',
-    explorerUrl: 'https://etherscan.io',
-    rpcUrl: 'https://rpc.infura.com/v1/'
+    nativeCurrency: {
+      name: 'Arbitrum',
+      symbol: 'ARB',
+      decimals: 18
+    },
+    rpcUrls: {
+      default: { http: ['https://rpc.infura.com/v1/'] }
+    },
+    blockExplorers: {
+      default: { name: 'Arbitrum Explorer', url: 'https://explorer.arbitrum.io' }
+    }
   },
   {
-    id: 'eip155:43114',
+    id: 43114,
+    caipNetworkId: 'eip155:43114',
     name: 'Avalanche C-Chain',
     chainNamespace: ConstantsUtil.CHAIN.EVM,
-    chainId: 43114,
-    currency: 'ETH',
-    explorerUrl: 'https://etherscan.io',
-    rpcUrl: 'https://rpc.infura.com/v1/'
+    nativeCurrency: {
+      name: 'Avalanche',
+      symbol: 'AVAX',
+      decimals: 18
+    },
+    rpcUrls: {
+      default: { http: ['https://rpc.infura.com/v1/'] }
+    },
+    blockExplorers: {
+      default: { name: 'Avalanche C-Chain', url: 'https://cchain.explorer.avax.network' }
+    }
   }
 ] as CaipNetwork[]
 
 const caipNetwork = {
-  id: 'eip155:1',
+  id: 1,
   name: 'Ethereum',
   chainNamespace: ConstantsUtil.CHAIN.EVM,
-  chainId: 1,
-  currency: 'ETH',
-  explorerUrl: 'https://etherscan.io',
-  rpcUrl: 'https://rpc.infura.com/v1/'
+  caipNetworkId: 'eip155:1',
+  nativeCurrency: { name: 'Ethereum', symbol: 'ETH', decimals: 18 },
+  rpcUrls: { default: { http: ['https://rpc.infura.com/v1/'] } },
+  blockExplorers: { default: { name: 'Etherscan', url: 'https://etherscan.io' } }
 } as const
 
 const solanaCaipNetwork = {
-  id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  id: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  caipNetworkId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
   name: 'Solana',
   chainNamespace: ConstantsUtil.CHAIN.SOLANA,
-  chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-  currency: 'SOL',
-  explorerUrl: 'https://solscan.io',
-  rpcUrl: 'https://rpc.infura.com/v1/'
+  nativeCurrency: { name: 'Solana', symbol: 'SOL', decimals: 9 },
+  rpcUrls: { default: { http: ['https://rpc.infura.com/v1/'] } },
+  blockExplorers: { default: { name: 'Solscan', url: 'https://solscan.io' } }
 } as const
 
 const connectionControllerClient: ConnectionControllerClient = {
@@ -143,7 +167,15 @@ describe('ChainController', () => {
   })
 
   it('should update state correctly on setCaipNetwork()', () => {
-    ChainController.setActiveCaipNetwork(caipNetwork)
+    ChainController.setActiveCaipNetwork({
+      id: 1,
+      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      caipNetworkId: 'eip155:1',
+      name: 'Ethereum',
+      nativeCurrency: { name: 'Ethereum', symbol: 'ETH', decimals: 18 },
+      rpcUrls: { default: { http: ['https://rpc.infura.com/v1/'] } },
+      blockExplorers: { default: { name: 'Etherscan', url: 'https://etherscan.io' } }
+    })
     expect(ChainController.state.activeCaipNetwork).toEqual(caipNetwork)
   })
 
@@ -156,13 +188,13 @@ describe('ChainController', () => {
     ChainController.setSmartAccountEnabledNetworks([2], chainNamespace)
     expect(ChainController.checkIfSmartAccountEnabled()).toEqual(false)
     ChainController.setActiveCaipNetwork({
-      id: 'eip155:2',
-      name: 'Ethereum',
+      id: 2,
       chainNamespace: ConstantsUtil.CHAIN.EVM,
-      chainId: 2,
-      currency: 'ETH',
-      explorerUrl: 'https://etherscan.io',
-      rpcUrl: 'https://rpc.infura.com/v1/'
+      caipNetworkId: 'eip155:2',
+      name: 'Ethereum',
+      nativeCurrency: { name: 'Ethereum', symbol: 'ETH', decimals: 18 },
+      rpcUrls: { default: { http: ['https://rpc.infura.com/v1/'] } },
+      blockExplorers: { default: { name: 'Etherscan', url: 'https://etherscan.io' } }
     })
   })
 

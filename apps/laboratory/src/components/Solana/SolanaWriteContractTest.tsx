@@ -26,7 +26,7 @@ export function SolanaWriteContractTest() {
   async function onIncrementCounter() {
     setLoading(true)
 
-    const PROGRAM_ID = new PublicKey(detectProgramId(caipNetwork?.chainId?.toString() ?? ''))
+    const PROGRAM_ID = new PublicKey(detectProgramId(caipNetwork?.id?.toString() ?? ''))
 
     try {
       if (!walletProvider?.publicKey) {

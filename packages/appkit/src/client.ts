@@ -32,13 +32,12 @@ import {
   ConstantsUtil,
   type CaipNetwork,
   type ChainNamespace,
-  CaipNetworksUtil,
   SafeLocalStorage,
   SafeLocalStorageKeys
 } from '@reown/appkit-common'
 import type { AppKitOptions } from './utils/TypesUtil.js'
 import { UniversalAdapterClient } from './universal-adapter/client.js'
-import { ErrorUtil, PresetsUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, ErrorUtil } from '@reown/appkit-utils'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { ProviderUtil } from './store/ProviderUtil.js'
 
@@ -67,6 +66,10 @@ export class AppKit {
 
   private initPromise?: Promise<void> = undefined
 
+  private caipNetworks: [CaipNetwork, ...CaipNetwork[]]
+
+  private defaultCaipNetwork?: CaipNetwork
+
   public constructor(
     options: AppKitOptions & {
       adapters?: ChainAdapter[]
@@ -76,6 +79,8 @@ export class AppKit {
   ) {
     // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
     this.adapter = options.adapters?.[0] as ChainAdapter
+    this.caipNetworks = this.extendCaipNetworks(options)
+    this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
     this.initControllers(options)
     this.initOrContinue()
     this.version = options.sdkVersion
@@ -106,7 +111,7 @@ export class AppKit {
   }
 
   public getChainId() {
-    return ChainController.state.activeCaipNetwork?.chainId
+    return ChainController.state.activeCaipNetwork?.id
   }
 
   public switchNetwork(caipNetwork: CaipNetwork) {
@@ -302,6 +307,16 @@ export class AppKit {
     return ChainController.state.activeCaipNetwork
   }
 
+  public getCaipNetworkId = <T extends number | string>(): T | undefined => {
+    const network = this.getCaipNetwork()
+
+    if (network) {
+      return network.id as T
+    }
+
+    return undefined
+  }
+
   public getCaipNetworks = (namespace: ChainNamespace) =>
     ChainController.getRequestedCaipNetworks(namespace)
 
@@ -433,10 +448,9 @@ export class AppKit {
     this.adapters = options.adapters
 
     this.setMetadata(options)
-    this.extendCaipNetworks(options)
     this.initializeUniversalAdapter(options)
     this.initializeAdapters(options)
-    this.setDefaultNetwork(options)
+    this.setDefaultNetwork()
 
     OptionsController.setAllWallets(options.allWallets)
     OptionsController.setIncludeWalletIds(options.includeWalletIds)
@@ -497,42 +511,59 @@ export class AppKit {
   }
 
   private extendCaipNetworks(options: AppKitOptions) {
-    options.networks = CaipNetworksUtil.extendCaipNetworks(options.networks, {
-      networkImageIds: PresetsUtil.NetworkImageIds,
+    const extendedNetworks = CaipNetworksUtil.extendCaipNetworks(options.networks, {
       customNetworkImageUrls: options.chainImages,
       projectId: options.projectId
     })
-    options.defaultNetwork = options.networks.find(n => n.id === options.defaultNetwork?.id)
+
+    return extendedNetworks
   }
 
-  private initializeUniversalAdapter(options: AppKitOptions) {
-    this.universalAdapter = new UniversalAdapterClient(options)
-    ChainController.initializeUniversalAdapter(this.universalAdapter, options.adapters || [])
-    this.universalAdapter.construct?.(this, options)
-  }
-
-  private initializeAdapters(options: AppKitOptions) {
-    ChainController.initialize(options.adapters || [])
-    options.adapters?.forEach(adapter => {
-      // @ts-expect-error will introduce construct later
-      adapter.construct?.(this, options)
-    })
-  }
-
-  private setDefaultNetwork(options: AppKitOptions) {
-    const extendedDefaultNetwork = options.defaultNetwork
-      ? CaipNetworksUtil.extendCaipNetwork(options.defaultNetwork, {
-          networkImageIds: PresetsUtil.NetworkImageIds,
+  private extendDefaultCaipNetwork(options: AppKitOptions) {
+    const defaultNetwork = options.networks.find(n => n.id === options.defaultNetwork?.id)
+    const extendedNetwork = defaultNetwork
+      ? CaipNetworksUtil.extendCaipNetwork(defaultNetwork, {
           customNetworkImageUrls: options.chainImages,
           projectId: options.projectId
         })
       : undefined
+
+    return extendedNetwork
+  }
+
+  private initializeUniversalAdapter(options: AppKitOptions) {
+    const extendedOptions = {
+      ...options,
+      networks: this.caipNetworks,
+      defaultNetwork: this.defaultCaipNetwork
+    }
+
+    this.universalAdapter = new UniversalAdapterClient(extendedOptions)
+    ChainController.initializeUniversalAdapter(this.universalAdapter, options.adapters || [])
+    this.universalAdapter.construct?.(this, extendedOptions)
+  }
+
+  private initializeAdapters(options: AppKitOptions) {
+    const extendedOptions = {
+      ...options,
+      networks: this.caipNetworks,
+      defaultNetwork: this.defaultCaipNetwork
+    }
+
+    ChainController.initialize(options.adapters || [])
+    options.adapters?.forEach(adapter => {
+      // @ts-expect-error will introduce construct later
+      adapter.construct?.(this, extendedOptions)
+    })
+  }
+
+  private setDefaultNetwork() {
     const previousNetwork = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
     const caipNetwork = previousNetwork
-      ? options.networks.find(n => n.id === previousNetwork)
+      ? this.caipNetworks.find(n => n.caipNetworkId === previousNetwork)
       : undefined
 
-    const network = caipNetwork ?? extendedDefaultNetwork ?? options.networks[0]
+    const network = caipNetwork || this.defaultCaipNetwork || this.caipNetworks[0]
     ChainController.setActiveCaipNetwork(network)
   }
 

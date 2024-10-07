@@ -38,7 +38,7 @@ export function SolanaTests() {
             </Heading>
             <SolanaSignMessageTest />
           </Box>
-          {caipNetwork?.chainId === solana.chainId && (
+          {caipNetwork?.id === solana.id && (
             <Box>
               <Text fontSize="md" color="yellow">
                 Please be aware that you are connected to the mainnet. Be careful with your
@@ -99,8 +99,7 @@ export function SolanaTests() {
             <SolanaSignJupiterSwapTest />
           </Box>
 
-          {(caipNetwork?.chainId === solanaTestnet.chainId ||
-            caipNetwork?.chainId === solanaDevnet.chainId) && (
+          {(caipNetwork?.id === solanaTestnet.id || caipNetwork?.id === solanaDevnet.id) && (
             <Stack divider={<StackDivider />} spacing="4">
               <Box>
                 <Heading size="xs" textTransform="uppercase" pb="2">
