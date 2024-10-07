@@ -189,31 +189,37 @@ export class W3mModal extends LitElement {
   }
 
   private async onNewAddress(caipAddress?: CaipAddress) {
-    const prevConnected = this.caipAddress
-      ? CoreHelperUtil.getPlainAddress(this.caipAddress)
+    const prevCaipAddress = this.caipAddress
+    const prevConnected = prevCaipAddress
+      ? CoreHelperUtil.getPlainAddress(prevCaipAddress)
       : undefined
     const nextConnected = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
     const isSameAddress = prevConnected === nextConnected
 
-    if (nextConnected && !isSameAddress && this.isSiweEnabled) {
-      const { SIWEController } = await import('@reown/appkit-siwe')
-      const signed = AccountController.state.siweStatus === 'success'
+    this.caipAddress = caipAddress
 
-      if (!prevConnected && nextConnected) {
-        this.onSiweNavigation()
-      } else if (signed && prevConnected && nextConnected && prevConnected !== nextConnected) {
-        if (SIWEController.state._client?.options.signOutOnAccountChange) {
-          await SIWEController.signOut()
+    if (nextConnected && !isSameAddress && this.isSiweEnabled) {
+      try {
+        const { SIWEController } = await import('@reown/appkit-siwe')
+        const signed = AccountController.state.siweStatus === 'success'
+
+        if (!prevConnected && nextConnected) {
           this.onSiweNavigation()
+        } else if (signed && prevConnected && nextConnected && prevConnected !== nextConnected) {
+          if (SIWEController.state._client?.options.signOutOnAccountChange) {
+            await SIWEController.signOut()
+            this.onSiweNavigation()
+          }
         }
+      } catch (err) {
+        this.caipAddress = prevCaipAddress
+        throw err
       }
     }
 
     if (!nextConnected) {
       ModalController.close()
     }
-
-    this.caipAddress = caipAddress
   }
 
   private async onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {
@@ -224,8 +230,8 @@ export class W3mModal extends LitElement {
       return
     }
 
-    const prevCaipNetworkId = this.caipNetwork?.id?.toString()
-    const nextNetworkId = nextCaipNetwork?.id?.toString()
+    const prevCaipNetworkId = this.caipNetwork?.caipNetworkId?.toString()
+    const nextNetworkId = nextCaipNetwork?.caipNetworkId?.toString()
 
     if (prevCaipNetworkId && nextNetworkId && prevCaipNetworkId !== nextNetworkId) {
       if (this.isSiweEnabled) {

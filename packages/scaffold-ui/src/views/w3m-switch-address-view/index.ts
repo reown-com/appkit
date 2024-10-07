@@ -45,14 +45,16 @@ export class W3mSwitchAddressView extends LitElement {
   public override connectedCallback() {
     super.connectedCallback()
     this.allAccounts.forEach(account => {
-      BlockchainApiController.getBalance(account.address, this.caipNetwork?.id).then(response => {
-        let total = this.balances[account.address] || 0
-        if (response.balances.length > 0) {
-          total = response.balances.reduce((acc, balance) => acc + (balance?.value || 0), 0)
+      BlockchainApiController.getBalance(account.address, this.caipNetwork?.caipNetworkId).then(
+        response => {
+          let total = this.balances[account.address] || 0
+          if (response.balances.length > 0) {
+            total = response.balances.reduce((acc, balance) => acc + (balance?.value || 0), 0)
+          }
+          this.balances[account.address] = total
+          this.requestUpdate()
         }
-        this.balances[account.address] = total
-        this.requestUpdate()
-      })
+      )
     })
   }
 
@@ -142,7 +144,7 @@ export class W3mSwitchAddressView extends LitElement {
   private onSwitchAddress(address: string) {
     const caipNetwork = ChainController.state.activeCaipNetwork
     const activeChainNamespace = caipNetwork?.chainNamespace
-    const caipAddress = `${activeChainNamespace}:${caipNetwork?.chainId}:${address}` as CaipAddress
+    const caipAddress = `${activeChainNamespace}:${caipNetwork?.id}:${address}` as CaipAddress
     AccountController.setCaipAddress(caipAddress, activeChainNamespace)
     ModalController.close()
   }

@@ -17,9 +17,13 @@ import { WcHelpersUtil } from '../utils/HelpersUtil.js'
 import type { AppKit } from '../client.js'
 import type { SessionTypes } from '@walletconnect/types'
 import type { CaipNetwork, CaipAddress, ChainNamespace, AdapterType } from '@reown/appkit-common'
-import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
+import {
+  SafeLocalStorage,
+  SafeLocalStorageKeys,
+  ConstantsUtil as CommonConstantsUtil
+} from '@reown/appkit-common'
 import { ProviderUtil } from '../store/index.js'
-import type { AppKitOptions } from '../utils/TypesUtil.js'
+import type { AppKitOptions, AppKitOptionsWithCaipNetworks } from '../utils/TypesUtil.js'
 
 type Metadata = {
   name: string
@@ -54,7 +58,7 @@ export class UniversalAdapterClient {
 
   private appKit: AppKit | undefined = undefined
 
-  public caipNetworks: CaipNetwork[]
+  public caipNetworks: [CaipNetwork, ...CaipNetwork[]]
 
   public walletConnectProvider?: UniversalProvider
 
@@ -63,8 +67,6 @@ export class UniversalAdapterClient {
   public isUniversalAdapterClient = true
 
   public chainNamespace: ChainNamespace
-
-  public defaultNetwork: CaipNetwork | undefined = undefined
 
   public networkControllerClient: NetworkControllerClient
 
@@ -76,26 +78,20 @@ export class UniversalAdapterClient {
 
   public reportErrors = true
 
-  public constructor(options: AppKitOptions) {
+  public constructor(options: AppKitOptionsWithCaipNetworks) {
     const { siweConfig, metadata } = options
 
     this.caipNetworks = options.networks
 
-    this.chainNamespace = 'eip155'
+    this.chainNamespace = CommonConstantsUtil.CHAIN.EVM
 
     this.metadata = metadata
-
-    this.defaultNetwork = options.defaultNetwork || options.networks[0]
 
     this.networkControllerClient = {
       // @ts-expect-error switchCaipNetwork is async for some adapter but not for this adapter
       switchCaipNetwork: caipNetwork => {
         if (caipNetwork) {
-          try {
-            this.switchNetwork(caipNetwork)
-          } catch (error) {
-            throw new Error('networkControllerClient:switchCaipNetwork - unable to switch chain')
-          }
+          this.switchNetwork(caipNetwork)
         }
       },
 
@@ -152,19 +148,19 @@ export class UniversalAdapterClient {
             siweParams &&
             isProviderSupported &&
             isSiweParamsValid &&
-            ChainController.state.activeChain === 'eip155'
+            ChainController.state.activeChain === CommonConstantsUtil.CHAIN.EVM
           ) {
             const { SIWEController, getDidChainId, getDidAddress } = await import(
               '@reown/appkit-siwe'
             )
 
             const chains = this.caipNetworks
-              ?.filter(network => network.chainNamespace === 'eip155')
-              .map(chain => chain.id) as string[]
+              ?.filter(network => network.chainNamespace === CommonConstantsUtil.CHAIN.EVM)
+              .map(chain => chain.caipNetworkId) as string[]
 
             siweParams.chains = this.caipNetworks
-              ?.filter(network => network.chainNamespace === 'eip155')
-              .map(chain => chain.chainId) as number[]
+              ?.filter(network => network.chainNamespace === CommonConstantsUtil.CHAIN.EVM)
+              .map(chain => chain.id) as number[]
 
             const result = await WalletConnectProvider.authenticate({
               nonce: await siweConfig?.getNonce?.(),
@@ -226,8 +222,8 @@ export class UniversalAdapterClient {
 
         await this.walletConnectProvider?.disconnect()
 
-        this.appKit?.resetAccount('eip155')
-        this.appKit?.resetAccount('solana')
+        this.appKit?.resetAccount(CommonConstantsUtil.CHAIN.EVM)
+        this.appKit?.resetAccount(CommonConstantsUtil.CHAIN.SOLANA)
       },
 
       signMessage: async (message: string) => {
@@ -269,7 +265,7 @@ export class UniversalAdapterClient {
   }
 
   // -- Public ------------------------------------------------------------------
-  public construct(appkit: AppKit, options: AppKitOptions) {
+  public construct(appkit: AppKit, options: AppKitOptionsWithCaipNetworks) {
     this.appKit = appkit
     this.options = options
 
@@ -281,7 +277,7 @@ export class UniversalAdapterClient {
   public switchNetwork(caipNetwork: CaipNetwork) {
     if (caipNetwork) {
       if (this.walletConnectProvider) {
-        this.walletConnectProvider.setDefaultChain(caipNetwork.id)
+        this.walletConnectProvider.setDefaultChain(caipNetwork.caipNetworkId)
       }
     }
   }
@@ -289,8 +285,8 @@ export class UniversalAdapterClient {
   public async disconnect() {
     if (this.walletConnectProvider) {
       await (this.walletConnectProvider as unknown as UniversalProvider).disconnect()
-      this.appKit?.resetAccount('eip155')
-      this.appKit?.resetAccount('solana')
+      this.appKit?.resetAccount(CommonConstantsUtil.CHAIN.EVM)
+      this.appKit?.resetAccount(CommonConstantsUtil.CHAIN.SOLANA)
     }
   }
 
@@ -352,7 +348,7 @@ export class UniversalAdapterClient {
     await this.checkActiveWalletConnectProvider()
   }
 
-  private syncRequestedNetworks(caipNetworks: AppKitOptions['networks']) {
+  private syncRequestedNetworks(caipNetworks: CaipNetwork[]) {
     const uniqueChainNamespaces = [
       ...new Set(caipNetworks.map(caipNetwork => caipNetwork.chainNamespace))
     ]
@@ -406,7 +402,7 @@ export class UniversalAdapterClient {
           ChainController.setActiveCaipNetwork(storedCaipNetwork)
         } else if (
           !activeCaipNetwork ||
-          !ChainController.getAllApprovedCaipNetworkIds().includes(activeCaipNetwork.id)
+          !ChainController.getAllApprovedCaipNetworkIds().includes(activeCaipNetwork.caipNetworkId)
         ) {
           this.setDefaultNetwork(nameSpaces)
         }
@@ -431,7 +427,7 @@ export class UniversalAdapterClient {
           const requestedCaipNetworks = ChainController.getRequestedCaipNetworks(chainNamespace)
 
           if (requestedCaipNetworks) {
-            const network = requestedCaipNetworks.find(c => c.id === chainId)
+            const network = requestedCaipNetworks.find(c => c.caipNetworkId === chainId)
 
             if (network) {
               ChainController.setActiveCaipNetwork(network as unknown as CaipNetwork)
@@ -466,18 +462,26 @@ export class UniversalAdapterClient {
 
     const chainChanged = (chainId: number | string) => {
       // eslint-disable-next-line eqeqeq
-      const caipNetwork = this.caipNetworks.find(c => c.chainId == chainId)
+      const caipNetwork = this.caipNetworks.find(c => c.id == chainId)
       const currentCaipNetwork = this.appKit?.getCaipNetwork()
 
       if (!caipNetwork) {
+        const namespace = this.appKit?.getActiveChainNamespace() || CommonConstantsUtil.CHAIN.EVM
         ChainController.setActiveCaipNetwork({
-          chainId: Number(chainId),
-          id: `eip155:${chainId}`,
+          id: chainId,
+          caipNetworkId: `${namespace}:${chainId}`,
           name: 'Unknown Network',
-          currency: '',
-          explorerUrl: '',
-          rpcUrl: '',
-          chainNamespace: this.appKit?.getActiveChainNamespace() || 'eip155'
+          chainNamespace: namespace,
+          nativeCurrency: {
+            name: '',
+            decimals: 0,
+            symbol: ''
+          },
+          rpcUrls: {
+            default: {
+              http: []
+            }
+          }
         })
 
         return
@@ -581,8 +585,14 @@ export class UniversalAdapterClient {
           chainNamespace
         )
       } else if (currentActiveWallet) {
-        this.appKit?.setConnectedWalletInfo({ name: currentActiveWallet }, 'eip155')
-        this.appKit?.setConnectedWalletInfo({ name: currentActiveWallet }, 'solana')
+        this.appKit?.setConnectedWalletInfo(
+          { name: currentActiveWallet },
+          CommonConstantsUtil.CHAIN.EVM
+        )
+        this.appKit?.setConnectedWalletInfo(
+          { name: currentActiveWallet },
+          CommonConstantsUtil.CHAIN.SOLANA
+        )
       }
     })
   }

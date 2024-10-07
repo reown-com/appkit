@@ -8,22 +8,48 @@ import type { Provider } from '../src/solana/SolanaTypesUtil.js'
 describe('SolHelpersUtil', () => {
   const mockChains: CaipNetwork[] = [
     {
-      id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      id: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       name: 'Solana Mainnet',
-      chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      caipNetworkId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       chainNamespace: CommonConstantsUtil.CHAIN.SOLANA,
-      rpcUrl: 'https://api.mainnet-beta.solana.com',
-      currency: 'SOL',
-      explorerUrl: ''
+      rpcUrls: {
+        default: {
+          http: ['https://api.mainnet-beta.solana.com']
+        }
+      },
+      nativeCurrency: {
+        name: 'Solana',
+        decimals: 9,
+        symbol: 'SOL'
+      },
+      blockExplorers: {
+        default: {
+          name: 'Solscan',
+          url: 'https://solscan.io'
+        }
+      }
     },
     {
-      id: 'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
+      id: '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
       name: 'Solana Testnet',
-      chainId: '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
+      caipNetworkId: 'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
       chainNamespace: CommonConstantsUtil.CHAIN.SOLANA,
-      rpcUrl: 'https://api.testnet.solana.com',
-      currency: 'SOL',
-      explorerUrl: ''
+      rpcUrls: {
+        default: {
+          http: ['https://api.testnet.solana.com']
+        }
+      },
+      nativeCurrency: {
+        name: 'Solana',
+        decimals: 9,
+        symbol: 'SOL'
+      },
+      blockExplorers: {
+        default: {
+          name: 'Solscan',
+          url: 'https://solscan.io'
+        }
+      }
     }
   ]
 
@@ -35,14 +61,14 @@ describe('SolHelpersUtil', () => {
       } as CaipNetwork
       const projectId = 'test-project-id'
       const result = SolHelpersUtil.detectRpcUrl(chain, projectId)
-      expect(result).toBe(chain.rpcUrl)
+      expect(result).toBe(chain.rpcUrls.default.http[0])
     })
 
     it('should return original RPC URL for non-blockchain API URLs', () => {
       const chain = mockChains[0]
       const projectId = 'test-project-id'
       const result = SolHelpersUtil.detectRpcUrl(chain!, projectId)
-      expect(result).toBe(chain?.rpcUrl)
+      expect(result).toBe(chain?.rpcUrls.default.http[0])
     })
   })
 
@@ -78,23 +104,6 @@ describe('SolHelpersUtil', () => {
         ...SolConstantsUtil.DEFAULT_CHAIN,
         id: 'solana:chain',
         imageId: undefined,
-        chainNamespace: CommonConstantsUtil.CHAIN.SOLANA
-      })
-    })
-  })
-
-  describe('getCaipDefaultChain', () => {
-    it('should return undefined for undefined input', () => {
-      const result = SolHelpersUtil.getCaipDefaultChain(undefined)
-      expect(result).toBeUndefined()
-    })
-
-    it('should convert chain to CAIP format', () => {
-      const result = SolHelpersUtil.getCaipDefaultChain(mockChains[0])
-      expect(result).toEqual({
-        id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        name: 'Solana Mainnet',
-        imageId: 'a1b58899-f671-4276-6a5e-56ca5bd59700',
         chainNamespace: CommonConstantsUtil.CHAIN.SOLANA
       })
     })

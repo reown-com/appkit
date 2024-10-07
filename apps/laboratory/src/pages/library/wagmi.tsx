@@ -18,7 +18,7 @@ const wagmiAdapter = new WagmiAdapter({
 
 const modal = createAppKit({
   adapters: [wagmiAdapter],
-  networks: ConstantsUtil.EvmNetworks,
+  networks: wagmiAdapter.caipNetworks,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,

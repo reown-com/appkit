@@ -6,7 +6,6 @@ import { AccountController } from './AccountController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { RouterController } from './RouterController.js'
 import { ConnectionController } from './ConnectionController.js'
-import { NetworkUtil } from '@reown/appkit-common'
 import { EnsUtil } from '../utils/EnsUtil.js'
 import { ChainController } from './ChainController.js'
 
@@ -129,7 +128,7 @@ export const EnsController = {
       })
 
       const signature = await ConnectionController.signMessage(message)
-      const networkId = NetworkUtil.caipNetworkIdToNumber(network.id)
+      const networkId = network.id
 
       if (!networkId) {
         throw new Error('Network not found')
