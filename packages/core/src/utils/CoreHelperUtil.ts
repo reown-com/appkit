@@ -141,7 +141,7 @@ export const CoreHelperUtil = {
   },
   openHref(
     href: string,
-    target: '_blank' | '_self' | 'popupWindow',
+    target: '_top' | '_blank' | '_self' | 'popupWindow',
     features = 'noreferrer noopener',
     forceTarget = false
   ) {
@@ -150,7 +150,7 @@ export const CoreHelperUtil = {
 
   returnOpenHref(
     href: string,
-    target: '_blank' | '_self' | 'popupWindow',
+    target: '_top' | '_blank' | '_self' | 'popupWindow',
     features = 'noreferrer noopener',
     forceTarget = false
   ) {
