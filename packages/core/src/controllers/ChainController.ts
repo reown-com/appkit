@@ -73,6 +73,12 @@ const state = proxy<ChainControllerState>({
 export const ChainController = {
   state,
 
+  subscribe(callback: (value: ChainControllerState) => void) {
+    return sub(state, () => {
+      callback(state)
+    })
+  },
+
   subscribeKey<K extends ChainControllerStateKey>(
     key: K,
     callback: (value: ChainControllerState[K]) => void
@@ -224,10 +230,13 @@ export const ChainController = {
     if (caipNetwork?.id) {
       state.activeCaipAddress = newAdapter?.accountState?.caipAddress
       state.activeCaipNetwork = caipNetwork
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetwork?.id)
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID,
+        caipNetwork?.caipNetworkId
+      )
       PublicStateController.set({
         activeChain: chain,
-        selectedNetworkId: caipNetwork?.id
+        selectedNetworkId: caipNetwork?.caipNetworkId
       })
     }
   },
@@ -248,9 +257,9 @@ export const ChainController = {
 
     PublicStateController.set({
       activeChain: state.activeChain,
-      selectedNetworkId: state.activeCaipNetwork?.id
+      selectedNetworkId: state.activeCaipNetwork?.caipNetworkId
     })
-    SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetwork.id)
+    SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetwork.caipNetworkId)
 
     const isSupported = this.checkIfSupportedNetwork(caipNetwork.chainNamespace)
 
@@ -272,7 +281,7 @@ export const ChainController = {
       EventsController.sendEvent({
         type: 'track',
         event: 'SWITCH_NETWORK',
-        properties: { network: network.id }
+        properties: { network: network.caipNetworkId }
       })
     }
   },
@@ -424,6 +433,14 @@ export const ChainController = {
     return approvedCaipNetworkIds
   },
 
+  getActiveCaipNetwork() {
+    return state.activeCaipNetwork
+  },
+
+  getActiveCaipAddress() {
+    return state.activeCaipAddress
+  },
+
   getApprovedCaipNetworkIds(namespace: ChainNamespace): CaipNetworkId[] {
     const adapter = state.chains.get(namespace)
     const approvedCaipNetworkIds = adapter?.networkState?.approvedCaipNetworkIds || []
@@ -457,7 +474,7 @@ export const ChainController = {
   },
 
   checkIfSmartAccountEnabled() {
-    const networkId = NetworkUtil.caipNetworkIdToNumber(state.activeCaipNetwork?.id)
+    const networkId = NetworkUtil.caipNetworkIdToNumber(state.activeCaipNetwork?.caipNetworkId)
     const activeChain = this.state.activeChain
 
     if (!activeChain || !networkId) {
@@ -474,7 +491,7 @@ export const ChainController = {
 
   getActiveNetworkTokenAddress() {
     const namespace = this.state.activeCaipNetwork?.chainNamespace || 'eip155'
-    const chainId = this.state.activeCaipNetwork?.chainId || 1
+    const chainId = this.state.activeCaipNetwork?.id || 1
     const address = ConstantsUtil.NATIVE_TOKEN_ADDRESS[namespace]
 
     return `${namespace}:${chainId}:${address}`

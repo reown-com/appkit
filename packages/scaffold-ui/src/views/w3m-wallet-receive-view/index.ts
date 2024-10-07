@@ -124,7 +124,7 @@ export class W3mWalletReceiveView extends LitElement {
       ></wui-compatible-network>`
     }
     const slicedNetworks = requestedCaipNetworks
-      ?.filter(network => (caipNetwork?.id === network.id ? network?.imageId : null))
+      ?.filter(network => network?.assets?.imageId)
       ?.slice(0, 5)
     const imagesArray = slicedNetworks.map(AssetUtil.getNetworkImage).filter(Boolean) as string[]
 

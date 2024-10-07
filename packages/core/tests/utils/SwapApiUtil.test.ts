@@ -16,23 +16,37 @@ vi.mock('../../src/controllers/AccountController')
 vi.mock('../../src/controllers/ChainController')
 
 const mockSolanaNetwork = {
-  id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  id: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  caipNetworkId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
   chainNamespace: 'solana',
-  chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
   name: 'Solana',
-  explorerUrl: 'https://explorer.solana.com',
-  rpcUrl: 'https://api.mainnet-beta.solana.com',
-  currency: 'SOL'
+  nativeCurrency: {
+    name: 'Solana',
+    decimals: 9,
+    symbol: 'SOL'
+  },
+  rpcUrls: {
+    default: {
+      http: ['https://api.mainnet-beta.solana.com']
+    }
+  }
 } as const
 
 const mockEthereumNetwork = {
-  id: 'eip155:1',
+  id: '1',
   chainNamespace: 'eip155',
-  chainId: '1',
+  caipNetworkId: 'eip155:1',
   name: 'Ethereum',
-  explorerUrl: 'https://etherscan.io',
-  rpcUrl: 'https://mainnet.infura.io/v3/YOUR-PROJECT-ID',
-  currency: 'ETH'
+  nativeCurrency: {
+    name: 'Ethereum',
+    decimals: 18,
+    symbol: 'ETH'
+  },
+  rpcUrls: {
+    default: {
+      http: ['https://mainnet.infura.io/v3/YOUR-PROJECT-ID']
+    }
+  }
 } as const
 
 describe('SwapApiUtil', () => {
@@ -104,13 +118,20 @@ describe('SwapApiUtil', () => {
     })
     it('should return null if there is an error', async () => {
       ChainController.state.activeCaipNetwork = {
-        id: 'eip155:1',
+        id: 1,
         chainNamespace: 'eip155',
-        chainId: '1',
+        caipNetworkId: 'eip155:1',
         name: 'Ethereum',
-        currency: 'ETH',
-        explorerUrl: 'https://etherscan.io',
-        rpcUrl: 'https://mainnet.infura.io/v3/YOUR-PROJECT-ID'
+        nativeCurrency: {
+          name: 'Ethereum',
+          decimals: 18,
+          symbol: 'ETH'
+        },
+        rpcUrls: {
+          default: {
+            http: ['https://mainnet.infura.io/v3/YOUR-PROJECT-ID']
+          }
+        }
       }
       BlockchainApiController.fetchGasPrice = vi.fn().mockRejectedValue(new Error('API Error'))
 

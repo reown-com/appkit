@@ -289,7 +289,8 @@ describe('TransactionsController', () => {
 
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       activeCaipNetwork: {
-        id: 'eip155:1'
+        id: 1,
+        caipNetworkId: 'eip155:1'
       }
     } as any)
 

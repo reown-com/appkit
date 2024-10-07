@@ -44,12 +44,12 @@ export const AssetUtil = {
   },
 
   getNetworkImage(network?: CaipNetwork) {
-    if (network?.imageUrl) {
-      return network?.imageUrl
+    if (network?.assets?.imageUrl) {
+      return network?.assets?.imageUrl
     }
 
-    if (network?.imageId) {
-      return AssetController.state.networkImages[network.imageId]
+    if (network?.assets?.imageId) {
+      return AssetController.state.networkImages[network.assets.imageId]
     }
 
     return undefined

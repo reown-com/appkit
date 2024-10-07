@@ -41,7 +41,7 @@ export class CoinbaseWalletProvider extends ProviderEventEmitter implements Prov
 
   public get chains() {
     // For Coinbase Wallet, we only support the Solana mainnet
-    return this.requestedChains.filter(chain => chain.chainId === solana.chainId)
+    return this.requestedChains.filter(chain => chain.id === solana.id)
   }
 
   public get publicKey() {
