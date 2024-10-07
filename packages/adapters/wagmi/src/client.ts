@@ -113,8 +113,6 @@ export class WagmiAdapter implements ChainAdapter {
   // -- Private variables -------------------------------------------------------
   private appKit: AppKit | undefined = undefined
 
-  private createConfigParams?: Partial<CreateConfigParameters>
-
   // -- Public variables --------------------------------------------------------
   public options: AppKitOptions | undefined = undefined
 
@@ -168,10 +166,10 @@ export class WagmiAdapter implements ChainAdapter {
     const connectors: CreateConnectorFn[] = [...(configParams.connectors ?? [])]
 
     this.wagmiConfig = createConfig({
-      ...this.createConfigParams,
+      ...configParams,
       chains: this.wagmiChains,
       transports,
-      connectors: [...connectors, ...(this.createConfigParams?.connectors ?? [])]
+      connectors: [...connectors, ...(configParams?.connectors ?? [])]
     })
   }
 
@@ -258,7 +256,7 @@ export class WagmiAdapter implements ChainAdapter {
             )
             resolve(getWalletConnectCaipNetworks(connector))
           }
-          resolve({ approvedCaipNetworkIds: undefined, supportsAllNetworks: true })
+          resolve({ approvedCaipNetworkIds: [], supportsAllNetworks: true })
         })
       }
     }
@@ -604,7 +602,7 @@ export class WagmiAdapter implements ChainAdapter {
     if (status === 'disconnected') {
       this.appKit?.resetAccount(this.chainNamespace)
       this.appKit?.resetWcConnection()
-      this.appKit?.resetNetwork()
+      this.appKit?.resetNetwork(this.chainNamespace)
       this.appKit?.setAllAccounts([], this.chainNamespace)
       SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
       if (isAuthConnector) {

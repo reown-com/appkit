@@ -1,5 +1,52 @@
 # @reown/appkit-ui
 
+## 1.0.7
+
+### Patch Changes
+
+- [#2977](https://github.com/reown-com/appkit/pull/2977) [`d45545d`](https://github.com/reown-com/appkit/commit/d45545ddd4073c35214db273b090ae8b4df9ef61) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where email line separator was not showing when social logins were disabled and `emailShowWallets` was set to false.
+
+- [#2990](https://github.com/reown-com/appkit/pull/2990) [`c2e391d`](https://github.com/reown-com/appkit/commit/c2e391d832aa3b5a1c2850cc49467bd4ef1e56f9) Thanks [@zoruka](https://github.com/zoruka)! - Fixes external connectors not appearing when using Solana adapter
+
+- [#2998](https://github.com/reown-com/appkit/pull/2998) [`e1081e9`](https://github.com/reown-com/appkit/commit/e1081e957b3ed73c068d6092923b59b0e27815d1) Thanks [@zoruka](https://github.com/zoruka)! - Fixes failing to connect with extension wallets on Solana Adapter
+
+- [#2985](https://github.com/reown-com/appkit/pull/2985) [`b949143`](https://github.com/reown-com/appkit/commit/b949143a0838810f7ae17a85e4c17acae10b888c) Thanks [@enesozturk](https://github.com/enesozturk)! - Updates wagmi adapter to pass all custom wagmi configs to the createConfig function
+
+- [#3001](https://github.com/reown-com/appkit/pull/3001) [`6ad2530`](https://github.com/reown-com/appkit/commit/6ad253000261e60ddc0f60b341a658da6636bd3e) Thanks [@tomiir](https://github.com/tomiir)! - Adds FRAME_READY event for W3mFrameProvider
+
+- [#2989](https://github.com/reown-com/appkit/pull/2989) [`d40f978`](https://github.com/reown-com/appkit/commit/d40f978fe685fbc9599cdac36a99b12ec4350d3c) Thanks [@zoruka](https://github.com/zoruka)! - Disable names feature flow for Solana networks
+
+## 1.0.6
+
+### Patch Changes
+
+- [#2970](https://github.com/reown-com/appkit/pull/2970) [`e6a36a7`](https://github.com/reown-com/appkit/commit/e6a36a746e85ced1f89fc1d7227e25df1559f063) Thanks [@magiziz](https://github.com/magiziz)! - Introducing debug mode. This is useful for seeing UI alerts while debugging.
+
+  **Example usage**
+
+  ```ts
+  import { createAppKit } from '@reown/appkit/react'
+  import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+  import { mainnet } from '@reown/appkit/networks'
+
+  const wagmiAdapter = new WagmiAdapter({
+    ssr: true,
+    networks: [mainnet],
+    projectId: 'YOUR_PROJECT_ID'
+  })
+
+  const modal = createAppKit({
+    adapters: [wagmiAdapter],
+    networks: [mainnet],
+    projectId: 'YOUR_PROJECT_ID',
+    debug: true // Optional - defaults to false
+  })
+  ```
+
+- [#2984](https://github.com/reown-com/appkit/pull/2984) [`b5444bd`](https://github.com/reown-com/appkit/commit/b5444bdd454d370cf3f17267d457cd46de10a5b9) Thanks [@magiziz](https://github.com/magiziz)! - Changed logger imports to not cause the webpack bundler to throw a CommonJS module error.
+
+- [#2974](https://github.com/reown-com/appkit/pull/2974) [`0563711`](https://github.com/reown-com/appkit/commit/05637111aba940af5f46215336268294675322fd) Thanks [@magiziz](https://github.com/magiziz)! - Added create wallet flow in connect modal
+
 ## 1.0.5
 
 ### Patch Changes

@@ -1,7 +1,7 @@
 import {
   AssetUtil,
+  ChainController,
   ConnectorController,
-  NetworkController,
   RouterController,
   StorageUtil
 } from '@reown/appkit-core'
@@ -131,7 +131,7 @@ export class W3mNetworkSwitchView extends LitElement {
     try {
       this.error = false
       if (this.network) {
-        await NetworkController.switchActiveNetwork(this.network)
+        await ChainController.switchActiveNetwork(this.network)
       }
     } catch {
       this.error = true

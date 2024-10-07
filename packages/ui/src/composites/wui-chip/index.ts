@@ -4,7 +4,7 @@ import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { ChipType, IconType } from '../../utils/TypeUtil.js'
+import type { ChipType, IconType, SizeType } from '../../utils/TypeUtil.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
@@ -17,6 +17,10 @@ export class WuiChip extends LitElement {
   @property() public variant: ChipType = 'fill'
 
   @property() public imageSrc?: string = undefined
+
+  @property() public imageIcon?: IconType = undefined
+
+  @property() public imageIconSize: SizeType = 'md'
 
   @property({ type: Boolean }) public disabled = false
 
@@ -53,6 +57,15 @@ export class WuiChip extends LitElement {
   private imageTemplate() {
     if (this.imageSrc) {
       return html`<wui-image src=${this.imageSrc}></wui-image>`
+    }
+
+    if (this.imageIcon) {
+      return html`<wui-icon
+        name=${this.imageIcon}
+        color="inherit"
+        size=${this.imageIconSize}
+        class="image-icon"
+      ></wui-icon>`
     }
 
     return null

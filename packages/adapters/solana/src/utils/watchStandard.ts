@@ -3,57 +3,50 @@ import { WalletStandardProvider } from '../providers/WalletStandardProvider.js'
 import { isWalletAdapterCompatibleStandardWallet } from '@solana/wallet-adapter-base'
 import type { Wallet } from '@wallet-standard/base'
 
-import type { AppKit } from '@reown/appkit'
 import type { CaipNetwork } from '@reown/appkit-common'
 
 const { get, on } = getWallets()
-let standardAdapters: WalletStandardProvider[] = wrapWalletsWithAdapters(get())
+let standardAdapters: WalletStandardProvider[] = []
 
 export function watchStandard(
-  appKit: AppKit,
-  caipNetwork: CaipNetwork,
-  callback: (arg: WalletStandardProvider[]) => void
+  requestedChains: CaipNetwork[],
+  getActiveChain: () => CaipNetwork | undefined,
+  callback: (...arg: WalletStandardProvider[]) => void
 ) {
   const listeners = [
     on('register', (...wallets) => {
-      if (!standardAdapters || standardAdapters.length === 0) {
-        standardAdapters = [...wrapWalletsWithAdapters(wallets, appKit, caipNetwork)]
-      } else {
-        standardAdapters = [
-          ...standardAdapters,
-          ...wrapWalletsWithAdapters(wallets, appKit, caipNetwork)
-        ]
-      }
-      callback(standardAdapters)
+      standardAdapters = [
+        ...standardAdapters,
+        ...wrapWalletsWithAdapters(wallets, requestedChains, getActiveChain)
+      ]
+      callback(...standardAdapters)
     }),
     on('unregister', (...wallets) => {
       standardAdapters = standardAdapters.filter(standardAdapter =>
         wallets.some(wallet => wallet.name === standardAdapter.wallet.name)
       )
-      callback(standardAdapters)
+      callback(...standardAdapters)
     })
   ]
 
-  standardAdapters = wrapWalletsWithAdapters(get(), appKit, caipNetwork)
-  callback(standardAdapters)
+  standardAdapters = wrapWalletsWithAdapters(get(), requestedChains, getActiveChain)
+
+  callback(...standardAdapters)
 
   return () => listeners.forEach(off => off())
 }
 
 function wrapWalletsWithAdapters(
   wallets: readonly Wallet[],
-  appKit?: AppKit,
-  caipNetwork?: CaipNetwork
+  requestedChains: CaipNetwork[],
+  getActiveChain: () => CaipNetwork | undefined
 ): WalletStandardProvider[] {
-  if (appKit?.getCaipNetwork() || caipNetwork) {
-    return wallets.filter(isWalletAdapterCompatibleStandardWallet).map(
-      wallet =>
-        new WalletStandardProvider({
-          wallet,
-          getActiveChain: () => appKit?.getCaipNetwork() ?? caipNetwork
-        })
-    )
-  }
-
-  return []
+  return wallets.filter(isWalletAdapterCompatibleStandardWallet).map(
+    wallet =>
+      new WalletStandardProvider({
+        wallet,
+        requestedChains,
+        getActiveChain
+      })
+  )
 }

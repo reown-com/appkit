@@ -1,5 +1,40 @@
 # @examples/html-wagmi
 
+## 1.0.6
+
+### Patch Changes
+
+- [#2970](https://github.com/reown-com/appkit/pull/2970) [`e6a36a7`](https://github.com/reown-com/appkit/commit/e6a36a746e85ced1f89fc1d7227e25df1559f063) Thanks [@magiziz](https://github.com/magiziz)! - Introducing debug mode. This is useful for seeing UI alerts while debugging.
+
+  **Example usage**
+
+  ```ts
+  import { createAppKit } from '@reown/appkit/react'
+  import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+  import { mainnet } from '@reown/appkit/networks'
+
+  const wagmiAdapter = new WagmiAdapter({
+    ssr: true,
+    networks: [mainnet],
+    projectId: 'YOUR_PROJECT_ID'
+  })
+
+  const modal = createAppKit({
+    adapters: [wagmiAdapter],
+    networks: [mainnet],
+    projectId: 'YOUR_PROJECT_ID',
+    debug: true // Optional - defaults to false
+  })
+  ```
+
+- [#2984](https://github.com/reown-com/appkit/pull/2984) [`b5444bd`](https://github.com/reown-com/appkit/commit/b5444bdd454d370cf3f17267d457cd46de10a5b9) Thanks [@magiziz](https://github.com/magiziz)! - Changed logger imports to not cause the webpack bundler to throw a CommonJS module error.
+
+- [#2974](https://github.com/reown-com/appkit/pull/2974) [`0563711`](https://github.com/reown-com/appkit/commit/05637111aba940af5f46215336268294675322fd) Thanks [@magiziz](https://github.com/magiziz)! - Added create wallet flow in connect modal
+
+- Updated dependencies [[`e6a36a7`](https://github.com/reown-com/appkit/commit/e6a36a746e85ced1f89fc1d7227e25df1559f063), [`b5444bd`](https://github.com/reown-com/appkit/commit/b5444bdd454d370cf3f17267d457cd46de10a5b9), [`0563711`](https://github.com/reown-com/appkit/commit/05637111aba940af5f46215336268294675322fd)]:
+  - @reown/appkit-adapter-wagmi@1.0.6
+  - @reown/appkit@1.0.6
+
 ## 1.0.5
 
 ### Patch Changes

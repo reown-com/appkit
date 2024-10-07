@@ -1,4 +1,5 @@
 ---
+'@reown/appkit': patch
 '@apps/demo': patch
 '@apps/gallery': patch
 '@apps/laboratory': patch
@@ -7,6 +8,8 @@
 '@examples/html-wagmi': patch
 '@examples/next-ethers': patch
 '@examples/next-wagmi': patch
+'@examples/next-wagmi-app-router': patch
+'@examples/next-wagmi-pages-router': patch
 '@examples/react-ethers': patch
 '@examples/react-ethers5': patch
 '@examples/react-solana': patch
@@ -19,7 +22,6 @@
 '@reown/appkit-adapter-polkadot': patch
 '@reown/appkit-adapter-solana': patch
 '@reown/appkit-adapter-wagmi': patch
-'@reown/appkit': patch
 '@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-common': patch
@@ -35,25 +37,4 @@
 '@reown/appkit-wallet': patch
 ---
 
-Introducing debug mode. This is useful for seeing UI alerts while debugging.
-
-**Example usage**
-
-```ts
-import { createAppKit } from '@reown/appkit/react'
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { mainnet } from '@reown/appkit/networks'
-
-const wagmiAdapter = new WagmiAdapter({
-  ssr: true,
-  networks: [mainnet],
-  projectId: 'YOUR_PROJECT_ID'
-})
-
-const modal = createAppKit({
-  adapters: [wagmiAdapter],
-  networks: [mainnet],
-  projectId: 'YOUR_PROJECT_ID',
-  debug: true // Optional - defaults to false
-})
-```
+Exposes version in AppKit class

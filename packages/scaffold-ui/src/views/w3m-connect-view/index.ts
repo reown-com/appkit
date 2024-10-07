@@ -6,9 +6,11 @@ import {
   ConnectorController,
   CoreHelperUtil,
   OptionsController,
-  RouterController
+  RouterController,
+  type WalletGuideType
 } from '@reown/appkit-core'
 import { state } from 'lit/decorators/state.js'
+import { property } from 'lit/decorators.js'
 
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
@@ -23,6 +25,8 @@ export class W3mConnectView extends LitElement {
   @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
 
   @state() private features = OptionsController.state.features
+
+  @property() private walletGuide: WalletGuideType = 'get-started'
 
   public constructor() {
     super()
@@ -41,12 +45,24 @@ export class W3mConnectView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const socials = this.features?.socials
+    const enableWallets = OptionsController.state.enableWallets
+
+    const socialsExist = socials && socials.length
+    const socialOrEmailLoginEnabled = socialsExist || this.authConnector
+
     return html`
-      <wui-flex flexDirection="column" .padding=${['3xs', 's', 's', 's']}>
-        <w3m-email-login-widget></w3m-email-login-widget>
+      <wui-flex
+        flexDirection="column"
+        .padding=${socialOrEmailLoginEnabled && enableWallets && this.walletGuide === 'get-started'
+          ? ['3xs', 's', '0', 's']
+          : ['3xs', 's', 's', 's']}
+      >
+        <w3m-email-login-widget walletGuide=${this.walletGuide}></w3m-email-login-widget>
         <w3m-social-login-widget></w3m-social-login-widget>
         ${this.walletListTemplate()}
       </wui-flex>
+      ${this.guideTemplate()}
       <w3m-legal-footer></w3m-legal-footer>
     `
   }
@@ -63,6 +79,10 @@ export class W3mConnectView extends LitElement {
     // In tg ios context, we have to preload the connection uri so we can use it to deeplink on user click
     if (CoreHelperUtil.isTelegram() && CoreHelperUtil.isIos()) {
       ConnectionController.connectWalletConnect().catch(_e => ({}))
+    }
+
+    if (this.walletGuide === 'explore') {
+      return null
     }
 
     if (this.authConnector && socials) {
@@ -84,6 +104,35 @@ export class W3mConnectView extends LitElement {
     }
 
     return html`<w3m-wallet-login-list></w3m-wallet-login-list>`
+  }
+
+  private guideTemplate() {
+    const socials = this.features?.socials
+    const enableWallets = OptionsController.state.enableWallets
+
+    const socialsExist = socials && socials.length
+
+    if (!this.authConnector && !socialsExist) {
+      return null
+    }
+
+    if (!enableWallets) {
+      return null
+    }
+
+    if (this.walletGuide === 'explore') {
+      return html`
+        <wui-flex flexDirection="column" .padding=${['0', '0', 'xl', '0']}>
+          <w3m-wallet-guide walletGuide=${this.walletGuide}></w3m-wallet-guide>
+        </wui-flex>
+      `
+    }
+
+    return html`
+      <wui-flex flexDirection="column" .padding=${['xl', '0', 'xl', '0']}>
+        <w3m-wallet-guide walletGuide=${this.walletGuide}></w3m-wallet-guide>
+      </wui-flex>
+    `
   }
 
   // -- Private Methods ----------------------------------- //

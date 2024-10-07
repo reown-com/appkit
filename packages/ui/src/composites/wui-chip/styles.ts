@@ -11,7 +11,7 @@ export default css`
     overflow: hidden;
   }
 
-  a.disabled > wui-icon,
+  a.disabled > wui-icon:not(.image-icon),
   a.disabled > wui-image {
     filter: grayscale(1);
   }
@@ -89,8 +89,8 @@ export default css`
     box-shadow: inset 0 0 0 1px var(--wui-color-gray-glass-010);
   }
 
-  a[data-variant='fill'] > wui-icon,
-  a[data-variant='shade'] > wui-icon {
+  a[data-variant='fill'] > wui-icon:not(.image-icon),
+  a[data-variant='shade'] > wui-icon:not(.image-icon) {
     width: 14px;
     height: 14px;
   }
@@ -103,10 +103,10 @@ export default css`
     height: 14px;
   }
 
-  a[data-variant='transparent'] > wui-icon,
-  a[data-variant='success'] > wui-icon,
-  a[data-variant='shadeSmall'] > wui-icon,
-  a[data-variant='error'] > wui-icon {
+  a[data-variant='transparent'] > wui-icon:not(.image-icon),
+  a[data-variant='success'] > wui-icon:not(.image-icon),
+  a[data-variant='shadeSmall'] > wui-icon:not(.image-icon),
+  a[data-variant='error'] > wui-icon:not(.image-icon) {
     width: 12px;
     height: 12px;
   }
