@@ -213,24 +213,12 @@ importers:
       '@reown/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
-      '@reown/appkit-ethers':
-        specifier: workspace:*
-        version: link:../../packages/ethers
-      '@reown/appkit-ethers5':
-        specifier: workspace:*
-        version: link:../../packages/ethers5
       '@reown/appkit-experimental':
         specifier: workspace:*
         version: link:../../packages/experimental
       '@reown/appkit-siwe':
         specifier: workspace:*
         version: link:../../packages/siwe
-      '@reown/appkit-solana':
-        specifier: workspace:*
-        version: link:../../packages/solana
-      '@reown/appkit-wagmi':
-        specifier: workspace:*
-        version: link:../../packages/wagmi
       '@reown/appkit-wallet':
         specifier: workspace:*
         version: link:../../packages/wallet
@@ -661,9 +649,9 @@ importers:
       '@reown/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-solana':
+      '@reown/appkit-adapter-solana':
         specifier: workspace:*
-        version: link:../../packages/solana
+        version: link:../../packages/adapters/solana
       '@solana/wallet-adapter-backpack':
         specifier: 0.1.14
         version: 0.1.14(@solana/web3.js@1.95.3(bufferutil@4.0.8)(utf-8-validate@5.0.10))
@@ -760,9 +748,9 @@ importers:
       '@reown/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
-      '@reown/appkit-solana':
+      '@reown/appkit-adapter-solana':
         specifier: workspace:*
-        version: link:../../packages/solana
+        version: link:../../packages/adapters/solana
       '@solana/wallet-adapter-backpack':
         specifier: 0.1.14
         version: 0.1.14(@solana/web3.js@1.95.3(bufferutil@4.0.8)(utf-8-validate@5.0.10))
@@ -1217,18 +1205,24 @@ importers:
 
   packages/cdn:
     dependencies:
-      '@reown/appkit-ethers':
+      '@reown/appkit':
         specifier: workspace:*
-        version: link:../ethers
-      '@reown/appkit-ethers5':
+        version: link:../appkit
+      '@reown/appkit-adapter-ethers':
         specifier: workspace:*
-        version: link:../ethers5
+        version: link:../adapters/ethers
+      '@reown/appkit-adapter-ethers5':
+        specifier: workspace:*
+        version: link:../adapters/ethers5
+      '@reown/appkit-adapter-solana':
+        specifier: workspace:*
+        version: link:../adapters/solana
+      '@reown/appkit-adapter-wagmi':
+        specifier: workspace:*
+        version: link:../adapters/wagmi
       '@reown/appkit-polyfills':
         specifier: workspace:*
         version: link:../polyfills
-      '@reown/appkit-wagmi':
-        specifier: workspace:*
-        version: link:../wagmi
       '@wagmi/connectors':
         specifier: 5.1.9
         version: 5.1.9(@types/react@18.2.62)(@wagmi/core@2.13.4(@tanstack/query-core@5.56.2)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.21.4(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)))(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(rollup@4.22.4)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.21.4(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4)
@@ -1297,98 +1291,6 @@ importers:
         version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.33.0)
       vue:
         specifier: 3.x
-        version: 3.4.3(typescript@5.3.3)
-
-  packages/ethers:
-    dependencies:
-      '@coinbase/wallet-sdk':
-        specifier: 4.0.3
-        version: 4.0.3
-      '@reown/appkit':
-        specifier: workspace:*
-        version: link:../appkit
-      '@reown/appkit-adapter-ethers':
-        specifier: workspace:*
-        version: link:../adapters/ethers
-      '@reown/appkit-common':
-        specifier: workspace:*
-        version: link:../common
-      '@reown/appkit-polyfills':
-        specifier: workspace:*
-        version: link:../polyfills
-      '@reown/appkit-siwe':
-        specifier: workspace:*
-        version: link:../siwe
-      '@reown/appkit-utils':
-        specifier: workspace:*
-        version: link:../appkit-utils
-      '@reown/appkit-wallet':
-        specifier: workspace:*
-        version: link:../wallet
-      '@walletconnect/utils':
-        specifier: 2.17.0
-        version: 2.17.0
-      ethers:
-        specifier: '>=6.0.0'
-        version: 6.13.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      valtio:
-        specifier: 1.11.2
-        version: 1.11.2(@types/react@18.2.62)(react@18.2.0)
-    devDependencies:
-      react:
-        specifier: 18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: 18.2.0
-        version: 18.2.0(react@18.2.0)
-      vue:
-        specifier: 3.4.3
-        version: 3.4.3(typescript@5.3.3)
-
-  packages/ethers5:
-    dependencies:
-      '@coinbase/wallet-sdk':
-        specifier: 4.0.3
-        version: 4.0.3
-      '@reown/appkit':
-        specifier: workspace:*
-        version: link:../appkit
-      '@reown/appkit-adapter-ethers5':
-        specifier: workspace:*
-        version: link:../adapters/ethers5
-      '@reown/appkit-common':
-        specifier: workspace:*
-        version: link:../common
-      '@reown/appkit-polyfills':
-        specifier: workspace:*
-        version: link:../polyfills
-      '@reown/appkit-siwe':
-        specifier: workspace:*
-        version: link:../siwe
-      '@reown/appkit-utils':
-        specifier: workspace:*
-        version: link:../appkit-utils
-      '@reown/appkit-wallet':
-        specifier: workspace:*
-        version: link:../wallet
-      '@walletconnect/utils':
-        specifier: 2.17.0
-        version: 2.17.0
-      valtio:
-        specifier: 1.11.2
-        version: 1.11.2(@types/react@18.2.62)(react@18.2.0)
-    devDependencies:
-      ethers:
-        specifier: 5.7.2
-        version: 5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      react:
-        specifier: 18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: 18.2.0
-        version: 18.2.0(react@18.2.0)
-      vue:
-        specifier: 3.4.3
         version: 3.4.3(typescript@5.3.3)
 
   packages/experimental:
@@ -1487,97 +1389,6 @@ importers:
         specifier: 1.11.2
         version: 1.11.2(@types/react@18.2.62)(react@18.2.0)
 
-  packages/solana:
-    dependencies:
-      '@ethersproject/sha2':
-        specifier: 5.7.0
-        version: 5.7.0
-      '@reown/appkit':
-        specifier: workspace:*
-        version: link:../appkit
-      '@reown/appkit-adapter-solana':
-        specifier: workspace:*
-        version: link:../adapters/solana
-      '@reown/appkit-common':
-        specifier: workspace:*
-        version: link:../common
-      '@reown/appkit-core':
-        specifier: workspace:*
-        version: link:../core
-      '@reown/appkit-polyfills':
-        specifier: workspace:*
-        version: link:../polyfills
-      '@reown/appkit-utils':
-        specifier: workspace:*
-        version: link:../appkit-utils
-      '@reown/appkit-wallet':
-        specifier: workspace:*
-        version: link:../wallet
-      '@solana/wallet-adapter-base':
-        specifier: 0.9.23
-        version: 0.9.23(@solana/web3.js@1.95.3(bufferutil@4.0.8)(utf-8-validate@5.0.10))
-      '@solana/wallet-standard-features':
-        specifier: 1.2.0
-        version: 1.2.0
-      '@solana/wallet-standard-util':
-        specifier: 1.1.1
-        version: 1.1.1
-      '@solana/web3.js':
-        specifier: 1.95.3
-        version: 1.95.3(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      '@wallet-standard/app':
-        specifier: 1.0.1
-        version: 1.0.1
-      '@wallet-standard/base':
-        specifier: 1.0.1
-        version: 1.0.1
-      '@wallet-standard/features':
-        specifier: 1.0.3
-        version: 1.0.3
-      '@wallet-standard/wallet':
-        specifier: 1.0.1
-        version: 1.0.1
-      '@walletconnect/universal-provider':
-        specifier: 2.17.0
-        version: 2.17.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      bn.js:
-        specifier: 5.2.1
-        version: 5.2.1
-      borsh:
-        specifier: 0.7.0
-        version: 0.7.0
-      bs58:
-        specifier: 5.0.0
-        version: 5.0.0
-      buffer:
-        specifier: 6.0.3
-        version: 6.0.3
-      react:
-        specifier: '>=17'
-        version: 18.2.0
-      react-dom:
-        specifier: '>=17'
-        version: 18.2.0(react@18.2.0)
-      valtio:
-        specifier: 1.11.2
-        version: 1.11.2(@types/react@18.2.62)(react@18.2.0)
-      vue:
-        specifier: '>=3'
-        version: 3.4.3(typescript@5.3.3)
-    devDependencies:
-      '@types/bn.js':
-        specifier: 5.1.5
-        version: 5.1.5
-      '@vitest/coverage-v8':
-        specifier: 2.0.5
-        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0)(terser@5.33.0))
-      '@walletconnect/types':
-        specifier: 2.17.0
-        version: 2.17.0
-      vitest:
-        specifier: 2.0.5
-        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.33.0)
-
   packages/ui:
     dependencies:
       lit:
@@ -1611,58 +1422,6 @@ importers:
       vitest:
         specifier: 2.0.5
         version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.33.0)
-
-  packages/wagmi:
-    dependencies:
-      '@reown/appkit':
-        specifier: workspace:*
-        version: link:../appkit
-      '@reown/appkit-adapter-wagmi':
-        specifier: workspace:*
-        version: link:../adapters/wagmi
-      '@reown/appkit-common':
-        specifier: workspace:*
-        version: link:../common
-      '@reown/appkit-polyfills':
-        specifier: workspace:*
-        version: link:../polyfills
-      '@reown/appkit-siwe':
-        specifier: workspace:*
-        version: link:../siwe
-      '@reown/appkit-utils':
-        specifier: workspace:*
-        version: link:../appkit-utils
-      '@reown/appkit-wallet':
-        specifier: workspace:*
-        version: link:../wallet
-      '@walletconnect/utils':
-        specifier: 2.17.0
-        version: 2.17.0
-    devDependencies:
-      '@wagmi/connectors':
-        specifier: 5.1.9
-        version: 5.1.9(@types/react@18.2.62)(@wagmi/core@2.13.4(@tanstack/query-core@5.56.2)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.21.4(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)))(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(rollup@4.22.4)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.21.4(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4)
-      '@wagmi/core':
-        specifier: 2.13.4
-        version: 2.13.4(@tanstack/query-core@5.56.2)(@types/react@18.2.62)(react@18.2.0)(typescript@5.3.3)(viem@2.21.4(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))
-      react:
-        specifier: 18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: 18.2.0
-        version: 18.2.0(react@18.2.0)
-      viem:
-        specifier: 2.x
-        version: 2.21.4(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)
-      vitest:
-        specifier: 2.0.5
-        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.33.0)
-      vue:
-        specifier: 3.4.3
-        version: 3.4.3(typescript@5.3.3)
-      wagmi:
-        specifier: 2.12.9
-        version: 2.12.9(@tanstack/query-core@5.56.2)(@tanstack/react-query@5.56.2(react@18.2.0))(@types/react@18.2.62)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(rollup@4.22.4)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.21.4(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4)
 
   packages/wallet:
     dependencies:
@@ -6495,9 +6254,6 @@ packages:
 
   '@types/babel__traverse@7.20.6':
     resolution: {integrity: sha512-r1bzfrm0tomOI8g1SzvCaQHo6Lcv6zu0EA+W2kHrt8dyrHQxGzBBL4kdkzIS+jBMV+EYcMAEAqXqYaLJq5rOZg==}
-
-  '@types/bn.js@5.1.5':
-    resolution: {integrity: sha512-V46N0zwKRF5Q00AZ6hWtN0T8gGmDUaUzLWQvHFo5yThtVwK/VCenFY3wXVbOvNfajEpsTfQM4IN9k/d6gUVX3A==}
 
   '@types/body-parser@1.19.5':
     resolution: {integrity: sha512-fB3Zu92ucau0iQ0JMCFQE7b/dv8Ot07NI3KaZIkIUNXq82k4eBAqUaneXfleGY9JWskeS9y+u0nXMyspcuQrCg==}
@@ -20110,10 +19866,6 @@ snapshots:
     dependencies:
       '@babel/types': 7.25.6
 
-  '@types/bn.js@5.1.5':
-    dependencies:
-      '@types/node': 20.11.5
-
   '@types/body-parser@1.19.5':
     dependencies:
       '@types/connect': 3.4.38
@@ -23172,7 +22924,7 @@ snapshots:
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint@8.56.0))(eslint@8.56.0)
-      eslint-plugin-import: 2.30.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0)
+      eslint-plugin-import: 2.30.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.56.0)
       eslint-plugin-jsx-a11y: 6.10.0(eslint@8.56.0)
       eslint-plugin-react: 7.36.1(eslint@8.56.0)
       eslint-plugin-react-hooks: 4.6.2(eslint@8.56.0)
@@ -23191,7 +22943,7 @@ snapshots:
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@6.18.1(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.30.0(@typescript-eslint/parser@6.18.1(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.18.1(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-import: 2.30.0(@typescript-eslint/parser@6.18.1(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.0)
       eslint-plugin-jsx-a11y: 6.10.0(eslint@8.57.0)
       eslint-plugin-react: 7.36.1(eslint@8.57.0)
       eslint-plugin-react-hooks: 4.6.2(eslint@8.57.0)
@@ -23226,7 +22978,7 @@ snapshots:
       is-bun-module: 1.2.1
       is-glob: 4.0.3
     optionalDependencies:
-      eslint-plugin-import: 2.30.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0)
+      eslint-plugin-import: 2.30.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.56.0)
     transitivePeerDependencies:
       - '@typescript-eslint/parser'
       - eslint-import-resolver-node
@@ -23245,7 +22997,7 @@ snapshots:
       is-bun-module: 1.2.1
       is-glob: 4.0.3
     optionalDependencies:
-      eslint-plugin-import: 2.30.0(@typescript-eslint/parser@6.18.1(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.18.1(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-import: 2.30.0(@typescript-eslint/parser@6.18.1(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.0)
     transitivePeerDependencies:
       - '@typescript-eslint/parser'
       - eslint-import-resolver-node
@@ -23274,7 +23026,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.30.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0):
+  eslint-plugin-import@2.30.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.56.0):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.8
@@ -23302,7 +23054,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-plugin-import@2.30.0(@typescript-eslint/parser@6.18.1(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.18.1(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.30.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0):
+  eslint-plugin-import@2.30.0(@typescript-eslint/parser@6.18.1(eslint@8.57.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.6.3)(eslint@8.57.0):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.8
