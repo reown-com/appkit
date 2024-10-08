@@ -1,3 +1,3 @@
 import '@reown/appkit-polyfills'
 export * as AppKit from '@reown/appkit'
-export * as AppKitEthers from '@reown/appkit-adapter-ethers'
+export * as AppKitSolana from '@reown/appkit-adapter-solana'
