@@ -8,8 +8,6 @@
 '@apps/laboratory': minor
 '@reown/appkit': minor
 '@reown/appkit-common': minor
-'@reown/appkit-solana': minor
-'@reown/appkit-wagmi': minor
 '@reown/appkit-core': minor
 '@reown/appkit-siwe': minor
 '@reown/appkit-cdn': minor
@@ -17,8 +15,6 @@
 '@apps/demo': minor
 '@apps/gallery': minor
 '@reown/appkit-adapter-polkadot': minor
-'@reown/appkit-ethers': minor
-'@reown/appkit-ethers5': minor
 '@reown/appkit-polyfills': minor
 '@reown/appkit-wallet': minor
 ---

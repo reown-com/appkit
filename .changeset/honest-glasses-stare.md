@@ -13,13 +13,9 @@
 '@reown/appkit-cdn': patch
 '@reown/appkit-common': patch
 '@reown/appkit-core': patch
-'@reown/appkit-ethers': patch
-'@reown/appkit-ethers5': patch
 '@reown/appkit-polyfills': patch
 '@reown/appkit-siwe': patch
-'@reown/appkit-solana': patch
 '@reown/appkit-ui': patch
-'@reown/appkit-wagmi': patch
 '@reown/appkit-wallet': patch
 ---
 
