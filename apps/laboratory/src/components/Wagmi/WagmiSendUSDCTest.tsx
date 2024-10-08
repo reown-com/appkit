@@ -1,9 +1,10 @@
 import { Button, Stack, Link, Text, Spacer, Input } from '@chakra-ui/react'
-import { useAccount, useWriteContract } from 'wagmi'
-import { useCallback, useState } from 'react'
+import { useAccount, type Config } from 'wagmi'
+import { useState } from 'react'
 import { arbitrum, base, optimism, sepolia } from 'wagmi/chains'
 import { useChakraToast } from '../Toast'
 import { erc20Abi, type Chain, type Hex } from 'viem'
+import { getWalletClient } from 'wagmi/actions'
 
 const ALLOWED_CHAINS = [sepolia, optimism, base, arbitrum]
 const ALLOWED_CHAINIDS = ALLOWED_CHAINS.map(chain => chain.id) as number[]
@@ -14,16 +15,20 @@ const TOKEN_ADDRESSES = {
   [arbitrum.id]: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831' as Hex
 }
 
-export function WagmiSendUSDCTest() {
+interface IBaseProps {
+  config?: Config
+}
+
+export function WagmiSendUSDCTest({ config }: IBaseProps) {
   const { status, chain } = useAccount()
 
   return ALLOWED_CHAINIDS.includes(Number(chain?.id)) && status === 'connected' && chain ? (
-    <AvailableTestContent chain={chain} />
+    <AvailableTestContent chain={chain} config={config} />
   ) : (
     <Text fontSize="md" color="yellow">
       Allowed chains are:{' '}
       {ALLOWED_CHAINS.map(c => (
-        <>{c.name}, </>
+        <span key={c.name}>{c.name}, </span>
       ))}
     </Text>
   )
@@ -31,43 +36,49 @@ export function WagmiSendUSDCTest() {
 
 interface IProps {
   chain: Chain
+  config?: Config
 }
 
-function AvailableTestContent({ chain }: IProps) {
+function AvailableTestContent({ chain, config }: IProps) {
   const [address, setAddress] = useState('')
   const [amount, setAmount] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   const toast = useChakraToast()
 
-  const { writeContract, isPending: isLoading } = useWriteContract({
-    mutation: {
-      onSuccess: hash => {
-        toast({
-          title: 'Transaction Success',
-          description: hash,
-          type: 'success'
-        })
-      },
-      onError: () => {
-        toast({
-          title: 'Error',
-          description: 'Failed to send transaction',
-          type: 'error'
-        })
-      }
-    }
-  })
-
-  const onSendTransaction = useCallback(() => {
+  async function onSendTransaction(wagmiConfig: Config) {
     const usdcAmount = BigInt(Number(amount) * 1000000)
     const chainId = chain.id as keyof typeof TOKEN_ADDRESSES
     const contractAddress = TOKEN_ADDRESSES[chainId]
-    writeContract({
-      abi: erc20Abi,
-      functionName: 'transfer',
-      args: [address as Hex, usdcAmount],
-      address: contractAddress
-    })
-  }, [writeContract, address, amount, chain])
+    const client = await getWalletClient(wagmiConfig)
+
+    try {
+      setIsLoading(true)
+
+      const hash = await client.writeContract({
+        abi: erc20Abi,
+        functionName: 'transfer',
+        args: [address as Hex, usdcAmount],
+        address: contractAddress
+      })
+      toast({
+        title: 'Transaction Success',
+        description: hash,
+        type: 'success'
+      })
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to send transaction',
+        type: 'error'
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  if (!config) {
+    return <Text>Config is not available</Text>
+  }
 
   return (
     <Stack direction={['column', 'column', 'row']}>
@@ -81,8 +92,9 @@ function AvailableTestContent({ chain }: IProps) {
       />
       <Button
         data-testid="sign-transaction-button"
-        onClick={onSendTransaction}
-        disabled={!writeContract}
+        onClick={() => {
+          onSendTransaction(config)
+        }}
         isDisabled={isLoading}
         isLoading={isLoading}
         width="80%"
