@@ -27,15 +27,16 @@ const modal = createAppKit({
   }
 })
 
+const config = wagmiAdapter.wagmiConfig
 ThemeStore.setModal(modal)
 
 export default function Wagmi() {
   return (
-    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
+    <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtons />
         <WagmiModalInfo />
-        <WagmiTests />
+        <WagmiTests config={config} />
       </QueryClientProvider>
     </WagmiProvider>
   )
