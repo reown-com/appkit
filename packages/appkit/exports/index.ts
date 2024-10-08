@@ -1,9 +1,7 @@
+import { CoreHelperUtil } from '@reown/appkit-core'
 import { AppKit } from '../src/client.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
-import { CoreHelperUtil } from '@reown/appkit-core'
-import fs from 'fs'
-
-const packageJson = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
+import { PACKAGE_VERSION } from './constants.js'
 
 // -- Views ------------------------------------------------------------
 export * from '@reown/appkit-scaffold-ui'
@@ -19,11 +17,7 @@ type CreateAppKit = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
 export function createAppKit(options: CreateAppKit) {
   return new AppKit({
     ...options,
-    sdkVersion: CoreHelperUtil.generateSdkVersion(
-      options.adapters ?? [],
-      'html',
-      packageJson.version
-    )
+    sdkVersion: CoreHelperUtil.generateSdkVersion(options.adapters ?? [], 'html', PACKAGE_VERSION)
   })
 }
 

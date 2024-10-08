@@ -2,9 +2,7 @@ import { AppKit } from '../src/client.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { getAppKit } from '../src/library/react/index.js'
 import { CoreHelperUtil } from '@reown/appkit-core'
-import fs from 'fs'
-
-const packageJson = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
+import { PACKAGE_VERSION } from './constants.js'
 
 // -- Views ------------------------------------------------------------
 export * from '@reown/appkit-scaffold-ui'
@@ -29,7 +27,7 @@ export function createAppKit(options: CreateAppKit) {
       sdkVersion: CoreHelperUtil.generateSdkVersion(
         options.adapters ?? [],
         'react',
-        packageJson.version
+        PACKAGE_VERSION
       )
     })
     getAppKit(modal)
