@@ -49,7 +49,13 @@ const OPTIONAL_METHODS = [
   'wallet_requestPermissions',
   'wallet_registerOnboarding',
   'wallet_watchAsset',
-  'wallet_scanQRCode'
+  'wallet_scanQRCode',
+  // EIP-5792
+  'wallet_getCallsStatus',
+  'wallet_sendCalls',
+  'wallet_getCapabilities',
+  // EIP-7715
+  'wallet_grantPermissions'
 ]
 
 // -- Client --------------------------------------------------------------------
@@ -255,6 +261,34 @@ export class UniversalAdapterClient {
       getEnsAddress: async (value: string) => await Promise.resolve(value),
 
       writeContract: async () => await Promise.resolve('0x'),
+
+      getCapabilities: async (params: string) => {
+        const provider = await this.getWalletConnectProvider()
+
+        if (!provider) {
+          throw new Error('connectionControllerClient:getCapabilities - provider is undefined')
+        }
+
+        const walletCapabilitiesString = provider.session?.sessionProperties?.['capabilities']
+        if (walletCapabilitiesString) {
+          const walletCapabilities = this.parseWalletCapabilities(walletCapabilitiesString)
+          const accountCapabilities = walletCapabilities[params]
+          if (accountCapabilities) {
+            return accountCapabilities
+          }
+        }
+
+        return await provider.request({ method: 'wallet_getCapabilities', params: [params] })
+      },
+
+      grantPermissions: async (params: object | readonly unknown[]) => {
+        const provider = await this.getWalletConnectProvider()
+        if (!provider) {
+          throw new Error('connectionControllerClient:grantPermissions - provider is undefined')
+        }
+
+        return provider.request({ method: 'wallet_grantPermissions', params })
+      },
 
       sendTransaction: async () => await Promise.resolve('0x'),
 
@@ -610,5 +644,14 @@ export class UniversalAdapterClient {
     })
 
     this.appKit?.setConnectors(w3mConnectors)
+  }
+  private parseWalletCapabilities(walletCapabilitiesString: string) {
+    try {
+      const walletCapabilities = JSON.parse(walletCapabilitiesString)
+
+      return walletCapabilities
+    } catch (error) {
+      throw new Error('Error parsing wallet capabilities')
+    }
   }
 }

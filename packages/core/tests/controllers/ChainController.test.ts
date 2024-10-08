@@ -98,7 +98,9 @@ const connectionControllerClient: ConnectionControllerClient = {
   sendTransaction: () => Promise.resolve('0x'),
   writeContract: () => Promise.resolve('0x'),
   getEnsAddress: async (value: string) => Promise.resolve(value),
-  getEnsAvatar: async (value: string) => Promise.resolve(value)
+  getEnsAvatar: async (value: string) => Promise.resolve(value),
+  getCapabilities: async () => Promise.resolve(''),
+  grantPermissions: async () => Promise.resolve('')
 }
 
 const networkControllerClient: NetworkControllerClient = {
