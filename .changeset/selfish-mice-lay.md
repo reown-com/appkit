@@ -14,6 +14,7 @@
 '@reown/appkit-core': patch
 '@reown/appkit-ethers': patch
 '@reown/appkit-ethers5': patch
+'@reown/appkit-experimental': patch
 '@reown/appkit-polyfills': patch
 '@reown/appkit-scaffold-ui': patch
 '@reown/appkit-siwe': patch
@@ -23,4 +24,4 @@
 '@reown/appkit-wallet': patch
 ---
 
-Exposes version in AppKit class
+Exports util functions for networks path
