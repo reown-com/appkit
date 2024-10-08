@@ -1,8 +1,10 @@
 import { AppKit } from '../src/client.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { getAppKit } from '../src/library/vue/index.js'
-import packageJson from '../package.json' assert { type: 'json' }
 import { CoreHelperUtil } from '@reown/appkit-core'
+import fs from 'fs'
+
+const packageJson = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
 
 // -- Views ------------------------------------------------------------
 export * from '@reown/appkit-scaffold-ui'
