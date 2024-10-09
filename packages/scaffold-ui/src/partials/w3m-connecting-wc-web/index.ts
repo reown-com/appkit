@@ -1,4 +1,9 @@
-import { ConnectionController, CoreHelperUtil, EventsController } from '@reown/appkit-core'
+import {
+  ConnectionController,
+  ConstantsUtil,
+  CoreHelperUtil,
+  EventsController
+} from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
@@ -11,7 +16,7 @@ export class W3mConnectingWcWeb extends W3mConnectingWidget {
     }
     this.onConnect = this.onConnectProxy.bind(this)
     this.secondaryBtnLabel = 'Open'
-    this.secondaryLabel = 'Open and continue in a new browser tab'
+    this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
     this.secondaryBtnIcon = 'externalLink'
     EventsController.sendEvent({
       type: 'track',
