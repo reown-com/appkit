@@ -122,10 +122,10 @@ describe('AuthProvider specific tests', () => {
     const listener = vi.fn()
 
     authProvider.on('chainChanged', listener)
-    await authProvider.switchNetwork(newChain.chainId)
+    await authProvider.switchNetwork(newChain.id)
 
-    expect(provider.switchNetwork).toHaveBeenCalledWith(newChain.chainId)
-    expect(listener).toHaveBeenCalledWith(newChain.chainId)
+    expect(provider.switchNetwork).toHaveBeenCalledWith(newChain.id)
+    expect(listener).toHaveBeenCalledWith(newChain.id)
   })
 
   it('should call signAllTransactions with correct params', async () => {

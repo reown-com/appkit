@@ -61,7 +61,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
         }
 
         return this.requestedChains.find(
-          chain => withSolanaNamespace(chain.chainId as string) === chainId
+          chain => withSolanaNamespace(chain.id as string) === chainId
         )
       })
       .filter(Boolean) as CaipNetwork[]
@@ -79,7 +79,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
 
   public async connect() {
     const rpcMap = this.requestedChains.reduce<Record<string, string>>((acc, chain) => {
-      acc[withSolanaNamespace(chain.chainId as string)] = chain.rpcUrl
+      acc[withSolanaNamespace(chain.id as string)] = chain.rpcUrls.default.http[0] || ''
 
       return acc
     }, {})
@@ -232,10 +232,10 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     method: Method,
     params: WalletConnectProvider.RequestMethods[Method]['params']
   ) {
-    const chain = this.chains.find(c => this.getActiveChain()?.chainId === c.chainId)
+    const chain = this.chains.find(c => this.getActiveChain()?.id === c.id)
 
     // This is a workaround for wallets that only accept Solana deprecated networks
-    let chainId = withSolanaNamespace(chain?.chainId)
+    let chainId = withSolanaNamespace(chain?.id)
 
     switch (chainId) {
       case SolConstantsUtil.CHAIN_IDS.Mainnet:
@@ -311,7 +311,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
    * This method is a workaround for wallets that only accept Solana deprecated networks
    */
   private getRequestedChainsWithDeprecated() {
-    const chains = this.requestedChains.map(chain => withSolanaNamespace<ChainId>(chain.chainId))
+    const chains = this.requestedChains.map(chain => withSolanaNamespace<ChainId>(chain.id))
 
     if (chains.includes(SolConstantsUtil.CHAIN_IDS.Mainnet)) {
       chains.push(SolConstantsUtil.CHAIN_IDS.Deprecated_Mainnet)

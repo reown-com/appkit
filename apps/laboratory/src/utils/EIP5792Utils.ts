@@ -54,7 +54,6 @@ export function convertCapabilitiesToRecord(
     Object.entries(accountCapabilities).map(([key, value]) => [parseInt(key, 16), value])
   )
 }
-/* eslint-enable @typescript-eslint/no-explicit-any */
 
 export function getProviderCachedCapabilities(
   address: string,

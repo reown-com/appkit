@@ -35,3 +35,7 @@ noSocialsTest('should not display any socials', async () => {
 noSocialsTest('should show email login', async () => {
   await modalValidator.expectEmailLogin()
 })
+
+noSocialsTest('should show "or" line separator under email field', async () => {
+  await modalValidator.expectEmailLineSeparator()
+})

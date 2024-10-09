@@ -256,6 +256,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-error-100: var(--wui-color-error-base-100);
         --wui-color-error-125: var(--wui-color-error-base-125);
 
+        --wui-color-blue-100: var(--wui-color-blue-base-100);
+
         --wui-icon-box-bg-error-100: var(--wui-icon-box-bg-error-base-100);
         --wui-icon-box-bg-blue-100: var(--wui-icon-box-bg-blue-base-100);
         --wui-icon-box-bg-success-100: var(--wui-icon-box-bg-success-base-100);
@@ -465,6 +467,11 @@ function createRootStyles(themeVariables?: ThemeVariables) {
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
             var(--wui-color-error-base-100)
           );
+          --wui-color-blue-100: color-mix(
+            in srgb,
+            var(--w3m-color-mix) var(--w3m-color-mix-strength),
+            var(--wui-color-blue-base-100)
+          );
           --wui-color-error-125: color-mix(
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
@@ -559,6 +566,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
 
         --wui-color-error-base-100: #f25a67;
         --wui-color-error-base-125: #df4a34;
+
+        --wui-color-blue-base-100: #667dff;
 
         --wui-color-success-glass-001: rgba(38, 217, 98, 0.01);
         --wui-color-success-glass-002: rgba(38, 217, 98, 0.02);
@@ -660,6 +669,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
 
         --wui-color-error-base-100: #f05142;
         --wui-color-error-base-125: #df4a34;
+
+        --wui-color-blue-base-100: #667dff;
 
         --wui-color-success-glass-001: rgba(38, 181, 98, 0.01);
         --wui-color-success-glass-002: rgba(38, 181, 98, 0.02);
@@ -799,6 +810,10 @@ export const colorStyles = css`
 
   .wui-color-error-100 {
     color: var(--wui-color-error-100);
+  }
+
+  .wui-color-blue-100 {
+    color: var(--wui-color-blue-100);
   }
 
   .wui-color-error-125 {

@@ -28,6 +28,8 @@ export class W3mConnectingWcView extends LitElement {
 
   @state() private platforms: Platform[] = []
 
+  @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
+
   public constructor() {
     super()
     this.determinePlatforms()
@@ -62,8 +64,8 @@ export class W3mConnectingWcView extends LitElement {
     }
 
     try {
-      const { wcPairingExpiry } = ConnectionController.state
-      if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
+      const { wcPairingExpiry, status } = ConnectionController.state
+      if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry) || status === 'connecting') {
         await ConnectionController.connectWalletConnect()
         this.finalizeConnection()
 
@@ -72,7 +74,7 @@ export class W3mConnectingWcView extends LitElement {
           OptionsController.state.hasMultipleAddresses
         ) {
           RouterController.push('SelectAddresses')
-        } else {
+        } else if (!this.isSiweEnabled) {
           ModalController.close()
         }
       }

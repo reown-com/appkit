@@ -372,3 +372,19 @@ async function checkDevelopmentConstants() {
   }
 }
 checkDevelopmentConstants()
+
+// -- Check changesets ------------------------------------------------------------
+async function checkChangesetFiles() {
+  const changesetFiles = updated_files
+    .filter(f => f.startsWith('.changeset/'))
+    .filter(f => f.endsWith('.md') && !f.startsWith('README.md'))
+
+  for (const f of changesetFiles) {
+    const fileContent = await danger.github.utils.fileContents(f)
+
+    if (fileContent.includes('@examples/')) {
+      fail(`Changeset file ${f} cannot include @examples/* packages as part of the changeset`)
+    }
+  }
+}
+checkChangesetFiles()

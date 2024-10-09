@@ -49,7 +49,7 @@ export function Ethers5TransactionTest() {
     }
   }
 
-  return Number(chainId) !== mainnet.chainId && address ? (
+  return chainId !== mainnet.id && address ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button
         data-testid="sign-transaction-button"

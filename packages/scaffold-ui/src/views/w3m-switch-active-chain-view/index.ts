@@ -1,9 +1,4 @@
-import {
-  ChainController,
-  ModalController,
-  NetworkController,
-  RouterController
-} from '@reown/appkit-core'
+import { ChainController, ModalController, RouterController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
@@ -85,7 +80,12 @@ export class W3mSwitchActiveChainView extends LitElement {
       return
     }
 
-    await NetworkController.switchActiveNetwork(this.caipNetwork)
+    if (this.caipNetwork) {
+      await ChainController.switchActiveNetwork(this.caipNetwork)
+    } else {
+      ChainController.setActiveNamespace(this.switchToChain)
+    }
+
     ModalController.close()
     ModalController.open({
       view: 'Connect'

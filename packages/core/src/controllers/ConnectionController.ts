@@ -39,6 +39,8 @@ export interface ConnectionControllerClient {
   writeContract: (args: WriteContractArgs) => Promise<`0x${string}` | null>
   getEnsAddress: (value: string) => Promise<false | string>
   getEnsAvatar: (value: string) => Promise<false | string>
+  grantPermissions: (params: readonly unknown[] | object) => Promise<unknown>
+  getCapabilities: (params: string) => Promise<unknown>
 }
 
 export interface ConnectionControllerState {
@@ -64,10 +66,11 @@ const state = proxy<ConnectionControllerState>({
   status: 'disconnected'
 })
 
+// eslint-disable-next-line init-declarations
+let wcConnectionPromise: Promise<void> | undefined
 // -- Controller ---------------------------------------- //
 export const ConnectionController = {
   state,
-
   subscribeKey<K extends StateKey>(
     key: K,
     callback: (value: ConnectionControllerState[K]) => void
@@ -86,12 +89,46 @@ export const ConnectionController = {
   async connectWalletConnect() {
     StorageUtil.setConnectedConnector('WALLET_CONNECT')
 
-    await ChainController.state?.universalAdapter?.connectionControllerClient?.connectWalletConnect?.(
-      uri => {
-        state.wcUri = uri
-        state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
+    if (CoreHelperUtil.isTelegram()) {
+      if (wcConnectionPromise) {
+        try {
+          await wcConnectionPromise
+        } catch (error) {
+          /* Empty */
+        }
+        wcConnectionPromise = undefined
+
+        return
       }
-    )
+
+      if (!CoreHelperUtil.isPairingExpired(state?.wcPairingExpiry)) {
+        const link = state.wcUri
+        state.wcUri = link
+
+        return
+      }
+      wcConnectionPromise = new Promise(async (resolve, reject) => {
+        await ChainController.state?.universalAdapter?.connectionControllerClient
+          ?.connectWalletConnect?.(uri => {
+            state.wcUri = uri
+            state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
+          })
+          .catch(reject)
+        resolve()
+      })
+      this.state.status = 'connecting'
+      await wcConnectionPromise
+      wcConnectionPromise = undefined
+      state.wcPairingExpiry = undefined
+      this.state.status = 'connected'
+    } else {
+      await ChainController.state?.universalAdapter?.connectionControllerClient?.connectWalletConnect?.(
+        uri => {
+          state.wcUri = uri
+          state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
+        }
+      )
+    }
   },
 
   async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
@@ -119,7 +156,10 @@ export const ConnectionController = {
     EventsController.sendEvent({
       type: 'track',
       event: 'SET_PREFERRED_ACCOUNT_TYPE',
-      properties: { accountType, network: ChainController.state.activeCaipNetwork?.id || '' }
+      properties: {
+        accountType,
+        network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
+      }
     })
   },
 
@@ -137,6 +177,14 @@ export const ConnectionController = {
 
   async sendTransaction(args: SendTransactionArgs) {
     return this._getClient().sendTransaction(args)
+  },
+
+  async getCapabilities(params: string) {
+    return this._getClient().getCapabilities(params)
+  },
+
+  async grantPermissions(params: object | readonly unknown[]) {
+    return this._getClient().grantPermissions(params)
   },
 
   async estimateGas(args: EstimateGasTransactionArgs) {
@@ -164,6 +212,7 @@ export const ConnectionController = {
     state.wcPairingExpiry = undefined
     state.wcLinking = undefined
     state.recentWallet = undefined
+    state.status = 'disconnected'
     TransactionsController.resetTransactions()
     StorageUtil.deleteWalletConnectDeepLink()
   },

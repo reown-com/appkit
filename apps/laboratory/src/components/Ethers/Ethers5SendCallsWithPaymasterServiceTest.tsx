@@ -17,6 +17,7 @@ import {
   getCapabilitySupportedChainInfo
 } from '../../utils/EIP5792Utils'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
+import { abi, address as donutAddress } from '../../utils/DonutContract'
 
 export function Ethers5SendCallsWithPaymasterServiceTest() {
   const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')
@@ -54,7 +55,7 @@ export function Ethers5SendCallsWithPaymasterServiceTest() {
   const currentChainsInfo = paymasterServiceSupportedChains.find(
     chainInfo => chainInfo.chainId === Number(chainId)
   )
-  async function onSendCalls() {
+  async function onSendCalls(donut?: boolean) {
     try {
       setLoading(true)
       if (!walletProvider || !address) {
@@ -69,16 +70,27 @@ export function Ethers5SendCallsWithPaymasterServiceTest() {
       }
       const provider = new ethers.providers.Web3Provider(walletProvider, chainId)
       const amountToSend = parseGwei('0.001').toString(16)
-      const calls = [
-        {
-          to: vitalikEthAddress,
-          value: `0x${amountToSend}`
-        },
-        {
-          to: vitalikEthAddress,
-          data: '0xdeadbeef'
-        }
-      ]
+      const donutIntrerface = new ethers.utils.Interface(abi)
+      const encodedCallData = donutIntrerface.encodeFunctionData('getBalance', [address])
+
+      const calls = donut
+        ? [
+            {
+              to: donutAddress,
+              data: encodedCallData
+            }
+          ]
+        : [
+            {
+              to: vitalikEthAddress,
+              value: `0x${amountToSend}`
+            },
+            {
+              to: vitalikEthAddress,
+              data: '0xdeadbeef'
+            }
+          ]
+
       const sendCallsParams = {
         version: '1.0',
         chainId: `0x${BigInt(chainId).toString(16)}`,
@@ -159,10 +171,18 @@ export function Ethers5SendCallsWithPaymasterServiceTest() {
       <Button
         width={'fit-content'}
         data-testid="send-calls-paymaster-service-button"
-        onClick={onSendCalls}
+        onClick={() => onSendCalls()}
         isDisabled={isLoading || !paymasterServiceUrl}
       >
         SendCalls w/ Paymaster Service
+      </Button>
+      <Button
+        width={'fit-content'}
+        data-testid="send-calls-paymaster-service-button"
+        onClick={() => onSendCalls(true)}
+        isDisabled={isLoading || !paymasterServiceUrl}
+      >
+        Send Donut Calls w/ Paymaster Service
       </Button>
     </Stack>
   ) : (
