@@ -10,7 +10,9 @@
   "scripts": {
     "build:clean": "rm -rf dist",
     "build": "tsc && vite build",
-    "upload": "pnpm build && pnpm publish --public"
+    "watch": "tsc --watch",
+    "upload": "pnpm build && pnpm publish --public",
+    "serve": "http-server dist -p 8080 --cors"
   },
   "devDependencies": {
     "@wagmi/connectors": "5.1.9",

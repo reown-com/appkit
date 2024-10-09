@@ -7,11 +7,20 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills'
 export default defineConfig({
   build: {
     lib: {
-      entry: {
-        wagmi: resolve(__dirname, 'lib/wagmi.ts'),
-        ethers: resolve(__dirname, 'lib/ethers.ts')
+      entry: resolve(__dirname, 'lib/appkit.ts'),
+      name: 'AppKit',
+      formats: ['umd'],
+      fileName: (_, entryName) => `${entryName}.js`
+    },
+    rollupOptions: {
+      output: {
+        globals: {
+          '@reown/appkit': 'AppKit'
+        }
       }
-    }
+    },
+    sourcemap: true,
+    minify: 'terser'
   },
   plugins: [
     nodePolyfills({
@@ -20,5 +29,8 @@ export default defineConfig({
         process: true
       }
     })
-  ]
+  ],
+  define: {
+    'process.env.NODE_ENV': 'development'
+  }
 })

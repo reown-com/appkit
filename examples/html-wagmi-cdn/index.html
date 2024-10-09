@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AppKit CDN Example</title>
+</head>
+
+<body>
+  <h1>AppKit CDN Example</h1>
+  <button id="open-connect-modal">Open Connect Modal</button>
+  <button id="open-network-modal">Open Network Modal</button>
+
+  <!-- Load the CDN scripts -->
+  <script src="http://localhost:8080/appkit.js"></script>
+  <script>
+    window.onerror = function (message, source, lineno, colno, error) {
+      console.error('Global error:', message, 'at', source, ':', lineno, ':', colno);
+      console.error('Error object:', error);
+    };
+    // Check if AppKit is loaded
+    console.log('AppKit loaded:', window);
+  </script>
+  <!-- Load our main script -->
+  <script src="./main.js" type="module"></script>
+</body>
+
+</html>
