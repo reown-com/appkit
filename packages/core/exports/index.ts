@@ -14,12 +14,6 @@ export type { AccountControllerState } from '../src/controllers/AccountControlle
 export { ChainController } from '../src/controllers/ChainController.js'
 export type { ChainControllerState } from '../src/controllers/ChainController.js'
 
-export { NetworkController } from '../src/controllers/NetworkController.js'
-export type {
-  NetworkControllerClient,
-  NetworkControllerState
-} from '../src/controllers/NetworkController.js'
-
 export { OnRampController } from '../src/controllers/OnRampController.js'
 export type { OnRampControllerState, OnRampProvider } from '../src/controllers/OnRampController.js'
 
@@ -69,6 +63,9 @@ export type { TooltipControllerState } from '../src/controllers/TooltipControlle
 
 export { EnsController } from '../src/controllers/EnsController.js'
 export type { EnsControllerState } from '../src/controllers/EnsController.js'
+
+export { AlertController } from '../src/controllers/AlertController.js'
+export type { AlertControllerState } from '../src/controllers/AlertController.js'
 
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from '../src/utils/AssetUtil.js'

@@ -2,11 +2,12 @@ import {
   ChainController,
   ConnectorController,
   CoreHelperUtil,
-  OptionsController
+  OptionsController,
+  type WalletGuideType
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import { ref, createRef } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 import styles from './styles.js'
@@ -33,6 +34,8 @@ export class W3mEmailLoginWidget extends LitElement {
 
   @state() private error = ''
 
+  @property() private walletGuide: WalletGuideType = 'get-started'
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -57,10 +60,7 @@ export class W3mEmailLoginWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const socials = OptionsController.state.features?.socials
     const email = OptionsController.state.features?.email
-    const multipleConnectors = this.connectors.length > 1
-    const enableWallets = OptionsController.state.enableWallets
 
     if (!this.authConnector || !email) {
       return null
@@ -79,12 +79,7 @@ export class W3mEmailLoginWidget extends LitElement {
         ${this.submitButtonTemplate()}${this.loadingTemplate()}
         <input type="submit" hidden />
       </form>
-
-      ${socials || !multipleConnectors || !enableWallets
-        ? null
-        : html`<wui-flex .padding=${['xxs', '0', '0', '0'] as const}>
-            <wui-separator text="or"></wui-separator>
-          </wui-flex>`}
+      ${this.separatorTemplate()}
     `
   }
 
@@ -105,6 +100,32 @@ export class W3mEmailLoginWidget extends LitElement {
       : null
   }
 
+  private separatorTemplate() {
+    const socials = OptionsController.state.features?.socials
+    const multipleConnectors = this.connectors.length > 1
+    const enableWallets = OptionsController.state.enableWallets
+    const emailShowWallets = OptionsController.state.features?.emailShowWallets
+
+    const hideSeparator =
+      (socials && socials.length) || emailShowWallets || !multipleConnectors || !enableWallets
+
+    if (hideSeparator && this.walletGuide === 'get-started') {
+      return null
+    }
+
+    if (socials && socials.length > 0) {
+      return null
+    }
+
+    return html`
+      <wui-flex
+        data-testid="w3m-email-login-or-separator"
+        .padding=${['xxs', '0', '0', '0'] as const}
+      >
+        <wui-separator text="or"></wui-separator>
+      </wui-flex>
+    `
+  }
   private loadingTemplate() {
     return this.loading
       ? html`<wui-loading-spinner size="md" color="accent-100"></wui-loading-spinner>`

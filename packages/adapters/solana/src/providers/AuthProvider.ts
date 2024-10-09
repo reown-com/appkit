@@ -57,8 +57,8 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
 
   get publicKey(): PublicKey | undefined {
     const session = this.getSession()
-
-    if (session) {
+    const namespace = this.getActiveNamespace()
+    if (session && namespace === 'solana') {
       return new PublicKey(session.address)
     }
 
@@ -69,13 +69,13 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     const availableChainIds = this.getProvider().getAvailableChainIds()
 
     return this.requestedChains.filter(requestedChain =>
-      availableChainIds.includes(withSolanaNamespace(requestedChain.chainId) as string)
+      availableChainIds.includes(withSolanaNamespace(requestedChain.id) as string)
     )
   }
 
   public async connect() {
     const session = await this.getProvider().connect({
-      chainId: withSolanaNamespace(this.getActiveChain()?.chainId)
+      chainId: withSolanaNamespace(this.getActiveChain()?.id)
     })
     this.setSession(session)
 
@@ -229,11 +229,12 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
       this.emit('auth_rpcError', error)
     })
 
-    this.getProvider().onIsConnected(response => {
-      this.setSession(response)
-      const activeNamespace = this.getActiveNamespace()
+    this.getProvider().onConnect(response => {
+      const isSolanaNamespace =
+        typeof response.chainId === 'string' ? response.chainId?.startsWith('solana') : false
 
-      if (activeNamespace === 'solana') {
+      if (isSolanaNamespace) {
+        this.setSession(response)
         this.emit('connect', this.getPublicKey(true))
       }
     })

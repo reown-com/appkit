@@ -1,26 +1,30 @@
 import { Button, Stack, Text, Input } from '@chakra-ui/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   useAppKitAccount,
   useAppKitNetwork,
   useAppKitProvider,
   type Provider
 } from '@reown/appkit/react'
-import { EthereumProvider } from '@walletconnect/ethereum-provider'
+import { UniversalProvider } from '@walletconnect/universal-provider'
 import { useChakraToast } from '../Toast'
 import { BrowserProvider } from 'ethers'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { type GetCallsStatusParams } from '../../types/EIP5792'
 import { EIP_5792_RPC_METHODS } from '../../utils/EIP5792Utils'
 
-export function EthersGetCallsStatusTest() {
+export function EthersGetCallsStatusTest({ callsHash }: { callsHash: string }) {
   const [isLoading, setLoading] = useState(false)
-  const [batchCallId, setBatchCallId] = useState('')
+  const [batchCallId, setBatchCallId] = useState(callsHash)
 
   const { chainId } = useAppKitNetwork()
   const { address, isConnected } = useAppKitAccount()
   const { walletProvider } = useAppKitProvider<Provider>('eip155')
   const toast = useChakraToast()
+
+  useEffect(() => {
+    setBatchCallId(callsHash)
+  }, [callsHash])
 
   async function onGetCallsStatus() {
     try {
@@ -58,9 +62,9 @@ export function EthersGetCallsStatusTest() {
     if (walletProvider instanceof W3mFrameProvider) {
       return true
     }
-    if (walletProvider instanceof EthereumProvider) {
+    if (walletProvider instanceof UniversalProvider) {
       return Boolean(
-        walletProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
+        walletProvider?.session?.namespaces?.['eip155']?.methods?.includes(
           EIP_5792_RPC_METHODS.WALLET_GET_CALLS_STATUS
         )
       )

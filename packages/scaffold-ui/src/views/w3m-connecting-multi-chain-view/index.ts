@@ -92,7 +92,6 @@ export class W3mConnectingMultiChainView extends LitElement {
   }
 
   private onConnector(provider: Connector) {
-    ChainController.setActiveChain(provider.chain)
     const connector = this.activeConnector?.connectors?.find(p => p.chain === provider.chain)
 
     if (!connector) {
@@ -101,7 +100,7 @@ export class W3mConnectingMultiChainView extends LitElement {
       return
     }
 
-    if (connector.type === 'WALLET_CONNECT') {
+    if (connector.id === 'walletConnect') {
       if (CoreHelperUtil.isMobile()) {
         RouterController.push('AllWallets')
       } else {

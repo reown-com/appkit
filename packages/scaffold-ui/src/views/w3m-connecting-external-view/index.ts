@@ -11,6 +11,9 @@ import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-external-view')
 export class W3mConnectingExternalView extends W3mConnectingWidget {
+  // -- Members ------------------------------------------- //
+  private externalViewUnsubscribe: (() => void)[] = []
+
   public constructor() {
     super()
     if (!this.connector) {
@@ -28,11 +31,17 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
     this.onConnect = this.onConnectProxy.bind(this)
     this.onAutoConnect = this.onConnectProxy.bind(this)
     this.isWalletConnect = false
-    ChainController.subscribeKey('activeCaipAddress', val => {
-      if (val) {
-        ModalController.close()
-      }
-    })
+    this.externalViewUnsubscribe.push(
+      ChainController.subscribeKey('activeCaipAddress', val => {
+        if (val) {
+          ModalController.close()
+        }
+      })
+    )
+  }
+
+  public override disconnectedCallback() {
+    this.externalViewUnsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
   // -- Private ------------------------------------------- //

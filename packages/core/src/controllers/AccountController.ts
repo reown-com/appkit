@@ -19,7 +19,6 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
-  isConnected: boolean
   currentTab: number
   caipAddress?: CaipAddress
   address?: string
@@ -45,7 +44,6 @@ export interface AccountControllerState {
 
 // -- State --------------------------------------------- //
 const state = proxy<AccountControllerState>({
-  isConnected: false,
   currentTab: 0,
   tokenBalance: [],
   smartAccountDeployed: false,
@@ -97,19 +95,8 @@ export const AccountController = {
     )
   },
 
-  setIsConnected(
-    isConnected: AccountControllerState['isConnected'],
-    chain: ChainNamespace | undefined
-  ) {
-    ChainController.setAccountProp('isConnected', isConnected, chain)
-  },
-
   setStatus(status: AccountControllerState['status'], chain: ChainNamespace | undefined) {
     ChainController.setAccountProp('status', status, chain)
-  },
-
-  getChainIsConnected(chain: ChainNamespace | undefined) {
-    return ChainController.getAccountProp('isConnected', chain)
   },
 
   getCaipAddress(chain: ChainNamespace | undefined) {
@@ -235,7 +222,7 @@ export const AccountController = {
   },
 
   async fetchTokenBalance() {
-    const chainId = ChainController.state.activeCaipNetwork?.id
+    const chainId = ChainController.state.activeCaipNetwork?.caipNetworkId
     const chain = ChainController.state.activeCaipNetwork?.chainNamespace
     const caipAddress = ChainController.state.activeCaipAddress
     const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined

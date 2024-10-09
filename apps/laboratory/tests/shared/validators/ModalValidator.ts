@@ -3,6 +3,7 @@ import type { Page } from '@playwright/test'
 import { ConstantsUtil } from '../../../src/utils/ConstantsUtil'
 import { getMaximumWaitConnections } from '../utils/timeouts'
 import { verifySignature } from '../../../src/utils/SignatureUtil'
+import type { CaipNetworkId } from '@reown/appkit'
 
 const MAX_WAIT = getMaximumWaitConnections()
 
@@ -60,6 +61,15 @@ export class ModalValidator {
     })
   }
 
+  async expectSingleAccount() {
+    await expect(
+      this.page.getByTestId('single-account-avatar'),
+      'Single account widget should be present'
+    ).toBeVisible({
+      timeout: MAX_WAIT
+    })
+  }
+
   async expectConnectScreen() {
     await expect(this.page.getByText('Connect Wallet')).toBeVisible({
       timeout: MAX_WAIT
@@ -70,6 +80,13 @@ export class ModalValidator {
     const address = this.page.getByTestId('w3m-address')
 
     await expect(address, 'Correct address should be present').toHaveText(expectedAddress)
+  }
+
+  async expectCaipAddressHaveCorrectNetworkId(caipNetworkId: CaipNetworkId) {
+    const address = this.page.getByTestId('appkit-caip-address')
+    await expect(address, 'Correct CAIP address should be present').toContainText(
+      caipNetworkId.toString()
+    )
   }
 
   async expectNetwork(network: string) {
@@ -96,6 +113,10 @@ export class ModalValidator {
   async expectRejectedSign() {
     // We use Chakra Toast and it's not quite straightforward to set the `data-testid` attribute on the toast element.
     await expect(this.page.getByText(ConstantsUtil.SigningFailedToastTitle)).toBeVisible()
+    const closeButton = this.page.locator('#toast-close-button')
+
+    await expect(closeButton).toBeVisible()
+    await closeButton.click()
   }
 
   async expectSwitchedNetwork(network: string) {
@@ -123,8 +144,18 @@ export class ModalValidator {
     await expect(socialList).toBeHidden()
   }
 
+  async expectAlertBarText(text: string) {
+    const alertBarText = this.page.getByTestId('wui-alertbar-text')
+    await expect(alertBarText).toHaveText(text)
+  }
+
   async expectEmailLogin() {
     const emailInput = this.page.getByTestId('wui-email-input')
+    await expect(emailInput).toBeVisible()
+  }
+
+  async expectEmailLineSeparator() {
+    const emailInput = this.page.getByTestId('w3m-email-login-or-separator')
     await expect(emailInput).toBeVisible()
   }
 
@@ -171,9 +202,16 @@ export class ModalValidator {
     await expect(switchNetworkButton).toBeVisible()
   }
 
-  async expectOnrampButton(_library: string) {
+  async expectOnrampButton() {
     const onrampButton = this.page.getByTestId('w3m-account-default-onramp-button')
     await expect(onrampButton).toBeVisible()
+  }
+
+  async expectWalletGuide(_library: string, guide: 'get-started' | 'explore') {
+    const walletGuide = this.page.getByTestId(
+      guide === 'explore' ? 'w3m-wallet-guide-explore' : 'w3m-wallet-guide-get-started'
+    )
+    await expect(walletGuide).toBeVisible()
   }
 
   async expectAccountNameFound(name: string) {
@@ -199,6 +237,12 @@ export class ModalValidator {
     }
 
     throw new Error('Call status not confirmed')
+  }
+
+  async expectNetworkVisible(name: string) {
+    const network = this.page.getByTestId(`w3m-network-switch-${name}`)
+    await expect(network).toBeVisible()
+    await expect(network).toBeDisabled()
   }
 
   async expectNetworksDisabled(name: string) {

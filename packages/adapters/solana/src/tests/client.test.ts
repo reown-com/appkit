@@ -4,13 +4,31 @@ import { mockOptions } from './mocks/Options'
 import mockAppKit from './mocks/AppKit'
 import { mockAuthConnector } from './mocks/AuthConnector'
 import { Connection } from '@solana/web3.js'
-import { SafeLocalStorage } from '@reown/appkit-common'
+import { SafeLocalStorage, type CaipNetwork } from '@reown/appkit-common'
 import { ProviderUtil } from '@reown/appkit/store'
 import { SolHelpersUtil } from '@reown/appkit-utils/solana'
 import { SolStoreUtil } from '../utils/SolanaStoreUtil.js'
 import { WalletConnectProvider } from '../providers/WalletConnectProvider'
 import UniversalProvider from '@walletconnect/universal-provider'
-import { solana } from '@reown/appkit/networks'
+import {
+  solana as AppKitSolana,
+  solanaTestnet as AppKitSolanaTestnet
+} from '@reown/appkit/networks'
+import { CaipNetworksUtil } from '@reown/appkit-utils'
+
+const [solana, solanaTestnet] = CaipNetworksUtil.extendCaipNetworks(
+  [AppKitSolana, AppKitSolanaTestnet],
+  {
+    customNetworkImageUrls: {},
+    projectId: '1234'
+  }
+) as [CaipNetwork, CaipNetwork]
+
+const mockOptionsExtended = {
+  ...mockOptions,
+  networks: [solana, solanaTestnet] as [CaipNetwork, ...CaipNetwork[]],
+  defaultNetwork: solana
+}
 
 vi.mock('@solana/web3.js', () => ({
   Connection: vi.fn(),
@@ -65,7 +83,7 @@ describe('SolanaAdapter', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     client = new SolanaAdapter({})
-    client.construct(mockAppKit, mockOptions)
+    client.construct(mockAppKit, mockOptionsExtended)
   })
 
   afterEach(() => {
@@ -79,7 +97,7 @@ describe('SolanaAdapter', () => {
     })
 
     it('should set caipNetworks to provided caipNetworks options', () => {
-      expect(client['caipNetworks']).toEqual(mockOptions.networks)
+      expect(client['caipNetworks']).toEqual(mockOptionsExtended.networks)
     })
 
     it('should create network and connection controller clients', () => {
@@ -104,10 +122,10 @@ describe('SolanaAdapter', () => {
       vi.spyOn(mockAppKit, 'getAddress').mockReturnValue(mockAddress)
       vi.spyOn(client as any, 'syncBalance')
 
-      await client['syncNetwork']({ address: mockAddress })
+      await client['syncNetwork'](mockAddress)
 
       expect(mockAppKit.setAddressExplorerUrl).toHaveBeenCalledWith(
-        `${solana.explorerUrl}/account/${mockAddress}`,
+        `${solana.blockExplorers?.default.url}/account/${mockAddress}`,
         'solana'
       )
       expect(client['syncBalance']).toHaveBeenCalledWith(mockAddress)
@@ -122,7 +140,10 @@ describe('SolanaAdapter', () => {
       vi.spyOn(mockAppKit, 'getIsConnectedState').mockReturnValue(true)
       vi.spyOn(client as any, 'syncBalance').mockResolvedValue(undefined)
 
-      await client['syncAccount']({ address: mockAddress })
+      await client['syncAccount']({
+        address: mockAddress,
+        caipNetwork: solana
+      })
 
       expect(SolStoreUtil.setConnection).toHaveBeenCalled()
       expect(client['syncBalance']).toHaveBeenCalledWith(mockAddress)
@@ -147,7 +168,8 @@ describe('SolanaAdapter', () => {
       const mockProvider = {
         connect: vi.fn().mockResolvedValue('DjPi1LtwrXJMAh2AUvuUMajCpMJEKg8N1J1PbLGjCH5B'),
         name: 'MockProvider',
-        on: vi.fn()
+        on: vi.fn(),
+        chains: [solana, solanaTestnet]
       }
       vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValue(
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
@@ -161,11 +183,16 @@ describe('SolanaAdapter', () => {
         'solana'
       )
       expect(ProviderUtil.setProvider).toHaveBeenCalledWith('solana', mockProvider)
-      expect(ProviderUtil.setProviderId).toHaveBeenCalledWith('solana', 'walletConnect')
+      expect(ProviderUtil.setProviderId).toHaveBeenCalledWith('solana', 'injected')
     })
 
     it('should add provider', () => {
-      const mockProvider = { name: 'MockProvider', type: 'INJECTED', icon: 'mock-icon' }
+      const mockProvider = {
+        name: 'MockProvider',
+        type: 'INJECTED',
+        icon: 'mock-icon',
+        chains: [{ chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' }]
+      }
       client['addProvider'](mockProvider as any)
 
       expect(client['availableProviders']).toContain(mockProvider)

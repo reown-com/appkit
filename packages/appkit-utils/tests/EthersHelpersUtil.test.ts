@@ -1,38 +1,8 @@
 import { describe, it, expect, vi } from 'vitest'
 import { EthersHelpersUtil } from '../src/ethers/EthersHelpersUtil.js'
-import { ConstantsUtil } from '../src/ConstantsUtil.js'
-import { PresetsUtil } from '../src/PresetsUtil.js'
-import type { CaipNetwork } from '@reown/appkit-common'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { Provider } from '../src/ethers/EthersTypesUtil.js'
 
 describe('EthersHelpersUtil', () => {
-  describe('getCaipDefaultChain', () => {
-    it('should return undefined for undefined input', () => {
-      const result = EthersHelpersUtil.getCaipDefaultChain(undefined)
-      expect(result).toBeUndefined()
-    })
-
-    it('should convert chain to CAIP format', () => {
-      const mockChain: CaipNetwork = {
-        id: 'eip155:1',
-        name: 'Ethereum',
-        chainId: '1',
-        chainNamespace: CommonConstantsUtil.CHAIN.EVM,
-        rpcUrl: 'https://mainnet.infura.io/v3/',
-        currency: 'ETH',
-        explorerUrl: ''
-      }
-      const result = EthersHelpersUtil.getCaipDefaultChain(mockChain)
-      expect(result).toEqual({
-        id: `${ConstantsUtil.EIP155}:1`,
-        name: 'Ethereum',
-        imageId: PresetsUtil.NetworkImageIds['1'],
-        chainNamespace: CommonConstantsUtil.CHAIN.EVM
-      })
-    })
-  })
-
   describe('hexStringToNumber', () => {
     it('should convert hex string to number', () => {
       expect(EthersHelpersUtil.hexStringToNumber('0xa')).toBe(10)

@@ -7,8 +7,14 @@ import { WagmiSendUSDCTest } from './WagmiSendUSDCTest'
 import { WagmiSendCallsTest } from './WagmiSendCallsTest'
 import { WagmiGetCallsStatusTest } from './WagmiGetCallsStatusTest'
 import { WagmiSendCallsWithPaymasterServiceTest } from './WagmiSendCallsWithPaymasterServiceTest'
+import { WagmiDisconnectTest } from './WagmiDisconnectTest'
+import type { Config } from 'wagmi'
 
-export function WagmiTests() {
+interface IProps {
+  config?: Config
+}
+
+export function WagmiTests({ config }: IProps) {
   return (
     <Card marginTop={10} marginBottom={10}>
       <CardHeader>
@@ -48,7 +54,7 @@ export function WagmiTests() {
             <Heading size="xs" textTransform="uppercase" pb="2">
               USDC Send
             </Heading>
-            <WagmiSendUSDCTest />
+            <WagmiSendUSDCTest config={config} />
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
@@ -69,6 +75,13 @@ export function WagmiTests() {
               Send Calls (Paymaster Service)
             </Heading>
             <WagmiSendCallsWithPaymasterServiceTest />
+          </Box>
+
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Disconnect
+            </Heading>
+            <WagmiDisconnectTest />
           </Box>
         </Stack>
       </CardBody>

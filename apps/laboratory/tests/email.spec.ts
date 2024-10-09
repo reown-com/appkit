@@ -3,6 +3,8 @@ import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 import { Email } from './shared/utils/email'
 import { SECURE_WEBSITE_URL } from './shared/constants'
+import { mainnet, polygon, solana, solanaTestnet } from '@reown/appkit/networks'
+import type { CaipNetworkId } from '@reown/appkit'
 
 /* eslint-disable init-declarations */
 let page: ModalWalletPage
@@ -64,20 +66,33 @@ emailTest('it should reject sign', async () => {
 
 emailTest('it should switch network and sign', async ({ library }) => {
   let targetChain = library === 'solana' ? 'Solana Testnet' : 'Polygon'
+  let caipNetworkId: number | string = library === 'solana' ? solanaTestnet.id : polygon.id
+
   await page.switchNetwork(targetChain)
   await validator.expectSwitchedNetworkOnNetworksView(targetChain)
   await page.closeModal()
+  await validator.expectCaipAddressHaveCorrectNetworkId(caipNetworkId as CaipNetworkId)
+
   await page.sign()
   await page.approveSign()
   await validator.expectAcceptedSign()
 
   targetChain = library === 'solana' ? 'Solana' : 'Ethereum'
+  caipNetworkId = library === 'solana' ? solana.id : mainnet.id
   await page.switchNetwork(targetChain)
   await validator.expectSwitchedNetworkOnNetworksView(targetChain)
   await page.closeModal()
+  await validator.expectCaipAddressHaveCorrectNetworkId(caipNetworkId as CaipNetworkId)
+
   await page.sign()
   await page.approveSign()
   await validator.expectAcceptedSign()
+})
+
+emailTest('it should show names feature only for EVM networks', async ({ library }) => {
+  await page.goToSettings()
+  await validator.expectNamesFeatureVisible(library !== 'solana')
+  await page.closeModal()
 })
 
 emailTest('it should show loading on page refresh', async () => {

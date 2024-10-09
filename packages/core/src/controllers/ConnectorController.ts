@@ -32,16 +32,31 @@ export const ConnectorController = {
   },
 
   setConnectors(connectors: ConnectorControllerState['connectors']) {
-    const newConnectors = connectors.filter(
-      newConnector =>
-        !state.allConnectors.some(
-          existingConnector =>
-            existingConnector.id === newConnector.id &&
-            this.getConnectorName(existingConnector.name) ===
-              this.getConnectorName(newConnector.name) &&
-            existingConnector.chain === newConnector.chain
-        )
-    )
+    const newConnectors = connectors.filter(newConnector => {
+      try {
+        /**
+         * This is a fix for non-serializable objects that may prevent all the connectors in the list from being displayed
+         * Check more about this issue on https://valtio.dev/docs/api/basic/proxy#Gotchas
+         */
+        proxy(newConnector)
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('ConnectorController.setConnectors: Not possible to add connector', {
+          newConnector,
+          error
+        })
+
+        return false
+      }
+
+      return !state.allConnectors.some(
+        existingConnector =>
+          existingConnector.id === newConnector.id &&
+          this.getConnectorName(existingConnector.name) ===
+            this.getConnectorName(newConnector.name) &&
+          existingConnector.chain === newConnector.chain
+      )
+    })
 
     state.allConnectors = [...state.connectors, ...newConnectors]
     state.connectors = this.mergeMultiChainConnectors(state.allConnectors)
@@ -55,13 +70,15 @@ export const ConnectorController = {
     connectorsByNameMap.forEach(keyConnectors => {
       const firstItem = keyConnectors[0]
 
+      const isAuthConnector = firstItem?.id === 'w3mAuth'
+
       if (keyConnectors.length > 1) {
         mergedConnectors.push({
           name: firstItem?.name,
           imageUrl: firstItem?.imageUrl,
           imageId: firstItem?.imageId,
           connectors: [...keyConnectors],
-          type: 'MULTI_CHAIN',
+          type: isAuthConnector ? 'AUTH' : 'MULTI_CHAIN',
           // These values are just placeholders, we don't use them in multi-chain connector select screen
           chain: 'eip155',
           id: firstItem?.id || ''
@@ -152,10 +169,10 @@ export const ConnectorController = {
       return undefined
     }
 
-    if (authConnector.type === 'MULTI_CHAIN' && authConnector?.connectors?.length) {
-      return authConnector.connectors.find(c => c.chain === activeNamespace) as
-        | AuthConnector
-        | undefined
+    if (authConnector?.connectors?.length) {
+      const connector = authConnector.connectors.find(c => c.chain === activeNamespace)
+
+      return connector as AuthConnector | undefined
     }
 
     return authConnector as AuthConnector

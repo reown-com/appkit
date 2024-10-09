@@ -1,19 +1,19 @@
 import * as React from 'react'
 import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
-import EthereumProvider from '@walletconnect/ethereum-provider'
+import UniversalProvider from '@walletconnect/universal-provider'
 
 import { AppKitInfo } from '../AppKitInfo'
 
 export function EthersModalInfo() {
   const [ready, setReady] = React.useState(false)
   const [clientId, setClientId] = React.useState<string | undefined>(undefined)
-  const { isConnected, address } = useAppKitAccount()
+  const { isConnected, address, caipAddress } = useAppKitAccount()
   const { chainId } = useAppKitNetwork()
-  const { walletProvider, walletProviderType } = useAppKitProvider<EthereumProvider>('eip155')
+  const { walletProvider, walletProviderType } = useAppKitProvider<UniversalProvider>('eip155')
 
   async function getClientId() {
     if (walletProviderType === 'walletConnect') {
-      return await walletProvider?.signer?.client?.core?.crypto?.getClientId()
+      return await walletProvider?.client?.core?.crypto?.getClientId()
     }
 
     return undefined
@@ -28,6 +28,6 @@ export function EthersModalInfo() {
   }, [])
 
   return ready && isConnected && chainId ? (
-    <AppKitInfo address={address} chainId={chainId} clientId={clientId} />
+    <AppKitInfo caipAddress={caipAddress} address={address} chainId={chainId} clientId={clientId} />
   ) : null
 }

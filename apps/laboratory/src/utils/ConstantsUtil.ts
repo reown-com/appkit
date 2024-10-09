@@ -1,12 +1,31 @@
+import {
+  arbitrum,
+  mainnet,
+  optimism,
+  polygon,
+  zkSync,
+  sepolia,
+  solana,
+  solanaTestnet,
+  solanaDevnet,
+  base,
+  baseSepolia,
+  gnosis,
+  type AppKitNetwork
+} from '@reown/appkit/networks'
 import { getLocalStorageItem } from './LocalStorage'
+import type { CaipNetwork } from '@reown/appkit'
 
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 if (!projectId) {
   throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
 }
 export const WALLET_URL = process.env['WALLET_URL'] || 'https://react-wallet.walletconnect.com/'
-export const WC_COSIGNER_BASE_URL = 'https://rpc.walletconnect.org/v1/sessions'
-export const USEROP_BUILDER_SERVICE_BASE_URL = 'https://react-wallet.walletconnect.com/api'
+export const USEROP_BUILDER_SERVICE_BASE_URL = 'https://rpc.walletconnect.com/v1/wallet'
+
+export const GALLERY_URL = 'https://appkit-gallery.reown.com/'
+export const DOCS_URL = 'https://docs.reown.com/appkit/overview'
+export const REPO_URL = 'https://github.com/reown-com/appkit'
 
 export function getPublicUrl() {
   const publicUrl = process.env['NEXT_PUBLIC_PUBLIC_URL']
@@ -32,10 +51,41 @@ if (typeof window !== 'undefined') {
 
 const customWallet = storedCustomWallet ? [JSON.parse(storedCustomWallet)] : []
 
+const EvmNetworks = [
+  mainnet,
+  optimism,
+  polygon,
+  zkSync,
+  arbitrum,
+  base,
+  baseSepolia,
+  sepolia,
+  gnosis
+] as [AppKitNetwork, ...AppKitNetwork[]]
+
+export const solanaNotExist = {
+  id: 'chaindoesntexist',
+  caipNetworkId: 'solana:chaindoesntexist',
+  chainNamespace: 'solana',
+  name: 'Solana Unsupported',
+  nativeCurrency: { name: 'Solana', symbol: 'SOL', decimals: 9 },
+  blockExplorers: {
+    default: { name: 'Solscan', url: 'https://explorer.solana.com/?cluster=unsupported' }
+  },
+  rpcUrls: { default: { http: ['https://api.unsupported.solana.com'] } }
+} as CaipNetwork
+
+const SolanaNetworks = [solana, solanaTestnet, solanaDevnet, solanaNotExist] as [
+  AppKitNetwork,
+  ...AppKitNetwork[]
+]
+
 export const ConstantsUtil = {
   SigningSucceededToastTitle: 'Signing Succeeded',
   SigningFailedToastTitle: 'Signing Failed',
   TestIdSiweAuthenticationStatus: 'w3m-authentication-status',
+  DisconnectingSuccessToastTitle: 'Disconnecting Succeeded',
+  DisconnectingFailedToastTitle: 'Disconnecting Failed',
   Metadata: {
     name: 'AppKit Lab',
     description: 'Laboratory environment for AppKit testing',
@@ -83,5 +133,8 @@ export const ConstantsUtil = {
       image_url: '/sample-wallets/react-native.svg'
     }
   ],
-  ProjectId: projectId
+  ProjectId: projectId,
+  EvmNetworks,
+  SolanaNetworks,
+  AllNetworks: [...EvmNetworks, ...SolanaNetworks] as [AppKitNetwork, ...AppKitNetwork[]]
 }

@@ -1,4 +1,4 @@
-import { type CaipNetwork, type CaipNetworkId } from '@reown/appkit-common'
+import { type CaipNetworkId } from '@reown/appkit-common'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { UniversalProvider } from '@walletconnect/universal-provider'
 import { fallback, http, type Hex } from 'viem'
@@ -6,6 +6,7 @@ import { fallback, http, type Hex } from 'viem'
 import type { Chain } from '@wagmi/core/chains'
 import type { Connector } from '@wagmi/core'
 import { CoreHelperUtil } from '@reown/appkit-core'
+import { WcHelpersUtil } from '@reown/appkit'
 
 export async function getWalletConnectCaipNetworks(connector?: Connector) {
   if (!connector) {
@@ -15,22 +16,13 @@ export async function getWalletConnectCaipNetworks(connector?: Connector) {
     ReturnType<(typeof UniversalProvider)['init']>
   >
 
-  const ns = provider?.session?.namespaces
-
-  const nsChains: CaipNetworkId[] | undefined = []
-
-  if (ns) {
-    Object.keys(ns).forEach(key => {
-      const chains = ns?.[key]?.chains
-      if (chains) {
-        nsChains.push(...(chains as CaipNetworkId[]))
-      }
-    })
-  }
+  const approvedCaipNetworkIds = WcHelpersUtil.getChainsFromNamespaces(
+    provider?.session?.namespaces
+  )
 
   return {
-    supportsAllNetworks: true,
-    approvedCaipNetworkIds: nsChains
+    supportsAllNetworks: false,
+    approvedCaipNetworkIds
   }
 }
 
@@ -45,7 +37,7 @@ export function getEmailCaipNetworks() {
 
 export function getTransport({ chain, projectId }: { chain: Chain; projectId: string }) {
   const RPC_URL = CoreHelperUtil.getBlockchainApiUrl()
-  const chainDefaultUrl = chain.rpcUrls[0]?.http?.[0]
+  const chainDefaultUrl = chain.rpcUrls.default.http?.[0]
 
   if (!PresetsUtil.WalletConnectRpcChainIds.includes(chain.id)) {
     return http(chainDefaultUrl)
@@ -79,31 +71,10 @@ export function requireCaipAddress(caipAddress: string) {
   return account
 }
 
-export function convertToAppKitChains(caipNetworks: CaipNetwork[]) {
-  const chains = caipNetworks.map(caipNetwork => ({
-    blockExplorers: {
-      default: {
-        apiUrl: '',
-        name: '',
-        url: caipNetwork.explorerUrl || ''
-      }
-    },
-    fees: undefined,
-    formatters: undefined,
-    id: Number(caipNetwork.chainId),
-    name: caipNetwork.name,
-    nativeCurrency: {
-      decimals: 18,
-      name: caipNetwork.currency,
-      symbol: caipNetwork.currency
-    },
-    rpcUrls: {
-      default: {
-        http: [caipNetwork.rpcUrl]
-      }
-    },
-    serializers: undefined
-  })) as unknown as readonly [Chain, ...Chain[]]
-
-  return chains
+export function parseWalletCapabilities(str: string) {
+  try {
+    return JSON.parse(str)
+  } catch (error) {
+    throw new Error('Error parsing wallet capabilities')
+  }
 }

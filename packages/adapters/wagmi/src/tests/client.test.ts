@@ -1,15 +1,27 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { mockAccount, mockAppKit, mockOptions, mockWagmiClient } from './mocks/adapter.mock'
 import {
-  mockAccount,
-  mockAppKit,
-  mockChain,
-  mockOptions,
-  mockWagmiClient
-} from './mocks/adapter.mock'
-import { arbitrum, mainnet } from '@reown/appkit/networks'
+  arbitrum as AppkitArbitrum,
+  mainnet as AppkitMainnet,
+  polygon as AppkitPolygon,
+  optimism as AppkitOptimism,
+  bsc as AppkitBsc
+} from '@reown/appkit/networks'
 import { connect, disconnect, getAccount, getChainId, getEnsName, getBalance } from '@wagmi/core'
-import { ConstantsUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, ConstantsUtil } from '@reown/appkit-utils'
+import type { CaipNetwork } from '@reown/appkit-common'
+
+const [mainnet, arbitrum] = CaipNetworksUtil.extendCaipNetworks(
+  [AppkitMainnet, AppkitArbitrum, AppkitPolygon, AppkitOptimism, AppkitBsc],
+  { customNetworkImageUrls: {}, projectId: '1234' }
+) as [CaipNetwork, CaipNetwork, CaipNetwork, CaipNetwork, CaipNetwork]
+
+const mockOptionsExtended = {
+  ...mockOptions,
+  networks: [mainnet, arbitrum] as [CaipNetwork, ...CaipNetwork[]],
+  defaultNetwork: mainnet
+}
 
 vi.mock('@wagmi/core', async () => {
   const actual = await vi.importActual('@wagmi/core')
@@ -43,8 +55,8 @@ describe('Wagmi Client', () => {
        * Specifically to Wagmi, we are mutating caipNetworks on both Wagmi constructor and when we set adapters.
        * So there is not proper way to compare objects since imageId and imageUrl is added later.
        */
-      mockOptions.networks.forEach((network, index) => {
-        expect(mockWagmiClient.caipNetworks[index]?.name).toEqual(network.name)
+      mockWagmiClient.caipNetworks.forEach((network, index) => {
+        expect(network.name).toEqual(mockOptionsExtended.networks[index]?.name)
       })
     })
 
@@ -53,8 +65,8 @@ describe('Wagmi Client', () => {
        * Specifically to Wagmi, we are mutating caipNetworks on both Wagmi constructor and when we set adapters.
        * So there is not proper way to compare objects since imageId and imageUrl is added later.
        */
-      expect(mockWagmiClient.defaultCaipNetwork?.chainId).toEqual(mockOptions.networks[0]?.chainId)
-      expect(mockWagmiClient.defaultCaipNetwork?.name).toEqual(mockOptions.networks[0]?.name)
+      expect(mockWagmiClient.defaultCaipNetwork?.id).toEqual(mainnet.id)
+      expect(mockWagmiClient.defaultCaipNetwork?.name).toEqual(mainnet.name)
     })
 
     it('should create wagmi config', () => {
@@ -66,13 +78,13 @@ describe('Wagmi Client', () => {
     it('should switch to correct chain', async () => {
       await mockWagmiClient.networkControllerClient?.switchCaipNetwork(arbitrum)
 
-      expect(getChainId(mockWagmiClient.wagmiConfig)).toBe(arbitrum.chainId)
+      expect(getChainId(mockWagmiClient.wagmiConfig)).toBe(arbitrum.id)
     })
 
     it('should sync the correct requested networks', async () => {
       const setRequestedCaipNetworks = vi.spyOn(mockAppKit, 'setRequestedCaipNetworks')
 
-      mockWagmiClient['syncRequestedNetworks'](mockOptions.networks)
+      mockWagmiClient['syncRequestedNetworks']([mainnet, arbitrum])
 
       /**
        * Specifically to Wagmi, we are mutating caipNetworks on both Wagmi constructor and when we set adapters.
@@ -105,7 +117,7 @@ describe('Wagmi Client', () => {
       expect(setApprovedCaipNetworksData).toHaveBeenCalledOnce()
 
       expect(mockAppKit.getCaipAddress()).toBe(
-        `${ConstantsUtil.EIP155}:${mainnet.chainId}:${mockAccount.address}`
+        `${ConstantsUtil.EIP155}:${mainnet.id}:${mockAccount.address}`
       )
 
       const connectedWagmiAccount = getAccount(mockWagmiClient.wagmiConfig)
@@ -113,15 +125,22 @@ describe('Wagmi Client', () => {
       expect(connectedWagmiAccount.status).toBe('connected')
       expect(connectedWagmiAccount.address).toBe(mockAccount.address)
 
+      const resetAccountSpy = vi.spyOn(mockAppKit, 'resetAccount')
+      const resetWcSpy = vi.spyOn(mockAppKit, 'resetWcConnection')
+      const resetNetworkSpy = vi.spyOn(mockAppKit, 'resetNetwork')
+      const setAllAccountsSpy = vi.spyOn(mockAppKit, 'setAllAccounts')
+
       await disconnect(mockWagmiClient.wagmiConfig)
 
       const disconnectedWagmiAccount = getAccount(mockWagmiClient.wagmiConfig)
 
       expect(disconnectedWagmiAccount.status).toBe('disconnected')
       expect(disconnectedWagmiAccount.address).toBeUndefined()
+      expect(resetAccountSpy).toHaveBeenCalledOnce()
+      expect(resetWcSpy).toHaveBeenCalledOnce()
+      expect(resetNetworkSpy).toHaveBeenCalledOnce()
+      expect(setAllAccountsSpy).toHaveBeenCalledOnce()
     })
-
-    it('should disconnect from client', async () => {})
   })
 
   describe('Wagmi Client - Sync Account', () => {
@@ -159,45 +178,40 @@ describe('Wagmi Client', () => {
     it('should sync network correctly', async () => {
       const mockAddress = '0x1234567890123456789012345678901234567890'
 
-      mockWagmiClient.caipNetworks = [mockChain]
+      mockWagmiClient.caipNetworks = [mainnet, arbitrum]
 
       const setCaipNetworkSpy = vi.spyOn(mockAppKit, 'setCaipNetwork')
       const setCaipAddressSpy = vi.spyOn(mockAppKit, 'setCaipAddress')
       const setAddressExplorerUrlSpy = vi.spyOn(mockAppKit, 'setAddressExplorerUrl')
       const syncBalanceSpy = vi.spyOn(mockWagmiClient as any, 'syncBalance')
 
-      await (mockWagmiClient as any).syncNetwork(mockAddress, mockChain.chainId, true)
+      await (mockWagmiClient as any).syncNetwork(mockAddress, mainnet.id, true)
 
       expect(setCaipNetworkSpy).toHaveBeenCalledWith(
         expect.objectContaining({
-          chainId: 1,
-          id: 'eip155:1',
+          id: 1,
+          caipNetworkId: 'eip155:1',
           name: 'Ethereum',
-          chainNamespace: 'eip155',
-          currency: 'ETH',
-          explorerUrl: 'https://etherscan.io'
+          chainNamespace: 'eip155'
         })
       )
 
       expect(setCaipAddressSpy).toHaveBeenCalledWith(
-        `eip155:${mockChain.chainId}:${mockAddress}`,
+        `eip155:${mainnet.id}:${mockAddress}`,
         'eip155'
       )
       expect(setAddressExplorerUrlSpy).toHaveBeenCalledWith(
         'https://etherscan.io/address/0x1234567890123456789012345678901234567890',
         'eip155'
       )
-      expect(syncBalanceSpy).toHaveBeenCalledWith(mockAddress, mockChain.chainId)
+      expect(syncBalanceSpy).toHaveBeenCalledWith(mockAddress, mainnet.id)
     })
 
     it('should not sync network if chain is not found', async () => {
       const mockAddress = '0x1234567890123456789012345678901234567890'
       const mockChainId = 999
 
-      mockWagmiClient.options = {
-        ...mockOptions,
-        networks: []
-      }
+      mockWagmiClient.options = mockOptionsExtended
       const setCaipNetworkSpy = vi.spyOn(mockAppKit, 'setCaipNetwork')
       const syncBalanceSpy = vi.spyOn(mockWagmiClient as any, 'syncBalance')
 
@@ -258,7 +272,7 @@ describe('Wagmi Client', () => {
     const mockChainId = 1 // Ethereum mainnet
 
     beforeEach(() => {
-      mockWagmiClient.options = { networks: [mockChain], projectId: '123' }
+      mockWagmiClient.options = { networks: [mainnet], projectId: '123' }
       mockAppKit.setBalance = vi.fn()
       ;(getBalance as any).mockReset()
     })
@@ -413,7 +427,7 @@ describe('Wagmi Client', () => {
       expect(mockAppKit.addConnector).toHaveBeenCalledWith({
         id: ConstantsUtil.AUTH_CONNECTOR_ID,
         type: 'AUTH',
-        name: 'Auth',
+        name: 'w3mAuth',
         provider: 'mockProvider',
         chain: 'eip155'
       })
@@ -438,7 +452,8 @@ describe('Wagmi Client', () => {
         onIsConnected: vi.fn(),
         onGetSmartAccountEnabledNetworks: vi.fn(),
         onSetPreferredAccount: vi.fn(),
-        rejectRpcRequests: vi.fn()
+        rejectRpcRequests: vi.fn(),
+        onConnect: vi.fn()
       }
       mockConnector = {
         getProvider: vi.fn().mockResolvedValue(mockProvider)

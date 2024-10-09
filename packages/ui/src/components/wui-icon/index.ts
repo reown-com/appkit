@@ -73,11 +73,13 @@ import { verifySvg } from '../../assets/svg/verify.js'
 import { verifyFilledSvg } from '../../assets/svg/verify-filled.js'
 import { walletPlaceholderSvg } from '../../assets/svg/wallet-placeholder.js'
 import { walletSvg } from '../../assets/svg/wallet.js'
-import { walletConnectSvg } from '../../assets/svg/walletconnect.js'
+import { walletConnectLightBrownSvg, walletConnectSvg } from '../../assets/svg/walletconnect.js'
 import { warningCircleSvg } from '../../assets/svg/warning-circle.js'
 import { lightbulbSvg } from '../../assets/svg/lightbulb.js'
 import { idSvg } from '../../assets/svg/id.js'
 import { xSvg } from '../../assets/svg/x.js'
+import { infoSvg } from '../../assets/svg/info.js'
+import { exclamationTriangleSvg } from '../../assets/svg/exclamation-triangle.js'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   add: addSvg,
@@ -149,9 +151,12 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   verifyFilled: verifyFilledSvg,
   wallet: walletSvg,
   walletConnect: walletConnectSvg,
+  walletConnectLightBrown: walletConnectLightBrownSvg,
   walletPlaceholder: walletPlaceholderSvg,
   warningCircle: warningCircleSvg,
-  x: xSvg
+  x: xSvg,
+  info: infoSvg,
+  exclamationTriangle: exclamationTriangleSvg
 }
 
 @customElement('wui-icon')

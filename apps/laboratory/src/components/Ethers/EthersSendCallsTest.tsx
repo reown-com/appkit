@@ -1,9 +1,19 @@
-import { Button, Stack, Text, Spacer, Heading } from '@chakra-ui/react'
+import {
+  Box,
+  Link,
+  Stat,
+  StatLabel,
+  StatNumber,
+  StatHelpText,
+  Card,
+  CardBody
+} from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
+import { Button, Stack, Text, Spacer, Heading } from '@chakra-ui/react'
 import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
-import { EthereumProvider } from '@walletconnect/ethereum-provider'
+import { UniversalProvider } from '@walletconnect/universal-provider'
 import { useChakraToast } from '../Toast'
-import type { Address } from 'viem'
+import { parseGwei, type Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { BrowserProvider, type Eip1193Provider } from 'ethers'
 import {
@@ -11,17 +21,38 @@ import {
   WALLET_CAPABILITIES,
   getCapabilitySupportedChainInfo
 } from '../../utils/EIP5792Utils'
+import { AddIcon, DeleteIcon } from '@chakra-ui/icons'
+import { AddTransactionModal } from '../AddTransactionModal'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
+type Provider = W3mFrameProvider | Awaited<ReturnType<(typeof UniversalProvider)['init']>>
 
-type Provider = W3mFrameProvider | Awaited<ReturnType<(typeof EthereumProvider)['init']>>
-
-export function EthersSendCallsTest() {
+export function EthersSendCallsTest({ onCallsHash }: { onCallsHash: (hash: string) => void }) {
   const [loading, setLoading] = useState(false)
 
   const { chainId } = useAppKitNetwork()
   const { address, isConnected } = useAppKitAccount()
   const { walletProvider } = useAppKitProvider<Eip1193Provider>('eip155')
+  const [transactionsToBatch, setTransactionsToBatch] = useState<{ value: string; to: string }[]>(
+    []
+  )
   const toast = useChakraToast()
+
+  const [isOpen, setIsOpen] = useState(false)
+  function onSubmit(args: { to: string; eth: string }) {
+    setLastCallsBatchId(null)
+    setTransactionsToBatch(prev => [
+      ...prev,
+      {
+        to: args.to as `0x${string}`,
+        data: '0x' as `0x${string}`,
+        value: `0x${parseGwei(args.eth).toString(16)}`
+      }
+    ])
+  }
+
+  function onClose() {
+    setIsOpen(false)
+  }
 
   const [atomicBatchSupportedChains, setAtomicBatchSupportedChains] = useState<
     Awaited<ReturnType<typeof getCapabilitySupportedChainInfo>>
@@ -33,7 +64,7 @@ export function EthersSendCallsTest() {
     if (address && walletProvider) {
       getCapabilitySupportedChainInfo(
         WALLET_CAPABILITIES.ATOMIC_BATCH,
-        walletProvider as Provider,
+        walletProvider as unknown as Provider,
         address
       ).then(capabilities => setAtomicBatchSupportedChains(capabilities))
     } else {
@@ -47,6 +78,14 @@ export function EthersSendCallsTest() {
   const currentChainsInfo = atomicBatchSupportedChains.find(
     chainInfo => chainInfo.chainId === Number(chainId)
   )
+
+  function onAddTransactionButtonClick() {
+    setIsOpen(true)
+  }
+
+  function onRemoveTransaction(index: number) {
+    setTransactionsToBatch(prev => prev.filter((_, i) => i !== index))
+  }
 
   async function onSendCalls() {
     try {
@@ -74,7 +113,7 @@ export function EthersSendCallsTest() {
         version: '1.0',
         chainId: `0x${BigInt(chainId).toString(16)}`,
         from: address,
-        calls
+        calls: transactionsToBatch.length ? transactionsToBatch : calls
       }
       const batchCallHash = await provider.send(EIP_5792_RPC_METHODS.WALLET_SEND_CALLS, [
         sendCallsParams
@@ -86,6 +125,8 @@ export function EthersSendCallsTest() {
         description: batchCallHash,
         type: 'success'
       })
+      setTransactionsToBatch([])
+      onCallsHash(batchCallHash)
     } catch {
       toast({
         title: 'Error',
@@ -100,9 +141,9 @@ export function EthersSendCallsTest() {
     if (walletProvider instanceof W3mFrameProvider) {
       return true
     }
-    if (walletProvider instanceof EthereumProvider) {
+    if (walletProvider instanceof UniversalProvider) {
       return Boolean(
-        walletProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
+        walletProvider?.session?.namespaces?.['eip155']?.methods?.includes(
           EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
         )
       )
@@ -134,23 +175,62 @@ export function EthersSendCallsTest() {
   }
 
   return currentChainsInfo ? (
-    <Stack direction={['column', 'column']}>
-      <Button
-        data-testid="send-calls-button"
-        onClick={onSendCalls}
-        isDisabled={loading}
-        maxWidth={'50%'}
-      >
-        Send Batch Calls to Vitalik
-      </Button>
-      <Spacer />
+    <>
+      <Box>
+        <Stack direction={['column', 'column', 'row']}>
+          <Stack direction={['column']}>
+            (
+            {transactionsToBatch.length ? (
+              transactionsToBatch.map((tx, index) => (
+                <>
+                  <Card>
+                    <CardBody>
+                      <Stat>
+                        <StatLabel>
+                          ({index + 1}) Sending
+                          <DeleteIcon
+                            style={{ float: 'right', cursor: 'pointer' }}
+                            onClick={() => onRemoveTransaction(index)}
+                          />
+                        </StatLabel>
+                        <StatNumber>{parseInt(tx.value, 16) / 1000000000} ETH</StatNumber>
+                        <StatHelpText>to {tx.to}</StatHelpText>
+                      </Stat>
+                    </CardBody>
+                  </Card>{' '}
+                  <Spacer />
+                </>
+              ))
+            ) : (
+              <Button data-test-id="send-calls-button" onClick={onSendCalls} isDisabled={loading}>
+                Send Batch Calls to Vitalik
+              </Button>
+            )}
+            )
+          </Stack>
+          <Spacer />
+          <Link onClick={onAddTransactionButtonClick}>
+            <Button variant="outline" colorScheme="blue" isDisabled={loading}>
+              <AddIcon mr={2} /> Add Transaction
+            </Button>
+          </Link>
+        </Stack>
+        {transactionsToBatch.length ? (
+          <Button data-test-id="send-calls-button" onClick={onSendCalls} isDisabled={loading}>
+            Send Calls
+          </Button>
+        ) : null}
+      </Box>
+      <AddTransactionModal isOpen={isOpen} onSubmit={onSubmit} onClose={onClose} />
+
+      <Spacer m={2} />
       {lastCallsBatchId && (
         <>
           <Heading size="xs">Last batch call ID:</Heading>
           <Text data-testid="send-calls-id">{lastCallsBatchId}</Text>
         </>
       )}
-    </Stack>
+    </>
   ) : (
     <Text fontSize="md" color="yellow">
       Switch to {atomicBatchSupportedChainsNames} to test atomic batch feature

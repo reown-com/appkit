@@ -1,4 +1,4 @@
-import { EthereumProvider } from '@walletconnect/ethereum-provider'
+import { UniversalProvider } from '@walletconnect/universal-provider'
 import { getChain } from './NetworksUtil'
 import { parseJSON } from './CommonUtils'
 import { fromHex, type WalletCapabilities } from 'viem'
@@ -54,13 +54,12 @@ export function convertCapabilitiesToRecord(
     Object.entries(accountCapabilities).map(([key, value]) => [parseInt(key, 16), value])
   )
 }
-/* eslint-enable @typescript-eslint/no-explicit-any */
 
 export function getProviderCachedCapabilities(
   address: string,
-  provider: Awaited<ReturnType<(typeof EthereumProvider)['init']>>
+  provider: Awaited<ReturnType<(typeof UniversalProvider)['init']>>
 ) {
-  const walletCapabilitiesString = provider.signer?.session?.sessionProperties?.['capabilities']
+  const walletCapabilitiesString = provider?.session?.sessionProperties?.['capabilities']
   if (!walletCapabilitiesString) {
     return undefined
   }
@@ -75,7 +74,7 @@ export function getProviderCachedCapabilities(
 
 export async function getCapabilitySupportedChainInfo(
   capability: string,
-  provider: Awaited<ReturnType<(typeof EthereumProvider)['init']>> | W3mFrameProvider,
+  provider: Awaited<ReturnType<(typeof UniversalProvider)['init']>> | W3mFrameProvider,
   address: string
 ): Promise<
   {

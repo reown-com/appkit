@@ -7,6 +7,13 @@ import {
   useAppKitState,
   useAppKitTheme
 } from '@reown/appkit/vue'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
+import {
+  PhantomWalletAdapter,
+  HuobiWalletAdapter,
+  SolflareWalletAdapter,
+  TrustWalletAdapter
+} from '@solana/wallet-adapter-wallets'
 import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
 import {
   PhantomWalletAdapter,
@@ -26,6 +33,16 @@ const networks = [solana, solanaTestnet, solanaDevnet]
 
 // 3. Create modal
 createAppKit({
+  adapters: [
+    new SolanaAdapter({
+      wallets: [
+        new HuobiWalletAdapter(),
+        new PhantomWalletAdapter(),
+        new SolflareWalletAdapter(),
+        new TrustWalletAdapter()
+      ]
+    })
+  ],
   metadata: {
     name: 'AppKit React Example',
     description: 'AppKit React Example',
@@ -35,13 +52,6 @@ createAppKit({
   projectId,
   themeMode: 'light',
   networks,
-  wallets: [
-    new BackpackWalletAdapter(),
-    new HuobiWalletAdapter(),
-    new PhantomWalletAdapter(),
-    new SolflareWalletAdapter(),
-    new TrustWalletAdapter()
-  ],
   themeVariables: {
     '--w3m-color-mix': '#00DCFF',
     '--w3m-color-mix-strength': 20

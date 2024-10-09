@@ -15,16 +15,22 @@ describe('SafeLocalStorage unsafe', () => {
   })
 
   it('should not setItem', () => {
-    const key = '@w3m/wallet_id'
+    const key = '@appkit/wallet_id'
 
     expect(SafeLocalStorage.setItem(key, '1')).toBe(undefined)
-    expect(SafeLocalStorage.getItem(key)).toBe(null)
+    expect(SafeLocalStorage.getItem(key)).toBe(undefined)
     expect(SafeLocalStorage.removeItem(key)).toBe(undefined)
   })
 })
 
 describe('SafeLocalStorage safe', () => {
-  let getItem = vi.fn(() => '{"test":"test"}')
+  let getItem = vi.fn(value => {
+    if (value === '@appkit/wallet_id') {
+      return 'test'
+    }
+
+    return undefined
+  })
   let setItem = vi.fn()
   let removeItem = vi.fn()
 
@@ -32,18 +38,29 @@ describe('SafeLocalStorage safe', () => {
     Object.assign(globalThis, { window: {}, localStorage: { getItem, setItem, removeItem } })
   })
 
-  it('should setItem', () => {
-    expect(SafeLocalStorage.setItem('@w3m/wallet_id', 'test')).toBe(undefined)
-    expect(setItem).toHaveBeenCalledWith('@w3m/wallet_id', '"test"')
+  afterAll(() => {
+    getItem.mockClear()
+    setItem.mockClear()
+    removeItem.mockClear()
   })
 
-  it('should getItem', () => {
-    expect(SafeLocalStorage.getItem('@w3m/wallet_id')).toEqual({ test: 'test' })
-    expect(getItem).toHaveBeenCalledWith('@w3m/wallet_id')
+  it('should setItem', () => {
+    expect(SafeLocalStorage.setItem('@appkit/wallet_id', 'test')).toBe(undefined)
+    expect(setItem).toHaveBeenCalledWith('@appkit/wallet_id', 'test')
+  })
+
+  it('should getItem ', () => {
+    expect(SafeLocalStorage.getItem('@appkit/wallet_id')).toEqual('test')
+    expect(getItem).toHaveBeenCalledWith('@appkit/wallet_id')
   })
 
   it('should removeItem', () => {
-    expect(SafeLocalStorage.removeItem('@w3m/wallet_id')).toBe(undefined)
-    expect(removeItem).toHaveBeenCalledWith('@w3m/wallet_id')
+    expect(SafeLocalStorage.removeItem('@appkit/wallet_id')).toBe(undefined)
+    expect(removeItem).toHaveBeenCalledWith('@appkit/wallet_id')
+  })
+
+  it('getItem should return undefined if the value not exist', () => {
+    expect(SafeLocalStorage.getItem('@appkit/connected_connector')).toBe(undefined)
+    expect(getItem).toHaveBeenCalledWith('@appkit/connected_connector')
   })
 })
