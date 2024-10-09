@@ -82,7 +82,7 @@ import type { AppKit } from '@reown/appkit'
 import { walletConnect } from './connectors/UniversalConnector.js'
 import { coinbaseWallet } from '@wagmi/connectors'
 import { authConnector } from './connectors/AuthConnector.js'
-import { ProviderUtil } from '@reown/appkit/store'
+import { ProviderUtil, type ProviderIdType } from '@reown/appkit/store'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions<C extends Config>
@@ -682,7 +682,7 @@ export class WagmiAdapter implements ChainAdapter {
 
     if (this.wagmiConfig) {
       if (connector) {
-        if (connector && connector.name === 'WalletConnect' && connector.getProvider && address) {
+        if (connector.name === 'WalletConnect' && connector.getProvider && address) {
           const activeCaipNetwork = this.appKit?.getCaipNetwork()
           const currentChainId = chainId || (activeCaipNetwork?.id as number | undefined)
           const provider = (await connector.getProvider()) as UniversalProvider
@@ -715,20 +715,18 @@ export class WagmiAdapter implements ChainAdapter {
             ])
           }
         } else if (status === 'connected' && address && chainId) {
+          ProviderUtil.setProvider(this.chainNamespace, await connector.getProvider())
+          ProviderUtil.setProviderId(this.chainNamespace, connector.id as ProviderIdType)
           const caipAddress = `eip155:${chainId}:${address}` as CaipAddress
           this.syncNetwork(address, chainId, true)
-          this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
           await Promise.all([
             this.syncProfile(address, chainId),
             this.syncBalance(address, chainId),
             this.syncConnectedWalletInfo(connector),
             this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
           ])
-          if (connector) {
-            this.syncConnectedWalletInfo(connector)
-            ProviderUtil.setProvider(this.chainNamespace, await connector.getProvider())
-          }
-
+          this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
+          this.appKit?.setStatus('connected', this.chainNamespace)
           // Set by authConnector.onIsConnectedHandler as we need the account type
           if (!isAuthConnector && addresses?.length) {
             this.appKit?.setAllAccounts(
