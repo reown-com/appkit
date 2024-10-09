@@ -6,7 +6,7 @@ import { useLocalEcdsaKey } from '../../context/LocalEcdsaKeyContext'
 import { bigIntReplacer } from '../../utils/CommonUtils'
 import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
 import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
-import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 import {
   grantPermissions,
   isSmartSessionSupported,
@@ -15,8 +15,13 @@ import {
 
 export function WagmiRequestPermissionsAsyncTest() {
   const { address, isConnected } = useAppKitAccount()
-
+  const { walletProvider } = useAppKitProvider('eip155')
   const { chainId } = useAppKitNetwork()
+
+  const isSupported = useMemo(
+    () => isSmartSessionSupported(),
+    [walletProvider, chainId, address, isConnected]
+  )
 
   if (!isConnected || !address || !chainId) {
     return (
@@ -25,8 +30,6 @@ export function WagmiRequestPermissionsAsyncTest() {
       </Text>
     )
   }
-
-  const isSupported = isSmartSessionSupported()
 
   if (!isSupported) {
     return (

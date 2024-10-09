@@ -8,3 +8,6 @@ export type {
   SmartSessionGrantPermissionsRequest,
   SmartSessionGrantPermissionsResponse
 } from '../../src/smart-session/utils/TypeUtils.js'
+
+// Views
+export * from '../../src/smart-session/ui/views/w3m-smart-session-created-view/index.js'
