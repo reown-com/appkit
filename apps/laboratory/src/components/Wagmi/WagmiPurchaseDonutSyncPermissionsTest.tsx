@@ -6,12 +6,31 @@ import { encodeFunctionData, parseEther } from 'viem'
 import { abi as donutContractAbi, address as donutContractaddress } from '../../utils/DonutContract'
 import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
 import { usePasskey } from '../../context/PasskeyContext'
-import { sepolia } from 'viem/chains'
-import { executeActionsWithPasskeyAndCosignerPermissions } from '../../utils/ERC7715Utils'
+import { executeActionsWithPasskey } from '../../utils/ERC7715Utils'
+import { getChain } from '../../utils/NetworksUtil'
+import type { SmartSessionGrantPermissionsResponse } from '@reown/appkit-experimental/smart-session'
 
 export function WagmiPurchaseDonutSyncPermissionsTest() {
+  const { smartSession } = useERC7715Permissions()
+
+  if (smartSession?.type !== 'sync' || !smartSession.grantedPermissions?.context) {
+    return (
+      <Text fontSize="md" color="yellow">
+        Dapp does not have the permissions
+      </Text>
+    )
+  }
+
+  return <ConnectedTestContent grantedPermissions={smartSession.grantedPermissions} />
+}
+function ConnectedTestContent({
+  grantedPermissions
+}: {
+  grantedPermissions: SmartSessionGrantPermissionsResponse
+}) {
   const { passkeyId } = usePasskey()
-  const { grantedPermissions, pci } = useERC7715Permissions()
+  const toast = useChakraToast()
+  const [isTransactionPending, setTransactionPending] = useState<boolean>(false)
 
   const {
     data: donutsOwned,
@@ -22,22 +41,23 @@ export function WagmiPurchaseDonutSyncPermissionsTest() {
     abi: donutContractAbi,
     address: donutContractaddress,
     functionName: 'getBalance',
-    args: [grantedPermissions?.signerData?.submitToAddress || '0x']
+    args: [grantedPermissions.address]
   })
-
-  const [isTransactionPending, setTransactionPending] = useState<boolean>(false)
-  const toast = useChakraToast()
 
   async function onPurchaseDonutWithPermissions() {
     setTransactionPending(true)
     try {
-      if (!grantedPermissions) {
-        throw Error('No permissions available')
+      const chainId = parseInt(grantedPermissions.chainId, 16)
+      if (!chainId) {
+        throw new Error('Chain ID not available in granted permissions')
       }
-      if (!pci) {
-        throw Error('No WC cosigner data(PCI) available')
+      const chain = getChain(chainId)
+      if (!chain) {
+        throw new Error('Unknown chainId')
       }
-
+      if (!passkeyId) {
+        throw new Error(`Unable to get passkeyId`)
+      }
       const purchaseDonutCallData = encodeFunctionData({
         abi: donutContractAbi,
         functionName: 'purchase',
@@ -50,12 +70,12 @@ export function WagmiPurchaseDonutSyncPermissionsTest() {
           data: purchaseDonutCallData
         }
       ]
-      const txHash = await executeActionsWithPasskeyAndCosignerPermissions({
+      const txHash = await executeActionsWithPasskey({
+        accountAddress: grantedPermissions.address,
         actions: purchaseDonutCallDataExecution,
-        chain: sepolia,
+        chain,
         passkeyId,
-        permissions: grantedPermissions,
-        pci
+        permissionsContext: grantedPermissions.context
       })
       if (txHash) {
         toast({
@@ -73,14 +93,6 @@ export function WagmiPurchaseDonutSyncPermissionsTest() {
       })
     }
     setTransactionPending(false)
-  }
-
-  if (!grantedPermissions) {
-    return (
-      <Text fontSize="md" color="yellow">
-        Dapp does not have the permissions
-      </Text>
-    )
   }
 
   return (

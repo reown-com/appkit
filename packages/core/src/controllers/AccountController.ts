@@ -222,7 +222,7 @@ export const AccountController = {
   },
 
   async fetchTokenBalance() {
-    const chainId = ChainController.state.activeCaipNetwork?.id
+    const chainId = ChainController.state.activeCaipNetwork?.caipNetworkId
     const chain = ChainController.state.activeCaipNetwork?.chainNamespace
     const caipAddress = ChainController.state.activeCaipAddress
     const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined

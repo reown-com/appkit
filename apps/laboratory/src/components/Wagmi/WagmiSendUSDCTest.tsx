@@ -1,97 +1,100 @@
 import { Button, Stack, Link, Text, Spacer, Input } from '@chakra-ui/react'
-import { useAccount, useWriteContract } from 'wagmi'
-import { useCallback, useState } from 'react'
-import { optimism, sepolia } from 'wagmi/chains'
+import { useAccount, type Config } from 'wagmi'
+import { useState } from 'react'
+import { arbitrum, base, optimism, sepolia } from '@reown/appkit/networks'
 import { useChakraToast } from '../Toast'
+import { erc20Abi, type Chain, type Hex } from 'viem'
+import { getWalletClient } from 'wagmi/actions'
 
-const minTokenAbi = [
-  {
-    inputs: [
-      { internalType: 'address', name: 'to', type: 'address' },
-      { internalType: 'uint256', name: 'value', type: 'uint256' }
-    ],
-    name: 'transfer',
-    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [{ internalType: 'address', name: 'account', type: 'address' }],
-    name: 'balanceOf',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'decimals',
-    outputs: [{ internalType: 'uint8', name: '', type: 'uint8' }],
-    stateMutability: 'view',
-    type: 'function'
-  }
-]
+const ALLOWED_CHAINS = [sepolia, optimism, base, arbitrum]
+const ALLOWED_CHAINIDS = ALLOWED_CHAINS.map(chain => chain.id) as number[]
+const TOKEN_ADDRESSES = {
+  [sepolia.id]: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238' as Hex,
+  [optimism.id]: '0x0b2c639c533813f4aa9d7837caf62653d097ff85' as Hex,
+  [base.id]: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' as Hex,
+  [arbitrum.id]: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831' as Hex
+}
 
-const ALLOWED_CHAINS = [sepolia.id, optimism.id] as number[]
+interface IBaseProps {
+  config?: Config
+}
 
-export function WagmiSendUSDCTest() {
+export function WagmiSendUSDCTest({ config }: IBaseProps) {
   const { status, chain } = useAccount()
 
-  return ALLOWED_CHAINS.includes(Number(chain?.id)) && status === 'connected' ? (
-    <AvailableTestContent />
+  return ALLOWED_CHAINIDS.includes(Number(chain?.id)) && status === 'connected' && chain ? (
+    <AvailableTestContent chain={chain} config={config} />
   ) : (
     <Text fontSize="md" color="yellow">
-      Switch to Sepolia or OP to test this feature
+      Allowed chains are:{' '}
+      {ALLOWED_CHAINS.map(c => (
+        <span key={c.name}>{c.name}, </span>
+      ))}
     </Text>
   )
 }
 
-function AvailableTestContent() {
+interface IProps {
+  chain: Chain
+  config?: Config
+}
+
+function AvailableTestContent({ chain, config }: IProps) {
   const [address, setAddress] = useState('')
   const [amount, setAmount] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   const toast = useChakraToast()
 
-  const { writeContract, isPending: isLoading } = useWriteContract({
-    mutation: {
-      onSuccess: hash => {
-        toast({
-          title: 'Transaction Success',
-          description: hash,
-          type: 'success'
-        })
-      },
-      onError: () => {
-        toast({
-          title: 'Error',
-          description: 'Failed to send transaction',
-          type: 'error'
-        })
-      }
-    }
-  })
+  async function onSendTransaction(wagmiConfig: Config) {
+    const usdcAmount = BigInt(Number(amount) * 1000000)
+    const chainId = chain.id as keyof typeof TOKEN_ADDRESSES
+    const contractAddress = TOKEN_ADDRESSES[chainId]
+    const client = await getWalletClient(wagmiConfig)
 
-  const onSendTransaction = useCallback(() => {
-    writeContract({
-      abi: minTokenAbi,
-      functionName: 'transfer',
-      args: [address, amount],
-      address: '0x1c7d4b196cb0c7b01d743fbc6116a902379c7238'
-    })
-  }, [writeContract, address, amount])
+    try {
+      setIsLoading(true)
+
+      const hash = await client.writeContract({
+        abi: erc20Abi,
+        functionName: 'transfer',
+        args: [address as Hex, usdcAmount],
+        address: contractAddress
+      })
+      toast({
+        title: 'Transaction Success',
+        description: hash,
+        type: 'success'
+      })
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to send transaction',
+        type: 'error'
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  if (!config) {
+    return <Text>Config is not available</Text>
+  }
 
   return (
     <Stack direction={['column', 'column', 'row']}>
       <Spacer />
-      <Input placeholder="0xf34ffa..." onChange={e => setAddress(e.target.value)} value={address} />
+      <Input placeholder="Destination" onChange={e => setAddress(e.target.value)} value={address} />
       <Input
-        placeholder="Units (1000000000 for 1 USDC)"
+        placeholder="USDC Amount"
         onChange={e => setAmount(e.target.value)}
         value={amount}
         type="number"
       />
       <Button
         data-testid="sign-transaction-button"
-        onClick={onSendTransaction}
-        disabled={!writeContract}
+        onClick={() => {
+          onSendTransaction(config)
+        }}
         isDisabled={isLoading}
         isLoading={isLoading}
         width="80%"
