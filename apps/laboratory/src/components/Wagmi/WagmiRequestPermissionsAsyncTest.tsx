@@ -17,7 +17,6 @@ export function WagmiRequestPermissionsAsyncTest() {
   const { address, isConnected } = useAppKitAccount()
 
   const { chainId } = useAppKitNetwork()
-  const isSupported = useMemo(() => isSmartSessionSupported(), [address])
 
   if (!isConnected || !address || !chainId) {
     return (
@@ -26,6 +25,9 @@ export function WagmiRequestPermissionsAsyncTest() {
       </Text>
     )
   }
+
+  const isSupported = isSmartSessionSupported()
+
   if (!isSupported) {
     return (
       <Text fontSize="md" color="yellow">

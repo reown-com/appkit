@@ -82,7 +82,7 @@ import type { AppKit } from '@reown/appkit'
 import { walletConnect } from './connectors/UniversalConnector.js'
 import { coinbaseWallet } from '@wagmi/connectors'
 import { authConnector } from './connectors/AuthConnector.js'
-import { ProviderUtil } from '@reown/appkit/store'
+import { ProviderUtil, type ProviderIdType } from '@reown/appkit/store'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions<C extends Config>
@@ -718,15 +718,18 @@ export class WagmiAdapter implements ChainAdapter {
           const caipAddress = `eip155:${chainId}:${address}` as CaipAddress
           this.syncNetwork(address, chainId, true)
           this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
+
           await Promise.all([
             this.syncProfile(address, chainId),
             this.syncBalance(address, chainId),
             this.syncConnectedWalletInfo(connector),
             this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
           ])
-          if (connector) {
-            this.syncConnectedWalletInfo(connector)
-          }
+          const provider = await connector.getProvider()
+          ProviderUtil.setProvider('eip155', provider)
+          ProviderUtil.setProviderId('eip155', connector.id as ProviderIdType)
+
+          this.syncConnectedWalletInfo(connector)
 
           // Set by authConnector.onIsConnectedHandler as we need the account type
           if (!isAuthConnector && addresses?.length) {
