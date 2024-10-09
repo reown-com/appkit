@@ -600,11 +600,7 @@ export class AppKit {
       },
       disconnect: async () => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
-        console.log('STOP LISTEN')
 
-        adapter?.off('disconnect', () => {})
-        adapter?.off('switchNetwork', () => {})
-        adapter?.off('accountChanged', () => {})
         await adapter?.disconnect()
 
         ChainController.state.chains.forEach(chain => {
@@ -655,17 +651,48 @@ export class AppKit {
     NetworkController.setClient(this.networkControllerClient)
   }
 
+  private handleSwitchNetwork(chainNamespace: ChainNamespace, chainId: number | string) {
+    if (ChainController.state.activeChain === chainNamespace) {
+      const caipNetwork = this.options?.networks.find(
+        n => n.chainId === chainId && n.chainNamespace === ChainController.state.activeChain
+      )
+      if (caipNetwork !== ChainController.state.activeCaipNetwork && caipNetwork) {
+        this.switchNetwork(caipNetwork)
+      }
+    }
+  }
+
+  private handleAccountChanged(chainNamespace: ChainNamespace, address: string) {
+    if (ChainController.state.activeChain === chainNamespace) {
+      this.setCaipAddress(
+        `${ChainController.state.activeChain}:${ChainController.state.activeCaipNetwork?.chainId}:${address}` as `${ChainNamespace}:${string}:${string}`,
+        ChainController.state.activeChain as ChainNamespace
+      )
+    }
+  }
+
+  private async handleDisconnect() {
+    await this.connectionControllerClient?.disconnect()
+  }
+
   private listenAdapter(chainNamespace: ChainNamespace) {
     const adapter = this.getAdapter(chainNamespace)
 
     adapter?.on('switchNetwork', (chainId: number | string) => {
       if (ChainController.state.activeChain === chainNamespace) {
-        const caipNetwork = this.options?.networks.find(
-          n => n.chainId === chainId && n.chainNamespace === ChainController.state.activeChain
-        )
-        if (caipNetwork) {
-          this.setCaipNetwork(caipNetwork)
-        }
+        this.handleSwitchNetwork(chainNamespace, chainId)
+      }
+    })
+
+    adapter?.on('disconnect', () => {
+      if (ChainController.state.activeChain === chainNamespace) {
+        this.handleDisconnect()
+      }
+    })
+
+    adapter?.on('accountChanged', (address: string) => {
+      if (ChainController.state.activeChain === chainNamespace) {
+        this.handleAccountChanged(chainNamespace, address)
       }
     })
   }
@@ -694,7 +721,6 @@ export class AppKit {
       this.setCaipAddress(address, chainNamespace)
       StorageUtil.setConnectedConnector('WALLET_CONNECT')
       StorageUtil.setConnectedNamespace(chainNamespace)
-      this.listenAdapter(chainNamespace)
       await Promise.all([this.setApprovedCaipNetworksData(chainNamespace)])
     })
   }
@@ -717,7 +743,6 @@ export class AppKit {
     ProviderUtil.setProvider(ChainController.state.activeChain as ChainNamespace, _res.provider)
     StorageUtil.setConnectedConnector(_res.type)
     StorageUtil.setConnectedNamespace(ChainController.state.activeChain as ChainNamespace)
-    this.listenAdapter(ChainController.state.activeChain as ChainNamespace)
   }
 
   private async initOrContinue() {
@@ -870,8 +895,9 @@ export class AppKit {
     await Promise.all(
       this.chainNamespaces.map(async namespace => {
         if (this.options) {
-          await this.chainAdapters?.[namespace]?.syncConnectors(this.options, this)
+          this.chainAdapters?.[namespace]?.syncConnectors(this.options, this)
 
+          this.listenAdapter(namespace)
           this.setConnectors(this.chainAdapters?.[namespace]?.connectors || [])
         }
       })

@@ -47,15 +47,12 @@ export class WagmiAdapter extends AdapterBlueprint {
 
     watchAccount(this.wagmiConfig, {
       onChange: accountData => {
-        console.log(accountData)
-
-        this.emit('switchNetwork', 'test')
-      }
-    })
-
-    watchChainId(this.wagmiConfig, {
-      onChange: chainId => {
-        this.emit('chainChanged', chainId)
+        if (accountData.address) {
+          this.emit('accountChanged', accountData.address)
+        }
+        if (accountData.chainId) {
+          this.emit('switchNetwork', accountData.chainId)
+        }
       }
     })
 

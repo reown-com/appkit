@@ -69,7 +69,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     if (!this.caipAddress) {
-      throw new Error('w3m-account-view: No account provided')
+      return null
     }
 
     return html`<wui-flex
