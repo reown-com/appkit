@@ -726,6 +726,7 @@ export class WagmiAdapter implements ChainAdapter {
           ])
           if (connector) {
             this.syncConnectedWalletInfo(connector)
+            ProviderUtil.setProvider(this.chainNamespace, await connector.getProvider())
           }
 
           // Set by authConnector.onIsConnectedHandler as we need the account type
