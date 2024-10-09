@@ -559,23 +559,21 @@ export class AppKit {
 
   private async checkExistingConnection() {
     try {
-      console.log('checkExistingConnection...')
       if (!CoreHelperUtil.isTelegram()) {
-        console.log('non Telegram env, returning..')
+        return
       }
-      const socialProviderToConnect = localStorage.getItem(
-        'socialProvider'
+      const socialProviderToConnect = SafeLocalStorage.getItem(
+        SafeLocalStorageKeys.SOCIAL_PROVIDER
       ) as AccountControllerState['socialProvider']
       if (!socialProviderToConnect) {
-        console.log('no socialProvider, returning..')
-
+        return
+      }
+      if (typeof window === 'undefined' || typeof document === 'undefined') {
         return
       }
       const url = new URL(window.location.href)
       const resultUri = url.searchParams.get('result_uri')
       if (!resultUri) {
-        console.log('no resultUri, returning..')
-
         return
       }
       AccountController.setSocialProvider(
@@ -583,11 +581,10 @@ export class AppKit {
         ChainController.state.activeChain
       )
       const authConnector = ConnectorController.getAuthConnector()
-      console.log('socialProvider', socialProviderToConnect)
-      console.log('authConnector', authConnector)
       if (socialProviderToConnect && authConnector) {
         await authConnector.provider.connectSocial(resultUri)
         await ConnectionController.connectExternal(authConnector, authConnector.chain)
+        SafeLocalStorage.removeItem(SafeLocalStorageKeys.SOCIAL_PROVIDER)
         EventsController.sendEvent({
           type: 'track',
           event: 'SOCIAL_LOGIN_SUCCESS',
@@ -595,12 +592,19 @@ export class AppKit {
         })
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('checkExistingConnection error', error)
     }
-    const url = new URL(window.location.href)
-    // Remove the 'result_uri' parameter
-    url.searchParams.delete('result_uri')
-    // Update the URL without reloading the page
-    window.history.replaceState({}, document.title, url.toString())
+
+    try {
+      const url = new URL(window.location.href)
+      // Remove the 'result_uri' parameter
+      url.searchParams.delete('result_uri')
+      // Update the URL without reloading the page
+      window.history.replaceState({}, document.title, url.toString())
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error)
+    }
   }
 }

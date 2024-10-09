@@ -1,5 +1,9 @@
 import type { AppKitSdkVersion, Balance, ChainNamespace } from '@reown/appkit-common'
-import { ConstantsUtil as CommonConstants } from '@reown/appkit-common'
+import {
+  ConstantsUtil as CommonConstants,
+  SafeLocalStorage,
+  SafeLocalStorageKeys
+} from '@reown/appkit-common'
 import { ConstantsUtil } from './ConstantsUtil.js'
 import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
 import type { ChainAdapter, LinkingRecord } from './TypeUtil.js'
@@ -128,12 +132,14 @@ export const CoreHelperUtil = {
       href: safeAppUrl
     }
   },
-  getOpenTargetForPlatform(target: string, forceTarget = false) {
-    if (forceTarget) {
-      return target
-    }
+  getOpenTargetForPlatform(target: string) {
     // Only '_blank' deeplinks work in Telegram context
     if (this.isTelegram()) {
+      // But for social login, we need to load the page in the same context
+      if (SafeLocalStorage.getItem(SafeLocalStorageKeys.SOCIAL_PROVIDER)) {
+        return '_top'
+      }
+
       return '_blank'
     }
 
@@ -142,21 +148,17 @@ export const CoreHelperUtil = {
   openHref(
     href: string,
     target: '_top' | '_blank' | '_self' | 'popupWindow',
-    features = 'noreferrer noopener',
-    forceTarget = false
+    features = 'noreferrer noopener'
   ) {
-    window.open(href, this.getOpenTargetForPlatform(target, forceTarget), features)
+    window.open(href, this.getOpenTargetForPlatform(target), features)
   },
-
   returnOpenHref(
     href: string,
     target: '_top' | '_blank' | '_self' | 'popupWindow',
-    features = 'noreferrer noopener',
-    forceTarget = false
+    features = 'noreferrer noopener'
   ) {
-    return window.open(href, this.getOpenTargetForPlatform(target, forceTarget), features)
+    return window.open(href, this.getOpenTargetForPlatform(target), features)
   },
-
   isTelegram() {
     return (
       typeof window !== 'undefined' &&
@@ -180,8 +182,6 @@ export const CoreHelperUtil = {
         paramToInject,
         valueToInject
       )
-      console.log('resultUrl', resultUrl)
-      console.log('full parsedUrl', encodeURIComponent(resultUrl))
 
       return url.replace(providerUrl, encodeURIComponent(resultUrl))
     }
@@ -200,6 +200,7 @@ export const CoreHelperUtil = {
     const keyEndIndex = url.indexOf('&', keyIndex)
     const keyLength = key.length
     // If there is no "&" after key, it means "key" is the last parameter
+    // eslint-disable-next-line no-negated-condition
     const keyParamEnd = keyEndIndex !== -1 ? keyEndIndex : url.length
     // Extract the part of the URL before the key value
     const beforeKeyValue = url.substring(0, keyIndex + keyLength)

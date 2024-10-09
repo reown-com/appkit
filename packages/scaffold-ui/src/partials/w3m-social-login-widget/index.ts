@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import {
   AccountController,
   ChainController,
@@ -18,6 +17,7 @@ import { state, property } from 'lit/decorators.js'
 import styles from './styles.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { SocialProviderEnum } from '@reown/appkit-utils'
+import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 
 const MAX_TOP_VIEW = 2
 const MAXIMUM_LENGTH = 6
@@ -169,7 +169,6 @@ export class W3mSocialLoginWidget extends LitElement {
   }
 
   async onSocialClick(socialProvider?: SocialProvider) {
-    console.log('onSocialClick', socialProvider)
     if (socialProvider) {
       AccountController.setSocialProvider(socialProvider, ChainController.state.activeChain)
 
@@ -206,8 +205,6 @@ export class W3mSocialLoginWidget extends LitElement {
           true
         )
       }
-
-      console.log('popupWindow', this.popupWindow)
       try {
         if (authConnector && socialProvider) {
           const { uri } = await authConnector.provider.getSocialRedirectUri({
@@ -217,21 +214,15 @@ export class W3mSocialLoginWidget extends LitElement {
             AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
             this.popupWindow.location.href = uri
           } else if (CoreHelperUtil.isTelegram() && uri) {
-            console.log('plain uri', uri)
-
+            SafeLocalStorage.setItem(SafeLocalStorageKeys.SOCIAL_PROVIDER, socialProvider)
             const parsedUri = CoreHelperUtil.formatTelegramSocialLoginUrl(uri)
-            console.log('parsedUri', parsedUri)
-
-            CoreHelperUtil.openHref(parsedUri, '_top', '', true)
-
-            localStorage.setItem('socialProvider', socialProvider)
+            CoreHelperUtil.openHref(parsedUri, '_top')
           } else {
             this.popupWindow?.close()
             throw new Error('Something went wrong')
           }
         }
       } catch (error) {
-        console.error('onSocialClick error', error)
         this.popupWindow?.close()
         SnackController.showError('Something went wrong')
       }
