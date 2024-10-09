@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@wagmi/connectors": "5.1.9",
-    "http-server": "^14.1.1",
+    "http-server": "14.1.1",
     "vite-plugin-node-polyfills": "0.22.0"
   },
   "peerDependencies": {
