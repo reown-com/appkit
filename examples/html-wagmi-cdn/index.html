@@ -1,34 +1,32 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AppKit CDN Example</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AppKit CDN Example</title>
-</head>
+  <body>
+    <h1>AppKit CDN Example</h1>
+    <div style="display: flex; gap: 16px; margin-bottom: 16px">
+      <w3m-button></w3m-button>
+      <w3m-network-button></w3m-network-button>
+    </div>
+    <div style="display: flex; gap: 16px">
+      <button id="open-appkit">Open AppKit</button>
+      <button id="open-appkit-networks">Open AppKit Networks</button>
+    </div>
 
-<body>
-  <h1>AppKit CDN Example</h1>
-  <div style="display: flex; gap: 16px; margin-bottom: 16px;">
-    <w3m-button></w3m-button>
-    <w3m-network-button></w3m-network-button>
-  </div>
-  <div style="display: flex; gap: 16px;">
-    <button id="open-appkit">Open AppKit</button>
-    <button id="open-appkit-networks">Open AppKit Networks</button>
-  </div>
-
-  <!-- Load the CDN scripts -->
-  <script src="http://localhost:8080/appkit.js"></script>
-  <script>
-    window.onerror = function (message, source, lineno, colno, error) {
-      console.error('Error while loading document:', error, message, source, lineno, colno);
-    };
-    // Check if AppKit is loaded
-    console.info('AppKit loaded');
-  </script>
-  <!-- Load our main script -->
-  <script src="./main.js" type="module"></script>
-</body>
-
+    <!-- Load the CDN scripts -->
+    <script src="http://localhost:8080/appkit.js"></script>
+    <script>
+      window.onerror = function (message, source, lineno, colno, error) {
+        console.error('Error while loading document:', error, message, source, lineno, colno)
+      }
+      // Check if AppKit is loaded
+      console.info('AppKit loaded')
+    </script>
+    <!-- Load our main script -->
+    <script src="./main.js" type="module"></script>
+  </body>
 </html>
