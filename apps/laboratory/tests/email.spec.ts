@@ -66,7 +66,7 @@ emailTest('it should reject sign', async () => {
 
 emailTest('it should switch network and sign', async ({ library }) => {
   let targetChain = library === 'solana' ? 'Solana Testnet' : 'Polygon'
-  let caipNetworkId = library === 'solana' ? solanaTestnet.id : polygon.id
+  let caipNetworkId: number | string = library === 'solana' ? solanaTestnet.id : polygon.id
 
   await page.switchNetwork(targetChain)
   await validator.expectSwitchedNetworkOnNetworksView(targetChain)

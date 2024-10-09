@@ -7,11 +7,11 @@ export const SolanaConstantsUtil = {
   chains: [solana, solanaTestnet, solanaDevnet],
   programIds: [
     {
-      chainId: solanaDevnet.chainId,
+      chainId: solanaDevnet.id,
       programId: 'Cb5aXEgXptKqHHWLifvXu5BeAuVLjojQ5ypq6CfQj1hy'
     },
     {
-      chainId: solanaTestnet.chainId,
+      chainId: solanaTestnet.id,
       programId: 'FZn4xQoKKvcxDADDRdqNAAPnVv9qYCbUTbP3y4Rn1BBr'
     }
   ]

@@ -23,13 +23,20 @@ import { ConstantsUtil } from '@reown/appkit-common'
 
 // - Mocks ---------------------------------------------------------------------
 const caipNetwork = {
-  id: 'eip155:137',
+  id: 137,
+  caipNetworkId: 'eip155:137',
   name: 'Polygon',
   chainNamespace: ConstantsUtil.CHAIN.EVM,
-  chainId: 137,
-  currency: 'ETH',
-  explorerUrl: 'https://etherscan.io',
-  rpcUrl: 'https://rpc.infura.com/v1/'
+  nativeCurrency: {
+    name: 'Polygon',
+    decimals: 18,
+    symbol: 'MATIC'
+  },
+  rpcUrls: {
+    default: {
+      http: ['']
+    }
+  }
 } as CaipNetwork
 const approvedCaipNetworkIds = ['eip155:1', 'eip155:137'] as CaipNetworkId[]
 const client: NetworkControllerClient = {
