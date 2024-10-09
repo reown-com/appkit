@@ -5,7 +5,13 @@
  * See https://pnpm.io/it/next/cli/run#enable-pre-post-scripts
  */
 import fs from 'node:fs'
-import packageJson from '../packages/appkit/package.json' assert { type: 'json' }
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const packageJsonPath = path.join(__dirname, '../packages/appkit/package.json')
+const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
 
 const filePath = 'packages/appkit/exports/constants.ts'
 
