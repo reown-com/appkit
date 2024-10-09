@@ -1,10 +1,13 @@
-// scripts/injectVersion.js
+/**
+ * This script injects the version from the packages/appkit/package.json into the packages/appkit/exports/constants.ts file.
+ * This is a alternative solution to not import the package.json file in our packages due to restriction on bundlers.
+ * It's run before the build process of the packages starts with `prebuild` script.
+ * See https://pnpm.io/it/next/cli/run#enable-pre-post-scripts
+ */
 import fs from 'node:fs'
 import packageJson from '../packages/appkit/package.json' assert { type: 'json' }
 
 const filePath = 'packages/appkit/exports/constants.ts'
-
-// const PACKAGE_VERSION = '0.0.4'
 
 const fileContent = fs.readFileSync(filePath, 'utf8')
 const updatedContent = fileContent.replace(
