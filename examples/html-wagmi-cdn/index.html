@@ -9,8 +9,14 @@
 
 <body>
   <h1>AppKit CDN Example</h1>
-  <button id="open-connect-modal">Open Connect Modal</button>
-  <button id="open-network-modal">Open Network Modal</button>
+  <div style="display: flex; gap: 16px; margin-bottom: 16px;">
+    <w3m-button></w3m-button>
+    <w3m-network-button></w3m-network-button>
+  </div>
+  <div style="display: flex; gap: 16px;">
+    <button id="open-appkit">Open AppKit</button>
+    <button id="open-appkit-networks">Open AppKit Networks</button>
+  </div>
 
   <!-- Load the CDN scripts -->
   <script src="http://localhost:8080/appkit.js"></script>

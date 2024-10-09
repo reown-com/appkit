@@ -33,8 +33,8 @@ if (!AppKit || !AppKit.createAppKit) {
 
     // 4. Trigger modal programmatically
     document.addEventListener('DOMContentLoaded', () => {
-      const openConnectModalBtn = document.getElementById('open-connect-modal')
-      const openNetworkModalBtn = document.getElementById('open-network-modal')
+      const openConnectModalBtn = document.getElementById('open-appkit')
+      const openNetworkModalBtn = document.getElementById('open-appkit-networks')
 
       if (openConnectModalBtn && openNetworkModalBtn) {
         openConnectModalBtn.addEventListener('click', () => {
