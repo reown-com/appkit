@@ -147,7 +147,11 @@ describe('Wagmi Client', () => {
     it('should sync account correctly when connected', async () => {
       const mockAddress = '0x1234567890123456789012345678901234567890'
       const mockChainId = 1
-      const mockConnector = { id: 'mockConnector', name: 'Mock Connector' }
+      const mockConnector = {
+        id: 'mockConnector',
+        name: 'Mock Connector',
+        getProvider: vi.fn().mockResolvedValue({})
+      }
 
       const setCaipAddressSpy = vi.spyOn(mockAppKit, 'setCaipAddress')
 
