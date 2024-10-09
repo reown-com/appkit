@@ -177,7 +177,7 @@ export const ChainController = {
   setChainAccountData(
     chain: ChainNamespace | undefined,
     accountProps: Partial<AccountControllerState>,
-    replaceState = true
+    replaceState = false
   ) {
     if (!chain) {
       throw new Error('Chain is required to update chain account data')
@@ -205,7 +205,7 @@ export const ChainController = {
     prop: keyof AccountControllerState,
     value: AccountControllerState[keyof AccountControllerState],
     chain: ChainNamespace | undefined,
-    replaceState = true
+    replaceState = false
   ) {
     this.setChainAccountData(
       chain,
@@ -224,9 +224,6 @@ export const ChainController = {
       const newAdapter = chain ? state.chains.get(caipNetwork.chainNamespace) : undefined
       const newNamespace = newAdapter?.chainNamespace !== state.activeChain
 
-      console.log('NEW ADAPTER', newAdapter)
-      console.log('NEW NAMESPACE', newNamespace)
-
       if (newAdapter) {
         state.activeChain = newAdapter.chainNamespace
         state.activeCaipNetwork = caipNetwork
@@ -238,12 +235,13 @@ export const ChainController = {
 
         PublicStateController.set({
           activeChain: chain,
-          selectedNetworkId: newAdapter.networkState?.caipNetwork?.id
+          selectedNetworkId: state.activeCaipNetwork?.id
         })
       }
     } else {
       state.activeChain = chain
       const caipNetworks = chain ? state.chains.get(chain)?.caipNetworks : []
+
       state.activeCaipNetwork = caipNetworks?.[0]
       PublicStateController.set({
         activeChain: chain,
@@ -253,8 +251,6 @@ export const ChainController = {
   },
 
   setActiveCaipNetwork(caipNetwork: NetworkControllerState['caipNetwork']) {
-    console.log('SET ACTIVE CAIP NETWORK', caipNetwork)
-
     if (!caipNetwork) {
       return
     }

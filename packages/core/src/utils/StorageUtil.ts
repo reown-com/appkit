@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
+import { SafeLocalStorage, SafeLocalStorageKeys, type ChainNamespace } from '@reown/appkit-common'
 import type { WcWallet, ConnectorType, SocialProvider } from './TypeUtil.js'
 import { ChainController } from '../controllers/ChainController.js'
 
@@ -67,6 +67,14 @@ export const StorageUtil = {
       SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR, connectorType)
     } catch {
       console.info('Unable to set Connected Connector')
+    }
+  },
+
+  setConnectedNamespace(namespace: ChainNamespace) {
+    try {
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_NAMESPACE, namespace)
+    } catch {
+      console.info('Unable to set Connected Namespace')
     }
   },
 

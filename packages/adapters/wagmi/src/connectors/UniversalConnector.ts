@@ -211,7 +211,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
           return undefined
         }
 
-        const provider = appKit.universalAdapter?.getWalletConnectProvider()
+        const provider = await appKit.getUniversalProvider()
 
         if (!provider) {
           throw new Error('Provider not found')

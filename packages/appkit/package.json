@@ -61,6 +61,11 @@
       "types": "./dist/types/exports/auth-provider.d.ts",
       "import": "./dist/esm/exports/auth-provider.js",
       "default": "./dist/esm/exports/auth-provider.js"
+    },
+    "./adapters": {
+      "types": "./dist/types/exports/adapters.d.ts",
+      "import": "./dist/esm/exports/adapters.js",
+      "default": "./dist/esm/exports/adapters.js"
     }
   },
   "typesVersions": {
@@ -85,6 +90,9 @@
       ],
       "auth-provider": [
         "./dist/types/exports/auth-provider.d.ts"
+      ],
+      "adapters": [
+        "./dist/types/exports/adapters.d.ts"
       ]
     }
   },

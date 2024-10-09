@@ -9,6 +9,7 @@ export type SafeLocalStorageItems = {
   '@appkit/connected_social_username': string
   '@appkit/recent_wallets': string
   '@appkit/deeplink_choice': string
+  '@appkit/connected_namespace': string
 }
 
 export const SafeLocalStorageKeys = {
@@ -21,7 +22,8 @@ export const SafeLocalStorageKeys = {
   CONNECTED_SOCIAL: '@appkit/connected_social',
   CONNECTED_SOCIAL_USERNAME: '@appkit/connected_social_username',
   RECENT_WALLETS: '@appkit/recent_wallets',
-  DEEPLINK_CHOICE: '@appkit/deeplink_choice'
+  DEEPLINK_CHOICE: '@appkit/deeplink_choice',
+  CONNECTED_NAMESPACE: '@appkit/connected_namespace'
 } as const
 
 export const SafeLocalStorage = {

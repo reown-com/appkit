@@ -37,6 +37,7 @@ export class W3mConnectorList extends LitElement {
   public override render() {
     const { custom, recent, announced, injected, multiChain, recommended, featured, external } =
       this.getConnectorsByType()
+
     const enableWalletConnect = OptionsController.state.enableWalletConnect
 
     return html`
@@ -79,6 +80,7 @@ export class W3mConnectorList extends LitElement {
     const multiChain = this.connectors.filter(connector => connector.type === 'MULTI_CHAIN')
     const announced = this.connectors.filter(connector => connector.type === 'ANNOUNCED')
     const injected = this.connectors.filter(connector => connector.type === 'INJECTED')
+
     const external = this.connectors.filter(connector => connector.type === 'EXTERNAL')
     const isEVM = ChainController.state.activeChain === CommonConstantsUtil.CHAIN.EVM
     const includeAnnouncedAndInjected = isEVM ? OptionsController.state.enableEIP6963 : true

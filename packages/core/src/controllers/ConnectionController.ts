@@ -24,6 +24,7 @@ export interface ConnectExternalOptions {
   type: Connector['type']
   provider?: Connector['provider']
   info?: Connector['info']
+  chainId?: number | string
 }
 
 export interface ConnectionControllerClient {
@@ -85,8 +86,6 @@ export const ConnectionController = {
   },
 
   async connectWalletConnect() {
-    StorageUtil.setConnectedConnector('WALLET_CONNECT')
-
     await this._getClient()?.connectWalletConnect?.(uri => {
       state.wcUri = uri
       state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
@@ -94,7 +93,10 @@ export const ConnectionController = {
   },
 
   async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
-    await this._getClient()?.connectExternal?.(options)
+    await this._getClient()?.connectExternal?.({
+      ...options,
+      chainId: ChainController.state.activeCaipNetwork?.chainId
+    })
     if (setChain) {
       ChainController.setActiveNamespace(chain)
       StorageUtil.setConnectedConnector(options.type)

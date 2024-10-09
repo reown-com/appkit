@@ -128,7 +128,10 @@ export const AccountController = {
   ) {
     const newAddress = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
 
-    ChainController.state.activeCaipAddress = caipAddress
+    if (chain === ChainController.state.activeChain) {
+      ChainController.state.activeCaipAddress = caipAddress
+    }
+
     ChainController.setAccountProp('caipAddress', caipAddress, chain)
     ChainController.setAccountProp('address', newAddress, chain)
   },

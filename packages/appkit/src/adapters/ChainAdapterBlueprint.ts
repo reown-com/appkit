@@ -5,20 +5,36 @@ import type { Connector as AppKitConnector } from '@reown/appkit-core'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
+import type { AppKitOptions } from '../utils/index.js'
+import type { AppKit } from '../client.js'
+
+type EventName = 'disconnect' | 'accountChanged' | 'switchNetwork'
+type EventData = {
+  disconnect: () => void
+  accountChanged: string
+  switchNetwork: number | string
+}
+type EventCallback<T extends EventName> = (data: EventData[T]) => void
 
 export abstract class AdapterBlueprint<
   Connector extends ChainAdapterConnector = ChainAdapterConnector
 > {
-  public readonly namespace: ChainNamespace
+  public namespace: ChainNamespace | undefined
   public readonly caipNetworks?: CaipNetwork[]
+  public readonly projectId?: string
 
   protected avaiableConnectors: Connector[] = []
   protected connector?: Connector
   protected provider?: Connector['provider']
 
+  private eventListeners = new Map<EventName, Set<EventCallback<EventName>>>()
+
   constructor(params: AdapterBlueprint.Params) {
-    this.namespace = params.namespace
-    this.caipNetworks = params.caipNetworks
+    this.caipNetworks = params.networks
+    this.projectId = params.projectId
+    if (params.namespace) {
+      this.namespace = params.namespace
+    }
   }
 
   public get connectors(): Connector[] {
@@ -53,14 +69,16 @@ export abstract class AdapterBlueprint<
     } as unknown as Connector)
   }
 
-  public abstract connectWalletConnect(onUri: (uri: string) => void): Promise<void>
-
-  public abstract connect(id: Connector['id']): Promise<string>
-
-  public abstract switchNetwork(
-    caipNetwork: CaipNetwork,
-    provider?: Connector['provider']
+  public abstract connectWalletConnect(
+    onUri: (uri: string) => void,
+    chainId?: number | string
   ): Promise<void>
+
+  public abstract connect(
+    params: AdapterBlueprint.ConnectParams
+  ): Promise<AdapterBlueprint.ConnectResult>
+
+  public abstract switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void>
 
   public abstract disconnect(): Promise<void>
 
@@ -68,8 +86,9 @@ export abstract class AdapterBlueprint<
 
   public abstract getBalance(address: string): Promise<string>
 
+  public abstract syncConnectors(options: AppKitOptions, appKit: AppKit): void
+
   protected addConnector(...connectors: Connector[]) {
-    // Filter out duplicates and add new connectors
     this.avaiableConnectors = [
       ...this.avaiableConnectors.filter(
         existing => !connectors.some(newConnector => newConnector.id === existing.id)
@@ -77,12 +96,40 @@ export abstract class AdapterBlueprint<
       ...connectors
     ]
   }
+
+  public on<T extends EventName>(eventName: T, callback: EventCallback<T>) {
+    if (!this.eventListeners.has(eventName)) {
+      this.eventListeners.set(eventName, new Set())
+    }
+
+    this.eventListeners.get(eventName)?.add(callback as EventCallback<EventName>)
+  }
+
+  public off<T extends EventName>(eventName: T, callback: EventCallback<T>) {
+    const listeners = this.eventListeners.get(eventName)
+    if (listeners) {
+      listeners.delete(callback as EventCallback<EventName>)
+    }
+  }
+
+  protected emit<T extends EventName>(eventName: T, data: EventData[T]) {
+    const listeners = this.eventListeners.get(eventName)
+    if (listeners) {
+      listeners.forEach(callback => callback(data))
+    }
+  }
 }
 
 export namespace AdapterBlueprint {
   export type Params = {
-    namespace: ChainNamespace
-    caipNetworks?: CaipNetwork[]
+    namespace?: ChainNamespace
+    networks?: CaipNetwork[]
+    projectId?: string
+  }
+
+  export type SwitchNetworkParams = {
+    caipNetwork: CaipNetwork
+    provider?: AppKitConnector['provider']
   }
 
   export type ConnectParams = { id: AppKitConnector['id'] } & (
@@ -91,14 +138,19 @@ export namespace AdapterBlueprint {
         onUri: (uri: string) => void
       }
     | {
+        id: AppKitConnector['id']
         type: Omit<AppKitConnector['type'], 'WALLET_CONNECT'>
         provider?: AppKitConnector['provider']
         info?: AppKitConnector['info']
+        chainId?: number | string
         onUri?: never
       }
   )
 
   export type ConnectResult = {
     address: string
+    type: AppKitConnector['type']
+    provider: AppKitConnector['provider']
+    chainId: number
   }
 }

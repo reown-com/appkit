@@ -1,13 +1,14 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
-import { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint'
-import { WcHelpersUtil } from '../utils'
+import { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
+import { WcHelpersUtil } from '../utils/index.js'
 import type { CaipNetwork } from '@reown/appkit-common'
+import type { Connector } from '@reown/appkit-core'
 
 export class UniversalAdapter extends AdapterBlueprint {
   public async connectWalletConnect(onUri: (uri: string) => void) {
     const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
 
-    const provider = connector?.provider
+    const provider = connector?.provider as UniversalProvider
 
     if (!this.caipNetworks || !provider) {
       throw new Error(
@@ -24,10 +25,14 @@ export class UniversalAdapter extends AdapterBlueprint {
     await provider.connect({ optionalNamespaces: namespaces })
   }
 
+  public async disconnect() {
+    const connector = this.connectors.find(c => c.id === 'WALLET_CONNECT')
+    const provider = connector?.provider
+    await provider?.disconnect()
+  }
+
   // eslint-disable-next-line @typescript-eslint/require-await
   public async switchNetwork(caipNetwork: CaipNetwork, provider?: UniversalProvider) {
-    console.log('switchNetwork', provider)
-
     if (!provider) {
       throw new Error('UniversalAdapter:switchNetwork - provider is undefined')
     }

@@ -1,5 +1,5 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { proxy, snapshot } from 'valtio/vanilla'
+import { proxy, ref, snapshot } from 'valtio/vanilla'
 import type { AuthConnector, Connector } from '../utils/TypeUtil.js'
 import { getW3mThemeVariables } from '@reown/appkit-common'
 import { OptionsController } from './OptionsController.js'
@@ -43,7 +43,7 @@ export const ConnectorController = {
         )
     )
 
-    state.allConnectors = [...state.connectors, ...newConnectors]
+    state.allConnectors = ref([...state.connectors, ...newConnectors])
     state.connectors = state.allConnectors
   },
 
