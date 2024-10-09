@@ -1,3 +1,7 @@
+/**
+ * Due to some limitations on exporting multiple modules with UMD, we needed to export all of our modules in this file.
+ * For now exporting only Wagmi and Solana adapters. Until we found a better workaround and need other adapters, we can keep it this way.
+ */
 import '@reown/appkit-polyfills'
 import { createAppKit } from '@reown/appkit'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
@@ -6,10 +10,8 @@ import * as AppKitNetworks from '@reown/appkit/networks'
 
 const networks = AppKitNetworks
 
-// Export the createAppKit function and other necessary exports
 export { createAppKit, networks, WagmiAdapter, SolanaAdapter }
 
-// If you're using a global object, make sure it's properly defined
 declare global {
   interface Window {
     AppKit: {

@@ -12,13 +12,6 @@ export default defineConfig({
       formats: ['umd'],
       fileName: (_, entryName) => `${entryName}.js`
     },
-    rollupOptions: {
-      output: {
-        globals: {
-          '@reown/appkit': 'AppKit'
-        }
-      }
-    },
     sourcemap: true,
     minify: 'terser'
   },
@@ -29,8 +22,5 @@ export default defineConfig({
         process: true
       }
     })
-  ],
-  define: {
-    'process.env.NODE_ENV': 'development'
-  }
+  ]
 })
