@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "@wagmi/connectors": "5.1.9",
+    "http-server": "^14.1.1",
     "vite-plugin-node-polyfills": "0.22.0"
   },
   "peerDependencies": {
@@ -28,10 +29,10 @@
   },
   "dependencies": {
     "@reown/appkit": "workspace:*",
-    "@reown/appkit-adapter-wagmi": "workspace:*",
     "@reown/appkit-adapter-ethers": "workspace:*",
     "@reown/appkit-adapter-ethers5": "workspace:*",
     "@reown/appkit-adapter-solana": "workspace:*",
+    "@reown/appkit-adapter-wagmi": "workspace:*",
     "@reown/appkit-polyfills": "workspace:*",
     "@wagmi/connectors": "5.1.9",
     "@wagmi/core": "2.13.4",

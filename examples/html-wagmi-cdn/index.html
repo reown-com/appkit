@@ -16,11 +16,10 @@
   <script src="http://localhost:8080/appkit.js"></script>
   <script>
     window.onerror = function (message, source, lineno, colno, error) {
-      console.error('Global error:', message, 'at', source, ':', lineno, ':', colno);
-      console.error('Error object:', error);
+      console.error('Error while loading document:', error, message, source, lineno, colno);
     };
     // Check if AppKit is loaded
-    console.log('AppKit loaded:', window);
+    console.info('AppKit loaded');
   </script>
   <!-- Load our main script -->
   <script src="./main.js" type="module"></script>

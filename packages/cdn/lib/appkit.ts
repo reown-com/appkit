@@ -1,35 +1,32 @@
 import '@reown/appkit-polyfills'
-import { createAppKit, AppKit, CoreHelperUtil, AccountController } from '@reown/appkit'
+import { createAppKit } from '@reown/appkit'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana'
+import * as AppKitNetworks from '@reown/appkit/networks'
 
-console.log('AppKit module loading...')
+const networks = AppKitNetworks
 
 // Export the createAppKit function and other necessary exports
-export { createAppKit, AppKit, CoreHelperUtil, AccountController }
+export { createAppKit, networks, WagmiAdapter, SolanaAdapter }
 
 // If you're using a global object, make sure it's properly defined
 declare global {
   interface Window {
     AppKit: {
       createAppKit: typeof createAppKit
-      AppKit: typeof AppKit
-      CoreHelperUtil: typeof CoreHelperUtil
-      AccountController: typeof AccountController
+      WagmiAdapter: typeof WagmiAdapter
+      SolanaAdapter: typeof SolanaAdapter
+      networks: typeof AppKitNetworks
     }
   }
 }
 
 // Assign to window.AppKit
 if (typeof window !== 'undefined') {
-  console.log('Assigning AppKit to window...')
   window.AppKit = {
     createAppKit,
-    AppKit,
-    CoreHelperUtil,
-    AccountController
+    WagmiAdapter,
+    SolanaAdapter,
+    networks: AppKitNetworks
   }
-  console.log('AppKit assigned to window')
-} else {
-  console.log('Window object not available')
 }
-
-console.log('AppKit module loaded')

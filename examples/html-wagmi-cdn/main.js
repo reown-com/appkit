@@ -1,23 +1,25 @@
-console.log('Main script started')
-
 // Since we're using the CDN, we can access AppKit globals directly
-const AppKit = window.AppKit
-
-console.log('Window AppKit:', window.AppKit)
+const createAppKit = window.AppKit.createAppKit
+const appKitNetworks = window.AppKit.networks
+const WagmiAdapter = window.AppKit.WagmiAdapter
+const SolanaAdapter = window.AppKit.SolanaAdapter
 
 if (!AppKit || !AppKit.createAppKit) {
-  console.error('AppKit or createAppKit not found on window object')
-  console.log('Window object:', window)
+  throw new Error('AppKit or createAppKit not found on window object')
 } else {
-  console.log('AppKit found:', AppKit)
-
-  // @ts-expect-error 1. Get projectId
   const projectId = '3bdbc796b351092d40d5d08e987f4eca' // Replace with your actual project ID
+  const networks = [appKitNetworks.mainnet, appKitNetworks.polygon, appKitNetworks.base]
 
   try {
-    console.log('Attempting to create modal...')
+    const wagmiAdapter = new AppKit.WagmiAdapter({
+      projectId,
+      networks
+    })
+
     // 3. Create modal
     const modal = AppKit.createAppKit({
+      adapters: [wagmiAdapter],
+      networks,
       projectId,
       metadata: {
         name: 'Html CDN Example',
@@ -29,32 +31,21 @@ if (!AppKit || !AppKit.createAppKit) {
       themeMode: 'light'
     })
 
-    console.log('Modal created:', modal)
-
     // 4. Trigger modal programmatically
     document.addEventListener('DOMContentLoaded', () => {
-      console.log('DOM content loaded')
       const openConnectModalBtn = document.getElementById('open-connect-modal')
       const openNetworkModalBtn = document.getElementById('open-network-modal')
 
       if (openConnectModalBtn && openNetworkModalBtn) {
         openConnectModalBtn.addEventListener('click', () => {
-          console.log('Connect button clicked')
           modal.open()
         })
         openNetworkModalBtn.addEventListener('click', () => {
-          console.log('Network button clicked')
           modal.open({ view: 'Networks' })
         })
-        console.log('Event listeners added')
-      } else {
-        console.error('Buttons not found')
       }
     })
   } catch (error) {
     console.error('Error creating or using modal:', error)
-    console.log('Error details:', error.message, error.stack)
   }
 }
-
-console.log('Main script finished')
