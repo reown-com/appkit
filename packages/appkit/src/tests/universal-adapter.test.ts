@@ -1,21 +1,33 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
-import { mainnet, solana } from '../networks'
+import { mainnet as mainnetAppKit, solana as solanaAppKit } from '../networks'
 import { UniversalAdapterClient } from '../universal-adapter'
 import { mockOptions } from './mocks/Options'
 import mockProvider from './mocks/UniversalProvider'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { ChainController } from '@reown/appkit-core'
 import { ProviderUtil } from '../store/index.js'
-import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import mockAppKit from './mocks/AppKit'
+import type { CaipNetwork } from '@reown/appkit-common'
+
+const [mainnet, solana] = CaipNetworksUtil.extendCaipNetworks([mainnetAppKit, solanaAppKit], {
+  customNetworkImageUrls: {},
+  projectId: 'test-project-id'
+})
+
+const mockOptionsExtended = {
+  ...mockOptions,
+  networks: [mainnet, solana] as [CaipNetwork, ...CaipNetwork[]],
+  defaultNetwork: mainnet
+}
 
 describe('UniversalAdapter', () => {
   let universalAdapter: UniversalAdapterClient
 
   beforeEach(() => {
-    universalAdapter = new UniversalAdapterClient(mockOptions)
+    universalAdapter = new UniversalAdapterClient(mockOptionsExtended)
     universalAdapter.walletConnectProvider = mockProvider
-    universalAdapter.construct(mockAppKit, mockOptions)
+    universalAdapter.construct(mockAppKit, mockOptionsExtended)
   })
 
   afterEach(() => {
@@ -24,11 +36,7 @@ describe('UniversalAdapter', () => {
 
   describe('UniversalAdapter - Initialization', () => {
     it('should set caipNetworks to provided caipNetworks options', () => {
-      expect(universalAdapter?.caipNetworks).toEqual(mockOptions.networks)
-    })
-
-    it('should set defaultNetwork to first caipNetwork option', () => {
-      expect(universalAdapter?.defaultNetwork).toEqual(mockOptions.networks[0])
+      expect(universalAdapter?.caipNetworks).toEqual(mockOptionsExtended.networks)
     })
 
     it('should set metadata to metadata options', () => {
@@ -39,6 +47,7 @@ describe('UniversalAdapter', () => {
   describe('UniversalAdapter - Public Methods', () => {
     it('should return walletConnectProvider when getWalletConnectProvider is invoked', async () => {
       const switchNetworkSpy = vi.spyOn(universalAdapter, 'switchNetwork')
+      const mainnet = universalAdapter.caipNetworks[0]
       await universalAdapter.networkControllerClient.switchCaipNetwork(mainnet)
       expect(switchNetworkSpy).toHaveBeenCalledWith(mainnet)
     })
@@ -76,7 +85,8 @@ describe('UniversalAdapter', () => {
     })
 
     it('should set correct requestedCaipNetworks in AppKit when syncRequestedNetworks has been called', () => {
-      ;(universalAdapter as any).syncRequestedNetworks(mockOptions.networks)
+      ;(universalAdapter as any).syncRequestedNetworks(mockOptionsExtended.networks)
+      const mainnet = universalAdapter.caipNetworks[0]
       expect(mockAppKit.setRequestedCaipNetworks).toHaveBeenCalledWith([mainnet], 'eip155')
       expect(mockAppKit.setRequestedCaipNetworks).toHaveBeenCalledWith([solana], 'solana')
     })

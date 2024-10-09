@@ -19,7 +19,7 @@ export const CoreHelperUtil = {
   },
 
   checkCaipNetwork(network: CaipNetwork | undefined, networkName = '') {
-    return network?.id.toLocaleLowerCase().includes(networkName.toLowerCase())
+    return network?.caipNetworkId.toLocaleLowerCase().includes(networkName.toLowerCase())
   },
 
   isAndroid() {

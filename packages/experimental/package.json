@@ -1,0 +1,70 @@
+{
+  "name": "@reown/appkit-experimental",
+  "version": "1.1.0",
+  "type": "module",
+  "main": "./dist/esm/exports/index.js",
+  "types": "./dist/types/exports/index.d.ts",
+  "files": [
+    "dist",
+    "!tsconfig.tsbuildinfo"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/exports/index.d.ts",
+      "import": "./dist/esm/exports/index.js",
+      "default": "./dist/esm/exports/index.js"
+    },
+    "./smart-session": {
+      "types": "./dist/types/exports/smart-session/index.d.ts",
+      "import": "./dist/esm/exports/smart-session/index.js",
+      "default": "./dist/esm/exports/smart-session/index.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "smart-session": [
+        "./dist/types/exports/smart-session/index.d.ts"
+      ]
+    }
+  },
+  "scripts": {
+    "build:clean": "rm -rf dist",
+    "build": "tsc --build",
+    "watch": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --dir tests --coverage.enabled=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+  },
+  "dependencies": {
+    "@reown/appkit": "workspace:*",
+    "@reown/appkit-core": "workspace:*",
+    "@reown/appkit-common": "workspace:*",
+    "axios": "1.7.2",
+    "zod": "3.22.4"
+  },
+  "devDependencies": {
+    "@types/axios-mock-adapter": "1.10.0",
+    "@vitest/coverage-v8": "2.0.5",
+    "axios-mock-adapter": "2.0.0",
+    "vitest": "2.0.5"
+  },
+  "keywords": [
+    "web3",
+    "crypto",
+    "ethereum",
+    "appkit",
+    "reown",
+    "lit",
+    "experimental"
+  ],
+  "author": "Reown <support@reown.com> (https://reown.com)",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/reown-com/appkit",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reown-com/appkit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/reown-com/appkit/issues"
+  }
+}

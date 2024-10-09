@@ -1,4 +1,4 @@
-import { type CaipNetwork, type CaipNetworkId } from '@reown/appkit-common'
+import { type CaipNetworkId } from '@reown/appkit-common'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { UniversalProvider } from '@walletconnect/universal-provider'
 import { fallback, http, type Hex } from 'viem'
@@ -37,7 +37,7 @@ export function getEmailCaipNetworks() {
 
 export function getTransport({ chain, projectId }: { chain: Chain; projectId: string }) {
   const RPC_URL = CoreHelperUtil.getBlockchainApiUrl()
-  const chainDefaultUrl = chain.rpcUrls[0]?.http?.[0]
+  const chainDefaultUrl = chain.rpcUrls.default.http?.[0]
 
   if (!PresetsUtil.WalletConnectRpcChainIds.includes(chain.id)) {
     return http(chainDefaultUrl)
@@ -71,31 +71,10 @@ export function requireCaipAddress(caipAddress: string) {
   return account
 }
 
-export function convertToAppKitChains(caipNetworks: CaipNetwork[]) {
-  const chains = caipNetworks.map(caipNetwork => ({
-    blockExplorers: {
-      default: {
-        apiUrl: '',
-        name: '',
-        url: caipNetwork.explorerUrl || ''
-      }
-    },
-    fees: undefined,
-    formatters: undefined,
-    id: Number(caipNetwork.chainId),
-    name: caipNetwork.name,
-    nativeCurrency: {
-      decimals: 18,
-      name: caipNetwork.currency,
-      symbol: caipNetwork.currency
-    },
-    rpcUrls: {
-      default: {
-        http: [caipNetwork.rpcUrl]
-      }
-    },
-    serializers: undefined
-  })) as unknown as readonly [Chain, ...Chain[]]
-
-  return chains
+export function parseWalletCapabilities(str: string) {
+  try {
+    return JSON.parse(str)
+  } catch (error) {
+    throw new Error('Error parsing wallet capabilities')
+  }
 }
