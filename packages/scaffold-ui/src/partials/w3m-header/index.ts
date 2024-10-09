@@ -17,7 +17,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 
 // -- Constants ----------------------------------------- //
-const BETA_SCREENS = ['Swap', 'SwapSelectToken', 'SwapPreview']
+const BETA_SCREENS: string[] = []
 
 // -- Helpers ------------------------------------------- //
 function headings() {

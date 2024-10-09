@@ -34,7 +34,10 @@ export class W3mConnectingWcView extends LitElement {
     super()
     this.determinePlatforms()
     this.initializeConnection()
-    this.interval = setInterval(this.initializeConnection.bind(this), ConstantsUtil.TEN_SEC_MS)
+    this.interval = setInterval(
+      this.initializeConnection.bind(this),
+      ConstantsUtil.TEN_SEC_MS
+    ) as unknown as NodeJS.Timeout
   }
 
   public override disconnectedCallback() {
