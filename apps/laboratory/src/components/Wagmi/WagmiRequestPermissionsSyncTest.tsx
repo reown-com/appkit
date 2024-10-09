@@ -15,9 +15,9 @@ import {
 } from '@reown/appkit-experimental/smart-session'
 
 export function WagmiRequestPermissionsSyncTest() {
-  const { address, isConnected } = useAppKitAccount()
+  const { address, isConnected, status } = useAppKitAccount()
   const { chainId } = useAppKitNetwork()
-  const isSupported = useMemo(() => isSmartSessionSupported(), [address])
+  const isSupported = useMemo(() => isSmartSessionSupported(), [status])
 
   if (!isConnected || !address || !chainId) {
     return (
