@@ -74,7 +74,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          repository: WalletConnect/web3modal
+          repository: reown-com/appkit
           ref: ${{ inputs.branch }}
 
       - uses: pnpm/action-setup@v4

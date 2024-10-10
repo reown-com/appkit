@@ -96,36 +96,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
-  bundle_size:
-    runs-on: ubuntu-latest
-    name: Bundle size check
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - name: checkout
-        uses: actions/checkout@v3
-
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-
-      - name: setup-node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-          cache: 'pnpm'
-
-      - name: install
-        run: pnpm install
-
-      - name: build
-        run: pnpm build
-
-      - name: Running vite-size script
-        uses: glitch-txs/vite-size-action@v1.0.3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
   test:
     runs-on: ubuntu-latest
     continue-on-error: true
