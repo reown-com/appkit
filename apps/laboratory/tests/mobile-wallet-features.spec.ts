@@ -10,7 +10,6 @@ let modalValidator: ModalValidator
 let context: BrowserContext
 
 // -- Setup --------------------------------------------------------------------
-
 const mobileWalletFeaturesTest = test.extend<{ library: string }>({
   library: ['wagmi', { option: true }]
 })

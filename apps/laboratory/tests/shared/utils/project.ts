@@ -9,7 +9,7 @@ const MULTICHAIN_LIBRARIES = [
   'multichain-wagmi-solana'
 ] as const
 
-const LIBRARY_DESKTOP_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
+const LIBRARY_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
   LIBRARIES.map(library => ({ device, library }))
 )
 
@@ -66,19 +66,19 @@ const SINGLE_ADAPTER_SOLANA_TESTS = [
 
 const SINGLE_ADAPTER_SOLANA_MOBILE_TESTS = ['mobile-wallet-features.spec.ts']
 
-function matchRegex(tests: string[], isDesktop = true) {
+function createRegex(tests: string[], isDesktop = true) {
   const desktopCheck = isDesktop ? '(?!.*/mobile-)' : ''
 
   return new RegExp(`^(?!.*/multichain/)${desktopCheck}.*(?:${tests.join('|')})`, 'u')
 }
 
 // Desktop
-const SINGLE_ADAPTER_EVM_TESTS_REGEX = matchRegex(SINGLE_ADAPTER_EVM_TESTS)
-const SINGLE_ADAPTER_SOLANA_TESTS_REGEX = matchRegex(SINGLE_ADAPTER_SOLANA_TESTS)
+const SINGLE_ADAPTER_EVM_TESTS_REGEX = createRegex(SINGLE_ADAPTER_EVM_TESTS)
+const SINGLE_ADAPTER_SOLANA_TESTS_REGEX = createRegex(SINGLE_ADAPTER_SOLANA_TESTS)
 
 // Mobile
-const SINGLE_ADAPTER_EVM_MOBILE_REGEX = matchRegex(SINGLE_ADAPTER_EVM_MOBILE_TESTS, false)
-const SINGLE_ADAPTER_SOLANA_MOBILE_TESTS_REGEX = matchRegex(
+const SINGLE_ADAPTER_EVM_MOBILE_REGEX = createRegex(SINGLE_ADAPTER_EVM_MOBILE_TESTS, false)
+const SINGLE_ADAPTER_SOLANA_MOBILE_TESTS_REGEX = createRegex(
   SINGLE_ADAPTER_SOLANA_MOBILE_TESTS,
   false
 )
@@ -188,7 +188,7 @@ function createProject({ device, library }: CreateProjectParameters) {
 }
 
 export function getProjects() {
-  const libraryDesktopProjects = LIBRARY_DESKTOP_PERMUTATIONS.map(createProject)
+  const libraryDesktopProjects = LIBRARY_PERMUTATIONS.map(createProject)
   const libraryMobileProjects = LIBRARY_MOBILE_PERMUTATIONS.map(createProject)
   const multichainProjects = MULTICHAIN_PERMUTATIONS.map(createProject)
 
