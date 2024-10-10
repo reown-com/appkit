@@ -289,13 +289,13 @@ export class WagmiAdapter implements ChainAdapter {
 
         let chainId = Number(NetworkUtil.caipNetworkIdToNumber(this.appKit?.getCaipNetwork()?.id))
         let address: string | undefined = undefined
-        let isSuccessful1CA = false
+        let isSuccessfulOneClickAuth = false
 
         const isSiweEnabled = this.appKit?.getIsSiweEnabled()
         const isProviderSupported = typeof provider?.authenticate === 'function'
-        const supports1ClickAuth = isSiweEnabled && isProviderSupported
+        const supportsOneClickAuth = isSiweEnabled && isProviderSupported
 
-        if (supports1ClickAuth) {
+        if (supportsOneClickAuth) {
           const { SIWEController, getDidChainId, getDidAddress } = await import(
             '@reown/appkit-siwe'
           )
@@ -359,9 +359,9 @@ export class WagmiAdapter implements ChainAdapter {
                 cacao: signedCacao,
                 clientId
               })
-              isSuccessful1CA = true
+              isSuccessfulOneClickAuth = true
             } catch (error) {
-              isSuccessful1CA = false
+              isSuccessfulOneClickAuth = false
               SIWEController.setIs1ClickAuthenticating(false)
 
               // eslint-disable-next-line no-console
@@ -378,7 +378,7 @@ export class WagmiAdapter implements ChainAdapter {
 
         await connect(this.wagmiConfig, { connector, chainId })
         const { SIWEController } = await import('@reown/appkit-siwe')
-        if (supports1ClickAuth && address && chainId && isSuccessful1CA) {
+        if (supportsOneClickAuth && address && chainId && isSuccessfulOneClickAuth) {
           SIWEController.setStatus('authenticating')
           await SIWEController.onSignIn?.({
             address,

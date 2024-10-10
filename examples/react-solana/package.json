@@ -1,7 +1,7 @@
 {
   "name": "@examples/react-solana",
   "private": true,
-  "version": "1.0.6-6594e108a.0",
+  "version": "1.0.6-0e6050d7a.1",
   "scripts": {
     "dev": "vite --port 3002",
     "build": "vite build"

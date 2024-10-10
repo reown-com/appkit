@@ -1,5 +1,19 @@
 # @reown/appkit-wagmi
 
+## 1.0.6-0e6050d7a.1
+
+### Patch Changes
+
+- SIWE and 1CA fixes
+- Updated dependencies
+  - @reown/appkit-adapter-wagmi@1.0.6-0e6050d7a.1
+  - @reown/appkit-utils@1.0.6-0e6050d7a.1
+  - @reown/appkit-polyfills@1.0.6-0e6050d7a.1
+  - @reown/appkit@1.0.6-0e6050d7a.1
+  - @reown/appkit-common@1.0.6-0e6050d7a.1
+  - @reown/appkit-wallet@1.0.6-0e6050d7a.1
+  - @reown/appkit-siwe@1.0.6-0e6050d7a.1
+
 ## 1.0.6-6594e108a.0
 
 ### Patch Changes

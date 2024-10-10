@@ -1,5 +1,11 @@
 # @reown/appkit-common
 
+## 1.0.6-0e6050d7a.1
+
+### Patch Changes
+
+- SIWE and 1CA fixes
+
 ## 1.0.6-6594e108a.0
 
 ### Patch Changes

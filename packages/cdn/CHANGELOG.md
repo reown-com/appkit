@@ -1,5 +1,16 @@
 # @reown/appkit-cdn
 
+## 1.0.6-0e6050d7a.1
+
+### Patch Changes
+
+- SIWE and 1CA fixes
+- Updated dependencies
+  - @reown/appkit-polyfills@1.0.6-0e6050d7a.1
+  - @reown/appkit-ethers5@1.0.6-0e6050d7a.1
+  - @reown/appkit-ethers@1.0.6-0e6050d7a.1
+  - @reown/appkit-wagmi@1.0.6-0e6050d7a.1
+
 ## 1.0.6-6594e108a.0
 
 ### Patch Changes

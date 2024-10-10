@@ -1,6 +1,6 @@
 {
   "name": "@examples/next-ethers",
-  "version": "1.0.6-6594e108a.0",
+  "version": "1.0.6-0e6050d7a.1",
   "private": true,
   "scripts": {
     "dev": "next dev",

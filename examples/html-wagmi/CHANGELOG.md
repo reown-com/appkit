@@ -1,5 +1,13 @@
 # @examples/html-wagmi
 
+## 1.0.6-0e6050d7a.1
+
+### Patch Changes
+
+- Updated dependencies
+  - @reown/appkit-adapter-wagmi@1.0.6-0e6050d7a.1
+  - @reown/appkit@1.0.6-0e6050d7a.1
+
 ## 1.0.6-6594e108a.0
 
 ### Patch Changes

@@ -1,5 +1,22 @@
 # @apps/laboratory
 
+## 1.0.6-0e6050d7a.1
+
+### Patch Changes
+
+- Updated dependencies
+  - @reown/appkit-adapter-ethers5@1.0.6-0e6050d7a.1
+  - @reown/appkit-adapter-ethers@1.0.6-0e6050d7a.1
+  - @reown/appkit-adapter-solana@1.0.6-0e6050d7a.1
+  - @reown/appkit-adapter-wagmi@1.0.6-0e6050d7a.1
+  - @reown/appkit-ethers5@1.0.6-0e6050d7a.1
+  - @reown/appkit@1.0.6-0e6050d7a.1
+  - @reown/appkit-ethers@1.0.6-0e6050d7a.1
+  - @reown/appkit-solana@1.0.6-0e6050d7a.1
+  - @reown/appkit-wallet@1.0.6-0e6050d7a.1
+  - @reown/appkit-wagmi@1.0.6-0e6050d7a.1
+  - @reown/appkit-siwe@1.0.6-0e6050d7a.1
+
 ## 1.0.6-6594e108a.0
 
 ### Patch Changes
