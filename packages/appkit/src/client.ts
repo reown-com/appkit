@@ -85,7 +85,10 @@ export class AppKit {
     this.initControllers(options)
     this.initOrContinue()
     this.version = options.sdkVersion
-    this.checkExistingConnection()
+    // Check on the next thick because wagmiAdapter authConnector is not immediately available
+    setTimeout(() => {
+      this.checkExistingConnection()
+    }, 0)
   }
 
   public static getInstance() {
@@ -613,6 +616,7 @@ export class AppKit {
       )
       const authConnector = ConnectorController.getAuthConnector()
       if (socialProviderToConnect && authConnector) {
+        this.setLoading(true)
         await authConnector.provider.connectSocial(resultUri)
         await ConnectionController.connectExternal(authConnector, authConnector.chain)
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.SOCIAL_PROVIDER)
@@ -623,6 +627,7 @@ export class AppKit {
         })
       }
     } catch (error) {
+      this.setLoading(false)
       // eslint-disable-next-line no-console
       console.error('checkExistingConnection error', error)
     }
