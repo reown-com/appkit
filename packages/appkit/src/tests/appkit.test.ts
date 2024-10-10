@@ -1,6 +1,7 @@
 import type { CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
+  AssetUtil,
   BlockchainApiController,
   ChainController,
   ConnectionController,

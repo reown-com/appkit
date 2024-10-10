@@ -29,7 +29,7 @@ describe('AccountController', () => {
       tokenBalance: [],
       allAccounts: [],
       addressLabels: new Map<string, string>(),
-      is1ClickAuthenticating: false
+      isOneClickAuthenticating: false
     })
   })
 
@@ -85,7 +85,7 @@ describe('AccountController', () => {
       profileName: undefined,
       profileImage: undefined,
       addressExplorerUrl: undefined,
-      is1ClickAuthenticating: false,
+      isOneClickAuthenticating: false,
       tokenBalance: [],
       allAccounts: [],
       addressLabels: new Map<string, string>(),

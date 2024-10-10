@@ -330,7 +330,7 @@ export class WagmiAdapter implements ChainAdapter {
             reorderedChains = [chainId, ...reorderedChains.filter(c => c !== chainId)]
           }
 
-          SIWEController.setIs1ClickAuthenticating(true)
+          SIWEController.setIsOneClickAuthenticating(true)
           const result = await provider.authenticate({
             nonce: await SIWEController.getNonce(),
             methods: [...OPTIONAL_METHODS],
@@ -373,7 +373,7 @@ export class WagmiAdapter implements ChainAdapter {
               isSuccessfulOneClickAuth = true
             } catch (error) {
               isSuccessfulOneClickAuth = false
-              SIWEController.setIs1ClickAuthenticating(false)
+              SIWEController.setIsOneClickAuthenticating(false)
 
               // eslint-disable-next-line no-console
               console.error('Error verifying message', error)
@@ -384,7 +384,7 @@ export class WagmiAdapter implements ChainAdapter {
               throw error
             }
           }
-          SIWEController.setIs1ClickAuthenticating(false)
+          SIWEController.setIsOneClickAuthenticating(false)
         }
 
         await connect(this.wagmiConfig, { connector, chainId })

@@ -38,7 +38,7 @@ export class W3mModal extends LitElement {
 
   @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
 
-  @state() private is1ClickAuthenticating = AccountController.state.is1ClickAuthenticating
+  @state() private isOneClickAuthenticating = AccountController.state.isOneClickAuthenticating
 
   @state() private caipAddress = ChainController.state.activeCaipAddress
 
@@ -54,8 +54,8 @@ export class W3mModal extends LitElement {
       ...[
         ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
         ModalController.subscribeKey('shake', val => (this.shake = val)),
-        AccountController.subscribeKey('is1ClickAuthenticating', val => {
-          this.is1ClickAuthenticating = val
+        AccountController.subscribeKey('isOneClickAuthenticating', val => {
+          this.isOneClickAuthenticating = val
         }),
         AccountController.subscribeKey('siweStatus', val => this.onSiweStatusChange(val), 'eip155'),
         ChainController.subscribeKey('activeCaipNetwork', val => this.onNewNetwork(val)),
@@ -252,7 +252,7 @@ export class W3mModal extends LitElement {
     const isEIP155Namespace = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
     const authenticated = AccountController.state.siweStatus === 'success'
 
-    if (!authenticated && isEIP155Namespace && !this.is1ClickAuthenticating) {
+    if (!authenticated && isEIP155Namespace && !this.isOneClickAuthenticating) {
       ModalController.open({
         view: 'ConnectingSiwe'
       })

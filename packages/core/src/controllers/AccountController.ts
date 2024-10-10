@@ -36,7 +36,7 @@ export interface AccountControllerState {
   preferredAccountType?: W3mFrameTypes.AccountType
   socialWindow?: Window
   farcasterUrl?: string
-  is1ClickAuthenticating?: boolean
+  isOneClickAuthenticating?: boolean
   provider?: UniversalProvider | Provider | CombinedProvider
   status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
   siweStatus?:
@@ -56,7 +56,7 @@ const state = proxy<AccountControllerState>({
   smartAccountDeployed: false,
   addressLabels: new Map(),
   allAccounts: [],
-  is1ClickAuthenticating: false
+  isOneClickAuthenticating: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -259,12 +259,12 @@ export const AccountController = {
     ChainController.setAccountProp('siweStatus', status, ChainController.state.activeChain)
   },
 
-  setIs1ClickAuthenticating(
-    is1ClickAuthenticating: AccountControllerState['is1ClickAuthenticating']
+  setIsOneClickAuthenticating(
+    isOneClickAuthenticating: AccountControllerState['isOneClickAuthenticating']
   ) {
     ChainController.setAccountProp(
-      'is1ClickAuthenticating',
-      is1ClickAuthenticating,
+      'isOneClickAuthenticating',
+      isOneClickAuthenticating,
       ChainController.state.activeChain
     )
   }

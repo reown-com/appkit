@@ -159,7 +159,7 @@ export const SIWEController = {
     ChainController.setAccountProp('siweStatus', state.status, 'eip155')
   },
 
-  setIs1ClickAuthenticating(is1ClickAuthenticating: boolean) {
-    ChainController.setAccountProp('is1ClickAuthenticating', is1ClickAuthenticating, 'eip155')
+  setIsOneClickAuthenticating(isOneClickAuthenticating: boolean) {
+    ChainController.setAccountProp('isOneClickAuthenticating', isOneClickAuthenticating, 'eip155')
   }
 }
