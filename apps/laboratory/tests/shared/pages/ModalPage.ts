@@ -427,6 +427,24 @@ export class ModalPage {
     await networkToSwitchButton.click()
   }
 
+  async openAllWallets() {
+    const allWallets = this.page.getByTestId('all-wallets')
+    await expect(allWallets, 'All wallets should be visible').toBeVisible()
+    await allWallets.click()
+  }
+
+  async clickAllWalletsListSearchItem(id: string) {
+    const allWalletsListSearchItem = this.page.getByTestId(`wallet-search-item-${id}`)
+    await expect(allWalletsListSearchItem).toBeVisible()
+    await allWalletsListSearchItem.click()
+  }
+
+  async search(value: string) {
+    const searchInput = this.page.getByTestId('wui-input-text')
+    await expect(searchInput, 'Search input should be visible').toBeVisible()
+    await searchInput.fill(value)
+  }
+
   async openModal() {
     await this.page.getByTestId('account-button').click()
   }

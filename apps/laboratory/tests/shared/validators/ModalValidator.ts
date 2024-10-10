@@ -144,6 +144,21 @@ export class ModalValidator {
     await expect(socialList).toBeHidden()
   }
 
+  async expectAllWallets() {
+    const allWallets = this.page.getByTestId('all-wallets')
+    await expect(allWallets).toBeVisible()
+  }
+
+  async expectNoTryAgainButton() {
+    const secondaryButton = this.page.getByTestId('w3m-connecting-widget-secondary-button')
+    await expect(secondaryButton).toBeHidden()
+  }
+
+  async expectTryAgainButton() {
+    const secondaryButton = this.page.getByTestId('w3m-connecting-widget-secondary-button')
+    await expect(secondaryButton).toBeVisible()
+  }
+
   async expectAlertBarText(text: string) {
     const alertBarText = this.page.getByTestId('wui-alertbar-text')
     await expect(alertBarText).toHaveText(text)
