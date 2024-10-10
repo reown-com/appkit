@@ -9,8 +9,8 @@ import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-wc-mobile')
 export class W3mConnectingWcMobile extends W3mConnectingWidget {
-  public btnLabelTimeout?: ReturnType<typeof setTimeout> = undefined
-  public labelTimeout?: ReturnType<typeof setTimeout> = undefined
+  private btnLabelTimeout?: ReturnType<typeof setTimeout> = undefined
+  private labelTimeout?: ReturnType<typeof setTimeout> = undefined
 
   public constructor() {
     super()
