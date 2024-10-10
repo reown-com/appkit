@@ -682,7 +682,12 @@ export class WagmiAdapter implements ChainAdapter {
 
     if (this.wagmiConfig) {
       if (connector) {
-        if (connector.name === 'WalletConnect' && connector.getProvider && address) {
+        if (
+          status === 'connected' &&
+          address &&
+          connector.name === 'WalletConnect' &&
+          connector.getProvider
+        ) {
           const activeCaipNetwork = this.appKit?.getCaipNetwork()
           const currentChainId = chainId || (activeCaipNetwork?.id as number | undefined)
           const provider = (await connector.getProvider()) as UniversalProvider
@@ -691,7 +696,6 @@ export class WagmiAdapter implements ChainAdapter {
           const namespaceKeys = namespaces ? Object.keys(namespaces) : []
 
           const preferredAccountType = this.appKit?.getPreferredAccountType()
-
           namespaceKeys.forEach(key => {
             const chainNamespace = key as ChainNamespace
             const caipAddress = namespaces?.[key]?.accounts[0] as CaipAddress
@@ -701,6 +705,7 @@ export class WagmiAdapter implements ChainAdapter {
 
             this.appKit?.setPreferredAccountType(preferredAccountType, chainNamespace)
             this.appKit?.setCaipAddress(caipAddress, chainNamespace)
+            this.appKit?.setStatus('connected', chainNamespace)
           })
           if (
             this.appKit?.getCaipNetwork()?.chainNamespace !== CommonConstantsUtil.CHAIN.SOLANA &&
