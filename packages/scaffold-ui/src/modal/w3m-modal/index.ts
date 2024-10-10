@@ -194,28 +194,20 @@ export class W3mModal extends LitElement {
   }
 
   private async onNewAddress(caipAddress?: CaipAddress) {
-    const prevConnectedAddress = this.caipAddress
-      ? CoreHelperUtil.getPlainAddress(this.caipAddress)
+    const prevCaipAddress = this.caipAddress
+    const prevConnected = prevCaipAddress
+      ? CoreHelperUtil.getPlainAddress(prevCaipAddress)
       : undefined
     const nextConnected = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
-    const isSameAddress = prevConnectedAddress === nextConnected
+    const isSameAddress = prevConnected === nextConnected
 
-    if (nextConnected && !isSameAddress && this.isSiweEnabled && !this.is1ClickAuthenticating) {
-      const { SIWEController, appKitAuthConfig } = await import('@reown/appkit-siwe')
-      if (!SIWEController.state._client && OptionsController.state.enableAuth) {
-        SIWEController.setSIWEClient(appKitAuthConfig)
-      }
-
+    if (nextConnected && !isSameAddress && this.isSiweEnabled) {
+      const { SIWEController } = await import('@reown/appkit-siwe')
       const signed = AccountController.state.siweStatus === 'success'
 
-      if (!prevConnectedAddress && nextConnected) {
+      if (!prevConnected && nextConnected) {
         this.onSiweNavigation()
-      } else if (
-        signed &&
-        prevConnectedAddress &&
-        nextConnected &&
-        prevConnectedAddress !== nextConnected
-      ) {
+      } else if (signed && prevConnected && nextConnected && prevConnected !== nextConnected) {
         if (SIWEController.state._client?.options.signOutOnAccountChange) {
           await SIWEController.signOut()
           this.onSiweNavigation()
@@ -226,8 +218,6 @@ export class W3mModal extends LitElement {
     if (!nextConnected) {
       ModalController.close()
     }
-
-    this.caipAddress = caipAddress
   }
 
   private async onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {
@@ -238,8 +228,8 @@ export class W3mModal extends LitElement {
       return
     }
 
-    const prevCaipNetworkId = this.caipNetwork?.id?.toString()
-    const nextNetworkId = nextCaipNetwork?.id?.toString()
+    const prevCaipNetworkId = this.caipNetwork?.caipNetworkId?.toString()
+    const nextNetworkId = nextCaipNetwork?.caipNetworkId?.toString()
 
     if (prevCaipNetworkId && nextNetworkId && prevCaipNetworkId !== nextNetworkId) {
       if (this.isSiweEnabled) {
@@ -262,7 +252,7 @@ export class W3mModal extends LitElement {
     const isEIP155Namespace = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
     const authenticated = AccountController.state.siweStatus === 'success'
 
-    if (!authenticated && isEIP155Namespace) {
+    if (!authenticated && isEIP155Namespace && !this.is1ClickAuthenticating) {
       ModalController.open({
         view: 'ConnectingSiwe'
       })

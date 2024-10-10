@@ -46,9 +46,9 @@ export function EthersWriteContractTest() {
       setLoading(false)
     }
   }
-  const allowedChains = [sepolia.chainId, optimism.chainId]
+  const allowedChains = [sepolia.id, optimism.id]
 
-  return allowedChains.includes(Number(chainId)) && address ? (
+  return allowedChains.find(chain => chain === chainId) && address ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button
         data-testid="sign-transaction-button"

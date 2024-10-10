@@ -8,7 +8,7 @@ import type {
   SIWEVerifyMessageArgs
 } from '../core/utils/TypeUtils.js'
 
-import { NetworkUtil, type CaipAddress } from '@reown/appkit-common'
+import { type CaipAddress } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectionController,
@@ -104,7 +104,7 @@ export class AppKitSIWEClient {
       throw new Error('A chainId is required to create a SIWE message.')
     }
 
-    const chainId = NetworkUtil.caipNetworkIdToNumber(caipNetwork.id)
+    const chainId = caipNetwork.id
 
     if (!chainId) {
       throw new Error('A chainId is required to create a SIWE message.')

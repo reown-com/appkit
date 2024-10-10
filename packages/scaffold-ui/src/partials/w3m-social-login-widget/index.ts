@@ -7,11 +7,12 @@ import {
   OptionsController,
   RouterController,
   SnackController,
-  type SocialProvider
+  type SocialProvider,
+  type WalletGuideType
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { state, property } from 'lit/decorators.js'
 
 import { SocialProviderEnum } from '@reown/appkit-utils'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -35,6 +36,8 @@ export class W3mSocialLoginWidget extends LitElement {
   @state() private features = OptionsController.state.features
 
   @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
+
+  @property() public walletGuide: WalletGuideType = 'get-started'
 
   public constructor() {
     super()
@@ -152,7 +155,7 @@ export class W3mSocialLoginWidget extends LitElement {
     const walletConnectConnector = this.connectors.find(c => c.id === 'walletConnect')
     const enableWallets = OptionsController.state.enableWallets
 
-    if (walletConnectConnector && enableWallets) {
+    if ((walletConnectConnector && enableWallets) || this.walletGuide === 'explore') {
       return html`<wui-separator text="or"></wui-separator>`
     }
 

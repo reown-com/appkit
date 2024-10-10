@@ -37,7 +37,10 @@ export class W3mConnectingWcView extends LitElement {
     super()
     this.determinePlatforms()
     this.initializeConnection()
-    this.interval = setInterval(this.initializeConnection.bind(this), ConstantsUtil.TEN_SEC_MS)
+    this.interval = setInterval(
+      this.initializeConnection.bind(this),
+      ConstantsUtil.TEN_SEC_MS
+    ) as unknown as NodeJS.Timeout
     this.unsubscribe.push(
       AccountController.subscribe(val => {
         if (val.siweStatus === 'authenticating') {
@@ -92,7 +95,7 @@ export class W3mConnectingWcView extends LitElement {
           OptionsController.state.hasMultipleAddresses
         ) {
           RouterController.push('SelectAddresses')
-        } else if (OptionsController.state.isSiweEnabled) {
+        } else if (this.isSiweEnabled) {
           const { SIWEController } = await import('@reown/appkit-siwe')
           const { status: siweStatus } = SIWEController.state
           if (siweStatus === 'success') {

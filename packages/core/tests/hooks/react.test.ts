@@ -17,14 +17,24 @@ describe('useAppKitNetwork', () => {
 
   it('should return the correct network state', () => {
     const mockNetwork: CaipNetwork = {
-      id: 'eip155:1',
+      id: 1,
       name: 'Ethereum',
-      imageId: 'ethereum',
-      rpcUrl: 'https://mainnet.infura.io/v3/YOUR-PROJECT-ID',
-      chainId: 1,
+      assets: {
+        imageId: 'ethereum',
+        imageUrl: ''
+      },
+      caipNetworkId: 'eip155:1',
       chainNamespace: 'eip155',
-      explorerUrl: 'https://etherscan.io',
-      currency: 'ETH'
+      nativeCurrency: {
+        name: 'Ethereum',
+        decimals: 18,
+        symbol: 'ETH'
+      },
+      rpcUrls: {
+        default: {
+          http: ['']
+        }
+      }
     }
 
     // Mock the useSnapshot hook

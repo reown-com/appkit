@@ -46,6 +46,6 @@ export function mockW3mFrameProvider() {
 export function mockSession(): AuthProvider.Session {
   return {
     address: TestConstants.accounts[0].address,
-    chainId: TestConstants.chains[0]?.chainId || ''
+    chainId: TestConstants.chains[0]?.id || ''
   }
 }

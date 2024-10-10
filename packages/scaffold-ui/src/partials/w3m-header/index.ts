@@ -6,7 +6,6 @@ import {
   ConnectorController,
   EventsController,
   ModalController,
-  NetworkController,
   OptionsController,
   RouterController
 } from '@reown/appkit-core'
@@ -18,7 +17,7 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 import styles from './styles.js'
 
 // -- Constants ----------------------------------------- //
-const BETA_SCREENS = ['Swap', 'SwapSelectToken', 'SwapPreview']
+const BETA_SCREENS: string[] = []
 
 // -- Helpers ------------------------------------------- //
 function headings() {
@@ -31,6 +30,7 @@ function headings() {
 
   return {
     Connect: `Connect ${isEmail ? 'Email' : ''} Wallet`,
+    Create: 'Create Wallet',
     ChooseAccountName: undefined,
     Account: undefined,
     AccountSettings: undefined,
@@ -243,7 +243,7 @@ export class W3mHeader extends LitElement {
   }
 
   private isAllowedNetworkSwitch() {
-    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
     const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 

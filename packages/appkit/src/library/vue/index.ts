@@ -1,5 +1,5 @@
 import { onUnmounted, reactive, ref } from 'vue'
-import { AccountController, ChainController, CoreHelperUtil, type Event } from '@reown/appkit-core'
+import { type Event } from '@reown/appkit-core'
 import type {
   W3mAccountButton,
   W3mButton,
@@ -11,6 +11,11 @@ import type { AppKit } from '../../../src/client.js'
 import type { AppKitOptions } from '../../utils/TypesUtil.js'
 import { ProviderUtil } from '../../store/ProviderUtil.js'
 import type { ChainNamespace } from '@reown/appkit-common'
+
+export interface AppKitEvent {
+  timestamp: number
+  data: Event
+}
 
 type OpenOptions = {
   view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'
@@ -38,19 +43,8 @@ export function getAppKit(appKit: AppKit) {
   }
 }
 
-export function useAppKitAccount() {
-  const state = ref(ChainController.state)
-  const accountState = ref(AccountController.state)
-  const { activeCaipAddress } = state.value
-  const { status } = accountState.value
-
-  return {
-    caipAddress: activeCaipAddress,
-    address: CoreHelperUtil.getPlainAddress(activeCaipAddress),
-    isConnected: Boolean(activeCaipAddress),
-    status
-  }
-}
+// -- Core Hooks ---------------------------------------------------------------
+export * from '@reown/appkit-core/vue'
 
 export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
   const state = ref(ProviderUtil.state)
@@ -158,11 +152,6 @@ export function useAppKitState() {
   })
 
   return reactive({ open, selectedNetworkId })
-}
-
-export interface AppKitEvent {
-  timestamp: number
-  data: Event
 }
 
 export function useAppKitEvents(): AppKitEvent {
