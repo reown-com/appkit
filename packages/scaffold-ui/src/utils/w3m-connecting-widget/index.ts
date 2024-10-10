@@ -149,6 +149,7 @@ export class W3mConnectingWidget extends LitElement {
                 size="md"
                 ?disabled=${this.isRetrying || (!this.error && this.buffering)}
                 @click=${this.onTryAgain.bind(this)}
+                data-testid="w3m-connecting-widget-secondary-button"
               >
                 <wui-icon color="inherit" slot="iconLeft" name=${this.secondaryBtnIcon}></wui-icon>
                 ${this.secondaryBtnLabel}
