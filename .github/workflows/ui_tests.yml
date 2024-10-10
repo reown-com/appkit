@@ -86,14 +86,13 @@ jobs:
           node-version: 18.x
           cache: 'pnpm'
 
-      - name: Install dependencies
-        run: pnpm install
-
       - name: Download laboratory artifact
         uses: actions/download-artifact@v3
         with:
-          name: laboratory-build
-          path: apps/laboratory/out
+          name: laboratory-package
+
+      - name: Extract laboratory package
+        run: mkdir -p apps/laboratory && tar -xzf laboratory.tar.gz -C apps/laboratory
 
       - name: Install Playwright Browsers
         working-directory: ./apps/laboratory/

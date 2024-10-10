@@ -46,11 +46,14 @@ jobs:
           SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
 
+      - name: Package laboratory
+        run: tar -czf laboratory.tar.gz -C apps/laboratory .
+
       - name: Upload laboratory artifact
         uses: actions/upload-artifact@v3
         with:
-          name: laboratory-build
-          path: apps/laboratory/out
+          name: laboratory-package
+          path: laboratory.tar.gz
           retention-days: 1
 
   code_style:
