@@ -5,7 +5,7 @@ import { mockOptions } from './mocks/Options'
 import { mockCreateEthersConfig } from './mocks/EthersConfig'
 import mockAppKit from './mocks/AppKit'
 import { mockAuthConnector } from './mocks/AuthConnector'
-import { EthersHelpersUtil, type ProviderId, type ProviderType } from '@reown/appkit-utils/ethers'
+import { EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
 import { CaipNetworksUtil, ConstantsUtil } from '@reown/appkit-utils'
 import {
   arbitrum as AppkitArbitrum,
@@ -14,7 +14,7 @@ import {
   optimism as AppkitOptimism,
   bsc as AppkitBsc
 } from '@reown/appkit/networks'
-import { ProviderUtil } from '@reown/appkit/store'
+import { ProviderUtil, type ProviderIdType } from '@reown/appkit/store'
 import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 import { type BlockchainApiLookupEnsName } from '@reown/appkit'
 import { InfuraProvider, JsonRpcProvider } from 'ethers'
@@ -813,7 +813,7 @@ describe('EthersAdapter', () => {
       vi.spyOn(ProviderUtil.state, 'providerIds', 'get').mockReturnValue({
         eip155: ConstantsUtil.EIP6963_CONNECTOR_ID,
         solana: undefined
-      } as Record<ChainNamespace, ProviderId | undefined>)
+      } as Record<ChainNamespace, ProviderIdType | undefined>)
       client['EIP6963Providers'] = [
         {
           info: { name: 'MetaMask', icon: 'icon-url', uuid: 'test-uuid', rdns: 'com.metamask' },
@@ -833,7 +833,7 @@ describe('EthersAdapter', () => {
       vi.spyOn(ProviderUtil.state, 'providerIds', 'get').mockReturnValue({
         eip155: ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID,
         solana: undefined
-      } as Record<ChainNamespace, ProviderId | undefined>)
+      } as Record<ChainNamespace, ProviderIdType | undefined>)
       const mockProvider = {
         session: {
           peer: {
@@ -862,7 +862,7 @@ describe('EthersAdapter', () => {
       vi.spyOn(ProviderUtil.state, 'providerIds', 'get').mockReturnValue({
         eip155: ConstantsUtil.COINBASE_SDK_CONNECTOR_ID,
         solana: undefined
-      } as Record<ChainNamespace, ProviderId | undefined>)
+      } as Record<ChainNamespace, ProviderIdType | undefined>)
       vi.spyOn(mockAppKit, 'getConnectors').mockReturnValue([
         {
           id: ConstantsUtil.COINBASE_SDK_CONNECTOR_ID,
