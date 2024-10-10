@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-adapter-polkadot",
-  "version": "1.0.7",
+  "version": "1.1.1",
   "scripts": {
     "build:clean": "rm -rf dist",
     "build": "tsc --build tsconfig.build.json",

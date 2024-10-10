@@ -24,10 +24,11 @@ export const mockProvider = {
         'wallet_sendCalls',
         'wallet_showCallsStatus',
         'wallet_getCallsStatus',
+        'wallet_grantPermissions',
         'wallet_switchEthereumChain'
       ],
       rpcMap: {
-        '1': 'https://rpc.walletconnect.org/v1/?chainId=eip155:1'
+        '1': 'https://rpc.walletconnect.org/v1/?chainId=eip155%3A1&projectId=test-project-id'
       }
     },
     solana: {
@@ -43,7 +44,7 @@ export const mockProvider = {
       events: ['accountsChanged', 'chainChanged'],
       rpcMap: {
         '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp':
-          'https://rpc.walletconnect.org/v1/?chainId=solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+          'https://rpc.walletconnect.org/v1/?chainId=solana%3A5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp&projectId=test-project-id'
       }
     }
   },

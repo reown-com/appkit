@@ -226,7 +226,10 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onSwapClick() {
-    if (this.network?.id && !CoreConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(this.network?.id)) {
+    if (
+      this.network?.caipNetworkId &&
+      !CoreConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(this.network?.caipNetworkId)
+    ) {
       RouterController.push('UnsupportedChain', {
         swapUnsupportedChain: true
       })
@@ -235,7 +238,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         type: 'track',
         event: 'OPEN_SWAP',
         properties: {
-          network: this.network?.id || '',
+          network: this.network?.caipNetworkId || '',
           isSmartAccount:
             AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
@@ -254,7 +257,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       type: 'track',
       event: 'OPEN_SEND',
       properties: {
-        network: this.network?.id || '',
+        network: this.network?.caipNetworkId || '',
         isSmartAccount:
           AccountController.state.preferredAccountType ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT

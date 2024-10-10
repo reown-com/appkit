@@ -246,7 +246,7 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
 
   private getActiveChainName() {
     const entry = Object.entries(solanaChains).find(
-      ([, chain]) => chain.chainId === this.getActiveChain()?.chainId
+      ([, chain]) => chain.id === this.getActiveChain()?.id
     )
 
     if (!entry) {

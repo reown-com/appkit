@@ -9,8 +9,9 @@ import {
   solanaTestnet,
   solanaDevnet,
   base,
+  baseSepolia,
   gnosis,
-  baseSepolia
+  type AppKitNetwork
 } from '@reown/appkit/networks'
 import { getLocalStorageItem } from './LocalStorage'
 import type { CaipNetwork } from '@reown/appkit'
@@ -20,8 +21,7 @@ if (!projectId) {
   throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
 }
 export const WALLET_URL = process.env['WALLET_URL'] || 'https://react-wallet.walletconnect.com/'
-export const WC_COSIGNER_BASE_URL = 'https://rpc.walletconnect.org/v1/sessions'
-export const USEROP_BUILDER_SERVICE_BASE_URL = 'https://react-wallet.walletconnect.com/api'
+export const USEROP_BUILDER_SERVICE_BASE_URL = 'https://rpc.walletconnect.com/v1/wallet'
 
 export const GALLERY_URL = 'https://appkit-gallery.reown.com/'
 export const DOCS_URL = 'https://docs.reown.com/appkit/overview'
@@ -58,22 +58,27 @@ const EvmNetworks = [
   zkSync,
   arbitrum,
   base,
+  baseSepolia,
   sepolia,
-  gnosis,
-  baseSepolia
-]
+  gnosis
+] as [AppKitNetwork, ...AppKitNetwork[]]
 
 export const solanaNotExist = {
-  id: 'solana:chaindoesntexist',
-  chainId: 'chaindoesntexist',
+  id: 'chaindoesntexist',
+  caipNetworkId: 'solana:chaindoesntexist',
+  chainNamespace: 'solana',
   name: 'Solana Unsupported',
-  currency: 'SOL',
-  explorerUrl: 'https://explorer.solana.com/?cluster=unsupported',
-  rpcUrl: 'https://api.unsupported.solana.com',
-  chainNamespace: 'solana'
+  nativeCurrency: { name: 'Solana', symbol: 'SOL', decimals: 9 },
+  blockExplorers: {
+    default: { name: 'Solscan', url: 'https://explorer.solana.com/?cluster=unsupported' }
+  },
+  rpcUrls: { default: { http: ['https://api.unsupported.solana.com'] } }
 } as CaipNetwork
 
-const SolanaNetworks = [solana, solanaTestnet, solanaDevnet, solanaNotExist]
+const SolanaNetworks = [solana, solanaTestnet, solanaDevnet, solanaNotExist] as [
+  AppKitNetwork,
+  ...AppKitNetwork[]
+]
 
 export const ConstantsUtil = {
   SigningSucceededToastTitle: 'Signing Succeeded',
@@ -131,5 +136,5 @@ export const ConstantsUtil = {
   ProjectId: projectId,
   EvmNetworks,
   SolanaNetworks,
-  AllNetworks: [...EvmNetworks, ...SolanaNetworks]
+  AllNetworks: [...EvmNetworks, ...SolanaNetworks] as [AppKitNetwork, ...AppKitNetwork[]]
 }

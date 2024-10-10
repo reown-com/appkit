@@ -82,7 +82,7 @@ export class W3mConnectingSiweView extends LitElement {
       event: 'CLICK_SIGN_SIWE_MESSAGE',
       type: 'track',
       properties: {
-        network: ChainController.state.activeCaipNetwork?.id || '',
+        network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
         isSmartAccount:
           AccountController.state.preferredAccountType ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
@@ -96,7 +96,7 @@ export class W3mConnectingSiweView extends LitElement {
         event: 'SIWE_AUTH_SUCCESS',
         type: 'track',
         properties: {
-          network: ChainController.state.activeCaipNetwork?.id || '',
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
           isSmartAccount:
             AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
@@ -119,7 +119,7 @@ export class W3mConnectingSiweView extends LitElement {
         event: 'SIWE_AUTH_ERROR',
         type: 'track',
         properties: {
-          network: ChainController.state.activeCaipNetwork?.id || '',
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
           isSmartAccount
         }
       })
@@ -142,7 +142,7 @@ export class W3mConnectingSiweView extends LitElement {
       event: 'CLICK_CANCEL_SIWE',
       type: 'track',
       properties: {
-        network: ChainController.state.activeCaipNetwork?.id || '',
+        network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
         isSmartAccount:
           AccountController.state.preferredAccountType ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT

@@ -63,7 +63,7 @@ export const TransactionsController = {
         onramp,
         // Coinbase transaction history state updates require the latest data
         cache: onramp === 'coinbase' ? 'no-cache' : undefined,
-        chainId: ChainController.state.activeCaipNetwork?.id
+        chainId: ChainController.state.activeCaipNetwork?.caipNetworkId
       })
 
       const nonSpamTransactions = this.filterSpamTransactions(response.data)
@@ -144,7 +144,7 @@ export const TransactionsController = {
   },
 
   filterByConnectedChain(transactions: Transaction[]) {
-    const chainId = ChainController.state.activeCaipNetwork?.id
+    const chainId = ChainController.state.activeCaipNetwork?.caipNetworkId
     const filteredTransactions = transactions.filter(
       transaction => transaction.metadata.chain === chainId
     )
