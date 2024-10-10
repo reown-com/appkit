@@ -20,7 +20,6 @@ import {
   EthersHelpersUtil,
   type Provider,
   type ProviderType,
-  type ProviderId,
   type Address
 } from '@reown/appkit-utils/ethers'
 import type { AppKit } from '@reown/appkit'
@@ -45,7 +44,7 @@ import { WcConstantsUtil } from '@reown/appkit'
 import { EthersMethods } from './utils/EthersMethods.js'
 import { formatEther, InfuraProvider, JsonRpcProvider } from 'ethers'
 import type { PublicStateControllerState } from '@reown/appkit-core'
-import { ProviderUtil } from '@reown/appkit/store'
+import { ProviderUtil, type ProviderIdType } from '@reown/appkit/store'
 import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
 
@@ -301,7 +300,7 @@ export class EthersAdapter {
           }
           await this.setProvider(
             selectedProvider,
-            selectedConnector.providerType as ProviderId,
+            selectedConnector.providerType as ProviderIdType,
             info?.name
           )
         } catch (error) {
@@ -613,12 +612,12 @@ export class EthersAdapter {
     const activeConfig = providerConfigs[walletId as unknown as keyof typeof providerConfigs]
 
     if (activeConfig?.provider) {
-      this.setProvider(activeConfig.provider, walletId as ProviderId)
-      this.setupProviderListeners(activeConfig.provider, walletId as ProviderId)
+      this.setProvider(activeConfig.provider, walletId as ProviderIdType)
+      this.setupProviderListeners(activeConfig.provider, walletId as ProviderIdType)
     }
   }
 
-  private async setProvider(provider: Provider, providerId: ProviderId, name?: string) {
+  private async setProvider(provider: Provider, providerId: ProviderIdType, name?: string) {
     if (providerId === 'w3mAuth') {
       this.setAuthProvider()
     } else {
@@ -685,7 +684,7 @@ export class EthersAdapter {
         )
         this.appKit?.setSmartAccountDeployed(Boolean(smartAccountDeployed), this.chainNamespace)
         ProviderUtil.setProvider<Provider>('eip155', this.authProvider as unknown as Provider)
-        ProviderUtil.setProviderId('eip155', ConstantsUtil.AUTH_CONNECTOR_ID as ProviderId)
+        ProviderUtil.setProviderId('eip155', ConstantsUtil.AUTH_CONNECTOR_ID as ProviderIdType)
         this.setupProviderListeners(this.authProvider as unknown as Provider, 'w3mAuth')
         this.watchModal()
       }
@@ -703,7 +702,7 @@ export class EthersAdapter {
     }
   }
 
-  private setupProviderListeners(provider: Provider, providerId: ProviderId) {
+  private setupProviderListeners(provider: Provider, providerId: ProviderIdType) {
     const disconnectHandler = () => {
       SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
       this.removeListeners(provider)
