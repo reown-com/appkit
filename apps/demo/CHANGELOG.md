@@ -1,5 +1,15 @@
 # @apps/demo
 
+## 1.1.1
+
+### Patch Changes
+
+- [#3036](https://github.com/reown-com/appkit/pull/3036) [`23a7613`](https://github.com/reown-com/appkit/commit/23a7613fc2d3516a85183eae325aedacaac0a073) Thanks [@enesozturk](https://github.com/enesozturk)! - Removes assert syntax to import json modules
+
+- Updated dependencies [[`23a7613`](https://github.com/reown-com/appkit/commit/23a7613fc2d3516a85183eae325aedacaac0a073)]:
+  - @reown/appkit@1.1.1
+  - @reown/appkit-adapter-wagmi@1.1.1
+
 ## 1.1.0
 
 ### Minor Changes
