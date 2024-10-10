@@ -179,7 +179,7 @@ export class WagmiAdapter implements ChainAdapter {
       ...configParams,
       chains: this.wagmiChains,
       transports,
-      connectors: [...connectors, ...(configParams?.connectors ?? [])]
+      connectors
     })
   }
 
