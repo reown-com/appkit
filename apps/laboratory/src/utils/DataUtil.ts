@@ -43,11 +43,6 @@ export const wagmiSdkOptions: SdkOption[] = [
       'Configuration using wagmi and implementing sign in with ethereum with a hosted server'
   },
   {
-    title: 'Profiles',
-    link: '/library/wagmi-profiles/',
-    description: 'Configuration using wagmi and implementing profiles feature'
-  },
-  {
     title: 'Without Email',
     link: '/library/wagmi-no-email/',
     description: 'Configuration using wagmi without email'
