@@ -118,7 +118,7 @@ export const SendController = {
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token.address,
           amount: this.state.sendTokenAmount,
-          network: ChainController.state.activeCaipNetwork?.id || ''
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
         }
       })
       this.sendERC20Token({
@@ -142,7 +142,7 @@ export const SendController = {
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol,
           amount: this.state.sendTokenAmount,
-          network: ChainController.state.activeCaipNetwork?.id || ''
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
         }
       })
       this.sendNativeToken({
@@ -186,7 +186,7 @@ export const SendController = {
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
-          network: ChainController.state.activeCaipNetwork?.id || ''
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
         }
       })
       this.resetSend()
@@ -200,7 +200,7 @@ export const SendController = {
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
-          network: ChainController.state.activeCaipNetwork?.id || ''
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
         }
       })
       SnackController.showError('Something went wrong')

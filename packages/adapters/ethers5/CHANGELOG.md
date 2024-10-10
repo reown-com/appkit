@@ -1,5 +1,151 @@
 # @reown/appkit-adapter-ethers5
 
+## 1.1.2
+
+### Patch Changes
+
+- [#3014](https://github.com/reown-com/appkit/pull/3014) [`53f5525`](https://github.com/reown-com/appkit/commit/53f552510380e99f95a2ac7065be3cb81d674dab) Thanks [@Magehernan](https://github.com/Magehernan)! - Removes connector list variable duplication for wagmi adapter
+
+- [#2858](https://github.com/reown-com/appkit/pull/2858) [`e95ecde`](https://github.com/reown-com/appkit/commit/e95ecdea26614b4428e31dd6075efcce7a01a5e0) Thanks [@renovate](https://github.com/apps/renovate)! - Upgrades ethers v6
+
+- [#3048](https://github.com/reown-com/appkit/pull/3048) [`2751feb`](https://github.com/reown-com/appkit/commit/2751feb985e9d15a6babd5584f75a50ba7fb1098) Thanks [@KannuSingh](https://github.com/KannuSingh)! - fix: add missing setProvider and setProviderId call for connector other than walletconnect on syncAccount
+
+- [#3053](https://github.com/reown-com/appkit/pull/3053) [`3c6e2c7`](https://github.com/reown-com/appkit/commit/3c6e2c7a915f1d16d26c8c2fb9bd137adc18b808) Thanks [@enesozturk](https://github.com/enesozturk)! - Reverts removing types package on ethers adapter
+
+- [#3027](https://github.com/reown-com/appkit/pull/3027) [`30e2ee5`](https://github.com/reown-com/appkit/commit/30e2ee523de1150a66727582d0522bfd7e9b7264) Thanks [@enesozturk](https://github.com/enesozturk)! - Removes beta tag from Swap screens
+
+- [#3046](https://github.com/reown-com/appkit/pull/3046) [`3b3b124`](https://github.com/reown-com/appkit/commit/3b3b124ba9138b47aeae193491b36f495bd7da89) Thanks [@enesozturk](https://github.com/enesozturk)! - Refactor CDN package to properly export our modules
+
+- [#3058](https://github.com/reown-com/appkit/pull/3058) [`91c1be7`](https://github.com/reown-com/appkit/commit/91c1be7c35165e94e5107ac4c4cb5d406d3ea5da) Thanks [@magiziz](https://github.com/magiziz)! - Improved mobile connection UX
+
+- Updated dependencies [[`53f5525`](https://github.com/reown-com/appkit/commit/53f552510380e99f95a2ac7065be3cb81d674dab), [`e95ecde`](https://github.com/reown-com/appkit/commit/e95ecdea26614b4428e31dd6075efcce7a01a5e0), [`2751feb`](https://github.com/reown-com/appkit/commit/2751feb985e9d15a6babd5584f75a50ba7fb1098), [`3c6e2c7`](https://github.com/reown-com/appkit/commit/3c6e2c7a915f1d16d26c8c2fb9bd137adc18b808), [`30e2ee5`](https://github.com/reown-com/appkit/commit/30e2ee523de1150a66727582d0522bfd7e9b7264), [`3b3b124`](https://github.com/reown-com/appkit/commit/3b3b124ba9138b47aeae193491b36f495bd7da89), [`91c1be7`](https://github.com/reown-com/appkit/commit/91c1be7c35165e94e5107ac4c4cb5d406d3ea5da)]:
+  - @reown/appkit@1.1.2
+  - @reown/appkit-utils@1.1.2
+  - @reown/appkit-common@1.1.2
+  - @reown/appkit-core@1.1.2
+  - @reown/appkit-polyfills@1.1.2
+  - @reown/appkit-scaffold-ui@1.1.2
+  - @reown/appkit-siwe@1.1.2
+  - @reown/appkit-ui@1.1.2
+  - @reown/appkit-wallet@1.1.2
+
+## 1.1.1
+
+### Patch Changes
+
+- [#3036](https://github.com/reown-com/appkit/pull/3036) [`23a7613`](https://github.com/reown-com/appkit/commit/23a7613fc2d3516a85183eae325aedacaac0a073) Thanks [@enesozturk](https://github.com/enesozturk)! - Removes assert syntax to import json modules
+
+- Updated dependencies [[`23a7613`](https://github.com/reown-com/appkit/commit/23a7613fc2d3516a85183eae325aedacaac0a073)]:
+  - @reown/appkit@1.1.1
+  - @reown/appkit-utils@1.1.1
+  - @reown/appkit-common@1.1.1
+  - @reown/appkit-core@1.1.1
+  - @reown/appkit-polyfills@1.1.1
+  - @reown/appkit-scaffold-ui@1.1.1
+  - @reown/appkit-siwe@1.1.1
+  - @reown/appkit-ui@1.1.1
+  - @reown/appkit-wallet@1.1.1
+
+## 1.1.0
+
+### Minor Changes
+
+- [#2955](https://github.com/reown-com/appkit/pull/2955) [`c5a2107`](https://github.com/reown-com/appkit/commit/c5a21078a4b04e0518015c3600b16851b6d5318b) Thanks [@enesozturk](https://github.com/enesozturk)! - Add Viem chains support
+
+### Patch Changes
+
+- [#3012](https://github.com/reown-com/appkit/pull/3012) [`e1b8720`](https://github.com/reown-com/appkit/commit/e1b8720121fd49985fe488e401600482ce691571) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where SIWE modal wasn't showing up for some mobile wallets.
+
+- [#3033](https://github.com/reown-com/appkit/pull/3033) [`789df12`](https://github.com/reown-com/appkit/commit/789df124487f3facf22501ad570cbf6423533564) Thanks [@enesozturk](https://github.com/enesozturk)! - Upgrades solana/web3js deps
+
+- [#2999](https://github.com/reown-com/appkit/pull/2999) [`72010c6`](https://github.com/reown-com/appkit/commit/72010c694d1b7a4c21995e64cfa51d6df0f966d8) Thanks [@zoruka](https://github.com/zoruka)! - Remove duplicated Solana chains declared on Solana Adapter package.
+
+- [#3002](https://github.com/reown-com/appkit/pull/3002) [`d558f2b`](https://github.com/reown-com/appkit/commit/d558f2bfbf215928eded5236a3dd984c76fd9c37) Thanks [@tomiir](https://github.com/tomiir)! - Exposes version in AppKit class
+
+- [#3032](https://github.com/reown-com/appkit/pull/3032) [`2b1d72a`](https://github.com/reown-com/appkit/commit/2b1d72a301e2f07119e1c9eda260adda5c34a3ec) Thanks [@enesozturk](https://github.com/enesozturk)! - Exports util functions for networks path
+
+- [#3030](https://github.com/reown-com/appkit/pull/3030) [`aced68a`](https://github.com/reown-com/appkit/commit/aced68ad4328351ccff2d934fc689f2ad51cbc19) Thanks [@KannuSingh](https://github.com/KannuSingh)! - Added experimental package with smart-session feature.
+
+- Updated dependencies [[`c5a2107`](https://github.com/reown-com/appkit/commit/c5a21078a4b04e0518015c3600b16851b6d5318b), [`e1b8720`](https://github.com/reown-com/appkit/commit/e1b8720121fd49985fe488e401600482ce691571), [`789df12`](https://github.com/reown-com/appkit/commit/789df124487f3facf22501ad570cbf6423533564), [`72010c6`](https://github.com/reown-com/appkit/commit/72010c694d1b7a4c21995e64cfa51d6df0f966d8), [`d558f2b`](https://github.com/reown-com/appkit/commit/d558f2bfbf215928eded5236a3dd984c76fd9c37), [`2b1d72a`](https://github.com/reown-com/appkit/commit/2b1d72a301e2f07119e1c9eda260adda5c34a3ec), [`aced68a`](https://github.com/reown-com/appkit/commit/aced68ad4328351ccff2d934fc689f2ad51cbc19)]:
+  - @reown/appkit-utils@1.1.0
+  - @reown/appkit-scaffold-ui@1.1.0
+  - @reown/appkit@1.1.0
+  - @reown/appkit-common@1.1.0
+  - @reown/appkit-core@1.1.0
+  - @reown/appkit-siwe@1.1.0
+  - @reown/appkit-ui@1.1.0
+  - @reown/appkit-polyfills@1.1.0
+  - @reown/appkit-wallet@1.1.0
+
+## 1.0.7
+
+### Patch Changes
+
+- [#2977](https://github.com/reown-com/appkit/pull/2977) [`d45545d`](https://github.com/reown-com/appkit/commit/d45545ddd4073c35214db273b090ae8b4df9ef61) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where email line separator was not showing when social logins were disabled and `emailShowWallets` was set to false.
+
+- [#2990](https://github.com/reown-com/appkit/pull/2990) [`c2e391d`](https://github.com/reown-com/appkit/commit/c2e391d832aa3b5a1c2850cc49467bd4ef1e56f9) Thanks [@zoruka](https://github.com/zoruka)! - Fixes external connectors not appearing when using Solana adapter
+
+- [#2998](https://github.com/reown-com/appkit/pull/2998) [`e1081e9`](https://github.com/reown-com/appkit/commit/e1081e957b3ed73c068d6092923b59b0e27815d1) Thanks [@zoruka](https://github.com/zoruka)! - Fixes failing to connect with extension wallets on Solana Adapter
+
+- [#2985](https://github.com/reown-com/appkit/pull/2985) [`b949143`](https://github.com/reown-com/appkit/commit/b949143a0838810f7ae17a85e4c17acae10b888c) Thanks [@enesozturk](https://github.com/enesozturk)! - Updates wagmi adapter to pass all custom wagmi configs to the createConfig function
+
+- [#3001](https://github.com/reown-com/appkit/pull/3001) [`6ad2530`](https://github.com/reown-com/appkit/commit/6ad253000261e60ddc0f60b341a658da6636bd3e) Thanks [@tomiir](https://github.com/tomiir)! - Adds FRAME_READY event for W3mFrameProvider
+
+- [#2989](https://github.com/reown-com/appkit/pull/2989) [`d40f978`](https://github.com/reown-com/appkit/commit/d40f978fe685fbc9599cdac36a99b12ec4350d3c) Thanks [@zoruka](https://github.com/zoruka)! - Disable names feature flow for Solana networks
+
+- Updated dependencies [[`d45545d`](https://github.com/reown-com/appkit/commit/d45545ddd4073c35214db273b090ae8b4df9ef61), [`c2e391d`](https://github.com/reown-com/appkit/commit/c2e391d832aa3b5a1c2850cc49467bd4ef1e56f9), [`e1081e9`](https://github.com/reown-com/appkit/commit/e1081e957b3ed73c068d6092923b59b0e27815d1), [`b949143`](https://github.com/reown-com/appkit/commit/b949143a0838810f7ae17a85e4c17acae10b888c), [`6ad2530`](https://github.com/reown-com/appkit/commit/6ad253000261e60ddc0f60b341a658da6636bd3e), [`d40f978`](https://github.com/reown-com/appkit/commit/d40f978fe685fbc9599cdac36a99b12ec4350d3c)]:
+  - @reown/appkit-scaffold-ui@1.0.7
+  - @reown/appkit@1.0.7
+  - @reown/appkit-utils@1.0.7
+  - @reown/appkit-common@1.0.7
+  - @reown/appkit-core@1.0.7
+  - @reown/appkit-polyfills@1.0.7
+  - @reown/appkit-siwe@1.0.7
+  - @reown/appkit-ui@1.0.7
+  - @reown/appkit-wallet@1.0.7
+
+## 1.0.6
+
+### Patch Changes
+
+- [#2970](https://github.com/reown-com/appkit/pull/2970) [`e6a36a7`](https://github.com/reown-com/appkit/commit/e6a36a746e85ced1f89fc1d7227e25df1559f063) Thanks [@magiziz](https://github.com/magiziz)! - Introducing debug mode. This is useful for seeing UI alerts while debugging.
+
+  **Example usage**
+
+  ```ts
+  import { createAppKit } from '@reown/appkit/react'
+  import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+  import { mainnet } from '@reown/appkit/networks'
+
+  const wagmiAdapter = new WagmiAdapter({
+    ssr: true,
+    networks: [mainnet],
+    projectId: 'YOUR_PROJECT_ID'
+  })
+
+  const modal = createAppKit({
+    adapters: [wagmiAdapter],
+    networks: [mainnet],
+    projectId: 'YOUR_PROJECT_ID',
+    debug: true // Optional - defaults to false
+  })
+  ```
+
+- [#2984](https://github.com/reown-com/appkit/pull/2984) [`b5444bd`](https://github.com/reown-com/appkit/commit/b5444bdd454d370cf3f17267d457cd46de10a5b9) Thanks [@magiziz](https://github.com/magiziz)! - Changed logger imports to not cause the webpack bundler to throw a CommonJS module error.
+
+- [#2974](https://github.com/reown-com/appkit/pull/2974) [`0563711`](https://github.com/reown-com/appkit/commit/05637111aba940af5f46215336268294675322fd) Thanks [@magiziz](https://github.com/magiziz)! - Added create wallet flow in connect modal
+
+- Updated dependencies [[`e6a36a7`](https://github.com/reown-com/appkit/commit/e6a36a746e85ced1f89fc1d7227e25df1559f063), [`b5444bd`](https://github.com/reown-com/appkit/commit/b5444bdd454d370cf3f17267d457cd46de10a5b9), [`0563711`](https://github.com/reown-com/appkit/commit/05637111aba940af5f46215336268294675322fd)]:
+  - @reown/appkit@1.0.6
+  - @reown/appkit-utils@1.0.6
+  - @reown/appkit-common@1.0.6
+  - @reown/appkit-core@1.0.6
+  - @reown/appkit-polyfills@1.0.6
+  - @reown/appkit-scaffold-ui@1.0.6
+  - @reown/appkit-siwe@1.0.6
+  - @reown/appkit-ui@1.0.6
+  - @reown/appkit-wallet@1.0.6
+
 ## 1.0.5
 
 ### Patch Changes

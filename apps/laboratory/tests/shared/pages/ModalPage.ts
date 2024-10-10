@@ -325,6 +325,10 @@ export class ModalPage {
     return page
   }
 
+  async clickWalletGuideGetStarted() {
+    await this.page.getByTestId('w3m-wallet-guide-get-started').click()
+  }
+
   async promptSiwe() {
     const siweSign = this.page.getByTestId('w3m-connecting-siwe-sign')
     await expect(siweSign, 'Siwe prompt sign button should be visible').toBeVisible({
@@ -421,6 +425,24 @@ export class ModalPage {
 
     const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${networkName}`)
     await networkToSwitchButton.click()
+  }
+
+  async openAllWallets() {
+    const allWallets = this.page.getByTestId('all-wallets')
+    await expect(allWallets, 'All wallets should be visible').toBeVisible()
+    await allWallets.click()
+  }
+
+  async clickAllWalletsListSearchItem(id: string) {
+    const allWalletsListSearchItem = this.page.getByTestId(`wallet-search-item-${id}`)
+    await expect(allWalletsListSearchItem).toBeVisible()
+    await allWalletsListSearchItem.click()
+  }
+
+  async search(value: string) {
+    const searchInput = this.page.getByTestId('wui-input-text')
+    await expect(searchInput, 'Search input should be visible').toBeVisible()
+    await searchInput.fill(value)
   }
 
   async openModal() {

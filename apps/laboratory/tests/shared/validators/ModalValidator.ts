@@ -84,7 +84,9 @@ export class ModalValidator {
 
   async expectCaipAddressHaveCorrectNetworkId(caipNetworkId: CaipNetworkId) {
     const address = this.page.getByTestId('appkit-caip-address')
-    await expect(address, 'Correct CAIP address should be present').toContainText(caipNetworkId)
+    await expect(address, 'Correct CAIP address should be present').toContainText(
+      caipNetworkId.toString()
+    )
   }
 
   async expectNetwork(network: string) {
@@ -142,6 +144,21 @@ export class ModalValidator {
     await expect(socialList).toBeHidden()
   }
 
+  async expectAllWallets() {
+    const allWallets = this.page.getByTestId('all-wallets')
+    await expect(allWallets).toBeVisible()
+  }
+
+  async expectNoTryAgainButton() {
+    const secondaryButton = this.page.getByTestId('w3m-connecting-widget-secondary-button')
+    await expect(secondaryButton).toBeHidden()
+  }
+
+  async expectTryAgainButton() {
+    const secondaryButton = this.page.getByTestId('w3m-connecting-widget-secondary-button')
+    await expect(secondaryButton).toBeVisible()
+  }
+
   async expectAlertBarText(text: string) {
     const alertBarText = this.page.getByTestId('wui-alertbar-text')
     await expect(alertBarText).toHaveText(text)
@@ -149,6 +166,11 @@ export class ModalValidator {
 
   async expectEmailLogin() {
     const emailInput = this.page.getByTestId('wui-email-input')
+    await expect(emailInput).toBeVisible()
+  }
+
+  async expectEmailLineSeparator() {
+    const emailInput = this.page.getByTestId('w3m-email-login-or-separator')
     await expect(emailInput).toBeVisible()
   }
 
@@ -195,9 +217,16 @@ export class ModalValidator {
     await expect(switchNetworkButton).toBeVisible()
   }
 
-  async expectOnrampButton(_library: string) {
+  async expectOnrampButton() {
     const onrampButton = this.page.getByTestId('w3m-account-default-onramp-button')
     await expect(onrampButton).toBeVisible()
+  }
+
+  async expectWalletGuide(_library: string, guide: 'get-started' | 'explore') {
+    const walletGuide = this.page.getByTestId(
+      guide === 'explore' ? 'w3m-wallet-guide-explore' : 'w3m-wallet-guide-get-started'
+    )
+    await expect(walletGuide).toBeVisible()
   }
 
   async expectAccountNameFound(name: string) {
@@ -223,6 +252,12 @@ export class ModalValidator {
     }
 
     throw new Error('Call status not confirmed')
+  }
+
+  async expectNetworkVisible(name: string) {
+    const network = this.page.getByTestId(`w3m-network-switch-${name}`)
+    await expect(network).toBeVisible()
+    await expect(network).toBeDisabled()
   }
 
   async expectNetworksDisabled(name: string) {

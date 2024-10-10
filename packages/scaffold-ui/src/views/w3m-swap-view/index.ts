@@ -11,8 +11,7 @@ import {
   type SwapInputTarget,
   EventsController,
   AccountController,
-  ChainController,
-  NetworkController
+  ChainController
 } from '@reown/appkit-core'
 import { NumberUtil } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
@@ -28,7 +27,7 @@ export class W3mSwapView extends LitElement {
 
   @state() private detailsOpen = false
 
-  @state() private caipNetworkId = ChainController.state.activeCaipNetwork?.id
+  @state() private caipNetworkId = ChainController.state.activeCaipNetwork?.caipNetworkId
 
   @state() private initialized = SwapController.state.initialized
 
@@ -60,8 +59,8 @@ export class W3mSwapView extends LitElement {
   public constructor() {
     super()
     ChainController.subscribeKey('activeCaipNetwork', newCaipNetwork => {
-      if (this.caipNetworkId !== newCaipNetwork?.id) {
-        this.caipNetworkId = newCaipNetwork?.id
+      if (this.caipNetworkId !== newCaipNetwork?.caipNetworkId) {
+        this.caipNetworkId = newCaipNetwork?.caipNetworkId
         SwapController.resetState()
         SwapController.initializeState()
       }
@@ -207,7 +206,7 @@ export class W3mSwapView extends LitElement {
 
   private onSetMaxValue(target: SwapInputTarget, balance: string | undefined) {
     const token = target === 'sourceToken' ? this.sourceToken : this.toToken
-    const isNetworkToken = token?.address === NetworkController.getActiveNetworkTokenAddress()
+    const isNetworkToken = token?.address === ChainController.getActiveNetworkTokenAddress()
     let value = '0'
 
     if (!balance) {

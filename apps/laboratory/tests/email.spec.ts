@@ -66,7 +66,7 @@ emailTest('it should reject sign', async () => {
 
 emailTest('it should switch network and sign', async ({ library }) => {
   let targetChain = library === 'solana' ? 'Solana Testnet' : 'Polygon'
-  let caipNetworkId = library === 'solana' ? solanaTestnet.id : polygon.id
+  let caipNetworkId: number | string = library === 'solana' ? solanaTestnet.id : polygon.id
 
   await page.switchNetwork(targetChain)
   await validator.expectSwitchedNetworkOnNetworksView(targetChain)
@@ -87,6 +87,12 @@ emailTest('it should switch network and sign', async ({ library }) => {
   await page.sign()
   await page.approveSign()
   await validator.expectAcceptedSign()
+})
+
+emailTest('it should show names feature only for EVM networks', async ({ library }) => {
+  await page.goToSettings()
+  await validator.expectNamesFeatureVisible(library !== 'solana')
+  await page.closeModal()
 })
 
 emailTest('it should show loading on page refresh', async () => {

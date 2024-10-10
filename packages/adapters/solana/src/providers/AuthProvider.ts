@@ -69,13 +69,13 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     const availableChainIds = this.getProvider().getAvailableChainIds()
 
     return this.requestedChains.filter(requestedChain =>
-      availableChainIds.includes(withSolanaNamespace(requestedChain.chainId) as string)
+      availableChainIds.includes(withSolanaNamespace(requestedChain.id) as string)
     )
   }
 
   public async connect() {
     const session = await this.getProvider().connect({
-      chainId: withSolanaNamespace(this.getActiveChain()?.chainId)
+      chainId: withSolanaNamespace(this.getActiveChain()?.id)
     })
     this.setSession(session)
 

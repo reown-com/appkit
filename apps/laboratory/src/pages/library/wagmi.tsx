@@ -18,7 +18,7 @@ const wagmiAdapter = new WagmiAdapter({
 
 const modal = createAppKit({
   adapters: [wagmiAdapter],
-  networks: ConstantsUtil.EvmNetworks,
+  networks: wagmiAdapter.caipNetworks,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,
@@ -27,15 +27,16 @@ const modal = createAppKit({
   }
 })
 
+const config = wagmiAdapter.wagmiConfig
 ThemeStore.setModal(modal)
 
 export default function Wagmi() {
   return (
-    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
+    <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtons />
         <WagmiModalInfo />
-        <WagmiTests />
+        <WagmiTests config={config} />
       </QueryClientProvider>
     </WagmiProvider>
   )
