@@ -42,8 +42,6 @@ export abstract class AdapterBlueprint<
     }
   }
 
-  public abstract getWalletConnectNamespaceConfig(): NamespaceConfig
-
   public abstract getBalance(address: string): Promise<string>
 
   protected addProvider(...providers: Provider[]) {

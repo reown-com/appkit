@@ -594,8 +594,10 @@ export class AppKit {
       connectExternal: async ({ id, info, type, provider, chainId }: ConnectExternalOptions) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
         const res = await adapter?.connect({ id, info, type, provider, chainId })
+
         if (res) {
-          this.syncAccount(res)
+          await this.syncAccount(res)
+          await this.syncProvider(res)
         }
       },
       disconnect: async () => {
@@ -651,26 +653,6 @@ export class AppKit {
     NetworkController.setClient(this.networkControllerClient)
   }
 
-  private handleSwitchNetwork(chainNamespace: ChainNamespace, chainId: number | string) {
-    if (ChainController.state.activeChain === chainNamespace) {
-      const caipNetwork = this.options?.networks.find(
-        n => n.chainId === chainId && n.chainNamespace === ChainController.state.activeChain
-      )
-      if (caipNetwork !== ChainController.state.activeCaipNetwork && caipNetwork) {
-        this.switchNetwork(caipNetwork)
-      }
-    }
-  }
-
-  private handleAccountChanged(chainNamespace: ChainNamespace, address: string) {
-    if (ChainController.state.activeChain === chainNamespace) {
-      this.setCaipAddress(
-        `${ChainController.state.activeChain}:${ChainController.state.activeCaipNetwork?.chainId}:${address}` as `${ChainNamespace}:${string}:${string}`,
-        ChainController.state.activeChain as ChainNamespace
-      )
-    }
-  }
-
   private async handleDisconnect() {
     await this.connectionControllerClient?.disconnect()
   }
@@ -678,9 +660,9 @@ export class AppKit {
   private listenAdapter(chainNamespace: ChainNamespace) {
     const adapter = this.getAdapter(chainNamespace)
 
-    adapter?.on('switchNetwork', (chainId: number | string) => {
+    adapter?.on('switchNetwork', ({ address, chainId }) => {
       if (ChainController.state.activeChain === chainNamespace) {
-        this.handleSwitchNetwork(chainNamespace, chainId)
+        this.syncAccount({ address, chainId: Number(chainId) })
       }
     })
 
@@ -690,9 +672,9 @@ export class AppKit {
       }
     })
 
-    adapter?.on('accountChanged', (address: string) => {
+    adapter?.on('accountChanged', ({ address, chainId }) => {
       if (ChainController.state.activeChain === chainNamespace) {
-        this.handleAccountChanged(chainNamespace, address)
+        this.syncAccount({ address, chainId: Number(chainId) })
       }
     })
   }
@@ -725,24 +707,102 @@ export class AppKit {
     })
   }
 
-  private syncAccount(_res: AdapterBlueprint.ConnectResult) {
+  private syncProvider({
+    type,
+    provider,
+    id
+  }: Pick<AdapterBlueprint.ConnectResult, 'type' | 'provider' | 'id'>) {
+    ProviderUtil.setProviderId(ChainController.state.activeChain as ChainNamespace, type)
+    ProviderUtil.setProvider(ChainController.state.activeChain as ChainNamespace, provider)
+
+    StorageUtil.setConnectedConnector(id as ConnectorType)
+    StorageUtil.setConnectedNamespace(ChainController.state.activeChain as ChainNamespace)
+  }
+
+  private async syncAccount({
+    address,
+    chainId
+  }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'>) {
     this.setPreferredAccountType('eoa', ChainController.state.activeChain as ChainNamespace)
     this.setCaipAddress(
-      `${ChainController.state.activeChain}:${_res.chainId}:${_res.address}` as `${ChainNamespace}:${string}:${string}`,
+      `${ChainController.state.activeChain}:${chainId}:${address}` as `${ChainNamespace}:${string}:${string}`,
       ChainController.state.activeChain as ChainNamespace
     )
 
     const caipNetwork = this.options?.networks.find(
-      n => n.chainId === _res.chainId && n.chainNamespace === ChainController.state.activeChain
+      n => n.chainId === chainId && n.chainNamespace === ChainController.state.activeChain
     )
     if (caipNetwork) {
       this.setCaipNetwork(caipNetwork)
     }
-    // This.syncConnectedWalletInfo()
-    ProviderUtil.setProviderId(ChainController.state.activeChain as ChainNamespace, _res.type)
-    ProviderUtil.setProvider(ChainController.state.activeChain as ChainNamespace, _res.provider)
-    StorageUtil.setConnectedConnector(_res.type)
-    StorageUtil.setConnectedNamespace(ChainController.state.activeChain as ChainNamespace)
+
+    const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+    const balance = await adapter?.getBalance({ address, chainId })
+    if (balance) {
+      this.setBalance(
+        balance.balance,
+        balance.symbol,
+        ChainController.state.activeChain as ChainNamespace
+      )
+    }
+    await this.syncIdentity({ address, chainId: Number(chainId) })
+  }
+
+  private async syncIdentity({
+    address,
+    chainId
+  }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'>) {
+    try {
+      const { name, avatar } = await this.fetchIdentity({
+        address
+      })
+
+      this.setProfileName(name, ChainController.state.activeChain as ChainNamespace)
+      this.setProfileImage(avatar, ChainController.state.activeChain as ChainNamespace)
+
+      if (!name) {
+        await this.syncReownName(address)
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+        const result = await adapter?.getProfile({ address, chainId: Number(chainId) })
+
+        if (result?.profileName) {
+          this.setProfileName(
+            result.profileName,
+            ChainController.state.activeChain as ChainNamespace
+          )
+          if (result.profileImage) {
+            this.setProfileImage(
+              result.profileImage,
+              ChainController.state.activeChain as ChainNamespace
+            )
+          }
+        } else {
+          await this.syncReownName(address)
+          this.setProfileImage(null, ChainController.state.activeChain as ChainNamespace)
+        }
+      }
+    } catch {
+      if (chainId === 1) {
+        await this.syncReownName(address)
+      } else {
+        await this.syncReownName(address)
+        this.setProfileImage(null, ChainController.state.activeChain as ChainNamespace)
+      }
+    }
+  }
+
+  private async syncReownName(address: string) {
+    try {
+      const registeredWcNames = await this.getReownName(address)
+      if (registeredWcNames[0]) {
+        const wcName = registeredWcNames[0]
+        this.setProfileName(wcName.name, ChainController.state.activeChain as ChainNamespace)
+      } else {
+        this.setProfileName(null, ChainController.state.activeChain as ChainNamespace)
+      }
+    } catch {
+      this.setProfileName(null, ChainController.state.activeChain as ChainNamespace)
+    }
   }
 
   private async initOrContinue() {
@@ -788,9 +848,10 @@ export class AppKit {
       this.syncWalletConnectAccount()
     } else if (connectedConnector && connectedNamespace) {
       const adapter = this.getAdapter(connectedNamespace as ChainNamespace)
-      const res = await adapter?.syncConnection(connectedConnector)
+      const res = await adapter?.syncConnection(connectedConnector, connectedNamespace)
 
-      this.syncAccount(res)
+      this.syncProvider(res)
+      await this.syncAccount(res)
     }
   }
 
@@ -855,6 +916,11 @@ export class AppKit {
       if (blueprint) {
         adapters[namespace] = blueprint
         adapters[namespace].namespace = namespace
+        adapters[namespace].construct({
+          namespace,
+          projectId: this.options?.projectId,
+          networks: this.options?.networks
+        })
         if (this.options?.features) {
           adapters[namespace].syncConnectors(this.options, this)
         }
@@ -895,9 +961,8 @@ export class AppKit {
     await Promise.all(
       this.chainNamespaces.map(async namespace => {
         if (this.options) {
-          this.chainAdapters?.[namespace]?.syncConnectors(this.options, this)
-
           this.listenAdapter(namespace)
+
           this.setConnectors(this.chainAdapters?.[namespace]?.connectors || [])
         }
       })

@@ -13,8 +13,10 @@ import {
   injected,
   type Connector,
   watchAccount,
-  watchChainId,
-  watchConnections
+  watchConnections,
+  getBalance,
+  getEnsName,
+  getEnsAvatar
 } from '@wagmi/core'
 import { type Chain } from '@wagmi/core/chains'
 import { convertToAppKitChains, getTransport } from './utils/helpers.js'
@@ -29,10 +31,10 @@ import {
   type Provider
 } from '@reown/appkit-core'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
-import type { ConnectExternalOptions } from '../../../core/dist/types/src/controllers/ConnectionController.js'
+import type { Hex } from 'viem'
+
 export class WagmiAdapter extends AdapterBlueprint {
   public wagmiChains: readonly [Chain, ...Chain[]] | undefined
-
   public wagmiConfig!: Config
 
   constructor(
@@ -44,25 +46,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     super({ projectId: configParams.projectId, networks: configParams.networks })
     this.namespace = CommonConstantsUtil.CHAIN.EVM
     this.createConfig(configParams)
-
-    watchAccount(this.wagmiConfig, {
-      onChange: accountData => {
-        if (accountData.address) {
-          this.emit('accountChanged', accountData.address)
-        }
-        if (accountData.chainId) {
-          this.emit('switchNetwork', accountData.chainId)
-        }
-      }
-    })
-
-    watchConnections(this.wagmiConfig, {
-      onChange: connections => {
-        if (connections.length === 0) {
-          this.emit('disconnect')
-        }
-      }
-    })
+    this.setupWatchers()
   }
 
   private createConfig(
@@ -93,6 +77,33 @@ export class WagmiAdapter extends AdapterBlueprint {
     })
   }
 
+  private setupWatchers() {
+    watchAccount(this.wagmiConfig, {
+      onChange: accountData => {
+        if (accountData.address) {
+          this.emit('accountChanged', {
+            address: accountData.address,
+            chainId: accountData.chainId
+          })
+        }
+        if (accountData.chainId) {
+          this.emit('switchNetwork', {
+            address: accountData.address,
+            chainId: accountData.chainId
+          })
+        }
+      }
+    })
+
+    watchConnections(this.wagmiConfig, {
+      onChange: connections => {
+        if (connections.length === 0) {
+          this.emit('disconnect')
+        }
+      }
+    })
+  }
+
   private addWagmiConnectors(options: AppKitOptions, appKit: AppKit) {
     const customConnectors: CreateConnectorFn[] = []
 
@@ -115,13 +126,9 @@ export class WagmiAdapter extends AdapterBlueprint {
       )
     }
 
-    const emailEnabled =
-      options.features?.email === undefined
-        ? CoreConstantsUtil.DEFAULT_FEATURES.email
-        : options.features?.email
-    const socialsEnabled = options.features?.socials
-      ? options.features?.socials?.length > 0
-      : CoreConstantsUtil.DEFAULT_FEATURES.socials
+    const emailEnabled = options.features?.email ?? CoreConstantsUtil.DEFAULT_FEATURES.email
+    const socialsEnabled =
+      options.features?.socials?.length > 0 ?? CoreConstantsUtil.DEFAULT_FEATURES.socials
 
     if (emailEnabled || socialsEnabled) {
       customConnectors.push(
@@ -156,7 +163,6 @@ export class WagmiAdapter extends AdapterBlueprint {
 
     await Promise.all(
       filteredConnectors.map(async ({ id, name, type, icon, getProvider }) => {
-        // Auth connector is initialized separately
         const shouldSkip = ConstantsUtil.AUTH_CONNECTOR_ID === id
         const provider = (await getProvider()) as Provider
 
@@ -168,9 +174,7 @@ export class WagmiAdapter extends AdapterBlueprint {
             name: PresetsUtil.ConnectorNamesMap[id] ?? name,
             imageId: PresetsUtil.ConnectorImageIds[id],
             type: PresetsUtil.ConnectorTypesMap[type] ?? 'EXTERNAL',
-            info: {
-              rdns: id
-            },
+            info: { rdns: id },
             chain: this.namespace,
             chains: [],
             provider
@@ -180,20 +184,18 @@ export class WagmiAdapter extends AdapterBlueprint {
     )
   }
 
-  public async syncConnection(type: ConnectorType): Promise<ConnectExternalOptions> {
+  public async syncConnection(id: string): Promise<AdapterBlueprint.ConnectResult> {
     const connections = getConnections(this.wagmiConfig)
-
-    const connection = connections.find(c => c.connector.type === type.toLowerCase())
-
-    const connector = this.wagmiConfig.connectors.find(c => c.type === type.toLowerCase())
-
+    const connection = connections.find(c => c.connector.id === id)
+    const connector = this.wagmiConfig.connectors.find(c => c.id === id)
     const provider = (await connector?.getProvider()) as Provider
 
     return {
       chainId: connection?.chainId,
       address: connection?.accounts[0] as string,
       provider,
-      type
+      type: connection?.connector.type,
+      id: connection?.connector.id
     }
   }
 
@@ -244,7 +246,42 @@ export class WagmiAdapter extends AdapterBlueprint {
       chainId: chainId ? Number(chainId) : undefined
     })
 
-    return { address: res.accounts[0] as string, type, provider, chainId }
+    return { address: res.accounts[0] as string, type, provider, chainId, id }
+  }
+
+  public async getBalance(
+    params: AdapterBlueprint.GetBalanceParams
+  ): Promise<AdapterBlueprint.GetBalanceResult | undefined> {
+    const caipNetwork = this.caipNetworks?.find((c: CaipNetwork) => c.chainId === params.chainId)
+
+    if (caipNetwork && this.wagmiConfig) {
+      const balance = await getBalance(this.wagmiConfig, {
+        address: params.address as Hex,
+        chainId: params.chainId,
+        token: caipNetwork.tokens?.[0]?.address as Hex
+      })
+
+      return { balance: balance.value, symbol: balance.symbol }
+    }
+  }
+
+  public async getProfile(
+    params: AdapterBlueprint.GetProfileParams
+  ): Promise<AdapterBlueprint.GetProfileResult | undefined> {
+    const profileName = await getEnsName(this.wagmiConfig, {
+      address: params.address,
+      chainId: params.chainId
+    })
+    if (profileName) {
+      const profileImage = await getEnsAvatar(this.wagmiConfig, {
+        name: profileName,
+        chainId: params.chainId
+      })
+
+      return { profileName, profileImage }
+    }
+
+    return { profileName: null, profileImage: null }
   }
 
   public async disconnect() {
@@ -252,17 +289,13 @@ export class WagmiAdapter extends AdapterBlueprint {
     await Promise.all(
       connections.map(async connection => {
         const connector = connection?.connector
-
         if (connector) {
           await wagmiDisconnect(this.wagmiConfig, { connector })
         }
       })
     )
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   }
 
-  // eslint-disable-next-line @typescript-eslint/require-await
   public async switchNetwork(caipNetwork: CaipNetwork) {
     await switchChain(this.wagmiConfig, { chainId: caipNetwork.chainId as number })
   }

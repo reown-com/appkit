@@ -99,7 +99,6 @@ export const ConnectionController = {
     })
     if (setChain) {
       ChainController.setActiveNamespace(chain)
-      StorageUtil.setConnectedConnector(options.type)
     }
   },
 

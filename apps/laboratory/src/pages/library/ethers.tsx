@@ -14,9 +14,10 @@ const modal = createAppKit({
   networks: [mainnet, optimism, polygon, zkSync, arbitrum, sepolia],
   projectId: ConstantsUtil.ProjectId,
   features: {
-    analytics: true
-  },
-  customWallets: ConstantsUtil.CustomWallets
+    analytics: true,
+    socials: [],
+    email: false
+  }
 })
 
 ThemeStore.setModal(modal)
