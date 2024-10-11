@@ -59,7 +59,6 @@ import {
 import { isReownName, SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 import {
   getEmailCaipNetworks,
-  getTransport,
   getWalletConnectCaipNetworks,
   parseWalletCapabilities,
   requireCaipAddress
@@ -174,10 +173,10 @@ export class WagmiAdapter implements ChainAdapter {
 
     Object.entries(configParams.transports ?? {}).forEach(([chainId, transport]) => {
       const index = transportsArr.findIndex(([id]) => id === Number(chainId))
-      if (index !== -1) {
-        transportsArr[index] = [Number(chainId), transport as HttpTransport]
-      } else {
+      if (index === -1) {
         transportsArr.push([Number(chainId), transport as HttpTransport])
+      } else {
+        transportsArr[index] = [Number(chainId), transport as HttpTransport]
       }
     })
 
