@@ -36,7 +36,9 @@ export class WuiSnackbar extends LitElement {
             icon=${this.icon}
             background="opaque"
           ></wui-icon-box>`}
-      <wui-text variant="paragraph-500" color="fg-100">${this.message}</wui-text>
+      <wui-text variant="paragraph-500" color="fg-100" data-testid="wui-snackbar-message"
+        >${this.message}</wui-text
+      >
     `
   }
 }

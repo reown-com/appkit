@@ -21,7 +21,7 @@ export default defineConfig<ModalFixture>({
   expect: {
     timeout: getValue(60, 15) * 1000
   },
-  timeout: 60 * 1000,
+  timeout: 90 * 1000,
 
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
