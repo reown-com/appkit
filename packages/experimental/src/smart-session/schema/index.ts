@@ -22,10 +22,9 @@ export const ERROR_MESSAGES = {
   //PermissionSchema
   INVALID_PERMISSIONS: 'Invalid permissions: must be a non-empty array',
   INVALID_PERMISSIONS_TYPE: 'Invalid permissions: Expected array, received object',
-  INVALID_PERMISSIONS_TYPE_LITERALS: 'Invalid literal value, expected "contract-call"',
 
   INVALID_ALLOWANCE_FORMAT: 'Invalid allowance: must be a hexadecimal string starting with "0x"',
-  INVALID_START: 'Invalid start time: must be a positive integer',
+  INVALID_START: 'Invalid start time: must be a positive integer and in the future',
   INVALID_PERIOD: 'Invalid period: must be a positive integer',
   //PolicySchema
   INVALID_POLICIES: 'Invalid policies: must be a non-empty array',
@@ -94,9 +93,7 @@ const FunctionPermissionSchema = z.object({
 
 // Contract Call Permission Schema
 const ContractCallPermissionSchema = z.object({
-  type: z.literal('contract-call').refine(val => val === 'contract-call', {
-    message: ERROR_MESSAGES.INVALID_PERMISSIONS_TYPE_LITERALS
-  }),
+  type: z.literal('contract-call'),
   data: z.object({
     address: z.string().startsWith('0x', { message: ERROR_MESSAGES.INVALID_ADDRESS }),
     abi: z.array(z.record(z.unknown())),
