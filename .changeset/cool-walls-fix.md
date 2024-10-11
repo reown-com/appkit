@@ -20,4 +20,4 @@
 '@reown/appkit-siwe': patch
 ---
 
-Added maximum timeout for frame requests
+Added maximum timeouts for frame requests
