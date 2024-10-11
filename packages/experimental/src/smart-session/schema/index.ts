@@ -23,6 +23,10 @@ export const ERROR_MESSAGES = {
   INVALID_PERMISSIONS: 'Invalid permissions: must be a non-empty array',
   INVALID_PERMISSIONS_TYPE: 'Invalid permissions: Expected array, received object',
   INVALID_PERMISSIONS_TYPE_LITERALS: 'Invalid literal value, expected "contract-call"',
+
+  INVALID_ALLOWANCE_FORMAT: 'Invalid allowance: must be a hexadecimal string starting with "0x"',
+  INVALID_START: 'Invalid start time: must be a positive integer',
+  INVALID_PERIOD: 'Invalid period: must be a positive integer',
   //PolicySchema
   INVALID_POLICIES: 'Invalid policies: must be a non-empty array',
   INVALID_POLICIES_TYPE: 'Invalid policies: Expected array, received object',
@@ -100,6 +104,43 @@ const ContractCallPermissionSchema = z.object({
   })
 })
 
+// Native Token Recurring Allowance Permission Schema
+const NativeTokenRecurringAllowancePermissionSchema = z.object({
+  type: z.literal('native-token-recurring-allowance'),
+  data: z.object({
+    allowance: z.string().startsWith('0x', { message: ERROR_MESSAGES.INVALID_ALLOWANCE_FORMAT }),
+    start: z
+      .number()
+      .positive({ message: ERROR_MESSAGES.INVALID_START })
+      .refine(value => value > Math.floor(Date.now() / 1000), {
+        message: ERROR_MESSAGES.INVALID_START
+      }),
+    period: z.number().positive({ message: ERROR_MESSAGES.INVALID_PERIOD })
+  })
+})
+
+// ERC20 Recurring Allowance Permission Schema
+const ERC20RecurringAllowancePermissionSchema = z.object({
+  type: z.literal('erc20-recurring-allowance'),
+  data: z.object({
+    token: z.string().startsWith('0x', { message: ERROR_MESSAGES.INVALID_ADDRESS }),
+    allowance: z.string().startsWith('0x', { message: ERROR_MESSAGES.INVALID_ALLOWANCE_FORMAT }),
+    start: z
+      .number()
+      .positive({ message: ERROR_MESSAGES.INVALID_START })
+      .refine(value => value > Math.floor(Date.now() / 1000), {
+        message: ERROR_MESSAGES.INVALID_START
+      }),
+    period: z.number().positive({ message: ERROR_MESSAGES.INVALID_PERIOD })
+  })
+})
+
+// Update Permission Schema to support new types
+const PermissionSchema = z.union([
+  ContractCallPermissionSchema,
+  NativeTokenRecurringAllowancePermissionSchema,
+  ERC20RecurringAllowancePermissionSchema
+])
 // Policies Schema
 const PolicySchema = z.object({
   type: z.string(),
@@ -114,7 +155,7 @@ export const SmartSessionGrantPermissionsRequestSchema = z
     expiry: ExpirySchema,
     signer: SignerSchema,
     permissions: z
-      .array(ContractCallPermissionSchema)
+      .array(PermissionSchema)
       .nonempty({ message: ERROR_MESSAGES.INVALID_PERMISSIONS }),
     policies: z.array(PolicySchema)
   })
