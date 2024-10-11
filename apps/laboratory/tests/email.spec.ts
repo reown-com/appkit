@@ -11,7 +11,8 @@ let page: ModalWalletPage
 let validator: ModalWalletValidator
 let context: BrowserContext
 let browserPage: Page
-/* eslint-enable init-declarations */
+let email: Email
+let tempEmail: string
 
 // -- Setup --------------------------------------------------------------------
 const emailTest = test.extend<{ library: string }>({
@@ -33,8 +34,8 @@ emailTest.beforeAll(async ({ browser, library }) => {
   if (!mailsacApiKey) {
     throw new Error('MAILSAC_API_KEY is not set')
   }
-  const email = new Email(mailsacApiKey)
-  const tempEmail = await email.getEmailAddressToUse()
+  email = new Email(mailsacApiKey)
+  tempEmail = await email.getEmailAddressToUse()
   await page.emailFlow(tempEmail, context, mailsacApiKey)
 
   await validator.expectConnected()
@@ -104,4 +105,11 @@ emailTest('it should disconnect correctly', async () => {
   await page.goToSettings()
   await page.disconnect()
   await validator.expectDisconnected()
+})
+
+emailTest('it should abort request if it takes more than 30 seconds', async () => {
+  await page.page.context().setOffline(true)
+  await page.loginWithEmail(tempEmail, false)
+  await page.page.waitForTimeout(30_000)
+  await validator.expectSnackbar('Something went wrong')
 })

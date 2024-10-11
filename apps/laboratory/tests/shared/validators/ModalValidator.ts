@@ -284,4 +284,10 @@ export class ModalValidator {
     const modal = this.page.getByTestId('w3m-modal')
     await expect(modal).toBeHidden()
   }
+
+  async expectSnackbar(message: string) {
+    await expect(this.page.getByTestId('wui-snackbar-message')).toHaveText(message, {
+      timeout: MAX_WAIT
+    })
+  }
 }
