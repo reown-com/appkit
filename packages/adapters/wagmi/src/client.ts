@@ -672,6 +672,7 @@ export class WagmiAdapter implements ChainAdapter {
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork(this.chainNamespace)
       this.appKit?.setAllAccounts([], this.chainNamespace)
+      this.appKit?.setStatus(status, this.chainNamespace)
       SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
       if (isAuthConnector) {
         await connector.disconnect()
