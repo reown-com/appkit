@@ -50,7 +50,8 @@
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/logger": "2.1.2",
     "@walletconnect/universal-provider": "2.17.0",
-    "valtio": "1.11.2"
+    "valtio": "1.11.2",
+    "viem": "2.x"
   },
   "devDependencies": {
     "@coinbase/wallet-sdk": "4.0.3",
