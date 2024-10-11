@@ -5,6 +5,7 @@ import {
   type CaipNetworkId
 } from '@reown/appkit-common'
 import { PresetsUtil } from './PresetsUtil.js'
+import { fallback, http } from 'viem'
 
 const RPC_URL_HOST = 'rpc.walletconnect.org'
 
@@ -170,5 +171,28 @@ export const CaipNetworksUtil = {
         projectId
       })
     ) as [CaipNetwork, ...CaipNetwork[]]
+  },
+
+  getViemTransport(caipNetwork: CaipNetwork) {
+    const chainDefaultUrl = caipNetwork.rpcUrls.default.http?.[0]
+
+    if (!WC_HTTP_RPC_SUPPORTED_CHAINS.includes(caipNetwork.caipNetworkId)) {
+      return http(chainDefaultUrl)
+    }
+
+    return fallback([
+      http(chainDefaultUrl, {
+        /*
+         * The Blockchain API uses "Content-Type: text/plain" to avoid OPTIONS preflight requests
+         * It will only work for viem >= 2.17.7
+         */
+        fetchOptions: {
+          headers: {
+            'Content-Type': 'text/plain'
+          }
+        }
+      }),
+      http(chainDefaultUrl)
+    ])
   }
 }
