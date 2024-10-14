@@ -9,7 +9,7 @@
   "files.exclude": {
     "**/.DS_Store": true,
     "**/.git": true,
-    "**/node_modules": false,
+    "**/node_modules": true,
     "**/out": true,
     "**/dist": true,
     "**/.turbo": true,
