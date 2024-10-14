@@ -24,6 +24,11 @@ export interface SIWECreateMessageArgs {
   iat?: string
 }
 export type SIWEMessageArgs = {
+  /**
+   * @deprecated - Chains are set based on the `networks` you provided to the `createAppKit` function.
+   * @see https://docs.reown.com/appkit/react/core/installation#implementation
+   */
+  chains?: number[]
   methods?: string[]
 } & Omit<SIWECreateMessageArgs, 'address' | 'chainId' | 'nonce' | 'version'>
 // Signed Cacao (CAIP-74)
