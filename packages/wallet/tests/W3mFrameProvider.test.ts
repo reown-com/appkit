@@ -105,12 +105,12 @@ describe('W3mFrameProvider', () => {
   it('should timeout after 30 seconds', async () => {
     const postAppEventSpy = vi.spyOn(provider['w3mFrame'].events, 'postAppEvent')
 
-    const mockTimeoutSpyOn = vi.spyOn(provider, 'onTimeout')
+    const mockTimeoutSpy = vi.spyOn(provider, 'onTimeout')
 
     await expect(provider.getFarcasterUri()).rejects.toThrow()
 
     expect(postAppEventSpy).toHaveBeenCalled()
 
-    expect(mockTimeoutSpyOn).toHaveBeenCalled()
+    expect(mockTimeoutSpy).toHaveBeenCalled()
   })
 })
