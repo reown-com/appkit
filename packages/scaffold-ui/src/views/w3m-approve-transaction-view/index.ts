@@ -11,7 +11,7 @@ import {
 import { getW3mThemeVariables } from '@reown/appkit-common'
 
 // -- Variables ------------------------------------------- //
-const PAGE_HEIGHT = 700
+const PAGE_HEIGHT = 600
 const PAGE_WIDTH = 360
 const HEADER_HEIGHT = 64
 

@@ -136,7 +136,6 @@ export function validateRequestForSupportedPermissionsCapability(
 
 export function isSmartSessionSupported(): boolean {
   const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
-  console.log('>> isSmartSessionSupported provider:', provider)
   if (!provider) {
     return false
   }

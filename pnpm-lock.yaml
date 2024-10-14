@@ -1313,9 +1313,15 @@ importers:
       '@reown/appkit-core':
         specifier: workspace:*
         version: link:../core
+      '@reown/appkit-ui':
+        specifier: workspace:*
+        version: link:../ui
       axios:
         specifier: 1.7.2
         version: 1.7.2
+      lit:
+        specifier: 3.1.0
+        version: 3.1.0
       zod:
         specifier: 3.22.4
         version: 3.22.4
