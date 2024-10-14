@@ -144,6 +144,21 @@ export class ModalValidator {
     await expect(socialList).toBeHidden()
   }
 
+  async expectAllWallets() {
+    const allWallets = this.page.getByTestId('all-wallets')
+    await expect(allWallets).toBeVisible()
+  }
+
+  async expectNoTryAgainButton() {
+    const secondaryButton = this.page.getByTestId('w3m-connecting-widget-secondary-button')
+    await expect(secondaryButton).toBeHidden()
+  }
+
+  async expectTryAgainButton() {
+    const secondaryButton = this.page.getByTestId('w3m-connecting-widget-secondary-button')
+    await expect(secondaryButton).toBeVisible()
+  }
+
   async expectAlertBarText(text: string) {
     const alertBarText = this.page.getByTestId('wui-alertbar-text')
     await expect(alertBarText).toHaveText(text)
@@ -219,6 +234,28 @@ export class ModalValidator {
     await expect(suggestion).toBeVisible()
   }
 
+  async expectHeaderText(text: string) {
+    const headerText = this.page.getByTestId('w3m-header-text')
+    await expect(headerText).toHaveText(text)
+  }
+
+  async expectSignatureRequestFrameByText(headerText: string) {
+    await expect(
+      this.page.frameLocator('#w3m-iframe').getByText(headerText),
+      'AppKit iframe should be visible'
+    ).toBeVisible({
+      timeout: 10000
+    })
+    await this.page.waitForTimeout(500)
+  }
+
+  async expectAccountNameApproveTransaction(name: string) {
+    await this.expectSignatureRequestFrameByText('requests a signature')
+    const iframe = this.page.frameLocator('#w3m-iframe')
+    const textContent = await iframe.locator('.textContent').textContent()
+    expect(textContent).toContain(`{"name":"${name}","attributes":{},"timestamp":`)
+  }
+
   async expectCallStatusSuccessOrRetry(sendCallsId: string, allowedRetry: boolean) {
     const callStatusReceipt = this.page.getByText('"status": "CONFIRMED"')
     const isConfirmed = await callStatusReceipt.isVisible({
@@ -268,5 +305,11 @@ export class ModalValidator {
   async expectModalNotVisible() {
     const modal = this.page.getByTestId('w3m-modal')
     await expect(modal).toBeHidden()
+  }
+
+  async expectSnackbar(message: string) {
+    await expect(this.page.getByTestId('wui-snackbar-message')).toHaveText(message, {
+      timeout: MAX_WAIT
+    })
   }
 }

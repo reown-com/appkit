@@ -25,6 +25,7 @@ import type {
   SendTransactionArgs,
   WriteContractArgs
 } from '@reown/appkit-core'
+import type { HttpTransport } from 'viem'
 import {
   ChainController,
   ConstantsUtil as CoreConstantsUtil,
@@ -82,7 +83,6 @@ import { authConnector } from './connectors/AuthConnector.js'
 import { walletConnect } from './connectors/UniversalConnector.js'
 import {
   getEmailCaipNetworks,
-  getTransport,
   getWalletConnectCaipNetworks,
   parseWalletCapabilities,
   requireCaipAddress
@@ -173,8 +173,17 @@ export class WagmiAdapter implements ChainAdapter {
 
     const transportsArr = this.wagmiChains.map(chain => [
       chain.id,
-      getTransport({ chain: chain as Chain, projectId: configParams.projectId })
+      CaipNetworksUtil.getViemTransport(chain as CaipNetwork)
     ])
+
+    Object.entries(configParams.transports ?? {}).forEach(([chainId, transport]) => {
+      const index = transportsArr.findIndex(([id]) => id === Number(chainId))
+      if (index === -1) {
+        transportsArr.push([Number(chainId), transport as HttpTransport])
+      } else {
+        transportsArr[index] = [Number(chainId), transport as HttpTransport]
+      }
+    })
 
     const transports = Object.fromEntries(transportsArr)
     const connectors: CreateConnectorFn[] = [...(configParams.connectors ?? [])]
@@ -183,7 +192,7 @@ export class WagmiAdapter implements ChainAdapter {
       ...configParams,
       chains: this.wagmiChains,
       transports,
-      connectors: [...connectors, ...(configParams?.connectors ?? [])]
+      connectors
     })
   }
 
@@ -711,6 +720,7 @@ export class WagmiAdapter implements ChainAdapter {
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork(this.chainNamespace)
       this.appKit?.setAllAccounts([], this.chainNamespace)
+      this.appKit?.setStatus(status, this.chainNamespace)
       SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
       if (isAuthConnector) {
         await connector.disconnect()
@@ -730,7 +740,6 @@ export class WagmiAdapter implements ChainAdapter {
           const namespaceKeys = namespaces ? Object.keys(namespaces) : []
 
           const preferredAccountType = this.appKit?.getPreferredAccountType()
-
           namespaceKeys.forEach(key => {
             const chainNamespace = key as ChainNamespace
             const caipAddress = namespaces?.[key]?.accounts[0] as CaipAddress
@@ -740,6 +749,7 @@ export class WagmiAdapter implements ChainAdapter {
 
             this.appKit?.setPreferredAccountType(preferredAccountType, chainNamespace)
             this.appKit?.setCaipAddress(caipAddress, chainNamespace)
+            this.appKit?.setStatus(status, chainNamespace)
           })
           if (
             this.appKit?.getCaipNetwork()?.chainNamespace !== CommonConstantsUtil.CHAIN.SOLANA &&

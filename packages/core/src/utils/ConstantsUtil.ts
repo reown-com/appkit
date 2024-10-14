@@ -28,6 +28,10 @@ export const ConstantsUtil = {
 
   TEN_SEC_MS: 10_000,
 
+  FIVE_SEC_MS: 5_000,
+
+  THREE_SEC_MS: 3_000,
+
   ONE_SEC_MS: 1_000,
 
   SECURE_SITE,
@@ -204,6 +208,10 @@ export const ConstantsUtil = {
   } as const satisfies Record<ChainNamespace, string>,
 
   CONVERT_SLIPPAGE_TOLERANCE: 1,
+
+  CONNECT_LABELS: {
+    MOBILE: 'Open and continue in a new browser tab'
+  },
 
   DEFAULT_FEATURES: {
     swaps: true,
