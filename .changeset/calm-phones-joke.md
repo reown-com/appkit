@@ -20,4 +20,4 @@
 '@reown/appkit-ui': patch
 ---
 
-Refactored frame timeout error handling
+Refactored frame timeouts
