@@ -102,6 +102,7 @@ export class W3mEmailLoginWidget extends LitElement {
 
   private separatorTemplate() {
     const socials = OptionsController.state.features?.socials
+
     const multipleConnectors = this.connectors.length > 1
     const enableWallets = OptionsController.state.enableWallets
     const emailShowWallets = OptionsController.state.features?.emailShowWallets

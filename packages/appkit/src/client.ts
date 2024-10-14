@@ -1,45 +1,45 @@
-import {
-  ConstantsUtil,
-  SafeLocalStorage,
-  SafeLocalStorageKeys,
-  type CaipNetwork,
-  type ChainNamespace
-} from '@reown/appkit-common'
 import type {
-  ChainAdapter,
-  ConnectedWalletInfo,
   EventsControllerState,
-  ModalControllerState,
   PublicStateControllerState,
+  ThemeControllerState,
+  ModalControllerState,
+  ConnectedWalletInfo,
   RouterControllerState,
-  SdkVersion,
-  ThemeControllerState
+  ChainAdapter,
+  SdkVersion
 } from '@reown/appkit-core'
 import {
   AccountController,
-  AlertController,
-  ApiController,
-  AssetUtil,
   BlockchainApiController,
-  ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
-  EnsController,
   EventsController,
   ModalController,
-  OptionsController,
+  ChainController,
   PublicStateController,
-  RouterController,
+  ThemeController,
   SnackController,
-  ThemeController
+  RouterController,
+  EnsController,
+  OptionsController,
+  AssetUtil,
+  ApiController,
+  AlertController
 } from '@reown/appkit-core'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
+import {
+  ConstantsUtil,
+  type CaipNetwork,
+  type ChainNamespace,
+  SafeLocalStorage,
+  SafeLocalStorageKeys
+} from '@reown/appkit-common'
+import type { AppKitOptions } from './utils/TypesUtil.js'
+import { UniversalAdapterClient } from './universal-adapter/client.js'
 import { CaipNetworksUtil, ErrorUtil } from '@reown/appkit-utils'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { ProviderUtil } from './store/ProviderUtil.js'
-import { UniversalAdapterClient } from './universal-adapter/client.js'
-import type { AppKitOptions } from './utils/TypesUtil.js'
 
 // -- Export Controllers -------------------------------------------------------
 export { AccountController }
@@ -494,7 +494,7 @@ export class AppKit {
     // Only set the analytics state if it's not already set through the SDK config
     if (options.features?.analytics === undefined) {
       const projectCloudConfig = await ApiController.fetchProjectConfig()
-      OptionsController.setFeatures({ analytics: projectCloudConfig?.isAppKitAuthEnabled })
+      // OptionsController.setFeatures({ analytics: projectCloudConfig?.isAppKitAuthEnabled })
 
       if (options.enableAuth === undefined) {
         OptionsController.setEnableAuth(projectCloudConfig?.isAnalyticsEnabled)
