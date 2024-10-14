@@ -517,10 +517,11 @@ export class W3mFrameProvider {
 
         logger.logger.info?.({ framEvent, id }, 'Received frame response')
 
+        if (timer) {
+          clearTimeout(timer)
+        }
+
         if (framEvent.type === `@w3m-frame/${type}_SUCCESS`) {
-          if (timer) {
-            clearTimeout(timer)
-          }
           if ('payload' in framEvent) {
             resolve(framEvent.payload)
           }
