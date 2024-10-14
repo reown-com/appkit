@@ -201,17 +201,24 @@ export class W3mModal extends LitElement {
     const nextConnected = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
     const isSameAddress = prevConnected === nextConnected
 
-    if (nextConnected && !isSameAddress && this.isSiweEnabled) {
-      const { SIWEController } = await import('@reown/appkit-siwe')
-      const signed = AccountController.state.siweStatus === 'success'
+    this.caipAddress = caipAddress
 
-      if (!prevConnected && nextConnected) {
-        this.onSiweNavigation()
-      } else if (signed && prevConnected && nextConnected && prevConnected !== nextConnected) {
-        if (SIWEController.state._client?.options.signOutOnAccountChange) {
-          await SIWEController.signOut()
+    if (nextConnected && !isSameAddress && this.isSiweEnabled) {
+      try {
+        const { SIWEController } = await import('@reown/appkit-siwe')
+        const signed = AccountController.state.siweStatus === 'success'
+
+        if (!prevConnected && nextConnected) {
           this.onSiweNavigation()
+        } else if (signed && prevConnected && nextConnected && prevConnected !== nextConnected) {
+          if (SIWEController.state._client?.options.signOutOnAccountChange) {
+            await SIWEController.signOut()
+            this.onSiweNavigation()
+          }
         }
+      } catch (err) {
+        this.caipAddress = prevCaipAddress
+        throw err
       }
     }
 
