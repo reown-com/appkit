@@ -11,7 +11,6 @@ export {
   getChainIdFromMessage,
   verifySignature
 } from '../core/helpers/index.js'
-export { useSiweSession } from '../core/hooks/react.js'
 export * from '../core/utils/AppKitAuthUtil.js'
 
 export { formatMessage, getDidAddress, getDidChainId } from '@walletconnect/utils'

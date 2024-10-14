@@ -26,7 +26,7 @@ export interface SIWECreateMessageArgs {
 export type SIWEMessageArgs = {
   /**
    * @deprecated - Chains are set based on the `networks` you provided to the `createAppKit` function.
-   * @see https://docs.reown.com/appkit/react/core/installation#implementation
+   * @see https://docs.reown.com/appkit/react/core/options#networks
    */
   chains?: number[]
   methods?: string[]

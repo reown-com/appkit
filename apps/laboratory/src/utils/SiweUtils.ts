@@ -1,5 +1,9 @@
-import type { SIWECreateMessageArgs, SIWESession, SIWEVerifyMessageArgs } from '@reown/appkit-siwe'
-import { createSIWEConfig, formatMessage } from '@reown/appkit-siwe'
+import type {
+  SIWECreateMessageArgs,
+  SIWESession,
+  SIWEVerifyMessageArgs
+} from '@reown/appkit-siwe/react'
+import { createSIWEConfig, formatMessage } from '@reown/appkit-siwe/react'
 import { getCsrfToken, getSession, signIn, signOut } from 'next-auth/react'
 
 export const siweConfig = createSIWEConfig({

@@ -1,7 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import nextAuth from 'next-auth'
 import credentialsProvider from 'next-auth/providers/credentials'
-import { type SIWESession, getChainIdFromMessage, getAddressFromMessage } from '@reown/appkit-siwe'
+import {
+  type SIWESession,
+  getChainIdFromMessage,
+  getAddressFromMessage
+} from '@reown/appkit-siwe/react'
 import { verifySignature } from '../../../utils/SignatureUtil'
 
 declare module 'next-auth' {

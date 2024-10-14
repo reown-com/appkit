@@ -9,7 +9,7 @@ import {
   Text
 } from '@chakra-ui/react'
 import { useSession } from 'next-auth/react'
-import type { SIWESession } from '@reown/appkit-siwe'
+import type { SIWESession } from '@reown/appkit-siwe/react'
 
 export function SiweData() {
   const { data, status } = useSession()
