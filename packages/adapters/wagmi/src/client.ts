@@ -48,7 +48,7 @@ import type {
   WriteContractArgs
 } from '@reown/appkit-core'
 import { formatUnits, parseUnits } from 'viem'
-import type { Hex } from 'viem'
+import type { Hex, HttpTransport } from 'viem'
 import {
   ConstantsUtil,
   PresetsUtil,
@@ -59,7 +59,6 @@ import {
 import { isReownName, SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 import {
   getEmailCaipNetworks,
-  getTransport,
   getWalletConnectCaipNetworks,
   parseWalletCapabilities,
   requireCaipAddress
@@ -169,8 +168,17 @@ export class WagmiAdapter implements ChainAdapter {
 
     const transportsArr = this.wagmiChains.map(chain => [
       chain.id,
-      getTransport({ chain: chain as Chain, projectId: configParams.projectId })
+      CaipNetworksUtil.getViemTransport(chain as CaipNetwork)
     ])
+
+    Object.entries(configParams.transports ?? {}).forEach(([chainId, transport]) => {
+      const index = transportsArr.findIndex(([id]) => id === Number(chainId))
+      if (index === -1) {
+        transportsArr.push([Number(chainId), transport as HttpTransport])
+      } else {
+        transportsArr[index] = [Number(chainId), transport as HttpTransport]
+      }
+    })
 
     const transports = Object.fromEntries(transportsArr)
     const connectors: CreateConnectorFn[] = [...(configParams.connectors ?? [])]
@@ -179,7 +187,7 @@ export class WagmiAdapter implements ChainAdapter {
       ...configParams,
       chains: this.wagmiChains,
       transports,
-      connectors: [...connectors, ...(configParams?.connectors ?? [])]
+      connectors
     })
   }
 
@@ -672,6 +680,7 @@ export class WagmiAdapter implements ChainAdapter {
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork(this.chainNamespace)
       this.appKit?.setAllAccounts([], this.chainNamespace)
+      this.appKit?.setStatus(status, this.chainNamespace)
       SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
       if (isAuthConnector) {
         await connector.disconnect()
@@ -682,7 +691,7 @@ export class WagmiAdapter implements ChainAdapter {
 
     if (this.wagmiConfig) {
       if (connector) {
-        if (connector && connector.name === 'WalletConnect' && connector.getProvider && address) {
+        if (connector.name === 'WalletConnect' && connector.getProvider && address) {
           const activeCaipNetwork = this.appKit?.getCaipNetwork()
           const currentChainId = chainId || (activeCaipNetwork?.id as number | undefined)
           const provider = (await connector.getProvider()) as UniversalProvider
@@ -691,7 +700,6 @@ export class WagmiAdapter implements ChainAdapter {
           const namespaceKeys = namespaces ? Object.keys(namespaces) : []
 
           const preferredAccountType = this.appKit?.getPreferredAccountType()
-
           namespaceKeys.forEach(key => {
             const chainNamespace = key as ChainNamespace
             const caipAddress = namespaces?.[key]?.accounts[0] as CaipAddress
@@ -701,6 +709,7 @@ export class WagmiAdapter implements ChainAdapter {
 
             this.appKit?.setPreferredAccountType(preferredAccountType, chainNamespace)
             this.appKit?.setCaipAddress(caipAddress, chainNamespace)
+            this.appKit?.setStatus(status, chainNamespace)
           })
           if (
             this.appKit?.getCaipNetwork()?.chainNamespace !== CommonConstantsUtil.CHAIN.SOLANA &&
@@ -715,22 +724,18 @@ export class WagmiAdapter implements ChainAdapter {
             ])
           }
         } else if (status === 'connected' && address && chainId) {
+          ProviderUtil.setProvider(this.chainNamespace, await connector.getProvider())
+          ProviderUtil.setProviderId(this.chainNamespace, connector.id as ProviderIdType)
           const caipAddress = `eip155:${chainId}:${address}` as CaipAddress
           this.syncNetwork(address, chainId, true)
-          this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
-
           await Promise.all([
             this.syncProfile(address, chainId),
             this.syncBalance(address, chainId),
             this.syncConnectedWalletInfo(connector),
             this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
           ])
-          const provider = await connector.getProvider()
-          ProviderUtil.setProvider('eip155', provider)
-          ProviderUtil.setProviderId('eip155', connector.id as ProviderIdType)
-
-          this.syncConnectedWalletInfo(connector)
-
+          this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
+          this.appKit?.setStatus('connected', this.chainNamespace)
           // Set by authConnector.onIsConnectedHandler as we need the account type
           if (!isAuthConnector && addresses?.length) {
             this.appKit?.setAllAccounts(
