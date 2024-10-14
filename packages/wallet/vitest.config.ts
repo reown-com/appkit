@@ -5,6 +5,7 @@ export default defineConfig({
   test: {
     ...configDefaults,
     globals: true,
-    environment: 'jsdom'
+    environment: 'jsdom',
+    testTimeout: 60_000
   }
 })

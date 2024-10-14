@@ -8,11 +8,13 @@ import { SecureSiteMock } from './mocks/SecureSite.mock.js'
 import { W3mFrameConstants } from '../src/W3mFrameConstants.js'
 
 describe('W3mFrameProvider', () => {
+  const mockTimeout = vi.fn
+
   const projectId = 'test-project-id'
-  let provider = new W3mFrameProvider(projectId)
+  let provider = new W3mFrameProvider({ projectId, onTimeout: mockTimeout })
 
   beforeEach(() => {
-    provider = new W3mFrameProvider(projectId)
+    provider = new W3mFrameProvider({ projectId })
     provider['w3mFrame'].frameLoadPromise = Promise.resolve()
     window.postMessage = vi.fn()
   })
@@ -98,5 +100,17 @@ describe('W3mFrameProvider', () => {
 
     expect(response).toEqual(responsePayload)
     expect(postAppEventSpy).toHaveBeenCalled()
+  })
+
+  it('should timeout after 30 seconds', async () => {
+    const postAppEventSpy = vi.spyOn(provider['w3mFrame'].events, 'postAppEvent')
+
+    const mockTimeoutSpyOn = vi.spyOn(provider, 'onTimeout')
+
+    await expect(provider.getFarcasterUri()).rejects.toThrow()
+
+    expect(postAppEventSpy).toHaveBeenCalled()
+
+    expect(mockTimeoutSpyOn).toHaveBeenCalled()
   })
 })
