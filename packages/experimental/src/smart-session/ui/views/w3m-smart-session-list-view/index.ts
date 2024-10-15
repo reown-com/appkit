@@ -174,34 +174,42 @@ export class W3mSmartSessionListView extends LitElement {
         .padding=${['s', 's', 's', 's'] as const}
         alignItems="center"
         justifyContent="space-between"
+        onClick=${this.onSessionClick.bind(this, session)}
       >
-        <wui-flex gap="xs">
-          ${project.iconUrl
-            ? html`<img
-                class="session-project-image"
-                src=${project?.iconUrl}
-                width="40px"
-                height="40px"
-              />`
-            : html`<wui-icon-box
-                size="xl"
-                icon="helpCircle"
-                background="opaque"
-                iconColor="fg-100"
-                backgroundColor="inverse-100"
-              ></wui-icon-box>`}
-          <wui-flex flexDirection="column">
-            <wui-text variant="small-400" color="fg-100"
-              >${project?.name || 'Unknown Dapp'}</wui-text
-            >
-            ${project.url ? html`<wui-link>${project?.url}</wui-link>` : ''}
+        <wui-flex flexDirection="column">
+          <wui-flex gap="xs">
+            ${project.iconUrl
+              ? html`<img
+                  class="session-project-image"
+                  src=${project?.iconUrl}
+                  width="40px"
+                  height="40px"
+                />`
+              : html`<wui-icon-box
+                  size="xl"
+                  icon="helpCircle"
+                  background="opaque"
+                  iconColor="fg-100"
+                  backgroundColor="inverse-100"
+                ></wui-icon-box>`}
+            <wui-flex flexDirection="column">
+              <wui-text variant="small-400" color="fg-100"
+                >${project?.name || 'Unknown Dapp'}</wui-text
+              >
+              ${project.url ? html`<wui-link>${project?.url}</wui-link>` : ''}
+            </wui-flex>
           </wui-flex>
+          <wui-tag variant=${getVariant(session)}
+            >${SMART_SESSION_TABS[this.currentTab]?.label}</wui-tag
+          >
         </wui-flex>
-        <wui-tag variant=${getVariant(session)}
-          >${SMART_SESSION_TABS[this.currentTab]?.label}</wui-tag
-        >
       </wui-flex>`
     })
+  }
+
+  private onSessionClick(session: SmartSession) {
+    // this.openSession = session.pci
+    console.log('session', session)
   }
 
   private onTabChange(index: number) {
