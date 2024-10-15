@@ -22,11 +22,7 @@ export class W3mConnectingWidget extends LitElement {
 
   protected timeout?: ReturnType<typeof setTimeout> = undefined
 
-  protected secondaryBtnLabel = 'Try again'
-
   protected secondaryBtnIcon: IconType = 'refresh'
-
-  protected secondaryLabel = 'Accept connection request in the wallet'
 
   protected onConnect?: (() => void) | (() => Promise<void>) = undefined
 
@@ -43,9 +39,9 @@ export class W3mConnectingWidget extends LitElement {
 
   private name = this.wallet?.name ?? this.connector?.name ?? 'Wallet'
 
-  private isRetrying = false
-
   // -- State & Properties -------------------------------- //
+  @state() protected isRetrying = false
+
   @state() protected uri = ConnectionController.state.wcUri
 
   @state() protected error = ConnectionController.state.wcError
@@ -53,6 +49,10 @@ export class W3mConnectingWidget extends LitElement {
   @state() protected ready = false
 
   @state() private showRetry = false
+
+  @state() protected secondaryBtnLabel? = 'Try again'
+
+  @state() protected secondaryLabel = 'Accept connection request in the wallet'
 
   @state() public buffering = false
 
@@ -142,15 +142,20 @@ export class W3mConnectingWidget extends LitElement {
           <wui-text align="center" variant="small-500" color="fg-200">${subLabel}</wui-text>
         </wui-flex>
 
-        <wui-button
-          variant="accent"
-          size="md"
-          ?disabled=${!this.error && this.buffering}
-          @click=${this.onTryAgain.bind(this)}
-        >
-          <wui-icon color="inherit" slot="iconLeft" name=${this.secondaryBtnIcon}></wui-icon>
-          ${this.secondaryBtnLabel}
-        </wui-button>
+        ${this.secondaryBtnLabel
+          ? html`
+              <wui-button
+                variant="accent"
+                size="md"
+                ?disabled=${this.isRetrying || (!this.error && this.buffering)}
+                @click=${this.onTryAgain.bind(this)}
+                data-testid="w3m-connecting-widget-secondary-button"
+              >
+                <wui-icon color="inherit" slot="iconLeft" name=${this.secondaryBtnIcon}></wui-icon>
+                ${this.secondaryBtnLabel}
+              </wui-button>
+            `
+          : null}
       </wui-flex>
 
       ${this.isWalletConnect
