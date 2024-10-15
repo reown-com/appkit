@@ -526,6 +526,9 @@ export class W3mFrameProvider {
           }
           resolve(undefined as unknown as W3mFrameTypes.Responses[`Frame${T}Response`])
         } else if (framEvent.type === `@w3m-frame/${type}_ERROR`) {
+          if (timer) {
+            clearTimeout(timer)
+          }
           if ('payload' in framEvent) {
             reject(new Error(framEvent.payload?.message || 'An error occurred'))
           }
