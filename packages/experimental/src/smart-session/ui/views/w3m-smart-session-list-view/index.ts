@@ -176,10 +176,25 @@ export class W3mSmartSessionListView extends LitElement {
         justifyContent="space-between"
       >
         <wui-flex gap="xs">
-          <img class="session-project-image" src=${project?.iconUrl} width="40px" height="40px" />
+          ${project.iconUrl
+            ? html`<img
+                class="session-project-image"
+                src=${project?.iconUrl}
+                width="40px"
+                height="40px"
+              />`
+            : html`<wui-icon-box
+                size="xl"
+                icon="helpCircle"
+                background="opaque"
+                iconColor="fg-100"
+                backgroundColor="inverse-100"
+              ></wui-icon-box>`}
           <wui-flex flexDirection="column">
-            <wui-text variant="small-400" color="fg-100">${project?.name}</wui-text>
-            <wui-link>${project?.url}</wui-link>
+            <wui-text variant="small-400" color="fg-100"
+              >${project?.name || 'Unknown Dapp'}</wui-text
+            >
+            ${project.url ? html`<wui-link>${project?.url}</wui-link>` : ''}
           </wui-flex>
         </wui-flex>
         <wui-tag variant=${getVariant(session)}
