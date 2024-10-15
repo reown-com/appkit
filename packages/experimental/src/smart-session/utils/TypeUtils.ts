@@ -111,3 +111,26 @@ export type ActivatePermissionsRequest = {
   pci: string
   context: `0x${string}`
 } & AddPermissionRequest
+
+// T0DO: Fetch right format from max
+export type Policy = {
+  id: string
+}
+
+export type SmartSessionStatus = 'active' | 'expired' | 'revoked'
+
+export type SmartSession = {
+  project: {
+    id: string
+    name: string
+    url?: string
+    iconUrl?: string
+  }
+  pci: string
+  expiration: number
+  createdAt: number
+  permissions: Permission[]
+  policies: Policy[]
+  context: string
+  status: SmartSessionStatus
+}

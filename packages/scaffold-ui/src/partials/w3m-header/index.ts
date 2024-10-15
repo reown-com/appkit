@@ -84,7 +84,8 @@ function headings() {
     ConnectingMultiChain: 'Select chain',
     ConnectingFarcaster: 'Farcaster',
     SwitchActiveChain: 'Switch chain',
-    SmartSessionCreated: 'Session created'
+    SmartSessionCreated: undefined,
+    SmartSessionList: 'Smart Sessions'
   }
 }
 
@@ -138,7 +139,7 @@ export class W3mHeader extends LitElement {
   public override render() {
     return html`
       <wui-flex .padding=${this.getPadding()} justifyContent="space-between" alignItems="center">
-        ${this.dynamicButtonTemplate()} ${this.titleTemplate()} ${this.closeButtonTemplate()}
+        ${this.leftHeaderTemplate()} ${this.titleTemplate()} ${this.rightHeaderTemplate()}
       </wui-flex>
     `
   }
@@ -165,6 +166,21 @@ export class W3mHeader extends LitElement {
     } else {
       ModalController.close()
     }
+  }
+
+  private rightHeaderTemplate() {
+    if (this.view !== 'Account') {
+      this.closeButtonTemplate()
+    }
+
+    return html`<wui-flex>
+      <wui-icon-link
+        icon="clock"
+        @click=${() => RouterController.push('SmartSessionList')}
+        data-testid="w3m-header-smart-sessions"
+      ></wui-icon-link>
+      ${this.closeButtonTemplate()}
+    </wui-flex> `
   }
 
   private closeButtonTemplate() {
@@ -202,7 +218,7 @@ export class W3mHeader extends LitElement {
     `
   }
 
-  private dynamicButtonTemplate() {
+  private leftHeaderTemplate() {
     const { view } = RouterController.state
     const isConnectHelp = view === 'Connect'
     const isApproveTransaction = view === 'ApproveTransaction'
