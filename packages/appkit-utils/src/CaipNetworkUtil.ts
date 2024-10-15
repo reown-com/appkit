@@ -52,7 +52,8 @@ const WC_HTTP_RPC_SUPPORTED_CHAINS = [
   'eip155:97',
   'eip155:43113',
   'eip155:137',
-  'eip155:10'
+  'eip155:10',
+  'eip155:1301'
 ]
 
 type ExtendCaipNetworkParams = {
