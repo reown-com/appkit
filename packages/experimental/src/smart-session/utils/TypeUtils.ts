@@ -93,8 +93,29 @@ export type ContractCallPermission = {
   }
 }
 
+export type NativeTokenRecurringAllowancePermission = {
+  type: 'native-token-recurring-allowance'
+  data: {
+    allowance: `0x${string}`
+    start: number
+    period: number
+  }
+}
+
+export type ERC20RecurringAllowancePermission = {
+  type: 'erc20-recurring-allowance'
+  data: {
+    token: `0x${string}`
+    allowance: `0x${string}`
+    start: number
+    period: number
+  }
+}
 // Union type for all possible permissions
-export type Permission = ContractCallPermission
+export type Permission =
+  | ContractCallPermission
+  | NativeTokenRecurringAllowancePermission
+  | ERC20RecurringAllowancePermission
 
 //--Cosigner Types----------------------------------------------------------------------- //
 export type AddPermissionRequest = SmartSessionGrantPermissionsRequest
