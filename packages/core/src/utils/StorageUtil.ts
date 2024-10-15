@@ -63,6 +63,8 @@ export const StorageUtil = {
   },
 
   setConnectedConnector(connectorType: ConnectorType) {
+    console.trace('setConnectedConnector', connectorType)
+
     try {
       SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR, connectorType)
     } catch {

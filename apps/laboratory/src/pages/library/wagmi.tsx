@@ -25,8 +25,8 @@ const modal = createAppKit({
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true,
-    email: false,
-    socials: []
+    email: true,
+    socials: ['google']
   }
 })
 

@@ -10,8 +10,8 @@ import type { AppKit } from '../client.js'
 type EventName = 'disconnect' | 'accountChanged' | 'switchNetwork'
 type EventData = {
   disconnect: () => void
-  accountChanged: { address: `0x${string}`; chainId: number | string }
-  switchNetwork: { address: `0x${string}`; chainId: number | string }
+  accountChanged: { address: `0x${string}`; chainId?: number | string }
+  switchNetwork: { address?: `0x${string}`; chainId: number | string }
 }
 type EventCallback<T extends EventName> = (data: EventData[T]) => void
 
@@ -143,15 +143,15 @@ export abstract class AdapterBlueprint<
   }
 
   /**
-   * Emits an event with the given name and data.
+   * Emits an event with the given name and optional data.
    * @template T
    * @param {T} eventName - The name of the event to emit
-   * @param {EventData[T]} data - The data to be passed to the event listeners
+   * @param {EventData[T]} [data] - The optional data to be passed to the event listeners
    */
-  protected emit<T extends EventName>(eventName: T, data: EventData[T]) {
+  protected emit<T extends EventName>(eventName: T, data?: EventData[T]) {
     const listeners = this.eventListeners.get(eventName)
     if (listeners) {
-      listeners.forEach(callback => callback(data))
+      listeners.forEach(callback => callback(data as EventData[T]))
     }
   }
 
@@ -183,7 +183,7 @@ export abstract class AdapterBlueprint<
   /**
    * Disconnects the current wallet.
    */
-  public abstract disconnect(): Promise<void>
+  public abstract disconnect(params?: AdapterBlueprint.DisconnectParams): Promise<void>
 
   /**
    * Gets the balance for a given address and chain ID.
@@ -221,6 +221,7 @@ export namespace AdapterBlueprint {
   export type SwitchNetworkParams = {
     caipNetwork: CaipNetwork
     provider?: AppKitConnector['provider']
+    providerType?: AppKitConnector['type']
   }
 
   export type GetBalanceParams = {
@@ -233,20 +234,18 @@ export namespace AdapterBlueprint {
     chainId: number
   }
 
-  export type ConnectParams = { id: AppKitConnector['id'] } & (
-    | {
-        type: 'WALLET_CONNECT'
-        onUri: (uri: string) => void
-      }
-    | {
-        id: AppKitConnector['id']
-        type: Omit<AppKitConnector['type'], 'WALLET_CONNECT'>
-        provider?: AppKitConnector['provider']
-        info?: AppKitConnector['info']
-        chainId?: number | string
-        onUri?: never
-      }
-  )
+  export type DisconnectParams = {
+    provider?: AppKitConnector['provider']
+    providerType?: AppKitConnector['type']
+  }
+
+  export type ConnectParams = {
+    id: string
+    provider?: unknown
+    info?: unknown
+    type: string
+    chainId?: number | string
+  }
 
   export type GetBalanceResult = {
     balance: string

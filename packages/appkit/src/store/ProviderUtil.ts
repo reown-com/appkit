@@ -2,16 +2,17 @@ import { proxy, ref, subscribe } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type { ChainNamespace } from '@reown/appkit-common'
+import type { ConnectorType } from '@reown/appkit-core'
 
 type StateKey = keyof ProviderStoreUtilState
 
 export interface ProviderStoreUtilState {
   // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   providers: Record<ChainNamespace, UniversalProvider | unknown | undefined>
-  providerIds: Record<ChainNamespace, ProviderIdType | undefined>
+  providerIds: Record<ChainNamespace, ConnectorType | undefined>
 }
 
-type ProviderIdType =
+export type ConnectorType =
   | 'walletConnect'
   | 'injected'
   | 'coinbaseWallet'
@@ -45,13 +46,13 @@ export const ProviderUtil = {
     return state.providers[chainNamespace] as T | undefined
   },
 
-  setProviderId(chainNamespace: ChainNamespace, providerId: ProviderIdType) {
+  setProviderId(chainNamespace: ChainNamespace, providerId: ConnectorType) {
     if (providerId) {
       state.providerIds[chainNamespace] = providerId
     }
   },
 
-  getProviderId(chainNamespace: ChainNamespace): ProviderIdType | undefined {
+  getProviderId(chainNamespace: ChainNamespace): ConnectorType | undefined {
     return state.providerIds[chainNamespace]
   },
 

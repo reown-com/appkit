@@ -1,13 +1,14 @@
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { type Provider } from '@reown/appkit-core'
+import { type CombinedProvider, type ConnectorType, type Provider } from '@reown/appkit-core'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
-import { type ProviderType } from '@reown/appkit-utils/ethers'
-import { WcHelpersUtil, type AppKitOptions } from '@reown/appkit'
+import { EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
+import { WcConstantsUtil, WcHelpersUtil, type AppKitOptions } from '@reown/appkit'
 import UniversalProvider from '@walletconnect/universal-provider'
 import { formatEther, InfuraProvider, JsonRpcProvider } from 'ethers'
 import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 interface Info {
   uuid: string
@@ -103,18 +104,30 @@ export class EthersAdapter extends AdapterBlueprint {
     const selectedProvider = connector?.provider as Provider
     const chainId = Number(caipNetworkId?.split(':')[1])
 
-    if (selectedProvider) {
-      const accounts: string[] = await selectedProvider.request({
-        method: 'eth_requestAccounts'
-      })
+    if (!selectedProvider) {
+      throw new Error('Provider not found')
+    }
 
-      return {
-        address: accounts[0],
-        chainId,
-        provider: selectedProvider,
-        type: connector?.type,
-        id
-      }
+    const accounts: string[] = await selectedProvider.request({
+      method: 'eth_requestAccounts'
+    })
+
+    this.listenProviderEvents(selectedProvider)
+
+    if (!accounts[0]) {
+      throw new Error('No accounts found')
+    }
+
+    if (!connector?.type) {
+      throw new Error('Connector type not found')
+    }
+
+    return {
+      address: accounts[0],
+      chainId: chainId || 0,
+      provider: selectedProvider,
+      type: connector.type,
+      id
     }
   }
 
@@ -210,33 +223,59 @@ export class EthersAdapter extends AdapterBlueprint {
     id,
     type,
     chainId
-  }: {
-    id: string
-    provider?: Provider
-    info?: unknown
-    type: string
-    chainId?: string | number
-  }) {
+  }: AdapterBlueprint.ConnectParams): Promise<AdapterBlueprint.ConnectResult> {
     const connector = this.connectors.find(c => c.id === id)
     const selectedProvider = connector?.provider as Provider
-    if (selectedProvider) {
-      const accounts: string[] = await selectedProvider.request({
+    if (!selectedProvider) {
+      throw new Error('Provider not found')
+    }
+
+    let accounts: string[] = []
+
+    if (type === 'AUTH') {
+      const { address } = await (selectedProvider as unknown as W3mFrameProvider).connect({
+        chainId
+      })
+
+      accounts = [address]
+    } else {
+      accounts = await selectedProvider.request({
         method: 'eth_requestAccounts'
       })
 
-      return {
-        address: accounts[0],
-        chainId: Number(chainId),
-        provider: selectedProvider,
-        type,
-        id
-      }
+      this.listenProviderEvents(selectedProvider)
+    }
+
+    return {
+      address: accounts[0] as `0x${string}`,
+      chainId: Number(chainId),
+      provider: selectedProvider,
+      type: type as ConnectorType,
+      id
+    }
+  }
+
+  public async disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
+    if (!params.provider || !params.providerType) {
+      throw new Error('Provider or providerType not provided')
+    }
+
+    switch (params.providerType) {
+      case 'WALLET_CONNECT':
+      case 'AUTH':
+        await params.provider.disconnect()
+        break
+      case 'ANNOUNCED':
+        await this.revokeProviderPermissions(params.provider as Provider)
+        break
+      default:
+        throw new Error('Unsupported provider type')
     }
   }
 
   public async getBalance(
     params: AdapterBlueprint.GetBalanceParams
-  ): Promise<AdapterBlueprint.GetBalanceResult | undefined> {
+  ): Promise<AdapterBlueprint.GetBalanceResult> {
     const caipNetwork = this.caipNetworks?.find((c: CaipNetwork) => c.chainId === params.chainId)
 
     if (caipNetwork) {
@@ -250,19 +289,117 @@ export class EthersAdapter extends AdapterBlueprint {
 
       return { balance: formattedBalance, symbol: caipNetwork.currency }
     }
+
+    return { balance: '', symbol: '' }
   }
 
   public async getProfile(
     params: AdapterBlueprint.GetProfileParams
-  ): Promise<AdapterBlueprint.GetProfileResult | undefined> {
+  ): Promise<AdapterBlueprint.GetProfileResult> {
     if (params.chainId === 1) {
       const ensProvider = new InfuraProvider('mainnet')
       const name = await ensProvider.lookupAddress(params.address)
       const avatar = await ensProvider.getAvatar(params.address)
 
-      return { profileName: name || null, profileImage: avatar || null }
+      return { profileName: name || undefined, profileImage: avatar || undefined }
     }
 
-    return { profileName: null, profileImage: null }
+    return { profileName: undefined, profileImage: undefined }
+  }
+
+  private providerHandlers: {
+    disconnect: () => void
+    accountsChanged: (accounts: string[]) => void
+    chainChanged: (chainId: string) => void
+  } | null = null
+
+  private listenProviderEvents(provider: Provider | CombinedProvider) {
+    const disconnectHandler = () => {
+      this.removeProviderListeners(provider)
+      this.emit('disconnect')
+    }
+
+    const accountsChangedHandler = (accounts: string[]) => {
+      if (accounts.length > 0) {
+        this.emit('accountChanged', {
+          address: accounts[0] as `0x${string}`
+        })
+      }
+    }
+
+    const chainChangedHandler = (chainId: string) => {
+      const chainIdNumber =
+        typeof chainId === 'string' ? EthersHelpersUtil.hexStringToNumber(chainId) : Number(chainId)
+
+      this.emit('switchNetwork', { chainId: chainIdNumber })
+    }
+
+    provider.on('disconnect', disconnectHandler)
+    provider.on('accountsChanged', accountsChangedHandler)
+    provider.on('chainChanged', chainChangedHandler)
+
+    this.providerHandlers = {
+      disconnect: disconnectHandler,
+      accountsChanged: accountsChangedHandler,
+      chainChanged: chainChangedHandler
+    }
+  }
+
+  private removeProviderListeners(provider: Provider | CombinedProvider) {
+    if (this.providerHandlers) {
+      provider.removeListener('disconnect', this.providerHandlers.disconnect)
+      provider.removeListener('accountsChanged', this.providerHandlers.accountsChanged)
+      provider.removeListener('chainChanged', this.providerHandlers.chainChanged)
+      this.providerHandlers = null
+    }
+  }
+
+  public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
+    const { caipNetwork, provider, providerType } = params
+    if (providerType === 'WALLET_CONNECT') {
+      ;(provider as UniversalProvider).setDefaultChain(caipNetwork.id)
+    } else if (providerType === 'AUTH') {
+      // TODO: Implement
+    } else {
+      try {
+        await (provider as Provider).request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: EthersHelpersUtil.numberToHexString(caipNetwork.chainId) }]
+        })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (switchError: any) {
+        if (
+          switchError.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+          switchError.code === WcConstantsUtil.ERROR_CODE_DEFAULT ||
+          switchError?.data?.originalError?.code ===
+            WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+        ) {
+          await EthersHelpersUtil.addEthereumChain(provider as Provider, caipNetwork)
+        } else {
+          throw new Error('Chain is not supported')
+        }
+      }
+    }
+  }
+
+  private async revokeProviderPermissions(provider: Provider | CombinedProvider) {
+    try {
+      const permissions: { parentCapability: string }[] = await provider.request({
+        method: 'wallet_getPermissions'
+      })
+      const ethAccountsPermission = permissions.find(
+        permission => permission.parentCapability === 'eth_accounts'
+      )
+
+      if (ethAccountsPermission) {
+        await provider.request({
+          method: 'wallet_revokePermissions',
+          params: [{ eth_accounts: {} }]
+        })
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.info('Could not revoke permissions from wallet. Disconnecting...', error)
+    }
   }
 }

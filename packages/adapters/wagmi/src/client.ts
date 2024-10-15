@@ -32,6 +32,7 @@ import {
 } from '@reown/appkit-core'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { Hex } from 'viem'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 export class WagmiAdapter extends AdapterBlueprint {
   public wagmiChains: readonly [Chain, ...Chain[]] | undefined
@@ -126,15 +127,21 @@ export class WagmiAdapter extends AdapterBlueprint {
       )
     }
 
-    const emailEnabled = options.features?.email ?? CoreConstantsUtil.DEFAULT_FEATURES.email
-    const socialsEnabled =
-      options.features?.socials?.length > 0 ?? CoreConstantsUtil.DEFAULT_FEATURES.socials
+    const emailEnabled =
+      options.features?.email === undefined
+        ? CoreConstantsUtil.DEFAULT_FEATURES.email
+        : options.features?.email
+    const socialsEnabled = options.features?.socials
+      ? options.features?.socials?.length > 0
+      : CoreConstantsUtil.DEFAULT_FEATURES.socials
 
     if (emailEnabled || socialsEnabled) {
       customConnectors.push(
         authConnector({
           chains: this.wagmiChains,
-          options: { projectId: options.projectId }
+          options: { projectId: options.projectId },
+          provider: this.avaiableConnectors.find(c => c.id === ConstantsUtil.AUTH_CONNECTOR_ID)
+            ?.provider as W3mFrameProvider
         })
       )
     }
@@ -162,19 +169,20 @@ export class WagmiAdapter extends AdapterBlueprint {
     })
 
     await Promise.all(
-      filteredConnectors.map(async ({ id, name, type, icon, getProvider }) => {
-        const shouldSkip = ConstantsUtil.AUTH_CONNECTOR_ID === id
-        const provider = (await getProvider()) as Provider
+      filteredConnectors.map(async connector => {
+        const shouldSkip = ConstantsUtil.AUTH_CONNECTOR_ID === connector.id
+
+        const provider = (await connector.getProvider()) as Provider
 
         if (!shouldSkip && this.namespace && provider) {
           this.addConnector({
-            id,
-            explorerId: PresetsUtil.ConnectorExplorerIds[id],
-            imageUrl: options?.connectorImages?.[id] ?? icon,
-            name: PresetsUtil.ConnectorNamesMap[id] ?? name,
-            imageId: PresetsUtil.ConnectorImageIds[id],
-            type: PresetsUtil.ConnectorTypesMap[type] ?? 'EXTERNAL',
-            info: { rdns: id },
+            id: connector.id,
+            explorerId: PresetsUtil.ConnectorExplorerIds[connector.id],
+            imageUrl: options?.connectorImages?.[connector.id] ?? connector.icon,
+            name: PresetsUtil.ConnectorNamesMap[connector.id] ?? connector.name,
+            imageId: PresetsUtil.ConnectorImageIds[connector.id],
+            type: PresetsUtil.ConnectorTypesMap[connector.type] ?? 'EXTERNAL',
+            info: { rdns: connector.id },
             chain: this.namespace,
             chains: [],
             provider
@@ -191,11 +199,11 @@ export class WagmiAdapter extends AdapterBlueprint {
     const provider = (await connector?.getProvider()) as Provider
 
     return {
-      chainId: connection?.chainId,
+      chainId: connection?.chainId ?? 1,
       address: connection?.accounts[0] as string,
       provider,
-      type: connection?.connector.type,
-      id: connection?.connector.id
+      type: connection?.connector.type as ConnectorType,
+      id: connection?.connector.id as string
     }
   }
 
@@ -219,23 +227,16 @@ export class WagmiAdapter extends AdapterBlueprint {
     await connect(this.wagmiConfig, { connector, chainId: chainId ? Number(chainId) : undefined })
   }
 
-  public async connect({
-    id,
-    provider,
-    type,
-    info,
-    chainId
-  }: {
-    id: string
-    provider?: unknown
-    info?: unknown
-    type: string
-    chainId?: number | string
-  }) {
+  public async connect(
+    params: AdapterBlueprint.ConnectParams
+  ): Promise<AdapterBlueprint.ConnectResult> {
+    const { id, provider, type, info, chainId } = params
+
     const connector = this.wagmiConfig.connectors.find(c => c.id === id)
     if (!connector) {
       throw new Error('connectionControllerClient:connectExternal - connector is undefined')
     }
+
     if (provider && info && connector.id === ConstantsUtil.EIP6963_CONNECTOR_ID) {
       // @ts-expect-error Exists on EIP6963Connector
       connector.setEip6963Wallet?.({ provider, info })
@@ -246,12 +247,18 @@ export class WagmiAdapter extends AdapterBlueprint {
       chainId: chainId ? Number(chainId) : undefined
     })
 
-    return { address: res.accounts[0] as string, type, provider, chainId, id }
+    return {
+      address: res.accounts[0],
+      chainId: res.chainId,
+      provider: provider as Provider,
+      type: type as ConnectorType,
+      id
+    }
   }
 
   public async getBalance(
     params: AdapterBlueprint.GetBalanceParams
-  ): Promise<AdapterBlueprint.GetBalanceResult | undefined> {
+  ): Promise<AdapterBlueprint.GetBalanceResult> {
     const caipNetwork = this.caipNetworks?.find((c: CaipNetwork) => c.chainId === params.chainId)
 
     if (caipNetwork && this.wagmiConfig) {
@@ -261,15 +268,17 @@ export class WagmiAdapter extends AdapterBlueprint {
         token: caipNetwork.tokens?.[0]?.address as Hex
       })
 
-      return { balance: balance.value, symbol: balance.symbol }
+      return { balance: balance.value.toString(), symbol: balance.symbol }
     }
+
+    return { balance: '', symbol: '' }
   }
 
   public async getProfile(
     params: AdapterBlueprint.GetProfileParams
-  ): Promise<AdapterBlueprint.GetProfileResult | undefined> {
+  ): Promise<AdapterBlueprint.GetProfileResult> {
     const profileName = await getEnsName(this.wagmiConfig, {
-      address: params.address,
+      address: params.address as Hex,
       chainId: params.chainId
     })
     if (profileName) {
@@ -278,10 +287,10 @@ export class WagmiAdapter extends AdapterBlueprint {
         chainId: params.chainId
       })
 
-      return { profileName, profileImage }
+      return { profileName, profileImage: profileImage ?? undefined }
     }
 
-    return { profileName: null, profileImage: null }
+    return { profileName: undefined, profileImage: undefined }
   }
 
   public async disconnect() {
@@ -296,7 +305,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     )
   }
 
-  public async switchNetwork(caipNetwork: CaipNetwork) {
-    await switchChain(this.wagmiConfig, { chainId: caipNetwork.chainId as number })
+  public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
+    await switchChain(this.wagmiConfig, { chainId: params.caipNetwork.chainId as number })
   }
 }
