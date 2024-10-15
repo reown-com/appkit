@@ -11,7 +11,7 @@ import {
   base,
   baseSepolia,
   gnosis,
-  unichainSepolia
+  unichainSepolia,
   type AppKitNetwork
 } from '@reown/appkit/networks'
 import { getLocalStorageItem } from './LocalStorage'
