@@ -3,6 +3,7 @@
   "private": true,
   "version": "1.0.6",
   "scripts": {
+    "prebuild": "node inject-cdn-version.js",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
