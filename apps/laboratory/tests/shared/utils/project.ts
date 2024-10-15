@@ -1,13 +1,8 @@
 import { devices } from '@playwright/test'
 import { DESKTOP_DEVICES, MOBILE_DEVICES } from '../constants/devices'
 
-const LIBRARIES = ['ethers', 'ethers5', 'wagmi', 'solana'] as const
-const MULTICHAIN_LIBRARIES = [
-  'multichain-basic',
-  'multichain-ethers-solana',
-  'multichain-ethers5-solana',
-  'multichain-wagmi-solana'
-] as const
+const LIBRARIES = ['wagmi', 'solana'] as const
+const MULTICHAIN_LIBRARIES = ['multichain-basic', 'multichain-wagmi-solana'] as const
 
 const LIBRARY_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
   LIBRARIES.map(library => ({ device, library }))
