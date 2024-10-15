@@ -866,8 +866,6 @@ export class AppKit {
     address,
     chainId
   }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'>) {
-    console.trace('syncAccount')
-
     this.setPreferredAccountType(
       AccountController.state.preferredAccountType
         ? AccountController.state.preferredAccountType

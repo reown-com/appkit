@@ -268,7 +268,9 @@ export class WagmiAdapter extends AdapterBlueprint {
         token: caipNetwork.tokens?.[0]?.address as Hex
       })
 
-      return { balance: balance.value.toString(), symbol: balance.symbol }
+      console.log('BALANCE', balance)
+
+      return { balance: balance.formatted, symbol: balance.symbol }
     }
 
     return { balance: '', symbol: '' }
