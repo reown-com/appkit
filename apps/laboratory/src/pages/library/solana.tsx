@@ -19,9 +19,7 @@ const modal = createAppKit({
   networks,
   projectId: ConstantsUtil.ProjectId,
   features: {
-    analytics: true,
-    email: true,
-    socials: ['google', 'github', 'apple', 'discord']
+    analytics: true
   },
   metadata: ConstantsUtil.Metadata
 })
