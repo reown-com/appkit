@@ -132,5 +132,5 @@ export type SmartSession = {
   permissions: Permission[]
   policies: Policy[]
   context: string
-  status: SmartSessionStatus
+  revokedAt?: number
 }

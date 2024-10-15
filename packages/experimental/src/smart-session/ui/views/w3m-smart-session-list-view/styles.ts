@@ -5,34 +5,26 @@ export default css`
     width: 100%;
   }
 
-  wui-promo {
-    position: absolute;
-    top: -32px;
-  }
-
-  wui-profile-button {
-    margin-top: calc(-1 * var(--wui-spacing-2l));
-  }
-
-  wui-promo + wui-profile-button {
-    margin-top: var(--wui-spacing-2l);
-  }
-
   wui-tabs {
     width: 100%;
   }
 
-  .contentContainer {
-    height: 280px;
+  :host {
+    min-height: 100%;
   }
 
-  .contentContainer > wui-icon-box {
+  .group-container[last-group='true'] {
+    padding-bottom: var(--wui-spacing-m);
+  }
+
+  .session-container {
+    background-color: var(--wui-color-bg-125);
+    border-radius: var(--wui-border-radius-xs);
+  }
+
+  .session-project-image {
+    border-radius: var(--wui-border-radius-3xs);
     width: 40px;
     height: 40px;
-    border-radius: var(--wui-border-radius-xxs);
-  }
-
-  .contentContainer > .textContent {
-    width: 65%;
   }
 `

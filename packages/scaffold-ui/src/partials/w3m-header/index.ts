@@ -17,7 +17,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 
 // -- Constants ----------------------------------------- //
-const BETA_SCREENS: string[] = []
+const BETA_SCREENS: string[] = ['SmartSessionList']
 
 // -- Helpers ------------------------------------------- //
 function headings() {

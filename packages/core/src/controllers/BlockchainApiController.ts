@@ -34,6 +34,7 @@ import { OptionsController } from './OptionsController.js'
 import { proxy } from 'valtio/vanilla'
 import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
+import type { CaipAddress } from '@reown/appkit-common'
 
 const DEFAULT_OPTIONS = {
   purchaseCurrencies: [
@@ -426,6 +427,15 @@ export const BlockchainApiController = {
         quoteId: 'mocked-quote-id'
       }
     }
+  },
+
+  getSmartSessions(caipAddress: CaipAddress) {
+    return state.api.get({
+      path: `/v1/sessions/${caipAddress}`,
+      params: {
+        projectId: OptionsController.state.projectId
+      }
+    })
   },
 
   setClientId(clientId: string | null) {
