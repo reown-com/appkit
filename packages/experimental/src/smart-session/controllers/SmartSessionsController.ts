@@ -50,7 +50,7 @@ export const SmartSessionsController = {
               'https://app.uniswap.org/static/media/uniswap-wallet-icon.12b3568891522db07d59.png'
           },
           pci: '0x123',
-          expiration: Date.now() + 10_000,
+          expiry: Date.now() + 10_000,
           permissions: [],
           policies: [],
           createdAt: Date.now() - 10_000,
@@ -65,7 +65,7 @@ export const SmartSessionsController = {
               'https://app.uniswap.org/static/media/uniswap-wallet-icon.12b3568891522db07d59.png'
           },
           pci: '0x123',
-          expiration: Date.now() - 5000,
+          expiry: Date.now() - 5000,
           permissions: [],
           policies: [],
           createdAt: Date.now() - 15_000,
@@ -80,7 +80,7 @@ export const SmartSessionsController = {
               'https://app.uniswap.org/static/media/uniswap-wallet-icon.12b3568891522db07d59.png'
           },
           pci: '0x123',
-          expiration: Date.now() + 10_000,
+          expiry: Date.now() + 10_000,
           permissions: [],
           policies: [],
           createdAt: Date.now() - 10_000,

@@ -59,9 +59,9 @@ export class W3mSmartSessionListView extends LitElement {
   // -- Private ------------------------------------------- //
   private listContentTemplate() {
     const revokedSessions = this.sessions.filter(session => session.revokedAt)
-    const expiredSessions = this.sessions.filter(session => session.expiration < Date.now())
+    const expiredSessions = this.sessions.filter(session => session.expiry < Date.now())
     const activeSessions = this.sessions.filter(
-      session => !session.revokedAt && session.expiration > Date.now()
+      session => !session.revokedAt && session.expiry > Date.now()
     )
 
     const sessionsByTab = [activeSessions, expiredSessions, revokedSessions]
@@ -165,7 +165,7 @@ export class W3mSmartSessionListView extends LitElement {
           return 'error'
         }
 
-        return val.expiration < Date.now() ? 'shade' : 'success'
+        return val.expiry < Date.now() ? 'shade' : 'success'
       }
 
       return html`<wui-flex

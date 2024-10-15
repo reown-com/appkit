@@ -127,7 +127,7 @@ export type SmartSession = {
     iconUrl?: string
   }
   pci: string
-  expiration: number
+  expiry: number
   createdAt: number
   permissions: Permission[]
   policies: Policy[]
