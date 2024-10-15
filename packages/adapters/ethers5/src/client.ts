@@ -605,7 +605,8 @@ export class Ethers5Adapter {
       }
 
       if (provider) {
-        const { addresses, chainId } = await EthersHelpersUtil.getUserInfo(provider)
+        const { addresses } = await EthersHelpersUtil.getUserInfo(provider)
+        const chainId = this.appKit?.getCaipNetwork()?.id
         const firstAddress = addresses?.[0]
         const caipAddress = `${this.chainNamespace}:${chainId}:${firstAddress}` as CaipAddress
 
