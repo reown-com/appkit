@@ -19,7 +19,7 @@ export class WuiPermissionContractCall extends LitElement {
     }
 
     return html`
-      <wui-flex flexDirection="column" padding=${['l', '0', '0', '0']} alignItems="center">
+      <wui-flex flexDirection="column" alignItems="center">
         <wui-details-group>
           <wui-details-group-item name="Type">
             <wui-text variant="paragraph-400" color="fg-100"> Contract Call </wui-text>

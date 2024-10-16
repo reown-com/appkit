@@ -34,7 +34,11 @@ export const SmartSessionsController = {
       const sessions = (await BlockchainApiController.getSmartSessions(caipAddress)) as {
         pcis: SmartSession[]
       }
-      state.sessions = sessions.pcis
+
+      state.sessions = sessions.pcis.map(session => ({
+        ...session,
+        expiry: session.expiry * 1000
+      }))
 
       return sessions.pcis
     } catch (e) {

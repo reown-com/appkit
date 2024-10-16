@@ -20,6 +20,7 @@ export default css`
   .session-container {
     background-color: var(--wui-color-bg-125);
     border-radius: var(--wui-border-radius-xs);
+    cursor: pointer;
   }
 
   .session-project-image {

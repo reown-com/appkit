@@ -5,7 +5,7 @@ import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 import { SmartSessionsController } from '../../../controllers/SmartSessionsController.js'
 import { DateUtil } from '@reown/appkit-common'
-import type { SmartSession } from '../../../utils/TypeUtils.js'
+import type { ContractCallPermission, SmartSession } from '../../../utils/TypeUtils.js'
 
 const TABS = 3
 const TABS_PADDING = 48
@@ -22,6 +22,7 @@ export class W3mSmartSessionListView extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @state() private sessions = SmartSessionsController.state.sessions
+  @state() private openSession?: string
 
   public constructor() {
     super()
@@ -90,19 +91,16 @@ export class W3mSmartSessionListView extends LitElement {
     }
     const sessionsByYearAndMonth = sessions.reduce<Record<number, Record<number, SmartSession[]>>>(
       (acc, session) => {
-        const date = new Date(session.createdAt)
+        const date = new Date(session.createdAt * 1000)
         const year = date.getFullYear()
         const month = date.getMonth()
 
-        if (!acc[year]) {
-          acc[year] = {}
-        }
+        const acumYear = acc[year] || {}
+        const acumMonth = acumYear[month] || []
 
-        if (!acc[year][month]) {
-          acc[year][month] = []
-        }
-
-        acc[year][month].push(session)
+        acumMonth.push(session)
+        acumYear[month] = acumMonth
+        acc[year] = acumYear
 
         return acc
       },
@@ -168,15 +166,14 @@ export class W3mSmartSessionListView extends LitElement {
         return val.expiry < Date.now() ? 'shade' : 'success'
       }
 
-      return html`<wui-flex
+      return html` <wui-flex
         class="session-container"
         gap="s"
+        flexDirection="column"
         .padding=${['s', 's', 's', 's'] as const}
-        alignItems="center"
-        justifyContent="space-between"
-        onClick=${this.onSessionClick.bind(this, session)}
+        @click=${this.onSessionClick.bind(this, session)}
       >
-        <wui-flex flexDirection="column">
+        <wui-flex gap="s" alignItems="center" justifyContent="space-between">
           <wui-flex gap="xs">
             ${project.iconUrl
               ? html`<img
@@ -186,7 +183,7 @@ export class W3mSmartSessionListView extends LitElement {
                   height="40px"
                 />`
               : html`<wui-icon-box
-                  size="xl"
+                  size="lg"
                   icon="helpCircle"
                   background="opaque"
                   iconColor="fg-100"
@@ -203,13 +200,29 @@ export class W3mSmartSessionListView extends LitElement {
             >${SMART_SESSION_TABS[this.currentTab]?.label}</wui-tag
           >
         </wui-flex>
+        ${this.openSession === session.pci
+          ? html`<wui-flex>
+              ${session.permissions.map(permission => {
+                // Skip other perms for now. TODO: map to corresponding ui pieces
+                if (permission.type !== 'contract-call') {
+                  return ''
+                }
+                const { data } = permission as ContractCallPermission
+
+                return html`<wui-permission-contract-call
+                  .contractAddress=${data.address}
+                  .expiry=${session.expiry / 1000}
+                  .functions=${data.functions}
+                ></wui-permission-contract-call>`
+              })}
+            </wui-flex>`
+          : ''}
       </wui-flex>`
     })
   }
 
   private onSessionClick(session: SmartSession) {
-    // this.openSession = session.pci
-    console.log('session', session)
+    this.openSession = this.openSession === session.pci ? undefined : session.pci
   }
 
   private onTabChange(index: number) {
