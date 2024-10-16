@@ -79,6 +79,9 @@ export class W3mSnackBar extends LitElement {
           easing: 'ease'
         }
       )
+      if (this.timeout) {
+        clearTimeout(this.timeout)
+      }
       this.timeout = setTimeout(() => SnackController.hide(), durationMs)
     } else {
       this.animate(

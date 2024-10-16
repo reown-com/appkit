@@ -11,7 +11,7 @@ import {
 import { getW3mThemeVariables } from '@reown/appkit-common'
 
 // -- Variables ------------------------------------------- //
-const PAGE_HEIGHT = 400
+const PAGE_HEIGHT = 600
 const PAGE_WIDTH = 360
 const HEADER_HEIGHT = 64
 
@@ -60,11 +60,15 @@ export class W3mApproveTransactionView extends LitElement {
     await this.syncTheme()
 
     this.iframe.style.display = 'block'
+    const container = this?.renderRoot?.querySelector('div') as HTMLDivElement
     this.bodyObserver = new ResizeObserver(entries => {
       const contentBoxSize = entries?.[0]?.contentBoxSize
       const width = contentBoxSize?.[0]?.inlineSize
 
       this.iframe.style.height = `${PAGE_HEIGHT}px`
+
+      // Update container size to prevent the iframe from being cut off
+      container.style.height = `${PAGE_HEIGHT}px`
       if (width && width <= 430) {
         this.iframe.style.width = '100%'
         this.iframe.style.left = '0px'
@@ -84,7 +88,7 @@ export class W3mApproveTransactionView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html`<div data-ready=${this.ready}></div>`
+    return html`<div data-ready=${this.ready} id="w3m-frame-container"></div>`
   }
 
   // -- Private ------------------------------------------- //
