@@ -115,7 +115,8 @@ export const EnsController = {
       const message = JSON.stringify({
         name,
         attributes: {},
-        timestamp: Math.floor(Date.now())
+        // Unix timestamp
+        timestamp: Math.floor(Date.now() / 1000)
       })
 
       RouterController.pushTransactionStack({

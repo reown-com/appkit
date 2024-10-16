@@ -336,7 +336,8 @@ export const BlockchainApiController = {
     return state.api.get<BlockchainApiSuggestionResponse>({
       path: `/v1/profile/suggestions/${name}`,
       params: {
-        projectId: OptionsController.state.projectId
+        projectId: OptionsController.state.projectId,
+        zone: 'reown.id'
       }
     })
   },
