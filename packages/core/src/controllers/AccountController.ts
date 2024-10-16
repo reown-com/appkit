@@ -6,7 +6,7 @@ import type {
   Provider,
   SocialProvider
 } from '../utils/TypeUtil.js'
-import type { CaipAddress, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
+import type { CaipAddress, ChainNamespace } from '@reown/appkit-common'
 import type { Balance } from '@reown/appkit-common'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { SnackController } from './SnackController.js'
@@ -16,6 +16,7 @@ import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { ChainController } from './ChainController.js'
 import { proxy, ref } from 'valtio/vanilla'
 import type UniversalProvider from '@walletconnect/universal-provider'
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
@@ -40,7 +41,7 @@ export interface AccountControllerState {
   provider?: UniversalProvider | Provider | CombinedProvider
   status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
   siweStatus?: 'uninitialized' | 'ready' | 'loading' | 'success' | 'rejected' | 'error'
-  tokenFetchFailureChainIds?: Set<CaipNetworkId>
+  lastRetry?: number
 }
 
 // -- State --------------------------------------------- //
@@ -49,8 +50,7 @@ const state = proxy<AccountControllerState>({
   tokenBalance: [],
   smartAccountDeployed: false,
   addressLabels: new Map(),
-  allAccounts: [],
-  tokenFetchFailureChainIds: new Set()
+  allAccounts: []
 })
 
 // -- Controller ---------------------------------------- //
@@ -229,10 +229,10 @@ export const AccountController = {
     const caipAddress = ChainController.state.activeCaipAddress
     const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
 
-    const hasFetchFailure =
-      chainId && state.tokenFetchFailureChainIds && state.tokenFetchFailureChainIds.has(chainId)
-
-    if (hasFetchFailure) {
+    if (
+      state.lastRetry &&
+      !CoreHelperUtil.isAllowedRetry(state.lastRetry, ConstantsUtil.FIVE_SEC_MS)
+    ) {
       return
     }
 
@@ -246,11 +246,11 @@ export const AccountController = {
 
         this.setTokenBalance(filteredBalances, chain)
         SwapController.setBalances(SwapApiUtil.mapBalancesToSwapTokens(response.balances))
+        state.lastRetry = undefined
       }
     } catch (error) {
-      if (chainId && state.tokenFetchFailureChainIds) {
-        state.tokenFetchFailureChainIds.add(chainId)
-      }
+      state.lastRetry = Date.now()
+
       SnackController.showError('Token Balance Unavailable')
     }
   },
