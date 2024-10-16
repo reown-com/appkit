@@ -2,6 +2,9 @@ import { proxy } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 
+// -- Constants ----------------------------------------- //
+const DEFAULT_DURATION_MS = 2500
+
 // -- Types --------------------------------------------- //
 export interface SnackControllerState {
   message: string
@@ -17,7 +20,7 @@ const state = proxy<SnackControllerState>({
   message: '',
   variant: 'success',
   open: false,
-  durationMs: 2500
+  durationMs: DEFAULT_DURATION_MS
 })
 
 // -- Controller ---------------------------------------- //
@@ -62,7 +65,7 @@ export const SnackController = {
         state.message = message
         state.variant = variant
         state.open = true
-        state.durationMs = durationMs || 2500
+        state.durationMs = durationMs || DEFAULT_DURATION_MS
       }, 150)
     } else {
       state.message = message
