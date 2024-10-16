@@ -607,9 +607,12 @@ export class Ethers5Adapter {
       if (provider) {
         const { addresses, chainId } = await EthersHelpersUtil.getUserInfo(provider)
         const firstAddress = addresses?.[0]
-        const caipAddress = `${this.chainNamespace}:${chainId}:${firstAddress}` as CaipAddress
+        const caipNetwork = this.caipNetworks.find(c => c.id === chainId) ?? this.caipNetworks[0]
+        const caipAddress =
+          `${this.chainNamespace}:${caipNetwork?.id}:${firstAddress}` as CaipAddress
 
-        if (firstAddress && chainId) {
+        if (firstAddress && caipNetwork) {
+          this.appKit?.setCaipNetwork(caipNetwork)
           this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
           ProviderUtil.setProviderId('eip155', providerId)
           ProviderUtil.setProvider<Provider>('eip155', provider)

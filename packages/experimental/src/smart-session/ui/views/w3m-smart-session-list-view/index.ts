@@ -5,7 +5,7 @@ import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 import { SmartSessionsController } from '../../../controllers/SmartSessionsController.js'
 import { DateUtil } from '@reown/appkit-common'
-import type { ContractCallPermission, SmartSession } from '../../../utils/TypeUtils.js'
+import type { SmartSession } from '../../../utils/TypeUtils.js'
 
 const TABS = 3
 const TABS_PADDING = 48
@@ -215,7 +215,7 @@ export class W3mSmartSessionListView extends LitElement {
                 if (permission.type !== 'contract-call') {
                   return ''
                 }
-                const { data } = permission as ContractCallPermission
+                const { data } = permission
 
                 return html` <wui-flex flexDirection="column" gap="s">
                   <wui-permission-contract-call
