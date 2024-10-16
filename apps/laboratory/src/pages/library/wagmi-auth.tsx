@@ -27,8 +27,7 @@ const modal = createAppKit({
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true
-  },
-  enableAuth: true
+  }
 })
 
 ThemeStore.setModal(modal)

@@ -1,45 +1,45 @@
+import {
+  ConstantsUtil,
+  SafeLocalStorage,
+  SafeLocalStorageKeys,
+  type CaipNetwork,
+  type ChainNamespace
+} from '@reown/appkit-common'
 import type {
-  EventsControllerState,
-  PublicStateControllerState,
-  ThemeControllerState,
-  ModalControllerState,
-  ConnectedWalletInfo,
-  RouterControllerState,
   ChainAdapter,
-  SdkVersion
+  ConnectedWalletInfo,
+  EventsControllerState,
+  ModalControllerState,
+  PublicStateControllerState,
+  RouterControllerState,
+  SdkVersion,
+  ThemeControllerState
 } from '@reown/appkit-core'
 import {
   AccountController,
+  AlertController,
+  ApiController,
+  AssetUtil,
   BlockchainApiController,
+  ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
+  EnsController,
   EventsController,
   ModalController,
-  ChainController,
-  PublicStateController,
-  ThemeController,
-  SnackController,
-  RouterController,
-  EnsController,
   OptionsController,
-  AssetUtil,
-  ApiController,
-  AlertController
+  PublicStateController,
+  RouterController,
+  SnackController,
+  ThemeController
 } from '@reown/appkit-core'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
-import {
-  ConstantsUtil,
-  type CaipNetwork,
-  type ChainNamespace,
-  SafeLocalStorage,
-  SafeLocalStorageKeys
-} from '@reown/appkit-common'
-import type { AppKitOptions } from './utils/TypesUtil.js'
-import { UniversalAdapterClient } from './universal-adapter/client.js'
 import { CaipNetworksUtil, ErrorUtil } from '@reown/appkit-utils'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { ProviderUtil } from './store/ProviderUtil.js'
+import { UniversalAdapterClient } from './universal-adapter/client.js'
+import type { AppKitOptions } from './utils/TypesUtil.js'
 
 // -- Export Controllers -------------------------------------------------------
 export { AccountController }
@@ -465,7 +465,6 @@ export class AppKit {
     OptionsController.setTokens(options.tokens)
     OptionsController.setTermsConditionsUrl(options.termsConditionsUrl)
     OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
-    OptionsController.setEnableAuth(options.enableAuth)
     OptionsController.setCustomWallets(options.customWallets)
     OptionsController.setFeatures(options.features)
     OptionsController.setEnableWalletConnect(options.enableWalletConnect !== false)
@@ -497,7 +496,7 @@ export class AppKit {
       // OptionsController.setFeatures({ analytics: projectCloudConfig?.isAppKitAuthEnabled })
 
       if (options.enableAuth === undefined) {
-        OptionsController.setEnableAuth(projectCloudConfig?.isAnalyticsEnabled)
+        OptionsController.setEnableAuth(projectCloudConfig?.isAppKitAuthEnabled)
       }
     }
 

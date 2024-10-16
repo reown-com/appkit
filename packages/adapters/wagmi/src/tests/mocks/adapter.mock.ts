@@ -35,8 +35,7 @@ export const mockOptions = {
     icons: ['icon.png']
   },
   projectId: '1234',
-  sdkVersion: `html-wagmi-5.1.6` as SdkVersion,
-  enableAuth: false
+  sdkVersion: `html-wagmi-5.1.6` as SdkVersion
 }
 
 export const mockAppKit = new AppKit(mockOptions)

@@ -22,8 +22,7 @@ const modal = createAppKit({
     socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook']
   },
   termsConditionsUrl: 'https://reown.com/terms-of-service',
-  privacyPolicyUrl: 'https://reown.com/privacy-policy',
-  enableAuth: true
+  privacyPolicyUrl: 'https://reown.com/privacy-policy'
 })
 
 ThemeStore.setModal(modal)
