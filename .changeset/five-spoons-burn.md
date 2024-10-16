@@ -20,4 +20,4 @@
 '@reown/appkit-wallet': patch
 ---
 
-Refactored token balance error message and made sure to only fetch ones if the token balance API fails
+Refactored token balance error messages and ensured that token balances are only fetched again after 5 seconds if the token balance API fails.
