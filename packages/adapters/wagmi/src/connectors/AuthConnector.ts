@@ -20,6 +20,9 @@ export type AuthParameters = {
 
 // -- Connector ------------------------------------------------------------------------------------
 export function authConnector(parameters: AuthParameters) {
+  /* eslint-disable init-declarations */
+  let currentAddress: Address | null = null
+
   type Properties = {
     provider?: W3mFrameProvider
   }
@@ -44,17 +47,19 @@ export function authConnector(parameters: AuthParameters) {
           throw new Error('ChainId not found in provider')
         }
       }
-
       const { address, chainId: frameChainId } = await provider.connect({
         chainId
       })
+
+      currentAddress = address as Address
+
       await provider.getSmartAccountEnabledNetworks()
 
       const parsedChainId = parseChainId(frameChainId)
 
       return {
-        accounts: [address as Address],
-        account: address as Address,
+        accounts: [currentAddress],
+        account: currentAddress,
         chainId: parsedChainId,
         chain: {
           id: parsedChainId,
@@ -68,12 +73,14 @@ export function authConnector(parameters: AuthParameters) {
       await provider.disconnect()
     },
 
-    async getAccounts() {
-      const provider = await this.getProvider()
-      const { address } = await provider.connect()
-      config.emitter.emit('change', { accounts: [address as Address] })
+    getAccounts() {
+      if (!currentAddress) {
+        return Promise.resolve([])
+      }
 
-      return [address as Address]
+      config.emitter.emit('change', { accounts: [currentAddress] })
+
+      return Promise.resolve([currentAddress])
     },
 
     async getProvider() {
