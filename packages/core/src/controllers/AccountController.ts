@@ -229,10 +229,10 @@ export const AccountController = {
     const caipAddress = ChainController.state.activeCaipAddress
     const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
 
-    const hasFailedFetch =
+    const hasFailedFailure =
       chainId && state.tokenFetchFailureChainIds && state.tokenFetchFailureChainIds.has(chainId)
 
-    if (hasFailedFetch) {
+    if (hasFailedFailure) {
       return
     }
 

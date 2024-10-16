@@ -20,4 +20,4 @@
 '@reown/appkit-wallet': patch
 ---
 
-Refactored token balance error handling
+Refactored token balance error handling to improve error messages and ensure token balances are only fetched once if they fail.
