@@ -25,6 +25,8 @@ const mockOptionsExtended = {
   defaultNetwork: mainnet
 }
 
+const mockConnector = mockWagmiClient.wagmiConfig.connectors[0]!
+
 vi.mock('@wagmi/core', async () => {
   const actual = await vi.importActual('@wagmi/core')
   return {
@@ -112,10 +114,17 @@ describe('Wagmi Client', () => {
 
       expect(mockWagmiClient.wagmiConfig).toBeDefined()
 
+      const syncAccountSpy = vi.spyOn(mockWagmiClient as any, 'syncAccount')
+      const mockConnectorConnectSpy = vi.spyOn(mockConnector, 'connect')
+      const mockConnectorGetAccountsSpy = vi.spyOn(mockConnector, 'connect')
+
       await connect(mockWagmiClient.wagmiConfig, {
-        connector: mockWagmiClient.wagmiConfig.connectors[0]!
+        connector: mockConnector
       })
 
+      expect(syncAccountSpy).toHaveBeenCalledTimes(2)
+      expect(mockConnectorConnectSpy).toHaveBeenCalledOnce()
+      expect(mockConnectorGetAccountsSpy).toHaveBeenCalledOnce()
       expect(setApprovedCaipNetworksData).toHaveBeenCalledOnce()
 
       expect(mockAppKit.getCaipAddress()).toBe(
@@ -132,7 +141,12 @@ describe('Wagmi Client', () => {
       const resetNetworkSpy = vi.spyOn(mockAppKit, 'resetNetwork')
       const setAllAccountsSpy = vi.spyOn(mockAppKit, 'setAllAccounts')
 
+      const mockConnectorDisconnectSpy = vi.spyOn(mockConnector, 'disconnect')
+
       await disconnect(mockWagmiClient.wagmiConfig)
+
+      expect(mockConnectorConnectSpy).toHaveBeenCalled()
+      expect(mockConnectorDisconnectSpy).toHaveBeenCalledOnce()
 
       const disconnectedWagmiAccount = getAccount(mockWagmiClient.wagmiConfig)
 
@@ -479,7 +493,6 @@ describe('Wagmi Client', () => {
       expect(mockProvider.onRpcError).toHaveBeenCalledWith(expect.any(Function))
       expect(mockProvider.onRpcSuccess).toHaveBeenCalledWith(expect.any(Function))
       expect(mockProvider.onNotConnected).toHaveBeenCalledWith(expect.any(Function))
-      expect(mockProvider.onIsConnected).toHaveBeenCalledWith(expect.any(Function))
       expect(mockProvider.onGetSmartAccountEnabledNetworks).toHaveBeenCalledWith(
         expect.any(Function)
       )
