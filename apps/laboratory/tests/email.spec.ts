@@ -100,9 +100,18 @@ emailTest('it should show names feature only for EVM networks', async ({ library
 emailTest('it should show loading on page refresh', async () => {
   await page.page.reload()
   await validator.expectConnectButtonLoading()
+  await validator.expectAccountButtonReady()
+})
+
+emailTest('it should show snackbar error if failed to fetch token balance', async () => {
+  await page.page.context().setOffline(true)
+  await page.openAccount()
+  await validator.expectSnackbar('Token Balance Unavailable')
+  await page.closeModal()
 })
 
 emailTest('it should disconnect correctly', async () => {
+  await page.page.context().setOffline(false)
   await page.goToSettings()
   await page.disconnect()
   await validator.expectDisconnected()

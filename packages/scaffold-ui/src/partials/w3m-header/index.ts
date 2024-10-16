@@ -83,7 +83,8 @@ function headings() {
       : 'Connect Social',
     ConnectingMultiChain: 'Select chain',
     ConnectingFarcaster: 'Farcaster',
-    SwitchActiveChain: 'Switch chain'
+    SwitchActiveChain: 'Switch chain',
+    SmartSessionCreated: 'Session created'
   }
 }
 

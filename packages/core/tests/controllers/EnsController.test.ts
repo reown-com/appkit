@@ -177,21 +177,33 @@ describe('EnsController', () => {
       }
     })
     AccountController.setCaipAddress('eip155:1:0x123', chain)
+    // Use fake timers so that the timestamp is always the same
+    vi.useFakeTimers()
+
+    const message = JSON.stringify({
+      name: 'newname.reown.id',
+      attributes: {},
+      timestamp: Math.floor(Date.now() / 1000)
+    })
+
     const getAuthConnectorSpy = vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
       provider: { getEmail: () => 'test@walletconnect.com' } as unknown as W3mFrameProvider,
       id: 'w3mAuth',
       type: 'AUTH',
       chain: ConstantsUtil.CHAIN.EVM
     })
+
     const signMessageSpy = vi
       .spyOn(ConnectionController, 'signMessage')
       .mockResolvedValueOnce('0x123123123')
 
     await EnsController.registerName('newname.reown.id')
     expect(getAuthConnectorSpy).toHaveBeenCalled()
-    expect(signMessageSpy).toHaveBeenCalled()
+
+    expect(signMessageSpy).toHaveBeenCalledWith(message)
     expect(AccountController.state.profileName).toBe(`newname${ConstantsUtil.WC_NAME_SUFFIX}`)
     expect(EnsController.state.loading).toBe(false)
+    vi.useRealTimers()
   })
 
   it('should validate name correctly', () => {
