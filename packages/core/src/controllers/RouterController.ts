@@ -80,6 +80,7 @@ export interface RouterControllerState {
     | 'SwapPreview'
     | 'ConnectingMultiChain'
     | 'SwitchActiveChain'
+    | 'SmartSessionCreated'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector

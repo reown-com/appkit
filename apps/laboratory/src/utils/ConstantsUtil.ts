@@ -11,6 +11,7 @@ import {
   base,
   baseSepolia,
   gnosis,
+  unichainSepolia,
   type AppKitNetwork
 } from '@reown/appkit/networks'
 import { getLocalStorageItem } from './LocalStorage'
@@ -59,6 +60,7 @@ const EvmNetworks = [
   arbitrum,
   base,
   baseSepolia,
+  unichainSepolia,
   sepolia,
   gnosis
 ] as [AppKitNetwork, ...AppKitNetwork[]]

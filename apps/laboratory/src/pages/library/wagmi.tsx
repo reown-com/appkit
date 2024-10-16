@@ -21,9 +21,7 @@ const modal = createAppKit({
   networks: wagmiAdapter.caipNetworks,
   projectId: ConstantsUtil.ProjectId,
   features: {
-    analytics: true,
-    email: true,
-    socials: ['google', 'github', 'apple', 'discord']
+    analytics: true
   }
 })
 
