@@ -292,6 +292,11 @@ export class ModalValidator {
     await expect(connectButton).toContainText('Connecting...')
   }
 
+  async expectAccountButtonReady() {
+    const accountButton = this.page.getByTestId('account-button')
+    await expect(accountButton).toBeVisible({ timeout: MAX_WAIT })
+  }
+
   async expectAccountSwitched(oldAddress: string) {
     const address = this.page.getByTestId('w3m-address')
     await expect(address).not.toHaveText(oldAddress)
