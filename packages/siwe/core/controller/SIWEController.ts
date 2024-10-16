@@ -1,4 +1,4 @@
-import type { SIWEStatus } from '@reown/appkit-common'
+import { ConstantsUtil, type SIWEStatus } from '@reown/appkit-common'
 import { ChainController, OptionsController } from '@reown/appkit-core'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
@@ -146,7 +146,7 @@ export const SIWEController = {
 
   setStatus(status: SIWEControllerClientState['status']) {
     state.status = status
-    ChainController.setAccountProp('siweStatus', state.status, 'eip155')
+    ChainController.setAccountProp('siweStatus', state.status, ConstantsUtil.CHAIN.EVM)
   },
 
   setMessage(message: SIWEControllerClientState['message']) {
@@ -156,10 +156,14 @@ export const SIWEController = {
   setSession(session: SIWEControllerClientState['session']) {
     state.session = session
     this.setStatus(session?.address && session?.chainId ? 'success' : 'ready')
-    ChainController.setAccountProp('siweStatus', state.status, 'eip155')
+    ChainController.setAccountProp('siweStatus', state.status, ConstantsUtil.CHAIN.EVM)
   },
 
   setIsOneClickAuthenticating(isOneClickAuthenticating: boolean) {
-    ChainController.setAccountProp('isOneClickAuthenticating', isOneClickAuthenticating, 'eip155')
+    ChainController.setAccountProp(
+      'isOneClickAuthenticating',
+      isOneClickAuthenticating,
+      ConstantsUtil.CHAIN.EVM
+    )
   }
 }

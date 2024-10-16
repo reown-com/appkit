@@ -42,15 +42,15 @@ export class W3mConnectingWcView extends LitElement {
       ConstantsUtil.TEN_SEC_MS
     ) as unknown as NodeJS.Timeout
     this.unsubscribe.push(
-      AccountController.subscribe(val => {
-        if (val.siweStatus === 'authenticating') {
+      AccountController.subscribeKey('siweStatus', val => {
+        if (val === 'authenticating') {
           SnackController.showLoading('Authenticating', 8000)
         }
 
-        if (val.siweStatus === 'success') {
+        if (val === 'success') {
           SnackController.hide()
         }
-        if (val.siweStatus === 'ready') {
+        if (val === 'ready') {
           SnackController.hide()
         }
       }),
@@ -95,21 +95,12 @@ export class W3mConnectingWcView extends LitElement {
           OptionsController.state.hasMultipleAddresses
         ) {
           RouterController.push('SelectAddresses')
-        } else if (this.isSiweEnabled) {
-          const { SIWEController } = await import('@reown/appkit-siwe')
-          const { status: siweStatus } = SIWEController.state
-          if (siweStatus === 'success') {
-            SnackController.hide()
-          } else if (siweStatus === 'ready') {
-            SnackController.hide()
-          } else {
-            RouterController.push('ConnectingSiwe')
-          }
-        } else {
+        } else if (!this.isSiweEnabled) {
           ModalController.close()
         }
       }
     } catch (error) {
+      console.log('>>> initializeConnection - error', error)
       const errorMessage = (error as BaseError)?.message
       EventsController.sendEvent({
         type: 'track',

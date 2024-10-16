@@ -390,6 +390,10 @@ export class WagmiAdapter implements ChainAdapter {
           SIWEController.setIsOneClickAuthenticating(false)
         }
 
+        /**
+         * @description This is necessary to bypass the connection state in Wagmi when we have 1CA feature enabled. Otherwise, when we authenticate user, AppKit will try to re-trigger the connectWalletConnect function.
+         */
+        this.wagmiConfig.state.current = ''
         await connect(this.wagmiConfig, { connector, chainId })
         const { SIWEController } = await import('@reown/appkit-siwe')
         if (supportsOneClickAuth && address && chainId && isSuccessfulOneClickAuth) {

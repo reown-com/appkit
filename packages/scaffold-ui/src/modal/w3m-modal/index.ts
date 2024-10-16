@@ -55,6 +55,9 @@ export class W3mModal extends LitElement {
         ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
         ModalController.subscribeKey('shake', val => (this.shake = val)),
         AccountController.subscribeKey('isOneClickAuthenticating', val => {
+          if (this.isOneClickAuthenticating && !val) {
+            ModalController.close()
+          }
           this.isOneClickAuthenticating = val
         }),
         AccountController.subscribeKey('siweStatus', val => this.onSiweStatusChange(val), 'eip155'),
@@ -259,7 +262,11 @@ export class W3mModal extends LitElement {
     const isEIP155Namespace = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
     const authenticated = AccountController.state.siweStatus === 'success'
 
-    if (!authenticated && isEIP155Namespace && !this.isOneClickAuthenticating) {
+    if (this.isOneClickAuthenticating) {
+      return
+    }
+
+    if (!authenticated && isEIP155Namespace) {
       ModalController.open({
         view: 'ConnectingSiwe'
       })
