@@ -1,5 +1,21 @@
 # @reown/appkit-cdn
 
+## 1.1.4
+
+### Patch Changes
+
+- [#3082](https://github.com/reown-com/appkit/pull/3082) [`bbc48bc`](https://github.com/reown-com/appkit/commit/bbc48bcf8cfe2eca801c9a6619c7c9b437df4614) Thanks [@tomiir](https://github.com/tomiir)! - Adds wui-permission-contract-call to experimental package. Adds w3m-smart-session-created-view to experimental package
+
+- [#3086](https://github.com/reown-com/appkit/pull/3086) [`d27bd6d`](https://github.com/reown-com/appkit/commit/d27bd6da9a6e4942fc4d2a211f3a0dde6fe73655) Thanks [@magiziz](https://github.com/magiziz)! - Fixes an issue where ethers and ethers5 adapters were causing infinite network requests
+
+- Updated dependencies [[`bbc48bc`](https://github.com/reown-com/appkit/commit/bbc48bcf8cfe2eca801c9a6619c7c9b437df4614), [`d27bd6d`](https://github.com/reown-com/appkit/commit/d27bd6da9a6e4942fc4d2a211f3a0dde6fe73655)]:
+  - @reown/appkit-adapter-ethers@1.1.4
+  - @reown/appkit-adapter-ethers5@1.1.4
+  - @reown/appkit-adapter-solana@1.1.4
+  - @reown/appkit-adapter-wagmi@1.1.4
+  - @reown/appkit@1.1.4
+  - @reown/appkit-polyfills@1.1.4
+
 ## 1.1.3
 
 ### Patch Changes
