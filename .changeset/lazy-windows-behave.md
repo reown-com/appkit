@@ -1,11 +1,9 @@
 ---
-'@apps/laboratory': patch
-'@reown/appkit-wallet': patch
-'@reown/appkit-ui': patch
+'@reown/appkit-adapter-ethers5': patch
+'@reown/appkit-adapter-ethers': patch
 '@apps/demo': patch
 '@apps/gallery': patch
-'@reown/appkit-adapter-ethers': patch
-'@reown/appkit-adapter-ethers5': patch
+'@apps/laboratory': patch
 '@reown/appkit-adapter-polkadot': patch
 '@reown/appkit-adapter-solana': patch
 '@reown/appkit-adapter-wagmi': patch
@@ -18,6 +16,8 @@
 '@reown/appkit-polyfills': patch
 '@reown/appkit-scaffold-ui': patch
 '@reown/appkit-siwe': patch
+'@reown/appkit-ui': patch
+'@reown/appkit-wallet': patch
 ---
 
-Added maximum timeouts for frame requests
+Fixes an issue where ethers and ethers5 adapters were causing infinite network requests
