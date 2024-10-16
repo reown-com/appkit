@@ -6,7 +6,7 @@ import type {
   Provider,
   SocialProvider
 } from '../utils/TypeUtil.js'
-import type { CaipAddress, ChainNamespace } from '@reown/appkit-common'
+import type { CaipAddress, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 import type { Balance } from '@reown/appkit-common'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { SnackController } from './SnackController.js'
@@ -40,6 +40,7 @@ export interface AccountControllerState {
   provider?: UniversalProvider | Provider | CombinedProvider
   status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
   siweStatus?: 'uninitialized' | 'ready' | 'loading' | 'success' | 'rejected' | 'error'
+  tokenFetchFailureChainIds?: Set<CaipNetworkId>
 }
 
 // -- State --------------------------------------------- //
@@ -48,7 +49,8 @@ const state = proxy<AccountControllerState>({
   tokenBalance: [],
   smartAccountDeployed: false,
   addressLabels: new Map(),
-  allAccounts: []
+  allAccounts: [],
+  tokenFetchFailureChainIds: new Set()
 })
 
 // -- Controller ---------------------------------------- //
@@ -227,6 +229,13 @@ export const AccountController = {
     const caipAddress = ChainController.state.activeCaipAddress
     const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
 
+    const hasFailedFetch =
+      chainId && state.tokenFetchFailureChainIds && state.tokenFetchFailureChainIds.has(chainId)
+
+    if (hasFailedFetch) {
+      return
+    }
+
     try {
       if (address && chainId && chain) {
         const response = await BlockchainApiController.getBalance(address, chainId)
@@ -239,7 +248,10 @@ export const AccountController = {
         SwapController.setBalances(SwapApiUtil.mapBalancesToSwapTokens(response.balances))
       }
     } catch (error) {
-      SnackController.showError('Failed to fetch token balance')
+      if (chainId && state.tokenFetchFailureChainIds) {
+        state.tokenFetchFailureChainIds.add(chainId)
+      }
+      SnackController.showError('Token Balance Unavailable')
     }
   },
 
