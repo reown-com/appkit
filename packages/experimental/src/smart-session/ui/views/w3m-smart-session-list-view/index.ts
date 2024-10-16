@@ -69,6 +69,10 @@ export class W3mSmartSessionListView extends LitElement {
 
     const sessions = sessionsByTab[this.currentTab] || []
 
+    if (!sessions.length) {
+      return this.templateNoSessions()
+    }
+
     return html`${this.groupedSessionsTemplate(sessions)}`
   }
 
@@ -154,17 +158,21 @@ export class W3mSmartSessionListView extends LitElement {
     })
   }
 
+  private templateNoSessions() {
+    const type = SMART_SESSION_TABS[this.currentTab]?.label || ''
+
+    return html`<wui-flex
+      alignItems="center"
+      justifyContent="center"
+      .padding=${['l', 'l', 'l', 'l'] as const}
+    >
+      <wui-text variant="title-400" color="fg-200">No ${type.toLowerCase()} sessions</wui-text>
+    </wui-flex>`
+  }
+
   private templateSessions(sessions: SmartSession[]) {
     return sessions.map(session => {
       const { project } = session
-
-      function getVariant(val: SmartSession) {
-        if (session.revokedAt) {
-          return 'error'
-        }
-
-        return val.expiry < Date.now() ? 'shade' : 'success'
-      }
 
       return html` <wui-flex
         class="session-container"
@@ -196,7 +204,7 @@ export class W3mSmartSessionListView extends LitElement {
               ${project.url ? html`<wui-link>${project?.url}</wui-link>` : ''}
             </wui-flex>
           </wui-flex>
-          <wui-tag variant=${getVariant(session)}
+          <wui-tag variant=${this.getVariant(session)}
             >${SMART_SESSION_TABS[this.currentTab]?.label}</wui-tag
           >
         </wui-flex>
@@ -219,6 +227,14 @@ export class W3mSmartSessionListView extends LitElement {
           : ''}
       </wui-flex>`
     })
+  }
+
+  private getVariant(session: SmartSession) {
+    if (session.revokedAt) {
+      return 'error'
+    }
+
+    return session.expiry < Date.now() ? 'shade' : 'success'
   }
 
   private onSessionClick(session: SmartSession) {
