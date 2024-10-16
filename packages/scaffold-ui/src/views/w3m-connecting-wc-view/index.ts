@@ -100,7 +100,6 @@ export class W3mConnectingWcView extends LitElement {
         }
       }
     } catch (error) {
-      console.log('>>> initializeConnection - error', error)
       const errorMessage = (error as BaseError)?.message
       EventsController.sendEvent({
         type: 'track',
