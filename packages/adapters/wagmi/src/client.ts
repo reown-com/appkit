@@ -744,7 +744,7 @@ export class WagmiAdapter implements ChainAdapter {
               this.chainNamespace
             )
           }
-        } else if (status === 'reconnecting' || status === 'connecting') {
+        } else if (status === 'reconnecting') {
           this.appKit?.setLoading(true)
         }
       }
