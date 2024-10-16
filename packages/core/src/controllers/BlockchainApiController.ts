@@ -437,7 +437,18 @@ export const BlockchainApiController = {
       }
     })
   },
-
+  revokeSmartSession(address: `0x${string}`, pci: string, signature: string) {
+    return state.api.post({
+      path: `/v1/sessions/${address}/revoke`,
+      params: {
+        projectId: OptionsController.state.projectId
+      },
+      body: {
+        pci,
+        signature
+      }
+    })
+  },
   setClientId(clientId: string | null) {
     state.clientId = clientId
     state.api = new FetchUtil({ baseUrl, clientId })

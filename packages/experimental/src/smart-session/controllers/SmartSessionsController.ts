@@ -48,5 +48,12 @@ export const SmartSessionsController = {
 
       return []
     }
+  },
+  async revokeSmartSession(address: `0x${string}`, pci: string, signature: string) {
+    try {
+      await BlockchainApiController.revokeSmartSession(address, pci, signature)
+    } catch (e) {
+      SnackController.showError('Error revoking smart session')
+    }
   }
 }
