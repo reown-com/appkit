@@ -26,7 +26,8 @@ import {
   OptionsController,
   AssetUtil,
   ApiController,
-  AlertController
+  AlertController,
+  StorageUtil
 } from '@reown/appkit-core'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
 import {
@@ -619,6 +620,7 @@ export class AppKit {
         this.setLoading(true)
         await authConnector.provider.connectSocial(resultUri)
         await ConnectionController.connectExternal(authConnector, authConnector.chain)
+        StorageUtil.setConnectedSocialProvider(socialProviderToConnect)
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.SOCIAL_PROVIDER)
         EventsController.sendEvent({
           type: 'track',
