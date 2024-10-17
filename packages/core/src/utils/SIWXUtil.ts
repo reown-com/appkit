@@ -1,18 +1,25 @@
+/**
+ * @experimental - This is an experimental feature and it is not production ready
+ */
 export interface SWIXConfig {
   createMessage: (chainId: string) => Promise<SIWXMessage>
-
   addSession: (session: SIWXSession) => Promise<void>
   revokeSession: (chainId: string, address: string) => Promise<void>
-
   setSessions: (sessions: SIWXSession[]) => Promise<void>
   getSessions: (chainId: string) => Promise<SIWXSession[]>
 }
 
+/**
+ * @experimental - This is an experimental feature and it is not production ready
+ */
 export interface SIWXSession {
   message: SIWXMessage
-  singature: Uint8Array
+  signature: string
 }
 
+/**
+ * @experimental - This is an experimental feature and it is not production ready
+ */
 export interface SIWXMessage {
   chainId: string
   domain: string
