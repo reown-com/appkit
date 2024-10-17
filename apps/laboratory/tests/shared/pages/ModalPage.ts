@@ -486,7 +486,6 @@ export class ModalPage {
         const lastTab = pages[pages.length - 1]
 
         if (lastTab) {
-          await lastTab.waitForLoadState('load')
           url = lastTab.url()
           break
         }
