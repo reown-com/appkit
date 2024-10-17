@@ -494,6 +494,26 @@ export class WagmiAdapter implements ChainAdapter {
 
         return provider.request({ method: 'wallet_grantPermissions', params })
       },
+      revokePermissions: async session => {
+        if (!this.wagmiConfig) {
+          throw new Error('connectionControllerClient:revokePermissions - wagmiConfig is undefined')
+        }
+
+        const connections = getConnections(this.wagmiConfig)
+        const connection = connections[0]
+
+        if (!connection?.connector) {
+          throw new Error('connectionControllerClient:revokePermissions - connector is undefined')
+        }
+
+        const provider = (await connection.connector.getProvider()) as UniversalProvider
+
+        if (!provider) {
+          throw new Error('connectionControllerClient:revokePermissions - provider is undefined')
+        }
+
+        return provider.request({ method: 'wallet_revokePermissions', params: [session] })
+      },
 
       sendTransaction: async (data: SendTransactionArgs) => {
         if (data.chainNamespace && data.chainNamespace !== 'eip155') {

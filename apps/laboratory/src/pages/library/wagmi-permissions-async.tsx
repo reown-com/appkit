@@ -12,7 +12,12 @@ import { LocalEcdsaKeyProvider } from '../../context/LocalEcdsaKeyContext'
 
 const queryClient = new QueryClient()
 
-const networks = [baseSepolia, sepolia] as [AppKitNetwork, ...AppKitNetwork[]]
+const customBaseSepolia = {
+  ...baseSepolia,
+  rpcUrl: 'https://maksy.ngrok.dev'
+}
+
+const networks = [customBaseSepolia, sepolia] as [AppKitNetwork, ...AppKitNetwork[]]
 
 const wagmiAdapter = new WagmiAdapter({
   ssr: true,

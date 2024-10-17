@@ -6,7 +6,7 @@ export const solanaDevnet = defineChain({
   network: 'solana-devnet',
   nativeCurrency: { name: 'Solana', symbol: 'SOL', decimals: 9 },
   rpcUrls: {
-    default: { http: ['https://rpc.walletconnect.org/v1'] }
+    default: { http: ['https://maksy.ngrok.dev/v1'] }
   },
   blockExplorers: { default: { name: 'Solscan', url: 'https://solscan.io' } },
   testnet: true,

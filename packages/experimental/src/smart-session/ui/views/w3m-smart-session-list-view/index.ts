@@ -223,9 +223,11 @@ export class W3mSmartSessionListView extends LitElement {
                     .expiry=${session.expiry / 1000}
                     .functions=${data.functions}
                   ></wui-permission-contract-call>
-                  <wui-button variant="inverse" @click=${this.revokePermission.bind(this, session)}
-                    >Revoke</wui-button
-                  >
+                  ${this.currentTab === 0
+                    ? html`<wui-button @click=${this.revokePermission.bind(this, session)}
+                        >Revoke</wui-button
+                      >`
+                    : ''}
                 </wui-flex>`
               })}
             </wui-flex>`
@@ -247,7 +249,7 @@ export class W3mSmartSessionListView extends LitElement {
   }
 
   private revokePermission(session: SmartSession) {
-    console.log('>> Revoke permission: ', session)
+    SmartSessionsController.revokeSmartSession(session)
   }
 
   private onTabChange(index: number) {

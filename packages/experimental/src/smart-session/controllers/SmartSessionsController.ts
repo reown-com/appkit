@@ -1,7 +1,19 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
 import type { SmartSession } from '../utils/TypeUtils.js'
-import { AccountController, BlockchainApiController, SnackController } from '@reown/appkit-core'
+import {
+  AccountController,
+  BlockchainApiController,
+  ChainController,
+  ConnectionController,
+  OptionsController,
+  RouterController,
+  SnackController
+} from '@reown/appkit-core'
+import { extractChainAndAddress } from '../helper/index.js'
+import { ERROR_MESSAGES } from '../schema/index.js'
+import { ConstantsUtil } from '@reown/appkit-common'
+import { CosignerService } from '../utils/CosignerService.js'
 
 // -- Types --------------------------------------------- //
 export type SmartSessionsControllerState = {
@@ -49,9 +61,38 @@ export const SmartSessionsController = {
       return []
     }
   },
-  async revokeSmartSession(address: `0x${string}`, pci: string, signature: string) {
+  async revokeSmartSession(session: SmartSession) {
     try {
-      await BlockchainApiController.revokeSmartSession(address, pci, signature)
+      const { activeCaipAddress } = ChainController.state
+
+      // Ensure the namespace is supported and extract address
+      const chainAndAddress = extractChainAndAddress(activeCaipAddress)
+      if (!activeCaipAddress || !chainAndAddress) {
+        throw new Error(ERROR_MESSAGES.INVALID_ADDRESS)
+      }
+      // Fetch the ConnectionController client
+      const connectionControllerClient = ConnectionController._getClient(ConstantsUtil.CHAIN.EVM)
+
+      // Retrieve state values
+      const { projectId } = OptionsController.state
+
+      // Instantiate CosignerService and process permissions
+      const cosignerService = new CosignerService(projectId)
+
+      RouterController.pushTransactionStack({
+        view: 'SmartSessionList',
+        goBack: false
+      })
+
+      const signature = await connectionControllerClient.revokePermissions({
+        pci: session.pci,
+        permissions: [...session.permissions.map(p => JSON.parse(JSON.stringify(p)))],
+        expiry: session.expiry,
+        address: activeCaipAddress as `0x${string}`
+      })
+
+      // Activate the permissions using CosignerService
+      await cosignerService.revokePermissions(activeCaipAddress, session.pci, signature)
     } catch (e) {
       SnackController.showError('Error revoking smart session')
     }

@@ -7,6 +7,7 @@ import {
 import { ProviderUtil } from '@reown/appkit/store'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type {
+  SmartSession,
   SmartSessionGrantPermissionsRequest,
   SmartSessionGrantPermissionsResponse
 } from './utils/TypeUtils.js'
@@ -149,4 +150,43 @@ export function isSmartSessionSupported(): boolean {
   const supportedMethods = evmNamespace?.methods || []
 
   return supportedMethods.includes(ERC7715_METHOD)
+}
+
+/**
+ * 1. Validate the request using the SmartSessionRevokePermissionsRequestSchema
+ * 2. check connected wallet supports `wallet_revokePermissions` method
+ * 3. check connected wallet supports permissions capabilities
+ *  3.1. if supported then validate request against the supported permissions capabilities of the connected wallet
+ *    3.2. if validation fails throw error
+ * 4. Add permission using CosignerService
+ * 5. Update request signer with the cosigner key
+ * 6. Call `wallet_revokePermissions` method
+ * 7. Validate and type guard the response
+ * 8. Activate the permissions using CosignerService
+ * 9. Return the permissions granted and the context
+ * @param request SmartSessionRevokePermissionsRequest
+ * @returns success boolean
+ *
+ */
+export async function revokePermissions(session: SmartSession): Promise<void> {
+  const { activeCaipAddress } = ChainController.state
+
+  // Ensure the namespace is supported and extract address
+  const chainAndAddress = extractChainAndAddress(activeCaipAddress)
+  if (!activeCaipAddress || !chainAndAddress) {
+    throw new Error(ERROR_MESSAGES.INVALID_ADDRESS)
+  }
+  // Fetch the ConnectionController client
+  const connectionControllerClient = ConnectionController._getClient(CommonConstantsUtil.CHAIN.EVM)
+
+  // Retrieve state values
+  const { projectId } = OptionsController.state
+
+  // Instantiate CosignerService and process permissions
+  const cosignerService = new CosignerService(projectId)
+
+  const signature = await connectionControllerClient.revokePermissions(session)
+
+  // Activate the permissions using CosignerService
+  await cosignerService.revokePermissions(activeCaipAddress, session.pci, signature)
 }
