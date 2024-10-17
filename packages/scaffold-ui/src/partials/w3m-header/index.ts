@@ -169,8 +169,10 @@ export class W3mHeader extends LitElement {
   }
 
   private rightHeaderTemplate() {
-    if (this.view !== 'Account') {
-      this.closeButtonTemplate()
+    const isSmartSessionsEnabled = OptionsController?.state?.features?.smartSessions
+
+    if (RouterController.state.view !== 'Account' || !isSmartSessionsEnabled) {
+      return this.closeButtonTemplate()
     }
 
     return html`<wui-flex>

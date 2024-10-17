@@ -152,6 +152,7 @@ export const OptionsController = {
       if (!state.features) {
         state.features = ConstantsUtil.DEFAULT_FEATURES
       }
+
       if (key in state.features) {
         ;(state.features as Record<keyof Features, unknown>)[key as keyof Features] = value
       }
