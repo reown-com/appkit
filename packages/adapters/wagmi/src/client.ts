@@ -751,7 +751,7 @@ export class WagmiAdapter implements ChainAdapter {
     }
   }
 
-  private async syncNetwork(address?: Hex, chainId?: number, isConnected?: boolean) {
+  private syncNetwork(address?: Hex, chainId?: number, isConnected?: boolean) {
     const caipNetwork = this.caipNetworks.find((c: CaipNetwork) => c.id === chainId)
 
     if (caipNetwork && chainId) {
@@ -766,8 +766,6 @@ export class WagmiAdapter implements ChainAdapter {
         } else {
           this.appKit?.setAddressExplorerUrl(undefined, this.chainNamespace)
         }
-
-        await this.syncBalance(address, chainId)
       }
     }
   }
