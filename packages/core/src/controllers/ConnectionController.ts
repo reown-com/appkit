@@ -265,6 +265,12 @@ export const ConnectionController = {
       return
     }
 
+    if (OptionsController.state.isSiweEnabled) {
+      console.warn('SIWE is enabled skipping experimental SIWX initialization')
+
+      return
+    }
+
     const activeCaipNetwork = ChainController.getActiveCaipNetwork()
     const client = this._getClient(activeCaipNetwork?.chainNamespace)
 
