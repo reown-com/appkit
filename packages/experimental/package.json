@@ -42,7 +42,8 @@
     "@reown/appkit-ui": "workspace:*",
     "axios": "1.7.2",
     "zod": "3.22.4",
-    "lit": "3.1.0"
+    "lit": "3.1.0",
+    "valtio": "1.11.2"
   },
   "devDependencies": {
     "@types/axios-mock-adapter": "1.10.0",

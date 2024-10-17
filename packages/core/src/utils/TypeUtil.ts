@@ -968,6 +968,11 @@ export type Features = {
    * @type {boolean}
    */
   allWallets?: boolean
+  /**
+   * @description Enable or disable the Smart Sessions feature. Disabled by default.
+   * @type {boolean}
+   */
+  smartSessions?: boolean
 }
 
 export type FeaturesKeys = keyof Features

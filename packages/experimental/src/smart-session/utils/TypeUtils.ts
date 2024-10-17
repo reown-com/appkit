@@ -132,3 +132,25 @@ export type ActivatePermissionsRequest = {
   pci: string
   context: `0x${string}`
 } & AddPermissionRequest
+
+export type Policy = {
+  id: string
+}
+
+export type SmartSessionStatus = 'active' | 'expired' | 'revoked'
+
+export type SmartSession = {
+  project: {
+    id: string
+    name: string
+    url?: string
+    iconUrl?: string
+  }
+  pci: string
+  expiry: number
+  createdAt: number
+  permissions: Permission[]
+  policies: Policy[]
+  context: string
+  revokedAt?: number
+}

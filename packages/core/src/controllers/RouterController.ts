@@ -81,6 +81,7 @@ export interface RouterControllerState {
     | 'ConnectingMultiChain'
     | 'SwitchActiveChain'
     | 'SmartSessionCreated'
+    | 'SmartSessionList'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
