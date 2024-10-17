@@ -87,7 +87,7 @@ export const SmartSessionsController = {
       const signature = await connectionControllerClient.revokePermissions({
         pci: session.pci,
         permissions: [...session.permissions.map(p => JSON.parse(JSON.stringify(p)))],
-        expiry: session.expiry,
+        expiry: Math.floor(session.expiry / 1000),
         address: activeCaipAddress as `0x${string}`
       })
 
