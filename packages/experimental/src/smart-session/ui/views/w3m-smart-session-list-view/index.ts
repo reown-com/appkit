@@ -225,9 +225,13 @@ export class W3mSmartSessionListView extends LitElement {
                     .functions=${data.functions}
                   ></wui-permission-contract-call>
                   ${this.currentTab === 0
-                    ? html`<wui-button @click=${this.revokePermission.bind(this, session)}
-                        >Revoke</wui-button
-                      >`
+                    ? html`<wui-button
+                        @click=${this.revokePermission.bind(this, session)}
+                        fullWidth
+                        variant="accent"
+                      >
+                        Revoke
+                      </wui-button>`
                     : ''}
                 </wui-flex>`
               })}
@@ -249,8 +253,9 @@ export class W3mSmartSessionListView extends LitElement {
     this.openSession = this.openSession === session.pci ? undefined : session.pci
   }
 
-  private revokePermission(session: SmartSession) {
-    SmartSessionsController.revokeSmartSession(session)
+  private async revokePermission(session: SmartSession) {
+    await SmartSessionsController.revokeSmartSession(session)
+    this.requestUpdate()
   }
 
   private onTabChange(index: number) {

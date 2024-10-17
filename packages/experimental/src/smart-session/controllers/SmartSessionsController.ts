@@ -225,6 +225,7 @@ export const SmartSessionsController = {
 
       // Activate the permissions using CosignerService
       await cosignerService.revokePermissions(activeCaipAddress, session.pci, signature)
+      state.sessions = state.sessions.filter(s => s.pci !== session.pci)
     } catch (e) {
       SnackController.showError('Error revoking smart session')
     }

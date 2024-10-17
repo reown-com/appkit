@@ -25,3 +25,7 @@ export async function getSmartSessions() {
 export async function revokeSmartSession(session: SmartSession) {
   return SmartSessionsController.revokeSmartSession(session)
 }
+
+export function isSmartSessionSupported() {
+  return SmartSessionsController.isSmartSessionSupported()
+}
