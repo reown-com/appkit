@@ -5,6 +5,7 @@ import type {
   SIWECreateMessageArgs,
   SIWEMessageArgs,
   SIWESession,
+  SIWESignInArgs,
   SIWEVerifyMessageArgs
 } from '../core/utils/TypeUtils.js'
 
@@ -84,7 +85,7 @@ export class AppKitSIWEClient {
     return session
   }
 
-  async signIn(): Promise<SIWESession> {
+  async signIn(params?: SIWESignInArgs): Promise<SIWESession> {
     if (!SIWEController.state._client) {
       throw new Error('SIWE client needs to be initialized before calling signIn')
     }
@@ -147,7 +148,12 @@ export class AppKitSIWEClient {
     const clientId = ConnectionController.state.wcClientId
     try {
       const signature = await ConnectionController.signMessage(message)
-      const isValid = await this.methods.verifyMessage({ message, signature, clientId })
+      const isValid = await this.methods.verifyMessage({
+        message,
+        signature,
+        clientId,
+        walletName: params?.walletName
+      })
       if (!isValid) {
         throw new Error('Error verifying SIWE signature')
       }

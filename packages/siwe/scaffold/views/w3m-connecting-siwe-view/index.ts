@@ -89,8 +89,11 @@ export class W3mConnectingSiweView extends LitElement {
       }
     })
     try {
+      const walletName = AccountController.state.connectedWalletInfo?.name
       SIWEController.setStatus('loading')
-      const session = await SIWEController.signIn()
+      const session = await SIWEController.signIn({
+        walletName
+      })
       SIWEController.setStatus('success')
       EventsController.sendEvent({
         event: 'SIWE_AUTH_SUCCESS',

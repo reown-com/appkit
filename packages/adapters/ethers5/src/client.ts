@@ -1,5 +1,8 @@
-import type { AppKitOptions, AppKitOptionsWithCaipNetworks } from '@reown/appkit'
+import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
+import type { AppKit, AppKitOptions, AppKitOptionsWithCaipNetworks } from '@reown/appkit'
+import { WcConstantsUtil } from '@reown/appkit'
 import {
+  ConstantsUtil as CommonConstantsUtil,
   SafeLocalStorage,
   SafeLocalStorageKeys,
   type AdapterType,
@@ -8,29 +11,20 @@ import {
   type CaipNetworkId,
   type ChainNamespace
 } from '@reown/appkit-common'
+import type {
+  ConnectionControllerClient,
+  NetworkControllerClient,
+  PublicStateControllerState
+} from '@reown/appkit-core'
 import {
   AccountController,
-  ChainController,
-  CoreHelperUtil,
   AlertController,
+  ChainController,
+  ConstantsUtil as CoreConstantsUtil,
+  CoreHelperUtil,
   type CombinedProvider,
   type Connector
 } from '@reown/appkit-core'
-import {
-  EthersHelpersUtil,
-  type Provider,
-  type ProviderType,
-  type Address
-} from '@reown/appkit-utils/ethers'
-import type { AppKit } from '@reown/appkit'
-import {
-  W3mFrameHelpers,
-  W3mFrameProvider,
-  W3mFrameRpcConstants,
-  type W3mFrameTypes
-} from '@reown/appkit-wallet'
-import { ConstantsUtil as CoreConstantsUtil } from '@reown/appkit-core'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   CaipNetworksUtil,
   ConstantsUtil,
@@ -38,15 +32,23 @@ import {
   HelpersUtil,
   PresetsUtil
 } from '@reown/appkit-utils'
-import UniversalProvider from '@walletconnect/universal-provider'
-import type { ConnectionControllerClient, NetworkControllerClient } from '@reown/appkit-core'
-import { WcConstantsUtil } from '@reown/appkit'
-import { Ethers5Methods } from './utils/Ethers5Methods.js'
-import { ethers } from 'ethers'
-import type { PublicStateControllerState } from '@reown/appkit-core'
-import { ProviderUtil, type ProviderIdType } from '@reown/appkit/store'
-import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
+import {
+  EthersHelpersUtil,
+  type Address,
+  type Provider,
+  type ProviderType
+} from '@reown/appkit-utils/ethers'
+import {
+  W3mFrameHelpers,
+  W3mFrameProvider,
+  W3mFrameRpcConstants,
+  type W3mFrameTypes
+} from '@reown/appkit-wallet'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
+import { ProviderUtil, type ProviderIdType } from '@reown/appkit/store'
+import UniversalProvider from '@walletconnect/universal-provider'
+import { ethers } from 'ethers'
+import { Ethers5Methods } from './utils/Ethers5Methods.js'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions {
@@ -101,8 +103,6 @@ export class Ethers5Adapter {
   public networkControllerClient?: NetworkControllerClient
 
   public connectionControllerClient?: ConnectionControllerClient
-
-  public siweControllerClient = this.options?.siweConfig
 
   public tokens = HelpersUtil.getCaipTokens(this.options?.tokens)
 
@@ -329,9 +329,11 @@ export class Ethers5Adapter {
         const providerId = ProviderUtil.state.providerIds['eip155']
 
         this.appKit?.setClientId(null)
-        if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
+        if (this.appKit?.getIsSiweEnabled()) {
           const { SIWEController } = await import('@reown/appkit-siwe')
-          await SIWEController.signOut()
+          if (SIWEController.state._client?.options.signOutOnAccountChange) {
+            await SIWEController.signOut()
+          }
         }
 
         const disconnectConfig = {

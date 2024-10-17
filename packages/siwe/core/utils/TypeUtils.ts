@@ -62,6 +62,11 @@ export interface SIWEVerifyMessageArgs {
   signature: string
   cacao?: Cacao
   clientId?: string | null
+  walletName?: string | null
+}
+
+export interface SIWESignInArgs {
+  walletName?: string
 }
 
 export interface SIWEClientMethods {

@@ -6,12 +6,13 @@ import type {
   SIWEClientMethods,
   SIWECreateMessageArgs,
   SIWESession,
+  SIWESignInArgs,
   SIWEVerifyMessageArgs
 } from '../utils/TypeUtils.js'
 
 // -- Types --------------------------------------------- //
 export interface SIWEControllerClient extends SIWEClientMethods {
-  signIn: () => Promise<SIWESession>
+  signIn: (params?: SIWESignInArgs) => Promise<SIWESession>
   options: {
     enabled: boolean
     nonceRefetchIntervalMs: number
@@ -106,9 +107,9 @@ export const SIWEController = {
     return messageParams
   },
 
-  async signIn() {
+  async signIn(params?: SIWESignInArgs) {
     const client = this._getClient()
-    const session = await client.signIn()
+    const session = await client.signIn(params)
     this.setSession(session)
 
     return session

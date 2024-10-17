@@ -85,7 +85,7 @@ export class UniversalAdapterClient {
   public reportErrors = true
 
   public constructor(options: AppKitOptionsWithCaipNetworks) {
-    const { siweConfig, metadata } = options
+    const { metadata } = options
 
     this.caipNetworks = options.networks
 
@@ -134,6 +134,11 @@ export class UniversalAdapterClient {
           onUri(uri)
         })
 
+        const clientId = await WalletConnectProvider.client?.core?.crypto?.getClientId()
+        if (clientId) {
+          this.appKit?.setClientId(clientId)
+        }
+
         if (
           ChainController.state.activeChain &&
           ChainController.state?.chains?.get(ChainController.state.activeChain)?.adapterType ===
@@ -143,29 +148,38 @@ export class UniversalAdapterClient {
           await adapter?.connectionControllerClient?.connectWalletConnect?.(onUri)
           this.setWalletConnectProvider()
         } else {
-          const siweParams = await siweConfig?.getMessageParams?.()
-          const isSiweEnabled = siweConfig?.options?.enabled
+          let chainId = this.appKit?.getCaipNetworkId<number>()
+          let address: string | undefined = undefined
+
+          const isSiweEnabled = this.appKit?.getIsSiweEnabled()
           const isProviderSupported = typeof WalletConnectProvider?.authenticate === 'function'
-          const isSiweParamsValid = siweParams && Object.keys(siweParams || {}).length > 0
+          const supportsOneClickAuth = isSiweEnabled && isProviderSupported
 
           if (
-            siweConfig &&
-            isSiweEnabled &&
-            siweParams &&
-            isProviderSupported &&
-            isSiweParamsValid &&
+            supportsOneClickAuth &&
             ChainController.state.activeChain === CommonConstantsUtil.CHAIN.EVM
           ) {
             const { SIWEController, getDidChainId, getDidAddress } = await import(
               '@reown/appkit-siwe'
             )
 
+            if (!SIWEController.state._client) {
+              return
+            }
+
+            const siweParams = await SIWEController?.getMessageParams?.()
+            const isSiweParamsValid = siweParams && Object.keys(siweParams || {}).length > 0
+
+            if (!isSiweParamsValid) {
+              return
+            }
+
             const chains = this.caipNetworks
               ?.filter(network => network.chainNamespace === CommonConstantsUtil.CHAIN.EVM)
               .map(chain => chain.caipNetworkId) as string[]
 
             const result = await WalletConnectProvider.authenticate({
-              nonce: await siweConfig?.getNonce?.(),
+              nonce: await SIWEController?.getNonce?.(),
               methods: [...OPTIONAL_METHODS],
               ...siweParams,
               chains
@@ -176,13 +190,17 @@ export class UniversalAdapterClient {
             if (signedCacao) {
               const { p, s } = signedCacao
               const cacaoChainId = getDidChainId(p.iss)
-              const address = getDidAddress(p.iss)
+              address = getDidAddress(p.iss)
               if (address && cacaoChainId) {
+                chainId = parseInt(cacaoChainId, 10)
+
                 SIWEController.setSession({
                   address,
                   chainId: parseInt(cacaoChainId, 10)
                 })
               }
+
+              SIWEController.setStatus('authenticating')
 
               try {
                 // Kicks off verifyMessage and populates external states
@@ -194,18 +212,30 @@ export class UniversalAdapterClient {
                 await SIWEController.verifyMessage({
                   message,
                   signature: s.s,
-                  cacao: signedCacao
+                  cacao: signedCacao,
+                  clientId,
+                  walletName: WalletConnectProvider.session?.peer.metadata.name
                 })
+
+                if (address && chainId) {
+                  await SIWEController.onSignIn?.({
+                    address,
+                    chainId
+                  })
+                }
+                SIWEController.setStatus('success')
               } catch (error) {
+                SIWEController.setIsOneClickAuthenticating(false)
                 // eslint-disable-next-line no-console
                 console.error('Error verifying message', error)
                 // eslint-disable-next-line no-console
                 await WalletConnectProvider.disconnect().catch(console.error)
                 // eslint-disable-next-line no-console
-                await SIWEController.signOut().catch(console.error)
+                await this.connectionControllerClient?.disconnect().catch(console.error)
                 throw error
               }
             }
+            SIWEController.setIsOneClickAuthenticating(false)
           } else {
             const optionalNamespaces = WcHelpersUtil.createNamespaces(this.caipNetworks)
             await WalletConnectProvider.connect({ optionalNamespaces })
@@ -217,9 +247,11 @@ export class UniversalAdapterClient {
       disconnect: async () => {
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
 
-        if (siweConfig?.options?.signOutOnDisconnect) {
+        if (this.appKit?.getIsSiweEnabled()) {
           const { SIWEController } = await import('@reown/appkit-siwe')
-          await SIWEController.signOut()
+          if (SIWEController.state._client?.options.signOutOnAccountChange) {
+            await SIWEController.signOut()
+          }
         }
 
         await this.walletConnectProvider?.disconnect()

@@ -1,43 +1,21 @@
-import {
-  connect,
-  disconnect,
-  signMessage,
-  getBalance,
-  getEnsAvatar as wagmiGetEnsAvatar,
-  getEnsName,
-  watchAccount,
-  watchConnectors,
-  estimateGas as wagmiEstimateGas,
-  writeContract as wagmiWriteContract,
-  getAccount,
-  getEnsAddress as wagmiGetEnsAddress,
-  reconnect,
-  switchChain,
-  waitForTransactionReceipt,
-  getConnections,
-  switchAccount,
-  injected,
-  createConfig,
-  getConnectors
-} from '@wagmi/core'
-import {
-  ChainController,
-  ConstantsUtil as CoreConstantsUtil,
-  StorageUtil
-} from '@reown/appkit-core'
-import type UniversalProvider from '@walletconnect/universal-provider'
-import type { ChainAdapter } from '@reown/appkit-core'
-import { prepareTransactionRequest, sendTransaction as wagmiSendTransaction } from '@wagmi/core'
-import type { Chain } from '@wagmi/core/chains'
-import { mainnet } from 'viem/chains'
+import type { AppKit, AppKitOptions, AppKitOptionsWithCaipNetworks } from '@reown/appkit'
 import type {
-  GetAccountReturnType,
-  GetEnsAddressReturnType,
-  Config,
-  CreateConnectorFn,
-  CreateConfigParameters
-} from '@wagmi/core'
+  AdapterType,
+  AppKitNetwork,
+  BaseNetwork,
+  CaipAddress,
+  CaipNetwork,
+  ChainNamespace
+} from '@reown/appkit-common'
+import {
+  ConstantsUtil as CommonConstantsUtil,
+  isReownName,
+  NetworkUtil,
+  SafeLocalStorage,
+  SafeLocalStorageKeys
+} from '@reown/appkit-common'
 import type {
+  ChainAdapter,
   ConnectionControllerClient,
   Connector,
   NetworkControllerClient,
@@ -45,41 +23,67 @@ import type {
   SendTransactionArgs,
   WriteContractArgs
 } from '@reown/appkit-core'
-import { formatUnits, parseUnits } from 'viem'
-import type { Hex, HttpTransport } from 'viem'
 import {
+  ChainController,
+  ConstantsUtil as CoreConstantsUtil,
+  StorageUtil
+} from '@reown/appkit-core'
+import {
+  CaipNetworksUtil,
   ConstantsUtil,
-  PresetsUtil,
-  HelpersUtil,
   ErrorUtil,
-  CaipNetworksUtil
+  HelpersUtil,
+  PresetsUtil
 } from '@reown/appkit-utils'
-import { isReownName, SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
+import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
+import { W3mFrameHelpers, W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { ProviderUtil, type ProviderIdType } from '@reown/appkit/store'
+import { coinbaseWallet } from '@wagmi/connectors'
+import type {
+  Config,
+  CreateConfigParameters,
+  CreateConnectorFn,
+  GetAccountReturnType,
+  GetEnsAddressReturnType
+} from '@wagmi/core'
+import {
+  connect,
+  createConfig,
+  disconnect,
+  getAccount,
+  getBalance,
+  getConnections,
+  getConnectors,
+  getEnsName,
+  injected,
+  prepareTransactionRequest,
+  reconnect,
+  signMessage,
+  switchAccount,
+  switchChain,
+  estimateGas as wagmiEstimateGas,
+  getEnsAddress as wagmiGetEnsAddress,
+  getEnsAvatar as wagmiGetEnsAvatar,
+  sendTransaction as wagmiSendTransaction,
+  writeContract as wagmiWriteContract,
+  waitForTransactionReceipt,
+  watchAccount,
+  watchConnectors
+} from '@wagmi/core'
+import type { Chain } from '@wagmi/core/chains'
+import type UniversalProvider from '@walletconnect/universal-provider'
+import type { Hex, HttpTransport } from 'viem'
+import { formatUnits, parseUnits } from 'viem'
+import { mainnet } from 'viem/chains'
+import { normalize } from 'viem/ens'
+import { authConnector } from './connectors/AuthConnector.js'
+import { walletConnect } from './connectors/UniversalConnector.js'
 import {
   getEmailCaipNetworks,
   getWalletConnectCaipNetworks,
   parseWalletCapabilities,
   requireCaipAddress
 } from './utils/helpers.js'
-import { W3mFrameHelpers, W3mFrameRpcConstants } from '@reown/appkit-wallet'
-import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
-import { NetworkUtil } from '@reown/appkit-common'
-import { normalize } from 'viem/ens'
-import type { AppKitOptions, AppKitOptionsWithCaipNetworks } from '@reown/appkit'
-import type {
-  CaipAddress,
-  BaseNetwork,
-  ChainNamespace,
-  AdapterType,
-  CaipNetwork,
-  AppKitNetwork
-} from '@reown/appkit-common'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import type { AppKit } from '@reown/appkit'
-import { walletConnect } from './connectors/UniversalConnector.js'
-import { coinbaseWallet } from '@wagmi/connectors'
-import { authConnector } from './connectors/AuthConnector.js'
-import { ProviderUtil, type ProviderIdType } from '@reown/appkit/store'
 
 // -- Types ---------------------------------------------------------------------
 export interface AdapterOptions<C extends Config>
@@ -140,8 +144,6 @@ export class WagmiAdapter implements ChainAdapter {
   public defaultCaipNetwork: CaipNetwork | undefined = undefined
 
   public tokens = HelpersUtil.getCaipTokens(this.options?.tokens)
-
-  public siweControllerClient = this.options?.siweConfig
 
   public adapterType: AdapterType = 'wagmi'
 
@@ -370,7 +372,8 @@ export class WagmiAdapter implements ChainAdapter {
                 message,
                 signature: s.s,
                 cacao: signedCacao,
-                clientId
+                clientId,
+                walletName: provider.session?.peer.metadata.name
               })
               isSuccessfulOneClickAuth = true
             } catch (error) {
@@ -395,8 +398,8 @@ export class WagmiAdapter implements ChainAdapter {
          */
         this.wagmiConfig.state.current = ''
         await connect(this.wagmiConfig, { connector, chainId })
-        const { SIWEController } = await import('@reown/appkit-siwe')
         if (supportsOneClickAuth && address && chainId && isSuccessfulOneClickAuth) {
+          const { SIWEController } = await import('@reown/appkit-siwe')
           SIWEController.setStatus('authenticating')
           await SIWEController.onSignIn?.({
             address,
@@ -442,9 +445,11 @@ export class WagmiAdapter implements ChainAdapter {
       },
       disconnect: async () => {
         await disconnect(this.wagmiConfig)
-        if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
+        if (this.appKit?.getIsSiweEnabled()) {
           const { SIWEController } = await import('@reown/appkit-siwe')
-          await SIWEController.signOut()
+          if (SIWEController.state._client?.options.signOutOnAccountChange) {
+            await SIWEController.signOut()
+          }
         }
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
