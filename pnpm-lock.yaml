@@ -60,13 +60,13 @@ importers:
         version: 5.3.3
       vite:
         specifier: 5.2.11
-        version: 5.2.11(@types/node@20.11.5)(terser@5.34.1)
+        version: 5.2.11(@types/node@20.11.5)(terser@5.35.0)
       vite-plugin-node-polyfills:
         specifier: 0.22.0
-        version: 0.22.0(rollup@4.24.0)(vite@5.2.11(@types/node@20.11.5)(terser@5.34.1))
+        version: 0.22.0(rollup@4.24.0)(vite@5.2.11(@types/node@20.11.5)(terser@5.35.0))
       vitest:
         specifier: 2.0.5
-        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1)
+        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0)
 
   apps/demo:
     dependencies:
@@ -337,7 +337,7 @@ importers:
     devDependencies:
       vite:
         specifier: 5.2.11
-        version: 5.2.11(@types/node@20.11.5)(terser@5.34.1)
+        version: 5.2.11(@types/node@20.11.5)(terser@5.35.0)
 
   examples/html-ethers5:
     dependencies:
@@ -353,7 +353,7 @@ importers:
     devDependencies:
       vite:
         specifier: 5.2.11
-        version: 5.2.11(@types/node@20.11.5)(terser@5.34.1)
+        version: 5.2.11(@types/node@20.11.5)(terser@5.35.0)
 
   examples/html-wagmi:
     dependencies:
@@ -378,13 +378,13 @@ importers:
     devDependencies:
       vite:
         specifier: 5.2.11
-        version: 5.2.11(@types/node@20.11.5)(terser@5.34.1)
+        version: 5.2.11(@types/node@20.11.5)(terser@5.35.0)
 
   examples/html-wagmi-cdn:
     devDependencies:
       vite:
         specifier: 5.2.11
-        version: 5.2.11(@types/node@20.11.5)(terser@5.34.1)
+        version: 5.2.11(@types/node@20.11.5)(terser@5.35.0)
 
   examples/next-ethers:
     dependencies:
@@ -617,7 +617,7 @@ importers:
         version: 4.2.1(vite@5.2.11(@types/node@20.11.5))
       vite:
         specifier: 5.2.11
-        version: 5.2.11(@types/node@20.11.5)(terser@5.34.1)
+        version: 5.2.11(@types/node@20.11.5)(terser@5.35.0)
 
   examples/react-ethers5:
     dependencies:
@@ -648,7 +648,7 @@ importers:
         version: 4.2.1(vite@5.2.11(@types/node@20.11.5))
       vite:
         specifier: 5.2.11
-        version: 5.2.11(@types/node@20.11.5)(terser@5.34.1)
+        version: 5.2.11(@types/node@20.11.5)(terser@5.35.0)
 
   examples/react-solana:
     dependencies:
@@ -675,7 +675,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vite:
         specifier: 5.2.11
-        version: 5.2.11(@types/node@20.11.5)(terser@5.34.1)
+        version: 5.2.11(@types/node@20.11.5)(terser@5.35.0)
     devDependencies:
       '@types/react':
         specifier: 18.2.62
@@ -709,7 +709,7 @@ importers:
         version: 2.21.26(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)
       vite:
         specifier: 5.2.11
-        version: 5.2.11(@types/node@20.11.5)(terser@5.34.1)
+        version: 5.2.11(@types/node@20.11.5)(terser@5.35.0)
       wagmi:
         specifier: 2.12.17
         version: 2.12.17(@tanstack/query-core@5.56.2)(@tanstack/react-query@5.24.8(react@18.2.0))(@types/react@18.2.62)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(rollup@4.24.0)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.21.26(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4)
@@ -741,10 +741,10 @@ importers:
     devDependencies:
       '@vitejs/plugin-vue':
         specifier: 5.0.2
-        version: 5.0.2(vite@5.2.11(@types/node@20.11.5)(terser@5.34.1))(vue@3.4.3(typescript@5.3.3))
+        version: 5.0.2(vite@5.2.11(@types/node@20.11.5)(terser@5.35.0))(vue@3.4.3(typescript@5.3.3))
       vite:
         specifier: 5.2.11
-        version: 5.2.11(@types/node@20.11.5)(terser@5.34.1)
+        version: 5.2.11(@types/node@20.11.5)(terser@5.35.0)
 
   examples/vue-solana:
     dependencies:
@@ -766,10 +766,10 @@ importers:
     devDependencies:
       '@vitejs/plugin-vue':
         specifier: 5.0.2
-        version: 5.0.2(vite@5.2.11(@types/node@20.11.5)(terser@5.34.1))(vue@3.4.3(typescript@5.3.3))
+        version: 5.0.2(vite@5.2.11(@types/node@20.11.5)(terser@5.35.0))(vue@3.4.3(typescript@5.3.3))
       vite:
         specifier: 5.2.11
-        version: 5.2.11(@types/node@20.11.5)(terser@5.34.1)
+        version: 5.2.11(@types/node@20.11.5)(terser@5.35.0)
 
   examples/vue-wagmi:
     dependencies:
@@ -791,10 +791,10 @@ importers:
     devDependencies:
       '@vitejs/plugin-vue':
         specifier: 5.0.2
-        version: 5.0.2(vite@5.2.11(@types/node@20.11.5)(terser@5.34.1))(vue@3.4.3(typescript@5.3.3))
+        version: 5.0.2(vite@5.2.11(@types/node@20.11.5)(terser@5.35.0))(vue@3.4.3(typescript@5.3.3))
       vite:
         specifier: 5.2.11
-        version: 5.2.11(@types/node@20.11.5)(terser@5.34.1)
+        version: 5.2.11(@types/node@20.11.5)(terser@5.35.0)
 
   packages/adapters/ethers:
     dependencies:
@@ -846,13 +846,13 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.0.5
-        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1))
+        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0))
       '@walletconnect/types':
         specifier: 2.17.0
         version: 2.17.0
       vitest:
         specifier: 2.0.5
-        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1)
+        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0)
 
   packages/adapters/ethers5:
     dependencies:
@@ -904,13 +904,13 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.0.5
-        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1))
+        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0))
       '@walletconnect/types':
         specifier: 2.17.0
         version: 2.17.0
       vitest:
         specifier: 2.0.5
-        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1)
+        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0)
 
   packages/adapters/polkadot:
     dependencies:
@@ -926,10 +926,10 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.0.5
-        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1))
+        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0))
       vitest:
         specifier: 2.0.5
-        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1)
+        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0)
 
   packages/adapters/solana:
     dependencies:
@@ -1012,7 +1012,7 @@ importers:
         version: 18.2.0
       '@vitest/coverage-v8':
         specifier: 2.0.5
-        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1))
+        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0))
       '@vue/runtime-core':
         specifier: 3.4.3
         version: 3.4.3
@@ -1024,7 +1024,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vitest:
         specifier: 2.0.5
-        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1)
+        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0)
       vue:
         specifier: 3.4.3
         version: 3.4.3(typescript@5.3.3)
@@ -1091,13 +1091,13 @@ importers:
         version: 18.2.0
       '@vitest/coverage-v8':
         specifier: 2.0.5
-        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1))
+        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0))
       '@walletconnect/types':
         specifier: 2.17.0
         version: 2.17.0
       vitest:
         specifier: 2.0.5
-        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1)
+        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0)
 
   packages/appkit:
     dependencies:
@@ -1149,7 +1149,7 @@ importers:
         version: 18.2.0
       '@vitest/coverage-v8':
         specifier: 2.0.5
-        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1))
+        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0))
       '@vue/runtime-core':
         specifier: 3.4.3
         version: 3.4.3
@@ -1161,7 +1161,7 @@ importers:
         version: 18.2.0(react@18.2.0)
       vitest:
         specifier: 2.0.5
-        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1)
+        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0)
       vue:
         specifier: 3.x
         version: 3.4.3(typescript@5.3.3)
@@ -1204,10 +1204,10 @@ importers:
         version: 1.95.3(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@vitest/coverage-v8':
         specifier: 2.0.5
-        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1))
+        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0))
       vitest:
         specifier: 2.0.5
-        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1)
+        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0)
 
   packages/cdn:
     dependencies:
@@ -1243,7 +1243,7 @@ importers:
         version: 2.21.26(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)
       vite:
         specifier: 5.2.11
-        version: 5.2.11(@types/node@20.11.5)(terser@5.34.1)
+        version: 5.2.11(@types/node@20.11.5)(terser@5.35.0)
       wagmi:
         specifier: 2.12.17
         version: 2.12.17(@tanstack/query-core@5.56.2)(@tanstack/react-query@5.56.2(react@18.2.0))(@types/react@18.2.62)(bufferutil@4.0.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.75.4(@babel/core@7.25.8)(@babel/preset-env@7.25.8(@babel/core@7.25.8))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.2.0)(typescript@5.3.3)(utf-8-validate@5.0.10))(react@18.2.0)(rollup@4.24.0)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.21.26(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4))(zod@3.22.4)
@@ -1253,7 +1253,7 @@ importers:
         version: 14.1.1
       vite-plugin-node-polyfills:
         specifier: 0.22.0
-        version: 0.22.0(rollup@4.24.0)(vite@5.2.11(@types/node@20.11.5)(terser@5.34.1))
+        version: 0.22.0(rollup@4.24.0)(vite@5.2.11(@types/node@20.11.5)(terser@5.35.0))
 
   packages/common:
     dependencies:
@@ -1269,10 +1269,10 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.0.5
-        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1))
+        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0))
       vitest:
         specifier: 2.0.5
-        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1)
+        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0)
 
   packages/core:
     dependencies:
@@ -1294,10 +1294,10 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.0.5
-        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1))
+        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0))
       vitest:
         specifier: 2.0.5
-        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1)
+        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0)
       vue:
         specifier: 3.x
         version: 3.4.3(typescript@5.3.3)
@@ -1334,13 +1334,13 @@ importers:
         version: 1.10.0(axios@1.7.2)
       '@vitest/coverage-v8':
         specifier: 2.0.5
-        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1))
+        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0))
       axios-mock-adapter:
         specifier: 2.0.0
         version: 2.0.0(axios@1.7.2)
       vitest:
         specifier: 2.0.5
-        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1)
+        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0)
 
   packages/polyfills:
     dependencies:
@@ -1378,7 +1378,7 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: '2'
-        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1))
+        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0))
 
   packages/siwe:
     dependencies:
@@ -1430,7 +1430,7 @@ importers:
         version: 1.5.5
       '@vitest/coverage-v8':
         specifier: 2.0.5
-        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1))
+        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0))
       eslint-plugin-lit:
         specifier: 1.11.0
         version: 1.11.0(eslint@8.57.0)
@@ -1439,7 +1439,7 @@ importers:
         version: 2.0.4(eslint@8.57.0)
       vitest:
         specifier: 2.0.5
-        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1)
+        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0)
 
   packages/wallet:
     dependencies:
@@ -1458,13 +1458,13 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.0.5
-        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1))
+        version: 2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0))
       jsdom:
         specifier: 24.1.0
         version: 24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       vitest:
         specifier: 2.0.5
-        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1)
+        version: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0)
 
   services/id-allocation-service:
     dependencies:
@@ -11593,8 +11593,8 @@ packages:
     resolution: {integrity: sha512-wK0Ri4fOGjv/XPy8SBHZChl8CM7uMc5VML7SqiQ0zG7+J5Vr+RMQDoHa2CNT6KHUnTGIXH34UDMkPzAUyapBZg==}
     engines: {node: '>=8'}
 
-  terser@5.34.1:
-    resolution: {integrity: sha512-FsJZ7iZLd/BXkz+4xrRTGJ26o/6VTjQytUk8b8OxkwcD2I+79VPJlz7qss1+zE7h8GNIScFqXcDyJ/KqBYZFVA==}
+  terser@5.35.0:
+    resolution: {integrity: sha512-TmYbQnzVfrx3RQsPoItoPplymixIAtp2R2xlpyVBYmFmvI34IzLhCLj8SimRb/kZXlq4t1gA+vbcTqLQ3+5Q5g==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -18428,7 +18428,7 @@ snapshots:
       fs-extra: 11.2.0
       magic-string: 0.30.12
       rollup: 3.29.5
-      vite: 5.2.11(@types/node@20.11.5)(terser@5.34.1)
+      vite: 5.2.11(@types/node@20.11.5)(terser@5.35.0)
     optionalDependencies:
       typescript: 5.3.3
     transitivePeerDependencies:
@@ -19577,13 +19577,13 @@ snapshots:
       '@babel/plugin-transform-react-jsx-source': 7.25.7(@babel/core@7.25.8)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 5.2.11(@types/node@20.11.5)(terser@5.34.1)
+      vite: 5.2.11(@types/node@20.11.5)(terser@5.35.0)
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-vue@5.0.2(vite@5.2.11(@types/node@20.11.5)(terser@5.34.1))(vue@3.4.3(typescript@5.3.3))':
+  '@vitejs/plugin-vue@5.0.2(vite@5.2.11(@types/node@20.11.5)(terser@5.35.0))(vue@3.4.3(typescript@5.3.3))':
     dependencies:
-      vite: 5.2.11(@types/node@20.11.5)(terser@5.34.1)
+      vite: 5.2.11(@types/node@20.11.5)(terser@5.35.0)
       vue: 3.4.3(typescript@5.3.3)
 
   '@vitest/coverage-v8@1.1.2(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0))':
@@ -19601,11 +19601,11 @@ snapshots:
       std-env: 3.7.0
       test-exclude: 6.0.0
       v8-to-istanbul: 9.3.0
-      vitest: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1)
+      vitest: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0)
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1))':
+  '@vitest/coverage-v8@2.0.5(vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -19619,7 +19619,7 @@ snapshots:
       std-env: 3.7.0
       test-exclude: 7.0.1
       tinyrainbow: 1.2.0
-      vitest: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1)
+      vitest: 2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -24297,7 +24297,7 @@ snapshots:
   metro-minify-terser@0.80.12:
     dependencies:
       flow-enums-runtime: 0.0.6
-      terser: 5.34.1
+      terser: 5.35.0
 
   metro-resolver@0.80.12:
     dependencies:
@@ -26463,7 +26463,7 @@ snapshots:
 
   term-size@2.2.1: {}
 
-  terser@5.34.1:
+  terser@5.35.0:
     dependencies:
       '@jridgewell/source-map': 0.3.6
       acorn: 8.13.0
@@ -27001,13 +27001,13 @@ snapshots:
       - utf-8-validate
       - zod
 
-  vite-node@2.0.5(@types/node@20.11.5)(terser@5.34.1):
+  vite-node@2.0.5(@types/node@20.11.5)(terser@5.35.0):
     dependencies:
       cac: 6.7.14
       debug: 4.3.7
       pathe: 1.1.2
       tinyrainbow: 1.2.0
-      vite: 5.2.11(@types/node@20.11.5)(terser@5.34.1)
+      vite: 5.2.11(@types/node@20.11.5)(terser@5.35.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -27018,15 +27018,15 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-node-polyfills@0.22.0(rollup@4.24.0)(vite@5.2.11(@types/node@20.11.5)(terser@5.34.1)):
+  vite-plugin-node-polyfills@0.22.0(rollup@4.24.0)(vite@5.2.11(@types/node@20.11.5)(terser@5.35.0)):
     dependencies:
       '@rollup/plugin-inject': 5.0.5(rollup@4.24.0)
       node-stdlib-browser: 1.2.1
-      vite: 5.2.11(@types/node@20.11.5)(terser@5.34.1)
+      vite: 5.2.11(@types/node@20.11.5)(terser@5.35.0)
     transitivePeerDependencies:
       - rollup
 
-  vite@5.2.11(@types/node@20.11.5)(terser@5.34.1):
+  vite@5.2.11(@types/node@20.11.5)(terser@5.35.0):
     dependencies:
       esbuild: 0.20.2
       postcss: 8.4.47
@@ -27034,9 +27034,9 @@ snapshots:
     optionalDependencies:
       '@types/node': 20.11.5
       fsevents: 2.3.3
-      terser: 5.34.1
+      terser: 5.35.0
 
-  vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.34.1):
+  vitest@2.0.5(@types/node@20.11.5)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(terser@5.35.0):
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@vitest/expect': 2.0.5
@@ -27054,8 +27054,8 @@ snapshots:
       tinybench: 2.9.0
       tinypool: 1.0.1
       tinyrainbow: 1.2.0
-      vite: 5.2.11(@types/node@20.11.5)(terser@5.34.1)
-      vite-node: 2.0.5(@types/node@20.11.5)(terser@5.34.1)
+      vite: 5.2.11(@types/node@20.11.5)(terser@5.35.0)
+      vite-node: 2.0.5(@types/node@20.11.5)(terser@5.35.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 20.11.5

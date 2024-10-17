@@ -55,7 +55,8 @@ const OPTIONAL_METHODS = [
   'wallet_sendCalls',
   'wallet_getCapabilities',
   // EIP-7715
-  'wallet_grantPermissions'
+  'wallet_grantPermissions',
+  'wallet_revokePermissions'
 ]
 
 // -- Client --------------------------------------------------------------------
@@ -288,6 +289,14 @@ export class UniversalAdapterClient {
         }
 
         return provider.request({ method: 'wallet_grantPermissions', params })
+      },
+      revokePermissions: async (session: object | readonly unknown[]) => {
+        const provider = await this.getWalletConnectProvider()
+        if (!provider) {
+          throw new Error('connectionControllerClient:grantPermissions - provider is undefined')
+        }
+
+        return provider.request({ method: 'wallet_revokePermissions', params: session })
       },
 
       sendTransaction: async () => await Promise.resolve('0x'),

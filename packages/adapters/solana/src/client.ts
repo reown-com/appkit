@@ -241,6 +241,8 @@ export class SolanaAdapter implements ChainAdapter {
 
       grantPermissions: async () => await Promise.resolve('0x'),
 
+      revokePermissions: async () => await Promise.resolve('0x'),
+
       sendTransaction: async params => {
         if (params.chainNamespace !== CommonConstantsUtil.CHAIN.SOLANA) {
           throw new Error('Chain namespace is not supported')

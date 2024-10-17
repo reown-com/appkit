@@ -40,6 +40,12 @@ export interface ConnectionControllerClient {
   getEnsAddress: (value: string) => Promise<false | string>
   getEnsAvatar: (value: string) => Promise<false | string>
   grantPermissions: (params: readonly unknown[] | object) => Promise<unknown>
+  revokePermissions: (params: {
+    pci: string
+    permissions: unknown[]
+    expiry: number
+    address: `0x${string}`
+  }) => Promise<`0x${string}`>
   getCapabilities: (params: string) => Promise<unknown>
 }
 

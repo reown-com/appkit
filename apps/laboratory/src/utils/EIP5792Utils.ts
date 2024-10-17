@@ -10,7 +10,8 @@ export const EIP_5792_RPC_METHODS = {
   WALLET_SEND_CALLS: 'wallet_sendCalls'
 }
 export const EIP_7715_RPC_METHODS = {
-  WALLET_GRANT_PERMISSIONS: 'wallet_grantPermissions'
+  WALLET_GRANT_PERMISSIONS: 'wallet_grantPermissions',
+  WALLET_REVOKE_PERMISSIONS: 'wallet_revokePermissions'
 }
 
 export const WALLET_CAPABILITIES = {

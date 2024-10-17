@@ -436,6 +436,15 @@ export class EthersAdapter {
 
         return await provider.request({ method: 'wallet_grantPermissions', params })
       },
+      revokePermissions: async params => {
+        const provider = ProviderUtil.getProvider<Provider>(CommonConstantsUtil.CHAIN.EVM)
+
+        if (!provider) {
+          throw new Error('Provider is undefined')
+        }
+
+        return await provider.request({ method: 'wallet_grantPermissions', params })
+      },
 
       sendTransaction: async data => {
         if (data.chainNamespace && data.chainNamespace !== 'eip155') {
