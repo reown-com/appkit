@@ -447,11 +447,6 @@ export class ModalPage {
     await tabWebApp.click()
   }
 
-  async expectCopiedText(text: string) {
-    const clipboardText = await this.page.evaluate(() => navigator.clipboard.readText())
-    expect(clipboardText).toBe(text)
-  }
-
   async clickCopyLink() {
     const copyLink = this.page.getByTestId('wui-link-copy')
     await expect(copyLink).toBeVisible()
@@ -470,7 +465,7 @@ export class ModalPage {
       }
     }
 
-    return await this.page.evaluate(() => navigator.clipboard.readText())
+    return this.page.evaluate(() => navigator.clipboard.readText())
   }
 
   async clickOpenWebApp() {
