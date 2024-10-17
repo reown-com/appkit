@@ -51,6 +51,7 @@ on:
 
 jobs:
   ui_tests:
+    if: inputs.branch != 'changeset-release/main'
     name: 'Playwright Tests'
     runs-on: [self-hosted, aws-ecs-16cpu-64mem-30m]
     strategy:
