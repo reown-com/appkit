@@ -133,7 +133,6 @@ export type ActivatePermissionsRequest = {
   context: `0x${string}`
 } & AddPermissionRequest
 
-// T0DO: Fetch right format from max
 export type Policy = {
   id: string
 }
