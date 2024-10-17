@@ -16,6 +16,7 @@ import { ModalController } from './ModalController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import type { ChainNamespace } from '@reown/appkit-common'
+import { OptionsController } from './OptionsController.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -129,6 +130,8 @@ export const ConnectionController = {
         }
       )
     }
+
+    await this.initializeSWIXIfAvailable()
   },
 
   async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
@@ -137,6 +140,8 @@ export const ConnectionController = {
       ChainController.setActiveNamespace(chain)
       StorageUtil.setConnectedConnector(options.type)
     }
+
+    await this.initializeSWIXIfAvailable()
   },
 
   async reconnectExternal(options: ConnectExternalOptions) {
@@ -246,6 +251,43 @@ export const ConnectionController = {
       this.resetWcConnection()
     } catch (error) {
       throw new Error('Failed to disconnect')
+    }
+  },
+
+  /**
+   * @experimental - This is an experimental feature and may be subject to change.
+   * Initializes SIWX if available.
+   * This is not yet considering One Click Auth.
+   */
+  async initializeSWIXIfAvailable() {
+    const swix = OptionsController.state.siwx
+    if (!swix) {
+      return
+    }
+
+    const activeCaipNetwork = ChainController.getActiveCaipNetwork()
+    const client = this._getClient(activeCaipNetwork?.chainNamespace)
+
+    try {
+      if (!activeCaipNetwork) {
+        throw new Error('No active chain')
+      }
+
+      const message = await swix.createMessage(activeCaipNetwork.caipNetworkId)
+
+      const signature = await client.signMessage(message.toString())
+
+      await swix.addSession({
+        message,
+        signature
+      })
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to initialize SIWX', error)
+
+      await client.disconnect()
+
+      throw error
     }
   }
 }
