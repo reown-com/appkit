@@ -9,6 +9,8 @@ let validator: ModalWalletValidator
 let context: BrowserContext
 /* eslint-enable init-declarations */
 
+const WEB3_AUTH_WALLET_ID = '78aaedfb74f2f4737134f2aaa78871f15ff0a2828ecb0ddc5b068a1f57bb4213'
+
 // -- Setup --------------------------------------------------------------------
 const walletFeaturesTest = test.extend<{ library: string }>({
   library: ['wagmi', { option: true }]
@@ -75,4 +77,20 @@ walletFeaturesTest('it should find account name as expected', async () => {
   await validator.expectHeaderText('Approve Transaction')
   await validator.expectAccountNameApproveTransaction('test-ens-check.reown.id')
   await page.closeModal()
+})
+
+walletFeaturesTest('it should open web app wallet', async () => {
+  await page.goToSettings()
+  await page.disconnect()
+  await page.openConnectModal()
+  await validator.expectAllWallets()
+  await page.openAllWallets()
+  await page.page.waitForTimeout(500)
+  await page.search('web3auth')
+  await page.clickAllWalletsListSearchItem(WEB3_AUTH_WALLET_ID)
+  await page.page.waitForTimeout(500)
+  await page.clickTabWebApp()
+  await page.clickCopyLink()
+  
+  await page.clickOpen()
 })

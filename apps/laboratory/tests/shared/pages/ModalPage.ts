@@ -441,6 +441,44 @@ export class ModalPage {
     await allWalletsListSearchItem.click()
   }
 
+  async clickTabWebApp() {
+    const tabWebApp = this.page.getByTestId('tab-webapp')
+    await expect(tabWebApp).toBeVisible()
+    await tabWebApp.click()
+  }
+
+  async expectCopiedText(text: string) {
+    const clipboardText = await this.page.evaluate(() => navigator.clipboard.readText())
+    expect(clipboardText).toBe(text)
+  }
+
+  async clickCopyLink() {
+    const copyLink = this.page.getByTestId('wui-link-copy')
+    await expect(copyLink).toBeVisible()
+    await copyLink.click()
+  }
+
+  async clickOpen() {
+    const openButton = this.page.getByTestId('w3m-connecting-widget-secondary-button')
+
+    await expect(openButton).toBeVisible()
+    await expect(openButton).toHaveText('Open')
+    await openButton.click()
+    await openButton.waitFor()
+
+    // Wait for the navigation to complete
+    await this.page.waitForNavigation({ waitUntil: 'domcontentloaded' })
+
+    // Get the current URL
+    const currentUrl = this.page.url()
+    console.log(currentUrl)
+
+    const url = new URL(currentUrl)
+    const queryParams = Object.fromEntries(url.searchParams.entries())
+
+    console.log(queryParams)
+  }
+
   async search(value: string) {
     const searchInput = this.page.getByTestId('wui-input-text')
     await expect(searchInput, 'Search input should be visible').toBeVisible()
