@@ -4,9 +4,11 @@ import { useSignMessage } from 'wagmi'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'
 import { useAppKitAccount } from '@reown/appkit/react'
+import type { Address } from 'viem'
 
 export function WagmiSignMessageTest() {
   const toast = useChakraToast()
+  const { address } = useAppKitAccount()
 
   const { signMessageAsync, isPending } = useSignMessage()
   const { isConnected } = useAppKitAccount()
@@ -14,8 +16,17 @@ export function WagmiSignMessageTest() {
   const [signature, setSignature] = React.useState<string | undefined>()
 
   async function onSignMessage() {
+    if (!address) {
+      toast({
+        title: ConstantsUtil.SigningFailedToastTitle,
+        description: 'No address found',
+        type: 'error'
+      })
+      return
+    }
+
     try {
-      const sig = await signMessageAsync({ message: 'Hello AppKit!' })
+      const sig = await signMessageAsync({ message: 'Hello AppKit!', account: address as Address })
       setSignature(sig)
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
