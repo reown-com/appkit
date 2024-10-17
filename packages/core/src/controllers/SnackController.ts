@@ -27,25 +27,34 @@ export const SnackController = {
   },
 
   showLoading(message: SnackControllerState['message']) {
-    state.message = message
-    state.variant = 'loading'
-    state.open = true
+    this._showMessage(message, 'loading')
   },
 
   showSuccess(message: SnackControllerState['message']) {
-    state.message = message
-    state.variant = 'success'
-    state.open = true
+    this._showMessage(message, 'success')
   },
 
   showError(message: unknown) {
     const errorMessage = CoreHelperUtil.parseError(message)
-    state.message = errorMessage
-    state.variant = 'error'
-    state.open = true
+    this._showMessage(errorMessage, 'error')
   },
 
   hide() {
     state.open = false
+  },
+
+  _showMessage(message: SnackControllerState['message'], variant: SnackControllerState['variant']) {
+    if (state.open) {
+      state.open = false
+      setTimeout(() => {
+        state.message = message
+        state.variant = variant
+        state.open = true
+      }, 150)
+    } else {
+      state.message = message
+      state.variant = variant
+      state.open = true
+    }
   }
 }

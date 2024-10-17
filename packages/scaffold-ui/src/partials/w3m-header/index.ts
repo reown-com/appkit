@@ -83,7 +83,8 @@ function headings() {
       : 'Connect Social',
     ConnectingMultiChain: 'Select chain',
     ConnectingFarcaster: 'Farcaster',
-    SwitchActiveChain: 'Switch chain'
+    SwitchActiveChain: 'Switch chain',
+    SmartSessionCreated: 'Session created'
   }
 }
 
@@ -193,7 +194,9 @@ export class W3mHeader extends LitElement {
         alignItems="center"
         gap="xs"
       >
-        <wui-text variant="paragraph-700" color="fg-100">${this.headerText}</wui-text>
+        <wui-text variant="paragraph-700" color="fg-100" data-testid="w3m-header-text"
+          >${this.headerText}</wui-text
+        >
         ${isBeta ? html`<wui-tag variant="main">Beta</wui-tag>` : null}
       </wui-flex>
     `

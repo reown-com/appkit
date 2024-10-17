@@ -179,7 +179,7 @@ export class ModalPage {
     await this.enterOTP(otp)
   }
 
-  async loginWithEmail(email: string) {
+  async loginWithEmail(email: string, validate = true) {
     // Connect Button doesn't have a proper `disabled` attribute so we need to wait for the button to change the text
     await this.page
       .getByTestId('connect-button')
@@ -188,12 +188,14 @@ export class ModalPage {
     await this.page.getByTestId('wui-email-input').locator('input').focus()
     await this.page.getByTestId('wui-email-input').locator('input').fill(email)
     await this.page.getByTestId('wui-email-input').locator('input').press('Enter')
-    await expect(
-      this.page.getByText(email),
-      `Expected current email: ${email} to be visible on the notification screen`
-    ).toBeVisible({
-      timeout: 20_000
-    })
+    if (validate) {
+      await expect(
+        this.page.getByText(email),
+        `Expected current email: ${email} to be visible on the notification screen`
+      ).toBeVisible({
+        timeout: 20_000
+      })
+    }
   }
 
   async loginWithSocial(socialOption: 'github', socialMail: string, socialPass: string) {
@@ -425,6 +427,24 @@ export class ModalPage {
 
     const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${networkName}`)
     await networkToSwitchButton.click()
+  }
+
+  async openAllWallets() {
+    const allWallets = this.page.getByTestId('all-wallets')
+    await expect(allWallets, 'All wallets should be visible').toBeVisible()
+    await allWallets.click()
+  }
+
+  async clickAllWalletsListSearchItem(id: string) {
+    const allWalletsListSearchItem = this.page.getByTestId(`wallet-search-item-${id}`)
+    await expect(allWalletsListSearchItem).toBeVisible()
+    await allWalletsListSearchItem.click()
+  }
+
+  async search(value: string) {
+    const searchInput = this.page.getByTestId('wui-input-text')
+    await expect(searchInput, 'Search input should be visible').toBeVisible()
+    await searchInput.fill(value)
   }
 
   async openModal() {

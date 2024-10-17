@@ -7,7 +7,7 @@ const SolanaAdapter = window.AppKit.SolanaAdapter
 if (!AppKit || !AppKit.createAppKit) {
   throw new Error('AppKit or createAppKit not found on window object')
 } else {
-  const projectId = '3bdbc796b351092d40d5d08e987f4eca' // Replace with your actual project ID
+  const projectId = import.meta.env.VITE_PROJECT_ID
   const networks = [appKitNetworks.mainnet, appKitNetworks.polygon, appKitNetworks.base]
 
   try {

@@ -12,7 +12,8 @@ import {
   mainnet as AppkitMainnet,
   polygon as AppkitPolygon,
   optimism as AppkitOptimism,
-  bsc as AppkitBsc
+  bsc as AppkitBsc,
+  harmonyOne as AppkitHarmonyOne
 } from '@reown/appkit/networks'
 import { ProviderUtil, type ProviderIdType } from '@reown/appkit/store'
 import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
@@ -107,17 +108,40 @@ vi.mock('ethers', async () => {
   }
 })
 
+vi.mock('@reown/appkit-common', async importOriginal => {
+  const actual = await importOriginal()
+  return {
+    // @ts-expect-error - actual is not typed
+    ...actual,
+    SafeLocalStorage: {
+      getItem: vi.fn(key => {
+        const values = {
+          '@appkit/wallet_id': 'injected'
+        }
+        return values[key as keyof typeof values]
+      }),
+      setItem: vi.fn(),
+      removeItem: vi.fn()
+    }
+  }
+})
+
 describe('EthersAdapter', () => {
   let client: EthersAdapter
 
   beforeEach(() => {
     vi.clearAllMocks()
+    const ethersConfig = mockCreateEthersConfig()
     client = new EthersAdapter()
+    vi.spyOn(client as any, 'createEthersConfig').mockImplementation(() => ({
+      metadata: ethersConfig.metadata,
+      injected: ethersConfig.injected
+    }))
     const optionsWithEthersConfig = {
       ...mockOptions,
       networks: caipNetworks,
       defaultNetwork: undefined,
-      ethersConfig: mockCreateEthersConfig()
+      ethersConfig
     }
     client.construct(mockAppKit, optionsWithEthersConfig)
   })
@@ -649,17 +673,23 @@ describe('EthersAdapter', () => {
   describe('EthersClient - syncAccount', () => {
     beforeEach(() => {
       vi.spyOn(client as any, 'syncConnectedWalletInfo').mockImplementation(() => {})
+      vi.spyOn(client as any, 'setupProviderListeners').mockImplementation(() => {})
+      vi.spyOn(client as any, 'setProvider').mockImplementation(() => Promise.resolve())
       vi.spyOn(client as any, 'syncProfile').mockImplementation(() => Promise.resolve())
       vi.spyOn(client as any, 'syncBalance').mockImplementation(() => Promise.resolve())
+      vi.spyOn(mockAppKit, 'getIsConnectedState').mockReturnValue(true)
+      vi.spyOn(mockAppKit, 'getPreferredAccountType').mockReturnValue('eoa')
     })
 
     it('should sync account when connected and address is provided', async () => {
       const mockAddress = '0x1234567890123456789012345678901234567890'
       const mockCaipNetwork = mainnet
 
-      vi.spyOn(mockAppKit, 'getIsConnectedState').mockReturnValue(true)
       vi.spyOn(mockAppKit, 'getCaipNetwork').mockReturnValue(mockCaipNetwork)
-      vi.spyOn(mockAppKit, 'getPreferredAccountType').mockReturnValue('eoa')
+      vi.spyOn(EthersHelpersUtil, 'getUserInfo').mockResolvedValue({
+        addresses: ['0x1234567890123456789012345678901234567890'],
+        chainId: 1
+      })
 
       await client['syncAccount']({ address: mockAddress })
 
@@ -670,7 +700,37 @@ describe('EthersAdapter', () => {
       )
       expect(client['syncConnectedWalletInfo']).toHaveBeenCalled()
       expect(client['syncProfile']).toHaveBeenCalledWith(mockAddress)
+      expect(client['setupProviderListeners']).toHaveBeenCalledOnce()
+      expect(client['setProvider']).toHaveBeenCalledOnce()
+      expect(mockAppKit.setCaipAddress).toHaveBeenCalledTimes(2)
+      expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(
+        `eip155:${mainnet.id}:${mockAddress}`,
+        'eip155'
+      )
+      expect(mockAppKit.setCaipNetwork).toHaveBeenCalledOnce()
+      expect(mockAppKit.setCaipNetwork).toHaveBeenCalledWith(mainnet)
       expect(mockAppKit.setApprovedCaipNetworksData).toHaveBeenCalledWith('eip155')
+    })
+
+    it('it should fallback to first available chain if current chain is unsupported', async () => {
+      const mockAddress = '0x1234567890123456789012345678901234567890'
+
+      vi.spyOn(EthersHelpersUtil, 'getUserInfo').mockResolvedValue({
+        addresses: [mockAddress],
+        chainId: AppkitHarmonyOne.id as number
+      })
+
+      await client['syncAccount']({ address: mockAddress })
+
+      expect(client['setupProviderListeners']).toHaveBeenCalledOnce()
+      expect(client['setProvider']).toHaveBeenCalledOnce()
+      expect(mockAppKit.setCaipAddress).toHaveBeenCalledTimes(2)
+      expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(
+        `eip155:${mainnet.id}:${mockAddress}`,
+        'eip155'
+      )
+      expect(mockAppKit.setCaipNetwork).toHaveBeenCalledOnce()
+      expect(mockAppKit.setCaipNetwork).toHaveBeenCalledWith(mainnet)
     })
 
     it('should reset connection when not connected', async () => {

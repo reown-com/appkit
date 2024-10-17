@@ -43,6 +43,11 @@ const nextConfig = {
   trailingSlash: true,
   distDir: 'out',
   cleanDistDir: true,
+  webpack: config => {
+    config.externals.push('pino-pretty', 'lokijs', 'encoding')
+
+    return config
+  },
   async headers() {
     return [
       {

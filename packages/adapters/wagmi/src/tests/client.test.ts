@@ -11,6 +11,8 @@ import {
 import { connect, disconnect, getAccount, getChainId, getEnsName, getBalance } from '@wagmi/core'
 import { CaipNetworksUtil, ConstantsUtil } from '@reown/appkit-utils'
 import type { CaipNetwork } from '@reown/appkit-common'
+import { http } from 'viem'
+import { WagmiAdapter } from '../client'
 
 const [mainnet, arbitrum] = CaipNetworksUtil.extendCaipNetworks(
   [AppkitMainnet, AppkitArbitrum, AppkitPolygon, AppkitOptimism, AppkitBsc],
@@ -22,6 +24,8 @@ const mockOptionsExtended = {
   networks: [mainnet, arbitrum] as [CaipNetwork, ...CaipNetwork[]],
   defaultNetwork: mainnet
 }
+
+const mockConnector = mockWagmiClient.wagmiConfig.connectors[0]!
 
 vi.mock('@wagmi/core', async () => {
   const actual = await vi.importActual('@wagmi/core')
@@ -110,10 +114,17 @@ describe('Wagmi Client', () => {
 
       expect(mockWagmiClient.wagmiConfig).toBeDefined()
 
+      const syncAccountSpy = vi.spyOn(mockWagmiClient as any, 'syncAccount')
+      const mockConnectorConnectSpy = vi.spyOn(mockConnector, 'connect')
+      const mockConnectorGetAccountsSpy = vi.spyOn(mockConnector, 'connect')
+
       await connect(mockWagmiClient.wagmiConfig, {
-        connector: mockWagmiClient.wagmiConfig.connectors[0]!
+        connector: mockConnector
       })
 
+      expect(syncAccountSpy).toHaveBeenCalledTimes(2)
+      expect(mockConnectorConnectSpy).toHaveBeenCalledOnce()
+      expect(mockConnectorGetAccountsSpy).toHaveBeenCalledOnce()
       expect(setApprovedCaipNetworksData).toHaveBeenCalledOnce()
 
       expect(mockAppKit.getCaipAddress()).toBe(
@@ -130,7 +141,12 @@ describe('Wagmi Client', () => {
       const resetNetworkSpy = vi.spyOn(mockAppKit, 'resetNetwork')
       const setAllAccountsSpy = vi.spyOn(mockAppKit, 'setAllAccounts')
 
+      const mockConnectorDisconnectSpy = vi.spyOn(mockConnector, 'disconnect')
+
       await disconnect(mockWagmiClient.wagmiConfig)
+
+      expect(mockConnectorConnectSpy).toHaveBeenCalled()
+      expect(mockConnectorDisconnectSpy).toHaveBeenCalledOnce()
 
       const disconnectedWagmiAccount = getAccount(mockWagmiClient.wagmiConfig)
 
@@ -477,7 +493,6 @@ describe('Wagmi Client', () => {
       expect(mockProvider.onRpcError).toHaveBeenCalledWith(expect.any(Function))
       expect(mockProvider.onRpcSuccess).toHaveBeenCalledWith(expect.any(Function))
       expect(mockProvider.onNotConnected).toHaveBeenCalledWith(expect.any(Function))
-      expect(mockProvider.onIsConnected).toHaveBeenCalledWith(expect.any(Function))
       expect(mockProvider.onGetSmartAccountEnabledNetworks).toHaveBeenCalledWith(
         expect.any(Function)
       )
@@ -493,6 +508,69 @@ describe('Wagmi Client', () => {
       callback({ method: 'eth_sendTransaction' })
 
       expect(mockAppKit.redirect).toHaveBeenCalledWith('ApproveTransaction')
+    })
+  })
+
+  describe('Wagmi Client - Transports', () => {
+    it('should use default transports for networks without custom transports', () => {
+      const client = new WagmiAdapter({
+        projectId: '123',
+        networks: [mainnet, arbitrum]
+      })
+
+      expect(client.wagmiConfig._internal.transports).toBeDefined()
+      expect(client.wagmiConfig._internal.transports[mainnet.id as number]).toBeDefined()
+      expect(client.wagmiConfig._internal.transports[arbitrum.id as number]).toBeDefined()
+    })
+
+    it('should merge user-provided transports with default transports', () => {
+      const customTransport = http('https://custom-rpc.example.com')
+      const client = new WagmiAdapter({
+        projectId: '123',
+        networks: [mainnet, arbitrum],
+        transports: {
+          [mainnet.id]: customTransport
+        }
+      })
+
+      expect(client.wagmiConfig._internal.transports).toBeDefined()
+      expect(client.wagmiConfig._internal.transports[mainnet.id as number]).toBe(customTransport)
+      expect(client.wagmiConfig._internal.transports[arbitrum.id as number]).toBeDefined()
+      expect(client.wagmiConfig._internal.transports[arbitrum.id as number]).not.toBe(
+        customTransport
+      )
+    })
+
+    it('should prioritize user-provided transports over default ones', () => {
+      const customTransport1 = http('https://custom-rpc1.example.com')
+      const customTransport2 = http('https://custom-rpc2.example.com')
+      const client = new WagmiAdapter({
+        projectId: '123',
+        networks: [mainnet, arbitrum],
+        transports: {
+          [mainnet.id]: customTransport1,
+          [arbitrum.id]: customTransport2
+        }
+      })
+
+      expect(client.wagmiConfig._internal.transports).toBeDefined()
+      expect(client.wagmiConfig._internal.transports[mainnet.id as number]).toBe(customTransport1)
+      expect(client.wagmiConfig._internal.transports[arbitrum.id as number]).toBe(customTransport2)
+    })
+
+    it('should handle transports for networks not in the provided networks array', () => {
+      const customTransport = http('https://custom-rpc.example.com')
+      const client = new WagmiAdapter({
+        projectId: '123',
+        networks: [mainnet],
+        transports: {
+          [arbitrum.id]: customTransport
+        }
+      })
+
+      expect(client.wagmiConfig._internal.transports).toBeDefined()
+      expect(client.wagmiConfig._internal.transports[mainnet.id as number]).toBeDefined()
+      expect(client.wagmiConfig._internal.transports[arbitrum.id as number]).toBe(customTransport)
     })
   })
 })
