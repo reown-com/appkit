@@ -11,6 +11,7 @@ const TABS = 3
 const TABS_PADDING = 48
 const MODAL_MOBILE_VIEW_PX = 430
 const SMART_SESSION_TABS = [{ label: 'Active' }, { label: 'Expired' }, { label: 'Revoked' }]
+
 @customElement('w3m-smart-session-list-view')
 export class W3mSmartSessionListView extends LitElement {
   public static override styles = styles

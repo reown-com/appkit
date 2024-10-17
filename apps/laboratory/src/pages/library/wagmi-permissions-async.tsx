@@ -31,7 +31,8 @@ const modal = createAppKit({
   defaultNetwork: sepolia,
   projectId: ConstantsUtil.ProjectId,
   features: {
-    analytics: true
+    analytics: true,
+    smartSessions: true
   },
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy'
