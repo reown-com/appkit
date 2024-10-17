@@ -231,7 +231,7 @@ export const AccountController = {
 
     if (
       state.lastRetry &&
-      !CoreHelperUtil.isAllowedRetry(state.lastRetry, ConstantsUtil.FIVE_SEC_MS)
+      !CoreHelperUtil.isAllowedRetry(state.lastRetry, 30 * ConstantsUtil.ONE_SEC_MS)
     ) {
       return
     }

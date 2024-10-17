@@ -441,6 +441,60 @@ export class ModalPage {
     await allWalletsListSearchItem.click()
   }
 
+  async clickTabWebApp() {
+    const tabWebApp = this.page.getByTestId('tab-webapp')
+    await expect(tabWebApp).toBeVisible()
+    await tabWebApp.click()
+  }
+
+  async clickCopyLink() {
+    const copyLink = this.page.getByTestId('wui-link-copy')
+    await expect(copyLink).toBeVisible()
+
+    let hasCopied = false
+
+    while (!hasCopied) {
+      await copyLink.click()
+      await this.page.waitForTimeout(500)
+
+      const snackbarMessage = this.page.getByTestId('wui-snackbar-message')
+      const snackbarMessageText = await snackbarMessage.textContent()
+
+      if (snackbarMessageText && snackbarMessageText.startsWith('Link copied')) {
+        hasCopied = true
+      }
+    }
+
+    return this.page.evaluate(() => navigator.clipboard.readText())
+  }
+
+  async clickOpenWebApp() {
+    let url = ''
+
+    const openButton = this.page.getByTestId('w3m-connecting-widget-secondary-button')
+    await expect(openButton).toBeVisible()
+    await expect(openButton).toHaveText('Open')
+
+    while (!url) {
+      await openButton.click()
+      await this.page.waitForTimeout(500)
+
+      const pages = this.page.context().pages()
+
+      // Check if more than 1 tab is open
+      if (pages.length > 1) {
+        const lastTab = pages[pages.length - 1]
+
+        if (lastTab) {
+          url = lastTab.url()
+          break
+        }
+      }
+    }
+
+    return url
+  }
+
   async search(value: string) {
     const searchInput = this.page.getByTestId('wui-input-text')
     await expect(searchInput, 'Search input should be visible').toBeVisible()
