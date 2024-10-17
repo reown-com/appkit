@@ -455,28 +455,50 @@ export class ModalPage {
   async clickCopyLink() {
     const copyLink = this.page.getByTestId('wui-link-copy')
     await expect(copyLink).toBeVisible()
-    await copyLink.click()
+
+    let hasCopied = false
+
+    while (!hasCopied) {
+      await copyLink.click()
+      await this.page.waitForTimeout(500)
+
+      const snackbarMessage = this.page.getByTestId('wui-snackbar-message')
+      const snackbarMessageText = await snackbarMessage.textContent()
+
+      if (snackbarMessageText && snackbarMessageText.startsWith('Link copied')) {
+        hasCopied = true
+      }
+    }
+
+    return await this.page.evaluate(() => navigator.clipboard.readText())
   }
 
-  async clickOpen() {
-    const openButton = this.page.getByTestId('w3m-connecting-widget-secondary-button')
+  async clickOpenWebApp() {
+    let url = ''
 
+    const openButton = this.page.getByTestId('w3m-connecting-widget-secondary-button')
     await expect(openButton).toBeVisible()
     await expect(openButton).toHaveText('Open')
-    await openButton.click()
-    await openButton.waitFor()
 
-    // Wait for the navigation to complete
-    await this.page.waitForNavigation({ waitUntil: 'domcontentloaded' })
+    while (!url) {
+      await openButton.click()
+      await this.page.waitForTimeout(500)
 
-    // Get the current URL
-    const currentUrl = this.page.url()
-    console.log(currentUrl)
+      const pages = this.page.context().pages()
 
-    const url = new URL(currentUrl)
-    const queryParams = Object.fromEntries(url.searchParams.entries())
+      // Check if more than 1 tab is open
+      if (pages.length > 1) {
+        const lastTab = pages[pages.length - 1]
 
-    console.log(queryParams)
+        if (lastTab) {
+          await lastTab.waitForLoadState('load')
+          url = lastTab.url()
+          break
+        }
+      }
+    }
+
+    return url
   }
 
   async search(value: string) {

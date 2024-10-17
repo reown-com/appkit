@@ -9,7 +9,7 @@ let validator: ModalWalletValidator
 let context: BrowserContext
 /* eslint-enable init-declarations */
 
-const WEB3_AUTH_WALLET_ID = '78aaedfb74f2f4737134f2aaa78871f15ff0a2828ecb0ddc5b068a1f57bb4213'
+const ABSOLUTE_WALLET_ID = 'bfa6967fd05add7bb2b19a442ac37cedb6a6b854483729194f5d7185272c5594'
 
 // -- Setup --------------------------------------------------------------------
 const walletFeaturesTest = test.extend<{ library: string }>({
@@ -18,9 +18,14 @@ const walletFeaturesTest = test.extend<{ library: string }>({
 
 walletFeaturesTest.describe.configure({ mode: 'serial' })
 
-walletFeaturesTest.beforeAll(async ({ browser, library }) => {
+walletFeaturesTest.beforeAll(async ({ browser, browserName, library }) => {
   walletFeaturesTest.setTimeout(300000)
-  context = await browser.newContext()
+
+  if (browserName === 'chromium') {
+    context = await browser.newContext({ permissions: ['clipboard-read', 'clipboard-write'] })
+  } else {
+    context = await browser.newContext()
+  }
   const browserPage = await context.newPage()
 
   page = new ModalWalletPage(browserPage, library, 'default')
@@ -86,11 +91,15 @@ walletFeaturesTest('it should open web app wallet', async () => {
   await validator.expectAllWallets()
   await page.openAllWallets()
   await page.page.waitForTimeout(500)
-  await page.search('web3auth')
-  await page.clickAllWalletsListSearchItem(WEB3_AUTH_WALLET_ID)
+  await page.search('absolute wallet')
+  await page.clickAllWalletsListSearchItem(ABSOLUTE_WALLET_ID)
   await page.page.waitForTimeout(500)
   await page.clickTabWebApp()
-  await page.clickCopyLink()
-  
-  await page.clickOpen()
+  const copiedLink = await page.clickCopyLink()
+  const url = await page.clickOpenWebApp()
+  validator.expectQueryParameterFromUrl({
+    url,
+    key: 'uri',
+    value: copiedLink
+  })
 })
