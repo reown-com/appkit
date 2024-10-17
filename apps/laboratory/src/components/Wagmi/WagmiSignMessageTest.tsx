@@ -22,6 +22,7 @@ export function WagmiSignMessageTest() {
         description: 'No address found',
         type: 'error'
       })
+
       return
     }
 

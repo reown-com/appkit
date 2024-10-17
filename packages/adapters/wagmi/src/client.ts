@@ -682,7 +682,9 @@ export class WagmiAdapter implements ChainAdapter {
     connector: GetAccountReturnType['connector'],
     status: GetAccountReturnType['status'] | undefined
   ) {
-    if (!connector || !connector?.getProvider) return
+    if (!connector || !connector?.getProvider) {
+      return
+    }
 
     const provider = (await connector.getProvider()) as UniversalProvider
 
@@ -702,11 +704,6 @@ export class WagmiAdapter implements ChainAdapter {
       this.appKit?.setCaipAddress(caipAddress, chainNamespace)
       this.appKit?.setStatus(status, chainNamespace)
     })
-
-    return {
-      connector,
-      status
-    }
   }
 
   private async setProfileAndBalance(address: Address, chainId: number) {
