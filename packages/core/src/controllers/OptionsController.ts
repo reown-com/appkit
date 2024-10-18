@@ -9,7 +9,7 @@ import type {
   Tokens
 } from '../utils/TypeUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
-import { filterSocialsByPlatform, OptionsUtil } from '../utils/OptionsUtil.js'
+import { filterSocialsByPlatform } from '../utils/OptionsUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerStatePublic {
