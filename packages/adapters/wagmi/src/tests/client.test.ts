@@ -157,7 +157,7 @@ describe('Wagmi Client', () => {
       expect(resetAccountSpy).toHaveBeenCalledOnce()
       expect(resetWcSpy).toHaveBeenCalledOnce()
       expect(resetNetworkSpy).toHaveBeenCalledOnce()
-      expect(setAllAccountsSpy).toHaveBeenCalledOnce()
+      expect(setAllAccountsSpy).toHaveBeenCalledTimes(2)
     })
   })
 
