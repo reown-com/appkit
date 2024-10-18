@@ -755,8 +755,6 @@ export class WagmiAdapter implements ChainAdapter {
           ) {
             this.syncNetwork(address, currentChainId, true)
             await Promise.all([
-              this.syncProfile(address, currentChainId),
-              this.syncBalance(address, currentChainId),
               this.syncConnectedWalletInfo(connector),
               this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
             ])
@@ -767,8 +765,6 @@ export class WagmiAdapter implements ChainAdapter {
           const caipAddress = `eip155:${chainId}:${address}` as CaipAddress
           this.syncNetwork(address, chainId, true)
           await Promise.all([
-            this.syncProfile(address, chainId),
-            this.syncBalance(address, chainId),
             this.syncConnectedWalletInfo(connector),
             this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
           ])
