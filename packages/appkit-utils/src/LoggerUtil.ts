@@ -14,7 +14,8 @@ export const LoggerUtil = {
       for (const arg of args) {
         if (arg instanceof Error) {
           onError(arg, ...args)
-          break
+
+          return
         }
       }
 
