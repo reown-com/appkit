@@ -84,6 +84,7 @@ describe('WcHelpersUtil', () => {
         'wallet_showCallsStatus',
         'wallet_getCallsStatus',
         'wallet_grantPermissions',
+        'wallet_revokePermissions',
         'wallet_switchEthereumChain'
       ])
     })

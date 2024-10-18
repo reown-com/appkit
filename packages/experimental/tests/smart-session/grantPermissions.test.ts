@@ -1,5 +1,4 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest'
-import { grantPermissions } from '../../src/smart-session/grantPermissions'
 import {
   ChainController,
   ConnectionController,
@@ -16,6 +15,7 @@ import {
 } from '../../src/smart-session/helper/index.js'
 import { donutContractAbi } from '../data/abi'
 import { ERROR_MESSAGES } from '../../src/smart-session/schema'
+import { SmartSessionsController } from '../../src/smart-session/controllers/SmartSessionsController'
 
 vi.mock('@reown/appkit-core')
 vi.mock('@reown/appkit/store')
@@ -25,7 +25,8 @@ describe('grantPermissions', () => {
   let mockRequest: SmartSessionGrantPermissionsRequest
   const expiry = Date.now() + 1000
   beforeEach(() => {
-    ;(mockRequest = {
+    SmartSessionsController.state.sessions = []
+    mockRequest = {
       address: '0x1234567890123456789012345678901234567890',
       chainId: '0x1',
       expiry: expiry,
@@ -50,8 +51,8 @@ describe('grantPermissions', () => {
         }
       ],
       policies: []
-    }),
-      vi.resetAllMocks()
+    }
+    vi.resetAllMocks()
     vi.mocked(OptionsController.state).projectId = 'test-project-id'
     vi.mocked(ChainController.state).activeCaipAddress =
       'eip155:1:0x1234567890123456789012345678901234567890'
@@ -118,7 +119,7 @@ describe('grantPermissions', () => {
   })
 
   it('should successfully grant permissions and invoke required methods', async () => {
-    const result = await grantPermissions(mockRequest)
+    const result = await SmartSessionsController.grantPermissions(mockRequest)
 
     expect(result).toEqual({
       permissions: [
@@ -149,7 +150,7 @@ describe('grantPermissions', () => {
 
   it('should throw an error for unsupported namespace', async () => {
     vi.mocked(ChainController.state).activeCaipAddress = undefined
-    await expect(grantPermissions(mockRequest)).rejects.toThrow(
+    await expect(SmartSessionsController.grantPermissions(mockRequest)).rejects.toThrow(
       ERROR_MESSAGES.UNSUPPORTED_NAMESPACE
     )
   })
@@ -169,52 +170,58 @@ describe('grantPermissions', () => {
       grantPermissions: vi.fn().mockResolvedValue(null)
     } as unknown as ConnectionControllerClient)
 
-    await expect(grantPermissions(mockRequest)).rejects.toThrow(ERROR_MESSAGES.NO_RESPONSE_RECEIVED)
+    await expect(SmartSessionsController.grantPermissions(mockRequest)).rejects.toThrow(
+      ERROR_MESSAGES.NO_RESPONSE_RECEIVED
+    )
   })
 
   it('should handle network errors', async () => {
     vi.mocked(CosignerService.prototype.addPermission).mockRejectedValue(new Error('Network error'))
-    await expect(grantPermissions(mockRequest)).rejects.toThrow('Network error')
+    await expect(SmartSessionsController.grantPermissions(mockRequest)).rejects.toThrow(
+      'Network error'
+    )
   })
 
   it('should throw an error for invalid chainId format', async () => {
     const invalidRequest = { ...mockRequest, chainId: '1' } // chainId should start with '0x'
-    await expect(grantPermissions(invalidRequest as any)).rejects.toThrow(
+    await expect(SmartSessionsController.grantPermissions(invalidRequest as any)).rejects.toThrow(
       ERROR_MESSAGES.INVALID_CHAIN_ID_FORMAT
     )
   })
 
   it('should throw an error for invalid expiry', async () => {
     const invalidRequest = { ...mockRequest, expiry: -1 }
-    await expect(grantPermissions(invalidRequest)).rejects.toThrow(ERROR_MESSAGES.INVALID_EXPIRY)
+    await expect(SmartSessionsController.grantPermissions(invalidRequest)).rejects.toThrow(
+      ERROR_MESSAGES.INVALID_EXPIRY
+    )
   })
 
   it('should throw an error for empty permissions', async () => {
     const invalidRequest = { ...mockRequest, permissions: [] }
-    await expect(grantPermissions(invalidRequest)).rejects.toThrow(
+    await expect(SmartSessionsController.grantPermissions(invalidRequest)).rejects.toThrow(
       ERROR_MESSAGES.INVALID_PERMISSIONS
     )
   })
 
   it('should throw an error for invalid policies', async () => {
     const invalidRequest = { ...mockRequest, policies: {} as any }
-    await expect(grantPermissions(invalidRequest)).rejects.toThrow(
+    await expect(SmartSessionsController.grantPermissions(invalidRequest)).rejects.toThrow(
       ERROR_MESSAGES.INVALID_POLICIES_TYPE
     )
   })
 
   it('should throw an error for invalid signer', async () => {
     const invalidRequest = { ...mockRequest, signer: null as any }
-    await expect(grantPermissions(invalidRequest)).rejects.toThrow()
+    await expect(SmartSessionsController.grantPermissions(invalidRequest)).rejects.toThrow()
   })
 
   it('should throw an error for invalid signer type', async () => {
     const invalidRequest = { ...mockRequest, signer: { type: {}, data: {} } as any }
-    await expect(grantPermissions(invalidRequest)).rejects.toThrow()
+    await expect(SmartSessionsController.grantPermissions(invalidRequest)).rejects.toThrow()
   })
 
   it('should successfully update the signer in request for valid key signer', async () => {
-    await grantPermissions(mockRequest)
+    await SmartSessionsController.grantPermissions(mockRequest)
     expect(mockRequest.signer).toEqual({
       type: 'keys',
       data: {
@@ -231,7 +238,7 @@ describe('grantPermissions', () => {
       type: 'keys',
       data: { keys: [{ type: 'secp256k1', publicKey: '0xexisting-key' }] }
     }
-    await grantPermissions(mockRequest)
+    await SmartSessionsController.grantPermissions(mockRequest)
     expect(mockRequest.signer).toEqual({
       type: 'keys',
       data: {
@@ -247,7 +254,9 @@ describe('grantPermissions', () => {
     vi.mocked(CosignerService.prototype.addPermission).mockRejectedValue(
       new Error('Cosigner error')
     )
-    await expect(grantPermissions(mockRequest)).rejects.toThrow('Cosigner error')
+    await expect(SmartSessionsController.grantPermissions(mockRequest)).rejects.toThrow(
+      'Cosigner error'
+    )
   })
 
   it('should throw an error when ConnectionController grantPermissions fails', async () => {
@@ -265,7 +274,9 @@ describe('grantPermissions', () => {
       grantPermissions: vi.fn().mockRejectedValue(new Error('Connection error'))
     } as unknown as ConnectionControllerClient)
 
-    await expect(grantPermissions(mockRequest)).rejects.toThrow('Connection error')
+    await expect(SmartSessionsController.grantPermissions(mockRequest)).rejects.toThrow(
+      'Connection error'
+    )
   })
 
   it('should return undefined for an invalid address in extractAddress', () => {
