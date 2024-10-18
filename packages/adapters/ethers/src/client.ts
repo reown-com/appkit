@@ -437,6 +437,16 @@ export class EthersAdapter {
         return await provider.request({ method: 'wallet_grantPermissions', params })
       },
 
+      revokePermissions: async session => {
+        const provider = ProviderUtil.getProvider<Provider>(CommonConstantsUtil.CHAIN.EVM)
+
+        if (!provider) {
+          throw new Error('Provider is undefined')
+        }
+
+        return await provider.request({ method: 'wallet_revokePermissions', params: [session] })
+      },
+
       sendTransaction: async data => {
         if (data.chainNamespace && data.chainNamespace !== 'eip155') {
           throw new Error(`Invalid chain namespace - Expected eip155, got ${data.chainNamespace}`)
@@ -486,16 +496,6 @@ export class EthersAdapter {
         const caipNetwork = this.appKit?.getCaipNetwork()
 
         return await EthersMethods.getEnsAvatar(value, Number(caipNetwork?.id))
-      },
-
-      revokePermissions: async session => {
-        const provider = ProviderUtil.getProvider<Provider>(CommonConstantsUtil.CHAIN.EVM)
-
-        if (!provider) {
-          throw new Error('Provider is undefined')
-        }
-
-        return await provider.request({ method: 'wallet_revokePermissions', params: [session] })
       }
     }
 
