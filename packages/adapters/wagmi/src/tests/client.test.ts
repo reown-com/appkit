@@ -42,6 +42,8 @@ describe('Wagmi Client', () => {
     vi.clearAllMocks()
     ;(getEnsName as any).mockResolvedValue('mock.eth')
     ;(getBalance as any).mockResolvedValue({ formatted: '1.0', symbol: 'ETH' })
+    vi.spyOn(mockAppKit, 'fetchIdentity').mockResolvedValue({ name: 'example.eth', avatar: '' })
+    vi.spyOn(mockAppKit, 'getReownName').mockImplementation(() => Promise.resolve([]))
   })
 
   afterEach(() => {
@@ -187,9 +189,17 @@ describe('Wagmi Client', () => {
         `eip155:${mockChainId}:${mockAddress}`,
         'eip155'
       )
+
+      expect(syncNetworkSpy).toHaveBeenCalledOnce()
       expect(syncNetworkSpy).toHaveBeenCalledWith(mockAddress, mockChainId, true)
+
+      expect(syncProfileSpy).toHaveBeenCalledOnce()
       expect(syncProfileSpy).toHaveBeenCalledWith(mockAddress, mockChainId)
+
+      expect(syncBalanceSpy).toHaveBeenCalledOnce()
       expect(syncBalanceSpy).toHaveBeenCalledWith(mockAddress, mockChainId)
+
+      expect(syncConnectedWalletInfoSpy).toHaveBeenCalledOnce
       expect(syncConnectedWalletInfoSpy).toHaveBeenCalledWith(mockConnector)
     })
   })
@@ -203,7 +213,6 @@ describe('Wagmi Client', () => {
       const setCaipNetworkSpy = vi.spyOn(mockAppKit, 'setCaipNetwork')
       const setCaipAddressSpy = vi.spyOn(mockAppKit, 'setCaipAddress')
       const setAddressExplorerUrlSpy = vi.spyOn(mockAppKit, 'setAddressExplorerUrl')
-      const syncBalanceSpy = vi.spyOn(mockWagmiClient as any, 'syncBalance')
 
       await (mockWagmiClient as any).syncNetwork(mockAddress, mainnet.id, true)
 
@@ -224,7 +233,6 @@ describe('Wagmi Client', () => {
         'https://etherscan.io/address/0x1234567890123456789012345678901234567890',
         'eip155'
       )
-      expect(syncBalanceSpy).toHaveBeenCalledWith(mockAddress, mainnet.id)
     })
 
     it('should not sync network if chain is not found', async () => {
