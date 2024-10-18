@@ -447,6 +447,12 @@ export class ModalPage {
     await tabWebApp.click()
   }
 
+  async clickHookDisconnectButton() {
+    const disconnectHookButton = this.page.getByTestId('disconnect-hook-button')
+    await expect(disconnectHookButton).toBeVisible()
+    await disconnectHookButton.click()
+  }
+
   async clickCopyLink() {
     const copyLink = this.page.getByTestId('wui-link-copy')
     await expect(copyLink).toBeVisible()
