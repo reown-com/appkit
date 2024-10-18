@@ -24,6 +24,7 @@ import {
 import {
   ChainController,
   ConstantsUtil as CoreConstantsUtil,
+  CoreHelperUtil,
   StorageUtil
 } from '@reown/appkit-core'
 import type UniversalProvider from '@walletconnect/universal-provider'
@@ -187,6 +188,19 @@ export class WagmiAdapter implements ChainAdapter {
       chains: this.wagmiChains,
       transports,
       connectors
+    })
+
+    ChainController.subscribeKey('activeCaipAddress', val => {
+      const isEVMAddress = val?.startsWith('eip155:')
+      const caipNetwork = ChainController.state.activeCaipNetwork
+      const isEVMNetwork = caipNetwork?.chainNamespace === this.chainNamespace
+
+      if (caipNetwork && isEVMAddress && isEVMNetwork) {
+        this.setProfileAndBalance(
+          CoreHelperUtil.getPlainAddress(val) as Hex,
+          Number(caipNetwork.id)
+        )
+      }
     })
   }
 
@@ -675,6 +689,10 @@ export class WagmiAdapter implements ChainAdapter {
       })
   }
 
+  private async setProfileAndBalance(address: Hex, chainId: number) {
+    await Promise.all([this.syncProfile(address, chainId), this.syncBalance(address, chainId)])
+  }
+
   private async syncAccount({
     address,
     chainId,
@@ -737,8 +755,6 @@ export class WagmiAdapter implements ChainAdapter {
           ) {
             this.syncNetwork(address, currentChainId, true)
             await Promise.all([
-              this.syncProfile(address, currentChainId),
-              this.syncBalance(address, currentChainId),
               this.syncConnectedWalletInfo(connector),
               this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
             ])
@@ -749,8 +765,6 @@ export class WagmiAdapter implements ChainAdapter {
           const caipAddress = `eip155:${chainId}:${address}` as CaipAddress
           this.syncNetwork(address, chainId, true)
           await Promise.all([
-            this.syncProfile(address, chainId),
-            this.syncBalance(address, chainId),
             this.syncConnectedWalletInfo(connector),
             this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
           ])
