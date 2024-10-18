@@ -49,6 +49,7 @@ export class W3mSocialLoginWidget extends LitElement {
       }),
       OptionsController.subscribeKey('features', val => (this.features = val))
     )
+    OptionsController.setFeatures(this.features)
   }
 
   public override disconnectedCallback() {

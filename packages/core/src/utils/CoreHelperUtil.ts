@@ -38,6 +38,12 @@ export const CoreHelperUtil = {
     return CoreHelperUtil.isMobile() && (ua.includes('iphone') || ua.includes('ipad'))
   },
 
+  isMac() {
+    const ua = window.navigator.userAgent.toLowerCase()
+
+    return ua.includes('macintosh') && !ua.includes('safari')
+  },
+
   isClient() {
     return typeof window !== 'undefined'
   },
