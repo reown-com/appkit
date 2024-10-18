@@ -76,3 +76,4 @@ export { RouterUtil } from '../src/utils/RouterUtil.js'
 export { OptionsUtil } from '../src/utils/OptionsUtil.js'
 
 export type * from '../src/utils/TypeUtil.js'
+export type * from '../src/utils/SIWXUtil.js'
