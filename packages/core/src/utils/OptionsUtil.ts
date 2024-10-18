@@ -1,4 +1,5 @@
 import { ConstantsUtil } from './ConstantsUtil.js'
+import { CoreHelperUtil } from './CoreHelperUtil.js'
 import type { Features, FeaturesKeys } from './TypeUtil.js'
 
 export const OptionsUtil = {
@@ -11,4 +12,24 @@ export const OptionsUtil = {
 
     return optionValue as Features[typeof key]
   }
+}
+
+export function filterSocialsByPlatform<T>(socials: Features['socials']) {
+  if (!socials || !socials.length) {
+    return socials as T
+  }
+
+  if (CoreHelperUtil.isTelegram()) {
+    if (CoreHelperUtil.isIos()) {
+      return socials.filter(s => s !== 'google')
+    }
+    if (CoreHelperUtil.isMac()) {
+      return socials.filter(s => s !== 'x')
+    }
+    if (CoreHelperUtil.isAndroid()) {
+      return socials.filter(s => !['facebook', 'x'].includes(s))
+    }
+  }
+
+  return socials
 }

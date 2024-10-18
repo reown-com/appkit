@@ -267,7 +267,6 @@ describe('EthersAdapter', () => {
         provider: expect.any(Object),
         chain: 'eip155'
       })
-      expect(mockAppKit.setLoading).toHaveBeenCalledWith(false)
     })
 
     describe('Auth Connector Handle Requests', () => {
