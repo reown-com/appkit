@@ -290,13 +290,13 @@ export class UniversalAdapterClient {
 
         return provider.request({ method: 'wallet_grantPermissions', params })
       },
-      revokePermissions: async (session: object | readonly unknown[]) => {
+      revokePermissions: async session => {
         const provider = await this.getWalletConnectProvider()
         if (!provider) {
           throw new Error('connectionControllerClient:grantPermissions - provider is undefined')
         }
 
-        return provider.request({ method: 'wallet_revokePermissions', params: session })
+        return provider.request({ method: 'wallet_revokePermissions', params: [session] })
       },
 
       sendTransaction: async () => await Promise.resolve('0x'),

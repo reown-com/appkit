@@ -462,6 +462,24 @@ export class Ethers5Adapter {
         const caipNetwork = this.appKit?.getCaipNetwork()
 
         return await Ethers5Methods.getEnsAvatar(value, Number(caipNetwork?.id))
+      },
+      grantPermissions: async params => {
+        const provider = ProviderUtil.getProvider<Provider>(CommonConstantsUtil.CHAIN.EVM)
+
+        if (!provider) {
+          throw new Error('Provider is undefined')
+        }
+
+        return await provider.request({ method: 'wallet_grantPermissions', params })
+      },
+      revokePermissions: async session => {
+        const provider = ProviderUtil.getProvider<Provider>(CommonConstantsUtil.CHAIN.EVM)
+
+        if (!provider) {
+          throw new Error('Provider is undefined')
+        }
+
+        return await provider.request({ method: 'wallet_revokePermissions', params: [session] })
       }
     }
 
