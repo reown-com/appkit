@@ -4,7 +4,7 @@ import { ChainController } from '../src/controllers/ChainController.js'
 import type { CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
 import { ref } from 'valtio/vanilla'
 import { onUnmounted } from 'vue'
-import { ConnectionController } from './index.js'
+import { ConnectionController } from '../src/controllers/ConnectionController.js'
 
 // -- Hooks ------------------------------------------------------------
 export function useAppKitNetwork(): {

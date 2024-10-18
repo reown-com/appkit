@@ -3,7 +3,7 @@ import { AccountController } from '../src/controllers/AccountController.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import { ChainController } from '../src/controllers/ChainController.js'
 import type { CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
-import { ConnectionController } from './index.js'
+import { ConnectionController } from '../src/controllers/ConnectionController.js'
 
 // -- Hooks ------------------------------------------------------------
 export function useAppKitNetwork(): {
