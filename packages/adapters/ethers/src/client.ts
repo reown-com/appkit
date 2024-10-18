@@ -443,7 +443,7 @@ export class EthersAdapter {
           throw new Error('Provider is undefined')
         }
 
-        return await provider.request({ method: 'wallet_grantPermissions', params })
+        return await provider.request({ method: 'wallet_revokePermissions', params })
       },
 
       sendTransaction: async data => {
