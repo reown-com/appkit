@@ -1,6 +1,5 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
-<<<<<<< HEAD
 import {
   AccountController,
   BlockchainApiController,
@@ -29,10 +28,6 @@ import {
 } from '../helper/index.js'
 import type { PermissionsCapability, WalletCapabilities } from '../utils/ERC5792Types.js'
 import { ERC7715_METHOD } from '../utils/ConstantUtils.js'
-=======
-import type { SmartSession } from '../utils/TypeUtils.js'
-import { AccountController, BlockchainApiController, SnackController } from '@reown/appkit-core'
->>>>>>> 04d55799cbeefc88c9ca98355b9b428575320415
 
 // -- Types --------------------------------------------- //
 export type SmartSessionsControllerState = {
@@ -79,9 +74,7 @@ export const SmartSessionsController = {
 
       return []
     }
-<<<<<<< HEAD
   },
-
   async grantPermissions(
     request: SmartSessionGrantPermissionsRequest
   ): Promise<SmartSessionGrantPermissionsResponse> {
@@ -235,7 +228,5 @@ export const SmartSessionsController = {
     } catch (e) {
       SnackController.showError('Error revoking smart session')
     }
-=======
->>>>>>> 04d55799cbeefc88c9ca98355b9b428575320415
   }
 }

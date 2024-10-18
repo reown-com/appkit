@@ -13,7 +13,6 @@ export default css`
     min-height: 100%;
   }
 
-<<<<<<< HEAD
   .group-container {
     max-height: 400px;
     border-bottom-left-radius: var(--wui-border-radius-xs);
@@ -21,8 +20,6 @@ export default css`
     overflow: scroll;
   }
 
-=======
->>>>>>> 04d55799cbeefc88c9ca98355b9b428575320415
   .group-container[last-group='true'] {
     padding-bottom: var(--wui-spacing-m);
   }
