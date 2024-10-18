@@ -10,8 +10,8 @@
     "@reown/appkit-adapter-ethers": "workspace:*",
     "@reown/appkit": "workspace:*",
     "ethers": "6.13.2",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
   },
   "devDependencies": {
     "@types/react": "18.2.62",
