@@ -202,7 +202,7 @@ export class W3mSmartSessionListView extends LitElement {
               <wui-text variant="small-400" color="fg-100"
                 >${project?.name || 'Unknown Dapp'}</wui-text
               >
-              ${project.url ? html`<wui-link>${project?.url}</wui-link>` : ''}
+              ${project.url ? html`<wui-link>${project?.url}</wui-link>` : null}
             </wui-flex>
           </wui-flex>
           <wui-tag variant=${this.getVariant(session)}
@@ -232,11 +232,11 @@ export class W3mSmartSessionListView extends LitElement {
                       >
                         Revoke
                       </wui-button>`
-                    : ''}
+                    : null}
                 </wui-flex>`
               })}
             </wui-flex>`
-          : ''}
+          : null}
       </wui-flex>`
     })
   }
