@@ -161,7 +161,7 @@ export class W3mConnectingWidget extends LitElement {
       ${this.isWalletConnect
         ? html`
             <wui-flex .padding=${['0', 'xl', 'xl', 'xl'] as const} justifyContent="center">
-              <wui-link @click=${this.onCopyUri} color="fg-200">
+              <wui-link @click=${this.onCopyUri} color="fg-200" data-testid="wui-link-copy">
                 <wui-icon size="xs" color="fg-200" slot="iconLeft" name="copy"></wui-icon>
                 Copy link
               </wui-link>

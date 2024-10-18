@@ -48,6 +48,6 @@
     "url": "https://github.com/reown-com/appkit/issues"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "2"
+    "@vitest/coverage-v8": "2.1.3"
   }
 }
