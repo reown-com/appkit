@@ -82,7 +82,7 @@ export class UniversalAdapterClient {
 
   public adapterType: AdapterType = 'universal'
 
-  public reportErrors = true
+  public reportedErrors: Record<string, boolean> = {}
 
   public constructor(options: AppKitOptionsWithCaipNetworks) {
     const { siweConfig, metadata } = options
@@ -351,17 +351,31 @@ export class UniversalAdapterClient {
     return this.walletConnectProviderInitPromise
   }
 
+  private handleAlertError(errorMessage: string) {
+    const matchedUniversalProviderError = Object.entries(ErrorUtil.UniversalProviderErrors).find(
+      ([, providerError]) => providerError.message.includes(errorMessage)
+    )
+
+    const [providerErrorKey, providerError] = matchedUniversalProviderError ?? []
+
+    const { message, alertErrorKey } = providerError ?? {}
+
+    if (providerErrorKey && message && !this.reportedErrors[providerErrorKey]) {
+      const alertError =
+        ErrorUtil.ALERT_ERRORS[alertErrorKey as keyof typeof ErrorUtil.ALERT_ERRORS] ??
+        ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION
+
+      AlertController.open(alertError, 'error')
+
+      this.reportedErrors[providerErrorKey] = true
+    }
+  }
+
   private async initWalletConnectProvider(projectId: string) {
-    const logger = LoggerUtil.createLogger((err, ...args) => {
-      if (err.message.includes(ErrorUtil.UniversalProviderErrors.UNAUTHORIZED_DOMAIN_NOT_ALLOWED)) {
-        if (this.reportErrors) {
-          AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
-          this.reportErrors = false
-        }
-
-        return
+    const logger = LoggerUtil.createLogger((error, ...args) => {
+      if (error) {
+        this.handleAlertError(error.message)
       }
-
       // eslint-disable-next-line no-console
       console.error(...args)
     })
@@ -378,7 +392,6 @@ export class UniversalAdapterClient {
     }
 
     this.walletConnectProvider = await UniversalProvider.init(walletConnectProviderOptions)
-
     await this.checkActiveWalletConnectProvider()
   }
 

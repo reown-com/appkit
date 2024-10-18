@@ -1,6 +1,13 @@
 export const ErrorUtil = {
   UniversalProviderErrors: {
-    UNAUTHORIZED_DOMAIN_NOT_ALLOWED: 'Unauthorized: origin not allowed'
+    UNAUTHORIZED_DOMAIN_NOT_ALLOWED: {
+      message: 'Unauthorized: origin not allowed',
+      alertErrorKey: 'INVALID_APP_CONFIGURATION'
+    },
+    JWT_VALIDATION_ERROR: {
+      message: 'JWT validation error: JWT Token is not yet valid',
+      alertErrorKey: 'JWT_TOKEN_NOT_VALID'
+    }
   },
   ALERT_ERRORS: {
     INVALID_APP_CONFIGURATION: {
@@ -16,6 +23,10 @@ export const ErrorUtil = {
         `Origin ${
           isSafe() ? window.origin : 'unknown'
         } not found on Allowlist - update configuration to enable social login`
+    },
+    JWT_TOKEN_NOT_VALID: {
+      shortMessage: 'Session Expired',
+      longMessage: 'Session expired - please connect again'
     },
     PROJECT_ID_NOT_CONFIGURED: {
       shortMessage: 'Project ID Not Configured',
