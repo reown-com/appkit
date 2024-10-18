@@ -16,7 +16,7 @@ if (!projectId) {
 }
 
 function getBlockchainApiRpcUrl(chainId) {
-  return `https://maksy.ngrok.dev/v1/?chainId=eip155:${chainId}&projectId=${projectId}`
+  return `https://rpc.walletconnect.org/v1/?chainId=eip155:${chainId}&projectId=${projectId}`
 }
 
 // 2. Set Ethers adapter

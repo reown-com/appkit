@@ -2,7 +2,7 @@ import { createPublicClient, http } from 'viem'
 
 function getTransport({ chainId }: { chainId: number }) {
   return http(
-    `https://maksy.ngrok.dev/v1/?chainId=eip155:${chainId}&projectId=${process.env['NEXT_PUBLIC_PROJECT_ID']}`
+    `https://rpc.walletconnect.org/v1/?chainId=eip155:${chainId}&projectId=${process.env['NEXT_PUBLIC_PROJECT_ID']}`
   )
 }
 
