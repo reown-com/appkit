@@ -1,4 +1,4 @@
-import { useAppKit, useDisconnect } from '@reown/appkit/react'
+import { useAppKit, useDisconnect, useAppKitAccount } from '@reown/appkit/react'
 import {
   Stack,
   Card,
@@ -12,6 +12,7 @@ import {
 
 export function AppKitButtons() {
   const { open } = useAppKit()
+  const { caipAddress } = useAppKitAccount()
   const { disconnect } = useDisconnect()
 
   return (
@@ -43,9 +44,11 @@ export function AppKitButtons() {
                 Open
               </Button>
 
-              <Button data-testid="disconnect-hook-button" onClick={() => disconnect()}>
-                Disconnect
-              </Button>
+              {caipAddress && (
+                <Button data-testid="disconnect-hook-button" onClick={() => disconnect()}>
+                  Disconnect
+                </Button>
+              )}
             </Box>
           </Box>
         </Stack>
