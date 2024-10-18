@@ -12,12 +12,7 @@ import { LocalEcdsaKeyProvider } from '../../context/LocalEcdsaKeyContext'
 
 const queryClient = new QueryClient()
 
-const customBaseSepolia = {
-  ...baseSepolia,
-  rpcUrl: 'https://rpc.walletconnect.org'
-}
-
-const networks = [customBaseSepolia, sepolia] as [AppKitNetwork, ...AppKitNetwork[]]
+const networks = [baseSepolia, sepolia] as [AppKitNetwork, ...AppKitNetwork[]]
 
 const wagmiAdapter = new WagmiAdapter({
   ssr: true,
