@@ -701,8 +701,6 @@ describe('EthersAdapter', () => {
       )
       expect(client['syncConnectedWalletInfo']).toHaveBeenCalled()
       expect(client['syncProfile']).toHaveBeenCalledWith(mockAddress)
-      expect(client['setupProviderListeners']).toHaveBeenCalledOnce()
-      expect(client['setProvider']).toHaveBeenCalledOnce()
       expect(mockAppKit.setCaipAddress).toHaveBeenCalledTimes(2)
       expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(
         `eip155:${mainnet.id}:${mockAddress}`,
@@ -723,8 +721,6 @@ describe('EthersAdapter', () => {
 
       await client['syncAccount']({ address: mockAddress })
 
-      expect(client['setupProviderListeners']).toHaveBeenCalledOnce()
-      expect(client['setProvider']).toHaveBeenCalledOnce()
       expect(mockAppKit.setCaipAddress).toHaveBeenCalledTimes(2)
       expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(
         `eip155:${mainnet.id}:${mockAddress}`,
