@@ -4,6 +4,7 @@ import { ChainController } from '../src/controllers/ChainController.js'
 import type { CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
 import { ref } from 'valtio/vanilla'
 import { onUnmounted } from 'vue'
+import { ConnectionController } from './index.js'
 
 // -- Hooks ------------------------------------------------------------
 export function useAppKitNetwork(): {
@@ -55,4 +56,12 @@ export function useAppKitAccount() {
     isConnected: Boolean(state.activeCaipAddress),
     status: state.status
   }
+}
+
+export function useDisconnect() {
+  async function disconnect() {
+    await ConnectionController.disconnect()
+  }
+
+  return { disconnect }
 }

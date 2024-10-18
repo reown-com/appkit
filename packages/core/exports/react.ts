@@ -3,6 +3,7 @@ import { AccountController } from '../src/controllers/AccountController.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import { ChainController } from '../src/controllers/ChainController.js'
 import type { CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
+import { ConnectionController } from './index.js'
 
 // -- Hooks ------------------------------------------------------------
 export function useAppKitNetwork(): {
@@ -29,4 +30,12 @@ export function useAppKitAccount() {
     isConnected: Boolean(activeCaipAddress),
     status
   }
+}
+
+export function useDisconnect() {
+  async function disconnect() {
+    await ConnectionController.disconnect()
+  }
+
+  return { disconnect }
 }
