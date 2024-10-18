@@ -689,7 +689,7 @@ export class WagmiAdapter implements ChainAdapter {
       })
   }
 
-  private async setProfileAndBalance(address: Address, chainId: number) {
+  private async setProfileAndBalance(address: Hex, chainId: number) {
     await Promise.all([this.syncProfile(address, chainId), this.syncBalance(address, chainId)])
   }
 
