@@ -1,4 +1,4 @@
-import { useAppKit } from '@reown/appkit/react'
+import { useAppKit, useDisconnect, useAppKitAccount } from '@reown/appkit/react'
 import {
   Stack,
   Card,
@@ -12,6 +12,8 @@ import {
 
 export function AppKitButtons() {
   const { open } = useAppKit()
+  const { caipAddress } = useAppKitAccount()
+  const { disconnect } = useDisconnect()
 
   return (
     <Card marginTop={10}>
@@ -37,9 +39,17 @@ export function AppKitButtons() {
             <Heading size="xs" textTransform="uppercase" pb="2">
               Hooks Interactions
             </Heading>
-            <Button data-testid="w3m-open-hook-button" onClick={() => open()}>
-              Open
-            </Button>
+            <Box display="flex" alignItems="center" columnGap={3}>
+              <Button data-testid="w3m-open-hook-button" onClick={() => open()}>
+                Open
+              </Button>
+
+              {caipAddress && (
+                <Button data-testid="disconnect-hook-button" onClick={() => disconnect()}>
+                  Disconnect
+                </Button>
+              )}
+            </Box>
           </Box>
         </Stack>
       </CardBody>

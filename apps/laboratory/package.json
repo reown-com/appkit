@@ -1,7 +1,7 @@
 {
   "name": "@apps/laboratory",
   "type": "module",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -100,8 +100,8 @@
     "framer-motion": "10.17.9",
     "next": "14.2.3",
     "next-auth": "4.24.5",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
     "react-icons": "4.12.0",
     "rpc-websockets": "7.11.0",
     "valtio": "1.11.2",

@@ -163,6 +163,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-register-account-name-success-view></w3m-register-account-name-success-view>`
       case 'SmartSessionCreated':
         return html`<w3m-smart-session-created-view></w3m-smart-session-created-view>`
+      case 'SmartSessionList':
+        return html`<w3m-smart-session-list-view></w3m-smart-session-list-view>`
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }
