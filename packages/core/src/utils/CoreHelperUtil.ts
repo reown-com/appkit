@@ -212,7 +212,7 @@ export const CoreHelperUtil = {
   },
 
   getBlockchainApiUrl() {
-    return 'https://maksy.ngrok.dev' // CommonConstants.BLOCKCHAIN_API_RPC_URL
+    return CommonConstants.BLOCKCHAIN_API_RPC_URL
   },
 
   getAnalyticsUrl() {

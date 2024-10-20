@@ -7,10 +7,10 @@ import {
 import { PresetsUtil } from './PresetsUtil.js'
 import { fallback, http } from 'viem'
 
-const RPC_URL_HOST = 'maksy.ngrok.dev'
+const RPC_URL_HOST = 'rpc.walletconnect.org'
 
 export function getBlockchainApiRpcUrl(caipNetworkId: CaipNetworkId, projectId: string) {
-  const url = new URL('https://maksy.ngrok.dev/v1/')
+  const url = new URL('https://rpc.walletconnect.org/v1/')
   url.searchParams.set('chainId', caipNetworkId)
   url.searchParams.set('projectId', projectId)
 

@@ -14,7 +14,7 @@ const queryClient = new QueryClient()
 
 const customBaseSepolia = {
   ...baseSepolia,
-  rpcUrl: 'https://maksy.ngrok.dev'
+  rpcUrl: 'https://rpc.walletconnect.org'
 }
 
 const networks = [customBaseSepolia, sepolia] as [AppKitNetwork, ...AppKitNetwork[]]
