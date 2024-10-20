@@ -9,6 +9,8 @@ let validator: ModalWalletValidator
 let context: BrowserContext
 /* eslint-enable init-declarations */
 
+const ABSOLUTE_WALLET_ID = 'bfa6967fd05add7bb2b19a442ac37cedb6a6b854483729194f5d7185272c5594'
+
 // -- Setup --------------------------------------------------------------------
 const walletFeaturesTest = test.extend<{ library: string }>({
   library: ['wagmi', { option: true }]
@@ -16,9 +18,14 @@ const walletFeaturesTest = test.extend<{ library: string }>({
 
 walletFeaturesTest.describe.configure({ mode: 'serial' })
 
-walletFeaturesTest.beforeAll(async ({ browser, library }) => {
+walletFeaturesTest.beforeAll(async ({ browser, browserName, library }) => {
   walletFeaturesTest.setTimeout(300000)
-  context = await browser.newContext()
+
+  if (browserName === 'chromium') {
+    context = await browser.newContext({ permissions: ['clipboard-read', 'clipboard-write'] })
+  } else {
+    context = await browser.newContext()
+  }
   const browserPage = await context.newPage()
 
   page = new ModalWalletPage(browserPage, library, 'default')
@@ -75,4 +82,24 @@ walletFeaturesTest('it should find account name as expected', async () => {
   await validator.expectHeaderText('Approve Transaction')
   await validator.expectAccountNameApproveTransaction('test-ens-check.reown.id')
   await page.closeModal()
+})
+
+walletFeaturesTest('it should open web app wallet', async () => {
+  await page.goToSettings()
+  await page.disconnect()
+  await page.openConnectModal()
+  await validator.expectAllWallets()
+  await page.openAllWallets()
+  await page.page.waitForTimeout(500)
+  await page.search('absolute wallet')
+  await page.clickAllWalletsListSearchItem(ABSOLUTE_WALLET_ID)
+  await page.page.waitForTimeout(500)
+  await page.clickTabWebApp()
+  const copiedLink = await page.clickCopyLink()
+  const url = await page.clickOpenWebApp()
+  validator.expectQueryParameterFromUrl({
+    url,
+    key: 'uri',
+    value: copiedLink
+  })
 })

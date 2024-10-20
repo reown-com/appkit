@@ -12,8 +12,9 @@ import {
   baseSepolia,
   gnosis,
   unichainSepolia,
-  type AppKitNetwork
+  hedera
 } from '@reown/appkit/networks'
+import type { AppKitNetwork } from '@reown/appkit/networks'
 import { getLocalStorageItem } from './LocalStorage'
 import type { CaipNetwork } from '@reown/appkit'
 
@@ -62,7 +63,8 @@ const EvmNetworks = [
   baseSepolia,
   unichainSepolia,
   sepolia,
-  gnosis
+  gnosis,
+  hedera
 ] as [AppKitNetwork, ...AppKitNetwork[]]
 
 export const solanaNotExist = {

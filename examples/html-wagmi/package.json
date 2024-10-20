@@ -11,8 +11,8 @@
     "@wagmi/core": "2.13.8",
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@reown/appkit": "workspace:*",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
   },
   "devDependencies": {
     "vite": "5.2.11"
