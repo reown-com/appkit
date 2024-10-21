@@ -83,7 +83,7 @@
     "@reown/appkit-experimental": "workspace:*",
     "@reown/appkit-siwe": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@sentry/browser": "7.119.1",
+    "@sentry/browser": "7.119.2",
     "@sentry/react": "7.92.0",
     "@solana/wallet-adapter-wallets": "0.19.32",
     "@solana/web3.js": "1.95.3",
