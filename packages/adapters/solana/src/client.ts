@@ -139,7 +139,7 @@ export class SolanaAdapter implements ChainAdapter {
         : network
     )
     this.defaultCaipNetwork = SolHelpersUtil.getChainFromCaip({
-      chains: options.networks,
+      chains: this.caipNetworks,
       chainCaipId: SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID),
       customNetworkImageUrls: options.chainImages
     })
