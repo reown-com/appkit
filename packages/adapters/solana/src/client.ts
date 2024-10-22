@@ -130,11 +130,13 @@ export class SolanaAdapter implements ChainAdapter {
     this.appKit = appKit
     this.options = options
     this.caipNetworks = options.networks.map(network =>
-      SolHelpersUtil.getChainFromCaip({
-        chains: options.networks,
-        chainCaipId: `${network.chainNamespace}:${network.id}`,
-        customNetworkImageUrls: options.chainImages
-      })
+      SolHelpersUtil.isSolanaChainNameSpace(network)
+        ? SolHelpersUtil.getChainFromCaip({
+            chains: options.networks,
+            chainCaipId: `${network.chainNamespace}:${network.id}`,
+            customNetworkImageUrls: options.chainImages
+          })
+        : network
     )
     this.defaultCaipNetwork = SolHelpersUtil.getChainFromCaip({
       chains: options.networks,

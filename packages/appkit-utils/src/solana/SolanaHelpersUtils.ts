@@ -33,6 +33,10 @@ export const SolHelpersUtil = {
     return SolConstantsUtil.DEFAULT_CHAIN
   },
 
+  isSolanaChainNameSpace({ chainNamespace }: CaipNetwork) {
+    return chainNamespace.startsWith(CommonConstantsUtil.CHAIN.SOLANA)
+  },
+
   getChainFromCaip({
     chains,
     chainCaipId = ':',
