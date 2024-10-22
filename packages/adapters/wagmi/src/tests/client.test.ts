@@ -25,6 +25,8 @@ const mockOptionsExtended = {
   defaultNetwork: mainnet
 }
 
+const mockConnector = mockWagmiClient.wagmiConfig.connectors[0]!
+
 vi.mock('@wagmi/core', async () => {
   const actual = await vi.importActual('@wagmi/core')
   return {
@@ -40,6 +42,8 @@ describe('Wagmi Client', () => {
     vi.clearAllMocks()
     ;(getEnsName as any).mockResolvedValue('mock.eth')
     ;(getBalance as any).mockResolvedValue({ formatted: '1.0', symbol: 'ETH' })
+    vi.spyOn(mockAppKit, 'fetchIdentity').mockResolvedValue({ name: 'example.eth', avatar: '' })
+    vi.spyOn(mockAppKit, 'getReownName').mockImplementation(() => Promise.resolve([]))
   })
 
   afterEach(() => {
@@ -112,10 +116,17 @@ describe('Wagmi Client', () => {
 
       expect(mockWagmiClient.wagmiConfig).toBeDefined()
 
+      const syncAccountSpy = vi.spyOn(mockWagmiClient as any, 'syncAccount')
+      const mockConnectorConnectSpy = vi.spyOn(mockConnector, 'connect')
+      const mockConnectorGetAccountsSpy = vi.spyOn(mockConnector, 'connect')
+
       await connect(mockWagmiClient.wagmiConfig, {
-        connector: mockWagmiClient.wagmiConfig.connectors[0]!
+        connector: mockConnector
       })
 
+      expect(syncAccountSpy).toHaveBeenCalledTimes(2)
+      expect(mockConnectorConnectSpy).toHaveBeenCalledOnce()
+      expect(mockConnectorGetAccountsSpy).toHaveBeenCalledOnce()
       expect(setApprovedCaipNetworksData).toHaveBeenCalledOnce()
 
       expect(mockAppKit.getCaipAddress()).toBe(
@@ -132,7 +143,12 @@ describe('Wagmi Client', () => {
       const resetNetworkSpy = vi.spyOn(mockAppKit, 'resetNetwork')
       const setAllAccountsSpy = vi.spyOn(mockAppKit, 'setAllAccounts')
 
+      const mockConnectorDisconnectSpy = vi.spyOn(mockConnector, 'disconnect')
+
       await disconnect(mockWagmiClient.wagmiConfig)
+
+      expect(mockConnectorConnectSpy).toHaveBeenCalled()
+      expect(mockConnectorDisconnectSpy).toHaveBeenCalledOnce()
 
       const disconnectedWagmiAccount = getAccount(mockWagmiClient.wagmiConfig)
 
@@ -141,7 +157,7 @@ describe('Wagmi Client', () => {
       expect(resetAccountSpy).toHaveBeenCalledOnce()
       expect(resetWcSpy).toHaveBeenCalledOnce()
       expect(resetNetworkSpy).toHaveBeenCalledOnce()
-      expect(setAllAccountsSpy).toHaveBeenCalledOnce()
+      expect(setAllAccountsSpy).toHaveBeenCalledTimes(2)
     })
   })
 
@@ -173,9 +189,17 @@ describe('Wagmi Client', () => {
         `eip155:${mockChainId}:${mockAddress}`,
         'eip155'
       )
+
+      expect(syncNetworkSpy).toHaveBeenCalledOnce()
       expect(syncNetworkSpy).toHaveBeenCalledWith(mockAddress, mockChainId, true)
+
+      expect(syncProfileSpy).toHaveBeenCalledOnce()
       expect(syncProfileSpy).toHaveBeenCalledWith(mockAddress, mockChainId)
+
+      expect(syncBalanceSpy).toHaveBeenCalledOnce()
       expect(syncBalanceSpy).toHaveBeenCalledWith(mockAddress, mockChainId)
+
+      expect(syncConnectedWalletInfoSpy).toHaveBeenCalledOnce
       expect(syncConnectedWalletInfoSpy).toHaveBeenCalledWith(mockConnector)
     })
   })
@@ -189,7 +213,6 @@ describe('Wagmi Client', () => {
       const setCaipNetworkSpy = vi.spyOn(mockAppKit, 'setCaipNetwork')
       const setCaipAddressSpy = vi.spyOn(mockAppKit, 'setCaipAddress')
       const setAddressExplorerUrlSpy = vi.spyOn(mockAppKit, 'setAddressExplorerUrl')
-      const syncBalanceSpy = vi.spyOn(mockWagmiClient as any, 'syncBalance')
 
       await (mockWagmiClient as any).syncNetwork(mockAddress, mainnet.id, true)
 
@@ -210,7 +233,6 @@ describe('Wagmi Client', () => {
         'https://etherscan.io/address/0x1234567890123456789012345678901234567890',
         'eip155'
       )
-      expect(syncBalanceSpy).toHaveBeenCalledWith(mockAddress, mainnet.id)
     })
 
     it('should not sync network if chain is not found', async () => {
@@ -479,7 +501,6 @@ describe('Wagmi Client', () => {
       expect(mockProvider.onRpcError).toHaveBeenCalledWith(expect.any(Function))
       expect(mockProvider.onRpcSuccess).toHaveBeenCalledWith(expect.any(Function))
       expect(mockProvider.onNotConnected).toHaveBeenCalledWith(expect.any(Function))
-      expect(mockProvider.onIsConnected).toHaveBeenCalledWith(expect.any(Function))
       expect(mockProvider.onGetSmartAccountEnabledNetworks).toHaveBeenCalledWith(
         expect.any(Function)
       )

@@ -162,15 +162,12 @@ export class W3mConnectingWcView extends LitElement {
     switch (this.platform) {
       case 'browser':
         return html`<w3m-connecting-wc-browser></w3m-connecting-wc-browser>`
+      case 'web':
+        return html`<w3m-connecting-wc-web></w3m-connecting-wc-web>`
       case 'desktop':
         return html`
           <w3m-connecting-wc-desktop .onRetry=${() => this.initializeConnection(true)}>
           </w3m-connecting-wc-desktop>
-        `
-      case 'web':
-        return html`
-          <w3m-connecting-wc-web .onRetry=${() => this.initializeConnection(true)}>
-          </w3m-connecting-wc-web>
         `
       case 'mobile':
         return html`

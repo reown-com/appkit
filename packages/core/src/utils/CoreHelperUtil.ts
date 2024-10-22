@@ -42,8 +42,8 @@ export const CoreHelperUtil = {
     return expiry ? expiry - Date.now() <= ConstantsUtil.TEN_SEC_MS : true
   },
 
-  isAllowedRetry(lastRetry: number) {
-    return Date.now() - lastRetry >= ConstantsUtil.ONE_SEC_MS
+  isAllowedRetry(lastRetry: number, differenceMs = ConstantsUtil.ONE_SEC_MS) {
+    return Date.now() - lastRetry >= differenceMs
   },
 
   copyToClopboard(text: string) {

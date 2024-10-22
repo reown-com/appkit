@@ -139,6 +139,12 @@ export class ModalValidator {
     expect(secureSiteIframe).toBeNull()
   }
 
+  expectQueryParameterFromUrl({ url, key, value }: { url: string; key: string; value: string }) {
+    const _url = new URL(url)
+    const queryParameters = Object.fromEntries(_url.searchParams.entries())
+    expect(queryParameters[key]).toBe(value)
+  }
+
   async expectNoSocials() {
     const socialList = this.page.getByTestId('wui-list-social')
     await expect(socialList).toBeHidden()
@@ -290,6 +296,11 @@ export class ModalValidator {
   async expectConnectButtonLoading() {
     const connectButton = this.page.getByTestId('connect-button')
     await expect(connectButton).toContainText('Connecting...')
+  }
+
+  async expectAccountButtonReady() {
+    const accountButton = this.page.getByTestId('account-button')
+    await expect(accountButton).toBeVisible({ timeout: MAX_WAIT })
   }
 
   async expectAccountSwitched(oldAddress: string) {

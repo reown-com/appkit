@@ -150,6 +150,7 @@ export const W3mFrameRpcConstants = {
     'solana_signAndSendTransaction',
     'wallet_sendCalls',
     'wallet_grantPermissions',
+    'wallet_revokePermissions',
     'eth_sendUserOperation'
   ],
   GET_CHAIN_ID: 'eth_chainId',

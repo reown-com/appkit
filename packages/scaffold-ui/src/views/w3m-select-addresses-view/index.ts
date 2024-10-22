@@ -28,6 +28,7 @@ export class W3mSelectAddressesView extends LitElement {
   @state() private approved = false
 
   @state() private isApproving = false
+
   constructor() {
     super()
     AccountController.subscribeKey('allAccounts', allAccounts => {

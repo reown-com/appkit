@@ -17,7 +17,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 
 // -- Constants ----------------------------------------- //
-const BETA_SCREENS: string[] = []
+const BETA_SCREENS: string[] = ['SmartSessionList']
 
 // -- Helpers ------------------------------------------- //
 function headings() {
@@ -83,7 +83,9 @@ function headings() {
       : 'Connect Social',
     ConnectingMultiChain: 'Select chain',
     ConnectingFarcaster: 'Farcaster',
-    SwitchActiveChain: 'Switch chain'
+    SwitchActiveChain: 'Switch chain',
+    SmartSessionCreated: undefined,
+    SmartSessionList: 'Smart Sessions'
   }
 }
 
@@ -137,7 +139,7 @@ export class W3mHeader extends LitElement {
   public override render() {
     return html`
       <wui-flex .padding=${this.getPadding()} justifyContent="space-between" alignItems="center">
-        ${this.dynamicButtonTemplate()} ${this.titleTemplate()} ${this.closeButtonTemplate()}
+        ${this.leftHeaderTemplate()} ${this.titleTemplate()} ${this.rightHeaderTemplate()}
       </wui-flex>
     `
   }
@@ -164,6 +166,23 @@ export class W3mHeader extends LitElement {
     } else {
       ModalController.close()
     }
+  }
+
+  private rightHeaderTemplate() {
+    const isSmartSessionsEnabled = OptionsController?.state?.features?.smartSessions
+
+    if (RouterController.state.view !== 'Account' || !isSmartSessionsEnabled) {
+      return this.closeButtonTemplate()
+    }
+
+    return html`<wui-flex>
+      <wui-icon-link
+        icon="clock"
+        @click=${() => RouterController.push('SmartSessionList')}
+        data-testid="w3m-header-smart-sessions"
+      ></wui-icon-link>
+      ${this.closeButtonTemplate()}
+    </wui-flex> `
   }
 
   private closeButtonTemplate() {
@@ -201,7 +220,7 @@ export class W3mHeader extends LitElement {
     `
   }
 
-  private dynamicButtonTemplate() {
+  private leftHeaderTemplate() {
     const { view } = RouterController.state
     const isConnectHelp = view === 'Connect'
     const isApproveTransaction = view === 'ApproveTransaction'

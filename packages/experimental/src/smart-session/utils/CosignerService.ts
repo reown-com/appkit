@@ -104,4 +104,14 @@ export class CosignerService {
       headers: { 'Content-Type': 'application/json' }
     })
   }
+
+  async revokePermissions(address: string, pci: string, signature: `0x${string}`): Promise<void> {
+    const url = `${this.baseUrl}/${encodeURIComponent(address)}/revoke`
+    await sendCoSignerRequest<Record<string, string>, never, { projectId: string }>({
+      url,
+      request: { pci, signature },
+      queryParams: { projectId: this.projectId },
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
 }
