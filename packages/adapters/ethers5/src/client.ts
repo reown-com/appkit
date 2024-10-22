@@ -219,12 +219,10 @@ export class Ethers5Adapter {
   public construct(appKit: AppKit, options: AppKitOptionsWithCaipNetworks) {
     this.appKit = appKit
     this.options = options
-
     this.caipNetworks = CaipNetworksUtil.extendCaipNetworks(options.networks, {
       customNetworkImageUrls: options.chainImages,
       projectId: options.projectId
     })
-
     this.defaultCaipNetwork = options.defaultNetwork
       ? CaipNetworksUtil.extendCaipNetwork(options.defaultNetwork, {
           customNetworkImageUrls: options.chainImages,

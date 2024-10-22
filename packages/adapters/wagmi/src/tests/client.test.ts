@@ -92,11 +92,6 @@ describe('Wagmi Client', () => {
       expect(mockWagmiClient.defaultCaipNetwork?.name).toEqual(mainnet.name)
     })
 
-    it('should set chainImages to first chainImages option', () => {
-      expect(mockWagmiClient.defaultCaipNetwork?.id).toEqual(mainnet.id)
-      expect(mockWagmiClient.defaultCaipNetwork?.name).toEqual(mainnet.name)
-    })
-
     it('should create wagmi config', () => {
       expect(mockWagmiClient['wagmiConfig']).toBeDefined()
     })

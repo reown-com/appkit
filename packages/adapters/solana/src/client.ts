@@ -129,6 +129,7 @@ export class SolanaAdapter implements ChainAdapter {
 
     this.appKit = appKit
     this.options = options
+    console.log('hi')
     this.caipNetworks = options.networks.map(network =>
       SolHelpersUtil.getChainFromCaip({
         chains: options.networks,
