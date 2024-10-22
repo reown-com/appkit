@@ -39,6 +39,7 @@ export type CustomProjectProperties = {
 }
 
 const SINGLE_ADAPTER_EVM_TESTS = [
+  'metamask.spec.ts',
   'basic-tests.spec.ts',
   'canary.spec.ts',
   'email.spec.ts',
