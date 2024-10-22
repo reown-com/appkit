@@ -86,24 +86,35 @@ describe('SolHelpersUtil', () => {
 
   describe('getChainFromCaip', () => {
     it('should return the correct chain for a valid CAIP ID', () => {
-      const result = SolHelpersUtil.getChainFromCaip(
-        mockChains,
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
-      )
+      const result = SolHelpersUtil.getChainFromCaip({
+        chains: mockChains,
+        chainCaipId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        customNetworkImageUrls: {}
+      })
       expect(result).toEqual({
         ...mockChains[0],
-        id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        imageId: 'a1b58899-f671-4276-6a5e-56ca5bd59700',
+        id: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        assets: {
+          imageId: 'a1b58899-f671-4276-6a5e-56ca5bd59700',
+          imageUrl: undefined
+        },
         chainNamespace: CommonConstantsUtil.CHAIN.SOLANA
       })
     })
 
     it('should return the default chain for an invalid CAIP ID', () => {
-      const result = SolHelpersUtil.getChainFromCaip(mockChains, 'invalid:chain')
+      const result = SolHelpersUtil.getChainFromCaip({
+        chains: mockChains,
+        chainCaipId: 'invalid:chain',
+        customNetworkImageUrls: {}
+      })
       expect(result).toEqual({
         ...SolConstantsUtil.DEFAULT_CHAIN,
-        id: 'solana:chain',
-        imageId: undefined,
+        id: 'chain',
+        assets: {
+          imageId: undefined,
+          imageUrl: undefined
+        },
         chainNamespace: CommonConstantsUtil.CHAIN.SOLANA
       })
     })

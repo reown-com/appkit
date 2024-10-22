@@ -24,7 +24,7 @@ import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 
 const [mainnet, arbitrum, polygon, optimism, bsc] = CaipNetworksUtil.extendCaipNetworks(
   [AppkitMainnet, AppkitArbitrum, AppkitPolygon, AppkitOptimism, AppkitBsc],
-  { customNetworkImageUrls: {}, projectId: '1234' }
+  { customNetworkImageUrls: mockOptions.chainImages, projectId: 'test-project-id' }
 ) as [CaipNetwork, CaipNetwork, CaipNetwork, CaipNetwork, CaipNetwork]
 
 const caipNetworks = [mainnet, arbitrum, polygon] as [CaipNetwork, ...CaipNetwork[]]
@@ -164,6 +164,16 @@ describe('EthersAdapter', () => {
 
     it('should set caipNetworks to provided caipNetworks options', () => {
       expect(client.caipNetworks).toEqual(caipNetworks)
+    })
+
+    it('should set chain images', () => {
+      Object.entries(mockOptions.chainImages!).map(([networkId, imageUrl]) => {
+        const caipNetwork = client.caipNetworks.find(
+          caipNetwork => caipNetwork.id === Number(networkId)
+        )
+        expect(caipNetwork).toBeDefined()
+        expect(caipNetwork?.assets?.imageUrl).toEqual(imageUrl)
+      })
     })
 
     it('should set defaultNetwork to first caipNetwork option', () => {

@@ -66,11 +66,33 @@ describe('Wagmi Client', () => {
       })
     })
 
+    it('should set chain images', () => {
+      const client = new WagmiAdapter({
+        projectId: '123',
+        networks: [mainnet, arbitrum]
+      })
+
+      client.construct(mockAppKit, mockOptions)
+
+      Object.entries(mockOptions.chainImages).map(([networkId, imageUrl]) => {
+        const caipNetwork = client.caipNetworks.find(
+          caipNetwork => caipNetwork.id === Number(networkId)
+        )
+        expect(caipNetwork).toBeDefined()
+        expect(caipNetwork?.assets?.imageUrl).toEqual(imageUrl)
+      })
+    })
+
     it('should set defaultNetwork to first caipNetwork option', () => {
       /**
        * Specifically to Wagmi, we are mutating caipNetworks on both Wagmi constructor and when we set adapters.
        * So there is not proper way to compare objects since imageId and imageUrl is added later.
        */
+      expect(mockWagmiClient.defaultCaipNetwork?.id).toEqual(mainnet.id)
+      expect(mockWagmiClient.defaultCaipNetwork?.name).toEqual(mainnet.name)
+    })
+
+    it('should set chainImages to first chainImages option', () => {
       expect(mockWagmiClient.defaultCaipNetwork?.id).toEqual(mainnet.id)
       expect(mockWagmiClient.defaultCaipNetwork?.name).toEqual(mainnet.name)
     })

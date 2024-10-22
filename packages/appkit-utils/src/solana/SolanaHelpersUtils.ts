@@ -33,7 +33,15 @@ export const SolHelpersUtil = {
     return SolConstantsUtil.DEFAULT_CHAIN
   },
 
-  getChainFromCaip(chains: CaipNetwork[], chainCaipId: string | undefined | null = ':') {
+  getChainFromCaip({
+    chains,
+    chainCaipId = ':',
+    customNetworkImageUrls
+  }: {
+    chains: CaipNetwork[]
+    chainCaipId: string | undefined | null
+    customNetworkImageUrls: Record<number | string, string> | undefined
+  }): CaipNetwork {
     const chainId: string = (chainCaipId?.split(':')[1] ?? '').replace(/\s/gu, '')
 
     const selectedChain = chains.find(chain => chain.id === chainId)
@@ -41,18 +49,23 @@ export const SolHelpersUtil = {
     if (selectedChain) {
       return {
         ...selectedChain,
-        id: `solana:${chainId}`,
-        imageId: NetworkImageIds[chainId],
+        assets: {
+          imageId: NetworkImageIds[chainId],
+          imageUrl: customNetworkImageUrls?.[chainId]
+        },
         chainNamespace: CommonConstantsUtil.CHAIN.SOLANA
-      } as CaipNetwork
+      }
     }
 
     return {
       ...SolConstantsUtil.DEFAULT_CHAIN,
-      id: `solana:${chainId}`,
-      imageId: NetworkImageIds[chainId],
+      id: chainId,
+      assets: {
+        imageId: NetworkImageIds[chainId],
+        imageUrl: customNetworkImageUrls?.[chainId]
+      },
       chainNamespace: CommonConstantsUtil.CHAIN.SOLANA
-    } as CaipNetwork
+    }
   },
 
   hexStringToNumber(value: string) {
