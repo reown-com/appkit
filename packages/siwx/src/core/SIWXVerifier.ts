@@ -1,7 +1,7 @@
 import type { ChainNamespace } from '@reown/appkit-common'
 import type { SIWXSession } from '@reown/appkit-core'
 
-export abstract class SIWXVerifierBlueprint {
+export abstract class SIWXVerifier {
   public abstract readonly chainNamespace: ChainNamespace
   public abstract readonly messageVersion: string
 
@@ -15,8 +15,8 @@ export abstract class SIWXVerifierBlueprint {
   abstract verify(session: SIWXSession): Promise<boolean>
 }
 
-export namespace SIWXVerifierBlueprint {
-  export type BlueprintParams = {
+export namespace SIWXVerifier {
+  export type ConstructorParams = {
     chainNamespace: ChainNamespace
   }
 }

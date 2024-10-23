@@ -1,15 +1,20 @@
-import type { SIWXConfig, SIWXMessage, SIWXMessageInput, SIWXSession } from '@reown/appkit-core'
-import type { SIWXMessageBlueprint } from './SIWXMessageBlueprint.js'
-import type { SIWXVerifierBlueprint } from './SIWXVerifierBlueprint.js'
-import type { SIWXStorageBlueprint } from './SIWXStorageBlueprint.js'
+import type {
+  SIWXConfig as SIWXConfigInterface,
+  SIWXMessage,
+  SIWXMessageInput,
+  SIWXSession
+} from '@reown/appkit-core'
+import type { SIWXMessenger } from './SIWXMessager.js'
+import type { SIWXVerifier } from './SIWXVerifier.js'
+import type { SIWXStorage } from './SIWXStorage.js'
 import type { CaipNetworkId } from '@reown/appkit-common'
 
-export abstract class SIWXConfigBlueprint implements SIWXConfig {
-  private messenger: SIWXMessageBlueprint
-  private verifiers: SIWXVerifierBlueprint[]
-  private storage: SIWXStorageBlueprint
+export abstract class SIWXConfig implements SIWXConfigInterface {
+  private messenger: SIWXMessenger
+  private verifiers: SIWXVerifier[]
+  private storage: SIWXStorage
 
-  constructor(params: SIWXConfigBlueprint.BlueprintParams) {
+  constructor(params: SIWXConfig.ConstructorParams) {
     this.messenger = params.messenger
     this.verifiers = params.verifiers
     this.storage = params.storage
@@ -57,10 +62,10 @@ export abstract class SIWXConfigBlueprint implements SIWXConfig {
   }
 }
 
-export namespace SIWXConfigBlueprint {
-  export type BlueprintParams = {
-    messenger: SIWXMessageBlueprint
-    verifiers: SIWXVerifierBlueprint[]
-    storage: SIWXStorageBlueprint
+export namespace SIWXConfig {
+  export type ConstructorParams = {
+    messenger: SIWXMessenger
+    verifiers: SIWXVerifier[]
+    storage: SIWXStorage
   }
 }

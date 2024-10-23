@@ -1,5 +1,5 @@
 import type { SIWXMessage, SIWXMessageMethods } from '@reown/appkit-core'
-import { SIWXMessageBlueprint } from '../blueprints/SIWXMessageBlueprint.js'
+import { SIWXMessenger } from '../core/SIWXMessager.js'
 
 /**
  * Follow Informal Message template from EIP-4361
@@ -27,7 +27,7 @@ import { SIWXMessageBlueprint } from '../blueprints/SIWXMessageBlueprint.js'
  * - ${resources[n]}
  * ```
  */
-export class InformalMessage extends SIWXMessageBlueprint {
+export class InformalMessage extends SIWXMessenger {
   protected readonly version = '1'
 
   protected override stringify(params: Omit<SIWXMessage, keyof SIWXMessageMethods>): string {

@@ -5,7 +5,7 @@ import type {
   SIWXMessageMethods
 } from '@reown/appkit-core'
 
-export abstract class SIWXMessageBlueprint {
+export abstract class SIWXMessenger {
   public domain: SIWXMessage['domain']
   public uri: SIWXMessage['uri']
   public statement?: SIWXMessage['statement']
@@ -14,12 +14,12 @@ export abstract class SIWXMessageBlueprint {
   protected abstract readonly version: SIWXMessage['version']
 
   protected expiration?: number
-  protected getNonce: SIWXMessageBlueprint.BlueprintParams['getNonce']
-  protected getRequestId?: SIWXMessageBlueprint.BlueprintParams['getRequestId']
+  protected getNonce: SIWXMessenger.ConstructorParams['getNonce']
+  protected getRequestId?: SIWXMessenger.ConstructorParams['getRequestId']
 
   protected abstract stringify(params: Omit<SIWXMessage, keyof SIWXMessageMethods>): string
 
-  constructor(params: SIWXMessageBlueprint.BlueprintParams) {
+  constructor(params: SIWXMessenger.ConstructorParams) {
     this.expiration = params.expiration
     this.getNonce = params.getNonce
     this.getRequestId = params.getRequestId
@@ -77,8 +77,8 @@ export abstract class SIWXMessageBlueprint {
   }
 }
 
-export namespace SIWXMessageBlueprint {
-  export interface BlueprintParams extends Omit<SIWXMessageMetadata, 'nonce' | 'version'> {
+export namespace SIWXMessenger {
+  export interface ConstructorParams extends Omit<SIWXMessageMetadata, 'nonce' | 'version'> {
     /**
      * Time in milliseconds
      */

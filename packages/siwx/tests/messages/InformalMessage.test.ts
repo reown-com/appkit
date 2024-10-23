@@ -1,10 +1,10 @@
 import { describe, test, expect, beforeAll, vi, afterAll } from 'vitest'
 import { type SIWXMessageInput } from '@reown/appkit-core'
 import { InformalMessage } from '../../src/index.js'
-import type { SIWXMessageBlueprint } from '../../src/blueprints/SIWXMessageBlueprint.js'
+import type { SIWXMessenger } from '../../src/core/SIWXMessager.js'
 
 type Case = {
-  params: Omit<SIWXMessageInput & SIWXMessageBlueprint.BlueprintParams, 'toString'>
+  params: Omit<SIWXMessageInput & SIWXMessenger.ConstructorParams, 'toString'>
   expected: string
 }
 
