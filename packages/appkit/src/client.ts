@@ -502,11 +502,15 @@ export class AppKit {
     }
 
     options.metadata = {
-      name: document.getElementsByTagName('title')[0]?.textContent || '',
+      name: options.metadata?.name || document.getElementsByTagName('title')[0]?.textContent || '',
       description:
-        document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.content || '',
-      url: window.location.origin,
-      icons: [document.querySelector<HTMLLinkElement>('link[rel~="icon"]')?.href || '']
+        options.metadata?.description ||
+        document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.content ||
+        '',
+      url: options.metadata?.url || window.location.origin,
+      icons: options.metadata?.icons || [
+        document.querySelector<HTMLLinkElement>('link[rel~="icon"]')?.href || ''
+      ]
     }
   }
 
