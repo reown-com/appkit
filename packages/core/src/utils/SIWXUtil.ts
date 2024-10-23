@@ -1,12 +1,14 @@
+import type { CaipNetworkId } from '@reown/appkit-common'
+
 /**
  * @experimental - This is an experimental feature and it is not production ready
  */
-export interface SWIXConfig {
+export interface SIWXConfig {
   createMessage: (input: SIWXMessageInput) => Promise<SIWXMessage>
   addSession: (session: SIWXSession) => Promise<void>
   revokeSession: (chainId: string, address: string) => Promise<void>
   setSessions: (sessions: SIWXSession[]) => Promise<void>
-  getSessions: (chainId: string) => Promise<SIWXSession[]>
+  getSessions: (chainId: CaipNetworkId) => Promise<SIWXSession[]>
 }
 
 /**
