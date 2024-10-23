@@ -17,6 +17,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@reown/appkit-common": "workspace:*",
     "@reown/appkit-core": "workspace:*"
   },
   "keywords": [
