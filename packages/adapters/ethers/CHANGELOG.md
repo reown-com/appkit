@@ -1,5 +1,18 @@
 # @reown/appkit-adapter-ethers
 
+## 1.1.8
+
+### Patch Changes
+
+- Updated dependencies [[`e16f0fe`](https://github.com/reown-com/appkit/commit/e16f0fe0dcc8c049e9c38560e177247c1eea9779)]:
+  - @reown/appkit-wallet@1.2.0
+  - @reown/appkit@1.1.8
+  - @reown/appkit-utils@1.1.8
+  - @reown/appkit-core@1.1.8
+  - @reown/appkit-scaffold-ui@1.1.8
+  - @reown/appkit-siwe@1.1.8
+  - @reown/appkit-ui@1.1.7
+
 ## 1.1.7
 
 ### Patch Changes

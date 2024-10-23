@@ -1,5 +1,13 @@
 # @reown/appkit-adapter-polkadot
 
+## 1.1.8
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @reown/appkit@1.1.8
+  - @reown/appkit-core@1.1.8
+
 ## 1.1.7
 
 ### Patch Changes

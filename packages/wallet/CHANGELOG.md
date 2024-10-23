@@ -1,5 +1,11 @@
 # @reown/appkit-wallet
 
+## 1.2.0
+
+### Minor Changes
+
+- [#3131](https://github.com/reown-com/appkit/pull/3131) [`e16f0fe`](https://github.com/reown-com/appkit/commit/e16f0fe0dcc8c049e9c38560e177247c1eea9779) Thanks [@AleksHirsch](https://github.com/AleksHirsch)! - Fixed message event handler when payload type was not a string
+
 ## 1.1.7
 
 ### Patch Changes
