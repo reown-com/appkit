@@ -26,7 +26,7 @@ const [mainnet, arbitrum, polygon, optimism, bsc] = CaipNetworksUtil.extendCaipN
   [AppkitMainnet, AppkitArbitrum, AppkitPolygon, AppkitOptimism, AppkitBsc],
   {
     customNetworkImageUrls: mockOptions.chainImages,
-    projectId: 'test-project-id'
+    projectId: '1234'
   }
 ) as [CaipNetwork, CaipNetwork, CaipNetwork, CaipNetwork, CaipNetwork]
 

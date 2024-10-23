@@ -24,7 +24,7 @@ import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 
 const [mainnet, arbitrum, polygon, optimism, bsc] = CaipNetworksUtil.extendCaipNetworks(
   [AppkitMainnet, AppkitArbitrum, AppkitPolygon, AppkitOptimism, AppkitBsc],
-  { customNetworkImageUrls: mockOptions.chainImages, projectId: 'test-project-id' }
+  { customNetworkImageUrls: mockOptions.chainImages, projectId: '1234' }
 ) as [CaipNetwork, CaipNetwork, CaipNetwork, CaipNetwork, CaipNetwork]
 
 const caipNetworks = [mainnet, arbitrum, polygon] as [CaipNetwork, ...CaipNetwork[]]

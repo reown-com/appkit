@@ -19,7 +19,7 @@ const [solana, solanaTestnet] = CaipNetworksUtil.extendCaipNetworks(
   [AppKitSolana, AppKitSolanaTestnet],
   {
     customNetworkImageUrls: mockOptions.chainImages,
-    projectId: 'test-project-id'
+    projectId: '1234'
   }
 ) as [CaipNetwork, CaipNetwork]
 
@@ -66,16 +66,14 @@ vi.mock('../utils/SolanaStoreUtil.js', () => ({
   }
 }))
 
-vi.mock('@reown/appkit-utils/solana', () => {
-  return {
-    SolHelpersUtil: {
-      detectRpcUrl: vi.fn()
-    },
-    SolConstantsUtil: {
-      LAMPORTS_PER_SOL: 1_000_000_000
-    }
+vi.mock('@reown/appkit-utils/solana', () => ({
+  SolHelpersUtil: {
+    detectRpcUrl: vi.fn()
+  },
+  SolConstantsUtil: {
+    LAMPORTS_PER_SOL: 1_000_000_000
   }
-})
+}))
 
 describe('SolanaAdapter', () => {
   let client: SolanaAdapter
