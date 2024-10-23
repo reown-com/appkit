@@ -129,20 +129,8 @@ export class SolanaAdapter implements ChainAdapter {
 
     this.appKit = appKit
     this.options = options
-    this.caipNetworks = options.networks.map(network =>
-      SolHelpersUtil.isSolanaChainNameSpace(network)
-        ? SolHelpersUtil.getChainFromCaip({
-            chains: options.networks,
-            chainCaipId: `${network.chainNamespace}:${network.id}`,
-            customNetworkImageUrls: options.chainImages
-          })
-        : network
-    )
-    this.defaultCaipNetwork = SolHelpersUtil.getChainFromCaip({
-      chains: this.caipNetworks,
-      chainCaipId: SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID),
-      customNetworkImageUrls: options.chainImages
-    })
+    this.caipNetworks = options.networks
+    this.defaultCaipNetwork = options.defaultNetwork
 
     if (!projectId) {
       throw new Error('Solana:construct - projectId is undefined')

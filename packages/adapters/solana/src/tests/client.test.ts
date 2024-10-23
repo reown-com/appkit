@@ -66,15 +66,9 @@ vi.mock('../utils/SolanaStoreUtil.js', () => ({
   }
 }))
 
-vi.mock('@reown/appkit-utils/solana', async importOriginal => {
-  const actual = await importOriginal()
-
+vi.mock('@reown/appkit-utils/solana', () => {
   return {
-    // @ts-expect-error
-    ...actual,
     SolHelpersUtil: {
-      // @ts-expect-error
-      ...actual.SolHelpersUtil,
       detectRpcUrl: vi.fn()
     },
     SolConstantsUtil: {

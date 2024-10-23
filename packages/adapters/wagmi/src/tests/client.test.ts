@@ -21,7 +21,7 @@ const [mainnet, arbitrum] = CaipNetworksUtil.extendCaipNetworks(
 
 const mockOptionsExtended = {
   ...mockOptions,
-  networks: [mainnet, arbitrum] as [CaipNetwork, ...CaipNetwork[]],
+  networks: mockAppKit.getCaipNetworks('eip155') as [CaipNetwork, ...CaipNetwork[]],
   defaultNetwork: mainnet
 }
 
@@ -72,7 +72,7 @@ describe('Wagmi Client', () => {
         networks: [mainnet, arbitrum]
       })
 
-      client.construct(mockAppKit, mockOptions)
+      client.construct(mockAppKit, mockOptionsExtended)
 
       Object.entries(mockOptions.chainImages).map(([networkId, imageUrl]) => {
         const caipNetwork = client.caipNetworks.find(

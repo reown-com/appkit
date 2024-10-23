@@ -252,17 +252,8 @@ export class WagmiAdapter implements ChainAdapter {
   public construct(appKit: AppKit, options: AppKitOptionsWithCaipNetworks) {
     this.appKit = appKit
     this.options = options
-    this.defaultCaipNetwork = CaipNetworksUtil.extendCaipNetwork(
-      options.defaultNetwork ?? options.networks?.[0],
-      {
-        customNetworkImageUrls: options.chainImages,
-        projectId: options.projectId
-      }
-    )
-    this.caipNetworks = CaipNetworksUtil.extendCaipNetworks(options.networks, {
-      projectId: options.projectId,
-      customNetworkImageUrls: options.chainImages
-    }) as [CaipNetwork, ...CaipNetwork[]]
+    this.caipNetworks = options.networks
+    this.defaultCaipNetwork = options.defaultNetwork || options.networks?.[0]
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
     this.setCustomConnectors(options, appKit)
 
