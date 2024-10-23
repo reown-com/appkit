@@ -22,7 +22,7 @@ Your on-ramp to web3 multichain. AppKit is a versatile library that makes it sup
 2. In each of the `examples` create `.env.local` file with following contents
 
 ```zsh
-VITE_PROJECT_ID="your_project_id"
+NEXT_PUBLIC_PROJECT_ID="your_project_id"
 ```
 
 3. Run `pnpm watch` to build and watch for file changes in a separate tab
