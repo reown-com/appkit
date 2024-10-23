@@ -3,37 +3,42 @@
  * For now exporting only Wagmi and Solana adapters. Until we found a better workaround and need other adapters, we can keep it this way.
  */
 import '@reown/appkit-polyfills'
-import { createAppKit } from '@reown/appkit'
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { SolanaAdapter } from '@reown/appkit-adapter-solana'
-import * as AppKitNetworks from '@reown/appkit/networks'
 
-// -- Export Wagmi ------------------------------------------- //
+export * as AppKit from '@reown/appkit'
+export * as AppKitNetworks from '@reown/appkit/networks'
+export * as WagmiAdapter from '@reown/appkit-adapter-wagmi'
+export * as SolanaAdapter from '@reown/appkit-adapter-solana'
 export * as Viem from 'viem'
 export * as Connectors from '@wagmi/connectors'
 export * as WagmiCore from '@wagmi/core'
 
-const networks = AppKitNetworks
-
-export { createAppKit, networks, WagmiAdapter, SolanaAdapter }
-
+// -- Global AppKit object -------------------------------- //
 declare global {
   interface Window {
-    AppKit: {
-      createAppKit: typeof createAppKit
-      WagmiAdapter: typeof WagmiAdapter
-      SolanaAdapter: typeof SolanaAdapter
-      networks: typeof AppKitNetworks
-    }
+    AppKit: any
+    WagmiAdapter: any
+    SolanaAdapter: any
+    AppKitNetworks: any
+    Viem: any
+    Connectors: any
+    WagmiCore: any
   }
 }
 
 // Assign to window.AppKit
 if (typeof window !== 'undefined') {
-  window.AppKit = {
-    createAppKit,
-    WagmiAdapter,
-    SolanaAdapter,
-    networks: AppKitNetworks
-  }
+  // @ts-expect-error no types for this
+  window.AppKit = AppKit
+  // @ts-expect-error no types for this
+  window.WagmiAdapter = WagmiAdapter
+  // @ts-expect-error no types for this
+  window.SolanaAdapter = SolanaAdapter
+  // @ts-expect-error no types for this
+  window.AppKitNetworks = AppKitNetworks
+  // @ts-expect-error no types for this
+  window.Viem = Viem
+  // @ts-expect-error no types for this
+  window.Connectors = Connectors
+  // @ts-expect-error no types for this
+  window.WagmiCore = WagmiCore
 }

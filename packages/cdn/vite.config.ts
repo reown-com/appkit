@@ -9,7 +9,7 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'lib/appkit.ts'),
       name: 'AppKit',
-      formats: ['umd'],
+      formats: ['es'],
       fileName: (_, entryName) => `${entryName}.js`
     },
     sourcemap: true,
