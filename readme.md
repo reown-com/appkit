@@ -3,7 +3,7 @@
 
 #### 📚 [Documentation](https://docs.reown.com/appkit/overview)
 
-#### 🧪 [Laboratory](https://appkit-lab.reown.org)
+#### 🧪 [Laboratory](https://appkit-lab.reown.com)
 
 #### 🔗 [Website](https://reown.com/appkit)
 
