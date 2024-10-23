@@ -13,7 +13,7 @@ import {
   SafeLocalStorageKeys
 } from '@reown/appkit-common'
 
-import { SolConstantsUtil, SolHelpersUtil } from '@reown/appkit-utils/solana'
+import { SolConstantsUtil } from '@reown/appkit-utils/solana'
 import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
 import type { Provider } from '@reown/appkit-utils/solana'
 
