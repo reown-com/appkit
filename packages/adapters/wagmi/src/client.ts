@@ -974,11 +974,7 @@ export class WagmiAdapter implements ChainAdapter {
     bypassWindowCheck = false
   ) {
     if (bypassWindowCheck || (typeof window !== 'undefined' && connector)) {
-      this.appKit?.setLoading(true)
       const provider = (await connector.getProvider()) as W3mFrameProvider
-      const isLoginEmailUsed = provider.getLoginEmailUsed()
-
-      this.appKit?.setLoading(isLoginEmailUsed)
 
       provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
