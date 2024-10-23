@@ -1,5 +1,19 @@
 # @apps/laboratory
 
+## 1.1.8
+
+### Patch Changes
+
+- Updated dependencies [[`e16f0fe`](https://github.com/reown-com/appkit/commit/e16f0fe0dcc8c049e9c38560e177247c1eea9779)]:
+  - @reown/appkit-wallet@1.2.0
+  - @reown/appkit-adapter-ethers@1.1.8
+  - @reown/appkit-adapter-ethers5@1.1.8
+  - @reown/appkit-adapter-solana@1.1.8
+  - @reown/appkit-adapter-wagmi@1.1.8
+  - @reown/appkit@1.1.8
+  - @reown/appkit-siwe@1.1.8
+  - @reown/appkit-experimental@1.1.8
+
 ## 1.1.7
 
 ### Patch Changes

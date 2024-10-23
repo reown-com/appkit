@@ -1,5 +1,16 @@
 # @reown/appkit-cdn
 
+## 1.1.8
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @reown/appkit-adapter-ethers@1.1.8
+  - @reown/appkit-adapter-ethers5@1.1.8
+  - @reown/appkit-adapter-solana@1.1.8
+  - @reown/appkit-adapter-wagmi@1.1.8
+  - @reown/appkit@1.1.8
+
 ## 1.1.7
 
 ### Patch Changes

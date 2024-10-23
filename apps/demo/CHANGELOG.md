@@ -1,5 +1,13 @@
 # @apps/demo
 
+## 1.1.8
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @reown/appkit-adapter-wagmi@1.1.8
+  - @reown/appkit@1.1.8
+
 ## 1.1.7
 
 ### Patch Changes
