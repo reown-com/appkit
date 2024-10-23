@@ -31,6 +31,37 @@ describe('Base', () => {
 
   beforeEach(() => {
     vi.resetAllMocks()
+
+    Object.defineProperty(global, 'document', {
+      value: {
+        title: 'Document Title',
+        querySelector: vi.fn().mockImplementation(selector => {
+          if (selector === 'meta[property="og:description"]') {
+            return { content: 'Document Description' }
+          } else if (selector === 'link[rel~="icon"]') {
+            return { href: 'https://example.com/favicon.ico' }
+          }
+          return null
+        }),
+        getElementsByTagName: vi.fn().mockImplementation(tagName => {
+          if (tagName === 'title') {
+            return [{ textContent: 'Document Title' }]
+          }
+          return []
+        })
+      },
+      writable: true
+    })
+
+    Object.defineProperty(global, 'window', {
+      value: {
+        location: {
+          origin: 'https://example.com'
+        }
+      },
+      writable: true
+    })
+
     appKit = new AppKit(mockOptions)
   })
 
@@ -439,6 +470,45 @@ describe('Base', () => {
         chain: 'eip155'
       })
       expect(result).toBe('connector-image-url')
+    })
+  })
+
+  describe('Metadata Handling', () => {
+    it('should read metadata from document object when not provided', () => {
+      appKit = new AppKit(mockOptions)
+      expect(OptionsController.setMetadata).toHaveBeenCalledWith({
+        name: 'Document Title',
+        description: 'Document Description',
+        url: 'https://example.com',
+        icons: ['https://example.com/favicon.ico']
+      })
+    })
+
+    it('should use provided metadata when available', () => {
+      const customMetadata = {
+        name: 'Custom Name',
+        description: 'Custom Description',
+        url: 'https://custom.com',
+        icons: ['https://custom.com/icon.png']
+      }
+      appKit = new AppKit({ ...mockOptions, metadata: customMetadata })
+      expect(OptionsController.setMetadata).toHaveBeenCalledWith(customMetadata)
+    })
+
+    it('should use a mix of provided and document metadata', () => {
+      const partialMetadata = {
+        name: 'Custom Name',
+        description: '',
+        url: '',
+        icons: ['https://custom.com/icon.png']
+      }
+      appKit = new AppKit({ ...mockOptions, metadata: partialMetadata })
+      expect(OptionsController.setMetadata).toHaveBeenCalledWith({
+        name: 'Custom Name',
+        description: 'Document Description',
+        url: 'https://example.com',
+        icons: ['https://custom.com/icon.png']
+      })
     })
   })
 })
