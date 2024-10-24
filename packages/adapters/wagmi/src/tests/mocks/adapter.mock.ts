@@ -17,6 +17,9 @@ export const mockWagmiClient = new WagmiAdapter({
 
 export const mockWagmiConfig = mockWagmiClient.wagmiConfig
 
+export const mockMainnetChainImage =
+  'https://assets.coingecko.com/coins/images/279/large/ethereum.png'
+
 export const mockOptions = {
   adapters: [mockWagmiClient],
   networks: mockWagmiClient.caipNetworks,
@@ -26,6 +29,9 @@ export const mockOptions = {
   features: {
     email: false,
     socials: []
+  },
+  chainImages: {
+    [mainnet.id]: mockMainnetChainImage
   },
   metadata: {
     description: 'Desc',
