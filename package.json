@@ -13,7 +13,7 @@
     "gallery": "turbo run dev --filter={./apps/gallery}",
     "laboratory": "pnpm --filter @apps/laboratory dev",
     "builder:dev": "pnpm --filter @apps/builder dev",
-    "builder:build": "pnpm --filter @apps/builder build",
+    "builder:build": "pnpm build; pnpm --filter @apps/builder build",
     "demo": "turbo run dev --filter={./apps/demo}",
     "examples": "turbo run dev --filter={./examples/*}",
     "build:gallery": "pnpm build; pnpm --filter=./apps/gallery build",
