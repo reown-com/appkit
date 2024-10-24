@@ -8,11 +8,8 @@
     "start": "next start"
   },
   "dependencies": {
-    "@reown/appkit": "workspace:*",
-    "@reown/appkit-adapter-ethers": "workspace:*",
-    "@reown/appkit-scaffold-ui": "workspace:*",
-    "@reown/appkit-core": "workspace:*",
     "@hookform/resolvers": "^3.9.0",
+    "@radix-ui/react-checkbox": "^1.1.2",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-icons": "^1.3.0",
     "@radix-ui/react-label": "^2.1.0",
@@ -20,6 +17,10 @@
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.1",
+    "@reown/appkit": "workspace:*",
+    "@reown/appkit-adapter-ethers": "workspace:*",
+    "@reown/appkit-core": "workspace:*",
+    "@reown/appkit-scaffold-ui": "workspace:*",
     "class-variance-authority": "^0.7.0",
     "clsx": "2.1.0",
     "lucide-react": "^0.453.0",

@@ -6,12 +6,9 @@ import {
   Sun,
   MonitorSmartphone,
   Smartphone,
-  Check,
   RefreshCcw,
   ArrowRightCircle,
   ArrowLeftCircle,
-  Mail,
-  Users,
   Share2
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -20,6 +17,8 @@ import { Separator } from '@/components/ui/separator'
 import { W3mHeader, W3mRouter, W3mSnackBar, W3mTooltip } from '@reown/appkit-scaffold-ui'
 import { useAppKit } from '@/contexts/AppKitContext'
 import { cn } from '@/lib/utils'
+import { DragHandleDots2Icon } from '@radix-ui/react-icons'
+import { Checkbox } from '@/components/ui/checkbox'
 
 // Add this type for social options
 type SocialOption = 'google' | 'x' | 'discord' | 'farcaster' | 'github' | 'apple' | 'facebook'
@@ -70,55 +69,72 @@ export default function Component() {
   }
 
   return (
-    <div className={`flex h-screen ${themeMode === 'dark' ? 'dark' : ''}`}>
-      <div className="w-80 bg-background text-foreground p-6 flex flex-col">
+    <div className={`flex p-4 bg-background/95 h-screen ${themeMode === 'dark' ? 'dark' : ''}`}>
+      <div className="w-80 bg-muted dark:bg-muted/50 text-foreground p-6 flex flex-col rounded-2xl">
         <h1 className="text-2xl font-bold mb-1">AppKit demo</h1>
         <p className="text-sm text-muted-foreground mb-6">
           Use our AppKit demo to test and design onchain UX
         </p>
 
-        <Tabs defaultValue="auth" className="mb-6">
-          <TabsList>
-            <TabsTrigger value="auth">Auth</TabsTrigger>
-            <TabsTrigger value="features">Features</TabsTrigger>
-            <TabsTrigger value="other">Other</TabsTrigger>
+        <Tabs defaultValue="auth" className="mb-6 w-full">
+          <TabsList className="w-full">
+            <TabsTrigger className="w-full" value="auth">
+              Auth
+            </TabsTrigger>
+            <TabsTrigger className="w-full" value="features">
+              Features
+            </TabsTrigger>
+            <TabsTrigger className="w-full" value="other">
+              Other
+            </TabsTrigger>
           </TabsList>
         </Tabs>
 
         <div className="space-y-4 flex-grow">
           <button
             className={cn(
-              'flex items-center justify-between bg-muted/20 rounded-lg px-4 py-2 w-full',
-              features.email ? 'bg-muted/30' : ''
+              'flex items-center justify-between rounded-xl p-3 w-full',
+              features.email
+                ? 'bg-foreground/5 dark:bg-foreground/5'
+                : 'bg-foreground/[2%] dark:bg-foreground/[2%]'
             )}
             onClick={() => toggleFeature('email')}
           >
             <span className="flex items-center gap-2">
-              <Mail size={16} className={features.email ? 'text-blue-500' : 'text-gray-500'} />
+              <DragHandleDots2Icon
+                className={cn('w-5 h-5', features.email ? 'text-blue-500' : 'text-gray-500')}
+              />
               Email
             </span>
-            <Check size={16} className={cn(features.email ? 'text-blue-500' : 'text-gray-500')} />
+            <Checkbox
+              className="bg-background data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:text-xl w-6 h-6 rounded-lg border-none"
+              checked={features.email}
+            />
           </button>
           <button
             className={cn(
-              'flex items-center justify-between bg-muted/20 rounded-lg px-4 py-2 w-full',
-              Array.isArray(features.socials) ? 'bg-muted/30' : ''
+              'flex items-center justify-between rounded-xl p-3 w-full',
+              Array.isArray(features.socials)
+                ? 'bg-foreground/5 dark:bg-foreground/5'
+                : 'bg-foreground/[2%] dark:bg-foreground/[2%]'
             )}
             onClick={() => updateSocials(!socialsEnabled)}
           >
             <span className="flex items-center gap-2">
-              <Users
-                size={16}
-                className={Array.isArray(features.socials) ? 'text-blue-500' : 'text-gray-500'}
+              <DragHandleDots2Icon
+                className={cn(
+                  'w-5 h-5',
+                  Array.isArray(features.socials) ? 'text-blue-500' : 'text-gray-500'
+                )}
               />
               Social
             </span>
-            <Check
-              size={16}
-              className={cn(Array.isArray(features.socials) ? 'text-blue-500' : 'text-gray-500')}
+            <Checkbox
+              className="bg-background data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:text-xl w-6 h-6 rounded-lg border-none"
+              checked={Array.isArray(features.socials)}
             />
           </button>
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-4 gap-2 items-center">
             {(
               [
                 'google',
@@ -132,55 +148,54 @@ export default function Component() {
             ).map(social => {
               const isEnabled = Array.isArray(features.socials) && features.socials.includes(social)
               return (
-                <Button
+                <button
                   key={social}
-                  variant={isEnabled ? 'default' : 'outline'}
-                  size="icon"
-                  className="rounded-xl"
+                  className={cn(
+                    'w-10 h-10 flex items-center justify-center rounded-xl place-self-center bg-transparent border',
+                    isEnabled
+                      ? 'border-blue-500 text-foreground'
+                      : 'border-muted-foreground/20 text-muted-foreground'
+                  )}
                   onClick={() => toggleSocial(social)}
                 >
-                  <span
-                    className={`text-sm ${
-                      isEnabled ? 'text-primary-foreground' : 'text-muted-foreground'
-                    }`}
-                  >
-                    {social === 'x' ? 'X' : social.charAt(0).toUpperCase()}
-                  </span>
-                </Button>
+                  <span>{social === 'x' ? 'X' : social.charAt(0).toUpperCase()}</span>
+                </button>
               )
             })}
           </div>
           <button
             className={cn(
-              'flex items-center justify-between bg-muted/20 rounded-lg px-4 py-2 w-full',
-              features.emailShowWallets ? 'bg-muted/30' : ''
+              'flex items-center justify-between rounded-xl p-3 w-full',
+              features.emailShowWallets
+                ? 'bg-foreground/5 dark:bg-foreground/5'
+                : 'bg-foreground/[2%] dark:bg-foreground/[2%]'
             )}
             onClick={() => toggleFeature('emailShowWallets')}
           >
             <span className="flex items-center gap-2">
-              <Users
-                size={16}
-                className={Array.isArray(features.socials) ? 'text-blue-500' : 'text-gray-500'}
+              <DragHandleDots2Icon
+                className={cn(
+                  'w-5 h-5',
+                  Array.isArray(features.socials) ? 'text-blue-500' : 'text-gray-500'
+                )}
               />
               Show wallets
             </span>
-            <Check
-              size={16}
-              className={cn(features.emailShowWallets ? 'text-blue-500' : 'text-gray-500')}
+            <Checkbox
+              className="bg-background data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:text-xl w-6 h-6 rounded-lg border-none"
+              checked={features.emailShowWallets}
             />
           </button>
         </div>
 
-        <Separator className="my-6" />
-
-        <Button variant="outline" className="mb-4">
+        <Button variant="outline" className="mb-4 bg-transparent rounded-xl">
           <MonitorSmartphone size={16} className="mr-2" />
           Read our docs
         </Button>
-        <Button>Get started</Button>
+        <Button className="rounded-xl">Get started</Button>
       </div>
 
-      <div className="flex-grow flex flex-col bg-background/95 p-6">
+      <div className="flex-grow flex flex-col p-6">
         <div className="flex justify-between mb-6">
           <Tabs defaultValue="desktop">
             <TabsList className="mb-4 bg-muted">
