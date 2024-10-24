@@ -22,7 +22,6 @@ export default function AppKitProvider({ children }: AppKitProviderProps) {
   useEffect(() => {
     kit?.setThemeMode(themeMode)
     kit?.setThemeVariables(themeVariables)
-    console.log('set features', features)
     kit?.updateFeatures(features)
   }, [themeMode, themeVariables, features])
 
@@ -34,7 +33,9 @@ export default function AppKitProvider({ children }: AppKitProviderProps) {
         defaultNetwork: mainnet,
         projectId: process.env.NEXT_PUBLIC_PROJECT_ID!,
         disableAppend: true,
-        features
+        features,
+        themeMode,
+        themeVariables
       })
     }
   }, [isLoading])
