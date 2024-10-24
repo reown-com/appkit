@@ -759,6 +759,7 @@ export class WagmiAdapter implements ChainAdapter {
               this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
             ])
           }
+          this.appKit?.setLoading(false)
         } else if (status === 'connected' && address && chainId) {
           ProviderUtil.setProvider(this.chainNamespace, await connector.getProvider())
           ProviderUtil.setProviderId(this.chainNamespace, connector.id as ProviderIdType)
