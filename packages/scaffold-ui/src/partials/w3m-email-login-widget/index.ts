@@ -34,6 +34,10 @@ export class W3mEmailLoginWidget extends LitElement {
 
   @state() private error = ''
 
+  @state() private emailFeature = OptionsController.state.features?.email
+
+  @state() private enableWallets = OptionsController.state.enableWallets
+
   @property() private walletGuide: WalletGuideType = 'get-started'
 
   public constructor() {
@@ -42,6 +46,13 @@ export class W3mEmailLoginWidget extends LitElement {
       ConnectorController.subscribeKey('connectors', val => {
         this.connectors = val
         this.authConnector = val.find(c => c.type === 'AUTH')
+      }),
+      OptionsController.subscribeKey('features', val => {
+        console.log('>>> W3mEmailLoginWidget.features', val)
+        this.emailFeature = val?.email
+      }),
+      OptionsController.subscribeKey('enableWallets', val => {
+        this.enableWallets = val
       })
     )
   }
@@ -60,9 +71,9 @@ export class W3mEmailLoginWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const email = OptionsController.state.features?.email
+    console.log('>>> W3mEmailLoginWidget.render', this.authConnector, this.emailFeature)
 
-    if (!this.authConnector || !email) {
+    if (!this.authConnector || !this.emailFeature) {
       return null
     }
 
@@ -103,11 +114,10 @@ export class W3mEmailLoginWidget extends LitElement {
   private separatorTemplate() {
     const socials = OptionsController.state.features?.socials
     const multipleConnectors = this.connectors.length > 1
-    const enableWallets = OptionsController.state.enableWallets
     const emailShowWallets = OptionsController.state.features?.emailShowWallets
 
     const hideSeparator =
-      (socials && socials.length) || emailShowWallets || !multipleConnectors || !enableWallets
+      (socials && socials.length) || emailShowWallets || !multipleConnectors || !this.enableWallets
 
     if (hideSeparator && this.walletGuide === 'get-started') {
       return null

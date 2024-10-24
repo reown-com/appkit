@@ -151,19 +151,12 @@ export const OptionsController = {
   },
 
   setFeatures(features: OptionsControllerState['features'] | undefined) {
+    console.log('>>> OptionsController.setFeatures', features)
     if (!features) {
       return
     }
 
-    Object.entries(features).forEach(([key, value]) => {
-      if (!state.features) {
-        state.features = ConstantsUtil.DEFAULT_FEATURES
-      }
-
-      if (key in state.features) {
-        ;(state.features as Record<keyof Features, unknown>)[key as keyof Features] = value
-      }
-    })
+    state.features = features
   },
 
   setProjectId(projectId: OptionsControllerState['projectId']) {

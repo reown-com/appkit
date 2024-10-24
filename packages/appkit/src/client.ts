@@ -6,7 +6,8 @@ import type {
   ConnectedWalletInfo,
   RouterControllerState,
   ChainAdapter,
-  SdkVersion
+  SdkVersion,
+  Features
 } from '@reown/appkit-core'
 import {
   AccountController,
@@ -425,6 +426,13 @@ export class AppKit {
       // If called from outside the modal, open ApproveTransaction
       this.open({ view: 'ApproveTransaction' })
     }
+  }
+
+  public updateFeatures(newFeatures: Partial<Features>) {
+    const currentFeatures = OptionsController.state.features || {}
+    const updatedFeatures = { ...currentFeatures, ...newFeatures }
+    console.log('>>> set features', newFeatures, updatedFeatures)
+    OptionsController.setFeatures(updatedFeatures)
   }
 
   // -- Private ------------------------------------------------------------------
