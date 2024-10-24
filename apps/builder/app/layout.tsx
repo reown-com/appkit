@@ -3,6 +3,7 @@ import localFont from 'next/font/local'
 import './globals.css'
 import AppKitProvider from '@/providers/appkit-provider'
 import { AppKitProvider as AppKitContextProvider } from '@/contexts/AppKitContext'
+import { Toaster } from 'sonner'
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -27,6 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <Toaster />
       <AppKitContextProvider>
         <AppKitProvider>
           <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>

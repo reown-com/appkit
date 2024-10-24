@@ -130,12 +130,18 @@ importers:
       react-hook-form:
         specifier: ^7.53.1
         version: 7.53.1(react@18.3.1)
+      sonner:
+        specifier: 1.4.3
+        version: 1.4.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       tailwind-merge:
         specifier: 2.2.1
         version: 2.2.1
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.1)
+      vaul:
+        specifier: 0.9.0
+        version: 0.9.0(@types/react-dom@18.3.1)(@types/react@18.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       zod:
         specifier: 3.22.4
         version: 3.22.4
@@ -28278,6 +28284,15 @@ snapshots:
   vaul@0.9.0(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@radix-ui/react-dialog': 1.1.2(@types/react-dom@18.2.7)(@types/react@18.2.62)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+    transitivePeerDependencies:
+      - '@types/react'
+      - '@types/react-dom'
+
+  vaul@0.9.0(@types/react-dom@18.3.1)(@types/react@18.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      '@radix-ui/react-dialog': 1.1.2(@types/react-dom@18.3.1)(@types/react@18.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
     transitivePeerDependencies:

@@ -9,6 +9,8 @@ interface AppKitContextType {
   themeVariables: ThemeVariables
   features: Features
   isLoading: boolean
+  isDrawerOpen: boolean
+  setIsDrawerOpen: (open: boolean) => void
   updateThemeMode: (mode: ThemeMode) => void
   updateThemeVariables: (variables: Partial<ThemeVariables>) => void
   updateFeatures: (features: Partial<Features>) => void
@@ -35,6 +37,7 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
   const [features, setFeatures] = useState<Features>({})
   const [themeMode, setThemeMode] = useState<ThemeMode>('light')
   const [themeVariables, setThemeVariables] = useState<ThemeVariables>({})
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
   // Initialize state from URL
   useEffect(() => {
@@ -81,6 +84,8 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
         themeVariables,
         updateThemeVariables: setThemeVariables,
         isLoading,
+        isDrawerOpen,
+        setIsDrawerOpen,
         socialsEnabled,
         updateSocials
       }}

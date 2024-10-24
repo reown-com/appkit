@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode, useEffect, useMemo } from 'react'
+import { ReactNode, useEffect, useMemo, useState, createContext } from 'react'
 import { createAppKit, type AppKit } from '@reown/appkit/react'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { type AppKitNetwork, mainnet, polygon } from '@reown/appkit/networks'
@@ -16,8 +16,16 @@ interface AppKitProviderProps {
 
 let kit: undefined | AppKit = undefined
 
+export const AppKitContext = createContext({
+  themeMode: 'light',
+  setThemeMode: () => {},
+  isDrawerOpen: false,
+  setIsDrawerOpen: () => {}
+})
+
 export default function AppKitProvider({ children }: AppKitProviderProps) {
   const { themeMode, themeVariables, features, isLoading } = useAppKit()
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
   useEffect(() => {
     kit?.setThemeMode(themeMode)
@@ -40,5 +48,16 @@ export default function AppKitProvider({ children }: AppKitProviderProps) {
     }
   }, [isLoading])
 
-  return <>{children}</>
+  return (
+    <AppKitContext.Provider
+      value={{
+        themeMode,
+        setThemeMode: (mode: string) => kit?.setThemeMode(mode),
+        isDrawerOpen,
+        setIsDrawerOpen
+      }}
+    >
+      {children}
+    </AppKitContext.Provider>
+  )
 }
