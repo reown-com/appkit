@@ -34,7 +34,7 @@ export class W3mEmailLoginWidget extends LitElement {
 
   @state() private error = ''
 
-  @state() private emailFeature = OptionsController.state.features?.email
+  @state() private features = OptionsController.state.features
 
   @state() private enableWallets = OptionsController.state.enableWallets
 
@@ -49,10 +49,7 @@ export class W3mEmailLoginWidget extends LitElement {
       }),
       OptionsController.subscribeKey('features', val => {
         console.log('>>> W3mEmailLoginWidget.features', val)
-        this.emailFeature = val?.email
-      }),
-      OptionsController.subscribeKey('enableWallets', val => {
-        this.enableWallets = val
+        this.features = val
       })
     )
   }
@@ -71,9 +68,9 @@ export class W3mEmailLoginWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    console.log('>>> W3mEmailLoginWidget.render', this.authConnector, this.emailFeature)
+    console.log('>>> W3mEmailLoginWidget.render', this.authConnector, this.features?.email)
 
-    if (!this.authConnector || !this.emailFeature) {
+    if (!this.authConnector || !this.features?.email) {
       return null
     }
 
@@ -112,14 +109,23 @@ export class W3mEmailLoginWidget extends LitElement {
   }
 
   private separatorTemplate() {
-    const socials = OptionsController.state.features?.socials
+    const socials = this.features?.socials
     const multipleConnectors = this.connectors.length > 1
-    const emailShowWallets = OptionsController.state.features?.emailShowWallets
+    const emailShowWallets = this.features?.emailShowWallets
+    const haveSocials = socials && socials.length
 
-    const hideSeparator =
-      (socials && socials.length) || emailShowWallets || !multipleConnectors || !this.enableWallets
+    const hideSeparator = emailShowWallets || !multipleConnectors || !this.enableWallets
+    console.log(
+      '>>> separator',
+      socials,
+      haveSocials,
+      emailShowWallets,
+      multipleConnectors,
+      this.enableWallets,
+      this.walletGuide
+    )
 
-    if (hideSeparator && this.walletGuide === 'get-started') {
+    if (haveSocials && hideSeparator && this.walletGuide === 'get-started') {
       return null
     }
 
