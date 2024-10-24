@@ -1,9 +1,9 @@
 > [!NOTE]
 > Looking for Web3modal v[1-5]? [switch the branch](https://github.com/WalletConnect/web3modal/tree/V5).
 
-#### 📚 [Documentation](https://docs.reown.com/appkit/about)
+#### 📚 [Documentation](https://docs.reown.com/appkit/overview)
 
-#### 🧪 [Laboratory](https://appkit-lab.reown.org)
+#### 🧪 [Laboratory](https://appkit-lab.reown.com)
 
 #### 🔗 [Website](https://reown.com/appkit)
 

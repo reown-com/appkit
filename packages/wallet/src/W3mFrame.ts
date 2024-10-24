@@ -107,7 +107,10 @@ export class W3mFrame {
       signal: AbortSignal
     ) => {
       function eventHandler({ data }: MessageEvent) {
-        if (!data.type?.includes(W3mFrameConstants.FRAME_EVENT_KEY)) {
+        if (
+          typeof data.type !== 'string' ||
+          !data.type.includes(W3mFrameConstants.FRAME_EVENT_KEY)
+        ) {
           return
         }
         const frameEvent = W3mFrameSchema.frameEvent.parse(data)
@@ -127,7 +130,10 @@ export class W3mFrame {
     onFrameEvent: (callback: (event: W3mFrameTypes.FrameEvent) => void) => {
       if (W3mFrameHelpers.isClient) {
         window.addEventListener('message', ({ data }) => {
-          if (!data.type?.includes(W3mFrameConstants.FRAME_EVENT_KEY)) {
+          if (
+            typeof data.type !== 'string' ||
+            !data.type.includes(W3mFrameConstants.FRAME_EVENT_KEY)
+          ) {
             return
           }
           const frameEvent = W3mFrameSchema.frameEvent.parse(data)
@@ -139,7 +145,10 @@ export class W3mFrame {
     onAppEvent: (callback: (event: W3mFrameTypes.AppEvent) => void) => {
       if (W3mFrameHelpers.isClient) {
         window.addEventListener('message', ({ data }) => {
-          if (!data.type?.includes(W3mFrameConstants.APP_EVENT_KEY)) {
+          if (
+            typeof data.type !== 'string' ||
+            !data.type.includes(W3mFrameConstants.APP_EVENT_KEY)
+          ) {
             return
           }
           const appEvent = W3mFrameSchema.appEvent.parse(data)
