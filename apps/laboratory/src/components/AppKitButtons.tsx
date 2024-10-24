@@ -12,7 +12,7 @@ import {
 
 export function AppKitButtons() {
   const { open } = useAppKit()
-  const { caipAddress } = useAppKitAccount()
+  const { isConnected } = useAppKitAccount()
   const { disconnect } = useDisconnect()
 
   return (
@@ -44,11 +44,13 @@ export function AppKitButtons() {
                 Open
               </Button>
 
-              {caipAddress && (
-                <Button data-testid="disconnect-hook-button" onClick={() => disconnect()}>
-                  Disconnect
-                </Button>
-              )}
+              <Button
+                data-testid="disconnect-hook-button"
+                isDisabled={!isConnected}
+                onClick={() => disconnect()}
+              >
+                Disconnect
+              </Button>
             </Box>
           </Box>
         </Stack>

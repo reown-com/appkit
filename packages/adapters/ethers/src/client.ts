@@ -1176,11 +1176,13 @@ export class EthersAdapter {
       this.appKit?.setLoading(true)
       const isLoginEmailUsed = this.authProvider.getLoginEmailUsed()
       this.appKit?.setLoading(isLoginEmailUsed)
-      const { isConnected } = await this.authProvider.isConnected()
-      if (isConnected) {
-        await this.setAuthProvider()
-      } else {
-        this.appKit?.setLoading(false)
+      if (isLoginEmailUsed) {
+        const { isConnected } = await this.authProvider.isConnected()
+        if (isConnected) {
+          await this.setAuthProvider()
+        } else {
+          this.appKit?.setLoading(false)
+        }
       }
     }
   }
