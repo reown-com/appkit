@@ -4,7 +4,7 @@ import type {
   SIWXMessageInput,
   SIWXSession
 } from '@reown/appkit-core'
-import type { SIWXMessenger } from './SIWXMessager.js'
+import type { SIWXMessenger } from './SIWXMessenger.js'
 import type { SIWXVerifier } from './SIWXVerifier.js'
 import type { SIWXStorage } from './SIWXStorage.js'
 import type { CaipNetworkId } from '@reown/appkit-common'

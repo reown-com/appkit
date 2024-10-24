@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeAll, vi, afterAll } from 'vitest'
 import { type SIWXMessageInput } from '@reown/appkit-core'
-import { InformalMessage } from '../../src/index.js'
-import type { SIWXMessenger } from '../../src/core/SIWXMessager.js'
+import { InformalMessenger } from '../../src/index.js'
+import type { SIWXMessenger } from '../../src/core/SIWXMessenger.js'
 
 type Case = {
   params: Omit<SIWXMessageInput & SIWXMessenger.ConstructorParams, 'toString'>
@@ -58,7 +58,7 @@ Resources:
   }
 ]
 
-describe('InformalMessage', () => {
+describe('InformalMessenger', () => {
   beforeAll(() => {
     vi.useFakeTimers({
       now: new Date('2024-01-01T00:00:00Z')
@@ -70,7 +70,7 @@ describe('InformalMessage', () => {
   })
 
   test.each(cases)(`should return expected message`, async ({ params, expected }) => {
-    const messageFactory = new InformalMessage(params)
+    const messageFactory = new InformalMessenger(params)
     const message = await messageFactory.createMessage(params)
     expect(message.toString()).toBe(expected)
   })
