@@ -1,5 +1,21 @@
 # @reown/appkit-scaffold-ui
 
+## 1.2.0
+
+### Minor Changes
+
+- [#3153](https://github.com/reown-com/appkit/pull/3153) [`9413662`](https://github.com/reown-com/appkit/commit/941366260caa945a73c509031c4045d84bb2fabe) Thanks [@magiziz](https://github.com/magiziz)! - Fixes an issue where metadata values weren't overriding.
+
+### Patch Changes
+
+- Updated dependencies [[`9413662`](https://github.com/reown-com/appkit/commit/941366260caa945a73c509031c4045d84bb2fabe)]:
+  - @reown/appkit-utils@1.2.0
+  - @reown/appkit-common@1.2.0
+  - @reown/appkit-core@1.2.0
+  - @reown/appkit-siwe@1.2.0
+  - @reown/appkit-ui@1.2.0
+  - @reown/appkit-wallet@1.2.1
+
 ## 1.1.8
 
 ### Patch Changes
