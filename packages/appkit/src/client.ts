@@ -446,8 +446,10 @@ export class AppKit {
     }
 
     this.adapters = options.adapters
-
-    this.setMetadata(options)
+    
+    if (!options.metadata) {
+      this.setDefaultMetaData(options)
+    }
     this.initializeUniversalAdapter(options)
     this.initializeAdapters(options)
     this.setDefaultNetwork()
@@ -496,7 +498,7 @@ export class AppKit {
     }
   }
 
-  private setMetadata(options: AppKitOptions) {
+  private setDefaultMetaData(options: AppKitOptions) {
     if (typeof window === 'undefined' || typeof document === 'undefined') {
       return
     }

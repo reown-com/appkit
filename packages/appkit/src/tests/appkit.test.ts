@@ -38,7 +38,7 @@ describe('Base', () => {
     it('should initialize controllers with required provided options', () => {
       expect(OptionsController.setSdkVersion).toHaveBeenCalledWith(mockOptions.sdkVersion)
       expect(OptionsController.setProjectId).toHaveBeenCalledWith(mockOptions.projectId)
-      expect(OptionsController.setMetadata).toHaveBeenCalled()
+      expect(OptionsController.setMetadata).toHaveBeenCalledWith(mockOptions.metadata)
     })
 
     it('should initialize adapters in ChainController', () => {
