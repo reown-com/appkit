@@ -1,5 +1,24 @@
+<template>
+  <div :class="themeMode">
+    <h1>Hello Vue Wagmi</h1>
+    <w3m-button />
+    <w3m-network-button />
+
+    <button @click="modal.open()">Open Connect Modal</button>
+    <button @click="modal.open({ view: 'Networks' })">Open Network Modal</button>
+    <button @click="setThemeMode(themeMode === 'dark' ? 'light' : 'dark')">
+      Toggle Theme Mode
+    </button>
+    <pre>{{ JSON.stringify(state, null, 2) }}</pre>
+    <pre>{{ JSON.stringify({ themeMode, themeVariables }, null, 2) }}</pre>
+    <pre>{{ JSON.stringify(events, null, 2) }}</pre>
+  </div>
+</template>
+
 <script lang="ts" setup>
+import { ref, onMounted } from 'vue'
 import { arbitrum, mainnet } from '@reown/appkit/networks'
+import { wagmiAdapter } from './config'
 import {
   createAppKit,
   useAppKit,
@@ -8,50 +27,38 @@ import {
   useAppKitTheme
 } from '@reown/appkit/vue'
 
-// @ts-expect-error 1. Get projectId
-const projectId = import.meta.env.VITE_PROJECT_ID
-if (!projectId) {
-  throw new Error('VITE_PROJECT_ID is not set')
-}
+const error = ref('')
 
-// 2. Create wagmiConfig
-const chains = [mainnet, arbitrum]
+const projectId = '3bdbc796b351092d40d5d08e987f4eca'
 
-// 3. Create modal
+// 2. Create modal
 createAppKit({
+  adapters: [wagmiAdapter],
+  networks: [mainnet, arbitrum],
+  projectId,
   metadata: {
     name: 'AppKit Vue Example',
     description: 'AppKit Vue Example',
     url: '',
     icons: [],
     verifyUrl: ''
-  },
-  projectId,
-  caipNetworks: [mainnet, arbitrum],
-  themeMode: 'light',
-  themeVariables: {
-    '--w3m-color-mix': '#00BB7F',
-    '--w3m-color-mix-strength': 20
   }
 })
 
-// 4. Use modal composable
 const modal = useAppKit()
 const state = useAppKitState()
 const { setThemeMode, themeMode, themeVariables } = useAppKitTheme()
 const events = useAppKitEvents()
 </script>
 
-<template>
-  <w3m-button />
-  <w3m-network-button />
-  <w3m-connect-button />
-  <w3m-account-button />
+<style scoped>
+.dark {
+  background-color: #333;
+  color: #fff;
+}
 
-  <button @click="modal.open()">Open Connect Modal</button>
-  <button @click="modal.open({ view: 'Networks' })">Open Network Modal</button>
-  <button @click="setThemeMode(themeMode === 'dark' ? 'light' : 'dark')">Toggle Theme Mode</button>
-  <pre>{{ JSON.stringify(state, null, 2) }}</pre>
-  <pre>{{ JSON.stringify({ themeMode, themeVariables }, null, 2) }}</pre>
-  <pre>{{ JSON.stringify(events, null, 2) }}</pre>
-</template>
+.light {
+  background-color: #fff;
+  color: #000;
+}
+</style>
