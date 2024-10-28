@@ -10,7 +10,6 @@
 
 - Updated dependencies [[`9413662`](https://github.com/reown-com/appkit/commit/941366260caa945a73c509031c4045d84bb2fabe)]:
   - @reown/appkit-common@1.2.0
-  - @reown/appkit-wallet@1.2.1
 
 ## 1.1.8
 

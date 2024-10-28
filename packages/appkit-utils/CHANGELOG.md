@@ -12,7 +12,6 @@
   - @reown/appkit-common@1.2.0
   - @reown/appkit-core@1.2.0
   - @reown/appkit-polyfills@1.2.0
-  - @reown/appkit-wallet@1.2.1
 
 ## 1.1.8
 

@@ -16,7 +16,6 @@
   - @reown/appkit-scaffold-ui@1.2.0
   - @reown/appkit-siwe@1.2.0
   - @reown/appkit-ui@1.2.0
-  - @reown/appkit-wallet@1.2.1
 
 ## 1.1.8
 
