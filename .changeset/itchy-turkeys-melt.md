@@ -1,5 +1,4 @@
 ---
-'@reown/appkit': minor
 '@apps/demo': minor
 '@apps/gallery': minor
 '@apps/laboratory': minor
@@ -8,6 +7,7 @@
 '@reown/appkit-adapter-polkadot': minor
 '@reown/appkit-adapter-solana': minor
 '@reown/appkit-adapter-wagmi': minor
+'@reown/appkit': minor
 '@reown/appkit-utils': minor
 '@reown/appkit-cdn': minor
 '@reown/appkit-common': minor
