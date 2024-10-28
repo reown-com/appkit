@@ -17,7 +17,6 @@
 '@reown/appkit-scaffold-ui': minor
 '@reown/appkit-siwe': minor
 '@reown/appkit-ui': minor
-'@reown/appkit-wallet': minor
 ---
 
-der
+Fixes an issue where metadata values weren't overriding.
