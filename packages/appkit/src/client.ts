@@ -447,7 +447,6 @@ export class AppKit {
 
     this.adapters = options.adapters
 
-    this.setMetadata(options)
     this.initializeUniversalAdapter(options)
     this.initializeAdapters(options)
     this.setDefaultNetwork()
@@ -467,8 +466,10 @@ export class AppKit {
     OptionsController.setEnableWalletConnect(options.enableWalletConnect !== false)
     OptionsController.setEnableWallets(options.enableWallets !== false)
 
-    if (options.metadata) {
-      OptionsController.setMetadata(options.metadata)
+    const metadata = options.metadata ?? this.getDefaultMetaData()
+
+    if (metadata) {
+      OptionsController.setMetadata(metadata)
     }
 
     if (options.themeMode) {
@@ -500,18 +501,18 @@ export class AppKit {
     }
   }
 
-  private setMetadata(options: AppKitOptions) {
-    if (typeof window === 'undefined' || typeof document === 'undefined') {
-      return
+  private getDefaultMetaData() {
+    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+      return {
+        name: document.getElementsByTagName('title')[0]?.textContent || '',
+        description:
+          document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.content || '',
+        url: window.location.origin,
+        icons: [document.querySelector<HTMLLinkElement>('link[rel~="icon"]')?.href || '']
+      }
     }
 
-    options.metadata = {
-      name: document.getElementsByTagName('title')[0]?.textContent || '',
-      description:
-        document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.content || '',
-      url: window.location.origin,
-      icons: [document.querySelector<HTMLLinkElement>('link[rel~="icon"]')?.href || '']
-    }
+    return null
   }
 
   private extendCaipNetworks(options: AppKitOptions) {

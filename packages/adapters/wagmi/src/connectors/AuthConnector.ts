@@ -105,9 +105,8 @@ export function authConnector(parameters: AuthParameters) {
 
     async isAuthorized() {
       const provider = await this.getProvider()
-      const { isConnected } = await provider.isConnected()
 
-      return isConnected
+      return Promise.resolve(provider.getLoginEmailUsed())
     },
 
     async switchChain({ chainId }) {

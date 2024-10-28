@@ -51,6 +51,11 @@ sampleWalletTest('it should show onramp button accordingly', async () => {
   await modalPage.closeModal()
 })
 
+sampleWalletTest('it should be connected instantly after page refresh', async () => {
+  await modalPage.page.reload()
+  await modalValidator.expectToBeConnectedInstantly()
+})
+
 sampleWalletTest('it should show disabled networks', async ({ library }) => {
   const disabledNetworks = library === 'solana' ? 'Solana Unsupported' : 'Gnosis'
 
@@ -172,7 +177,19 @@ sampleWalletTest(
     await modalPage.closeModal()
   }
 )
+
+sampleWalletTest('it should connect and disconnect using hook', async () => {
+  await walletPage.disconnectConnection()
+  await modalValidator.expectDisconnected()
+  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalValidator.expectConnected()
+  await modalPage.clickHookDisconnectButton()
+  await modalValidator.expectDisconnected()
+})
+
 sampleWalletTest('it should disconnect and close modal when connecting from wallet', async () => {
+  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalValidator.expectConnected()
   await modalPage.openModal()
   await walletPage.disconnectConnection()
   await walletValidator.expectSessionCard({ visible: false })
