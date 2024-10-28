@@ -46,8 +46,7 @@ describe('StorageUtil', () => {
       const deepLink = { href: 'https://example.com', name: 'Example Wallet' }
       StorageUtil.setWalletConnectDeepLink(deepLink)
       const savedDL = SafeLocalStorage.getItem(SafeLocalStorageKeys.DEEPLINK_CHOICE)
-      expect(savedDL?.href).toBe(deepLink.href)
-      expect(savedDL?.name).toBe(deepLink.name)
+      expect(savedDL).toBe(JSON.stringify({ href: deepLink.href, name: deepLink.name }))
     })
 
     it('should handle errors when setting deep link', () => {
@@ -64,8 +63,14 @@ describe('StorageUtil', () => {
   describe('getWalletConnectDeepLink', () => {
     it('should get WalletConnect deep link from localStorage', () => {
       const deepLink = { href: 'https://example.com', name: 'Example Wallet' }
-      SafeLocalStorage.setItem('@appkit/deeplink_choice', deepLink)
-      expect(StorageUtil.getWalletConnectDeepLink()).toEqual(deepLink)
+      SafeLocalStorage.setItem(
+        'WALLETCONNECT_DEEPLINK_CHOICE',
+        JSON.stringify({ href: deepLink.href, name: deepLink.name })
+      )
+      expect(StorageUtil.getWalletConnectDeepLink()).toEqual({
+        href: deepLink.href,
+        name: deepLink.name
+      })
     })
 
     it('should return undefined if deep link is not set', () => {
@@ -85,12 +90,12 @@ describe('StorageUtil', () => {
 
   describe('deleteWalletConnectDeepLink', () => {
     it('should delete WalletConnect deep link from localStorage', () => {
-      SafeLocalStorage.setItem('@appkit/deeplink_choice', {
-        href: 'https://example.com',
-        name: 'Example Wallet'
-      })
+      SafeLocalStorage.setItem(
+        'WALLETCONNECT_DEEPLINK_CHOICE',
+        JSON.stringify({ href: 'https://example.com', name: 'Example' })
+      )
       StorageUtil.deleteWalletConnectDeepLink()
-      expect(SafeLocalStorage.getItem('@appkit/deeplink_choice')).toBeUndefined()
+      expect(SafeLocalStorage.getItem('WALLETCONNECT_DEEPLINK_CHOICE')).toBeUndefined()
     })
 
     it('should handle errors when deleting deep link', () => {

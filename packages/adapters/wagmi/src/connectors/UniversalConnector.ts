@@ -19,10 +19,11 @@ import {
   numberToHex
 } from 'viem'
 import { WcHelpersUtil } from '@reown/appkit'
+import { StorageUtil } from '@reown/appkit-core'
 import type { AppKitOptions } from '@reown/appkit'
 import type { AppKit } from '@reown/appkit'
-import { convertToAppKitChains } from '../utils/helpers.js'
-import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
+import { ConstantsUtil } from '@reown/appkit-common'
+import type { CaipNetwork } from '@reown/appkit-common'
 
 type UniversalConnector = Connector & {
   onDisplayUri(uri: string): void
@@ -35,7 +36,11 @@ export type AppKitOptionsParams = AppKitOptions & {
 
 walletConnect.type = 'walletConnect' as const
 
-export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
+export function walletConnect(
+  parameters: AppKitOptionsParams,
+  appKit: AppKit,
+  caipNetworks: [CaipNetwork, ...CaipNetwork[]]
+) {
   const isNewChainsStale = parameters.isNewChainsStale ?? true
   type Provider = Awaited<ReturnType<(typeof UniversalProviderType)['init']>>
   type Properties = {
@@ -106,14 +111,14 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
 
         // If there isn't an active session or chains are stale, connect.
         if (!provider.session || isChainsStale) {
-          const namespaces = WcHelpersUtil.createNamespaces(parameters.networks)
+          const namespaces = WcHelpersUtil.createNamespaces(caipNetworks)
 
           await provider.connect({
             optionalNamespaces: namespaces,
             ...('pairingTopic' in rest ? { pairingTopic: rest.pairingTopic } : {})
           })
 
-          this.setRequestedChainsIds(parameters.networks.map(x => Number(x.chainId)))
+          this.setRequestedChainsIds(caipNetworks.map(x => Number(x.id)))
         }
 
         // If session exists and chains are authorized, enable provider for required chain
@@ -205,7 +210,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
     },
     async getProvider({ chainId } = {}) {
       async function initProvider() {
-        const optionalChains = parameters.networks.map(x => Number(x.chainId))
+        const optionalChains = caipNetworks.map(x => Number(x.id))
 
         if (!optionalChains.length) {
           return undefined
@@ -228,12 +233,13 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         provider_?.events.setMaxListeners(Number.POSITIVE_INFINITY)
       }
 
-      const currentChainId = appKit.getCaipNetwork()?.chainId
+      const currentChainId = appKit.getCaipNetwork()?.id
 
       if (chainId && currentChainId !== chainId) {
-        const storedCaipNetwork = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK)
-        if (storedCaipNetwork && storedCaipNetwork.chainNamespace === 'eip155') {
-          await this.switchChain?.({ chainId: Number(storedCaipNetwork.chainId) })
+        const storedCaipNetwork = StorageUtil.getStoredActiveCaipNetwork()
+
+        if (storedCaipNetwork && storedCaipNetwork.chainNamespace === ConstantsUtil.CHAIN.EVM) {
+          await this.switchChain?.({ chainId: Number(storedCaipNetwork.id) })
         } else {
           await this.switchChain?.({ chainId })
         }
@@ -243,7 +249,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       return provider_ as Provider
     },
     async getChainId() {
-      const chainId = appKit.getCaipNetwork()?.chainId
+      const chainId = appKit.getCaipNetwork()?.id
 
       if (chainId) {
         return chainId as number
@@ -252,9 +258,9 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
       const provider = await this.getProvider()
       const chain = provider.session?.namespaces['eip155']?.chains?.[0]
 
-      const network = parameters.networks.find(c => c.id === chain)
+      const network = caipNetworks.find(c => c.id === chain)
 
-      return network?.chainId as number
+      return network?.id as number
     },
     async isAuthorized() {
       try {
@@ -285,16 +291,15 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         throw new ProviderNotFoundError()
       }
 
-      const chain = parameters.networks.find(x => x.chainId === chainId)
-      const [wagmiChain] = chain ? convertToAppKitChains([chain]) : []
+      const chainToSwitch = caipNetworks.find(x => x.id === chainId)
 
-      if (!wagmiChain) {
+      if (!chainToSwitch) {
         throw new SwitchChainError(new ChainNotConfiguredError())
       }
 
       try {
-        if (chain?.id) {
-          provider.setDefaultChain(chain?.id)
+        if (chainToSwitch?.caipNetworkId) {
+          provider.setDefaultChain(chainToSwitch?.caipNetworkId as string)
         }
 
         await provider.request({
@@ -306,7 +311,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
         const requestedChains = await this.getRequestedChainsIds()
         this.setRequestedChainsIds([...requestedChains, chainId])
 
-        return wagmiChain
+        return { ...chainToSwitch, id: chainToSwitch.id as number }
       } catch (err) {
         const error = err as RpcError
 
@@ -320,18 +325,18 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
           if (addEthereumChainParameter?.blockExplorerUrls) {
             blockExplorerUrls = addEthereumChainParameter.blockExplorerUrls
           } else {
-            blockExplorerUrls = wagmiChain.blockExplorers?.default.url
-              ? [wagmiChain.blockExplorers?.default.url]
+            blockExplorerUrls = chainToSwitch.blockExplorers?.default.url
+              ? [chainToSwitch.blockExplorers?.default.url]
               : []
           }
 
           const addEthereumChain = {
             blockExplorerUrls,
             chainId: numberToHex(chainId),
-            chainName: wagmiChain.name,
+            chainName: chainToSwitch.name,
             iconUrls: addEthereumChainParameter?.iconUrls,
-            nativeCurrency: wagmiChain.nativeCurrency,
-            rpcUrls: wagmiChain.rpcUrls.default.http
+            nativeCurrency: chainToSwitch.nativeCurrency,
+            rpcUrls: chainToSwitch.rpcUrls.default.http
           } satisfies AddEthereumChainParameter
 
           await provider.request({
@@ -342,7 +347,7 @@ export function walletConnect(parameters: AppKitOptionsParams, appKit: AppKit) {
           const requestedChains = await this.getRequestedChainsIds()
           this.setRequestedChainsIds([...requestedChains, chainId])
 
-          return wagmiChain
+          return { ...chainToSwitch, id: chainToSwitch.id as number }
         } catch (e) {
           throw new UserRejectedRequestError(e as Error)
         }

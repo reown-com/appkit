@@ -38,6 +38,7 @@ test.afterAll(async () => {
 test('it should switch networks and sign siwe', async () => {
   const chainName = 'Polygon'
   await modalPage.switchNetwork(chainName)
+  await modalValidator.expectUnauthenticated()
   await modalPage.promptSiwe()
   await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAuthenticated()

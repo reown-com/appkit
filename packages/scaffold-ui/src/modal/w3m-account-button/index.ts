@@ -4,8 +4,7 @@ import {
   AssetUtil,
   ChainController,
   CoreHelperUtil,
-  ModalController,
-  NetworkController
+  ModalController
 } from '@reown/appkit-core'
 
 import type { WuiAccountButton } from '@reown/appkit-ui'
@@ -40,9 +39,9 @@ export class W3mAccountButton extends LitElement {
 
   @state() private network = ChainController.state.activeCaipNetwork
 
-  @state() private networkImage = this.network ? AssetUtil.getNetworkImage(this.network) : undefined
+  @state() private networkImage = AssetUtil.getNetworkImage(this.network)
 
-  @state() private isUnsupportedChain = NetworkController.state.isUnsupportedChain
+  @state() private isSupported = true
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -50,9 +49,7 @@ export class W3mAccountButton extends LitElement {
     this.unsubscribe.push(
       ...[
         AssetController.subscribeNetworkImages(() => {
-          this.networkImage = this.network?.imageId
-            ? AssetUtil.getNetworkImage(this.network)
-            : undefined
+          this.networkImage = AssetUtil.getNetworkImage(this.network)
         }),
         ChainController.subscribeKey('activeCaipAddress', val => (this.caipAddress = val)),
         AccountController.subscribeKey('balance', val => (this.balanceVal = val)),
@@ -61,10 +58,10 @@ export class W3mAccountButton extends LitElement {
         AccountController.subscribeKey('profileImage', val => (this.profileImage = val)),
         ChainController.subscribeKey('activeCaipNetwork', val => {
           this.network = val
-          this.networkImage = val?.imageId ? AssetUtil.getNetworkImage(val) : undefined
-        }),
-        NetworkController.subscribeKey('isUnsupportedChain', val => {
-          this.isUnsupportedChain = val
+          this.networkImage = AssetUtil.getNetworkImage(val)
+          this.isSupported = val?.chainNamespace
+            ? ChainController.checkIfSupportedNetwork(val?.chainNamespace)
+            : true
         })
       ]
     )
@@ -76,12 +73,16 @@ export class W3mAccountButton extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    if (!ChainController.state.activeChain) {
+      return null
+    }
+
     const showBalance = this.balance === 'show'
 
     return html`
       <wui-account-button
         .disabled=${Boolean(this.disabled)}
-        .isUnsupportedChain=${this.isUnsupportedChain}
+        .isUnsupportedChain=${!this.isSupported}
         address=${ifDefined(CoreHelperUtil.getPlainAddress(this.caipAddress))}
         profileName=${ifDefined(this.profileName)}
         networkSrc=${ifDefined(this.networkImage)}
@@ -100,10 +101,10 @@ export class W3mAccountButton extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onClick() {
-    if (this.isUnsupportedChain) {
-      ModalController.open({ view: 'UnsupportedChain' })
-    } else {
+    if (this.isSupported) {
       ModalController.open()
+    } else {
+      ModalController.open({ view: 'UnsupportedChain' })
     }
   }
 }

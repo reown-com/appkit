@@ -2,13 +2,13 @@ import { createAppKit } from '@reown/appkit/react'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 
 import { ThemeStore } from '../../utils/StoreUtil'
-import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit/networks'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { SolanaTests } from '../../components/Solana/SolanaTests'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
+import { solana } from '@reown/appkit/networks'
 
-const networks = [solana, solanaTestnet, solanaDevnet]
+const networks = ConstantsUtil.SolanaNetworks
 
 const solanaWeb3JsAdapter = new SolanaAdapter({
   wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
@@ -17,10 +17,12 @@ const solanaWeb3JsAdapter = new SolanaAdapter({
 const modal = createAppKit({
   adapters: [solanaWeb3JsAdapter],
   networks,
+  defaultNetwork: solana,
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata,
   features: {
-    socials: []
+    socials: [],
+    emailShowWallets: false
   }
 })
 

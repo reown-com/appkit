@@ -1,35 +1,57 @@
 import { describe, test, expect } from 'vitest'
 import { WcHelpersUtil } from '../../utils/HelpersUtil'
-import type { CaipNetwork } from '@reown/appkit-common'
+import { ConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
+import type { SessionTypes } from '@walletconnect/types'
 
 const mockEthereumNetwork = {
-  id: 'eip155:1',
-  chainNamespace: 'eip155',
-  chainId: '1',
+  id: 1,
+  chainNamespace: ConstantsUtil.CHAIN.EVM,
+  caipNetworkId: 'eip155:1',
   name: 'Ethereum',
-  explorerUrl: 'https://etherscan.io',
-  rpcUrl: 'https://mainnet.infura.io/v3/YOUR-PROJECT-ID',
-  currency: 'ETH'
+  nativeCurrency: {
+    name: 'Ethereum',
+    decimals: 18,
+    symbol: 'ETH'
+  },
+  rpcUrls: {
+    default: {
+      http: ['https://mainnet.infura.io/v3/YOUR-PROJECT-ID']
+    }
+  }
 } as const
 
 const mockPolygonNetwork = {
-  id: 'eip155:137',
-  chainNamespace: 'eip155',
-  chainId: '137',
+  id: 137,
+  chainNamespace: ConstantsUtil.CHAIN.EVM,
+  caipNetworkId: 'eip155:137',
   name: 'Polygon',
-  explorerUrl: 'https://polygonscan.com',
-  rpcUrl: 'https://polygon.rpc.com',
-  currency: 'MATIC'
+  nativeCurrency: {
+    name: 'Matic',
+    decimals: 18,
+    symbol: 'MATIC'
+  },
+  rpcUrls: {
+    default: {
+      http: ['https://polygon.rpc.com']
+    }
+  }
 } as const
 
 const mockSolanaNetwork = {
-  id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-  chainNamespace: 'solana',
-  chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  id: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  chainNamespace: ConstantsUtil.CHAIN.SOLANA,
+  caipNetworkId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
   name: 'Solana',
-  explorerUrl: 'https://explorer.solana.com',
-  rpcUrl: 'https://api.mainnet-beta.solana.com',
-  currency: 'SOL'
+  nativeCurrency: {
+    name: 'Solana',
+    decimals: 9,
+    symbol: 'SOL'
+  },
+  rpcUrls: {
+    default: {
+      http: ['https://api.mainnet-beta.solana.com']
+    }
+  }
 } as const
 
 describe('WcHelpersUtil', () => {
@@ -40,7 +62,9 @@ describe('WcHelpersUtil', () => {
         'solana_signMessage',
         'solana_signTransaction',
         'solana_requestAccounts',
-        'solana_getAccounts'
+        'solana_getAccounts',
+        'solana_signAllTransactions',
+        'solana_signAndSendTransaction'
       ])
     })
 
@@ -59,6 +83,8 @@ describe('WcHelpersUtil', () => {
         'wallet_sendCalls',
         'wallet_showCallsStatus',
         'wallet_getCallsStatus',
+        'wallet_grantPermissions',
+        'wallet_revokePermissions',
         'wallet_switchEthereumChain'
       ])
     })
@@ -108,7 +134,9 @@ describe('WcHelpersUtil', () => {
             'solana_signMessage',
             'solana_signTransaction',
             'solana_requestAccounts',
-            'solana_getAccounts'
+            'solana_getAccounts',
+            'solana_signAllTransactions',
+            'solana_signAndSendTransaction'
           ],
           events: ['accountsChanged', 'chainChanged'],
           chains: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
@@ -122,6 +150,35 @@ describe('WcHelpersUtil', () => {
     test('creates empty namespaces for empty input', () => {
       const namespaces = WcHelpersUtil.createNamespaces([])
       expect(namespaces).toEqual({})
+    })
+  })
+
+  describe('getChainsFromNamespaces', () => {
+    test('returns correct chain ids', () => {
+      const namespaces = {
+        eip155: {
+          methods: [],
+          events: [],
+          chains: ['eip155:1', 'eip155:137'],
+          accounts: ['eip155:4000:0x123', 'eip155:3000:0x456']
+        },
+        solana: {
+          methods: [],
+          events: [],
+          chains: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+          accounts: ['solana:mainnet:address', 'solana:devnet:address']
+        }
+      } as SessionTypes.Namespaces
+
+      expect(WcHelpersUtil.getChainsFromNamespaces(namespaces)).toEqual([
+        'eip155:1',
+        'eip155:137',
+        'eip155:4000',
+        'eip155:3000',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        'solana:mainnet',
+        'solana:devnet'
+      ])
     })
   })
 })

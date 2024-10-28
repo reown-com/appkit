@@ -28,10 +28,16 @@ export class W3mConnectingWcView extends LitElement {
 
   @state() private platforms: Platform[] = []
 
+  @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
+
   public constructor() {
     super()
+    this.determinePlatforms()
     this.initializeConnection()
-    this.interval = setInterval(this.initializeConnection.bind(this), ConstantsUtil.TEN_SEC_MS)
+    this.interval = setInterval(
+      this.initializeConnection.bind(this),
+      ConstantsUtil.TEN_SEC_MS
+    ) as unknown as NodeJS.Timeout
   }
 
   public override disconnectedCallback() {
@@ -44,8 +50,6 @@ export class W3mConnectingWcView extends LitElement {
       return html`<w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode>`
     }
 
-    this.determinePlatforms()
-
     return html`
       ${this.headerTemplate()}
       <div>${this.platformTemplate()}</div>
@@ -54,12 +58,22 @@ export class W3mConnectingWcView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private async initializeConnection(retry = false) {
+    if (this.platform === 'browser') {
+      /*
+       * If the platform is browser it means the user is using a browser wallet,
+       * in this case the connection is handled in w3m-connecting-wc-browser component.
+       */
+      return
+    }
+
     try {
-      const { wcPairingExpiry } = ConnectionController.state
-      if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry)) {
+      const { wcPairingExpiry, status } = ConnectionController.state
+      if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry) || status === 'connecting') {
         await ConnectionController.connectWalletConnect()
         this.finalizeConnection()
-        ModalController.close()
+        if (!this.isSiweEnabled) {
+          ModalController.close()
+        }
       }
     } catch (error) {
       EventsController.sendEvent({
@@ -98,16 +112,19 @@ export class W3mConnectingWcView extends LitElement {
 
   private determinePlatforms() {
     if (!this.wallet) {
-      throw new Error('w3m-connecting-wc-view:determinePlatforms No wallet')
+      this.platforms.push('qrcode')
+      this.platform = 'qrcode'
+
+      return
     }
 
     if (this.platform) {
       return
     }
 
-    const { mobile_link, desktop_link, webapp_link, injected, rdns } = this.wallet
+    const { mobile_link, desktop_link, webapp_link, injected, rdns, name } = this.wallet
     const injectedIds = injected?.map(({ injected_id }) => injected_id).filter(Boolean) as string[]
-    const browserIds = rdns ? [rdns] : injectedIds ?? []
+    const browserIds = [...(rdns ? [rdns] : injectedIds ?? []), name]
     const isBrowser = OptionsController.state.isUniversalProvider ? false : browserIds.length
     const isMobileWc = mobile_link
     const isWebWc = webapp_link
@@ -139,15 +156,12 @@ export class W3mConnectingWcView extends LitElement {
     switch (this.platform) {
       case 'browser':
         return html`<w3m-connecting-wc-browser></w3m-connecting-wc-browser>`
+      case 'web':
+        return html`<w3m-connecting-wc-web></w3m-connecting-wc-web>`
       case 'desktop':
         return html`
           <w3m-connecting-wc-desktop .onRetry=${() => this.initializeConnection(true)}>
           </w3m-connecting-wc-desktop>
-        `
-      case 'web':
-        return html`
-          <w3m-connecting-wc-web .onRetry=${() => this.initializeConnection(true)}>
-          </w3m-connecting-wc-web>
         `
       case 'mobile':
         return html`

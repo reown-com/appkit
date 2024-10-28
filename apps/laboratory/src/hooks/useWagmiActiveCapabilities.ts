@@ -1,4 +1,4 @@
-import { UniversalProvider } from '@walletconnect/universal-provider'
+import type UniversalProvider from '@walletconnect/universal-provider'
 import { useAccount, type Connector } from 'wagmi'
 import { useState, useEffect, useMemo } from 'react'
 import { type Address, type WalletCapabilities } from 'viem'
@@ -17,7 +17,7 @@ type UseWagmiAvailableCapabilitiesParams = {
   method: string
 }
 
-export type Provider = Awaited<ReturnType<(typeof UniversalProvider)['init']>> | W3mFrameProvider
+export type Provider = UniversalProvider | W3mFrameProvider
 
 export function useWagmiAvailableCapabilities({
   capability,

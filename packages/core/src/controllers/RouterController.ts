@@ -38,6 +38,7 @@ export interface RouterControllerState {
     | 'WalletCompatibleNetworks'
     | 'ChooseAccountName'
     | 'Connect'
+    | 'Create'
     | 'ConnectingExternal'
     | 'ConnectingFarcaster'
     | 'ConnectingWalletConnect'
@@ -78,6 +79,8 @@ export interface RouterControllerState {
     | 'SwapPreview'
     | 'ConnectingMultiChain'
     | 'SwitchActiveChain'
+    | 'SmartSessionCreated'
+    | 'SmartSessionList'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector

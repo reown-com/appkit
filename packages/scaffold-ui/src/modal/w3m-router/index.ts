@@ -75,6 +75,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-choose-account-name-view></w3m-choose-account-name-view>`
       case 'Connect':
         return html`<w3m-connect-view></w3m-connect-view>`
+      case 'Create':
+        return html`<w3m-connect-view walletGuide="explore"></w3m-connect-view>`
       case 'ConnectingWalletConnect':
         return html`<w3m-connecting-wc-view></w3m-connecting-wc-view>`
       case 'ConnectingExternal':
@@ -157,6 +159,10 @@ export class W3mRouter extends LitElement {
         return html`<w3m-register-account-name-view></w3m-register-account-name-view>`
       case 'RegisterAccountNameSuccess':
         return html`<w3m-register-account-name-success-view></w3m-register-account-name-success-view>`
+      case 'SmartSessionCreated':
+        return html`<w3m-smart-session-created-view></w3m-smart-session-created-view>`
+      case 'SmartSessionList':
+        return html`<w3m-smart-session-list-view></w3m-smart-session-list-view>`
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }

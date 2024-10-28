@@ -1,15 +1,31 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { mockAccount, mockAppKit, mockOptions, mockWagmiClient } from './mocks/adapter.mock'
 import {
-  mockAccount,
-  mockAppKit,
-  mockChain,
-  mockOptions,
-  mockWagmiClient
-} from './mocks/adapter.mock'
-import { arbitrum, mainnet } from '@reown/appkit/networks'
+  arbitrum as AppkitArbitrum,
+  mainnet as AppkitMainnet,
+  polygon as AppkitPolygon,
+  optimism as AppkitOptimism,
+  bsc as AppkitBsc
+} from '@reown/appkit/networks'
 import { connect, disconnect, getAccount, getChainId, getEnsName, getBalance } from '@wagmi/core'
-import { ConstantsUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, ConstantsUtil } from '@reown/appkit-utils'
+import type { CaipNetwork } from '@reown/appkit-common'
+import { http } from 'viem'
+import { WagmiAdapter } from '../client'
+
+const [mainnet, arbitrum] = CaipNetworksUtil.extendCaipNetworks(
+  [AppkitMainnet, AppkitArbitrum, AppkitPolygon, AppkitOptimism, AppkitBsc],
+  { customNetworkImageUrls: {}, projectId: '1234' }
+) as [CaipNetwork, CaipNetwork, CaipNetwork, CaipNetwork, CaipNetwork]
+
+const mockOptionsExtended = {
+  ...mockOptions,
+  networks: mockAppKit.getCaipNetworks('eip155') as [CaipNetwork, ...CaipNetwork[]],
+  defaultNetwork: mainnet
+}
+
+const mockConnector = mockWagmiClient.wagmiConfig.connectors[0]!
 
 vi.mock('@wagmi/core', async () => {
   const actual = await vi.importActual('@wagmi/core')
@@ -26,6 +42,8 @@ describe('Wagmi Client', () => {
     vi.clearAllMocks()
     ;(getEnsName as any).mockResolvedValue('mock.eth')
     ;(getBalance as any).mockResolvedValue({ formatted: '1.0', symbol: 'ETH' })
+    vi.spyOn(mockAppKit, 'fetchIdentity').mockResolvedValue({ name: 'example.eth', avatar: '' })
+    vi.spyOn(mockAppKit, 'getReownName').mockImplementation(() => Promise.resolve([]))
   })
 
   afterEach(() => {
@@ -43,8 +61,25 @@ describe('Wagmi Client', () => {
        * Specifically to Wagmi, we are mutating caipNetworks on both Wagmi constructor and when we set adapters.
        * So there is not proper way to compare objects since imageId and imageUrl is added later.
        */
-      mockOptions.networks.forEach((network, index) => {
-        expect(mockWagmiClient.caipNetworks[index]?.name).toEqual(network.name)
+      mockWagmiClient.caipNetworks.forEach((network, index) => {
+        expect(network.name).toEqual(mockOptionsExtended.networks[index]?.name)
+      })
+    })
+
+    it('should set chain images', () => {
+      const client = new WagmiAdapter({
+        projectId: '123',
+        networks: [mainnet, arbitrum]
+      })
+
+      client.construct(mockAppKit, mockOptionsExtended)
+
+      Object.entries(mockOptions.chainImages).map(([networkId, imageUrl]) => {
+        const caipNetwork = client.caipNetworks.find(
+          caipNetwork => caipNetwork.id === Number(networkId)
+        )
+        expect(caipNetwork).toBeDefined()
+        expect(caipNetwork?.assets?.imageUrl).toEqual(imageUrl)
       })
     })
 
@@ -53,8 +88,8 @@ describe('Wagmi Client', () => {
        * Specifically to Wagmi, we are mutating caipNetworks on both Wagmi constructor and when we set adapters.
        * So there is not proper way to compare objects since imageId and imageUrl is added later.
        */
-      expect(mockWagmiClient.defaultCaipNetwork?.chainId).toEqual(mockOptions.networks[0]?.chainId)
-      expect(mockWagmiClient.defaultCaipNetwork?.name).toEqual(mockOptions.networks[0]?.name)
+      expect(mockWagmiClient.defaultCaipNetwork?.id).toEqual(mainnet.id)
+      expect(mockWagmiClient.defaultCaipNetwork?.name).toEqual(mainnet.name)
     })
 
     it('should create wagmi config', () => {
@@ -66,13 +101,13 @@ describe('Wagmi Client', () => {
     it('should switch to correct chain', async () => {
       await mockWagmiClient.networkControllerClient?.switchCaipNetwork(arbitrum)
 
-      expect(getChainId(mockWagmiClient.wagmiConfig)).toBe(arbitrum.chainId)
+      expect(getChainId(mockWagmiClient.wagmiConfig)).toBe(arbitrum.id)
     })
 
     it('should sync the correct requested networks', async () => {
       const setRequestedCaipNetworks = vi.spyOn(mockAppKit, 'setRequestedCaipNetworks')
 
-      mockWagmiClient['syncRequestedNetworks'](mockOptions.networks)
+      mockWagmiClient['syncRequestedNetworks']([mainnet, arbitrum])
 
       /**
        * Specifically to Wagmi, we are mutating caipNetworks on both Wagmi constructor and when we set adapters.
@@ -98,14 +133,21 @@ describe('Wagmi Client', () => {
 
       expect(mockWagmiClient.wagmiConfig).toBeDefined()
 
+      const syncAccountSpy = vi.spyOn(mockWagmiClient as any, 'syncAccount')
+      const mockConnectorConnectSpy = vi.spyOn(mockConnector, 'connect')
+      const mockConnectorGetAccountsSpy = vi.spyOn(mockConnector, 'connect')
+
       await connect(mockWagmiClient.wagmiConfig, {
-        connector: mockWagmiClient.wagmiConfig.connectors[0]!
+        connector: mockConnector
       })
 
+      expect(syncAccountSpy).toHaveBeenCalledTimes(2)
+      expect(mockConnectorConnectSpy).toHaveBeenCalledOnce()
+      expect(mockConnectorGetAccountsSpy).toHaveBeenCalledOnce()
       expect(setApprovedCaipNetworksData).toHaveBeenCalledOnce()
 
       expect(mockAppKit.getCaipAddress()).toBe(
-        `${ConstantsUtil.EIP155}:${mainnet.chainId}:${mockAccount.address}`
+        `${ConstantsUtil.EIP155}:${mainnet.id}:${mockAccount.address}`
       )
 
       const connectedWagmiAccount = getAccount(mockWagmiClient.wagmiConfig)
@@ -113,22 +155,38 @@ describe('Wagmi Client', () => {
       expect(connectedWagmiAccount.status).toBe('connected')
       expect(connectedWagmiAccount.address).toBe(mockAccount.address)
 
+      const resetAccountSpy = vi.spyOn(mockAppKit, 'resetAccount')
+      const resetWcSpy = vi.spyOn(mockAppKit, 'resetWcConnection')
+      const resetNetworkSpy = vi.spyOn(mockAppKit, 'resetNetwork')
+      const setAllAccountsSpy = vi.spyOn(mockAppKit, 'setAllAccounts')
+
+      const mockConnectorDisconnectSpy = vi.spyOn(mockConnector, 'disconnect')
+
       await disconnect(mockWagmiClient.wagmiConfig)
+
+      expect(mockConnectorConnectSpy).toHaveBeenCalled()
+      expect(mockConnectorDisconnectSpy).toHaveBeenCalledOnce()
 
       const disconnectedWagmiAccount = getAccount(mockWagmiClient.wagmiConfig)
 
       expect(disconnectedWagmiAccount.status).toBe('disconnected')
       expect(disconnectedWagmiAccount.address).toBeUndefined()
+      expect(resetAccountSpy).toHaveBeenCalledOnce()
+      expect(resetWcSpy).toHaveBeenCalledOnce()
+      expect(resetNetworkSpy).toHaveBeenCalledOnce()
+      expect(setAllAccountsSpy).toHaveBeenCalledTimes(2)
     })
-
-    it('should disconnect from client', async () => {})
   })
 
   describe('Wagmi Client - Sync Account', () => {
     it('should sync account correctly when connected', async () => {
       const mockAddress = '0x1234567890123456789012345678901234567890'
       const mockChainId = 1
-      const mockConnector = { id: 'mockConnector', name: 'Mock Connector' }
+      const mockConnector = {
+        id: 'mockConnector',
+        name: 'Mock Connector',
+        getProvider: vi.fn().mockResolvedValue({})
+      }
 
       const setCaipAddressSpy = vi.spyOn(mockAppKit, 'setCaipAddress')
 
@@ -148,9 +206,17 @@ describe('Wagmi Client', () => {
         `eip155:${mockChainId}:${mockAddress}`,
         'eip155'
       )
+
+      expect(syncNetworkSpy).toHaveBeenCalledOnce()
       expect(syncNetworkSpy).toHaveBeenCalledWith(mockAddress, mockChainId, true)
+
+      expect(syncProfileSpy).toHaveBeenCalledOnce()
       expect(syncProfileSpy).toHaveBeenCalledWith(mockAddress, mockChainId)
+
+      expect(syncBalanceSpy).toHaveBeenCalledOnce()
       expect(syncBalanceSpy).toHaveBeenCalledWith(mockAddress, mockChainId)
+
+      expect(syncConnectedWalletInfoSpy).toHaveBeenCalledOnce
       expect(syncConnectedWalletInfoSpy).toHaveBeenCalledWith(mockConnector)
     })
   })
@@ -159,45 +225,38 @@ describe('Wagmi Client', () => {
     it('should sync network correctly', async () => {
       const mockAddress = '0x1234567890123456789012345678901234567890'
 
-      mockWagmiClient.caipNetworks = [mockChain]
+      mockWagmiClient.caipNetworks = [mainnet, arbitrum]
 
       const setCaipNetworkSpy = vi.spyOn(mockAppKit, 'setCaipNetwork')
       const setCaipAddressSpy = vi.spyOn(mockAppKit, 'setCaipAddress')
       const setAddressExplorerUrlSpy = vi.spyOn(mockAppKit, 'setAddressExplorerUrl')
-      const syncBalanceSpy = vi.spyOn(mockWagmiClient as any, 'syncBalance')
 
-      await (mockWagmiClient as any).syncNetwork(mockAddress, mockChain.chainId, true)
+      await (mockWagmiClient as any).syncNetwork(mockAddress, mainnet.id, true)
 
       expect(setCaipNetworkSpy).toHaveBeenCalledWith(
         expect.objectContaining({
-          chainId: 1,
-          id: 'eip155:1',
+          id: 1,
+          caipNetworkId: 'eip155:1',
           name: 'Ethereum',
-          chainNamespace: 'eip155',
-          currency: 'ETH',
-          explorerUrl: 'https://etherscan.io'
+          chainNamespace: 'eip155'
         })
       )
 
       expect(setCaipAddressSpy).toHaveBeenCalledWith(
-        `eip155:${mockChain.chainId}:${mockAddress}`,
+        `eip155:${mainnet.id}:${mockAddress}`,
         'eip155'
       )
       expect(setAddressExplorerUrlSpy).toHaveBeenCalledWith(
         'https://etherscan.io/address/0x1234567890123456789012345678901234567890',
         'eip155'
       )
-      expect(syncBalanceSpy).toHaveBeenCalledWith(mockAddress, mockChain.chainId)
     })
 
     it('should not sync network if chain is not found', async () => {
       const mockAddress = '0x1234567890123456789012345678901234567890'
       const mockChainId = 999
 
-      mockWagmiClient.options = {
-        ...mockOptions,
-        networks: []
-      }
+      mockWagmiClient.options = mockOptionsExtended
       const setCaipNetworkSpy = vi.spyOn(mockAppKit, 'setCaipNetwork')
       const syncBalanceSpy = vi.spyOn(mockWagmiClient as any, 'syncBalance')
 
@@ -258,7 +317,7 @@ describe('Wagmi Client', () => {
     const mockChainId = 1 // Ethereum mainnet
 
     beforeEach(() => {
-      mockWagmiClient.options = { networks: [mockChain], projectId: '123' }
+      mockWagmiClient.options = { networks: [mainnet], projectId: '123' }
       mockAppKit.setBalance = vi.fn()
       ;(getBalance as any).mockReset()
     })
@@ -459,7 +518,6 @@ describe('Wagmi Client', () => {
       expect(mockProvider.onRpcError).toHaveBeenCalledWith(expect.any(Function))
       expect(mockProvider.onRpcSuccess).toHaveBeenCalledWith(expect.any(Function))
       expect(mockProvider.onNotConnected).toHaveBeenCalledWith(expect.any(Function))
-      expect(mockProvider.onIsConnected).toHaveBeenCalledWith(expect.any(Function))
       expect(mockProvider.onGetSmartAccountEnabledNetworks).toHaveBeenCalledWith(
         expect.any(Function)
       )
@@ -475,6 +533,69 @@ describe('Wagmi Client', () => {
       callback({ method: 'eth_sendTransaction' })
 
       expect(mockAppKit.redirect).toHaveBeenCalledWith('ApproveTransaction')
+    })
+  })
+
+  describe('Wagmi Client - Transports', () => {
+    it('should use default transports for networks without custom transports', () => {
+      const client = new WagmiAdapter({
+        projectId: '123',
+        networks: [mainnet, arbitrum]
+      })
+
+      expect(client.wagmiConfig._internal.transports).toBeDefined()
+      expect(client.wagmiConfig._internal.transports[mainnet.id as number]).toBeDefined()
+      expect(client.wagmiConfig._internal.transports[arbitrum.id as number]).toBeDefined()
+    })
+
+    it('should merge user-provided transports with default transports', () => {
+      const customTransport = http('https://custom-rpc.example.com')
+      const client = new WagmiAdapter({
+        projectId: '123',
+        networks: [mainnet, arbitrum],
+        transports: {
+          [mainnet.id]: customTransport
+        }
+      })
+
+      expect(client.wagmiConfig._internal.transports).toBeDefined()
+      expect(client.wagmiConfig._internal.transports[mainnet.id as number]).toBe(customTransport)
+      expect(client.wagmiConfig._internal.transports[arbitrum.id as number]).toBeDefined()
+      expect(client.wagmiConfig._internal.transports[arbitrum.id as number]).not.toBe(
+        customTransport
+      )
+    })
+
+    it('should prioritize user-provided transports over default ones', () => {
+      const customTransport1 = http('https://custom-rpc1.example.com')
+      const customTransport2 = http('https://custom-rpc2.example.com')
+      const client = new WagmiAdapter({
+        projectId: '123',
+        networks: [mainnet, arbitrum],
+        transports: {
+          [mainnet.id]: customTransport1,
+          [arbitrum.id]: customTransport2
+        }
+      })
+
+      expect(client.wagmiConfig._internal.transports).toBeDefined()
+      expect(client.wagmiConfig._internal.transports[mainnet.id as number]).toBe(customTransport1)
+      expect(client.wagmiConfig._internal.transports[arbitrum.id as number]).toBe(customTransport2)
+    })
+
+    it('should handle transports for networks not in the provided networks array', () => {
+      const customTransport = http('https://custom-rpc.example.com')
+      const client = new WagmiAdapter({
+        projectId: '123',
+        networks: [mainnet],
+        transports: {
+          [arbitrum.id]: customTransport
+        }
+      })
+
+      expect(client.wagmiConfig._internal.transports).toBeDefined()
+      expect(client.wagmiConfig._internal.transports[mainnet.id as number]).toBeDefined()
+      expect(client.wagmiConfig._internal.transports[arbitrum.id as number]).toBe(customTransport)
     })
   })
 })

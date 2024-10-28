@@ -1,34 +1,37 @@
+/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 import React, { type ReactNode } from 'react'
 import { createContext } from 'react'
-import {
-  GRANTED_PERMISSIONS_KEY,
-  removeLocalStorageItem,
-  WC_COSIGNER_DATA
-} from '../utils/LocalStorage'
+import { SMART_SESSION_KEY, removeLocalStorageItem } from '../utils/LocalStorage'
 import { useLocalStorageState } from '../hooks/useLocalStorageState'
-import type { GrantPermissionsReturnType } from 'viem/experimental'
-import type { AddPermissionResponse } from '../utils/WalletConnectCosignerUtils'
+import type { SmartSessionGrantPermissionsResponse } from '@reown/appkit-experimental/smart-session'
 
 export type ERC7715PermissionsContextType = {
   projectId: string
-  grantedPermissions: GrantPermissionsReturnType | undefined
-  setGrantedPermissions: React.Dispatch<
-    React.SetStateAction<GrantPermissionsReturnType | undefined>
+  smartSession:
+    | {
+        grantedPermissions: SmartSessionGrantPermissionsResponse
+        type: 'async' | 'sync'
+      }
+    | undefined
+  setSmartSession: React.Dispatch<
+    React.SetStateAction<
+      | {
+          grantedPermissions: SmartSessionGrantPermissionsResponse
+          type: 'async' | 'sync'
+        }
+      | undefined
+    >
   >
-  wcCosignerData: AddPermissionResponse | undefined
-  setWCCosignerData: React.Dispatch<React.SetStateAction<AddPermissionResponse | undefined>>
-  clearGrantedPermissions: () => void
+  clearSmartSession: () => void
 }
 function noop() {
   console.warn('WagmiPermissionsAsyncContext used outside of provider')
 }
 export const ERC7715PermissionsContext = createContext<ERC7715PermissionsContextType>({
   projectId: '',
-  grantedPermissions: undefined,
-  wcCosignerData: undefined,
-  setGrantedPermissions: noop,
-  setWCCosignerData: noop,
-  clearGrantedPermissions: noop
+  clearSmartSession: noop,
+  smartSession: undefined,
+  setSmartSession: noop
 })
 
 interface ERC7715PermissionsProviderProps {
@@ -40,27 +43,25 @@ export function ERC7715PermissionsProvider({ children }: ERC7715PermissionsProvi
   if (!projectId) {
     throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
   }
-  const [grantedPermissions, setGrantedPermissions] = useLocalStorageState<
-    GrantPermissionsReturnType | undefined
-  >(GRANTED_PERMISSIONS_KEY, undefined)
-  const [wcCosignerData, setWCCosignerData] = useLocalStorageState<
-    AddPermissionResponse | undefined
-  >(WC_COSIGNER_DATA, undefined)
-
-  function clearGrantedPermissions() {
-    removeLocalStorageItem(GRANTED_PERMISSIONS_KEY)
-    setGrantedPermissions(undefined)
+  const [smartSession, setSmartSession] = useLocalStorageState<
+    | {
+        grantedPermissions: SmartSessionGrantPermissionsResponse
+        type: 'async' | 'sync'
+      }
+    | undefined
+  >(SMART_SESSION_KEY, undefined)
+  function clearSmartSession() {
+    removeLocalStorageItem(SMART_SESSION_KEY)
+    setSmartSession(undefined)
   }
 
   return (
     <ERC7715PermissionsContext.Provider
       value={{
         projectId,
-        grantedPermissions,
-        wcCosignerData,
-        clearGrantedPermissions,
-        setGrantedPermissions,
-        setWCCosignerData
+        smartSession,
+        setSmartSession,
+        clearSmartSession
       }}
     >
       {children}

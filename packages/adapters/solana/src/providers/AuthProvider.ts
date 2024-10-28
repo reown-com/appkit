@@ -69,13 +69,13 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     const availableChainIds = this.getProvider().getAvailableChainIds()
 
     return this.requestedChains.filter(requestedChain =>
-      availableChainIds.includes(withSolanaNamespace(requestedChain.chainId) as string)
+      availableChainIds.includes(withSolanaNamespace(requestedChain.id) as string)
     )
   }
 
   public async connect() {
     const session = await this.getProvider().connect({
-      chainId: withSolanaNamespace(this.getActiveChain()?.chainId)
+      chainId: withSolanaNamespace(this.getActiveChain()?.id)
     })
     this.setSession(session)
 
@@ -201,8 +201,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     required?: Required
   ): Required extends true ? PublicKey : PublicKey | undefined {
     const session = this.getSession()
-    const namespace = this.getActiveNamespace()
-    if (!session || namespace !== 'solana') {
+    if (!session) {
       if (required) {
         throw new Error('Account is required')
       }
@@ -231,10 +230,11 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     })
 
     this.getProvider().onConnect(response => {
-      this.setSession(response)
-      const activeNamespace = this.getActiveNamespace()
+      const isSolanaNamespace =
+        typeof response.chainId === 'string' ? response.chainId?.startsWith('solana') : false
 
-      if (activeNamespace === 'solana') {
+      if (isSolanaNamespace) {
+        this.setSession(response)
         this.emit('connect', this.getPublicKey(true))
       }
     })

@@ -5,14 +5,29 @@ import { mockOptions } from './mocks/Options'
 import { mockCreateEthersConfig } from './mocks/EthersConfig'
 import mockAppKit from './mocks/AppKit'
 import { mockAuthConnector } from './mocks/AuthConnector'
-import { EthersHelpersUtil, type ProviderId, type ProviderType } from '@reown/appkit-utils/ethers'
-import { ConstantsUtil } from '@reown/appkit-utils'
-import { arbitrum, mainnet, polygon } from '@reown/appkit/networks'
-import { ProviderUtil } from '@reown/appkit/store'
+import { EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
+import { CaipNetworksUtil, ConstantsUtil } from '@reown/appkit-utils'
+import {
+  arbitrum as AppkitArbitrum,
+  mainnet as AppkitMainnet,
+  polygon as AppkitPolygon,
+  optimism as AppkitOptimism,
+  bsc as AppkitBsc,
+  harmonyOne as AppkitHarmonyOne
+} from '@reown/appkit/networks'
+import { ProviderUtil, type ProviderIdType } from '@reown/appkit/store'
 import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 import { type BlockchainApiLookupEnsName } from '@reown/appkit'
-import { ethers } from 'ethers5'
+import { ethers } from 'ethers'
+
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+
+const [mainnet, arbitrum, polygon, optimism, bsc] = CaipNetworksUtil.extendCaipNetworks(
+  [AppkitMainnet, AppkitArbitrum, AppkitPolygon, AppkitOptimism, AppkitBsc],
+  { customNetworkImageUrls: mockOptions.chainImages, projectId: '1234' }
+) as [CaipNetwork, CaipNetwork, CaipNetwork, CaipNetwork, CaipNetwork]
+
+const caipNetworks = [mainnet, arbitrum, polygon] as [CaipNetwork, ...CaipNetwork[]]
 
 vi.mock('@reown/appkit-wallet', () => ({
   W3mFrameProvider: vi.fn().mockImplementation(() => mockAuthConnector),
@@ -25,13 +40,16 @@ vi.mock('@reown/appkit-wallet', () => ({
   }
 }))
 
-vi.mock('@reown/appkit-utils', () => {
+vi.mock('@reown/appkit-utils', async importOriginal => {
+  const actual = await importOriginal()
   const INJECTED_CONNECTOR_ID = 'injected'
   const COINBASE_SDK_CONNECTOR_ID = 'coinbaseWallet'
   const EIP6963_CONNECTOR_ID = 'eip6963'
   const WALLET_CONNECT_CONNECTOR_ID = 'walletConnect'
   const AUTH_CONNECTOR_ID = 'w3mAuth'
   return {
+    // @ts-expect-error - actual is not typed
+    ...actual,
     PresetsUtil: {
       ConnectorTypesMap: {
         [INJECTED_CONNECTOR_ID]: 'INJECTED',
@@ -80,7 +98,7 @@ vi.mock('@reown/appkit/store', () => ({
   }
 }))
 
-vi.mock('ethers5', async () => {
+vi.mock('ethers', async () => {
   return {
     ethers: {
       providers: {
@@ -96,15 +114,40 @@ vi.mock('ethers5', async () => {
   }
 })
 
+vi.mock('@reown/appkit-common', async importOriginal => {
+  const actual = await importOriginal()
+  return {
+    // @ts-expect-error - actual is not typed
+    ...actual,
+    SafeLocalStorage: {
+      getItem: vi.fn(key => {
+        const values = {
+          '@appkit/wallet_id': 'injected'
+        }
+        return values[key as keyof typeof values]
+      }),
+      setItem: vi.fn(),
+      removeItem: vi.fn()
+    }
+  }
+})
+
 describe('EthersAdapter', () => {
   let client: Ethers5Adapter
 
   beforeEach(() => {
     vi.clearAllMocks()
+    const ethersConfig = mockCreateEthersConfig()
     client = new Ethers5Adapter()
+    vi.spyOn(client as any, 'createEthersConfig').mockImplementation(() => ({
+      metadata: ethersConfig.metadata,
+      injected: ethersConfig.injected
+    }))
     const optionsWithEthersConfig = {
       ...mockOptions,
-      ethersConfig: mockCreateEthersConfig()
+      networks: caipNetworks,
+      defaultNetwork: undefined,
+      ethersConfig
     }
     client.construct(mockAppKit, optionsWithEthersConfig)
   })
@@ -120,11 +163,21 @@ describe('EthersAdapter', () => {
     })
 
     it('should set caipNetworks to provided caipNetworks options', () => {
-      expect(client.caipNetworks).toEqual(mockOptions.networks)
+      expect(client.caipNetworks).toEqual(caipNetworks)
+    })
+
+    it('should set chain images', () => {
+      Object.entries(mockOptions.chainImages!).map(([networkId, imageUrl]) => {
+        const caipNetwork = client.caipNetworks.find(
+          caipNetwork => caipNetwork.id === Number(networkId)
+        )
+        expect(caipNetwork).toBeDefined()
+        expect(caipNetwork?.assets?.imageUrl).toEqual(imageUrl)
+      })
     })
 
     it('should set defaultNetwork to first caipNetwork option', () => {
-      expect(client.defaultCaipNetwork).toEqual(mockOptions.networks[0])
+      expect(client.defaultCaipNetwork).toEqual(mainnet)
     })
 
     it('should create ethers config', () => {
@@ -149,16 +202,9 @@ describe('EthersAdapter', () => {
     })
 
     it('should switch network for injected provider', async () => {
-      const newNetwork = {
-        id: 'eip155:137',
-        name: 'Polygon',
-        chainId: '137',
-        rpcUrl: 'https://polygon-rpc.com'
-      } as unknown as CaipNetwork
-
       mockProvider.request.mockResolvedValueOnce(null)
 
-      await client.switchNetwork(newNetwork)
+      await client.switchNetwork(polygon)
 
       expect(mockProvider.request).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -170,22 +216,14 @@ describe('EthersAdapter', () => {
           ])
         })
       )
-      expect(mockAppKit.setCaipNetwork).toHaveBeenCalledWith(newNetwork)
     })
 
     it('should add network if not recognized by wallet', async () => {
-      const newNetwork = {
-        id: 'eip155:42161',
-        name: 'Arbitrum One',
-        chainId: '42161',
-        rpcUrl: 'https://arb1.arbitrum.io/rpc'
-      } as unknown as CaipNetwork
-
       const switchError = { code: 4902 }
       mockProvider.request.mockRejectedValueOnce(switchError)
       mockProvider.request.mockResolvedValueOnce(null)
 
-      await client.switchNetwork(newNetwork)
+      await client.switchNetwork(arbitrum)
 
       expect(mockProvider.request).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -200,17 +238,10 @@ describe('EthersAdapter', () => {
     })
 
     it('should throw error if switching fails', async () => {
-      const newNetwork = {
-        id: 'eip155:56',
-        name: 'Binance Smart Chain',
-        chainId: '56',
-        rpcUrl: 'https://bsc-dataseed.binance.org'
-      } as unknown as CaipNetwork
-
       const switchError = new Error('User rejected the request')
       mockProvider.request.mockRejectedValueOnce(switchError)
 
-      await expect(client.switchNetwork(newNetwork)).rejects.toThrow('Chain is not supported')
+      await expect(client.switchNetwork(bsc)).rejects.toThrow('Chain is not supported')
     })
 
     it('should use universal adapter for WalletConnect', async () => {
@@ -220,18 +251,11 @@ describe('EthersAdapter', () => {
         polkadot: undefined
       })
 
-      const newNetwork = {
-        id: 'eip155:10',
-        name: 'Optimism',
-        chainId: '10',
-        rpcUrl: 'https://mainnet.optimism.io'
-      } as unknown as CaipNetwork
-
-      await client.switchNetwork(newNetwork)
+      await client.switchNetwork(optimism)
 
       expect(
         mockAppKit.universalAdapter?.networkControllerClient.switchCaipNetwork
-      ).toHaveBeenCalledWith(newNetwork)
+      ).toHaveBeenCalledWith(optimism)
     })
 
     it('should set requested CAIP networks for each unique chain namespace', () => {
@@ -267,13 +291,13 @@ describe('EthersAdapter', () => {
         client['appKit'] = mockAppKit
       })
 
-      it.skip('should handle RPC request correctly when modal is closed', () => {
+      it('should handle RPC request correctly when modal is closed', () => {
         vi.spyOn(mockAppKit, 'isOpen').mockReturnValue(false)
         mockAppKit['handleUnsafeRPCRequest']()
         expect(mockAppKit.open).toHaveBeenCalledWith({ view: 'ApproveTransaction' })
       })
 
-      it.skip('should handle RPC request correctly when modal is open and transaction stack is not empty', () => {
+      it('should handle RPC request correctly when modal is open and transaction stack is not empty', () => {
         vi.spyOn(mockAppKit, 'isOpen').mockReturnValue(true)
         vi.spyOn(mockAppKit, 'isTransactionStackEmpty').mockReturnValue(false)
         vi.spyOn(mockAppKit, 'isTransactionShouldReplaceView').mockReturnValue(true)
@@ -349,7 +373,6 @@ describe('EthersAdapter', () => {
 
         expect(mockAppKit.setLoading).toHaveBeenCalledWith(true)
         expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(`eip155:${1}:${address}`, 'eip155')
-        expect(mockAppKit.setCaipNetwork).toHaveBeenCalled()
         expect(mockAppKit.setStatus).toHaveBeenCalledWith('connected', 'eip155')
         expect(mockAppKit.setPreferredAccountType).toHaveBeenCalledWith(type, 'eip155')
 
@@ -393,7 +416,6 @@ describe('EthersAdapter', () => {
           [{ address: mockAddress, type: mockPreferredAccountType }],
           'eip155'
         )
-        expect(mockAppKit.setCaipNetwork).toHaveBeenCalled()
         expect(mockAppKit.setStatus).toHaveBeenCalledWith('connected', 'eip155')
         expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(
           `eip155:${mockChainId}:${mockAddress}`,
@@ -532,7 +554,7 @@ describe('EthersAdapter', () => {
         SafeLocalStorageKeys.WALLET_NAME,
         'MetaMask'
       )
-      expect(mockAppKit.setCaipNetwork).toHaveBeenCalled()
+      expect(mockAppKit.setCaipAddress).toHaveBeenCalled()
       expect(ProviderUtil.setProviderId).toHaveBeenCalledWith('eip155', 'injected')
       expect(ProviderUtil.setProvider).toHaveBeenCalledWith('eip155', mockProvider)
       expect(mockAppKit.setStatus).toHaveBeenCalledWith('connected', 'eip155')
@@ -588,7 +610,7 @@ describe('EthersAdapter', () => {
       const chainChangedHandler = mockProvider.on.mock.calls.find(
         (call: string[]) => call[0] === 'chainChanged'
       )[1]
-      await chainChangedHandler('0x1')
+      await chainChangedHandler('0x10')
 
       expect(mockAppKit.setCaipNetwork).toHaveBeenCalled()
     })
@@ -668,17 +690,23 @@ describe('EthersAdapter', () => {
   describe('EthersClient - syncAccount', () => {
     beforeEach(() => {
       vi.spyOn(client as any, 'syncConnectedWalletInfo').mockImplementation(() => {})
+      vi.spyOn(client as any, 'setupProviderListeners').mockImplementation(() => {})
+      vi.spyOn(client as any, 'setProvider').mockImplementation(() => Promise.resolve())
       vi.spyOn(client as any, 'syncProfile').mockImplementation(() => Promise.resolve())
       vi.spyOn(client as any, 'syncBalance').mockImplementation(() => Promise.resolve())
+      vi.spyOn(mockAppKit, 'getIsConnectedState').mockReturnValue(true)
+      vi.spyOn(mockAppKit, 'getPreferredAccountType').mockReturnValue('eoa')
     })
 
     it('should sync account when connected and address is provided', async () => {
       const mockAddress = '0x1234567890123456789012345678901234567890'
       const mockCaipNetwork = mainnet
 
-      vi.spyOn(mockAppKit, 'getIsConnectedState').mockReturnValue(true)
       vi.spyOn(mockAppKit, 'getCaipNetwork').mockReturnValue(mockCaipNetwork)
-      vi.spyOn(mockAppKit, 'getPreferredAccountType').mockReturnValue('eoa')
+      vi.spyOn(EthersHelpersUtil, 'getUserInfo').mockResolvedValue({
+        addresses: ['0x1234567890123456789012345678901234567890'],
+        chainId: 1
+      })
 
       await client['syncAccount']({ address: mockAddress })
 
@@ -689,7 +717,33 @@ describe('EthersAdapter', () => {
       )
       expect(client['syncConnectedWalletInfo']).toHaveBeenCalled()
       expect(client['syncProfile']).toHaveBeenCalledWith(mockAddress)
+      expect(mockAppKit.setCaipAddress).toHaveBeenCalledTimes(2)
+      expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(
+        `eip155:${mainnet.id}:${mockAddress}`,
+        'eip155'
+      )
+      expect(mockAppKit.setCaipNetwork).toHaveBeenCalledOnce()
+      expect(mockAppKit.setCaipNetwork).toHaveBeenCalledWith(mainnet)
       expect(mockAppKit.setApprovedCaipNetworksData).toHaveBeenCalledWith('eip155')
+    })
+
+    it('it should fallback to first available chain if current chain is unsupported', async () => {
+      const mockAddress = '0x1234567890123456789012345678901234567890'
+
+      vi.spyOn(EthersHelpersUtil, 'getUserInfo').mockResolvedValue({
+        addresses: [mockAddress],
+        chainId: AppkitHarmonyOne.id as number
+      })
+
+      await client['syncAccount']({ address: mockAddress })
+
+      expect(mockAppKit.setCaipAddress).toHaveBeenCalledTimes(2)
+      expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(
+        `eip155:${mainnet.id}:${mockAddress}`,
+        'eip155'
+      )
+      expect(mockAppKit.setCaipNetwork).toHaveBeenCalledOnce()
+      expect(mockAppKit.setCaipNetwork).toHaveBeenCalledWith(mainnet)
     })
 
     it('should reset connection when not connected', async () => {
@@ -768,10 +822,13 @@ describe('EthersAdapter', () => {
 
       await client['syncBalance'](mockAddress, mainnet)
 
-      expect(ethers.providers.JsonRpcProvider).toHaveBeenCalledWith(mainnet.rpcUrl, {
-        chainId: 1,
-        name: 'Ethereum'
-      })
+      expect(ethers.providers.JsonRpcProvider).toHaveBeenCalledWith(
+        mainnet.rpcUrls.default.http[0],
+        {
+          chainId: 1,
+          name: 'Ethereum'
+        }
+      )
       expect(mockJsonRpcProvider.getBalance).toHaveBeenCalledWith(mockAddress)
       expect(mockAppKit.setBalance).toHaveBeenCalledWith('1.0', 'ETH', 'eip155')
     })
@@ -833,7 +890,7 @@ describe('EthersAdapter', () => {
       vi.spyOn(ProviderUtil.state, 'providerIds', 'get').mockReturnValue({
         eip155: ConstantsUtil.EIP6963_CONNECTOR_ID,
         solana: undefined
-      } as Record<ChainNamespace, ProviderId | undefined>)
+      } as Record<ChainNamespace, ProviderIdType | undefined>)
       client['EIP6963Providers'] = [
         {
           info: { name: 'MetaMask', icon: 'icon-url', uuid: 'test-uuid', rdns: 'com.metamask' },
@@ -853,7 +910,7 @@ describe('EthersAdapter', () => {
       vi.spyOn(ProviderUtil.state, 'providerIds', 'get').mockReturnValue({
         eip155: ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID,
         solana: undefined
-      } as Record<ChainNamespace, ProviderId | undefined>)
+      } as Record<ChainNamespace, ProviderIdType | undefined>)
       const mockProvider = {
         session: {
           peer: {
@@ -882,7 +939,7 @@ describe('EthersAdapter', () => {
       vi.spyOn(ProviderUtil.state, 'providerIds', 'get').mockReturnValue({
         eip155: ConstantsUtil.COINBASE_SDK_CONNECTOR_ID,
         solana: undefined
-      } as Record<ChainNamespace, ProviderId | undefined>)
+      } as Record<ChainNamespace, ProviderIdType | undefined>)
       vi.spyOn(mockAppKit, 'getConnectors').mockReturnValue([
         {
           id: ConstantsUtil.COINBASE_SDK_CONNECTOR_ID,

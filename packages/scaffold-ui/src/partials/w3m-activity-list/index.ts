@@ -93,7 +93,7 @@ export class W3mActivityList extends LitElement {
 
   // -- Private ------------------------------------------- //
   private updateTransactionView() {
-    const currentNetwork = ChainController.state.activeCaipNetwork?.id
+    const currentNetwork = ChainController.state.activeCaipNetwork?.caipNetworkId
     const lastNetworkInView = TransactionsController.state.lastNetworkInView
 
     if (lastNetworkInView !== currentNetwork) {

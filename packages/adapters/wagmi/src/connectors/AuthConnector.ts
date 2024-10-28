@@ -3,9 +3,10 @@ import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { SwitchChainError, getAddress } from 'viem'
 import type { Address, Hex } from 'viem'
-import { ConstantsUtil } from '@reown/appkit-utils'
+import { ConstantsUtil, ErrorUtil } from '@reown/appkit-utils'
 import { NetworkUtil } from '@reown/appkit-common'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
+import { AlertController } from '@reown/appkit-core'
 
 // -- Types ----------------------------------------------------------------------------------------
 interface W3mFrameProviderOptions {
@@ -19,6 +20,9 @@ export type AuthParameters = {
 
 // -- Connector ------------------------------------------------------------------------------------
 export function authConnector(parameters: AuthParameters) {
+  /* eslint-disable init-declarations */
+  let currentAddress: Address | null = null
+
   type Properties = {
     provider?: W3mFrameProvider
   }
@@ -36,23 +40,26 @@ export function authConnector(parameters: AuthParameters) {
     async connect(options = {}) {
       const provider = await this.getProvider()
       let chainId = options.chainId
+
       if (options.isReconnecting) {
         chainId = provider.getLastUsedChainId()
         if (!chainId) {
           throw new Error('ChainId not found in provider')
         }
       }
-
       const { address, chainId: frameChainId } = await provider.connect({
         chainId
       })
+
+      currentAddress = address as Address
+
       await provider.getSmartAccountEnabledNetworks()
 
       const parsedChainId = parseChainId(frameChainId)
 
       return {
-        accounts: [address as Address],
-        account: address as Address,
+        accounts: [currentAddress],
+        account: currentAddress,
         chainId: parsedChainId,
         chain: {
           id: parsedChainId,
@@ -66,17 +73,24 @@ export function authConnector(parameters: AuthParameters) {
       await provider.disconnect()
     },
 
-    async getAccounts() {
-      const provider = await this.getProvider()
-      const { address } = await provider.connect()
-      config.emitter.emit('change', { accounts: [address as Address] })
+    getAccounts() {
+      if (!currentAddress) {
+        return Promise.resolve([])
+      }
 
-      return [address as Address]
+      config.emitter.emit('change', { accounts: [currentAddress] })
+
+      return Promise.resolve([currentAddress])
     },
 
     async getProvider() {
       if (!this.provider) {
-        this.provider = W3mFrameProviderSingleton.getInstance(parameters.options.projectId)
+        this.provider = W3mFrameProviderSingleton.getInstance({
+          projectId: parameters.options.projectId,
+          onTimeout: () => {
+            AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION_SOCIALS, 'error')
+          }
+        })
       }
 
       return Promise.resolve(this.provider)
@@ -91,9 +105,8 @@ export function authConnector(parameters: AuthParameters) {
 
     async isAuthorized() {
       const provider = await this.getProvider()
-      const { isConnected } = await provider.isConnected()
 
-      return isConnected
+      return Promise.resolve(provider.getLoginEmailUsed())
     },
 
     async switchChain({ chainId }) {

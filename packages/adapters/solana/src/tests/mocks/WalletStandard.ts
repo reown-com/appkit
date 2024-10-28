@@ -17,7 +17,7 @@ export function mockWalletStandard() {
 
   return {
     accounts,
-    chains: TestConstants.chains.map(chain => `solana:${chain.chainId}` as const),
+    chains: TestConstants.chains.map(chain => `solana:${chain.id}` as const),
     features: {
       'standard:connect': {
         version: '1.0.0',
@@ -87,7 +87,7 @@ export function mockWalletStandard() {
 function mockAccount(account: TestConstants.Account = TestConstants.accounts[0]): WalletAccount {
   return {
     address: account.address,
-    chains: TestConstants.chains.map(chain => `solana:${chain.chainId}` as const),
+    chains: TestConstants.chains.map(chain => `solana:${chain.id}` as const),
     features: [],
     publicKey: account.publicKey.toBytes(),
     icon: 'data:image/png;base64,mocked...',

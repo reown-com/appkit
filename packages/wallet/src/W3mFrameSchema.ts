@@ -11,7 +11,7 @@ function zType<K extends keyof typeof W3mFrameConstants>(key: K) {
 
 // -- Custom Types -----------------------------------------------------------
 type SdkType = 'w3m' | 'appkit'
-type SdkVersion = `${SdkFramework}-${AdapterType}-${string}` | AppKitSdkVersion
+type SdkVersion = `${SdkFramework}-${AdapterType}-${string}` | AppKitSdkVersion | undefined
 
 // -- Responses --------------------------------------------------------------
 export const GetTransactionByHashResponse = z.object({
@@ -62,7 +62,7 @@ export const AppSyncDappDataRequest = z.object({
       icons: z.array(z.string())
     })
     .optional(),
-  sdkVersion: z.string() as z.ZodType<SdkVersion>,
+  sdkVersion: z.string().optional() as z.ZodType<SdkVersion>,
   sdkType: (z.string() as z.ZodType<SdkType>).optional(),
   projectId: z.string()
 })
@@ -130,6 +130,12 @@ export const FrameInitSmartAccountResponse = z.object({
   address: z.string(),
   isDeployed: z.boolean()
 })
+
+export const FrameReadyResponse = z.object({
+  // Placeholder for future data
+  version: z.string().optional()
+})
+
 export const FrameSetPreferredAccountResponse = z.object({ type: z.string(), address: z.string() })
 
 export const RpcResponse = z.any()
@@ -391,6 +397,10 @@ export const WalletGrantPermissionsRequest = z.object({
   method: z.literal('wallet_grantPermissions'),
   params: z.array(z.any())
 })
+export const WalletRevokePermissionsRequest = z.object({
+  method: z.literal('wallet_revokePermissions'),
+  params: z.any()
+})
 
 export const FrameSession = z.object({
   token: z.string()
@@ -516,6 +526,7 @@ export const W3mFrameSchema = {
           .or(WalletSendCallsRequest)
           .or(WalletGetCapabilitiesRequest)
           .or(WalletGrantPermissionsRequest)
+          .or(WalletRevokePermissionsRequest)
       })
     )
 
@@ -719,4 +730,5 @@ export const W3mFrameSchema = {
         payload: zError
       })
     )
+    .or(EventSchema.extend({ type: zType('FRAME_READY'), payload: FrameReadyResponse }))
 }

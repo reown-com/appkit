@@ -17,15 +17,21 @@ export const mockWagmiClient = new WagmiAdapter({
 
 export const mockWagmiConfig = mockWagmiClient.wagmiConfig
 
+export const mockMainnetChainImage =
+  'https://assets.coingecko.com/coins/images/279/large/ethereum.png'
+
 export const mockOptions = {
   adapters: [mockWagmiClient],
-  networks: [mainnet, arbitrum],
+  networks: mockWagmiClient.caipNetworks,
   enableInjected: false,
   enableCoinbase: false,
   enableWalletConnect: false,
   features: {
     email: false,
     socials: []
+  },
+  chainImages: {
+    [mainnet.id]: mockMainnetChainImage
   },
   metadata: {
     description: 'Desc',
@@ -40,11 +46,25 @@ export const mockOptions = {
 export const mockAppKit = new AppKit(mockOptions)
 
 export const mockChain = {
-  id: 'eip155:1',
+  id: 1,
   name: 'Ethereum',
-  chainId: 1,
+  caipNetworkId: 'eip155:1',
   chainNamespace: 'eip155',
-  currency: 'ETH',
-  explorerUrl: 'https://etherscan.io',
-  rpcUrl: 'https://rpc.example.com'
+  nativeCurrency: {
+    name: 'Ethereum',
+    symbol: 'ETH',
+    decimals: 18
+  },
+  blockExplorers: {
+    default: {
+      name: 'etherscan',
+      url: 'https://etherscan.io',
+      standard: 'EIP3091'
+    }
+  },
+  rpcUrls: {
+    default: {
+      http: ['https://rpc.example.com']
+    }
+  }
 } as CaipNetwork

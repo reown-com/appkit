@@ -1,8 +1,8 @@
 import { AppKit } from '../src/client.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { getAppKit } from '../src/library/vue/index.js'
-import packageJson from '../package.json' assert { type: 'json' }
 import { CoreHelperUtil } from '@reown/appkit-core'
+import { PACKAGE_VERSION } from './constants.js'
 
 // -- Views ------------------------------------------------------------
 export * from '@reown/appkit-scaffold-ui'
@@ -14,7 +14,7 @@ export * from '../src/library/vue/index.js'
 export * from '../src/utils/index.js'
 export type * from '@reown/appkit-core'
 export type { CaipNetwork, CaipAddress, CaipNetworkId } from '@reown/appkit-common'
-export { CoreHelperUtil, AccountController, NetworkController } from '@reown/appkit-core'
+export { CoreHelperUtil, AccountController } from '@reown/appkit-core'
 
 let modal: AppKit | undefined = undefined
 
@@ -24,11 +24,7 @@ export function createAppKit(options: CreateAppKit) {
   if (!modal) {
     modal = new AppKit({
       ...options,
-      sdkVersion: CoreHelperUtil.generateSdkVersion(
-        options.adapters ?? [],
-        'html',
-        packageJson.version
-      )
+      sdkVersion: CoreHelperUtil.generateSdkVersion(options.adapters ?? [], 'html', PACKAGE_VERSION)
     })
     getAppKit(modal)
   }

@@ -5,7 +5,7 @@ import { TestConstants } from '../util/TestConstants.js'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
 
 export function mockW3mFrameProvider() {
-  const w3mFrame = W3mFrameProviderSingleton.getInstance('projectId')
+  const w3mFrame = W3mFrameProviderSingleton.getInstance({ projectId: 'projectId' })
 
   w3mFrame.connect = vi.fn(() => Promise.resolve(mockSession()))
   w3mFrame.disconnect = vi.fn(() => Promise.resolve(undefined))
@@ -46,6 +46,6 @@ export function mockW3mFrameProvider() {
 export function mockSession(): AuthProvider.Session {
   return {
     address: TestConstants.accounts[0].address,
-    chainId: TestConstants.chains[0]?.chainId || ''
+    chainId: TestConstants.chains[0]?.id || ''
   }
 }
