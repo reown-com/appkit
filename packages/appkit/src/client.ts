@@ -483,6 +483,10 @@ export class AppKit {
       OptionsController.setDisableAppend(Boolean(options.disableAppend))
     }
 
+    if (options.siwx) {
+      OptionsController.setSIWX(options.siwx)
+    }
+
     const evmAdapter = options.adapters?.find(
       adapter => adapter.chainNamespace === ConstantsUtil.CHAIN.EVM
     )
