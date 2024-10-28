@@ -6,14 +6,14 @@ import { EIP155Verifier } from '../verifiers/index.js'
 const DEFAULTS = {
   getDefaultMessenger: () =>
     new InformalMessenger({
-      domain: 'localhost',
-      getNonce: async () => Promise.resolve(Math.round(Math.random() * 10000).toString()),
-      uri: 'http://localhost:3000'
+      domain: typeof document === 'undefined' ? 'Unknown Domain' : document.location.host,
+      uri: typeof document === 'undefined' ? 'Unknown URI' : document.location.href,
+      getNonce: async () => Promise.resolve(Math.round(Math.random() * 10000).toString())
     }),
 
   getDefaultVerifiers: () => [new EIP155Verifier()],
 
-  getDefaultStorage: () => new LocalStorage({ key: 'siwx-sessions' })
+  getDefaultStorage: () => new LocalStorage({ key: '@appkit/siwx' })
 }
 
 export class DefaultSIWX extends SIWXConfig {
