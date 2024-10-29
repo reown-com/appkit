@@ -447,6 +447,12 @@ export class AppKit {
 
     this.adapters = options.adapters
 
+    const defaultMetaData = this.getDefaultMetaData()
+
+    if (!options.metadata && defaultMetaData) {
+      options.metadata = defaultMetaData
+    }
+
     this.initializeUniversalAdapter(options)
     this.initializeAdapters(options)
     this.setDefaultNetwork()
@@ -466,10 +472,8 @@ export class AppKit {
     OptionsController.setEnableWalletConnect(options.enableWalletConnect !== false)
     OptionsController.setEnableWallets(options.enableWallets !== false)
 
-    const metadata = options.metadata ?? this.getDefaultMetaData()
-
-    if (metadata) {
-      OptionsController.setMetadata(metadata)
+    if (options.metadata) {
+      OptionsController.setMetadata(options.metadata)
     }
 
     if (options.themeMode) {
