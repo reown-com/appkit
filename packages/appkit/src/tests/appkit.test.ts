@@ -39,6 +39,12 @@ describe('Base', () => {
       expect(OptionsController.setSdkVersion).toHaveBeenCalledWith(mockOptions.sdkVersion)
       expect(OptionsController.setProjectId).toHaveBeenCalledWith(mockOptions.projectId)
       expect(OptionsController.setMetadata).toHaveBeenCalledWith(mockOptions.metadata)
+      expect(appKit.universalAdapter?.construct).toHaveBeenCalledWith(
+        appKit,
+        expect.objectContaining({
+          metadata: mockOptions.metadata
+        })
+      )
     })
 
     it('should initialize adapters in ChainController', () => {
