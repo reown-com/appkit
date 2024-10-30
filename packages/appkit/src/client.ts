@@ -604,20 +604,28 @@ export class AppKit {
   private async checkExistingConnection() {
     try {
       if (!CoreHelperUtil.isTelegram()) {
+        console.log('checkExistingConnection', 'not telegram')
+
         return
       }
       const socialProviderToConnect = SafeLocalStorage.getItem(
         SafeLocalStorageKeys.SOCIAL_PROVIDER
       ) as AccountControllerState['socialProvider']
       if (!socialProviderToConnect) {
+        console.log('checkExistingConnection', 'no social provider')
+
         return
       }
       if (typeof window === 'undefined' || typeof document === 'undefined') {
+        console.log('checkExistingConnection', 'no window or document')
+
         return
       }
       const url = new URL(window.location.href)
       const resultUri = url.searchParams.get('result_uri')
       if (!resultUri) {
+        console.log('checkExistingConnection', 'no result uri')
+
         return
       }
       AccountController.setSocialProvider(
