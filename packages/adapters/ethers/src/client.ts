@@ -1175,29 +1175,28 @@ export class EthersAdapter {
 
       const isLoginEmailUsed = this.authProvider.getLoginEmailUsed()
 
+      if (isLoginEmailUsed) {
+        this.appKit?.setLoading(isLoginEmailUsed)
+      }
+
+      const { isConnected } = await this.authProvider.isConnected()
+      if (isConnected) {
+        await this.setAuthProvider()
+      } else if (isLoginEmailUsed) {
+        this.appKit?.setLoading(false)
+      }
+
       /*
-       * If (isLoginEmailUsed) {
-       *   this.appKit?.setLoading(isLoginEmailUsed)
+       * This.appKit?.setLoading(isLoginEmailUsed)
+       * if (isLoginEmailUsed) {
+       *   const { isConnected } = await this.authProvider.isConnected()
+       *   if (isConnected) {
+       *     await this.setAuthProvider()
+       *   } else {
+       *     this.appKit?.setLoading(false)
+       *   }
        * }
        */
-
-      /*
-       * Const { isConnected } = await this.authProvider.isConnected()
-       * if (isConnected) {
-       *   await this.setAuthProvider()
-       * } else if (isLoginEmailUsed) {
-       *   this.appKit?.setLoading(false)
-       */
-
-      this.appKit?.setLoading(isLoginEmailUsed)
-      if (isLoginEmailUsed) {
-        const { isConnected } = await this.authProvider.isConnected()
-        if (isConnected) {
-          await this.setAuthProvider()
-        } else {
-          this.appKit?.setLoading(false)
-        }
-      }
     }
   }
 
