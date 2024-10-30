@@ -22,6 +22,9 @@ export class W3mSIWXSignMessageView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
+      <wui-flex justifyContent="center" .padding=${['2xl', '0', 'xxl', '0'] as const}>
+        <w3m-siwx-sign-message-thumbnails></w3m-siwx-sign-message-thumbnails>
+      </wui-flex>
       <wui-flex
         .padding=${['0', '4xl', 'l', '4xl'] as const}
         gap="s"
