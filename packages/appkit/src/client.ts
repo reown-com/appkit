@@ -120,10 +120,11 @@ export class AppKit {
 
     if (!network) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.SWITCH_NETWORK_NOT_FOUND, 'error')
+
       return
     }
 
-    return ChainController.switchActiveNetwork(network)
+    ChainController.switchActiveNetwork(network)
   }
 
   public getWalletProvider() {
