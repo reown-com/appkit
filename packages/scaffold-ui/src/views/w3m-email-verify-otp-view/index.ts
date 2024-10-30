@@ -5,7 +5,8 @@ import {
   EventsController,
   ConnectionController,
   ModalController,
-  ChainController
+  ChainController,
+  OptionsController
 } from '@reown/appkit-core'
 
 @customElement('w3m-email-verify-otp-view')
@@ -31,7 +32,9 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
           event: 'CONNECT_SUCCESS',
           properties: { method: 'email', name: this.authConnector.name || 'Unknown' }
         })
-        ModalController.close()
+        if (!OptionsController.state.isSiweEnabled) {
+          ModalController.close()
+        }
       }
     } catch (error) {
       EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_FAIL' })
