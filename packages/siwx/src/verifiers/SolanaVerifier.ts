@@ -5,7 +5,6 @@ import bs58 from 'bs58'
 
 export class SolanaVerifier extends SIWXVerifier {
   public readonly chainNamespace = 'solana'
-  public readonly messageVersion = '1'
 
   public async verify(session: SIWXSession): Promise<boolean> {
     try {

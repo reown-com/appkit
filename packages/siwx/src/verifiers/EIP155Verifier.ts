@@ -4,7 +4,6 @@ import { verifyMessage } from 'viem'
 
 export class EIP155Verifier extends SIWXVerifier {
   public readonly chainNamespace = 'eip155'
-  public readonly messageVersion = '1'
 
   public async verify(session: SIWXSession): Promise<boolean> {
     try {
