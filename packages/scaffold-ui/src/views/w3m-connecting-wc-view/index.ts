@@ -71,13 +71,7 @@ export class W3mConnectingWcView extends LitElement {
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry) || status === 'connecting') {
         await ConnectionController.connectWalletConnect()
         this.finalizeConnection()
-
-        if (
-          StorageUtil.getConnectedConnector() === 'AUTH' &&
-          OptionsController.state.hasMultipleAddresses
-        ) {
-          RouterController.push('SelectAddresses')
-        } else if (!this.isSiweEnabled) {
+        if (!this.isSiweEnabled) {
           ModalController.close()
         }
       }
