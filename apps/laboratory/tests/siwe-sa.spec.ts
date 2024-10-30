@@ -77,7 +77,7 @@ smartAccountSiweTest('it should switch to a smart account enabled network and si
 })
 
 smartAccountSiweTest('it should switch to a not enabled network and sign with EOA', async () => {
-  const targetChain = 'Ethereum'
+  const targetChain = 'Unichain Sepolia'
   await page.switchNetwork(targetChain)
   await page.page.waitForTimeout(1000)
   await page.promptSiwe()
