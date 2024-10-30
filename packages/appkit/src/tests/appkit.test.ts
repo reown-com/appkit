@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { AppKit } from '../client'
+import { mainnet, polygon } from '../networks/index.js'
 import {
   AccountController,
   ModalController,
@@ -445,6 +446,35 @@ describe('Base', () => {
         chain: 'eip155'
       })
       expect(result).toBe('connector-image-url')
+    })
+
+    it('should switch network when requested', async () => {
+      vi.mocked(ChainController.switchActiveNetwork).mockResolvedValue(undefined)
+      vi.mocked(ChainController.addCaipNetwork).mockImplementation(() => {})
+
+      await appKit.switchNetwork(mainnet)
+
+      expect(ChainController.switchActiveNetwork).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: mainnet.id,
+          name: mainnet.name
+        })
+      )
+
+      await appKit.switchNetwork(polygon)
+
+      expect(ChainController.addCaipNetwork).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: polygon.id,
+          name: polygon.name
+        })
+      )
+      expect(ChainController.switchActiveNetwork).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: polygon.id,
+          name: polygon.name
+        })
+      )
     })
   })
 })
