@@ -1,4 +1,5 @@
-import { useAppKit, useDisconnect, useAppKitAccount } from '@reown/appkit/react'
+import { useAppKit, useDisconnect, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+import { polygon, mainnet, solana, solanaTestnet } from '@reown/appkit/networks'
 import {
   Stack,
   Card,
@@ -13,7 +14,25 @@ import {
 export function AppKitButtons() {
   const { open } = useAppKit()
   const { isConnected } = useAppKitAccount()
+  const { caipNetwork, switchNetwork } = useAppKitNetwork()
   const { disconnect } = useDisconnect()
+
+  const isEIPNamespace = caipNetwork?.chainNamespace === 'eip155'
+  const networkToSwitch = isEIPNamespace
+    ? caipNetwork?.id === polygon.id
+      ? mainnet
+      : polygon
+    : caipNetwork?.id === solana.id
+      ? solanaTestnet
+      : solana
+
+  const handleSwitchNetwork = () => {
+    if (isEIPNamespace) {
+      switchNetwork(networkToSwitch)
+    } else {
+      switchNetwork(networkToSwitch)
+    }
+  }
 
   return (
     <Card marginTop={10}>
@@ -50,6 +69,10 @@ export function AppKitButtons() {
                 onClick={() => disconnect()}
               >
                 Disconnect
+              </Button>
+
+              <Button data-testid="switch-network-hook-button" onClick={handleSwitchNetwork}>
+                Switch Network to {networkToSwitch?.name}
               </Button>
             </Box>
           </Box>

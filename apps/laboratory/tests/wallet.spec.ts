@@ -99,6 +99,34 @@ sampleWalletTest('it should switch networks and sign', async ({ library }) => {
   await processChain(0)
 })
 
+sampleWalletTest('it should switch networks using hook', async ({ library }) => {
+  const chains = library === 'solana' ? ['Solana Testnet', 'Solana'] : ['Polygon', 'Ethereum']
+  const caipNetworkId =
+    library === 'solana' ? [solanaTestnet.id, solana.id] : [polygon.id, mainnet.id]
+
+  async function processChain(index: number) {
+    if (index >= chains.length) {
+      return
+    }
+
+    const chainName = chains[index] ?? DEFAULT_CHAIN_NAME
+    // Switch network using hook button
+    await modalPage.switchNetworkWithHook()
+    await modalPage.openModal()
+    await modalPage.openNetworks()
+    await modalValidator.expectSwitchedNetwork(chainName)
+    await modalPage.closeModal()
+    await modalValidator.expectCaipAddressHaveCorrectNetworkId(
+      caipNetworkId[index] as CaipNetworkId
+    )
+
+    await processChain(index + 1)
+  }
+
+  // Start processing from the first chain
+  await processChain(0)
+})
+
 sampleWalletTest('it should show last connected network after refreshing', async ({ library }) => {
   const chainName = library === 'solana' ? 'Solana Testnet' : 'Polygon'
 

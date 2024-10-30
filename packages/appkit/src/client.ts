@@ -40,6 +40,7 @@ import { UniversalAdapterClient } from './universal-adapter/client.js'
 import { CaipNetworksUtil, ErrorUtil } from '@reown/appkit-utils'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { ProviderUtil } from './store/ProviderUtil.js'
+import type { AppKitNetwork } from '@reown/appkit/networks'
 
 // -- Export Controllers -------------------------------------------------------
 export { AccountController }
@@ -112,6 +113,27 @@ export class AppKit {
 
   public getChainId() {
     return ChainController.state.activeCaipNetwork?.id
+  }
+
+  public async switchNetworkBase(appKitNetwork: AppKitNetwork) {
+    const network = this.caipNetworks.find(n => n.caipNetworkId === appKitNetwork.id)
+    let extendedNetwork: CaipNetwork
+
+    if (!network) {
+      extendedNetwork = CaipNetworksUtil.extendCaipNetwork(appKitNetwork, {
+        projectId: OptionsController.state.projectId,
+        customNetworkImageUrls: {}
+      })
+      ChainController.addCaipNetwork(extendedNetwork)
+    } else {
+      extendedNetwork = network
+    }
+
+    return ChainController.switchActiveNetwork(extendedNetwork)
+  }
+
+  public addCaipNetwork(caipNetwork: CaipNetwork) {
+    ChainController.addCaipNetwork(caipNetwork)
   }
 
   public switchNetwork(caipNetwork: CaipNetwork) {

@@ -3,6 +3,9 @@ import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { getAppKit } from '../src/library/vue/index.js'
 import { CoreHelperUtil } from '@reown/appkit-core'
 import { PACKAGE_VERSION } from './constants.js'
+import { useAppKitNetworkCore } from '@reown/appkit-core/vue'
+import type { CaipNetwork } from '@reown/appkit'
+import type { AppKitNetwork } from '@reown/appkit/networks'
 
 // -- Views ------------------------------------------------------------
 export * from '@reown/appkit-scaffold-ui'
@@ -36,4 +39,24 @@ export { AppKit }
 export type { AppKitOptions }
 
 // -- Hooks ------------------------------------------------------------
+export function useAppKitNetwork() {
+  const { caipNetwork, caipNetworkId, chainId } = useAppKitNetworkCore()
+
+  function switchNetwork(caipNetwork: AppKitNetwork) {
+    modal?.switchNetworkBase(caipNetwork)
+  }
+
+  function addNetwork(caipNetwork: CaipNetwork) {
+    modal?.addCaipNetwork(caipNetwork)
+  }
+
+  return {
+    caipNetwork,
+    caipNetworkId,
+    chainId,
+    switchNetwork,
+    addNetwork
+  }
+}
+
 export * from '../src/library/vue/index.js'
