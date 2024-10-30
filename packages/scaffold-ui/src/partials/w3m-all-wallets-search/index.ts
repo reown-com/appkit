@@ -1,4 +1,4 @@
-import type { WcWallet } from '@reown/appkit-core'
+import type { BadgeType, WcWallet } from '@reown/appkit-core'
 import { ApiController, ConnectorController, RouterController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
@@ -13,10 +13,14 @@ export class W3mAllWalletsSearch extends LitElement {
   // -- Members ------------------------------------------- //
   private prevQuery = ''
 
+  private prevBadge?: BadgeType = undefined
+
   // -- State & Properties -------------------------------- //
   @state() private loading = true
 
   @property() private query = ''
+
+  @property() private badge?: BadgeType
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -29,10 +33,11 @@ export class W3mAllWalletsSearch extends LitElement {
 
   // Private Methods ------------------------------------- //
   private async onSearch() {
-    if (this.query.trim() !== this.prevQuery.trim()) {
+    if (this.query.trim() !== this.prevQuery.trim() || this.badge !== this.prevBadge) {
       this.prevQuery = this.query
+      this.prevBadge = this.badge
       this.loading = true
-      await ApiController.searchWallet({ search: this.query })
+      await ApiController.searchWallet({ search: this.query, badge: this.badge })
       this.loading = false
     }
   }

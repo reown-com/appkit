@@ -169,6 +169,7 @@ export type IconType =
   | 'wallet'
   | 'walletConnect'
   | 'walletConnectLightBrown'
+  | 'walletConnectBrown'
   | 'walletPlaceholder'
   | 'warningCircle'
   | 'x'

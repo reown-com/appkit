@@ -132,6 +132,7 @@ export interface ApiGetWalletsRequest {
   chains: string
   entries: number
   search?: string
+  badge?: BadgeType
   include?: string[]
   exclude?: string[]
 }
@@ -978,3 +979,5 @@ export type Features = {
 export type FeaturesKeys = keyof Features
 
 export type WalletGuideType = 'get-started' | 'explore'
+
+export type BadgeType = 'none' | 'certified'

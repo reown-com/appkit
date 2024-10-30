@@ -72,6 +72,8 @@ import type { WuiFlex } from '../layout/wui-flex/index.js'
 import type { WuiGrid } from '../layout/wui-grid/index.js'
 import type { WuiSeparator } from '../layout/wui-separator/index.js'
 import type { WuiAlertBar } from '../composites/wui-alertbar/index.js'
+import type { WuiSwitch } from '../composites/wui-switch/index.js'
+import type { WuiCertifiedSwitch } from '../composites/wui-certified-switch/index.js'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type CustomElement<E> = Partial<E & { children?: any; onClick: any }>
@@ -151,6 +153,8 @@ declare global {
       'wui-wallet-image': CustomElement<WuiWalletImage>
       'wui-banner': CustomElement<WuiBanner>
       'wui-list-account': CustomElement<WuiListAccount>
+      'wui-switch': CustomElement<WuiSwitch>
+      'wui-certified-switch': CustomElement<WuiCertifiedSwitch>
       // -- Layout ------------------------------------------- //
       'wui-flex': CustomElement<WuiFlex>
       'wui-grid': CustomElement<WuiGrid>

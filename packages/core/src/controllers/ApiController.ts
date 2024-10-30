@@ -180,7 +180,7 @@ export const ApiController = {
     }
   },
 
-  async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
+  async fetchWallets({ page, badge }: Pick<ApiGetWalletsRequest, 'page' | 'badge'>) {
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
 
     const exclude = [
@@ -194,6 +194,7 @@ export const ApiController = {
       params: {
         page: String(page),
         entries,
+        badge_type: badge,
         chains: ChainController.state.activeCaipNetwork?.caipNetworkId,
         include: includeWalletIds?.join(','),
         exclude: exclude.join(',')
@@ -234,7 +235,7 @@ export const ApiController = {
     }
   },
 
-  async searchWallet({ search }: Pick<ApiGetWalletsRequest, 'search'>) {
+  async searchWallet({ search, badge }: Pick<ApiGetWalletsRequest, 'search' | 'badge'>) {
     const { includeWalletIds, excludeWalletIds } = OptionsController.state
     state.search = []
     const { data } = await api.get<ApiGetWalletsResponse>({
@@ -244,6 +245,7 @@ export const ApiController = {
         page: '1',
         entries: '100',
         search: search?.trim(),
+        badge_type: badge,
         chains: ChainController.state.activeCaipNetwork?.caipNetworkId,
         include: includeWalletIds?.join(','),
         exclude: excludeWalletIds?.join(',')
