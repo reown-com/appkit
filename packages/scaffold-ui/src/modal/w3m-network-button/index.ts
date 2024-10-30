@@ -26,7 +26,7 @@ export class W3mNetworkButton extends LitElement {
 
   @state() private network = ChainController.state.activeCaipNetwork
 
-  @state() private networkImage = this.network ? AssetUtil.getNetworkImage(this.network) : undefined
+  @state() private networkImage = AssetUtil.getNetworkImage(this.network)
 
   @state() private caipAddress = ChainController.state.activeCaipAddress
 
@@ -40,16 +40,14 @@ export class W3mNetworkButton extends LitElement {
     this.unsubscribe.push(
       ...[
         AssetController.subscribeNetworkImages(() => {
-          this.networkImage = this.network?.assets?.imageId
-            ? AssetUtil.getNetworkImage(this.network)
-            : undefined
+          this.networkImage = AssetUtil.getNetworkImage(this.network)
         }),
         ChainController.subscribeKey('activeCaipAddress', val => {
           this.caipAddress = val
         }),
         ChainController.subscribeKey('activeCaipNetwork', val => {
           this.network = val
-          this.networkImage = val?.assets?.imageId ? AssetUtil.getNetworkImage(val) : undefined
+          this.networkImage = AssetUtil.getNetworkImage(val)
           this.isSupported = val?.chainNamespace
             ? ChainController.checkIfSupportedNetwork(val.chainNamespace)
             : true

@@ -252,6 +252,7 @@ export class WagmiAdapter implements ChainAdapter {
   public construct(appKit: AppKit, options: AppKitOptionsWithCaipNetworks) {
     this.appKit = appKit
     this.options = options
+    this.caipNetworks = options.networks
     this.defaultCaipNetwork = options.defaultNetwork || options.networks?.[0]
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
     this.setCustomConnectors(options, appKit)
@@ -759,6 +760,7 @@ export class WagmiAdapter implements ChainAdapter {
               this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
             ])
           }
+          this.appKit?.setLoading(false)
         } else if (status === 'connected' && address && chainId) {
           ProviderUtil.setProvider(this.chainNamespace, await connector.getProvider())
           ProviderUtil.setProviderId(this.chainNamespace, connector.id as ProviderIdType)
@@ -974,11 +976,7 @@ export class WagmiAdapter implements ChainAdapter {
     bypassWindowCheck = false
   ) {
     if (bypassWindowCheck || (typeof window !== 'undefined' && connector)) {
-      this.appKit?.setLoading(true)
       const provider = (await connector.getProvider()) as W3mFrameProvider
-      const isLoginEmailUsed = provider.getLoginEmailUsed()
-
-      this.appKit?.setLoading(isLoginEmailUsed)
 
       provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {

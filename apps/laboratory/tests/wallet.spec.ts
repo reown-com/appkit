@@ -51,6 +51,11 @@ sampleWalletTest('it should show onramp button accordingly', async () => {
   await modalPage.closeModal()
 })
 
+sampleWalletTest('it should be connected instantly after page refresh', async () => {
+  await modalPage.page.reload()
+  await modalValidator.expectToBeConnectedInstantly()
+})
+
 sampleWalletTest('it should show disabled networks', async ({ library }) => {
   const disabledNetworks = library === 'solana' ? 'Solana Unsupported' : 'Gnosis'
 
