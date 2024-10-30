@@ -70,7 +70,7 @@ smartAccountTest('it should sign with smart account 6492 signature', async () =>
   await validator.expectValidSignature(signature, address, chainId)
 })
 
-smartAccountTest.only('it should switch to a not enabled network and sign with EOA', async () => {
+smartAccountTest('it should switch to a not enabled network and sign with EOA', async () => {
   const targetChain = 'Unichain Sepolia'
   await page.switchNetwork(targetChain)
   await validator.expectSwitchedNetwork(targetChain)
