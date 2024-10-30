@@ -285,7 +285,10 @@ export const ConnectionController = {
         throw new Error('No active chain')
       }
 
-      const message = await swix.createMessage(activeCaipNetwork.caipNetworkId)
+      const message = await swix.createMessage({
+        chainId: activeCaipNetwork.caipNetworkId,
+        accountAddress: ChainController.getActiveCaipAddress()?.split(':')[2] || ''
+      })
 
       const signature = await client.signMessage(message.toString())
 
