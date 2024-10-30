@@ -1185,18 +1185,6 @@ export class EthersAdapter {
       } else if (isLoginEmailUsed) {
         this.appKit?.setLoading(false)
       }
-
-      /*
-       * This.appKit?.setLoading(isLoginEmailUsed)
-       * if (isLoginEmailUsed) {
-       *   const { isConnected } = await this.authProvider.isConnected()
-       *   if (isConnected) {
-       *     await this.setAuthProvider()
-       *   } else {
-       *     this.appKit?.setLoading(false)
-       *   }
-       * }
-       */
     }
   }
 
