@@ -115,7 +115,11 @@ export class AppKit {
     return ChainController.state.activeCaipNetwork?.id
   }
 
-  public async switchNetworkBase(appKitNetwork: AppKitNetwork) {
+  public addNetwork(caipNetwork: CaipNetwork) {
+    ChainController.addCaipNetwork(caipNetwork)
+  }
+
+  public switchNetwork(appKitNetwork: AppKitNetwork | CaipNetwork) {
     const network = this.caipNetworks.find(n => n.caipNetworkId === appKitNetwork.id)
     const extendedNetwork =
       network ||
@@ -129,14 +133,6 @@ export class AppKit {
     }
 
     return ChainController.switchActiveNetwork(extendedNetwork)
-  }
-
-  public addCaipNetwork(caipNetwork: CaipNetwork) {
-    ChainController.addCaipNetwork(caipNetwork)
-  }
-
-  public switchNetwork(caipNetwork: CaipNetwork) {
-    return ChainController.switchActiveNetwork(caipNetwork)
   }
 
   public getWalletProvider() {

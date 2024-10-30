@@ -43,11 +43,11 @@ export function useAppKitNetwork() {
   const { caipNetwork, caipNetworkId, chainId } = useAppKitNetworkCore()
 
   function switchNetwork(network: AppKitNetwork) {
-    modal?.switchNetworkBase(network)
+    modal?.switchNetwork(network)
   }
 
   function addNetwork(network: CaipNetwork) {
-    modal?.addCaipNetwork(network)
+    modal?.addNetwork(network)
   }
 
   return {
