@@ -450,7 +450,6 @@ describe('Base', () => {
 
     it('should switch network when requested', async () => {
       vi.mocked(ChainController.switchActiveNetwork).mockResolvedValue(undefined)
-      vi.mocked(ChainController.addCaipNetwork).mockImplementation(() => {})
 
       await appKit.switchNetwork(mainnet)
 
@@ -463,18 +462,7 @@ describe('Base', () => {
 
       await appKit.switchNetwork(polygon)
 
-      expect(ChainController.addCaipNetwork).toHaveBeenCalledWith(
-        expect.objectContaining({
-          id: polygon.id,
-          name: polygon.name
-        })
-      )
-      expect(ChainController.switchActiveNetwork).toHaveBeenCalledWith(
-        expect.objectContaining({
-          id: polygon.id,
-          name: polygon.name
-        })
-      )
+      expect(ChainController.switchActiveNetwork).toHaveBeenCalledTimes(1)
     })
   })
 })

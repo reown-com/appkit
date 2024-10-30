@@ -66,7 +66,8 @@ sampleWalletTest('it should show disabled networks', async ({ library }) => {
 })
 
 sampleWalletTest('it should switch networks and sign', async ({ library }) => {
-  const chains = library === 'solana' ? ['Solana Testnet', 'Solana'] : ['Polygon', 'Ethereum']
+  const chains =
+    library === 'solana' ? [solanaTestnet.name, solana.name] : [polygon.name, mainnet.name]
   const caipNetworkId =
     library === 'solana' ? [solanaTestnet.id, solana.id] : [polygon.id, mainnet.id]
 

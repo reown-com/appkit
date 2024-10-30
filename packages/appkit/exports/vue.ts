@@ -4,7 +4,6 @@ import { getAppKit } from '../src/library/vue/index.js'
 import { CoreHelperUtil } from '@reown/appkit-core'
 import { PACKAGE_VERSION } from './constants.js'
 import { useAppKitNetworkCore } from '@reown/appkit-core/vue'
-import type { CaipNetwork } from '@reown/appkit'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 
 // -- Views ------------------------------------------------------------
@@ -46,16 +45,11 @@ export function useAppKitNetwork() {
     modal?.switchNetwork(network)
   }
 
-  function addNetwork(network: CaipNetwork) {
-    modal?.addNetwork(network)
-  }
-
   return {
     caipNetwork,
     caipNetworkId,
     chainId,
-    switchNetwork,
-    addNetwork
+    switchNetwork
   }
 }
 
