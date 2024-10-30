@@ -52,6 +52,28 @@ describe('SolanaVerifier', () => {
     expect(verifier.chainNamespace).toBe('solana')
   })
 
+  test('should verify only solana chain id', () => {
+    expect(
+      verifier.shouldVerify(
+        mockSession({
+          message: {
+            chainId: 'solana:mainnet'
+          }
+        })
+      )
+    ).toBe(true)
+
+    expect(
+      verifier.shouldVerify(
+        mockSession({
+          message: {
+            chainId: 'eip155:1'
+          }
+        })
+      )
+    ).toBe(false)
+  })
+
   test.each(cases)(`should verify $reason`, async ({ session, expected }) => {
     expect(await verifier.verify(session)).toBe(expected)
   })
