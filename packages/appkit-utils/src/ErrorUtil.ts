@@ -8,18 +8,18 @@ export const ErrorUtil = {
       longMessage: () =>
         `Origin ${
           isSafe() ? window.origin : 'unknown'
-        } not found on Allowlist - update configuration`
+        } not found on Allowlist - update configuration on cloud.reown.com`
     },
     INVALID_APP_CONFIGURATION_SOCIALS: {
       shortMessage: 'Invalid App Configuration',
       longMessage: () =>
         `Origin ${
           isSafe() ? window.origin : 'unknown'
-        } not found on Allowlist - update configuration to enable social login`
+        } not found on Allowlist - update configuration on cloud.reown.com to enable social login`
     },
     PROJECT_ID_NOT_CONFIGURED: {
       shortMessage: 'Project ID Not Configured',
-      longMessage: 'Project ID Not Configured - update configuration'
+      longMessage: 'Project ID Not Configured - update configuration on cloud.reown.com'
     }
   }
 }
