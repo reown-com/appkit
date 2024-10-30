@@ -89,7 +89,7 @@ export class AppKit {
     // Check on the next thick because wagmiAdapter authConnector is not immediately available
     setTimeout(() => {
       this.checkExistingConnection()
-    }, 0)
+    }, 1000)
   }
 
   public static getInstance() {
@@ -603,6 +603,7 @@ export class AppKit {
 
   private async checkExistingConnection() {
     try {
+      console.log('checkExistingConnection')
       if (!CoreHelperUtil.isTelegram()) {
         console.log('checkExistingConnection', 'not telegram')
 
@@ -616,6 +617,7 @@ export class AppKit {
 
         return
       }
+      console.log('checkExistingConnection', 'social provider to connect', socialProviderToConnect)
       if (typeof window === 'undefined' || typeof document === 'undefined') {
         console.log('checkExistingConnection', 'no window or document')
 
@@ -623,6 +625,7 @@ export class AppKit {
       }
       const url = new URL(window.location.href)
       const resultUri = url.searchParams.get('result_uri')
+      console.log('checkExistingConnection', 'result uri', resultUri)
       if (!resultUri) {
         console.log('checkExistingConnection', 'no result uri')
 
@@ -633,6 +636,7 @@ export class AppKit {
         ChainController.state.activeChain
       )
       const authConnector = ConnectorController.getAuthConnector()
+      console.log('checkExistingConnection', 'auth connector', authConnector)
       if (socialProviderToConnect && authConnector) {
         this.setLoading(true)
         await authConnector.provider.connectSocial(resultUri)
