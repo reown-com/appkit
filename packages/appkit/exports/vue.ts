@@ -42,12 +42,12 @@ export type { AppKitOptions }
 export function useAppKitNetwork() {
   const { caipNetwork, caipNetworkId, chainId } = useAppKitNetworkCore()
 
-  function switchNetwork(caipNetwork: AppKitNetwork) {
-    modal?.switchNetworkBase(caipNetwork)
+  function switchNetwork(network: AppKitNetwork) {
+    modal?.switchNetworkBase(network)
   }
 
-  function addNetwork(caipNetwork: CaipNetwork) {
-    modal?.addCaipNetwork(caipNetwork)
+  function addNetwork(network: CaipNetwork) {
+    modal?.addCaipNetwork(network)
   }
 
   return {

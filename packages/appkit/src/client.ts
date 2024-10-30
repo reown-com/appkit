@@ -117,16 +117,15 @@ export class AppKit {
 
   public async switchNetworkBase(appKitNetwork: AppKitNetwork) {
     const network = this.caipNetworks.find(n => n.caipNetworkId === appKitNetwork.id)
-    let extendedNetwork: CaipNetwork
-
-    if (!network) {
-      extendedNetwork = CaipNetworksUtil.extendCaipNetwork(appKitNetwork, {
+    const extendedNetwork =
+      network ||
+      CaipNetworksUtil.extendCaipNetwork(appKitNetwork, {
         projectId: OptionsController.state.projectId,
         customNetworkImageUrls: {}
       })
+
+    if (!network) {
       ChainController.addCaipNetwork(extendedNetwork)
-    } else {
-      extendedNetwork = network
     }
 
     return ChainController.switchActiveNetwork(extendedNetwork)
