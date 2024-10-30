@@ -1,6 +1,6 @@
 export const ConstantsUtil = {
   ACCOUNT_TABS: [{ label: 'Tokens' }, { label: 'NFTs' }, { label: 'Activity' }],
-  SECURE_SITE_ORIGIN: 'https://secure-appkit-git-chore-tma-support-reown-com.vercel.app',
+  SECURE_SITE_ORIGIN: 'https://b1a9fa46.secure-appkit-sdk.pages.dev',
   VIEW_DIRECTION: {
     Next: 'next',
     Prev: 'prev'

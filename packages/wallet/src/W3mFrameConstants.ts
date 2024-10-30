@@ -1,5 +1,4 @@
-export const SECURE_SITE_SDK =
-  'https://secure-appkit-git-chore-tma-support-reown-com.vercel.app/sdk'
+export const SECURE_SITE_SDK = 'https://b1a9fa46.secure-appkit-sdk.pages.dev/sdk'
 // Process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL'] || 'https://secure.walletconnect.org/sdk'
 
 export const DEFAULT_LOG_LEVEL = process.env['NEXT_PUBLIC_DEFAULT_LOG_LEVEL'] || 'error'
