@@ -7,13 +7,13 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@reown/appkit-adapter-ethers5": "workspace:*",
     "@reown/appkit": "workspace:*",
+    "@reown/appkit-adapter-ethers5": "workspace:*",
     "ethers": "5.7.2",
     "vue": "3.4.3"
   },
   "devDependencies": {
-    "vite": "5.2.11",
-    "@vitejs/plugin-vue": "5.0.2"
+    "@vitejs/plugin-vue": "5.0.2",
+    "vite": "5.2.11"
   }
 }
