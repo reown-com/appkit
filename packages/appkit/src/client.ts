@@ -453,7 +453,12 @@ export class AppKit {
 
     this.adapters = options.adapters
 
-    this.setMetadata(options)
+    const defaultMetaData = this.getDefaultMetaData()
+
+    if (!options.metadata && defaultMetaData) {
+      options.metadata = defaultMetaData
+    }
+
     this.initializeUniversalAdapter(options)
     this.initializeAdapters(options)
     this.setDefaultNetwork()
@@ -489,6 +494,10 @@ export class AppKit {
       OptionsController.setDisableAppend(Boolean(options.disableAppend))
     }
 
+    if (options.siwx) {
+      OptionsController.setSIWX(options.siwx)
+    }
+
     const evmAdapter = options.adapters?.find(
       adapter => adapter.chainNamespace === ConstantsUtil.CHAIN.EVM
     )
@@ -502,18 +511,18 @@ export class AppKit {
     }
   }
 
-  private setMetadata(options: AppKitOptions) {
-    if (typeof window === 'undefined' || typeof document === 'undefined') {
-      return
+  private getDefaultMetaData() {
+    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+      return {
+        name: document.getElementsByTagName('title')[0]?.textContent || '',
+        description:
+          document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.content || '',
+        url: window.location.origin,
+        icons: [document.querySelector<HTMLLinkElement>('link[rel~="icon"]')?.href || '']
+      }
     }
 
-    options.metadata = {
-      name: document.getElementsByTagName('title')[0]?.textContent || '',
-      description:
-        document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.content || '',
-      url: window.location.origin,
-      icons: [document.querySelector<HTMLLinkElement>('link[rel~="icon"]')?.href || '']
-    }
+    return null
   }
 
   private extendCaipNetworks(options: AppKitOptions) {

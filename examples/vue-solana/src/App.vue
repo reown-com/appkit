@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { ref, onMounted, watch } from 'vue'
 import { solana, solanaTestnet, solanaDevnet } from '@reown/appkit/networks'
 import {
   createAppKit,
@@ -7,7 +8,7 @@ import {
   useAppKitState,
   useAppKitTheme
 } from '@reown/appkit/vue'
-import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import {
   PhantomWalletAdapter,
   HuobiWalletAdapter,
@@ -15,66 +16,95 @@ import {
   TrustWalletAdapter
 } from '@solana/wallet-adapter-wallets'
 import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
-import {
-  PhantomWalletAdapter,
-  HuobiWalletAdapter,
-  SolflareWalletAdapter,
-  TrustWalletAdapter
-} from '@solana/wallet-adapter-wallets'
 
-// @ts-expect-error 1. Get projectId
+const error = ref('')
+
+// 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
 if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
 }
 
-// 2. Set chains
-const networks = [solana, solanaTestnet, solanaDevnet]
+// 2. Create Solana adapter
+const solanaAdapter = new SolanaAdapter({
+  wallets: [
+    new HuobiWalletAdapter(),
+    new PhantomWalletAdapter(),
+    new SolflareWalletAdapter(),
+    new TrustWalletAdapter(),
+    new BackpackWalletAdapter()
+  ]
+})
 
 // 3. Create modal
 createAppKit({
-  adapters: [
-    new SolanaAdapter({
-      wallets: [
-        new HuobiWalletAdapter(),
-        new PhantomWalletAdapter(),
-        new SolflareWalletAdapter(),
-        new TrustWalletAdapter()
-      ]
-    })
-  ],
+  adapters: [solanaAdapter],
+  networks: [solana, solanaTestnet, solanaDevnet],
+  projectId,
   metadata: {
-    name: 'AppKit React Example',
-    description: 'AppKit React Example',
+    name: 'AppKit Vue Solana Example',
+    description: 'AppKit Vue Solana Example',
     url: '',
     icons: []
-  },
-  projectId,
-  themeMode: 'light',
-  networks,
-  themeVariables: {
-    '--w3m-color-mix': '#00DCFF',
-    '--w3m-color-mix-strength': 20
   }
 })
 
-// 4. Use modal composable
 const modal = useAppKit()
 const state = useAppKitState()
 const { setThemeMode, themeMode, themeVariables } = useAppKitTheme()
 const events = useAppKitEvents()
+
+const toggleTheme = () => {
+  const newTheme = themeMode.value === 'dark' ? 'light' : 'dark'
+  setThemeMode(newTheme)
+}
+
+// Watch for theme changes and update body class
+watch(themeMode, newTheme => {
+  document.body.className = newTheme
+})
+
+// Set initial theme class on mount
+onMounted(() => {
+  document.body.className = themeMode.value
+})
 </script>
 
 <template>
-  <w3m-button />
-  <w3m-network-button />
-  <w3m-connect-button />
-  <w3m-account-button />
+  <div class="container">
+    <h1>Hello Vue Solana</h1>
+    <w3m-button />
+    <w3m-network-button />
 
-  <button @click="modal.open()">Open Connect Modal</button>
-  <button @click="modal.open({ view: 'Networks' })">Open Network Modal</button>
-  <button @click="setThemeMode(themeMode === 'dark' ? 'light' : 'dark')">Toggle Theme Mode</button>
-  <pre>{{ JSON.stringify(state, null, 2) }}</pre>
-  <pre>{{ JSON.stringify({ themeMode, themeVariables }, null, 2) }}</pre>
-  <pre>{{ JSON.stringify(events, null, 2) }}</pre>
+    <button @click="modal.open()">Open Connect Modal</button>
+    <button @click="modal.open({ view: 'Networks' })">Open Network Modal</button>
+    <button @click="toggleTheme">Toggle Theme Mode</button>
+    <pre>{{ JSON.stringify(state, null, 2) }}</pre>
+    <pre>{{ JSON.stringify({ themeMode, themeVariables }, null, 2) }}</pre>
+    <pre>{{ JSON.stringify(events, null, 2) }}</pre>
+  </div>
 </template>
+
+<style>
+body {
+  margin: 0;
+  min-height: 100vh;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+body.dark {
+  background-color: #333;
+  color: #fff;
+}
+
+body.light {
+  background-color: #fff;
+  color: #000;
+}
+
+.container {
+  padding: 20px;
+}
+</style>

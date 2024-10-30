@@ -139,6 +139,12 @@ export class ModalValidator {
     expect(secureSiteIframe).toBeNull()
   }
 
+  expectQueryParameterFromUrl({ url, key, value }: { url: string; key: string; value: string }) {
+    const _url = new URL(url)
+    const queryParameters = Object.fromEntries(_url.searchParams.entries())
+    expect(queryParameters[key]).toBe(value)
+  }
+
   async expectNoSocials() {
     const socialList = this.page.getByTestId('wui-list-social')
     await expect(socialList).toBeHidden()
@@ -285,6 +291,13 @@ export class ModalValidator {
   async expectNetworksDisabled(name: string) {
     const disabledNetwork = this.page.getByTestId(`w3m-network-switch-${name}`)
     await expect(disabledNetwork.locator('button')).toBeDisabled()
+  }
+
+  async expectToBeConnectedInstantly() {
+    const accountButton = this.page.locator('w3m-account-button')
+    await expect(accountButton, 'Account button should be present').toBeAttached({
+      timeout: 1000
+    })
   }
 
   async expectConnectButtonLoading() {

@@ -32,7 +32,6 @@ export interface RouterControllerState {
   view:
     | 'Account'
     | 'AccountSettings'
-    | 'SelectAddresses'
     | 'AllWallets'
     | 'ApproveTransaction'
     | 'BuyInProgress'
@@ -81,6 +80,7 @@ export interface RouterControllerState {
     | 'ConnectingMultiChain'
     | 'SwitchActiveChain'
     | 'SmartSessionCreated'
+    | 'SmartSessionList'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector

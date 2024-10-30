@@ -58,7 +58,7 @@ export const ConnectorController = {
       )
     })
 
-    state.allConnectors = [...state.connectors, ...newConnectors]
+    state.allConnectors = [...state.allConnectors, ...newConnectors]
     state.connectors = this.mergeMultiChainConnectors(state.allConnectors)
   },
 

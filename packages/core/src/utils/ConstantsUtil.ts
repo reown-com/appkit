@@ -221,6 +221,7 @@ export const ConstantsUtil = {
     socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'],
     history: true,
     analytics: true,
-    allWallets: true
+    allWallets: true,
+    smartSessions: false
   } as Features
 }

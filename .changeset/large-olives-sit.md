@@ -1,4 +1,5 @@
 ---
+'@reown/appkit-siwx': minor
 '@reown/appkit-adapter-polkadot': patch
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-ethers': patch
@@ -20,4 +21,4 @@
 '@apps/demo': patch
 ---
 
-Fixes an issue where the wagmi adapter was making excessive network calls.
+Adds SIWX package

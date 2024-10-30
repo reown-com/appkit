@@ -21,7 +21,7 @@ const [mainnet, arbitrum] = CaipNetworksUtil.extendCaipNetworks(
 
 const mockOptionsExtended = {
   ...mockOptions,
-  networks: [mainnet, arbitrum] as [CaipNetwork, ...CaipNetwork[]],
+  networks: mockAppKit.getCaipNetworks('eip155') as [CaipNetwork, ...CaipNetwork[]],
   defaultNetwork: mainnet
 }
 
@@ -63,6 +63,23 @@ describe('Wagmi Client', () => {
        */
       mockWagmiClient.caipNetworks.forEach((network, index) => {
         expect(network.name).toEqual(mockOptionsExtended.networks[index]?.name)
+      })
+    })
+
+    it('should set chain images', () => {
+      const client = new WagmiAdapter({
+        projectId: '123',
+        networks: [mainnet, arbitrum]
+      })
+
+      client.construct(mockAppKit, mockOptionsExtended)
+
+      Object.entries(mockOptions.chainImages).map(([networkId, imageUrl]) => {
+        const caipNetwork = client.caipNetworks.find(
+          caipNetwork => caipNetwork.id === Number(networkId)
+        )
+        expect(caipNetwork).toBeDefined()
+        expect(caipNetwork?.assets?.imageUrl).toEqual(imageUrl)
       })
     })
 
@@ -157,7 +174,7 @@ describe('Wagmi Client', () => {
       expect(resetAccountSpy).toHaveBeenCalledOnce()
       expect(resetWcSpy).toHaveBeenCalledOnce()
       expect(resetNetworkSpy).toHaveBeenCalledOnce()
-      expect(setAllAccountsSpy).toHaveBeenCalledOnce()
+      expect(setAllAccountsSpy).toHaveBeenCalledTimes(2)
     })
   })
 

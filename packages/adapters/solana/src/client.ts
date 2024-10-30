@@ -13,7 +13,7 @@ import {
   SafeLocalStorageKeys
 } from '@reown/appkit-common'
 
-import { SolConstantsUtil, SolHelpersUtil } from '@reown/appkit-utils/solana'
+import { SolConstantsUtil } from '@reown/appkit-utils/solana'
 import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
 import type { Provider } from '@reown/appkit-utils/solana'
 
@@ -130,10 +130,7 @@ export class SolanaAdapter implements ChainAdapter {
     this.appKit = appKit
     this.options = options
     this.caipNetworks = options.networks
-    this.defaultCaipNetwork = SolHelpersUtil.getChainFromCaip(
-      options.networks,
-      SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
-    )
+    this.defaultCaipNetwork = options.defaultNetwork
 
     if (!projectId) {
       throw new Error('Solana:construct - projectId is undefined')
@@ -240,6 +237,8 @@ export class SolanaAdapter implements ChainAdapter {
       getCapabilities: async () => await Promise.resolve('0x'),
 
       grantPermissions: async () => await Promise.resolve('0x'),
+
+      revokePermissions: async () => await Promise.resolve('0x'),
 
       sendTransaction: async params => {
         if (params.chainNamespace !== CommonConstantsUtil.CHAIN.SOLANA) {
