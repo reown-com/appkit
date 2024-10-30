@@ -252,6 +252,16 @@ export const ConnectionController = {
   async disconnect() {
     const connectionControllerClient = this._getClient()
 
+    const siwx = OptionsController.state.siwx
+    if (siwx) {
+      const activeCaipNetwork = ChainController.getActiveCaipNetwork()
+      const address = ChainController.getActiveCaipAddress()?.split(':')[2] || ''
+
+      if (activeCaipNetwork && address) {
+        siwx.revokeSession(activeCaipNetwork.caipNetworkId, address)
+      }
+    }
+
     try {
       await connectionControllerClient?.disconnect()
       this.resetWcConnection()
@@ -266,8 +276,8 @@ export const ConnectionController = {
    * This is not yet considering One Click Auth.
    */
   async initializeSWIXIfAvailable() {
-    const swix = OptionsController.state.siwx
-    if (!swix) {
+    const siwx = OptionsController.state.siwx
+    if (!siwx) {
       return
     }
 
@@ -285,16 +295,23 @@ export const ConnectionController = {
         throw new Error('No active chain')
       }
 
+      const address = ChainController.getActiveCaipAddress()?.split(':')[2] || ''
+
+      const sessions = await siwx.getSessions(activeCaipNetwork.caipNetworkId, address)
+      if (sessions.length) {
+        return
+      }
+
       ModalController.open({ view: 'SIWXSignMessage' })
 
-      const message = await swix.createMessage({
+      const message = await siwx.createMessage({
         chainId: activeCaipNetwork.caipNetworkId,
-        accountAddress: ChainController.getActiveCaipAddress()?.split(':')[2] || ''
+        accountAddress: address
       })
 
       const signature = await client.signMessage(message.toString())
 
-      await swix.addSession({
+      await siwx.addSession({
         message,
         signature
       })
