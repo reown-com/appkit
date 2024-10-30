@@ -285,6 +285,8 @@ export const ConnectionController = {
         throw new Error('No active chain')
       }
 
+      ModalController.open({ view: 'SIWXSignMessage' })
+
       const message = await swix.createMessage({
         chainId: activeCaipNetwork.caipNetworkId,
         accountAddress: ChainController.getActiveCaipAddress()?.split(':')[2] || ''
@@ -296,6 +298,8 @@ export const ConnectionController = {
         message,
         signature
       })
+
+      ModalController.close()
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Failed to initialize SIWX', error)
