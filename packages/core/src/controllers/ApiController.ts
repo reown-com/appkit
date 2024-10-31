@@ -180,7 +180,7 @@ export const ApiController = {
     }
   },
 
-  async fetchWallets({ page, badge }: Pick<ApiGetWalletsRequest, 'page' | 'badge'>) {
+  async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
 
     const exclude = [
@@ -194,7 +194,6 @@ export const ApiController = {
       params: {
         page: String(page),
         entries,
-        badge_type: badge,
         chains: ChainController.state.activeCaipNetwork?.caipNetworkId,
         include: includeWalletIds?.join(','),
         exclude: exclude.join(',')

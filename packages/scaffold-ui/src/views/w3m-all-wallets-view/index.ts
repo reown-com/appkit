@@ -38,10 +38,6 @@ export class W3mAllWalletsView extends LitElement {
     this.onDebouncedSearch(event.detail)
   }
 
-  private onSwitch(value: CustomEvent<string>) {
-    console.log('value')
-  }
-
   private onClick() {
     this.badge = this.badge ? undefined : 'certified'
   }

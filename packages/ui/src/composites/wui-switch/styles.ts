@@ -45,7 +45,7 @@ export default css`
     width: 16px;
     left: 3px;
     top: 2px;
-    background-color: white;
+    background-color: var(--wui-color-inverse-100);
     transition: transform var(--wui-ease-inout-power-1) var(--wui-duration-lg);
     will-change: transform;
     border-radius: 50%;
