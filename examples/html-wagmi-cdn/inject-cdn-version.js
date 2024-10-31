@@ -7,17 +7,17 @@ const appkitPackageJsonPath = path.join(__dirname, '../../packages/appkit/packag
 const appkitPackageJson = JSON.parse(fs.readFileSync(appkitPackageJsonPath, 'utf8'))
 const appkitVersion = appkitPackageJson.version
 
-// Inject version into HTML file
-const htmlPath = path.join(__dirname, 'index.html')
-let htmlContent = fs.readFileSync(htmlPath, 'utf8')
+// Inject version into main.js file
+const mainJsPath = path.join(__dirname, 'main.js')
+let mainJsContent = fs.readFileSync(mainJsPath, 'utf8')
 
 // Regular expression to match both __VERSION__ and any semver version
 const versionRegex = /@reown\/appkit-cdn@(__VERSION__|[\d.]+)/
 
-if (versionRegex.test(htmlContent)) {
-  htmlContent = htmlContent.replace(versionRegex, `@reown/appkit-cdn@${appkitVersion}`)
-  fs.writeFileSync(htmlPath, htmlContent, 'utf8')
-  console.log(`Version ${appkitVersion} injected into HTML file.`)
+if (versionRegex.test(mainJsContent)) {
+  mainJsContent = mainJsContent.replace(versionRegex, `@reown/appkit-cdn@${appkitVersion}`)
+  fs.writeFileSync(mainJsPath, mainJsContent, 'utf8')
+  console.log(`Version ${appkitVersion} injected into main.js file.`)
 } else {
-  console.warn('Version placeholder not found in HTML file. No changes made.')
+  console.warn('Version placeholder not found in main.js file. No changes made.')
 }
