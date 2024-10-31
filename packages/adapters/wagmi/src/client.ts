@@ -399,6 +399,16 @@ export class WagmiAdapter implements ChainAdapter {
         const chainId = this.appKit?.getCaipNetworkId<number>()
         await connect(this.wagmiConfig, { connector, chainId })
       },
+      reconnectExternal: async ({ id }) => {
+        if (!this.wagmiConfig) {
+          throw new Error('networkControllerClient:reconnectExternal - wagmiConfig is undefined')
+        }
+        const connector = this.wagmiConfig.connectors.find(c => c.id === id)
+        if (!connector) {
+          throw new Error('connectionControllerClient:reconnectExternal - connector is undefined')
+        }
+        await reconnect(this.wagmiConfig, { connectors: [connector] })
+      },
       checkInstalled: ids => {
         const injectedConnector = this.appKit
           ?.getConnectors()
@@ -1060,16 +1070,6 @@ export class WagmiAdapter implements ChainAdapter {
 
       provider.onGetSmartAccountEnabledNetworks(networks => {
         this.appKit?.setSmartAccountEnabledNetworks(networks, this.chainNamespace)
-      })
-
-      provider.onSetPreferredAccount(({ address, type }) => {
-        if (!address) {
-          return
-        }
-        this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chainNamespace)
-        if (this.wagmiConfig) {
-          reconnect(this.wagmiConfig, { connectors: [connector] })
-        }
       })
     }
   }

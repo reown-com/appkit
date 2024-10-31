@@ -2,7 +2,7 @@ import { createConnector, type CreateConfigParameters } from '@wagmi/core'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { SwitchChainError, getAddress } from 'viem'
-import type { Address, Hex } from 'viem'
+import type { Address } from 'viem'
 import { ConstantsUtil, ErrorUtil } from '@reown/appkit-utils'
 import { NetworkUtil } from '@reown/appkit-common'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
@@ -128,7 +128,7 @@ export function authConnector(parameters: AuthParameters) {
 
         config.emitter.emit('change', {
           chainId: Number(chainId),
-          accounts: [response.address as Hex]
+          accounts: currentAccounts
         })
 
         return chain
