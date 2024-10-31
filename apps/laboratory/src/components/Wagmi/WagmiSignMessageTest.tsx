@@ -3,14 +3,12 @@ import { Button } from '@chakra-ui/react'
 import { useSignMessage } from 'wagmi'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'
-import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
-import { createPublicClient, http, type Address } from 'viem'
-import * as chains from 'viem/chains'
+import { useAppKitAccount } from '@reown/appkit/react'
+import { type Address } from 'viem'
 
 export function WagmiSignMessageTest() {
   const toast = useChakraToast()
   const { address } = useAppKitAccount()
-  const { chainId, caipNetwork } = useAppKitNetwork()
 
   const { signMessageAsync, isPending } = useSignMessage()
   const { isConnected } = useAppKitAccount()
@@ -36,31 +34,6 @@ export function WagmiSignMessageTest() {
         description: sig,
         type: 'success'
       })
-
-      const publicClient = createPublicClient({
-        transport: http(caipNetwork?.rpcUrls?.default?.http[0]),
-        chain: Object.values(chains).find(c => c.id === chainId)
-      })
-
-      const valid = await publicClient.verifyMessage({
-        message: 'Hello AppKit!',
-        signature: sig,
-        address: address as Address
-      })
-
-      if (valid) {
-        toast({
-          title: 'Signature Verification',
-          description: 'Signature is valid',
-          type: 'success'
-        })
-      } else {
-        toast({
-          title: 'Signature Verification',
-          description: 'Signature is invalid',
-          type: 'error'
-        })
-      }
     } catch (e) {
       toast({
         title: ConstantsUtil.SigningFailedToastTitle,
