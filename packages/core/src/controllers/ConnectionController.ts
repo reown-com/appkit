@@ -123,11 +123,17 @@ export const ConnectionController = {
           .catch(reject)
         resolve()
       })
-      this.state.status = 'connecting'
-      await wcConnectionPromise
-      wcConnectionPromise = undefined
-      state.wcPairingExpiry = undefined
-      this.state.status = 'connected'
+
+      try {
+        this.state.status = 'connecting'
+        await wcConnectionPromise
+        wcConnectionPromise = undefined
+        state.wcPairingExpiry = undefined
+        this.state.status = 'connected'
+      } catch (error) {
+        this.state.status = 'disconnected'
+        throw error
+      }
     } else {
       await ChainController.state?.universalAdapter?.connectionControllerClient?.connectWalletConnect?.(
         uri => {
@@ -141,7 +147,15 @@ export const ConnectionController = {
   },
 
   async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
-    await this._getClient(chain).connectExternal?.(options)
+    try {
+      this.state.status = 'connecting'
+      await this._getClient(chain).connectExternal?.(options)
+      this.state.status = 'connected'
+    } catch (error) {
+      this.state.status = 'disconnected'
+      throw error
+    }
+
     if (setChain) {
       ChainController.setActiveNamespace(chain)
       StorageUtil.setConnectedConnector(options.type)
@@ -277,7 +291,13 @@ export const ConnectionController = {
    */
   async initializeSWIXIfAvailable() {
     const siwx = OptionsController.state.siwx
-    if (!siwx) {
+    if (
+      !(
+        siwx &&
+        ConnectionController.state.status === 'connected' &&
+        ChainController.getActiveCaipAddress()
+      )
+    ) {
       return
     }
 
