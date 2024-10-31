@@ -1,23 +1,12 @@
-import { useEffect, useState } from 'react'
 import { useAppKit, useDisconnect, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 import { polygon, mainnet, solana, solanaTestnet, type AppKitNetwork } from '@reown/appkit/networks'
 import { Heading, Box, Button } from '@chakra-ui/react'
 
 export function AppKitHooks() {
-  const [isClient, setIsClient] = useState(false)
-
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
-
   const { open } = useAppKit()
   const { isConnected } = useAppKitAccount()
   const { caipNetwork, switchNetwork } = useAppKitNetwork()
   const { disconnect } = useDisconnect()
-
-  if (!isClient) {
-    return null
-  }
 
   const isEIPNamespace = caipNetwork?.chainNamespace === 'eip155'
   // eslint-disable-next-line no-nested-ternary
@@ -55,11 +44,9 @@ export function AppKitHooks() {
           Disconnect
         </Button>
 
-        {caipNetwork ? (
-          <Button data-testid="switch-network-hook-button" onClick={handleSwitchNetwork}>
-            Switch Network to {networkToSwitch?.name}
-          </Button>
-        ) : null}
+        <Button data-testid="switch-network-hook-button" onClick={handleSwitchNetwork}>
+          Switch Network
+        </Button>
       </Box>
     </Box>
   )
