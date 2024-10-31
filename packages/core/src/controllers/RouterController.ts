@@ -81,6 +81,7 @@ export interface RouterControllerState {
     | 'SwitchActiveChain'
     | 'SmartSessionCreated'
     | 'SmartSessionList'
+    | 'SIWXSignMessage'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
