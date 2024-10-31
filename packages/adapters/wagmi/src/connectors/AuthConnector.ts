@@ -128,7 +128,7 @@ export function authConnector(parameters: AuthParameters) {
 
         config.emitter.emit('change', {
           chainId: Number(chainId),
-          accounts: [response.address as Hex]
+          accounts: currentAccounts
         })
 
         return chain
