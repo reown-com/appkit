@@ -6,9 +6,9 @@ import type { CaipNetworkId } from '@reown/appkit-common'
 export interface SIWXConfig {
   createMessage: (input: SIWXMessageInput) => Promise<SIWXMessage>
   addSession: (session: SIWXSession) => Promise<void>
-  revokeSession: (chainId: string, address: string) => Promise<void>
+  revokeSession: (chainId: CaipNetworkId, address: string) => Promise<void>
   setSessions: (sessions: SIWXSession[]) => Promise<void>
-  getSessions: (chainId: CaipNetworkId) => Promise<SIWXSession[]>
+  getSessions: (chainId: CaipNetworkId, address: string) => Promise<SIWXSession[]>
 }
 
 /**
