@@ -72,9 +72,11 @@ export function AppKitButtons() {
                 Disconnect
               </Button>
 
-              <Button data-testid="switch-network-hook-button" onClick={handleSwitchNetwork}>
-                Switch Network to {networkToSwitch?.name}
-              </Button>
+              {caipNetwork ? (
+                <Button data-testid="switch-network-hook-button" onClick={handleSwitchNetwork}>
+                  Switch Network to {networkToSwitch?.name}
+                </Button>
+              ) : null}
             </Box>
           </Box>
         </Stack>
