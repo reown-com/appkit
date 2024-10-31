@@ -1,7 +1,7 @@
 import { SIWXConfig } from '../core/SIWXConfig.js'
 import { InformalMessenger } from '../messengers/index.js'
 import { LocalStorage } from '../storages/index.js'
-import { EIP155Verifier } from '../verifiers/index.js'
+import { EIP155Verifier, SolanaVerifier } from '../verifiers/index.js'
 
 const DEFAULTS = {
   getDefaultMessenger: () =>
@@ -11,7 +11,7 @@ const DEFAULTS = {
       getNonce: async () => Promise.resolve(Math.round(Math.random() * 10000).toString())
     }),
 
-  getDefaultVerifiers: () => [new EIP155Verifier()],
+  getDefaultVerifiers: () => [new EIP155Verifier(), new SolanaVerifier()],
 
   getDefaultStorage: () => new LocalStorage({ key: '@appkit/siwx' })
 }
