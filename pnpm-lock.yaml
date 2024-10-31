@@ -219,6 +219,9 @@ importers:
       '@reown/appkit-siwe':
         specifier: workspace:*
         version: link:../../packages/siwe
+      '@reown/appkit-siwx':
+        specifier: workspace:*
+        version: link:../../packages/siwx
       '@reown/appkit-wallet':
         specifier: workspace:*
         version: link:../../packages/wallet

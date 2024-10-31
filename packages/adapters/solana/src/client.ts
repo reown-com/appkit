@@ -180,7 +180,7 @@ export class SolanaAdapter implements ChainAdapter {
 
         // If it's not the auth provider, we should auto connect the provider
         if (chainNamespace === this.chainNamespace || !isAuthProvider) {
-          this.setProvider(externalProvider)
+          await this.setProvider(externalProvider)
         }
       },
 

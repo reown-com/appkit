@@ -10,12 +10,15 @@
     <pre>{{ JSON.stringify(state, null, 2) }}</pre>
     <pre>{{ JSON.stringify({ themeMode, themeVariables }, null, 2) }}</pre>
     <pre>{{ JSON.stringify(events, null, 2) }}</pre>
+    <h2>Wagmi Hooks</h2>
+    <p>Address: {{ wagmiAccount.address }}</p>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, onMounted, watch } from 'vue'
 import { arbitrum, mainnet } from '@reown/appkit/networks'
+import { useAccount } from '@wagmi/vue'
 import { wagmiAdapter } from './config'
 import {
   createAppKit,
@@ -50,6 +53,7 @@ const modal = useAppKit()
 const state = useAppKitState()
 const { setThemeMode, themeMode, themeVariables } = useAppKitTheme()
 const events = useAppKitEvents()
+const wagmiAccount = useAccount()
 
 const toggleTheme = () => {
   const newTheme = themeMode.value === 'dark' ? 'light' : 'dark'
