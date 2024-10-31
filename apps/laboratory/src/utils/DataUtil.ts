@@ -137,6 +137,11 @@ export const multichainSdkOptions: SdkOption[] = [
     title: 'Basic',
     link: '/library/multichain-basic',
     description: 'Configuration with no adapters enabled for AppKit'
+  },
+  {
+    title: '[Experimental] SIWX',
+    link: '/library/multichain-siwx',
+    description: 'Configuration with SIWX adapters enabled for AppKit'
   }
 ]
 
