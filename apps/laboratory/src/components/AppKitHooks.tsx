@@ -1,14 +1,21 @@
+import { useEffect, useState } from 'react'
 import { useAppKit, useDisconnect, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 import { polygon, mainnet, solana, solanaTestnet, type AppKitNetwork } from '@reown/appkit/networks'
 import { Heading, Box, Button } from '@chakra-ui/react'
 
 export function AppKitHooks() {
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
   const { open } = useAppKit()
   const { isConnected } = useAppKitAccount()
   const { caipNetwork, switchNetwork } = useAppKitNetwork()
   const { disconnect } = useDisconnect()
 
-  if (!caipNetwork) {
+  if (!isClient || !caipNetwork) {
     return null
   }
 
