@@ -186,13 +186,6 @@ export const SwapController = {
       !state.sourceToken?.decimals ||
       !NumberUtil.bigNumber(state.sourceTokenAmount).isGreaterThan(0)
     const invalidSourceTokenAmount = !state.sourceTokenAmount
-    console.log(
-      '>>> SWAP',
-      caipAddress,
-      invalidToToken,
-      invalidSourceToken,
-      invalidSourceTokenAmount
-    )
 
     return {
       networkAddress,
