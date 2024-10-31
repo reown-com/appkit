@@ -97,7 +97,7 @@ export class UniversalAdapterClient {
 
     this.metadata = metadata
 
-    this.walletConnectProvider = options?.provider
+    this.walletConnectProvider = options?.walletConnectProvider
 
     this.manualControl = manualControl || false
 

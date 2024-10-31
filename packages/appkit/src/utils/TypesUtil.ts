@@ -78,6 +78,6 @@ export type AppKitOptions = {
 export type AppKitOptionsWithCaipNetworks = Omit<AppKitOptions, 'defaultNetwork' | 'networks'> & {
   defaultNetwork?: CaipNetwork
   networks: [CaipNetwork, ...CaipNetwork[]]
-  provider?: IUniversalProvider
+  walletConnectProvider?: IUniversalProvider
   manualControl?: boolean
 }
