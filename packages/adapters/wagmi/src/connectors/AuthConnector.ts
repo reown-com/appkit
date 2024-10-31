@@ -20,8 +20,7 @@ export type AuthParameters = {
 
 // -- Connector ------------------------------------------------------------------------------------
 export function authConnector(parameters: AuthParameters) {
-  /* eslint-disable init-declarations */
-  let currentAddress: Address | null = null
+  let currentAccounts: Address[] = []
 
   type Properties = {
     provider?: W3mFrameProvider
@@ -47,19 +46,23 @@ export function authConnector(parameters: AuthParameters) {
           throw new Error('ChainId not found in provider')
         }
       }
-      const { address, chainId: frameChainId } = await provider.connect({
+      const {
+        address,
+        chainId: frameChainId,
+        accounts
+      } = await provider.connect({
         chainId
       })
 
-      currentAddress = address as Address
+      currentAccounts = accounts?.map(a => a.address as Address) || [address as Address]
 
       await provider.getSmartAccountEnabledNetworks()
 
       const parsedChainId = parseChainId(frameChainId)
 
       return {
-        accounts: [currentAddress],
-        account: currentAddress,
+        accounts: currentAccounts,
+        account: address as Address,
         chainId: parsedChainId,
         chain: {
           id: parsedChainId,
@@ -74,13 +77,13 @@ export function authConnector(parameters: AuthParameters) {
     },
 
     getAccounts() {
-      if (!currentAddress) {
+      if (!currentAccounts?.length) {
         return Promise.resolve([])
       }
 
-      config.emitter.emit('change', { accounts: [currentAddress] })
+      config.emitter.emit('change', { accounts: currentAccounts })
 
-      return Promise.resolve([currentAddress])
+      return Promise.resolve(currentAccounts)
     },
 
     async getProvider() {
@@ -118,6 +121,10 @@ export function authConnector(parameters: AuthParameters) {
         const provider = await this.getProvider()
         // We connect instead, since changing the chain may cause the address to change as well
         const response = await provider.connect({ chainId })
+
+        currentAccounts = response?.accounts?.map(a => a.address as Address) || [
+          response.address as Address
+        ]
 
         config.emitter.emit('change', {
           chainId: Number(chainId),
