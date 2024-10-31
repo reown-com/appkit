@@ -6,7 +6,9 @@ import type {
   ConnectedWalletInfo,
   RouterControllerState,
   ChainAdapter,
-  SdkVersion
+  SdkVersion,
+  UseAppKitAccountReturn,
+  UseAppKitNetworkReturn
 } from '@reown/appkit-core'
 import {
   AccountController,
@@ -167,6 +169,30 @@ export class AppKit {
 
   public getWalletInfo() {
     return AccountController.state.connectedWalletInfo
+  }
+
+  public subscribeAccount(callback: (newState: UseAppKitAccountReturn) => void) {
+    function updateVal() {
+      callback({
+        caipAddress: ChainController.state.activeCaipAddress,
+        address: CoreHelperUtil.getPlainAddress(ChainController.state.activeCaipAddress),
+        isConnected: Boolean(ChainController.state.activeCaipAddress),
+        status: AccountController.state.status
+      })
+    }
+
+    ChainController.subscribe(updateVal)
+    AccountController.subscribe(updateVal)
+  }
+
+  public subscribeNetwork(callback: (newState: UseAppKitNetworkReturn) => void) {
+    return ChainController.subscribe(({ activeCaipNetwork }) => {
+      callback({
+        caipNetwork: activeCaipNetwork,
+        chainId: activeCaipNetwork?.id,
+        caipNetworkId: activeCaipNetwork?.caipNetworkId
+      })
+    })
   }
 
   public subscribeWalletInfo(callback: (newState: ConnectedWalletInfo) => void) {
