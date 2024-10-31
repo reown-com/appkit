@@ -14,6 +14,7 @@ import type { ChainNamespace } from '@reown/appkit-common'
 
 type OpenOptions = {
   view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'
+  uri?: string
 }
 
 type ThemeModeOptions = AppKitOptions['themeMode']

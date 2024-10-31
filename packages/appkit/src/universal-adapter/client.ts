@@ -85,14 +85,21 @@ export class UniversalAdapterClient {
 
   public reportErrors = true
 
+  // In manual control, devs provide connection uri & provider instance to the adapter
+  public manualControl: boolean
+
   public constructor(options: AppKitOptionsWithCaipNetworks) {
-    const { siweConfig, metadata } = options
+    const { siweConfig, metadata, manualControl } = options
 
     this.caipNetworks = options.networks
 
     this.chainNamespace = CommonConstantsUtil.CHAIN.EVM
 
     this.metadata = metadata
+
+    this.walletConnectProvider = options?.provider
+
+    this.manualControl = manualControl || false
 
     this.networkControllerClient = {
       // @ts-expect-error switchCaipNetwork is async for some adapter but not for this adapter
@@ -125,6 +132,17 @@ export class UniversalAdapterClient {
 
     this.connectionControllerClient = {
       connectWalletConnect: async onUri => {
+        console.log(
+          'on Connect WalletConnect',
+          this.manualControl,
+          ConnectionController.state.wcUri
+        )
+        if (this.manualControl && ConnectionController.state.wcUri) {
+          console.log('on Connect WalletConnect, onUri', ConnectionController.state.wcUri)
+          onUri(ConnectionController.state.wcUri)
+
+          return
+        }
         const WalletConnectProvider = await this.getWalletConnectProvider()
 
         if (!WalletConnectProvider) {
@@ -213,9 +231,9 @@ export class UniversalAdapterClient {
             }
           } else {
             const optionalNamespaces = WcHelpersUtil.createNamespaces(this.caipNetworks)
+            console.log('optionalNamespaces', optionalNamespaces, this.caipNetworks)
             await WalletConnectProvider.connect({ optionalNamespaces })
           }
-          this.setWalletConnectProvider()
         }
       },
 
@@ -311,10 +329,13 @@ export class UniversalAdapterClient {
   public construct(appkit: AppKit, options: AppKitOptionsWithCaipNetworks) {
     this.appKit = appkit
     this.options = options
-
+    this.caipNetworks = options.networks
     this.createProvider()
     this.syncRequestedNetworks(this.caipNetworks)
     this.syncConnectors()
+    this.walletConnectProvider?.on('connect', () => {
+      this.setWalletConnectProvider()
+    })
   }
 
   public switchNetwork(caipNetwork: CaipNetwork) {
@@ -348,6 +369,7 @@ export class UniversalAdapterClient {
   // -- Private -----------------------------------------------------------------
   private createProvider() {
     if (
+      !this.walletConnectProvider &&
       !this.walletConnectProviderInitPromise &&
       typeof window !== 'undefined' &&
       this.options?.projectId

@@ -2,6 +2,7 @@ import { CoreHelperUtil } from '@reown/appkit-core'
 import { AppKit } from '../src/client.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { PACKAGE_VERSION } from './constants.js'
+export { UniversalAdapterClient as UniversalAdapter } from '../src/universal-adapter/client.js'
 
 // -- Views ------------------------------------------------------------
 export * from '@reown/appkit-scaffold-ui'

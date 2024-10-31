@@ -39,6 +39,7 @@ function headings() {
     BuyInProgress: 'Buy',
     ConnectingExternal: name ?? 'Connect Wallet',
     ConnectingWalletConnect: name ?? 'WalletConnect',
+    ConnectingWalletConnectBasic: 'WalletConnect',
     ConnectingSiwe: 'Sign In',
     Convert: 'Convert',
     ConvertSelectToken: 'Select token',

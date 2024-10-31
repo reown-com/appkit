@@ -108,12 +108,13 @@ export const ChainController = {
 
   initialize(adapters: ChainsInitializerAdapter[]) {
     const adapterToActivate = adapters?.[0]
-
-    if (adapters?.length === 0) {
+    const additionalAdapters = adapters?.filter(a => a.adapterType !== 'universal') ?? []
+    console.log('additionalProviders', additionalAdapters)
+    if (additionalAdapters.length === 0) {
       state.noAdapters = true
     }
 
-    if (!state.noAdapters) {
+    if (adapterToActivate) {
       state.activeChain = adapterToActivate?.chainNamespace
       PublicStateController.set({ activeChain: adapterToActivate?.chainNamespace })
 

@@ -1,6 +1,7 @@
 import type { AppKitNetwork, CaipNetwork, ThemeVariables } from '@reown/appkit-common'
 import type { ChainAdapter, Metadata, OptionsControllerState, ThemeMode } from '@reown/appkit-core'
 import type { AppKitSIWEClient } from '@reown/appkit-siwe'
+import type IUniversalProvider from '@walletconnect/universal-provider'
 
 export type AppKitOptions = {
   /**
@@ -77,4 +78,6 @@ export type AppKitOptions = {
 export type AppKitOptionsWithCaipNetworks = Omit<AppKitOptions, 'defaultNetwork' | 'networks'> & {
   defaultNetwork?: CaipNetwork
   networks: [CaipNetwork, ...CaipNetwork[]]
+  provider?: IUniversalProvider
+  manualControl?: boolean
 }

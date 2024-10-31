@@ -9,10 +9,14 @@ import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 import styles from './styles.js'
+import { state } from 'lit/decorators.js'
 
 @customElement('w3m-connecting-wc-qrcode')
 export class W3mConnectingWcQrcode extends W3mConnectingWidget {
   public static override styles = styles
+
+  // -- State & Properties -------------------------------- //
+  @state() private manualControl = ConnectionController.state.manualControl
 
   public constructor() {
     super()
@@ -47,8 +51,12 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
         </wui-text>
         ${this.copyTemplate()}
       </wui-flex>
-
       <w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links>
+      ${this.manualControl
+        ? html`<wui-flex flexDirection="column" .padding=${['0', 'xl', 'xl', 'xl']} gap="xl">
+            <w3m-all-wallets-widget></w3m-all-wallets-widget>
+          </wui-flex>`
+        : null}
     `
   }
 
