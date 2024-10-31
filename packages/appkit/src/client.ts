@@ -6,7 +6,9 @@ import type {
   ConnectedWalletInfo,
   RouterControllerState,
   ChainAdapter,
-  SdkVersion
+  SdkVersion,
+  UseAppKitAccountReturn,
+  UseAppKitNetworkReturn
 } from '@reown/appkit-core'
 import {
   AccountController,
@@ -40,9 +42,6 @@ import { UniversalAdapterClient } from './universal-adapter/client.js'
 import { CaipNetworksUtil, ErrorUtil } from '@reown/appkit-utils'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { ProviderUtil } from './store/ProviderUtil.js'
-import type { CaipAddress } from '@reown/appkit'
-import type { AccountControllerState } from '@reown/appkit'
-import type { CaipNetworkId } from '@reown/appkit'
 
 // -- Export Controllers -------------------------------------------------------
 export { AccountController }
@@ -50,17 +49,6 @@ export { AccountController }
 // -- Types --------------------------------------------------------------------
 export interface OpenOptions {
   view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'
-}
-type AccountState = {
-  caipAddress: CaipAddress | undefined
-  address: string | undefined
-  isConnected: boolean
-  status: AccountControllerState['status']
-}
-type NetworkState = {
-  caipNetwork: CaipNetwork | undefined
-  chainId: number | string | undefined
-  caipNetworkId: CaipNetworkId | undefined
 }
 
 // -- Helpers -------------------------------------------------------------------
@@ -174,7 +162,7 @@ export class AppKit {
     return AccountController.state.connectedWalletInfo
   }
 
-  public subscribeAccount(callback: (newState: AccountState) => void) {
+  public subscribeAccount(callback: (newState: UseAppKitAccountReturn) => void) {
     function updateVal() {
       callback({
         caipAddress: ChainController.state.activeCaipAddress,
@@ -188,7 +176,7 @@ export class AppKit {
     AccountController.subscribe(updateVal)
   }
 
-  public subscribeNetwork(callback: (newState: NetworkState) => void) {
+  public subscribeNetwork(callback: (newState: UseAppKitNetworkReturn) => void) {
     return ChainController.subscribe(({ activeCaipNetwork }) => {
       callback({
         caipNetwork: activeCaipNetwork,
