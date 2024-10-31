@@ -8,22 +8,18 @@ export function AppKitHooks() {
   const { caipNetwork, switchNetwork } = useAppKitNetwork()
   const { disconnect } = useDisconnect()
 
-  const isEIPNamespace = caipNetwork?.chainNamespace === 'eip155'
-  // eslint-disable-next-line no-nested-ternary
-  const networkToSwitch: AppKitNetwork = isEIPNamespace
-    ? caipNetwork?.id === polygon.id
-      ? mainnet
-      : polygon
-    : caipNetwork?.id === solana.id
-      ? solanaTestnet
-      : solana
-
   function handleSwitchNetwork() {
-    if (isEIPNamespace) {
-      switchNetwork(networkToSwitch)
-    } else {
-      switchNetwork(networkToSwitch)
-    }
+    const isEIPNamespace = caipNetwork?.chainNamespace === 'eip155'
+    // eslint-disable-next-line no-nested-ternary
+    const networkToSwitch: AppKitNetwork = isEIPNamespace
+      ? caipNetwork?.id === polygon.id
+        ? mainnet
+        : polygon
+      : caipNetwork?.id === solana.id
+        ? solanaTestnet
+        : solana
+
+    switchNetwork(networkToSwitch)
   }
 
   return (

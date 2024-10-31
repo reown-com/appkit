@@ -9,7 +9,7 @@ export function AppKitButtons() {
       </CardHeader>
 
       <CardBody>
-        <Stack divider={<StackDivider />} spacing="4">
+        <Stack divider={<StackDivider />} spacing="4" flexWrap="wrap">
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Connect / Account Button
