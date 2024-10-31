@@ -1427,6 +1427,12 @@ importers:
       '@reown/appkit-core':
         specifier: workspace:*
         version: link:../core
+      bs58:
+        specifier: 6.0.0
+        version: 6.0.0
+      tweetnacl:
+        specifier: 1.0.3
+        version: 1.0.3
       viem:
         specifier: 2.21.34
         version: 2.21.34(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)
@@ -11947,6 +11953,9 @@ packages:
   turbo@2.0.6-canary.0:
     resolution: {integrity: sha512-35bevmsAkogFCfzil46dsM9vk1QVhMC63vqcXSSgzkQerDVYjrdfl/eMrMoqxzJI8ZHZYIBHAsiHMK7TteOCGw==}
     hasBin: true
+
+  tweetnacl@1.0.3:
+    resolution: {integrity: sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==}
 
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
@@ -27654,6 +27663,8 @@ snapshots:
       turbo-linux-arm64: 2.0.6-canary.0
       turbo-windows-64: 2.0.6-canary.0
       turbo-windows-arm64: 2.0.6-canary.0
+
+  tweetnacl@1.0.3: {}
 
   type-check@0.4.0:
     dependencies:
