@@ -160,6 +160,30 @@ export class AppKit {
     return AccountController.state.connectedWalletInfo
   }
 
+  public subscribeAccount(callback: (newState: any) => void) {
+    function updateVal() {
+      callback({
+        caipAddress: ChainController.state.activeCaipAddress,
+        address: CoreHelperUtil.getPlainAddress(ChainController.state.activeCaipAddress),
+        isConnected: Boolean(ChainController.state.activeCaipAddress),
+        status: AccountController.state.status
+      })
+    }
+
+    ChainController.subscribe(updateVal)
+    AccountController.subscribe(updateVal)
+  }
+
+  public subscribeNetwork(callback: (newState: ConnectedWalletInfo) => void) {
+    return ChainController.subscribe(({ activeCaipNetwork }) => {
+      callback({
+        caipNetwork: activeCaipNetwork,
+        chainId: activeCaipNetwork?.id,
+        caipNetworkId: activeCaipNetwork?.caipNetworkId
+      })
+    })
+  }
+
   public subscribeWalletInfo(callback: (newState: ConnectedWalletInfo) => void) {
     return AccountController.subscribeKey('connectedWalletInfo', callback)
   }
