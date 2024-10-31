@@ -15,7 +15,7 @@ export function AppKitHooks() {
   const { caipNetwork, switchNetwork } = useAppKitNetwork()
   const { disconnect } = useDisconnect()
 
-  if (!isClient || !caipNetwork) {
+  if (!isClient) {
     return null
   }
 
