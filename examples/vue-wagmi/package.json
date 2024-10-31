@@ -3,9 +3,9 @@
   "private": true,
   "version": "1.2.0",
   "scripts": {
-    "dev": "vite --port 3003",
+    "dev": "vite",
     "build": "vite build",
-    "start": "vite preview --port 3003"
+    "start": "vite preview"
   },
   "dependencies": {
     "@reown/appkit": "workspace:*",
