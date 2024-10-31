@@ -1,9 +1,10 @@
 import type { SIWXSession } from '@reown/appkit-core'
 import { SIWXVerifier } from '../core/SIWXVerifier.js'
 import { verifyMessage } from 'viem'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 export class EIP155Verifier extends SIWXVerifier {
-  public readonly chainNamespace = 'eip155'
+  public readonly chainNamespace = ConstantsUtil.CHAIN.EVM
 
   public async verify(session: SIWXSession): Promise<boolean> {
     try {
