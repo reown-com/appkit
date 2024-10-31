@@ -109,6 +109,7 @@ export const ChainController = {
   initialize(adapters: ChainsInitializerAdapter[]) {
     const adapterToActivate = adapters?.[0]
     const additionalAdapters = adapters?.filter(a => a.adapterType !== 'universal') ?? []
+    // eslint-disable-next-line no-console
     console.log('additionalProviders', additionalAdapters)
     if (additionalAdapters.length === 0) {
       state.noAdapters = true

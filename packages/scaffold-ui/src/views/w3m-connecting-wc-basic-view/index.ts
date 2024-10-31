@@ -12,6 +12,7 @@ export class W3mConnectingWcBasicView extends LitElement {
   }
   // -- Render -------------------------------------------- //
   public override render() {
+    // eslint-disable-next-line no-console
     console.log('W3mConnectingWcBasicView.constructor()', this.isMobile)
 
     if (this.isMobile) {
@@ -21,6 +22,7 @@ export class W3mConnectingWcBasicView extends LitElement {
 
       const showConnectors =
         featured.length || recommended.length || customWallets?.length || recent.length
+      // eslint-disable-next-line no-console
       console.log('W3mConnectingWcBasicView.constructor()', recommended)
 
       return html`<wui-flex
