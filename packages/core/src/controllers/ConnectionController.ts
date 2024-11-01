@@ -136,8 +136,6 @@ export const ConnectionController = {
         }
       )
     }
-
-    await this.initializeSWIXIfAvailable()
   },
 
   async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
@@ -147,8 +145,6 @@ export const ConnectionController = {
       ChainController.setActiveNamespace(chain)
       StorageUtil.setConnectedConnector(options.type)
     }
-
-    await this.initializeSWIXIfAvailable()
   },
 
   async reconnectExternal(options: ConnectExternalOptions) {
@@ -279,8 +275,9 @@ export const ConnectionController = {
   async initializeSWIXIfAvailable() {
     const siwx = OptionsController.state.siwx
     const address = CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress())
+    const network = ChainController.getActiveCaipNetwork()
 
-    if (!(siwx && address)) {
+    if (!(siwx && address && network)) {
       return
     }
 
@@ -290,15 +287,10 @@ export const ConnectionController = {
       return
     }
 
-    const activeCaipNetwork = ChainController.getActiveCaipNetwork()
-    const client = this._getClient(activeCaipNetwork?.chainNamespace)
+    const client = this._getClient(network?.chainNamespace)
 
     try {
-      if (!activeCaipNetwork) {
-        throw new Error('No active chain')
-      }
-
-      const sessions = await siwx.getSessions(activeCaipNetwork.caipNetworkId, address)
+      const sessions = await siwx.getSessions(network.caipNetworkId, address)
       if (sessions.length) {
         return
       }
@@ -306,7 +298,7 @@ export const ConnectionController = {
       ModalController.open({ view: 'SIWXSignMessage' })
 
       const message = await siwx.createMessage({
-        chainId: activeCaipNetwork.caipNetworkId,
+        chainId: network.caipNetworkId,
         accountAddress: address
       })
 
