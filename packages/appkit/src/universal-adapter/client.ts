@@ -8,7 +8,8 @@ import {
   type ConnectionControllerClient,
   type Connector,
   type NetworkControllerClient,
-  AlertController
+  AlertController,
+  BlockchainApiController
 } from '@reown/appkit-core'
 import { ConstantsUtil, ErrorUtil, LoggerUtil, PresetsUtil } from '@reown/appkit-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
@@ -305,6 +306,22 @@ export class UniversalAdapterClient {
 
       formatUnits: () => ''
     }
+
+    ChainController.subscribeKey('activeCaipNetwork', val => {
+      const caipAddress = this.appKit?.getCaipAddress(this.chainNamespace)
+
+      if (val && caipAddress) {
+        this.syncBalance(CoreHelperUtil.getPlainAddress(caipAddress) as `0x${string}`, val)
+        this.syncAccount()
+      }
+    })
+    ChainController.subscribeKey('activeCaipAddress', val => {
+      const caipNetwork = ChainController.state.activeCaipNetwork
+      if (val && caipNetwork) {
+        this.syncBalance(CoreHelperUtil.getPlainAddress(val) as `0x${string}`, caipNetwork)
+        this.syncAccount()
+      }
+    })
   }
 
   // -- Public ------------------------------------------------------------------
@@ -346,6 +363,31 @@ export class UniversalAdapterClient {
   }
 
   // -- Private -----------------------------------------------------------------
+  private async syncBalance(address: `0x${string}`, caipNetwork: CaipNetwork) {
+    const isExistingNetwork = this.appKit
+      ?.getCaipNetworks(caipNetwork.chainNamespace)
+      .find(network => network.id === caipNetwork.id)
+
+    // How to fetch balance on non-evm networks?
+    if (caipNetwork && isExistingNetwork) {
+      try {
+        const { balances } = await BlockchainApiController.getBalance(
+          address,
+          String(caipNetwork.id)
+        )
+        const balance = balances.find(b => b.symbol === caipNetwork.nativeCurrency.symbol)
+        this.appKit?.setBalance(
+          balance?.quantity.numeric || '0',
+          caipNetwork.nativeCurrency.symbol,
+          this.chainNamespace
+        )
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Error fetching balance', error)
+      }
+    }
+  }
+
   private createProvider() {
     if (
       !this.walletConnectProviderInitPromise &&
@@ -539,6 +581,7 @@ export class UniversalAdapterClient {
       provider.on('disconnect', disconnectHandler)
       provider.on('accountsChanged', accountsChangedHandler)
       provider.on('chainChanged', chainChanged)
+      provider.on('connect', this.syncAccount.bind(this))
     }
   }
 
