@@ -85,7 +85,7 @@ const modal = createAppKit({
 const accountState = ref({})
 const networkState = ref({})
 const appState = useAppKitState()
-const { themeMode, themeVariables, setThemeMode } = useAppKitTheme()
+const { setThemeMode } = useAppKitTheme()
 const events = useAppKitEvents()
 const walletInfo = ref({})
 const themeState = ref({ themeMode: 'light', themeVariables: {} })
@@ -121,6 +121,7 @@ onMounted(() => {
   })
 
   modal.subscribeWalletInfo(state => {
+    // @ts-ignore
     walletInfo.value = state
   })
 })

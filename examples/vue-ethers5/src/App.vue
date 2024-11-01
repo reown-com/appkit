@@ -2,13 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { arbitrum, mainnet } from '@reown/appkit/networks'
 import { Ethers5Adapter } from '@reown/appkit-adapter-ethers5'
-import {
-  createAppKit,
-  useAppKit,
-  useAppKitEvents,
-  useAppKitState,
-  useAppKitTheme
-} from '@reown/appkit/vue'
+import { createAppKit, useAppKitEvents, useAppKitState, useAppKitTheme } from '@reown/appkit/vue'
 
 const projectId = import.meta.env.VITE_PROJECT_ID
 if (!projectId) {
@@ -35,7 +29,7 @@ const modal = createAppKit({
 const accountState = ref({})
 const networkState = ref({})
 const appState = useAppKitState()
-const { themeMode, themeVariables, setThemeMode } = useAppKitTheme()
+const { setThemeMode } = useAppKitTheme()
 const events = useAppKitEvents()
 const walletInfo = ref({})
 const themeState = ref({ themeMode: 'light', themeVariables: {} })
@@ -68,6 +62,7 @@ onMounted(() => {
   })
 
   modal.subscribeWalletInfo(state => {
+    // @ts-ignore
     walletInfo.value = state
   })
 })

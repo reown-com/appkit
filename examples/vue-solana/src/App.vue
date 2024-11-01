@@ -1,13 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import { solana, solanaTestnet, solanaDevnet } from '@reown/appkit/networks'
-import {
-  createAppKit,
-  useAppKit,
-  useAppKitEvents,
-  useAppKitState,
-  useAppKitTheme
-} from '@reown/appkit/vue'
+import { createAppKit, useAppKitEvents, useAppKitState, useAppKitTheme } from '@reown/appkit/vue'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import {
   PhantomWalletAdapter,
@@ -50,7 +44,7 @@ const modal = createAppKit({
 const accountState = ref({})
 const networkState = ref({})
 const appState = useAppKitState()
-const { themeMode, themeVariables, setThemeMode } = useAppKitTheme()
+const { setThemeMode } = useAppKitTheme()
 const events = useAppKitEvents()
 const walletInfo = ref({})
 const themeState = ref({ themeMode: 'light', themeVariables: {} })
@@ -83,6 +77,7 @@ onMounted(() => {
   })
 
   modal.subscribeWalletInfo(state => {
+    // @ts-ignore
     walletInfo.value = state
   })
 })
