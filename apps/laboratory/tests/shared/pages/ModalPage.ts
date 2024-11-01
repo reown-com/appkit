@@ -567,4 +567,8 @@ export class ModalPage {
 
     return signature as `0x${string}`
   }
+
+  async switchNetworkWithHook() {
+    await this.page.getByTestId('switch-network-hook-button').click()
+  }
 }
