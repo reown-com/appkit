@@ -24,6 +24,7 @@ import {
 } from '@reown/appkit-common'
 import { ProviderUtil } from '../store/index.js'
 import type { AppKitOptions, AppKitOptionsWithCaipNetworks } from '../utils/TypesUtil.js'
+import bs58 from 'bs58'
 
 type Metadata = {
   name: string
@@ -242,12 +243,35 @@ export class UniversalAdapterClient {
           throw new Error('connectionControllerClient:signMessage - provider is undefined')
         }
 
-        const signature = await provider.request({
-          method: 'personal_sign',
-          params: [message, address]
-        })
+        let signature = ''
 
-        return signature as string
+        if (
+          ChainController.state.activeCaipNetwork?.chainNamespace ===
+          CommonConstantsUtil.CHAIN.SOLANA
+        ) {
+          const response = await provider.request(
+            {
+              method: 'solana_signMessage',
+              params: {
+                message: bs58.encode(new TextEncoder().encode(message)),
+                pubkey: address
+              }
+            },
+            ChainController.state.activeCaipNetwork?.caipNetworkId
+          )
+
+          signature = (response as { signature: string }).signature
+        } else {
+          signature = await provider.request(
+            {
+              method: 'personal_sign',
+              params: [message, address]
+            },
+            ChainController.state.activeCaipNetwork?.caipNetworkId
+          )
+        }
+
+        return signature
       },
 
       estimateGas: async () => await Promise.resolve(BigInt(0)),

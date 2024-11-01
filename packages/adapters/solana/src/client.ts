@@ -477,13 +477,13 @@ export class SolanaAdapter implements ChainAdapter {
         provider.chains.find(chain => chain.caipNetworkId === caipNetworkId) || provider.chains[0]
 
       if (connectionChain) {
+        ProviderUtil.setProvider(this.chainNamespace, provider)
+        this.provider = provider
+
         const caipAddress = `${connectionChain.caipNetworkId}:${address}` as const
         this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
 
         await this.switchNetwork(connectionChain)
-
-        ProviderUtil.setProvider(this.chainNamespace, provider)
-        this.provider = provider
 
         switch (provider.type) {
           case 'WALLET_CONNECT':

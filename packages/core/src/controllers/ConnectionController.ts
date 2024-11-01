@@ -291,13 +291,9 @@ export const ConnectionController = {
    */
   async initializeSWIXIfAvailable() {
     const siwx = OptionsController.state.siwx
-    if (
-      !(
-        siwx &&
-        ConnectionController.state.status === 'connected' &&
-        ChainController.getActiveCaipAddress()
-      )
-    ) {
+    const address = CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress())
+
+    if (!(siwx && address)) {
       return
     }
 
@@ -314,8 +310,6 @@ export const ConnectionController = {
       if (!activeCaipNetwork) {
         throw new Error('No active chain')
       }
-
-      const address = ChainController.getActiveCaipAddress()?.split(':')[2] || ''
 
       const sessions = await siwx.getSessions(activeCaipNetwork.caipNetworkId, address)
       if (sessions.length) {
