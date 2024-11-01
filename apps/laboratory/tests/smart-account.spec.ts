@@ -71,7 +71,7 @@ smartAccountTest('it should sign with smart account 6492 signature', async () =>
 })
 
 smartAccountTest('it should switch to a not enabled network and sign with EOA', async () => {
-  const targetChain = 'Ethereum'
+  const targetChain = 'Aurora'
   await page.switchNetwork(targetChain)
   await validator.expectSwitchedNetwork(targetChain)
   await page.closeModal()

@@ -40,6 +40,28 @@ describe('EIP155Verifier', () => {
     expect(verifier.chainNamespace).toBe('eip155')
   })
 
+  test('should verify only eip155 chain id', () => {
+    expect(
+      verifier.shouldVerify(
+        mockSession({
+          message: {
+            chainId: 'eip155:1'
+          }
+        })
+      )
+    ).toBe(true)
+
+    expect(
+      verifier.shouldVerify(
+        mockSession({
+          message: {
+            chainId: 'solana:mainnet'
+          }
+        })
+      )
+    ).toBe(false)
+  })
+
   test.each(cases)(`should verify $reason`, async ({ session, expected }) => {
     expect(await verifier.verify(session)).toBe(expected)
   })
