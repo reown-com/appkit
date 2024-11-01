@@ -8,7 +8,7 @@
     "build:clean": "turbo run build:clean --filter={./packages/*}",
     "build:sample-apps": "turbo run build --filter={./examples/*}",
     "build:example:wagmi-cdn": "pnpm build; pnpm --filter @examples/html-wagmi-cdn build",
-    "build:example:vue-wagmi": "pnpm build; pnpm --filter @examples/vue-wagmi build",
+    "build:example:vue-wagmi": "pnpm --filter @examples/vue-wagmi build",
     "build": "turbo run build --filter={./packages/*} --concurrency=31",
     "watch": "turbo run watch --filter={./packages/*,./packages/adapters/*} --concurrency=50 --continue",
     "gallery": "turbo run dev --filter={./apps/gallery}",

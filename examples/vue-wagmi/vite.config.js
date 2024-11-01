@@ -10,6 +10,6 @@ export default defineConfig({
     }
   },
   define: {
-    VITE_PROJECT_ID: process.env.VITE_PROJECT_ID
+    'process.env.VITE_PROJECT_ID': JSON.stringify(process.env.VITE_PROJECT_ID)
   }
 })
