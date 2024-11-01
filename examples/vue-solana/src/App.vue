@@ -1,88 +1,3 @@
-<script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { solana, solanaTestnet, solanaDevnet } from '@reown/appkit/networks'
-import { createAppKit, useAppKitEvents, useAppKitState, useAppKitTheme } from '@reown/appkit/vue'
-import { SolanaAdapter } from '@reown/appkit-adapter-solana'
-import {
-  PhantomWalletAdapter,
-  HuobiWalletAdapter,
-  SolflareWalletAdapter,
-  TrustWalletAdapter
-} from '@solana/wallet-adapter-wallets'
-import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack'
-
-const projectId = import.meta.env.VITE_PROJECT_ID
-if (!projectId) {
-  throw new Error('VITE_PROJECT_ID is not set')
-}
-
-// Initialize Solana adapter
-const solanaAdapter = new SolanaAdapter({
-  wallets: [
-    new HuobiWalletAdapter(),
-    new PhantomWalletAdapter(),
-    new SolflareWalletAdapter(),
-    new TrustWalletAdapter(),
-    new BackpackWalletAdapter()
-  ]
-})
-
-// Initialize AppKit
-const modal = createAppKit({
-  adapters: [solanaAdapter],
-  networks: [solana, solanaTestnet, solanaDevnet],
-  projectId,
-  metadata: {
-    name: 'AppKit Vue Solana Example',
-    description: 'AppKit Vue Solana Example',
-    url: 'https://reown.com/appkit',
-    icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
-  }
-})
-
-// State Management
-const accountState = ref({})
-const networkState = ref({})
-const appState = useAppKitState()
-const { setThemeMode } = useAppKitTheme()
-const events = useAppKitEvents()
-const walletInfo = ref({})
-const themeState = ref({ themeMode: 'light', themeVariables: {} })
-
-// Theme toggle function
-const toggleTheme = () => {
-  const newTheme = themeState.value.themeMode === 'dark' ? 'light' : 'dark'
-  setThemeMode(newTheme)
-  themeState.value.themeMode = newTheme
-  document.body.className = newTheme
-}
-
-// Subscriptions
-onMounted(() => {
-  // Set initial theme
-  document.body.className = themeState.value.themeMode
-
-  // Setup subscriptions
-  modal.subscribeAccount(state => {
-    accountState.value = state
-  })
-
-  modal.subscribeNetwork(state => {
-    networkState.value = state
-  })
-
-  modal.subscribeTheme(state => {
-    themeState.value = state
-    document.body.className = state.themeMode
-  })
-
-  modal.subscribeWalletInfo(state => {
-    // @ts-ignore
-    walletInfo.value = state
-  })
-})
-</script>
-
 <template>
   <div class="container">
     <h1>Vue Solana Example</h1>
@@ -134,6 +49,81 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
+<script language="ts" setup>
+import { ref, onMounted, watch } from 'vue'
+import {
+  createAppKit,
+  useAppKit,
+  useAppKitState,
+  useAppKitTheme,
+  useAppKitEvents
+} from '@reown/appkit/vue'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana'
+import { solana, solanaTestnet } from '@reown/appkit/networks'
+
+const projectId = import.meta.env.VITE_PROJECT_ID
+if (!projectId) {
+  throw new Error('VITE_PROJECT_ID is not set')
+}
+
+const solanaAdapter = new SolanaAdapter({})
+
+// Initialize AppKit
+const modal = createAppKit({
+  adapters: [solanaAdapter],
+  networks: [solana, solanaTestnet],
+  projectId,
+  metadata: {
+    name: 'AppKit Vue Example',
+    description: 'AppKit Vue Example',
+    url: 'https://reown.com/appkit',
+    icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
+  }
+})
+
+// State Management
+const accountState = ref({})
+const networkState = ref({})
+const appState = useAppKitState()
+const { setThemeMode } = useAppKitTheme()
+const events = useAppKitEvents()
+const walletInfo = ref({})
+const themeState = ref({ themeMode: 'light', themeVariables: {} })
+
+// Theme toggle function
+const toggleTheme = () => {
+  const newTheme = themeState.value.themeMode === 'dark' ? 'light' : 'dark'
+  setThemeMode(newTheme)
+  themeState.value.themeMode = newTheme
+  document.body.className = newTheme
+}
+
+// Subscriptions
+onMounted(() => {
+  // Set initial theme
+  document.body.className = themeState.value.themeMode
+
+  // Setup subscriptions
+  modal.subscribeAccount(state => {
+    accountState.value = state
+  })
+
+  modal.subscribeNetwork(state => {
+    networkState.value = state
+  })
+
+  modal.subscribeTheme(state => {
+    themeState.value = state
+    document.body.className = state.themeMode
+  })
+
+  modal.subscribeWalletInfo(state => {
+    // @ts-ignore
+    walletInfo.value = state
+  })
+})
+</script>
 
 <style>
 /* Base styles */
