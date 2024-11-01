@@ -65,7 +65,7 @@ sampleWalletTest('it should show disabled networks', async ({ library }) => {
   await modalPage.closeModal()
 })
 
-sampleWalletTest.skip('it should switch networks and sign', async ({ library }) => {
+sampleWalletTest('it should switch networks and sign', async ({ library }) => {
   const chains =
     library === 'solana' ? [solanaTestnet.name, solana.name] : [polygon.name, mainnet.name]
   const caipNetworkId =
@@ -100,7 +100,7 @@ sampleWalletTest.skip('it should switch networks and sign', async ({ library }) 
   await processChain(0)
 })
 
-sampleWalletTest('it should switch networks using hook', async ({ library }) => {
+sampleWalletTest.skip('it should switch networks using hook', async ({ library }) => {
   const chains = library === 'solana' ? ['Solana Testnet', 'Solana'] : ['Polygon', 'Ethereum']
   const caipNetworkId =
     library === 'solana' ? [solanaTestnet.id, solana.id] : [polygon.id, mainnet.id]
