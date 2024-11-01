@@ -4,7 +4,7 @@ import { useSignMessage } from 'wagmi'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'
 import { useAppKitAccount } from '@reown/appkit/react'
-import type { Address } from 'viem'
+import { type Address } from 'viem'
 
 export function WagmiSignMessageTest() {
   const toast = useChakraToast()

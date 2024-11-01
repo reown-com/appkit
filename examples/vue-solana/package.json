@@ -1,9 +1,10 @@
 {
   "name": "@examples/vue-solana",
   "private": true,
-  "version": "1.0.6",
+  "version": "1.2.0",
   "scripts": {
-    "dev": "vite --port 3013"
+    "dev": "vite --port 3013",
+    "build": "vite build"
   },
   "dependencies": {
     "@solana/wallet-adapter-backpack": "0.1.14",

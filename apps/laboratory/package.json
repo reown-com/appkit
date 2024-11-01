@@ -82,6 +82,7 @@
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@reown/appkit-experimental": "workspace:*",
     "@reown/appkit-siwe": "workspace:*",
+    "@reown/appkit-siwx": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@sentry/browser": "7.119.1",
     "@sentry/react": "7.92.0",

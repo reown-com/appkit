@@ -6,7 +6,7 @@ import type { CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
 
 // -- Hooks ------------------------------------------------------------
-export function useAppKitNetwork(): {
+export function useAppKitNetworkCore(): {
   caipNetwork: CaipNetwork | undefined
   chainId: number | string | undefined
   caipNetworkId: CaipNetworkId | undefined

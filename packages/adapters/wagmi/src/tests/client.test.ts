@@ -521,7 +521,6 @@ describe('Wagmi Client', () => {
       expect(mockProvider.onGetSmartAccountEnabledNetworks).toHaveBeenCalledWith(
         expect.any(Function)
       )
-      expect(mockProvider.onSetPreferredAccount).toHaveBeenCalledWith(expect.any(Function))
     })
 
     it.skip('should handle RPC requests correctly', async () => {

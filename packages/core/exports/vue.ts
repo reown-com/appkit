@@ -7,7 +7,7 @@ import { onUnmounted } from 'vue'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
 
 // -- Hooks ------------------------------------------------------------
-export function useAppKitNetwork(): {
+export function useAppKitNetworkCore(): {
   caipNetwork: CaipNetwork | undefined
   chainId: number | string | undefined
   caipNetworkId: CaipNetworkId | undefined
