@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1>Vue Wagmi Example</h1>
+    <h1>Vue Solana Example</h1>
 
     <!-- AppKit UI Components -->
     <div class="button-group">
@@ -63,9 +63,7 @@ import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { solana, solanaTestnet } from '@reown/appkit/networks'
 
 const projectId = import.meta.env.VITE_PROJECT_ID
-console.log('projectId', projectId)
 if (!projectId) {
-  console.error('VITE_PROJECT_ID is not set')
   throw new Error('VITE_PROJECT_ID is not set')
 }
 
