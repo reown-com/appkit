@@ -123,17 +123,11 @@ export const ConnectionController = {
           .catch(reject)
         resolve()
       })
-
-      try {
-        this.state.status = 'connecting'
-        await wcConnectionPromise
-        wcConnectionPromise = undefined
-        state.wcPairingExpiry = undefined
-        this.state.status = 'connected'
-      } catch (error) {
-        this.state.status = 'disconnected'
-        throw error
-      }
+      this.state.status = 'connecting'
+      await wcConnectionPromise
+      wcConnectionPromise = undefined
+      state.wcPairingExpiry = undefined
+      this.state.status = 'connected'
     } else {
       await ChainController.state?.universalAdapter?.connectionControllerClient?.connectWalletConnect?.(
         uri => {
@@ -147,14 +141,7 @@ export const ConnectionController = {
   },
 
   async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
-    try {
-      this.state.status = 'connecting'
-      await this._getClient(chain).connectExternal?.(options)
-      this.state.status = 'connected'
-    } catch (error) {
-      this.state.status = 'disconnected'
-      throw error
-    }
+    await this._getClient(chain).connectExternal?.(options)
 
     if (setChain) {
       ChainController.setActiveNamespace(chain)
