@@ -1,5 +1,5 @@
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { mainnet, arbitrum } from '@reown/appkit/networks'
+import { mainnet, polygon, base } from '@reown/appkit/networks'
 
 const projectId = import.meta.env.VITE_PROJECT_ID
 if (!projectId) {
@@ -7,6 +7,6 @@ if (!projectId) {
 }
 
 export const wagmiAdapter = new WagmiAdapter({
-  networks: [mainnet, arbitrum],
+  networks: [mainnet, polygon, base],
   projectId
 })

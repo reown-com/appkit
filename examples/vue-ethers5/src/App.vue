@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
-import { arbitrum, mainnet } from '@reown/appkit/networks'
+import { mainnet, polygon, base } from '@reown/appkit/networks'
 import { Ethers5Adapter } from '@reown/appkit-adapter-ethers5'
 import { createAppKit, useAppKitEvents, useAppKitState, useAppKitTheme } from '@reown/appkit/vue'
 
@@ -15,7 +15,7 @@ const ethersAdapter = new Ethers5Adapter()
 // Initialize AppKit
 const modal = createAppKit({
   adapters: [ethersAdapter],
-  networks: [mainnet, arbitrum],
+  networks: [mainnet, polygon, base],
   projectId,
   metadata: {
     name: 'AppKit Vue Ethers Example',
