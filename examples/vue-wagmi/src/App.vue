@@ -50,7 +50,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script language="ts" setup>
 import { ref, onMounted, watch } from 'vue'
 import { useAccount } from '@wagmi/vue'
 import {
