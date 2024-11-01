@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1>Hello Vue Wagmi</h1>
+    <h1>Vue Wagmi Example</h1>
 
     <!-- AppKit UI Components -->
     <div class="button-group">
@@ -127,14 +127,19 @@ onMounted(() => {
 </script>
 
 <style>
+/* Base styles */
 body {
   margin: 0;
   min-height: 100vh;
   transition:
     background-color 0.3s,
     color 0.3s;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* Theme styles */
 body.dark {
   background-color: #333;
   color: #fff;
@@ -145,12 +150,29 @@ body.light {
   color: #000;
 }
 
+/* Layout */
 .container {
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
+/* Typography */
+h1 {
+  font-weight: 700;
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-weight: 600;
+  font-size: 1.125rem;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.01em;
+}
+
+/* Buttons */
 .button-group {
   display: flex;
   gap: 16px;
@@ -163,6 +185,8 @@ button {
   border: 1px solid #ddd;
   cursor: pointer;
   transition: all 0.3s;
+  font-weight: 500;
+  font-size: 0.875rem;
 }
 
 /* Light theme button styles */
@@ -187,6 +211,7 @@ body.dark button:hover {
   background: #555;
 }
 
+/* State container */
 .state-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -202,13 +227,13 @@ section {
   overflow-y: auto;
 }
 
-h2 {
-  margin: 0 0 10px 0;
-}
-
 pre {
   margin: 0;
   white-space: pre-wrap;
   word-break: break-all;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Mono', 'Droid Sans Mono', 'Source Code Pro',
+    monospace;
+  font-size: 0.875rem;
+  line-height: 1.5;
 }
 </style>
