@@ -35,8 +35,8 @@ const modal = createAppKit({
   metadata: {
     name: 'AppKit Vue Solana Example',
     description: 'AppKit Vue Solana Example',
-    url: 'https://appkit.org',
-    icons: ['https://avatars.githubusercontent.com/u/37784886']
+    url: 'https://reown.com/appkit',
+    icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
   }
 })
 
