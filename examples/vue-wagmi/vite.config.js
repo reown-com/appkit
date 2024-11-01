@@ -6,5 +6,10 @@ export default defineConfig({
   plugins: [vue(), vercel()],
   define: {
     'import.meta.env.VITE_PROJECT_ID': JSON.stringify(process.env.VITE_PROJECT_ID)
+  },
+  build: {
+    rollupOptions: {
+      external: ['@tanstack/vue-query']
+    }
   }
 })
