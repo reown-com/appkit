@@ -334,6 +334,9 @@ export class UniversalAdapterClient {
     this.createProvider()
     this.syncRequestedNetworks(this.caipNetworks)
     this.syncConnectors()
+    if (this.walletConnectProvider?.session) {
+      this.setWalletConnectProvider()
+    }
     this.walletConnectProvider?.on('connect', () => {
       this.setWalletConnectProvider()
     })
