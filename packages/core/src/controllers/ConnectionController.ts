@@ -247,19 +247,19 @@ export const ConnectionController = {
   },
 
   async disconnect() {
-    const connectionControllerClient = this._getClient()
-
-    const siwx = OptionsController.state.siwx
-    if (siwx) {
-      const activeCaipNetwork = ChainController.getActiveCaipNetwork()
-      const address = ChainController.getActiveCaipAddress()?.split(':')[2] || ''
-
-      if (activeCaipNetwork && address) {
-        siwx.revokeSession(activeCaipNetwork.caipNetworkId, address)
-      }
-    }
-
     try {
+      const connectionControllerClient = this._getClient()
+
+      const siwx = OptionsController.state.siwx
+      if (siwx) {
+        const activeCaipNetwork = ChainController.getActiveCaipNetwork()
+        const address = CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress())
+
+        if (activeCaipNetwork && address) {
+          await siwx.revokeSession(activeCaipNetwork.caipNetworkId, address)
+        }
+      }
+
       await connectionControllerClient?.disconnect()
       this.resetWcConnection()
     } catch (error) {
@@ -315,8 +315,6 @@ export const ConnectionController = {
       console.error('Failed to initialize SIWX', error)
 
       await client.disconnect()
-
-      throw error
     }
   }
 }
