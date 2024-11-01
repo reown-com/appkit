@@ -9,17 +9,22 @@ export default css`
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    column-gap: var(--wui-spacing-1xs);
   }
 
   label > input[type='checkbox'] {
     height: 0;
     width: 0;
     opacity: 0;
+    pointer-events: none;
+    position: absolute;
   }
 
   label > span {
     width: var(--wui-spacing-xl);
     height: var(--wui-spacing-xl);
+    min-width: var(--wui-spacing-xl);
+    min-height: var(--wui-spacing-xl);
     border-radius: var(--wui-border-radius-3xs);
     border-width: 1px;
     border-style: solid;

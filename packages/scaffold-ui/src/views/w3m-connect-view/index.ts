@@ -11,6 +11,7 @@ import {
 } from '@reown/appkit-core'
 import { state } from 'lit/decorators/state.js'
 import { property } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
@@ -27,6 +28,8 @@ export class W3mConnectView extends LitElement {
   @state() private features = OptionsController.state.features
 
   @property() private walletGuide: WalletGuideType = 'get-started'
+
+  @state() private checked = false
 
   public constructor() {
     super()
@@ -45,6 +48,8 @@ export class W3mConnectView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
+
     const socials = this.features?.socials
     const enableWallets = OptionsController.state.enableWallets
 
@@ -52,18 +57,32 @@ export class W3mConnectView extends LitElement {
     const socialOrEmailLoginEnabled = socialsExist || this.authConnector
 
     return html`
-      <wui-flex
-        flexDirection="column"
-        .padding=${socialOrEmailLoginEnabled && enableWallets && this.walletGuide === 'get-started'
-          ? ['3xs', 's', '0', 's']
-          : ['3xs', 's', 's', 's']}
-      >
-        <w3m-email-login-widget walletGuide=${this.walletGuide}></w3m-email-login-widget>
-        <w3m-social-login-widget></w3m-social-login-widget>
-        ${this.walletListTemplate()}
+      <wui-flex flexDirection="column" rowGap="xs">
+        <w3m-legal-checkbox
+          @checkboxChange=${this.onCheckBoxChange.bind(this)}
+        ></w3m-legal-checkbox>
+        <wui-flex
+          flexDirection="column"
+          class=${ifDefined(
+            termsConditionsUrl || privacyPolicyUrl ? 'disabled-connect-view' : undefined
+          )}
+        >
+          <wui-flex
+            flexDirection="column"
+            .padding=${socialOrEmailLoginEnabled &&
+            enableWallets &&
+            this.walletGuide === 'get-started'
+              ? ['3xs', 's', '0', 's']
+              : ['3xs', 's', 's', 's']}
+            class="connect-scroll-view"
+          >
+            <w3m-email-login-widget walletGuide=${this.walletGuide}></w3m-email-login-widget>
+            <w3m-social-login-widget></w3m-social-login-widget>
+            ${this.walletListTemplate()}
+          </wui-flex>
+          ${this.guideTemplate()}
+        </wui-flex>
       </wui-flex>
-      ${this.guideTemplate()}
-      <w3m-legal-footer></w3m-legal-footer>
     `
   }
 
@@ -104,6 +123,10 @@ export class W3mConnectView extends LitElement {
     }
 
     return html`<w3m-wallet-login-list></w3m-wallet-login-list>`
+  }
+
+  private onCheckBoxChange(event: CustomEvent<string>) {
+    this.checked = Boolean(event.detail)
   }
 
   private guideTemplate() {
