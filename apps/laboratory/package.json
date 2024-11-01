@@ -93,7 +93,7 @@
     "@wagmi/core": "2.13.8",
     "@walletconnect/universal-provider": "2.17.0",
     "@walletconnect/utils": "2.17.0",
-    "axios": "1.7.2",
+    "axios": "1.7.4",
     "bs58": "6.0.0",
     "date-fns": "4.1.0",
     "ethers": "6.13.2",
