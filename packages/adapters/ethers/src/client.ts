@@ -732,9 +732,13 @@ export class EthersAdapter {
     }
 
     const accountsChangedHandler = (accounts: string[]) => {
-      const currentAccount = accounts?.[0] as CaipAddress | undefined
+      const currentAccount = accounts?.[0] as Address | undefined
+
       if (currentAccount) {
-        this.appKit?.setCaipAddress(currentAccount, this.chainNamespace)
+        const chainId = this.appKit?.getCaipNetwork()?.id
+        const caipAddress = `${this.chainNamespace}:${chainId}:${currentAccount}` as CaipAddress
+
+        this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
 
         if (providerId === ConstantsUtil.EIP6963_CONNECTOR_ID) {
           this.appKit?.setAllAccounts(

@@ -596,12 +596,14 @@ describe('EthersAdapter', () => {
     it('should handle accountsChanged event', async () => {
       client['setupProviderListeners'](mockProvider, 'injected')
 
+      const address = '0x1234567890123456789012345678901234567890'
       const accountsChangedHandler = mockProvider.on.mock.calls.find(
         (call: string[]) => call[0] === 'accountsChanged'
       )[1]
-      await accountsChangedHandler(['0x1234567890123456789012345678901234567890'])
+      await accountsChangedHandler([address])
 
       expect(mockAppKit.setCaipAddress).toHaveBeenCalled()
+      expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(`eip155:1:${address}`, 'eip155')
     })
 
     it('should handle chainChanged event', async () => {
