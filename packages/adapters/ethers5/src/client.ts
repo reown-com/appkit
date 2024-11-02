@@ -368,6 +368,7 @@ export class Ethers5Adapter {
         // Common cleanup actions
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
         this.appKit?.resetAccount(this.chainNamespace)
+        this.removeListeners(provider as Provider)
       },
       signMessage: async (message: string) => {
         const provider = ProviderUtil.getProvider<Provider>(this.chainNamespace)

@@ -368,6 +368,7 @@ export class EthersAdapter {
         // Common cleanup actions
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
         this.appKit?.resetAccount(this.chainNamespace)
+        this.removeListeners(provider as Provider)
       },
       signMessage: async (message: string) => {
         const provider = ProviderUtil.getProvider<Provider>(this.chainNamespace)
@@ -624,7 +625,6 @@ export class EthersAdapter {
     }
 
     const activeConfig = providerConfigs[walletId as unknown as keyof typeof providerConfigs]
-
     if (activeConfig?.provider) {
       this.setProvider(activeConfig.provider, walletId as ProviderIdType)
       this.setupProviderListeners(activeConfig.provider, walletId as ProviderIdType)
