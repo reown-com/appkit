@@ -293,6 +293,13 @@ export class ModalValidator {
     await expect(disabledNetwork.locator('button')).toBeDisabled()
   }
 
+  async expectToBeConnectedInstantly() {
+    const accountButton = this.page.locator('w3m-account-button')
+    await expect(accountButton, 'Account button should be present').toBeAttached({
+      timeout: 1000
+    })
+  }
+
   async expectConnectButtonLoading() {
     const connectButton = this.page.getByTestId('connect-button')
     await expect(connectButton).toContainText('Connecting...')

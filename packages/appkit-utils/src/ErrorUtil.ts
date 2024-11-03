@@ -10,6 +10,11 @@ export const ErrorUtil = {
     }
   },
   ALERT_ERRORS: {
+    SWITCH_NETWORK_NOT_FOUND: {
+      shortMessage: 'Network Not Found',
+      longMessage:
+        "Network not found - please make sure it is included in 'networks' array in createAppKit function"
+    },
     INVALID_APP_CONFIGURATION: {
       shortMessage: 'Invalid App Configuration',
       longMessage: () =>

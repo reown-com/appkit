@@ -447,6 +447,12 @@ export class ModalPage {
     await tabWebApp.click()
   }
 
+  async clickHookDisconnectButton() {
+    const disconnectHookButton = this.page.getByTestId('disconnect-hook-button')
+    await expect(disconnectHookButton).toBeVisible()
+    await disconnectHookButton.click()
+  }
+
   async clickCopyLink() {
     const copyLink = this.page.getByTestId('wui-link-copy')
     await expect(copyLink).toBeVisible()
@@ -560,5 +566,9 @@ export class ModalPage {
     expect(signature, 'Signature should be present').toBeTruthy()
 
     return signature as `0x${string}`
+  }
+
+  async switchNetworkWithHook() {
+    await this.page.getByTestId('switch-network-hook-button').click()
   }
 }

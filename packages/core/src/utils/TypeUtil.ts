@@ -968,8 +968,26 @@ export type Features = {
    * @type {boolean}
    */
   allWallets?: boolean
+  /**
+   * @description Enable or disable the Smart Sessions feature. Disabled by default.
+   * @type {boolean}
+   */
+  smartSessions?: boolean
 }
 
 export type FeaturesKeys = keyof Features
 
 export type WalletGuideType = 'get-started' | 'explore'
+
+export type UseAppKitAccountReturn = {
+  caipAddress: CaipAddress | undefined
+  address: string | undefined
+  isConnected: boolean
+  status: AccountControllerState['status']
+}
+
+export type UseAppKitNetworkReturn = {
+  caipNetwork: CaipNetwork | undefined
+  chainId: number | string | undefined
+  caipNetworkId: CaipNetworkId | undefined
+}

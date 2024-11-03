@@ -24,7 +24,10 @@ import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 
 const [mainnet, arbitrum, polygon, optimism, bsc] = CaipNetworksUtil.extendCaipNetworks(
   [AppkitMainnet, AppkitArbitrum, AppkitPolygon, AppkitOptimism, AppkitBsc],
-  { customNetworkImageUrls: {}, projectId: '1234' }
+  {
+    customNetworkImageUrls: mockOptions.chainImages,
+    projectId: '1234'
+  }
 ) as [CaipNetwork, CaipNetwork, CaipNetwork, CaipNetwork, CaipNetwork]
 
 const caipNetworks = [mainnet, arbitrum, polygon] as [CaipNetwork, ...CaipNetwork[]]
@@ -158,6 +161,16 @@ describe('EthersAdapter', () => {
 
     it('should set caipNetworks to provided caipNetworks options', () => {
       expect(client.caipNetworks).toEqual(caipNetworks)
+    })
+
+    it('should set chain images', () => {
+      Object.entries(mockOptions.chainImages!).map(([networkId, imageUrl]) => {
+        const caipNetwork = client.caipNetworks.find(
+          caipNetwork => caipNetwork.id === Number(networkId)
+        )
+        expect(caipNetwork).toBeDefined()
+        expect(caipNetwork?.assets?.imageUrl).toEqual(imageUrl)
+      })
     })
 
     it('should set defaultNetwork to first caipNetwork option', () => {
@@ -701,8 +714,6 @@ describe('EthersAdapter', () => {
       )
       expect(client['syncConnectedWalletInfo']).toHaveBeenCalled()
       expect(client['syncProfile']).toHaveBeenCalledWith(mockAddress)
-      expect(client['setupProviderListeners']).toHaveBeenCalledOnce()
-      expect(client['setProvider']).toHaveBeenCalledOnce()
       expect(mockAppKit.setCaipAddress).toHaveBeenCalledTimes(2)
       expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(
         `eip155:${mainnet.id}:${mockAddress}`,
@@ -723,8 +734,6 @@ describe('EthersAdapter', () => {
 
       await client['syncAccount']({ address: mockAddress })
 
-      expect(client['setupProviderListeners']).toHaveBeenCalledOnce()
-      expect(client['setProvider']).toHaveBeenCalledOnce()
       expect(mockAppKit.setCaipAddress).toHaveBeenCalledTimes(2)
       expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(
         `eip155:${mainnet.id}:${mockAddress}`,

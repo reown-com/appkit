@@ -75,7 +75,6 @@ export async function grantPermissions(
   // Instantiate CosignerService and process permissions
   const cosignerService = new CosignerService(projectId)
   const addPermissionResponse = await cosignerService.addPermission(activeCaipAddress, request)
-
   // Update request signer with the cosigner key
   updateRequestSigner(request, addPermissionResponse.key)
 

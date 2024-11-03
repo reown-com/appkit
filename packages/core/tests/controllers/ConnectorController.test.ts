@@ -24,6 +24,13 @@ const walletConnectConnector = {
   chain: ConstantsUtil.CHAIN.EVM,
   name: 'WalletConnect'
 } as const
+const walletConnectSolanaConnector = {
+  id: 'walletConnect-solana',
+  explorerId: 'walletConnectId-slo',
+  type: 'WALLET_CONNECT',
+  chain: ConstantsUtil.CHAIN.SOLANA,
+  name: 'WalletConnect'
+} as const
 const externalConnector = {
   id: 'external',
   type: 'EXTERNAL',
@@ -98,7 +105,23 @@ describe('ConnectorController', () => {
     expect(ConnectorController.state.connectors).toEqual([])
   })
 
+  it('should update state correctly on setConnectors() with multichain', () => {
+    ConnectorController.setConnectors([walletConnectConnector, walletConnectSolanaConnector])
+    expect(ConnectorController.state.connectors).toStrictEqual([
+      {
+        id: 'walletConnect',
+        name: 'WalletConnect',
+        chain: 'eip155',
+        imageId: undefined,
+        imageUrl: undefined,
+        type: 'MULTI_CHAIN',
+        connectors: [walletConnectConnector, walletConnectSolanaConnector]
+      }
+    ])
+  })
+
   it('should update state correctly on setConnectors()', () => {
+    ConnectorController.state.allConnectors = []
     ConnectorController.setConnectors([walletConnectConnector])
     expect(ConnectorController.state.connectors).toEqual([walletConnectConnector])
   })

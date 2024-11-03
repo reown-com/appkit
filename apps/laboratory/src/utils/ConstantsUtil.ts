@@ -12,7 +12,8 @@ import {
   baseSepolia,
   gnosis,
   unichainSepolia,
-  hedera
+  hedera,
+  aurora
 } from '@reown/appkit/networks'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 import { getLocalStorageItem } from './LocalStorage'
@@ -23,7 +24,7 @@ if (!projectId) {
   throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
 }
 export const WALLET_URL = process.env['WALLET_URL'] || 'https://react-wallet.walletconnect.com/'
-export const USEROP_BUILDER_SERVICE_BASE_URL = 'https://rpc.walletconnect.com/v1/wallet'
+export const USEROP_BUILDER_SERVICE_BASE_URL = 'https://rpc.walletconnect.org/v1/wallet'
 
 export const GALLERY_URL = 'https://appkit-gallery.reown.com/'
 export const DOCS_URL = 'https://docs.reown.com/appkit/overview'
@@ -64,7 +65,8 @@ const EvmNetworks = [
   unichainSepolia,
   sepolia,
   gnosis,
-  hedera
+  hedera,
+  aurora
 ] as [AppKitNetwork, ...AppKitNetwork[]]
 
 export const solanaNotExist = {

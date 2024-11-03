@@ -51,6 +51,11 @@ sampleWalletTest('it should show onramp button accordingly', async () => {
   await modalPage.closeModal()
 })
 
+sampleWalletTest('it should be connected instantly after page refresh', async () => {
+  await modalPage.page.reload()
+  await modalValidator.expectToBeConnectedInstantly()
+})
+
 sampleWalletTest('it should show disabled networks', async ({ library }) => {
   const disabledNetworks = library === 'solana' ? 'Solana Unsupported' : 'Gnosis'
 
@@ -61,7 +66,8 @@ sampleWalletTest('it should show disabled networks', async ({ library }) => {
 })
 
 sampleWalletTest('it should switch networks and sign', async ({ library }) => {
-  const chains = library === 'solana' ? ['Solana Testnet', 'Solana'] : ['Polygon', 'Ethereum']
+  const chains =
+    library === 'solana' ? [solanaTestnet.name, solana.name] : [polygon.name, mainnet.name]
   const caipNetworkId =
     library === 'solana' ? [solanaTestnet.id, solana.id] : [polygon.id, mainnet.id]
 
@@ -86,6 +92,34 @@ sampleWalletTest('it should switch networks and sign', async ({ library }) => {
     await walletValidator.expectReceivedSign({ chainName: chainNameOnWalletPage })
     await walletPage.handleRequest({ accept: true })
     await modalValidator.expectAcceptedSign()
+
+    await processChain(index + 1)
+  }
+
+  // Start processing from the first chain
+  await processChain(0)
+})
+
+sampleWalletTest('it should switch networks using hook', async ({ library }) => {
+  const chains = library === 'solana' ? ['Solana Testnet', 'Solana'] : ['Polygon', 'Ethereum']
+  const caipNetworkId =
+    library === 'solana' ? [solanaTestnet.id, solana.id] : [polygon.id, mainnet.id]
+
+  async function processChain(index: number) {
+    if (index >= chains.length) {
+      return
+    }
+
+    const chainName = chains[index] ?? DEFAULT_CHAIN_NAME
+    // Switch network using hook button
+    await modalPage.switchNetworkWithHook()
+    await modalPage.openModal()
+    await modalPage.openNetworks()
+    await modalValidator.expectSwitchedNetwork(chainName)
+    await modalPage.closeModal()
+    await modalValidator.expectCaipAddressHaveCorrectNetworkId(
+      caipNetworkId[index] as CaipNetworkId
+    )
 
     await processChain(index + 1)
   }
@@ -172,7 +206,19 @@ sampleWalletTest(
     await modalPage.closeModal()
   }
 )
+
+sampleWalletTest('it should connect and disconnect using hook', async () => {
+  await walletPage.disconnectConnection()
+  await modalValidator.expectDisconnected()
+  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalValidator.expectConnected()
+  await modalPage.clickHookDisconnectButton()
+  await modalValidator.expectDisconnected()
+})
+
 sampleWalletTest('it should disconnect and close modal when connecting from wallet', async () => {
+  await modalPage.qrCodeFlow(modalPage, walletPage)
+  await modalValidator.expectConnected()
   await modalPage.openModal()
   await walletPage.disconnectConnection()
   await walletValidator.expectSessionCard({ visible: false })

@@ -1,18 +1,7 @@
-import { useAppKit } from '@reown/appkit/react'
-import {
-  Stack,
-  Card,
-  CardHeader,
-  Heading,
-  CardBody,
-  Box,
-  StackDivider,
-  Button
-} from '@chakra-ui/react'
+import { Stack, Card, CardHeader, Heading, CardBody, Box, StackDivider } from '@chakra-ui/react'
+import { AppKitHooks } from './AppKitHooks'
 
 export function AppKitButtons() {
-  const { open } = useAppKit()
-
   return (
     <Card marginTop={10}>
       <CardHeader>
@@ -20,7 +9,7 @@ export function AppKitButtons() {
       </CardHeader>
 
       <CardBody>
-        <Stack divider={<StackDivider />} spacing="4">
+        <Stack divider={<StackDivider />} spacing="4" flexWrap="wrap">
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Connect / Account Button
@@ -33,14 +22,7 @@ export function AppKitButtons() {
             </Heading>
             <w3m-network-button />
           </Box>
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Hooks Interactions
-            </Heading>
-            <Button data-testid="w3m-open-hook-button" onClick={() => open()}>
-              Open
-            </Button>
-          </Box>
+          <AppKitHooks />
         </Stack>
       </CardBody>
     </Card>

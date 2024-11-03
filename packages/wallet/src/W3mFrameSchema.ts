@@ -397,6 +397,10 @@ export const WalletGrantPermissionsRequest = z.object({
   method: z.literal('wallet_grantPermissions'),
   params: z.array(z.any())
 })
+export const WalletRevokePermissionsRequest = z.object({
+  method: z.literal('wallet_revokePermissions'),
+  params: z.any()
+})
 
 export const FrameSession = z.object({
   token: z.string()
@@ -522,6 +526,7 @@ export const W3mFrameSchema = {
           .or(WalletSendCallsRequest)
           .or(WalletGetCapabilitiesRequest)
           .or(WalletGrantPermissionsRequest)
+          .or(WalletRevokePermissionsRequest)
       })
     )
 

@@ -437,6 +437,16 @@ export class EthersAdapter {
         return await provider.request({ method: 'wallet_grantPermissions', params })
       },
 
+      revokePermissions: async session => {
+        const provider = ProviderUtil.getProvider<Provider>(CommonConstantsUtil.CHAIN.EVM)
+
+        if (!provider) {
+          throw new Error('Provider is undefined')
+        }
+
+        return await provider.request({ method: 'wallet_revokePermissions', params: [session] })
+      },
+
       sendTransaction: async data => {
         if (data.chainNamespace && data.chainNamespace !== 'eip155') {
           throw new Error(`Invalid chain namespace - Expected eip155, got ${data.chainNamespace}`)
@@ -589,6 +599,10 @@ export class EthersAdapter {
     })
   }
 
+  /**
+   * Checks the active providers and sets the provider. We call this when we initialize the adapter.
+   * @param config - The provider config
+   */
   private checkActiveProviders(config: ProviderType) {
     const walletId = SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_ID)
     const walletName = SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_NAME)
@@ -617,6 +631,12 @@ export class EthersAdapter {
     }
   }
 
+  /**
+   * Sets the provider and updates the local storage. We call this when we connect with external providers or via checkActiveProviders function.
+   * @param provider - The provider to set
+   * @param providerId - The provider id
+   * @param name - The name of the provider
+   */
   private async setProvider(provider: Provider, providerId: ProviderIdType, name?: string) {
     if (providerId === 'w3mAuth') {
       this.setAuthProvider()
@@ -874,6 +894,10 @@ export class EthersAdapter {
     }
   }
 
+  /**
+   * Syncs the account state depending on the given parameters. We call this in different conditions like when caipNetwork or caipAddress changes, when the user switches account or network.
+   * @param param0 - The address and caipNetwork. Both are optional.
+   */
   private async syncAccount({
     address,
     caipNetwork
@@ -895,9 +919,6 @@ export class EthersAdapter {
         )
 
         this.syncConnectedWalletInfo()
-        if (this.ethersConfig) {
-          this.checkActiveProviders(this.ethersConfig)
-        }
 
         if (currentCaipNetwork?.blockExplorers?.default.url) {
           this.appKit?.setAddressExplorerUrl(
@@ -1155,11 +1176,13 @@ export class EthersAdapter {
       this.appKit?.setLoading(true)
       const isLoginEmailUsed = this.authProvider.getLoginEmailUsed()
       this.appKit?.setLoading(isLoginEmailUsed)
-      const { isConnected } = await this.authProvider.isConnected()
-      if (isConnected) {
-        await this.setAuthProvider()
-      } else {
-        this.appKit?.setLoading(false)
+      if (isLoginEmailUsed) {
+        const { isConnected } = await this.authProvider.isConnected()
+        if (isConnected) {
+          await this.setAuthProvider()
+        } else {
+          this.appKit?.setLoading(false)
+        }
       }
     }
   }

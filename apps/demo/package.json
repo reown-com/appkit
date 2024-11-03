@@ -1,6 +1,6 @@
 {
   "name": "@apps/demo",
-  "version": "1.1.5",
+  "version": "1.2.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -16,8 +16,8 @@
     "clsx": "2.1.0",
     "framer-motion": "11.0.8",
     "next": "14.2.3",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
     "sonner": "1.4.3",
     "tailwind-merge": "2.2.1",
     "vaul": "0.9.0",

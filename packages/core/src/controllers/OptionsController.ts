@@ -9,6 +9,7 @@ import type {
   Tokens
 } from '../utils/TypeUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
+import type { SIWXConfig } from '../utils/SIWXUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerStatePublic {
@@ -110,6 +111,12 @@ export interface OptionsControllerStatePublic {
    * @see https://docs.reown.com/appkit/react/core/options#features
    */
   features?: Features
+  /**
+   * @experimental - This feature is not production ready.
+   * Enable Sign In With X (SIWX) feature in your AppKit.
+   * @default undefined
+   */
+  siwx?: SIWXConfig
 }
 
 export interface OptionsControllerStateInternal {
@@ -152,6 +159,7 @@ export const OptionsController = {
       if (!state.features) {
         state.features = ConstantsUtil.DEFAULT_FEATURES
       }
+
       if (key in state.features) {
         ;(state.features as Record<keyof Features, unknown>)[key as keyof Features] = value
       }
@@ -232,5 +240,9 @@ export const OptionsController = {
 
   setHasMultipleAddresses(hasMultipleAddresses: OptionsControllerState['hasMultipleAddresses']) {
     state.hasMultipleAddresses = hasMultipleAddresses
+  },
+
+  setSIWX(siwx: OptionsControllerState['siwx']) {
+    state.siwx = siwx
   }
 }
