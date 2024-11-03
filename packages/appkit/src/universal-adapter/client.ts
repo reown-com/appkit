@@ -83,7 +83,7 @@ export class UniversalAdapterClient {
 
   public adapterType: AdapterType = 'universal'
 
-  public reportedErrors: Record<string, boolean> = {}
+  public reportedAlertErrors: Record<string, boolean> = {}
 
   public constructor(options: AppKitOptionsWithCaipNetworks) {
     const { siweConfig, metadata } = options
@@ -369,13 +369,13 @@ export class UniversalAdapterClient {
 
     const { message, alertErrorKey } = value ?? {}
 
-    if (key && message && !this.reportedErrors[key]) {
+    if (key && message && !this.reportedAlertErrors[key]) {
       const alertError =
         ErrorUtil.ALERT_ERRORS[alertErrorKey as keyof typeof ErrorUtil.ALERT_ERRORS]
 
       if (alertError) {
         AlertController.open(alertError, 'error')
-        this.reportedErrors[key] = true
+        this.reportedAlertErrors[key] = true
       }
     }
   }
