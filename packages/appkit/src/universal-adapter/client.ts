@@ -365,17 +365,17 @@ export class UniversalAdapterClient {
       ([, { message }]) => error.message.includes(message)
     )
 
-    const [key, value] = matchedUniversalProviderError ?? []
+    const [errorKey, errorValue] = matchedUniversalProviderError ?? []
 
-    const { message, alertErrorKey } = value ?? {}
+    const { message, alertErrorKey } = errorValue ?? {}
 
-    if (key && message && !this.reportedAlertErrors[key]) {
+    if (errorKey && message && !this.reportedAlertErrors[errorKey]) {
       const alertError =
         ErrorUtil.ALERT_ERRORS[alertErrorKey as keyof typeof ErrorUtil.ALERT_ERRORS]
 
       if (alertError) {
         AlertController.open(alertError, 'error')
-        this.reportedAlertErrors[key] = true
+        this.reportedAlertErrors[errorKey] = true
       }
     }
   }
