@@ -1161,7 +1161,7 @@ export class EthersAdapter {
       this.authProvider = W3mFrameProviderSingleton.getInstance({
         projectId,
         onTimeout: () => {
-          AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION_SOCIALS, 'error')
+          AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
         }
       })
 

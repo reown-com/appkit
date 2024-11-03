@@ -22,7 +22,7 @@ export const ErrorUtil = {
           isSafe() ? window.origin : 'unknown'
         } not found on Allowlist - update configuration`
     },
-    INVALID_APP_CONFIGURATION_SOCIALS: {
+    SOCIALS_TIMEOUT: {
       shortMessage: 'Invalid App Configuration',
       longMessage: () =>
         'There was an issue loading the embedded wallet. Please verify that your domain is allowed at cloud.reown.com'
