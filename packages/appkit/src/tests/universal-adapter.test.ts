@@ -4,9 +4,9 @@ import { UniversalAdapterClient } from '../universal-adapter'
 import { mockOptions } from './mocks/Options'
 import mockProvider from './mocks/UniversalProvider'
 import type UniversalProvider from '@walletconnect/universal-provider'
-import { ChainController } from '@reown/appkit-core'
+import { AlertController, ChainController } from '@reown/appkit-core'
 import { ProviderUtil } from '../store/index.js'
-import { CaipNetworksUtil, ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, ConstantsUtil, ErrorUtil, PresetsUtil } from '@reown/appkit-utils'
 import mockAppKit from './mocks/AppKit'
 import type { CaipNetwork } from '@reown/appkit-common'
 
@@ -20,6 +20,8 @@ const mockOptionsExtended = {
   networks: [mainnet, solana] as [CaipNetwork, ...CaipNetwork[]],
   defaultNetwork: mainnet
 }
+
+vi.mock('@reown/appkit-core')
 
 describe('UniversalAdapter', () => {
   let universalAdapter: UniversalAdapterClient
@@ -194,6 +196,28 @@ describe('UniversalAdapter', () => {
           chain: universalAdapter.chainNamespace
         }
       ])
+    })
+  })
+
+  describe('UniversalAdapter - Alert Errors', () => {
+    it('should handle alert errors based on error messages', () => {
+      const errors = [
+        {
+          alert: ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION,
+          message:
+            'Error: WebSocket connection closed abnormally with code: 3000 (Unauthorized: origin not allowed)'
+        },
+        {
+          alert: ErrorUtil.ALERT_ERRORS.JWT_TOKEN_NOT_VALID,
+          message:
+            'WebSocket connection closed abnormally with code: 3000 (JWT validation error: JWT Token is not yet valid:)'
+        }
+      ]
+
+      for (const { alert, message } of errors) {
+        ;(universalAdapter as any).handleAlertError(new Error(message))
+        expect(AlertController.open).toHaveBeenCalledWith(alert, 'error')
+      }
     })
   })
 })

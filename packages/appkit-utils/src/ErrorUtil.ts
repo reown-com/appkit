@@ -25,9 +25,7 @@ export const ErrorUtil = {
     INVALID_APP_CONFIGURATION_SOCIALS: {
       shortMessage: 'Invalid App Configuration',
       longMessage: () =>
-        `Origin ${
-          isSafe() ? window.origin : 'unknown'
-        } not found on Allowlist - update configuration to enable social login`
+        'There was an issue loading the embedded wallet. Please verify that your domain is allowed at cloud.reown.com'
     },
     JWT_TOKEN_NOT_VALID: {
       shortMessage: 'Session Expired',

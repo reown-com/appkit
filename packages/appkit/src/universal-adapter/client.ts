@@ -360,30 +360,30 @@ export class UniversalAdapterClient {
     return this.walletConnectProviderInitPromise
   }
 
-  private handleAlertError(errorMessage: string) {
+  private handleAlertError(error: Error) {
     const matchedUniversalProviderError = Object.entries(ErrorUtil.UniversalProviderErrors).find(
-      ([, providerError]) => providerError.message.includes(errorMessage)
+      ([, { message }]) => error.message.includes(message)
     )
 
-    const [providerErrorKey, providerError] = matchedUniversalProviderError ?? []
+    const [key, value] = matchedUniversalProviderError ?? []
 
-    const { message, alertErrorKey } = providerError ?? {}
+    const { message, alertErrorKey } = value ?? {}
 
-    if (providerErrorKey && message && !this.reportedErrors[providerErrorKey]) {
+    if (key && message && !this.reportedErrors[key]) {
       const alertError =
-        ErrorUtil.ALERT_ERRORS[alertErrorKey as keyof typeof ErrorUtil.ALERT_ERRORS] ??
-        ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION
+        ErrorUtil.ALERT_ERRORS[alertErrorKey as keyof typeof ErrorUtil.ALERT_ERRORS]
 
-      AlertController.open(alertError, 'error')
-
-      this.reportedErrors[providerErrorKey] = true
+      if (alertError) {
+        AlertController.open(alertError, 'error')
+        this.reportedErrors[key] = true
+      }
     }
   }
 
   private async initWalletConnectProvider(projectId: string) {
     const logger = LoggerUtil.createLogger((error, ...args) => {
       if (error) {
-        this.handleAlertError(error.message)
+        this.handleAlertError(error)
       }
       // eslint-disable-next-line no-console
       console.error(...args)
