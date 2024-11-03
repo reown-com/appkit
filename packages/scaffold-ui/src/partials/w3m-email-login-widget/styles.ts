@@ -19,15 +19,15 @@ export default css`
   wui-icon-link,
   wui-loading-spinner {
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
   }
 
   wui-icon-link {
+    top: 13px;
     right: var(--wui-spacing-xs);
   }
 
   wui-loading-spinner {
+    top: 19px;
     right: var(--wui-spacing-m);
   }
 `
