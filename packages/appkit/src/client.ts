@@ -534,8 +534,13 @@ export class AppKit {
     // Set the SIWE client for EVM chains
     if (evmAdapter) {
       if (options.siweConfig) {
-        const { SIWEController } = await import('@reown/appkit-siwe')
-        SIWEController.setSIWEClient(options.siweConfig)
+        if (options.siwx) {
+          throw new Error('Cannot set both siweConfig and siwx')
+        }
+
+        const { mapToSIWX } = await import('@reown/appkit-siwe')
+        const siwx = await mapToSIWX(options.siweConfig)
+        OptionsController.setSIWX(siwx)
       }
     }
   }

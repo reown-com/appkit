@@ -213,7 +213,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   }
 
   private serializeTransaction(transaction: AnyTransaction) {
-    return base58.encode(transaction.serialize({ verifySignatures: false }))
+    return base58.encode(Uint8Array.from(transaction.serialize({ verifySignatures: false })))
   }
 
   private bindEvents() {

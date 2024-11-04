@@ -90,30 +90,6 @@ export interface AdapterOptions<C extends Config>
   defaultNetwork?: Chain
 }
 
-const OPTIONAL_METHODS = [
-  'eth_accounts',
-  'eth_requestAccounts',
-  'eth_sendRawTransaction',
-  'eth_sign',
-  'eth_signTransaction',
-  'eth_signTypedData',
-  'eth_signTypedData_v3',
-  'eth_signTypedData_v4',
-  'eth_sendTransaction',
-  'personal_sign',
-  'wallet_switchEthereumChain',
-  'wallet_addEthereumChain',
-  'wallet_getPermissions',
-  'wallet_requestPermissions',
-  'wallet_registerOnboarding',
-  'wallet_watchAsset',
-  'wallet_scanQRCode',
-  'wallet_getCallsStatus',
-  'wallet_sendCalls',
-  'wallet_getCapabilities',
-  'wallet_grantPermissions'
-]
-
 // @ts-expect-error: Overridden state type is correct
 interface AppKitState extends PublicStateControllerState {
   selectedNetworkId: number | undefined
@@ -307,77 +283,6 @@ export class WagmiAdapter implements ChainAdapter {
           throw new Error('connectionControllerClient:getWalletConnectUri - connector is undefined')
         }
 
-        const provider = (await connector.getProvider()) as Awaited<
-          ReturnType<(typeof UniversalProvider)['init']>
-        >
-
-        const siweParams = await this.options?.siweConfig?.getMessageParams?.()
-
-        const isSiweEnabled = this.options?.siweConfig?.options?.enabled
-        const isProviderSupported = typeof provider?.authenticate === 'function'
-        const isSiweParamsValid = siweParams && Object.keys(siweParams || {}).length > 0
-        const siweConfig = this.options?.siweConfig
-
-        if (isSiweEnabled && isProviderSupported && isSiweParamsValid && siweConfig) {
-          // @ts-expect-error - setting requested chains beforehand avoids wagmi auto disconnecting the session when `connect` is called because it things chains are stale
-          await connector.setRequestedChainsIds(siweParams.chains)
-
-          const { SIWEController, getDidChainId, getDidAddress } = await import(
-            '@reown/appkit-siwe'
-          )
-
-          const chains = this.caipNetworks
-            ?.filter(network => network.chainNamespace === 'eip155')
-            .map(chain => chain.caipNetworkId) as string[]
-
-          siweParams.chains = this.caipNetworks
-            ?.filter(network => network.chainNamespace === 'eip155')
-            .map(chain => chain.id) as number[]
-
-          const result = await provider.authenticate({
-            nonce: await siweConfig.getNonce(),
-            methods: [...OPTIONAL_METHODS],
-            ...siweParams,
-            chains
-          })
-          // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
-          const signedCacao = result?.auths?.[0]
-
-          if (signedCacao) {
-            const { p, s } = signedCacao
-            const cacaoChainId = getDidChainId(p.iss)
-            const address = getDidAddress(p.iss)
-            if (address && cacaoChainId) {
-              SIWEController.setSession({
-                address,
-                chainId: parseInt(cacaoChainId, 10)
-              })
-            }
-
-            try {
-              // Kicks off verifyMessage and populates external states
-              const message = provider.client.formatAuthMessage({
-                request: p,
-                iss: p.iss
-              })
-
-              await SIWEController.verifyMessage({
-                message,
-                signature: s.s,
-                cacao: signedCacao
-              })
-            } catch (error) {
-              // eslint-disable-next-line no-console
-              console.error('Error verifying message', error)
-              // eslint-disable-next-line no-console
-              await provider.disconnect().catch(console.error)
-              // eslint-disable-next-line no-console
-              await SIWEController.signOut().catch(console.error)
-              throw error
-            }
-          }
-        }
-
         const chainId = this.appKit?.getCaipNetworkId<number>()
         await connect(this.wagmiConfig, { connector, chainId })
       },
@@ -428,10 +333,6 @@ export class WagmiAdapter implements ChainAdapter {
       },
       disconnect: async () => {
         await disconnect(this.wagmiConfig)
-        if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@reown/appkit-siwe')
-          await SIWEController.signOut()
-        }
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_NAME)

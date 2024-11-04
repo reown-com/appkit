@@ -145,13 +145,13 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     if ('signature' in result) {
       transaction.addSignature(
         new PublicKey(this.getAccount(true).publicKey),
-        Buffer.from(base58.decode(result.signature))
+        Buffer.from(base58.decode(result.signature)) as Uint8Array & Buffer
       )
 
       return transaction
     }
 
-    const decodedTransaction = Buffer.from(result.transaction, 'base64')
+    const decodedTransaction = Uint8Array.from(Buffer.from(result.transaction, 'base64'))
 
     if (isVersionedTransaction(transaction)) {
       return VersionedTransaction.deserialize(decodedTransaction) as T
@@ -203,7 +203,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
           throw new Error('Invalid transactions response')
         }
 
-        const decodedTransaction = Buffer.from(serializedTransaction, 'base64')
+        const decodedTransaction = Uint8Array.from(Buffer.from(serializedTransaction, 'base64'))
 
         if (isVersionedTransaction(transaction)) {
           return VersionedTransaction.deserialize(decodedTransaction)
@@ -336,7 +336,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     return {
       feePayer: transaction.feePayer?.toBase58() ?? '',
       instructions: transaction.instructions.map(instruction => ({
-        data: base58.encode(instruction.data),
+        data: base58.encode(Uint8Array.from(instruction.data)),
         keys: instruction.keys.map(key => ({
           isWritable: key.isWritable,
           isSigner: key.isSigner,
