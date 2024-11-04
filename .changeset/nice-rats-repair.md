@@ -1,24 +1,24 @@
 ---
-'@reown/appkit-scaffold-ui': patch
-'@apps/laboratory': patch
-'@reown/appkit': patch
-'@apps/demo': patch
-'@apps/gallery': patch
-'@reown/appkit-adapter-ethers': patch
-'@reown/appkit-adapter-ethers5': patch
-'@reown/appkit-adapter-polkadot': patch
-'@reown/appkit-adapter-solana': patch
-'@reown/appkit-adapter-wagmi': patch
-'@reown/appkit-utils': patch
-'@reown/appkit-cdn': patch
-'@reown/appkit-common': patch
-'@reown/appkit-core': patch
-'@reown/appkit-experimental': patch
-'@reown/appkit-polyfills': patch
-'@reown/appkit-siwe': patch
-'@reown/appkit-siwx': patch
-'@reown/appkit-ui': patch
-'@reown/appkit-wallet': patch
+'@reown/appkit-scaffold-ui': minor
+'@apps/laboratory': minor
+'@reown/appkit': minor
+'@apps/demo': minor
+'@apps/gallery': minor
+'@reown/appkit-adapter-ethers': minor
+'@reown/appkit-adapter-ethers5': minor
+'@reown/appkit-adapter-polkadot': minor
+'@reown/appkit-adapter-solana': minor
+'@reown/appkit-adapter-wagmi': minor
+'@reown/appkit-utils': minor
+'@reown/appkit-cdn': minor
+'@reown/appkit-common': minor
+'@reown/appkit-core': minor
+'@reown/appkit-experimental': minor
+'@reown/appkit-polyfills': minor
+'@reown/appkit-siwe': minor
+'@reown/appkit-siwx': minor
+'@reown/appkit-ui': minor
+'@reown/appkit-wallet': minor
 ---
 
 Updates public component names with appkit prefix

@@ -182,7 +182,7 @@ export class ModalPage {
   async loginWithEmail(email: string, validate = true) {
     // Connect Button doesn't have a proper `disabled` attribute so we need to wait for the button to change the text
     await this.page
-      .getByTestId('connect-button')
+      .getByTestId('appkit-connect-button')
       .getByRole('button', { name: 'Connect Wallet' })
       .click()
     await this.page.getByTestId('wui-email-input').locator('input').focus()
@@ -200,7 +200,7 @@ export class ModalPage {
 
   async loginWithSocial(socialOption: 'github', socialMail: string, socialPass: string) {
     await this.page
-      .getByTestId('connect-button')
+      .getByTestId('appkit-connect-button')
       .getByRole('button', { name: 'Connect Wallet' })
       .click()
 
