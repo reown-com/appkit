@@ -2,7 +2,14 @@
 import { ref, onMounted } from 'vue'
 import { mainnet, polygon, base } from '@reown/appkit/networks'
 import { Ethers5Adapter } from '@reown/appkit-adapter-ethers5'
-import { createAppKit, useAppKitEvents, useAppKitState, useAppKitTheme } from '@reown/appkit/vue'
+import {
+  createAppKit,
+  useAppKitEvents,
+  useAppKitState,
+  useAppKitTheme,
+  useAppKitAccount,
+  useAppKitNetwork
+} from '@reown/appkit/vue'
 
 const projectId = import.meta.env.VITE_PROJECT_ID
 if (!projectId) {
@@ -26,9 +33,9 @@ const modal = createAppKit({
 })
 
 // State Management
-const accountState = ref({})
-const networkState = ref({})
-const appState = useAppKitState()
+const useAccount = useAppKitAccount()
+const useNetwork = useAppKitNetwork()
+const useAppKit = useAppKitState()
 const { setThemeMode } = useAppKitTheme()
 const events = useAppKitEvents()
 const walletInfo = ref({})
@@ -46,15 +53,6 @@ const toggleTheme = () => {
 onMounted(() => {
   // Set initial theme
   document.body.className = themeState.value.themeMode
-
-  // Setup subscriptions
-  modal.subscribeAccount(state => {
-    accountState.value = state
-  })
-
-  modal.subscribeNetwork(state => {
-    networkState.value = state
-  })
 
   modal.subscribeTheme(state => {
     themeState.value = state
@@ -83,23 +81,29 @@ onMounted(() => {
       <button @click="modal.open()">Open Connect Modal</button>
       <button @click="modal.open({ view: 'Networks' })">Open Network Modal</button>
       <button @click="toggleTheme">Toggle Theme Mode</button>
+      <button
+        @click="useNetwork.switchNetwork(useNetwork.chainId === polygon.id ? mainnet : polygon)"
+      >
+        Switch to
+        {{ useNetwork.chainId === polygon.id ? 'Mainnet' : 'Polygon' }}
+      </button>
     </div>
 
     <!-- State Displays -->
     <div class="state-container">
       <section>
         <h2>Account</h2>
-        <pre>{{ JSON.stringify(accountState, null, 2) }}</pre>
+        <pre>{{ JSON.stringify(useAccount, null, 2) }}</pre>
       </section>
 
       <section>
         <h2>Network</h2>
-        <pre>{{ JSON.stringify(networkState, null, 2) }}</pre>
+        <pre>{{ JSON.stringify(useNetwork, null, 2) }}</pre>
       </section>
 
       <section>
-        <h2>State</h2>
-        <pre>{{ JSON.stringify(appState, null, 2) }}</pre>
+        <h2>Modal State</h2>
+        <pre>{{ JSON.stringify(useAppKit, null, 2) }}</pre>
       </section>
 
       <section>
