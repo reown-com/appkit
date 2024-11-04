@@ -38,7 +38,7 @@ export abstract class SIWXMessenger {
       uri: this.uri,
       statement: this.statement,
       resources: this.resources,
-      nonce: await this.getNonce(),
+      nonce: await this.getNonce(input),
       requestId: await this.getRequestId?.(),
       expirationTime: this.getExpirationTime(input),
       issuedAt: this.getIssuedAt(),
@@ -86,7 +86,7 @@ export namespace SIWXMessenger {
     /**
      * Getter function for message nonce value
      */
-    getNonce: () => Promise<SIWXMessage['nonce']>
+    getNonce: (params: SIWXMessageInput) => Promise<SIWXMessage['nonce']>
     /**
      * Getter function for message request ID
      * If not provided, the request ID will be omitted
