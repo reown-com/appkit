@@ -13,7 +13,7 @@ synpressTest.describe.configure({ mode: 'serial' })
 synpressTest('should be connected as expected', async ({ page, metamask }) => {
   await page.goto(`/library/wagmi`)
   const modalValidator = new ModalValidator(page)
-  await page.getByTestId('connect-button').click()
+  await page.getByTestId('appkit-connect-button').click()
   const connectMetaMaskButton = page.getByTestId('wallet-selector-io.metamask')
   await expect(connectMetaMaskButton).toBeVisible()
   await connectMetaMaskButton.click()
@@ -23,7 +23,7 @@ synpressTest('should be connected as expected', async ({ page, metamask }) => {
 
 synpressTest('should show injected connectors on Solana as expected', async ({ page }) => {
   await page.goto(`/library/solana`)
-  await page.getByTestId('connect-button').click()
+  await page.getByTestId('appkit-connect-button').click()
   const connectMetaMaskButton = page.getByTestId('wallet-selector-MetaMask')
   await expect(connectMetaMaskButton).toBeVisible()
 })

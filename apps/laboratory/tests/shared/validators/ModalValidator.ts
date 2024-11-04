@@ -16,7 +16,7 @@ export class ModalValidator {
       timeout: MAX_WAIT
     })
     await expect(
-      this.page.getByTestId('connect-button'),
+      this.page.getByTestId('appkit-connect-button'),
       'Connect button should not be present'
     ).toBeHidden({
       timeout: MAX_WAIT
@@ -54,7 +54,7 @@ export class ModalValidator {
 
   async expectDisconnected() {
     await expect(
-      this.page.getByTestId('connect-button'),
+      this.page.getByTestId('appkit-connect-button'),
       'Connect button should be present'
     ).toBeVisible({
       timeout: MAX_WAIT
@@ -301,12 +301,12 @@ export class ModalValidator {
   }
 
   async expectConnectButtonLoading() {
-    const connectButton = this.page.getByTestId('connect-button')
+    const connectButton = this.page.getByTestId('appkit-connect-button')
     await expect(connectButton).toContainText('Connecting...')
   }
 
   async expectAccountButtonReady() {
-    const accountButton = this.page.getByTestId('account-button')
+    const accountButton = this.page.getByTestId('appkit-account-button')
     await expect(accountButton).toBeVisible({ timeout: MAX_WAIT })
   }
 
