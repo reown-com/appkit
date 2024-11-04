@@ -6,12 +6,12 @@ export default css`
     overflow: scroll;
     scrollbar-width: none;
     grid-auto-rows: min-content;
-    grid-template-columns: repeat(auto-fill, 76px);
+    grid-template-columns: repeat(auto-fill, 104px);
   }
 
   @media (max-width: 435px) {
     wui-grid {
-      grid-template-columns: repeat(auto-fill, 77px);
+      grid-template-columns: repeat(auto-fill, 105px);
     }
   }
 

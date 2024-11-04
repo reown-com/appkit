@@ -108,6 +108,7 @@ export type Metadata = {
 export interface WcWallet {
   id: string
   name: string
+  badge_type: BadgeType
   homepage?: string
   image_id?: string
   image_url?: string

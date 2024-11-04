@@ -64,7 +64,7 @@ export class W3mAllWalletsSearch extends LitElement {
     return html`
       <wui-grid
         .padding=${['0', 's', 's', 's'] as const}
-        gridTemplateColumns="repeat(4, 1fr)"
+        gridTemplateColumns="repeat(3, 1fr)"
         rowGap="l"
         columnGap="xs"
       >
