@@ -21,12 +21,17 @@ export class AppKitNetworkButton extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public disabled?: WuiNetworkButton['disabled'] = false
+
   @property({ type: String }) public label?: string
 
   @state() private network = ChainController.state.activeCaipNetwork
+
   @state() private networkImage = AssetUtil.getNetworkImage(this.network)
+
   @state() private caipAddress = ChainController.state.activeCaipAddress
+
   @state() private loading = ModalController.state.loading
+
   @state() private isSupported = true
 
   // -- Lifecycle ----------------------------------------- //
@@ -64,7 +69,6 @@ export class AppKitNetworkButton extends LitElement {
 
     return html`
       <wui-network-button
-        data-testid="wui-network-button"
         .disabled=${Boolean(this.disabled || this.loading)}
         .isUnsupportedChain=${!isSupported}
         imageSrc=${ifDefined(this.networkImage)}

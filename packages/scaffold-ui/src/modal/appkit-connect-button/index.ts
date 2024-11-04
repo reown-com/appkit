@@ -45,7 +45,7 @@ export class AppKitConnectButton extends LitElement {
         size=${ifDefined(this.size)}
         .loading=${isLoading}
         @click=${this.onClick.bind(this)}
-        data-testid="connect-button"
+        data-testid="appkit-connect-button"
       >
         ${isLoading ? this.loadingLabel : this.label}
       </wui-connect-button>

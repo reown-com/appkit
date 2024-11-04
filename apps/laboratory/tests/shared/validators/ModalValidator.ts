@@ -11,7 +11,7 @@ export class ModalValidator {
   constructor(public readonly page: Page) {}
 
   async expectConnected() {
-    const accountButton = this.page.locator('w3m-account-button')
+    const accountButton = this.page.locator('appkit-account-button')
     await expect(accountButton, 'Account button should be present').toBeAttached({
       timeout: MAX_WAIT
     })
@@ -25,7 +25,7 @@ export class ModalValidator {
   }
 
   async expectBalanceFetched(currency: 'SOL' | 'ETH') {
-    const accountButton = this.page.locator('w3m-account-button')
+    const accountButton = this.page.locator('appkit-account-button')
     await expect(accountButton, `Account button should show balance as ${currency}`).toContainText(
       `0.000 ${currency}`
     )
@@ -294,7 +294,7 @@ export class ModalValidator {
   }
 
   async expectToBeConnectedInstantly() {
-    const accountButton = this.page.locator('w3m-account-button')
+    const accountButton = this.page.locator('appkit-account-button')
     await expect(accountButton, 'Account button should be present').toBeAttached({
       timeout: 1000
     })

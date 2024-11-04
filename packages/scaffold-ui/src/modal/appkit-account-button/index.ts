@@ -19,17 +19,27 @@ export class AppKitAccountButton extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public disabled?: WuiAccountButton['disabled'] = false
+
   @property() public balance?: 'show' | 'hide' = 'show'
+
   @property() public charsStart?: WuiAccountButton['charsStart'] = 4
+
   @property() public charsEnd?: WuiAccountButton['charsEnd'] = 6
 
   @state() private caipAddress = ChainController.state.activeCaipAddress
+
   @state() private balanceVal = AccountController.state.balance
+
   @state() private balanceSymbol = AccountController.state.balanceSymbol
+
   @state() private profileName = AccountController.state.profileName
+
   @state() private profileImage = AccountController.state.profileImage
+
   @state() private network = ChainController.state.activeCaipNetwork
+
   @state() private networkImage = AssetUtil.getNetworkImage(this.network)
+
   @state() private isSupported = true
 
   // -- Lifecycle ----------------------------------------- //
@@ -80,7 +90,7 @@ export class AppKitAccountButton extends LitElement {
           ? CoreHelperUtil.formatBalance(this.balanceVal, this.balanceSymbol)
           : ''}
         @click=${this.onClick.bind(this)}
-        data-testid="account-button"
+        data-testid="appkit-account-button"
         .charsStart=${this.charsStart}
         .charsEnd=${this.charsEnd}
       >
