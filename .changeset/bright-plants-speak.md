@@ -21,4 +21,4 @@
 '@reown/appkit-wallet': patch
 ---
 
-Improved error handling for auth and universal provider connector
+Improved error handling for auth and universal provider connector.
