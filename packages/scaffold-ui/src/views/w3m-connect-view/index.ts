@@ -11,7 +11,7 @@ import {
 } from '@reown/appkit-core'
 import { state } from 'lit/decorators/state.js'
 import { property } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+import { classMap } from 'lit/directives/class-map.js'
 
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
@@ -50,6 +50,13 @@ export class W3mConnectView extends LitElement {
   public override render() {
     const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
 
+    const legal = termsConditionsUrl || privacyPolicyUrl
+
+    const classes = {
+      'connect-scroll-view': true,
+      disabled: Boolean(legal) && !this.checked && this.walletGuide === 'get-started'
+    }
+
     const socials = this.features?.socials
     const enableWallets = OptionsController.state.enableWallets
 
@@ -57,16 +64,9 @@ export class W3mConnectView extends LitElement {
     const socialOrEmailLoginEnabled = socialsExist || this.authConnector
 
     return html`
-      <wui-flex flexDirection="column" rowGap="xs">
-        <w3m-legal-checkbox
-          @checkboxChange=${this.onCheckBoxChange.bind(this)}
-        ></w3m-legal-checkbox>
-        <wui-flex
-          flexDirection="column"
-          class=${ifDefined(
-            termsConditionsUrl || privacyPolicyUrl ? 'disabled-connect-view' : undefined
-          )}
-        >
+      <wui-flex flexDirection="column">
+        ${this.legalCheckBoxTemplate()}
+        <wui-flex flexDirection="column" class=${classMap(classes)}>
           <wui-flex
             flexDirection="column"
             .padding=${socialOrEmailLoginEnabled &&
@@ -74,7 +74,6 @@ export class W3mConnectView extends LitElement {
             this.walletGuide === 'get-started'
               ? ['3xs', 's', '0', 's']
               : ['3xs', 's', 's', 's']}
-            class="connect-scroll-view"
           >
             <w3m-email-login-widget walletGuide=${this.walletGuide}></w3m-email-login-widget>
             <w3m-social-login-widget></w3m-social-login-widget>
@@ -125,10 +124,6 @@ export class W3mConnectView extends LitElement {
     return html`<w3m-wallet-login-list></w3m-wallet-login-list>`
   }
 
-  private onCheckBoxChange(event: CustomEvent<string>) {
-    this.checked = Boolean(event.detail)
-  }
-
   private guideTemplate() {
     const socials = this.features?.socials
     const enableWallets = OptionsController.state.enableWallets
@@ -158,9 +153,29 @@ export class W3mConnectView extends LitElement {
     `
   }
 
+  private legalCheckBoxTemplate() {
+    const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
+
+    if (!termsConditionsUrl && !privacyPolicyUrl) {
+      return null
+    }
+
+    if (this.walletGuide === 'explore') {
+      return null
+    }
+
+    return html`<w3m-legal-checkbox
+      @checkboxChange=${this.onCheckBoxChange.bind(this)}
+    ></w3m-legal-checkbox>`
+  }
+
   // -- Private Methods ----------------------------------- //
   private onContinueWalletClick() {
     RouterController.push('ConnectWallets')
+  }
+
+  private onCheckBoxChange(event: CustomEvent<string>) {
+    this.checked = Boolean(event.detail)
   }
 }
 

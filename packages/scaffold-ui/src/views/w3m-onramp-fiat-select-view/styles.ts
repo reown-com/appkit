@@ -6,7 +6,22 @@ export default css`
     overflow: auto;
   }
 
+  wui-flex {
+    transition: opacity var(--wui-ease-out-power-1) var(--wui-duration-md);
+    will-change: opacity;
+  }
+
   wui-grid::-webkit-scrollbar {
     display: none;
+  }
+
+  w3m-legal-checkbox {
+    padding: 0 var(--wui-spacing-s) var(--wui-spacing-s) var(--wui-spacing-s);
+  }
+
+  wui-flex.disabled {
+    opacity: 0.3;
+    pointer-events: none;
+    user-select: none;
   }
 `

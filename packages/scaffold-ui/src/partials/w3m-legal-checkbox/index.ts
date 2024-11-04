@@ -9,17 +9,10 @@ export class W3mLegalCheckbox extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
-
-    if (!termsConditionsUrl && !privacyPolicyUrl) {
-      return null
-    }
-
     return html`
       <wui-checkbox>
         <wui-text color="fg-250" variant="small-400" align="left">
-          By connecting your wallet, you agree to our ${this.termsTemplate()} ${this.andTemplate()}
-          ${this.privacyTemplate()}
+          I agree to our ${this.termsTemplate()} ${this.andTemplate()} ${this.privacyTemplate()}
         </wui-text>
       </wui-checkbox>
     `
@@ -34,20 +27,22 @@ export class W3mLegalCheckbox extends LitElement {
 
   private termsTemplate() {
     const { termsConditionsUrl } = OptionsController.state
+    
     if (!termsConditionsUrl) {
       return null
     }
 
-    return html`<a href=${termsConditionsUrl}>Terms of Service</a>`
+    return html`<a href=${termsConditionsUrl}>terms of service</a>`
   }
 
   private privacyTemplate() {
     const { privacyPolicyUrl } = OptionsController.state
+
     if (!privacyPolicyUrl) {
       return null
     }
 
-    return html`<a href=${privacyPolicyUrl}>Privacy Policy</a>`
+    return html`<a href=${privacyPolicyUrl}>privacy policy</a>`
   }
 }
 

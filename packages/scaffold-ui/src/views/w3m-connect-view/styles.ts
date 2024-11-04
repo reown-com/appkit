@@ -6,6 +6,8 @@ export default css`
     scrollbar-width: none;
     overflow-y: scroll;
     overflow-x: hidden;
+    transition: opacity var(--wui-ease-out-power-1) var(--wui-duration-md);
+    will-change: opacity;
   }
 
   .connect-scroll-view::-webkit-scrollbar {
@@ -17,14 +19,12 @@ export default css`
   }
 
   w3m-legal-checkbox {
-    margin: 0 auto;
-    max-width: fit-content;
-    padding: var(--wui-spacing-3xs) var(--wui-spacing-s) 0 var(--wui-spacing-s);
+    padding: var(--wui-spacing-s);
   }
 
-  .disabled-connect-view {
-    /* opacity: 0.3;
+  .connect-scroll-view.disabled {
+    opacity: 0.3;
     pointer-events: none;
-    user-select: none; */
+    user-select: none;
   }
 `

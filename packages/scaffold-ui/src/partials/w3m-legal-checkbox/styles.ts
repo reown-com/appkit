@@ -1,6 +1,11 @@
 import { css } from 'lit'
 
 export default css`
+  :host {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   a {
     text-decoration: none;
     color: var(--wui-color-fg-150);

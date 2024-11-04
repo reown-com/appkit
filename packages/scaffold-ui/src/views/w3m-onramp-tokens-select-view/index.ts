@@ -1,4 +1,9 @@
-import { OnRampController, ModalController, AssetController } from '@reown/appkit-core'
+import {
+  OnRampController,
+  ModalController,
+  AssetController,
+  OptionsController
+} from '@reown/appkit-core'
 import type { PurchaseCurrency } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
@@ -17,6 +22,7 @@ export class W3mOnrampTokensView extends LitElement {
   @state() public selectedCurrency = OnRampController.state.purchaseCurrencies
   @state() public tokens = OnRampController.state.purchaseCurrencies
   @state() private tokenImages = AssetController.state.tokenImages
+  @state() private checked = false
 
   public constructor() {
     super()
@@ -37,8 +43,18 @@ export class W3mOnrampTokensView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
+
+    const legal = termsConditionsUrl || privacyPolicyUrl
+
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 's', 's', 's']} gap="xs">
+      ${this.legalCheckBoxTemplate()}
+      <wui-flex
+        flexDirection="column"
+        .padding=${['0', 's', 's', 's']}
+        gap="xs"
+        class=${ifDefined(Boolean(legal) && !this.checked ? 'disabled' : undefined)}
+      >
         ${this.currenciesTemplate()}
       </wui-flex>
       <w3m-legal-footer></w3m-legal-footer>
@@ -70,6 +86,24 @@ export class W3mOnrampTokensView extends LitElement {
 
     OnRampController.setPurchaseCurrency(currency)
     ModalController.close()
+  }
+
+  private legalCheckBoxTemplate() {
+    const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
+
+    if (!termsConditionsUrl && !privacyPolicyUrl) {
+      return null
+    }
+
+    return html`<w3m-legal-checkbox
+      @checkboxChange=${this.onCheckBoxChange.bind(this)}
+    ></w3m-legal-checkbox>`
+  }
+
+  // -- Private Methods ----------------------------------- //
+
+  private onCheckBoxChange(event: CustomEvent<string>) {
+    this.checked = Boolean(event.detail)
   }
 }
 
