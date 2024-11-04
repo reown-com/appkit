@@ -287,7 +287,7 @@ export const ApiController = {
   async fetchAnalyticsConfig() {
     const { isAnalyticsEnabled } = await api.get<ApiGetAnalyticsConfigResponse>({
       path: '/getAnalyticsConfig',
-      ...ApiController._getSdkProperties()
+      params: ApiController._getSdkProperties()
     })
     OptionsController.setFeatures({ analytics: isAnalyticsEnabled })
   }
