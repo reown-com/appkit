@@ -1,7 +1,6 @@
-import { ChainController, ModalController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import type { W3mAccountButton } from '../w3m-account-button/index.js'
 import type { W3mConnectButton } from '../w3m-connect-button/index.js'
@@ -10,9 +9,6 @@ import styles from './styles.js'
 @customElement('w3m-button')
 export class W3mButton extends LitElement {
   public static override styles = styles
-
-  // -- Members ------------------------------------------- //
-  private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public disabled?: W3mAccountButton['disabled'] = false
@@ -29,41 +25,19 @@ export class W3mButton extends LitElement {
 
   @property() public charsEnd?: W3mAccountButton['charsEnd'] = 6
 
-  @state() private caipAddress = ChainController.state.activeCaipAddress
-
-  @state() private isLoading = ModalController.state.loading
-
-  // -- Lifecycle ----------------------------------------- //
-  public override firstUpdated() {
-    this.unsubscribe.push(
-      ChainController.subscribeKey('activeCaipAddress', val => (this.caipAddress = val)),
-      ModalController.subscribeKey('loading', val => (this.isLoading = val))
-    )
-  }
-
-  public override disconnectedCallback() {
-    this.unsubscribe.forEach(unsubscribe => unsubscribe())
-  }
-
   // -- Render -------------------------------------------- //
   public override render() {
-    return this.caipAddress && !this.isLoading
-      ? html`
-          <w3m-account-button
-            .disabled=${Boolean(this.disabled)}
-            balance=${ifDefined(this.balance)}
-            .charsStart=${ifDefined(this.charsStart)}
-            .charsEnd=${ifDefined(this.charsEnd)}
-          >
-          </w3m-account-button>
-        `
-      : html`
-          <w3m-connect-button
-            size=${ifDefined(this.size)}
-            label=${ifDefined(this.label)}
-            loadingLabel=${ifDefined(this.loadingLabel)}
-          ></w3m-connect-button>
-        `
+    return html`
+      <appkit-button
+        .disabled=${this.disabled}
+        balance=${ifDefined(this.balance)}
+        size=${ifDefined(this.size)}
+        label=${ifDefined(this.label)}
+        loadingLabel=${ifDefined(this.loadingLabel)}
+        .charsStart=${this.charsStart}
+        .charsEnd=${this.charsEnd}
+      ></appkit-button>
+    `
   }
 }
 
