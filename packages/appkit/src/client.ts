@@ -291,13 +291,8 @@ export class AppKit {
     return ChainController.getAccountProp('caipAddress', chainNamespace)
   }
 
-  public getAddress = (chainNamespace?: ChainNamespace) => {
-    if (ChainController.state.activeChain === chainNamespace || !chainNamespace) {
-      return AccountController.state.address
-    }
-
-    return ChainController.getAccountProp('address', chainNamespace)
-  }
+  public getAddress = (chainNamespace?: ChainNamespace) =>
+    ChainController.getAccountProp('address', chainNamespace)
 
   public getProvider = () => AccountController.state.provider
 

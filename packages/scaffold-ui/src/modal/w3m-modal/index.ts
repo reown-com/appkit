@@ -199,9 +199,7 @@ export class W3mModal extends LitElement {
 
     this.caipAddress = caipAddress
 
-    if (!prevConnected && nextConnected) {
-      await ConnectionController.initializeSWIXIfAvailable()
-    }
+    await ConnectionController.initializeSWIXIfAvailable()
 
     if (nextConnected && !isSameAddress && this.isSiweEnabled) {
       try {
