@@ -82,6 +82,7 @@ export class AppKitNetworkButton extends LitElement {
       if (!this.isSupported) {
         return 'Switch Network'
       }
+
       return this.network.name
     }
 
