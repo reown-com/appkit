@@ -10,7 +10,6 @@ describe('NumberUtil', () => {
   })
 })
 
-
 describe('multiply', () => {
   it('should return 0 if either value is undefined', () => {
     expect(NumberUtil.multiply(undefined, '10')).toEqual(new BigNumber(0))
