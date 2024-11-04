@@ -21,4 +21,4 @@
 '@reown/appkit-wallet': patch
 ---
 
-Fixes an issue where the submit/loading icons were overflowing when entering a wrong email address.
+Fixes an issue where email input validation errors broke the button styles.
