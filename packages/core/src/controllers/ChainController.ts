@@ -268,6 +268,14 @@ export const ChainController = {
     }
   },
 
+  addCaipNetwork(caipNetwork: AdapterNetworkState['caipNetwork']) {
+    if (!caipNetwork) {
+      return
+    }
+
+    state.chains.get(caipNetwork.chainNamespace)?.caipNetworks.push(caipNetwork)
+  },
+
   async switchActiveNetwork(network: CaipNetwork) {
     const networkControllerClient = this.getNetworkControllerClient(network.chainNamespace)
 

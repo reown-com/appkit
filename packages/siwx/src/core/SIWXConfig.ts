@@ -44,8 +44,25 @@ export abstract class SIWXConfig implements SIWXConfigInterface {
     return this.storage.set(sessions)
   }
 
-  public async getSessions(chainId: CaipNetworkId): Promise<SIWXSession[]> {
-    return this.storage.get(chainId)
+  public async getSessions(chainId: CaipNetworkId, address: string): Promise<SIWXSession[]> {
+    const allSessions = await this.storage.get(chainId)
+
+    return allSessions.filter(session => {
+      const isSameChain = session.message.chainId === chainId
+      const isSameAddress = session.message.accountAddress === address
+
+      const startsAt = session.message.notBefore || session.message.issuedAt
+      if (!startsAt || Date.parse(startsAt) > Date.now()) {
+        return false
+      }
+
+      const endsAt = session.message.expirationTime
+      if (endsAt && Date.now() > Date.parse(endsAt)) {
+        return false
+      }
+
+      return isSameChain && isSameAddress
+    })
   }
 
   public async revokeSession(chainId: string, address: string): Promise<void> {
@@ -58,7 +75,7 @@ export abstract class SIWXConfig implements SIWXConfigInterface {
       chainVerifiers.map(verifier => verifier.verify(session))
     )
 
-    return verifications.every(result => result)
+    return verifications.length > 0 && verifications.every(result => result)
   }
 }
 
