@@ -1,4 +1,9 @@
-import { CoreHelperUtil, RouterController, type BadgeType } from '@reown/appkit-core'
+import {
+  CoreHelperUtil,
+  RouterController,
+  type BadgeType,
+  SnackController
+} from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
@@ -39,7 +44,18 @@ export class W3mAllWalletsView extends LitElement {
   }
 
   private onClick() {
-    this.badge = this.badge ? undefined : 'certified'
+    if (this.badge === 'certified') {
+      this.badge = undefined
+
+      return
+    }
+
+    this.badge = 'certified'
+    SnackController.showSvg('Only WalletConnect certified', {
+      icon: 'walletConnectBrown',
+      backgroundColor: 'accent-100',
+      iconColor: 'accent-100'
+    })
   }
 
   private onDebouncedSearch = CoreHelperUtil.debounce((value: string) => {

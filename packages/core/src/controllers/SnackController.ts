@@ -5,7 +5,8 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 // -- Types --------------------------------------------- //
 export interface SnackControllerState {
   message: string
-  variant: 'error' | 'success' | 'loading'
+  variant?: 'error' | 'success' | 'loading'
+  icon?: { backgroundColor: string; iconColor: string; icon: string }
   open: boolean
 }
 
@@ -14,7 +15,8 @@ type StateKey = keyof SnackControllerState
 // -- State --------------------------------------------- //
 const state = proxy<SnackControllerState>({
   message: '',
-  variant: 'success',
+  variant: undefined,
+  icon: undefined,
   open: false
 })
 
@@ -27,33 +29,47 @@ export const SnackController = {
   },
 
   showLoading(message: SnackControllerState['message']) {
-    this._showMessage(message, 'loading')
+    this._showMessage({ message, variant: 'loading' })
   },
 
   showSuccess(message: SnackControllerState['message']) {
-    this._showMessage(message, 'success')
+    this._showMessage({ message, variant: 'success' })
+  },
+
+  showSvg(message: SnackControllerState['message'], icon: SnackControllerState['icon']) {
+    this._showMessage({ message, icon })
   },
 
   showError(message: unknown) {
     const errorMessage = CoreHelperUtil.parseError(message)
-    this._showMessage(errorMessage, 'error')
+    this._showMessage({ message: errorMessage, variant: 'error' })
   },
 
   hide() {
     state.open = false
   },
 
-  _showMessage(message: SnackControllerState['message'], variant: SnackControllerState['variant']) {
+  _showMessage({
+    message,
+    icon,
+    variant
+  }: {
+    message: SnackControllerState['message']
+    icon?: SnackControllerState['icon']
+    variant?: SnackControllerState['variant']
+  }) {
     if (state.open) {
       state.open = false
       setTimeout(() => {
         state.message = message
         state.variant = variant
+        state.icon = icon
         state.open = true
       }, 150)
     } else {
       state.message = message
       state.variant = variant
+      state.icon = icon
       state.open = true
     }
   }

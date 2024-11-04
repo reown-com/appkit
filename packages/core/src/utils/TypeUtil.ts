@@ -734,6 +734,14 @@ export type Event =
         name: string
       }
     }
+  | {
+      type: 'track'
+      event: 'SEARCH_WALLET'
+      properties: {
+        badge: BadgeType
+        search: string
+      }
+    }
 // Onramp Types
 export type DestinationWallet = {
   address: string

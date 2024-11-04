@@ -90,4 +90,4 @@ export { UiHelperUtil } from './src/utils/UiHelperUtil.js'
 export { TransactionUtil } from './src/utils/TransactionUtil.js'
 export { customElement } from './src/utils/WebComponentsUtil.js'
 
-export type { IconType, VisualType, ColorType, TransactionType } from './src/utils/TypeUtil.js'
+export type { SizeType, IconType, VisualType, ColorType, TransactionType } from './src/utils/TypeUtil.js'

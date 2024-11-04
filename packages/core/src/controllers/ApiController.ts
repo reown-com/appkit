@@ -13,6 +13,7 @@ import { AssetController } from './AssetController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { OptionsController } from './OptionsController.js'
 import { ChainController } from './ChainController.js'
+import { EventsController } from './EventsController.js'
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()
@@ -56,13 +57,13 @@ export const ApiController = {
     return subKey(state, key, callback)
   },
 
-  _getApiHeaders() {
+  _getSdkProperties() {
     const { projectId, sdkType, sdkVersion } = OptionsController.state
 
     return {
-      'x-project-id': projectId,
-      'x-sdk-type': sdkType || 'appkit',
-      'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
+      projectId,
+      st: sdkType || 'appkit',
+      sv: sdkVersion || 'html-wagmi-4.2.2'
     }
   },
 
@@ -76,31 +77,31 @@ export const ApiController = {
 
   async _fetchWalletImage(imageId: string) {
     const imageUrl = `${api.baseUrl}/getWalletImage/${imageId}`
-    const blob = await api.getBlob({ path: imageUrl, headers: ApiController._getApiHeaders() })
+    const blob = await api.getBlob({ path: imageUrl, params: ApiController._getSdkProperties() })
     AssetController.setWalletImage(imageId, URL.createObjectURL(blob))
   },
 
   async _fetchNetworkImage(imageId: string) {
     const imageUrl = `${api.baseUrl}/public/getAssetImage/${imageId}`
-    const blob = await api.getBlob({ path: imageUrl, headers: ApiController._getApiHeaders() })
+    const blob = await api.getBlob({ path: imageUrl, params: ApiController._getSdkProperties() })
     AssetController.setNetworkImage(imageId, URL.createObjectURL(blob))
   },
 
   async _fetchConnectorImage(imageId: string) {
     const imageUrl = `${api.baseUrl}/public/getAssetImage/${imageId}`
-    const blob = await api.getBlob({ path: imageUrl, headers: ApiController._getApiHeaders() })
+    const blob = await api.getBlob({ path: imageUrl, params: ApiController._getSdkProperties() })
     AssetController.setConnectorImage(imageId, URL.createObjectURL(blob))
   },
 
   async _fetchCurrencyImage(countryCode: string) {
     const imageUrl = `${api.baseUrl}/public/getCurrencyImage/${countryCode}`
-    const blob = await api.getBlob({ path: imageUrl, headers: ApiController._getApiHeaders() })
+    const blob = await api.getBlob({ path: imageUrl, params: ApiController._getSdkProperties() })
     AssetController.setCurrencyImage(countryCode, URL.createObjectURL(blob))
   },
 
   async _fetchTokenImage(symbol: string) {
     const imageUrl = `${api.baseUrl}/public/getTokenImage/${symbol}`
-    const blob = await api.getBlob({ path: imageUrl, headers: ApiController._getApiHeaders() })
+    const blob = await api.getBlob({ path: imageUrl, params: ApiController._getSdkProperties() })
     AssetController.setTokenImage(symbol, URL.createObjectURL(blob))
   },
 
@@ -134,8 +135,8 @@ export const ApiController = {
     if (featuredWalletIds?.length) {
       const { data } = await api.get<ApiGetWalletsResponse>({
         path: '/getWallets',
-        headers: ApiController._getApiHeaders(),
         params: {
+          ...ApiController._getSdkProperties(),
           page: '1',
           entries: featuredWalletIds?.length
             ? String(featuredWalletIds.length)
@@ -156,8 +157,8 @@ export const ApiController = {
       const exclude = [...(excludeWalletIds ?? []), ...(featuredWalletIds ?? [])].filter(Boolean)
       const { data, count } = await api.get<ApiGetWalletsResponse>({
         path: '/getWallets',
-        headers: ApiController._getApiHeaders(),
         params: {
+          ...ApiController._getSdkProperties(),
           page: '1',
           chains: ChainController.state.activeCaipNetwork?.caipNetworkId,
           entries: recommendedEntries,
@@ -190,8 +191,8 @@ export const ApiController = {
     ].filter(Boolean)
     const { data, count } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getSdkProperties(),
         page: String(page),
         entries,
         chains: ChainController.state.activeCaipNetwork?.caipNetworkId,
@@ -216,8 +217,8 @@ export const ApiController = {
   async searchWalletByIds({ ids }: { ids: string[] }) {
     const { data } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getSdkProperties(),
         page: '1',
         entries: String(ids.length),
         chains: ChainController.state.activeCaipNetwork?.caipNetworkId,
@@ -239,8 +240,8 @@ export const ApiController = {
     state.search = []
     const { data } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getSdkProperties(),
         page: '1',
         entries: '100',
         search: search?.trim(),
@@ -249,6 +250,11 @@ export const ApiController = {
         include: includeWalletIds?.join(','),
         exclude: excludeWalletIds?.join(',')
       }
+    })
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'SEARCH_WALLET',
+      properties: { badge: badge ?? 'none', search: search ?? '' }
     })
     const images = data.map(w => w.image_id).filter(Boolean)
     await Promise.allSettled([
@@ -281,7 +287,7 @@ export const ApiController = {
   async fetchAnalyticsConfig() {
     const { isAnalyticsEnabled } = await api.get<ApiGetAnalyticsConfigResponse>({
       path: '/getAnalyticsConfig',
-      headers: ApiController._getApiHeaders()
+      ...ApiController._getSdkProperties()
     })
     OptionsController.setFeatures({ analytics: isAnalyticsEnabled })
   }
