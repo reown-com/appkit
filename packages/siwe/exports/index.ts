@@ -17,3 +17,4 @@ export function createSIWEConfig(siweConfig: SIWEConfig) {
 
 export * from '../scaffold/partials/w3m-connecting-siwe/index.js'
 export * from '../scaffold/views/w3m-connecting-siwe-view/index.js'
+export * from '../src/mapToSIWX.js'
