@@ -295,7 +295,10 @@ export const ConnectionController = {
         return
       }
 
-      ModalController.open({ view: 'SIWXSignMessage' })
+      await ModalController.open({
+        view:
+          StorageUtil.getConnectedConnector() === 'AUTH' ? 'ApproveTransaction' : 'SIWXSignMessage'
+      })
 
       const message = await siwx.createMessage({
         chainId: network.caipNetworkId,
@@ -313,8 +316,10 @@ export const ConnectionController = {
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Failed to initialize SIWX', error)
-
-      await client.disconnect()
+      ModalController.setLoading(true)
+      await client.disconnect().finally(() => {
+        ModalController.setLoading(false)
+      })
     }
   }
 }
