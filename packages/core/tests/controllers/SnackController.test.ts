@@ -6,7 +6,7 @@ describe('SnackController', () => {
   it('should have valid default state', () => {
     expect(SnackController.state).toEqual({
       message: '',
-      variant: 'success',
+      variant: undefined,
       open: false
     })
   })
