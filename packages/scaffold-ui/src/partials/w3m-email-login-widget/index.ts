@@ -72,14 +72,13 @@ export class W3mEmailLoginWidget extends LitElement {
           @focus=${this.onFocusEvent.bind(this)}
           .disabled=${this.loading}
           @inputChange=${this.onEmailInputChange.bind(this)}
-          .errorMessage=${this.error}
         >
         </wui-email-input>
 
         ${this.submitButtonTemplate()}${this.loadingTemplate()}
         <input type="submit" hidden />
       </form>
-      ${this.separatorTemplate()}
+      ${this.templateError()} ${this.separatorTemplate()}
     `
   }
 
@@ -130,6 +129,14 @@ export class W3mEmailLoginWidget extends LitElement {
     return this.loading
       ? html`<wui-loading-spinner size="md" color="accent-100"></wui-loading-spinner>`
       : null
+  }
+
+  private templateError() {
+    if (this.error) {
+      return html`<wui-text variant="tiny-500" color="error-100">${this.error}</wui-text>`
+    }
+
+    return null
   }
 
   private onEmailInputChange(event: CustomEvent<string>) {
