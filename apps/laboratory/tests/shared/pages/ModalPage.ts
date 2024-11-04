@@ -422,7 +422,7 @@ export class ModalPage {
   }
 
   async switchNetworkWithNetworkButton(networkName: string) {
-    const networkButton = this.page.getByTestId('w3m-network-button')
+    const networkButton = this.page.getByTestId('appkit-network-button')
     await networkButton.click()
 
     const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${networkName}`)
