@@ -19,7 +19,8 @@ export const mockAppKit = {
   getPreferredAccountType: vi.fn().mockReturnValue('eoa'),
   getCaipNetwork: vi.fn().mockReturnValue(mainnet),
   setApprovedCaipNetworksData: vi.fn(),
-  getAddress: vi.fn().mockReturnValue('0xE62a3eD41B21447b67a63880607CD2E746A0E35d')
+  getAddress: vi.fn().mockReturnValue('0xE62a3eD41B21447b67a63880607CD2E746A0E35d'),
+  setClientId: vi.fn()
 } as unknown as AppKit
 
 export default mockAppKit
