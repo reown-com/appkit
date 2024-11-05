@@ -10,17 +10,21 @@ import {
   useAppKitEvents
 } from '@reown/appkit/vue'
 import { wagmiAdapter } from './config'
-import { mainnet, polygon, base } from '@reown/appkit/networks'
+import { mainnet, polygon, base, solana, solanaTestnet } from '@reown/appkit/networks'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 
 const projectId = import.meta.env.VITE_PROJECT_ID
 if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
 }
 
+// Initialize Solana adapter
+const solanaAdapter = new SolanaAdapter({})
+
 // Initialize AppKit
 const modal = createAppKit({
-  adapters: [wagmiAdapter],
-  networks: [mainnet, polygon, base],
+  adapters: [wagmiAdapter, solanaAdapter],
+  networks: [mainnet, polygon, base, solana, solanaTestnet],
   projectId,
   metadata: {
     name: 'AppKit Vue Example',

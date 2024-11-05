@@ -1,30 +1,36 @@
-<script language="ts" setup>
-import { ref, onMounted, watch } from 'vue'
+<script lang="ts" setup>
+import { ref, onMounted } from 'vue'
+import { mainnet, polygon, base, solana, solanaTestnet } from '@reown/appkit/networks'
+import { EthersAdapter } from '@reown/appkit-adapter-ethers'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import {
   createAppKit,
-  useAppKit,
-  useAppKitAccount,
-  useAppKitNetwork,
+  useAppKitEvents,
   useAppKitState,
   useAppKitTheme,
-  useAppKitEvents
+  useAppKitAccount,
+  useAppKitNetwork
 } from '@reown/appkit/vue'
-import { wagmiAdapter } from './config'
-import { mainnet, polygon, base } from '@reown/appkit/networks'
 
 const projectId = import.meta.env.VITE_PROJECT_ID
 if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
 }
 
+// Initialize Ethers adapter
+const ethersAdapter = new EthersAdapter()
+
+// Initialize Solana adapter
+const solanaAdapter = new SolanaAdapter({})
+
 // Initialize AppKit
 const modal = createAppKit({
-  adapters: [wagmiAdapter],
-  networks: [mainnet, polygon, base],
+  adapters: [ethersAdapter, solanaAdapter],
+  networks: [mainnet, polygon, base, solana, solanaTestnet],
   projectId,
   metadata: {
-    name: 'AppKit Vue Example',
-    description: 'AppKit Vue Example',
+    name: 'AppKit Vue Ethers Example',
+    description: 'AppKit Vue Ethers Example',
     url: 'https://reown.com/appkit',
     icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
   }
@@ -33,7 +39,7 @@ const modal = createAppKit({
 // State Management
 const useAccount = useAppKitAccount()
 const useNetwork = useAppKitNetwork()
-const appState = useAppKitState()
+const useAppKit = useAppKitState()
 const { setThemeMode } = useAppKitTheme()
 const events = useAppKitEvents()
 const walletInfo = ref({})
@@ -52,17 +58,6 @@ onMounted(() => {
   // Set initial theme
   document.body.className = themeState.value.themeMode
 
-  // Setup subscriptions
-  // You can subscribe to the account state like this instead of using the useAppKitAccount hook
-  // modal.subscribeAccount(state => {
-  //   accountState.value = state
-  // })
-
-  // You can subscribe to the network state like this instead of using the useAppKitNetwork hook
-  // modal.subscribeNetwork(state => {
-  //   networkState.value = state
-  // })
-
   modal.subscribeTheme(state => {
     themeState.value = state
     document.body.className = state.themeMode
@@ -77,7 +72,7 @@ onMounted(() => {
 
 <template>
   <div class="container">
-    <h1>Vue Wagmi Example</h1>
+    <h1>Vue Ethers + Solana Example</h1>
 
     <!-- AppKit UI Components -->
     <div class="button-group">
@@ -111,8 +106,8 @@ onMounted(() => {
       </section>
 
       <section>
-        <h2>State</h2>
-        <pre>{{ JSON.stringify(appState, null, 2) }}</pre>
+        <h2>Modal State</h2>
+        <pre>{{ JSON.stringify(useAppKit, null, 2) }}</pre>
       </section>
 
       <section>
