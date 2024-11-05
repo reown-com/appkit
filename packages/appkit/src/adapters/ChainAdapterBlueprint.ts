@@ -1,4 +1,4 @@
-import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import type { CaipAddress, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
 import type { Connector as AppKitConnector } from '@reown/appkit-core'
 import type UniversalProvider from '@walletconnect/universal-provider'
@@ -209,6 +209,69 @@ export abstract class AdapterBlueprint<
    * @param {AppKit} [appKit] - Optional AppKit instance
    */
   public abstract syncConnectors(options?: AppKitOptions, appKit?: AppKit): void
+
+  /**
+   * Signs a message with the connected wallet.
+   * @param {AdapterBlueprint.SignMessageParams} params - Parameters including message to sign, address, and optional provider
+   * @returns {Promise<AdapterBlueprint.SignMessageResult>} Object containing the signature
+   */
+  public abstract signMessage(
+    params: AdapterBlueprint.SignMessageParams
+  ): Promise<AdapterBlueprint.SignMessageResult>
+
+  /**
+   * Estimates gas for a transaction.
+   * @param {AdapterBlueprint.EstimateGasTransactionArgs} params - Parameters including address, to, data, and optional provider
+   * @returns {Promise<AdapterBlueprint.EstimateGasTransactionResult>} Object containing the gas estimate
+   */
+  public abstract estimateGas(
+    params: AdapterBlueprint.EstimateGasTransactionArgs
+  ): Promise<AdapterBlueprint.EstimateGasTransactionResult>
+
+  /**
+   * Sends a transaction.
+   * @param {AdapterBlueprint.SendTransactionParams} params - Parameters including address, to, data, value, gasPrice, gas, and optional provider
+   * @returns {Promise<AdapterBlueprint.SendTransactionResult>} Object containing the transaction hash
+   */
+  public abstract sendTransaction(
+    params: AdapterBlueprint.SendTransactionParams
+  ): Promise<AdapterBlueprint.SendTransactionResult>
+
+  /**
+   * Writes a contract transaction.
+   * @param {AdapterBlueprint.WriteContractParams} params - Parameters including receiver address, token amount, token address, from address, method, and ABI
+   * @returns {Promise<AdapterBlueprint.WriteContractResult>} Object containing the transaction hash
+   */
+  public abstract writeContract(
+    params: AdapterBlueprint.WriteContractParams
+  ): Promise<AdapterBlueprint.WriteContractResult>
+
+  /**
+   * Gets the ENS address for a given name.
+   * @param {AdapterBlueprint.GetEnsAddressParams} params - Parameters including name
+   * @returns {Promise<AdapterBlueprint.GetEnsAddressResult>} Object containing the ENS address
+   */
+  public abstract getEnsAddress(
+    params: AdapterBlueprint.GetEnsAddressParams
+  ): Promise<AdapterBlueprint.GetEnsAddressResult>
+
+  /**
+   * Parses a decimal string value into a bigint with the specified number of decimals.
+   * @param {AdapterBlueprint.ParseUnitsParams} params - Parameters including value and decimals
+   * @returns {AdapterBlueprint.ParseUnitsResult} The parsed bigint value
+   */
+  public abstract parseUnits(
+    params: AdapterBlueprint.ParseUnitsParams
+  ): AdapterBlueprint.ParseUnitsResult
+
+  /**
+   * Formats a bigint value into a decimal string with the specified number of decimals.
+   * @param {AdapterBlueprint.FormatUnitsParams} params - Parameters including value and decimals
+   * @returns {AdapterBlueprint.FormatUnitsResult} The formatted decimal string
+   */
+  public abstract formatUnits(
+    params: AdapterBlueprint.FormatUnitsParams
+  ): AdapterBlueprint.FormatUnitsResult
 }
 
 export namespace AdapterBlueprint {
@@ -226,12 +289,13 @@ export namespace AdapterBlueprint {
 
   export type GetBalanceParams = {
     address: string
-    chainId: number
+    chainId: number | string
+    caipNetwork?: CaipNetwork
   }
 
   export type GetProfileParams = {
     address: string
-    chainId: number
+    chainId: number | string
   }
 
   export type DisconnectParams = {
@@ -245,6 +309,85 @@ export namespace AdapterBlueprint {
     info?: unknown
     type: string
     chainId?: number | string
+    rpcUrl?: string
+  }
+
+  export type SignMessageParams = {
+    message: string
+    address: string
+    provider?: AppKitConnector['provider']
+  }
+
+  export type SignMessageResult = {
+    signature: string
+  }
+
+  export type EstimateGasTransactionArgs = {
+    address: string
+    to: string
+    data: string
+    caipNetwork: CaipNetwork
+    provider?: AppKitConnector['provider']
+  }
+
+  export type EstimateGasTransactionResult = {
+    gas: bigint
+  }
+
+  export type WriteContractParams = {
+    receiverAddress: string
+    tokenAmount: bigint
+    tokenAddress: string
+    fromAddress: string
+    method: 'send' | 'transfer' | 'call'
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    abi: any
+    caipNetwork: CaipNetwork
+    provider?: AppKitConnector['provider']
+    caipAddress: CaipAddress
+  }
+
+  export type WriteContractResult = {
+    hash: string
+  }
+
+  export type ParseUnitsParams = {
+    value: string
+    decimals: number
+  }
+
+  export type ParseUnitsResult = bigint
+
+  export type FormatUnitsParams = {
+    value: bigint
+    decimals: number
+  }
+
+  export type FormatUnitsResult = string
+
+  export type SendTransactionParams = {
+    address: `0x${string}`
+    to: string
+    data: string
+    value: bigint | number
+    gasPrice: bigint | number
+    gas?: bigint | number
+    caipNetwork?: CaipNetwork
+    provider?: AppKitConnector['provider']
+  }
+
+  export type SendTransactionResult = {
+    hash: string
+  }
+
+  export type GetEnsAddressParams = {
+    name: string
+    caipNetwork: CaipNetwork
+    appKit?: AppKit
+  }
+
+  export type GetEnsAddressResult = {
+    address: string | false
   }
 
   export type GetBalanceResult = {

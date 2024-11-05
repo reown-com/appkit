@@ -9,6 +9,7 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import { formatEther, InfuraProvider, JsonRpcProvider } from 'ethers'
 import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
+import { EthersMethods } from './utils/EthersMethods.js'
 
 interface Info {
   uuid: string
@@ -94,6 +95,120 @@ export class EthersAdapter extends AdapterBlueprint {
     providers.EIP6963 = options.enableEIP6963 !== false
 
     return providers
+  }
+
+  public async signMessage(
+    params: AdapterBlueprint.SignMessageParams
+  ): Promise<AdapterBlueprint.SignMessageResult> {
+    const { message, address, provider } = params
+
+    if (!provider) {
+      throw new Error('Provider is undefined')
+    }
+    try {
+      const signature = await EthersMethods.signMessage(message, provider as Provider, address)
+
+      return { signature }
+    } catch (error) {
+      throw new Error('EthersAdapter:signMessage - Sign message failed')
+    }
+  }
+
+  public async sendTransaction(
+    params: AdapterBlueprint.SendTransactionParams
+  ): Promise<AdapterBlueprint.SendTransactionResult> {
+    if (!params.provider) {
+      throw new Error('Provider is undefined')
+    }
+
+    const tx = await EthersMethods.sendTransaction(
+      {
+        value: params.value as bigint,
+        to: params.to as `0x${string}`,
+        data: params.data as `0x${string}`,
+        gas: params.gas as bigint,
+        gasPrice: params.gasPrice as bigint,
+        address: params.address as `0x${string}`
+      },
+      params.provider as Provider,
+      params.address as `0x${string}`,
+      Number(params.caipNetwork?.chainId)
+    )
+
+    return { hash: tx }
+  }
+
+  public async writeContract(
+    params: AdapterBlueprint.WriteContractParams
+  ): Promise<AdapterBlueprint.WriteContractResult> {
+    if (!params.provider) {
+      throw new Error('Provider is undefined')
+    }
+
+    const result = await EthersMethods.writeContract(
+      {
+        abi: params.abi,
+        method: params.method,
+        fromAddress: params.caipAddress as `0x${string}`,
+        receiverAddress: params.receiverAddress as `0x${string}`,
+        tokenAmount: params.tokenAmount,
+        tokenAddress: params.tokenAddress as `0x${string}`
+      },
+      params.provider as Provider,
+      params.caipAddress,
+      Number(params.caipNetwork?.chainId)
+    )
+
+    return { hash: result }
+  }
+
+  public async estimateGas(
+    params: AdapterBlueprint.EstimateGasTransactionArgs
+  ): Promise<AdapterBlueprint.EstimateGasTransactionResult> {
+    const { provider, caipNetwork, address } = params
+    if (!provider) {
+      throw new Error('Provider is undefined')
+    }
+
+    try {
+      const result = await EthersMethods.estimateGas(
+        {
+          data: params.data as `0x${string}`,
+          to: params.to as `0x${string}`,
+          address: address as `0x${string}`
+        },
+        provider as Provider,
+        address as `0x${string}`,
+        Number(caipNetwork?.chainId)
+      )
+
+      return { gas: result }
+    } catch (error) {
+      throw new Error('EthersAdapter:estimateGas - Estimate gas failed')
+    }
+  }
+
+  public async getEnsAddress(
+    params: AdapterBlueprint.GetEnsAddressParams
+  ): Promise<AdapterBlueprint.GetEnsAddressResult> {
+    const { name, appKit } = params
+    if (appKit) {
+      const result = await EthersMethods.getEnsAddress(name, appKit)
+
+      return { address: result }
+    }
+
+    return { address: false }
+  }
+
+  public parseUnits(params: AdapterBlueprint.ParseUnitsParams): AdapterBlueprint.ParseUnitsResult {
+    return EthersMethods.parseUnits(params.value, params.decimals)
+  }
+
+  public formatUnits(
+    params: AdapterBlueprint.FormatUnitsParams
+  ): AdapterBlueprint.FormatUnitsResult {
+    return EthersMethods.formatUnits(params.value, params.decimals)
   }
 
   public async syncConnection(
@@ -268,6 +383,9 @@ export class EthersAdapter extends AdapterBlueprint {
       case 'ANNOUNCED':
         await this.revokeProviderPermissions(params.provider as Provider)
         break
+      case 'EXTERNAL':
+        await this.revokeProviderPermissions(params.provider as Provider)
+        break
       default:
         throw new Error('Unsupported provider type')
     }
@@ -359,7 +477,11 @@ export class EthersAdapter extends AdapterBlueprint {
     if (providerType === 'WALLET_CONNECT') {
       ;(provider as UniversalProvider).setDefaultChain(caipNetwork.id)
     } else if (providerType === 'AUTH') {
-      // TODO: Implement
+      const authProvider = provider as W3mFrameProvider
+      await authProvider.switchNetwork(caipNetwork.chainId)
+      await authProvider.connect({
+        chainId: caipNetwork.chainId as number | undefined
+      })
     } else {
       try {
         await (provider as Provider).request({

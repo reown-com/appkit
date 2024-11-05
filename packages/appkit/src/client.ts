@@ -11,7 +11,10 @@ import {
   type NetworkControllerClient,
   type Provider,
   type ConnectorType,
-  ConstantsUtil as CoreConstantsUtil
+  ConstantsUtil as CoreConstantsUtil,
+  type EstimateGasTransactionArgs,
+  type SendTransactionArgs,
+  type WriteContractArgs
 } from '@reown/appkit-core'
 import {
   AccountController,
@@ -60,6 +63,7 @@ import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
 import { W3mFrameProviderSingleton } from './auth-provider/W3MFrameProviderSingleton.js'
 import type { SessionTypes } from '@walletconnect/types'
 import type { ConnectExternalOptions } from '../../core/dist/types/src/controllers/ConnectionController.js'
+import type { ChainAdapterConnector } from './adapters/ChainAdapterConnector.js'
 
 declare global {
   interface Window {
@@ -138,7 +142,9 @@ export class AppKit {
     await this.createUniversalProvider()
     this.createClients()
     this.initControllers(options)
-    this.chainAdapters = await this.createAdapters(options.adapters)
+    this.chainAdapters = await this.createAdapters(
+      options.adapters as unknown as AdapterBlueprint[]
+    )
     await this.initChainAdapters()
 
     this.syncRequestedNetworks()
@@ -597,11 +603,19 @@ export class AppKit {
       },
       connectExternal: async ({ id, info, type, provider, chainId }: ConnectExternalOptions) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
-        const res = await adapter?.connect({ id, info, type, provider, chainId })
+
+        const res = await adapter?.connect({
+          id,
+          info,
+          type,
+          provider,
+          chainId,
+          rpcUrl: this.getCaipNetwork()?.rpcUrl
+        })
 
         if (res) {
           await this.syncAccount(res)
-          await this.syncProvider(res)
+          this.syncProvider(res)
         }
       },
       disconnect: async () => {
@@ -624,15 +638,91 @@ export class AppKit {
         }
 
         return ids.some(id => Boolean(window.ethereum?.[String(id)]))
+      },
+      signMessage: async (message: string) => {
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+        const result = await adapter?.signMessage({
+          message,
+          address: AccountController.state.address as string,
+          provider: ProviderUtil.getProvider(ChainController.state.activeChain as ChainNamespace)
+        })
+
+        return result?.signature || ''
+      },
+      sendTransaction: async (args: SendTransactionArgs) => {
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+        const result = await adapter?.sendTransaction(args)
+
+        return result?.hash || ''
+      },
+      estimateGas: async (args: EstimateGasTransactionArgs) => {
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+        const provider = ProviderUtil.getProvider(
+          ChainController.state.activeChain as ChainNamespace
+        )
+        const caipNetwork = this.getCaipNetwork()
+        if (!caipNetwork) {
+          throw new Error('CaipNetwork is undefined')
+        }
+
+        const result = await adapter?.estimateGas({
+          ...args,
+          provider,
+          caipNetwork
+        })
+
+        return result?.gas || 0n
+      },
+      getEnsAvatar: async () => {
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+        const result = await adapter?.getProfile({
+          address: AccountController.state.address as string,
+          chainId: Number(this.getCaipNetwork()?.chainId)
+        })
+
+        return result?.profileImage || false
+      },
+      getEnsAddress: async (name: string) => {
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+        const caipNetwork = this.getCaipNetwork()
+        if (!caipNetwork) {
+          return false
+        }
+        const result = await adapter?.getEnsAddress({
+          name,
+          caipNetwork,
+          appKit: this
+        })
+
+        return result?.address || false
+      },
+      writeContract: async (args: WriteContractArgs) => {
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+        const caipNetwork = this.getCaipNetwork()
+        const caipAddress = this.getCaipAddress()
+        const provider = ProviderUtil.getProvider(
+          ChainController.state.activeChain as ChainNamespace
+        )
+        if (!caipNetwork || !caipAddress) {
+          throw new Error('CaipNetwork or CaipAddress is undefined')
+        }
+        const result = await adapter?.writeContract({ ...args, caipNetwork, provider, caipAddress })
+
+        return result?.hash as `0x${string}` | null
+      },
+      parseUnits: (value: string, decimals: number) => {
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+
+        return adapter?.parseUnits({ value, decimals }) ?? 0n
+      },
+      formatUnits: (value: bigint, decimals: number) => {
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+
+        return adapter?.formatUnits({ value, decimals }) ?? '0'
       }
-      // signMessage: () => {},
-      // sendTransaction: () => {},
-      // estimateGas: () => {},
-      // getTransaction: () => {},
-      // getTransactionCount: () => {},
-      // getTransactionReceipt: () => {}
     }
-    ConnectionController.setClient(this.connectionControllerClient as ConnectionControllerClient)
+
+    ConnectionController.setClient(this.connectionControllerClient)
 
     this.networkControllerClient = {
       switchCaipNetwork: async caipNetwork => {
@@ -647,6 +737,10 @@ export class AppKit {
         const providerType =
           ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
         await adapter?.switchNetwork({ caipNetwork, provider, providerType })
+        await this.syncAccount({
+          address: AccountController.state.address as string,
+          chainId: Number(ChainController.state.activeCaipNetwork?.chainId)
+        })
       },
       getApprovedCaipNetworksData: async () => {
         const providerType =
@@ -676,7 +770,7 @@ export class AppKit {
     const isLoginEmailUsed = provider.getLoginEmailUsed()
     this.setLoading(isLoginEmailUsed)
     const { isConnected } = await provider.isConnected()
-    if (isConnected) {
+    if (isConnected && this.connectionControllerClient?.connectExternal) {
       this.connectionControllerClient?.connectExternal({
         id: 'w3mAuth',
         info: {
@@ -837,16 +931,23 @@ export class AppKit {
 
   private syncWalletConnectAccount() {
     this.chainNamespaces.forEach(async chainNamespace => {
-      const address = this.universalProvider?.session?.namespaces?.[chainNamespace]
+      const caipAddress = this.universalProvider?.session?.namespaces?.[chainNamespace]
         ?.accounts[0] as CaipAddress
 
       ProviderUtil.setProviderId(chainNamespace, 'WALLET_CONNECT')
       ProviderUtil.setProvider(chainNamespace, this.universalProvider)
-      this.setPreferredAccountType('eoa', chainNamespace)
-      this.setCaipAddress(address, chainNamespace)
       StorageUtil.setConnectedConnector('WALLET_CONNECT')
       StorageUtil.setConnectedNamespace(chainNamespace)
-      await Promise.all([this.setApprovedCaipNetworksData(chainNamespace)])
+      let address = ''
+      if (caipAddress.split(':').length === 3) {
+        address = caipAddress.split(':')[2] as string
+      } else {
+        address = AccountController.state.address as string
+      }
+      await this.syncAccount({
+        address,
+        chainId: Number(ChainController.state.activeCaipNetwork?.chainId)
+      })
     })
   }
 
@@ -885,7 +986,11 @@ export class AppKit {
     }
 
     const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
-    const balance = await adapter?.getBalance({ address, chainId })
+    const balance = await adapter?.getBalance({
+      address,
+      chainId,
+      caipNetwork: this.getCaipNetwork()
+    })
     if (balance) {
       this.setBalance(
         balance.balance,
@@ -996,10 +1101,16 @@ export class AppKit {
       this.syncWalletConnectAccount()
     } else if (connectedConnector && connectedConnector !== 'w3mAuth' && connectedNamespace) {
       const adapter = this.getAdapter(connectedNamespace as ChainNamespace)
-      const res = await adapter?.syncConnection(connectedConnector, connectedNamespace)
+      const res = await adapter?.syncConnection(
+        connectedConnector,
+        connectedNamespace,
+        this.getCaipNetwork()?.rpcUrl
+      )
 
-      this.syncProvider(res)
-      await this.syncAccount(res)
+      if (res) {
+        this.syncProvider(res)
+        await this.syncAccount(res)
+      }
     }
   }
 
@@ -1053,7 +1164,7 @@ export class AppKit {
     const socialsEnabled = this.options?.features?.socials
       ? this.options?.features?.socials?.length > 0
       : CoreConstantsUtil.DEFAULT_FEATURES.socials
-    if (this.options?.projectId && emailEnabled && socialsEnabled) {
+    if (this.options?.projectId && (emailEnabled || socialsEnabled)) {
       this.authProvider = W3mFrameProviderSingleton.getInstance(this.options?.projectId)
       this.listenAuthConnector(this.authProvider)
     }

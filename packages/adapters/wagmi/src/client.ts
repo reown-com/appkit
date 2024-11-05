@@ -16,11 +16,23 @@ import {
   watchConnections,
   getBalance,
   getEnsName,
-  getEnsAvatar
+  getEnsAvatar,
+  signMessage,
+  estimateGas as wagmiEstimateGas,
+  sendTransaction as wagmiSendTransaction,
+  getEnsAddress as wagmiGetEnsAddress,
+  writeContract as wagmiWriteContract,
+  waitForTransactionReceipt,
+  getAccount,
+  prepareTransactionRequest
 } from '@wagmi/core'
 import { type Chain } from '@wagmi/core/chains'
 import { convertToAppKitChains, getTransport } from './utils/helpers.js'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import {
+  ConstantsUtil as CommonConstantsUtil,
+  isReownName,
+  NetworkUtil
+} from '@reown/appkit-common'
 import { authConnector } from './connectors/AuthConnector.js'
 import { AppKit, type AppKitOptions } from '@reown/appkit'
 import { walletConnect } from './connectors/UniversalConnector.js'
@@ -31,8 +43,9 @@ import {
   type Provider
 } from '@reown/appkit-core'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
-import type { Hex } from 'viem'
+import { formatUnits, parseUnits, type GetEnsAddressReturnType, type Hex } from 'viem'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
+import { normalize } from 'viem/ens'
 
 export class WagmiAdapter extends AdapterBlueprint {
   public wagmiChains: readonly [Chain, ...Chain[]] | undefined
@@ -152,6 +165,117 @@ export class WagmiAdapter extends AdapterBlueprint {
     })
   }
 
+  public async signMessage(
+    params: AdapterBlueprint.SignMessageParams
+  ): Promise<AdapterBlueprint.SignMessageResult> {
+    try {
+      const signature = await signMessage(this.wagmiConfig, {
+        message: params.message,
+        account: params.address as Hex
+      })
+
+      return { signature }
+    } catch (error) {
+      throw new Error('WagmiAdapter:signMessage - Sign message failed')
+    }
+  }
+
+  public async sendTransaction(
+    params: AdapterBlueprint.SendTransactionParams
+  ): Promise<AdapterBlueprint.SendTransactionResult> {
+    const { chainId } = getAccount(this.wagmiConfig)
+    const txParams = {
+      account: params.address,
+      to: params.to as Hex,
+      value: params.value as bigint,
+      gas: params.gas as bigint,
+      gasPrice: params.gasPrice as bigint,
+      data: params.data as Hex,
+      chainId,
+      type: 'legacy' as const
+    }
+    await prepareTransactionRequest(this.wagmiConfig, txParams)
+    const tx = await wagmiSendTransaction(this.wagmiConfig, txParams)
+    await waitForTransactionReceipt(this.wagmiConfig, { hash: tx, timeout: 25000 })
+
+    return { hash: tx }
+  }
+
+  public async writeContract(
+    params: AdapterBlueprint.WriteContractParams
+  ): Promise<AdapterBlueprint.WriteContractResult> {
+    const { caipAddress, caipNetwork, ...data } = params
+    const chainId = Number(NetworkUtil.caipNetworkIdToNumber(caipNetwork.id))
+    const tx = await wagmiWriteContract(this.wagmiConfig, {
+      chain: this.wagmiChains?.[chainId],
+      chainId,
+      address: data.tokenAddress as Hex,
+      account: caipAddress as Hex,
+      abi: data.abi,
+      functionName: data.method,
+      args: [data.receiverAddress, data.tokenAmount]
+    })
+
+    return { hash: tx }
+  }
+
+  public async getEnsAddress(
+    params: AdapterBlueprint.GetEnsAddressParams
+  ): Promise<AdapterBlueprint.GetEnsAddressResult> {
+    const { name, appKit, caipNetwork } = params
+
+    try {
+      if (!this.wagmiConfig) {
+        throw new Error(
+          'networkControllerClient:getApprovedCaipNetworksData - wagmiConfig is undefined'
+        )
+      }
+
+      let ensName: boolean | GetEnsAddressReturnType = false
+      let wcName: boolean | string = false
+      if (isReownName(name)) {
+        wcName = (await appKit?.resolveReownName(name)) || false
+      }
+      if (caipNetwork.chainId === 1) {
+        ensName = await wagmiGetEnsAddress(this.wagmiConfig, {
+          name: normalize(name),
+          chainId: caipNetwork.chainId
+        })
+      }
+
+      return { address: (ensName as string) || wcName || false }
+    } catch {
+      return { address: false }
+    }
+  }
+
+  public async estimateGas(
+    params: AdapterBlueprint.EstimateGasTransactionArgs
+  ): Promise<AdapterBlueprint.EstimateGasTransactionResult> {
+    try {
+      const result = await wagmiEstimateGas(this.wagmiConfig, {
+        account: params.address as Hex,
+        to: params.to as Hex,
+        data: params.data as Hex,
+        type: 'legacy'
+      })
+
+      return { gas: result }
+    } catch (error) {
+      throw new Error('WagmiAdapter:estimateGas - error estimating gas')
+    }
+  }
+
+  public parseUnits(params: AdapterBlueprint.ParseUnitsParams): AdapterBlueprint.ParseUnitsResult {
+    return parseUnits(params.value, params.decimals)
+  }
+
+  public formatUnits(
+    params: AdapterBlueprint.FormatUnitsParams
+  ): AdapterBlueprint.FormatUnitsResult {
+    return formatUnits(params.value, params.decimals)
+  }
+
   public async syncConnectors(options: AppKitOptions, appKit: AppKit) {
     this.addWagmiConnectors(options, appKit)
 
@@ -262,13 +386,13 @@ export class WagmiAdapter extends AdapterBlueprint {
     const caipNetwork = this.caipNetworks?.find((c: CaipNetwork) => c.chainId === params.chainId)
 
     if (caipNetwork && this.wagmiConfig) {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+      const chainId = params.chainId as number
       const balance = await getBalance(this.wagmiConfig, {
         address: params.address as Hex,
-        chainId: params.chainId,
+        chainId,
         token: caipNetwork.tokens?.[0]?.address as Hex
       })
-
-      console.log('BALANCE', balance)
 
       return { balance: balance.formatted, symbol: balance.symbol }
     }
@@ -279,14 +403,16 @@ export class WagmiAdapter extends AdapterBlueprint {
   public async getProfile(
     params: AdapterBlueprint.GetProfileParams
   ): Promise<AdapterBlueprint.GetProfileResult> {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    const chainId = params.chainId as number
     const profileName = await getEnsName(this.wagmiConfig, {
       address: params.address as Hex,
-      chainId: params.chainId
+      chainId
     })
     if (profileName) {
       const profileImage = await getEnsAvatar(this.wagmiConfig, {
         name: profileName,
-        chainId: params.chainId
+        chainId
       })
 
       return { profileName, profileImage: profileImage ?? undefined }

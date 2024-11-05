@@ -13,6 +13,7 @@ import {
 import { type Provider } from '@reown/appkit-utils/ethers'
 import type {
   EstimateGasTransactionArgs,
+  Provider,
   SendTransactionArgs,
   WriteContractArgs
 } from '@reown/appkit-core'
