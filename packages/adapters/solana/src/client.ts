@@ -19,7 +19,6 @@ import type { Provider } from '@reown/appkit-utils/solana'
 
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import { PublicKey, type Commitment, type ConnectionConfig } from '@solana/web3.js'
-import UniversalProvider, { type UniversalProviderOpts } from '@walletconnect/universal-provider'
 import type {
   ChainAdapter,
   ConnectionControllerClient,
@@ -164,7 +163,20 @@ export class SolanaAdapter implements ChainAdapter {
     }
 
     this.connectionControllerClient = {
-      // eslint-disable-next-line @typescript-eslint/require-await
+      connectWalletConnect: async onUri => {
+        const wcProvider = this.availableProviders.find(
+          provider => provider.type === 'WALLET_CONNECT'
+        )
+
+        if (!wcProvider || !(wcProvider instanceof WalletConnectProvider)) {
+          throw new Error('connectionControllerClient:getWalletConnectUri - provider is undefined')
+        }
+
+        wcProvider.onUri = onUri
+
+        return this.setProvider(wcProvider)
+      },
+
       connectExternal: async ({ id }) => {
         const externalProvider = this.availableProviders.find(
           provider => provider.name.toLocaleLowerCase() === id.toLocaleLowerCase()
@@ -297,18 +309,9 @@ export class SolanaAdapter implements ChainAdapter {
       caipNetworks: this.caipNetworks
     })
 
-    ProviderUtil.subscribeProviders(providers => {
-      if (providers['solana'] && providers['solana'] instanceof UniversalProvider) {
-        const walletConnectProvider = this.getSolanaWalletConnectProvider(providers['solana'])
-        ProviderUtil.setProvider(this.chainNamespace, walletConnectProvider)
-      }
-    })
-
     this.syncRequestedNetworks(this.caipNetworks)
 
     this.initializeProviders({
-      relayUrl: 'wss://relay.walletconnect.com',
-      metadata: options.metadata,
       projectId: options.projectId
     })
 
@@ -598,23 +601,23 @@ export class SolanaAdapter implements ChainAdapter {
     provider.on('auth_rpcError', rpcErrorHandler)
   }
 
-  private getSolanaWalletConnectProvider(provider: UniversalProvider) {
-    const walletConnectProvider = new WalletConnectProvider({
-      provider,
-      chains: this.caipNetworks,
-      getActiveChain: () => this.appKit?.getCaipNetwork()
-    })
-
-    this.addProvider(walletConnectProvider)
-
-    return walletConnectProvider
-  }
-
-  private initializeProviders(opts: UniversalProviderOpts) {
+  private initializeProviders(opts: { projectId: string }) {
     if (CoreHelperUtil.isClient()) {
       if (!opts.projectId) {
         throw new Error('projectId is required for AuthProvider')
       }
+
+      this.appKit?.universalAdapter?.getWalletConnectProvider().then(provider => {
+        if (provider) {
+          this.addProvider(
+            new WalletConnectProvider({
+              provider,
+              chains: this.caipNetworks,
+              getActiveChain: () => this.appKit?.getCaipNetwork()
+            })
+          )
+        }
+      })
 
       const getActiveChain = () => this.appKit?.getCaipNetwork(this.chainNamespace)
 

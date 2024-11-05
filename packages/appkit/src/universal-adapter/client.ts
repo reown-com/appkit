@@ -135,13 +135,11 @@ export class UniversalAdapterClient {
           onUri(uri)
         })
 
-        if (
-          ChainController.state.activeChain &&
-          ChainController.state?.chains?.get(ChainController.state.activeChain)?.adapterType ===
-            'wagmi'
-        ) {
-          const adapter = ChainController.state.chains.get(ChainController.state.activeChain)
-          await adapter?.connectionControllerClient?.connectWalletConnect?.(onUri)
+        const activeChain = ChainController.state.activeChain
+        const chainAdapter = activeChain && ChainController.state?.chains?.get(activeChain)
+
+        if (chainAdapter?.adapterType === 'wagmi' || chainAdapter?.adapterType === 'solana') {
+          await chainAdapter.connectionControllerClient?.connectWalletConnect?.(onUri)
           this.setWalletConnectProvider()
         } else {
           const siweParams = await siweConfig?.getMessageParams?.()
@@ -429,8 +427,11 @@ export class UniversalAdapterClient {
       reversedChainNamespaces.forEach(chainNamespace => {
         const caipAddress = nameSpaces?.[chainNamespace]?.accounts[0] as CaipAddress | undefined
 
-        ProviderUtil.setProvider(chainNamespace, this.walletConnectProvider)
-        ProviderUtil.setProviderId(chainNamespace, 'walletConnect')
+        if (chainNamespace !== CommonConstantsUtil.CHAIN.SOLANA) {
+          ProviderUtil.setProvider(chainNamespace, this.walletConnectProvider)
+          ProviderUtil.setProviderId(chainNamespace, 'walletConnect')
+        }
+
         this.appKit?.setApprovedCaipNetworksData(chainNamespace)
 
         if (caipAddress) {
