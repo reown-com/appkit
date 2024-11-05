@@ -14,17 +14,18 @@ export class W3mConnectWalletsView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
+    const { termsConditionsUrl, privacyPolicyUrl, enableLegalCheckbox } = OptionsController.state
 
-    const legal = termsConditionsUrl || privacyPolicyUrl
+    const legalUrl = termsConditionsUrl || privacyPolicyUrl
+    const showLegalCheckbox = Boolean(legalUrl) && Boolean(enableLegalCheckbox)
 
     return html`
-      ${this.legalCheckBoxTemplate()}
+      <w3m-legal-checkbox @checkboxChange=${this.onCheckboxChange.bind(this)}></w3m-legal-checkbox>
       <wui-flex
         flexDirection="column"
-        .padding=${legal ? ['0', 's', 's', 's'] : 's'}
+        .padding=${showLegalCheckbox ? ['0', 's', 's', 's'] : 's'}
         gap="xs"
-        class=${ifDefined(Boolean(legal) && !this.checked ? 'disabled' : undefined)}
+        class=${ifDefined(showLegalCheckbox && !this.checked ? 'disabled' : undefined)}
       >
         <w3m-wallet-login-list></w3m-wallet-login-list>
       </wui-flex>
@@ -32,23 +33,9 @@ export class W3mConnectWalletsView extends LitElement {
     `
   }
 
-  // -- Private ------------------------------------------- //
-
-  private legalCheckBoxTemplate() {
-    const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
-
-    if (!termsConditionsUrl && !privacyPolicyUrl) {
-      return null
-    }
-
-    return html`<w3m-legal-checkbox
-      @checkboxChange=${this.onCheckBoxChange.bind(this)}
-    ></w3m-legal-checkbox>`
-  }
-
   // -- Private Methods ----------------------------------- //
 
-  private onCheckBoxChange(event: CustomEvent<string>) {
+  private onCheckboxChange(event: CustomEvent<string>) {
     this.checked = Boolean(event.detail)
   }
 }

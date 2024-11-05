@@ -9,9 +9,13 @@ export class W3mLegalFooter extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
+    const { termsConditionsUrl, privacyPolicyUrl, enableLegalCheckbox } = OptionsController.state
 
     if (!termsConditionsUrl && !privacyPolicyUrl) {
+      return null
+    }
+
+    if (enableLegalCheckbox) {
       return null
     }
 

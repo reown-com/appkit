@@ -43,17 +43,18 @@ export class W3mOnrampFiatSelectView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
+    const { termsConditionsUrl, privacyPolicyUrl, enableLegalCheckbox } = OptionsController.state
 
-    const legal = termsConditionsUrl || privacyPolicyUrl
+    const legalUrl = termsConditionsUrl || privacyPolicyUrl
+    const showLegalCheckbox = Boolean(legalUrl) && Boolean(enableLegalCheckbox)
 
     return html`
-      ${this.legalCheckBoxTemplate()}
+      <w3m-legal-checkbox @checkboxChange=${this.onCheckboxChange.bind(this)}></w3m-legal-checkbox>
       <wui-flex
         flexDirection="column"
         .padding=${['0', 's', 's', 's']}
         gap="xs"
-        class=${ifDefined(Boolean(legal) && !this.checked ? 'disabled' : undefined)}
+        class=${ifDefined(showLegalCheckbox && !this.checked ? 'disabled' : undefined)}
       >
         ${this.currenciesTemplate()}
       </wui-flex>
@@ -76,18 +77,6 @@ export class W3mOnrampFiatSelectView extends LitElement {
     )
   }
 
-  private legalCheckBoxTemplate() {
-    const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
-
-    if (!termsConditionsUrl && !privacyPolicyUrl) {
-      return null
-    }
-
-    return html`<w3m-legal-checkbox
-      @checkboxChange=${this.onCheckBoxChange.bind(this)}
-    ></w3m-legal-checkbox>`
-  }
-
   private selectCurrency(currency: PaymentCurrency) {
     if (!currency) {
       return
@@ -99,7 +88,7 @@ export class W3mOnrampFiatSelectView extends LitElement {
 
   // -- Private Methods ----------------------------------- //
 
-  private onCheckBoxChange(event: CustomEvent<string>) {
+  private onCheckboxChange(event: CustomEvent<string>) {
     this.checked = Boolean(event.detail)
   }
 }

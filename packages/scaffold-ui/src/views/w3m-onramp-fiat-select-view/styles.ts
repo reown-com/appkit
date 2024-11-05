@@ -15,10 +15,6 @@ export default css`
     display: none;
   }
 
-  w3m-legal-checkbox {
-    padding: 0 var(--wui-spacing-s) var(--wui-spacing-s) var(--wui-spacing-s);
-  }
-
   wui-flex.disabled {
     opacity: 0.3;
     pointer-events: none;

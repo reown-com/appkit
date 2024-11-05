@@ -7,7 +7,7 @@ export default css`
   }
 
   .connect {
-    max-height: clamp(360px, 540px, 80vh);
+    max-height: clamp(360px, 478px, 80vh);
     scrollbar-width: none;
     overflow-y: scroll;
     overflow-x: hidden;
@@ -37,10 +37,6 @@ export default css`
 
   .all-wallets {
     flex-flow: column;
-  }
-
-  w3m-legal-checkbox {
-    padding: var(--wui-spacing-s);
   }
 
   .connect.disabled,

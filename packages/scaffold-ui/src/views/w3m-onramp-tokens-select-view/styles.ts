@@ -11,10 +11,6 @@ export default css`
     will-change: opacity;
   }
 
-  w3m-legal-checkbox {
-    padding: 0 var(--wui-spacing-s) var(--wui-spacing-s) var(--wui-spacing-s);
-  }
-
   wui-grid::-webkit-scrollbar {
     display: none;
   }

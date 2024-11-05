@@ -470,6 +470,7 @@ export class AppKit {
     OptionsController.setCustomWallets(options.customWallets)
     OptionsController.setFeatures(options.features)
     OptionsController.setEnableWalletConnect(options.enableWalletConnect !== false)
+    OptionsController.setEnableLegalCheckbox(options.enableLegalCheckbox)
     OptionsController.setEnableWallets(options.enableWallets !== false)
 
     if (options.metadata) {

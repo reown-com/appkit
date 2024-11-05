@@ -11,9 +11,6 @@ export default css`
   wui-flex::-webkit-scrollbar {
     display: none;
   }
-  w3m-legal-checkbox {
-    padding: var(--wui-spacing-s);
-  }
   wui-flex.disabled {
     opacity: 0.3;
     pointer-events: none;

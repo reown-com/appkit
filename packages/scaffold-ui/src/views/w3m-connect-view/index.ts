@@ -57,13 +57,14 @@ export class W3mConnectView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
+    const { termsConditionsUrl, privacyPolicyUrl, enableLegalCheckbox } = OptionsController.state
 
-    const legal = termsConditionsUrl || privacyPolicyUrl
+    const legalUrl = termsConditionsUrl || privacyPolicyUrl
+    const showLegalCheckbox = Boolean(legalUrl) && Boolean(enableLegalCheckbox)
 
     const classes = {
       connect: true,
-      disabled: Boolean(legal) && !this.checked && this.walletGuide === 'get-started'
+      disabled: showLegalCheckbox && !this.checked && this.walletGuide === 'get-started'
     }
 
     const socials = this.features?.socials
@@ -74,7 +75,7 @@ export class W3mConnectView extends LitElement {
 
     return html`
       <wui-flex flexDirection="column">
-        ${this.legalCheckBoxTemplate()}
+        ${this.legalCheckboxTemplate()}
         <wui-flex flexDirection="column" class=${classMap(classes)}>
           <wui-flex
             flexDirection="column"
@@ -90,6 +91,7 @@ export class W3mConnectView extends LitElement {
           </wui-flex>
         </wui-flex>
         ${this.guideTemplate()}
+        <w3m-legal-footer></w3m-legal-footer>
       </wui-flex>
     `
   }
@@ -137,15 +139,19 @@ export class W3mConnectView extends LitElement {
     const socials = this.features?.socials
     const enableWallets = OptionsController.state.enableWallets
 
-    const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
+    const { termsConditionsUrl, privacyPolicyUrl, enableLegalCheckbox } = OptionsController.state
 
     const legal = termsConditionsUrl || privacyPolicyUrl
 
     const socialsExist = socials && socials.length
 
     const classes = {
-      'guide': true,
-      disabled: Boolean(legal) && !this.checked && this.walletGuide === 'get-started'
+      guide: true,
+      disabled:
+        Boolean(enableLegalCheckbox) &&
+        Boolean(legal) &&
+        !this.checked &&
+        this.walletGuide === 'get-started'
     }
 
     if (!this.authConnector && !socialsExist) {
@@ -179,19 +185,13 @@ export class W3mConnectView extends LitElement {
     `
   }
 
-  private legalCheckBoxTemplate() {
-    const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
-
-    if (!termsConditionsUrl && !privacyPolicyUrl) {
-      return null
-    }
-
+  private legalCheckboxTemplate() {
     if (this.walletGuide === 'explore') {
       return null
     }
 
     return html`<w3m-legal-checkbox
-      @checkboxChange=${this.onCheckBoxChange.bind(this)}
+      @checkboxChange=${this.onCheckboxChange.bind(this)}
     ></w3m-legal-checkbox>`
   }
 
@@ -222,7 +222,7 @@ export class W3mConnectView extends LitElement {
     RouterController.push('ConnectWallets')
   }
 
-  private onCheckBoxChange(event: CustomEvent<string>) {
+  private onCheckboxChange(event: CustomEvent<string>) {
     this.checked = Boolean(event.detail)
   }
 }

@@ -6,6 +6,9 @@ export default css`
     align-items: center;
     justify-content: center;
   }
+  wui-checkbox {
+    padding: var(--wui-spacing-s);
+  }
   a {
     text-decoration: none;
     color: var(--wui-color-fg-150);

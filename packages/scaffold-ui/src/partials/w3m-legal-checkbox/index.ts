@@ -9,6 +9,16 @@ export class W3mLegalCheckbox extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const { termsConditionsUrl, privacyPolicyUrl, enableLegalCheckbox } = OptionsController.state
+
+    if (!termsConditionsUrl && !privacyPolicyUrl) {
+      return null
+    }
+
+    if (!enableLegalCheckbox) {
+      return null
+    }
+
     return html`
       <wui-checkbox>
         <wui-text color="fg-250" variant="small-400" align="left">
@@ -27,7 +37,7 @@ export class W3mLegalCheckbox extends LitElement {
 
   private termsTemplate() {
     const { termsConditionsUrl } = OptionsController.state
-    
+
     if (!termsConditionsUrl) {
       return null
     }
