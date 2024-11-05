@@ -1,5 +1,5 @@
-import { ChainController, ModalController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import { ChainController, ModalController } from '@reown/appkit-core'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -7,8 +7,7 @@ import type { W3mAccountButton } from '../w3m-account-button/index.js'
 import type { W3mConnectButton } from '../w3m-connect-button/index.js'
 import styles from './styles.js'
 
-@customElement('w3m-button')
-export class W3mButton extends LitElement {
+class W3mButtonBase extends LitElement {
   public static override styles = styles
 
   // -- Members ------------------------------------------- //
@@ -49,26 +48,33 @@ export class W3mButton extends LitElement {
   public override render() {
     return this.caipAddress && !this.isLoading
       ? html`
-          <w3m-account-button
+          <appkit-account-button
             .disabled=${Boolean(this.disabled)}
             balance=${ifDefined(this.balance)}
             .charsStart=${ifDefined(this.charsStart)}
             .charsEnd=${ifDefined(this.charsEnd)}
           >
-          </w3m-account-button>
+          </appkit-account-button>
         `
       : html`
-          <w3m-connect-button
+          <appkit-connect-button
             size=${ifDefined(this.size)}
             label=${ifDefined(this.label)}
             loadingLabel=${ifDefined(this.loadingLabel)}
-          ></w3m-connect-button>
+          ></appkit-connect-button>
         `
   }
 }
 
+@customElement('w3m-button')
+export class W3mButton extends W3mButtonBase {}
+
+@customElement('appkit-button')
+export class AppKitButton extends W3mButtonBase {}
+
 declare global {
   interface HTMLElementTagNameMap {
     'w3m-button': W3mButton
+    'appkit-button': AppKitButton
   }
 }
