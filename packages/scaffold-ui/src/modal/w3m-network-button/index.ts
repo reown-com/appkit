@@ -1,3 +1,4 @@
+import { customElement } from '@reown/appkit-ui'
 import {
   AssetController,
   AssetUtil,
@@ -7,7 +8,7 @@ import {
 } from '@reown/appkit-core'
 import type { WuiNetworkButton } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { customElement, property, state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 

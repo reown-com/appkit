@@ -1,6 +1,7 @@
+import { customElement } from '@reown/appkit-ui'
 import { ChainController, ModalController } from '@reown/appkit-core'
 import { LitElement, html } from 'lit'
-import { customElement, property, state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import type { W3mAccountButton } from '../w3m-account-button/index.js'
 import type { W3mConnectButton } from '../w3m-connect-button/index.js'

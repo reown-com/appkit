@@ -1,7 +1,8 @@
+import { customElement } from '@reown/appkit-ui'
 import { ModalController } from '@reown/appkit-core'
 import type { WuiConnectButton } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { customElement, property, state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 class W3mConnectButtonBase extends LitElement {
