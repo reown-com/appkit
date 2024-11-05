@@ -5,20 +5,19 @@ import {
   CoreHelperUtil,
   EventsController,
   ModalController,
-  NetworkController,
   RouterController,
   SnackController,
   StorageUtil,
   ConnectorController,
   SendController,
-  ConstantsUtil
+  ConstantsUtil,
+  ChainController
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
-import { ChainController } from '@reown/appkit-core'
 
 @customElement('w3m-account-settings-view')
 export class W3mAccountSettingsView extends LitElement {
@@ -83,7 +82,7 @@ export class W3mAccountSettingsView extends LitElement {
       // throw new Error('w3m-account-settings-view: No account provided')
     }
 
-    const networkImage = this.networkImages[this.network?.imageId ?? '']
+    const networkImage = this.networkImages[this.network?.assets?.imageId ?? '']
 
     return html`
       <wui-flex
@@ -155,7 +154,8 @@ export class W3mAccountSettingsView extends LitElement {
   private chooseNameButtonTemplate() {
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
-    if (!authConnector || type !== 'AUTH' || this.profileName) {
+    const hasNetworkSupport = ChainController.checkIfNamesSupported()
+    if (!hasNetworkSupport || !authConnector || type !== 'AUTH' || this.profileName) {
       return null
     }
 
@@ -194,7 +194,7 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private isAllowedNetworkSwitch() {
-    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
     const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 
@@ -213,7 +213,7 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private togglePreferredAccountBtnTemplate() {
-    const networkEnabled = NetworkController.checkIfSmartAccountEnabled()
+    const networkEnabled = ChainController.checkIfSmartAccountEnabled()
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
 
@@ -249,7 +249,7 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private async changePreferredAccountType() {
-    const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
+    const smartAccountEnabled = ChainController.checkIfSmartAccountEnabled()
     const accountTypeTarget =
       this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT ||
       !smartAccountEnabled

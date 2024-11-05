@@ -2,9 +2,11 @@ import { createConnector, type CreateConfigParameters } from '@wagmi/core'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { SwitchChainError, getAddress } from 'viem'
-import type { Address, Hex } from 'viem'
-import { ConstantsUtil } from '@reown/appkit-utils'
+import type { Address } from 'viem'
+import { ConstantsUtil, ErrorUtil } from '@reown/appkit-utils'
 import { NetworkUtil } from '@reown/appkit-common'
+import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
+import { AlertController } from '@reown/appkit-core'
 
 // -- Types ----------------------------------------------------------------------------------------
 interface W3mFrameProviderOptions {
@@ -19,7 +21,8 @@ export type AuthParameters = {
 
 // -- Connector ------------------------------------------------------------------------------------
 export function authConnector(parameters: AuthParameters) {
-  const singleTonProvider = parameters.provider
+  let currentAccounts: Address[] = []
+
   type Properties = {
     provider?: W3mFrameProvider
   }
@@ -37,22 +40,29 @@ export function authConnector(parameters: AuthParameters) {
     async connect(options = {}) {
       const provider = await this.getProvider()
       let chainId = options.chainId
+
       if (options.isReconnecting) {
         chainId = provider.getLastUsedChainId()
         if (!chainId) {
           throw new Error('ChainId not found in provider')
         }
       }
-
-      const { address, chainId: frameChainId } = await provider.connect({
+      const {
+        address,
+        chainId: frameChainId,
+        accounts
+      } = await provider.connect({
         chainId
       })
+
+      currentAccounts = accounts?.map(a => a.address as Address) || [address as Address]
+
       await provider.getSmartAccountEnabledNetworks()
 
       const parsedChainId = parseChainId(frameChainId)
 
       return {
-        accounts: [address as Address],
+        accounts: currentAccounts,
         account: address as Address,
         chainId: parsedChainId,
         chain: {
@@ -67,16 +77,27 @@ export function authConnector(parameters: AuthParameters) {
       await provider.disconnect()
     },
 
-    async getAccounts() {
-      const provider = await this.getProvider()
-      const { address } = await provider.connect()
-      config.emitter.emit('change', { accounts: [address as Address] })
+    getAccounts() {
+      if (!currentAccounts?.length) {
+        return Promise.resolve([])
+      }
 
-      return [address as Address]
+      config.emitter.emit('change', { accounts: currentAccounts })
+
+      return Promise.resolve(currentAccounts)
     },
 
     async getProvider() {
-      return Promise.resolve(singleTonProvider)
+      if (!this.provider) {
+        this.provider = W3mFrameProviderSingleton.getInstance({
+          projectId: parameters.options.projectId,
+          onTimeout: () => {
+            AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION_SOCIALS, 'error')
+          }
+        })
+      }
+
+      return Promise.resolve(this.provider)
     },
 
     async getChainId() {
@@ -88,9 +109,8 @@ export function authConnector(parameters: AuthParameters) {
 
     async isAuthorized() {
       const provider = await this.getProvider()
-      const { isConnected } = await provider.isConnected()
 
-      return isConnected
+      return Promise.resolve(provider.getLoginEmailUsed())
     },
 
     async switchChain({ chainId }) {
@@ -103,9 +123,13 @@ export function authConnector(parameters: AuthParameters) {
         // We connect instead, since changing the chain may cause the address to change as well
         const response = await provider.connect({ chainId })
 
+        currentAccounts = response?.accounts?.map(a => a.address as Address) || [
+          response.address as Address
+        ]
+
         config.emitter.emit('change', {
           chainId: Number(chainId),
-          accounts: [response.address as Hex]
+          accounts: currentAccounts
         })
 
         return chain

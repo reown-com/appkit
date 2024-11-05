@@ -3,20 +3,14 @@ import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import {
-  mainnet,
-  polygon,
-  solana,
-  arbitrum,
-  optimism,
-  solanaTestnet,
-  solanaDevnet
-} from '@reown/appkit/networks'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsEthersSolana } from '../../components/MultiChainTestsEthersSolana'
 import { siweConfig } from '../../utils/SiweUtils'
 import { SiweData } from '../../components/Siwe/SiweData'
+import { mainnet } from '@reown/appkit/networks'
+
+const networks = ConstantsUtil.AllNetworks
 
 const etherAdapter = new EthersAdapter()
 
@@ -27,7 +21,8 @@ const solanaWeb3JsAdapter = new SolanaAdapter({
 const modal = createAppKit({
   adapters: [etherAdapter, solanaWeb3JsAdapter],
   projectId: ConstantsUtil.ProjectId,
-  networks: [mainnet, arbitrum, polygon, optimism, solana, solanaTestnet, solanaDevnet],
+  networks,
+  defaultNetwork: mainnet,
   features: {
     analytics: true
   },

@@ -10,6 +10,11 @@ export type SafeLocalStorageItems = {
   '@appkit/recent_wallets': string
   '@appkit/deeplink_choice': string
   '@appkit/connected_namespace': string
+  /*
+   * DO NOT CHANGE: @walletconnect/universal-provider requires us to set this specific key
+   *  This value is a stringified version of { href: stiring; name: string }
+   */
+  WALLETCONNECT_DEEPLINK_CHOICE: string
 }
 
 export const SafeLocalStorageKeys = {

@@ -5,9 +5,9 @@ import { ChainController } from '../controllers/ChainController.js'
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
-  setWalletConnectDeepLink({ href }: { href: string; name: string }) {
+  setWalletConnectDeepLink({ name, href }: { href: string; name: string }) {
     try {
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.DEEPLINK_CHOICE, href)
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.DEEPLINK_CHOICE, JSON.stringify({ href, name }))
     } catch {
       console.info('Unable to set WalletConnect deep link')
     }
@@ -17,7 +17,7 @@ export const StorageUtil = {
     try {
       const deepLink = SafeLocalStorage.getItem(SafeLocalStorageKeys.DEEPLINK_CHOICE)
       if (deepLink) {
-        return deepLink
+        return JSON.parse(deepLink)
       }
     } catch {
       console.info('Unable to get WalletConnect deep link')
@@ -121,7 +121,9 @@ export const StorageUtil = {
       SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID
     )
     const allRequestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
-    const storedCaipNetwork = allRequestedCaipNetworks?.find(c => c.id === storedCaipNetworkId)
+    const storedCaipNetwork = allRequestedCaipNetworks?.find(
+      c => c.caipNetworkId === storedCaipNetworkId
+    )
 
     return storedCaipNetwork
   }

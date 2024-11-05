@@ -1,9 +1,9 @@
 import { getCsrfToken, signIn, signOut, getSession } from 'next-auth/react'
 import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs, SIWESession } from '@reown/appkit-siwe'
 import { createSIWEConfig, formatMessage } from '@reown/appkit-siwe'
-import { arbitrum, mainnet, optimism, polygon, zkSync, sepolia } from '@reown/appkit/networks'
+import { ConstantsUtil } from './ConstantsUtil'
 
-const chains = [mainnet, optimism, polygon, zkSync, arbitrum, sepolia]
+const chains = ConstantsUtil.EvmNetworks
 
 export const siweConfig = createSIWEConfig({
   signOutOnAccountChange: true,
@@ -13,7 +13,7 @@ export const siweConfig = createSIWEConfig({
   getMessageParams: async () => ({
     domain: window.location.host,
     uri: window.location.origin,
-    chains: chains.map(chain => chain.chainId as number),
+    chains: chains.map(chain => chain.id as number),
     statement: 'Please sign with your account',
     iat: new Date().toISOString()
   }),

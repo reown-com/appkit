@@ -80,18 +80,15 @@ export class W3mConnectorList extends LitElement {
     const multiChain = this.connectors.filter(connector => connector.type === 'MULTI_CHAIN')
     const announced = this.connectors.filter(connector => connector.type === 'ANNOUNCED')
     const injected = this.connectors.filter(connector => connector.type === 'INJECTED')
-
     const external = this.connectors.filter(connector => connector.type === 'EXTERNAL')
-    const isEVM = ChainController.state.activeChain === CommonConstantsUtil.CHAIN.EVM
-    const includeAnnouncedAndInjected = isEVM ? OptionsController.state.enableEIP6963 : true
 
     return {
       custom,
       recent,
       external,
       multiChain,
-      announced: includeAnnouncedAndInjected ? announced : [],
-      injected: includeAnnouncedAndInjected ? injected : [],
+      announced,
+      injected,
       recommended: filteredRecommended,
       featured: filteredFeatured
     }

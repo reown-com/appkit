@@ -16,10 +16,10 @@ import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { ChainController } from './ChainController.js'
 import { proxy, ref } from 'valtio/vanilla'
 import type UniversalProvider from '@walletconnect/universal-provider'
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {
-  isConnected: boolean
   currentTab: number
   caipAddress?: CaipAddress
   address?: string
@@ -41,11 +41,11 @@ export interface AccountControllerState {
   provider?: UniversalProvider | Provider | CombinedProvider
   status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
   siweStatus?: 'uninitialized' | 'ready' | 'loading' | 'success' | 'rejected' | 'error'
+  lastRetry?: number
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<AccountControllerState>({
-  isConnected: false,
   currentTab: 0,
   tokenBalance: [],
   smartAccountDeployed: false,
@@ -97,19 +97,8 @@ export const AccountController = {
     )
   },
 
-  setIsConnected(
-    isConnected: AccountControllerState['isConnected'],
-    chain: ChainNamespace | undefined
-  ) {
-    ChainController.setAccountProp('isConnected', isConnected, chain)
-  },
-
   setStatus(status: AccountControllerState['status'], chain: ChainNamespace | undefined) {
     ChainController.setAccountProp('status', status, chain)
-  },
-
-  getChainIsConnected(chain: ChainNamespace | undefined) {
-    return ChainController.getAccountProp('isConnected', chain)
   },
 
   getCaipAddress(chain: ChainNamespace | undefined) {
@@ -238,10 +227,17 @@ export const AccountController = {
   },
 
   async fetchTokenBalance() {
-    const chainId = ChainController.state.activeCaipNetwork?.id
+    const chainId = ChainController.state.activeCaipNetwork?.caipNetworkId
     const chain = ChainController.state.activeCaipNetwork?.chainNamespace
     const caipAddress = ChainController.state.activeCaipAddress
     const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
+
+    if (
+      state.lastRetry &&
+      !CoreHelperUtil.isAllowedRetry(state.lastRetry, 30 * ConstantsUtil.ONE_SEC_MS)
+    ) {
+      return
+    }
 
     try {
       if (address && chainId && chain) {
@@ -253,9 +249,12 @@ export const AccountController = {
 
         this.setTokenBalance(filteredBalances, chain)
         SwapController.setBalances(SwapApiUtil.mapBalancesToSwapTokens(response.balances))
+        state.lastRetry = undefined
       }
     } catch (error) {
-      SnackController.showError('Failed to fetch token balance')
+      state.lastRetry = Date.now()
+
+      SnackController.showError('Token Balance Unavailable')
     }
   },
 

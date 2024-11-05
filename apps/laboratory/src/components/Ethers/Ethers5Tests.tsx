@@ -11,6 +11,7 @@ import { EthersSendCallsWithPaymasterServiceTest } from './EthersSendCallsWithPa
 
 export function Ethers5Tests() {
   const [ready, setReady] = React.useState(false)
+  const [callsHash, setCallsHash] = React.useState<string>('')
   const { isConnected } = useAppKitAccount()
 
   React.useEffect(() => {
@@ -59,13 +60,13 @@ export function Ethers5Tests() {
             <Heading size="xs" textTransform="uppercase" pb="2">
               Send Calls (Atomic Batch)
             </Heading>
-            <EthersSendCallsTest />
+            <EthersSendCallsTest onCallsHash={setCallsHash} />
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Get Calls Status
             </Heading>
-            <EthersGetCallsStatusTest />
+            <EthersGetCallsStatusTest callsHash={callsHash} />
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">

@@ -11,7 +11,6 @@ import type {
 } from '../utils/TypeUtil.js'
 import { AssetController } from './AssetController.js'
 import { ConnectorController } from './ConnectorController.js'
-import { NetworkController } from './NetworkController.js'
 import { OptionsController } from './OptionsController.js'
 import { ChainController } from './ChainController.js'
 
@@ -106,9 +105,9 @@ export const ApiController = {
   },
 
   async fetchNetworkImages() {
-    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
 
-    const ids = requestedCaipNetworks?.map(({ imageId }) => imageId).filter(Boolean)
+    const ids = requestedCaipNetworks?.map(({ assets }) => assets?.imageId).filter(Boolean)
     if (ids) {
       await Promise.allSettled((ids as string[]).map(id => ApiController._fetchNetworkImage(id)))
     }
@@ -160,7 +159,7 @@ export const ApiController = {
         headers: ApiController._getApiHeaders(),
         params: {
           page: '1',
-          chains: ChainController.state.activeCaipNetwork?.id,
+          chains: ChainController.state.activeCaipNetwork?.caipNetworkId,
           entries: recommendedEntries,
           include: includeWalletIds?.join(','),
           exclude: exclude?.join(',')
@@ -195,7 +194,7 @@ export const ApiController = {
       params: {
         page: String(page),
         entries,
-        chains: ChainController.state.activeCaipNetwork?.id,
+        chains: ChainController.state.activeCaipNetwork?.caipNetworkId,
         include: includeWalletIds?.join(','),
         exclude: exclude.join(',')
       }
@@ -221,7 +220,7 @@ export const ApiController = {
       params: {
         page: '1',
         entries: String(ids.length),
-        chains: ChainController.state.activeCaipNetwork?.id,
+        chains: ChainController.state.activeCaipNetwork?.caipNetworkId,
         include: ids?.join(',')
       }
     })
@@ -245,7 +244,7 @@ export const ApiController = {
         page: '1',
         entries: '100',
         search: search?.trim(),
-        chains: ChainController.state.activeCaipNetwork?.id,
+        chains: ChainController.state.activeCaipNetwork?.caipNetworkId,
         include: includeWalletIds?.join(','),
         exclude: excludeWalletIds?.join(',')
       }

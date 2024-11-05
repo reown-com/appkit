@@ -34,7 +34,9 @@ smartAccountTest.beforeAll(async ({ browser, library }) => {
 
   // Switch to a SA enabled network
   await page.switchNetworkWithNetworkButton('Polygon')
+  await validator.expectSwitchedNetworkOnNetworksView('Polygon')
   await page.closeModal()
+
   const tempEmail = await email.getEmailAddressToUse()
   await page.emailFlow(tempEmail, context, mailsacApiKey)
 
@@ -69,7 +71,7 @@ smartAccountTest('it should sign with smart account 6492 signature', async () =>
 })
 
 smartAccountTest('it should switch to a not enabled network and sign with EOA', async () => {
-  const targetChain = 'Ethereum'
+  const targetChain = 'Aurora'
   await page.switchNetwork(targetChain)
   await validator.expectSwitchedNetwork(targetChain)
   await page.closeModal()

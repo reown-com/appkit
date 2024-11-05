@@ -12,7 +12,7 @@ export interface ProviderStoreUtilState {
   providerIds: Record<ChainNamespace, ConnectorType | undefined>
 }
 
-export type ConnectorType =
+export type ProviderType =
   | 'walletConnect'
   | 'injected'
   | 'coinbaseWallet'

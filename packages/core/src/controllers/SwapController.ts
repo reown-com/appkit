@@ -16,7 +16,6 @@ import { EventsController } from './EventsController.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import { ChainController } from './ChainController.js'
-import { NetworkController } from './NetworkController.js'
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000
@@ -174,7 +173,7 @@ export const SwapController = {
   getParams() {
     const caipAddress = ChainController.state.activeCaipAddress
     const address = CoreHelperUtil.getPlainAddress(caipAddress)
-    const networkAddress = NetworkController.getActiveNetworkTokenAddress()
+    const networkAddress = ChainController.getActiveNetworkTokenAddress()
     const type = StorageUtil.getConnectedConnector()
 
     if (!address) {
@@ -438,7 +437,9 @@ export const SwapController = {
     balances.forEach(token => {
       state.tokensPriceMap[token.address] = token.price || 0
     })
-    state.myTokensWithBalance = balances.filter(token => token.address.startsWith(caipNetwork.id))
+    state.myTokensWithBalance = balances.filter(token =>
+      token.address.startsWith(caipNetwork.caipNetworkId)
+    )
     state.networkBalanceInUSD = networkToken
       ? NumberUtil.multiply(networkToken.quantity.numeric, networkToken.price).toString()
       : '0'
@@ -494,9 +495,9 @@ export const SwapController = {
 
     state.loadingQuote = true
 
-    const amountDecimal = NumberUtil.bigNumber(state.sourceTokenAmount).multipliedBy(
-      10 ** sourceToken.decimals
-    )
+    const amountDecimal = NumberUtil.bigNumber(state.sourceTokenAmount)
+      .multipliedBy(10 ** sourceToken.decimals)
+      .integerValue()
 
     const quoteResponse = await BlockchainApiController.fetchSwapQuote({
       userAddress: address,
@@ -765,7 +766,7 @@ export const SwapController = {
         type: 'track',
         event: 'SWAP_SUCCESS',
         properties: {
-          network: ChainController.state.activeCaipNetwork?.id || '',
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',
           swapFromAmount: this.state.sourceTokenAmount || '',
@@ -791,7 +792,7 @@ export const SwapController = {
         type: 'track',
         event: 'SWAP_ERROR',
         properties: {
-          network: ChainController.state.activeCaipNetwork?.id || '',
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',
           swapFromAmount: this.state.sourceTokenAmount || '',
@@ -813,10 +814,20 @@ export const SwapController = {
       sourceTokenAddress,
       state.myTokensWithBalance
     )
-    const insufficientNetworkTokenForGas = SwapCalculationUtil.isInsufficientNetworkTokenForGas(
-      state.networkBalanceInUSD,
-      state.gasPriceInUSD
-    )
+
+    let insufficientNetworkTokenForGas = true
+    if (
+      AccountController.state.preferredAccountType ===
+      W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+    ) {
+      // Smart Accounts may pay gas in any ERC20 token
+      insufficientNetworkTokenForGas = false
+    } else {
+      insufficientNetworkTokenForGas = SwapCalculationUtil.isInsufficientNetworkTokenForGas(
+        state.networkBalanceInUSD,
+        state.gasPriceInUSD
+      )
+    }
 
     return insufficientNetworkTokenForGas || isInsufficientSourceTokenForSwap
   },

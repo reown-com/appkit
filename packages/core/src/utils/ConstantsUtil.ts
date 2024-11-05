@@ -28,6 +28,10 @@ export const ConstantsUtil = {
 
   TEN_SEC_MS: 10_000,
 
+  FIVE_SEC_MS: 5_000,
+
+  THREE_SEC_MS: 3_000,
+
   ONE_SEC_MS: 1_000,
 
   SECURE_SITE,
@@ -195,6 +199,8 @@ export const ConstantsUtil = {
     'eip155:1313161554'
   ],
 
+  NAMES_SUPPORTED_CHAIN_NAMESPACES: ['eip155'] as ChainNamespace[],
+
   NATIVE_TOKEN_ADDRESS: {
     eip155: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
     solana: 'So11111111111111111111111111111111111111111',
@@ -202,6 +208,10 @@ export const ConstantsUtil = {
   } as const satisfies Record<ChainNamespace, string>,
 
   CONVERT_SLIPPAGE_TOLERANCE: 1,
+
+  CONNECT_LABELS: {
+    MOBILE: 'Open and continue in a new browser tab'
+  },
 
   DEFAULT_FEATURES: {
     swaps: true,
@@ -211,6 +221,7 @@ export const ConstantsUtil = {
     socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'],
     history: true,
     analytics: true,
-    allWallets: true
+    allWallets: true,
+    smartSessions: false
   } as Features
 }

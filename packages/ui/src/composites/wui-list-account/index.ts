@@ -47,15 +47,20 @@ export class WuiListAccount extends LitElement {
 
   public override connectedCallback() {
     super.connectedCallback()
-    BlockchainApiController.getBalance(this.accountAddress, this.caipNetwork?.id).then(response => {
-      let total = this.balance
-      if (response.balances.length > 0) {
-        total = response.balances.reduce((acc, balance) => acc + (balance?.value || 0), 0)
-      }
-      this.balance = total
-      this.fetchingBalance = false
-      this.requestUpdate()
-    })
+    BlockchainApiController.getBalance(this.accountAddress, this.caipNetwork?.caipNetworkId)
+      .then(response => {
+        let total = this.balance
+        if (response.balances.length > 0) {
+          total = response.balances.reduce((acc, balance) => acc + (balance?.value || 0), 0)
+        }
+        this.balance = total
+        this.fetchingBalance = false
+        this.requestUpdate()
+      })
+      .catch(() => {
+        this.fetchingBalance = false
+        this.requestUpdate()
+      })
   }
 
   // -- Render -------------------------------------------- //

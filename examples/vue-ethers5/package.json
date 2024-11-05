@@ -1,19 +1,22 @@
 {
   "name": "@examples/vue-ethers5",
   "private": true,
-  "version": "1.0.3",
+  "version": "1.2.0",
   "scripts": {
-    "dev": "vite --port 3013",
-    "build": "vite build"
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@reown/appkit-adapter-ethers5": "workspace:*",
     "@reown/appkit": "workspace:*",
+    "@reown/appkit-adapter-ethers5": "workspace:*",
     "ethers": "5.7.2",
     "vue": "3.4.3"
   },
   "devDependencies": {
+    "@vitejs/plugin-vue": "5.0.2",
+    "typescript": "5.6.2",
     "vite": "5.2.11",
-    "@vitejs/plugin-vue": "5.0.2"
+    "vue-tsc": "2.1.8"
   }
 }

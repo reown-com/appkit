@@ -4,8 +4,7 @@ import {
   ChainController,
   ConnectionController,
   ConnectorController,
-  EnsController,
-  NetworkController
+  EnsController
 } from '../../exports/index.js'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { ConstantsUtil } from '@reown/appkit-common'
@@ -136,14 +135,21 @@ describe('EnsController', () => {
     // No network set
     const result = await EnsController.getNamesForAddress('0x123')
     expect(result).toEqual([])
-    NetworkController.setActiveCaipNetwork({
-      id: 'eip155:1',
+    ChainController.setActiveCaipNetwork({
+      id: 1,
+      caipNetworkId: 'eip155:1',
       chainNamespace: ConstantsUtil.CHAIN.EVM,
-      chainId: 1,
       name: 'Ethereum',
-      currency: 'ETH',
-      explorerUrl: 'https://etherscan.io',
-      rpcUrl: 'https://rpc.infura.com/v1/'
+      nativeCurrency: {
+        name: 'Ethereum',
+        decimals: 18,
+        symbol: 'ETH'
+      },
+      rpcUrls: {
+        default: {
+          http: ['']
+        }
+      }
     })
     const resultWithNetwork = await EnsController.getNamesForAddress('0x123')
     expect(resultWithNetwork).toEqual([TEST_NAME])
@@ -154,31 +160,50 @@ describe('EnsController', () => {
 
   it('should register name', async () => {
     // Setup
-    NetworkController.setActiveCaipNetwork({
-      id: 'eip155:137',
+    ChainController.setActiveCaipNetwork({
+      id: 137,
+      caipNetworkId: 'eip155:137',
       chainNamespace: ConstantsUtil.CHAIN.EVM,
-      chainId: 137,
-      currency: 'ETH',
-      explorerUrl: 'https://etherscan.io',
-      rpcUrl: 'https://rpc.infura.com/v1/',
-      name: 'Polygon'
+      name: 'Polygon',
+      nativeCurrency: {
+        name: 'Polygon',
+        decimals: 18,
+        symbol: 'MATIC'
+      },
+      rpcUrls: {
+        default: {
+          http: ['']
+        }
+      }
     })
     AccountController.setCaipAddress('eip155:1:0x123', chain)
+    // Use fake timers so that the timestamp is always the same
+    vi.useFakeTimers()
+
+    const message = JSON.stringify({
+      name: 'newname.reown.id',
+      attributes: {},
+      timestamp: Math.floor(Date.now() / 1000)
+    })
+
     const getAuthConnectorSpy = vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
       provider: { getEmail: () => 'test@walletconnect.com' } as unknown as W3mFrameProvider,
       id: 'w3mAuth',
       type: 'AUTH',
       chain: ConstantsUtil.CHAIN.EVM
     })
+
     const signMessageSpy = vi
       .spyOn(ConnectionController, 'signMessage')
       .mockResolvedValueOnce('0x123123123')
 
     await EnsController.registerName('newname.reown.id')
     expect(getAuthConnectorSpy).toHaveBeenCalled()
-    expect(signMessageSpy).toHaveBeenCalled()
+
+    expect(signMessageSpy).toHaveBeenCalledWith(message)
     expect(AccountController.state.profileName).toBe(`newname${ConstantsUtil.WC_NAME_SUFFIX}`)
     expect(EnsController.state.loading).toBe(false)
+    vi.useRealTimers()
   })
 
   it('should validate name correctly', () => {

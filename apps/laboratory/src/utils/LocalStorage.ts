@@ -2,9 +2,8 @@ import { bigIntReplacer } from './CommonUtils'
 
 export const PASSKEY_LOCALSTORAGE_KEY = 'passkeyId'
 export const LAST_USED_ADDRESS_KEY = 'lastUsedAddress'
-export const LOCAL_SIGNER_KEY = 'localECDSASigner'
-export const GRANTED_PERMISSIONS_KEY = 'grantedPermissions'
-export const WC_COSIGNER_DATA = 'wc_cosignerData'
+export const LOCAL_SIGNER_KEY = 'ecdsa-key'
+export const SMART_SESSION_KEY = 'smart-session'
 /**
  * Sets an item in the local storage.
  * @param key - The key to set the item with.

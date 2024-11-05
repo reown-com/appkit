@@ -70,9 +70,7 @@ export class EthersAdapter extends AdapterBlueprint {
       const coinbaseWallet = new CoinbaseWalletSDK({
         appName: options?.metadata?.name,
         appLogoUrl: options?.metadata?.icons[0],
-        appChainIds: options.networks?.map(caipNetwork => caipNetwork.chainId as number) || [
-          1, 84532
-        ]
+        appChainIds: options.networks?.map(caipNetwork => caipNetwork.id as number) || [1, 84532]
       })
 
       coinbaseProvider = coinbaseWallet.makeWeb3Provider({
@@ -128,11 +126,11 @@ export class EthersAdapter extends AdapterBlueprint {
         data: params.data as `0x${string}`,
         gas: params.gas as bigint,
         gasPrice: params.gasPrice as bigint,
-        address: params.address as `0x${string}`
+        address: params.address
       },
       params.provider as Provider,
-      params.address as `0x${string}`,
-      Number(params.caipNetwork?.chainId)
+      params.address,
+      Number(params.caipNetwork?.id)
     )
 
     return { hash: tx }
@@ -156,7 +154,7 @@ export class EthersAdapter extends AdapterBlueprint {
       },
       params.provider as Provider,
       params.caipAddress,
-      Number(params.caipNetwork?.chainId)
+      Number(params.caipNetwork?.id)
     )
 
     return { hash: result }
@@ -179,7 +177,7 @@ export class EthersAdapter extends AdapterBlueprint {
         },
         provider as Provider,
         address as `0x${string}`,
-        Number(caipNetwork?.chainId)
+        Number(caipNetwork?.id)
       )
 
       return { gas: result }
@@ -212,12 +210,12 @@ export class EthersAdapter extends AdapterBlueprint {
   }
 
   public async syncConnection(
-    id: string,
-    caipNetworkId?: string
+    params: AdapterBlueprint.SyncConnectionParams
   ): Promise<AdapterBlueprint.ConnectResult> {
+    const { id, namespace } = params
     const connector = this.connectors.find(c => c.id === id)
     const selectedProvider = connector?.provider as Provider
-    const chainId = Number(caipNetworkId?.split(':')[1])
+    const chainId = Number(namespace?.split(':')[1])
 
     if (!selectedProvider) {
       throw new Error('Provider not found')
@@ -394,18 +392,18 @@ export class EthersAdapter extends AdapterBlueprint {
   public async getBalance(
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
-    const caipNetwork = this.caipNetworks?.find((c: CaipNetwork) => c.chainId === params.chainId)
+    const caipNetwork = this.caipNetworks?.find((c: CaipNetwork) => c.id === params.chainId)
 
     if (caipNetwork) {
-      const jsonRpcProvider = new JsonRpcProvider(caipNetwork.rpcUrl, {
-        chainId: caipNetwork.chainId as number,
+      const jsonRpcProvider = new JsonRpcProvider(caipNetwork.rpcUrls.default.http[0], {
+        chainId: caipNetwork.id as number,
         name: caipNetwork.name
       })
 
       const balance = await jsonRpcProvider.getBalance(params.address)
       const formattedBalance = formatEther(balance)
 
-      return { balance: formattedBalance, symbol: caipNetwork.currency }
+      return { balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol }
     }
 
     return { balance: '', symbol: '' }
@@ -475,18 +473,18 @@ export class EthersAdapter extends AdapterBlueprint {
   public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
     const { caipNetwork, provider, providerType } = params
     if (providerType === 'WALLET_CONNECT') {
-      ;(provider as UniversalProvider).setDefaultChain(caipNetwork.id)
+      ;(provider as UniversalProvider).setDefaultChain(String(`eip155:${String(caipNetwork.id)}`))
     } else if (providerType === 'AUTH') {
       const authProvider = provider as W3mFrameProvider
-      await authProvider.switchNetwork(caipNetwork.chainId)
+      await authProvider.switchNetwork(caipNetwork.id)
       await authProvider.connect({
-        chainId: caipNetwork.chainId as number | undefined
+        chainId: caipNetwork.id
       })
     } else {
       try {
         await (provider as Provider).request({
           method: 'wallet_switchEthereumChain',
-          params: [{ chainId: EthersHelpersUtil.numberToHexString(caipNetwork.chainId) }]
+          params: [{ chainId: EthersHelpersUtil.numberToHexString(caipNetwork.id) }]
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (switchError: any) {

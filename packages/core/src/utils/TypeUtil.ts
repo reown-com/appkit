@@ -10,10 +10,6 @@ import type {
   SdkFramework,
   AppKitSdkVersion
 } from '@reown/appkit-common'
-import type {
-  NetworkControllerClient,
-  NetworkControllerState
-} from '../controllers/NetworkController.js'
 import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
 import type { AccountControllerState } from '../controllers/AccountController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
@@ -729,6 +725,16 @@ export type Event =
         amount: number
       }
     }
+  | {
+      type: 'track'
+      event: 'CONNECT_PROXY_ERROR'
+      properties: {
+        message: string
+        uri: string
+        mobile_link: string
+        name: string
+      }
+    }
 // Onramp Types
 export type DestinationWallet = {
   address: string
@@ -821,11 +827,53 @@ export interface WriteContractArgs {
   abi: any
 }
 
+export interface NetworkControllerClient {
+  switchCaipNetwork: (network: CaipNetwork) => Promise<void>
+  getApprovedCaipNetworksData: () => Promise<{
+    approvedCaipNetworkIds: CaipNetworkId[]
+    supportsAllNetworks: boolean
+  }>
+}
+
+export type AdapterNetworkState = {
+  supportsAllNetworks: boolean
+  isUnsupportedChain?: boolean
+  _client?: NetworkControllerClient
+  caipNetwork?: CaipNetwork
+  requestedCaipNetworks?: CaipNetwork[]
+  approvedCaipNetworkIds?: CaipNetworkId[]
+  allowUnsupportedCaipNetwork?: boolean
+  smartAccountEnabledNetworks?: number[]
+}
+
+export type AdapterAccountState = {
+  currentTab: number
+  caipAddress?: CaipAddress
+  address?: string
+  addressLabels: Map<string, string>
+  allAccounts: AccountType[]
+  balance?: string
+  balanceSymbol?: string
+  profileName?: string | null
+  profileImage?: string | null
+  addressExplorerUrl?: string
+  smartAccountDeployed?: boolean
+  socialProvider?: SocialProvider
+  tokenBalance?: Balance[]
+  shouldUpdateToAddress?: string
+  connectedWalletInfo?: ConnectedWalletInfo
+  preferredAccountType?: W3mFrameTypes.AccountType
+  socialWindow?: Window
+  farcasterUrl?: string
+  status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
+  siweStatus?: 'uninitialized' | 'ready' | 'loading' | 'success' | 'rejected' | 'error'
+}
+
 export type ChainAdapter = {
   connectionControllerClient?: ConnectionControllerClient
   networkControllerClient?: NetworkControllerClient
   accountState?: AccountControllerState
-  networkState?: NetworkControllerState
+  networkState?: AdapterNetworkState
   defaultNetwork?: CaipNetwork
   chainNamespace: ChainNamespace
   isUniversalAdapterClient?: boolean
@@ -919,6 +967,26 @@ export type Features = {
    * @type {boolean}
    */
   allWallets?: boolean
+  /**
+   * @description Enable or disable the Smart Sessions feature. Disabled by default.
+   * @type {boolean}
+   */
+  smartSessions?: boolean
 }
 
 export type FeaturesKeys = keyof Features
+
+export type WalletGuideType = 'get-started' | 'explore'
+
+export type UseAppKitAccountReturn = {
+  caipAddress: CaipAddress | undefined
+  address: string | undefined
+  isConnected: boolean
+  status: AccountControllerState['status']
+}
+
+export type UseAppKitNetworkReturn = {
+  caipNetwork: CaipNetwork | undefined
+  chainId: number | string | undefined
+  caipNetworkId: CaipNetworkId | undefined
+}

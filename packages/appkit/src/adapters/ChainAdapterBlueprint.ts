@@ -1,4 +1,4 @@
-import type { CaipAddress, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import type { AppKitNetwork, CaipAddress, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
 import type { Connector as AppKitConnector } from '@reown/appkit-core'
 import type UniversalProvider from '@walletconnect/universal-provider'
@@ -211,6 +211,15 @@ export abstract class AdapterBlueprint<
   public abstract syncConnectors(options?: AppKitOptions, appKit?: AppKit): void
 
   /**
+   * Synchronizes the connection with the given parameters.
+   * @param {AdapterBlueprint.SyncConnectionParams} params - Synchronization parameters
+   * @returns {Promise<AdapterBlueprint.ConnectResult>} Connection result
+   */
+  public abstract syncConnection(
+    params: AdapterBlueprint.SyncConnectionParams
+  ): Promise<AdapterBlueprint.ConnectResult>
+
+  /**
    * Signs a message with the connected wallet.
    * @param {AdapterBlueprint.SignMessageParams} params - Parameters including message to sign, address, and optional provider
    * @returns {Promise<AdapterBlueprint.SignMessageResult>} Object containing the signature
@@ -312,6 +321,12 @@ export namespace AdapterBlueprint {
     rpcUrl?: string
   }
 
+  export type SyncConnectionParams = {
+    id: string
+    namespace: ChainNamespace
+    rpcUrl: string
+  }
+
   export type SignMessageParams = {
     message: string
     address: string
@@ -404,7 +419,7 @@ export namespace AdapterBlueprint {
     id: AppKitConnector['id']
     type: AppKitConnector['type']
     provider: AppKitConnector['provider']
-    chainId: number
+    chainId: number | string
     address: string
   }
 }

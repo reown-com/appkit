@@ -5,7 +5,7 @@ import {
   useAppKitState,
   useAppKitTheme
 } from '@reown/appkit/react'
-import { mainnet, polygon } from '@reown/appkit/networks'
+import { mainnet, polygon, bsc } from '@reown/appkit/networks'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { WagmiProvider } from 'wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -23,7 +23,7 @@ if (!projectId) {
 // 2. Setup wagmi adapter
 const wagmiAdapter = new WagmiAdapter({
   projectId,
-  networks: [mainnet, polygon]
+  networks: [mainnet, polygon, bsc]
 })
 
 // 3. Create modal

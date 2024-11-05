@@ -124,4 +124,13 @@ export class UniversalAdapter extends AdapterBlueprint {
     }
     provider.setDefaultChain(caipNetwork.id)
   }
+  private parseWalletCapabilities(walletCapabilitiesString: string) {
+    try {
+      const walletCapabilities = JSON.parse(walletCapabilitiesString)
+
+      return walletCapabilities
+    } catch (error) {
+      throw new Error('Error parsing wallet capabilities')
+    }
+  }
 }
