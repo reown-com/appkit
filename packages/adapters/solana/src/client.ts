@@ -322,7 +322,7 @@ export class SolanaAdapter extends AdapterBlueprint {
 
     if (caipNetwork?.rpcUrls?.default?.http?.[0]) {
       SolStoreUtil.setConnection(
-        new Connection(caipNetwork?.rpcUrls?.default.http[0] as string, this.connectionSettings)
+        new Connection(caipNetwork.rpcUrls.default.http[0], this.connectionSettings)
       )
     }
   }

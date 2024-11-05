@@ -3,6 +3,7 @@ import {
   ChainController,
   ConnectorController,
   OptionsController,
+  type AuthConnector,
   type Metadata,
   type SdkVersion,
   type ThemeMode,
@@ -161,7 +162,7 @@ describe('ConnectorController', () => {
     OptionsController.setSdkVersion(mockDappData.sdkVersion)
     OptionsController.setProjectId(mockDappData.projectId)
 
-    ConnectorController.addConnector(evmAuthConnector)
+    ConnectorController.addConnector(evmAuthConnector as unknown as AuthConnector)
     expect(ConnectorController.state.connectors).toEqual([
       walletConnectConnector,
       externalConnector,
@@ -184,7 +185,7 @@ describe('ConnectorController', () => {
   })
 
   it('getAuthConnector() should return merged connector when already added on different network', () => {
-    ConnectorController.addConnector(solanaAuthConnector)
+    ConnectorController.addConnector(solanaAuthConnector as unknown as AuthConnector)
     const connector = ConnectorController.getAuthConnector()
     expect(connector).toEqual(evmAuthConnector)
   })

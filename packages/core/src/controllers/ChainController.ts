@@ -30,8 +30,8 @@ export interface ChainControllerState {
   activeCaipAddress: CaipAddress | undefined
   activeCaipNetwork?: CaipNetwork
   chains: Map<ChainNamespace, ChainAdapter>
-  networkControllerClient: NetworkControllerClient
-  connectionControllerClient: ConnectionControllerClient
+  networkControllerClient?: NetworkControllerClient
+  connectionControllerClient?: ConnectionControllerClient
   activeConnector?: Connector
   universalAdapter: Pick<ChainAdapter, 'networkControllerClient' | 'connectionControllerClient'>
   noAdapters: boolean
@@ -133,38 +133,6 @@ export const ChainController = {
         })
       })
     }
-  },
-
-  initializeUniversalAdapter(
-    adapter: ChainsInitializerAdapter,
-    adapters: ChainsInitializerAdapter[]
-  ) {
-    // state.universalAdapter = adapter
-    // if (adapters.length === 0) {
-    //   const storedCaipNetwork = StorageUtil.getStoredActiveCaipNetwork()
-    //   try {
-    //     if (storedCaipNetwork) {
-    //       state.activeChain = storedCaipNetwork.chainNamespace
-    //     } else {
-    //       state.activeChain =
-    //         adapter?.defaultNetwork?.chainNamespace ?? adapter.caipNetworks[0]?.chainNamespace
-    //     }
-    //   } catch (error) {
-    //     console.warn('>>> Error setting active caip network', error)
-    //   }
-    // }
-    // const chains = [...new Set(adapter.caipNetworks.map(caipNetwork => caipNetwork.chainNamespace))]
-    // chains.forEach((chain: ChainNamespace) => {
-    //   state.chains.set(chain, {
-    //     chainNamespace: chain,
-    //     connectionControllerClient: undefined,
-    //     networkControllerClient: undefined,
-    //     adapterType: adapter.adapterType,
-    //     accountState,
-    //     networkState,
-    //     caipNetworks: adapter.caipNetworks
-    //   })
-    // })
   },
 
   setAdapterNetworkState(chain: ChainNamespace, props: Partial<AdapterNetworkState>) {

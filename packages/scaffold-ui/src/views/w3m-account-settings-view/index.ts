@@ -79,7 +79,7 @@ export class W3mAccountSettingsView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     if (!this.address) {
-      // throw new Error('w3m-account-settings-view: No account provided')
+      // Throw new Error('w3m-account-settings-view: No account provided')
     }
 
     const networkImage = this.networkImages[this.network?.assets?.imageId ?? '']

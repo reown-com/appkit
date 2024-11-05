@@ -65,16 +65,10 @@ const evmAdapter = {
   connectionControllerClient: client
 }
 const adapters = [evmAdapter] as ChainAdapter[]
-const universalAdapter = {
-  chainNamespace: 'eip155',
-  connectionControllerClient: client,
-  caipNetworks: []
-} as ChainAdapter
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
   ChainController.initialize(adapters)
-  ChainController.initializeUniversalAdapter(universalAdapter, adapters)
 })
 
 describe('ConnectionController', () => {

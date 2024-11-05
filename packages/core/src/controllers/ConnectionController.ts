@@ -193,11 +193,11 @@ export const ConnectionController = {
   },
 
   async getCapabilities(params: string) {
-    return this._getClient().getCapabilities(params)
+    return this._getClient()?.getCapabilities(params)
   },
 
   async grantPermissions(params: object | readonly unknown[]) {
-    return this._getClient().grantPermissions(params)
+    return this._getClient()?.grantPermissions(params)
   },
 
   async estimateGas(args: EstimateGasTransactionArgs) {
@@ -216,7 +216,7 @@ export const ConnectionController = {
     return this._getClient()?.getEnsAvatar(value)
   },
 
-  checkInstalled(ids?: string[], chain?: ChainNamespace) {
+  checkInstalled(ids?: string[]) {
     return this._getClient()?.checkInstalled?.(ids) || false
   },
 
@@ -290,7 +290,7 @@ export const ConnectionController = {
     }
 
     const activeCaipNetwork = ChainController.getActiveCaipNetwork()
-    const client = this._getClient(activeCaipNetwork?.chainNamespace)
+    const client = this._getClient()
 
     try {
       if (!activeCaipNetwork) {
@@ -311,19 +311,19 @@ export const ConnectionController = {
         accountAddress: address
       })
 
-      const signature = await client.signMessage(message.toString())
+      const signature = await client?.signMessage(message.toString())
 
       await siwx.addSession({
         message,
-        signature
+        signature: signature as `0x${string}`
       })
 
       ModalController.close()
-    } catch (error) {
+    } catch (error: unknown) {
       // eslint-disable-next-line no-console
       console.error('Failed to initialize SIWX', error)
 
-      await client.disconnect()
+      await client?.disconnect()
 
       throw error
     }

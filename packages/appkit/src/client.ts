@@ -559,7 +559,6 @@ export class AppKit {
       options.metadata = defaultMetaData
     }
 
-    this.initializeUniversalAdapter()
     this.setDefaultNetwork()
 
     OptionsController.setAllWallets(options.allWallets)
@@ -707,28 +706,36 @@ export class AppKit {
         return result?.signature || ''
       },
       sendTransaction: async (args: SendTransactionArgs) => {
-        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
-        const result = await adapter?.sendTransaction(args)
+        if (args.chainNamespace === 'eip155') {
+          const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+          const result = await adapter?.sendTransaction(args)
 
-        return result?.hash || ''
-      },
-      estimateGas: async (args: EstimateGasTransactionArgs) => {
-        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
-        const provider = ProviderUtil.getProvider(
-          ChainController.state.activeChain as ChainNamespace
-        )
-        const caipNetwork = this.getCaipNetwork()
-        if (!caipNetwork) {
-          throw new Error('CaipNetwork is undefined')
+          return result?.hash || ''
         }
 
-        const result = await adapter?.estimateGas({
-          ...args,
-          provider,
-          caipNetwork
-        })
+        return ''
+      },
+      estimateGas: async (args: EstimateGasTransactionArgs) => {
+        if (args.chainNamespace === 'eip155') {
+          const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+          const provider = ProviderUtil.getProvider(
+            ChainController.state.activeChain as ChainNamespace
+          )
+          const caipNetwork = this.getCaipNetwork()
+          if (!caipNetwork) {
+            throw new Error('CaipNetwork is undefined')
+          }
 
-        return result?.gas || 0n
+          const result = await adapter?.estimateGas({
+            ...args,
+            provider,
+            caipNetwork
+          })
+
+          return result?.gas || 0n
+        }
+
+        return 0n
       },
       getEnsAvatar: async () => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
@@ -799,6 +806,7 @@ export class AppKit {
           chainId: ChainController.state.activeCaipNetwork?.id as string | number
         })
       },
+      // eslint-disable-next-line @typescript-eslint/require-await
       getApprovedCaipNetworksData: async () => {
         const providerType =
           ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
@@ -1275,6 +1283,7 @@ export class AppKit {
 
   private async initChainAdapters() {
     await Promise.all(
+      // eslint-disable-next-line @typescript-eslint/require-await
       this.chainNamespaces.map(async namespace => {
         if (this.options) {
           this.listenAdapter(namespace)

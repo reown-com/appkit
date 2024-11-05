@@ -173,7 +173,7 @@ export const SendController = {
         to,
         address,
         data,
-        value,
+        value: value ?? BigInt(0),
         gasPrice: params.gasPrice
       })
       SnackController.showSuccess('Transaction started')
@@ -233,7 +233,7 @@ export const SendController = {
           fromAddress: AccountController.state.address as `0x${string}`,
           tokenAddress,
           receiverAddress: params.receiverAddress as `0x${string}`,
-          tokenAmount: amount,
+          tokenAmount: amount ?? BigInt(0),
           method: 'transfer',
           abi: ContractUtil.getERC20Abi(tokenAddress)
         })
@@ -259,7 +259,7 @@ export const SendController = {
 
     ConnectionController.sendTransaction({
       chainNamespace: 'solana',
-      to: this.state.receiverAddress,
+      to: this.state.receiverAddress as `0x${string}`,
       value: this.state.sendTokenAmount
     })
       .then(() => {

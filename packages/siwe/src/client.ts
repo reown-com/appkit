@@ -149,7 +149,7 @@ export class AppKitSIWEClient {
 
     const signature = await ConnectionController.signMessage(message)
 
-    const isValid = await this.methods.verifyMessage({ message, signature })
+    const isValid = await this.methods.verifyMessage({ message, signature: signature as string })
     if (!isValid) {
       throw new Error('Error verifying SIWE signature')
     }
