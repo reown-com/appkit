@@ -34,7 +34,7 @@ if (!createAppKit || !WagmiAdapter) {
         name: 'Html CDN Example',
         description: 'Html CDN Example using local server',
         url: 'https://reown.com/appkit',
-        icons: ['https://avatars.githubusercontent.com/u/37784886']
+        icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
       }
     })
 
