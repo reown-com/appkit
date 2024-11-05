@@ -1,4 +1,4 @@
-import { customElement } from '@reown/appkit-ui'
+import { MathUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import {
@@ -44,6 +44,15 @@ export class W3mConnectView extends LitElement {
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+    const connectEl = this.shadowRoot?.querySelector('.connect')
+    connectEl?.removeEventListener('scroll', this.handleConnectListScroll.bind(this))
+  }
+
+  public override firstUpdated() {
+    const connectEl = this.shadowRoot?.querySelector('.connect')
+    // Use requestAnimationFrame to access scroll properties before the next repaint
+    requestAnimationFrame(this.handleConnectListScroll.bind(this))
+    connectEl?.addEventListener('scroll', this.handleConnectListScroll.bind(this))
   }
 
   // -- Render -------------------------------------------- //
@@ -53,7 +62,7 @@ export class W3mConnectView extends LitElement {
     const legal = termsConditionsUrl || privacyPolicyUrl
 
     const classes = {
-      'connect-scroll-view': true,
+      connect: true,
       disabled: Boolean(legal) && !this.checked && this.walletGuide === 'get-started'
     }
 
@@ -79,8 +88,8 @@ export class W3mConnectView extends LitElement {
             <w3m-social-login-widget></w3m-social-login-widget>
             ${this.walletListTemplate()}
           </wui-flex>
-          ${this.guideTemplate()}
         </wui-flex>
+        ${this.guideTemplate()}
       </wui-flex>
     `
   }
@@ -128,7 +137,16 @@ export class W3mConnectView extends LitElement {
     const socials = this.features?.socials
     const enableWallets = OptionsController.state.enableWallets
 
+    const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
+
+    const legal = termsConditionsUrl || privacyPolicyUrl
+
     const socialsExist = socials && socials.length
+
+    const classes = {
+      'guide': true,
+      disabled: Boolean(legal) && !this.checked && this.walletGuide === 'get-started'
+    }
 
     if (!this.authConnector && !socialsExist) {
       return null
@@ -140,14 +158,22 @@ export class W3mConnectView extends LitElement {
 
     if (this.walletGuide === 'explore') {
       return html`
-        <wui-flex flexDirection="column" .padding=${['0', '0', 'xl', '0']}>
+        <wui-flex
+          flexDirection="column"
+          .padding=${['0', '0', 'xl', '0']}
+          class=${classMap(classes)}
+        >
           <w3m-wallet-guide walletGuide=${this.walletGuide}></w3m-wallet-guide>
         </wui-flex>
       `
     }
 
     return html`
-      <wui-flex flexDirection="column" .padding=${['xl', '0', 'xl', '0']}>
+      <wui-flex
+        flexDirection="column"
+        .padding=${['xl', '0', 'xl', '0']}
+        class=${classMap(classes)}
+      >
         <w3m-wallet-guide walletGuide=${this.walletGuide}></w3m-wallet-guide>
       </wui-flex>
     `
@@ -167,6 +193,28 @@ export class W3mConnectView extends LitElement {
     return html`<w3m-legal-checkbox
       @checkboxChange=${this.onCheckBoxChange.bind(this)}
     ></w3m-legal-checkbox>`
+  }
+
+  private handleConnectListScroll() {
+    const connectEl = this.shadowRoot?.querySelector('.connect') as HTMLElement | undefined
+
+    // If connect element is not found or is not overflowing do not apply the mask
+    if (!connectEl || connectEl.scrollHeight <= 548) {
+      return
+    }
+
+    connectEl.style.setProperty(
+      '--connect-scroll--top-opacity',
+      MathUtil.interpolate([0, 100], [0, 1], connectEl.scrollTop).toString()
+    )
+    connectEl.style.setProperty(
+      '--connect-scroll--bottom-opacity',
+      MathUtil.interpolate(
+        [0, 100],
+        [0, 1],
+        connectEl.scrollHeight - connectEl.scrollTop - connectEl.offsetHeight
+      ).toString()
+    )
   }
 
   // -- Private Methods ----------------------------------- //
