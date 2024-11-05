@@ -469,7 +469,8 @@ export class UniversalAdapterClient {
       reversedChainNamespaces.forEach(chainNamespace => {
         const caipAddress = nameSpaces?.[chainNamespace]?.accounts[0] as CaipAddress | undefined
 
-        if (chainNamespace !== CommonConstantsUtil.CHAIN.SOLANA) {
+        //
+        if (!ProviderUtil.getProvider(chainNamespace)) {
           ProviderUtil.setProvider(chainNamespace, this.walletConnectProvider)
           ProviderUtil.setProviderId(chainNamespace, 'walletConnect')
         }

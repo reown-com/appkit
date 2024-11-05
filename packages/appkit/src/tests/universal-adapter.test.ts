@@ -152,6 +152,8 @@ describe('UniversalAdapter', () => {
 
   describe('UniversalAdapter - ProviderUtil', () => {
     it('should set the provider in ProviderUtil when setWalletConnectProvider is called', async () => {
+      ProviderUtil.reset()
+
       const mockSetProvider = vi.spyOn(ProviderUtil, 'setProvider')
       const mockSetProviderId = vi.spyOn(ProviderUtil, 'setProviderId')
 

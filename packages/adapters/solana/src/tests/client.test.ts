@@ -7,8 +7,7 @@ import { Connection } from '@solana/web3.js'
 import { SafeLocalStorage, type CaipNetwork } from '@reown/appkit-common'
 import { ProviderUtil } from '@reown/appkit/store'
 import { SolStoreUtil } from '../utils/SolanaStoreUtil.js'
-import { WalletConnectProvider } from '../providers/WalletConnectProvider'
-import UniversalProvider from '@walletconnect/universal-provider'
+
 import {
   solana as AppKitSolana,
   solanaTestnet as AppKitSolanaTestnet
@@ -202,15 +201,6 @@ describe('SolanaAdapter', () => {
 
       expect(client['availableProviders']).toContain(mockProvider)
       expect(mockAppKit.setConnectors).toHaveBeenCalled()
-    })
-  })
-
-  describe('SolanaAdapter - GetWalletConnectProvider', () => {
-    it('should get Solana WalletConnect provider', () => {
-      const mockUniversalProvider = {} as UniversalProvider
-      const result = client['getSolanaWalletConnectProvider'](mockUniversalProvider)
-
-      expect(result).toBeInstanceOf(WalletConnectProvider)
     })
   })
 
