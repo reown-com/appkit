@@ -17,10 +17,8 @@ export default css`
       to bottom,
       rgba(0, 0, 0, calc(1 - var(--connect-scroll--top-opacity))) 0px,
       rgba(200, 200, 200, calc(1 - var(--connect-scroll--top-opacity))) 1px,
-      black 80px,
-      black 110px,
-      black calc(100% - 150px),
-      black calc(100% - 110px),
+      black 140px,
+      black calc(100% - 140px),
       rgba(155, 155, 155, calc(1 - var(--connect-scroll--bottom-opacity))) calc(100% - 1px),
       rgba(0, 0, 0, calc(1 - var(--connect-scroll--bottom-opacity))) 100%
     );

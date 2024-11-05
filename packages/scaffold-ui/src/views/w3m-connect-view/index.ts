@@ -205,12 +205,12 @@ export class W3mConnectView extends LitElement {
 
     connectEl.style.setProperty(
       '--connect-scroll--top-opacity',
-      MathUtil.interpolate([0, 100], [0, 1], connectEl.scrollTop).toString()
+      MathUtil.interpolate([0, 50], [0, 1], connectEl.scrollTop).toString()
     )
     connectEl.style.setProperty(
       '--connect-scroll--bottom-opacity',
       MathUtil.interpolate(
-        [0, 100],
+        [0, 50],
         [0, 1],
         connectEl.scrollHeight - connectEl.scrollTop - connectEl.offsetHeight
       ).toString()
