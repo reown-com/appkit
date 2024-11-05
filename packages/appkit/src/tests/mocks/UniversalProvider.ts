@@ -96,7 +96,8 @@ export const mockProvider = {
         keychain: {
           has: vi.fn().mockResolvedValue(true),
           set: vi.fn()
-        }
+        },
+        getClientId: vi.fn().mockReturnValue('mock_client_id')
       },
       relayer: {
         subscriber: {
