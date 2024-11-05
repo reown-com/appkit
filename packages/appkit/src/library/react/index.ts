@@ -1,9 +1,9 @@
 import { useEffect, useState, useSyncExternalStore } from 'react'
 import { useSnapshot } from 'valtio'
 import type {
+  AppKitAccountButton,
   AppKitButton,
   AppKitConnectButton,
-  AppKitAccountButton,
   AppKitNetworkButton,
   W3mAccountButton,
   W3mButton,

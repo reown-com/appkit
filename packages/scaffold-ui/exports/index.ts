@@ -6,10 +6,6 @@
  */
 
 // -- Modal Components ---------------------------------- //
-export * from '../src/modal/appkit-account-button/index.js'
-export * from '../src/modal/appkit-button/index.js'
-export * from '../src/modal/appkit-connect-button/index.js'
-export * from '../src/modal/appkit-network-button/index.js'
 export * from '../src/modal/w3m-account-button/index.js'
 export * from '../src/modal/w3m-button/index.js'
 export * from '../src/modal/w3m-connect-button/index.js'

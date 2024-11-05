@@ -1,10 +1,10 @@
 import { onUnmounted, reactive, ref } from 'vue'
 import { type Event } from '@reown/appkit-core'
 import type {
-  AppKitButton,
-  AppKitConnectButton,
   AppKitAccountButton,
   AppKitNetworkButton,
+  AppKitButton,
+  AppKitConnectButton,
   W3mAccountButton,
   W3mButton,
   W3mConnectButton,
