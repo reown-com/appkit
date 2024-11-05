@@ -1,3 +1,4 @@
+import { customElement } from '@reown/appkit-ui'
 import {
   AccountController,
   AssetController,
@@ -6,15 +7,12 @@ import {
   CoreHelperUtil,
   ModalController
 } from '@reown/appkit-core'
-
 import type { WuiAccountButton } from '@reown/appkit-ui'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-@customElement('w3m-account-button')
-export class W3mAccountButton extends LitElement {
+class W3mAccountButtonBase extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
@@ -111,8 +109,15 @@ export class W3mAccountButton extends LitElement {
   }
 }
 
+@customElement('w3m-account-button')
+export class W3mAccountButton extends W3mAccountButtonBase {}
+
+@customElement('appkit-account-button')
+export class AppKitAccountButton extends W3mAccountButtonBase {}
+
 declare global {
   interface HTMLElementTagNameMap {
     'w3m-account-button': W3mAccountButton
+    'appkit-account-button': AppKitAccountButton
   }
 }

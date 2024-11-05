@@ -15,7 +15,7 @@ export default function Home() {
         <div>Page 2</div>
       </Link>
 
-      <w3m-button />
+      <appkit-button />
     </div>
   )
 }

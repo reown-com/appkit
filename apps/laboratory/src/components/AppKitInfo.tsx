@@ -30,7 +30,7 @@ export function AppKitInfo({ caipAddress, address, chainId, clientId }: AppKitIn
             <Heading size="xs" textTransform="uppercase" pb="2">
               CAIP Address
             </Heading>
-            <Text data-testid="appkit-caip-address">{caipAddress}</Text>
+            <Text data-testid="w3m-caip-address">{caipAddress}</Text>
           </Box>
 
           <Box>
