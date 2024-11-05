@@ -105,6 +105,15 @@ describe('UniversalAdapter', () => {
       })
     })
 
+    it('should set the clientId in AppKit when connectionControllerClient.connectWalletConnect is invoked', async () => {
+      const mockOnUri = vi.fn()
+      await universalAdapter?.connectionControllerClient?.connectWalletConnect?.(mockOnUri)
+
+      expect(mockAppKit.setClientId).toHaveBeenCalledWith(
+        mockProvider.client?.core?.crypto?.getClientId()
+      )
+    })
+
     it('should update AppKit state when connectionControllerClient.connectWalletConnect is invoked', async () => {
       const mockOnUri = vi.fn()
       await universalAdapter?.connectionControllerClient?.connectWalletConnect?.(mockOnUri)
