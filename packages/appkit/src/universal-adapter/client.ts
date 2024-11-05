@@ -469,11 +469,8 @@ export class UniversalAdapterClient {
       reversedChainNamespaces.forEach(chainNamespace => {
         const caipAddress = nameSpaces?.[chainNamespace]?.accounts[0] as CaipAddress | undefined
 
-        //
-        if (!ProviderUtil.getProvider(chainNamespace)) {
-          ProviderUtil.setProvider(chainNamespace, this.walletConnectProvider)
-          ProviderUtil.setProviderId(chainNamespace, 'walletConnect')
-        }
+        ProviderUtil.setProvider(chainNamespace, this.walletConnectProvider)
+        ProviderUtil.setProviderId(chainNamespace, 'walletConnect')
 
         this.appKit?.setApprovedCaipNetworksData(chainNamespace)
 

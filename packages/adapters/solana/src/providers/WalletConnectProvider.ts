@@ -12,8 +12,7 @@ import {
   type SendOptions
 } from '@solana/web3.js'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
-import type { CaipNetwork, ChainId } from '@reown/appkit-common'
-import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
+import type { CaipNetwork } from '@reown/appkit-common'
 import { WcHelpersUtil } from '@reown/appkit'
 import { WalletConnectMethodNotSupportedError } from './shared/Errors.js'
 
@@ -60,9 +59,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
           chainId = SolConstantsUtil.CHAIN_IDS.Devnet
         }
 
-        return this.requestedChains.find(
-          chain => withSolanaNamespace(chain.id as string) === chainId
-        )
+        return this.requestedChains.find(chain => chain.caipNetworkId === chainId)
       })
       .filter(Boolean) as CaipNetwork[]
   }
@@ -79,7 +76,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
 
   public async connect() {
     const rpcMap = this.requestedChains.reduce<Record<string, string>>((acc, chain) => {
-      acc[withSolanaNamespace(chain.id as string)] = chain.rpcUrls.default.http[0] || ''
+      acc[chain.caipNetworkId] = chain.rpcUrls.default.http[0] || ''
 
       return acc
     }, {})
@@ -235,7 +232,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     const chain = this.chains.find(c => this.getActiveChain()?.id === c.id)
 
     // This is a workaround for wallets that only accept Solana deprecated networks
-    let chainId = withSolanaNamespace(chain?.id)
+    let chainId = chain?.caipNetworkId
 
     switch (chainId) {
       case SolConstantsUtil.CHAIN_IDS.Mainnet:
@@ -311,7 +308,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
    * This method is a workaround for wallets that only accept Solana deprecated networks
    */
   private getRequestedChainsWithDeprecated() {
-    const chains = this.requestedChains.map(chain => withSolanaNamespace<ChainId>(chain.id))
+    const chains = this.requestedChains.map(chain => chain.caipNetworkId)
 
     if (chains.includes(SolConstantsUtil.CHAIN_IDS.Mainnet)) {
       chains.push(SolConstantsUtil.CHAIN_IDS.Deprecated_Mainnet)
