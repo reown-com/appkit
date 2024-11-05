@@ -11,12 +11,12 @@ export class ModalValidator {
   constructor(public readonly page: Page) {}
 
   async expectConnected() {
-    const accountButton = this.page.locator('appkit-account-button')
+    const accountButton = this.page.locator('account-button')
     await expect(accountButton, 'Account button should be present').toBeAttached({
       timeout: MAX_WAIT
     })
     await expect(
-      this.page.getByTestId('appkit-connect-button'),
+      this.page.getByTestId('connect-button'),
       'Connect button should not be present'
     ).toBeHidden({
       timeout: MAX_WAIT
@@ -25,7 +25,7 @@ export class ModalValidator {
   }
 
   async expectBalanceFetched(currency: 'SOL' | 'ETH') {
-    const accountButton = this.page.locator('appkit-account-button')
+    const accountButton = this.page.locator('account-button')
     await expect(accountButton, `Account button should show balance as ${currency}`).toContainText(
       `0.000 ${currency}`
     )
@@ -54,7 +54,7 @@ export class ModalValidator {
 
   async expectDisconnected() {
     await expect(
-      this.page.getByTestId('appkit-connect-button'),
+      this.page.getByTestId('connect-button'),
       'Connect button should be present'
     ).toBeVisible({
       timeout: MAX_WAIT
@@ -83,7 +83,7 @@ export class ModalValidator {
   }
 
   async expectCaipAddressHaveCorrectNetworkId(caipNetworkId: CaipNetworkId) {
-    const address = this.page.getByTestId('appkit-caip-address')
+    const address = this.page.getByTestId('w3m-caip-address')
     await expect(address, 'Correct CAIP address should be present').toContainText(
       caipNetworkId.toString()
     )
@@ -294,19 +294,19 @@ export class ModalValidator {
   }
 
   async expectToBeConnectedInstantly() {
-    const accountButton = this.page.locator('appkit-account-button')
+    const accountButton = this.page.locator('account-button')
     await expect(accountButton, 'Account button should be present').toBeAttached({
       timeout: 1000
     })
   }
 
   async expectConnectButtonLoading() {
-    const connectButton = this.page.getByTestId('appkit-connect-button')
+    const connectButton = this.page.getByTestId('connect-button')
     await expect(connectButton).toContainText('Connecting...')
   }
 
   async expectAccountButtonReady() {
-    const accountButton = this.page.getByTestId('appkit-account-button')
+    const accountButton = this.page.getByTestId('account-button')
     await expect(accountButton).toBeVisible({ timeout: MAX_WAIT })
   }
 

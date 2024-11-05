@@ -34,7 +34,7 @@ basicTest.afterAll(async () => {
 
 // -- Tests --------------------------------------------------------------------
 basicTest('Should be able to open modal', async () => {
-  await modalPage.page.getByTestId('appkit-connect-button').click()
+  await modalPage.page.getByTestId('connect-button').click()
   await expect(modalPage.page.getByTestId('all-wallets')).toBeVisible()
   await modalPage.closeModal()
 })
@@ -47,7 +47,7 @@ basicTest('Should be able to open modal with the open hook', async () => {
 })
 
 basicTest('Should show socials enabled by default', async () => {
-  await modalPage.page.getByTestId('appkit-connect-button').click()
+  await modalPage.page.getByTestId('connect-button').click()
   await modalValidator.expectSocialsVisible()
   await modalPage.closeModal()
 })
@@ -58,6 +58,6 @@ basicTest('Should show external connectors', async ({ library }) => {
   }
 
   await modalPage.page.goto(`${BASE_URL}/library/external/`)
-  await modalPage.page.getByTestId('appkit-connect-button').click()
+  await modalPage.page.getByTestId('connect-button').click()
   await modalValidator.expectExternalVisible()
 })

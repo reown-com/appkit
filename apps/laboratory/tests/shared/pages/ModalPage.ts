@@ -48,7 +48,7 @@ export class ModalPage {
     public readonly library: string,
     public readonly flavor: ModalFlavor
   ) {
-    this.connectButton = this.page.getByTestId('appkit-connect-button')
+    this.connectButton = this.page.getByTestId('connect-button')
     if (library === 'multichain-ethers-solana') {
       this.url = `${this.baseURL}library/multichain-ethers-solana/`
     } else {
@@ -182,7 +182,7 @@ export class ModalPage {
   async loginWithEmail(email: string, validate = true) {
     // Connect Button doesn't have a proper `disabled` attribute so we need to wait for the button to change the text
     await this.page
-      .getByTestId('appkit-connect-button')
+      .getByTestId('connect-button')
       .getByRole('button', { name: 'Connect Wallet' })
       .click()
     await this.page.getByTestId('wui-email-input').locator('input').focus()
@@ -200,7 +200,7 @@ export class ModalPage {
 
   async loginWithSocial(socialOption: 'github', socialMail: string, socialPass: string) {
     await this.page
-      .getByTestId('appkit-connect-button')
+      .getByTestId('connect-button')
       .getByRole('button', { name: 'Connect Wallet' })
       .click()
 
@@ -264,7 +264,7 @@ export class ModalPage {
   }
 
   async disconnect() {
-    const accountBtn = this.page.getByTestId('appkit-account-button')
+    const accountBtn = this.page.getByTestId('account-button')
     await expect(accountBtn, 'Account button should be visible').toBeVisible()
     await expect(accountBtn, 'Account button should be enabled').toBeEnabled()
     await accountBtn.click()
@@ -313,7 +313,7 @@ export class ModalPage {
   }
 
   async clickWalletUpgradeCard(context: BrowserContext) {
-    await this.page.getByTestId('appkit-account-button').click()
+    await this.page.getByTestId('account-button').click()
 
     await this.page.getByTestId('w3m-profile-button').click()
     await this.page.getByTestId('account-settings-button').click()
@@ -345,7 +345,7 @@ export class ModalPage {
   }
 
   async switchNetwork(network: string) {
-    await this.page.getByTestId('appkit-account-button').click()
+    await this.page.getByTestId('account-button').click()
     await this.page.getByTestId('w3m-account-select-network').click()
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
     // The state is chaing too fast and test runner doesn't wait the loading page. It's fastly checking the network selection button and detect that it's switched already.
@@ -362,11 +362,11 @@ export class ModalPage {
     expect(this.page.getByTestId('w3m-modal-card')).not.toBeVisible()
     expect(this.page.getByTestId('w3m-modal-overlay')).not.toBeVisible()
     this.page.waitForTimeout(300)
-    await this.page.getByTestId('appkit-account-button').click()
+    await this.page.getByTestId('account-button').click()
   }
 
   async openConnectModal() {
-    await this.page.getByTestId('appkit-connect-button').click()
+    await this.page.getByTestId('connect-button').click()
   }
 
   async closeModal() {
@@ -379,7 +379,7 @@ export class ModalPage {
     const email = new Email(mailsacApiKey)
     const newEmailAddress = await email.getEmailAddressToUse()
 
-    await this.page.getByTestId('appkit-account-button').click()
+    await this.page.getByTestId('account-button').click()
     await this.page.getByTestId('w3m-account-email-update').click()
     await this.page.getByTestId('wui-email-input').locator('input').focus()
     await this.page.getByTestId('wui-email-input').locator('input').fill(newEmailAddress)
@@ -508,7 +508,7 @@ export class ModalPage {
   }
 
   async openModal() {
-    await this.page.getByTestId('appkit-account-button').click()
+    await this.page.getByTestId('account-button').click()
   }
 
   async openNetworks() {
