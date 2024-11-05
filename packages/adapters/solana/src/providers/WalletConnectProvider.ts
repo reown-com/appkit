@@ -15,6 +15,7 @@ import { isVersionedTransaction } from '@solana/wallet-adapter-base'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { WcHelpersUtil } from '@reown/appkit'
 import { WalletConnectMethodNotSupportedError } from './shared/Errors.js'
+import type { ProviderIdType } from '@reown/appkit/store'
 
 export type WalletConnectProviderConfig = {
   provider: UniversalProvider
@@ -23,7 +24,7 @@ export type WalletConnectProviderConfig = {
 }
 
 export class WalletConnectProvider extends ProviderEventEmitter implements Provider {
-  public readonly name = 'WalletConnect'
+  public readonly name = 'walletConnect' satisfies ProviderIdType
   public readonly type = 'WALLET_CONNECT'
   public readonly icon =
     'https://imagedelivery.net/_aTEfDRm7z3tKgu9JhfeKA/05338e12-4f75-4982-4e8a-83c67b826b00/md'
@@ -47,7 +48,6 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
   public onUri?: (uri: string) => void
 
   // -- Public ------------------------------------------- //
-
   public get chains() {
     return this.sessionChains
       .map(sessionChainId => {
@@ -75,32 +75,13 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
   }
 
   public async connect() {
-    const rpcMap = this.requestedChains.reduce<Record<string, string>>((acc, chain) => {
-      acc[chain.caipNetworkId] = chain.rpcUrls.default.http[0] || ''
-
-      return acc
-    }, {})
-
     if (this.provider.session?.namespaces['solana']) {
       this.session = this.provider.session
     } else {
       this.provider.on('display_uri', this.onUri)
-      this.session = await this.provider.connect({
-        optionalNamespaces: {
-          solana: {
-            // Double check these with Felipe
-            chains: this.getRequestedChainsWithDeprecated() as string[],
-            methods: [
-              'solana_signMessage',
-              'solana_signTransaction',
-              'solana_signAndSendTransaction',
-              'solana_signAllTransactions'
-            ],
-            events: [],
-            rpcMap
-          }
-        }
-      })
+      const optionalNamespaces = WcHelpersUtil.createNamespaces(this.chains)
+      optionalNamespaces['solana']?.chains.push(...this.getRequestedChainsWithDeprecated())
+      this.session = await this.provider.connect({ optionalNamespaces })
       this.provider.removeListener('display_uri', this.onUri)
     }
 
@@ -308,7 +289,9 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
    * This method is a workaround for wallets that only accept Solana deprecated networks
    */
   private getRequestedChainsWithDeprecated() {
-    const chains = this.requestedChains.map(chain => chain.caipNetworkId)
+    const chains = this.requestedChains
+      .map(chain => chain.caipNetworkId)
+      .filter(chain => chain.startsWith('solana'))
 
     if (chains.includes(SolConstantsUtil.CHAIN_IDS.Mainnet)) {
       chains.push(SolConstantsUtil.CHAIN_IDS.Deprecated_Mainnet)

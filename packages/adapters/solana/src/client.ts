@@ -320,7 +320,6 @@ export class SolanaAdapter implements ChainAdapter {
         })
 
         this.addProvider(wcProvider)
-        this.setProvider(wcProvider)
       }
     })
 
