@@ -49,7 +49,10 @@ import {
   type CaipNetworkId
 } from '@reown/appkit-common'
 import type { AppKitOptions } from './utils/TypesUtil.js'
-import { UniversalAdapter, UniversalAdapterClient } from './universal-adapter/client.js'
+import {
+  UniversalAdapter,
+  UniversalAdapter as UniversalAdapterClient
+} from './universal-adapter/client.js'
 import { CaipNetworksUtil, ErrorUtil } from '@reown/appkit-utils'
 import {
   W3mFrameHelpers,
@@ -114,11 +117,11 @@ export class AppKit {
 
   private initPromise?: Promise<void> = undefined
 
-  public version: SdkVersion
+  public version?: SdkVersion
 
   public adapter?: ChainAdapter
 
-  private caipNetworks: [CaipNetwork, ...CaipNetwork[]]
+  private caipNetworks?: [CaipNetwork, ...CaipNetwork[]]
 
   private defaultCaipNetwork?: CaipNetwork
 
@@ -186,7 +189,7 @@ export class AppKit {
   }
 
   public switchNetwork(appKitNetwork: AppKitNetwork) {
-    const network = this.caipNetworks.find(n => n.id === appKitNetwork.id)
+    const network = this.caipNetworks?.find(n => n.id === appKitNetwork.id)
 
     if (!network) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.SWITCH_NETWORK_NOT_FOUND, 'error')
@@ -643,6 +646,8 @@ export class AppKit {
   }
 
   private createClients() {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     this.connectionControllerClient = {
       connectWalletConnect: async (onUri: (uri: string) => void) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
@@ -791,7 +796,7 @@ export class AppKit {
         await adapter?.switchNetwork({ caipNetwork, provider, providerType })
         await this.syncAccount({
           address: AccountController.state.address as string,
-          chainId: ChainController.state.activeCaipNetwork?.id
+          chainId: ChainController.state.activeCaipNetwork?.id as string | number
         })
       },
       getApprovedCaipNetworksData: async () => {
@@ -1004,7 +1009,7 @@ export class AppKit {
         }
         await this.syncAccount({
           address,
-          chainId: ChainController.state.activeCaipNetwork?.id
+          chainId: ChainController.state.activeCaipNetwork?.id as string | number
         })
       }
     })
@@ -1038,7 +1043,7 @@ export class AppKit {
       ChainController.state.activeChain as ChainNamespace
     )
 
-    const caipNetwork = this.caipNetworks.find(
+    const caipNetwork = this.caipNetworks?.find(
       n => n.id === chainId && n.chainNamespace === ChainController.state.activeChain
     )
     if (caipNetwork) {
@@ -1050,7 +1055,8 @@ export class AppKit {
     const balance = await adapter?.getBalance({
       address,
       chainId,
-      caipNetwork: this.getCaipNetwork()
+      caipNetwork: this.getCaipNetwork(),
+      tokens: this.options.tokens
     })
     if (balance) {
       this.setBalance(
@@ -1121,13 +1127,14 @@ export class AppKit {
 
   private syncRequestedNetworks() {
     const uniqueChainNamespaces = [
-      ...new Set(this.caipNetworks.map(caipNetwork => caipNetwork.chainNamespace))
+      ...new Set(this.caipNetworks?.map(caipNetwork => caipNetwork.chainNamespace))
     ]
     this.chainNamespaces = uniqueChainNamespaces
 
     uniqueChainNamespaces.forEach(chainNamespace =>
       this.setRequestedCaipNetworks(
-        this.caipNetworks.filter(caipNetwork => caipNetwork.chainNamespace === chainNamespace),
+        this.caipNetworks?.filter(caipNetwork => caipNetwork.chainNamespace === chainNamespace) ??
+          [],
         chainNamespace
       )
     )
@@ -1258,7 +1265,7 @@ export class AppKit {
         chainNamespace: namespace,
         connectionControllerClient: this.connectionControllerClient,
         networkControllerClient: this.networkControllerClient,
-        caipNetworks: this.caipNetworks
+        caipNetworks: this.caipNetworks ?? []
       })
 
       return adapters
@@ -1280,12 +1287,15 @@ export class AppKit {
 
   private setDefaultNetwork() {
     const previousNetwork = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
-    const caipNetwork = previousNetwork
-      ? this.caipNetworks.find(n => n.caipNetworkId === previousNetwork)
-      : undefined
+    const caipNetwork =
+      previousNetwork && this.caipNetworks?.length
+        ? this.caipNetworks.find(n => n.caipNetworkId === previousNetwork)
+        : undefined
 
-    const network = caipNetwork || this.defaultCaipNetwork || this.caipNetworks[0]
-    ChainController.setActiveCaipNetwork(network)
+    const network = caipNetwork || this.defaultCaipNetwork || this.caipNetworks?.[0]
+    if (network) {
+      ChainController.setActiveCaipNetwork(network)
+    }
   }
 
   private async initOrContinue() {

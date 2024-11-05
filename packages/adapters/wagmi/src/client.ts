@@ -413,7 +413,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       const balance = await getBalance(this.wagmiConfig, {
         address: params.address as Hex,
         chainId,
-        token: caipNetwork.tokens?.[0]?.address as Hex
+        token: params.tokens?.[caipNetwork.caipNetworkId]?.address as Hex
       })
 
       return { balance: balance.formatted, symbol: balance.symbol }

@@ -282,7 +282,7 @@ export class SolanaAdapter extends AdapterBlueprint {
 
     return {
       address,
-      chainId: params.chainId,
+      chainId: params.chainId as string,
       provider: selectedProvider,
       type: type as ConnectorType,
       id
@@ -341,7 +341,11 @@ export class SolanaAdapter extends AdapterBlueprint {
     }
 
     provider.on('disconnect', disconnectHandler)
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     provider.on('accountsChanged', accountsChangedHandler)
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     provider.on('connect', accountsChangedHandler)
 
     this.providerHandlers = {

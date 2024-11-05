@@ -101,7 +101,7 @@ export class W3mAccountSettingsView extends LitElement {
           <wui-flex gap="3xs" alignItems="center" justifyContent="center">
             <wui-text variant="title-6-600" color="fg-100" data-testid="account-settings-address">
               ${UiHelperUtil.getTruncateString({
-                string: this.address,
+                string: this.address as string,
                 charsStart: 4,
                 charsEnd: 6,
                 truncate: 'middle'

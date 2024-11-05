@@ -1,6 +1,6 @@
-import type { AppKitNetwork, CaipAddress, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import type { CaipAddress, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
-import type { Connector as AppKitConnector } from '@reown/appkit-core'
+import type { Connector as AppKitConnector, Tokens } from '@reown/appkit-core'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
@@ -10,8 +10,8 @@ import type { AppKit } from '../client.js'
 type EventName = 'disconnect' | 'accountChanged' | 'switchNetwork'
 type EventData = {
   disconnect: () => void
-  accountChanged: { address: `0x${string}`; chainId?: number | string }
-  switchNetwork: { address?: `0x${string}`; chainId: number | string }
+  accountChanged: { address: string; chainId?: number | string }
+  switchNetwork: { address?: string; chainId: number | string }
 }
 type EventCallback<T extends EventName> = (data: EventData[T]) => void
 
@@ -300,6 +300,7 @@ export namespace AdapterBlueprint {
     address: string
     chainId: number | string
     caipNetwork?: CaipNetwork
+    tokens?: Tokens
   }
 
   export type GetProfileParams = {

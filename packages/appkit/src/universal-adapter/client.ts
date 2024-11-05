@@ -113,6 +113,16 @@ export class UniversalAdapter extends AdapterBlueprint {
     return '0'
   }
 
+  public async syncConnection() {
+    return Promise.resolve({
+      id: 'WALLET_CONNECT',
+      type: 'WALLET_CONNECT' as const,
+      chainId: 1,
+      provider: this.provider as UniversalProvider,
+      address: ''
+    })
+  }
+
   // eslint-disable-next-line @typescript-eslint/require-await
   public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
     const { caipNetwork } = params
@@ -122,15 +132,6 @@ export class UniversalAdapter extends AdapterBlueprint {
     if (!provider) {
       throw new Error('UniversalAdapter:switchNetwork - provider is undefined')
     }
-    provider.setDefaultChain(caipNetwork.id)
-  }
-  private parseWalletCapabilities(walletCapabilitiesString: string) {
-    try {
-      const walletCapabilities = JSON.parse(walletCapabilitiesString)
-
-      return walletCapabilities
-    } catch (error) {
-      throw new Error('Error parsing wallet capabilities')
-    }
+    provider.setDefaultChain(`${caipNetwork.chainNamespace}:${String(caipNetwork.id)}`)
   }
 }

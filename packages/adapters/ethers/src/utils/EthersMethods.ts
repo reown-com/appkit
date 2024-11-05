@@ -10,7 +10,6 @@ import {
   parseUnits,
   formatUnits
 } from 'ethers'
-import { type Provider } from '@reown/appkit-utils/ethers'
 import type {
   EstimateGasTransactionArgs,
   Provider,
