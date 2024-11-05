@@ -68,7 +68,6 @@ class W3mNetworkButtonBase extends LitElement {
 
     return html`
       <wui-network-button
-        data-testid="wui-network-button"
         .disabled=${Boolean(this.disabled || this.loading)}
         .isUnsupportedChain=${!isSupported}
         imageSrc=${ifDefined(this.networkImage)}
