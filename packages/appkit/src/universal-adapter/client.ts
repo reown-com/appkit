@@ -149,7 +149,10 @@ export class UniversalAdapterClient {
           const isSiweEnabled = siweConfig?.options?.enabled
           const isProviderSupported = typeof WalletConnectProvider?.authenticate === 'function'
           const isSiweParamsValid = siweParams && Object.keys(siweParams || {}).length > 0
-
+          const clientId = await WalletConnectProvider?.client?.core?.crypto?.getClientId()
+          if (clientId) {
+            this.appKit?.setClientId(clientId)
+          }
           if (
             siweConfig &&
             isSiweEnabled &&

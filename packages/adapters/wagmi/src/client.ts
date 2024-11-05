@@ -311,8 +311,12 @@ export class WagmiAdapter implements ChainAdapter {
           ReturnType<(typeof UniversalProvider)['init']>
         >
 
-        const siweParams = await this.options?.siweConfig?.getMessageParams?.()
+        const clientId = await provider?.client?.core?.crypto?.getClientId()
+        if (clientId) {
+          this.appKit?.setClientId(clientId)
+        }
 
+        const siweParams = await this.options?.siweConfig?.getMessageParams?.()
         const isSiweEnabled = this.options?.siweConfig?.options?.enabled
         const isProviderSupported = typeof provider?.authenticate === 'function'
         const isSiweParamsValid = siweParams && Object.keys(siweParams || {}).length > 0
