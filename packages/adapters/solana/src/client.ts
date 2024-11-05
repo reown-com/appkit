@@ -19,6 +19,7 @@ import type { Provider } from '@reown/appkit-utils/solana'
 
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import { PublicKey, type Commitment, type ConnectionConfig } from '@solana/web3.js'
+import UniversalProvider from '@walletconnect/universal-provider'
 import type {
   ChainAdapter,
   ConnectionControllerClient,
@@ -307,6 +308,20 @@ export class SolanaAdapter implements ChainAdapter {
       networkControllerClient: this.networkControllerClient,
       adapterType: this.adapterType,
       caipNetworks: this.caipNetworks
+    })
+
+    ProviderUtil.subscribeProviders(providers => {
+      // If using UniversalAdapter, we need to add the WalletConnectProvider
+      if (providers['solana'] && providers['solana'] instanceof UniversalProvider) {
+        const wcProvider = new WalletConnectProvider({
+          chains: this.caipNetworks,
+          getActiveChain: () => this.appKit?.getCaipNetwork(),
+          provider: providers['solana']
+        })
+
+        this.addProvider(wcProvider)
+        this.setProvider(wcProvider)
+      }
     })
 
     this.syncRequestedNetworks(this.caipNetworks)
