@@ -102,10 +102,10 @@ export class WuiListAccount extends LitElement {
           >
         </wui-flex>
         <wui-flex gap="s" alignItems="center">
+          <slot name="action"></slot>
           ${this.fetchingBalance
             ? html`<wui-loading-spinner size="sm" color="accent-100"></wui-loading-spinner>`
             : html` <wui-text variant="small-400">$${this.balance.toFixed(2)}</wui-text>`}
-          <slot name="action"></slot>
         </wui-flex>
       </wui-flex>
     `
