@@ -1,6 +1,7 @@
 import type { WcWallet } from '@reown/appkit-core'
 import {
   AssetUtil,
+  ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   OptionsController,
@@ -19,12 +20,19 @@ export class W3mConnectCustomWidget extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @state() private connectors = ConnectorController.state.connectors
+  @state() private loading = false
 
   public constructor() {
     super()
     this.unsubscribe.push(
       ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
     )
+    if (CoreHelperUtil.isTelegram() && CoreHelperUtil.isIos()) {
+      this.loading = !ConnectionController.state.wcUri
+      this.unsubscribe.push(
+        ConnectionController.subscribeKey('wcUri', val => (this.loading = !val))
+      )
+    }
   }
 
   public override disconnectedCallback() {
@@ -49,6 +57,7 @@ export class W3mConnectCustomWidget extends LitElement {
           <wui-list-wallet
             imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
             name=${wallet.name ?? 'Unknown'}
+            ?loading=${this.loading}
             @click=${() => this.onConnectWallet(wallet)}
             data-testid=${`wallet-selector-${wallet.id}`}
           >
