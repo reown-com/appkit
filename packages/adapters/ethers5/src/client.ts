@@ -274,7 +274,7 @@ export class Ethers5Adapter {
           },
           [ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]: {
             getProvider: () => this.ethersConfig?.coinbase,
-            providerType: 'coinbase' as const
+            providerType: 'coinbaseWalletSDK' as const
           },
           [ConstantsUtil.AUTH_CONNECTOR_ID]: {
             getProvider: () => this.authProvider,
@@ -325,7 +325,9 @@ export class Ethers5Adapter {
       },
 
       disconnect: async () => {
-        const provider = ProviderUtil.getProvider<UniversalProvider | Provider>('eip155')
+        const provider = ProviderUtil.getProvider<UniversalProvider | Provider | ProviderInterface>(
+          'eip155'
+        )
         const providerId = ProviderUtil.state.providerIds['eip155']
 
         this.appKit?.setClientId(null)
@@ -338,8 +340,11 @@ export class Ethers5Adapter {
           [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: async () =>
             await this.appKit?.universalAdapter?.connectionControllerClient?.disconnect(),
 
-          coinbaseWalletSDK: async () =>
-            await this.appKit?.universalAdapter?.connectionControllerClient?.disconnect(),
+          coinbaseWalletSDK: async () => {
+            if (provider && 'disconnect' in provider) {
+              await provider.disconnect()
+            }
+          },
 
           [ConstantsUtil.AUTH_CONNECTOR_ID]: async () => {
             await this.authProvider?.disconnect()
