@@ -1,1 +1,1 @@
-export { UniversalAdapter } from "./client.js";
+export { UniversalAdapter } from './client.js'

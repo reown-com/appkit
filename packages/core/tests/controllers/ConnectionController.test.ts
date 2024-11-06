@@ -16,7 +16,7 @@ import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 const chain = CommonConstantsUtil.CHAIN.EVM
 const walletConnectUri = 'wc://uri?=123'
 const externalId = 'coinbaseWallet'
-const type = 'AUTH' as ConnectorType
+const type = 'WALLET_CONNECT' as ConnectorType
 const storageSpy = vi.spyOn(StorageUtil, 'setConnectedConnector')
 
 const client: ConnectionControllerClient = {
@@ -69,6 +69,7 @@ const adapters = [evmAdapter] as ChainAdapter[]
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
   ChainController.initialize(adapters)
+  ConnectionController.setClient(evmAdapter.connectionControllerClient)
 })
 
 describe('ConnectionController', () => {
@@ -84,7 +85,8 @@ describe('ConnectionController', () => {
     expect(ConnectionController.state).toEqual({
       wcError: false,
       buffering: false,
-      status: 'disconnected'
+      status: 'disconnected',
+      _client: evmAdapter.connectionControllerClient
     })
   })
 
@@ -140,7 +142,7 @@ describe('ConnectionController', () => {
     ConnectionController.checkInstalled([externalId])
     expect(clientCheckInstalledSpy).toHaveBeenCalledWith([externalId])
     expect(clientCheckInstalledSpy).toHaveBeenCalledWith(undefined)
-    expect(ConnectionController._getClient()).toEqual(partialClient)
+    expect(ConnectionController._getClient()).toEqual(evmAdapter.connectionControllerClient)
   })
 
   it('should update state correctly on resetWcConnection()', () => {
