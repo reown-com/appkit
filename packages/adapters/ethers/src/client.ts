@@ -368,6 +368,7 @@ export class EthersAdapter {
         // Common cleanup actions
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
         this.appKit?.resetAccount(this.chainNamespace)
+        this.removeListeners(provider as Provider)
       },
       signMessage: async (message: string) => {
         const provider = ProviderUtil.getProvider<Provider>(this.chainNamespace)
@@ -624,7 +625,6 @@ export class EthersAdapter {
     }
 
     const activeConfig = providerConfigs[walletId as unknown as keyof typeof providerConfigs]
-
     if (activeConfig?.provider) {
       this.setProvider(activeConfig.provider, walletId as ProviderIdType)
       this.setupProviderListeners(activeConfig.provider, walletId as ProviderIdType)
@@ -732,9 +732,13 @@ export class EthersAdapter {
     }
 
     const accountsChangedHandler = (accounts: string[]) => {
-      const currentAccount = accounts?.[0] as CaipAddress | undefined
+      const currentAccount = accounts?.[0] as Address | undefined
+
       if (currentAccount) {
-        this.appKit?.setCaipAddress(currentAccount, this.chainNamespace)
+        const chainId = this.appKit?.getCaipNetwork()?.id
+        const caipAddress = `${this.chainNamespace}:${chainId}:${currentAccount}` as CaipAddress
+
+        this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
 
         if (providerId === ConstantsUtil.EIP6963_CONNECTOR_ID) {
           this.appKit?.setAllAccounts(

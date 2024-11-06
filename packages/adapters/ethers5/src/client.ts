@@ -368,6 +368,7 @@ export class Ethers5Adapter {
         // Common cleanup actions
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
         this.appKit?.resetAccount(this.chainNamespace)
+        this.removeListeners(provider as Provider)
       },
       signMessage: async (message: string) => {
         const provider = ProviderUtil.getProvider<Provider>(this.chainNamespace)
@@ -720,7 +721,10 @@ export class Ethers5Adapter {
     const accountsChangedHandler = (accounts: string[]) => {
       const currentAccount = accounts?.[0] as CaipAddress | undefined
       if (currentAccount) {
-        this.appKit?.setCaipAddress(currentAccount, this.chainNamespace)
+        const chainId = this.appKit?.getCaipNetwork()?.id
+        const caipAddress = `${this.chainNamespace}:${chainId}:${currentAccount}` as CaipAddress
+
+        this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
 
         if (providerId === ConstantsUtil.EIP6963_CONNECTOR_ID) {
           this.appKit?.setAllAccounts(
