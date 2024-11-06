@@ -51,7 +51,7 @@ describe('LocalStorage', () => {
     getItem.mockImplementation(() =>
       JSON.stringify([
         mockSession({
-          message: { accountAddress: '0x1234567890abcdef', chainId: 'eip155:1' }
+          data: { accountAddress: '0x1234567890abcdef', chainId: 'eip155:1' }
         })
       ])
     )
