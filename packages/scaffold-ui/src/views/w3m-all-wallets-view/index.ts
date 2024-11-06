@@ -54,7 +54,6 @@ export class W3mAllWalletsView extends LitElement {
     this.badge = 'certified'
     SnackController.showSvg('Only WalletConnect certified', {
       icon: 'walletConnectBrown',
-      backgroundColor: 'accent-100',
       iconColor: 'accent-100'
     })
   }
