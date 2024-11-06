@@ -50,7 +50,7 @@ export class W3mSnackBar extends LitElement {
   public override render() {
     const { message, variant, icon } = SnackController.state
 
-    const preset = variant ? presets[variant] : icon
+    const preset = icon ?? presets[variant]
 
     return html`
       <wui-snackbar

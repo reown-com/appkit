@@ -5,7 +5,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 // -- Types --------------------------------------------- //
 export interface SnackControllerState {
   message: string
-  variant?: 'error' | 'success' | 'loading'
+  variant: 'error' | 'success' | 'loading'
   icon?: { backgroundColor: string; iconColor: string; icon: string }
   open: boolean
 }
@@ -15,7 +15,7 @@ type StateKey = keyof SnackControllerState
 // -- State --------------------------------------------- //
 const state = proxy<SnackControllerState>({
   message: '',
-  variant: undefined,
+  variant: 'success',
   icon: undefined,
   open: false
 })
@@ -52,7 +52,7 @@ export const SnackController = {
   _showMessage({
     message,
     icon,
-    variant
+    variant = 'success'
   }: {
     message: SnackControllerState['message']
     icon?: SnackControllerState['icon']
