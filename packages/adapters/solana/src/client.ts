@@ -47,6 +47,7 @@ import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
 import { ConstantsUtil, ErrorUtil } from '@reown/appkit-utils'
 import { createSendTransaction } from './utils/createSendTransaction.js'
 import { CoinbaseWalletProvider } from './providers/CoinbaseWalletProvider.js'
+import base58 from 'bs58'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
@@ -179,7 +180,7 @@ export class SolanaAdapter implements ChainAdapter {
 
         // If it's not the auth provider, we should auto connect the provider
         if (chainNamespace === this.chainNamespace || !isAuthProvider) {
-          this.setProvider(externalProvider)
+          await this.setProvider(externalProvider)
         }
       },
 
@@ -197,7 +198,7 @@ export class SolanaAdapter implements ChainAdapter {
 
         const signature = await provider.signMessage(new TextEncoder().encode(message))
 
-        return new TextDecoder().decode(signature)
+        return base58.encode(signature)
       },
 
       estimateGas: async params => {

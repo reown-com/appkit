@@ -63,6 +63,7 @@ export * from '../src/views/w3m-connecting-social-view/index.js'
 export * from '../src/views/w3m-profile-view/index.js'
 export * from '../src/views/w3m-switch-address-view/index.js'
 export * from '../src/views/w3m-connecting-farcaster-view/index.js'
+export * from '../src/views/w3m-siwx-sign-message-view/index.js'
 
 // -- Partials ------------------------------------------ //
 export * from '../src/partials/w3m-all-wallets-list/index.js'
@@ -116,3 +117,4 @@ export * from '../src/partials/w3m-connector-list/index.js'
 export * from '../src/partials/w3m-all-wallets-widget/index.js'
 export * from '../src/partials/w3m-account-auth-button/index.js'
 export * from '../src/partials/w3m-wallet-guide/index.js'
+export * from '../src/partials/w3m-siwx-sign-message-thumbnails/index.js'

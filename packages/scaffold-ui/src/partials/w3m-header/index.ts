@@ -85,7 +85,8 @@ function headings() {
     ConnectingFarcaster: 'Farcaster',
     SwitchActiveChain: 'Switch chain',
     SmartSessionCreated: undefined,
-    SmartSessionList: 'Smart Sessions'
+    SmartSessionList: 'Smart Sessions',
+    SIWXSignMessage: 'Sign In'
   }
 }
 

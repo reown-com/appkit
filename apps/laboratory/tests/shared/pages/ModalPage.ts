@@ -422,7 +422,7 @@ export class ModalPage {
   }
 
   async switchNetworkWithNetworkButton(networkName: string) {
-    const networkButton = this.page.getByTestId('w3m-network-button')
+    const networkButton = this.page.getByTestId('wui-network-button')
     await networkButton.click()
 
     const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${networkName}`)
@@ -566,5 +566,9 @@ export class ModalPage {
     expect(signature, 'Signature should be present').toBeTruthy()
 
     return signature as `0x${string}`
+  }
+
+  async switchNetworkWithHook() {
+    await this.page.getByTestId('switch-network-hook-button').click()
   }
 }
