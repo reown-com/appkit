@@ -51,4 +51,10 @@ export default css`
   [data-selected='true']:active:enabled {
     background-color: var(--wui-color-accent-glass-010);
   }
+
+  @media (max-width: 350px) {
+    button {
+      width: 100%;
+    }
+  }
 `

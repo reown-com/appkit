@@ -30,4 +30,10 @@ export default css`
     stroke: var(--wui-color-gray-glass-010);
     stroke-width: 1px;
   }
+
+  @media (max-width: 350px) {
+    :host {
+      width: 100%;
+    }
+  }
 `

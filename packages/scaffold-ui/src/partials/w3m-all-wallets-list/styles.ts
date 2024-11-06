@@ -9,9 +9,9 @@ export default css`
     grid-template-columns: repeat(auto-fill, 104px);
   }
 
-  @media (max-width: 435px) {
+  @media (max-width: 350px) {
     wui-grid {
-      grid-template-columns: repeat(auto-fill, 105px);
+      grid-template-columns: repeat(2, 1fr);
     }
   }
 
