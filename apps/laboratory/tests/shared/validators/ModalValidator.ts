@@ -145,6 +145,11 @@ export class ModalValidator {
     expect(queryParameters[key]).toBe(value)
   }
 
+  async expectAllWalletsListSearchItem(id: string) {
+    const allWalletsListSearchItem = this.page.getByTestId(`wallet-search-item-${id}`)
+    await expect(allWalletsListSearchItem).toBeVisible()
+  }
+
   async expectNoSocials() {
     const socialList = this.page.getByTestId('wui-list-social')
     await expect(socialList).toBeHidden()

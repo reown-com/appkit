@@ -26,6 +26,7 @@ export class W3mAllWalletsView extends LitElement {
         <wui-certified-switch
           ?checked=${this.badge}
           @click=${this.onClick.bind(this)}
+          data-testid="wui-certified-switch"
         ></wui-certified-switch>
         ${this.qrButtonTemplate()}
       </wui-flex>
