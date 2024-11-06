@@ -388,3 +388,18 @@ async function checkChangesetFiles() {
   }
 }
 checkChangesetFiles()
+
+// -- Check Workflows ------------------------------------------------------------
+function checkWorkflows() {
+  const updatedWorkflows = updated_files.filter(f => f.includes('.github/workflows/'))
+  const deletedWorkflows = deleted_files.filter(f => f.includes('.github/workflows/'))
+
+  for (const f of deletedWorkflows) {
+    fail(`Workflow file(s) ${f} has been deleted`)
+  }
+
+  for (const f of updatedWorkflows) {
+    warn(`Workflow file ${f} has been modified`)
+  }
+}
+checkWorkflows()

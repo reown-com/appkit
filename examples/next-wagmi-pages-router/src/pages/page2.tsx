@@ -15,7 +15,7 @@ export default function Page2({ data }: Props) {
       <span>Address: {address}</span>
       <span>Server side data: {data}</span>
       <button onClick={() => open()}>Open AppKit</button>
-      <w3m-button />
+      <appkit-button />
     </div>
   )
 }
