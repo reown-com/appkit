@@ -60,11 +60,12 @@ export class W3mConnectView extends LitElement {
     const { termsConditionsUrl, privacyPolicyUrl, enableLegalCheckbox } = OptionsController.state
 
     const legalUrl = termsConditionsUrl || privacyPolicyUrl
-    const showLegalCheckbox = Boolean(legalUrl) && Boolean(enableLegalCheckbox)
+    const showLegalCheckbox =
+      Boolean(legalUrl) && Boolean(enableLegalCheckbox) && this.walletGuide === 'get-started'
 
     const classes = {
       connect: true,
-      disabled: showLegalCheckbox && !this.checked && this.walletGuide === 'get-started'
+      disabled: showLegalCheckbox && !this.checked
     }
 
     const socials = this.features?.socials
@@ -199,7 +200,7 @@ export class W3mConnectView extends LitElement {
     const connectEl = this.shadowRoot?.querySelector('.connect') as HTMLElement | undefined
 
     // If connect element is not found or is not overflowing do not apply the mask
-    if (!connectEl || connectEl.scrollHeight <= 548) {
+    if (!connectEl || connectEl.scrollHeight <= 470) {
       return
     }
 
