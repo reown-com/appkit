@@ -11,7 +11,7 @@ export class ModalValidator {
   constructor(public readonly page: Page) {}
 
   async expectConnected() {
-    const accountButton = this.page.locator('w3m-account-button')
+    const accountButton = this.page.locator('appkit-account-button')
     await expect(accountButton, 'Account button should be present').toBeAttached({
       timeout: MAX_WAIT
     })
@@ -25,7 +25,7 @@ export class ModalValidator {
   }
 
   async expectBalanceFetched(currency: 'SOL' | 'ETH') {
-    const accountButton = this.page.locator('w3m-account-button')
+    const accountButton = this.page.locator('appkit-account-button')
     await expect(accountButton, `Account button should show balance as ${currency}`).toContainText(
       `0.000 ${currency}`
     )
@@ -83,7 +83,7 @@ export class ModalValidator {
   }
 
   async expectCaipAddressHaveCorrectNetworkId(caipNetworkId: CaipNetworkId) {
-    const address = this.page.getByTestId('appkit-caip-address')
+    const address = this.page.getByTestId('w3m-caip-address')
     await expect(address, 'Correct CAIP address should be present').toContainText(
       caipNetworkId.toString()
     )
@@ -291,6 +291,13 @@ export class ModalValidator {
   async expectNetworksDisabled(name: string) {
     const disabledNetwork = this.page.getByTestId(`w3m-network-switch-${name}`)
     await expect(disabledNetwork.locator('button')).toBeDisabled()
+  }
+
+  async expectToBeConnectedInstantly() {
+    const accountButton = this.page.locator('appkit-account-button')
+    await expect(accountButton, 'Account button should be present').toBeAttached({
+      timeout: 1000
+    })
   }
 
   async expectConnectButtonLoading() {

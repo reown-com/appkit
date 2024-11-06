@@ -9,7 +9,7 @@ import type {
   Tokens
 } from '../utils/TypeUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
-import type { SWIXConfig } from '../utils/SIWXUtil.js'
+import type { SIWXConfig } from '../utils/SIWXUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerStatePublic {
@@ -116,7 +116,7 @@ export interface OptionsControllerStatePublic {
    * Enable Sign In With X (SIWX) feature in your AppKit.
    * @default undefined
    */
-  siwx?: SWIXConfig
+  siwx?: SIWXConfig
 }
 
 export interface OptionsControllerStateInternal {

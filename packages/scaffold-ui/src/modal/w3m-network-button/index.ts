@@ -1,3 +1,4 @@
+import { customElement } from '@reown/appkit-ui'
 import {
   AssetController,
   AssetUtil,
@@ -6,14 +7,12 @@ import {
   ModalController
 } from '@reown/appkit-core'
 import type { WuiNetworkButton } from '@reown/appkit-ui'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 
-@customElement('w3m-network-button')
-export class W3mNetworkButton extends LitElement {
+class W3mNetworkButtonBase extends LitElement {
   public static override styles = styles
 
   // -- Members ------------------------------------------- //
@@ -26,7 +25,7 @@ export class W3mNetworkButton extends LitElement {
 
   @state() private network = ChainController.state.activeCaipNetwork
 
-  @state() private networkImage = this.network ? AssetUtil.getNetworkImage(this.network) : undefined
+  @state() private networkImage = AssetUtil.getNetworkImage(this.network)
 
   @state() private caipAddress = ChainController.state.activeCaipAddress
 
@@ -40,16 +39,14 @@ export class W3mNetworkButton extends LitElement {
     this.unsubscribe.push(
       ...[
         AssetController.subscribeNetworkImages(() => {
-          this.networkImage = this.network?.assets?.imageId
-            ? AssetUtil.getNetworkImage(this.network)
-            : undefined
+          this.networkImage = AssetUtil.getNetworkImage(this.network)
         }),
         ChainController.subscribeKey('activeCaipAddress', val => {
           this.caipAddress = val
         }),
         ChainController.subscribeKey('activeCaipNetwork', val => {
           this.network = val
-          this.networkImage = val?.assets?.imageId ? AssetUtil.getNetworkImage(val) : undefined
+          this.networkImage = AssetUtil.getNetworkImage(val)
           this.isSupported = val?.chainNamespace
             ? ChainController.checkIfSupportedNetwork(val.chainNamespace)
             : true
@@ -71,7 +68,6 @@ export class W3mNetworkButton extends LitElement {
 
     return html`
       <wui-network-button
-        data-testid="wui-network-button"
         .disabled=${Boolean(this.disabled || this.loading)}
         .isUnsupportedChain=${!isSupported}
         imageSrc=${ifDefined(this.networkImage)}
@@ -112,8 +108,15 @@ export class W3mNetworkButton extends LitElement {
   }
 }
 
+@customElement('w3m-network-button')
+export class W3mNetworkButton extends W3mNetworkButtonBase {}
+
+@customElement('appkit-network-button')
+export class AppKitNetworkButton extends W3mNetworkButtonBase {}
+
 declare global {
   interface HTMLElementTagNameMap {
     'w3m-network-button': W3mNetworkButton
+    'appkit-network-button': AppKitNetworkButton
   }
 }

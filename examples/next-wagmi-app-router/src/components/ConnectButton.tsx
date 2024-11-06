@@ -18,7 +18,7 @@ export const ConnectButton = () => {
     <div className="column">
       <span className="text-black">useAppKitAccount: {compactAddress}</span>
       <span className="text-black">useAccount (wagmi): {compactAddressWagmi}</span>
-      <w3m-button />
+      <appkit-button />
     </div>
   )
 }

@@ -19,7 +19,7 @@ const modal = createAppKit({
     name: 'AppKit',
     description: 'AppKit Laboratory',
     url: 'https://example.com',
-    icons: ['https://avatars.githubusercontent.com/u/37784886']
+    icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
   },
   projectId,
   metadata,

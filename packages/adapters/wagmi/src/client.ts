@@ -252,6 +252,7 @@ export class WagmiAdapter implements ChainAdapter {
   public construct(appKit: AppKit, options: AppKitOptionsWithCaipNetworks) {
     this.appKit = appKit
     this.options = options
+    this.caipNetworks = options.networks
     this.defaultCaipNetwork = options.defaultNetwork || options.networks?.[0]
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
     this.setCustomConnectors(options, appKit)
@@ -397,6 +398,16 @@ export class WagmiAdapter implements ChainAdapter {
         }
         const chainId = this.appKit?.getCaipNetworkId<number>()
         await connect(this.wagmiConfig, { connector, chainId })
+      },
+      reconnectExternal: async ({ id }) => {
+        if (!this.wagmiConfig) {
+          throw new Error('networkControllerClient:reconnectExternal - wagmiConfig is undefined')
+        }
+        const connector = this.wagmiConfig.connectors.find(c => c.id === id)
+        if (!connector) {
+          throw new Error('connectionControllerClient:reconnectExternal - connector is undefined')
+        }
+        await reconnect(this.wagmiConfig, { connectors: [connector] })
       },
       checkInstalled: ids => {
         const injectedConnector = this.appKit
@@ -759,6 +770,7 @@ export class WagmiAdapter implements ChainAdapter {
               this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
             ])
           }
+          this.appKit?.setLoading(false)
         } else if (status === 'connected' && address && chainId) {
           ProviderUtil.setProvider(this.chainNamespace, await connector.getProvider())
           ProviderUtil.setProviderId(this.chainNamespace, connector.id as ProviderIdType)
@@ -974,11 +986,7 @@ export class WagmiAdapter implements ChainAdapter {
     bypassWindowCheck = false
   ) {
     if (bypassWindowCheck || (typeof window !== 'undefined' && connector)) {
-      this.appKit?.setLoading(true)
       const provider = (await connector.getProvider()) as W3mFrameProvider
-      const isLoginEmailUsed = provider.getLoginEmailUsed()
-
-      this.appKit?.setLoading(isLoginEmailUsed)
 
       provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
@@ -1062,16 +1070,6 @@ export class WagmiAdapter implements ChainAdapter {
 
       provider.onGetSmartAccountEnabledNetworks(networks => {
         this.appKit?.setSmartAccountEnabledNetworks(networks, this.chainNamespace)
-      })
-
-      provider.onSetPreferredAccount(({ address, type }) => {
-        if (!address) {
-          return
-        }
-        this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chainNamespace)
-        if (this.wagmiConfig) {
-          reconnect(this.wagmiConfig, { connectors: [connector] })
-        }
       })
     }
   }

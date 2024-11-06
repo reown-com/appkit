@@ -7,7 +7,9 @@ import type {
   RouterControllerState,
   ChainAdapter,
   SdkVersion,
-  Features
+  Features,
+  UseAppKitAccountReturn,
+  UseAppKitNetworkReturn
 } from '@reown/appkit-core'
 import {
   AccountController,
@@ -41,6 +43,7 @@ import { UniversalAdapterClient } from './universal-adapter/client.js'
 import { CaipNetworksUtil, ErrorUtil } from '@reown/appkit-utils'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { ProviderUtil } from './store/ProviderUtil.js'
+import type { AppKitNetwork } from '@reown/appkit/networks'
 
 // -- Export Controllers -------------------------------------------------------
 export { AccountController }
@@ -115,8 +118,16 @@ export class AppKit {
     return ChainController.state.activeCaipNetwork?.id
   }
 
-  public switchNetwork(caipNetwork: CaipNetwork) {
-    return ChainController.switchActiveNetwork(caipNetwork)
+  public switchNetwork(appKitNetwork: AppKitNetwork) {
+    const network = this.caipNetworks.find(n => n.id === appKitNetwork.id)
+
+    if (!network) {
+      AlertController.open(ErrorUtil.ALERT_ERRORS.SWITCH_NETWORK_NOT_FOUND, 'error')
+
+      return
+    }
+
+    ChainController.switchActiveNetwork(network)
   }
 
   public getWalletProvider() {
@@ -159,6 +170,30 @@ export class AppKit {
 
   public getWalletInfo() {
     return AccountController.state.connectedWalletInfo
+  }
+
+  public subscribeAccount(callback: (newState: UseAppKitAccountReturn) => void) {
+    function updateVal() {
+      callback({
+        caipAddress: ChainController.state.activeCaipAddress,
+        address: CoreHelperUtil.getPlainAddress(ChainController.state.activeCaipAddress),
+        isConnected: Boolean(ChainController.state.activeCaipAddress),
+        status: AccountController.state.status
+      })
+    }
+
+    ChainController.subscribe(updateVal)
+    AccountController.subscribe(updateVal)
+  }
+
+  public subscribeNetwork(callback: (newState: UseAppKitNetworkReturn) => void) {
+    return ChainController.subscribe(({ activeCaipNetwork }) => {
+      callback({
+        caipNetwork: activeCaipNetwork,
+        chainId: activeCaipNetwork?.id,
+        caipNetworkId: activeCaipNetwork?.caipNetworkId
+      })
+    })
   }
 
   public subscribeWalletInfo(callback: (newState: ConnectedWalletInfo) => void) {
@@ -455,7 +490,12 @@ export class AppKit {
 
     this.adapters = options.adapters
 
-    this.setMetadata(options)
+    const defaultMetaData = this.getDefaultMetaData()
+
+    if (!options.metadata && defaultMetaData) {
+      options.metadata = defaultMetaData
+    }
+
     this.initializeUniversalAdapter(options)
     this.initializeAdapters(options)
     this.setDefaultNetwork()
@@ -491,6 +531,10 @@ export class AppKit {
       OptionsController.setDisableAppend(Boolean(options.disableAppend))
     }
 
+    if (options.siwx) {
+      OptionsController.setSIWX(options.siwx)
+    }
+
     const evmAdapter = options.adapters?.find(
       adapter => adapter.chainNamespace === ConstantsUtil.CHAIN.EVM
     )
@@ -504,18 +548,18 @@ export class AppKit {
     }
   }
 
-  private setMetadata(options: AppKitOptions) {
-    if (typeof window === 'undefined' || typeof document === 'undefined') {
-      return
+  private getDefaultMetaData() {
+    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+      return {
+        name: document.getElementsByTagName('title')[0]?.textContent || '',
+        description:
+          document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.content || '',
+        url: window.location.origin,
+        icons: [document.querySelector<HTMLLinkElement>('link[rel~="icon"]')?.href || '']
+      }
     }
 
-    options.metadata = {
-      name: document.getElementsByTagName('title')[0]?.textContent || '',
-      description:
-        document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.content || '',
-      url: window.location.origin,
-      icons: [document.querySelector<HTMLLinkElement>('link[rel~="icon"]')?.href || '']
-    }
+    return null
   }
 
   private extendCaipNetworks(options: AppKitOptions) {
