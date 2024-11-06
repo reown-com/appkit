@@ -43,17 +43,16 @@ describe('SnackController', () => {
   })
 
   it('should update state correctly on showSvg()', async () => {
-    const icon = {
-      backgroundColor: 'accent-100',
+    const svg = {
       iconColor: 'accent-100',
       icon: 'checkmark'
     }
     SnackController.hide()
-    SnackController.showSvg('Svg Msg', icon)
+    SnackController.showSvg('Svg Msg', svg)
     expect(SnackController.state).toEqual({
       message: 'Svg Msg',
       variant: 'success',
-      icon,
+      svg,
       open: true
     })
   })
