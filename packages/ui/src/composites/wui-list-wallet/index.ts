@@ -41,7 +41,7 @@ export class WuiListWallet extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.loading || this.disabled} ontouchstart>
+      <button ?disabled=${this.disabled} ontouchstart>
         ${this.templateAllWallets()} ${this.templateWalletImage()}
         <wui-text variant="paragraph-500" color="inherit">${this.name}</wui-text>
         ${this.templateStatus()}

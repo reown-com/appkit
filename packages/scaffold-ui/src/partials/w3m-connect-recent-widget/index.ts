@@ -60,6 +60,9 @@ export class W3mConnectRecentWidget extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private onConnectWallet(wallet: WcWallet) {
+    if (this.loading) {
+      return
+    }
     RouterController.push('ConnectingWalletConnect', { wallet })
   }
 }

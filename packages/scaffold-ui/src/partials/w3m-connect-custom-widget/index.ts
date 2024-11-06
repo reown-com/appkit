@@ -87,6 +87,9 @@ export class W3mConnectCustomWidget extends LitElement {
   }
 
   private onConnectWallet(wallet: WcWallet) {
+    if (this.loading) {
+      return
+    }
     RouterController.push('ConnectingWalletConnect', { wallet })
   }
 }
