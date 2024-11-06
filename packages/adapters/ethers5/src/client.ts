@@ -1,7 +1,12 @@
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { type CombinedProvider, type ConnectorType, type Provider } from '@reown/appkit-core'
+import {
+  type CombinedProvider,
+  type Connector,
+  type ConnectorType,
+  type Provider
+} from '@reown/appkit-core'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
 import { WcConstantsUtil, WcHelpersUtil, type AppKitOptions } from '@reown/appkit'
@@ -11,14 +16,8 @@ import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { ethers } from 'ethers'
 import { Ethers5Methods } from './utils/Ethers5Methods.js'
 
-interface Info {
-  uuid: string
-  name: string
-  icon: string
-  rdns: string
-}
 export interface EIP6963ProviderDetail {
-  info: Info
+  info: Connector['info']
   provider: Provider
 }
 
@@ -189,14 +188,14 @@ export class Ethers5Adapter extends AdapterBlueprint {
   public async getEnsAddress(
     params: AdapterBlueprint.GetEnsAddressParams
   ): Promise<AdapterBlueprint.GetEnsAddressResult> {
-    const { name, appKit } = params
-    if (appKit) {
-      const result = await Ethers5Methods.getEnsAddress(name, appKit)
+    const { name, caipNetwork } = params
+    if (caipNetwork) {
+      const result = await Ethers5Methods.getEnsAddress(name, caipNetwork)
 
       return { address: result }
     }
 
-    return { address: false }
+    return { address: '' }
   }
 
   public parseUnits(params: AdapterBlueprint.ParseUnitsParams): AdapterBlueprint.ParseUnitsResult {
@@ -296,13 +295,13 @@ export class Ethers5Adapter extends AdapterBlueprint {
   private eip6963EventHandler(event: CustomEventInit<EIP6963ProviderDetail>) {
     if (event.detail) {
       const { info, provider } = event.detail
-      const existingConnector = this.connectors?.find(c => c.name === info.name)
+      const existingConnector = this.connectors?.find(c => c.name === info?.name)
       const coinbaseConnector = this.connectors?.find(
         c => c.id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
       )
       const isCoinbaseDuplicated =
         coinbaseConnector &&
-        event.detail.info.rdns ===
+        event.detail.info?.rdns ===
           ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]
 
       if (!existingConnector && !isCoinbaseDuplicated) {
@@ -310,10 +309,10 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
         if (type && this.namespace) {
           this.addConnector({
-            id: info.rdns,
+            id: info?.rdns || '',
             type,
-            imageUrl: info.icon,
-            name: info.name,
+            imageUrl: info?.icon,
+            name: info?.name,
             provider,
             info,
             chain: this.namespace,
@@ -379,8 +378,6 @@ export class Ethers5Adapter extends AdapterBlueprint {
         await params.provider.disconnect()
         break
       case 'ANNOUNCED':
-        await this.revokeProviderPermissions(params.provider as Provider)
-        break
       case 'EXTERNAL':
         await this.revokeProviderPermissions(params.provider as Provider)
         break

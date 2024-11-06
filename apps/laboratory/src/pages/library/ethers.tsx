@@ -17,10 +17,9 @@ const modal = createAppKit({
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
-    analytics: true,
-    socials: ['google'],
-    email: true
-  }
+    analytics: true
+  },
+  customWallets: ConstantsUtil.CustomWallets
 })
 
 ThemeStore.setModal(modal)

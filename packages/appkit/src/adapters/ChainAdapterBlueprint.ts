@@ -26,7 +26,7 @@ export abstract class AdapterBlueprint<
   public caipNetworks?: CaipNetwork[]
   public projectId?: string
 
-  protected avaiableConnectors: Connector[] = []
+  protected availableConnectors: Connector[] = []
   protected connector?: Connector
   protected provider?: Connector['provider']
 
@@ -49,9 +49,7 @@ export abstract class AdapterBlueprint<
   construct(params: AdapterBlueprint.Params) {
     this.caipNetworks = params.networks
     this.projectId = params.projectId
-    if (params.namespace) {
-      this.namespace = params.namespace
-    }
+    this.namespace = params.namespace
   }
 
   /**
@@ -59,7 +57,7 @@ export abstract class AdapterBlueprint<
    * @returns {Connector[]} An array of available connectors
    */
   public get connectors(): Connector[] {
-    return this.avaiableConnectors
+    return this.availableConnectors
   }
 
   /**
@@ -107,8 +105,8 @@ export abstract class AdapterBlueprint<
    * @param {...Connector} connectors - The connectors to add
    */
   protected addConnector(...connectors: Connector[]) {
-    this.avaiableConnectors = [
-      ...this.avaiableConnectors.filter(
+    this.availableConnectors = [
+      ...this.availableConnectors.filter(
         existing => !connectors.some(newConnector => newConnector.id === existing.id)
       ),
       ...connectors
@@ -399,7 +397,6 @@ export namespace AdapterBlueprint {
   export type GetEnsAddressParams = {
     name: string
     caipNetwork: CaipNetwork
-    appKit?: AppKit
   }
 
   export type GetEnsAddressResult = {

@@ -17,5 +17,12 @@ export const ConstantsUtil = {
   CONNECTOR_RDNS_MAP: {
     coinbaseWallet: 'com.coinbase.wallet',
     coinbaseWalletSDK: 'com.coinbase.wallet'
-  } as Record<string, string>
+  } as Record<string, string>,
+  CONNECTOR_TYPE_EXTERNAL: 'EXTERNAL',
+  CONNECTOR_TYPE_WALLET_CONNECT: 'WALLET_CONNECT',
+  CONNECTOR_TYPE_INJECTED: 'INJECTED',
+  CONNECTOR_TYPE_ANNOUNCED: 'ANNOUNCED',
+  CONNECTOR_TYPE_AUTH: 'AUTH',
+  CONNECTOR_TYPE_MULTI_CHAIN: 'MULTI_CHAIN',
+  CONNECTOR_TYPE_W3M_AUTH: 'w3mAuth'
 }

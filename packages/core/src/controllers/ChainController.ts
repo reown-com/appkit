@@ -151,7 +151,7 @@ export const ChainController = {
   setChainAccountData(
     chain: ChainNamespace | undefined,
     accountProps: Partial<AccountControllerState>,
-    replaceState = false
+    replaceState = true
   ) {
     if (!chain) {
       throw new Error('Chain is required to update chain account data')

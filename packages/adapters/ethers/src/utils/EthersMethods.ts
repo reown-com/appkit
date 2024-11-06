@@ -16,8 +16,8 @@ import type {
   SendTransactionArgs,
   WriteContractArgs
 } from '@reown/appkit-core'
-import { isReownName } from '@reown/appkit-common'
-import type { AppKit } from '@reown/appkit'
+import { isReownName, type CaipNetwork } from '@reown/appkit-common'
+import { WcHelpersUtil } from '@reown/appkit'
 
 export const EthersMethods = {
   signMessage: async (message: string, provider: Provider, address: string) => {
@@ -117,14 +117,14 @@ export const EthersMethods = {
     throw new Error('Contract method is undefined')
   },
 
-  getEnsAddress: async (value: string, appKit: AppKit) => {
+  getEnsAddress: async (value: string, caipNetwork: CaipNetwork) => {
     try {
-      const chainId = Number(appKit.getCaipNetwork()?.id)
+      const chainId = Number(caipNetwork.id)
       let ensName: string | null = null
       let wcName: boolean | string = false
 
       if (isReownName(value)) {
-        wcName = (await appKit?.resolveReownName(value)) || false
+        wcName = (await WcHelpersUtil.resolveReownName(value)) || false
       }
 
       // If on mainnet, fetch from ENS

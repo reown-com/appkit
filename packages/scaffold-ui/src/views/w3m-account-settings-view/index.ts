@@ -79,7 +79,7 @@ export class W3mAccountSettingsView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     if (!this.address) {
-      // Throw new Error('w3m-account-settings-view: No account provided')
+      throw new Error('w3m-account-settings-view: No account provided')
     }
 
     const networkImage = this.networkImages[this.network?.assets?.imageId ?? '']
@@ -101,7 +101,7 @@ export class W3mAccountSettingsView extends LitElement {
           <wui-flex gap="3xs" alignItems="center" justifyContent="center">
             <wui-text variant="title-6-600" color="fg-100" data-testid="account-settings-address">
               ${UiHelperUtil.getTruncateString({
-                string: this.address as string,
+                string: this.address,
                 charsStart: 4,
                 charsEnd: 6,
                 truncate: 'middle'

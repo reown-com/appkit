@@ -28,7 +28,8 @@ export const SafeLocalStorageKeys = {
   CONNECTED_SOCIAL_USERNAME: '@appkit/connected_social_username',
   RECENT_WALLETS: '@appkit/recent_wallets',
   DEEPLINK_CHOICE: '@appkit/deeplink_choice',
-  CONNECTED_NAMESPACE: '@appkit/connected_namespace'
+  CONNECTED_NAMESPACE: '@appkit/connected_namespace',
+  WALLETCONNECT_DEEPLINK_CHOICE: 'WALLETCONNECT_DEEPLINK_CHOICE'
 } as const
 
 export const SafeLocalStorage = {

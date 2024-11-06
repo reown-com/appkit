@@ -34,7 +34,7 @@ import {
   NetworkUtil
 } from '@reown/appkit-common'
 import { authConnector } from './connectors/AuthConnector.js'
-import { AppKit, type AppKitOptions } from '@reown/appkit'
+import { AppKit, WcHelpersUtil, type AppKitOptions } from '@reown/appkit'
 import { walletConnect } from './connectors/UniversalConnector.js'
 import { coinbaseWallet } from '@wagmi/connectors'
 import {
@@ -173,7 +173,7 @@ export class WagmiAdapter extends AdapterBlueprint {
         authConnector({
           chains: this.wagmiChains,
           options: { projectId: options.projectId },
-          provider: this.avaiableConnectors.find(c => c.id === ConstantsUtil.AUTH_CONNECTOR_ID)
+          provider: this.availableConnectors.find(c => c.id === ConstantsUtil.AUTH_CONNECTOR_ID)
             ?.provider as W3mFrameProvider
         })
       )
@@ -242,7 +242,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   public async getEnsAddress(
     params: AdapterBlueprint.GetEnsAddressParams
   ): Promise<AdapterBlueprint.GetEnsAddressResult> {
-    const { name, appKit, caipNetwork } = params
+    const { name, caipNetwork } = params
 
     try {
       if (!this.wagmiConfig) {
@@ -254,7 +254,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       let ensName: boolean | GetEnsAddressReturnType = false
       let wcName: boolean | string = false
       if (isReownName(name)) {
-        wcName = (await appKit?.resolveReownName(name)) || false
+        wcName = (await WcHelpersUtil.resolveReownName(name)) || false
       }
       if (caipNetwork.id === 1) {
         ensName = await wagmiGetEnsAddress(this.wagmiConfig, {

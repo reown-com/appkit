@@ -1,6 +1,7 @@
 import type { NamespaceConfig, Namespace } from '@walletconnect/universal-provider'
 import type { CaipNetwork, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 import type { SessionTypes } from '@walletconnect/types'
+import { EnsController } from '@reown/appkit-core'
 
 export const WcHelpersUtil = {
   getMethodsByChainNamespace(chainNamespace: ChainNamespace): string[] {
@@ -66,6 +67,13 @@ export const WcHelpersUtil = {
 
       return acc
     }, {})
+  },
+
+  resolveReownName: async (name: string) => {
+    const wcNameAddress = await EnsController.resolveName(name)
+    const networkNameAddresses = Object.values(wcNameAddress?.addresses) || []
+
+    return networkNameAddresses[0]?.address || false
   },
 
   getChainsFromNamespaces(namespaces: SessionTypes.Namespaces = {}): CaipNetworkId[] {

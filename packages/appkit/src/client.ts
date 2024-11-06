@@ -53,7 +53,11 @@ import {
   UniversalAdapter,
   UniversalAdapter as UniversalAdapterClient
 } from './universal-adapter/client.js'
-import { CaipNetworksUtil, ErrorUtil } from '@reown/appkit-utils'
+import {
+  CaipNetworksUtil,
+  ErrorUtil,
+  ConstantsUtil as UtilConstantsUtil
+} from '@reown/appkit-utils'
 import {
   W3mFrameHelpers,
   W3mFrameRpcConstants,
@@ -500,13 +504,6 @@ export class AppKit {
   public getReownName: (typeof EnsController)['getNamesForAddress'] = address =>
     EnsController.getNamesForAddress(address)
 
-  public resolveReownName = async (name: string) => {
-    const wcNameAddress = await EnsController.resolveName(name)
-    const networkNameAddresses = Object.values(wcNameAddress?.addresses) || []
-
-    return networkNameAddresses[0]?.address || false
-  }
-
   public setEIP6963Enabled: (typeof OptionsController)['setEIP6963Enabled'] = enabled => {
     OptionsController.setEIP6963Enabled(enabled)
   }
@@ -754,8 +751,7 @@ export class AppKit {
         }
         const result = await adapter?.getEnsAddress({
           name,
-          caipNetwork,
-          appKit: this
+          caipNetwork
         })
 
         return result?.address || false
@@ -811,7 +807,7 @@ export class AppKit {
         const providerType =
           ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
 
-        if (providerType === 'WALLET_CONNECT') {
+        if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
           const namespaces = this.universalProvider?.session?.namespaces
 
           return {
@@ -1004,9 +1000,14 @@ export class AppKit {
         ?.accounts[0] as CaipAddress
 
       if (caipAddress) {
-        ProviderUtil.setProviderId(chainNamespace, 'WALLET_CONNECT')
+        ProviderUtil.setProviderId(
+          chainNamespace,
+          UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT as ConnectorType
+        )
         ProviderUtil.setProvider(chainNamespace, this.universalProvider)
-        StorageUtil.setConnectedConnector('WALLET_CONNECT')
+        StorageUtil.setConnectedConnector(
+          UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT as ConnectorType
+        )
         StorageUtil.setConnectedNamespace(chainNamespace)
         let address = ''
 
@@ -1154,9 +1155,16 @@ export class AppKit {
     ) as ConnectorType
     const connectedNamespace = SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_NAMESPACE)
 
-    if (connectedConnector === 'WALLET_CONNECT' && connectedNamespace) {
+    if (
+      connectedConnector === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT &&
+      connectedNamespace
+    ) {
       this.syncWalletConnectAccount()
-    } else if (connectedConnector && connectedConnector !== 'w3mAuth' && connectedNamespace) {
+    } else if (
+      connectedConnector &&
+      connectedConnector !== UtilConstantsUtil.CONNECTOR_TYPE_AUTH &&
+      connectedNamespace
+    ) {
       const adapter = this.getAdapter(connectedNamespace as ChainNamespace)
       const res = await adapter?.syncConnection({
         id: connectedConnector,

@@ -29,6 +29,7 @@ import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
 import UniversalProvider from '@walletconnect/universal-provider'
 import { createSendTransaction } from './utils/createSendTransaction.js'
 import type { WalletStandardProvider } from './providers/WalletStandardProvider.js'
+import { handleMobileWalletRedirection } from './utils/handleMobileWalletRedirection.js'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
@@ -51,18 +52,7 @@ export class SolanaAdapter extends AdapterBlueprint {
         const isClient = CoreHelperUtil.isClient()
 
         if (isMobile && isClient) {
-          if (state.data.properties?.name === 'Phantom' && !('phantom' in window)) {
-            const href = window.location.href
-            const protocol = href.startsWith('https') ? 'https' : 'http'
-            const host = href.split('/')[2]
-            const ref = `${protocol}://${host}`
-            window.location.href = `https://phantom.app/ul/browse/${href}?ref=${ref}`
-          }
-
-          if (state.data.properties?.name === 'Coinbase Wallet' && !('coinbaseSolana' in window)) {
-            const href = window.location.href
-            window.location.href = `https://go.cb-w.com/dapp?cb_url=${href}`
-          }
+          handleMobileWalletRedirection(state.data.properties)
         }
       }
     })
@@ -276,7 +266,7 @@ export class SolanaAdapter extends AdapterBlueprint {
       address = await selectedProvider.connect()
     }
 
-    this.listenProviderEvents(selectedProvider)
+    this.listenProviderEvents(selectedProvider as unknown as WalletStandardProvider)
 
     SolStoreUtil.setConnection(new Connection(rpcUrl as string, 'confirmed'))
 
@@ -327,7 +317,7 @@ export class SolanaAdapter extends AdapterBlueprint {
     }
   }
 
-  private listenProviderEvents(provider: Provider) {
+  private listenProviderEvents(provider: WalletStandardProvider) {
     const disconnectHandler = () => {
       this.removeProviderListeners(provider)
       this.emit('disconnect')
@@ -341,11 +331,7 @@ export class SolanaAdapter extends AdapterBlueprint {
     }
 
     provider.on('disconnect', disconnectHandler)
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
     provider.on('accountsChanged', accountsChangedHandler)
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
     provider.on('connect', accountsChangedHandler)
 
     this.providerHandlers = {
@@ -359,7 +345,7 @@ export class SolanaAdapter extends AdapterBlueprint {
     accountsChanged: (publicKey: PublicKey) => void
   } | null = null
 
-  private removeProviderListeners(provider: Provider) {
+  private removeProviderListeners(provider: WalletStandardProvider) {
     if (this.providerHandlers) {
       provider.removeListener('disconnect', this.providerHandlers.disconnect)
       provider.removeListener('accountsChanged', this.providerHandlers.accountsChanged)
@@ -436,7 +422,7 @@ export class SolanaAdapter extends AdapterBlueprint {
     const address = await selectedProvider.connect()
     const chainId = this.caipNetworks?.[0]?.id || 1
 
-    this.listenProviderEvents(selectedProvider)
+    this.listenProviderEvents(selectedProvider as unknown as WalletStandardProvider)
 
     SolStoreUtil.setConnection(new Connection(rpcUrl, 'confirmed'))
 
