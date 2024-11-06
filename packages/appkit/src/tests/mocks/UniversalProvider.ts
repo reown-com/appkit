@@ -33,7 +33,10 @@ export const mockProvider = {
       }
     },
     solana: {
-      chains: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+      chains: [
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ'
+      ],
       methods: [
         'solana_signMessage',
         'solana_signTransaction',
