@@ -6,7 +6,9 @@ import type {
   ConnectedWalletInfo,
   RouterControllerState,
   ChainAdapter,
-  SdkVersion
+  SdkVersion,
+  UseAppKitAccountReturn,
+  UseAppKitNetworkReturn
 } from '@reown/appkit-core'
 import {
   AccountController,
@@ -40,6 +42,7 @@ import { UniversalAdapterClient } from './universal-adapter/client.js'
 import { CaipNetworksUtil, ErrorUtil } from '@reown/appkit-utils'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { ProviderUtil } from './store/ProviderUtil.js'
+import type { AppKitNetwork } from '@reown/appkit/networks'
 
 // -- Export Controllers -------------------------------------------------------
 export { AccountController }
@@ -114,8 +117,16 @@ export class AppKit {
     return ChainController.state.activeCaipNetwork?.id
   }
 
-  public switchNetwork(caipNetwork: CaipNetwork) {
-    return ChainController.switchActiveNetwork(caipNetwork)
+  public switchNetwork(appKitNetwork: AppKitNetwork) {
+    const network = this.caipNetworks.find(n => n.id === appKitNetwork.id)
+
+    if (!network) {
+      AlertController.open(ErrorUtil.ALERT_ERRORS.SWITCH_NETWORK_NOT_FOUND, 'error')
+
+      return
+    }
+
+    ChainController.switchActiveNetwork(network)
   }
 
   public getWalletProvider() {
@@ -158,6 +169,30 @@ export class AppKit {
 
   public getWalletInfo() {
     return AccountController.state.connectedWalletInfo
+  }
+
+  public subscribeAccount(callback: (newState: UseAppKitAccountReturn) => void) {
+    function updateVal() {
+      callback({
+        caipAddress: ChainController.state.activeCaipAddress,
+        address: CoreHelperUtil.getPlainAddress(ChainController.state.activeCaipAddress),
+        isConnected: Boolean(ChainController.state.activeCaipAddress),
+        status: AccountController.state.status
+      })
+    }
+
+    ChainController.subscribe(updateVal)
+    AccountController.subscribe(updateVal)
+  }
+
+  public subscribeNetwork(callback: (newState: UseAppKitNetworkReturn) => void) {
+    return ChainController.subscribe(({ activeCaipNetwork }) => {
+      callback({
+        caipNetwork: activeCaipNetwork,
+        chainId: activeCaipNetwork?.id,
+        caipNetworkId: activeCaipNetwork?.caipNetworkId
+      })
+    })
   }
 
   public subscribeWalletInfo(callback: (newState: ConnectedWalletInfo) => void) {
