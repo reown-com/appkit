@@ -95,9 +95,7 @@ smartAccountTest('it should switch to smart account and sign', async () => {
   await page.togglePreferredAccountType()
   await validator.expectChangePreferredAccountToShow(EOA)
   await page.closeModal()
-
-  // Need some time for Lab UI to refresh state
-  await page.page.waitForTimeout(1000)
+  await validator.expectAccountButtonReady()
 
   await page.sign()
   await page.approveSign()
@@ -115,9 +113,7 @@ smartAccountTest('it should switch to eoa and sign', async () => {
   await page.togglePreferredAccountType()
   await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
   await page.closeModal()
-
-  // Need some time for Lab UI to refresh state
-  await page.page.waitForTimeout(1000)
+  await validator.expectAccountButtonReady()
 
   await page.sign()
   await page.approveSign()

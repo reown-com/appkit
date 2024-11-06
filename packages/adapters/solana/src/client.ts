@@ -631,7 +631,7 @@ export class SolanaAdapter implements ChainAdapter {
           projectId: opts.projectId,
           chainId: withSolanaNamespace(this.appKit?.getCaipNetwork(this.chainNamespace)?.id),
           onTimeout: () => {
-            AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION_SOCIALS, 'error')
+            AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
           }
         })
 
