@@ -14,13 +14,13 @@ export function AppKitButtons() {
             <Heading size="xs" textTransform="uppercase" pb="2">
               Connect / Account Button
             </Heading>
-            <w3m-button />
+            <appkit-button />
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Network Button
             </Heading>
-            <w3m-network-button />
+            <appkit-network-button />
           </Box>
           <AppKitHooks />
         </Stack>

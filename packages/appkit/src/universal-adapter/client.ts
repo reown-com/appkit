@@ -8,7 +8,8 @@ import {
   type ConnectionControllerClient,
   type Connector,
   type NetworkControllerClient,
-  AlertController
+  AlertController,
+  BlockchainApiController
 } from '@reown/appkit-core'
 import { ConstantsUtil, ErrorUtil, LoggerUtil, PresetsUtil } from '@reown/appkit-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
@@ -56,7 +57,7 @@ export class UniversalAdapterClient {
 
   public adapterType: AdapterType = 'universal'
 
-  public reportErrors = true
+  public reportedAlertErrors: Record<string, boolean> = {}
 
   public constructor(options: AppKitOptionsWithCaipNetworks) {
     const { metadata } = options
@@ -204,6 +205,22 @@ export class UniversalAdapterClient {
 
       formatUnits: () => ''
     }
+
+    ChainController.subscribeKey('activeCaipNetwork', val => {
+      const caipAddress = this.appKit?.getCaipAddress(this.chainNamespace)
+
+      if (val && caipAddress) {
+        this.syncBalance(CoreHelperUtil.getPlainAddress(caipAddress) as `0x${string}`, val)
+        this.syncAccount()
+      }
+    })
+    ChainController.subscribeKey('activeCaipAddress', val => {
+      const caipNetwork = ChainController.state.activeCaipNetwork
+      if (val && caipNetwork) {
+        this.syncBalance(CoreHelperUtil.getPlainAddress(val) as `0x${string}`, caipNetwork)
+        this.syncAccount()
+      }
+    })
   }
 
   // -- Public ------------------------------------------------------------------
@@ -245,6 +262,31 @@ export class UniversalAdapterClient {
   }
 
   // -- Private -----------------------------------------------------------------
+  private async syncBalance(address: `0x${string}`, caipNetwork: CaipNetwork) {
+    const isExistingNetwork = this.appKit
+      ?.getCaipNetworks(caipNetwork.chainNamespace)
+      .find(network => network.id === caipNetwork.id)
+
+    // How to fetch balance on non-evm networks?
+    if (caipNetwork && isExistingNetwork) {
+      try {
+        const { balances } = await BlockchainApiController.getBalance(
+          address,
+          String(caipNetwork.id)
+        )
+        const balance = balances.find(b => b.symbol === caipNetwork.nativeCurrency.symbol)
+        this.appKit?.setBalance(
+          balance?.quantity.numeric || '0',
+          caipNetwork.nativeCurrency.symbol,
+          this.chainNamespace
+        )
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Error fetching balance', error)
+      }
+    }
+  }
+
   private createProvider() {
     if (
       !this.walletConnectProviderInitPromise &&
@@ -259,17 +301,31 @@ export class UniversalAdapterClient {
     return this.walletConnectProviderInitPromise
   }
 
-  private async initWalletConnectProvider(projectId: string) {
-    const logger = LoggerUtil.createLogger((err, ...args) => {
-      if (err.message.includes(ErrorUtil.UniversalProviderErrors.UNAUTHORIZED_DOMAIN_NOT_ALLOWED)) {
-        if (this.reportErrors) {
-          AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
-          this.reportErrors = false
-        }
+  private handleAlertError(error: Error) {
+    const matchedUniversalProviderError = Object.entries(ErrorUtil.UniversalProviderErrors).find(
+      ([, { message }]) => error.message.includes(message)
+    )
 
-        return
+    const [errorKey, errorValue] = matchedUniversalProviderError ?? []
+
+    const { message, alertErrorKey } = errorValue ?? {}
+
+    if (errorKey && message && !this.reportedAlertErrors[errorKey]) {
+      const alertError =
+        ErrorUtil.ALERT_ERRORS[alertErrorKey as keyof typeof ErrorUtil.ALERT_ERRORS]
+
+      if (alertError) {
+        AlertController.open(alertError, 'error')
+        this.reportedAlertErrors[errorKey] = true
       }
+    }
+  }
 
+  private async initWalletConnectProvider(projectId: string) {
+    const logger = LoggerUtil.createLogger((error, ...args) => {
+      if (error) {
+        this.handleAlertError(error)
+      }
       // eslint-disable-next-line no-console
       console.error(...args)
     })
@@ -286,7 +342,6 @@ export class UniversalAdapterClient {
     }
 
     this.walletConnectProvider = await UniversalProvider.init(walletConnectProviderOptions)
-
     await this.checkActiveWalletConnectProvider()
   }
 
@@ -438,6 +493,7 @@ export class UniversalAdapterClient {
       provider.on('disconnect', disconnectHandler)
       provider.on('accountsChanged', accountsChangedHandler)
       provider.on('chainChanged', chainChanged)
+      provider.on('connect', this.syncAccount.bind(this))
     }
   }
 

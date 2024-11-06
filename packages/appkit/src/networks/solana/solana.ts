@@ -11,5 +11,6 @@ export const solana = defineChain({
   blockExplorers: { default: { name: 'Solscan', url: 'https://solscan.io' } },
   testnet: false,
   chainNamespace: 'solana',
-  caipNetworkId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+  caipNetworkId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  deprecatedCaipNetworkId: 'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ'
 })

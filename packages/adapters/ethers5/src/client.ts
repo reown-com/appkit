@@ -272,7 +272,7 @@ export class Ethers5Adapter {
           },
           [ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]: {
             getProvider: () => this.ethersConfig?.coinbase,
-            providerType: 'coinbase' as const
+            providerType: 'coinbaseWalletSDK' as const
           },
           [ConstantsUtil.AUTH_CONNECTOR_ID]: {
             getProvider: () => this.authProvider,
@@ -323,7 +323,9 @@ export class Ethers5Adapter {
       },
 
       disconnect: async () => {
-        const provider = ProviderUtil.getProvider<UniversalProvider | Provider>('eip155')
+        const provider = ProviderUtil.getProvider<UniversalProvider | Provider | ProviderInterface>(
+          'eip155'
+        )
         const providerId = ProviderUtil.state.providerIds['eip155']
 
         this.appKit?.setClientId(null)
@@ -332,8 +334,11 @@ export class Ethers5Adapter {
           [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: async () =>
             await this.appKit?.universalAdapter?.connectionControllerClient?.disconnect(),
 
-          coinbaseWalletSDK: async () =>
-            await this.appKit?.universalAdapter?.connectionControllerClient?.disconnect(),
+          coinbaseWalletSDK: async () => {
+            if (provider && 'disconnect' in provider) {
+              await provider.disconnect()
+            }
+          },
 
           [ConstantsUtil.AUTH_CONNECTOR_ID]: async () => {
             await this.authProvider?.disconnect()
@@ -362,6 +367,7 @@ export class Ethers5Adapter {
         // Common cleanup actions
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
         this.appKit?.resetAccount(this.chainNamespace)
+        this.removeListeners(provider as Provider)
       },
       signMessage: async (message: string) => {
         const provider = ProviderUtil.getProvider<Provider>(this.chainNamespace)
@@ -714,7 +720,10 @@ export class Ethers5Adapter {
     const accountsChangedHandler = (accounts: string[]) => {
       const currentAccount = accounts?.[0] as CaipAddress | undefined
       if (currentAccount) {
-        this.appKit?.setCaipAddress(currentAccount, this.chainNamespace)
+        const chainId = this.appKit?.getCaipNetwork()?.id
+        const caipAddress = `${this.chainNamespace}:${chainId}:${currentAccount}` as CaipAddress
+
+        this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
 
         if (providerId === ConstantsUtil.EIP6963_CONNECTOR_ID) {
           this.appKit?.setAllAccounts(
@@ -1144,7 +1153,7 @@ export class Ethers5Adapter {
       this.authProvider = W3mFrameProviderSingleton.getInstance({
         projectId,
         onTimeout: () => {
-          AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION_SOCIALS, 'error')
+          AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
         }
       })
 
