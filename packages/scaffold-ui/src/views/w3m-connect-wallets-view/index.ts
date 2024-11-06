@@ -34,7 +34,6 @@ export class W3mConnectWalletsView extends LitElement {
   }
 
   // -- Private Methods ----------------------------------- //
-
   private onCheckboxChange(event: CustomEvent<string>) {
     this.checked = Boolean(event.detail)
   }
