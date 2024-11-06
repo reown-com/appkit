@@ -19,7 +19,7 @@ export function authConnector(parameters: AuthParameters) {
     provider: W3mFrameProviderSingleton.getInstance({
       projectId: parameters.options.projectId,
       onTimeout: () => {
-        AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION_SOCIALS, 'error')
+        AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
       }
     })
   })
