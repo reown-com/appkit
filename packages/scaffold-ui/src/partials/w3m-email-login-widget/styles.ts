@@ -30,4 +30,8 @@ export default css`
   wui-loading-spinner {
     right: var(--wui-spacing-m);
   }
+
+  wui-text {
+    margin: var(--wui-spacing-xxs) var(--wui-spacing-m) var(--wui-spacing-0) var(--wui-spacing-m);
+  }
 `
