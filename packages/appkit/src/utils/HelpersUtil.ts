@@ -2,6 +2,7 @@ import type { NamespaceConfig, Namespace } from '@walletconnect/universal-provid
 import type { CaipNetwork, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 import type { SessionTypes } from '@walletconnect/types'
 import { EnsController } from '@reown/appkit-core'
+import { solana, solanaDevnet } from '../networks/index.js'
 
 export const WcHelpersUtil = {
   getMethodsByChainNamespace(chainNamespace: ChainNamespace): string[] {
@@ -60,6 +61,17 @@ export const WcHelpersUtil = {
       const namespace = acc[chainNamespace] as Namespace
 
       namespace.chains.push(caipNetworkId)
+
+      // Workaround for wallets that only support deprecated Solana network ID
+      switch (caipNetworkId) {
+        case solana.caipNetworkId:
+          namespace.chains.push(solana.deprecatedCaipNetworkId)
+          break
+        case solanaDevnet.deprecatedCaipNetworkId:
+          namespace.chains.push(solanaDevnet.deprecatedCaipNetworkId)
+          break
+        default:
+      }
 
       if (namespace?.rpcMap && rpcUrl) {
         namespace.rpcMap[id] = rpcUrl
