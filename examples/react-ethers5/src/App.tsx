@@ -44,10 +44,10 @@ export default function App() {
 
   return (
     <>
-      <w3m-button />
-      <w3m-network-button />
-      <w3m-connect-button />
-      <w3m-account-button />
+      <appkit-button />
+      <appkit-network-button />
+      <appkit-connect-button />
+      <appkit-account-button />
 
       <button onClick={() => modal.open()}>Connect Wallet</button>
       <button onClick={() => modal.open({ view: 'Networks' })}>Choose Network</button>
