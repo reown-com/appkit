@@ -311,8 +311,12 @@ export class WagmiAdapter implements ChainAdapter {
           ReturnType<(typeof UniversalProvider)['init']>
         >
 
-        const siweParams = await this.options?.siweConfig?.getMessageParams?.()
+        const clientId = await provider?.client?.core?.crypto?.getClientId()
+        if (clientId) {
+          this.appKit?.setClientId(clientId)
+        }
 
+        const siweParams = await this.options?.siweConfig?.getMessageParams?.()
         const isSiweEnabled = this.options?.siweConfig?.options?.enabled
         const isProviderSupported = typeof provider?.authenticate === 'function'
         const isSiweParamsValid = siweParams && Object.keys(siweParams || {}).length > 0
@@ -398,6 +402,16 @@ export class WagmiAdapter implements ChainAdapter {
         }
         const chainId = this.appKit?.getCaipNetworkId<number>()
         await connect(this.wagmiConfig, { connector, chainId })
+      },
+      reconnectExternal: async ({ id }) => {
+        if (!this.wagmiConfig) {
+          throw new Error('networkControllerClient:reconnectExternal - wagmiConfig is undefined')
+        }
+        const connector = this.wagmiConfig.connectors.find(c => c.id === id)
+        if (!connector) {
+          throw new Error('connectionControllerClient:reconnectExternal - connector is undefined')
+        }
+        await reconnect(this.wagmiConfig, { connectors: [connector] })
       },
       checkInstalled: ids => {
         const injectedConnector = this.appKit
@@ -1066,16 +1080,6 @@ export class WagmiAdapter implements ChainAdapter {
 
       provider.onGetSmartAccountEnabledNetworks(networks => {
         this.appKit?.setSmartAccountEnabledNetworks(networks, this.chainNamespace)
-      })
-
-      provider.onSetPreferredAccount(({ address, type }) => {
-        if (!address) {
-          return
-        }
-        this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chainNamespace)
-        if (this.wagmiConfig) {
-          reconnect(this.wagmiConfig, { connectors: [connector] })
-        }
       })
     }
   }

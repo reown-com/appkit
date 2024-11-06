@@ -1,6 +1,7 @@
 import {
   AccountController,
   ChainController,
+  ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   ModalController,
@@ -30,6 +31,8 @@ export class W3mProfileView extends LitElement {
   @state() private profileName = AccountController.state.profileName
 
   @state() private accounts = AccountController.state.allAccounts
+
+  @state() private loading = false
 
   public constructor() {
     super()
@@ -126,14 +129,14 @@ export class W3mProfileView extends LitElement {
   }
 
   private async onSwitchAccount(account: AccountType) {
-    AccountController.setShouldUpdateToAddress(account.address, ChainController.state.activeChain)
+    this.loading = true
     const emailConnector = ConnectorController.getAuthConnector()
-    if (!emailConnector) {
-      return
+    if (emailConnector) {
+      await ConnectionController.setPreferredAccountType(account.type)
     }
 
-    await emailConnector.provider.setPreferredAccount(account.type)
-    await emailConnector.provider.connect()
+    AccountController.setShouldUpdateToAddress(account.address, ChainController.state.activeChain)
+    this.loading = false
   }
 
   private accountTemplate(account: AccountType) {
@@ -146,6 +149,7 @@ export class W3mProfileView extends LitElement {
             size="md"
             variant="accent"
             @click=${() => this.onSwitchAccount(account)}
+            .loading=${this.loading}
             >Switch</wui-button
           >`}
     </wui-list-account>`
