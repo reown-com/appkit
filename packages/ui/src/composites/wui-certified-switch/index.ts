@@ -9,7 +9,7 @@ import { property } from 'lit/decorators.js'
 export class WuiCertifiedSwitch extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
-  // -- State & Properties --------------------------------- //
+  // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public checked?: boolean = undefined
 
   // -- Render -------------------------------------------- //

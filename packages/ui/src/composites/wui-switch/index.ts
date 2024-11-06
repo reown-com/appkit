@@ -13,7 +13,7 @@ export class WuiSwitch extends LitElement {
   // -- Members ------------------------------------------- //
   public inputElementRef: Ref<HTMLInputElement> = createRef<HTMLInputElement>()
 
-  // -- State & Properties --------------------------------- //
+  // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public checked?: boolean = undefined
 
   // -- Render -------------------------------------------- //
