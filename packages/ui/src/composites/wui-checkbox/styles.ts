@@ -36,7 +36,8 @@ export default css`
     will-change: background-color;
   }
 
-  label > span:hover {
+  label > span:hover,
+  label > input[type='checkbox']:focus-visible + span {
     background-color: var(--wui-color-gray-glass-010);
   }
 

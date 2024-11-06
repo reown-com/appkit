@@ -193,6 +193,7 @@ export class W3mConnectView extends LitElement {
 
     return html`<w3m-legal-checkbox
       @checkboxChange=${this.onCheckboxChange.bind(this)}
+      data-testid="w3m-legal-checkbox"
     ></w3m-legal-checkbox>`
   }
 
