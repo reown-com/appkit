@@ -29,7 +29,8 @@ export const ErrorUtil = {
     },
     JWT_TOKEN_NOT_VALID: {
       shortMessage: 'Session Expired',
-      longMessage: 'Session expired - please connect again'
+      longMessage:
+        'Invalid session found on UniversalProvider - please check your time settings and connect again'
     },
     PROJECT_ID_NOT_CONFIGURED: {
       shortMessage: 'Project ID Not Configured',

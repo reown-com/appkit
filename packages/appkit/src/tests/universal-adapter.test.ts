@@ -215,7 +215,8 @@ describe('UniversalAdapter', () => {
       ]
 
       for (const { alert, message } of errors) {
-        ;(universalAdapter as any).handleAlertError(new Error(message))
+        // @ts-expect-error
+        universalAdapter.handleAlertError(new Error(message))
         expect(AlertController.open).toHaveBeenCalledWith(alert, 'error')
       }
     })
