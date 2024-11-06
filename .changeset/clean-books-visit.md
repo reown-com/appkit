@@ -21,4 +21,4 @@
 '@reown/appkit-wallet': patch
 ---
 
-Fixes an issue where using ethers/ethers5 adapters caused the Coinbase Wallet to not reconnect after refreshing the page.
+Fixes an issue where Coinbase Wallet did not reconnect after refreshing the page when using ethers/ethers5 adapters.
