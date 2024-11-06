@@ -311,7 +311,7 @@ export const ConnectionController = {
 
       const message = siwxMessage.toString()
 
-      const signature = await client.signMessage(siwxMessage.toString())
+      const signature = await client.signMessage(message)
 
       await siwx.addSession({
         data: siwxMessage,
