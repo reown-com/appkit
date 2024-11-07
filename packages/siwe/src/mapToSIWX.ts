@@ -22,7 +22,7 @@ export async function mapToSIWX(siwe: SIWEConfig): Promise<SIWXConfig> {
     verifiers: [
       {
         chainNamespace: 'eip155',
-        shouldVerify: session => session.message.chainId.startsWith('eip155'),
+        shouldVerify: session => session.data.chainId.startsWith('eip155'),
         verify: async session => {
           const success = await siwe.verifyMessage({
             message: session.message.toString(),
@@ -36,14 +36,14 @@ export async function mapToSIWX(siwe: SIWEConfig): Promise<SIWXConfig> {
 
     storage: {
       add: async session => {
-        const chainId = NetworkUtil.parseEvmChainId(session.message.chainId)
+        const chainId = NetworkUtil.parseEvmChainId(session.data.chainId)
 
         if (!chainId) {
           throw new Error('Invalid chain ID!')
         }
 
         siwe.onSignIn?.({
-          address: session.message.accountAddress,
+          address: session.data.accountAddress,
           chainId
         })
 
@@ -59,10 +59,11 @@ export async function mapToSIWX(siwe: SIWEConfig): Promise<SIWXConfig> {
 
           // How should we parse the session?
           const session: SIWXSession = {
-            message: {
+            data: {
               accountAddress: siweSession.address,
               chainId: `eip155:${siweSession.chainId}`
-            } as SIWXMessage,
+            } as SIWXMessage.Data,
+            message: '',
             signature: ''
           }
 

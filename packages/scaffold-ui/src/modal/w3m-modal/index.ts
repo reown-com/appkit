@@ -5,7 +5,6 @@ import {
   CoreHelperUtil,
   EventsController,
   ModalController,
-  OptionsController,
   RouterController,
   SnackController,
   ThemeController
@@ -35,8 +34,6 @@ export class W3mModal extends LitElement {
 
   @state() private caipNetwork = ChainController.state.activeCaipNetwork
 
-  @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
-
   @state() private shake = ModalController.state.shake
 
   public constructor() {
@@ -49,8 +46,7 @@ export class W3mModal extends LitElement {
         ModalController.subscribeKey('shake', val => (this.shake = val)),
         AccountController.subscribeKey('siweStatus', val => this.onSiweStatusChange(val), 'eip155'),
         ChainController.subscribeKey('activeCaipNetwork', val => this.onNewNetwork(val)),
-        ChainController.subscribeKey('activeCaipAddress', val => this.onNewAddress(val)),
-        OptionsController.subscribeKey('isSiweEnabled', val => (this.isSiweEnabled = val))
+        ChainController.subscribeKey('activeCaipAddress', val => this.onNewAddress(val))
       ]
     )
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })

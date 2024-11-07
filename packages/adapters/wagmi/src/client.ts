@@ -119,8 +119,6 @@ export class WagmiAdapter implements ChainAdapter {
 
   public tokens = HelpersUtil.getCaipTokens(this.options?.tokens)
 
-  public siweControllerClient = this.options?.siweConfig
-
   public adapterType: AdapterType = 'wagmi'
 
   public constructor(
