@@ -68,7 +68,7 @@
   },
   "optionalDependencies": {
     "borsh": "0.7.0",
-    "bs58": "5.0.0"
+    "bs58": "6.0.0"
   },
   "devDependencies": {
     "@types/react": "18.3.1",
