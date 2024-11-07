@@ -24,14 +24,14 @@ export class LocalStorage implements SIWXStorage {
   }
 
   get(chainId: CaipNetworkId, address: string): Promise<SIWXSession[]> {
-    const allSessions = this.getSessions().filter(session => session.data.chainId === chainId)
+    const allSessions = this.getSessions()
 
     const validSessions = allSessions.filter(session => {
       const isSameChain = session.data.chainId === chainId
       const isSameAddress = session.data.accountAddress === address
 
       const startsAt = session.data.notBefore || session.data.issuedAt
-      if (!startsAt || Date.parse(startsAt) > Date.now()) {
+      if (startsAt && Date.parse(startsAt) > Date.now()) {
         return false
       }
 
