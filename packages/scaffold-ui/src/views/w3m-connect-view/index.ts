@@ -96,29 +96,20 @@ export class W3mConnectView extends LitElement {
               tabIdx=${ifDefined(tabIndex)}
             ></w3m-email-login-widget>
             <w3m-social-login-widget tabIdx=${ifDefined(tabIndex)}></w3m-social-login-widget>
-            ${this.walletListTemplate()}
+            ${this.walletListTemplate(tabIndex)}
           </wui-flex>
         </wui-flex>
-        ${this.guideTemplate()}
+        ${this.guideTemplate(disabled)}
         <w3m-legal-footer></w3m-legal-footer>
       </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
-  private walletListTemplate() {
-    const { termsConditionsUrl, privacyPolicyUrl, enableLegalCheckbox } = OptionsController.state
+  private walletListTemplate(tabIndex?: number) {
     const socials = this.features?.socials
     const emailShowWallets = this.features?.emailShowWallets
     const enableWallets = OptionsController.state.enableWallets
-
-    const legalUrl = termsConditionsUrl || privacyPolicyUrl
-    const showLegalCheckbox =
-      Boolean(legalUrl) && Boolean(enableLegalCheckbox) && this.walletGuide === 'get-started'
-
-    const disabled = showLegalCheckbox && !this.checked
-
-    const tabIndex = disabled ? -1 : undefined
 
     if (!enableWallets) {
       return null
@@ -154,19 +145,11 @@ export class W3mConnectView extends LitElement {
     return html`<w3m-wallet-login-list tabIdx=${ifDefined(tabIndex)}></w3m-wallet-login-list>`
   }
 
-  private guideTemplate() {
+  private guideTemplate(disabled = false) {
     const socials = this.features?.socials
     const enableWallets = OptionsController.state.enableWallets
 
-    const { termsConditionsUrl, privacyPolicyUrl, enableLegalCheckbox } = OptionsController.state
-
-    const legalUrl = termsConditionsUrl || privacyPolicyUrl
-    const showLegalCheckbox =
-      Boolean(legalUrl) && Boolean(enableLegalCheckbox) && this.walletGuide === 'get-started'
-
     const socialsExist = socials && socials.length
-
-    const disabled = showLegalCheckbox && !this.checked
 
     const classes = {
       guide: true,

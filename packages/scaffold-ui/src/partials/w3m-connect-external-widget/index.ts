@@ -49,6 +49,7 @@ export class W3mConnectExternalWidget extends LitElement {
               name=${connector.name ?? 'Unknown'}
               data-testid=${`wallet-selector-external-${connector.id}`}
               @click=${() => this.onConnector(connector)}
+              tabIdx=${ifDefined(this.tabIdx)}
             >
             </wui-list-wallet>
           `
