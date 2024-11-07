@@ -27,11 +27,11 @@ const modal = createAppKit({
   features: {
     analytics: true,
     email: false,
+    legalCheckbox: true,
     socials: []
   },
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy',
-  enableLegalCheckbox: true,
   customWallets: ConstantsUtil.CustomWallets
 })
 

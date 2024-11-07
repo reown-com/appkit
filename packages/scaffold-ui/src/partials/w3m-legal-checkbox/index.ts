@@ -9,13 +9,15 @@ export class W3mLegalCheckbox extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const { termsConditionsUrl, privacyPolicyUrl, enableLegalCheckbox } = OptionsController.state
+    const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
+
+    const legalCheckbox = OptionsController.state.features?.legalCheckbox
 
     if (!termsConditionsUrl && !privacyPolicyUrl) {
       return null
     }
 
-    if (!enableLegalCheckbox) {
+    if (!legalCheckbox) {
       return null
     }
 

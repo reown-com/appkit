@@ -43,10 +43,12 @@ export class W3mOnrampFiatSelectView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const { termsConditionsUrl, privacyPolicyUrl, enableLegalCheckbox } = OptionsController.state
+    const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
+
+    const legalCheckbox = OptionsController.state.features?.legalCheckbox
 
     const legalUrl = termsConditionsUrl || privacyPolicyUrl
-    const showLegalCheckbox = Boolean(legalUrl) && Boolean(enableLegalCheckbox)
+    const showLegalCheckbox = Boolean(legalUrl) && Boolean(legalCheckbox)
 
     const disabled = showLegalCheckbox && !this.checked
 

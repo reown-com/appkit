@@ -21,4 +21,23 @@
 '@reown/appkit-wallet': patch
 ---
 
-Introduced new feature where users can enable checkbox for terms of service and/or privacy policy.
+Introduced a new feature with an option to enable the terms of service and/or privacy policy checkbox.
+
+**Example usage**
+
+```ts
+import { createAppKit } from '@reown/appkit/react'
+import { mainnet } from '@reown/appkit/networks'
+
+const modal = createAppKit({
+  adapters: [/* adapters */],
+  networks: [mainnet],
+  defaultNetwork: mainnet,
+  projectId: 'YOUR_PROJECT_ID',
+  features: {
+    legalCheckbox: true // Optional - defaults to false
+  },
+  termsConditionsUrl: '...',
+  privacyPolicyUrl: '...'
+})
+```

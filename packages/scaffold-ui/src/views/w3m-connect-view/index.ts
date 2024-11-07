@@ -58,11 +58,13 @@ export class W3mConnectView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const { termsConditionsUrl, privacyPolicyUrl, enableLegalCheckbox } = OptionsController.state
+    const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
+
+    const legalCheckbox = OptionsController.state.features?.legalCheckbox
 
     const legalUrl = termsConditionsUrl || privacyPolicyUrl
     const showLegalCheckbox =
-      Boolean(legalUrl) && Boolean(enableLegalCheckbox) && this.walletGuide === 'get-started'
+      Boolean(legalUrl) && Boolean(legalCheckbox) && this.walletGuide === 'get-started'
 
     const disabled = showLegalCheckbox && !this.checked
 

@@ -101,11 +101,6 @@ export interface OptionsControllerStatePublic {
    */
   enableWalletConnect?: boolean
   /**
-   * Enable or disable the checkbox for accepting terms of service and/or privacy policy.
-   * @default false
-   */
-  enableLegalCheckbox?: boolean
-  /**
    * Enable or disable debug mode in your AppKit. This is useful if you want to see UI alerts when debugging.
    * @default false
    */
@@ -237,10 +232,6 @@ export const OptionsController = {
 
   setEnableWalletConnect(enableWalletConnect: OptionsControllerState['enableWalletConnect']) {
     state.enableWalletConnect = enableWalletConnect
-  },
-
-  setEnableLegalCheckbox(enableLegalCheckbox: OptionsControllerState['enableLegalCheckbox']) {
-    state.enableLegalCheckbox = enableLegalCheckbox
   },
 
   setEnableWallets(enableWallets: OptionsControllerState['enableWallets']) {
