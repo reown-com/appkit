@@ -1,7 +1,6 @@
 import type {
   SIWXConfig as SIWXConfigInterface,
   SIWXMessage,
-  SIWXMessageInput,
   SIWXSession
 } from '@reown/appkit-core'
 import type { SIWXMessenger } from './SIWXMessenger.js'
@@ -20,7 +19,7 @@ export abstract class SIWXConfig implements SIWXConfigInterface {
     this.storage = params.storage
   }
 
-  public createMessage(input: SIWXMessageInput): Promise<SIWXMessage> {
+  public createMessage(input: SIWXMessage.Input): Promise<SIWXMessage> {
     return this.messenger.createMessage(input)
   }
 
@@ -48,15 +47,15 @@ export abstract class SIWXConfig implements SIWXConfigInterface {
     const allSessions = await this.storage.get(chainId)
 
     return allSessions.filter(session => {
-      const isSameChain = session.message.chainId === chainId
-      const isSameAddress = session.message.accountAddress === address
+      const isSameChain = session.data.chainId === chainId
+      const isSameAddress = session.data.accountAddress === address
 
-      const startsAt = session.message.notBefore || session.message.issuedAt
+      const startsAt = session.data.notBefore || session.data.issuedAt
       if (!startsAt || Date.parse(startsAt) > Date.now()) {
         return false
       }
 
-      const endsAt = session.message.expirationTime
+      const endsAt = session.data.expirationTime
       if (endsAt && Date.now() > Date.parse(endsAt)) {
         return false
       }
