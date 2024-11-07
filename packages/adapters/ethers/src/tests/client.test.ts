@@ -593,12 +593,14 @@ describe('EthersAdapter', () => {
     it('should handle accountsChanged event', async () => {
       client['setupProviderListeners'](mockProvider, 'injected')
 
+      const address = '0x1234567890123456789012345678901234567890'
       const accountsChangedHandler = mockProvider.on.mock.calls.find(
         (call: string[]) => call[0] === 'accountsChanged'
       )[1]
-      await accountsChangedHandler(['0x1234567890123456789012345678901234567890'])
+      await accountsChangedHandler([address])
 
       expect(mockAppKit.setCaipAddress).toHaveBeenCalled()
+      expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(`eip155:1:${address}`, 'eip155')
     })
 
     it('should handle chainChanged event', async () => {
@@ -614,10 +616,10 @@ describe('EthersAdapter', () => {
   })
 
   describe('EthersClient - checkActiveProviders', () => {
-    let mockInjectedProvider: any
+    let mockProvider: any
 
     beforeEach(() => {
-      mockInjectedProvider = {
+      mockProvider = {
         request: vi.fn(),
         on: vi.fn(),
         removeListener: vi.fn()
@@ -633,31 +635,38 @@ describe('EthersAdapter', () => {
       vi.spyOn(client as any, 'setupProviderListeners').mockImplementation(() => {})
     })
 
-    it('should check and set active provider for injected wallet', () => {
+    it('should check and set active provider for injected and coinbase wallet', () => {
       const mockConfig = {
-        injected: mockInjectedProvider,
-        coinbase: undefined,
+        injected: mockProvider,
+        coinbase: mockProvider,
         metadata: {}
+      } as ProviderType
+
+      const providers = {
+        [ConstantsUtil.INJECTED_CONNECTOR_ID]: 'MetaMask',
+        [ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]: 'Coinbase Wallet'
+      } as const
+
+      for (const [key, name] of Object.entries(providers)) {
+        vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation(localStorageKey => {
+          if (localStorageKey === SafeLocalStorageKeys.WALLET_ID) return key
+          if (localStorageKey === SafeLocalStorageKeys.WALLET_NAME) return name
+          return undefined
+        })
+
+        client['checkActiveProviders'](mockConfig)
+
+        expect(SafeLocalStorage.getItem).toHaveBeenCalledWith(SafeLocalStorageKeys.WALLET_ID)
+        expect(client['setProvider']).toHaveBeenCalledWith(mockProvider, key)
+        expect(client['setupProviderListeners']).toHaveBeenCalledWith(mockProvider, key)
       }
-
-      client['checkActiveProviders'](mockConfig as ProviderType)
-
-      expect(SafeLocalStorage.getItem).toHaveBeenCalledWith(SafeLocalStorageKeys.WALLET_ID)
-      expect(client['setProvider']).toHaveBeenCalledWith(
-        mockInjectedProvider,
-        ConstantsUtil.INJECTED_CONNECTOR_ID
-      )
-      expect(client['setupProviderListeners']).toHaveBeenCalledWith(
-        mockInjectedProvider,
-        ConstantsUtil.INJECTED_CONNECTOR_ID
-      )
     })
 
     it('should not set provider when wallet ID is not found', () => {
       vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValue(undefined)
 
       const mockConfig = {
-        injected: mockInjectedProvider,
+        injected: mockProvider,
         coinbase: undefined,
         metadata: {}
       }
