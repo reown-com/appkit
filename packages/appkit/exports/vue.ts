@@ -55,7 +55,7 @@ export function useAppKitNetwork(): Ref<UseAppKitNetworkReturn> {
   })
 
   onUnmounted(() => {
-    unsubscribe?.()
+    unsubscribe()
   })
 
   return state
