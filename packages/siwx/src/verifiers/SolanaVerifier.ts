@@ -9,7 +9,7 @@ export class SolanaVerifier extends SIWXVerifier {
 
   public async verify(session: SIWXSession): Promise<boolean> {
     try {
-      const publicKey = bs58.decode(session.message.accountAddress)
+      const publicKey = bs58.decode(session.data.accountAddress)
       const signature = bs58.decode(session.signature)
       const message = new TextEncoder().encode(session.message.toString())
 

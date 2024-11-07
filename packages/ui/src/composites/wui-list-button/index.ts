@@ -4,6 +4,7 @@ import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('wui-list-button')
 export class WuiListButton extends LitElement {
@@ -14,10 +15,12 @@ export class WuiListButton extends LitElement {
 
   @property({ type: Boolean }) public disabled = false
 
+  @property() public tabIdx?: number = undefined
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.disabled} ontouchstart>
+      <button ?disabled=${this.disabled} tabindex=${ifDefined(this.tabIdx)} ontouchstart>
         <wui-text align="center" variant="paragraph-500" color="inherit">${this.text}</wui-text>
       </button>
     `

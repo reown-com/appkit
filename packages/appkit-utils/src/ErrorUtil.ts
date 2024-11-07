@@ -20,7 +20,7 @@ export const ErrorUtil = {
       longMessage: () =>
         `Origin ${
           isSafe() ? window.origin : 'unknown'
-        } not found on Allowlist - update configuration`
+        } not found on Allowlist - update configuration on cloud.reown.com`
     },
     SOCIALS_TIMEOUT: {
       shortMessage: 'Invalid App Configuration',
@@ -34,7 +34,7 @@ export const ErrorUtil = {
     },
     PROJECT_ID_NOT_CONFIGURED: {
       shortMessage: 'Project ID Not Configured',
-      longMessage: 'Project ID Not Configured - update configuration'
+      longMessage: 'Project ID Not Configured - update configuration on cloud.reown.com'
     }
   }
 }
