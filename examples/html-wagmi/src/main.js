@@ -21,7 +21,7 @@ const modal = createAppKit({
     name: 'Html Example',
     description: 'Html Example',
     url: 'https://reown.com/appkit',
-    icons: ['https://avatars.githubusercontent.com/u/37784886']
+    icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
   },
   networks: [mainnet, arbitrum],
   projectId,

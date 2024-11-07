@@ -3,8 +3,9 @@
   "private": true,
   "version": "1.2.0",
   "scripts": {
-    "dev": "vite --port 3013",
-    "build": "vite build"
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@reown/appkit": "workspace:*",
@@ -14,6 +15,8 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "5.0.2",
-    "vite": "5.2.11"
+    "typescript": "5.3.3",
+    "vite": "5.2.11",
+    "vue-tsc": "2.1.8"
   }
 }
