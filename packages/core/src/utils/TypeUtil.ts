@@ -987,4 +987,5 @@ export type UseAppKitNetworkReturn = {
   caipNetwork: CaipNetwork | undefined
   chainId: number | string | undefined
   caipNetworkId: CaipNetworkId | undefined
+  switchNetwork: (network: AppKitNetwork) => void
 }

@@ -306,14 +306,17 @@ export const ConnectionController = {
 
       ModalController.open({ view: 'SIWXSignMessage' })
 
-      const message = await siwx.createMessage({
+      const siwxMessage = await siwx.createMessage({
         chainId: activeCaipNetwork.caipNetworkId,
         accountAddress: address
       })
 
-      const signature = await client?.signMessage(message.toString())
+      const message = siwxMessage.toString()
+
+      const signature = await client?.signMessage(message)
 
       await siwx.addSession({
+        data: siwxMessage,
         message,
         signature: signature as `0x${string}`
       })
