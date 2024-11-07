@@ -1,27 +1,25 @@
 {
   "name": "@examples/react-wagmi",
   "private": true,
-  "version": "1.0.4",
+  "version": "1.2.0",
   "scripts": {
     "dev": "vite --port 3002",
-    "build": "vite build",
-    "size": "pnpm run build && vite-size --react --externals wagmi viem @tanstack/react-query react react-dom"
+    "build": "vite build"
   },
   "dependencies": {
-    "@tanstack/react-query": "5.24.8",
-    "@reown/appkit-adapter-wagmi": "workspace:*",
     "@reown/appkit": "workspace:*",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "viem": "2.21.4",
+    "@reown/appkit-adapter-wagmi": "workspace:*",
+    "@tanstack/react-query": "5.24.8",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "viem": "2.21.26",
     "vite": "5.2.11",
-    "wagmi": "2.12.9"
+    "wagmi": "2.12.17"
   },
   "devDependencies": {
     "@types/react": "18.2.62",
     "@types/react-dom": "18.2.7",
     "@vitejs/plugin-react": "4.2.1",
-    "vite": "5.2.11",
-    "vite-size": "0.0.5"
+    "vite": "5.2.11"
   }
 }

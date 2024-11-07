@@ -72,7 +72,9 @@ import {
   RpcSolanaSignMessageRequest,
   RpcSolanaSignTransactionRequest,
   RpcSolanaSignAndSendTransactionRequest,
-  RpcSolanaSignAllTransactionsRequest
+  RpcSolanaSignAllTransactionsRequest,
+  FrameReadyResponse,
+  WalletRevokePermissionsRequest
 } from './W3mFrameSchema.js'
 import type { W3mFrameRpcConstants } from './W3mFrameConstants.js'
 import type { CaipNetworkId } from '@reown/appkit-common'
@@ -128,6 +130,7 @@ export namespace W3mFrameTypes {
     FrameSetPreferredAccountResponse: z.infer<typeof FrameSetPreferredAccountResponse>
     FrameSignOutResponse: undefined
     FrameRpcResponse: RPCResponse
+    FrameReadyResponse: z.infer<typeof FrameReadyResponse>
   }
 
   export interface Network {
@@ -181,6 +184,7 @@ export namespace W3mFrameTypes {
     | z.infer<typeof WalletGetCallsReceiptRequest>
     | z.infer<typeof WalletGetCapabilitiesRequest>
     | z.infer<typeof WalletGrantPermissionsRequest>
+    | z.infer<typeof WalletRevokePermissionsRequest>
 
   export type RPCResponse = z.infer<typeof RpcResponse>
 

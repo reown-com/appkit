@@ -1,6 +1,7 @@
 import type { NamespaceConfig, Namespace } from '@walletconnect/universal-provider'
 import type { CaipNetwork, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 import type { SessionTypes } from '@walletconnect/types'
+import { solana, solanaDevnet } from '../networks/index.js'
 
 export const WcHelpersUtil = {
   getMethodsByChainNamespace(chainNamespace: ChainNamespace): string[] {
@@ -28,6 +29,8 @@ export const WcHelpersUtil = {
           'wallet_sendCalls',
           'wallet_showCallsStatus',
           'wallet_getCallsStatus',
+          'wallet_grantPermissions',
+          'wallet_revokePermissions',
           'wallet_switchEthereumChain'
         ]
       default:
@@ -37,7 +40,8 @@ export const WcHelpersUtil = {
 
   createNamespaces(caipNetworks: CaipNetwork[]): NamespaceConfig {
     return caipNetworks.reduce<NamespaceConfig>((acc, chain) => {
-      const { chainId, chainNamespace, rpcUrl } = chain
+      const { id, chainNamespace, rpcUrls } = chain
+      const rpcUrl = rpcUrls.default.http[0]
 
       const methods = this.getMethodsByChainNamespace(chainNamespace)
 
@@ -50,15 +54,26 @@ export const WcHelpersUtil = {
         } satisfies Namespace
       }
 
-      const fullChainId = `${chainNamespace}:${chainId}`
+      const caipNetworkId = `${chainNamespace}:${id}`
 
       // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
       const namespace = acc[chainNamespace] as Namespace
 
-      namespace.chains.push(fullChainId)
+      namespace.chains.push(caipNetworkId)
 
-      if (namespace?.rpcMap) {
-        namespace.rpcMap[chainId] = rpcUrl
+      // Workaround for wallets that only support deprecated Solana network ID
+      switch (caipNetworkId) {
+        case solana.caipNetworkId:
+          namespace.chains.push(solana.deprecatedCaipNetworkId)
+          break
+        case solanaDevnet.deprecatedCaipNetworkId:
+          namespace.chains.push(solanaDevnet.deprecatedCaipNetworkId)
+          break
+        default:
+      }
+
+      if (namespace?.rpcMap && rpcUrl) {
+        namespace.rpcMap[id] = rpcUrl
       }
 
       return acc

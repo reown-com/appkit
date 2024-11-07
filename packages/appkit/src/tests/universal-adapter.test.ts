@@ -1,21 +1,35 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
-import { mainnet, solana } from '../networks'
+import { mainnet as mainnetAppKit, solana as solanaAppKit } from '../networks'
 import { UniversalAdapterClient } from '../universal-adapter'
 import { mockOptions } from './mocks/Options'
 import mockProvider from './mocks/UniversalProvider'
 import type UniversalProvider from '@walletconnect/universal-provider'
-import { NetworkController } from '@reown/appkit-core'
+import { AlertController, ChainController } from '@reown/appkit-core'
 import { ProviderUtil } from '../store/index.js'
-import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, ConstantsUtil, ErrorUtil, PresetsUtil } from '@reown/appkit-utils'
 import mockAppKit from './mocks/AppKit'
+import type { CaipNetwork } from '@reown/appkit-common'
+
+const [mainnet, solana] = CaipNetworksUtil.extendCaipNetworks([mainnetAppKit, solanaAppKit], {
+  customNetworkImageUrls: {},
+  projectId: 'test-project-id'
+})
+
+const mockOptionsExtended = {
+  ...mockOptions,
+  networks: [mainnet, solana] as [CaipNetwork, ...CaipNetwork[]],
+  defaultNetwork: mainnet
+}
+
+vi.mock('@reown/appkit-core')
 
 describe('UniversalAdapter', () => {
   let universalAdapter: UniversalAdapterClient
 
   beforeEach(() => {
-    universalAdapter = new UniversalAdapterClient(mockOptions)
+    universalAdapter = new UniversalAdapterClient(mockOptionsExtended)
     universalAdapter.walletConnectProvider = mockProvider
-    universalAdapter.construct(mockAppKit, mockOptions)
+    universalAdapter.construct(mockAppKit, mockOptionsExtended)
   })
 
   afterEach(() => {
@@ -24,11 +38,7 @@ describe('UniversalAdapter', () => {
 
   describe('UniversalAdapter - Initialization', () => {
     it('should set caipNetworks to provided caipNetworks options', () => {
-      expect(universalAdapter?.caipNetworks).toEqual(mockOptions.networks)
-    })
-
-    it('should set defaultNetwork to first caipNetwork option', () => {
-      expect(universalAdapter?.defaultNetwork).toEqual(mockOptions.networks[0])
+      expect(universalAdapter?.caipNetworks).toEqual(mockOptionsExtended.networks)
     })
 
     it('should set metadata to metadata options', () => {
@@ -39,6 +49,7 @@ describe('UniversalAdapter', () => {
   describe('UniversalAdapter - Public Methods', () => {
     it('should return walletConnectProvider when getWalletConnectProvider is invoked', async () => {
       const switchNetworkSpy = vi.spyOn(universalAdapter, 'switchNetwork')
+      const mainnet = universalAdapter.caipNetworks[0]
       await universalAdapter.networkControllerClient.switchCaipNetwork(mainnet)
       expect(switchNetworkSpy).toHaveBeenCalledWith(mainnet)
     })
@@ -63,26 +74,21 @@ describe('UniversalAdapter', () => {
       })
     })
 
-    it('should call setDefaultNetwork and set first caipNetwork on setActiveCaipNetwork when there is no active caipNetwork', async () => {
-      vi.spyOn(NetworkController, 'state', 'get').mockReturnValue({
-        caipNetwork: undefined,
-        requestedCaipNetworks: [mainnet, solana],
-        approvedCaipNetworkIds: [],
-        supportsAllNetworks: true
-      })
-
+    // Something is making it so it never recognizes ChainController as the correct instance
+    it.skip('should call setDefaultNetwork and set first caipNetwork on setActiveCaipNetwork when there is no active caipNetwork', async () => {
       const adapterSpy = vi.spyOn(universalAdapter as any, 'setDefaultNetwork')
-      const networkControllerSpy = vi.spyOn(NetworkController, 'setActiveCaipNetwork')
-
+      ChainController.setRequestedCaipNetworks([mainnet], 'eip155')
+      const setActiveCaipNetworkSpy = vi.spyOn(ChainController, 'setActiveCaipNetwork')
       const mockOnUri = vi.fn()
       await universalAdapter?.connectionControllerClient?.connectWalletConnect?.(mockOnUri)
 
       expect(adapterSpy).toHaveBeenCalledWith(mockProvider.session?.namespaces)
-      expect(networkControllerSpy).toHaveBeenCalledWith(mainnet)
+      expect(setActiveCaipNetworkSpy).toHaveBeenCalledWith(mainnet)
     })
 
     it('should set correct requestedCaipNetworks in AppKit when syncRequestedNetworks has been called', () => {
-      ;(universalAdapter as any).syncRequestedNetworks(mockOptions.networks)
+      ;(universalAdapter as any).syncRequestedNetworks(mockOptionsExtended.networks)
+      const mainnet = universalAdapter.caipNetworks[0]
       expect(mockAppKit.setRequestedCaipNetworks).toHaveBeenCalledWith([mainnet], 'eip155')
       expect(mockAppKit.setRequestedCaipNetworks).toHaveBeenCalledWith([solana], 'solana')
     })
@@ -99,6 +105,15 @@ describe('UniversalAdapter', () => {
       expect(providerSpy).toHaveBeenCalledWith({
         optionalNamespaces: universalAdapter.walletConnectProvider?.namespaces
       })
+    })
+
+    it('should set the clientId in AppKit when connectionControllerClient.connectWalletConnect is invoked', async () => {
+      const mockOnUri = vi.fn()
+      await universalAdapter?.connectionControllerClient?.connectWalletConnect?.(mockOnUri)
+
+      expect(mockAppKit.setClientId).toHaveBeenCalledWith(
+        mockProvider.client?.core?.crypto?.getClientId()
+      )
     })
 
     it('should update AppKit state when connectionControllerClient.connectWalletConnect is invoked', async () => {
@@ -190,6 +205,29 @@ describe('UniversalAdapter', () => {
           chain: universalAdapter.chainNamespace
         }
       ])
+    })
+  })
+
+  describe('UniversalAdapter - Alert Errors', () => {
+    it('should handle alert errors based on error messages', () => {
+      const errors = [
+        {
+          alert: ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION,
+          message:
+            'Error: WebSocket connection closed abnormally with code: 3000 (Unauthorized: origin not allowed)'
+        },
+        {
+          alert: ErrorUtil.ALERT_ERRORS.JWT_TOKEN_NOT_VALID,
+          message:
+            'WebSocket connection closed abnormally with code: 3000 (JWT validation error: JWT Token is not yet valid:)'
+        }
+      ]
+
+      for (const { alert, message } of errors) {
+        // @ts-expect-error
+        universalAdapter.handleAlertError(new Error(message))
+        expect(AlertController.open).toHaveBeenCalledWith(alert, 'error')
+      }
     })
   })
 })

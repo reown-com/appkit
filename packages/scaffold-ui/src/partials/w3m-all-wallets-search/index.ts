@@ -4,7 +4,7 @@ import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { markWalletsAsInstalled } from '../../utils/markWalletsAsInstalled.js'
+import { WalletUtil } from '../../utils/WalletUtil.js'
 
 @customElement('w3m-all-wallets-search')
 export class W3mAllWalletsSearch extends LitElement {
@@ -39,7 +39,7 @@ export class W3mAllWalletsSearch extends LitElement {
 
   private walletsTemplate() {
     const { search } = ApiController.state
-    const wallets = markWalletsAsInstalled(search)
+    const wallets = WalletUtil.markWalletsAsInstalled(search)
 
     if (!search.length) {
       return html`
@@ -68,6 +68,7 @@ export class W3mAllWalletsSearch extends LitElement {
             <w3m-all-wallets-list-item
               @click=${() => this.onConnectWallet(wallet)}
               .wallet=${wallet}
+              data-testid="wallet-search-item-${wallet.id}"
             ></w3m-all-wallets-list-item>
           `
         )}

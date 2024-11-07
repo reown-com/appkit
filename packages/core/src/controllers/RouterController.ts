@@ -32,13 +32,13 @@ export interface RouterControllerState {
   view:
     | 'Account'
     | 'AccountSettings'
-    | 'SelectAddresses'
     | 'AllWallets'
     | 'ApproveTransaction'
     | 'BuyInProgress'
     | 'WalletCompatibleNetworks'
     | 'ChooseAccountName'
     | 'Connect'
+    | 'Create'
     | 'ConnectingExternal'
     | 'ConnectingFarcaster'
     | 'ConnectingWalletConnect'
@@ -79,6 +79,9 @@ export interface RouterControllerState {
     | 'SwapPreview'
     | 'ConnectingMultiChain'
     | 'SwitchActiveChain'
+    | 'SmartSessionCreated'
+    | 'SmartSessionList'
+    | 'SIWXSignMessage'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector

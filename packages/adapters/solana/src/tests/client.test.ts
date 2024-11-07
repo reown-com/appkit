@@ -4,13 +4,30 @@ import { mockOptions } from './mocks/Options'
 import mockAppKit from './mocks/AppKit'
 import { mockAuthConnector } from './mocks/AuthConnector'
 import { Connection } from '@solana/web3.js'
-import { SafeLocalStorage } from '@reown/appkit-common'
+import { SafeLocalStorage, type CaipNetwork } from '@reown/appkit-common'
 import { ProviderUtil } from '@reown/appkit/store'
-import { SolHelpersUtil } from '@reown/appkit-utils/solana'
 import { SolStoreUtil } from '../utils/SolanaStoreUtil.js'
 import { WalletConnectProvider } from '../providers/WalletConnectProvider'
 import UniversalProvider from '@walletconnect/universal-provider'
-import { solana } from '@reown/appkit/networks'
+import {
+  solana as AppKitSolana,
+  solanaTestnet as AppKitSolanaTestnet
+} from '@reown/appkit/networks'
+import { CaipNetworksUtil } from '@reown/appkit-utils'
+
+const [solana, solanaTestnet] = CaipNetworksUtil.extendCaipNetworks(
+  [AppKitSolana, AppKitSolanaTestnet],
+  {
+    customNetworkImageUrls: mockOptions.chainImages,
+    projectId: '1234'
+  }
+) as [CaipNetwork, CaipNetwork]
+
+const mockOptionsExtended = {
+  ...mockOptions,
+  networks: [solana, solanaTestnet] as [CaipNetwork, ...CaipNetwork[]],
+  defaultNetwork: solana
+}
 
 vi.mock('@solana/web3.js', () => ({
   Connection: vi.fn(),
@@ -51,7 +68,6 @@ vi.mock('../utils/SolanaStoreUtil.js', () => ({
 
 vi.mock('@reown/appkit-utils/solana', () => ({
   SolHelpersUtil: {
-    getChainFromCaip: vi.fn(),
     detectRpcUrl: vi.fn()
   },
   SolConstantsUtil: {
@@ -65,7 +81,7 @@ describe('SolanaAdapter', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     client = new SolanaAdapter({})
-    client.construct(mockAppKit, mockOptions)
+    client.construct(mockAppKit, mockOptionsExtended)
   })
 
   afterEach(() => {
@@ -79,7 +95,15 @@ describe('SolanaAdapter', () => {
     })
 
     it('should set caipNetworks to provided caipNetworks options', () => {
-      expect(client['caipNetworks']).toEqual(mockOptions.networks)
+      expect(client['caipNetworks']).toEqual(mockOptionsExtended.networks)
+    })
+
+    it('should set chain images', () => {
+      Object.entries(mockOptionsExtended.chainImages!).map(([networkId, imageUrl]) => {
+        const caipNetwork = client.caipNetworks.find(caipNetwork => caipNetwork.id === networkId)
+        expect(caipNetwork).toBeDefined()
+        expect(caipNetwork?.assets?.imageUrl).toEqual(imageUrl)
+      })
     })
 
     it('should create network and connection controller clients', () => {
@@ -107,7 +131,7 @@ describe('SolanaAdapter', () => {
       await client['syncNetwork'](mockAddress)
 
       expect(mockAppKit.setAddressExplorerUrl).toHaveBeenCalledWith(
-        `${solana.explorerUrl}/account/${mockAddress}`,
+        `${solana.blockExplorers?.default.url}/account/${mockAddress}`,
         'solana'
       )
       expect(client['syncBalance']).toHaveBeenCalledWith(mockAddress)
@@ -151,12 +175,11 @@ describe('SolanaAdapter', () => {
         connect: vi.fn().mockResolvedValue('DjPi1LtwrXJMAh2AUvuUMajCpMJEKg8N1J1PbLGjCH5B'),
         name: 'MockProvider',
         on: vi.fn(),
-        chains: [{ chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' }]
+        chains: [solana, solanaTestnet]
       }
       vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValue(
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
       )
-      vi.spyOn(SolHelpersUtil, 'getChainFromCaip').mockReturnValue(solana)
 
       await client['setProvider'](mockProvider as any)
 

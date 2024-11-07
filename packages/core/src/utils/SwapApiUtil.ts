@@ -5,7 +5,6 @@ import { OptionsController } from '../controllers/OptionsController.js'
 import type { BlockchainApiSwapAllowanceRequest, BlockchainApiBalanceResponse } from './TypeUtil.js'
 import { AccountController } from '../controllers/AccountController.js'
 import { ChainController } from '../controllers/ChainController.js'
-import { NetworkController } from '../controllers/NetworkController.js'
 
 // -- Types --------------------------------------------- //
 export type TokenInfo = {
@@ -25,7 +24,7 @@ export const SwapApiUtil = {
   async getTokenList() {
     const caipNetwork = ChainController.state.activeCaipNetwork
     const response = await BlockchainApiController.fetchSwapTokens({
-      chainId: caipNetwork?.id,
+      chainId: caipNetwork?.caipNetworkId,
       projectId: OptionsController.state.projectId
     })
     const tokens =
@@ -72,7 +71,7 @@ export const SwapApiUtil = {
         default:
           return await BlockchainApiController.fetchGasPrice({
             projectId,
-            chainId: caipNetwork.id
+            chainId: caipNetwork.caipNetworkId
           })
       }
     } catch {
@@ -116,7 +115,11 @@ export const SwapApiUtil = {
       return []
     }
 
-    const response = await BlockchainApiController.getBalance(address, caipNetwork.id, forceUpdate)
+    const response = await BlockchainApiController.getBalance(
+      address,
+      caipNetwork.caipNetworkId,
+      forceUpdate
+    )
     const balances = response.balances.filter(balance => balance.quantity.decimals !== '0')
 
     AccountController.setTokenBalance(balances, ChainController.state.activeChain)
@@ -132,7 +135,7 @@ export const SwapApiUtil = {
             ...token,
             address: token?.address
               ? token.address
-              : NetworkController.getActiveNetworkTokenAddress(),
+              : ChainController.getActiveNetworkTokenAddress(),
             decimals: parseInt(token.quantity.decimals, 10),
             logoUri: token.iconUrl,
             eip2612: false

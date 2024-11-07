@@ -49,7 +49,7 @@ export function mockUniversalProviderSession(
   replaces: Partial<SessionTypes.Struct> = {},
   inputChains = TestConstants.chains
 ): SessionTypes.Struct {
-  const chains = inputChains.map(chain => `solana:${chain.chainId}`)
+  const chains = inputChains.map(chain => `solana:${chain.id}`)
 
   const accounts = chains.reduce<string[]>((acc, cur) => {
     for (const account of TestConstants.accounts) {

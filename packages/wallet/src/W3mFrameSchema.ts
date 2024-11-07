@@ -130,6 +130,12 @@ export const FrameInitSmartAccountResponse = z.object({
   address: z.string(),
   isDeployed: z.boolean()
 })
+
+export const FrameReadyResponse = z.object({
+  // Placeholder for future data
+  version: z.string().optional()
+})
+
 export const FrameSetPreferredAccountResponse = z.object({ type: z.string(), address: z.string() })
 
 export const RpcResponse = z.any()
@@ -391,6 +397,10 @@ export const WalletGrantPermissionsRequest = z.object({
   method: z.literal('wallet_grantPermissions'),
   params: z.array(z.any())
 })
+export const WalletRevokePermissionsRequest = z.object({
+  method: z.literal('wallet_revokePermissions'),
+  params: z.any()
+})
 
 export const FrameSession = z.object({
   token: z.string()
@@ -516,6 +526,7 @@ export const W3mFrameSchema = {
           .or(WalletSendCallsRequest)
           .or(WalletGetCapabilitiesRequest)
           .or(WalletGrantPermissionsRequest)
+          .or(WalletRevokePermissionsRequest)
       })
     )
 
@@ -719,4 +730,5 @@ export const W3mFrameSchema = {
         payload: zError
       })
     )
+    .or(EventSchema.extend({ type: zType('FRAME_READY'), payload: FrameReadyResponse }))
 }

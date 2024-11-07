@@ -24,14 +24,19 @@ export const mockProvider = {
         'wallet_sendCalls',
         'wallet_showCallsStatus',
         'wallet_getCallsStatus',
+        'wallet_grantPermissions',
+        'wallet_revokePermissions',
         'wallet_switchEthereumChain'
       ],
       rpcMap: {
-        '1': 'https://rpc.walletconnect.org/v1/?chainId=eip155:1'
+        '1': 'https://rpc.walletconnect.org/v1/?chainId=eip155%3A1&projectId=test-project-id'
       }
     },
     solana: {
-      chains: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+      chains: [
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ'
+      ],
       methods: [
         'solana_signMessage',
         'solana_signTransaction',
@@ -43,7 +48,7 @@ export const mockProvider = {
       events: ['accountsChanged', 'chainChanged'],
       rpcMap: {
         '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp':
-          'https://rpc.walletconnect.org/v1/?chainId=solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+          'https://rpc.walletconnect.org/v1/?chainId=solana%3A5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp&projectId=test-project-id'
       }
     }
   },
@@ -94,7 +99,8 @@ export const mockProvider = {
         keychain: {
           has: vi.fn().mockResolvedValue(true),
           set: vi.fn()
-        }
+        },
+        getClientId: vi.fn().mockReturnValue('mock_client_id')
       },
       relayer: {
         subscriber: {

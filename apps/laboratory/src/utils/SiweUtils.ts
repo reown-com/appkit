@@ -13,7 +13,7 @@ export const siweConfig = createSIWEConfig({
   getMessageParams: async () => ({
     domain: window.location.host,
     uri: window.location.origin,
-    chains: chains.map(chain => chain.chainId as number),
+    chains: chains.map(chain => chain.id as number),
     statement: 'Please sign with your account',
     iat: new Date().toISOString()
   }),

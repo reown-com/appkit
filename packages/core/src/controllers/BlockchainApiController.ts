@@ -34,6 +34,7 @@ import { OptionsController } from './OptionsController.js'
 import { proxy } from 'valtio/vanilla'
 import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
+import type { CaipAddress } from '@reown/appkit-common'
 
 const DEFAULT_OPTIONS = {
   purchaseCurrencies: [
@@ -336,7 +337,8 @@ export const BlockchainApiController = {
     return state.api.get<BlockchainApiSuggestionResponse>({
       path: `/v1/profile/suggestions/${name}`,
       params: {
-        projectId: OptionsController.state.projectId
+        projectId: OptionsController.state.projectId,
+        zone: 'reown.id'
       }
     })
   },
@@ -428,6 +430,26 @@ export const BlockchainApiController = {
     }
   },
 
+  getSmartSessions(caipAddress: CaipAddress) {
+    return state.api.get({
+      path: `/v1/sessions/${caipAddress}`,
+      params: {
+        projectId: OptionsController.state.projectId
+      }
+    })
+  },
+  revokeSmartSession(address: `0x${string}`, pci: string, signature: string) {
+    return state.api.post({
+      path: `/v1/sessions/${address}/revoke`,
+      params: {
+        projectId: OptionsController.state.projectId
+      },
+      body: {
+        pci,
+        signature
+      }
+    })
+  },
   setClientId(clientId: string | null) {
     state.clientId = clientId
     state.api = new FetchUtil({ baseUrl, clientId })

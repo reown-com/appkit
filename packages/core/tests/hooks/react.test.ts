@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { useAppKitNetwork, useAppKitAccount } from '../../exports/react'
+import { useAppKitNetworkCore, useAppKitAccount } from '../../exports/react'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import { AccountController, ChainController } from '../../exports'
@@ -17,14 +17,24 @@ describe('useAppKitNetwork', () => {
 
   it('should return the correct network state', () => {
     const mockNetwork: CaipNetwork = {
-      id: 'eip155:1',
+      id: 1,
       name: 'Ethereum',
-      imageId: 'ethereum',
-      rpcUrl: 'https://mainnet.infura.io/v3/YOUR-PROJECT-ID',
-      chainId: 1,
+      assets: {
+        imageId: 'ethereum',
+        imageUrl: ''
+      },
+      caipNetworkId: 'eip155:1',
       chainNamespace: 'eip155',
-      explorerUrl: 'https://etherscan.io',
-      currency: 'ETH'
+      nativeCurrency: {
+        name: 'Ethereum',
+        decimals: 18,
+        symbol: 'ETH'
+      },
+      rpcUrls: {
+        default: {
+          http: ['']
+        }
+      }
     }
 
     // Mock the useSnapshot hook
@@ -32,7 +42,7 @@ describe('useAppKitNetwork', () => {
       activeCaipNetwork: mockNetwork
     })
 
-    const { caipNetwork, chainId } = useAppKitNetwork()
+    const { caipNetwork, chainId } = useAppKitNetworkCore()
 
     expect(caipNetwork).toBe(mockNetwork)
     expect(chainId).toBe(1)
