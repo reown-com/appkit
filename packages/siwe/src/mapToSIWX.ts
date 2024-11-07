@@ -50,10 +50,11 @@ export async function mapToSIWX(siwe: SIWEConfig): Promise<SIWXConfig> {
         return Promise.resolve()
       },
 
-      get: async () => {
+      get: async (chainId, address) => {
         try {
           const siweSession = await siwe.getSession()
-          if (!siweSession) {
+          const siweCaipNetworkId = `eip155:${siweSession?.chainId}`
+          if (!siweSession || siweSession.address !== address || siweCaipNetworkId !== chainId) {
             return []
           }
 
@@ -61,7 +62,7 @@ export async function mapToSIWX(siwe: SIWEConfig): Promise<SIWXConfig> {
           const session: SIWXSession = {
             data: {
               accountAddress: siweSession.address,
-              chainId: `eip155:${siweSession.chainId}`
+              chainId: siweCaipNetworkId
             } as SIWXMessage.Data,
             message: '',
             signature: ''
