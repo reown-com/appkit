@@ -1,5 +1,5 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
-import type { BaseNetwork, CaipNetwork } from '@reown/appkit-common'
+import type { AppKitNetwork, BaseNetwork, CaipNetwork } from '@reown/appkit-common'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import {
   connect,
@@ -56,16 +56,29 @@ import { normalize } from 'viem/ens'
 export class WagmiAdapter extends AdapterBlueprint {
   public wagmiChains: readonly [Chain, ...Chain[]] | undefined
   public wagmiConfig!: Config
+  public adapterType = 'wagmi'
 
   constructor(
     configParams: Partial<CreateConfigParameters> & {
-      networks: CaipNetwork[]
+      networks: AppKitNetwork[]
       projectId: string
     }
   ) {
-    super({ projectId: configParams.projectId, networks: configParams.networks })
+    super({
+      projectId: configParams.projectId,
+      networks: CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
+        projectId: configParams.projectId,
+        customNetworkImageUrls: {}
+      }) as [CaipNetwork, ...CaipNetwork[]]
+    })
     this.namespace = CommonConstantsUtil.CHAIN.EVM
-    this.createConfig(configParams)
+    this.createConfig({
+      networks: CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
+        projectId: configParams.projectId,
+        customNetworkImageUrls: {}
+      }) as [CaipNetwork, ...CaipNetwork[]],
+      projectId: configParams.projectId
+    })
     this.setupWatchers()
   }
 
@@ -263,7 +276,7 @@ export class WagmiAdapter extends AdapterBlueprint {
         })
       }
 
-      return { address: (ensName as string) || wcName || false }
+      return { address: (ensName as string) || (wcName as string) || false }
     } catch {
       return { address: false }
     }

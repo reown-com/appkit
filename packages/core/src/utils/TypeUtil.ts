@@ -8,7 +8,8 @@ import type {
   CaipAddress,
   AdapterType,
   SdkFramework,
-  AppKitSdkVersion
+  AppKitSdkVersion,
+  AppKitNetwork
 } from '@reown/appkit-common'
 import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
 import type { AccountControllerState } from '../controllers/AccountController.js'
@@ -878,21 +879,12 @@ export type AdapterAccountState = {
 export type ChainAdapter = {
   connectionControllerClient?: ConnectionControllerClient
   networkControllerClient?: NetworkControllerClient
-  accountState?: AccountControllerState
+  accountState?: AdapterAccountState
   networkState?: AdapterNetworkState
-  defaultNetwork?: CaipNetwork
-  chainNamespace: ChainNamespace
-  isUniversalAdapterClient?: boolean
-  adapterType?: AdapterType
-  caipNetworks: CaipNetwork[]
-  getAddress?: () => string | undefined
-  getError?: () => unknown
-  getChainId?: () => number | string | undefined
-  switchNetwork?: ((caipNetwork: CaipNetwork) => void) | undefined
-  getIsConnected?: () => boolean | undefined
-  getWalletProvider?: () => unknown
-  getWalletProviderType?: () => string | undefined
-  subscribeProvider?: (callback: (newState: unknown) => void) => void
+  namespace?: ChainNamespace
+  caipNetworks?: CaipNetwork[] | AppKitNetwork[]
+  projectId?: string
+  adapterType?: string
 }
 
 type ProviderEventListener = {

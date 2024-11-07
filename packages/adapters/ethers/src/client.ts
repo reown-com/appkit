@@ -23,6 +23,7 @@ export interface EIP6963ProviderDetail {
 
 export class EthersAdapter extends AdapterBlueprint {
   private ethersConfig?: ProviderType
+  public adapterType = 'ethers'
 
   constructor() {
     super({})
@@ -192,7 +193,7 @@ export class EthersAdapter extends AdapterBlueprint {
     if (caipNetwork) {
       const result = await EthersMethods.getEnsAddress(name, caipNetwork)
 
-      return { address: result }
+      return { address: result as string }
     }
 
     return { address: '' }

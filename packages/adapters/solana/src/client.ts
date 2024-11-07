@@ -40,6 +40,7 @@ export class SolanaAdapter extends AdapterBlueprint {
   private w3mFrameProvider?: W3mFrameProvider
   private authProvider?: AuthProvider
   private authSession?: AuthProvider.Session
+  public adapterType = 'solana'
 
   constructor(options: AdapterOptions = {}) {
     super({})

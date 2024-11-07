@@ -61,7 +61,7 @@ const partialClient: ConnectionControllerClient = {
 }
 
 const evmAdapter = {
-  chainNamespace: CommonConstantsUtil.CHAIN.EVM,
+  namespace: CommonConstantsUtil.CHAIN.EVM,
   connectionControllerClient: client
 }
 const adapters = [evmAdapter] as ChainAdapter[]
@@ -76,7 +76,7 @@ describe('ConnectionController', () => {
   it('should have valid default state', () => {
     ChainController.initialize([
       {
-        chainNamespace: CommonConstantsUtil.CHAIN.EVM,
+        namespace: CommonConstantsUtil.CHAIN.EVM,
         connectionControllerClient: client,
         caipNetworks: []
       }
@@ -133,7 +133,7 @@ describe('ConnectionController', () => {
   it('should not throw when optional methods are undefined', async () => {
     ChainController.initialize([
       {
-        chainNamespace: CommonConstantsUtil.CHAIN.EVM,
+        namespace: CommonConstantsUtil.CHAIN.EVM,
         connectionControllerClient: partialClient,
         caipNetworks: []
       }

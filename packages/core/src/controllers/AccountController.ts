@@ -86,7 +86,9 @@ export const AccountController = {
       'accountState',
       accountState => {
         if (accountState) {
-          const nextValue = accountState[property]
+          const nextValue = accountState[
+            property as keyof typeof accountState
+          ] as AccountControllerState[K]
           if (prev !== nextValue) {
             prev = nextValue
             callback(nextValue)

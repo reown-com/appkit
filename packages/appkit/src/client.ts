@@ -16,7 +16,9 @@ import {
   type WriteContractArgs,
   type Provider,
   type SendTransactionArgs,
-  type EstimateGasTransactionArgs
+  type EstimateGasTransactionArgs,
+  type AccountControllerState,
+  type AdapterNetworkState
 } from '@reown/appkit-core'
 import {
   AccountController,
@@ -88,6 +90,20 @@ export interface OpenOptions {
 
 type Adapters = Record<ChainNamespace, AdapterBlueprint>
 
+// -- Constants ----------------------------------------- //
+const accountState: AccountControllerState = {
+  currentTab: 0,
+  tokenBalance: [],
+  smartAccountDeployed: false,
+  addressLabels: new Map(),
+  allAccounts: []
+}
+
+const networkState: AdapterNetworkState = {
+  supportsAllNetworks: true,
+  smartAccountEnabledNetworks: []
+}
+
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
 
@@ -156,6 +172,7 @@ export class AppKit {
     this.createAuthProvider()
     await this.createUniversalProvider()
     this.createClients()
+    ChainController.initialize(options.adapters ?? [])
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
     this.initControllers(options)
     this.chainAdapters = await this.createAdapters(
@@ -594,7 +611,7 @@ export class AppKit {
     }
 
     const evmAdapter = options.adapters?.find(
-      adapter => adapter.chainNamespace === ConstantsUtil.CHAIN.EVM
+      adapter => adapter.namespace === ConstantsUtil.CHAIN.EVM
     )
 
     // Set the SIWE client for EVM chains
@@ -664,7 +681,10 @@ export class AppKit {
         })
 
         if (res) {
-          await this.syncAccount(res)
+          await this.syncAccount({
+            ...res,
+            chainNamespace: ChainController.state.activeChain as ChainNamespace
+          })
           this.syncProvider(res)
         }
       },
@@ -682,7 +702,7 @@ export class AppKit {
         localStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
 
         ChainController.state.chains.forEach(chain => {
-          this.resetAccount(chain.chainNamespace)
+          this.resetAccount(chain.namespace as ChainNamespace)
         })
       },
       checkInstalled: (ids?: string[]) => {
@@ -799,7 +819,8 @@ export class AppKit {
         await adapter?.switchNetwork({ caipNetwork, provider, providerType })
         await this.syncAccount({
           address: AccountController.state.address as string,
-          chainId: ChainController.state.activeCaipNetwork?.id as string | number
+          chainId: ChainController.state.activeCaipNetwork?.id as string | number,
+          chainNamespace: caipNetwork.chainNamespace
         })
       },
       // eslint-disable-next-line @typescript-eslint/require-await
@@ -820,7 +841,6 @@ export class AppKit {
       }
     }
     if (this.networkControllerClient && this.connectionControllerClient) {
-      ChainController.setClients(this.networkControllerClient, this.connectionControllerClient)
       ConnectionController.setClient(this.connectionControllerClient)
     }
   }
@@ -951,12 +971,12 @@ export class AppKit {
 
     adapter?.on('switchNetwork', ({ address, chainId }) => {
       if (ChainController.state.activeChain === chainNamespace && address) {
-        this.syncAccount({ address, chainId })
+        this.syncAccount({ address, chainId, chainNamespace })
       } else if (
         ChainController.state.activeChain === chainNamespace &&
         AccountController.state.address
       ) {
-        this.syncAccount({ address: AccountController.state.address, chainId })
+        this.syncAccount({ address: AccountController.state.address, chainId, chainNamespace })
       }
     })
 
@@ -968,14 +988,15 @@ export class AppKit {
 
     adapter?.on('accountChanged', ({ address, chainId }) => {
       if (ChainController.state.activeChain === chainNamespace && chainId) {
-        this.syncAccount({ address, chainId: Number(chainId) })
+        this.syncAccount({ address, chainId: Number(chainId), chainNamespace })
       } else if (
         ChainController.state.activeChain === chainNamespace &&
         ChainController.state.activeCaipNetwork?.id
       ) {
         this.syncAccount({
           address,
-          chainId: ChainController.state.activeCaipNetwork.id
+          chainId: ChainController.state.activeCaipNetwork.id,
+          chainNamespace
         })
       }
     })
@@ -1018,7 +1039,8 @@ export class AppKit {
         }
         await this.syncAccount({
           address,
-          chainId: ChainController.state.activeCaipNetwork?.id as string | number
+          chainId: ChainController.state.activeCaipNetwork?.id as string | number,
+          chainNamespace
         })
       }
     })
@@ -1038,8 +1060,11 @@ export class AppKit {
 
   private async syncAccount({
     address,
-    chainId
-  }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'>) {
+    chainId,
+    chainNamespace
+  }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
+    chainNamespace: ChainNamespace
+  }) {
     this.setPreferredAccountType(
       AccountController.state.preferredAccountType
         ? AccountController.state.preferredAccountType
@@ -1048,18 +1073,18 @@ export class AppKit {
     )
 
     this.setCaipAddress(
-      `${ChainController.state.activeChain}:${chainId}:${address}` as `${ChainNamespace}:${string}:${string}`,
-      ChainController.state.activeChain as ChainNamespace
+      `${chainNamespace}:${chainId}:${address}` as `${ChainNamespace}:${string}:${string}`,
+      chainNamespace
     )
 
     const caipNetwork = this.caipNetworks?.find(
-      n => n.id === chainId && n.chainNamespace === ChainController.state.activeChain
+      n => n.id === chainId && n.chainNamespace === chainNamespace
     )
     if (caipNetwork) {
       this.setCaipNetwork(caipNetwork)
     }
 
-    const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+    const adapter = this.getAdapter(chainNamespace)
 
     const balance = await adapter?.getBalance({
       address,
@@ -1068,69 +1093,65 @@ export class AppKit {
       tokens: this.options.tokens
     })
     if (balance) {
-      this.setBalance(
-        balance.balance,
-        balance.symbol,
-        ChainController.state.activeChain as ChainNamespace
-      )
+      this.setBalance(balance.balance, balance.symbol, chainNamespace)
     }
-    await this.syncIdentity({ address, chainId: Number(chainId) })
+    await this.syncIdentity({ address, chainId: Number(chainId), chainNamespace })
   }
 
   private async syncIdentity({
     address,
-    chainId
-  }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'>) {
+    chainId,
+    chainNamespace
+  }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
+    chainNamespace: ChainNamespace
+  }) {
     try {
       const { name, avatar } = await this.fetchIdentity({
         address
       })
 
-      this.setProfileName(name, ChainController.state.activeChain as ChainNamespace)
-      this.setProfileImage(avatar, ChainController.state.activeChain as ChainNamespace)
+      this.setProfileName(name, chainNamespace)
+      this.setProfileImage(avatar, chainNamespace)
 
       if (!name) {
-        await this.syncReownName(address)
-        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
-        const result = await adapter?.getProfile({ address, chainId: Number(chainId) })
+        await this.syncReownName(address, chainNamespace)
+        const adapter = this.getAdapter(chainNamespace)
+        const result = await adapter?.getProfile({
+          address,
+          chainId: Number(chainId)
+        })
 
         if (result?.profileName) {
-          this.setProfileName(
-            result.profileName,
-            ChainController.state.activeChain as ChainNamespace
-          )
+          this.setProfileName(result.profileName, chainNamespace)
           if (result.profileImage) {
-            this.setProfileImage(
-              result.profileImage,
-              ChainController.state.activeChain as ChainNamespace
-            )
+            this.setProfileImage(result.profileImage, chainNamespace)
           }
         } else {
-          await this.syncReownName(address)
-          this.setProfileImage(null, ChainController.state.activeChain as ChainNamespace)
+          await this.syncReownName(address, chainNamespace)
+          this.setProfileImage(null, chainNamespace)
         }
       }
     } catch {
       if (chainId === 1) {
-        await this.syncReownName(address)
+        await this.syncReownName(address, chainNamespace)
       } else {
-        await this.syncReownName(address)
-        this.setProfileImage(null, ChainController.state.activeChain as ChainNamespace)
+        await this.syncReownName(address, chainNamespace)
+        this.setProfileImage(null, chainNamespace)
       }
     }
   }
 
-  private async syncReownName(address: string) {
+  private async syncReownName(address: string, chainNamespace: ChainNamespace) {
     try {
       const registeredWcNames = await this.getReownName(address)
       if (registeredWcNames[0]) {
         const wcName = registeredWcNames[0]
-        this.setProfileName(wcName.name, ChainController.state.activeChain as ChainNamespace)
+        this.setProfileName(wcName.name, chainNamespace)
       } else {
-        this.setProfileName(null, ChainController.state.activeChain as ChainNamespace)
+        this.setProfileName(null, chainNamespace)
       }
     } catch {
-      this.setProfileName(null, ChainController.state.activeChain as ChainNamespace)
+      this.setProfileName(null, chainNamespace)
     }
   }
 
@@ -1174,7 +1195,7 @@ export class AppKit {
 
       if (res) {
         this.syncProvider(res)
-        await this.syncAccount(res)
+        await this.syncAccount({ ...res, chainNamespace: connectedNamespace as ChainNamespace })
       }
     }
   }
@@ -1278,9 +1299,11 @@ export class AppKit {
       }
 
       ChainController.state.chains.set(namespace, {
-        chainNamespace: namespace,
+        namespace,
         connectionControllerClient: this.connectionControllerClient,
         networkControllerClient: this.networkControllerClient,
+        networkState,
+        accountState,
         caipNetworks: this.caipNetworks ?? []
       })
 

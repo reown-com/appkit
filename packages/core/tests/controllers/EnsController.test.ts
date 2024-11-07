@@ -72,7 +72,7 @@ vi.mock('../../src/controllers/BlockchainApiController.js', async importOriginal
 beforeAll(() => {
   ChainController.initialize([
     {
-      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      namespace: ConstantsUtil.CHAIN.EVM,
       caipNetworks: []
     }
   ])
