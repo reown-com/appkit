@@ -1,4 +1,4 @@
-import type { SIWXMessage, SIWXMessageMethods } from '@reown/appkit-core'
+import type { SIWXMessage } from '@reown/appkit-core'
 import { SIWXMessenger } from '../core/SIWXMessenger.js'
 
 /**
@@ -30,7 +30,7 @@ import { SIWXMessenger } from '../core/SIWXMessenger.js'
 export class InformalMessenger extends SIWXMessenger {
   protected readonly version = '1'
 
-  protected override stringify(params: Omit<SIWXMessage, keyof SIWXMessageMethods>): string {
+  protected override stringify(params: SIWXMessage.Data): string {
     return [
       `${params.domain} wants you to sign in with your **blockchain** account:`,
       params.accountAddress,
