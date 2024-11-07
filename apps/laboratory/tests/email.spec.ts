@@ -11,7 +11,8 @@ let page: ModalWalletPage
 let validator: ModalWalletValidator
 let context: BrowserContext
 let browserPage: Page
-/* eslint-enable init-declarations */
+let email: Email
+let tempEmail: string
 
 // -- Setup --------------------------------------------------------------------
 const emailTest = test.extend<{ library: string }>({
@@ -27,14 +28,15 @@ emailTest.beforeAll(async ({ browser, library }) => {
   page = new ModalWalletPage(browserPage, library, 'default')
   validator = new ModalWalletValidator(browserPage)
 
+  await page.page.context().setOffline(false)
   await page.load()
 
   const mailsacApiKey = process.env['MAILSAC_API_KEY']
   if (!mailsacApiKey) {
     throw new Error('MAILSAC_API_KEY is not set')
   }
-  const email = new Email(mailsacApiKey)
-  const tempEmail = await email.getEmailAddressToUse()
+  email = new Email(mailsacApiKey)
+  tempEmail = await email.getEmailAddressToUse()
   await page.emailFlow(tempEmail, context, mailsacApiKey)
 
   await validator.expectConnected()
@@ -98,10 +100,26 @@ emailTest('it should show names feature only for EVM networks', async ({ library
 emailTest('it should show loading on page refresh', async () => {
   await page.page.reload()
   await validator.expectConnectButtonLoading()
+  await validator.expectAccountButtonReady()
+})
+
+emailTest('it should show snackbar error if failed to fetch token balance', async () => {
+  await page.page.context().setOffline(true)
+  await page.openAccount()
+  await validator.expectSnackbar('Token Balance Unavailable')
+  await page.closeModal()
 })
 
 emailTest('it should disconnect correctly', async () => {
+  await page.page.context().setOffline(false)
   await page.goToSettings()
   await page.disconnect()
   await validator.expectDisconnected()
+})
+
+emailTest('it should abort request if it takes more than 30 seconds', async () => {
+  await page.page.context().setOffline(true)
+  await page.loginWithEmail(tempEmail, false)
+  await page.page.waitForTimeout(30_000)
+  await validator.expectSnackbar('Something went wrong')
 })

@@ -1,8 +1,9 @@
 {
   "name": "@examples/html-wagmi-cdn",
   "private": true,
-  "version": "1.0.6",
+  "version": "1.2.0",
   "scripts": {
+    "prebuild": "node inject-cdn-version.js",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"

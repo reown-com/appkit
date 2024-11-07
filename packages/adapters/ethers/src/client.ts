@@ -274,7 +274,7 @@ export class EthersAdapter {
           },
           [ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]: {
             getProvider: () => this.ethersConfig?.coinbase,
-            providerType: 'coinbase' as const
+            providerType: 'coinbaseWalletSDK' as const
           },
           [ConstantsUtil.AUTH_CONNECTOR_ID]: {
             getProvider: () => this.authProvider,
@@ -325,7 +325,9 @@ export class EthersAdapter {
       },
 
       disconnect: async () => {
-        const provider = ProviderUtil.getProvider<UniversalProvider | Provider>('eip155')
+        const provider = ProviderUtil.getProvider<UniversalProvider | Provider | ProviderInterface>(
+          'eip155'
+        )
         const providerId = ProviderUtil.state.providerIds['eip155']
 
         this.appKit?.setClientId(null)
@@ -338,8 +340,11 @@ export class EthersAdapter {
           [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: async () =>
             await this.appKit?.universalAdapter?.connectionControllerClient?.disconnect(),
 
-          coinbaseWalletSDK: async () =>
-            await this.appKit?.universalAdapter?.connectionControllerClient?.disconnect(),
+          coinbaseWalletSDK: async () => {
+            if (provider && 'disconnect' in provider) {
+              await provider.disconnect()
+            }
+          },
 
           [ConstantsUtil.AUTH_CONNECTOR_ID]: async () => {
             await this.authProvider?.disconnect()
@@ -368,6 +373,7 @@ export class EthersAdapter {
         // Common cleanup actions
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
         this.appKit?.resetAccount(this.chainNamespace)
+        this.removeListeners(provider as Provider)
       },
       signMessage: async (message: string) => {
         const provider = ProviderUtil.getProvider<Provider>(this.chainNamespace)
@@ -435,6 +441,16 @@ export class EthersAdapter {
         }
 
         return await provider.request({ method: 'wallet_grantPermissions', params })
+      },
+
+      revokePermissions: async session => {
+        const provider = ProviderUtil.getProvider<Provider>(CommonConstantsUtil.CHAIN.EVM)
+
+        if (!provider) {
+          throw new Error('Provider is undefined')
+        }
+
+        return await provider.request({ method: 'wallet_revokePermissions', params: [session] })
       },
 
       sendTransaction: async data => {
@@ -589,6 +605,10 @@ export class EthersAdapter {
     })
   }
 
+  /**
+   * Checks the active providers and sets the provider. We call this when we initialize the adapter.
+   * @param config - The provider config
+   */
   private checkActiveProviders(config: ProviderType) {
     const walletId = SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_ID)
     const walletName = SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLET_NAME)
@@ -610,13 +630,18 @@ export class EthersAdapter {
     }
 
     const activeConfig = providerConfigs[walletId as unknown as keyof typeof providerConfigs]
-
     if (activeConfig?.provider) {
       this.setProvider(activeConfig.provider, walletId as ProviderIdType)
       this.setupProviderListeners(activeConfig.provider, walletId as ProviderIdType)
     }
   }
 
+  /**
+   * Sets the provider and updates the local storage. We call this when we connect with external providers or via checkActiveProviders function.
+   * @param provider - The provider to set
+   * @param providerId - The provider id
+   * @param name - The name of the provider
+   */
   private async setProvider(provider: Provider, providerId: ProviderIdType, name?: string) {
     if (providerId === 'w3mAuth') {
       this.setAuthProvider()
@@ -631,9 +656,12 @@ export class EthersAdapter {
       if (provider) {
         const { addresses, chainId } = await EthersHelpersUtil.getUserInfo(provider)
         const firstAddress = addresses?.[0]
-        const caipAddress = `${this.chainNamespace}:${chainId}:${firstAddress}` as CaipAddress
+        const caipNetwork = this.caipNetworks.find(c => c.id === chainId) ?? this.caipNetworks[0]
+        const caipAddress =
+          `${this.chainNamespace}:${caipNetwork?.id}:${firstAddress}` as CaipAddress
 
-        if (firstAddress && chainId) {
+        if (firstAddress && caipNetwork) {
+          this.appKit?.setCaipNetwork(caipNetwork)
           this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
           ProviderUtil.setProviderId('eip155', providerId)
           ProviderUtil.setProvider<Provider>('eip155', provider)
@@ -709,9 +737,13 @@ export class EthersAdapter {
     }
 
     const accountsChangedHandler = (accounts: string[]) => {
-      const currentAccount = accounts?.[0] as CaipAddress | undefined
+      const currentAccount = accounts?.[0] as Address | undefined
+
       if (currentAccount) {
-        this.appKit?.setCaipAddress(currentAccount, this.chainNamespace)
+        const chainId = this.appKit?.getCaipNetwork()?.id
+        const caipAddress = `${this.chainNamespace}:${chainId}:${currentAccount}` as CaipAddress
+
+        this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
 
         if (providerId === ConstantsUtil.EIP6963_CONNECTOR_ID) {
           this.appKit?.setAllAccounts(
@@ -871,6 +903,10 @@ export class EthersAdapter {
     }
   }
 
+  /**
+   * Syncs the account state depending on the given parameters. We call this in different conditions like when caipNetwork or caipAddress changes, when the user switches account or network.
+   * @param param0 - The address and caipNetwork. Both are optional.
+   */
   private async syncAccount({
     address,
     caipNetwork
@@ -892,9 +928,6 @@ export class EthersAdapter {
         )
 
         this.syncConnectedWalletInfo()
-        if (this.ethersConfig) {
-          this.checkActiveProviders(this.ethersConfig)
-        }
 
         if (currentCaipNetwork?.blockExplorers?.default.url) {
           this.appKit?.setAddressExplorerUrl(
@@ -1137,7 +1170,7 @@ export class EthersAdapter {
       this.authProvider = W3mFrameProviderSingleton.getInstance({
         projectId,
         onTimeout: () => {
-          AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION_SOCIALS, 'error')
+          AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
         }
       })
 
@@ -1152,11 +1185,13 @@ export class EthersAdapter {
       this.appKit?.setLoading(true)
       const isLoginEmailUsed = this.authProvider.getLoginEmailUsed()
       this.appKit?.setLoading(isLoginEmailUsed)
-      const { isConnected } = await this.authProvider.isConnected()
-      if (isConnected) {
-        await this.setAuthProvider()
-      } else {
-        this.appKit?.setLoading(false)
+      if (isLoginEmailUsed) {
+        const { isConnected } = await this.authProvider.isConnected()
+        if (isConnected) {
+          await this.setAuthProvider()
+        } else {
+          this.appKit?.setLoading(false)
+        }
       }
     }
   }

@@ -19,12 +19,12 @@ import {
   getConnections,
   switchAccount,
   injected,
-  createConfig,
-  getConnectors
+  createConfig
 } from '@wagmi/core'
 import {
   ChainController,
   ConstantsUtil as CoreConstantsUtil,
+  CoreHelperUtil,
   StorageUtil
 } from '@reown/appkit-core'
 import type UniversalProvider from '@walletconnect/universal-provider'
@@ -48,7 +48,7 @@ import type {
   WriteContractArgs
 } from '@reown/appkit-core'
 import { formatUnits, parseUnits } from 'viem'
-import type { Hex } from 'viem'
+import type { Hex, HttpTransport } from 'viem'
 import {
   ConstantsUtil,
   PresetsUtil,
@@ -59,7 +59,6 @@ import {
 import { isReownName, SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 import {
   getEmailCaipNetworks,
-  getTransport,
   getWalletConnectCaipNetworks,
   parseWalletCapabilities,
   requireCaipAddress
@@ -169,8 +168,17 @@ export class WagmiAdapter implements ChainAdapter {
 
     const transportsArr = this.wagmiChains.map(chain => [
       chain.id,
-      getTransport({ chain: chain as Chain, projectId: configParams.projectId })
+      CaipNetworksUtil.getViemTransport(chain as CaipNetwork)
     ])
+
+    Object.entries(configParams.transports ?? {}).forEach(([chainId, transport]) => {
+      const index = transportsArr.findIndex(([id]) => id === Number(chainId))
+      if (index === -1) {
+        transportsArr.push([Number(chainId), transport as HttpTransport])
+      } else {
+        transportsArr[index] = [Number(chainId), transport as HttpTransport]
+      }
+    })
 
     const transports = Object.fromEntries(transportsArr)
     const connectors: CreateConnectorFn[] = [...(configParams.connectors ?? [])]
@@ -180,6 +188,19 @@ export class WagmiAdapter implements ChainAdapter {
       chains: this.wagmiChains,
       transports,
       connectors
+    })
+
+    ChainController.subscribeKey('activeCaipAddress', val => {
+      const isEVMAddress = val?.startsWith('eip155:')
+      const caipNetwork = ChainController.state.activeCaipNetwork
+      const isEVMNetwork = caipNetwork?.chainNamespace === this.chainNamespace
+
+      if (caipNetwork && isEVMAddress && isEVMNetwork) {
+        this.setProfileAndBalance(
+          CoreHelperUtil.getPlainAddress(val) as Hex,
+          Number(caipNetwork.id)
+        )
+      }
     })
   }
 
@@ -231,6 +252,7 @@ export class WagmiAdapter implements ChainAdapter {
   public construct(appKit: AppKit, options: AppKitOptionsWithCaipNetworks) {
     this.appKit = appKit
     this.options = options
+    this.caipNetworks = options.networks
     this.defaultCaipNetwork = options.defaultNetwork || options.networks?.[0]
     this.tokens = HelpersUtil.getCaipTokens(options.tokens)
     this.setCustomConnectors(options, appKit)
@@ -289,8 +311,12 @@ export class WagmiAdapter implements ChainAdapter {
           ReturnType<(typeof UniversalProvider)['init']>
         >
 
-        const siweParams = await this.options?.siweConfig?.getMessageParams?.()
+        const clientId = await provider?.client?.core?.crypto?.getClientId()
+        if (clientId) {
+          this.appKit?.setClientId(clientId)
+        }
 
+        const siweParams = await this.options?.siweConfig?.getMessageParams?.()
         const isSiweEnabled = this.options?.siweConfig?.options?.enabled
         const isProviderSupported = typeof provider?.authenticate === 'function'
         const isSiweParamsValid = siweParams && Object.keys(siweParams || {}).length > 0
@@ -376,6 +402,16 @@ export class WagmiAdapter implements ChainAdapter {
         }
         const chainId = this.appKit?.getCaipNetworkId<number>()
         await connect(this.wagmiConfig, { connector, chainId })
+      },
+      reconnectExternal: async ({ id }) => {
+        if (!this.wagmiConfig) {
+          throw new Error('networkControllerClient:reconnectExternal - wagmiConfig is undefined')
+        }
+        const connector = this.wagmiConfig.connectors.find(c => c.id === id)
+        if (!connector) {
+          throw new Error('connectionControllerClient:reconnectExternal - connector is undefined')
+        }
+        await reconnect(this.wagmiConfig, { connectors: [connector] })
       },
       checkInstalled: ids => {
         const injectedConnector = this.appKit
@@ -485,6 +521,26 @@ export class WagmiAdapter implements ChainAdapter {
         }
 
         return provider.request({ method: 'wallet_grantPermissions', params })
+      },
+      revokePermissions: async session => {
+        if (!this.wagmiConfig) {
+          throw new Error('connectionControllerClient:revokePermissions - wagmiConfig is undefined')
+        }
+
+        const connections = getConnections(this.wagmiConfig)
+        const connection = connections[0]
+
+        if (!connection?.connector) {
+          throw new Error('connectionControllerClient:revokePermissions - connector is undefined')
+        }
+
+        const provider = (await connection.connector.getProvider()) as UniversalProvider
+
+        if (!provider) {
+          throw new Error('connectionControllerClient:revokePermissions - provider is undefined')
+        }
+
+        return provider.request({ method: 'wallet_revokePermissions', params: [session] })
       },
 
       sendTransaction: async (data: SendTransactionArgs) => {
@@ -648,6 +704,10 @@ export class WagmiAdapter implements ChainAdapter {
       })
   }
 
+  private async setProfileAndBalance(address: Hex, chainId: number) {
+    await Promise.all([this.syncProfile(address, chainId), this.syncBalance(address, chainId)])
+  }
+
   private async syncAccount({
     address,
     chainId,
@@ -672,6 +732,8 @@ export class WagmiAdapter implements ChainAdapter {
       this.appKit?.resetWcConnection()
       this.appKit?.resetNetwork(this.chainNamespace)
       this.appKit?.setAllAccounts([], this.chainNamespace)
+      this.appKit?.setStatus(status, this.chainNamespace)
+      this.appKit?.setLoading(false)
       SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
       if (isAuthConnector) {
         await connector.disconnect()
@@ -691,7 +753,6 @@ export class WagmiAdapter implements ChainAdapter {
           const namespaceKeys = namespaces ? Object.keys(namespaces) : []
 
           const preferredAccountType = this.appKit?.getPreferredAccountType()
-
           namespaceKeys.forEach(key => {
             const chainNamespace = key as ChainNamespace
             const caipAddress = namespaces?.[key]?.accounts[0] as CaipAddress
@@ -701,6 +762,7 @@ export class WagmiAdapter implements ChainAdapter {
 
             this.appKit?.setPreferredAccountType(preferredAccountType, chainNamespace)
             this.appKit?.setCaipAddress(caipAddress, chainNamespace)
+            this.appKit?.setStatus(status, chainNamespace)
           })
           if (
             this.appKit?.getCaipNetwork()?.chainNamespace !== CommonConstantsUtil.CHAIN.SOLANA &&
@@ -708,23 +770,21 @@ export class WagmiAdapter implements ChainAdapter {
           ) {
             this.syncNetwork(address, currentChainId, true)
             await Promise.all([
-              this.syncProfile(address, currentChainId),
-              this.syncBalance(address, currentChainId),
               this.syncConnectedWalletInfo(connector),
               this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
             ])
           }
+          this.appKit?.setLoading(false)
         } else if (status === 'connected' && address && chainId) {
           ProviderUtil.setProvider(this.chainNamespace, await connector.getProvider())
           ProviderUtil.setProviderId(this.chainNamespace, connector.id as ProviderIdType)
           const caipAddress = `eip155:${chainId}:${address}` as CaipAddress
           this.syncNetwork(address, chainId, true)
           await Promise.all([
-            this.syncProfile(address, chainId),
-            this.syncBalance(address, chainId),
             this.syncConnectedWalletInfo(connector),
             this.appKit?.setApprovedCaipNetworksData(this.chainNamespace)
           ])
+          this.appKit?.setLoading(false)
           this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
           this.appKit?.setStatus('connected', this.chainNamespace)
           // Set by authConnector.onIsConnectedHandler as we need the account type
@@ -736,21 +796,12 @@ export class WagmiAdapter implements ChainAdapter {
           }
         } else if (status === 'reconnecting') {
           this.appKit?.setLoading(true)
-          const connectors = getConnectors(this.wagmiConfig)
-          const currentConnector = connectors.find(c => c.id === connector.id)
-
-          if (currentConnector) {
-            await reconnect(this.wagmiConfig, {
-              connectors: [currentConnector]
-            })
-            this.appKit?.setLoading(false)
-          }
         }
       }
     }
   }
 
-  private async syncNetwork(address?: Hex, chainId?: number, isConnected?: boolean) {
+  private syncNetwork(address?: Hex, chainId?: number, isConnected?: boolean) {
     const caipNetwork = this.caipNetworks.find((c: CaipNetwork) => c.id === chainId)
 
     if (caipNetwork && chainId) {
@@ -765,8 +816,6 @@ export class WagmiAdapter implements ChainAdapter {
         } else {
           this.appKit?.setAddressExplorerUrl(undefined, this.chainNamespace)
         }
-
-        await this.syncBalance(address, chainId)
       }
     }
   }
@@ -941,11 +990,7 @@ export class WagmiAdapter implements ChainAdapter {
     bypassWindowCheck = false
   ) {
     if (bypassWindowCheck || (typeof window !== 'undefined' && connector)) {
-      this.appKit?.setLoading(true)
       const provider = (await connector.getProvider()) as W3mFrameProvider
-      const isLoginEmailUsed = provider.getLoginEmailUsed()
-
-      this.appKit?.setLoading(isLoginEmailUsed)
 
       provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
         if (W3mFrameHelpers.checkIfRequestExists(request)) {
@@ -1003,10 +1048,6 @@ export class WagmiAdapter implements ChainAdapter {
         }
       })
 
-      provider.onIsConnected(() => {
-        provider.connect()
-      })
-
       provider.onConnect(user => {
         const caipAddress = `eip155:${user.chainId}:${user.address}` as CaipAddress
         this.appKit?.setCaipAddress(caipAddress, this.chainNamespace)
@@ -1033,16 +1074,6 @@ export class WagmiAdapter implements ChainAdapter {
 
       provider.onGetSmartAccountEnabledNetworks(networks => {
         this.appKit?.setSmartAccountEnabledNetworks(networks, this.chainNamespace)
-      })
-
-      provider.onSetPreferredAccount(({ address, type }) => {
-        if (!address) {
-          return
-        }
-        this.appKit?.setPreferredAccountType(type as W3mFrameTypes.AccountType, this.chainNamespace)
-        if (this.wagmiConfig) {
-          reconnect(this.wagmiConfig, { connectors: [connector] })
-        }
       })
     }
   }

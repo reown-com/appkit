@@ -1,8 +1,10 @@
 import { AppKit } from '../src/client.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { getAppKit } from '../src/library/react/index.js'
-import { CoreHelperUtil } from '@reown/appkit-core'
+import { CoreHelperUtil, type UseAppKitNetworkReturn } from '@reown/appkit-core'
 import { PACKAGE_VERSION } from './constants.js'
+import { useAppKitNetworkCore } from '@reown/appkit-core/react'
+import type { AppKitNetwork } from '@reown/appkit/networks'
 
 // -- Views ------------------------------------------------------------
 export * from '@reown/appkit-scaffold-ui'
@@ -41,4 +43,20 @@ export type { AppKitOptions }
 
 // -- Hooks ------------------------------------------------------------
 export * from '../src/library/react/index.js'
-export { useAppKitAccount, useAppKitNetwork } from '@reown/appkit-core/react'
+
+export function useAppKitNetwork(): UseAppKitNetworkReturn {
+  const { caipNetwork, caipNetworkId, chainId } = useAppKitNetworkCore()
+
+  function switchNetwork(network: AppKitNetwork) {
+    modal?.switchNetwork(network)
+  }
+
+  return {
+    caipNetwork,
+    caipNetworkId,
+    chainId,
+    switchNetwork
+  }
+}
+
+export { useAppKitAccount } from '@reown/appkit-core/react'

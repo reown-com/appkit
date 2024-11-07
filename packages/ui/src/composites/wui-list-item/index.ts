@@ -21,6 +21,8 @@ export class WuiListItem extends LitElement {
 
   @property() public iconSize?: SizeType
 
+  @property() public tabIdx?: number = undefined
+
   @property() public variant: AccountEntryType = 'icon'
 
   @property() public iconVariant?: 'blue' | 'overlay' | 'square' | 'square-blue'
@@ -42,6 +44,7 @@ export class WuiListItem extends LitElement {
         ?disabled=${this.loading ? true : Boolean(this.disabled)}
         data-loading=${this.loading}
         data-iconvariant=${ifDefined(this.iconVariant)}
+        tabindex=${ifDefined(this.tabIdx)}
         ontouchstart
       >
         ${this.loadingTemplate()} ${this.visualTemplate()}

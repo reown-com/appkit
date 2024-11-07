@@ -8,6 +8,11 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import * as AppKitNetworks from '@reown/appkit/networks'
 
+// -- Export Wagmi ------------------------------------------- //
+export * as Viem from 'viem'
+export * as Connectors from '@wagmi/connectors'
+export * as WagmiCore from '@wagmi/core'
+
 const networks = AppKitNetworks
 
 export { createAppKit, networks, WagmiAdapter, SolanaAdapter }

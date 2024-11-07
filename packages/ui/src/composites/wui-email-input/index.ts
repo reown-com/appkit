@@ -6,6 +6,7 @@ import { resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-input-text/index.js'
 import styles from './styles.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('wui-email-input')
 export class WuiEmailInput extends LitElement {
@@ -18,6 +19,8 @@ export class WuiEmailInput extends LitElement {
 
   @property() public value?: string
 
+  @property() public tabIdx?: number
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
@@ -29,6 +32,7 @@ export class WuiEmailInput extends LitElement {
         .disabled=${this.disabled}
         .value=${this.value}
         data-testid="wui-email-input"
+        tabIdx=${ifDefined(this.tabIdx)}
       ></wui-input-text>
       ${this.templateError()}
     `
