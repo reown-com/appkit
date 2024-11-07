@@ -26,6 +26,7 @@ export function WagmiRequestPermissionsAsyncTest() {
       </Text>
     )
   }
+
   if (!isSupported) {
     return (
       <Text fontSize="md" color="yellow">

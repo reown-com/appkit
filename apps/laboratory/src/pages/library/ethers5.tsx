@@ -17,9 +17,7 @@ const modal = createAppKit({
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {
-    analytics: true,
-    email: true,
-    socials: ['google', 'github', 'apple', 'discord']
+    analytics: true
   },
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy',

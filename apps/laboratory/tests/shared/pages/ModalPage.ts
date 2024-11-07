@@ -179,7 +179,7 @@ export class ModalPage {
     await this.enterOTP(otp)
   }
 
-  async loginWithEmail(email: string) {
+  async loginWithEmail(email: string, validate = true) {
     // Connect Button doesn't have a proper `disabled` attribute so we need to wait for the button to change the text
     await this.page
       .getByTestId('connect-button')
@@ -188,12 +188,14 @@ export class ModalPage {
     await this.page.getByTestId('wui-email-input').locator('input').focus()
     await this.page.getByTestId('wui-email-input').locator('input').fill(email)
     await this.page.getByTestId('wui-email-input').locator('input').press('Enter')
-    await expect(
-      this.page.getByText(email),
-      `Expected current email: ${email} to be visible on the notification screen`
-    ).toBeVisible({
-      timeout: 20_000
-    })
+    if (validate) {
+      await expect(
+        this.page.getByText(email),
+        `Expected current email: ${email} to be visible on the notification screen`
+      ).toBeVisible({
+        timeout: 20_000
+      })
+    }
   }
 
   async loginWithSocial(socialOption: 'github', socialMail: string, socialPass: string) {
@@ -420,7 +422,7 @@ export class ModalPage {
   }
 
   async switchNetworkWithNetworkButton(networkName: string) {
-    const networkButton = this.page.getByTestId('w3m-network-button')
+    const networkButton = this.page.getByTestId('wui-network-button')
     await networkButton.click()
 
     const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${networkName}`)
@@ -437,6 +439,66 @@ export class ModalPage {
     const allWalletsListSearchItem = this.page.getByTestId(`wallet-search-item-${id}`)
     await expect(allWalletsListSearchItem).toBeVisible()
     await allWalletsListSearchItem.click()
+  }
+
+  async clickTabWebApp() {
+    const tabWebApp = this.page.getByTestId('tab-webapp')
+    await expect(tabWebApp).toBeVisible()
+    await tabWebApp.click()
+  }
+
+  async clickHookDisconnectButton() {
+    const disconnectHookButton = this.page.getByTestId('disconnect-hook-button')
+    await expect(disconnectHookButton).toBeVisible()
+    await disconnectHookButton.click()
+  }
+
+  async clickCopyLink() {
+    const copyLink = this.page.getByTestId('wui-link-copy')
+    await expect(copyLink).toBeVisible()
+
+    let hasCopied = false
+
+    while (!hasCopied) {
+      await copyLink.click()
+      await this.page.waitForTimeout(500)
+
+      const snackbarMessage = this.page.getByTestId('wui-snackbar-message')
+      const snackbarMessageText = await snackbarMessage.textContent()
+
+      if (snackbarMessageText && snackbarMessageText.startsWith('Link copied')) {
+        hasCopied = true
+      }
+    }
+
+    return this.page.evaluate(() => navigator.clipboard.readText())
+  }
+
+  async clickOpenWebApp() {
+    let url = ''
+
+    const openButton = this.page.getByTestId('w3m-connecting-widget-secondary-button')
+    await expect(openButton).toBeVisible()
+    await expect(openButton).toHaveText('Open')
+
+    while (!url) {
+      await openButton.click()
+      await this.page.waitForTimeout(500)
+
+      const pages = this.page.context().pages()
+
+      // Check if more than 1 tab is open
+      if (pages.length > 1) {
+        const lastTab = pages[pages.length - 1]
+
+        if (lastTab) {
+          url = lastTab.url()
+          break
+        }
+      }
+    }
+
+    return url
   }
 
   async search(value: string) {
@@ -504,5 +566,22 @@ export class ModalPage {
     expect(signature, 'Signature should be present').toBeTruthy()
 
     return signature as `0x${string}`
+  }
+
+  async switchNetworkWithHook() {
+    await this.page.getByTestId('switch-network-hook-button').click()
+  }
+
+  async clickLegalCheckbox() {
+    const legalCheckbox = this.page.getByTestId('w3m-legal-checkbox')
+    await expect(legalCheckbox).toBeVisible()
+    const boundingBox = await legalCheckbox.boundingBox()
+    if (!boundingBox) {
+      throw new Error('Legal checkbox bounding box not found')
+    }
+    const x = boundingBox.x + boundingBox.width / 2 - 100
+    const y = boundingBox.y + boundingBox.height / 2
+    // Click on the left side of the checkbox to avoid clicking on links
+    await this.page.mouse.click(x, y)
   }
 }

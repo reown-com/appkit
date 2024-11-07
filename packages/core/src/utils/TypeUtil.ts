@@ -8,7 +8,8 @@ import type {
   CaipAddress,
   AdapterType,
   SdkFramework,
-  AppKitSdkVersion
+  AppKitSdkVersion,
+  AppKitNetwork
 } from '@reown/appkit-common'
 import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
 import type { AccountControllerState } from '../controllers/AccountController.js'
@@ -968,8 +969,32 @@ export type Features = {
    * @type {boolean}
    */
   allWallets?: boolean
+  /**
+   * @description Enable or disable the Smart Sessions feature. Disabled by default.
+   * @type {boolean}
+   */
+  smartSessions?: boolean
+  /**
+   * Enable or disable the terms of service and/or privacy policy checkbox.
+   * @default false
+   */
+  legalCheckbox?: boolean
 }
 
 export type FeaturesKeys = keyof Features
 
 export type WalletGuideType = 'get-started' | 'explore'
+
+export type UseAppKitAccountReturn = {
+  caipAddress: CaipAddress | undefined
+  address: string | undefined
+  isConnected: boolean
+  status: AccountControllerState['status']
+}
+
+export type UseAppKitNetworkReturn = {
+  caipNetwork: CaipNetwork | undefined
+  chainId: number | string | undefined
+  caipNetworkId: CaipNetworkId | undefined
+  switchNetwork: (network: AppKitNetwork) => void
+}

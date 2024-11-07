@@ -1,4 +1,9 @@
-import { ChainController, ConnectionController, OptionsController } from '@reown/appkit-core'
+import {
+  ChainController,
+  ConnectionController,
+  OptionsController,
+  RouterController
+} from '@reown/appkit-core'
 import { ProviderUtil } from '@reown/appkit/store'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type {
@@ -70,9 +75,13 @@ export async function grantPermissions(
   // Instantiate CosignerService and process permissions
   const cosignerService = new CosignerService(projectId)
   const addPermissionResponse = await cosignerService.addPermission(activeCaipAddress, request)
-
   // Update request signer with the cosigner key
   updateRequestSigner(request, addPermissionResponse.key)
+
+  RouterController.pushTransactionStack({
+    view: 'SmartSessionCreated',
+    goBack: false
+  })
 
   const rawResponse = await connectionControllerClient.grantPermissions([request])
 
@@ -126,7 +135,6 @@ export function validateRequestForSupportedPermissionsCapability(
 
 export function isSmartSessionSupported(): boolean {
   const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
-
   if (!provider) {
     return false
   }

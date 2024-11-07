@@ -1,8 +1,10 @@
 import { AppKit } from '../src/client.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { getAppKit } from '../src/library/vue/index.js'
-import { CoreHelperUtil } from '@reown/appkit-core'
+import { ChainController, CoreHelperUtil, type UseAppKitNetworkReturn } from '@reown/appkit-core'
 import { PACKAGE_VERSION } from './constants.js'
+import type { AppKitNetwork } from '@reown/appkit/networks'
+import { onUnmounted, ref, type Ref } from 'vue'
 
 // -- Views ------------------------------------------------------------
 export * from '@reown/appkit-scaffold-ui'
@@ -36,4 +38,27 @@ export { AppKit }
 export type { AppKitOptions }
 
 // -- Hooks ------------------------------------------------------------
+export function useAppKitNetwork(): Ref<UseAppKitNetworkReturn> {
+  const state = ref({
+    caipNetwork: ChainController.state.activeCaipNetwork,
+    chainId: ChainController.state.activeCaipNetwork?.id,
+    caipNetworkId: ChainController.state.activeCaipNetwork?.caipNetworkId,
+    switchNetwork: (network: AppKitNetwork) => {
+      modal?.switchNetwork(network)
+    }
+  })
+
+  const unsubscribe = ChainController.subscribeKey('activeCaipNetwork', val => {
+    state.value.caipNetwork = val
+    state.value.chainId = val?.id
+    state.value.caipNetworkId = val?.caipNetworkId
+  })
+
+  onUnmounted(() => {
+    unsubscribe()
+  })
+
+  return state
+}
+
 export * from '../src/library/vue/index.js'

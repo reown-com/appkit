@@ -16,6 +16,7 @@ import { ModalController } from './ModalController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import type { ChainNamespace } from '@reown/appkit-common'
+import { OptionsController } from './OptionsController.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -40,6 +41,12 @@ export interface ConnectionControllerClient {
   getEnsAddress: (value: string) => Promise<false | string>
   getEnsAvatar: (value: string) => Promise<false | string>
   grantPermissions: (params: readonly unknown[] | object) => Promise<unknown>
+  revokePermissions: (params: {
+    pci: string
+    permissions: unknown[]
+    expiry: number
+    address: `0x${string}`
+  }) => Promise<`0x${string}`>
   getCapabilities: (params: string) => Promise<unknown>
 }
 
@@ -133,6 +140,7 @@ export const ConnectionController = {
 
   async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
     await this._getClient(chain).connectExternal?.(options)
+
     if (setChain) {
       ChainController.setActiveNamespace(chain)
       StorageUtil.setConnectedConnector(options.type)
@@ -239,13 +247,82 @@ export const ConnectionController = {
   },
 
   async disconnect() {
-    const connectionControllerClient = this._getClient()
-
     try {
+      const connectionControllerClient = this._getClient()
+
+      const siwx = OptionsController.state.siwx
+      if (siwx) {
+        const activeCaipNetwork = ChainController.getActiveCaipNetwork()
+        const address = CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress())
+
+        if (activeCaipNetwork && address) {
+          await siwx.revokeSession(activeCaipNetwork.caipNetworkId, address)
+        }
+      }
+
       await connectionControllerClient?.disconnect()
       this.resetWcConnection()
     } catch (error) {
       throw new Error('Failed to disconnect')
+    }
+  },
+
+  /**
+   * @experimental - This is an experimental feature and may be subject to change.
+   * Initializes SIWX if available.
+   * This is not yet considering One Click Auth.
+   */
+  async initializeSWIXIfAvailable() {
+    const siwx = OptionsController.state.siwx
+    const address = CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress())
+    const network = ChainController.getActiveCaipNetwork()
+
+    if (!(siwx && address && network)) {
+      return
+    }
+
+    if (OptionsController.state.isSiweEnabled) {
+      console.warn('SIWE is enabled skipping experimental SIWX initialization')
+
+      return
+    }
+
+    const client = this._getClient(network?.chainNamespace)
+
+    try {
+      const sessions = await siwx.getSessions(network.caipNetworkId, address)
+      if (sessions.length) {
+        return
+      }
+
+      await ModalController.open({
+        view:
+          StorageUtil.getConnectedConnector() === 'AUTH' ? 'ApproveTransaction' : 'SIWXSignMessage'
+      })
+
+      const siwxMessage = await siwx.createMessage({
+        chainId: network.caipNetworkId,
+        accountAddress: address
+      })
+
+      const message = siwxMessage.toString()
+
+      const signature = await client.signMessage(message)
+
+      await siwx.addSession({
+        data: siwxMessage,
+        message,
+        signature
+      })
+
+      ModalController.close()
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to initialize SIWX', error)
+      ModalController.setLoading(true)
+      await client.disconnect().finally(() => {
+        ModalController.setLoading(false)
+      })
     }
   }
 }

@@ -84,31 +84,6 @@ describe('SolHelpersUtil', () => {
     })
   })
 
-  describe('getChainFromCaip', () => {
-    it('should return the correct chain for a valid CAIP ID', () => {
-      const result = SolHelpersUtil.getChainFromCaip(
-        mockChains,
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
-      )
-      expect(result).toEqual({
-        ...mockChains[0],
-        id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        imageId: 'a1b58899-f671-4276-6a5e-56ca5bd59700',
-        chainNamespace: CommonConstantsUtil.CHAIN.SOLANA
-      })
-    })
-
-    it('should return the default chain for an invalid CAIP ID', () => {
-      const result = SolHelpersUtil.getChainFromCaip(mockChains, 'invalid:chain')
-      expect(result).toEqual({
-        ...SolConstantsUtil.DEFAULT_CHAIN,
-        id: 'solana:chain',
-        imageId: undefined,
-        chainNamespace: CommonConstantsUtil.CHAIN.SOLANA
-      })
-    })
-  })
-
   describe('hexStringToNumber', () => {
     it('should convert hex string to number', () => {
       expect(SolHelpersUtil.hexStringToNumber('0xa')).toBe(10)

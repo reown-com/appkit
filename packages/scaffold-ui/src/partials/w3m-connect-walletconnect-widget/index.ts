@@ -8,7 +8,7 @@ import {
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connect-walletconnect-widget')
@@ -17,6 +17,8 @@ export class W3mConnectWalletConnectWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
+  @property() public tabIdx?: number = undefined
+
   @state() private connectors = ConnectorController.state.connectors
 
   public constructor() {
@@ -53,6 +55,7 @@ export class W3mConnectWalletConnectWidget extends LitElement {
         @click=${() => this.onConnector(connector)}
         tagLabel="qr code"
         tagVariant="main"
+        tabIdx=${ifDefined(this.tabIdx)}
         data-testid="wallet-selector-walletconnect"
       >
       </wui-list-wallet>
