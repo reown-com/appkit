@@ -9,16 +9,19 @@ import {
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { WalletUtil } from '../../utils/WalletUtil.js'
 
 @customElement('w3m-connect-recommended-widget')
 export class W3mConnectRecommendedWidget extends LitElement {
   // -- Members ------------------------------------------- //
+
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
+  @property() public tabIdx?: number = undefined
+
   @state() private connectors = ConnectorController.state.connectors
 
   public constructor() {
@@ -74,6 +77,7 @@ export class W3mConnectRecommendedWidget extends LitElement {
               imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
               name=${wallet?.name ?? 'Unknown'}
               @click=${() => this.onConnectWallet(wallet)}
+              tabIdx=${ifDefined(this.tabIdx)}
             >
             </wui-list-wallet>
           `

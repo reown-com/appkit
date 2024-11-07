@@ -33,6 +33,8 @@ export class WuiInputText extends LitElement {
 
   @property() public inputRightPadding?: SpacingType
 
+  @property() public tabIdx?: number
+
   // -- Render -------------------------------------------- //
   public override render() {
     const inputClass = `wui-padding-right-${this.inputRightPadding}`
@@ -53,6 +55,7 @@ export class WuiInputText extends LitElement {
         placeholder=${this.placeholder}
         @input=${this.dispatchInputChangeEvent.bind(this)}
         .value=${this.value || ''}
+        tabindex=${ifDefined(this.tabIdx)}
       />
       <slot></slot>`
   }

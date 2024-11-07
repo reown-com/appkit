@@ -974,6 +974,11 @@ export type Features = {
    * @type {boolean}
    */
   smartSessions?: boolean
+  /**
+   * Enable or disable the terms of service and/or privacy policy checkbox.
+   * @default false
+   */
+  legalCheckbox?: boolean
 }
 
 export type FeaturesKeys = keyof Features

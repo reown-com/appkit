@@ -4,11 +4,15 @@ import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { WalletUtil } from '../../utils/WalletUtil.js'
+import { property } from 'lit/decorators.js'
 
 @customElement('w3m-connect-featured-widget')
 export class W3mConnectFeaturedWidget extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
+
+  // -- State & Properties -------------------------------- //
+  @property() public tabIdx?: number = undefined
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
@@ -33,6 +37,7 @@ export class W3mConnectFeaturedWidget extends LitElement {
               imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
               name=${wallet.name ?? 'Unknown'}
               @click=${() => this.onConnectWallet(wallet)}
+              tabIdx=${ifDefined(this.tabIdx)}
             >
             </wui-list-wallet>
           `
