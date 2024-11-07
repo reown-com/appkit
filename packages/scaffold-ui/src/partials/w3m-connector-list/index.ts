@@ -46,53 +46,39 @@ export class W3mConnectorList extends LitElement {
     return html`
       <wui-flex flexDirection="column" gap="xs">
         ${enableWalletConnect
-          ? html`
-              <w3m-connect-walletconnect-widget
-                tabIdx=${ifDefined(this.tabIdx)}
-              ></w3m-connect-walletconnect-widget>
-            `
+          ? html`<w3m-connect-walletconnect-widget
+              tabIdx=${ifDefined(this.tabIdx)}
+            ></w3m-connect-walletconnect-widget>`
           : null}
         ${recent.length
-          ? html`
-              <w3m-connect-recent-widget
-                tabIdx=${ifDefined(this.tabIdx)}
-              ></w3m-connect-recent-widget>
-            `
+          ? html`<w3m-connect-recent-widget
+              tabIdx=${ifDefined(this.tabIdx)}
+            ></w3m-connect-recent-widget>`
           : null}
         ${multiChain.length
-          ? html`
-              <w3m-connect-multi-chain-widget
-                tabIdx=${ifDefined(this.tabIdx)}
-              ></w3m-connect-multi-chain-widget>
-            `
+          ? html`<w3m-connect-multi-chain-widget
+              tabIdx=${ifDefined(this.tabIdx)}
+            ></w3m-connect-multi-chain-widget>`
           : null}
         ${announced.length
-          ? html`
-              <w3m-connect-announced-widget
-                tabIdx=${ifDefined(this.tabIdx)}
-              ></w3m-connect-announced-widget>
-            `
+          ? html`<w3m-connect-announced-widget
+              tabIdx=${ifDefined(this.tabIdx)}
+            ></w3m-connect-announced-widget>`
           : null}
         ${injected.length
-          ? html`
-              <w3m-connect-injected-widget
-                tabIdx=${ifDefined(this.tabIdx)}
-              ></w3m-connect-injected-widget>
-            `
+          ? html`<w3m-connect-injected-widget
+              tabIdx=${ifDefined(this.tabIdx)}
+            ></w3m-connect-injected-widget>`
           : null}
         ${featured.length
-          ? html`
-              <w3m-connect-featured-widget
-                tabIdx=${ifDefined(this.tabIdx)}
-              ></w3m-connect-featured-widget>
-            `
+          ? html`<w3m-connect-featured-widget
+              tabIdx=${ifDefined(this.tabIdx)}
+            ></w3m-connect-featured-widget>`
           : null}
         ${custom?.length
-          ? html`
-              <w3m-connect-custom-widget
-                tabIdx=${ifDefined(this.tabIdx)}
-              ></w3m-connect-custom-widget>
-            `
+          ? html`<w3m-connect-custom-widget
+              tabIdx=${ifDefined(this.tabIdx)}
+            ></w3m-connect-custom-widget>`
           : null}
         ${external.length
           ? html`<w3m-connect-external-widget
