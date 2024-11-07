@@ -1,4 +1,4 @@
-<script language="ts" setup>
+<script lang="ts" setup>
 import { ref, onMounted, watch } from 'vue'
 import {
   createAppKit,
