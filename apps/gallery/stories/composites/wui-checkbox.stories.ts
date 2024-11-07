@@ -20,5 +20,5 @@ export default {
 } as Component
 
 export const Default: Component = {
-  render: (args) => html`<wui-checkbox ?checked=${args.checked}></wui-checkbox>`
+  render: args => html`<wui-checkbox ?checked=${args.checked}></wui-checkbox>`
 }
