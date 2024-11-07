@@ -11,7 +11,7 @@ export class EIP155Verifier extends SIWXVerifier {
       return await verifyMessage({
         message: session.message.toString(),
         signature: session.signature as `0x${string}`,
-        address: session.message.accountAddress as `0x${string}`
+        address: session.data.accountAddress as `0x${string}`
       })
     } catch (error) {
       return false

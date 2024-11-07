@@ -300,14 +300,17 @@ export const ConnectionController = {
           StorageUtil.getConnectedConnector() === 'AUTH' ? 'ApproveTransaction' : 'SIWXSignMessage'
       })
 
-      const message = await siwx.createMessage({
+      const siwxMessage = await siwx.createMessage({
         chainId: network.caipNetworkId,
         accountAddress: address
       })
 
-      const signature = await client.signMessage(message.toString())
+      const message = siwxMessage.toString()
+
+      const signature = await client.signMessage(message)
 
       await siwx.addSession({
+        data: siwxMessage,
         message,
         signature
       })
