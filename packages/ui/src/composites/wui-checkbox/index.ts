@@ -4,15 +4,16 @@ import { createRef, ref, type Ref } from 'lit/directives/ref.js'
 import styles from './styles.js'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+import { resetStyles } from '../../utils/ThemeUtil.js'
 
 @customElement('wui-checkbox')
 export class WuiCheckBox extends LitElement {
-  static override styles = [styles]
+  public static override styles = [resetStyles, styles]
 
   // -- Members ------------------------------------------- //
   public inputElementRef: Ref<HTMLInputElement> = createRef<HTMLInputElement>()
 
-  // -- State & Properties --------------------------------- //
+  // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public checked?: boolean = undefined
 
   // -- Render -------------------------------------------- //
