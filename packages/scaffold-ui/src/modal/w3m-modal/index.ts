@@ -2,6 +2,7 @@ import {
   AccountController,
   ApiController,
   ChainController,
+  ConnectionController,
   CoreHelperUtil,
   EventsController,
   ModalController,
@@ -168,10 +169,12 @@ export class W3mModal extends LitElement {
     }
   }
 
-  private onNewAddress(caipAddress?: CaipAddress) {
+  private async onNewAddress(caipAddress?: CaipAddress) {
     const nextConnected = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
 
     this.caipAddress = caipAddress
+
+    await ConnectionController.initializeSWIXIfAvailable()
 
     if (!nextConnected) {
       ModalController.close()
