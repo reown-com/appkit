@@ -50,7 +50,7 @@ jobs:
         run: tar -czf laboratory.tar.gz -C apps/laboratory .
 
       - name: Upload laboratory artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: laboratory-package
           path: laboratory.tar.gz
