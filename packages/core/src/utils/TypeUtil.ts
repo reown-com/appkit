@@ -8,7 +8,8 @@ import type {
   CaipAddress,
   AdapterType,
   SdkFramework,
-  AppKitSdkVersion
+  AppKitSdkVersion,
+  AppKitNetwork
 } from '@reown/appkit-common'
 import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
 import type { AccountControllerState } from '../controllers/AccountController.js'
@@ -990,4 +991,5 @@ export type UseAppKitNetworkReturn = {
   caipNetwork: CaipNetwork | undefined
   chainId: number | string | undefined
   caipNetworkId: CaipNetworkId | undefined
+  switchNetwork: (network: AppKitNetwork) => void
 }

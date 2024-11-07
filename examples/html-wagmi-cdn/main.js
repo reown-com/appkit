@@ -2,7 +2,7 @@ import {
   createAppKit,
   WagmiAdapter,
   networks
-} from 'https://cdn.jsdelivr.net/npm/@reown/appkit-cdn@__VERSION__/dist/appkit.js'
+} from 'https://cdn.jsdelivr.net/npm/@reown/appkit-cdn@1.3.0/dist/appkit.js'
 import { reconnect } from 'https://esm.sh/@wagmi/core@2.x'
 
 if (!createAppKit || !WagmiAdapter) {
@@ -34,7 +34,7 @@ if (!createAppKit || !WagmiAdapter) {
         name: 'Html CDN Example',
         description: 'Html CDN Example using local server',
         url: 'https://reown.com/appkit',
-        icons: ['https://avatars.githubusercontent.com/u/37784886']
+        icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
       }
     })
 

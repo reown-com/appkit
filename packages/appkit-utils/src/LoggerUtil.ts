@@ -1,7 +1,7 @@
 import { generatePlatformLogger, getDefaultLoggerOptions } from '@walletconnect/logger'
 
 export const LoggerUtil = {
-  createLogger(onError: (error: Error, ...args: unknown[]) => void, level = 'error') {
+  createLogger(onError: (error?: Error, ...args: unknown[]) => void, level = 'error') {
     const loggerOptions = getDefaultLoggerOptions({
       level
     })
@@ -14,11 +14,12 @@ export const LoggerUtil = {
       for (const arg of args) {
         if (arg instanceof Error) {
           onError(arg, ...args)
-          break
+
+          return
         }
       }
 
-      onError(new Error(), ...args)
+      onError(undefined, ...args)
     }
 
     return logger

@@ -1,4 +1,5 @@
 ---
+'@reown/appkit': patch
 '@reown/appkit-core': patch
 '@apps/demo': patch
 '@apps/gallery': patch
@@ -8,7 +9,6 @@
 '@reown/appkit-adapter-polkadot': patch
 '@reown/appkit-adapter-solana': patch
 '@reown/appkit-adapter-wagmi': patch
-'@reown/appkit': patch
 '@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
 '@reown/appkit-common': patch
@@ -21,4 +21,4 @@
 '@reown/appkit-wallet': patch
 ---
 
-Fixes swap gas availability check for smart accounts
+Refactors Vue hooks to listen state as expected

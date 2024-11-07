@@ -2,15 +2,14 @@ import { useSnapshot } from 'valtio'
 import { AccountController } from '../src/controllers/AccountController.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import { ChainController } from '../src/controllers/ChainController.js'
-import type { CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
+import type { UseAppKitAccountReturn, UseAppKitNetworkReturn } from '../src/utils/TypeUtil.js'
 
 // -- Hooks ------------------------------------------------------------
-export function useAppKitNetworkCore(): {
-  caipNetwork: CaipNetwork | undefined
-  chainId: number | string | undefined
-  caipNetworkId: CaipNetworkId | undefined
-} {
+export function useAppKitNetworkCore(): Pick<
+  UseAppKitNetworkReturn,
+  'caipNetwork' | 'chainId' | 'caipNetworkId'
+> {
   const { activeCaipNetwork } = useSnapshot(ChainController.state)
 
   return {
@@ -20,7 +19,7 @@ export function useAppKitNetworkCore(): {
   }
 }
 
-export function useAppKitAccount() {
+export function useAppKitAccount(): UseAppKitAccountReturn {
   const { status } = useSnapshot(AccountController.state)
   const { activeCaipAddress } = useSnapshot(ChainController.state)
 
