@@ -18,12 +18,14 @@ export class WuiListSocial extends LitElement {
 
   @property() public align: 'left' | 'center' = 'left'
 
+  @property() public tabIdx?: boolean
+
   @property({ type: Boolean }) public disabled = false
 
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.disabled} ontouchstart>
+      <button ?disabled=${this.disabled} tabindex=${this.tabIdx} ontouchstart>
         <wui-logo logo=${this.logo}></wui-logo>
         <wui-text
           data-align=${this.align}

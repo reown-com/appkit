@@ -12,6 +12,7 @@ import {
 import { state } from 'lit/decorators/state.js'
 import { property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
@@ -63,9 +64,11 @@ export class W3mConnectView extends LitElement {
     const showLegalCheckbox =
       Boolean(legalUrl) && Boolean(enableLegalCheckbox) && this.walletGuide === 'get-started'
 
+    const disabled = showLegalCheckbox && !this.checked
+
     const classes = {
       connect: true,
-      disabled: showLegalCheckbox && !this.checked
+      disabled
     }
 
     const socials = this.features?.socials
@@ -86,8 +89,13 @@ export class W3mConnectView extends LitElement {
               ? ['3xs', 's', '0', 's']
               : ['3xs', 's', 's', 's']}
           >
-            <w3m-email-login-widget walletGuide=${this.walletGuide}></w3m-email-login-widget>
-            <w3m-social-login-widget></w3m-social-login-widget>
+            <w3m-email-login-widget
+              walletGuide=${this.walletGuide}
+              tabIdx=${ifDefined(disabled ? -1 : undefined)}
+            ></w3m-email-login-widget>
+            <w3m-social-login-widget
+              tabIdx=${ifDefined(disabled ? -1 : undefined)}
+            ></w3m-social-login-widget>
             ${this.walletListTemplate()}
           </wui-flex>
         </wui-flex>
