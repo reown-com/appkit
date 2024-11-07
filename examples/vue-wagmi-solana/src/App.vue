@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import {
   createAppKit,
-  useAppKit,
   useAppKitAccount,
   useAppKitNetwork,
   useAppKitState,
