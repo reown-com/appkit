@@ -30,9 +30,11 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import { createSendTransaction } from './utils/createSendTransaction.js'
 import type { WalletStandardProvider } from './providers/WalletStandardProvider.js'
 import { handleMobileWalletRedirection } from './utils/handleMobileWalletRedirection.js'
+import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
+  wallets?: BaseWalletAdapter[]
 }
 
 export class SolanaAdapter extends AdapterBlueprint {
@@ -41,11 +43,13 @@ export class SolanaAdapter extends AdapterBlueprint {
   private authProvider?: AuthProvider
   private authSession?: AuthProvider.Session
   public adapterType = 'solana'
+  public wallets?: BaseWalletAdapter[]
 
   constructor(options: AdapterOptions = {}) {
     super({})
     this.namespace = CommonConstantsUtil.CHAIN.SOLANA
     this.connectionSettings = options.connectionSettings || 'confirmed'
+    this.wallets = options.wallets
 
     EventsController.subscribe(state => {
       if (state.data.event === 'SELECT_WALLET') {
