@@ -100,6 +100,7 @@ export class W3mNetworksView extends LitElement {
   private networksTemplate() {
     const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
     const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
+
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
       requestedCaipNetworks
@@ -136,7 +137,7 @@ export class W3mNetworksView extends LitElement {
       ChainController.getNetworkProp('supportsAllNetworks', networkNamespace) !== false
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
-    const isConnectedWithAuth = type === 'AUTH' && authConnector
+    const isConnectedWithAuth = type === 'w3mAuth' && authConnector
 
     if (!isNamespaceConnected || supportsAllNetworks || isConnectedWithAuth) {
       return false

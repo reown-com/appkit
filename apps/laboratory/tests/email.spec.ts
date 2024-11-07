@@ -31,7 +31,7 @@ emailTest.beforeAll(async ({ browser, library }) => {
   await page.page.context().setOffline(false)
   await page.load()
 
-  const mailsacApiKey = process.env['MAILSAC_API_KEY']
+  const mailsacApiKey = 'k_Om5blBjThidSk73YhTpAjCUgq15uorClMzikgYPqBoF060'
   if (!mailsacApiKey) {
     throw new Error('MAILSAC_API_KEY is not set')
   }

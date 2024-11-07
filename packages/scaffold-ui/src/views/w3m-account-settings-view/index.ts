@@ -155,7 +155,7 @@ export class W3mAccountSettingsView extends LitElement {
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
     const hasNetworkSupport = ChainController.checkIfNamesSupported()
-    if (!hasNetworkSupport || !authConnector || type !== 'AUTH' || this.profileName) {
+    if (!hasNetworkSupport || !authConnector || type !== 'w3mAuth' || this.profileName) {
       return null
     }
 
@@ -178,7 +178,7 @@ export class W3mAccountSettingsView extends LitElement {
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
-    if (!authConnector || type !== 'AUTH' || origin.includes(ConstantsUtil.SECURE_SITE)) {
+    if (!authConnector || type !== 'w3mAuth' || origin.includes(ConstantsUtil.SECURE_SITE)) {
       return null
     }
 
@@ -217,7 +217,7 @@ export class W3mAccountSettingsView extends LitElement {
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
 
-    if (!authConnector || type !== 'AUTH' || !networkEnabled) {
+    if (!authConnector || type !== 'w3mAuth' || !networkEnabled) {
       return null
     }
 

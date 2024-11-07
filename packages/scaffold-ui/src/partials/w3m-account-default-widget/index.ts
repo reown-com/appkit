@@ -174,7 +174,7 @@ export class W3mAccountDefaultWidget extends LitElement {
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
-    if (!authConnector || type !== 'AUTH' || origin.includes(CommonConstantsUtil.SECURE_SITE)) {
+    if (!authConnector || type !== 'w3mAuth' || origin.includes(CommonConstantsUtil.SECURE_SITE)) {
       return null
     }
 

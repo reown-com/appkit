@@ -383,6 +383,7 @@ export const ChainController = {
   async setApprovedCaipNetworksData(namespace: ChainNamespace) {
     const networkControllerClient = this.getNetworkControllerClient()
     const data = await networkControllerClient?.getApprovedCaipNetworksData()
+
     this.setAdapterNetworkState(namespace, {
       approvedCaipNetworkIds: data?.approvedCaipNetworkIds,
       supportsAllNetworks: data?.supportsAllNetworks

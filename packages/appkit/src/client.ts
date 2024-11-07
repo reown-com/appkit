@@ -669,7 +669,7 @@ export class AppKit {
 
         await adapter?.connectWalletConnect(onUri, this.getCaipNetwork()?.id)
 
-        this.syncWalletConnectAccount()
+        await this.syncWalletConnectAccount()
       },
       connectExternal: async ({ id, info, type, provider, chainId }) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
@@ -869,7 +869,6 @@ export class AppKit {
     } else {
       this.setLoading(false)
     }
-
     provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
       if (W3mFrameHelpers.checkIfRequestExists(request)) {
         if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
@@ -887,10 +886,8 @@ export class AppKit {
         provider.rejectRpcRequests()
       }
     })
-
     provider.onRpcError(() => {
       const isModalOpen = this.isOpen()
-
       if (isModalOpen) {
         if (this.isTransactionStackEmpty()) {
           this.close()
@@ -899,34 +896,28 @@ export class AppKit {
         }
       }
     })
-
     provider.onRpcSuccess((_, request) => {
       const isSafeRequest = W3mFrameHelpers.checkIfRequestIsSafe(request)
       if (isSafeRequest) {
         return
       }
-
       if (this.isTransactionStackEmpty()) {
         this.close()
       } else {
         this.popTransactionStack()
       }
     })
-
     provider.onNotConnected(() => {
       const connectedConnector = SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
       const isConnectedWithAuth = connectedConnector === 'w3mAuth'
-
       if (!isConnected && isConnectedWithAuth) {
         this.setCaipAddress(undefined, ChainController.state.activeChain as ChainNamespace)
         this.setLoading(false)
       }
     })
-
     provider.onIsConnected(() => {
       provider.connect()
     })
-
     provider.onConnect(user => {
       const caipAddress = `eip155:${user.chainId}:${user.address}` as CaipAddress
       this.setCaipAddress(caipAddress, ChainController.state.activeChain as ChainNamespace)
@@ -949,14 +940,12 @@ export class AppKit {
       )
       this.setLoading(false)
     })
-
     provider.onGetSmartAccountEnabledNetworks(networks => {
       this.setSmartAccountEnabledNetworks(
         networks,
         ChainController.state.activeChain as ChainNamespace
       )
     })
-
     provider.onSetPreferredAccount(({ address, type }) => {
       if (!address) {
         return
@@ -1017,7 +1006,7 @@ export class AppKit {
     })
   }
 
-  private syncWalletConnectAccount() {
+  private async syncWalletConnectAccount() {
     this.chainNamespaces.forEach(async chainNamespace => {
       const caipAddress = this.universalProvider?.session?.namespaces?.[chainNamespace]
         ?.accounts[0] as CaipAddress
@@ -1046,6 +1035,10 @@ export class AppKit {
         })
       }
     })
+
+    await ChainController.setApprovedCaipNetworksData(
+      ChainController.state.activeChain as ChainNamespace
+    )
   }
 
   private syncProvider({
@@ -1185,7 +1178,7 @@ export class AppKit {
       this.syncWalletConnectAccount()
     } else if (
       connectedConnector &&
-      connectedConnector !== UtilConstantsUtil.CONNECTOR_TYPE_AUTH &&
+      connectedConnector !== UtilConstantsUtil.CONNECTOR_TYPE_W3M_AUTH &&
       connectedNamespace
     ) {
       const adapter = this.getAdapter(connectedNamespace as ChainNamespace)
