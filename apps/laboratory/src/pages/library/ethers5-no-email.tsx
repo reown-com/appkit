@@ -19,6 +19,7 @@ const modal = createAppKit({
   features: {
     analytics: true,
     email: false,
+    legalCheckbox: true,
     socials: []
   },
   termsConditionsUrl: 'https://reown.com/terms-of-service',

@@ -10,6 +10,7 @@ import '../wui-all-wallets-image/index.js'
 import '../wui-tag/index.js'
 import '../wui-wallet-image/index.js'
 import styles from './styles.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('wui-list-wallet')
 export class WuiListWallet extends LitElement {
@@ -30,6 +31,8 @@ export class WuiListWallet extends LitElement {
 
   @property() public walletIcon?: IconType
 
+  @property() public tabIdx?: number = undefined
+
   @property({ type: Boolean }) public installed = false
 
   @property({ type: Boolean }) public disabled = false
@@ -39,7 +42,7 @@ export class WuiListWallet extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.disabled} ontouchstart>
+      <button ?disabled=${this.disabled} tabindex=${ifDefined(this.tabIdx)} ontouchstart>
         ${this.templateAllWallets()} ${this.templateWalletImage()}
         <wui-text variant="paragraph-500" color="inherit">${this.name}</wui-text>
         ${this.templateStatus()}

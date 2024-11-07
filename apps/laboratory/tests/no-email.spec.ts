@@ -31,3 +31,10 @@ noEmailTest.afterAll(async () => {
 noEmailTest('secure site iframe should not be present', () => {
   modalValidator.expectSecureSiteFrameNotInjected()
 })
+
+noEmailTest('should check the terms of service and privacy policy checkbox', async () => {
+  await modalPage.openConnectModal()
+  await modalValidator.expectConnectViewToBeDisabled()
+  await modalPage.clickLegalCheckbox()
+  await modalValidator.expectConnectViewNotToBeDisabled()
+})
