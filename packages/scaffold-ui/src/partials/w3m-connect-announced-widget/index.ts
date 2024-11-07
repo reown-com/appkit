@@ -21,7 +21,6 @@ export class W3mConnectAnnouncedWidget extends LitElement {
 
   @state() private connectors = ConnectorController.state.connectors
 
-
   public constructor() {
     super()
     this.unsubscribe.push(

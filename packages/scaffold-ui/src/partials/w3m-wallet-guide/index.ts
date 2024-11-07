@@ -11,7 +11,7 @@ export class W3mWalletGuide extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @property() public tabIdx?: boolean
-  
+
   @property() public walletGuide: WalletGuideType = 'get-started'
 
   // -- Render -------------------------------------------- //

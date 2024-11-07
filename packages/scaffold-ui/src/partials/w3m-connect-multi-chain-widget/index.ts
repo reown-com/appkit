@@ -17,7 +17,7 @@ export class W3mConnectMultiChainWidget extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @property() public tabIdx?: number = undefined
-  
+
   @state() private connectors = ConnectorController.state.connectors
 
   public constructor() {

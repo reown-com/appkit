@@ -26,7 +26,7 @@ export class W3mEmailLoginWidget extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @property() public tabIdx?: number
-  
+
   @state() private connectors = ConnectorController.state.connectors
 
   @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
@@ -38,7 +38,6 @@ export class W3mEmailLoginWidget extends LitElement {
   @state() private error = ''
 
   @property() private walletGuide: WalletGuideType = 'get-started'
-
 
   public constructor() {
     super()
