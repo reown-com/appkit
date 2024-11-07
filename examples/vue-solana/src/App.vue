@@ -52,12 +52,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
-import {
-  createAppKit,
-  useAppKitState,
-  useAppKitTheme,
-  useAppKitEvents
-} from '@reown/appkit/vue'
+import { createAppKit, useAppKitState, useAppKitTheme, useAppKitEvents } from '@reown/appkit/vue'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { solana, solanaTestnet } from '@reown/appkit/networks'
 
