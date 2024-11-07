@@ -1,9 +1,4 @@
-import type {
-  SIWXMessage,
-  SIWXMessageInput,
-  SIWXMessageMetadata,
-  SIWXMessageMethods
-} from '@reown/appkit-core'
+import type { SIWXMessage } from '@reown/appkit-core'
 
 export abstract class SIWXMessenger {
   public domain: SIWXMessage['domain']
@@ -17,7 +12,7 @@ export abstract class SIWXMessenger {
   protected getNonce: SIWXMessenger.ConstructorParams['getNonce']
   protected getRequestId?: SIWXMessenger.ConstructorParams['getRequestId']
 
-  protected abstract stringify(params: Omit<SIWXMessage, keyof SIWXMessageMethods>): string
+  protected abstract stringify(params: SIWXMessage.Data): string
 
   constructor(params: SIWXMessenger.ConstructorParams) {
     this.expiration = params.expiration
@@ -29,7 +24,7 @@ export abstract class SIWXMessenger {
     this.resources = params.resources
   }
 
-  async createMessage(input: SIWXMessageInput): Promise<SIWXMessage> {
+  async createMessage(input: SIWXMessage.Input): Promise<SIWXMessage> {
     const params = {
       accountAddress: input.accountAddress,
       chainId: input.chainId,
@@ -38,7 +33,7 @@ export abstract class SIWXMessenger {
       uri: this.uri,
       statement: this.statement,
       resources: this.resources,
-      nonce: await this.getNonce(),
+      nonce: await this.getNonce(input),
       requestId: await this.getRequestId?.(),
       expirationTime: this.getExpirationTime(input),
       issuedAt: this.getIssuedAt(),
@@ -47,14 +42,14 @@ export abstract class SIWXMessenger {
 
     const methods = {
       toString: () => this.stringify(params)
-    } satisfies SIWXMessageMethods
+    } satisfies SIWXMessage.Methods
 
     return Object.assign(params, methods)
   }
 
   protected getExpirationTime({
     notBefore
-  }: Pick<SIWXMessageInput, 'notBefore'>): string | undefined {
+  }: Pick<SIWXMessage.Input, 'notBefore'>): string | undefined {
     if (typeof this.expiration === 'undefined') {
       return undefined
     }
@@ -64,7 +59,7 @@ export abstract class SIWXMessenger {
     return this.stringifyDate(new Date(startingAt + this.expiration))
   }
 
-  protected getNotBefore({ notBefore }: Pick<SIWXMessageInput, 'notBefore'>): string | undefined {
+  protected getNotBefore({ notBefore }: Pick<SIWXMessage.Input, 'notBefore'>): string | undefined {
     return notBefore ? this.stringifyDate(new Date(notBefore)) : undefined
   }
 
@@ -78,7 +73,7 @@ export abstract class SIWXMessenger {
 }
 
 export namespace SIWXMessenger {
-  export interface ConstructorParams extends Omit<SIWXMessageMetadata, 'nonce' | 'version'> {
+  export interface ConstructorParams extends Omit<SIWXMessage.Metadata, 'nonce' | 'version'> {
     /**
      * Time in milliseconds
      */
@@ -86,7 +81,7 @@ export namespace SIWXMessenger {
     /**
      * Getter function for message nonce value
      */
-    getNonce: () => Promise<SIWXMessage['nonce']>
+    getNonce: (params: SIWXMessage.Input) => Promise<SIWXMessage['nonce']>
     /**
      * Getter function for message request ID
      * If not provided, the request ID will be omitted
