@@ -220,7 +220,7 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
 
   // -- Private ------------------------------------------- //
   private serializeTransaction(transaction: AnyTransaction) {
-    return Uint8Array.from(transaction.serialize({ verifySignatures: false }))
+    return transaction.serialize({ verifySignatures: false })
   }
 
   private getAccount<Required extends boolean>(
