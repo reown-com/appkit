@@ -77,6 +77,8 @@ export class W3mConnectView extends LitElement {
     const socialsExist = socials && socials.length
     const socialOrEmailLoginEnabled = socialsExist || this.authConnector
 
+    const tabIndex = disabled ? -1 : undefined
+
     return html`
       <wui-flex flexDirection="column">
         ${this.legalCheckboxTemplate()}
@@ -91,11 +93,9 @@ export class W3mConnectView extends LitElement {
           >
             <w3m-email-login-widget
               walletGuide=${this.walletGuide}
-              tabIdx=${ifDefined(disabled ? -1 : undefined)}
+              tabIdx=${ifDefined(tabIndex)}
             ></w3m-email-login-widget>
-            <w3m-social-login-widget
-              tabIdx=${ifDefined(disabled ? -1 : undefined)}
-            ></w3m-social-login-widget>
+            <w3m-social-login-widget tabIdx=${ifDefined(tabIndex)}></w3m-social-login-widget>
             ${this.walletListTemplate()}
           </wui-flex>
         </wui-flex>
@@ -107,9 +107,18 @@ export class W3mConnectView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private walletListTemplate() {
+    const { termsConditionsUrl, privacyPolicyUrl, enableLegalCheckbox } = OptionsController.state
     const socials = this.features?.socials
     const emailShowWallets = this.features?.emailShowWallets
     const enableWallets = OptionsController.state.enableWallets
+
+    const legalUrl = termsConditionsUrl || privacyPolicyUrl
+    const showLegalCheckbox =
+      Boolean(legalUrl) && Boolean(enableLegalCheckbox) && this.walletGuide === 'get-started'
+
+    const disabled = showLegalCheckbox && !this.checked
+
+    const tabIndex = disabled ? -1 : undefined
 
     if (!enableWallets) {
       return null
@@ -127,21 +136,22 @@ export class W3mConnectView extends LitElement {
       if (this.authConnector && emailShowWallets) {
         return html`
           <wui-flex flexDirection="column" gap="xs" .margin=${['xs', '0', '0', '0'] as const}>
-            <w3m-connector-list></w3m-connector-list>
+            <w3m-connector-list tabIdx=${ifDefined(tabIndex)}></w3m-connector-list>
             <wui-flex class="all-wallets">
-              <w3m-all-wallets-widget></w3m-all-wallets-widget>
+              <w3m-all-wallets-widget tabIdx=${ifDefined(tabIndex)}></w3m-all-wallets-widget>
             </wui-flex>
           </wui-flex>
         `
       }
 
       return html`<wui-list-button
+        tabIdx=${ifDefined(tabIndex)}
         @click=${this.onContinueWalletClick.bind(this)}
         text="Continue with a wallet"
       ></wui-list-button>`
     }
 
-    return html`<w3m-wallet-login-list></w3m-wallet-login-list>`
+    return html`<w3m-wallet-login-list tabIdx=${ifDefined(tabIndex)}></w3m-wallet-login-list>`
   }
 
   private guideTemplate() {
@@ -156,10 +166,14 @@ export class W3mConnectView extends LitElement {
 
     const socialsExist = socials && socials.length
 
+    const disabled = showLegalCheckbox && !this.checked
+
     const classes = {
       guide: true,
-      disabled: showLegalCheckbox && !this.checked
+      disabled
     }
+
+    const tabIndex = disabled ? -1 : undefined
 
     if (!this.authConnector && !socialsExist) {
       return null
@@ -187,7 +201,10 @@ export class W3mConnectView extends LitElement {
         .padding=${['xl', '0', 'xl', '0']}
         class=${classMap(classes)}
       >
-        <w3m-wallet-guide walletGuide=${this.walletGuide}></w3m-wallet-guide>
+        <w3m-wallet-guide
+          tabIdx=${ifDefined(tabIndex)}
+          walletGuide=${this.walletGuide}
+        ></w3m-wallet-guide>
       </wui-flex>
     `
   }

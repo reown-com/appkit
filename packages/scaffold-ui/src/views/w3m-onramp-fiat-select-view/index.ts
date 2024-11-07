@@ -48,28 +48,31 @@ export class W3mOnrampFiatSelectView extends LitElement {
     const legalUrl = termsConditionsUrl || privacyPolicyUrl
     const showLegalCheckbox = Boolean(legalUrl) && Boolean(enableLegalCheckbox)
 
+    const disabled = showLegalCheckbox && !this.checked
+
     return html`
       <w3m-legal-checkbox @checkboxChange=${this.onCheckboxChange.bind(this)}></w3m-legal-checkbox>
       <wui-flex
         flexDirection="column"
         .padding=${['0', 's', 's', 's']}
         gap="xs"
-        class=${ifDefined(showLegalCheckbox && !this.checked ? 'disabled' : undefined)}
+        class=${ifDefined(disabled ? 'disabled' : undefined)}
       >
-        ${this.currenciesTemplate()}
+        ${this.currenciesTemplate(disabled)}
       </wui-flex>
       <w3m-legal-footer></w3m-legal-footer>
     `
   }
 
   // -- Private ------------------------------------------- //
-  private currenciesTemplate() {
+  private currenciesTemplate(disabled = false) {
     return this.currencies.map(
       currency => html`
         <wui-list-item
           imageSrc=${ifDefined(this.currencyImages?.[currency.id])}
           @click=${() => this.selectCurrency(currency)}
           variant="image"
+          tabIdx=${ifDefined(disabled ? -1 : undefined)}
         >
           <wui-text variant="paragraph-500" color="fg-100">${currency.id}</wui-text>
         </wui-list-item>

@@ -3,12 +3,15 @@ import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { RouterController, type WalletGuideType } from '@reown/appkit-core'
 import { property } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-wallet-guide')
 export class W3mWalletGuide extends LitElement {
   public static override styles = styles
 
   // -- State & Properties -------------------------------- //
+  @property() public tabIdx?: boolean
+  
   @property() public walletGuide: WalletGuideType = 'get-started'
 
   // -- Render -------------------------------------------- //
@@ -50,6 +53,7 @@ export class W3mWalletGuide extends LitElement {
             color="blue-100"
             class="get-started-link"
             @click=${this.onGetStarted}
+            tabIdx=${ifDefined(this.tabIdx)}
           >
             Get started
           </wui-link>

@@ -19,15 +19,19 @@ export class W3mConnectWalletsView extends LitElement {
     const legalUrl = termsConditionsUrl || privacyPolicyUrl
     const showLegalCheckbox = Boolean(legalUrl) && Boolean(enableLegalCheckbox)
 
+    const disabled = showLegalCheckbox && !this.checked
+
+    const tabIndex = disabled ? -1 : undefined
+
     return html`
       <w3m-legal-checkbox @checkboxChange=${this.onCheckboxChange.bind(this)}></w3m-legal-checkbox>
       <wui-flex
         flexDirection="column"
         .padding=${showLegalCheckbox ? ['0', 's', 's', 's'] : 's'}
         gap="xs"
-        class=${ifDefined(showLegalCheckbox && !this.checked ? 'disabled' : undefined)}
+        class=${ifDefined(disabled ? 'disabled' : undefined)}
       >
-        <w3m-wallet-login-list></w3m-wallet-login-list>
+        <w3m-wallet-login-list tabIdx=${ifDefined(tabIndex)}></w3m-wallet-login-list>
       </wui-flex>
       <w3m-legal-footer></w3m-legal-footer>
     `

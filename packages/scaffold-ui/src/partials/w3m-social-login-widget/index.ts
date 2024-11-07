@@ -31,15 +31,15 @@ export class W3mSocialLoginWidget extends LitElement {
   private popupWindow?: Window | null
 
   // -- State & Properties -------------------------------- //
+  @property() public walletGuide: WalletGuideType = 'get-started'
+
+  @property() public tabIdx?: number = undefined
+
   @state() private connectors = ConnectorController.state.connectors
 
   @state() private features = OptionsController.state.features
 
   @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
-
-  @property() public walletGuide: WalletGuideType = 'get-started'
-
-  @property() public tabIdx?: number = undefined
 
   public constructor() {
     super()
