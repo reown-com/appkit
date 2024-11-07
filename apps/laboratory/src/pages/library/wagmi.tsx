@@ -22,7 +22,8 @@ const modal = createAppKit({
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true
-  }
+  },
+  customWallets: ConstantsUtil.CustomWallets
 })
 
 const config = wagmiAdapter.wagmiConfig

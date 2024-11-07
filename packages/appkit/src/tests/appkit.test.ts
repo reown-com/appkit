@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { AppKit } from '../client'
+import { mainnet, polygon } from '../networks/index.js'
 import {
   AccountController,
   ModalController,
@@ -39,6 +40,12 @@ describe('Base', () => {
       expect(OptionsController.setSdkVersion).toHaveBeenCalledWith(mockOptions.sdkVersion)
       expect(OptionsController.setProjectId).toHaveBeenCalledWith(mockOptions.projectId)
       expect(OptionsController.setMetadata).toHaveBeenCalledWith(mockOptions.metadata)
+      expect(appKit.universalAdapter?.construct).toHaveBeenCalledWith(
+        appKit,
+        expect.objectContaining({
+          metadata: mockOptions.metadata
+        })
+      )
     })
 
     it('should initialize adapters in ChainController', () => {
@@ -439,6 +446,23 @@ describe('Base', () => {
         chain: 'eip155'
       })
       expect(result).toBe('connector-image-url')
+    })
+
+    it('should switch network when requested', async () => {
+      vi.mocked(ChainController.switchActiveNetwork).mockResolvedValue(undefined)
+
+      await appKit.switchNetwork(mainnet)
+
+      expect(ChainController.switchActiveNetwork).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: mainnet.id,
+          name: mainnet.name
+        })
+      )
+
+      await appKit.switchNetwork(polygon)
+
+      expect(ChainController.switchActiveNetwork).toHaveBeenCalledTimes(1)
     })
   })
 })

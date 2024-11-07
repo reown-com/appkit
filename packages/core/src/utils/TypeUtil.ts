@@ -979,3 +979,16 @@ export type Features = {
 export type FeaturesKeys = keyof Features
 
 export type WalletGuideType = 'get-started' | 'explore'
+
+export type UseAppKitAccountReturn = {
+  caipAddress: CaipAddress | undefined
+  address: string | undefined
+  isConnected: boolean
+  status: AccountControllerState['status']
+}
+
+export type UseAppKitNetworkReturn = {
+  caipNetwork: CaipNetwork | undefined
+  chainId: number | string | undefined
+  caipNetworkId: CaipNetworkId | undefined
+}

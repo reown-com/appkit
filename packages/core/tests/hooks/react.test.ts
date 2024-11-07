@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { useAppKitNetwork, useAppKitAccount } from '../../exports/react'
+import { useAppKitNetworkCore, useAppKitAccount } from '../../exports/react'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import { AccountController, ChainController } from '../../exports'
@@ -42,7 +42,7 @@ describe('useAppKitNetwork', () => {
       activeCaipNetwork: mockNetwork
     })
 
-    const { caipNetwork, chainId } = useAppKitNetwork()
+    const { caipNetwork, chainId } = useAppKitNetworkCore()
 
     expect(caipNetwork).toBe(mockNetwork)
     expect(chainId).toBe(1)

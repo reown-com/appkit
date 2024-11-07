@@ -816,18 +816,19 @@ export const SwapController = {
       state.myTokensWithBalance
     )
 
-    // Smart Accounts may pay gas in any ERC20 token
+    let insufficientNetworkTokenForGas = true
     if (
       AccountController.state.preferredAccountType ===
       W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     ) {
-      return true
+      // Smart Accounts may pay gas in any ERC20 token
+      insufficientNetworkTokenForGas = false
+    } else {
+      insufficientNetworkTokenForGas = SwapCalculationUtil.isInsufficientNetworkTokenForGas(
+        state.networkBalanceInUSD,
+        state.gasPriceInUSD
+      )
     }
-
-    const insufficientNetworkTokenForGas = SwapCalculationUtil.isInsufficientNetworkTokenForGas(
-      state.networkBalanceInUSD,
-      state.gasPriceInUSD
-    )
 
     return insufficientNetworkTokenForGas || isInsufficientSourceTokenForSwap
   },

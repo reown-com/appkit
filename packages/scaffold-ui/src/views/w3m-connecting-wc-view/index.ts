@@ -71,13 +71,7 @@ export class W3mConnectingWcView extends LitElement {
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry) || status === 'connecting') {
         await ConnectionController.connectWalletConnect()
         this.finalizeConnection()
-
-        if (
-          StorageUtil.getConnectedConnector() === 'AUTH' &&
-          OptionsController.state.hasMultipleAddresses
-        ) {
-          RouterController.push('SelectAddresses')
-        } else if (!this.isSiweEnabled) {
+        if (!this.isSiweEnabled) {
           ModalController.close()
         }
       }
@@ -89,9 +83,11 @@ export class W3mConnectingWcView extends LitElement {
       })
       ConnectionController.setWcError(true)
       if (CoreHelperUtil.isAllowedRetry(this.lastRetry)) {
-        SnackController.showError('Declined')
+        SnackController.showError((error as BaseError).message ?? 'Declined')
         this.lastRetry = Date.now()
         this.initializeConnection(true)
+      } else {
+        SnackController.showError((error as BaseError).message ?? 'Connection error')
       }
     }
   }
