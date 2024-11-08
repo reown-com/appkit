@@ -136,20 +136,14 @@ export const ConnectionController = {
         state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
       })
     }
-
-    await this.initializeSWIXIfAvailable()
   },
 
   async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
-    await this._getClient()?.connectExternal?.({
-      ...options,
-      chainId: ChainController.state.activeCaipNetwork?.id
-    })
+    await this._getClient()?.connectExternal?.(options)
+
     if (setChain) {
       ChainController.setActiveNamespace(chain)
     }
-
-    await this.initializeSWIXIfAvailable()
   },
 
   async reconnectExternal(options: ConnectExternalOptions) {
@@ -252,19 +246,19 @@ export const ConnectionController = {
   },
 
   async disconnect() {
-    const connectionControllerClient = this._getClient()
-
-    const siwx = OptionsController.state.siwx
-    if (siwx) {
-      const activeCaipNetwork = ChainController.getActiveCaipNetwork()
-      const address = ChainController.getActiveCaipAddress()?.split(':')[2] || ''
-
-      if (activeCaipNetwork && address) {
-        siwx.revokeSession(activeCaipNetwork.caipNetworkId, address)
-      }
-    }
-
     try {
+      const connectionControllerClient = this._getClient()
+
+      const siwx = OptionsController.state.siwx
+      if (siwx) {
+        const activeCaipNetwork = ChainController.getActiveCaipNetwork()
+        const address = CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress())
+
+        if (activeCaipNetwork && address) {
+          await siwx.revokeSession(activeCaipNetwork.caipNetworkId, address)
+        }
+      }
+
       await connectionControllerClient?.disconnect()
       this.resetWcConnection()
     } catch (error) {
@@ -279,7 +273,10 @@ export const ConnectionController = {
    */
   async initializeSWIXIfAvailable() {
     const siwx = OptionsController.state.siwx
-    if (!siwx) {
+    const address = CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress())
+    const network = ChainController.getActiveCaipNetwork()
+
+    if (!(siwx && address && network)) {
       return
     }
 
@@ -289,25 +286,21 @@ export const ConnectionController = {
       return
     }
 
-    const activeCaipNetwork = ChainController.getActiveCaipNetwork()
     const client = this._getClient()
 
     try {
-      if (!activeCaipNetwork) {
-        throw new Error('No active chain')
-      }
-
-      const address = ChainController.getActiveCaipAddress()?.split(':')[2] || ''
-
-      const sessions = await siwx.getSessions(activeCaipNetwork.caipNetworkId, address)
+      const sessions = await siwx.getSessions(network.caipNetworkId, address)
       if (sessions.length) {
         return
       }
 
-      ModalController.open({ view: 'SIWXSignMessage' })
+      await ModalController.open({
+        view:
+          StorageUtil.getConnectedConnector() === 'AUTH' ? 'ApproveTransaction' : 'SIWXSignMessage'
+      })
 
       const siwxMessage = await siwx.createMessage({
-        chainId: activeCaipNetwork.caipNetworkId,
+        chainId: network.caipNetworkId,
         accountAddress: address
       })
 
@@ -325,10 +318,10 @@ export const ConnectionController = {
     } catch (error: unknown) {
       // eslint-disable-next-line no-console
       console.error('Failed to initialize SIWX', error)
-
-      await client?.disconnect()
-
-      throw error
+      ModalController.setLoading(true)
+      await client?.disconnect().finally(() => {
+        ModalController.setLoading(false)
+      })
     }
   }
 }
