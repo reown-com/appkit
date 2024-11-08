@@ -13,6 +13,7 @@ import type { Ref } from 'lit/directives/ref.js'
 import styles from './styles.js'
 import { SnackController, RouterController, EventsController } from '@reown/appkit-core'
 import { ConstantsUtil } from '@reown/appkit-common'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-email-login-widget')
 export class W3mEmailLoginWidget extends LitElement {
@@ -24,6 +25,8 @@ export class W3mEmailLoginWidget extends LitElement {
   private formRef: Ref<HTMLFormElement> = createRef()
 
   // -- State & Properties -------------------------------- //
+  @property() public tabIdx?: number
+
   @state() private connectors = ConnectorController.state.connectors
 
   @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
@@ -72,6 +75,7 @@ export class W3mEmailLoginWidget extends LitElement {
           @focus=${this.onFocusEvent.bind(this)}
           .disabled=${this.loading}
           @inputChange=${this.onEmailInputChange.bind(this)}
+          tabIdx=${ifDefined(this.tabIdx)}
         >
         </wui-email-input>
 

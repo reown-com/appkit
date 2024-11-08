@@ -631,6 +631,7 @@ export type Event =
         swapToToken: string
         swapFromAmount: string
         swapToAmount: string
+        message: string
       }
     }
   | {
@@ -974,6 +975,11 @@ export type Features = {
    * @type {boolean}
    */
   smartSessions?: boolean
+  /**
+   * Enable or disable the terms of service and/or privacy policy checkbox.
+   * @default false
+   */
+  legalCheckbox?: boolean
 }
 
 export type FeaturesKeys = keyof Features
