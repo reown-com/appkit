@@ -39,7 +39,7 @@ export class W3mFrame {
       if (W3mFrameHelpers.isClient) {
         const iframe = document.createElement('iframe')
         iframe.id = 'w3m-iframe'
-        iframe.src = `${SECURE_SITE_SDK}?projectId=${projectId}&chainId=${chainId}`
+        iframe.src = `${SECURE_SITE_SDK}?projectId=${projectId}&chainId=${chainId}&version=2.0.0`
         iframe.name = 'w3m-secure-iframe'
         iframe.style.position = 'fixed'
         iframe.style.zIndex = '999999'
@@ -47,15 +47,18 @@ export class W3mFrame {
         iframe.style.animationDelay = '0s, 50ms'
         iframe.style.borderBottomLeftRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
         iframe.style.borderBottomRightRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
-        document.body.appendChild(iframe)
         this.iframe = iframe
-        this.iframe.onload = () => {
-          this.frameLoadPromiseResolver?.resolve(undefined)
-        }
         this.iframe.onerror = () => {
           this.frameLoadPromiseResolver?.reject('Unable to load email login dependency')
         }
       }
+    }
+  }
+
+  public initFrame = () => {
+    const isFrameInitialized = document.getElementById('w3m-iframe')
+    if (this.iframe && !isFrameInitialized) {
+      document.body.appendChild(this.iframe)
     }
   }
 
@@ -136,6 +139,12 @@ export class W3mFrame {
           ) {
             return
           }
+
+          // if frame_ready event, resolve frameLoadPromise
+          if (data.type === '@w3m-frame/READY') {
+            this.frameLoadPromiseResolver?.resolve(undefined)
+          }
+
           const frameEvent = W3mFrameSchema.frameEvent.parse(data)
           callback(frameEvent)
         })
