@@ -37,6 +37,9 @@ emailTest.beforeAll(async ({ browser, library }) => {
   }
   email = new Email(mailsacApiKey)
   tempEmail = await email.getEmailAddressToUse()
+
+  // Iframe should not be injected until needed
+  validator.expectSecureSiteFrameNotInjected()
   await page.emailFlow(tempEmail, context, mailsacApiKey)
 
   await validator.expectConnected()

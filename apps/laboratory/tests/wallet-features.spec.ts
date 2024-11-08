@@ -39,6 +39,9 @@ walletFeaturesTest.beforeAll(async ({ browser, browserName, library }) => {
   }
   const email = new Email(mailsacApiKey)
   const tempEmail = await email.getEmailAddressToUse()
+
+  // Iframe should not be injected until needed
+  validator.expectSecureSiteFrameNotInjected()
   await page.emailFlow(tempEmail, context, mailsacApiKey)
 
   await validator.expectConnected()
