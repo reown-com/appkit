@@ -140,7 +140,6 @@ export class W3mFrame {
             return
           }
 
-          // if frame_ready event, resolve frameLoadPromise
           if (data.type === '@w3m-frame/READY') {
             this.frameLoadPromiseResolver?.resolve(undefined)
           }
