@@ -34,33 +34,6 @@ type Metadata = {
   icons: string[]
 }
 
-const OPTIONAL_METHODS = [
-  'eth_accounts',
-  'eth_requestAccounts',
-  'eth_sendRawTransaction',
-  'eth_sign',
-  'eth_signTransaction',
-  'eth_signTypedData',
-  'eth_signTypedData_v3',
-  'eth_signTypedData_v4',
-  'eth_sendTransaction',
-  'personal_sign',
-  'wallet_switchEthereumChain',
-  'wallet_addEthereumChain',
-  'wallet_getPermissions',
-  'wallet_requestPermissions',
-  'wallet_registerOnboarding',
-  'wallet_watchAsset',
-  'wallet_scanQRCode',
-  // EIP-5792
-  'wallet_getCallsStatus',
-  'wallet_sendCalls',
-  'wallet_getCapabilities',
-  // EIP-7715
-  'wallet_grantPermissions',
-  'wallet_revokePermissions'
-]
-
 // -- Client --------------------------------------------------------------------
 export class UniversalAdapterClient {
   private walletConnectProviderInitPromise?: Promise<void>
@@ -88,7 +61,7 @@ export class UniversalAdapterClient {
   public reportedAlertErrors: Record<string, boolean> = {}
 
   public constructor(options: AppKitOptionsWithCaipNetworks) {
-    const { siweConfig, metadata } = options
+    const { metadata } = options
 
     this.caipNetworks = options.networks
 
@@ -144,93 +117,18 @@ export class UniversalAdapterClient {
         ) {
           const adapter = ChainController.state.chains.get(ChainController.state.activeChain)
           await adapter?.connectionControllerClient?.connectWalletConnect?.(onUri)
-          this.setWalletConnectProvider()
         } else {
-          const siweParams = await siweConfig?.getMessageParams?.()
-          const isSiweEnabled = siweConfig?.options?.enabled
-          const isProviderSupported = typeof WalletConnectProvider?.authenticate === 'function'
-          const isSiweParamsValid = siweParams && Object.keys(siweParams || {}).length > 0
-          const clientId = await WalletConnectProvider?.client?.core?.crypto?.getClientId()
-          if (clientId) {
-            this.appKit?.setClientId(clientId)
-          }
-          if (
-            siweConfig &&
-            isSiweEnabled &&
-            siweParams &&
-            isProviderSupported &&
-            isSiweParamsValid &&
-            ChainController.state.activeChain === CommonConstantsUtil.CHAIN.EVM
-          ) {
-            const { SIWEController, getDidChainId, getDidAddress } = await import(
-              '@reown/appkit-siwe'
-            )
-
-            const chains = this.caipNetworks
-              ?.filter(network => network.chainNamespace === CommonConstantsUtil.CHAIN.EVM)
-              .map(chain => chain.caipNetworkId) as string[]
-
-            siweParams.chains = this.caipNetworks
-              ?.filter(network => network.chainNamespace === CommonConstantsUtil.CHAIN.EVM)
-              .map(chain => chain.id) as number[]
-
-            const result = await WalletConnectProvider.authenticate({
-              nonce: await siweConfig?.getNonce?.(),
-              methods: [...OPTIONAL_METHODS],
-              ...siweParams,
-              chains
-            })
-            // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
-            const signedCacao = result?.auths?.[0]
-
-            if (signedCacao) {
-              const { p, s } = signedCacao
-              const cacaoChainId = getDidChainId(p.iss)
-              const address = getDidAddress(p.iss)
-              if (address && cacaoChainId) {
-                SIWEController.setSession({
-                  address,
-                  chainId: parseInt(cacaoChainId, 10)
-                })
-              }
-
-              try {
-                // Kicks off verifyMessage and populates external states
-                const message = WalletConnectProvider.client.formatAuthMessage({
-                  request: p,
-                  iss: p.iss
-                })
-
-                await SIWEController.verifyMessage({
-                  message,
-                  signature: s.s,
-                  cacao: signedCacao
-                })
-              } catch (error) {
-                // eslint-disable-next-line no-console
-                console.error('Error verifying message', error)
-                // eslint-disable-next-line no-console
-                await WalletConnectProvider.disconnect().catch(console.error)
-                // eslint-disable-next-line no-console
-                await SIWEController.signOut().catch(console.error)
-                throw error
-              }
-            }
-          } else {
-            const optionalNamespaces = WcHelpersUtil.createNamespaces(this.caipNetworks)
-            await WalletConnectProvider.connect({ optionalNamespaces })
-          }
-          this.setWalletConnectProvider()
+          const optionalNamespaces = WcHelpersUtil.createNamespaces(this.caipNetworks)
+          await WalletConnectProvider.connect({ optionalNamespaces })
         }
+
+        this.appKit?.setClientId(await WalletConnectProvider.client.core.crypto.getClientId())
+
+        this.setWalletConnectProvider()
       },
 
       disconnect: async () => {
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLET_ID)
-
-        if (siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@reown/appkit-siwe')
-          await SIWEController.signOut()
-        }
 
         await this.walletConnectProvider?.disconnect()
 

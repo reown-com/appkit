@@ -102,8 +102,6 @@ export class Ethers5Adapter {
 
   public connectionControllerClient?: ConnectionControllerClient
 
-  public siweControllerClient = this.options?.siweConfig
-
   public tokens = HelpersUtil.getCaipTokens(this.options?.tokens)
 
   public defaultCaipNetwork: CaipNetwork | undefined = undefined
@@ -331,10 +329,6 @@ export class Ethers5Adapter {
         const providerId = ProviderUtil.state.providerIds['eip155']
 
         this.appKit?.setClientId(null)
-        if (this.options?.siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@reown/appkit-siwe')
-          await SIWEController.signOut()
-        }
 
         const disconnectConfig = {
           [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: async () =>
