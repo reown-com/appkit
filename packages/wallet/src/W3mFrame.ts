@@ -1,4 +1,4 @@
-import { SECURE_SITE_SDK, W3mFrameConstants } from './W3mFrameConstants.js'
+import { SECURE_SITE_SDK, SECURE_SITE_SDK_VERSION, W3mFrameConstants } from './W3mFrameConstants.js'
 import { W3mFrameSchema } from './W3mFrameSchema.js'
 import { W3mFrameHelpers } from './W3mFrameHelpers.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
@@ -39,7 +39,7 @@ export class W3mFrame {
       if (W3mFrameHelpers.isClient) {
         const iframe = document.createElement('iframe')
         iframe.id = 'w3m-iframe'
-        iframe.src = `${SECURE_SITE_SDK}?projectId=${projectId}&chainId=${chainId}&version=2.0.0`
+        iframe.src = `${SECURE_SITE_SDK}?projectId=${projectId}&chainId=${chainId}&version=${SECURE_SITE_SDK_VERSION}`
         iframe.name = 'w3m-secure-iframe'
         iframe.style.position = 'fixed'
         iframe.style.zIndex = '999999'
