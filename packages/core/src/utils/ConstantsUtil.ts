@@ -222,6 +222,7 @@ export const ConstantsUtil = {
     history: true,
     analytics: true,
     allWallets: true,
+    legalCheckbox: false,
     smartSessions: false
   } as Features
 }

@@ -1,5 +1,36 @@
 # @reown/appkit-polyfills
 
+## 1.3.1
+
+### Patch Changes
+
+- [#3207](https://github.com/reown-com/appkit/pull/3207) [`3bfbbb9`](https://github.com/reown-com/appkit/commit/3bfbbb947f53dc49de3ab467e03c35e81aa72787) Thanks [@magiziz](https://github.com/magiziz)! - Introduced a new feature with an option to enable the terms of service and/or privacy policy checkbox.
+
+  **Example usage**
+
+  ```ts
+  import { createAppKit } from '@reown/appkit/react'
+  import { mainnet } from '@reown/appkit/networks'
+
+  const modal = createAppKit({
+    adapters: [
+      /* adapters */
+    ],
+    networks: [mainnet],
+    defaultNetwork: mainnet,
+    projectId: 'YOUR_PROJECT_ID',
+    features: {
+      legalCheckbox: true // Optional - defaults to false
+    },
+    termsConditionsUrl: '...',
+    privacyPolicyUrl: '...'
+  })
+  ```
+
+- [#3179](https://github.com/reown-com/appkit/pull/3179) [`ffb30d3`](https://github.com/reown-com/appkit/commit/ffb30d37a3a193c1dc18d152177f12d869110a3d) Thanks [@zoruka](https://github.com/zoruka)! - Fixes for improving SIWX initialization and flows
+
+- [#3197](https://github.com/reown-com/appkit/pull/3197) [`879ad0a`](https://github.com/reown-com/appkit/commit/879ad0ad98b8a41fcb66c0bf5a75ceacd05d367d) Thanks [@enesozturk](https://github.com/enesozturk)! - Refactors Vue hooks to listen state as expected
+
 ## 1.3.0
 
 ### Minor Changes
