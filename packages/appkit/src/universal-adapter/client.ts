@@ -117,12 +117,14 @@ export class UniversalAdapterClient {
         ) {
           const adapter = ChainController.state.chains.get(ChainController.state.activeChain)
           await adapter?.connectionControllerClient?.connectWalletConnect?.(onUri)
-          this.setWalletConnectProvider()
         } else {
           const optionalNamespaces = WcHelpersUtil.createNamespaces(this.caipNetworks)
           await WalletConnectProvider.connect({ optionalNamespaces })
-          this.setWalletConnectProvider()
         }
+
+        this.appKit?.setClientId(await WalletConnectProvider.client.core.crypto.getClientId())
+
+        this.setWalletConnectProvider()
       },
 
       disconnect: async () => {
