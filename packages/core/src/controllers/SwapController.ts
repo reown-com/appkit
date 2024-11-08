@@ -792,6 +792,7 @@ export const SwapController = {
         type: 'track',
         event: 'SWAP_ERROR',
         properties: {
+          message: error?.shortMessage || error?.message || 'Unknown',
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
           swapFromToken: this.state.sourceToken?.symbol || '',
           swapToToken: this.state.toToken?.symbol || '',
