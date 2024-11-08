@@ -207,6 +207,7 @@ export class W3mFrameProvider {
       const response = await this.appEvent<'GetSmartAccountEnabledNetworks'>({
         type: W3mFrameConstants.APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS
       } as W3mFrameTypes.AppEvent)
+
       this.persistSmartAccountEnabledNetworks(response.smartAccountEnabledNetworks)
 
       return response

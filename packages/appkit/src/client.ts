@@ -1,3 +1,4 @@
+/* eslint-disable max-depth */
 import {
   type EventsControllerState,
   type PublicStateControllerState,
@@ -103,6 +104,33 @@ const networkState: AdapterNetworkState = {
   supportsAllNetworks: true,
   smartAccountEnabledNetworks: []
 }
+
+const OPTIONAL_METHODS = [
+  'eth_accounts',
+  'eth_requestAccounts',
+  'eth_sendRawTransaction',
+  'eth_sign',
+  'eth_signTransaction',
+  'eth_signTypedData',
+  'eth_signTypedData_v3',
+  'eth_signTypedData_v4',
+  'eth_sendTransaction',
+  'personal_sign',
+  'wallet_switchEthereumChain',
+  'wallet_addEthereumChain',
+  'wallet_getPermissions',
+  'wallet_requestPermissions',
+  'wallet_registerOnboarding',
+  'wallet_watchAsset',
+  'wallet_scanQRCode',
+  // EIP-5792
+  'wallet_getCallsStatus',
+  'wallet_sendCalls',
+  'wallet_getCapabilities',
+  // EIP-7715
+  'wallet_grantPermissions',
+  'wallet_revokePermissions'
+]
 
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
@@ -667,7 +695,85 @@ export class AppKit {
       connectWalletConnect: async (onUri: (uri: string) => void) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
-        await adapter?.connectWalletConnect(onUri, this.getCaipNetwork()?.id)
+        this.universalProvider?.on('display_uri', (uri: string) => {
+          onUri(uri)
+        })
+
+        if (this.options.siweConfig) {
+          const siweParams = await this.options.siweConfig?.getMessageParams?.()
+          const isSiweEnabled = this.options.siweConfig?.options?.enabled
+          const isProviderSupported = typeof this.universalProvider?.authenticate === 'function'
+          const isSiweParamsValid = siweParams && Object.keys(siweParams || {}).length > 0
+          const clientId = await this.universalProvider?.client?.core?.crypto?.getClientId()
+          if (clientId) {
+            this.setClientId(clientId)
+            if (
+              this.options.siweConfig &&
+              isSiweEnabled &&
+              siweParams &&
+              isProviderSupported &&
+              isSiweParamsValid &&
+              ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
+            ) {
+              const { SIWEController, getDidChainId, getDidAddress } = await import(
+                '@reown/appkit-siwe'
+              )
+
+              const chains = this.caipNetworks
+                ?.filter(network => network.chainNamespace === ConstantsUtil.CHAIN.EVM)
+                .map(chain => chain.caipNetworkId) as string[]
+
+              siweParams.chains = this.caipNetworks
+                ?.filter(network => network.chainNamespace === ConstantsUtil.CHAIN.EVM)
+                .map(chain => chain.id) as number[]
+
+              const result = await this.universalProvider?.authenticate({
+                nonce: await this.options.siweConfig?.getNonce?.(),
+                methods: [...OPTIONAL_METHODS],
+                ...siweParams,
+                chains
+              })
+              // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
+              const signedCacao = result?.auths?.[0]
+
+              if (signedCacao) {
+                const { p, s } = signedCacao
+                const cacaoChainId = getDidChainId(p.iss)
+                const address = getDidAddress(p.iss)
+                if (address && cacaoChainId) {
+                  SIWEController.setSession({
+                    address,
+                    chainId: parseInt(cacaoChainId, 10)
+                  })
+                }
+
+                try {
+                  // Kicks off verifyMessage and populates external states
+                  const message = this.universalProvider?.client.formatAuthMessage({
+                    request: p,
+                    iss: p.iss
+                  })
+
+                  await SIWEController.verifyMessage({
+                    message: message as string,
+                    signature: s.s,
+                    cacao: signedCacao
+                  })
+                } catch (error) {
+                  // eslint-disable-next-line no-console
+                  console.error('Error verifying message', error)
+                  // eslint-disable-next-line no-console
+                  await this.universalProvider?.disconnect().catch(console.error)
+                  // eslint-disable-next-line no-console
+                  await SIWEController.signOut().catch(console.error)
+                  throw error
+                }
+              }
+            }
+          }
+        } else {
+          await adapter?.connectWalletConnect(onUri, this.getCaipNetwork()?.id)
+        }
 
         await this.syncWalletConnectAccount()
       },
@@ -695,6 +801,12 @@ export class AppKit {
         const provider = ProviderUtil.getProvider<UniversalProvider | Provider | W3mFrameProvider>(
           ChainController.state.activeChain as ChainNamespace
         )
+
+        if (this.options.siweConfig?.options?.signOutOnDisconnect) {
+          const { SIWEController } = await import('@reown/appkit-siwe')
+          await SIWEController.signOut()
+        }
+
         const providerType =
           ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
 
@@ -869,6 +981,7 @@ export class AppKit {
     } else {
       this.setLoading(false)
     }
+
     provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
       if (W3mFrameHelpers.checkIfRequestExists(request)) {
         if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
@@ -918,7 +1031,7 @@ export class AppKit {
     provider.onIsConnected(() => {
       provider.connect()
     })
-    provider.onConnect(user => {
+    provider.onConnect(async user => {
       const caipAddress = `eip155:${user.chainId}:${user.address}` as CaipAddress
       this.setCaipAddress(caipAddress, ChainController.state.activeChain as ChainNamespace)
       this.setSmartAccountDeployed(
@@ -938,6 +1051,9 @@ export class AppKit {
         ],
         ChainController.state.activeChain as ChainNamespace
       )
+
+      await provider.getSmartAccountEnabledNetworks()
+
       this.setLoading(false)
     })
     provider.onGetSmartAccountEnabledNetworks(networks => {
@@ -955,6 +1071,51 @@ export class AppKit {
         ChainController.state.activeChain as ChainNamespace
       )
     })
+  }
+
+  private listenWalletConnect() {
+    if (this.universalProvider) {
+      this.universalProvider.on('disconnect', () => {
+        this.chainNamespaces.forEach(namespace => {
+          this.resetAccount(namespace)
+        })
+        ConnectionController.resetWcConnection()
+      })
+
+      this.universalProvider.on('chainChanged', (chainId: number | string) => {
+        const caipNetwork = this.caipNetworks?.find(
+          // eslint-disable-next-line eqeqeq
+          c => c.chainNamespace === ChainController.state.activeChain && c.id == chainId
+        )
+        const currentCaipNetwork = this.getCaipNetwork()
+
+        if (!caipNetwork) {
+          const namespace = this.getActiveChainNamespace() || ConstantsUtil.CHAIN.EVM
+          ChainController.setActiveCaipNetwork({
+            id: chainId,
+            caipNetworkId: `${namespace}:${chainId}`,
+            name: 'Unknown Network',
+            chainNamespace: namespace,
+            nativeCurrency: {
+              name: '',
+              decimals: 0,
+              symbol: ''
+            },
+            rpcUrls: {
+              default: {
+                http: []
+              }
+            }
+          })
+
+          return
+        }
+
+        if (!currentCaipNetwork || currentCaipNetwork?.id !== caipNetwork?.id) {
+          this.setCaipNetwork(caipNetwork)
+        }
+      })
+    }
   }
 
   private listenAdapter(chainNamespace: ChainNamespace) {
@@ -1028,6 +1189,9 @@ export class AppKit {
         } else {
           address = AccountController.state.address as string
         }
+
+        this.syncWalletConnectAccounts(chainNamespace)
+
         await this.syncAccount({
           address,
           chainId: ChainController.state.activeCaipNetwork?.id as string | number,
@@ -1039,6 +1203,23 @@ export class AppKit {
     await ChainController.setApprovedCaipNetworksData(
       ChainController.state.activeChain as ChainNamespace
     )
+  }
+
+  private syncWalletConnectAccounts(chainNamespace: ChainNamespace) {
+    const addresses = this.universalProvider?.session?.namespaces?.[chainNamespace]?.accounts
+      ?.map(account => {
+        const [, , address] = account.split(':')
+
+        return address
+      })
+      .filter((address, index, self) => self.indexOf(address) === index) as string[]
+
+    if (addresses) {
+      this.setAllAccounts(
+        addresses.map(address => ({ address, type: 'eoa' })),
+        chainNamespace
+      )
+    }
   }
 
   private syncProvider({
@@ -1318,6 +1499,7 @@ export class AppKit {
         }
       })
     )
+    this.listenWalletConnect()
   }
 
   private setDefaultNetwork() {

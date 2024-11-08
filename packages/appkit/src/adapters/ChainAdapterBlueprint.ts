@@ -1,11 +1,24 @@
-import type { CaipAddress, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import {
+  getW3mThemeVariables,
+  type CaipAddress,
+  type CaipNetwork,
+  type ChainNamespace
+} from '@reown/appkit-common'
 import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
-import type { Connector as AppKitConnector, Tokens } from '@reown/appkit-core'
+import {
+  OptionsController,
+  ThemeController,
+  type Connector as AppKitConnector,
+  type AuthConnector,
+  type Metadata,
+  type Tokens
+} from '@reown/appkit-core'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { AppKitOptions } from '../utils/index.js'
 import type { AppKit } from '../client.js'
+import { snapshot } from 'valtio'
 
 type EventName = 'disconnect' | 'accountChanged' | 'switchNetwork'
 type EventData = {
@@ -105,6 +118,27 @@ export abstract class AdapterBlueprint<
    * @param {...Connector} connectors - The connectors to add
    */
   protected addConnector(...connectors: Connector[]) {
+    if (connectors.some(connector => connector.id === 'w3mAuth')) {
+      const authConnector = connectors.find(
+        connector => connector.id === 'w3mAuth'
+      ) as AuthConnector
+
+      const optionsState = snapshot(OptionsController.state)
+      const themeMode = ThemeController.getSnapshot().themeMode
+      const themeVariables = ThemeController.getSnapshot().themeVariables
+
+      authConnector?.provider?.syncDappData?.({
+        metadata: optionsState.metadata as Metadata,
+        sdkVersion: optionsState.sdkVersion,
+        projectId: optionsState.projectId,
+        sdkType: optionsState.sdkType
+      })
+      authConnector.provider.syncTheme({
+        themeMode,
+        themeVariables,
+        w3mThemeVariables: getW3mThemeVariables(themeVariables, themeMode)
+      })
+    }
     this.availableConnectors = [
       ...this.availableConnectors.filter(
         existing => !connectors.some(newConnector => newConnector.id === existing.id)

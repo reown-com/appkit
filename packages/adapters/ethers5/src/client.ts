@@ -375,6 +375,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
     switch (params.providerType) {
       case 'WALLET_CONNECT':
+        break
       case 'AUTH':
         await params.provider.disconnect()
         break
