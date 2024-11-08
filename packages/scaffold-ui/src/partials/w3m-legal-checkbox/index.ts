@@ -3,8 +3,8 @@ import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 
-@customElement('w3m-legal-footer')
-export class W3mLegalFooter extends LitElement {
+@customElement('w3m-legal-checkbox')
+export class W3mLegalCheckbox extends LitElement {
   public static override styles = [styles]
 
   // -- Render -------------------------------------------- //
@@ -17,17 +17,16 @@ export class W3mLegalFooter extends LitElement {
       return null
     }
 
-    if (legalCheckbox) {
+    if (!legalCheckbox) {
       return null
     }
 
     return html`
-      <wui-flex .padding=${['m', 's', 's', 's'] as const} justifyContent="center">
-        <wui-text color="fg-250" variant="small-400" align="center">
-          By connecting your wallet, you agree to our <br />
-          ${this.termsTemplate()} ${this.andTemplate()} ${this.privacyTemplate()}
+      <wui-checkbox data-testid="wui-checkbox">
+        <wui-text color="fg-250" variant="small-400" align="left">
+          I agree to our ${this.termsTemplate()} ${this.andTemplate()} ${this.privacyTemplate()}
         </wui-text>
-      </wui-flex>
+      </wui-checkbox>
     `
   }
 
@@ -40,25 +39,27 @@ export class W3mLegalFooter extends LitElement {
 
   private termsTemplate() {
     const { termsConditionsUrl } = OptionsController.state
+
     if (!termsConditionsUrl) {
       return null
     }
 
-    return html`<a href=${termsConditionsUrl}>Terms of Service</a>`
+    return html`<a rel="noreferrer" target="_blank" href=${termsConditionsUrl}>terms of service</a>`
   }
 
   private privacyTemplate() {
     const { privacyPolicyUrl } = OptionsController.state
+
     if (!privacyPolicyUrl) {
       return null
     }
 
-    return html`<a href=${privacyPolicyUrl}>Privacy Policy</a>`
+    return html`<a rel="noreferrer" target="_blank" href=${privacyPolicyUrl}>privacy policy</a>`
   }
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-legal-footer': W3mLegalFooter
+    'w3m-legal-checkbox': W3mLegalCheckbox
   }
 }
