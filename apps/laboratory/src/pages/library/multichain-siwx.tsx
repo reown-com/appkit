@@ -8,7 +8,7 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsEthersSolana } from '../../components/MultiChainTestsEthersSolana'
 import { mainnet } from '@reown/appkit/networks'
-import { DefaultSIWX } from '@reown/appkit-siwx'
+import { CloudAuth, DefaultSIWX } from '@reown/appkit-siwx'
 
 const networks = ConstantsUtil.AllNetworks
 
@@ -28,7 +28,9 @@ const modal = createAppKit({
   },
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy',
-  siwx: new DefaultSIWX()
+  siwx: new DefaultSIWX({
+    storage: new CloudAuth()
+  })
 })
 
 ThemeStore.setModal(modal)
