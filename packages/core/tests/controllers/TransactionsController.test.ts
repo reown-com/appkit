@@ -29,7 +29,7 @@ describe('TransactionsController', () => {
     expect(TransactionsController.state).toEqual(defaultState)
   })
 
-  it('should fetch onramp transactions and group them appropiately', async () => {
+  it('should fetch onramp transactions and group them appropriately', async () => {
     const accountAddress = ONRAMP_TRANSACTIONS_RESPONSES_JAN.SUCCESS.metadata.sentTo
 
     const response = {

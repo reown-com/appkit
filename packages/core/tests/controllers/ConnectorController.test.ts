@@ -178,7 +178,7 @@ describe('ConnectorController', () => {
     })
   })
 
-  it('getAuthConnector() should return appropiate authconnector when already added', () => {
+  it('getAuthConnector() should return appropriate authconnector when already added', () => {
     const connector = ConnectorController.getAuthConnector()
     expect(connector).toEqual(evmAuthConnector)
   })
