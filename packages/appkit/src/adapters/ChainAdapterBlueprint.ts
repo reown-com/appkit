@@ -313,6 +313,15 @@ export abstract class AdapterBlueprint<
   public abstract formatUnits(
     params: AdapterBlueprint.FormatUnitsParams
   ): AdapterBlueprint.FormatUnitsResult
+
+  /**
+   * Gets the WalletConnect provider.
+   * @param {AdapterBlueprint.GetWalletConnectProviderParams} params - Parameters including provider, caip networks, and active caip network
+   * @returns {AdapterBlueprint.GetWalletConnectProviderResult} The WalletConnect provider
+   */
+  public abstract getWalletConnectProvider(
+    params: AdapterBlueprint.GetWalletConnectProviderParams
+  ): AdapterBlueprint.GetWalletConnectProviderResult
 }
 
 export namespace AdapterBlueprint {
@@ -357,6 +366,7 @@ export namespace AdapterBlueprint {
   export type SyncConnectionParams = {
     id: string
     namespace: ChainNamespace
+    chainId?: number | string
     rpcUrl: string
   }
 
@@ -412,6 +422,14 @@ export namespace AdapterBlueprint {
   }
 
   export type FormatUnitsResult = string
+
+  export type GetWalletConnectProviderParams = {
+    provider: AppKitConnector['provider']
+    caipNetworks: CaipNetwork[]
+    activeCaipNetwork: CaipNetwork
+  }
+
+  export type GetWalletConnectProviderResult = AppKitConnector['provider']
 
   export type SendTransactionParams = {
     address: `0x${string}`

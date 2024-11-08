@@ -134,4 +134,12 @@ export class UniversalAdapter extends AdapterBlueprint {
     }
     provider.setDefaultChain(`${caipNetwork.chainNamespace}:${String(caipNetwork.id)}`)
   }
+
+  public getWalletConnectProvider() {
+    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
+
+    const provider = connector?.provider as UniversalProvider
+
+    return provider
+  }
 }

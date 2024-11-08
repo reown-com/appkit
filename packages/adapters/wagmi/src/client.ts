@@ -124,7 +124,7 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   private setupWatchers() {
     watchAccount(this.wagmiConfig, {
-      onChange: accountData => {
+      onChange: async accountData => {
         if (accountData.address) {
           this.emit('accountChanged', {
             address: accountData.address,
@@ -352,14 +352,14 @@ export class WagmiAdapter extends AdapterBlueprint {
   public async syncConnection(
     params: AdapterBlueprint.SyncConnectionParams
   ): Promise<AdapterBlueprint.ConnectResult> {
-    const { id } = params
+    const { id, chainId } = params
     const connections = getConnections(this.wagmiConfig)
     const connection = connections.find(c => c.connector.id === id)
     const connector = this.wagmiConfig.connectors.find(c => c.id === id)
     const provider = (await connector?.getProvider()) as Provider
 
     return {
-      chainId: connection?.chainId ?? 1,
+      chainId: Number(chainId),
       address: connection?.accounts[0] as string,
       provider,
       type: connection?.connector.type as ConnectorType,
@@ -454,6 +454,12 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     return { profileName: undefined, profileImage: undefined }
+  }
+
+  public getWalletConnectProvider(): AdapterBlueprint.GetWalletConnectProviderResult {
+    return this.wagmiConfig.connectors.find(c => c.type === 'walletConnect')?.[
+      'provider'
+    ] as UniversalProvider
   }
 
   public async disconnect() {

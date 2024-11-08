@@ -217,9 +217,6 @@ sampleWalletTest('it should connect and disconnect using hook', async () => {
 })
 
 sampleWalletTest('it should disconnect and close modal when connecting from wallet', async () => {
-  await modalPage.qrCodeFlow(modalPage, walletPage)
-  await modalValidator.expectConnected()
-  await modalPage.openModal()
   await walletPage.disconnectConnection()
   await walletValidator.expectSessionCard({ visible: false })
   await modalValidator.expectModalNotVisible()
@@ -227,6 +224,7 @@ sampleWalletTest('it should disconnect and close modal when connecting from wall
 })
 
 sampleWalletTest('it should display wallet guide and show explore option', async ({ library }) => {
+  await modalPage.disconnect()
   await modalPage.openConnectModal()
   await modalValidator.expectWalletGuide(library, 'get-started')
   await modalPage.clickWalletGuideGetStarted()
@@ -235,8 +233,6 @@ sampleWalletTest('it should display wallet guide and show explore option', async
 })
 
 sampleWalletTest('it should disconnect as expected', async () => {
-  await modalPage.qrCodeFlow(modalPage, walletPage)
-  await modalValidator.expectConnected()
   await modalPage.disconnect()
   await modalValidator.expectDisconnected()
 })

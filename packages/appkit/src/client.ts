@@ -777,14 +777,15 @@ export class AppKit {
 
         await this.syncWalletConnectAccount()
       },
-      connectExternal: async ({ id, info, type, provider, chainId }) => {
+      connectExternal: async ({ id, info, type, provider }) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+
         const res = await adapter?.connect({
           id,
           info,
           type,
           provider,
-          chainId,
+          chainId: this.getCaipNetwork()?.id,
           rpcUrl: this.getCaipNetwork()?.rpcUrls?.default?.http?.[0]
         })
 
@@ -1168,6 +1169,7 @@ export class AppKit {
   }
 
   private async syncWalletConnectAccount() {
+    const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
     this.chainNamespaces.forEach(async chainNamespace => {
       const caipAddress = this.universalProvider?.session?.namespaces?.[chainNamespace]
         ?.accounts[0] as CaipAddress
@@ -1177,7 +1179,22 @@ export class AppKit {
           chainNamespace,
           UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT as ConnectorType
         )
-        ProviderUtil.setProvider(chainNamespace, this.universalProvider)
+
+        if (
+          this.caipNetworks &&
+          ChainController.state.activeCaipNetwork &&
+          (adapter as ChainAdapter)?.adapterType === 'solana'
+        ) {
+          const provider = adapter?.getWalletConnectProvider({
+            caipNetworks: this.caipNetworks,
+            provider: this.universalProvider,
+            activeCaipNetwork: ChainController.state.activeCaipNetwork
+          })
+          ProviderUtil.setProvider(chainNamespace, provider)
+        } else {
+          ProviderUtil.setProvider(chainNamespace, this.universalProvider)
+        }
+
         StorageUtil.setConnectedConnector(
           UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT as ConnectorType
         )
@@ -1356,6 +1373,12 @@ export class AppKit {
       connectedConnector === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT &&
       connectedNamespace
     ) {
+      const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+      adapter?.connect({
+        id: 'walletConnect',
+        type: 'WALLET_CONNECT',
+        chainId: ChainController.state.activeCaipNetwork?.id as string | number
+      })
       this.syncWalletConnectAccount()
     } else if (
       connectedConnector &&
@@ -1365,6 +1388,7 @@ export class AppKit {
       const adapter = this.getAdapter(connectedNamespace as ChainNamespace)
       const res = await adapter?.syncConnection({
         id: connectedConnector,
+        chainId: this.getCaipNetwork()?.id,
         namespace: connectedNamespace as ChainNamespace,
         rpcUrl: this.getCaipNetwork()?.rpcUrls?.default?.http?.[0] as string
       })

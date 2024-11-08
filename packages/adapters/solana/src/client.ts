@@ -31,6 +31,7 @@ import { createSendTransaction } from './utils/createSendTransaction.js'
 import type { WalletStandardProvider } from './providers/WalletStandardProvider.js'
 import { handleMobileWalletRedirection } from './utils/handleMobileWalletRedirection.js'
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
+import { WalletConnectProvider } from './providers/WalletConnectProvider.js'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
@@ -65,7 +66,7 @@ export class SolanaAdapter extends AdapterBlueprint {
 
   public syncConnectors(options: AppKitOptions, appKit: AppKit) {
     if (!options.projectId) {
-      throw new Error('projectId is required')
+      AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
     }
 
     // Initialize Auth Provider if email/socials enabled
@@ -307,12 +308,13 @@ export class SolanaAdapter extends AdapterBlueprint {
   public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
     const { caipNetwork, provider, providerType } = params
 
-    if (providerType === 'AUTH') {
+    if (providerType === 'w3mAuth') {
       await (provider as unknown as W3mFrameProvider).switchNetwork(caipNetwork.id)
       const user = await (provider as unknown as W3mFrameProvider).getUser({
         chainId: caipNetwork.id
       })
       this.authSession = user
+      this.emit('switchNetwork', { chainId: caipNetwork.id, address: user.address })
     }
 
     if (caipNetwork?.rpcUrls?.default?.http?.[0]) {
@@ -438,5 +440,17 @@ export class SolanaAdapter extends AdapterBlueprint {
       type: connector?.type as ConnectorType,
       id
     }
+  }
+
+  public getWalletConnectProvider(
+    params: AdapterBlueprint.GetWalletConnectProviderParams
+  ): AdapterBlueprint.GetWalletConnectProviderResult {
+    const walletConnectProvider = new WalletConnectProvider({
+      provider: params.provider as UniversalProvider,
+      chains: params.caipNetworks,
+      getActiveChain: () => params.activeCaipNetwork
+    })
+
+    return walletConnectProvider as unknown as UniversalProvider
   }
 }

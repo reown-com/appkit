@@ -212,10 +212,10 @@ export class Ethers5Adapter extends AdapterBlueprint {
   public async syncConnection(
     params: AdapterBlueprint.SyncConnectionParams
   ): Promise<AdapterBlueprint.ConnectResult> {
-    const { id, namespace } = params
+    const { id, chainId } = params
+
     const connector = this.connectors.find(c => c.id === id)
     const selectedProvider = connector?.provider as Provider
-    const chainId = Number(namespace?.split(':')[1])
 
     if (!selectedProvider) {
       throw new Error('Provider not found')
@@ -237,7 +237,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
     return {
       address: accounts[0],
-      chainId: chainId || 0,
+      chainId: Number(chainId),
       provider: selectedProvider,
       type: connector.type,
       id
@@ -375,7 +375,6 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
     switch (params.providerType) {
       case 'WALLET_CONNECT':
-        break
       case 'AUTH':
         await params.provider.disconnect()
         break
@@ -502,6 +501,10 @@ export class Ethers5Adapter extends AdapterBlueprint {
         }
       }
     }
+  }
+
+  public getWalletConnectProvider(): AdapterBlueprint.GetWalletConnectProviderResult {
+    return this.connectors.find(c => c.type === 'WALLET_CONNECT')?.provider as UniversalProvider
   }
 
   private async revokeProviderPermissions(provider: Provider | CombinedProvider) {
