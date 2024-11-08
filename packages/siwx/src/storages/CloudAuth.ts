@@ -1,12 +1,18 @@
-import { ApiController, type SIWXMessage, type SIWXSession } from '@reown/appkit-core'
+import {
+  ApiController,
+  BlockchainApiController,
+  type SIWXMessage,
+  type SIWXSession
+} from '@reown/appkit-core'
 import type { SIWXStorage } from '../core/SIWXStorage.js'
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil, type CaipNetworkId } from '@reown/appkit-common'
 
 export class CloudAuth implements SIWXStorage {
   add(session: SIWXSession): Promise<void> {
     return this.request('authenticate', {
       message: session.message,
-      signature: session.signature
+      signature: session.signature,
+      clientId: BlockchainApiController.state.clientId
     })
   }
 
@@ -14,12 +20,12 @@ export class CloudAuth implements SIWXStorage {
     return this.request('sign-out', undefined)
   }
 
-  async get(chainId: string): Promise<SIWXSession[]> {
+  async get(chainId: CaipNetworkId, address: string): Promise<SIWXSession[]> {
     try {
       const siweSession = await this.request('me', undefined)
       const siweCaipNetworkId = `eip155:${siweSession?.chainId}`
 
-      if (!siweSession || siweCaipNetworkId !== chainId) {
+      if (!siweSession || siweCaipNetworkId !== chainId || siweSession.address !== address) {
         return []
       }
 
