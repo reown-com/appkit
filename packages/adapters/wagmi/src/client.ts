@@ -939,6 +939,8 @@ export class WagmiAdapter implements ChainAdapter {
       // Auth connector is initialized separately
       const shouldSkip = ConstantsUtil.AUTH_CONNECTOR_ID === id
       if (!shouldSkip) {
+        const injectedConnector = id === ConstantsUtil.INJECTED_CONNECTOR_ID
+
         w3mConnectors.push({
           id,
           explorerId: PresetsUtil.ConnectorExplorerIds[id],
@@ -946,9 +948,7 @@ export class WagmiAdapter implements ChainAdapter {
           name: PresetsUtil.ConnectorNamesMap[id] ?? name,
           imageId: PresetsUtil.ConnectorImageIds[id],
           type: PresetsUtil.ConnectorTypesMap[type] ?? 'EXTERNAL',
-          info: {
-            rdns: id
-          },
+          info: injectedConnector ? undefined : { rdns: id },
           chain: this.chainNamespace
         })
       }

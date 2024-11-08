@@ -481,6 +481,20 @@ describe('Wagmi Client', () => {
         mockAuthConnector
       )
     })
+
+    it('should not set info property for injected connector', () => {
+      const mockConnectors = [
+        { id: 'injected', name: 'Injected Connector', type: 'injected', info: { rdns: 'injected' } }
+      ]
+
+      ;(mockWagmiClient as any).syncConnectors(mockConnectors)
+
+      const setConnectorsCalls = (mockAppKit.setConnectors as any).mock.calls
+      const syncedConnectors = setConnectorsCalls[0][0]
+      const injectedConnector = syncedConnectors.filter((c: any) => c.id === 'injected')[0]
+
+      expect(injectedConnector.info).toBeUndefined()
+    })
   })
   describe('Wagmi Client - Listen Auth Connector', () => {
     let mockProvider: any
