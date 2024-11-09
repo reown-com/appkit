@@ -6,6 +6,7 @@ import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-logo/index.js'
 import styles from './styles.js'
 import type { LogoType } from '../../utils/TypeUtil.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('wui-list-social')
 export class WuiListSocial extends LitElement {
@@ -18,12 +19,14 @@ export class WuiListSocial extends LitElement {
 
   @property() public align: 'left' | 'center' = 'left'
 
+  @property() public tabIdx?: boolean
+
   @property({ type: Boolean }) public disabled = false
 
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.disabled} ontouchstart>
+      <button ?disabled=${this.disabled} tabindex=${ifDefined(this.tabIdx)} ontouchstart>
         <wui-logo logo=${this.logo}></wui-logo>
         <wui-text
           data-align=${this.align}

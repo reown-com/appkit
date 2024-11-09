@@ -25,7 +25,7 @@ const cases: Case[] = [
   {
     reason: 'invalid session with an invalid account address',
     session: mockSession({
-      message: {
+      data: {
         accountAddress: '0x1234567890abcdef1234567890abcdef12345678'
       }
     }),
@@ -44,7 +44,7 @@ describe('EIP155Verifier', () => {
     expect(
       verifier.shouldVerify(
         mockSession({
-          message: {
+          data: {
             chainId: 'eip155:1'
           }
         })
@@ -54,7 +54,7 @@ describe('EIP155Verifier', () => {
     expect(
       verifier.shouldVerify(
         mockSession({
-          message: {
+          data: {
             chainId: 'solana:mainnet'
           }
         })
