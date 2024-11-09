@@ -254,7 +254,7 @@ export const ApiController = {
     EventsController.sendEvent({
       type: 'track',
       event: 'SEARCH_WALLET',
-      properties: { badge: badge ?? 'none', search: search ?? '' }
+      properties: { badge: badge ?? '', search: search ?? '' }
     })
     const images = data.map(w => w.image_id).filter(Boolean)
     await Promise.allSettled([

@@ -739,7 +739,7 @@ export type Event =
       type: 'track'
       event: 'SEARCH_WALLET'
       properties: {
-        badge: BadgeType
+        badge: string
         search: string
       }
     }
