@@ -21,4 +21,4 @@
 '@reown/appkit-wallet': patch
 ---
 
-Added walletconnect certified badge in al wallets view.
+Added walletconnect certified badge in all wallets view.
