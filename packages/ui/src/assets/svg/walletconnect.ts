@@ -27,5 +27,10 @@ export const walletConnectLightBrownSvg = svg`
 `
 
 export const walletConnectBrownSvg = svg`
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"><circle cx="11" cy="11" r="11" fill="#202020" transform="matrix(-1 0 0 1 23 1)"/><circle cx="11" cy="11" r="11.5" stroke="#C7B994" stroke-opacity=".7" transform="matrix(-1 0 0 1 23 1)"/><path fill="#C7B994" d="m15.452 11.069 1.295-1.287c-2.927-2.909-6.563-2.909-9.49 0l1.295 1.287c2.226-2.213 4.676-2.213 6.902 0z"/><path fill="#C7B994" d="M15.02 14.067 12 11.066l-3.02 3.001-3.02-3.001-1.293 1.285L8.98 16.64 12 13.638l3.02 3.001 4.313-4.288-1.293-1.285z"/></svg>
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="11" cy="11" r="11" transform="matrix(-1 0 0 1 23 1)" fill="#202020"/>
+<circle cx="11" cy="11" r="11.5" transform="matrix(-1 0 0 1 23 1)" stroke="#C7B994" stroke-opacity="0.7"/>
+<path d="M15.4523 11.0686L16.7472 9.78167C13.8205 6.87297 10.1838 6.87297 7.25708 9.78167L8.55201 11.0686C10.7779 8.85645 13.2279 8.85645 15.4538 11.0686H15.4523Z" fill="#C7B994"/>
+<path d="M15.0199 14.067L12 11.0656L8.98 14.067L5.96004 11.0656L4.66663 12.3511L8.98 16.6393L12 13.638L15.0199 16.6393L19.3333 12.3511L18.0399 11.0656L15.0199 14.067Z" fill="#C7B994"/>
+</svg>
 `
