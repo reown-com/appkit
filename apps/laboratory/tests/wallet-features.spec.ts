@@ -116,11 +116,11 @@ walletFeaturesTest('it should search for a certified wallet', async () => {
   await validator.expectAllWalletsListSearchItem(SAMPLE_WALLET_ID)
 
   // Try searching for a certified wallet while toggle is on
-  await page.search('sample')
+  await page.search('SampleW')
   await validator.expectAllWalletsListSearchItem(SAMPLE_WALLET_ID)
 
   // Try searching for a certified wallet while toggle is off
   await page.clickCertifiedToggle()
-  await page.search('sample')
+  await page.search('SampleW')
   await validator.expectAllWalletsListSearchItem(SAMPLE_WALLET_ID)
 })
