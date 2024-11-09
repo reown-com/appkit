@@ -21,4 +21,4 @@
 '@reown/appkit-wallet': patch
 ---
 
-Added certified filtering feature to all wallets view.
+Added walletconnect certified badge in al wallets view.
