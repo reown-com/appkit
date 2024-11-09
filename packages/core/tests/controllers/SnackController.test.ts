@@ -7,7 +7,7 @@ describe('SnackController', () => {
     expect(SnackController.state).toEqual({
       message: '',
       variant: 'success',
-      icon: undefined,
+      svg: undefined,
       open: false
     })
   })
@@ -17,7 +17,7 @@ describe('SnackController', () => {
     expect(SnackController.state).toEqual({
       message: 'Success Msg',
       variant: 'success',
-      icon: undefined,
+      svg: undefined,
       open: true
     })
   })
@@ -27,7 +27,7 @@ describe('SnackController', () => {
     expect(SnackController.state).toEqual({
       message: 'Success Msg',
       variant: 'success',
-      icon: undefined,
+      svg: undefined,
       open: false
     })
   })
@@ -37,7 +37,7 @@ describe('SnackController', () => {
     expect(SnackController.state).toEqual({
       message: 'Error Msg',
       variant: 'error',
-      icon: undefined,
+      svg: undefined,
       open: true
     })
   })
