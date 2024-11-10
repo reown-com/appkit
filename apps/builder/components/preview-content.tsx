@@ -1,19 +1,8 @@
 'use client'
 
 import * as React from 'react'
-import {
-  Sun,
-  Moon,
-  MonitorSmartphone,
-  Smartphone,
-  RefreshCcw,
-  ArrowRightCircle,
-  ArrowLeftCircle,
-  Share2,
-  Settings
-} from 'lucide-react'
+import { Sun, Moon, RefreshCcw, Share2, Settings } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAppKit } from '@/contexts/AppKitContext'
 import { toast } from 'sonner'
 
@@ -43,14 +32,8 @@ export function PreviewContent() {
       </div>
 
       <div className="w-[400px] mx-auto flex-grow flex items-center justify-center">
-        <wui-flex style={{ width: '100%' }}>
-          <wui-card role="alertdialog" aria-modal="true" style={{ width: '100%' }}>
-            <w3m-header></w3m-header>
-            <w3m-router></w3m-router>
-            <w3m-snackbar></w3m-snackbar>
-          </wui-card>
-        </wui-flex>
-        <w3m-tooltip></w3m-tooltip>
+        {/* @ts-ignore */}
+        <w3m-modal style={{ positive: 'relative' }} embedded={true} class="embedded"></w3m-modal>
       </div>
 
       <div className="flex justify-center gap-2 mt-6">
