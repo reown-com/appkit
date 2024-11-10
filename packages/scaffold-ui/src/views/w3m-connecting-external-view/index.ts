@@ -3,7 +3,7 @@ import {
   ChainController,
   ConnectionController,
   EventsController,
-  ModalController
+  RouterController
 } from '@reown/appkit-core'
 import { ConstantsUtil } from '@reown/appkit-utils'
 import { customElement } from '@reown/appkit-ui'
@@ -34,7 +34,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
     this.externalViewUnsubscribe.push(
       ChainController.subscribeKey('activeCaipAddress', val => {
         if (val) {
-          ModalController.close()
+          RouterController.replace('Account')
         }
       })
     )
@@ -56,6 +56,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
          */
         if (this.connector.id !== ConstantsUtil.COINBASE_SDK_CONNECTOR_ID || !this.error) {
           await ConnectionController.connectExternal(this.connector, this.connector.chain)
+          console.log('>>> connecting dude2')
 
           EventsController.sendEvent({
             type: 'track',
