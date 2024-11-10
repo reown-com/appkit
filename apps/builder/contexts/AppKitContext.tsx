@@ -66,7 +66,9 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
   const updateSocials = (enabled: boolean) => {
     if (enabled && !Array.isArray(features.socials)) {
       // Set initial social options when enabling
-      updateFeatures({ socials: ['google', 'github'] })
+      updateFeatures({
+        socials: ['apple', 'google', 'x', 'github', 'farcaster', 'discord', 'facebook']
+      })
     } else if (!enabled) {
       updateFeatures({ socials: false })
     }

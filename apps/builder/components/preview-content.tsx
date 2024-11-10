@@ -32,18 +32,7 @@ export function PreviewContent() {
   return (
     <>
       <div className="flex justify-between mb-6">
-        <Tabs defaultValue="desktop">
-          <TabsList className="mb-4 bg-muted">
-            <TabsTrigger value="desktop">
-              <MonitorSmartphone size={16} className="mr-2" />
-              Desktop
-            </TabsTrigger>
-            <TabsTrigger value="mobile">
-              <Smartphone size={16} className="mr-2" />
-              Mobile
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <div />
         <Button
           variant="default"
           size="icon"
@@ -65,23 +54,17 @@ export function PreviewContent() {
       </div>
 
       <div className="flex justify-center gap-2 mt-6">
-        <Button variant="default" onClick={handleShare}>
+        <Button variant="outline" onClick={handleShare}>
           <Share2 size={16} className="mr-2" />
           Share
         </Button>
-        <Button variant="default">
+        <Button variant="outline">
           <RefreshCcw size={16} className="mr-2" />
           Reset
         </Button>
-        <Button variant="default" className="flex sm:hidden" onClick={() => setIsDrawerOpen(true)}>
+        <Button variant="outline" className="flex sm:hidden" onClick={() => setIsDrawerOpen(true)}>
           <Settings size={16} className="mr-2" />
           Settings
-        </Button>
-        <Button variant="default">
-          <ArrowLeftCircle size={16} className="mr-2" />
-        </Button>
-        <Button variant="default">
-          <ArrowRightCircle size={16} className="mr-2" />
         </Button>
       </div>
     </>

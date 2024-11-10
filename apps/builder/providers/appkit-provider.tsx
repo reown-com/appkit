@@ -1,10 +1,11 @@
 'use client'
 
 import { ReactNode, useEffect, useMemo, useState, createContext } from 'react'
-import { createAppKit, type AppKit } from '@reown/appkit/react'
+import { createAppKit, ThemeVariables, type AppKit } from '@reown/appkit/react'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { type AppKitNetwork, mainnet, polygon } from '@reown/appkit/networks'
 import { useAppKit } from '../contexts/AppKitContext'
+import { ThemeStore } from '../lib/ThemeStore'
 
 const networks = [mainnet, polygon] as [AppKitNetwork, ...AppKitNetwork[]]
 
@@ -24,14 +25,13 @@ export const AppKitContext = createContext({
 })
 
 export default function AppKitProvider({ children }: AppKitProviderProps) {
-  const { themeMode, themeVariables, features, isLoading } = useAppKit()
+  const { themeMode, features, isLoading } = useAppKit()
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
   useEffect(() => {
     kit?.setThemeMode(themeMode)
-    kit?.setThemeVariables(themeVariables)
     kit?.updateFeatures(features)
-  }, [themeMode, themeVariables, features])
+  }, [themeMode, features])
 
   useEffect(() => {
     if (!isLoading) {
@@ -42,9 +42,15 @@ export default function AppKitProvider({ children }: AppKitProviderProps) {
         projectId: process.env.NEXT_PUBLIC_PROJECT_ID!,
         disableAppend: true,
         features,
-        themeMode,
-        themeVariables
+        themeMode
       })
+      ThemeStore.setModal({
+        setThemeVariables: (variables: ThemeVariables) => {
+          console.log('Setting theme variables:', variables)
+          kit?.setThemeVariables(variables)
+        }
+      })
+      console.log('AppKit initialized with theme:', themeMode)
     }
   }, [isLoading])
 
@@ -52,7 +58,10 @@ export default function AppKitProvider({ children }: AppKitProviderProps) {
     <AppKitContext.Provider
       value={{
         themeMode,
-        setThemeMode: (mode: string) => kit?.setThemeMode(mode),
+        setThemeMode: (mode: string) => {
+          kit?.setThemeMode(mode)
+          console.log('Theme mode updated:', mode)
+        },
         isDrawerOpen,
         setIsDrawerOpen
       }}
