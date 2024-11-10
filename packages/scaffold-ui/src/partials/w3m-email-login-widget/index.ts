@@ -48,7 +48,6 @@ export class W3mEmailLoginWidget extends LitElement {
         this.authConnector = val.find(c => c.type === 'AUTH')
       }),
       OptionsController.subscribeKey('features', val => {
-        console.log('>>> W3mEmailLoginWidget.features', val)
         this.features = val
       })
     )
@@ -68,8 +67,6 @@ export class W3mEmailLoginWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    console.log('>>> W3mEmailLoginWidget.render', this.authConnector, this.features?.email)
-
     if (!this.authConnector || !this.features?.email) {
       return null
     }
@@ -115,15 +112,6 @@ export class W3mEmailLoginWidget extends LitElement {
     const haveSocials = socials && socials.length
 
     const hideSeparator = emailShowWallets || !multipleConnectors || !this.enableWallets
-    console.log(
-      '>>> separator',
-      socials,
-      haveSocials,
-      emailShowWallets,
-      multipleConnectors,
-      this.enableWallets,
-      this.walletGuide
-    )
 
     if (haveSocials && hideSeparator && this.walletGuide === 'get-started') {
       return null

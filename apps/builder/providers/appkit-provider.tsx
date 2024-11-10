@@ -46,11 +46,9 @@ export default function AppKitProvider({ children }: AppKitProviderProps) {
       })
       ThemeStore.setModal({
         setThemeVariables: (variables: ThemeVariables) => {
-          console.log('Setting theme variables:', variables)
           kit?.setThemeVariables(variables)
         }
       })
-      console.log('AppKit initialized with theme:', themeMode)
     }
   }, [isLoading])
 
@@ -58,11 +56,13 @@ export default function AppKitProvider({ children }: AppKitProviderProps) {
     <AppKitContext.Provider
       value={{
         themeMode,
+        // @ts-ignore
         setThemeMode: (mode: string) => {
+          // @ts-ignore
           kit?.setThemeMode(mode)
-          console.log('Theme mode updated:', mode)
         },
         isDrawerOpen,
+        // @ts-ignore
         setIsDrawerOpen
       }}
     >

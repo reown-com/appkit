@@ -151,7 +151,6 @@ export const OptionsController = {
   },
 
   setFeatures(features: OptionsControllerState['features'] | undefined) {
-    console.log('>>> OptionsController.setFeatures', features)
     if (!features) {
       return
     }

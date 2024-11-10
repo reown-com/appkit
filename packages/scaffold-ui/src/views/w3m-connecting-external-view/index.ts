@@ -56,7 +56,6 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
          */
         if (this.connector.id !== ConstantsUtil.COINBASE_SDK_CONNECTOR_ID || !this.error) {
           await ConnectionController.connectExternal(this.connector, this.connector.chain)
-          console.log('>>> connecting dude2')
 
           EventsController.sendEvent({
             type: 'track',
