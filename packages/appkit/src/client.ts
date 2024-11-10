@@ -466,7 +466,6 @@ export class AppKit {
   public updateFeatures(newFeatures: Partial<Features>) {
     const currentFeatures = OptionsController.state.features || {}
     const updatedFeatures = { ...currentFeatures, ...newFeatures }
-    console.log('>>> set features', newFeatures, updatedFeatures)
     OptionsController.setFeatures(updatedFeatures)
   }
 
