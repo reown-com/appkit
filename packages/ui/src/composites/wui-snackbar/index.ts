@@ -23,23 +23,36 @@ export class WuiSnackbar extends LitElement {
 
   @property() public loading = false
 
+  @property() public iconType: 'default' | 'box' = 'default'
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      ${this.loading
-        ? html`<wui-loading-spinner size="md" color="accent-100"></wui-loading-spinner>`
-        : html`<wui-icon-box
-            size="sm"
-            iconSize="xs"
-            iconColor=${this.iconColor}
-            backgroundColor=${this.backgroundColor}
-            icon=${this.icon}
-            background="opaque"
-          ></wui-icon-box>`}
+      ${this.templateIcon()}
       <wui-text variant="paragraph-500" color="fg-100" data-testid="wui-snackbar-message"
         >${this.message}</wui-text
       >
     `
+  }
+
+  // -- Private ------------------------------------------- //
+  private templateIcon() {
+    if (this.loading) {
+      return html`<wui-loading-spinner size="md" color="accent-100"></wui-loading-spinner>`
+    }
+
+    if (this.iconType === 'default') {
+      return html`<wui-icon size="xl" color=${this.iconColor} name=${this.icon}></wui-icon>`
+    }
+
+    return html`<wui-icon-box
+      size="sm"
+      iconSize="xs"
+      iconColor=${this.iconColor}
+      backgroundColor=${this.backgroundColor}
+      icon=${this.icon}
+      background="opaque"
+    ></wui-icon-box>`
   }
 }
 
