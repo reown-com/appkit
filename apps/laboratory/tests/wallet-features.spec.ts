@@ -10,8 +10,7 @@ let context: BrowserContext
 /* eslint-enable init-declarations */
 
 const ABSOLUTE_WALLET_ID = 'bfa6967fd05add7bb2b19a442ac37cedb6a6b854483729194f5d7185272c5594'
-// Only wallet that is certified
-const SAMPLE_WALLET_ID = '92ebfc08f0ac3bc8015a9bf843f9366750d5139b00a166086ad893aeb701acd4'
+const METAMASK_WALLET_ID = 'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96'
 
 // -- Setup --------------------------------------------------------------------
 const walletFeaturesTest = test.extend<{ library: string }>({
@@ -113,14 +112,14 @@ walletFeaturesTest('it should search for a certified wallet', async () => {
   await page.openAllWallets()
   await page.clickCertifiedToggle()
   await page.page.waitForTimeout(500)
-  await validator.expectAllWalletsListSearchItem(SAMPLE_WALLET_ID)
+  await validator.expectAllWalletsListSearchItem(METAMASK_WALLET_ID)
 
   // Try searching for a certified wallet while toggle is on
-  await page.search('SampleW')
-  await validator.expectAllWalletsListSearchItem(SAMPLE_WALLET_ID)
+  await page.search('MetaMask')
+  await validator.expectAllWalletsListSearchItem(METAMASK_WALLET_ID)
 
   // Try searching for a certified wallet while toggle is off
   await page.clickCertifiedToggle()
-  await page.search('SampleW')
-  await validator.expectAllWalletsListSearchItem(SAMPLE_WALLET_ID)
+  await page.search('MetaMask')
+  await validator.expectAllWalletsListSearchItem(METAMASK_WALLET_ID)
 })
