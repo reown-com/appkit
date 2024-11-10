@@ -2,7 +2,14 @@
 
 import * as React from 'react'
 import { DragHandleDots2Icon } from '@radix-ui/react-icons'
-import { MonitorSmartphone } from 'lucide-react'
+import {
+  MonitorSmartphone,
+  MailIcon,
+  XIcon,
+  WalletIcon,
+  CreditCardIcon,
+  RefreshCcwIcon
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -26,7 +33,9 @@ export function SidebarContent() {
     updateFeatures({ socials: newSocials.length ? newSocials : false })
   }
 
-  const toggleFeature = (featureName: 'email' | 'socials' | 'emailShowWallets') => {
+  const toggleFeature = (
+    featureName: 'email' | 'socials' | 'emailShowWallets' | 'swaps' | 'onramp'
+  ) => {
     updateFeatures({ [featureName]: !features[featureName] })
   }
 
@@ -66,7 +75,7 @@ export function SidebarContent() {
               onClick={() => toggleFeature('email')}
             >
               <span className="flex items-center gap-2 text-foreground">
-                <DragHandleDots2Icon
+                <MailIcon
                   className={cn('w-5 h-5', features.email ? 'text-blue-500' : 'text-gray-500')}
                 />
                 Email
@@ -86,13 +95,10 @@ export function SidebarContent() {
               onClick={() => updateSocials(!socialsEnabled)}
             >
               <span className="flex items-center gap-2 text-foreground">
-                <DragHandleDots2Icon
-                  className={cn(
-                    'w-5 h-5',
-                    Array.isArray(features.socials) ? 'text-blue-500' : 'text-gray-500'
-                  )}
+                <XIcon
+                  className={cn('w-5 h-5', features.socials ? 'text-blue-500' : 'text-gray-500')}
                 />
-                Social
+                Socials
               </span>
               <Checkbox
                 className="bg-transparent border border-muted-foreground/10 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:text-xl w-6 h-6 rounded-lg"
@@ -139,10 +145,10 @@ export function SidebarContent() {
               onClick={() => toggleFeature('emailShowWallets')}
             >
               <span className="flex items-center gap-2 text-foreground">
-                <DragHandleDots2Icon
+                <WalletIcon
                   className={cn(
                     'w-5 h-5',
-                    Array.isArray(features.socials) ? 'text-blue-500' : 'text-gray-500'
+                    features.emailShowWallets ? 'text-blue-500' : 'text-gray-500'
                   )}
                 />
                 Show wallets
@@ -156,7 +162,49 @@ export function SidebarContent() {
         )}
 
         {activeTab === 'features' && (
-          <div className="space-y-4 flex-grow">{/* ... existing features content */}</div>
+          <div className="space-y-4 flex-grow">
+            <button
+              className={cn(
+                'flex items-center justify-between rounded-xl p-3 w-full',
+                features.swaps
+                  ? 'bg-foreground/5 dark:bg-foreground/5'
+                  : 'bg-foreground/[2%] dark:bg-foreground/[2%]'
+              )}
+              onClick={() => toggleFeature('swaps')}
+            >
+              <span className="flex items-center gap-2 text-foreground">
+                <RefreshCcwIcon
+                  className={cn('w-5 h-5', features.swaps ? 'text-blue-500' : 'text-gray-500')}
+                />
+                Token Swaps
+              </span>
+              <Checkbox
+                className="bg-transparent border border-muted-foreground/10 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:text-xl w-6 h-6 rounded-lg"
+                checked={features.swaps}
+              />
+            </button>
+
+            <button
+              className={cn(
+                'flex items-center justify-between rounded-xl p-3 w-full',
+                features.onramp
+                  ? 'bg-foreground/5 dark:bg-foreground/5'
+                  : 'bg-foreground/[2%] dark:bg-foreground/[2%]'
+              )}
+              onClick={() => toggleFeature('onramp')}
+            >
+              <span className="flex items-center gap-2 text-foreground">
+                <CreditCardIcon
+                  className={cn('w-5 h-5', features.onramp ? 'text-blue-500' : 'text-gray-500')}
+                />
+                Fiat Onramp
+              </span>
+              <Checkbox
+                className="bg-transparent border border-muted-foreground/10 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:text-xl w-6 h-6 rounded-lg"
+                checked={features.onramp}
+              />
+            </button>
+          </div>
         )}
 
         {activeTab === 'other' && (
