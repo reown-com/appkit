@@ -936,15 +936,15 @@ export class AppKit {
           const providerType =
             ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
           await adapter?.switchNetwork({ caipNetwork, provider, providerType })
-          if (AccountController.state.address) {
-            await this.syncAccount({
-              address: AccountController.state.address,
-              chainId: ChainController.state.activeCaipNetwork?.id as string | number,
-              chainNamespace: caipNetwork.chainNamespace
-            })
-          }
+          this.setCaipNetwork(caipNetwork)
+          await this.syncAccount({
+            address: AccountController.state.address,
+            chainId: ChainController.state.activeCaipNetwork?.id as string | number,
+            chainNamespace: caipNetwork.chainNamespace
+          })
+        } else {
+          this.setCaipNetwork(caipNetwork)
         }
-        this.setCaipNetwork(caipNetwork)
       },
       // eslint-disable-next-line @typescript-eslint/require-await
       getApprovedCaipNetworksData: async () => {
