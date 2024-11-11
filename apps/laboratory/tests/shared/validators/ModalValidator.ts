@@ -145,6 +145,11 @@ export class ModalValidator {
     expect(queryParameters[key]).toBe(value)
   }
 
+  async expectAllWalletsListSearchItem(id: string) {
+    const allWalletsListSearchItem = this.page.getByTestId(`wallet-search-item-${id}`)
+    await expect(allWalletsListSearchItem).toBeVisible()
+  }
+
   async expectNoSocials() {
     const socialList = this.page.getByTestId('wui-list-social')
     await expect(socialList).toBeHidden()
@@ -329,5 +334,15 @@ export class ModalValidator {
     await expect(this.page.getByTestId('wui-snackbar-message')).toHaveText(message, {
       timeout: MAX_WAIT
     })
+  }
+
+  async expectConnectViewToBeDisabled() {
+    const connectDisabled = this.page.locator('.connect.disabled')
+    await expect(connectDisabled).toBeVisible()
+  }
+
+  async expectConnectViewNotToBeDisabled() {
+    const connectDisabled = this.page.locator('.connect.disabled')
+    await expect(connectDisabled).not.toBeVisible()
   }
 }

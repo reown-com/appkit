@@ -441,6 +441,12 @@ export class ModalPage {
     await allWalletsListSearchItem.click()
   }
 
+  async clickCertifiedToggle() {
+    const certifiedSwitch = this.page.getByTestId('wui-certified-switch')
+    await expect(certifiedSwitch).toBeVisible()
+    await certifiedSwitch.click()
+  }
+
   async clickTabWebApp() {
     const tabWebApp = this.page.getByTestId('tab-webapp')
     await expect(tabWebApp).toBeVisible()
@@ -570,5 +576,18 @@ export class ModalPage {
 
   async switchNetworkWithHook() {
     await this.page.getByTestId('switch-network-hook-button').click()
+  }
+
+  async clickLegalCheckbox() {
+    const legalCheckbox = this.page.getByTestId('w3m-legal-checkbox')
+    await expect(legalCheckbox).toBeVisible()
+    const boundingBox = await legalCheckbox.boundingBox()
+    if (!boundingBox) {
+      throw new Error('Legal checkbox bounding box not found')
+    }
+    const x = boundingBox.x + boundingBox.width / 2 - 100
+    const y = boundingBox.y + boundingBox.height / 2
+    // Click on the left side of the checkbox to avoid clicking on links
+    await this.page.mouse.click(x, y)
   }
 }

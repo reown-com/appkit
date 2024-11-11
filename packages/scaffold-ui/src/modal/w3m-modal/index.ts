@@ -2,6 +2,7 @@ import {
   AccountController,
   ApiController,
   ChainController,
+  ConnectionController,
   CoreHelperUtil,
   EventsController,
   ModalController,
@@ -208,6 +209,8 @@ export class W3mModal extends LitElement {
     const isSameAddress = prevConnected === nextConnected
 
     this.caipAddress = caipAddress
+
+    await ConnectionController.initializeSWIXIfAvailable()
 
     if (nextConnected && !isSameAddress && this.isSiweEnabled) {
       try {

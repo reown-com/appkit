@@ -186,7 +186,9 @@ export class AppKit {
     AccountController.subscribe(updateVal)
   }
 
-  public subscribeNetwork(callback: (newState: UseAppKitNetworkReturn) => void) {
+  public subscribeNetwork(
+    callback: (newState: Omit<UseAppKitNetworkReturn, 'switchNetwork'>) => void
+  ) {
     return ChainController.subscribe(({ activeCaipNetwork }) => {
       callback({
         caipNetwork: activeCaipNetwork,

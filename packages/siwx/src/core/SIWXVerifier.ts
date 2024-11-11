@@ -5,7 +5,7 @@ export abstract class SIWXVerifier {
   public abstract readonly chainNamespace: ChainNamespace
 
   public shouldVerify(session: SIWXSession): boolean {
-    return session.message.chainId.startsWith(this.chainNamespace)
+    return session.data.chainId.startsWith(this.chainNamespace)
   }
 
   abstract verify(session: SIWXSession): Promise<boolean>

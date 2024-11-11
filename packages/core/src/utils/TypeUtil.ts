@@ -8,7 +8,8 @@ import type {
   CaipAddress,
   AdapterType,
   SdkFramework,
-  AppKitSdkVersion
+  AppKitSdkVersion,
+  AppKitNetwork
 } from '@reown/appkit-common'
 import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
 import type { AccountControllerState } from '../controllers/AccountController.js'
@@ -108,6 +109,7 @@ export type Metadata = {
 export interface WcWallet {
   id: string
   name: string
+  badge_type?: BadgeType
   homepage?: string
   image_id?: string
   image_url?: string
@@ -132,6 +134,7 @@ export interface ApiGetWalletsRequest {
   chains: string
   entries: number
   search?: string
+  badge?: BadgeType
   include?: string[]
   exclude?: string[]
 }
@@ -630,6 +633,7 @@ export type Event =
         swapToToken: string
         swapFromAmount: string
         swapToAmount: string
+        message: string
       }
     }
   | {
@@ -731,6 +735,14 @@ export type Event =
         uri: string
         mobile_link: string
         name: string
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SEARCH_WALLET'
+      properties: {
+        badge: string
+        search: string
       }
     }
 // Onramp Types
@@ -973,6 +985,11 @@ export type Features = {
    * @type {boolean}
    */
   smartSessions?: boolean
+  /**
+   * Enable or disable the terms of service and/or privacy policy checkbox.
+   * @default false
+   */
+  legalCheckbox?: boolean
 }
 
 export type FeaturesKeys = keyof Features
@@ -990,4 +1007,7 @@ export type UseAppKitNetworkReturn = {
   caipNetwork: CaipNetwork | undefined
   chainId: number | string | undefined
   caipNetworkId: CaipNetworkId | undefined
+  switchNetwork: (network: AppKitNetwork) => void
 }
+
+export type BadgeType = 'none' | 'certified'

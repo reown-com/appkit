@@ -13,6 +13,7 @@ import type { Ref } from 'lit/directives/ref.js'
 import styles from './styles.js'
 import { SnackController, RouterController, EventsController } from '@reown/appkit-core'
 import { ConstantsUtil } from '@reown/appkit-common'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-email-login-widget')
 export class W3mEmailLoginWidget extends LitElement {
@@ -24,6 +25,8 @@ export class W3mEmailLoginWidget extends LitElement {
   private formRef: Ref<HTMLFormElement> = createRef()
 
   // -- State & Properties -------------------------------- //
+  @property() public tabIdx?: number
+
   @state() private connectors = ConnectorController.state.connectors
 
   @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
@@ -77,14 +80,14 @@ export class W3mEmailLoginWidget extends LitElement {
           @focus=${this.onFocusEvent.bind(this)}
           .disabled=${this.loading}
           @inputChange=${this.onEmailInputChange.bind(this)}
-          .errorMessage=${this.error}
+          tabIdx=${ifDefined(this.tabIdx)}
         >
         </wui-email-input>
 
         ${this.submitButtonTemplate()}${this.loadingTemplate()}
         <input type="submit" hidden />
       </form>
-      ${this.separatorTemplate()}
+      ${this.templateError()} ${this.separatorTemplate()}
     `
   }
 
@@ -134,6 +137,14 @@ export class W3mEmailLoginWidget extends LitElement {
     return this.loading
       ? html`<wui-loading-spinner size="md" color="accent-100"></wui-loading-spinner>`
       : null
+  }
+
+  private templateError() {
+    if (this.error) {
+      return html`<wui-text variant="tiny-500" color="error-100">${this.error}</wui-text>`
+    }
+
+    return null
   }
 
   private onEmailInputChange(event: CustomEvent<string>) {

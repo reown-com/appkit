@@ -25,6 +25,7 @@ import {
 } from '@reown/appkit-common'
 import { ProviderUtil } from '../store/index.js'
 import type { AppKitOptions, AppKitOptionsWithCaipNetworks } from '../utils/TypesUtil.js'
+import bs58 from 'bs58'
 
 type Metadata = {
   name: string
@@ -84,7 +85,7 @@ export class UniversalAdapterClient {
 
   public adapterType: AdapterType = 'universal'
 
-  public reportErrors = true
+  public reportedAlertErrors: Record<string, boolean> = {}
 
   public constructor(options: AppKitOptionsWithCaipNetworks) {
     const { siweConfig, metadata } = options
@@ -149,7 +150,10 @@ export class UniversalAdapterClient {
           const isSiweEnabled = siweConfig?.options?.enabled
           const isProviderSupported = typeof WalletConnectProvider?.authenticate === 'function'
           const isSiweParamsValid = siweParams && Object.keys(siweParams || {}).length > 0
-
+          const clientId = await WalletConnectProvider?.client?.core?.crypto?.getClientId()
+          if (clientId) {
+            this.appKit?.setClientId(clientId)
+          }
           if (
             siweConfig &&
             isSiweEnabled &&
@@ -243,12 +247,35 @@ export class UniversalAdapterClient {
           throw new Error('connectionControllerClient:signMessage - provider is undefined')
         }
 
-        const signature = await provider.request({
-          method: 'personal_sign',
-          params: [message, address]
-        })
+        let signature = ''
 
-        return signature as string
+        if (
+          ChainController.state.activeCaipNetwork?.chainNamespace ===
+          CommonConstantsUtil.CHAIN.SOLANA
+        ) {
+          const response = await provider.request(
+            {
+              method: 'solana_signMessage',
+              params: {
+                message: bs58.encode(new TextEncoder().encode(message)),
+                pubkey: address
+              }
+            },
+            ChainController.state.activeCaipNetwork?.caipNetworkId
+          )
+
+          signature = (response as { signature: string }).signature
+        } else {
+          signature = await provider.request(
+            {
+              method: 'personal_sign',
+              params: [message, address]
+            },
+            ChainController.state.activeCaipNetwork?.caipNetworkId
+          )
+        }
+
+        return signature
       },
 
       estimateGas: async () => await Promise.resolve(BigInt(0)),
@@ -402,17 +429,31 @@ export class UniversalAdapterClient {
     return this.walletConnectProviderInitPromise
   }
 
-  private async initWalletConnectProvider(projectId: string) {
-    const logger = LoggerUtil.createLogger((err, ...args) => {
-      if (err.message.includes(ErrorUtil.UniversalProviderErrors.UNAUTHORIZED_DOMAIN_NOT_ALLOWED)) {
-        if (this.reportErrors) {
-          AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
-          this.reportErrors = false
-        }
+  private handleAlertError(error: Error) {
+    const matchedUniversalProviderError = Object.entries(ErrorUtil.UniversalProviderErrors).find(
+      ([, { message }]) => error.message.includes(message)
+    )
 
-        return
+    const [errorKey, errorValue] = matchedUniversalProviderError ?? []
+
+    const { message, alertErrorKey } = errorValue ?? {}
+
+    if (errorKey && message && !this.reportedAlertErrors[errorKey]) {
+      const alertError =
+        ErrorUtil.ALERT_ERRORS[alertErrorKey as keyof typeof ErrorUtil.ALERT_ERRORS]
+
+      if (alertError) {
+        AlertController.open(alertError, 'error')
+        this.reportedAlertErrors[errorKey] = true
       }
+    }
+  }
 
+  private async initWalletConnectProvider(projectId: string) {
+    const logger = LoggerUtil.createLogger((error, ...args) => {
+      if (error) {
+        this.handleAlertError(error)
+      }
       // eslint-disable-next-line no-console
       console.error(...args)
     })
@@ -429,7 +470,6 @@ export class UniversalAdapterClient {
     }
 
     this.walletConnectProvider = await UniversalProvider.init(walletConnectProviderOptions)
-
     await this.checkActiveWalletConnectProvider()
   }
 

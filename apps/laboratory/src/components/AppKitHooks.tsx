@@ -32,13 +32,11 @@ export function AppKitHooks() {
           Open
         </Button>
 
-        <Button
-          data-testid="disconnect-hook-button"
-          isDisabled={!isConnected}
-          onClick={() => disconnect()}
-        >
-          Disconnect
-        </Button>
+        {isConnected && (
+          <Button data-testid="disconnect-hook-button" onClick={disconnect}>
+            Disconnect
+          </Button>
+        )}
 
         <Button data-testid="switch-network-hook-button" onClick={handleSwitchNetwork}>
           Switch Network
