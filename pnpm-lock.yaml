@@ -201,6 +201,9 @@ importers:
       '@reown/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
+      '@reown/appkit-adapter-bitcoin':
+        specifier: workspace:*
+        version: link:../../packages/adapters/bitcoin
       '@reown/appkit-adapter-ethers':
         specifier: workspace:*
         version: link:../../packages/adapters/ethers

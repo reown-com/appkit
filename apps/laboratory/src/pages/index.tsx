@@ -6,7 +6,8 @@ import {
   ethers5SdkOptions,
   featuredSdkOptions,
   multichainSdkOptions,
-  testingSdkOptions
+  testingSdkOptions,
+  bitcoinSdkOptions
 } from '../utils/DataUtil'
 import { ConfigurationList } from '../components/ConfigurationList'
 
@@ -19,6 +20,7 @@ export default function HomePage() {
       <ConfigurationList title="Ethers" sdkOptions={ethersSdkOptions} />
       <ConfigurationList title="Ethers 5" sdkOptions={ethers5SdkOptions} />
       <ConfigurationList title="Solana" sdkOptions={solanaSdkOptions} />
+      <ConfigurationList title="Bitcoin" sdkOptions={bitcoinSdkOptions} />
       <ConfigurationList
         title={
           <>
