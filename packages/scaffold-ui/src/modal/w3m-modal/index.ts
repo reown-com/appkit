@@ -44,8 +44,6 @@ export class W3mModal extends LitElement {
 
   @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
 
-  @state() private isOpen = ModalController.state.open
-
   @state() private shake = ModalController.state.shake
 
   public constructor() {
@@ -59,8 +57,7 @@ export class W3mModal extends LitElement {
         AccountController.subscribeKey('siweStatus', val => this.onSiweStatusChange(val), 'eip155'),
         ChainController.subscribeKey('activeCaipNetwork', val => this.onNewNetwork(val)),
         ChainController.subscribeKey('activeCaipAddress', val => this.onNewAddress(val)),
-        OptionsController.subscribeKey('isSiweEnabled', val => (this.isSiweEnabled = val)),
-        ModalController.subscribeKey('open', val => (this.isOpen = val))
+        OptionsController.subscribeKey('isSiweEnabled', val => (this.isSiweEnabled = val))
       ]
     )
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })
