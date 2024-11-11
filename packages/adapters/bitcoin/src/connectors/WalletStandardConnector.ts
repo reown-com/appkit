@@ -5,31 +5,38 @@ import type { CaipNetwork } from '@reown/appkit-common'
 
 export class WalletStandardConnector implements BitcoinConnector {
   public readonly chain = 'bip122'
-  public readonly type = 'EXTERNAL'
+  public readonly type = 'ANNOUNCED'
 
   readonly wallet: Wallet
+  private requestedChains: CaipNetwork[] = []
 
-  constructor({ wallet }: WalletStandardConnector.ConstructorParams) {
+  constructor({ wallet, requestedChains }: WalletStandardConnector.ConstructorParams) {
     this.wallet = wallet
+    this.requestedChains = requestedChains
   }
 
   public get id(): string {
     return this.wallet.name
   }
 
-  public get chains(): CaipNetwork[] {
-    return []
+  public get chains() {
+    return this.wallet.chains
+      .map(chainId => this.requestedChains.find(chain => chain.id === chainId))
+      .filter(Boolean) as CaipNetwork[]
   }
 
   async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {
     return Promise.resolve([])
   }
 
-  public static watchWallets({ callback }: WalletStandardConnector.WatchWalletsParams) {
+  public static watchWallets({
+    callback,
+    requestedChains
+  }: WalletStandardConnector.WatchWalletsParams) {
     const { get, on } = getWallets()
 
     function wrapWallet(wallet: Wallet) {
-      return new WalletStandardConnector({ wallet })
+      return new WalletStandardConnector({ wallet, requestedChains })
     }
 
     const listeners = [
@@ -50,9 +57,11 @@ export class WalletStandardConnector implements BitcoinConnector {
 export namespace WalletStandardConnector {
   export type ConstructorParams = {
     wallet: Wallet
+    requestedChains: CaipNetwork[]
   }
 
   export type WatchWalletsParams = {
     callback: (...connectors: WalletStandardConnector[]) => void
+    requestedChains: CaipNetwork[]
   }
 }

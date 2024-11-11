@@ -52,7 +52,8 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
   override syncConnectors(_options?: AppKitOptions, _appKit?: AppKit): void {
     WalletStandardConnector.watchWallets({
-      callback: this.addConnector.bind(this)
+      callback: this.addConnector.bind(this),
+      requestedChains: this.networks
     })
   }
 
