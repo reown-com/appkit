@@ -13,7 +13,8 @@ import {
   gnosis,
   unichainSepolia,
   hedera,
-  aurora
+  aurora,
+  mantle
 } from '@reown/appkit/networks'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 import { getLocalStorageItem } from './LocalStorage'
@@ -66,7 +67,8 @@ const EvmNetworks = [
   sepolia,
   gnosis,
   hedera,
-  aurora
+  aurora,
+  mantle
 ] as [AppKitNetwork, ...AppKitNetwork[]]
 
 export const solanaNotExist = {
