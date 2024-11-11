@@ -3,6 +3,7 @@
 import { ReactNode, useEffect, useMemo, useState, createContext } from 'react'
 import { createAppKit, ThemeVariables, type AppKit } from '@reown/appkit/react'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { type AppKitNetwork, mainnet, polygon } from '@reown/appkit/networks'
 import { useAppKit } from '../contexts/AppKitContext'
 import { ThemeStore } from '../lib/ThemeStore'
@@ -10,6 +11,7 @@ import { ThemeStore } from '../lib/ThemeStore'
 const networks = [mainnet, polygon] as [AppKitNetwork, ...AppKitNetwork[]]
 
 const ethersAdapter = new EthersAdapter()
+const solanaAdapter = new SolanaAdapter({})
 
 interface AppKitProviderProps {
   children: ReactNode
@@ -36,7 +38,7 @@ export default function AppKitProvider({ children }: AppKitProviderProps) {
   useEffect(() => {
     if (!isLoading) {
       kit = createAppKit({
-        adapters: [ethersAdapter],
+        adapters: [ethersAdapter, solanaAdapter],
         networks,
         defaultNetwork: mainnet,
         projectId: process.env.NEXT_PUBLIC_PROJECT_ID!,
