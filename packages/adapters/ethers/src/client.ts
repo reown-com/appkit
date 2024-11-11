@@ -368,6 +368,16 @@ export class EthersAdapter extends AdapterBlueprint {
     }
   }
 
+  public override async reconnect(params: AdapterBlueprint.ConnectParams): Promise<void> {
+    const { id, chainId } = params
+
+    const connector = this.connectors.find(c => c.id === id)
+
+    if (connector && connector.type === 'AUTH' && chainId) {
+      await (connector.provider as W3mFrameProvider).connect({ chainId })
+    }
+  }
+
   public async disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
     if (!params.provider || !params.providerType) {
       throw new Error('Provider or providerType not provided')
@@ -375,6 +385,10 @@ export class EthersAdapter extends AdapterBlueprint {
 
     switch (params.providerType) {
       case 'WALLET_CONNECT':
+        if ((params.provider as UniversalProvider).session) {
+          ;(params.provider as UniversalProvider).disconnect()
+        }
+        break
       case 'AUTH':
         await params.provider.disconnect()
         break
@@ -493,7 +507,11 @@ export class EthersAdapter extends AdapterBlueprint {
             WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
         ) {
           await EthersHelpersUtil.addEthereumChain(provider as Provider, caipNetwork)
-        } else {
+        } else if (
+          providerType === 'ANNOUNCED' ||
+          providerType === 'EXTERNAL' ||
+          providerType === 'INJECTED'
+        ) {
           throw new Error('Chain is not supported')
         }
       }

@@ -11,7 +11,7 @@ export class W3mAccountView extends LitElement {
     const authConnector = ConnectorController.getAuthConnector()
 
     return html`
-      ${authConnector && connectedConnectorType === 'w3mAuth'
+      ${authConnector && connectedConnectorType === 'ID_AUTH'
         ? this.walletFeaturesTemplate()
         : this.defaultTemplate()}
     `

@@ -118,9 +118,9 @@ export abstract class AdapterBlueprint<
    * @param {...Connector} connectors - The connectors to add
    */
   protected addConnector(...connectors: Connector[]) {
-    if (connectors.some(connector => connector.id === 'w3mAuth')) {
+    if (connectors.some(connector => connector.id === 'ID_AUTH')) {
       const authConnector = connectors.find(
-        connector => connector.id === 'w3mAuth'
+        connector => connector.id === 'ID_AUTH'
       ) as AuthConnector
 
       const optionsState = snapshot(OptionsController.state)
@@ -322,6 +322,12 @@ export abstract class AdapterBlueprint<
   public abstract getWalletConnectProvider(
     params: AdapterBlueprint.GetWalletConnectProviderParams
   ): AdapterBlueprint.GetWalletConnectProviderResult
+
+  /**
+   * Reconnects to a wallet.
+   * @param {AdapterBlueprint.ReconnectParams} params - Reconnection parameters
+   */
+  public reconnect?(params: AdapterBlueprint.ReconnectParams): Promise<void>
 }
 
 export namespace AdapterBlueprint {
@@ -362,6 +368,8 @@ export namespace AdapterBlueprint {
     chainId?: number | string
     rpcUrl?: string
   }
+
+  export type ReconnectParams = ConnectParams
 
   export type SyncConnectionParams = {
     id: string

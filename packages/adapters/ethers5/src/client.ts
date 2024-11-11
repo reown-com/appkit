@@ -375,6 +375,10 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
     switch (params.providerType) {
       case 'WALLET_CONNECT':
+        if ((params.provider as UniversalProvider).session) {
+          ;(params.provider as UniversalProvider).disconnect()
+        }
+        break
       case 'AUTH':
         await params.provider.disconnect()
         break
@@ -496,7 +500,11 @@ export class Ethers5Adapter extends AdapterBlueprint {
             WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
         ) {
           await EthersHelpersUtil.addEthereumChain(provider as Provider, caipNetwork)
-        } else {
+        } else if (
+          providerType === 'ANNOUNCED' ||
+          providerType === 'EXTERNAL' ||
+          providerType === 'INJECTED'
+        ) {
           throw new Error('Chain is not supported')
         }
       }

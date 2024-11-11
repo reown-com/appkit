@@ -136,7 +136,7 @@ export class AppKitSIWEClient {
     })
     const type = StorageUtil.getConnectedConnector()
 
-    if (type === 'w3mAuth') {
+    if (type === 'ID_AUTH') {
       RouterController.pushTransactionStack({
         view: null,
         goBack: false,

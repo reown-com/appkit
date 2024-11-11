@@ -148,7 +148,7 @@ export const ConnectionController = {
 
   async reconnectExternal(options: ConnectExternalOptions) {
     await this._getClient()?.reconnectExternal?.(options)
-    StorageUtil.setConnectedConnector(options.type)
+    StorageUtil.setConnectedConnector(options.type === 'AUTH' ? 'ID_AUTH' : options.type)
   },
 
   async setPreferredAccountType(accountType: W3mFrameTypes.AccountType) {
@@ -158,7 +158,7 @@ export const ConnectionController = {
       return
     }
     await authConnector?.provider.setPreferredAccount(accountType)
-    await this._getClient()?.reconnectExternal?.(authConnector)
+    await this.reconnectExternal(authConnector)
     ModalController.setLoading(false)
     EventsController.sendEvent({
       type: 'track',
@@ -296,7 +296,9 @@ export const ConnectionController = {
 
       await ModalController.open({
         view:
-          StorageUtil.getConnectedConnector() === 'AUTH' ? 'ApproveTransaction' : 'SIWXSignMessage'
+          StorageUtil.getConnectedConnector() === 'ID_AUTH'
+            ? 'ApproveTransaction'
+            : 'SIWXSignMessage'
       })
 
       const siwxMessage = await siwx.createMessage({

@@ -797,6 +797,12 @@ export class AppKit {
           this.syncProvider(res)
         }
       },
+      reconnectExternal: async ({ id, info, type, provider }) => {
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+        if (adapter?.reconnect) {
+          await adapter?.reconnect({ id, info, type, provider, chainId: this.getCaipNetwork()?.id })
+        }
+      },
       disconnect: async () => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
         const provider = ProviderUtil.getProvider<UniversalProvider | Provider | W3mFrameProvider>(
@@ -922,21 +928,23 @@ export class AppKit {
         if (!caipNetwork) {
           return
         }
-
+        if (AccountController.state.address) {
+          const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+          const provider = ProviderUtil.getProvider<
+            UniversalProvider | Provider | W3mFrameProvider
+          >(ChainController.state.activeChain as ChainNamespace)
+          const providerType =
+            ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
+          await adapter?.switchNetwork({ caipNetwork, provider, providerType })
+          if (AccountController.state.address) {
+            await this.syncAccount({
+              address: AccountController.state.address,
+              chainId: ChainController.state.activeCaipNetwork?.id as string | number,
+              chainNamespace: caipNetwork.chainNamespace
+            })
+          }
+        }
         this.setCaipNetwork(caipNetwork)
-
-        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
-        const provider = ProviderUtil.getProvider<UniversalProvider | Provider | W3mFrameProvider>(
-          ChainController.state.activeChain as ChainNamespace
-        )
-        const providerType =
-          ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
-        await adapter?.switchNetwork({ caipNetwork, provider, providerType })
-        await this.syncAccount({
-          address: AccountController.state.address as string,
-          chainId: ChainController.state.activeCaipNetwork?.id as string | number,
-          chainNamespace: caipNetwork.chainNamespace
-        })
       },
       // eslint-disable-next-line @typescript-eslint/require-await
       getApprovedCaipNetworksData: async () => {
@@ -971,9 +979,9 @@ export class AppKit {
     const { isConnected } = await provider.isConnected()
     if (isConnected && this.connectionControllerClient?.connectExternal) {
       this.connectionControllerClient?.connectExternal({
-        id: 'w3mAuth',
+        id: 'ID_AUTH',
         info: {
-          name: 'w3mAuth'
+          name: 'ID_AUTH'
         },
         type: 'AUTH',
         provider,
@@ -1023,7 +1031,7 @@ export class AppKit {
     })
     provider.onNotConnected(() => {
       const connectedConnector = SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
-      const isConnectedWithAuth = connectedConnector === 'w3mAuth'
+      const isConnectedWithAuth = connectedConnector === 'ID_AUTH'
       if (!isConnected && isConnectedWithAuth) {
         this.setCaipAddress(undefined, ChainController.state.activeChain as ChainNamespace)
         this.setLoading(false)

@@ -155,7 +155,7 @@ export class W3mAccountSettingsView extends LitElement {
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
     const hasNetworkSupport = ChainController.checkIfNamesSupported()
-    if (!hasNetworkSupport || !authConnector || type !== 'w3mAuth' || this.profileName) {
+    if (!hasNetworkSupport || !authConnector || type !== 'ID_AUTH' || this.profileName) {
       return null
     }
 
@@ -178,7 +178,7 @@ export class W3mAccountSettingsView extends LitElement {
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
-    if (!authConnector || type !== 'w3mAuth' || origin.includes(ConstantsUtil.SECURE_SITE)) {
+    if (!authConnector || type !== 'ID_AUTH' || origin.includes(ConstantsUtil.SECURE_SITE)) {
       return null
     }
 
@@ -217,7 +217,7 @@ export class W3mAccountSettingsView extends LitElement {
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
 
-    if (!authConnector || type !== 'w3mAuth' || !networkEnabled) {
+    if (!authConnector || type !== 'ID_AUTH' || !networkEnabled) {
       return null
     }
 
@@ -250,6 +250,7 @@ export class W3mAccountSettingsView extends LitElement {
 
   private async changePreferredAccountType() {
     const smartAccountEnabled = ChainController.checkIfSmartAccountEnabled()
+
     const accountTypeTarget =
       this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT ||
       !smartAccountEnabled

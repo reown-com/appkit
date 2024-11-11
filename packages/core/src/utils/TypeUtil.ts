@@ -50,7 +50,7 @@ export type ConnectorType =
   | 'ANNOUNCED'
   | 'AUTH'
   | 'MULTI_CHAIN'
-  | 'w3mAuth'
+  | 'ID_AUTH'
 
 export type SocialProvider =
   | 'google'

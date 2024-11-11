@@ -24,7 +24,8 @@ import {
   writeContract as wagmiWriteContract,
   waitForTransactionReceipt,
   getAccount,
-  prepareTransactionRequest
+  prepareTransactionRequest,
+  reconnect
 } from '@wagmi/core'
 import { type Chain } from '@wagmi/core/chains'
 
@@ -124,7 +125,7 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   private setupWatchers() {
     watchAccount(this.wagmiConfig, {
-      onChange: async accountData => {
+      onChange: accountData => {
         if (accountData.address) {
           this.emit('accountChanged', {
             address: accountData.address,
@@ -152,16 +153,6 @@ export class WagmiAdapter extends AdapterBlueprint {
   private addWagmiConnectors(options: AppKitOptions, appKit: AppKit) {
     const customConnectors: CreateConnectorFn[] = []
 
-    if (options.enableWalletConnect !== false) {
-      customConnectors.push(
-        walletConnect(options, appKit, this.caipNetworks as [CaipNetwork, ...CaipNetwork[]])
-      )
-    }
-
-    if (options.enableInjected !== false) {
-      customConnectors.push(injected({ shimDisconnect: true }))
-    }
-
     if (options.enableCoinbase !== false) {
       customConnectors.push(
         coinbaseWallet({
@@ -171,6 +162,16 @@ export class WagmiAdapter extends AdapterBlueprint {
           preference: options.coinbasePreference ?? 'all'
         })
       )
+    }
+
+    if (options.enableWalletConnect !== false) {
+      customConnectors.push(
+        walletConnect(options, appKit, this.caipNetworks as [CaipNetwork, ...CaipNetwork[]])
+      )
+    }
+
+    if (options.enableInjected !== false) {
+      customConnectors.push(injected({ shimDisconnect: true }))
     }
 
     const emailEnabled =
@@ -309,7 +310,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     return formatUnits(params.value, params.decimals)
   }
 
-  public async syncConnectors(options: AppKitOptions, appKit: AppKit) {
+  public syncConnectors(options: AppKitOptions, appKit: AppKit) {
     this.addWagmiConnectors(options, appKit)
 
     const connectors = this.wagmiConfig.connectors.map(connector => ({
@@ -325,28 +326,23 @@ export class WagmiAdapter extends AdapterBlueprint {
       return !isDuplicate
     })
 
-    await Promise.all(
-      filteredConnectors.map(async connector => {
-        const shouldSkip = ConstantsUtil.AUTH_CONNECTOR_ID === connector.id
+    filteredConnectors.forEach(connector => {
+      const shouldSkip = ConstantsUtil.AUTH_CONNECTOR_ID === connector.id
 
-        const provider = (await connector.getProvider()) as Provider
-
-        if (!shouldSkip && this.namespace && provider) {
-          this.addConnector({
-            id: connector.id,
-            explorerId: PresetsUtil.ConnectorExplorerIds[connector.id],
-            imageUrl: options?.connectorImages?.[connector.id] ?? connector.icon,
-            name: PresetsUtil.ConnectorNamesMap[connector.id] ?? connector.name,
-            imageId: PresetsUtil.ConnectorImageIds[connector.id],
-            type: PresetsUtil.ConnectorTypesMap[connector.type] ?? 'EXTERNAL',
-            info: { rdns: connector.id },
-            chain: this.namespace,
-            chains: [],
-            provider
-          })
-        }
-      })
-    )
+      if (!shouldSkip && this.namespace) {
+        this.addConnector({
+          id: connector.id,
+          explorerId: PresetsUtil.ConnectorExplorerIds[connector.id],
+          imageUrl: options?.connectorImages?.[connector.id] ?? connector.icon,
+          name: PresetsUtil.ConnectorNamesMap[connector.id] ?? connector.name,
+          imageId: PresetsUtil.ConnectorImageIds[connector.id],
+          type: PresetsUtil.ConnectorTypesMap[connector.type] ?? 'EXTERNAL',
+          info: { rdns: connector.id },
+          chain: this.namespace,
+          chains: []
+        })
+      }
+    })
   }
 
   public async syncConnection(
@@ -414,6 +410,19 @@ export class WagmiAdapter extends AdapterBlueprint {
       type: type as ConnectorType,
       id
     }
+  }
+
+  public override async reconnect(params: AdapterBlueprint.ConnectParams): Promise<void> {
+    const { id } = params
+
+    const connector = this.wagmiConfig.connectors.find(c => c.id === id)
+    if (!connector) {
+      throw new Error('connectionControllerClient:connectExternal - connector is undefined')
+    }
+
+    await reconnect(this.wagmiConfig, {
+      connectors: [connector]
+    })
   }
 
   public async getBalance(

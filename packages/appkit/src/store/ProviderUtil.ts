@@ -17,7 +17,7 @@ export type ProviderType =
   | 'injected'
   | 'coinbaseWallet'
   | 'eip6963'
-  | 'w3mAuth'
+  | 'ID_AUTH'
   | 'coinbaseWalletSDK'
 
 const state = proxy<ProviderStoreUtilState>({
