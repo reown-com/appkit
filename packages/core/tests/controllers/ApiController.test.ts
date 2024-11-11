@@ -45,7 +45,7 @@ describe('ApiController', () => {
     await ApiController._fetchWalletImage(imageId)
     expect(fetchSpy).toHaveBeenCalledWith({
       path: `${api.baseUrl}/getWalletImage/${imageId}`,
-      headers: ApiController._getApiHeaders()
+      params: ApiController._getSdkProperties()
     })
 
     // Cannot exactly recreate the object url
@@ -61,7 +61,7 @@ describe('ApiController', () => {
     await ApiController._fetchNetworkImage(imageId)
     expect(fetchSpy).toHaveBeenCalledWith({
       path: `${api.baseUrl}/public/getAssetImage/${imageId}`,
-      headers: ApiController._getApiHeaders()
+      params: ApiController._getSdkProperties()
     })
 
     // Cannot exactly recreate the object url
@@ -77,7 +77,7 @@ describe('ApiController', () => {
     await ApiController._fetchConnectorImage(imageId)
     expect(fetchSpy).toHaveBeenCalledWith({
       path: `${api.baseUrl}/public/getAssetImage/${imageId}`,
-      headers: ApiController._getApiHeaders()
+      params: ApiController._getSdkProperties()
     })
 
     // Cannot exactly recreate the object url
@@ -93,7 +93,7 @@ describe('ApiController', () => {
     await ApiController._fetchCurrencyImage(countryCode)
     expect(fetchSpy).toHaveBeenCalledWith({
       path: `${api.baseUrl}/public/getCurrencyImage/${countryCode}`,
-      headers: ApiController._getApiHeaders()
+      params: ApiController._getSdkProperties()
     })
 
     // Cannot exactly recreate the object url
@@ -109,7 +109,7 @@ describe('ApiController', () => {
     await ApiController._fetchTokenImage(symbol)
     expect(fetchSpy).toHaveBeenCalledWith({
       path: `${api.baseUrl}/public/getTokenImage/${symbol}`,
-      headers: ApiController._getApiHeaders()
+      params: ApiController._getSdkProperties()
     })
 
     // Cannot exactly recreate the object url
@@ -321,8 +321,8 @@ describe('ApiController', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getSdkProperties(),
         page: '1',
         entries: '2',
         include: '12341,12342'
@@ -379,8 +379,8 @@ describe('ApiController', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getSdkProperties(),
         page: '1',
         // Fixed to recommendedEntries
         entries: '4',
@@ -407,8 +407,8 @@ describe('ApiController', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getSdkProperties(),
         page: '1',
         entries: '4',
         include: '',
@@ -448,8 +448,8 @@ describe('ApiController', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getSdkProperties(),
         page: '1',
         entries: '40',
         include: '12341,12342',
@@ -492,8 +492,8 @@ describe('ApiController', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getSdkProperties(),
         page: '1',
         entries: String(excludeWalletIds.length),
         include: excludeWalletIds.join(',')
@@ -530,8 +530,8 @@ describe('ApiController', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getSdkProperties(),
         page: '1',
         entries: '100',
         search: 'MetaMask',
@@ -567,8 +567,8 @@ describe('ApiController', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getSdkProperties(),
         page: '1',
         entries: '100',
         search: 'MetaMask',
@@ -584,8 +584,8 @@ describe('ApiController', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getSdkProperties(),
         page: '1',
         entries: '100',
         search: 'MetaMask',
@@ -600,8 +600,8 @@ describe('ApiController', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getSdkProperties(),
         page: '1',
         entries: '100',
         search: 'MetaMask',
@@ -624,8 +624,8 @@ describe('ApiController', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getSdkProperties(),
         page: '1',
         entries: '100',
         search: 'Safe Wallet',
@@ -690,7 +690,7 @@ describe('ApiController', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getAnalyticsConfig',
-      headers: ApiController._getApiHeaders()
+      ...ApiController._getSdkProperties()
     })
 
     expect(ApiController.state.isAnalyticsEnabled).toBe(true)
