@@ -11,10 +11,11 @@ import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
 import { WcConstantsUtil, WcHelpersUtil, type AppKitOptions } from '@reown/appkit'
 import UniversalProvider from '@walletconnect/universal-provider'
+import * as ethers from 'ethers'
 import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
-import { ethers } from 'ethers'
 import { Ethers5Methods } from './utils/Ethers5Methods.js'
+import { formatEther } from 'ethers/lib/utils.js'
 
 export interface EIP6963ProviderDetail {
   info: Connector['info']
@@ -23,7 +24,7 @@ export interface EIP6963ProviderDetail {
 
 export class Ethers5Adapter extends AdapterBlueprint {
   private ethersConfig?: ProviderType
-  public adapterType = 'ethers5'
+  public adapterType = 'ethers'
 
   constructor() {
     super({})
@@ -368,6 +369,16 @@ export class Ethers5Adapter extends AdapterBlueprint {
     }
   }
 
+  public override async reconnect(params: AdapterBlueprint.ConnectParams): Promise<void> {
+    const { id, chainId } = params
+
+    const connector = this.connectors.find(c => c.id === id)
+
+    if (connector && connector.type === 'AUTH' && chainId) {
+      await (connector.provider as W3mFrameProvider).connect({ chainId })
+    }
+  }
+
   public async disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
     if (!params.provider || !params.providerType) {
       throw new Error('Provider or providerType not provided')
@@ -406,7 +417,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
       )
 
       const balance = await jsonRpcProvider.getBalance(params.address)
-      const formattedBalance = ethers.utils.formatEther(balance)
+      const formattedBalance = formatEther(balance)
 
       return { balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol }
     }
