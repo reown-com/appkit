@@ -160,7 +160,7 @@ export class W3mNetworksView extends LitElement {
       network.chainNamespace
     )
     const isCurrentNetworkConnected = AccountController.state.caipAddress
-    const isAuthConnected = StorageUtil.getConnectedConnector() === 'AUTH'
+    const isAuthConnected = StorageUtil.getConnectedConnector() === 'ID_AUTH'
 
     if (
       isDifferentNamespace &&

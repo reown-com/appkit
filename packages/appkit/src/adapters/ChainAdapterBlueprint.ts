@@ -365,6 +365,7 @@ export namespace AdapterBlueprint {
     provider?: unknown
     info?: unknown
     type: string
+    chain?: ChainNamespace
     chainId?: number | string
     rpcUrl?: string
   }

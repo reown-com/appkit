@@ -240,8 +240,6 @@ export function walletConnect(
 
         if (storedCaipNetwork && storedCaipNetwork.chainNamespace === ConstantsUtil.CHAIN.EVM) {
           await this.switchChain?.({ chainId: Number(storedCaipNetwork.id) })
-        } else {
-          await this.switchChain?.({ chainId })
         }
       }
 

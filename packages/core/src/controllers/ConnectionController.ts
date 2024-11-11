@@ -24,6 +24,7 @@ export interface ConnectExternalOptions {
   type: Connector['type']
   provider?: Connector['provider']
   info?: Connector['info']
+  chain?: ChainNamespace
   chainId?: number | string
 }
 
