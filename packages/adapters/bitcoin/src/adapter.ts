@@ -1,7 +1,16 @@
 import type { AppKit, AppKitOptions } from '@reown/appkit'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
+import type { BitcoinConnector } from './utils/BitcoinConnector.js'
+import { WalletStandardConnector } from './connectors/WalletStandardConnector.js'
 
-export class BitcoinAdapter extends AdapterBlueprint {
+export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
+  constructor(params: BitcoinAdapter.ConstructorParams) {
+    super({
+      namespace: 'bip122',
+      ...params
+    })
+  }
+
   override connectWalletConnect(
     _onUri: (uri: string) => void,
     _chainId?: string | number | undefined
@@ -42,7 +51,9 @@ export class BitcoinAdapter extends AdapterBlueprint {
   }
 
   override syncConnectors(_options?: AppKitOptions, _appKit?: AppKit): void {
-    // Sync connectors
+    WalletStandardConnector.watchWallets({
+      callback: this.addConnector.bind(this)
+    })
   }
 
   override syncConnection(
@@ -103,4 +114,8 @@ export class BitcoinAdapter extends AdapterBlueprint {
     // Get WalletConnect provider
     return undefined
   }
+}
+
+export namespace BitcoinAdapter {
+  export type ConstructorParams = Omit<AdapterBlueprint.Params, 'namespace'>
 }

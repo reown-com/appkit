@@ -911,6 +911,12 @@ importers:
       '@reown/appkit-core':
         specifier: workspace:*
         version: link:../../core
+      '@wallet-standard/app':
+        specifier: 1.0.1
+        version: 1.0.1
+      '@wallet-standard/base':
+        specifier: 1.0.1
+        version: 1.0.1
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.1.3
