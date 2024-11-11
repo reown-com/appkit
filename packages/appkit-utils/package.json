@@ -49,16 +49,16 @@
     "@reown/appkit-polyfills": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/logger": "2.1.2",
-    "@walletconnect/universal-provider": "2.17.0",
+    "@walletconnect/universal-provider": "2.17.2",
     "valtio": "1.11.2",
     "viem": "2.x"
   },
   "devDependencies": {
-    "@coinbase/wallet-sdk": "4.0.3",
+    "@coinbase/wallet-sdk": "4.2.2",
     "@solana/wallet-adapter-base": "0.9.23",
-    "@solana/web3.js": "1.95.3",
-    "@vitest/coverage-v8": "2.1.3",
-    "vitest": "2.1.3"
+    "@solana/web3.js": "1.95.4",
+    "@vitest/coverage-v8": "2.1.4",
+    "vitest": "2.1.4"
   },
   "peerDependencies": {
     "valtio": "1.11.2"

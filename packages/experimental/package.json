@@ -40,16 +40,16 @@
     "@reown/appkit-core": "workspace:*",
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
-    "axios": "1.7.2",
-    "zod": "3.22.4",
-    "lit": "3.1.0",
+    "axios": "1.7.7",
+    "zod": "3.23.8",
+    "lit": "3.2.1",
     "valtio": "1.11.2"
   },
   "devDependencies": {
-    "@types/axios-mock-adapter": "1.10.0",
-    "@vitest/coverage-v8": "2.1.3",
-    "axios-mock-adapter": "2.0.0",
-    "vitest": "2.1.3"
+    "@types/axios-mock-adapter": "1.10.4",
+    "@vitest/coverage-v8": "2.1.4",
+    "axios-mock-adapter": "2.1.0",
+    "vitest": "2.1.4"
   },
   "keywords": [
     "web3",

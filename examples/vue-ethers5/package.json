@@ -11,12 +11,12 @@
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-ethers5": "workspace:*",
     "ethers": "5.7.2",
-    "vue": "3.4.3"
+    "vue": "3.5.12"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "5.0.2",
-    "typescript": "5.3.3",
-    "vite": "5.2.11",
-    "vue-tsc": "2.1.8"
+    "@vitejs/plugin-vue": "5.1.4",
+    "typescript": "5.6.3",
+    "vite": "5.4.10",
+    "vue-tsc": "2.1.10"
   }
 }

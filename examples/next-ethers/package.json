@@ -11,18 +11,18 @@
   "dependencies": {
     "@reown/appkit-adapter-ethers": "workspace:*",
     "@reown/appkit": "workspace:*",
-    "ethers": "6.13.2",
+    "ethers": "6.13.4",
     "next": "14.2.3",
     "react": "18.3.1",
     "react-dom": "18.3.1"
   },
   "devDependencies": {
-    "@types/react": "18.2.62",
-    "@types/react-dom": "18.2.7",
-    "@types/node": "20.11.5",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@types/node": "22.9.0",
     "eslint": "8.56.0",
     "eslint-config-next": "14.1.0",
-    "typescript": "5.3.3",
-    "esbuild": "0.21.1"
+    "typescript": "5.6.3",
+    "esbuild": "0.24.0"
   }
 }

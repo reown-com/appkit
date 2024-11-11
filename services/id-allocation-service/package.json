@@ -6,10 +6,10 @@
     "deploy": "wrangler deploy --minify src/index.ts"
   },
   "dependencies": {
-    "hono": "4.6.5"
+    "hono": "4.6.9"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "4.20241011.0",
-    "wrangler": "3.81.0"
+    "@cloudflare/workers-types": "4.20241106.0",
+    "wrangler": "3.85.0"
   }
 }
