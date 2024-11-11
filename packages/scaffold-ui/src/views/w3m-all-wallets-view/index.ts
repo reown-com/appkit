@@ -1,31 +1,61 @@
-import { CoreHelperUtil, RouterController } from '@reown/appkit-core'
+import {
+  CoreHelperUtil,
+  RouterController,
+  type BadgeType,
+  SnackController
+} from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-all-wallets-view')
 export class W3mAllWalletsView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private search = ''
 
+  @state() private badge?: BadgeType
+
   // -- Render -------------------------------------------- //
   public override render() {
     const isSearch = this.search.length >= 2
 
     return html`
-      <wui-flex .padding=${['0', 's', 's', 's']} gap="s">
+      <wui-flex .padding=${['0', 's', 's', 's']} gap="xs">
         <wui-search-bar @inputChange=${this.onInputChange.bind(this)}></wui-search-bar>
+        <wui-certified-switch
+          ?checked=${this.badge}
+          @click=${this.onClick.bind(this)}
+          data-testid="wui-certified-switch"
+        ></wui-certified-switch>
         ${this.qrButtonTemplate()}
       </wui-flex>
-      ${isSearch
-        ? html`<w3m-all-wallets-search query=${this.search}></w3m-all-wallets-search>`
-        : html`<w3m-all-wallets-list></w3m-all-wallets-list>`}
+      ${isSearch || this.badge
+        ? html`<w3m-all-wallets-search
+            query=${this.search}
+            badge=${ifDefined(this.badge)}
+          ></w3m-all-wallets-search>`
+        : html`<w3m-all-wallets-list badge=${ifDefined(this.badge)}></w3m-all-wallets-list>`}
     `
   }
 
   // -- Private ------------------------------------------- //
   private onInputChange(event: CustomEvent<string>) {
     this.onDebouncedSearch(event.detail)
+  }
+
+  private onClick() {
+    if (this.badge === 'certified') {
+      this.badge = undefined
+
+      return
+    }
+
+    this.badge = 'certified'
+    SnackController.showSvg('Only WalletConnect certified', {
+      icon: 'walletConnectBrown',
+      iconColor: 'accent-100'
+    })
   }
 
   private onDebouncedSearch = CoreHelperUtil.debounce((value: string) => {
