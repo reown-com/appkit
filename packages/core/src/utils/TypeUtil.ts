@@ -109,6 +109,7 @@ export type Metadata = {
 export interface WcWallet {
   id: string
   name: string
+  badge_type?: BadgeType
   homepage?: string
   image_id?: string
   image_url?: string
@@ -133,6 +134,7 @@ export interface ApiGetWalletsRequest {
   chains: string
   entries: number
   search?: string
+  badge?: BadgeType
   include?: string[]
   exclude?: string[]
 }
@@ -735,6 +737,14 @@ export type Event =
         name: string
       }
     }
+  | {
+      type: 'track'
+      event: 'SEARCH_WALLET'
+      properties: {
+        badge: string
+        search: string
+      }
+    }
 // Onramp Types
 export type DestinationWallet = {
   address: string
@@ -999,3 +1009,5 @@ export type UseAppKitNetworkReturn = {
   caipNetworkId: CaipNetworkId | undefined
   switchNetwork: (network: AppKitNetwork) => void
 }
+
+export type BadgeType = 'none' | 'certified'
