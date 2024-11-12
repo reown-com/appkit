@@ -15,7 +15,7 @@ import { type W3mFrameTypes } from '@reown/appkit-wallet'
 import { ModalController } from './ModalController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
-import type { ChainNamespace } from '@reown/appkit-common'
+import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import { OptionsController } from './OptionsController.js'
 
 // -- Types --------------------------------------------- //
@@ -26,6 +26,7 @@ export interface ConnectExternalOptions {
   info?: Connector['info']
   chain?: ChainNamespace
   chainId?: number | string
+  caipNetwork?: CaipNetwork
 }
 
 export interface ConnectionControllerClient {

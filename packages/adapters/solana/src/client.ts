@@ -292,6 +292,7 @@ export class SolanaAdapter extends AdapterBlueprint {
       params.caipNetwork?.rpcUrls?.default?.http?.[0] as string,
       this.connectionSettings
     )
+
     const balance = await connection.getBalance(new PublicKey(params.address))
     const formattedBalance = (balance / SolConstantsUtil.LAMPORTS_PER_SOL).toString()
 
@@ -308,7 +309,7 @@ export class SolanaAdapter extends AdapterBlueprint {
   public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
     const { caipNetwork, provider, providerType } = params
 
-    if (providerType === 'ID_AUTH') {
+    if (providerType === 'AUTH') {
       await (provider as unknown as W3mFrameProvider).switchNetwork(caipNetwork.id)
       const user = await (provider as unknown as W3mFrameProvider).getUser({
         chainId: caipNetwork.id

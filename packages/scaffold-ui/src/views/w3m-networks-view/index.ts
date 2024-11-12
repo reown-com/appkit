@@ -161,12 +161,14 @@ export class W3mNetworksView extends LitElement {
     )
     const isCurrentNetworkConnected = AccountController.state.caipAddress
     const isAuthConnected = StorageUtil.getConnectedConnector() === 'ID_AUTH'
+    const isWalletConnectConnected = StorageUtil.getConnectedConnector() === 'WALLET_CONNECT'
 
     if (
       isDifferentNamespace &&
       isCurrentNetworkConnected &&
       !isNewNetworkConnected &&
-      !isAuthConnected
+      !isAuthConnected &&
+      !isWalletConnectConnected
     ) {
       RouterController.push('SwitchActiveChain', {
         switchToChain: network.chainNamespace,
