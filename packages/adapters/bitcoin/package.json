@@ -17,6 +17,7 @@
     "test": "vitest run --coverage.enabled=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true"
   },
   "dependencies": {
+    "@exodus/bitcoin-wallet-standard": "^0.0.0",
     "@reown/appkit": "workspace:*",
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-core": "workspace:*",

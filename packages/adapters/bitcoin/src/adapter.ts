@@ -19,11 +19,23 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     return Promise.resolve()
   }
 
-  override connect(
-    _params: AdapterBlueprint.ConnectParams
+  override async connect(
+    params: AdapterBlueprint.ConnectParams
   ): Promise<AdapterBlueprint.ConnectResult> {
-    // Connect to Metamask
-    return Promise.resolve({} as unknown as AdapterBlueprint.ConnectResult)
+    const connector = this.connectors.find(c => c.id === params.id)
+    if (!connector) {
+      throw new Error('connectionControllerClient:connectExternal - connector is undefined')
+    }
+
+    const address = await connector.connect()
+
+    return {
+      id: connector.id,
+      type: connector.type,
+      address,
+      chainId: this.networks[0]?.id || '',
+      provider: connector.provider
+    }
   }
 
   override switchNetwork(_params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {

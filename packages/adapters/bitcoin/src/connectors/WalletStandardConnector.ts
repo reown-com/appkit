@@ -16,13 +16,25 @@ export class WalletStandardConnector implements BitcoinConnector {
   }
 
   public get id(): string {
+    return this.name
+  }
+
+  public get name(): string {
     return this.wallet.name
+  }
+
+  public get imageUrl(): string {
+    return this.wallet.icon || ''
   }
 
   public get chains() {
     return this.wallet.chains
       .map(chainId => this.requestedChains.find(chain => chain.id === chainId))
       .filter(Boolean) as CaipNetwork[]
+  }
+
+  async connect() {
+    return Promise.resolve('address')
   }
 
   async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {
@@ -35,22 +47,16 @@ export class WalletStandardConnector implements BitcoinConnector {
   }: WalletStandardConnector.WatchWalletsParams) {
     const { get, on } = getWallets()
 
-    function wrapWallet(wallet: Wallet) {
-      return new WalletStandardConnector({ wallet, requestedChains })
+    function wrapWallets(wallets: readonly Wallet[]) {
+      // Must replace the filter with the correct function to identify bitcoin wallets
+      return wallets
+        .filter(wallet => 'bitcoin:connect' in wallet.features)
+        .map(wallet => new WalletStandardConnector({ wallet, requestedChains }))
     }
 
-    const listeners = [
-      on('register', (...wallets) => {
-        callback(...wallets.map(wrapWallet))
-      }),
-      on('unregister', (...wallets) => {
-        callback(...wallets.map(wrapWallet))
-      })
-    ]
+    callback(...wrapWallets(get()))
 
-    callback(...get().map(wrapWallet))
-
-    return () => listeners.forEach(off => off())
+    return on('register', (...wallets) => callback(...wrapWallets(wallets)))
   }
 }
 

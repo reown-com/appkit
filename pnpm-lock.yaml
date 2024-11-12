@@ -905,6 +905,9 @@ importers:
 
   packages/adapters/bitcoin:
     dependencies:
+      '@exodus/bitcoin-wallet-standard':
+        specifier: ^0.0.0
+        version: 0.0.0
       '@reown/appkit':
         specifier: workspace:*
         version: link:../../appkit
@@ -4270,6 +4273,22 @@ packages:
 
   '@ethersproject/wordlists@5.7.0':
     resolution: {integrity: sha512-S2TFNJNfHWVHNE6cNDjbVlZ6MgE17MIxMbMg2zv3wn+3XSJGosL1m9ZVv3GXCf/2ymSsQ+hRI5IzoMJTG6aoVA==}
+
+  '@exodus/bitcoin-wallet-standard-chains@0.0.0':
+    resolution: {integrity: sha512-D9ddBdkZZCyX4lMLirqdRchrkDhRzlqhAwmKE1IC/N2mndY0Sz2PayJrhpxvS+vlVbU54ZlBGfSwOhPUQekP/w==}
+    engines: {node: '>=16'}
+
+  '@exodus/bitcoin-wallet-standard-core@0.0.0':
+    resolution: {integrity: sha512-E9sJ4taqZl72fFU8pUAe15dxf92XzgVTPpPLE5XDHcqz1TkaIUAZ2zbOjvns469vxUj9bDHbBxNAPLlIgohasA==}
+    engines: {node: '>=16'}
+
+  '@exodus/bitcoin-wallet-standard-features@0.0.0':
+    resolution: {integrity: sha512-IXt07cl0A+7QuhfB/FiXtGdtTdLN7LyKZjE0ZvU/7msI3D39OsjQMj0qLxLiKj8n+jzAcO2/ULZcrOv5e/jT5A==}
+    engines: {node: '>=16'}
+
+  '@exodus/bitcoin-wallet-standard@0.0.0':
+    resolution: {integrity: sha512-b/BE2VNLy7CEe3ziOTIjveSBzC4E71OxKIcAyguEQnPizNZ/cC27WQdJhfGeeubOy48+uxCFT1fZq2T53I2mpg==}
+    engines: {node: '>=16'}
 
   '@fal-works/esbuild-plugin-global-externals@2.1.2':
     resolution: {integrity: sha512-cEee/Z+I12mZcFJshKcCqC8tuX5hG3s+d+9nZ3LabqKF1vKdF41B92pJVCBggjAGORAeOzyyDDKrZwIkLffeOQ==}
@@ -16234,6 +16253,24 @@ snapshots:
       '@ethersproject/logger': 5.7.0
       '@ethersproject/properties': 5.7.0
       '@ethersproject/strings': 5.7.0
+
+  '@exodus/bitcoin-wallet-standard-chains@0.0.0':
+    dependencies:
+      '@wallet-standard/base': 1.0.1
+
+  '@exodus/bitcoin-wallet-standard-core@0.0.0':
+    dependencies:
+      '@exodus/bitcoin-wallet-standard-chains': 0.0.0
+      '@exodus/bitcoin-wallet-standard-features': 0.0.0
+
+  '@exodus/bitcoin-wallet-standard-features@0.0.0':
+    dependencies:
+      '@wallet-standard/base': 1.0.1
+      '@wallet-standard/features': 1.0.3
+
+  '@exodus/bitcoin-wallet-standard@0.0.0':
+    dependencies:
+      '@exodus/bitcoin-wallet-standard-core': 0.0.0
 
   '@fal-works/esbuild-plugin-global-externals@2.1.2': {}
 
