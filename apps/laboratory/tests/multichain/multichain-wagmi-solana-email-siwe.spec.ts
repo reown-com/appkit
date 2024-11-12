@@ -21,7 +21,7 @@ test.beforeAll(async ({ browser }) => {
 
   await page.load()
 
-  const mailsacApiKey = process.env['MAILSAC_API_KEY']
+  const mailsacApiKey = 'k_Om5blBjThidSk73YhTpAjCUgq15uorClMzikgYPqBoF060'
   if (!mailsacApiKey) {
     throw new Error('MAILSAC_API_KEY is not set')
   }
@@ -59,6 +59,8 @@ test('it should switch to different namespace', async () => {
   const chainName = 'Solana'
 
   await page.switchNetwork(chainName)
+  await validator.expectUnauthenticated()
+  await page.closeModal()
   await page.openAccount()
   await page.openNetworks()
   await validator.expectSwitchedNetwork(chainName)
