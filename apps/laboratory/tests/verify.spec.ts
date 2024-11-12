@@ -279,6 +279,11 @@ testMEthersVerifyEvil(
   }
 )
 
+const prodVerifyServer = "https://verify.walletconnect.org"
+
+// "https://verify-server-staging.walletconnect-v1-bridge.workers.dev"
+const altVerifyServer = null
+
 timingFixture(
   'wagmi: AppKit in iframe + verify happy case',
   async ({ page: rootPage, context }) => {
@@ -291,12 +296,14 @@ timingFixture(
         body: `<iframe name="innerFrame" src="${innerUrl}" style="width:100vw; height:100vh"></iframe>`
       })
     })
-    await routeInterceptUrl(
-      rootPage,
-      'https://verify.walletconnect.org',
-      'https://verify-server-staging.walletconnect-v1-bridge.workers.dev',
-      '/'
-    )
+    if (altVerifyServer) {
+      await routeInterceptUrl(
+        rootPage,
+        prodVerifyServer,
+        altVerifyServer,
+        '/'
+      )
+    }
     await rootPage.goto(outerUrl)
 
     const frame = rootPage.frame({ name: 'innerFrame' })
@@ -318,12 +325,14 @@ timingFixture(
 
     const modalValidator = new ModalValidator(modalPage.page)
     const walletPagePage = await context.newPage()
-    await routeInterceptUrl(
-      walletPagePage,
-      'https://verify.walletconnect.org',
-      'https://verify-server-staging.walletconnect-v1-bridge.workers.dev',
-      '/'
-    )
+    if (altVerifyServer) {
+      await routeInterceptUrl(
+        walletPagePage,
+        prodVerifyServer,
+        altVerifyServer,
+        '/'
+      )
+    }
     const walletPage = new WalletPage(walletPagePage)
     await walletPage.load()
     const walletValidator = new WalletValidator(walletPage.page)
