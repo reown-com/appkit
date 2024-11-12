@@ -15,6 +15,12 @@ const modal = createAppKit({
   networks: ConstantsUtil.EvmNetworks,
   defaultNetwork: mainnet,
   projectId,
+  metadata: {
+    name: "AppKit",
+    description: "AppKit Laboratory",
+    url: "https://example.com",
+    icons: []
+  },
   features: {
     analytics: true
   },

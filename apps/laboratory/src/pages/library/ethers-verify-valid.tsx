@@ -1,20 +1,11 @@
+import { createAppKit } from '@reown/appkit/react'
+import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { EthersTests } from '../../components/Ethers/EthersTests'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
 import { mainnet } from '@reown/appkit/networks'
-import { EthersAdapter } from '@reown/appkit-adapter-ethers'
-import { createAppKit } from '@reown/appkit'
-
-const metadata = {
-  name: 'Web3Modal',
-  description: 'Web3Modal Laboratory',
-  // Allow localhost
-  url: 'http://localhost:3000',
-  icons: ['https://avatars.githubusercontent.com/u/37784886'],
-  verifyUrl: ''
-}
 
 // Special project ID with verify enabled on localhost
 const projectId = 'e4eae1aad4503db9966a04fd045a7e4d'
@@ -27,8 +18,7 @@ const modal = createAppKit({
   features: {
     analytics: true
   },
-  customWallets: ConstantsUtil.CustomWallets,
-  metadata
+  customWallets: ConstantsUtil.CustomWallets
 })
 
 ThemeStore.setModal(modal)

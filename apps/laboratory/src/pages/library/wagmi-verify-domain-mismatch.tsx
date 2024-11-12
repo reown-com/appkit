@@ -27,8 +27,12 @@ const modal = createAppKit({
   networks,
   defaultNetwork: mainnet,
   projectId,
-  termsConditionsUrl: 'https://reown.com/terms-of-service',
-  privacyPolicyUrl: 'https://reown.com/privacy-policy'
+  metadata: {
+    name: "AppKit",
+    description: "AppKit Laboratory",
+    url: "https://example.com",
+    icons: []
+  }
 })
 
 ThemeStore.setModal(modal)

@@ -9,15 +9,6 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { mainnet } from '@reown/appkit/networks'
 
-const metadata = {
-  name: 'AppKit',
-  description: 'AppKit Laboratory',
-  // Allow localhost
-  url: 'http://localhost:3000',
-  icons: ['https://avatars.githubusercontent.com/u/37784886'],
-  verifyUrl: ''
-}
-
 // Special project ID with verify enabled on localhost
 const projectId = 'e4eae1aad4503db9966a04fd045a7e4d'
 
@@ -36,7 +27,6 @@ const modal = createAppKit({
   networks,
   projectId,
   defaultNetwork: mainnet,
-  metadata,
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy'
 })

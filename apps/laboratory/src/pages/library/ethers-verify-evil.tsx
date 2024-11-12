@@ -1,19 +1,11 @@
-import { createAppKit } from '@reown/appkit'
+import { createAppKit } from '@reown/appkit/react'
+import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { EthersTests } from '../../components/Ethers/EthersTests'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
-import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { mainnet } from '@reown/appkit/networks'
-
-const metadata = {
-  name: 'Evil Web3Modal',
-  description: 'Evil Web3Modal Laboratory',
-  url: 'https://malicious-app-verify-simulation.vercel.app/',
-  icons: ['https://avatars.githubusercontent.com/u/37784886'],
-  verifyUrl: ''
-}
 
 // Special project ID with https://malicious-app-verify-simulation.vercel.app/ as the verified domain and this domain is marked as a scam
 const projectId = '9d176efa3150a1df0a76c8c138b6b657'
@@ -26,8 +18,7 @@ const modal = createAppKit({
   features: {
     analytics: true
   },
-  customWallets: ConstantsUtil.CustomWallets,
-  metadata
+  customWallets: ConstantsUtil.CustomWallets
 })
 
 ThemeStore.setModal(modal)
