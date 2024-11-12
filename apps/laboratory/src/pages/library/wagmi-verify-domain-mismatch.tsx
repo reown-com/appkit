@@ -28,9 +28,9 @@ const modal = createAppKit({
   defaultNetwork: mainnet,
   projectId,
   metadata: {
-    name: "AppKit",
-    description: "AppKit Laboratory",
-    url: "https://example.com",
+    name: 'AppKit',
+    description: 'AppKit Laboratory',
+    url: 'https://example.com',
     icons: []
   }
 })
