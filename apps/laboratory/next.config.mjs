@@ -8,6 +8,8 @@ const SHAKRA_UI = `'sha256-e7MRMmTzLsLQvIy1iizO1lXf7VWYoQ6ysj5fuUzvRwE='`
 const secureSiteDomain = process.env.NEXT_PUBLIC_SECURE_SITE_SDK_URL
   ? new URL(process.env.NEXT_PUBLIC_SECURE_SITE_SDK_URL).origin
   : ''
+const verifyApiNestedIframesTestOuterDomain =
+  'https://verify-api-nested-iframes-test-outer-domain.com'
 const cspHeader = `
   default-src 'self';
   script-src 'self' ${SHAKRA_UI} ${process.env.NODE_ENV === 'production' ? '' : "'unsafe-eval'"};
@@ -19,7 +21,9 @@ const cspHeader = `
   object-src 'none';
   base-uri 'self';
   form-action 'self';
-  frame-ancestors 'none';
+  frame-ancestors ${
+    process.env.NODE_ENV === 'production' ? 'none' : verifyApiNestedIframesTestOuterDomain
+  };
   report-uri https://o1095249.ingest.sentry.io/api/4505685639364608/security/?sentry_key=36ff1e79c60877fce6c0273e94a8ed69;
   report-to csp-endpoint
 `

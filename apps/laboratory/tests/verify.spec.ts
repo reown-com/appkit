@@ -1,4 +1,4 @@
-import { DEFAULT_CHAIN_NAME, DEFAULT_SESSION_PARAMS } from './shared/constants'
+import { BASE_URL, DEFAULT_CHAIN_NAME, DEFAULT_SESSION_PARAMS } from './shared/constants'
 import { testM as testMWagmi } from './shared/fixtures/w3m-fixture'
 import { testMWagmiVerifyDomainMismatch } from './shared/fixtures/w3m-wagmi-verify-domain-mismatch-fixture'
 import { testMWagmiVerifyEvil } from './shared/fixtures/w3m-wagmi-verify-evil-fixture'
@@ -10,7 +10,10 @@ import { testMEthersVerifyValid } from './shared/fixtures/w3m-ethers-verify-vali
 import { WalletPage } from './shared/pages/WalletPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
 import { WalletValidator } from './shared/validators/WalletValidator'
-import { expect } from '@playwright/test'
+import { expect, type Page } from '@playwright/test'
+import { timingFixture } from './shared/fixtures/timing-fixture'
+import { ModalPage } from './shared/pages/ModalPage'
+import { routeInterceptUrl } from './shared/utils/verify'
 
 testMWagmi(
   'wagmi: connection and signature requests from non-verified project should show as cannot verify',
@@ -267,6 +270,75 @@ testMEthersVerifyEvil(
     await walletPage.page.getByText('Proceed anyway').click()
     await walletValidator.expectReceivedSign({ chainName })
     await expect(walletPage.page.getByText('Potential threat')).toBeVisible()
+    await walletPage.handleRequest({ accept: true })
+    await modalValidator.expectAcceptedSign()
+
+    await modalPage.disconnect()
+    await modalValidator.expectDisconnected()
+    await walletValidator.expectDisconnected()
+  }
+)
+
+timingFixture(
+  'wagmi: AppKit in iframe + verify happy case',
+  async ({ page: rootPage, context }) => {
+    const verifyApiNestedIframesTestOuterDomain =
+      'https://verify-api-nested-iframes-test-outer-domain.com'
+    const outerUrl = verifyApiNestedIframesTestOuterDomain
+    const innerUrl = `${BASE_URL}library/wagmi-verify-valid`
+    await rootPage.route(outerUrl, async route => {
+      await route.fulfill({
+        body: `<iframe name="innerFrame" src="${innerUrl}" style="width:100vw; height:100vh"></iframe>`
+      })
+    })
+    await routeInterceptUrl(
+      rootPage,
+      'https://verify.walletconnect.org',
+      'https://verify-server-staging.walletconnect-v1-bridge.workers.dev',
+      '/'
+    )
+    await rootPage.goto(outerUrl)
+
+    const frame = rootPage.frame({ name: 'innerFrame' })
+    if (frame === null) {
+      throw new Error('iframe not found')
+    }
+
+    /*
+     * Forcibly cast the Frame to a Page so ModalPage accepts it. It has the same necessary functions for this test case, so this is OK.
+     * Note we don't call `.load()` on the ModalPage since it would navigate the top-level page instead of the iframe.
+     * Tried using `Page | Frame` on the ModalPage constructor but we have other functions that depend on fields specific to Page.
+     */
+    const page = frame as unknown as Page
+
+    const modalPage = new ModalPage(page, 'wagmi', 'wagmi-verify-valid')
+    if (modalPage.library === 'solana') {
+      return
+    }
+
+    const modalValidator = new ModalValidator(modalPage.page)
+    const walletPagePage = await context.newPage()
+    await routeInterceptUrl(
+      walletPagePage,
+      'https://verify.walletconnect.org',
+      'https://verify-server-staging.walletconnect-v1-bridge.workers.dev',
+      '/'
+    )
+    const walletPage = new WalletPage(walletPagePage)
+    await walletPage.load()
+    const walletValidator = new WalletValidator(walletPage.page)
+
+    const uri = await modalPage.getConnectUri()
+    await walletPage.connectWithUri(uri)
+    await expect(walletPage.page.getByTestId('session-info-verified')).toBeVisible()
+    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+    await modalValidator.expectConnected()
+    await walletValidator.expectConnected()
+
+    await modalPage.sign()
+    const chainName = modalPage.library === 'solana' ? 'Solana' : DEFAULT_CHAIN_NAME
+    await walletValidator.expectReceivedSign({ chainName })
+    await expect(walletPage.page.getByTestId('session-info-verified')).toBeVisible()
     await walletPage.handleRequest({ accept: true })
     await modalValidator.expectAcceptedSign()
 
