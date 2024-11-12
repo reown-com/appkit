@@ -1,4 +1,37 @@
-export type CaipNetworkId = `${string}:${string}`
+import type { Chain as BaseChain } from 'viem/chains'
+import type { ChainFormatters } from 'viem'
+
+export type { BaseChain }
+
+export type BaseNetwork<
+  formatters extends ChainFormatters | undefined = ChainFormatters | undefined,
+  custom extends Record<string, unknown> | undefined = Record<string, unknown> | undefined
+> = BaseChain<formatters, custom>
+
+export type CaipNetwork<
+  formatters extends ChainFormatters | undefined = ChainFormatters | undefined,
+  custom extends Record<string, unknown> | undefined = Record<string, unknown> | undefined
+> = Omit<BaseChain<formatters, custom>, 'id'> & {
+  id: number | string
+  chainNamespace: ChainNamespace
+  caipNetworkId: CaipNetworkId
+  assets?: {
+    imageId: string | undefined
+    imageUrl: string | undefined
+  }
+}
+
+export type AppKitNetwork = BaseNetwork | CaipNetwork
+
+export type CaipNetworkId = `${ChainNamespace}:${ChainId}`
+
+export type CaipAddress = `${ChainNamespace}:${ChainId}:${string}`
+
+export type ChainId = string | number
+
+export type ChainNamespace = 'eip155' | 'solana' | 'polkadot'
+
+export type AdapterType = 'solana' | 'wagmi' | 'ethers' | 'ethers5' | 'universal' | 'polkadot'
 
 export type CoinbaseTransactionStatus =
   | 'ONRAMP_TRANSACTION_STATUS_SUCCESS'
@@ -13,8 +46,6 @@ export type TransactionImage = {
   type: 'FUNGIBLE' | 'NFT' | undefined
   url: string | undefined
 }
-
-export type Chain = 'evm' | 'solana'
 
 export interface Transaction {
   id: string
@@ -92,3 +123,11 @@ type BalanceQuantity = {
   decimals: string
   numeric: string
 }
+
+export type SIWEStatus = 'uninitialized' | 'ready' | 'loading' | 'success' | 'rejected' | 'error'
+
+export type SdkFramework = 'html' | 'react' | 'vue'
+
+export type SdkVersion = `${SdkFramework}-${AdapterType}-${string}`
+
+export type AppKitSdkVersion = `${SdkFramework}-${string}-${string}`

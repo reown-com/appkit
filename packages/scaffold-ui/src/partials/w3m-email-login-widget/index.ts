@@ -1,12 +1,19 @@
-import { ChainController, ConnectorController, CoreHelperUtil } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import {
+  ChainController,
+  ConnectorController,
+  CoreHelperUtil,
+  OptionsController,
+  type WalletGuideType
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import { ref, createRef } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 import styles from './styles.js'
-import { SnackController, RouterController, EventsController } from '@web3modal/core'
-import { ConstantsUtil } from '@web3modal/common'
+import { SnackController, RouterController, EventsController } from '@reown/appkit-core'
+import { ConstantsUtil } from '@reown/appkit-common'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-email-login-widget')
 export class W3mEmailLoginWidget extends LitElement {
@@ -18,7 +25,11 @@ export class W3mEmailLoginWidget extends LitElement {
   private formRef: Ref<HTMLFormElement> = createRef()
 
   // -- State & Properties -------------------------------- //
+  @property() public tabIdx?: number
+
   @state() private connectors = ConnectorController.state.connectors
+
+  @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
 
   @state() private email = ''
 
@@ -26,10 +37,15 @@ export class W3mEmailLoginWidget extends LitElement {
 
   @state() private error = ''
 
+  @property() private walletGuide: WalletGuideType = 'get-started'
+
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
+      ConnectorController.subscribeKey('connectors', val => {
+        this.connectors = val
+        this.authConnector = val.find(c => c.type === 'AUTH')
+      })
     )
   }
 
@@ -47,10 +63,9 @@ export class W3mEmailLoginWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const connector = this.connectors.find(c => c.type === 'AUTH')
-    const multipleConnectors = this.connectors.length > 1
+    const email = OptionsController.state.features?.email
 
-    if (!connector?.email) {
+    if (!this.authConnector || !email) {
       return null
     }
 
@@ -60,19 +75,14 @@ export class W3mEmailLoginWidget extends LitElement {
           @focus=${this.onFocusEvent.bind(this)}
           .disabled=${this.loading}
           @inputChange=${this.onEmailInputChange.bind(this)}
-          .errorMessage=${this.error}
+          tabIdx=${ifDefined(this.tabIdx)}
         >
         </wui-email-input>
 
         ${this.submitButtonTemplate()}${this.loadingTemplate()}
         <input type="submit" hidden />
       </form>
-
-      ${connector.socials || !multipleConnectors
-        ? null
-        : html`<wui-flex .padding=${['xxs', '0', '0', '0'] as const}>
-            <wui-separator text="or"></wui-separator>
-          </wui-flex>`}
+      ${this.templateError()} ${this.separatorTemplate()}
     `
   }
 
@@ -93,10 +103,44 @@ export class W3mEmailLoginWidget extends LitElement {
       : null
   }
 
+  private separatorTemplate() {
+    const socials = OptionsController.state.features?.socials
+    const multipleConnectors = this.connectors.length > 1
+    const enableWallets = OptionsController.state.enableWallets
+    const emailShowWallets = OptionsController.state.features?.emailShowWallets
+
+    const hideSeparator =
+      (socials && socials.length) || emailShowWallets || !multipleConnectors || !enableWallets
+
+    if (hideSeparator && this.walletGuide === 'get-started') {
+      return null
+    }
+
+    if (socials && socials.length > 0) {
+      return null
+    }
+
+    return html`
+      <wui-flex
+        data-testid="w3m-email-login-or-separator"
+        .padding=${['xxs', '0', '0', '0'] as const}
+      >
+        <wui-separator text="or"></wui-separator>
+      </wui-flex>
+    `
+  }
   private loadingTemplate() {
     return this.loading
       ? html`<wui-loading-spinner size="md" color="accent-100"></wui-loading-spinner>`
       : null
+  }
+
+  private templateError() {
+    if (this.error) {
+      return html`<wui-text variant="tiny-500" color="error-100">${this.error}</wui-text>`
+    }
+
+    return null
   }
 
   private onEmailInputChange(event: CustomEvent<string>) {

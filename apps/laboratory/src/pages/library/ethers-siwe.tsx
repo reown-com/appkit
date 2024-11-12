@@ -1,22 +1,26 @@
+import { createAppKit } from '@reown/appkit/react'
+import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { EthersTests } from '../../components/Ethers/EthersTests'
 import { AppKitButtons } from '../../components/AppKitButtons'
-import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
 import { ThemeStore } from '../../utils/StoreUtil'
-import { EthersConstants } from '../../utils/EthersConstants'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { siweConfig } from '../../utils/SiweUtils'
 import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
+import { mainnet } from '@reown/appkit/networks'
 
-const modal = createWeb3Modal({
-  ethersConfig: defaultConfig({
-    metadata: ConstantsUtil.Metadata,
-    defaultChainId: 1
-  }),
-  chains: EthersConstants.chains,
+const networks = ConstantsUtil.EvmNetworks
+
+const ethersAdapter = new EthersAdapter()
+
+const modal = createAppKit({
+  adapters: [ethersAdapter],
+  networks,
+  defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
-  enableAnalytics: true,
-  metadata: ConstantsUtil.Metadata,
+  features: {
+    analytics: true
+  },
   siweConfig,
   customWallets: ConstantsUtil.CustomWallets
 })

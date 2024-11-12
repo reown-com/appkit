@@ -4,18 +4,22 @@ import {
   AssetController,
   ChainController,
   ConnectorController,
-  NetworkController,
   OptionsController
-} from '../../index.js'
+} from '../../exports/index.js'
 import { api } from '../../src/controllers/ApiController.js'
-import { ConstantsUtil } from '@web3modal/common'
+import { ConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
 
 // -- Constants ----------------------------------------------------------------
 const chain = ConstantsUtil.CHAIN.EVM
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize([{ chain: ConstantsUtil.CHAIN.EVM }])
+  ChainController.initialize([
+    {
+      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      caipNetworks: []
+    }
+  ])
 })
 
 describe('ApiController', () => {
@@ -41,7 +45,7 @@ describe('ApiController', () => {
     await ApiController._fetchWalletImage(imageId)
     expect(fetchSpy).toHaveBeenCalledWith({
       path: `${api.baseUrl}/getWalletImage/${imageId}`,
-      headers: ApiController._getApiHeaders()
+      params: ApiController._getSdkProperties()
     })
 
     // Cannot exactly recreate the object url
@@ -57,7 +61,7 @@ describe('ApiController', () => {
     await ApiController._fetchNetworkImage(imageId)
     expect(fetchSpy).toHaveBeenCalledWith({
       path: `${api.baseUrl}/public/getAssetImage/${imageId}`,
-      headers: ApiController._getApiHeaders()
+      params: ApiController._getSdkProperties()
     })
 
     // Cannot exactly recreate the object url
@@ -73,7 +77,7 @@ describe('ApiController', () => {
     await ApiController._fetchConnectorImage(imageId)
     expect(fetchSpy).toHaveBeenCalledWith({
       path: `${api.baseUrl}/public/getAssetImage/${imageId}`,
-      headers: ApiController._getApiHeaders()
+      params: ApiController._getSdkProperties()
     })
 
     // Cannot exactly recreate the object url
@@ -89,7 +93,7 @@ describe('ApiController', () => {
     await ApiController._fetchCurrencyImage(countryCode)
     expect(fetchSpy).toHaveBeenCalledWith({
       path: `${api.baseUrl}/public/getCurrencyImage/${countryCode}`,
-      headers: ApiController._getApiHeaders()
+      params: ApiController._getSdkProperties()
     })
 
     // Cannot exactly recreate the object url
@@ -105,7 +109,7 @@ describe('ApiController', () => {
     await ApiController._fetchTokenImage(symbol)
     expect(fetchSpy).toHaveBeenCalledWith({
       path: `${api.baseUrl}/public/getTokenImage/${symbol}`,
-      headers: ApiController._getApiHeaders()
+      params: ApiController._getSdkProperties()
     })
 
     // Cannot exactly recreate the object url
@@ -113,25 +117,64 @@ describe('ApiController', () => {
   })
 
   it('should fetch network images ', async () => {
-    NetworkController.setRequestedCaipNetworks(
+    ChainController.setRequestedCaipNetworks(
       [
         {
-          id: '155:1',
+          caipNetworkId: 'eip155:1',
+          id: 1,
           name: 'Ethereum Mainnet',
-          imageId: '12341',
-          chain
-        },
+          assets: {
+            imageId: '12341',
+            imageUrl: ''
+          },
+          chainNamespace: chain,
+          nativeCurrency: {
+            name: 'Ethereum',
+            decimals: 18,
+            symbol: 'ETH'
+          },
+          rpcUrls: {
+            default: {
+              http: ['']
+            }
+          }
+        } as CaipNetwork,
         {
-          id: '155:4',
+          caipNetworkId: 'eip155:4',
+          id: 4,
           name: 'Ethereum Rinkeby',
-          imageId: '12342',
-          chain
-        },
+          assets: {
+            imageId: '12342',
+            imageUrl: ''
+          },
+          chainNamespace: chain,
+          nativeCurrency: {
+            name: 'Ethereum',
+            decimals: 18,
+            symbol: 'ETH'
+          },
+          rpcUrls: {
+            default: {
+              http: ['']
+            }
+          }
+        } as CaipNetwork,
         {
-          id: '155:42',
+          caipNetworkId: 'eip155:42',
+          id: 42,
           name: 'Ethereum Kovan',
-          chain
-        }
+          chainNamespace: chain,
+          nativeCurrency: {
+            name: 'Ethereum',
+            decimals: 18,
+            symbol: 'ETH'
+          },
+          rpcUrls: {
+            default: {
+              http: ['']
+            }
+          }
+        } as CaipNetwork
       ],
       chain
     )
@@ -143,25 +186,63 @@ describe('ApiController', () => {
   })
 
   it('should only fetch network images for networks with imageIds', async () => {
-    NetworkController.setRequestedCaipNetworks(
+    ChainController.setRequestedCaipNetworks(
       [
         {
-          id: '155:1',
+          caipNetworkId: 'eip155:1',
+          id: 1,
           name: 'Ethereum Mainnet',
-          imageId: '12341',
-          chain
+          assets: {
+            imageId: '12341',
+            imageUrl: ''
+          },
+          chainNamespace: chain,
+          nativeCurrency: {
+            name: 'Ethereum',
+            decimals: 18,
+            symbol: 'ETH'
+          },
+          rpcUrls: {
+            default: {
+              http: ['']
+            }
+          }
         },
         {
-          id: '155:4',
+          caipNetworkId: 'eip155:4',
+          id: 4,
           name: 'Ethereum Rinkeby',
-          imageId: '12342',
-          chain
+          assets: {
+            imageId: '12342',
+            imageUrl: ''
+          },
+          chainNamespace: chain,
+          nativeCurrency: {
+            name: 'Ethereum',
+            decimals: 18,
+            symbol: 'ETH'
+          },
+          rpcUrls: {
+            default: {
+              http: ['']
+            }
+          }
         },
-        // Should not fetch this
         {
-          id: '155:42',
+          caipNetworkId: 'eip155:42',
+          id: 42,
           name: 'Ethereum Kovan',
-          chain: ConstantsUtil.CHAIN.EVM
+          chainNamespace: chain,
+          nativeCurrency: {
+            name: 'Ethereum',
+            decimals: 18,
+            symbol: 'ETH'
+          },
+          rpcUrls: {
+            default: {
+              http: ['']
+            }
+          }
         }
       ],
       chain
@@ -216,17 +297,20 @@ describe('ApiController', () => {
     const featuredWalletIds = ['12341', '12342']
     const data = [
       {
-        id: '12341',
+        caipNetworkId: '12341',
+        id: 12341,
         name: 'MetaMask',
         image_id: '12341'
       },
       {
-        id: '12342',
+        caipNetworkId: '12342',
+        id: 12342,
         name: 'RandomWallet',
         image_id: '12342'
       },
       {
-        id: '12343',
+        caipNetworkId: '12343',
+        id: 12343,
         name: 'RandomWallet'
       }
     ]
@@ -237,8 +321,8 @@ describe('ApiController', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getSdkProperties(),
         page: '1',
         entries: '2',
         include: '12341,12342'
@@ -267,17 +351,20 @@ describe('ApiController', () => {
     const featuredWalletIds = ['12344']
     const data = [
       {
-        id: '12341',
+        caipNetworkId: '12341',
+        id: 12341,
         name: 'MetaMask',
         image_id: '12341'
       },
       {
-        id: '12342',
+        caipNetworkId: '12342',
+        id: 12342,
         name: 'RandomWallet',
         image_id: '12342'
       },
       {
-        id: '12343',
+        caipNetworkId: '12343',
+        id: 12343,
         name: 'RandomWallet'
       }
     ]
@@ -292,8 +379,8 @@ describe('ApiController', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getSdkProperties(),
         page: '1',
         // Fixed to recommendedEntries
         entries: '4',
@@ -320,8 +407,8 @@ describe('ApiController', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getSdkProperties(),
         page: '1',
         entries: '4',
         include: '',
@@ -338,12 +425,14 @@ describe('ApiController', () => {
     const featuredWalletIds = ['12344']
     const data = [
       {
-        id: '12341',
+        caipNetworkId: '12341',
+        id: 12341,
         name: 'MetaMask',
         image_id: '12341'
       },
       {
-        id: '12342',
+        caipNetworkId: '12342',
+        id: 12342,
         name: 'RandomWallet',
         image_id: '12342'
       }
@@ -359,8 +448,8 @@ describe('ApiController', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getSdkProperties(),
         page: '1',
         entries: '40',
         include: '12341,12342',
@@ -381,12 +470,14 @@ describe('ApiController', () => {
     const filteredWallet = [{ name: 'Rainbow', rdns: 'me.rainbow' }]
     const data = [
       {
-        id: '12345',
+        caipNetworkId: '12345',
+        id: 12345,
         name: 'MetaMask',
         rdns: 'io.metamask'
       },
       {
-        id: '12346',
+        caipNetworkId: '12346',
+        id: 12346,
         name: 'Phantom',
         rdns: 'app.phantom'
       }
@@ -401,8 +492,8 @@ describe('ApiController', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getSdkProperties(),
         page: '1',
         entries: String(excludeWalletIds.length),
         include: excludeWalletIds.join(',')
@@ -423,7 +514,8 @@ describe('ApiController', () => {
     const excludeWalletIds = ['12343']
     const data = [
       {
-        id: '12341',
+        caipNetworkId: '12341',
+        id: 12341,
         name: 'MetaMask',
         image_id: '12341'
       }
@@ -438,8 +530,8 @@ describe('ApiController', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getSdkProperties(),
         page: '1',
         entries: '100',
         search: 'MetaMask',
@@ -458,7 +550,8 @@ describe('ApiController', () => {
     const excludeWalletIds = ['12343']
     let data = [
       {
-        id: '12341',
+        caipNetworkId: '12341',
+        id: 12341,
         name: 'MetaMask',
         image_id: '12341'
       }
@@ -474,8 +567,8 @@ describe('ApiController', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getSdkProperties(),
         page: '1',
         entries: '100',
         search: 'MetaMask',
@@ -491,8 +584,8 @@ describe('ApiController', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getSdkProperties(),
         page: '1',
         entries: '100',
         search: 'MetaMask',
@@ -507,8 +600,8 @@ describe('ApiController', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getSdkProperties(),
         page: '1',
         entries: '100',
         search: 'MetaMask',
@@ -520,7 +613,8 @@ describe('ApiController', () => {
 
     data = [
       {
-        id: '12341',
+        caipNetworkId: '12341',
+        id: 12341,
         name: 'Safe Wallet',
         image_id: '12341'
       }
@@ -530,8 +624,8 @@ describe('ApiController', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',
-      headers: ApiController._getApiHeaders(),
       params: {
+        ...ApiController._getSdkProperties(),
         page: '1',
         entries: '100',
         search: 'Safe Wallet',
@@ -544,7 +638,7 @@ describe('ApiController', () => {
 
   // Prefetch
   it('should prefetch without analytics', () => {
-    OptionsController.state.enableAnalytics = false
+    OptionsController.setFeatures({ analytics: false })
     const fetchFeaturedSpy = vi.spyOn(ApiController, 'fetchFeaturedWallets').mockResolvedValue()
     const fetchNetworkImagesSpy = vi.spyOn(ApiController, 'fetchNetworkImages').mockResolvedValue()
     const recommendedWalletsSpy = vi
@@ -566,7 +660,7 @@ describe('ApiController', () => {
   })
 
   it('should prefetch with analytics', () => {
-    OptionsController.state.enableAnalytics = undefined
+    OptionsController.setFeatures({ analytics: true })
     const fetchSpy = vi.spyOn(ApiController, 'fetchFeaturedWallets').mockResolvedValue()
     const fetchNetworkImagesSpy = vi.spyOn(ApiController, 'fetchNetworkImages').mockResolvedValue()
     const recommendedWalletsSpy = vi
@@ -596,7 +690,7 @@ describe('ApiController', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getAnalyticsConfig',
-      headers: ApiController._getApiHeaders()
+      ...ApiController._getSdkProperties()
     })
 
     expect(ApiController.state.isAnalyticsEnabled).toBe(true)

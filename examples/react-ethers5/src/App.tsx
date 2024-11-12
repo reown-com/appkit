@@ -1,11 +1,12 @@
+import { Ethers5Adapter } from '@reown/appkit-adapter-ethers5'
 import {
-  createWeb3Modal,
-  defaultConfig,
-  useWeb3Modal,
-  useWeb3ModalEvents,
-  useWeb3ModalState,
-  useWeb3ModalTheme
-} from '@web3modal/ethers5/react'
+  createAppKit,
+  useAppKit,
+  useAppKitEvents,
+  useAppKitState,
+  useAppKitTheme
+} from '@reown/appkit/react'
+import { mainnet, arbitrum } from '@reown/appkit/networks'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -13,45 +14,20 @@ if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
 }
 
-function getBlockchainApiRpcUrl(chainId: number) {
-  return `https://rpc.walletconnect.org/v1/?chainId=eip155:${chainId}&projectId=${projectId}`
-}
+// 2. Set Ethers adapter
+const ethers5Adapter = new Ethers5Adapter()
 
-// 2. Set chains
-const chains = [
-  {
-    chainId: 1,
-    name: 'Ethereum',
-    currency: 'ETH',
-    explorerUrl: 'https://etherscan.io',
-    rpcUrl: getBlockchainApiRpcUrl(1)
-  },
-  {
-    chainId: 42161,
-    name: 'Arbitrum',
-    currency: 'ETH',
-    explorerUrl: 'https://arbiscan.io',
-    rpcUrl: getBlockchainApiRpcUrl(42161)
-  }
-]
-
-const ethersConfig = defaultConfig({
+// 3. Create modal
+createAppKit({
+  adapters: [ethers5Adapter],
   metadata: {
     name: 'AppKit',
     description: 'AppKit Laboratory',
     url: 'https://example.com',
-    icons: ['https://avatars.githubusercontent.com/u/37784886']
+    icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
   },
-  defaultChainId: 1
-})
-
-// 3. Create modal
-createWeb3Modal({
-  ethersConfig,
-  chains,
-  defaultChain: chains[1],
+  networks: [mainnet, arbitrum],
   projectId,
-  enableAnalytics: true,
   themeMode: 'light',
   themeVariables: {
     '--w3m-color-mix': '#00DCFF',
@@ -61,17 +37,17 @@ createWeb3Modal({
 
 export default function App() {
   // 4. Use modal hook
-  const modal = useWeb3Modal()
-  const state = useWeb3ModalState()
-  const { themeMode, themeVariables, setThemeMode } = useWeb3ModalTheme()
-  const events = useWeb3ModalEvents()
+  const modal = useAppKit()
+  const state = useAppKitState()
+  const { themeMode, themeVariables, setThemeMode } = useAppKitTheme()
+  const events = useAppKitEvents()
 
   return (
     <>
-      <w3m-button />
-      <w3m-network-button />
-      <w3m-connect-button />
-      <w3m-account-button />
+      <appkit-button />
+      <appkit-network-button />
+      <appkit-connect-button />
+      <appkit-account-button />
 
       <button onClick={() => modal.open()}>Connect Wallet</button>
       <button onClick={() => modal.open({ view: 'Networks' })}>Choose Network</button>

@@ -168,12 +168,17 @@ export type IconType =
   | 'verifyFilled'
   | 'wallet'
   | 'walletConnect'
+  | 'walletConnectLightBrown'
+  | 'walletConnectBrown'
   | 'walletPlaceholder'
   | 'warningCircle'
   | 'x'
+  | 'info'
+  | 'exclamationTriangle'
 
 export type VisualType =
   | 'browser'
+  | 'meld'
   | 'coinbase'
   | 'dao'
   | 'defi'
@@ -194,6 +199,7 @@ export type VisualType =
   | 'stripe'
   | 'paypal'
   | 'pencil'
+  | 'solana'
 
 export type VisualSize = 'sm' | 'md' | 'lg'
 
@@ -321,6 +327,8 @@ export interface ThemeVariables {
 export type IconBoxBorderType = 'wui-color-bg-125' | 'wui-accent-glass-010'
 
 export type TruncateType = 'start' | 'middle' | 'end'
+
+export type WalletGuideType = 'get-started' | 'explore'
 
 export type TruncateOptions = {
   string: string

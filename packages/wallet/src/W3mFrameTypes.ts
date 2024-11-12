@@ -72,10 +72,12 @@ import {
   RpcSolanaSignMessageRequest,
   RpcSolanaSignTransactionRequest,
   RpcSolanaSignAndSendTransactionRequest,
-  RpcSolanaSignAllTransactionsRequest
+  RpcSolanaSignAllTransactionsRequest,
+  FrameReadyResponse,
+  WalletRevokePermissionsRequest
 } from './W3mFrameSchema.js'
 import type { W3mFrameRpcConstants } from './W3mFrameConstants.js'
-import type { CaipNetworkId } from '@web3modal/common'
+import type { CaipNetworkId } from '@reown/appkit-common'
 
 export namespace W3mFrameTypes {
   export type AppEvent = z.infer<typeof W3mFrameSchema.appEvent>
@@ -128,6 +130,7 @@ export namespace W3mFrameTypes {
     FrameSetPreferredAccountResponse: z.infer<typeof FrameSetPreferredAccountResponse>
     FrameSignOutResponse: undefined
     FrameRpcResponse: RPCResponse
+    FrameReadyResponse: z.infer<typeof FrameReadyResponse>
   }
 
   export interface Network {
@@ -181,6 +184,7 @@ export namespace W3mFrameTypes {
     | z.infer<typeof WalletGetCallsReceiptRequest>
     | z.infer<typeof WalletGetCapabilitiesRequest>
     | z.infer<typeof WalletGrantPermissionsRequest>
+    | z.infer<typeof WalletRevokePermissionsRequest>
 
   export type RPCResponse = z.infer<typeof RpcResponse>
 
@@ -191,23 +195,23 @@ export namespace W3mFrameTypes {
   export type SocialProvider = 'google' | 'github' | 'apple' | 'facebook' | 'x' | 'discord'
 
   export type ProviderRequestType =
-    | 'GetUser'
-    | 'GetFarcasterUri'
-    | 'ConnectDevice'
     | 'ConnectEmail'
-    | 'ConnectSocial'
-    | 'ConnectFarcaster'
     | 'ConnectOtp'
-    | 'GetSocialRedirectUri'
+    | 'GetUser'
     | 'SwitchNetwork'
+    | 'GetChainId'
+    | 'IsConnected'
+    | 'GetSmartAccountEnabledNetworks'
     | 'UpdateEmail'
+    | 'GetSocialRedirectUri'
+    | 'ConnectSocial'
+    | 'GetFarcasterUri'
+    | 'ConnectFarcaster'
     | 'SyncTheme'
     | 'SyncDappData'
     | 'UpdateEmailPrimaryOtp'
     | 'UpdateEmailSecondaryOtp'
-    | 'GetSmartAccountEnabledNetworks'
-    | 'GetChainId'
-    | 'IsConnected'
+    | 'ConnectDevice'
     | 'SetPreferredAccount'
     | 'SignOut'
     | 'Rpc'

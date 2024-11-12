@@ -3,7 +3,7 @@ import {
   aurora,
   avalanche,
   base,
-  binanceSmartChain,
+  bsc,
   celo,
   gnosis,
   mainnet,
@@ -13,7 +13,7 @@ import {
   zora,
   sepolia,
   baseSepolia
-} from './ChainsUtil'
+} from '@reown/appkit/networks'
 
 export const EthersConstants = {
   chains: [
@@ -21,7 +21,7 @@ export const EthersConstants = {
     arbitrum,
     polygon,
     avalanche,
-    binanceSmartChain,
+    bsc,
     optimism,
     gnosis,
     zkSync,

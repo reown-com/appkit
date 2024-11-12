@@ -1,16 +1,23 @@
 import { Button, Stack, Link, Text, Spacer } from '@chakra-ui/react'
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react'
+import {
+  useAppKitAccount,
+  useAppKitNetwork,
+  useAppKitProvider,
+  type Provider
+} from '@reown/appkit/react'
 import { ethers } from 'ethers5'
 import { useState } from 'react'
-import { mainnet } from '../../utils/ChainsUtil'
+import { mainnet } from '@reown/appkit/networks'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { useChakraToast } from '../Toast'
 
 export function Ethers5TransactionTest() {
-  const toast = useChakraToast()
-  const { address, chainId } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider()
   const [loading, setLoading] = useState(false)
+  const toast = useChakraToast()
+
+  const { address } = useAppKitAccount()
+  const { chainId } = useAppKitNetwork()
+  const { walletProvider } = useAppKitProvider<Provider>('eip155')
 
   async function onSendTransaction() {
     try {
@@ -30,10 +37,11 @@ export function Ethers5TransactionTest() {
         description: tx.hash,
         type: 'success'
       })
-    } catch {
+    } catch (e) {
       toast({
         title: 'Error',
-        description: 'Failed to sign transaction',
+        // @ts-expect-error - error is unknown
+        description: e?.message || 'Failed to sign transaction',
         type: 'error'
       })
     } finally {
@@ -41,7 +49,7 @@ export function Ethers5TransactionTest() {
     }
   }
 
-  return Number(chainId) !== mainnet.chainId && address ? (
+  return chainId !== mainnet.id && address ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button
         data-testid="sign-transaction-button"

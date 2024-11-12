@@ -1,6 +1,11 @@
-import { OnRampController, ModalController, AssetController } from '@web3modal/core'
-import type { PaymentCurrency } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import {
+  OnRampController,
+  ModalController,
+  AssetController,
+  OptionsController
+} from '@reown/appkit-core'
+import type { PaymentCurrency } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -17,6 +22,7 @@ export class W3mOnrampFiatSelectView extends LitElement {
   @state() public selectedCurrency = OnRampController.state.paymentCurrency
   @state() public currencies = OnRampController.state.paymentCurrencies
   @state() private currencyImages = AssetController.state.currencyImages
+  @state() private checked = false
 
   public constructor() {
     super()
@@ -37,22 +43,38 @@ export class W3mOnrampFiatSelectView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
+
+    const legalCheckbox = OptionsController.state.features?.legalCheckbox
+
+    const legalUrl = termsConditionsUrl || privacyPolicyUrl
+    const showLegalCheckbox = Boolean(legalUrl) && Boolean(legalCheckbox)
+
+    const disabled = showLegalCheckbox && !this.checked
+
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 's', 's', 's']} gap="xs">
-        ${this.currenciesTemplate()}
+      <w3m-legal-checkbox @checkboxChange=${this.onCheckboxChange.bind(this)}></w3m-legal-checkbox>
+      <wui-flex
+        flexDirection="column"
+        .padding=${['0', 's', 's', 's']}
+        gap="xs"
+        class=${ifDefined(disabled ? 'disabled' : undefined)}
+      >
+        ${this.currenciesTemplate(disabled)}
       </wui-flex>
       <w3m-legal-footer></w3m-legal-footer>
     `
   }
 
   // -- Private ------------------------------------------- //
-  private currenciesTemplate() {
+  private currenciesTemplate(disabled = false) {
     return this.currencies.map(
       currency => html`
         <wui-list-item
           imageSrc=${ifDefined(this.currencyImages?.[currency.id])}
           @click=${() => this.selectCurrency(currency)}
           variant="image"
+          tabIdx=${ifDefined(disabled ? -1 : undefined)}
         >
           <wui-text variant="paragraph-500" color="fg-100">${currency.id}</wui-text>
         </wui-list-item>
@@ -67,6 +89,11 @@ export class W3mOnrampFiatSelectView extends LitElement {
 
     OnRampController.setPaymentCurrency(currency)
     ModalController.close()
+  }
+
+  // -- Private Methods ----------------------------------- //
+  private onCheckboxChange(event: CustomEvent<string>) {
+    this.checked = Boolean(event.detail)
   }
 }
 

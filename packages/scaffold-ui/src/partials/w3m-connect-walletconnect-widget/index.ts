@@ -1,8 +1,14 @@
-import type { Connector } from '@web3modal/core'
-import { AssetUtil, ConnectorController, CoreHelperUtil, RouterController } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import type { Connector } from '@reown/appkit-core'
+import {
+  AssetUtil,
+  ChainController,
+  ConnectorController,
+  CoreHelperUtil,
+  RouterController
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connect-walletconnect-widget')
@@ -11,6 +17,8 @@ export class W3mConnectWalletConnectWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
+  @property() public tabIdx?: number = undefined
+
   @state() private connectors = ConnectorController.state.connectors
 
   public constructor() {
@@ -32,7 +40,7 @@ export class W3mConnectWalletConnectWidget extends LitElement {
       return null
     }
 
-    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
+    const connector = this.connectors.find(c => c.id === 'walletConnect')
 
     if (!connector) {
       this.style.cssText = `display: none`
@@ -47,6 +55,7 @@ export class W3mConnectWalletConnectWidget extends LitElement {
         @click=${() => this.onConnector(connector)}
         tagLabel="qr code"
         tagVariant="main"
+        tabIdx=${ifDefined(this.tabIdx)}
         data-testid="wallet-selector-walletconnect"
       >
       </wui-list-wallet>
@@ -55,15 +64,8 @@ export class W3mConnectWalletConnectWidget extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
-    if (connector.type === 'WALLET_CONNECT') {
-      if (CoreHelperUtil.isMobile()) {
-        RouterController.push('AllWallets')
-      } else {
-        RouterController.push('ConnectingWalletConnect')
-      }
-    } else {
-      RouterController.push('ConnectingExternal', { connector })
-    }
+    ChainController.setActiveConnector(connector)
+    RouterController.push('ConnectingWalletConnect')
   }
 }
 

@@ -1,7 +1,16 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest'
-import type { ConnectionControllerClient, ConnectorType } from '../../index.js'
-import { ChainController, ConnectionController, ConstantsUtil, StorageUtil } from '../../index.js'
-import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
+import type {
+  ChainAdapter,
+  ConnectionControllerClient,
+  ConnectorType
+} from '../../exports/index.js'
+import {
+  ChainController,
+  ConnectionController,
+  ConstantsUtil,
+  StorageUtil
+} from '../../exports/index.js'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 
 // -- Setup --------------------------------------------------------------------
 const chain = CommonConstantsUtil.CHAIN.EVM
@@ -25,9 +34,13 @@ const client: ConnectionControllerClient = {
   sendTransaction: () => Promise.resolve('0x'),
   writeContract: () => Promise.resolve('0x'),
   getEnsAddress: async (value: string) => Promise.resolve(value),
-  getEnsAvatar: async (value: string) => Promise.resolve(value)
+  getEnsAvatar: async (value: string) => Promise.resolve(value),
+  getCapabilities: async () => Promise.resolve(''),
+  grantPermissions: async () => Promise.resolve('0x'),
+  revokePermissions: async () => Promise.resolve('0x')
 }
 
+const clientConnectWalletConnectSpy = vi.spyOn(client, 'connectWalletConnect')
 const clientConnectExternalSpy = vi.spyOn(client, 'connectExternal')
 const clientCheckInstalledSpy = vi.spyOn(client, 'checkInstalled')
 
@@ -41,23 +54,43 @@ const partialClient: ConnectionControllerClient = {
   sendTransaction: () => Promise.resolve('0x'),
   writeContract: () => Promise.resolve('0x'),
   getEnsAddress: async (value: string) => Promise.resolve(value),
-  getEnsAvatar: async (value: string) => Promise.resolve(value)
+  getEnsAvatar: async (value: string) => Promise.resolve(value),
+  getCapabilities: async () => Promise.resolve(''),
+  grantPermissions: async () => Promise.resolve('0x'),
+  revokePermissions: async () => Promise.resolve('0x')
 }
+
+const evmAdapter = {
+  chainNamespace: CommonConstantsUtil.CHAIN.EVM,
+  connectionControllerClient: client
+}
+const adapters = [evmAdapter] as ChainAdapter[]
+const universalAdapter = {
+  chainNamespace: 'eip155',
+  connectionControllerClient: client,
+  caipNetworks: []
+} as ChainAdapter
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize([{ chain: CommonConstantsUtil.CHAIN.EVM }])
+  ChainController.initialize(adapters)
+  ChainController.initializeUniversalAdapter(universalAdapter, adapters)
 })
 
 describe('ConnectionController', () => {
   it('should have valid default state', () => {
     ChainController.initialize([
-      { chain: CommonConstantsUtil.CHAIN.EVM, connectionControllerClient: client }
+      {
+        chainNamespace: CommonConstantsUtil.CHAIN.EVM,
+        connectionControllerClient: client,
+        caipNetworks: []
+      }
     ])
 
     expect(ConnectionController.state).toEqual({
       wcError: false,
-      buffering: false
+      buffering: false,
+      status: 'disconnected'
     })
   })
 
@@ -67,7 +100,7 @@ describe('ConnectionController', () => {
     expect(ConnectionController.state.wcPairingExpiry).toEqual(undefined)
   })
 
-  it('should update state correctly and set wcPromise on connectWalletConnect()', async () => {
+  it('should update state correctly and set wcPromisae on connectWalletConnect()', async () => {
     // Setup timers for pairing expiry
     const fakeDate = new Date(0)
     vi.useFakeTimers()
@@ -78,6 +111,7 @@ describe('ConnectionController', () => {
     expect(ConnectionController.state.wcUri).toEqual(walletConnectUri)
     expect(ConnectionController.state.wcPairingExpiry).toEqual(ConstantsUtil.FOUR_MINUTES_MS)
     expect(storageSpy).toHaveBeenCalledWith('WALLET_CONNECT')
+    expect(clientConnectWalletConnectSpy).toHaveBeenCalled()
 
     // Just in case
     vi.useRealTimers()
@@ -102,7 +136,11 @@ describe('ConnectionController', () => {
 
   it('should not throw when optional methods are undefined', async () => {
     ChainController.initialize([
-      { chain: CommonConstantsUtil.CHAIN.EVM, connectionControllerClient: partialClient }
+      {
+        chainNamespace: CommonConstantsUtil.CHAIN.EVM,
+        connectionControllerClient: partialClient,
+        caipNetworks: []
+      }
     ])
     await ConnectionController.connectExternal({ id: externalId, type }, chain)
     ConnectionController.checkInstalled([externalId])

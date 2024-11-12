@@ -2,16 +2,16 @@ import {
   AccountController,
   AssetUtil,
   CoreHelperUtil,
-  NetworkController,
+  ChainController,
   RouterController,
   SnackController,
   ThemeController
-} from '@web3modal/core'
-import { UiHelperUtil, customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { state } from 'lit/decorators.js'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 @customElement('w3m-wallet-receive-view')
 export class W3mWalletReceiveView extends LitElement {
@@ -25,7 +25,7 @@ export class W3mWalletReceiveView extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private network = NetworkController.state.caipNetwork
+  @state() private network = ChainController.state.activeCaipNetwork
 
   @state() private preferredAccountType = AccountController.state.preferredAccountType
 
@@ -43,7 +43,7 @@ export class W3mWalletReceiveView extends LitElement {
           }
         })
       ],
-      NetworkController.subscribeKey('caipNetwork', val => {
+      ChainController.subscribeKey('activeCaipNetwork', val => {
         if (val?.id) {
           this.network = val
         }
@@ -105,9 +105,9 @@ export class W3mWalletReceiveView extends LitElement {
 
   // -- Private ------------------------------------------- //
   networkTemplate() {
-    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
-    const isNetworkEnabledForSmartAccounts = NetworkController.checkIfSmartAccountEnabled()
-    const caipNetwork = NetworkController.state.caipNetwork
+    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+    const isNetworkEnabledForSmartAccounts = ChainController.checkIfSmartAccountEnabled()
+    const caipNetwork = ChainController.state.activeCaipNetwork
 
     if (
       this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT &&
@@ -123,7 +123,9 @@ export class W3mWalletReceiveView extends LitElement {
         .networkImages=${[AssetUtil.getNetworkImage(caipNetwork) ?? '']}
       ></wui-compatible-network>`
     }
-    const slicedNetworks = requestedCaipNetworks?.filter(network => network?.imageId)?.slice(0, 5)
+    const slicedNetworks = requestedCaipNetworks
+      ?.filter(network => network?.assets?.imageId)
+      ?.slice(0, 5)
     const imagesArray = slicedNetworks.map(AssetUtil.getNetworkImage).filter(Boolean) as string[]
 
     return html`<wui-compatible-network

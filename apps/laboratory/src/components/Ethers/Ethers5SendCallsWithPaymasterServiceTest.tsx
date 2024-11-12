@@ -1,7 +1,12 @@
 import { Button, Stack, Text, Input, Tooltip } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react'
-import { EthereumProvider } from '@walletconnect/ethereum-provider'
+import {
+  useAppKitAccount,
+  useAppKitNetwork,
+  useAppKitProvider,
+  type Provider
+} from '@reown/appkit/react'
+import { UniversalProvider } from '@walletconnect/universal-provider'
 import { useChakraToast } from '../Toast'
 import { parseGwei } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
@@ -11,14 +16,16 @@ import {
   WALLET_CAPABILITIES,
   getCapabilitySupportedChainInfo
 } from '../../utils/EIP5792Utils'
-import { W3mFrameProvider } from '@web3modal/wallet'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
+import { abi, address as donutAddress } from '../../utils/DonutContract'
 
 export function Ethers5SendCallsWithPaymasterServiceTest() {
   const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')
   const [isLoading, setLoading] = useState(false)
 
-  const { address, chainId, isConnected } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider()
+  const { chainId } = useAppKitNetwork()
+  const { address, isConnected } = useAppKitAccount()
+  const { walletProvider } = useAppKitProvider<Provider>('eip155')
   const toast = useChakraToast()
 
   const [paymasterServiceSupportedChains, setPaymasterServiceSupportedChains] = useState<
@@ -28,7 +35,7 @@ export function Ethers5SendCallsWithPaymasterServiceTest() {
   useEffect(() => {
     if (
       address &&
-      (walletProvider instanceof EthereumProvider || walletProvider instanceof W3mFrameProvider)
+      (walletProvider instanceof UniversalProvider || walletProvider instanceof W3mFrameProvider)
     ) {
       getCapabilitySupportedChainInfo(
         WALLET_CAPABILITIES.PAYMASTER_SERVICE,
@@ -48,7 +55,7 @@ export function Ethers5SendCallsWithPaymasterServiceTest() {
   const currentChainsInfo = paymasterServiceSupportedChains.find(
     chainInfo => chainInfo.chainId === Number(chainId)
   )
-  async function onSendCalls() {
+  async function onSendCalls(donut?: boolean) {
     try {
       setLoading(true)
       if (!walletProvider || !address) {
@@ -63,16 +70,27 @@ export function Ethers5SendCallsWithPaymasterServiceTest() {
       }
       const provider = new ethers.providers.Web3Provider(walletProvider, chainId)
       const amountToSend = parseGwei('0.001').toString(16)
-      const calls = [
-        {
-          to: vitalikEthAddress,
-          value: `0x${amountToSend}`
-        },
-        {
-          to: vitalikEthAddress,
-          data: '0xdeadbeef'
-        }
-      ]
+      const donutIntrerface = new ethers.utils.Interface(abi)
+      const encodedCallData = donutIntrerface.encodeFunctionData('getBalance', [address])
+
+      const calls = donut
+        ? [
+            {
+              to: donutAddress,
+              data: encodedCallData
+            }
+          ]
+        : [
+            {
+              to: vitalikEthAddress,
+              value: `0x${amountToSend}`
+            },
+            {
+              to: vitalikEthAddress,
+              data: '0xdeadbeef'
+            }
+          ]
+
       const sendCallsParams = {
         version: '1.0',
         chainId: `0x${BigInt(chainId).toString(16)}`,
@@ -105,9 +123,9 @@ export function Ethers5SendCallsWithPaymasterServiceTest() {
 
   function isSendCallsSupported(): boolean {
     // We are currently checking capabilities above. We should use those capabilities instead of this check.
-    if (walletProvider instanceof EthereumProvider) {
+    if (walletProvider instanceof UniversalProvider) {
       return Boolean(
-        walletProvider?.signer?.session?.namespaces?.['eip155']?.methods?.includes(
+        walletProvider?.session?.namespaces['eip155']?.methods?.includes(
           EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
         )
       )
@@ -153,10 +171,18 @@ export function Ethers5SendCallsWithPaymasterServiceTest() {
       <Button
         width={'fit-content'}
         data-testid="send-calls-paymaster-service-button"
-        onClick={onSendCalls}
+        onClick={() => onSendCalls()}
         isDisabled={isLoading || !paymasterServiceUrl}
       >
         SendCalls w/ Paymaster Service
+      </Button>
+      <Button
+        width={'fit-content'}
+        data-testid="send-calls-paymaster-service-button"
+        onClick={() => onSendCalls(true)}
+        isDisabled={isLoading || !paymasterServiceUrl}
+      >
+        Send Donut Calls w/ Paymaster Service
       </Button>
     </Stack>
   ) : (

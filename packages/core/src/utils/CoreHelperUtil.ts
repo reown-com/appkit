@@ -1,7 +1,10 @@
-import type { Balance } from '@web3modal/common'
-import { ConstantsUtil as CommonConstants } from '@web3modal/common'
+import type { AppKitSdkVersion, Balance, ChainNamespace } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstants } from '@reown/appkit-common'
 import { ConstantsUtil } from './ConstantsUtil.js'
-import type { CaipAddress, LinkingRecord, CaipNetwork } from './TypeUtil.js'
+import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
+import type { ChainAdapter, LinkingRecord } from './TypeUtil.js'
+
+type SDKFramework = 'html' | 'react' | 'vue'
 
 export const CoreHelperUtil = {
   isMobile() {
@@ -16,7 +19,7 @@ export const CoreHelperUtil = {
   },
 
   checkCaipNetwork(network: CaipNetwork | undefined, networkName = '') {
-    return network?.id.toLocaleLowerCase().includes(networkName.toLowerCase())
+    return network?.caipNetworkId.toLocaleLowerCase().includes(networkName.toLowerCase())
   },
 
   isAndroid() {
@@ -39,8 +42,8 @@ export const CoreHelperUtil = {
     return expiry ? expiry - Date.now() <= ConstantsUtil.TEN_SEC_MS : true
   },
 
-  isAllowedRetry(lastRetry: number) {
-    return Date.now() - lastRetry >= ConstantsUtil.ONE_SEC_MS
+  isAllowedRetry(lastRetry: number, differenceMs = ConstantsUtil.ONE_SEC_MS) {
+    return Date.now() - lastRetry >= differenceMs
   },
 
   copyToClopboard(text: string) {
@@ -97,6 +100,11 @@ export const CoreHelperUtil = {
     if (!safeAppUrl.endsWith('/')) {
       safeAppUrl = `${safeAppUrl}/`
     }
+    // Android deeplinks in tg context require the uri to be encoded twice
+    if (this.isTelegram() && this.isAndroid()) {
+      // eslint-disable-next-line no-param-reassign
+      wcUri = encodeURIComponent(wcUri)
+    }
     const encodedWcUrl = encodeURIComponent(wcUri)
 
     return {
@@ -120,13 +128,36 @@ export const CoreHelperUtil = {
       href: safeAppUrl
     }
   },
+  getOpenTargetForPlatform(target: string) {
+    // Only '_blank' deeplinks work in Telegram context
+    if (this.isTelegram()) {
+      return '_blank'
+    }
 
+    return target
+  },
   openHref(href: string, target: '_blank' | '_self' | 'popupWindow', features?: string) {
-    window.open(href, target, features || 'noreferrer noopener')
+    window.open(href, this.getOpenTargetForPlatform(target), features || 'noreferrer noopener')
   },
 
   returnOpenHref(href: string, target: '_blank' | '_self' | 'popupWindow', features?: string) {
-    return window.open(href, target, features || 'noreferrer noopener')
+    return window.open(
+      href,
+      this.getOpenTargetForPlatform(target),
+      features || 'noreferrer noopener'
+    )
+  },
+
+  isTelegram() {
+    return (
+      typeof window !== 'undefined' &&
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (Boolean((window as any).TelegramWebviewProxy) ||
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        Boolean((window as any).Telegram) ||
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        Boolean((window as any).TelegramWebviewProxyProto))
+    )
   },
 
   async preloadImage(src: string) {
@@ -260,14 +291,25 @@ export const CoreHelperUtil = {
     return { dollars, pennies }
   },
 
-  isAddress(address: string): boolean {
-    if (!/^(?:0x)?[0-9a-f]{40}$/iu.test(address)) {
-      return false
-    } else if (/^(?:0x)?[0-9a-f]{40}$/iu.test(address) || /^(?:0x)?[0-9A-F]{40}$/iu.test(address)) {
-      return true
-    }
+  isAddress(address: string, chain: ChainNamespace = 'eip155'): boolean {
+    switch (chain) {
+      case 'eip155':
+        if (!/^(?:0x)?[0-9a-f]{40}$/iu.test(address)) {
+          return false
+        } else if (
+          /^(?:0x)?[0-9a-f]{40}$/iu.test(address) ||
+          /^(?:0x)?[0-9A-F]{40}$/iu.test(address)
+        ) {
+          return true
+        }
 
-    return false
+        return false
+      case 'solana':
+        return /[1-9A-HJ-NP-Za-km-z]{32,44}$/iu.test(address)
+
+      default:
+        return false
+    }
   },
 
   uniqueBy<T>(arr: T[], key: keyof T) {
@@ -282,5 +324,18 @@ export const CoreHelperUtil = {
 
       return true
     })
+  },
+
+  generateSdkVersion(
+    adapters: ChainAdapter[],
+    platform: SDKFramework,
+    version: string
+  ): AppKitSdkVersion {
+    const noAdapters = adapters.length === 0
+    const adapterNames = noAdapters
+      ? 'universal'
+      : adapters.map(adapter => adapter.adapterType).join(',')
+
+    return `${platform}-${adapterNames}-${version}`
   }
 }

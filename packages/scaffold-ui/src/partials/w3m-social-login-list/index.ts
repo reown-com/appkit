@@ -4,15 +4,18 @@ import {
   ConnectorController,
   CoreHelperUtil,
   EventsController,
+  OptionsController,
   RouterController,
   SnackController
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import styles from './styles.js'
-import type { SocialProvider } from '@web3modal/scaffold-utils'
-import { SocialProviderEnum } from '@web3modal/scaffold-utils'
+import type { SocialProvider } from '@reown/appkit-utils'
+import { SocialProviderEnum } from '@reown/appkit-utils'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 @customElement('w3m-social-login-list')
 export class W3mSocialLoginList extends LitElement {
   public static override styles = styles
@@ -23,17 +26,22 @@ export class W3mSocialLoginList extends LitElement {
   private popupWindow?: Window | null
 
   // -- State & Properties -------------------------------- //
+  @property() public tabIdx?: number = undefined
+
   @state() private connectors = ConnectorController.state.connectors
 
-  private connector = this.connectors.find(c => c.type === 'AUTH')
+  @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
+
+  @state() private features = OptionsController.state.features
 
   public constructor() {
     super()
     this.unsubscribe.push(
       ConnectorController.subscribeKey('connectors', val => {
         this.connectors = val
-        this.connector = this.connectors.find(c => c.type === 'AUTH')
-      })
+        this.authConnector = this.connectors.find(c => c.type === 'AUTH')
+      }),
+      OptionsController.subscribeKey('features', val => (this.features = val))
     )
   }
 
@@ -43,12 +51,14 @@ export class W3mSocialLoginList extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    if (!this.connector?.socials) {
+    const socials = this.features?.socials
+
+    if (!this.authConnector || !socials || !socials?.length) {
       return null
     }
 
     return html` <wui-flex flexDirection="column" gap="xs">
-      ${this.connector.socials.map(
+      ${socials.map(
         social =>
           html`<wui-list-social
             @click=${() => {
@@ -56,6 +66,7 @@ export class W3mSocialLoginList extends LitElement {
             }}
             name=${social}
             logo=${social}
+            tabIdx=${ifDefined(this.tabIdx)}
           ></wui-list-social>`
       )}
     </wui-flex>`

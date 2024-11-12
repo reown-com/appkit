@@ -1,17 +1,24 @@
 import { Button, Stack, Link, Text, Spacer } from '@chakra-ui/react'
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers5/react'
+import {
+  useAppKitAccount,
+  useAppKitNetwork,
+  useAppKitProvider,
+  type Provider
+} from '@reown/appkit/react'
 import { ethers } from 'ethers5'
-import { optimism, sepolia } from '../../utils/ChainsUtil'
+import { optimism, sepolia } from '@reown/appkit/networks'
 import { useState } from 'react'
 
 import { abi, address as donutAddress } from '../../utils/DonutContract'
 import { useChakraToast } from '../Toast'
 
 export function Ethers5WriteContractTest() {
-  const toast = useChakraToast()
-  const { address, chainId } = useWeb3ModalAccount()
-  const { walletProvider } = useWeb3ModalProvider()
   const [loading, setLoading] = useState(false)
+
+  const toast = useChakraToast()
+  const { address } = useAppKitAccount()
+  const { chainId } = useAppKitNetwork()
+  const { walletProvider } = useAppKitProvider<Provider>('eip155')
 
   async function onSendTransaction() {
     try {
@@ -29,19 +36,20 @@ export function Ethers5WriteContractTest() {
         description: tx.hash,
         type: 'success'
       })
-    } catch {
+    } catch (e) {
       toast({
         title: 'Error',
-        description: 'Failed to sign transaction',
+        // @ts-expect-error - error is unknown
+        description: e?.message || 'Failed to sign transaction',
         type: 'error'
       })
     } finally {
       setLoading(false)
     }
   }
-  const allowedChains = [sepolia.chainId, optimism.chainId]
+  const allowedChains = [sepolia.id, optimism.id]
 
-  return allowedChains.includes(Number(chainId)) && address ? (
+  return allowedChains.find(chain => chain === chainId) && address ? (
     <Stack direction={['column', 'column', 'row']}>
       <Button
         data-testid="sign-transaction-button"

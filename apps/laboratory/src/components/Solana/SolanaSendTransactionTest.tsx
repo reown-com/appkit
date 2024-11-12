@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Button, Stack, Text, Spacer, Link } from '@chakra-ui/react'
-import { useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/solana/react'
+import { Button, Stack, Spacer, Link } from '@chakra-ui/react'
+import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 import {
   PublicKey,
   Transaction,
@@ -9,8 +9,8 @@ import {
   SystemProgram
 } from '@solana/web3.js'
 
-import { solana } from '../../utils/ChainsUtil'
 import { useChakraToast } from '../Toast'
+import { type Provider, useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 
 const PHANTOM_TESTNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
 const recipientAddress = new PublicKey(PHANTOM_TESTNET_ADDRESS)
@@ -18,8 +18,9 @@ const amountInLamports = 10_000_000
 
 export function SolanaSendTransactionTest() {
   const toast = useChakraToast()
-  const { address, chainId } = useWeb3ModalAccount()
-  const { walletProvider, connection } = useWeb3ModalProvider()
+  const { address } = useAppKitAccount()
+  const { walletProvider } = useAppKitProvider<Provider>('solana')
+  const { connection } = useAppKitConnection()
   const [loading, setLoading] = useState(false)
 
   async function onSendTransaction() {
@@ -126,14 +127,6 @@ export function SolanaSendTransactionTest() {
 
   if (!address) {
     return null
-  }
-
-  if (chainId === solana.chainId) {
-    return (
-      <Text fontSize="md" color="yellow">
-        Switch to Solana Devnet or Testnet to test this feature
-      </Text>
-    )
   }
 
   return (

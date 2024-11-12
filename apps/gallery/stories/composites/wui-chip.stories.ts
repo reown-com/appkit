@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/composites/wui-chip'
-import type { WuiChip } from '@web3modal/ui/src/composites/wui-chip'
+import '@reown/appkit-ui/src/composites/wui-chip'
+import type { WuiChip } from '@reown/appkit-ui/src/composites/wui-chip'
 import { html } from 'lit'
 import {
   chipVariants,
@@ -29,6 +29,14 @@ export default {
       options: iconOptions,
       control: { type: 'select' }
     },
+    imageIcon: {
+      options: iconOptions,
+      control: { type: 'select' }
+    },
+    imageIconSize: {
+      options: ['xxs', 'xs', 'sm', 'md', 'lg'],
+      control: { type: 'select' }
+    },
     disabled: {
       control: { type: 'boolean' }
     }
@@ -43,5 +51,7 @@ export const Default: Component = {
       href=${args.href}
       ?disabled=${args.disabled}
       .imageSrc=${args.imageSrc}
+      .imageIcon=${args.imageIcon}
+      .imageIconSize=${args.imageIconSize}
     ></wui-chip>`
 }

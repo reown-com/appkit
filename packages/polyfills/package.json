@@ -1,6 +1,6 @@
 {
-  "name": "@web3modal/polyfills",
-  "version": "5.1.6",
+  "name": "@reown/appkit-polyfills",
+  "version": "1.3.2",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -25,18 +25,18 @@
     "web3",
     "crypto",
     "ethereum",
-    "web3modal",
-    "walletconnect",
+    "appkit",
+    "reown",
     "polyfills"
   ],
-  "author": "WalletConnect <walletconnect.com>",
+  "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/web3modal/web3modal",
+  "homepage": "https://github.com/reown-com/appkit",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/web3modal/web3modal.git"
+    "url": "git+https://github.com/reown-com/appkit.git"
   },
   "bugs": {
-    "url": "https://github.com/web3modal/web3modal/issues"
+    "url": "https://github.com/reown-com/appkit/issues"
   }
 }

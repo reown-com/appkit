@@ -1,5 +1,6 @@
-import { arbitrum, mainnet } from '@wagmi/core/chains'
-import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi'
+import { arbitrum, mainnet } from '@reown/appkit/networks'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { createAppKit } from '@reown/appkit'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -7,21 +8,25 @@ if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
 }
 
-// 2. Create wagmiConfig
-const chains = [mainnet, arbitrum]
-const wagmiConfig = defaultWagmiConfig({
-  chains,
-  projectId,
-  metadata: {
-    name: 'Html Example',
-    description: 'Html Example',
-    url: 'https://web3modal.com',
-    icons: ['https://avatars.githubusercontent.com/u/37784886']
-  }
+// 2. Create Wagmi adapter
+const wagmiAdapter = new WagmiAdapter({
+  networks: [mainnet, arbitrum],
+  projectId
 })
 
 // 3. Create modal
-const modal = createWeb3Modal({ wagmiConfig, projectId, chains, themeMode: 'light' })
+const modal = createAppKit({
+  adapters: [wagmiAdapter],
+  metadata: {
+    name: 'Html Example',
+    description: 'Html Example',
+    url: 'https://reown.com/appkit',
+    icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
+  },
+  networks: [mainnet, arbitrum],
+  projectId,
+  themeMode: 'light'
+})
 
 // 4. Trigger modal programaticaly
 const openConnectModalBtn = document.getElementById('open-connect-modal')

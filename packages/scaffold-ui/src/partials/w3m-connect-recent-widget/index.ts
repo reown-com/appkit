@@ -1,11 +1,15 @@
-import type { WcWallet } from '@web3modal/core'
-import { AssetUtil, RouterController, StorageUtil } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import type { WcWallet } from '@reown/appkit-core'
+import { AssetUtil, RouterController, StorageUtil } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
+import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connect-recent-widget')
 export class W3mConnectRecentWidget extends LitElement {
+  // -- State & Properties -------------------------------- //
+  @property() public tabIdx?: number = undefined
+
   // -- Render -------------------------------------------- //
   public override render() {
     const recent = StorageUtil.getRecentWallets()
@@ -26,6 +30,7 @@ export class W3mConnectRecentWidget extends LitElement {
               @click=${() => this.onConnectWallet(wallet)}
               tagLabel="recent"
               tagVariant="shade"
+              tabIdx=${ifDefined(this.tabIdx)}
             >
             </wui-list-wallet>
           `

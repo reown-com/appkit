@@ -1,7 +1,6 @@
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
-import { ConstantsUtil as CommonConstantsUtil } from '@web3modal/common'
 import type {
   BlockchainApiTransactionsRequest,
   BlockchainApiTransactionsResponse,
@@ -34,6 +33,8 @@ import type {
 import { OptionsController } from './OptionsController.js'
 import { proxy } from 'valtio/vanilla'
 import { AccountController } from './AccountController.js'
+import { ChainController } from './ChainController.js'
+import type { CaipAddress } from '@reown/appkit-common'
 
 const DEFAULT_OPTIONS = {
   purchaseCurrencies: [
@@ -132,7 +133,9 @@ export const BlockchainApiController = {
       path: `/v1/identity/${address}`,
       params: {
         projectId: OptionsController.state.projectId,
-        sender: AccountController.state.address
+        sender: ChainController.state.activeCaipAddress
+          ? CoreHelperUtil.getPlainAddress(ChainController.state.activeCaipAddress)
+          : undefined
       }
     })
   },
@@ -220,7 +223,7 @@ export const BlockchainApiController = {
       headers: {
         'Content-Type': 'application/json',
         'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion
+        'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
       }
     })
   },
@@ -233,7 +236,7 @@ export const BlockchainApiController = {
       headers: {
         'Content-Type': 'application/json',
         'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion
+        'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
       },
       params: {
         projectId,
@@ -280,7 +283,7 @@ export const BlockchainApiController = {
       headers: {
         'Content-Type': 'application/json',
         'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion
+        'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
       },
       params: {
         projectId,
@@ -298,7 +301,7 @@ export const BlockchainApiController = {
       path: `/v1/account/${address}/balance`,
       headers: {
         'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion
+        'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
       },
       params: {
         currency: 'usd',
@@ -311,7 +314,7 @@ export const BlockchainApiController = {
 
   async lookupEnsName(name: string) {
     return state.api.get<BlockchainApiLookupEnsName>({
-      path: `/v1/profile/account/${name}${CommonConstantsUtil.WC_NAME_SUFFIX}`,
+      path: `/v1/profile/account/${name}`,
       params: {
         projectId: OptionsController.state.projectId,
         apiVersion: '2'
@@ -334,7 +337,8 @@ export const BlockchainApiController = {
     return state.api.get<BlockchainApiSuggestionResponse>({
       path: `/v1/profile/suggestions/${name}`,
       params: {
-        projectId: OptionsController.state.projectId
+        projectId: OptionsController.state.projectId,
+        zone: 'reown.id'
       }
     })
   },
@@ -426,6 +430,26 @@ export const BlockchainApiController = {
     }
   },
 
+  getSmartSessions(caipAddress: CaipAddress) {
+    return state.api.get({
+      path: `/v1/sessions/${caipAddress}`,
+      params: {
+        projectId: OptionsController.state.projectId
+      }
+    })
+  },
+  revokeSmartSession(address: `0x${string}`, pci: string, signature: string) {
+    return state.api.post({
+      path: `/v1/sessions/${address}/revoke`,
+      params: {
+        projectId: OptionsController.state.projectId
+      },
+      body: {
+        pci,
+        signature
+      }
+    })
+  },
   setClientId(clientId: string | null) {
     state.clientId = clientId
     state.api = new FetchUtil({ baseUrl, clientId })

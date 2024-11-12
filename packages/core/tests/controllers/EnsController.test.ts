@@ -4,11 +4,10 @@ import {
   ChainController,
   ConnectionController,
   ConnectorController,
-  EnsController,
-  NetworkController
-} from '../../index.js'
-import { W3mFrameProvider } from '@web3modal/wallet'
-import { ConstantsUtil } from '@web3modal/common'
+  EnsController
+} from '../../exports/index.js'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
+import { ConstantsUtil } from '@reown/appkit-common'
 // -- Setup --------------------------------------------------------------------
 const TEST_NAME = {
   name: 'test',
@@ -71,7 +70,12 @@ vi.mock('../../src/controllers/BlockchainApiController.js', async importOriginal
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize([{ chain: ConstantsUtil.CHAIN.EVM }])
+  ChainController.initialize([
+    {
+      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      caipNetworks: []
+    }
+  ])
 })
 
 describe('EnsController', () => {
@@ -111,7 +115,7 @@ describe('EnsController', () => {
     const result = await EnsController.getSuggestions('test')
     const mockSuggestions = ['test1', 'test2', 'testSomething', 'test'].map(name => ({
       registered: false,
-      name
+      name: `${name}${ConstantsUtil.WC_NAME_SUFFIX}`
     }))
     expect(result).toEqual(mockSuggestions)
     expect(EnsController.state.suggestions).toEqual(mockSuggestions)
@@ -120,7 +124,7 @@ describe('EnsController', () => {
     const result2 = await EnsController.getSuggestions('name')
     const mockSuggestions2 = ['name1', 'name2', 'nameSomething'].map(name => ({
       registered: false,
-      name
+      name: `${name}${ConstantsUtil.WC_NAME_SUFFIX}`
     }))
     expect(result2).toEqual(mockSuggestions2)
     expect(EnsController.state.suggestions).toEqual(mockSuggestions2)
@@ -131,7 +135,22 @@ describe('EnsController', () => {
     // No network set
     const result = await EnsController.getNamesForAddress('0x123')
     expect(result).toEqual([])
-    NetworkController.setActiveCaipNetwork({ id: 'test:123', chain: ConstantsUtil.CHAIN.EVM })
+    ChainController.setActiveCaipNetwork({
+      id: 1,
+      caipNetworkId: 'eip155:1',
+      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      name: 'Ethereum',
+      nativeCurrency: {
+        name: 'Ethereum',
+        decimals: 18,
+        symbol: 'ETH'
+      },
+      rpcUrls: {
+        default: {
+          http: ['']
+        }
+      }
+    })
     const resultWithNetwork = await EnsController.getNamesForAddress('0x123')
     expect(resultWithNetwork).toEqual([TEST_NAME])
 
@@ -141,28 +160,50 @@ describe('EnsController', () => {
 
   it('should register name', async () => {
     // Setup
-    NetworkController.setActiveCaipNetwork({ id: 'test:123', chain: ConstantsUtil.CHAIN.EVM })
+    ChainController.setActiveCaipNetwork({
+      id: 137,
+      caipNetworkId: 'eip155:137',
+      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      name: 'Polygon',
+      nativeCurrency: {
+        name: 'Polygon',
+        decimals: 18,
+        symbol: 'MATIC'
+      },
+      rpcUrls: {
+        default: {
+          http: ['']
+        }
+      }
+    })
     AccountController.setCaipAddress('eip155:1:0x123', chain)
+    // Use fake timers so that the timestamp is always the same
+    vi.useFakeTimers()
+
+    const message = JSON.stringify({
+      name: 'newname.reown.id',
+      attributes: {},
+      timestamp: Math.floor(Date.now() / 1000)
+    })
+
     const getAuthConnectorSpy = vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
       provider: { getEmail: () => 'test@walletconnect.com' } as unknown as W3mFrameProvider,
       id: 'w3mAuth',
       type: 'AUTH',
       chain: ConstantsUtil.CHAIN.EVM
     })
+
     const signMessageSpy = vi
       .spyOn(ConnectionController, 'signMessage')
       .mockResolvedValueOnce('0x123123123')
 
-    const message = JSON.stringify({
-      name: `newname${ConstantsUtil.WC_NAME_SUFFIX}`,
-      attributes: {},
-      timestamp: Math.floor(Date.now() / 1000)
-    })
-    await EnsController.registerName('newname')
+    await EnsController.registerName('newname.reown.id')
     expect(getAuthConnectorSpy).toHaveBeenCalled()
+
     expect(signMessageSpy).toHaveBeenCalledWith(message)
     expect(AccountController.state.profileName).toBe(`newname${ConstantsUtil.WC_NAME_SUFFIX}`)
     expect(EnsController.state.loading).toBe(false)
+    vi.useRealTimers()
   })
 
   it('should validate name correctly', () => {

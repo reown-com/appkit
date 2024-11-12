@@ -1,34 +1,33 @@
 import { Button, Stack, Text } from '@chakra-ui/react'
-import { useAccount } from 'wagmi'
-import { walletActionsErc7715 } from 'viem/experimental'
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useChakraToast } from '../Toast'
-import { createWalletClient, custom, type Address, type Chain } from 'viem'
-import { EIP_7715_RPC_METHODS } from '../../utils/EIP5792Utils'
-import {
-  useWagmiAvailableCapabilities,
-  type Provider
-} from '../../hooks/useWagmiActiveCapabilities'
+import { toHex, type Address } from 'viem'
 import { useLocalEcdsaKey } from '../../context/LocalEcdsaKeyContext'
 import { bigIntReplacer } from '../../utils/CommonUtils'
 import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
 import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
-import { KeyTypes } from '../../utils/EncodingUtils'
+import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+import {
+  grantPermissions,
+  isSmartSessionSupported,
+  type SmartSessionGrantPermissionsRequest
+} from '@reown/appkit-experimental/smart-session'
 
 export function WagmiRequestPermissionsAsyncTest() {
-  const { provider, supported } = useWagmiAvailableCapabilities({
-    method: EIP_7715_RPC_METHODS.WALLET_GRANT_PERMISSIONS
-  })
-  const { chain, address, isConnected } = useAccount()
+  const { address, isConnected, status } = useAppKitAccount()
 
-  if (!isConnected || !provider || !address || !chain) {
+  const { chainId } = useAppKitNetwork()
+  const isSupported = useMemo(() => isSmartSessionSupported(), [status])
+
+  if (!isConnected || !address || !chainId) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet not connected
       </Text>
     )
   }
-  if (!supported) {
+
+  if (!isSupported) {
     return (
       <Text fontSize="md" color="yellow">
         Wallet does not support wallet_grantPermissions rpc method
@@ -36,51 +35,55 @@ export function WagmiRequestPermissionsAsyncTest() {
     )
   }
 
-  return <ConnectedTestContent chain={chain} provider={provider} address={address} />
+  return <ConnectedTestContent chainId={chainId} address={address as Address} />
 }
 
 function ConnectedTestContent({
-  chain,
-  provider,
+  chainId,
   address
 }: {
-  chain: Chain
-  provider: Provider
+  chainId: string | number
   address: Address
 }) {
-  const { grantedPermissions, clearGrantedPermissions, grantPermissions } = useERC7715Permissions()
+  const { clearSmartSession, setSmartSession, smartSession } = useERC7715Permissions()
   const { signer } = useLocalEcdsaKey()
   const [isRequestPermissionLoading, setRequestPermissionLoading] = useState<boolean>(false)
   const toast = useChakraToast()
-
   const onRequestPermissions = useCallback(async () => {
     setRequestPermissionLoading(true)
     try {
       if (!signer) {
-        throw new Error('PrivateKey signer not available')
+        throw new Error('No signer available')
       }
-      if (!provider) {
-        throw new Error('No Provider available, Please connect your wallet.')
-      }
-
-      const walletClient = createWalletClient({
-        account: address,
-        chain,
-        transport: custom(provider)
-      }).extend(walletActionsErc7715())
-
       const purchaseDonutPermissions = getPurchaseDonutPermissions()
-      const response = await grantPermissions(walletClient, {
-        permissions: purchaseDonutPermissions,
-        signerKey: {
-          key: signer.publicKey,
-          type: KeyTypes.secp256k1
-        }
+      const grantPurchaseDonutPermissions: SmartSessionGrantPermissionsRequest = {
+        // Adding 24 hours to the current time
+        expiry: Math.floor(Date.now() / 1000) + 24 * 60 * 60,
+        chainId: toHex(chainId),
+        address,
+        signer: {
+          type: 'keys',
+          data: {
+            keys: [
+              {
+                type: 'secp256k1',
+                publicKey: signer.publicKey
+              }
+            ]
+          }
+        },
+        permissions: purchaseDonutPermissions['permissions'],
+        policies: purchaseDonutPermissions['policies'] || []
+      }
+      const response = await grantPermissions(grantPurchaseDonutPermissions)
+      setSmartSession({
+        type: 'async',
+        grantedPermissions: response
       })
       toast({
         type: 'success',
         title: 'Permissions Granted',
-        description: JSON.stringify(response.approvedPermissions, bigIntReplacer)
+        description: JSON.stringify(response, bigIntReplacer)
       })
     } catch (error) {
       toast({
@@ -91,22 +94,22 @@ function ConnectedTestContent({
     } finally {
       setRequestPermissionLoading(false)
     }
-  }, [signer, provider, address, chain, grantPermissions, toast])
+  }, [signer, address, chainId, grantPermissions, toast])
 
   return (
     <Stack direction={['column', 'column', 'row']}>
       <Button
         data-test-id="request-permissions-button"
         onClick={onRequestPermissions}
-        isDisabled={Boolean(isRequestPermissionLoading || Boolean(grantedPermissions))}
+        isDisabled={Boolean(isRequestPermissionLoading || Boolean(smartSession?.type === 'async'))}
         isLoading={isRequestPermissionLoading}
       >
         Request Permissions
       </Button>
       <Button
         data-test-id="clear-permissions-button"
-        onClick={clearGrantedPermissions}
-        isDisabled={!grantedPermissions}
+        onClick={clearSmartSession}
+        isDisabled={!smartSession || smartSession.type !== 'async'}
       >
         Clear Permissions
       </Button>

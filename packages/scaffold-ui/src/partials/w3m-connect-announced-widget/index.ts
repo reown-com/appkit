@@ -1,14 +1,14 @@
-import type { Connector } from '@web3modal/core'
+import type { Connector } from '@reown/appkit-core'
 import {
   ApiController,
   AssetUtil,
   ConnectorController,
   CoreHelperUtil,
   RouterController
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connect-announced-widget')
@@ -17,6 +17,8 @@ export class W3mConnectAnnouncedWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
+  @property() public tabIdx?: number = undefined
+
   @state() private connectors = ConnectorController.state.connectors
 
   public constructor() {
@@ -58,6 +60,7 @@ export class W3mConnectAnnouncedWidget extends LitElement {
               tagLabel="installed"
               data-testid=${`wallet-selector-${connector.id}`}
               .installed=${true}
+              tabIdx=${ifDefined(this.tabIdx)}
             >
             </wui-list-wallet>
           `
@@ -68,7 +71,7 @@ export class W3mConnectAnnouncedWidget extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
-    if (connector.type === 'WALLET_CONNECT') {
+    if (connector.id === 'walletConnect') {
       if (CoreHelperUtil.isMobile()) {
         RouterController.push('AllWallets')
       } else {

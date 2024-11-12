@@ -1,21 +1,21 @@
 import {
   AccountController,
   ModalController,
-  NetworkController,
   AssetUtil,
   RouterController,
   CoreHelperUtil,
   ConstantsUtil as CoreConstantsUtil,
   EventsController,
-  OptionsController
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+  OptionsController,
+  ChainController
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 const TABS = 3
 const TABS_PADDING = 48
@@ -39,13 +39,15 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private smartAccountDeployed = AccountController.state.smartAccountDeployed
 
-  @state() private network = NetworkController.state.caipNetwork
+  @state() private network = ChainController.state.activeCaipNetwork
 
   @state() private currentTab = AccountController.state.currentTab
 
   @state() private tokenBalance = AccountController.state.tokenBalance
 
   @state() private preferredAccountType = AccountController.state.preferredAccountType
+
+  @state() private features = OptionsController.state.features
 
   public constructor() {
     super()
@@ -65,9 +67,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           }
         })
       ],
-      NetworkController.subscribeKey('caipNetwork', val => {
-        this.network = val
-      })
+      ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val)),
+      OptionsController.subscribeKey('features', val => (this.features = val))
     )
     this.watchSwapValues()
   }
@@ -147,9 +148,9 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   // -- Private ------------------------------------------- //
   private swapsTemplate() {
-    const { enableSwaps } = OptionsController.state
+    const swaps = this.features?.swaps
 
-    if (!enableSwaps) {
+    if (!swaps) {
       return null
     }
 
@@ -195,7 +196,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private activateAccountTemplate() {
-    const smartAccountEnabled = NetworkController.checkIfSmartAccountEnabled()
+    const smartAccountEnabled = ChainController.checkIfSmartAccountEnabled()
 
     if (
       !smartAccountEnabled ||
@@ -225,7 +226,10 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onSwapClick() {
-    if (this.network?.id && !CoreConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(this.network?.id)) {
+    if (
+      this.network?.caipNetworkId &&
+      !CoreConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(this.network?.caipNetworkId)
+    ) {
       RouterController.push('UnsupportedChain', {
         swapUnsupportedChain: true
       })
@@ -234,7 +238,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         type: 'track',
         event: 'OPEN_SWAP',
         properties: {
-          network: this.network?.id || '',
+          network: this.network?.caipNetworkId || '',
           isSmartAccount:
             AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
@@ -253,7 +257,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       type: 'track',
       event: 'OPEN_SEND',
       properties: {
-        network: this.network?.id || '',
+        network: this.network?.caipNetworkId || '',
         isSmartAccount:
           AccountController.state.preferredAccountType ===
           W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT

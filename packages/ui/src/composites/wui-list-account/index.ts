@@ -7,13 +7,13 @@ import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
-import { W3mFrameRpcConstants } from '@web3modal/wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 import {
   AccountController,
   BlockchainApiController,
-  NetworkController,
+  ChainController,
   StorageUtil
-} from '@web3modal/core'
+} from '@reown/appkit-core'
 
 @customElement('wui-list-account')
 export class WuiListAccount extends LitElement {
@@ -28,7 +28,7 @@ export class WuiListAccount extends LitElement {
 
   private labels = AccountController.state.addressLabels
 
-  private caipNetwork = NetworkController.state.caipNetwork
+  private caipNetwork = ChainController.state.activeCaipNetwork
 
   private socialProvider = StorageUtil.getConnectedSocialProvider()
 
@@ -47,15 +47,20 @@ export class WuiListAccount extends LitElement {
 
   public override connectedCallback() {
     super.connectedCallback()
-    BlockchainApiController.getBalance(this.accountAddress, this.caipNetwork?.id).then(response => {
-      let total = this.balance
-      if (response.balances.length > 0) {
-        total = response.balances.reduce((acc, balance) => acc + (balance?.value || 0), 0)
-      }
-      this.balance = total
-      this.fetchingBalance = false
-      this.requestUpdate()
-    })
+    BlockchainApiController.getBalance(this.accountAddress, this.caipNetwork?.caipNetworkId)
+      .then(response => {
+        let total = this.balance
+        if (response.balances.length > 0) {
+          total = response.balances.reduce((acc, balance) => acc + (balance?.value || 0), 0)
+        }
+        this.balance = total
+        this.fetchingBalance = false
+        this.requestUpdate()
+      })
+      .catch(() => {
+        this.fetchingBalance = false
+        this.requestUpdate()
+      })
   }
 
   // -- Render -------------------------------------------- //
@@ -97,10 +102,10 @@ export class WuiListAccount extends LitElement {
           >
         </wui-flex>
         <wui-flex gap="s" alignItems="center">
+          <slot name="action"></slot>
           ${this.fetchingBalance
             ? html`<wui-loading-spinner size="sm" color="accent-100"></wui-loading-spinner>`
             : html` <wui-text variant="small-400">$${this.balance.toFixed(2)}</wui-text>`}
-          <slot name="action"></slot>
         </wui-flex>
       </wui-flex>
     `

@@ -1,10 +1,8 @@
 import { ConnectionController } from '../controllers/ConnectionController.js'
-import { ConstantsUtil } from './ConstantsUtil.js'
 import { BlockchainApiController } from '../controllers/BlockchainApiController.js'
 import type { SwapTokenWithBalance } from './TypeUtil.js'
 import { OptionsController } from '../controllers/OptionsController.js'
 import type { BlockchainApiSwapAllowanceRequest, BlockchainApiBalanceResponse } from './TypeUtil.js'
-import { NetworkController } from '../controllers/NetworkController.js'
 import { AccountController } from '../controllers/AccountController.js'
 import { ChainController } from '../controllers/ChainController.js'
 
@@ -24,9 +22,9 @@ export type TokenInfo = {
 // -- Controller ---------------------------------------- //
 export const SwapApiUtil = {
   async getTokenList() {
-    const caipNetwork = NetworkController.state.caipNetwork
+    const caipNetwork = ChainController.state.activeCaipNetwork
     const response = await BlockchainApiController.fetchSwapTokens({
-      chainId: caipNetwork?.id,
+      chainId: caipNetwork?.caipNetworkId,
       projectId: OptionsController.state.projectId
     })
     const tokens =
@@ -49,16 +47,36 @@ export const SwapApiUtil = {
 
   async fetchGasPrice() {
     const projectId = OptionsController.state.projectId
-    const caipNetwork = NetworkController.state.caipNetwork
+    const caipNetwork = ChainController.state.activeCaipNetwork
 
     if (!caipNetwork) {
       return null
     }
 
-    return await BlockchainApiController.fetchGasPrice({
-      projectId,
-      chainId: caipNetwork.id
-    })
+    try {
+      switch (caipNetwork.chainNamespace) {
+        case 'solana':
+          // eslint-disable-next-line no-case-declarations
+          const lamportsPerSignature = (
+            await ConnectionController.estimateGas({ chainNamespace: 'solana' })
+          ).toString()
+
+          return {
+            standard: lamportsPerSignature,
+            fast: lamportsPerSignature,
+            instant: lamportsPerSignature
+          }
+
+        case 'eip155':
+        default:
+          return await BlockchainApiController.fetchGasPrice({
+            projectId,
+            chainId: caipNetwork.caipNetworkId
+          })
+      }
+    } catch {
+      return null
+    }
   },
 
   async fetchSwapAllowance({
@@ -91,13 +109,17 @@ export const SwapApiUtil = {
 
   async getMyTokensWithBalance(forceUpdate?: string) {
     const address = AccountController.state.address
-    const caipNetwork = NetworkController.state.caipNetwork
+    const caipNetwork = ChainController.state.activeCaipNetwork
 
     if (!address || !caipNetwork) {
       return []
     }
 
-    const response = await BlockchainApiController.getBalance(address, caipNetwork.id, forceUpdate)
+    const response = await BlockchainApiController.getBalance(
+      address,
+      caipNetwork.caipNetworkId,
+      forceUpdate
+    )
     const balances = response.balances.filter(balance => balance.quantity.decimals !== '0')
 
     AccountController.setTokenBalance(balances, ChainController.state.activeChain)
@@ -113,7 +135,7 @@ export const SwapApiUtil = {
             ...token,
             address: token?.address
               ? token.address
-              : `${token.chainId}:${ConstantsUtil.NATIVE_TOKEN_ADDRESS}`,
+              : ChainController.getActiveNetworkTokenAddress(),
             decimals: parseInt(token.quantity.decimals, 10),
             logoUri: token.iconUrl,
             eip2612: false

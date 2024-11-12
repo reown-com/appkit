@@ -1,4 +1,4 @@
-import type { WcWallet } from '@web3modal/core'
+import type { WcWallet } from '@reown/appkit-core'
 import {
   AssetUtil,
   ConnectorController,
@@ -6,10 +6,10 @@ import {
   OptionsController,
   RouterController,
   StorageUtil
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connect-custom-widget')
@@ -18,6 +18,8 @@ export class W3mConnectCustomWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
+  @property() public tabIdx?: number = undefined
+
   @state() private connectors = ConnectorController.state.connectors
 
   public constructor() {
@@ -51,6 +53,7 @@ export class W3mConnectCustomWidget extends LitElement {
             name=${wallet.name ?? 'Unknown'}
             @click=${() => this.onConnectWallet(wallet)}
             data-testid=${`wallet-selector-${wallet.id}`}
+            tabIdx=${ifDefined(this.tabIdx)}
           >
           </wui-list-wallet>
         `

@@ -1,6 +1,6 @@
 {
-  "name": "@web3modal/cdn",
-  "version": "5.1.6",
+  "name": "@reown/appkit-cdn",
+  "version": "1.3.2",
   "main": "dist/wagmi.js",
   "type": "module",
   "files": [
@@ -10,14 +10,17 @@
   "scripts": {
     "build:clean": "rm -rf dist",
     "build": "tsc && vite build",
-    "upload": "pnpm build && pnpm publish --public"
+    "watch": "tsc --watch",
+    "upload": "pnpm build && pnpm publish --public",
+    "serve": "http-server dist -p 8080 --cors"
   },
   "devDependencies": {
-    "typescript": "5.3.3",
+    "@wagmi/connectors": "5.1.15",
+    "http-server": "14.1.1",
     "vite-plugin-node-polyfills": "0.22.0"
   },
   "peerDependencies": {
-    "typescript": ">=5"
+    "typescript": "5.3.3"
   },
   "peerDependenciesMeta": {
     "typescript": {
@@ -25,13 +28,16 @@
     }
   },
   "dependencies": {
-    "@web3modal/wagmi": "workspace:*",
-    "@web3modal/ethers": "workspace:*",
-    "@web3modal/ethers5": "workspace:*",
-    "@wagmi/connectors": "5.1.5",
-    "@wagmi/core": "2.13.4",
-    "viem": "2.19.6",
+    "@reown/appkit": "workspace:*",
+    "@reown/appkit-adapter-ethers": "workspace:*",
+    "@reown/appkit-adapter-ethers5": "workspace:*",
+    "@reown/appkit-adapter-solana": "workspace:*",
+    "@reown/appkit-adapter-wagmi": "workspace:*",
+    "@reown/appkit-polyfills": "workspace:*",
+    "@wagmi/connectors": "5.1.15",
+    "@wagmi/core": "2.13.8",
+    "viem": "2.21.26",
     "vite": "5.2.11",
-    "wagmi": "2.12.8"
+    "wagmi": "2.12.17"
   }
 }

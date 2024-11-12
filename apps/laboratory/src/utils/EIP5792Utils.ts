@@ -1,8 +1,8 @@
-import { EthereumProvider } from '@walletconnect/ethereum-provider'
-import { getChain } from './ChainsUtil'
+import { UniversalProvider } from '@walletconnect/universal-provider'
+import { getChain } from './NetworksUtil'
 import { parseJSON } from './CommonUtils'
 import { fromHex, type WalletCapabilities } from 'viem'
-import { W3mFrameProvider } from '@web3modal/wallet'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 export const EIP_5792_RPC_METHODS = {
   WALLET_GET_CAPABILITIES: 'wallet_getCapabilities',
@@ -10,7 +10,8 @@ export const EIP_5792_RPC_METHODS = {
   WALLET_SEND_CALLS: 'wallet_sendCalls'
 }
 export const EIP_7715_RPC_METHODS = {
-  WALLET_GRANT_PERMISSIONS: 'wallet_grantPermissions'
+  WALLET_GRANT_PERMISSIONS: 'wallet_grantPermissions',
+  WALLET_REVOKE_PERMISSIONS: 'wallet_revokePermissions'
 }
 
 export const WALLET_CAPABILITIES = {
@@ -46,21 +47,20 @@ export function getFilteredCapabilitySupportedChainInfo(
   return chainInfo
 }
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export function convertCapabilitiesToRecord(
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   accountCapabilities: Record<string, any>
 ): Record<number, WalletCapabilities> {
   return Object.fromEntries(
     Object.entries(accountCapabilities).map(([key, value]) => [parseInt(key, 16), value])
   )
 }
-/* eslint-enable @typescript-eslint/no-explicit-any */
 
 export function getProviderCachedCapabilities(
   address: string,
-  provider: Awaited<ReturnType<(typeof EthereumProvider)['init']>>
+  provider: Awaited<ReturnType<(typeof UniversalProvider)['init']>>
 ) {
-  const walletCapabilitiesString = provider.signer?.session?.sessionProperties?.['capabilities']
+  const walletCapabilitiesString = provider?.session?.sessionProperties?.['capabilities']
   if (!walletCapabilitiesString) {
     return undefined
   }
@@ -75,7 +75,7 @@ export function getProviderCachedCapabilities(
 
 export async function getCapabilitySupportedChainInfo(
   capability: string,
-  provider: Awaited<ReturnType<(typeof EthereumProvider)['init']>> | W3mFrameProvider,
+  provider: Awaited<ReturnType<(typeof UniversalProvider)['init']>> | W3mFrameProvider,
   address: string
 ): Promise<
   {

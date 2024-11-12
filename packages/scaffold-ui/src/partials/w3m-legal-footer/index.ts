@@ -1,5 +1,5 @@
-import { OptionsController } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import { OptionsController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 
@@ -11,7 +11,13 @@ export class W3mLegalFooter extends LitElement {
   public override render() {
     const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
 
+    const legalCheckbox = OptionsController.state.features?.legalCheckbox
+
     if (!termsConditionsUrl && !privacyPolicyUrl) {
+      return null
+    }
+
+    if (legalCheckbox) {
       return null
     }
 

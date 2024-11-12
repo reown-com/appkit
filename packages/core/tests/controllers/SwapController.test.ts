@@ -5,11 +5,10 @@ import {
   BlockchainApiController,
   ChainController,
   ConnectionController,
-  NetworkController,
   SwapController,
-  type CaipNetworkId,
   type NetworkControllerClient
-} from '../../index.js'
+} from '../../exports/index.js'
+import type { CaipNetworkId, CaipNetwork } from '@reown/appkit-common'
 import {
   allowanceResponse,
   balanceResponse,
@@ -20,10 +19,25 @@ import {
   tokensResponse
 } from '../mocks/SwapController.js'
 import { SwapApiUtil } from '../../src/utils/SwapApiUtil.js'
-import { ConstantsUtil } from '@web3modal/common'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 // - Mocks ---------------------------------------------------------------------
-const caipNetwork = { id: 'eip155:137', name: 'Polygon', chain: ConstantsUtil.CHAIN.EVM } as const
+const caipNetwork = {
+  id: 137,
+  caipNetworkId: 'eip155:137',
+  name: 'Polygon',
+  chainNamespace: ConstantsUtil.CHAIN.EVM,
+  nativeCurrency: {
+    name: 'Polygon',
+    decimals: 18,
+    symbol: 'MATIC'
+  },
+  rpcUrls: {
+    default: {
+      http: ['']
+    }
+  }
+} as CaipNetwork
 const approvedCaipNetworkIds = ['eip155:1', 'eip155:137'] as CaipNetworkId[]
 const client: NetworkControllerClient = {
   switchCaipNetwork: async _caipNetwork => Promise.resolve(),
@@ -40,8 +54,15 @@ const toTokenAddress = 'eip155:137:0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b'
 // - Setup ---------------------------------------------------------------------
 beforeAll(async () => {
   //  -- Set Account and
-  ChainController.initialize([{ chain: ConstantsUtil.CHAIN.EVM, networkControllerClient: client }])
-  await NetworkController.switchActiveNetwork(caipNetwork)
+  ChainController.initialize([
+    {
+      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      networkControllerClient: client,
+      caipNetworks: [caipNetwork]
+    }
+  ])
+
+  ChainController.setActiveCaipNetwork(caipNetwork)
   AccountController.setCaipAddress(caipAddress, chain)
 
   vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValue(tokensResponse)

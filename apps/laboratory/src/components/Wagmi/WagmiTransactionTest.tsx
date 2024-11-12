@@ -43,11 +43,11 @@ function AvailableTestContent() {
           type: 'success'
         })
       },
-      onError: () => {
+      onError: error => {
         setLoading(false)
         toast({
           title: 'Error',
-          description: 'Failed to sign transaction',
+          description: error?.message || 'Failed to sign transaction',
           type: 'error'
         })
       }
@@ -60,7 +60,7 @@ function AvailableTestContent() {
     if (prepareError) {
       toast({
         title: 'Error',
-        description: 'Not enough funds for transaction',
+        description: prepareError?.message || 'Failed to sign transaction',
         type: 'error'
       })
     } else {

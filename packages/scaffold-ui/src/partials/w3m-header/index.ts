@@ -1,15 +1,15 @@
 import {
   AccountController,
   AssetUtil,
+  ChainController,
   ConnectionController,
   ConnectorController,
   EventsController,
   ModalController,
-  NetworkController,
   OptionsController,
   RouterController
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -17,7 +17,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 
 // -- Constants ----------------------------------------- //
-const BETA_SCREENS = ['Swap', 'SwapSelectToken', 'SwapPreview']
+const BETA_SCREENS: string[] = ['SmartSessionList']
 
 // -- Helpers ------------------------------------------- //
 function headings() {
@@ -30,6 +30,7 @@ function headings() {
 
   return {
     Connect: `Connect ${isEmail ? 'Email' : ''} Wallet`,
+    Create: 'Create Wallet',
     ChooseAccountName: undefined,
     Account: undefined,
     AccountSettings: undefined,
@@ -52,7 +53,6 @@ function headings() {
     OnRampTokenSelect: 'Select Token',
     OnRampFiatSelect: 'Select Currency',
     Profile: undefined,
-    SelectAddresses: 'Select accounts',
     SwitchNetwork: networkName ?? 'Switch Network',
     SwitchAddress: 'Switch Address',
     Transactions: 'Activity',
@@ -82,7 +82,10 @@ function headings() {
       : 'Connect Social',
     ConnectingMultiChain: 'Select chain',
     ConnectingFarcaster: 'Farcaster',
-    SwitchActiveChain: 'Switch chain'
+    SwitchActiveChain: 'Switch chain',
+    SmartSessionCreated: undefined,
+    SmartSessionList: 'Smart Sessions',
+    SIWXSignMessage: 'Sign In'
   }
 }
 
@@ -96,7 +99,7 @@ export class W3mHeader extends LitElement {
   // -- State & Properties --------------------------------- //
   @state() private heading = headings()[RouterController.state.view]
 
-  @state() private network = NetworkController.state.caipNetwork
+  @state() private network = ChainController.state.activeCaipNetwork
 
   @state() private buffering = false
 
@@ -124,7 +127,7 @@ export class W3mHeader extends LitElement {
         this.onHistoryChange()
       }),
       ConnectionController.subscribeKey('buffering', val => (this.buffering = val)),
-      NetworkController.subscribeKey('caipNetwork', val => (this.network = val))
+      ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val))
     )
   }
 
@@ -136,7 +139,7 @@ export class W3mHeader extends LitElement {
   public override render() {
     return html`
       <wui-flex .padding=${this.getPadding()} justifyContent="space-between" alignItems="center">
-        ${this.dynamicButtonTemplate()} ${this.titleTemplate()} ${this.closeButtonTemplate()}
+        ${this.leftHeaderTemplate()} ${this.titleTemplate()} ${this.rightHeaderTemplate()}
       </wui-flex>
     `
   }
@@ -151,7 +154,7 @@ export class W3mHeader extends LitElement {
 
   private async onClose() {
     if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@web3modal/siwe')
+      const { SIWEController } = await import('@reown/appkit-siwe')
       const isApproveSignScreen = RouterController.state.view === 'ApproveTransaction'
       const isUnauthenticated = SIWEController.state.status !== 'success'
 
@@ -163,6 +166,23 @@ export class W3mHeader extends LitElement {
     } else {
       ModalController.close()
     }
+  }
+
+  private rightHeaderTemplate() {
+    const isSmartSessionsEnabled = OptionsController?.state?.features?.smartSessions
+
+    if (RouterController.state.view !== 'Account' || !isSmartSessionsEnabled) {
+      return this.closeButtonTemplate()
+    }
+
+    return html`<wui-flex>
+      <wui-icon-link
+        icon="clock"
+        @click=${() => RouterController.push('SmartSessionList')}
+        data-testid="w3m-header-smart-sessions"
+      ></wui-icon-link>
+      ${this.closeButtonTemplate()}
+    </wui-flex> `
   }
 
   private closeButtonTemplate() {
@@ -192,13 +212,15 @@ export class W3mHeader extends LitElement {
         alignItems="center"
         gap="xs"
       >
-        <wui-text variant="paragraph-700" color="fg-100">${this.headerText}</wui-text>
+        <wui-text variant="paragraph-700" color="fg-100" data-testid="w3m-header-text"
+          >${this.headerText}</wui-text
+        >
         ${isBeta ? html`<wui-tag variant="main">Beta</wui-tag>` : null}
       </wui-flex>
     `
   }
 
-  private dynamicButtonTemplate() {
+  private leftHeaderTemplate() {
     const { view } = RouterController.state
     const isConnectHelp = view === 'Connect'
     const isApproveTransaction = view === 'ApproveTransaction'
@@ -212,7 +234,7 @@ export class W3mHeader extends LitElement {
       return html`<wui-select
         id="dynamic"
         data-testid="w3m-account-select-network"
-        active-network=${this.network?.name}
+        active-network=${ifDefined(this.network?.name)}
         @click=${this.onNetworks.bind(this)}
         imageSrc=${ifDefined(AssetUtil.getNetworkImage(this.network))}
       ></wui-select>`
@@ -243,7 +265,7 @@ export class W3mHeader extends LitElement {
   }
 
   private isAllowedNetworkSwitch() {
-    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
+    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
     const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
     const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 

@@ -11,8 +11,6 @@ body:
         You should also test your issue against the latest NPM package version(s) to ensure that it hasn't already been resolved.
         Sharing a link to a GitHub repository or preview deployment are best. Include any instructions to run the project in the README or the summary field below.
 
-        Don't have an available repo/preview to share? You can create online with our [StackBlitz template](https://stackblitz.com/edit/web3modal-next-template) quickly.
-
         IF A REPRODUCIBLE DEMO IS NOT PROVIDED, YOUR ISSUE WILL BE CLOSED.
         [Learn more about creating a minimal reproducible example](https://stackoverflow.com/help/mcve).
     validations:
@@ -29,6 +27,6 @@ body:
   - type: textarea
     attributes:
       label: List of related npm package versions
-      description: Include all web3modal, wagmi and other packages that can be related to the issue, including their versions.
+      description: Include all appkit, wagmi and other packages that can be related to the issue, including their versions.
     validations:
       required: true

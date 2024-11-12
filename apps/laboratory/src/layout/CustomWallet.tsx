@@ -53,7 +53,7 @@ export function CustomWallet({ controls }: Props) {
           <Link
             isExternal
             color="blue.500"
-            href="https://docs.walletconnect.com/cloud/explorer-submission#how-do-we-test-wallets"
+            href="https://docs.reown.com/cloud/explorer-submission#how-do-we-test-wallets"
           >
             Learn more.
           </Link>

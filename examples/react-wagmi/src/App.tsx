@@ -1,13 +1,13 @@
-import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 import {
-  createWeb3Modal,
-  useWeb3Modal,
-  useWeb3ModalEvents,
-  useWeb3ModalState,
-  useWeb3ModalTheme
-} from '@web3modal/wagmi/react'
+  createAppKit,
+  useAppKit,
+  useAppKitEvents,
+  useAppKitState,
+  useAppKitTheme
+} from '@reown/appkit/react'
+import { mainnet, polygon, bsc } from '@reown/appkit/networks'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { WagmiProvider } from 'wagmi'
-import { arbitrum, mainnet, polygon } from 'wagmi/chains'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiHooks } from './WagmiHooks'
 
@@ -20,23 +20,23 @@ if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
 }
 
-// 2. Create wagmiConfig
-const wagmiConfig = defaultWagmiConfig({
-  chains: [mainnet, polygon, arbitrum],
+// 2. Setup wagmi adapter
+const wagmiAdapter = new WagmiAdapter({
   projectId,
+  networks: [mainnet, polygon, bsc]
+})
+
+// 3. Create modal
+createAppKit({
+  adapters: [wagmiAdapter],
+  networks: [mainnet, polygon],
   metadata: {
     name: 'AppKit',
     description: 'AppKit React Wagmi Example',
     url: '',
     icons: []
-  }
-})
-
-// 3. Create modal
-createWeb3Modal({
-  wagmiConfig,
+  },
   projectId,
-  defaultChain: polygon,
   themeMode: 'light',
   themeVariables: {
     '--w3m-color-mix': '#00DCFF',
@@ -46,18 +46,18 @@ createWeb3Modal({
 
 export default function App() {
   // 4. Use modal hook
-  const modal = useWeb3Modal()
-  const state = useWeb3ModalState()
-  const { themeMode, themeVariables, setThemeMode } = useWeb3ModalTheme()
-  const events = useWeb3ModalEvents()
+  const modal = useAppKit()
+  const state = useAppKitState()
+  const { themeMode, themeVariables, setThemeMode } = useAppKitTheme()
+  const events = useAppKitEvents()
 
   return (
-    <WagmiProvider config={wagmiConfig}>
+    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <w3m-button />
-        <w3m-network-button />
-        <w3m-connect-button />
-        <w3m-account-button />
+        <appkit-button />
+        <appkit-network-button />
+        <appkit-connect-button />
+        <appkit-account-button />
 
         <button onClick={() => modal.open()}>Connect Wallet</button>
         <button onClick={() => modal.open({ view: 'Networks' })}>Choose Network</button>

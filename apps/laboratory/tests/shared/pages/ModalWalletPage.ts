@@ -7,7 +7,7 @@ export class ModalWalletPage extends ModalPage {
   constructor(
     public override readonly page: Page,
     public override readonly library: string,
-    public override readonly flavor: 'default' | 'all'
+    public override readonly flavor: 'default' | 'all' | 'siwe'
   ) {
     super(page, library, flavor)
   }
@@ -30,14 +30,14 @@ export class ModalWalletPage extends ModalPage {
     await this.page.getByRole('button', { name: 'Choose Name' }).click()
   }
 
-  async typeName(name: string) {
-    await this.page.getByTestId('wui-ens-input').getByTestId('wui-input-text').fill(name)
+  async clickAccountName(name: string) {
+    const suggestion = this.page.getByTestId('account-name-suggestion').getByText(name)
+    await expect(suggestion).toBeVisible()
+    await suggestion.click()
   }
 
-  override async switchNetwork(network: string) {
-    await this.page.getByTestId('account-switch-network-button').click()
-    const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${network}`)
-    await networkToSwitchButton.click()
+  async typeName(name: string) {
+    await this.page.getByTestId('wui-ens-input').getByTestId('wui-input-text').fill(name)
   }
 
   async togglePreferredAccountType() {

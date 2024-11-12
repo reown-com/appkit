@@ -70,4 +70,4 @@ export const abi = [
   }
 ]
 
-export const address = '0xfcfCFD8D9f4A23D8DD11b03b212B69262A3ba1b8'
+export const address = '0x2E65BAfA07238666c3b239E94F32DaD3cDD6498D'

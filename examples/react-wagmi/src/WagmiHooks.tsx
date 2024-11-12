@@ -1,8 +1,9 @@
-import * as React from 'react'
+import { useAppKitAccount } from '@reown/appkit/react'
 import { useAccount } from 'wagmi'
 
 export function WagmiHooks() {
-  const { isConnected, address, chainId } = useAccount()
+  const { address } = useAppKitAccount()
+  const { isConnected, chainId } = useAccount()
 
   return (
     <div>

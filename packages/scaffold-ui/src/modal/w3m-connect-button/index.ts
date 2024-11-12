@@ -1,12 +1,11 @@
-import { ModalController } from '@web3modal/core'
-import type { WuiConnectButton } from '@web3modal/ui'
-import { customElement } from '@web3modal/ui'
+import { customElement } from '@reown/appkit-ui'
+import { ModalController } from '@reown/appkit-core'
+import type { WuiConnectButton } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-@customElement('w3m-connect-button')
-export class W3mConnectButton extends LitElement {
+class W3mConnectButtonBase extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
@@ -62,8 +61,15 @@ export class W3mConnectButton extends LitElement {
   }
 }
 
+@customElement('w3m-connect-button')
+export class W3mConnectButton extends W3mConnectButtonBase {}
+
+@customElement('appkit-connect-button')
+export class AppKitConnectButton extends W3mConnectButtonBase {}
+
 declare global {
   interface HTMLElementTagNameMap {
     'w3m-connect-button': W3mConnectButton
+    'appkit-connect-button': AppKitConnectButton
   }
 }

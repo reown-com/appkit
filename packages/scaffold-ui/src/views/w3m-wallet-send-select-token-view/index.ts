@@ -1,16 +1,16 @@
-import { customElement } from '@web3modal/ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import {
   AccountController,
+  ChainController,
   CoreHelperUtil,
-  NetworkController,
   RouterController,
   SendController
-} from '@web3modal/core'
+} from '@reown/appkit-core'
 
 import { state } from 'lit/decorators.js'
-import type { Balance } from '@web3modal/common'
+import type { Balance } from '@reown/appkit-common'
 
 @customElement('w3m-wallet-send-select-token-view')
 export class W3mSendSelectTokenView extends LitElement {
@@ -71,7 +71,7 @@ export class W3mSendSelectTokenView extends LitElement {
 
   private templateTokens() {
     this.tokens = this.tokenBalance?.filter(
-      token => token.chainId === NetworkController.state.caipNetwork?.id
+      token => token.chainId === ChainController.state.activeCaipNetwork?.caipNetworkId
     )
     if (this.search) {
       this.filteredTokens = this.tokenBalance?.filter(token =>

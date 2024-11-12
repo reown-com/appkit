@@ -1,14 +1,24 @@
 import { devices } from '@playwright/test'
-import { getAvailableDevices } from './device'
-import { getValue } from './config'
-import { getLocalBravePath, BRAVE_LINUX_PATH } from '../constants/browsers'
+import { DESKTOP_DEVICES, MOBILE_DEVICES } from '../constants/devices'
 
-const availableDevices = getAvailableDevices()
+const LIBRARIES = ['ethers', 'ethers5', 'wagmi', 'solana'] as const
+const MULTICHAIN_LIBRARIES = [
+  'multichain-basic',
+  'multichain-ethers-solana',
+  'multichain-ethers5-solana',
+  'multichain-wagmi-solana'
+] as const
 
-const LIBRARIES = ['ethers5', 'ethers', 'wagmi', 'solana'] as const
-
-const PERMUTATIONS = availableDevices.flatMap(device =>
+const LIBRARY_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
   LIBRARIES.map(library => ({ device, library }))
+)
+
+const LIBRARY_MOBILE_PERMUTATIONS = MOBILE_DEVICES.flatMap(device =>
+  LIBRARIES.map(library => ({ device, library }))
+)
+
+const MULTICHAIN_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
+  MULTICHAIN_LIBRARIES.map(library => ({ device, library }))
 )
 
 interface UseOptions {
@@ -19,7 +29,7 @@ interface UseOptions {
 
 interface CustomProperties {
   testIgnore?: RegExp | string
-  testMatch?: string
+  testMatch?: RegExp | string
   useOptions?: UseOptions
   grep?: RegExp
 }
@@ -28,83 +38,125 @@ export type CustomProjectProperties = {
   [T in string]: CustomProperties
 }
 
-const braveOptions: UseOptions = {
-  launchOptions: {
-    executablePath: getValue(BRAVE_LINUX_PATH, getLocalBravePath())
-  }
-}
-
-const SOLANA_DISABLED_TESTS = [
+const SINGLE_ADAPTER_EVM_TESTS = [
+  'basic-tests.spec.ts',
   'canary.spec.ts',
   'email.spec.ts',
-  'siwe.spec.ts',
+  'no-email.spec.ts',
+  'no-socials.spec.ts',
+  'debug-mode.spec.ts',
   'siwe-email.spec.ts',
   'siwe-sa.spec.ts',
+  'siwe.spec.ts',
   'smart-account.spec.ts',
   'wallet-features.spec.ts',
-  'metamask.spec.ts'
-]
-const WAGMI_DISABLED_TESTS = ['metamask.spec.ts']
-const ETHERS_DISABLED_TESTS = ['metamask.spec.ts']
-const ETHERS5_DISABLED_TESTS = [
-  'metamask.spec.ts',
-  'email.spec.ts',
-  'wallet-features.spec.ts',
-  'smart-account.spec.ts',
-  'siwe-email.spec.ts',
-  'siwe-sa.spec.ts'
+  'wallet.spec.ts'
 ]
 
-const ETHERS_EMAIL_BASED_REGEX = new RegExp(ETHERS_DISABLED_TESTS.join('|'), 'u')
-const ETHERS5_EMAIL_BASED_REGEX = new RegExp(ETHERS5_DISABLED_TESTS.join('|'), 'u')
-const WAGMI_DISABLED_TESTS_REGEX = new RegExp(WAGMI_DISABLED_TESTS.join('|'), 'u')
-const WAGMI_DISABLED_TESTS_REGEX_FF = new RegExp([...WAGMI_DISABLED_TESTS].join('|'), 'u')
-const SOLANA_DISABLED_TESTS_REGEX = new RegExp(SOLANA_DISABLED_TESTS.join('|'), 'u')
+const SINGLE_ADAPTER_EVM_MOBILE_TESTS = ['mobile-wallet-features.spec.ts']
+
+const SINGLE_ADAPTER_SOLANA_TESTS = [
+  'basic-tests.spec.ts',
+  'email.spec.ts',
+  'no-email.spec.ts',
+  'no-socials.spec.ts',
+  'debug-mode.spec.ts',
+  'wallet.spec.ts'
+]
+
+const SINGLE_ADAPTER_SOLANA_MOBILE_TESTS = ['mobile-wallet-features.spec.ts']
+
+function createRegex(tests: string[], isDesktop = true) {
+  const desktopCheck = isDesktop ? '(?!.*/mobile-)' : ''
+
+  return new RegExp(`^(?!.*/multichain/)${desktopCheck}.*(?:${tests.join('|')})`, 'u')
+}
+
+// Desktop
+const SINGLE_ADAPTER_EVM_TESTS_REGEX = createRegex(SINGLE_ADAPTER_EVM_TESTS)
+const SINGLE_ADAPTER_SOLANA_TESTS_REGEX = createRegex(SINGLE_ADAPTER_SOLANA_TESTS)
+
+// Mobile
+const SINGLE_ADAPTER_EVM_MOBILE_REGEX = createRegex(SINGLE_ADAPTER_EVM_MOBILE_TESTS, false)
+const SINGLE_ADAPTER_SOLANA_MOBILE_TESTS_REGEX = createRegex(
+  SINGLE_ADAPTER_SOLANA_MOBILE_TESTS,
+  false
+)
 
 const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/ethers': {
-    testIgnore: ETHERS_EMAIL_BASED_REGEX
-  },
-  'Desktop Brave/ethers': {
-    testIgnore: ETHERS_EMAIL_BASED_REGEX,
-    useOptions: braveOptions
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Firefox/ethers': {
-    testIgnore: ETHERS_EMAIL_BASED_REGEX
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Chrome/ethers5': {
-    testIgnore: ETHERS5_EMAIL_BASED_REGEX
-  },
-  'Desktop Brave/ethers5': {
-    testIgnore: ETHERS5_EMAIL_BASED_REGEX,
-    useOptions: braveOptions
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Firefox/ethers5': {
-    testIgnore: ETHERS5_EMAIL_BASED_REGEX
-  },
-  'Desktop Brave/wagmi': {
-    testIgnore: WAGMI_DISABLED_TESTS_REGEX,
-    useOptions: braveOptions
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Chrome/wagmi': {
-    testIgnore: WAGMI_DISABLED_TESTS_REGEX
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Firefox/wagmi': {
-    testIgnore: WAGMI_DISABLED_TESTS_REGEX_FF
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
-  // Exclude social.spec.ts, email.spec.ts, siwe.spec.ts, and canary.spec.ts from solana, not yet implemented
   'Desktop Chrome/solana': {
-    testIgnore: SOLANA_DISABLED_TESTS_REGEX
-  },
-  'Desktop Brave/solana': {
-    useOptions: braveOptions,
-    testIgnore: SOLANA_DISABLED_TESTS_REGEX
+    testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
+    testIgnore: 'siwe-email.spec.ts'
   },
   'Desktop Firefox/solana': {
-    testIgnore: SOLANA_DISABLED_TESTS_REGEX
+    testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
+    testIgnore: 'siwe-email.spec.ts'
   },
-  'Desktop Safari/solana': {
-    testIgnore: SOLANA_DISABLED_TESTS_REGEX
+  'Desktop Firefox/multichain-ethers-solana': {
+    testMatch: /^.*\/multichain-ethers-.*\.spec\.ts$/u
+  },
+  'Desktop Firefox/multichain-wagmi-solana': {
+    testMatch: /^.*\/multichain-wagmi-.*\.spec\.ts$/u
+  },
+  'Desktop Firefox/multichain-ethers5-solana': {
+    testMatch: /^.*\/multichain-ethers5-.*\.spec\.ts$/u
+  },
+  'Desktop Firefox/multichain-basic': {
+    testMatch: /^.*\/multichain-basic\.spec\.ts$/u
+  },
+  'Desktop Chrome/multichain-ethers-solana': {
+    testMatch: /^.*\/multichain-ethers-.*\.spec\.ts$/u
+  },
+  'Desktop Chrome/multichain-wagmi-solana': {
+    testMatch: /^.*\/multichain-wagmi-.*\.spec\.ts$/u
+  },
+  'Desktop Chrome/multichain-ethers5-solana': {
+    testMatch: /^.*\/multichain-ethers5-.*\.spec\.ts$/u
+  },
+  'Desktop Chrome/multichain-basic': {
+    testMatch: /^.*\/multichain-basic\.spec\.ts$/u
+  },
+  'iPhone 12/ethers': {
+    testMatch: SINGLE_ADAPTER_EVM_MOBILE_REGEX
+  },
+  'Galaxy S5/ethers': {
+    testMatch: SINGLE_ADAPTER_EVM_MOBILE_REGEX
+  },
+  'iPhone 12/ethers5': {
+    testMatch: SINGLE_ADAPTER_EVM_MOBILE_REGEX
+  },
+  'Galaxy S5/ethers5': {
+    testMatch: SINGLE_ADAPTER_EVM_MOBILE_REGEX
+  },
+  'iPhone 12/wagmi': {
+    testMatch: SINGLE_ADAPTER_EVM_MOBILE_REGEX
+  },
+  'Galaxy S5/wagmi': {
+    testMatch: SINGLE_ADAPTER_EVM_MOBILE_REGEX
+  },
+  'iPhone 12/solana': {
+    testMatch: SINGLE_ADAPTER_SOLANA_MOBILE_TESTS_REGEX
+  },
+  'Galaxy S5/solana': {
+    testMatch: SINGLE_ADAPTER_SOLANA_MOBILE_TESTS_REGEX
   }
 }
 
@@ -113,22 +165,34 @@ export interface Permutation {
   library: string
 }
 
-export function getProjects() {
-  return PERMUTATIONS.map(({ device, library }) => {
-    const deviceName = device === 'Desktop Brave' ? 'Desktop Chrome' : device
-    let project = {
-      name: `${device}/${library}`,
-      use: { ...devices[deviceName], library },
-      storageState: 'playwright/.auth/user.json'
-    }
-    const props = customProjectProperties[project.name]
-    if (props) {
-      project = { ...project, ...props }
-      if (props.useOptions) {
-        project.use = { ...project.use, ...props.useOptions }
-      }
-    }
+interface CreateProjectParameters {
+  device: string
+  library: string
+}
 
-    return project
-  })
+function createProject({ device, library }: CreateProjectParameters) {
+  let project = {
+    name: `${device}/${library}`,
+    use: { ...devices[device], library },
+    storageState: 'playwright/.auth/user.json'
+  }
+  const props = customProjectProperties[project.name]
+  if (props) {
+    project = { ...project, ...props }
+    if (props.useOptions) {
+      project.use = { ...project.use, ...props.useOptions }
+    }
+  }
+
+  return project
+}
+
+export function getProjects() {
+  const libraryDesktopProjects = LIBRARY_PERMUTATIONS.map(createProject)
+  const libraryMobileProjects = LIBRARY_MOBILE_PERMUTATIONS.map(createProject)
+  const multichainProjects = MULTICHAIN_PERMUTATIONS.map(createProject)
+
+  const projects = [...libraryDesktopProjects, ...libraryMobileProjects, ...multichainProjects]
+
+  return projects
 }

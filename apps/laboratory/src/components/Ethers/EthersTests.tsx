@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useWeb3ModalAccount } from '@web3modal/ethers/react'
+import { useAppKitAccount } from '@reown/appkit/react'
 import { EthersSignMessageTest } from './EthersSignMessageTest'
 import { EthersSignTypedDataTest } from './EthersSignTypedDataTest'
 import { StackDivider, Card, CardHeader, Heading, CardBody, Box, Stack } from '@chakra-ui/react'
@@ -11,7 +11,19 @@ import { EthersSendCallsWithPaymasterServiceTest } from './EthersSendCallsWithPa
 
 export function EthersTests() {
   const [ready, setReady] = React.useState(false)
-  const { isConnected } = useWeb3ModalAccount()
+
+  const [callsHash, setCallsHash] = React.useState<string>('')
+  const { isConnected } = useAppKitAccount()
+
+  const onCallsHash = React.useCallback((hash: string) => {
+    setCallsHash(hash)
+  }, [])
+
+  React.useEffect(() => {
+    if (!isConnected) {
+      setCallsHash('')
+    }
+  }, [isConnected])
 
   React.useEffect(() => {
     setReady(true)
@@ -59,13 +71,13 @@ export function EthersTests() {
             <Heading size="xs" textTransform="uppercase" pb="2">
               Send Calls (Atomic Batch)
             </Heading>
-            <EthersSendCallsTest />
+            <EthersSendCallsTest onCallsHash={onCallsHash} />
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Get Calls Status
             </Heading>
-            <EthersGetCallsStatusTest />
+            <EthersGetCallsStatusTest callsHash={callsHash} />
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">

@@ -15,6 +15,7 @@ const maliciousUrl = 'https://malicious-app-verify-simulation.vercel.app'
 export type ModalFlavor =
   | 'default'
   | 'external'
+  | 'debug-mode'
   | 'wagmi-verify-valid'
   | 'wagmi-verify-domain-mismatch'
   | 'wagmi-verify-evil'
@@ -23,6 +24,7 @@ export type ModalFlavor =
   | 'ethers-verify-evil'
   | 'no-email'
   | 'no-socials'
+  | 'siwe'
   | 'all'
 
 function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
@@ -53,7 +55,11 @@ export class ModalPage {
     public readonly flavor: ModalFlavor
   ) {
     this.connectButton = this.page.getByTestId('connect-button')
-    this.url = getUrlByFlavor(this.baseURL, library, flavor)
+    if (library === 'multichain-ethers-solana') {
+      this.url = `${this.baseURL}library/multichain-ethers-solana/`
+    } else {
+      this.url = getUrlByFlavor(this.baseURL, library, flavor)
+    }
   }
 
   async load() {
@@ -100,10 +106,37 @@ export class ModalPage {
     return uri
   }
 
-  async qrCodeFlow(page: ModalPage, walletPage: WalletPage): Promise<void> {
+  async getImmidiateConnectUri(timingRecords?: TimingRecords): Promise<string> {
+    await this.connectButton.click()
+    const qrLoadInitiatedTime = new Date()
+
+    // Using getByTestId() doesn't work on my machine, I'm guessing because this element is inside of a <slot>
+    const qrCode = this.page.locator('wui-qr-code')
+    await expect(qrCode).toBeVisible()
+
+    const uri = this.assertDefined(await qrCode.getAttribute('uri'))
+    const qrLoadedTime = new Date()
+    if (timingRecords) {
+      timingRecords.push({
+        item: 'qrLoad',
+        timeMs: qrLoadedTime.getTime() - qrLoadInitiatedTime.getTime()
+      })
+    }
+
+    return uri
+  }
+
+  async qrCodeFlow(page: ModalPage, walletPage: WalletPage, immediate?: boolean): Promise<void> {
+    // eslint-disable-next-line init-declarations
+    let uri: string
     await walletPage.load()
-    const uri = await page.getConnectUri()
+    if (immediate) {
+      uri = await page.getImmidiateConnectUri()
+    } else {
+      uri = await page.getConnectUri()
+    }
     await walletPage.connectWithUri(uri)
+
     await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
     const walletValidator = new WalletValidator(walletPage.page)
     await walletValidator.expectConnected()
@@ -155,7 +188,7 @@ export class ModalPage {
     await this.enterOTP(otp)
   }
 
-  async loginWithEmail(email: string) {
+  async loginWithEmail(email: string, validate = true) {
     // Connect Button doesn't have a proper `disabled` attribute so we need to wait for the button to change the text
     await this.page
       .getByTestId('connect-button')
@@ -164,12 +197,14 @@ export class ModalPage {
     await this.page.getByTestId('wui-email-input').locator('input').focus()
     await this.page.getByTestId('wui-email-input').locator('input').fill(email)
     await this.page.getByTestId('wui-email-input').locator('input').press('Enter')
-    await expect(
-      this.page.getByText(email),
-      `Expected current email: ${email} to be visible on the notification screen`
-    ).toBeVisible({
-      timeout: 20_000
-    })
+    if (validate) {
+      await expect(
+        this.page.getByText(email),
+        `Expected current email: ${email} to be visible on the notification screen`
+      ).toBeVisible({
+        timeout: 20_000
+      })
+    }
   }
 
   async loginWithSocial(socialOption: 'github', socialMail: string, socialPass: string) {
@@ -301,6 +336,10 @@ export class ModalPage {
     return page
   }
 
+  async clickWalletGuideGetStarted() {
+    await this.page.getByTestId('w3m-wallet-guide-get-started').click()
+  }
+
   async promptSiwe() {
     const siweSign = this.page.getByTestId('w3m-connecting-siwe-sign')
     await expect(siweSign, 'Siwe prompt sign button should be visible').toBeVisible({
@@ -318,6 +357,8 @@ export class ModalPage {
     await this.page.getByTestId('account-button').click()
     await this.page.getByTestId('w3m-account-select-network').click()
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
+    // The state is chaing too fast and test runner doesn't wait the loading page. It's fastly checking the network selection button and detect that it's switched already.
+    await this.page.waitForTimeout(300)
   }
 
   async clickWalletDeeplink() {
@@ -390,12 +431,95 @@ export class ModalPage {
   }
 
   async switchNetworkWithNetworkButton(networkName: string) {
-    const networkButton = this.page.getByTestId('w3m-network-button')
+    const networkButton = this.page.getByTestId('wui-network-button')
     await networkButton.click()
 
     const networkToSwitchButton = this.page.getByTestId(`w3m-network-switch-${networkName}`)
     await networkToSwitchButton.click()
-    await networkToSwitchButton.waitFor({ state: 'hidden' })
+  }
+
+  async openAllWallets() {
+    const allWallets = this.page.getByTestId('all-wallets')
+    await expect(allWallets, 'All wallets should be visible').toBeVisible()
+    await allWallets.click()
+  }
+
+  async clickAllWalletsListSearchItem(id: string) {
+    const allWalletsListSearchItem = this.page.getByTestId(`wallet-search-item-${id}`)
+    await expect(allWalletsListSearchItem).toBeVisible()
+    await allWalletsListSearchItem.click()
+  }
+
+  async clickCertifiedToggle() {
+    const certifiedSwitch = this.page.getByTestId('wui-certified-switch')
+    await expect(certifiedSwitch).toBeVisible()
+    await certifiedSwitch.click()
+  }
+
+  async clickTabWebApp() {
+    const tabWebApp = this.page.getByTestId('tab-webapp')
+    await expect(tabWebApp).toBeVisible()
+    await tabWebApp.click()
+  }
+
+  async clickHookDisconnectButton() {
+    const disconnectHookButton = this.page.getByTestId('disconnect-hook-button')
+    await expect(disconnectHookButton).toBeVisible()
+    await disconnectHookButton.click()
+  }
+
+  async clickCopyLink() {
+    const copyLink = this.page.getByTestId('wui-link-copy')
+    await expect(copyLink).toBeVisible()
+
+    let hasCopied = false
+
+    while (!hasCopied) {
+      await copyLink.click()
+      await this.page.waitForTimeout(500)
+
+      const snackbarMessage = this.page.getByTestId('wui-snackbar-message')
+      const snackbarMessageText = await snackbarMessage.textContent()
+
+      if (snackbarMessageText && snackbarMessageText.startsWith('Link copied')) {
+        hasCopied = true
+      }
+    }
+
+    return this.page.evaluate(() => navigator.clipboard.readText())
+  }
+
+  async clickOpenWebApp() {
+    let url = ''
+
+    const openButton = this.page.getByTestId('w3m-connecting-widget-secondary-button')
+    await expect(openButton).toBeVisible()
+    await expect(openButton).toHaveText('Open')
+
+    while (!url) {
+      await openButton.click()
+      await this.page.waitForTimeout(500)
+
+      const pages = this.page.context().pages()
+
+      // Check if more than 1 tab is open
+      if (pages.length > 1) {
+        const lastTab = pages[pages.length - 1]
+
+        if (lastTab) {
+          url = lastTab.url()
+          break
+        }
+      }
+    }
+
+    return url
+  }
+
+  async search(value: string) {
+    const searchInput = this.page.getByTestId('wui-input-text')
+    await expect(searchInput, 'Search input should be visible').toBeVisible()
+    await searchInput.fill(value)
   }
 
   async openModal() {
@@ -457,5 +581,22 @@ export class ModalPage {
     expect(signature, 'Signature should be present').toBeTruthy()
 
     return signature as `0x${string}`
+  }
+
+  async switchNetworkWithHook() {
+    await this.page.getByTestId('switch-network-hook-button').click()
+  }
+
+  async clickLegalCheckbox() {
+    const legalCheckbox = this.page.getByTestId('w3m-legal-checkbox')
+    await expect(legalCheckbox).toBeVisible()
+    const boundingBox = await legalCheckbox.boundingBox()
+    if (!boundingBox) {
+      throw new Error('Legal checkbox bounding box not found')
+    }
+    const x = boundingBox.x + boundingBox.width / 2 - 100
+    const y = boundingBox.y + boundingBox.height / 2
+    // Click on the left side of the checkbox to avoid clicking on links
+    await this.page.mouse.click(x, y)
   }
 }

@@ -1,23 +1,21 @@
 import {
   AccountController,
   AssetUtil,
+  ChainController,
   ConnectionController,
   ConstantsUtil,
   CoreHelperUtil,
   EventsController,
   ModalController,
-  NetworkController,
   RouterController,
   SnackController
-} from '@web3modal/core'
-
-import type { CaipNetwork } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import type { CaipNetwork } from '@reown/appkit-common'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
-import { NetworkUtil } from '../../utils/NetworkUtil.js'
 
 @customElement('w3m-unsupported-chain-view')
 export class W3mUnsupportedChainView extends LitElement {
@@ -84,8 +82,8 @@ export class W3mUnsupportedChainView extends LitElement {
   }
 
   private networksTemplate() {
-    const requestedCaipNetworks = NetworkController.getRequestedCaipNetworks()
-    const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
+    const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
+    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
 
     const sortedNetworks = CoreHelperUtil.sortRequestedNetworks(
       approvedCaipNetworkIds,
@@ -93,7 +91,9 @@ export class W3mUnsupportedChainView extends LitElement {
     )
 
     const filteredNetworks = this.swapUnsupportedChain
-      ? sortedNetworks.filter(network => ConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(network.id))
+      ? sortedNetworks.filter(network =>
+          ConstantsUtil.SWAP_SUPPORTED_NETWORKS.includes(network.caipNetworkId)
+        )
       : sortedNetworks
 
     return filteredNetworks.map(
@@ -126,21 +126,23 @@ export class W3mUnsupportedChainView extends LitElement {
   }
 
   private async onSwitchNetwork(network: CaipNetwork) {
-    const isConnected = AccountController.state.isConnected
-    const approvedCaipNetworkIds = NetworkController.state.approvedCaipNetworkIds
-    const supportsAllNetworks = NetworkController.state.supportsAllNetworks
-    const caipNetwork = NetworkController.state.caipNetwork
+    const caipAddress = AccountController.state.caipAddress
+    const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
+    const supportsAllNetworks = ChainController.getNetworkProp(
+      'supportsAllNetworks',
+      network.chainNamespace
+    )
+    const caipNetwork = ChainController.state.activeCaipNetwork
     const routerData = RouterController.state.data
 
-    if (isConnected && caipNetwork?.id !== network.id) {
-      if (approvedCaipNetworkIds?.includes(network.id)) {
-        await NetworkController.switchActiveNetwork(network)
-        await NetworkUtil.onNetworkChange()
+    if (caipAddress && caipNetwork?.caipNetworkId !== network.caipNetworkId) {
+      if (approvedCaipNetworkIds?.includes(network.caipNetworkId)) {
+        await ChainController.switchActiveNetwork(network)
       } else if (supportsAllNetworks) {
         RouterController.push('SwitchNetwork', { ...routerData, network })
       }
-    } else if (!isConnected) {
-      NetworkController.setActiveCaipNetwork(network)
+    } else if (!caipAddress) {
+      ChainController.setActiveCaipNetwork(network)
       RouterController.push('Connect')
     }
   }

@@ -1,8 +1,8 @@
-import type { Connector } from '@web3modal/core'
-import { AssetUtil, ConnectorController, RouterController } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import type { Connector } from '@reown/appkit-core'
+import { AssetUtil, ConnectorController, RouterController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connect-external-widget')
@@ -11,6 +11,8 @@ export class W3mConnectExternalWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
+  @property() public tabIdx?: number = undefined
+
   @state() private connectors = ConnectorController.state.connectors
 
   public constructor() {
@@ -47,6 +49,7 @@ export class W3mConnectExternalWidget extends LitElement {
               name=${connector.name ?? 'Unknown'}
               data-testid=${`wallet-selector-external-${connector.id}`}
               @click=${() => this.onConnector(connector)}
+              tabIdx=${ifDefined(this.tabIdx)}
             >
             </wui-list-wallet>
           `

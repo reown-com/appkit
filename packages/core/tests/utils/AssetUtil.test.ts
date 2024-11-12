@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { AssetController } from '../../src/controllers/AssetController.js'
 import { AssetUtil } from '../../src/utils/AssetUtil.js'
-import type { CaipNetwork, Connector, WcWallet } from '../../src/utils/TypeUtil.js'
+import type { Connector, WcWallet } from '../../src/utils/TypeUtil.js'
 import { ApiController } from '../../src/controllers/ApiController.js'
+import type { CaipNetwork } from '@reown/appkit-common'
 
 // - Mocks ---------------------------------------------------------------------
 const connector: Partial<Connector> = {
@@ -14,12 +15,16 @@ const connectorWithImageUrl: Partial<Connector> = {
   imageId: 'walletconnect'
 }
 const network: Partial<CaipNetwork> = {
-  imageUrl: undefined,
-  imageId: 'ethereum'
+  assets: {
+    imageUrl: undefined,
+    imageId: 'ethereum'
+  }
 }
-const networkWithImageUrl: Partial<Connector> = {
-  imageUrl: 'ethereum-logo-src',
-  imageId: 'ethereum'
+const networkWithImageUrl: Partial<CaipNetwork> = {
+  assets: {
+    imageUrl: 'ethereum-logo-src',
+    imageId: 'ethereum'
+  }
 }
 const wallet: Partial<WcWallet> = {
   image_url: undefined,

@@ -5,10 +5,11 @@ import {
   EventsController,
   OptionsController,
   RouterController
-} from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-all-wallets-widget')
 export class W3mAllWalletsWidget extends LitElement {
@@ -16,6 +17,7 @@ export class W3mAllWalletsWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
+  @property() public tabIdx?: number = undefined
   @state() private connectors = ConnectorController.state.connectors
   @state() private count = ApiController.state.count
 
@@ -33,7 +35,7 @@ export class W3mAllWalletsWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const wcConnector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
+    const wcConnector = this.connectors.find(c => c.id === 'walletConnect')
     const { allWallets } = OptionsController.state
 
     if (!wcConnector || allWallets === 'HIDE') {
@@ -58,6 +60,7 @@ export class W3mAllWalletsWidget extends LitElement {
         tagLabel=${tagLabel}
         tagVariant="shade"
         data-testid="all-wallets"
+        tabIdx=${ifDefined(this.tabIdx)}
       ></wui-list-wallet>
     `
   }

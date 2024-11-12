@@ -1,10 +1,10 @@
-import type { WcWallet } from '@web3modal/core'
-import { ApiController, ConnectorController, RouterController } from '@web3modal/core'
-import { customElement } from '@web3modal/ui'
+import type { BadgeType, WcWallet } from '@reown/appkit-core'
+import { ApiController, ConnectorController, RouterController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { markWalletsAsInstalled } from '../../utils/markWalletsAsInstalled.js'
+import { WalletUtil } from '../../utils/WalletUtil.js'
 
 @customElement('w3m-all-wallets-search')
 export class W3mAllWalletsSearch extends LitElement {
@@ -13,10 +13,14 @@ export class W3mAllWalletsSearch extends LitElement {
   // -- Members ------------------------------------------- //
   private prevQuery = ''
 
+  private prevBadge?: BadgeType = undefined
+
   // -- State & Properties -------------------------------- //
   @state() private loading = true
 
   @property() private query = ''
+
+  @property() private badge?: BadgeType
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -29,17 +33,18 @@ export class W3mAllWalletsSearch extends LitElement {
 
   // Private Methods ------------------------------------- //
   private async onSearch() {
-    if (this.query.trim() !== this.prevQuery.trim()) {
+    if (this.query.trim() !== this.prevQuery.trim() || this.badge !== this.prevBadge) {
       this.prevQuery = this.query
+      this.prevBadge = this.badge
       this.loading = true
-      await ApiController.searchWallet({ search: this.query })
+      await ApiController.searchWallet({ search: this.query, badge: this.badge })
       this.loading = false
     }
   }
 
   private walletsTemplate() {
     const { search } = ApiController.state
-    const wallets = markWalletsAsInstalled(search)
+    const wallets = WalletUtil.markWalletsAsInstalled(search)
 
     if (!search.length) {
       return html`
@@ -59,15 +64,16 @@ export class W3mAllWalletsSearch extends LitElement {
     return html`
       <wui-grid
         .padding=${['0', 's', 's', 's'] as const}
-        gridTemplateColumns="repeat(4, 1fr)"
         rowGap="l"
         columnGap="xs"
+        justifyContent="space-between"
       >
         ${wallets.map(
           wallet => html`
             <w3m-all-wallets-list-item
               @click=${() => this.onConnectWallet(wallet)}
               .wallet=${wallet}
+              data-testid="wallet-search-item-${wallet.id}"
             ></w3m-all-wallets-list-item>
           `
         )}

@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@web3modal/ui/src/layout/wui-separator'
-import type { WuiSeparator } from '@web3modal/ui/src/layout/wui-separator'
+import '@reown/appkit-ui/src/layout/wui-separator'
+import type { WuiSeparator } from '@reown/appkit-ui/src/layout/wui-separator'
 import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import '../../components/gallery-container'

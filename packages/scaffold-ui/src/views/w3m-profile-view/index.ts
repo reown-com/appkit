@@ -1,15 +1,16 @@
 import {
   AccountController,
   ChainController,
+  ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   ModalController,
   RouterController,
   SnackController,
   type AccountType
-} from '@web3modal/core'
+} from '@reown/appkit-core'
 
-import { UiHelperUtil, customElement } from '@web3modal/ui'
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -30,6 +31,8 @@ export class W3mProfileView extends LitElement {
   @state() private profileName = AccountController.state.profileName
 
   @state() private accounts = AccountController.state.allAccounts
+
+  @state() private loading = false
 
   public constructor() {
     super()
@@ -64,8 +67,6 @@ export class W3mProfileView extends LitElement {
       throw new Error('w3m-profile-view: No account provided')
     }
 
-    const name = this.profileName?.split('.')[0]
-
     return html`
       <wui-flex flexDirection="column" gap="l" .padding=${['0', 'xl', 'm', 'xl'] as const}>
         <wui-flex flexDirection="column" alignItems="center" gap="l">
@@ -78,9 +79,9 @@ export class W3mProfileView extends LitElement {
           <wui-flex flexDirection="column" alignItems="center">
             <wui-flex gap="3xs" alignItems="center" justifyContent="center">
               <wui-text variant="title-6-600" color="fg-100" data-testid="account-settings-address">
-                ${name
+                ${this.profileName
                   ? UiHelperUtil.getTruncateString({
-                      string: name,
+                      string: this.profileName,
                       charsStart: 20,
                       charsEnd: 0,
                       truncate: 'end'
@@ -128,14 +129,14 @@ export class W3mProfileView extends LitElement {
   }
 
   private async onSwitchAccount(account: AccountType) {
-    AccountController.setShouldUpdateToAddress(account.address, ChainController.state.activeChain)
+    this.loading = true
     const emailConnector = ConnectorController.getAuthConnector()
-    if (!emailConnector) {
-      return
+    if (emailConnector) {
+      await ConnectionController.setPreferredAccountType(account.type)
     }
 
-    await emailConnector.provider.setPreferredAccount(account.type)
-    await emailConnector.provider.connect()
+    AccountController.setShouldUpdateToAddress(account.address, ChainController.state.activeChain)
+    this.loading = false
   }
 
   private accountTemplate(account: AccountType) {
@@ -145,9 +146,10 @@ export class W3mProfileView extends LitElement {
         : html`<wui-button
             slot="action"
             textVariant="small-600"
-            size="sm"
+            size="md"
             variant="accent"
             @click=${() => this.onSwitchAccount(account)}
+            .loading=${this.loading}
             >Switch</wui-button
           >`}
     </wui-list-account>`

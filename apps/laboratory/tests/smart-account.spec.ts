@@ -34,7 +34,9 @@ smartAccountTest.beforeAll(async ({ browser, library }) => {
 
   // Switch to a SA enabled network
   await page.switchNetworkWithNetworkButton('Polygon')
+  await validator.expectSwitchedNetworkOnNetworksView('Polygon')
   await page.closeModal()
+
   const tempEmail = await email.getEmailAddressToUse()
   await page.emailFlow(tempEmail, context, mailsacApiKey)
 
@@ -69,10 +71,12 @@ smartAccountTest('it should sign with smart account 6492 signature', async () =>
 })
 
 smartAccountTest('it should switch to a not enabled network and sign with EOA', async () => {
-  const targetChain = 'Ethereum'
-  await page.goToSettings()
+  const targetChain = 'Aurora'
   await page.switchNetwork(targetChain)
   await validator.expectSwitchedNetwork(targetChain)
+  await page.closeModal()
+
+  await page.goToSettings()
   await validator.expectTogglePreferredTypeVisible(false)
   await page.closeModal()
 
@@ -83,15 +87,15 @@ smartAccountTest('it should switch to a not enabled network and sign with EOA', 
 
 smartAccountTest('it should switch to smart account and sign', async () => {
   const targetChain = 'Polygon'
-  await page.goToSettings()
   await page.switchNetwork(targetChain)
   await validator.expectSwitchedNetwork(targetChain)
+  await page.closeModal()
+
+  await page.goToSettings()
   await page.togglePreferredAccountType()
   await validator.expectChangePreferredAccountToShow(EOA)
   await page.closeModal()
-
-  // Need some time for Lab UI to refresh state
-  await page.page.waitForTimeout(1000)
+  await validator.expectAccountButtonReady()
 
   await page.sign()
   await page.approveSign()
@@ -109,9 +113,7 @@ smartAccountTest('it should switch to eoa and sign', async () => {
   await page.togglePreferredAccountType()
   await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
   await page.closeModal()
-
-  // Need some time for Lab UI to refresh state
-  await page.page.waitForTimeout(1000)
+  await validator.expectAccountButtonReady()
 
   await page.sign()
   await page.approveSign()

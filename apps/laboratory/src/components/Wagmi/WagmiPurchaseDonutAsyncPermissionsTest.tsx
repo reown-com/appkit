@@ -4,15 +4,34 @@ import { useState } from 'react'
 import { useChakraToast } from '../Toast'
 import { encodeFunctionData, parseEther } from 'viem'
 import { abi as donutContractAbi, address as donutContractaddress } from '../../utils/DonutContract'
-import { sepolia } from 'viem/chains'
 import { useLocalEcdsaKey } from '../../context/LocalEcdsaKeyContext'
 import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
-import { executeActionsWithECDSAAndCosignerPermissions } from '../../utils/ERC7715Utils'
+import { executeActionsWithECDSAKey } from '../../utils/ERC7715Utils'
+import { getChain } from '../../utils/NetworksUtil'
+import type { SmartSessionGrantPermissionsResponse } from '@reown/appkit-experimental/smart-session'
 
 export function WagmiPurchaseDonutAsyncPermissionsTest() {
-  const { privateKey } = useLocalEcdsaKey()
+  const { smartSession } = useERC7715Permissions()
 
-  const { grantedPermissions, pci } = useERC7715Permissions()
+  if (smartSession?.type !== 'async' || !smartSession.grantedPermissions?.context) {
+    return (
+      <Text fontSize="md" color="yellow">
+        Dapp does not have the permissions
+      </Text>
+    )
+  }
+
+  return <ConnectedTestContent grantedPermissions={smartSession.grantedPermissions} />
+}
+
+function ConnectedTestContent({
+  grantedPermissions
+}: {
+  grantedPermissions: SmartSessionGrantPermissionsResponse
+}) {
+  const { privateKey } = useLocalEcdsaKey()
+  const toast = useChakraToast()
+  const [isTransactionPending, setTransactionPending] = useState<boolean>(false)
 
   const {
     data: donutsOwned,
@@ -23,24 +42,24 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
     abi: donutContractAbi,
     address: donutContractaddress,
     functionName: 'getBalance',
-    args: [grantedPermissions?.signerData?.submitToAddress || '0x']
+    args: [grantedPermissions.address]
   })
-
-  const [isTransactionPending, setTransactionPending] = useState<boolean>(false)
-  const toast = useChakraToast()
 
   async function onPurchaseDonutWithPermissions() {
     setTransactionPending(true)
     try {
+      const chainId = parseInt(grantedPermissions.chainId, 16)
+      if (!chainId) {
+        throw new Error('Chain ID not available in granted permissions')
+      }
+      const chain = getChain(chainId)
+      if (!chain) {
+        throw new Error('Unknown chainId')
+      }
       if (!privateKey) {
         throw new Error(`Unable to get dApp private key`)
       }
-      if (!grantedPermissions) {
-        throw Error('No permissions available')
-      }
-      if (!pci) {
-        throw Error('No WC cosigner data(PCI) available')
-      }
+
       const purchaseDonutCallData = encodeFunctionData({
         abi: donutContractAbi,
         functionName: 'purchase',
@@ -53,12 +72,12 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
           data: purchaseDonutCallData
         }
       ]
-      const txHash = await executeActionsWithECDSAAndCosignerPermissions({
+      const txHash = await executeActionsWithECDSAKey({
         actions: purchaseDonutCallDataExecution,
-        chain: sepolia,
+        chain,
         ecdsaPrivateKey: privateKey as `0x${string}`,
-        permissions: grantedPermissions,
-        pci
+        accountAddress: grantedPermissions.address,
+        permissionsContext: grantedPermissions.context
       })
       if (txHash) {
         toast({
@@ -77,16 +96,9 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
     }
     setTransactionPending(false)
   }
-  if (!grantedPermissions) {
-    return (
-      <Text fontSize="md" color="yellow">
-        Dapp does not have the permissions
-      </Text>
-    )
-  }
 
   return (
-    <Stack direction={['column', 'column', 'row']}>
+    <Stack direction={['column']}>
       <Button
         isDisabled={!grantedPermissions}
         isLoading={isTransactionPending}
@@ -99,7 +111,7 @@ export function WagmiPurchaseDonutAsyncPermissionsTest() {
           <Text>Fetching donuts...</Text>
         ) : (
           <>
-            <Text marginRight="5px">Crypto donuts left:</Text>
+            <Text marginRight="5px">Crypto donuts purchased:</Text>
             <Text>{donutsOwned?.toString()}</Text>
           </>
         )}

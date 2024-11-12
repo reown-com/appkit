@@ -1,12 +1,12 @@
-import { DateUtil, type Transaction } from '@web3modal/common'
+import { DateUtil, type Transaction } from '@reown/appkit-common'
 import {
   AccountController,
   AssetController,
   OnRampController,
   OptionsController,
   TransactionsController
-} from '@web3modal/core'
-import { TransactionUtil, customElement } from '@web3modal/ui'
+} from '@reown/appkit-core'
+import { TransactionUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'

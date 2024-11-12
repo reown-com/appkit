@@ -1,0 +1,28 @@
+{
+  "name": "@examples/next-ethers",
+  "version": "1.2.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@reown/appkit-adapter-ethers": "workspace:*",
+    "@reown/appkit": "workspace:*",
+    "ethers": "6.13.2",
+    "next": "14.2.3",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "18.2.62",
+    "@types/react-dom": "18.2.7",
+    "@types/node": "20.11.5",
+    "eslint": "8.56.0",
+    "eslint-config-next": "14.1.0",
+    "typescript": "5.3.3",
+    "esbuild": "0.21.1"
+  }
+}
