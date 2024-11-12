@@ -1,7 +1,7 @@
 import type { AppKit, AppKitOptions } from '@reown/appkit'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import type { BitcoinConnector } from './utils/BitcoinConnector.js'
-import { WalletStandardConnector } from './connectors/WalletStandardConnector.js'
+import { WBIPConnector } from './connectors/WBIPConnector.js'
 
 export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   constructor(params: BitcoinAdapter.ConstructorParams) {
@@ -28,6 +28,8 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     }
 
     const address = await connector.connect()
+
+    this.connector = connector
 
     return {
       id: connector.id,
@@ -63,10 +65,18 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   }
 
   override syncConnectors(_options?: AppKitOptions, _appKit?: AppKit): void {
-    WalletStandardConnector.watchWallets({
-      callback: this.addConnector.bind(this),
-      requestedChains: this.networks
-    })
+    /*
+     * WalletStandardConnector.watchWallets({
+     *   callback: this.addConnector.bind(this),
+     *   requestedChains: this.networks
+     * })
+     */
+
+    this.addConnector(
+      ...WBIPConnector.getWallets({
+        requestedChains: this.networks
+      })
+    )
   }
 
   override syncConnection(

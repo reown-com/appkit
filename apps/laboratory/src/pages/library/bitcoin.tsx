@@ -20,7 +20,8 @@ const modal = createAppKit({
   features: {
     analytics: true
   },
-  metadata: ConstantsUtil.Metadata
+  metadata: ConstantsUtil.Metadata,
+  debug: true
 })
 
 ThemeStore.setModal(modal)
