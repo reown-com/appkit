@@ -1372,10 +1372,13 @@ export class AppKit {
 
     if (chainNamespace === ChainController.state.activeChain) {
       const caipNetwork = this.caipNetworks?.find(
-        n => n.id === chainId || n.chainNamespace === chainNamespace
+        n => n.id === chainId && n.chainNamespace === chainNamespace
       )
+
       if (caipNetwork) {
         this.setCaipNetwork(caipNetwork)
+      } else {
+        this.setCaipNetwork(this.caipNetworks?.find(n => n.chainNamespace === chainNamespace))
       }
 
       const adapter = this.getAdapter(chainNamespace)
