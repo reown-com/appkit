@@ -77,4 +77,4 @@ export { OptionsUtil } from '../src/utils/OptionsUtil.js'
 export { SIWXUtil } from '../src/utils/SIWXUtil.js'
 
 export type * from '../src/utils/TypeUtil.js'
-export type * from '../src/utils/TypeUtil.js'
+export type * from '../src/utils/SIWXUtil.js'

@@ -719,14 +719,14 @@ export class AppKit {
 
         const siwx = SIWXUtil.getSIWX()
 
-        if (siwx) {
+        if (siwx && this.universalProvider) {
           // Ignores chainId and account address to get other message data
           const siwxMessage = await siwx.createMessage({
             chainId: '',
             accountAddress: ''
           })
 
-          const result = await this.universalProvider?.authenticate({
+          const result = await this.universalProvider.authenticate({
             nonce: siwxMessage.nonce,
             domain: siwxMessage.domain,
             uri: siwxMessage.uri,
@@ -751,7 +751,7 @@ export class AppKit {
 
               return {
                 data: siwxMessage,
-                message,
+                message: message || '',
                 signature: cacao.s.s,
                 cacao
               }
