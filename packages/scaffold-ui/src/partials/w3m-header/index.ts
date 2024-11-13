@@ -153,9 +153,23 @@ export class W3mHeader extends LitElement {
   }
 
   private async onClose() {
-    ModalController.close()
+    const isUnsupportedChain = RouterController.state.view === 'UnsupportedChain'
 
-    return Promise.resolve()
+    if (this.isSiweEnabled) {
+      const { SIWEController } = await import('@reown/appkit-siwe')
+      const isApproveSignScreen = RouterController.state.view === 'ApproveTransaction'
+      const isUnauthenticated = SIWEController.state.status !== 'success'
+
+      if (isUnauthenticated && isApproveSignScreen) {
+        RouterController.popTransactionStack(true)
+      } else {
+        ModalController.close()
+      }
+    } else if (isUnsupportedChain) {
+      ModalController.shake()
+    } else {
+      ModalController.close()
+    }
   }
 
   private rightHeaderTemplate() {

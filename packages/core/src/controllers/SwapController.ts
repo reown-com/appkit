@@ -454,7 +454,7 @@ export const SwapController = {
 
     switch (ChainController.state?.activeCaipNetwork?.chainNamespace) {
       case 'solana':
-        state.gasFee = res.standard
+        state.gasFee = res.standard ?? '0'
         state.gasPriceInUSD = NumberUtil.multiply(res.standard, state.networkPrice)
           .dividedBy(1e9)
           .toNumber()
@@ -467,7 +467,7 @@ export const SwapController = {
       case 'eip155':
       default:
         // eslint-disable-next-line no-case-declarations
-        const value = res.standard
+        const value = res.standard ?? '0'
         // eslint-disable-next-line no-case-declarations
         const gasFee = BigInt(value)
         // eslint-disable-next-line no-case-declarations
@@ -610,11 +610,24 @@ export const SwapController = {
         value: BigInt(response.tx.value),
         toAmount: state.toTokenAmount
       }
-
       state.swapTransaction = undefined
-      state.approvalTransaction = transaction
+      state.approvalTransaction = {
+        data: transaction.data,
+        to: transaction.to,
+        gas: transaction.gas ?? BigInt(0),
+        gasPrice: transaction.gasPrice,
+        value: transaction.value,
+        toAmount: transaction.toAmount
+      }
 
-      return transaction
+      return {
+        data: transaction.data,
+        to: transaction.to,
+        gas: transaction.gas ?? BigInt(0),
+        gasPrice: transaction.gasPrice,
+        value: transaction.value,
+        toAmount: transaction.toAmount
+      }
     } catch (error) {
       RouterController.goBack()
       SnackController.showError('Failed to create approval transaction')
@@ -638,7 +651,7 @@ export const SwapController = {
     const amount = ConnectionController.parseUnits(
       sourceTokenAmount,
       sourceToken.decimals
-    ).toString()
+    )?.toString()
 
     try {
       const response = await BlockchainApiController.generateSwapCalldata({
@@ -646,7 +659,7 @@ export const SwapController = {
         userAddress: fromCaipAddress,
         from: sourceToken.address,
         to: toToken.address,
-        amount
+        amount: amount as string
       })
 
       const isSourceTokenIsNetworkToken = sourceToken.address === networkAddress
@@ -659,7 +672,7 @@ export const SwapController = {
         to: CoreHelperUtil.getPlainAddress(response.tx.to) as `0x${string}`,
         gas,
         gasPrice,
-        value: isSourceTokenIsNetworkToken ? BigInt(amount) : BigInt('0'),
+        value: isSourceTokenIsNetworkToken ? BigInt(amount ?? '0') : BigInt('0'),
         toAmount: state.toTokenAmount
       }
 

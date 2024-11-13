@@ -6,9 +6,10 @@ export default css`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 76px;
+    cursor: pointer;
+    width: 104px;
     row-gap: var(--wui-spacing-xs);
-    padding: var(--wui-spacing-xs) var(--wui-spacing-0);
+    padding: var(--wui-spacing-s) var(--wui-spacing-0);
     background-color: var(--wui-color-gray-glass-002);
     border-radius: clamp(0px, var(--wui-border-radius-xs), 20px);
     will-change: background-color, color;
@@ -16,20 +17,24 @@ export default css`
     border: none;
   }
 
-  button > wui-text {
+  button > wui-flex > wui-text {
     color: var(--wui-color-fg-100);
-    max-width: var(--wui-icon-box-size-xl);
+    max-width: 86px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     justify-content: center;
   }
 
+  button > wui-flex > wui-text.certified {
+    max-width: 66px;
+  }
+
   button:hover:enabled {
     background-color: var(--wui-color-gray-glass-005);
   }
 
-  button:disabled > wui-text {
+  button:disabled > wui-flex > wui-text {
     color: var(--wui-color-gray-glass-015);
   }
 
@@ -45,5 +50,11 @@ export default css`
 
   [data-selected='true']:active:enabled {
     background-color: var(--wui-color-accent-glass-010);
+  }
+
+  @media (max-width: 350px) {
+    button {
+      width: 100%;
+    }
   }
 `

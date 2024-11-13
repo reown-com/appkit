@@ -441,6 +441,12 @@ export class ModalPage {
     await allWalletsListSearchItem.click()
   }
 
+  async clickCertifiedToggle() {
+    const certifiedSwitch = this.page.getByTestId('wui-certified-switch')
+    await expect(certifiedSwitch).toBeVisible()
+    await certifiedSwitch.click()
+  }
+
   async clickTabWebApp() {
     const tabWebApp = this.page.getByTestId('tab-webapp')
     await expect(tabWebApp).toBeVisible()

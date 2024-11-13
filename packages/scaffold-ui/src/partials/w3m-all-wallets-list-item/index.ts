@@ -49,10 +49,20 @@ export class W3mAllWalletsListItem extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const certified = this.wallet?.badge_type === 'certified'
+
     return html`
       <button ontouchstart>
         ${this.imageTemplate()}
-        <wui-text variant="tiny-500" color="inherit">${this.wallet?.name}</wui-text>
+        <wui-flex flexDirection="row" alignItems="center" justifyContent="center" gap="3xs">
+          <wui-text
+            variant="tiny-500"
+            color="inherit"
+            class=${ifDefined(certified ? 'certified' : undefined)}
+            >${this.wallet?.name}</wui-text
+          >
+          ${certified ? html`<wui-icon size="sm" name="walletConnectBrown"></wui-icon>` : null}
+        </wui-flex>
       </button>
     `
   }
