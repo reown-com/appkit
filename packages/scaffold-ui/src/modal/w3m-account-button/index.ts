@@ -49,7 +49,9 @@ class W3mAccountButtonBase extends LitElement {
         AssetController.subscribeNetworkImages(() => {
           this.networkImage = AssetUtil.getNetworkImage(this.network)
         }),
-        ChainController.subscribeKey('activeCaipAddress', val => (this.caipAddress = val)),
+        ChainController.subscribeKey('activeCaipAddress', val => {
+          this.caipAddress = val
+        }),
         AccountController.subscribeKey('balance', val => (this.balanceVal = val)),
         AccountController.subscribeKey('balanceSymbol', val => (this.balanceSymbol = val)),
         AccountController.subscribeKey('profileName', val => (this.profileName = val)),

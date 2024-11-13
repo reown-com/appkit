@@ -1,233 +1,145 @@
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
-import { mainnet as mainnetAppKit, solana as solanaAppKit } from '../networks'
-import { UniversalAdapterClient } from '../universal-adapter'
-import { mockOptions } from './mocks/Options'
-import mockProvider from './mocks/UniversalProvider'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { UniversalAdapter } from '../universal-adapter/client'
 import type UniversalProvider from '@walletconnect/universal-provider'
-import { AlertController, ChainController } from '@reown/appkit-core'
-import { ProviderUtil } from '../store/index.js'
-import { CaipNetworksUtil, ConstantsUtil, ErrorUtil, PresetsUtil } from '@reown/appkit-utils'
-import mockAppKit from './mocks/AppKit'
 import type { CaipNetwork } from '@reown/appkit-common'
 
-const [mainnet, solana] = CaipNetworksUtil.extendCaipNetworks([mainnetAppKit, solanaAppKit], {
-  customNetworkImageUrls: {},
-  projectId: 'test-project-id'
-})
+// Mock provider
+const mockProvider = {
+  on: vi.fn(),
+  connect: vi.fn(),
+  disconnect: vi.fn(),
+  setDefaultChain: vi.fn()
+} as unknown as UniversalProvider
 
-const mockOptionsExtended = {
-  ...mockOptions,
-  networks: [mainnet, solana] as [CaipNetwork, ...CaipNetwork[]],
-  defaultNetwork: mainnet
+// Mock CaipNetwork
+const mockCaipNetwork: CaipNetwork = {
+  id: 1,
+  name: 'Ethereum',
+  chainNamespace: 'eip155',
+  caipNetworkId: 'eip155:1',
+  rpcUrls: {
+    default: { http: ['https://ethereum.rpc.com'] }
+  },
+  nativeCurrency: {
+    name: 'Ether',
+    symbol: 'ETH',
+    decimals: 18
+  }
 }
 
-vi.mock('@reown/appkit-core')
-
 describe('UniversalAdapter', () => {
-  let universalAdapter: UniversalAdapterClient
+  let adapter: UniversalAdapter
 
   beforeEach(() => {
-    universalAdapter = new UniversalAdapterClient(mockOptionsExtended)
-    universalAdapter.walletConnectProvider = mockProvider
-    universalAdapter.construct(mockAppKit, mockOptionsExtended)
-  })
+    adapter = new UniversalAdapter()
 
-  afterEach(() => {
+    // Mock internal state using Object.defineProperty
+    Object.defineProperty(adapter, 'connectors', {
+      value: [
+        {
+          id: 'WALLET_CONNECT',
+          type: 'WALLET_CONNECT',
+          provider: mockProvider
+        }
+      ],
+      writable: true
+    })
+
+    Object.defineProperty(adapter, 'caipNetworks', {
+      value: [mockCaipNetwork],
+      writable: true
+    })
+
     vi.clearAllMocks()
   })
 
-  describe('UniversalAdapter - Initialization', () => {
-    it('should set caipNetworks to provided caipNetworks options', () => {
-      expect(universalAdapter?.caipNetworks).toEqual(mockOptionsExtended.networks)
-    })
+  describe('connectWalletConnect', () => {
+    it('should connect successfully', async () => {
+      const onUri = vi.fn()
 
-    it('should set metadata to metadata options', () => {
-      expect((universalAdapter as any).appKit).toEqual(mockAppKit)
-    })
-  })
+      await adapter.connectWalletConnect(onUri)
 
-  describe('UniversalAdapter - Public Methods', () => {
-    it('should return walletConnectProvider when getWalletConnectProvider is invoked', async () => {
-      const switchNetworkSpy = vi.spyOn(universalAdapter, 'switchNetwork')
-      const mainnet = universalAdapter.caipNetworks[0]
-      await universalAdapter.networkControllerClient.switchCaipNetwork(mainnet)
-      expect(switchNetworkSpy).toHaveBeenCalledWith(mainnet)
-    })
-  })
-
-  describe('UniversalAdapter - Network', () => {
-    it('should call switchCaipNetwork when networkControllerClient.switchCaipNetwork is invoked', async () => {
-      const provider = await universalAdapter.getWalletConnectProvider()
-      expect(provider).toEqual(mockProvider)
-    })
-
-    it('should call return correct approvedCaipNetworksData', async () => {
-      const approvedCaipNetworksData =
-        await universalAdapter.networkControllerClient.getApprovedCaipNetworksData()
-
-      expect(approvedCaipNetworksData).toMatchObject({
-        supportsAllNetworks: false,
-        approvedCaipNetworkIds: [
-          mockProvider.session?.namespaces['eip155']?.chains?.[0],
-          mockProvider.session?.namespaces['solana']?.chains?.[0]
-        ]
+      expect(mockProvider.on).toHaveBeenCalledWith('display_uri', expect.any(Function))
+      expect(mockProvider.connect).toHaveBeenCalledWith({
+        optionalNamespaces: expect.any(Object)
       })
     })
 
-    // Something is making it so it never recognizes ChainController as the correct instance
-    it.skip('should call setDefaultNetwork and set first caipNetwork on setActiveCaipNetwork when there is no active caipNetwork', async () => {
-      const adapterSpy = vi.spyOn(universalAdapter as any, 'setDefaultNetwork')
-      ChainController.setRequestedCaipNetworks([mainnet], 'eip155')
-      const setActiveCaipNetworkSpy = vi.spyOn(ChainController, 'setActiveCaipNetwork')
-      const mockOnUri = vi.fn()
-      await universalAdapter?.connectionControllerClient?.connectWalletConnect?.(mockOnUri)
-
-      expect(adapterSpy).toHaveBeenCalledWith(mockProvider.session?.namespaces)
-      expect(setActiveCaipNetworkSpy).toHaveBeenCalledWith(mainnet)
-    })
-
-    it('should set correct requestedCaipNetworks in AppKit when syncRequestedNetworks has been called', () => {
-      ;(universalAdapter as any).syncRequestedNetworks(mockOptionsExtended.networks)
-      const mainnet = universalAdapter.caipNetworks[0]
-      expect(mockAppKit.setRequestedCaipNetworks).toHaveBeenCalledWith([mainnet], 'eip155')
-      expect(mockAppKit.setRequestedCaipNetworks).toHaveBeenCalledWith([solana], 'solana')
-    })
-  })
-
-  describe('UniversalAdapter - Connection', () => {
-    it('should connect the walletConnectProvider with the right namespaces  when connectionControllerClient.connectWalletConnect is invoked', async () => {
-      const providerSpy = vi.spyOn(
-        universalAdapter.walletConnectProvider as UniversalProvider,
-        'connect'
-      )
-      const mockOnUri = vi.fn()
-      await universalAdapter?.connectionControllerClient?.connectWalletConnect?.(mockOnUri)
-      expect(providerSpy).toHaveBeenCalledWith({
-        optionalNamespaces: universalAdapter.walletConnectProvider?.namespaces
+    it('should throw error if provider is undefined', async () => {
+      Object.defineProperty(adapter, 'connectors', {
+        value: [],
+        writable: true
       })
-    })
 
-    it('should set the clientId in AppKit when connectionControllerClient.connectWalletConnect is invoked', async () => {
-      const mockOnUri = vi.fn()
-      await universalAdapter?.connectionControllerClient?.connectWalletConnect?.(mockOnUri)
-
-      expect(mockAppKit.setClientId).toHaveBeenCalledWith(
-        mockProvider.client?.core?.crypto?.getClientId()
+      await expect(adapter.connectWalletConnect(() => {})).rejects.toThrow(
+        'UniversalAdapter:connectWalletConnect - caipNetworks or provider is undefined'
       )
     })
 
-    it('should update AppKit state when connectionControllerClient.connectWalletConnect is invoked', async () => {
-      const mockOnUri = vi.fn()
-      await universalAdapter?.connectionControllerClient?.connectWalletConnect?.(mockOnUri)
+    it('should call onUri when display_uri event is emitted', async () => {
+      const onUri = vi.fn()
+      const testUri = 'wc:test-uri'
 
-      expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(
-        mockProvider.session?.namespaces['eip155']?.accounts[0],
-        'eip155'
-      )
-      expect(mockAppKit.setCaipAddress).toHaveBeenCalledWith(
-        mockProvider.session?.namespaces['solana']?.accounts[0],
-        'solana'
-      )
-    })
-
-    it('should return correct provider data when getProviderData is invoked', async () => {
-      const data = (universalAdapter as any).getProviderData()
-      expect(data).toMatchObject({
-        provider: mockProvider,
-        namespaces: mockProvider.session?.namespaces,
-        namespaceKeys: Object.keys(mockProvider.session?.namespaces || {}),
-        isConnected: true,
-        preferredAccountType: 'eoa'
-      })
-    })
-
-    it('should disconnect the walletConnectProvider when disconnect is invoked', async () => {
-      const providerSpy = vi.spyOn(
-        universalAdapter.walletConnectProvider as UniversalProvider,
-        'disconnect'
-      )
-      await universalAdapter?.connectionControllerClient?.disconnect?.()
-      expect(providerSpy).toHaveBeenCalled()
-      expect(mockAppKit.resetAccount).toHaveBeenCalledWith('eip155')
-      expect(mockAppKit.resetAccount).toHaveBeenCalledWith('solana')
-    })
-
-    it('should set the ApprovedCaipNetworksData', async () => {
-      const mockOnUri = vi.fn()
-      await universalAdapter?.connectionControllerClient?.connectWalletConnect?.(mockOnUri)
-
-      expect(mockAppKit.setApprovedCaipNetworksData).toHaveBeenCalledWith('eip155')
-      expect(mockAppKit.setApprovedCaipNetworksData).toHaveBeenCalledWith('solana')
-    })
-  })
-
-  describe('UniversalAdapter - ProviderUtil', () => {
-    it('should set the provider in ProviderUtil when setWalletConnectProvider is called', async () => {
-      const mockSetProvider = vi.spyOn(ProviderUtil, 'setProvider')
-      const mockSetProviderId = vi.spyOn(ProviderUtil, 'setProviderId')
-
-      await (universalAdapter as any).setWalletConnectProvider()
-
-      expect(mockSetProvider).toHaveBeenCalledWith('eip155', universalAdapter.walletConnectProvider)
-
-      expect(mockSetProviderId).toHaveBeenCalledWith('eip155', 'walletConnect')
-
-      expect(mockSetProvider).toHaveBeenCalledWith('solana', universalAdapter.walletConnectProvider)
-
-      expect(mockSetProviderId).toHaveBeenCalledWith('solana', 'walletConnect')
-    })
-  })
-
-  describe('UniversalAdapter - Provider', () => {
-    it('should set up event listeners when watchWalletConnect is called', async () => {
-      const provider = await universalAdapter.getWalletConnectProvider()
-      const providerOnSpy = vi.spyOn(provider as UniversalProvider, 'on')
-
-      await (universalAdapter as any).watchWalletConnect()
-
-      expect(providerOnSpy).toHaveBeenCalledWith('disconnect', expect.any(Function))
-      expect(providerOnSpy).toHaveBeenCalledWith('accountsChanged', expect.any(Function))
-      expect(providerOnSpy).toHaveBeenCalledWith('chainChanged', expect.any(Function))
-    })
-  })
-
-  describe('UniversalAdapter - Connectors', () => {
-    it('should sync connectors correctly', () => {
-      ;(universalAdapter as any).syncConnectors()
-
-      expect(mockAppKit.setConnectors).toHaveBeenCalledWith([
-        {
-          id: ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID,
-          explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
-          imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
-          name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
-          type: 'WALLET_CONNECT',
-          chain: universalAdapter.chainNamespace
+      // Call the callback directly when 'on' is called
+      vi.mocked(mockProvider.on).mockImplementation((event: string, callback: any) => {
+        if (event === 'display_uri') {
+          callback(testUri)
         }
-      ])
+        return mockProvider
+      })
+
+      await adapter.connectWalletConnect(onUri)
+
+      expect(onUri).toHaveBeenCalledWith(testUri)
     })
   })
 
-  describe('UniversalAdapter - Alert Errors', () => {
-    it('should handle alert errors based on error messages', () => {
-      const errors = [
-        {
-          alert: ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION,
-          message:
-            'Error: WebSocket connection closed abnormally with code: 3000 (Unauthorized: origin not allowed)'
-        },
-        {
-          alert: ErrorUtil.ALERT_ERRORS.JWT_TOKEN_NOT_VALID,
-          message:
-            'WebSocket connection closed abnormally with code: 3000 (JWT validation error: JWT Token is not yet valid:)'
-        }
-      ]
+  describe('disconnect', () => {
+    it('should disconnect successfully', async () => {
+      await adapter.disconnect()
 
-      for (const { alert, message } of errors) {
-        // @ts-expect-error
-        universalAdapter.handleAlertError(new Error(message))
-        expect(AlertController.open).toHaveBeenCalledWith(alert, 'error')
+      expect(mockProvider.disconnect).toHaveBeenCalled()
+    })
+
+    it('should handle missing provider gracefully', async () => {
+      Object.defineProperty(adapter, 'connectors', {
+        value: [],
+        writable: true
+      })
+
+      await expect(adapter.disconnect()).resolves.not.toThrow()
+    })
+  })
+
+  describe('switchNetwork', () => {
+    it('should switch network successfully', async () => {
+      const polygonNetwork: CaipNetwork = {
+        ...mockCaipNetwork,
+        id: 137,
+        name: 'Polygon',
+        nativeCurrency: {
+          name: 'MATIC',
+          symbol: 'MATIC',
+          decimals: 18
+        }
       }
+
+      await adapter.switchNetwork({ caipNetwork: polygonNetwork })
+
+      expect(mockProvider.setDefaultChain).toHaveBeenCalledWith('eip155:137')
+    })
+
+    it('should throw error if provider is undefined', async () => {
+      Object.defineProperty(adapter, 'connectors', {
+        value: [],
+        writable: true
+      })
+
+      await expect(
+        adapter.switchNetwork({
+          caipNetwork: mockCaipNetwork
+        })
+      ).rejects.toThrow('UniversalAdapter:switchNetwork - provider is undefined')
     })
   })
 })

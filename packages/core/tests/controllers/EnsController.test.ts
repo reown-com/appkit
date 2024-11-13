@@ -72,7 +72,7 @@ vi.mock('../../src/controllers/BlockchainApiController.js', async importOriginal
 beforeAll(() => {
   ChainController.initialize([
     {
-      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      namespace: ConstantsUtil.CHAIN.EVM,
       caipNetworks: []
     }
   ])
@@ -188,7 +188,7 @@ describe('EnsController', () => {
 
     const getAuthConnectorSpy = vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
       provider: { getEmail: () => 'test@walletconnect.com' } as unknown as W3mFrameProvider,
-      id: 'w3mAuth',
+      id: 'ID_AUTH',
       type: 'AUTH',
       chain: ConstantsUtil.CHAIN.EVM
     })

@@ -139,7 +139,7 @@ export const EnsController = {
       await BlockchainApiController.registerEnsName({
         coinType,
         address: address as `0x${string}`,
-        signature,
+        signature: signature as `0x${string}`,
         message
       })
 

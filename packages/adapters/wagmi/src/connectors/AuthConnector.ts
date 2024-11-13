@@ -16,6 +16,7 @@ interface W3mFrameProviderOptions {
 export type AuthParameters = {
   chains?: CreateConfigParameters['chains']
   options: W3mFrameProviderOptions
+  provider: W3mFrameProvider
 }
 
 // -- Connector ------------------------------------------------------------------------------------
@@ -33,7 +34,7 @@ export function authConnector(parameters: AuthParameters) {
   return createConnector<W3mFrameProvider, Properties>(config => ({
     id: ConstantsUtil.AUTH_CONNECTOR_ID,
     name: 'AppKit Auth',
-    type: 'w3mAuth',
+    type: 'ID_AUTH',
     chain: CommonConstantsUtil.CHAIN.EVM,
 
     async connect(options = {}) {
