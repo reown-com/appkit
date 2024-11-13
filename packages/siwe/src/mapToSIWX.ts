@@ -23,14 +23,7 @@ export async function mapToSIWX(siwe: SIWEConfig): Promise<SIWXConfig> {
       {
         chainNamespace: 'eip155',
         shouldVerify: session => session.data.chainId.startsWith('eip155'),
-        verify: async session => {
-          const success = await siwe.verifyMessage({
-            message: session.message.toString(),
-            signature: session.signature
-          })
-
-          return success
-        }
+        verify: siwe.verifyMessage.bind(siwe)
       }
     ],
 

@@ -719,7 +719,7 @@ export class AppKit {
 
         const siwx = SIWXUtil.getSIWX()
 
-        if (siwx && this.universalProvider) {
+        if (siwx && this.universalProvider && this.chainNamespaces.length === 1) {
           // Ignores chainId and account address to get other message data
           const siwxMessage = await siwx.createMessage({
             chainId: '',
@@ -750,7 +750,20 @@ export class AppKit {
               })
 
               return {
-                data: siwxMessage,
+                data: {
+                  accountAddress: cacao.p.iss.split(':').slice(-1).join(''),
+                  chainId: cacao.p.iss.split(':').slice(2, 3).join(''),
+                  uri: cacao.p.aud,
+                  domain: cacao.p.domain,
+                  nonce: cacao.p.nonce,
+                  version: cacao.p.version || siwxMessage.version,
+                  expirationTime: cacao.p.exp,
+                  statement: cacao.p.statement,
+                  issuedAt: cacao.p.iat,
+                  notBefore: cacao.p.nbf,
+                  requestId: cacao.p.requestId,
+                  resources: cacao.p.resources
+                },
                 message: message || '',
                 signature: cacao.s.s,
                 cacao
