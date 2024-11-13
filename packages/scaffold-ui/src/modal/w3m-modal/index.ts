@@ -89,23 +89,15 @@ export class W3mModal extends LitElement {
   }
 
   private async handleClose() {
-    const isSiweSignScreen = RouterController.state.view === 'ConnectingSiwe'
-    const isApproveSignScreen = RouterController.state.view === 'ApproveTransaction'
     const isUnsupportedChain = RouterController.state.view === 'UnsupportedChain'
 
-    if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@reown/appkit-siwe')
-      const isUnauthenticated = SIWEController.state.status !== 'success'
-      if (isUnauthenticated && (isSiweSignScreen || isApproveSignScreen)) {
-        ModalController.shake()
-      } else {
-        ModalController.close()
-      }
-    } else if (isUnsupportedChain) {
+    if (isUnsupportedChain) {
       ModalController.shake()
     } else {
       ModalController.close()
     }
+
+    return Promise.resolve()
   }
 
   private initializeTheming() {
