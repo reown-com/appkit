@@ -243,67 +243,64 @@ interface TimingFixtureWithLibrary {
 
 timingFixture.extend<TimingFixtureWithLibrary>({
   library: ['wagmi', { option: true }]
-})(
-  'wagmi: AppKit in iframe + verify happy case',
-  async ({ page: rootPage, context, library }) => {
-    test.skip(library !== 'wagmi', 'test always uses wagmi')
+})('wagmi: AppKit in iframe + verify happy case', async ({ page: rootPage, context, library }) => {
+  test.skip(library !== 'wagmi', 'test always uses wagmi')
 
-    const verifyApiNestedIframesTestOuterDomain =
-      'https://verify-api-nested-iframes-test-outer-domain.com'
-    const outerUrl = verifyApiNestedIframesTestOuterDomain
-    const innerUrl = `${BASE_URL}library/wagmi-verify-valid`
-    await rootPage.route(outerUrl, async route => {
-      await route.fulfill({
-        body: `<iframe name="innerFrame" src="${innerUrl}" style="width:100vw; height:100vh"></iframe>`
-      })
+  const verifyApiNestedIframesTestOuterDomain =
+    'https://verify-api-nested-iframes-test-outer-domain.com'
+  const outerUrl = verifyApiNestedIframesTestOuterDomain
+  const innerUrl = `${BASE_URL}library/wagmi-verify-valid`
+  await rootPage.route(outerUrl, async route => {
+    await route.fulfill({
+      body: `<iframe name="innerFrame" src="${innerUrl}" style="width:100vw; height:100vh"></iframe>`
     })
-    if (altVerifyServer) {
-      await routeInterceptUrl(rootPage, prodVerifyServer, altVerifyServer, '/')
-    }
-    await rootPage.goto(outerUrl)
-
-    const frame = rootPage.frame({ name: 'innerFrame' })
-    if (frame === null) {
-      throw new Error('iframe not found')
-    }
-
-    /*
-     * Forcibly cast the Frame to a Page so ModalPage accepts it. It has the same necessary functions for this test case, so this is OK.
-     * Note we don't call `.load()` on the ModalPage since it would navigate the top-level page instead of the iframe.
-     * Tried using `Page | Frame` on the ModalPage constructor but we have other functions that depend on fields specific to Page.
-     */
-    const page = frame as unknown as Page
-
-    const modalPage = new ModalPage(page, 'wagmi', 'wagmi-verify-valid')
-    if (modalPage.library === 'solana') {
-      return
-    }
-
-    const modalValidator = new ModalValidator(modalPage.page)
-    const walletPagePage = await context.newPage()
-    if (altVerifyServer) {
-      await routeInterceptUrl(walletPagePage, prodVerifyServer, altVerifyServer, '/')
-    }
-    const walletPage = new WalletPage(walletPagePage)
-    await walletPage.load()
-    const walletValidator = new WalletValidator(walletPage.page)
-
-    const uri = await modalPage.getConnectUri()
-    await walletPage.connectWithUri(uri)
-    await expect(walletPage.page.getByTestId('session-info-verified')).toBeVisible()
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
-    await modalValidator.expectConnected()
-    await walletValidator.expectConnected()
-
-    await modalPage.sign()
-    const chainName = modalPage.library === 'solana' ? 'Solana' : DEFAULT_CHAIN_NAME
-    await walletValidator.expectReceivedSign({ chainName })
-    await expect(walletPage.page.getByTestId('session-info-verified')).toBeVisible()
-    await walletPage.handleRequest({ accept: true })
-    await modalValidator.expectAcceptedSign()
-
-    await modalPage.disconnect()
-    await modalValidator.expectDisconnected()
-    await walletValidator.expectDisconnected()
+  })
+  if (altVerifyServer) {
+    await routeInterceptUrl(rootPage, prodVerifyServer, altVerifyServer, '/')
   }
-)
+  await rootPage.goto(outerUrl)
+
+  const frame = rootPage.frame({ name: 'innerFrame' })
+  if (frame === null) {
+    throw new Error('iframe not found')
+  }
+
+  /*
+   * Forcibly cast the Frame to a Page so ModalPage accepts it. It has the same necessary functions for this test case, so this is OK.
+   * Note we don't call `.load()` on the ModalPage since it would navigate the top-level page instead of the iframe.
+   * Tried using `Page | Frame` on the ModalPage constructor but we have other functions that depend on fields specific to Page.
+   */
+  const page = frame as unknown as Page
+
+  const modalPage = new ModalPage(page, 'wagmi', 'wagmi-verify-valid')
+  if (modalPage.library === 'solana') {
+    return
+  }
+
+  const modalValidator = new ModalValidator(modalPage.page)
+  const walletPagePage = await context.newPage()
+  if (altVerifyServer) {
+    await routeInterceptUrl(walletPagePage, prodVerifyServer, altVerifyServer, '/')
+  }
+  const walletPage = new WalletPage(walletPagePage)
+  await walletPage.load()
+  const walletValidator = new WalletValidator(walletPage.page)
+
+  const uri = await modalPage.getConnectUri()
+  await walletPage.connectWithUri(uri)
+  await expect(walletPage.page.getByTestId('session-info-verified')).toBeVisible()
+  await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
+  await modalValidator.expectConnected()
+  await walletValidator.expectConnected()
+
+  await modalPage.sign()
+  const chainName = modalPage.library === 'solana' ? 'Solana' : DEFAULT_CHAIN_NAME
+  await walletValidator.expectReceivedSign({ chainName })
+  await expect(walletPage.page.getByTestId('session-info-verified')).toBeVisible()
+  await walletPage.handleRequest({ accept: true })
+  await modalValidator.expectAcceptedSign()
+
+  await modalPage.disconnect()
+  await modalValidator.expectDisconnected()
+  await walletValidator.expectDisconnected()
+})
