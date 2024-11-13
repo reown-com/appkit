@@ -170,12 +170,14 @@ export const SendController = {
 
     try {
       await ConnectionController.sendTransaction({
+        chainNamespace: 'eip155',
         to,
         address,
         data,
         value: value ?? BigInt(0),
         gasPrice: params.gasPrice
       })
+
       SnackController.showSuccess('Transaction started')
       EventsController.sendEvent({
         type: 'track',
@@ -237,6 +239,7 @@ export const SendController = {
           method: 'transfer',
           abi: ContractUtil.getERC20Abi(tokenAddress)
         })
+
         SnackController.showSuccess('Transaction started')
         this.resetSend()
       }

@@ -238,13 +238,14 @@ export class WagmiAdapter extends AdapterBlueprint {
   public async writeContract(
     params: AdapterBlueprint.WriteContractParams
   ): Promise<AdapterBlueprint.WriteContractResult> {
-    const { caipAddress, caipNetwork, ...data } = params
+    const { caipNetwork, ...data } = params
     const chainId = Number(NetworkUtil.caipNetworkIdToNumber(caipNetwork.caipNetworkId))
+
     const tx = await wagmiWriteContract(this.wagmiConfig, {
       chain: this.wagmiChains?.[chainId],
       chainId,
       address: data.tokenAddress as Hex,
-      account: caipAddress as Hex,
+      account: data.fromAddress as Hex,
       abi: data.abi,
       functionName: data.method,
       args: [data.receiverAddress, data.tokenAmount]

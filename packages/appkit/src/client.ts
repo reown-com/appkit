@@ -864,6 +864,7 @@ export class AppKit {
       sendTransaction: async (args: SendTransactionArgs) => {
         if (args.chainNamespace === 'eip155') {
           const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+
           const result = await adapter?.sendTransaction(args)
 
           return result?.hash || ''
@@ -925,6 +926,7 @@ export class AppKit {
         if (!caipNetwork || !caipAddress) {
           throw new Error('CaipNetwork or CaipAddress is undefined')
         }
+
         const result = await adapter?.writeContract({ ...args, caipNetwork, provider, caipAddress })
 
         return result?.hash as `0x${string}` | null
