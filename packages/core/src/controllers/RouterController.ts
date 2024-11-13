@@ -32,7 +32,6 @@ export interface RouterControllerState {
   view:
     | 'Account'
     | 'AccountSettings'
-    | 'SelectAddresses'
     | 'AllWallets'
     | 'ApproveTransaction'
     | 'BuyInProgress'
@@ -80,6 +79,9 @@ export interface RouterControllerState {
     | 'SwapPreview'
     | 'ConnectingMultiChain'
     | 'SwitchActiveChain'
+    | 'SmartSessionCreated'
+    | 'SmartSessionList'
+    | 'SIWXSignMessage'
   history: RouterControllerState['view'][]
   data?: {
     connector?: Connector
@@ -183,7 +185,7 @@ export const RouterController = {
   },
 
   goBack() {
-    if (state.history.length > 1) {
+    if (state.history.length > 1 && !state.history.includes('UnsupportedChain')) {
       state.history.pop()
       const [last] = state.history.slice(-1)
       if (last) {

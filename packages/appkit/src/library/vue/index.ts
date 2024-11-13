@@ -1,11 +1,14 @@
 import { onUnmounted, reactive, ref } from 'vue'
 import { type Event } from '@reown/appkit-core'
 import type {
+  AppKitAccountButton,
+  AppKitNetworkButton,
+  AppKitButton,
+  AppKitConnectButton,
   W3mAccountButton,
   W3mButton,
   W3mConnectButton,
-  W3mNetworkButton,
-  W3mOnrampWidget
+  W3mNetworkButton
 } from '@reown/appkit-scaffold-ui'
 import type { AppKit } from '../../../src/client.js'
 import type { AppKitOptions } from '../../utils/TypesUtil.js'
@@ -27,11 +30,14 @@ type ThemeVariablesOptions = AppKitOptions['themeVariables']
 
 declare module '@vue/runtime-core' {
   export interface ComponentCustomProperties {
+    AppKitButton: Pick<AppKitButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
+    AppKitConnectButton: Pick<AppKitConnectButton, 'size' | 'label' | 'loadingLabel'>
+    AppKitAccountButton: Pick<AppKitAccountButton, 'disabled' | 'balance'>
+    AppKitNetworkButton: Pick<AppKitNetworkButton, 'disabled'>
     W3mConnectButton: Pick<W3mConnectButton, 'size' | 'label' | 'loadingLabel'>
     W3mAccountButton: Pick<W3mAccountButton, 'disabled' | 'balance'>
     W3mButton: Pick<W3mButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
     W3mNetworkButton: Pick<W3mNetworkButton, 'disabled'>
-    W3mOnrampWidget: Pick<W3mOnrampWidget, 'disabled'>
   }
 }
 

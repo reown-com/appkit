@@ -3,6 +3,7 @@ import {
   ChainController,
   ConnectorController,
   OptionsController,
+  type AuthConnector,
   type Metadata,
   type SdkVersion,
   type ThemeMode,
@@ -24,6 +25,13 @@ const walletConnectConnector = {
   chain: ConstantsUtil.CHAIN.EVM,
   name: 'WalletConnect'
 } as const
+const walletConnectSolanaConnector = {
+  id: 'walletConnect-solana',
+  explorerId: 'walletConnectId-slo',
+  type: 'WALLET_CONNECT',
+  chain: ConstantsUtil.CHAIN.SOLANA,
+  name: 'WalletConnect'
+} as const
 const externalConnector = {
   id: 'external',
   type: 'EXTERNAL',
@@ -31,14 +39,14 @@ const externalConnector = {
   name: 'External'
 } as const
 const evmAuthConnector = {
-  id: 'w3mAuth',
+  id: 'ID_AUTH',
   type: 'AUTH',
   provider: authProvider,
   chain: ConstantsUtil.CHAIN.EVM,
   name: 'Auth'
 } as const
 const solanaAuthConnector = {
-  id: 'w3mAuth',
+  id: 'ID_AUTH',
   type: 'AUTH',
   provider: authProvider,
   chain: ConstantsUtil.CHAIN.SOLANA,
@@ -98,7 +106,23 @@ describe('ConnectorController', () => {
     expect(ConnectorController.state.connectors).toEqual([])
   })
 
+  it('should update state correctly on setConnectors() with multichain', () => {
+    ConnectorController.setConnectors([walletConnectConnector, walletConnectSolanaConnector])
+    expect(ConnectorController.state.connectors).toStrictEqual([
+      {
+        id: 'walletConnect',
+        name: 'WalletConnect',
+        chain: 'eip155',
+        imageId: undefined,
+        imageUrl: undefined,
+        type: 'MULTI_CHAIN',
+        connectors: [walletConnectConnector, walletConnectSolanaConnector]
+      }
+    ])
+  })
+
   it('should update state correctly on setConnectors()', () => {
+    ConnectorController.state.allConnectors = []
     ConnectorController.setConnectors([walletConnectConnector])
     expect(ConnectorController.state.connectors).toEqual([walletConnectConnector])
   })
@@ -138,7 +162,7 @@ describe('ConnectorController', () => {
     OptionsController.setSdkVersion(mockDappData.sdkVersion)
     OptionsController.setProjectId(mockDappData.projectId)
 
-    ConnectorController.addConnector(evmAuthConnector)
+    ConnectorController.addConnector(evmAuthConnector as unknown as AuthConnector)
     expect(ConnectorController.state.connectors).toEqual([
       walletConnectConnector,
       externalConnector,
@@ -161,7 +185,7 @@ describe('ConnectorController', () => {
   })
 
   it('getAuthConnector() should return merged connector when already added on different network', () => {
-    ConnectorController.addConnector(solanaAuthConnector)
+    ConnectorController.addConnector(solanaAuthConnector as unknown as AuthConnector)
     const connector = ConnectorController.getAuthConnector()
     expect(connector).toEqual(evmAuthConnector)
   })
@@ -183,7 +207,7 @@ describe('ConnectorController', () => {
       zerionConnector,
       // Need to define inline to reference the spies
       {
-        id: 'w3mAuth',
+        id: 'ID_AUTH',
         imageId: undefined,
         imageUrl: undefined,
         name: 'Auth',
@@ -192,7 +216,7 @@ describe('ConnectorController', () => {
         connectors: [
           {
             chain: 'eip155',
-            id: 'w3mAuth',
+            id: 'ID_AUTH',
             name: 'Auth',
             provider: {
               syncDappData: syncDappDataSpy,
@@ -202,7 +226,7 @@ describe('ConnectorController', () => {
           },
           {
             chain: 'solana',
-            id: 'w3mAuth',
+            id: 'ID_AUTH',
             name: 'Auth',
             provider: {
               syncDappData: syncDappDataSpy,
@@ -228,7 +252,7 @@ describe('ConnectorController', () => {
     }
 
     const mergedAuthConnector = {
-      id: 'w3mAuth',
+      id: 'ID_AUTH',
       imageId: undefined,
       imageUrl: undefined,
       name: 'Auth',
@@ -237,7 +261,7 @@ describe('ConnectorController', () => {
       connectors: [
         {
           chain: 'eip155',
-          id: 'w3mAuth',
+          id: 'ID_AUTH',
           name: 'Auth',
           provider: {
             syncDappData: syncDappDataSpy,
@@ -247,7 +271,7 @@ describe('ConnectorController', () => {
         },
         {
           chain: 'solana',
-          id: 'w3mAuth',
+          id: 'ID_AUTH',
           name: 'Auth',
           provider: {
             syncDappData: syncDappDataSpy,

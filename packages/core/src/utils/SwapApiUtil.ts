@@ -58,8 +58,8 @@ export const SwapApiUtil = {
         case 'solana':
           // eslint-disable-next-line no-case-declarations
           const lamportsPerSignature = (
-            await ConnectionController.estimateGas({ chainNamespace: 'solana' })
-          ).toString()
+            await ConnectionController?.estimateGas({ chainNamespace: 'solana' })
+          )?.toString()
 
           return {
             standard: lamportsPerSignature,

@@ -1,4 +1,9 @@
-import { ChainController, ConnectionController, OptionsController } from '@reown/appkit-core'
+import {
+  ChainController,
+  ConnectionController,
+  OptionsController,
+  RouterController
+} from '@reown/appkit-core'
 import { ProviderUtil } from '@reown/appkit/store'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type {
@@ -50,10 +55,10 @@ export async function grantPermissions(
     throw new Error(ERROR_MESSAGES.INVALID_ADDRESS)
   }
   // Fetch the ConnectionController client
-  const connectionControllerClient = ConnectionController._getClient(CommonConstantsUtil.CHAIN.EVM)
+  const connectionControllerClient = ConnectionController._getClient()
 
   //Check for connected wallet supports permissions capabilities
-  const walletCapabilities = (await connectionControllerClient.getCapabilities(
+  const walletCapabilities = (await connectionControllerClient?.getCapabilities(
     chainAndAddress.address
   )) as WalletCapabilities
 
@@ -70,11 +75,15 @@ export async function grantPermissions(
   // Instantiate CosignerService and process permissions
   const cosignerService = new CosignerService(projectId)
   const addPermissionResponse = await cosignerService.addPermission(activeCaipAddress, request)
-
   // Update request signer with the cosigner key
   updateRequestSigner(request, addPermissionResponse.key)
 
-  const rawResponse = await connectionControllerClient.grantPermissions([request])
+  RouterController.pushTransactionStack({
+    view: 'SmartSessionCreated',
+    goBack: false
+  })
+
+  const rawResponse = await connectionControllerClient?.grantPermissions([request])
 
   // Validate and type guard the response
   const response = assertWalletGrantPermissionsResponse(rawResponse)
@@ -126,7 +135,6 @@ export function validateRequestForSupportedPermissionsCapability(
 
 export function isSmartSessionSupported(): boolean {
   const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
-
   if (!provider) {
     return false
   }

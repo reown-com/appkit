@@ -84,6 +84,7 @@ describe('WcHelpersUtil', () => {
         'wallet_showCallsStatus',
         'wallet_getCallsStatus',
         'wallet_grantPermissions',
+        'wallet_revokePermissions',
         'wallet_switchEthereumChain'
       ])
     })
@@ -138,7 +139,10 @@ describe('WcHelpersUtil', () => {
             'solana_signAndSendTransaction'
           ],
           events: ['accountsChanged', 'chainChanged'],
-          chains: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+          chains: [
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+            'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ'
+          ],
           rpcMap: {
             '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'https://api.mainnet-beta.solana.com'
           }

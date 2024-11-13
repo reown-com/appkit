@@ -11,6 +11,7 @@ export default css`
     overflow: scroll;
     scrollbar-width: none;
     grid-auto-rows: min-content;
+    grid-template-columns: repeat(auto-fill, 104px);
   }
 
   wui-grid[data-scroll='false'] {
@@ -24,5 +25,11 @@ export default css`
   wui-loading-spinner {
     justify-content: center;
     align-items: center;
+  }
+
+  @media (max-width: 350px) {
+    wui-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 `

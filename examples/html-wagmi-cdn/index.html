@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AppKit CDN Example</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        transition:
+          background-color 0.3s,
+          color 0.3s;
+        padding: 20px;
+      }
+
+      body.dark {
+        background-color: #333;
+        color: #fff;
+      }
+
+      body.light {
+        background-color: #fff;
+        color: #000;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 16px;
+      }
+
+      pre {
+        background: rgba(0, 0, 0, 0.1);
+        padding: 16px;
+        margin: 0;
+        border-radius: 8px;
+        overflow-x: auto;
+      }
+
+      h2 {
+        padding: 0;
+        margin: 0;
+      }
+    </style>
+  </head>
+
+  <body class="light">
+    <div class="container">
+      <h1>AppKit CDN Example</h1>
+      <div class="button-group">
+        <appkit-button></appkit-button>
+        <appkit-network-button></appkit-network-button>
+      </div>
+      <div class="button-group">
+        <button id="open-appkit">Open AppKit</button>
+        <button id="open-appkit-networks">Open AppKit Networks</button>
+        <button id="toggle-theme">Toggle Theme Mode</button>
+      </div>
+
+      <h2>Account</h2>
+      <pre id="account-display"></pre>
+
+      <h2>Network</h2>
+      <pre id="network-display"></pre>
+
+      <h2>State</h2>
+      <pre id="state-display"></pre>
+
+      <h2>Theme</h2>
+      <pre id="theme-display"></pre>
+
+      <h2>Events</h2>
+      <pre id="events-display"></pre>
+
+      <h2>Wallet Info</h2>
+      <pre id="wallet-info"></pre>
+    </div>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

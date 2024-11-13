@@ -47,8 +47,8 @@ export class WuiListAccount extends LitElement {
 
   public override connectedCallback() {
     super.connectedCallback()
-    BlockchainApiController.getBalance(this.accountAddress, this.caipNetwork?.caipNetworkId).then(
-      response => {
+    BlockchainApiController.getBalance(this.accountAddress, this.caipNetwork?.caipNetworkId)
+      .then(response => {
         let total = this.balance
         if (response.balances.length > 0) {
           total = response.balances.reduce((acc, balance) => acc + (balance?.value || 0), 0)
@@ -56,8 +56,11 @@ export class WuiListAccount extends LitElement {
         this.balance = total
         this.fetchingBalance = false
         this.requestUpdate()
-      }
-    )
+      })
+      .catch(() => {
+        this.fetchingBalance = false
+        this.requestUpdate()
+      })
   }
 
   // -- Render -------------------------------------------- //
@@ -65,7 +68,7 @@ export class WuiListAccount extends LitElement {
     const label = this.getLabel()
 
     // Only show icon for AUTH accounts
-    this.shouldShowIcon = this.connectedConnector === 'AUTH'
+    this.shouldShowIcon = this.connectedConnector === 'ID_AUTH'
 
     return html`
       <wui-flex
@@ -99,10 +102,10 @@ export class WuiListAccount extends LitElement {
           >
         </wui-flex>
         <wui-flex gap="s" alignItems="center">
+          <slot name="action"></slot>
           ${this.fetchingBalance
             ? html`<wui-loading-spinner size="sm" color="accent-100"></wui-loading-spinner>`
             : html` <wui-text variant="small-400">$${this.balance.toFixed(2)}</wui-text>`}
-          <slot name="action"></slot>
         </wui-flex>
       </wui-flex>
     `
@@ -113,7 +116,7 @@ export class WuiListAccount extends LitElement {
   private getLabel() {
     let label = this.labels?.get(this.accountAddress)
 
-    if (!label && this.connectedConnector === 'AUTH') {
+    if (!label && this.connectedConnector === 'ID_AUTH') {
       label = `${this.accountType === 'eoa' ? this.socialProvider ?? 'Email' : 'Smart'} Account`
     } else if (
       (!label && this.connectedConnector === 'INJECTED') ||

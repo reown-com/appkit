@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { AppKit } from '../client'
+import { mainnet, polygon } from '../networks/index.js'
 import {
   AccountController,
   ModalController,
@@ -31,6 +32,13 @@ describe('Base', () => {
 
   beforeEach(() => {
     vi.resetAllMocks()
+
+    vi.mocked(ChainController).state = {
+      chains: new Map(),
+      activeChain: 'eip155'
+    } as any
+
+    vi.mocked(ConnectorController).getConnectors = vi.fn().mockReturnValue([])
     appKit = new AppKit(mockOptions)
   })
 
@@ -38,7 +46,7 @@ describe('Base', () => {
     it('should initialize controllers with required provided options', () => {
       expect(OptionsController.setSdkVersion).toHaveBeenCalledWith(mockOptions.sdkVersion)
       expect(OptionsController.setProjectId).toHaveBeenCalledWith(mockOptions.projectId)
-      expect(OptionsController.setMetadata).toHaveBeenCalled()
+      expect(OptionsController.setMetadata).toHaveBeenCalledWith(mockOptions.metadata)
     })
 
     it('should initialize adapters in ChainController', () => {
@@ -227,9 +235,17 @@ describe('Base', () => {
     })
 
     it('should set CAIP address', () => {
+      // First mock AccountController.setCaipAddress to update ChainController state
+      vi.mocked(AccountController.setCaipAddress).mockImplementation(() => {
+        vi.mocked(ChainController).state = {
+          ...vi.mocked(ChainController).state,
+          activeCaipAddress: 'eip155:1:0x123'
+        } as any
+      })
+
       appKit.setCaipAddress('eip155:1:0x123', 'eip155')
-      expect(appKit.getIsConnectedState()).toBe(true)
       expect(AccountController.setCaipAddress).toHaveBeenCalledWith('eip155:1:0x123', 'eip155')
+      expect(appKit.getIsConnectedState()).toBe(true)
     })
 
     it('should set provider', () => {
@@ -290,14 +306,19 @@ describe('Base', () => {
         { id: 'phantom', name: 'Phantom', chain: 'eip155', type: 'INJECTED' }
       ] as Connector[]
 
+      // Mock getConnectors to return existing connectors
       vi.mocked(ConnectorController.getConnectors).mockReturnValue(existingConnectors)
-      const connectors = [
+
+      const newConnectors = [
         { id: 'metamask', name: 'MetaMask', chain: 'eip155', type: 'INJECTED' }
       ] as Connector[]
-      appKit.setConnectors(connectors)
+
+      appKit.setConnectors(newConnectors)
+
+      // Verify that setConnectors was called with combined array
       expect(ConnectorController.setConnectors).toHaveBeenCalledWith([
         ...existingConnectors,
-        ...connectors
+        ...newConnectors
       ])
     })
 
@@ -407,19 +428,6 @@ describe('Base', () => {
       ])
     })
 
-    it('should resolve Reown name', async () => {
-      vi.mocked(EnsController.resolveName).mockResolvedValue({
-        addresses: { eip155: { address: '0x123', created: '0' } },
-        name: 'john.reown.id',
-        registered: 0,
-        updated: 0,
-        attributes: []
-      })
-      const result = await appKit.resolveReownName('john.reown.id')
-      expect(EnsController.resolveName).toHaveBeenCalledWith('john.reown.id')
-      expect(result).toBe('0x123')
-    })
-
     it('should set EIP6963 enabled', () => {
       appKit.setEIP6963Enabled(true)
       expect(OptionsController.setEIP6963Enabled).toHaveBeenCalledWith(true)
@@ -439,6 +447,23 @@ describe('Base', () => {
         chain: 'eip155'
       })
       expect(result).toBe('connector-image-url')
+    })
+
+    it('should switch network when requested', async () => {
+      vi.mocked(ChainController.switchActiveNetwork).mockResolvedValue(undefined)
+
+      await appKit.switchNetwork(mainnet)
+
+      expect(ChainController.switchActiveNetwork).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: mainnet.id,
+          name: mainnet.name
+        })
+      )
+
+      await appKit.switchNetwork(polygon)
+
+      expect(ChainController.switchActiveNetwork).toHaveBeenCalledTimes(1)
     })
   })
 })

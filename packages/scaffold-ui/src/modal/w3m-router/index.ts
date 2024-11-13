@@ -103,8 +103,6 @@ export class W3mRouter extends LitElement {
         return html`<w3m-network-switch-view></w3m-network-switch-view>`
       case 'Profile':
         return html`<w3m-profile-view></w3m-profile-view>`
-      case 'SelectAddresses':
-        return html`<w3m-select-addresses-view></w3m-select-addresses-view>`
       case 'SwitchAddress':
         return html`<w3m-switch-address-view></w3m-switch-address-view>`
       case 'Transactions':
@@ -161,6 +159,12 @@ export class W3mRouter extends LitElement {
         return html`<w3m-register-account-name-view></w3m-register-account-name-view>`
       case 'RegisterAccountNameSuccess':
         return html`<w3m-register-account-name-success-view></w3m-register-account-name-success-view>`
+      case 'SmartSessionCreated':
+        return html`<w3m-smart-session-created-view></w3m-smart-session-created-view>`
+      case 'SmartSessionList':
+        return html`<w3m-smart-session-list-view></w3m-smart-session-list-view>`
+      case 'SIWXSignMessage':
+        return html`<w3m-siwx-sign-message-view></w3m-siwx-sign-message-view>`
       default:
         return html`<w3m-connect-view></w3m-connect-view>`
     }

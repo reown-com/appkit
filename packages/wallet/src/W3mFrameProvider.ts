@@ -207,6 +207,7 @@ export class W3mFrameProvider {
       const response = await this.appEvent<'GetSmartAccountEnabledNetworks'>({
         type: W3mFrameConstants.APP_GET_SMART_ACCOUNT_ENABLED_NETWORKS
       } as W3mFrameTypes.AppEvent)
+
       this.persistSmartAccountEnabledNetworks(response.smartAccountEnabledNetworks)
 
       return response
@@ -471,6 +472,8 @@ export class W3mFrameProvider {
       return type.replace('@w3m-app/', '')
     }
 
+    const abortController = new AbortController()
+
     const type = replaceEventType(event.type)
 
     const shouldCheckForTimeout = [
@@ -484,16 +487,18 @@ export class W3mFrameProvider {
       .map(replaceEventType)
       .includes(type)
 
-    if (shouldCheckForTimeout && this.onTimeout) {
-      // 15 seconds timeout
-      timer = setTimeout(this.onTimeout, 15_000)
+    if (shouldCheckForTimeout) {
+      timer = setTimeout(() => {
+        this.onTimeout?.()
+        abortController.abort()
+      }, 30_000)
     }
 
     return new Promise((resolve, reject) => {
       const id = Math.random().toString(36).substring(7)
       this.w3mLogger.logger.info?.({ event, id }, 'Sending app event')
       this.w3mFrame.events.postAppEvent({ ...event, id } as W3mFrameTypes.AppEvent)
-      const abortController = new AbortController()
+
       if (type === 'RPC_REQUEST') {
         const rpcEvent = event as Extract<W3mFrameTypes.AppEvent, { type: '@w3m-app/RPC_REQUEST' }>
         this.openRpcRequests = [...this.openRpcRequests, { ...rpcEvent.payload, abortController }]
@@ -501,6 +506,8 @@ export class W3mFrameProvider {
       abortController.signal.addEventListener('abort', () => {
         if (type === 'RPC_REQUEST') {
           reject(new Error('Request was aborted'))
+        } else {
+          reject(new Error('Something went wrong'))
         }
       })
 
@@ -520,6 +527,9 @@ export class W3mFrameProvider {
           }
           resolve(undefined as unknown as W3mFrameTypes.Responses[`Frame${T}Response`])
         } else if (framEvent.type === `@w3m-frame/${type}_ERROR`) {
+          if (timer) {
+            clearTimeout(timer)
+          }
           if ('payload' in framEvent) {
             reject(new Error(framEvent.payload?.message || 'An error occurred'))
           }

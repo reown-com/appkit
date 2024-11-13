@@ -1,6 +1,8 @@
 import type { NamespaceConfig, Namespace } from '@walletconnect/universal-provider'
 import type { CaipNetwork, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 import type { SessionTypes } from '@walletconnect/types'
+import { EnsController } from '@reown/appkit-core'
+import { solana, solanaDevnet } from '../networks/index.js'
 
 export const WcHelpersUtil = {
   getMethodsByChainNamespace(chainNamespace: ChainNamespace): string[] {
@@ -29,6 +31,7 @@ export const WcHelpersUtil = {
           'wallet_showCallsStatus',
           'wallet_getCallsStatus',
           'wallet_grantPermissions',
+          'wallet_revokePermissions',
           'wallet_switchEthereumChain'
         ]
       default:
@@ -59,12 +62,30 @@ export const WcHelpersUtil = {
 
       namespace.chains.push(caipNetworkId)
 
+      // Workaround for wallets that only support deprecated Solana network ID
+      switch (caipNetworkId) {
+        case solana.caipNetworkId:
+          namespace.chains.push(solana.deprecatedCaipNetworkId)
+          break
+        case solanaDevnet.deprecatedCaipNetworkId:
+          namespace.chains.push(solanaDevnet.deprecatedCaipNetworkId)
+          break
+        default:
+      }
+
       if (namespace?.rpcMap && rpcUrl) {
         namespace.rpcMap[id] = rpcUrl
       }
 
       return acc
     }, {})
+  },
+
+  resolveReownName: async (name: string) => {
+    const wcNameAddress = await EnsController.resolveName(name)
+    const networkNameAddresses = Object.values(wcNameAddress?.addresses) || []
+
+    return networkNameAddresses[0]?.address || false
   },
 
   getChainsFromNamespaces(namespaces: SessionTypes.Namespaces = {}): CaipNetworkId[] {

@@ -115,7 +115,8 @@ export const EnsController = {
       const message = JSON.stringify({
         name,
         attributes: {},
-        timestamp: Math.floor(Date.now())
+        // Unix timestamp
+        timestamp: Math.floor(Date.now() / 1000)
       })
 
       RouterController.pushTransactionStack({
@@ -138,7 +139,7 @@ export const EnsController = {
       await BlockchainApiController.registerEnsName({
         coinType,
         address: address as `0x${string}`,
-        signature,
+        signature: signature as `0x${string}`,
         message
       })
 

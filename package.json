@@ -7,6 +7,8 @@
     "prebuild": "node scripts/inject-version.js",
     "build:clean": "turbo run build:clean --filter={./packages/*}",
     "build:sample-apps": "turbo run build --filter={./examples/*}",
+    "build:example:wagmi-cdn": "pnpm build; pnpm --filter @examples/html-wagmi-cdn build",
+    "build:example:vue-wagmi": "pnpm --filter @examples/vue-wagmi build",
     "build": "turbo run build --filter={./packages/*} --concurrency=31",
     "watch": "turbo run watch --filter={./packages/*,./packages/adapters/*} --concurrency=50 --continue",
     "gallery": "turbo run dev --filter={./apps/gallery}",
@@ -36,15 +38,14 @@
     "publish:alpha": "pnpm install; pnpm build; changeset publish --tag alpha",
     "publish:beta": "pnpm install; pnpm build; changeset publish --tag beta",
     "publish:canary": "pnpm install; pnpm build; changeset publish --tag canary",
-    "prepare": "husky",
-    "size": "pnpm --filter=./examples/react-wagmi size"
+    "prepare": "husky"
   },
   "devDependencies": {
     "@changesets/changelog-github": "0.5.0",
-    "@changesets/cli": "2.27.1",
+    "@changesets/cli": "2.27.9",
     "@typescript-eslint/eslint-plugin": "6.18.1",
     "@typescript-eslint/parser": "6.18.1",
-    "@vitest/coverage-v8": "1.1.2",
+    "@vitest/coverage-v8": "2.1.3",
     "danger": "11.3.1",
     "eslint": "8.56.0",
     "eslint-config-prettier": "9.1.0",
@@ -55,7 +56,7 @@
     "turbo": "2.0.6-canary.0",
     "typescript": "5.3.3",
     "vite": "5.2.11",
-    "vitest": "2.0.5",
+    "vitest": "2.1.3",
     "vite-plugin-node-polyfills": "0.22.0",
     "pino": "7.11.0"
   },

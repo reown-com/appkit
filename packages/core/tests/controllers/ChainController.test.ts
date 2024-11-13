@@ -100,7 +100,8 @@ const connectionControllerClient: ConnectionControllerClient = {
   getEnsAddress: async (value: string) => Promise.resolve(value),
   getEnsAvatar: async (value: string) => Promise.resolve(value),
   getCapabilities: async () => Promise.resolve(''),
-  grantPermissions: async () => Promise.resolve('')
+  grantPermissions: async () => Promise.resolve(''),
+  revokePermissions: async () => Promise.resolve('0x')
 }
 
 const networkControllerClient: NetworkControllerClient = {
@@ -110,7 +111,7 @@ const networkControllerClient: NetworkControllerClient = {
 }
 
 const evmAdapter = {
-  chainNamespace,
+  namespace: ConstantsUtil.CHAIN.EVM,
   connectionControllerClient,
   networkControllerClient,
   caipNetworks: []

@@ -31,13 +31,15 @@ export class W3mSocialLoginWidget extends LitElement {
   private popupWindow?: Window | null
 
   // -- State & Properties -------------------------------- //
+  @property() public walletGuide: WalletGuideType = 'get-started'
+
+  @property() public tabIdx?: number = undefined
+
   @state() private connectors = ConnectorController.state.connectors
 
   @state() private features = OptionsController.state.features
 
   @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
-
-  @property() public walletGuide: WalletGuideType = 'get-started'
 
   public constructor() {
     super()
@@ -94,6 +96,7 @@ export class W3mSocialLoginWidget extends LitElement {
                 this.onSocialClick(social)
               }}
               logo=${social}
+              tabIdx=${ifDefined(this.tabIdx)}
             ></wui-logo-select>`
         )}
       </wui-flex>`
@@ -107,6 +110,7 @@ export class W3mSocialLoginWidget extends LitElement {
       logo=${ifDefined(socials[0])}
       align="center"
       name=${`Continue with ${socials[0]}`}
+      tabIdx=${ifDefined(this.tabIdx)}
     ></wui-list-social>`
   }
 
@@ -131,9 +135,14 @@ export class W3mSocialLoginWidget extends LitElement {
                 this.onSocialClick(social)
               }}
               logo=${social}
+              tabIdx=${ifDefined(this.tabIdx)}
             ></wui-logo-select>`
         )}
-        <wui-logo-select logo="more" @click=${this.onMoreSocialsClick.bind(this)}></wui-logo-select>
+        <wui-logo-select
+          logo="more"
+          tabIdx=${ifDefined(this.tabIdx)}
+          @click=${this.onMoreSocialsClick.bind(this)}
+        ></wui-logo-select>
       </wui-flex>`
     }
 
@@ -146,6 +155,7 @@ export class W3mSocialLoginWidget extends LitElement {
               this.onSocialClick(social)
             }}
             logo=${social}
+            tabIdx=${ifDefined(this.tabIdx)}
           ></wui-logo-select>`
       )}
     </wui-flex>`

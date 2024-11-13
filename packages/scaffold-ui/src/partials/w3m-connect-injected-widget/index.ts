@@ -10,7 +10,7 @@ import {
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connect-injected-widget')
@@ -18,7 +18,9 @@ export class W3mConnectInjectedWidget extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
-  // -- State & Properties -------------------------------- //
+  // -- State & Properties -------------------------------- //  // -- State & Properties -------------------------------- //
+  @property() public tabIdx?: number = undefined
+
   @state() private connectors = ConnectorController.state.connectors
 
   public constructor() {
@@ -54,14 +56,16 @@ export class W3mConnectInjectedWidget extends LitElement {
             return null
           }
 
-          if (!ConnectionController.checkInstalled(undefined, connector.chain)) {
+          const walletRDNS = connector.info?.rdns
+
+          if (!walletRDNS && !ConnectionController.checkInstalled(undefined)) {
             this.style.cssText = `display: none`
 
             return null
           }
 
-          if (connector.info?.rdns && ApiController.state.excludedRDNS) {
-            if (ApiController.state.excludedRDNS.includes(connector?.info?.rdns)) {
+          if (walletRDNS && ApiController.state.excludedRDNS) {
+            if (ApiController.state.excludedRDNS.includes(walletRDNS)) {
               return null
             }
           }
@@ -75,6 +79,7 @@ export class W3mConnectInjectedWidget extends LitElement {
               tagLabel="installed"
               data-testid=${`wallet-selector-${connector.id}`}
               @click=${() => this.onConnector(connector)}
+              tabIdx=${ifDefined(this.tabIdx)}
             >
             </wui-list-wallet>
           `

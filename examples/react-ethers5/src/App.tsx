@@ -24,7 +24,7 @@ createAppKit({
     name: 'AppKit',
     description: 'AppKit Laboratory',
     url: 'https://example.com',
-    icons: ['https://avatars.githubusercontent.com/u/37784886']
+    icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
   },
   networks: [mainnet, arbitrum],
   projectId,
@@ -44,10 +44,10 @@ export default function App() {
 
   return (
     <>
-      <w3m-button />
-      <w3m-network-button />
-      <w3m-connect-button />
-      <w3m-account-button />
+      <appkit-button />
+      <appkit-network-button />
+      <appkit-connect-button />
+      <appkit-account-button />
 
       <button onClick={() => modal.open()}>Connect Wallet</button>
       <button onClick={() => modal.open({ view: 'Networks' })}>Choose Network</button>

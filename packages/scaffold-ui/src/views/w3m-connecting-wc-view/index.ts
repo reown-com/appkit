@@ -34,7 +34,10 @@ export class W3mConnectingWcView extends LitElement {
     super()
     this.determinePlatforms()
     this.initializeConnection()
-    this.interval = setInterval(this.initializeConnection.bind(this), ConstantsUtil.TEN_SEC_MS)
+    this.interval = setInterval(
+      this.initializeConnection.bind(this),
+      ConstantsUtil.TEN_SEC_MS
+    ) as unknown as NodeJS.Timeout
   }
 
   public override disconnectedCallback() {
@@ -68,13 +71,7 @@ export class W3mConnectingWcView extends LitElement {
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry) || status === 'connecting') {
         await ConnectionController.connectWalletConnect()
         this.finalizeConnection()
-
-        if (
-          StorageUtil.getConnectedConnector() === 'AUTH' &&
-          OptionsController.state.hasMultipleAddresses
-        ) {
-          RouterController.push('SelectAddresses')
-        } else if (!this.isSiweEnabled) {
+        if (!this.isSiweEnabled) {
           ModalController.close()
         }
       }
@@ -86,9 +83,11 @@ export class W3mConnectingWcView extends LitElement {
       })
       ConnectionController.setWcError(true)
       if (CoreHelperUtil.isAllowedRetry(this.lastRetry)) {
-        SnackController.showError('Declined')
+        SnackController.showError((error as BaseError).message ?? 'Declined')
         this.lastRetry = Date.now()
         this.initializeConnection(true)
+      } else {
+        SnackController.showError((error as BaseError).message ?? 'Connection error')
       }
     }
   }
@@ -159,15 +158,12 @@ export class W3mConnectingWcView extends LitElement {
     switch (this.platform) {
       case 'browser':
         return html`<w3m-connecting-wc-browser></w3m-connecting-wc-browser>`
+      case 'web':
+        return html`<w3m-connecting-wc-web></w3m-connecting-wc-web>`
       case 'desktop':
         return html`
           <w3m-connecting-wc-desktop .onRetry=${() => this.initializeConnection(true)}>
           </w3m-connecting-wc-desktop>
-        `
-      case 'web':
-        return html`
-          <w3m-connecting-wc-web .onRetry=${() => this.initializeConnection(true)}>
-          </w3m-connecting-wc-web>
         `
       case 'mobile':
         return html`
