@@ -17,7 +17,6 @@ import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import { OptionsController } from './OptionsController.js'
-import { SnackController } from './SnackController.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
