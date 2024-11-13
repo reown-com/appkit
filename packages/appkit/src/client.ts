@@ -692,8 +692,6 @@ export class AppKit {
   }
 
   private createClients() {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
     this.connectionControllerClient = {
       connectWalletConnect: async (onUri: (uri: string) => void) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
@@ -940,6 +938,25 @@ export class AppKit {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
         return adapter?.formatUnits({ value, decimals }) ?? '0'
+      },
+      getCapabilities: async (params: AdapterBlueprint.GetCapabilitiesParams) => {
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+
+        await adapter?.getCapabilities(params)
+      },
+      grantPermissions: async (params: AdapterBlueprint.GrantPermissionsParams) => {
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+
+        await adapter?.grantPermissions(params)
+      },
+      revokePermissions: async (params: AdapterBlueprint.RevokePermissionsParams) => {
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+
+        if (adapter?.revokePermissions) {
+          return await adapter.revokePermissions(params)
+        }
+
+        return '0x'
       }
     }
 
