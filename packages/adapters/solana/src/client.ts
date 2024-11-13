@@ -436,7 +436,7 @@ export class SolanaAdapter extends AdapterBlueprint {
 
     return {
       address,
-      chainId: Number(chainId),
+      chainId,
       provider: selectedProvider,
       type: connector?.type as ConnectorType,
       id

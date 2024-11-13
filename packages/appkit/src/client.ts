@@ -1194,17 +1194,21 @@ export class AppKit {
     const adapter = this.getAdapter(chainNamespace)
 
     adapter?.on('switchNetwork', ({ address, chainId }) => {
-      if (ChainController.state.activeChain === chainNamespace && address) {
-        this.syncAccount({ address, chainId, chainNamespace })
-      } else if (
-        ChainController.state.activeChain === chainNamespace &&
-        AccountController.state.address
-      ) {
-        this.syncAccount({
-          address: AccountController.state.address,
-          chainId,
-          chainNamespace
-        })
+      if (chainId && this.caipNetworks?.find(n => n.id === chainId)) {
+        if (ChainController.state.activeChain === chainNamespace && address) {
+          this.syncAccount({ address, chainId, chainNamespace })
+        } else if (
+          ChainController.state.activeChain === chainNamespace &&
+          AccountController.state.address
+        ) {
+          this.syncAccount({
+            address: AccountController.state.address,
+            chainId,
+            chainNamespace
+          })
+        }
+      } else {
+        ChainController.showUnsupportedChainUI()
       }
     })
 
@@ -1361,31 +1365,28 @@ export class AppKit {
   }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
     chainNamespace: ChainNamespace
   }) {
-    if (chainNamespace === ChainController.state.activeChain && chainId) {
+    this.setPreferredAccountType(
+      AccountController.state.preferredAccountType
+        ? AccountController.state.preferredAccountType
+        : 'eoa',
+      ChainController.state.activeChain as ChainNamespace
+    )
+
+    this.setCaipAddress(
+      `${chainNamespace}:${chainId}:${address}` as `${ChainNamespace}:${string}:${string}`,
+      chainNamespace
+    )
+
+    if (chainNamespace === ChainController.state.activeChain) {
       const caipNetwork = this.caipNetworks?.find(
         n => n.id === chainId && n.chainNamespace === chainNamespace
       )
 
       if (caipNetwork) {
         this.setCaipNetwork(caipNetwork)
-      } else if (ChainController.state.activeCaipNetwork) {
-        this.setCaipNetwork({
-          ...ChainController.state.activeCaipNetwork,
-          id: chainId
-        })
+      } else {
+        this.setCaipNetwork(this.caipNetworks?.find(n => n.chainNamespace === chainNamespace))
       }
-
-      this.setPreferredAccountType(
-        AccountController.state.preferredAccountType
-          ? AccountController.state.preferredAccountType
-          : 'eoa',
-        ChainController.state.activeChain as ChainNamespace
-      )
-
-      this.setCaipAddress(
-        `${chainNamespace}:${chainId}:${address}` as `${ChainNamespace}:${string}:${string}`,
-        chainNamespace
-      )
 
       const adapter = this.getAdapter(chainNamespace)
 
