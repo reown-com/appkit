@@ -2,11 +2,11 @@ import {
   AccountController,
   ApiController,
   ChainController,
-  ConnectionController,
   CoreHelperUtil,
   EventsController,
   ModalController,
   RouterController,
+  SIWXUtil,
   SnackController,
   ThemeController
 } from '@reown/appkit-core'
@@ -90,14 +90,11 @@ export class W3mModal extends LitElement {
 
   private async handleClose() {
     const isUnsupportedChain = RouterController.state.view === 'UnsupportedChain'
-
-    if (isUnsupportedChain) {
+    if (isUnsupportedChain || (await SIWXUtil.isSIWXCloseDisabled())) {
       ModalController.shake()
     } else {
       ModalController.close()
     }
-
-    return Promise.resolve()
   }
 
   private initializeTheming() {
@@ -180,7 +177,7 @@ export class W3mModal extends LitElement {
 
     this.caipAddress = caipAddress
 
-    await ConnectionController.initializeSWIXIfAvailable()
+    await SIWXUtil.initializeIfEnabled()
 
     if (!nextConnected) {
       ModalController.close()

@@ -19,7 +19,9 @@ import {
   type SendTransactionArgs,
   type EstimateGasTransactionArgs,
   type AccountControllerState,
-  type AdapterNetworkState
+  type AdapterNetworkState,
+  type SIWXSession,
+  SIWXUtil
 } from '@reown/appkit-core'
 import {
   AccountController,
@@ -651,11 +653,15 @@ export class AppKit {
     if (evmAdapter) {
       if (options.siweConfig) {
         if (options.siwx) {
-          throw new Error('Cannot set both siweConfig and siwx')
+          throw new Error('Cannot set both `siweConfig` and `siwx` options')
         }
 
-        const { mapToSIWX } = await import('@reown/appkit-siwe')
-        const siwx = await mapToSIWX(options.siweConfig)
+        const siwe = await import('@reown/appkit-siwe')
+        if (typeof siwe.mapToSIWX !== 'function') {
+          throw new Error('Please update the `@reown/appkit-siwe` package to the latest version')
+        }
+
+        const siwx = await siwe.mapToSIWX(options.siweConfig)
         OptionsController.setSIWX(siwx)
       }
     }
@@ -707,76 +713,59 @@ export class AppKit {
           onUri(uri)
         })
 
-        if (this.options.siweConfig) {
-          const siweParams = await this.options.siweConfig?.getMessageParams?.()
-          const isSiweEnabled = this.options.siweConfig?.options?.enabled
-          const isProviderSupported = typeof this.universalProvider?.authenticate === 'function'
-          const isSiweParamsValid = siweParams && Object.keys(siweParams || {}).length > 0
-          const clientId = await this.universalProvider?.client?.core?.crypto?.getClientId()
-          if (clientId) {
-            this.setClientId(clientId)
-            if (
-              this.options.siweConfig &&
-              isSiweEnabled &&
-              siweParams &&
-              isProviderSupported &&
-              isSiweParamsValid &&
-              ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
-            ) {
-              const { SIWEController, getDidChainId, getDidAddress } = await import(
-                '@reown/appkit-siwe'
-              )
+        this.setClientId(
+          (await this.universalProvider?.client?.core?.crypto?.getClientId()) || null
+        )
 
-              const chains = this.caipNetworks
-                ?.filter(network => network.chainNamespace === ConstantsUtil.CHAIN.EVM)
-                .map(chain => chain.caipNetworkId) as string[]
+        const siwx = SIWXUtil.getSIWX()
 
-              siweParams.chains = this.caipNetworks
-                ?.filter(network => network.chainNamespace === ConstantsUtil.CHAIN.EVM)
-                .map(chain => chain.id) as number[]
+        if (siwx) {
+          // Ignores chainId and account address to get other message data
+          const siwxMessage = await siwx.createMessage({
+            chainId: '',
+            accountAddress: ''
+          })
 
-              const result = await this.universalProvider?.authenticate({
-                nonce: await this.options.siweConfig?.getNonce?.(),
-                methods: [...OPTIONAL_METHODS],
-                ...siweParams,
-                chains
+          const result = await this.universalProvider?.authenticate({
+            nonce: siwxMessage.nonce,
+            domain: siwxMessage.domain,
+            uri: siwxMessage.uri,
+            exp: siwxMessage.expirationTime,
+            iat: siwxMessage.issuedAt,
+            nbf: siwxMessage.notBefore,
+            requestId: siwxMessage.requestId,
+            version: siwxMessage.version,
+            resources: siwxMessage.resources,
+            statement: siwxMessage.statement,
+
+            methods: OPTIONAL_METHODS,
+            chains: this.caipNetworks?.map(network => network.caipNetworkId) || []
+          })
+
+          if (result?.auths?.length) {
+            const sessions = result.auths.map<SIWXSession>(cacao => {
+              const message = this.universalProvider?.client.formatAuthMessage({
+                request: cacao.p,
+                iss: cacao.p.iss
               })
-              // Auths is an array of signed CACAO objects https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-74.md
-              const signedCacao = result?.auths?.[0]
 
-              if (signedCacao) {
-                const { p, s } = signedCacao
-                const cacaoChainId = getDidChainId(p.iss)
-                const address = getDidAddress(p.iss)
-                if (address && cacaoChainId) {
-                  SIWEController.setSession({
-                    address,
-                    chainId: parseInt(cacaoChainId, 10)
-                  })
-                }
-
-                try {
-                  // Kicks off verifyMessage and populates external states
-                  const message = this.universalProvider?.client.formatAuthMessage({
-                    request: p,
-                    iss: p.iss
-                  })
-
-                  await SIWEController.verifyMessage({
-                    message: message as string,
-                    signature: s.s,
-                    cacao: signedCacao
-                  })
-                } catch (error) {
-                  // eslint-disable-next-line no-console
-                  console.error('Error verifying message', error)
-                  // eslint-disable-next-line no-console
-                  await this.universalProvider?.disconnect().catch(console.error)
-                  // eslint-disable-next-line no-console
-                  await SIWEController.signOut().catch(console.error)
-                  throw error
-                }
+              return {
+                data: siwxMessage,
+                message,
+                signature: cacao.s.s,
+                cacao
               }
+            })
+
+            try {
+              await siwx.setSessions(sessions)
+              this.close()
+            } catch (error) {
+              // eslint-disable-next-line no-console
+              console.error('Error verifying message', error)
+              // eslint-disable-next-line no-console
+              await this.universalProvider?.disconnect().catch(console.error)
+              throw error
             }
           }
         } else {
@@ -831,11 +820,6 @@ export class AppKit {
         const provider = ProviderUtil.getProvider<UniversalProvider | Provider | W3mFrameProvider>(
           ChainController.state.activeChain as ChainNamespace
         )
-
-        if (this.options.siweConfig?.options?.signOutOnDisconnect) {
-          const { SIWEController } = await import('@reown/appkit-siwe')
-          await SIWEController.signOut()
-        }
 
         const providerType =
           ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
