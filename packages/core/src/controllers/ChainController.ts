@@ -401,6 +401,16 @@ export const ChainController = {
     return requestedCaipNetworks?.some(network => network.id === activeCaipNetwork?.id)
   },
 
+  checkIfSupportedChainId(chainId: number | string) {
+    if (!this.state.activeChain) {
+      return true
+    }
+
+    const requestedCaipNetworks = this.getRequestedCaipNetworks(this.state.activeChain)
+
+    return requestedCaipNetworks?.some(network => network.id === chainId)
+  },
+
   // Smart Account Network Handlers
   setSmartAccountEnabledNetworks(smartAccountEnabledNetworks: number[], chain: ChainNamespace) {
     this.setAdapterNetworkState(chain, { smartAccountEnabledNetworks })

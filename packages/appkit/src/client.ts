@@ -992,6 +992,7 @@ export class AppKit {
             this.setCaipNetwork(caipNetwork)
             this.syncWalletConnectAccount()
           } else {
+            this.setCaipNetwork(caipNetwork)
             const address = this.getAddressByChainNamespace(caipNetwork.chainNamespace)
             if (address) {
               this.syncAccount({
@@ -1360,28 +1361,31 @@ export class AppKit {
   }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
     chainNamespace: ChainNamespace
   }) {
-    this.setPreferredAccountType(
-      AccountController.state.preferredAccountType
-        ? AccountController.state.preferredAccountType
-        : 'eoa',
-      ChainController.state.activeChain as ChainNamespace
-    )
-
-    this.setCaipAddress(
-      `${chainNamespace}:${chainId}:${address}` as `${ChainNamespace}:${string}:${string}`,
-      chainNamespace
-    )
-
-    if (chainNamespace === ChainController.state.activeChain) {
+    if (chainNamespace === ChainController.state.activeChain && chainId) {
       const caipNetwork = this.caipNetworks?.find(
         n => n.id === chainId && n.chainNamespace === chainNamespace
       )
 
       if (caipNetwork) {
         this.setCaipNetwork(caipNetwork)
-      } else {
-        this.setCaipNetwork(this.caipNetworks?.find(n => n.chainNamespace === chainNamespace))
+      } else if (ChainController.state.activeCaipNetwork) {
+        this.setCaipNetwork({
+          ...ChainController.state.activeCaipNetwork,
+          id: chainId
+        })
       }
+
+      this.setPreferredAccountType(
+        AccountController.state.preferredAccountType
+          ? AccountController.state.preferredAccountType
+          : 'eoa',
+        ChainController.state.activeChain as ChainNamespace
+      )
+
+      this.setCaipAddress(
+        `${chainNamespace}:${chainId}:${address}` as `${ChainNamespace}:${string}:${string}`,
+        chainNamespace
+      )
 
       const adapter = this.getAdapter(chainNamespace)
 
