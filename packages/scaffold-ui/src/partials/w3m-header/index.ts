@@ -153,6 +153,8 @@ export class W3mHeader extends LitElement {
   }
 
   private async onClose() {
+    const isUnsupportedChain = RouterController.state.view === 'UnsupportedChain'
+
     if (this.isSiweEnabled) {
       const { SIWEController } = await import('@reown/appkit-siwe')
       const isApproveSignScreen = RouterController.state.view === 'ApproveTransaction'
@@ -163,6 +165,8 @@ export class W3mHeader extends LitElement {
       } else {
         ModalController.close()
       }
+    } else if (isUnsupportedChain) {
+      ModalController.shake()
     } else {
       ModalController.close()
     }

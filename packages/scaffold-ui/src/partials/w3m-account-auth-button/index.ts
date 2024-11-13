@@ -20,7 +20,7 @@ export class W3mAccountAuthButton extends LitElement {
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
 
-    if (!authConnector || type !== 'AUTH') {
+    if (!authConnector || type !== 'ID_AUTH') {
       this.style.cssText = `display: none`
 
       return null

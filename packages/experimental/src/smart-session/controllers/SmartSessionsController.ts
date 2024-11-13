@@ -10,7 +10,6 @@ import {
   SnackController
 } from '@reown/appkit-core'
 import { ERROR_MESSAGES } from '../schema/index.js'
-import { ConstantsUtil } from '@reown/appkit-common'
 import { CosignerService } from '../utils/CosignerService.js'
 
 import { ProviderUtil } from '@reown/appkit/store'
@@ -93,12 +92,10 @@ export const SmartSessionsController = {
       throw new Error(ERROR_MESSAGES.INVALID_ADDRESS)
     }
     // Fetch the ConnectionController client
-    const connectionControllerClient = ConnectionController._getClient(
-      CommonConstantsUtil.CHAIN.EVM
-    )
+    const connectionControllerClient = ConnectionController._getClient()
 
     //Check for connected wallet supports permissions capabilities
-    const walletCapabilities = (await connectionControllerClient.getCapabilities(
+    const walletCapabilities = (await connectionControllerClient?.getCapabilities(
       chainAndAddress.address
     )) as WalletCapabilities
 
@@ -123,7 +120,7 @@ export const SmartSessionsController = {
       goBack: false
     })
 
-    const rawResponse = await connectionControllerClient.grantPermissions([request])
+    const rawResponse = await connectionControllerClient?.grantPermissions([request])
 
     // Validate and type guard the response
     const response = assertWalletGrantPermissionsResponse(rawResponse)
@@ -202,7 +199,7 @@ export const SmartSessionsController = {
         throw new Error(ERROR_MESSAGES.INVALID_ADDRESS)
       }
       // Fetch the ConnectionController client
-      const connectionControllerClient = ConnectionController._getClient(ConstantsUtil.CHAIN.EVM)
+      const connectionControllerClient = ConnectionController._getClient()
 
       // Retrieve state values
       const { projectId } = OptionsController.state
@@ -215,7 +212,7 @@ export const SmartSessionsController = {
         goBack: false
       })
 
-      const signature = await connectionControllerClient.revokePermissions({
+      const signature = await connectionControllerClient?.revokePermissions({
         pci: session.pci,
         permissions: [...session.permissions.map(p => JSON.parse(JSON.stringify(p)))],
         expiry: Math.floor(session.expiry / 1000),
@@ -223,7 +220,11 @@ export const SmartSessionsController = {
       })
 
       // Activate the permissions using CosignerService
-      await cosignerService.revokePermissions(activeCaipAddress, session.pci, signature)
+      await cosignerService.revokePermissions(
+        activeCaipAddress,
+        session.pci,
+        signature as `0x${string}`
+      )
       state.sessions = state.sessions.filter(s => s.pci !== session.pci)
     } catch (e) {
       SnackController.showError('Error revoking smart session')
