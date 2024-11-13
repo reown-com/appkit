@@ -1,26 +1,23 @@
 import { BASE_URL, DEFAULT_CHAIN_NAME, DEFAULT_SESSION_PARAMS } from './shared/constants'
-import { testM as testMWagmi } from './shared/fixtures/w3m-fixture'
+import { testM } from './shared/fixtures/w3m-fixture'
 import { testMWagmiVerifyDomainMismatch } from './shared/fixtures/w3m-wagmi-verify-domain-mismatch-fixture'
 import { testMWagmiVerifyEvil } from './shared/fixtures/w3m-wagmi-verify-evil-fixture'
 import { testMWagmiVerifyValid } from './shared/fixtures/w3m-wagmi-verify-valid-fixture'
-import { testMEthers } from './shared/fixtures/w3m-fixture'
 import { testMEthersVerifyDomainMismatch } from './shared/fixtures/w3m-ethers-verify-domain-mismatch-fixture'
 import { testMEthersVerifyEvil } from './shared/fixtures/w3m-ethers-verify-evil-fixture'
 import { testMEthersVerifyValid } from './shared/fixtures/w3m-ethers-verify-valid-fixture'
 import { WalletPage } from './shared/pages/WalletPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
 import { WalletValidator } from './shared/validators/WalletValidator'
-import { expect, type Page } from '@playwright/test'
+import test, { expect, type Page } from '@playwright/test'
 import { timingFixture } from './shared/fixtures/timing-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
 import { routeInterceptUrl } from './shared/utils/verify'
 
-testMWagmi(
-  'wagmi: connection and signature requests from non-verified project should show as cannot verify',
+testM(
+  'connection and signature requests from non-verified project should show as cannot verify',
   async ({ modalPage, context }) => {
-    if (modalPage.library === 'solana') {
-      return
-    }
+    test.skip(modalPage.library === 'solana')
 
     const modalValidator = new ModalValidator(modalPage.page)
     const walletPage = new WalletPage(await context.newPage())
@@ -50,9 +47,7 @@ testMWagmi(
 testMWagmiVerifyValid(
   'wagmi: connection and signature requests from non-scam verified domain should show as domain match',
   async ({ modalPage, context }) => {
-    if (modalPage.library === 'solana') {
-      return
-    }
+    test.skip(modalPage.library !== 'wagmi', 'fixture always uses wagmi')
 
     const modalValidator = new ModalValidator(modalPage.page)
     const walletPage = new WalletPage(await context.newPage())
@@ -67,7 +62,7 @@ testMWagmiVerifyValid(
     await walletValidator.expectConnected()
 
     await modalPage.sign()
-    const chainName = modalPage.library === 'solana' ? 'Solana' : DEFAULT_CHAIN_NAME
+    const chainName = DEFAULT_CHAIN_NAME
     await walletValidator.expectReceivedSign({ chainName })
     await expect(walletPage.page.getByTestId('session-info-verified')).toBeVisible()
     await walletPage.handleRequest({ accept: true })
@@ -82,9 +77,7 @@ testMWagmiVerifyValid(
 testMWagmiVerifyDomainMismatch(
   'wagmi: connection and signature requests from non-scam verified domain but on localhost should show as invalid domain',
   async ({ modalPage, context }) => {
-    if (modalPage.library === 'solana') {
-      return
-    }
+    test.skip(modalPage.library !== 'wagmi', 'fixture always uses wagmi')
 
     const modalValidator = new ModalValidator(modalPage.page)
     const walletPage = new WalletPage(await context.newPage())
@@ -99,7 +92,7 @@ testMWagmiVerifyDomainMismatch(
     await walletValidator.expectConnected()
 
     await modalPage.sign()
-    const chainName = modalPage.library === 'solana' ? 'Solana' : DEFAULT_CHAIN_NAME
+    const chainName = DEFAULT_CHAIN_NAME
     await walletValidator.expectReceivedSign({ chainName })
     await expect(walletPage.page.getByText('Invalid Domain')).toBeVisible()
     await walletPage.handleRequest({ accept: true })
@@ -114,9 +107,7 @@ testMWagmiVerifyDomainMismatch(
 testMWagmiVerifyEvil(
   'wagmi: connection and signature requests from scam verified domain should show as scam domain',
   async ({ modalPage, context }) => {
-    if (modalPage.library === 'solana') {
-      return
-    }
+    test.skip(modalPage.library !== 'wagmi', 'fixture always uses wagmi')
 
     const modalValidator = new ModalValidator(modalPage.page)
     const walletPage = new WalletPage(await context.newPage())
@@ -133,43 +124,11 @@ testMWagmiVerifyEvil(
     await walletValidator.expectConnected()
 
     await modalPage.sign()
-    const chainName = modalPage.library === 'solana' ? 'Solana' : DEFAULT_CHAIN_NAME
+    const chainName = DEFAULT_CHAIN_NAME
     await expect(walletPage.page.getByText('Website flagged')).toBeVisible()
     await walletPage.page.getByText('Proceed anyway').click()
     await walletValidator.expectReceivedSign({ chainName })
     await expect(walletPage.page.getByText('Potential threat')).toBeVisible()
-    await walletPage.handleRequest({ accept: true })
-    await modalValidator.expectAcceptedSign()
-
-    await modalPage.disconnect()
-    await modalValidator.expectDisconnected()
-    await walletValidator.expectDisconnected()
-  }
-)
-
-testMEthers(
-  'ethers: connection and signature requests from non-verified project should show as cannot verify',
-  async ({ modalPage, context }) => {
-    if (modalPage.library === 'solana') {
-      return
-    }
-
-    const modalValidator = new ModalValidator(modalPage.page)
-    const walletPage = new WalletPage(await context.newPage())
-    await walletPage.load()
-    const walletValidator = new WalletValidator(walletPage.page)
-
-    const uri = await modalPage.getConnectUri()
-    await walletPage.connectWithUri(uri)
-    await expect(walletPage.page.getByText('Cannot Verify')).toBeVisible()
-    await walletPage.handleSessionProposal(DEFAULT_SESSION_PARAMS)
-    await modalValidator.expectConnected()
-    await walletValidator.expectConnected()
-
-    await modalPage.sign()
-    const chainName = modalPage.library === 'solana' ? 'Solana' : DEFAULT_CHAIN_NAME
-    await walletValidator.expectReceivedSign({ chainName })
-    await expect(walletPage.page.getByText('Cannot Verify')).toBeVisible()
     await walletPage.handleRequest({ accept: true })
     await modalValidator.expectAcceptedSign()
 
@@ -182,9 +141,7 @@ testMEthers(
 testMEthersVerifyValid(
   'ethers: connection and signature requests from non-scam verified domain should show as domain match',
   async ({ modalPage, context }) => {
-    if (modalPage.library === 'solana') {
-      return
-    }
+    test.skip(modalPage.library !== 'ethers', 'fixture always uses ethers')
 
     const modalValidator = new ModalValidator(modalPage.page)
     const walletPage = new WalletPage(await context.newPage())
@@ -199,7 +156,7 @@ testMEthersVerifyValid(
     await walletValidator.expectConnected()
 
     await modalPage.sign()
-    const chainName = modalPage.library === 'solana' ? 'Solana' : DEFAULT_CHAIN_NAME
+    const chainName = DEFAULT_CHAIN_NAME
     await walletValidator.expectReceivedSign({ chainName })
     await expect(walletPage.page.getByTestId('session-info-verified')).toBeVisible()
     await walletPage.handleRequest({ accept: true })
@@ -214,9 +171,7 @@ testMEthersVerifyValid(
 testMEthersVerifyDomainMismatch(
   'ethers: connection and signature requests from non-scam verified domain but on localhost should show as invalid domain',
   async ({ modalPage, context }) => {
-    if (modalPage.library === 'solana') {
-      return
-    }
+    test.skip(modalPage.library !== 'ethers', 'fixture always uses ethers')
 
     const modalValidator = new ModalValidator(modalPage.page)
     const walletPage = new WalletPage(await context.newPage())
@@ -231,7 +186,7 @@ testMEthersVerifyDomainMismatch(
     await walletValidator.expectConnected()
 
     await modalPage.sign()
-    const chainName = modalPage.library === 'solana' ? 'Solana' : DEFAULT_CHAIN_NAME
+    const chainName = DEFAULT_CHAIN_NAME
     await walletValidator.expectReceivedSign({ chainName })
     await expect(walletPage.page.getByText('Invalid Domain')).toBeVisible()
     await walletPage.handleRequest({ accept: true })
@@ -246,9 +201,7 @@ testMEthersVerifyDomainMismatch(
 testMEthersVerifyEvil(
   'ethers: connection and signature requests from scam verified domain should show as scam domain',
   async ({ modalPage, context }) => {
-    if (modalPage.library === 'solana') {
-      return
-    }
+    test.skip(modalPage.library !== 'ethers', 'fixture always uses ethers')
 
     const modalValidator = new ModalValidator(modalPage.page)
     const walletPage = new WalletPage(await context.newPage())
@@ -265,7 +218,7 @@ testMEthersVerifyEvil(
     await walletValidator.expectConnected()
 
     await modalPage.sign()
-    const chainName = modalPage.library === 'solana' ? 'Solana' : DEFAULT_CHAIN_NAME
+    const chainName = DEFAULT_CHAIN_NAME
     await expect(walletPage.page.getByText('Website flagged')).toBeVisible()
     await walletPage.page.getByText('Proceed anyway').click()
     await walletValidator.expectReceivedSign({ chainName })
@@ -284,9 +237,17 @@ const prodVerifyServer = 'https://verify.walletconnect.org'
 // "https://verify-server-staging.walletconnect-v1-bridge.workers.dev"
 const altVerifyServer = null
 
-timingFixture(
+interface TimingFixtureWithLibrary {
+  library: string
+}
+
+timingFixture.extend<TimingFixtureWithLibrary>({
+  library: ['wagmi', { option: true }]
+})(
   'wagmi: AppKit in iframe + verify happy case',
-  async ({ page: rootPage, context }) => {
+  async ({ page: rootPage, context, library }) => {
+    test.skip(library !== 'wagmi', 'test always uses wagmi')
+
     const verifyApiNestedIframesTestOuterDomain =
       'https://verify-api-nested-iframes-test-outer-domain.com'
     const outerUrl = verifyApiNestedIframesTestOuterDomain
