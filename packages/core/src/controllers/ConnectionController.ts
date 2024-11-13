@@ -17,6 +17,7 @@ import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import { OptionsController } from './OptionsController.js'
+import { SnackController } from './SnackController.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -322,10 +323,9 @@ export const ConnectionController = {
     } catch (error: unknown) {
       // eslint-disable-next-line no-console
       console.error('Failed to initialize SIWX', error)
-      ModalController.setLoading(true)
-      await client?.disconnect().finally(() => {
-        ModalController.setLoading(false)
-      })
+      await client?.disconnect()
+      await ModalController.open({ view: 'Connect' })
+      SnackController.showError('It was not possible to verify the message signature')
     }
   }
 }
