@@ -279,7 +279,7 @@ testMEthersVerifyEvil(
   }
 )
 
-const prodVerifyServer = "https://verify.walletconnect.org"
+const prodVerifyServer = 'https://verify.walletconnect.org'
 
 // "https://verify-server-staging.walletconnect-v1-bridge.workers.dev"
 const altVerifyServer = null
@@ -297,12 +297,7 @@ timingFixture(
       })
     })
     if (altVerifyServer) {
-      await routeInterceptUrl(
-        rootPage,
-        prodVerifyServer,
-        altVerifyServer,
-        '/'
-      )
+      await routeInterceptUrl(rootPage, prodVerifyServer, altVerifyServer, '/')
     }
     await rootPage.goto(outerUrl)
 
@@ -326,12 +321,7 @@ timingFixture(
     const modalValidator = new ModalValidator(modalPage.page)
     const walletPagePage = await context.newPage()
     if (altVerifyServer) {
-      await routeInterceptUrl(
-        walletPagePage,
-        prodVerifyServer,
-        altVerifyServer,
-        '/'
-      )
+      await routeInterceptUrl(walletPagePage, prodVerifyServer, altVerifyServer, '/')
     }
     const walletPage = new WalletPage(walletPagePage)
     await walletPage.load()
