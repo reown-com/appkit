@@ -10,5 +10,11 @@ export const ConstantsUtil = {
     HeaderText: 120,
     ModalHeight: 150,
     ViewTransition: 150
+  },
+  // Breakpoints width
+  BREAKPOINTS: {
+    DESKTOP: 1024,
+    TABLET: 1118,
+    MOBILE: 667
   }
 }

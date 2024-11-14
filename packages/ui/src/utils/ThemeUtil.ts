@@ -1,22 +1,31 @@
 import { css, unsafeCSS } from 'lit'
 import { getW3mThemeVariables } from '@reown/appkit-common'
 import type { ThemeVariables, ThemeType } from '@reown/appkit-common'
+import { ThemeHelperUtil } from './ThemeHelperUtil.js'
+import { assignedCSSVariables } from './ThemeUtilConstants.js'
 
 // -- Utilities ---------------------------------------------------------------
+let experimental: HTMLStyleElement | undefined = undefined
 let themeTag: HTMLStyleElement | undefined = undefined
 let darkModeTag: HTMLStyleElement | undefined = undefined
 let lightModeTag: HTMLStyleElement | undefined = undefined
 
 export function initializeTheming(themeVariables?: ThemeVariables, themeMode?: ThemeType) {
+  experimental = document.createElement('style')
   themeTag = document.createElement('style')
   darkModeTag = document.createElement('style')
   lightModeTag = document.createElement('style')
+
+  experimental.textContent = ThemeHelperUtil.createRooStyles(assignedCSSVariables)
+
   themeTag.textContent = createRootStyles(themeVariables).core.cssText
   darkModeTag.textContent = createRootStyles(themeVariables).dark.cssText
   lightModeTag.textContent = createRootStyles(themeVariables).light.cssText
   document.head.appendChild(themeTag)
   document.head.appendChild(darkModeTag)
   document.head.appendChild(lightModeTag)
+  document.head.appendChild(experimental)
+
   setColorTheme(themeMode)
 }
 

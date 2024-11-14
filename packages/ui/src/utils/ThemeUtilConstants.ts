@@ -1,29 +1,5 @@
-export function generateRgbaColors({
-  rgb,
-  name,
-  multiplier = 2,
-  start = 1,
-  end = 10
-}: {
-  rgb: string
-  name: string
-  multiplier?: number
-  start?: number
-  end?: number
-}) {
-  const length = end - start + 1
-  const opacities = Array.from({ length }, (_, i) => (start + i) * 10)
-
-  return Object.fromEntries(
-    opacities.map(value => {
-      const multiplied = value * multiplier
-      const opacity = multiplied / 100
-      const key = `${name}${multiplied.toString().padStart(3, '0')}`
-
-      return [key, `rgba(${rgb}, ${opacity})`]
-    })
-  )
-}
+import { css as litCSS, type CSSResultGroup, unsafeCSS } from 'lit'
+import { ThemeHelperUtil } from './ThemeHelperUtil.js'
 
 export const colors = {
   /* Main colors */
@@ -31,8 +7,11 @@ export const colors = {
   white: '#FFFFFF',
 
   /* Accent colors */
-  ...generateRgbaColors({ name: 'accent', rgb: '9, 136, 240' }),
-  ...generateRgbaColors({ name: 'accentSecondary', rgb: '199, 185, 148' }),
+  ...ThemeHelperUtil.generateRgbaColors({ name: 'accent', rgb: '9, 136, 240' }),
+  ...ThemeHelperUtil.generateRgbaColors({
+    name: 'accentSecondary',
+    rgb: '199, 185, 148'
+  }),
 
   /* Product colors */
   productWalletKit: '#FFB800',
@@ -54,9 +33,18 @@ export const colors = {
   neutrals1000: '#252525',
 
   /* Semantic colors */
-  ...generateRgbaColors({ name: 'semanticSuccess', rgb: '48, 164, 107' }),
-  ...generateRgbaColors({ name: 'semanticError', rgb: '223, 74, 52' }),
-  ...generateRgbaColors({ name: 'semanticWarning', rgb: '243, 161, 63' })
+  ...ThemeHelperUtil.generateRgbaColors({
+    name: 'semanticSuccess',
+    rgb: '48, 164, 107'
+  }),
+  ...ThemeHelperUtil.generateRgbaColors({
+    name: 'semanticError',
+    rgb: '223, 74, 52'
+  }),
+  ...ThemeHelperUtil.generateRgbaColors({
+    name: 'semanticWarning',
+    rgb: '243, 161, 63'
+  })
 }
 
 export const tokens = {
@@ -96,14 +84,14 @@ export const tokens = {
     borderWarning: '#F3A13F',
 
     /* Foreground colors */
-    ...generateRgbaColors({
+    ...ThemeHelperUtil.generateRgbaColors({
       name: 'foregroundAccent',
       start: 1,
       multiplier: 2,
       end: 3,
       rgb: '9, 136, 240'
     }),
-    ...generateRgbaColors({
+    ...ThemeHelperUtil.generateRgbaColors({
       name: 'foregroundSecondary',
       start: 1,
       multiplier: 2,
@@ -170,34 +158,57 @@ export const tokens = {
 }
 
 export const radii = {
-  xs: '4px',
-  sm: '4px',
-  md: '8px',
-  lg: '16px',
-  xl: '32px',
-  '80': '80px',
-  '128': '128px',
-  '256': '256px',
-  '512': '512px',
-  round: '999px'
+  '1': '4px',
+  '2': '8px',
+  '4': '16px',
+  '8': '32px',
+  '16': '64px',
+  '32': '128px',
+  '64': '256px',
+  round: '9999px'
 }
 
 export const spacing = {
-  '2': '2px',
-  '4': '4px',
-  '8': '8px',
-  '12': '12px',
-  '16': '16px',
-  '20': '20px',
-  '24': '24px',
-  '28': '28px',
-  '32': '32px',
-  '36': '36px',
-  '40': '40px',
-  '48': '48px',
-  '56': '56px',
-  '64': '64px',
-  '80': '80px',
-  '128': '128px',
-  '256': '256px'
+  '0.5': '2px',
+  '1': '4px',
+  '2': '8px',
+  '3': '12px',
+  '4': '16px',
+  '5': '20px',
+  '6': '24px',
+  '7': '28px',
+  '8': '32px',
+  '9': '36px',
+  '10': '40px',
+  '12': '48px',
+  '14': '56px',
+  '16': '64px',
+  '20': '80px',
+  '32': '128px',
+  '64': '256px'
+}
+
+export const styles = {
+  colors,
+  tokens: tokens.dark,
+  radii,
+  spacing
+}
+
+const { cssVariables, cssVariablesVarPrefix } = ThemeHelperUtil.createCSSVariables(styles)
+
+export const assignedCSSVariables = ThemeHelperUtil.assignCSSVariables(cssVariables, styles)
+
+export const vars = cssVariablesVarPrefix
+
+export function css(
+  strings: TemplateStringsArray,
+  ...values: ((_vars: typeof vars) => CSSResultGroup | number | string)[]
+) {
+  return litCSS(
+    strings,
+    ...values.map(value =>
+      typeof value === 'function' ? unsafeCSS(value(vars)) : unsafeCSS(value)
+    )
+  )
 }

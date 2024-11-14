@@ -84,6 +84,7 @@ export * from './src/layout/wui-flex/index.js'
 export * from './src/layout/wui-grid/index.js'
 export * from './src/layout/wui-separator/index.js'
 export * from './src/utils/JSXTypeUtil.js'
+export * from './src/utils/ThemeUtilConstants.js'
 
 export { MathUtil } from './src/utils/MathUtil.js'
 export { initializeTheming, setColorTheme, setThemeVariables } from './src/utils/ThemeUtil.js'
