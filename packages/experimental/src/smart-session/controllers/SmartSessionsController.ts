@@ -174,11 +174,15 @@ export const SmartSessionsController = {
 
   isSmartSessionSupported(): boolean {
     const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
+    console.log(provider)
+
     if (!provider) {
       return false
     }
 
     // If it's not a WalletConnect provider, assume smart session is supported
+    console.log('provider.isWalletConnect', provider.isWalletConnect)
+
     if (!provider.isWalletConnect) {
       return true
     }

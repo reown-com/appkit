@@ -803,11 +803,11 @@ export class AppKit {
         })
 
         if (res) {
-          await this.syncAccount({
+          this.syncProvider({
             ...res,
             chainNamespace: chain || (ChainController.state.activeChain as ChainNamespace)
           })
-          this.syncProvider({
+          await this.syncAccount({
             ...res,
             chainNamespace: chain || (ChainController.state.activeChain as ChainNamespace)
           })
@@ -834,6 +834,8 @@ export class AppKit {
           ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
 
         await adapter?.disconnect({ provider, providerType })
+
+        this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
 
         localStorage.removeItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
         localStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
@@ -1368,6 +1370,8 @@ export class AppKit {
   }: Pick<AdapterBlueprint.ConnectResult, 'type' | 'provider' | 'id'> & {
     chainNamespace: ChainNamespace
   }) {
+    console.log('sync provider', chainNamespace, type, provider)
+
     ProviderUtil.setProviderId(chainNamespace, type)
     ProviderUtil.setProvider(chainNamespace, provider)
 
@@ -1393,6 +1397,9 @@ export class AppKit {
       `${chainNamespace}:${chainId}:${address}` as `${ChainNamespace}:${string}:${string}`,
       chainNamespace
     )
+
+    console.trace('syncAccount', chainNamespace)
+    this.setStatus('connected', chainNamespace)
 
     if (chainNamespace === ChainController.state.activeChain) {
       const caipNetwork = this.caipNetworks?.find(
