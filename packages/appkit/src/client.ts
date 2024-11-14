@@ -712,7 +712,7 @@ export class AppKit {
           (await this.universalProvider?.client?.core?.crypto?.getClientId()) || null
         )
 
-        const isOneClickAuthenticated =
+        const isAuthenticated =
           this.universalProvider &&
           (await SIWXUtil.universalProviderAuthenticate({
             universalProvider: this.universalProvider,
@@ -720,7 +720,7 @@ export class AppKit {
             methods: OPTIONAL_METHODS
           }))
 
-        if (isOneClickAuthenticated) {
+        if (isAuthenticated) {
           this.close()
         } else {
           await adapter?.connectWalletConnect(onUri, this.getCaipNetwork()?.id)
