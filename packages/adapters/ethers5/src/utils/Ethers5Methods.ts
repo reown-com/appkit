@@ -143,6 +143,14 @@ export const Ethers5Methods = {
     return false
   },
 
+  parseWalletCapabilities: (str: string) => {
+    try {
+      return JSON.parse(str)
+    } catch (error) {
+      throw new Error('Error parsing wallet capabilities')
+    }
+  },
+
   parseUnits: (value: string, _: number) => ethers.utils.parseUnits(value, 'gwei').toBigInt(),
   formatUnits: ethers.utils.formatUnits
 }
