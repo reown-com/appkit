@@ -6,7 +6,7 @@ import {
   type SIWXSession
 } from '@reown/appkit-core'
 import type { AppKitSIWEClient } from '../exports/index.js'
-import { NetworkUtil, type CaipNetworkId } from '@reown/appkit-common'
+import { NetworkUtil } from '@reown/appkit-common'
 
 export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
   ChainController.subscribeKey('activeCaipNetwork', async activeCaipNetwork => {
@@ -58,7 +58,7 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
         toString: () =>
           siwe.createMessage({
             ...params,
-            chainId: NetworkUtil.caipNetworkIdToNumber(input.chainId as CaipNetworkId) || 1,
+            chainId: NetworkUtil.caipNetworkIdToNumber(input.chainId) || 1,
             address: `did:pkh:${input.chainId}:${input.accountAddress}`,
             nonce,
             version,

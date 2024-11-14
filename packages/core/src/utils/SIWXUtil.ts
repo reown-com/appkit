@@ -10,6 +10,7 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import { EventsController } from '../controllers/EventsController.js'
 import { AccountController } from '../controllers/AccountController.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { StorageUtil } from './StorageUtil.js'
 
 export const SIWXUtil = {
   getSIWX() {
@@ -66,6 +67,14 @@ export const SIWXUtil = {
       })
 
       const message = siwxMessage.toString()
+
+      if (StorageUtil.getConnectedConnector() === 'ID_AUTH') {
+        RouterController.pushTransactionStack({
+          view: null,
+          goBack: false,
+          replace: true
+        })
+      }
 
       const signature = await client.signMessage(message)
 
