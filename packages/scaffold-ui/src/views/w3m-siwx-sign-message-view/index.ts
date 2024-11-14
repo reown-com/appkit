@@ -1,16 +1,15 @@
 import {
-  AccountController,
   ChainController,
   ConnectionController,
   EventsController,
   ModalController,
   OptionsController,
-  RouterController
+  RouterController,
+  SIWXUtil
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 @customElement('w3m-siwx-sign-message-view')
 export class W3mSIWXSignMessageView extends LitElement {
@@ -72,14 +71,9 @@ export class W3mSIWXSignMessageView extends LitElement {
     }
     this.isCancelling = false
     EventsController.sendEvent({
-      event: 'CLICK_CANCEL_SIWE',
+      event: 'CLICK_CANCEL_SIWX',
       type: 'track',
-      properties: {
-        network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
-        isSmartAccount:
-          AccountController.state.preferredAccountType ===
-          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-      }
+      properties: SIWXUtil.getSIWXEventProperties()
     })
   }
 }

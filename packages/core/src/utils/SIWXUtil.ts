@@ -8,6 +8,9 @@ import { StorageUtil } from './StorageUtil.js'
 import { SnackController } from '../controllers/SnackController.js'
 import { RouterController } from '../controllers/RouterController.js'
 import UniversalProvider from '@walletconnect/universal-provider'
+import { EventsController } from '../controllers/EventsController.js'
+import { AccountController } from '../controllers/AccountController.js'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 export const SIWXUtil = {
   getSIWX() {
@@ -53,9 +56,22 @@ export const SIWXUtil = {
       })
 
       ModalController.close()
+
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SIWX_AUTH_SUCCESS',
+        properties: SIWXUtil.getSIWXEventProperties()
+      })
     } catch (error: unknown) {
       // eslint-disable-next-line no-console
       console.error('Failed to initialize SIWX', error)
+
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SIWX_AUTH_ERROR',
+        properties: SIWXUtil.getSIWXEventProperties()
+      })
+
       // eslint-disable-next-line no-console
       await client?.disconnect().catch(console.error)
       await ModalController.open({ view: 'Connect' })
@@ -156,9 +172,22 @@ export const SIWXUtil = {
 
       try {
         await siwx.setSessions(sessions)
+
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'SIWX_AUTH_SUCCESS',
+          properties: SIWXUtil.getSIWXEventProperties()
+        })
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error('SIWX:universalProviderAuth - failed to set sessions', error)
+
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'SIWX_AUTH_ERROR',
+          properties: SIWXUtil.getSIWXEventProperties()
+        })
+
         // eslint-disable-next-line no-console
         await universalProvider.disconnect().catch(console.error)
         throw error
@@ -166,6 +195,14 @@ export const SIWXUtil = {
     }
 
     return true
+  },
+  getSIWXEventProperties() {
+    return {
+      network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
+      isSmartAccount:
+        AccountController.state.preferredAccountType ===
+        W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+    }
   }
 }
 
