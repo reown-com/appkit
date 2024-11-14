@@ -659,8 +659,7 @@ export class AppKit {
           throw new Error('Please update the `@reown/appkit-siwe` package to the latest version')
         }
 
-        const siwx = await siwe.mapToSIWX(options.siweConfig)
-        OptionsController.setSIWX(siwx)
+        OptionsController.setSIWX(siwe.mapToSIWX(options.siweConfig))
       }
     }
   }

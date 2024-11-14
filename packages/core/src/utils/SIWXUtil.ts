@@ -56,7 +56,8 @@ export const SIWXUtil = {
     } catch (error: unknown) {
       // eslint-disable-next-line no-console
       console.error('Failed to initialize SIWX', error)
-      await client?.disconnect()
+      // eslint-disable-next-line no-console
+      await client?.disconnect().catch(console.error)
       await ModalController.open({ view: 'Connect' })
       SnackController.showError('It was not possible to verify the message signature')
     }
@@ -97,9 +98,9 @@ export const SIWXUtil = {
   }) {
     const siwx = SIWXUtil.getSIWX()
 
-    const namespaces = chains.map(chain => chain.split(':')[0])
+    const namespaces = new Set(chains.map(chain => chain.split(':')[0]))
 
-    if (!siwx || namespaces.length !== 1) {
+    if (!siwx || namespaces.size !== 1) {
       return false
     }
 
@@ -135,7 +136,7 @@ export const SIWXUtil = {
         return {
           data: {
             accountAddress: cacao.p.iss.split(':').slice(-1).join(''),
-            chainId: cacao.p.iss.split(':').slice(2, 3).join(''),
+            chainId: cacao.p.iss.split(':').slice(2, 4).join(':'),
             uri: cacao.p.aud,
             domain: cacao.p.domain,
             nonce: cacao.p.nonce,
@@ -155,18 +156,16 @@ export const SIWXUtil = {
 
       try {
         await siwx.setSessions(sessions)
-
-        return true
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error('Error verifying message', error)
+        console.error('SIWX:universalProviderAuth - failed to set sessions', error)
         // eslint-disable-next-line no-console
         await universalProvider.disconnect().catch(console.error)
         throw error
       }
     }
 
-    return false
+    return true
   }
 }
 
