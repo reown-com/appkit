@@ -196,13 +196,12 @@ export class AppKit {
     }
   ) {
     this.caipNetworks = this.extendCaipNetworks(options)
-
+    this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
+    await this.initControllers(options)
     this.createAuthProvider()
     await this.createUniversalProvider()
     this.createClients()
     ChainController.initialize(options.adapters ?? [])
-    this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
-    this.initControllers(options)
     this.chainAdapters = await this.createAdapters(
       options.adapters as unknown as AdapterBlueprint[]
     )
@@ -692,8 +691,6 @@ export class AppKit {
   }
 
   private createClients() {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
     this.connectionControllerClient = {
       connectWalletConnect: async (onUri: (uri: string) => void) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
@@ -805,11 +802,11 @@ export class AppKit {
         })
 
         if (res) {
-          await this.syncAccount({
+          this.syncProvider({
             ...res,
             chainNamespace: chain || (ChainController.state.activeChain as ChainNamespace)
           })
-          this.syncProvider({
+          await this.syncAccount({
             ...res,
             chainNamespace: chain || (ChainController.state.activeChain as ChainNamespace)
           })
@@ -836,6 +833,8 @@ export class AppKit {
           ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
 
         await adapter?.disconnect({ provider, providerType })
+
+        this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
 
         localStorage.removeItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
         localStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
@@ -940,6 +939,25 @@ export class AppKit {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
         return adapter?.formatUnits({ value, decimals }) ?? '0'
+      },
+      getCapabilities: async (params: AdapterBlueprint.GetCapabilitiesParams) => {
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+
+        await adapter?.getCapabilities(params)
+      },
+      grantPermissions: async (params: AdapterBlueprint.GrantPermissionsParams) => {
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+
+        return await adapter?.grantPermissions(params)
+      },
+      revokePermissions: async (params: AdapterBlueprint.RevokePermissionsParams) => {
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+
+        if (adapter?.revokePermissions) {
+          return await adapter.revokePermissions(params)
+        }
+
+        return '0x'
       }
     }
 
@@ -1101,6 +1119,13 @@ export class AppKit {
       provider.connect()
     })
     provider.onConnect(async user => {
+      this.syncProvider({
+        type: 'AUTH',
+        provider,
+        id: 'ID_AUTH',
+        chainNamespace: ChainController.state.activeChain as ChainNamespace
+      })
+
       const caipAddress =
         ChainController.state.activeChain === 'eip155'
           ? (`eip155:${user.chainId}:${user.address}` as CaipAddress)
@@ -1377,6 +1402,8 @@ export class AppKit {
       chainNamespace
     )
 
+    this.setStatus('connected', chainNamespace)
+
     if (chainNamespace === ChainController.state.activeChain) {
       const caipNetwork = this.caipNetworks?.find(
         n => n.id === chainId && n.chainNamespace === chainNamespace
@@ -1388,6 +1415,7 @@ export class AppKit {
         this.setCaipNetwork(this.caipNetworks?.find(n => n.chainNamespace === chainNamespace))
       }
 
+      this.syncConnectedWalletInfo(chainNamespace)
       const adapter = this.getAdapter(chainNamespace)
 
       const balance = await adapter?.getBalance({
@@ -1400,6 +1428,48 @@ export class AppKit {
         this.setBalance(balance.balance, balance.symbol, chainNamespace)
       }
       await this.syncIdentity({ address, chainId: Number(chainId), chainNamespace })
+    }
+  }
+
+  private syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
+    const currentActiveWallet = SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
+    const providerType = ProviderUtil.state.providerIds[chainNamespace]
+
+    if (
+      providerType === UtilConstantsUtil.CONNECTOR_TYPE_ANNOUNCED ||
+      providerType === UtilConstantsUtil.CONNECTOR_TYPE_INJECTED
+    ) {
+      if (currentActiveWallet) {
+        const connector = this.getConnectors().find(c => c.id === currentActiveWallet)
+
+        if (connector?.info) {
+          this.setConnectedWalletInfo({ ...connector.info }, chainNamespace)
+        }
+      }
+    } else if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
+      const provider = ProviderUtil.getProvider(chainNamespace)
+
+      if (provider?.session) {
+        this.setConnectedWalletInfo(
+          {
+            ...provider.session.peer.metadata,
+            name: provider.session.peer.metadata.name,
+            icon: provider.session.peer.metadata.icons?.[0]
+          },
+          chainNamespace
+        )
+      }
+    } else if (providerType === UtilConstantsUtil.COINBASE_CONNECTOR_ID) {
+      const connector = this.getConnectors().find(
+        c => c.id === UtilConstantsUtil.COINBASE_CONNECTOR_ID
+      )
+
+      this.setConnectedWalletInfo(
+        { name: 'Coinbase Wallet', icon: this.getConnectorImage(connector) },
+        chainNamespace
+      )
+    } else if (currentActiveWallet) {
+      this.setConnectedWalletInfo({ name: currentActiveWallet }, chainNamespace)
     }
   }
 

@@ -1,7 +1,7 @@
 import { Button, Input, Stack, Text, Tooltip } from '@chakra-ui/react'
 import { useAccount } from 'wagmi'
 import { useSendCalls } from 'wagmi/experimental'
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useChakraToast } from '../Toast'
 import { parseGwei, type Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
@@ -16,6 +16,19 @@ const TEST_TX_1 = {
 const TEST_TX_2 = {
   to: vitalikEthAddress as Address,
   data: '0xdeadbeef' as `0x${string}`
+}
+
+const BICONOMY_PAYMASTER_CONTEXT = {
+  mode: 'SPONSORED',
+  calculateGasLimits: false,
+  expiryDuration: 300,
+  sponsorshipInfo: {
+    webhookData: {},
+    smartAccountInfo: {
+      name: 'SAFE',
+      version: '1.4.1'
+    }
+  }
 }
 
 export function WagmiSendCallsWithPaymasterServiceTest() {
@@ -66,10 +79,31 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
 }
 
 function AvailableTestContent() {
+  const [paymasterProvider, setPaymasterProvider] = useState<string>()
+  const [reownPolicyId, setReownPolicyId] = useState<string>('')
   const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')
   const [isLoading, setLoading] = useState(false)
-
   const toast = useChakraToast()
+
+  const context = useMemo(() => {
+    const contexts: Record<string, unknown> = {
+      biconomy: BICONOMY_PAYMASTER_CONTEXT,
+      reown: {
+        policyId: reownPolicyId
+      }
+    }
+
+    return contexts[paymasterProvider || '']
+  }, [paymasterProvider])
+
+  function onPaymasterUrlChange(url: string) {
+    setPaymasterServiceUrl(url)
+
+    const match = url.match(/pimlico|biconomy|reown/u)
+    if (match?.[0]) {
+      setPaymasterProvider(match?.[0])
+    }
+  }
 
   const { sendCalls } = useSendCalls({
     mutation: {
@@ -101,7 +135,8 @@ function AvailableTestContent() {
       calls: [TEST_TX_1, TEST_TX_2],
       capabilities: {
         paymasterService: {
-          url: paymasterServiceUrl
+          url: paymasterServiceUrl,
+          context
         }
       }
     })
@@ -112,13 +147,23 @@ function AvailableTestContent() {
       <Tooltip label="Paymaster Service URL should be of ERC-7677 paymaster service proxy">
         <Input
           placeholder="http://api.pimlico.io/v2/sepolia/rpc?apikey=..."
-          onChange={e => setPaymasterServiceUrl(e.target.value)}
+          onChange={e => onPaymasterUrlChange(e.target.value)}
           value={paymasterServiceUrl}
           isDisabled={isLoading}
           whiteSpace="nowrap"
           textOverflow="ellipsis"
         />
       </Tooltip>
+      {paymasterProvider === 'reown' && (
+        <Input
+          placeholder="Reown Policy ID (Optional)"
+          onChange={e => setReownPolicyId(e.target.value)}
+          value={reownPolicyId}
+          isDisabled={isLoading}
+          whiteSpace="nowrap"
+          textOverflow="ellipsis"
+        />
+      )}
       <Button
         width={'fit-content'}
         data-testid="send-calls-paymaster-service-button"
