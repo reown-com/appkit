@@ -948,7 +948,7 @@ export class AppKit {
       grantPermissions: async (params: AdapterBlueprint.GrantPermissionsParams) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
-        await adapter?.grantPermissions(params)
+        return await adapter?.grantPermissions(params)
       },
       revokePermissions: async (params: AdapterBlueprint.RevokePermissionsParams) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
@@ -1119,6 +1119,13 @@ export class AppKit {
       provider.connect()
     })
     provider.onConnect(async user => {
+      this.syncProvider({
+        type: 'AUTH',
+        provider,
+        id: 'ID_AUTH',
+        chainNamespace: ChainController.state.activeChain as ChainNamespace
+      })
+
       const caipAddress =
         ChainController.state.activeChain === 'eip155'
           ? (`eip155:${user.chainId}:${user.address}` as CaipAddress)
@@ -1369,8 +1376,6 @@ export class AppKit {
   }: Pick<AdapterBlueprint.ConnectResult, 'type' | 'provider' | 'id'> & {
     chainNamespace: ChainNamespace
   }) {
-    console.log('sync provider', chainNamespace, type, provider)
-
     ProviderUtil.setProviderId(chainNamespace, type)
     ProviderUtil.setProvider(chainNamespace, provider)
 
@@ -1397,7 +1402,6 @@ export class AppKit {
       chainNamespace
     )
 
-    console.trace('syncAccount', chainNamespace)
     this.setStatus('connected', chainNamespace)
 
     if (chainNamespace === ChainController.state.activeChain) {
