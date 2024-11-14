@@ -106,8 +106,6 @@ export class W3mHeader extends LitElement {
 
   @state() private showBack = false
 
-  @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
-
   @state() private prevHistoryLength = 1
 
   @state() private view = RouterController.state.view

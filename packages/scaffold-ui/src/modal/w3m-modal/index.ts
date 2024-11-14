@@ -1,5 +1,4 @@
 import {
-  AccountController,
   ApiController,
   ChainController,
   CoreHelperUtil,
@@ -14,7 +13,7 @@ import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
-import { type CaipAddress, type CaipNetwork, type SIWEStatus } from '@reown/appkit-common'
+import { type CaipAddress, type CaipNetwork } from '@reown/appkit-common'
 
 // -- Helpers --------------------------------------------- //
 const SCROLL_LOCK = 'scroll-lock'
@@ -45,7 +44,6 @@ export class W3mModal extends LitElement {
       ...[
         ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
         ModalController.subscribeKey('shake', val => (this.shake = val)),
-        AccountController.subscribeKey('siweStatus', val => this.onSiweStatusChange(val), 'eip155'),
         ChainController.subscribeKey('activeCaipNetwork', val => this.onNewNetwork(val)),
         ChainController.subscribeKey('activeCaipAddress', val => this.onNewAddress(val))
       ]
@@ -164,12 +162,6 @@ export class W3mModal extends LitElement {
   private onRemoveKeyboardListener() {
     this.abortController?.abort()
     this.abortController = undefined
-  }
-
-  private onSiweStatusChange(nextStatus: SIWEStatus | undefined) {
-    if (nextStatus === 'success') {
-      ModalController.close()
-    }
   }
 
   private async onNewAddress(caipAddress?: CaipAddress) {
