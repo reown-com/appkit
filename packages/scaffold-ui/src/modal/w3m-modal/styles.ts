@@ -23,9 +23,11 @@ export default css`
   }
 
   wui-card {
-    max-width: var(--w3m-modal-width);
+    height: 100%;
     width: 100%;
     position: relative;
+    grid-column: 5 / 7;
+    grid-row: 2 / 10;
     animation: zoom-in 0.2s var(--wui-ease-out-power-2);
     animation-fill-mode: backwards;
     outline: none;
@@ -38,36 +40,37 @@ export default css`
   }
 
   wui-flex {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    gap: 8px;
     overflow-x: hidden;
     overflow-y: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     width: 100%;
     height: 100%;
+  }
+
+  @media screen and (max-width: 1024px) {
+    wui-flex {
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+    }
+
+    wui-card {
+      grid-column: 4 / 6;
+      grid-row: 2 / 8;
+    }
   }
 
   @media (max-height: 700px) and (min-width: 431px) {
     wui-flex {
       align-items: flex-start;
     }
-
-    wui-card {
-      margin: var(--wui-spacing-xxl) 0px;
-    }
   }
 
   @media (max-width: 430px) {
     wui-flex {
       align-items: flex-end;
-    }
-
-    wui-card {
-      max-width: 100%;
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-      border-bottom: none;
-      animation: slide-in 0.2s var(--wui-ease-out-power-2);
     }
 
     wui-card[shake='true'] {
