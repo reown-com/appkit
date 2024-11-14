@@ -328,6 +328,16 @@ export abstract class AdapterBlueprint<
    * @param {AdapterBlueprint.ReconnectParams} params - Reconnection parameters
    */
   public reconnect?(params: AdapterBlueprint.ReconnectParams): Promise<void>
+
+  public abstract getCapabilities(params: AdapterBlueprint.GetCapabilitiesParams): Promise<unknown>
+
+  public abstract grantPermissions(
+    params: AdapterBlueprint.GrantPermissionsParams
+  ): Promise<unknown>
+
+  public abstract revokePermissions(
+    params: AdapterBlueprint.RevokePermissionsParams
+  ): Promise<`0x${string}`>
 }
 
 export namespace AdapterBlueprint {
@@ -439,6 +449,17 @@ export namespace AdapterBlueprint {
   }
 
   export type GetWalletConnectProviderResult = AppKitConnector['provider']
+
+  export type GetCapabilitiesParams = string
+
+  export type GrantPermissionsParams = object | readonly unknown[]
+
+  export type RevokePermissionsParams = {
+    pci: string
+    permissions: unknown[]
+    expiry: number
+    address: `0x${string}`
+  }
 
   export type SendTransactionParams = {
     address: `0x${string}`

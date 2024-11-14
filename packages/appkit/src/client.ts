@@ -691,8 +691,6 @@ export class AppKit {
   }
 
   private createClients() {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
     this.connectionControllerClient = {
       connectWalletConnect: async (onUri: (uri: string) => void) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
@@ -836,6 +834,8 @@ export class AppKit {
 
         await adapter?.disconnect({ provider, providerType })
 
+        this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
+
         localStorage.removeItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
         localStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
 
@@ -939,6 +939,25 @@ export class AppKit {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
         return adapter?.formatUnits({ value, decimals }) ?? '0'
+      },
+      getCapabilities: async (params: AdapterBlueprint.GetCapabilitiesParams) => {
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+
+        await adapter?.getCapabilities(params)
+      },
+      grantPermissions: async (params: AdapterBlueprint.GrantPermissionsParams) => {
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+
+        return await adapter?.grantPermissions(params)
+      },
+      revokePermissions: async (params: AdapterBlueprint.RevokePermissionsParams) => {
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+
+        if (adapter?.revokePermissions) {
+          return await adapter.revokePermissions(params)
+        }
+
+        return '0x'
       }
     }
 
@@ -1100,6 +1119,13 @@ export class AppKit {
       provider.connect()
     })
     provider.onConnect(async user => {
+      this.syncProvider({
+        type: 'AUTH',
+        provider,
+        id: 'ID_AUTH',
+        chainNamespace: ChainController.state.activeChain as ChainNamespace
+      })
+
       const caipAddress =
         ChainController.state.activeChain === 'eip155'
           ? (`eip155:${user.chainId}:${user.address}` as CaipAddress)
@@ -1375,6 +1401,8 @@ export class AppKit {
       `${chainNamespace}:${chainId}:${address}` as `${ChainNamespace}:${string}:${string}`,
       chainNamespace
     )
+
+    this.setStatus('connected', chainNamespace)
 
     if (chainNamespace === ChainController.state.activeChain) {
       const caipNetwork = this.caipNetworks?.find(
