@@ -20,7 +20,6 @@ import {
   type EstimateGasTransactionArgs,
   type AccountControllerState,
   type AdapterNetworkState,
-  type SIWXSession,
   SIWXUtil
 } from '@reown/appkit-core'
 import {
@@ -714,70 +713,16 @@ export class AppKit {
           (await this.universalProvider?.client?.core?.crypto?.getClientId()) || null
         )
 
-        const siwx = SIWXUtil.getSIWX()
+        const isOneClickAuthenticated =
+          this.universalProvider &&
+          (await SIWXUtil.universalProviderAuthenticate({
+            universalProvider: this.universalProvider,
+            chains: this.caipNetworks?.map(network => network.caipNetworkId) || [],
+            methods: OPTIONAL_METHODS
+          }))
 
-        if (siwx && this.universalProvider && this.chainNamespaces.length === 1) {
-          // Ignores chainId and account address to get other message data
-          const siwxMessage = await siwx.createMessage({
-            chainId: '',
-            accountAddress: ''
-          })
-
-          const result = await this.universalProvider.authenticate({
-            nonce: siwxMessage.nonce,
-            domain: siwxMessage.domain,
-            uri: siwxMessage.uri,
-            exp: siwxMessage.expirationTime,
-            iat: siwxMessage.issuedAt,
-            nbf: siwxMessage.notBefore,
-            requestId: siwxMessage.requestId,
-            version: siwxMessage.version,
-            resources: siwxMessage.resources,
-            statement: siwxMessage.statement,
-
-            methods: OPTIONAL_METHODS,
-            chains: this.caipNetworks?.map(network => network.caipNetworkId) || []
-          })
-
-          if (result?.auths?.length) {
-            const sessions = result.auths.map<SIWXSession>(cacao => {
-              const message = this.universalProvider?.client.formatAuthMessage({
-                request: cacao.p,
-                iss: cacao.p.iss
-              })
-
-              return {
-                data: {
-                  accountAddress: cacao.p.iss.split(':').slice(-1).join(''),
-                  chainId: cacao.p.iss.split(':').slice(2, 3).join(''),
-                  uri: cacao.p.aud,
-                  domain: cacao.p.domain,
-                  nonce: cacao.p.nonce,
-                  version: cacao.p.version || siwxMessage.version,
-                  expirationTime: cacao.p.exp,
-                  statement: cacao.p.statement,
-                  issuedAt: cacao.p.iat,
-                  notBefore: cacao.p.nbf,
-                  requestId: cacao.p.requestId,
-                  resources: cacao.p.resources
-                },
-                message: message || '',
-                signature: cacao.s.s,
-                cacao
-              }
-            })
-
-            try {
-              await siwx.setSessions(sessions)
-              this.close()
-            } catch (error) {
-              // eslint-disable-next-line no-console
-              console.error('Error verifying message', error)
-              // eslint-disable-next-line no-console
-              await this.universalProvider?.disconnect().catch(console.error)
-              throw error
-            }
-          }
+        if (isOneClickAuthenticated) {
+          this.close()
         } else {
           await adapter?.connectWalletConnect(onUri, this.getCaipNetwork()?.id)
         }

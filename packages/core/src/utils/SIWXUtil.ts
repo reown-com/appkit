@@ -7,6 +7,7 @@ import { ModalController } from '../controllers/ModalController.js'
 import { StorageUtil } from './StorageUtil.js'
 import { SnackController } from '../controllers/SnackController.js'
 import { RouterController } from '../controllers/RouterController.js'
+import UniversalProvider from '@walletconnect/universal-provider'
 
 export const SIWXUtil = {
   getSIWX() {
@@ -80,6 +81,88 @@ export const SIWXUtil = {
 
       if (isApproveSignScreen || isSiwxSignMessage) {
         return (await this.getSessions()).length > 1
+      }
+    }
+
+    return false
+  },
+  async universalProviderAuthenticate({
+    universalProvider,
+    chains,
+    methods
+  }: {
+    universalProvider: UniversalProvider
+    chains: CaipNetworkId[]
+    methods: string[]
+  }) {
+    const siwx = SIWXUtil.getSIWX()
+
+    const namespaces = chains.map(chain => chain.split(':')[0])
+
+    if (!siwx || namespaces.length !== 1) {
+      return false
+    }
+
+    // Ignores chainId and account address to get other message data
+    const siwxMessage = await siwx.createMessage({
+      chainId: '',
+      accountAddress: ''
+    })
+
+    const result = await universalProvider.authenticate({
+      nonce: siwxMessage.nonce,
+      domain: siwxMessage.domain,
+      uri: siwxMessage.uri,
+      exp: siwxMessage.expirationTime,
+      iat: siwxMessage.issuedAt,
+      nbf: siwxMessage.notBefore,
+      requestId: siwxMessage.requestId,
+      version: siwxMessage.version,
+      resources: siwxMessage.resources,
+      statement: siwxMessage.statement,
+
+      methods,
+      chains
+    })
+
+    if (result?.auths?.length) {
+      const sessions = result.auths.map<SIWXSession>(cacao => {
+        const message = universalProvider.client.formatAuthMessage({
+          request: cacao.p,
+          iss: cacao.p.iss
+        })
+
+        return {
+          data: {
+            accountAddress: cacao.p.iss.split(':').slice(-1).join(''),
+            chainId: cacao.p.iss.split(':').slice(2, 3).join(''),
+            uri: cacao.p.aud,
+            domain: cacao.p.domain,
+            nonce: cacao.p.nonce,
+            version: cacao.p.version || siwxMessage.version,
+            expirationTime: cacao.p.exp,
+            statement: cacao.p.statement,
+            issuedAt: cacao.p.iat,
+            notBefore: cacao.p.nbf,
+            requestId: cacao.p.requestId,
+            resources: cacao.p.resources
+          },
+          message,
+          signature: cacao.s.s,
+          cacao
+        }
+      })
+
+      try {
+        await siwx.setSessions(sessions)
+
+        return true
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Error verifying message', error)
+        // eslint-disable-next-line no-console
+        await universalProvider.disconnect().catch(console.error)
+        throw error
       }
     }
 
