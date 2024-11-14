@@ -86,18 +86,14 @@ function AvailableTestContent() {
   const toast = useChakraToast()
 
   const context = useMemo(() => {
-    if (paymasterProvider) {
-      const contexts: Record<string, unknown> = {
-        biconomy: BICONOMY_PAYMASTER_CONTEXT,
-        reown: {
-          policyId: reownPolicyId
-        }
+    const contexts: Record<string, unknown> = {
+      biconomy: BICONOMY_PAYMASTER_CONTEXT,
+      reown: {
+        policyId: reownPolicyId
       }
-
-      return contexts[paymasterProvider]
     }
 
-    return undefined
+    return contexts[paymasterProvider || '']
   }, [paymasterProvider])
 
   function onPaymasterUrlChange(url: string) {
