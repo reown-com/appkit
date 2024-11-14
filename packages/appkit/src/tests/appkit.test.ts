@@ -20,7 +20,12 @@ import {
   ChainController,
   type Connector
 } from '@reown/appkit-core'
-import type { CaipNetwork } from '@reown/appkit-common'
+import {
+  SafeLocalStorage,
+  SafeLocalStorageKeys,
+  type CaipNetwork,
+  type SafeLocalStorageItems
+} from '@reown/appkit-common'
 import { mockOptions } from './mocks/Options'
 
 // Mock all controllers and UniversalAdapterClient
@@ -464,6 +469,39 @@ describe('Base', () => {
       await appKit.switchNetwork(polygon)
 
       expect(ChainController.switchActiveNetwork).toHaveBeenCalledTimes(1)
+    })
+
+    it('should set connected wallet info when syncing account', async () => {
+      // Mock the connector data
+      const mockConnector = {
+        id: 'test-wallet'
+      } as Connector
+
+      vi.mocked(ConnectorController.getConnectors).mockReturnValue([mockConnector])
+
+      const mockAccountData = {
+        address: '0x123',
+        chainId: '1',
+        chainNamespace: 'eip155' as const
+      }
+
+      vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation(
+        (key: keyof SafeLocalStorageItems) => {
+          if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
+            return mockConnector.id
+          }
+          return undefined
+        }
+      )
+
+      await appKit['syncAccount'](mockAccountData)
+
+      expect(AccountController.setConnectedWalletInfo).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: mockConnector.id
+        }),
+        'eip155'
+      )
     })
   })
 })
