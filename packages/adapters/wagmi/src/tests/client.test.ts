@@ -18,6 +18,7 @@ import {
 } from '@wagmi/core'
 import { mainnet } from '@wagmi/core/chains'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
+import type UniversalProvider from '@walletconnect/universal-provider'
 
 vi.mock('@wagmi/core', async () => {
   const actual = await vi.importActual('@wagmi/core')
@@ -320,6 +321,63 @@ describe('WagmiAdapter', () => {
           chainId: 1
         })
       )
+    })
+  })
+
+  describe('WagmiAdapter - Permissions', () => {
+    const mockProvider = {
+      request: vi.fn()
+    } as unknown as UniversalProvider
+
+    beforeEach(() => {
+      vi.mocked(getConnections).mockReturnValue([
+        {
+          connector: {
+            getProvider: () => Promise.resolve(mockProvider)
+          }
+        }
+      ] as any)
+    })
+
+    it('should get capabilities from session properties', async () => {
+      await adapter.getCapabilities('eip155:1:0x123')
+
+      expect(mockProvider.request).toHaveBeenCalledWith({
+        method: 'wallet_getCapabilities',
+        params: ['eip155:1:0x123']
+      })
+    })
+
+    it('should call provider request with correct params', async () => {
+      const mockParams = {
+        pci: 'test-pci',
+        expiry: 1234567890,
+        address: '0x123',
+        permissions: ['eth_accounts']
+      }
+
+      await adapter.grantPermissions(mockParams)
+
+      expect(mockProvider.request).toHaveBeenCalledWith({
+        method: 'wallet_grantPermissions',
+        params: mockParams
+      })
+    })
+
+    it('should call provider request with correct params', async () => {
+      const mockParams = {
+        pci: 'test-pci',
+        expiry: 1234567890,
+        address: '0x123' as `0x${string}`,
+        permissions: ['eth_accounts']
+      }
+
+      await adapter.revokePermissions(mockParams)
+
+      expect(mockProvider.request).toHaveBeenCalledWith({
+        method: 'wallet_revokePermissions',
+        params: mockParams
+      })
     })
   })
 })

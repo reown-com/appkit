@@ -45,6 +45,7 @@ describe('StorageUtil', () => {
     it('should set WalletConnect deep link in localStorage', () => {
       const deepLink = { href: 'https://example.com', name: 'Example Wallet' }
       StorageUtil.setWalletConnectDeepLink(deepLink)
+      expect(SafeLocalStorageKeys.DEEPLINK_CHOICE).toBe('WALLETCONNECT_DEEPLINK_CHOICE')
       const savedDL = SafeLocalStorage.getItem(SafeLocalStorageKeys.DEEPLINK_CHOICE)
       expect(savedDL).toBe(JSON.stringify({ href: deepLink.href, name: deepLink.name }))
     })

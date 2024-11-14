@@ -174,6 +174,7 @@ export const SmartSessionsController = {
 
   isSmartSessionSupported(): boolean {
     const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
+
     if (!provider) {
       return false
     }

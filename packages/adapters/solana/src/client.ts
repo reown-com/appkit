@@ -163,6 +163,18 @@ export class SolanaAdapter extends AdapterBlueprint {
     })
   }
 
+  public async getCapabilities(): Promise<unknown> {
+    return Promise.resolve({})
+  }
+
+  public async grantPermissions(): Promise<unknown> {
+    return Promise.resolve({})
+  }
+
+  public async revokePermissions(): Promise<`0x${string}`> {
+    return Promise.resolve('0x')
+  }
+
   public async signMessage(
     params: AdapterBlueprint.SignMessageParams
   ): Promise<AdapterBlueprint.SignMessageResult> {
