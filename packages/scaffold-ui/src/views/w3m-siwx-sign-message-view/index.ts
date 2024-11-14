@@ -1,12 +1,4 @@
-import {
-  ChainController,
-  ConnectionController,
-  EventsController,
-  ModalController,
-  OptionsController,
-  RouterController,
-  SIWXUtil
-} from '@reown/appkit-core'
+import { OptionsController, SIWXUtil } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
@@ -17,6 +9,8 @@ export class W3mSIWXSignMessageView extends LitElement {
   private readonly dappName = OptionsController.state.metadata?.name
 
   @state() private isCancelling = false
+
+  @state() private isSigning = false
 
   // -- Render -------------------------------------------- //
   public override render() {
@@ -53,28 +47,32 @@ export class W3mSIWXSignMessageView extends LitElement {
           @click=${this.onCancel.bind(this)}
           data-testid="w3m-connecting-siwe-cancel"
         >
-          Cancel
+          ${this.isCancelling ? 'Cancelling...' : 'Cancel'}
+        </wui-button>
+        <wui-button
+          size="lg"
+          borderRadius="xs"
+          fullWidth
+          variant="main"
+          @click=${this.onSign.bind(this)}
+          ?loading=${this.isSigning}
+          data-testid="w3m-connecting-siwe-sign"
+        >
+          ${this.isSigning ? 'Signing...' : 'Sign'}
         </wui-button>
       </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
+  private async onSign() {
+    this.isSigning = true
+    await SIWXUtil.requestSignMessage().finally(() => (this.isSigning = false))
+  }
+
   private async onCancel() {
     this.isCancelling = true
-    const caipAddress = ChainController.state.activeCaipAddress
-    if (caipAddress) {
-      await ConnectionController.disconnect()
-      ModalController.close()
-    } else {
-      RouterController.push('Connect')
-    }
-    this.isCancelling = false
-    EventsController.sendEvent({
-      event: 'CLICK_CANCEL_SIWX',
-      type: 'track',
-      properties: SIWXUtil.getSIWXEventProperties()
-    })
+    await SIWXUtil.cancelSignMessage().finally(() => (this.isCancelling = false))
   }
 }
 

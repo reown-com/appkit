@@ -4,7 +4,6 @@ import { CoreHelperUtil } from './CoreHelperUtil.js'
 import { ChainController } from '../controllers/ChainController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
 import { ModalController } from '../controllers/ModalController.js'
-import { StorageUtil } from './StorageUtil.js'
 import { SnackController } from '../controllers/SnackController.js'
 import { RouterController } from '../controllers/RouterController.js'
 import UniversalProvider from '@walletconnect/universal-provider'
@@ -25,8 +24,6 @@ export const SIWXUtil = {
       return
     }
 
-    const client = ConnectionController._getClient()
-
     try {
       const sessions = await siwx.getSessions(network.caipNetworkId, address)
       if (sessions.length) {
@@ -34,12 +31,35 @@ export const SIWXUtil = {
       }
 
       await ModalController.open({
-        view:
-          StorageUtil.getConnectedConnector() === 'ID_AUTH'
-            ? 'ApproveTransaction'
-            : 'SIWXSignMessage'
+        view: 'SIWXSignMessage'
+      })
+    } catch (error: unknown) {
+      // eslint-disable-next-line no-console
+      console.error('SIWXUtil:initializeIfEnabled', error)
+
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SIWX_AUTH_ERROR',
+        properties: this.getSIWXEventProperties()
       })
 
+      // eslint-disable-next-line no-console
+      await ConnectionController._getClient()?.disconnect().catch(console.error)
+      RouterController.reset('Connect')
+      SnackController.showError('A problem occurred while trying initialize authentication')
+    }
+  },
+  async requestSignMessage() {
+    const siwx = OptionsController.state.siwx
+    const address = CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress())
+    const network = ChainController.getActiveCaipNetwork()
+    const client = ConnectionController._getClient()
+
+    if (!(siwx && address && network && client)) {
+      throw new Error('SIWX is not enabled')
+    }
+
+    try {
       const siwxMessage = await siwx.createMessage({
         chainId: network.caipNetworkId,
         accountAddress: address
@@ -47,7 +67,7 @@ export const SIWXUtil = {
 
       const message = siwxMessage.toString()
 
-      const signature = await client?.signMessage(message)
+      const signature = await client.signMessage(message)
 
       await siwx.addSession({
         data: siwxMessage,
@@ -60,22 +80,39 @@ export const SIWXUtil = {
       EventsController.sendEvent({
         type: 'track',
         event: 'SIWX_AUTH_SUCCESS',
-        properties: SIWXUtil.getSIWXEventProperties()
+        properties: this.getSIWXEventProperties()
       })
-    } catch (error: unknown) {
-      // eslint-disable-next-line no-console
-      console.error('Failed to initialize SIWX', error)
+    } catch (error) {
+      const properties = this.getSIWXEventProperties()
+
+      if (properties.isSmartAccount) {
+        SnackController.showError('This application might not support Smart Accounts')
+      } else {
+        SnackController.showError('Signature declined')
+      }
 
       EventsController.sendEvent({
         type: 'track',
         event: 'SIWX_AUTH_ERROR',
-        properties: SIWXUtil.getSIWXEventProperties()
+        properties
       })
 
       // eslint-disable-next-line no-console
-      await client?.disconnect().catch(console.error)
-      await ModalController.open({ view: 'Connect' })
-      SnackController.showError('It was not possible to verify the message signature')
+      console.error('SWIXUtil:requestSignMessage', error)
+    }
+  },
+  async cancelSignMessage() {
+    try {
+      await ConnectionController.disconnect()
+      RouterController.reset('Connect')
+      EventsController.sendEvent({
+        event: 'CLICK_CANCEL_SIWX',
+        type: 'track',
+        properties: this.getSIWXEventProperties()
+      })
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('SIWXUtil:cancelSignMessage', error)
     }
   },
   async getSessions() {
@@ -97,7 +134,7 @@ export const SIWXUtil = {
       const isSiwxSignMessage = RouterController.state.view === 'SIWXSignMessage'
 
       if (isApproveSignScreen || isSiwxSignMessage) {
-        return (await this.getSessions()).length > 1
+        return (await this.getSessions()).length === 0
       }
     }
 
