@@ -159,7 +159,7 @@ export const SIWXUtil = {
 
     // Ignores chainId and account address to get other message data
     const siwxMessage = await siwx.createMessage({
-      chainId: '',
+      chainId: '' as CaipNetworkId,
       accountAddress: ''
     })
 
@@ -189,7 +189,7 @@ export const SIWXUtil = {
         return {
           data: {
             accountAddress: cacao.p.iss.split(':').slice(-1).join(''),
-            chainId: cacao.p.iss.split(':').slice(2, 4).join(':'),
+            chainId: cacao.p.iss.split(':').slice(2, 4).join(':') as CaipNetworkId,
             uri: cacao.p.aud,
             domain: cacao.p.domain,
             nonce: cacao.p.nonce,
@@ -280,7 +280,7 @@ export namespace SIWXMessage {
    */
   export interface Input {
     accountAddress: string
-    chainId: string
+    chainId: CaipNetworkId
     notBefore?: Timestamp
   }
 
