@@ -1,5 +1,11 @@
 # @reown/appkit-common
 
+## 1.4.1
+
+### Patch Changes
+
+- [#3246](https://github.com/reown-com/appkit/pull/3246) [`0eb4fd8`](https://github.com/reown-com/appkit/commit/0eb4fd864f4b844dd605887364557ea879e6fce2) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix issue when connectors are not syncing correctly
+
 ## 1.4.0
 
 ### Minor Changes
