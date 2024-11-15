@@ -1,5 +1,35 @@
 # @reown/appkit-cdn
 
+## 1.4.1
+
+### Patch Changes
+
+- [#3246](https://github.com/reown-com/appkit/pull/3246) [`0eb4fd8`](https://github.com/reown-com/appkit/commit/0eb4fd864f4b844dd605887364557ea879e6fce2) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix issue when connectors are not syncing correctly
+
+- Updated dependencies [[`0eb4fd8`](https://github.com/reown-com/appkit/commit/0eb4fd864f4b844dd605887364557ea879e6fce2)]:
+  - @reown/appkit@1.4.1
+  - @reown/appkit-adapter-ethers@1.4.1
+  - @reown/appkit-adapter-ethers5@1.4.1
+  - @reown/appkit-adapter-solana@1.4.1
+  - @reown/appkit-adapter-wagmi@1.4.1
+  - @reown/appkit-polyfills@1.4.1
+
+## 1.4.0
+
+### Minor Changes
+
+- [#3076](https://github.com/reown-com/appkit/pull/3076) [`1bd3dc7`](https://github.com/reown-com/appkit/commit/1bd3dc70850257dd8db523499e8a38e3a0f2ac4a) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Implementing new architecture design for better handling and scalibity of the various adapters
+
+### Patch Changes
+
+- Updated dependencies [[`1bd3dc7`](https://github.com/reown-com/appkit/commit/1bd3dc70850257dd8db523499e8a38e3a0f2ac4a)]:
+  - @reown/appkit-adapter-ethers5@1.4.0
+  - @reown/appkit-adapter-ethers@1.4.0
+  - @reown/appkit-adapter-solana@1.4.0
+  - @reown/appkit-adapter-wagmi@1.4.0
+  - @reown/appkit-polyfills@1.4.0
+  - @reown/appkit@1.4.0
+
 ## 1.3.2
 
 ### Patch Changes
