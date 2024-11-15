@@ -1658,9 +1658,8 @@ export class AppKit {
         if (this.authProvider) {
           adapters[namespace].setAuthProvider(this.authProvider)
         }
-        if (this.options?.features) {
-          adapters[namespace].syncConnectors(this.options, this)
-        }
+
+        adapters[namespace].syncConnectors(this.options, this)
       } else {
         adapters[namespace] = new UniversalAdapter({
           namespace,
