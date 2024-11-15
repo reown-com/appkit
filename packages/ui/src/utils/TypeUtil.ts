@@ -221,15 +221,17 @@ export type ChipType = 'fill' | 'shade' | 'shadeSmall' | 'transparent' | 'succes
 
 export type ChipButtonVariant = 'accent' | 'main' | 'shade' | 'gray'
 
-export type ButtonSize = 'lg' | 'md'
+export type ButtonSize = 'lg' | 'md' | 'sm'
 
 export type ButtonVariant =
-  | 'main'
-  | 'inverse'
-  | 'accent'
-  | 'accent-error'
-  | 'accent-success'
-  | 'neutral'
+  | 'accent-primary'
+  | 'accent-secondary'
+  | 'neutral-primary'
+  | 'neutral-secondary'
+  | 'error-primary'
+  | 'error-secondary'
+
+export type ShortcutButtonVariant = 'accent' | 'secondary'
 
 export type TransactionType =
   | 'approve'

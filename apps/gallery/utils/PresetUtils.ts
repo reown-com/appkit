@@ -20,6 +20,7 @@ import type {
   IconType,
   LogoType,
   PlacementType,
+  ShortcutButtonVariant,
   SpacingType,
   TagType,
   TextAlign,
@@ -271,13 +272,15 @@ export const chipVariants: ChipType[] = [
 ]
 
 export const buttonOptions: ButtonVariant[] = [
-  'main',
-  'accent',
-  'accent',
-  'accent-error',
-  'accent-success',
-  'neutral'
+  'accent-primary',
+  'accent-secondary',
+  'neutral-primary',
+  'neutral-secondary',
+  'error-primary',
+  'error-secondary'
 ]
+
+export const buttonShortcutOptions: ShortcutButtonVariant[] = ['accent', 'secondary']
 
 export const transactionTypeOptions: TransactionType[] = [
   'approve',

@@ -1,3 +1,8 @@
+import { styles as themeStyles, tokens } from './ThemeUtilConstants.js'
+import { css as litCSS, type CSSResultGroup, unsafeCSS } from 'lit'
+
+import type { ThemeType } from '@reown/appkit-common'
+
 const PREFIX_VAR = '--apkt'
 
 export const ThemeHelperUtil = {
@@ -23,14 +28,14 @@ export const ThemeHelperUtil = {
    * @param params.start - The starting index for opacity generation.
    * @param params.end - The ending index for opacity generation.
    */
-  generateRgbaColors({
+  generateRgbaColors<rgb extends string>({
     rgb,
     name,
     multiplier = 1,
     start = 1,
     end = 10
   }: {
-    rgb: string
+    rgb: rgb
     name: string
     multiplier?: number
     start?: number
@@ -139,11 +144,38 @@ export const ThemeHelperUtil = {
    * Creates a string of CSS variables for the root element.
    * @param variables - The CSS variables object.
    */
-  createRooStyles(variables: Record<string, string>) {
-    const styles = Object.entries(variables)
+  createRooStyles(theme: ThemeType = 'dark') {
+    const styles = {
+      ...themeStyles,
+      tokens: { ...themeStyles.tokens, theme: theme === 'light' ? tokens.light : tokens.dark }
+    }
+
+    const { cssVariables } = ThemeHelperUtil.createCSSVariables(styles)
+
+    const assignedCSSVariables = ThemeHelperUtil.assignCSSVariables(cssVariables, styles)
+
+    const rootStyles = Object.entries(assignedCSSVariables)
       .map(([key, style]) => `${key}:${style.replace('/[:;{}</>]/g', '')};`)
       .join('')
 
-    return `:root {${styles}}`
+    return `:root {${rootStyles}}`
   }
 }
+
+const { cssVariablesVarPrefix } = ThemeHelperUtil.createCSSVariables(themeStyles)
+
+const vars = cssVariablesVarPrefix
+
+function css(
+  strings: TemplateStringsArray,
+  ...values: ((_vars: typeof vars) => CSSResultGroup | number | string)[]
+) {
+  return litCSS(
+    strings,
+    ...values.map(value =>
+      typeof value === 'function' ? unsafeCSS(value(vars)) : unsafeCSS(value)
+    )
+  )
+}
+
+export { css, vars }

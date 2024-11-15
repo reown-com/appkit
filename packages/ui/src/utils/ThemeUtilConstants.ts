@@ -1,17 +1,30 @@
-import { css as litCSS, type CSSResultGroup, unsafeCSS } from 'lit'
-import { ThemeHelperUtil } from './ThemeHelperUtil.js'
-
 export const colors = {
   /* Main colors */
   black: '#202020',
   white: '#FFFFFF',
 
   /* Accent colors */
-  ...ThemeHelperUtil.generateRgbaColors({ name: 'accent', rgb: '9, 136, 240' }),
-  ...ThemeHelperUtil.generateRgbaColors({
-    name: 'accentSecondary',
-    rgb: '199, 185, 148'
-  }),
+  accent010: 'rgba(9, 136, 240, 0.1)',
+  accent020: 'rgba(9, 136, 240, 0.2)',
+  accent030: 'rgba(9, 136, 240, 0.3)',
+  accent040: 'rgba(9, 136, 240, 0.4)',
+  accent050: 'rgba(9, 136, 240, 0.5)',
+  accent060: 'rgba(9, 136, 240, 0.6)',
+  accent070: 'rgba(9, 136, 240, 0.7)',
+  accent080: 'rgba(9, 136, 240, 0.8)',
+  accent090: 'rgba(9, 136, 240, 0.9)',
+  accent100: 'rgba(9, 136, 240, 1.0)',
+
+  accentSecondary010: 'rgba(199, 185, 148, 0.1)',
+  accentSecondary020: 'rgba(199, 185, 148, 0.2)',
+  accentSecondary030: 'rgba(199, 185, 148, 0.3)',
+  accentSecondary040: 'rgba(199, 185, 148, 0.4)',
+  accentSecondary050: 'rgba(199, 185, 148, 0.5)',
+  accentSecondary060: 'rgba(199, 185, 148, 0.6)',
+  accentSecondary070: 'rgba(199, 185, 148, 0.7)',
+  accentSecondary080: 'rgba(199, 185, 148, 0.8)',
+  accentSecondary090: 'rgba(199, 185, 148, 0.9)',
+  accentSecondary100: 'rgba(199, 185, 148, 1.0)',
 
   /* Product colors */
   productWalletKit: '#FFB800',
@@ -33,18 +46,38 @@ export const colors = {
   neutrals1000: '#252525',
 
   /* Semantic colors */
-  ...ThemeHelperUtil.generateRgbaColors({
-    name: 'semanticSuccess',
-    rgb: '48, 164, 107'
-  }),
-  ...ThemeHelperUtil.generateRgbaColors({
-    name: 'semanticError',
-    rgb: '223, 74, 52'
-  }),
-  ...ThemeHelperUtil.generateRgbaColors({
-    name: 'semanticWarning',
-    rgb: '243, 161, 63'
-  })
+  semanticSuccess010: 'rgba(48, 164, 107, 0.1)',
+  semanticSuccess020: 'rgba(48, 164, 107, 0.2)',
+  semanticSuccess030: 'rgba(48, 164, 107, 0.3)',
+  semanticSuccess040: 'rgba(48, 164, 107, 0.4)',
+  semanticSuccess050: 'rgba(48, 164, 107, 0.5)',
+  semanticSuccess060: 'rgba(48, 164, 107, 0.6)',
+  semanticSuccess070: 'rgba(48, 164, 107, 0.7)',
+  semanticSuccess080: 'rgba(48, 164, 107, 0.8)',
+  semanticSuccess090: 'rgba(48, 164, 107, 0.9)',
+  semanticSuccess100: 'rgba(48, 164, 107, 1.0)',
+
+  semanticError010: 'rgba(223, 74, 52, 0.1)',
+  semanticError020: 'rgba(223, 74, 52, 0.2)',
+  semanticError030: 'rgba(223, 74, 52, 0.3)',
+  semanticError040: 'rgba(223, 74, 52, 0.4)',
+  semanticError050: 'rgba(223, 74, 52, 0.5)',
+  semanticError060: 'rgba(223, 74, 52, 0.6)',
+  semanticError070: 'rgba(223, 74, 52, 0.7)',
+  semanticError080: 'rgba(223, 74, 52, 0.8)',
+  semanticError090: 'rgba(223, 74, 52, 0.9)',
+  semanticError100: 'rgba(223, 74, 52, 1.0)',
+
+  semanticWarning010: 'rgba(243, 161, 63, 0.1)',
+  semanticWarning020: 'rgba(243, 161, 63, 0.2)',
+  semanticWarning030: 'rgba(243, 161, 63, 0.3)',
+  semanticWarning040: 'rgba(243, 161, 63, 0.4)',
+  semanticWarning050: 'rgba(243, 161, 63, 0.5)',
+  semanticWarning060: 'rgba(243, 161, 63, 0.6)',
+  semanticWarning070: 'rgba(243, 161, 63, 0.7)',
+  semanticWarning080: 'rgba(243, 161, 63, 0.8)',
+  semanticWarning090: 'rgba(243, 161, 63, 0.9)',
+  semanticWarning100: 'rgba(243, 161, 63, 1.0)'
 }
 
 export const tokens = {
@@ -84,20 +117,14 @@ export const tokens = {
     borderWarning: '#F3A13F',
 
     /* Foreground colors */
-    ...ThemeHelperUtil.generateRgbaColors({
-      name: 'foregroundAccent',
-      start: 1,
-      multiplier: 2,
-      end: 3,
-      rgb: '9, 136, 240'
-    }),
-    ...ThemeHelperUtil.generateRgbaColors({
-      name: 'foregroundSecondary',
-      start: 1,
-      multiplier: 2,
-      end: 3,
-      rgb: '199, 185, 148'
-    }),
+    foregroundAccent010: 'rgba(9, 136, 240, 0.1)',
+    foregroundAccent020: 'rgba(9, 136, 240, 0.2)',
+    foregroundAccent040: 'rgba(9, 136, 240, 0.4)',
+    foregroundAccent060: 'rgba(9, 136, 240, 0.6)',
+
+    foregroundSecondary020: 'rgba(199, 185, 148, 0.2)',
+    foregroundSecondary040: 'rgba(199, 185, 148, 0.4)',
+    foregroundSecondary060: 'rgba(199, 185, 148, 0.6)',
 
     /* Icon colors */
     iconAccentPrimary: '#0988F0',
@@ -116,7 +143,7 @@ export const tokens = {
     textPrimary: '#FFFFFF',
     textSecondary: '#9A9A9A',
     textTertiary: '#BBBBBB',
-    textInvert: '#363636',
+    textInvert: '#202020',
 
     /* Border colors */
     borderPrimary: '#2A2A2A',
@@ -134,7 +161,7 @@ export const tokens = {
   light: {
     /* Background colors */
     backgroundPrimary: '#202020',
-    backgroundInvert: '#FFFFFF',
+    backgroundInvert: '#202020',
 
     /* Text colors */
     textPrimary: '#202020',
@@ -160,11 +187,13 @@ export const tokens = {
 export const radii = {
   '1': '4px',
   '2': '8px',
+  '3': '12px',
   '4': '16px',
   '8': '32px',
   '16': '64px',
   '32': '128px',
   '64': '256px',
+  '128': '512px',
   round: '9999px'
 }
 
@@ -188,27 +217,18 @@ export const spacing = {
   '64': '256px'
 }
 
-export const styles = {
-  colors,
-  tokens: tokens.dark,
-  radii,
-  spacing
+const fonts = {
+  regular: 'KHTeka',
+  mono: 'KHTekaMono'
 }
 
-const { cssVariables, cssVariablesVarPrefix } = ThemeHelperUtil.createCSSVariables(styles)
-
-export const assignedCSSVariables = ThemeHelperUtil.assignCSSVariables(cssVariables, styles)
-
-export const vars = cssVariablesVarPrefix
-
-export function css(
-  strings: TemplateStringsArray,
-  ...values: ((_vars: typeof vars) => CSSResultGroup | number | string)[]
-) {
-  return litCSS(
-    strings,
-    ...values.map(value =>
-      typeof value === 'function' ? unsafeCSS(value(vars)) : unsafeCSS(value)
-    )
-  )
+export const styles = {
+  colors,
+  fonts,
+  tokens: {
+    core: tokens.core,
+    theme: tokens.dark
+  },
+  radii,
+  spacing
 }

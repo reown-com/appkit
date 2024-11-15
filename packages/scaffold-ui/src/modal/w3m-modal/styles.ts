@@ -50,7 +50,7 @@ export default css`
     height: 100%;
   }
 
-  @media screen and (max-width: 1024px) {
+  @media screen and (max-width: 1920px) {
     wui-flex {
       grid-template-columns: repeat(8, 1fr);
       grid-template-rows: repeat(8, 1fr);
@@ -62,21 +62,26 @@ export default css`
     }
   }
 
-  @media (max-height: 700px) and (min-width: 431px) {
+  @media screen and (max-width: 1440px) {
     wui-flex {
-      align-items: flex-start;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+    }
+
+    wui-card {
+      grid-column: 3 / 7;
     }
   }
 
-  @media (max-width: 430px) {
+  @media screen and (max-width: 820px) {
     wui-flex {
-      align-items: flex-end;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(8, 1fr);
     }
 
-    wui-card[shake='true'] {
-      animation:
-        slide-in 0.2s var(--wui-ease-out-power-2),
-        w3m-shake 0.5s var(--wui-ease-out-power-2);
+    wui-card {
+      grid-row: 1 / 9;
+      grid-column: 1 / 3;
     }
   }
 
