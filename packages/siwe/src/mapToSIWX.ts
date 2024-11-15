@@ -71,13 +71,14 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
       const chainId = NetworkUtil.parseEvmChainId(session.data.chainId)
 
       if (!chainId) {
-        throw new Error('Invalid chain ID')
+        // Workaround to ignore non-EVM chains to keep the same behavior of SIWE
+        return Promise.resolve()
       }
 
-      if (await siwe.verifyMessage?.(session)) {
+      if (await siwe.methods.verifyMessage(session)) {
         siwe.methods.onSignIn?.({
           address: session.data.accountAddress,
-          chainId
+          chainId: NetworkUtil.parseEvmChainId(session.data.chainId) as number
         })
 
         return Promise.resolve()
@@ -107,6 +108,20 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
 
     async getSessions(chainId, address) {
       try {
+        if (!chainId.startsWith('eip155:')) {
+          // Workaround to ignore non-EVM chains to keep the same behavior of SIWE
+          return [
+            {
+              data: {
+                accountAddress: address,
+                chainId
+              },
+              message: '',
+              signature: ''
+            } as SIWXSession
+          ]
+        }
+
         const siweSession = await siwe.methods.getSession()
 
         const siweCaipNetworkId = `eip155:${siweSession?.chainId}`

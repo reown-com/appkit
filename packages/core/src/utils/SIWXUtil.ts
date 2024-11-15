@@ -18,15 +18,15 @@ export const SIWXUtil = {
   },
   async initializeIfEnabled() {
     const siwx = OptionsController.state.siwx
-    const address = CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress())
-    const network = ChainController.getActiveCaipNetwork()
+    const caipAddress = ChainController.getActiveCaipAddress()
 
-    if (!(siwx && address && network)) {
+    if (!(siwx && caipAddress)) {
       return
     }
+    const [network, chainId, address] = caipAddress.split(':') as [string, string, string]
 
     try {
-      const sessions = await siwx.getSessions(network.caipNetworkId, address)
+      const sessions = await siwx.getSessions(`${network}:${chainId}` as CaipNetworkId, address)
       if (sessions.length) {
         return
       }
@@ -93,6 +93,12 @@ export const SIWXUtil = {
       })
     } catch (error) {
       const properties = this.getSIWXEventProperties()
+
+      if (!ModalController.state.open || RouterController.state.view === 'ApproveTransaction') {
+        await ModalController.open({
+          view: 'SIWXSignMessage'
+        })
+      }
 
       if (properties.isSmartAccount) {
         SnackController.showError('This application might not support Smart Accounts')

@@ -165,7 +165,7 @@ export class W3mModal extends LitElement {
   }
 
   private async onNewAddress(caipAddress?: CaipAddress) {
-    const nextConnected = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
+    const nextConnected = CoreHelperUtil.getPlainAddress(caipAddress)
 
     this.caipAddress = caipAddress
 
