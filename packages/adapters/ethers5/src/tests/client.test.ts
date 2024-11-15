@@ -7,6 +7,7 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import { providers } from 'ethers'
 import { mainnet } from '@reown/appkit/networks'
 import { Ethers5Methods } from '../utils/Ethers5Methods'
+import { ProviderUtil } from '@reown/appkit/store'
 
 // Mock external dependencies
 vi.mock('ethers', async importOriginal => {
@@ -320,6 +321,62 @@ describe('Ethers5Adapter', () => {
       })
 
       expect(result).toBe('1.5')
+    })
+  })
+
+  describe('Ethers5Adapter - Permissions', () => {
+    const mockProvider = {
+      request: vi.fn()
+    } as unknown as UniversalProvider
+
+    beforeEach(() => {
+      vi.spyOn(ProviderUtil, 'getProvider').mockImplementation(() => mockProvider)
+    })
+
+    it('should call wallet_getCapabilities', async () => {
+      await adapter.getCapabilities('eip155:1:0x123')
+
+      expect(mockProvider.request).toHaveBeenCalledWith({
+        method: 'wallet_getCapabilities',
+        params: ['eip155:1:0x123']
+      })
+    })
+
+    it('should call wallet_grantPermissions', async () => {
+      const mockParams = {
+        pci: 'test-pci',
+        expiry: 1234567890,
+        address: '0x123',
+        permissions: ['eth_accounts']
+      }
+
+      await adapter.grantPermissions(mockParams)
+
+      expect(mockProvider.request).toHaveBeenCalledWith({
+        method: 'wallet_grantPermissions',
+        params: mockParams
+      })
+    })
+
+    it('should call wallet_revokePermissions', async () => {
+      vi.mocked(mockProvider.request).mockImplementation(() =>
+        Promise.resolve('0x123' as `0x${string}`)
+      )
+
+      const mockParams = {
+        pci: 'test-pci',
+        expiry: 1234567890,
+        address: '0x123' as `0x${string}`,
+        permissions: ['eth_accounts']
+      }
+
+      const result = await adapter.revokePermissions(mockParams)
+
+      expect(mockProvider.request).toHaveBeenCalledWith({
+        method: 'wallet_revokePermissions',
+        params: [mockParams]
+      })
+      expect(result).toBe('0x123')
     })
   })
 })

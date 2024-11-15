@@ -113,6 +113,18 @@ export class UniversalAdapter extends AdapterBlueprint {
     return '0'
   }
 
+  public async getCapabilities(): Promise<unknown> {
+    return Promise.resolve({})
+  }
+
+  public async grantPermissions(): Promise<unknown> {
+    return Promise.resolve({})
+  }
+
+  public async revokePermissions(): Promise<`0x${string}`> {
+    return Promise.resolve('0x')
+  }
+
   public async syncConnection() {
     return Promise.resolve({
       id: 'WALLET_CONNECT',

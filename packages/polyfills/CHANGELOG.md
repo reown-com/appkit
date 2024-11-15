@@ -1,5 +1,11 @@
 # @reown/appkit-polyfills
 
+## 1.4.0
+
+### Minor Changes
+
+- [#3076](https://github.com/reown-com/appkit/pull/3076) [`1bd3dc7`](https://github.com/reown-com/appkit/commit/1bd3dc70850257dd8db523499e8a38e3a0f2ac4a) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Implementing new architecture design for better handling and scalibity of the various adapters
+
 ## 1.3.2
 
 ### Patch Changes

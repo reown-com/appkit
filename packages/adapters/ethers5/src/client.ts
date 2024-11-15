@@ -16,6 +16,7 @@ import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { Ethers5Methods } from './utils/Ethers5Methods.js'
 import { formatEther } from 'ethers/lib/utils.js'
+import { ProviderUtil } from '@reown/appkit/store'
 
 export interface EIP6963ProviderDetail {
   info: Connector['info']
@@ -545,5 +546,46 @@ export class Ethers5Adapter extends AdapterBlueprint {
       // eslint-disable-next-line no-console
       console.info('Could not revoke permissions from wallet. Disconnecting...', error)
     }
+  }
+
+  public async getCapabilities(params: AdapterBlueprint.GetCapabilitiesParams): Promise<unknown> {
+    const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
+
+    if (!provider) {
+      throw new Error('Provider is undefined')
+    }
+
+    const walletCapabilitiesString = provider.session?.sessionProperties?.['capabilities']
+    if (walletCapabilitiesString) {
+      const walletCapabilities = Ethers5Methods.parseWalletCapabilities(walletCapabilitiesString)
+      const accountCapabilities = walletCapabilities[params]
+      if (accountCapabilities) {
+        return accountCapabilities
+      }
+    }
+
+    return await provider.request({ method: 'wallet_getCapabilities', params: [params] })
+  }
+
+  public async grantPermissions(params: AdapterBlueprint.GrantPermissionsParams): Promise<unknown> {
+    const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
+
+    if (!provider) {
+      throw new Error('Provider is undefined')
+    }
+
+    return await provider.request({ method: 'wallet_grantPermissions', params })
+  }
+
+  public async revokePermissions(
+    params: AdapterBlueprint.RevokePermissionsParams
+  ): Promise<`0x${string}`> {
+    const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
+
+    if (!provider) {
+      throw new Error('Provider is undefined')
+    }
+
+    return await provider.request({ method: 'wallet_revokePermissions', params: [params] })
   }
 }

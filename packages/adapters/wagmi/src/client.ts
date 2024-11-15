@@ -53,6 +53,7 @@ import {
 } from 'viem'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { normalize } from 'viem/ens'
+import { parseWalletCapabilities } from './utils/helpers.js'
 
 export class WagmiAdapter extends AdapterBlueprint {
   public wagmiChains: readonly [Chain, ...Chain[]] | undefined
@@ -486,5 +487,79 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
     await switchChain(this.wagmiConfig, { chainId: params.caipNetwork.id as number })
+  }
+
+  public async getCapabilities(params: string) {
+    if (!this.wagmiConfig) {
+      throw new Error('connectionControllerClient:getCapabilities - wagmiConfig is undefined')
+    }
+
+    const connections = getConnections(this.wagmiConfig)
+    const connection = connections[0]
+
+    if (!connection?.connector) {
+      throw new Error('connectionControllerClient:getCapabilities - connector is undefined')
+    }
+
+    const provider = (await connection.connector.getProvider()) as UniversalProvider
+
+    if (!provider) {
+      throw new Error('connectionControllerClient:getCapabilities - provider is undefined')
+    }
+
+    const walletCapabilitiesString = provider.session?.sessionProperties?.['capabilities']
+    if (walletCapabilitiesString) {
+      const walletCapabilities = parseWalletCapabilities(walletCapabilitiesString)
+      const accountCapabilities = walletCapabilities[params]
+      if (accountCapabilities) {
+        return accountCapabilities
+      }
+    }
+
+    return await provider.request({ method: 'wallet_getCapabilities', params: [params] })
+  }
+
+  public async grantPermissions(params: AdapterBlueprint.GrantPermissionsParams) {
+    if (!this.wagmiConfig) {
+      throw new Error('connectionControllerClient:grantPermissions - wagmiConfig is undefined')
+    }
+
+    const connections = getConnections(this.wagmiConfig)
+    const connection = connections[0]
+
+    if (!connection?.connector) {
+      throw new Error('connectionControllerClient:grantPermissions - connector is undefined')
+    }
+
+    const provider = (await connection.connector.getProvider()) as UniversalProvider
+
+    if (!provider) {
+      throw new Error('connectionControllerClient:grantPermissions - provider is undefined')
+    }
+
+    return provider.request({ method: 'wallet_grantPermissions', params })
+  }
+
+  public async revokePermissions(
+    params: AdapterBlueprint.RevokePermissionsParams
+  ): Promise<`0x${string}`> {
+    if (!this.wagmiConfig) {
+      throw new Error('connectionControllerClient:revokePermissions - wagmiConfig is undefined')
+    }
+
+    const connections = getConnections(this.wagmiConfig)
+    const connection = connections[0]
+
+    if (!connection?.connector) {
+      throw new Error('connectionControllerClient:revokePermissions - connector is undefined')
+    }
+
+    const provider = (await connection.connector.getProvider()) as UniversalProvider
+
+    if (!provider) {
+      throw new Error('connectionControllerClient:revokePermissions - provider is undefined')
+    }
+
+    return provider.request({ method: 'wallet_revokePermissions', params })
   }
 }
