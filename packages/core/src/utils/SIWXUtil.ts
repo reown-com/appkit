@@ -197,18 +197,14 @@ export const SIWXUtil = {
 
         return {
           data: {
+            ...cacao.p,
             accountAddress: cacao.p.iss.split(':').slice(-1).join(''),
             chainId: cacao.p.iss.split(':').slice(2, 4).join(':') as CaipNetworkId,
             uri: cacao.p.aud,
-            domain: cacao.p.domain,
-            nonce: cacao.p.nonce,
             version: cacao.p.version || siwxMessage.version,
             expirationTime: cacao.p.exp,
-            statement: cacao.p.statement,
             issuedAt: cacao.p.iat,
-            notBefore: cacao.p.nbf,
-            requestId: cacao.p.requestId,
-            resources: cacao.p.resources
+            notBefore: cacao.p.nbf
           },
           message,
           signature: cacao.s.s,
