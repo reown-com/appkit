@@ -136,7 +136,7 @@ export class AppKitSIWEClient {
     })
     const type = StorageUtil.getConnectedConnector()
 
-    if (type === 'AUTH') {
+    if (type === 'ID_AUTH') {
       RouterController.pushTransactionStack({
         view: null,
         goBack: false,
@@ -149,7 +149,7 @@ export class AppKitSIWEClient {
 
     const signature = await ConnectionController.signMessage(message)
 
-    const isValid = await this.methods.verifyMessage({ message, signature })
+    const isValid = await this.methods.verifyMessage({ message, signature: signature as string })
     if (!isValid) {
       throw new Error('Error verifying SIWE signature')
     }

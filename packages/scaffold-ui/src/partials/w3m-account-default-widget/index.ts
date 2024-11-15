@@ -75,7 +75,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     if (!this.caipAddress) {
-      throw new Error('w3m-account-view: No account provided')
+      return null
     }
 
     const shouldShowMultiAccount =
@@ -174,7 +174,7 @@ export class W3mAccountDefaultWidget extends LitElement {
     const type = StorageUtil.getConnectedConnector()
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
-    if (!authConnector || type !== 'AUTH' || origin.includes(CommonConstantsUtil.SECURE_SITE)) {
+    if (!authConnector || type !== 'ID_AUTH' || origin.includes(CommonConstantsUtil.SECURE_SITE)) {
       return null
     }
 

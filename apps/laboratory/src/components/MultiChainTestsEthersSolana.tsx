@@ -4,6 +4,7 @@ import { useAppKitState } from '@reown/appkit/react'
 import { SolanaTests } from './Solana/SolanaTests'
 import { EthersTests } from './Ethers/EthersTests'
 import { EthersModalInfo } from './Ethers/EthersModalInfo'
+import { SolanaModalInfo } from './Solana/SolanaModalInfo'
 
 export function MultiChainTestsEthersSolana() {
   const { activeChain } = useAppKitState()
@@ -16,7 +17,12 @@ export function MultiChainTestsEthersSolana() {
           <EthersTests />
         </React.Fragment>
       ) : null}
-      {activeChain === 'solana' ? <SolanaTests /> : null}
+      {activeChain === 'solana' ? (
+        <React.Fragment>
+          <SolanaModalInfo />
+          <SolanaTests />
+        </React.Fragment>
+      ) : null}
     </>
   )
 }

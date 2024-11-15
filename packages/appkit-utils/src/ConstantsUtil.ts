@@ -9,7 +9,7 @@ export const ConstantsUtil = {
   SAFE_CONNECTOR_ID: 'safe',
   LEDGER_CONNECTOR_ID: 'ledger',
   EIP6963_CONNECTOR_ID: 'eip6963',
-  AUTH_CONNECTOR_ID: 'w3mAuth',
+  AUTH_CONNECTOR_ID: 'ID_AUTH',
   EIP155: 'eip155' as ChainNamespace,
   ADD_CHAIN_METHOD: 'wallet_addEthereumChain',
   EIP6963_ANNOUNCE_EVENT: 'eip6963:announceProvider',
@@ -17,5 +17,12 @@ export const ConstantsUtil = {
   CONNECTOR_RDNS_MAP: {
     coinbaseWallet: 'com.coinbase.wallet',
     coinbaseWalletSDK: 'com.coinbase.wallet'
-  } as Record<string, string>
+  } as Record<string, string>,
+  CONNECTOR_TYPE_EXTERNAL: 'EXTERNAL',
+  CONNECTOR_TYPE_WALLET_CONNECT: 'WALLET_CONNECT',
+  CONNECTOR_TYPE_INJECTED: 'INJECTED',
+  CONNECTOR_TYPE_ANNOUNCED: 'ANNOUNCED',
+  CONNECTOR_TYPE_AUTH: 'AUTH',
+  CONNECTOR_TYPE_MULTI_CHAIN: 'MULTI_CHAIN',
+  CONNECTOR_TYPE_W3M_AUTH: 'ID_AUTH'
 }

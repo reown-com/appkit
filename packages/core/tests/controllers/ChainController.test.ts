@@ -111,7 +111,7 @@ const networkControllerClient: NetworkControllerClient = {
 }
 
 const evmAdapter = {
-  chainNamespace,
+  namespace: ConstantsUtil.CHAIN.EVM,
   connectionControllerClient,
   networkControllerClient,
   caipNetworks: []

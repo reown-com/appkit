@@ -133,7 +133,7 @@ export class W3mNetworkSwitchView extends LitElement {
       if (this.network) {
         await ChainController.switchActiveNetwork(this.network)
       }
-    } catch {
+    } catch (error) {
       this.error = true
     }
   }

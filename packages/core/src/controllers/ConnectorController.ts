@@ -70,7 +70,7 @@ export const ConnectorController = {
     connectorsByNameMap.forEach(keyConnectors => {
       const firstItem = keyConnectors[0]
 
-      const isAuthConnector = firstItem?.id === 'w3mAuth'
+      const isAuthConnector = firstItem?.id === 'ID_AUTH'
 
       if (keyConnectors.length > 1) {
         mergedConnectors.push({
@@ -138,7 +138,7 @@ export const ConnectorController = {
   },
 
   addConnector(connector: Connector | AuthConnector) {
-    if (connector.id === 'w3mAuth') {
+    if (connector.id === 'ID_AUTH') {
       const authConnector = connector as AuthConnector
 
       const optionsState = snapshot(OptionsController.state) as typeof OptionsController.state
@@ -164,7 +164,7 @@ export const ConnectorController = {
 
   getAuthConnector(): AuthConnector | undefined {
     const activeNamespace = ChainController.state.activeChain
-    const authConnector = state.connectors.find(c => c.id === 'w3mAuth')
+    const authConnector = state.connectors.find(c => c.id === 'ID_AUTH')
     if (!authConnector) {
       return undefined
     }
@@ -191,7 +191,7 @@ export const ConnectorController = {
   },
 
   syncIfAuthConnector(connector: Connector | AuthConnector) {
-    if (connector.id !== 'w3mAuth') {
+    if (connector.id !== 'ID_AUTH') {
       return
     }
 
