@@ -712,13 +712,17 @@ export class AppKit {
           (await this.universalProvider?.client?.core?.crypto?.getClientId()) || null
         )
 
-        const isAuthenticated =
-          this.universalProvider &&
-          (await SIWXUtil.universalProviderAuthenticate({
+        let isAuthenticated = false
+
+        if (this.universalProvider) {
+          const chains = this.caipNetworks?.map(network => network.caipNetworkId) || []
+
+          isAuthenticated = await SIWXUtil.universalProviderAuthenticate({
             universalProvider: this.universalProvider,
-            chains: this.caipNetworks?.map(network => network.caipNetworkId) || [],
+            chains,
             methods: OPTIONAL_METHODS
-          }))
+          })
+        }
 
         if (isAuthenticated) {
           this.close()
