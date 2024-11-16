@@ -10,10 +10,14 @@ import { vars } from '../../utils/ThemeHelperUtil.js'
 // -- Constants ------------------------------------------ //
 
 const TEXT_VARS_BY_COLOR = {
+  /* Colors */
   primary: vars.tokens.theme.textPrimary,
   secondary: vars.tokens.theme.textSecondary,
   tertiary: vars.tokens.theme.textTertiary,
-  invert: vars.tokens.theme.textInvert
+  invert: vars.tokens.theme.textInvert,
+
+  /* Token colors */
+  'accent-primary': vars.tokens.core.textAccentPrimary
 }
 
 @customElement('wui-text')
@@ -23,7 +27,7 @@ export class WuiText extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public variant: TextType = 'h3-regular'
 
-  @property() public color?: TextColorType = 'primary'
+  @property() public color?: TextColorType = 'inherit'
 
   @property() public align?: TextAlign = 'left'
 
@@ -39,7 +43,7 @@ export class WuiText extends LitElement {
 
     this.style.cssText = `
       text-align: ${this.align};
-      color: ${TEXT_VARS_BY_COLOR[this.color ?? 'primary']};
+      color: ${this.color === 'inherit' ? 'inherit' : TEXT_VARS_BY_COLOR[this.color ?? 'primary']};
       `
 
     return html`<slot class=${classMap(classes)}></slot>`

@@ -7,20 +7,6 @@ const PREFIX_VAR = '--apkt'
 
 export const ThemeHelperUtil = {
   /**
-   * Converts a string to kebab case.
-   * @param str - The string to convert.
-   */
-  toKebabCase(str: string) {
-    return str
-      .replace(/(?<lowerOrDigit>[a-z0-9])(?<upper>[A-Z])/gu, '$<lowerOrDigit>-$<upper>')
-      .replace(
-        /(?<consecutiveUpper>[A-Z]+)(?<nextUpperWithLower>[A-Z][a-z0-9]+)/gu,
-        '$<consecutiveUpper>-$<nextUpperWithLower>'
-      )
-      .replace(/(?<letters>[a-zA-Z]+)(?<digits>[0-9]+)/gu, '$<letters>-$<digits>')
-      .toLowerCase()
-  },
-  /**
    * Generates a set of rgba colors based on the provided rgb color, name, and params.
    * @param params.rgb - The rgb color
    * @param params.name - The name for the generated rgba colors.
@@ -68,9 +54,7 @@ export const ThemeHelperUtil = {
       currentVar = ''
     ) {
       for (const [styleKey, styleValue] of Object.entries(_styles)) {
-        const variable = currentVar
-          ? `${currentVar}-${ThemeHelperUtil.toKebabCase(styleKey)}`
-          : ThemeHelperUtil.toKebabCase(styleKey)
+        const variable = currentVar ? `${currentVar}-${styleKey}` : styleKey
 
         if (styleValue && typeof styleValue === 'object' && Object.keys(styleValue).length) {
           parent[styleKey] = {}
@@ -118,9 +102,7 @@ export const ThemeHelperUtil = {
       variable?: string
     ) {
       for (const [varKey, varValue] of Object.entries(_vars)) {
-        const nextVariable = variable
-          ? `${variable}-${ThemeHelperUtil.toKebabCase(varKey)}`
-          : ThemeHelperUtil.toKebabCase(varKey)
+        const nextVariable = variable ? `${variable}-${varKey}` : varKey
 
         const styleValues = _styles[varKey]
 
@@ -162,9 +144,7 @@ export const ThemeHelperUtil = {
   }
 }
 
-const { cssVariablesVarPrefix } = ThemeHelperUtil.createCSSVariables(themeStyles)
-
-const vars = cssVariablesVarPrefix
+const { cssVariablesVarPrefix: vars } = ThemeHelperUtil.createCSSVariables(themeStyles)
 
 function css(
   strings: TemplateStringsArray,

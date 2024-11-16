@@ -24,10 +24,12 @@ export default css`
   /* -- Variants --------------------------------------------------------- */
   button[data-variant='accent'] {
     background-color: ${({ tokens }) => tokens.core.foregroundAccent010};
+    color: ${({ tokens }) => tokens.core.textAccentPrimary};
   }
 
   button[data-variant='secondary'] {
     background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    color: ${({ tokens }) => tokens.theme.textPrimary};
   }
 
   /* -- Focus states --------------------------------------------------- */
@@ -37,7 +39,8 @@ export default css`
 
   /* -- Hover & Active states ----------------------------------------------------------- */
   @media (hover: hover) and (pointer: fine) {
-    button:hover:enabled {
+    button:hover:enabled,
+    button:active:enabled {
       border-radius: ${({ radii }) => radii[128]};
     }
 

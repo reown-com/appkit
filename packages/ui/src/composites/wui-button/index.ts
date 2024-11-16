@@ -4,16 +4,16 @@ import '../../components/wui-icon/index.js'
 import '../../components/wui-loading-spinner/index.js'
 import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { BorderRadiusType, ButtonSize, ButtonVariant } from '../../utils/TypeUtil.js'
+import type { BorderRadiusType, ButtonSize, ButtonVariant, TextType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
 // -- Constants ------------------------------------------ //
 
 const TEXT_VARIANT_BY_SIZE = {
-  lg: 'paragraph-600',
-  md: 'small-600',
-  sm: 'small-600'
+  lg: 'lg-regular-mono',
+  md: 'md-regular-mono',
+  sm: 'sm-regular-mono'
 }
 
 const SPINNER_SIZE_BY_SIZE = {
@@ -41,7 +41,7 @@ export class WuiButton extends LitElement {
 
   @property() public borderRadius: Exclude<BorderRadiusType, 'inherit' | 'xxs'> = 'm'
 
-  @property() public textVariant?: string
+  @property() public textVariant?: TextType
 
   // -- Render -------------------------------------------- //
   public override render() {

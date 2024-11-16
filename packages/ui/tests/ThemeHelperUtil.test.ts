@@ -3,13 +3,6 @@ import { ThemeHelperUtil } from '../src/utils/ThemeHelperUtil.js'
 
 // -- Tests --------------------------------------------------------------------
 describe('ThemeHelperUtil', () => {
-  it('should convert string to kebab case string', () => {
-    expect(ThemeHelperUtil.toKebabCase('backgroundColor')).toStrictEqual('background-color')
-    expect(ThemeHelperUtil.toKebabCase('borderRadius')).toStrictEqual('border-radius')
-    expect(ThemeHelperUtil.toKebabCase('padding50')).toStrictEqual('padding-50')
-    expect(ThemeHelperUtil.toKebabCase('marginLeft50')).toStrictEqual('margin-left-50')
-  })
-
   it('should generate rgba colors based on configuration', () => {
     expect(
       ThemeHelperUtil.generateRgbaColors({ rgb: '9, 136, 240', name: 'accent' })

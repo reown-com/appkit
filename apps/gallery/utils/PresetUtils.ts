@@ -34,6 +34,8 @@ import type { TransactionStatus, TransactionDirection } from '@reown/appkit-comm
 
 export const textColorOptions: TextColorType[] = ['primary', 'secondary', 'tertiary', 'invert']
 
+export const colorOptions = []
+
 export const textOptions: TextType[] = [
   'h1-regular-mono',
   'h1-regular',

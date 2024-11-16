@@ -76,6 +76,7 @@ import type { WuiCheckBox } from '../composites/wui-checkbox/index.js'
 import type { WuiSwitch } from '../composites/wui-switch/index.js'
 import type { WuiCertifiedSwitch } from '../composites/wui-certified-switch/index.js'
 import type { WuiShortcut } from '../composites/wui-shortcut/index.js'
+import type { WuiTab } from '../../index.js'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type CustomElement<E> = Partial<E & { children?: any; onClick: any }>
@@ -141,6 +142,7 @@ declare global {
       'wui-search-bar': CustomElement<WuiSearchBar>
       'wui-select': CustomElement<WuiSelect>
       'wui-snackbar': CustomElement<WuiSnackbar>
+      'wui-tab': CustomElement<WuiTab>
       'wui-alertbar': CustomElement<WuiAlertBar>
       'wui-tabs': CustomElement<WuiTabs>
       'wui-tag': CustomElement<WuiTag>

@@ -34,216 +34,216 @@ export default css`
   /* -- Headings --------------------------------------------------- */
   .wui-font-h1-regular-mono {
     font-size: ${({ textSizes }) => textSizes.h1};
-    line-height: ${({ lineHeight }) => lineHeight['h1-regular-mono']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['h1-regular-mono']};
+    line-height: ${({ typography }) => typography['h1-regular-mono'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['h1-regular-mono'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.mono};
   }
 
   .wui-font-h1-regular {
     font-size: ${({ textSizes }) => textSizes.h1};
-    line-height: ${({ lineHeight }) => lineHeight['h1-regular']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['h1-regular']};
+    line-height: ${({ typography }) => typography['h1-regular'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['h1-regular'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.regular};
   }
 
   .wui-font-h1-medium {
     font-size: ${({ textSizes }) => textSizes.h1};
-    line-height: ${({ lineHeight }) => lineHeight['h1-medium']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['h1-medium']};
+    line-height: ${({ typography }) => typography['h1-medium'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['h1-medium'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.medium};
     font-family: ${({ fontFamily }) => fontFamily.regular};
   }
 
   .wui-font-h2-regular-mono {
     font-size: ${({ textSizes }) => textSizes.h2};
-    line-height: ${({ lineHeight }) => lineHeight['h2-regular-mono']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['h2-regular-mono']};
+    line-height: ${({ typography }) => typography['h2-regular-mono'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['h2-regular-mono'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.mono};
   }
 
   .wui-font-h2-regular {
     font-size: ${({ textSizes }) => textSizes.h2};
-    line-height: ${({ lineHeight }) => lineHeight['h2-regular']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['h2-regular']};
+    line-height: ${({ typography }) => typography['h2-regular'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['h2-regular'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.regular};
   }
 
   .wui-font-h2-medium {
     font-size: ${({ textSizes }) => textSizes.h2};
-    line-height: ${({ lineHeight }) => lineHeight['h2-medium']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['h2-medium']};
+    line-height: ${({ typography }) => typography['h2-medium'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['h2-medium'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.medium};
     font-family: ${({ fontFamily }) => fontFamily.regular};
   }
 
   .wui-font-h3-regular-mono {
     font-size: ${({ textSizes }) => textSizes.h3};
-    line-height: ${({ lineHeight }) => lineHeight['h3-regular-mono']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['h3-regular-mono']};
+    line-height: ${({ typography }) => typography['h3-regular-mono'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['h3-regular-mono'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.mono};
   }
 
   .wui-font-h3-regular {
     font-size: ${({ textSizes }) => textSizes.h3};
-    line-height: ${({ lineHeight }) => lineHeight['h3-regular']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['h3-regular']};
+    line-height: ${({ typography }) => typography['h3-regular'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['h3-regular'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.regular};
   }
 
   .wui-font-h3-medium {
     font-size: ${({ textSizes }) => textSizes.h3};
-    line-height: ${({ lineHeight }) => lineHeight['h3-medium']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['h3-medium']};
+    line-height: ${({ typography }) => typography['h3-medium'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['h3-medium'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.medium};
     font-family: ${({ fontFamily }) => fontFamily.regular};
   }
 
   .wui-font-h4-regular-mono {
     font-size: ${({ textSizes }) => textSizes.h4};
-    line-height: ${({ lineHeight }) => lineHeight['h4-regular-mono']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['h4-regular-mono']};
+    line-height: ${({ typography }) => typography['h4-regular-mono'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['h4-regular-mono'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.mono};
   }
 
   .wui-font-h4-regular {
     font-size: ${({ textSizes }) => textSizes.h4};
-    line-height: ${({ lineHeight }) => lineHeight['h4-regular']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['h4-regular']};
+    line-height: ${({ typography }) => typography['h4-regular'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['h4-regular'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.regular};
   }
 
   .wui-font-h4-medium {
     font-size: ${({ textSizes }) => textSizes.h4};
-    line-height: ${({ lineHeight }) => lineHeight['h4-medium']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['h4-medium']};
+    line-height: ${({ typography }) => typography['h4-medium'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['h4-medium'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.medium};
     font-family: ${({ fontFamily }) => fontFamily.regular};
   }
 
   .wui-font-h5-regular-mono {
     font-size: ${({ textSizes }) => textSizes.h5};
-    line-height: ${({ lineHeight }) => lineHeight['h5-regular-mono']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['h5-regular-mono']};
+    line-height: ${({ typography }) => typography['h5-regular-mono'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['h5-regular-mono'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.mono};
   }
 
   .wui-font-h5-regular {
     font-size: ${({ textSizes }) => textSizes.h5};
-    line-height: ${({ lineHeight }) => lineHeight['h5-regular']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['h5-regular']};
+    line-height: ${({ typography }) => typography['h5-regular'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['h5-regular'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.regular};
   }
 
   .wui-font-h5-medium {
     font-size: ${({ textSizes }) => textSizes.h5};
-    line-height: ${({ lineHeight }) => lineHeight['h5-medium']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['h5-medium']};
+    line-height: ${({ typography }) => typography['h5-medium'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['h5-medium'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.medium};
     font-family: ${({ fontFamily }) => fontFamily.regular};
   }
 
   .wui-font-h6-regular-mono {
     font-size: ${({ textSizes }) => textSizes.h6};
-    line-height: ${({ lineHeight }) => lineHeight['h6-regular-mono']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['h6-regular-mono']};
+    line-height: ${({ typography }) => typography['h6-regular-mono'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['h6-regular-mono'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.mono};
   }
 
   .wui-font-h6-regular {
     font-size: ${({ textSizes }) => textSizes.h6};
-    line-height: ${({ lineHeight }) => lineHeight['h6-regular']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['h6-regular']};
+    line-height: ${({ typography }) => typography['h6-regular'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['h6-regular'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.regular};
   }
 
   .wui-font-h6-medium {
     font-size: ${({ textSizes }) => textSizes.h6};
-    line-height: ${({ lineHeight }) => lineHeight['h6-medium']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['h6-medium']};
+    line-height: ${({ typography }) => typography['h6-medium'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['h6-medium'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.medium};
     font-family: ${({ fontFamily }) => fontFamily.regular};
   }
 
   .wui-font-lg-regular-mono {
     font-size: ${({ textSizes }) => textSizes.large};
-    line-height: ${({ lineHeight }) => lineHeight['lg-regular-mono']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['lg-regular-mono']};
+    line-height: ${({ typography }) => typography['lg-regular-mono'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['lg-regular-mono'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.mono};
   }
 
   .wui-font-lg-regular {
     font-size: ${({ textSizes }) => textSizes.large};
-    line-height: ${({ lineHeight }) => lineHeight['lg-regular']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['lg-regular']};
+    line-height: ${({ typography }) => typography['lg-regular'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['lg-regular'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.regular};
   }
 
   .wui-font-lg-medium {
     font-size: ${({ textSizes }) => textSizes.large};
-    line-height: ${({ lineHeight }) => lineHeight['lg-medium']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['lg-medium']};
+    line-height: ${({ typography }) => typography['lg-medium'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['lg-medium'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.medium};
     font-family: ${({ fontFamily }) => fontFamily.regular};
   }
 
   .wui-font-md-regular-mono {
     font-size: ${({ textSizes }) => textSizes.medium};
-    line-height: ${({ lineHeight }) => lineHeight['md-regular-mono']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['md-regular-mono']};
+    line-height: ${({ typography }) => typography['md-regular-mono'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['md-regular-mono'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.mono};
   }
 
   .wui-font-md-regular {
     font-size: ${({ textSizes }) => textSizes.medium};
-    line-height: ${({ lineHeight }) => lineHeight['md-regular']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['md-regular']};
+    line-height: ${({ typography }) => typography['md-regular'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['md-regular'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.regular};
   }
 
   .wui-font-md-medium {
     font-size: ${({ textSizes }) => textSizes.medium};
-    line-height: ${({ lineHeight }) => lineHeight['md-medium']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['md-medium']};
+    line-height: ${({ typography }) => typography['md-medium'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['md-medium'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.medium};
     font-family: ${({ fontFamily }) => fontFamily.regular};
   }
 
   .wui-font-sm-regular-mono {
     font-size: ${({ textSizes }) => textSizes.small};
-    line-height: ${({ lineHeight }) => lineHeight['sm-regular-mono']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['sm-regular-mono']};
+    line-height: ${({ typography }) => typography['sm-regular-mono'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['sm-regular-mono'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.mono};
   }
 
   .wui-font-sm-regular {
     font-size: ${({ textSizes }) => textSizes.small};
-    line-height: ${({ lineHeight }) => lineHeight['sm-regular']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['sm-regular']};
+    line-height: ${({ typography }) => typography['sm-regular'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['sm-regular'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.regular};
   }
 
   .wui-font-sm-medium {
     font-size: ${({ textSizes }) => textSizes.small};
-    line-height: ${({ lineHeight }) => lineHeight['sm-medium']};
-    letter-spacing: ${({ letterSpacing }) => letterSpacing['sm-medium']};
+    line-height: ${({ typography }) => typography['sm-medium'].lineHeight};
+    letter-spacing: ${({ typography }) => typography['sm-medium'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.medium};
     font-family: ${({ fontFamily }) => fontFamily.regular};
   }

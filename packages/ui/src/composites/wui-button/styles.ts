@@ -6,7 +6,6 @@ export default css`
   }
 
   button {
-    border: none;
     width: var(--local-width);
     white-space: nowrap;
     column-gap: ${({ spacing }) => spacing[2]};

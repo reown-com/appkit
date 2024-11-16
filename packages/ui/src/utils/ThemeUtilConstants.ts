@@ -191,6 +191,7 @@ export const radii = {
   '4': '16px',
   '8': '32px',
   '16': '64px',
+  '20': '80px',
   '32': '128px',
   '64': '256px',
   '128': '512px',
@@ -239,80 +240,51 @@ const textSizes = {
   small: '12px'
 }
 
-const lineHeight = {
-  'h1-regular-mono': '50px',
-  'h1-regular': '50px',
-  'h1-medium': '50px',
+const typography = {
+  /* Heading 1 */
+  'h1-regular-mono': { lineHeight: '50px', letterSpacing: '-3px' },
+  'h1-regular': { lineHeight: '50px', letterSpacing: '-1px' },
+  'h1-medium': { lineHeight: '50px', letterSpacing: '-0.84px' },
 
-  'h2-regular-mono': '64px',
-  'h2-regular': '64px',
-  'h2-medium': '64px',
+  /* Heading 2 */
+  'h2-regular-mono': { lineHeight: '64px', letterSpacing: '-2.64px' },
+  'h2-regular': { lineHeight: '64px', letterSpacing: '-0.88px' },
+  'h2-medium': { lineHeight: '64px', letterSpacing: '-0.88px' },
 
-  'h3-regular-mono': '64px',
-  'h3-regular': '64px',
-  'h3-medium': '64px',
+  /* Heading 3 */
+  'h3-regular-mono': { lineHeight: '64px', letterSpacing: '-2.28px' },
+  'h3-regular': { lineHeight: '64px', letterSpacing: '-0.76px' },
+  'h3-medium': { lineHeight: '64px', letterSpacing: '-0.76px' },
 
-  'h4-regular-mono': '32px',
-  'h4-regular': '32px',
-  'h4-medium': '32px',
+  /* Heading 4 */
+  'h4-regular-mono': { lineHeight: '32px', letterSpacing: '-1.92px' },
+  'h4-regular': { lineHeight: '32px', letterSpacing: '-0.32px' },
+  'h4-medium': { lineHeight: '32px', letterSpacing: '-0.32px' },
 
-  'h5-regular-mono': '26px',
-  'h5-regular': '26px',
-  'h5-medium': '26px',
+  /* Heading 5 */
+  'h5-regular-mono': { lineHeight: '26px', letterSpacing: '-1.56px' },
+  'h5-regular': { lineHeight: '26px', letterSpacing: '-0.26px' },
+  'h5-medium': { lineHeight: '26px', letterSpacing: '-0.26px' },
 
-  'h6-regular-mono': '20px',
-  'h6-regular': '20px',
-  'h6-medium': '20px',
+  /* Heading 6 */
+  'h6-regular-mono': { lineHeight: '20px', letterSpacing: '-1.2px' },
+  'h6-regular': { lineHeight: '20px', letterSpacing: '-0.6px' },
+  'h6-medium': { lineHeight: '20px', letterSpacing: '-0.6px' },
 
-  'lg-regular-mono': '16px',
-  'lg-regular': '18px',
-  'lg-medium': '18px',
+  /* Large */
+  'lg-regular-mono': { lineHeight: '16px', letterSpacing: '-0.96px' },
+  'lg-regular': { lineHeight: '18px', letterSpacing: '-0.16px' },
+  'lg-medium': { lineHeight: '18px', letterSpacing: '-0.16px' },
 
-  'md-regular-mono': '14px',
-  'md-regular': '16px',
-  'md-medium': '16px',
+  /* Medium */
+  'md-regular-mono': { lineHeight: '14px', letterSpacing: '-0.84px' },
+  'md-regular': { lineHeight: '16px', letterSpacing: '-0.14px' },
+  'md-medium': { lineHeight: '16px', letterSpacing: '-0.14px' },
 
-  'sm-regular-mono': '12px',
-  'sm-regular': '14px',
-  'sm-medium': '14px'
-}
-
-const letterSpacing = {
-  'h1-regular-mono': '-3px',
-  'h1-regular': '-1px',
-  'h1-medium': '-0.84px',
-
-  'h2-regular-mono': '-2.64px',
-  'h2-regular': '-0.88px',
-  'h2-medium': '-0.88px',
-
-  'h3-regular-mono': '-2.28px',
-  'h3-regular': '-0.76px',
-  'h3-medium': '-0.76px',
-
-  'h4-regular-mono': '-1.92px',
-  'h4-regular': '-0.32px',
-  'h4-medium': '-0.32px',
-
-  'h5-regular-mono': '-1.56px',
-  'h5-regular': '-0.26px',
-  'h5-medium': '-0.26px',
-
-  'h6-regular-mono': '-1.2px',
-  'h6-regular': '-0.6px',
-  'h6-medium': '-0.6px',
-
-  'lg-regular-mono': '-0.96px',
-  'lg-regular': '-0.16px',
-  'lg-medium': '-0.16px',
-
-  'md-regular-mono': '-0.84px',
-  'md-regular': '-0.14px',
-  'md-medium': '-0.14px',
-
-  'sm-regular-mono': '-0.72px',
-  'sm-regular': '-0.12px',
-  'sm-medium': '-0.12px'
+  /* Small */
+  'sm-regular-mono': { lineHeight: '12px', letterSpacing: '-0.72px' },
+  'sm-regular': { lineHeight: '14px', letterSpacing: '-0.12px' },
+  'sm-medium': { lineHeight: '14px', letterSpacing: '-0.12px' }
 }
 
 export const styles = {
@@ -320,8 +292,7 @@ export const styles = {
   fontFamily,
   fontWeight,
   textSizes,
-  lineHeight,
-  letterSpacing,
+  typography,
   tokens: {
     core: tokens.core,
     theme: tokens.dark

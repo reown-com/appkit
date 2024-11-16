@@ -29,7 +29,7 @@ export class WuiShortcut extends LitElement {
 
   @property() public iconSize?: Exclude<SizeType, 'inherit'>
 
-  @property() public iconColor: ColorType = 'accent-100'
+  @property() public iconColor?: ColorType = undefined
 
   // -- Render -------------------------------------------- //
   public override render() {

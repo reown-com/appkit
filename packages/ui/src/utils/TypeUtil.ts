@@ -1,4 +1,6 @@
-export type TextColorType = 'primary' | 'secondary' | 'tertiary' | 'invert'
+export type ColorType = string
+
+export type TextColorType = 'inherit' | 'primary' | 'secondary' | 'tertiary' | 'invert'
 
 export type FontFamilyType = 'regular' | 'mono'
 
@@ -81,6 +83,8 @@ export interface IWalletImage {
   src: string
   walletName?: string
 }
+
+export type TabSize = 'sm' | 'md' | 'lg'
 
 export type GridContentType =
   | 'center'

@@ -2,7 +2,7 @@ import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import { colorStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { ColorType, IconType, SizeType } from '../../utils/TypeUtil.js'
+import type { IconType, SizeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -175,12 +175,14 @@ export class WuiIcon extends LitElement {
 
   @property() public name: IconType = 'copy'
 
-  @property() public color: ColorType = 'fg-300'
+  /*
+   *   @property() public color?: ColorType = undefined
+   */
 
   // -- Render -------------------------------------------- //
   public override render() {
+    /* --local-color: ${`var(--wui-color-${this.color});`} */
     this.style.cssText = `
-      --local-color: ${`var(--wui-color-${this.color});`}
       --local-width: ${`var(--wui-icon-size-${this.size});`}
     `
 

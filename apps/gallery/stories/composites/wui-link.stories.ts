@@ -12,11 +12,11 @@ export default {
   args: {
     disabled: false,
     variant: 'accent',
-    size: 'lg'
+    size: 'md'
   },
   argTypes: {
     size: {
-      options: ['md', 'lg'],
+      options: ['sm', 'md'],
       control: { type: 'select' }
     },
     disabled: {
