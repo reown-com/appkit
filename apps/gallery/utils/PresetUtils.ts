@@ -6,7 +6,7 @@ import type {
   CardSelectType,
   ChipButtonVariant,
   ChipType,
-  ColorType,
+  TextColorType,
   FlexAlignItemsType,
   FlexBasisType,
   FlexDirectionType,
@@ -32,36 +32,36 @@ import type {
 } from '@reown/appkit-ui/src/utils/TypeUtil'
 import type { TransactionStatus, TransactionDirection } from '@reown/appkit-common'
 
-export const colorOptions: ColorType[] = [
-  'accent-100',
-  'error-100',
-  'fg-100',
-  'fg-150',
-  'fg-200',
-  'fg-300',
-  'inherit',
-  'inverse-000',
-  'inverse-100',
-  'success-100'
-]
+export const textColorOptions: TextColorType[] = ['primary', 'secondary', 'tertiary', 'invert']
 
 export const textOptions: TextType[] = [
-  'micro-700',
-  'micro-600',
-  'mini-700',
-  'tiny-500',
-  'tiny-600',
-  'small-500',
-  'small-600',
-  'medium-400',
-  'paragraph-400',
-  'paragraph-500',
-  'paragraph-600',
-  'paragraph-700',
-  'large-500',
-  'large-600',
-  'large-700',
-  '2xl-500'
+  'h1-regular-mono',
+  'h1-regular',
+  'h1-medium',
+  'h2-regular-mono',
+  'h2-regular',
+  'h2-medium',
+  'h3-regular-mono',
+  'h3-regular',
+  'h3-medium',
+  'h4-regular-mono',
+  'h4-regular',
+  'h4-medium',
+  'h5-regular-mono',
+  'h5-regular',
+  'h5-medium',
+  'h6-regular-mono',
+  'h6-regular',
+  'h6-medium',
+  'lg-regular-mono',
+  'lg-regular',
+  'lg-medium',
+  'md-regular-mono',
+  'md-regular',
+  'md-medium',
+  'sm-regular-mono',
+  'sm-regular',
+  'sm-medium'
 ]
 
 export const textAlignOptions: TextAlign[] = ['center', 'left', 'right']

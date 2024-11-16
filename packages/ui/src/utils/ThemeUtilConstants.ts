@@ -217,14 +217,111 @@ export const spacing = {
   '64': '256px'
 }
 
-const fonts = {
+const fontFamily = {
   regular: 'KHTeka',
   mono: 'KHTekaMono'
 }
 
+const fontWeight = {
+  regular: '400',
+  medium: '500'
+}
+
+const textSizes = {
+  h1: '50px',
+  h2: '44px',
+  h3: '38px',
+  h4: '32px',
+  h5: '26px',
+  h6: '20px',
+  large: '16px',
+  medium: '14px',
+  small: '12px'
+}
+
+const lineHeight = {
+  'h1-regular-mono': '50px',
+  'h1-regular': '50px',
+  'h1-medium': '50px',
+
+  'h2-regular-mono': '64px',
+  'h2-regular': '64px',
+  'h2-medium': '64px',
+
+  'h3-regular-mono': '64px',
+  'h3-regular': '64px',
+  'h3-medium': '64px',
+
+  'h4-regular-mono': '32px',
+  'h4-regular': '32px',
+  'h4-medium': '32px',
+
+  'h5-regular-mono': '26px',
+  'h5-regular': '26px',
+  'h5-medium': '26px',
+
+  'h6-regular-mono': '20px',
+  'h6-regular': '20px',
+  'h6-medium': '20px',
+
+  'lg-regular-mono': '16px',
+  'lg-regular': '18px',
+  'lg-medium': '18px',
+
+  'md-regular-mono': '14px',
+  'md-regular': '16px',
+  'md-medium': '16px',
+
+  'sm-regular-mono': '12px',
+  'sm-regular': '14px',
+  'sm-medium': '14px'
+}
+
+const letterSpacing = {
+  'h1-regular-mono': '-3px',
+  'h1-regular': '-1px',
+  'h1-medium': '-0.84px',
+
+  'h2-regular-mono': '-2.64px',
+  'h2-regular': '-0.88px',
+  'h2-medium': '-0.88px',
+
+  'h3-regular-mono': '-2.28px',
+  'h3-regular': '-0.76px',
+  'h3-medium': '-0.76px',
+
+  'h4-regular-mono': '-1.92px',
+  'h4-regular': '-0.32px',
+  'h4-medium': '-0.32px',
+
+  'h5-regular-mono': '-1.56px',
+  'h5-regular': '-0.26px',
+  'h5-medium': '-0.26px',
+
+  'h6-regular-mono': '-1.2px',
+  'h6-regular': '-0.6px',
+  'h6-medium': '-0.6px',
+
+  'lg-regular-mono': '-0.96px',
+  'lg-regular': '-0.16px',
+  'lg-medium': '-0.16px',
+
+  'md-regular-mono': '-0.84px',
+  'md-regular': '-0.14px',
+  'md-medium': '-0.14px',
+
+  'sm-regular-mono': '-0.72px',
+  'sm-regular': '-0.12px',
+  'sm-medium': '-0.12px'
+}
+
 export const styles = {
   colors,
-  fonts,
+  fontFamily,
+  fontWeight,
+  textSizes,
+  lineHeight,
+  letterSpacing,
   tokens: {
     core: tokens.core,
     theme: tokens.dark

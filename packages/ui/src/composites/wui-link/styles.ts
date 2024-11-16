@@ -10,7 +10,6 @@ export default css`
     border-radius: ${({ radii }) => radii[1]};
     padding: 0 ${({ spacing }) => spacing[1]};
     border-radius: ${({ spacing }) => spacing[1]};
-    font-family: ${({ fonts }) => fonts.regular};
   }
 
   /* -- Variants --------------------------------------------------------- */

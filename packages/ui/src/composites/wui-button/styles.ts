@@ -9,7 +9,6 @@ export default css`
     border: none;
     width: var(--local-width);
     white-space: nowrap;
-    font-family: ${({ fonts }) => fonts.mono};
     column-gap: ${({ spacing }) => spacing[2]};
   }
 
