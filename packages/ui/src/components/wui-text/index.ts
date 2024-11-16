@@ -13,7 +13,7 @@ export class WuiText extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public variant: TextType = 'paragraph-500'
 
-  @property() public color: ColorType = 'fg-300'
+  @property() public color?: ColorType = 'fg-300'
 
   @property() public align?: TextAlign = 'left'
 
@@ -30,7 +30,7 @@ export class WuiText extends LitElement {
 
     this.style.cssText = `
       --local-align: ${this.align};
-      --local-color: var(--wui-color-${this.color});
+      --local-color: ${this.color};
     `
 
     return html`<slot class=${classMap(classes)}></slot>`

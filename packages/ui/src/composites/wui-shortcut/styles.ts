@@ -41,6 +41,10 @@ export default css`
       border-radius: ${({ radii }) => radii[128]};
     }
 
+    button[data-variant='secondary']:hover:enabled {
+      background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+    }
+
     button:active:enabled {
       box-shadow: 0px 0px 0px 4px rgba(9, 136, 240, 0.2);
     }

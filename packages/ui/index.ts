@@ -79,7 +79,7 @@ export * from './src/composites/wui-select/index.js'
 export * from './src/composites/wui-checkbox/index.js'
 export * from './src/composites/wui-switch/index.js'
 export * from './src/composites/wui-certified-switch/index.js'
-export * from './src/composites/wui-shortcut-button/index.js'
+export * from './src/composites/wui-shortcut/index.js'
 
 export * from './src/layout/wui-flex/index.js'
 export * from './src/layout/wui-grid/index.js'

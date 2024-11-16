@@ -20,14 +20,15 @@ import type {
   IconType,
   LogoType,
   PlacementType,
-  ShortcutButtonVariant,
+  ButtonShortcutVariant,
   SpacingType,
   TagType,
   TextAlign,
   TextType,
   ThemeType,
   TransactionType,
-  VisualType
+  VisualType,
+  ButtonLinkVariant
 } from '@reown/appkit-ui/src/utils/TypeUtil'
 import type { TransactionStatus, TransactionDirection } from '@reown/appkit-common'
 
@@ -280,7 +281,9 @@ export const buttonOptions: ButtonVariant[] = [
   'error-secondary'
 ]
 
-export const buttonShortcutOptions: ShortcutButtonVariant[] = ['accent', 'secondary']
+export const buttonShortcutOptions: ButtonShortcutVariant[] = ['accent', 'secondary']
+
+export const buttonLinkOptions: ButtonLinkVariant[] = ['accent', 'secondary']
 
 export const transactionTypeOptions: TransactionType[] = [
   'approve',

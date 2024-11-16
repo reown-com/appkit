@@ -109,6 +109,7 @@ export type IconType =
   | 'arrowLeft'
   | 'arrowRight'
   | 'arrowTop'
+  | 'arrowTopRight'
   | 'bank'
   | 'browser'
   | 'card'
@@ -231,7 +232,8 @@ export type ButtonVariant =
   | 'error-primary'
   | 'error-secondary'
 
-export type ShortcutButtonVariant = 'accent' | 'secondary'
+export type ButtonShortcutVariant = 'accent' | 'secondary'
+export type ButtonLinkVariant = 'accent' | 'secondary'
 
 export type TransactionType =
   | 'approve'

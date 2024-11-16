@@ -84,6 +84,7 @@ import { idSvg } from '../../assets/svg/id.js'
 import { xSvg } from '../../assets/svg/x.js'
 import { infoSvg } from '../../assets/svg/info.js'
 import { exclamationTriangleSvg } from '../../assets/svg/exclamation-triangle.js'
+import { arrowTopRightSvg } from '../../assets/svg/arrowTopRight.js'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   add: addSvg,
@@ -95,6 +96,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   arrowLeft: arrowLeftSvg,
   arrowRight: arrowRightSvg,
   arrowTop: arrowTopSvg,
+  arrowTopRight: arrowTopRightSvg,
   bank: bankSvg,
   browser: browserSvg,
   card: cardSvg,

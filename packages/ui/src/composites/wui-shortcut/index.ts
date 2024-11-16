@@ -6,17 +6,15 @@ import type {
   ButtonSize,
   ColorType,
   IconType,
-  ShortcutButtonVariant,
+  ButtonShortcutVariant,
   SizeType
 } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
-// -- Constants ------------------------------------------ //
-
 // -- Component ------------------------------------------ //
-@customElement('wui-shortcut-button')
-export class WuiShortcutButton extends LitElement {
+@customElement('wui-shortcut')
+export class WuiShortcut extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
@@ -25,7 +23,7 @@ export class WuiShortcutButton extends LitElement {
 
   @property({ type: Boolean }) public disabled = false
 
-  @property() public variant: ShortcutButtonVariant = 'accent'
+  @property() public variant: ButtonShortcutVariant = 'accent'
 
   @property() public icon: IconType = 'copy'
 
@@ -50,6 +48,6 @@ export class WuiShortcutButton extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'wui-shortcut-button': WuiShortcutButton
+    'wui-shortcut': WuiShortcut
   }
 }

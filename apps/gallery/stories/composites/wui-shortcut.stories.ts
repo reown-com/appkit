@@ -1,14 +1,14 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui/src/composites/wui-shortcut-button'
-import type { WuiShortcutButton } from '@reown/appkit-ui/src/composites/wui-shortcut-button'
+import '@reown/appkit-ui/src/composites/wui-shortcut'
+import type { WuiShortcut } from '@reown/appkit-ui/src/composites/wui-shortcut'
 import { html } from 'lit'
 
 import { buttonShortcutOptions, colorOptions, iconOptions } from '../../utils/PresetUtils'
 
-type Component = Meta<WuiShortcutButton>
+type Component = Meta<WuiShortcut>
 
 export default {
-  title: 'Composites/wui-shortcut-button',
+  title: 'Composites/wui-shortcut',
   args: {
     size: 'md',
     variant: 'accent',
@@ -48,11 +48,11 @@ export default {
 
 export const Default: Component = {
   render: args =>
-    html`<wui-shortcut-button
+    html`<wui-shortcut
       size=${args.size}
       variant=${args.variant}
       icon=${args.icon}
       iconColor=${args.iconColor}
       ?disabled=${args.disabled}
-    ></wui-shortcut-button>`
+    ></wui-shortcut>`
 }

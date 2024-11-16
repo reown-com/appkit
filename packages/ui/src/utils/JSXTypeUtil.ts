@@ -75,7 +75,7 @@ import type { WuiSeparator } from '../layout/wui-separator/index.js'
 import type { WuiCheckBox } from '../composites/wui-checkbox/index.js'
 import type { WuiSwitch } from '../composites/wui-switch/index.js'
 import type { WuiCertifiedSwitch } from '../composites/wui-certified-switch/index.js'
-import type { WuiShortcutButton } from '../composites/wui-shortcut-button/index.js'
+import type { WuiShortcut } from '../composites/wui-shortcut/index.js'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type CustomElement<E> = Partial<E & { children?: any; onClick: any }>
@@ -158,7 +158,7 @@ declare global {
       'wui-checkbox': CustomElement<WuiCheckBox>
       'wui-switch': CustomElement<WuiSwitch>
       'wui-certified-switch': CustomElement<WuiCertifiedSwitch>
-      'wui-shortcut-button': CustomElement<WuiShortcutButton>
+      'wui-shortcut': CustomElement<WuiShortcut>
       // -- Layout ------------------------------------------- //
       'wui-flex': CustomElement<WuiFlex>
       'wui-grid': CustomElement<WuiGrid>

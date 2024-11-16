@@ -3,7 +3,6 @@ import { css } from '../../utils/ThemeHelperUtil.js'
 export default css`
   :host {
     width: var(--local-width);
-    position: relative;
   }
 
   button {
