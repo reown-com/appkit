@@ -5,9 +5,10 @@ import styles from './styles.js'
 import { colorStyles, elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+import type { ToggleSizes } from '../../utils/TypeUtil.js'
 
-@customElement('wui-switch')
-export class WuiSwitch extends LitElement {
+@customElement('wui-toggle')
+export class WuiToggle extends LitElement {
   public static override styles = [resetStyles, elementStyles, colorStyles, styles]
 
   // -- Members ------------------------------------------- //
@@ -16,14 +17,19 @@ export class WuiSwitch extends LitElement {
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) public checked?: boolean = undefined
 
+  @property({ type: Boolean }) public disabled = false
+
+  @property() public size: ToggleSizes = 'md'
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <label>
+      <label data-size=${this.size}>
         <input
           ${ref(this.inputElementRef)}
           type="checkbox"
           ?checked=${ifDefined(this.checked)}
+          ?disabled=${this.disabled}
           @change=${this.dispatchChangeEvent.bind(this)}
         />
         <span></span>
@@ -45,6 +51,6 @@ export class WuiSwitch extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'wui-switch': WuiSwitch
+    'wui-toggle': WuiToggle
   }
 }

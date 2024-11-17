@@ -48,7 +48,7 @@ import type { WuiNetworkImage } from '../composites/wui-network-image/index.js'
 import type { WuiOtp } from '../composites/wui-otp/index.js'
 import type { WuiQrCode } from '../composites/wui-qr-code/index.js'
 import type { WuiSearchBar } from '../composites/wui-search-bar/index.js'
-import type { WuiSelect } from '../composites/wui-select/index.js'
+import type { WuiNetworkSwitch } from '../composites/wui-network-switch/index.js'
 import type { WuiSnackbar } from '../composites/wui-snackbar/index.js'
 import type { WuiTabs } from '../composites/wui-tabs/index.js'
 import type { WuiTag } from '../composites/wui-tag/index.js'
@@ -73,7 +73,7 @@ import type { WuiFlex } from '../layout/wui-flex/index.js'
 import type { WuiGrid } from '../layout/wui-grid/index.js'
 import type { WuiSeparator } from '../layout/wui-separator/index.js'
 import type { WuiCheckBox } from '../composites/wui-checkbox/index.js'
-import type { WuiSwitch } from '../composites/wui-switch/index.js'
+import type { WuiToggle } from '../composites/wui-toggle/index.js'
 import type { WuiCertifiedSwitch } from '../composites/wui-certified-switch/index.js'
 import type { WuiShortcut } from '../composites/wui-shortcut/index.js'
 import type { WuiTab } from '../../index.js'
@@ -140,7 +140,7 @@ declare global {
       'wui-promo': CustomElement<WuiPromo>
       'wui-qr-code': CustomElement<WuiQrCode>
       'wui-search-bar': CustomElement<WuiSearchBar>
-      'wui-select': CustomElement<WuiSelect>
+      'wui-network-switch': CustomElement<WuiNetworkSwitch>
       'wui-snackbar': CustomElement<WuiSnackbar>
       'wui-tab': CustomElement<WuiTab>
       'wui-alertbar': CustomElement<WuiAlertBar>
@@ -158,7 +158,7 @@ declare global {
       'wui-banner': CustomElement<WuiBanner>
       'wui-list-account': CustomElement<WuiListAccount>
       'wui-checkbox': CustomElement<WuiCheckBox>
-      'wui-switch': CustomElement<WuiSwitch>
+      'wui-toggle': CustomElement<WuiToggle>
       'wui-certified-switch': CustomElement<WuiCertifiedSwitch>
       'wui-shortcut': CustomElement<WuiShortcut>
       // -- Layout ------------------------------------------- //

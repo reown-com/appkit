@@ -15,7 +15,7 @@ const TEXT_VARIANT_BY_SIZE = {
   sm: 'sm-regular'
 }
 
-const ICON_SIZE_BY_SIZE = {
+const ICON_SIZE = {
   lg: 'sm',
   md: 'xs',
   sm: 'xxs'
@@ -38,7 +38,7 @@ export class WuiTab extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     const textVariant = TEXT_VARIANT_BY_SIZE[this.size]
-    const iconSize = ICON_SIZE_BY_SIZE[this.size]
+    const iconSize = ICON_SIZE[this.size]
 
     return html`
       <button data-active=${this.active} data-testid="tab-${this.label.toLowerCase()}">

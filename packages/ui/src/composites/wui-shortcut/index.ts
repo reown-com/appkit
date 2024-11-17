@@ -11,6 +11,7 @@ import type {
 } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 // -- Component ------------------------------------------ //
 @customElement('wui-shortcut')
@@ -40,7 +41,11 @@ export class WuiShortcut extends LitElement {
         ?disabled=${this.disabled}
         ontouchstart
       >
-        <wui-icon color=${this.iconColor} size=${this.iconSize} name=${this.icon}></wui-icon>
+        <wui-icon
+          color=${ifDefined(this.iconColor)}
+          size=${this.iconSize}
+          name=${this.icon}
+        ></wui-icon>
       </button>
     `
   }

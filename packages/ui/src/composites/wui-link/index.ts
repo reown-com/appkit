@@ -19,7 +19,7 @@ const TEXT_COLOR_BY_VARIANT = {
   secondary: 'secondary'
 }
 
-const ICON_SIZE_BY_SIZE = {
+const ICON_SIZE = {
   sm: '3xs',
   md: 'xxs'
 }
@@ -39,7 +39,7 @@ export class WuiLink extends LitElement {
   public override render() {
     const textVariant = TEXT_VARIANT_BY_SIZE[this.size]
     const textColor = TEXT_COLOR_BY_VARIANT[this.variant]
-    const iconSize = ICON_SIZE_BY_SIZE[this.size]
+    const iconSize = ICON_SIZE[this.size]
 
     return html`
       <button ?disabled=${this.disabled} data-variant=${this.variant} ontouchstart>
