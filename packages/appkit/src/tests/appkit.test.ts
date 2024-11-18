@@ -27,6 +27,8 @@ import {
   type SafeLocalStorageItems
 } from '@reown/appkit-common'
 import { mockOptions } from './mocks/Options'
+import { UniversalAdapter } from '../universal-adapter/client'
+import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint'
 
 // Mock all controllers and UniversalAdapterClient
 vi.mock('@reown/appkit-core')
@@ -501,6 +503,148 @@ describe('Base', () => {
           name: mockConnector.id
         }),
         'eip155'
+      )
+    })
+  })
+  describe('Base Initialization', () => {
+    let appKit: AppKit
+    let mockAdapter: AdapterBlueprint
+    let mockUniversalAdapter: any
+
+    beforeEach(() => {
+      vi.resetAllMocks()
+
+      vi.mocked(ChainController).state = {
+        chains: new Map(),
+        activeChain: 'eip155'
+      } as any
+
+      vi.mocked(ConnectorController).getConnectors = vi.fn().mockReturnValue([])
+
+      mockAdapter = {
+        namespace: 'eip155',
+        construct: vi.fn(),
+        setUniversalProvider: vi.fn(),
+        setAuthProvider: vi.fn(),
+        syncConnectors: vi.fn(),
+        connectors: [],
+        on: vi.fn(),
+        off: vi.fn(),
+        emit: vi.fn()
+      } as unknown as AdapterBlueprint
+
+      vi.mocked(UniversalAdapter).mockImplementation(() => mockUniversalAdapter)
+
+      appKit = new AppKit({
+        ...mockOptions,
+        adapters: [mockAdapter]
+      })
+
+      vi.spyOn(appKit as any, 'getUniversalProvider').mockResolvedValue({
+        on: vi.fn(),
+        off: vi.fn(),
+        emit: vi.fn()
+      })
+    })
+
+    it('should call syncConnectors when initializing adapters', async () => {
+      const createAdapters = (appKit as any).createAdapters.bind(appKit)
+
+      vi.spyOn(appKit as any, 'createUniversalProvider').mockResolvedValue(undefined)
+
+      await createAdapters([mockAdapter])
+
+      expect(mockAdapter.syncConnectors).toHaveBeenCalledWith(
+        expect.objectContaining({
+          projectId: mockOptions.projectId,
+          metadata: mockOptions.metadata
+        }),
+        expect.any(Object)
+      )
+    })
+
+    it('should create UniversalAdapter when no blueprint is provided for namespace', async () => {
+      const createAdapters = (appKit as any).createAdapters.bind(appKit)
+
+      vi.spyOn(appKit as any, 'createUniversalProvider').mockResolvedValue(undefined)
+
+      const mockUniversalAdapter = {
+        setUniversalProvider: vi.fn(),
+        setAuthProvider: vi.fn()
+      }
+
+      vi.mocked(UniversalAdapter).mockImplementation(() => mockUniversalAdapter as any)
+
+      const adapters = await createAdapters([])
+
+      expect(adapters.eip155).toBeDefined()
+      expect(mockUniversalAdapter.setUniversalProvider).toHaveBeenCalled()
+    })
+
+    it('should initialize multiple adapters for different namespaces', async () => {
+      const createAdapters = (appKit as any).createAdapters.bind(appKit)
+
+      const mockSolanaAdapter = {
+        namespace: 'solana',
+        construct: vi.fn(),
+        setUniversalProvider: vi.fn(),
+        setAuthProvider: vi.fn(),
+        syncConnectors: vi.fn(),
+        connectors: [],
+        on: vi.fn(),
+        off: vi.fn(),
+        emit: vi.fn()
+      } as unknown as AdapterBlueprint
+
+      vi.spyOn(appKit as any, 'createUniversalProvider').mockResolvedValue(undefined)
+
+      const adapters = await createAdapters([mockAdapter, mockSolanaAdapter])
+
+      expect(mockAdapter.syncConnectors).toHaveBeenCalled()
+      expect(mockSolanaAdapter.syncConnectors).toHaveBeenCalled()
+      expect(adapters.eip155).toBeDefined()
+      expect(adapters.solana).toBeDefined()
+    })
+
+    it('should set universal provider and auth provider for each adapter', async () => {
+      const createAdapters = (appKit as any).createAdapters.bind(appKit)
+
+      const mockUniversalProvider = {
+        on: vi.fn(),
+        off: vi.fn(),
+        emit: vi.fn()
+      }
+      vi.spyOn(appKit as any, 'createUniversalProvider').mockResolvedValue(undefined)
+      vi.spyOn(appKit as any, 'getUniversalProvider').mockResolvedValue(mockUniversalProvider)
+
+      await createAdapters([mockAdapter])
+
+      expect(mockAdapter.setUniversalProvider).toHaveBeenCalledWith(
+        expect.objectContaining({
+          on: expect.any(Function),
+          off: expect.any(Function),
+          emit: expect.any(Function)
+        })
+      )
+      expect(mockAdapter.setAuthProvider).toHaveBeenCalled()
+    })
+
+    it('should update ChainController state with initialized adapters', async () => {
+      const createAdapters = (appKit as any).createAdapters.bind(appKit)
+
+      vi.spyOn(appKit as any, 'createUniversalProvider').mockResolvedValue(undefined)
+
+      await createAdapters([mockAdapter])
+
+      expect(ChainController.state.chains.get('eip155')).toEqual(
+        expect.objectContaining({
+          namespace: 'eip155',
+          connectionControllerClient: expect.any(Object),
+          networkControllerClient: expect.any(Object),
+          networkState: expect.any(Object),
+          accountState: expect.any(Object),
+          caipNetworks: expect.any(Array)
+        })
       )
     })
   })
