@@ -10,15 +10,20 @@ type Component = Meta<WuiCheckBox>
 export default {
   title: 'Composites/wui-checkbox',
   args: {
-    checked: false
+    disabled: false,
+    size: 'md'
   },
   argTypes: {
-    checked: {
+    disabled: {
       control: { type: 'boolean' }
+    },
+    size: {
+      options: ['sm', 'md', 'lg'],
+      control: { type: 'select' }
     }
   }
 } as Component
 
 export const Default: Component = {
-  render: args => html`<wui-checkbox ?checked=${args.checked}></wui-checkbox>`
+  render: args => html`<wui-checkbox ?disabled=${args.disabled} size=${args.size}></wui-checkbox>`
 }

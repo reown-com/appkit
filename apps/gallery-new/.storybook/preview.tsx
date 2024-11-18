@@ -11,7 +11,7 @@ initializeTheming({})
 const backgroundChangeListener = args => {
   const bgColor = args.globals.backgrounds?.value
   if (bgColor) {
-    const theme = bgColor === '#272A2A' ? 'dark' : 'light'
+    const theme = bgColor === '#202020' ? 'dark' : 'light'
     setColorTheme(theme)
   } else {
     setColorTheme('dark')
@@ -39,11 +39,11 @@ export default {
       values: [
         {
           name: 'dark',
-          value: '#272A2A'
+          value: '#202020'
         },
         {
           name: 'light',
-          value: '#EAF1F1'
+          value: '#FFFFF'
         }
       ]
     },
