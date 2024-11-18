@@ -166,6 +166,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   exclamationTriangle: exclamationTriangleSvg
 }
 
+// @TODO: Add color property
 @customElement('wui-icon')
 export class WuiIcon extends LitElement {
   public static override styles = [resetStyles, colorStyles, styles]

@@ -6,6 +6,7 @@ import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 import { vars } from '../../utils/ThemeHelperUtil.js'
 
+// @TODO: Add color property
 @customElement('wui-loading-spinner')
 export class WuiLoadingSpinner extends LitElement {
   public static override styles = [resetStyles, styles]
