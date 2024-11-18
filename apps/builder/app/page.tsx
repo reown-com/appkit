@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { useAppKit } from '@/contexts/AppKitContext'
+import { useAppKit } from '@/hooks/use-appkit'
 import { SidebarContent } from '@/components/sidebar-content'
 import { PreviewContent } from '@/components/preview-content'
 import { cn } from '@/lib/utils'

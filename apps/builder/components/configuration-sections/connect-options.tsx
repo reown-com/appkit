@@ -1,4 +1,4 @@
-import { useAppKit } from '@/contexts/AppKitContext'
+import { useAppKit } from '@/hooks/use-appkit'
 import { SocialButtons } from '@/components/configuration-sections/social-buttons'
 import { FeatureButton } from '@/components/feature-button'
 

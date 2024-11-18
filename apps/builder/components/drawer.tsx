@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { Drawer } from 'vaul'
 import { SidebarContent } from './sidebar-content'
 import { cn } from '@/lib/utils'
-import { useAppKit } from '@/contexts/AppKitContext'
+import { useAppKit } from '@/hooks/use-appkit'
 
 export default function VaulDrawer() {
   const { themeMode, isDrawerOpen, setIsDrawerOpen } = useAppKit()

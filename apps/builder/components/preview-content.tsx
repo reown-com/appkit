@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { Sun, Moon, RefreshCcw, Share2, Settings } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useAppKit } from '@/contexts/AppKitContext'
+import { useAppKit } from '@/hooks/use-appkit'
 import { toast } from 'sonner'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ThemeMode } from '@reown/appkit'

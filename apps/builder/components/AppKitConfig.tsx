@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { useAppKit } from '@/contexts/AppKitContext'
+import { useAppKit } from '@/hooks/use-appkit'
 import { ThemeMode, ThemeVariables, Features } from '@reown/appkit/core'
 
 export const AppKitConfig: React.FC = () => {
