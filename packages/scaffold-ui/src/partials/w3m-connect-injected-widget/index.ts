@@ -58,7 +58,7 @@ export class W3mConnectInjectedWidget extends LitElement {
 
           const walletRDNS = connector.info?.rdns
 
-          if (!walletRDNS && !ConnectionController.checkInstalled(undefined, connector.chain)) {
+          if (!walletRDNS && !ConnectionController.checkInstalled(undefined)) {
             this.style.cssText = `display: none`
 
             return null
