@@ -25,7 +25,7 @@ export class WuiText extends LitElement {
   public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public variant: TextType = 'h3-regular'
+  @property() public variant: TextType = 'md-regular'
 
   @property() public color?: TextColorType = 'inherit'
 
