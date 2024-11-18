@@ -184,7 +184,7 @@ export const tokens = {
   }
 }
 
-export const radii = {
+export const borderRadius = {
   '1': '4px',
   '6': '6px',
   '2': '8px',
@@ -293,7 +293,7 @@ export const styles = {
   colors,
   fontFamily,
   fontWeight,
-  textSizes,
+  textSize,
   typography,
   tokens: {
     core: tokens.core,
@@ -303,6 +303,6 @@ export const styles = {
      */
     theme: tokens.dark
   },
-  radii,
+  borderRadius,
   spacing
 }

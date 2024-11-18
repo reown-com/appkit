@@ -17,13 +17,13 @@ describe('ThemeHelperUtil', () => {
     }
 
     expect(ThemeHelperUtil.createCSSVariables(styles).cssVariables).toStrictEqual({
-      background: '--apkt--background',
+      background: '--apkt-background',
       theme: {
         dark: {
-          accent: '--apkt--theme-dark-accent'
+          accent: '--apkt-theme-dark-accent'
         },
         light: {
-          accent: '--apkt--theme-light-accent'
+          accent: '--apkt-theme-light-accent'
         }
       }
     })
@@ -32,10 +32,10 @@ describe('ThemeHelperUtil', () => {
     ).toStrictEqual({
       theme: {
         dark: {
-          accent: '--apkt--theme-dark-accent'
+          accent: '--apkt-theme-dark-accent'
         },
         light: {
-          accent: '--apkt--theme-light-accent'
+          accent: '--apkt-theme-light-accent'
         }
       }
     })
@@ -44,10 +44,10 @@ describe('ThemeHelperUtil', () => {
     ).toStrictEqual({
       theme: {
         dark: {
-          accent: '--apkt--theme-dark-accent'
+          accent: '--apkt-theme-dark-accent'
         },
         light: {
-          accent: '--apkt--theme-light-accent'
+          accent: '--apkt-theme-light-accent'
         }
       }
     })
@@ -56,22 +56,22 @@ describe('ThemeHelperUtil', () => {
     ).toStrictEqual({
       theme: {
         dark: {
-          accent: '--apkt--theme-dark-accent'
+          accent: '--apkt-theme-dark-accent'
         },
         light: {
-          accent: '--apkt--theme-light-accent'
+          accent: '--apkt-theme-light-accent'
         }
       }
     })
 
     expect(ThemeHelperUtil.createCSSVariables(styles).cssVariablesVarPrefix).toStrictEqual({
-      background: 'var(--apkt--background)',
+      background: 'var(--apkt-background)',
       theme: {
         dark: {
-          accent: 'var(--apkt--theme-dark-accent)'
+          accent: 'var(--apkt-theme-dark-accent)'
         },
         light: {
-          accent: 'var(--apkt--theme-light-accent)'
+          accent: 'var(--apkt-theme-light-accent)'
         }
       }
     })
@@ -80,10 +80,10 @@ describe('ThemeHelperUtil', () => {
     ).toStrictEqual({
       theme: {
         dark: {
-          accent: 'var(--apkt--theme-dark-accent)'
+          accent: 'var(--apkt-theme-dark-accent)'
         },
         light: {
-          accent: 'var(--apkt--theme-light-accent)'
+          accent: 'var(--apkt-theme-light-accent)'
         }
       }
     })
@@ -92,10 +92,10 @@ describe('ThemeHelperUtil', () => {
     ).toStrictEqual({
       theme: {
         dark: {
-          accent: 'var(--apkt--theme-dark-accent)'
+          accent: 'var(--apkt-theme-dark-accent)'
         },
         light: {
-          accent: 'var(--apkt--theme-light-accent)'
+          accent: 'var(--apkt-theme-light-accent)'
         }
       }
     })
@@ -104,10 +104,10 @@ describe('ThemeHelperUtil', () => {
     ).toStrictEqual({
       theme: {
         dark: {
-          accent: 'var(--apkt--theme-dark-accent)'
+          accent: 'var(--apkt-theme-dark-accent)'
         },
         light: {
-          accent: 'var(--apkt--theme-light-accent)'
+          accent: 'var(--apkt-theme-light-accent)'
         }
       }
     })
@@ -129,21 +129,21 @@ describe('ThemeHelperUtil', () => {
     const { cssVariables } = ThemeHelperUtil.createCSSVariables(styles)
 
     expect(ThemeHelperUtil.assignCSSVariables(cssVariables, styles)).toStrictEqual({
-      '--apkt--background': styles.background,
-      '--apkt--theme-dark-accent': styles.theme.dark.accent,
-      '--apkt--theme-light-accent': styles.theme.light.accent
+      '--apkt-background': styles.background,
+      '--apkt-theme-dark-accent': styles.theme.dark.accent,
+      '--apkt-theme-light-accent': styles.theme.light.accent
     })
     expect(
       ThemeHelperUtil.assignCSSVariables(cssVariables, { ...styles, background: undefined })
     ).toStrictEqual({
-      '--apkt--theme-dark-accent': styles.theme.dark.accent,
-      '--apkt--theme-light-accent': styles.theme.light.accent
+      '--apkt-theme-dark-accent': styles.theme.dark.accent,
+      '--apkt-theme-light-accent': styles.theme.light.accent
     })
     expect(
       ThemeHelperUtil.assignCSSVariables(cssVariables, { ...styles, background: undefined })
     ).toStrictEqual({
-      '--apkt--theme-dark-accent': styles.theme.dark.accent,
-      '--apkt--theme-light-accent': styles.theme.light.accent
+      '--apkt-theme-dark-accent': styles.theme.dark.accent,
+      '--apkt-theme-light-accent': styles.theme.light.accent
     })
   })
 })

@@ -9,7 +9,7 @@ let themeTag: HTMLStyleElement | undefined = undefined
 let darkModeTag: HTMLStyleElement | undefined = undefined
 let lightModeTag: HTMLStyleElement | undefined = undefined
 
-/* Temprorary for now */
+/* @TODO: Replace fonts */
 const fonts = {
   'KHTeka-500':
     'https://res.cloudinary.com/dn7w4dnog/raw/upload/v1731623453/KHTeka-Medium_k8mbxr.otf',
@@ -82,8 +82,6 @@ export function setThemeVariables(themeVariables: ThemeVariables) {
 function createRootStyles(themeVariables?: ThemeVariables) {
   return {
     core: css`
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
       @font-face {
         font-family: 'KHTeka';
         src: url(${unsafeCSS(fonts['KHTeka-500'])}) format('opentype');
@@ -817,6 +815,7 @@ export const resetStyles = css`
     -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: transparent;
     backface-visibility: hidden;
+    font-family: var(--wui-font-family);
   }
 `
 

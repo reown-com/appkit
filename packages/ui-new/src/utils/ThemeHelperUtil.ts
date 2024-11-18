@@ -29,7 +29,7 @@ export const ThemeHelperUtil = {
             variable
           )
         } else if (typeof styleValue === 'string') {
-          parent[styleKey] = `${PREFIX_VAR}--${variable}`
+          parent[styleKey] = `${PREFIX_VAR}-${variable}`
         }
       }
     }
@@ -78,7 +78,7 @@ export const ThemeHelperUtil = {
             nextVariable
           )
         } else if (typeof styleValues === 'string') {
-          assignedCSSVariables[`${PREFIX_VAR}--${nextVariable}`] = styleValues
+          assignedCSSVariables[`${PREFIX_VAR}-${nextVariable}`] = styleValues
         }
       }
     }
