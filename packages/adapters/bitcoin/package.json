@@ -22,7 +22,8 @@
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-core": "workspace:*",
     "@wallet-standard/app": "1.0.1",
-    "@wallet-standard/base": "1.0.1"
+    "@wallet-standard/base": "1.0.1",
+    "sats-connect": "^3.0.1"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "2.1.3",
