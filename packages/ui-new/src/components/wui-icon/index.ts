@@ -2,7 +2,7 @@ import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import { colorStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { ColorType, IconType, SizeType } from '../../utils/TypeUtil.js'
+import type { IconType, SizeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -84,6 +84,7 @@ import { idSvg } from '../../assets/svg/id.js'
 import { xSvg } from '../../assets/svg/x.js'
 import { infoSvg } from '../../assets/svg/info.js'
 import { exclamationTriangleSvg } from '../../assets/svg/exclamation-triangle.js'
+import { arrowTopRightSvg } from '../../assets/svg/arrowTopRight.js'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   add: addSvg,
@@ -95,6 +96,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   arrowLeft: arrowLeftSvg,
   arrowRight: arrowRightSvg,
   arrowTop: arrowTopSvg,
+  arrowTopRight: arrowTopRightSvg,
   bank: bankSvg,
   browser: browserSvg,
   card: cardSvg,
@@ -173,12 +175,9 @@ export class WuiIcon extends LitElement {
 
   @property() public name: IconType = 'copy'
 
-  @property() public color: ColorType = 'fg-300'
-
   // -- Render -------------------------------------------- //
   public override render() {
     this.style.cssText = `
-      --local-color: ${`var(--wui-color-${this.color});`}
       --local-width: ${`var(--wui-icon-size-${this.size});`}
     `
 
