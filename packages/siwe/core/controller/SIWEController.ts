@@ -6,7 +6,6 @@ import type {
   SIWECreateMessageArgs,
   SIWEVerifyMessageArgs
 } from '../utils/TypeUtils.js'
-import { ChainController, OptionsController } from '@reown/appkit-core'
 import type { SIWEStatus } from '@reown/appkit-common'
 
 // -- Types --------------------------------------------- //
@@ -127,8 +126,6 @@ export const SIWEController = {
     state._client = ref(client)
     state.session = await this.getSession()
     state.status = state.session ? 'success' : 'ready'
-    ChainController.setAccountProp('siweStatus', state.status, 'eip155')
-    OptionsController.setIsSiweEnabled(client.options.enabled)
   },
 
   setNonce(nonce: SIWEControllerClientState['nonce']) {
@@ -137,7 +134,6 @@ export const SIWEController = {
 
   setStatus(status: SIWEControllerClientState['status']) {
     state.status = status
-    ChainController.setAccountProp('siweStatus', state.status, 'eip155')
   },
 
   setMessage(message: SIWEControllerClientState['message']) {
@@ -147,6 +143,5 @@ export const SIWEController = {
   setSession(session: SIWEControllerClientState['session']) {
     state.session = session
     state.status = session ? 'success' : 'ready'
-    ChainController.setAccountProp('siweStatus', state.status, 'eip155')
   }
 }
