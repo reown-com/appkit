@@ -230,7 +230,7 @@ const fontWeight = {
   medium: '500'
 }
 
-const textSizes = {
+const textSize = {
   h1: '50px',
   h2: '44px',
   h3: '38px',
