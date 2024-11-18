@@ -3,7 +3,7 @@ import '@reown/appkit-ui/src/composites/wui-shortcut'
 import type { WuiShortcut } from '@reown/appkit-ui/src/composites/wui-shortcut'
 import { html } from 'lit'
 
-import { buttonShortcutOptions, colorOptions, iconOptions } from '../../utils/PresetUtils'
+import { buttonShortcutOptions, iconOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiShortcut>
 
@@ -14,7 +14,6 @@ export default {
     variant: 'accent',
     icon: 'copy',
     iconSize: 'lg',
-    iconColor: 'accent-100',
     disabled: false
   },
   argTypes: {
@@ -34,10 +33,6 @@ export default {
     iconSize: {
       defaultValue: 'lg',
       options: ['sm', 'md', 'lg', 'xl'],
-      control: { type: 'select' }
-    },
-    iconColor: {
-      options: colorOptions,
       control: { type: 'select' }
     },
     disabled: {
