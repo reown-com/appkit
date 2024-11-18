@@ -1,6 +1,6 @@
 import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
 import type { CaipNetwork } from '@reown/appkit-common'
-import Wallet, { AddressPurpose, type Provider } from 'sats-connect'
+import Wallet, { AddressPurpose, getProviders, type Provider } from 'sats-connect'
 
 export class SatsConnectConnector implements BitcoinConnector {
   public readonly chain = 'bip122'
@@ -58,8 +58,7 @@ export class SatsConnectConnector implements BitcoinConnector {
   }
 
   public static getWallets({ requestedChains }: SatsConnectConnector.GetWalletsParams) {
-    const providers: Provider[] =
-      (window as Window & { btc_providers?: Provider[] }).btc_providers || []
+    const providers = getProviders()
 
     return providers.map(provider => new SatsConnectConnector({ provider, requestedChains }))
   }
