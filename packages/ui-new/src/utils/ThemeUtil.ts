@@ -1,13 +1,37 @@
 import { css, unsafeCSS } from 'lit'
 import { getW3mThemeVariables } from '@reown/appkit-common'
 import type { ThemeVariables, ThemeType } from '@reown/appkit-common'
+import { ThemeHelperUtil } from './ThemeHelperUtil.js'
 
 // -- Utilities ---------------------------------------------------------------
+let apktTag: HTMLStyleElement | undefined = undefined
 let themeTag: HTMLStyleElement | undefined = undefined
 let darkModeTag: HTMLStyleElement | undefined = undefined
 let lightModeTag: HTMLStyleElement | undefined = undefined
 
-export function initializeTheming(themeVariables?: ThemeVariables, themeMode?: ThemeType) {
+/* Temprorary for now */
+const fonts = {
+  'KHTeka-500':
+    'https://res.cloudinary.com/dn7w4dnog/raw/upload/v1731623453/KHTeka-Medium_k8mbxr.otf',
+  'KHTeka-400':
+    'https://res.cloudinary.com/dn7w4dnog/raw/upload/v1731623453/KHTeka-Regular_ubss3t.otf',
+  'KHTeka-300':
+    'https://res.cloudinary.com/dn7w4dnog/raw/upload/v1731623453/KHTeka-Light_jvrkit.otf',
+  'KHTekaMono-400':
+    'https://res.cloudinary.com/dn7w4dnog/raw/upload/v1731623453/KHTekaMono-Regular_sytzur.otf'
+}
+
+function createAppKitTheme(theme: ThemeType = 'dark') {
+  if (apktTag) {
+    document.head.removeChild(apktTag)
+  }
+
+  apktTag = document.createElement('style')
+  apktTag.textContent = ThemeHelperUtil.createRootStyles(theme)
+  document.head.appendChild(apktTag)
+}
+
+export function initializeTheming(themeVariables?: ThemeVariables, themeMode: ThemeType = 'dark') {
   themeTag = document.createElement('style')
   darkModeTag = document.createElement('style')
   lightModeTag = document.createElement('style')
@@ -17,15 +41,30 @@ export function initializeTheming(themeVariables?: ThemeVariables, themeMode?: T
   document.head.appendChild(themeTag)
   document.head.appendChild(darkModeTag)
   document.head.appendChild(lightModeTag)
+  createAppKitTheme(themeMode)
+  setColorTheme(themeMode)
+
+  // Preload fonts
+  for (const url of Object.values(fonts)) {
+    const link = document.createElement('link')
+    link.rel = 'preload'
+    link.href = url
+    link.as = 'font'
+    link.type = 'font/otf'
+    document.head.appendChild(link)
+  }
+
   setColorTheme(themeMode)
 }
 
-export function setColorTheme(themeMode?: string) {
-  if (darkModeTag && lightModeTag) {
+export function setColorTheme(themeMode: ThemeType = 'dark') {
+  if (darkModeTag && lightModeTag && apktTag) {
     if (themeMode === 'light') {
+      createAppKitTheme(themeMode)
       darkModeTag.removeAttribute('media')
       lightModeTag.media = 'enabled'
     } else {
+      createAppKitTheme(themeMode)
       lightModeTag.removeAttribute('media')
       darkModeTag.media = 'enabled'
     }
@@ -44,6 +83,35 @@ function createRootStyles(themeVariables?: ThemeVariables) {
   return {
     core: css`
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+      @font-face {
+        font-family: 'KHTeka';
+        src: url(${unsafeCSS(fonts['KHTeka-500'])}) format('opentype');
+        font-weight: 500;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'KHTeka';
+        src: url(${unsafeCSS(fonts['KHTeka-300'])}) format('opentype');
+        font-weight: 300;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'KHTekaMono';
+        src: url(${unsafeCSS(fonts['KHTekaMono-400'])}) format('opentype');
+        font-weight: 400;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'KHTeka';
+        src: url(${unsafeCSS(fonts['KHTeka-400'])}) format('opentype');
+        font-weight: 400;
+        font-style: normal;
+      }
+
       @keyframes w3m-shake {
         0% {
           transform: scale(1) rotate(0deg);
@@ -99,10 +167,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
             ? `${themeVariables['--w3m-color-mix-strength']}%`
             : '0%'
         )};
-        --w3m-font-family: ${unsafeCSS(
-          themeVariables?.['--w3m-font-family'] ||
-            'Inter, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;'
-        )};
+        --w3m-font-family: ${unsafeCSS(themeVariables?.['--w3m-font-family'] || 'KHTekaMono')};
         --w3m-font-size-master: ${unsafeCSS(themeVariables?.['--w3m-font-size-master'] || '10px')};
         --w3m-border-radius-master: ${unsafeCSS(
           themeVariables?.['--w3m-border-radius-master'] || '4px'
@@ -751,7 +816,6 @@ export const resetStyles = css`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: transparent;
-    font-family: var(--wui-font-family);
     backface-visibility: hidden;
   }
 `
@@ -764,15 +828,9 @@ export const elementStyles = css`
     justify-content: center;
     align-items: center;
     position: relative;
-    transition:
-      color var(--wui-duration-lg) var(--wui-ease-out-power-1),
-      background-color var(--wui-duration-lg) var(--wui-ease-out-power-1),
-      border var(--wui-duration-lg) var(--wui-ease-out-power-1),
-      box-shadow var(--wui-duration-lg) var(--wui-ease-out-power-1);
     will-change: background-color, color, border, box-shadow;
     outline: none;
     border: none;
-    column-gap: var(--wui-spacing-3xs);
     background-color: transparent;
     text-decoration: none;
   }
@@ -784,16 +842,6 @@ export const elementStyles = css`
   button:disabled > wui-transaction-visual,
   button:disabled > wui-logo {
     filter: grayscale(1);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    button:hover:enabled {
-      background-color: var(--wui-color-gray-glass-005);
-    }
-
-    button:active:enabled {
-      background-color: var(--wui-color-gray-glass-010);
-    }
   }
 
   button:disabled > wui-icon-box {
