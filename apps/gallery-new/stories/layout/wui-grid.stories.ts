@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui/src/layout/wui-grid'
-import type { WuiGrid } from '@reown/appkit-ui/src/layout/wui-grid'
+import '@reown/appkit-ui-new/src/layout/wui-grid'
+import type { WuiGrid } from '@reown/appkit-ui-new/src/layout/wui-grid'
 import { html } from 'lit'
 import '../../components/gallery-placeholder'
 import { gridContentOptions, gridItemsOptions, spacingOptions } from '../../utils/PresetUtils'

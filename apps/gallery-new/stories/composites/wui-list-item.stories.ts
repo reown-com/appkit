@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui/src/composites/wui-list-item'
-import type { WuiListItem } from '@reown/appkit-ui/src/composites/wui-list-item'
+import '@reown/appkit-ui-new/src/composites/wui-list-item'
+import type { WuiListItem } from '@reown/appkit-ui-new/src/composites/wui-list-item'
 import { html } from 'lit'
 import '../../components/gallery-container'
 import { accountEntryOptions, iconOptions, networkImageSrc } from '../../utils/PresetUtils'

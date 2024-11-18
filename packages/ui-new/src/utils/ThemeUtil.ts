@@ -822,6 +822,11 @@ export const resetStyles = css`
   }
 `
 
+/*
+ * @TODO: Include input checkbox default styles
+ * @TOOD: Include focus visible and focus styles (button)
+ * @TODO: Add disabled state to have opacity 0.3
+ */
 export const elementStyles = css`
   button,
   a {
@@ -846,8 +851,9 @@ export const elementStyles = css`
     filter: grayscale(1);
   }
 
-  button:disabled > wui-icon-box {
-    opacity: 0.5;
+  button:disabled {
+    opacity: 0.3;
+    cursor: default;
   }
 
   input {

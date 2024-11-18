@@ -1,9 +1,9 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui/src/composites/wui-link'
-import type { WuiLink } from '@reown/appkit-ui/src/composites/wui-link'
-import type { IconType } from '@reown/appkit-ui/src/utils/TypesUtil'
+import '@reown/appkit-ui-new/src/composites/wui-link'
+import type { WuiLink } from '@reown/appkit-ui-new/src/composites/wui-link'
+import type { IconType } from '@reown/appkit-ui-new/src/utils/TypeUtil'
 import { html } from 'lit'
-import { iconOptions } from '../../utils/PresetUtils'
+import { buttonLinkOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiLink & { iconLeft?: IconType; iconRight?: IconType }>
 
@@ -11,43 +11,27 @@ export default {
   title: 'Composites/wui-link',
   args: {
     disabled: false,
-    iconLeft: undefined,
-    iconRight: undefined
+    variant: 'accent',
+    size: 'md'
   },
   argTypes: {
-    disabled: {
-      control: { type: 'boolean' }
-    },
-    iconLeft: {
-      options: [undefined, ...iconOptions],
+    size: {
+      options: ['sm', 'md'],
       control: { type: 'select' }
     },
-    iconRight: {
-      options: [undefined, ...iconOptions],
+    disabled: {
+      control: { type: 'boolean' },
+      variant: { type: 'boolean' }
+    },
+    variant: {
+      options: buttonLinkOptions,
       control: { type: 'select' }
     }
   }
 } as Component
 
 export const Default: Component = {
-  render: args =>
-    html`<wui-link ?disabled=${args.disabled}>
-      ${args.iconLeft
-        ? html`<wui-icon
-            size="xs"
-            color="inherit"
-            name=${args.iconLeft}
-            slot="iconLeft"
-          ></wui-icon>`
-        : null}
-      Link
-      ${args.iconRight
-        ? html`<wui-icon
-            size="xs"
-            color="inherit"
-            name=${args.iconRight}
-            slot="iconRight"
-          ></wui-icon>`
-        : null}
-    </wui-link>`
+  render: args => html`
+    <wui-link ?disabled=${args.disabled} size=${args.size} variant=${args.variant}>Link</wui-link>
+  `
 }

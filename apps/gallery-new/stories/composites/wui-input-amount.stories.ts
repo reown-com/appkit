@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui/src/composites/wui-input-amount'
-import type { WuiInputAmount } from '@reown/appkit-ui/src/composites/wui-input-amount'
+import '@reown/appkit-ui-new/src/composites/wui-input-amount'
+import type { WuiInputAmount } from '@reown/appkit-ui-new/src/composites/wui-input-amount'
 import { html } from 'lit'
 import '../../components/gallery-container'
 

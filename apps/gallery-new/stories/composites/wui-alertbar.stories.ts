@@ -1,7 +1,7 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui/src/composites/wui-alertbar'
+import '@reown/appkit-ui-new/src/composites/wui-alertbar'
 import '../../components/gallery-container'
-import type { WuiAlertBar } from '@reown/appkit-ui/src/composites/wui-alertbar'
+import type { WuiAlertBar } from '@reown/appkit-ui-new/src/composites/wui-alertbar'
 import { html } from 'lit'
 import { colorOptions, iconOptions } from '../../utils/PresetUtils'
 

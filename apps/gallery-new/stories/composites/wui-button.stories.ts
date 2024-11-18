@@ -1,7 +1,7 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui/src/composites/wui-button'
-import type { WuiButton } from '@reown/appkit-ui/src/composites/wui-button'
-import type { IconType } from '@reown/appkit-ui/src/utils/TypesUtil'
+import '@reown/appkit-ui-new/src/composites/wui-button'
+import type { WuiButton } from '@reown/appkit-ui-new/src/composites/wui-button'
+import type { IconType } from '@reown/appkit-ui-new/src/utils/TypeUtil'
 import { html } from 'lit'
 import { buttonOptions, iconOptions } from '../../utils/PresetUtils'
 
@@ -11,7 +11,7 @@ export default {
   title: 'Composites/wui-button',
   args: {
     size: 'lg',
-    variant: 'main',
+    variant: 'accent-primary',
     disabled: false,
     fullWidth: false,
     iconLeft: undefined,
@@ -20,7 +20,7 @@ export default {
   },
   argTypes: {
     size: {
-      options: ['lg', 'md'],
+      options: ['sm', 'md', 'lg'],
       control: { type: 'select' }
     },
     variant: {

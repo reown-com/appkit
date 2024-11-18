@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui/src/composites/wui-transaction-list-item-loader'
-import type { WuiTransactionListItemLoader } from '@reown/appkit-ui/src/composites/wui-transaction-list-item-loader'
+import '@reown/appkit-ui-new/src/composites/wui-transaction-list-item-loader'
+import type { WuiTransactionListItemLoader } from '@reown/appkit-ui-new/src/composites/wui-transaction-list-item-loader'
 import { html } from 'lit'
 import '../../components/gallery-container'
 
