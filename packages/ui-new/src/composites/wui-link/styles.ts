@@ -53,12 +53,6 @@ export default css`
     box-shadow: 0px 0px 0px 4px rgba(9, 136, 240, 0.2);
   }
 
-  /* -- Disabled state --------------------------------------------------- */
-  button:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
-
   button[data-variant='accent']:disabled {
     background-color: ${({ tokens }) => tokens.core.foregroundAccent010};
   }

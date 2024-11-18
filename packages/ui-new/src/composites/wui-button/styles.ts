@@ -72,10 +72,4 @@ export default css`
   button:active:enabled {
     border-radius: ${({ borderRadius }) => borderRadius[128]};
   }
-
-  /* -- Disabled state --------------------------------------------------- */
-  button:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
 `

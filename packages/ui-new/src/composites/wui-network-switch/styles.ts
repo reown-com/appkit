@@ -8,14 +8,17 @@ export default css`
     padding: ${({ spacing }) => spacing[1]};
     border-radius: ${({ borderRadius }) => borderRadius[128]};
   }
+
   button > wui-icon {
     color: ${({ tokens }) => tokens.theme.iconDefault};
   }
+
   /* -- Focus states --------------------------------------------------- */
   button:focus-visible:enabled {
     background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
     box-shadow: 0px 0px 0px 4px rgba(9, 136, 240, 0.2);
   }
+
   /* -- Hover & Active states ----------------------------------------------------------- */
   @media (hover: hover) and (pointer: fine) {
     button:hover:enabled {
@@ -26,10 +29,9 @@ export default css`
       box-shadow: 0px 0px 0px 4px rgba(9, 136, 240, 0.2);
     }
   }
+
   /* -- Disabled state --------------------------------------------------- */
   button:disabled {
-    opacity: 0.3;
     background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
-    cursor: not-allowed;
   }
 `

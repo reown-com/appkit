@@ -851,8 +851,9 @@ export const elementStyles = css`
     filter: grayscale(1);
   }
 
-  button:disabled > wui-icon-box {
-    opacity: 0.5;
+  button:disabled {
+    opacity: 0.3;
+    cursor: default;
   }
 
   input {
