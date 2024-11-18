@@ -10,6 +10,10 @@ import { NetworkUtil } from '@reown/appkit-common'
 
 export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
   ChainController.subscribeKey('activeCaipNetwork', async activeCaipNetwork => {
+    if (!siwe.options.signOutOnNetworkChange) {
+      return
+    }
+
     const session = await siwe.methods.getSession().catch(() => undefined)
     const isDiffernetNetwork =
       session &&
@@ -21,6 +25,10 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
   })
 
   ChainController.subscribeKey('activeCaipAddress', async activeCaipAddress => {
+    if (!siwe.options.signOutOnAccountChange) {
+      return
+    }
+
     const session = await siwe.methods.getSession().catch(() => undefined)
     const isDifferentAddress =
       session && session.address !== CoreHelperUtil.getPlainAddress(activeCaipAddress)
