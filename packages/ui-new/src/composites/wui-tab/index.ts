@@ -37,13 +37,10 @@ export class WuiTab extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const textVariant = TEXT_VARIANT_BY_SIZE[this.size]
-    const iconSize = ICON_SIZE[this.size]
-
     return html`
       <button data-active=${this.active} data-testid="tab-${this.label.toLowerCase()}">
-        <wui-icon size=${iconSize} name=${this.icon}></wui-icon>
-        <wui-text variant=${textVariant}> ${this.label} </wui-text>
+        <wui-icon size=${ICON_SIZE[this.size]} name=${this.icon}></wui-icon>
+        <wui-text variant=${TEXT_VARIANT_BY_SIZE[this.size]}> ${this.label} </wui-text>
       </button>
     `
   }
