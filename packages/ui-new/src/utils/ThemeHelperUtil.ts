@@ -6,40 +6,6 @@ const PREFIX_VAR = '--apkt'
 
 export const ThemeHelperUtil = {
   /**
-   * Generates a set of rgba colors based on the provided rgb color, name, and params.
-   * @param params.rgb - The rgb color
-   * @param params.name - The name for the generated rgba colors.
-   * @param params.multiplier - A multiplier to adjust the opacity values.
-   * @param params.start - The starting index for opacity generation.
-   * @param params.end - The ending index for opacity generation.
-   */
-  generateRgbaColors<rgb extends string>({
-    rgb,
-    name,
-    multiplier = 1,
-    start = 1,
-    end = 10
-  }: {
-    rgb: rgb
-    name: string
-    multiplier?: number
-    start?: number
-    end?: number
-  }) {
-    const length = end - start + 1
-    const opacities = Array.from({ length }, (_, i) => (start + i) * 10)
-
-    return Object.fromEntries(
-      opacities.map(value => {
-        const multiplied = value * multiplier
-        const opacity = multiplied / 100
-        const key = `${name}${multiplied.toString().padStart(3, '0')}`
-
-        return [key, `rgba(${rgb}, ${opacity})`]
-      })
-    )
-  },
-  /**
    * Recursively transforms a nested styles object into a new object with CSS variable strings.
    * @param styles - The original styles object to transform.
    */
