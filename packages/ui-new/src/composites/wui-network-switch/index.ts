@@ -43,16 +43,13 @@ export class WuiNetworkSwitch extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const textVariant = TEXT_VARIANT_BY_SIZE[this.size]
-    const iconSize = RIGHT_ICON_SIZE[this.size]
-
     return html`
       <button ?disabled=${this.disabled} ontouchstart>
         ${this.leftIconTemplate()}
-        <wui-text color="primary" variant=${textVariant}>
+        <wui-text color="primary" variant=${TEXT_VARIANT_BY_SIZE[this.size]}>
           <slot></slot>
         </wui-text>
-        <wui-icon size=${iconSize} name="chevronBottom"></wui-icon>
+        <wui-icon size=${RIGHT_ICON_SIZE[this.size]} name="chevronBottom"></wui-icon>
       </button>
     `
   }
