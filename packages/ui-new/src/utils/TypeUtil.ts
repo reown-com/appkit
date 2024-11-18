@@ -1,40 +1,37 @@
-export type ColorType =
-  | 'accent-100'
-  | 'error-100'
-  | 'fg-100'
-  | 'fg-150'
-  | 'fg-200'
-  | 'fg-250'
-  | 'fg-300'
-  | 'inherit'
-  | 'inverse-000'
-  | 'inverse-100'
-  | 'success-100'
-  | 'gray-glass-005'
-  | 'gray-glass-020'
+export type ColorType = string
+
+export type TextColorType = 'inherit' | 'primary' | 'secondary' | 'tertiary' | 'invert'
+
+export type FontFamilyType = 'regular' | 'mono'
 
 export type TextType =
-  | 'large-500'
-  | 'large-600'
-  | 'large-700'
-  | 'medium-400'
-  | 'medium-600'
-  | 'medium-title-600'
-  | 'micro-600'
-  | 'title-6-600'
-  | 'micro-700'
-  | 'mini-700'
-  | 'paragraph-400'
-  | 'paragraph-500'
-  | 'paragraph-600'
-  | 'paragraph-700'
-  | 'small-400'
-  | 'small-500'
-  | 'small-600'
-  | 'tiny-400'
-  | 'tiny-500'
-  | 'tiny-600'
-  | '2xl-500'
+  | 'h1-regular-mono'
+  | 'h1-regular'
+  | 'h1-medium'
+  | 'h2-regular-mono'
+  | 'h2-regular'
+  | 'h2-medium'
+  | 'h3-regular-mono'
+  | 'h3-regular'
+  | 'h3-medium'
+  | 'h4-regular-mono'
+  | 'h4-regular'
+  | 'h4-medium'
+  | 'h5-regular-mono'
+  | 'h5-regular'
+  | 'h5-medium'
+  | 'h6-regular-mono'
+  | 'h6-regular'
+  | 'h6-medium'
+  | 'lg-regular-mono'
+  | 'lg-regular'
+  | 'lg-medium'
+  | 'md-regular-mono'
+  | 'md-regular'
+  | 'md-medium'
+  | 'sm-regular-mono'
+  | 'sm-regular'
+  | 'sm-medium'
 
 export type TextAlign = 'center' | 'left' | 'right'
 
@@ -87,6 +84,8 @@ export interface IWalletImage {
   walletName?: string
 }
 
+export type TabSize = 'sm' | 'md' | 'lg'
+
 export type GridContentType =
   | 'center'
   | 'end'
@@ -109,6 +108,7 @@ export type IconType =
   | 'arrowLeft'
   | 'arrowRight'
   | 'arrowTop'
+  | 'arrowTopRight'
   | 'bank'
   | 'browser'
   | 'card'
@@ -221,15 +221,22 @@ export type ChipType = 'fill' | 'shade' | 'shadeSmall' | 'transparent' | 'succes
 
 export type ChipButtonVariant = 'accent' | 'main' | 'shade' | 'gray'
 
-export type ButtonSize = 'lg' | 'md'
+export type ButtonSize = 'lg' | 'md' | 'sm'
+
+export type ToggleSize = 'lg' | 'md' | 'sm'
+
+export type CheckboxSize = 'lg' | 'md' | 'sm'
 
 export type ButtonVariant =
-  | 'main'
-  | 'inverse'
-  | 'accent'
-  | 'accent-error'
-  | 'accent-success'
-  | 'neutral'
+  | 'accent-primary'
+  | 'accent-secondary'
+  | 'neutral-primary'
+  | 'neutral-secondary'
+  | 'error-primary'
+  | 'error-secondary'
+
+export type ButtonShortcutVariant = 'accent' | 'secondary'
+export type ButtonLinkVariant = 'accent' | 'secondary'
 
 export type TransactionType =
   | 'approve'

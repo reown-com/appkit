@@ -24,7 +24,7 @@ export default css`
     right: 0;
     bottom: 0;
     background-color: ${({ colors }) => colors.neutrals700};
-    border-radius: ${({ radii }) => radii.round};
+    border-radius: ${({ borderRadius }) => borderRadius.round};
     border: 1px solid transparent;
     will-change: border;
   }

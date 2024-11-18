@@ -51,7 +51,7 @@ export default css`
     height: 24px;
     min-width: 24px;
     min-height: 24px;
-    border-radius: ${({ radii }) => radii[10]};
+    border-radius: ${({ borderRadius }) => borderRadius[10]};
   }
 
   label[data-size='md'] > span {
@@ -59,7 +59,7 @@ export default css`
     height: 20px;
     min-width: 20px;
     min-height: 20px;
-    border-radius: ${({ radii }) => radii[2]};
+    border-radius: ${({ borderRadius }) => borderRadius[2]};
   }
 
   label[data-size='sm'] > span {
@@ -67,7 +67,7 @@ export default css`
     height: 16px;
     min-width: 16px;
     min-height: 16px;
-    border-radius: ${({ radii }) => radii[6]};
+    border-radius: ${({ borderRadius }) => borderRadius[6]};
   }
 
   /* -- Focus states --------------------------------------------------- */

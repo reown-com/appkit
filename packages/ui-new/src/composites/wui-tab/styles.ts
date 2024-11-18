@@ -7,7 +7,7 @@ export default css`
     padding: ${({ spacing }) => spacing[1]} ${({ spacing }) => spacing[2]};
     column-gap: ${({ spacing }) => spacing[1]};
     color: ${({ tokens }) => tokens.theme.textSecondary};
-    border-radius: ${({ radii }) => radii[20]};
+    border-radius: ${({ borderRadius }) => borderRadius[20]};
   }
   button[data-active='true'] {
     color: ${({ tokens }) => tokens.theme.textPrimary};

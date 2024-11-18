@@ -7,7 +7,7 @@ export default css`
     height: 20px;
     padding: ${({ spacing }) => spacing[2]};
     column-gap: ${({ spacing }) => spacing[1]};
-    border-radius: ${({ radii }) => radii[1]};
+    border-radius: ${({ borderRadius }) => borderRadius[1]};
     padding: 0 ${({ spacing }) => spacing[1]};
     border-radius: ${({ spacing }) => spacing[1]};
   }

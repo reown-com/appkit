@@ -5,7 +5,7 @@ export default css`
     display: inline-flex;
     align-items: center;
     background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
-    border-radius: ${({ radii }) => radii[32]};
+    border-radius: ${({ borderRadius }) => borderRadius[32]};
     border: 3px solid ${({ tokens }) => tokens.theme.foregroundPrimary};
   }
 `

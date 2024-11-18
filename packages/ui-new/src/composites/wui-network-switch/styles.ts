@@ -6,7 +6,7 @@ export default css`
     background: transparent;
     column-gap: ${({ spacing }) => spacing[1]};
     padding: ${({ spacing }) => spacing[1]};
-    border-radius: ${({ radii }) => radii[128]};
+    border-radius: ${({ borderRadius }) => borderRadius[128]};
   }
   button > wui-icon {
     color: ${({ tokens }) => tokens.theme.iconDefault};
