@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui/src/layout/wui-flex'
-import type { WuiFlex } from '@reown/appkit-ui/src/layout/wui-flex'
+import '@reown/appkit-ui-new/src/layout/wui-flex'
+import type { WuiFlex } from '@reown/appkit-ui-new/src/layout/wui-flex'
 import { html } from 'lit'
 import '../../components/gallery-placeholder'
 import {

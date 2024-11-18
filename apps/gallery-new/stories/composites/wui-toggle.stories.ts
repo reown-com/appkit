@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui/src/composites/wui-toggle'
-import type { WuiToggle } from '@reown/appkit-ui/src/composites/wui-toggle'
+import '@reown/appkit-ui-new/src/composites/wui-toggle'
+import type { WuiToggle } from '@reown/appkit-ui-new/src/composites/wui-toggle'
 import { html } from 'lit'
 import '../../components/gallery-container'
 

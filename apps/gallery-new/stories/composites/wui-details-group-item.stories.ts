@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui/src/composites/wui-list-item'
-import type { WuiDetailsGroupItem } from '@reown/appkit-ui/src/composites/wui-details-group-item'
+import '@reown/appkit-ui-new/src/composites/wui-list-item'
+import type { WuiDetailsGroupItem } from '@reown/appkit-ui-new/src/composites/wui-details-group-item'
 import { html } from 'lit'
 import '../../components/gallery-container'
 

@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui/src/composites/wui-network-switch'
-import type { WuiNetworkSwitch } from '@reown/appkit-ui/src/composites/wui-network-switch'
+import '@reown/appkit-ui-new/src/composites/wui-network-switch'
+import type { WuiNetworkSwitch } from '@reown/appkit-ui-new/src/composites/wui-network-switch'
 import { html } from 'lit'
 import { iconOptions, networkImageSrc } from '../../utils/PresetUtils'
 

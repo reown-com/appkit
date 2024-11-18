@@ -1,7 +1,7 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui/src/composites/wui-link'
-import type { WuiLink } from '@reown/appkit-ui/src/composites/wui-link'
-import type { IconType } from '@reown/appkit-ui/src/utils/TypeUtil'
+import '@reown/appkit-ui-new/src/composites/wui-link'
+import type { WuiLink } from '@reown/appkit-ui-new/src/composites/wui-link'
+import type { IconType } from '@reown/appkit-ui-new/src/utils/TypeUtil'
 import { html } from 'lit'
 import { buttonLinkOptions } from '../../utils/PresetUtils'
 

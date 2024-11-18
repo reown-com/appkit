@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui/src/composites/wui-transaction-visual'
-import type { WuiTransactionVisual } from '@reown/appkit-ui/src/composites/wui-transaction-visual'
+import '@reown/appkit-ui-new/src/composites/wui-transaction-visual'
+import type { WuiTransactionVisual } from '@reown/appkit-ui-new/src/composites/wui-transaction-visual'
 import { html } from 'lit'
 
 import {

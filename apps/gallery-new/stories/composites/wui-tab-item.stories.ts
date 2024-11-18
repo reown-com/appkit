@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui/src/composites/wui-tab-item'
-import type { WuiTab } from '@reown/appkit-ui-new/src/composites/wui-tab-item'
+import '@reown/appkit-ui-new/src/composites/wui-tab-item'
+import type { WuiTab } from '@reown/appkit-ui-new-new/src/composites/wui-tab-item'
 import { html } from 'lit'
 import { iconOptions } from '../../utils/PresetUtils'
 

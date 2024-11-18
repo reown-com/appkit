@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui/src/components/wui-text'
-import type { WuiText } from '@reown/appkit-ui/src/components/wui-text'
+import '@reown/appkit-ui-new/src/components/wui-text'
+import type { WuiText } from '@reown/appkit-ui-new/src/components/wui-text'
 import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { textAlignOptions, textColorOptions, textOptions } from '../../utils/PresetUtils'
