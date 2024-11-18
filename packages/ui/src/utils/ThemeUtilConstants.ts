@@ -186,7 +186,9 @@ export const tokens = {
 
 export const radii = {
   '1': '4px',
+  '6': '6px',
   '2': '8px',
+  '10': '10px',
   '3': '12px',
   '4': '16px',
   '8': '32px',

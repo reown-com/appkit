@@ -223,7 +223,10 @@ export type ChipButtonVariant = 'accent' | 'main' | 'shade' | 'gray'
 
 export type ButtonSize = 'lg' | 'md' | 'sm'
 
-export type ToggleSizes = 'lg' | 'md' | 'sm'
+export type ToggleSize = 'lg' | 'md' | 'sm'
+
+export type CheckboxSize = 'lg' | 'md' | 'sm'
+
 
 export type ButtonVariant =
   | 'accent-primary'

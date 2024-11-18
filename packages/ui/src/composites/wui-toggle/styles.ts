@@ -29,6 +29,7 @@ export default css`
     background-color: ${({ colors }) => colors.neutrals700};
     border-radius: ${({ radii }) => radii.round};
     border: 1px solid transparent;
+    will-change: border;
   }
 
   span:before {
@@ -106,15 +107,13 @@ export default css`
     transform: translateX(calc(100% - 7px));
   }
 
-  /* -- Hover & Active states ----------------------------------------------------------- */
-  @media (hover: hover) and (pointer: fine) {
-    label:hover > input:not(:checked):not(:disabled) + span {
-      background-color: ${({ tokens }) => tokens.theme.textTertiary};
-    }
+  /* -- Hover states ------------------------------------------------------- */
+  label:hover > input:not(:checked):not(:disabled) + span {
+    background-color: ${({ tokens }) => tokens.theme.textTertiary};
+  }
 
-    label:hover > input:checked:not(:disabled) + span {
-      background-color: ${({ colors }) => colors.accent080};
-    }
+  label:hover > input:checked:not(:disabled) + span {
+    background-color: ${({ colors }) => colors.accent080};
   }
 
   /* -- Disabled state --------------------------------------------------- */

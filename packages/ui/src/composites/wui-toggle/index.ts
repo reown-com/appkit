@@ -5,7 +5,7 @@ import styles from './styles.js'
 import { colorStyles, elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import type { ToggleSizes } from '../../utils/TypeUtil.js'
+import type { ToggleSize } from '../../utils/TypeUtil.js'
 
 @customElement('wui-toggle')
 export class WuiToggle extends LitElement {
@@ -19,7 +19,7 @@ export class WuiToggle extends LitElement {
 
   @property({ type: Boolean }) public disabled = false
 
-  @property() public size: ToggleSizes = 'md'
+  @property() public size: ToggleSize = 'md'
 
   // -- Render -------------------------------------------- //
   public override render() {

@@ -21,10 +21,8 @@ export default css`
   }
 
   /* -- Hover & Active states ----------------------------------------------------------- */
-  @media (hover: hover) and (pointer: fine) {
-    button:hover:enabled:not([data-active='true']),
-    button:active:enabled:not([data-active='true']) {
-      background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
-    }
+  button:hover:enabled:not([data-active='true']),
+  button:active:enabled:not([data-active='true']) {
+    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
   }
 `
