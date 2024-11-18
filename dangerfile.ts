@@ -385,6 +385,12 @@ async function checkChangesetFiles() {
     if (fileContent.includes('@examples/')) {
       fail(`Changeset file ${f} cannot include @examples/* packages as part of the changeset`)
     }
+
+    if (fileContent.includes('@apps/gallery-new') || fileContent.includes('@reown/appkit-ui-new')) {
+      fail(
+        `Changeset file ${f} cannot include @apps/gallery-new or @reown/appkit-ui-new' packages as part of the changeset`
+      )
+    }
   }
 }
 checkChangesetFiles()
