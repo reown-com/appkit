@@ -19,7 +19,8 @@ import {
   type SendTransactionArgs,
   type EstimateGasTransactionArgs,
   type AccountControllerState,
-  type AdapterNetworkState
+  type AdapterNetworkState,
+  type Features
 } from '@reown/appkit-core'
 import {
   AccountController,
