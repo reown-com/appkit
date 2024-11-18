@@ -1,7 +1,4 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui-new/src/composites/wui-checkbox'
-import '@reown/appkit-ui-new/src/components/wui-icon'
-import '@reown/appkit-ui-new/src/components/wui-text'
 import type { WuiCheckBox } from '@reown/appkit-ui-new/src/composites/wui-checkbox'
 import { html } from 'lit'
 
