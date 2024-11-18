@@ -1,0 +1,19 @@
+{
+  "name": "parcel-demo",
+  "version": "1.0.0",
+  "source": "src/index.html",
+  "scripts": {
+    "start": "parcel",
+    "build": "parcel build"
+  },
+  "dependencies": {
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
+  },
+  "devDependencies": {
+    "@types/react": "17.0.2",
+    "@types/react-dom": "17.0.2",
+    "parcel": "2.0.1",
+    "process": "0.11.10"
+  }
+}
