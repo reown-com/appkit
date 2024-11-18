@@ -41,6 +41,7 @@ export class WuiText extends LitElement {
       [`wui-line-clamp-${this.lineClamp}`]: this.lineClamp ? true : false
     }
 
+    // @TODO: Add variables if used by other components
     this.style.cssText = `
       text-align: ${this.align};
       color: ${this.color === 'inherit' ? 'inherit' : TEXT_VARS_BY_COLOR[this.color ?? 'primary']};
