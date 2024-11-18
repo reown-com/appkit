@@ -22,7 +22,7 @@ const ICON_SIZE = {
 }
 
 // -- Component ------------------------------------------ //
-@customElement('wui-tab')
+@customElement('wui-tab-item')
 export class WuiTab extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
@@ -48,6 +48,6 @@ export class WuiTab extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'wui-tab': WuiTab
+    'wui-tab-item': WuiTab
   }
 }

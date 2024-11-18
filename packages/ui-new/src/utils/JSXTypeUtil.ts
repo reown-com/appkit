@@ -142,7 +142,7 @@ declare global {
       'wui-search-bar': CustomElement<WuiSearchBar>
       'wui-network-switch': CustomElement<WuiNetworkSwitch>
       'wui-snackbar': CustomElement<WuiSnackbar>
-      'wui-tab': CustomElement<WuiTab>
+      'wui-tab-item': CustomElement<WuiTab>
       'wui-alertbar': CustomElement<WuiAlertBar>
       'wui-tabs': CustomElement<WuiTabs>
       'wui-tag': CustomElement<WuiTag>

@@ -2,7 +2,7 @@ import { html, LitElement } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { IconType, TabSize } from '../../utils/TypeUtil.js'
-import '../../composites/wui-tab/index.js'
+import '../../composites/wui-tab-item/index.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -25,13 +25,13 @@ export class WuiTabs extends LitElement {
       const active = index === this.activeTab
 
       return html`
-        <wui-tab
+        <wui-tab-item
           @click=${() => this.onTabClick(index)}
           icon=${tab.icon}
           size=${this.size}
           label=${tab.label}
           ?active=${active}
-        ></wui-tab>
+        ></wui-tab-item>
       `
     })
   }
