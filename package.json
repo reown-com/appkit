@@ -12,6 +12,7 @@
     "build": "turbo run build --filter={./packages/*} --concurrency=31",
     "watch": "turbo run watch --filter={./packages/*,./packages/adapters/*} --concurrency=50 --continue",
     "gallery": "turbo run dev --filter={./apps/gallery}",
+    "gallery-new": "turbo run dev --filter={./apps/gallery-new}",
     "laboratory": "pnpm --filter @apps/laboratory dev",
     "demo": "turbo run dev --filter={./apps/demo}",
     "examples": "turbo run dev --filter={./examples/*}",
