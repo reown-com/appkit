@@ -37,16 +37,15 @@ export class WuiLink extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const textVariant = TEXT_VARIANT_BY_SIZE[this.size]
-    const textColor = TEXT_COLOR_BY_VARIANT[this.variant]
-    const iconSize = ICON_SIZE[this.size]
-
     return html`
       <button ?disabled=${this.disabled} data-variant=${this.variant} ontouchstart>
-        <wui-text color=${textColor} variant=${textVariant}>
+        <wui-text
+          color=${TEXT_COLOR_BY_VARIANT[this.variant]}
+          variant=${TEXT_VARIANT_BY_SIZE[this.size]}
+        >
           <slot></slot>
         </wui-text>
-        <wui-icon size=${iconSize} name="arrowTopRight"></wui-icon>
+        <wui-icon size=${ICON_SIZE[this.size]} name="arrowTopRight"></wui-icon>
       </button>
     `
   }
