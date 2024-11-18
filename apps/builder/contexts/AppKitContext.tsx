@@ -80,15 +80,15 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
     <AppKitContext.Provider
       value={{
         features,
-        updateFeatures,
         themeMode,
-        updateThemeMode,
         themeVariables,
-        updateThemeVariables: setThemeVariables,
         isLoading,
         isDrawerOpen,
-        setIsDrawerOpen,
         socialsEnabled,
+        updateFeatures,
+        updateThemeMode,
+        updateThemeVariables: setThemeVariables,
+        setIsDrawerOpen,
         updateSocials
       }}
     >

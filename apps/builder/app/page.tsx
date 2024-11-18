@@ -19,10 +19,10 @@ export default function Component() {
   }
 
   return (
-    <div className={cn('flex p-4 bg-background/95 h-screen', themeMode === 'dark' ? 'dark' : '')}>
+    <div className={cn('flex p-4 bg-background h-screen', themeMode === 'dark' ? 'dark' : '')}>
       <VaulDrawer />
 
-      <div className="w-80 bg-muted dark:bg-muted/50 text-foreground p-6 flex-col rounded-2xl hidden sm:flex">
+      <div className="w-80 bg-muted dark:bg-fg-primary text-foreground p-6 flex-col rounded-2xl hidden sm:flex">
         <SidebarContent />
       </div>
 

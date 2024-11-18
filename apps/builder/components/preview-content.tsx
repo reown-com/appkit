@@ -5,6 +5,8 @@ import { Sun, Moon, RefreshCcw, Share2, Settings } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAppKit } from '@/contexts/AppKitContext'
 import { toast } from 'sonner'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ThemeMode } from '@reown/appkit'
 
 export function PreviewContent() {
   const { themeMode, updateThemeMode, setIsDrawerOpen } = useAppKit()
@@ -22,13 +24,16 @@ export function PreviewContent() {
     <>
       <div className="flex justify-between mb-6">
         <div />
-        <Button
-          variant="default"
-          size="icon"
-          onClick={() => updateThemeMode(themeMode === 'dark' ? 'light' : 'dark')}
-        >
-          {themeMode === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-        </Button>
+        <Tabs value={themeMode} onValueChange={value => updateThemeMode(value as ThemeMode)}>
+          <TabsList className="bg-fg-secondary ring-4 ring-fg-secondary">
+            <TabsTrigger value="dark" className="h-full">
+              <Moon size={16} />
+            </TabsTrigger>
+            <TabsTrigger value="light" className="h-full">
+              <Sun size={16} />
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
 
       <div className="w-[400px] mx-auto flex-grow flex items-center justify-center">
@@ -37,15 +42,19 @@ export function PreviewContent() {
       </div>
 
       <div className="flex justify-center gap-2 mt-6">
-        <Button variant="outline" onClick={handleShare}>
+        <Button variant="neutral-secondary" onClick={handleShare}>
           <Share2 size={16} className="mr-2" />
           Share
         </Button>
-        <Button variant="outline">
+        <Button variant="neutral-secondary">
           <RefreshCcw size={16} className="mr-2" />
           Reset
         </Button>
-        <Button variant="outline" className="flex sm:hidden" onClick={() => setIsDrawerOpen(true)}>
+        <Button
+          variant="neutral-secondary"
+          className="flex sm:hidden"
+          onClick={() => setIsDrawerOpen(true)}
+        >
           <Settings size={16} className="mr-2" />
           Settings
         </Button>

@@ -9,8 +9,8 @@ import { cn } from '@/lib/utils'
 import AccentColorInput from './theme/AccentColorInput'
 import MixColorInput from './theme/MixColorInput'
 import BorderRadiusInput from './theme/BorderRadiusInput'
-import { AuthFeatures } from './features/AuthFeatures'
-import { AdvancedFeatures } from './features/AdvancedFeatures'
+import { AuthFeatures } from './configuration-sections/connect-options'
+import { AdvancedFeatures } from './configuration-sections/wallet-features'
 
 export function SidebarContent() {
   const { themeMode } = useAppKit()
@@ -18,14 +18,14 @@ export function SidebarContent() {
 
   return (
     <div className={cn('h-full flex flex-col', themeMode === 'dark' ? 'dark' : '')}>
-      <h1 className="text-2xl font-bold mb-1 text-foreground">AppKit demo</h1>
-      <p className="text-sm text-muted-foreground mb-6">
+      <h4 className="text-3xl text-text-primary mb-1">AppKit demo</h4>
+      <p className="text-sm text-text-secondary mb-6">
         Use our AppKit demo to test and design onchain UX
       </p>
 
       <div className="flex flex-col flex-1 min-h-[300px]">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6 w-full">
-          <TabsList className="w-full">
+          <TabsList className="w-full bg-fg-secondary">
             <TabsTrigger className="w-full" value="auth">
               Auth
             </TabsTrigger>
@@ -56,11 +56,13 @@ export function SidebarContent() {
       </div>
 
       <div className="flex flex-col items-center w-full gap-2">
-        <Button variant="outline" className="bg-transparent rounded-xl w-full">
+        <Button variant="neutral-secondary" className="bg-transparent rounded-xl w-full">
           <MonitorSmartphone size={16} className="mr-2" />
           Read our docs
         </Button>
-        <Button className="rounded-xl w-full">Get started {`</>`}</Button>
+        <Button variant="neutral" className="rounded-xl w-full">
+          Get started {`</>`}
+        </Button>
       </div>
     </div>
   )

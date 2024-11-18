@@ -10,7 +10,32 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: 'hsl(var(--background))',
+        background: {
+          DEFAULT: 'hsl(var(--apkt-background-primary))',
+          invert: 'hsl(var(--apkt-background-invert))'
+        },
+        fg: {
+          primary: 'hsl(var(--apkt-foreground-primary))',
+          secondary: 'hsl(var(--apkt-foreground-secondary))',
+          tertiary: 'hsl(var(--apkt-foreground-tertiary))'
+        },
+        border: {
+          DEFAULT: 'hsl(var(--apkt-border))',
+          secondary: 'hsl(var(--apkt-border-secondary))',
+          accent: 'hsl(var(--apkt-border-accent))',
+          'accent-certified': 'hsl(var(--apkt-border-accent-certified))',
+          success: 'hsl(var(--apkt-border-success))',
+          error: 'hsl(var(--apkt-border-error))',
+          warning: 'hsl(var(--apkt-border-warning))'
+        },
+        text: {
+          primary: 'hsl(var(--apkt-text-primary))',
+          secondary: 'hsl(var(--apkt-text-secondary))',
+          tertiary: 'hsl(var(--apkt-text-tertiary))',
+          invert: 'hsl(var(--apkt-text-invert))'
+        },
+
+        // ---- Shadcn Variables
         foreground: 'hsl(var(--foreground))',
         card: {
           DEFAULT: 'hsl(var(--card))',
@@ -40,7 +65,6 @@ const config: Config = {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))'
         },
-        border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
         chart: {
@@ -51,10 +75,13 @@ const config: Config = {
           '5': 'hsl(var(--chart-5))'
         }
       },
+      height: {
+        '9.5': '2.375rem'
+      },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)'
+        sm: 'var(--apkt-border-sm)',
+        md: 'var(--apkt-border-md)',
+        lg: 'var(--apkt-border-lg)'
       }
     }
   },

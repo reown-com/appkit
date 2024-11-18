@@ -33,14 +33,33 @@ body {
     --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;
     --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+
+    --apkt-border-sm: 8px;
+    --apkt-border-md: 12px;
+    --apkt-border-lg: 16px;
   }
   .dark {
+    --apkt-background-primary: 0 0% 13%;
+    --apkt-background-invert: 0 0% 100%;
+
+    --apkt-foreground-primary: 0 0% 15%;
+    --apkt-foreground-secondary: 0 0% 16%;
+    --apkt-foreground-tertiary: 0 0% 21%;
+
+    --apkt-border: 0 0% 16%;
+    --apkt-border-secondary: 0 0% 31%;
+    --apkt-border-accent: 0.64 1% 70%;
+    --apkt-border-accent-certified: 0.12 31% 68%;
+    --apkt-border-success: 0.42 55% 42%;
+    --apkt-border-error: 0.02 73% 54%;
+    --apkt-border-warning: 0.09 88% 60%;
+
+    --apkt-text-primary: 0 0% 100%;
+    --apkt-text-secondary: 0 0% 60%;
+    --apkt-text-tertiary: 0 0% 73%;
+    --apkt-text-invert: 0 0% 13%;
+
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
     --card: 0 0% 3.9%;
@@ -60,11 +79,6 @@ body {
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
   }
 }
 
