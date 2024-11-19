@@ -1,5 +1,5 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { proxy, snapshot } from 'valtio/vanilla'
+import { proxy, ref, snapshot } from 'valtio/vanilla'
 import type { AuthConnector, Connector } from '../utils/TypeUtil.js'
 import { getW3mThemeVariables } from '@reown/appkit-common'
 import { OptionsController } from './OptionsController.js'
@@ -32,33 +32,26 @@ export const ConnectorController = {
   },
 
   setConnectors(connectors: ConnectorControllerState['connectors']) {
-    const newConnectors = connectors.filter(newConnector => {
-      try {
-        /**
-         * This is a fix for non-serializable objects that may prevent all the connectors in the list from being displayed
-         * Check more about this issue on https://valtio.dev/docs/api/basic/proxy#Gotchas
-         */
-        proxy(newConnector)
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('ConnectorController.setConnectors: Not possible to add connector', {
-          newConnector,
-          error
-        })
+    const newConnectors = connectors.filter(
+      newConnector =>
+        !state.allConnectors.some(
+          existingConnector =>
+            existingConnector.id === newConnector.id &&
+            this.getConnectorName(existingConnector.name) ===
+              this.getConnectorName(newConnector.name) &&
+            existingConnector.chain === newConnector.chain
+        )
+    )
 
-        return false
-      }
-
-      return !state.allConnectors.some(
-        existingConnector =>
-          existingConnector.id === newConnector.id &&
-          this.getConnectorName(existingConnector.name) ===
-            this.getConnectorName(newConnector.name) &&
-          existingConnector.chain === newConnector.chain
-      )
+    /**
+     * We are reassigning the state of the proxy to a new array of new objects, this can cause issues. So it is better to use ref in this case.
+     * Check more about proxy on https://valtio.dev/docs/api/basic/proxy#Gotchas
+     * Check more about ref on https://valtio.dev/docs/api/basic/ref
+     */
+    newConnectors.forEach(connector => {
+      state.allConnectors.push(ref(connector))
     })
 
-    state.allConnectors = [...state.allConnectors, ...newConnectors]
     state.connectors = this.mergeMultiChainConnectors(state.allConnectors)
   },
 

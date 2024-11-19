@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-siwe",
-  "version": "1.3.2",
+  "version": "1.5.0",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -16,14 +16,14 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@walletconnect/utils": "2.17.0",
+    "@reown/appkit-common": "workspace:*",
     "@reown/appkit-core": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
-    "@reown/appkit-common": "workspace:*",
-    "@reown/appkit-wallet": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
-    "valtio": "1.11.2",
-    "lit": "3.1.0"
+    "@reown/appkit-wallet": "workspace:*",
+    "@walletconnect/utils": "2.17.0",
+    "lit": "3.1.0",
+    "valtio": "1.11.2"
   },
   "keywords": [
     "web3",

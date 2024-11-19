@@ -227,6 +227,10 @@ export class Ethers5Adapter extends AdapterBlueprint {
       method: 'eth_requestAccounts'
     })
 
+    const requestChainId = await selectedProvider.request({
+      method: 'eth_chainId'
+    })
+
     this.listenProviderEvents(selectedProvider)
 
     if (!accounts[0]) {
@@ -239,7 +243,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
     return {
       address: accounts[0],
-      chainId: Number(chainId),
+      chainId: Number(requestChainId) || Number(chainId),
       provider: selectedProvider,
       type: connector.type,
       id
@@ -347,6 +351,8 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
     let accounts: string[] = []
 
+    let requestChainId: string | undefined = undefined
+
     if (type === 'AUTH') {
       const { address } = await (selectedProvider as unknown as W3mFrameProvider).connect({
         chainId
@@ -358,12 +364,16 @@ export class Ethers5Adapter extends AdapterBlueprint {
         method: 'eth_requestAccounts'
       })
 
+      requestChainId = await selectedProvider.request({
+        method: 'eth_chainId'
+      })
+
       this.listenProviderEvents(selectedProvider)
     }
 
     return {
       address: accounts[0] as `0x${string}`,
-      chainId: Number(chainId),
+      chainId: Number(requestChainId) || Number(chainId),
       provider: selectedProvider,
       type: type as ConnectorType,
       id

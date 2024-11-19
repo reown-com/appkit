@@ -28,13 +28,17 @@ describe('LocalStorage', () => {
   })
 
   test('should get sessions empty', async () => {
-    const sessions = await storage.get('eip155:1')
+    const sessions = await storage.get('eip155:1', '0x1234567890abcdef')
     expect(sessions).toEqual([])
   })
 
   test('should get sessions', async () => {
-    getItem.mockImplementation(() => JSON.stringify([mockSession()]))
-    const sessions = await storage.get('eip155:1')
+    getItem.mockImplementation(() =>
+      JSON.stringify([
+        mockSession({ data: { accountAddress: '0x1234567890abcdef', chainId: 'eip155:1' } })
+      ])
+    )
+    const sessions = await storage.get('eip155:1', '0x1234567890abcdef')
 
     expect(getItem).toHaveBeenCalledWith(key)
     expect(sessions).toHaveLength(1)
@@ -55,7 +59,7 @@ describe('LocalStorage', () => {
         })
       ])
     )
-    expect(await storage.get('eip155:1')).toHaveLength(1)
+    expect(await storage.get('eip155:1', '0x1234567890abcdef')).toHaveLength(1)
 
     await storage.delete('eip155:1', '0x1234567890abcdef')
     expect(getItem).toHaveBeenCalledWith(key)
