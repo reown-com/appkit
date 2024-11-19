@@ -12,13 +12,13 @@ let lightModeTag: HTMLStyleElement | undefined = undefined
 /* @TODO: Replace fonts */
 const fonts = {
   'KHTeka-500':
-    'https://res.cloudinary.com/dn7w4dnog/raw/upload/v1731623453/KHTeka-Medium_k8mbxr.otf',
+    'https://res.cloudinary.com/dn7w4dnog/raw/upload/v1732023137/KHTeka-Medium_dzj5on.woff',
   'KHTeka-400':
-    'https://res.cloudinary.com/dn7w4dnog/raw/upload/v1731623453/KHTeka-Regular_ubss3t.otf',
+    'https://res.cloudinary.com/dn7w4dnog/raw/upload/v1732023137/KHTeka-Regular_rgphis.woff',
   'KHTeka-300':
-    'https://res.cloudinary.com/dn7w4dnog/raw/upload/v1731623453/KHTeka-Light_jvrkit.otf',
+    'https://res.cloudinary.com/dn7w4dnog/raw/upload/v1732023137/KHTeka-Light_jzizi3.woff',
   'KHTekaMono-400':
-    'https://res.cloudinary.com/dn7w4dnog/raw/upload/v1731623453/KHTekaMono-Regular_sytzur.otf'
+    'https://res.cloudinary.com/dn7w4dnog/raw/upload/v1732023137/KHTekaMono-Regular_nytitk.woff'
 }
 
 function createAppKitTheme(theme: ThemeType = 'dark') {
@@ -84,28 +84,28 @@ function createRootStyles(themeVariables?: ThemeVariables) {
     core: css`
       @font-face {
         font-family: 'KHTeka';
-        src: url(${unsafeCSS(fonts['KHTeka-500'])}) format('opentype');
+        src: url(${unsafeCSS(fonts['KHTeka-500'])}) format('woff');
         font-weight: 500;
         font-style: normal;
       }
 
       @font-face {
         font-family: 'KHTeka';
-        src: url(${unsafeCSS(fonts['KHTeka-300'])}) format('opentype');
+        src: url(${unsafeCSS(fonts['KHTeka-300'])}) format('woff');
         font-weight: 300;
         font-style: normal;
       }
 
       @font-face {
         font-family: 'KHTekaMono';
-        src: url(${unsafeCSS(fonts['KHTekaMono-400'])}) format('opentype');
+        src: url(${unsafeCSS(fonts['KHTekaMono-400'])}) format('woff');
         font-weight: 400;
         font-style: normal;
       }
 
       @font-face {
         font-family: 'KHTeka';
-        src: url(${unsafeCSS(fonts['KHTeka-400'])}) format('opentype');
+        src: url(${unsafeCSS(fonts['KHTeka-400'])}) format('woff');
         font-weight: 400;
         font-style: normal;
       }

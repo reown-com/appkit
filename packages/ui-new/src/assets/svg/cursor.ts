@@ -1,5 +1,5 @@
 import { svg } from 'lit'
 
-export const cursorSvg = svg` <svg fill="none" viewBox="0 0 13 4">
-  <path fill="currentColor" d="M.5 0h12L8.9 3.13a3.76 3.76 0 0 1-4.8 0L.5 0Z" />
+export const cursorSvg = svg`<svg width="11" height="4" viewBox="0 0 11 4" fill="none">
+  <path d="M0.5 -1.5427e-08L10.5 -1.5427e-08L7.5 3.13445C6.39543 4.28852 4.60457 4.28852 3.5 3.13445L0.5 -1.5427e-08Z" fill="currentColor"/>
 </svg>`

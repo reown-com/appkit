@@ -45,8 +45,10 @@ export class WuiText extends LitElement {
 
     // @TODO: Add variables if used by other components
     this.style.cssText = `
-      text-align: ${this.align};
-      color: ${this.color === 'inherit' ? 'inherit' : TEXT_VARS_BY_COLOR[this.color ?? 'primary']};
+      --local-color: ${this.align};
+      --local-align: ${
+        this.color === 'inherit' ? 'inherit' : TEXT_VARS_BY_COLOR[this.color ?? 'primary']
+      };
       `
 
     return html`<slot class=${classMap(classes)}></slot>`

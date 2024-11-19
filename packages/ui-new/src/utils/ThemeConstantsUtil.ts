@@ -186,8 +186,10 @@ export const tokens = {
 
 export const borderRadius = {
   '1': '4px',
+  // @TOOD: 6px doesn't exist in design system. Remove this.
   '6': '6px',
   '2': '8px',
+  // @TOOD: 10px doesn't exist in design system. Remove this.
   '10': '10px',
   '3': '12px',
   '4': '16px',
@@ -249,14 +251,14 @@ const typography = {
   'h1-medium': { lineHeight: '50px', letterSpacing: '-0.84px' },
 
   /* Heading 2 */
-  'h2-regular-mono': { lineHeight: '64px', letterSpacing: '-2.64px' },
-  'h2-regular': { lineHeight: '64px', letterSpacing: '-0.88px' },
-  'h2-medium': { lineHeight: '64px', letterSpacing: '-0.88px' },
+  'h2-regular-mono': { lineHeight: '44px', letterSpacing: '-2.64px' },
+  'h2-regular': { lineHeight: '44px', letterSpacing: '-0.88px' },
+  'h2-medium': { lineHeight: '44px', letterSpacing: '-0.88px' },
 
   /* Heading 3 */
-  'h3-regular-mono': { lineHeight: '64px', letterSpacing: '-2.28px' },
-  'h3-regular': { lineHeight: '64px', letterSpacing: '-0.76px' },
-  'h3-medium': { lineHeight: '64px', letterSpacing: '-0.76px' },
+  'h3-regular-mono': { lineHeight: '38px', letterSpacing: '-2.28px' },
+  'h3-regular': { lineHeight: '38px', letterSpacing: '-0.76px' },
+  'h3-medium': { lineHeight: '38px', letterSpacing: '-0.76px' },
 
   /* Heading 4 */
   'h4-regular-mono': { lineHeight: '32px', letterSpacing: '-1.92px' },
