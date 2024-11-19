@@ -161,7 +161,11 @@ describe('EthersAdapter', () => {
 
   describe('EthersAdapter -connect', () => {
     it('should connect with external provider', async () => {
-      vi.mocked(mockProvider.request).mockResolvedValue(['0x123'])
+      vi.mocked(mockProvider.request).mockImplementation(request => {
+        if (request.method === 'eth_requestAccounts') return Promise.resolve(['0x123'])
+        if (request.method === 'eth_chainId') return Promise.resolve('0x1')
+        return Promise.resolve(null)
+      })
       const connectors = [
         {
           id: 'test',

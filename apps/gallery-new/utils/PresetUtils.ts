@@ -22,7 +22,7 @@ import type {
   PlacementType,
   ButtonShortcutVariant,
   SpacingType,
-  TagType,
+  TagVariant,
   TextAlign,
   TextType,
   ThemeType,
@@ -315,7 +315,14 @@ export const cardSelectOptions: CardSelectType[] = ['network', 'wallet']
 
 export const backgroundOptions: BackgroundType[] = ['opaque', 'transparent']
 
-export const tagOptions: TagType[] = ['main', 'shade', 'error', 'success']
+export const tagOptions: TagVariant[] = [
+  'accent',
+  'info',
+  'success',
+  'warning',
+  'error',
+  'certified'
+]
 
 export const accountEntryOptions: AccountEntryType[] = ['icon', 'image']
 
