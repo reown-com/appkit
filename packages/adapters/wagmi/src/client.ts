@@ -350,14 +350,14 @@ export class WagmiAdapter extends AdapterBlueprint {
   public async syncConnection(
     params: AdapterBlueprint.SyncConnectionParams
   ): Promise<AdapterBlueprint.ConnectResult> {
-    const { id, chainId } = params
+    const { id } = params
     const connections = getConnections(this.wagmiConfig)
     const connection = connections.find(c => c.connector.id === id)
     const connector = this.wagmiConfig.connectors.find(c => c.id === id)
     const provider = (await connector?.getProvider()) as Provider
 
     return {
-      chainId: Number(chainId),
+      chainId: Number(connection?.chainId),
       address: connection?.accounts[0] as string,
       provider,
       type: connection?.connector.type as ConnectorType,
