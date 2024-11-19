@@ -2,14 +2,14 @@ import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import '../../components/wui-text/index.js'
 import '../../components/wui-image/index.js'
-import '../../composites/wui-icon-box/index.js'
+import '../wui-icon-box/index.js'
 import '../wui-tag/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
-@customElement('wui-list-wallet')
-export class WuiListWallet extends LitElement {
+@customElement('wui-list-select-wallet')
+export class WuiListSelectWallet extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
@@ -67,6 +67,6 @@ export class WuiListWallet extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'wui-list-wallet': WuiListWallet
+    'wui-list-select-wallet': WuiListSelectWallet
   }
 }
