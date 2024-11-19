@@ -2,15 +2,16 @@ import type { Meta } from '@storybook/web-components'
 import '@reown/appkit-ui-new/src/composites/wui-tag'
 import type { WuiTag } from '@reown/appkit-ui-new/src/composites/wui-tag'
 import { html } from 'lit'
-import { tagOptions } from '../../utils/PresetUtils'
+import { iconOptions, tagOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiTag>
 
 export default {
   title: 'Composites/wui-tag',
   args: {
-    variant: 'main',
-    size: 'lg'
+    variant: 'accent',
+    size: 'md',
+    icon: undefined
   },
   argTypes: {
     variant: {
@@ -18,12 +19,17 @@ export default {
       control: { type: 'select' }
     },
     size: {
-      options: ['lg', 'md'],
+      options: ['md', 'sm'],
+      control: { type: 'select' }
+    },
+    icon: {
+      options: [undefined, ...iconOptions],
       control: { type: 'select' }
     }
   }
 } as Component
 
 export const Default: Component = {
-  render: args => html`<wui-tag size=${args.size} variant=${args.variant}>Recent</wui-tag>`
+  render: args =>
+    html`<wui-tag icon=${args.icon} size=${args.size} variant=${args.variant}>Recent</wui-tag>`
 }

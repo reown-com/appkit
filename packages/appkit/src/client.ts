@@ -785,6 +785,10 @@ export class AppKit {
             chainNamespace: chain || (ChainController.state.activeChain as ChainNamespace)
           })
         }
+
+        if (!this.caipNetworks?.some(network => network.id === res?.chainId)) {
+          ChainController.showUnsupportedChainUI()
+        }
       },
       reconnectExternal: async ({ id, info, type, provider }) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
@@ -1541,6 +1545,10 @@ export class AppKit {
       if (res) {
         this.syncProvider({ ...res, chainNamespace: connectedNamespace as ChainNamespace })
         await this.syncAccount({ ...res, chainNamespace: connectedNamespace as ChainNamespace })
+      }
+
+      if (!this.caipNetworks?.some(network => network.id === res?.chainId)) {
+        ChainController.showUnsupportedChainUI()
       }
     }
   }
