@@ -3,6 +3,7 @@ import type { ChainAdapterConnector } from '../../../../appkit/dist/types/src/ad
 export interface BitcoinConnector extends ChainAdapterConnector {
   connect(): Promise<string>
   getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]>
+  signMessage(params: { address: string; message: string }): Promise<string>
 }
 
 export namespace BitcoinConnector {

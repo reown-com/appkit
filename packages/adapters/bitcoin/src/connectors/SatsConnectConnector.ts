@@ -6,11 +6,11 @@ export class SatsConnectConnector implements BitcoinConnector {
   public readonly chain = 'bip122'
   public readonly type = 'ANNOUNCED'
 
-  readonly wallet: Provider
+  readonly provider: Provider
   private requestedChains: CaipNetwork[] = []
 
   constructor({ provider, requestedChains }: SatsConnectConnector.ConstructorParams) {
-    this.wallet = provider
+    this.provider = provider
     this.requestedChains = requestedChains
   }
 
@@ -19,11 +19,11 @@ export class SatsConnectConnector implements BitcoinConnector {
   }
 
   public get name(): string {
-    return this.wallet.name
+    return this.provider.name
   }
 
   public get imageUrl(): string {
-    return this.wallet.icon || ''
+    return this.provider.icon || ''
   }
 
   public get chains() {
@@ -61,6 +61,16 @@ export class SatsConnectConnector implements BitcoinConnector {
     const providers = getProviders()
 
     return providers.map(provider => new SatsConnectConnector({ provider, requestedChains }))
+  }
+
+  public async signMessage(params: { message: string; address: string }): Promise<string> {
+    const res = await Wallet.request('signMessage', params)
+
+    if (res.status === 'error') {
+      throw new Error('Signature denied')
+    }
+
+    return res.result.signature
   }
 }
 

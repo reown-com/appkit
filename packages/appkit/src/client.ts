@@ -802,6 +802,7 @@ export class AppKit {
         })
 
         if (res) {
+          console.log('>> Syncing provider', res)
           this.syncProvider({
             ...res,
             chainNamespace: chain || (ChainController.state.activeChain as ChainNamespace)
