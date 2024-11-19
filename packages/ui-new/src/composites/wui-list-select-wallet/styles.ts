@@ -42,7 +42,8 @@ export default css`
 
   button:disabled > wui-text,
   button:disabled > wui-image,
-  button:disabled > wui-tag {
+  button:disabled > wui-tag,
+  button:disabled > wui-icon-box {
     opacity: 0.5 !important;
   }
 `
