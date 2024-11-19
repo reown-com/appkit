@@ -14,10 +14,8 @@ export default {
     icon: 'search',
     disabled: false,
     errorText: '',
-    warningMessage: '',
-    onSubmit: () => {
-      alert('Input submitted')
-    }
+    warningText: '',
+    showSubmitButton: false
   },
   argTypes: {
     disabled: {
@@ -30,11 +28,11 @@ export default {
     errorText: {
       control: { type: 'text' }
     },
-    warningMessage: {
+    warningText: {
       control: { type: 'text' }
     },
-    onSubmit: {
-      control: { type: 'function' }
+    showSubmitButton: {
+      control: { type: 'boolean' }
     }
   }
 } as Component
@@ -43,9 +41,13 @@ export const Default: Component = {
   render: args => {
     let inputValue = args.value
 
-    const handleInputChange = (e: CustomEvent<string>) => {
+    function handleInputChange(e: CustomEvent<string>) {
       inputValue = e.detail
-      console.log('Input value changed:', inputValue)
+    }
+
+    function handleSubmit() {
+      // eslint-disable-next-line no-alert
+      alert('Input submitted')
     }
 
     return html`<gallery-container width="336">
@@ -54,9 +56,9 @@ export const Default: Component = {
         ?disabled=${args.disabled}
         .icon=${args.icon}
         .errorText=${args.errorText}
-        .warningMessage=${args.warningMessage}
+        .warningText=${args.warningText}
         .value=${inputValue}
-        .onSubmit=${args.onSubmit ? () => alert('Submit clicked!') : undefined}
+        .onSubmit=${args.showSubmitButton ? handleSubmit : undefined}
         @inputChange=${handleInputChange}
       ></wui-input-text
     ></gallery-container>`
