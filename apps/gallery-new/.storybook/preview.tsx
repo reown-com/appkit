@@ -43,7 +43,7 @@ export default {
         },
         {
           name: 'light',
-          value: '#FFFFF'
+          value: '#FFFFFF'
         }
       ]
     },
