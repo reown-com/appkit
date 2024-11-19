@@ -1,7 +1,8 @@
 import type { AppKit, AppKitOptions } from '@reown/appkit'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import type { BitcoinConnector } from './utils/BitcoinConnector.js'
-import { WBIPConnector } from './connectors/WBIPConnector.js'
+
+import { SatsConnectConnector } from './connectors/SatsConnectConnector.js'
 
 export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   constructor(params: BitcoinAdapter.ConstructorParams) {
@@ -73,7 +74,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
      */
 
     this.addConnector(
-      ...WBIPConnector.getWallets({
+      ...SatsConnectConnector.getWallets({
         requestedChains: this.networks
       })
     )
@@ -86,11 +87,22 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     return Promise.resolve({} as unknown as AdapterBlueprint.ConnectResult)
   }
 
-  override signMessage(
-    _params: AdapterBlueprint.SignMessageParams
+  override async signMessage(
+    params: AdapterBlueprint.SignMessageParams
   ): Promise<AdapterBlueprint.SignMessageResult> {
     // Sign message
-    return Promise.resolve({} as unknown as AdapterBlueprint.SignMessageResult)
+
+    const connector = this.connector
+    if (!connector) {
+      throw new Error('BitcoinAdapter:signMessage - connector is undefined')
+    }
+
+    const signature = await connector.signMessage({
+      message: params.message,
+      address: params.address
+    })
+
+    return { signature }
   }
 
   override estimateGas(
@@ -136,6 +148,23 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   ): AdapterBlueprint.GetWalletConnectProviderResult {
     // Get WalletConnect provider
     return undefined
+  }
+
+  override grantPermissions(_params: AdapterBlueprint.GrantPermissionsParams): Promise<unknown> {
+    // Grant permissions
+    return Promise.resolve({})
+  }
+
+  override getCapabilities(_params: AdapterBlueprint.GetCapabilitiesParams): Promise<unknown> {
+    // Revoke permissions
+    return Promise.resolve({})
+  }
+
+  override revokePermissions(
+    _params: AdapterBlueprint.RevokePermissionsParams
+  ): Promise<`0x${string}`> {
+    // Get capabilities
+    return Promise.resolve('0x')
   }
 }
 

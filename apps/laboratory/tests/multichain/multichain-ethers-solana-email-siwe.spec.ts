@@ -59,7 +59,7 @@ test('it should switch to different namespace', async () => {
   const chainName = 'Solana'
 
   await page.switchNetwork(chainName)
-  await page.openNetworks()
+  await validator.expectUnauthenticated()
   await validator.expectSwitchedNetwork(chainName)
   await page.closeModal()
 

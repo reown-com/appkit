@@ -8,11 +8,11 @@ export class WalletStandardConnector implements BitcoinConnector {
   public readonly chain = 'bip122'
   public readonly type = 'ANNOUNCED'
 
-  readonly wallet: Wallet
+  readonly provider: Wallet
   private requestedChains: CaipNetwork[] = []
 
   constructor({ wallet, requestedChains }: WalletStandardConnector.ConstructorParams) {
-    this.wallet = wallet
+    this.provider = wallet
     this.requestedChains = requestedChains
   }
 
@@ -21,15 +21,15 @@ export class WalletStandardConnector implements BitcoinConnector {
   }
 
   public get name(): string {
-    return this.wallet.name
+    return this.provider.name
   }
 
   public get imageUrl(): string {
-    return this.wallet.icon || ''
+    return this.provider.icon || ''
   }
 
   public get chains() {
-    return this.wallet.chains
+    return this.provider.chains
       .map(chainId => this.requestedChains.find(chain => chain.id === chainId))
       .filter(Boolean) as CaipNetwork[]
   }
@@ -48,6 +48,11 @@ export class WalletStandardConnector implements BitcoinConnector {
 
   async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {
     return Promise.resolve([])
+  }
+
+
+  async signMessage(_params: { address: string; message: string }): Promise<string> {
+    return Promise.resolve('signature')
   }
 
   private getWalletFeature<Name extends keyof BitcoinFeatures>(feature: Name) {
