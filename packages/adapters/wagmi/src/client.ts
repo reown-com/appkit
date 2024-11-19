@@ -229,6 +229,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       chainId,
       type: 'legacy' as const
     }
+
     await prepareTransactionRequest(this.wagmiConfig, txParams)
     const tx = await wagmiSendTransaction(this.wagmiConfig, txParams)
     await waitForTransactionReceipt(this.wagmiConfig, { hash: tx, timeout: 25000 })
