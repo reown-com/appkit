@@ -45,8 +45,17 @@ export const EventsController = {
   async _sendAnalyticsEvent(payload: EventsControllerState) {
     try {
       if (excluded.includes(payload.data.event) || typeof window === 'undefined') {
+        console.log(
+          '>> Analytics early return',
+          payload,
+          excluded.includes(payload.data.event),
+          typeof window === 'undefined'
+        )
+
         return
       }
+
+      console.log('>> Final analytics event', payload)
       await api.post({
         path: '/e',
         headers: EventsController._getApiHeaders(),
@@ -58,14 +67,16 @@ export const EventsController = {
           props: payload.data
         }
       })
-    } catch {
+    } catch (e) {
       // Catch silently
+      console.log('>> Analytics error', e)
     }
   },
 
   sendEvent(data: EventsControllerState['data']) {
     state.timestamp = Date.now()
     state.data = data
+    console.log('>> Sending analytics event', OptionsController.state.features?.analytics, state)
     if (OptionsController.state.features?.analytics) {
       EventsController._sendAnalyticsEvent(state)
     }

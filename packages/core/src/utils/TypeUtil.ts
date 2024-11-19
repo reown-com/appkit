@@ -18,6 +18,30 @@ import type { ConstantsUtil } from './ConstantsUtil.js'
 import type { ReownName } from '../controllers/EnsController.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 
+type AppKitConfigs = {
+  showWallets?: boolean
+  siweConfig?: {
+    options: {
+      enabled?: boolean
+      nonceRefetchIntervalMs?: number
+      sessionRefetchIntervalMs?: number
+      signOutOnDisconnect?: boolean
+      signOutOnAccountChange?: boolean
+      signOutOnNetworkChange?: boolean
+    }
+  }
+  themeMode?: 'dark' | 'light'
+
+  themeVariables?: ThemeVariables
+  allowUnsupportedChain?: boolean
+  networks: (string | number)[]
+  defaultNetwork?: AppKitNetwork
+  chainImages?: Record<number | string, string>
+  connectorImages?: Record<string, string>
+  coinbasePreference?: 'all' | 'smartWalletOnly' | 'eoaOnly'
+  metadata?: Metadata
+}
+
 export type CaipNetworkCoinbaseNetwork =
   | 'Ethereum'
   | 'Arbitrum One'
@@ -746,6 +770,11 @@ export type Event =
         badge: string
         search: string
       }
+    }
+  | {
+      type: 'track'
+      event: 'INITIALIZE'
+      properties: AppKitConfigs
     }
 // Onramp Types
 export type DestinationWallet = {
