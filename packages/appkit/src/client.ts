@@ -580,6 +580,10 @@ export class AppKit {
     }
   }
 
+  public async disconnect() {
+    await this.connectionControllerClient?.disconnect()
+  }
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(
     options: AppKitOptions & {
@@ -766,6 +770,10 @@ export class AppKit {
             chainNamespace: chain || (ChainController.state.activeChain as ChainNamespace)
           })
         }
+
+        if (!this.caipNetworks?.some(network => network.id === res?.chainId)) {
+          ChainController.showUnsupportedChainUI()
+        }
       },
       reconnectExternal: async ({ id, info, type, provider }) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
@@ -786,8 +794,8 @@ export class AppKit {
 
         this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
 
-        localStorage.removeItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
-        localStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
+        SafeLocalStorage.removeItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
+        SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
 
         ChainController.state.chains.forEach(chain => {
           this.resetAccount(chain.namespace as ChainNamespace)
@@ -1522,6 +1530,10 @@ export class AppKit {
       if (res) {
         this.syncProvider({ ...res, chainNamespace: connectedNamespace as ChainNamespace })
         await this.syncAccount({ ...res, chainNamespace: connectedNamespace as ChainNamespace })
+      }
+
+      if (!this.caipNetworks?.some(network => network.id === res?.chainId)) {
+        ChainController.showUnsupportedChainUI()
       }
     }
   }
