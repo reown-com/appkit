@@ -16,13 +16,12 @@ export default css`
 
   input {
     width: 100%;
-    border-radius: ${({ borderRadius }) => borderRadius[4]};
-    background: transparent;
-    will-change: background-color, border-color, box-shadow;
-    caret-color: ${({ tokens }) => tokens.core.textAccentPrimary};
-    border: 1px solid ${({ tokens }) => tokens.theme.borderPrimary};
     height: 56px;
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
     color: inherit;
+    background: transparent;
+    border: 1px solid ${({ tokens }) => tokens.theme.borderPrimary};
+    caret-color: ${({ tokens }) => tokens.core.textAccentPrimary};
     padding-left: ${({ spacing }) => spacing[4]};
     padding-right: ${({ spacing }) => spacing[4]};
     padding-top: ${({ spacing }) => spacing[5]};
@@ -34,17 +33,15 @@ export default css`
     font-family: ${({ fontFamily }) => fontFamily.regular};
   }
 
-  input:hover {
-    border: 1px solid ${({ tokens }) => tokens.theme.borderSecondary};
+  @media (hover: hover) and (pointer: fine) {
+    input:hover:enabled {
+      border: 1px solid ${({ tokens }) => tokens.theme.borderSecondary};
+    }
   }
 
   input:disabled {
     cursor: unset;
     border: 1px solid ${({ tokens }) => tokens.theme.borderPrimary};
-  }
-
-  .wui-input-text-container:has(input:disabled) {
-    opacity: 0.5;
   }
 
   input::placeholder {
@@ -59,12 +56,17 @@ export default css`
     box-shadow: 0px 0px 0px 4px ${({ tokens }) => tokens.core.foregroundAccent040};
   }
 
+  div.wui-input-text-container:has(input:disabled) {
+    opacity: 0.5;
+  }
+
   wui-icon.wui-input-text-left-icon {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     pointer-events: none;
     left: ${({ spacing }) => spacing[4]};
+    color: ${({ tokens }) => tokens.theme.iconDefault};
   }
 
   button.wui-input-text-submit-button {
@@ -84,13 +86,12 @@ export default css`
     opacity: 1;
   }
 
-  button.wui-input-text-submit-button:hover {
-    background: ${({ tokens }) => tokens.core.foregroundAccent010};
+  button.wui-input-text-submit-button.loading wui-icon {
+    animation: spin 1s linear infinite;
   }
 
-  wui-icon.wui-input-text-left-icon {
-    left: ${({ spacing }) => spacing[4]};
-    color: ${({ tokens }) => tokens.theme.iconDefault};
+  button.wui-input-text-submit-button:hover {
+    background: ${({ tokens }) => tokens.core.foregroundAccent010};
   }
 
   wui-icon.wui-input-text-left-icon + input {
@@ -103,5 +104,15 @@ export default css`
 
   input[type='number'] {
     -moz-appearance: textfield;
+  }
+
+  /* -- Keyframes --------------------------------------------------- */
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 `

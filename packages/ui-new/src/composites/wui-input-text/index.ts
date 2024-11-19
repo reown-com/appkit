@@ -20,7 +20,9 @@ export class WuiInputText extends LitElement {
 
   @property() public icon?: IconType
 
-  @property() public disabled = false
+  @property({ type: Boolean }) public disabled = false
+
+  @property({ type: Boolean }) public loading = false
 
   @property() public placeholder = ''
 
@@ -70,11 +72,13 @@ export class WuiInputText extends LitElement {
   private templateSubmitButton() {
     if (this.onSubmit) {
       return html`<button
-        class="wui-input-text-submit-button"
+        class="wui-input-text-submit-button ${this.loading ? 'loading' : ''}"
         @click=${this.onSubmit?.bind(this)}
-        ?disabled=${this.disabled}
+        ?disabled=${this.disabled || this.loading}
       >
-        <wui-icon name="chevronRight" size="md"></wui-icon>
+        ${this.loading
+          ? html`<wui-icon name="spinner" size="md"></wui-icon>`
+          : html`<wui-icon name="chevronRight" size="md"></wui-icon>`}
       </button>`
     }
 

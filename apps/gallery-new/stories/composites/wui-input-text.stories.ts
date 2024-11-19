@@ -15,7 +15,8 @@ export default {
     disabled: false,
     errorText: '',
     warningText: '',
-    showSubmitButton: false
+    showSubmitButton: false,
+    loading: false
   },
   argTypes: {
     disabled: {
@@ -32,6 +33,9 @@ export default {
       control: { type: 'text' }
     },
     showSubmitButton: {
+      control: { type: 'boolean' }
+    },
+    loading: {
       control: { type: 'boolean' }
     }
   }
@@ -54,6 +58,7 @@ export const Default: Component = {
       <wui-input-text
         placeholder=${args.placeholder}
         ?disabled=${args.disabled}
+        ?loading=${args.loading}
         .icon=${args.icon}
         .errorText=${args.errorText}
         .warningText=${args.warningText}

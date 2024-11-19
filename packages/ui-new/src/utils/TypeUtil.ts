@@ -161,6 +161,7 @@ export type IconType =
   | 'refresh'
   | 'search'
   | 'send'
+  | 'spinner'
   | 'swapHorizontal'
   | 'swapHorizontalBold'
   | 'swapHorizontalMedium'

@@ -60,6 +60,7 @@ import { recycleHorizontalSvg } from '../../assets/svg/recycle-horizontal.js'
 import { refreshSvg } from '../../assets/svg/refresh.js'
 import { searchSvg } from '../../assets/svg/search.js'
 import { sendSvg } from '../../assets/svg/send.js'
+import { spinnerSvg } from '../../assets/svg/spinner.js'
 import { swapHorizontalSvg } from '../../assets/svg/swapHorizontal.js'
 import { swapHorizontalBoldSvg } from '../../assets/svg/swapHorizontalBold.js'
 import { swapHorizontalMediumSvg } from '../../assets/svg/swapHorizontalMedium.js'
@@ -143,6 +144,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   refresh: refreshSvg,
   search: searchSvg,
   send: sendSvg,
+  spinner: spinnerSvg,
   swapHorizontal: swapHorizontalSvg,
   swapHorizontalMedium: swapHorizontalMediumSvg,
   swapHorizontalBold: swapHorizontalBoldSvg,
