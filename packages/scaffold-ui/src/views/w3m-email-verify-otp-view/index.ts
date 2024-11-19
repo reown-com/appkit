@@ -32,7 +32,7 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
           event: 'CONNECT_SUCCESS',
           properties: { method: 'email', name: this.authConnector.name || 'Unknown' }
         })
-        if (!OptionsController.state.isSiweEnabled) {
+        if (!OptionsController.state.siwx) {
           ModalController.close()
         }
       }
