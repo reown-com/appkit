@@ -3,7 +3,7 @@ import type { ChainAdapterConnector } from '../../../../appkit/dist/types/src/ad
 export interface BitcoinConnector extends ChainAdapterConnector {
   connect(): Promise<string>
   getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]>
-  signMessage(params: { address: string; message: string }): Promise<string>
+  signMessage(params: BitcoinConnector.SignMessageParams): Promise<string>
 }
 
 export namespace BitcoinConnector {
@@ -15,5 +15,10 @@ export namespace BitcoinConnector {
     // Derivation path of the address e.g. "m/84'/0'/0'/0/0"
     path?: string
     intention?: 'payment' | 'ordinal'
+  }
+
+  export type SignMessageParams = {
+    message: string
+    address: string
   }
 }

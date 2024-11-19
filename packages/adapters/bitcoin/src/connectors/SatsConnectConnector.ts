@@ -1,16 +1,23 @@
 import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
 import type { CaipNetwork } from '@reown/appkit-common'
-import Wallet, { AddressPurpose, getProviders, type Provider } from 'sats-connect'
+import type { Provider } from '@reown/appkit-core'
+import Wallet, {
+  AddressPurpose,
+  getProviders,
+  type Provider as SatsConnectProvider
+} from 'sats-connect'
 
 export class SatsConnectConnector implements BitcoinConnector {
   public readonly chain = 'bip122'
   public readonly type = 'ANNOUNCED'
 
+  readonly wallet: SatsConnectProvider
   readonly provider: Provider
   private requestedChains: CaipNetwork[] = []
 
   constructor({ provider, requestedChains }: SatsConnectConnector.ConstructorParams) {
-    this.provider = provider
+    this.provider = this as unknown as Provider
+    this.wallet = provider
     this.requestedChains = requestedChains
   }
 
@@ -19,11 +26,11 @@ export class SatsConnectConnector implements BitcoinConnector {
   }
 
   public get name(): string {
-    return this.provider.name
+    return this.wallet.name
   }
 
   public get imageUrl(): string {
-    return this.provider.icon || ''
+    return this.wallet.icon || ''
   }
 
   public get chains() {
@@ -63,7 +70,7 @@ export class SatsConnectConnector implements BitcoinConnector {
     return providers.map(provider => new SatsConnectConnector({ provider, requestedChains }))
   }
 
-  public async signMessage(params: { message: string; address: string }): Promise<string> {
+  public async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
     const res = await Wallet.request('signMessage', params)
 
     if (res.status === 'error') {
@@ -76,7 +83,7 @@ export class SatsConnectConnector implements BitcoinConnector {
 
 export namespace SatsConnectConnector {
   export type ConstructorParams = {
-    provider: Provider
+    provider: SatsConnectProvider
     requestedChains: CaipNetwork[]
   }
 
