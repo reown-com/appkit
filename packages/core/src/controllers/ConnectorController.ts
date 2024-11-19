@@ -7,12 +7,12 @@ import { ThemeController } from './ThemeController.js'
 import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
-interface ConnectorWithProviders extends Connector {
-  connectors?: Connector[]
+interface ConnectorWithProviders<T> extends Connector<T> {
+  connectors?: Connector<T>[]
 }
 export interface ConnectorControllerState {
-  allConnectors: Connector[]
-  connectors: ConnectorWithProviders[]
+  allConnectors: Connector<unknown>[]
+  connectors: ConnectorWithProviders<unknown>[]
 }
 
 type StateKey = keyof ConnectorControllerState
@@ -55,10 +55,10 @@ export const ConnectorController = {
     state.connectors = this.mergeMultiChainConnectors(state.allConnectors)
   },
 
-  mergeMultiChainConnectors(connectors: Connector[]) {
+  mergeMultiChainConnectors(connectors: Connector<unknown>[]) {
     const connectorsByNameMap = this.generateConnectorMapByName(connectors)
 
-    const mergedConnectors: ConnectorWithProviders[] = []
+    const mergedConnectors: ConnectorWithProviders<unknown>[] = []
 
     connectorsByNameMap.forEach(keyConnectors => {
       const firstItem = keyConnectors[0]
@@ -84,8 +84,8 @@ export const ConnectorController = {
     return mergedConnectors
   },
 
-  generateConnectorMapByName(connectors: Connector[]): Map<string, Connector[]> {
-    const connectorsByNameMap = new Map<string, Connector[]>()
+  generateConnectorMapByName(connectors: Connector<unknown>[]): Map<string, Connector<unknown>[]> {
+    const connectorsByNameMap = new Map<string, Connector<unknown>[]>()
 
     connectors.forEach(connector => {
       const { name } = connector
@@ -118,8 +118,8 @@ export const ConnectorController = {
     return (nameOverrideMap as Record<string, string>)[name] || name
   },
 
-  getUniqueConnectorsByName(connectors: Connector[]) {
-    const uniqueConnectors: Connector[] = []
+  getUniqueConnectorsByName(connectors: Connector<unknown>[]) {
+    const uniqueConnectors: Connector<unknown>[] = []
 
     connectors.forEach(c => {
       if (!uniqueConnectors.find(uc => uc.chain === c.chain)) {
@@ -130,7 +130,7 @@ export const ConnectorController = {
     return uniqueConnectors
   },
 
-  addConnector(connector: Connector | AuthConnector) {
+  addConnector<T>(connector: Connector<T> | AuthConnector) {
     if (connector.id === 'ID_AUTH') {
       const authConnector = connector as AuthConnector
 
@@ -183,7 +183,7 @@ export const ConnectorController = {
     return state.connectors.find(c => c.explorerId === id || c.info?.rdns === rdns)
   },
 
-  syncIfAuthConnector(connector: Connector | AuthConnector) {
+  syncIfAuthConnector(connector: Connector<unknown> | AuthConnector) {
     if (connector.id !== 'ID_AUTH') {
       return
     }

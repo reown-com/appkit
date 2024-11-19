@@ -22,7 +22,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
   override async connect(
     params: AdapterBlueprint.ConnectParams
-  ): Promise<AdapterBlueprint.ConnectResult> {
+  ): Promise<AdapterBlueprint.ConnectResult<BitcoinConnector>> {
     const connector = this.connectors.find(c => c.id === params.id)
     if (!connector) {
       throw new Error('connectionControllerClient:connectExternal - connector is undefined')

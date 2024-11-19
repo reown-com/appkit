@@ -6,11 +6,11 @@ import { ApiController } from '../../src/controllers/ApiController.js'
 import type { CaipNetwork } from '@reown/appkit-common'
 
 // - Mocks ---------------------------------------------------------------------
-const connector: Partial<Connector> = {
+const connector: Partial<Connector<unknown>> = {
   imageUrl: undefined,
   imageId: 'walletconnect'
 }
-const connectorWithImageUrl: Partial<Connector> = {
+const connectorWithImageUrl: Partial<Connector<unknown>> = {
   imageUrl: 'walletconnect-connector-logo-src',
   imageId: 'walletconnect'
 }

@@ -90,7 +90,7 @@ export interface OpenOptions {
   view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'
 }
 
-type Adapters = Record<ChainNamespace, AdapterBlueprint>
+type Adapters = Record<ChainNamespace, AdapterBlueprint<unknown>>
 
 // -- Constants ----------------------------------------- //
 const accountState: AccountControllerState = {
@@ -140,7 +140,7 @@ let isInitialized = false
 export class AppKit {
   private static instance?: AppKit
 
-  public activeAdapter?: AdapterBlueprint
+  public activeAdapter?: AdapterBlueprint<unknown>
 
   public options: AppKitOptions
 
@@ -204,7 +204,7 @@ export class AppKit {
     this.createClients()
     ChainController.initialize(options.adapters ?? [])
     this.chainAdapters = await this.createAdapters(
-      options.adapters as unknown as AdapterBlueprint[]
+      options.adapters as unknown as AdapterBlueprint<unknown>[]
     )
     await this.initChainAdapters()
     this.syncRequestedNetworks()
@@ -761,7 +761,6 @@ export class AppKit {
         })
 
         if (res) {
-          console.log('>> Syncing provider', res)
           this.syncProvider({
             ...res,
             chainNamespace: chain || (ChainController.state.activeChain as ChainNamespace)
@@ -1327,12 +1326,12 @@ export class AppKit {
     }
   }
 
-  private syncProvider({
+  private syncProvider<T>({
     type,
     provider,
     id,
     chainNamespace
-  }: Pick<AdapterBlueprint.ConnectResult, 'type' | 'provider' | 'id'> & {
+  }: Pick<AdapterBlueprint.ConnectResult<T>, 'type' | 'provider' | 'id'> & {
     chainNamespace: ChainNamespace
   }) {
     ProviderUtil.setProviderId(chainNamespace, type)
@@ -1346,7 +1345,7 @@ export class AppKit {
     address,
     chainId,
     chainNamespace
-  }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
+  }: Pick<AdapterBlueprint.ConnectResult<unknown>, 'address' | 'chainId'> & {
     chainNamespace: ChainNamespace
   }) {
     this.setPreferredAccountType(
@@ -1436,7 +1435,7 @@ export class AppKit {
     address,
     chainId,
     chainNamespace
-  }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
+  }: Pick<AdapterBlueprint.ConnectResult<unknown>, 'address' | 'chainId'> & {
     chainNamespace: ChainNamespace
   }) {
     try {
@@ -1597,7 +1596,7 @@ export class AppKit {
     }
   }
 
-  private async createAdapters(blueprints?: AdapterBlueprint[]): Promise<Adapters> {
+  private async createAdapters(blueprints?: AdapterBlueprint<unknown>[]): Promise<Adapters> {
     if (!this.universalProvider) {
       this.universalProvider = await this.getUniversalProvider()
     }

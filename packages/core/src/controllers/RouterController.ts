@@ -84,14 +84,14 @@ export interface RouterControllerState {
     | 'SIWXSignMessage'
   history: RouterControllerState['view'][]
   data?: {
-    connector?: Connector
+    connector?: Connector<unknown>
     wallet?: WcWallet
     network?: CaipNetwork
     email?: string
     newEmail?: string
     target?: SwapInputTarget
     swapUnsupportedChain?: boolean
-    connectors?: Connector[]
+    connectors?: Connector<unknown>[]
     switchToChain?: ChainNamespace
     navigateTo?: RouterControllerState['view']
     navigateWithReplace?: boolean

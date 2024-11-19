@@ -19,11 +19,11 @@ import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import { OptionsController } from './OptionsController.js'
 
 // -- Types --------------------------------------------- //
-export interface ConnectExternalOptions {
-  id: Connector['id']
-  type: Connector['type']
-  provider?: Connector['provider']
-  info?: Connector['info']
+export interface ConnectExternalOptions<T> {
+  id: Connector<T>['id']
+  type: Connector<T>['type']
+  provider?: T
+  info?: Connector<T>['info']
   chain?: ChainNamespace
   chainId?: number | string
   caipNetwork?: CaipNetwork
@@ -37,8 +37,8 @@ export interface ConnectionControllerClient {
   estimateGas: (args: EstimateGasTransactionArgs) => Promise<bigint>
   parseUnits: (value: string, decimals: number) => bigint
   formatUnits: (value: bigint, decimals: number) => string
-  connectExternal?: (options: ConnectExternalOptions) => Promise<void>
-  reconnectExternal?: (options: ConnectExternalOptions) => Promise<void>
+  connectExternal?: <T>(options: ConnectExternalOptions<T>) => Promise<void>
+  reconnectExternal?: <T>(options: ConnectExternalOptions<T>) => Promise<void>
   checkInstalled?: (ids?: string[]) => boolean
   writeContract: (args: WriteContractArgs) => Promise<`0x${string}` | null>
   getEnsAddress: (value: string) => Promise<false | string>
@@ -140,7 +140,11 @@ export const ConnectionController = {
     }
   },
 
-  async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
+  async connectExternal<T>(
+    options: ConnectExternalOptions<T>,
+    chain: ChainNamespace,
+    setChain = true
+  ) {
     await this._getClient()?.connectExternal?.(options)
 
     if (setChain) {
@@ -148,7 +152,7 @@ export const ConnectionController = {
     }
   },
 
-  async reconnectExternal(options: ConnectExternalOptions) {
+  async reconnectExternal<T>(options: ConnectExternalOptions<T>) {
     await this._getClient()?.reconnectExternal?.(options)
     StorageUtil.setConnectedConnector(options.type === 'AUTH' ? 'ID_AUTH' : options.type)
   },

@@ -43,7 +43,7 @@ export interface ChainControllerState {
   activeCaipAddress: CaipAddress | undefined
   activeCaipNetwork?: CaipNetwork
   chains: Map<ChainNamespace, ChainAdapter>
-  activeConnector?: Connector
+  activeConnector?: Connector<unknown>
   universalAdapter: Pick<ChainAdapter, 'networkControllerClient' | 'connectionControllerClient'>
   noAdapters: boolean
 }
