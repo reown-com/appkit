@@ -186,8 +186,10 @@ export const tokens = {
 
 export const borderRadius = {
   '1': '4px',
+  // @TOOD: 6px doesn't exist in design system. Remove this.
   '6': '6px',
   '2': '8px',
+  // @TOOD: 10px doesn't exist in design system. Remove this.
   '10': '10px',
   '3': '12px',
   '4': '16px',
