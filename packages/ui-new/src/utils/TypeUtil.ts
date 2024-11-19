@@ -124,7 +124,6 @@ export type IconType =
   | 'compass'
   | 'copy'
   | 'cursor'
-  | 'cursorTransparent'
   | 'desktop'
   | 'disconnect'
   | 'discord'
@@ -226,6 +225,8 @@ export type ButtonSize = 'lg' | 'md' | 'sm'
 export type ToggleSize = 'lg' | 'md' | 'sm'
 
 export type CheckboxSize = 'lg' | 'md' | 'sm'
+
+export type TooltipSize = 'md' | 'sm'
 
 export type ButtonVariant =
   | 'accent-primary'

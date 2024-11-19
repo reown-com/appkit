@@ -195,7 +195,6 @@ export const iconOptions: IconType[] = [
   'compass',
   'copy',
   'cursor',
-  'cursorTransparent',
   'desktop',
   'disconnect',
   'discord',

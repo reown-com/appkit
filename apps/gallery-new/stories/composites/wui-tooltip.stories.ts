@@ -12,12 +12,16 @@ export default {
   args: {
     message: 'Tooltip',
     placement: 'top',
+    size: 'md',
     variant: 'fill'
   },
-
   argTypes: {
     placement: {
       options: placementOptions,
+      control: { type: 'select' }
+    },
+    size: {
+      options: ['sm', 'md'],
       control: { type: 'select' }
     },
     variant: {
@@ -33,5 +37,6 @@ export const Default: Component = {
       variant=${args.variant}
       placement=${args.placement}
       message=${args.message}
+      size=${args.size}
     ></wui-tooltip>`
 }
