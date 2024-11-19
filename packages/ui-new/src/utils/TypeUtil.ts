@@ -8,6 +8,7 @@ export type TextColorType =
   | 'invert'
   | 'error'
   | 'warning'
+  | 'accent-primary'
 
 export type FontFamilyType = 'regular' | 'mono'
 
