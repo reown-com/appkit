@@ -15,6 +15,8 @@ const TEXT_VARS_BY_COLOR = {
   secondary: vars.tokens.theme.textSecondary,
   tertiary: vars.tokens.theme.textTertiary,
   invert: vars.tokens.theme.textInvert,
+  error: vars.tokens.core.textError,
+  warning: vars.tokens.core.textWarning,
 
   /* Token colors */
   'accent-primary': vars.tokens.core.textAccentPrimary
@@ -41,10 +43,11 @@ export class WuiText extends LitElement {
       [`wui-line-clamp-${this.lineClamp}`]: this.lineClamp ? true : false
     }
 
-    // @TODO: Add variables if used by other components
     this.style.cssText = `
-      text-align: ${this.align};
-      color: ${this.color === 'inherit' ? 'inherit' : TEXT_VARS_BY_COLOR[this.color ?? 'primary']};
+      --local-align: ${this.align};
+      --local-color: ${
+        this.color === 'inherit' ? 'inherit' : TEXT_VARS_BY_COLOR[this.color ?? 'primary']
+      };
       `
 
     return html`<slot class=${classMap(classes)}></slot>`

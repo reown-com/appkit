@@ -1,6 +1,14 @@
 export type ColorType = string
 
-export type TextColorType = 'inherit' | 'primary' | 'secondary' | 'tertiary' | 'invert'
+export type TextColorType =
+  | 'inherit'
+  | 'primary'
+  | 'secondary'
+  | 'tertiary'
+  | 'invert'
+  | 'error'
+  | 'warning'
+  | 'accent-primary'
 
 export type FontFamilyType = 'regular' | 'mono'
 
@@ -124,7 +132,6 @@ export type IconType =
   | 'compass'
   | 'copy'
   | 'cursor'
-  | 'cursorTransparent'
   | 'desktop'
   | 'disconnect'
   | 'discord'
@@ -154,6 +161,7 @@ export type IconType =
   | 'refresh'
   | 'search'
   | 'send'
+  | 'spinner'
   | 'swapHorizontal'
   | 'swapHorizontalBold'
   | 'swapHorizontalMedium'
@@ -226,6 +234,8 @@ export type ButtonSize = 'lg' | 'md' | 'sm'
 export type ToggleSize = 'lg' | 'md' | 'sm'
 
 export type CheckboxSize = 'lg' | 'md' | 'sm'
+
+export type TooltipSize = 'md' | 'sm'
 
 export type TagVariant = 'accent' | 'info' | 'success' | 'warning' | 'error' | 'certified'
 
