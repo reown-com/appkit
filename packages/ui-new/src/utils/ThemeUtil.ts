@@ -818,6 +818,9 @@ export const resetStyles = css`
     -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: transparent;
     backface-visibility: hidden;
+  }
+
+  :host {
     font-family: var(--wui-font-family);
   }
 `
