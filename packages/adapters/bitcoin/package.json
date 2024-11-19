@@ -21,6 +21,7 @@
     "@reown/appkit": "workspace:*",
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-core": "workspace:*",
+    "@reown/appkit-wallet": "workspace:*",
     "@wallet-standard/app": "1.0.1",
     "@wallet-standard/base": "1.0.1",
     "sats-connect": "3.0.1"

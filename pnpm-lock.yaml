@@ -957,6 +957,9 @@ importers:
       '@reown/appkit-core':
         specifier: workspace:*
         version: link:../../core
+      '@reown/appkit-wallet':
+        specifier: workspace:*
+        version: link:../../wallet
       '@wallet-standard/app':
         specifier: 1.0.1
         version: 1.0.1

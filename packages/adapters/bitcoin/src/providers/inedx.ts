@@ -1,0 +1,70 @@
+import type { W3mFrameTypes } from '@reown/appkit-wallet'
+
+export interface ProviderEventEmitterMethods {
+  on: <E extends ProviderEventEmitterMethods.Event>(
+    event: E,
+    listener: (data: ProviderEventEmitterMethods.EventParams[E]) => void
+  ) => void
+  removeListener: <E extends ProviderEventEmitterMethods.Event>(
+    event: E,
+    listener: (data: ProviderEventEmitterMethods.EventParams[E]) => void
+  ) => void
+  emit: <E extends ProviderEventEmitterMethods.Event>(
+    event: E,
+    data: ProviderEventEmitterMethods.EventParams[E]
+  ) => void
+}
+
+export namespace ProviderEventEmitterMethods {
+  export type Event = keyof EventParams
+  export type EventParams = {
+    connect: string
+    disconnect: undefined
+    accountsChanged: string
+    chainChanged: string
+
+    auth_rpcRequest: W3mFrameTypes.RPCRequest
+    auth_rpcSuccess: W3mFrameTypes.FrameEvent
+    auth_rpcError: Error
+  }
+}
+
+type Listeners = {
+  [Event in ProviderEventEmitterMethods.Event]: Array<
+    (arg: ProviderEventEmitterMethods.EventParams[Event]) => void
+  >
+}
+
+export class ProviderEventEmitter implements ProviderEventEmitterMethods {
+  private listeners: Listeners = {
+    accountsChanged: [],
+    chainChanged: [],
+    connect: [],
+    disconnect: [],
+
+    auth_rpcRequest: [],
+    auth_rpcSuccess: [],
+    auth_rpcError: []
+  }
+
+  public on<E extends ProviderEventEmitterMethods.Event>(
+    event: E,
+    listener: (data: ProviderEventEmitterMethods.EventParams[E]) => void
+  ) {
+    this.listeners[event].push(listener)
+  }
+
+  public removeListener<E extends ProviderEventEmitterMethods.Event>(
+    event: E,
+    listener: (data: ProviderEventEmitterMethods.EventParams[E]) => void
+  ) {
+    this.listeners[event] = this.listeners[event].filter(l => l !== listener) as Listeners[E]
+  }
+
+  public emit<E extends ProviderEventEmitterMethods.Event>(
+    event: E,
+    data: ProviderEventEmitterMethods.EventParams[E]
+  ) {
+    this.listeners[event].forEach(listener => listener(data))
+  }
+}
