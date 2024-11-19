@@ -2,7 +2,7 @@ import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import '../../components/wui-text/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { TagType } from '../../utils/TypeUtil.js'
+import type { TagVariant, TagSize, IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -11,17 +11,21 @@ export class WuiTag extends LitElement {
   public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public variant: TagType = 'main'
+  @property() public variant: TagVariant = 'accent'
 
-  @property() public size: 'lg' | 'md' = 'lg'
+  @property() public size: TagSize = 'md'
+
+  @property() public icon: IconType | undefined = undefined
 
   // -- Render -------------------------------------------- //
   public override render() {
     this.dataset['variant'] = this.variant
     this.dataset['size'] = this.size
-    const textVariant = this.size === 'md' ? 'mini-700' : 'micro-700'
+    const textVariant = this.size === 'md' ? 'md-medium' : 'sm-medium'
+    const iconSize = this.size === 'md' ? 'sm' : 'xs'
 
     return html`
+      ${this.icon ? html`<wui-icon size=${iconSize} name=${this.icon}></wui-icon>` : null}
       <wui-text data-variant=${this.variant} variant=${textVariant} color="inherit">
         <slot></slot>
       </wui-text>

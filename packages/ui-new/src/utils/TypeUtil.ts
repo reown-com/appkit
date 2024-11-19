@@ -227,6 +227,10 @@ export type ToggleSize = 'lg' | 'md' | 'sm'
 
 export type CheckboxSize = 'lg' | 'md' | 'sm'
 
+export type TagVariant = 'accent' | 'info' | 'success' | 'warning' | 'error' | 'certified'
+
+export type TagSize = 'md' | 'sm'
+
 export type ButtonVariant =
   | 'accent-primary'
   | 'accent-secondary'
@@ -290,8 +294,6 @@ export type TransactionIconType =
 export type CardSelectType = 'network' | 'wallet'
 
 export type BackgroundType = 'opaque' | 'gray' | 'transparent'
-
-export type TagType = 'main' | 'shade' | 'error' | 'success'
 
 export type AccountEntryType = 'icon' | 'image'
 
