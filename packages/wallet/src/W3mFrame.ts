@@ -51,6 +51,12 @@ export class W3mFrame {
         this.iframe.onerror = () => {
           this.frameLoadPromiseResolver?.reject('Unable to load email login dependency')
         }
+
+        this.events.onFrameEvent(event => {
+          if (event.type === '@w3m-frame/READY') {
+            this.frameLoadPromiseResolver?.resolve(undefined)
+          }
+        })
       }
     }
   }
@@ -138,10 +144,6 @@ export class W3mFrame {
             !data.type.includes(W3mFrameConstants.FRAME_EVENT_KEY)
           ) {
             return
-          }
-
-          if (data.type === '@w3m-frame/READY') {
-            this.frameLoadPromiseResolver?.resolve(undefined)
           }
 
           const frameEvent = W3mFrameSchema.frameEvent.parse(data)
