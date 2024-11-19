@@ -44,6 +44,9 @@ export const textColorOptions: TextColorType[] = [
 
 export const iconColorOptions = ['accent', 'inverse']
 
+// @TODO: Deprecate this
+export const colorOptions = iconColorOptions
+
 export const backgroundColorOptions = ['foregroundSecondary', 'foregroundAccent010']
 
 export const textOptions: TextType[] = [
