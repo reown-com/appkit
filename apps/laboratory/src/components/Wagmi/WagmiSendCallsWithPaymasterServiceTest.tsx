@@ -93,6 +93,9 @@ function AvailableTestContent() {
       biconomy: BICONOMY_PAYMASTER_CONTEXT,
       reown: {
         policyId: reownPolicyId
+      },
+      trycloudflare: {
+        policyId: reownPolicyId
       }
     }
 
@@ -102,7 +105,7 @@ function AvailableTestContent() {
   function onPaymasterUrlChange(url: string) {
     setPaymasterServiceUrl(url)
 
-    const match = url.match(/pimlico|biconomy|reown/u)
+    const match = url.match(/pimlico|biconomy|reown|trycloudflare/u)
     if (match?.[0]) {
       setPaymasterProvider(match?.[0])
     }
@@ -157,7 +160,7 @@ function AvailableTestContent() {
           textOverflow="ellipsis"
         />
       </Tooltip>
-      {paymasterProvider === 'reown' && (
+      {
         <Input
           placeholder="Reown Policy ID (Optional)"
           onChange={e => setReownPolicyId(e.target.value)}
@@ -166,7 +169,7 @@ function AvailableTestContent() {
           whiteSpace="nowrap"
           textOverflow="ellipsis"
         />
-      )}
+      }
       <Button
         width={'fit-content'}
         data-testid="send-calls-paymaster-service-button"
