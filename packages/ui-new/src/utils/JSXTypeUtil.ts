@@ -1,4 +1,5 @@
 import type { WuiCard } from '../components/wui-card/index.js'
+import type { WuiDivider } from '../components/wui-divider/index.js'
 import type { WuiIcon } from '../components/wui-icon/index.js'
 import type { WuiImage } from '../components/wui-image/index.js'
 import type { WuiLoadingHexagon } from '../components/wui-loading-hexagon/index.js'
@@ -71,7 +72,6 @@ import type { WuiPreviewItem } from '../composites/wui-preview-item/index.js'
 import type { WuiAlertBar } from '../composites/wui-alertbar/index.js'
 import type { WuiFlex } from '../layout/wui-flex/index.js'
 import type { WuiGrid } from '../layout/wui-grid/index.js'
-import type { WuiSeparator } from '../layout/wui-separator/index.js'
 import type { WuiCheckBox } from '../composites/wui-checkbox/index.js'
 import type { WuiToggle } from '../composites/wui-toggle/index.js'
 import type { WuiCertifiedSwitch } from '../composites/wui-certified-switch/index.js'
@@ -164,7 +164,7 @@ declare global {
       // -- Layout ------------------------------------------- //
       'wui-flex': CustomElement<WuiFlex>
       'wui-grid': CustomElement<WuiGrid>
-      'wui-separator': CustomElement<WuiSeparator>
+      'wui-divider': CustomElement<WuiDivider>
     }
   }
 }

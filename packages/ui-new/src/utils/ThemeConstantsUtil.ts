@@ -160,7 +160,7 @@ export const tokens = {
   },
   light: {
     /* Background colors */
-    backgroundPrimary: '#202020',
+    backgroundPrimary: '#FFFFFF',
     backgroundInvert: '#202020',
 
     /* Text colors */
