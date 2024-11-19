@@ -7,5 +7,5 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["@examples/*", "@reown/appkit-adapter-bitcoin"]
+  "ignore": ["@examples/*", "@apps/gallery-new", "@reown/appkit-ui-new", "@reown/appkit-adapter-bitcoin"]
 }

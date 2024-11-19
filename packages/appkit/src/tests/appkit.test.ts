@@ -18,7 +18,8 @@ import {
   AssetUtil,
   ConnectorController,
   ChainController,
-  type Connector
+  type Connector,
+  StorageUtil
 } from '@reown/appkit-core'
 import {
   SafeLocalStorage,
@@ -504,6 +505,66 @@ describe('Base', () => {
         }),
         'eip155'
       )
+    })
+
+    it('should disconnect correctly', async () => {
+      vi.mocked(ChainController).state = {
+        chains: new Map([['eip155', { namespace: 'eip155' }]]),
+        activeChain: 'eip155'
+      } as any
+
+      const mockRemoveItem = vi.fn()
+      vi.spyOn(SafeLocalStorage, 'removeItem').mockImplementation(mockRemoveItem)
+
+      await appKit.disconnect()
+
+      expect(mockRemoveItem).toHaveBeenCalledWith(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
+      expect(mockRemoveItem).toHaveBeenCalledWith(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
+
+      expect(AccountController.resetAccount).toHaveBeenCalledWith('eip155')
+
+      expect(AccountController.setStatus).toHaveBeenCalledWith('disconnected', 'eip155')
+    })
+
+    it('should show unsupported chain UI when synced chainId is not supported', async () => {
+      vi.mocked(ChainController).state = {
+        chains: new Map([['eip155', { namespace: 'eip155' }]]),
+        activeChain: 'eip155'
+      } as any
+      ;(appKit as any).caipNetworks = [{ id: 'eip155:1', chainNamespace: 'eip155' }]
+
+      const mockAdapter = {
+        syncConnection: vi.fn().mockResolvedValue({
+          chainId: 'eip155:999', // Unsupported chain
+          address: '0x123'
+        }),
+        getBalance: vi.fn().mockResolvedValue({ balance: '0', symbol: 'ETH' }),
+        getProfile: vi.fn().mockResolvedValue({}),
+        on: vi.fn(),
+        off: vi.fn(),
+        emit: vi.fn()
+      }
+
+      vi.spyOn(appKit as any, 'getAdapter').mockReturnValue(mockAdapter)
+
+      vi.spyOn(StorageUtil, 'setConnectedConnector').mockImplementation(vi.fn())
+      vi.spyOn(StorageUtil, 'setConnectedNamespace').mockImplementation(vi.fn())
+
+      vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation((key: string) => {
+        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
+          return 'test-wallet'
+        }
+        if (key === SafeLocalStorageKeys.CONNECTED_NAMESPACE) {
+          return 'eip155'
+        }
+        return undefined
+      })
+
+      vi.mocked(ChainController.showUnsupportedChainUI).mockImplementation(vi.fn())
+
+      await (appKit as any).syncExistingConnection()
+
+      expect(ChainController.showUnsupportedChainUI).toHaveBeenCalled()
     })
   })
   describe('Base Initialization', () => {
