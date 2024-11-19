@@ -16,7 +16,6 @@ import type { AccountControllerState } from '../controllers/AccountController.js
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
 import type { ConstantsUtil } from './ConstantsUtil.js'
 import type { ReownName } from '../controllers/EnsController.js'
-import type UniversalProvider from '@walletconnect/universal-provider'
 
 export type CaipNetworkCoinbaseNetwork =
   | 'Ethereum'
@@ -61,7 +60,7 @@ export type SocialProvider =
   | 'discord'
   | 'farcaster'
 
-export type Connector = {
+export type Connector<T> = {
   id: string
   type: ConnectorType
   name?: string
@@ -74,12 +73,12 @@ export type Connector = {
     icon?: string
     rdns?: string
   }
-  provider?: Provider | W3mFrameProvider | UniversalProvider
+  provider?: T
   chain: ChainNamespace
-  connectors?: Connector[]
+  connectors?: Connector<T>[]
 }
 
-export interface AuthConnector extends Connector {
+export interface AuthConnector extends Connector<W3mFrameProvider> {
   provider: W3mFrameProvider
   socials?: SocialProvider[]
   email?: boolean

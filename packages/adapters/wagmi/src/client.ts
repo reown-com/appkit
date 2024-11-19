@@ -55,7 +55,9 @@ import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { normalize } from 'viem/ens'
 import { parseWalletCapabilities } from './utils/helpers.js'
 
-export class WagmiAdapter extends AdapterBlueprint {
+type WagmiProvider = UniversalProvider | Provider | W3mFrameProvider
+
+export class WagmiAdapter extends AdapterBlueprint<WagmiProvider> {
   public wagmiChains: readonly [Chain, ...Chain[]] | undefined
   public wagmiConfig!: Config
   public adapterType = 'wagmi'
@@ -201,7 +203,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public async signMessage(
-    params: AdapterBlueprint.SignMessageParams
+    params: AdapterBlueprint.SignMessageParams<WagmiProvider>
   ): Promise<AdapterBlueprint.SignMessageResult> {
     try {
       const signature = await signMessage(this.wagmiConfig, {
@@ -216,7 +218,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public async sendTransaction(
-    params: AdapterBlueprint.SendTransactionParams
+    params: AdapterBlueprint.SendTransactionParams<WagmiProvider>
   ): Promise<AdapterBlueprint.SendTransactionResult> {
     const { chainId } = getAccount(this.wagmiConfig)
     const txParams = {
@@ -237,7 +239,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public async writeContract(
-    params: AdapterBlueprint.WriteContractParams
+    params: AdapterBlueprint.WriteContractParams<WagmiProvider>
   ): Promise<AdapterBlueprint.WriteContractResult> {
     const { caipNetwork, ...data } = params
     const chainId = Number(NetworkUtil.caipNetworkIdToNumber(caipNetwork.caipNetworkId))
@@ -286,7 +288,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public async estimateGas(
-    params: AdapterBlueprint.EstimateGasTransactionArgs
+    params: AdapterBlueprint.EstimateGasTransactionArgs<WagmiProvider>
   ): Promise<AdapterBlueprint.EstimateGasTransactionResult> {
     try {
       const result = await wagmiEstimateGas(this.wagmiConfig, {
@@ -349,7 +351,7 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   public async syncConnection(
     params: AdapterBlueprint.SyncConnectionParams
-  ): Promise<AdapterBlueprint.ConnectResult> {
+  ): Promise<AdapterBlueprint.ConnectResult<WagmiProvider>> {
     const { id } = params
     const connections = getConnections(this.wagmiConfig)
     const connection = connections.find(c => c.connector.id === id)
@@ -387,7 +389,7 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   public async connect(
     params: AdapterBlueprint.ConnectParams
-  ): Promise<AdapterBlueprint.ConnectResult> {
+  ): Promise<AdapterBlueprint.ConnectResult<WagmiProvider>> {
     const { id, provider, type, info, chainId } = params
 
     const connector = this.wagmiConfig.connectors.find(c => c.id === id)
@@ -467,7 +469,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     return { profileName: undefined, profileImage: undefined }
   }
 
-  public getWalletConnectProvider(): AdapterBlueprint.GetWalletConnectProviderResult {
+  public getWalletConnectProvider(): AdapterBlueprint.GetWalletConnectProviderResult<WagmiProvider> {
     return this.wagmiConfig.connectors.find(c => c.type === 'walletConnect')?.[
       'provider'
     ] as UniversalProvider
@@ -485,7 +487,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     )
   }
 
-  public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
+  public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams<WagmiProvider>) {
     await switchChain(this.wagmiConfig, { chainId: params.caipNetwork.id as number })
   }
 

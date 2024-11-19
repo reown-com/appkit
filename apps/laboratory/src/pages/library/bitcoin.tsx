@@ -48,7 +48,7 @@ export default function MultiChainBitcoinAdapterOnly() {
       })
     }
 
-    const signature = await walletProvider.signMessage({
+    const signature = await (walletProvider as any).signMessage({
       address,
       message: 'Hello, World!'
     })
@@ -59,7 +59,7 @@ export default function MultiChainBitcoinAdapterOnly() {
   return (
     <>
       <AppKitButtons />
-      <button>Connect</button>
+      <button onClick={signMessage}>Connect</button>
     </>
   )
 }

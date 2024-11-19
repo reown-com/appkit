@@ -5,7 +5,7 @@ import { ChainController } from '@reown/appkit-core'
 import bs58 from 'bs58'
 import { ConstantsUtil } from '@reown/appkit-common'
 
-export class UniversalAdapter extends AdapterBlueprint {
+export class UniversalAdapter extends AdapterBlueprint<UniversalProvider> {
   public async connectWalletConnect(onUri: (uri: string) => void) {
     const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
 
@@ -27,7 +27,7 @@ export class UniversalAdapter extends AdapterBlueprint {
   }
   public async connect(
     params: AdapterBlueprint.ConnectParams
-  ): Promise<AdapterBlueprint.ConnectResult> {
+  ): Promise<AdapterBlueprint.ConnectResult<UniversalProvider>> {
     return Promise.resolve({
       id: 'WALLET_CONNECT',
       type: 'WALLET_CONNECT' as const,
@@ -56,7 +56,7 @@ export class UniversalAdapter extends AdapterBlueprint {
   }
 
   public override async signMessage(
-    params: AdapterBlueprint.SignMessageParams
+    params: AdapterBlueprint.SignMessageParams<UniversalProvider>
   ): Promise<AdapterBlueprint.SignMessageResult> {
     const { provider, message, address } = params
     if (!provider) {
@@ -159,7 +159,7 @@ export class UniversalAdapter extends AdapterBlueprint {
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await
-  public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
+  public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams<UniversalProvider>) {
     const { caipNetwork } = params
     const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
     const provider = connector?.provider as UniversalProvider

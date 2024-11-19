@@ -17,12 +17,14 @@ import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { EthersMethods } from './utils/EthersMethods.js'
 import { ProviderUtil } from '@reown/appkit/store'
 
+type EthersProvider = UniversalProvider | Provider | W3mFrameProvider
+
 export interface EIP6963ProviderDetail {
-  info: Connector['info']
+  info: Connector<EthersProvider>['info']
   provider: Provider
 }
 
-export class EthersAdapter extends AdapterBlueprint {
+export class EthersAdapter extends AdapterBlueprint<EthersProvider> {
   private ethersConfig?: ProviderType
   public adapterType = 'ethers'
 
@@ -97,7 +99,7 @@ export class EthersAdapter extends AdapterBlueprint {
   }
 
   public async signMessage(
-    params: AdapterBlueprint.SignMessageParams
+    params: AdapterBlueprint.SignMessageParams<EthersProvider>
   ): Promise<AdapterBlueprint.SignMessageResult> {
     const { message, address, provider } = params
 
@@ -114,7 +116,7 @@ export class EthersAdapter extends AdapterBlueprint {
   }
 
   public async sendTransaction(
-    params: AdapterBlueprint.SendTransactionParams
+    params: AdapterBlueprint.SendTransactionParams<EthersProvider>
   ): Promise<AdapterBlueprint.SendTransactionResult> {
     if (!params.provider) {
       throw new Error('Provider is undefined')
@@ -138,7 +140,7 @@ export class EthersAdapter extends AdapterBlueprint {
   }
 
   public async writeContract(
-    params: AdapterBlueprint.WriteContractParams
+    params: AdapterBlueprint.WriteContractParams<EthersProvider>
   ): Promise<AdapterBlueprint.WriteContractResult> {
     if (!params.provider) {
       throw new Error('Provider is undefined')
@@ -162,7 +164,7 @@ export class EthersAdapter extends AdapterBlueprint {
   }
 
   public async estimateGas(
-    params: AdapterBlueprint.EstimateGasTransactionArgs
+    params: AdapterBlueprint.EstimateGasTransactionArgs<EthersProvider>
   ): Promise<AdapterBlueprint.EstimateGasTransactionResult> {
     const { provider, caipNetwork, address } = params
     if (!provider) {
@@ -212,7 +214,7 @@ export class EthersAdapter extends AdapterBlueprint {
 
   public async syncConnection(
     params: AdapterBlueprint.SyncConnectionParams
-  ): Promise<AdapterBlueprint.ConnectResult> {
+  ): Promise<AdapterBlueprint.ConnectResult<EthersProvider>> {
     const { id, chainId } = params
 
     const connector = this.connectors.find(c => c.id === id)
@@ -341,7 +343,7 @@ export class EthersAdapter extends AdapterBlueprint {
     id,
     type,
     chainId
-  }: AdapterBlueprint.ConnectParams): Promise<AdapterBlueprint.ConnectResult> {
+  }: AdapterBlueprint.ConnectParams): Promise<AdapterBlueprint.ConnectResult<EthersProvider>> {
     const connector = this.connectors.find(c => c.id === id)
     const selectedProvider = connector?.provider as Provider
     if (!selectedProvider) {
@@ -389,7 +391,9 @@ export class EthersAdapter extends AdapterBlueprint {
     }
   }
 
-  public async disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
+  public async disconnect(
+    params: AdapterBlueprint.DisconnectParams<EthersProvider>
+  ): Promise<void> {
     if (!params.provider || !params.providerType) {
       throw new Error('Provider or providerType not provided')
     }
@@ -493,7 +497,9 @@ export class EthersAdapter extends AdapterBlueprint {
     }
   }
 
-  public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
+  public async switchNetwork(
+    params: AdapterBlueprint.SwitchNetworkParams<EthersProvider>
+  ): Promise<void> {
     const { caipNetwork, provider, providerType } = params
     if (providerType === 'WALLET_CONNECT') {
       ;(provider as UniversalProvider).setDefaultChain(String(`eip155:${String(caipNetwork.id)}`))
@@ -529,7 +535,7 @@ export class EthersAdapter extends AdapterBlueprint {
     }
   }
 
-  public getWalletConnectProvider(): AdapterBlueprint.GetWalletConnectProviderResult {
+  public getWalletConnectProvider(): AdapterBlueprint.GetWalletConnectProviderResult<EthersProvider> {
     return this.connectors.find(c => c.type === 'WALLET_CONNECT')?.provider as UniversalProvider
   }
 

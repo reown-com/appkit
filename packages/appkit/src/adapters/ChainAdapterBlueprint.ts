@@ -33,7 +33,8 @@ type EventCallback<T extends EventName> = (data: EventData[T]) => void
  * @template Connector - The type of connector extending ChainAdapterConnector
  */
 export abstract class AdapterBlueprint<
-  Connector extends ChainAdapterConnector = ChainAdapterConnector
+  ProviderType,
+  Connector extends ChainAdapterConnector<ProviderType> = ChainAdapterConnector<ProviderType>
 > {
   public namespace: ChainNamespace | undefined
   public caipNetworks?: CaipNetwork[]
@@ -209,18 +210,22 @@ export abstract class AdapterBlueprint<
    */
   public abstract connect(
     params: AdapterBlueprint.ConnectParams
-  ): Promise<AdapterBlueprint.ConnectResult>
+  ): Promise<AdapterBlueprint.ConnectResult<ProviderType>>
 
   /**
    * Switches the network.
    * @param {AdapterBlueprint.SwitchNetworkParams} params - Network switching parameters
    */
-  public abstract switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void>
+  public abstract switchNetwork(
+    params: AdapterBlueprint.SwitchNetworkParams<ProviderType>
+  ): Promise<void>
 
   /**
    * Disconnects the current wallet.
    */
-  public abstract disconnect(params?: AdapterBlueprint.DisconnectParams): Promise<void>
+  public abstract disconnect(
+    params?: AdapterBlueprint.DisconnectParams<ProviderType>
+  ): Promise<void>
 
   /**
    * Gets the balance for a given address and chain ID.
@@ -254,7 +259,7 @@ export abstract class AdapterBlueprint<
    */
   public abstract syncConnection(
     params: AdapterBlueprint.SyncConnectionParams
-  ): Promise<AdapterBlueprint.ConnectResult>
+  ): Promise<AdapterBlueprint.ConnectResult<ProviderType>>
 
   /**
    * Signs a message with the connected wallet.
@@ -262,7 +267,7 @@ export abstract class AdapterBlueprint<
    * @returns {Promise<AdapterBlueprint.SignMessageResult>} Object containing the signature
    */
   public abstract signMessage(
-    params: AdapterBlueprint.SignMessageParams
+    params: AdapterBlueprint.SignMessageParams<ProviderType>
   ): Promise<AdapterBlueprint.SignMessageResult>
 
   /**
@@ -271,7 +276,7 @@ export abstract class AdapterBlueprint<
    * @returns {Promise<AdapterBlueprint.EstimateGasTransactionResult>} Object containing the gas estimate
    */
   public abstract estimateGas(
-    params: AdapterBlueprint.EstimateGasTransactionArgs
+    params: AdapterBlueprint.EstimateGasTransactionArgs<ProviderType>
   ): Promise<AdapterBlueprint.EstimateGasTransactionResult>
 
   /**
@@ -280,7 +285,7 @@ export abstract class AdapterBlueprint<
    * @returns {Promise<AdapterBlueprint.SendTransactionResult>} Object containing the transaction hash
    */
   public abstract sendTransaction(
-    params: AdapterBlueprint.SendTransactionParams
+    params: AdapterBlueprint.SendTransactionParams<ProviderType>
   ): Promise<AdapterBlueprint.SendTransactionResult>
 
   /**
@@ -289,7 +294,7 @@ export abstract class AdapterBlueprint<
    * @returns {Promise<AdapterBlueprint.WriteContractResult>} Object containing the transaction hash
    */
   public abstract writeContract(
-    params: AdapterBlueprint.WriteContractParams
+    params: AdapterBlueprint.WriteContractParams<ProviderType>
   ): Promise<AdapterBlueprint.WriteContractResult>
 
   /**
@@ -325,8 +330,8 @@ export abstract class AdapterBlueprint<
    * @returns {AdapterBlueprint.GetWalletConnectProviderResult} The WalletConnect provider
    */
   public abstract getWalletConnectProvider(
-    params: AdapterBlueprint.GetWalletConnectProviderParams
-  ): AdapterBlueprint.GetWalletConnectProviderResult
+    params: AdapterBlueprint.GetWalletConnectProviderParams<ProviderType>
+  ): AdapterBlueprint.GetWalletConnectProviderResult<ProviderType>
 
   /**
    * Reconnects to a wallet.
@@ -352,10 +357,10 @@ export namespace AdapterBlueprint {
     projectId?: string
   }
 
-  export type SwitchNetworkParams = {
+  export type SwitchNetworkParams<T> = {
     caipNetwork: CaipNetwork
-    provider?: AppKitConnector['provider']
-    providerType?: AppKitConnector['type']
+    provider?: AppKitConnector<T>['provider']
+    providerType?: AppKitConnector<T>['type']
   }
 
   export type GetBalanceParams = {
@@ -370,9 +375,9 @@ export namespace AdapterBlueprint {
     chainId: number | string
   }
 
-  export type DisconnectParams = {
-    provider?: AppKitConnector['provider']
-    providerType?: AppKitConnector['type']
+  export type DisconnectParams<T> = {
+    provider?: AppKitConnector<T>['provider']
+    providerType?: AppKitConnector<T>['type']
   }
 
   export type ConnectParams = {
@@ -394,29 +399,29 @@ export namespace AdapterBlueprint {
     rpcUrl: string
   }
 
-  export type SignMessageParams = {
+  export type SignMessageParams<T> = {
     message: string
     address: string
-    provider?: AppKitConnector['provider']
+    provider?: AppKitConnector<T>['provider']
   }
 
   export type SignMessageResult = {
     signature: string
   }
 
-  export type EstimateGasTransactionArgs = {
+  export type EstimateGasTransactionArgs<T> = {
     address: string
     to: string
     data: string
     caipNetwork: CaipNetwork
-    provider?: AppKitConnector['provider']
+    provider?: AppKitConnector<T>['provider']
   }
 
   export type EstimateGasTransactionResult = {
     gas: bigint
   }
 
-  export type WriteContractParams = {
+  export type WriteContractParams<T> = {
     receiverAddress: string
     tokenAmount: bigint
     tokenAddress: string
@@ -425,7 +430,7 @@ export namespace AdapterBlueprint {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     abi: any
     caipNetwork: CaipNetwork
-    provider?: AppKitConnector['provider']
+    provider?: AppKitConnector<T>['provider']
     caipAddress: CaipAddress
   }
 
@@ -447,13 +452,13 @@ export namespace AdapterBlueprint {
 
   export type FormatUnitsResult = string
 
-  export type GetWalletConnectProviderParams = {
-    provider: AppKitConnector['provider']
+  export type GetWalletConnectProviderParams<T> = {
+    provider: AppKitConnector<T>['provider']
     caipNetworks: CaipNetwork[]
     activeCaipNetwork: CaipNetwork
   }
 
-  export type GetWalletConnectProviderResult = AppKitConnector['provider']
+  export type GetWalletConnectProviderResult<T> = AppKitConnector<T>['provider']
 
   export type GetCapabilitiesParams = string
 
@@ -466,7 +471,7 @@ export namespace AdapterBlueprint {
     address: `0x${string}`
   }
 
-  export type SendTransactionParams = {
+  export type SendTransactionParams<T> = {
     address: `0x${string}`
     to: string
     data: string
@@ -474,7 +479,7 @@ export namespace AdapterBlueprint {
     gasPrice: bigint | number
     gas?: bigint | number
     caipNetwork?: CaipNetwork
-    provider?: AppKitConnector['provider']
+    provider?: AppKitConnector<T>['provider']
   }
 
   export type SendTransactionResult = {
@@ -500,10 +505,10 @@ export namespace AdapterBlueprint {
     profileName?: string
   }
 
-  export type ConnectResult = {
-    id: AppKitConnector['id']
-    type: AppKitConnector['type']
-    provider: AppKitConnector['provider']
+  export type ConnectResult<T> = {
+    id: AppKitConnector<T>['id']
+    type: AppKitConnector<T>['type']
+    provider: AppKitConnector<T>['provider']
     chainId: number | string
     address: string
   }
