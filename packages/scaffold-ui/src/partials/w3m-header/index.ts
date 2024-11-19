@@ -7,7 +7,8 @@ import {
   EventsController,
   ModalController,
   OptionsController,
-  RouterController
+  RouterController,
+  SIWXUtil
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
@@ -105,8 +106,6 @@ export class W3mHeader extends LitElement {
 
   @state() private showBack = false
 
-  @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
-
   @state() private prevHistoryLength = 1
 
   @state() private view = RouterController.state.view
@@ -153,16 +152,10 @@ export class W3mHeader extends LitElement {
   }
 
   private async onClose() {
-    if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@reown/appkit-siwe')
-      const isApproveSignScreen = RouterController.state.view === 'ApproveTransaction'
-      const isUnauthenticated = SIWEController.state.status !== 'success'
+    const isUnsupportedChain = RouterController.state.view === 'UnsupportedChain'
 
-      if (isUnauthenticated && isApproveSignScreen) {
-        RouterController.popTransactionStack(true)
-      } else {
-        ModalController.close()
-      }
+    if (isUnsupportedChain || (await SIWXUtil.isSIWXCloseDisabled())) {
+      ModalController.shake()
     } else {
       ModalController.close()
     }
@@ -186,12 +179,6 @@ export class W3mHeader extends LitElement {
   }
 
   private closeButtonTemplate() {
-    const isSiweSignScreen = RouterController.state.view === 'ConnectingSiwe'
-
-    if (this.isSiweEnabled && isSiweSignScreen) {
-      return html`<div style="width:40px" />`
-    }
-
     return html`
       <wui-icon-link
         ?disabled=${this.buffering}

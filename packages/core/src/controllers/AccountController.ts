@@ -40,7 +40,6 @@ export interface AccountControllerState {
   farcasterUrl?: string
   provider?: UniversalProvider | Provider | CombinedProvider
   status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
-  siweStatus?: 'uninitialized' | 'ready' | 'loading' | 'success' | 'rejected' | 'error'
   lastRetry?: number
 }
 
@@ -86,7 +85,9 @@ export const AccountController = {
       'accountState',
       accountState => {
         if (accountState) {
-          const nextValue = accountState[property]
+          const nextValue = accountState[
+            property as keyof typeof accountState
+          ] as AccountControllerState[K]
           if (prev !== nextValue) {
             prev = nextValue
             callback(nextValue)
@@ -117,7 +118,10 @@ export const AccountController = {
   ) {
     const newAddress = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
 
-    ChainController.state.activeCaipAddress = caipAddress
+    if (chain === ChainController.state.activeChain) {
+      ChainController.state.activeCaipAddress = caipAddress
+    }
+
     ChainController.setAccountProp('caipAddress', caipAddress, chain)
     ChainController.setAccountProp('address', newAddress, chain)
   },
@@ -257,9 +261,5 @@ export const AccountController = {
 
   resetAccount(chain: ChainNamespace) {
     ChainController.resetAccount(chain)
-  },
-
-  setSiweStatus(status: AccountControllerState['siweStatus']) {
-    ChainController.setAccountProp('siweStatus', status, ChainController.state.activeChain)
   }
 }

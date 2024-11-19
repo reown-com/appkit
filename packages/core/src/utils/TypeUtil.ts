@@ -16,6 +16,7 @@ import type { AccountControllerState } from '../controllers/AccountController.js
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
 import type { ConstantsUtil } from './ConstantsUtil.js'
 import type { ReownName } from '../controllers/EnsController.js'
+import type UniversalProvider from '@walletconnect/universal-provider'
 
 export type CaipNetworkCoinbaseNetwork =
   | 'Ethereum'
@@ -49,6 +50,7 @@ export type ConnectorType =
   | 'ANNOUNCED'
   | 'AUTH'
   | 'MULTI_CHAIN'
+  | 'ID_AUTH'
 
 export type SocialProvider =
   | 'google'
@@ -72,7 +74,7 @@ export type Connector = {
     icon?: string
     rdns?: string
   }
-  provider?: unknown
+  provider?: Provider | W3mFrameProvider | UniversalProvider
   chain: ChainNamespace
   connectors?: Connector[]
 }
@@ -109,6 +111,7 @@ export type Metadata = {
 export interface WcWallet {
   id: string
   name: string
+  badge_type?: BadgeType
   homepage?: string
   image_id?: string
   image_url?: string
@@ -133,6 +136,7 @@ export interface ApiGetWalletsRequest {
   chains: string
   entries: number
   search?: string
+  badge?: BadgeType
   include?: string[]
   exclude?: string[]
 }
@@ -474,7 +478,7 @@ export type Event =
     }
   | {
       type: 'track'
-      event: 'CLICK_SIGN_SIWE_MESSAGE'
+      event: 'CLICK_SIGN_SIWX_MESSAGE'
       properties: {
         network: string
         isSmartAccount: boolean
@@ -482,7 +486,7 @@ export type Event =
     }
   | {
       type: 'track'
-      event: 'CLICK_CANCEL_SIWE'
+      event: 'CLICK_CANCEL_SIWX'
       properties: {
         network: string
         isSmartAccount: boolean
@@ -494,7 +498,7 @@ export type Event =
     }
   | {
       type: 'track'
-      event: 'SIWE_AUTH_SUCCESS'
+      event: 'SIWX_AUTH_SUCCESS'
       properties: {
         network: string
         isSmartAccount: boolean
@@ -502,7 +506,7 @@ export type Event =
     }
   | {
       type: 'track'
-      event: 'SIWE_AUTH_ERROR'
+      event: 'SIWX_AUTH_ERROR'
       properties: {
         network: string
         isSmartAccount: boolean
@@ -735,6 +739,14 @@ export type Event =
         name: string
       }
     }
+  | {
+      type: 'track'
+      event: 'SEARCH_WALLET'
+      properties: {
+        badge: string
+        search: string
+      }
+    }
 // Onramp Types
 export type DestinationWallet = {
   address: string
@@ -872,32 +884,23 @@ export type AdapterAccountState = {
   socialWindow?: Window
   farcasterUrl?: string
   status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
-  siweStatus?: 'uninitialized' | 'ready' | 'loading' | 'success' | 'rejected' | 'error'
 }
 
 export type ChainAdapter = {
   connectionControllerClient?: ConnectionControllerClient
   networkControllerClient?: NetworkControllerClient
-  accountState?: AccountControllerState
+  accountState?: AdapterAccountState
   networkState?: AdapterNetworkState
-  defaultNetwork?: CaipNetwork
-  chainNamespace: ChainNamespace
-  isUniversalAdapterClient?: boolean
-  adapterType?: AdapterType
-  caipNetworks: CaipNetwork[]
-  getAddress?: () => string | undefined
-  getError?: () => unknown
-  getChainId?: () => number | string | undefined
-  switchNetwork?: ((caipNetwork: CaipNetwork) => void) | undefined
-  getIsConnected?: () => boolean | undefined
-  getWalletProvider?: () => unknown
-  getWalletProviderType?: () => string | undefined
-  subscribeProvider?: (callback: (newState: unknown) => void) => void
+  namespace?: ChainNamespace
+  caipNetworks?: CaipNetwork[] | AppKitNetwork[]
+  projectId?: string
+  adapterType?: string
 }
 
 type ProviderEventListener = {
   connect: (connectParams: { chainId: number }) => void
   disconnect: (error: Error) => void
+  display_uri: (uri: string) => void
   chainChanged: (chainId: string) => void
   accountsChanged: (accounts: string[]) => void
   message: (message: { type: string; data: unknown }) => void
@@ -909,6 +912,8 @@ export interface RequestArguments {
 }
 
 export interface Provider {
+  connect: (params?: { onUri?: (uri: string) => void }) => Promise<string>
+  disconnect: () => Promise<void>
   request: <T>(args: RequestArguments) => Promise<T>
   on<T extends keyof ProviderEventListener>(event: T, listener: ProviderEventListener[T]): void
   removeListener: <T>(event: string, listener: (data: T) => void) => void
@@ -999,3 +1004,5 @@ export type UseAppKitNetworkReturn = {
   caipNetworkId: CaipNetworkId | undefined
   switchNetwork: (network: AppKitNetwork) => void
 }
+
+export type BadgeType = 'none' | 'certified'

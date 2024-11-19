@@ -10,6 +10,7 @@ let context: BrowserContext
 /* eslint-enable init-declarations */
 
 const ABSOLUTE_WALLET_ID = 'bfa6967fd05add7bb2b19a442ac37cedb6a6b854483729194f5d7185272c5594'
+const METAMASK_WALLET_ID = 'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96'
 
 // -- Setup --------------------------------------------------------------------
 const walletFeaturesTest = test.extend<{ library: string }>({
@@ -105,4 +106,23 @@ walletFeaturesTest('it should open web app wallet', async () => {
     key: 'uri',
     value: copiedLink
   })
+  await page.closeModal()
+})
+
+walletFeaturesTest('it should search for a certified wallet', async () => {
+  await page.openConnectModal()
+  await validator.expectAllWallets()
+  await page.openAllWallets()
+  await page.clickCertifiedToggle()
+  await page.page.waitForTimeout(500)
+  await validator.expectAllWalletsListSearchItem(METAMASK_WALLET_ID)
+
+  // Try searching for a certified wallet while toggle is on
+  await page.search('MetaMask')
+  await validator.expectAllWalletsListSearchItem(METAMASK_WALLET_ID)
+
+  // Try searching for a certified wallet while toggle is off
+  await page.clickCertifiedToggle()
+  await page.search('MetaMask')
+  await validator.expectAllWalletsListSearchItem(METAMASK_WALLET_ID)
 })

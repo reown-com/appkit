@@ -216,7 +216,7 @@ export function walletConnect(
           return undefined
         }
 
-        const provider = appKit.universalAdapter?.getWalletConnectProvider()
+        const provider = await appKit.getUniversalProvider()
 
         if (!provider) {
           throw new Error('Provider not found')
@@ -240,8 +240,6 @@ export function walletConnect(
 
         if (storedCaipNetwork && storedCaipNetwork.chainNamespace === ConstantsUtil.CHAIN.EVM) {
           await this.switchChain?.({ chainId: Number(storedCaipNetwork.id) })
-        } else {
-          await this.switchChain?.({ chainId })
         }
       }
 
