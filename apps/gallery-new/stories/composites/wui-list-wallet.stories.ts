@@ -11,8 +11,10 @@ export default {
   title: 'Composites/wui-list-wallet',
   args: {
     imageSrc: walletImagesOptions[0]?.src,
-    name: 'Rainbow',
+    name: 'MetaMask',
     tagLabel: 'LABEL',
+    qrCode: false,
+    allWallets: false,
     disabled: false
   },
   argTypes: {
@@ -24,6 +26,12 @@ export default {
     },
     tagLabel: {
       control: { type: 'text' }
+    },
+    qrCode: {
+      control: { type: 'boolean' }
+    },
+    allWallets: {
+      control: { type: 'boolean' }
     },
     disabled: {
       control: { type: 'boolean' }
@@ -37,8 +45,10 @@ export const Default: Component = {
       <wui-list-wallet
         .imageSrc=${args.imageSrc}
         .tagLabel=${args.tagLabel}
-        ?disabled=${args.disabled}
         name=${args.name}
+        ?qrcode=${args.qrCode}
+        ?allwallets=${args.allWallets}
+        ?disabled=${args.disabled}
       ></wui-list-wallet>
     </gallery-container>`
 }

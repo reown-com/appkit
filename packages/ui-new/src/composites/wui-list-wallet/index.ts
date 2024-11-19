@@ -2,6 +2,7 @@ import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import '../../components/wui-text/index.js'
 import '../../components/wui-image/index.js'
+import '../../composites/wui-icon-box/index.js'
 import '../wui-tag/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
@@ -12,11 +13,15 @@ export class WuiListWallet extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public imageSrc = ''
+  @property() public imageSrc? = ''
 
   @property() public name = ''
 
   @property() public tagLabel?: string
+
+  @property({ type: Boolean }) public qrCode = false
+
+  @property({ type: Boolean }) public allWallets = false
 
   @property({ type: Boolean }) public disabled = false
 
@@ -24,11 +29,39 @@ export class WuiListWallet extends LitElement {
   public override render() {
     return html`
       <button ?disabled=${this.disabled} ontouchstart>
-        <wui-image src=${this.imageSrc} alt=${this.name}></wui-image>
+        ${this.leftImageTemplate()}
         <wui-text color="primary" variant="lg-regular">${this.name}</wui-text>
-        <wui-tag variant="accent" size="sm">${this.tagLabel}</wui-tag>
+        <wui-tag variant=${this.allWallets ? 'info' : 'accent'} size="sm">${this.tagLabel}</wui-tag>
       </button>
     `
+  }
+
+  // -- Private ------------------------------------------- //
+
+  private leftImageTemplate() {
+    if (this.allWallets) {
+      return html`<wui-icon-box
+        iconcolor="accent"
+        iconsize="xl"
+        backgroundcolor="foregroundAccent010"
+        icon="allWallets"
+      ></wui-icon-box>`
+    }
+
+    if (this.qrCode) {
+      return html`<wui-icon-box
+        iconcolor="inverse"
+        iconsize="xl"
+        backgroundcolor="foregroundSecondary"
+        icon="qrCode"
+      ></wui-icon-box>`
+    }
+
+    if (this.imageSrc) {
+      return html`<wui-image src=${this.imageSrc} alt=${this.name}></wui-image>`
+    }
+
+    return null
   }
 }
 

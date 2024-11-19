@@ -19,7 +19,7 @@ export default css`
   button > wui-image {
     width: 40px;
     height: 40px;
-    border-radius: ${({ borderRadius }) => borderRadius[3]};
+    border-radius: ${({ borderRadius }) => borderRadius[2]};
   }
 
   /* -- Focus states --------------------------------------------------- */

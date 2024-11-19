@@ -9,7 +9,7 @@ import { vars } from '../../utils/ThemeHelperUtil.js'
 
 // -- Constants ------------------------------------------ //
 
-const TEXT_VARS_BY_COLOR = {
+export const TEXT_VARS_BY_COLOR = {
   /* Colors */
   primary: vars.tokens.theme.textPrimary,
   secondary: vars.tokens.theme.textSecondary,
