@@ -580,6 +580,10 @@ export class AppKit {
     }
   }
 
+  public async disconnect() {
+    await this.connectionControllerClient?.disconnect()
+  }
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(
     options: AppKitOptions & {
@@ -786,8 +790,8 @@ export class AppKit {
 
         this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
 
-        localStorage.removeItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
-        localStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
+        SafeLocalStorage.removeItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
+        SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
 
         ChainController.state.chains.forEach(chain => {
           this.resetAccount(chain.namespace as ChainNamespace)

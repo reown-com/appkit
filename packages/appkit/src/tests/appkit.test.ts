@@ -505,6 +505,25 @@ describe('Base', () => {
         'eip155'
       )
     })
+
+    it('should disconnect correctly', async () => {
+      vi.mocked(ChainController).state = {
+        chains: new Map([['eip155', { namespace: 'eip155' }]]),
+        activeChain: 'eip155'
+      } as any
+
+      const mockRemoveItem = vi.fn()
+      vi.spyOn(SafeLocalStorage, 'removeItem').mockImplementation(mockRemoveItem)
+
+      await appKit.disconnect()
+
+      expect(mockRemoveItem).toHaveBeenCalledWith(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
+      expect(mockRemoveItem).toHaveBeenCalledWith(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
+
+      expect(AccountController.resetAccount).toHaveBeenCalledWith('eip155')
+
+      expect(AccountController.setStatus).toHaveBeenCalledWith('disconnected', 'eip155')
+    })
   })
   describe('Base Initialization', () => {
     let appKit: AppKit
