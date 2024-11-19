@@ -838,7 +838,6 @@ export const elementStyles = css`
     will-change: background-color, color, border, box-shadow;
     outline: none;
     border: none;
-    background-color: transparent;
     text-decoration: none;
   }
 
