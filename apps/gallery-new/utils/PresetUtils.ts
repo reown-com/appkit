@@ -332,8 +332,6 @@ export const iconBoxBorderOptions: IconBoxBorderType[] = [
   'wui-accent-glass-010'
 ]
 
-export const tagLabelOptions = ['get wallet', 'installed', 'qr code', 'recent']
-
 export const signTypedData = {
   domain: {
     name: 'Ether Mail',

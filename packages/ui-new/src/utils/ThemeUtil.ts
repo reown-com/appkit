@@ -844,15 +844,6 @@ export const elementStyles = css`
     text-decoration: none;
   }
 
-  button:disabled > wui-wallet-image,
-  button:disabled > wui-all-wallets-image,
-  button:disabled > wui-network-image,
-  button:disabled > wui-image,
-  button:disabled > wui-transaction-visual,
-  button:disabled > wui-logo {
-    filter: grayscale(1);
-  }
-
   button:disabled {
     opacity: 0.3;
     cursor: default;

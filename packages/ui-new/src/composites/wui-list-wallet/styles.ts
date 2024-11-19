@@ -1,31 +1,48 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   button {
-    column-gap: var(--wui-spacing-s);
-    padding: 7px var(--wui-spacing-l) 7px var(--wui-spacing-xs);
+    align-items: center;
+    column-gap: ${({ spacing }) => spacing[2]};
+    padding: ${({ spacing }) => spacing[3]};
     width: 100%;
-    background-color: var(--wui-color-gray-glass-002);
-    border-radius: var(--wui-border-radius-xs);
-    color: var(--wui-color-fg-100);
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
+    height: 64px;
   }
 
-  button > wui-text:nth-child(2) {
+  button > wui-text {
     display: flex;
     flex: 1;
   }
 
+  button > wui-image {
+    width: 40px;
+    height: 40px;
+    border-radius: ${({ borderRadius }) => borderRadius[3]};
+  }
+
+  /* -- Focus states --------------------------------------------------- */
+  button:focus-visible:enabled,
+  button:active:enabled {
+    box-shadow: 0px 0px 0px 4px rgba(9, 136, 240, 0.2);
+    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+  }
+
+  /* -- Hover & Active states ----------------------------------------------------------- */
+  button:hover:enabled {
+    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+  }
+
+  /* -- Disabled state --------------------------------------------------- */
   button:disabled {
-    background-color: var(--wui-color-gray-glass-015);
-    color: var(--wui-color-gray-glass-015);
+    background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+    opacity: 1 !important;
   }
 
+  button:disabled > wui-text,
+  button:disabled > wui-image,
   button:disabled > wui-tag {
-    background-color: var(--wui-color-gray-glass-010);
-    color: var(--wui-color-fg-300);
-  }
-
-  wui-icon {
-    color: var(--wui-color-fg-200) !important;
+    opacity: 0.5 !important;
   }
 `

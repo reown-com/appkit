@@ -3,56 +3,40 @@ import '@reown/appkit-ui-new/src/composites/wui-list-wallet'
 import type { WuiListWallet } from '@reown/appkit-ui-new/src/composites/wui-list-wallet'
 import { html } from 'lit'
 import '../../components/gallery-container'
-import {
-  iconOptions,
-  tagLabelOptions,
-  tagOptions,
-  walletImagesOptions
-} from '../../utils/PresetUtils'
+import { walletImagesOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiListWallet>
 
 export default {
   title: 'Composites/wui-list-wallet',
   args: {
-    walletImages: walletImagesOptions,
     imageSrc: walletImagesOptions[0]?.src,
     name: 'Rainbow',
-    showAllWallets: false,
-    disabled: false,
-    tagLabel: 'qr code',
-    tagVariant: 'main',
-    icon: undefined
+    tagLabel: 'LABEL',
+    disabled: false
   },
   argTypes: {
-    showAllWallets: {
-      control: { type: 'boolean' }
+    imageSrc: {
+      control: { type: 'text' }
+    },
+    name: {
+      control: { type: 'text' }
     },
     tagLabel: {
-      options: [undefined, ...tagLabelOptions],
-      control: { type: 'select' }
+      control: { type: 'text' }
     },
-    tagVariant: {
-      options: [undefined, ...tagOptions],
-      control: { type: 'select' }
-    },
-    icon: {
-      options: [undefined, ...iconOptions],
-      control: { type: 'select' }
+    disabled: {
+      control: { type: 'boolean' }
     }
   }
 } as Component
 
 export const Default: Component = {
   render: args =>
-    html` <gallery-container width="336">
+    html`<gallery-container width="328">
       <wui-list-wallet
         .imageSrc=${args.imageSrc}
-        .walletImages=${args.walletImages}
-        .showAllWallets=${args.showAllWallets}
         .tagLabel=${args.tagLabel}
-        .tagVariant=${args.tagVariant}
-        .icon=${args.icon}
         ?disabled=${args.disabled}
         name=${args.name}
       ></wui-list-wallet>
