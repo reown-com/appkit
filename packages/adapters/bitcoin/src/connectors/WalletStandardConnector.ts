@@ -1,7 +1,8 @@
 import { getWallets } from '@wallet-standard/app'
 import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
-import type { Wallet } from '@wallet-standard/base'
+import type { Wallet, WalletWithFeatures } from '@wallet-standard/base'
 import type { CaipNetwork } from '@reown/appkit-common'
+import type { BitcoinFeatures } from '@exodus/bitcoin-wallet-standard'
 
 export class WalletStandardConnector implements BitcoinConnector {
   public readonly chain = 'bip122'
@@ -34,7 +35,15 @@ export class WalletStandardConnector implements BitcoinConnector {
   }
 
   async connect() {
-    return Promise.resolve('address')
+    const connectFeature = this.getWalletFeature('bitcoin:connect')
+    const response = await connectFeature.connect({ purposes: ['payment', 'ordinals'] })
+
+    const account = response.accounts[0]
+    if (!account) {
+      throw new Error('No account found')
+    }
+
+    return account.address
   }
 
   async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {
@@ -43,6 +52,16 @@ export class WalletStandardConnector implements BitcoinConnector {
 
   async signMessage(_params: { address: string; message: string }): Promise<string> {
     return Promise.resolve('signature')
+  }
+
+  private getWalletFeature<Name extends keyof BitcoinFeatures>(feature: Name) {
+    if (!(feature in this.provider.features)) {
+      throw new Error('Wallet does not support feature')
+    }
+
+    return this.provider.features[feature] as WalletWithFeatures<
+      Record<Name, BitcoinFeatures[Name]>
+    >['features'][Name]
   }
 
   public static watchWallets({
