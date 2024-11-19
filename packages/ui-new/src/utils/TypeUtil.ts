@@ -1,6 +1,13 @@
 export type ColorType = string
 
-export type TextColorType = 'inherit' | 'primary' | 'secondary' | 'tertiary' | 'invert'
+export type TextColorType =
+  | 'inherit'
+  | 'primary'
+  | 'secondary'
+  | 'tertiary'
+  | 'invert'
+  | 'error'
+  | 'warning'
 
 export type FontFamilyType = 'regular' | 'mono'
 

@@ -10,34 +10,55 @@ type Component = Meta<WuiInputText>
 export default {
   title: 'Composites/wui-input-text',
   args: {
-    size: 'sm',
     placeholder: 'Search wallet',
     icon: 'search',
-    disabled: false
+    disabled: false,
+    errorText: '',
+    warningMessage: '',
+    onSubmit: () => {
+      alert('Input submitted')
+    }
   },
   argTypes: {
-    size: {
-      options: ['sm', 'md', 'lg'],
-      control: { type: 'select' }
-    },
     disabled: {
       control: { type: 'boolean' }
     },
     icon: {
       options: [undefined, ...iconOptions],
       control: { type: 'select' }
+    },
+    errorText: {
+      control: { type: 'text' }
+    },
+    warningMessage: {
+      control: { type: 'text' }
+    },
+    onSubmit: {
+      control: { type: 'function' }
     }
   }
 } as Component
 
 export const Default: Component = {
-  render: args =>
-    html`<gallery-container width="336">
+  render: args => {
+    let inputValue = args.value
+
+    const handleInputChange = (e: CustomEvent<string>) => {
+      inputValue = e.detail
+      console.log('Input value changed:', inputValue)
+    }
+
+    return html`<gallery-container width="336">
       <wui-input-text
-        size=${args.size}
         placeholder=${args.placeholder}
         ?disabled=${args.disabled}
         .icon=${args.icon}
+        .errorText=${args.errorText}
+        .warningMessage=${args.warningMessage}
+        .value=${inputValue}
+        .onSubmit=${args.onSubmit ? () => alert('Submit clicked!') : undefined}
+        @inputChange=${handleInputChange}
       ></wui-input-text
     ></gallery-container>`
+  }
 }
