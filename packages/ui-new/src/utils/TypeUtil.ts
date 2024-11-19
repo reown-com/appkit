@@ -228,6 +228,10 @@ export type CheckboxSize = 'lg' | 'md' | 'sm'
 
 export type TooltipSize = 'md' | 'sm'
 
+export type TagVariant = 'accent' | 'info' | 'success' | 'warning' | 'error' | 'certified'
+
+export type TagSize = 'md' | 'sm'
+
 export type ButtonVariant =
   | 'accent-primary'
   | 'accent-secondary'
