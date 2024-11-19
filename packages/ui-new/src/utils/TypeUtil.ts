@@ -295,6 +295,8 @@ export type CardSelectType = 'network' | 'wallet'
 
 export type BackgroundType = 'opaque' | 'gray' | 'transparent'
 
+export type TagType = 'main' | 'shade' | 'error' | 'success'
+
 export type AccountEntryType = 'icon' | 'image'
 
 export type ThemeType = 'dark' | 'light'
