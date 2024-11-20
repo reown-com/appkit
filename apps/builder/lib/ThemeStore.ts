@@ -17,6 +17,7 @@ interface ThemeState {
   borderRadius: string
   themeVariables: ThemeVariables
   modal?: any
+  fontFamily: string | undefined
 }
 
 export const state = proxy<ThemeState>({
@@ -25,7 +26,8 @@ export const state = proxy<ThemeState>({
   accentColor: '#3B82F6',
   borderRadius: '12px',
   themeVariables: {},
-  modal: undefined
+  modal: undefined,
+  fontFamily: ''
 })
 
 export const ThemeStore = {
@@ -55,6 +57,7 @@ export const ThemeStore = {
   setBorderRadius(value: number) {
     const radiusString = `${value}px`
     state.borderRadius = radiusString
+    console.log('setBorderRadius', value)
     if (state.modal) {
       state.modal.setThemeVariables({ '--w3m-border-radius-master': radiusString })
     }
@@ -64,6 +67,14 @@ export const ThemeStore = {
     state.themeVariables = value
     if (state.modal) {
       state.modal.setThemeVariables(value)
+    }
+  },
+
+  setFontFamily(value: ThemeState['fontFamily']) {
+    console.log('setFontFamily', value)
+    state.fontFamily = value
+    if (state.modal) {
+      state.modal.setThemeVariables({ '--w3m-font-family': value })
     }
   },
 

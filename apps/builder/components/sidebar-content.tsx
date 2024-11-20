@@ -6,11 +6,9 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAppKit } from '@/hooks/use-appkit'
 import { cn } from '@/lib/utils'
-import AccentColorInput from './theme/AccentColorInput'
-import MixColorInput from './theme/MixColorInput'
-import BorderRadiusInput from './theme/BorderRadiusInput'
 import { AuthFeatures } from './configuration-sections/connect-options'
 import { AdvancedFeatures } from './configuration-sections/wallet-features'
+import SidebarContentDesign from '@/components/sidebar-content-design'
 
 export function SidebarContent() {
   const { themeMode } = useAppKit()
@@ -33,26 +31,14 @@ export function SidebarContent() {
               Features
             </TabsTrigger>
             <TabsTrigger className="w-full" value="other">
-              Theme
+              Design
             </TabsTrigger>
           </TabsList>
         </Tabs>
 
         {activeTab === 'auth' && <AuthFeatures />}
         {activeTab === 'features' && <AdvancedFeatures />}
-        {activeTab === 'other' && (
-          <div className="space-y-6 flex-grow">
-            <div className="space-y-4">
-              <MixColorInput />
-            </div>
-            <div className="space-y-4">
-              <AccentColorInput />
-            </div>
-            <div className="space-y-4">
-              <BorderRadiusInput />
-            </div>
-          </div>
-        )}
+        {activeTab === 'other' && <SidebarContentDesign />}
       </div>
 
       <div className="flex flex-col items-center w-full gap-2">

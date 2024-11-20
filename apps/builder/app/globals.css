@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
+
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -14,6 +16,27 @@ body {
 
 @layer base {
   :root {
+    --apkt-background-primary: 0 0% 100%;
+    --apkt-background-invert: 0 0% 13%;
+
+    --apkt-foreground-primary: 0, 0%, 95%;
+    --apkt-foreground-secondary: 0, 0%, 91%;
+    --apkt-foreground-tertiary: 0, 0%, 82%;
+    --apkt-foreground-accent: 231, 100%, 70%;
+
+    --apkt-border: 0, 0%, 91%;
+    --apkt-border-secondary: 0, 0%, 82%;
+    --apkt-border-accent: 231, 100%, 70%;
+    --apkt-border-accent-certified: 44, 31%, 68%;
+    --apkt-border-success: 0.42 55% 42%;
+    --apkt-border-error: 0.02 73% 54%;
+    --apkt-border-warning: 0.09 88% 60%;
+
+    --apkt-text-primary: 0, 0%, 13%;
+    --apkt-text-secondary: 0, 0%, 60%;
+    --apkt-text-tertiary: 0, 0%, 42%;
+    --apkt-text-invert: 0, 0%, 100%;
+
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -46,6 +69,7 @@ body {
     --apkt-foreground-primary: 0 0% 15%;
     --apkt-foreground-secondary: 0 0% 16%;
     --apkt-foreground-tertiary: 0 0% 21%;
+    --apkt-foreground-accent: 207 92.8% 48.8%;
 
     --apkt-border: 0 0% 16%;
     --apkt-border-secondary: 0 0% 31%;
@@ -89,4 +113,40 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@font-face {
+  font-family: 'KHTeka';
+  src: url('https://res.cloudinary.com/dn7w4dnog/raw/upload/v1732023137/KHTeka-Light_jzizi3.woff')
+    format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'KHTeka';
+  src: url('https://res.cloudinary.com/dn7w4dnog/raw/upload/v1732023137/KHTeka-Regular_rgphis.woff')
+    format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'KHTeka';
+  src: url('https://res.cloudinary.com/dn7w4dnog/raw/upload/v1732023137/KHTeka-Medium_dzj5on.woff')
+    format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'KHTekaMono';
+  src: url('https://res.cloudinary.com/dn7w4dnog/raw/upload/v1732023137/KHTekaMono-Regular_nytitk.woff')
+    format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }

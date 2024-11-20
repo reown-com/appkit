@@ -15,6 +15,7 @@ const config: Config = {
           invert: 'hsl(var(--apkt-background-invert))'
         },
         fg: {
+          accent: 'hsl(var(--apkt-foreground-accent))',
           primary: 'hsl(var(--apkt-foreground-primary))',
           secondary: 'hsl(var(--apkt-foreground-secondary))',
           tertiary: 'hsl(var(--apkt-foreground-tertiary))'

@@ -27,7 +27,7 @@ export function AdvancedFeatures() {
         onClick={() => toggleFeature('swaps')}
       />
 
-      <p className="text-sm text-text-secondary">Other features</p>
+      {/* <p className="text-sm text-text-secondary">Other features</p>
       <div className="space-y-2">
         <FeatureButton
           label="Terms & Conditions"
@@ -58,7 +58,7 @@ export function AdvancedFeatures() {
             className="mt-2"
           />
         )}
-      </div>
+      </div> */}
     </div>
   )
 }
