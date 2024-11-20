@@ -1,3 +1,5 @@
+import type { vars } from './ThemeHelperUtil.js'
+
 export type ColorType = string
 
 export type TextColorType =
@@ -47,23 +49,7 @@ export type LineClamp = '1' | '2'
 
 export type SizeType = 'inherit' | 'xl' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs' | 'xxl'
 
-export type SpacingType =
-  | '0'
-  | '1xs'
-  | '2xl'
-  | '3xl'
-  | '4xl'
-  | '5xl'
-  | '3xs'
-  | '4xs'
-  | 'l'
-  | '2l'
-  | 'm'
-  | 's'
-  | 'xl'
-  | 'xs'
-  | 'xxl'
-  | 'xxs'
+export type SpacingType = keyof typeof vars.spacing
 
 export type BorderRadiusType = Exclude<SpacingType, '1xs' | 'xl' | 'xxl'> | 'xs'
 
