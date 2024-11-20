@@ -67,7 +67,6 @@ import type { WuiListWalletTransaction } from '../composites/wui-list-wallet-tra
 import type { WuiPromo } from '../composites/wui-promo/index.js'
 import type { WuiProfileButton } from '../composites/wui-profile-button/index.js'
 import type { WuiProfileButtonV2 } from '../composites/wui-profile-button-v2/index.js'
-import type { WuiListAccount } from '../composites/wui-list-account/index.js'
 import type { WuiPreviewItem } from '../composites/wui-preview-item/index.js'
 import type { WuiAlertBar } from '../composites/wui-alertbar/index.js'
 import type { WuiFlex } from '../layout/wui-flex/index.js'
@@ -156,7 +155,6 @@ declare global {
       'wui-visual-thumbnail': CustomElement<WuiVisualThumbnail>
       'wui-wallet-image': CustomElement<WuiWalletImage>
       'wui-banner': CustomElement<WuiBanner>
-      'wui-list-account': CustomElement<WuiListAccount>
       'wui-checkbox': CustomElement<WuiCheckBox>
       'wui-toggle': CustomElement<WuiToggle>
       'wui-certified-switch': CustomElement<WuiCertifiedSwitch>
