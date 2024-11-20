@@ -19,6 +19,7 @@ export default css`
   button > wui-image {
     width: 40px;
     height: 40px;
+    flex-shrink: 0;
     border-radius: ${({ borderRadius }) => borderRadius[2]};
   }
 

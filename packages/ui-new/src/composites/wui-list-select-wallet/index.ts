@@ -30,14 +30,13 @@ export class WuiListSelectWallet extends LitElement {
     return html`
       <button ?disabled=${this.disabled} ontouchstart>
         ${this.leftImageTemplate()}
-        <wui-text color="primary" variant="lg-regular">${this.name}</wui-text>
+        <wui-text color="primary" variant="lg-regular" lineClamp="1">${this.name}</wui-text>
         <wui-tag variant=${this.allWallets ? 'info' : 'accent'} size="sm">${this.tagLabel}</wui-tag>
       </button>
     `
   }
 
   // -- Private ------------------------------------------- //
-
   private leftImageTemplate() {
     if (this.allWallets) {
       return html`<wui-icon-box
