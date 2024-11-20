@@ -30,6 +30,10 @@ smartAccountTest.beforeAll(async ({ browser, library }) => {
   if (!mailsacApiKey) {
     throw new Error('MAILSAC_API_KEY is not set')
   }
+
+  // Iframe should not be injected until needed
+  validator.expectSecureSiteFrameNotInjected()
+
   const email = new Email(mailsacApiKey)
 
   // Switch to a SA enabled network

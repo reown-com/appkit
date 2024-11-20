@@ -28,6 +28,9 @@ test.beforeAll(async ({ browser }) => {
   await modalPage.load()
   await modalPage.qrCodeFlow(modalPage, walletPage)
   await modalValidator.expectConnected()
+  await modalPage.promptSiwe()
+  await walletPage.handleRequest({ accept: true })
+  await modalValidator.expectAuthenticated()
 })
 
 test.afterAll(async () => {
@@ -52,5 +55,5 @@ test('it should switch networks and sign siwe', async () => {
 test('it should switch to Solana and validate chain title', async () => {
   const chainName = 'Solana'
   await modalPage.switchNetwork(chainName)
-  await modalValidator.expectSwitchChainView(chainName.toLocaleLowerCase())
+  await modalValidator.expectSwitchedNetworkOnNetworksView(chainName)
 })
