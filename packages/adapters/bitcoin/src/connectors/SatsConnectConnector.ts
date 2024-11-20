@@ -8,14 +8,14 @@ import Wallet, {
   type Params,
   type Provider as SatsConnectProvider
 } from 'sats-connect'
-import type { Provider, RequestArguments } from '@reown/appkit-core'
+import type { RequestArguments } from '@reown/appkit-core'
 
 export class SatsConnectConnector implements BitcoinConnector {
   public readonly chain = 'bip122'
   public readonly type = 'ANNOUNCED'
 
   readonly wallet: SatsConnectProvider
-  readonly provider: Provider
+  readonly provider: BitcoinConnector
 
   private requestedChains: CaipNetwork[] = []
 
