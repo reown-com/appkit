@@ -1,4 +1,4 @@
- import { html } from 'lit'
+import { html } from 'lit'
 import type { Meta } from '@storybook/web-components'
 import '@reown/appkit-ui-new/src/composites/wui-list-select-account'
 import '../../components/gallery-container'
@@ -17,7 +17,7 @@ export default {
     icon: 'mail',
     disabled: false
   },
-  transparent: {
+  argTypes: {
     dollars: {
       control: { type: 'text' }
     },

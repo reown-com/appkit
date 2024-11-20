@@ -6,7 +6,6 @@ import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import '../../components/wui-text/index.js'
 import '../../components/wui-icon/index.js'
 import '../wui-avatar/index.js'
-import '../wui-icon-box/index.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import type { IconType } from '../../utils/TypeUtil.js'
 
@@ -32,31 +31,34 @@ export class WuiListSelectAccount extends LitElement {
     return html`
       <button ?disabled=${this.disabled} ontouchstart>
         <wui-avatar size="sm" address=${this.address}></wui-avatar>
-        <wui-icon-box
-          size="xs"
-          iconcolor="fg-200"
-          backgroundcolor="fg-300"
-          icon=${this.icon}
-          background="fg-300"
-          borderColor=${undefined}
-        ></wui-icon-box>
+        <wui-icon class="avatarIcon" size="xs" name=${this.icon}></wui-icon>
 
-        <wui-flex flexDirection="column" alignItems="start" justifyContent="center" rowGap="2">
-          <wui-text color="primary" variant="lg-regular-mono">
+        <wui-flex
+          flexDirection="column"
+          alignItems="start"
+          justifyContent="center"
+          flexGrow="1"
+          flexShrink="1"
+          rowGap="2"
+          class="description"
+        >
+          <wui-text color="primary" variant="lg-regular">
             ${UiHelperUtil.getTruncateString({
               string: this.address,
               charsStart: 4,
-              charsEnd: 6,
+              charsEnd: 4,
               truncate: 'middle'
             })}
           </wui-text>
 
-          <wui-text color="secondary" variant="md-regular">${this.description}</wui-text>
+          <wui-text color="secondary" variant="md-regular" lineClamp="1">
+            ${this.description}
+          </wui-text>
         </wui-flex>
 
         <wui-flex flexDirection="row" alignItems="center" justifyContent="center" columnGap="2">
-          <wui-text color="secondary" variant="lg-regular-mono">
-            $${this.dollars}<span class="pennies">.${this.pennies}</span>
+          <wui-text color="secondary" variant="lg-regular-mono" lineClamp="1">
+            $${this.dollars}.${this.pennies}
           </wui-text>
           <wui-icon name="chevronRight" size="md"></wui-icon>
         </wui-flex>

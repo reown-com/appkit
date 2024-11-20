@@ -1,5 +1,10 @@
 import { css } from '../../utils/ThemeHelperUtil.js'
 
+/*
+ * @TODO: Instead of using fixed height and width for <wui-avatar>,
+ * use icon/avatar spacing variables once the become available
+ */
+
 export default css`
   button {
     align-items: center;
@@ -17,15 +22,28 @@ export default css`
     flex-shrink: 0;
   }
 
-  wui-icon-box {
-    position: relative;
-    right: 15px;
-    top: 15px;
-    border: 2px solid ${({ tokens }) => tokens.theme.backgroundPrimary};
+  wui-flex {
+    width: fit-content;
   }
 
-  wui-flex:nth-child(1) {
-    flex: 1;
+  wui-icon:last-child {
+    color: ${({ tokens }) => tokens.theme.textSecondary};
+  }
+
+  wui-text {
+    word-break: break-all;
+  }
+
+  .avatarIcon {
+    position: relative;
+    margin-left: -25px;
+    margin-top: 16px;
+    z-index: 2;
+    border: 2px solid ${({ tokens }) => tokens.theme.backgroundPrimary};
+    background: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius.round};
+    padding: ${({ spacing }) => spacing[1]};
+    color: ${({ tokens }) => tokens.theme.iconDefault};
   }
 
   /* -- Focus states --------------------------------------------------- */
