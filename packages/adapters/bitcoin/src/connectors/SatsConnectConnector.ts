@@ -1,11 +1,14 @@
 import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
 import type { CaipNetwork } from '@reown/appkit-common'
-import type { Provider } from '@reown/appkit-core'
 import Wallet, {
   AddressPurpose,
   getProviders,
+  type BtcRequestMethod,
+  type BtcRequests,
+  type Params,
   type Provider as SatsConnectProvider
 } from 'sats-connect'
+import type { Provider, RequestArguments } from '@reown/appkit-core'
 
 export class SatsConnectConnector implements BitcoinConnector {
   public readonly chain = 'bip122'
@@ -13,12 +16,13 @@ export class SatsConnectConnector implements BitcoinConnector {
 
   readonly wallet: SatsConnectProvider
   readonly provider: Provider
+
   private requestedChains: CaipNetwork[] = []
 
   constructor({ provider, requestedChains }: SatsConnectConnector.ConstructorParams) {
-    this.provider = this as unknown as Provider
     this.wallet = provider
     this.requestedChains = requestedChains
+    this.provider = this
   }
 
   public get id(): string {
@@ -35,6 +39,57 @@ export class SatsConnectConnector implements BitcoinConnector {
 
   public get chains() {
     return this.requestedChains
+  }
+
+  on<
+    T extends keyof {
+      connect: (connectParams: { chainId: number }) => void
+      disconnect: (error: Error) => void
+      display_uri: (uri: string) => void
+      chainChanged: (chainId: string) => void
+      accountsChanged: (accounts: string[]) => void
+      message: (message: { type: string; data: unknown }) => void
+    }
+  >(
+    event: T,
+    listener: {
+      connect: (connectParams: { chainId: number }) => void
+      disconnect: (error: Error) => void
+      display_uri: (uri: string) => void
+      chainChanged: (chainId: string) => void
+      accountsChanged: (accounts: string[]) => void
+      message: (message: { type: string; data: unknown }) => void
+    }[T]
+  ): void {
+    console.log(event, listener)
+    throw new Error('Method not implemented.')
+  }
+
+  removeListener<T>(event: string, listener: (data: T) => void) {
+    console.log(event, listener)
+    throw new Error('Method not implemented.')
+  }
+
+  async disconnect() {
+    await Wallet.disconnect()
+  }
+
+  async request<T>(args: RequestArguments) {
+    const info = await Wallet.request('getInfo', null)
+    if (info.status === 'error') {
+      throw new Error('Failed to get wallet info')
+    }
+
+    const methods = info.result.methods || []
+    if (!methods.includes(args.method)) {
+      throw new Error('Method not available')
+    }
+
+    return Wallet.request(args.method as BtcRequestMethod, args.params as Params<BtcRequests>) as T
+  }
+
+  emit() {
+    throw new Error('Method not implemented.')
   }
 
   async connect() {
@@ -78,6 +133,22 @@ export class SatsConnectConnector implements BitcoinConnector {
     }
 
     return res.result.signature
+  }
+
+  public async sendTransfer({
+    amount,
+    recipient
+  }: BitcoinConnector.SendTransferParams): Promise<string> {
+    const parsedAmount = isNaN(Number(amount)) ? 0 : Number(amount)
+    const res = await Wallet.request('sendTransfer', {
+      recipients: [{ address: recipient, amount: parsedAmount }]
+    })
+
+    if (res.status === 'error') {
+      throw new Error('Transfer failed')
+    }
+
+    return res.result.txid
   }
 }
 

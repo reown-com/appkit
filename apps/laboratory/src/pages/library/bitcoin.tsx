@@ -67,8 +67,27 @@ export default function MultiChainBitcoinAdapterOnly() {
       })
 
     toast({ title: 'Signature', description: signature, status: 'success' })
+  }
 
-    console.log('>> SIGNATURE', signature)
+  async function sendTransfer() {
+    if (!walletProvider) {
+      toast({
+        title: 'No wallet provider',
+        status: 'error',
+        isClosable: true
+      })
+    }
+
+    const signature = await walletProvider.sendTransfer({
+      recipient: 'bc1qcer94ntpu33lcj0fnave79lu8tghkll47eeu9u',
+      amount: '100000'
+    })
+
+    toast({
+      title: `Transfer sent: ${signature}`,
+      status: 'success',
+      isClosable: true
+    })
   }
 
   return (
@@ -77,7 +96,10 @@ export default function MultiChainBitcoinAdapterOnly() {
       {address && (
         <Stack direction={['column', 'column', 'row']} pt="8">
           <Button data-testid="sign-transaction-button" onClick={signMessage} isDisabled={loading}>
-            Sign Transaction
+            Sign Message
+          </Button>
+          <Button data-testid="send-transfer-button" onClick={sendTransfer} isDisabled={loading}>
+            Send Transfer
           </Button>
         </Stack>
       )}
