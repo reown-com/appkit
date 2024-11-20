@@ -1,6 +1,18 @@
 export type ColorType = string
 
-export type TextColorType = 'inherit' | 'primary' | 'secondary' | 'tertiary' | 'invert'
+export type BackgroundColorType = 'foregroundSecondary' | 'foregroundAccent010'
+
+export type IconColorType = 'inverse'
+
+export type TextColorType =
+  | 'inherit'
+  | 'primary'
+  | 'secondary'
+  | 'tertiary'
+  | 'invert'
+  | 'error'
+  | 'warning'
+  | 'accent-primary'
 
 export type FontFamilyType = 'regular' | 'mono'
 
@@ -38,6 +50,9 @@ export type TextAlign = 'center' | 'left' | 'right'
 export type LineClamp = '1' | '2'
 
 export type SizeType = 'inherit' | 'xl' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs' | 'xxl'
+
+// @TODO: Remove these sizes after completing <wui-icon> component
+export type IconSizeType = 'inherit' | 'xl' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs' | 'xxl'
 
 export type SpacingType =
   | '0'
@@ -124,7 +139,6 @@ export type IconType =
   | 'compass'
   | 'copy'
   | 'cursor'
-  | 'cursorTransparent'
   | 'desktop'
   | 'disconnect'
   | 'discord'
@@ -154,6 +168,7 @@ export type IconType =
   | 'refresh'
   | 'search'
   | 'send'
+  | 'spinner'
   | 'swapHorizontal'
   | 'swapHorizontalBold'
   | 'swapHorizontalMedium'
@@ -226,6 +241,8 @@ export type ButtonSize = 'lg' | 'md' | 'sm'
 export type ToggleSize = 'lg' | 'md' | 'sm'
 
 export type CheckboxSize = 'lg' | 'md' | 'sm'
+
+export type TooltipSize = 'md' | 'sm'
 
 export type TagVariant = 'accent' | 'info' | 'success' | 'warning' | 'error' | 'certified'
 

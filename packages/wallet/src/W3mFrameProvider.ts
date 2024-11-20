@@ -33,6 +33,9 @@ export class W3mFrameProvider {
     this.w3mLogger = new W3mFrameLogger(projectId)
     this.w3mFrame = new W3mFrame(projectId, true, chainId)
     this.onTimeout = onTimeout
+    if (this.getLoginEmailUsed()) {
+      this.w3mFrame.initFrame()
+    }
   }
 
   // -- Extended Methods ------------------------------------------------
@@ -47,6 +50,7 @@ export class W3mFrameProvider {
   public async connectEmail(payload: W3mFrameTypes.Requests['AppConnectEmailRequest']) {
     try {
       W3mFrameHelpers.checkIfAllowedToTriggerEmail()
+      this.w3mFrame.initFrame()
       const response = await this.appEvent<'ConnectEmail'>({
         type: W3mFrameConstants.APP_CONNECT_EMAIL,
         payload
@@ -119,6 +123,8 @@ export class W3mFrameProvider {
     payload: W3mFrameTypes.Requests['AppGetSocialRedirectUriRequest']
   ) {
     try {
+      this.w3mFrame.initFrame()
+
       return this.appEvent<'GetSocialRedirectUri'>({
         type: W3mFrameConstants.APP_GET_SOCIAL_REDIRECT_URI,
         payload
@@ -283,6 +289,7 @@ export class W3mFrameProvider {
 
   public async getFarcasterUri() {
     try {
+      this.w3mFrame.initFrame()
       const response = await this.appEvent<'GetFarcasterUri'>({
         type: W3mFrameConstants.APP_GET_FARCASTER_URI
       } as W3mFrameTypes.AppEvent)
