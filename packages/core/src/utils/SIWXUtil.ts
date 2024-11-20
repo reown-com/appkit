@@ -56,8 +56,20 @@ export const SIWXUtil = {
     const network = ChainController.getActiveCaipNetwork()
     const client = ConnectionController._getClient()
 
-    if (!(siwx && address && network && client)) {
+    if (!siwx) {
       throw new Error('SIWX is not enabled')
+    }
+
+    if (!address) {
+      throw new Error('No ActiveCaipAddress found')
+    }
+
+    if (!network) {
+      throw new Error('No ActiveCaipNetwork or client found')
+    }
+
+    if (!client) {
+      throw new Error('No ConnectionController client found')
     }
 
     try {
