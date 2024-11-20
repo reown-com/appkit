@@ -3,6 +3,7 @@ import { AdapterBlueprint } from '@reown/appkit/adapters'
 import type { BitcoinConnector } from './utils/BitcoinConnector.js'
 
 import { SatsConnectConnector } from './connectors/SatsConnectConnector.js'
+import { WalletStandardConnector } from './connectors/WalletStandardConnector.js'
 
 export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   constructor(params: BitcoinAdapter.ConstructorParams) {
@@ -66,12 +67,10 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   }
 
   override syncConnectors(_options?: AppKitOptions, _appKit?: AppKit): void {
-    /*
-     * WalletStandardConnector.watchWallets({
-     *   callback: this.addConnector.bind(this),
-     *   requestedChains: this.networks
-     * })
-     */
+    WalletStandardConnector.watchWallets({
+      callback: this.addConnector.bind(this),
+      requestedChains: this.networks
+    })
 
     this.addConnector(
       ...SatsConnectConnector.getWallets({
@@ -90,8 +89,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   override async signMessage(
     params: AdapterBlueprint.SignMessageParams
   ): Promise<AdapterBlueprint.SignMessageResult> {
-    // Sign message
-
     const connector = this.connector
     if (!connector) {
       throw new Error('BitcoinAdapter:signMessage - connector is undefined')

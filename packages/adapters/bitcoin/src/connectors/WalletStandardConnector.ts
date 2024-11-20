@@ -3,16 +3,19 @@ import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
 import type { Wallet, WalletWithFeatures } from '@wallet-standard/base'
 import type { CaipNetwork } from '@reown/appkit-common'
 import type { BitcoinFeatures } from '@exodus/bitcoin-wallet-standard'
+import type { Provider } from '@reown/appkit-core'
 
 export class WalletStandardConnector implements BitcoinConnector {
   public readonly chain = 'bip122'
   public readonly type = 'ANNOUNCED'
 
-  readonly provider: Wallet
+  readonly provider: Provider
+  readonly wallet: Wallet
   private requestedChains: CaipNetwork[] = []
 
   constructor({ wallet, requestedChains }: WalletStandardConnector.ConstructorParams) {
-    this.provider = wallet
+    this.provider = this as unknown as Provider
+    this.wallet = wallet
     this.requestedChains = requestedChains
   }
 
@@ -21,15 +24,15 @@ export class WalletStandardConnector implements BitcoinConnector {
   }
 
   public get name(): string {
-    return this.provider.name
+    return this.wallet.name
   }
 
   public get imageUrl(): string {
-    return this.provider.icon || ''
+    return this.wallet.icon || ''
   }
 
   public get chains() {
-    return this.provider.chains
+    return this.wallet.chains
       .map(chainId => this.requestedChains.find(chain => chain.id === chainId))
       .filter(Boolean) as CaipNetwork[]
   }
@@ -50,9 +53,17 @@ export class WalletStandardConnector implements BitcoinConnector {
     return Promise.resolve([])
   }
 
+  async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
+    // BitcoinWalletStandard package is not exposing the signMessage feature
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const feature = this.getWalletFeature('bitcoin:signMessage' as any)
 
-  async signMessage(_params: { address: string; message: string }): Promise<string> {
-    return Promise.resolve('signature')
+    const account = this.wallet.accounts.find(acc => acc.address === params.address)
+    const message = new TextEncoder().encode(params.message)
+    const response = (await feature.signMessage({ account, message }))[0]
+
+    // Should it be base64 encoded?
+    return Buffer.from(response.signature).toString('base64')
   }
 
   private getWalletFeature<Name extends keyof BitcoinFeatures>(feature: Name) {
