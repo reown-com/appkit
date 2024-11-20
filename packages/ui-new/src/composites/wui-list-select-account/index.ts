@@ -14,15 +14,13 @@ export class WuiListSelectAccount extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() dollars = '0'
-
-  @property() pennies = '00'
-
   @property() address = ''
 
   @property() description = 'Email'
 
   @property() icon: IconType = 'mail'
+
+  @property({ type: Number }) dollarAmount = 0
 
   @property({ type: Boolean }) public disabled = false
 
@@ -38,7 +36,7 @@ export class WuiListSelectAccount extends LitElement {
           alignItems="start"
           justifyContent="center"
           flexGrow="1"
-          flexShrink="1"
+          flexShrink="0"
           rowGap="2"
           class="description"
         >
@@ -56,9 +54,15 @@ export class WuiListSelectAccount extends LitElement {
           </wui-text>
         </wui-flex>
 
-        <wui-flex flexDirection="row" alignItems="center" justifyContent="center" columnGap="2">
+        <wui-flex
+          flexGrow="1"
+          flexDirection="row"
+          alignItems="center"
+          justifyContent="center"
+          columnGap="2"
+        >
           <wui-text color="secondary" variant="lg-regular-mono" lineClamp="1">
-            $${this.dollars}.${this.pennies}
+            ${UiHelperUtil.formatCurrency(this.dollarAmount)}
           </wui-text>
           <wui-icon name="chevronRight" size="md"></wui-icon>
         </wui-flex>
