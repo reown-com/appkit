@@ -100,7 +100,7 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
         await siwe.signOut()
         siwe.methods.onSignOut?.()
       } catch (error) {
-        console.warn('SIWE:revokeSession - signOut error', error)
+        console.warn('AppKit:SIWE:revokeSession - signOut error', error)
       }
     },
 
@@ -109,7 +109,7 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
         try {
           await siwe.methods.signOut()
         } catch (error) {
-          console.warn('SIWE:setSessions - signOut error', error)
+          console.warn('AppKit:SIWE:setSessions - signOut error', error)
         }
       } else {
         const addingSessions = sessions.map(session => this.addSession(session))
@@ -152,7 +152,7 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
         return [session]
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.warn('SIWE:getSessions - error:', error)
+        console.warn('AppKit:SIWE:getSessions - error:', error)
 
         return []
       }
