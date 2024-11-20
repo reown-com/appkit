@@ -805,10 +805,16 @@ function createRootStyles(themeVariables?: ThemeVariables) {
 
 // -- Presets -----------------------------------------------------------------
 export const resetStyles = css`
-  *,
+  div,
+  span,
+  iframe,
+  a,
+  img,
+  form,
+  button,
+  label,
   *::after,
-  *::before,
-  :host {
+  *::before {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -818,6 +824,9 @@ export const resetStyles = css`
     -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: transparent;
     backface-visibility: hidden;
+  }
+
+  :host {
     font-family: var(--wui-font-family);
   }
 `
@@ -841,17 +850,7 @@ export const elementStyles = css`
     text-decoration: none;
   }
 
-  button:disabled > wui-wallet-image,
-  button:disabled > wui-all-wallets-image,
-  button:disabled > wui-network-image,
-  button:disabled > wui-image,
-  button:disabled > wui-transaction-visual,
-  button:disabled > wui-logo {
-    filter: grayscale(1);
-  }
-
   button:disabled {
-    opacity: 0.3;
     cursor: default;
   }
 
