@@ -14,6 +14,7 @@ export default css`
   button > wui-text {
     display: flex;
     flex: 1;
+    word-break: break-all;
   }
 
   button > wui-image {
