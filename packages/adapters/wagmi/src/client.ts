@@ -332,6 +332,8 @@ export class WagmiAdapter extends AdapterBlueprint {
     filteredConnectors.forEach(connector => {
       const shouldSkip = ConstantsUtil.AUTH_CONNECTOR_ID === connector.id
 
+      const injectedConnector = connector.id === ConstantsUtil.INJECTED_CONNECTOR_ID
+
       if (!shouldSkip && this.namespace) {
         this.addConnector({
           id: connector.id,
@@ -340,7 +342,7 @@ export class WagmiAdapter extends AdapterBlueprint {
           name: PresetsUtil.ConnectorNamesMap[connector.id] ?? connector.name,
           imageId: PresetsUtil.ConnectorImageIds[connector.id],
           type: PresetsUtil.ConnectorTypesMap[connector.type] ?? 'EXTERNAL',
-          info: { rdns: connector.id },
+          info: injectedConnector ? undefined : { rdns: connector.id },
           chain: this.namespace,
           chains: []
         })
