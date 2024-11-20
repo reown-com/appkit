@@ -52,14 +52,39 @@ export default function MultiChainBitcoinAdapterOnly() {
       address,
       message: 'Hello, World!'
     })
+    toast({
+      title: `Transfer sent: ${signature}`,
+      status: 'success',
+      isClosable: true
+    })
+  }
 
-    console.log('>> SIGNATURE', signature)
+  async function sendTransfer() {
+    if (!walletProvider) {
+      toast({
+        title: 'No wallet provider',
+        status: 'error',
+        isClosable: true
+      })
+    }
+
+    const signature = await walletProvider.sendTransfer({
+      recipient: 'bc1qcer94ntpu33lcj0fnave79lu8tghkll47eeu9u',
+      amount: '100000'
+    })
+
+    toast({
+      title: `Transfer sent: ${signature}`,
+      status: 'success',
+      isClosable: true
+    })
   }
 
   return (
     <>
       <AppKitButtons />
-      <button>Connect</button>
+      <button onClick={signMessage}>SignMessage</button>
+      <button onClick={sendTransfer}>Send Tranasfer</button>
     </>
   )
 }

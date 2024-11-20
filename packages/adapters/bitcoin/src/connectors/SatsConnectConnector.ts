@@ -1,17 +1,28 @@
 import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
 import type { CaipNetwork } from '@reown/appkit-common'
-import Wallet, { AddressPurpose, getProviders, type Provider } from 'sats-connect'
+import Wallet, {
+  AddressPurpose,
+  getProviders,
+  type BtcRequestMethod,
+  type BtcRequests,
+  type Params,
+  type Provider as SatsConnectProvider
+} from 'sats-connect'
+import type { Provider, RequestArguments } from '@reown/appkit-core'
 
 export class SatsConnectConnector implements BitcoinConnector {
   public readonly chain = 'bip122'
   public readonly type = 'ANNOUNCED'
 
+  readonly wallet: SatsConnectProvider
   readonly provider: Provider
+
   private requestedChains: CaipNetwork[] = []
 
   constructor({ provider, requestedChains }: SatsConnectConnector.ConstructorParams) {
-    this.provider = provider
+    this.wallet = provider
     this.requestedChains = requestedChains
+    this.provider = this
   }
 
   public get id(): string {
@@ -19,15 +30,66 @@ export class SatsConnectConnector implements BitcoinConnector {
   }
 
   public get name(): string {
-    return this.provider.name
+    return this.wallet.name
   }
 
   public get imageUrl(): string {
-    return this.provider.icon || ''
+    return this.wallet.icon || ''
   }
 
   public get chains() {
     return this.requestedChains
+  }
+
+  on<
+    T extends keyof {
+      connect: (connectParams: { chainId: number }) => void
+      disconnect: (error: Error) => void
+      display_uri: (uri: string) => void
+      chainChanged: (chainId: string) => void
+      accountsChanged: (accounts: string[]) => void
+      message: (message: { type: string; data: unknown }) => void
+    }
+  >(
+    event: T,
+    listener: {
+      connect: (connectParams: { chainId: number }) => void
+      disconnect: (error: Error) => void
+      display_uri: (uri: string) => void
+      chainChanged: (chainId: string) => void
+      accountsChanged: (accounts: string[]) => void
+      message: (message: { type: string; data: unknown }) => void
+    }[T]
+  ): void {
+    console.log(event, listener)
+    throw new Error('Method not implemented.')
+  }
+
+  removeListener<T>(event: string, listener: (data: T) => void) {
+    console.log(event, listener)
+    throw new Error('Method not implemented.')
+  }
+
+  async disconnect() {
+    await Wallet.disconnect()
+  }
+
+  async request<T>(args: RequestArguments) {
+    const info = await Wallet.request('getInfo', null)
+    if (info.status === 'error') {
+      throw new Error('Failed to get wallet info')
+    }
+
+    const methods = info.result.methods || []
+    if (!methods.includes(args.method)) {
+      throw new Error('Method not available')
+    }
+
+    return Wallet.request(args.method as BtcRequestMethod, args.params as Params<BtcRequests>) as T
+  }
+
+  emit() {
+    throw new Error('Method not implemented.')
   }
 
   async connect() {
@@ -63,7 +125,7 @@ export class SatsConnectConnector implements BitcoinConnector {
     return providers.map(provider => new SatsConnectConnector({ provider, requestedChains }))
   }
 
-  public async signMessage(params: { message: string; address: string }): Promise<string> {
+  public async signMessage(params: SatsConnectConnector.SignMessageParams): Promise<string> {
     const res = await Wallet.request('signMessage', params)
 
     if (res.status === 'error') {
@@ -72,15 +134,42 @@ export class SatsConnectConnector implements BitcoinConnector {
 
     return res.result.signature
   }
+
+  public async sendTransfer({
+    amount,
+    recipient
+  }: SatsConnectConnector.SendTransferParams): Promise<string> {
+    const parsedAmount = isNaN(Number(amount)) ? 0 : Number(amount)
+    const res = await Wallet.request('sendTransfer', {
+      recipients: [{ address: recipient, amount: parsedAmount }]
+    })
+
+    if (res.status === 'error') {
+      throw new Error('Transfer failed')
+    }
+
+    return res.result.txid
+  }
 }
 
 export namespace SatsConnectConnector {
   export type ConstructorParams = {
-    provider: Provider
+    provider: SatsConnectProvider
     requestedChains: CaipNetwork[]
   }
 
   export type GetWalletsParams = {
     requestedChains: CaipNetwork[]
+  }
+
+  export type SignMessageParams = {
+    message: string
+    address: string
+  }
+
+  export type SendTransferParams = {
+    address: string
+    amount: string
+    recipient: string
   }
 }
