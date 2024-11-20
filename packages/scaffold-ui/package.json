@@ -31,7 +31,6 @@
   "dependencies": {
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-core": "workspace:*",
-    "@reown/appkit-siwe": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
