@@ -4,8 +4,8 @@ import type { Provider } from '@reown/appkit-core'
 export interface BitcoinConnector extends ChainAdapterConnector, Provider {
   connect(): Promise<string>
   getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]>
-  signMessage(params: { address: string; message: string }): Promise<string>
-  sendTransfer(params: { address: string; amount: string; recipient: string }): Promise<string>
+  signMessage(params: BitcoinConnector.SignMessageParams): Promise<string>
+  sendTransfer(params: BitcoinConnector.SendTransferParams): Promise<string>
 }
 
 export namespace BitcoinConnector {
@@ -17,5 +17,15 @@ export namespace BitcoinConnector {
     // Derivation path of the address e.g. "m/84'/0'/0'/0/0"
     path?: string
     intention?: 'payment' | 'ordinal'
+  }
+
+  export type SignMessageParams = {
+    message: string
+    address: string
+  }
+
+  export type SendTransferParams = {
+    amount: string
+    recipient: string
   }
 }

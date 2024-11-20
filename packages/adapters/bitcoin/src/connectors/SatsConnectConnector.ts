@@ -125,7 +125,7 @@ export class SatsConnectConnector implements BitcoinConnector {
     return providers.map(provider => new SatsConnectConnector({ provider, requestedChains }))
   }
 
-  public async signMessage(params: SatsConnectConnector.SignMessageParams): Promise<string> {
+  public async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
     const res = await Wallet.request('signMessage', params)
 
     if (res.status === 'error') {
@@ -138,7 +138,7 @@ export class SatsConnectConnector implements BitcoinConnector {
   public async sendTransfer({
     amount,
     recipient
-  }: SatsConnectConnector.SendTransferParams): Promise<string> {
+  }: BitcoinConnector.SendTransferParams): Promise<string> {
     const parsedAmount = isNaN(Number(amount)) ? 0 : Number(amount)
     const res = await Wallet.request('sendTransfer', {
       recipients: [{ address: recipient, amount: parsedAmount }]
@@ -160,16 +160,5 @@ export namespace SatsConnectConnector {
 
   export type GetWalletsParams = {
     requestedChains: CaipNetwork[]
-  }
-
-  export type SignMessageParams = {
-    message: string
-    address: string
-  }
-
-  export type SendTransferParams = {
-    address: string
-    amount: string
-    recipient: string
   }
 }

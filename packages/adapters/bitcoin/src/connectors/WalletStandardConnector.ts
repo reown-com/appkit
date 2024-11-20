@@ -8,12 +8,13 @@ import type { Provider, RequestArguments } from '@reown/appkit-core'
 export class WalletStandardConnector implements BitcoinConnector {
   public readonly chain = 'bip122'
   public readonly type = 'ANNOUNCED'
-  provider: Provider
 
+  readonly provider: Provider
   readonly wallet: Wallet
   private requestedChains: CaipNetwork[] = []
 
   constructor({ wallet, requestedChains }: WalletStandardConnector.ConstructorParams) {
+    this.provider = this
     this.wallet = wallet
     this.requestedChains = requestedChains
     this.provider = this
@@ -53,8 +54,17 @@ export class WalletStandardConnector implements BitcoinConnector {
     return Promise.resolve([])
   }
 
-  async signMessage(_params: { address: string; message: string }): Promise<string> {
-    return Promise.resolve('signature')
+  async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
+    // BitcoinWalletStandard package is not exposing the signMessage feature
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const feature = this.getWalletFeature('bitcoin:signMessage' as any)
+
+    const account = this.wallet.accounts.find(acc => acc.address === params.address)
+    const message = new TextEncoder().encode(params.message)
+    const response = (await feature.signMessage({ account, message }))[0]
+
+    // Should it be base64 encoded?
+    return Buffer.from(response.signature).toString('base64')
   }
 
   private getWalletFeature<Name extends keyof BitcoinFeatures>(feature: Name) {
