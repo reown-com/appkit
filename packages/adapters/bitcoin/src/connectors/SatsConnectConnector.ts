@@ -70,6 +70,10 @@ export class SatsConnectConnector implements BitcoinConnector {
     throw new Error('Method not implemented.')
   }
 
+  emit() {
+    throw new Error('Method not implemented.')
+  }
+
   async disconnect() {
     await Wallet.disconnect()
   }
@@ -86,10 +90,6 @@ export class SatsConnectConnector implements BitcoinConnector {
     }
 
     return Wallet.request(args.method as BtcRequestMethod, args.params as Params<BtcRequests>) as T
-  }
-
-  emit() {
-    throw new Error('Method not implemented.')
   }
 
   async connect() {
@@ -149,6 +149,29 @@ export class SatsConnectConnector implements BitcoinConnector {
     }
 
     return res.result.txid
+  }
+
+  public async signPSBT(
+    params: BitcoinConnector.SignPSBTParams
+  ): Promise<BitcoinConnector.SignPSBTResponse> {
+    const signInputs = params.signInputs.reduce<Record<string, number[]>>((acc, input) => {
+      const currentIndexes = acc[input.address] || []
+      currentIndexes.push(input.index)
+
+      return { ...acc, [input.address]: currentIndexes }
+    }, {})
+
+    const res = await Wallet.request('signPsbt', {
+      psbt: params.psbt,
+      broadcast: params.broadcast,
+      signInputs
+    })
+
+    if (res.status === 'error') {
+      throw new Error('PSBT signing failed')
+    }
+
+    return res.result
   }
 }
 

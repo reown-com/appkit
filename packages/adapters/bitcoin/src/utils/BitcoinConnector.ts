@@ -6,6 +6,7 @@ export interface BitcoinConnector extends ChainAdapterConnector, Provider {
   getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]>
   signMessage(params: BitcoinConnector.SignMessageParams): Promise<string>
   sendTransfer(params: BitcoinConnector.SendTransferParams): Promise<string>
+  signPSBT(params: BitcoinConnector.SignPSBTParams): Promise<BitcoinConnector.SignPSBTResponse>
 }
 
 export namespace BitcoinConnector {
@@ -27,5 +28,20 @@ export namespace BitcoinConnector {
   export type SendTransferParams = {
     amount: string
     recipient: string
+  }
+
+  export type SignPSBTParams = {
+    psbt: string
+    signInputs: {
+      address: string
+      index: number
+      singhHashTypes: number[]
+    }[]
+    broadcast?: boolean
+  }
+
+  export type SignPSBTResponse = {
+    psbt: string
+    txid?: string
   }
 }
