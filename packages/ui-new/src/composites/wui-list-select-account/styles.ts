@@ -1,7 +1,7 @@
 import { css } from '../../utils/ThemeHelperUtil.js'
 
 /*
- * @TODO: Instead of using fixed height and width for <wui-avatar>,
+ * @TODO: Instead of using fixed height and width for wui-avatar,
  * use icon/avatar spacing variables once the become available
  */
 

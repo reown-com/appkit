@@ -75,7 +75,7 @@ import type { WuiCheckBox } from '../composites/wui-checkbox/index.js'
 import type { WuiToggle } from '../composites/wui-toggle/index.js'
 import type { WuiCertifiedSwitch } from '../composites/wui-certified-switch/index.js'
 import type { WuiShortcut } from '../composites/wui-shortcut/index.js'
-import type { WuiTab } from '../../index.js'
+import type { WuiListSelectAccount, WuiTab } from '../../index.js'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type CustomElement<E> = Partial<E & { children?: any; onClick: any }>
@@ -155,6 +155,7 @@ declare global {
       'wui-visual-thumbnail': CustomElement<WuiVisualThumbnail>
       'wui-wallet-image': CustomElement<WuiWalletImage>
       'wui-banner': CustomElement<WuiBanner>
+      'wui-list-select-account': CustomElement<WuiListSelectAccount>
       'wui-checkbox': CustomElement<WuiCheckBox>
       'wui-toggle': CustomElement<WuiToggle>
       'wui-certified-switch': CustomElement<WuiCertifiedSwitch>
