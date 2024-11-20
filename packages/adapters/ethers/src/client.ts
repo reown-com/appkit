@@ -261,6 +261,9 @@ export class EthersAdapter extends AdapterBlueprint {
 
     connectors.forEach(connector => {
       const key = connector === 'coinbase' ? 'coinbaseWalletSDK' : connector
+
+      const injectedConnector = connector === ConstantsUtil.INJECTED_CONNECTOR_ID
+
       if (this.namespace) {
         this.addConnector({
           id: connector,
@@ -269,7 +272,7 @@ export class EthersAdapter extends AdapterBlueprint {
           name: PresetsUtil.ConnectorNamesMap[key],
           imageId: PresetsUtil.ConnectorImageIds[key],
           type: PresetsUtil.ConnectorTypesMap[key] ?? 'EXTERNAL',
-          info: { rdns: key },
+          info: injectedConnector ? undefined : { rdns: key },
           chain: this.namespace,
           chains: [],
           provider: this.ethersConfig?.[connector as keyof ProviderType] as Provider
