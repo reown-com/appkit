@@ -69,6 +69,10 @@ siweWalletTest('it should be authenticated when refresh page', async () => {
   await modalPage.sign()
   await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAcceptedSign()
+  await modalPage.disconnect()
+  await modalValidator.expectDisconnected()
+  await modalValidator.expectUnauthenticated()
+  await walletValidator.expectSessionCard({ visible: false })
 })
 
 siweWalletTest('it should be unauthenticated when disconnect', async () => {
