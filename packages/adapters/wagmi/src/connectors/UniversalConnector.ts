@@ -212,6 +212,8 @@ export function walletConnect(
         provider_ = await appKit.getUniversalProvider()
       }
 
+      provider_?.events.setMaxListeners(Number.POSITIVE_INFINITY)
+
       const currentChainId = appKit.getCaipNetwork()?.id
 
       if (chainId && currentChainId !== chainId) {
