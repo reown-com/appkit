@@ -642,7 +642,8 @@ export class UniversalAdapterClient {
           {
             ...this.walletConnectProvider.session.peer.metadata,
             name: this.walletConnectProvider.session.peer.metadata.name,
-            icon: this.walletConnectProvider.session.peer.metadata.icons?.[0]
+            icon: this.walletConnectProvider.session.peer.metadata.icons?.[0],
+            providerType: 'walletConnect'
           },
           chainNamespace
         )

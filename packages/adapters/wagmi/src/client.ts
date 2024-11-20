@@ -909,7 +909,8 @@ export class WagmiAdapter implements ChainAdapter {
           {
             ...walletConnectProvider.session.peer.metadata,
             name: walletConnectProvider.session.peer.metadata.name,
-            icon: walletConnectProvider.session.peer.metadata.icons?.[0]
+            icon: walletConnectProvider.session.peer.metadata.icons?.[0],
+            providerType: 'walletConnect'
           },
           this.chainNamespace
         )
@@ -919,7 +920,8 @@ export class WagmiAdapter implements ChainAdapter {
       this.appKit?.setConnectedWalletInfo(
         {
           name: connector.name,
-          icon: connector.icon || this.appKit.getConnectorImage(wagmiConnector)
+          icon: connector.icon || this.appKit.getConnectorImage(wagmiConnector),
+          providerType: wagmiConnector?.type
         },
         this.chainNamespace
       )

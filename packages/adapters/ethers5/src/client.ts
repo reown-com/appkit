@@ -973,7 +973,10 @@ export class Ethers5Adapter {
         )
 
         if (currentProvider) {
-          this.appKit?.setConnectedWalletInfo({ ...currentProvider.info }, this.chainNamespace)
+          this.appKit?.setConnectedWalletInfo(
+            { ...currentProvider.info, providerType },
+            this.chainNamespace
+          )
         }
       }
     } else if (providerType === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID) {
@@ -984,7 +987,8 @@ export class Ethers5Adapter {
           {
             ...provider.session.peer.metadata,
             name: provider.session.peer.metadata.name,
-            icon: provider.session.peer.metadata.icons?.[0]
+            icon: provider.session.peer.metadata.icons?.[0],
+            providerType
           },
           this.chainNamespace
         )
@@ -995,11 +999,14 @@ export class Ethers5Adapter {
         .find(c => c.id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID)
 
       this.appKit?.setConnectedWalletInfo(
-        { name: 'Coinbase Wallet', icon: this.appKit?.getConnectorImage(connector) },
+        { name: 'Coinbase Wallet', icon: this.appKit?.getConnectorImage(connector), providerType },
         this.chainNamespace
       )
     } else if (currentActiveWallet) {
-      this.appKit?.setConnectedWalletInfo({ name: currentActiveWallet }, this.chainNamespace)
+      this.appKit?.setConnectedWalletInfo(
+        { name: currentActiveWallet, providerType },
+        this.chainNamespace
+      )
     }
   }
 
