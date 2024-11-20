@@ -96,18 +96,21 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
     },
 
     async revokeSession(_chainId, _address) {
-      if (await siwe.signOut()) {
+      try {
+        await siwe.signOut()
         siwe.methods.onSignOut?.()
-
-        return Promise.resolve()
+      } catch (error) {
+        console.warn('SIWE:revokeSession - signOut error', error)
       }
-
-      throw new Error('Failed to sign out')
     },
 
     async setSessions(sessions) {
       if (sessions.length === 0) {
-        await siwe.methods.signOut()
+        try {
+          await siwe.methods.signOut()
+        } catch (error) {
+          console.warn('SIWE:setSessions - signOut error', error)
+        }
       } else {
         const addingSessions = sessions.map(session => this.addSession(session))
         await Promise.all(addingSessions)
@@ -149,7 +152,7 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
         return [session]
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error('SIWE:getSessions - error:', error)
+        console.warn('SIWE:getSessions - error:', error)
 
         return []
       }
