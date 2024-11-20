@@ -9,12 +9,22 @@ import type { AppKitSIWEClient } from '../exports/index.js'
 import { NetworkUtil } from '@reown/appkit-common'
 
 export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
+  async function getSession() {
+    try {
+      return await siwe.methods.getSession()
+    } catch (error) {
+      console.warn('AppKit:SIWE:getSession - error:', error)
+
+      return undefined
+    }
+  }
+
   ChainController.subscribeKey('activeCaipNetwork', async activeCaipNetwork => {
     if (!siwe.options.signOutOnNetworkChange) {
       return
     }
 
-    const session = await siwe.methods.getSession().catch(() => undefined)
+    const session = await getSession()
     const isDiffernetNetwork =
       session &&
       session.chainId !== NetworkUtil.caipNetworkIdToNumber(activeCaipNetwork?.caipNetworkId)
@@ -29,7 +39,7 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
       return
     }
 
-    const session = await siwe.methods.getSession().catch(() => undefined)
+    const session = await getSession()
     const isDifferentAddress =
       session && session.address !== CoreHelperUtil.getPlainAddress(activeCaipAddress)
 
@@ -133,7 +143,7 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
           ]
         }
 
-        const siweSession = await siwe.methods.getSession()
+        const siweSession = await getSession()
 
         const siweCaipNetworkId = `eip155:${siweSession?.chainId}`
         if (!siweSession || siweSession.address !== address || siweCaipNetworkId !== chainId) {
