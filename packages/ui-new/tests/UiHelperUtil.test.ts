@@ -10,7 +10,7 @@ describe('UiHelperUtil', () => {
   })
 
   it('should format currency as expected', () => {
-    // Big numbers
+    // Large numbers
     expect(UiHelperUtil.formatCurrency(1000000)).toEqual('$1,000,000.00')
     expect(UiHelperUtil.formatCurrency(2500000.5)).toEqual('$2,500,000.50')
     expect(UiHelperUtil.formatCurrency(123456789.99)).toEqual('$123,456,789.99')
