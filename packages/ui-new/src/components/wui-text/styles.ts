@@ -15,6 +15,8 @@ export default css`
       'case' on;
     overflow: inherit;
     text-overflow: inherit;
+    text-align: var(--local-align);
+    color: var(--local-color);
   }
 
   .wui-line-clamp-1 {

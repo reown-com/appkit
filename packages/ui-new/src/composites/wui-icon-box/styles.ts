@@ -1,25 +1,16 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    position: relative;
-    overflow: hidden;
-    background-color: var(--wui-color-gray-glass-020);
-    border-radius: var(--local-border-radius);
-    border: var(--local-border);
-    box-sizing: content-box;
-    width: var(--local-size);
-    height: var(--local-size);
-    min-height: var(--local-size);
-    min-width: var(--local-size);
+    background-color: var(--local-bg-color);
+    border-radius: ${({ borderRadius }) => borderRadius[2]};
+    padding: ${({ spacing }) => spacing[2]} !important;
   }
 
-  @supports (background: color-mix(in srgb, white 50%, black)) {
-    :host {
-      background-color: color-mix(in srgb, var(--local-bg-value) var(--local-bg-mix), transparent);
-    }
+  :host > wui-icon {
+    color: var(--local-icon-color);
   }
 `

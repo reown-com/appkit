@@ -1,4 +1,5 @@
 import type { WuiCard } from '../components/wui-card/index.js'
+import type { WuiDivider } from '../components/wui-divider/index.js'
 import type { WuiIcon } from '../components/wui-icon/index.js'
 import type { WuiImage } from '../components/wui-image/index.js'
 import type { WuiLoadingHexagon } from '../components/wui-loading-hexagon/index.js'
@@ -40,7 +41,7 @@ import type { WuiListItem } from '../composites/wui-list-item/index.js'
 import type { WuiListNetwork } from '../composites/wui-list-network/index.js'
 import type { WuiListToken } from '../composites/wui-list-token/index.js'
 import type { WuiListSocial } from '../composites/wui-list-social/index.js'
-import type { WuiListWallet } from '../composites/wui-list-wallet/index.js'
+import type { WuiListSelectWallet } from '../composites/wui-list-select-wallet/index.js'
 import type { WuiLogo } from '../composites/wui-logo/index.js'
 import type { WuiLogoSelect } from '../composites/wui-logo-select/index.js'
 import type { WuiNetworkButton } from '../composites/wui-network-button/index.js'
@@ -71,7 +72,6 @@ import type { WuiPreviewItem } from '../composites/wui-preview-item/index.js'
 import type { WuiAlertBar } from '../composites/wui-alertbar/index.js'
 import type { WuiFlex } from '../layout/wui-flex/index.js'
 import type { WuiGrid } from '../layout/wui-grid/index.js'
-import type { WuiSeparator } from '../layout/wui-separator/index.js'
 import type { WuiCheckBox } from '../composites/wui-checkbox/index.js'
 import type { WuiToggle } from '../composites/wui-toggle/index.js'
 import type { WuiCertifiedSwitch } from '../composites/wui-certified-switch/index.js'
@@ -127,7 +127,7 @@ declare global {
       'wui-list-social': CustomElement<WuiListSocial>
       'wui-list-token': CustomElement<WuiListToken>
       'wui-list-wallet-transaction': CustomElement<WuiListWalletTransaction>
-      'wui-list-wallet': CustomElement<WuiListWallet>
+      'wui-list-wallet': CustomElement<WuiListSelectWallet>
       'wui-logo-select': CustomElement<WuiLogoSelect>
       'wui-logo': CustomElement<WuiLogo>
       'wui-network-button': CustomElement<WuiNetworkButton>
@@ -164,7 +164,7 @@ declare global {
       // -- Layout ------------------------------------------- //
       'wui-flex': CustomElement<WuiFlex>
       'wui-grid': CustomElement<WuiGrid>
-      'wui-separator': CustomElement<WuiSeparator>
+      'wui-divider': CustomElement<WuiDivider>
     }
   }
 }
