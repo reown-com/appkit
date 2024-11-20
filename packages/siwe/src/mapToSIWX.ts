@@ -107,7 +107,7 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
 
     async revokeSession(_chainId, _address) {
       try {
-        await siwe.signOut()
+        await siwe.methods.signOut()
         siwe.methods.onSignOut?.()
       } catch (error) {
         console.warn('AppKit:SIWE:revokeSession - signOut error', error)
