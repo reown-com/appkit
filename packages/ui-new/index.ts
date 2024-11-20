@@ -2,6 +2,7 @@ export * from './src/assets/svg/swap-input-mask-bottom.js'
 export * from './src/assets/svg/swap-input-mask-top.js'
 
 export * from './src/components/wui-card/index.js'
+export * from './src/components/wui-divider/index.js'
 export * from './src/components/wui-icon/index.js'
 export * from './src/components/wui-image/index.js'
 export * from './src/components/wui-loading-hexagon/index.js'
@@ -84,7 +85,6 @@ export * from './src/composites/wui-shortcut/index.js'
 
 export * from './src/layout/wui-flex/index.js'
 export * from './src/layout/wui-grid/index.js'
-export * from './src/layout/wui-separator/index.js'
 export * from './src/utils/JSXTypeUtil.js'
 export * from './src/utils/ThemeConstantsUtil.js'
 

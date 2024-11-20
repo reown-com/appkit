@@ -32,7 +32,15 @@ import type {
 } from '@reown/appkit-ui-new/src/utils/TypeUtil'
 import type { TransactionStatus, TransactionDirection } from '@reown/appkit-common'
 
-export const textColorOptions: TextColorType[] = ['primary', 'secondary', 'tertiary', 'invert']
+export const textColorOptions: TextColorType[] = [
+  'primary',
+  'secondary',
+  'tertiary',
+  'invert',
+  'error',
+  'warning',
+  'accent-primary'
+]
 
 export const colorOptions = []
 
@@ -195,7 +203,6 @@ export const iconOptions: IconType[] = [
   'compass',
   'copy',
   'cursor',
-  'cursorTransparent',
   'desktop',
   'disconnect',
   'discord',
