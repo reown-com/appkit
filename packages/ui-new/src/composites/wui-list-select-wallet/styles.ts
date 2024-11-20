@@ -39,13 +39,9 @@ export default css`
   /* -- Disabled state --------------------------------------------------- */
   button:disabled {
     background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
-    opacity: 1 !important;
   }
 
-  button:disabled > wui-text,
-  button:disabled > wui-image,
-  button:disabled > wui-tag,
-  button:disabled > wui-icon-box {
+  button:disabled > * {
     opacity: 0.5;
   }
 `

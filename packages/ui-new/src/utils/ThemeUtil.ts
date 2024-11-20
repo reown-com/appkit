@@ -805,10 +805,16 @@ function createRootStyles(themeVariables?: ThemeVariables) {
 
 // -- Presets -----------------------------------------------------------------
 export const resetStyles = css`
-  *,
+  div,
+  span,
+  iframe,
+  a,
+  img,
+  form,
+  button,
+  label,
   *::after,
-  *::before,
-  :host {
+  *::before {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -845,7 +851,6 @@ export const elementStyles = css`
   }
 
   button:disabled {
-    opacity: 0.3;
     cursor: default;
   }
 

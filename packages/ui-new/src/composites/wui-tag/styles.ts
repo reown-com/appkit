@@ -40,13 +40,13 @@ export default css`
 
   :host([data-size='md']) {
     height: 30px;
-    padding: 0 ${({ spacing }) => spacing[2]} !important;
+    padding: 0 ${({ spacing }) => spacing[2]};
     border-radius: ${({ borderRadius }) => borderRadius[2]};
   }
 
   :host([data-size='sm']) {
     height: 20px;
-    padding: 0 ${({ spacing }) => spacing[1]} !important;
+    padding: 0 ${({ spacing }) => spacing[1]};
     border-radius: ${({ borderRadius }) => borderRadius[1]};
   }
 `
