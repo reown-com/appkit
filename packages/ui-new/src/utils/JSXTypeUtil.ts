@@ -41,7 +41,7 @@ import type { WuiListItem } from '../composites/wui-list-item/index.js'
 import type { WuiListNetwork } from '../composites/wui-list-network/index.js'
 import type { WuiListToken } from '../composites/wui-list-token/index.js'
 import type { WuiListSocial } from '../composites/wui-list-social/index.js'
-import type { WuiListWallet } from '../composites/wui-list-wallet/index.js'
+import type { WuiListSelectWallet } from '../composites/wui-list-select-wallet/index.js'
 import type { WuiLogo } from '../composites/wui-logo/index.js'
 import type { WuiLogoSelect } from '../composites/wui-logo-select/index.js'
 import type { WuiNetworkButton } from '../composites/wui-network-button/index.js'
@@ -127,7 +127,7 @@ declare global {
       'wui-list-social': CustomElement<WuiListSocial>
       'wui-list-token': CustomElement<WuiListToken>
       'wui-list-wallet-transaction': CustomElement<WuiListWalletTransaction>
-      'wui-list-wallet': CustomElement<WuiListWallet>
+      'wui-list-wallet': CustomElement<WuiListSelectWallet>
       'wui-logo-select': CustomElement<WuiLogoSelect>
       'wui-logo': CustomElement<WuiLogo>
       'wui-network-button': CustomElement<WuiNetworkButton>
