@@ -1,5 +1,9 @@
 export type ColorType = string
 
+export type BackgroundColorType = 'foregroundSecondary' | 'foregroundAccent010'
+
+export type IconColorType = 'inverse'
+
 export type TextColorType =
   | 'inherit'
   | 'primary'
@@ -46,6 +50,9 @@ export type TextAlign = 'center' | 'left' | 'right'
 export type LineClamp = '1' | '2'
 
 export type SizeType = 'inherit' | 'xl' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs' | 'xxl'
+
+// @TODO: Remove these sizes after completing <wui-icon> component
+export type IconSizeType = 'inherit' | 'xl' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs' | 'xxl'
 
 export type SpacingType =
   | '0'
