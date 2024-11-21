@@ -63,7 +63,6 @@ export function walletConnect(
   }
 
   let provider_: Provider | undefined
-  let providerPromise: Promise<typeof provider_>
 
   let accountsChanged: UniversalConnector['onAccountsChanged'] | undefined
   let chainChanged: UniversalConnector['onChainChanged'] | undefined
@@ -209,27 +208,8 @@ export function walletConnect(
       return accounts as `0x${string}`[]
     },
     async getProvider({ chainId } = {}) {
-      async function initProvider() {
-        const optionalChains = caipNetworks.map(x => Number(x.id))
-
-        if (!optionalChains.length) {
-          return undefined
-        }
-
-        const provider = await appKit.getUniversalProvider()
-
-        if (!provider) {
-          throw new Error('Provider not found')
-        }
-
-        return provider
-      }
-
       if (!provider_) {
-        if (!providerPromise) {
-          providerPromise = initProvider()
-        }
-        provider_ = await providerPromise
+        provider_ = await appKit.getUniversalProvider()
         provider_?.events.setMaxListeners(Number.POSITIVE_INFINITY)
       }
 
@@ -368,6 +348,7 @@ export function walletConnect(
     async onConnect(connectInfo) {
       const chainId = Number(connectInfo.chainId)
       const accounts = await this.getAccounts()
+      this.setRequestedChainsIds(caipNetworks.map(x => Number(x.id)))
       config.emitter.emit('connect', { accounts, chainId })
     },
     async onDisconnect(_error) {

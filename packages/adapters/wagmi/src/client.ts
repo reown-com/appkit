@@ -229,6 +229,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       chainId,
       type: 'legacy' as const
     }
+
     await prepareTransactionRequest(this.wagmiConfig, txParams)
     const tx = await wagmiSendTransaction(this.wagmiConfig, txParams)
     await waitForTransactionReceipt(this.wagmiConfig, { hash: tx, timeout: 25000 })
@@ -331,6 +332,8 @@ export class WagmiAdapter extends AdapterBlueprint {
     filteredConnectors.forEach(connector => {
       const shouldSkip = ConstantsUtil.AUTH_CONNECTOR_ID === connector.id
 
+      const injectedConnector = connector.id === ConstantsUtil.INJECTED_CONNECTOR_ID
+
       if (!shouldSkip && this.namespace) {
         this.addConnector({
           id: connector.id,
@@ -339,7 +342,7 @@ export class WagmiAdapter extends AdapterBlueprint {
           name: PresetsUtil.ConnectorNamesMap[connector.id] ?? connector.name,
           imageId: PresetsUtil.ConnectorImageIds[connector.id],
           type: PresetsUtil.ConnectorTypesMap[connector.type] ?? 'EXTERNAL',
-          info: { rdns: connector.id },
+          info: injectedConnector ? undefined : { rdns: connector.id },
           chain: this.namespace,
           chains: []
         })
@@ -350,14 +353,14 @@ export class WagmiAdapter extends AdapterBlueprint {
   public async syncConnection(
     params: AdapterBlueprint.SyncConnectionParams
   ): Promise<AdapterBlueprint.ConnectResult> {
-    const { id, chainId } = params
+    const { id } = params
     const connections = getConnections(this.wagmiConfig)
     const connection = connections.find(c => c.connector.id === id)
     const connector = this.wagmiConfig.connectors.find(c => c.id === id)
     const provider = (await connector?.getProvider()) as Provider
 
     return {
-      chainId: Number(chainId),
+      chainId: Number(connection?.chainId),
       address: connection?.accounts[0] as string,
       provider,
       type: connection?.connector.type as ConnectorType,

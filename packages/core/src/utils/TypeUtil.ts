@@ -478,7 +478,7 @@ export type Event =
     }
   | {
       type: 'track'
-      event: 'CLICK_SIGN_SIWE_MESSAGE'
+      event: 'CLICK_SIGN_SIWX_MESSAGE'
       properties: {
         network: string
         isSmartAccount: boolean
@@ -486,7 +486,7 @@ export type Event =
     }
   | {
       type: 'track'
-      event: 'CLICK_CANCEL_SIWE'
+      event: 'CLICK_CANCEL_SIWX'
       properties: {
         network: string
         isSmartAccount: boolean
@@ -498,7 +498,7 @@ export type Event =
     }
   | {
       type: 'track'
-      event: 'SIWE_AUTH_SUCCESS'
+      event: 'SIWX_AUTH_SUCCESS'
       properties: {
         network: string
         isSmartAccount: boolean
@@ -506,7 +506,7 @@ export type Event =
     }
   | {
       type: 'track'
-      event: 'SIWE_AUTH_ERROR'
+      event: 'SIWX_AUTH_ERROR'
       properties: {
         network: string
         isSmartAccount: boolean
@@ -884,7 +884,6 @@ export type AdapterAccountState = {
   socialWindow?: Window
   farcasterUrl?: string
   status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
-  siweStatus?: 'uninitialized' | 'ready' | 'loading' | 'success' | 'rejected' | 'error'
 }
 
 export type ChainAdapter = {

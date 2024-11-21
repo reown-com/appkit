@@ -39,6 +39,9 @@ smartAccountSiweTest.beforeAll(async ({ browser, library }) => {
   await validator.expectSwitchedNetworkOnNetworksView('Polygon')
   await page.closeModal()
   const tempEmail = await email.getEmailAddressToUse()
+
+  // Iframe should not be injected until needed
+  validator.expectSecureSiteFrameNotInjected()
   await page.emailFlow(tempEmail, context, mailsacApiKey)
   await page.promptSiwe()
   await page.approveSign()

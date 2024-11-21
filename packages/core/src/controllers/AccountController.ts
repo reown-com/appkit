@@ -40,7 +40,6 @@ export interface AccountControllerState {
   farcasterUrl?: string
   provider?: UniversalProvider | Provider | CombinedProvider
   status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
-  siweStatus?: 'uninitialized' | 'ready' | 'loading' | 'success' | 'rejected' | 'error'
   lastRetry?: number
 }
 
@@ -262,9 +261,5 @@ export const AccountController = {
 
   resetAccount(chain: ChainNamespace) {
     ChainController.resetAccount(chain)
-  },
-
-  setSiweStatus(status: AccountControllerState['siweStatus']) {
-    ChainController.setAccountProp('siweStatus', status, ChainController.state.activeChain)
   }
 }

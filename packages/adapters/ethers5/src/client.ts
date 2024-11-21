@@ -227,6 +227,10 @@ export class Ethers5Adapter extends AdapterBlueprint {
       method: 'eth_requestAccounts'
     })
 
+    const requestChainId = await selectedProvider.request({
+      method: 'eth_chainId'
+    })
+
     this.listenProviderEvents(selectedProvider)
 
     if (!accounts[0]) {
@@ -239,7 +243,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
     return {
       address: accounts[0],
-      chainId: Number(chainId),
+      chainId: Number(requestChainId) || Number(chainId),
       provider: selectedProvider,
       type: connector.type,
       id
@@ -258,6 +262,9 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
     connectors.forEach(connector => {
       const key = connector === 'coinbase' ? 'coinbaseWalletSDK' : connector
+
+      const injectedConnector = connector === ConstantsUtil.INJECTED_CONNECTOR_ID
+
       if (this.namespace) {
         this.addConnector({
           id: connector,
@@ -266,7 +273,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
           name: PresetsUtil.ConnectorNamesMap[key],
           imageId: PresetsUtil.ConnectorImageIds[key],
           type: PresetsUtil.ConnectorTypesMap[key] ?? 'EXTERNAL',
-          info: { rdns: key },
+          info: injectedConnector ? undefined : { rdns: key },
           chain: this.namespace,
           chains: [],
           provider: this.ethersConfig?.[connector as keyof ProviderType] as Provider
@@ -347,6 +354,8 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
     let accounts: string[] = []
 
+    let requestChainId: string | undefined = undefined
+
     if (type === 'AUTH') {
       const { address } = await (selectedProvider as unknown as W3mFrameProvider).connect({
         chainId
@@ -358,12 +367,16 @@ export class Ethers5Adapter extends AdapterBlueprint {
         method: 'eth_requestAccounts'
       })
 
+      requestChainId = await selectedProvider.request({
+        method: 'eth_chainId'
+      })
+
       this.listenProviderEvents(selectedProvider)
     }
 
     return {
       address: accounts[0] as `0x${string}`,
-      chainId: Number(chainId),
+      chainId: Number(requestChainId) || Number(chainId),
       provider: selectedProvider,
       type: type as ConnectorType,
       id

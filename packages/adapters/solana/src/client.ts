@@ -32,6 +32,7 @@ import type { WalletStandardProvider } from './providers/WalletStandardProvider.
 import { handleMobileWalletRedirection } from './utils/handleMobileWalletRedirection.js'
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import { WalletConnectProvider } from './providers/WalletConnectProvider.js'
+import bs58 from 'bs58'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
@@ -187,7 +188,7 @@ export class SolanaAdapter extends AdapterBlueprint {
     )
 
     return {
-      signature: new TextDecoder().decode(signature)
+      signature: bs58.encode(signature)
     }
   }
 
