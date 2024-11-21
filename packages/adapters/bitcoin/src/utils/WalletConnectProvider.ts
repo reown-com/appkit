@@ -129,7 +129,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Bitco
   private internalRequest<Method extends WalletConnectProvider.RequestMethod>({
     method,
     params
-  }: WalletConnectProvider.RequestParams<Method>) {
+  }: WalletConnectProvider.InternalRequestParams<Method>) {
     const chain = this.getActiveChain()
 
     if (!chain) {
@@ -191,7 +191,7 @@ export namespace WalletConnectProvider {
 
   export type RequestMethod = keyof RequestMethods
 
-  export type RequestParams<Method extends RequestMethod> = {
+  export type InternalRequestParams<Method extends RequestMethod> = {
     method: Method
     params: RequestMethods[Method]['params']
   }
