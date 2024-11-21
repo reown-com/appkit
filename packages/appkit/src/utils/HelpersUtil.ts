@@ -67,7 +67,7 @@ export const WcHelpersUtil = {
         case solana.caipNetworkId:
           namespace.chains.push(solana.deprecatedCaipNetworkId)
           break
-        case solanaDevnet.deprecatedCaipNetworkId:
+        case solanaDevnet.caipNetworkId:
           namespace.chains.push(solanaDevnet.deprecatedCaipNetworkId)
           break
         default:
