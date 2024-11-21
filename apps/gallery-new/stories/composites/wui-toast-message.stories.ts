@@ -1,14 +1,14 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui-new/src/composites/wui-alertbar'
+import '@reown/appkit-ui-new/src/composites/wui-toast-message'
 import '../../components/gallery-container'
-import type { WuiAlertBar } from '@reown/appkit-ui-new/src/composites/wui-alertbar'
+import type { WuiToastMessage } from '@reown/appkit-ui-new/src/composites/wui-toast-message'
 import { html } from 'lit'
 import { colorOptions, iconOptions } from '../../utils/PresetUtils'
 
-type Component = Meta<WuiAlertBar>
+type Component = Meta<WuiToastMessage>
 
 export default {
-  title: 'Composites/wui-alertbar',
+  title: 'Composites/wui-toast-message',
   args: {
     message: 'Alert',
     backgroundColor: 'fg-350',
@@ -34,13 +34,13 @@ export default {
 export const Default: Component = {
   render: args => html`
     <gallery-container width="336">
-      <wui-alertbar
+      <wui-toast-message
         iconColor=${args.iconColor}
         backgroundColor=${args.backgroundColor}
         icon=${args.icon}
         message=${args.message}
       >
-      </wui-alertbar>
+      </wui-toast-message>
     </gallery-container>
   `
 }

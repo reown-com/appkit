@@ -6,8 +6,8 @@ import type { ColorType, IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
-@customElement('wui-alertbar')
-export class WuiAlertBar extends LitElement {
+@customElement('wui-toast-message')
+export class WuiToastMessage extends LitElement {
   public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
@@ -23,7 +23,7 @@ export class WuiAlertBar extends LitElement {
   public override render() {
     this.style.cssText = `
       --local-icon-bg-value: var(--wui-color-${this.backgroundColor});
-   `
+    `
 
     return html`
       <wui-flex flexDirection="row" justifyContent="space-between" alignItems="center">
@@ -36,7 +36,7 @@ export class WuiAlertBar extends LitElement {
           >
             <wui-icon color=${this.iconColor} size="md" name=${this.icon}></wui-icon>
           </wui-flex>
-          <wui-text variant="small-500" color="bg-350" data-testid="wui-alertbar-text"
+          <wui-text variant="small-500" color="bg-350" data-testid="wui-toast-message-text"
             >${this.message}</wui-text
           >
         </wui-flex>
@@ -59,6 +59,6 @@ export class WuiAlertBar extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'wui-alertbar': WuiAlertBar
+    'wui-toast-message': WuiToastMessage
   }
 }
