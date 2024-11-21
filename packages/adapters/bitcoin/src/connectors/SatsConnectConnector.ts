@@ -1,16 +1,20 @@
 import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
 import type { CaipNetwork } from '@reown/appkit-common'
-import Wallet, {
+import {
   AddressPurpose,
   getProviders,
+  getProviderById,
   type BtcRequestMethod,
   type BtcRequests,
   type Params,
-  type Provider as SatsConnectProvider
+  type Provider as SatsConnectProvider,
+  type BitcoinProvider,
+  type Requests as SatsConnectRequests
 } from 'sats-connect'
 import type { RequestArguments } from '@reown/appkit-core'
+import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 
-export class SatsConnectConnector implements BitcoinConnector {
+export class SatsConnectConnector extends ProviderEventEmitter implements BitcoinConnector {
   public readonly chain = 'bip122'
   public readonly type = 'ANNOUNCED'
 
@@ -20,6 +24,7 @@ export class SatsConnectConnector implements BitcoinConnector {
   private requestedChains: CaipNetwork[] = []
 
   constructor({ provider, requestedChains }: SatsConnectConnector.ConstructorParams) {
+    super()
     this.wallet = provider
     this.requestedChains = requestedChains
     this.provider = this
@@ -41,82 +46,44 @@ export class SatsConnectConnector implements BitcoinConnector {
     return this.requestedChains
   }
 
-  on<
-    T extends keyof {
-      connect: (connectParams: { chainId: number }) => void
-      disconnect: (error: Error) => void
-      display_uri: (uri: string) => void
-      chainChanged: (chainId: string) => void
-      accountsChanged: (accounts: string[]) => void
-      message: (message: { type: string; data: unknown }) => void
-    }
-  >(
-    event: T,
-    listener: {
-      connect: (connectParams: { chainId: number }) => void
-      disconnect: (error: Error) => void
-      display_uri: (uri: string) => void
-      chainChanged: (chainId: string) => void
-      accountsChanged: (accounts: string[]) => void
-      message: (message: { type: string; data: unknown }) => void
-    }[T]
-  ): void {
-    console.log(event, listener)
-    throw new Error('Method not implemented.')
-  }
-
-  removeListener<T>(event: string, listener: (data: T) => void) {
-    console.log(event, listener)
-    throw new Error('Method not implemented.')
-  }
-
   async disconnect() {
-    await Wallet.disconnect()
+    await this.internalRequest('wallet_disconnect', null)
   }
 
   async request<T>(args: RequestArguments) {
-    const info = await Wallet.request('getInfo', null)
-    if (info.status === 'error') {
-      throw new Error('Failed to get wallet info')
-    }
-
-    const methods = info.result.methods || []
-    if (!methods.includes(args.method)) {
-      throw new Error('Method not available')
-    }
-
-    return Wallet.request(args.method as BtcRequestMethod, args.params as Params<BtcRequests>) as T
-  }
-
-  emit() {
-    throw new Error('Method not implemented.')
+    return this.internalRequest(
+      args.method as BtcRequestMethod,
+      args.params as Params<BtcRequests>
+    ) as Promise<T>
   }
 
   async connect() {
-    const addresses = await this.getAccountAddresses()
+    const address = await this.getAccountAddresses()
+      .then(addresses => addresses[0]?.address)
+      .catch(() =>
+        this.internalRequest('wallet_connect', null).then(
+          response => response.addresses.find(a => a.purpose === AddressPurpose.Payment)?.address
+        )
+      )
 
-    if (addresses.length === 0) {
+    if (!address) {
       throw new Error('No address available')
     }
 
-    return addresses[0]?.address as string
+    return address
   }
 
   async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {
-    const response = await Wallet.request('getAccounts', {
+    const response = await this.internalRequest('getAddresses', {
       purposes: [AddressPurpose.Payment, AddressPurpose.Ordinals, AddressPurpose.Stacks],
       message: 'Connect to your wallet'
     })
 
-    if (response.status === 'error') {
-      throw new Error('User denied access to wallet')
-    }
-
-    if (response.result.length === 0) {
+    if (response.addresses.length === 0) {
       throw new Error('No address available')
     }
 
-    return response.result
+    return response.addresses
   }
 
   public static getWallets({ requestedChains }: SatsConnectConnector.GetWalletsParams) {
@@ -126,13 +93,9 @@ export class SatsConnectConnector implements BitcoinConnector {
   }
 
   public async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
-    const res = await Wallet.request('signMessage', params)
+    const res = await this.internalRequest('signMessage', params)
 
-    if (res.status === 'error') {
-      throw new Error('Signature denied')
-    }
-
-    return res.result.signature
+    return res.signature
   }
 
   public async sendTransfer({
@@ -140,15 +103,28 @@ export class SatsConnectConnector implements BitcoinConnector {
     recipient
   }: BitcoinConnector.SendTransferParams): Promise<string> {
     const parsedAmount = isNaN(Number(amount)) ? 0 : Number(amount)
-    const res = await Wallet.request('sendTransfer', {
+    const res = await this.internalRequest('sendTransfer', {
       recipients: [{ address: recipient, amount: parsedAmount }]
     })
 
-    if (res.status === 'error') {
-      throw new Error('Transfer failed')
+    return res.txid
+  }
+
+  private getWalletProvider() {
+    return getProviderById(this.wallet.id) as BitcoinProvider
+  }
+
+  private async internalRequest<Method extends keyof SatsConnectRequests>(
+    method: Method,
+    options: Params<Method>
+  ) {
+    const response = await this.getWalletProvider().request(method, options)
+
+    if ('result' in response) {
+      return response.result
     }
 
-    return res.result.txid
+    throw new Error(response.error.message)
   }
 }
 
