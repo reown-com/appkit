@@ -279,7 +279,7 @@ export const logoOptions: LogoType[] = [
 
 export const placementOptions: PlacementType[] = ['top', 'right', 'bottom', 'left']
 
-export const chipButtonVariants: ChipButtonVariant[] = ['main', 'accent', 'shade', 'gray', 'shade']
+export const chipButtonVariants: ChipButtonVariant[] = ['main', 'accent', 'primary']
 
 export const chipVariants: ChipType[] = [
   'fill',

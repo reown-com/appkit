@@ -220,7 +220,9 @@ export type PlacementType = 'bottom' | 'left' | 'right' | 'top'
 
 export type ChipType = 'fill' | 'shade' | 'shadeSmall' | 'transparent' | 'success' | 'error'
 
-export type ChipButtonVariant = 'accent' | 'main' | 'shade' | 'gray'
+export type ChipButtonVariant = 'main' | 'accent' | 'primary'
+
+export type ChipButtonSize = 'sm' | 'md'
 
 export type ButtonSize = 'lg' | 'md' | 'sm'
 
