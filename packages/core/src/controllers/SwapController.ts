@@ -454,7 +454,7 @@ export const SwapController = {
 
     switch (ChainController.state?.activeCaipNetwork?.chainNamespace) {
       case 'solana':
-        state.gasFee = res.standard
+        state.gasFee = res.standard ?? ''
         state.gasPriceInUSD = NumberUtil.multiply(res.standard, state.networkPrice)
           .dividedBy(1e9)
           .toNumber()
@@ -469,13 +469,13 @@ export const SwapController = {
         // eslint-disable-next-line no-case-declarations
         const value = res.standard
         // eslint-disable-next-line no-case-declarations
-        const gasFee = BigInt(value)
+        const gasFee = BigInt(value ?? '0')
         // eslint-disable-next-line no-case-declarations
         const gasLimit = BigInt(INITIAL_GAS_LIMIT)
         // eslint-disable-next-line no-case-declarations
         const gasPrice = SwapCalculationUtil.getGasPriceInUSD(state.networkPrice, gasLimit, gasFee)
 
-        state.gasFee = value
+        state.gasFee = value ?? ''
         state.gasPriceInUSD = gasPrice
 
         return { gasPrice: gasFee, gasPriceInUSD: gasPrice }
@@ -559,7 +559,7 @@ export const SwapController = {
       if (hasAllowance) {
         transaction = await this.createSwapTransaction()
       } else {
-        transaction = await this.createAllowanceTransaction()
+        transaction = (await this.createAllowanceTransaction()) as TransactionParams
       }
 
       state.loadingBuildTransaction = false
@@ -612,7 +612,7 @@ export const SwapController = {
       }
 
       state.swapTransaction = undefined
-      state.approvalTransaction = transaction
+      state.approvalTransaction = transaction as TransactionParams
 
       return transaction
     } catch (error) {
