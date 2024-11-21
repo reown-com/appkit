@@ -21,4 +21,4 @@
 '@reown/appkit-wallet': patch
 ---
 
-Expose disconnect method
+Updates Vue type decleration module

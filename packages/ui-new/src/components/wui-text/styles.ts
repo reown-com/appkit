@@ -9,12 +9,10 @@ export default css`
     width: 100%;
     display: inline-block;
     font-style: normal;
-    font-feature-settings:
-      'tnum' on,
-      'lnum' on,
-      'case' on;
     overflow: inherit;
     text-overflow: inherit;
+    text-align: var(--local-align);
+    color: var(--local-color);
   }
 
   .wui-line-clamp-1 {
@@ -46,6 +44,9 @@ export default css`
     letter-spacing: ${({ typography }) => typography['h1-regular'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.regular};
+    font-feature-settings:
+      'liga' off,
+      'clig' off;
   }
 
   .wui-font-h1-medium {
@@ -54,6 +55,9 @@ export default css`
     letter-spacing: ${({ typography }) => typography['h1-medium'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.medium};
     font-family: ${({ fontFamily }) => fontFamily.regular};
+    font-feature-settings:
+      'liga' off,
+      'clig' off;
   }
 
   .wui-font-h2-regular-mono {
@@ -70,6 +74,9 @@ export default css`
     letter-spacing: ${({ typography }) => typography['h2-regular'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.regular};
+    font-feature-settings:
+      'liga' off,
+      'clig' off;
   }
 
   .wui-font-h2-medium {
@@ -78,6 +85,9 @@ export default css`
     letter-spacing: ${({ typography }) => typography['h2-medium'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.medium};
     font-family: ${({ fontFamily }) => fontFamily.regular};
+    font-feature-settings:
+      'liga' off,
+      'clig' off;
   }
 
   .wui-font-h3-regular-mono {
@@ -94,6 +104,9 @@ export default css`
     letter-spacing: ${({ typography }) => typography['h3-regular'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.regular};
+    font-feature-settings:
+      'liga' off,
+      'clig' off;
   }
 
   .wui-font-h3-medium {
@@ -102,6 +115,9 @@ export default css`
     letter-spacing: ${({ typography }) => typography['h3-medium'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.medium};
     font-family: ${({ fontFamily }) => fontFamily.regular};
+    font-feature-settings:
+      'liga' off,
+      'clig' off;
   }
 
   .wui-font-h4-regular-mono {
@@ -118,6 +134,9 @@ export default css`
     letter-spacing: ${({ typography }) => typography['h4-regular'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.regular};
+    font-feature-settings:
+      'liga' off,
+      'clig' off;
   }
 
   .wui-font-h4-medium {
@@ -126,6 +145,9 @@ export default css`
     letter-spacing: ${({ typography }) => typography['h4-medium'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.medium};
     font-family: ${({ fontFamily }) => fontFamily.regular};
+    font-feature-settings:
+      'liga' off,
+      'clig' off;
   }
 
   .wui-font-h5-regular-mono {
@@ -142,6 +164,9 @@ export default css`
     letter-spacing: ${({ typography }) => typography['h5-regular'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.regular};
+    font-feature-settings:
+      'liga' off,
+      'clig' off;
   }
 
   .wui-font-h5-medium {
@@ -150,6 +175,9 @@ export default css`
     letter-spacing: ${({ typography }) => typography['h5-medium'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.medium};
     font-family: ${({ fontFamily }) => fontFamily.regular};
+    font-feature-settings:
+      'liga' off,
+      'clig' off;
   }
 
   .wui-font-h6-regular-mono {
@@ -166,6 +194,9 @@ export default css`
     letter-spacing: ${({ typography }) => typography['h6-regular'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.regular};
+    font-feature-settings:
+      'liga' off,
+      'clig' off;
   }
 
   .wui-font-h6-medium {
@@ -174,6 +205,9 @@ export default css`
     letter-spacing: ${({ typography }) => typography['h6-medium'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.medium};
     font-family: ${({ fontFamily }) => fontFamily.regular};
+    font-feature-settings:
+      'liga' off,
+      'clig' off;
   }
 
   .wui-font-lg-regular-mono {
@@ -190,6 +224,9 @@ export default css`
     letter-spacing: ${({ typography }) => typography['lg-regular'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.regular};
+    font-feature-settings:
+      'liga' off,
+      'clig' off;
   }
 
   .wui-font-lg-medium {
@@ -198,6 +235,9 @@ export default css`
     letter-spacing: ${({ typography }) => typography['lg-medium'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.medium};
     font-family: ${({ fontFamily }) => fontFamily.regular};
+    font-feature-settings:
+      'liga' off,
+      'clig' off;
   }
 
   .wui-font-md-regular-mono {
@@ -214,6 +254,9 @@ export default css`
     letter-spacing: ${({ typography }) => typography['md-regular'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.regular};
+    font-feature-settings:
+      'liga' off,
+      'clig' off;
   }
 
   .wui-font-md-medium {
@@ -222,6 +265,9 @@ export default css`
     letter-spacing: ${({ typography }) => typography['md-medium'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.medium};
     font-family: ${({ fontFamily }) => fontFamily.regular};
+    font-feature-settings:
+      'liga' off,
+      'clig' off;
   }
 
   .wui-font-sm-regular-mono {
@@ -238,6 +284,9 @@ export default css`
     letter-spacing: ${({ typography }) => typography['sm-regular'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.regular};
     font-family: ${({ fontFamily }) => fontFamily.regular};
+    font-feature-settings:
+      'liga' off,
+      'clig' off;
   }
 
   .wui-font-sm-medium {
@@ -246,5 +295,8 @@ export default css`
     letter-spacing: ${({ typography }) => typography['sm-medium'].letterSpacing};
     font-weight: ${({ fontWeight }) => fontWeight.medium};
     font-family: ${({ fontFamily }) => fontFamily.regular};
+    font-feature-settings:
+      'liga' off,
+      'clig' off;
   }
 `

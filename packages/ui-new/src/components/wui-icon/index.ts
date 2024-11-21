@@ -32,7 +32,6 @@ import { coinPlaceholderSvg } from '../../assets/svg/coinPlaceholder.js'
 import { compassSvg } from '../../assets/svg/compass.js'
 import { copySvg } from '../../assets/svg/copy.js'
 import { cursorSvg } from '../../assets/svg/cursor.js'
-import { cursorTransparentSvg } from '../../assets/svg/cursor-transparent.js'
 import { desktopSvg } from '../../assets/svg/desktop.js'
 import { disconnectSvg } from '../../assets/svg/disconnect.js'
 import { discordSvg } from '../../assets/svg/discord.js'
@@ -60,6 +59,7 @@ import { recycleHorizontalSvg } from '../../assets/svg/recycle-horizontal.js'
 import { refreshSvg } from '../../assets/svg/refresh.js'
 import { searchSvg } from '../../assets/svg/search.js'
 import { sendSvg } from '../../assets/svg/send.js'
+import { spinnerSvg } from '../../assets/svg/spinner.js'
 import { swapHorizontalSvg } from '../../assets/svg/swapHorizontal.js'
 import { swapHorizontalBoldSvg } from '../../assets/svg/swapHorizontalBold.js'
 import { swapHorizontalMediumSvg } from '../../assets/svg/swapHorizontalMedium.js'
@@ -113,7 +113,6 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   coinPlaceholder: coinPlaceholderSvg,
   copy: copySvg,
   cursor: cursorSvg,
-  cursorTransparent: cursorTransparentSvg,
   desktop: desktopSvg,
   disconnect: disconnectSvg,
   discord: discordSvg,
@@ -143,6 +142,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   refresh: refreshSvg,
   search: searchSvg,
   send: sendSvg,
+  spinner: spinnerSvg,
   swapHorizontal: swapHorizontalSvg,
   swapHorizontalMedium: swapHorizontalMediumSvg,
   swapHorizontalBold: swapHorizontalBoldSvg,
