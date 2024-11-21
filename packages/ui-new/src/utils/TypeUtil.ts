@@ -248,7 +248,7 @@ export type ButtonVariant =
 export type ButtonShortcutVariant = 'accent' | 'secondary'
 export type ButtonLinkVariant = 'accent' | 'secondary'
 
-export type TransactionThumbnailType = 'token' | 'nft' | 'swap' | 'fiat' | 'unknown'
+export type TransactionThumbnailType = TransactionType
 export type TransactionThumbnailSize = 'sm' | 'lg'
 
 // @TODO: Remove this everywhere in the code and use TransactionThumbnailType type instead
@@ -270,6 +270,9 @@ export type TransactionType =
   | 'trade'
   | 'unstake'
   | 'withdraw'
+  | 'fiat'
+  | 'unknown'
+  | 'nft'
 
 // eslint-disable-next-line no-shadow
 export enum TransactionTypePastTense {

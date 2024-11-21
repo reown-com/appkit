@@ -18,7 +18,7 @@ export class WuiTransactionThumbnail extends LitElement {
   public static override styles = [styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public type: TransactionThumbnailType = 'token'
+  @property() public type: TransactionThumbnailType = 'approve'
 
   @property() public size: TransactionThumbnailSize = 'lg'
 
@@ -35,15 +35,19 @@ export class WuiTransactionThumbnail extends LitElement {
   private templateVisual() {
     this.dataset['size'] = this.size
 
-    const templates = {
-      token: this.tokenTemplate.bind(this),
-      nft: this.tokenTemplate.bind(this),
-      swap: this.swapTemplate.bind(this),
-      fiat: this.fiatTemplate.bind(this),
-      unknown: this.unknownTemplate.bind(this)
-    }
+    switch (this.type) {
+      case 'trade':
+        return this.swapTemplate()
 
-    return templates[this.type]()
+      case 'fiat':
+        return this.fiatTemplate()
+
+      case 'unknown':
+        return this.unknownTemplate()
+
+      default:
+        return this.tokenTemplate()
+    }
   }
 
   private swapTemplate() {
@@ -103,19 +107,19 @@ export class WuiTransactionThumbnail extends LitElement {
       ></wui-image>`
     }
 
-    const icon = {
-      token: 'arrowBottom',
-      nft: 'arrowBottom',
-      swap: 'arrowClockWise',
-      fiat: 'arrowBottom',
-      unknown: 'arrowBottom'
-    }
-
     return html`<wui-icon
       class="direction-icon"
       size=${ICON_SIZE[this.size]}
-      name=${icon[this.type]}
+      name=${this.getTemplateIcon()}
     ></wui-icon>`
+  }
+
+  private getTemplateIcon() {
+    if (this.type === 'trade') {
+      return 'arrowClockWise'
+    }
+
+    return 'arrowBottom'
   }
 }
 

@@ -10,7 +10,7 @@ type Component = Meta<WuiTransactionThumbnail>
 export default {
   title: 'Composites/wui-transaction-thumbnail',
   args: {
-    type: 'token',
+    type: 'approve',
     size: 'lg',
     images: [networkImageSrc],
     statusImageUrl: ''

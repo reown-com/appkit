@@ -27,10 +27,10 @@ import type {
   TextType,
   ThemeType,
   VisualType,
-  ButtonLinkVariant,
-  TransactionThumbnailType
+  ButtonLinkVariant
 } from '@reown/appkit-ui-new/src/utils/TypeUtil'
 import type { TransactionStatus } from '@reown/appkit-common'
+import type { TransactionType } from '@reown/appkit-ui-new'
 
 export const textColorOptions: TextColorType[] = [
   'primary',
@@ -303,12 +303,27 @@ export const buttonShortcutOptions: ButtonShortcutVariant[] = ['accent', 'second
 
 export const buttonLinkOptions: ButtonLinkVariant[] = ['accent', 'secondary']
 
-export const transactionThumbnailOptions: TransactionThumbnailType[] = [
-  'token',
-  'nft',
-  'swap',
+export const transactionThumbnailOptions: TransactionType[] = [
+  'approve',
+  'bought',
+  'borrow',
+  'burn',
+  'cancel',
+  'claim',
+  'deploy',
+  'deposit',
+  'execute',
+  'mint',
+  'receive',
+  'repay',
+  'send',
+  'stake',
+  'trade',
+  'unstake',
+  'withdraw',
   'fiat',
-  'unknown'
+  'unknown',
+  'nft'
 ]
 
 export const transactionStatusOptions: TransactionStatus[] = ['confirmed', 'pending', 'failed']
