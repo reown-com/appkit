@@ -76,16 +76,22 @@ export default function MultiChainBitcoinAdapterOnly() {
       })
     }
 
-    const signature = await walletProvider.sendTransfer({
-      recipient: 'bc1qcer94ntpu33lcj0fnave79lu8tghkll47eeu9u',
-      amount: '100000'
-    })
+    try {
+      const signature = await walletProvider.sendTransfer({
+        recipient: 'bc1qcer94ntpu33lcj0fnave79lu8tghkll47eeu9u',
+        amount: '100000'
+      })
 
-    toast({
-      title: `Transfer sent: ${signature}`,
-      status: 'success',
-      isClosable: true
-    })
+      toast({
+        title: `Transfer sent: ${signature}`,
+        status: 'success',
+        isClosable: true
+      })
+    } catch (error) {
+      toast({ title: 'Error', description: (error as Error).message, status: 'error' })
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
