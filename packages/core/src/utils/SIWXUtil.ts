@@ -11,6 +11,7 @@ import { EventsController } from '../controllers/EventsController.js'
 import { AccountController } from '../controllers/AccountController.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 import { StorageUtil } from './StorageUtil.js'
+import { localhost } from 'viem/chains'
 
 export const SIWXUtil = {
   getSIWX() {
@@ -27,6 +28,7 @@ export const SIWXUtil = {
 
     try {
       const sessions = await siwx.getSessions(`${network}:${chainId}` as CaipNetworkId, address)
+
       if (sessions.length) {
         return
       }

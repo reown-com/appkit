@@ -30,8 +30,11 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
     }
 
     const session = await siwe.methods.getSession().catch(() => undefined)
-    const isDifferentAddress =
-      session && session.address !== CoreHelperUtil.getPlainAddress(activeCaipAddress)
+
+    const compareSessionAddress = session?.address.toLowerCase()
+    const compareCaipAddress = CoreHelperUtil?.getPlainAddress(activeCaipAddress)?.toLowerCase()
+
+    const isDifferentAddress = session && compareSessionAddress !== compareCaipAddress
 
     if (isDifferentAddress) {
       await siwe.methods.signOut()
@@ -133,7 +136,14 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
         const siweSession = await siwe.methods.getSession()
 
         const siweCaipNetworkId = `eip155:${siweSession?.chainId}`
-        if (!siweSession || siweSession.address !== address || siweCaipNetworkId !== chainId) {
+
+        const compareSessionAddress = siweSession?.address.toLowerCase()
+        const compareCaipAddress = address?.toLowerCase()
+        if (
+          !siweSession ||
+          compareSessionAddress !== compareCaipAddress ||
+          siweCaipNetworkId !== chainId
+        ) {
           return []
         }
 

@@ -2,6 +2,7 @@ import {
   AssetUtil,
   ChainController,
   ConnectorController,
+  ModalController,
   RouterController,
   StorageUtil
 } from '@reown/appkit-core'
@@ -131,6 +132,8 @@ export class W3mNetworkSwitchView extends LitElement {
     try {
       this.error = false
       if (this.network) {
+        const sameNetwork =
+          ChainController.state.activeCaipNetwork?.caipNetworkId === this.network.caipNetworkId
         await ChainController.switchActiveNetwork(this.network)
       }
     } catch (error) {
