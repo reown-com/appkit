@@ -52,30 +52,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     }
   }
 
-  override switchNetwork(_params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
-    // Switch network
-    return Promise.resolve()
-  }
-
-  override disconnect(): Promise<void> {
-    // Disconnect
-    return Promise.resolve()
-  }
-
-  override getBalance(
-    _params: AdapterBlueprint.GetBalanceParams
-  ): Promise<AdapterBlueprint.GetBalanceResult> {
-    // Get balance
-    return Promise.resolve({} as unknown as AdapterBlueprint.GetBalanceResult)
-  }
-
-  override getProfile(
-    _params: AdapterBlueprint.GetProfileParams
-  ): Promise<AdapterBlueprint.GetProfileResult> {
-    // Get profile
-    return Promise.resolve({} as unknown as AdapterBlueprint.GetProfileResult)
-  }
-
   override syncConnectors(_options?: AppKitOptions, _appKit?: AppKit): void {
     WalletStandardConnector.watchWallets({
       callback: this.addConnector.bind(this),
@@ -115,6 +91,44 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     return { signature }
   }
 
+  public getWalletConnectProvider(
+    params: AdapterBlueprint.GetWalletConnectProviderParams
+  ): AdapterBlueprint.GetWalletConnectProviderResult {
+    const walletConnectProvider = new WalletConnectProvider({
+      provider: params.provider as UniversalProvider,
+      chains: params.caipNetworks,
+      getActiveChain: () => params.activeCaipNetwork
+    })
+
+    return walletConnectProvider as unknown as Provider
+  }
+
+  override switchNetwork(_params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
+    // Switch network
+    return Promise.resolve()
+  }
+
+  override disconnect(): Promise<void> {
+    // Disconnect
+    return Promise.resolve()
+  }
+
+  // -- Unused => Refactor ------------------------------------------- //
+
+  override getBalance(
+    _params: AdapterBlueprint.GetBalanceParams
+  ): Promise<AdapterBlueprint.GetBalanceResult> {
+    // Get balance
+    return Promise.resolve({} as unknown as AdapterBlueprint.GetBalanceResult)
+  }
+
+  override getProfile(
+    _params: AdapterBlueprint.GetProfileParams
+  ): Promise<AdapterBlueprint.GetProfileResult> {
+    // Get profile
+    return Promise.resolve({} as unknown as AdapterBlueprint.GetProfileResult)
+  }
+
   override estimateGas(
     _params: AdapterBlueprint.EstimateGasTransactionArgs
   ): Promise<AdapterBlueprint.EstimateGasTransactionResult> {
@@ -151,18 +165,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   override formatUnits(_params: AdapterBlueprint.FormatUnitsParams): string {
     // Format units
     return ''
-  }
-
-  public getWalletConnectProvider(
-    params: AdapterBlueprint.GetWalletConnectProviderParams
-  ): AdapterBlueprint.GetWalletConnectProviderResult {
-    const walletConnectProvider = new WalletConnectProvider({
-      provider: params.provider as UniversalProvider,
-      chains: params.caipNetworks,
-      getActiveChain: () => params.activeCaipNetwork
-    })
-
-    return walletConnectProvider as unknown as Provider
   }
 
   override grantPermissions(_params: AdapterBlueprint.GrantPermissionsParams): Promise<unknown> {
