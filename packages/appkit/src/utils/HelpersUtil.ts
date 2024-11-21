@@ -34,6 +34,8 @@ export const WcHelpersUtil = {
           'wallet_revokePermissions',
           'wallet_switchEthereumChain'
         ]
+      case 'bip122':
+        return ['sendTransfer', 'signMessage', 'signPsbt', 'getAccountAddresses']
       default:
         return []
     }

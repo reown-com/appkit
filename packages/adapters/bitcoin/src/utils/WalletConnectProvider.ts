@@ -78,7 +78,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Bitco
 
   public async disconnect() {
     await this.provider?.disconnect()
-    this.emit('disconnect', undefined)
+    this.emit('disconnect')
   }
 
   public async signMessage({ message, address }: BitcoinConnector.SignMessageParams) {
@@ -109,7 +109,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Bitco
   }
 
   public request<T>({ method, params }: RequestArguments) {
-    const chain = this.chains.find(c => this.getActiveChain()?.id === c.id)
+    const chain = this.getActiveChain()
 
     if (!chain) {
       throw new Error('Chain not found')
@@ -120,7 +120,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Bitco
         method,
         params
       },
-      String(chain.id)
+      chain.caipNetworkId
     )
   }
 

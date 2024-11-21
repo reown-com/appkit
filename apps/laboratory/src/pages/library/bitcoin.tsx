@@ -36,7 +36,7 @@ const appkit = createAppKit({
 ThemeStore.setModal(appkit)
 
 export default function MultiChainBitcoinAdapterOnly() {
-  const { walletProvider, walletProviderType } = useAppKitProvider<BitcoinConnector>('bip122')
+  const { walletProvider } = useAppKitProvider<BitcoinConnector>('bip122')
   const { address } = useAppKitAccount()
   const [loading, setLoading] = useState(false)
 
@@ -54,27 +54,12 @@ export default function MultiChainBitcoinAdapterOnly() {
 
     setLoading(true)
 
-    // if (walletProviderType === 'WALLET_CONNECT') {
-    //   walletProvider.request({
-    //     method: '',
-    //     params: [address, 'Hello, World!']
-    //   })
-    //   toast({
-    //     title: 'Wallet Connect',
-    //     description: 'Please check your wallet to sign the message',
-    //     status: 'info'
-    //   })
-
-    //   return
-    // }
-
-    console.log('>> SIGN MESSAGE', walletProvider, address)
     try {
       const signature = await walletProvider.signMessage({
         address,
         message: 'Hello, World!'
       })
-      toast({ title: 'Signature', description: signature || '', status: 'success' })
+      toast({ title: 'Signature', description: signature, status: 'success' })
     } catch (error) {
       toast({ title: 'Error', description: (error as Error).message, status: 'error' })
     } finally {

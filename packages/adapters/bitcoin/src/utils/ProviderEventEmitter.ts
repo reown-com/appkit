@@ -1,34 +1,15 @@
-import type { ProviderEventListener } from '@reown/appkit-core'
+import type { ProviderEventListener, Provider } from '@reown/appkit-core'
 
-interface ProviderEventEmitterMethods {
-  on: <E extends ProviderEventEmitterMethods.Event>(
-    event: E,
-    listener: ProviderEventListener[E]
-  ) => void
-  removeListener: <E extends ProviderEventEmitterMethods.Event>(
-    event: E,
-    listener: (data: ProviderEventEmitterMethods.EventParams[E]) => void
-  ) => void
-  emit: <E extends ProviderEventEmitterMethods.Event>(
-    event: E,
-    data: ProviderEventEmitterMethods.EventParams[E]
-  ) => void
-}
-declare namespace ProviderEventEmitterMethods {
-  type Event = keyof EventParams
-  type EventParams = {
-    connect: { chainId: string | number }
-    disconnect: Error
-    accountsChanged: string
-    chainChanged: string
-    display_uri: string
-    message: { type: string; data: unknown }
-  }
-}
+type ProviderEventEmitterMethods = Pick<Provider, 'on' | 'removeListener' | 'emit'>
+
+type Events = keyof ProviderEventListener
+
+type Listener<Event extends Events> = ProviderEventListener[Event]
 
 type Listeners = {
-  [Event in ProviderEventEmitterMethods.Event]: Array<ProviderEventListener[Event]>
+  [Event in Events]: Array<Listener<Event>>
 }
+
 export class ProviderEventEmitter implements ProviderEventEmitterMethods {
   private listeners: Listeners = {
     accountsChanged: [],
@@ -39,56 +20,21 @@ export class ProviderEventEmitter implements ProviderEventEmitterMethods {
     message: []
   }
 
-  on<
-    T extends keyof {
-      connect: (connectParams: { chainId: number }) => void
-      disconnect: (error: Error) => void
-      display_uri: (uri: string) => void
-      chainChanged: (chainId: string) => void
-      accountsChanged: (accounts: string[]) => void
-      message: (message: { type: string; data: unknown }) => void
+  on<Event extends Events>(event: Event, listener: Listener<Event>): void {
+    this.listeners[event].push(listener)
+  }
+
+  removeListener<T>(event: string, listener: (data: T) => void) {
+    if (event in this.listeners) {
+      // @ts-expect-error - Bad typed Provider from core package
+      this.listeners[event] = this.listeners[event].filter((l: Listener<Events>) => l !== listener)
     }
-  >(
-    event: T,
-    listener: {
-      connect: (connectParams: { chainId: number }) => void
-      disconnect: (error: Error) => void
-      display_uri: (uri: string) => void
-      chainChanged: (chainId: string) => void
-      accountsChanged: (accounts: string[]) => void
-      message: (message: { type: string; data: unknown }) => void
-    }[T]
-  ): void {
-    console.log(event, listener)
-    throw new Error('Method not implemented.')
   }
 
-  removeListener<T extends ProviderEventEmitterMethods.Event>(
-    event: T,
-    listener: (data: ProviderEventEmitterMethods.EventParams[T]) => void
-  ) {
-    console.log(event, listener)
-    throw new Error('Method not implemented.')
-  }
-
-  // public on<E extends ProviderEventEmitterMethods.Event>(
-  //   event: E,
-  //   listener: ProviderEventListener[E]
-  // ) {
-  //   this.listeners[event].push(listener)
-  // }
-
-  // public removeListener<E extends ProviderEventEmitterMethods.Event>(
-  //   event: E,
-  //   listener: ProviderEventListener[E]
-  // ) {
-  //   this.listeners[event] = this.listeners[event].filter(l => l !== listener) as Listeners[E]
-  // }
-
-  public emit<E extends ProviderEventEmitterMethods.Event>(
-    event: E,
-    data: ProviderEventEmitterMethods.EventParams[E]
-  ) {
-    this.listeners[event].forEach((listener: ProviderEventListener[E]) => listener(data as any))
+  public emit(event: string, data?: unknown) {
+    if (event in this.listeners) {
+      // @ts-expect-error - Bad typed Provider from core package
+      this.listeners[event].forEach(listener => listener(data))
+    }
   }
 }
