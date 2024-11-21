@@ -16,6 +16,13 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "test": "vitest run --coverage.enabled=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true"
   },
+  "exports": {
+    ".": {
+      "types": "./dist/types/exports/index.d.ts",
+      "import": "./dist/esm/exports/index.js",
+      "default": "./dist/esm/exports/index.js"
+    }
+  },
   "dependencies": {
     "@exodus/bitcoin-wallet-standard": "^0.0.0",
     "@reown/appkit": "workspace:*",
