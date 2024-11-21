@@ -934,6 +934,7 @@ export class AppKit {
           >(ChainController.state.activeChain as ChainNamespace)
           const providerType =
             ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
+
           await adapter?.switchNetwork({ caipNetwork, provider, providerType })
           this.setCaipNetwork(caipNetwork)
           await this.syncAccount({
@@ -1282,9 +1283,12 @@ export class AppKit {
               chainId: ChainController.state.activeCaipNetwork?.id as string | number
             })
           } catch (error) {
-            /* In some cases, wagmi needs to reconnect the wallet connect connector, but sometimes it doesn't,
-             * so we don't need to handle the error.
-             */
+            if (adapter?.reconnect) {
+              adapter?.reconnect({
+                id: 'walletConnect',
+                type: 'WALLET_CONNECT'
+              })
+            }
           }
         }
 
