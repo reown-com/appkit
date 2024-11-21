@@ -252,7 +252,24 @@ export type TransactionThumbnailType = 'token' | 'nft' | 'swap' | 'fiat' | 'unkn
 export type TransactionThumbnailSize = 'sm' | 'lg'
 
 // @TODO: Remove this everywhere in the code and use TransactionThumbnailType type instead
-export type TransactionType = TransactionThumbnailType
+export type TransactionType =
+  | 'approve'
+  | 'bought'
+  | 'borrow'
+  | 'burn'
+  | 'cancel'
+  | 'claim'
+  | 'deploy'
+  | 'deposit'
+  | 'execute'
+  | 'mint'
+  | 'receive'
+  | 'repay'
+  | 'send'
+  | 'stake'
+  | 'trade'
+  | 'unstake'
+  | 'withdraw'
 
 // eslint-disable-next-line no-shadow
 export enum TransactionTypePastTense {
