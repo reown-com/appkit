@@ -16,6 +16,24 @@ export const UiHelperUtil = {
     return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(date)
   },
 
+  formatCurrency(amount: number | string = 0, options: Intl.NumberFormatOptions = {}) {
+    const numericAmount = Number(amount)
+
+    if (isNaN(numericAmount)) {
+      return '$0.00'
+    }
+
+    const formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+      ...options
+    })
+
+    return formatter.format(numericAmount)
+  },
+
   getHostName(url: string) {
     try {
       const newUrl = new URL(url)

@@ -7,7 +7,6 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { createAppKit } from '@reown/appkit/react'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { ThemeStore } from '../../utils/StoreUtil'
-import { mainnet } from 'viem/chains'
 
 const queryClient = new QueryClient()
 
@@ -19,7 +18,7 @@ const wagmiAdapter = new WagmiAdapter({
 
 const modal = createAppKit({
   adapters: [wagmiAdapter],
-  networks: [mainnet],
+  networks: ConstantsUtil.EvmNetworks,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true
