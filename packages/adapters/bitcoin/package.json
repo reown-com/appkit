@@ -23,7 +23,7 @@
     }
   },
   "dependencies": {
-    "@exodus/bitcoin-wallet-standard": "^0.0.0",
+    "@exodus/bitcoin-wallet-standard": "0.0.0",
     "@reown/appkit": "workspace:*",
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-core": "workspace:*",
