@@ -28,8 +28,8 @@ const CLEAN_PROVIDERS_STATE = {
 }
 
 const state = proxy<ProviderStoreUtilState>({
-  providers: CLEAN_PROVIDERS_STATE,
-  providerIds: CLEAN_PROVIDERS_STATE
+  providers: { ...CLEAN_PROVIDERS_STATE },
+  providerIds: { ...CLEAN_PROVIDERS_STATE }
 })
 
 export const ProviderUtil = {
@@ -64,8 +64,8 @@ export const ProviderUtil = {
   },
 
   reset() {
-    state.providers = CLEAN_PROVIDERS_STATE
-    state.providerIds = CLEAN_PROVIDERS_STATE
+    state.providers = { ...CLEAN_PROVIDERS_STATE }
+    state.providerIds = { ...CLEAN_PROVIDERS_STATE }
   },
 
   resetChain(chainNamespace: ChainNamespace) {
