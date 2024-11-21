@@ -898,7 +898,7 @@ export type ChainAdapter = {
 }
 
 export type ProviderEventListener = {
-  connect: (connectParams: { chainId: number | string }) => void
+  connect: (connectParams: { chainId: number }) => void
   disconnect: (error: Error) => void
   display_uri: (uri: string) => void
   chainChanged: (chainId: string) => void
