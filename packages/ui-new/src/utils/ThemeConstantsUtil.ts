@@ -202,7 +202,7 @@ export const borderRadius = {
   round: '9999px'
 }
 
-// @TODO: Provide proper values like sm, md, lg, xl, etc.
+// @TODO: Provide proper values to something sm, md, lg, xl, etc.
 export const spacing = {
   '01': '2px',
   '1': '4px',
