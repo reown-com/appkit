@@ -13,7 +13,7 @@ export default {
     type: 'token',
     size: 'lg',
     images: [networkImageSrc],
-    statusImageUrl: 'https://assets.coingecko.com/coins/images/6319/standard/usdc.png?1696506694'
+    statusImageUrl: ''
   },
   argTypes: {
     type: {
@@ -26,6 +26,9 @@ export default {
     },
     images: {
       control: { type: 'array' }
+    },
+    statusImageUrl: {
+      control: { type: 'text' }
     }
   }
 } as Component
