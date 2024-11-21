@@ -20,7 +20,9 @@ export class WuiListSelectAccount extends LitElement {
 
   @property() icon: IconType = 'mail'
 
-  @property({ type: Number }) dollarAmount = 0
+  @property() currency: Intl.NumberFormatOptions['currency'] = 'USD'
+
+  @property({ type: Number }) amount = 0
 
   @property({ type: Boolean }) public disabled = false
 
@@ -62,7 +64,7 @@ export class WuiListSelectAccount extends LitElement {
           columnGap="2"
         >
           <wui-text color="secondary" variant="lg-regular-mono" lineClamp="1">
-            ${UiHelperUtil.formatCurrency(this.dollarAmount)}
+            ${UiHelperUtil.formatCurrency(this.amount, { currency: this.currency })}
           </wui-text>
           <wui-icon name="chevronRight" size="md"></wui-icon>
         </wui-flex>

@@ -10,15 +10,20 @@ type Component = Meta<WuiListSelectAccount>
 export default {
   title: 'Composites/wui-list-select-account',
   args: {
-    dollarAmount: 1740.72,
+    amount: 1740.72,
+    currency: 'USD',
     address: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
     description: 'Email',
     icon: 'mail',
     disabled: false
   },
   argTypes: {
-    dollarAmount: {
+    amount: {
       control: { type: 'number' }
+    },
+    currency: {
+      options: ['USD', 'EUR', 'GBP'],
+      control: { type: 'select' }
     },
     address: {
       control: { type: 'text' }
@@ -40,7 +45,8 @@ export const Default: Component = {
   render: args => html`
     <gallery-container width="328">
       <wui-list-select-account
-        dollarAmount=${args.dollarAmount}
+        amount=${args.amount}
+        currency=${args.currency}
         address=${args.address}
         description=${args.description}
         icon=${args.icon}
