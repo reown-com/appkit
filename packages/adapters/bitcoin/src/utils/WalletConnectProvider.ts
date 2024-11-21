@@ -1,5 +1,4 @@
 import UniversalProvider from '@walletconnect/universal-provider'
-import type { SessionTypes } from '@walletconnect/types'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { WcHelpersUtil, type RequestArguments } from '@reown/appkit'
 import type { BitcoinConnector } from './BitcoinConnector.js'
@@ -10,6 +9,7 @@ export type WalletConnectProviderConfig = {
   chains: CaipNetwork[]
   getActiveChain: () => CaipNetwork | undefined
 }
+
 export class WalletConnectProvider extends ProviderEventEmitter implements BitcoinConnector {
   public readonly id = 'WalletConnect'
   public readonly name = 'WalletConnect'
@@ -17,7 +17,6 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Bitco
   public readonly chain = 'bip122'
   public readonly icon =
     'https://imagedelivery.net/_aTEfDRm7z3tKgu9JhfeKA/05338e12-4f75-4982-4e8a-83c67b826b00/md'
-  public session?: SessionTypes.Struct
   public provider: UniversalProvider
 
   private readonly requestedChains: CaipNetwork[]
@@ -28,16 +27,9 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Bitco
     this.requestedChains = chains
     this.provider = provider
     this.getActiveChain = getActiveChain
-    if (this.provider.session) {
-      this.session = this.provider.session
-    }
   }
 
-  // -- Universal Provider Events ------------------------ //
-  public onUri?: (uri: string) => void
-
   // -- Public ------------------------------------------- //
-
   public get chains() {
     return this.sessionChains
       .map(chainId => this.requestedChains.find(chain => chain.id === chainId))
@@ -45,46 +37,21 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Bitco
   }
 
   public async connect() {
-    const rpcMap = this.requestedChains.reduce<Record<string, string>>((acc, chain) => {
-      acc[chain.caipNetworkId] = chain.rpcUrls.default.http[0] || ''
-
-      return acc
-    }, {})
-
-    if (this.provider.session?.namespaces['bip122']) {
-      this.session = this.provider.session
-    } else {
-      this.provider.on('display_uri', this.onUri)
-      this.session = await this.provider.connect({
-        optionalNamespaces: {
-          bip122: {
-            // Double check these with Felipe
-            chains: this.chains.map(chain => chain.caipNetworkId),
-            methods: ['sendTransfer', 'signMessage', 'signPsbt', 'getAccountAddresses'],
-            events: ['bip122_addressesChanged'],
-            rpcMap
-          }
-        }
-      })
-      this.provider.removeListener('display_uri', this.onUri)
-    }
-
-    const account = this.getAccount(true)
-
-    this.emit('connect', { chainId: String(this.getActiveChain()?.id) })
-
-    return account
+    return Promise.reject(
+      new Error('Connection of WalletConnectProvider should be done via UniversalAdapter')
+    )
   }
 
   public async disconnect() {
-    await this.provider?.disconnect()
-    this.emit('disconnect')
+    return Promise.reject(
+      new Error('Disconnection of WalletConnectProvider should be done via UniversalAdapter')
+    )
   }
 
   public async signMessage({ message, address }: BitcoinConnector.SignMessageParams) {
     this.checkIfMethodIsSupported('signMessage')
 
-    const signedMessage = await this.request<WalletConnectProvider.WCSignMessageResponse>({
+    const signedMessage = await this.internalRequest({
       method: 'signMessage',
       params: { message, account: address, address }
     })
@@ -96,7 +63,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Bitco
     this.checkIfMethodIsSupported('sendTransfer')
     const account = this.getAccount(true)
 
-    const result = await this.request<WalletConnectProvider.WCSendTransferResponse>({
+    const result = await this.internalRequest({
       method: 'sendTransfer',
       params: {
         account,
@@ -108,42 +75,31 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Bitco
     return result.txid
   }
 
-  public request<T>({ method, params }: RequestArguments) {
-    const chain = this.getActiveChain()
-
-    if (!chain) {
-      throw new Error('Chain not found')
-    }
-
-    return this.provider?.request<T>(
-      {
-        method,
-        params
-      },
-      chain.caipNetworkId
-    )
-  }
-
   public async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {
     this.checkIfMethodIsSupported('getAccountAddresses')
 
-    const addresses = await this.request<string[]>({
+    const addresses = await this.internalRequest({
       method: 'getAccountAddresses',
       params: undefined
     })
 
     return addresses.map(address => ({ address }))
   }
-  // -- Private ------------------------------------------ //
 
+  public request<T>(args: RequestArguments) {
+    // @ts-expect-error - args type should match internalRequest arguments but it's not correctly typed in Provider
+    return this.internalRequest(args) as T
+  }
+
+  // -- Private ------------------------------------------ //
   private get sessionChains() {
-    return WcHelpersUtil.getChainsFromNamespaces(this.session?.namespaces)
+    return WcHelpersUtil.getChainsFromNamespaces(this.provider.session?.namespaces)
   }
 
   private getAccount<Required extends boolean>(
     required?: Required
   ): Required extends true ? string : string | undefined {
-    const account = this.session?.namespaces['bip122']?.accounts[0]
+    const account = this.provider.session?.namespaces['bip122']?.accounts[0]
     if (!account) {
       if (required) {
         throw new Error('Account not found')
@@ -165,9 +121,28 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Bitco
   }
 
   private checkIfMethodIsSupported(method: WalletConnectProvider.RequestMethod) {
-    if (!this.session?.namespaces['bip122']?.methods.includes(method)) {
+    if (!this.provider.session?.namespaces['bip122']?.methods.includes(method)) {
       throw new Error(`Method ${method} is not supported`)
     }
+  }
+
+  private internalRequest<Method extends WalletConnectProvider.RequestMethod>({
+    method,
+    params
+  }: WalletConnectProvider.RequestParams<Method>) {
+    const chain = this.getActiveChain()
+
+    if (!chain) {
+      throw new Error('Chain not found')
+    }
+
+    return this.provider.request<WalletConnectProvider.RequestMethods[Method]['returns']>(
+      {
+        method,
+        params
+      },
+      chain.caipNetworkId
+    )
   }
 }
 
@@ -215,4 +190,9 @@ export namespace WalletConnectProvider {
   }
 
   export type RequestMethod = keyof RequestMethods
+
+  export type RequestParams<Method extends RequestMethod> = {
+    method: Method
+    params: RequestMethods[Method]['params']
+  }
 }
