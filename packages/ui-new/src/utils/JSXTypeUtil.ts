@@ -67,7 +67,6 @@ import type { WuiListWalletTransaction } from '../composites/wui-list-wallet-tra
 import type { WuiPromo } from '../composites/wui-promo/index.js'
 import type { WuiProfileButton } from '../composites/wui-profile-button/index.js'
 import type { WuiProfileButtonV2 } from '../composites/wui-profile-button-v2/index.js'
-import type { WuiListAccount } from '../composites/wui-list-account/index.js'
 import type { WuiPreviewItem } from '../composites/wui-preview-item/index.js'
 import type { WuiAlertBar } from '../composites/wui-alertbar/index.js'
 import type { WuiFlex } from '../layout/wui-flex/index.js'
@@ -76,7 +75,7 @@ import type { WuiCheckBox } from '../composites/wui-checkbox/index.js'
 import type { WuiToggle } from '../composites/wui-toggle/index.js'
 import type { WuiCertifiedSwitch } from '../composites/wui-certified-switch/index.js'
 import type { WuiShortcut } from '../composites/wui-shortcut/index.js'
-import type { WuiTab } from '../../index.js'
+import type { WuiListSelectAccount, WuiTab } from '../../index.js'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type CustomElement<E> = Partial<E & { children?: any; onClick: any }>
@@ -156,7 +155,7 @@ declare global {
       'wui-visual-thumbnail': CustomElement<WuiVisualThumbnail>
       'wui-wallet-image': CustomElement<WuiWalletImage>
       'wui-banner': CustomElement<WuiBanner>
-      'wui-list-account': CustomElement<WuiListAccount>
+      'wui-list-select-account': CustomElement<WuiListSelectAccount>
       'wui-checkbox': CustomElement<WuiCheckBox>
       'wui-toggle': CustomElement<WuiToggle>
       'wui-certified-switch': CustomElement<WuiCertifiedSwitch>

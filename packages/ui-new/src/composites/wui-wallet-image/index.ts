@@ -27,13 +27,13 @@ export class WuiWalletImage extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    let borderRadius: BorderRadiusType = 'xxs'
+    let borderRadius: BorderRadiusType = '1'
     if (this.size === 'lg') {
-      borderRadius = 'm'
+      borderRadius = '3'
     } else if (this.size === 'md') {
-      borderRadius = 'xs'
+      borderRadius = '2'
     } else {
-      borderRadius = 'xxs'
+      borderRadius = '1'
     }
     this.style.cssText = `
        --local-border-radius: var(--wui-border-radius-${borderRadius});

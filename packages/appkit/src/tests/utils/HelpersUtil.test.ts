@@ -54,6 +54,23 @@ const mockSolanaNetwork = {
   }
 } as const
 
+const mockSolanaDevnetNetwork = {
+  id: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
+  chainNamespace: ConstantsUtil.CHAIN.SOLANA,
+  caipNetworkId: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
+  name: 'Solana',
+  nativeCurrency: {
+    name: 'Solana',
+    decimals: 9,
+    symbol: 'SOL'
+  },
+  rpcUrls: {
+    default: {
+      http: ['https://api.mainnet-beta.solana.com']
+    }
+  }
+} as const
+
 describe('WcHelpersUtil', () => {
   describe('getMethodsByChainNamespace', () => {
     test('returns correct methods for solana', () => {
@@ -100,7 +117,8 @@ describe('WcHelpersUtil', () => {
       const caipNetworks: CaipNetwork[] = [
         mockEthereumNetwork,
         mockPolygonNetwork,
-        mockSolanaNetwork
+        mockSolanaNetwork,
+        mockSolanaDevnetNetwork
       ]
 
       const namespaces = WcHelpersUtil.createNamespaces(caipNetworks)
@@ -141,10 +159,13 @@ describe('WcHelpersUtil', () => {
           events: ['accountsChanged', 'chainChanged'],
           chains: [
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-            'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ'
+            'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ',
+            'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
+            'solana:8E9rvCKLFQia2Y35HXjjpWzj8weVo44K'
           ],
           rpcMap: {
-            '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'https://api.mainnet-beta.solana.com'
+            '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'https://api.mainnet-beta.solana.com',
+            EtWTRABZaYq6iMfeYKouRu166VU2xqa1: 'https://api.mainnet-beta.solana.com'
           }
         }
       })
