@@ -454,7 +454,7 @@ export const SwapController = {
 
     switch (ChainController.state?.activeCaipNetwork?.chainNamespace) {
       case 'solana':
-        state.gasFee = res.standard ?? '0'
+        state.gasFee = res.standard
         state.gasPriceInUSD = NumberUtil.multiply(res.standard, state.networkPrice)
           .dividedBy(1e9)
           .toNumber()
@@ -467,7 +467,7 @@ export const SwapController = {
       case 'eip155':
       default:
         // eslint-disable-next-line no-case-declarations
-        const value = res.standard ?? '0'
+        const value = res.standard
         // eslint-disable-next-line no-case-declarations
         const gasFee = BigInt(value)
         // eslint-disable-next-line no-case-declarations
@@ -610,24 +610,11 @@ export const SwapController = {
         value: BigInt(response.tx.value),
         toAmount: state.toTokenAmount
       }
-      state.swapTransaction = undefined
-      state.approvalTransaction = {
-        data: transaction.data,
-        to: transaction.to,
-        gas: transaction.gas ?? BigInt(0),
-        gasPrice: transaction.gasPrice,
-        value: transaction.value,
-        toAmount: transaction.toAmount
-      }
 
-      return {
-        data: transaction.data,
-        to: transaction.to,
-        gas: transaction.gas ?? BigInt(0),
-        gasPrice: transaction.gasPrice,
-        value: transaction.value,
-        toAmount: transaction.toAmount
-      }
+      state.swapTransaction = undefined
+      state.approvalTransaction = transaction
+
+      return transaction
     } catch (error) {
       RouterController.goBack()
       SnackController.showError('Failed to create approval transaction')
