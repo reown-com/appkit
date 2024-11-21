@@ -11,8 +11,8 @@ import '../../components/wui-image/index.js'
 import '../wui-icon-box/index.js'
 import styles from './styles.js'
 
-@customElement('wui-transaction-visual')
-export class WuiTransactionVisual extends LitElement {
+@customElement('wui-transaction-thumbnail')
+export class WuiTransactionThumbnail extends LitElement {
   public static override styles = [styles]
 
   // -- State & Properties -------------------------------- //
@@ -142,6 +142,6 @@ export class WuiTransactionVisual extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'wui-transaction-visual': WuiTransactionVisual
+    'wui-transaction-thumbnail': WuiTransactionThumbnail
   }
 }

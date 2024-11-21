@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui-new/src/composites/wui-transaction-visual'
-import type { WuiTransactionVisual } from '@reown/appkit-ui-new/src/composites/wui-transaction-visual'
+import '@reown/appkit-ui-new/src/composites/wui-transaction-thumbnail'
+import type { WuiTransactionThumbnail } from '@reown/appkit-ui-new/src/composites/wui-transaction-thumbnail'
 import { html } from 'lit'
 
 import {
@@ -10,10 +10,10 @@ import {
   transactionImageSrc
 } from '../../utils/PresetUtils'
 
-type Component = Meta<WuiTransactionVisual>
+type Component = Meta<WuiTransactionThumbnail>
 
 export default {
-  title: 'Composites/wui-transaction-visual',
+  title: 'Composites/wui-transaction-thumbnail',
   args: {
     type: 'approve',
     imageURL: transactionImageSrc,
@@ -47,10 +47,10 @@ export default {
 
 export const Default: Component = {
   render: args =>
-    html`<wui-transaction-visual
+    html`<wui-transaction-thumbnail
       type=${args.type}
       images=${args.images}
       status=${args.status}
       direction=${args.direction}
-    ></wui-transaction-visual>`
+    ></wui-transaction-thumbnail>`
 }
