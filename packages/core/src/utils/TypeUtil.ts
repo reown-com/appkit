@@ -897,8 +897,8 @@ export type ChainAdapter = {
   adapterType?: string
 }
 
-type ProviderEventListener = {
-  connect: (connectParams: { chainId: number }) => void
+export type ProviderEventListener = {
+  connect: (connectParams: { chainId: number | string }) => void
   disconnect: (error: Error) => void
   display_uri: (uri: string) => void
   chainChanged: (chainId: string) => void
@@ -917,7 +917,7 @@ export interface Provider {
   request: <T>(args: RequestArguments) => Promise<T>
   on<T extends keyof ProviderEventListener>(event: T, listener: ProviderEventListener[T]): void
   removeListener: <T>(event: string, listener: (data: T) => void) => void
-  emit: (event: string) => void
+  emit: (event: string, data?: unknown) => void
 }
 
 export type CombinedProvider = W3mFrameProvider & Provider

@@ -136,7 +136,7 @@ export class WalletStandardConnector implements BitcoinConnector {
     return Promise.resolve()
   }
 
-  async request<T>(args: RequestArguments) {
+  async request<T>(args: RequestArguments): Promise<T> {
     console.log('request', args)
 
     return Promise.reject(new Error('Method not implemented.'))

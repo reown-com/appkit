@@ -1,9 +1,10 @@
-import type { AppKit, AppKitOptions } from '@reown/appkit'
+import { WcHelpersUtil, type AppKit, type AppKitOptions, type Provider } from '@reown/appkit'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import type { BitcoinConnector } from './utils/BitcoinConnector.js'
-
+import type UniversalProvider from '@walletconnect/universal-provider'
 import { SatsConnectConnector } from './connectors/SatsConnectConnector.js'
 import { WalletStandardConnector } from './connectors/WalletStandardConnector.js'
+import { WalletConnectProvider } from './utils/WalletConnectProvider.js'
 
 export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   constructor(params: BitcoinAdapter.ConstructorParams) {
@@ -13,12 +14,22 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     })
   }
 
-  override connectWalletConnect(
-    _onUri: (uri: string) => void,
-    _chainId?: string | number | undefined
-  ): Promise<void> {
-    // Connect to WalletConnect
-    return Promise.resolve()
+  public async connectWalletConnect(onUri: (uri: string) => void): Promise<void> {
+    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
+    const provider = connector?.provider as UniversalProvider
+    if (!this.caipNetworks || !provider) {
+      throw new Error(
+        'UniversalAdapter:connectWalletConnect - caipNetworks or provider is undefined'
+      )
+    }
+
+    provider.on('display_uri', (uri: string) => {
+      onUri(uri)
+    })
+
+    const namespaces = WcHelpersUtil.createNamespaces(this.caipNetworks)
+    console.log('>> Adapter - connectWalletConnect - namespaces:', namespaces)
+    await provider.connect({ optionalNamespaces: namespaces })
   }
 
   override async connect(
@@ -94,6 +105,8 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       throw new Error('BitcoinAdapter:signMessage - connector is undefined')
     }
 
+    console.log('>> Adapter - signMessage - params:', connector)
+
     const signature = await connector.signMessage({
       message: params.message,
       address: params.address
@@ -140,11 +153,21 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     return ''
   }
 
-  override getWalletConnectProvider(
-    _params: AdapterBlueprint.GetWalletConnectProviderParams
+  public getWalletConnectProvider(
+    params: AdapterBlueprint.GetWalletConnectProviderParams
   ): AdapterBlueprint.GetWalletConnectProviderResult {
-    // Get WalletConnect provider
-    return undefined
+    const walletConnectProvider = new WalletConnectProvider({
+      provider: params.provider as UniversalProvider,
+      chains: params.caipNetworks,
+      getActiveChain: () => params.activeCaipNetwork
+    })
+
+    console.log(
+      '>> Adapter - getWalletConnectProvider - walletConnectProvider:',
+      walletConnectProvider
+    )
+
+    return walletConnectProvider as unknown as Provider
   }
 
   override grantPermissions(_params: AdapterBlueprint.GrantPermissionsParams): Promise<unknown> {
