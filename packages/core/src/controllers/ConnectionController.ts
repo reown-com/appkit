@@ -98,7 +98,6 @@ export const ConnectionController = {
   },
 
   async connectWalletConnect() {
-    console.log('>> ConnectionController - connectWalletConnect')
     StorageUtil.setConnectedConnector('WALLET_CONNECT')
 
     if (CoreHelperUtil.isTelegram()) {
@@ -134,7 +133,6 @@ export const ConnectionController = {
       state.wcPairingExpiry = undefined
       this.state.status = 'connected'
     } else {
-      console.log('>> Getting client connectwalletconnect')
       await this._getClient()?.connectWalletConnect?.(uri => {
         state.wcUri = uri
         state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()

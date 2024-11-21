@@ -28,7 +28,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     })
 
     const namespaces = WcHelpersUtil.createNamespaces(this.caipNetworks)
-    console.log('>> Adapter - connectWalletConnect - namespaces:', namespaces)
     await provider.connect({ optionalNamespaces: namespaces })
   }
 
@@ -108,8 +107,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       throw new Error('BitcoinAdapter:signMessage - connector is undefined')
     }
 
-    console.log('>> Adapter - signMessage - params:', connector)
-
     const signature = await connector.signMessage({
       message: params.message,
       address: params.address
@@ -164,11 +161,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       chains: params.caipNetworks,
       getActiveChain: () => params.activeCaipNetwork
     })
-
-    console.log(
-      '>> Adapter - getWalletConnectProvider - walletConnectProvider:',
-      walletConnectProvider
-    )
 
     return walletConnectProvider as unknown as Provider
   }

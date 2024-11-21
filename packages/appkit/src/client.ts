@@ -706,7 +706,6 @@ export class AppKit {
   private createClients() {
     this.connectionControllerClient = {
       connectWalletConnect: async (onUri: (uri: string) => void) => {
-        console.log('>> AppKit - connectWalletConnect')
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
         this.universalProvider?.on('display_uri', (uri: string) => {
@@ -762,7 +761,6 @@ export class AppKit {
         })
 
         if (res) {
-          console.log('>> Syncing provider', res)
           this.syncProvider({
             ...res,
             chainNamespace: chain || (ChainController.state.activeChain as ChainNamespace)
@@ -1237,7 +1235,6 @@ export class AppKit {
   }
 
   private async syncWalletConnectAccount() {
-    console.log('>> Syncing WC Account')
     const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
     StorageUtil.setConnectedNamespace(ChainController.state.activeChain as ChainNamespace)
     this.chainNamespaces.forEach(async chainNamespace => {
@@ -1260,7 +1257,6 @@ export class AppKit {
             provider: this.universalProvider,
             activeCaipNetwork: ChainController.state.activeCaipNetwork
           })
-          console.log('>> Syncing WC Provider', provider)
           ProviderUtil.setProvider(chainNamespace, provider)
         } else {
           ProviderUtil.setProvider(chainNamespace, this.universalProvider)
