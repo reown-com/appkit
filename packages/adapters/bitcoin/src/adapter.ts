@@ -91,10 +91,13 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   }
 
   override syncConnection(
-    _params: AdapterBlueprint.SyncConnectionParams
+    params: AdapterBlueprint.SyncConnectionParams
   ): Promise<AdapterBlueprint.ConnectResult> {
-    // Sync connection
-    return Promise.resolve({} as unknown as AdapterBlueprint.ConnectResult)
+    return this.connect({
+      id: params.id,
+      chainId: params.chainId || this.networks[0]?.id || '',
+      type: ''
+    })
   }
 
   override async signMessage(
