@@ -59,7 +59,7 @@ import type { WuiTooltip } from '../composites/wui-tooltip/index.js'
 import type { WuiIconButton } from '../composites/wui-icon-button/index.js'
 import type { WuiTransactionListItem } from '../composites/wui-transaction-list-item/index.js'
 import type { WuiTransactionListItemLoader } from '../composites/wui-transaction-list-item-loader/index.js'
-import type { WuiTransactionVisual } from '../composites/wui-transaction-visual/index.js'
+import type { WuiTransactionThumbnail } from '../composites/wui-transaction-thumbnail/index.js'
 import type { WuiVisualThumbnail } from '../composites/wui-visual-thumbnail/index.js'
 import type { WuiWalletImage } from '../composites/wui-wallet-image/index.js'
 import type { WuiNoticeCard } from '../composites/wui-notice-card/index.js'
@@ -151,7 +151,7 @@ declare global {
       'wui-tooltip': CustomElement<WuiTooltip>
       'wui-transaction-list-item-loader': CustomElement<WuiTransactionListItemLoader>
       'wui-transaction-list-item': CustomElement<WuiTransactionListItem>
-      'wui-transaction-visual': CustomElement<WuiTransactionVisual>
+      'wui-transaction-thumbnail': CustomElement<WuiTransactionThumbnail>
       'wui-visual-thumbnail': CustomElement<WuiVisualThumbnail>
       'wui-wallet-image': CustomElement<WuiWalletImage>
       'wui-banner': CustomElement<WuiBanner>
