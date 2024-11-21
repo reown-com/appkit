@@ -2,8 +2,8 @@
   "name": "@reown/appkit-adapter-bitcoin",
   "version": "1.3.2",
   "type": "module",
-  "main": "./dist/esm/src/index.js",
-  "types": "./dist/types/src/index.d.ts",
+  "main": "./dist/esm/exports/index.js",
+  "types": "./dist/types/exports/index.d.ts",
   "files": [
     "dist",
     "!tsconfig.tsbuildinfo"
