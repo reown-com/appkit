@@ -239,9 +239,7 @@ export const ChainController = {
     const networkControllerClient = this.getNetworkControllerClient(network.chainNamespace)
 
     if (networkControllerClient) {
-      console.log('ChainController switchActiveNetwork start', network)
       await networkControllerClient.switchCaipNetwork(network)
-      console.log('ChainController switchActiveNetwork end', network)
     }
 
     this.setActiveCaipNetwork(network)

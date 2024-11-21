@@ -1282,10 +1282,9 @@ export class AppKit {
               chainId: ChainController.state.activeCaipNetwork?.id as string | number
             })
           } catch (error) {
-            adapter?.switchNetwork({
-              provider: this.universalProvider,
-              caipNetwork: ChainController.state.activeCaipNetwork as CaipNetwork
-            })
+            /* In some cases, wagmi needs to reconnect the wallet connect connector, but sometimes it doesn't,
+             * so we don't need to handle the error.
+             */
           }
         }
 

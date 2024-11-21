@@ -426,7 +426,7 @@ export function walletConnect(
 
       const requestedChains = await this.getRequestedChainsIds()
 
-      return !connectorChains.every(id => requestedChains.includes(Number(id)))
+      return !requestedChains.every(id => connectorChains.includes(Number(id)))
     },
     async setRequestedChainsIds(chains) {
       await config.storage?.setItem(this.requestedChainsStorageKey, chains)
