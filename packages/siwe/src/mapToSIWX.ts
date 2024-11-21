@@ -9,12 +9,22 @@ import type { AppKitSIWEClient } from '../exports/index.js'
 import { NetworkUtil } from '@reown/appkit-common'
 
 export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
+  async function getSession() {
+    try {
+      return await siwe.methods.getSession()
+    } catch (error) {
+      console.warn('AppKit:SIWE:getSession - error:', error)
+
+      return undefined
+    }
+  }
+
   ChainController.subscribeKey('activeCaipNetwork', async activeCaipNetwork => {
     if (!siwe.options.signOutOnNetworkChange) {
       return
     }
 
-    const session = await siwe.methods.getSession().catch(() => undefined)
+    const session = await getSession()
     const isDiffernetNetwork =
       session &&
       session.chainId !== NetworkUtil.caipNetworkIdToNumber(activeCaipNetwork?.caipNetworkId)
@@ -29,7 +39,7 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
       return
     }
 
-    const session = await siwe.methods.getSession().catch(() => undefined)
+    const session = await getSession()
     const isDifferentAddress =
       session && session.address !== CoreHelperUtil.getPlainAddress(activeCaipAddress)
 
@@ -96,18 +106,21 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
     },
 
     async revokeSession(_chainId, _address) {
-      if (await siwe.signOut()) {
+      try {
+        await siwe.methods.signOut()
         siwe.methods.onSignOut?.()
-
-        return Promise.resolve()
+      } catch (error) {
+        console.warn('AppKit:SIWE:revokeSession - signOut error', error)
       }
-
-      throw new Error('Failed to sign out')
     },
 
     async setSessions(sessions) {
       if (sessions.length === 0) {
-        await siwe.methods.signOut()
+        try {
+          await siwe.methods.signOut()
+        } catch (error) {
+          console.warn('AppKit:SIWE:setSessions - signOut error', error)
+        }
       } else {
         const addingSessions = sessions.map(session => this.addSession(session))
         await Promise.all(addingSessions)
@@ -130,7 +143,7 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
           ]
         }
 
-        const siweSession = await siwe.methods.getSession()
+        const siweSession = await getSession()
 
         const siweCaipNetworkId = `eip155:${siweSession?.chainId}`
         if (!siweSession || siweSession.address !== address || siweCaipNetworkId !== chainId) {
@@ -149,7 +162,7 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
         return [session]
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error('SIWE:getSessions - error:', error)
+        console.warn('AppKit:SIWE:getSessions - error:', error)
 
         return []
       }
