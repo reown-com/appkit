@@ -8,7 +8,6 @@ import styles from './styles.js'
 import { vars } from '../../utils/ThemeHelperUtil.js'
 
 // -- Constants ------------------------------------------ //
-
 export const TEXT_VARS_BY_COLOR = {
   /* Colors */
   primary: vars.tokens.theme.textPrimary,

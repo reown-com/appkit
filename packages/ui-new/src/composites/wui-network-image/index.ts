@@ -1,8 +1,6 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
-import { networkSvgSm } from '../../assets/svg/networkSm.js'
-import { networkSvgMd } from '../../assets/svg/networkMd.js'
-import { networkSvgLg } from '../../assets/svg/networkLg.js'
+
 import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
@@ -18,12 +16,6 @@ export class WuiNetworkImage extends LitElement {
   @property() public size: Exclude<SizeType, 'inherit' | 'xxl' | 'xl' | 'xs' | 'mdl' | 'xxs'> = 'md'
 
   @property() public name = 'uknown'
-
-  @property({ type: Object }) public networkImagesBySize = {
-    sm: networkSvgSm,
-    md: networkSvgMd,
-    lg: networkSvgLg
-  }
 
   @property() public imageSrc?: string
 
@@ -60,14 +52,14 @@ export class WuiNetworkImage extends LitElement {
       return null
     }
 
-    return this.networkImagesBySize[this.size]
+    return null
   }
   private templateVisual() {
     if (this.imageSrc) {
       return html`<wui-image src=${this.imageSrc} alt=${this.name}></wui-image>`
     }
 
-    return html`<wui-icon size="inherit" color="fg-200" name="networkPlaceholder"></wui-icon>`
+    return html`<wui-icon size="inherit" color="iconInverse" name="allWallets"></wui-icon>`
   }
 }
 

@@ -244,6 +244,14 @@ const textSize = {
   small: '12px'
 }
 
+export const iconSize = {
+  xs: '8px',
+  sm: '16px',
+  md: '24px',
+  lg: '32px',
+  xl: '40px'
+}
+
 const typography = {
   /* Heading 1 */
   'h1-regular-mono': { lineHeight: '50px', letterSpacing: '-3px' },
@@ -297,6 +305,7 @@ export const styles = {
   fontWeight,
   textSize,
   typography,
+  iconSize,
   tokens: {
     core: tokens.core,
     /*

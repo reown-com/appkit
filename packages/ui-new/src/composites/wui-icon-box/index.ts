@@ -7,23 +7,17 @@ import type {
   BackgroundColorType,
   IconColorType,
   IconSizeType,
-  IconType
+  SvgType
 } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 import { vars } from '../../utils/ThemeHelperUtil.js'
+import { ICON_COLOR } from '../../components/wui-icon/index.js'
 
 // -- Constants ------------------------------------------ //
-
 const BACKGROUND_COLOR = {
   foregroundSecondary: vars.tokens.theme.foregroundSecondary,
   foregroundAccent010: vars.tokens.core.foregroundAccent010
-}
-
-// @TODO: move this to <wui-icon> component
-const ICON_COLOR = {
-  accent: vars.tokens.core.iconAccentPrimary,
-  inverse: vars.tokens.theme.iconInverse
 }
 
 @customElement('wui-icon-box')
@@ -31,11 +25,11 @@ export class WuiIconBox extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public icon: IconType = 'copy'
+  @property() public icon: SvgType = 'qrCode'
 
-  @property() public iconColor: IconColorType = 'inverse'
+  @property() public iconColor: IconColorType = 'inherit'
 
-  @property() public iconSize?: Exclude<IconSizeType, 'inherit'>
+  @property() public iconSize: IconSizeType = 'md'
 
   @property() public backgroundColor: BackgroundColorType = 'foregroundSecondary'
 
@@ -43,7 +37,7 @@ export class WuiIconBox extends LitElement {
   public override render() {
     this.style.cssText = `
        --local-bg-color: ${BACKGROUND_COLOR[this.backgroundColor]};
-       --local-icon-color: ${ICON_COLOR[this.iconColor]};
+       --local-icon-color: ${this.iconColor === 'inherit' ? 'inherit' : ICON_COLOR[this.iconColor]};
    `
 
     return html`

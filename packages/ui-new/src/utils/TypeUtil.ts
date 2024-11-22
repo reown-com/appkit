@@ -1,10 +1,9 @@
+import type { SVG_OPTIONS } from '../../index.js'
 import type { vars } from './ThemeHelperUtil.js'
 
 export type ColorType = string
 
 export type BackgroundColorType = 'foregroundSecondary' | 'foregroundAccent010'
-
-export type IconColorType = 'inverse'
 
 export type TextColorType =
   | 'inherit'
@@ -51,12 +50,19 @@ export type TextAlign = 'center' | 'left' | 'right'
 
 export type LineClamp = '1' | '2'
 
-export type SizeType = 'inherit' | 'xl' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs' | 'xxl'
-
 export type SpacingType = keyof typeof vars.spacing
 
-// @TODO: Remove these sizes after completing <wui-icon> component
-export type IconSizeType = 'inherit' | 'xl' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs' | 'xxl'
+export type IconSizeType = keyof typeof vars.iconSize | 'inherit'
+
+export type IconColorType =
+  | 'iconDefault'
+  | 'iconInverse'
+  | 'iconAccentPrimary'
+  | 'iconAccentCertified'
+  | 'iconSuccess'
+  | 'iconError'
+  | 'iconWarning'
+  | 'inherit'
 
 export type BorderRadiusType = Exclude<SpacingType, '1xs' | 'xl' | 'xxl'> | 'xs'
 
@@ -98,84 +104,10 @@ export type GridContentType =
 
 export type GridItemsType = 'center' | 'end' | 'start' | 'stretch'
 
-export type IconType =
-  | 'add'
-  | 'allWallets'
-  | 'arrowBottomCircle'
-  | 'appStore'
-  | 'chromeStore'
-  | 'apple'
-  | 'arrowBottom'
-  | 'arrowLeft'
-  | 'arrowRight'
-  | 'arrowTop'
-  | 'arrowTopRight'
-  | 'bank'
-  | 'browser'
-  | 'card'
-  | 'checkmark'
-  | 'checkmarkBold'
-  | 'chevronBottom'
-  | 'chevronLeft'
-  | 'chevronRight'
-  | 'chevronTop'
-  | 'clock'
-  | 'close'
-  | 'coinPlaceholder'
-  | 'compass'
-  | 'copy'
-  | 'cursor'
-  | 'desktop'
-  | 'disconnect'
-  | 'discord'
-  | 'etherscan'
-  | 'extension'
-  | 'externalLink'
-  | 'facebook'
-  | 'farcaster'
-  | 'filters'
-  | 'github'
-  | 'google'
-  | 'helpCircle'
-  | 'image'
-  | 'id'
-  | 'infoCircle'
-  | 'lightbulb'
-  | 'mail'
-  | 'mobile'
-  | 'more'
-  | 'networkPlaceholder'
-  | 'nftPlaceholder'
-  | 'off'
-  | 'playStore'
-  | 'plus'
-  | 'qrCode'
-  | 'recycleHorizontal'
-  | 'refresh'
-  | 'search'
-  | 'send'
-  | 'spinner'
-  | 'swapHorizontal'
-  | 'swapHorizontalBold'
-  | 'swapHorizontalMedium'
-  | 'swapHorizontalRoundedBold'
-  | 'swapVertical'
-  | 'telegram'
-  | 'threeDots'
-  | 'twitch'
-  | 'twitter'
-  | 'twitterIcon'
-  | 'verify'
-  | 'verifyFilled'
-  | 'wallet'
-  | 'walletConnect'
-  | 'walletConnectLightBrown'
-  | 'walletConnectBrown'
-  | 'walletPlaceholder'
-  | 'warningCircle'
-  | 'x'
-  | 'info'
-  | 'exclamationTriangle'
+export type SvgType = keyof typeof SVG_OPTIONS
+
+export type IconType = string
+export type SizeType = string
 
 export type VisualType =
   | 'browser'
