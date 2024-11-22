@@ -67,7 +67,7 @@ describe('SIWE mapped to SIWX', () => {
     expect(OptionsController.state.siwx).toBeDefined()
   })
 
-  describe('SIWXUtils agains SIWE usage', () => {
+  describe('SIWXUtils against SIWE usage', () => {
     it('should have siwx', async () => {
       expect(SIWXUtil.getSIWX()).toBeDefined()
     })
