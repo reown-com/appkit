@@ -2,7 +2,7 @@ import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import { colorStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { IconType, SizeType } from '../../utils/TypeUtil.js'
+import type { IconColorType, IconType, SizeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -85,7 +85,9 @@ import { xSvg } from '../../assets/svg/x.js'
 import { infoSvg } from '../../assets/svg/info.js'
 import { exclamationTriangleSvg } from '../../assets/svg/exclamation-triangle.js'
 import { arrowTopRightSvg } from '../../assets/svg/arrow-top-right.js'
+import { vars } from '../../utils/ThemeHelperUtil.js'
 
+// -- Constants ------------------------------------------ //
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   add: addSvg,
   allWallets: allWalletsSvg,
@@ -166,7 +168,17 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   exclamationTriangle: exclamationTriangleSvg
 }
 
-// @TODO: Add color property
+// -- Constants ------------------------------------------ //
+export const ICON_COLOR = {
+  'accent-primary': vars.tokens.core.iconAccentPrimary,
+  'accent-certified': vars.tokens.core.iconAccentCertified,
+  default: vars.tokens.theme.iconDefault,
+  success: vars.tokens.core.iconSuccess,
+  error: vars.tokens.core.iconError,
+  warning: vars.tokens.core.iconWarning,
+  inverse: vars.tokens.theme.iconInverse
+}
+
 @customElement('wui-icon')
 export class WuiIcon extends LitElement {
   public static override styles = [resetStyles, colorStyles, styles]
@@ -176,10 +188,13 @@ export class WuiIcon extends LitElement {
 
   @property() public name: IconType = 'copy'
 
+  @property() public color: IconColorType = 'inherit'
+
   // -- Render -------------------------------------------- //
   public override render() {
     this.style.cssText = `
       --local-width: ${`var(--wui-icon-size-${this.size});`}
+      --local-color: ${this.color === 'inherit' ? 'inherit' : ICON_COLOR[this.color]}
     `
 
     return html`${svgOptions[this.name]}`

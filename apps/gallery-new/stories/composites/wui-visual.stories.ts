@@ -7,7 +7,7 @@ import { visualOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiVisual>
 
 export default {
-  title: 'Components/wui-visual',
+  title: 'Composites/wui-visual',
   args: {
     name: 'browser'
   },

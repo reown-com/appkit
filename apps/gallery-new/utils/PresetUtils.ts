@@ -28,7 +28,8 @@ import type {
   ThemeType,
   TransactionType,
   VisualType,
-  ButtonLinkVariant
+  ButtonLinkVariant,
+  IconColorType
 } from '@reown/appkit-ui-new/src/utils/TypeUtil'
 import type { TransactionStatus, TransactionDirection } from '@reown/appkit-common'
 
@@ -42,7 +43,16 @@ export const textColorOptions: TextColorType[] = [
   'accent-primary'
 ]
 
-export const iconColorOptions = ['accent', 'inverse']
+export const iconColorOptions: IconColorType[] = [
+  'inherit',
+  'accent-primary',
+  'accent-certified',
+  'success',
+  'error',
+  'warning',
+  'default',
+  'inverse'
+]
 
 // @TODO: Deprecate this
 export const colorOptions = iconColorOptions

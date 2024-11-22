@@ -4,7 +4,15 @@ export type ColorType = string
 
 export type BackgroundColorType = 'foregroundSecondary' | 'foregroundAccent010'
 
-export type IconColorType = 'inverse'
+export type IconColorType =
+  | 'inherit'
+  | 'accent-primary'
+  | 'accent-certified'
+  | 'success'
+  | 'error'
+  | 'warning'
+  | 'default'
+  | 'inverse'
 
 export type TextColorType =
   | 'inherit'

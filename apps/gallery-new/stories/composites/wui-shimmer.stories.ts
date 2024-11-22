@@ -7,7 +7,7 @@ import { borderRadiusOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiShimmer>
 
 export default {
-  title: 'Components/wui-shimmer',
+  title: 'Composites/wui-shimmer',
   args: {
     width: '200px',
     height: '50px',
