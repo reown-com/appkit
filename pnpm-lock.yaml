@@ -211,6 +211,9 @@ importers:
       '@storybook/blocks':
         specifier: 7.6.7
         version: 7.6.7(@types/react-dom@18.3.1)(@types/react@18.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@storybook/manager-api':
+        specifier: 7.6.7
+        version: 7.6.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@storybook/theming':
         specifier: 7.6.7
         version: 7.6.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
