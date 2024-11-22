@@ -1283,6 +1283,10 @@ export class AppKit {
               chainId: ChainController.state.activeCaipNetwork?.id as string | number
             })
           } catch (error) {
+            /**
+             * Handle edge case where wagmi detects existing connection but lacks to complete UniversalProvider instance.
+             * Connection attempt fails due to already connected state - reconnect to restore provider state.
+             */
             if (adapter?.reconnect) {
               adapter?.reconnect({
                 id: 'walletConnect',
