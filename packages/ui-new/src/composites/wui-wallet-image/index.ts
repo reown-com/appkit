@@ -3,7 +3,7 @@ import { property } from 'lit/decorators.js'
 import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { BorderRadiusType, SvgType, SizeType } from '../../utils/TypeUtil.js'
+import type { BorderRadiusType, IconType, SizeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-icon-box/index.js'
 import styles from './styles.js'
@@ -19,7 +19,7 @@ export class WuiWalletImage extends LitElement {
 
   @property() public imageSrc?: string
 
-  @property() public walletIcon?: SvgType
+  @property() public walletIcon?: IconType
 
   @property({ type: Boolean }) public installed = false
 

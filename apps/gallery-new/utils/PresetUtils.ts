@@ -28,7 +28,7 @@ import type {
   TransactionType,
   VisualType,
   ButtonLinkVariant,
-  SvgType
+  IconType
 } from '@reown/appkit-ui-new/src/utils/TypeUtil'
 import type { TransactionStatus, TransactionDirection } from '@reown/appkit-common'
 
@@ -214,7 +214,7 @@ export const spacingOptions: SpacingType[] = [
   '64'
 ]
 
-export const iconOptions: SvgType[] = [
+export const iconOptions: IconType[] = [
   'allWallets',
   'cursor',
   'exclamationTriangle',

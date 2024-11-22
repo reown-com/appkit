@@ -8,7 +8,6 @@ import { property } from 'lit/decorators.js'
 import type { IconType, TabSize } from '../../utils/TypeUtil.js'
 
 // -- Constants ------------------------------------------ //
-
 const TEXT_VARIANT_BY_SIZE = {
   lg: 'lg-regular',
   md: 'md-regular',
@@ -16,10 +15,10 @@ const TEXT_VARIANT_BY_SIZE = {
 }
 
 const ICON_SIZE = {
-  lg: 'sm',
-  md: 'xs',
-  sm: 'xxs'
-}
+  lg: 'xs',
+  md: 'sm',
+  sm: 'sm'
+} as const
 
 // -- Component ------------------------------------------ //
 @customElement('wui-tab-item')
@@ -27,7 +26,7 @@ export class WuiTab extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public icon: IconType = 'mobile'
+  @property() public icon: IconType = 'mail'
 
   @property() public size: TabSize = 'md'
 

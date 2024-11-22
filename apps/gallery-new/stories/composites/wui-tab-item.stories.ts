@@ -9,7 +9,7 @@ type Component = Meta<WuiTab>
 export default {
   title: 'Composites/wui-tab-item',
   args: {
-    icon: 'mobile',
+    icon: 'mail',
     size: 'md',
     label: 'Tab',
     active: false

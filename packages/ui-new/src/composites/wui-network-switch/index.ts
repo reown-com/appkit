@@ -23,10 +23,10 @@ const LEFT_ICON_SIZE = {
 }
 
 const RIGHT_ICON_SIZE = {
-  sm: 'xxs',
-  md: 'xxs',
-  lg: 'xs'
-}
+  sm: 'xs',
+  md: 'sm',
+  lg: 'sm'
+} as const
 
 @customElement('wui-network-switch')
 export class WuiNetworkSwitch extends LitElement {
@@ -35,7 +35,7 @@ export class WuiNetworkSwitch extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public imageSrc = ''
 
-  @property() public icon: IconType = 'networkPlaceholder'
+  @property() public icon: IconType = 'ethereum'
 
   @property() public size: ButtonSize = 'md'
 
@@ -49,7 +49,7 @@ export class WuiNetworkSwitch extends LitElement {
         <wui-text color="primary" variant=${TEXT_VARIANT_BY_SIZE[this.size]}>
           <slot></slot>
         </wui-text>
-        <wui-icon size=${RIGHT_ICON_SIZE[this.size]} name="chevronBottom"></wui-icon>
+        <wui-icon size=${RIGHT_ICON_SIZE[this.size]} name="chevronDown"></wui-icon>
       </button>
     `
   }

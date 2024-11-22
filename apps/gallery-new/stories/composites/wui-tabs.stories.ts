@@ -10,9 +10,9 @@ export default {
   args: {
     size: 'md',
     tabs: [
-      { icon: 'mobile', label: 'Mobile' },
-      { icon: 'extension', label: 'Browser' },
-      { icon: 'desktop', label: 'Desktop' }
+      { icon: 'allWallets', label: 'Wallets' },
+      { icon: 'externalLink', label: 'External' },
+      { icon: 'info', label: 'Info' }
     ],
     onTabChange: () => null
   },

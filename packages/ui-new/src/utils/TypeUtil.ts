@@ -55,13 +55,13 @@ export type SpacingType = keyof typeof vars.spacing
 export type IconSizeType = keyof typeof vars.iconSize | 'inherit'
 
 export type IconColorType =
-  | 'iconDefault'
-  | 'iconInverse'
-  | 'iconAccentPrimary'
-  | 'iconAccentCertified'
-  | 'iconSuccess'
-  | 'iconError'
-  | 'iconWarning'
+  | 'default'
+  | 'inverse'
+  | 'accentPrimary'
+  | 'accentCertified'
+  | 'success'
+  | 'error'
+  | 'warning'
   | 'inherit'
 
 export type BorderRadiusType = keyof typeof vars.borderRadius
@@ -104,9 +104,9 @@ export type GridContentType =
 
 export type GridItemsType = 'center' | 'end' | 'start' | 'stretch'
 
-export type SvgType = keyof typeof SVG_OPTIONS
+export type IconType = keyof typeof SVG_OPTIONS
 
-export type IconType = string
+// @TOOD: deprecate this
 export type SizeType = string
 
 export type VisualType =

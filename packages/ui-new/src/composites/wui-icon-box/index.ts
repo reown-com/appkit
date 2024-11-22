@@ -7,7 +7,7 @@ import type {
   BackgroundColorType,
   IconColorType,
   IconSizeType,
-  SvgType
+  IconType
 } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
@@ -25,7 +25,7 @@ export class WuiIconBox extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public icon: SvgType = 'qrCode'
+  @property() public icon: IconType = 'qrCode'
 
   @property() public iconColor: IconColorType = 'inherit'
 
@@ -40,9 +40,7 @@ export class WuiIconBox extends LitElement {
        --local-icon-color: ${this.iconColor === 'inherit' ? 'inherit' : ICON_COLOR[this.iconColor]};
    `
 
-    return html`
-      <wui-icon color=${this.iconColor} size=${this.iconSize} name=${this.icon}></wui-icon>
-    `
+    return html`<wui-icon size=${this.iconSize} name=${this.icon}></wui-icon>`
   }
 }
 

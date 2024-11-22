@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import { colorStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { SvgType, IconSizeType, IconColorType } from '../../utils/TypeUtil.js'
+import type { IconType, IconSizeType, IconColorType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -16,11 +16,15 @@ import { externalLinkSvg } from '../../assets/svg/external-link.js'
 import { mailSvg } from '../../assets/svg/mail.js'
 import { cursorSvg } from '../../assets/svg/cursor.js'
 import { vars } from '../../utils/ThemeHelperUtil.js'
+import { ethereumSvg } from '../../assets/svg/ethereum.js'
+import { chevronDownSvg } from '../../assets/svg/chevron-down.js'
 
 // -- Constants ------------------------------------------ //
 export const SVG_OPTIONS = {
   allWallets: allWalletsSvg,
   cursor: cursorSvg,
+  chevronDown: chevronDownSvg,
+  ethereum: ethereumSvg,
   exclamationTriangle: exclamationTriangleSvg,
   externalLink: externalLinkSvg,
   info: infoSvg,
@@ -31,13 +35,13 @@ export const SVG_OPTIONS = {
 }
 
 export const ICON_COLOR = {
-  iconDefault: vars.tokens.theme.iconDefault,
-  iconInverse: vars.tokens.theme.iconInverse,
-  iconAccentPrimary: vars.tokens.core.iconAccentPrimary,
-  iconAccentCertified: vars.tokens.core.iconAccentCertified,
-  iconSuccess: vars.tokens.core.iconSuccess,
-  iconError: vars.tokens.core.iconError,
-  iconWarning: vars.tokens.core.iconWarning
+  default: vars.tokens.theme.iconDefault,
+  inverse: vars.tokens.theme.iconInverse,
+  accentPrimary: vars.tokens.core.iconAccentPrimary,
+  accentCertified: vars.tokens.core.iconAccentCertified,
+  success: vars.tokens.core.iconSuccess,
+  error: vars.tokens.core.iconError,
+  warning: vars.tokens.core.iconWarning
 }
 
 @customElement('wui-icon')
@@ -49,7 +53,7 @@ export class WuiIcon extends LitElement {
 
   @property() public color: IconColorType = 'inherit'
 
-  @property() public name: SvgType = 'qrCode'
+  @property() public name: IconType = 'qrCode'
 
   // -- Render -------------------------------------------- //
   public override render() {
