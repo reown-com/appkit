@@ -178,3 +178,11 @@ export const featuredSdkOptions: SdkOption[] = [
     description: 'Configuration with no adapters enabled for AppKit'
   }
 ]
+
+export const bitcoinSdkOptions: SdkOption[] = [
+  {
+    title: 'Default',
+    link: '/library/bitcoin',
+    description: 'Basic configuration using bitcoin as a driving library'
+  }
+]

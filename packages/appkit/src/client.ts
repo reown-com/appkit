@@ -1250,7 +1250,7 @@ export class AppKit {
         if (
           this.caipNetworks &&
           ChainController.state.activeCaipNetwork &&
-          (adapter as ChainAdapter)?.adapterType === 'solana'
+          (adapter as ChainAdapter)?.namespace !== 'eip155'
         ) {
           const provider = adapter?.getWalletConnectProvider({
             caipNetworks: this.caipNetworks,

@@ -20,9 +20,16 @@ export type ProviderType =
   | 'ID_AUTH'
   | 'coinbaseWalletSDK'
 
+const CLEAN_PROVIDERS_STATE = {
+  eip155: undefined,
+  solana: undefined,
+  polkadot: undefined,
+  bip122: undefined
+}
+
 const state = proxy<ProviderStoreUtilState>({
-  providers: { eip155: undefined, solana: undefined, polkadot: undefined },
-  providerIds: { eip155: undefined, solana: undefined, polkadot: undefined }
+  providers: { ...CLEAN_PROVIDERS_STATE },
+  providerIds: { ...CLEAN_PROVIDERS_STATE }
 })
 
 export const ProviderUtil = {
@@ -57,8 +64,8 @@ export const ProviderUtil = {
   },
 
   reset() {
-    state.providers = { eip155: undefined, solana: undefined, polkadot: undefined }
-    state.providerIds = { eip155: undefined, solana: undefined, polkadot: undefined }
+    state.providers = { ...CLEAN_PROVIDERS_STATE }
+    state.providerIds = { ...CLEAN_PROVIDERS_STATE }
   },
 
   resetChain(chainNamespace: ChainNamespace) {
