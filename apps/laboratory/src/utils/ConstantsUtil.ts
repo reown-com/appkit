@@ -13,7 +13,8 @@ import {
   gnosis,
   unichainSepolia,
   hedera,
-  aurora
+  aurora,
+  bitcoin
 } from '@reown/appkit/networks'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 import { getLocalStorageItem } from './LocalStorage'
@@ -86,6 +87,8 @@ const SolanaNetworks = [solana, solanaTestnet, solanaDevnet, solanaNotExist] as 
   ...AppKitNetwork[]
 ]
 
+const BitcoinNetworks = [bitcoin] as [AppKitNetwork, ...AppKitNetwork[]]
+
 export const ConstantsUtil = {
   SigningSucceededToastTitle: 'Signing Succeeded',
   SigningFailedToastTitle: 'Signing Failed',
@@ -142,5 +145,6 @@ export const ConstantsUtil = {
   ProjectId: projectId,
   EvmNetworks,
   SolanaNetworks,
+  BitcoinNetworks,
   AllNetworks: [...EvmNetworks, ...SolanaNetworks] as [AppKitNetwork, ...AppKitNetwork[]]
 }
