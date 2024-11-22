@@ -11,17 +11,17 @@
   "dependencies": {
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
-    "lit": "3.1.0",
+    "lit": "3.2.1",
     "react": "18.3.1",
-    "storybook": "7.6.7"
+    "storybook": "8.4.5"
   },
   "devDependencies": {
-    "@storybook/addon-essentials": "7.6.7",
-    "@storybook/addon-links": "7.6.7",
-    "@storybook/blocks": "7.6.7",
-    "@storybook/theming": "7.6.7",
-    "@storybook/web-components": "7.6.7",
-    "@storybook/web-components-vite": "7.6.7",
-    "file-system-cache": "2.4.4"
+    "@storybook/addon-essentials": "8.4.5",
+    "@storybook/addon-links": "8.4.5",
+    "@storybook/blocks": "8.4.5",
+    "@storybook/theming": "8.4.5",
+    "@storybook/web-components": "8.4.5",
+    "@storybook/web-components-vite": "8.4.5",
+    "file-system-cache": "3.0.0"
   }
 }

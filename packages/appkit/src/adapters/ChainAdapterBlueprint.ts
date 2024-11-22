@@ -19,6 +19,7 @@ import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { AppKitOptions } from '../utils/index.js'
 import type { AppKit } from '../client.js'
 import { snapshot } from 'valtio'
+import { ref } from 'valtio/vanilla'
 
 type EventName = 'disconnect' | 'accountChanged' | 'switchNetwork'
 type EventData = {
@@ -123,7 +124,7 @@ export abstract class AdapterBlueprint<
         connector => connector.id === 'ID_AUTH'
       ) as AuthConnector
 
-      const optionsState = snapshot(OptionsController.state)
+      const optionsState = OptionsController.state
       const themeMode = ThemeController.getSnapshot().themeMode
       const themeVariables = ThemeController.getSnapshot().themeVariables
 
