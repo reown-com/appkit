@@ -1,7 +1,7 @@
 import { defineChain } from './utils.js'
 
 export const bitcoin = defineChain({
-  id: 'bitcoin',
+  id: '000000000019d6689c085ae165831e93',
   caipNetworkId: 'bip122:000000000019d6689c085ae165831e93',
   chainNamespace: 'bip122',
   name: 'Bitcoin',

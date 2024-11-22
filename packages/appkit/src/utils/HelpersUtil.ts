@@ -34,6 +34,8 @@ export const WcHelpersUtil = {
           'wallet_revokePermissions',
           'wallet_switchEthereumChain'
         ]
+      case 'bip122':
+        return ['sendTransfer', 'signMessage', 'signPsbt', 'getAccountAddresses']
       default:
         return []
     }
@@ -67,7 +69,7 @@ export const WcHelpersUtil = {
         case solana.caipNetworkId:
           namespace.chains.push(solana.deprecatedCaipNetworkId)
           break
-        case solanaDevnet.deprecatedCaipNetworkId:
+        case solanaDevnet.caipNetworkId:
           namespace.chains.push(solanaDevnet.deprecatedCaipNetworkId)
           break
         default:

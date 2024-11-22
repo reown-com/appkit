@@ -14,6 +14,7 @@ import type {
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
+import { vars } from '../../utils/ThemeHelperUtil.js'
 
 @customElement('wui-flex')
 export class WuiFlex extends LitElement {
@@ -54,9 +55,9 @@ export class WuiFlex extends LitElement {
       flex-shrink: ${this.flexShrink};
       align-items: ${this.alignItems};
       justify-content: ${this.justifyContent};
-      column-gap: ${this.columnGap && `var(--wui-spacing-${this.columnGap})`};
-      row-gap: ${this.rowGap && `var(--wui-spacing-${this.rowGap})`};
-      gap: ${this.gap && `var(--wui-spacing-${this.gap})`};
+      column-gap: ${this.columnGap && vars.spacing[this.columnGap]};
+      row-gap: ${this.rowGap && vars.spacing[this.rowGap]};
+      gap: ${this.gap && vars.spacing[this.gap]};
       padding-top: ${this.padding && UiHelperUtil.getSpacingStyles(this.padding, 0)};
       padding-right: ${this.padding && UiHelperUtil.getSpacingStyles(this.padding, 1)};
       padding-bottom: ${this.padding && UiHelperUtil.getSpacingStyles(this.padding, 2)};

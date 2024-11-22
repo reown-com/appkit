@@ -946,7 +946,7 @@ importers:
   packages/adapters/bitcoin:
     dependencies:
       '@exodus/bitcoin-wallet-standard':
-        specifier: ^0.0.0
+        specifier: 0.0.0
         version: 0.0.0
       '@reown/appkit':
         specifier: workspace:*
@@ -963,6 +963,9 @@ importers:
       '@wallet-standard/base':
         specifier: 1.0.1
         version: 1.0.1
+      '@walletconnect/universal-provider':
+        specifier: 2.17.0
+        version: 2.17.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       sats-connect:
         specifier: 3.0.1
         version: 3.0.1(typescript@5.3.3)
