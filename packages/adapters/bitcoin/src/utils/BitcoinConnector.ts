@@ -35,7 +35,7 @@ export namespace BitcoinConnector {
     signInputs: {
       address: string
       index: number
-      singhHashTypes: number[]
+      sighashTypes: number[]
     }[]
     broadcast?: boolean
   }
