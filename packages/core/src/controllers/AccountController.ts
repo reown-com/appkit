@@ -1,6 +1,7 @@
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import type {
   AccountType,
+  AccountTypeMap,
   CombinedProvider,
   ConnectedWalletInfo,
   Provider,
@@ -167,11 +168,12 @@ export const AccountController = {
     }
   },
   setShouldUpdateToAddress(address: string, chain: ChainNamespace | undefined) {
+    console.log('>> setShouldUpdateToAddress', address, chain)
     ChainController.setAccountProp('shouldUpdateToAddress', address, chain)
   },
 
-  setAllAccounts(accounts: AccountType[], chain: ChainNamespace | undefined) {
-    ChainController.setAccountProp('allAccounts', accounts, chain)
+  setAllAccounts<N extends ChainNamespace>(accounts: AccountTypeMap[N][], namespace: N) {
+    ChainController.setAccountProp('allAccounts', accounts, namespace)
   },
 
   addAddressLabel(address: string, label: string, chain: ChainNamespace | undefined) {

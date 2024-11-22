@@ -198,7 +198,14 @@ describe('Base', () => {
     })
 
     it('should set all accounts', () => {
-      const addresses = ['0x123', '0x456'] as unknown as AccountType[]
+      const addresses: AccountType[] = [
+        { address: '0x1', namespace: 'eip155', type: 'eoa' },
+        { address: '0x2', namespace: 'eip155', type: 'smartAccount' },
+        { address: 'asdbjk', namespace: 'solana', type: 'eoa' },
+        { address: 'asdasd1', namespace: 'bip122', type: 'payment' },
+        { address: 'asdasd2', namespace: 'bip122', type: 'ordinal' },
+        { address: 'ASDASD3', namespace: 'bip122', type: 'stx' }
+      ]
       appKit.setAllAccounts(addresses, 'eip155')
       expect(AccountController.setAllAccounts).toHaveBeenCalledWith(addresses, 'eip155')
       expect(OptionsController.setHasMultipleAddresses).toHaveBeenCalledWith(true)

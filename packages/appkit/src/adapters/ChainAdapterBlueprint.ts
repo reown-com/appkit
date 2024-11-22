@@ -8,6 +8,7 @@ import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
 import {
   OptionsController,
   ThemeController,
+  type AccountType,
   type Connector as AppKitConnector,
   type AuthConnector,
   type Metadata,
@@ -210,6 +211,15 @@ export abstract class AdapterBlueprint<
   public abstract connect(
     params: AdapterBlueprint.ConnectParams
   ): Promise<AdapterBlueprint.ConnectResult>
+
+  /**
+   * Gets the accounts for the connected wallet.
+   * @returns {Promise<AccountType[]>} An array of account objects with their associated type and namespace
+   */
+
+  public abstract getAccounts(
+    params: AdapterBlueprint.GetAccountsParams
+  ): Promise<AdapterBlueprint.GetAccountsResult>
 
   /**
    * Switches the network.
@@ -506,5 +516,11 @@ export namespace AdapterBlueprint {
     provider: AppKitConnector['provider']
     chainId: number | string
     address: string
+  }
+
+  export type GetAccountsResult = { accounts: AccountType[] }
+  export type GetAccountsParams = {
+    id: AppKitConnector['id']
+    namespace?: ChainNamespace
   }
 }

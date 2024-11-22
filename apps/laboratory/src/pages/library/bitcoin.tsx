@@ -79,7 +79,7 @@ export default function MultiChainBitcoinAdapterOnly() {
     try {
       const signature = await walletProvider.sendTransfer({
         recipient: 'bc1qcer94ntpu33lcj0fnave79lu8tghkll47eeu9u',
-        amount: '100000'
+        amount: '1500'
       })
 
       toast({
