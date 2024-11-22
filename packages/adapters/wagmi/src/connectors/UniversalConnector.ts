@@ -276,14 +276,14 @@ export function walletConnect(
       }
 
       try {
+        if (chainToSwitch?.caipNetworkId) {
+          provider.setDefaultChain(chainToSwitch?.caipNetworkId as string)
+        }
+
         await provider.request({
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: numberToHex(chainId) }]
         })
-
-        if (chainToSwitch?.caipNetworkId) {
-          provider.setDefaultChain(chainToSwitch?.caipNetworkId as string)
-        }
         config.emitter.emit('change', { chainId: Number(chainId) })
 
         const requestedChains = await this.getRequestedChainsIds()
@@ -412,21 +412,8 @@ export function walletConnect(
      * connector later on, however, this chain will not have been approved or rejected
      * by the wallet. In this case, the chain is considered stale.
      */
-    async isChainsStale() {
-      if (!isNewChainsStale) {
-        return false
-      }
-
-      const connectorChains = config.chains.map(x => x.id)
-      const namespaceChains = this.getNamespaceChainsIds()
-
-      if (namespaceChains.length && !namespaceChains.some(id => connectorChains.includes(id))) {
-        return false
-      }
-
-      const requestedChains = await this.getRequestedChainsIds()
-
-      return !requestedChains.every(id => connectorChains.includes(Number(id)))
+    isChainsStale() {
+      return false
     },
     async setRequestedChainsIds(chains) {
       await config.storage?.setItem(this.requestedChainsStorageKey, chains)
