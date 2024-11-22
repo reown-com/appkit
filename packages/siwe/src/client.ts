@@ -1,4 +1,4 @@
-import { SIWEController, type SIWEControllerClient } from '../core/controller/SIWEController.js'
+import { type SIWEControllerClient } from '../core/controller/SIWEController.js'
 import type {
   SIWEClientMethods,
   SIWEConfig,
@@ -8,15 +8,7 @@ import type {
   SIWEVerifyMessageArgs
 } from '../core/utils/TypeUtils.js'
 
-import {
-  ChainController,
-  ConnectionController,
-  RouterController,
-  StorageUtil,
-  ModalController,
-  CoreHelperUtil
-} from '@reown/appkit-core'
-import { type CaipAddress } from '@reown/appkit-common'
+import { SIWXUtil } from '@reown/appkit-core'
 import { ConstantsUtil } from '../core/utils/ConstantsUtil.js'
 
 // -- Client -------------------------------------------------------------------- //
@@ -88,88 +80,25 @@ export class AppKitSIWEClient {
   }
 
   async signIn(): Promise<SIWESession> {
-    if (!SIWEController.state._client) {
-      throw new Error('SIWE client needs to be initialized before calling signIn')
-    }
-
-    const caipAddress = ChainController.state.activeCaipAddress
-    const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : ''
-
-    const nonce = await this.methods.getNonce(address)
-    if (!address) {
-      throw new Error('An address is required to create a SIWE message.')
-    }
-
-    const caipNetwork = ChainController.state.activeCaipNetwork
-
-    if (!caipNetwork?.id) {
-      throw new Error('A chainId is required to create a SIWE message.')
-    }
-
-    const chainId = caipNetwork.id
-
-    if (!chainId) {
-      throw new Error('A chainId is required to create a SIWE message.')
-    }
-
-    const signOutOnNetworkChange = SIWEController.state._client?.options.signOutOnNetworkChange
-    // Sign out if signOutOnNetworkChange is enabled to avoid re-prompting the user for a signature
-    if (signOutOnNetworkChange) {
-      SIWEController.state._client.options.signOutOnNetworkChange = false
-      await this.signOut()
-    }
-
-    // Enable the signOutOnNetworkChange option if it was previously enabled
-    if (signOutOnNetworkChange) {
-      SIWEController.state._client.options.signOutOnNetworkChange = true
-    }
-
-    const messageParams = await this.getMessageParams?.()
-    const message = this.methods.createMessage({
-      address: caipAddress as CaipAddress,
-      chainId: Number(chainId),
-      nonce,
-      version: '1',
-      iat: messageParams?.iat || new Date().toISOString(),
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      ...messageParams!
-    })
-    const type = StorageUtil.getConnectedConnector()
-
-    if (type === 'ID_AUTH') {
-      RouterController.pushTransactionStack({
-        view: null,
-        goBack: false,
-        replace: true,
-        onSuccess() {
-          ModalController.close()
-        }
-      })
-    }
-
-    const signature = await ConnectionController.signMessage(message)
-
-    const isValid = await this.methods.verifyMessage({ message, signature: signature as string })
-    if (!isValid) {
-      throw new Error('Error verifying SIWE signature')
-    }
-
+    await SIWXUtil.requestSignMessage()
     const session = await this.methods.getSession()
 
     if (!session) {
       throw new Error('Error verifying SIWE signature')
     }
 
-    if (this.methods.onSignIn) {
-      this.methods.onSignIn(session)
-    }
-
     return session
   }
 
   async signOut() {
-    this.methods.onSignOut?.()
+    const siwx = SIWXUtil.getSIWX()
 
-    return this.methods.signOut()
+    if (!siwx) {
+      return false
+    }
+
+    await siwx.setSessions([])
+
+    return true
   }
 }
