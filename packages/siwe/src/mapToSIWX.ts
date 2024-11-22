@@ -19,35 +19,47 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
     }
   }
 
+  async function signOut() {
+    await siwe.methods.signOut()
+    siwe.methods.onSignOut?.()
+  }
+
   ChainController.subscribeKey('activeCaipNetwork', async activeCaipNetwork => {
     if (!siwe.options.signOutOnNetworkChange) {
       return
     }
 
     const session = await getSession()
-    const isDiffernetNetwork =
+    const isDifferentNetwork =
       session &&
       session.chainId !== NetworkUtil.caipNetworkIdToNumber(activeCaipNetwork?.caipNetworkId)
 
-    if (isDiffernetNetwork) {
-      await siwe.methods.signOut()
+    if (isDifferentNetwork) {
+      await signOut()
     }
   })
 
   ChainController.subscribeKey('activeCaipAddress', async activeCaipAddress => {
-    if (!siwe.options.signOutOnAccountChange) {
+    if (siwe.options.signOutOnDisconnect && !activeCaipAddress) {
+      const session = await getSession()
+      if (session) {
+        await signOut()
+      }
+
       return
     }
 
-    const session = await getSession()
+    if (siwe.options.signOutOnAccountChange) {
+      const session = await getSession()
 
-    const compareSessionAddress = session?.address.toLowerCase()
-    const compareCaipAddress = CoreHelperUtil?.getPlainAddress(activeCaipAddress)?.toLowerCase()
+      const compareSessionAddress = session?.address.toLowerCase()
+      const compareCaipAddress = CoreHelperUtil?.getPlainAddress(activeCaipAddress)?.toLowerCase()
 
-    const isDifferentAddress = session && compareSessionAddress !== compareCaipAddress
+      const isDifferentAddress = session && compareSessionAddress !== compareCaipAddress
 
-    if (isDifferentAddress) {
-      await siwe.methods.signOut()
+      if (isDifferentAddress) {
+        await signOut()
+      }
     }
   })
 
@@ -110,8 +122,7 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
 
     async revokeSession(_chainId, _address) {
       try {
-        await siwe.methods.signOut()
-        siwe.methods.onSignOut?.()
+        await signOut()
       } catch (error) {
         console.warn('AppKit:SIWE:revokeSession - signOut error', error)
       }
@@ -120,7 +131,7 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
     async setSessions(sessions) {
       if (sessions.length === 0) {
         try {
-          await siwe.methods.signOut()
+          await signOut()
         } catch (error) {
           console.warn('AppKit:SIWE:setSessions - signOut error', error)
         }
