@@ -132,13 +132,15 @@ export class W3mUnsupportedChainView extends LitElement {
       'supportsAllNetworks',
       network.chainNamespace
     )
-    const caipNetwork = ChainController.state.activeCaipNetwork
+
     const routerData = RouterController.state.data
 
-    if (caipAddress && caipNetwork?.caipNetworkId !== network.caipNetworkId) {
+    if (caipAddress) {
       if (approvedCaipNetworkIds?.includes(network.caipNetworkId)) {
         await ChainController.switchActiveNetwork(network)
       } else if (supportsAllNetworks) {
+        RouterController.push('SwitchNetwork', { ...routerData, network })
+      } else {
         RouterController.push('SwitchNetwork', { ...routerData, network })
       }
     } else if (!caipAddress) {
