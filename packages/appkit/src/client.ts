@@ -934,6 +934,7 @@ export class AppKit {
           >(ChainController.state.activeChain as ChainNamespace)
           const providerType =
             ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
+
           await adapter?.switchNetwork({ caipNetwork, provider, providerType })
           this.setCaipNetwork(caipNetwork)
           await this.syncAccount({
@@ -1250,7 +1251,7 @@ export class AppKit {
         if (
           this.caipNetworks &&
           ChainController.state.activeCaipNetwork &&
-          (adapter as ChainAdapter)?.adapterType === 'solana'
+          (adapter as ChainAdapter)?.namespace !== 'eip155'
         ) {
           const provider = adapter?.getWalletConnectProvider({
             caipNetworks: this.caipNetworks,
@@ -1282,10 +1283,16 @@ export class AppKit {
               chainId: ChainController.state.activeCaipNetwork?.id as string | number
             })
           } catch (error) {
-            adapter?.switchNetwork({
-              provider: this.universalProvider,
-              caipNetwork: ChainController.state.activeCaipNetwork as CaipNetwork
-            })
+            /**
+             * Handle edge case where wagmi detects existing connection but lacks to complete UniversalProvider instance.
+             * Connection attempt fails due to already connected state - reconnect to restore provider state.
+             */
+            if (adapter?.reconnect) {
+              adapter?.reconnect({
+                id: 'walletConnect',
+                type: 'WALLET_CONNECT'
+              })
+            }
           }
         }
 

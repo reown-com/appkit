@@ -13,6 +13,7 @@ import type { SIWESession } from '@reown/appkit-siwe'
 
 export function SiweData() {
   const { data, status } = useSession()
+
   const session = data as unknown as SIWESession
 
   return (
