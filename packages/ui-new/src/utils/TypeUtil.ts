@@ -132,6 +132,8 @@ export type IconType =
   | 'etherscan'
   | 'extension'
   | 'externalLink'
+  | 'exclamationCircle'
+  | 'exclamationTriangle'
   | 'facebook'
   | 'farcaster'
   | 'filters'
@@ -176,7 +178,6 @@ export type IconType =
   | 'warningCircle'
   | 'x'
   | 'info'
-  | 'exclamationTriangle'
 
 export type VisualType =
   | 'browser'
