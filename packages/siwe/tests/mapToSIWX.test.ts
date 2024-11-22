@@ -6,8 +6,7 @@ import {
   OptionsController,
   type SIWXSession
 } from '@reown/appkit-core'
-
-import * as networks from '@reown/appkit/networks'
+import type { CaipNetwork } from '@reown/appkit-common'
 
 const siweConfig = createSIWEConfig({
   createMessage: () => {
@@ -52,6 +51,19 @@ const sessionMock = {
     chainId: 'eip155:1'
   }
 } as unknown as SIWXSession
+
+const networks = {
+  mainnet: {
+    id: '1',
+    caipNetworkId: 'eip155:1',
+    chainNamespace: 'eip155'
+  } as unknown as CaipNetwork,
+  polygon: {
+    id: '137',
+    caipNetworkId: 'eip155:137',
+    chainNamespace: 'eip155'
+  } as unknown as CaipNetwork
+}
 
 describe('SIWE: mapToSIWX', () => {
   it('should correctly map methods', () => {
@@ -246,7 +258,9 @@ describe('SIWE: mapToSIWX', () => {
 
       OptionsController.setSIWX(siwx)
 
-      ChainController.setActiveCaipNetwork(networks.solana)
+      ChainController.setActiveCaipNetwork({
+        id: '1'
+      } as CaipNetwork)
 
       // Wait for the event loop to finish
       await new Promise(resolve => setTimeout(resolve, 10))
@@ -267,7 +281,7 @@ describe('SIWE: mapToSIWX', () => {
 
       OptionsController.setSIWX(siwx)
 
-      ChainController.setActiveCaipNetwork(networks.solanaDevnet)
+      ChainController.setActiveCaipNetwork(networks.polygon)
 
       // Wait for the event loop to finish
       await new Promise(resolve => setTimeout(resolve, 10))
