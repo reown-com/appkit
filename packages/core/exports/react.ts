@@ -4,6 +4,7 @@ import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import { ChainController } from '../src/controllers/ChainController.js'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
 import type { UseAppKitAccountReturn, UseAppKitNetworkReturn } from '../src/utils/TypeUtil.js'
+import { ModalController } from '../src/controllers/ModalController.js'
 
 // -- Hooks ------------------------------------------------------------
 export function useAppKitNetworkCore(): Pick<
@@ -22,12 +23,14 @@ export function useAppKitNetworkCore(): Pick<
 export function useAppKitAccount(): UseAppKitAccountReturn {
   const { status } = useSnapshot(AccountController.state)
   const { activeCaipAddress } = useSnapshot(ChainController.state)
+  const { loading } = useSnapshot(ModalController.state)
 
   return {
     caipAddress: activeCaipAddress,
     address: CoreHelperUtil.getPlainAddress(activeCaipAddress),
     isConnected: Boolean(activeCaipAddress),
-    status
+    status,
+    loading
   }
 }
 

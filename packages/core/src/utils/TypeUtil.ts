@@ -996,6 +996,7 @@ export type UseAppKitAccountReturn = {
   address: string | undefined
   isConnected: boolean
   status: AccountControllerState['status']
+  loading: boolean
 }
 
 export type UseAppKitNetworkReturn = {

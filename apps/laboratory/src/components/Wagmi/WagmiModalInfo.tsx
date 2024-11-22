@@ -6,10 +6,11 @@ import { AppKitInfo } from '../AppKitInfo'
 import { useAppKitAccount } from '@reown/appkit/react'
 
 export function WagmiModalInfo() {
-  const { caipAddress, address, isConnected } = useAppKitAccount()
-  const { chainId, connector } = useAccount()
+  const { caipAddress, address, isConnected, status: appkitStatus } = useAppKitAccount()
+  const { chainId, connector, status: wagmiStatus, loading } = useAccount()
   const [clientId, setClientId] = React.useState<string | null>(null)
 
+  console.log('>> Statuses:', { appkitStatus, wagmiStatus, loading })
   async function getClientId() {
     if (connector?.type === 'walletConnect') {
       const provider = await connector?.getProvider?.()

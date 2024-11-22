@@ -706,7 +706,8 @@ export class AppKit {
   private createClients() {
     this.connectionControllerClient = {
       connectWalletConnect: async (onUri: (uri: string) => void) => {
-        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+        const namespace = ChainController.state.activeChain as ChainNamespace
+        const adapter = this.getAdapter(namespace)
 
         this.universalProvider?.on('display_uri', (uri: string) => {
           onUri(uri)
@@ -717,7 +718,7 @@ export class AppKit {
         )
 
         let isAuthenticated = false
-
+        this.setStatus('connecting', namespace)
         if (this.universalProvider) {
           const chains = this.caipNetworks?.map(network => network.caipNetworkId) || []
 
@@ -748,6 +749,9 @@ export class AppKit {
         const adapter = chain
           ? this.getAdapter(chain)
           : this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+
+        console.log('>> Setting connecting')
+        this.setStatus('connecting', chain)
 
         const res = await adapter?.connect({
           id,
@@ -1516,31 +1520,27 @@ export class AppKit {
     ) as ConnectorType
     const connectedNamespace = SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_NAMESPACE)
 
-    if (
-      connectedConnector === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT &&
-      connectedNamespace
-    ) {
-      this.syncWalletConnectAccount()
-    } else if (
-      connectedConnector &&
-      connectedConnector !== UtilConstantsUtil.CONNECTOR_TYPE_W3M_AUTH &&
-      connectedNamespace
-    ) {
-      const adapter = this.getAdapter(connectedNamespace as ChainNamespace)
-      const res = await adapter?.syncConnection({
-        id: connectedConnector,
-        chainId: this.getCaipNetwork()?.id,
-        namespace: connectedNamespace as ChainNamespace,
-        rpcUrl: this.getCaipNetwork()?.rpcUrls?.default?.http?.[0] as string
-      })
+    if (connectedConnector && connectedNamespace) {
+      this.setStatus('reconnecting', connectedNamespace as ChainNamespace)
+      if (connectedConnector === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
+        this.syncWalletConnectAccount()
+      } else if (connectedConnector !== UtilConstantsUtil.CONNECTOR_TYPE_W3M_AUTH) {
+        const adapter = this.getAdapter(connectedNamespace as ChainNamespace)
+        const res = await adapter?.syncConnection({
+          id: connectedConnector,
+          chainId: this.getCaipNetwork()?.id,
+          namespace: connectedNamespace as ChainNamespace,
+          rpcUrl: this.getCaipNetwork()?.rpcUrls?.default?.http?.[0] as string
+        })
 
-      if (res) {
-        this.syncProvider({ ...res, chainNamespace: connectedNamespace as ChainNamespace })
-        await this.syncAccount({ ...res, chainNamespace: connectedNamespace as ChainNamespace })
-      }
+        if (res) {
+          this.syncProvider({ ...res, chainNamespace: connectedNamespace as ChainNamespace })
+          await this.syncAccount({ ...res, chainNamespace: connectedNamespace as ChainNamespace })
+        }
 
-      if (!this.caipNetworks?.some(network => network.id === res?.chainId)) {
-        ChainController.showUnsupportedChainUI()
+        if (!this.caipNetworks?.some(network => network.id === res?.chainId)) {
+          ChainController.showUnsupportedChainUI()
+        }
       }
     }
   }
