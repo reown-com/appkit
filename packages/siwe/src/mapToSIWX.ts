@@ -152,6 +152,7 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
 
         const compareSessionAddress = siweSession?.address.toLowerCase()
         const compareCaipAddress = address?.toLowerCase()
+
         if (
           !siweSession ||
           compareSessionAddress !== compareCaipAddress ||

@@ -412,8 +412,22 @@ export function walletConnect(
      * connector later on, however, this chain will not have been approved or rejected
      * by the wallet. In this case, the chain is considered stale.
      */
-    isChainsStale() {
-      return false
+    async isChainsStale() {
+      if (!isNewChainsStale) {
+        return false
+      }
+
+      const connectorChains = config.chains.map(x => x.id)
+
+      const namespaceChains = this.getNamespaceChainsIds()
+
+      if (namespaceChains.length && !namespaceChains.some(id => connectorChains.includes(id))) {
+        return false
+      }
+
+      const requestedChains = await this.getRequestedChainsIds()
+
+      return !connectorChains.every(id => requestedChains.includes(Number(id)))
     },
     async setRequestedChainsIds(chains) {
       await config.storage?.setItem(this.requestedChainsStorageKey, chains)
