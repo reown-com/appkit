@@ -64,7 +64,7 @@ export type IconColorType =
   | 'iconWarning'
   | 'inherit'
 
-export type BorderRadiusType = Exclude<SpacingType, '1xs' | 'xl' | 'xxl'> | 'xs'
+export type BorderRadiusType = keyof typeof vars.borderRadius
 
 export type FlexDirectionType = 'column-reverse' | 'column' | 'row-reverse' | 'row'
 

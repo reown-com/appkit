@@ -17,7 +17,6 @@ import type {
   GridContentType,
   GridItemsType,
   IconBoxBorderType,
-  IconType,
   LogoType,
   PlacementType,
   ButtonShortcutVariant,
@@ -28,7 +27,8 @@ import type {
   ThemeType,
   TransactionType,
   VisualType,
-  ButtonLinkVariant
+  ButtonLinkVariant,
+  SvgType
 } from '@reown/appkit-ui-new/src/utils/TypeUtil'
 import type { TransactionStatus, TransactionDirection } from '@reown/appkit-common'
 
@@ -178,71 +178,51 @@ export const address = '0xDBbD65026a07cFbFa1aa92744E4D69951686077d'
 
 export const gridItemsOptions: GridItemsType[] = ['center', 'end', 'start', 'stretch']
 
-export const borderRadiusOptions: BorderRadiusType[] = ['4xs', '3xs', 'xxs', 'xs', 's', 'm', 'l']
-
-export const spacingOptions: SpacingType[] = [
-  '4xs',
-  '3xs',
-  'xxs',
-  'xs',
-  's',
-  'm',
-  'l',
-  '2l',
-  'xl',
-  '3xl'
+export const borderRadiusOptions: BorderRadiusType[] = [
+  '1',
+  '6',
+  '2',
+  '10',
+  '3',
+  '4',
+  '8',
+  '16',
+  '20',
+  '32',
+  '64',
+  '128',
+  'round'
 ]
 
-export const iconOptions: IconType[] = [
+export const spacingOptions: SpacingType[] = [
+  '0.5',
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  '12',
+  '14',
+  '16',
+  '20',
+  '32',
+  '64'
+]
+
+export const iconOptions: SvgType[] = [
   'allWallets',
-  'apple',
-  'arrowBottom',
-  'arrowLeft',
-  'arrowRight',
-  'arrowTop',
-  'browser',
-  'checkmark',
-  'chevronBottom',
-  'chevronLeft',
-  'chevronRight',
-  'chevronTop',
-  'clock',
-  'close',
-  'coinPlaceholder',
-  'compass',
-  'copy',
   'cursor',
-  'desktop',
-  'disconnect',
-  'discord',
-  'etherscan',
-  'extension',
+  'exclamationTriangle',
   'externalLink',
-  'facebook',
-  'filters',
-  'github',
-  'google',
-  'helpCircle',
-  'infoCircle',
+  'info',
   'mail',
-  'mobile',
-  'networkPlaceholder',
-  'nftPlaceholder',
-  'off',
   'qrCode',
-  'refresh',
-  'search',
-  'swapHorizontal',
-  'swapVertical',
-  'telegram',
-  'twitch',
-  'twitterIcon',
-  'twitter',
-  'verify',
-  'verifyFilled',
-  'wallet',
-  'walletConnect',
-  'walletPlaceholder',
+  'spinner',
   'warningCircle'
 ]
 
