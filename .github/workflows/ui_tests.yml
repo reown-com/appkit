@@ -44,6 +44,10 @@ on:
         required: false
       TESTS_SOCIAL_PASSWORD:
         required: false
+      RELEASE_TOKEN_V2:
+        required: true
+      TFC_INFRA_TOKEN:
+        required: true
 
 jobs:
   ui_tests:
