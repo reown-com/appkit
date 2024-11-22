@@ -115,6 +115,7 @@ export type IconType =
   | 'card'
   | 'checkmark'
   | 'checkmarkBold'
+  | 'checkmarkVerified'
   | 'chevronBottom'
   | 'chevronLeft'
   | 'chevronRight'
@@ -223,6 +224,10 @@ export type ChipType = 'fill' | 'shade' | 'shadeSmall' | 'transparent' | 'succes
 export type ChipButtonVariant = 'main' | 'accent' | 'primary'
 
 export type ChipButtonSize = 'sm' | 'md'
+
+export type DomainChipVariant = 'success' | 'warning' | 'error'
+
+export type DomainChipSize = 'sm' | 'md'
 
 export type ButtonSize = 'lg' | 'md' | 'sm'
 

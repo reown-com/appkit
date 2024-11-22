@@ -8,7 +8,7 @@ export default css`
     flex-direction: row;
     align-items: center;
     gap: ${({ spacing }) => spacing[1]};
-    padding: ${({ spacing }) => spacing[1]};
+    padding: ${({ spacing }) => spacing[2]};
   }
 
   /* -- Variants --------------------------------------------------------------- */
