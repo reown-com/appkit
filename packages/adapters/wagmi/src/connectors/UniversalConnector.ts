@@ -276,14 +276,14 @@ export function walletConnect(
       }
 
       try {
-        if (chainToSwitch?.caipNetworkId) {
-          provider.setDefaultChain(chainToSwitch?.caipNetworkId as string)
-        }
-
         await provider.request({
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: numberToHex(chainId) }]
         })
+
+        if (chainToSwitch?.caipNetworkId) {
+          provider.setDefaultChain(chainToSwitch?.caipNetworkId as string)
+        }
         config.emitter.emit('change', { chainId: Number(chainId) })
 
         const requestedChains = await this.getRequestedChainsIds()
