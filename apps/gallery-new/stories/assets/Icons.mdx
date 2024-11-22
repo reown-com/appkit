@@ -11,7 +11,13 @@ import { iconOptions } from '../../utils/PresetUtils'
 
 <wui-grid gridTemplateColumns="repeat(6, 1fr)" gap="3xl">
   {iconOptions.map(value => (
-    <wui-flex flexDirection="column" alignItems="center" justifyContent="space-between" rowGap="3">
+    <wui-flex
+      key={value}
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="space-between"
+      rowGap="3"
+    >
       <wui-icon color="default" size="lg" name={value}></wui-icon>
       <wui-text variant="md-regular" color="primary">
         {value}
