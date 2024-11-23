@@ -1,7 +1,6 @@
 ---
 '@reown/appkit-adapter-wagmi': patch
 '@reown/appkit-scaffold-ui': patch
-'@apps/laboratory': patch
 '@reown/appkit': patch
 '@reown/appkit-core': patch
 '@reown/appkit-siwe': patch
