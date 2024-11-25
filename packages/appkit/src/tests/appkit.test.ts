@@ -31,7 +31,6 @@ import {
 import { mockOptions } from './mocks/Options'
 import { UniversalAdapter } from '../universal-adapter/client'
 import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint'
-import { getBalance } from 'viem/actions'
 
 // Mock all controllers and UniversalAdapterClient
 vi.mock('@reown/appkit-core')
