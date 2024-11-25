@@ -2,7 +2,8 @@ import {
   createAppKit,
   useAppKitAccount,
   useAppKitProvider,
-  type CaipNetwork
+  type CaipNetwork,
+  useAppKitNetwork
 } from '@reown/appkit/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
@@ -12,6 +13,7 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { BitcoinAdapter, type BitcoinConnector } from '@reown/appkit-adapter-bitcoin'
 import { Button, Stack, useToast } from '@chakra-ui/react'
 import { useState } from 'react'
+import { BitcoinUtil } from '../../utils/BitcoinUtil'
 
 const networks = ConstantsUtil.BitcoinNetworks
 
@@ -38,6 +40,8 @@ ThemeStore.setModal(appkit)
 export default function MultiChainBitcoinAdapterOnly() {
   const { walletProvider } = useAppKitProvider<BitcoinConnector>('bip122')
   const { address } = useAppKitAccount()
+  const { caipNetwork } = useAppKitNetwork()
+
   const [loading, setLoading] = useState(false)
 
   const toast = useToast()
@@ -94,6 +98,51 @@ export default function MultiChainBitcoinAdapterOnly() {
     }
   }
 
+  async function signPSBT() {
+    if (!walletProvider || !address || !caipNetwork) {
+      toast({
+        title: 'No connection detected',
+        status: 'error',
+        isClosable: true
+      })
+
+      return
+    }
+
+    if (caipNetwork.chainNamespace !== 'bip122') {
+      toast({
+        title: 'The selected chain is not bip122',
+        status: 'error',
+        isClosable: true
+      })
+
+      return
+    }
+
+    try {
+      const utxos = await BitcoinUtil.getUTXOs(address, caipNetwork.caipNetworkId)
+      const feeRate = await BitcoinUtil.getFeeRate()
+
+      const params = BitcoinUtil.createSignPSBTParams({
+        amount: 100,
+        feeRate,
+        network: caipNetwork,
+        recipientAddress: address,
+        senderAddress: address,
+        utxos
+      })
+
+      console.log({ params })
+
+      const signature = await walletProvider.signPSBT(params)
+      toast({ title: 'PSBT Signature', description: signature.psbt, status: 'success' })
+    } catch (error) {
+      toast({ title: 'Error', description: (error as Error).message, status: 'error' })
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <>
       <AppKitButtons />
@@ -104,6 +153,9 @@ export default function MultiChainBitcoinAdapterOnly() {
           </Button>
           <Button data-testid="send-transfer-button" onClick={sendTransfer} isDisabled={loading}>
             Send Transfer
+          </Button>
+          <Button data-testid="sign-psbt-button" onClick={signPSBT} isDisabled={loading}>
+            Sign PSBT
           </Button>
         </Stack>
       )}
