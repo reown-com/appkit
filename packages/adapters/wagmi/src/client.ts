@@ -127,13 +127,13 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   private setupWatchers() {
-    const initialAccountData = getAccount(this.wagmiConfig)
-    StorageUtil.setConnectionStatus(initialAccountData.status)
+    // const initialAccountData = getAccount(this.wagmiConfig)
+    // StorageUtil.setConnectionStatus(initialAccountData.status)
 
     watchAccount(this.wagmiConfig, {
       onChange: accountData => {
-        StorageUtil.setConnectionStatus(accountData.status)
-        this.emit('statusChanged', accountData.status)
+        // StorageUtil.setConnectionStatus(accountData.status)
+        // this.emit('statusChanged', accountData.status)
 
         if (accountData.address) {
           this.emit('accountChanged', {

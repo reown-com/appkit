@@ -20,7 +20,8 @@ import {
   type EstimateGasTransactionArgs,
   type AccountControllerState,
   type AdapterNetworkState,
-  SIWXUtil
+  SIWXUtil,
+  type ConnectionStatus
 } from '@reown/appkit-core'
 import {
   AccountController,
@@ -380,6 +381,8 @@ export class AppKit {
   }
 
   public setStatus: (typeof AccountController)['setStatus'] = (status, chain) => {
+    console.log('>>> AccountController.setStatus', status, chain)
+    StorageUtil.setConnectionStatus(status as ConnectionStatus)
     AccountController.setStatus(status, chain)
   }
 
@@ -1010,12 +1013,21 @@ export class AppKit {
   }
 
   private async listenAuthConnector(provider: W3mFrameProvider) {
+    console.log('>>> listenAuthConnector')
     this.setLoading(true)
     const isLoginEmailUsed = provider.getLoginEmailUsed()
     this.setLoading(isLoginEmailUsed)
+
+    console.log('>>> listenAuthConnector1', isLoginEmailUsed, ChainController.state.activeChain)
+    if (isLoginEmailUsed) {
+      this.setStatus('reconnecting', ChainController.state.activeChain as ChainNamespace)
+    }
+
     const { isConnected } = await provider.isConnected()
+
     if (isConnected && this.connectionControllerClient?.connectExternal) {
-      this.connectionControllerClient?.connectExternal({
+      console.log('>>> listenAuthConnector2')
+      await this.connectionControllerClient?.connectExternal({
         id: 'ID_AUTH',
         info: {
           name: 'ID_AUTH'
@@ -1024,7 +1036,11 @@ export class AppKit {
         provider,
         chainId: ChainController.state.activeCaipNetwork?.id
       })
+      this.setStatus('connected', ChainController.state.activeChain as ChainNamespace)
+      this.setLoading(false)
     } else {
+      console.log('>>> listenAuthConnector3')
+      this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
       this.setLoading(false)
     }
 
@@ -1175,7 +1191,18 @@ export class AppKit {
   }
 
   private listenAdapter(chainNamespace: ChainNamespace) {
+    console.log('>>> listenAdapter', chainNamespace)
     const adapter = this.getAdapter(chainNamespace)
+    const connectionStatus = StorageUtil.getConnectionStatus()
+
+    if (connectionStatus === 'connected') {
+      this.setStatus('connecting', chainNamespace)
+    }
+
+    // adapter?.on('statusChanged', status => {
+    //   // console.log('>>> statusChanged', status)
+    //   // this.setStatus(status, chainNamespace)
+    // })
 
     adapter?.on('switchNetwork', ({ address, chainId }) => {
       if (chainId && this.caipNetworks?.find(n => n.id === chainId)) {
@@ -1277,6 +1304,7 @@ export class AppKit {
 
         if ((adapter as ChainAdapter)?.adapterType === 'wagmi') {
           try {
+            // this.setStatus('connecting', chainNamespace)
             await adapter?.connect({
               id: 'walletConnect',
               type: 'WALLET_CONNECT',
@@ -1288,6 +1316,7 @@ export class AppKit {
              * Connection attempt fails due to already connected state - reconnect to restore provider state.
              */
             if (adapter?.reconnect) {
+              // this.setStatus('reconnecting', chainNamespace)
               adapter?.reconnect({
                 id: 'walletConnect',
                 type: 'WALLET_CONNECT'
@@ -1511,6 +1540,8 @@ export class AppKit {
   }
 
   private async syncExistingConnection() {
+    console.log('>>> SYNC EXISTING CONNECTION')
+
     const connectedConnector = SafeLocalStorage.getItem(
       SafeLocalStorageKeys.CONNECTED_CONNECTOR
     ) as ConnectorType
@@ -1520,12 +1551,15 @@ export class AppKit {
       connectedConnector === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT &&
       connectedNamespace
     ) {
+      console.log('>>> SYNC EXISTING CONNECTION1')
       this.syncWalletConnectAccount()
     } else if (
       connectedConnector &&
       connectedConnector !== UtilConstantsUtil.CONNECTOR_TYPE_W3M_AUTH &&
       connectedNamespace
     ) {
+      console.log('>>> SYNC EXISTING CONNECTION2', connectedNamespace)
+      this.setStatus('connecting', connectedNamespace as ChainNamespace)
       const adapter = this.getAdapter(connectedNamespace as ChainNamespace)
       const res = await adapter?.syncConnection({
         id: connectedConnector,
@@ -1533,15 +1567,23 @@ export class AppKit {
         namespace: connectedNamespace as ChainNamespace,
         rpcUrl: this.getCaipNetwork()?.rpcUrls?.default?.http?.[0] as string
       })
+      console.log('>>> SYNC EXISTING CONNECTION3')
 
       if (res) {
         this.syncProvider({ ...res, chainNamespace: connectedNamespace as ChainNamespace })
         await this.syncAccount({ ...res, chainNamespace: connectedNamespace as ChainNamespace })
+        this.setStatus('connected', connectedNamespace as ChainNamespace)
+      } else {
+        console.log('>>> SYNC EXISTING CONNECTION4')
+        this.setStatus('disconnected', connectedNamespace as ChainNamespace)
       }
 
       if (!this.caipNetworks?.some(network => network.id === res?.chainId)) {
         ChainController.showUnsupportedChainUI()
       }
+    } else if (connectedConnector !== UtilConstantsUtil.CONNECTOR_TYPE_W3M_AUTH) {
+      console.log('>>> SYNC EXISTING CONNECTION5')
+      this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
     }
   }
 

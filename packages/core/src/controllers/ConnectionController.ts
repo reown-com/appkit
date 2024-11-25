@@ -261,7 +261,9 @@ export const ConnectionController = {
         }
       }
 
+      console.log('>>> disconnect')
       await connectionControllerClient?.disconnect()
+
       this.resetWcConnection()
     } catch (error) {
       throw new Error('Failed to disconnect')

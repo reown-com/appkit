@@ -1,5 +1,19 @@
 # @reown/appkit-cdn
 
+## 1.5.3-ae9267.0
+
+### Patch Changes
+
+- Sync wagmi status with account controller status
+
+- Updated dependencies []:
+  - @reown/appkit-adapter-wagmi@1.5.3-ae9267.0
+  - @reown/appkit@1.5.3-ae9267.0
+  - @reown/appkit-adapter-ethers@1.5.3-ae9267.0
+  - @reown/appkit-adapter-ethers5@1.5.3-ae9267.0
+  - @reown/appkit-adapter-solana@1.5.3-ae9267.0
+  - @reown/appkit-polyfills@1.5.3-ae9267.0
+
 ## 1.5.2
 
 ### Patch Changes

@@ -1,0 +1,25 @@
+{
+  "mode": "exit",
+  "tag": "4228d6",
+  "initialVersions": {
+    "@reown/appkit-adapter-ethers": "1.5.2",
+    "@reown/appkit-adapter-ethers5": "1.5.2",
+    "@reown/appkit-adapter-solana": "1.5.2",
+    "@reown/appkit-adapter-wagmi": "1.5.2",
+    "@reown/appkit": "1.5.2",
+    "@reown/appkit-utils": "1.5.2",
+    "@reown/appkit-cdn": "1.5.2",
+    "@reown/appkit-common": "1.5.2",
+    "@reown/appkit-core": "1.5.2",
+    "@reown/appkit-experimental": "1.5.2",
+    "@reown/appkit-polyfills": "1.5.2",
+    "@reown/appkit-scaffold-ui": "1.5.2",
+    "@reown/appkit-siwe": "1.5.2",
+    "@reown/appkit-siwx": "1.5.2",
+    "@reown/appkit-ui": "1.5.2",
+    "@reown/appkit-wallet": "1.5.2"
+  },
+  "changesets": [
+    "two-glasses-drive"
+  ]
+}

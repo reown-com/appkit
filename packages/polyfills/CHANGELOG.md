@@ -1,5 +1,11 @@
 # @reown/appkit-polyfills
 
+## 1.5.3-ae9267.0
+
+### Patch Changes
+
+- Sync wagmi status with account controller status
+
 ## 1.5.2
 
 ### Patch Changes

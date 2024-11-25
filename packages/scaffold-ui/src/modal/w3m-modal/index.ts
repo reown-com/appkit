@@ -1,12 +1,15 @@
 import {
+  AccountController,
   ApiController,
   ChainController,
+  ConnectionController,
   CoreHelperUtil,
   EventsController,
   ModalController,
   RouterController,
   SIWXUtil,
   SnackController,
+  StorageUtil,
   ThemeController
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
@@ -101,12 +104,16 @@ export class W3mModal extends LitElement {
     initializeTheming(themeVariables, defaultThemeMode)
   }
 
-  private onClose() {
+  private async onClose() {
     this.open = false
     this.classList.remove('open')
     this.onScrollUnlock()
     SnackController.hide()
     this.onRemoveKeyboardListener()
+    const connectionStatus = StorageUtil.getConnectionStatus()
+    if (connectionStatus === 'connecting') {
+      await ConnectionController.disconnect()
+    }
   }
 
   private onOpen() {
