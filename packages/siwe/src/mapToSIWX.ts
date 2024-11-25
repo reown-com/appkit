@@ -162,15 +162,13 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
         }
 
         const siweSession = await getSession()
-
         const siweCaipNetworkId = `eip155:${siweSession?.chainId}`
-
-        const compareSessionAddress = siweSession?.address.toLowerCase()
-        const compareCaipAddress = address?.toLowerCase()
+        const lowercaseSessionAddress = siweSession?.address.toLowerCase()
+        const lowercaseCaipAddress = address?.toLowerCase()
 
         if (
           !siweSession ||
-          compareSessionAddress !== compareCaipAddress ||
+          lowercaseSessionAddress !== lowercaseCaipAddress ||
           siweCaipNetworkId !== chainId
         ) {
           return []

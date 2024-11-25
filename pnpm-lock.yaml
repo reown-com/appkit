@@ -1285,6 +1285,9 @@ importers:
       '@reown/appkit-scaffold-ui':
         specifier: workspace:*
         version: link:../scaffold-ui
+      '@reown/appkit-siwe':
+        specifier: workspace:*
+        version: link:../siwe
       '@reown/appkit-ui':
         specifier: workspace:*
         version: link:../ui
@@ -1313,9 +1316,6 @@ importers:
         specifier: 2.x
         version: 2.21.34(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.22.4)
     devDependencies:
-      '@reown/appkit-siwe':
-        specifier: workspace:*
-        version: link:../siwe
       '@types/react':
         specifier: 18.3.1
         version: 18.3.1
