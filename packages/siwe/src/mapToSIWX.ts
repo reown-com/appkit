@@ -55,10 +55,11 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
       if (siwe.options.signOutOnAccountChange) {
         const session = await getSession()
 
-        const compareSessionAddress = session?.address.toLowerCase()
-        const compareCaipAddress = CoreHelperUtil?.getPlainAddress(activeCaipAddress)?.toLowerCase()
+        const lowercaseSessionAddress = session?.address.toLowerCase()
+        const lowercaseCaipAddress =
+          CoreHelperUtil?.getPlainAddress(activeCaipAddress)?.toLowerCase()
 
-        const isDifferentAddress = session && compareSessionAddress !== compareCaipAddress
+        const isDifferentAddress = session && lowercaseSessionAddress !== lowercaseCaipAddress
 
         if (isDifferentAddress) {
           await signOut()
