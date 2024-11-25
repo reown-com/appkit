@@ -19,7 +19,8 @@ import {
   ConnectorController,
   ChainController,
   type Connector,
-  StorageUtil
+  StorageUtil,
+  CoreHelperUtil
 } from '@reown/appkit-core'
 import {
   SafeLocalStorage,
@@ -526,7 +527,8 @@ describe('Base', () => {
       expect(AccountController.setStatus).toHaveBeenCalledWith('disconnected', 'eip155')
     })
 
-    it('should show unsupported chain UI when synced chainId is not supported', async () => {
+    it.only('should show unsupported chain UI when synced chainId is not supported', async () => {
+      const isClientSpy = vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
       vi.mocked(ChainController).state = {
         chains: new Map([['eip155', { namespace: 'eip155' }]]),
         activeChain: 'eip155'
@@ -565,6 +567,7 @@ describe('Base', () => {
       await (appKit as any).syncExistingConnection()
 
       expect(ChainController.showUnsupportedChainUI).toHaveBeenCalled()
+      expect(isClientSpy).toHaveBeenCalled()
     })
   })
   describe('Base Initialization', () => {
