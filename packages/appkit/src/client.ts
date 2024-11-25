@@ -1389,7 +1389,6 @@ export class AppKit {
       chainNamespace
     )
 
-    console.log('>>> x: connected')
     this.setStatus('connected', chainNamespace)
 
     if (chainNamespace === ChainController.state.activeChain) {

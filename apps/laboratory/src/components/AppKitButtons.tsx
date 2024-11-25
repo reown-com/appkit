@@ -4,7 +4,7 @@ import { useAppKit, useAppKitAccount } from '@reown/appkit/react'
 
 function CustomButton() {
   const { open } = useAppKit()
-  const { status, address, caipAddress, isConnected } = useAppKitAccount()
+  const { status, address, caipAddress } = useAppKitAccount()
 
   const isPending = status === undefined || status === 'connecting' || status === 'reconnecting'
 

@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { createAppKit, useAppKit, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 import { wagmiAdapter } from '../config'
 import { mainnet, polygon, base } from '@reown/appkit/networks'
@@ -26,7 +25,7 @@ const modal = createAppKit({
 
 function CustomButton() {
   const { open } = useAppKit()
-  const { status, address, caipAddress, isConnected } = useAppKitAccount()
+  const { status, address, caipAddress } = useAppKitAccount()
 
   const isPending = status === undefined || status === 'connecting' || status === 'reconnecting'
 
@@ -42,27 +41,26 @@ function CustomButton() {
 }
 
 export default function Connect() {
-  const { address, caipAddress, status, isConnected } = useAppKitAccount()
+  const { status } = useAppKitAccount()
   const network = useAppKitNetwork()
 
-  console.log('>>> status', status, address)
   const isPending = status === undefined || status === 'connecting' || status === 'reconnecting'
 
   return (
-    <div className={styles.container}>
+    <div className={styles['container']}>
       <h1>Next.js Wagmi Example</h1>
 
       {isPending ? (
         <div>Loading...</div>
       ) : (
-        <div className={styles.buttonGroup}>
+        <div className={styles['buttonGroup']}>
           <w3m-button />
           <w3m-network-button />
         </div>
       )}
 
       {/* Modal Controls */}
-      <div className={styles.buttonGroup}>
+      <div className={styles['buttonGroup']}>
         <CustomButton />
         <button onClick={() => modal.open({ view: 'Networks' })}>Open Network Modal</button>
         <button
