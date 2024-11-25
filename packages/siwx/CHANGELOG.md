@@ -1,9 +1,5 @@
 # @reown/appkit-siwx
 
-- Updated dependencies []:
-  - @reown/appkit-common@1.5.3-ae9267.0
-  - @reown/appkit-core@1.5.3-ae9267.0
-
 ## 1.5.2
 
 ### Patch Changes
