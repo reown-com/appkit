@@ -1193,7 +1193,7 @@ export class AppKit {
     const adapter = this.getAdapter(chainNamespace)
     const connectionStatus = StorageUtil.getConnectionStatus()
 
-    if (connectionStatus === 'connected' || connectionStatus === 'connecting') {
+    if (connectionStatus === 'connected') {
       this.setStatus('connecting', chainNamespace)
     } else {
       this.setStatus(connectionStatus, chainNamespace)
