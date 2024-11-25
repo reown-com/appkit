@@ -38,11 +38,19 @@ export class ModalValidator {
     ).toContainText('authenticated')
   }
 
+  async expectOnSignInEventCalled(toBe: boolean) {
+    await expect(this.page.getByTestId('siwe-event-onSignIn')).toContainText(`${toBe}`)
+  }
+
   async expectUnauthenticated() {
     await expect(
       this.page.getByTestId('w3m-authentication-status'),
       'Authentication status should be: unauthenticated'
     ).toContainText('unauthenticated')
+  }
+
+  async expectOnSignOutEventCalled(toBe: boolean) {
+    await expect(this.page.getByTestId('siwe-event-onSignOut')).toContainText(`${toBe}`)
   }
 
   async expectSignatureDeclined() {
@@ -197,8 +205,22 @@ export class ModalValidator {
   }
 
   async expectExternalVisible() {
-    const externalConnector = this.page.getByTestId(/^wallet-selector-external/u)
+    const externalConnector = this.page.getByTestId(
+      /^wallet-selector-external-externalTestConnector/u
+    )
     await expect(externalConnector).toBeVisible()
+  }
+
+  async expectCoinbaseNotVisible() {
+    const coinbaseConnector = this.page.getByTestId(/^wallet-selector-external-coinbaseWalletSDK/u)
+    await expect(coinbaseConnector).not.toBeVisible()
+  }
+
+  async expectCoinbaseVisible() {
+    const coinbaseConnector = this.page.getByTestId(
+      /^wallet-selector-featured-fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa/u
+    )
+    await expect(coinbaseConnector).toBeVisible()
   }
 
   async expectMultipleAccounts() {

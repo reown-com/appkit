@@ -50,6 +50,18 @@ export function SiweData() {
               {session?.address}
             </Text>
           </Box>
+
+          <Box>
+            <Heading size="xs" textTransform="uppercase">
+              Session Events Called
+            </Heading>
+            {['onSignIn', 'onSignOut'].map(event => (
+              <Box key={event} display="flex" mr="1" pt="2">
+                <Text fontWeight="bold">{event}:&nbsp;</Text>
+                <Text data-testid={`siwe-event-${event}`}>false</Text>
+              </Box>
+            ))}
+          </Box>
         </Stack>
       </CardBody>
     </Card>
