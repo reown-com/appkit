@@ -18,6 +18,7 @@
     "@reown/appkit-new", 
     "@reown/appkit-scaffold-ui-new", 
     "@reown/appkit-ui-new", 
-    "@reown/appkit-adapter-bitcoin"
+    "@reown/appkit-adapter-bitcoin",
+    "@reown/appkit-adapter-polkadot"
   ]
 }
