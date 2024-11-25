@@ -243,6 +243,24 @@ describe('SIWE: mapToSIWX', () => {
 
       await expect(siwx.getSessions('eip155:1', 'mock-address')).resolves.toMatchObject([])
     })
+
+    it('should accept undefined address or chain', async () => {
+      const siwx = mapToSIWX(siweConfig)
+
+      vi.spyOn(siweConfig.methods, 'getSession').mockResolvedValueOnce({
+        address: undefined as any,
+        chainId: 1
+      })
+
+      await expect(siwx.getSessions('eip155:1', 'mock-address')).resolves.toMatchObject([])
+
+      vi.spyOn(siweConfig.methods, 'getSession').mockResolvedValueOnce({
+        address: 'mock-address',
+        chainId: undefined as any
+      })
+
+      await expect(siwx.getSessions('eip155:1', 'mock-address')).resolves.toMatchObject([])
+    })
   })
 
   describe('siwe.options.signOutOnNetworkChange', () => {

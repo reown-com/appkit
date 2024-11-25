@@ -13,7 +13,17 @@ const subscriptions: (() => void)[] = []
 export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
   async function getSession() {
     try {
-      return await siwe.methods.getSession()
+      const response = await siwe.methods.getSession()
+
+      if (!response?.address) {
+        throw new Error('SIWE session is missing address')
+      }
+
+      if (!response?.chainId) {
+        throw new Error('SIWE session is missing chainId')
+      }
+
+      return response
     } catch (error) {
       console.warn('AppKit:SIWE:getSession - error:', error)
 
@@ -55,7 +65,7 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
       if (siwe.options.signOutOnAccountChange) {
         const session = await getSession()
 
-        const lowercaseSessionAddress = session?.address.toLowerCase()
+        const lowercaseSessionAddress = session?.address?.toLowerCase()
         const lowercaseCaipAddress =
           CoreHelperUtil?.getPlainAddress(activeCaipAddress)?.toLowerCase()
 
@@ -164,7 +174,7 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
 
         const siweSession = await getSession()
         const siweCaipNetworkId = `eip155:${siweSession?.chainId}`
-        const lowercaseSessionAddress = siweSession?.address.toLowerCase()
+        const lowercaseSessionAddress = siweSession?.address?.toLowerCase()
         const lowercaseCaipAddress = address?.toLowerCase()
 
         if (
