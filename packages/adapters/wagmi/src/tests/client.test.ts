@@ -14,11 +14,13 @@ import {
   getEnsAddress as wagmiGetEnsAddress,
   writeContract as wagmiWriteContract,
   waitForTransactionReceipt,
-  getAccount
+  getAccount,
+  createConfig
 } from '@wagmi/core'
 import { mainnet } from '@wagmi/core/chains'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type UniversalProvider from '@walletconnect/universal-provider'
+import type { HttpTransport } from 'viem'
 
 vi.mock('@wagmi/core', async () => {
   const actual = await vi.importActual('@wagmi/core')
@@ -107,6 +109,41 @@ describe('WagmiAdapter', () => {
       const injectedConnector = mockConnectors.filter((c: any) => c.id === 'injected')[0]
 
       expect(injectedConnector?.info).toBeUndefined()
+    })
+
+    it('should pass WagmiAdapter constructor params to createConfig', () => {
+      new WagmiAdapter({
+        networks: mockNetworks,
+        projectId: mockProjectId,
+        ssr: true
+      })
+
+      expect(vi.mocked(createConfig)).toHaveBeenCalledWith(
+        expect.objectContaining({
+          chains: expect.any(Array),
+          projectId: mockProjectId,
+          ssr: true
+        })
+      )
+    })
+
+    it('should merge provided transports with default network transports', () => {
+      const mockCustomTransport = {} as HttpTransport
+      const mockTransports = { 1: mockCustomTransport }
+
+      new WagmiAdapter({
+        networks: mockNetworks,
+        projectId: mockProjectId,
+        transports: mockTransports
+      })
+
+      expect(vi.mocked(createConfig)).toHaveBeenCalledWith(
+        expect.objectContaining({
+          transports: expect.objectContaining({
+            1: mockCustomTransport
+          })
+        })
+      )
     })
   })
 
