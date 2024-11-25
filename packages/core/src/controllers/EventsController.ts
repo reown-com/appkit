@@ -17,7 +17,7 @@ export interface EventsControllerState {
 
 // -- State --------------------------------------------- //
 const state = proxy<EventsControllerState>({
-  timestamp: 0,
+  timestamp: Date.now(),
   data: {
     type: 'track',
     event: 'MODAL_CREATED'
@@ -64,10 +64,6 @@ export const EventsController = {
   },
 
   sendEvent(data: EventsControllerState['data']) {
-    if (!CoreHelperUtil.isClient()) {
-      return
-    }
-
     state.timestamp = Date.now()
     state.data = data
     if (OptionsController.state.features?.analytics) {
