@@ -1,5 +1,29 @@
 # @reown/appkit-adapter-wagmi
 
+## 1.5.2
+
+### Patch Changes
+
+- [#3310](https://github.com/reown-com/appkit/pull/3310) [`7c0a17d`](https://github.com/reown-com/appkit/commit/7c0a17d21392819563652b770f0e87015d6e5a91) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Remove coinbase from default screen
+
+- [#3316](https://github.com/reown-com/appkit/pull/3316) [`1f586a2`](https://github.com/reown-com/appkit/commit/1f586a2f974e56192d0e2d43e7d1ac38223ff7c7) Thanks [@zoruka](https://github.com/zoruka)! - - Fix onSignOut not being called for activeCaipAddress changes;
+
+  - Fix signOut/onSignOut not being called on useDisconnect hook calls;
+  - Fix AppKitSIWEClient signIn and signOut methods to call new SIWX handlers;
+  - Add tests for mapToSIWX function and usage against AppKit.
+
+- [#3299](https://github.com/reown-com/appkit/pull/3299) [`093a1a6`](https://github.com/reown-com/appkit/commit/093a1a6f1b69e27ecd10a54ff2badf94e070c356) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Resolve cases where wagmi doesn't recognize wc session and unable to switch from unsupported network"
+
+- Updated dependencies [[`7c0a17d`](https://github.com/reown-com/appkit/commit/7c0a17d21392819563652b770f0e87015d6e5a91), [`1f586a2`](https://github.com/reown-com/appkit/commit/1f586a2f974e56192d0e2d43e7d1ac38223ff7c7), [`093a1a6`](https://github.com/reown-com/appkit/commit/093a1a6f1b69e27ecd10a54ff2badf94e070c356)]:
+  - @reown/appkit-scaffold-ui@1.5.2
+  - @reown/appkit@1.5.2
+  - @reown/appkit-utils@1.5.2
+  - @reown/appkit-common@1.5.2
+  - @reown/appkit-core@1.5.2
+  - @reown/appkit-polyfills@1.5.2
+  - @reown/appkit-ui@1.5.2
+  - @reown/appkit-wallet@1.5.2
+
 ## 1.5.1
 
 ### Patch Changes
