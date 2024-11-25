@@ -1,14 +1,12 @@
 import {
   ApiController,
   ChainController,
-  ConnectionController,
   CoreHelperUtil,
   EventsController,
   ModalController,
   RouterController,
   SIWXUtil,
   SnackController,
-  StorageUtil,
   ThemeController
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
