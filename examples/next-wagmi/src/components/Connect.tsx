@@ -9,7 +9,7 @@ export default function Connect() {
 
   console.log('>>> status', status)
 
-  const isPending = status === undefined || status === 'connecting' || status === 'reconnecting'
+  const isPending = status === undefined || (status !== 'disconnected' && status !== 'connected')
 
   useEffect(() => {
     setRendered(true)

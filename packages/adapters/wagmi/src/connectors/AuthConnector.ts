@@ -109,7 +109,6 @@ export function authConnector(parameters: AuthParameters) {
 
     async isAuthorized() {
       const provider = await this.getProvider()
-      console.log('>>> isAuthorized', provider.getLoginEmailUsed())
 
       return Promise.resolve(provider.getLoginEmailUsed())
     },

@@ -5,7 +5,7 @@ import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { mainnet, arbitrum, avalanche, base, optimism, polygon } from '@reown/appkit/networks'
 import { type ReactNode } from 'react'
 
-const projectId = 'Your project ID'
+const projectId = '3bdbc796b351092d40d5d08e987f4eca'
 
 const ethersAdapter = new EthersAdapter()
 
