@@ -22,6 +22,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { ModalController } from './ModalController.js'
 import { EventsController } from './EventsController.js'
+import { SIWXUtil } from '../utils/SIWXUtil.js'
 
 // -- Constants ----------------------------------------- //
 const accountState: AccountControllerState = {
@@ -250,6 +251,8 @@ export const ChainController = {
         event: 'SWITCH_NETWORK',
         properties: { network: network.caipNetworkId }
       })
+
+      await SIWXUtil.initializeIfEnabled()
     }
   },
 
