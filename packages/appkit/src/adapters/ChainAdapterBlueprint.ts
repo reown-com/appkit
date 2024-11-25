@@ -22,12 +22,11 @@ import type { AppKitOptions } from '../utils/index.js'
 import type { AppKit } from '../client.js'
 import { snapshot } from 'valtio'
 
-type EventName = 'disconnect' | 'accountChanged' | 'switchNetwork' | 'statusChanged'
+type EventName = 'disconnect' | 'accountChanged' | 'switchNetwork'
 type EventData = {
   disconnect: () => void
   accountChanged: { address: string; chainId?: number | string }
   switchNetwork: { address?: string; chainId: number | string }
-  statusChanged: AccountControllerState['status']
 }
 type EventCallback<T extends EventName> = (data: EventData[T]) => void
 
