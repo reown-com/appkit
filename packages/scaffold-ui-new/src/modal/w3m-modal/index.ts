@@ -9,7 +9,7 @@ import {
   SnackController,
   ThemeController
 } from '@reown/appkit-core'
-import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
+import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui-new'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -61,17 +61,20 @@ export class W3mModal extends LitElement {
     return this.open
       ? html`
           <wui-flex @click=${this.onOverlayClick.bind(this)} data-testid="w3m-modal-overlay">
-            <wui-card
-              shake="${this.shake}"
-              role="alertdialog"
-              aria-modal="true"
-              tabindex="0"
-              data-testid="w3m-modal-card"
-            >
-              <w3m-header></w3m-header>
-              <w3m-router></w3m-router>
-              <w3m-snackbar></w3m-snackbar>
-              <w3m-alertbar></w3m-alertbar>
+            <wui-card class="modal-grid">
+              <wui-card
+                shake="${this.shake}"
+                role="alertdialog"
+                aria-modal="true"
+                tabindex="0"
+                data-testid="w3m-modal-card"
+                class="modal-card"
+              >
+                <w3m-header></w3m-header>
+                <w3m-router></w3m-router>
+                <w3m-snackbar></w3m-snackbar>
+                <w3m-alertbar></w3m-alertbar>
+              </wui-card>
             </wui-card>
           </wui-flex>
           <w3m-tooltip></w3m-tooltip>
