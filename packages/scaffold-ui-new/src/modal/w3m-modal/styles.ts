@@ -3,7 +3,7 @@ import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 
 export default css`
   :host {
-    z-index: 999;
+    z-index: var(--w3m-z-index);
     display: flex;
     justify-content: center;
     backface-visibility: hidden;
