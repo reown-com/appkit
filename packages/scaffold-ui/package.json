@@ -32,6 +32,7 @@
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-core": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
+    "@reown/appkit-ui-new": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "lit": "3.1.0"

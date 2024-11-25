@@ -119,7 +119,10 @@ const { cssVariablesVarPrefix: vars } = ThemeHelperUtil.createCSSVariables(allSt
  */
 function css(
   strings: TemplateStringsArray,
-  ...values: ((_vars: typeof vars) => CSSResultGroup | number | string)[]
+  ...values: (
+    | ((_vars: typeof vars) => CSSResultGroup | number | string)
+    | (CSSResultGroup | number | string)
+  )[]
 ) {
   return litCSS(
     strings,

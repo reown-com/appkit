@@ -9,7 +9,7 @@ import {
   SnackController,
   ThemeController
 } from '@reown/appkit-core'
-import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
+import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui-new'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
