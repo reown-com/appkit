@@ -15,6 +15,10 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
     try {
       const response = await siwe.methods.getSession()
 
+      if (!response) {
+        return undefined
+      }
+
       if (!response?.address) {
         throw new Error('SIWE session is missing address')
       }
