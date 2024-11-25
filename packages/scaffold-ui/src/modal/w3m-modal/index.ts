@@ -103,16 +103,12 @@ export class W3mModal extends LitElement {
     initializeTheming(themeVariables, defaultThemeMode)
   }
 
-  private async onClose() {
+  private onClose() {
     this.open = false
     this.classList.remove('open')
     this.onScrollUnlock()
     SnackController.hide()
     this.onRemoveKeyboardListener()
-    const connectionStatus = StorageUtil.getConnectionStatus()
-    if (connectionStatus === 'connecting') {
-      await ConnectionController.disconnect()
-    }
   }
 
   private onOpen() {

@@ -99,9 +99,6 @@ export const AccountController = {
   },
 
   setStatus(status: AccountControllerState['status'], chain: ChainNamespace | undefined) {
-    if (status === 'disconnected') {
-      console.trace('>>> setStatus', status)
-    }
     ChainController.setAccountProp('status', status, chain)
   },
 

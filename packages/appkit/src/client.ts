@@ -1390,7 +1390,7 @@ export class AppKit {
     )
 
     console.log('>>> x: connected')
-    // this.setStatus('connected', chainNamespace)
+    this.setStatus('connected', chainNamespace)
 
     if (chainNamespace === ChainController.state.activeChain) {
       const caipNetwork = this.caipNetworks?.find(
