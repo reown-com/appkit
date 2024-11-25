@@ -140,8 +140,7 @@ export const StorageUtil = {
     try {
       return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTION_STATUS) as ConnectionStatus
     } catch {
-      console.info('Unable to get Connection Status')
-      return 'disconnected'
+      return undefined
     }
   }
 }

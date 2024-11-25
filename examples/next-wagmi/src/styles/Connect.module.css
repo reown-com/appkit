@@ -1,0 +1,64 @@
+/* Base styles */
+.container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Typography */
+.container h1 {
+  font-weight: 700;
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.container h2 {
+  font-weight: 600;
+  font-size: 1.125rem;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.01em;
+}
+
+/* Buttons */
+.buttonGroup {
+  display: flex;
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.container button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+/* State container */
+.stateContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.stateContainer section {
+  background: rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  border-radius: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.stateContainer pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Mono', 'Droid Sans Mono', 'Source Code Pro',
+    monospace;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}

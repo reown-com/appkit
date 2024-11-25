@@ -1,5 +1,4 @@
 import {
-  AccountController,
   ApiController,
   ChainController,
   ConnectionController,

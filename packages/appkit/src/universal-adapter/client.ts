@@ -38,6 +38,7 @@ export class UniversalAdapter extends AdapterBlueprint {
   }
 
   public async disconnect() {
+    console.trace('>>> disconnect')
     const connector = this.connectors.find(c => c.id === 'WALLET_CONNECT')
     const provider = connector?.provider
     await provider?.disconnect()

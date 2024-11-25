@@ -1016,6 +1016,10 @@ export class AppKit {
     const isLoginEmailUsed = provider.getLoginEmailUsed()
     this.setLoading(isLoginEmailUsed)
 
+    if (!CoreHelperUtil.isClient()) {
+      return
+    }
+
     if (isLoginEmailUsed) {
       this.setStatus('connecting', ChainController.state.activeChain as ChainNamespace)
     }
@@ -1295,7 +1299,6 @@ export class AppKit {
 
         if ((adapter as ChainAdapter)?.adapterType === 'wagmi') {
           try {
-            // this.setStatus('connecting', chainNamespace)
             await adapter?.connect({
               id: 'walletConnect',
               type: 'WALLET_CONNECT',
@@ -1307,7 +1310,6 @@ export class AppKit {
              * Connection attempt fails due to already connected state - reconnect to restore provider state.
              */
             if (adapter?.reconnect) {
-              // this.setStatus('reconnecting', chainNamespace)
               adapter?.reconnect({
                 id: 'walletConnect',
                 type: 'WALLET_CONNECT'
@@ -1387,7 +1389,8 @@ export class AppKit {
       chainNamespace
     )
 
-    this.setStatus('connected', chainNamespace)
+    console.log('>>> x: connected')
+    // this.setStatus('connected', chainNamespace)
 
     if (chainNamespace === ChainController.state.activeChain) {
       const caipNetwork = this.caipNetworks?.find(

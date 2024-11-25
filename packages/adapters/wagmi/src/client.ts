@@ -40,7 +40,6 @@ import { walletConnect } from './connectors/UniversalConnector.js'
 import { coinbaseWallet } from '@wagmi/connectors'
 import {
   ConstantsUtil as CoreConstantsUtil,
-  StorageUtil,
   type ConnectorType,
   type Provider
 } from '@reown/appkit-core'
@@ -127,14 +126,8 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   private setupWatchers() {
-    // const initialAccountData = getAccount(this.wagmiConfig)
-    // StorageUtil.setConnectionStatus(initialAccountData.status)
-
     watchAccount(this.wagmiConfig, {
       onChange: accountData => {
-        // StorageUtil.setConnectionStatus(accountData.status)
-        // this.emit('statusChanged', accountData.status)
-
         if (accountData.address) {
           this.emit('accountChanged', {
             address: accountData.address,
