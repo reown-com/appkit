@@ -132,8 +132,6 @@ export default function MultiChainBitcoinAdapterOnly() {
         utxos
       })
 
-      console.log({ params })
-
       const signature = await walletProvider.signPSBT(params)
       toast({ title: 'PSBT Signature', description: signature.psbt, status: 'success' })
     } catch (error) {
