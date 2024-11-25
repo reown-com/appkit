@@ -527,7 +527,7 @@ describe('Base', () => {
       expect(AccountController.setStatus).toHaveBeenCalledWith('disconnected', 'eip155')
     })
 
-    it.only('should show unsupported chain UI when synced chainId is not supported', async () => {
+    it('should show unsupported chain UI when synced chainId is not supported', async () => {
       const isClientSpy = vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
       vi.mocked(ChainController).state = {
         chains: new Map([['eip155', { namespace: 'eip155' }]]),
