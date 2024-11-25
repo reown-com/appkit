@@ -6,8 +6,10 @@ import {
 } from '@reown/appkit-common'
 import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
 import {
+  AccountController,
   OptionsController,
   ThemeController,
+  type AccountControllerState,
   type Connector as AppKitConnector,
   type AuthConnector,
   type Metadata,
@@ -20,11 +22,12 @@ import type { AppKitOptions } from '../utils/index.js'
 import type { AppKit } from '../client.js'
 import { snapshot } from 'valtio'
 
-type EventName = 'disconnect' | 'accountChanged' | 'switchNetwork'
+type EventName = 'disconnect' | 'accountChanged' | 'switchNetwork' | 'statusChanged'
 type EventData = {
   disconnect: () => void
   accountChanged: { address: string; chainId?: number | string }
   switchNetwork: { address?: string; chainId: number | string }
+  statusChanged: AccountControllerState['status']
 }
 type EventCallback<T extends EventName> = (data: EventData[T]) => void
 
@@ -150,6 +153,10 @@ export abstract class AdapterBlueprint<
 
       return true
     })
+  }
+
+  protected setStatus(status: AccountControllerState['status'], chainNamespace?: ChainNamespace) {
+    AccountController.setStatus(status, chainNamespace)
   }
 
   /**
