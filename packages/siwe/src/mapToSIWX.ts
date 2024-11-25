@@ -151,8 +151,11 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
           console.warn('AppKit:SIWE:setSessions - signOut error', error)
         }
       } else {
-        const addingSessions = sessions.map(session => this.addSession(session))
-        await Promise.all(addingSessions)
+        /*
+         * The default SIWE implementation would only support one session
+         * So we only add the first session to keep backwards compatibility
+         */
+        await this.addSession(sessions[0] as SIWXSession)
       }
     },
 

@@ -203,6 +203,23 @@ describe('SIWE: mapToSIWX', () => {
       expect(addSessionSpy).not.toBeCalled()
       expect(signOutSpy).toBeCalled()
     })
+
+    it('should only use the first session', async () => {
+      const siwx = mapToSIWX(siweConfig)
+
+      const addSessionSpy = vi.spyOn(siwx, 'addSession')
+
+      const firstSessionMock = { ...sessionMock }
+      const secondSessionMock = {
+        ...sessionMock,
+        data: { ...sessionMock.data, chainId: 'eip155:2' as const }
+      }
+
+      await expect(siwx.setSessions([firstSessionMock, secondSessionMock])).resolves.not.toThrow()
+
+      expect(addSessionSpy).toBeCalledWith(firstSessionMock)
+      expect(addSessionSpy).not.toBeCalledWith(secondSessionMock)
+    })
   })
 
   describe('getSessions', () => {
