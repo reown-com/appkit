@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Button, Stack, Spacer, Link } from '@chakra-ui/react'
-import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitProvider } from '@reown/appkit-new/react'
 import {
   PublicKey,
   Transaction,

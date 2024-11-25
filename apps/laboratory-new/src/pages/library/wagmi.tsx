@@ -4,7 +4,7 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { createAppKit } from '@reown/appkit/react'
+import { createAppKit } from '@reown/appkit-new/react'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { ThemeStore } from '../../utils/StoreUtil'
 

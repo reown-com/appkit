@@ -1,6 +1,6 @@
 import { Button, Stack, Text, Input, Tooltip, Flex } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
-import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit-new/react'
 import { UniversalProvider } from '@walletconnect/universal-provider'
 import { useChakraToast } from '../Toast'
 import { parseGwei } from 'viem'

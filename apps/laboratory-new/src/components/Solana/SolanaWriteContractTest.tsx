@@ -9,7 +9,7 @@ import {
   VersionedTransaction,
   TransactionMessage
 } from '@solana/web3.js'
-import { useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+import { useAppKitNetwork, useAppKitProvider } from '@reown/appkit-new/react'
 
 import { COUNTER_ACCOUNT_SIZE } from '../../utils/SolanaConstants'
 import { deserializeCounterAccount, detectProgramId } from '../../utils/SolanaUtil'

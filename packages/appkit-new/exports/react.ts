@@ -4,10 +4,10 @@ import { getAppKit } from '../src/library/react/index.js'
 import { CoreHelperUtil, type UseAppKitNetworkReturn } from '@reown/appkit-core'
 import { PACKAGE_VERSION } from './constants.js'
 import { useAppKitNetworkCore } from '@reown/appkit-core/react'
-import type { AppKitNetwork } from '@reown/appkit/networks'
+import type { AppKitNetwork } from '@reown/appkit-new/networks'
 
 // -- Views ------------------------------------------------------------
-export * from '@reown/appkit-scaffold-ui'
+export * from '@reown/appkit-scaffold-ui-new'
 
 // -- Hooks ------------------------------------------------------------
 export * from '../src/library/react/index.js'

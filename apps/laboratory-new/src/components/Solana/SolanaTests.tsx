@@ -1,4 +1,4 @@
-import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit-new/react'
 import {
   StackDivider,
   Card,
@@ -15,7 +15,7 @@ import { SolanaSignTransactionTest } from './SolanaSignTransactionTest'
 import { SolanaSendTransactionTest } from './SolanaSendTransactionTest'
 import { SolanaSignMessageTest } from './SolanaSignMessageTest'
 import { SolanaWriteContractTest } from './SolanaWriteContractTest'
-import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit/networks'
+import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit-new/networks'
 import { SolanaSignAndSendTransaction } from './SolanaSignAndSendTransactionTest'
 import { SolanaSignAllTransactionsTest } from './SolanaSignAllTransactionsTest'
 import { SolanaSignJupiterSwapTest } from './SolanaSignJupiterSwapTest'

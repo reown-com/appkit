@@ -13,7 +13,7 @@ import {
   zora,
   sepolia,
   baseSepolia
-} from '@reown/appkit/networks'
+} from '@reown/appkit-new/networks'
 
 export const EthersConstants = {
   chains: [

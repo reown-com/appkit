@@ -3,7 +3,7 @@ import type { Page } from '@playwright/test'
 import { ConstantsUtil } from '../../../src/utils/ConstantsUtil'
 import { getMaximumWaitConnections } from '../utils/timeouts'
 import { verifySignature } from '../../../src/utils/SignatureUtil'
-import type { CaipNetworkId } from '@reown/appkit'
+import type { CaipNetworkId } from '@reown/appkit-new'
 
 const MAX_WAIT = getMaximumWaitConnections()
 

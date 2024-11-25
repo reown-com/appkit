@@ -1,4 +1,4 @@
-import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit/networks'
+import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit-new/networks'
 
 export const COUNTER_ACCOUNT_SIZE = 8
 

@@ -125,8 +125,8 @@
   **Example usage**
 
   ```ts
-  import { createAppKit } from '@reown/appkit/react'
-  import { mainnet } from '@reown/appkit/networks'
+  import { createAppKit } from '@reown/appkit-new/react'
+  import { mainnet } from '@reown/appkit-new/networks'
 
   const modal = createAppKit({
     adapters: [
@@ -273,7 +273,7 @@
   - SIWX AppKit options config
   - SIWX initialization
 
-- [#3121](https://github.com/reown-com/appkit/pull/3121) [`f30d116`](https://github.com/reown-com/appkit/commit/f30d11632e3beee7cefe6863fb7873b420a6e84f) Thanks [@magiziz](https://github.com/magiziz)! - Added `useDisconnect` hook to `@reown/appkit/react` and `@reown/appkit/vue`.
+- [#3121](https://github.com/reown-com/appkit/pull/3121) [`f30d116`](https://github.com/reown-com/appkit/commit/f30d11632e3beee7cefe6863fb7873b420a6e84f) Thanks [@magiziz](https://github.com/magiziz)! - Added `useDisconnect` hook to `@reown/appkit-new/react` and `@reown/appkit/vue`.
 
 - Updated dependencies [[`7523543`](https://github.com/reown-com/appkit/commit/7523543f5efd1e180f667fb9ed9b95459a332c78), [`0c93f2f`](https://github.com/reown-com/appkit/commit/0c93f2f64b3d8c71b902815991162ce84024a202), [`f30d116`](https://github.com/reown-com/appkit/commit/f30d11632e3beee7cefe6863fb7873b420a6e84f)]:
   - @reown/appkit-adapter-ethers5@1.1.7
@@ -492,9 +492,9 @@
   **Example usage**
 
   ```ts
-  import { createAppKit } from '@reown/appkit/react'
+  import { createAppKit } from '@reown/appkit-new/react'
   import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-  import { mainnet } from '@reown/appkit/networks'
+  import { mainnet } from '@reown/appkit-new/networks'
 
   const wagmiAdapter = new WagmiAdapter({
     ssr: true,

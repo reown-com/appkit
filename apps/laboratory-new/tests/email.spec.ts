@@ -3,8 +3,8 @@ import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 import { Email } from './shared/utils/email'
 import { SECURE_WEBSITE_URL } from './shared/constants'
-import { mainnet, polygon, solana, solanaTestnet } from '@reown/appkit/networks'
-import type { CaipNetworkId } from '@reown/appkit'
+import { mainnet, polygon, solana, solanaTestnet } from '@reown/appkit-new/networks'
+import type { CaipNetworkId } from '@reown/appkit-new'
 
 /* eslint-disable init-declarations */
 let page: ModalWalletPage

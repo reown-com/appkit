@@ -1,5 +1,16 @@
-import { useAppKit, useDisconnect, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
-import { polygon, mainnet, solana, solanaTestnet, type AppKitNetwork } from '@reown/appkit/networks'
+import {
+  useAppKit,
+  useDisconnect,
+  useAppKitAccount,
+  useAppKitNetwork
+} from '@reown/appkit-new/react'
+import {
+  polygon,
+  mainnet,
+  solana,
+  solanaTestnet,
+  type AppKitNetwork
+} from '@reown/appkit-new/networks'
 import { Heading, Box, Button } from '@chakra-ui/react'
 
 export function AppKitHooks() {

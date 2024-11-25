@@ -1,10 +1,10 @@
 import { Button, Stack, Text, Spacer, Heading } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
-import { useAppKitAccount, useAppKitProvider, useAppKitNetwork } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitProvider, useAppKitNetwork } from '@reown/appkit-new/react'
 import { UniversalProvider } from '@walletconnect/universal-provider'
 import { useChakraToast } from '../Toast'
 import type { Address } from 'viem'
-import type { Provider as RawProvider } from '@reown/appkit'
+import type { Provider as RawProvider } from '@reown/appkit-new'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { ethers } from 'ethers5'
 import {

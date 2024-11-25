@@ -9,7 +9,7 @@ import type {
   W3mButton,
   W3mConnectButton,
   W3mNetworkButton
-} from '@reown/appkit-scaffold-ui'
+} from '@reown/appkit-scaffold-ui-new'
 import type { AppKit } from '../../../src/client.js'
 import type { AppKitOptions } from '../../utils/TypesUtil.js'
 import { ProviderUtil } from '../../store/ProviderUtil.js'

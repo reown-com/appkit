@@ -7,7 +7,7 @@ import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
 import { bigIntReplacer } from '../../utils/CommonUtils'
 import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
 import { serializePublicKey, type P256Credential } from 'webauthn-p256'
-import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit-new/react'
 import {
   grantPermissions,
   isSmartSessionSupported,

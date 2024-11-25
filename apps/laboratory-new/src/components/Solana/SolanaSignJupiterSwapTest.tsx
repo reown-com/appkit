@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Button, Stack, Spacer } from '@chakra-ui/react'
 import { PublicKey, VersionedTransaction } from '@solana/web3.js'
 
-import { useAppKitProvider } from '@reown/appkit/react'
+import { useAppKitProvider } from '@reown/appkit-new/react'
 import { useChakraToast } from '../Toast'
 import bs58 from 'bs58'
 import { useAppKitConnection, type Provider } from '@reown/appkit-adapter-solana/react'

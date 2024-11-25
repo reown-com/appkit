@@ -4,10 +4,10 @@ import {
   useAppKitNetwork,
   useAppKitProvider,
   type Provider
-} from '@reown/appkit/react'
+} from '@reown/appkit-new/react'
 import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers'
 import { useState } from 'react'
-import { mainnet } from '@reown/appkit/networks'
+import { mainnet } from '@reown/appkit-new/networks'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { useChakraToast } from '../Toast'
 

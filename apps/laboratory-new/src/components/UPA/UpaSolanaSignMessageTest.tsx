@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Button } from '@chakra-ui/react'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'
-import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit-new/react'
 import Provider from '@walletconnect/universal-provider'
 import base58 from 'bs58'
 

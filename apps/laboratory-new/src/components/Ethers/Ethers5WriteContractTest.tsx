@@ -4,9 +4,9 @@ import {
   useAppKitNetwork,
   useAppKitProvider,
   type Provider
-} from '@reown/appkit/react'
+} from '@reown/appkit-new/react'
 import { ethers } from 'ethers5'
-import { optimism, sepolia } from '@reown/appkit/networks'
+import { optimism, sepolia } from '@reown/appkit-new/networks'
 import { useState } from 'react'
 
 import { abi, address as donutAddress } from '../../utils/DonutContract'

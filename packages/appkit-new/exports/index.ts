@@ -4,7 +4,7 @@ import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { PACKAGE_VERSION } from './constants.js'
 
 // -- Views ------------------------------------------------------------
-export * from '@reown/appkit-scaffold-ui'
+export * from '@reown/appkit-scaffold-ui-new'
 
 // -- Utils & Other -----------------------------------------------------
 export * from '../src/utils/index.js'

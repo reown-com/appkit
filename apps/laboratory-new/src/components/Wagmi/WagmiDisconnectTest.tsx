@@ -3,7 +3,7 @@ import { Button } from '@chakra-ui/react'
 import { useConnections, useDisconnect } from 'wagmi'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'
-import { useAppKitAccount } from '@reown/appkit/react'
+import { useAppKitAccount } from '@reown/appkit-new/react'
 
 export function WagmiDisconnectTest() {
   const toast = useChakraToast()

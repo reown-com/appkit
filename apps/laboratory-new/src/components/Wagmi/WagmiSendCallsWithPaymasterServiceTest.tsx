@@ -7,7 +7,7 @@ import { parseGwei, type Address } from 'viem'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '../../utils/EIP5792Utils'
 import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
-import { useAppKitAccount } from '@reown/appkit/react'
+import { useAppKitAccount } from '@reown/appkit-new/react'
 
 const TEST_TX_1 = {
   to: vitalikEthAddress as Address,

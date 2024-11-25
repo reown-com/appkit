@@ -3,11 +3,11 @@ import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { getAppKit } from '../src/library/vue/index.js'
 import { ChainController, CoreHelperUtil, type UseAppKitNetworkReturn } from '@reown/appkit-core'
 import { PACKAGE_VERSION } from './constants.js'
-import type { AppKitNetwork } from '@reown/appkit/networks'
+import type { AppKitNetwork } from '@reown/appkit-new/networks'
 import { onUnmounted, ref, type Ref } from 'vue'
 
 // -- Views ------------------------------------------------------------
-export * from '@reown/appkit-scaffold-ui'
+export * from '@reown/appkit-scaffold-ui-new'
 
 // -- Hooks ------------------------------------------------------------
 export * from '../src/library/vue/index.js'

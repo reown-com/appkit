@@ -10,7 +10,7 @@ import {
   getProviderCachedCapabilities
 } from '../utils/EIP5792Utils'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
-import { useAppKitAccount } from '@reown/appkit/react'
+import { useAppKitAccount } from '@reown/appkit-new/react'
 
 type UseWagmiAvailableCapabilitiesParams = {
   capability?: string

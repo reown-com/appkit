@@ -4,8 +4,8 @@ import { WalletPage } from './shared/pages/WalletPage'
 import { WalletValidator } from './shared/validators/WalletValidator'
 import { ModalPage } from './shared/pages/ModalPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
-import { mainnet, polygon, solana, solanaTestnet } from '@reown/appkit/networks'
-import type { CaipNetworkId } from '@reown/appkit'
+import { mainnet, polygon, solana, solanaTestnet } from '@reown/appkit-new/networks'
+import type { CaipNetworkId } from '@reown/appkit-new'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage

@@ -42,7 +42,7 @@ import {
   AlertController,
   StorageUtil
 } from '@reown/appkit-core'
-import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
+import { setColorTheme, setThemeVariables } from '@reown/appkit-ui-new'
 import {
   ConstantsUtil,
   type CaipNetwork,
@@ -69,7 +69,7 @@ import {
   type W3mFrameTypes
 } from '@reown/appkit-wallet'
 import { ProviderUtil } from './store/ProviderUtil.js'
-import type { AppKitNetwork } from '@reown/appkit/networks'
+import type { AppKitNetwork } from '@reown/appkit-new/networks'
 import type { AdapterBlueprint } from './adapters/ChainAdapterBlueprint.js'
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { SessionTypes } from '@walletconnect/types'
@@ -1688,8 +1688,8 @@ export class AppKit {
       isInitialized = true
       this.initPromise = new Promise<void>(async resolve => {
         await Promise.all([
-          import('@reown/appkit-ui'),
-          import('@reown/appkit-scaffold-ui/w3m-modal')
+          import('@reown/appkit-ui-new'),
+          import('@reown/appkit-scaffold-ui-new/w3m-modal')
         ])
         const modal = document.createElement('w3m-modal')
         if (!OptionsController.state.disableAppend) {

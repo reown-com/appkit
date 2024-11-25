@@ -4,7 +4,7 @@ import {
   useAppKitNetwork,
   useAppKitProvider,
   type Provider
-} from '@reown/appkit/react'
+} from '@reown/appkit-new/react'
 import { ethers } from 'ethers5'
 import type { TypedDataField } from 'ethers5'
 import { useChakraToast } from '../Toast'

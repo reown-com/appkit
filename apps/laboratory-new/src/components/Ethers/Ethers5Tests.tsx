@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useAppKitAccount } from '@reown/appkit/react'
+import { useAppKitAccount } from '@reown/appkit-new/react'
 import { EthersSignMessageTest } from './EthersSignMessageTest'
 import { EthersSignTypedDataTest } from './EthersSignTypedDataTest'
 import { StackDivider, Card, CardHeader, Heading, CardBody, Box, Stack } from '@chakra-ui/react'

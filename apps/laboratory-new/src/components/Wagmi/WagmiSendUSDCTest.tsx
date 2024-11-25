@@ -1,7 +1,7 @@
 import { Button, Stack, Link, Text, Spacer, Input } from '@chakra-ui/react'
 import { useAccount, type Config } from 'wagmi'
 import { useState } from 'react'
-import { arbitrum, base, optimism, sepolia } from '@reown/appkit/networks'
+import { arbitrum, base, optimism, sepolia } from '@reown/appkit-new/networks'
 import { useChakraToast } from '../Toast'
 import { erc20Abi, type Chain, type Hex } from 'viem'
 import { getWalletClient } from 'wagmi/actions'

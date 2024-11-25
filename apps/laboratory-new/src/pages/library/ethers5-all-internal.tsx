@@ -1,4 +1,4 @@
-import { createAppKit } from '@reown/appkit/react'
+import { createAppKit } from '@reown/appkit-new/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { AppKitButtons } from '../../components/AppKitButtons'
@@ -7,7 +7,7 @@ import { SiweData } from '../../components/Siwe/SiweData'
 import { Ethers5Tests } from '../../components/Ethers/Ethers5Tests'
 import { Ethers5ModalInfo } from '../../components/Ethers/Ethers5ModalInfo'
 import { Ethers5Adapter } from '@reown/appkit-adapter-ethers5'
-import { mainnet } from '@reown/appkit/networks'
+import { mainnet } from '@reown/appkit-new/networks'
 
 const networks = ConstantsUtil.EvmNetworks
 const ethers5Adapter = new Ethers5Adapter()

@@ -10,7 +10,7 @@ import {
 } from '@solana/web3.js'
 
 import { useChakraToast } from '../Toast'
-import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitProvider } from '@reown/appkit-new/react'
 import { useAppKitConnection, type Provider } from '@reown/appkit-adapter-solana/react'
 
 const PHANTOM_TESTNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'

@@ -5,7 +5,7 @@ import { useCallback, useEffect } from 'react'
 import { optimism, sepolia } from 'wagmi/chains'
 import { abi, address } from '../../utils/DonutContract'
 import { useChakraToast } from '../Toast'
-import { useAppKitAccount } from '@reown/appkit/react'
+import { useAppKitAccount } from '@reown/appkit-new/react'
 
 const ALLOWED_CHAINS = [sepolia.id, optimism.id] as number[]
 

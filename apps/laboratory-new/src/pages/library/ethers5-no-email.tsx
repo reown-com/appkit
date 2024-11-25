@@ -1,11 +1,11 @@
-import { createAppKit } from '@reown/appkit/react'
+import { createAppKit } from '@reown/appkit-new/react'
 import { Ethers5Adapter } from '@reown/appkit-adapter-ethers5'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { Ethers5ModalInfo } from '../../components/Ethers/Ethers5ModalInfo'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { Ethers5Tests } from '../../components/Ethers/Ethers5Tests'
-import { mainnet } from '@reown/appkit/networks'
+import { mainnet } from '@reown/appkit-new/networks'
 
 const networks = ConstantsUtil.EvmNetworks
 

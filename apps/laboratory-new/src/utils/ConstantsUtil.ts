@@ -15,10 +15,10 @@ import {
   hedera,
   aurora,
   bitcoin
-} from '@reown/appkit/networks'
-import type { AppKitNetwork } from '@reown/appkit/networks'
+} from '@reown/appkit-new/networks'
+import type { AppKitNetwork } from '@reown/appkit-new/networks'
 import { getLocalStorageItem } from './LocalStorage'
-import type { CaipNetwork } from '@reown/appkit'
+import type { CaipNetwork } from '@reown/appkit-new'
 
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 if (!projectId) {

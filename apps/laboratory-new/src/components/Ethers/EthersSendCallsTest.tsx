@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { Button, Stack, Text, Spacer, Heading } from '@chakra-ui/react'
-import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit-new/react'
 import { UniversalProvider } from '@walletconnect/universal-provider'
 import { useChakraToast } from '../Toast'
 import { parseGwei, type Address } from 'viem'

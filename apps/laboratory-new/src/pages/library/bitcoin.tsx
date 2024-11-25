@@ -3,7 +3,7 @@ import {
   useAppKitAccount,
   useAppKitProvider,
   type CaipNetwork
-} from '@reown/appkit/react'
+} from '@reown/appkit-new/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 
