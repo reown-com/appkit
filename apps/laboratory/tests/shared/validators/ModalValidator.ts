@@ -203,6 +203,18 @@ export class ModalValidator {
     await expect(externalConnector).toBeVisible()
   }
 
+  async expectCoinbaseNotVisible() {
+    const coinbaseConnector = this.page.getByTestId(/^wallet-selector-external-coinbaseWalletSDK/u)
+    await expect(coinbaseConnector).not.toBeVisible()
+  }
+
+  async expectCoinbaseVisible() {
+    const coinbaseConnector = this.page.getByTestId(
+      /^wallet-selector-featured-fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa/u
+    )
+    await expect(coinbaseConnector).toBeVisible()
+  }
+
   async expectMultipleAccounts() {
     await this.page.waitForTimeout(500)
     await expect(this.page.getByText('Switch Address')).toBeVisible({
