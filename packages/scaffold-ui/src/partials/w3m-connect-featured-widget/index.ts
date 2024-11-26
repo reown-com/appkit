@@ -34,6 +34,7 @@ export class W3mConnectFeaturedWidget extends LitElement {
         ${wallets.map(
           wallet => html`
             <wui-list-wallet
+              data-testid=${`wallet-selector-featured-${wallet.id}`}
               imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
               name=${wallet.name ?? 'Unknown'}
               @click=${() => this.onConnectWallet(wallet)}

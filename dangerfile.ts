@@ -379,6 +379,14 @@ async function checkChangesetFiles() {
     .filter(f => f.startsWith('.changeset/'))
     .filter(f => f.endsWith('.md') && !f.startsWith('README.md'))
 
+  const ignoredChangesetFiles = [
+    '@apps/gallery-new',
+    '@reown/appkit-ui-new',
+    '@reown/appkit-scaffold-ui-new',
+    '@apps/laboratory-new',
+    '@reown/appkit-new'
+  ]
+
   for (const f of changesetFiles) {
     const fileContent = await danger.github.utils.fileContents(f)
 
@@ -386,9 +394,11 @@ async function checkChangesetFiles() {
       fail(`Changeset file ${f} cannot include @examples/* packages as part of the changeset`)
     }
 
-    if (fileContent.includes('@apps/gallery-new') || fileContent.includes('@reown/appkit-ui-new')) {
+    if (ignoredChangesetFiles.some(ignored => fileContent.includes(ignored))) {
       fail(
-        `Changeset file ${f} cannot include @apps/gallery-new or @reown/appkit-ui-new' packages as part of the changeset`
+        `Changeset file ${f} cannot include ${ignoredChangesetFiles
+          .map(changesetFile => changesetFile)
+          .join(', ')} packages as part of the changeset`
       )
     }
   }

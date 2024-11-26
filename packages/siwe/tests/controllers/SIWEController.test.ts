@@ -1,9 +1,9 @@
-import { describe, expect, it } from 'vitest'
-import { SIWEController } from '../../core/controller/SIWEController.js'
+import { vi, describe, expect, it } from 'vitest'
+import { SIWEController, type SIWEControllerClient } from '../../core/controller/SIWEController.js'
 
 // -- Mocks -------------------------------------------------------------
 const session = { address: '0x', chainId: 1 }
-const client = {
+const client: SIWEControllerClient = {
   signIn: () => Promise.resolve(session),
   options: {
     enabled: true,
@@ -33,8 +33,9 @@ describe('SIWEController', () => {
     expect(() => SIWEController._getClient()).toThrow('SIWEController client not set')
   })
 
-  it('should set the SIWE client and update status to READY', () => {
-    SIWEController.setSIWEClient(client)
+  it('should set the SIWE client and update status to READY', async () => {
+    vi.spyOn(client, 'getSession').mockResolvedValueOnce(null)
+    await SIWEController.setSIWEClient(client)
 
     const state = SIWEController.state
     expect(state._client).toBe(client)

@@ -76,6 +76,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     })
     this.namespace = CommonConstantsUtil.CHAIN.EVM
     this.createConfig({
+      ...configParams,
       networks: CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
         projectId: configParams.projectId,
         customNetworkImageUrls: {}

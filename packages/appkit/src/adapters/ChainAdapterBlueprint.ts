@@ -6,9 +6,11 @@ import {
 } from '@reown/appkit-common'
 import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
 import {
+  AccountController,
   OptionsController,
   ThemeController,
   type AccountType,
+  type AccountControllerState,
   type Connector as AppKitConnector,
   type AuthConnector,
   type Metadata,
@@ -151,6 +153,10 @@ export abstract class AdapterBlueprint<
 
       return true
     })
+  }
+
+  protected setStatus(status: AccountControllerState['status'], chainNamespace?: ChainNamespace) {
+    AccountController.setStatus(status, chainNamespace)
   }
 
   /**
