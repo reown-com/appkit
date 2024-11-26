@@ -1016,10 +1016,6 @@ export class AppKit {
     const isLoginEmailUsed = provider.getLoginEmailUsed()
     this.setLoading(isLoginEmailUsed)
 
-    if (!CoreHelperUtil.isClient()) {
-      return
-    }
-
     if (isLoginEmailUsed) {
       this.setStatus('connecting', ChainController.state.activeChain as ChainNamespace)
     }
