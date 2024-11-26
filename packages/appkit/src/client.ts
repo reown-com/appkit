@@ -948,15 +948,15 @@ export class AppKit {
           const providerType =
             ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
 
-          if (providerType === 'AUTH') {
+          if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH) {
             try {
               ChainController.state.activeChain = caipNetwork.chainNamespace
               await this.connectionControllerClient?.connectExternal?.({
-                id: 'ID_AUTH',
+                id: UtilConstantsUtil.AUTH_CONNECTOR_ID,
                 provider: this.authProvider,
                 chain: caipNetwork.chainNamespace,
                 chainId: caipNetwork.id,
-                type: 'AUTH',
+                type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
                 caipNetwork
               })
             } catch (error) {
@@ -1022,23 +1022,6 @@ export class AppKit {
 
     const { isConnected } = await provider.isConnected()
 
-    if (isConnected && this.connectionControllerClient?.connectExternal) {
-      await this.connectionControllerClient?.connectExternal({
-        id: 'ID_AUTH',
-        info: {
-          name: 'ID_AUTH'
-        },
-        type: 'AUTH',
-        provider,
-        chainId: ChainController.state.activeCaipNetwork?.id
-      })
-      this.setLoading(false)
-      this.setStatus('connected', ChainController.state.activeChain as ChainNamespace)
-    } else {
-      this.setLoading(false)
-      this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
-    }
-
     provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
       if (W3mFrameHelpers.checkIfRequestExists(request)) {
         if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
@@ -1079,7 +1062,7 @@ export class AppKit {
     })
     provider.onNotConnected(() => {
       const connectedConnector = SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
-      const isConnectedWithAuth = connectedConnector === 'ID_AUTH'
+      const isConnectedWithAuth = connectedConnector === UtilConstantsUtil.AUTH_CONNECTOR_ID
       if (!isConnected && isConnectedWithAuth) {
         this.setCaipAddress(undefined, ChainController.state.activeChain as ChainNamespace)
         this.setLoading(false)
@@ -1090,9 +1073,9 @@ export class AppKit {
     })
     provider.onConnect(async user => {
       this.syncProvider({
-        type: 'AUTH',
+        type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
         provider,
-        id: 'ID_AUTH',
+        id: UtilConstantsUtil.AUTH_CONNECTOR_ID,
         chainNamespace: ChainController.state.activeChain as ChainNamespace
       })
 
@@ -1138,6 +1121,21 @@ export class AppKit {
         ChainController.state.activeChain as ChainNamespace
       )
     })
+
+    if (isConnected && this.connectionControllerClient?.connectExternal) {
+      await this.connectionControllerClient?.connectExternal({
+        id: UtilConstantsUtil.AUTH_CONNECTOR_ID,
+        info: { name: UtilConstantsUtil.AUTH_CONNECTOR_ID },
+        type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
+        provider,
+        chainId: ChainController.state.activeCaipNetwork?.id
+      })
+      this.setLoading(false)
+      this.setStatus('connected', ChainController.state.activeChain as ChainNamespace)
+    } else {
+      this.setLoading(false)
+      this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
+    }
   }
 
   private listenWalletConnect() {
