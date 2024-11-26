@@ -57,7 +57,6 @@ export class W3mAccountDefaultWidget extends LitElement {
     this.unsubscribe.push(
       ...[
         AccountController.subscribeKey('caipAddress', val => {
-          console.log('>> CAIP ADDRESS', val)
           this.address = CoreHelperUtil.getPlainAddress(val)
           this.caipAddress = val
         }),
@@ -96,7 +95,6 @@ export class W3mAccountDefaultWidget extends LitElement {
     const shouldShowMultiAccount =
       ChainController.state.activeChain !== ConstantsUtil.CHAIN.SOLANA &&
       this.allAccounts.length > 1
-    console.log('>> WASSAAP', this.allAccounts.length, shouldShowMultiAccount)
 
     return html`<wui-flex
         flexDirection="column"
@@ -276,7 +274,6 @@ export class W3mAccountDefaultWidget extends LitElement {
 
     const account = this.allAccounts.find(acc => acc.address === this.address)
     const label = AccountController.state.addressLabels.get(this.address)
-    console.log('>> Multi account widget', account, label)
     if (this.namespace === 'bip122') {
       return this.btcAccountsTemplate()
     }
@@ -297,8 +294,6 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private btcAccountsTemplate() {
-    console.log('>> BTC ACCOUNTS', this.allAccounts)
-
     return html`<wui-flex gap="m" alignItems="center" flexDirection="column">
       <wui-avatar
         .imageSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}

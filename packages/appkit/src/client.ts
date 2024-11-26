@@ -777,10 +777,8 @@ export class AppKit {
             chainNamespace: chainToUse
           })
 
-          console.log('>> Getting all accounts...')
           const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
 
-          console.log('>> Setting all accounts...', accounts)
           this.setAllAccounts(accounts, chainToUse)
         }
 

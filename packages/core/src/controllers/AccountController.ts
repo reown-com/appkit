@@ -168,7 +168,6 @@ export const AccountController = {
     }
   },
   setShouldUpdateToAddress(address: string, chain: ChainNamespace | undefined) {
-    console.log('>> setShouldUpdateToAddress', address, chain)
     ChainController.setAccountProp('shouldUpdateToAddress', address, chain)
   },
 

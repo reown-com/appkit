@@ -62,12 +62,9 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     _params: AdapterBlueprint.GetAccountsParams
   ): Promise<AdapterBlueprint.GetAccountsResult> {
     const addresses = await this.connector?.getAccountAddresses()
-    console.log('BitcoinAdapter:getAccounts - addresses:', addresses)
     const accounts = addresses?.map(a =>
       CoreHelperUtil.createAccount('bip122', a.address, a.purpose || 'payment')
     )
-
-    console.log('>> Accounts:', accounts)
 
     return {
       accounts: accounts || []
