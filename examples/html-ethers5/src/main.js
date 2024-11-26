@@ -1,4 +1,4 @@
-import { Ethers5Adapter } from '@reown/appkit-adapter-ethers5'
+import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { mainnet, arbitrum } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit'
 
@@ -9,7 +9,7 @@ if (!projectId) {
 }
 
 // 2. Create wagmiConfig
-const ethers5Adapter = new Ethers5Adapter()
+const ethers5Adapter = new EthersAdapter()
 
 // 3. Create modal
 const modal = createAppKit({

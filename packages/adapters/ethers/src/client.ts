@@ -1,5 +1,5 @@
 import { AdapterBlueprint } from '@reown/appkit/adapters'
-import type { CaipNetwork } from '@reown/appkit-common'
+import type { BaseNetwork, CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   type CombinedProvider,
@@ -11,11 +11,12 @@ import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
 import { WcConstantsUtil, WcHelpersUtil, type AppKitOptions } from '@reown/appkit'
 import UniversalProvider from '@walletconnect/universal-provider'
-import { formatEther, InfuraProvider, JsonRpcProvider } from 'ethers'
+import { formatEther } from 'viem/utils'
 import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { EthersMethods } from './utils/EthersMethods.js'
 import { ProviderUtil } from '@reown/appkit/store'
+import { createProviderWrapper } from './providers'
 
 export interface EIP6963ProviderDetail {
   info: Connector['info']
@@ -414,12 +415,12 @@ export class EthersAdapter extends AdapterBlueprint {
     const caipNetwork = this.caipNetworks?.find((c: CaipNetwork) => c.id === params.chainId)
 
     if (caipNetwork) {
-      const jsonRpcProvider = new JsonRpcProvider(caipNetwork.rpcUrls.default.http[0], {
-        chainId: caipNetwork.id as number,
-        name: caipNetwork.name
-      })
+      const provider = createProviderWrapper(
+        caipNetwork.rpcUrls.default.http[0] as string,
+        caipNetwork as BaseNetwork
+      )
 
-      const balance = await jsonRpcProvider.getBalance(params.address)
+      const balance = await provider.getBalance(params.address as `0x${string}`)
       const formattedBalance = formatEther(balance)
 
       return { balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol }
@@ -432,9 +433,13 @@ export class EthersAdapter extends AdapterBlueprint {
     params: AdapterBlueprint.GetProfileParams
   ): Promise<AdapterBlueprint.GetProfileResult> {
     if (params.chainId === 1) {
-      const ensProvider = new InfuraProvider('mainnet')
-      const name = await ensProvider.lookupAddress(params.address)
-      const avatar = await ensProvider.getAvatar(params.address)
+      const provider = createProviderWrapper(
+        'https://mainnet.infura.io/v3/your-key', // You'll need to handle this appropriately
+        this.caipNetworks?.find((c: CaipNetwork) => c.id === 1) as BaseNetwork
+      )
+
+      const name = await provider.lookupAddress(params.address as `0x${string}`)
+      const avatar = await provider.getAvatar(name)
 
       return { profileName: name || undefined, profileImage: avatar || undefined }
     }

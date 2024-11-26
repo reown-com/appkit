@@ -23,11 +23,13 @@ export interface EIP6963ProviderDetail {
   provider: Provider
 }
 
+/** @deprecated Use the unified EthersAdapter instead. This adapter will be removed in the next major version. */
 export class Ethers5Adapter extends AdapterBlueprint {
   private ethersConfig?: ProviderType
   public adapterType = 'ethers'
 
   constructor() {
+    console.warn('Ethers5Adapter is deprecated. Please use EthersAdapter instead.')
     super({})
     this.namespace = CommonConstantsUtil.CHAIN.EVM
   }

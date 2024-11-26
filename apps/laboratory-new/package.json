@@ -77,7 +77,6 @@
     "@emotion/styled": "11.11.0",
     "@reown/appkit-new": "workspace:*",
     "@reown/appkit-adapter-ethers": "workspace:*",
-    "@reown/appkit-adapter-ethers5": "workspace:*",
     "@reown/appkit-adapter-solana": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@reown/appkit-adapter-bitcoin": "workspace:*",
