@@ -17,19 +17,6 @@ export const UiHelperUtil = {
   getBreakPointStyle(breakpoint: BreakpointType, property: BreakpointPropertyType) {
     const value = ConstantsUtil.BREAKPOINTS[breakpoint][property]
 
-    const isArrayConverter =
-      property === 'MODAL_GRID_COLUMN_PLACEMENT' ||
-      property === 'MODAL_GRID_ROW_PLACEMENT' ||
-      property === 'GUTTER'
-
-    if (isArrayConverter && Array.isArray(value)) {
-      return BREAKPOINT_PROPERTY_CONVERTER[property](value)
-    }
-
-    if (!isArrayConverter && typeof value === 'number') {
-      return BREAKPOINT_PROPERTY_CONVERTER[property](value)
-    }
-
-    return ''
+    return BREAKPOINT_PROPERTY_CONVERTER[property](value as number & number[])
   }
 }

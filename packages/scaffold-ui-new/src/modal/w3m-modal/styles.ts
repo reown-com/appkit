@@ -48,7 +48,10 @@ export default css`
   }
 
   .modal-card {
-    border-radius: ${({ borderRadius }) => borderRadius[8]};
+    border-top-right-radius: ${({ borderRadius }) => borderRadius[8]};
+    border-bottom-right-radius: ${({ borderRadius }) => borderRadius[8]};
+    border-top-left-radius: ${({ borderRadius }) => borderRadius[8]};
+    border-bottom-left-radius: ${({ borderRadius }) => borderRadius[8]};
     background: ${({ tokens }) => tokens.theme.foregroundPrimary};
     width: 100%;
   }
@@ -124,6 +127,8 @@ export default css`
 
     .modal-card {
       height: 100%;
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
     }
   }
 `
