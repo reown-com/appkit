@@ -1529,10 +1529,6 @@ export class AppKit {
   }
 
   private async syncExistingConnection() {
-    if (!CoreHelperUtil.isClient()) {
-      return
-    }
-
     const connectedConnector = SafeLocalStorage.getItem(
       SafeLocalStorageKeys.CONNECTED_CONNECTOR
     ) as ConnectorType
