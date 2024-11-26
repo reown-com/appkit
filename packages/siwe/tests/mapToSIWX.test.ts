@@ -204,7 +204,7 @@ describe('SIWE: mapToSIWX', () => {
       expect(signOutSpy).toBeCalled()
     })
 
-    it('should only use the first session', async () => {
+    it('should only use the active network session', async () => {
       const siwx = mapToSIWX(siweConfig)
 
       const addSessionSpy = vi.spyOn(siwx, 'addSession')
@@ -215,10 +215,14 @@ describe('SIWE: mapToSIWX', () => {
         data: { ...sessionMock.data, chainId: 'eip155:2' as const }
       }
 
+      vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue({
+        caipNetworkId: 'eip155:2'
+      } as any)
+
       await expect(siwx.setSessions([firstSessionMock, secondSessionMock])).resolves.not.toThrow()
 
-      expect(addSessionSpy).toBeCalledWith(firstSessionMock)
-      expect(addSessionSpy).not.toBeCalledWith(secondSessionMock)
+      expect(addSessionSpy).not.toBeCalledWith(firstSessionMock)
+      expect(addSessionSpy).toBeCalledWith(secondSessionMock)
     })
   })
 

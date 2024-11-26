@@ -159,7 +159,10 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
          * The default SIWE implementation would only support one session
          * So we only add the first session to keep backwards compatibility
          */
-        await this.addSession(sessions[0] as SIWXSession)
+        const session = (sessions.find(
+          s => s.data.chainId === ChainController.getActiveCaipNetwork()?.caipNetworkId
+        ) || sessions[0]) as SIWXSession
+        await this.addSession(session)
       }
     },
 

@@ -191,7 +191,7 @@ export const SIWXUtil = {
 
     // Ignores chainId and account address to get other message data
     const siwxMessage = await siwx.createMessage({
-      chainId: '' as CaipNetworkId,
+      chainId: ChainController.getActiveCaipNetwork()?.caipNetworkId || ('' as CaipNetworkId),
       accountAddress: ''
     })
 
@@ -206,6 +206,7 @@ export const SIWXUtil = {
       version: siwxMessage.version,
       resources: siwxMessage.resources,
       statement: siwxMessage.statement,
+      chainId: siwxMessage.chainId,
 
       methods,
       chains
