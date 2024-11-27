@@ -994,7 +994,13 @@ export class AppKit {
           const namespaces = this.universalProvider?.session?.namespaces
 
           return {
-            supportsAllNetworks: false,
+            /*
+             * MetaMask Wallet only returns 1 namespace in the session object. This makes it imposible
+             * to switch to other networks. Setting supportsAllNetworks to true for MetaMask Wallet
+             * will make it possible to switch to other networks.
+             */
+            supportsAllNetworks:
+              this.universalProvider?.session?.peer?.metadata.name === 'MetaMask Wallet',
             approvedCaipNetworkIds: this.getChainsFromNamespaces(namespaces)
           }
         }
