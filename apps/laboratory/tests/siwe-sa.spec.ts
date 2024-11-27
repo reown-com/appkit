@@ -71,6 +71,7 @@ smartAccountSiweTest('it should upgrade wallet', async () => {
 smartAccountSiweTest('it should switch to a smart account enabled network and sign', async () => {
   const targetChain = 'Sepolia'
   await page.switchNetwork(targetChain)
+  await validator.expectSwitchedNetworkWithNetworkView()
   await page.promptSiwe()
   await page.approveSign()
 
