@@ -203,6 +203,27 @@ describe('SIWE: mapToSIWX', () => {
       expect(addSessionSpy).not.toBeCalled()
       expect(signOutSpy).toBeCalled()
     })
+
+    it('should only use the active network session', async () => {
+      const siwx = mapToSIWX(siweConfig)
+
+      const addSessionSpy = vi.spyOn(siwx, 'addSession')
+
+      const firstSessionMock = { ...sessionMock }
+      const secondSessionMock = {
+        ...sessionMock,
+        data: { ...sessionMock.data, chainId: 'eip155:2' as const }
+      }
+
+      vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue({
+        caipNetworkId: 'eip155:2'
+      } as any)
+
+      await expect(siwx.setSessions([firstSessionMock, secondSessionMock])).resolves.not.toThrow()
+
+      expect(addSessionSpy).not.toBeCalledWith(firstSessionMock)
+      expect(addSessionSpy).toBeCalledWith(secondSessionMock)
+    })
   })
 
   describe('getSessions', () => {
@@ -240,6 +261,24 @@ describe('SIWE: mapToSIWX', () => {
       const siwx = mapToSIWX(siweConfig)
 
       vi.spyOn(siweConfig.methods, 'getSession').mockRejectedValueOnce(new Error('mock-error'))
+
+      await expect(siwx.getSessions('eip155:1', 'mock-address')).resolves.toMatchObject([])
+    })
+
+    it('should accept undefined address or chain', async () => {
+      const siwx = mapToSIWX(siweConfig)
+
+      vi.spyOn(siweConfig.methods, 'getSession').mockResolvedValueOnce({
+        address: undefined as any,
+        chainId: 1
+      })
+
+      await expect(siwx.getSessions('eip155:1', 'mock-address')).resolves.toMatchObject([])
+
+      vi.spyOn(siweConfig.methods, 'getSession').mockResolvedValueOnce({
+        address: 'mock-address',
+        chainId: undefined as any
+      })
 
       await expect(siwx.getSessions('eip155:1', 'mock-address')).resolves.toMatchObject([])
     })
