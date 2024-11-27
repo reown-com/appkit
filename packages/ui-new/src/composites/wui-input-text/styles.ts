@@ -17,6 +17,7 @@ export default css`
   input {
     width: 100%;
     height: 56px;
+    box-sizing: border-box;
     border-radius: ${({ borderRadius }) => borderRadius[4]};
     color: inherit;
     background: transparent;

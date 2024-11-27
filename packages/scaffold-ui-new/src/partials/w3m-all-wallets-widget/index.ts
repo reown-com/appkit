@@ -8,8 +8,7 @@ import {
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+import { state } from 'lit/decorators.js'
 
 @customElement('w3m-all-wallets-widget')
 export class W3mAllWalletsWidget extends LitElement {
@@ -17,7 +16,6 @@ export class W3mAllWalletsWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @property() public tabIdx?: number = undefined
   @state() private connectors = ConnectorController.state.connectors
   @state() private count = ApiController.state.count
 
@@ -52,16 +50,15 @@ export class W3mAllWalletsWidget extends LitElement {
     const tagLabel = roundedCount < rawCount ? `${roundedCount}+` : `${roundedCount}`
 
     return html`
-      <wui-list-wallet
-        name="All Wallets"
-        walletIcon="allWallets"
-        showAllWallets
-        @click=${this.onAllWallets.bind(this)}
+      <wui-list-select-wallet
+        name="Search Wallet"
         tagLabel=${tagLabel}
-        tagVariant="shade"
+        tagVariant="info"
+        icon="search"
+        variant="secondary"
+        @click=${this.onAllWallets.bind(this)}
         data-testid="all-wallets"
-        tabIdx=${ifDefined(this.tabIdx)}
-      ></wui-list-wallet>
+      ></wui-list-select-wallet>
     `
   }
 

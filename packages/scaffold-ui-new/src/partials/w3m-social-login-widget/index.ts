@@ -4,66 +4,35 @@ import {
   ConnectorController,
   CoreHelperUtil,
   EventsController,
-  OptionsController,
   RouterController,
   SnackController,
+  type FeaturesSocials,
   type SocialProvider,
   type WalletGuideType
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { state, property } from 'lit/decorators.js'
+import { property } from 'lit/decorators.js'
 
 import styles from './styles.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 import { SocialProviderEnum } from '@reown/appkit-utils'
 
-const MAX_TOP_VIEW = 2
-const MAXIMUM_LENGTH = 6
+const MAX_VIEW = 3
 
 @customElement('w3m-social-login-widget')
 export class W3mSocialLoginWidget extends LitElement {
   public static override styles = styles
 
   // -- Members ------------------------------------------- //
-  private unsubscribe: (() => void)[] = []
-
   private popupWindow?: Window | null
 
   // -- State & Properties -------------------------------- //
   @property() public walletGuide: WalletGuideType = 'get-started'
 
-  @property() public tabIdx?: number = undefined
-
-  @state() private connectors = ConnectorController.state.connectors
-
-  @state() private features = OptionsController.state.features
-
-  @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
-
-  public constructor() {
-    super()
-    this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => {
-        this.connectors = val
-        this.authConnector = this.connectors.find(c => c.type === 'AUTH')
-      }),
-      OptionsController.subscribeKey('features', val => (this.features = val))
-    )
-  }
-
-  public override disconnectedCallback() {
-    this.unsubscribe.forEach(unsubscribe => unsubscribe())
-  }
+  @property() public socials: FeaturesSocials[] = []
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const socials = this.features?.socials
-
-    if (!this.authConnector || !socials || !socials?.length) {
-      return null
-    }
-
     return html`
       <wui-flex
         class="container"
@@ -72,104 +41,49 @@ export class W3mSocialLoginWidget extends LitElement {
         .padding=${['0', '0', 'xs', '0'] as const}
         data-testid="w3m-social-login-widget"
       >
-        ${this.topViewTemplate()}${this.bottomViewTemplate()}
+        ${this.viewTemplate()}
       </wui-flex>
-      ${this.separatorTemplate()}
     `
   }
 
   // -- Private ------------------------------------------- //
-  private topViewTemplate() {
-    const socials = this.features?.socials
-
-    if (!this.authConnector || !socials || !socials?.length) {
-      return null
-    }
-
-    if (socials.length === 2) {
-      return html` <wui-flex gap="xs">
-        ${socials.slice(0, MAX_TOP_VIEW).map(
+  private viewTemplate() {
+    if (this.socials.length < MAX_VIEW) {
+      return html`<wui-flex flexDirection="column" gap="2">
+        ${this.socials.map(
           social =>
-            html`<wui-logo-select
+            html`<wui-social-button
               data-testid=${`social-selector-${social}`}
               @click=${() => {
                 this.onSocialClick(social)
               }}
-              logo=${social}
-              tabIdx=${ifDefined(this.tabIdx)}
-            ></wui-logo-select>`
+              icon=${social}
+              name=${`Continue with ${social}`}
+            ></wui-social-button>`
         )}
       </wui-flex>`
     }
 
-    return html` <wui-list-social
-      data-testid=${`social-selector-${socials?.[0]}`}
-      @click=${() => {
-        this.onSocialClick(socials?.[0])
-      }}
-      logo=${ifDefined(socials[0])}
-      align="center"
-      name=${`Continue with ${socials[0]}`}
-      tabIdx=${ifDefined(this.tabIdx)}
-    ></wui-list-social>`
-  }
-
-  private bottomViewTemplate() {
-    const socials = this.features?.socials
-
-    if (!this.authConnector || !socials || !socials?.length) {
-      return null
-    }
-
-    if (socials.length <= MAX_TOP_VIEW) {
-      return null
-    }
-
-    if (socials.length > MAXIMUM_LENGTH) {
-      return html`<wui-flex gap="xs">
-        ${socials.slice(1, MAXIMUM_LENGTH - 1).map(
-          social =>
-            html`<wui-logo-select
-              data-testid=${`social-selector-${social}`}
-              @click=${() => {
-                this.onSocialClick(social)
-              }}
-              logo=${social}
-              tabIdx=${ifDefined(this.tabIdx)}
-            ></wui-logo-select>`
-        )}
-        <wui-logo-select
-          logo="more"
-          tabIdx=${ifDefined(this.tabIdx)}
-          @click=${this.onMoreSocialsClick.bind(this)}
-        ></wui-logo-select>
-      </wui-flex>`
-    }
-
-    return html`<wui-flex gap="xs">
-      ${socials.slice(1, socials.length).map(
+    return html`<wui-flex gap="2">
+      ${this.socials.slice(0, MAX_VIEW).map(
         social =>
-          html`<wui-logo-select
+          html`<wui-social-button
             data-testid=${`social-selector-${social}`}
             @click=${() => {
               this.onSocialClick(social)
             }}
-            logo=${social}
-            tabIdx=${ifDefined(this.tabIdx)}
-          ></wui-logo-select>`
+            icon=${social}
+          ></wui-social-button>`
       )}
+      ${this.socials.length > MAX_VIEW
+        ? html`
+            <wui-social-button
+              icon="more"
+              @click=${this.onMoreSocialsClick.bind(this)}
+            ></wui-social-button>
+          `
+        : null}
     </wui-flex>`
-  }
-
-  private separatorTemplate() {
-    const walletConnectConnector = this.connectors.find(c => c.id === 'walletConnect')
-    const enableWallets = OptionsController.state.enableWallets
-
-    if ((walletConnectConnector && enableWallets) || this.walletGuide === 'explore') {
-      return html`<wui-separator text="or"></wui-separator>`
-    }
-
-    return null
   }
 
   // -- Private Methods ----------------------------------- //

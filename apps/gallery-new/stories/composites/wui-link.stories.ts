@@ -3,7 +3,7 @@ import '@reown/appkit-ui-new/src/composites/wui-link'
 import type { WuiLink } from '@reown/appkit-ui-new/src/composites/wui-link'
 import type { IconType } from '@reown/appkit-ui-new/src/utils/TypeUtil'
 import { html } from 'lit'
-import { buttonLinkOptions } from '../../utils/PresetUtils'
+import { buttonLinkOptions, iconOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiLink & { iconLeft?: IconType; iconRight?: IconType }>
 
@@ -11,6 +11,7 @@ export default {
   title: 'Composites/wui-link',
   args: {
     disabled: false,
+    icon: 'arrowTopRight',
     variant: 'accent',
     size: 'md'
   },
@@ -23,6 +24,10 @@ export default {
       control: { type: 'boolean' },
       variant: { type: 'boolean' }
     },
+    icon: {
+      options: [undefined, ...iconOptions],
+      control: { type: 'select' }
+    },
     variant: {
       options: buttonLinkOptions,
       control: { type: 'select' }
@@ -32,6 +37,13 @@ export default {
 
 export const Default: Component = {
   render: args => html`
-    <wui-link ?disabled=${args.disabled} size=${args.size} variant=${args.variant}>Link</wui-link>
+    <wui-link
+      ?disabled=${args.disabled}
+      icon=${args.icon}
+      size=${args.size}
+      variant=${args.variant}
+    >
+      Link
+    </wui-link>
   `
 }

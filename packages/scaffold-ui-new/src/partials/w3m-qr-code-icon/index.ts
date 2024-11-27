@@ -1,24 +1,15 @@
 import type { Connector } from '@reown/appkit-core'
-import {
-  AssetUtil,
-  ChainController,
-  ConnectorController,
-  CoreHelperUtil,
-  RouterController
-} from '@reown/appkit-core'
+import { ChainController, ConnectorController, RouterController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+import { state } from 'lit/decorators.js'
 
-@customElement('w3m-connect-walletconnect-widget')
-export class W3mConnectWalletConnectWidget extends LitElement {
+@customElement('w3m-qr-code-icon')
+export class W3mQRCodeIcon extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @property() public tabIdx?: number = undefined
-
   @state() private connectors = ConnectorController.state.connectors
 
   public constructor() {
@@ -34,31 +25,20 @@ export class W3mConnectWalletConnectWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    if (CoreHelperUtil.isMobile()) {
-      this.style.cssText = `display: none`
-
-      return null
-    }
-
     const connector = this.connectors.find(c => c.id === 'walletConnect')
 
     if (!connector) {
-      this.style.cssText = `display: none`
-
       return null
     }
 
     return html`
-      <wui-list-wallet
-        imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
-        name=${connector.name ?? 'Unknown'}
+      <wui-icon
+        color="accentPrimary"
+        cursor="pointer"
+        name="qrCodeBold"
+        size="lg"
         @click=${() => this.onConnector(connector)}
-        tagLabel="qr code"
-        tagVariant="main"
-        tabIdx=${ifDefined(this.tabIdx)}
-        data-testid="wallet-selector-walletconnect"
-      >
-      </wui-list-wallet>
+      ></wui-icon>
     `
   }
 
@@ -71,6 +51,6 @@ export class W3mConnectWalletConnectWidget extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'w3m-connect-walletconnect-widget': W3mConnectWalletConnectWidget
+    'w3m-qr-code-icon': W3mQRCodeIcon
   }
 }

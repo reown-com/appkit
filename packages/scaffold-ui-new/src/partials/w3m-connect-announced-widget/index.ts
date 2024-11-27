@@ -8,7 +8,7 @@ import {
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
+import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connect-announced-widget')
@@ -17,8 +17,6 @@ export class W3mConnectAnnouncedWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @property() public tabIdx?: number = undefined
-
   @state() private connectors = ConnectorController.state.connectors
 
   public constructor() {
@@ -43,29 +41,25 @@ export class W3mConnectAnnouncedWidget extends LitElement {
     }
 
     return html`
-      <wui-flex flexDirection="column" gap="xs">
-        ${announcedConnectors.map(connector => {
-          if (connector.info?.rdns && ApiController.state.excludedRDNS) {
-            if (ApiController.state.excludedRDNS.includes(connector?.info?.rdns)) {
-              return null
-            }
+      ${announcedConnectors.map(connector => {
+        if (connector.info?.rdns && ApiController.state.excludedRDNS) {
+          if (ApiController.state.excludedRDNS.includes(connector?.info?.rdns)) {
+            return null
           }
+        }
 
-          return html`
-            <wui-list-wallet
-              imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
-              name=${connector.name ?? 'Unknown'}
-              @click=${() => this.onConnector(connector)}
-              tagVariant="success"
-              tagLabel="installed"
-              data-testid=${`wallet-selector-${connector.id}`}
-              .installed=${true}
-              tabIdx=${ifDefined(this.tabIdx)}
-            >
-            </wui-list-wallet>
-          `
-        })}
-      </wui-flex>
+        return html`
+          <wui-list-select-wallet
+            imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
+            name=${connector.name ?? 'Unknown'}
+            tagLabel="INSTALLED"
+            tagVariant="success"
+            variant="primary"
+            @click=${() => this.onConnector(connector)}
+            data-testid=${`wallet-selector-${connector.id}`}
+          ></wui-list-select-wallet>
+        `
+      })}
     `
   }
 

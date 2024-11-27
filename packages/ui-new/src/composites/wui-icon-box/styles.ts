@@ -5,9 +5,9 @@ export default css`
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--local-bg-color);
     border-radius: ${({ borderRadius }) => borderRadius[2]};
-    padding: ${({ spacing }) => spacing[2]} !important;
+    background-color: var(--local-bg-color);
+    padding: var(--local-spacing);
   }
 
   :host > wui-icon {

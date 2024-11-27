@@ -269,7 +269,7 @@ export const visualOptions: VisualType[] = [
   'paypal'
 ]
 
-export const logoOptions: LogoType[] = [
+export const socialsIconOptions: LogoType[] = [
   'apple',
   'discord',
   'facebook',

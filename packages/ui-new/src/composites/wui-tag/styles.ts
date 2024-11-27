@@ -47,6 +47,6 @@ export default css`
   :host([data-size='sm']) {
     height: 20px;
     padding: 0 ${({ spacing }) => spacing[1]};
-    border-radius: ${({ borderRadius }) => borderRadius[1]};
+    border-radius: 6px; // @TODO: 6px doesn't exist in design system. Replace this with another value.
   }
 `

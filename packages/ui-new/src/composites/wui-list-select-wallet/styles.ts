@@ -6,9 +6,7 @@ export default css`
     column-gap: ${({ spacing }) => spacing[2]};
     padding: ${({ spacing }) => spacing[3]};
     width: 100%;
-    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
     border-radius: ${({ borderRadius }) => borderRadius[4]};
-    height: 64px;
   }
 
   button > wui-text {
@@ -18,26 +16,51 @@ export default css`
   }
 
   button > wui-image {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     flex-shrink: 0;
     border-radius: ${({ borderRadius }) => borderRadius[2]};
   }
 
+  button > wui-flex {
+    width: fit-content;
+  }
+
+  /* -- Variants --------------------------------------------------- */
+  :host([data-variant='primary']) > button {
+    background-color: transparent;
+  }
+
+  :host([data-variant='secondary']) > button {
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+  }
+
   /* -- Focus states --------------------------------------------------- */
-  button:focus-visible:enabled,
-  button:active:enabled {
-    box-shadow: 0px 0px 0px 4px rgba(9, 136, 240, 0.2);
+  :host([data-variant='primary']) > button:focus-visible:enabled,
+  :host([data-variant='primary']) > button:active:enabled {
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+  }
+
+  :host([data-variant='secondary']) > button:focus-visible:enabled,
+  :host([data-variant='secondary']) > button:active:enabled {
     background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
   }
 
   /* -- Hover & Active states ----------------------------------------------------------- */
-  button:hover:enabled {
+  :host([data-variant='primary']) > button:hover:enabled {
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+  }
+
+  :host([data-variant='secondary']) > button:hover:enabled {
     background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
   }
 
   /* -- Disabled state --------------------------------------------------- */
-  button:disabled {
+  :host([data-variant='primary']) > button:disabled {
+    background-color: ${({ tokens }) => tokens.theme.foregroundPrimary};
+  }
+
+  :host([data-variant='secondary']) > button:disabled {
     background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
   }
 

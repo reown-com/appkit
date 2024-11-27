@@ -3,7 +3,7 @@ import { property } from 'lit/decorators.js'
 import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { ButtonSize, ButtonLinkVariant } from '../../utils/TypeUtil.js'
+import type { ButtonSize, ButtonLinkVariant, IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -33,6 +33,8 @@ export class WuiLink extends LitElement {
 
   @property({ type: Boolean }) public disabled = false
 
+  @property() public icon?: IconType = undefined
+
   @property() public variant: ButtonLinkVariant = 'accent'
 
   // -- Render -------------------------------------------- //
@@ -45,9 +47,18 @@ export class WuiLink extends LitElement {
         >
           <slot></slot>
         </wui-text>
-        <wui-icon size=${ICON_SIZE[this.size]} name="arrowTopRight"></wui-icon>
+        ${this.iconTemplate()}
       </button>
     `
+  }
+
+  // -- Private ------------------------------------------- //
+  private iconTemplate() {
+    if (this.icon) {
+      return html`<wui-icon size=${ICON_SIZE[this.size]} name=${this.icon}></wui-icon>`
+    }
+
+    return null
   }
 }
 
