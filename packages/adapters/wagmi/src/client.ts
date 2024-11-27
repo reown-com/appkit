@@ -127,14 +127,14 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   private setupWatchers() {
     watchAccount(this.wagmiConfig, {
-      onChange: (accountData, prevData) => {
-        if (accountData.address && accountData.address !== prevData.address) {
+      onChange: accountData => {
+        if (accountData.address) {
           this.emit('accountChanged', {
             address: accountData.address,
             chainId: accountData.chainId
           })
         }
-        if (accountData.chainId && accountData.chainId !== prevData.chainId) {
+        if (accountData.chainId) {
           this.emit('switchNetwork', {
             address: accountData.address,
             chainId: accountData.chainId
