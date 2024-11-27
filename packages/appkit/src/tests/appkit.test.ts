@@ -551,6 +551,7 @@ describe('Base', () => {
       ;(appKit as any).caipNetworks = [{ id: 'eip155:1', chainNamespace: 'eip155' }]
 
       const mockAdapter = {
+        getAccounts: vi.fn().mockResolvedValue([]),
         syncConnection: vi.fn().mockResolvedValue({
           chainId: 'eip155:999', // Unsupported chain
           address: '0x123'
@@ -599,6 +600,7 @@ describe('Base', () => {
       })
 
       const mockAdapter = {
+        getAccounts: vi.fn().mockResolvedValue([]),
         syncConnection: vi.fn().mockResolvedValue({
           address: '0x123',
           chainId: '1',
@@ -638,6 +640,7 @@ describe('Base', () => {
       })
 
       const mockAdapter = {
+        getAccounts: vi.fn().mockResolvedValue([]),
         syncConnection: vi.fn().mockResolvedValue(null),
         on: vi.fn()
       }
@@ -664,6 +667,7 @@ describe('Base', () => {
       vi.mocked(ConnectorController).getConnectors = vi.fn().mockReturnValue([])
 
       mockAdapter = {
+        getAccounts: vi.fn().mockResolvedValue([]),
         namespace: 'eip155',
         construct: vi.fn(),
         setUniversalProvider: vi.fn(),
