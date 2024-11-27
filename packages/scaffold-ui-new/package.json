@@ -1,5 +1,6 @@
 {
   "name": "@reown/appkit-scaffold-ui-new",
+  "private": true,
   "version": "1.5.1",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
