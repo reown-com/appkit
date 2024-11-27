@@ -1,7 +1,7 @@
 import { ChainController, ConnectorController, CoreHelperUtil } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
+import { state } from 'lit/decorators.js'
 import { ref, createRef } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 import styles from './styles.js'
@@ -25,8 +25,6 @@ export class W3mEmailLoginWidget extends LitElement {
   @state() private loading = false
 
   @state() private error = ''
-
-  @property({ type: Boolean }) public showSubmitButton = false
 
   public constructor() {
     super()
