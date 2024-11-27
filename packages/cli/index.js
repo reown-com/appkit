@@ -2,7 +2,7 @@
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 
-import { checkDirectoryExists, generateRepoUrl, cloneRepository, banner } from './fn.js';
+import { checkDirectoryExists, generateRepoUrl, cloneRepository, banner } from './utils.js';
 
 // Define styles
 const redTip = chalk.hex('#C70039');           // Red for tips

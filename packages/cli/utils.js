@@ -12,45 +12,17 @@ export async function checkDirectoryExists(directory) {
     }
   }
 
-export function generateRepoUrl(answerFramework, answerLibrary) {
+export function generateRepoUrl(answerFramework, answerLibrary) {  // library = wagmi // framework = nextjs
     switch (answerFramework.framework) {
         case 'nextjs':
-            switch (answerLibrary.library) {
-                case 'wagmi':
-                    return "reown-com/appkit-web-examples/nextjs/next-wagmi-app-router";
-                case 'ethers':
-                    return "reown-com/appkit-web-examples/nextjs/next-ethers-app-router";
-                case 'solana':
-                    return "reown-com/appkit-web-examples/nextjs/next-solana-app-router";
-                case 'multichain':
-                    return "reown-com/appkit-web-examples/nextjs/next-multichain-app-router";
-            }
+            return `reown-com/appkit-web-examples/nextjs/next-${answerLibrary.library}-app-router`;
         case 'react':
-            switch (answerLibrary.library) {
-                case 'wagmi':
-                    return "reown-com/appkit-web-examples/react/react-wagmi";
-                case 'ethers':
-                    return "reown-com/appkit-web-examples/react/react-ethers";
-                case 'solana':
-                    return "reown-com/appkit-web-examples/react/react-solana";
-                case 'multichain':
-                    return "reown-com/appkit-web-examples/react/react-multichain";
-            }
+            return `reown-com/appkit-web-examples/react/react-${answerLibrary.library}`;
         case 'vue':
-            switch (answerLibrary.library) {
-                case 'wagmi':
-                    return "reown-com/appkit-web-examples/vue/vue-wagmi";
-                case 'ethers':
-                    return "reown-com/appkit-web-examples/vue/vue-ethers";
-                case 'solana':
-                    return "reown-com/appkit-web-examples/vue/vue-solana";
-                case 'multichain':
-                    return "reown-com/appkit-web-examples/vue/vue-multichain";
-            }
+            return `reown-com/appkit-web-examples/vue/vue-${answerLibrary.library}`;
         default:
             return "reown-com/appkit-web-examples/react/react-wagmi";
     }
-    
 }
 
 export async function cloneRepository(repoUrl, directoryName) {
