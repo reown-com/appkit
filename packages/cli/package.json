@@ -1,0 +1,27 @@
+{
+  "name": "appkit-cli",
+  "version": "0.0.1",
+  "description": "Reown AppKit CLI",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "appkit-cli": "./index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "figlet": "^1.7.0",
+    "inquirer": "^12.0.1",
+    "tiged": "2.12.7"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.24.3",
+    "@babel/preset-env": "^7.24.5",
+    "@babel/runtime": "^7.24.5",
+    "cross-env": "^7.0.3",
+    "esm": "^3.2.25",
+    "ts-node": "^10.9.2"
+  }
+}
