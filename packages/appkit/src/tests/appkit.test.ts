@@ -540,6 +540,7 @@ describe('Base', () => {
       expect(AccountController.resetAccount).toHaveBeenCalledWith('eip155')
 
       expect(AccountController.setStatus).toHaveBeenCalledWith('disconnected', 'eip155')
+      expect(AccountController.resetAccount).toHaveBeenCalledWith('eip155')
     })
 
     it('should show unsupported chain UI when synced chainId is not supported', async () => {
