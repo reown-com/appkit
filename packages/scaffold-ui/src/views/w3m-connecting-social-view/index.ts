@@ -126,6 +126,13 @@ export class W3mConnectingSocialView extends LitElement {
             this.updateMessage()
             const uri = event.data.resultUri as string
 
+            if (this.socialProvider) {
+              EventsController.sendEvent({
+                type: 'track',
+                event: 'SOCIAL_LOGIN_REQUEST_USER_DATA',
+                properties: { provider: this.socialProvider }
+              })
+            }
             await this.authConnector.provider.connectSocial(uri)
 
             if (this.socialProvider) {
