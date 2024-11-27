@@ -16,7 +16,7 @@ export namespace BitcoinConnector {
     publicKey?: string
     // Derivation path of the address e.g. "m/84'/0'/0'/0/0"
     path?: string
-    purpose?: 'payment' | 'ordinal'
+    purpose: 'payment' | 'ordinal' | 'stx'
   }
 
   export type SignMessageParams = {
