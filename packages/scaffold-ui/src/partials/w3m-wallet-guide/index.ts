@@ -35,7 +35,7 @@ export class W3mWalletGuide extends LitElement {
               icon="externalLink"
               variant="transparent"
               href="https://explorer.walletconnect.com"
-              title="Visit our Explorer"
+              title="Find one on WalletGuide"
             ></wui-chip>
           </wui-flex>
         </wui-flex>`
