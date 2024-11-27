@@ -298,6 +298,9 @@ importers:
       axios:
         specifier: 1.7.2
         version: 1.7.2
+      bitcoinjs-lib:
+        specifier: 7.0.0-rc.0
+        version: 7.0.0-rc.0(typescript@5.3.3)
       bs58:
         specifier: 6.0.0
         version: 6.0.0
@@ -7972,6 +7975,10 @@ packages:
   bindings@1.5.0:
     resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==}
 
+  bip174@3.0.0-rc.1:
+    resolution: {integrity: sha512-+8P3BpSairVNF2Nee6Ksdc1etIjWjBOi/MH0MwKtq9YaYp+S2Hk2uvup0e8hCT4IKlS58nXJyyQVmW92zPoD4Q==}
+    engines: {node: '>=18.0.0'}
+
   bip66@2.0.0:
     resolution: {integrity: sha512-kBG+hSpgvZBrkIm9dt5T1Hd/7xGCPEX2npoxAWZfsK1FvjgaxySEh2WizjyIstWXriKo9K9uJ4u0OnsyLDUPXQ==}
 
@@ -7980,6 +7987,10 @@ packages:
 
   bitcoin-ops@1.4.1:
     resolution: {integrity: sha512-pef6gxZFztEhaE9RY9HmWVmiIHqCb2OyS4HPKkpc6CIiiOa3Qmuoylxc5P2EkU3w+5eTSifI9SEZC88idAIGow==}
+
+  bitcoinjs-lib@7.0.0-rc.0:
+    resolution: {integrity: sha512-7CQgOIbREemKR/NT2uc3uO/fkEy+6CM0sLxboVVY6bv6DbZmPt3gg5Y/hhWgQFeZu5lfTbtVAv32MIxf7lMh4g==}
+    engines: {node: '>=18.0.0'}
 
   bl@4.1.0:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==}
@@ -12703,6 +12714,10 @@ packages:
     resolution: {integrity: sha512-xS6+s8e0Xbx++5/0L+yyexukU7pz//Yg6IHg3BKhXotg1JcYtgxVcUctQ0HxLByiJzpAkNFawz1Nz5Xadzo82g==}
     engines: {node: '>=14.0.0'}
 
+  uint8array-tools@0.0.9:
+    resolution: {integrity: sha512-9vqDWmoSXOoi+K14zNaf6LBV51Q8MayF0/IiQs3GlygIKUYtog603e6virExkjjFosfJUBI4LhbQK1iq8IG11A==}
+    engines: {node: '>=14.0.0'}
+
   uint8arrays@3.1.0:
     resolution: {integrity: sha512-ei5rfKtoRO8OyOIor2Rz5fhzjThwIHJZ3uyDPnDHTXbP0aMQ1RN/6AI5B5d9dBxJOU+BvOAk7ZQ1xphsX8Lrog==}
 
@@ -12924,6 +12939,14 @@ packages:
   uuidv4@6.2.13:
     resolution: {integrity: sha512-AXyzMjazYB3ovL3q051VLH06Ixj//Knx7QnUSi1T//Ie3io6CpsPu9nVMOx5MoLWh6xV0B9J0hIaxungxXUbPQ==}
     deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+
+  valibot@0.38.0:
+    resolution: {integrity: sha512-RCJa0fetnzp+h+KN9BdgYOgtsMAG9bfoJ9JSjIhFHobKWVWyzM3jjaeNTdpFK9tQtf3q1sguXeERJ/LcmdFE7w==}
+    peerDependencies:
+      typescript: '>=5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
 
   valibot@0.42.1:
     resolution: {integrity: sha512-3keXV29Ar5b//Hqi4MbSdV7lfVp6zuYLZuA9V1PvQUsXqogr+u5lvLPLk3A4f74VUXDnf/JfWMN6sB+koJ/FFw==}
@@ -22722,6 +22745,11 @@ snapshots:
     dependencies:
       file-uri-to-path: 1.0.0
 
+  bip174@3.0.0-rc.1:
+    dependencies:
+      uint8array-tools: 0.0.9
+      varuint-bitcoin: 2.0.0
+
   bip66@2.0.0: {}
 
   bitcoin-address-validation@2.2.3:
@@ -22731,6 +22759,18 @@ snapshots:
       sha256-uint8array: 0.10.7
 
   bitcoin-ops@1.4.1: {}
+
+  bitcoinjs-lib@7.0.0-rc.0(typescript@5.3.3):
+    dependencies:
+      '@noble/hashes': 1.5.0
+      bech32: 2.0.0
+      bip174: 3.0.0-rc.1
+      bs58check: 4.0.0
+      uint8array-tools: 0.0.9
+      valibot: 0.38.0(typescript@5.3.3)
+      varuint-bitcoin: 2.0.0
+    transitivePeerDependencies:
+      - typescript
 
   bl@4.1.0:
     dependencies:
@@ -28629,6 +28669,8 @@ snapshots:
 
   uint8array-tools@0.0.8: {}
 
+  uint8array-tools@0.0.9: {}
+
   uint8arrays@3.1.0:
     dependencies:
       multiformats: 9.9.0
@@ -28846,6 +28888,10 @@ snapshots:
     dependencies:
       '@types/uuid': 8.3.4
       uuid: 8.3.2
+
+  valibot@0.38.0(typescript@5.3.3):
+    optionalDependencies:
+      typescript: 5.3.3
 
   valibot@0.42.1(typescript@5.3.3):
     optionalDependencies:

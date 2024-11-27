@@ -69,6 +69,12 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
     return Buffer.from(response.signature).toString('base64')
   }
 
+  async signPSBT(
+    _params: BitcoinConnector.SignPSBTParams
+  ): Promise<BitcoinConnector.SignPSBTResponse> {
+    return Promise.reject(new Error('Method not implemented.'))
+  }
+
   async sendTransfer(_params: BitcoinConnector.SendTransferParams): Promise<string> {
     return Promise.resolve('txid')
   }
