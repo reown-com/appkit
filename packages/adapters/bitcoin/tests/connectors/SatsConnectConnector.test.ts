@@ -1,4 +1,4 @@
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { SatsConnectConnector } from '../../src/connectors/SatsConnectConnector'
 import { mockSatsConnectProvider } from '../mocks/mockSatsConnect'
 import type { CaipNetwork } from '@reown/appkit-common'
@@ -95,5 +95,13 @@ describe('SatsConnectConnector', () => {
       message: 'Connect to your wallet'
     })
     expect(mocks.wallet.request).toHaveBeenNthCalledWith(2, 'wallet_connect', null)
+  })
+
+  it('should throw if connect with empty addresses', async () => {
+    const spy = vi.spyOn(mocks.wallet, 'request')
+
+    spy.mockResolvedValueOnce(mockSatsConnectProvider.mockRequestResolve({ addresses: [] }))
+
+    await expect(connector.connect()).rejects.toThrow('No address available')
   })
 })
