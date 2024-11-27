@@ -205,7 +205,12 @@ export const ChainController = {
     const newAdapter = state.chains.get(caipNetwork.chainNamespace)
     state.activeChain = caipNetwork.chainNamespace
     state.activeCaipNetwork = caipNetwork
-    state.activeCaipAddress = newAdapter?.accountState?.caipAddress
+
+    if (newAdapter?.accountState?.address) {
+      state.activeCaipAddress = `${caipNetwork.chainNamespace}:${caipNetwork.id}:${newAdapter?.accountState?.address}`
+    } else {
+      state.activeCaipAddress = undefined
+    }
 
     if (newAdapter) {
       AccountController.replaceState(newAdapter.accountState)
