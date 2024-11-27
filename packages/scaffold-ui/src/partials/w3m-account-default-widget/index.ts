@@ -132,8 +132,9 @@ export class W3mAccountDefaultWidget extends LitElement {
   // -- Private ------------------------------------------- //
   private onrampTemplate() {
     const onramp = this.features?.onramp
+    const isBitcoin = ChainController.state.activeChain === 'bip122'
 
-    if (!onramp) {
+    if (!onramp || isBitcoin) {
       return null
     }
 
@@ -168,9 +169,9 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   private swapsTemplate() {
     const swaps = this.features?.swaps
-    const isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
+    const isEvm = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
 
-    if (!swaps || isSolana) {
+    if (!swaps || !isEvm) {
       return null
     }
 
@@ -302,10 +303,7 @@ export class W3mAccountDefaultWidget extends LitElement {
         address=${this.address}
       ></wui-avatar>
       <wui-tabs
-        .tabs=${[
-          { label: 'Payment', icon: 'extension', platform: 'browser' },
-          { label: 'Ordinal', icon: 'extension', platform: 'browser' }
-        ]}
+        .tabs=${[{ label: 'Payment' }, { label: 'Ordinals' }]}
         .onTabChange=${(index: number) =>
           AccountController.setCaipAddress(
             `bip122:${this.chainId}:${this.allAccounts[index]?.address || ''}`,
