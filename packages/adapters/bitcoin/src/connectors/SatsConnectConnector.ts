@@ -39,7 +39,7 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
   }
 
   public get imageUrl(): string {
-    return this.wallet.icon || ''
+    return this.wallet.icon
   }
 
   public get chains() {
@@ -98,7 +98,12 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
     amount,
     recipient
   }: BitcoinConnector.SendTransferParams): Promise<string> {
-    const parsedAmount = isNaN(Number(amount)) ? 0 : Number(amount)
+    const parsedAmount = Number(amount)
+
+    if (isNaN(parsedAmount)) {
+      throw new Error('Invalid amount')
+    }
+
     const res = await this.internalRequest('sendTransfer', {
       recipients: [{ address: recipient, amount: parsedAmount }]
     })
