@@ -86,6 +86,28 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Bitco
     return addresses.map(address => ({ address }))
   }
 
+  public async signPSBT(
+    params: BitcoinConnector.SignPSBTParams
+  ): Promise<BitcoinConnector.SignPSBTResponse> {
+    this.checkIfMethodIsSupported('signPsbt')
+    const account = this.getAccount(true)
+
+    const response = await this.internalRequest({
+      method: 'signPsbt',
+      params: {
+        account,
+        psbt: params.psbt,
+        signInputs: params.signInputs,
+        broadcast: params.broadcast
+      }
+    })
+
+    return {
+      psbt: response.psbt,
+      txid: response.txid
+    }
+  }
+
   public request<T>(args: RequestArguments) {
     // @ts-expect-error - args type should match internalRequest arguments but it's not correctly typed in Provider
     return this.internalRequest(args) as T
@@ -183,10 +205,27 @@ export namespace WalletConnectProvider {
     txid: string
   }
 
+  export type WCSignPSBTParams = {
+    account: string
+    psbt: string
+    signInputs: {
+      address: string
+      index: number
+      sighashTypes?: number[]
+    }[]
+    broadcast?: boolean
+  }
+
+  export type WCSignPSBTResponse = {
+    psbt: string
+    txid?: string
+  }
+
   export type RequestMethods = {
     signMessage: Request<WCSignMessageParams, WCSignMessageResponse>
     sendTransfer: Request<WCSendTransferParams, WCSendTransferResponse>
     getAccountAddresses: Request<undefined, string[]>
+    signPsbt: Request<WCSignPSBTParams, WCSignPSBTResponse>
   }
 
   export type RequestMethod = keyof RequestMethods

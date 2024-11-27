@@ -98,6 +98,25 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
     return res.signature
   }
 
+  public async signPSBT(
+    params: BitcoinConnector.SignPSBTParams
+  ): Promise<BitcoinConnector.SignPSBTResponse> {
+    const signInputs = params.signInputs.reduce<Record<string, number[]>>((acc, input) => {
+      const currentIndexes = acc[input.address] || []
+      currentIndexes.push(input.index)
+
+      return { ...acc, [input.address]: currentIndexes }
+    }, {})
+
+    const res = await this.internalRequest('signPsbt', {
+      psbt: params.psbt,
+      broadcast: params.broadcast,
+      signInputs
+    })
+
+    return res
+  }
+
   public async sendTransfer({
     amount,
     recipient
