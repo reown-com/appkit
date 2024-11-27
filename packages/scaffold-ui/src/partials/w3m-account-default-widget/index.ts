@@ -50,7 +50,8 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   @state() private namespace = ChainController.state.activeChain
 
-  @state() private chainId: string | number
+  @state() private chainId =
+    ChainController.state.activeCaipNetwork?.caipNetworkId?.split?.(':')?.[1]
 
   public constructor() {
     super()
@@ -314,7 +315,7 @@ export class W3mAccountDefaultWidget extends LitElement {
       <wui-flex gap="xs" alignItems="center" justifyContent="center">
         <wui-text variant="large-600" color="fg-100">
           ${UiHelperUtil.getTruncateString({
-            string: this.profileName || this.address,
+            string: this.profileName || this.address || '',
             charsStart: this.profileName ? 18 : 4,
             charsEnd: this.profileName ? 0 : 4,
             truncate: this.profileName ? 'end' : 'middle'
