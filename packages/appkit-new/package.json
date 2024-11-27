@@ -1,5 +1,6 @@
 {
   "name": "@reown/appkit-new",
+  "private": true,
   "version": "1.5.1",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
