@@ -200,11 +200,11 @@ export class WuiIcon extends LitElement {
       --local-width: ${`var(--wui-icon-size-${this.size});`}
       --local-color: ${this.color === 'inherit' ? 'inherit' : ICON_COLOR[this.color]};
     `
-    
+
     if (this.cursor) {
       cssText += `--local-cursor: ${this.cursor};`
     }
-    
+
     this.style.cssText = cssText
 
     return html`${svgOptions[this.name]}`
