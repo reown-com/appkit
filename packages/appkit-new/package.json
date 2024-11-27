@@ -1,5 +1,6 @@
 {
   "name": "@reown/appkit-new",
+  "private": true,
   "version": "1.5.1",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -13,8 +14,7 @@
     "build": "tsc --build tsconfig.build.json",
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "test": "vitest run --coverage.enabled=true -- coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "exports": {
     ".": {
