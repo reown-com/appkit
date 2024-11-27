@@ -22,7 +22,6 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { ModalController } from './ModalController.js'
 import { EventsController } from './EventsController.js'
-import { SIWXUtil } from '../utils/SIWXUtil.js'
 
 // -- Constants ----------------------------------------- //
 const accountState: AccountControllerState = {
@@ -206,7 +205,12 @@ export const ChainController = {
     const newAdapter = state.chains.get(caipNetwork.chainNamespace)
     state.activeChain = caipNetwork.chainNamespace
     state.activeCaipNetwork = caipNetwork
-    state.activeCaipAddress = newAdapter?.accountState?.caipAddress
+
+    if (newAdapter?.accountState?.address) {
+      state.activeCaipAddress = `${caipNetwork.chainNamespace}:${caipNetwork.id}:${newAdapter?.accountState?.address}`
+    } else {
+      state.activeCaipAddress = undefined
+    }
 
     if (newAdapter) {
       AccountController.replaceState(newAdapter.accountState)
@@ -251,8 +255,6 @@ export const ChainController = {
         event: 'SWITCH_NETWORK',
         properties: { network: network.caipNetworkId }
       })
-
-      await SIWXUtil.initializeIfEnabled()
     }
   },
 
