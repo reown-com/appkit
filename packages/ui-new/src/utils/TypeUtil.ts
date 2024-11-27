@@ -218,7 +218,7 @@ export type VisualType =
 
 export type VisualSize = 'sm' | 'md' | 'lg'
 
-export type SocialsButtonIconType =
+export type SocialsIconType =
   | 'apple'
   | 'discord'
   | 'facebook'

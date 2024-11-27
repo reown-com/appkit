@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { SocialsButtonIconType } from '../../utils/TypeUtil.js'
+import type { SocialsIconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../../components/wui-icon/index.js'
 import styles from './styles.js'
@@ -11,7 +11,7 @@ export class WuiSocialButton extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public icon: SocialsButtonIconType = 'google'
+  @property() public icon: SocialsIconType = 'google'
 
   @property() public name = ''
 
