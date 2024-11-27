@@ -1006,3 +1006,5 @@ export type UseAppKitNetworkReturn = {
 }
 
 export type BadgeType = 'none' | 'certified'
+
+export type ConnectionStatus = 'connected' | 'disconnected' | 'connecting' | 'reconnecting'
