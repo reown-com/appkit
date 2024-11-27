@@ -261,15 +261,18 @@ export class EthersAdapter extends AdapterBlueprint {
 
     connectors.forEach(connector => {
       const key = connector === 'coinbase' ? 'coinbaseWalletSDK' : connector
+
+      const injectedConnector = connector === ConstantsUtil.INJECTED_CONNECTOR_ID
+
       if (this.namespace) {
         this.addConnector({
-          id: connector,
+          id: key,
           explorerId: PresetsUtil.ConnectorExplorerIds[key],
           imageUrl: options?.connectorImages?.[key],
           name: PresetsUtil.ConnectorNamesMap[key],
           imageId: PresetsUtil.ConnectorImageIds[key],
           type: PresetsUtil.ConnectorTypesMap[key] ?? 'EXTERNAL',
-          info: { rdns: key },
+          info: injectedConnector ? undefined : { rdns: key },
           chain: this.namespace,
           chains: [],
           provider: this.ethersConfig?.[connector as keyof ProviderType] as Provider
@@ -302,15 +305,8 @@ export class EthersAdapter extends AdapterBlueprint {
     if (event.detail) {
       const { info, provider } = event.detail
       const existingConnector = this.connectors?.find(c => c.name === info?.name)
-      const coinbaseConnector = this.connectors?.find(
-        c => c.id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
-      )
-      const isCoinbaseDuplicated =
-        coinbaseConnector &&
-        event.detail.info?.rdns ===
-          ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]
 
-      if (!existingConnector && !isCoinbaseDuplicated) {
+      if (!existingConnector) {
         const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EIP6963_CONNECTOR_ID]
 
         if (type && this.namespace) {

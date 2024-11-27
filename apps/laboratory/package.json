@@ -1,7 +1,7 @@
 {
   "name": "@apps/laboratory",
   "type": "module",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -80,6 +80,7 @@
     "@reown/appkit-adapter-ethers5": "workspace:*",
     "@reown/appkit-adapter-solana": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
+    "@reown/appkit-adapter-bitcoin": "workspace:*",
     "@reown/appkit-experimental": "workspace:*",
     "@reown/appkit-siwe": "workspace:*",
     "@reown/appkit-siwx": "workspace:*",

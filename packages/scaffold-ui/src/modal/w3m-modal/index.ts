@@ -198,7 +198,12 @@ export class W3mModal extends LitElement {
     const prevCaipNetworkId = this.caipNetwork?.caipNetworkId?.toString()
     const nextNetworkId = nextCaipNetwork?.caipNetworkId?.toString()
 
-    if (prevCaipNetworkId && nextNetworkId && prevCaipNetworkId !== nextNetworkId) {
+    if (
+      prevCaipNetworkId &&
+      nextNetworkId &&
+      prevCaipNetworkId !== nextNetworkId &&
+      this.caipNetwork?.name !== 'Unknown Network'
+    ) {
       RouterController.goBack()
     }
     this.caipNetwork = nextCaipNetwork

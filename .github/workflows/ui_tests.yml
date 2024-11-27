@@ -36,10 +36,6 @@ on:
     secrets:
       NEXT_PUBLIC_PROJECT_ID:
         required: true
-      RELEASE_TOKEN_V2:
-        required: true
-      TFC_INFRA_TOKEN:
-        required: true
       TESTS_NEXTAUTH_SECRET:
         required: false
       TESTS_MAILSAC_API_KEY:

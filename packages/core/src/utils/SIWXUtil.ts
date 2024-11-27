@@ -27,6 +27,7 @@ export const SIWXUtil = {
 
     try {
       const sessions = await siwx.getSessions(`${network}:${chainId}` as CaipNetworkId, address)
+
       if (sessions.length) {
         return
       }
