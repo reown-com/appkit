@@ -6,7 +6,7 @@ import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type {
   BackgroundColorType,
   IconColorType,
-  IconBoxSizeSpacingType,
+  IconBoxSpacingType,
   IconSizeType,
   IconType
 } from '../../utils/TypeUtil.js'
@@ -37,7 +37,7 @@ export class WuiIconBox extends LitElement {
 
   @property() public iconColor: IconColorType = 'inverse'
 
-  @property() public spacing: IconBoxSizeSpacingType = 'md'
+  @property() public spacing: IconBoxSpacingType = 'md'
 
   @property() public iconSize?: Exclude<IconSizeType, 'inherit'>
 

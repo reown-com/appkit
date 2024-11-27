@@ -12,7 +12,7 @@ export type IconColorType = 'default' | 'accentPrimary' | 'inverse' | 'inherit'
 
 export type IconCursorType = 'pointer'
 
-export type IconBoxSizeSpacingType = 'md' | 'sm'
+export type IconBoxSpacingType = 'md' | 'sm'
 
 export type TextColorType =
   | 'inherit'
