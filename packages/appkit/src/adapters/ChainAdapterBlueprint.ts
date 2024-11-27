@@ -6,8 +6,10 @@ import {
 } from '@reown/appkit-common'
 import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
 import {
+  AccountController,
   OptionsController,
   ThemeController,
+  type AccountControllerState,
   type Connector as AppKitConnector,
   type AuthConnector,
   type Metadata,
@@ -139,12 +141,21 @@ export abstract class AdapterBlueprint<
         w3mThemeVariables: getW3mThemeVariables(themeVariables, themeMode)
       })
     }
-    this.availableConnectors = [
-      ...this.availableConnectors.filter(
-        existing => !connectors.some(newConnector => newConnector.id === existing.id)
-      ),
-      ...connectors
-    ]
+
+    const connectorsAdded = new Set<string>()
+    this.availableConnectors = [...connectors, ...this.availableConnectors].filter(connector => {
+      if (connectorsAdded.has(connector.id)) {
+        return false
+      }
+
+      connectorsAdded.add(connector.id)
+
+      return true
+    })
+  }
+
+  protected setStatus(status: AccountControllerState['status'], chainNamespace?: ChainNamespace) {
+    AccountController.setStatus(status, chainNamespace)
   }
 
   /**

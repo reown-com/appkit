@@ -52,6 +52,12 @@ basicTest('Should show socials enabled by default', async () => {
   await modalPage.closeModal()
 })
 
+basicTest('Should not show Coinbase by default', async () => {
+  await modalPage.page.getByTestId('connect-button').click()
+  await modalValidator.expectCoinbaseNotVisible()
+  await modalPage.closeModal()
+})
+
 basicTest('Should show external connectors', async ({ library }) => {
   if (library !== 'wagmi') {
     return
@@ -60,4 +66,14 @@ basicTest('Should show external connectors', async ({ library }) => {
   await modalPage.page.goto(`${BASE_URL}/library/external/`)
   await modalPage.page.getByTestId('connect-button').click()
   await modalValidator.expectExternalVisible()
+})
+
+basicTest('Should show Coinbase as featured wallet', async ({ library }) => {
+  if (library !== 'wagmi') {
+    return
+  }
+
+  await modalPage.page.goto(`${BASE_URL}/library/external/`)
+  await modalPage.page.getByTestId('connect-button').click()
+  await modalValidator.expectCoinbaseVisible()
 })
