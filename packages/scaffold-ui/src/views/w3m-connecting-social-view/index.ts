@@ -177,6 +177,13 @@ export class W3mConnectingSocialView extends LitElement {
     const interval = setInterval(() => {
       if (this.socialWindow?.closed) {
         if (!this.connecting && RouterController.state.view === 'ConnectingSocial') {
+          if (this.socialProvider) {
+            EventsController.sendEvent({
+              type: 'track',
+              event: 'SOCIAL_LOGIN_CANCELED',
+              properties: { provider: this.socialProvider }
+            })
+          }
           RouterController.goBack()
         }
         clearInterval(interval)
