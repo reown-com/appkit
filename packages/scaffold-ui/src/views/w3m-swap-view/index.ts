@@ -187,13 +187,6 @@ export class W3mSwapView extends LitElement {
     const price = target === 'toToken' ? this.toTokenPriceInUSD : this.sourceTokenPriceInUSD
     const marketValue = NumberUtil.parseLocalStringToNumber(amount) * price
 
-    // Why do we need to subtract the gas price here?
-    /*
-     * If (target === 'toToken') {
-     *   marketValue -= this.gasPriceInUSD || 0
-     * }
-     */
-
     return html`<w3m-swap-input
       .value=${target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount}
       .disabled=${target === 'toToken'}
