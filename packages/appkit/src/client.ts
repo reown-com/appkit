@@ -684,6 +684,29 @@ export class AppKit {
     return null
   }
 
+  private setUnsupportedNetwork(chainId: string | number) {
+    const namespace = this.getActiveChainNamespace()
+
+    if (namespace) {
+      ChainController.setActiveCaipNetwork({
+        id: chainId,
+        caipNetworkId: `${namespace}:${chainId}`,
+        name: 'Unknown Network',
+        chainNamespace: namespace,
+        nativeCurrency: {
+          name: '',
+          decimals: 0,
+          symbol: ''
+        },
+        rpcUrls: {
+          default: {
+            http: []
+          }
+        }
+      })
+    }
+  }
+
   private extendCaipNetworks(options: AppKitOptions) {
     const extendedNetworks = CaipNetworksUtil.extendCaipNetworks(options.networks, {
       customNetworkImageUrls: options.chainImages,
@@ -774,7 +797,9 @@ export class AppKit {
         }
 
         if (!this.caipNetworks?.some(network => network.id === res?.chainId)) {
-          ChainController.showUnsupportedChainUI()
+          if (res?.chainId) {
+            this.setUnsupportedNetwork(res.chainId)
+          }
         }
       },
       reconnectExternal: async ({ id, info, type, provider }) => {
@@ -1161,23 +1186,7 @@ export class AppKit {
         const currentCaipNetwork = this.getCaipNetwork()
 
         if (!caipNetwork) {
-          const namespace = this.getActiveChainNamespace() || ConstantsUtil.CHAIN.EVM
-          ChainController.setActiveCaipNetwork({
-            id: chainId,
-            caipNetworkId: `${namespace}:${chainId}`,
-            name: 'Unknown Network',
-            chainNamespace: namespace,
-            nativeCurrency: {
-              name: '',
-              decimals: 0,
-              symbol: ''
-            },
-            rpcUrls: {
-              default: {
-                http: []
-              }
-            }
-          })
+          this.setUnsupportedNetwork(chainId)
 
           return
         }
@@ -1214,7 +1223,7 @@ export class AppKit {
           })
         }
       } else {
-        ChainController.showUnsupportedChainUI()
+        this.setUnsupportedNetwork(chainId)
       }
     })
 
@@ -1566,7 +1575,9 @@ export class AppKit {
       }
 
       if (!this.caipNetworks?.some(network => network.id === res?.chainId)) {
-        ChainController.showUnsupportedChainUI()
+        if (res?.chainId) {
+          this.setUnsupportedNetwork(res.chainId)
+        }
       }
     } else if (connectedConnector !== UtilConstantsUtil.CONNECTOR_TYPE_W3M_AUTH) {
       this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
