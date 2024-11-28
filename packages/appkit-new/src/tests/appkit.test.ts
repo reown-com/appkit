@@ -526,7 +526,7 @@ describe('Base', () => {
       expect(AccountController.setStatus).toHaveBeenCalledWith('disconnected', 'eip155')
     })
 
-    it('should show unsupported chain UI when synced chainId is not supported', async () => {
+    it('should set unsupported chain when synced chainId is not supported', async () => {
       vi.mocked(ChainController).state = {
         chains: new Map([['eip155', { namespace: 'eip155' }]]),
         activeChain: 'eip155'
@@ -547,6 +547,8 @@ describe('Base', () => {
 
       vi.spyOn(appKit as any, 'getAdapter').mockReturnValue(mockAdapter)
 
+      vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
+
       vi.spyOn(StorageUtil, 'setConnectedConnector').mockImplementation(vi.fn())
       vi.spyOn(StorageUtil, 'setConnectedNamespace').mockImplementation(vi.fn())
 
@@ -560,11 +562,9 @@ describe('Base', () => {
         return undefined
       })
 
-      vi.mocked(ChainController.showUnsupportedChainUI).mockImplementation(vi.fn())
-
       await (appKit as any).syncExistingConnection()
 
-      expect(ChainController.showUnsupportedChainUI).toHaveBeenCalled()
+      expect((appKit as any).setUnsupportedNetwork).toHaveBeenCalled()
     })
   })
   describe('Base Initialization', () => {
