@@ -1,12 +1,13 @@
 /* eslint-disable no-bitwise */
+import { vars } from './ThemeHelperUtil.js'
 import type { SpacingType, ThemeType, TruncateOptions } from './TypeUtil.js'
 
 export const UiHelperUtil = {
   getSpacingStyles(spacing: SpacingType | SpacingType[], index: number) {
     if (Array.isArray(spacing)) {
-      return spacing[index] ? `var(--wui-spacing-${spacing[index]})` : undefined
+      return spacing[index] ? vars.spacing[spacing[index] as keyof typeof vars.spacing] : undefined
     } else if (typeof spacing === 'string') {
-      return `var(--wui-spacing-${spacing})`
+      return vars.spacing[spacing]
     }
 
     return undefined

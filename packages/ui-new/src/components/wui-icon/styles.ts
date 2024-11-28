@@ -6,6 +6,7 @@ export default css`
     aspect-ratio: 1 / 1;
     color: var(--local-color);
     width: var(--local-width);
+    cursor: var(--local-cursor);
   }
 
   svg {

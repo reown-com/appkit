@@ -3,6 +3,7 @@ import { property } from 'lit/decorators.js'
 import type { BorderRadiusType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
+import { vars } from '../../utils/ThemeHelperUtil.js'
 
 // -- Type ---------------------------------------------- //
 type Variant = 'default' | 'light'
@@ -25,7 +26,7 @@ export class WuiShimmer extends LitElement {
     this.style.cssText = `
       width: ${this.width};
       height: ${this.height};
-      border-radius: ${`clamp(0px,var(--wui-border-radius-${this.borderRadius}), 40px)`};
+      border-radius: ${vars.borderRadius[this.borderRadius]};
     `
 
     return html`<slot></slot>`

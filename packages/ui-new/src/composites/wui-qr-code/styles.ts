@@ -1,24 +1,18 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
     user-select: none;
-    display: block;
     overflow: hidden;
+    box-sizing: border-box;
     aspect-ratio: 1 / 1;
     width: var(--local-size);
-  }
-
-  :host([data-theme='dark']) {
-    border-radius: clamp(0px, var(--wui-border-radius-l), 40px);
-    background-color: var(--wui-color-inverse-100);
-    padding: var(--wui-spacing-l);
-  }
-
-  :host([data-theme='light']) {
-    box-shadow: 0 0 0 1px var(--wui-color-bg-125);
-    background-color: var(--wui-color-bg-125);
+    background-color: ${({ tokens }) => tokens.theme.backgroundInvert};
+    border-radius: ${({ borderRadius }) => borderRadius[4]};
   }
 
   :host([data-clear='true']) > wui-icon {
@@ -44,6 +38,10 @@ export default css`
     width: 100%;
     height: 100%;
     color: #3396ff !important;
+    transform: translateY(-50%) translateX(-50%) scale(0.29);
+  }
+
+  wui-icon[name='farcaster'] {
     transform: translateY(-50%) translateX(-50%) scale(0.25);
   }
 `

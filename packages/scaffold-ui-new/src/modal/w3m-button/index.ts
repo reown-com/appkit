@@ -38,6 +38,9 @@ class W3mButtonBase extends LitElement {
       ChainController.subscribeKey('activeCaipAddress', val => (this.caipAddress = val)),
       ModalController.subscribeKey('loading', val => (this.isLoading = val))
     )
+    setTimeout(() => {
+      ModalController.open({ view: 'ConnectingWalletConnect' })
+    }, 500)
   }
 
   public override disconnectedCallback() {

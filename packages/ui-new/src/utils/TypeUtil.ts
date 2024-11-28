@@ -4,7 +4,7 @@ export type ColorType = string
 
 export type BackgroundColorType = 'foregroundSecondary' | 'foregroundAccent010'
 
-export type IconColorType = 'inverse'
+export type IconColorType = 'default' | 'accentPrimary' | 'inverse' | 'inherit'
 
 export type TextColorType =
   | 'inherit'
@@ -58,7 +58,7 @@ export type SpacingType = keyof typeof vars.spacing
 // @TODO: Remove these sizes after completing <wui-icon> component
 export type IconSizeType = 'inherit' | 'xl' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs' | 'xxl'
 
-export type BorderRadiusType = Exclude<SpacingType, '1xs' | 'xl' | 'xxl'> | 'xs'
+export type BorderRadiusType = keyof typeof vars.borderRadius
 
 export type FlexDirectionType = 'column-reverse' | 'column' | 'row-reverse' | 'row'
 

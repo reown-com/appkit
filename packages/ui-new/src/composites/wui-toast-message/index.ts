@@ -1,4 +1,4 @@
-import { AlertController } from '@reown/appkit-core'
+import { SnackController } from '@reown/appkit-core'
 import { html, LitElement } from 'lit'
 import '../../components/wui-text/index.js'
 import '../../components/wui-icon/index.js'
@@ -41,7 +41,7 @@ export class WuiToastMessage extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onClose() {
-    AlertController.close()
+    SnackController.hide()
   }
 }
 

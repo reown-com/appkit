@@ -34,20 +34,19 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
     this.onRenderProxy()
 
     return html`
-      <wui-flex
-        flexDirection="column"
-        alignItems="center"
-        .padding=${['0', 'xl', 'xl', 'xl']}
-        gap="xl"
-      >
-        <wui-shimmer borderRadius="l" width="100%"> ${this.qrCodeTemplate()} </wui-shimmer>
+      <wui-flex flexDirection="column" alignItems="center" .padding=${[0, 4, 4, 4]} rowGap="4">
+        <wui-shimmer borderRadius="4" width="100%"> ${this.qrCodeTemplate()} </wui-shimmer>
 
-        <wui-text variant="paragraph-500" color="fg-100">
-          Scan this QR Code with your phone
-        </wui-text>
-        ${this.copyTemplate()}
+        <wui-button
+          size="lg"
+          ?fullWidth=${true}
+          variant="neutral-secondary"
+          @click=${this.onCopyUri}
+        >
+          <wui-icon size="sm" color="inverse" name="copy" slot="iconLeft"></wui-icon>
+          Copy Link
+        </wui-button>
       </wui-flex>
-
       <w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links>
     `
   }
@@ -67,12 +66,12 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
       return null
     }
 
-    const size = this.getBoundingClientRect().width - 40
+    const size = this.getBoundingClientRect().width - 32
     const alt = this.wallet ? this.wallet.name : undefined
     ConnectionController.setWcLinking(undefined)
     ConnectionController.setRecentWallet(this.wallet)
 
-    return html` <wui-qr-code
+    return html`<wui-qr-code
       size=${size}
       theme=${ThemeController.state.themeMode}
       uri=${this.uri}
@@ -80,20 +79,6 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
       alt=${ifDefined(alt)}
       data-testid="wui-qr-code"
     ></wui-qr-code>`
-  }
-
-  private copyTemplate() {
-    const inactive = !this.uri || !this.ready
-
-    return html`<wui-link
-      .disabled=${inactive}
-      @click=${this.onCopyUri}
-      color="fg-200"
-      data-testid="copy-wc2-uri"
-    >
-      <wui-icon size="xs" color="fg-200" slot="iconLeft" name="copy"></wui-icon>
-      Copy link
-    </wui-link>`
   }
 
   private forceUpdate = () => {

@@ -39,7 +39,7 @@ function headings() {
     ApproveTransaction: 'Approve Transaction',
     BuyInProgress: 'Buy',
     ConnectingExternal: name ?? 'Connect Wallet',
-    ConnectingWalletConnect: name ?? 'WalletConnect',
+    ConnectingWalletConnect: name ?? 'Scan with your mobile wallet',
     ConnectingSiwe: 'Sign In',
     Convert: 'Convert',
     ConvertSelectToken: 'Select token',
@@ -137,7 +137,7 @@ export class W3mHeader extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex .padding=${this.getPadding()} justifyContent="space-between" alignItems="center">
+      <wui-flex padding="4" justifyContent="space-between" alignItems="center">
         ${this.leftHeaderTemplate()} ${this.titleTemplate()} ${this.rightHeaderTemplate()}
       </wui-flex>
     `
@@ -168,24 +168,29 @@ export class W3mHeader extends LitElement {
       return this.closeButtonTemplate()
     }
 
-    return html`<wui-flex>
-      <wui-icon-link
-        icon="clock"
+    return html`<wui-flex columnGap="1">
+      <wui-icon
+        name="clock"
         @click=${() => RouterController.push('SmartSessionList')}
         data-testid="w3m-header-smart-sessions"
-      ></wui-icon-link>
+        color="invert"
+        size="lg"
+        cursor="pointer"
+      ></wui-icon>
       ${this.closeButtonTemplate()}
     </wui-flex> `
   }
 
   private closeButtonTemplate() {
     return html`
-      <wui-icon-link
-        ?disabled=${this.buffering}
-        icon="close"
+      <wui-icon
+        name="close"
+        color="inverse"
         @click=${this.onClose.bind(this)}
+        size="lg"
         data-testid="w3m-header-close"
-      ></wui-icon-link>
+        cursor="pointer"
+      ></wui-icon>
     `
   }
 
@@ -197,12 +202,12 @@ export class W3mHeader extends LitElement {
         view-direction="${this.viewDirection}"
         class="w3m-header-title"
         alignItems="center"
-        gap="xs"
+        columnGap="1"
       >
-        <wui-text variant="paragraph-700" color="fg-100" data-testid="w3m-header-text"
-          >${this.headerText}</wui-text
-        >
-        ${isBeta ? html`<wui-tag variant="main">Beta</wui-tag>` : null}
+        <wui-text variant="md-regular" color="primary" data-testid="w3m-header-text">
+          ${this.headerText}
+        </wui-text>
+        ${isBeta ? html`<wui-tag variant="accent">Beta</wui-tag>` : null}
       </wui-flex>
     `
   }
@@ -213,35 +218,29 @@ export class W3mHeader extends LitElement {
     const isApproveTransaction = view === 'ApproveTransaction'
     const isUpgradeToSmartAccounts = view === 'UpgradeToSmartAccount'
     const isConnectingSIWEView = view === 'ConnectingSiwe'
-    const isAccountView = view === 'Account'
 
     const shouldHideBack = isApproveTransaction || isUpgradeToSmartAccounts || isConnectingSIWEView
 
-    if (isAccountView) {
-      return html`<wui-select
-        id="dynamic"
-        data-testid="w3m-account-select-network"
-        active-network=${ifDefined(this.network?.name)}
-        @click=${this.onNetworks.bind(this)}
-        imageSrc=${ifDefined(AssetUtil.getNetworkImage(this.network))}
-      ></wui-select>`
-    }
-
     if (this.showBack && !shouldHideBack) {
-      return html`<wui-icon-link
+      return html`<wui-icon
         id="dynamic"
-        icon="chevronLeft"
-        ?disabled=${this.buffering}
+        name="chevronLeft"
         @click=${this.onGoBack.bind(this)}
-      ></wui-icon-link>`
+        color="invert"
+        size="lg"
+        cursor="pointer"
+      ></wui-icon>`
     }
 
-    return html`<wui-icon-link
+    return html`<wui-icon
       data-hidden=${!isConnectHelp}
       id="dynamic"
-      icon="helpCircle"
+      name="helpCircle"
       @click=${this.onWalletHelp.bind(this)}
-    ></wui-icon-link>`
+      color="invert"
+      size="lg"
+      cursor="pointer"
+    ></wui-icon>`
   }
 
   private onNetworks() {
@@ -257,14 +256,6 @@ export class W3mHeader extends LitElement {
     const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 
     return isMultiNetwork || !isValidNetwork
-  }
-
-  private getPadding() {
-    if (this.heading) {
-      return ['l', '2l', 'l', '2l'] as const
-    }
-
-    return ['0', '2l', '0', '2l'] as const
   }
 
   private onViewChange() {

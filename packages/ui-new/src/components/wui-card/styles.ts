@@ -1,11 +1,10 @@
-import { css } from 'lit'
+import { css } from '../../utils/ThemeHelperUtil.js'
 
 export default css`
   :host {
     display: block;
-    border-radius: clamp(0px, var(--wui-border-radius-l), 44px);
-    box-shadow: 0 0 0 1px var(--wui-color-gray-glass-005);
-    background-color: var(--wui-color-modal-bg);
+    border-radius: ${({ borderRadius }) => borderRadius[8]};
+    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
     overflow: hidden;
   }
 `

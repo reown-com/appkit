@@ -9,7 +9,7 @@ import {
   SnackController,
   ThemeController
 } from '@reown/appkit-core'
-import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
+import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui-new'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
@@ -70,8 +70,7 @@ export class W3mModal extends LitElement {
             >
               <w3m-header></w3m-header>
               <w3m-router></w3m-router>
-              <w3m-snackbar></w3m-snackbar>
-              <w3m-alertbar></w3m-alertbar>
+              <w3m-toastbar></w3m-toastbar>
             </wui-card>
           </wui-flex>
           <w3m-tooltip></w3m-tooltip>

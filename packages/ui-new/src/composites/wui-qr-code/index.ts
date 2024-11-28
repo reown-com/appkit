@@ -4,7 +4,6 @@ import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import { QrCodeUtil } from '../../utils/QrCode.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { ThemeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -17,8 +16,6 @@ export class WuiQrCode extends LitElement {
 
   @property({ type: Number }) public size = 0
 
-  @property() public theme: ThemeType = 'dark'
-
   @property() public imageSrc?: string = undefined
 
   @property() public alt?: string = undefined
@@ -29,7 +26,6 @@ export class WuiQrCode extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    this.dataset['theme'] = this.theme
     this.dataset['clear'] = String(this.arenaClear)
     this.style.cssText = `--local-size: ${this.size}px`
 
@@ -38,7 +34,7 @@ export class WuiQrCode extends LitElement {
 
   // -- Private ------------------------------------------- //
   private templateSvg() {
-    const size = this.theme === 'light' ? this.size : this.size - 16 * 2
+    const size = this.size - 8 * 2
 
     return svg`
       <svg height=${size} width=${size}>
@@ -53,15 +49,10 @@ export class WuiQrCode extends LitElement {
     }
 
     if (this.farcaster) {
-      return html`<wui-icon
-        class="farcaster"
-        size="inherit"
-        color="inherit"
-        name="farcaster"
-      ></wui-icon>`
+      return html`<wui-icon class="farcaster" size="inherit" name="farcaster"></wui-icon>`
     }
 
-    return html`<wui-icon size="inherit" color="inherit" name="walletConnect"></wui-icon>`
+    return html`<wui-icon size="inherit" name="walletConnect"></wui-icon>`
   }
 }
 

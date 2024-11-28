@@ -1,10 +1,6 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui-new'
 
 export default css`
-  :host {
-    height: 64px;
-  }
-
   wui-text {
     text-transform: capitalize;
   }
@@ -12,6 +8,10 @@ export default css`
   wui-flex.w3m-header-title {
     transform: translateY(0);
     opacity: 1;
+  }
+
+  wui-icon {
+    padding: ${({ spacing }) => spacing[1]};
   }
 
   wui-flex.w3m-header-title[view-direction='prev'] {
