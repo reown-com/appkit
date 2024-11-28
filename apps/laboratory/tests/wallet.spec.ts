@@ -210,7 +210,6 @@ sampleWalletTest(
 )
 
 sampleWalletTest('it should connect and disconnect using hook', async () => {
-  await walletPage.switchNetwork('eip155:1')
   await walletPage.disconnectConnection()
   await modalValidator.expectDisconnected()
   await modalPage.qrCodeFlow(modalPage, walletPage)
