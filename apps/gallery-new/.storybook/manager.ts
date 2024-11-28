@@ -1,11 +1,13 @@
 import { addons } from '@storybook/manager-api'
 import { create } from '@storybook/theming'
+// @ts-expect-error
+import logo from '../assets/logo.png'
 
 const theme = create({
   base: 'dark',
   brandTitle: 'Reown',
   brandUrl: 'https://reown.com',
-  brandImage: '/assets/logo.png',
+  brandImage: logo,
   brandTarget: '_blank',
 
   fontBase:
