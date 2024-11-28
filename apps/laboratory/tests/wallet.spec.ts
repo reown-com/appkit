@@ -191,7 +191,7 @@ sampleWalletTest('it should disconnect and connect to a single account', async (
 })
 
 sampleWalletTest(
-  'it should show switch network modal if network is not supported',
+  'it should show switch network modal if network is not supported and switch to supported network',
   async ({ library }) => {
     if (library === 'solana') {
       return
@@ -203,11 +203,14 @@ sampleWalletTest(
     await walletPage.enableTestnets()
     await walletPage.switchNetwork('eip155:5')
     await modalValidator.expectNetworkNotSupportedVisible()
+    await walletPage.switchNetwork('eip155:1')
+    await modalValidator.expectConnected()
     await modalPage.closeModal()
   }
 )
 
 sampleWalletTest('it should connect and disconnect using hook', async () => {
+  await walletPage.switchNetwork('eip155:1')
   await walletPage.disconnectConnection()
   await modalValidator.expectDisconnected()
   await modalPage.qrCodeFlow(modalPage, walletPage)
