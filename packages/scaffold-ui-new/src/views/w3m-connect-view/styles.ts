@@ -7,12 +7,19 @@ export default css`
     border-radius: ${({ borderRadius }) => borderRadius[8]};
   }
 
-  :host > wui-flex:first-child {
+  .connect {
+    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
+    border-radius: ${({ borderRadius }) => borderRadius[8]};
+  }
+
+  .scrollable {
     max-height: clamp(360px, 578px, 80vh);
     scrollbar-width: none;
     overflow-y: scroll;
     overflow-x: hidden;
-    background-color: ${({ tokens }) => tokens.theme.backgroundPrimary};
+  }
+
+  :host > wui-flex:first-child {
     border: 4px solid ${({ tokens }) => tokens.theme.foregroundSecondary};
     border-radius: ${({ borderRadius }) => borderRadius[8]};
     box-sizing: border-box;
