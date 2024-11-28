@@ -685,23 +685,26 @@ export class AppKit {
   }
 
   private setUnsupportedNetwork(chainId: string | number) {
-    const namespace = this.getActiveChainNamespace() || ConstantsUtil.CHAIN.EVM
-    ChainController.setActiveCaipNetwork({
-      id: chainId,
-      caipNetworkId: `${namespace}:${chainId}`,
-      name: 'Unknown Network',
-      chainNamespace: namespace,
-      nativeCurrency: {
-        name: '',
-        decimals: 0,
-        symbol: ''
-      },
-      rpcUrls: {
-        default: {
-          http: []
+    const namespace = this.getActiveChainNamespace()
+
+    if (namespace) {
+      ChainController.setActiveCaipNetwork({
+        id: chainId,
+        caipNetworkId: `${namespace}:${chainId}`,
+        name: 'Unknown Network',
+        chainNamespace: namespace,
+        nativeCurrency: {
+          name: '',
+          decimals: 0,
+          symbol: ''
+        },
+        rpcUrls: {
+          default: {
+            http: []
+          }
         }
-      }
-    })
+      })
+    }
   }
 
   private extendCaipNetworks(options: AppKitOptions) {
