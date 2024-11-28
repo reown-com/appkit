@@ -1408,7 +1408,9 @@ export class AppKit {
       if (balance) {
         this.setBalance(balance.balance, balance.symbol, chainNamespace)
       }
-      await this.syncIdentity({ address, chainId: Number(chainId), chainNamespace })
+      if (adapter?.namespace === 'eip155') {
+        await this.syncIdentity({ address, chainId: Number(chainId), chainNamespace })
+      }
     }
   }
 

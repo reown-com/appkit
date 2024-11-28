@@ -6,7 +6,7 @@ import { ConnectionController } from './ConnectionController.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import { SnackController } from './SnackController.js'
 import { RouterController } from './RouterController.js'
-import { NumberUtil } from '@reown/appkit-common'
+import { ContractUtil, NumberUtil } from '@reown/appkit-common'
 import type { SwapTokenWithBalance } from '../utils/TypeUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
@@ -713,13 +713,13 @@ export const SwapController = {
     }
 
     try {
-      await ConnectionController.sendTransaction({
-        address: fromAddress as `0x${string}`,
-        to: data.to as `0x${string}`,
-        data: data.data as `0x${string}`,
-        value: BigInt(data.value),
-        gasPrice: BigInt(data.gasPrice),
-        chainNamespace: 'eip155'
+      await ConnectionController.writeContract({
+        fromAddress: fromAddress as `0x${string}`,
+        tokenAddress: data.to as `0x${string}`,
+        abi: ContractUtil.getSwapAbi(),
+        method: 'approve',
+        chainNamespace: 'eip155',
+        args: [data.to, BigInt(data.value)]
       })
 
       await this.swapTokens()

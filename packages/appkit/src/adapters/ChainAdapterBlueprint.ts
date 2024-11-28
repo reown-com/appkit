@@ -424,15 +424,17 @@ export namespace AdapterBlueprint {
 
   export type WriteContractParams = {
     receiverAddress: string
-    tokenAmount: bigint
+    tokenAmount?: bigint
     tokenAddress: string
-    fromAddress: string
-    method: 'send' | 'transfer' | 'call'
+    fromAddress?: string
+    method: 'send' | 'transfer' | 'call' | 'approve'
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     abi: any
     caipNetwork: CaipNetwork
     provider?: AppKitConnector['provider']
     caipAddress: CaipAddress
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    args?: any
   }
 
   export type WriteContractResult = {
