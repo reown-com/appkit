@@ -78,7 +78,8 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   override async signMessage(
     params: AdapterBlueprint.SignMessageParams
   ): Promise<AdapterBlueprint.SignMessageResult> {
-    const connector = this.connector
+    const connector = params.provider as BitcoinConnector
+
     if (!connector) {
       throw new Error('BitcoinAdapter:signMessage - connector is undefined')
     }
