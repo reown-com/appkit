@@ -14,6 +14,8 @@ import { property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+const connectMethodOrder = ['wallet', 'email', 'social']
+
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
   public static override styles = styles
@@ -28,6 +30,8 @@ export class W3mConnectView extends LitElement {
 
   @state() private features = OptionsController.state.features
 
+  @state() private enableWallets = OptionsController.state.enableWallets
+
   @property() private walletGuide: WalletGuideType = 'get-started'
 
   @state() private checked = false
@@ -39,7 +43,8 @@ export class W3mConnectView extends LitElement {
         this.connectors = val
         this.authConnector = this.connectors.find(c => c.type === 'AUTH')
       }),
-      OptionsController.subscribeKey('features', val => (this.features = val))
+      OptionsController.subscribeKey('features', val => (this.features = val)),
+      OptionsController.subscribeKey('enableWallets', val => (this.enableWallets = val))
     )
   }
 
@@ -74,7 +79,7 @@ export class W3mConnectView extends LitElement {
     }
 
     const socials = this.features?.socials
-    const enableWallets = OptionsController.state.enableWallets
+    const enableWallets = this.enableWallets
 
     const socialsExist = socials && socials.length
     const socialOrEmailLoginEnabled = socialsExist || this.authConnector
@@ -93,12 +98,7 @@ export class W3mConnectView extends LitElement {
               ? ['3xs', 's', '0', 's']
               : ['3xs', 's', 's', 's']}
           >
-            <w3m-email-login-widget
-              walletGuide=${this.walletGuide}
-              tabIdx=${ifDefined(tabIndex)}
-            ></w3m-email-login-widget>
-            <w3m-social-login-widget tabIdx=${ifDefined(tabIndex)}></w3m-social-login-widget>
-            ${this.walletListTemplate(tabIndex)}
+            ${this.renderConnectMethod(tabIndex)}
           </wui-flex>
         </wui-flex>
         ${this.guideTemplate(disabled)}
@@ -108,10 +108,139 @@ export class W3mConnectView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private renderConnectMethod(tabIndex?: number) {
+    if (!connectMethodOrder) {
+      // TODO: will be implemented
+      return null
+    }
+
+    return html`${connectMethodOrder.map((method, index) => {
+      switch (method) {
+        case 'email':
+          return html`${this.emailTemplate(tabIndex)} ${this.separatorTemplate(index, 'email')}`
+        case 'social':
+          return html`${this.socialListTemplate(tabIndex)}
+          ${this.separatorTemplate(index, 'social')}`
+        case 'wallet':
+          return html`${this.walletListTemplate(tabIndex)}
+          ${this.separatorTemplate(index, 'wallet')}`
+        default:
+          return null
+      }
+    })}`
+  }
+
+  private checkMethodEnabled(name: 'wallet' | 'social' | 'email') {
+    switch (name) {
+      case 'wallet':
+        return this.enableWallets
+      case 'social':
+        return this.features?.socials && this.features?.socials.length > 0
+      case 'email':
+        return this.features?.email
+    }
+  }
+
+  private checkIsThereNextMethod(currentIndex: number): boolean {
+    const nextMethod = connectMethodOrder[currentIndex + 1] as
+      | 'wallet'
+      | 'social'
+      | 'email'
+      | undefined
+
+    if (!nextMethod) {
+      return false
+    }
+
+    const isCurrentMethodEnabled = this.checkMethodEnabled(nextMethod)
+
+    if (isCurrentMethodEnabled) {
+      return true
+    }
+
+    return this.checkIsThereNextMethod(currentIndex + 1)
+  }
+
+  /**
+   * wallet render ederken
+   *   - aktif ve altında başka bir şey var mı?
+   *    - evet - separator
+   *    - hayır - null
+   * email render ederken
+   *  - aktif ve sonraki method social mi?
+   *      - evet null
+   *      - hayır separator
+   * social render ederken
+   *    - aktif ve sonraki method email mi
+   *        - evet null
+   *        - hayır separator
+   */
+
+  private separatorTemplate(index: number, type: 'wallet' | 'email' | 'social') {
+    const isNextMethodExist = this.checkIsThereNextMethod(index)
+    const isExplore = this.walletGuide === 'explore'
+
+    switch (type) {
+      case 'wallet': {
+        console.log('>>> separatorTemplate', type, this.enableWallets, isNextMethodExist, isExplore)
+        const isWalletEnable = this.enableWallets
+        return isWalletEnable && isNextMethodExist && !isExplore
+          ? html`<wui-separator text="or"></wui-separator>`
+          : null
+      }
+      case 'email': {
+        const isEmailEnabled = this.features?.email
+        const nextMethod = connectMethodOrder[index + 1] as 'wallet' | 'social' | undefined
+        const isNextMethodSocial = nextMethod === 'social'
+        return isEmailEnabled && !isNextMethodSocial && isNextMethodExist
+          ? html`<wui-separator text="or"></wui-separator>`
+          : null
+      }
+      case 'social': {
+        const isSocialEnabled = this.features?.socials && this.features?.socials.length > 0
+        const nextMethod = connectMethodOrder[index + 1] as 'wallet' | 'email' | undefined
+        const isNextMethodEmail = nextMethod === 'email'
+        return isSocialEnabled && !isNextMethodEmail && isNextMethodExist
+          ? html`<wui-separator text="or"></wui-separator>`
+          : null
+      }
+      default:
+        return null
+    }
+  }
+
+  private emailTemplate(tabIndex?: number) {
+    const emailEnabled = this.features?.email
+    const isCreateWalletPage = this.walletGuide === 'explore'
+
+    if (!isCreateWalletPage && !emailEnabled) {
+      return null
+    }
+
+    return html`<w3m-email-login-widget
+      walletGuide=${this.walletGuide}
+      tabIdx=${ifDefined(tabIndex)}
+    ></w3m-email-login-widget>`
+  }
+
+  private socialListTemplate(tabIndex?: number) {
+    const isSocialsEnabled = this.features?.socials && this.features?.socials.length > 0
+    const isCreateWalletPage = this.walletGuide === 'explore'
+
+    if (!isCreateWalletPage && !isSocialsEnabled) {
+      return null
+    }
+
+    return html`<w3m-social-login-widget
+      walletGuide=${this.walletGuide}
+      tabIdx=${ifDefined(tabIndex)}
+    ></w3m-social-login-widget>`
+  }
+
   private walletListTemplate(tabIndex?: number) {
     const socials = this.features?.socials
     const emailShowWallets = this.features?.emailShowWallets
-    const enableWallets = OptionsController.state.enableWallets
+    const enableWallets = this.enableWallets
 
     if (!enableWallets) {
       return null
@@ -168,8 +297,16 @@ export class W3mConnectView extends LitElement {
       return null
     }
 
+    console.log('>>> this.walletGuide', this.walletGuide)
+
     if (this.walletGuide === 'explore') {
       return html`
+        <wui-flex
+          data-testid="w3m-email-login-or-separator"
+          .padding=${['xxs', '0', '0', '0'] as const}
+        >
+          <wui-separator id="explore" text="or"></wui-separator>
+        </wui-flex>
         <wui-flex
           flexDirection="column"
           .padding=${['0', '0', 'xl', '0']}

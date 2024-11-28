@@ -70,10 +70,6 @@ export class W3mEmailLoginWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    if (!this.authConnector || !this.features?.email) {
-      return null
-    }
-
     return html`
       <form ${ref(this.formRef)} @submit=${this.onSubmitEmail.bind(this)}>
         <wui-email-input
@@ -87,7 +83,7 @@ export class W3mEmailLoginWidget extends LitElement {
         ${this.submitButtonTemplate()}${this.loadingTemplate()}
         <input type="submit" hidden />
       </form>
-      ${this.templateError()} ${this.separatorTemplate()}
+      ${this.templateError()}
     `
   }
 
@@ -108,31 +104,6 @@ export class W3mEmailLoginWidget extends LitElement {
       : null
   }
 
-  private separatorTemplate() {
-    const socials = this.features?.socials
-    const multipleConnectors = this.connectors.length > 1
-    const emailShowWallets = this.features?.emailShowWallets
-    const haveSocials = socials && socials.length
-
-    const hideSeparator = emailShowWallets || !multipleConnectors || !this.enableWallets
-
-    if (haveSocials && hideSeparator && this.walletGuide === 'get-started') {
-      return null
-    }
-
-    if (socials && socials.length > 0) {
-      return null
-    }
-
-    return html`
-      <wui-flex
-        data-testid="w3m-email-login-or-separator"
-        .padding=${['xxs', '0', '0', '0'] as const}
-      >
-        <wui-separator text="or"></wui-separator>
-      </wui-flex>
-    `
-  }
   private loadingTemplate() {
     return this.loading
       ? html`<wui-loading-spinner size="md" color="accent-100"></wui-loading-spinner>`

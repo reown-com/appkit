@@ -1,7 +1,14 @@
 'use client'
 
 import { ReactNode, useEffect, useState } from 'react'
-import { createAppKit, Features, ThemeMode, ThemeVariables, type AppKit } from '@reown/appkit/react'
+import {
+  createAppKit,
+  Features,
+  OptionsControllerState,
+  ThemeMode,
+  ThemeVariables,
+  type AppKit
+} from '@reown/appkit/react'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { type AppKitNetwork, mainnet, polygon } from '@reown/appkit/networks'
@@ -32,12 +39,13 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [termsConditionsUrl, setTermsConditionsUrl] = useState('')
   const [privacyPolicyUrl, setPrivacyPolicyUrl] = useState('')
-
+  const [enableWallets, setEnableWallets] = useState(true)
   // Initialize AppKit and state from URL
   useEffect(() => {
     const urlState = getStateFromUrl()
     setFeatures(urlState.features)
     setThemeMode(urlState.themeMode)
+    setEnableWallets(urlState.enableWallets)
 
     kit = createAppKit({
       adapters: [ethersAdapter, solanaAdapter],
@@ -45,7 +53,12 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
       defaultNetwork: mainnet,
       projectId: process.env.NEXT_PUBLIC_PROJECT_ID!,
       disableAppend: true,
-      features: urlState.features,
+      features: {
+        experiemental_walletFeatureOrder: ['swap', 'send', 'receive', 'buy'],
+        experiemental_connectMethodOrder: ['wallet', 'social', 'email'],
+        ...urlState.features
+      },
+      enableWallets: urlState.enableWallets,
       themeMode: urlState.themeMode,
       termsConditionsUrl,
       privacyPolicyUrl
@@ -77,6 +90,11 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
 
   const updateFeatures = (newFeatures: Partial<Features>) => {
     setFeatures(prev => ({ ...prev, ...newFeatures }))
+  }
+
+  const updateEnableWallets = (enabled: boolean) => {
+    setEnableWallets(enabled)
+    kit?.updateOptions({ enableWallets: enabled })
   }
 
   const updateThemeMode = (mode: ThemeMode) => {
@@ -118,12 +136,15 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
         termsConditionsUrl,
         privacyPolicyUrl,
         socialsEnabled,
+        enableWallets,
         setIsDrawerOpen,
         updateFeatures,
         updateThemeMode,
         updateThemeVariables: setThemeVariables,
         updateSocials,
-        updateUrls
+        updateUrls,
+        updateEnableWallets,
+        setEnableWallets: updateEnableWallets
       }}
     >
       {children}

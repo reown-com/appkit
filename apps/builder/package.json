@@ -24,6 +24,7 @@
     "@reown/appkit-adapter-solana": "workspace:*",
     "@reown/appkit-core": "workspace:*",
     "@reown/appkit-scaffold-ui": "workspace:*",
+    "@shopify/draggable": "^1.1.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "2.1.0",
     "lucide-react": "^0.453.0",

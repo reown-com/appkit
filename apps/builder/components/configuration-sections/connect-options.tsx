@@ -5,7 +5,14 @@ import { FeatureButton } from '@/components/feature-button'
 type SocialOption = 'google' | 'x' | 'discord' | 'farcaster' | 'github' | 'apple' | 'facebook'
 
 export function AuthFeatures() {
-  const { features, updateFeatures, socialsEnabled, updateSocials } = useAppKit()
+  const {
+    features,
+    enableWallets,
+    setEnableWallets,
+    updateFeatures,
+    socialsEnabled,
+    updateSocials
+  } = useAppKit()
 
   const toggleSocial = (social: SocialOption) => {
     const currentSocials = Array.isArray(features.socials) ? features.socials : []
@@ -19,6 +26,8 @@ export function AuthFeatures() {
   const toggleFeature = (featureName: 'email' | 'emailShowWallets') => {
     updateFeatures({ [featureName]: !features[featureName] })
   }
+
+  console.log('>>> enableWallets', enableWallets)
 
   return (
     <div className="space-y-4 flex-grow">
@@ -35,8 +44,8 @@ export function AuthFeatures() {
       <SocialButtons toggleSocial={toggleSocial} features={features} />
       <FeatureButton
         label="Show wallets"
-        isEnabled={features.emailShowWallets}
-        onClick={() => toggleFeature('emailShowWallets')}
+        isEnabled={enableWallets}
+        onClick={() => setEnableWallets(!enableWallets)}
       />
     </div>
   )

@@ -22,7 +22,8 @@ import {
   type AdapterNetworkState,
   type Features,
   SIWXUtil,
-  type ConnectionStatus
+  type ConnectionStatus,
+  type OptionsControllerState
 } from '@reown/appkit-core'
 import {
   AccountController,
@@ -595,6 +596,12 @@ export class AppKit {
     const currentFeatures = OptionsController.state.features || {}
     const updatedFeatures = { ...currentFeatures, ...newFeatures }
     OptionsController.setFeatures(updatedFeatures)
+  }
+
+  public updateOptions(newOptions: Partial<OptionsControllerState>) {
+    const currentOptions = OptionsController.state || {}
+    const updatedOptions = { ...currentOptions, ...newOptions }
+    OptionsController.setOptions(updatedOptions)
   }
 
   public async disconnect() {

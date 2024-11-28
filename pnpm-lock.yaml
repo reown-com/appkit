@@ -118,6 +118,9 @@ importers:
       '@reown/appkit-scaffold-ui':
         specifier: workspace:*
         version: link:../../packages/scaffold-ui
+      '@shopify/draggable':
+        specifier: ^1.1.3
+        version: 1.1.3
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -6302,6 +6305,9 @@ packages:
   '@sentry/utils@7.92.0':
     resolution: {integrity: sha512-3nEfrQ1z28b/2zgFGANPh5yMVtgwXmrasZxTvKbrAj+KWJpjrJHrIR84r9W277J44NMeZ5RhRW2uoDmuBslPnA==}
     engines: {node: '>=8'}
+
+  '@shopify/draggable@1.1.3':
+    resolution: {integrity: sha512-okZG6FTOX1HpfToN2uFVXTicum+NtHFGEY+0MFkZsdChP5qvLSlkffQormMxoDQVIDsK+jso3yz03tteIJ/A0w==}
 
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
@@ -18934,6 +18940,8 @@ snapshots:
   '@sentry/utils@7.92.0':
     dependencies:
       '@sentry/types': 7.92.0
+
+  '@shopify/draggable@1.1.3': {}
 
   '@sinclair/typebox@0.27.8': {}
 

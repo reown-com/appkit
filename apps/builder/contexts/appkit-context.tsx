@@ -7,6 +7,7 @@ interface AppKitContextType {
   themeMode: ThemeMode
   themeVariables: ThemeVariables
   features: Features
+  enableWallets: boolean
   isLoading: boolean
   isDrawerOpen: boolean
   termsConditionsUrl: string
@@ -17,7 +18,9 @@ interface AppKitContextType {
   updateThemeVariables: (variables: Partial<ThemeVariables>) => void
   updateFeatures: (features: Partial<Features>) => void
   updateSocials: (enabled: boolean) => void
+  updateEnableWallets: (enabled: boolean) => void
   updateUrls: (urls: { termsConditions?: string; privacyPolicy?: string }) => void
+  setEnableWallets: (enabled: boolean) => void
 }
 
 export const AppKitContext = createContext<AppKitContextType | undefined>(undefined)

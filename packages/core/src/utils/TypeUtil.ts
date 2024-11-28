@@ -985,6 +985,19 @@ export type Features = {
    * @default false
    */
   legalCheckbox?: boolean
+  /**
+   * @description The order of the connect methods. This is experimental and subject to change.
+   * @default ['email', 'social', 'wallet']
+   * @type {('email' | 'social' | 'wallet')[]}
+   */
+  experiemental_connectMethodOrder?: ('email' | 'social' | 'wallet')[]
+  /**
+   * @
+   * @description The order of the wallet features. This is experimental and subject to change.
+   * @default ['receive' | 'buy' | 'swap' | 'send']
+   * @type {('receive' | 'buy' | 'swap' | 'send')[]}
+   */
+  experiemental_walletFeatureOrder?: ('receive' | 'buy' | 'swap' | 'send')[]
 }
 
 export type FeaturesKeys = keyof Features
