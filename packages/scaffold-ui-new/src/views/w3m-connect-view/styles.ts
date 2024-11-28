@@ -4,7 +4,9 @@ export default css`
   :host {
     display: block;
     background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
+    border: 4px solid ${({ tokens }) => tokens.theme.foregroundSecondary};
     border-radius: ${({ borderRadius }) => borderRadius[8]};
+    box-sizing: border-box;
   }
 
   .connect {
@@ -19,9 +21,10 @@ export default css`
     overflow-x: hidden;
   }
 
-  :host > wui-flex:first-child {
-    border: 4px solid ${({ tokens }) => tokens.theme.foregroundSecondary};
-    border-radius: ${({ borderRadius }) => borderRadius[8]};
-    box-sizing: border-box;
+  @media (max-width: 430px) {
+    :host {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
   }
 `

@@ -43,16 +43,14 @@ export class W3mConnectView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column">
-        <wui-flex class="connect" flexDirection="column">
-          ${this.headerTemplate()}
-          <wui-flex class="scrollable" flexDirection="column">
-            ${this.heroTemplate()} ${this.authLoginTemplate()} ${this.separatorTemplate()}
-            ${this.walletListTemplate()} ${this.guideTemplate()}
-          </wui-flex>
+      <wui-flex class="connect" flexDirection="column">
+        ${this.headerTemplate()}
+        <wui-flex class="scrollable" flexDirection="column">
+          ${this.heroTemplate()} ${this.authLoginTemplate()} ${this.separatorTemplate()}
+          ${this.walletListTemplate()} ${this.guideTemplate()}
         </wui-flex>
-        <w3m-legal-footer></w3m-legal-footer>
       </wui-flex>
+      <w3m-legal-footer></w3m-legal-footer>
     `
   }
 
