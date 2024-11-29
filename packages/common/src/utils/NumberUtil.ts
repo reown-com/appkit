@@ -56,6 +56,6 @@ export const NumberUtil = {
     }
 
     // Remove any commas used as thousand separators and parse the float
-    return parseFloat(value.replace(/,/u, ''))
+    return parseFloat(value.replace(/,/gu, ''))
   }
 }
