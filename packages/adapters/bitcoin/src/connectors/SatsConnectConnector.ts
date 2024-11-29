@@ -9,7 +9,8 @@ import {
   type Params,
   type Provider as SatsConnectProvider,
   type BitcoinProvider,
-  type Requests as SatsConnectRequests
+  type Requests as SatsConnectRequests,
+  type RpcErrorResponse
 } from 'sats-connect'
 import type { RequestArguments } from '@reown/appkit-core'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
@@ -138,13 +139,21 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
     method: Method,
     options: Params<Method>
   ) {
-    const response = await this.getWalletProvider().request(method, options)
+    const response = await this.getWalletProvider()
+      .request(method, options)
+      .catch(error => {
+        if ('jsonrpc' in error && 'error' in error) {
+          return error as RpcErrorResponse
+        }
+
+        throw error
+      })
 
     if ('result' in response) {
       return response.result
     }
 
-    throw new Error(response.error.message)
+    throw { ...response.error, name: 'RPCError' } as Error
   }
 }
 
