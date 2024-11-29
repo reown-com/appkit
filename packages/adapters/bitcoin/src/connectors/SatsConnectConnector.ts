@@ -23,6 +23,7 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
   readonly provider: BitcoinConnector
 
   private requestedChains: CaipNetwork[] = []
+  private walletUnsubscribes: (() => void)[] = []
 
   constructor({ provider, requestedChains }: SatsConnectConnector.ConstructorParams) {
     super()
@@ -67,14 +68,19 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
       throw new Error('No address available')
     }
 
+    this.bindEvents()
+
     return address
   }
 
   async disconnect() {
     try {
       await this.internalRequest('wallet_disconnect', null)
+      this.unbindEvents()
     } catch (error) {
       if ((error as Error)?.message?.includes('not supported')) {
+        this.unbindEvents()
+
         return
       }
 
@@ -162,6 +168,39 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
     }
 
     throw { ...response.error, name: 'RPCError' } as Error
+  }
+
+  private bindEvents() {
+    this.unbindEvents()
+
+    const provider = this.getWalletProvider()
+
+    if (typeof provider.addListener !== 'function') {
+      console.warn('SatsConnectConnector:bindEvents - wallet provider does not support events')
+
+      return
+    }
+
+    this.walletUnsubscribes.push(
+      provider.addListener('accountChange', async _data => {
+        const address = await this.connect()
+        this.emit('accountsChanged', [address])
+      }),
+
+      provider.addListener('disconnect', async _data => {
+        await this.disconnect()
+        this.emit('disconnect')
+      }),
+
+      provider.addListener('networkChange', _data => {
+        this.emit('chainChanged', this.chains)
+      })
+    )
+  }
+
+  private unbindEvents() {
+    this.walletUnsubscribes.forEach(unsubscribe => unsubscribe())
+    this.walletUnsubscribes = []
   }
 }
 

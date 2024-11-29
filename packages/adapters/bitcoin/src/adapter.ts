@@ -7,6 +7,8 @@ import { WalletStandardConnector } from './connectors/WalletStandardConnector.js
 import { WalletConnectProvider } from './utils/WalletConnectProvider.js'
 
 export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
+  private eventsToUnbind: (() => void)[] = []
+
   constructor(params: BitcoinAdapter.ConstructorParams) {
     super({
       namespace: 'bip122',
@@ -42,6 +44,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     const address = await connector.connect()
 
     this.connector = connector
+    this.bindEvents(this.connector)
 
     return {
       id: connector.id,
@@ -109,16 +112,13 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     return Promise.resolve()
   }
 
-  override disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
+  override async disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
     if (params?.provider) {
-      return params.provider.disconnect()
+      await params.provider.disconnect()
+    } else if (this.connector) {
+      await this.connector.disconnect()
     }
-
-    if (this.connector) {
-      return this.connector.disconnect()
-    }
-
-    return Promise.resolve()
+    this.unbindEvents()
   }
 
   // -- Unused => Refactor ------------------------------------------- //
@@ -190,6 +190,40 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   ): Promise<`0x${string}`> {
     // Get capabilities
     return Promise.resolve('0x')
+  }
+
+  // -- Private ------------------------------------------ //
+  private bindEvents(connector: BitcoinConnector) {
+    this.unbindEvents()
+
+    const accountsChanged = (data: string[]) => {
+      const [newAccount] = data
+      if (newAccount) {
+        this.emit('accountChanged', {
+          address: newAccount,
+          chainId: this.networks[0]?.id || ''
+        })
+      }
+    }
+    connector.on('accountsChanged', accountsChanged)
+    this.eventsToUnbind.push(() => connector.removeListener('accountsChanged', accountsChanged))
+
+    const chainChanged = (data: string) => {
+      this.emit('switchNetwork', { chainId: data })
+    }
+    connector.on('chainChanged', chainChanged)
+    this.eventsToUnbind.push(() => connector.removeListener('chainChanged', chainChanged))
+
+    const disconnect = () => {
+      this.emit('disconnect')
+    }
+    connector.on('disconnect', disconnect)
+    this.eventsToUnbind.push(() => connector.removeListener('disconnect', disconnect))
+  }
+
+  private unbindEvents() {
+    this.eventsToUnbind.forEach(unsubscribe => unsubscribe())
+    this.eventsToUnbind = []
   }
 }
 
