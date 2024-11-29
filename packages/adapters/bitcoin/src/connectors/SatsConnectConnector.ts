@@ -187,8 +187,7 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
         this.emit('accountsChanged', [address])
       }),
 
-      provider.addListener('disconnect', async _data => {
-        await this.disconnect()
+      provider.addListener('disconnect', _data => {
         this.emit('disconnect')
       }),
 
