@@ -14,7 +14,7 @@ import { property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-const connectMethodOrder = ['wallet', 'email', 'social']
+const defaultConnectMethodOrder = ['wallet', 'email', 'social']
 
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
@@ -109,6 +109,8 @@ export class W3mConnectView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private renderConnectMethod(tabIndex?: number) {
+    const connectMethodOrder = this.features?.experiemental_connectMethodOrder
+
     if (!connectMethodOrder) {
       // TODO: will be implemented
       return null
@@ -142,6 +144,9 @@ export class W3mConnectView extends LitElement {
   }
 
   private checkIsThereNextMethod(currentIndex: number): boolean {
+    const connectMethodOrder =
+      this.features?.experiemental_connectMethodOrder || defaultConnectMethodOrder
+
     const nextMethod = connectMethodOrder[currentIndex + 1] as
       | 'wallet'
       | 'social'
@@ -177,6 +182,8 @@ export class W3mConnectView extends LitElement {
    */
 
   private separatorTemplate(index: number, type: 'wallet' | 'email' | 'social') {
+    const connectMethodOrder =
+      this.features?.experiemental_connectMethodOrder || defaultConnectMethodOrder
     const isNextMethodExist = this.checkIsThereNextMethod(index)
     const isExplore = this.walletGuide === 'explore'
 

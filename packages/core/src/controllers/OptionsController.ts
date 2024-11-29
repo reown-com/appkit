@@ -236,5 +236,12 @@ export const OptionsController = {
 
   setSIWX(siwx: OptionsControllerState['siwx']) {
     state.siwx = siwx
+  },
+
+  setConnectMethodOrder(connectMethodOrder: ('email' | 'social' | 'wallet')[]) {
+    state.features = {
+      ...state.features,
+      experiemental_connectMethodOrder: connectMethodOrder
+    }
   }
 }

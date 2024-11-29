@@ -10,7 +10,7 @@ interface SocialButtonsProps {
 
 export function SocialButtons({ toggleSocial, features }: SocialButtonsProps) {
   return (
-    <div className="grid grid-cols-4 gap-2 items-center">
+    <div className="grid grid-cols-4 gap-2 mt-2 items-center">
       {(
         ['apple', 'google', 'x', 'github', 'farcaster', 'discord', 'facebook'] as SocialOption[]
       ).map(social => {

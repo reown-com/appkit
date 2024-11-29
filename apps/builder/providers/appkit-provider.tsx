@@ -123,6 +123,10 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
     }
   }
 
+  function setConnectMethodOrder(connectMethodOrder: ('email' | 'social' | 'wallet')[]) {
+    kit?.setConnectMethodOrder(connectMethodOrder)
+  }
+
   const socialsEnabled = Array.isArray(features.socials)
 
   return (
@@ -144,7 +148,8 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
         updateSocials,
         updateUrls,
         updateEnableWallets,
-        setEnableWallets: updateEnableWallets
+        setEnableWallets: updateEnableWallets,
+        setConnectMethodOrder
       }}
     >
       {children}

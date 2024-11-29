@@ -1,0 +1,10 @@
+.Wrapper {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  justify-content: flex-start;
+
+  &.center {
+    justify-content: center;
+  }
+}

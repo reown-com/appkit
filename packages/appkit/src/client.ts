@@ -604,6 +604,11 @@ export class AppKit {
     OptionsController.setOptions(updatedOptions)
   }
 
+  public setConnectMethodOrder(connectMethodOrder: ('email' | 'social' | 'wallet')[]) {
+    console.log('setConnectMethodOrder', connectMethodOrder)
+    OptionsController.setConnectMethodOrder(connectMethodOrder)
+  }
+
   public async disconnect() {
     await this.connectionControllerClient?.disconnect()
   }
