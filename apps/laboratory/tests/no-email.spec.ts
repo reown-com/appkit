@@ -33,6 +33,8 @@ noEmailTest('secure site iframe should not be present', () => {
 })
 
 noEmailTest('should check the terms of service and privacy policy checkbox', async () => {
+  // Wait for the page to load
+  await modalPage.page.waitForTimeout(200)
   await modalPage.openConnectModal()
   await modalValidator.expectConnectViewToBeDisabled()
   await modalPage.clickLegalCheckbox()
