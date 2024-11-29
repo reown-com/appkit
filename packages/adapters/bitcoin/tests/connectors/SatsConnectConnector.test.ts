@@ -149,6 +149,28 @@ describe('SatsConnectConnector', () => {
     })
   })
 
+  it('should signPSBT correctly', async () => {
+    const params = {
+      psbt: 'mock_psbt',
+      broadcast: true,
+      signInputs: [{ address: 'mock_address', index: 0, sighashTypes: [0] }]
+    }
+    const spy = vi.spyOn(mocks.wallet, 'request')
+
+    spy.mockResolvedValueOnce(
+      mockSatsConnectProvider.mockRequestResolve({ psbt: 'mock_signed_psbt' })
+    )
+
+    const result = await connector.signPSBT(params)
+
+    expect(result).toEqual({ psbt: 'mock_signed_psbt' })
+    expect(mocks.wallet.request).toHaveBeenCalledWith('signPsbt', {
+      psbt: params.psbt,
+      broadcast: params.broadcast,
+      signInputs: { mock_address: [0] }
+    })
+  })
+
   it('should throw if sendTransfer with invalid amount', async () => {
     const params = {
       amount: 'invalid',
@@ -170,5 +192,17 @@ describe('SatsConnectConnector', () => {
     )
 
     await expect(connector.request(args)).rejects.toThrow('mock_error')
+
+    vi.spyOn(mocks.wallet, 'request').mockRejectedValueOnce(
+      mockSatsConnectProvider.mockRequestReject({
+        message: 'mock_error'
+      })
+    )
+
+    await expect(connector.request(args)).rejects.toThrow('mock_error')
+
+    vi.spyOn(mocks.wallet, 'request').mockRejectedValueOnce(new Error('unknown_error'))
+
+    await expect(connector.request(args)).rejects.toThrow('unknown_error')
   })
 })
