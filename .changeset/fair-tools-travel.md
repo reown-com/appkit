@@ -17,4 +17,4 @@
 '@reown/appkit-wallet': patch
 ---
 
-Fixed an issue where the Solana adapter would cause a server-side rendering error.
+Fixed an issue where solana adapter would throw an error if it was rendered in server-side.
