@@ -12,7 +12,6 @@ import {
   type AccountControllerState,
   type Connector as AppKitConnector,
   type AuthConnector,
-  type Metadata,
   type Tokens
 } from '@reown/appkit-core'
 import type UniversalProvider from '@walletconnect/universal-provider'
@@ -20,7 +19,6 @@ import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { AppKitOptions } from '../utils/index.js'
 import type { AppKit } from '../client.js'
-import { snapshot } from 'valtio'
 
 type EventName = 'disconnect' | 'accountChanged' | 'switchNetwork'
 type EventData = {
@@ -124,16 +122,16 @@ export abstract class AdapterBlueprint<
       const authConnector = connectors.find(
         connector => connector.id === 'ID_AUTH'
       ) as AuthConnector
-
-      const optionsState = snapshot(OptionsController.state)
       const themeMode = ThemeController.getSnapshot().themeMode
       const themeVariables = ThemeController.getSnapshot().themeVariables
 
+      const { metadata, sdkVersion, projectId, sdkType } = OptionsController.state
+
       authConnector?.provider?.syncDappData?.({
-        metadata: optionsState.metadata as Metadata,
-        sdkVersion: optionsState.sdkVersion,
-        projectId: optionsState.projectId,
-        sdkType: optionsState.sdkType
+        metadata,
+        sdkVersion,
+        projectId,
+        sdkType
       })
       authConnector.provider.syncTheme({
         themeMode,
