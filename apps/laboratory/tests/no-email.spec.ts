@@ -20,6 +20,7 @@ noEmailTest.beforeAll(async ({ browser, library }) => {
   modalPage = new ModalPage(browserPage, library, 'no-email')
   modalValidator = new ModalValidator(browserPage)
 
+  await modalPage.page.waitForTimeout(200)
   await modalPage.load()
 })
 
