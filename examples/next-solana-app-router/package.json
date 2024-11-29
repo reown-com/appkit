@@ -12,9 +12,9 @@
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-solana": "workspace:*",
     "@solana/wallet-adapter-wallets": "0.19.32",
-    "next": "15.0.3",
-    "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106"
+    "next": "14.2.3",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
   },
   "devDependencies": {
     "@types/react": "18.2.62",
