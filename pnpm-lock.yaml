@@ -233,6 +233,9 @@ importers:
       '@emotion/styled':
         specifier: 11.13.5
         version: 11.13.5(@emotion/react@11.13.5(@types/react@18.3.12)(react@18.3.1))(@types/react@18.3.12)(react@18.3.1)
+      '@reown/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
       '@reown/appkit-adapter-bitcoin':
         specifier: workspace:*
         version: link:../../packages/adapters/bitcoin
@@ -251,9 +254,6 @@ importers:
       '@reown/appkit-experimental':
         specifier: workspace:*
         version: link:../../packages/experimental
-      '@reown/appkit-new':
-        specifier: workspace:*
-        version: link:../../packages/appkit-new
       '@reown/appkit-siwe':
         specifier: workspace:*
         version: link:../../packages/siwe

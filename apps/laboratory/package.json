@@ -75,7 +75,7 @@
     "@chakra-ui/react": "2.10.4",
     "@emotion/react": "11.13.5",
     "@emotion/styled": "11.13.5",
-    "@reown/appkit-new": "workspace:*",
+    "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-ethers": "workspace:*",
     "@reown/appkit-adapter-ethers5": "workspace:*",
     "@reown/appkit-adapter-solana": "workspace:*",
