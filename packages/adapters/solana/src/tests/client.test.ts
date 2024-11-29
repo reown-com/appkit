@@ -2,11 +2,13 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { SolanaAdapter } from '../client'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
 import { solana } from '@reown/appkit/networks'
-import type { Provider } from '@reown/appkit-core'
+import { type Provider } from '@reown/appkit-core'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import UniversalProvider from '@walletconnect/universal-provider'
 import { SolStoreUtil } from '../utils/SolanaStoreUtil'
 import type { WalletStandardProvider } from '../providers/WalletStandardProvider'
+import mockAppKit from './mocks/AppKit'
+import { mockCoinbaseWallet } from './mocks/CoinbaseWallet'
 
 // Mock external dependencies
 vi.mock('@solana/web3.js', () => ({
@@ -61,12 +63,51 @@ const mockCaipNetworks = CaipNetworksUtil.extendCaipNetworks(mockNetworks, {
   customNetworkImageUrls: {}
 })
 
+vi.mock('@reown/appkit/adapters', () => {
+  class AdapterBlueprintMock {
+    addConnector = vi.fn()
+    emit = vi.fn()
+  }
+
+  return { AdapterBlueprint: AdapterBlueprintMock }
+})
+
 describe('SolanaAdapter', () => {
   let adapter: SolanaAdapter
 
   beforeEach(() => {
     vi.clearAllMocks()
     adapter = new SolanaAdapter()
+  })
+
+  describe('SolanaAdapter - syncConnectors', () => {
+    it('should not add coinbase connector if window.coinbaseSolana does not exist', async () => {
+      const addConnectorSpy = vi.spyOn(adapter, 'addConnector' as any)
+      adapter.syncConnectors(
+        { networks: [solana], projectId: '123', features: { email: false } },
+        mockAppKit
+      )
+      expect(addConnectorSpy).not.toHaveBeenCalled()
+    })
+
+    it('should add coinbase connector if window.coinbaseSolana exist', async () => {
+      ;(window as any).coinbaseSolana = mockCoinbaseWallet()
+      const addConnectorSpy = vi.spyOn(adapter, 'addConnector' as any)
+      adapter.syncConnectors(
+        { networks: [solana], projectId: '123', features: { email: false } },
+        mockAppKit
+      )
+      expect(addConnectorSpy).toHaveBeenCalledOnce()
+      expect(addConnectorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: 'coinbaseWallet',
+          type: 'EXTERNAL',
+          name: 'Coinbase Wallet',
+          chain: 'solana',
+          chains: []
+        })
+      )
+    })
   })
 
   describe('SolanaAdapter - constructor', () => {
