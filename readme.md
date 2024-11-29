@@ -60,4 +60,4 @@ pnpm changeset
 
 ### Running tests
 
-See <app/laboratory/tests/README.md>
+See  `app/laboratory/tests/README.md`
