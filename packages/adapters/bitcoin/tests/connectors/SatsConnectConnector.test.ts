@@ -205,4 +205,24 @@ describe('SatsConnectConnector', () => {
 
     await expect(connector.request(args)).rejects.toThrow('unknown_error')
   })
+
+  it('should ignore if wallet_disconnect request is not supported', async () => {
+    vi.spyOn(mocks.wallet, 'request').mockResolvedValueOnce(
+      mockSatsConnectProvider.mockRequestReject({
+        message: 'Method not supported'
+      })
+    )
+
+    await expect(connector.disconnect()).resolves.not.toThrow()
+  })
+
+  it('should throw if wallet_disconnect request fails', async () => {
+    vi.spyOn(mocks.wallet, 'request').mockRejectedValueOnce(
+      mockSatsConnectProvider.mockRequestReject({
+        message: 'mock_error'
+      })
+    )
+
+    await expect(connector.disconnect()).rejects.toThrow('mock_error')
+  })
 })
