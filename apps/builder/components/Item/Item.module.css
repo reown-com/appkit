@@ -40,6 +40,15 @@
     color: hsl(var(--background));
     z-index: 999;
   }
+
+  &.dragging:not(.dragOverlay) {
+    opacity: var(--dragging-opacity, 0.5);
+    z-index: 0;
+
+    &:focus {
+      box-shadow: $box-shadow;
+    }
+  }
 }
 
 .ListItem {
@@ -67,15 +76,6 @@
   &:not(.withHandle) {
     touch-action: manipulation;
     cursor: grab;
-  }
-
-  &.dragging:not(.dragOverlay) {
-    opacity: var(--dragging-opacity, 0.5);
-    z-index: 0;
-
-    &:focus {
-      box-shadow: $box-shadow;
-    }
   }
 
   &.disabled {

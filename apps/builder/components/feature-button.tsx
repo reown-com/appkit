@@ -6,9 +6,15 @@ interface FeatureButtonProps {
   label: string
   isEnabled: boolean | undefined
   onClick: () => void
+  dragHandle?: boolean
 }
 
-export function FeatureButton({ label, isEnabled, onClick }: FeatureButtonProps) {
+export function FeatureButton({
+  dragHandle = false,
+  label,
+  isEnabled,
+  onClick
+}: FeatureButtonProps) {
   return (
     <button
       className={cn(
@@ -20,7 +26,7 @@ export function FeatureButton({ label, isEnabled, onClick }: FeatureButtonProps)
       onClick={onClick}
     >
       <span className="flex items-center gap-2 text-foreground">
-        <DragIcon />
+        {dragHandle ? <DragIcon /> : null}
         {label}
       </span>
       <Checkbox

@@ -1,14 +1,7 @@
 'use client'
 
 import { ReactNode, useEffect, useState } from 'react'
-import {
-  createAppKit,
-  Features,
-  OptionsControllerState,
-  ThemeMode,
-  ThemeVariables,
-  type AppKit
-} from '@reown/appkit/react'
+import { createAppKit, Features, ThemeMode, ThemeVariables, type AppKit } from '@reown/appkit/react'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { type AppKitNetwork, mainnet, polygon } from '@reown/appkit/networks'

@@ -6,47 +6,22 @@ import { SortableList } from '@/components/sortable-list'
 type SocialOption = 'google' | 'x' | 'discord' | 'farcaster' | 'github' | 'apple' | 'facebook'
 
 export function AuthFeatures() {
-  const {
-    features,
-    enableWallets,
-    setEnableWallets,
-    updateFeatures,
-    socialsEnabled,
-    updateSocials
-  } = useAppKit()
+  const { features, updateFeatures } = useAppKit()
+  const collapseWallets = features.emailShowWallets
 
-  const toggleSocial = (social: SocialOption) => {
-    const currentSocials = Array.isArray(features.socials) ? features.socials : []
-    const newSocials = currentSocials.includes(social)
-      ? currentSocials.filter(s => s !== social)
-      : [...currentSocials, social]
-
-    updateFeatures({ socials: newSocials.length ? newSocials : false })
-  }
-
-  const toggleFeature = (featureName: 'email' | 'emailShowWallets') => {
-    updateFeatures({ [featureName]: !features[featureName] })
+  function toggleCollapseWallets() {
+    updateFeatures({ emailShowWallets: !collapseWallets })
   }
 
   return (
     <div className="space-y-4 flex-grow">
-      {/* <FeatureButton
-        label="Email"
-        isEnabled={features.email}
-        onClick={() => toggleFeature('email')}
-      />
-      <FeatureButton
-        label="Socials"
-        isEnabled={Array.isArray(features.socials)}
-        onClick={() => updateSocials(!socialsEnabled)}
-      />
-      <SocialButtons toggleSocial={toggleSocial} features={features} />
-      <FeatureButton
-        label="Show wallets"
-        isEnabled={enableWallets}
-        onClick={() => setEnableWallets(!enableWallets)}
-      /> */}
       <SortableList />
+      <p className="text-sm text-text-secondary">Other options</p>
+      <FeatureButton
+        label="Collapse wallets"
+        isEnabled={!collapseWallets}
+        onClick={toggleCollapseWallets}
+      />
     </div>
   )
 }

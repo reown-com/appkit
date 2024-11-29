@@ -92,6 +92,7 @@ export class W3mConnectView extends LitElement {
         <wui-flex flexDirection="column" class=${classMap(classes)}>
           <wui-flex
             flexDirection="column"
+            gap="s"
             .padding=${socialOrEmailLoginEnabled &&
             enableWallets &&
             this.walletGuide === 'get-started'
@@ -166,21 +167,6 @@ export class W3mConnectView extends LitElement {
     return this.checkIsThereNextMethod(currentIndex + 1)
   }
 
-  /**
-   * wallet render ederken
-   *   - aktif ve altında başka bir şey var mı?
-   *    - evet - separator
-   *    - hayır - null
-   * email render ederken
-   *  - aktif ve sonraki method social mi?
-   *      - evet null
-   *      - hayır separator
-   * social render ederken
-   *    - aktif ve sonraki method email mi
-   *        - evet null
-   *        - hayır separator
-   */
-
   private separatorTemplate(index: number, type: 'wallet' | 'email' | 'social') {
     const connectMethodOrder =
       this.features?.experiemental_connectMethodOrder || defaultConnectMethodOrder
@@ -189,7 +175,6 @@ export class W3mConnectView extends LitElement {
 
     switch (type) {
       case 'wallet': {
-        console.log('>>> separatorTemplate', type, this.enableWallets, isNextMethodExist, isExplore)
         const isWalletEnable = this.enableWallets
         return isWalletEnable && isNextMethodExist && !isExplore
           ? html`<wui-separator text="or"></wui-separator>`
@@ -304,16 +289,9 @@ export class W3mConnectView extends LitElement {
       return null
     }
 
-    console.log('>>> this.walletGuide', this.walletGuide)
-
     if (this.walletGuide === 'explore') {
       return html`
-        <wui-flex
-          data-testid="w3m-email-login-or-separator"
-          .padding=${['xxs', '0', '0', '0'] as const}
-        >
-          <wui-separator id="explore" text="or"></wui-separator>
-        </wui-flex>
+        <wui-separator id="explore" text="or"></wui-separator>
         <wui-flex
           flexDirection="column"
           .padding=${['0', '0', 'xl', '0']}

@@ -125,7 +125,8 @@ export const Item = React.memo(
             styles.Wrapper,
             fadeIn && styles.fadeIn,
             sorting && styles.sorting,
-            dragOverlay && styles.dragOverlay
+            dragOverlay && styles.dragOverlay,
+            dragging && styles.dragging
           )}
           style={
             {
@@ -154,7 +155,6 @@ export const Item = React.memo(
             <div
               className={classNames(
                 styles.Item,
-                dragging && styles.dragging,
                 handle && styles.withHandle,
                 dragOverlay && styles.dragOverlay,
                 disabled && styles.disabled,
