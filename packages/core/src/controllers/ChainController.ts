@@ -247,7 +247,7 @@ export const ChainController = {
     )
 
     const unsupportedNetwork = !activeAdapter?.caipNetworks?.some(
-      caipNetwork => caipNetwork.id === network.id
+      caipNetwork => caipNetwork.id === state.activeCaipNetwork?.id
     )
     const networkControllerClient = this.getNetworkControllerClient(network.chainNamespace)
 
