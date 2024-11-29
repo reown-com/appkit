@@ -17,4 +17,4 @@
 '@reown/appkit-ui': patch
 ---
 
-Fix issue where it is not possible to switch network with MM mobile wallet
+Add SIWX BIP122Verifier
