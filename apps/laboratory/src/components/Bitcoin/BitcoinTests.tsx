@@ -6,15 +6,9 @@ import { BitcoinSendTransferTest } from './BitcoinSendTransferTest'
 import { BitcoinSignPSBTTest } from './BitcoinSignPSBTTest'
 
 export function BitcoinTests() {
-  const [ready, setReady] = React.useState(false)
-
   const { isConnected } = useAppKitAccount()
 
-  React.useEffect(() => {
-    setReady(true)
-  }, [])
-
-  if (!ready || !isConnected) {
+  if (!isConnected) {
     return null
   }
 
