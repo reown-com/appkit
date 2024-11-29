@@ -413,16 +413,22 @@ export class EthersAdapter extends AdapterBlueprint {
   ): Promise<AdapterBlueprint.GetBalanceResult> {
     const caipNetwork = this.caipNetworks?.find((c: CaipNetwork) => c.id === params.chainId)
 
-    if (caipNetwork) {
+    if (caipNetwork && caipNetwork.chainNamespace === 'eip155') {
       const jsonRpcProvider = new JsonRpcProvider(caipNetwork.rpcUrls.default.http[0], {
         chainId: caipNetwork.id as number,
         name: caipNetwork.name
       })
 
-      const balance = await jsonRpcProvider.getBalance(params.address)
-      const formattedBalance = formatEther(balance)
+      if (jsonRpcProvider) {
+        try {
+          const balance = await jsonRpcProvider.getBalance(params.address)
+          const formattedBalance = formatEther(balance)
 
-      return { balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol }
+          return { balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol }
+        } catch (error) {
+          return { balance: '', symbol: '' }
+        }
+      }
     }
 
     return { balance: '', symbol: '' }
