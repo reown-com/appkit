@@ -109,8 +109,15 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     return Promise.resolve()
   }
 
-  override disconnect(): Promise<void> {
-    // Disconnect
+  override disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
+    if (params?.provider) {
+      return params.provider.disconnect()
+    }
+
+    if (this.connector) {
+      return this.connector.disconnect()
+    }
+
     return Promise.resolve()
   }
 

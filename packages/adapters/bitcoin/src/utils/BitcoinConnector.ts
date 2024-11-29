@@ -2,7 +2,6 @@ import type { ChainAdapterConnector } from '../../../../appkit/dist/types/src/ad
 import type { Provider } from '@reown/appkit-core'
 
 export interface BitcoinConnector extends ChainAdapterConnector, Provider {
-  connect(): Promise<string>
   getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]>
   signMessage(params: BitcoinConnector.SignMessageParams): Promise<string>
   sendTransfer(params: BitcoinConnector.SendTransferParams): Promise<string>

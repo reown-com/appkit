@@ -43,9 +43,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Bitco
   }
 
   public async disconnect() {
-    return Promise.reject(
-      new Error('Disconnection of WalletConnectProvider should be done via UniversalAdapter')
-    )
+    return this.provider.disconnect()
   }
 
   public async signMessage({ message, address }: BitcoinConnector.SignMessageParams) {
