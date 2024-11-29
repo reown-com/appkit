@@ -20,7 +20,6 @@ noEmailTest.beforeAll(async ({ browser, library }) => {
   modalPage = new ModalPage(browserPage, library, 'no-email')
   modalValidator = new ModalValidator(browserPage)
 
-  await modalPage.page.waitForTimeout(200)
   await modalPage.load()
 })
 
@@ -34,6 +33,7 @@ noEmailTest('secure site iframe should not be present', () => {
 })
 
 noEmailTest('should check the terms of service and privacy policy checkbox', async () => {
+  await modalPage.page.waitForTimeout(200)
   await modalPage.openConnectModal()
   await modalValidator.expectConnectViewToBeDisabled()
   await modalPage.clickLegalCheckbox()
