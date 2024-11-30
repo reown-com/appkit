@@ -2,7 +2,7 @@ import type { Meta } from '@storybook/web-components'
 import '@reown/appkit-ui-new/src/composites/wui-logo'
 import type { WuiLogo } from '@reown/appkit-ui-new/src/composites/wui-logo'
 import { html } from 'lit'
-import { logoOptions } from '../../utils/PresetUtils'
+import { socialsIconOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiLogo>
 
@@ -14,7 +14,7 @@ export default {
 
   argTypes: {
     logo: {
-      options: logoOptions,
+      options: socialsIconOptions,
       control: { type: 'select' }
     }
   }

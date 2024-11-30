@@ -40,10 +40,9 @@ import type { WuiListDescription } from '../composites/wui-list-description/inde
 import type { WuiListItem } from '../composites/wui-list-item/index.js'
 import type { WuiListNetwork } from '../composites/wui-list-network/index.js'
 import type { WuiListToken } from '../composites/wui-list-token/index.js'
-import type { WuiListSocial } from '../composites/wui-list-social/index.js'
 import type { WuiListSelectWallet } from '../composites/wui-list-select-wallet/index.js'
 import type { WuiLogo } from '../composites/wui-logo/index.js'
-import type { WuiLogoSelect } from '../composites/wui-logo-select/index.js'
+import type { WuiSocialButton } from '../composites/wui-social-button/index.js'
 import type { WuiNetworkButton } from '../composites/wui-network-button/index.js'
 import type { WuiNetworkImage } from '../composites/wui-network-image/index.js'
 import type { WuiOtp } from '../composites/wui-otp/index.js'
@@ -75,6 +74,7 @@ import type { WuiCheckBox } from '../composites/wui-checkbox/index.js'
 import type { WuiToggle } from '../composites/wui-toggle/index.js'
 import type { WuiCertifiedSwitch } from '../composites/wui-certified-switch/index.js'
 import type { WuiShortcut } from '../composites/wui-shortcut/index.js'
+import type { WuiPoweredBy } from '../composites/wui-powered-by/index.js'
 import type { WuiListSelectAccount, WuiTab } from '../../index.js'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -123,11 +123,10 @@ declare global {
       'wui-list-description': CustomElement<WuiListDescription>
       'wui-list-item': CustomElement<WuiListItem>
       'wui-list-network': CustomElement<WuiListNetwork>
-      'wui-list-social': CustomElement<WuiListSocial>
       'wui-list-token': CustomElement<WuiListToken>
       'wui-list-wallet-transaction': CustomElement<WuiListWalletTransaction>
       'wui-list-wallet': CustomElement<WuiListSelectWallet>
-      'wui-logo-select': CustomElement<WuiLogoSelect>
+      'wui-social-button': CustomElement<WuiSocialButton>
       'wui-logo': CustomElement<WuiLogo>
       'wui-network-button': CustomElement<WuiNetworkButton>
       'wui-network-image': CustomElement<WuiNetworkImage>
@@ -137,6 +136,7 @@ declare global {
       'wui-profile-button': CustomElement<WuiProfileButton>
       'wui-profile-button-v2': CustomElement<WuiProfileButtonV2>
       'wui-promo': CustomElement<WuiPromo>
+      'wui-powered-by': CustomElement<WuiPoweredBy>
       'wui-qr-code': CustomElement<WuiQrCode>
       'wui-search-bar': CustomElement<WuiSearchBar>
       'wui-network-switch': CustomElement<WuiNetworkSwitch>

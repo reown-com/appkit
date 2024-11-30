@@ -1,18 +1,15 @@
-import { MathUtil, customElement } from '@reown/appkit-ui'
+import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import {
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
+  ModalController,
   OptionsController,
-  RouterController,
-  type WalletGuideType
+  RouterController
 } from '@reown/appkit-core'
 import { state } from 'lit/decorators/state.js'
-import { property } from 'lit/decorators.js'
-import { classMap } from 'lit/directives/class-map.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
@@ -28,10 +25,6 @@ export class W3mConnectView extends LitElement {
 
   @state() private features = OptionsController.state.features
 
-  @property() private walletGuide: WalletGuideType = 'get-started'
-
-  @state() private checked = false
-
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -45,195 +38,153 @@ export class W3mConnectView extends LitElement {
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
-    const connectEl = this.shadowRoot?.querySelector('.connect')
-    connectEl?.removeEventListener('scroll', this.handleConnectListScroll.bind(this))
-  }
-
-  public override firstUpdated() {
-    const connectEl = this.shadowRoot?.querySelector('.connect')
-    // Use requestAnimationFrame to access scroll properties before the next repaint
-    requestAnimationFrame(this.handleConnectListScroll.bind(this))
-    connectEl?.addEventListener('scroll', this.handleConnectListScroll.bind(this))
   }
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
-
-    const legalCheckbox = OptionsController.state.features?.legalCheckbox
-
-    const legalUrl = termsConditionsUrl || privacyPolicyUrl
-    const showLegalCheckbox =
-      Boolean(legalUrl) && Boolean(legalCheckbox) && this.walletGuide === 'get-started'
-
-    const disabled = showLegalCheckbox && !this.checked
-
-    const classes = {
-      connect: true,
-      disabled
-    }
-
-    const socials = this.features?.socials
-    const enableWallets = OptionsController.state.enableWallets
-
-    const socialsExist = socials && socials.length
-    const socialOrEmailLoginEnabled = socialsExist || this.authConnector
-
-    const tabIndex = disabled ? -1 : undefined
-
     return html`
-      <wui-flex flexDirection="column">
-        ${this.legalCheckboxTemplate()}
-        <wui-flex flexDirection="column" class=${classMap(classes)}>
-          <wui-flex
-            flexDirection="column"
-            .padding=${socialOrEmailLoginEnabled &&
-            enableWallets &&
-            this.walletGuide === 'get-started'
-              ? ['3xs', 's', '0', 's']
-              : ['3xs', 's', 's', 's']}
-          >
-            <w3m-email-login-widget
-              walletGuide=${this.walletGuide}
-              tabIdx=${ifDefined(tabIndex)}
-            ></w3m-email-login-widget>
-            <w3m-social-login-widget tabIdx=${ifDefined(tabIndex)}></w3m-social-login-widget>
-            ${this.walletListTemplate(tabIndex)}
-          </wui-flex>
+      <wui-flex class="connect" flexDirection="column">
+        ${this.headerTemplate()}
+        <wui-flex class="scrollable" flexDirection="column">
+          ${this.heroTemplate()} ${this.authLoginTemplate()} ${this.separatorTemplate()}
+          ${this.walletListTemplate()} ${this.guideTemplate()}
         </wui-flex>
-        ${this.guideTemplate(disabled)}
-        <w3m-legal-footer></w3m-legal-footer>
       </wui-flex>
+      <w3m-legal-footer></w3m-legal-footer>
     `
   }
 
   // -- Private ------------------------------------------- //
-  private walletListTemplate(tabIndex?: number) {
-    const socials = this.features?.socials
-    const emailShowWallets = this.features?.emailShowWallets
+  private headerTemplate() {
+    const enableWalletConnect = OptionsController.state.enableWalletConnect
+
+    return html`
+      <wui-flex padding="4" alignItems="center" justifyContent="space-between">
+        <wui-icon color="inverse" cursor="pointer" name="question" size="lg"></wui-icon>
+
+        <wui-flex alignItems="center" columnGap="2">
+          ${enableWalletConnect ? html`<w3m-qr-code-icon></w3m-qr-code-icon>` : null}
+          <wui-icon
+            color="inverse"
+            cursor="pointer"
+            name="close"
+            size="lg"
+            @click=${ModalController.close}
+          ></wui-icon>
+        </wui-flex>
+      </wui-flex>
+    `
+  }
+
+  private heroTemplate() {
+    return html`
+      <wui-flex padding="4" flexDirection="column" rowGap="4">
+        <wui-text variant="md-regular" color="secondary">Welcome</wui-text>
+        <wui-text variant="h5-regular" color="primary">${this.getHeaderText()}</wui-text>
+      </wui-flex>
+    `
+  }
+
+  private getHeaderText() {
     const enableWallets = OptionsController.state.enableWallets
+
+    // If user has enabled wallets and email/socials
+    if (enableWallets && this.authConnector) {
+      return 'Login in or Connect Wallet'
+    }
+
+    // If user has disabled wallets, but enabled email/socials
+    if (this.authConnector) {
+      return 'Log in'
+    }
+
+    // Default
+    return 'Connect Wallet'
+  }
+
+  private authLoginTemplate() {
+    const showEmail = OptionsController.state.features?.email
+    const socials = this.features?.socials && this.features.socials.length
+
+    if (!this.authConnector) {
+      return null
+    }
+
+    return html`
+      <wui-flex flexDirection="column" rowGap="2" padding="4">
+        ${showEmail ? html`<w3m-email-login-widget></w3m-email-login-widget>` : null}
+        ${socials
+          ? html`<w3m-social-login-widget
+              .socials=${this.features?.socials}
+            ></w3m-social-login-widget>`
+          : null}
+      </wui-flex>
+    `
+  }
+
+  private separatorTemplate() {
+    const enableWallets = OptionsController.state.enableWallets
+
+    if (!this.authConnector) {
+      return null
+    }
 
     if (!enableWallets) {
       return null
     }
+
+    return html`
+      <wui-flex .padding=${[2, 4, 2, 4]}>
+        <wui-divider text="or"></wui-divider>
+      </wui-flex>
+    `
+  }
+
+  private walletListTemplate() {
+    const enableWallets = OptionsController.state.enableWallets
+    const emailShowWallets = this.features?.emailShowWallets
+
+    if (!enableWallets) {
+      return null
+    }
+
     // In tg ios context, we have to preload the connection uri so we can use it to deeplink on user click
     if (CoreHelperUtil.isTelegram() && CoreHelperUtil.isIos()) {
       ConnectionController.connectWalletConnect().catch(_e => ({}))
     }
 
-    if (this.walletGuide === 'explore') {
-      return null
-    }
-
-    if (this.authConnector && socials) {
-      if (this.authConnector && emailShowWallets) {
-        return html`
-          <wui-flex flexDirection="column" gap="xs" .margin=${['xs', '0', '0', '0'] as const}>
-            <w3m-connector-list tabIdx=${ifDefined(tabIndex)}></w3m-connector-list>
-            <wui-flex class="all-wallets">
-              <w3m-all-wallets-widget tabIdx=${ifDefined(tabIndex)}></w3m-all-wallets-widget>
-            </wui-flex>
-          </wui-flex>
-        `
-      }
-
-      return html`<wui-list-button
-        tabIdx=${ifDefined(tabIndex)}
-        @click=${this.onContinueWalletClick.bind(this)}
-        text="Continue with a wallet"
-      ></wui-list-button>`
-    }
-
-    return html`<w3m-wallet-login-list tabIdx=${ifDefined(tabIndex)}></w3m-wallet-login-list>`
-  }
-
-  private guideTemplate(disabled = false) {
-    const socials = this.features?.socials
-    const enableWallets = OptionsController.state.enableWallets
-
-    const socialsExist = socials && socials.length
-
-    const classes = {
-      guide: true,
-      disabled
-    }
-
-    const tabIndex = disabled ? -1 : undefined
-
-    if (!this.authConnector && !socialsExist) {
-      return null
-    }
-
-    if (!enableWallets) {
-      return null
-    }
-
-    if (this.walletGuide === 'explore') {
+    if (this.authConnector && !emailShowWallets) {
       return html`
-        <wui-flex
-          flexDirection="column"
-          .padding=${['0', '0', 'xl', '0']}
-          class=${classMap(classes)}
-        >
-          <w3m-wallet-guide walletGuide=${this.walletGuide}></w3m-wallet-guide>
+        <wui-flex rowGap="2" flexDirection="column" padding="4">
+          <wui-list-select-wallet
+            name="Continue with a Wallet"
+            variant="secondary"
+            icon="wallet"
+            @click=${this.onContinueWalletClick.bind(this)}
+          ></wui-list-select-wallet>
         </wui-flex>
       `
     }
 
     return html`
-      <wui-flex
-        flexDirection="column"
-        .padding=${['xl', '0', 'xl', '0']}
-        class=${classMap(classes)}
-      >
-        <w3m-wallet-guide
-          tabIdx=${ifDefined(tabIndex)}
-          walletGuide=${this.walletGuide}
-        ></w3m-wallet-guide>
+      <wui-flex rowGap="2" flexDirection="column" padding="4">
+        <w3m-connector-list></w3m-connector-list>
+        <w3m-all-wallets-widget></w3m-all-wallets-widget>
       </wui-flex>
     `
   }
 
-  private legalCheckboxTemplate() {
-    if (this.walletGuide === 'explore') {
-      return null
-    }
-
-    return html`<w3m-legal-checkbox
-      @checkboxChange=${this.onCheckboxChange.bind(this)}
-      data-testid="w3m-legal-checkbox"
-    ></w3m-legal-checkbox>`
-  }
-
-  private handleConnectListScroll() {
-    const connectEl = this.shadowRoot?.querySelector('.connect') as HTMLElement | undefined
-
-    // If connect element is not found or is not overflowing do not apply the mask
-    if (!connectEl || connectEl.scrollHeight <= 470) {
-      return
-    }
-
-    connectEl.style.setProperty(
-      '--connect-scroll--top-opacity',
-      MathUtil.interpolate([0, 50], [0, 1], connectEl.scrollTop).toString()
-    )
-    connectEl.style.setProperty(
-      '--connect-scroll--bottom-opacity',
-      MathUtil.interpolate(
-        [0, 50],
-        [0, 1],
-        connectEl.scrollHeight - connectEl.scrollTop - connectEl.offsetHeight
-      ).toString()
-    )
+  private guideTemplate() {
+    return html`
+      <wui-flex alignItems="center" justifyContent="center" .padding=${[0, 0, 4, 0]}>
+        <wui-link icon="" size="sm" variant="accent">Need a wallet?</wui-link>
+      </wui-flex>
+    `
   }
 
   // -- Private Methods ----------------------------------- //
   private onContinueWalletClick() {
     RouterController.push('ConnectWallets')
-  }
-
-  private onCheckboxChange(event: CustomEvent<string>) {
-    this.checked = Boolean(event.detail)
   }
 }
 

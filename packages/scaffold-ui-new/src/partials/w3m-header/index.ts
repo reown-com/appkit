@@ -3,12 +3,12 @@ import {
   AssetUtil,
   ChainController,
   ConnectionController,
-  ConnectorController,
   EventsController,
   ModalController,
   OptionsController,
   RouterController,
-  SIWXUtil
+  SIWXUtil,
+  type RouterControllerState
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
@@ -21,16 +21,13 @@ import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 const BETA_SCREENS: string[] = ['SmartSessionList']
 
 // -- Helpers ------------------------------------------- //
-function headings() {
+function headings(): { [key in RouterControllerState['view']]?: string } {
   const connectorName = RouterController.state.data?.connector?.name
   const walletName = RouterController.state.data?.wallet?.name
   const networkName = RouterController.state.data?.network?.name
   const name = walletName ?? connectorName
-  const connectors = ConnectorController.getConnectors()
-  const isEmail = connectors.length === 1 && connectors[0]?.id === 'w3m-email'
 
   return {
-    Connect: `Connect ${isEmail ? 'Email' : ''} Wallet`,
     Create: 'Create Wallet',
     ChooseAccountName: undefined,
     Account: undefined,
@@ -41,9 +38,6 @@ function headings() {
     ConnectingExternal: name ?? 'Connect Wallet',
     ConnectingWalletConnect: name ?? 'WalletConnect',
     ConnectingSiwe: 'Sign In',
-    Convert: 'Convert',
-    ConvertSelectToken: 'Select token',
-    ConvertPreview: 'Preview convert',
     Downloads: name ? `Get ${name}` : 'Downloads',
     EmailVerifyOtp: 'Confirm Email',
     EmailVerifyDevice: 'Register Device',
@@ -98,8 +92,6 @@ export class W3mHeader extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties --------------------------------- //
-  @state() private heading = headings()[RouterController.state.view]
-
   @state() private network = ChainController.state.activeCaipNetwork
 
   @state() private buffering = false
@@ -136,8 +128,12 @@ export class W3mHeader extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    if (!this.headerText) {
+      return null
+    }
+
     return html`
-      <wui-flex .padding=${this.getPadding()} justifyContent="space-between" alignItems="center">
+      <wui-flex padding="1" justifyContent="space-between" alignItems="center">
         ${this.leftHeaderTemplate()} ${this.titleTemplate()} ${this.rightHeaderTemplate()}
       </wui-flex>
     `
@@ -257,14 +253,6 @@ export class W3mHeader extends LitElement {
     const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 
     return isMultiNetwork || !isValidNetwork
-  }
-
-  private getPadding() {
-    if (this.heading) {
-      return ['l', '2l', 'l', '2l'] as const
-    }
-
-    return ['0', '2l', '0', '2l'] as const
   }
 
   private onViewChange() {

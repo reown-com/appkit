@@ -2,7 +2,7 @@ import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import '../../components/wui-icon/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { LogoType } from '../../utils/TypeUtil.js'
+import type { SocialsIconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -11,7 +11,7 @@ export class WuiLogo extends LitElement {
   public static override styles = [resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
-  @property() public logo: LogoType = 'google'
+  @property() public logo: SocialsIconType = 'google'
 
   // -- Render -------------------------------------------- //
   public override render() {

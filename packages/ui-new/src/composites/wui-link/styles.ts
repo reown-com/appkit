@@ -22,11 +22,6 @@ export default css`
   }
 
   /* -- Focus states --------------------------------------------------- */
-  button:focus-visible:enabled,
-  button:active:enabled {
-    box-shadow: 0px 0px 0px 4px rgba(9, 136, 240, 0.2);
-  }
-
   button[data-variant='accent']:focus-visible:enabled {
     background-color: ${({ tokens }) => tokens.core.foregroundAccent010};
   }
@@ -50,7 +45,6 @@ export default css`
 
   button[data-variant='secondary']:active:enabled {
     background-color: ${({ tokens }) => tokens.theme.foregroundSecondary};
-    box-shadow: 0px 0px 0px 4px rgba(9, 136, 240, 0.2);
   }
 
   button[data-variant='accent']:disabled {

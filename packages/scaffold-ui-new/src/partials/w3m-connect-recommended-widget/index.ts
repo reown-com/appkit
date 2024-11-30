@@ -9,7 +9,7 @@ import {
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
+import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { WalletUtil } from '../../utils/WalletUtil.js'
 
@@ -20,8 +20,6 @@ export class W3mConnectRecommendedWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @property() public tabIdx?: number = undefined
-
   @state() private connectors = ConnectorController.state.connectors
 
   public constructor() {
@@ -70,19 +68,16 @@ export class W3mConnectRecommendedWidget extends LitElement {
     }
 
     return html`
-      <wui-flex flexDirection="column" gap="xs">
-        ${wallets.map(
-          wallet => html`
-            <wui-list-wallet
-              imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
-              name=${wallet?.name ?? 'Unknown'}
-              @click=${() => this.onConnectWallet(wallet)}
-              tabIdx=${ifDefined(this.tabIdx)}
-            >
-            </wui-list-wallet>
-          `
-        )}
-      </wui-flex>
+      ${wallets.map(
+        wallet => html`
+          <wui-list-select-wallet
+            imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
+            name=${wallet?.name ?? 'Unknown'}
+            variant="primary"
+            @click=${() => this.onConnectWallet(wallet)}
+          ></wui-list-select-wallet>
+        `
+      )}
     `
   }
 

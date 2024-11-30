@@ -9,7 +9,7 @@ import {
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
+import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connect-custom-widget')
@@ -18,8 +18,6 @@ export class W3mConnectCustomWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @property() public tabIdx?: number = undefined
-
   @state() private connectors = ConnectorController.state.connectors
 
   public constructor() {
@@ -45,20 +43,19 @@ export class W3mConnectCustomWidget extends LitElement {
 
     const wallets = this.filterOutDuplicateWallets(customWallets)
 
-    return html`<wui-flex flexDirection="column" gap="xs">
+    return html`
       ${wallets.map(
         wallet => html`
-          <wui-list-wallet
+          <wui-list-select-wallet
             imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
             name=${wallet.name ?? 'Unknown'}
+            variant="primary"
             @click=${() => this.onConnectWallet(wallet)}
             data-testid=${`wallet-selector-${wallet.id}`}
-            tabIdx=${ifDefined(this.tabIdx)}
-          >
-          </wui-list-wallet>
+          ></wui-list-select-wallet>
         `
       )}
-    </wui-flex>`
+    `
   }
 
   // -- Private Methods ----------------------------------- //

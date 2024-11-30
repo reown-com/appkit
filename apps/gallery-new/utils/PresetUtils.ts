@@ -18,7 +18,7 @@ import type {
   GridItemsType,
   IconBoxBorderType,
   IconType,
-  LogoType,
+  SocialsIconType,
   PlacementType,
   ButtonShortcutVariant,
   SpacingType,
@@ -269,7 +269,7 @@ export const visualOptions: VisualType[] = [
   'paypal'
 ]
 
-export const logoOptions: LogoType[] = [
+export const socialsIconOptions: SocialsIconType[] = [
   'apple',
   'discord',
   'facebook',

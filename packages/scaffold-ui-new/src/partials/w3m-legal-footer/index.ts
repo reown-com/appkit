@@ -22,11 +22,18 @@ export class W3mLegalFooter extends LitElement {
     }
 
     return html`
-      <wui-flex .padding=${['m', 's', 's', 's'] as const} justifyContent="center">
-        <wui-text color="fg-250" variant="small-400" align="center">
+      <wui-flex
+        .padding=${['3', '4', '3', '4']}
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        rowGap="3"
+      >
+        <wui-text color="tertiary" variant="sm-regular" align="center">
           By connecting your wallet, you agree to our <br />
           ${this.termsTemplate()} ${this.andTemplate()} ${this.privacyTemplate()}
         </wui-text>
+        <wui-powered-by></wui-powered-by>
       </wui-flex>
     `
   }
@@ -44,7 +51,7 @@ export class W3mLegalFooter extends LitElement {
       return null
     }
 
-    return html`<a href=${termsConditionsUrl}>Terms of Service</a>`
+    return html`<a rel="noreferrer" target="_blank" href=${termsConditionsUrl}>Terms of Service</a>`
   }
 
   private privacyTemplate() {
@@ -53,7 +60,7 @@ export class W3mLegalFooter extends LitElement {
       return null
     }
 
-    return html`<a href=${privacyPolicyUrl}>Privacy Policy</a>`
+    return html`<a rel="noreferrer" target="_blank" href=${privacyPolicyUrl}>Privacy Policy</a>`
   }
 }
 

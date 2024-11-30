@@ -1,13 +1,7 @@
-import {
-  ChainController,
-  ConnectorController,
-  CoreHelperUtil,
-  OptionsController,
-  type WalletGuideType
-} from '@reown/appkit-core'
+import { ChainController, ConnectorController, CoreHelperUtil } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
+import { state } from 'lit/decorators.js'
 import { ref, createRef } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 import styles from './styles.js'
@@ -25,11 +19,6 @@ export class W3mEmailLoginWidget extends LitElement {
   private formRef: Ref<HTMLFormElement> = createRef()
 
   // -- State & Properties -------------------------------- //
-  @property() public tabIdx?: number
-
-  @state() private connectors = ConnectorController.state.connectors
-
-  @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
 
   @state() private email = ''
 
@@ -37,16 +26,8 @@ export class W3mEmailLoginWidget extends LitElement {
 
   @state() private error = ''
 
-  @property() private walletGuide: WalletGuideType = 'get-started'
-
   public constructor() {
     super()
-    this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => {
-        this.connectors = val
-        this.authConnector = val.find(c => c.type === 'AUTH')
-      })
-    )
   }
 
   public override disconnectedCallback() {
@@ -63,81 +44,29 @@ export class W3mEmailLoginWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const email = OptionsController.state.features?.email
-
-    if (!this.authConnector || !email) {
-      return null
-    }
+    const showSubmitButton = !this.loading && this.email.length > 3
 
     return html`
       <form ${ref(this.formRef)} @submit=${this.onSubmitEmail.bind(this)}>
         <wui-email-input
           @focus=${this.onFocusEvent.bind(this)}
-          .disabled=${this.loading}
           @inputChange=${this.onEmailInputChange.bind(this)}
-          tabIdx=${ifDefined(this.tabIdx)}
+          ?disabled=${this.loading}
+          ?loading=${this.loading}
+          .onSubmit=${ifDefined(showSubmitButton ? this.onSubmitEmail.bind(this) : undefined)}
         >
         </wui-email-input>
 
-        ${this.submitButtonTemplate()}${this.loadingTemplate()}
         <input type="submit" hidden />
       </form>
-      ${this.templateError()} ${this.separatorTemplate()}
+      ${this.templateError()}
     `
   }
 
   // -- Private ------------------------------------------- //
-  private submitButtonTemplate() {
-    const showSubmit = !this.loading && this.email.length > 3
-
-    return showSubmit
-      ? html`
-          <wui-icon-link
-            size="sm"
-            icon="chevronRight"
-            iconcolor="accent-100"
-            @click=${this.onSubmitEmail.bind(this)}
-          >
-          </wui-icon-link>
-        `
-      : null
-  }
-
-  private separatorTemplate() {
-    const socials = OptionsController.state.features?.socials
-    const multipleConnectors = this.connectors.length > 1
-    const enableWallets = OptionsController.state.enableWallets
-    const emailShowWallets = OptionsController.state.features?.emailShowWallets
-
-    const hideSeparator =
-      (socials && socials.length) || emailShowWallets || !multipleConnectors || !enableWallets
-
-    if (hideSeparator && this.walletGuide === 'get-started') {
-      return null
-    }
-
-    if (socials && socials.length > 0) {
-      return null
-    }
-
-    return html`
-      <wui-flex
-        data-testid="w3m-email-login-or-separator"
-        .padding=${['xxs', '0', '0', '0'] as const}
-      >
-        <wui-separator text="or"></wui-separator>
-      </wui-flex>
-    `
-  }
-  private loadingTemplate() {
-    return this.loading
-      ? html`<wui-loading-spinner size="md" color="accent-100"></wui-loading-spinner>`
-      : null
-  }
-
   private templateError() {
     if (this.error) {
-      return html`<wui-text variant="tiny-500" color="error-100">${this.error}</wui-text>`
+      return html`<wui-text variant="md-regular" color="error">${this.error}</wui-text>`
     }
 
     return null

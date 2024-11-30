@@ -3,7 +3,7 @@ import '@reown/appkit-ui-new/src/composites/wui-list-select-wallet'
 import type { WuiListSelectWallet } from '@reown/appkit-ui-new/src/composites/wui-list-select-wallet'
 import { html } from 'lit'
 import '../../components/gallery-container'
-import { walletImagesOptions } from '../../utils/PresetUtils'
+import { iconOptions, tagOptions, walletImagesOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiListSelectWallet>
 
@@ -12,9 +12,10 @@ export default {
   args: {
     imageSrc: walletImagesOptions[0]?.src,
     name: 'MetaMask',
+    variant: 'primary',
     tagLabel: 'LABEL',
-    qrCode: false,
-    allWallets: false,
+    tagVariant: 'accent',
+    icon: undefined,
     disabled: false
   },
   argTypes: {
@@ -24,14 +25,20 @@ export default {
     name: {
       control: { type: 'text' }
     },
+    variant: {
+      options: ['primary', 'secondary'],
+      control: { type: 'select' }
+    },
     tagLabel: {
       control: { type: 'text' }
     },
-    qrCode: {
-      control: { type: 'boolean' }
+    tagVariant: {
+      options: tagOptions,
+      control: { type: 'select' }
     },
-    allWallets: {
-      control: { type: 'boolean' }
+    icon: {
+      options: iconOptions,
+      control: { type: 'select' }
     },
     disabled: {
       control: { type: 'boolean' }
@@ -45,9 +52,10 @@ export const Default: Component = {
       <wui-list-select-wallet
         .imageSrc=${args.imageSrc}
         .tagLabel=${args.tagLabel}
+        .tagVariant=${args.tagVariant}
+        .icon=${args.icon}
+        .variant=${args.variant}
         name=${args.name}
-        ?qrcode=${args.qrCode}
-        ?allwallets=${args.allWallets}
         ?disabled=${args.disabled}
       ></wui-list-select-wallet>
     </gallery-container>`

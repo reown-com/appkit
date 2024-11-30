@@ -2,7 +2,7 @@ import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import { colorStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { IconType, SizeType } from '../../utils/TypeUtil.js'
+import type { IconColorType, IconCursorType, IconType, SizeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -54,7 +54,7 @@ import { nftPlaceholderSvg } from '../../assets/svg/nftPlaceholder.js'
 import { offSvg } from '../../assets/svg/off.js'
 import { playStoreSvg } from '../../assets/svg/play-store.js'
 import { plusSvg } from '../../assets/svg/plus.js'
-import { qrCodeIcon } from '../../assets/svg/qr-code.js'
+import { qrCodeBoldIcon, qrCodeIcon } from '../../assets/svg/qr-code.js'
 import { recycleHorizontalSvg } from '../../assets/svg/recycle-horizontal.js'
 import { refreshSvg } from '../../assets/svg/refresh.js'
 import { searchSvg } from '../../assets/svg/search.js'
@@ -85,6 +85,10 @@ import { xSvg } from '../../assets/svg/x.js'
 import { infoSvg } from '../../assets/svg/info.js'
 import { exclamationTriangleSvg } from '../../assets/svg/exclamation-triangle.js'
 import { arrowTopRightSvg } from '../../assets/svg/arrow-top-right.js'
+import { vars } from '../../utils/ThemeHelperUtil.js'
+import { questionSvg } from '../../assets/svg/question.js'
+import { envelopeSimpleSvg } from '../../assets/svg/envelope-simple.js'
+import { caretRightSvg } from '../../assets/svg/caret-right.js'
 
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   add: addSvg,
@@ -109,6 +113,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   chromeStore: chromeStoreSvg,
   clock: clockSvg,
   close: closeSvg,
+  caretRight: caretRightSvg,
   compass: compassSvg,
   coinPlaceholder: coinPlaceholderSvg,
   copy: copySvg,
@@ -119,6 +124,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   etherscan: etherscanSvg,
   extension: extensionSvg,
   externalLink: externalLinkSvg,
+  envelopeSimple: envelopeSimpleSvg,
   facebook: facebookSvg,
   farcaster: farcasterSvg,
   filters: filtersSvg,
@@ -138,6 +144,8 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   playStore: playStoreSvg,
   plus: plusSvg,
   qrCode: qrCodeIcon,
+  qrCodeBold: qrCodeBoldIcon,
+  question: questionSvg,
   recycleHorizontal: recycleHorizontalSvg,
   refresh: refreshSvg,
   search: searchSvg,
@@ -166,7 +174,13 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   exclamationTriangle: exclamationTriangleSvg
 }
 
-// @TODO: Add color property
+// -- Constants ------------------------------------------ //
+export const ICON_COLOR = {
+  default: vars.tokens.theme.iconDefault,
+  accentPrimary: vars.tokens.core.iconAccentPrimary,
+  inverse: vars.tokens.theme.iconInverse
+}
+
 @customElement('wui-icon')
 export class WuiIcon extends LitElement {
   public static override styles = [resetStyles, colorStyles, styles]
@@ -176,11 +190,22 @@ export class WuiIcon extends LitElement {
 
   @property() public name: IconType = 'copy'
 
+  @property() public color: IconColorType = 'inherit'
+
+  @property() public cursor?: IconCursorType
+
   // -- Render -------------------------------------------- //
   public override render() {
-    this.style.cssText = `
+    let cssText = `
       --local-width: ${`var(--wui-icon-size-${this.size});`}
+      --local-color: ${this.color === 'inherit' ? 'inherit' : ICON_COLOR[this.color]};
     `
+
+    if (this.cursor) {
+      cssText += `--local-cursor: ${this.cursor};`
+    }
+
+    this.style.cssText = cssText
 
     return html`${svgOptions[this.name]}`
   }

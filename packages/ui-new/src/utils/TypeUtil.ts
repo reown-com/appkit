@@ -2,9 +2,17 @@ import type { vars } from './ThemeHelperUtil.js'
 
 export type ColorType = string
 
-export type BackgroundColorType = 'foregroundSecondary' | 'foregroundAccent010'
+export type BackgroundColorType =
+  | 'primary'
+  | 'foregroundSecondary'
+  | 'foregroundAccent010'
+  | 'inherit'
 
-export type IconColorType = 'inverse'
+export type IconColorType = 'default' | 'accentPrimary' | 'inverse' | 'inherit'
+
+export type IconCursorType = 'pointer'
+
+export type IconBoxSpacingType = 'md' | 'sm'
 
 export type TextColorType =
   | 'inherit'
@@ -127,12 +135,14 @@ export type IconType =
   | 'compass'
   | 'copy'
   | 'cursor'
+  | 'caretRight'
   | 'desktop'
   | 'disconnect'
   | 'discord'
   | 'etherscan'
   | 'extension'
   | 'externalLink'
+  | 'envelopeSimple'
   | 'facebook'
   | 'farcaster'
   | 'filters'
@@ -152,6 +162,8 @@ export type IconType =
   | 'playStore'
   | 'plus'
   | 'qrCode'
+  | 'qrCodeBold'
+  | 'question'
   | 'recycleHorizontal'
   | 'refresh'
   | 'search'
@@ -206,7 +218,7 @@ export type VisualType =
 
 export type VisualSize = 'sm' | 'md' | 'lg'
 
-export type LogoType =
+export type SocialsIconType =
   | 'apple'
   | 'discord'
   | 'facebook'
@@ -233,6 +245,8 @@ export type CheckboxSize = 'lg' | 'md' | 'sm'
 export type TooltipSize = 'md' | 'sm'
 
 export type TagVariant = 'accent' | 'info' | 'success' | 'warning' | 'error' | 'certified'
+
+export type WalletListSelectVariant = 'primary' | 'secondary'
 
 export type TagSize = 'md' | 'sm'
 

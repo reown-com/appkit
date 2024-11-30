@@ -13,7 +13,7 @@ export default css`
     bottom: 0;
     pointer-events: none;
     opacity: 0;
-    background-color: var(--wui-cover);
+    background-color: rgba(0, 0, 0, 0.8);
     transition: opacity 0.2s var(--wui-ease-out-power-2);
     will-change: opacity;
   }
