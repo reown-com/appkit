@@ -4,8 +4,8 @@ import {
   type CaipNetwork,
   type CaipNetworkId
 } from '@reown/appkit-common'
-import { PresetsUtil } from './PresetsUtil.js'
 import { fallback, http } from 'viem'
+import { PresetsUtil } from './PresetsUtil.js'
 
 const RPC_URL_HOST = 'rpc.walletconnect.org'
 
@@ -146,8 +146,10 @@ export const CaipNetworksUtil = {
       },
       rpcUrls: {
         ...caipNetwork.rpcUrls,
-        default: {
-          http: [rpcUrl]
+        default: caipNetwork.rpcUrls.default ?? {
+          default: {
+            http: [rpcUrl]
+          }
         }
       }
     }
