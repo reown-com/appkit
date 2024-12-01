@@ -56,7 +56,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Bitco
       params: { message, account: address, address }
     })
 
-    return signedMessage.signature
+    return Buffer.from(signedMessage.signature, 'hex').toString('base64')
   }
 
   public async sendTransfer({ recipient, amount }: BitcoinConnector.SendTransferParams) {
