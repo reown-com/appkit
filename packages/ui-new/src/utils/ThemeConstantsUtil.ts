@@ -150,9 +150,9 @@ export const tokens = {
     borderSecondary: '#4F4F4F',
 
     /* Foreground colors */
-    foregroundPrimary: '#2A2A2A',
-    foregroundSecondary: '#363636',
-    foregroundTertiary: '#4F4F4F',
+    foregroundPrimary: '#252525',
+    foregroundSecondary: '#2A2A2A',
+    foregroundTertiary: '#363636',
 
     /* Icon colors */
     iconDefault: '#9A9A9A',
@@ -160,7 +160,7 @@ export const tokens = {
   },
   light: {
     /* Background colors */
-    backgroundPrimary: '#202020',
+    backgroundPrimary: '#FFFFFF',
     backgroundInvert: '#202020',
 
     /* Text colors */
@@ -193,6 +193,7 @@ export const borderRadius = {
   '10': '10px',
   '3': '12px',
   '4': '16px',
+  '5': '20px',
   '8': '32px',
   '16': '64px',
   '20': '80px',

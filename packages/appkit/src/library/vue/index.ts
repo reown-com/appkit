@@ -28,7 +28,7 @@ type ThemeModeOptions = AppKitOptions['themeMode']
 
 type ThemeVariablesOptions = AppKitOptions['themeVariables']
 
-declare module '@vue/runtime-core' {
+declare module 'vue' {
   export interface ComponentCustomProperties {
     AppKitButton: Pick<AppKitButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
     AppKitConnectButton: Pick<AppKitConnectButton, 'size' | 'label' | 'loadingLabel'>

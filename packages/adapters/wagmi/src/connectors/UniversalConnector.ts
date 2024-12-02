@@ -63,7 +63,6 @@ export function walletConnect(
   }
 
   let provider_: Provider | undefined
-  let providerPromise: Promise<typeof provider_>
 
   let accountsChanged: UniversalConnector['onAccountsChanged'] | undefined
   let chainChanged: UniversalConnector['onChainChanged'] | undefined
@@ -209,27 +208,8 @@ export function walletConnect(
       return accounts as `0x${string}`[]
     },
     async getProvider({ chainId } = {}) {
-      async function initProvider() {
-        const optionalChains = caipNetworks.map(x => Number(x.id))
-
-        if (!optionalChains.length) {
-          return undefined
-        }
-
-        const provider = await appKit.getUniversalProvider()
-
-        if (!provider) {
-          throw new Error('Provider not found')
-        }
-
-        return provider
-      }
-
       if (!provider_) {
-        if (!providerPromise) {
-          providerPromise = initProvider()
-        }
-        provider_ = await providerPromise
+        provider_ = await appKit.getUniversalProvider()
         provider_?.events.setMaxListeners(Number.POSITIVE_INFINITY)
       }
 
@@ -296,14 +276,14 @@ export function walletConnect(
       }
 
       try {
-        if (chainToSwitch?.caipNetworkId) {
-          provider.setDefaultChain(chainToSwitch?.caipNetworkId as string)
-        }
-
         await provider.request({
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: numberToHex(chainId) }]
         })
+
+        if (chainToSwitch?.caipNetworkId) {
+          provider.setDefaultChain(chainToSwitch?.caipNetworkId as string)
+        }
         config.emitter.emit('change', { chainId: Number(chainId) })
 
         const requestedChains = await this.getRequestedChainsIds()
@@ -365,10 +345,8 @@ export function walletConnect(
 
       config.emitter.emit('change', { chainId })
     },
-    async onConnect(connectInfo) {
-      const chainId = Number(connectInfo.chainId)
-      const accounts = await this.getAccounts()
-      config.emitter.emit('connect', { accounts, chainId })
+    onConnect(_connectInfo) {
+      this.setRequestedChainsIds(caipNetworks.map(x => Number(x.id)))
     },
     async onDisconnect(_error) {
       this.setRequestedChainsIds([])
@@ -437,6 +415,7 @@ export function walletConnect(
       }
 
       const connectorChains = config.chains.map(x => x.id)
+
       const namespaceChains = this.getNamespaceChainsIds()
 
       if (namespaceChains.length && !namespaceChains.some(id => connectorChains.includes(id))) {

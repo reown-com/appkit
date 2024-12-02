@@ -91,6 +91,23 @@ describe('WagmiAdapter', () => {
       expect(adapter.adapterType).toBe('wagmi')
       expect(adapter.namespace).toBe('eip155')
     })
+
+    it('should not set info property for injected connector', () => {
+      const mockConnectors = [
+        {
+          id: 'Browser Wallet',
+          name: 'Browser Wallet',
+          type: 'injected',
+          info: { rdns: 'Browser Wallet' }
+        }
+      ]
+
+      ;(adapter as any).syncConnectors(mockConnectors)
+
+      const injectedConnector = mockConnectors.filter((c: any) => c.id === 'injected')[0]
+
+      expect(injectedConnector?.info).toBeUndefined()
+    })
   })
 
   describe('WagmiAdapter - signMessage', () => {

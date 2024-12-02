@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { SafeLocalStorage, SafeLocalStorageKeys, type ChainNamespace } from '@reown/appkit-common'
-import type { WcWallet, ConnectorType, SocialProvider } from './TypeUtil.js'
+import type { WcWallet, ConnectorType, SocialProvider, ConnectionStatus } from './TypeUtil.js'
 import { ChainController } from '../controllers/ChainController.js'
 
 // -- Utility -----------------------------------------------------------------
@@ -126,5 +126,21 @@ export const StorageUtil = {
     )
 
     return storedCaipNetwork
+  },
+
+  setConnectionStatus(status: ConnectionStatus) {
+    try {
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTION_STATUS, status)
+    } catch {
+      console.info('Unable to set Connection Status')
+    }
+  },
+
+  getConnectionStatus() {
+    try {
+      return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTION_STATUS) as ConnectionStatus
+    } catch {
+      return undefined
+    }
   }
 }

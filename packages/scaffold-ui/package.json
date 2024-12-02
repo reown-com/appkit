@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-scaffold-ui",
-  "version": "1.5.0",
+  "version": "1.5.3",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -31,7 +31,6 @@
   "dependencies": {
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-core": "workspace:*",
-    "@reown/appkit-siwe": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",

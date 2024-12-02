@@ -9,12 +9,14 @@ export const ConstantsUtil = {
   CHAIN: {
     EVM: 'eip155',
     SOLANA: 'solana',
-    POLKADOT: 'polkadot'
+    POLKADOT: 'polkadot',
+    BITCOIN: 'bip122'
   } as const satisfies Record<string, ChainNamespace>,
   CHAIN_NAME_MAP: {
     eip155: 'Ethereum',
     solana: 'Solana',
-    polkadot: 'Polkadot'
+    polkadot: 'Polkadot',
+    bip122: 'Bitcoin'
   } as const satisfies Record<ChainNamespace, string>,
   USDT_CONTRACT_ADDRESSES: [
     // Mainnet
