@@ -22,6 +22,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { ModalController } from './ModalController.js'
 import { EventsController } from './EventsController.js'
+import { RouterController } from './RouterController.js'
 
 // -- Constants ----------------------------------------- //
 const accountState: AccountControllerState = {
@@ -241,10 +242,21 @@ export const ChainController = {
   },
 
   async switchActiveNetwork(network: CaipNetwork) {
+    const activeAdapter = ChainController.state.chains.get(
+      ChainController.state.activeChain as ChainNamespace
+    )
+
+    const unsupportedNetwork = !activeAdapter?.caipNetworks?.some(
+      caipNetwork => caipNetwork.id === state.activeCaipNetwork?.id
+    )
     const networkControllerClient = this.getNetworkControllerClient(network.chainNamespace)
 
     if (networkControllerClient) {
       await networkControllerClient.switchCaipNetwork(network)
+    }
+
+    if (unsupportedNetwork) {
+      RouterController.goBack()
     }
 
     this.setActiveCaipNetwork(network)

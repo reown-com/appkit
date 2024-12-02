@@ -543,7 +543,7 @@ describe('Base', () => {
       expect(AccountController.resetAccount).toHaveBeenCalledWith('eip155')
     })
 
-    it('should show unsupported chain UI when synced chainId is not supported', async () => {
+    it('should set unsupported chain when synced chainId is not supported', async () => {
       const isClientSpy = vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
       vi.mocked(ChainController).state = {
         chains: new Map([['eip155', { namespace: 'eip155' }]]),
@@ -569,6 +569,8 @@ describe('Base', () => {
       vi.spyOn(StorageUtil, 'setConnectedConnector').mockImplementation(vi.fn())
       vi.spyOn(StorageUtil, 'setConnectedNamespace').mockImplementation(vi.fn())
 
+      vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
+
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation((key: string) => {
         if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
           return 'test-wallet'
@@ -583,7 +585,7 @@ describe('Base', () => {
 
       await (appKit as any).syncExistingConnection()
 
-      expect(ChainController.showUnsupportedChainUI).toHaveBeenCalled()
+      expect((appKit as any).setUnsupportedNetwork).toHaveBeenCalled()
       expect(isClientSpy).toHaveBeenCalled()
     })
   })

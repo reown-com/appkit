@@ -566,6 +566,8 @@ describe('Base', () => {
 
       vi.spyOn(appKit as any, 'getAdapter').mockReturnValue(mockAdapter)
 
+      vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
+
       vi.spyOn(StorageUtil, 'setConnectedConnector').mockImplementation(vi.fn())
       vi.spyOn(StorageUtil, 'setConnectedNamespace').mockImplementation(vi.fn())
 
@@ -578,8 +580,6 @@ describe('Base', () => {
         }
         return undefined
       })
-
-      vi.mocked(ChainController.showUnsupportedChainUI).mockImplementation(vi.fn())
 
       await (appKit as any).syncExistingConnection()
 

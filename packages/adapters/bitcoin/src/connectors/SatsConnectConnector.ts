@@ -39,7 +39,7 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
   }
 
   public get imageUrl(): string {
-    return this.wallet.icon || ''
+    return this.wallet.icon
   }
 
   public get chains() {
@@ -79,11 +79,7 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
       message: 'Connect to your wallet'
     })
 
-    if (response.addresses.length === 0) {
-      throw new Error('No address available')
-    }
-
-    return response.addresses as BitcoinConnector.AccountAddress[]
+    return response.addresses
   }
 
   public static getWallets({ requestedChains }: SatsConnectConnector.GetWalletsParams) {
@@ -98,11 +94,35 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
     return res.signature
   }
 
+  public async signPSBT(
+    params: BitcoinConnector.SignPSBTParams
+  ): Promise<BitcoinConnector.SignPSBTResponse> {
+    const signInputs = params.signInputs.reduce<Record<string, number[]>>((acc, input) => {
+      const currentIndexes = acc[input.address] || []
+      currentIndexes.push(input.index)
+
+      return { ...acc, [input.address]: currentIndexes }
+    }, {})
+
+    const res = await this.internalRequest('signPsbt', {
+      psbt: params.psbt,
+      broadcast: params.broadcast,
+      signInputs
+    })
+
+    return res
+  }
+
   public async sendTransfer({
     amount,
     recipient
   }: BitcoinConnector.SendTransferParams): Promise<string> {
-    const parsedAmount = isNaN(Number(amount)) ? 0 : Number(amount)
+    const parsedAmount = Number(amount)
+
+    if (isNaN(parsedAmount)) {
+      throw new Error('Invalid amount')
+    }
+
     const res = await this.internalRequest('sendTransfer', {
       recipients: [{ address: recipient, amount: parsedAmount }]
     })
