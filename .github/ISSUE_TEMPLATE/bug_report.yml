@@ -30,3 +30,17 @@ body:
       description: Include all appkit, wagmi and other packages that can be related to the issue, including their versions.
     validations:
       required: true
+  - type: input
+    attributes:
+      label: Node.js Version
+      description: What version of Node.js are you using? Run `node --version` to check.
+      placeholder: 'e.g. v18.17.0'
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Package Manager
+      description: Which package manager and version are you using? Run `npm --version` or `pnpm --version` etc.
+      placeholder: 'e.g. npm@9.6.7 or yarn@3.6.1 or pnpm@8.6.2'
+    validations:
+      required: true
