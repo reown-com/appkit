@@ -1,6 +1,12 @@
 name: Publish Canary Image
 on:
   workflow_dispatch:
+    inputs:
+      ref:
+        description: 'The ref to build the canary for'
+        default: 'main'
+        required: false
+        type: string
   push:
     branches:
       - main
@@ -30,6 +36,8 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.base_ref }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3

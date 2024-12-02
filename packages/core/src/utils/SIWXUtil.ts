@@ -1,4 +1,4 @@
-import type { CaipNetworkId } from '@reown/appkit-common'
+import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 import { OptionsController } from '../controllers/OptionsController.js'
 import { CoreHelperUtil } from './CoreHelperUtil.js'
 import { ChainController } from '../controllers/ChainController.js'
@@ -23,10 +23,15 @@ export const SIWXUtil = {
     if (!(siwx && caipAddress)) {
       return
     }
-    const [network, chainId, address] = caipAddress.split(':') as [string, string, string]
+    const [namespace, chainId, address] = caipAddress.split(':') as [ChainNamespace, string, string]
+
+    if (!ChainController.checkIfSupportedNetwork(namespace)) {
+      return
+    }
 
     try {
-      const sessions = await siwx.getSessions(`${network}:${chainId}` as CaipNetworkId, address)
+      const sessions = await siwx.getSessions(`${namespace}:${chainId}`, address)
+
       if (sessions.length) {
         return
       }
@@ -186,7 +191,7 @@ export const SIWXUtil = {
 
     // Ignores chainId and account address to get other message data
     const siwxMessage = await siwx.createMessage({
-      chainId: '' as CaipNetworkId,
+      chainId: ChainController.getActiveCaipNetwork()?.caipNetworkId || ('' as CaipNetworkId),
       accountAddress: ''
     })
 
@@ -201,6 +206,7 @@ export const SIWXUtil = {
       version: siwxMessage.version,
       resources: siwxMessage.resources,
       statement: siwxMessage.statement,
+      chainId: siwxMessage.chainId,
 
       methods,
       chains

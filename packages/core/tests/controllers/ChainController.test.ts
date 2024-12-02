@@ -8,6 +8,7 @@ import {
 import { ChainController } from '../../src/controllers/ChainController.js'
 import { type ConnectionControllerClient } from '../../src/controllers/ConnectionController.js'
 import type { NetworkControllerClient } from '../../exports/index.js'
+import { RouterController } from '../../src/controllers/RouterController.js'
 
 // -- Setup --------------------------------------------------------------------
 const chainNamespace = 'eip155' as ChainNamespace
@@ -265,5 +266,43 @@ describe('ChainController', () => {
     )
     expect(ChainController.getAccountProp('socialProvider', chainNamespace)).toEqual(undefined)
     expect(ChainController.getAccountProp('socialWindow', chainNamespace)).toEqual(undefined)
+  })
+
+  it('Expect modal to close after switching from unsupported network to supported network', async () => {
+    // Mock RouterController.goBack
+    const routerGoBackSpy = vi.spyOn(RouterController, 'goBack')
+
+    // Setup adapter with limited network support
+    const limitedEvmAdapter = {
+      namespace: ConstantsUtil.CHAIN.EVM,
+      connectionControllerClient,
+      networkControllerClient,
+      caipNetworks: [
+        {
+          id: 1,
+          caipNetworkId: 'eip155:1',
+          name: 'Ethereum',
+          chainNamespace: ConstantsUtil.CHAIN.EVM
+        }
+      ] as unknown as CaipNetwork[]
+    }
+
+    ChainController.state.activeCaipNetwork = {
+      id: 42161,
+      caipNetworkId: 'eip155:42161',
+      name: 'Arbitrum One',
+      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      nativeCurrency: {
+        name: 'Arbitrum',
+        symbol: 'ARB',
+        decimals: 18
+      }
+    } as unknown as CaipNetwork
+    ChainController.state.chains.set(ConstantsUtil.CHAIN.EVM, limitedEvmAdapter)
+    await ChainController.switchActiveNetwork(caipNetwork)
+
+    expect(routerGoBackSpy).toHaveBeenCalled()
+
+    routerGoBackSpy.mockRestore()
   })
 })

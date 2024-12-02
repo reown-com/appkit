@@ -1,4 +1,10 @@
+import type { vars } from './ThemeHelperUtil.js'
+
 export type ColorType = string
+
+export type BackgroundColorType = 'foregroundSecondary' | 'foregroundAccent010'
+
+export type IconColorType = 'inverse'
 
 export type TextColorType =
   | 'inherit'
@@ -47,23 +53,10 @@ export type LineClamp = '1' | '2'
 
 export type SizeType = 'inherit' | 'xl' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs' | 'xxl'
 
-export type SpacingType =
-  | '0'
-  | '1xs'
-  | '2xl'
-  | '3xl'
-  | '4xl'
-  | '5xl'
-  | '3xs'
-  | '4xs'
-  | 'l'
-  | '2l'
-  | 'm'
-  | 's'
-  | 'xl'
-  | 'xs'
-  | 'xxl'
-  | 'xxs'
+export type SpacingType = keyof typeof vars.spacing
+
+// @TODO: Remove these sizes after completing <wui-icon> component
+export type IconSizeType = 'inherit' | 'xl' | 'lg' | 'md' | 'mdl' | 'sm' | 'xs' | 'xxs' | 'xxl'
 
 export type BorderRadiusType = Exclude<SpacingType, '1xs' | 'xl' | 'xxl'> | 'xs'
 
@@ -94,6 +87,8 @@ export interface IWalletImage {
 
 export type TabSize = 'sm' | 'md' | 'lg'
 
+export type ToastMessageVariant = 'info' | 'success' | 'warning' | 'error'
+
 export type GridContentType =
   | 'center'
   | 'end'
@@ -122,6 +117,7 @@ export type IconType =
   | 'card'
   | 'checkmark'
   | 'checkmarkBold'
+  | 'checkmarkVerified'
   | 'chevronBottom'
   | 'chevronLeft'
   | 'chevronRight'
@@ -138,6 +134,8 @@ export type IconType =
   | 'etherscan'
   | 'extension'
   | 'externalLink'
+  | 'exclamationCircle'
+  | 'exclamationTriangle'
   | 'facebook'
   | 'farcaster'
   | 'filters'
@@ -182,7 +180,6 @@ export type IconType =
   | 'warningCircle'
   | 'x'
   | 'info'
-  | 'exclamationTriangle'
 
 export type VisualType =
   | 'browser'
@@ -227,7 +224,13 @@ export type PlacementType = 'bottom' | 'left' | 'right' | 'top'
 
 export type ChipType = 'fill' | 'shade' | 'shadeSmall' | 'transparent' | 'success' | 'error'
 
-export type ChipButtonVariant = 'accent' | 'main' | 'shade' | 'gray'
+export type ChipButtonVariant = 'main' | 'accent' | 'primary'
+
+export type ChipButtonSize = 'sm' | 'md'
+
+export type DomainChipVariant = 'success' | 'warning' | 'error'
+
+export type DomainChipSize = 'sm' | 'md'
 
 export type ButtonSize = 'lg' | 'md' | 'sm'
 

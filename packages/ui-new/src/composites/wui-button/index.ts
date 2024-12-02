@@ -4,7 +4,7 @@ import '../../components/wui-icon/index.js'
 import '../../components/wui-loading-spinner/index.js'
 import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { BorderRadiusType, ButtonSize, ButtonVariant, TextType } from '../../utils/TypeUtil.js'
+import type { ButtonSize, ButtonVariant, TextType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
@@ -38,8 +38,6 @@ export class WuiButton extends LitElement {
   @property({ type: Boolean }) public loading = false
 
   @property() public variant: ButtonVariant = 'accent-primary'
-
-  @property() public borderRadius: Exclude<BorderRadiusType, 'inherit' | 'xxs'> = 'm'
 
   @property() public textVariant?: TextType
 

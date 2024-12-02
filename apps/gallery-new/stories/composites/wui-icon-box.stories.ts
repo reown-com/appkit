@@ -3,54 +3,33 @@ import '@reown/appkit-ui-new/src/composites/wui-icon-box'
 import type { WuiIconBox } from '@reown/appkit-ui-new/src/composites/wui-icon-box'
 import { html } from 'lit'
 
-import {
-  backgroundOptions,
-  colorOptions,
-  iconBoxBorderOptions,
-  iconOptions
-} from '../../utils/PresetUtils'
+import { backgroundColorOptions, iconColorOptions, iconOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiIconBox>
 
 export default {
   title: 'Composites/wui-icon-box',
   args: {
-    size: 'md',
-    backgroundColor: 'accent-100',
-    iconColor: 'accent-100',
-    icon: 'copy',
-    background: 'transparent',
-    border: false,
-    borderColor: undefined
+    iconColor: 'inverse',
+    iconSize: 'xl',
+    backgroundColor: 'foregroundSecondary',
+    icon: 'qrCode'
   },
-
   argTypes: {
-    size: {
-      defaultValue: 'md',
-      options: ['sm', 'md', 'lg', 'xl'],
+    iconColor: {
+      options: iconColorOptions,
+      control: { type: 'select' }
+    },
+    iconSize: {
+      options: ['xl', 'md', 'sm', 'xs'],
       control: { type: 'select' }
     },
     backgroundColor: {
-      options: colorOptions,
-      control: { type: 'select' }
-    },
-    iconColor: {
-      options: colorOptions,
+      options: backgroundColorOptions,
       control: { type: 'select' }
     },
     icon: {
       options: iconOptions,
-      control: { type: 'select' }
-    },
-    background: {
-      options: backgroundOptions,
-      control: { type: 'select' }
-    },
-    border: {
-      control: { type: 'boolean' }
-    },
-    borderColor: {
-      options: iconBoxBorderOptions,
       control: { type: 'select' }
     }
   }
@@ -59,12 +38,9 @@ export default {
 export const Default: Component = {
   render: args =>
     html`<wui-icon-box
-      size=${args.size}
       iconColor=${args.iconColor}
+      iconSize=${args.iconSize}
       backgroundColor=${args.backgroundColor}
       icon=${args.icon}
-      background=${args.background}
-      ?border=${args.border}
-      .borderColor=${args.borderColor}
     ></wui-icon-box>`
 }

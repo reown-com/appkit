@@ -9,7 +9,9 @@ const namespaceImageIds: Record<ChainNamespace, string> = {
   // Solana
   solana: 'a1b58899-f671-4276-6a5e-56ca5bd59700',
   // Polkadot
-  polkadot: ''
+  polkadot: '',
+  // Bitcoin
+  bip122: ''
 }
 
 export const AssetUtil = {

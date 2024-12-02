@@ -28,7 +28,9 @@ import type {
   ThemeType,
   TransactionType,
   VisualType,
-  ButtonLinkVariant
+  ButtonLinkVariant,
+  DomainChipVariant,
+  ToastMessageVariant
 } from '@reown/appkit-ui-new/src/utils/TypeUtil'
 import type { TransactionStatus, TransactionDirection } from '@reown/appkit-common'
 
@@ -42,7 +44,12 @@ export const textColorOptions: TextColorType[] = [
   'accent-primary'
 ]
 
-export const colorOptions = []
+export const iconColorOptions = ['accent', 'inverse']
+
+// @TODO: Deprecate this
+export const colorOptions = iconColorOptions
+
+export const backgroundColorOptions = ['foregroundSecondary', 'foregroundAccent010']
 
 export const textOptions: TextType[] = [
   'h1-regular-mono',
@@ -126,6 +133,10 @@ export const gridContentOptions: GridContentType[] = [
 
 export const walletImagesOptions = [
   {
+    src: 'https://explorer-api.walletconnect.org/v3/logo/md/018b2d52-10e9-4158-1fde-a5d5bac5aa00?projectId=c1781fc385454899a2b1385a2b83df3b',
+    walletName: 'MetaMask'
+  },
+  {
     src: 'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/7a33d7f1-3d12-4b5c-f3ee-5cd83cb1b500?projectId=c1781fc385454899a2b1385a2b83df3b',
     walletName: 'Rainbow'
   },
@@ -184,6 +195,8 @@ export const spacingOptions: SpacingType[] = [
   '3xl'
 ]
 
+export const toastMessageOptions: ToastMessageVariant[] = ['info', 'success', 'warning', 'error']
+
 export const iconOptions: IconType[] = [
   'allWallets',
   'apple',
@@ -193,6 +206,7 @@ export const iconOptions: IconType[] = [
   'arrowTop',
   'browser',
   'checkmark',
+  'checkmarkVerified',
   'chevronBottom',
   'chevronLeft',
   'chevronRight',
@@ -270,7 +284,9 @@ export const logoOptions: LogoType[] = [
 
 export const placementOptions: PlacementType[] = ['top', 'right', 'bottom', 'left']
 
-export const chipButtonVariants: ChipButtonVariant[] = ['main', 'accent', 'shade', 'gray', 'shade']
+export const chipButtonVariants: ChipButtonVariant[] = ['main', 'accent', 'primary']
+
+export const domainChipVariants: DomainChipVariant[] = ['success', 'warning', 'error']
 
 export const chipVariants: ChipType[] = [
   'fill',
@@ -339,8 +355,6 @@ export const iconBoxBorderOptions: IconBoxBorderType[] = [
   'wui-color-bg-125',
   'wui-accent-glass-010'
 ]
-
-export const tagLabelOptions = ['get wallet', 'installed', 'qr code', 'recent']
 
 export const signTypedData = {
   domain: {

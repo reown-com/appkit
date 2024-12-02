@@ -25,7 +25,8 @@ export const mockUniversalAdapter = {
   revokePermissions: vi.fn(),
   on: vi.fn(),
   off: vi.fn(),
-  emit: vi.fn()
+  emit: vi.fn(),
+  construct: vi.fn()
 } as unknown as AdapterBlueprint
 
 export default mockUniversalAdapter

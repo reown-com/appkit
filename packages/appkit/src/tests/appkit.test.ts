@@ -19,7 +19,8 @@ import {
   ConnectorController,
   ChainController,
   type Connector,
-  StorageUtil
+  StorageUtil,
+  CoreHelperUtil
 } from '@reown/appkit-core'
 import {
   SafeLocalStorage,
@@ -526,7 +527,8 @@ describe('Base', () => {
       expect(AccountController.setStatus).toHaveBeenCalledWith('disconnected', 'eip155')
     })
 
-    it('should show unsupported chain UI when synced chainId is not supported', async () => {
+    it('should set unsupported chain when synced chainId is not supported', async () => {
+      const isClientSpy = vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
       vi.mocked(ChainController).state = {
         chains: new Map([['eip155', { namespace: 'eip155' }]]),
         activeChain: 'eip155'
@@ -550,6 +552,8 @@ describe('Base', () => {
       vi.spyOn(StorageUtil, 'setConnectedConnector').mockImplementation(vi.fn())
       vi.spyOn(StorageUtil, 'setConnectedNamespace').mockImplementation(vi.fn())
 
+      vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
+
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation((key: string) => {
         if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
           return 'test-wallet'
@@ -564,7 +568,71 @@ describe('Base', () => {
 
       await (appKit as any).syncExistingConnection()
 
-      expect(ChainController.showUnsupportedChainUI).toHaveBeenCalled()
+      expect((appKit as any).setUnsupportedNetwork).toHaveBeenCalled()
+      expect(isClientSpy).toHaveBeenCalled()
+    })
+  })
+  describe('syncExistingConnection', () => {
+    it('should set status to "connecting" and sync the connection when a connector and namespace are present', async () => {
+      vi.mocked(CoreHelperUtil.isClient).mockReturnValueOnce(true)
+      vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation(key => {
+        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
+          return 'test-wallet'
+        }
+        if (key === SafeLocalStorageKeys.CONNECTED_NAMESPACE) {
+          return 'eip155'
+        }
+        return undefined
+      })
+
+      const mockAdapter = {
+        syncConnection: vi.fn().mockResolvedValue({
+          address: '0x123',
+          chainId: '1',
+          chainNamespace: 'eip155'
+        }),
+        on: vi.fn(),
+        getBalance: vi.fn().mockResolvedValue({ balance: '0', symbol: 'ETH' })
+      }
+      vi.spyOn(appKit as any, 'getAdapter').mockReturnValue(mockAdapter)
+
+      await appKit['syncExistingConnection']()
+
+      expect(AccountController.setStatus).toHaveBeenCalledWith('connecting', 'eip155')
+      expect(mockAdapter.syncConnection).toHaveBeenCalled()
+      expect(AccountController.setStatus).toHaveBeenCalledWith('connected', 'eip155')
+    })
+
+    it('should set status to "disconnected" when no connector is present', async () => {
+      vi.mocked(CoreHelperUtil.isClient).mockReturnValueOnce(true)
+      vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValueOnce(undefined)
+
+      await appKit['syncExistingConnection']()
+
+      expect(AccountController.setStatus).toHaveBeenCalledWith('disconnected', 'eip155')
+    })
+
+    it('should set status to "disconnected" if the connector is set to "AUTH" and the adapter fails to sync', async () => {
+      vi.mocked(CoreHelperUtil.isClient).mockReturnValueOnce(true)
+      vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation(key => {
+        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
+          return 'AUTH'
+        }
+        if (key === SafeLocalStorageKeys.CONNECTED_NAMESPACE) {
+          return 'eip155'
+        }
+        return undefined
+      })
+
+      const mockAdapter = {
+        syncConnection: vi.fn().mockResolvedValue(null),
+        on: vi.fn()
+      }
+      vi.spyOn(appKit as any, 'getAdapter').mockReturnValue(mockAdapter)
+
+      await appKit['syncExistingConnection']()
+
+      expect(AccountController.setStatus).toHaveBeenCalledWith('disconnected', 'eip155')
     })
   })
   describe('Base Initialization', () => {
