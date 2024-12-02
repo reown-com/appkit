@@ -11,12 +11,25 @@ export default {
   title: 'Composites/wui-icon-button',
   args: {
     icon: 'card',
-    text: 'Buy'
+    size: 'md',
+    variant: 'neutral-primary',
+    disabled: false
   },
   argTypes: {
     icon: {
       options: iconOptions,
       control: { type: 'select' }
+    },
+    size: {
+      options: ['xs', 'sm', 'md', 'lg'],
+      control: { type: 'select' }
+    },
+    variant: {
+      options: ['neutral-primary', 'neutral-secondary', 'accent-primary'],
+      control: { type: 'select' }
+    },
+    disabled: {
+      control: { type: 'boolean' }
     }
   }
 } as Component
@@ -24,7 +37,12 @@ export default {
 export const Default: Component = {
   render: args => html`
     <gallery-container width="120">
-      <wui-icon-button icon=${args.icon} text=${args.text}></wui-icon-button>
+      <wui-icon-button
+        icon=${args.icon}
+        size=${args.size}
+        variant=${args.variant}
+        ?disabled=${args.disabled}
+      ></wui-icon-button>
     </gallery-container>
   `
 }
