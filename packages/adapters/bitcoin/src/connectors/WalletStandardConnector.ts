@@ -49,6 +49,8 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
       throw new Error('No account found')
     }
 
+    this.bindEvents()
+
     return account.address
   }
 
@@ -132,6 +134,23 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
     return this.wallet.features[feature] as WalletWithFeatures<
       Record<Name, BitcoinFeatures[Name]>
     >['features'][Name]
+  }
+
+  private bindEvents() {
+    const feature = this.getWalletFeature('standard:events')
+
+    feature.on('change', data => {
+      if ('accounts' in data && data.accounts) {
+        if (data.accounts.length === 0) {
+          this.emit('disconnect')
+        } else {
+          this.emit(
+            'accountsChanged',
+            data.accounts.map(acc => acc.address)
+          )
+        }
+      }
+    })
   }
 
   public static watchWallets({
