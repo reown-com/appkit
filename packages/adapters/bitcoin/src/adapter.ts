@@ -56,7 +56,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     }
   }
 
-  override syncConnectors(_options?: AppKitOptions, _appKit?: AppKit): void {
+  override syncConnectors(_options?: AppKitOptions, appKit?: AppKit): void {
     WalletStandardConnector.watchWallets({
       callback: this.addConnector.bind(this),
       requestedChains: this.networks
@@ -64,7 +64,8 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
     this.addConnector(
       ...SatsConnectConnector.getWallets({
-        requestedChains: this.networks
+        requestedChains: this.networks,
+        getActiveNetwork: () => appKit?.getCaipNetwork()
       }).map(connector => {
         switch (connector.wallet.id) {
           case LeatherConnector.ProviderId:

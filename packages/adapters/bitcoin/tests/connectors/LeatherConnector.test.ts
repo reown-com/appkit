@@ -1,25 +1,36 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest'
 import { SatsConnectConnector } from '../../src/connectors/SatsConnectConnector'
 import { mockSatsConnectProvider } from '../mocks/mockSatsConnect'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { LeatherConnector } from '../../src/connectors/LeatherConnector'
+import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 
 describe('LeatherConnector', () => {
   let satsConnectConnector: SatsConnectConnector
   let connector: LeatherConnector
   let mocks: ReturnType<typeof mockSatsConnectProvider>
   let requestedChains: CaipNetwork[]
+  let getActiveNetwork: Mock<() => CaipNetwork | undefined>
 
   beforeEach(() => {
     requestedChains = []
+    getActiveNetwork = vi.fn(() => bitcoin)
     mocks = mockSatsConnectProvider({ id: 'LeatherProvider' })
-    satsConnectConnector = new SatsConnectConnector({ provider: mocks.provider, requestedChains })
+    satsConnectConnector = new SatsConnectConnector({
+      provider: mocks.provider,
+      requestedChains,
+      getActiveNetwork
+    })
     connector = new LeatherConnector({ connector: satsConnectConnector })
   })
 
   it('should throw an error if the wallet is not a LeatherProvider', () => {
     mocks = mockSatsConnectProvider({ id: 'NotLeatherProvider' })
-    satsConnectConnector = new SatsConnectConnector({ provider: mocks.provider, requestedChains })
+    satsConnectConnector = new SatsConnectConnector({
+      provider: mocks.provider,
+      requestedChains,
+      getActiveNetwork
+    })
     expect(() => {
       new LeatherConnector({ connector: satsConnectConnector })
     }).toThrowError('LeatherConnector: wallet must be a LeatherProvider')
@@ -58,5 +69,40 @@ describe('LeatherConnector', () => {
       network: 'mainnet',
       broadcast: true
     })
+  })
+
+  it('should sign a PSBT for testnet', async () => {
+    getActiveNetwork.mockReturnValueOnce(bitcoinTestnet)
+
+    const psbt = 'psbt'
+    const txid = 'txid'
+    const requestSpy = vi.spyOn(mocks.wallet, 'request')
+    requestSpy.mockResolvedValue(
+      mockSatsConnectProvider.mockRequestResolve({ hex: '70736274', txid })
+    )
+
+    const res = await connector.signPSBT({ psbt, signInputs: [], broadcast: true })
+
+    expect(res).toEqual({ psbt: 'cHNidA==', txid })
+    expect(requestSpy).toHaveBeenCalledWith('signPsbt', {
+      hex: 'a6c6ed',
+      network: 'testnet',
+      broadcast: true
+    })
+  })
+
+  it('should throw an error if the network is unsupported', async () => {
+    getActiveNetwork.mockReturnValueOnce(undefined)
+
+    const psbt = 'psbt'
+    const txid = 'txid'
+    const requestSpy = vi.spyOn(mocks.wallet, 'request')
+    requestSpy.mockResolvedValue(
+      mockSatsConnectProvider.mockRequestResolve({ hex: '70736274', txid })
+    )
+
+    await expect(
+      connector.signPSBT({ psbt, signInputs: [], broadcast: true })
+    ).rejects.toThrowError('LeatherConnector: unsupported network')
   })
 })

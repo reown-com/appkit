@@ -6,6 +6,7 @@ import type {
   SignPsbtRequestParams,
   SignPsbtResponseBody
 } from '@leather.io/rpc'
+import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 
 export class LeatherConnector extends SatsConnectConnector {
   static readonly ProviderId = 'LeatherProvider'
@@ -17,7 +18,8 @@ export class LeatherConnector extends SatsConnectConnector {
 
     super({
       provider: connector.wallet,
-      requestedChains: connector.requestedChains
+      requestedChains: connector.requestedChains,
+      getActiveNetwork: connector.getActiveNetwork
     })
   }
 
@@ -45,7 +47,7 @@ export class LeatherConnector extends SatsConnectConnector {
   }: BitcoinConnector.SignPSBTParams): Promise<BitcoinConnector.SignPSBTResponse> {
     const params: LeatherConnector.SignPSBTParams = {
       hex: Buffer.from(psbt, 'base64').toString('hex'),
-      network: 'mainnet',
+      network: this.getNetwork(),
       broadcast
     }
 
@@ -55,6 +57,19 @@ export class LeatherConnector extends SatsConnectConnector {
     return {
       psbt: Buffer.from(res.hex, 'hex').toString('base64'),
       txid: res.txid
+    }
+  }
+
+  private getNetwork(): LeatherConnector.Network {
+    const activeCaipNetwork = this.getActiveNetwork()
+
+    switch (activeCaipNetwork?.caipNetworkId) {
+      case bitcoin.caipNetworkId:
+        return 'mainnet'
+      case bitcoinTestnet.caipNetworkId:
+        return 'testnet'
+      default:
+        throw new Error('LeatherConnector: unsupported network')
     }
   }
 }
