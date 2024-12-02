@@ -7,7 +7,7 @@ const supportedChains = [mainnet] as const
 export type ChainId = (typeof supportedChains)[number]['id']
 
 const transports = supportedChains.reduce(
-  (acc, chain,  ) => {
+  (acc, chain) => {
     acc[chain.id] = http()
 
     return acc
