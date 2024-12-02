@@ -31,6 +31,7 @@ import {
 import { mockOptions } from './mocks/Options'
 import { UniversalAdapter } from '../universal-adapter/client'
 import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint'
+import { ProviderUtil } from '../store'
 
 // Mock all controllers and UniversalAdapterClient
 vi.mock('@reown/appkit-core')
@@ -570,6 +571,29 @@ describe('Base', () => {
 
       expect((appKit as any).setUnsupportedNetwork).toHaveBeenCalled()
       expect(isClientSpy).toHaveBeenCalled()
+    })
+
+    it('should subscribe to providers', () => {
+      const callback = vi.fn()
+      const providers = {
+        eip155: { provider: {} },
+        solana: {},
+        polkadot: {},
+        bip122: {}
+      }
+
+      const mockSubscribeProviders = vi.fn().mockImplementation(cb => {
+        cb(providers)
+        return () => {}
+      })
+
+      // Mock the entire ProviderUtil
+      vi.mocked(ProviderUtil).subscribeProviders = mockSubscribeProviders
+
+      appKit.subscribeProviders(callback)
+
+      expect(mockSubscribeProviders).toHaveBeenCalled()
+      expect(callback).toHaveBeenCalledWith(providers)
     })
   })
   describe('syncExistingConnection', () => {
