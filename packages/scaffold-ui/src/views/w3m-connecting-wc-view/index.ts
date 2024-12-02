@@ -28,7 +28,7 @@ export class W3mConnectingWcView extends LitElement {
 
   @state() private platforms: Platform[] = []
 
-  @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
+  @state() private isSiwxEnabled = Boolean(OptionsController.state.siwx)
 
   public constructor() {
     super()
@@ -67,7 +67,7 @@ export class W3mConnectingWcView extends LitElement {
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry) || status === 'connecting') {
         await ConnectionController.connectWalletConnect()
         this.finalizeConnection()
-        if (!this.isSiweEnabled) {
+        if (!this.isSiwxEnabled) {
           ModalController.close()
         }
       }

@@ -56,7 +56,7 @@ beforeAll(async () => {
   //  -- Set Account and
   ChainController.initialize([
     {
-      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      namespace: ConstantsUtil.CHAIN.EVM,
       networkControllerClient: client,
       caipNetworks: [caipNetwork]
     }

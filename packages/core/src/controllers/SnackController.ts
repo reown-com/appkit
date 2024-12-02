@@ -6,6 +6,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 export interface SnackControllerState {
   message: string
   variant: 'error' | 'success' | 'loading'
+  svg?: { iconColor: string; icon: string }
   open: boolean
 }
 
@@ -15,6 +16,7 @@ type StateKey = keyof SnackControllerState
 const state = proxy<SnackControllerState>({
   message: '',
   variant: 'success',
+  svg: undefined,
   open: false
 })
 
@@ -27,33 +29,47 @@ export const SnackController = {
   },
 
   showLoading(message: SnackControllerState['message']) {
-    this._showMessage(message, 'loading')
+    this._showMessage({ message, variant: 'loading' })
   },
 
   showSuccess(message: SnackControllerState['message']) {
-    this._showMessage(message, 'success')
+    this._showMessage({ message, variant: 'success' })
+  },
+
+  showSvg(message: SnackControllerState['message'], svg: NonNullable<SnackControllerState['svg']>) {
+    this._showMessage({ message, svg })
   },
 
   showError(message: unknown) {
     const errorMessage = CoreHelperUtil.parseError(message)
-    this._showMessage(errorMessage, 'error')
+    this._showMessage({ message: errorMessage, variant: 'error' })
   },
 
   hide() {
     state.open = false
   },
 
-  _showMessage(message: SnackControllerState['message'], variant: SnackControllerState['variant']) {
+  _showMessage({
+    message,
+    svg,
+    variant = 'success'
+  }: {
+    message: SnackControllerState['message']
+    svg?: SnackControllerState['svg']
+    variant?: SnackControllerState['variant']
+  }) {
     if (state.open) {
       state.open = false
       setTimeout(() => {
         state.message = message
         state.variant = variant
+        state.svg = svg
         state.open = true
       }, 150)
     } else {
       state.message = message
       state.variant = variant
+      state.svg = svg
       state.open = true
     }
   }

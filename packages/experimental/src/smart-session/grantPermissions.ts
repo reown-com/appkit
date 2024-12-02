@@ -55,10 +55,10 @@ export async function grantPermissions(
     throw new Error(ERROR_MESSAGES.INVALID_ADDRESS)
   }
   // Fetch the ConnectionController client
-  const connectionControllerClient = ConnectionController._getClient(CommonConstantsUtil.CHAIN.EVM)
+  const connectionControllerClient = ConnectionController._getClient()
 
   //Check for connected wallet supports permissions capabilities
-  const walletCapabilities = (await connectionControllerClient.getCapabilities(
+  const walletCapabilities = (await connectionControllerClient?.getCapabilities(
     chainAndAddress.address
   )) as WalletCapabilities
 
@@ -83,7 +83,7 @@ export async function grantPermissions(
     goBack: false
   })
 
-  const rawResponse = await connectionControllerClient.grantPermissions([request])
+  const rawResponse = await connectionControllerClient?.grantPermissions([request])
 
   // Validate and type guard the response
   const response = assertWalletGrantPermissionsResponse(rawResponse)

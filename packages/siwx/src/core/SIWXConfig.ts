@@ -1,7 +1,6 @@
 import type {
   SIWXConfig as SIWXConfigInterface,
   SIWXMessage,
-  SIWXMessageInput,
   SIWXSession
 } from '@reown/appkit-core'
 import type { SIWXMessenger } from './SIWXMessenger.js'
@@ -20,7 +19,7 @@ export abstract class SIWXConfig implements SIWXConfigInterface {
     this.storage = params.storage
   }
 
-  public createMessage(input: SIWXMessageInput): Promise<SIWXMessage> {
+  public createMessage(input: SIWXMessage.Input): Promise<SIWXMessage> {
     return this.messenger.createMessage(input)
   }
 
@@ -45,27 +44,10 @@ export abstract class SIWXConfig implements SIWXConfigInterface {
   }
 
   public async getSessions(chainId: CaipNetworkId, address: string): Promise<SIWXSession[]> {
-    const allSessions = await this.storage.get(chainId)
-
-    return allSessions.filter(session => {
-      const isSameChain = session.message.chainId === chainId
-      const isSameAddress = session.message.accountAddress === address
-
-      const startsAt = session.message.notBefore || session.message.issuedAt
-      if (!startsAt || Date.parse(startsAt) > Date.now()) {
-        return false
-      }
-
-      const endsAt = session.message.expirationTime
-      if (endsAt && Date.now() > Date.parse(endsAt)) {
-        return false
-      }
-
-      return isSameChain && isSameAddress
-    })
+    return this.storage.get(chainId, address)
   }
 
-  public async revokeSession(chainId: string, address: string): Promise<void> {
+  public async revokeSession(chainId: CaipNetworkId, address: string): Promise<void> {
     return this.storage.delete(chainId, address)
   }
 

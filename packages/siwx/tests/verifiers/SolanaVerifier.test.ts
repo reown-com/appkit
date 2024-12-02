@@ -13,7 +13,7 @@ const cases: Case[] = [
   {
     reason: 'valid session',
     session: mockSession({
-      message: {
+      data: {
         accountAddress: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgpU'
       },
       signature:
@@ -24,7 +24,7 @@ const cases: Case[] = [
   {
     reason: 'invalid session with an invalid signature',
     session: mockSession({
-      message: {
+      data: {
         accountAddress: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgpU'
       },
       signature:
@@ -35,7 +35,7 @@ const cases: Case[] = [
   {
     reason: 'invalid session with an invalid account address',
     session: mockSession({
-      message: {
+      data: {
         accountAddress: 'C6ydkvKcRdXz3ZTEYy6uWAAyZgyUF49qP4XPdaDB2nqS'
       },
       signature:
@@ -56,7 +56,7 @@ describe('SolanaVerifier', () => {
     expect(
       verifier.shouldVerify(
         mockSession({
-          message: {
+          data: {
             chainId: 'solana:mainnet'
           }
         })
@@ -66,7 +66,7 @@ describe('SolanaVerifier', () => {
     expect(
       verifier.shouldVerify(
         mockSession({
-          message: {
+          data: {
             chainId: 'eip155:1'
           }
         })

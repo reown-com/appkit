@@ -23,8 +23,11 @@ const modal = createAppKit({
     analytics: false,
     swaps: false,
     email: false,
+    legalCheckbox: true,
     socials: []
-  }
+  },
+  termsConditionsUrl: 'https://reown.com/terms-of-service',
+  privacyPolicyUrl: 'https://reown.com/privacy-policy'
 })
 
 ThemeStore.setModal(modal)

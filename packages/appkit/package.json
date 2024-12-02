@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit",
-  "version": "1.2.1",
+  "version": "1.5.3",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -61,6 +61,11 @@
       "types": "./dist/types/exports/auth-provider.d.ts",
       "import": "./dist/esm/exports/auth-provider.js",
       "default": "./dist/esm/exports/auth-provider.js"
+    },
+    "./adapters": {
+      "types": "./dist/types/exports/adapters.d.ts",
+      "import": "./dist/esm/exports/adapters.js",
+      "default": "./dist/esm/exports/adapters.js"
     }
   },
   "typesVersions": {
@@ -85,6 +90,9 @@
       ],
       "auth-provider": [
         "./dist/types/exports/auth-provider.d.ts"
+      ],
+      "adapters": [
+        "./dist/types/exports/adapters.d.ts"
       ]
     }
   },
@@ -98,8 +106,9 @@
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/types": "2.17.0",
-    "@walletconnect/utils": "2.17.0",
     "@walletconnect/universal-provider": "2.17.0",
+    "@walletconnect/utils": "2.17.0",
+    "bs58": "6.0.0",
     "valtio": "1.11.2",
     "viem": "2.x"
   },

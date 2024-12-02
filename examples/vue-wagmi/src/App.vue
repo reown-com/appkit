@@ -1,61 +1,9 @@
-<template>
-  <div class="container">
-    <h1>Vue Wagmi Example</h1>
-
-    <!-- AppKit UI Components -->
-    <div class="button-group">
-      <appkit-button />
-      <appkit-network-button />
-    </div>
-
-    <!-- Modal Controls -->
-    <div class="button-group">
-      <button @click="modal.open()">Open Connect Modal</button>
-      <button @click="modal.open({ view: 'Networks' })">Open Network Modal</button>
-      <button @click="toggleTheme">Toggle Theme Mode</button>
-    </div>
-
-    <!-- State Displays -->
-    <div class="state-container">
-      <section>
-        <h2>Account</h2>
-        <pre>{{ JSON.stringify(accountState, null, 2) }}</pre>
-      </section>
-
-      <section>
-        <h2>Network</h2>
-        <pre>{{ JSON.stringify(networkState, null, 2) }}</pre>
-      </section>
-
-      <section>
-        <h2>State</h2>
-        <pre>{{ JSON.stringify(appState, null, 2) }}</pre>
-      </section>
-
-      <section>
-        <h2>Theme</h2>
-        <pre>{{ JSON.stringify(themeState, null, 2) }}</pre>
-      </section>
-
-      <section>
-        <h2>Events</h2>
-        <pre>{{ JSON.stringify(events, null, 2) }}</pre>
-      </section>
-
-      <section>
-        <h2>Wallet Info</h2>
-        <pre>{{ JSON.stringify(walletInfo, null, 2) }}</pre>
-      </section>
-    </div>
-  </div>
-</template>
-
-<script language="ts" setup>
-import { ref, onMounted, watch } from 'vue'
-import { useAccount } from '@wagmi/vue'
+<script lang="ts" setup>
+import { ref, onMounted } from 'vue'
 import {
   createAppKit,
-  useAppKit,
+  useAppKitAccount,
+  useAppKitNetwork,
   useAppKitState,
   useAppKitTheme,
   useAppKitEvents
@@ -82,16 +30,13 @@ const modal = createAppKit({
 })
 
 // State Management
-const accountState = ref({})
-const networkState = ref({})
+const useAccount = useAppKitAccount()
+const useNetwork = useAppKitNetwork()
 const appState = useAppKitState()
 const { setThemeMode } = useAppKitTheme()
 const events = useAppKitEvents()
 const walletInfo = ref({})
 const themeState = ref({ themeMode: 'light', themeVariables: {} })
-
-// Setup hooks
-const wagmiAccount = useAccount()
 
 // Theme toggle function
 const toggleTheme = () => {
@@ -107,13 +52,15 @@ onMounted(() => {
   document.body.className = themeState.value.themeMode
 
   // Setup subscriptions
-  modal.subscribeAccount(state => {
-    accountState.value = state
-  })
+  // You can subscribe to the account state like this instead of using the useAppKitAccount hook
+  // modal.subscribeAccount(state => {
+  //   accountState.value = state
+  // })
 
-  modal.subscribeNetwork(state => {
-    networkState.value = state
-  })
+  // You can subscribe to the network state like this instead of using the useAppKitNetwork hook
+  // modal.subscribeNetwork(state => {
+  //   networkState.value = state
+  // })
 
   modal.subscribeTheme(state => {
     themeState.value = state
@@ -126,6 +73,64 @@ onMounted(() => {
   })
 })
 </script>
+
+<template>
+  <div class="container">
+    <h1>Vue Wagmi Example</h1>
+
+    <!-- AppKit UI Components -->
+    <div class="button-group">
+      <w3m-button />
+      <w3m-network-button />
+    </div>
+
+    <!-- Modal Controls -->
+    <div class="button-group">
+      <button @click="modal.open()">Open Connect Modal</button>
+      <button @click="modal.open({ view: 'Networks' })">Open Network Modal</button>
+      <button @click="toggleTheme">Toggle Theme Mode</button>
+      <button
+        @click="useNetwork.switchNetwork(useNetwork.chainId === polygon.id ? mainnet : polygon)"
+      >
+        Switch to
+        {{ useNetwork.chainId === polygon.id ? 'Mainnet' : 'Polygon' }}
+      </button>
+    </div>
+
+    <!-- State Displays -->
+    <div class="state-container">
+      <section>
+        <h2>Account</h2>
+        <pre>{{ JSON.stringify(useAccount, null, 2) }}</pre>
+      </section>
+
+      <section>
+        <h2>Network</h2>
+        <pre>{{ JSON.stringify(useNetwork, null, 2) }}</pre>
+      </section>
+
+      <section>
+        <h2>State</h2>
+        <pre>{{ JSON.stringify(appState, null, 2) }}</pre>
+      </section>
+
+      <section>
+        <h2>Theme</h2>
+        <pre>{{ JSON.stringify(themeState, null, 2) }}</pre>
+      </section>
+
+      <section>
+        <h2>Events</h2>
+        <pre>{{ JSON.stringify(events, null, 2) }}</pre>
+      </section>
+
+      <section>
+        <h2>Wallet Info</h2>
+        <pre>{{ JSON.stringify(walletInfo, null, 2) }}</pre>
+      </section>
+    </div>
+  </div>
+</template>
 
 <style>
 /* Base styles */
