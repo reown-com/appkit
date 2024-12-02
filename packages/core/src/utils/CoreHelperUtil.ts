@@ -343,11 +343,10 @@ export const CoreHelperUtil = {
     address: string,
     type: NamespaceTypeMap[N]
   ): AccountTypeMap[N] {
-    // @ts-expect-error - Type is correct
     return {
       namespace,
       address,
       type
-    }
+    } as AccountTypeMap[N]
   }
 }
