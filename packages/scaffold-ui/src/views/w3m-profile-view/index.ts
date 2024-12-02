@@ -15,6 +15,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
+import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
 @customElement('w3m-profile-view')
 export class W3mProfileView extends LitElement {
@@ -132,7 +133,8 @@ export class W3mProfileView extends LitElement {
     this.loading = true
     const emailConnector = ConnectorController.getAuthConnector()
     if (emailConnector) {
-      await ConnectionController.setPreferredAccountType(account.type)
+      const type = account.type as W3mFrameTypes.AccountType
+      await ConnectionController.setPreferredAccountType(type)
     }
 
     AccountController.setShouldUpdateToAddress(account.address, ChainController.state.activeChain)

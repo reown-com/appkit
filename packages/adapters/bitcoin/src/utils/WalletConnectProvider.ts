@@ -81,7 +81,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Bitco
       params: undefined
     })
 
-    return addresses.map(address => ({ address }))
+    return addresses.map(address => ({ address, purpose: 'payment' }))
   }
 
   public async signPSBT(

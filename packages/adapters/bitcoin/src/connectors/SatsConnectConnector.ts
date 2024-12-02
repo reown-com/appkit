@@ -67,7 +67,7 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
       .then(addresses => addresses[0]?.address)
       .catch(() =>
         this.internalRequest('wallet_connect', null).then(
-          response => response.addresses.find(a => a.purpose === AddressPurpose.Payment)?.address
+          response => response?.addresses?.find(a => a?.purpose === AddressPurpose.Payment)?.address
         )
       )
 
@@ -101,7 +101,11 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
       message: 'Connect to your wallet'
     })
 
-    return response.addresses
+    if (response.addresses.length === 0) {
+      throw new Error('No address available')
+    }
+
+    return response.addresses as BitcoinConnector.AccountAddress[]
   }
 
   public static getWallets({
