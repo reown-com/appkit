@@ -50,8 +50,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   @state() private namespace = ChainController.state.activeChain
 
-  @state() private chainId =
-    ChainController.state.activeCaipNetwork?.caipNetworkId?.split?.(':')?.[1]
+  @state() private chainId = ChainController.state.activeCaipNetwork?.id
 
   public constructor() {
     super()
