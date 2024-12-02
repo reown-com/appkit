@@ -240,10 +240,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     })
     RouterController.push('WalletSend')
   }
-
-  private onUpdateToSmartAccount() {
-    RouterController.push('UpgradeToSmartAccount')
-  }
 }
 
 declare global {
