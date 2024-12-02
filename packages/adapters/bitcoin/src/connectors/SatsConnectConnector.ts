@@ -79,7 +79,11 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
       message: 'Connect to your wallet'
     })
 
-    return response.addresses
+    if (response.addresses.length === 0) {
+      throw new Error('No address available')
+    }
+
+    return response.addresses as BitcoinConnector.AccountAddress[]
   }
 
   public static getWallets({ requestedChains }: SatsConnectConnector.GetWalletsParams) {
