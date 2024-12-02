@@ -10,7 +10,8 @@ import {
   type Provider as SatsConnectProvider,
   type BitcoinProvider,
   type Requests as SatsConnectRequests,
-  type RpcErrorResponse
+  type RpcErrorResponse,
+  type RpcSuccessResponse
 } from 'sats-connect'
 import type { RequestArguments } from '@reown/appkit-core'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
@@ -21,8 +22,8 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
 
   readonly wallet: SatsConnectProvider
   readonly provider: BitcoinConnector
+  readonly requestedChains: CaipNetwork[] = []
 
-  private requestedChains: CaipNetwork[] = []
   private walletUnsubscribes: (() => void)[] = []
 
   constructor({ provider, requestedChains }: SatsConnectConnector.ConstructorParams) {
@@ -145,14 +146,14 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
     return res.txid
   }
 
-  private getWalletProvider() {
+  protected getWalletProvider() {
     return getProviderById(this.wallet.id) as BitcoinProvider
   }
 
-  private async internalRequest<Method extends keyof SatsConnectRequests>(
+  protected async internalRequest<Method extends keyof SatsConnectRequests>(
     method: Method,
     options: Params<Method>
-  ) {
+  ): Promise<RpcSuccessResponse<Method>['result']> {
     const response = await this.getWalletProvider()
       .request(method, options)
       .catch(error => {
