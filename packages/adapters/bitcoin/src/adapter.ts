@@ -1,4 +1,10 @@
-import { WcHelpersUtil, type AppKit, type AppKitOptions, type Provider } from '@reown/appkit'
+import {
+  CoreHelperUtil,
+  WcHelpersUtil,
+  type AppKit,
+  type AppKitOptions,
+  type Provider
+} from '@reown/appkit'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import type { BitcoinConnector } from './utils/BitcoinConnector.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
@@ -49,6 +55,23 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       address,
       chainId: this.networks[0]?.id || '',
       provider: connector.provider
+    }
+  }
+
+  override async getAccounts(
+    _params: AdapterBlueprint.GetAccountsParams
+  ): Promise<AdapterBlueprint.GetAccountsResult> {
+    const addresses = await this.connector?.getAccountAddresses()
+    const accounts = addresses?.map(a =>
+      CoreHelperUtil.createAccount(
+        'bip122',
+        a.address,
+        (a.purpose || 'payment') as BitcoinConnector.AccountAddress['purpose']
+      )
+    )
+
+    return {
+      accounts: accounts || []
     }
   }
 

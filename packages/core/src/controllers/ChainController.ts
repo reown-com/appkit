@@ -506,7 +506,8 @@ export const ChainController = {
         socialProvider: undefined,
         socialWindow: undefined,
         farcasterUrl: undefined,
-        provider: undefined
+        provider: undefined,
+        allAccounts: []
       })
     )
   }

@@ -1,6 +1,7 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type { AppKitNetwork, BaseNetwork, CaipNetwork } from '@reown/appkit-common'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
+import { CoreHelperUtil } from '@reown/appkit-core'
 import {
   connect,
   disconnect as wagmiDisconnect,
@@ -83,6 +84,34 @@ export class WagmiAdapter extends AdapterBlueprint {
       projectId: configParams.projectId
     })
     this.setupWatchers()
+  }
+
+  override async getAccounts(
+    params: AdapterBlueprint.GetAccountsParams
+  ): Promise<AdapterBlueprint.GetAccountsResult> {
+    const connector = this.wagmiConfig.connectors.find(c => c.id === params.id)
+    if (!connector) {
+      throw new Error('WagmiAdapter:getAccounts - connector is undefined')
+    }
+
+    if (connector.id === ConstantsUtil.AUTH_CONNECTOR_ID) {
+      const provider = connector['provider'] as W3mFrameProvider
+      const { address, accounts } = await provider.connect()
+
+      return Promise.resolve({
+        accounts: (accounts || [{ address, type: 'eoa' }]).map(account =>
+          CoreHelperUtil.createAccount('eip155', account.address, account.type)
+        )
+      })
+    }
+
+    const { addresses, address } = getAccount(this.wagmiConfig)
+
+    return Promise.resolve({
+      accounts: (addresses || [address])?.map(val =>
+        CoreHelperUtil.createAccount('eip155', val || '', 'eoa')
+      )
+    })
   }
 
   private createConfig(
