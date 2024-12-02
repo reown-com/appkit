@@ -10,7 +10,8 @@
   "updateInternalDependencies": "patch",
   "ignore": [
     "@examples/*", 
-    "@apps/demo", 
+    "@apps/demo",
+    "@apps/browser-extension",
     "@apps/gallery", 
     "@apps/gallery-new", 
     "@apps/laboratory", 
