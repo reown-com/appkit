@@ -3,13 +3,10 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { fixture, elementUpdated } from '@open-wc/testing'
 import { OptionsController } from '@reown/appkit-core'
 import { html } from 'lit'
+import { TestUtil } from '../utils/TestUtil'
 
-// --- Helpers ---------------------------------------------------- //
-const getTextContent = (textContent: string | null) =>
-  textContent ? textContent.trim().replace('\n', '') : ''
-
-const getWuiCheckbox = (element: HTMLElement | Element) =>
-  element.shadowRoot?.querySelector('wui-checkbox') as Element
+// --- Constants ---------------------------------------------------- //
+const CHECKBOX_TEST_ID = 'wui-checkbox'
 
 vi.mock('@reown/appkit-core', () => ({
   OptionsController: {
@@ -31,9 +28,9 @@ describe('W3mLegalCheckbox', () => {
   })
 
   it('it should return checkbox if legalCheckbox is true', async () => {
-    const checkbox = getWuiCheckbox(element)
+    const checkbox = TestUtil.querySelect(element, CHECKBOX_TEST_ID)
     expect(checkbox).toBeDefined()
-    expect(getTextContent(checkbox.textContent)).toBe(
+    expect(TestUtil.getTextContent(checkbox)).toBe(
       'I agree to our terms of service and privacy policy'
     )
   })
@@ -44,7 +41,7 @@ describe('W3mLegalCheckbox', () => {
     element.requestUpdate()
     await elementUpdated(element)
 
-    expect(getWuiCheckbox(element)).toBeNull()
+    expect(TestUtil.querySelect(element, CHECKBOX_TEST_ID)).toBeNull()
   })
 
   it('it should return checkbox if either termsConditionsUrl or privacyPolicyUrl are defined', async () => {
@@ -55,9 +52,9 @@ describe('W3mLegalCheckbox', () => {
     element.requestUpdate()
     await elementUpdated(element)
 
-    const checkbox = getWuiCheckbox(element)
-    expect(getWuiCheckbox).toBeDefined()
-    expect(getTextContent(checkbox.textContent)).toBe('I agree to our terms of service')
+    const checkbox = TestUtil.querySelect(element, CHECKBOX_TEST_ID)
+    expect(checkbox).toBeDefined()
+    expect(TestUtil.getTextContent(checkbox)).toBe('I agree to our terms of service')
   })
 
   it('it should not return checkbox if both termsConditionsUrl and privacyPolicyUrl are not defined', async () => {
@@ -68,6 +65,6 @@ describe('W3mLegalCheckbox', () => {
     element.requestUpdate()
     await elementUpdated(element)
 
-    expect(getWuiCheckbox(element)).toBeNull()
+    expect(TestUtil.querySelect(element, CHECKBOX_TEST_ID)).toBeNull()
   })
 })
