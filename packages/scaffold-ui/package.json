@@ -47,7 +47,7 @@
     "url": "https://github.com/reown-com/appkit/issues"
   },
   "devDependencies": {
-    "@open-wc/testing": "^4.0.0",
+    "@open-wc/testing": "4.0.0",
     "@vitest/coverage-v8": "2.1.3"
   }
 }
