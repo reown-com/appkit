@@ -11,8 +11,11 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 import { SatsConnectConnector } from './connectors/SatsConnectConnector.js'
 import { WalletStandardConnector } from './connectors/WalletStandardConnector.js'
 import { WalletConnectProvider } from './utils/WalletConnectProvider.js'
+import { LeatherConnector } from './connectors/LeatherConnector.js'
 
 export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
+  private eventsToUnbind: (() => void)[] = []
+
   constructor(params: BitcoinAdapter.ConstructorParams) {
     super({
       namespace: 'bip122',
@@ -48,6 +51,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     const address = await connector.connect()
 
     this.connector = connector
+    this.bindEvents(this.connector)
 
     return {
       id: connector.id,
@@ -57,7 +61,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       provider: connector.provider
     }
   }
-
   override async getAccounts(
     _params: AdapterBlueprint.GetAccountsParams
   ): Promise<AdapterBlueprint.GetAccountsResult> {
@@ -74,8 +77,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       accounts: accounts || []
     }
   }
-
-  override syncConnectors(_options?: AppKitOptions, _appKit?: AppKit): void {
+  override syncConnectors(_options?: AppKitOptions, appKit?: AppKit): void {
     WalletStandardConnector.watchWallets({
       callback: this.addConnector.bind(this),
       requestedChains: this.networks
@@ -83,7 +85,18 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
     this.addConnector(
       ...SatsConnectConnector.getWallets({
-        requestedChains: this.networks
+        requestedChains: this.networks,
+        getActiveNetwork: () => appKit?.getCaipNetwork()
+      }).map(connector => {
+        switch (connector.wallet.id) {
+          case LeatherConnector.ProviderId:
+            return new LeatherConnector({
+              connector
+            })
+
+          default:
+            return connector
+        }
       })
     )
   }
@@ -132,9 +145,13 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     return Promise.resolve()
   }
 
-  override disconnect(): Promise<void> {
-    // Disconnect
-    return Promise.resolve()
+  override async disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
+    if (params?.provider) {
+      await params.provider.disconnect()
+    } else if (this.connector) {
+      await this.connector.disconnect()
+    }
+    this.unbindEvents()
   }
 
   // -- Unused => Refactor ------------------------------------------- //
@@ -206,6 +223,40 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   ): Promise<`0x${string}`> {
     // Get capabilities
     return Promise.resolve('0x')
+  }
+
+  // -- Private ------------------------------------------ //
+  private bindEvents(connector: BitcoinConnector) {
+    this.unbindEvents()
+
+    const accountsChanged = (data: string[]) => {
+      const [newAccount] = data
+      if (newAccount) {
+        this.emit('accountChanged', {
+          address: newAccount,
+          chainId: this.networks[0]?.id || ''
+        })
+      }
+    }
+    connector.on('accountsChanged', accountsChanged)
+    this.eventsToUnbind.push(() => connector.removeListener('accountsChanged', accountsChanged))
+
+    const chainChanged = (data: string) => {
+      this.emit('switchNetwork', { chainId: data })
+    }
+    connector.on('chainChanged', chainChanged)
+    this.eventsToUnbind.push(() => connector.removeListener('chainChanged', chainChanged))
+
+    const disconnect = () => {
+      this.emit('disconnect')
+    }
+    connector.on('disconnect', disconnect)
+    this.eventsToUnbind.push(() => connector.removeListener('disconnect', disconnect))
+  }
+
+  private unbindEvents() {
+    this.eventsToUnbind.forEach(unsubscribe => unsubscribe())
+    this.eventsToUnbind = []
   }
 }
 
