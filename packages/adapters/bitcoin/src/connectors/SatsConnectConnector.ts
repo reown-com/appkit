@@ -81,18 +81,8 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
   }
 
   async disconnect() {
-    try {
-      await this.internalRequest('wallet_disconnect', null)
-      this.unbindEvents()
-    } catch (error) {
-      if ((error as Error)?.message?.includes('not supported')) {
-        this.unbindEvents()
-
-        return
-      }
-
-      throw error
-    }
+    await this.internalRequest('wallet_disconnect', null)
+    this.unbindEvents()
   }
 
   async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {

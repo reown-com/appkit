@@ -23,6 +23,11 @@ export class LeatherConnector extends SatsConnectConnector {
     })
   }
 
+  public override disconnect(): Promise<void> {
+    // Leather doesn't have disconnect method
+    return Promise.resolve()
+  }
+
   public override async sendTransfer({
     amount,
     recipient

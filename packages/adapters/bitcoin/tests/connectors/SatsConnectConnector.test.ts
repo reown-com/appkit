@@ -1,18 +1,25 @@
-import { beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest'
+import { beforeEach, describe, expect, it, vi, type MockInstance, type Mock } from 'vitest'
 import { SatsConnectConnector } from '../../src/connectors/SatsConnectConnector'
 import { mockSatsConnectProvider } from '../mocks/mockSatsConnect'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { MessageSigningProtocols } from 'sats-connect'
+import { bitcoin } from '@reown/appkit/networks'
 
 describe('SatsConnectConnector', () => {
   let connector: SatsConnectConnector
   let mocks: ReturnType<typeof mockSatsConnectProvider>
   let requestedChains: CaipNetwork[]
+  let getActiveNetwork: Mock<() => CaipNetwork | undefined>
 
   beforeEach(() => {
     requestedChains = []
     mocks = mockSatsConnectProvider()
-    connector = new SatsConnectConnector({ provider: mocks.provider, requestedChains })
+    getActiveNetwork = vi.fn(() => bitcoin)
+    connector = new SatsConnectConnector({
+      provider: mocks.provider,
+      requestedChains,
+      getActiveNetwork
+    })
   })
 
   it('should validate the test fixture', async () => {
@@ -22,7 +29,7 @@ describe('SatsConnectConnector', () => {
   })
 
   it('should get wallets correctly', async () => {
-    const wallets = SatsConnectConnector.getWallets({ requestedChains })
+    const wallets = SatsConnectConnector.getWallets({ requestedChains, getActiveNetwork })
 
     expect(wallets instanceof Array).toBeTruthy()
     wallets.forEach(wallet => expect(wallet instanceof SatsConnectConnector).toBeTruthy())
@@ -204,16 +211,6 @@ describe('SatsConnectConnector', () => {
     vi.spyOn(mocks.wallet, 'request').mockRejectedValueOnce(new Error('unknown_error'))
 
     await expect(connector.request(args)).rejects.toThrow('unknown_error')
-  })
-
-  it('should ignore if wallet_disconnect request is not supported', async () => {
-    vi.spyOn(mocks.wallet, 'request').mockResolvedValueOnce(
-      mockSatsConnectProvider.mockRequestReject({
-        message: 'Method not supported'
-      })
-    )
-
-    await expect(connector.disconnect()).resolves.not.toThrow()
   })
 
   it('should throw if wallet_disconnect request fails', async () => {

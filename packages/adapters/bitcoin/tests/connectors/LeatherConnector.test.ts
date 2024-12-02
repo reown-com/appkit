@@ -105,4 +105,8 @@ describe('LeatherConnector', () => {
       connector.signPSBT({ psbt, signInputs: [], broadcast: true })
     ).rejects.toThrowError('LeatherConnector: unsupported network')
   })
+
+  it('should disconnect', async () => {
+    await expect(connector.disconnect()).resolves.not.toThrow()
+  })
 })
