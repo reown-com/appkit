@@ -2,7 +2,7 @@ import { getWallets } from '@wallet-standard/app'
 import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
 import type { Wallet, WalletWithFeatures } from '@wallet-standard/base'
 import type { CaipNetwork } from '@reown/appkit-common'
-import type { BitcoinFeatures } from '@exodus/bitcoin-wallet-standard'
+import type { BitcoinFeatures } from '../utils/wallet-standard/WalletFeatures.js'
 import type { Provider, RequestArguments } from '@reown/appkit-core'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 
@@ -57,26 +57,63 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   }
 
   async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
-    // BitcoinWalletStandard package is not exposing the signMessage feature
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const feature = this.getWalletFeature('bitcoin:signMessage' as any)
+    const feature = this.getWalletFeature('bitcoin:signMessage')
 
     const account = this.wallet.accounts.find(acc => acc.address === params.address)
+
+    if (!account) {
+      throw new Error('Account not found')
+    }
+
     const message = new TextEncoder().encode(params.message)
     const response = (await feature.signMessage({ account, message }))[0]
+
+    if (!response) {
+      throw new Error('No response from wallet')
+    }
 
     // Should it be base64 encoded?
     return Buffer.from(response.signature).toString('base64')
   }
 
   async signPSBT(
-    _params: BitcoinConnector.SignPSBTParams
+    params: BitcoinConnector.SignPSBTParams
   ): Promise<BitcoinConnector.SignPSBTResponse> {
-    return Promise.reject(new Error('Method not implemented.'))
+    const feature = this.getWalletFeature('bitcoin:signTransaction')
+
+    const inputsToSign = params.signInputs.map(input => {
+      const account = this.wallet.accounts.find(acc => acc.address === input.address)
+
+      if (!account) {
+        throw new Error(`Account with address ${input.address} not found`)
+      }
+
+      return {
+        account,
+        signingIndexes: [input.index],
+        sigHash: undefined
+      }
+    })
+
+    const response = (
+      await feature.signTransaction({
+        psbt: Buffer.from(params.psbt, 'base64'),
+        inputsToSign
+      })
+    )[0]
+
+    if (!response) {
+      throw new Error('No response from wallet')
+    }
+
+    return {
+      psbt: Buffer.from(response.signedPsbt).toString('base64'),
+      txid: undefined
+    }
   }
 
-  async sendTransfer(_params: BitcoinConnector.SendTransferParams): Promise<string> {
-    return Promise.resolve('txid')
+  sendTransfer(_params: BitcoinConnector.SendTransferParams): Promise<string> {
+    throw new Error(`The wallet doesn't support "sendTransfer" method`)
   }
 
   async disconnect() {
