@@ -244,6 +244,10 @@ export type TagVariant = 'accent' | 'info' | 'success' | 'warning' | 'error' | '
 
 export type TagSize = 'md' | 'sm'
 
+export type IconButtonVariant = 'neutral-primary' | 'neutral-secondary' | 'accent-primary'
+
+export type IconButtonSize = 'xs' | 'sm' | 'md' | 'lg'
+
 export type ButtonVariant =
   | 'accent-primary'
   | 'accent-secondary'
