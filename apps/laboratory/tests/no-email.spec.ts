@@ -33,12 +33,6 @@ noEmailTest('secure site iframe should not be present', () => {
 })
 
 noEmailTest('should check the terms of service and privacy policy checkbox', async () => {
-  /*
-   * When running the test in headless mode, it can sometimes be too fast and we
-   * need to wait for the modal to be fully loaded otherwise the test will fail.
-   * For now we just add 200ms timeout.
-   */
-  await modalPage.page.waitForTimeout(200)
   await modalPage.openConnectModal()
   await modalValidator.expectConnectViewToBeDisabled()
   await modalPage.clickLegalCheckbox()

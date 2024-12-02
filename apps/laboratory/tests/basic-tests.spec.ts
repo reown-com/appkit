@@ -34,12 +34,6 @@ basicTest.afterAll(async () => {
 
 // -- Tests --------------------------------------------------------------------
 basicTest('Should be able to open modal', async () => {
-  /*
-   * When running the test in headless mode, it can sometimes be too fast and we
-   * need to wait for the modal to be fully loaded otherwise the test will fail.
-   * For now we just add 200ms timeout.
-   */
-  await modalPage.page.waitForTimeout(200)
   await modalPage.page.getByTestId('connect-button').click()
   await expect(modalPage.page.getByTestId('all-wallets')).toBeVisible()
   await modalPage.closeModal()
