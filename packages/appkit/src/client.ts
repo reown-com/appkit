@@ -69,7 +69,7 @@ import {
   type W3mFrameProvider,
   type W3mFrameTypes
 } from '@reown/appkit-wallet'
-import { ProviderUtil } from './store/ProviderUtil.js'
+import { ProviderUtil, type ProviderStoreUtilState } from './store/ProviderUtil.js'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 import type { AdapterBlueprint } from './adapters/ChainAdapterBlueprint.js'
 import UniversalProvider from '@walletconnect/universal-provider'
@@ -262,8 +262,8 @@ export class AppKit {
       : null
   }
 
-  public subscribeProvider() {
-    return null
+  public subscribeProviders(callback: (providers: ProviderStoreUtilState['providers']) => void) {
+    return ProviderUtil.subscribeProviders(callback)
   }
 
   public getThemeMode() {
