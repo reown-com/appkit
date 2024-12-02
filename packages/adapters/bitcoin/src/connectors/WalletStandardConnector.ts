@@ -5,6 +5,7 @@ import type { CaipNetwork } from '@reown/appkit-common'
 import type { BitcoinFeatures } from '../utils/wallet-standard/WalletFeatures.js'
 import type { Provider, RequestArguments } from '@reown/appkit-core'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
+import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
 
 export class WalletStandardConnector extends ProviderEventEmitter implements BitcoinConnector {
   public readonly chain = 'bip122'
@@ -74,7 +75,6 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
       throw new Error('No response from wallet')
     }
 
-    // Should it be base64 encoded?
     return Buffer.from(response.signature).toString('base64')
   }
 
@@ -82,6 +82,14 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
     params: BitcoinConnector.SignPSBTParams
   ): Promise<BitcoinConnector.SignPSBTResponse> {
     const feature = this.getWalletFeature('bitcoin:signTransaction')
+
+    if (params.broadcast) {
+      throw new MethodNotSupportedError(
+        this.id,
+        'signPSBT',
+        'This wallet does not support broadcasting, please broadcast it manually or contact the development team.'
+      )
+    }
 
     const inputsToSign = params.signInputs.map(input => {
       const account = this.wallet.accounts.find(acc => acc.address === input.address)
@@ -115,20 +123,24 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   }
 
   sendTransfer(_params: BitcoinConnector.SendTransferParams): Promise<string> {
-    throw new Error(`The wallet doesn't support "sendTransfer" method`)
+    throw new MethodNotSupportedError(
+      this.id,
+      'sendTransfer',
+      'Please use "signPSBT" instead and broadcast the transaction manually.'
+    )
   }
 
   async disconnect() {
     return Promise.resolve()
   }
 
-  async request<T>(_args: RequestArguments): Promise<T> {
-    return Promise.reject(new Error('Method not implemented.'))
+  request<T>(_args: RequestArguments): Promise<T> {
+    throw new MethodNotSupportedError(this.id, 'request')
   }
 
   private getWalletFeature<Name extends keyof BitcoinFeatures>(feature: Name) {
     if (!(feature in this.wallet.features)) {
-      throw new Error('Wallet does not support feature')
+      throw new MethodNotSupportedError(this.id, feature)
     }
 
     return this.wallet.features[feature] as WalletWithFeatures<
