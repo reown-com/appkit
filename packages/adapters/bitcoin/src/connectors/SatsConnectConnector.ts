@@ -62,7 +62,7 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
       .then(addresses => addresses[0]?.address)
       .catch(() =>
         this.internalRequest('wallet_connect', null).then(
-          response => response.addresses.find(a => a.purpose === AddressPurpose.Payment)?.address
+          response => response?.addresses?.find(a => a?.purpose === AddressPurpose.Payment)?.address
         )
       )
 
