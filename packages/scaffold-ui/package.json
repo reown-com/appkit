@@ -26,7 +26,7 @@
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "test": "vitest run --coverage.enabled=true -- coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true"
+    "test": "vitest run"
   },
   "dependencies": {
     "@reown/appkit-common": "workspace:*",
@@ -47,6 +47,7 @@
     "url": "https://github.com/reown-com/appkit/issues"
   },
   "devDependencies": {
+    "@open-wc/testing": "^4.0.0",
     "@vitest/coverage-v8": "2.1.3"
   }
 }
