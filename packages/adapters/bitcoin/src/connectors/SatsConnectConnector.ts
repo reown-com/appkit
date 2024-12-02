@@ -10,7 +10,8 @@ import {
   type Provider as SatsConnectProvider,
   type BitcoinProvider,
   type Requests as SatsConnectRequests,
-  type RpcErrorResponse
+  type RpcErrorResponse,
+  type RpcSuccessResponse
 } from 'sats-connect'
 import type { RequestArguments } from '@reown/appkit-core'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
@@ -21,15 +22,21 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
 
   readonly wallet: SatsConnectProvider
   readonly provider: BitcoinConnector
+  readonly requestedChains: CaipNetwork[] = []
+  readonly getActiveNetwork: () => CaipNetwork | undefined
 
-  private requestedChains: CaipNetwork[] = []
   private walletUnsubscribes: (() => void)[] = []
 
-  constructor({ provider, requestedChains }: SatsConnectConnector.ConstructorParams) {
+  constructor({
+    provider,
+    requestedChains,
+    getActiveNetwork
+  }: SatsConnectConnector.ConstructorParams) {
     super()
     this.wallet = provider
     this.requestedChains = requestedChains
     this.provider = this
+    this.getActiveNetwork = getActiveNetwork
   }
 
   public get id(): string {
@@ -97,10 +104,15 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
     return response.addresses
   }
 
-  public static getWallets({ requestedChains }: SatsConnectConnector.GetWalletsParams) {
+  public static getWallets({
+    requestedChains,
+    getActiveNetwork
+  }: SatsConnectConnector.GetWalletsParams) {
     const providers = getProviders()
 
-    return providers.map(provider => new SatsConnectConnector({ provider, requestedChains }))
+    return providers.map(
+      provider => new SatsConnectConnector({ provider, requestedChains, getActiveNetwork })
+    )
   }
 
   public async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
@@ -145,14 +157,14 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
     return res.txid
   }
 
-  private getWalletProvider() {
+  protected getWalletProvider() {
     return getProviderById(this.wallet.id) as BitcoinProvider
   }
 
-  private async internalRequest<Method extends keyof SatsConnectRequests>(
+  protected async internalRequest<Method extends keyof SatsConnectRequests>(
     method: Method,
     options: Params<Method>
-  ) {
+  ): Promise<RpcSuccessResponse<Method>['result']> {
     const response = await this.getWalletProvider()
       .request(method, options)
       .catch(error => {
@@ -207,9 +219,11 @@ export namespace SatsConnectConnector {
   export type ConstructorParams = {
     provider: SatsConnectProvider
     requestedChains: CaipNetwork[]
+    getActiveNetwork: () => CaipNetwork | undefined
   }
 
   export type GetWalletsParams = {
     requestedChains: CaipNetwork[]
+    getActiveNetwork: ConstructorParams['getActiveNetwork']
   }
 }
