@@ -5,7 +5,8 @@ import {
   type CombinedProvider,
   type Connector,
   type ConnectorType,
-  type Provider
+  type Provider,
+  CoreHelperUtil
 } from '@reown/appkit-core'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
@@ -382,6 +383,36 @@ export class EthersAdapter extends AdapterBlueprint {
 
     if (connector && connector.type === 'AUTH' && chainId) {
       await (connector.provider as W3mFrameProvider).connect({ chainId })
+    }
+  }
+
+  public async getAccounts(
+    params: AdapterBlueprint.GetAccountsParams
+  ): Promise<AdapterBlueprint.GetAccountsResult> {
+    const connector = this.connectors.find(c => c.id === params.id)
+    const selectedProvider = connector?.provider as Provider
+
+    if (!selectedProvider || !connector) {
+      throw new Error('Provider not found')
+    }
+
+    if (params.id === ConstantsUtil.AUTH_CONNECTOR_ID) {
+      const provider = connector['provider'] as W3mFrameProvider
+      const { address, accounts } = await provider.connect()
+
+      return Promise.resolve({
+        accounts: (accounts || [{ address, type: 'eoa' }]).map(account =>
+          CoreHelperUtil.createAccount('eip155', account.address, account.type)
+        )
+      })
+    }
+
+    const accounts: string[] = await selectedProvider.request({
+      method: 'eth_requestAccounts'
+    })
+
+    return {
+      accounts: accounts.map(account => CoreHelperUtil.createAccount('eip155', account, 'eoa'))
     }
   }
 
