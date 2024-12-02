@@ -93,9 +93,6 @@ function AvailableTestContent() {
       biconomy: BICONOMY_PAYMASTER_CONTEXT,
       reown: {
         policyId: reownPolicyId
-      },
-      trycloudflare: {
-        policyId: reownPolicyId
       }
     }
 
@@ -105,7 +102,7 @@ function AvailableTestContent() {
   function onPaymasterUrlChange(url: string) {
     setPaymasterServiceUrl(url)
 
-    const match = url.match(/pimlico|biconomy|reown|trycloudflare/u)
+    const match = url.match(/pimlico|biconomy|reown/u)
     if (match?.[0]) {
       setPaymasterProvider(match?.[0])
     }
