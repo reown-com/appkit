@@ -29,7 +29,8 @@ import type {
   TransactionType,
   VisualType,
   ButtonLinkVariant,
-  DomainChipVariant
+  DomainChipVariant,
+  ToastMessageVariant
 } from '@reown/appkit-ui-new/src/utils/TypeUtil'
 import type { TransactionStatus, TransactionDirection } from '@reown/appkit-common'
 
@@ -193,6 +194,8 @@ export const spacingOptions: SpacingType[] = [
   'xl',
   '3xl'
 ]
+
+export const toastMessageOptions: ToastMessageVariant[] = ['info', 'success', 'warning', 'error']
 
 export const iconOptions: IconType[] = [
   'allWallets',

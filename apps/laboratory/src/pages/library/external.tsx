@@ -25,6 +25,7 @@ const wagmiAdapter = new WagmiAdapter({
 const modal = createAppKit({
   adapters: [wagmiAdapter],
   networks,
+  featuredWalletIds: ['fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa'],
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   features: {

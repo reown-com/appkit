@@ -44,5 +44,18 @@ export const NumberUtil = {
       maximumFractionDigits: decimals,
       minimumFractionDigits: decimals
     })
+  },
+  /**
+   * Parse a formatted local string back to a number
+   * @param value - The formatted string to parse
+   * @returns
+   */
+  parseLocalStringToNumber(value: string | undefined) {
+    if (value === undefined) {
+      return 0
+    }
+
+    // Remove any commas used as thousand separators and parse the float
+    return parseFloat(value.replace(/,/gu, ''))
   }
 }
