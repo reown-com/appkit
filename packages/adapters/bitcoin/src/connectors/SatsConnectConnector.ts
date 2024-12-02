@@ -182,7 +182,9 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
     const provider = this.getWalletProvider()
 
     if (typeof provider.addListener !== 'function') {
-      console.warn('SatsConnectConnector:bindEvents - wallet provider does not support events')
+      console.warn(
+        `SatsConnectConnector:bindEvents - wallet provider "${this.name}" does not support events`
+      )
 
       return
     }
