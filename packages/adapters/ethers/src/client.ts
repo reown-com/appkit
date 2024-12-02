@@ -266,7 +266,7 @@ export class EthersAdapter extends AdapterBlueprint {
 
       if (this.namespace) {
         this.addConnector({
-          id: connector,
+          id: key,
           explorerId: PresetsUtil.ConnectorExplorerIds[key],
           imageUrl: options?.connectorImages?.[key],
           name: PresetsUtil.ConnectorNamesMap[key],
@@ -305,15 +305,8 @@ export class EthersAdapter extends AdapterBlueprint {
     if (event.detail) {
       const { info, provider } = event.detail
       const existingConnector = this.connectors?.find(c => c.name === info?.name)
-      const coinbaseConnector = this.connectors?.find(
-        c => c.id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
-      )
-      const isCoinbaseDuplicated =
-        coinbaseConnector &&
-        event.detail.info?.rdns ===
-          ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]
 
-      if (!existingConnector && !isCoinbaseDuplicated) {
+      if (!existingConnector) {
         const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EIP6963_CONNECTOR_ID]
 
         if (type && this.namespace) {
@@ -420,16 +413,22 @@ export class EthersAdapter extends AdapterBlueprint {
   ): Promise<AdapterBlueprint.GetBalanceResult> {
     const caipNetwork = this.caipNetworks?.find((c: CaipNetwork) => c.id === params.chainId)
 
-    if (caipNetwork) {
+    if (caipNetwork && caipNetwork.chainNamespace === 'eip155') {
       const jsonRpcProvider = new JsonRpcProvider(caipNetwork.rpcUrls.default.http[0], {
         chainId: caipNetwork.id as number,
         name: caipNetwork.name
       })
 
-      const balance = await jsonRpcProvider.getBalance(params.address)
-      const formattedBalance = formatEther(balance)
+      if (jsonRpcProvider) {
+        try {
+          const balance = await jsonRpcProvider.getBalance(params.address)
+          const formattedBalance = formatEther(balance)
 
-      return { balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol }
+          return { balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol }
+        } catch (error) {
+          return { balance: '', symbol: '' }
+        }
+      }
     }
 
     return { balance: '', symbol: '' }

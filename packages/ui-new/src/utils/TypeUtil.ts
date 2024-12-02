@@ -87,6 +87,8 @@ export interface IWalletImage {
 
 export type TabSize = 'sm' | 'md' | 'lg'
 
+export type ToastMessageVariant = 'info' | 'success' | 'warning' | 'error'
+
 export type GridContentType =
   | 'center'
   | 'end'

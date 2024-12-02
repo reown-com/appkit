@@ -1,11 +1,24 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
-  "changelog": ["@changesets/changelog-github", { "repo": "reown-com/appkit" }],
+  "changelog": ["@changesets/changelog-github", 
+  { "repo": "reown-com/appkit" }],
   "commit": false,
   "fixed": [],
   "linked": [],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["@examples/*", "@apps/gallery-new", "@reown/appkit-ui-new"]
+  "ignore": [
+    "@examples/*", 
+    "@apps/demo", 
+    "@apps/gallery", 
+    "@apps/gallery-new", 
+    "@apps/laboratory", 
+    "@apps/laboratory-new", 
+    "@reown/appkit-new", 
+    "@reown/appkit-scaffold-ui-new", 
+    "@reown/appkit-ui-new", 
+    "@reown/appkit-adapter-bitcoin",
+    "@reown/appkit-adapter-polkadot"
+  ]
 }
