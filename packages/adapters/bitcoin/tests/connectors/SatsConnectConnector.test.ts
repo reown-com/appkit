@@ -1,18 +1,25 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi, type MockInstance, type Mock } from 'vitest'
 import { SatsConnectConnector } from '../../src/connectors/SatsConnectConnector'
 import { mockSatsConnectProvider } from '../mocks/mockSatsConnect'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { MessageSigningProtocols } from 'sats-connect'
+import { bitcoin } from '@reown/appkit/networks'
 
 describe('SatsConnectConnector', () => {
   let connector: SatsConnectConnector
   let mocks: ReturnType<typeof mockSatsConnectProvider>
   let requestedChains: CaipNetwork[]
+  let getActiveNetwork: Mock<() => CaipNetwork | undefined>
 
   beforeEach(() => {
     requestedChains = []
     mocks = mockSatsConnectProvider()
-    connector = new SatsConnectConnector({ provider: mocks.provider, requestedChains })
+    getActiveNetwork = vi.fn(() => bitcoin)
+    connector = new SatsConnectConnector({
+      provider: mocks.provider,
+      requestedChains,
+      getActiveNetwork
+    })
   })
 
   it('should validate the test fixture', async () => {
@@ -22,7 +29,7 @@ describe('SatsConnectConnector', () => {
   })
 
   it('should get wallets correctly', async () => {
-    const wallets = SatsConnectConnector.getWallets({ requestedChains })
+    const wallets = SatsConnectConnector.getWallets({ requestedChains, getActiveNetwork })
 
     expect(wallets instanceof Array).toBeTruthy()
     wallets.forEach(wallet => expect(wallet instanceof SatsConnectConnector).toBeTruthy())
@@ -149,6 +156,28 @@ describe('SatsConnectConnector', () => {
     })
   })
 
+  it('should signPSBT correctly', async () => {
+    const params = {
+      psbt: 'mock_psbt',
+      broadcast: true,
+      signInputs: [{ address: 'mock_address', index: 0, sighashTypes: [0] }]
+    }
+    const spy = vi.spyOn(mocks.wallet, 'request')
+
+    spy.mockResolvedValueOnce(
+      mockSatsConnectProvider.mockRequestResolve({ psbt: 'mock_signed_psbt' })
+    )
+
+    const result = await connector.signPSBT(params)
+
+    expect(result).toEqual({ psbt: 'mock_signed_psbt' })
+    expect(mocks.wallet.request).toHaveBeenCalledWith('signPsbt', {
+      psbt: params.psbt,
+      broadcast: params.broadcast,
+      signInputs: { mock_address: [0] }
+    })
+  })
+
   it('should throw if sendTransfer with invalid amount', async () => {
     const params = {
       amount: 'invalid',
@@ -170,5 +199,117 @@ describe('SatsConnectConnector', () => {
     )
 
     await expect(connector.request(args)).rejects.toThrow('mock_error')
+
+    vi.spyOn(mocks.wallet, 'request').mockRejectedValueOnce(
+      mockSatsConnectProvider.mockRequestReject({
+        message: 'mock_error'
+      })
+    )
+
+    await expect(connector.request(args)).rejects.toThrow('mock_error')
+
+    vi.spyOn(mocks.wallet, 'request').mockRejectedValueOnce(new Error('unknown_error'))
+
+    await expect(connector.request(args)).rejects.toThrow('unknown_error')
+  })
+
+  it('should throw if wallet_disconnect request fails', async () => {
+    vi.spyOn(mocks.wallet, 'request').mockRejectedValueOnce(
+      mockSatsConnectProvider.mockRequestReject({
+        message: 'mock_error'
+      })
+    )
+
+    await expect(connector.disconnect()).rejects.toThrow('mock_error')
+  })
+
+  it('should not add events if wallet provider does not support events', async () => {
+    ;(mocks.wallet as any).addListener = undefined
+
+    vi.spyOn(mocks.wallet, 'request').mockResolvedValue(
+      mockSatsConnectProvider.mockRequestResolve({
+        addresses: [
+          {
+            address: 'mock_address',
+            purpose: 'payment',
+            addressType: 'p2pkh',
+            gaiaAppKey: 'mock_gaia_app_key',
+            gaiaHubUrl: 'mock_gaia_hub_url',
+            publicKey: 'mock_public_key'
+          }
+        ]
+      })
+    )
+
+    await expect(connector.connect()).resolves.not.toThrow()
+  })
+
+  describe('events after connection', () => {
+    let addListenerSpy: MockInstance<typeof mocks.wallet.addListener>
+    const addListenerCallbackMock = vi.fn(() => {})
+
+    beforeEach(async () => {
+      // connect wallet first
+      vi.spyOn(mocks.wallet, 'request').mockResolvedValue(
+        mockSatsConnectProvider.mockRequestResolve({
+          addresses: [
+            {
+              address: 'mock_address',
+              purpose: 'payment',
+              addressType: 'p2pkh',
+              gaiaAppKey: 'mock_gaia_app_key',
+              gaiaHubUrl: 'mock_gaia_hub_url',
+              publicKey: 'mock_public_key'
+            }
+          ]
+        })
+      )
+
+      addListenerSpy = vi.spyOn(mocks.wallet, 'addListener')
+      addListenerSpy.mockReturnValue(addListenerCallbackMock)
+
+      await connector.connect()
+    })
+
+    it('should have bound events after connection', async () => {
+      expect(addListenerSpy).toHaveBeenCalledWith('accountChange', expect.any(Function))
+      expect(addListenerSpy).toHaveBeenCalledWith('disconnect', expect.any(Function))
+      expect(addListenerSpy).toHaveBeenCalledWith('networkChange', expect.any(Function))
+    })
+
+    it('should unbind events after disconnect', async () => {
+      await connector.disconnect()
+
+      expect(addListenerCallbackMock).toHaveBeenCalledTimes(3)
+    })
+
+    it('should execute the callback on accountChange event', async () => {
+      const connectSpy = vi.spyOn(connector, 'connect')
+      const emitSpy = vi.spyOn(connector, 'emit')
+      const callback = addListenerSpy.mock.calls.find(([event]) => event === 'accountChange')?.[1]
+
+      await callback?.({ type: 'accountChange' })
+
+      expect(connectSpy).toHaveBeenCalled()
+      expect(emitSpy).toHaveBeenCalledWith('accountsChanged', ['mock_address'])
+    })
+
+    it('should execute the callback on disconnect event', async () => {
+      const emitSpy = vi.spyOn(connector, 'emit')
+      const callback = addListenerSpy.mock.calls.find(([event]) => event === 'disconnect')?.[1]
+
+      await callback?.({ type: 'disconnect' })
+
+      expect(emitSpy).toHaveBeenCalledWith('disconnect')
+    })
+
+    it('should execute the callback on networkChange event', async () => {
+      const emitSpy = vi.spyOn(connector, 'emit')
+      const callback = addListenerSpy.mock.calls.find(([event]) => event === 'networkChange')?.[1]
+
+      await callback?.({ type: 'networkChange' })
+
+      expect(emitSpy).toHaveBeenCalledWith('chainChanged', requestedChains)
+    })
   })
 })
