@@ -4,6 +4,12 @@ import { W3mFrameHelpers } from './W3mFrameHelpers.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
 import { ConstantsUtil } from '@reown/appkit-common'
 
+type EventKey = typeof W3mFrameConstants.APP_EVENT_KEY | typeof W3mFrameConstants.FRAME_EVENT_KEY
+
+function shouldHandleEvent(eventKey: EventKey, data: MessageEvent['data'] = {}): boolean {
+  return typeof data?.type === 'string' && data?.type?.includes(eventKey)
+}
+
 // -- Sdk --------------------------------------------------------------------
 export class W3mFrame {
   private iframe: HTMLIFrameElement | null = null
@@ -116,10 +122,7 @@ export class W3mFrame {
       signal: AbortSignal
     ) => {
       function eventHandler({ data }: MessageEvent) {
-        if (
-          typeof data.type !== 'string' ||
-          !data.type.includes(W3mFrameConstants.FRAME_EVENT_KEY)
-        ) {
+        if (!shouldHandleEvent(W3mFrameConstants.FRAME_EVENT_KEY, data)) {
           return
         }
         const frameEvent = W3mFrameSchema.frameEvent.parse(data)
@@ -139,10 +142,7 @@ export class W3mFrame {
     onFrameEvent: (callback: (event: W3mFrameTypes.FrameEvent) => void) => {
       if (W3mFrameHelpers.isClient) {
         window.addEventListener('message', ({ data }) => {
-          if (
-            typeof data.type !== 'string' ||
-            !data.type.includes(W3mFrameConstants.FRAME_EVENT_KEY)
-          ) {
+          if (!shouldHandleEvent(W3mFrameConstants.FRAME_EVENT_KEY, data)) {
             return
           }
 
@@ -155,10 +155,7 @@ export class W3mFrame {
     onAppEvent: (callback: (event: W3mFrameTypes.AppEvent) => void) => {
       if (W3mFrameHelpers.isClient) {
         window.addEventListener('message', ({ data }) => {
-          if (
-            typeof data.type !== 'string' ||
-            !data.type.includes(W3mFrameConstants.APP_EVENT_KEY)
-          ) {
+          if (!shouldHandleEvent(W3mFrameConstants.APP_EVENT_KEY, data)) {
             return
           }
           const appEvent = W3mFrameSchema.appEvent.parse(data)
