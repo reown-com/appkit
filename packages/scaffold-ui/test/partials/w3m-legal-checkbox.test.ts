@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { fixture, elementUpdated } from '@open-wc/testing'
 import { OptionsController } from '@reown/appkit-core'
 import { html } from 'lit'
-import { TestUtil } from '../utils/TestUtil'
+import { HelpersUtil } from '../utils/HelpersUtil'
 
 // --- Constants ---------------------------------------------------- //
 const CHECKBOX_TEST_ID = 'wui-checkbox'
@@ -28,9 +28,9 @@ describe('W3mLegalCheckbox', () => {
   })
 
   it('it should return checkbox if legalCheckbox is true', async () => {
-    const checkbox = TestUtil.querySelect(element, CHECKBOX_TEST_ID)
+    const checkbox = HelpersUtil.querySelect(element, CHECKBOX_TEST_ID)
     expect(checkbox).toBeDefined()
-    expect(TestUtil.getTextContent(checkbox)).toBe(
+    expect(HelpersUtil.getTextContent(checkbox)).toBe(
       'I agree to our terms of service and privacy policy'
     )
   })
@@ -41,7 +41,7 @@ describe('W3mLegalCheckbox', () => {
     element.requestUpdate()
     await elementUpdated(element)
 
-    expect(TestUtil.querySelect(element, CHECKBOX_TEST_ID)).toBeNull()
+    expect(HelpersUtil.querySelect(element, CHECKBOX_TEST_ID)).toBeNull()
   })
 
   it('it should return checkbox if either termsConditionsUrl or privacyPolicyUrl are defined', async () => {
@@ -52,9 +52,9 @@ describe('W3mLegalCheckbox', () => {
     element.requestUpdate()
     await elementUpdated(element)
 
-    const checkbox = TestUtil.querySelect(element, CHECKBOX_TEST_ID)
+    const checkbox = HelpersUtil.querySelect(element, CHECKBOX_TEST_ID)
     expect(checkbox).toBeDefined()
-    expect(TestUtil.getTextContent(checkbox)).toBe('I agree to our terms of service')
+    expect(HelpersUtil.getTextContent(checkbox)).toBe('I agree to our terms of service')
   })
 
   it('it should not return checkbox if both termsConditionsUrl and privacyPolicyUrl are not defined', async () => {
@@ -65,6 +65,6 @@ describe('W3mLegalCheckbox', () => {
     element.requestUpdate()
     await elementUpdated(element)
 
-    expect(TestUtil.querySelect(element, CHECKBOX_TEST_ID)).toBeNull()
+    expect(HelpersUtil.querySelect(element, CHECKBOX_TEST_ID)).toBeNull()
   })
 })

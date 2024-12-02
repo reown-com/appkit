@@ -1,4 +1,4 @@
-export const TestUtil = {
+export const HelpersUtil = {
   getTextContent(element: HTMLElement | Element) {
     return element.textContent?.trim().replace('\n', '') ?? ''
   },

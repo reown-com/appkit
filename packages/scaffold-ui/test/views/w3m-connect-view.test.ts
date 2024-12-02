@@ -2,7 +2,7 @@ import { W3mConnectView } from '../../src/views/w3m-connect-view/index'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { fixture, elementUpdated } from '@open-wc/testing'
 import { html } from 'lit'
-import { TestUtil } from '../utils/TestUtil'
+import { HelpersUtil } from '../utils/HelpersUtil'
 import { OptionsController } from '@reown/appkit-core'
 
 // --- Constants ---------------------------------------------------- //
@@ -35,21 +35,21 @@ describe('W3mConnectView', () => {
   })
 
   it('it should disable connect view if legal checkbox is enabled', async () => {
-    const connectScrollView = TestUtil.getByTestId(element, CONNECT_SCROLL_VIEW_TEST_ID)
+    const connectScrollView = HelpersUtil.getByTestId(element, CONNECT_SCROLL_VIEW_TEST_ID)
 
     expect(connectScrollView).toBeDefined()
-    expect(TestUtil.getClasses(connectScrollView)).toStrictEqual(['connect', 'disabled'])
+    expect(HelpersUtil.getClasses(connectScrollView)).toStrictEqual(['connect', 'disabled'])
   })
 
   it('it should enable connect view if legal checkbox is disabled', async () => {
     OptionsController.state.features!.legalCheckbox = false
-    const connectScrollView = TestUtil.getByTestId(element, CONNECT_SCROLL_VIEW_TEST_ID)
+    const connectScrollView = HelpersUtil.getByTestId(element, CONNECT_SCROLL_VIEW_TEST_ID)
 
     expect(connectScrollView).toBeDefined()
 
     element.requestUpdate()
     await elementUpdated(element)
 
-    expect(TestUtil.getClasses(connectScrollView)).toStrictEqual(['connect'])
+    expect(HelpersUtil.getClasses(connectScrollView)).toStrictEqual(['connect'])
   })
 })
