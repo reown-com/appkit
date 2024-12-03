@@ -77,10 +77,11 @@ describe('CoSigner API Tests', () => {
         headers: {},
         queryParams: { projectId }
       })
-
+      const fullUrl = new URL(mockUrl)
+      fullUrl.searchParams.append('projectId', projectId)
       expect(response).toEqual(mockResponse)
       expect(mockFetch).toHaveBeenCalledWith(
-        `${mockUrl}?projectId=${encodeURIComponent(projectId)}`,
+        fullUrl.toString(),
         expect.objectContaining({
           method: 'POST',
           headers: expect.objectContaining(mockHeaders),

@@ -19,6 +19,23 @@ export class CoSignerApiError extends Error {
 }
 
 // -- Helper Function for API Requests ------------------------------------- //
+function isResponseEmptyOrInvalid(
+  response: Response,
+  contentType: string | null,
+  contentLength: string | null
+): boolean {
+  return (
+    // No content
+    response.status === 204 ||
+    // Explicit zero-length
+    contentLength === '0' ||
+    // No content type
+    !contentType ||
+    // Non-JSON response
+    !contentType.includes('application/json')
+  )
+}
+
 export async function sendCoSignerRequest<
   TRequest,
   TResponse = void,
@@ -40,13 +57,10 @@ export async function sendCoSignerRequest<
     // Transform request data if a transform function is provided
     const transformedData = transformRequest ? transformRequest(request) : request
 
-    // Construct query string
-    const queryString = new URLSearchParams({
-      ...queryParams
-    }).toString()
-
-    const fullUrl = queryString ? `${url}?${queryString}` : url
-
+    const fullUrl = new URL(url)
+    Object.entries(queryParams).forEach(([key, value]) => {
+      fullUrl.searchParams.append(key, value)
+    })
     // Prepare fetch options
     const fetchOptions: RequestInit = {
       method: 'POST',
@@ -56,9 +70,8 @@ export async function sendCoSignerRequest<
       },
       body: JSON.stringify(transformedData)
     }
-
     // Perform the fetch request
-    const response = await fetch(fullUrl, fetchOptions)
+    const response = await fetch(fullUrl.toString(), fetchOptions)
 
     // Check if the response is ok (status in the range 200-299)
     if (!response.ok) {
@@ -72,12 +85,7 @@ export async function sendCoSignerRequest<
     const contentType = response.headers.get('content-type')
 
     // If response is empty or has no content
-    if (
-      response.status === 204 ||
-      contentLength === '0' ||
-      !contentType ||
-      !contentType.includes('application/json')
-    ) {
+    if (isResponseEmptyOrInvalid(response, contentType, contentLength)) {
       return undefined as TResponse
     }
 
