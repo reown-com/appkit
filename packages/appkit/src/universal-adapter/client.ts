@@ -66,7 +66,7 @@ export class UniversalAdapter extends AdapterBlueprint {
       .filter((address, index, self) => self.indexOf(address) === index) as string[]
 
     return Promise.resolve({
-      accounts: addresses.map(address =>
+      accounts: addresses?.map?.(address =>
         CoreHelperUtil.createAccount(namespace, address, namespace === 'bip122' ? 'payment' : 'eoa')
       )
     })
