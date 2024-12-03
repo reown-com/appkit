@@ -1,4 +1,10 @@
-import { useAppKit, useDisconnect, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+import {
+  useAppKit,
+  useDisconnect,
+  useAppKitAccount,
+  useAppKitNetwork,
+  useAppKitProvider
+} from '@reown/appkit/react'
 import { polygon, mainnet, solana, solanaTestnet, type AppKitNetwork } from '@reown/appkit/networks'
 import { Heading, Box, Button } from '@chakra-ui/react'
 
@@ -7,7 +13,11 @@ export function AppKitHooks() {
   const { isConnected } = useAppKitAccount()
   const { caipNetwork, switchNetwork } = useAppKitNetwork()
   const { disconnect } = useDisconnect()
-
+  const { walletProvider } = useAppKitProvider('solana')
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
+  // eslint-disable-next-line no-console
+  console.log('publicKeyyy', walletProvider?.publicKey)
   function handleSwitchNetwork() {
     const isEIPNamespace = caipNetwork?.chainNamespace === 'eip155'
     // eslint-disable-next-line no-nested-ternary
