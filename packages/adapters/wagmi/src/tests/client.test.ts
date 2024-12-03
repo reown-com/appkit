@@ -404,10 +404,11 @@ describe('WagmiAdapter', () => {
 
   describe('WagmiAdapter - watchPendingTransactions', () => {
     it('should emit pendingTransactions when transactions are pending', () => {
-      const emitSpy = vi.spyOn(adapter, 'emit')
+      const emitSpy = vi.spyOn(adapter, 'emit' as any)
 
-      const watchPendingTransactionsCallback = vi.mocked(watchPendingTransactions).mock.calls[0][1]
-      watchPendingTransactionsCallback.onTransactions(['0xtx1', '0xtx2'])
+      const watchPendingTransactionsCallback =
+        vi.mocked(watchPendingTransactions).mock?.calls?.[0]?.[1]
+      watchPendingTransactionsCallback?.onTransactions(['0xtx1', '0xtx2'])
 
       expect(emitSpy).toHaveBeenCalledWith('pendingTransactions')
     })
