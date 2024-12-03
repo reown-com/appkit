@@ -24,7 +24,7 @@
     "build:laboratory-new": "pnpm build; pnpm --filter=./apps/laboratory-new build",
     "build:demo": "pnpm build; pnpm --filter=./apps/demo build",
     "build:examples": "pnpm build; pnpm --filter=./examples -r build",
-    "test": "turbo run test",
+    "test": "vitest",
     "test:static": "pnpm run typecheck; pnpm run lint; pnpm run prettier",
     "coverage:merge": "node ./scripts/coverage-merge.js",
     "coverage:summary": "node ./scripts/coverage-summary.js",
