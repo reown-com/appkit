@@ -16,6 +16,7 @@ import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { EthersMethods } from './utils/EthersMethods.js'
 import { ProviderUtil } from '@reown/appkit/store'
+import { BrowserProvider } from 'ethers'
 
 export interface EIP6963ProviderDetail {
   info: Connector['info']
@@ -231,6 +232,7 @@ export class EthersAdapter extends AdapterBlueprint {
     })
 
     this.listenProviderEvents(selectedProvider)
+    this.listenPendingTransactions(selectedProvider)
 
     if (!accounts[0]) {
       throw new Error('No accounts found')
@@ -366,6 +368,8 @@ export class EthersAdapter extends AdapterBlueprint {
       this.listenProviderEvents(selectedProvider)
     }
 
+    this.listenPendingTransactions(selectedProvider)
+
     return {
       address: accounts[0] as `0x${string}`,
       chainId: Number(requestChainId) || Number(chainId),
@@ -382,6 +386,8 @@ export class EthersAdapter extends AdapterBlueprint {
 
     if (connector && connector.type === 'AUTH' && chainId) {
       await (connector.provider as W3mFrameProvider).connect({ chainId })
+
+      this.listenPendingTransactions(connector.provider as Provider)
     }
   }
 
@@ -446,6 +452,14 @@ export class EthersAdapter extends AdapterBlueprint {
     }
 
     return { profileName: undefined, profileImage: undefined }
+  }
+
+  private listenPendingTransactions(provider: Provider) {
+    const browserProvider = new BrowserProvider(provider)
+
+    browserProvider.on('pending', () => {
+      this.emit('pendingTransactions')
+    })
   }
 
   private providerHandlers: {

@@ -25,7 +25,8 @@ import {
   waitForTransactionReceipt,
   getAccount,
   prepareTransactionRequest,
-  reconnect
+  reconnect,
+  watchPendingTransactions
 } from '@wagmi/core'
 import { type Chain } from '@wagmi/core/chains'
 
@@ -126,6 +127,11 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   private setupWatchers() {
+    watchPendingTransactions(this.wagmiConfig, {
+      onTransactions: () => {
+        this.emit('pendingTransactions')
+      }
+    })
     watchAccount(this.wagmiConfig, {
       onChange: accountData => {
         if (accountData.address) {

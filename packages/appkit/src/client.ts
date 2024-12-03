@@ -1233,6 +1233,20 @@ export class AppKit {
       }
     })
 
+    adapter?.on('pendingTransactions', async () => {
+      if (AccountController.state.address && ChainController.state.activeCaipNetwork?.id) {
+        const balance = await adapter?.getBalance({
+          address: AccountController.state.address,
+          chainId: ChainController.state.activeCaipNetwork?.id,
+          caipNetwork: this.getCaipNetwork(),
+          tokens: this.options.tokens
+        })
+        if (balance) {
+          this.setBalance(balance.balance, balance.symbol, chainNamespace)
+        }
+      }
+    })
+
     adapter?.on('accountChanged', ({ address, chainId }) => {
       if (ChainController.state.activeChain === chainNamespace && chainId) {
         this.syncAccount({
