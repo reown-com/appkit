@@ -1,5 +1,4 @@
 /* eslint-disable max-classes-per-file */
-import axios, { AxiosError } from 'axios'
 import { ConstantsUtil } from './ConstantUtils.js'
 import type {
   ActivatePermissionsRequest,
@@ -22,8 +21,8 @@ export class CoSignerApiError extends Error {
 // -- Helper Function for API Requests ------------------------------------- //
 export async function sendCoSignerRequest<
   TRequest,
-  TResponse,
-  TQueryParams extends Record<string, string>
+  TResponse = void,
+  TQueryParams extends Record<string, string> = Record<string, string>
 >({
   url,
   request,
@@ -38,26 +37,67 @@ export async function sendCoSignerRequest<
   transformRequest?: (data: TRequest) => unknown
 }): Promise<TResponse> {
   try {
+    // Transform request data if a transform function is provided
     const transformedData = transformRequest ? transformRequest(request) : request
-    const response = await axios.post<TResponse>(url, transformedData, {
-      params: queryParams,
-      headers
-    })
 
-    return response.data
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      const axiosError = error as AxiosError
-      if (axiosError.response) {
-        throw new CoSignerApiError(
-          axiosError.response.status,
-          JSON.stringify(axiosError.response.data)
-        )
-      } else {
-        throw new CoSignerApiError(500, 'Network error')
-      }
+    // Construct query string
+    const queryString = new URLSearchParams({
+      ...queryParams
+    }).toString()
+
+    const fullUrl = queryString ? `${url}?${queryString}` : url
+
+    // Prepare fetch options
+    const fetchOptions: RequestInit = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...headers
+      },
+      body: JSON.stringify(transformedData)
     }
-    throw error
+
+    // Perform the fetch request
+    const response = await fetch(fullUrl, fetchOptions)
+
+    // Check if the response is ok (status in the range 200-299)
+    if (!response.ok) {
+      // Try to parse error response
+      const errorData = await response.text()
+      throw new CoSignerApiError(response.status, errorData)
+    }
+
+    // Handle void responses explicitly
+    const contentLength = response.headers.get('content-length')
+    const contentType = response.headers.get('content-type')
+
+    // If response is empty or has no content
+    if (
+      response.status === 204 ||
+      contentLength === '0' ||
+      !contentType ||
+      !contentType.includes('application/json')
+    ) {
+      return undefined as TResponse
+    }
+
+    // Try to parse JSON, with fallback for empty/invalid responses
+    try {
+      const text = await response.text()
+
+      return text ? JSON.parse(text) : (undefined as TResponse)
+    } catch (parseError) {
+      // If JSON parsing fails, return undefined
+      return undefined as TResponse
+    }
+  } catch (error) {
+    // Handle network errors or JSON parsing errors
+    if (error instanceof CoSignerApiError) {
+      throw error
+    }
+
+    // For other errors, throw a generic network error
+    throw new CoSignerApiError(500, error instanceof Error ? error.message : 'Network error')
   }
 }
 
