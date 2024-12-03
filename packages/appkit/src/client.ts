@@ -1250,7 +1250,7 @@ export class AppKit {
       }
     })
 
-    adapter?.on('pendingTransactions', async () => {
+    adapter?.on('pendingTransactions', () => {
       if (AccountController.state.address && ChainController.state.activeCaipNetwork?.id) {
         this.updateBalance()
       }
