@@ -661,6 +661,20 @@ export type Event =
     }
   | {
       type: 'track'
+      event: 'SOCIAL_LOGIN_REQUEST_USER_DATA'
+      properties: {
+        provider: SocialProvider
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SOCIAL_LOGIN_CANCELED'
+      properties: {
+        provider: SocialProvider
+      }
+    }
+  | {
+      type: 'track'
       event: 'OPEN_ENS_FLOW'
       properties: {
         isSmartAccount: boolean
@@ -807,11 +821,23 @@ export type GetQuoteArgs = {
   amount: string
   network: string
 }
-export type AccountType = {
-  address: string
-  type: 'eoa' | 'smartAccount'
+
+export type NamespaceTypeMap = {
+  eip155: 'eoa' | 'smartAccount'
+  solana: 'eoa'
+  bip122: 'payment' | 'ordinal' | 'stx'
+  polkadot: 'eoa'
 }
 
+export type AccountTypeMap = {
+  [K in ChainNamespace]: {
+    namespace: K
+    address: string
+    type: NamespaceTypeMap[K]
+  }
+}
+
+export type AccountType = AccountTypeMap[ChainNamespace]
 export type SendTransactionArgs =
   | {
       chainNamespace?: undefined | 'eip155'

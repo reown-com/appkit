@@ -345,11 +345,8 @@ export function walletConnect(
 
       config.emitter.emit('change', { chainId })
     },
-    async onConnect(connectInfo) {
-      const chainId = Number(connectInfo.chainId)
-      const accounts = await this.getAccounts()
+    onConnect(_connectInfo) {
       this.setRequestedChainsIds(caipNetworks.map(x => Number(x.id)))
-      config.emitter.emit('connect', { accounts, chainId })
     },
     async onDisconnect(_error) {
       this.setRequestedChainsIds([])

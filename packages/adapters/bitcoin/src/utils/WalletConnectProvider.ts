@@ -43,9 +43,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Bitco
   }
 
   public async disconnect() {
-    return Promise.reject(
-      new Error('Disconnection of WalletConnectProvider should be done via UniversalAdapter')
-    )
+    return this.provider.disconnect()
   }
 
   public async signMessage({ message, address }: BitcoinConnector.SignMessageParams) {
@@ -56,7 +54,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Bitco
       params: { message, account: address, address }
     })
 
-    return signedMessage.signature
+    return Buffer.from(signedMessage.signature, 'hex').toString('base64')
   }
 
   public async sendTransfer({ recipient, amount }: BitcoinConnector.SendTransferParams) {
@@ -83,7 +81,29 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Bitco
       params: undefined
     })
 
-    return addresses.map(address => ({ address }))
+    return addresses.map(address => ({ address, purpose: 'payment' }))
+  }
+
+  public async signPSBT(
+    params: BitcoinConnector.SignPSBTParams
+  ): Promise<BitcoinConnector.SignPSBTResponse> {
+    this.checkIfMethodIsSupported('signPsbt')
+    const account = this.getAccount(true)
+
+    const response = await this.internalRequest({
+      method: 'signPsbt',
+      params: {
+        account,
+        psbt: params.psbt,
+        signInputs: params.signInputs,
+        broadcast: params.broadcast
+      }
+    })
+
+    return {
+      psbt: response.psbt,
+      txid: response.txid
+    }
   }
 
   public request<T>(args: RequestArguments) {
@@ -183,10 +203,27 @@ export namespace WalletConnectProvider {
     txid: string
   }
 
+  export type WCSignPSBTParams = {
+    account: string
+    psbt: string
+    signInputs: {
+      address: string
+      index: number
+      sighashTypes?: number[]
+    }[]
+    broadcast?: boolean
+  }
+
+  export type WCSignPSBTResponse = {
+    psbt: string
+    txid?: string
+  }
+
   export type RequestMethods = {
     signMessage: Request<WCSignMessageParams, WCSignMessageResponse>
     sendTransfer: Request<WCSendTransferParams, WCSendTransferResponse>
     getAccountAddresses: Request<undefined, string[]>
+    signPsbt: Request<WCSignPSBTParams, WCSignPSBTResponse>
   }
 
   export type RequestMethod = keyof RequestMethods
