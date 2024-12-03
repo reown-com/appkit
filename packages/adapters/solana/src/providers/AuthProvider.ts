@@ -88,7 +88,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
 
   public async disconnect() {
     await this.getProvider().disconnect()
-
+    this.setSession(undefined)
     this.emit('disconnect', undefined)
   }
 

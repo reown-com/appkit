@@ -1,10 +1,7 @@
-import { defineConfig } from 'vite'
-import { configDefaults } from 'vitest/config'
+import { defineProject } from 'vitest/config'
 
-export default defineConfig({
+export default defineProject({
   test: {
-    ...configDefaults,
-    globals: true,
     environment: 'jsdom'
   }
 })
