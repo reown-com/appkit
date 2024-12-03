@@ -1,62 +1,56 @@
 /* eslint-disable max-depth */
 import {
-  type EventsControllerState,
-  type PublicStateControllerState,
-  type ThemeControllerState,
-  type ModalControllerState,
-  type ConnectedWalletInfo,
-  type RouterControllerState,
-  type ChainAdapter,
-  type SdkVersion,
-  type UseAppKitAccountReturn,
-  type UseAppKitNetworkReturn,
-  type NetworkControllerClient,
-  type ConnectionControllerClient,
-  ConstantsUtil as CoreConstantsUtil,
-  type ConnectorType,
-  type WriteContractArgs,
-  type Provider,
-  type SendTransactionArgs,
-  type EstimateGasTransactionArgs,
-  type AccountControllerState,
-  type AdapterNetworkState,
-  SIWXUtil
-} from '@reown/appkit-core'
-import {
-  AccountController,
-  BlockchainApiController,
-  ConnectionController,
-  ConnectorController,
-  CoreHelperUtil,
-  EventsController,
-  ModalController,
-  ChainController,
-  PublicStateController,
-  ThemeController,
-  SnackController,
-  RouterController,
-  EnsController,
-  OptionsController,
-  AssetUtil,
-  ApiController,
-  AlertController,
-  StorageUtil
-} from '@reown/appkit-core'
-import { setColorTheme, setThemeVariables } from '@reown/appkit-ui-new'
-import {
   ConstantsUtil,
-  type CaipNetwork,
-  type ChainNamespace,
   SafeLocalStorage,
   SafeLocalStorageKeys,
   type CaipAddress,
-  type CaipNetworkId
+  type CaipNetwork,
+  type CaipNetworkId,
+  type ChainNamespace
 } from '@reown/appkit-common'
-import type { AppKitOptions } from './utils/TypesUtil.js'
 import {
-  UniversalAdapter,
-  UniversalAdapter as UniversalAdapterClient
-} from './universal-adapter/client.js'
+  AccountController,
+  AlertController,
+  ApiController,
+  AssetUtil,
+  BlockchainApiController,
+  ChainController,
+  ConnectionController,
+  ConnectorController,
+  ConstantsUtil as CoreConstantsUtil,
+  CoreHelperUtil,
+  EnsController,
+  EventsController,
+  ModalController,
+  OptionsController,
+  PublicStateController,
+  RouterController,
+  SIWXUtil,
+  SnackController,
+  StorageUtil,
+  ThemeController,
+  type AccountControllerState,
+  type AdapterNetworkState,
+  type ChainAdapter,
+  type ConnectedWalletInfo,
+  type ConnectionControllerClient,
+  type ConnectorType,
+  type EstimateGasTransactionArgs,
+  type EventsControllerState,
+  type ModalControllerState,
+  type NetworkControllerClient,
+  type Provider,
+  type PublicStateControllerState,
+  type RouterControllerState,
+  type SdkVersion,
+  type SendTransactionArgs,
+  type ThemeControllerState,
+  type UseAppKitAccountReturn,
+  type UseAppKitNetworkReturn,
+  type WriteContractArgs
+} from '@reown/appkit-core'
+import type { AppKitNetwork } from '@reown/appkit-new/networks'
+import { setColorTheme, setThemeVariables } from '@reown/appkit-ui-new'
 import {
   CaipNetworksUtil,
   ErrorUtil,
@@ -68,13 +62,17 @@ import {
   type W3mFrameProvider,
   type W3mFrameTypes
 } from '@reown/appkit-wallet'
-import { ProviderUtil } from './store/ProviderUtil.js'
-import type { AppKitNetwork } from '@reown/appkit-new/networks'
-import type { AdapterBlueprint } from './adapters/ChainAdapterBlueprint.js'
-import UniversalProvider from '@walletconnect/universal-provider'
 import type { SessionTypes } from '@walletconnect/types'
 import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
+import UniversalProvider from '@walletconnect/universal-provider'
+import type { AdapterBlueprint } from './adapters/ChainAdapterBlueprint.js'
 import { W3mFrameProviderSingleton } from './auth-provider/W3MFrameProviderSingleton.js'
+import { ProviderUtil } from './store/ProviderUtil.js'
+import {
+  UniversalAdapter,
+  UniversalAdapter as UniversalAdapterClient
+} from './universal-adapter/client.js'
+import type { AppKitOptions } from './utils/TypesUtil.js'
 
 declare global {
   interface Window {
@@ -685,7 +683,8 @@ export class AppKit {
   private extendCaipNetworks(options: AppKitOptions) {
     const extendedNetworks = CaipNetworksUtil.extendCaipNetworks(options.networks, {
       customNetworkImageUrls: options.chainImages,
-      projectId: options.projectId
+      projectId: options.projectId,
+      useWalletConnectRpc: options.useWalletConnectRpc
     })
 
     return extendedNetworks
@@ -696,7 +695,8 @@ export class AppKit {
     const extendedNetwork = defaultNetwork
       ? CaipNetworksUtil.extendCaipNetwork(defaultNetwork, {
           customNetworkImageUrls: options.chainImages,
-          projectId: options.projectId
+          projectId: options.projectId,
+          useWalletConnectRpc: options.useWalletConnectRpc
         })
       : undefined
 

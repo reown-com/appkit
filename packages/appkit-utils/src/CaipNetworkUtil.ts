@@ -59,6 +59,7 @@ const WC_HTTP_RPC_SUPPORTED_CHAINS = [
 type ExtendCaipNetworkParams = {
   customNetworkImageUrls: Record<number | string, string> | undefined
   projectId: string
+  useWalletConnectRpc: boolean | undefined
 }
 
 export const CaipNetworksUtil = {
@@ -109,11 +110,17 @@ export const CaipNetworksUtil = {
     return `${ConstantsUtil.CHAIN.EVM}:${network.id}` as CaipNetworkId
   },
 
-  getRpcUrl(caipNetwork: AppKitNetwork, caipNetworkId: CaipNetworkId, projectId: string) {
+  getRpcUrl(
+    caipNetwork: AppKitNetwork,
+    caipNetworkId: CaipNetworkId,
+    extraParam: { projectId: string; useWalletConnectRpc?: boolean }
+  ) {
     const defaultRpcUrl = caipNetwork.rpcUrls?.default?.http?.[0]
 
     if (WC_HTTP_RPC_SUPPORTED_CHAINS.includes(caipNetworkId)) {
-      return getBlockchainApiRpcUrl(caipNetworkId, projectId)
+      return extraParam.useWalletConnectRpc
+        ? getBlockchainApiRpcUrl(caipNetworkId, extraParam.projectId)
+        : defaultRpcUrl || ''
     }
 
     return defaultRpcUrl || ''
@@ -130,11 +137,11 @@ export const CaipNetworksUtil = {
    */
   extendCaipNetwork(
     caipNetwork: AppKitNetwork,
-    { customNetworkImageUrls, projectId }: ExtendCaipNetworkParams
+    { customNetworkImageUrls, projectId, useWalletConnectRpc }: ExtendCaipNetworkParams
   ): CaipNetwork {
     const caipNetworkId = this.getCaipNetworkId(caipNetwork)
     const chainNamespace = this.getChainNamespace(caipNetwork)
-    const rpcUrl = this.getRpcUrl(caipNetwork, caipNetworkId, projectId)
+    const rpcUrl = this.getRpcUrl(caipNetwork, caipNetworkId, { projectId, useWalletConnectRpc })
 
     return {
       ...caipNetwork,
@@ -146,10 +153,8 @@ export const CaipNetworksUtil = {
       },
       rpcUrls: {
         ...caipNetwork.rpcUrls,
-        default: caipNetwork.rpcUrls.default ?? {
-          default: {
-            http: [rpcUrl]
-          }
+        default: {
+          http: [rpcUrl]
         }
       }
     }
@@ -166,11 +171,12 @@ export const CaipNetworksUtil = {
    */
   extendCaipNetworks(
     caipNetworks: AppKitNetwork[],
-    { customNetworkImageUrls, projectId }: ExtendCaipNetworkParams
+    { customNetworkImageUrls, projectId, useWalletConnectRpc }: ExtendCaipNetworkParams
   ) {
     return caipNetworks.map(caipNetwork =>
       CaipNetworksUtil.extendCaipNetwork(caipNetwork, {
         customNetworkImageUrls,
+        useWalletConnectRpc,
         projectId
       })
     ) as [CaipNetwork, ...CaipNetwork[]]
