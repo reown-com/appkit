@@ -1096,8 +1096,14 @@ export class AppKit {
       }
       if (this.isTransactionStackEmpty()) {
         this.close()
+        if (AccountController.state.address && ChainController.state.activeCaipNetwork?.id) {
+          this.updateBalance()
+        }
       } else {
         this.popTransactionStack()
+        if (AccountController.state.address && ChainController.state.activeCaipNetwork?.id) {
+          this.updateBalance()
+        }
       }
     })
     provider.onNotConnected(() => {
@@ -1246,15 +1252,7 @@ export class AppKit {
 
     adapter?.on('pendingTransactions', async () => {
       if (AccountController.state.address && ChainController.state.activeCaipNetwork?.id) {
-        const balance = await adapter?.getBalance({
-          address: AccountController.state.address,
-          chainId: ChainController.state.activeCaipNetwork?.id,
-          caipNetwork: this.getCaipNetwork(),
-          tokens: this.options.tokens
-        })
-        if (balance) {
-          this.setBalance(balance.balance, balance.symbol, chainNamespace)
-        }
+        this.updateBalance()
       }
     })
 
@@ -1276,6 +1274,18 @@ export class AppKit {
         })
       }
     })
+  }
+
+  private updateBalance() {
+    const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+    if (adapter) {
+      adapter.getBalance({
+        address: AccountController.state.address as string,
+        chainId: ChainController.state.activeCaipNetwork?.id as string | number,
+        caipNetwork: this.getCaipNetwork(),
+        tokens: this.options.tokens
+      })
+    }
   }
 
   private getChainsFromNamespaces(namespaces: SessionTypes.Namespaces = {}): CaipNetworkId[] {

@@ -233,7 +233,6 @@ export class Ethers5Adapter extends AdapterBlueprint {
     })
 
     this.listenProviderEvents(selectedProvider)
-    this.listenPendingTransactions(selectedProvider)
 
     if (!accounts[0]) {
       throw new Error('No accounts found')
@@ -369,8 +368,6 @@ export class Ethers5Adapter extends AdapterBlueprint {
       this.listenProviderEvents(selectedProvider)
     }
 
-    this.listenPendingTransactions(selectedProvider)
-
     return {
       address: accounts[0] as `0x${string}`,
       chainId: Number(requestChainId) || Number(chainId),
@@ -417,8 +414,6 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
     if (connector && connector.type === 'AUTH' && chainId) {
       await (connector.provider as W3mFrameProvider).connect({ chainId })
-
-      this.listenPendingTransactions(connector.provider as Provider)
     }
   }
 
@@ -522,6 +517,8 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
       this.emit('switchNetwork', { chainId: chainIdNumber })
     }
+
+    this.listenPendingTransactions(provider)
 
     provider.on('disconnect', disconnectHandler)
     provider.on('accountsChanged', accountsChangedHandler)

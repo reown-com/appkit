@@ -233,7 +233,6 @@ export class EthersAdapter extends AdapterBlueprint {
     })
 
     this.listenProviderEvents(selectedProvider)
-    this.listenPendingTransactions(selectedProvider)
 
     if (!accounts[0]) {
       throw new Error('No accounts found')
@@ -369,8 +368,6 @@ export class EthersAdapter extends AdapterBlueprint {
       this.listenProviderEvents(selectedProvider)
     }
 
-    this.listenPendingTransactions(selectedProvider)
-
     return {
       address: accounts[0] as `0x${string}`,
       chainId: Number(requestChainId) || Number(chainId),
@@ -387,8 +384,6 @@ export class EthersAdapter extends AdapterBlueprint {
 
     if (connector && connector.type === 'AUTH' && chainId) {
       await (connector.provider as W3mFrameProvider).connect({ chainId })
-
-      this.listenPendingTransactions(connector.provider as Provider)
     }
   }
 
@@ -488,9 +483,14 @@ export class EthersAdapter extends AdapterBlueprint {
   private listenPendingTransactions(provider: Provider) {
     const browserProvider = new BrowserProvider(provider)
 
-    browserProvider.on('pending', () => {
-      this.emit('pendingTransactions')
-    })
+    try {
+      browserProvider.on('pending', () => {
+        this.emit('pendingTransactions')
+      })
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error listening to pending transactions', error)
+    }
   }
 
   private providerHandlers: {
@@ -519,6 +519,8 @@ export class EthersAdapter extends AdapterBlueprint {
 
       this.emit('switchNetwork', { chainId: chainIdNumber })
     }
+
+    this.listenPendingTransactions(provider)
 
     provider.on('disconnect', disconnectHandler)
     provider.on('accountsChanged', accountsChangedHandler)
