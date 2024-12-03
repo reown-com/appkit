@@ -1,4 +1,5 @@
 import {
+  ApiController,
   ConnectorController,
   CoreHelperUtil,
   OptionsController,
@@ -79,5 +80,8 @@ export const WalletUtil = {
     )
 
     return sortedWallets
+  },
+  getWalletButton(explorerId: string) {
+    return ApiController.state.walletButtons.find(({ id }) => id === explorerId)
   }
 }

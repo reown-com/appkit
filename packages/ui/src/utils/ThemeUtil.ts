@@ -170,6 +170,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-icon-box-size-xs: 20px;
         --wui-icon-box-size-sm: 24px;
         --wui-icon-box-size-md: 32px;
+        --wui-icon-box-size-mdl: 36px;
         --wui-icon-box-size-lg: 40px;
         --wui-icon-box-size-2lg: 48px;
         --wui-icon-box-size-xl: 64px;

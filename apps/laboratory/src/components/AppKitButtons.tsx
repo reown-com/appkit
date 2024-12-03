@@ -1,5 +1,6 @@
 import { Stack, Card, CardHeader, Heading, CardBody, Box, StackDivider } from '@chakra-ui/react'
 import { AppKitHooks } from './AppKitHooks'
+import { AppKitWalletButtons } from './AppKitWalletButtons'
 
 export function AppKitButtons() {
   return (
@@ -23,6 +24,7 @@ export function AppKitButtons() {
             <appkit-network-button />
           </Box>
           <AppKitHooks />
+          <AppKitWalletButtons />
         </Stack>
       </CardBody>
     </Card>

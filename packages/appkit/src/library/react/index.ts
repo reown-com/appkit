@@ -8,7 +8,8 @@ import type {
   W3mAccountButton,
   W3mButton,
   W3mConnectButton,
-  W3mNetworkButton
+  W3mNetworkButton,
+  W3mWalletButton
 } from '@reown/appkit-scaffold-ui'
 import type { AppKit } from '../../../src/client.js'
 import type { AppKitOptions } from '../../utils/TypesUtil.js'
@@ -34,6 +35,7 @@ declare global {
       'appkit-account-button': Pick<AppKitAccountButton, 'disabled' | 'balance'>
       'appkit-network-button': Pick<AppKitNetworkButton, 'disabled'>
       'w3m-connect-button': Pick<W3mConnectButton, 'size' | 'label' | 'loadingLabel'>
+      'w3m-wallet-button': Pick<W3mWalletButton, 'walletId'>
       'w3m-account-button': Pick<W3mAccountButton, 'disabled' | 'balance'>
       'w3m-button': Pick<W3mButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
       'w3m-network-button': Pick<W3mNetworkButton, 'disabled'>

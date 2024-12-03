@@ -224,6 +224,7 @@ export const ConstantsUtil = {
     analytics: true,
     allWallets: true,
     legalCheckbox: false,
-    smartSessions: false
+    smartSessions: false,
+    walletButtonIds: []
   } as Features
 }
