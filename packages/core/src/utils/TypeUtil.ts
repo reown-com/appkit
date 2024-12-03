@@ -1011,6 +1011,7 @@ export type Features = {
    * @default false
    */
   legalCheckbox?: boolean
+  walletButtonIds?: string[]
 }
 
 export type FeaturesKeys = keyof Features
