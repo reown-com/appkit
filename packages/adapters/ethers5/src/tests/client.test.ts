@@ -81,6 +81,23 @@ describe('Ethers5Adapter', () => {
       expect(adapter.adapterType).toBe('ethers')
       expect(adapter.namespace).toBe('eip155')
     })
+
+    it('should not set info property for injected connector', () => {
+      const mockConnectors = [
+        {
+          id: 'Browser Wallet',
+          name: 'Browser Wallet',
+          type: 'injected',
+          info: { rdns: 'Browser Wallet' }
+        }
+      ]
+
+      ;(adapter as any).syncConnectors(mockConnectors)
+
+      const injectedConnector = mockConnectors.filter((c: any) => c.id === 'injected')[0]
+
+      expect(injectedConnector?.info).toBeUndefined()
+    })
   })
 
   describe('Ethers5Adapter - signMessage', () => {
@@ -163,7 +180,11 @@ describe('Ethers5Adapter', () => {
 
   describe('Ethers5Adapter -connect', () => {
     it('should connect with external provider', async () => {
-      vi.mocked(mockProvider.request).mockResolvedValue(['0x123'])
+      vi.mocked(mockProvider.request).mockImplementation(request => {
+        if (request.method === 'eth_requestAccounts') return Promise.resolve(['0x123'])
+        if (request.method === 'eth_chainId') return Promise.resolve('0x1')
+        return Promise.resolve(null)
+      })
       const connectors = [
         {
           id: 'test',

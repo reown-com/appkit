@@ -38,14 +38,17 @@ siweWalletTest.afterAll(async () => {
 
 // -- Tests --------------------------------------------------------------------
 siweWalletTest('it should be authenticated', async () => {
+  await modalValidator.expectOnSignInEventCalled(false)
   await modalPage.qrCodeFlow(modalPage, walletPage)
   await modalValidator.expectConnected()
   await modalValidator.expectAuthenticated()
+  await modalValidator.expectOnSignInEventCalled(true)
 })
 
 siweWalletTest('it should require re-authentication when switching networks', async () => {
   await modalPage.switchNetwork('Polygon')
   await modalValidator.expectUnauthenticated()
+  await modalValidator.expectOnSignOutEventCalled(true)
   await modalPage.promptSiwe()
   await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAuthenticated()
@@ -60,13 +63,20 @@ siweWalletTest('it should disconnect when cancel siwe from AppKit', async () => 
   await walletValidator.expectSessionCard({ visible: false })
 })
 
-// WARNING: refreshing on wagmi-siwe doesn't auto connect
-siweWalletTest.skip('it should be authenticated when refresh page', async () => {
+siweWalletTest('it should be authenticated when refresh page', async () => {
   await modalPage.qrCodeFlow(modalPage, walletPage)
   await modalValidator.expectConnected()
   await modalPage.page.reload()
   await modalValidator.expectConnected()
   await modalValidator.expectAuthenticated()
+  await modalValidator.expectOnSignInEventCalled(false)
+  await modalPage.sign()
+  await walletPage.handleRequest({ accept: true })
+  await modalValidator.expectAcceptedSign()
+  await modalPage.disconnect()
+  await modalValidator.expectDisconnected()
+  await modalValidator.expectUnauthenticated()
+  await walletValidator.expectSessionCard({ visible: false })
 })
 
 siweWalletTest('it should be unauthenticated when disconnect', async () => {

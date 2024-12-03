@@ -39,6 +39,9 @@ smartAccountSiweTest.beforeAll(async ({ browser, library }) => {
   await validator.expectSwitchedNetworkOnNetworksView('Polygon')
   await page.closeModal()
   const tempEmail = await email.getEmailAddressToUse()
+
+  // Iframe should not be injected until needed
+  validator.expectSecureSiteFrameNotInjected()
   await page.emailFlow(tempEmail, context, mailsacApiKey)
   await page.promptSiwe()
   await page.approveSign()
@@ -66,8 +69,9 @@ smartAccountSiweTest('it should upgrade wallet', async () => {
 })
 
 smartAccountSiweTest('it should switch to a smart account enabled network and sign', async () => {
-  const targetChain = 'Sepolia'
+  const targetChain = 'Base'
   await page.switchNetwork(targetChain)
+  await validator.expectSwitchedNetworkWithNetworkView()
   await page.promptSiwe()
   await page.approveSign()
 

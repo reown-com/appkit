@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-adapter-ethers",
-  "version": "1.4.1",
+  "version": "1.5.3",
   "type": "module",
   "main": "./dist/esm/src/index.js",
   "types": "./dist/types/src/index.d.ts",
@@ -23,7 +23,6 @@
     "@reown/appkit-polyfills": "workspace:*",
     "@reown/appkit-scaffold-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
-    "@reown/appkit-siwe": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/utils": "2.17.0",

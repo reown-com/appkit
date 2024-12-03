@@ -1,6 +1,7 @@
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import type {
   AccountType,
+  AccountTypeMap,
   CombinedProvider,
   ConnectedWalletInfo,
   Provider,
@@ -40,7 +41,6 @@ export interface AccountControllerState {
   farcasterUrl?: string
   provider?: UniversalProvider | Provider | CombinedProvider
   status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
-  siweStatus?: 'uninitialized' | 'ready' | 'loading' | 'success' | 'rejected' | 'error'
   lastRetry?: number
 }
 
@@ -171,8 +171,8 @@ export const AccountController = {
     ChainController.setAccountProp('shouldUpdateToAddress', address, chain)
   },
 
-  setAllAccounts(accounts: AccountType[], chain: ChainNamespace | undefined) {
-    ChainController.setAccountProp('allAccounts', accounts, chain)
+  setAllAccounts<N extends ChainNamespace>(accounts: AccountTypeMap[N][], namespace: N) {
+    ChainController.setAccountProp('allAccounts', accounts, namespace)
   },
 
   addAddressLabel(address: string, label: string, chain: ChainNamespace | undefined) {
@@ -262,9 +262,5 @@ export const AccountController = {
 
   resetAccount(chain: ChainNamespace) {
     ChainController.resetAccount(chain)
-  },
-
-  setSiweStatus(status: AccountControllerState['siweStatus']) {
-    ChainController.setAccountProp('siweStatus', status, ChainController.state.activeChain)
   }
 }

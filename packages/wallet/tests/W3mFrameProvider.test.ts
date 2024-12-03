@@ -105,7 +105,11 @@ describe('W3mFrameProvider', () => {
   it(
     'should timeout after 30 seconds',
     async () => {
-      const postAppEventSpy = vi.spyOn(provider['w3mFrame'].events, 'postAppEvent')
+      const postAppEventSpy = vi
+        .spyOn(provider['w3mFrame'].events, 'postAppEvent')
+        .mockImplementation(() => {
+          // Do nothing
+        })
 
       const mockTimeoutSpy = vi.spyOn(provider, 'onTimeout')
 

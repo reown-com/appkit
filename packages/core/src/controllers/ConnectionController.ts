@@ -262,70 +262,10 @@ export const ConnectionController = {
       }
 
       await connectionControllerClient?.disconnect()
+
       this.resetWcConnection()
     } catch (error) {
       throw new Error('Failed to disconnect')
-    }
-  },
-
-  /**
-   * @experimental - This is an experimental feature and may be subject to change.
-   * Initializes SIWX if available.
-   * This is not yet considering One Click Auth.
-   */
-  async initializeSWIXIfAvailable() {
-    const siwx = OptionsController.state.siwx
-    const address = CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress())
-    const network = ChainController.getActiveCaipNetwork()
-
-    if (!(siwx && address && network)) {
-      return
-    }
-
-    if (OptionsController.state.isSiweEnabled) {
-      console.warn('SIWE is enabled skipping experimental SIWX initialization')
-
-      return
-    }
-
-    const client = this._getClient()
-
-    try {
-      const sessions = await siwx.getSessions(network.caipNetworkId, address)
-      if (sessions.length) {
-        return
-      }
-
-      await ModalController.open({
-        view:
-          StorageUtil.getConnectedConnector() === 'ID_AUTH'
-            ? 'ApproveTransaction'
-            : 'SIWXSignMessage'
-      })
-
-      const siwxMessage = await siwx.createMessage({
-        chainId: network.caipNetworkId,
-        accountAddress: address
-      })
-
-      const message = siwxMessage.toString()
-
-      const signature = await client?.signMessage(message)
-
-      await siwx.addSession({
-        data: siwxMessage,
-        message,
-        signature: signature as `0x${string}`
-      })
-
-      ModalController.close()
-    } catch (error: unknown) {
-      // eslint-disable-next-line no-console
-      console.error('Failed to initialize SIWX', error)
-      ModalController.setLoading(true)
-      await client?.disconnect().finally(() => {
-        ModalController.setLoading(false)
-      })
     }
   }
 }

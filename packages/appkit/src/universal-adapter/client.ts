@@ -1,6 +1,9 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import { WcHelpersUtil } from '../utils/index.js'
+import { ChainController, CoreHelperUtil } from '@reown/appkit-core'
+import bs58 from 'bs58'
+import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
 
 export class UniversalAdapter extends AdapterBlueprint {
   public async connectWalletConnect(onUri: (uri: string) => void) {
@@ -40,6 +43,27 @@ export class UniversalAdapter extends AdapterBlueprint {
     await provider?.disconnect()
   }
 
+  public async getAccounts({
+    namespace
+  }: AdapterBlueprint.GetAccountsParams & {
+    namespace: ChainNamespace
+  }): Promise<AdapterBlueprint.GetAccountsResult> {
+    const provider = this.provider as UniversalProvider
+    const addresses = provider?.session?.namespaces?.[namespace]?.accounts
+      ?.map(account => {
+        const [, , address] = account.split(':')
+
+        return address
+      })
+      .filter((address, index, self) => self.indexOf(address) === index) as string[]
+
+    return Promise.resolve({
+      accounts: addresses.map(address =>
+        CoreHelperUtil.createAccount(namespace, address, namespace === 'bip122' ? 'payment' : 'eoa')
+      )
+    })
+  }
+
   public async syncConnectors() {
     return Promise.resolve()
   }
@@ -60,12 +84,32 @@ export class UniversalAdapter extends AdapterBlueprint {
       throw new Error('UniversalAdapter:signMessage - provider is undefined')
     }
 
-    const signature = await provider.request({
-      method: 'personal_sign',
-      params: [message, address]
-    })
+    let signature = ''
 
-    return { signature: signature as `0x${string}` }
+    if (ChainController.state.activeCaipNetwork?.chainNamespace === ConstantsUtil.CHAIN.SOLANA) {
+      const response = await provider.request(
+        {
+          method: 'solana_signMessage',
+          params: {
+            message: bs58.encode(new TextEncoder().encode(message)),
+            pubkey: address
+          }
+        },
+        ChainController.state.activeCaipNetwork?.caipNetworkId
+      )
+
+      signature = (response as { signature: string }).signature
+    } else {
+      signature = await provider.request(
+        {
+          method: 'personal_sign',
+          params: [message, address]
+        },
+        ChainController.state.activeCaipNetwork?.caipNetworkId
+      )
+    }
+
+    return { signature }
   }
 
   // -- Transaction methods ---------------------------------------------------

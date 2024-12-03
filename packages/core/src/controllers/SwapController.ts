@@ -202,7 +202,7 @@ export const SwapController = {
       invalidSourceTokenAmount,
       availableToSwap:
         caipAddress && !invalidToToken && !invalidSourceToken && !invalidSourceTokenAmount,
-      isAuthConnector: type === 'AUTH'
+      isAuthConnector: type === 'ID_AUTH'
     }
   },
 
@@ -243,7 +243,6 @@ export const SwapController = {
   },
 
   async setTokenPrice(address: string, target: SwapInputTarget) {
-    const { availableToSwap } = this.getParams()
     let price = state.tokensPriceMap[address] || 0
 
     if (!price) {
@@ -259,9 +258,10 @@ export const SwapController = {
 
     if (state.loadingPrices) {
       state.loadingPrices = false
-      if (availableToSwap) {
-        this.swapTokens()
-      }
+    }
+
+    if (this.getParams().availableToSwap) {
+      this.swapTokens()
     }
   },
 
@@ -718,7 +718,8 @@ export const SwapController = {
         to: data.to as `0x${string}`,
         data: data.data as `0x${string}`,
         value: BigInt(data.value),
-        gasPrice: BigInt(data.gasPrice)
+        gasPrice: BigInt(data.gasPrice),
+        chainNamespace: 'eip155'
       })
 
       await this.swapTokens()
@@ -770,7 +771,8 @@ export const SwapController = {
         data: data.data as `0x${string}`,
         gas: data.gas,
         gasPrice: BigInt(data.gasPrice),
-        value: data.value
+        value: data.value,
+        chainNamespace: 'eip155'
       })
 
       state.loadingTransaction = false

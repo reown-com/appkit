@@ -5,7 +5,8 @@ import {
   type CombinedProvider,
   type Connector,
   type ConnectorType,
-  type Provider
+  type Provider,
+  CoreHelperUtil
 } from '@reown/appkit-core'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
@@ -226,6 +227,10 @@ export class EthersAdapter extends AdapterBlueprint {
       method: 'eth_requestAccounts'
     })
 
+    const requestChainId = await selectedProvider.request({
+      method: 'eth_chainId'
+    })
+
     this.listenProviderEvents(selectedProvider)
 
     if (!accounts[0]) {
@@ -238,7 +243,7 @@ export class EthersAdapter extends AdapterBlueprint {
 
     return {
       address: accounts[0],
-      chainId: Number(chainId),
+      chainId: Number(requestChainId) || Number(chainId),
       provider: selectedProvider,
       type: connector.type,
       id
@@ -257,15 +262,18 @@ export class EthersAdapter extends AdapterBlueprint {
 
     connectors.forEach(connector => {
       const key = connector === 'coinbase' ? 'coinbaseWalletSDK' : connector
+
+      const injectedConnector = connector === ConstantsUtil.INJECTED_CONNECTOR_ID
+
       if (this.namespace) {
         this.addConnector({
-          id: connector,
+          id: key,
           explorerId: PresetsUtil.ConnectorExplorerIds[key],
           imageUrl: options?.connectorImages?.[key],
           name: PresetsUtil.ConnectorNamesMap[key],
           imageId: PresetsUtil.ConnectorImageIds[key],
           type: PresetsUtil.ConnectorTypesMap[key] ?? 'EXTERNAL',
-          info: { rdns: key },
+          info: injectedConnector ? undefined : { rdns: key },
           chain: this.namespace,
           chains: [],
           provider: this.ethersConfig?.[connector as keyof ProviderType] as Provider
@@ -298,15 +306,8 @@ export class EthersAdapter extends AdapterBlueprint {
     if (event.detail) {
       const { info, provider } = event.detail
       const existingConnector = this.connectors?.find(c => c.name === info?.name)
-      const coinbaseConnector = this.connectors?.find(
-        c => c.id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
-      )
-      const isCoinbaseDuplicated =
-        coinbaseConnector &&
-        event.detail.info?.rdns ===
-          ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]
 
-      if (!existingConnector && !isCoinbaseDuplicated) {
+      if (!existingConnector) {
         const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EIP6963_CONNECTOR_ID]
 
         if (type && this.namespace) {
@@ -346,6 +347,8 @@ export class EthersAdapter extends AdapterBlueprint {
 
     let accounts: string[] = []
 
+    let requestChainId: string | undefined = undefined
+
     if (type === 'AUTH') {
       const { address } = await (selectedProvider as unknown as W3mFrameProvider).connect({
         chainId
@@ -357,12 +360,16 @@ export class EthersAdapter extends AdapterBlueprint {
         method: 'eth_requestAccounts'
       })
 
+      requestChainId = await selectedProvider.request({
+        method: 'eth_chainId'
+      })
+
       this.listenProviderEvents(selectedProvider)
     }
 
     return {
       address: accounts[0] as `0x${string}`,
-      chainId: Number(chainId),
+      chainId: Number(requestChainId) || Number(chainId),
       provider: selectedProvider,
       type: type as ConnectorType,
       id
@@ -376,6 +383,36 @@ export class EthersAdapter extends AdapterBlueprint {
 
     if (connector && connector.type === 'AUTH' && chainId) {
       await (connector.provider as W3mFrameProvider).connect({ chainId })
+    }
+  }
+
+  public async getAccounts(
+    params: AdapterBlueprint.GetAccountsParams
+  ): Promise<AdapterBlueprint.GetAccountsResult> {
+    const connector = this.connectors.find(c => c.id === params.id)
+    const selectedProvider = connector?.provider as Provider
+
+    if (!selectedProvider || !connector) {
+      throw new Error('Provider not found')
+    }
+
+    if (params.id === ConstantsUtil.AUTH_CONNECTOR_ID) {
+      const provider = connector['provider'] as W3mFrameProvider
+      const { address, accounts } = await provider.connect()
+
+      return Promise.resolve({
+        accounts: (accounts || [{ address, type: 'eoa' }]).map(account =>
+          CoreHelperUtil.createAccount('eip155', account.address, account.type)
+        )
+      })
+    }
+
+    const accounts: string[] = await selectedProvider.request({
+      method: 'eth_requestAccounts'
+    })
+
+    return {
+      accounts: accounts.map(account => CoreHelperUtil.createAccount('eip155', account, 'eoa'))
     }
   }
 
@@ -407,16 +444,22 @@ export class EthersAdapter extends AdapterBlueprint {
   ): Promise<AdapterBlueprint.GetBalanceResult> {
     const caipNetwork = this.caipNetworks?.find((c: CaipNetwork) => c.id === params.chainId)
 
-    if (caipNetwork) {
+    if (caipNetwork && caipNetwork.chainNamespace === 'eip155') {
       const jsonRpcProvider = new JsonRpcProvider(caipNetwork.rpcUrls.default.http[0], {
         chainId: caipNetwork.id as number,
         name: caipNetwork.name
       })
 
-      const balance = await jsonRpcProvider.getBalance(params.address)
-      const formattedBalance = formatEther(balance)
+      if (jsonRpcProvider) {
+        try {
+          const balance = await jsonRpcProvider.getBalance(params.address)
+          const formattedBalance = formatEther(balance)
 
-      return { balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol }
+          return { balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol }
+        } catch (error) {
+          return { balance: '', symbol: '' }
+        }
+      }
     }
 
     return { balance: '', symbol: '' }
