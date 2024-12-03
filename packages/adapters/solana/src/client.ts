@@ -175,6 +175,12 @@ export class SolanaAdapter extends AdapterBlueprint {
     return Promise.resolve('0x')
   }
 
+  public async getAccounts(): Promise<AdapterBlueprint.GetAccountsResult> {
+    return Promise.resolve({
+      accounts: []
+    })
+  }
+
   public async signMessage(
     params: AdapterBlueprint.SignMessageParams
   ): Promise<AdapterBlueprint.SignMessageResult> {
