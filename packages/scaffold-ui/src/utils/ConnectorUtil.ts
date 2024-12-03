@@ -30,7 +30,4 @@ export const ConnectorUtil = {
       featured: filteredFeatured
     }
   },
-  getConnectorRdns(explorerId: string) {
-    return AssetController.state.connectorRdns[explorerId]
-  }
 }
