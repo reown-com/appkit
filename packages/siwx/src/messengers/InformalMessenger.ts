@@ -42,7 +42,7 @@ export class InformalMessenger extends SIWXMessenger {
       params.expirationTime && `Expiration Time: ${params.expirationTime}`,
       params.notBefore && `Not Before: ${params.notBefore}`,
       params.requestId && `Request ID: ${params.requestId}`,
-      `Chain ID: ${params.chainId}`,
+      `Chain ID: ${params.chainId.split(':')[1]}`,
       params.resources?.length &&
         params.resources.reduce((acc, resource) => `${acc}\n- ${resource}`, 'Resources:')
     ]

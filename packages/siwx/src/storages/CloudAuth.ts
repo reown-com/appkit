@@ -48,17 +48,33 @@ export class CloudAuth implements SIWXStorage {
     throw new Error('Set is not available for CloudAuth')
   }
 
+  async getNonce(): Promise<string> {
+    const { nonce, token } = await this.request('nonce', undefined)
+
+    localStorage.setItem('cloud-token', token)
+
+    return nonce
+  }
+
   private async request<Key extends CloudAuth.RequestKey>(
     key: Key,
     params: CloudAuth.Requests[Key]['body']
   ): Promise<CloudAuth.Requests[Key]['response']> {
     const { projectId, st, sv } = ApiController._getSdkProperties()
 
+    const token = localStorage.getItem('cloud-token') || ''
+
     const response = await fetch(
       `${ConstantsUtil.W3M_API_URL}/auth/v1/${key}?projectId=${projectId}&st=${st}&sv=${sv}`,
       {
         method: RequestMethod[key],
-        body: JSON.stringify(params)
+        body: JSON.stringify(params),
+
+        headers: token
+          ? {
+              Authorization: `Bearer ${token}`
+            }
+          : undefined
       }
     )
 
@@ -86,7 +102,7 @@ export namespace CloudAuth {
   }
 
   export type Requests = {
-    nonce: Request<'GET', undefined, { nonce: string }>
+    nonce: Request<'GET', undefined, { nonce: string; token: string }>
     me: Request<'GET', undefined, { address: string; chainId: string }>
     authenticate: Request<
       'POST',
