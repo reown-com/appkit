@@ -2,7 +2,7 @@ import type { AppKitSdkVersion, Balance, ChainNamespace } from '@reown/appkit-co
 import { ConstantsUtil as CommonConstants } from '@reown/appkit-common'
 import { ConstantsUtil } from './ConstantsUtil.js'
 import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
-import type { ChainAdapter, LinkingRecord } from './TypeUtil.js'
+import type { AccountTypeMap, ChainAdapter, LinkingRecord, NamespaceTypeMap } from './TypeUtil.js'
 
 type SDKFramework = 'html' | 'react' | 'vue'
 
@@ -337,5 +337,16 @@ export const CoreHelperUtil = {
       : adapters.map(adapter => adapter.adapterType).join(',')
 
     return `${platform}-${adapterNames}-${version}`
+  },
+  createAccount<N extends ChainNamespace>(
+    namespace: N,
+    address: string,
+    type: NamespaceTypeMap[N]
+  ): AccountTypeMap[N] {
+    return {
+      namespace,
+      address,
+      type
+    } as AccountTypeMap[N]
   }
 }
