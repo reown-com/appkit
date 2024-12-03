@@ -86,19 +86,11 @@ jobs:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
       - name: Test
-        run: pnpm test
-
-      - name: Merge Coverage Reports
-        if: always()
-        run: pnpm coverage:merge
+        run: pnpm test:ci
 
       - name: Report
         if: always()
         uses: davelosert/vitest-coverage-report-action@v2
-        with:
-          name: Coverage
-          json-final-path: ./coverage/coverage-merged-final.json
-          json-summary-path: ./coverage/coverage-merged-summary.json
 
   ui-test:
     if: github.event.pull_request.draft == false
