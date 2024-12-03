@@ -1,14 +1,11 @@
 'use client'
 
 import * as React from 'react'
-import { RefreshCcw, Share2, Settings } from 'lucide-react'
+import { RefreshCcw, Share2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useAppKit } from '@/hooks/use-appkit'
 import { toast } from 'sonner'
 
 export function PreviewContent() {
-  const { setIsDrawerOpen } = useAppKit()
-
   const handleShare = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href)
@@ -20,12 +17,23 @@ export function PreviewContent() {
 
   return (
     <>
-      <div className="w-[400px] mx-auto flex-grow flex items-center justify-center">
-        {/* @ts-ignore */}
-        <w3m-modal style={{ positive: 'relative' }} embedded={true} class="embedded"></w3m-modal>
+      <div className="flex-col items-center gap-2 flex md:hidden pt-8">
+        <h4 className="text-[32px] text-text-primary mb-1 text-center">AppKit demo</h4>
+        <p className="text-[14px] text-text-secondary mb-6 text-center">
+          Use our AppKit demo to test and design onchain UX
+        </p>
       </div>
 
-      <div className="flex justify-center gap-2 mt-6">
+      <div className="w-full max-w-[400px] py-8 mx-auto flex-grow flex items-center justify-center">
+        {/* @ts-ignore */}
+        <w3m-modal
+          style={{ positive: 'relative', width: '100%' }}
+          embedded={true}
+          class="embedded"
+        />
+      </div>
+
+      <div className="flex justify-center gap-2">
         <Button variant="neutral-secondary" onClick={handleShare}>
           <Share2 size={16} className="mr-2" />
           Share
@@ -33,14 +41,6 @@ export function PreviewContent() {
         <Button variant="neutral-secondary">
           <RefreshCcw size={16} className="mr-2" />
           Reset
-        </Button>
-        <Button
-          variant="neutral-secondary"
-          className="flex sm:hidden"
-          onClick={() => setIsDrawerOpen(true)}
-        >
-          <Settings size={16} className="mr-2" />
-          Settings
         </Button>
       </div>
     </>

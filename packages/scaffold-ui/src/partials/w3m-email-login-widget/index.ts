@@ -1,10 +1,4 @@
-import {
-  ChainController,
-  ConnectorController,
-  CoreHelperUtil,
-  OptionsController,
-  type WalletGuideType
-} from '@reown/appkit-core'
+import { ChainController, ConnectorController, CoreHelperUtil } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
@@ -27,34 +21,11 @@ export class W3mEmailLoginWidget extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public tabIdx?: number
 
-  @state() private connectors = ConnectorController.state.connectors
-
-  @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
-
   @state() private email = ''
 
   @state() private loading = false
 
   @state() private error = ''
-
-  @state() private features = OptionsController.state.features
-
-  @state() private enableWallets = OptionsController.state.enableWallets
-
-  @property() private walletGuide: WalletGuideType = 'get-started'
-
-  public constructor() {
-    super()
-    this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => {
-        this.connectors = val
-        this.authConnector = val.find(c => c.type === 'AUTH')
-      }),
-      OptionsController.subscribeKey('features', val => {
-        this.features = val
-      })
-    )
-  }
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())

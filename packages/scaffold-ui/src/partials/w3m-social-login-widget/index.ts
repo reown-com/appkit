@@ -78,7 +78,7 @@ export class W3mSocialLoginWidget extends LitElement {
     const isSocialDisabled = !this.authConnector || !socials || !socials?.length
 
     if (isSocialDisabled && isCreateWalletPage) {
-      socials = ConstantsUtil.DEFAULT_FEATURES.socials
+      socials = ConstantsUtil.DEFAULT_FEATURES.socials as SocialProvider[]
     }
 
     if (!socials) {
@@ -102,13 +102,13 @@ export class W3mSocialLoginWidget extends LitElement {
     }
 
     return html` <wui-list-social
-      data-testid=${`social-selector-${socials?.[0]}`}
+      data-testid=${`social-selector-${(socials as SocialProvider[])[0]}`}
       @click=${() => {
-        this.onSocialClick(socials?.[0])
+        this.onSocialClick((socials as SocialProvider[])[0])
       }}
-      logo=${ifDefined(socials[0])}
+      logo=${ifDefined((socials as SocialProvider[])[0])}
       align="center"
-      name=${`Continue with ${socials[0]}`}
+      name=${`Continue with ${(socials as SocialProvider[])[0]}`}
       tabIdx=${ifDefined(this.tabIdx)}
     ></wui-list-social>`
   }

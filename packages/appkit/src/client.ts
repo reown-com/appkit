@@ -23,7 +23,10 @@ import {
   type Features,
   SIWXUtil,
   type ConnectionStatus,
-  type OptionsControllerState
+  type OptionsControllerState,
+  type WalletFeature,
+  type ConnectMethod,
+  type SocialProvider
 } from '@reown/appkit-core'
 import {
   AccountController,
@@ -604,11 +607,11 @@ export class AppKit {
     OptionsController.setOptions(updatedOptions)
   }
 
-  public setConnectMethodOrder(connectMethodOrder: ('email' | 'social' | 'wallet')[]) {
+  public setConnectMethodOrder(connectMethodOrder: ConnectMethod[]) {
     OptionsController.setConnectMethodOrder(connectMethodOrder)
   }
 
-  public setWalletFeatureOrder(walletFeatureOrder: ('swap' | 'send' | 'receive' | 'buy')[]) {
+  public setWalletFeatureOrder(walletFeatureOrder: WalletFeature[]) {
     OptionsController.setWalletFeatureOrder(walletFeatureOrder)
   }
 
@@ -616,9 +619,7 @@ export class AppKit {
     OptionsController.setCollapseWallets(collapseWallets)
   }
 
-  public setSocialsOrder(
-    socialsOrder: ('apple' | 'google' | 'x' | 'github' | 'farcaster' | 'discord' | 'facebook')[]
-  ) {
+  public setSocialsOrder(socialsOrder: SocialProvider[]) {
     OptionsController.setSocialsOrder(socialsOrder)
   }
 

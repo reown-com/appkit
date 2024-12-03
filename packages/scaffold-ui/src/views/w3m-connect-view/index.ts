@@ -113,7 +113,6 @@ export class W3mConnectView extends LitElement {
     const connectMethodOrder = this.features?.experimental_connectMethodOrder
 
     if (!connectMethodOrder) {
-      // TODO: will be implemented
       return null
     }
 
@@ -141,6 +140,8 @@ export class W3mConnectView extends LitElement {
         return this.features?.socials && this.features?.socials.length > 0
       case 'email':
         return this.features?.email
+      default:
+        return null
     }
   }
 
@@ -174,12 +175,7 @@ export class W3mConnectView extends LitElement {
     switch (type) {
       case 'wallet': {
         const isWalletEnable = this.enableWallets
-        console.log(
-          '>>> wallet separator logic',
-          isWalletEnable,
-          nextEnabledMethod,
-          this.walletGuide
-        )
+
         return isWalletEnable && nextEnabledMethod && !isExplore
           ? html`<wui-separator text="or"></wui-separator>`
           : null
@@ -187,6 +183,7 @@ export class W3mConnectView extends LitElement {
       case 'email': {
         const isEmailEnabled = this.features?.email
         const isNextMethodSocial = nextEnabledMethod === 'social'
+
         return isEmailEnabled && !isNextMethodSocial && nextEnabledMethod
           ? html`<wui-separator text="or"></wui-separator>`
           : null
@@ -235,7 +232,6 @@ export class W3mConnectView extends LitElement {
   private walletListTemplate(tabIndex?: number) {
     const enableWallets = this.enableWallets
     const collapseWallets = this.features?.experimental_collapseWallets
-    console.log('>>> collapseWallets', collapseWallets)
 
     if (!enableWallets) {
       return null
@@ -266,8 +262,6 @@ export class W3mConnectView extends LitElement {
 
   private guideTemplate(disabled = false) {
     const socials = this.features?.socials
-    const enableWallets = OptionsController.state.enableWallets
-
     const socialsExist = socials && socials.length
 
     const classes = {
@@ -291,7 +285,7 @@ export class W3mConnectView extends LitElement {
         class=${classMap(classes)}
       >
         <w3m-wallet-guide
-          tabId=${ifDefined(tabIndex)}
+          tabIdx=${ifDefined(tabIndex)}
           walletGuide=${this.walletGuide}
         ></w3m-wallet-guide>
       </wui-flex>

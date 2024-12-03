@@ -1,12 +1,15 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
 import type {
+  ConnectMethod,
   CustomWallet,
   Features,
   Metadata,
   ProjectId,
   SdkVersion,
-  Tokens
+  SocialProvider,
+  Tokens,
+  WalletFeature
 } from '../utils/TypeUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import type { SIWXConfig } from '../utils/SIWXUtil.js'
@@ -243,23 +246,21 @@ export const OptionsController = {
     state.siwx = siwx
   },
 
-  setConnectMethodOrder(connectMethodOrder: ('email' | 'social' | 'wallet')[]) {
+  setConnectMethodOrder(connectMethodOrder: ConnectMethod[]) {
     state.features = {
       ...state.features,
       experimental_connectMethodOrder: connectMethodOrder
     }
   },
 
-  setWalletFeatureOrder(
-    walletFeatureOrder: OptionsControllerState['features']['experimental_walletFeaturesOrder']
-  ) {
+  setWalletFeatureOrder(walletFeatureOrder: WalletFeature[]) {
     state.features = {
       ...state.features,
       experimental_walletFeaturesOrder: walletFeatureOrder
     }
   },
 
-  setSocialsOrder(socialsOrder: OptionsControllerState['features']['socials']) {
+  setSocialsOrder(socialsOrder: SocialProvider[]) {
     state.features = {
       ...state.features,
       socials: socialsOrder

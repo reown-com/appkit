@@ -5,7 +5,7 @@ import { useAppKit } from '@/hooks/use-appkit'
 import { SidebarContent } from '@/components/sidebar-content'
 import { PreviewContent } from '@/components/preview-content'
 import { cn } from '@/lib/utils'
-import VaulDrawer from '@/components/drawer'
+import { W3mHeader } from '@reown/appkit-scaffold-ui'
 
 export default function Component() {
   const { isLoading, themeMode } = useAppKit()
@@ -19,14 +19,17 @@ export default function Component() {
   }
 
   return (
-    <div className={cn('flex p-4 bg-background h-screen', themeMode === 'dark' ? 'dark' : '')}>
-      <VaulDrawer />
-
-      <div className="w-[340px] bg-fg-primary text-foreground p-6 flex-col rounded-2xl hidden sm:flex">
+    <div
+      className={cn(
+        'flex flex-col-reverse overflow-auto items-center md:items-start md:flex-row p-4 bg-background h-screen gap-8',
+        themeMode === 'dark' ? 'dark' : ''
+      )}
+    >
+      <div className="flex max-w-[360px] md:max-w-[340px] w-full bg-fg-primary h-none md:h-full text-foreground p-6 flex-col rounded-2xl">
         <SidebarContent />
       </div>
 
-      <div className="flex-grow flex flex-col p-6">
+      <div className="flex-grow flex flex-col max-w-[360px] md:max-w-none w-full h-none md:h-full">
         <PreviewContent />
       </div>
     </div>

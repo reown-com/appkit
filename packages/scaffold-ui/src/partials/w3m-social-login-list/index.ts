@@ -8,13 +8,12 @@ import {
   OptionsController,
   RouterController,
   SnackController,
-  type FeaturesSocials
+  type SocialProvider
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import styles from './styles.js'
-import type { SocialProvider } from '@reown/appkit-utils'
 import { SocialProviderEnum } from '@reown/appkit-utils'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
@@ -55,7 +54,7 @@ export class W3mSocialLoginList extends LitElement {
   public override render() {
     let socials = this.features?.socials || []
     const isAuthConnectorExist = Boolean(this.authConnector)
-    const isSocialsEnabled = socials && socials?.length
+    const isSocialsEnabled = socials?.length
     const isConnectSocialsView = RouterController.state.view === 'ConnectSocials'
 
     if ((!isAuthConnectorExist || !isSocialsEnabled) && !isConnectSocialsView) {
@@ -63,7 +62,7 @@ export class W3mSocialLoginList extends LitElement {
     }
 
     if (isConnectSocialsView && !isSocialsEnabled) {
-      socials = ConstantsUtil.DEFAULT_FEATURES.socials as FeaturesSocials[]
+      socials = ConstantsUtil.DEFAULT_FEATURES.socials as SocialProvider[]
     }
 
     return html` <wui-flex flexDirection="column" gap="xs">

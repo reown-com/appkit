@@ -159,10 +159,16 @@ export class W3mAccountDefaultWidget extends LitElement {
     ]
 
     return featuresOrder.map(feature => {
-      if (feature === 'onramp') return this.onrampTemplate()
-      if (feature === 'swaps') return this.swapsTemplate()
-      if (feature === 'send') return this.sendTemplate()
-      return
+      switch (feature) {
+        case 'onramp':
+          return this.onrampTemplate()
+        case 'swaps':
+          return this.swapsTemplate()
+        case 'send':
+          return this.sendTemplate()
+        default:
+          return null
+      }
     })
   }
 

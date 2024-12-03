@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react'
+import React, { createContext } from 'react'
 import type { ThemeVariables, Features, ThemeMode } from '@reown/appkit-core'
 
 interface AppKitContextType {

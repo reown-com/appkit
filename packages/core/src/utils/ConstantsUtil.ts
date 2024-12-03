@@ -1,4 +1,4 @@
-import type { Features, FeaturesSocials } from './TypeUtil.js'
+import type { Features, SocialProvider } from './TypeUtil.js'
 import type { ChainNamespace } from '@reown/appkit-common'
 
 const SECURE_SITE = 'https://secure.walletconnect.org'
@@ -229,7 +229,7 @@ export const ConstantsUtil = {
       'github',
       'apple',
       'facebook'
-    ] as FeaturesSocials[],
+    ] as SocialProvider[],
     history: true,
     analytics: true,
     allWallets: true,

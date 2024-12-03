@@ -9,6 +9,7 @@ import { ConstantsUtil } from '@reown/appkit-core'
 import { ThemeStore } from '../lib/ThemeStore'
 import { getStateFromUrl, updateUrlState } from '@/lib/url-state'
 import { AppKitContext } from '@/contexts/appkit-context'
+import { ConnectMethodValue, WalletFeatureValue } from '@/lib/types'
 
 const networks = [mainnet, polygon] as [AppKitNetwork, ...AppKitNetwork[]]
 
@@ -25,8 +26,8 @@ interface AppKitProviderProps {
   children: ReactNode
 }
 
-const defaultConnectMethodOrder = ['email', 'social', 'wallet']
-const defaultWalletFeatureOrder = ['swap', 'send', 'receive', 'buy']
+const defaultConnectMethodOrder = ['email', 'social', 'wallet'] as ConnectMethodValue[]
+const defaultWalletFeatureOrder = ['swap', 'send', 'receive', 'onramp'] as WalletFeatureValue[]
 
 export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true)

@@ -137,23 +137,22 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       return null
     }
 
-    return html`<wui-flex gap="s"
-      >${walletFeaturesOrder.map(feature => {
-        if (feature === 'onramp') {
-          return this.onrampTemplate()
+    return html`<wui-flex gap="s">
+      ${walletFeaturesOrder.map(feature => {
+        switch (feature) {
+          case 'onramp':
+            return this.onrampTemplate()
+          case 'swaps':
+            return this.swapsTemplate()
+          case 'receive':
+            return this.receiveTemplate()
+          case 'send':
+            return this.sendTemplate()
+          default:
+            return null
         }
-        if (feature === 'swaps') {
-          return this.swapsTemplate()
-        }
-        if (feature === 'receive') {
-          return this.receiveTemplate()
-        }
-        if (feature === 'send') {
-          return this.sendTemplate()
-        }
-        return null
-      })}</wui-flex
-    >`
+      })}
+    </wui-flex>`
   }
 
   private onrampTemplate() {

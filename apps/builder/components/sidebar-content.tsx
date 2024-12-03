@@ -15,13 +15,15 @@ export function SidebarContent() {
   const [activeTab, setActiveTab] = React.useState('auth')
 
   return (
-    <div className={cn('h-full flex flex-col', themeMode === 'dark' ? 'dark' : '')}>
-      <h4 className="text-3xl text-text-primary mb-1">AppKit demo</h4>
-      <p className="text-sm text-text-secondary mb-6">
-        Use our AppKit demo to test and design onchain UX
-      </p>
+    <div className={cn('flex flex-col', themeMode === 'dark' ? 'dark' : '')}>
+      <div className="flex-col items-start gap-2 hidden md:flex">
+        <h4 className="text-3xl text-text-primary mb-1">AppKit demo</h4>
+        <p className="text-sm text-text-secondary mb-6">
+          Use our AppKit demo to test and design onchain UX
+        </p>
+      </div>
 
-      <div className="flex flex-col flex-1 min-h-[300px]">
+      <div className="flex flex-col">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6 w-full">
           <TabsList className="w-full bg-fg-secondary">
             <TabsTrigger className="w-full transition-colors" value="auth">
@@ -41,7 +43,7 @@ export function SidebarContent() {
         {activeTab === 'other' && <SidebarContentDesign />}
       </div>
 
-      <div className="flex flex-col items-center w-full gap-2">
+      <div className="flex flex-col items-center w-full gap-2 mt-8">
         <Button variant="neutral-secondary" className="bg-transparent rounded-xl w-full">
           <MonitorSmartphone size={16} className="mr-2" />
           Read our docs

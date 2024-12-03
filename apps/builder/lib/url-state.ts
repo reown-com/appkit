@@ -1,16 +1,18 @@
-type Features = {
-  email?: boolean
-  socials?: string[] | false
-  emailShowWallets?: boolean
-}
+import { ConnectMethodValue, WalletFeatureValue } from '@/lib/types'
+import { Features, ThemeMode } from '@reown/appkit-core'
 
-type ThemeMode = 'dark' | 'light'
-
-export function getStateFromUrl(): {
+type URLState = {
   features: Features
   themeMode: ThemeMode
   enableWallets: boolean
-} {
+  termsConditions?: string
+  privacyPolicy?: string
+  walletFeatureOrder?: WalletFeatureValue[]
+  connectMethodOrder?: ConnectMethodValue[]
+  collapseWallets?: boolean
+}
+
+export function getStateFromUrl(): URLState {
   if (typeof window === 'undefined')
     return { features: {}, themeMode: 'light', enableWallets: false }
 
