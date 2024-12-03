@@ -41,10 +41,14 @@ export const EthersHelpersUtil = {
       params: [
         {
           chainId: EthersHelpersUtil.numberToHexString(caipNetwork.id),
-          rpcUrls: caipNetwork.rpcUrls.default.http,
+          rpcUrls: [caipNetwork.rpcUrls.default.http[0]],
           chainName: caipNetwork.name,
-          nativeCurrency: caipNetwork.nativeCurrency,
-          blockExplorerUrls: caipNetwork.blockExplorers,
+          nativeCurrency: {
+            name: caipNetwork.nativeCurrency.name,
+            decimals: caipNetwork.nativeCurrency.decimals,
+            symbol: caipNetwork.nativeCurrency.symbol
+          },
+          blockExplorerUrls: [caipNetwork.blockExplorers?.default.url],
           iconUrls: [PresetsUtil.NetworkImageIds[caipNetwork.id]]
         }
       ]

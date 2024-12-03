@@ -8,9 +8,11 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsEthersSolana } from '../../components/MultiChainTestsEthersSolana'
 import { mainnet } from '@reown/appkit/networks'
-import { CloudAuth, DefaultSIWX } from '@reown/appkit-siwx'
+import { DefaultSIWX, CloudAuth } from '@reown/appkit-siwx'
+import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
 
 const networks = ConstantsUtil.AllNetworks
+networks.push(...ConstantsUtil.BitcoinNetworks)
 
 const etherAdapter = new EthersAdapter()
 
@@ -18,8 +20,10 @@ const solanaWeb3JsAdapter = new SolanaAdapter({
   wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 
+const bitcoinAdapter = new BitcoinAdapter({})
+
 const modal = createAppKit({
-  adapters: [etherAdapter, solanaWeb3JsAdapter],
+  adapters: [etherAdapter, solanaWeb3JsAdapter, bitcoinAdapter],
   projectId: ConstantsUtil.ProjectId,
   networks,
   defaultNetwork: mainnet,

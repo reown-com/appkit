@@ -3,6 +3,7 @@ import {
   ChainController,
   ConnectorController,
   OptionsController,
+  type AuthConnector,
   type Metadata,
   type SdkVersion,
   type ThemeMode,
@@ -38,14 +39,14 @@ const externalConnector = {
   name: 'External'
 } as const
 const evmAuthConnector = {
-  id: 'w3mAuth',
+  id: 'ID_AUTH',
   type: 'AUTH',
   provider: authProvider,
   chain: ConstantsUtil.CHAIN.EVM,
   name: 'Auth'
 } as const
 const solanaAuthConnector = {
-  id: 'w3mAuth',
+  id: 'ID_AUTH',
   type: 'AUTH',
   provider: authProvider,
   chain: ConstantsUtil.CHAIN.SOLANA,
@@ -161,7 +162,7 @@ describe('ConnectorController', () => {
     OptionsController.setSdkVersion(mockDappData.sdkVersion)
     OptionsController.setProjectId(mockDappData.projectId)
 
-    ConnectorController.addConnector(evmAuthConnector)
+    ConnectorController.addConnector(evmAuthConnector as unknown as AuthConnector)
     expect(ConnectorController.state.connectors).toEqual([
       walletConnectConnector,
       externalConnector,
@@ -184,7 +185,7 @@ describe('ConnectorController', () => {
   })
 
   it('getAuthConnector() should return merged connector when already added on different network', () => {
-    ConnectorController.addConnector(solanaAuthConnector)
+    ConnectorController.addConnector(solanaAuthConnector as unknown as AuthConnector)
     const connector = ConnectorController.getAuthConnector()
     expect(connector).toEqual(evmAuthConnector)
   })
@@ -206,7 +207,7 @@ describe('ConnectorController', () => {
       zerionConnector,
       // Need to define inline to reference the spies
       {
-        id: 'w3mAuth',
+        id: 'ID_AUTH',
         imageId: undefined,
         imageUrl: undefined,
         name: 'Auth',
@@ -215,7 +216,7 @@ describe('ConnectorController', () => {
         connectors: [
           {
             chain: 'eip155',
-            id: 'w3mAuth',
+            id: 'ID_AUTH',
             name: 'Auth',
             provider: {
               syncDappData: syncDappDataSpy,
@@ -225,7 +226,7 @@ describe('ConnectorController', () => {
           },
           {
             chain: 'solana',
-            id: 'w3mAuth',
+            id: 'ID_AUTH',
             name: 'Auth',
             provider: {
               syncDappData: syncDappDataSpy,
@@ -251,7 +252,7 @@ describe('ConnectorController', () => {
     }
 
     const mergedAuthConnector = {
-      id: 'w3mAuth',
+      id: 'ID_AUTH',
       imageId: undefined,
       imageUrl: undefined,
       name: 'Auth',
@@ -260,7 +261,7 @@ describe('ConnectorController', () => {
       connectors: [
         {
           chain: 'eip155',
-          id: 'w3mAuth',
+          id: 'ID_AUTH',
           name: 'Auth',
           provider: {
             syncDappData: syncDappDataSpy,
@@ -270,7 +271,7 @@ describe('ConnectorController', () => {
         },
         {
           chain: 'solana',
-          id: 'w3mAuth',
+          id: 'ID_AUTH',
           name: 'Auth',
           provider: {
             syncDappData: syncDappDataSpy,

@@ -52,11 +52,15 @@ export class CloudAuth implements SIWXStorage {
     key: Key,
     params: CloudAuth.Requests[Key]['body']
   ): Promise<CloudAuth.Requests[Key]['response']> {
-    const response = await fetch(`${ConstantsUtil.W3M_API_URL}/auth/v1/${key}`, {
-      method: RequestMethod[key],
-      body: JSON.stringify(params),
-      headers: ApiController._getApiHeaders() satisfies { 'x-project-id': string }
-    })
+    const { projectId, st, sv } = ApiController._getSdkProperties()
+
+    const response = await fetch(
+      `${ConstantsUtil.W3M_API_URL}/auth/v1/${key}?projectId=${projectId}&st=${st}&sv=${sv}`,
+      {
+        method: RequestMethod[key],
+        body: JSON.stringify(params)
+      }
+    )
 
     if (response.headers.get('content-type')?.includes('application/json')) {
       return response.json()

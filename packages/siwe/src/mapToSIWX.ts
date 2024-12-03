@@ -1,88 +1,216 @@
-import type { SIWXConfig, SIWXMessage, SIWXSession } from '@reown/appkit-core'
-import type { SIWEConfig } from '../exports/index.js'
-import { DefaultSIWX, InformalMessenger } from '@reown/appkit-siwx'
+import {
+  ChainController,
+  CoreHelperUtil,
+  type SIWXConfig,
+  type SIWXMessage,
+  type SIWXSession
+} from '@reown/appkit-core'
+import type { AppKitSIWEClient } from '../exports/index.js'
 import { NetworkUtil } from '@reown/appkit-common'
 
-export async function mapToSIWX(siwe: SIWEConfig): Promise<SIWXConfig> {
-  const params = await siwe.getMessageParams?.()
+const subscriptions: (() => void)[] = []
 
-  const domain = params?.domain || 'Unknown Domain'
-  const uri = params?.uri || 'Unknown URI'
+export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
+  async function getSession() {
+    try {
+      const response = await siwe.methods.getSession()
 
-  const messenger = new InformalMessenger({
-    domain,
-    uri,
-    expiration: params?.expiry,
-    getNonce: ({ accountAddress }) => siwe.getNonce(accountAddress)
-  })
+      if (!response) {
+        return undefined
+      }
 
-  return new DefaultSIWX({
-    messenger,
+      if (!response?.address) {
+        throw new Error('SIWE session is missing address')
+      }
 
-    verifiers: [
-      {
-        chainNamespace: 'eip155',
-        shouldVerify: session => session.data.chainId.startsWith('eip155'),
-        verify: async session => {
-          const success = await siwe.verifyMessage({
-            message: session.message.toString(),
-            signature: session.signature
-          })
+      if (!response?.chainId) {
+        throw new Error('SIWE session is missing chainId')
+      }
 
-          return success
+      return response
+    } catch (error) {
+      console.warn('AppKit:SIWE:getSession - error:', error)
+
+      return undefined
+    }
+  }
+
+  async function signOut() {
+    await siwe.methods.signOut()
+    siwe.methods.onSignOut?.()
+  }
+
+  subscriptions.forEach(unsubscribe => unsubscribe())
+  subscriptions.push(
+    ChainController.subscribeKey('activeCaipNetwork', async activeCaipNetwork => {
+      if (!siwe.options.signOutOnNetworkChange) {
+        return
+      }
+
+      const session = await getSession()
+      const isDifferentNetwork =
+        session &&
+        session.chainId !== NetworkUtil.caipNetworkIdToNumber(activeCaipNetwork?.caipNetworkId)
+
+      if (isDifferentNetwork) {
+        await signOut()
+      }
+    }),
+    ChainController.subscribeKey('activeCaipAddress', async activeCaipAddress => {
+      if (siwe.options.signOutOnDisconnect && !activeCaipAddress) {
+        const session = await getSession()
+        if (session) {
+          await signOut()
+        }
+
+        return
+      }
+
+      if (siwe.options.signOutOnAccountChange) {
+        const session = await getSession()
+
+        const lowercaseSessionAddress = session?.address?.toLowerCase()
+        const lowercaseCaipAddress =
+          CoreHelperUtil?.getPlainAddress(activeCaipAddress)?.toLowerCase()
+
+        const isDifferentAddress = session && lowercaseSessionAddress !== lowercaseCaipAddress
+
+        if (isDifferentAddress) {
+          await signOut()
         }
       }
-    ],
+    })
+  )
 
-    storage: {
-      add: async session => {
-        const chainId = NetworkUtil.parseEvmChainId(session.data.chainId)
+  return {
+    async createMessage(input) {
+      const params = await siwe.methods.getMessageParams?.()
 
-        if (!chainId) {
-          throw new Error('Invalid chain ID!')
-        }
+      if (!params) {
+        throw new Error('Failed to get message params!')
+      }
 
-        siwe.onSignIn?.({
+      const nonce = await siwe.getNonce(input.accountAddress)
+      const issuedAt = params.iat || new Date().toISOString()
+      const version = '1'
+
+      return {
+        nonce,
+        version,
+        requestId: params.requestId,
+        accountAddress: input.accountAddress,
+        chainId: input.chainId,
+        domain: params.domain,
+        uri: params.uri,
+        notBefore: params.nbf,
+        resources: params.resources,
+        statement: params.statement,
+        expirationTime: params.exp,
+        issuedAt,
+        toString: () =>
+          siwe.createMessage({
+            ...params,
+            chainId: NetworkUtil.caipNetworkIdToNumber(input.chainId) || 1,
+            address: `did:pkh:${input.chainId}:${input.accountAddress}`,
+            nonce,
+            version,
+            iat: issuedAt
+          })
+      }
+    },
+
+    async addSession(session) {
+      const chainId = NetworkUtil.parseEvmChainId(session.data.chainId)
+
+      if (!chainId) {
+        // Workaround to ignore non-EVM chains to keep the same behavior of SIWE
+        return Promise.resolve()
+      }
+
+      if (await siwe.methods.verifyMessage(session)) {
+        siwe.methods.onSignIn?.({
           address: session.data.accountAddress,
-          chainId
+          chainId: NetworkUtil.parseEvmChainId(session.data.chainId) as number
         })
 
         return Promise.resolve()
-      },
+      }
 
-      get: async (chainId, address) => {
+      throw new Error('Failed to verify message')
+    },
+
+    async revokeSession(_chainId, _address) {
+      try {
+        await signOut()
+      } catch (error) {
+        console.warn('AppKit:SIWE:revokeSession - signOut error', error)
+      }
+    },
+
+    async setSessions(sessions) {
+      if (sessions.length === 0) {
         try {
-          const siweSession = await siwe.getSession()
-          const siweCaipNetworkId = `eip155:${siweSession?.chainId}`
-          if (!siweSession || siweSession.address !== address || siweCaipNetworkId !== chainId) {
-            return []
-          }
+          await signOut()
+        } catch (error) {
+          console.warn('AppKit:SIWE:setSessions - signOut error', error)
+        }
+      } else {
+        /*
+         * The default SIWE implementation would only support one session
+         * So we only add the first session to keep backwards compatibility
+         */
+        const session = (sessions.find(
+          s => s.data.chainId === ChainController.getActiveCaipNetwork()?.caipNetworkId
+        ) || sessions[0]) as SIWXSession
+        await this.addSession(session)
+      }
+    },
 
-          // How should we parse the session?
-          const session: SIWXSession = {
-            data: {
-              accountAddress: siweSession.address,
-              chainId: siweCaipNetworkId
-            } as SIWXMessage.Data,
-            message: '',
-            signature: ''
-          }
+    async getSessions(chainId, address) {
+      try {
+        if (!chainId.startsWith('eip155:')) {
+          // Workaround to ignore non-EVM chains to keep the same behavior of SIWE
+          return [
+            {
+              data: {
+                accountAddress: address,
+                chainId
+              },
+              message: '',
+              signature: ''
+            } as SIWXSession
+          ]
+        }
 
-          return [session]
-        } catch {
+        const siweSession = await getSession()
+        const siweCaipNetworkId = `eip155:${siweSession?.chainId}`
+        const lowercaseSessionAddress = siweSession?.address?.toLowerCase()
+        const lowercaseCaipAddress = address?.toLowerCase()
+
+        if (
+          !siweSession ||
+          lowercaseSessionAddress !== lowercaseCaipAddress ||
+          siweCaipNetworkId !== chainId
+        ) {
           return []
         }
-      },
 
-      set: async () => Promise.resolve(),
-
-      delete: async () => {
-        if (await siwe.signOut()) {
-          return Promise.resolve()
+        const session: SIWXSession = {
+          data: {
+            accountAddress: siweSession.address,
+            chainId: siweCaipNetworkId
+          } as SIWXMessage.Data,
+          message: '',
+          signature: ''
         }
 
-        throw new Error('Failed to sign out!')
+        return [session]
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.warn('AppKit:SIWE:getSessions - error:', error)
+
+        return []
       }
     }
-  })
+  }
 }

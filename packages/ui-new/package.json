@@ -1,0 +1,44 @@
+{
+  "name": "@reown/appkit-ui-new",
+  "private": true,
+  "version": "1.4.1",
+  "type": "module",
+  "main": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "files": [
+    "dist",
+    "!tsconfig.tsbuildinfo"
+  ],
+  "scripts": {
+    "build:clean": "rm -rf dist",
+    "build": "tsc --build",
+    "watch": "tsc --watch",
+    "test": "vitest run --dir tests --coverage.enabled --reporter=junit --coverage.reporter=json-summary --coverage.reporter=html",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+  },
+  "dependencies": {
+    "lit": "3.1.0",
+    "qrcode": "1.5.3"
+  },
+  "devDependencies": {
+    "@types/qrcode": "1.5.5",
+    "@reown/appkit-common": "workspace:*",
+    "@reown/appkit-wallet": "workspace:*",
+    "@reown/appkit-core": "workspace:*",
+    "eslint-plugin-lit": "1.11.0",
+    "eslint-plugin-wc": "2.0.4",
+    "vitest": "2.1.3",
+    "@vitest/coverage-v8": "2.1.3"
+  },
+  "author": "Reown <support@reown.com> (https://reown.com)",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/reown-com/appkit",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reown-com/appkit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/reown-com/appkit/issues"
+  }
+}
