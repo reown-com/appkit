@@ -13,7 +13,6 @@ import {
   ConnectionController,
   EnsController,
   EventsController,
-  type AccountType,
   type CombinedProvider,
   AssetUtil,
   ConnectorController,
@@ -200,9 +199,25 @@ describe('Base', () => {
     })
 
     it('should set all accounts', () => {
-      const addresses = ['0x123', '0x456'] as unknown as AccountType[]
-      appKit.setAllAccounts(addresses, 'eip155')
-      expect(AccountController.setAllAccounts).toHaveBeenCalledWith(addresses, 'eip155')
+      const evmAddresses = [
+        { address: '0x1', namespace: 'eip155', type: 'eoa' } as const,
+        { address: '0x2', namespace: 'eip155', type: 'smartAccount' } as const
+      ]
+
+      const solanaAddresses = [{ address: 'asdbjk', namespace: 'solana', type: 'eoa' } as const]
+
+      const bip122Addresses = [
+        { address: 'asdasd1', namespace: 'bip122', type: 'payment' } as const,
+        { address: 'asdasd2', namespace: 'bip122', type: 'ordinal' } as const,
+        { address: 'ASDASD3', namespace: 'bip122', type: 'stx' } as const
+      ]
+
+      appKit.setAllAccounts(evmAddresses, 'eip155')
+      appKit.setAllAccounts(solanaAddresses, 'solana')
+      appKit.setAllAccounts(bip122Addresses, 'bip122')
+      expect(AccountController.setAllAccounts).toHaveBeenCalledWith(evmAddresses, 'eip155')
+      expect(AccountController.setAllAccounts).toHaveBeenCalledWith(solanaAddresses, 'solana')
+      expect(AccountController.setAllAccounts).toHaveBeenCalledWith(bip122Addresses, 'bip122')
       expect(OptionsController.setHasMultipleAddresses).toHaveBeenCalledWith(true)
     })
 
@@ -526,6 +541,7 @@ describe('Base', () => {
       expect(AccountController.resetAccount).toHaveBeenCalledWith('eip155')
 
       expect(AccountController.setStatus).toHaveBeenCalledWith('disconnected', 'eip155')
+      expect(AccountController.resetAccount).toHaveBeenCalledWith('eip155')
     })
 
     it('should set unsupported chain when synced chainId is not supported', async () => {
@@ -537,6 +553,7 @@ describe('Base', () => {
       ;(appKit as any).caipNetworks = [{ id: 'eip155:1', chainNamespace: 'eip155' }]
 
       const mockAdapter = {
+        getAccounts: vi.fn().mockResolvedValue([]),
         syncConnection: vi.fn().mockResolvedValue({
           chainId: 'eip155:999', // Unsupported chain
           address: '0x123'
@@ -610,6 +627,7 @@ describe('Base', () => {
       })
 
       const mockAdapter = {
+        getAccounts: vi.fn().mockResolvedValue([]),
         syncConnection: vi.fn().mockResolvedValue({
           address: '0x123',
           chainId: '1',
@@ -649,6 +667,7 @@ describe('Base', () => {
       })
 
       const mockAdapter = {
+        getAccounts: vi.fn().mockResolvedValue([]),
         syncConnection: vi.fn().mockResolvedValue(null),
         on: vi.fn()
       }
@@ -675,6 +694,7 @@ describe('Base', () => {
       vi.mocked(ConnectorController).getConnectors = vi.fn().mockReturnValue([])
 
       mockAdapter = {
+        getAccounts: vi.fn().mockResolvedValue([]),
         namespace: 'eip155',
         construct: vi.fn(),
         setUniversalProvider: vi.fn(),
