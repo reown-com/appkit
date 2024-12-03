@@ -15,6 +15,8 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   readonly wallet: Wallet
   private requestedChains: CaipNetwork[] = []
 
+  private walletUnsubscribes: (() => void)[] = []
+
   constructor({ wallet, requestedChains }: WalletStandardConnector.ConstructorParams) {
     super()
     this.provider = this
@@ -32,7 +34,7 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   }
 
   public get imageUrl(): string {
-    return this.wallet.icon || ''
+    return this.wallet.icon
   }
 
   public get chains() {
@@ -128,7 +130,7 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
     }
   }
 
-  sendTransfer(_params: BitcoinConnector.SendTransferParams): Promise<string> {
+  async sendTransfer(_params: BitcoinConnector.SendTransferParams): Promise<string> {
     return Promise.reject(
       new MethodNotSupportedError(
         this.id,
@@ -139,10 +141,12 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   }
 
   async disconnect() {
+    this.unbindEvents()
+
     return Promise.resolve()
   }
 
-  request<T>(_args: RequestArguments): Promise<T> {
+  async request<T>(_args: RequestArguments): Promise<T> {
     return Promise.reject(new MethodNotSupportedError(this.id, 'request'))
   }
 
@@ -157,20 +161,35 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   }
 
   private bindEvents() {
-    const feature = this.getWalletFeature('standard:events')
+    this.unbindEvents()
 
-    feature.on('change', data => {
-      if ('accounts' in data && data.accounts) {
-        if (data.accounts.length === 0) {
-          this.emit('disconnect')
-        } else {
-          this.emit(
-            'accountsChanged',
-            data.accounts.map(acc => acc.address)
-          )
-        }
-      }
-    })
+    try {
+      const feature = this.getWalletFeature('standard:events')
+
+      this.walletUnsubscribes.push(
+        feature.on('change', data => {
+          if ('accounts' in data && data.accounts) {
+            if (data.accounts.length === 0) {
+              this.emit('disconnect')
+            } else {
+              this.emit(
+                'accountsChanged',
+                data.accounts.map(acc => acc.address)
+              )
+            }
+          }
+        })
+      )
+    } catch {
+      console.warn(
+        `WalletStandardConnector:bindEvents - wallet provider "${this.name}" does not support events`
+      )
+    }
+  }
+
+  private unbindEvents() {
+    this.walletUnsubscribes.forEach(unsubscribe => unsubscribe())
+    this.walletUnsubscribes = []
   }
 
   public static watchWallets({
