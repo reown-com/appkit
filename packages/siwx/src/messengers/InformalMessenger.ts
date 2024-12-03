@@ -37,12 +37,12 @@ export class InformalMessenger extends SIWXMessenger {
       params.statement ? `\n${params.statement}\n` : '',
       `URI: ${params.uri}`,
       `Version: ${params.version}`,
+      `Chain ID: ${params.chainId.split(':')[1]}`,
       `Nonce: ${params.nonce}`,
       params.issuedAt && `Issued At: ${params.issuedAt}`,
       params.expirationTime && `Expiration Time: ${params.expirationTime}`,
       params.notBefore && `Not Before: ${params.notBefore}`,
       params.requestId && `Request ID: ${params.requestId}`,
-      `Chain ID: ${params.chainId.split(':')[1]}`,
       params.resources?.length &&
         params.resources.reduce((acc, resource) => `${acc}\n- ${resource}`, 'Resources:')
     ]
