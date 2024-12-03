@@ -1,5 +1,4 @@
-import { ConnectMethodValue, WalletFeatureValue } from '@/lib/types'
-import { Features, ThemeMode } from '@reown/appkit-core'
+import { ConnectMethod, Features, ThemeMode, WalletFeature } from '@reown/appkit-core'
 
 type URLState = {
   features: Features
@@ -7,8 +6,8 @@ type URLState = {
   enableWallets: boolean
   termsConditions?: string
   privacyPolicy?: string
-  walletFeatureOrder?: WalletFeatureValue[]
-  connectMethodOrder?: ConnectMethodValue[]
+  walletFeatureOrder?: WalletFeature[]
+  connectMethodOrder?: ConnectMethod[]
   collapseWallets?: boolean
 }
 

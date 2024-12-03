@@ -5,9 +5,7 @@ import type { Transform } from '@dnd-kit/utilities'
 
 import styles from './sortable-social-item.module.css'
 import { useAppKit } from '@/hooks/use-appkit'
-import { cn } from '@/lib/utils'
-
-type SocialOption = 'google' | 'x' | 'discord' | 'farcaster' | 'github' | 'apple' | 'facebook'
+import { SocialProvider } from '@reown/appkit-core'
 
 export interface Props {
   dragOverlay?: boolean
@@ -40,7 +38,7 @@ export interface Props {
     transition: Props['transition']
     value: Props['value']
   }): React.ReactElement
-  onToggleOption?: (social: SocialOption) => void
+  onToggleOption?: (social: SocialProvider) => void
   connectMethodDragging?: boolean
 }
 
@@ -92,7 +90,7 @@ export const SocialOptionItem = React.memo(
         }
       }, [dragOverlay])
 
-      function toggleSocial(social: SocialOption) {
+      function toggleSocial(social: SocialProvider) {
         const newSocials = socials.includes(social)
           ? socials.filter(s => s !== social)
           : [...socials, social]
@@ -121,7 +119,7 @@ export const SocialOptionItem = React.memo(
             fadeIn && styles.fadeIn,
             sorting && styles.sorting,
             dragOverlay && styles.dragOverlay,
-            socials.includes(value as SocialOption)
+            socials.includes(value as SocialProvider)
               ? 'border border-border-accent bg-background-accent-primary/10'
               : 'border border-neutral-700'
           )}
@@ -145,7 +143,7 @@ export const SocialOptionItem = React.memo(
               '--color': color
             } as React.CSSProperties
           }
-          onClick={() => toggleSocial?.(value as SocialOption)}
+          onClick={() => toggleSocial?.(value as SocialProvider)}
           ref={ref}
         >
           <div
@@ -162,7 +160,7 @@ export const SocialOptionItem = React.memo(
             {...props}
             tabIndex={!handle ? 0 : undefined}
           >
-            <wui-logo logo={value as SocialOption}></wui-logo>
+            <wui-logo logo={value as SocialProvider}></wui-logo>
           </div>
         </li>
       )

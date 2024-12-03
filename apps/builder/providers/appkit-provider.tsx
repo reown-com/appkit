@@ -5,11 +5,10 @@ import { createAppKit, Features, ThemeMode, ThemeVariables, type AppKit } from '
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { type AppKitNetwork, mainnet, polygon } from '@reown/appkit/networks'
-import { ConstantsUtil } from '@reown/appkit-core'
+import { ConnectMethod, ConstantsUtil, WalletFeature } from '@reown/appkit-core'
 import { ThemeStore } from '../lib/ThemeStore'
 import { getStateFromUrl, updateUrlState } from '@/lib/url-state'
 import { AppKitContext } from '@/contexts/appkit-context'
-import { ConnectMethodValue, WalletFeatureValue } from '@/lib/types'
 
 const networks = [mainnet, polygon] as [AppKitNetwork, ...AppKitNetwork[]]
 
@@ -26,8 +25,8 @@ interface AppKitProviderProps {
   children: ReactNode
 }
 
-const defaultConnectMethodOrder = ['email', 'social', 'wallet'] as ConnectMethodValue[]
-const defaultWalletFeatureOrder = ['swap', 'send', 'receive', 'onramp'] as WalletFeatureValue[]
+const defaultConnectMethodOrder = ['email', 'social', 'wallet'] as ConnectMethod[]
+const defaultWalletFeatureOrder = ['swaps', 'send', 'receive', 'onramp'] as WalletFeature[]
 
 export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true)

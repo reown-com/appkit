@@ -12,9 +12,8 @@ export function createRange<T = number>(
   return [...new Array(length)].map((_, index) => initializer(index))
 }
 
-type SocialOption = 'google' | 'x' | 'discord' | 'farcaster' | 'github' | 'apple' | 'facebook'
-
 import { SocialOptionItem } from './social-option-item'
+import { SocialProvider } from '@reown/appkit-core'
 
 interface SortableSocialOptionItemProps {
   animateLayoutChanges?: AnimateLayoutChanges
@@ -27,7 +26,7 @@ interface SortableSocialOptionItemProps {
   onRemove?(id: UniqueIdentifier): void
   style(values: any): React.CSSProperties
   renderItem?(args: any): React.ReactElement
-  onToggleOption?(socialOption: SocialOption): void
+  onToggleOption?(socialOption: SocialProvider): void
 }
 
 export function SortableSocialOptionItem({

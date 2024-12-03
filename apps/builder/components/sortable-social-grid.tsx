@@ -38,12 +38,11 @@ export function createRange<T = number>(
   return [...new Array(length)].map((_, index) => initializer(index))
 }
 
-type SocialOption = 'google' | 'x' | 'discord' | 'farcaster' | 'github' | 'apple' | 'facebook'
-
 import { SocialOptionItem } from './social-option-item'
 import { List } from './List'
 import { Wrapper } from './Wrapper'
 import { SortableSocialOptionItem } from '@/components/sortable-item-social-option'
+import { SocialProvider } from '@reown/appkit-core'
 
 export interface Props {
   activationConstraint?: PointerActivationConstraint
@@ -74,7 +73,7 @@ export interface Props {
     isDragging: boolean
   }): React.CSSProperties
   isDisabled?(id: UniqueIdentifier): boolean
-  onToggleOption?(socialOption: SocialOption): void
+  onToggleOption?(socialOption: SocialProvider): void
   handleNewOrder?(items: UniqueIdentifier[]): void
 }
 

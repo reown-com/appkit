@@ -951,7 +951,7 @@ export type CombinedProvider = W3mFrameProvider & Provider
 export type CoinbasePaySDKChainNameValues =
   keyof typeof ConstantsUtil.WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP
 
-export type WalletFeature = 'swap' | 'send' | 'receive' | 'onramp'
+export type WalletFeature = 'swaps' | 'send' | 'receive' | 'onramp'
 
 export type ConnectMethod = 'email' | 'social' | 'wallet'
 
