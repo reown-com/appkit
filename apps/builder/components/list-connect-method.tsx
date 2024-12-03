@@ -1,5 +1,5 @@
 import { UniqueIdentifier } from '@dnd-kit/core'
-import { SortableConnectMethodList } from '@/components/sortable-connect-method-list'
+import { SortableConnectMethodList } from '@/components/sortable-list-connect-method'
 import { useAppKit } from '@/hooks/use-appkit'
 
 type SocialOption = 'google' | 'x' | 'discord' | 'farcaster' | 'github' | 'apple' | 'facebook'

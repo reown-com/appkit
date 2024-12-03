@@ -22,7 +22,7 @@ export default function Component() {
     <div className={cn('flex p-4 bg-background h-screen', themeMode === 'dark' ? 'dark' : '')}>
       <VaulDrawer />
 
-      <div className="w-80 bg-muted dark:bg-fg-primary text-foreground p-6 flex-col rounded-2xl hidden sm:flex">
+      <div className="w-[340px] bg-fg-primary text-foreground p-6 flex-col rounded-2xl hidden sm:flex">
         <SidebarContent />
       </div>
 

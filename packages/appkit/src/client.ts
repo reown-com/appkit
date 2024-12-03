@@ -637,6 +637,7 @@ export class AppKit {
     OptionsController.setDebug(options.debug)
     OptionsController.setProjectId(options.projectId)
     OptionsController.setSdkVersion(options.sdkVersion)
+    OptionsController.setExperimentalEnableEmbedded(options.experimental_enableEmbedded)
 
     if (!options.projectId) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')

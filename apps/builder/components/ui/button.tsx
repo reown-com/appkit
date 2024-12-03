@@ -7,7 +7,8 @@ import { cn } from '@/lib/utils'
 const buttonVariants = cva(
   cn(
     'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-30 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
-    'transition-[border-radius,background-color] duration ease-linear'
+    'transition-[border-radius,background-color] duration ease-linear',
+    'font-mono'
   ),
   {
     variants: {

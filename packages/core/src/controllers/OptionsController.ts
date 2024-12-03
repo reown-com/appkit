@@ -117,6 +117,11 @@ export interface OptionsControllerStatePublic {
    * @default undefined
    */
   siwx?: SIWXConfig
+  /**
+   * Renders the AppKit to DOM instead of the default modal.
+   * @default false
+   */
+  experimental_enableEmbedded?: boolean
 }
 
 export interface OptionsControllerStateInternal {
@@ -246,11 +251,11 @@ export const OptionsController = {
   },
 
   setWalletFeatureOrder(
-    walletFeatureOrder: OptionsControllerState['features']['experimental_walletFeatureOrder']
+    walletFeatureOrder: OptionsControllerState['features']['experimental_walletFeaturesOrder']
   ) {
     state.features = {
       ...state.features,
-      experimental_walletFeatureOrder: walletFeatureOrder
+      experimental_walletFeaturesOrder: walletFeatureOrder
     }
   },
 
@@ -261,10 +266,16 @@ export const OptionsController = {
     }
   },
 
-  setCollapseWallets(collapseWallets: OptionsControllerState['experimental_collapseWallets']) {
+  setCollapseWallets(collapseWallets: boolean) {
     state.features = {
       ...state.features,
       experimental_collapseWallets: collapseWallets
     }
+  },
+
+  setExperimentalEnableEmbedded(
+    experimental_enableEmbedded: OptionsControllerState['experimental_enableEmbedded']
+  ) {
+    state.experimental_enableEmbedded = experimental_enableEmbedded
   }
 }

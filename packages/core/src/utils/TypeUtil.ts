@@ -972,6 +972,17 @@ export type Features = {
    */
   onramp?: boolean
   /**
+   * @description Enable or disable the receive feature. Enabled by default.
+   * This feature is only visible when connected with email/social. It's not possible to configure when connected with wallet, which is enabled by default.
+   * @type {boolean}
+   */
+  receive?: boolean
+  /**
+   * @description Enable or disable the send feature. Enabled by default.
+   * @type {boolean}
+   */
+  send?: boolean
+  /**
    * @description Enable or disable the email feature. Enabled by default.
    * @type {boolean}
    */
@@ -1020,10 +1031,10 @@ export type Features = {
   /**
    * @
    * @description The order of the wallet features. This is experimental and subject to change.
-   * @default ['receive' | 'buy' | 'swap' | 'send']
-   * @type {('receive' | 'buy' | 'swap' | 'send')[]}
+   * @default ['receive' | 'onramp' | 'swaps' | 'send']
+   * @type {('receive' | 'onramp' | 'swaps' | 'send')[]}
    */
-  experimental_walletFeatureOrder?: ('receive' | 'buy' | 'swap' | 'send')[]
+  experimental_walletFeaturesOrder?: ('receive' | 'onramp' | 'swaps' | 'send')[]
   /**
    * @description Enable or disable the collapse wallets as an single "Continue with wallet" button for simple UI in connect page.
    * This can be activated when only have another connect method like email or social activated as well.

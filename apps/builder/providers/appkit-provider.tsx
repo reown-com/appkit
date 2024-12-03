@@ -5,6 +5,7 @@ import { createAppKit, Features, ThemeMode, ThemeVariables, type AppKit } from '
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { type AppKitNetwork, mainnet, polygon } from '@reown/appkit/networks'
+import { ConstantsUtil } from '@reown/appkit-core'
 import { ThemeStore } from '../lib/ThemeStore'
 import { getStateFromUrl, updateUrlState } from '@/lib/url-state'
 import { AppKitContext } from '@/contexts/appkit-context'
@@ -59,14 +60,15 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
       disableAppend: true,
       features: {
         ...urlState.features,
-        experimental_walletFeatureOrder: urlState.walletFeatureOrder || defaultWalletFeatureOrder,
+        experimental_walletFeaturesOrder: urlState.walletFeatureOrder || defaultWalletFeatureOrder,
         experimental_connectMethodOrder: urlState.connectMethodOrder || defaultConnectMethodOrder,
         experimental_collapseWallets: urlState.collapseWallets || false
       },
       enableWallets: urlState.enableWallets,
       themeMode: urlState.themeMode,
       termsConditionsUrl,
-      privacyPolicyUrl
+      privacyPolicyUrl,
+      experimental_enableEmbedded: true
     })
 
     ThemeStore.setModal({
@@ -78,14 +80,13 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
     setIsLoading(false)
   }, [])
 
-  // Update AppKit when core states change
   useEffect(() => {
     if (!isLoading) {
       kit?.setConnectMethodOrder(
         features.experimental_connectMethodOrder || defaultConnectMethodOrder
       )
       kit?.setWalletFeatureOrder(
-        features.experimental_walletFeatureOrder || defaultWalletFeatureOrder
+        features.experimental_walletFeaturesOrder || defaultWalletFeatureOrder
       )
       kit?.setCollapseWallets(features.experimental_collapseWallets || false)
     }
@@ -129,9 +130,7 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
 
   function updateSocials(enabled: boolean) {
     if (enabled && !Array.isArray(features.socials)) {
-      updateFeatures({
-        socials: ['apple', 'google', 'x', 'github', 'farcaster', 'discord', 'facebook']
-      })
+      updateFeatures({ socials: ConstantsUtil.DEFAULT_FEATURES.socials })
     } else if (!enabled) {
       updateFeatures({ socials: false })
     }

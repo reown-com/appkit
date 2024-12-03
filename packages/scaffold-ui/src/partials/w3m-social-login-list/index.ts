@@ -2,11 +2,13 @@ import {
   AccountController,
   ChainController,
   ConnectorController,
+  ConstantsUtil,
   CoreHelperUtil,
   EventsController,
   OptionsController,
   RouterController,
-  SnackController
+  SnackController,
+  type FeaturesSocials
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
@@ -51,10 +53,17 @@ export class W3mSocialLoginList extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const socials = this.features?.socials
+    let socials = this.features?.socials || []
+    const isAuthConnectorExist = Boolean(this.authConnector)
+    const isSocialsEnabled = socials && socials?.length
+    const isConnectSocialsView = RouterController.state.view === 'ConnectSocials'
 
-    if (!this.authConnector || !socials || !socials?.length) {
+    if ((!isAuthConnectorExist || !isSocialsEnabled) && !isConnectSocialsView) {
       return null
+    }
+
+    if (isConnectSocialsView && !isSocialsEnabled) {
+      socials = ConstantsUtil.DEFAULT_FEATURES.socials as FeaturesSocials[]
     }
 
     return html` <wui-flex flexDirection="column" gap="xs">

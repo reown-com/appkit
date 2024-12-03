@@ -2,40 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
-
 body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+  font-family: Roboto, KHTeka, Inter, Roboto, Arial, Helvetica, sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @layer base {
   :root {
     --apkt-background-primary: 0 0% 100%;
     --apkt-background-invert: 0 0% 13%;
+    --apkt-background-accent-primary: 207 93% 49%;
 
-    --apkt-foreground-primary: 0, 0%, 95%;
-    --apkt-foreground-secondary: 0, 0%, 91%;
-    --apkt-foreground-tertiary: 0, 0%, 82%;
-    --apkt-foreground-accent: 231, 100%, 70%;
+    --apkt-foreground-primary: 0 0% 95%;
+    --apkt-foreground-secondary: 0 0% 91%;
+    --apkt-foreground-tertiary: 0 0% 82%;
+    --apkt-foreground-accent: 231 100% 70%;
 
-    --apkt-border: 0, 0%, 91%;
-    --apkt-border-secondary: 0, 0%, 82%;
-    --apkt-border-accent: 231, 100%, 70%;
-    --apkt-border-accent-certified: 44, 31%, 68%;
+    --apkt-border: 0 0% 91%;
+    --apkt-border-secondary: 0 0% 82%;
+    --apkt-border-accent: 207 93% 49%;
+    --apkt-border-accent-certified: 44 31% 68%;
     --apkt-border-success: 0.42 55% 42%;
     --apkt-border-error: 0.02 73% 54%;
     --apkt-border-warning: 0.09 88% 60%;
 
-    --apkt-text-primary: 0, 0%, 13%;
-    --apkt-text-secondary: 0, 0%, 60%;
-    --apkt-text-tertiary: 0, 0%, 42%;
-    --apkt-text-invert: 0, 0%, 100%;
+    --apkt-text-primary: 0 0% 13%;
+    --apkt-text-secondary: 0 0% 60%;
+    --apkt-text-tertiary: 0 0% 42%;
+    --apkt-text-invert: 0 0% 100%;
 
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
@@ -65,6 +61,7 @@ body {
   .dark {
     --apkt-background-primary: 0 0% 13%;
     --apkt-background-invert: 0 0% 100%;
+    --apkt-background-accent-primary: 207 93% 49%;
 
     --apkt-foreground-primary: 0 0% 15%;
     --apkt-foreground-secondary: 0 0% 16%;
@@ -73,7 +70,7 @@ body {
 
     --apkt-border: 0 0% 16%;
     --apkt-border-secondary: 0 0% 31%;
-    --apkt-border-accent: 0.64 1% 70%;
+    --apkt-border-accent: 207 93% 49%;
     --apkt-border-accent-certified: 0.12 31% 68%;
     --apkt-border-success: 0.42 55% 42%;
     --apkt-border-error: 0.02 73% 54%;

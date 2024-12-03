@@ -12,7 +12,8 @@ const config: Config = {
       colors: {
         background: {
           DEFAULT: 'hsl(var(--apkt-background-primary))',
-          invert: 'hsl(var(--apkt-background-invert))'
+          invert: 'hsl(var(--apkt-background-invert))',
+          'accent-primary': 'hsl(var(--apkt-background-accent-primary))'
         },
         fg: {
           accent: 'hsl(var(--apkt-foreground-accent))',

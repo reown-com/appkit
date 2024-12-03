@@ -29,10 +29,7 @@ export function FeatureButton({
         {dragHandle ? <DragIcon /> : null}
         {label}
       </span>
-      <Checkbox
-        className="bg-transparent border border-muted-foreground/10 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:text-xl w-6 h-6 rounded-lg"
-        checked={isEnabled}
-      />
+      <Checkbox checked={isEnabled} />
     </button>
   )
 }

@@ -24,13 +24,13 @@ export function SidebarContent() {
       <div className="flex flex-col flex-1 min-h-[300px]">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6 w-full">
           <TabsList className="w-full bg-fg-secondary">
-            <TabsTrigger className="w-full" value="auth">
+            <TabsTrigger className="w-full transition-colors" value="auth">
               Auth
             </TabsTrigger>
-            <TabsTrigger className="w-full" value="features">
+            <TabsTrigger className="w-full transition-colors" value="features">
               Features
             </TabsTrigger>
-            <TabsTrigger className="w-full" value="other">
+            <TabsTrigger className="w-full transition-colors" value="other">
               Design
             </TabsTrigger>
           </TabsList>

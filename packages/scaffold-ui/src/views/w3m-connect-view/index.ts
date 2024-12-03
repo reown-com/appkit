@@ -144,7 +144,7 @@ export class W3mConnectView extends LitElement {
     }
   }
 
-  private checkIsThereNextMethod(currentIndex: number): boolean {
+  private checkIsThereNextMethod(currentIndex: number): string | undefined {
     const connectMethodOrder =
       this.features?.experimental_connectMethodOrder || defaultConnectMethodOrder
 
@@ -155,44 +155,47 @@ export class W3mConnectView extends LitElement {
       | undefined
 
     if (!nextMethod) {
-      return false
+      return undefined
     }
 
-    const isCurrentMethodEnabled = this.checkMethodEnabled(nextMethod)
+    const isNextMethodEnabled = this.checkMethodEnabled(nextMethod)
 
-    if (isCurrentMethodEnabled) {
-      return true
+    if (isNextMethodEnabled) {
+      return nextMethod
     }
 
     return this.checkIsThereNextMethod(currentIndex + 1)
   }
 
   private separatorTemplate(index: number, type: 'wallet' | 'email' | 'social') {
-    const connectMethodOrder =
-      this.features?.experimental_connectMethodOrder || defaultConnectMethodOrder
-    const isNextMethodExist = this.checkIsThereNextMethod(index)
+    const nextEnabledMethod = this.checkIsThereNextMethod(index)
     const isExplore = this.walletGuide === 'explore'
 
     switch (type) {
       case 'wallet': {
         const isWalletEnable = this.enableWallets
-        return isWalletEnable && isNextMethodExist && !isExplore
+        console.log(
+          '>>> wallet separator logic',
+          isWalletEnable,
+          nextEnabledMethod,
+          this.walletGuide
+        )
+        return isWalletEnable && nextEnabledMethod && !isExplore
           ? html`<wui-separator text="or"></wui-separator>`
           : null
       }
       case 'email': {
         const isEmailEnabled = this.features?.email
-        const nextMethod = connectMethodOrder[index + 1] as 'wallet' | 'social' | undefined
-        const isNextMethodSocial = nextMethod === 'social'
-        return isEmailEnabled && !isNextMethodSocial && isNextMethodExist
+        const isNextMethodSocial = nextEnabledMethod === 'social'
+        return isEmailEnabled && !isNextMethodSocial && nextEnabledMethod
           ? html`<wui-separator text="or"></wui-separator>`
           : null
       }
       case 'social': {
         const isSocialEnabled = this.features?.socials && this.features?.socials.length > 0
-        const nextMethod = connectMethodOrder[index + 1] as 'wallet' | 'email' | undefined
-        const isNextMethodEmail = nextMethod === 'email'
-        return isSocialEnabled && !isNextMethodEmail && isNextMethodExist
+        const isNextMethodEmail = nextEnabledMethod === 'email'
+
+        return isSocialEnabled && !isNextMethodEmail && nextEnabledMethod
           ? html`<wui-separator text="or"></wui-separator>`
           : null
       }
@@ -278,31 +281,17 @@ export class W3mConnectView extends LitElement {
       return null
     }
 
-    if (!enableWallets) {
-      return null
-    }
-
-    if (this.walletGuide === 'explore') {
-      return html`
-        <wui-separator id="explore" text="or"></wui-separator>
-        <wui-flex
-          flexDirection="column"
-          .padding=${['0', '0', 'xl', '0']}
-          class=${classMap(classes)}
-        >
-          <w3m-wallet-guide walletGuide=${this.walletGuide}></w3m-wallet-guide>
-        </wui-flex>
-      `
-    }
-
     return html`
+      ${this.walletGuide === 'explore'
+        ? html`<wui-separator id="explore" text="or"></wui-separator>`
+        : null}
       <wui-flex
         flexDirection="column"
         .padding=${['xl', '0', 'xl', '0']}
         class=${classMap(classes)}
       >
         <w3m-wallet-guide
-          tabIdx=${ifDefined(tabIndex)}
+          tabId=${ifDefined(tabIndex)}
           walletGuide=${this.walletGuide}
         ></w3m-wallet-guide>
       </wui-flex>

@@ -5,8 +5,7 @@ import type { Transform } from '@dnd-kit/utilities'
 
 import styles from './sortable-social-item.module.css'
 import { useAppKit } from '@/hooks/use-appkit'
-import { SocialButtons } from '@/components/configuration-sections/social-buttons'
-import { useSortable } from '@dnd-kit/sortable'
+import { cn } from '@/lib/utils'
 
 type SocialOption = 'google' | 'x' | 'discord' | 'farcaster' | 'github' | 'apple' | 'facebook'
 
@@ -45,7 +44,7 @@ export interface Props {
   connectMethodDragging?: boolean
 }
 
-export const SortableSocialItem = React.memo(
+export const SocialOptionItem = React.memo(
   React.forwardRef<HTMLLIElement, Props>(
     (
       {
@@ -122,7 +121,9 @@ export const SortableSocialItem = React.memo(
             fadeIn && styles.fadeIn,
             sorting && styles.sorting,
             dragOverlay && styles.dragOverlay,
-            socials.includes(value as SocialOption) && styles.enabled
+            socials.includes(value as SocialOption)
+              ? 'border border-border-accent bg-background-accent-primary/10'
+              : 'border border-neutral-700'
           )}
           style={
             {

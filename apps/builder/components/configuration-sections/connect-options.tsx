@@ -1,6 +1,6 @@
 import { useAppKit } from '@/hooks/use-appkit'
 import { FeatureButton } from '@/components/feature-button'
-import { ConnetMethodList } from '@/components/connect-method-list'
+import { ConnetMethodList } from '@/components/list-connect-method'
 
 type SocialOption = 'google' | 'x' | 'discord' | 'farcaster' | 'github' | 'apple' | 'facebook'
 
@@ -15,7 +15,8 @@ export function AuthFeatures() {
   return (
     <div className="space-y-4 flex-grow">
       <ConnetMethodList />
-      <p className="text-sm text-text-secondary">Other options</p>
+      <div className="flex flex-col gap-2 h-2"></div>
+      <span className="text-sm text-text-secondary mt-6">Wallet options</span>
       <FeatureButton
         label="Collapse wallets"
         isEnabled={collapseWallets}

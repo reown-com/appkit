@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import {
+  Active,
   closestCenter,
   CollisionDetection,
   DragOverlay,
@@ -24,9 +25,9 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   SortingStrategy,
-  rectSortingStrategy,
   AnimateLayoutChanges,
-  NewIndexGetter
+  NewIndexGetter,
+  verticalListSortingStrategy
 } from '@dnd-kit/sortable'
 
 const defaultInitializer = (index: number) => index
@@ -38,12 +39,10 @@ export function createRange<T = number>(
   return [...new Array(length)].map((_, index) => initializer(index))
 }
 
-type SocialOption = 'google' | 'x' | 'discord' | 'farcaster' | 'github' | 'apple' | 'facebook'
-
-import { SocialOptionItem } from './social-option-item'
+import { ConnectMethodItem } from './connect-method-item'
 import { List } from './List'
 import { Wrapper } from './Wrapper'
-import { SortableSocialOptionItem } from '@/components/sortable-item-social-option'
+import { SortableConnectMethodItem } from '@/components/sortable-item-connect-method'
 
 export interface Props {
   activationConstraint?: PointerActivationConstraint
@@ -73,8 +72,7 @@ export interface Props {
     overIndex: number
     isDragging: boolean
   }): React.CSSProperties
-  isDisabled?(id: UniqueIdentifier): boolean
-  onToggleOption?(socialOption: SocialOption): void
+  onToggleOption?(name: 'Email' | 'Socials' | 'Wallets'): void
   handleNewOrder?(items: UniqueIdentifier[]): void
 }
 
@@ -88,7 +86,7 @@ const dropAnimationConfig: DropAnimation = {
   })
 }
 
-export function SortableSocialGrid({
+export function SortableConnectMethodList({
   activationConstraint,
   animateLayoutChanges,
   adjustScale = false,
@@ -101,13 +99,10 @@ export function SortableSocialGrid({
   handle = false,
   itemCount = 3,
   items: initialItems,
-  isDisabled = () => false,
   measuring,
   modifiers,
-  removable,
   renderItem,
   reorderItems = arrayMove,
-  strategy = rectSortingStrategy,
   style,
   useDragOverlay = true,
   onToggleOption,
@@ -118,17 +113,20 @@ export function SortableSocialGrid({
   )
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
   const sensors = useSensors(
-    useSensor(MouseSensor, { activationConstraint }),
-    useSensor(TouchSensor, { activationConstraint }),
-    useSensor(KeyboardSensor, { scrollBehavior: 'auto', coordinateGetter })
+    useSensor(MouseSensor, {
+      activationConstraint
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint
+    }),
+    useSensor(KeyboardSensor, {
+      scrollBehavior: 'auto',
+      coordinateGetter
+    })
   )
   const isFirstAnnouncement = useRef(true)
   const getIndex = (id: UniqueIdentifier) => items.indexOf(id)
-  const getPosition = (id: UniqueIdentifier) => getIndex(id) + 1
   const activeIndex = activeId != null ? getIndex(activeId) : -1
-  const handleRemove = removable
-    ? (id: UniqueIdentifier) => setItems(items => items.filter(item => item !== id))
-    : undefined
 
   useEffect(() => {
     if (activeId == null) {
@@ -168,18 +166,16 @@ export function SortableSocialGrid({
       modifiers={modifiers}
     >
       <Wrapper style={style} center>
-        <SortableContext items={items} strategy={strategy}>
-          <Container columns={5}>
+        <SortableContext items={items} strategy={verticalListSortingStrategy}>
+          <Container>
             {items.map((value, index) => (
-              <SortableSocialOptionItem
+              <SortableConnectMethodItem
                 key={value}
                 id={value}
                 handle={handle}
                 index={index}
                 style={getItemStyles}
-                disabled={isDisabled(value)}
                 renderItem={renderItem}
-                onRemove={handleRemove}
                 animateLayoutChanges={animateLayoutChanges}
                 useDragOverlay={useDragOverlay}
                 getNewIndex={getNewIndex}
@@ -193,7 +189,7 @@ export function SortableSocialGrid({
         ? createPortal(
             <DragOverlay adjustScale={adjustScale} dropAnimation={dropAnimation}>
               {activeId != null ? (
-                <SocialOptionItem
+                <ConnectMethodItem
                   value={items[activeIndex]}
                   handle={handle}
                   renderItem={renderItem}

@@ -1,26 +1,13 @@
 import { SortableSocialGrid } from '@/components/sortable-social-grid'
 import { useAppKit } from '@/hooks/use-appkit'
+import { SocialOption } from '@/lib/types'
 import { UniqueIdentifier } from '@dnd-kit/core'
+import { ConstantsUtil, FeaturesSocials } from '@reown/appkit-core'
 
-type SocialOption = 'google' | 'x' | 'discord' | 'farcaster' | 'github' | 'apple' | 'facebook'
+const allSocials = ConstantsUtil.DEFAULT_FEATURES.socials as FeaturesSocials[]
 
-const defaultSocialsOrder: SocialOption[] = [
-  'google',
-  'x',
-  'discord',
-  'farcaster',
-  'github',
-  'apple',
-  'facebook'
-]
-
-interface SocialButtonsProps {
-  connectMethodDragging: boolean
-}
-
-export function SocialButtons({ connectMethodDragging }: SocialButtonsProps) {
-  const { features, updateFeatures } = useAppKit()
-  const socials = features.socials || defaultSocialsOrder
+export function SocialButtons() {
+  const { updateFeatures } = useAppKit()
 
   function handleNewOrder(items: UniqueIdentifier[]) {
     updateFeatures({ socials: items as SocialOption[] })
@@ -28,12 +15,11 @@ export function SocialButtons({ connectMethodDragging }: SocialButtonsProps) {
 
   return (
     <SortableSocialGrid
-      items={socials}
+      items={allSocials}
       handleNewOrder={handleNewOrder}
       activationConstraint={{
         distance: 10
       }}
-      connectMethodDragging={connectMethodDragging}
     />
   )
 }

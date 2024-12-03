@@ -22,20 +22,17 @@ const RADIUS_NAME_VALUE_MAP = {
 
 const FONT_OPTIONS = [
   { label: 'KH Teka', value: 'KHTeka' },
-  { label: 'Open Sans', value: 'Open Sans' },
-  { label: 'Roboto', value: 'Roboto' },
-  { label: 'Futura', value: 'Futura' },
-  { label: 'Helvetica', value: 'Helvetica' },
-  { label: 'Arial', value: 'Arial' }
+  { label: 'Noto Sans', value: 'Noto Sans' },
+  { label: 'Poppins', value: 'Poppins' },
+  { label: 'Tinos', value: 'Tinos' },
+  { label: 'Delius', value: 'Delius' },
+  { label: 'Agbalumo', value: 'Agbalumo' }
 ]
 
 export default function SidebarContentDesign() {
   const { themeMode, updateThemeMode } = useAppKit()
-  const { fontFamily } = useSnapshot(ThemeStore.state)
-
+  const { fontFamily, mixColor, accentColor } = useSnapshot(ThemeStore.state)
   const [radius, setRadius] = React.useState('M')
-  const [accentColor, setAccentColor] = React.useState(ACCENT_COLORS[0])
-  const [bgColor, setBgColor] = React.useState(BG_COLORS[0])
 
   return (
     <div className="space-y-4">
@@ -49,7 +46,7 @@ export default function SidebarContentDesign() {
           <Label
             htmlFor="light"
             className={cn(
-              'flex items-center justify-center rounded-md border border-transparent bg-fg-secondary px-3 py-2 text-sm',
+              'flex items-center justify-center rounded-md border border-transparent bg-fg-secondary px-3 py-2 text-sm transition-colors',
               themeMode === 'light'
                 ? 'border-fg-accent bg-fg-accent/10'
                 : 'hover:bg-fg-secondary/80'
@@ -61,7 +58,7 @@ export default function SidebarContentDesign() {
           <Label
             htmlFor="dark"
             className={cn(
-              'flex items-center justify-center rounded-md border px-3 py-2 text-sm',
+              'flex items-center justify-center rounded-md border px-3 py-2 text-sm transition-colors',
               themeMode === 'dark' && 'border-fg-accent bg-fg-accent/10'
             )}
           >
@@ -83,11 +80,14 @@ export default function SidebarContentDesign() {
               key={value}
               htmlFor={value}
               className={cn(
-                'flex items-center justify-center rounded-md border border-transparent bg-fg-secondary px-3 py-2 text-sm whitespace-nowrap',
+                'flex items-center justify-center rounded-md border border-transparent bg-fg-secondary px-3 py-2 text-sm whitespace-nowrap transition-colors',
                 fontFamily === value
                   ? 'border-fg-accent bg-fg-accent/10'
                   : 'hover:bg-fg-secondary/80'
               )}
+              style={{
+                fontFamily: value
+              }}
             >
               <RadioGroupItem value={value} id={value} className="sr-only" />
               {label}
@@ -113,7 +113,7 @@ export default function SidebarContentDesign() {
               key={size}
               htmlFor={size}
               className={cn(
-                'flex items-center justify-center rounded-md border border-transparent bg-fg-secondary px-3 py-2 text-sm',
+                'flex items-center justify-center rounded-md border border-transparent bg-fg-secondary px-3 py-2 text-sm transition-colors',
                 radius === size ? 'border-fg-accent bg-fg-accent/10' : 'hover:bg-fg-secondary/80'
               )}
             >
@@ -132,14 +132,15 @@ export default function SidebarContentDesign() {
               key={color}
               onClick={() => {
                 ThemeStore.setAccentColor(color)
-                setAccentColor(color)
               }}
-              className={`h-8 rounded-full ${
-                accentColor === color
-                  ? 'ring-2 ring-blue-600 ring-offset-2 ring-offset-zinc-900'
-                  : ''
-              }`}
-              style={{ backgroundColor: color }}
+              className={cn(
+                'h-8 rounded-full ring-2 ring-transparent ring-offset-2 ring-offset-fg-primary transition-colors'
+              )}
+              style={{
+                backgroundColor: color,
+                // @ts-expect-error CSS variables
+                '--tw-ring-color': accentColor === color ? color : 'transparent'
+              }}
               aria-label={`Color option ${index + 1}`}
             />
           ))}
@@ -155,12 +156,15 @@ export default function SidebarContentDesign() {
               onClick={() => {
                 ThemeStore.setMixColor(color)
                 ThemeStore.setMixColorStrength(8)
-                setBgColor(color)
               }}
-              className={`h-8 rounded-full ${
-                bgColor === color ? 'ring-2 ring-blue-600 ring-offset-2 ring-offset-zinc-900' : ''
-              }`}
-              style={{ backgroundColor: color }}
+              className={cn(
+                'h-8 rounded-full ring-2 ring-transparent ring-offset-2 ring-offset-fg-primary transition-colors'
+              )}
+              style={{
+                backgroundColor: color,
+                // @ts-expect-error CSS variables
+                '--tw-ring-color': mixColor === color ? color : 'transparent'
+              }}
               aria-label={`Background option ${index + 1}`}
             />
           ))}

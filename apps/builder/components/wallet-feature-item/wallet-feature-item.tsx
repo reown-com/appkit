@@ -5,12 +5,10 @@ import type { Transform } from '@dnd-kit/utilities'
 
 import { Handle } from './components'
 
-import styles from './Item.module.css'
+import styles from './wallet-feature-item.module.css'
 import { useAppKit } from '@/hooks/use-appkit'
 import { Checkbox } from '@/components/ui/checkbox'
-import { SocialButtons } from '@/components/configuration-sections/social-buttons'
-
-type SocialOption = 'google' | 'x' | 'discord' | 'farcaster' | 'github' | 'apple' | 'facebook'
+import { WalletFeatureName } from '@/lib/types'
 
 export interface Props {
   dragOverlay?: boolean
@@ -43,10 +41,10 @@ export interface Props {
     transition: Props['transition']
     value: Props['value']
   }): React.ReactElement
-  onToggleOption?: (name: 'Email' | 'Socials' | 'Wallets') => void
+  onToggleOption?: (name: WalletFeatureName) => void
 }
 
-export const Item = React.memo(
+export const WalletFeatureItem = React.memo(
   React.forwardRef<HTMLLIElement, Props>(
     (
       {
@@ -73,15 +71,17 @@ export const Item = React.memo(
       },
       ref
     ) => {
-      const { features, enableWallets } = useAppKit()
-      const emailEnabled = features.email
-      const socialsEnabled = Array.isArray(features.socials)
-      const walletsEnabled = enableWallets
+      const { features } = useAppKit()
+      const onrampEnabled = features.onramp
+      const swapsEnabled = features.swaps
+      const receiveEnabled = features.receive
+      const sendEnabled = features.send
 
       const featureEnabledMap = {
-        Email: emailEnabled,
-        Socials: socialsEnabled,
-        Wallets: walletsEnabled
+        Buy: onrampEnabled,
+        Swap: swapsEnabled,
+        Receive: receiveEnabled,
+        Send: sendEnabled
       }
 
       useEffect(() => {
@@ -134,11 +134,11 @@ export const Item = React.memo(
           ref={ref as React.LegacyRef<HTMLDivElement>}
         >
           <li
-            onClick={() => onToggleOption?.(value as 'Email' | 'Socials' | 'Wallets')}
+            onClick={() => onToggleOption?.(value as WalletFeatureName)}
             className={classNames(
               styles.ListItem,
               'flex items-center justify-between rounded-xl p-3 w-full',
-              featureEnabledMap[value as 'Email' | 'Socials' | 'Wallets']
+              featureEnabledMap[value as WalletFeatureName]
                 ? 'bg-foreground/5 dark:bg-foreground/5'
                 : 'bg-foreground/[2%] dark:bg-foreground/[2%]'
             )}
@@ -159,13 +159,9 @@ export const Item = React.memo(
             >
               {handle ? <Handle {...handleProps} {...listeners} /> : null}
               <span className="text-sm flex-1">{value}</span>
-              <Checkbox
-                className="bg-transparent border border-muted-foreground/10 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=checked]:text-xl w-6 h-6 rounded-lg"
-                checked={featureEnabledMap[value as 'Email' | 'Socials' | 'Wallets']}
-              />
+              <Checkbox checked={featureEnabledMap[value as WalletFeatureName]} />
             </div>
           </li>
-          {value === 'Socials' && <SocialButtons connectMethodDragging={dragging} />}
         </div>
       )
     }

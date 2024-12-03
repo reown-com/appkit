@@ -57,7 +57,6 @@ export const ThemeStore = {
   setBorderRadius(value: number) {
     const radiusString = `${value}px`
     state.borderRadius = radiusString
-    console.log('setBorderRadius', value)
     if (state.modal) {
       state.modal.setThemeVariables({ '--w3m-border-radius-master': radiusString })
     }
@@ -71,7 +70,6 @@ export const ThemeStore = {
   },
 
   setFontFamily(value: ThemeState['fontFamily']) {
-    console.log('setFontFamily', value)
     state.fontFamily = value
     if (state.modal) {
       state.modal.setThemeVariables({ '--w3m-font-family': value })
