@@ -37,7 +37,7 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
 
   public get chains() {
     return this.wallet.chains
-      .map(chainId => this.requestedChains.find(chain => chain.id === chainId))
+      .map(chainId => this.requestedChains.find(chain => chain.caipNetworkId === chainId))
       .filter(Boolean) as CaipNetwork[]
   }
 
