@@ -20,20 +20,27 @@ export function getStateFromUrl(): {
   if (!stateParam) return { features: {}, themeMode: 'light', enableWallets: true }
 
   try {
-    return JSON.parse(decodeURIComponent(stateParam))
+    const decodedState = atob(stateParam)
+    return JSON.parse(decodedState)
   } catch (e) {
     console.error('Failed to parse state from URL:', e)
     return { features: {}, themeMode: 'light', enableWallets: true }
   }
 }
 
-export function updateUrlState(features: Features, themeMode: ThemeMode) {
+export function updateUrlState(obj: Object) {
   if (typeof window === 'undefined') return
 
-  const state = { features, themeMode }
+  const currentState = getStateFromUrl()
+  const state = {
+    ...currentState,
+    ...obj
+  }
   const params = new URLSearchParams(window.location.search)
 
-  params.set('state', encodeURIComponent(JSON.stringify(state)))
+  // Convert state to base64 string to make URL more readable
+  const stateStr = btoa(JSON.stringify(state))
+  params.set('state', stateStr)
 
   const newUrl = `${window.location.pathname}?${params.toString()}`
   window.history.replaceState({}, '', newUrl)

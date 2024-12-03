@@ -1,25 +1,24 @@
 import { useAppKit } from '@/hooks/use-appkit'
-import { SocialButtons } from '@/components/configuration-sections/social-buttons'
 import { FeatureButton } from '@/components/feature-button'
-import { SortableList } from '@/components/sortable-list'
+import { ConnetMethodList } from '@/components/connect-method-list'
 
 type SocialOption = 'google' | 'x' | 'discord' | 'farcaster' | 'github' | 'apple' | 'facebook'
 
 export function AuthFeatures() {
   const { features, updateFeatures } = useAppKit()
-  const collapseWallets = features.emailShowWallets
+  const collapseWallets = features.experimental_collapseWallets
 
   function toggleCollapseWallets() {
-    updateFeatures({ emailShowWallets: !collapseWallets })
+    updateFeatures({ experimental_collapseWallets: !collapseWallets })
   }
 
   return (
     <div className="space-y-4 flex-grow">
-      <SortableList />
+      <ConnetMethodList />
       <p className="text-sm text-text-secondary">Other options</p>
       <FeatureButton
         label="Collapse wallets"
-        isEnabled={!collapseWallets}
+        isEnabled={collapseWallets}
         onClick={toggleCollapseWallets}
       />
     </div>

@@ -43,7 +43,9 @@ export function createRange<T = number>(
   return [...new Array(length)].map((_, index) => initializer(index))
 }
 
-import { Item } from './Item'
+type SocialOption = 'google' | 'x' | 'discord' | 'farcaster' | 'github' | 'apple' | 'facebook'
+
+import { SortableSocialItem } from './sortable-social-item'
 import { List } from './List'
 import { Wrapper } from './Wrapper'
 import { useAppKit } from '@/hooks/use-appkit'
@@ -83,8 +85,9 @@ export interface Props {
     id: UniqueIdentifier
   }): React.CSSProperties
   isDisabled?(id: UniqueIdentifier): boolean
-  onToggleOption?(name: 'Email' | 'Socials' | 'Wallets'): void
+  onToggleOption?(socialOption: SocialOption): void
   handleNewOrder?(items: UniqueIdentifier[]): void
+  connectMethodDragging?: boolean
 }
 
 const dropAnimationConfig: DropAnimation = {
@@ -105,7 +108,7 @@ const screenReaderInstructions: ScreenReaderInstructions = {
   `
 }
 
-export function Sortable({
+export function SortableSocialGrid({
   activationConstraint,
   animateLayoutChanges,
   adjustScale = false,
@@ -129,7 +132,8 @@ export function Sortable({
   useDragOverlay = true,
   wrapperStyle = () => ({}),
   onToggleOption,
-  handleNewOrder
+  handleNewOrder,
+  connectMethodDragging
 }: Props) {
   const [items, setItems] = useState<UniqueIdentifier[]>(
     () => initialItems ?? createRange<UniqueIdentifier>(itemCount, index => index)
@@ -236,8 +240,8 @@ export function Sortable({
       modifiers={modifiers}
     >
       <Wrapper style={style} center>
-        <SortableContext items={items} strategy={verticalListSortingStrategy}>
-          <Container>
+        <SortableContext items={items} strategy={strategy}>
+          <Container columns={4}>
             {items.map((value, index) => (
               <SortableItem
                 key={value}
@@ -253,6 +257,7 @@ export function Sortable({
                 useDragOverlay={useDragOverlay}
                 getNewIndex={getNewIndex}
                 onToggleOption={onToggleOption}
+                connectMethodDragging={connectMethodDragging}
               />
             ))}
           </Container>
@@ -262,7 +267,7 @@ export function Sortable({
         ? createPortal(
             <DragOverlay adjustScale={adjustScale} dropAnimation={dropAnimation}>
               {activeId != null ? (
-                <Item
+                <SortableSocialItem
                   value={items[activeIndex]}
                   handle={handle}
                   renderItem={renderItem}
@@ -281,6 +286,7 @@ export function Sortable({
                     isDragOverlay: true
                   })}
                   dragOverlay
+                  connectMethodDragging={connectMethodDragging}
                 />
               ) : null}
             </DragOverlay>,
@@ -303,7 +309,8 @@ interface SortableItemProps {
   style(values: any): React.CSSProperties
   renderItem?(args: any): React.ReactElement
   wrapperStyle: Props['wrapperStyle']
-  onToggleOption?(name: 'Email' | 'Socials' | 'Wallets'): void
+  onToggleOption?(socialOption: SocialOption): void
+  connectMethodDragging?: boolean
 }
 
 export function SortableItem({
@@ -318,7 +325,8 @@ export function SortableItem({
   renderItem,
   useDragOverlay,
   wrapperStyle,
-  onToggleOption
+  onToggleOption,
+  connectMethodDragging
 }: SortableItemProps) {
   const {
     active,
@@ -332,14 +340,11 @@ export function SortableItem({
     transform,
     transition
   } = useSortable({
-    id,
-    animateLayoutChanges,
-    disabled,
-    getNewIndex
+    id
   })
 
   return (
-    <Item
+    <SortableSocialItem
       ref={setNodeRef}
       value={id}
       disabled={disabled}
@@ -371,6 +376,7 @@ export function SortableItem({
       data-id={id}
       dragOverlay={!useDragOverlay && isDragging}
       onToggleOption={onToggleOption}
+      connectMethodDragging={connectMethodDragging}
       {...attributes}
     />
   )

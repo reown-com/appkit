@@ -1,19 +1,23 @@
 import { UniqueIdentifier } from '@dnd-kit/core'
-import { Sortable } from '@/components/sortable-item'
+import { SortableConnectMethodList } from '@/components/sortable-connect-method-list'
 import { useAppKit } from '@/hooks/use-appkit'
 
 type SocialOption = 'google' | 'x' | 'discord' | 'farcaster' | 'github' | 'apple' | 'facebook'
 
-export function SortableList() {
+export function ConnetMethodList() {
   const {
     features,
     enableWallets,
     socialsEnabled,
     updateSocials,
     updateFeatures,
-    setEnableWallets,
-    setConnectMethodOrder
+    setEnableWallets
   } = useAppKit()
+  const connectMethodOrder = features.experimental_connectMethodOrder || [
+    'email',
+    'social',
+    'wallet'
+  ]
 
   function handleNewOrder(items: UniqueIdentifier[]) {
     const nameMap = {
@@ -25,22 +29,20 @@ export function SortableList() {
       item => nameMap[item as 'Email' | 'Socials' | 'Wallets'] as 'email' | 'social' | 'wallet'
     )
 
-    setConnectMethodOrder(newOrder)
-    console.log(newOrder, items)
+    updateFeatures({
+      experimental_connectMethodOrder: newOrder
+    })
   }
 
   function handleToggleOption(name: 'Email' | 'Socials' | 'Wallets') {
     switch (name) {
       case 'Email':
-        console.log('Email')
         updateFeatures({ email: !features.email })
         return
       case 'Socials':
-        console.log('Socials')
         updateSocials(!socialsEnabled)
         return
       case 'Wallets':
-        console.log('Wallets')
         setEnableWallets(!enableWallets)
         return
       default:
@@ -48,9 +50,20 @@ export function SortableList() {
     }
   }
 
+  const connectMethodNameMap = connectMethodOrder.map(name => {
+    switch (name) {
+      case 'email':
+        return 'Email'
+      case 'social':
+        return 'Socials'
+      case 'wallet':
+        return 'Wallets'
+    }
+  })
+
   return (
-    <Sortable
-      items={['Email', 'Socials', 'Wallets']}
+    <SortableConnectMethodList
+      items={connectMethodNameMap}
       onToggleOption={handleToggleOption}
       handleNewOrder={handleNewOrder}
       handle={true}

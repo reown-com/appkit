@@ -241,7 +241,30 @@ export const OptionsController = {
   setConnectMethodOrder(connectMethodOrder: ('email' | 'social' | 'wallet')[]) {
     state.features = {
       ...state.features,
-      experiemental_connectMethodOrder: connectMethodOrder
+      experimental_connectMethodOrder: connectMethodOrder
+    }
+  },
+
+  setWalletFeatureOrder(
+    walletFeatureOrder: OptionsControllerState['features']['experimental_walletFeatureOrder']
+  ) {
+    state.features = {
+      ...state.features,
+      experimental_walletFeatureOrder: walletFeatureOrder
+    }
+  },
+
+  setSocialsOrder(socialsOrder: OptionsControllerState['features']['socials']) {
+    state.features = {
+      ...state.features,
+      socials: socialsOrder
+    }
+  },
+
+  setCollapseWallets(collapseWallets: OptionsControllerState['experimental_collapseWallets']) {
+    state.features = {
+      ...state.features,
+      experimental_collapseWallets: collapseWallets
     }
   }
 }

@@ -1016,14 +1016,20 @@ export type Features = {
    * @default ['email', 'social', 'wallet']
    * @type {('email' | 'social' | 'wallet')[]}
    */
-  experiemental_connectMethodOrder?: ('email' | 'social' | 'wallet')[]
+  experimental_connectMethodOrder?: ('email' | 'social' | 'wallet')[]
   /**
    * @
    * @description The order of the wallet features. This is experimental and subject to change.
    * @default ['receive' | 'buy' | 'swap' | 'send']
    * @type {('receive' | 'buy' | 'swap' | 'send')[]}
    */
-  experiemental_walletFeatureOrder?: ('receive' | 'buy' | 'swap' | 'send')[]
+  experimental_walletFeatureOrder?: ('receive' | 'buy' | 'swap' | 'send')[]
+  /**
+   * @description Enable or disable the collapse wallets as an single "Continue with wallet" button for simple UI in connect page.
+   * This can be activated when only have another connect method like email or social activated as well.
+   * @default false
+   */
+  experimental_collapseWallets?: boolean
 }
 
 export type FeaturesKeys = keyof Features

@@ -110,7 +110,7 @@ export class W3mConnectView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private renderConnectMethod(tabIndex?: number) {
-    const connectMethodOrder = this.features?.experiemental_connectMethodOrder
+    const connectMethodOrder = this.features?.experimental_connectMethodOrder
 
     if (!connectMethodOrder) {
       // TODO: will be implemented
@@ -146,7 +146,7 @@ export class W3mConnectView extends LitElement {
 
   private checkIsThereNextMethod(currentIndex: number): boolean {
     const connectMethodOrder =
-      this.features?.experiemental_connectMethodOrder || defaultConnectMethodOrder
+      this.features?.experimental_connectMethodOrder || defaultConnectMethodOrder
 
     const nextMethod = connectMethodOrder[currentIndex + 1] as
       | 'wallet'
@@ -169,7 +169,7 @@ export class W3mConnectView extends LitElement {
 
   private separatorTemplate(index: number, type: 'wallet' | 'email' | 'social') {
     const connectMethodOrder =
-      this.features?.experiemental_connectMethodOrder || defaultConnectMethodOrder
+      this.features?.experimental_connectMethodOrder || defaultConnectMethodOrder
     const isNextMethodExist = this.checkIsThereNextMethod(index)
     const isExplore = this.walletGuide === 'explore'
 
@@ -230,9 +230,9 @@ export class W3mConnectView extends LitElement {
   }
 
   private walletListTemplate(tabIndex?: number) {
-    const socials = this.features?.socials
-    const emailShowWallets = this.features?.emailShowWallets
     const enableWallets = this.enableWallets
+    const collapseWallets = this.features?.experimental_collapseWallets
+    console.log('>>> collapseWallets', collapseWallets)
 
     if (!enableWallets) {
       return null
@@ -246,18 +246,11 @@ export class W3mConnectView extends LitElement {
       return null
     }
 
-    if (this.authConnector && socials) {
-      if (this.authConnector && emailShowWallets) {
-        return html`
-          <wui-flex flexDirection="column" gap="xs" .margin=${['xs', '0', '0', '0'] as const}>
-            <w3m-connector-list tabIdx=${ifDefined(tabIndex)}></w3m-connector-list>
-            <wui-flex class="all-wallets">
-              <w3m-all-wallets-widget tabIdx=${ifDefined(tabIndex)}></w3m-all-wallets-widget>
-            </wui-flex>
-          </wui-flex>
-        `
-      }
+    const hasEmail = this.features?.email
+    const hasSocials = this.features?.socials && this.features.socials.length > 0
+    const hasOtherMethods = hasEmail || hasSocials
 
+    if (hasOtherMethods && collapseWallets) {
       return html`<wui-list-button
         tabIdx=${ifDefined(tabIndex)}
         @click=${this.onContinueWalletClick.bind(this)}

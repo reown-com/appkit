@@ -9,12 +9,6 @@
   transition: background-color 350ms ease;
   grid-template-columns: repeat(var(--columns, 1), 1fr);
 
-  &:after {
-    content: '';
-    height: 10px;
-    grid-column-start: span var(--columns, 1);
-  }
-
   &.horizontal {
     width: 100%;
     grid-auto-flow: column;

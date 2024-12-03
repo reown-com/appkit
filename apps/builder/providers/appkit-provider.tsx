@@ -24,6 +24,9 @@ interface AppKitProviderProps {
   children: ReactNode
 }
 
+const defaultConnectMethodOrder = ['email', 'social', 'wallet']
+const defaultWalletFeatureOrder = ['swap', 'send', 'receive', 'buy']
+
 export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [features, setFeatures] = useState<Features>({})
@@ -33,7 +36,15 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
   const [termsConditionsUrl, setTermsConditionsUrl] = useState('')
   const [privacyPolicyUrl, setPrivacyPolicyUrl] = useState('')
   const [enableWallets, setEnableWallets] = useState(true)
-  // Initialize AppKit and state from URL
+  const [isDraggingByKey, setIsDraggingByKey] = useState<Record<string, boolean>>({})
+
+  const updateDraggingState = (key: string, value: boolean) => {
+    setIsDraggingByKey(prev => ({
+      ...prev,
+      [key]: value
+    }))
+  }
+
   useEffect(() => {
     const urlState = getStateFromUrl()
     setFeatures(urlState.features)
@@ -47,9 +58,10 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
       projectId: process.env.NEXT_PUBLIC_PROJECT_ID!,
       disableAppend: true,
       features: {
-        experiemental_walletFeatureOrder: ['swap', 'send', 'receive', 'buy'],
-        experiemental_connectMethodOrder: ['wallet', 'social', 'email'],
-        ...urlState.features
+        ...urlState.features,
+        experimental_walletFeatureOrder: urlState.walletFeatureOrder || defaultWalletFeatureOrder,
+        experimental_connectMethodOrder: urlState.connectMethodOrder || defaultConnectMethodOrder,
+        experimental_collapseWallets: urlState.collapseWallets || false
       },
       enableWallets: urlState.enableWallets,
       themeMode: urlState.themeMode,
@@ -66,36 +78,45 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
     setIsLoading(false)
   }, [])
 
-  // Update URL when state changes
-  useEffect(() => {
-    if (!isLoading) {
-      updateUrlState(features, themeMode)
-    }
-  }, [features, themeMode, isLoading])
-
   // Update AppKit when core states change
   useEffect(() => {
     if (!isLoading) {
-      kit?.setThemeMode(themeMode)
-      kit?.updateFeatures(features)
+      kit?.setConnectMethodOrder(
+        features.experimental_connectMethodOrder || defaultConnectMethodOrder
+      )
+      kit?.setWalletFeatureOrder(
+        features.experimental_walletFeatureOrder || defaultWalletFeatureOrder
+      )
+      kit?.setCollapseWallets(features.experimental_collapseWallets || false)
     }
-  }, [themeMode, features, isLoading])
+  }, [isLoading, features])
 
-  const updateFeatures = (newFeatures: Partial<Features>) => {
-    setFeatures(prev => ({ ...prev, ...newFeatures }))
+  function updateFeatures(newFeatures: Partial<Features>) {
+    setFeatures(prev => {
+      const newValue = { ...prev, ...newFeatures }
+      kit?.updateFeatures(newValue)
+      updateUrlState({ features: newValue })
+      return newValue
+    })
   }
 
-  const updateEnableWallets = (enabled: boolean) => {
-    setEnableWallets(enabled)
-    kit?.updateOptions({ enableWallets: enabled })
+  function updateEnableWallets(enabled: boolean) {
+    setEnableWallets(() => {
+      updateUrlState({ enableWallets: enabled })
+      kit?.updateOptions({ enableWallets: enabled })
+      return enabled
+    })
   }
 
-  const updateThemeMode = (mode: ThemeMode) => {
-    setThemeMode(mode)
-    kit?.setThemeMode(mode)
+  function updateThemeMode(mode: ThemeMode) {
+    setThemeMode(() => {
+      updateUrlState({ themeMode: mode })
+      kit?.setThemeMode(mode)
+      return mode
+    })
   }
 
-  const updateUrls = (urls: { termsConditions?: string; privacyPolicy?: string }) => {
+  function updateUrls(urls: { termsConditions?: string; privacyPolicy?: string }) {
     if (urls.termsConditions !== undefined) {
       setTermsConditionsUrl(urls.termsConditions)
       kit?.setTermsConditionsUrl(urls.termsConditions)
@@ -106,7 +127,7 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
     }
   }
 
-  const updateSocials = (enabled: boolean) => {
+  function updateSocials(enabled: boolean) {
     if (enabled && !Array.isArray(features.socials)) {
       updateFeatures({
         socials: ['apple', 'google', 'x', 'github', 'farcaster', 'discord', 'facebook']
@@ -114,10 +135,6 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
     } else if (!enabled) {
       updateFeatures({ socials: false })
     }
-  }
-
-  function setConnectMethodOrder(connectMethodOrder: ('email' | 'social' | 'wallet')[]) {
-    kit?.setConnectMethodOrder(connectMethodOrder)
   }
 
   const socialsEnabled = Array.isArray(features.socials)
@@ -134,6 +151,7 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
         privacyPolicyUrl,
         socialsEnabled,
         enableWallets,
+        isDraggingByKey,
         setIsDrawerOpen,
         updateFeatures,
         updateThemeMode,
@@ -142,7 +160,8 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
         updateUrls,
         updateEnableWallets,
         setEnableWallets: updateEnableWallets,
-        setConnectMethodOrder
+        setSocialsOrder: kit?.setSocialsOrder,
+        updateDraggingState
       }}
     >
       {children}

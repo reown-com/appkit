@@ -605,8 +605,21 @@ export class AppKit {
   }
 
   public setConnectMethodOrder(connectMethodOrder: ('email' | 'social' | 'wallet')[]) {
-    console.log('setConnectMethodOrder', connectMethodOrder)
     OptionsController.setConnectMethodOrder(connectMethodOrder)
+  }
+
+  public setWalletFeatureOrder(walletFeatureOrder: ('swap' | 'send' | 'receive' | 'buy')[]) {
+    OptionsController.setWalletFeatureOrder(walletFeatureOrder)
+  }
+
+  public setCollapseWallets(collapseWallets: boolean) {
+    OptionsController.setCollapseWallets(collapseWallets)
+  }
+
+  public setSocialsOrder(
+    socialsOrder: ('apple' | 'google' | 'x' | 'github' | 'farcaster' | 'discord' | 'facebook')[]
+  ) {
+    OptionsController.setSocialsOrder(socialsOrder)
   }
 
   public async disconnect() {
