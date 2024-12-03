@@ -1,5 +1,5 @@
 import type { Connector } from '@reown/appkit-core'
-import { ApiController, AssetController, OptionsController, StorageUtil } from '@reown/appkit-core'
+import { ApiController, OptionsController, StorageUtil } from '@reown/appkit-core'
 import { WalletUtil } from './WalletUtil.js'
 
 export const ConnectorUtil = {
@@ -29,5 +29,5 @@ export const ConnectorUtil = {
       recommended: filteredRecommended,
       featured: filteredFeatured
     }
-  },
+  }
 }
