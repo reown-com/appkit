@@ -2,15 +2,11 @@ import React, { useEffect } from 'react'
 import classNames from 'classnames'
 import type { DraggableSyntheticListeners } from '@dnd-kit/core'
 import type { Transform } from '@dnd-kit/utilities'
-
 import { Handle } from './components'
-
 import styles from './connect-method-item.module.css'
 import { useAppKit } from '@/hooks/use-appkit'
 import { Checkbox } from '@/components/ui/checkbox'
 import { SocialButtons } from '@/components/configuration-sections/social-buttons'
-
-type SocialOption = 'google' | 'x' | 'discord' | 'farcaster' | 'github' | 'apple' | 'facebook'
 
 export interface Props {
   dragOverlay?: boolean

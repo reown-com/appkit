@@ -1,6 +1,10 @@
 import { cn } from '@/lib/utils'
-import { Checkbox } from '@/components/ui/checkbox'
 import { DragIcon } from '@/components/icon/drag'
+import dynamic from 'next/dynamic'
+
+const Checkbox = dynamic(() => import('@/components/ui/checkbox').then(mod => mod.Checkbox), {
+  ssr: false
+})
 
 interface FeatureButtonProps {
   label: string

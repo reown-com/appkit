@@ -39,7 +39,7 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
   const [enableWallets, setEnableWallets] = useState(true)
   const [isDraggingByKey, setIsDraggingByKey] = useState<Record<string, boolean>>({})
 
-  const updateDraggingState = (key: string, value: boolean) => {
+  function updateDraggingState(key: string, value: boolean) {
     setIsDraggingByKey(prev => ({
       ...prev,
       [key]: value

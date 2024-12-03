@@ -1,8 +1,14 @@
 import { UniqueIdentifier } from '@dnd-kit/core'
-import { SortableWalletFeatureList } from '@/components/sortable-list-wallet-features'
 import { useAppKit } from '@/hooks/use-appkit'
 import { WalletFeatureName } from '@/lib/types'
-import { WalletFeatureValue } from '@/lib/types'
+import { WalletFeature } from '@reown/appkit-core'
+import dynamic from 'next/dynamic'
+
+const SortableWalletFeatureList = dynamic(
+  () =>
+    import('@/components/sortable-list-wallet-features').then(mod => mod.SortableWalletFeatureList),
+  { ssr: false }
+)
 
 const defaultWalletFeaturesOrder = ['onramp', 'swaps', 'receive', 'send']
 
@@ -17,9 +23,7 @@ export function WalletFeatureList() {
       Receive: 'receive',
       Send: 'send'
     }
-    const newOrder = items.map(
-      item => titleValueMap[item as WalletFeatureName] as WalletFeatureValue
-    )
+    const newOrder = items.map(item => titleValueMap[item as WalletFeatureName] as WalletFeature)
 
     updateFeatures({ experimental_walletFeaturesOrder: newOrder })
   }

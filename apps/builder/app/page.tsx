@@ -8,15 +8,7 @@ import { cn } from '@/lib/utils'
 import { W3mHeader } from '@reown/appkit-scaffold-ui'
 
 export default function Component() {
-  const { isLoading, themeMode } = useAppKit()
-
-  if (isLoading) {
-    return (
-      <div className="h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-      </div>
-    )
-  }
+  const { themeMode } = useAppKit()
 
   return (
     <div
@@ -25,7 +17,7 @@ export default function Component() {
         themeMode === 'dark' ? 'dark' : ''
       )}
     >
-      <div className="flex max-w-[360px] md:max-w-[340px] w-full bg-fg-primary h-none md:h-full text-foreground p-6 flex-col rounded-2xl">
+      <div className="flex max-w-[360px] md:max-w-[340px] w-full bg-fg-primary h-none md:h-full text-foreground p-6 flex-col rounded-2xl overflow-none md:overflow-y-auto">
         <SidebarContent />
       </div>
 

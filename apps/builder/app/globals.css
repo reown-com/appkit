@@ -7,6 +7,11 @@ body {
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+
+  ::selection {
+    background-color: hsl(var(--apkt-background-accent-primary) / 0.1);
+  }
 }
 
 @layer base {

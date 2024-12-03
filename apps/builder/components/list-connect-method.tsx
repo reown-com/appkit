@@ -1,8 +1,22 @@
 import { UniqueIdentifier } from '@dnd-kit/core'
-import { SortableConnectMethodList } from '@/components/sortable-list-connect-method'
 import { useAppKit } from '@/hooks/use-appkit'
+import dynamic from 'next/dynamic'
+import { ConnectMethodItemLoading } from '@/components/connect-method-item/components/loading'
 
-type SocialOption = 'google' | 'x' | 'discord' | 'farcaster' | 'github' | 'apple' | 'facebook'
+const SortableConnectMethodList = dynamic(
+  () =>
+    import('@/components/sortable-list-connect-method').then(mod => mod.SortableConnectMethodList),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex flex-col gap-3">
+        <ConnectMethodItemLoading />
+        <ConnectMethodItemLoading />
+        <ConnectMethodItemLoading />
+      </div>
+    )
+  }
+)
 
 export function ConnetMethodList() {
   const {
