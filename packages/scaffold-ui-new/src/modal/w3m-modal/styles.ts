@@ -1,9 +1,11 @@
-import { css } from 'lit'
+import { css } from '@reown/appkit-ui-new'
+import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 
 export default css`
   :host {
     z-index: var(--w3m-z-index);
-    display: block;
+    display: flex;
+    justify-content: center;
     backface-visibility: hidden;
     will-change: opacity;
     position: fixed;
@@ -13,8 +15,7 @@ export default css`
     bottom: 0;
     pointer-events: none;
     opacity: 0;
-    background-color: var(--wui-cover);
-    transition: opacity 0.2s var(--wui-ease-out-power-2);
+    background-color: rgba(0, 0, 0, 0.8);
     will-change: opacity;
   }
 
@@ -22,106 +23,112 @@ export default css`
     opacity: 1;
   }
 
-  wui-card {
-    max-width: var(--w3m-modal-width);
-    width: 100%;
-    position: relative;
-    animation: zoom-in 0.2s var(--wui-ease-out-power-2);
-    animation-fill-mode: backwards;
-    outline: none;
-  }
-
-  wui-card[shake='true'] {
-    animation:
-      zoom-in 0.2s var(--wui-ease-out-power-2),
-      w3m-shake 0.5s var(--wui-ease-out-power-2);
-  }
-
   wui-flex {
+    display: grid;
+    grid-template-columns: ${UiHelperUtil.getBreakPointStyle('2XL', 'GRID_COLUMNS')};
+    grid-template-rows: ${UiHelperUtil.getBreakPointStyle('2XL', 'GRID_ROWS')};
+    max-width: ${UiHelperUtil.getBreakPointStyle('2XL', 'MAX_WIDTH')};
+    gap: ${UiHelperUtil.getBreakPointStyle('2XL', 'MARGIN')};
+    padding: ${UiHelperUtil.getBreakPointStyle('2XL', 'MARGIN')};
+    box-sizing: border-box;
     overflow-x: hidden;
     overflow-y: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     width: 100%;
     height: 100%;
   }
 
-  @media (max-height: 700px) and (min-width: 431px) {
+  .modal-grid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    grid-column: ${UiHelperUtil.getBreakPointStyle('2XL', 'MODAL_GRID_COLUMN_PLACEMENT')};
+    grid-row: ${UiHelperUtil.getBreakPointStyle('2XL', 'MODAL_GRID_ROW_PLACEMENT')};
+    padding: ${UiHelperUtil.getBreakPointStyle('2XL', 'GUTTER')};
+  }
+
+  .modal-card {
+    border-top-right-radius: ${({ borderRadius }) => borderRadius[8]};
+    border-bottom-right-radius: ${({ borderRadius }) => borderRadius[8]};
+    border-top-left-radius: ${({ borderRadius }) => borderRadius[8]};
+    border-bottom-left-radius: ${({ borderRadius }) => borderRadius[8]};
+    background: ${({ tokens }) => tokens.theme.foregroundPrimary};
+    width: 100%;
+  }
+
+  @media screen and (max-width: ${UiHelperUtil.getBreakPointStyle('2XL', 'MAX_WIDTH')}) {
     wui-flex {
-      align-items: flex-start;
+      grid-template-columns: ${UiHelperUtil.getBreakPointStyle('XL', 'GRID_COLUMNS')};
+      grid-template-rows: ${UiHelperUtil.getBreakPointStyle('XL', 'GRID_ROWS')};
+      padding: ${UiHelperUtil.getBreakPointStyle('XL', 'MARGIN')};
     }
 
-    wui-card {
-      margin: var(--wui-spacing-xxl) 0px;
+    .modal-grid {
+      grid-column: ${UiHelperUtil.getBreakPointStyle('XL', 'MODAL_GRID_COLUMN_PLACEMENT')};
+      grid-row: ${UiHelperUtil.getBreakPointStyle('XL', 'MODAL_GRID_ROW_PLACEMENT')};
+      padding: ${UiHelperUtil.getBreakPointStyle('XL', 'GUTTER')};
     }
   }
 
-  @media (max-width: 430px) {
+  @media screen and (max-width: ${UiHelperUtil.getBreakPointStyle('XL', 'MAX_WIDTH')}) {
     wui-flex {
-      align-items: flex-end;
+      grid-template-columns: ${UiHelperUtil.getBreakPointStyle('LG', 'GRID_COLUMNS')};
+      grid-template-rows: ${UiHelperUtil.getBreakPointStyle('LG', 'GRID_ROWS')};
+      padding: ${UiHelperUtil.getBreakPointStyle('LG', 'MARGIN')};
     }
 
-    wui-card {
-      max-width: 100%;
-      border-bottom-left-radius: 0;
+    .modal-grid {
+      grid-column: ${UiHelperUtil.getBreakPointStyle('LG', 'MODAL_GRID_COLUMN_PLACEMENT')};
+      grid-row: ${UiHelperUtil.getBreakPointStyle('LG', 'MODAL_GRID_ROW_PLACEMENT')};
+      padding: ${UiHelperUtil.getBreakPointStyle('LG', 'GUTTER')};
+    }
+  }
+
+  @media screen and (max-width: ${UiHelperUtil.getBreakPointStyle('LG', 'MAX_WIDTH')}) {
+    wui-flex {
+      grid-template-columns: ${UiHelperUtil.getBreakPointStyle('MD', 'GRID_COLUMNS')};
+      grid-template-rows: ${UiHelperUtil.getBreakPointStyle('MD', 'GRID_ROWS')};
+      padding: ${UiHelperUtil.getBreakPointStyle('MD', 'MARGIN')};
+    }
+
+    .modal-grid {
+      grid-column: ${UiHelperUtil.getBreakPointStyle('MD', 'MODAL_GRID_COLUMN_PLACEMENT')};
+      grid-row: ${UiHelperUtil.getBreakPointStyle('MD', 'MODAL_GRID_ROW_PLACEMENT')};
+      padding: ${UiHelperUtil.getBreakPointStyle('MD', 'GUTTER')};
+    }
+  }
+
+  @media screen and (max-width: ${UiHelperUtil.getBreakPointStyle('MD', 'MAX_WIDTH')}) {
+    wui-flex {
+      grid-template-columns: ${UiHelperUtil.getBreakPointStyle('SM', 'GRID_COLUMNS')};
+      grid-template-rows: ${UiHelperUtil.getBreakPointStyle('SM', 'GRID_ROWS')};
+      padding: ${UiHelperUtil.getBreakPointStyle('SM', 'MARGIN')};
+    }
+
+    .modal-grid {
+      grid-column: ${UiHelperUtil.getBreakPointStyle('SM', 'MODAL_GRID_COLUMN_PLACEMENT')};
+      grid-row: ${UiHelperUtil.getBreakPointStyle('SM', 'MODAL_GRID_ROW_PLACEMENT')};
+      padding: ${UiHelperUtil.getBreakPointStyle('SM', 'GUTTER')};
+    }
+  }
+
+  @media screen and (max-width: ${UiHelperUtil.getBreakPointStyle('SM', 'MAX_WIDTH')}) {
+    wui-flex {
+      grid-template-columns: ${UiHelperUtil.getBreakPointStyle('XS', 'GRID_COLUMNS')};
+      grid-template-rows: ${UiHelperUtil.getBreakPointStyle('XS', 'GRID_ROWS')};
+      padding: ${UiHelperUtil.getBreakPointStyle('XS', 'MARGIN')};
+    }
+
+    .modal-grid {
+      grid-column: ${UiHelperUtil.getBreakPointStyle('XS', 'MODAL_GRID_COLUMN_PLACEMENT')};
+      grid-row: ${UiHelperUtil.getBreakPointStyle('XS', 'MODAL_GRID_ROW_PLACEMENT')};
+      padding: ${UiHelperUtil.getBreakPointStyle('XS', 'GUTTER')};
+    }
+
+    .modal-card {
+      height: 100%;
       border-bottom-right-radius: 0;
-      border-bottom: none;
-      animation: slide-in 0.2s var(--wui-ease-out-power-2);
-    }
-
-    wui-card[shake='true'] {
-      animation:
-        slide-in 0.2s var(--wui-ease-out-power-2),
-        w3m-shake 0.5s var(--wui-ease-out-power-2);
-    }
-  }
-
-  @keyframes zoom-in {
-    0% {
-      transform: scale(0.95) translateY(0);
-    }
-    100% {
-      transform: scale(1) translateY(0);
-    }
-  }
-
-  @keyframes slide-in {
-    0% {
-      transform: scale(1) translateY(50px);
-    }
-    100% {
-      transform: scale(1) translateY(0);
-    }
-  }
-
-  @keyframes w3m-shake {
-    0% {
-      transform: scale(1) rotate(0deg);
-    }
-    20% {
-      transform: scale(1) rotate(-1deg);
-    }
-    40% {
-      transform: scale(1) rotate(1.5deg);
-    }
-    60% {
-      transform: scale(1) rotate(-1.5deg);
-    }
-    80% {
-      transform: scale(1) rotate(1deg);
-    }
-    100% {
-      transform: scale(1) rotate(0deg);
-    }
-  }
-
-  @keyframes w3m-view-height {
-    from {
-      height: var(--prev-height);
-    }
-    to {
-      height: var(--new-height);
+      border-bottom-left-radius: 0;
     }
   }
 `
