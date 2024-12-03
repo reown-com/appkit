@@ -129,10 +129,12 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   }
 
   sendTransfer(_params: BitcoinConnector.SendTransferParams): Promise<string> {
-    throw new MethodNotSupportedError(
-      this.id,
-      'sendTransfer',
-      'Please use "signPSBT" instead and broadcast the transaction manually.'
+    return Promise.reject(
+      new MethodNotSupportedError(
+        this.id,
+        'sendTransfer',
+        'Please use "signPSBT" instead and broadcast the transaction manually.'
+      )
     )
   }
 
@@ -141,7 +143,7 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   }
 
   request<T>(_args: RequestArguments): Promise<T> {
-    throw new MethodNotSupportedError(this.id, 'request')
+    return Promise.reject(new MethodNotSupportedError(this.id, 'request'))
   }
 
   private getWalletFeature<Name extends keyof BitcoinFeatures>(feature: Name) {
