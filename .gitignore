@@ -16,3 +16,4 @@ test-results
 apps/laboratory/playwright/.auth/user.json
 tsconfig.tsbuildinfo
 .cache-synpress
+.parcel-cache
