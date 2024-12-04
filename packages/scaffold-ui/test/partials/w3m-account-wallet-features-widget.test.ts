@@ -9,7 +9,7 @@ import { HelpersUtil } from '../utils/HelpersUtil'
 const WALLET_FEATURE_WIDGET_TEST_ID = 'w3m-account-wallet-features-widget'
 const MOCK_ADDRESS = '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826'
 
-describe('W3mLegalCheckbox', () => {
+describe('W3mAccountWalletFeaturesWidget', () => {
   beforeAll(() => {
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
