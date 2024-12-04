@@ -9,7 +9,6 @@ export class ReownEvmProvider extends EventEmitter {
     return transport.send({
       method,
       params
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    }) as any
+    })
   }
 }

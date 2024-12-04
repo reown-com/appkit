@@ -1,5 +1,44 @@
 import { createSprinkles, defineProperties } from '@vanilla-extract/sprinkles'
-import { dimensions, flexAlignments, radii, spacing, textAlignments, themeValues } from './vars'
+
+import { colors, spacing, borderRadius } from '@reown/appkit-ui-new'
+
+const flexAlignments = ['flex-start', 'flex-end', 'center']
+
+const dimensions = {
+  '1': '1px',
+  '2': '2px',
+  '4': '4px',
+  '8': '8px',
+  '12': '12px',
+  '20': '20px',
+  '24': '24px',
+  '28': '28px',
+  '30': '30px',
+  '32': '32px',
+  '34': '34px',
+  '36': '36px',
+  '40': '40px',
+  '44': '44px',
+  '48': '48px',
+  '49': '49px',
+  '50': '50px',
+  '54': '54px',
+  '56': '56px',
+  '62': '62px',
+  '64': '64px',
+  '106': '106px',
+  '140': '140px',
+  '180': '180px',
+  '200': '200px',
+  '320': '320px',
+  '360': '360px',
+  '490': '490px',
+  '565': '565px',
+  full: '100%',
+  auto: 'auto',
+  max: 'max-content',
+  screen: '100vh'
+}
 
 const unresponsiveProperties = defineProperties({
   properties: {
@@ -7,7 +46,7 @@ const unresponsiveProperties = defineProperties({
     backgroundSize: ['cover'] as const,
     flex: ['1', '0.5'],
     opacity: ['1', '0.7', '0.5'],
-    borderRadius: radii,
+    borderRadius,
     backgroundClip: ['text'],
     WebkitBackgroundClip: ['text'],
     WebkitTextFillColor: ['transparent'],
@@ -52,7 +91,7 @@ const unresponsiveProperties = defineProperties({
     gap: spacing,
     height: dimensions,
     justifyContent: [...flexAlignments, 'space-between', 'space-around'],
-    textAlign: textAlignments,
+    textAlign: ['left', 'center', 'inherit'],
     marginBottom: spacing,
     marginLeft: { ...spacing, auto: 'auto' },
     marginRight: spacing,
@@ -96,10 +135,9 @@ const colorProperties = defineProperties({
   },
   defaultCondition: 'base',
   properties: {
-    background: themeValues.colors,
-    borderColor: themeValues.colors,
-    boxShadow: themeValues.shadows,
-    color: themeValues.colors
+    background: colors,
+    borderColor: colors,
+    color: colors
   }
 })
 

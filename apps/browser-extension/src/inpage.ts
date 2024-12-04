@@ -15,6 +15,9 @@ announceProvider({
     rdns: 'reown.com',
     uuid: uuidv4()
   },
+  // We can fix type errors by providing all RPC methods to ReownEvmProvider (EIP1193 provider)
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
   provider: reownEvmProvider
 })
 

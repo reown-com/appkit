@@ -23,11 +23,12 @@ export function createReownTransport() {
         )
       })
 
-      // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
       const chainId = (localStorage.getItem('chainId') as ChainId | null) ?? '1'
       const hasConnected = localStorage.getItem('hasConnected')
 
-      const publicClient = ProviderUtil.createPublicClient(Number(chainId) as ChainId)
+      const publicClient = ProviderUtil.createPublicClient(
+        Number(chainId) as ChainId
+      ) as NonNullable<ReturnType<typeof ProviderUtil.createPublicClient>>
 
       switch (method) {
         case 'eth_chainId':

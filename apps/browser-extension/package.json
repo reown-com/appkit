@@ -43,7 +43,8 @@
     "viem": "2.21.26",
     "wagmi": "2.12.7",
     "webpack": "5.92.1",
-    "zustand": "5.0.1"
+    "zustand": "5.0.1",
+    "@reown/appkit-ui-new": "workspace:*"
   },
   "devDependencies": {
     "@types/big.js": "6.2.2",
