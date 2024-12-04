@@ -243,7 +243,6 @@ export const SwapController = {
   },
 
   async setTokenPrice(address: string, target: SwapInputTarget) {
-    const { availableToSwap } = this.getParams()
     let price = state.tokensPriceMap[address] || 0
 
     if (!price) {
@@ -259,9 +258,10 @@ export const SwapController = {
 
     if (state.loadingPrices) {
       state.loadingPrices = false
-      if (availableToSwap) {
-        this.swapTokens()
-      }
+    }
+
+    if (this.getParams().availableToSwap) {
+      this.swapTokens()
     }
   },
 
