@@ -1,5 +1,5 @@
 import { W3mLegalCheckbox } from '../../src/partials/w3m-legal-checkbox/index'
-import { describe, it, expect, beforeEach, vi, beforeAll } from 'vitest'
+import { describe, it, expect, vi, beforeAll } from 'vitest'
 import { fixture, elementUpdated } from '@open-wc/testing'
 import { OptionsController } from '@reown/appkit-core'
 import { html } from 'lit'
