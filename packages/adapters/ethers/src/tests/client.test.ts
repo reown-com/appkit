@@ -8,6 +8,16 @@ import { JsonRpcProvider, InfuraProvider } from 'ethers'
 import { mainnet } from '@reown/appkit/networks'
 import { EthersMethods } from '../utils/EthersMethods'
 import { ProviderUtil } from '@reown/appkit/store'
+import { WcConstantsUtil } from '@reown/appkit'
+
+class ErrorWithCode extends Error {
+  code: number
+
+  constructor(message: string, code: number) {
+    super(message)
+    this.code = code
+  }
+}
 
 // Mock external dependencies
 vi.mock('ethers', async importOriginal => {
@@ -296,6 +306,44 @@ describe('EthersAdapter', () => {
 
       expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith(1)
       expect(mockAuthProvider.connect).toHaveBeenCalledWith({ chainId: 1 })
+    })
+
+    it('should add Ethereum chain with external provider and use chain default', async () => {
+      // Mock request so that switchEthereumChain throws with code: WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+      vi.mocked(mockProvider.request).mockImplementation(request => {
+        if (request.method === 'wallet_switchEthereumChain') {
+          throw new ErrorWithCode(
+            'Unrecognized chain ID',
+            WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+          )
+        }
+        return Promise.resolve(null)
+      })
+
+      const mockCaipNetwork = mockCaipNetworks[0]
+      await adapter.switchNetwork({
+        caipNetwork: mockCaipNetwork,
+        provider: mockProvider,
+        providerType: 'EXTERNAL'
+      })
+
+      expect(mockProvider.request).toHaveBeenCalledWith({
+        method: 'wallet_addEthereumChain',
+        params: [
+          {
+            chainId: '0x1',
+            rpcUrls: [mockCaipNetwork.rpcUrls['chainDefault']?.http[0]],
+            chainName: 'Ethereum',
+            iconUrls: ['ba0ba0cd-17c6-4806-ad93-f9d174f17900'],
+            nativeCurrency: {
+              name: 'Ether',
+              decimals: 18,
+              symbol: 'ETH'
+            },
+            blockExplorerUrls: ['https://etherscan.io']
+          }
+        ]
+      })
     })
   })
 
