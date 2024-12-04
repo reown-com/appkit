@@ -3,7 +3,7 @@ export const HelpersUtil = {
     return element.textContent?.trim().replace('\n', '') ?? ''
   },
   querySelect(element: HTMLElement | Element, selector: string) {
-    return element.shadowRoot?.querySelector(selector) as Element
+    return element.shadowRoot?.querySelector(selector) as HTMLElement
   },
   getByTestId(element: HTMLElement | Element, testId: string) {
     return this.querySelect(element, `[data-testid="${testId}"]`)
