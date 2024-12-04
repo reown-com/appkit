@@ -41,9 +41,7 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
       EventsController.sendEvent({
         type: 'track',
         event: 'EMAIL_VERIFICATION_CODE_FAIL',
-        properties: {
-          message: CoreHelperUtil.parseError(error)
-        }
+        properties: { message: CoreHelperUtil.parseError(error) }
       })
       throw error
     }
