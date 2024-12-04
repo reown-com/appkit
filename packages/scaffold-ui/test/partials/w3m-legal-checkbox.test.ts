@@ -1,5 +1,5 @@
 import { W3mLegalCheckbox } from '../../src/partials/w3m-legal-checkbox/index'
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, vi, beforeAll } from 'vitest'
 import { fixture, elementUpdated } from '@open-wc/testing'
 import { OptionsController } from '@reown/appkit-core'
 import { html } from 'lit'
@@ -8,26 +8,24 @@ import { HelpersUtil } from '../utils/HelpersUtil'
 // --- Constants ---------------------------------------------------- //
 const CHECKBOX_TEST_ID = 'wui-checkbox'
 
-vi.mock('@reown/appkit-core', () => ({
-  OptionsController: {
-    state: {
-      termsConditionsUrl: 'https://example.com/terms',
-      privacyPolicyUrl: 'https://example.com/privacy',
+const TERMS_CONDITIONS_URL = 'https://example.com/terms'
+const PRIVACY_POLICY_URL = 'https://example.com/privacy'
+
+describe('W3mLegalCheckbox', () => {
+  beforeAll(() => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      termsConditionsUrl: TERMS_CONDITIONS_URL,
+      privacyPolicyUrl: PRIVACY_POLICY_URL,
       features: {
         legalCheckbox: true
       }
-    }
-  }
-}))
-
-describe('W3mLegalCheckbox', () => {
-  let element: W3mLegalCheckbox
-
-  beforeEach(async () => {
-    element = await fixture(html`<w3m-legal-checkbox></w3m-legal-checkbox>`)
+    })
   })
 
   it('it should return checkbox if legalCheckbox is true', async () => {
+    const element: W3mLegalCheckbox = await fixture(html`<w3m-legal-checkbox></w3m-legal-checkbox>`)
+
     const checkbox = HelpersUtil.querySelect(element, CHECKBOX_TEST_ID)
     expect(checkbox).toBeDefined()
     expect(HelpersUtil.getTextContent(checkbox)).toBe(
@@ -36,7 +34,14 @@ describe('W3mLegalCheckbox', () => {
   })
 
   it('it should not return checkbox if legalCheckbox is false', async () => {
-    OptionsController.state.features!.legalCheckbox = false
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      features: {
+        legalCheckbox: false
+      }
+    })
+
+    const element: W3mLegalCheckbox = await fixture(html`<w3m-legal-checkbox></w3m-legal-checkbox>`)
 
     element.requestUpdate()
     await elementUpdated(element)
@@ -45,9 +50,15 @@ describe('W3mLegalCheckbox', () => {
   })
 
   it('it should return checkbox if either termsConditionsUrl or privacyPolicyUrl are defined', async () => {
-    OptionsController.state.features!.legalCheckbox = true
-    OptionsController.state.termsConditionsUrl = 'https://example.com/terms'
-    OptionsController.state.privacyPolicyUrl = undefined
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      privacyPolicyUrl: undefined,
+      features: {
+        legalCheckbox: true
+      }
+    })
+
+    const element: W3mLegalCheckbox = await fixture(html`<w3m-legal-checkbox></w3m-legal-checkbox>`)
 
     element.requestUpdate()
     await elementUpdated(element)
@@ -58,9 +69,13 @@ describe('W3mLegalCheckbox', () => {
   })
 
   it('it should not return checkbox if both termsConditionsUrl and privacyPolicyUrl are not defined', async () => {
-    OptionsController.state.features!.legalCheckbox = true
-    OptionsController.state.termsConditionsUrl = undefined
-    OptionsController.state.privacyPolicyUrl = undefined
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      termsConditionsUrl: undefined,
+      privacyPolicyUrl: undefined
+    })
+
+    const element: W3mLegalCheckbox = await fixture(html`<w3m-legal-checkbox></w3m-legal-checkbox>`)
 
     element.requestUpdate()
     await elementUpdated(element)

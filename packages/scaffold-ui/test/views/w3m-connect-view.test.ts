@@ -1,5 +1,5 @@
 import { W3mConnectView } from '../../src/views/w3m-connect-view/index'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeAll } from 'vitest'
 import { fixture, elementUpdated } from '@open-wc/testing'
 import { html } from 'lit'
 import { HelpersUtil } from '../utils/HelpersUtil'
@@ -12,7 +12,7 @@ const TERMS_CONDITIONS_URL = 'https://example.com/terms'
 const PRIVACY_POLICY_URL = 'https://example.com/privacy'
 
 describe('W3mConnectView', () => {
-  it('it should disable connect view if legal checkbox is enabled', async () => {
+  beforeAll(() => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
       termsConditionsUrl: TERMS_CONDITIONS_URL,
@@ -21,7 +21,9 @@ describe('W3mConnectView', () => {
         legalCheckbox: true
       }
     })
+  })
 
+  it('it should disable connect view if legal checkbox is enabled', async () => {
     const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
 
     const connectScrollView = HelpersUtil.getByTestId(element, CONNECT_SCROLL_VIEW_TEST_ID)
@@ -33,8 +35,6 @@ describe('W3mConnectView', () => {
   it('it should enable connect view if legal checkbox is disabled', async () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
-      termsConditionsUrl: TERMS_CONDITIONS_URL,
-      privacyPolicyUrl: PRIVACY_POLICY_URL,
       features: {
         legalCheckbox: false
       }
@@ -55,8 +55,6 @@ describe('W3mConnectView', () => {
   it('should listen for checkboxChange event and enable connect view after checkbox is clicked', async () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
-      termsConditionsUrl: 'https://example.com/terms',
-      privacyPolicyUrl: 'https://example.com/privacy',
       features: {
         legalCheckbox: true
       }
