@@ -134,8 +134,6 @@ export class W3mNetworkSwitchView extends LitElement {
         await ChainController.switchActiveNetwork(this.network)
       }
     } catch (error) {
-      console.log(error, 'error')
-
       this.error = true
     }
   }

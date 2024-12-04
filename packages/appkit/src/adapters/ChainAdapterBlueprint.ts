@@ -13,7 +13,8 @@ import {
   type Connector as AppKitConnector,
   type AuthConnector,
   type Metadata,
-  type Tokens
+  type Tokens,
+  type WriteContractArgs
 } from '@reown/appkit-core'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
@@ -422,19 +423,11 @@ export namespace AdapterBlueprint {
     gas: bigint
   }
 
-  export type WriteContractParams = {
-    receiverAddress: string
-    tokenAmount?: bigint
-    tokenAddress: string
-    fromAddress?: string
-    method: 'send' | 'transfer' | 'call' | 'approve'
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    abi: any
+  export type WriteContractParams = WriteContractArgs & {
     caipNetwork: CaipNetwork
     provider?: AppKitConnector['provider']
     caipAddress: CaipAddress
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    args?: any
   }
 
   export type WriteContractResult = {
