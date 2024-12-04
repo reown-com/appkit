@@ -1,5 +1,5 @@
 import { UniqueIdentifier } from '@dnd-kit/core'
-import { useAppKit } from '@/hooks/use-appkit'
+import { useAppKitContext } from '@/hooks/use-appkit'
 import dynamic from 'next/dynamic'
 import { ConnectMethodItemLoading } from '@/components/connect-method-item/components/loading'
 
@@ -26,7 +26,7 @@ export function ConnetMethodList() {
     updateSocials,
     updateFeatures,
     setEnableWallets
-  } = useAppKit()
+  } = useAppKitContext()
   const connectMethodOrder = features.experimental_connectMethodOrder || [
     'email',
     'social',

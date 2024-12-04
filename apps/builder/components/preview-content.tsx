@@ -24,7 +24,7 @@ export function PreviewContent() {
         </p>
       </div>
 
-      <div className="w-full max-w-[400px] py-8 mx-auto flex-grow flex items-center justify-center">
+      <div className="w-full max-w-[400px] py-8 mx-auto flex-grow items-center justify-center hidden md:flex">
         {/* @ts-ignore */}
         <w3m-modal
           style={{ positive: 'relative', width: '100%' }}
@@ -33,7 +33,7 @@ export function PreviewContent() {
         />
       </div>
 
-      <div className="flex justify-center gap-2">
+      <div className="justify-center gap-2 hidden md:flex">
         <Button variant="neutral-secondary" onClick={handleShare}>
           <Share2 size={16} className="mr-2" />
           Share

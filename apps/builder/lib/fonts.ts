@@ -31,7 +31,7 @@ export const khTeka = localFont({
     {
       path: '../app/fonts/KHTekaMono-Regular.woff',
       weight: '700',
-      style: 'normal'
+      style: 'mono'
     }
   ]
 })

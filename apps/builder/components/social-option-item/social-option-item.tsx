@@ -4,7 +4,7 @@ import type { DraggableSyntheticListeners } from '@dnd-kit/core'
 import type { Transform } from '@dnd-kit/utilities'
 
 import styles from './sortable-social-item.module.css'
-import { useAppKit } from '@/hooks/use-appkit'
+import { useAppKitContext } from '@/hooks/use-appkit'
 import { SocialProvider } from '@reown/appkit-core'
 
 export interface Props {
@@ -70,9 +70,9 @@ export const SocialOptionItem = React.memo(
       },
       ref
     ) => {
-      const { features, updateFeatures } = useAppKit()
+      const { features, updateFeatures } = useAppKitContext()
       const socials = features.socials || []
-      const { isDraggingByKey } = useAppKit()
+      const { isDraggingByKey } = useAppKitContext()
       const emailDragging = isDraggingByKey['Email']
       const walletsDragging = isDraggingByKey['Wallets']
       const socialsDragging = isDraggingByKey['Socials']

@@ -4,7 +4,7 @@ import type { DraggableSyntheticListeners } from '@dnd-kit/core'
 import type { Transform } from '@dnd-kit/utilities'
 import { Handle } from './components'
 import styles from './connect-method-item.module.css'
-import { useAppKit } from '@/hooks/use-appkit'
+import { useAppKitContext } from '@/hooks/use-appkit'
 import { Checkbox } from '@/components/ui/checkbox'
 import { SocialButtons } from '@/components/configuration-sections/social-buttons'
 
@@ -69,7 +69,7 @@ export const ConnectMethodItem = React.memo(
       },
       ref
     ) => {
-      const { features, enableWallets } = useAppKit()
+      const { features, enableWallets } = useAppKitContext()
       const emailEnabled = features.email
       const socialsEnabled = Array.isArray(features.socials)
       const walletsEnabled = enableWallets

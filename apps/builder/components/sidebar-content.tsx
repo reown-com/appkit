@@ -4,15 +4,30 @@ import * as React from 'react'
 import { MonitorSmartphone } from 'lucide-react'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useAppKit } from '@/hooks/use-appkit'
+import { useAppKitContext } from '@/hooks/use-appkit'
 import { cn } from '@/lib/utils'
 import { AuthFeatures } from './configuration-sections/connect-options'
 import { AdvancedFeatures } from './configuration-sections/wallet-features'
 import SidebarContentDesign from '@/components/sidebar-content-design'
 import Link from 'next/link'
+import { useAppKit } from '@reown/appkit/react'
+
+function AppKitButton() {
+  const { open } = useAppKit()
+
+  return (
+    <div className="relative flex md:hidden">
+      <w3m-modal />
+      <Button variant="neutral-secondary" onClick={() => open()}>
+        Open
+      </Button>
+    </div>
+  )
+}
 
 export function SidebarContent() {
-  const { themeMode } = useAppKit()
+  const { themeMode } = useAppKitContext()
+  const { isInitialized } = useAppKitContext()
   const [activeTab, setActiveTab] = React.useState('auth')
 
   return (
@@ -69,6 +84,7 @@ export function SidebarContent() {
         >
           Get started {`</>`}
         </Link>
+        {isInitialized && <AppKitButton />}
       </div>
     </div>
   )

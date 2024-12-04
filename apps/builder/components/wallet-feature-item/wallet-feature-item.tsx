@@ -6,7 +6,7 @@ import type { Transform } from '@dnd-kit/utilities'
 import { Handle } from './components'
 
 import styles from './wallet-feature-item.module.css'
-import { useAppKit } from '@/hooks/use-appkit'
+import { useAppKitContext } from '@/hooks/use-appkit'
 import { Checkbox } from '@/components/ui/checkbox'
 import { WalletFeatureName } from '@/lib/types'
 
@@ -71,7 +71,7 @@ export const WalletFeatureItem = React.memo(
       },
       ref
     ) => {
-      const { features } = useAppKit()
+      const { features } = useAppKitContext()
       const onrampEnabled = features.onramp
       const swapsEnabled = features.swaps
       const receiveEnabled = features.receive

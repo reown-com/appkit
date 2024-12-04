@@ -28,7 +28,7 @@ export function createRange<T = number>(
 }
 
 import { ConnectMethodItem } from '@/components/connect-method-item'
-import { useAppKit } from '@/hooks/use-appkit'
+import { useAppKitContext } from '@/hooks/use-appkit'
 
 export interface Props {
   activationConstraint?: PointerActivationConstraint
@@ -108,7 +108,7 @@ export function SortableConnectMethodItem({
     transform,
     transition
   } = useSortable({ id })
-  const { updateDraggingState } = useAppKit()
+  const { updateDraggingState } = useAppKitContext()
 
   useEffect(() => {
     updateDraggingState(id, isDragging)

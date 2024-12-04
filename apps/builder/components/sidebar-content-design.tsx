@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { useAppKit } from '@/hooks/use-appkit'
+import { useAppKitContext } from '@/hooks/use-appkit'
 import { ThemeMode } from '@reown/appkit'
 import { cn } from '@/lib/utils'
 import { useSnapshot } from 'valtio'
@@ -24,7 +24,6 @@ const RADIUS_NAME_VALUE_MAP = {
 
 import Image from 'next/image'
 import {
-  khTeka,
   notoSans,
   inter,
   domine,
@@ -36,7 +35,6 @@ import {
 } from '@/lib/fonts'
 
 const FONT_OPTIONS = [
-  { label: 'KH Teka', value: khTeka.style.fontFamily },
   { label: 'Noto Sans', value: notoSans.style.fontFamily },
   { label: 'Inter', value: inter.style.fontFamily },
   { label: 'Domine', value: domine.style.fontFamily },
@@ -48,7 +46,7 @@ const FONT_OPTIONS = [
 ]
 
 export default function SidebarContentDesign() {
-  const { themeMode, updateThemeMode } = useAppKit()
+  const { themeMode, updateThemeMode } = useAppKitContext()
   const { fontFamily, mixColor, accentColor } = useSnapshot(ThemeStore.state)
   const [radius, setRadius] = React.useState('M')
 

@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { useAppKit } from '@/hooks/use-appkit'
+import { useAppKitContext } from '@/hooks/use-appkit'
 import { ThemeMode, ThemeVariables, Features } from '@reown/appkit/core'
 
 export const AppKitConfig: React.FC = () => {
@@ -12,7 +12,7 @@ export const AppKitConfig: React.FC = () => {
     updateThemeMode,
     updateThemeVariables,
     updateFeatures
-  } = useAppKit()
+  } = useAppKitContext()
 
   const handleThemeModeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     updateThemeMode(e.target.value as ThemeMode)

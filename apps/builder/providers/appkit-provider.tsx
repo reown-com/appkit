@@ -29,6 +29,7 @@ const defaultConnectMethodOrder = ['email', 'social', 'wallet'] as ConnectMethod
 const defaultWalletFeatureOrder = ['swaps', 'send', 'receive', 'onramp'] as WalletFeature[]
 
 export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
+  const [isInitialized, setIsInitialized] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [features, setFeatures] = useState<Features>({})
   const [themeMode, setThemeMode] = useState<ThemeMode>('light')
@@ -128,6 +129,7 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
     })
 
     setIsLoading(false)
+    setIsInitialized(true)
   }, [])
 
   useEffect(() => {
@@ -157,6 +159,7 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
         socialsEnabled,
         enableWallets,
         isDraggingByKey,
+        isInitialized,
         setIsDrawerOpen,
         updateFeatures,
         updateThemeMode,

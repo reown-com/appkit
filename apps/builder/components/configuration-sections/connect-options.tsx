@@ -1,11 +1,11 @@
 'use client'
 
-import { useAppKit } from '@/hooks/use-appkit'
+import { useAppKitContext } from '@/hooks/use-appkit'
 import { FeatureButton } from '@/components/feature-button'
 import { ConnetMethodList } from '@/components/list-connect-method'
 
 export function AuthFeatures() {
-  const { features, updateFeatures } = useAppKit()
+  const { features, updateFeatures } = useAppKitContext()
   const collapseWallets = features.experimental_collapseWallets
 
   function toggleCollapseWallets() {

@@ -1,5 +1,5 @@
 import { UniqueIdentifier } from '@dnd-kit/core'
-import { useAppKit } from '@/hooks/use-appkit'
+import { useAppKitContext } from '@/hooks/use-appkit'
 import { WalletFeatureName } from '@/lib/types'
 import { WalletFeature } from '@reown/appkit-core'
 import dynamic from 'next/dynamic'
@@ -13,7 +13,7 @@ const SortableWalletFeatureList = dynamic(
 const defaultWalletFeaturesOrder = ['onramp', 'swaps', 'receive', 'send']
 
 export function WalletFeatureList() {
-  const { features, updateFeatures } = useAppKit()
+  const { features, updateFeatures } = useAppKitContext()
   const connectMethodOrder = features.experimental_walletFeaturesOrder || defaultWalletFeaturesOrder
 
   function handleNewOrder(items: UniqueIdentifier[]) {
