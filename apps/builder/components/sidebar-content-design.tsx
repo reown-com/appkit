@@ -10,7 +10,6 @@ import { useSnapshot } from 'valtio'
 import { ThemeStore } from '@/lib/ThemeStore'
 import { HexColorPicker } from 'react-colorful'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { PlusCircle } from 'lucide-react'
 
 const ACCENT_COLORS = ['#3B82F6', '#EF4444', '#F59E0B', '#10B981']
 const BG_COLORS = ['#202020', '#363636', '#FFFFFF']
@@ -23,44 +22,29 @@ const RADIUS_NAME_VALUE_MAP = {
   XL: 6
 }
 
-import { Poppins, Tinos, Noto_Sans, Delius, Agbalumo } from 'next/font/google'
 import Image from 'next/image'
-
-const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
-  style: ['normal', 'italic']
-})
-
-const tinos = Tinos({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-  style: ['normal', 'italic']
-})
-
-const notoSans = Noto_Sans({
-  subsets: ['latin'],
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
-  style: ['normal', 'italic']
-})
-
-const delius = Delius({
-  subsets: ['latin'],
-  weight: '400'
-})
-
-const agbalumo = Agbalumo({
-  subsets: ['latin'],
-  weight: '400'
-})
+import {
+  khTeka,
+  notoSans,
+  inter,
+  domine,
+  ebGaramond,
+  breeSerif,
+  teko,
+  bellota,
+  newAmsterdam
+} from '@/lib/fonts'
 
 const FONT_OPTIONS = [
-  { label: 'KH Teka', value: 'KHTeka' },
+  { label: 'KH Teka', value: khTeka.style.fontFamily },
   { label: 'Noto Sans', value: notoSans.style.fontFamily },
-  { label: 'Poppins', value: poppins.style.fontFamily },
-  { label: 'Tinos', value: tinos.style.fontFamily },
-  { label: 'Delius', value: delius.style.fontFamily },
-  { label: 'Agbalumo', value: agbalumo.style.fontFamily }
+  { label: 'Inter', value: inter.style.fontFamily },
+  { label: 'Domine', value: domine.style.fontFamily },
+  { label: 'EB Garamond', value: ebGaramond.style.fontFamily },
+  { label: 'Bree Serif', value: breeSerif.style.fontFamily },
+  { label: 'Teko', value: teko.style.fontFamily },
+  { label: 'Bellota', value: bellota.style.fontFamily },
+  { label: 'New Amsterdam', value: newAmsterdam.style.fontFamily }
 ]
 
 export default function SidebarContentDesign() {

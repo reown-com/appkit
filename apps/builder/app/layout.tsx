@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { AppKitProvider } from '@/providers/appkit-provider'
 import { Toaster } from 'sonner'
+import { khTeka } from '@/lib/fonts'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -17,7 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <Toaster />
       <AppKitProvider>
-        <body>{children}</body>
+        <body className={khTeka.className}>{children}</body>
       </AppKitProvider>
     </html>
   )

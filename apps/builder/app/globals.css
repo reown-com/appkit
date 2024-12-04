@@ -3,8 +3,6 @@
 @tailwind utilities;
 
 body {
-  font-family: Roboto, KHTeka, Inter, Roboto, Arial, Helvetica, sans-serif;
-  font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
@@ -118,40 +116,4 @@ body {
   .inset-shadow {
     box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1);
   }
-}
-
-@font-face {
-  font-family: 'KHTeka';
-  src: url('https://res.cloudinary.com/dn7w4dnog/raw/upload/v1732023137/KHTeka-Light_jzizi3.woff')
-    format('woff');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'KHTeka';
-  src: url('https://res.cloudinary.com/dn7w4dnog/raw/upload/v1732023137/KHTeka-Regular_rgphis.woff')
-    format('woff');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'KHTeka';
-  src: url('https://res.cloudinary.com/dn7w4dnog/raw/upload/v1732023137/KHTeka-Medium_dzj5on.woff')
-    format('woff');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'KHTekaMono';
-  src: url('https://res.cloudinary.com/dn7w4dnog/raw/upload/v1732023137/KHTekaMono-Regular_nytitk.woff')
-    format('woff');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
 }
