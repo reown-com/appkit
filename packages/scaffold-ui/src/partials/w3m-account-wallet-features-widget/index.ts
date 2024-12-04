@@ -89,6 +89,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       .padding=${['0', 'xl', 'm', 'xl'] as const}
       alignItems="center"
       gap="m"
+      data-testid="w3m-account-wallet-features-widget"
     >
       ${this.network && html`<wui-network-icon .network=${this.network}></wui-network-icon>`}
       <wui-profile-button
