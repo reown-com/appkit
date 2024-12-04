@@ -14,7 +14,7 @@ const publicKey = keypair.publicKey
 export class ReownSolanaProvider {
   name = 'Reown'
   version = '1.0.0' as const
-  icon = ConstantsUtil.IconRawSvg as `data:image/png;base64,${string}`
+  icon = ConstantsUtil.IconRaw as `data:image/png;base64,${string}`
   chains = SOLANA_CHAINS
   accounts: WalletAccount[] = [
     {

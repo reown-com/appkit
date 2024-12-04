@@ -10,7 +10,7 @@ const reownSolanaProvider = new ReownSolanaProvider()
 
 announceProvider({
   info: {
-    icon: ConstantsUtil.IconRawSvg,
+    icon: ConstantsUtil.IconRaw,
     name: 'Reown',
     rdns: 'reown.com',
     uuid: uuidv4()
