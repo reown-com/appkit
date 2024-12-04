@@ -31,7 +31,7 @@ Go to `chrome://extensions/` and enable `Developer mode`.
 
 ### 3. Import the extension
 
-Click on `Load unpacked` and select the `build` folder.
+Click on `Load unpacked` and select the `dist` folder.
 
 ## Development
 
