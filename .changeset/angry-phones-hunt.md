@@ -17,4 +17,4 @@
 '@reown/appkit-wallet': patch
 ---
 
-Removed activate account badge
+Removed upgrade to smart account screen
