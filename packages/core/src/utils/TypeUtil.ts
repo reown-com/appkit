@@ -535,6 +535,9 @@ export type Event =
   | {
       type: 'track'
       event: 'EMAIL_VERIFICATION_CODE_FAIL'
+      properties: {
+        message: string
+      }
     }
   | {
       type: 'track'

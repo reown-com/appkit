@@ -6,7 +6,8 @@ import {
   ConnectionController,
   ModalController,
   ChainController,
-  OptionsController
+  OptionsController,
+  CoreHelperUtil
 } from '@reown/appkit-core'
 
 @customElement('w3m-email-verify-otp-view')
@@ -37,7 +38,13 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
         }
       }
     } catch (error) {
-      EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_FAIL' })
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'EMAIL_VERIFICATION_CODE_FAIL',
+        properties: {
+          message: CoreHelperUtil.parseError(error)
+        }
+      })
       throw error
     }
   }
