@@ -8,9 +8,12 @@ import { ThemeMode } from '@reown/appkit'
 import { cn } from '@/lib/utils'
 import { useSnapshot } from 'valtio'
 import { ThemeStore } from '@/lib/ThemeStore'
+import { HexColorPicker } from 'react-colorful'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { PlusCircle } from 'lucide-react'
 
-const ACCENT_COLORS = ['#3B82F6', '#EF4444', '#F59E0B', '#10B981', '#8B5CF6']
-const BG_COLORS = ['#202020', '#363636', '#FF573B', '#10B981']
+const ACCENT_COLORS = ['#3B82F6', '#EF4444', '#F59E0B', '#10B981']
+const BG_COLORS = ['#202020', '#363636', '#FFFFFF']
 
 const RADIUS_NAME_VALUE_MAP = {
   '-': 0,
@@ -20,13 +23,44 @@ const RADIUS_NAME_VALUE_MAP = {
   XL: 6
 }
 
+import { Poppins, Tinos, Noto_Sans, Delius, Agbalumo } from 'next/font/google'
+import Image from 'next/image'
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  style: ['normal', 'italic']
+})
+
+const tinos = Tinos({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  style: ['normal', 'italic']
+})
+
+const notoSans = Noto_Sans({
+  subsets: ['latin'],
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  style: ['normal', 'italic']
+})
+
+const delius = Delius({
+  subsets: ['latin'],
+  weight: '400'
+})
+
+const agbalumo = Agbalumo({
+  subsets: ['latin'],
+  weight: '400'
+})
+
 const FONT_OPTIONS = [
   { label: 'KH Teka', value: 'KHTeka' },
-  { label: 'Noto Sans', value: 'Noto Sans' },
-  { label: 'Poppins', value: 'Poppins' },
-  { label: 'Tinos', value: 'Tinos' },
-  { label: 'Delius', value: 'Delius' },
-  { label: 'Agbalumo', value: 'Agbalumo' }
+  { label: 'Noto Sans', value: notoSans.style.fontFamily },
+  { label: 'Poppins', value: poppins.style.fontFamily },
+  { label: 'Tinos', value: tinos.style.fontFamily },
+  { label: 'Delius', value: delius.style.fontFamily },
+  { label: 'Agbalumo', value: agbalumo.style.fontFamily }
 ]
 
 export default function SidebarContentDesign() {
@@ -85,9 +119,7 @@ export default function SidebarContentDesign() {
                   ? 'border-fg-accent bg-fg-accent/10'
                   : 'hover:bg-fg-secondary/80'
               )}
-              style={{
-                fontFamily: value
-              }}
+              style={{ fontFamily: value }}
             >
               <RadioGroupItem value={value} id={value} className="sr-only" />
               {label}
@@ -134,16 +166,40 @@ export default function SidebarContentDesign() {
                 ThemeStore.setAccentColor(color)
               }}
               className={cn(
-                'h-8 rounded-full ring-2 ring-transparent ring-offset-2 ring-offset-fg-primary transition-colors'
+                'flex items-center justify-center p-4 rounded-2xl transition-colors bg-fg-secondary hover:bg-fg-tertiary border border-transparent h-[38px]',
+                accentColor === color ? 'border-fg-accent bg-fg-accent/10' : null
               )}
-              style={{
-                backgroundColor: color,
-                // @ts-expect-error CSS variables
-                '--tw-ring-color': accentColor === color ? color : 'transparent'
-              }}
               aria-label={`Color option ${index + 1}`}
-            />
+            >
+              <div
+                className="w-4 h-4 rounded-2xl inset-shadow"
+                style={{ backgroundColor: color }}
+              ></div>
+            </button>
           ))}
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                className={cn(
+                  'flex items-center justify-center p-4 rounded-2xl transition-colors bg-fg-secondary hover:bg-fg-tertiary border border-transparent h-[38px]',
+                  !ACCENT_COLORS.includes(accentColor) ? 'border-fg-accent bg-fg-accent/10' : null
+                )}
+                aria-label="Custom color picker"
+              >
+                <Image
+                  src="/color-picker-icon.png"
+                  alt="Color picker icon"
+                  objectFit="cover"
+                  width={16}
+                  height={16}
+                  className="rounded-2xl aspect-square"
+                />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-3">
+              <HexColorPicker color={accentColor} onChange={ThemeStore.setAccentColor} />
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
 
@@ -155,19 +211,49 @@ export default function SidebarContentDesign() {
               key={color}
               onClick={() => {
                 ThemeStore.setMixColor(color)
-                ThemeStore.setMixColorStrength(8)
+                ThemeStore.setMixColorStrength(10)
               }}
               className={cn(
-                'h-8 rounded-full ring-2 ring-transparent ring-offset-2 ring-offset-fg-primary transition-colors'
+                'flex items-center justify-center p-4 rounded-2xl transition-colors bg-fg-secondary hover:bg-fg-tertiary border border-transparent h-[38px]',
+                mixColor === color ? 'border-fg-accent bg-fg-accent/10' : null
               )}
-              style={{
-                backgroundColor: color,
-                // @ts-expect-error CSS variables
-                '--tw-ring-color': mixColor === color ? color : 'transparent'
-              }}
               aria-label={`Background option ${index + 1}`}
-            />
+            >
+              <div
+                className="w-4 h-4 rounded-2xl inset-shadow"
+                style={{ backgroundColor: color }}
+              ></div>
+            </button>
           ))}
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                className={cn(
+                  'flex items-center justify-center p-4 rounded-2xl transition-colors bg-fg-secondary hover:bg-fg-tertiary border border-transparent h-[38px]',
+                  !BG_COLORS.includes(mixColor) ? 'border-fg-accent bg-fg-accent/10' : null
+                )}
+                aria-label="Custom background color picker"
+              >
+                <Image
+                  src="/color-picker-icon.png"
+                  alt="Color picker icon"
+                  objectFit="cover"
+                  width={16}
+                  height={16}
+                  className="rounded-2xl aspect-square"
+                />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-3">
+              <HexColorPicker
+                color={mixColor}
+                onChange={color => {
+                  ThemeStore.setMixColor(color)
+                  ThemeStore.setMixColorStrength(8)
+                }}
+              />
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
     </div>

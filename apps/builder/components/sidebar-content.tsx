@@ -2,13 +2,14 @@
 
 import * as React from 'react'
 import { MonitorSmartphone } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAppKit } from '@/hooks/use-appkit'
 import { cn } from '@/lib/utils'
 import { AuthFeatures } from './configuration-sections/connect-options'
 import { AdvancedFeatures } from './configuration-sections/wallet-features'
 import SidebarContentDesign from '@/components/sidebar-content-design'
+import Link from 'next/link'
 
 export function SidebarContent() {
   const { themeMode } = useAppKit()
@@ -48,13 +49,26 @@ export function SidebarContent() {
       </div>
 
       <div className="flex flex-col items-center w-full gap-2 mt-8">
-        <Button variant="neutral-secondary" className="bg-transparent rounded-xl w-full">
+        <Link
+          href="https://docs.reown.com/appkit/overview"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn(
+            buttonVariants({ variant: 'neutral-secondary' }),
+            'bg-transparent rounded-xl w-full'
+          )}
+        >
           <MonitorSmartphone size={16} className="mr-2" />
           Read our docs
-        </Button>
-        <Button variant="neutral" className="rounded-xl w-full">
+        </Link>
+        <Link
+          href="https://cloud.reown.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn(buttonVariants({ variant: 'neutral' }), 'rounded-xl w-full')}
+        >
           Get started {`</>`}
-        </Button>
+        </Link>
       </div>
     </div>
   )

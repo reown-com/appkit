@@ -1,4 +1,10 @@
-import { ConnectMethod, Features, ThemeMode, WalletFeature } from '@reown/appkit-core'
+import {
+  ConnectMethod,
+  Features,
+  ThemeMode,
+  ThemeVariables,
+  WalletFeature
+} from '@reown/appkit-core'
 
 type URLState = {
   features: Features
@@ -9,6 +15,12 @@ type URLState = {
   walletFeatureOrder?: WalletFeature[]
   connectMethodOrder?: ConnectMethod[]
   collapseWallets?: boolean
+  mixColor?: string
+  accentColor?: string
+  mixColorStrength?: number
+  borderRadius?: number
+  fontFamily?: string
+  themeVariables?: ThemeVariables
 }
 
 export function getStateFromUrl(): URLState {

@@ -46,52 +46,6 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
     }))
   }
 
-  useEffect(() => {
-    const urlState = getStateFromUrl()
-    setFeatures(urlState.features)
-    setThemeMode(urlState.themeMode)
-    setEnableWallets(urlState.enableWallets)
-
-    kit = createAppKit({
-      adapters: [ethersAdapter, solanaAdapter],
-      networks,
-      defaultNetwork: mainnet,
-      projectId: process.env.NEXT_PUBLIC_PROJECT_ID!,
-      disableAppend: true,
-      features: {
-        ...urlState.features,
-        experimental_walletFeaturesOrder: urlState.walletFeatureOrder || defaultWalletFeatureOrder,
-        experimental_connectMethodOrder: urlState.connectMethodOrder || defaultConnectMethodOrder,
-        experimental_collapseWallets: urlState.collapseWallets || false
-      },
-      enableWallets: urlState.enableWallets,
-      themeMode: urlState.themeMode,
-      termsConditionsUrl,
-      privacyPolicyUrl,
-      experimental_enableEmbedded: true
-    })
-
-    ThemeStore.setModal({
-      setThemeVariables: (variables: ThemeVariables) => {
-        kit?.setThemeVariables(variables)
-      }
-    })
-
-    setIsLoading(false)
-  }, [])
-
-  useEffect(() => {
-    if (!isLoading) {
-      kit?.setConnectMethodOrder(
-        features.experimental_connectMethodOrder || defaultConnectMethodOrder
-      )
-      kit?.setWalletFeatureOrder(
-        features.experimental_walletFeaturesOrder || defaultWalletFeatureOrder
-      )
-      kit?.setCollapseWallets(features.experimental_collapseWallets || false)
-    }
-  }, [isLoading, features])
-
   function updateFeatures(newFeatures: Partial<Features>) {
     setFeatures(prev => {
       const newValue = { ...prev, ...newFeatures }
@@ -135,6 +89,58 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
       updateFeatures({ socials: false })
     }
   }
+
+  useEffect(() => {
+    const urlState = getStateFromUrl()
+    setFeatures(urlState.features)
+    setThemeMode(urlState.themeMode)
+    setEnableWallets(urlState.enableWallets)
+    ThemeStore.setMixColor(urlState.mixColor || '')
+    ThemeStore.setAccentColor(urlState.accentColor || '')
+    ThemeStore.setMixColorStrength(urlState.mixColorStrength || 8)
+    ThemeStore.setBorderRadius(urlState.borderRadius || 16)
+    ThemeStore.setFontFamily(urlState.fontFamily || '')
+    ThemeStore.setThemeVariables(urlState.themeVariables || {})
+
+    kit = createAppKit({
+      adapters: [ethersAdapter, solanaAdapter],
+      networks,
+      defaultNetwork: mainnet,
+      projectId: process.env.NEXT_PUBLIC_PROJECT_ID!,
+      disableAppend: true,
+      features: {
+        ...urlState.features,
+        experimental_walletFeaturesOrder: urlState.walletFeatureOrder || defaultWalletFeatureOrder,
+        experimental_connectMethodOrder: urlState.connectMethodOrder || defaultConnectMethodOrder,
+        experimental_collapseWallets: urlState.collapseWallets || false
+      },
+      enableWallets: urlState.enableWallets,
+      themeMode: urlState.themeMode,
+      termsConditionsUrl,
+      privacyPolicyUrl,
+      experimental_enableEmbedded: true
+    })
+
+    ThemeStore.setModal({
+      setThemeVariables: (variables: ThemeVariables) => {
+        kit?.setThemeVariables(variables)
+      }
+    })
+
+    setIsLoading(false)
+  }, [])
+
+  useEffect(() => {
+    const connectMethodOrder = features.experimental_connectMethodOrder || defaultConnectMethodOrder
+    const walletFeatureOrder =
+      features.experimental_walletFeaturesOrder || defaultWalletFeatureOrder
+
+    if (!isLoading) {
+      kit?.setConnectMethodOrder(connectMethodOrder)
+      kit?.setWalletFeatureOrder(walletFeatureOrder)
+      kit?.setCollapseWallets(features.experimental_collapseWallets || false)
+    }
+  }, [isLoading, features])
 
   const socialsEnabled = Array.isArray(features.socials)
 
