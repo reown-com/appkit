@@ -24,7 +24,7 @@ describe('W3mLegalCheckbox', () => {
     ).rejects.toThrow('w3m-account-view: No account provided')
   })
 
-  it('it should return components if address is provided in AccountsController', async () => {
+  it('it should return all components if address is provided in AccountsController', async () => {
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,
       address: MOCK_ADDRESS
