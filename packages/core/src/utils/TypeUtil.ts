@@ -18,7 +18,7 @@ import type { ConstantsUtil } from './ConstantsUtil.js'
 import type { ReownName } from '../controllers/EnsController.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 
-type AppKitConfigs = {
+type InitializeAppKitConfigs = {
   showWallets?: boolean
   siweConfig?: {
     options: {
@@ -31,7 +31,6 @@ type AppKitConfigs = {
     }
   }
   themeMode?: 'dark' | 'light'
-
   themeVariables?: ThemeVariables
   allowUnsupportedChain?: boolean
   networks: (string | number)[]
@@ -791,7 +790,7 @@ export type Event =
   | {
       type: 'track'
       event: 'INITIALIZE'
-      properties: AppKitConfigs
+      properties: InitializeAppKitConfigs
     }
 // Onramp Types
 export type DestinationWallet = {

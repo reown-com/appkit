@@ -59,7 +59,7 @@ export const EventsController = {
           props: payload.data
         }
       })
-    } catch (e) {
+    } catch {
       // Catch silently
     }
   },
