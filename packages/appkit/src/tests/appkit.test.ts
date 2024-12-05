@@ -528,6 +528,28 @@ describe('Base', () => {
       )
     })
 
+    it('should sync identity only if address changed', async () => {
+      const mockAccountData = {
+        address: '0x123',
+        chainId: '1',
+        chainNamespace: 'eip155' as const
+      }
+      vi.mocked(BlockchainApiController.fetchIdentity).mockResolvedValue({
+        name: 'John Doe',
+        avatar: null
+      })
+
+      vi.mocked(AccountController).state = { address: '0x123' } as any
+
+      await appKit['syncAccount'](mockAccountData)
+
+      expect(BlockchainApiController.fetchIdentity).not.toHaveBeenCalled()
+
+      await appKit['syncAccount']({ ...mockAccountData, address: '0x456' })
+
+      expect(BlockchainApiController.fetchIdentity).toHaveBeenCalledOnce()
+    })
+
     it('should disconnect correctly', async () => {
       vi.mocked(ChainController).state = {
         chains: new Map([['eip155', { namespace: 'eip155' }]]),

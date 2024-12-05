@@ -1418,17 +1418,11 @@ export class AppKit {
   }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
     chainNamespace: ChainNamespace
   }) {
-    this.setPreferredAccountType(
-      AccountController.state.preferredAccountType
-        ? AccountController.state.preferredAccountType
-        : 'eoa',
-      ChainController.state.activeChain as ChainNamespace
-    )
-
-    this.setCaipAddress(
-      `${chainNamespace}:${chainId}:${address}` as `${ChainNamespace}:${string}:${string}`,
-      chainNamespace
-    )
+    // Only update state when needed
+    if (address.toLowerCase() !== AccountController.state.address?.toLowerCase()) {
+      this.setCaipAddress(`${chainNamespace}:${chainId}:${address}`, chainNamespace)
+      await this.syncIdentity({ address, chainId: Number(chainId), chainNamespace })
+    }
 
     this.setStatus('connected', chainNamespace)
 
@@ -1436,26 +1430,31 @@ export class AppKit {
       const caipNetwork = this.caipNetworks?.find(
         n => n.id === chainId && n.chainNamespace === chainNamespace
       )
+      const fallBackCaipNetwork = this.caipNetworks?.find(n => n.chainNamespace === chainNamespace)
 
-      if (caipNetwork) {
-        this.setCaipNetwork(caipNetwork)
-      } else {
-        this.setCaipNetwork(this.caipNetworks?.find(n => n.chainNamespace === chainNamespace))
-      }
-
+      this.setCaipNetwork(caipNetwork || fallBackCaipNetwork)
       this.syncConnectedWalletInfo(chainNamespace)
-      const adapter = this.getAdapter(chainNamespace)
+      await this.syncBalance({ address, chainId, chainNamespace })
+    }
+  }
 
-      const balance = await adapter?.getBalance({
-        address,
-        chainId,
-        caipNetwork: caipNetwork || this.getCaipNetwork(),
-        tokens: this.options.tokens
-      })
-      if (balance) {
-        this.setBalance(balance.balance, balance.symbol, chainNamespace)
-      }
-      await this.syncIdentity({ address, chainId: Number(chainId), chainNamespace })
+  private async syncBalance(params: {
+    address: string
+    chainId: string | number
+    chainNamespace: ChainNamespace
+  }) {
+    const adapter = this.getAdapter(params.chainNamespace)
+    const caipNetwork = this.caipNetworks?.find(
+      c => c.chainNamespace === params.chainNamespace && c.id === params.chainId
+    )
+    const balance = await adapter?.getBalance({
+      address: params.address,
+      chainId: params.chainId,
+      caipNetwork: caipNetwork || this.getCaipNetwork(),
+      tokens: this.options.tokens
+    })
+    if (balance) {
+      this.setBalance(balance.balance, balance.symbol, params.chainNamespace)
     }
   }
 
