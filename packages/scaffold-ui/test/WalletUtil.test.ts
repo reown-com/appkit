@@ -70,7 +70,7 @@ describe('WalletUtil', () => {
 
     it('should replace "io.metamask.mobile" with "io.metamask" on mobile', () => {
       const mockConnectors = [mockMetamaskMobileConnector]
-      const mockRecentWallets = []
+      const mockRecentWallets: WcWallet[] = []
 
       vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue(mockConnectors)
       vi.spyOn(StorageUtil, 'getRecentWallets').mockReturnValue(mockRecentWallets)
@@ -143,10 +143,12 @@ describe('WalletUtil', () => {
     })
 
     it('should return all wallets if no duplicates exist by RDNS or IDs', () => {
-      const mockConnectors = []
-      const mockRecentWallets = []
+      const mockConnectors: WcWallet[] = []
+      const mockRecentWallets: WcWallet[] = []
 
-      vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue(mockConnectors)
+      vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValue(
+        mockConnectors as any
+      )
       vi.spyOn(StorageUtil, 'getRecentWallets').mockReturnValue(mockRecentWallets)
 
       const filteredWallets = WalletUtil.filterOutDuplicateWallets(mockWallets)
