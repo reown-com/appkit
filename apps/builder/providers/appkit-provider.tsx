@@ -3,20 +3,16 @@
 import { ReactNode, useEffect, useState } from 'react'
 import { createAppKit, Features, ThemeMode, ThemeVariables, type AppKit } from '@reown/appkit/react'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
-import { SolanaAdapter } from '@reown/appkit-adapter-solana'
-import { type AppKitNetwork, mainnet, polygon } from '@reown/appkit/networks'
+import { mainnet } from '@reown/appkit/networks'
 import { ConnectMethod, ConstantsUtil, WalletFeature } from '@reown/appkit-core'
 import { ThemeStore } from '../lib/theme-store'
 import { URLState, urlStateUtils } from '@/lib/url-state'
 import { AppKitContext } from '@/contexts/appkit-context'
 import { useSnapshot } from 'valtio'
-import { defaultCustomizationConfig } from '@/lib/config'
+import { defaultCustomizationConfig, networks } from '@/lib/config'
 import { UniqueIdentifier } from '@dnd-kit/core'
 
-const networks = [mainnet, polygon] as [AppKitNetwork, ...AppKitNetwork[]]
-
 const ethersAdapter = new EthersAdapter()
-const solanaAdapter = new SolanaAdapter({})
 
 interface AppKitProviderProps {
   children: ReactNode
@@ -142,8 +138,8 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
     const collapseWallets = config?.collapseWallets || false
 
     kit = createAppKit({
-      adapters: [ethersAdapter, solanaAdapter],
-      networks,
+      adapters: [ethersAdapter],
+      networks: networks,
       defaultNetwork: mainnet,
       projectId: process.env.NEXT_PUBLIC_PROJECT_ID!,
       disableAppend: true,

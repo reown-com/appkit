@@ -26,7 +26,6 @@
     "@radix-ui/react-tabs": "^1.1.1",
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-ethers": "workspace:*",
-    "@reown/appkit-adapter-solana": "workspace:*",
     "@reown/appkit-core": "workspace:*",
     "@reown/appkit-scaffold-ui": "workspace:*",
     "class-variance-authority": "^0.7.0",
