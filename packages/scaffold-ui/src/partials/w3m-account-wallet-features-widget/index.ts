@@ -99,7 +99,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         networkSrc=${ifDefined(networkImage)}
         icon="chevronBottom"
         avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
-        profileName=${this.profileName}
+        profileName=${ifDefined(this.profileName ?? undefined)}
         data-testid="w3m-profile-button"
       ></wui-profile-button>
 
@@ -119,12 +119,9 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   // -- Private ------------------------------------------- //
   private orderedWalletFeatures() {
-    const walletFeaturesOrder = this.features?.experimental_walletFeaturesOrder || [
-      'onramp',
-      'swaps',
-      'receive',
-      'send'
-    ]
+    const walletFeaturesOrder =
+      this.features?.experimental_walletFeaturesOrder ||
+      CoreConstantsUtil.DEFAULT_FEATURES.experimental_walletFeaturesOrder
     const isAllDisabled = walletFeaturesOrder.every(feature => !this.features?.[feature])
 
     if (isAllDisabled) {

@@ -73,18 +73,24 @@ export class W3mSocialLoginWidget extends LitElement {
 
   // -- Private ------------------------------------------- //
   private topViewTemplate() {
-    let socials = this.features?.socials
     const isCreateWalletPage = this.walletGuide === 'explore'
+    let socials = this.features?.socials
     const isSocialDisabled = !this.authConnector || !socials || !socials?.length
 
-    if (isSocialDisabled && isCreateWalletPage) {
-      socials = ConstantsUtil.DEFAULT_FEATURES.socials as SocialProvider[]
+    if (!isSocialDisabled && isCreateWalletPage) {
+      socials = ConstantsUtil.DEFAULT_FEATURES.socials
+
+      return this.renderTopViewContent(socials)
     }
 
-    if (!socials) {
+    if (!isSocialDisabled) {
       return null
     }
 
+    return this.renderTopViewContent(socials as SocialProvider[])
+  }
+
+  private renderTopViewContent(socials: SocialProvider[]) {
     if (socials.length === 2) {
       return html` <wui-flex gap="xs">
         ${socials.slice(0, MAX_TOP_VIEW).map(
@@ -102,9 +108,9 @@ export class W3mSocialLoginWidget extends LitElement {
     }
 
     return html` <wui-list-social
-      data-testid=${`social-selector-${(socials as SocialProvider[])[0]}`}
+      data-testid=${`social-selector-${socials[0]}`}
       @click=${() => {
-        this.onSocialClick((socials as SocialProvider[])[0])
+        this.onSocialClick(socials[0])
       }}
       logo=${ifDefined((socials as SocialProvider[])[0])}
       align="center"

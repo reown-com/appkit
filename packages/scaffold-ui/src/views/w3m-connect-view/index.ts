@@ -91,8 +91,8 @@ export class W3mConnectView extends LitElement {
       <wui-flex flexDirection="column">
         ${this.legalCheckboxTemplate()}
         <wui-flex
-          flexDirection="column"
           data-testid="w3m-connect-scroll-view"
+          flexDirection="column"
           class=${classMap(classes)}
         >
           <wui-flex
