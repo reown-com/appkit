@@ -203,7 +203,7 @@ export class W3mConnectingFarcasterView extends LitElement {
         if (this.socialProvider) {
           EventsController.sendEvent({
             type: 'track',
-            event: 'SOCIAL_LOGIN_SUCCESS',
+            event: 'SOCIAL_LOGIN_ERROR',
             properties: { provider: this.socialProvider }
           })
         }
