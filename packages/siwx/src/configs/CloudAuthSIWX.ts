@@ -3,6 +3,7 @@ import {
   AccountController,
   ApiController,
   BlockchainApiController,
+  ChainController,
   type SIWXConfig,
   type SIWXMessage,
   type SIWXSession
@@ -69,10 +70,13 @@ export class CloudAuthSIWX implements SIWXConfig {
   }
 
   async setSessions(sessions: SIWXSession[]): Promise<void> {
-    if (sessions.length > 0) {
-      await this.request('sign-out', undefined)
+    if (sessions.length === 0) {
+      this.clearStorageToken()
     } else {
-      const session = sessions[0] as SIWXSession
+      const session = (sessions.find(
+        s => s.data.chainId === ChainController.getActiveCaipNetwork()?.caipNetworkId
+      ) || sessions[0]) as SIWXSession
+
       await this.addSession(session)
     }
   }
