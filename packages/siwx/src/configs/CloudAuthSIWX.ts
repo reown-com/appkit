@@ -20,7 +20,8 @@ export class CloudAuthSIWX implements SIWXConfig {
     this.messenger = new InformalMessenger({
       domain: typeof document === 'undefined' ? 'Unknown Domain' : document.location.host,
       uri: typeof document === 'undefined' ? 'Unknown URI' : document.location.href,
-      getNonce: this.getNonce.bind(this)
+      getNonce: this.getNonce.bind(this),
+      clearChainIdNamespace: true
     })
   }
 
@@ -35,7 +36,7 @@ export class CloudAuthSIWX implements SIWXConfig {
       clientId: this.getClientId(),
       walletInfo: this.getWalletInfo()
     })
-    localStorage.setItem(this.localStorageKey, response.token)
+    this.setStorageToken(response.token)
   }
 
   async getSessions(chainId: CaipNetworkId, address: string): Promise<SIWXSession[]> {
@@ -64,7 +65,7 @@ export class CloudAuthSIWX implements SIWXConfig {
   }
 
   async revokeSession(_chainId: CaipNetworkId, _address: string): Promise<void> {
-    return Promise.resolve(localStorage.removeItem(this.localStorageKey))
+    return Promise.resolve(this.clearStorageToken())
   }
 
   async setSessions(sessions: SIWXSession[]): Promise<void> {
@@ -109,6 +110,10 @@ export class CloudAuthSIWX implements SIWXConfig {
 
   private setStorageToken(token: string): void {
     localStorage.setItem(this.localStorageKey, token)
+  }
+
+  private clearStorageToken(): void {
+    localStorage.removeItem(this.localStorageKey)
   }
 
   private async getNonce(): Promise<string> {
