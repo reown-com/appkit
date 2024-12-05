@@ -234,6 +234,9 @@ export const ConstantsUtil = {
     analytics: true,
     allWallets: true,
     legalCheckbox: false,
-    smartSessions: false
+    smartSessions: false,
+    experimental_collapseWallets: false,
+    experimental_connectMethodOrder: ['email', 'social', 'wallet'],
+    experimental_walletFeaturesOrder: ['swaps', 'send', 'receive', 'onramp']
   } as Features
 }

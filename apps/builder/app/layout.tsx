@@ -1,16 +1,37 @@
 import type { Metadata } from 'next'
-import { AppKitProvider } from '@/providers/appkit-provider'
 import { Toaster } from 'sonner'
 import { khTeka } from '@/lib/fonts'
-import './globals.css'
 import { cn } from '@/lib/utils'
+import { AppKitProvider } from '@/providers/appkit-provider'
+import './globals.css'
+
+const title = 'AppKit | Builder'
+const description = 'The full stack toolkit to build onchain app UX'
 
 export const metadata: Metadata = {
-  title: 'AppKit | Builder',
-  description: 'The full stack toolkit to build onchain app UX'
+  title,
+  description,
+  openGraph: {
+    title,
+    description,
+    locale: 'en_US',
+    type: 'website'
+  },
+  icons: {
+    icon: [
+      {
+        url: '/favicon-dark.png',
+        media: '(prefers-color-scheme: light)'
+      },
+      {
+        url: '/favicon.png',
+        media: '(prefers-color-scheme: dark)'
+      }
+    ]
+  }
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode
@@ -18,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Toaster />
-      <AppKitProvider>
+      <AppKitProvider initialConfig={null}>
         <body className={cn(khTeka.className, 'tracking-wide')}>{children}</body>
       </AppKitProvider>
     </html>

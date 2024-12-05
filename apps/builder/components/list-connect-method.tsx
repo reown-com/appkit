@@ -19,15 +19,8 @@ const SortableConnectMethodList = dynamic(
 )
 
 export function ConnetMethodList() {
-  const {
-    features,
-    enableWallets,
-    socialsEnabled,
-    updateSocials,
-    updateFeatures,
-    setEnableWallets
-  } = useAppKitContext()
-  const connectMethodOrder = features.experimental_connectMethodOrder || [
+  const { config, updateFeatures, updateSocials, updateEnableWallets } = useAppKitContext()
+  const connectMethodOrder = config.features.experimental_connectMethodOrder || [
     'email',
     'social',
     'wallet'
@@ -51,13 +44,13 @@ export function ConnetMethodList() {
   function handleToggleOption(name: 'Email' | 'Socials' | 'Wallets') {
     switch (name) {
       case 'Email':
-        updateFeatures({ email: !features.email })
+        updateFeatures({ email: !config.features.email })
         return
       case 'Socials':
-        updateSocials(!socialsEnabled)
+        updateSocials(!config.features.socials)
         return
       case 'Wallets':
-        setEnableWallets(!enableWallets)
+        updateEnableWallets(!config.enableWallets)
         return
       default:
         return

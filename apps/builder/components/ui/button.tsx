@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 const buttonVariants = cva(
   cn(
     'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-30 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
-    'transition-[border-radius,background-color] duration ease-linear',
+    'transition-[border-radius,background-color] duration-300 ease',
     'font-mono'
   ),
   {
@@ -19,9 +19,9 @@ const buttonVariants = cva(
           'hover:bg-fg-secondary active:bg-fg-tertiary border border-border-secondary text-text-primary'
       },
       size: {
-        default: 'h-9.5 px-4 py-2 rounded-md hover:rounded-[3rem]',
-        sm: 'h-7 rounded-md px-3 text-xs rounded-sm hover:rounded-[3rem]',
-        lg: 'h-12 rounded-md px-8 rounded-lg hover:rounded-[3rem]'
+        default: 'h-[38px] px-4 py-2 rounded-md hover:rounded-[3rem]',
+        sm: 'h-[38px] rounded-md px-3 text-xs rounded-sm hover:rounded-[3rem]',
+        lg: 'h-[48px] rounded-md px-8 rounded-lg hover:rounded-[3rem]'
       }
     },
     defaultVariants: {

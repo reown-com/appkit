@@ -69,10 +69,10 @@ export const ConnectMethodItem = React.memo(
       },
       ref
     ) => {
-      const { features, enableWallets } = useAppKitContext()
-      const emailEnabled = features.email
-      const socialsEnabled = Array.isArray(features.socials)
-      const walletsEnabled = enableWallets
+      const { config } = useAppKitContext()
+      const emailEnabled = config.features.email
+      const socialsEnabled = Array.isArray(config.features.socials)
+      const walletsEnabled = config.enableWallets
 
       const featureEnabledMap = {
         Email: emailEnabled,
@@ -113,7 +113,10 @@ export const ConnectMethodItem = React.memo(
             fadeIn && styles.fadeIn,
             sorting && styles.sorting,
             dragOverlay && styles.dragOverlay,
-            dragging && styles.dragging
+            dragging && styles.dragging,
+            featureEnabledMap[value as 'Email' | 'Socials' | 'Wallets']
+              ? 'bg-foreground/5 dark:bg-foreground/5'
+              : 'bg-foreground/[2%] dark:bg-foreground/[2%]'
           )}
           style={
             {
@@ -132,16 +135,14 @@ export const ConnectMethodItem = React.memo(
           <li
             onClick={() => onToggleOption?.(value as 'Email' | 'Socials' | 'Wallets')}
             className={classNames(
-              styles.ListItem,
-              'flex items-center justify-between rounded-xl p-3 w-full',
-              featureEnabledMap[value as 'Email' | 'Socials' | 'Wallets']
-                ? 'bg-foreground/5 dark:bg-foreground/5'
-                : 'bg-foreground/[2%] dark:bg-foreground/[2%]'
+              'list-none flex items-center justify-between rounded-2xl p-3 w-full',
+              value === 'Socials' ? 'pb-0' : 'h-[52px]'
             )}
           >
             <div
               className={classNames(
                 styles.Item,
+                'h-[28px]',
                 handle && styles.withHandle,
                 dragOverlay && styles.dragOverlay,
                 disabled && styles.disabled,

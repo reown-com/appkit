@@ -7,8 +7,9 @@ import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { type AppKitNetwork, mainnet, polygon } from '@reown/appkit/networks'
 import { ConnectMethod, ConstantsUtil, WalletFeature } from '@reown/appkit-core'
 import { ThemeStore } from '../lib/ThemeStore'
-import { getStateFromUrl, updateUrlState } from '@/lib/url-state'
+import { URLState } from '@/lib/url-state'
 import { AppKitContext } from '@/contexts/appkit-context'
+import { useSnapshot } from 'valtio'
 
 const networks = [mainnet, polygon] as [AppKitNetwork, ...AppKitNetwork[]]
 
@@ -23,22 +24,37 @@ let kit: undefined | AppKit = undefined
 
 interface AppKitProviderProps {
   children: ReactNode
+  initialConfig: URLState | null
+}
+
+const defaultCustomizationConfig = {
+  features: ConstantsUtil.DEFAULT_FEATURES,
+  collapseWallets: false,
+  enableWallets: true,
+  themeMode: 'dark' as ThemeMode,
+  themeVariables: {},
+  termsConditionsUrl: 'https://reown.com/terms-of-service',
+  privacyPolicyUrl: 'https://reown.com/privacy-policy',
+  experimental_enableEmbedded: true
 }
 
 const defaultConnectMethodOrder = ['email', 'social', 'wallet'] as ConnectMethod[]
 const defaultWalletFeatureOrder = ['swaps', 'send', 'receive', 'onramp'] as WalletFeature[]
 
-export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
+export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children, initialConfig }) => {
   const [isInitialized, setIsInitialized] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [features, setFeatures] = useState<Features>({})
-  const [themeMode, setThemeMode] = useState<ThemeMode>('light')
-  const [themeVariables, setThemeVariables] = useState<ThemeVariables>({})
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  const [termsConditionsUrl, setTermsConditionsUrl] = useState('')
-  const [privacyPolicyUrl, setPrivacyPolicyUrl] = useState('')
-  const [enableWallets, setEnableWallets] = useState(true)
+  const [features, setFeatures] = useState<Features>(
+    initialConfig?.features || ConstantsUtil.DEFAULT_FEATURES
+  )
+  const [themeMode, setThemeMode] = useState<ThemeMode>(initialConfig?.themeMode || 'dark')
+  const [termsConditionsUrl, setTermsConditionsUrl] = useState(
+    initialConfig?.termsConditionsUrl || ''
+  )
+  const [privacyPolicyUrl, setPrivacyPolicyUrl] = useState(initialConfig?.privacyPolicyUrl || '')
+  const [enableWallets, setEnableWallets] = useState(initialConfig?.enableWallets || true)
   const [isDraggingByKey, setIsDraggingByKey] = useState<Record<string, boolean>>({})
+  const themeStore = useSnapshot(ThemeStore.state)
 
   function updateDraggingState(key: string, value: boolean) {
     setIsDraggingByKey(prev => ({
@@ -51,14 +67,12 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
     setFeatures(prev => {
       const newValue = { ...prev, ...newFeatures }
       kit?.updateFeatures(newValue)
-      updateUrlState({ features: newValue })
       return newValue
     })
   }
 
   function updateEnableWallets(enabled: boolean) {
     setEnableWallets(() => {
-      updateUrlState({ enableWallets: enabled })
       kit?.updateOptions({ enableWallets: enabled })
       return enabled
     })
@@ -66,7 +80,6 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
 
   function updateThemeMode(mode: ThemeMode) {
     setThemeMode(() => {
-      updateUrlState({ themeMode: mode })
       kit?.setThemeMode(mode)
       return mode
     })
@@ -91,17 +104,52 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
     }
   }
 
+  function initializeState(config: URLState | null) {
+    if (!config) {
+      return
+    }
+
+    // Theme configs
+    console.log('>>> initializeState', config)
+    if (Object.keys(config?.themeVariables || {}).length > 0) {
+      ThemeStore.state.mixColor = config?.themeVariables?.['--w3m-color-mix'] || ''
+      ThemeStore.state.accentColor = config?.themeVariables?.['--w3m-accent'] || ''
+      ThemeStore.state.mixColorStrength = config?.themeVariables?.['--w3m-color-mix-strength'] || 8
+      ThemeStore.state.borderRadius =
+        config?.themeVariables?.['--w3m-border-radius-master'] || '4px'
+      ThemeStore.state.fontFamily = config?.themeVariables?.['--w3m-font-family'] || ''
+      ThemeStore.state.themeVariables = config?.themeVariables || {}
+    }
+  }
+
+  function replaceConfig(config: URLState | null) {
+    if (!config) {
+      return
+    }
+
+    console.log('>>> replaceConfig', config)
+    updateFeatures(config?.features || ConstantsUtil.DEFAULT_FEATURES)
+    updateThemeMode(config?.themeMode || 'dark')
+    updateEnableWallets(config?.enableWallets || true)
+
+    // Theme configs
+    ThemeStore.setMixColor(config?.themeVariables?.['--w3m-color-mix'] || '')
+    ThemeStore.setAccentColor(config?.themeVariables?.['--w3m-accent'] || '')
+    ThemeStore.setMixColorStrength(config?.themeVariables?.['--w3m-color-mix-strength'] || 8)
+    ThemeStore.setBorderRadius(config?.themeVariables?.['--w3m-border-radius-master'] || '4px')
+    ThemeStore.setFontFamily(config?.themeVariables?.['--w3m-font-family'] || '')
+    ThemeStore.setThemeVariables(config?.themeVariables || {})
+  }
+
   useEffect(() => {
-    const urlState = getStateFromUrl()
-    setFeatures(urlState.features)
-    setThemeMode(urlState.themeMode)
-    setEnableWallets(urlState.enableWallets)
-    ThemeStore.setMixColor(urlState.mixColor || '')
-    ThemeStore.setAccentColor(urlState.accentColor || '')
-    ThemeStore.setMixColorStrength(urlState.mixColorStrength || 8)
-    ThemeStore.setBorderRadius(urlState.borderRadius || 16)
-    ThemeStore.setFontFamily(urlState.fontFamily || '')
-    ThemeStore.setThemeVariables(urlState.themeVariables || {})
+    const config = (initialConfig as URLState | null) || defaultCustomizationConfig
+    initializeState(config)
+
+    const walletFeatureOrder =
+      config?.features?.experimental_walletFeaturesOrder || defaultWalletFeatureOrder
+    const connectMethodOrder =
+      config?.features?.experimental_connectMethodOrder || defaultConnectMethodOrder
+    const collapseWallets = config?.collapseWallets || false
 
     kit = createAppKit({
       adapters: [ethersAdapter, solanaAdapter],
@@ -109,17 +157,13 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
       defaultNetwork: mainnet,
       projectId: process.env.NEXT_PUBLIC_PROJECT_ID!,
       disableAppend: true,
+      ...config,
       features: {
-        ...urlState.features,
-        experimental_walletFeaturesOrder: urlState.walletFeatureOrder || defaultWalletFeatureOrder,
-        experimental_connectMethodOrder: urlState.connectMethodOrder || defaultConnectMethodOrder,
-        experimental_collapseWallets: urlState.collapseWallets || false
-      },
-      enableWallets: urlState.enableWallets,
-      themeMode: urlState.themeMode,
-      termsConditionsUrl,
-      privacyPolicyUrl,
-      experimental_enableEmbedded: true
+        ...config?.features,
+        experimental_walletFeaturesOrder: walletFeatureOrder,
+        experimental_connectMethodOrder: connectMethodOrder,
+        experimental_collapseWallets: collapseWallets
+      }
     })
 
     ThemeStore.setModal({
@@ -136,7 +180,6 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
     const connectMethodOrder = features.experimental_connectMethodOrder || defaultConnectMethodOrder
     const walletFeatureOrder =
       features.experimental_walletFeaturesOrder || defaultWalletFeatureOrder
-
     if (!isLoading) {
       kit?.setConnectMethodOrder(connectMethodOrder)
       kit?.setWalletFeatureOrder(walletFeatureOrder)
@@ -149,21 +192,28 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
   return (
     <AppKitContext.Provider
       value={{
-        features,
-        themeMode,
-        themeVariables,
+        config: {
+          features,
+          enableWallets,
+          themeMode,
+          themeVariables: {
+            '--w3m-color-mix': themeStore.mixColor,
+            '--w3m-accent': themeStore.accentColor,
+            '--w3m-color-mix-strength': themeStore.mixColorStrength,
+            '--w3m-border-radius-master': themeStore.borderRadius,
+            '--w3m-font-family': themeStore.fontFamily
+          },
+          termsConditionsUrl,
+          privacyPolicyUrl
+        },
         isLoading,
-        isDrawerOpen,
-        termsConditionsUrl,
-        privacyPolicyUrl,
         socialsEnabled,
         enableWallets,
         isDraggingByKey,
         isInitialized,
-        setIsDrawerOpen,
+        replaceConfig,
         updateFeatures,
         updateThemeMode,
-        updateThemeVariables: setThemeVariables,
         updateSocials,
         updateUrls,
         updateEnableWallets,

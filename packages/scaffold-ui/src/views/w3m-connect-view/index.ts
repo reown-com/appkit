@@ -13,8 +13,9 @@ import { state } from 'lit/decorators/state.js'
 import { property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+import { ConstantsUtil } from '@reown/appkit-core'
 
-const defaultConnectMethodOrder = ['wallet', 'email', 'social']
+const defaultConnectMethodOrder = ConstantsUtil.DEFAULT_FEATURES.experimental_connectMethodOrder
 
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
@@ -110,7 +111,8 @@ export class W3mConnectView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private renderConnectMethod(tabIndex?: number) {
-    const connectMethodOrder = this.features?.experimental_connectMethodOrder
+    const connectMethodOrder =
+      this.features?.experimental_connectMethodOrder || defaultConnectMethodOrder
 
     if (!connectMethodOrder) {
       return null

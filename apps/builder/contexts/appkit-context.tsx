@@ -1,22 +1,20 @@
 'use client'
 
 import React, { createContext } from 'react'
-import type { ThemeVariables, Features, ThemeMode, SocialProvider } from '@reown/appkit-core'
+import type { Features, ThemeMode, SocialProvider } from '@reown/appkit-core'
+import { URLState } from '@/lib/url-state'
 
 interface AppKitContextType {
-  themeMode: ThemeMode
-  themeVariables: ThemeVariables
-  features: Features
+  config: URLState
   enableWallets: boolean
   isLoading: boolean
   isDrawerOpen: boolean
-  termsConditionsUrl: string
-  privacyPolicyUrl: string
   socialsEnabled: boolean
   isDraggingByKey: Record<string, boolean>
+  isInitialized: boolean
+  replaceConfig: (config: URLState) => void
   setIsDrawerOpen: (open: boolean) => void
   updateThemeMode: (mode: ThemeMode) => void
-  updateThemeVariables: (variables: Partial<ThemeVariables>) => void
   updateFeatures: (features: Partial<Features>) => void
   updateSocials: (enabled: boolean) => void
   updateEnableWallets: (enabled: boolean) => void

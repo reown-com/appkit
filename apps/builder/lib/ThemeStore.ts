@@ -1,5 +1,4 @@
-import { updateUrlState } from '@/lib/url-state'
-import { proxy } from 'valtio'
+import { proxy } from 'valtio/vanilla'
 
 interface ThemeVariables {
   '--w3m-font-family'?: string
@@ -43,7 +42,6 @@ export const ThemeStore = {
 
   setMixColor(value: ThemeState['mixColor']) {
     state.mixColor = value
-    updateUrlState({ mixColor: value })
     if (state.modal) {
       state.modal.setThemeVariables({ '--w3m-color-mix': value })
     }
@@ -51,24 +49,20 @@ export const ThemeStore = {
 
   setAccentColor(value: ThemeState['accentColor']) {
     state.accentColor = value
-    updateUrlState({ accentColor: value })
     if (state.modal) {
       state.modal.setThemeVariables({ '--w3m-accent': value })
     }
   },
 
-  setBorderRadius(value: number) {
-    const radiusString = `${value}px`
-    state.borderRadius = radiusString
-    updateUrlState({ borderRadius: value })
+  setBorderRadius(value: string) {
+    state.borderRadius = value
     if (state.modal) {
-      state.modal.setThemeVariables({ '--w3m-border-radius-master': radiusString })
+      state.modal.setThemeVariables({ '--w3m-border-radius-master': value })
     }
   },
 
   setThemeVariables(value: ThemeState['themeVariables']) {
     state.themeVariables = value
-    updateUrlState({ themeVariables: value })
     if (state.modal) {
       state.modal.setThemeVariables(value)
     }
@@ -76,7 +70,6 @@ export const ThemeStore = {
 
   setFontFamily(value: ThemeState['fontFamily']) {
     state.fontFamily = value
-    updateUrlState({ fontFamily: value })
     if (state.modal) {
       state.modal.setThemeVariables({ '--w3m-font-family': value })
     }

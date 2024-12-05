@@ -15,11 +15,11 @@ const ACCENT_COLORS = ['#3B82F6', '#EF4444', '#F59E0B', '#10B981']
 const BG_COLORS = ['#202020', '#363636', '#FFFFFF']
 
 const RADIUS_NAME_VALUE_MAP = {
-  '-': 0,
-  S: 1,
-  M: 2,
-  L: 4,
-  XL: 6
+  '-': '0px',
+  S: '1px',
+  M: '2px',
+  L: '4px',
+  XL: '6px'
 }
 
 import Image from 'next/image'
@@ -46,16 +46,17 @@ const FONT_OPTIONS = [
 ]
 
 export default function SidebarContentDesign() {
-  const { themeMode, updateThemeMode } = useAppKitContext()
-  const { fontFamily, mixColor, accentColor } = useSnapshot(ThemeStore.state)
+  const { config, updateThemeMode } = useAppKitContext()
+  const { fontFamily, mixColor, accentColor, borderRadius } = useSnapshot(ThemeStore.state)
   const [radius, setRadius] = React.useState('M')
 
+  console.log('>>> borderRadius', borderRadius)
   return (
     <div className="space-y-4">
       <div className="space-y-2">
         <Label className="text-sm text-text-secondary">Mode</Label>
         <RadioGroup
-          defaultValue={themeMode}
+          defaultValue={config.themeMode}
           onValueChange={value => updateThemeMode(value as ThemeMode)}
           className="grid grid-cols-2 gap-2"
         >
@@ -63,7 +64,7 @@ export default function SidebarContentDesign() {
             htmlFor="light"
             className={cn(
               'flex items-center justify-center rounded-md border border-transparent bg-fg-secondary px-3 py-2 text-sm transition-colors',
-              themeMode === 'light'
+              config.themeMode === 'light'
                 ? 'border-fg-accent bg-fg-accent/10'
                 : 'hover:bg-fg-secondary/80'
             )}
@@ -75,7 +76,7 @@ export default function SidebarContentDesign() {
             htmlFor="dark"
             className={cn(
               'flex items-center justify-center rounded-md border px-3 py-2 text-sm transition-colors',
-              themeMode === 'dark' && 'border-fg-accent bg-fg-accent/10'
+              config.themeMode === 'dark' && 'border-fg-accent bg-fg-accent/10'
             )}
           >
             <RadioGroupItem value="dark" id="dark" className="sr-only" />
@@ -128,7 +129,9 @@ export default function SidebarContentDesign() {
               htmlFor={size}
               className={cn(
                 'flex items-center justify-center rounded-md border border-transparent bg-fg-secondary px-3 py-2 text-sm transition-colors',
-                radius === size ? 'border-fg-accent bg-fg-accent/10' : 'hover:bg-fg-secondary/80'
+                borderRadius === RADIUS_NAME_VALUE_MAP[size as keyof typeof RADIUS_NAME_VALUE_MAP]
+                  ? 'border-fg-accent bg-fg-accent/10'
+                  : 'hover:bg-fg-secondary/80'
               )}
             >
               <RadioGroupItem value={size} id={size} className="sr-only" />

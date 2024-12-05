@@ -70,8 +70,8 @@ export const SocialOptionItem = React.memo(
       },
       ref
     ) => {
-      const { features, updateFeatures } = useAppKitContext()
-      const socials = features.socials || []
+      const { config, updateFeatures } = useAppKitContext()
+      const socials = config.features.socials || []
       const { isDraggingByKey } = useAppKitContext()
       const emailDragging = isDraggingByKey['Email']
       const walletsDragging = isDraggingByKey['Wallets']
@@ -116,6 +116,7 @@ export const SocialOptionItem = React.memo(
         <li
           className={classNames(
             styles.Wrapper,
+            'h-[44px] w-[44px]',
             fadeIn && styles.fadeIn,
             sorting && styles.sorting,
             dragOverlay && styles.dragOverlay,

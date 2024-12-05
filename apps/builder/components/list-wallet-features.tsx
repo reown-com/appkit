@@ -13,8 +13,9 @@ const SortableWalletFeatureList = dynamic(
 const defaultWalletFeaturesOrder = ['onramp', 'swaps', 'receive', 'send']
 
 export function WalletFeatureList() {
-  const { features, updateFeatures } = useAppKitContext()
-  const connectMethodOrder = features.experimental_walletFeaturesOrder || defaultWalletFeaturesOrder
+  const { config, updateFeatures } = useAppKitContext()
+  const connectMethodOrder =
+    config.features.experimental_walletFeaturesOrder || defaultWalletFeaturesOrder
 
   function handleNewOrder(items: UniqueIdentifier[]) {
     const titleValueMap = {
@@ -31,16 +32,16 @@ export function WalletFeatureList() {
   function handleToggleOption(name: WalletFeatureName) {
     switch (name) {
       case 'Buy':
-        updateFeatures({ onramp: !features.onramp })
+        updateFeatures({ onramp: !config.features.onramp })
         return
       case 'Swap':
-        updateFeatures({ swaps: !features.swaps })
+        updateFeatures({ swaps: !config.features.swaps })
         return
       case 'Receive':
-        updateFeatures({ receive: !features.receive })
+        updateFeatures({ receive: !config.features.receive })
         return
       case 'Send':
-        updateFeatures({ send: !features.send })
+        updateFeatures({ send: !config.features.send })
         return
       default:
         return

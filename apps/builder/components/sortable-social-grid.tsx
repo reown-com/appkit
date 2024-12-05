@@ -166,7 +166,7 @@ export function SortableSocialGrid({
       measuring={measuring}
       modifiers={modifiers}
     >
-      <Wrapper style={style} center>
+      <Wrapper style={style} center className="p-3">
         <SortableContext items={items} strategy={strategy}>
           <Container columns={5}>
             {items.map((value, index) => (

@@ -11,33 +11,47 @@ import { AdvancedFeatures } from './configuration-sections/wallet-features'
 import SidebarContentDesign from '@/components/sidebar-content-design'
 import Link from 'next/link'
 import { useAppKit } from '@reown/appkit/react'
+import Image from 'next/image'
+import { BookIcon } from '@/components/icon/book'
 
 function AppKitButton() {
   const { open } = useAppKit()
 
   return (
-    <div className="relative flex md:hidden">
+    <div className="relative flex md:hidden w-full">
+      {/* @ts-ignore */}
       <w3m-modal />
-      <Button variant="neutral-secondary" onClick={() => open()}>
-        Open
+      <Button variant="neutral" size="lg" className="w-full flex md:hidden" onClick={() => open()}>
+        Launch AppKit
       </Button>
     </div>
   )
 }
 
 export function SidebarContent() {
-  const { themeMode } = useAppKitContext()
+  const { config } = useAppKitContext()
   const { isInitialized } = useAppKitContext()
   const [activeTab, setActiveTab] = React.useState('auth')
 
   return (
     <div
-      className={cn('flex flex-col justify-between min-h-full', themeMode === 'dark' ? 'dark' : '')}
+      className={cn(
+        'flex flex-col justify-between min-h-full',
+        config.themeMode === 'dark' ? 'dark' : ''
+      )}
     >
-      <div className="flex flex-col gap-2">
-        <div className="flex-col items-start gap-2 hidden md:flex">
-          <h4 className="text-3xl text-text-primary mb-1">AppKit demo</h4>
-          <p className="text-sm text-text-secondary mb-6">
+      <div className="flex flex-col">
+        <Image
+          src="/reown-logo.png"
+          alt="Reown logo"
+          width={150}
+          height={40}
+          className="hidden md:flex mb-12"
+        />
+
+        <div className="flex-col items-start hidden md:flex mb-12 gap-2">
+          <h4 className="text-3xl text-text-primary">AppKit demo</h4>
+          <p className="text-sm text-text-secondary">
             Use our AppKit demo to test and design onchain UX
           </p>
         </div>
@@ -69,20 +83,23 @@ export function SidebarContent() {
           target="_blank"
           rel="noopener noreferrer"
           className={cn(
-            buttonVariants({ variant: 'neutral-secondary' }),
-            'bg-transparent rounded-xl w-full'
+            buttonVariants({ variant: 'neutral-secondary', size: 'lg' }),
+            'bg-transparent w-full'
           )}
         >
-          <MonitorSmartphone size={16} className="mr-2" />
           Read our docs
+          <BookIcon />
         </Link>
         <Link
           href="https://cloud.reown.com/"
           target="_blank"
           rel="noopener noreferrer"
-          className={cn(buttonVariants({ variant: 'neutral' }), 'rounded-xl w-full')}
+          className={cn(
+            buttonVariants({ variant: 'neutral', size: 'lg' }),
+            'w-full hidden md:flex'
+          )}
         >
-          Get started {`</>`}
+          Get started
         </Link>
         {isInitialized && <AppKitButton />}
       </div>

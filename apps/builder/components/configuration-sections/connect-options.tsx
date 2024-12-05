@@ -5,8 +5,8 @@ import { FeatureButton } from '@/components/feature-button'
 import { ConnetMethodList } from '@/components/list-connect-method'
 
 export function AuthFeatures() {
-  const { features, updateFeatures } = useAppKitContext()
-  const collapseWallets = features.experimental_collapseWallets
+  const { config, updateFeatures } = useAppKitContext()
+  const collapseWallets = config.features.experimental_collapseWallets
 
   function toggleCollapseWallets() {
     updateFeatures({ experimental_collapseWallets: !collapseWallets })

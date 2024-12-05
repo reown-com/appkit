@@ -116,4 +116,10 @@ body {
   .inset-shadow {
     box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1);
   }
+  wui-card {
+    box-shadow: 0 0 24px 0px rgba(0, 0, 0, 0.15);
+  }
+  .ease {
+    transition-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+  }
 }

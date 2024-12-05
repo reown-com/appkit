@@ -21,9 +21,9 @@
 .Wrapper {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
   margin: 0;
   box-sizing: border-box;
+  border-radius: 1rem;
   transform: translate3d(var(--translate-x, 0), var(--translate-y, 0), 0) scaleX(var(--scale-x, 1))
     scaleY(var(--scale-y, 1));
   transform-origin: 0 0;
@@ -43,16 +43,12 @@
   }
 
   &.dragging:not(.dragOverlay) {
-    opacity: var(--dragging-opacity, 0.5);
+    opacity: 0.5;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     z-index: 0;
   }
-}
-
-.ListItem {
-  list-style: none;
 }
 
 .Item {

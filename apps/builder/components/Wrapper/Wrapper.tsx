@@ -7,11 +7,15 @@ interface Props {
   children: React.ReactNode
   center?: boolean
   style?: React.CSSProperties
+  className?: string
 }
 
-export function Wrapper({ children, center, style }: Props) {
+export function Wrapper({ children, center, style, className }: Props) {
   return (
-    <div className={classNames(styles.Wrapper, center && styles.center, 'relative')} style={style}>
+    <div
+      className={classNames(styles.Wrapper, center && styles.center, 'relative', className)}
+      style={style}
+    >
       {children}
     </div>
   )

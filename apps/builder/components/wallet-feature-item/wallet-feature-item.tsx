@@ -71,11 +71,11 @@ export const WalletFeatureItem = React.memo(
       },
       ref
     ) => {
-      const { features } = useAppKitContext()
-      const onrampEnabled = features.onramp
-      const swapsEnabled = features.swaps
-      const receiveEnabled = features.receive
-      const sendEnabled = features.send
+      const { config } = useAppKitContext()
+      const onrampEnabled = config.features.onramp
+      const swapsEnabled = config.features.swaps
+      const receiveEnabled = config.features.receive
+      const sendEnabled = config.features.send
 
       const featureEnabledMap = {
         Buy: onrampEnabled,
@@ -136,8 +136,7 @@ export const WalletFeatureItem = React.memo(
           <li
             onClick={() => onToggleOption?.(value as WalletFeatureName)}
             className={classNames(
-              styles.ListItem,
-              'flex items-center justify-between rounded-xl p-3 w-full',
+              'h-[52px] list-none flex items-center justify-between rounded-2xl p-3 w-full',
               featureEnabledMap[value as WalletFeatureName]
                 ? 'bg-foreground/5 dark:bg-foreground/5'
                 : 'bg-foreground/[2%] dark:bg-foreground/[2%]'
