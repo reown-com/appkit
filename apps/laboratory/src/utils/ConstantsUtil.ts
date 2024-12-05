@@ -14,7 +14,7 @@ import {
   unichainSepolia,
   hedera,
   aurora,
-  mantle
+  mantle,
   bitcoin,
   bitcoinTestnet
 } from '@reown/appkit/networks'
