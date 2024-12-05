@@ -116,7 +116,7 @@ export const SocialOptionItem = React.memo(
         <li
           className={classNames(
             styles.Wrapper,
-            'h-[44px] w-[44px]',
+            'h-[44px] min-w-[44px]',
             fadeIn && styles.fadeIn,
             sorting && styles.sorting,
             dragOverlay && styles.dragOverlay,
@@ -156,7 +156,6 @@ export const SocialOptionItem = React.memo(
               color && styles.color
             )}
             style={style}
-            data-cypress="draggable-item"
             {...(!handle ? listeners : undefined)}
             {...props}
             tabIndex={!handle ? 0 : undefined}

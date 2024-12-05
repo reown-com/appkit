@@ -3,6 +3,7 @@
 import { createContext } from 'react'
 import type { Features, ThemeMode, SocialProvider } from '@reown/appkit-core'
 import { URLState } from '@/lib/url-state'
+import { UniqueIdentifier } from '@dnd-kit/core'
 
 interface AppKitContextType {
   config: URLState
@@ -18,7 +19,7 @@ interface AppKitContextType {
   updateUrls: (urls: { termsConditions?: string; privacyPolicy?: string }) => void
   setEnableWallets: (enabled: boolean) => void
   setSocialsOrder: ((order: SocialProvider[]) => void) | undefined
-  updateDraggingState: (key: string, dragging: boolean) => void
+  updateDraggingState: (key: UniqueIdentifier, dragging: boolean) => void
   resetConfigs: () => void
 }
 

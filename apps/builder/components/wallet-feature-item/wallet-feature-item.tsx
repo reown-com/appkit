@@ -1,46 +1,14 @@
 import React, { useEffect } from 'react'
 import classNames from 'classnames'
-import type { DraggableSyntheticListeners } from '@dnd-kit/core'
-import type { Transform } from '@dnd-kit/utilities'
 
 import { Handle } from './components'
 
 import styles from './wallet-feature-item.module.css'
 import { useAppKitContext } from '@/hooks/use-appkit'
 import { Checkbox } from '@/components/ui/checkbox'
-import { WalletFeatureName } from '@/lib/types'
+import { BaseDraggableItemProps, WalletFeatureName } from '@/lib/types'
 
-export interface Props {
-  dragOverlay?: boolean
-  color?: string
-  disabled?: boolean
-  dragging?: boolean
-  handle?: boolean
-  handleProps?: any
-  height?: number
-  index?: number
-  fadeIn?: boolean
-  transform?: Transform | null
-  listeners?: DraggableSyntheticListeners
-  sorting?: boolean
-  style?: React.CSSProperties
-  transition?: string | null
-  wrapperStyle?: React.CSSProperties
-  value: React.ReactNode
-  onRemove?(): void
-  renderItem?(args: {
-    dragOverlay: boolean
-    dragging: boolean
-    sorting: boolean
-    index: number | undefined
-    fadeIn: boolean
-    listeners: DraggableSyntheticListeners
-    ref: React.Ref<HTMLElement>
-    style: React.CSSProperties | undefined
-    transform: Props['transform']
-    transition: Props['transition']
-    value: Props['value']
-  }): React.ReactElement
+interface Props extends BaseDraggableItemProps {
   onToggleOption?: (name: WalletFeatureName) => void
 }
 
@@ -106,8 +74,8 @@ export const WalletFeatureItem = React.memo(
           listeners,
           ref,
           style,
-          transform,
-          transition,
+          transform: transform ?? null,
+          transition: transition ?? null,
           value
         })
       ) : (

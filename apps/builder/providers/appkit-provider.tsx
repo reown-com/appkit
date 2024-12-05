@@ -11,6 +11,7 @@ import { URLState, urlStateUtils } from '@/lib/url-state'
 import { AppKitContext } from '@/contexts/appkit-context'
 import { useSnapshot } from 'valtio'
 import { defaultCustomizationConfig } from '@/lib/config'
+import { UniqueIdentifier } from '@dnd-kit/core'
 
 const networks = [mainnet, polygon] as [AppKitNetwork, ...AppKitNetwork[]]
 
@@ -48,7 +49,7 @@ export const AppKitProvider: React.FC<AppKitProviderProps> = ({ children }) => {
   const [isDraggingByKey, setIsDraggingByKey] = useState<Record<string, boolean>>({})
   const themeStore = useSnapshot(ThemeStore.state)
 
-  function updateDraggingState(key: string, value: boolean) {
+  function updateDraggingState(key: UniqueIdentifier, value: boolean) {
     setIsDraggingByKey(prev => ({
       ...prev,
       [key]: value

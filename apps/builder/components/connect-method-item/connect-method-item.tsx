@@ -1,45 +1,14 @@
 import React, { useEffect } from 'react'
 import classNames from 'classnames'
-import type { DraggableSyntheticListeners } from '@dnd-kit/core'
-import type { Transform } from '@dnd-kit/utilities'
+import { BaseDraggableItemProps, ConnectMethodName } from '@/lib/types'
 import { Handle } from './components'
 import styles from './connect-method-item.module.css'
 import { useAppKitContext } from '@/hooks/use-appkit'
 import { Checkbox } from '@/components/ui/checkbox'
 import { SocialButtons } from '@/components/social-buttons'
 
-export interface Props {
-  dragOverlay?: boolean
-  color?: string
-  disabled?: boolean
-  dragging?: boolean
-  handle?: boolean
-  handleProps?: any
-  height?: number
-  index?: number
-  fadeIn?: boolean
-  transform?: Transform | null
-  listeners?: DraggableSyntheticListeners
-  sorting?: boolean
-  style?: React.CSSProperties
-  transition?: string | null
-  wrapperStyle?: React.CSSProperties
-  value: React.ReactNode
-  onRemove?(): void
-  renderItem?(args: {
-    dragOverlay: boolean
-    dragging: boolean
-    sorting: boolean
-    index: number | undefined
-    fadeIn: boolean
-    listeners: DraggableSyntheticListeners
-    ref: React.Ref<HTMLElement>
-    style: React.CSSProperties | undefined
-    transform: Props['transform']
-    transition: Props['transition']
-    value: Props['value']
-  }): React.ReactElement
-  onToggleOption?: (name: 'Email' | 'Socials' | 'Wallets') => void
+interface Props extends BaseDraggableItemProps {
+  onToggleOption?: (name: ConnectMethodName) => void
 }
 
 export const ConnectMethodItem = React.memo(
@@ -102,8 +71,8 @@ export const ConnectMethodItem = React.memo(
           listeners,
           ref,
           style,
-          transform,
-          transition,
+          transform: transform ?? null,
+          transition: transition ?? null,
           value
         })
       ) : (
@@ -114,7 +83,7 @@ export const ConnectMethodItem = React.memo(
             sorting && styles.sorting,
             dragOverlay && styles.dragOverlay,
             dragging && styles.dragging,
-            featureEnabledMap[value as 'Email' | 'Socials' | 'Wallets']
+            featureEnabledMap[value as ConnectMethodName]
               ? 'bg-foreground/5 dark:bg-foreground/5'
               : 'bg-foreground/[2%] dark:bg-foreground/[2%]'
           )}
@@ -133,7 +102,7 @@ export const ConnectMethodItem = React.memo(
           ref={ref as React.LegacyRef<HTMLDivElement>}
         >
           <li
-            onClick={() => onToggleOption?.(value as 'Email' | 'Socials' | 'Wallets')}
+            onClick={() => onToggleOption?.(value as ConnectMethodName)}
             className={classNames(
               'list-none flex items-center justify-between rounded-2xl p-3 w-full',
               value === 'Socials' ? 'pb-0' : 'h-[52px]'
@@ -149,14 +118,13 @@ export const ConnectMethodItem = React.memo(
                 color && styles.color
               )}
               style={style}
-              data-cypress="draggable-item"
               {...(!handle ? listeners : undefined)}
               {...props}
               tabIndex={!handle ? 0 : undefined}
             >
               {handle ? <Handle {...handleProps} {...listeners} /> : null}
               <span className="text-sm flex-1">{value}</span>
-              <Checkbox checked={featureEnabledMap[value as 'Email' | 'Socials' | 'Wallets']} />
+              <Checkbox checked={featureEnabledMap[value as ConnectMethodName]} />
             </div>
           </li>
           {value === 'Socials' && <SocialButtons />}
