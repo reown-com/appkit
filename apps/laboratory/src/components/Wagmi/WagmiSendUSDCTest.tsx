@@ -46,7 +46,7 @@ function AvailableTestContent({ chain, config }: IProps) {
   const toast = useChakraToast()
 
   async function onSendTransaction(wagmiConfig: Config) {
-    const usdcAmount = BigInt(Number(amount) * 1000000)
+    const usdcAmount = BigInt(Math.round(parseFloat(amount) * 1_000_000))
     const chainId = chain.id as keyof typeof TOKEN_ADDRESSES
     const contractAddress = TOKEN_ADDRESSES[chainId]
     const client = await getWalletClient(wagmiConfig)

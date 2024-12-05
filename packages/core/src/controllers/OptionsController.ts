@@ -163,7 +163,14 @@ export const OptionsController = {
       return
     }
 
-    state.features = features
+    if (!state.features) {
+      state.features = ConstantsUtil.DEFAULT_FEATURES
+
+      return
+    }
+
+    const newFeatures = { ...state.features, ...features }
+    state.features = newFeatures
   },
 
   setProjectId(projectId: OptionsControllerState['projectId']) {

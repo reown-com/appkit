@@ -217,6 +217,21 @@ export class AppKit {
     await this.initOrContinue()
     await this.syncExistingConnection()
     this.version = options.sdkVersion
+
+    const { ...optionsCopy } = options
+    delete optionsCopy.adapters
+
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'INITIALIZE',
+      properties: {
+        ...optionsCopy,
+        networks: options.networks.map(n => n.id),
+        siweConfig: {
+          options: options.siweConfig?.options || {}
+        }
+      }
+    })
   }
 
   // -- Public -------------------------------------------------------------------
@@ -596,9 +611,7 @@ export class AppKit {
   }
 
   public updateFeatures(newFeatures: Partial<Features>) {
-    const currentFeatures = OptionsController.state.features || {}
-    const updatedFeatures = { ...currentFeatures, ...newFeatures }
-    OptionsController.setFeatures(updatedFeatures)
+    OptionsController.setFeatures(newFeatures)
   }
 
   public updateOptions(newOptions: Partial<OptionsControllerState>) {
