@@ -15,6 +15,7 @@ packages:
   - 'packages/siwx'
   - 'packages/cdn'
   - 'packages/experimental'
+  - 'packages/cli'
   - 'apps/*'
   - 'examples/*'
   - 'services/*'
