@@ -535,6 +535,9 @@ export type Event =
   | {
       type: 'track'
       event: 'EMAIL_VERIFICATION_CODE_FAIL'
+      properties: {
+        message: string
+      }
     }
   | {
       type: 'track'
@@ -655,6 +658,20 @@ export type Event =
   | {
       type: 'track'
       event: 'SOCIAL_LOGIN_ERROR'
+      properties: {
+        provider: SocialProvider
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SOCIAL_LOGIN_REQUEST_USER_DATA'
+      properties: {
+        provider: SocialProvider
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SOCIAL_LOGIN_CANCELED'
       properties: {
         provider: SocialProvider
       }
@@ -807,11 +824,23 @@ export type GetQuoteArgs = {
   amount: string
   network: string
 }
-export type AccountType = {
-  address: string
-  type: 'eoa' | 'smartAccount'
+
+export type NamespaceTypeMap = {
+  eip155: 'eoa' | 'smartAccount'
+  solana: 'eoa'
+  bip122: 'payment' | 'ordinal' | 'stx'
+  polkadot: 'eoa'
 }
 
+export type AccountTypeMap = {
+  [K in ChainNamespace]: {
+    namespace: K
+    address: string
+    type: NamespaceTypeMap[K]
+  }
+}
+
+export type AccountType = AccountTypeMap[ChainNamespace]
 export type SendTransactionArgs =
   | {
       chainNamespace?: undefined | 'eip155'
@@ -1006,3 +1035,5 @@ export type UseAppKitNetworkReturn = {
 }
 
 export type BadgeType = 'none' | 'certified'
+
+export type ConnectionStatus = 'connected' | 'disconnected' | 'connecting' | 'reconnecting'

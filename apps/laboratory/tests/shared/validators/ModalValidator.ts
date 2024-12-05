@@ -137,6 +137,14 @@ export class ModalValidator {
     await expect(title).toBeVisible()
   }
 
+  async expectSwitchedNetworkWithNetworkView() {
+    const switchNetworkViewLocator = this.page.locator('w3m-network-switch-view')
+    await expect(switchNetworkViewLocator).toBeVisible()
+    await expect(switchNetworkViewLocator).not.toBeVisible({
+      timeout: 20_000
+    })
+  }
+
   async expectSwitchedNetworkOnNetworksView(name: string) {
     const networkOptions = this.page.getByTestId(`w3m-network-switch-${name}`)
     await expect(networkOptions.locator('wui-icon')).toBeVisible()
@@ -356,15 +364,5 @@ export class ModalValidator {
     await expect(this.page.getByTestId('wui-snackbar-message')).toHaveText(message, {
       timeout: MAX_WAIT
     })
-  }
-
-  async expectConnectViewToBeDisabled() {
-    const connectDisabled = this.page.locator('.connect.disabled')
-    await expect(connectDisabled).toBeVisible()
-  }
-
-  async expectConnectViewNotToBeDisabled() {
-    const connectDisabled = this.page.locator('.connect.disabled')
-    await expect(connectDisabled).not.toBeVisible()
   }
 }

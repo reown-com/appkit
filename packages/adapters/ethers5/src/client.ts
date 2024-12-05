@@ -2,6 +2,7 @@ import { AdapterBlueprint } from '@reown/appkit/adapters'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
+  CoreHelperUtil,
   type CombinedProvider,
   type Connector,
   type ConnectorType,
@@ -376,6 +377,36 @@ export class Ethers5Adapter extends AdapterBlueprint {
     }
   }
 
+  public async getAccounts(
+    params: AdapterBlueprint.GetAccountsParams
+  ): Promise<AdapterBlueprint.GetAccountsResult> {
+    const connector = this.connectors.find(c => c.id === params.id)
+    const selectedProvider = connector?.provider as Provider
+
+    if (!selectedProvider || !connector) {
+      throw new Error('Provider not found')
+    }
+
+    if (params.id === ConstantsUtil.AUTH_CONNECTOR_ID) {
+      const provider = connector['provider'] as W3mFrameProvider
+      const { address, accounts } = await provider.connect()
+
+      return Promise.resolve({
+        accounts: (accounts || [{ address, type: 'eoa' }]).map(account =>
+          CoreHelperUtil.createAccount('eip155', account.address, account.type)
+        )
+      })
+    }
+
+    const accounts: string[] = await selectedProvider.request({
+      method: 'eth_requestAccounts'
+    })
+
+    return {
+      accounts: accounts.map(account => CoreHelperUtil.createAccount('eip155', account, 'eoa'))
+    }
+  }
+
   public override async reconnect(params: AdapterBlueprint.ConnectParams): Promise<void> {
     const { id, chainId } = params
 
@@ -423,10 +454,16 @@ export class Ethers5Adapter extends AdapterBlueprint {
         }
       )
 
-      const balance = await jsonRpcProvider.getBalance(params.address)
-      const formattedBalance = formatEther(balance)
+      if (jsonRpcProvider) {
+        try {
+          const balance = await jsonRpcProvider.getBalance(params.address)
+          const formattedBalance = formatEther(balance)
 
-      return { balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol }
+          return { balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol }
+        } catch (error) {
+          return { balance: '', symbol: '' }
+        }
+      }
     }
 
     return { balance: '', symbol: '' }
