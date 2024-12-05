@@ -31,13 +31,12 @@ describe('SnackController', () => {
 
   it('should update state correctly on hide()', () => {
     SnackController.hide()
-    vi.advanceTimersByTime(SHOW_MESSAGE_TIMEOUT)
     expect(SnackController.state).toEqual({
-      autoClose: true,
-      message: 'Success Msg',
+      message: '',
       variant: 'success',
       svg: undefined,
-      open: false
+      open: false,
+      autoClose: true
     })
   })
 

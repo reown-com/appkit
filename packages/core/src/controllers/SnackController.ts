@@ -59,6 +59,9 @@ export const SnackController = {
   },
 
   hide() {
+    state.message = DEFAULT_STATE.message
+    state.variant = DEFAULT_STATE.variant
+    state.svg = DEFAULT_STATE.svg
     state.open = DEFAULT_STATE.open
     state.autoClose = DEFAULT_STATE.autoClose
   },
@@ -67,7 +70,7 @@ export const SnackController = {
     message,
     svg,
     variant = 'success',
-    autoClose
+    autoClose = DEFAULT_STATE.autoClose
   }: { message: string } & SnackControllerShowOptions) {
     if (state.open) {
       state.open = false
@@ -76,14 +79,14 @@ export const SnackController = {
         state.variant = variant
         state.svg = svg
         state.open = true
-        state.autoClose = autoClose ?? DEFAULT_STATE.autoClose
+        state.autoClose = autoClose
       }, 150)
     } else {
       state.message = message
       state.variant = variant
       state.svg = svg
       state.open = true
-      state.autoClose = autoClose ?? DEFAULT_STATE.autoClose
+      state.autoClose = autoClose
     }
   }
 }
