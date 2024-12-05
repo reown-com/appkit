@@ -1,4 +1,4 @@
-import type { Features } from './TypeUtil.js'
+import type { Features, SocialProvider } from './TypeUtil.js'
 import type { ChainNamespace } from '@reown/appkit-common'
 
 const SECURE_SITE = 'https://secure.walletconnect.org'
@@ -217,13 +217,26 @@ export const ConstantsUtil = {
   DEFAULT_FEATURES: {
     swaps: true,
     onramp: true,
+    receive: true,
+    send: true,
     email: true,
     emailShowWallets: true,
-    socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'],
+    socials: [
+      'google',
+      'x',
+      'discord',
+      'farcaster',
+      'github',
+      'apple',
+      'facebook'
+    ] as SocialProvider[],
     history: true,
     analytics: true,
     allWallets: true,
     legalCheckbox: false,
-    smartSessions: false
+    smartSessions: false,
+    experimental_collapseWallets: false,
+    experimental_connectMethodOrder: ['email', 'social', 'wallet'],
+    experimental_walletFeaturesOrder: ['swaps', 'send', 'receive', 'onramp']
   } as Features
 }

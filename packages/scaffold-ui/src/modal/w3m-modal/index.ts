@@ -11,7 +11,7 @@ import {
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import styles from './styles.js'
 import { type CaipAddress, type CaipNetwork } from '@reown/appkit-common'
 
@@ -28,6 +28,8 @@ export class W3mModal extends LitElement {
   private abortController?: AbortController = undefined
 
   // -- State & Properties -------------------------------- //
+  @property() private embedded = false
+
   @state() private open = ModalController.state.open
 
   @state() private caipAddress = ChainController.state.activeCaipAddress
@@ -58,21 +60,15 @@ export class W3mModal extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    if (this.embedded) {
+      return html`${this.contentTemplate()}
+        <w3m-tooltip></w3m-tooltip> `
+    }
+
     return this.open
       ? html`
           <wui-flex @click=${this.onOverlayClick.bind(this)} data-testid="w3m-modal-overlay">
-            <wui-card
-              shake="${this.shake}"
-              role="alertdialog"
-              aria-modal="true"
-              tabindex="0"
-              data-testid="w3m-modal-card"
-            >
-              <w3m-header></w3m-header>
-              <w3m-router></w3m-router>
-              <w3m-snackbar></w3m-snackbar>
-              <w3m-alertbar></w3m-alertbar>
-            </wui-card>
+            ${this.contentTemplate()}
           </wui-flex>
           <w3m-tooltip></w3m-tooltip>
         `
@@ -80,6 +76,21 @@ export class W3mModal extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private contentTemplate() {
+    return html` <wui-card
+      shake="${this.shake}"
+      role="alertdialog"
+      aria-modal="true"
+      tabindex="0"
+      data-testid="w3m-modal-card"
+    >
+      <w3m-header></w3m-header>
+      <w3m-router></w3m-router>
+      <w3m-snackbar></w3m-snackbar>
+      <w3m-alertbar></w3m-alertbar>
+    </wui-card>`
+  }
+
   private async onOverlayClick(event: PointerEvent) {
     if (event.target === event.currentTarget) {
       await this.handleClose()
@@ -172,7 +183,7 @@ export class W3mModal extends LitElement {
     await SIWXUtil.initializeIfEnabled()
 
     if (!nextConnected) {
-      ModalController.close()
+      RouterController.replace('Connect')
     }
   }
 

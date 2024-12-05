@@ -1,6 +1,6 @@
-import { defineProject } from 'vitest/config'
+import { defineConfig } from 'vitest/config'
 
-export default defineProject({
+export default defineConfig({
   test: {
     environment: 'jsdom'
   }

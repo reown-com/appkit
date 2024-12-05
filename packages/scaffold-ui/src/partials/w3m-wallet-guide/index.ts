@@ -10,7 +10,7 @@ export class W3mWalletGuide extends LitElement {
   public static override styles = styles
 
   // -- State & Properties -------------------------------- //
-  @property() public tabIdx?: boolean
+  @property() public tabIdx?: -1 | boolean
 
   @property() public walletGuide: WalletGuideType = 'get-started'
 
@@ -34,8 +34,8 @@ export class W3mWalletGuide extends LitElement {
               imageIcon="walletConnectLightBrown"
               icon="externalLink"
               variant="transparent"
-              href="https://walletguide.walletconnect.network"
-              title="Find one on WalletGuide"
+              href="https://explorer.walletconnect.com"
+              title="Visit our Explorer"
             ></wui-chip>
           </wui-flex>
         </wui-flex>`

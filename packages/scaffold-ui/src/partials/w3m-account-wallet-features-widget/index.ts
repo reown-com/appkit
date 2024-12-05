@@ -15,6 +15,7 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 const TABS = 3
@@ -107,32 +108,8 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         profileName=${this.profileName}
         data-testid="w3m-profile-button"
       ></wui-profile-button>
-      ${this.tokenBalanceTemplate()}
-      <wui-flex gap="s">
-        <w3m-tooltip-trigger text="Buy">
-          <wui-icon-button
-            data-testid="wallet-features-onramp-button"
-            @click=${this.onBuyClick.bind(this)}
-            icon="card"
-          ></wui-icon-button>
-        </w3m-tooltip-trigger>
-        ${this.swapsTemplate()}
-        <w3m-tooltip-trigger text="Receive">
-          <wui-icon-button
-            data-testid="wallet-features-receive-button"
-            @click=${this.onReceiveClick.bind(this)}
-            icon="arrowBottomCircle"
-          >
-          </wui-icon-button>
-        </w3m-tooltip-trigger>
-        <w3m-tooltip-trigger text="Send">
-          <wui-icon-button
-            data-testid="wallet-features-send-button"
-            @click=${this.onSendClick.bind(this)}
-            icon="send"
-          ></wui-icon-button>
-        </w3m-tooltip-trigger>
-      </wui-flex>
+
+      ${this.tokenBalanceTemplate()} ${this.orderedWalletFeatures()}
 
       <wui-tabs
         .onTabChange=${this.onTabChange.bind(this)}
@@ -147,10 +124,60 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private orderedWalletFeatures() {
+    const walletFeaturesOrder = this.features?.experimental_walletFeaturesOrder || [
+      'onramp',
+      'swaps',
+      'receive',
+      'send'
+    ]
+    const isAllDisabled = walletFeaturesOrder.every(feature => !this.features?.[feature])
+
+    if (isAllDisabled) {
+      return null
+    }
+
+    return html`<wui-flex gap="s">
+      ${walletFeaturesOrder.map(feature => {
+        switch (feature) {
+          case 'onramp':
+            return this.onrampTemplate()
+          case 'swaps':
+            return this.swapsTemplate()
+          case 'receive':
+            return this.receiveTemplate()
+          case 'send':
+            return this.sendTemplate()
+          default:
+            return null
+        }
+      })}
+    </wui-flex>`
+  }
+
+  private onrampTemplate() {
+    const onramp = this.features?.onramp
+
+    if (!onramp) {
+      return null
+    }
+
+    return html`
+      <w3m-tooltip-trigger text="Buy">
+        <wui-icon-button
+          data-testid="wallet-features-onramp-button"
+          @click=${this.onBuyClick.bind(this)}
+          icon="card"
+        ></wui-icon-button>
+      </w3m-tooltip-trigger>
+    `
+  }
+
   private swapsTemplate() {
     const swaps = this.features?.swaps
+    const isEvm = ChainController.state.activeChain === CommonConstantsUtil.CHAIN.EVM
 
-    if (!swaps) {
+    if (!swaps || !isEvm) {
       return null
     }
 
@@ -162,6 +189,44 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           icon="recycleHorizontal"
         >
         </wui-icon-button>
+      </w3m-tooltip-trigger>
+    `
+  }
+
+  private receiveTemplate() {
+    const receive = this.features?.receive
+
+    if (!receive) {
+      return null
+    }
+
+    return html`
+      <w3m-tooltip-trigger text="Receive">
+        <wui-icon-button
+          data-testid="wallet-features-receive-button"
+          @click=${this.onReceiveClick.bind(this)}
+          icon="arrowBottomCircle"
+        >
+        </wui-icon-button>
+      </w3m-tooltip-trigger>
+    `
+  }
+
+  private sendTemplate() {
+    const send = this.features?.send
+    const isEvm = ChainController.state.activeChain === CommonConstantsUtil.CHAIN.EVM
+
+    if (!send || !isEvm) {
+      return null
+    }
+
+    return html`
+      <w3m-tooltip-trigger text="Send">
+        <wui-icon-button
+          data-testid="wallet-features-send-button"
+          @click=${this.onSendClick.bind(this)}
+          icon="send"
+        ></wui-icon-button>
       </w3m-tooltip-trigger>
     `
   }

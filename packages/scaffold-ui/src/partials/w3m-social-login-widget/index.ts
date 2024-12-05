@@ -2,6 +2,7 @@ import {
   AccountController,
   ChainController,
   ConnectorController,
+  ConstantsUtil,
   CoreHelperUtil,
   EventsController,
   OptionsController,
@@ -58,31 +59,29 @@ export class W3mSocialLoginWidget extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const socials = this.features?.socials
-
-    if (!this.authConnector || !socials || !socials?.length) {
-      return null
-    }
-
     return html`
       <wui-flex
         class="container"
         flexDirection="column"
         gap="xs"
-        .padding=${['0', '0', 'xs', '0'] as const}
         data-testid="w3m-social-login-widget"
       >
         ${this.topViewTemplate()}${this.bottomViewTemplate()}
       </wui-flex>
-      ${this.separatorTemplate()}
     `
   }
 
   // -- Private ------------------------------------------- //
   private topViewTemplate() {
-    const socials = this.features?.socials
+    let socials = this.features?.socials
+    const isCreateWalletPage = this.walletGuide === 'explore'
+    const isSocialDisabled = !this.authConnector || !socials || !socials?.length
 
-    if (!this.authConnector || !socials || !socials?.length) {
+    if (isSocialDisabled && isCreateWalletPage) {
+      socials = ConstantsUtil.DEFAULT_FEATURES.socials as SocialProvider[]
+    }
+
+    if (!socials) {
       return null
     }
 
@@ -103,21 +102,27 @@ export class W3mSocialLoginWidget extends LitElement {
     }
 
     return html` <wui-list-social
-      data-testid=${`social-selector-${socials?.[0]}`}
+      data-testid=${`social-selector-${(socials as SocialProvider[])[0]}`}
       @click=${() => {
-        this.onSocialClick(socials?.[0])
+        this.onSocialClick((socials as SocialProvider[])[0])
       }}
-      logo=${ifDefined(socials[0])}
+      logo=${ifDefined((socials as SocialProvider[])[0])}
       align="center"
-      name=${`Continue with ${socials[0]}`}
+      name=${`Continue with ${(socials as SocialProvider[])[0]}`}
       tabIdx=${ifDefined(this.tabIdx)}
     ></wui-list-social>`
   }
 
   private bottomViewTemplate() {
-    const socials = this.features?.socials
+    let socials = this.features?.socials
+    const isCreateWalletPage = this.walletGuide === 'explore'
+    const isSocialDisabled = !this.authConnector || !socials || !socials?.length
 
-    if (!this.authConnector || !socials || !socials?.length) {
+    if (isSocialDisabled && isCreateWalletPage) {
+      socials = ConstantsUtil.DEFAULT_FEATURES.socials
+    }
+
+    if (!socials) {
       return null
     }
 
@@ -125,7 +130,7 @@ export class W3mSocialLoginWidget extends LitElement {
       return null
     }
 
-    if (socials.length > MAXIMUM_LENGTH) {
+    if (socials && socials.length > MAXIMUM_LENGTH) {
       return html`<wui-flex gap="xs">
         ${socials.slice(1, MAXIMUM_LENGTH - 1).map(
           social =>
@@ -146,6 +151,10 @@ export class W3mSocialLoginWidget extends LitElement {
       </wui-flex>`
     }
 
+    if (!socials) {
+      return null
+    }
+
     return html`<wui-flex gap="xs">
       ${socials.slice(1, socials.length).map(
         social =>
@@ -159,17 +168,6 @@ export class W3mSocialLoginWidget extends LitElement {
           ></wui-logo-select>`
       )}
     </wui-flex>`
-  }
-
-  private separatorTemplate() {
-    const walletConnectConnector = this.connectors.find(c => c.id === 'walletConnect')
-    const enableWallets = OptionsController.state.enableWallets
-
-    if ((walletConnectConnector && enableWallets) || this.walletGuide === 'explore') {
-      return html`<wui-separator text="or"></wui-separator>`
-    }
-
-    return null
   }
 
   // -- Private Methods ----------------------------------- //

@@ -365,4 +365,14 @@ export class ModalValidator {
       timeout: MAX_WAIT
     })
   }
+
+  async expectConnectViewToBeDisabled() {
+    const connectDisabled = this.page.locator('.connect.disabled')
+    await expect(connectDisabled).toBeVisible()
+  }
+
+  async expectConnectViewNotToBeDisabled() {
+    const connectDisabled = this.page.locator('.connect.disabled')
+    await expect(connectDisabled).not.toBeVisible()
+  }
 }
