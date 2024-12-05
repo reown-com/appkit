@@ -833,19 +833,19 @@ export class AppKit {
         }
       },
       disconnect: async () => {
-        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+        const namespace = ChainController.state.activeChain as ChainNamespace
+        const adapter = this.getAdapter(namespace)
         const provider = ProviderUtil.getProvider<UniversalProvider | Provider | W3mFrameProvider>(
-          ChainController.state.activeChain as ChainNamespace
+          namespace
         )
 
-        const providerType =
-          ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
+        const providerType = ProviderUtil.state.providerIds[namespace]
 
         await adapter?.disconnect({ provider, providerType })
 
-        this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
+        this.setStatus('disconnected', namespace)
 
-        SafeLocalStorage.removeItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
+        StorageUtil.removeConnectedConnector(namespace)
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
 
         ChainController.state.chains.forEach(chain => {
@@ -1116,10 +1116,11 @@ export class AppKit {
       }
     })
     provider.onNotConnected(() => {
-      const connectedConnector = SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
+      const namespace = ChainController.state.activeChain as ChainNamespace
+      const connectedConnector = StorageUtil.getConnectedConnector(namespace)
       const isConnectedWithAuth = connectedConnector === UtilConstantsUtil.AUTH_CONNECTOR_ID
       if (!isConnected && isConnectedWithAuth) {
-        this.setCaipAddress(undefined, ChainController.state.activeChain as ChainNamespace)
+        this.setCaipAddress(undefined, namespace)
         this.setLoading(false)
       }
     })
@@ -1321,7 +1322,8 @@ export class AppKit {
         }
 
         StorageUtil.setConnectedConnector(
-          UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT as ConnectorType
+          UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT as ConnectorType,
+          chainNamespace
         )
 
         let address = ''
@@ -1407,8 +1409,8 @@ export class AppKit {
     ProviderUtil.setProviderId(chainNamespace, type)
     ProviderUtil.setProvider(chainNamespace, provider)
 
-    StorageUtil.setConnectedConnector(id as ConnectorType)
-    StorageUtil.setConnectedNamespace(ChainController.state.activeChain as ChainNamespace)
+    StorageUtil.setConnectedConnector(id as ConnectorType, chainNamespace)
+    StorageUtil.setConnectedNamespace(chainNamespace as ChainNamespace)
   }
 
   private async syncAccount({
@@ -1459,7 +1461,7 @@ export class AppKit {
   }
 
   private syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
-    const currentActiveWallet = SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
+    const currentActiveWallet = StorageUtil.getConnectedConnector(chainNamespace)
     const providerType = ProviderUtil.state.providerIds[chainNamespace]
 
     if (
@@ -1575,51 +1577,55 @@ export class AppKit {
     )
   }
 
-  private async syncExistingConnection() {
-    const connectedConnector = SafeLocalStorage.getItem(
-      SafeLocalStorageKeys.CONNECTED_CONNECTOR
-    ) as ConnectorType
-    const connectedNamespace = SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_NAMESPACE)
+  private async syncExternalAccount(params: { namespace: ChainNamespace; connectorId: string }) {
+    this.setStatus('connecting', params.namespace)
+    const adapter = this.getAdapter(params.namespace)
+    const res = await adapter?.syncConnection({
+      id: params.connectorId,
+      chainId: this.getCaipNetwork()?.id,
+      namespace: params.namespace,
+      rpcUrl: this.getCaipNetwork()?.rpcUrls?.default?.http?.[0] as string
+    })
 
-    if (
-      connectedConnector === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT &&
-      connectedNamespace
-    ) {
-      this.syncWalletConnectAccount()
-    } else if (
-      connectedConnector &&
-      connectedConnector !== UtilConstantsUtil.CONNECTOR_TYPE_W3M_AUTH &&
-      connectedNamespace
-    ) {
-      this.setStatus('connecting', connectedNamespace as ChainNamespace)
-      const adapter = this.getAdapter(connectedNamespace as ChainNamespace)
-      const res = await adapter?.syncConnection({
-        id: connectedConnector,
-        chainId: this.getCaipNetwork()?.id,
-        namespace: connectedNamespace as ChainNamespace,
-        rpcUrl: this.getCaipNetwork()?.rpcUrls?.default?.http?.[0] as string
+    if (res?.address) {
+      this.syncProvider({ ...res, chainNamespace: params.namespace })
+      await this.syncAccount({ ...res, chainNamespace: params.namespace })
+      const accounts = await adapter?.getAccounts({
+        namespace: params.namespace,
+        id: params.connectorId
       })
+      this.setAllAccounts(accounts?.accounts || [], params.namespace)
+      this.setStatus('connected', params.namespace)
+    } else {
+      this.setStatus('disconnected', params.namespace)
+    }
 
-      if (res) {
-        const accounts = await adapter?.getAccounts({
-          namespace: connectedNamespace as ChainNamespace,
-          id: connectedConnector
-        })
-        this.syncProvider({ ...res, chainNamespace: connectedNamespace as ChainNamespace })
-        await this.syncAccount({ ...res, chainNamespace: connectedNamespace as ChainNamespace })
-        this.setAllAccounts(accounts?.accounts || [], connectedNamespace as ChainNamespace)
-        this.setStatus('connected', connectedNamespace as ChainNamespace)
-      } else {
+    if (!this.caipNetworks?.some(network => network.id === res?.chainId)) {
+      if (res?.chainId) {
+        this.setUnsupportedNetwork(res.chainId)
+      }
+    }
+  }
+
+  private async syncExistingConnection() {
+    const connectedNamespace = StorageUtil.getConnectedNamespace()
+
+    if (connectedNamespace) {
+      const connectedConnector = StorageUtil.getConnectedConnector(connectedNamespace)
+      if (!connectedConnector) {
         this.setStatus('disconnected', connectedNamespace as ChainNamespace)
+
+        return
       }
 
-      if (!this.caipNetworks?.some(network => network.id === res?.chainId)) {
-        if (res?.chainId) {
-          this.setUnsupportedNetwork(res.chainId)
-        }
+      if (connectedConnector === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
+        await this.syncWalletConnectAccount()
+      } else if (connectedConnector !== UtilConstantsUtil.CONNECTOR_TYPE_W3M_AUTH) {
+        await this.syncExternalAccount({
+          namespace: connectedNamespace,
+          connectorId: connectedConnector
+        })
       }
-    } else if (connectedConnector !== UtilConstantsUtil.CONNECTOR_TYPE_W3M_AUTH) {
-      this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
     }
   }
 

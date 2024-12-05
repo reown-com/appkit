@@ -62,9 +62,12 @@ export const StorageUtil = {
     return []
   },
 
-  setConnectedConnector(connectorType: ConnectorType) {
+  setConnectedConnector(connectorType: ConnectorType, namespace: ChainNamespace) {
     try {
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR, connectorType)
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys[`CONNECTED_CONNECTOR_${namespace}`],
+        connectorType
+      )
     } catch {
       console.info('Unable to set Connected Connector')
     }
@@ -78,14 +81,34 @@ export const StorageUtil = {
     }
   },
 
-  getConnectedConnector() {
+  getConnectedNamespace() {
     try {
-      return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR) as ConnectorType
+      return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_NAMESPACE) as ChainNamespace
+    } catch {
+      console.info('Unable to get Connected Namespace')
+    }
+
+    return undefined
+  },
+
+  getConnectedConnector(namespace: ChainNamespace) {
+    try {
+      return SafeLocalStorage.getItem(
+        SafeLocalStorageKeys[`CONNECTED_CONNECTOR_${namespace}`]
+      ) as ConnectorType
     } catch {
       console.info('Unable to get Connected Connector')
     }
 
     return undefined
+  },
+
+  removeConnectedConnector(namespace: ChainNamespace) {
+    try {
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys[`CONNECTED_CONNECTOR_${namespace}`])
+    } catch {
+      console.info('Unable to remove Connected Connector')
+    }
   },
 
   setConnectedSocialProvider(socialProvider: SocialProvider) {

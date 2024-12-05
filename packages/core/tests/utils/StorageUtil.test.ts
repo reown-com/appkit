@@ -150,16 +150,18 @@ describe('StorageUtil', () => {
   describe('setConnectedConnector', () => {
     it('should set connected connector', () => {
       const connector: ConnectorType = 'INJECTED'
-      StorageUtil.setConnectedConnector(connector)
-      expect(SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)).toBe(connector)
+      StorageUtil.setConnectedConnector(connector, 'eip155')
+      expect(SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR_eip155)).toBe(
+        connector
+      )
     })
   })
 
   describe('getConnectedConnector', () => {
     it('should get connected connector', () => {
       const connector: ConnectorType = 'INJECTED'
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR, connector)
-      expect(StorageUtil.getConnectedConnector()).toBe(connector)
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR_eip155, connector)
+      expect(StorageUtil.getConnectedConnector('eip155')).toBe(connector)
     })
   })
 
