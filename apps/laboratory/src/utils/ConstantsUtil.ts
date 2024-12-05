@@ -15,6 +15,8 @@ import {
   hedera,
   aurora,
   mantle
+  bitcoin,
+  bitcoinTestnet
 } from '@reown/appkit/networks'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 import { getLocalStorageItem } from './LocalStorage'
@@ -88,6 +90,8 @@ const SolanaNetworks = [solana, solanaTestnet, solanaDevnet, solanaNotExist] as 
   ...AppKitNetwork[]
 ]
 
+const BitcoinNetworks = [bitcoin, bitcoinTestnet] as [AppKitNetwork, ...AppKitNetwork[]]
+
 export const ConstantsUtil = {
   SigningSucceededToastTitle: 'Signing Succeeded',
   SigningFailedToastTitle: 'Signing Failed',
@@ -144,5 +148,6 @@ export const ConstantsUtil = {
   ProjectId: projectId,
   EvmNetworks,
   SolanaNetworks,
+  BitcoinNetworks,
   AllNetworks: [...EvmNetworks, ...SolanaNetworks] as [AppKitNetwork, ...AppKitNetwork[]]
 }

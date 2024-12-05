@@ -12,7 +12,7 @@ export function EthersModalInfo() {
   const { walletProvider, walletProviderType } = useAppKitProvider<UniversalProvider>('eip155')
 
   async function getClientId() {
-    if (walletProviderType === 'walletConnect') {
+    if (walletProviderType === 'WALLET_CONNECT') {
       return await walletProvider?.client?.core?.crypto?.getClientId()
     }
 

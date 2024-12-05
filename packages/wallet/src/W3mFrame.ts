@@ -1,8 +1,14 @@
-import { SECURE_SITE_SDK, W3mFrameConstants } from './W3mFrameConstants.js'
+import { SECURE_SITE_SDK, SECURE_SITE_SDK_VERSION, W3mFrameConstants } from './W3mFrameConstants.js'
 import { W3mFrameSchema } from './W3mFrameSchema.js'
 import { W3mFrameHelpers } from './W3mFrameHelpers.js'
 import type { W3mFrameTypes } from './W3mFrameTypes.js'
 import { ConstantsUtil } from '@reown/appkit-common'
+
+type EventKey = typeof W3mFrameConstants.APP_EVENT_KEY | typeof W3mFrameConstants.FRAME_EVENT_KEY
+
+function shouldHandleEvent(eventKey: EventKey, data: MessageEvent['data'] = {}): boolean {
+  return typeof data?.type === 'string' && data?.type?.includes(eventKey)
+}
 
 // -- Sdk --------------------------------------------------------------------
 export class W3mFrame {
@@ -39,7 +45,7 @@ export class W3mFrame {
       if (W3mFrameHelpers.isClient) {
         const iframe = document.createElement('iframe')
         iframe.id = 'w3m-iframe'
-        iframe.src = `${SECURE_SITE_SDK}?projectId=${projectId}&chainId=${chainId}`
+        iframe.src = `${SECURE_SITE_SDK}?projectId=${projectId}&chainId=${chainId}&version=${SECURE_SITE_SDK_VERSION}`
         iframe.name = 'w3m-secure-iframe'
         iframe.style.position = 'fixed'
         iframe.style.zIndex = '999999'
@@ -47,15 +53,24 @@ export class W3mFrame {
         iframe.style.animationDelay = '0s, 50ms'
         iframe.style.borderBottomLeftRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
         iframe.style.borderBottomRightRadius = `clamp(0px, var(--wui-border-radius-l), 44px)`
-        document.body.appendChild(iframe)
         this.iframe = iframe
-        this.iframe.onload = () => {
-          this.frameLoadPromiseResolver?.resolve(undefined)
-        }
         this.iframe.onerror = () => {
           this.frameLoadPromiseResolver?.reject('Unable to load email login dependency')
         }
+
+        this.events.onFrameEvent(event => {
+          if (event.type === '@w3m-frame/READY') {
+            this.frameLoadPromiseResolver?.resolve(undefined)
+          }
+        })
       }
+    }
+  }
+
+  public initFrame = () => {
+    const isFrameInitialized = document.getElementById('w3m-iframe')
+    if (this.iframe && !isFrameInitialized) {
+      document.body.appendChild(this.iframe)
     }
   }
 
@@ -107,10 +122,7 @@ export class W3mFrame {
       signal: AbortSignal
     ) => {
       function eventHandler({ data }: MessageEvent) {
-        if (
-          typeof data.type !== 'string' ||
-          !data.type.includes(W3mFrameConstants.FRAME_EVENT_KEY)
-        ) {
+        if (!shouldHandleEvent(W3mFrameConstants.FRAME_EVENT_KEY, data)) {
           return
         }
         const frameEvent = W3mFrameSchema.frameEvent.parse(data)
@@ -130,12 +142,10 @@ export class W3mFrame {
     onFrameEvent: (callback: (event: W3mFrameTypes.FrameEvent) => void) => {
       if (W3mFrameHelpers.isClient) {
         window.addEventListener('message', ({ data }) => {
-          if (
-            typeof data.type !== 'string' ||
-            !data.type.includes(W3mFrameConstants.FRAME_EVENT_KEY)
-          ) {
+          if (!shouldHandleEvent(W3mFrameConstants.FRAME_EVENT_KEY, data)) {
             return
           }
+
           const frameEvent = W3mFrameSchema.frameEvent.parse(data)
           callback(frameEvent)
         })
@@ -145,10 +155,7 @@ export class W3mFrame {
     onAppEvent: (callback: (event: W3mFrameTypes.AppEvent) => void) => {
       if (W3mFrameHelpers.isClient) {
         window.addEventListener('message', ({ data }) => {
-          if (
-            typeof data.type !== 'string' ||
-            !data.type.includes(W3mFrameConstants.APP_EVENT_KEY)
-          ) {
+          if (!shouldHandleEvent(W3mFrameConstants.APP_EVENT_KEY, data)) {
             return
           }
           const appEvent = W3mFrameSchema.appEvent.parse(data)

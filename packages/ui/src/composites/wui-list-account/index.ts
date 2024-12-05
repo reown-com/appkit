@@ -68,7 +68,7 @@ export class WuiListAccount extends LitElement {
     const label = this.getLabel()
 
     // Only show icon for AUTH accounts
-    this.shouldShowIcon = this.connectedConnector === 'AUTH'
+    this.shouldShowIcon = this.connectedConnector === 'ID_AUTH'
 
     return html`
       <wui-flex
@@ -116,7 +116,7 @@ export class WuiListAccount extends LitElement {
   private getLabel() {
     let label = this.labels?.get(this.accountAddress)
 
-    if (!label && this.connectedConnector === 'AUTH') {
+    if (!label && this.connectedConnector === 'ID_AUTH') {
       label = `${this.accountType === 'eoa' ? this.socialProvider ?? 'Email' : 'Smart'} Account`
     } else if (
       (!label && this.connectedConnector === 'INJECTED') ||

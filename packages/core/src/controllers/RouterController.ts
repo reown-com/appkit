@@ -66,7 +66,6 @@ export interface RouterControllerState {
     | 'UpdateEmailPrimaryOtp'
     | 'UpdateEmailSecondaryOtp'
     | 'UpgradeEmailWallet'
-    | 'UpgradeToSmartAccount'
     | 'WalletReceive'
     | 'WalletSend'
     | 'WalletSendPreview'
@@ -185,7 +184,7 @@ export const RouterController = {
   },
 
   goBack() {
-    if (state.history.length > 1) {
+    if (state.history.length > 1 && !state.history.includes('UnsupportedChain')) {
       state.history.pop()
       const [last] = state.history.slice(-1)
       if (last) {

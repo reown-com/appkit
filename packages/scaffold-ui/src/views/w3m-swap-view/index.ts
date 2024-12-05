@@ -185,21 +185,17 @@ export class W3mSwapView extends LitElement {
     )
     const amount = target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount
     const price = target === 'toToken' ? this.toTokenPriceInUSD : this.sourceTokenPriceInUSD
-    let value = parseFloat(amount) * price
-
-    if (target === 'toToken') {
-      value -= this.gasPriceInUSD || 0
-    }
+    const marketValue = NumberUtil.parseLocalStringToNumber(amount) * price
 
     return html`<w3m-swap-input
       .value=${target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount}
-      ?disabled=${this.loadingQuote && target === 'toToken'}
+      .disabled=${target === 'toToken'}
       .onSetAmount=${this.handleChangeAmount.bind(this)}
       target=${target}
       .token=${token}
       .balance=${myToken?.quantity?.numeric}
       .price=${myToken?.price}
-      .marketValue=${value}
+      .marketValue=${marketValue}
       .onSetMaxValue=${this.onSetMaxValue.bind(this)}
     ></w3m-swap-input>`
   }
