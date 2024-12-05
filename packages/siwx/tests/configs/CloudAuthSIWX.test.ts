@@ -23,6 +23,8 @@ describe('CloudAuthSIWX', () => {
 
   beforeAll(() => {
     global.fetch = vi.fn()
+    document.location.host = 'mocked.com'
+    document.location.href = 'http://mocked.com/'
   })
 
   beforeEach(() => {
@@ -46,7 +48,7 @@ describe('CloudAuthSIWX', () => {
       expect(message).toEqual({
         accountAddress: '0x1234567890abcdef1234567890abcdef12345678',
         chainId: 'eip155:1',
-        domain: 'localhost:3000',
+        domain: 'mocked.com',
         expirationTime: undefined,
         issuedAt: '2024-12-05T16:02:32.905Z',
         nonce: 'mock_nonce',
@@ -55,15 +57,15 @@ describe('CloudAuthSIWX', () => {
         resources: undefined,
         statement: undefined,
         toString: expect.any(Function),
-        uri: 'http://localhost:3000/',
+        uri: 'http://mocked.com/',
         version: '1'
       })
 
       expect(message.toString())
-        .toBe(`localhost:3000 wants you to sign in with your **blockchain** account:
+        .toBe(`mocked.com wants you to sign in with your **blockchain** account:
 0x1234567890abcdef1234567890abcdef12345678
 
-URI: http://localhost:3000/
+URI: http://mocked.com/
 Version: 1
 Chain ID: 1
 Nonce: mock_nonce
