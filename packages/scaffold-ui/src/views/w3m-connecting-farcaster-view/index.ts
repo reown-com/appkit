@@ -13,6 +13,7 @@ import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connecting-farcaster-view')
 export class W3mConnectingFarcasterView extends LitElement {
@@ -221,6 +222,8 @@ export class W3mConnectingFarcasterView extends LitElement {
       return null
     }
 
+    const themeVariables = ThemeController.state.themeVariables
+
     const size = this.getBoundingClientRect().width - 40
 
     return html` <wui-qr-code
@@ -229,6 +232,7 @@ export class W3mConnectingFarcasterView extends LitElement {
       uri=${this.uri}
       ?farcaster=${true}
       data-testid="wui-qr-code"
+      color=${ifDefined(themeVariables['--w3m-qr-color'])}
     ></wui-qr-code>`
   }
 

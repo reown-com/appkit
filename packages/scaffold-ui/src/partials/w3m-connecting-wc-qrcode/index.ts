@@ -72,11 +72,14 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
     ConnectionController.setWcLinking(undefined)
     ConnectionController.setRecentWallet(this.wallet)
 
+    const themeVariables = ThemeController.state.themeVariables
+
     return html` <wui-qr-code
       size=${size}
       theme=${ThemeController.state.themeMode}
       uri=${this.uri}
       imageSrc=${ifDefined(AssetUtil.getWalletImage(this.wallet))}
+      color=${ifDefined(themeVariables['--w3m-qr-color'])}
       alt=${ifDefined(alt)}
       data-testid="wui-qr-code"
     ></wui-qr-code>`

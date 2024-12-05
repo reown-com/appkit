@@ -3,10 +3,10 @@ import { property } from 'lit/decorators.js'
 import '../../components/wui-image/index.js'
 import '../../components/wui-text/index.js'
 import '../../components/wui-loading-spinner/index.js'
+import '../../composites/wui-icon-box/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
-import type { ButtonSize } from '../../utils/TypeUtil.js'
 
 @customElement('wui-wallet-button')
 export class WuiWalletButton extends LitElement {
@@ -17,18 +17,24 @@ export class WuiWalletButton extends LitElement {
 
   @property() public name? = ''
 
-  @property() public size: ButtonSize = 'md'
+  @property({ type: Boolean }) public walletConnect = false
 
-  @property({ type: Boolean }) public connecting = false
+  @property({ type: Boolean }) public social = false
+
+  @property({ type: Boolean }) public loading = false
+
+  @property({ type: Boolean }) public error = false
 
   @property({ type: Boolean }) public disabled = false
 
+  @property({ type: Boolean }) public shake = false
+
   // -- Render -------------------------------------------- //
   public override render() {
-    this.dataset['size'] = this.size
+    this.dataset['error'] = `${this.error}`
 
     return html`
-      <button ?disabled=${this.disabled || this.connecting} ontouchstart>
+      <button ?disabled=${this.disabled} ontouchstart>
         ${this.leftViewTemplate()} ${this.rightViewTemplate()}
       </button>
     `
@@ -36,23 +42,39 @@ export class WuiWalletButton extends LitElement {
 
   // -- Private ------------------------------------------- //
   private leftViewTemplate() {
-    if (this.imageSrc && this.name) {
-      if (this.connecting) {
-        return html`<wui-loading-spinner size="sm" color="inverse-100"></wui-loading-spinner>`
-      }
-
-      return html`<wui-image src=${this.imageSrc} alt=${this.name}></wui-image>`
+    if (this.error) {
+      return html`<wui-icon-box
+        icon="warningCircle"
+        iconColor="error-100"
+        backgroundColor="error-100"
+        size="sm"
+        iconSize="xs"
+      ></wui-icon-box>`
     }
 
-    return null
+    if (this.loading) {
+      return html`<wui-loading-spinner size="md" color="fg-100"></wui-loading-spinner>`
+    }
+
+    if (this.social) {
+      return html`<wui-icon size="xl" color="inherit" name=${this.name}></wui-icon>`
+    }
+
+    if (this.walletConnect) {
+      return html`<wui-icon size="xl" color="inherit" name="walletConnect"></wui-icon>`
+    }
+
+    if (!this.imageSrc) {
+      return html`<wui-icon size="xl" color="fg-100" name="walletPlaceholder"></wui-icon>`
+    }
+
+    return html`<wui-image src=${this.imageSrc} alt=${this.name}></wui-image>`
   }
 
   private rightViewTemplate() {
-    if (this.name) {
-      return html`<wui-text variant="paragraph-600" color="inverse-100">${this.name}</wui-text>`
-    }
-
-    return html`<wui-loading-spinner size="sm" color="inverse-100"></wui-loading-spinner>`
+    return html`<wui-text variant="paragraph-500" color="fg-100"
+      >${this.name || 'Unknown'}</wui-text
+    >`
   }
 }
 

@@ -12,7 +12,9 @@ export default {
     imageSrc: walletImageSrc,
     name: 'Rainbow',
     size: 'md',
-    connecting: false
+    loading: false,
+    error: false,
+    disabled: false
   },
   argTypes: {
     imageSrc: {
@@ -21,7 +23,13 @@ export default {
     name: {
       control: { type: 'text' }
     },
-    connecting: {
+    loading: {
+      control: { type: 'boolean' }
+    },
+    error: {
+      control: { type: 'boolean' }
+    },
+    disabled: {
       control: { type: 'boolean' }
     },
     size: {
@@ -37,6 +45,8 @@ export const Default: Component = {
       .imageSrc=${args.imageSrc}
       name=${args.name}
       size=${args.size}
-      ?connecting=${args.connecting}
+      ?loading=${args.loading}
+      ?error=${args.error}
+      ?disabled=${args.disabled}
     ></wui-wallet-button>`
 }

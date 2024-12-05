@@ -1,21 +1,87 @@
 import { Box, Flex, Heading } from '@chakra-ui/react'
-import { ConstantsUtil } from '../utils/ConstantsUtil'
 
 export function AppKitWalletButtons() {
-  const { MetaMask, Trust, Rainbow, Uniswap, Ledger } = ConstantsUtil.WalletButtons
-
   return (
     <Box>
-      <Heading size="xs" textTransform="uppercase" pb="2">
+      <Heading size="sm" textTransform="uppercase" pb="5">
         Wallet Buttons
       </Heading>
-      <Flex alignItems="center" gap="3">
-        <w3m-wallet-button walletId={MetaMask} />
-        <w3m-wallet-button walletId={Trust} />
-        <w3m-wallet-button walletId={Rainbow} />
-        <w3m-wallet-button walletId={Uniswap} />
-        <w3m-wallet-button walletId={Ledger} />
-      </Flex>
+
+      {/*      <w3m-wallet-button wallet="metamask" />
+        <w3m-wallet-button wallet="walletConnect" />
+        <w3m-wallet-button wallet="coinbase" />
+        <w3m-wallet-button wallet="trust" />
+        <w3m-wallet-button wallet="okx" />
+        <w3m-wallet-button wallet="bitget" />
+        <w3m-wallet-button wallet="binance" />
+        <w3m-wallet-button wallet="uniswap" />
+        <w3m-wallet-button wallet="safepal" />
+        <w3m-wallet-button wallet="rainbow" />
+        <w3m-wallet-button wallet="bybit" />
+        <w3m-wallet-button wallet="tokenpocket" />
+        <w3m-wallet-button wallet="ledger" />
+        <w3m-wallet-button wallet="timeless-x" />
+        <w3m-wallet-button wallet="safe" />
+        <w3m-wallet-button wallet="zerion" />
+        <w3m-wallet-button wallet="oneinch" />
+        <w3m-wallet-button wallet="crypto-com" />
+        <w3m-wallet-button wallet="imtoken" />
+        <w3m-wallet-button wallet="kraken" />
+        <w3m-wallet-button wallet="ronin" />
+        <w3m-wallet-button wallet="robinhood" />
+        <w3m-wallet-button wallet="exodus" />
+        <w3m-wallet-button wallet="argent" /> */}
+
+      {/*         <w3m-wallet-button wallet="metamask" />
+        <w3m-wallet-button wallet="walletConnect" />
+        <w3m-wallet-button wallet="coinbase" />
+        <w3m-wallet-button wallet="trust" /> */}
+
+      <Box display="flex" flexDirection="column" gap="4">
+        <Box display="flex" flexDirection="column" gap="1">
+          <Heading size="xs" textTransform="uppercase" pb="2">
+            QR Code
+          </Heading>
+
+          <w3m-wallet-button wallet="walletConnect" />
+        </Box>
+
+        <Box display="flex" flexDirection="column" gap="1">
+          <Heading size="xs" textTransform="uppercase" pb="2">
+            Wallets
+          </Heading>
+
+          <Flex flexWrap="wrap" alignItems="center" gap="3">
+            <w3m-wallet-button wallet="metamask" />
+            <w3m-wallet-button wallet="coinbase" />
+            <w3m-wallet-button wallet="trust" />
+            <w3m-wallet-button wallet="okx" />
+            <w3m-wallet-button wallet="binance" />
+            <w3m-wallet-button wallet="uniswap" />
+            <w3m-wallet-button wallet="rainbow" />
+            <w3m-wallet-button wallet="ledger" />
+            <w3m-wallet-button wallet="safe" />
+            <w3m-wallet-button wallet="argent" />
+            <w3m-wallet-button wallet="jupiter" />
+          </Flex>
+        </Box>
+
+        <Box display="flex" flexDirection="column" gap="1">
+          <Heading size="xs" textTransform="uppercase" pb="2">
+            Socials
+          </Heading>
+
+          <Flex flexWrap="wrap" alignItems="center" gap="3">
+            <w3m-wallet-button wallet="google" />
+            <w3m-wallet-button wallet="x" />
+            <w3m-wallet-button wallet="discord" />
+            <w3m-wallet-button wallet="farcaster" />
+            <w3m-wallet-button wallet="github" />
+            <w3m-wallet-button wallet="apple" />
+            <w3m-wallet-button wallet="facebook" />
+          </Flex>
+        </Box>
+      </Box>
     </Box>
   )
 }

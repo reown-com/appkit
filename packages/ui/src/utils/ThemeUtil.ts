@@ -271,6 +271,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
 
         --wui-thumbnail-border: var(--wui-thumbnail-border-base);
 
+        --wui-wallet-button-bg: var(--wui-wallet-button-bg-base);
+
         --wui-box-shadow-blue: var(--wui-color-accent-glass-020);
       }
 
@@ -523,6 +525,12 @@ function createRootStyles(themeVariables?: ThemeVariables) {
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
             var(--wui-thumbnail-border-base)
           );
+
+          --wui-wallet-button-bg: color-mix(
+            in srgb,
+            var(--w3m-color-mix) var(--w3m-color-mix-strength),
+            var(--wui-wallet-button-bg-base)
+          );
         }
       }
     `,
@@ -629,6 +637,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-avatar-border-base: #252525;
 
         --wui-thumbnail-border-base: #252525;
+
+        --wui-wallet-button-bg-base: var(--wui-color-bg-125);
       }
     `,
     dark: css`
@@ -719,6 +729,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-avatar-border-base: #f3f4f4;
 
         --wui-thumbnail-border-base: #eaefef;
+
+        --wui-wallet-button-bg-base: var(--wui-color-bg-125);
 
         --wui-color-gray-glass-001: rgba(0, 0, 0, 0.01);
         --wui-color-gray-glass-002: rgba(0, 0, 0, 0.02);

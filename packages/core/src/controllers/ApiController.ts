@@ -31,7 +31,6 @@ export interface ApiControllerState {
   recommended: WcWallet[]
   wallets: WcWallet[]
   search: WcWallet[]
-  walletButtons: WcWallet[]
   isAnalyticsEnabled: boolean
   excludedRDNS: string[]
 }
@@ -46,7 +45,6 @@ const state = proxy<ApiControllerState>({
   recommended: [],
   wallets: [],
   search: [],
-  walletButtons: [],
   isAnalyticsEnabled: false,
   excludedRDNS: []
 })
@@ -130,25 +128,6 @@ export const ApiController = {
 
   async fetchTokenImages(tokens: string[] = []) {
     await Promise.allSettled(tokens.map(token => ApiController._fetchTokenImage(token)))
-  },
-
-  async fetchWalletButtonWallets() {
-    const walletButtonIds = OptionsController.state.features?.walletButtonIds
-    if (walletButtonIds?.length) {
-      const { data } = await api.get<ApiGetWalletsResponse>({
-        path: '/getWallets',
-        params: {
-          ...ApiController._getSdkProperties(),
-          page: '1',
-          entries: String(walletButtonIds.length),
-          include: walletButtonIds?.join(',')
-        }
-      })
-      data.sort((a, b) => walletButtonIds.indexOf(a.id) - walletButtonIds.indexOf(b.id))
-      const images = data.map(d => d.image_id).filter(Boolean)
-      await Promise.allSettled((images as string[]).map(id => ApiController._fetchWalletImage(id)))
-      state.walletButtons = data
-    }
   },
 
   async fetchFeaturedWallets() {
@@ -294,7 +273,7 @@ export const ApiController = {
 
   prefetch() {
     const promises = [
-      ApiController.fetchWalletButtonWallets(),
+      ApiController.fetchFeaturedWallets(),
       ApiController.fetchFeaturedWallets(),
       ApiController.fetchRecommendedWallets(),
       ApiController.fetchNetworkImages(),

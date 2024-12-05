@@ -13,6 +13,7 @@ packages:
   - 'packages/wallet'
   - 'packages/siwe'
   - 'packages/siwx'
+  - 'packages/wallet-button'
   - 'packages/cdn'
   - 'packages/experimental'
   - 'apps/*'
