@@ -1217,6 +1217,11 @@ export class AppKit {
 
   private listenAdapter(chainNamespace: ChainNamespace) {
     const adapter = this.getAdapter(chainNamespace)
+
+    if (!adapter) {
+      return
+    }
+
     const connectionStatus = StorageUtil.getConnectionStatus()
 
     if (connectionStatus === 'connected') {
@@ -1225,7 +1230,7 @@ export class AppKit {
       this.setStatus(connectionStatus, chainNamespace)
     }
 
-    adapter?.on('switchNetwork', ({ address, chainId }) => {
+    adapter.on('switchNetwork', ({ address, chainId }) => {
       if (chainId && this.caipNetworks?.find(n => n.id === chainId)) {
         if (ChainController.state.activeChain === chainNamespace && address) {
           this.syncAccount({ address, chainId, chainNamespace })
@@ -1244,19 +1249,24 @@ export class AppKit {
       }
     })
 
-    adapter?.on('disconnect', () => {
+    adapter.on('disconnect', () => {
       if (ChainController.state.activeChain === chainNamespace) {
         this.handleDisconnect()
       }
     })
 
-    adapter?.on('pendingTransactions', () => {
-      if (AccountController.state.address && ChainController.state.activeCaipNetwork?.id) {
-        this.updateBalance()
+    adapter.on('pendingTransactions', () => {
+      const address = AccountController.state.address
+      const activeCaipNetwork = ChainController.state.activeCaipNetwork
+
+      if (!address || !activeCaipNetwork?.id) {
+        return
       }
+
+      this.updateBalance()
     })
 
-    adapter?.on('accountChanged', ({ address, chainId }) => {
+    adapter.on('accountChanged', ({ address, chainId }) => {
       if (ChainController.state.activeChain === chainNamespace && chainId) {
         this.syncAccount({
           address,

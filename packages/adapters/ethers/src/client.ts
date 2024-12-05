@@ -6,6 +6,7 @@ import {
   type Connector,
   type ConnectorType,
   type Provider,
+  AlertController,
   CoreHelperUtil
 } from '@reown/appkit-core'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
@@ -489,7 +490,14 @@ export class EthersAdapter extends AdapterBlueprint {
       })
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error('Error listening to pending transactions', error)
+      AlertController.open(
+        {
+          shortMessage: 'Error listening to pending transactions',
+          longMessage:
+            'The BrowserProvider in the EthersAdapter failed to listen to pending transactions.'
+        },
+        'error'
+      )
     }
   }
 
