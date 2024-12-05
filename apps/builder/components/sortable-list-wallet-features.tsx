@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import {
@@ -44,6 +44,7 @@ import { SortableWalletFeatureItem } from '@/components/sortable-item-wallet-fea
 import { WalletFeatureName } from '@/lib/types'
 import { Wrapper } from '@/components/ui/wrapper'
 import { List } from '@/components/ui/list'
+import { useAppKitContext } from '@/hooks/use-appkit'
 
 export interface Props {
   activationConstraint?: PointerActivationConstraint
@@ -135,11 +136,13 @@ export function SortableWalletFeatureList({
     }
   }, [activeId])
 
+  const orderString = useMemo(() => items.join(','), [items])
+
   useEffect(() => {
     if (handleNewOrder) {
-      handleNewOrder(items)
+      handleNewOrder(orderString.split(','))
     }
-  }, [items])
+  }, [orderString])
 
   return (
     <DndContext

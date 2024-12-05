@@ -6,7 +6,8 @@ import { FeatureButton } from '@/components/feature-button'
 import { UniqueIdentifier } from '@dnd-kit/core'
 import dynamic from 'next/dynamic'
 import { ConnectMethodItemLoading } from '@/components/connect-method-item/components/loading'
-import { ConstantsUtil } from '@reown/appkit-core'
+import { ConnectMethod, ConstantsUtil } from '@reown/appkit-core'
+import { urlStateUtils } from '@/lib/url-state'
 
 const SortableConnectMethodList = dynamic(
   () =>
@@ -35,29 +36,23 @@ export function SectionConnectOptions() {
   }
 
   function handleNewOrder(items: UniqueIdentifier[]) {
-    const nameMap = {
-      Email: 'email',
-      Socials: 'social',
-      Wallets: 'wallet'
-    }
-    const newOrder = items.map(
-      item => nameMap[item as 'Email' | 'Socials' | 'Wallets'] as 'email' | 'social' | 'wallet'
-    )
-
+    const currentFeatures =
+      urlStateUtils.getStateFromURL()?.features || ConstantsUtil.DEFAULT_FEATURES
     updateFeatures({
-      experimental_connectMethodOrder: newOrder
+      ...currentFeatures,
+      experimental_connectMethodOrder: items as ConnectMethod[]
     })
   }
 
-  function handleToggleOption(name: 'Email' | 'Socials' | 'Wallets') {
+  function handleToggleOption(name: string) {
     switch (name) {
-      case 'Email':
+      case 'email':
         updateFeatures({ email: !config.features.email })
         return
-      case 'Socials':
+      case 'social':
         updateSocials(!config.features.socials)
         return
-      case 'Wallets':
+      case 'wallet':
         updateEnableWallets(!config.enableWallets)
         return
       default:
@@ -65,21 +60,10 @@ export function SectionConnectOptions() {
     }
   }
 
-  const connectMethodNameMap = connectMethodOrder?.map(name => {
-    switch (name) {
-      case 'email':
-        return 'Email'
-      case 'social':
-        return 'Socials'
-      case 'wallet':
-        return 'Wallets'
-    }
-  })
-
   return (
     <div className="flex-grow">
       <SortableConnectMethodList
-        items={connectMethodNameMap}
+        items={connectMethodOrder}
         onToggleOption={handleToggleOption}
         handleNewOrder={handleNewOrder}
         handle={true}

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import {
@@ -43,6 +43,7 @@ import { ConnectMethodItem } from './connect-method-item'
 import { SortableConnectMethodItem } from '@/components/sortable-item-connect-method'
 import { Wrapper } from '@/components/ui/wrapper'
 import { List } from '@/components/ui/list'
+import { useAppKitContext } from '@/hooks/use-appkit'
 
 export interface Props {
   activationConstraint?: PointerActivationConstraint
@@ -134,11 +135,13 @@ export function SortableConnectMethodList({
     }
   }, [activeId])
 
+  const orderString = useMemo(() => items.join(','), [items])
+
   useEffect(() => {
     if (handleNewOrder) {
-      handleNewOrder(items)
+      handleNewOrder(orderString.split(','))
     }
-  }, [items])
+  }, [orderString])
 
   return (
     <DndContext

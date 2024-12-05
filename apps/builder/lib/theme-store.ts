@@ -1,4 +1,5 @@
 import { urlStateUtils } from '@/lib/url-state'
+import { AppKit } from '@reown/appkit'
 import { ThemeVariables } from '@reown/appkit-core'
 import { proxy } from 'valtio/vanilla'
 
@@ -8,7 +9,7 @@ interface ThemeState {
   accentColor: string
   borderRadius: string
   themeVariables: ThemeVariables
-  modal?: any
+  modal: AppKit | undefined
   fontFamily: string | undefined
 }
 

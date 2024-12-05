@@ -8,7 +8,6 @@ import { UniqueIdentifier } from '@dnd-kit/core'
 interface AppKitContextType {
   config: URLState
   enableWallets: boolean
-  isLoading: boolean
   socialsEnabled: boolean
   isDraggingByKey: Record<string, boolean>
   isInitialized: boolean

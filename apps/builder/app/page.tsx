@@ -12,12 +12,11 @@ export default function Page() {
   return (
     <div
       className={cn(
-        'flex flex-col overflow-auto items-center md:items-start md:flex-row p-4 bg-background h-screen gap-4 pt-10 md:pt-4',
-        config.themeMode === 'dark' ? 'dark' : ''
+        'flex flex-col items-center md:items-start md:flex-row p-4 bg-background gap-4 pt-10 md:pt-4 h-full'
       )}
     >
       <Image
-        src={config.themeMode === 'dark' ? '/reown-logo.png' : '/reown-logo-dark.png'}
+        src={config.themeMode === 'light' ? '/reown-logo-dark.png' : '/reown-logo.png'}
         alt="Reown logo"
         width={150}
         height={40}
@@ -31,7 +30,7 @@ export default function Page() {
         </p>
       </div>
 
-      <div className="flex max-w-[450px] md:max-w-[340px] w-full bg-transparent md:bg-fg-primary h-none md:h-full text-foreground p-0 md:p-6 flex-col rounded-2xl overflow-none md:overflow-y-auto">
+      <div className="flex max-w-[450px] md:max-w-[340px] w-full bg-transparent md:bg-fg-primary h-none md:h-full text-foreground p-0 md:p-6 flex-col rounded-2xl overflow-none md:overflow-y-auto h-auto pb-20">
         <SidebarContent />
       </div>
 

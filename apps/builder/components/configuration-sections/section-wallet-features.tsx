@@ -1,8 +1,9 @@
 import { UniqueIdentifier } from '@dnd-kit/core'
 import { useAppKitContext } from '@/hooks/use-appkit'
 import { WalletFeatureName } from '@/lib/types'
-import { WalletFeature } from '@reown/appkit-core'
+import { ConstantsUtil, WalletFeature } from '@reown/appkit-core'
 import dynamic from 'next/dynamic'
+import { urlStateUtils } from '@/lib/url-state'
 
 const SortableWalletFeatureList = dynamic(
   () =>
@@ -26,7 +27,9 @@ export function SectionWalletFeatures() {
     }
     const newOrder = items.map(item => titleValueMap[item as WalletFeatureName] as WalletFeature)
 
-    updateFeatures({ experimental_walletFeaturesOrder: newOrder })
+    const currentFeatures =
+      urlStateUtils.getStateFromURL()?.features || ConstantsUtil.DEFAULT_FEATURES
+    updateFeatures({ ...currentFeatures, experimental_walletFeaturesOrder: newOrder })
   }
 
   function handleToggleOption(name: WalletFeatureName) {

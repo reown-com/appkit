@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import {
@@ -43,6 +43,7 @@ import { SortableSocialOptionItem } from '@/components/sortable-item-social-opti
 import { SocialProvider } from '@reown/appkit-core'
 import { List } from '@/components/ui/list'
 import { Wrapper } from '@/components/ui/wrapper'
+import { useAppKitContext } from '@/hooks/use-appkit'
 
 export interface Props {
   activationConstraint?: PointerActivationConstraint
@@ -123,7 +124,6 @@ export function SortableSocialGrid({
   )
   const isFirstAnnouncement = useRef(true)
   const getIndex = (id: UniqueIdentifier) => items.indexOf(id)
-  const getPosition = (id: UniqueIdentifier) => getIndex(id) + 1
   const activeIndex = activeId != null ? getIndex(activeId) : -1
   const handleRemove = removable
     ? (id: UniqueIdentifier) => setItems(items => items.filter(item => item !== id))
@@ -135,11 +135,13 @@ export function SortableSocialGrid({
     }
   }, [activeId])
 
+  const orderString = useMemo(() => items.join(','), [items])
+
   useEffect(() => {
     if (handleNewOrder) {
-      handleNewOrder(items)
+      handleNewOrder(orderString.split(','))
     }
-  }, [items])
+  }, [orderString])
 
   return (
     <DndContext

@@ -1,8 +1,12 @@
 import type { Metadata } from 'next'
 import { Toaster } from 'sonner'
+import { ThemeProvider } from 'next-themes'
+
 import { khTeka } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
+import { ContextProvider } from '@/providers/appkit-context-provider'
 import { AppKitProvider } from '@/providers/appkit-provider'
+import { headers } from 'next/headers'
 import './globals.css'
 
 const title = 'AppKit | Builder'
@@ -31,17 +35,19 @@ export const metadata: Metadata = {
   }
 }
 
-export default async function RootLayout({
-  children
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const cookies = headers().get('cookie')
+
   return (
     <html lang="en">
-      <Toaster />
-      <AppKitProvider>
-        <body className={cn(khTeka.className, 'tracking-wide')}>{children}</body>
-      </AppKitProvider>
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+        <Toaster />
+        <AppKitProvider cookies={cookies}>
+          <ContextProvider>
+            <body className={cn(khTeka.className)}>{children}</body>
+          </ContextProvider>
+        </AppKitProvider>
+      </ThemeProvider>
     </html>
   )
 }

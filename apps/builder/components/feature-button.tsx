@@ -20,12 +20,12 @@ export function FeatureButton({
   onClick
 }: FeatureButtonProps) {
   return (
-    <button
+    <div
       className={cn(
         'flex items-center justify-between rounded-xl p-3 w-full h-[52px]',
-        isEnabled
-          ? 'bg-foreground/5 dark:bg-foreground/5'
-          : 'bg-foreground/[2%] dark:bg-foreground/[2%]'
+        'bg-foreground/5 dark:bg-foreground/5'
+        // isEnabled
+        //   : 'bg-foreground/[2%] dark:bg-foreground/[2%]'
       )}
       onClick={onClick}
     >
@@ -34,6 +34,6 @@ export function FeatureButton({
         {label}
       </span>
       <Checkbox checked={isEnabled} />
-    </button>
+    </div>
   )
 }

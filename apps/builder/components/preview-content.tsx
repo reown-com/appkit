@@ -7,7 +7,7 @@ import { Link1Icon, ResetIcon } from '@radix-ui/react-icons'
 import { useAppKitContext } from '@/hooks/use-appkit'
 
 export function PreviewContent() {
-  const { resetConfigs } = useAppKitContext()
+  const { isInitialized, resetConfigs } = useAppKitContext()
 
   async function handleShare() {
     try {
@@ -29,12 +29,16 @@ export function PreviewContent() {
       />
 
       <div className="w-full max-w-[400px] py-8 mx-auto flex-grow items-center justify-center hidden md:flex">
-        {/* @ts-ignore */}
-        <w3m-modal
-          style={{ positive: 'relative', width: '100%' }}
-          embedded={true}
-          class="embedded"
-        />
+        {isInitialized ? (
+          <>
+            {/* @ts-ignore */}
+            <w3m-modal
+              style={{ positive: 'relative', width: '100%' }}
+              embedded={true}
+              class="embedded"
+            />
+          </>
+        ) : null}
       </div>
 
       <div className="justify-center gap-2 hidden md:flex">

@@ -2,10 +2,11 @@ import React, { useEffect } from 'react'
 import classNames from 'classnames'
 import { BaseDraggableItemProps, ConnectMethodName } from '@/lib/types'
 import { Handle } from './components'
-import styles from './connect-method-item.module.css'
 import { useAppKitContext } from '@/hooks/use-appkit'
 import { Checkbox } from '@/components/ui/checkbox'
 import { SocialButtons } from '@/components/social-buttons'
+import { ConnectMethod } from '@reown/appkit-core'
+import styles from './connect-method-item.module.css'
 
 interface Props extends BaseDraggableItemProps {
   onToggleOption?: (name: ConnectMethodName) => void
@@ -42,11 +43,12 @@ export const ConnectMethodItem = React.memo(
       const emailEnabled = config.features.email
       const socialsEnabled = Array.isArray(config.features.socials)
       const walletsEnabled = config.enableWallets
+      const themeMode = config.themeMode
 
       const featureEnabledMap = {
-        Email: emailEnabled,
-        Socials: socialsEnabled,
-        Wallets: walletsEnabled
+        email: emailEnabled,
+        social: socialsEnabled,
+        wallet: walletsEnabled
       }
 
       useEffect(() => {
@@ -83,9 +85,10 @@ export const ConnectMethodItem = React.memo(
             sorting && styles.sorting,
             dragOverlay && styles.dragOverlay,
             dragging && styles.dragging,
-            featureEnabledMap[value as ConnectMethodName]
+            featureEnabledMap[value as ConnectMethod]
               ? 'bg-foreground/5 dark:bg-foreground/5'
-              : 'bg-foreground/[2%] dark:bg-foreground/[2%]'
+              : 'bg-foreground/[2%] dark:bg-foreground/[2%]',
+            themeMode
           )}
           style={
             {
@@ -105,7 +108,7 @@ export const ConnectMethodItem = React.memo(
             onClick={() => onToggleOption?.(value as ConnectMethodName)}
             className={classNames(
               'list-none flex items-center justify-between rounded-2xl p-3 w-full',
-              value === 'Socials' ? 'pb-0' : 'h-[52px]'
+              value === 'social' ? 'pb-0' : 'h-[52px]'
             )}
           >
             <div
@@ -123,11 +126,11 @@ export const ConnectMethodItem = React.memo(
               tabIndex={!handle ? 0 : undefined}
             >
               {handle ? <Handle {...handleProps} {...listeners} /> : null}
-              <span className="text-sm flex-1">{value}</span>
-              <Checkbox checked={featureEnabledMap[value as ConnectMethodName]} />
+              <span className="text-sm flex-1 text-text-primary capitalize">{value}</span>
+              <Checkbox checked={featureEnabledMap[value as ConnectMethod]} />
             </div>
           </li>
-          {value === 'Socials' && <SocialButtons />}
+          {value === 'social' && <SocialButtons />}
         </div>
       )
     }

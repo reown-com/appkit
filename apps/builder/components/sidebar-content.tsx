@@ -20,12 +20,7 @@ export function SidebarContent() {
   const [activeTab, setActiveTab] = React.useState('auth')
 
   return (
-    <div
-      className={cn(
-        'flex flex-col justify-between min-h-full',
-        config.themeMode === 'dark' ? 'dark' : ''
-      )}
-    >
+    <div className={cn('flex flex-col justify-between min-h-full')}>
       <div className="flex flex-col">
         <Image
           src="/reown-logo.png"

@@ -111,7 +111,7 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground h-[100svh];
   }
   .inset-shadow {
     box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1);
