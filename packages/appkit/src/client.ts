@@ -1404,11 +1404,8 @@ export class AppKit {
     chainNamespace: ChainNamespace
   }) {
     // Only update state when needed
-    if (address !== AccountController.state.address) {
-      this.setCaipAddress(
-        `${chainNamespace}:${chainId}:${address}` as CaipAddress,
-        chainNamespace
-      )
+    if (address.toLowerCase() !== AccountController.state.address?.toLowerCase()) {
+      this.setCaipAddress(`${chainNamespace}:${chainId}:${address}`, chainNamespace)
       await this.syncIdentity({ address, chainId: Number(chainId), chainNamespace })
     }
 
