@@ -39,11 +39,11 @@ export function createRange<T = number>(
   return [...new Array(length)].map((_, index) => initializer(index))
 }
 
-import { List } from './List'
-import { Wrapper } from './Wrapper'
 import { WalletFeatureItem } from '@/components/wallet-feature-item'
 import { SortableWalletFeatureItem } from '@/components/sortable-item-wallet-feature'
 import { WalletFeatureName } from '@/lib/types'
+import { Wrapper } from '@/components/ui/wrapper'
+import { List } from '@/components/ui/list'
 
 export interface Props {
   activationConstraint?: PointerActivationConstraint

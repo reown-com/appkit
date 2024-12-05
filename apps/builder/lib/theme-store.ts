@@ -1,14 +1,6 @@
+import { urlStateUtils } from '@/lib/url-state'
+import { ThemeVariables } from '@reown/appkit-core'
 import { proxy } from 'valtio/vanilla'
-
-interface ThemeVariables {
-  '--w3m-font-family'?: string
-  '--w3m-accent'?: string
-  '--w3m-color-mix'?: string
-  '--w3m-color-mix-strength'?: number
-  '--w3m-font-size-master'?: string
-  '--w3m-border-radius-master'?: string
-  '--w3m-z-index'?: number
-}
 
 interface ThemeState {
   mixColorStrength: number
@@ -37,6 +29,7 @@ export const ThemeStore = {
     state.mixColorStrength = value
     if (state.modal) {
       state.modal.setThemeVariables({ '--w3m-color-mix-strength': value })
+      urlStateUtils.updateURLWithState({ themeVariables: { '--w3m-color-mix-strength': value } })
     }
   },
 
@@ -44,6 +37,7 @@ export const ThemeStore = {
     state.mixColor = value
     if (state.modal) {
       state.modal.setThemeVariables({ '--w3m-color-mix': value })
+      urlStateUtils.updateURLWithState({ themeVariables: { '--w3m-color-mix': value } })
     }
   },
 
@@ -51,6 +45,7 @@ export const ThemeStore = {
     state.accentColor = value
     if (state.modal) {
       state.modal.setThemeVariables({ '--w3m-accent': value })
+      urlStateUtils.updateURLWithState({ themeVariables: { '--w3m-accent': value } })
     }
   },
 
@@ -58,6 +53,7 @@ export const ThemeStore = {
     state.borderRadius = value
     if (state.modal) {
       state.modal.setThemeVariables({ '--w3m-border-radius-master': value })
+      urlStateUtils.updateURLWithState({ themeVariables: { '--w3m-border-radius-master': value } })
     }
   },
 
@@ -65,6 +61,7 @@ export const ThemeStore = {
     state.themeVariables = value
     if (state.modal) {
       state.modal.setThemeVariables(value)
+      urlStateUtils.updateURLWithState({ themeVariables: value })
     }
   },
 
@@ -72,6 +69,7 @@ export const ThemeStore = {
     state.fontFamily = value
     if (state.modal) {
       state.modal.setThemeVariables({ '--w3m-font-family': value })
+      urlStateUtils.updateURLWithState({ themeVariables: { '--w3m-font-family': value } })
     }
   },
 

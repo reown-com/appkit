@@ -186,6 +186,10 @@ export class W3mConnectView extends LitElement {
         const isEmailEnabled = this.features?.email
         const isNextMethodSocial = nextEnabledMethod === 'social'
 
+        if (isExplore) {
+          return null
+        }
+
         return isEmailEnabled && !isNextMethodSocial && nextEnabledMethod
           ? html`<wui-separator text="or"></wui-separator>`
           : null
@@ -193,6 +197,10 @@ export class W3mConnectView extends LitElement {
       case 'social': {
         const isSocialEnabled = this.features?.socials && this.features?.socials.length > 0
         const isNextMethodEmail = nextEnabledMethod === 'email'
+
+        if (isExplore) {
+          return null
+        }
 
         return isSocialEnabled && !isNextMethodEmail && nextEnabledMethod
           ? html`<wui-separator text="or"></wui-separator>`

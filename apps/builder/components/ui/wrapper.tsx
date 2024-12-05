@@ -1,8 +1,6 @@
 import React from 'react'
 import classNames from 'classnames'
 
-import styles from './Wrapper.module.css'
-
 interface Props {
   children: React.ReactNode
   center?: boolean
@@ -13,7 +11,12 @@ interface Props {
 export function Wrapper({ children, center, style, className }: Props) {
   return (
     <div
-      className={classNames(styles.Wrapper, center && styles.center, 'relative', className)}
+      className={classNames(
+        'flex w-full box-border justify-start',
+        center && 'justify-center',
+        'relative',
+        className
+      )}
       style={style}
     >
       {children}

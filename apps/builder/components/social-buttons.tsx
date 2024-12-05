@@ -1,6 +1,5 @@
 import { SortableSocialGrid } from '@/components/sortable-social-grid'
 import { useAppKitContext } from '@/hooks/use-appkit'
-import { SocialOption } from '@/lib/types'
 import { UniqueIdentifier } from '@dnd-kit/core'
 import { ConstantsUtil, SocialProvider } from '@reown/appkit-core'
 
@@ -10,7 +9,7 @@ export function SocialButtons() {
   const { updateFeatures } = useAppKitContext()
 
   function handleNewOrder(items: UniqueIdentifier[]) {
-    updateFeatures({ socials: items as SocialOption[] })
+    updateFeatures({ socials: items as SocialProvider[] })
   }
 
   return (

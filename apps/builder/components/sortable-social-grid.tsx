@@ -39,10 +39,10 @@ export function createRange<T = number>(
 }
 
 import { SocialOptionItem } from './social-option-item'
-import { List } from './List'
-import { Wrapper } from './Wrapper'
 import { SortableSocialOptionItem } from '@/components/sortable-item-social-option'
 import { SocialProvider } from '@reown/appkit-core'
+import { List } from '@/components/ui/list'
+import { Wrapper } from '@/components/ui/wrapper'
 
 export interface Props {
   activationConstraint?: PointerActivationConstraint

@@ -22,7 +22,7 @@ export function FeatureButton({
   return (
     <button
       className={cn(
-        'flex items-center justify-between rounded-xl p-3 w-full',
+        'flex items-center justify-between rounded-xl p-3 w-full h-[52px]',
         isEnabled
           ? 'bg-foreground/5 dark:bg-foreground/5'
           : 'bg-foreground/[2%] dark:bg-foreground/[2%]'

@@ -40,9 +40,9 @@ export function createRange<T = number>(
 }
 
 import { ConnectMethodItem } from './connect-method-item'
-import { List } from './List'
-import { Wrapper } from './Wrapper'
 import { SortableConnectMethodItem } from '@/components/sortable-item-connect-method'
+import { Wrapper } from '@/components/ui/wrapper'
+import { List } from '@/components/ui/list'
 
 export interface Props {
   activationConstraint?: PointerActivationConstraint

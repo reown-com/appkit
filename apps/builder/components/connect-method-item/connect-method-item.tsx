@@ -6,7 +6,7 @@ import { Handle } from './components'
 import styles from './connect-method-item.module.css'
 import { useAppKitContext } from '@/hooks/use-appkit'
 import { Checkbox } from '@/components/ui/checkbox'
-import { SocialButtons } from '@/components/configuration-sections/social-buttons'
+import { SocialButtons } from '@/components/social-buttons'
 
 export interface Props {
   dragOverlay?: boolean

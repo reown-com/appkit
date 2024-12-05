@@ -1,32 +1,18 @@
 'use client'
 
 import * as React from 'react'
-import { MonitorSmartphone } from 'lucide-react'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAppKitContext } from '@/hooks/use-appkit'
 import { cn } from '@/lib/utils'
-import { AuthFeatures } from './configuration-sections/connect-options'
-import { AdvancedFeatures } from './configuration-sections/wallet-features'
-import SidebarContentDesign from '@/components/sidebar-content-design'
+
 import Link from 'next/link'
-import { useAppKit } from '@reown/appkit/react'
 import Image from 'next/image'
 import { BookIcon } from '@/components/icon/book'
-
-function AppKitButton() {
-  const { open } = useAppKit()
-
-  return (
-    <div className="relative flex md:hidden w-full">
-      {/* @ts-ignore */}
-      <w3m-modal />
-      <Button variant="neutral" size="lg" className="w-full flex md:hidden" onClick={() => open()}>
-        Launch AppKit
-      </Button>
-    </div>
-  )
-}
+import { SectionWalletFeatures } from '@/components/configuration-sections/section-wallet-features'
+import { SectionConnectOptions } from '@/components/configuration-sections/section-connect-options'
+import { SectionDesign } from '@/components/configuration-sections/section-design'
+import { AppKitButtonMobile } from '@/components/appkit-button-mobile'
 
 export function SidebarContent() {
   const { config } = useAppKitContext()
@@ -71,9 +57,9 @@ export function SidebarContent() {
             </TabsList>
           </Tabs>
 
-          {activeTab === 'auth' && <AuthFeatures />}
-          {activeTab === 'features' && <AdvancedFeatures />}
-          {activeTab === 'other' && <SidebarContentDesign />}
+          {activeTab === 'auth' && <SectionConnectOptions />}
+          {activeTab === 'features' && <SectionWalletFeatures />}
+          {activeTab === 'other' && <SectionDesign />}
         </div>
       </div>
 
@@ -101,7 +87,7 @@ export function SidebarContent() {
         >
           Get started
         </Link>
-        {isInitialized && <AppKitButton />}
+        {isInitialized && <AppKitButtonMobile />}
       </div>
     </div>
   )

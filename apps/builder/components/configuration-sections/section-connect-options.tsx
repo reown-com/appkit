@@ -1,7 +1,12 @@
-import { UniqueIdentifier } from '@dnd-kit/core'
+'use client'
+
 import { useAppKitContext } from '@/hooks/use-appkit'
+import { FeatureButton } from '@/components/feature-button'
+
+import { UniqueIdentifier } from '@dnd-kit/core'
 import dynamic from 'next/dynamic'
 import { ConnectMethodItemLoading } from '@/components/connect-method-item/components/loading'
+import { ConstantsUtil } from '@reown/appkit-core'
 
 const SortableConnectMethodList = dynamic(
   () =>
@@ -18,13 +23,16 @@ const SortableConnectMethodList = dynamic(
   }
 )
 
-export function ConnetMethodList() {
+export function SectionConnectOptions() {
   const { config, updateFeatures, updateSocials, updateEnableWallets } = useAppKitContext()
-  const connectMethodOrder = config.features.experimental_connectMethodOrder || [
-    'email',
-    'social',
-    'wallet'
-  ]
+  const collapseWallets = config.features.experimental_collapseWallets
+  const connectMethodOrder =
+    config.features.experimental_connectMethodOrder ||
+    ConstantsUtil.DEFAULT_FEATURES.experimental_connectMethodOrder
+
+  function toggleCollapseWallets() {
+    updateFeatures({ experimental_collapseWallets: !collapseWallets })
+  }
 
   function handleNewOrder(items: UniqueIdentifier[]) {
     const nameMap = {
@@ -57,7 +65,7 @@ export function ConnetMethodList() {
     }
   }
 
-  const connectMethodNameMap = connectMethodOrder.map(name => {
+  const connectMethodNameMap = connectMethodOrder?.map(name => {
     switch (name) {
       case 'email':
         return 'Email'
@@ -69,11 +77,20 @@ export function ConnetMethodList() {
   })
 
   return (
-    <SortableConnectMethodList
-      items={connectMethodNameMap}
-      onToggleOption={handleToggleOption}
-      handleNewOrder={handleNewOrder}
-      handle={true}
-    />
+    <div className="flex-grow">
+      <SortableConnectMethodList
+        items={connectMethodNameMap}
+        onToggleOption={handleToggleOption}
+        handleNewOrder={handleNewOrder}
+        handle={true}
+      />
+      <div className="flex flex-col gap-2 h-2"></div>
+      <div className="text-sm text-text-secondary mt-6 mb-2">Wallet options</div>
+      <FeatureButton
+        label="Collapse wallets"
+        isEnabled={collapseWallets}
+        onClick={toggleCollapseWallets}
+      />
+    </div>
   )
 }

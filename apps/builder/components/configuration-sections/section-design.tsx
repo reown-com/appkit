@@ -7,7 +7,7 @@ import { useAppKitContext } from '@/hooks/use-appkit'
 import { ThemeMode } from '@reown/appkit'
 import { cn } from '@/lib/utils'
 import { useSnapshot } from 'valtio'
-import { ThemeStore } from '@/lib/ThemeStore'
+import { ThemeStore } from '@/lib/theme-store'
 import { HexColorPicker } from 'react-colorful'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
@@ -45,12 +45,11 @@ const FONT_OPTIONS = [
   { label: 'New Amsterdam', value: newAmsterdam.style.fontFamily }
 ]
 
-export default function SidebarContentDesign() {
+export function SectionDesign() {
   const { config, updateThemeMode } = useAppKitContext()
   const { fontFamily, mixColor, accentColor, borderRadius } = useSnapshot(ThemeStore.state)
   const [radius, setRadius] = React.useState('M')
 
-  console.log('>>> borderRadius', borderRadius)
   return (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -63,10 +62,10 @@ export default function SidebarContentDesign() {
           <Label
             htmlFor="light"
             className={cn(
-              'flex items-center justify-center rounded-md border border-transparent bg-fg-secondary px-3 py-2 text-sm transition-colors',
+              'flex items-center justify-center rounded-md border border-transparent bg-fg-secondary hover:bg-fg-tertiary px-3 py-2 text-sm transition-colors',
               config.themeMode === 'light'
-                ? 'border-fg-accent bg-fg-accent/10'
-                : 'hover:bg-fg-secondary/80'
+                ? 'border-fg-accent bg-fg-accent/10 hover:bg-fg-accent/10'
+                : ''
             )}
           >
             <RadioGroupItem value="light" id="light" className="sr-only" />
@@ -75,8 +74,10 @@ export default function SidebarContentDesign() {
           <Label
             htmlFor="dark"
             className={cn(
-              'flex items-center justify-center rounded-md border px-3 py-2 text-sm transition-colors',
-              config.themeMode === 'dark' && 'border-fg-accent bg-fg-accent/10'
+              'flex items-center justify-center rounded-md border bg-fg-secondary hover:bg-fg-tertiary px-3 py-2 text-sm transition-colors',
+              config.themeMode === 'dark'
+                ? 'border-fg-accent bg-fg-accent/10 hover:bg-fg-accent/10'
+                : null
             )}
           >
             <RadioGroupItem value="dark" id="dark" className="sr-only" />
@@ -97,10 +98,8 @@ export default function SidebarContentDesign() {
               key={value}
               htmlFor={value}
               className={cn(
-                'flex items-center justify-center rounded-md border border-transparent bg-fg-secondary px-3 py-2 text-sm whitespace-nowrap transition-colors',
-                fontFamily === value
-                  ? 'border-fg-accent bg-fg-accent/10'
-                  : 'hover:bg-fg-secondary/80'
+                'flex items-center justify-center rounded-md border border-transparent bg-fg-secondary hover:bg-fg-tertiary px-3 py-2 text-sm whitespace-nowrap transition-colors',
+                fontFamily === value ? 'border-fg-accent bg-fg-accent/10 hover:bg-fg-accent/10' : ''
               )}
               style={{ fontFamily: value }}
             >
@@ -128,10 +127,10 @@ export default function SidebarContentDesign() {
               key={size}
               htmlFor={size}
               className={cn(
-                'flex items-center justify-center rounded-md border border-transparent bg-fg-secondary px-3 py-2 text-sm transition-colors',
+                'flex items-center justify-center rounded-md border border-transparent bg-fg-secondary hover:bg-fg-tertiary px-3 py-2 text-sm transition-colors',
                 borderRadius === RADIUS_NAME_VALUE_MAP[size as keyof typeof RADIUS_NAME_VALUE_MAP]
-                  ? 'border-fg-accent bg-fg-accent/10'
-                  : 'hover:bg-fg-secondary/80'
+                  ? 'border-fg-accent bg-fg-accent/10 hover:bg-fg-accent/10'
+                  : ''
               )}
             >
               <RadioGroupItem value={size} id={size} className="sr-only" />
@@ -152,7 +151,9 @@ export default function SidebarContentDesign() {
               }}
               className={cn(
                 'flex items-center justify-center p-4 rounded-2xl transition-colors bg-fg-secondary hover:bg-fg-tertiary border border-transparent h-[38px]',
-                accentColor === color ? 'border-fg-accent bg-fg-accent/10' : null
+                accentColor === color
+                  ? 'border-fg-accent bg-fg-accent/10 hover:bg-fg-accent/10'
+                  : null
               )}
               aria-label={`Color option ${index + 1}`}
             >
@@ -167,7 +168,9 @@ export default function SidebarContentDesign() {
               <button
                 className={cn(
                   'flex items-center justify-center p-4 rounded-2xl transition-colors bg-fg-secondary hover:bg-fg-tertiary border border-transparent h-[38px]',
-                  !ACCENT_COLORS.includes(accentColor) ? 'border-fg-accent bg-fg-accent/10' : null
+                  !ACCENT_COLORS.includes(accentColor) && accentColor !== ''
+                    ? 'border-fg-accent bg-fg-accent/10 hover:bg-fg-accent/10'
+                    : null
                 )}
                 aria-label="Custom color picker"
               >
@@ -200,7 +203,7 @@ export default function SidebarContentDesign() {
               }}
               className={cn(
                 'flex items-center justify-center p-4 rounded-2xl transition-colors bg-fg-secondary hover:bg-fg-tertiary border border-transparent h-[38px]',
-                mixColor === color ? 'border-fg-accent bg-fg-accent/10' : null
+                mixColor === color ? 'border-fg-accent bg-fg-accent/10 hover:bg-fg-accent/10' : null
               )}
               aria-label={`Background option ${index + 1}`}
             >
@@ -215,7 +218,9 @@ export default function SidebarContentDesign() {
               <button
                 className={cn(
                   'flex items-center justify-center p-4 rounded-2xl transition-colors bg-fg-secondary hover:bg-fg-tertiary border border-transparent h-[38px]',
-                  !BG_COLORS.includes(mixColor) ? 'border-fg-accent bg-fg-accent/10' : null
+                  !BG_COLORS.includes(mixColor) && mixColor !== ''
+                    ? 'border-fg-accent bg-fg-accent/10 hover:bg-fg-accent/10'
+                    : null
                 )}
                 aria-label="Custom background color picker"
               >

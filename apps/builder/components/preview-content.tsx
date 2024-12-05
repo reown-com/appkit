@@ -1,19 +1,17 @@
 'use client'
 
-import { RefreshCcw, Share2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
-import { useUrlState } from '@/hooks/use-url-state'
-import { useAppKitContext } from '@/hooks/use-appkit'
 import Image from 'next/image'
+import { Link1Icon, ResetIcon } from '@radix-ui/react-icons'
+import { useAppKitContext } from '@/hooks/use-appkit'
 
 export function PreviewContent() {
-  const { saveConfig, isLoading } = useUrlState()
-  const { config, isInitialized } = useAppKitContext()
+  const { resetConfigs } = useAppKitContext()
 
   async function handleShare() {
     try {
-      await saveConfig(config)
+      await navigator.clipboard.writeText(window.location.href)
       toast('Link copied to clipboard')
     } catch (err) {
       console.error('Failed to copy URL:', err)
@@ -40,12 +38,12 @@ export function PreviewContent() {
       </div>
 
       <div className="justify-center gap-2 hidden md:flex">
-        <Button disabled={isLoading} variant="neutral-secondary" onClick={handleShare}>
-          <Share2 size={16} className="mr-2" />
+        <Button variant="neutral-secondary" onClick={handleShare}>
+          <Link1Icon width={16} height={16} className="mr-2" />
           Share
         </Button>
-        <Button variant="neutral-secondary">
-          <RefreshCcw size={16} className="mr-2" />
+        <Button variant="neutral-secondary" onClick={resetConfigs}>
+          <ResetIcon width={16} height={16} className="mr-2" />
           Reset
         </Button>
       </div>

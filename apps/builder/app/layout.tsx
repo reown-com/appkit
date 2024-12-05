@@ -39,7 +39,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <Toaster />
-      <AppKitProvider initialConfig={null}>
+      <AppKitProvider>
         <body className={cn(khTeka.className, 'tracking-wide')}>{children}</body>
       </AppKitProvider>
     </html>

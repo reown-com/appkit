@@ -12,7 +12,7 @@ const SortableWalletFeatureList = dynamic(
 
 const defaultWalletFeaturesOrder = ['onramp', 'swaps', 'receive', 'send']
 
-export function WalletFeatureList() {
+export function SectionWalletFeatures() {
   const { config, updateFeatures } = useAppKitContext()
   const connectMethodOrder =
     config.features.experimental_walletFeaturesOrder || defaultWalletFeaturesOrder
