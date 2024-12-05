@@ -1,5 +1,6 @@
 import { ConstantsUtil, type CaipNetworkId } from '@reown/appkit-common'
 import {
+  AccountController,
   ApiController,
   BlockchainApiController,
   type SIWXConfig,
@@ -28,11 +29,13 @@ export class CloudAuthSIWX implements SIWXConfig {
   }
 
   async addSession(session: SIWXSession): Promise<void> {
-    return this.request('authenticate', {
+    const response = await this.request('authenticate', {
       message: session.message,
       signature: session.signature,
-      clientId: this.getClientId()
+      clientId: this.getClientId(),
+      walletInfo: this.getWalletInfo()
     })
+    localStorage.setItem(this.localStorageKey, response.token)
   }
 
   async getSessions(chainId: CaipNetworkId, address: string): Promise<SIWXSession[]> {
@@ -61,7 +64,7 @@ export class CloudAuthSIWX implements SIWXConfig {
   }
 
   async revokeSession(_chainId: CaipNetworkId, _address: string): Promise<void> {
-    return this.request('sign-out', undefined)
+    return Promise.resolve(localStorage.removeItem(this.localStorageKey))
   }
 
   async setSessions(sessions: SIWXSession[]): Promise<void> {
@@ -84,7 +87,7 @@ export class CloudAuthSIWX implements SIWXConfig {
       `${ConstantsUtil.W3M_API_URL}/auth/v1/${key}?projectId=${projectId}&st=${st}&sv=${sv}`,
       {
         method: RequestMethod[key],
-        body: JSON.stringify(params),
+        body: params ? JSON.stringify(params) : undefined,
         headers: token
           ? {
               Authorization: `Bearer ${token}`
@@ -120,6 +123,22 @@ export class CloudAuthSIWX implements SIWXConfig {
     return BlockchainApiController.state.clientId
   }
 
+  private getWalletInfo():
+    | {
+        name: string | undefined
+        icon: string | undefined
+      }
+    | undefined {
+    const { connectedWalletInfo } = AccountController.state
+    if (!connectedWalletInfo) {
+      return undefined
+    }
+
+    const { name, icon } = connectedWalletInfo
+
+    return { name, icon }
+  }
+
   private getSDKProperties(): { projectId: string; st: string; sv: string } {
     return ApiController._getSdkProperties()
   }
@@ -153,8 +172,14 @@ export namespace CloudAuthSIWX {
         message: string
         signature: string
         clientId?: string | null
+        walletInfo?: {
+          name: string | undefined
+          icon: string | undefined
+        }
       },
-      never
+      {
+        token: string
+      }
     >
     'update-user-metadata': Request<'PATCH', Record<string, unknown>, unknown>
     'sign-out': Request<'POST', undefined, never>
