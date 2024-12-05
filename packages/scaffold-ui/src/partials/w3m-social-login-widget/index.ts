@@ -73,18 +73,24 @@ export class W3mSocialLoginWidget extends LitElement {
 
   // -- Private ------------------------------------------- //
   private topViewTemplate() {
-    let socials = this.features?.socials
     const isCreateWalletPage = this.walletGuide === 'explore'
+    let socials = this.features?.socials
     const isSocialDisabled = !this.authConnector || !socials || !socials?.length
 
-    if (isSocialDisabled && isCreateWalletPage) {
+    if (!isSocialDisabled && isCreateWalletPage) {
       socials = ConstantsUtil.DEFAULT_FEATURES.socials
+
+      return this.renderTopViewContent(socials as SocialProvider[])
     }
 
-    if (!socials) {
+    if (!isSocialDisabled) {
       return null
     }
 
+    return this.renderTopViewContent(socials as SocialProvider[])
+  }
+
+  private renderTopViewContent(socials: SocialProvider[]) {
     if (socials.length === 2) {
       return html` <wui-flex gap="xs">
         ${socials.slice(0, MAX_TOP_VIEW).map(
