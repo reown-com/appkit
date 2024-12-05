@@ -32,7 +32,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Bitco
   // -- Public ------------------------------------------- //
   public get chains() {
     return this.sessionChains
-      .map(chainId => this.requestedChains.find(chain => chain.id === chainId))
+      .map(chainId => this.requestedChains.find(chain => chain.caipNetworkId === chainId))
       .filter(Boolean) as CaipNetwork[]
   }
 
@@ -146,7 +146,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Bitco
     }
   }
 
-  private internalRequest<Method extends WalletConnectProvider.RequestMethod>({
+  private async internalRequest<Method extends WalletConnectProvider.RequestMethod>({
     method,
     params
   }: WalletConnectProvider.InternalRequestParams<Method>) {

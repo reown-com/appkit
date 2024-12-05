@@ -38,15 +38,11 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private smartAccountDeployed = AccountController.state.smartAccountDeployed
-
   @state() private network = ChainController.state.activeCaipNetwork
 
   @state() private currentTab = AccountController.state.currentTab
 
   @state() private tokenBalance = AccountController.state.tokenBalance
-
-  @state() private preferredAccountType = AccountController.state.preferredAccountType
 
   @state() private features = OptionsController.state.features
 
@@ -61,8 +57,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
             this.profileName = val.profileName
             this.currentTab = val.currentTab
             this.tokenBalance = val.tokenBalance
-            this.smartAccountDeployed = val.smartAccountDeployed
-            this.preferredAccountType = val.preferredAccountType
           } else {
             ModalController.close()
           }
@@ -96,9 +90,9 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       .padding=${['0', 'xl', 'm', 'xl'] as const}
       alignItems="center"
       gap="m"
+      data-testid="w3m-account-wallet-features-widget"
     >
       ${this.network && html`<wui-network-icon .network=${this.network}></wui-network-icon>`}
-      ${this.activateAccountTemplate()}
       <wui-profile-button
         @click=${this.onProfileButtonClick.bind(this)}
         address=${ifDefined(this.address)}
@@ -260,24 +254,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     return html`<wui-balance dollars="0" pennies="00"></wui-balance>`
   }
 
-  private activateAccountTemplate() {
-    const smartAccountEnabled = ChainController.checkIfSmartAccountEnabled()
-
-    if (
-      !smartAccountEnabled ||
-      this.preferredAccountType !== W3mFrameRpcConstants.ACCOUNT_TYPES.EOA ||
-      this.smartAccountDeployed
-    ) {
-      return null
-    }
-
-    return html` <wui-promo
-      text=${'Activate your account'}
-      @click=${this.onUpdateToSmartAccount.bind(this)}
-      data-testid="activate-smart-account-promo"
-    ></wui-promo>`
-  }
-
   private onTabChange(index: number) {
     AccountController.setCurrentTab(index)
   }
@@ -329,10 +305,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       }
     })
     RouterController.push('WalletSend')
-  }
-
-  private onUpdateToSmartAccount() {
-    RouterController.push('UpgradeToSmartAccount')
   }
 }
 
