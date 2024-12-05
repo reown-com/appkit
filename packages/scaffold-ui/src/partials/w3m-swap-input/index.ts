@@ -67,7 +67,7 @@ export class W3mSwapInput extends LitElement {
           />
           <wui-text class="market-value" variant="small-400" color="fg-200">
             ${isMarketValueGreaterThanZero
-              ? `$${UiHelperUtil.formatNumberToLocalString(this.marketValue, 3)}`
+              ? `$${UiHelperUtil.formatNumberToLocalString(this.marketValue, 2)}`
               : null}
           </wui-text>
         </wui-flex>
@@ -147,7 +147,7 @@ export class W3mSwapInput extends LitElement {
     return html`
       ${haveBalance
         ? html`<wui-text variant="small-400" color="fg-200">
-            ${UiHelperUtil.formatNumberToLocalString(this.balance, 3)}
+            ${UiHelperUtil.formatNumberToLocalString(this.balance, 2)}
           </wui-text>`
         : null}
       ${this.target === 'sourceToken' ? this.tokenActionButtonTemplate(haveBalance) : null}

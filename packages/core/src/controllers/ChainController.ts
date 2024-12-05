@@ -22,6 +22,7 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { ModalController } from './ModalController.js'
 import { EventsController } from './EventsController.js'
+import { RouterController } from './RouterController.js'
 
 // -- Constants ----------------------------------------- //
 const accountState: AccountControllerState = {
@@ -205,7 +206,12 @@ export const ChainController = {
     const newAdapter = state.chains.get(caipNetwork.chainNamespace)
     state.activeChain = caipNetwork.chainNamespace
     state.activeCaipNetwork = caipNetwork
-    state.activeCaipAddress = newAdapter?.accountState?.caipAddress
+
+    if (newAdapter?.accountState?.address) {
+      state.activeCaipAddress = `${caipNetwork.chainNamespace}:${caipNetwork.id}:${newAdapter?.accountState?.address}`
+    } else {
+      state.activeCaipAddress = undefined
+    }
 
     if (newAdapter) {
       AccountController.replaceState(newAdapter.accountState)
@@ -236,10 +242,21 @@ export const ChainController = {
   },
 
   async switchActiveNetwork(network: CaipNetwork) {
+    const activeAdapter = ChainController.state.chains.get(
+      ChainController.state.activeChain as ChainNamespace
+    )
+
+    const unsupportedNetwork = !activeAdapter?.caipNetworks?.some(
+      caipNetwork => caipNetwork.id === state.activeCaipNetwork?.id
+    )
     const networkControllerClient = this.getNetworkControllerClient(network.chainNamespace)
 
     if (networkControllerClient) {
       await networkControllerClient.switchCaipNetwork(network)
+    }
+
+    if (unsupportedNetwork) {
+      RouterController.goBack()
     }
 
     this.setActiveCaipNetwork(network)
@@ -489,7 +506,8 @@ export const ChainController = {
         socialProvider: undefined,
         socialWindow: undefined,
         farcasterUrl: undefined,
-        provider: undefined
+        provider: undefined,
+        allAccounts: []
       })
     )
   }

@@ -6,8 +6,11 @@ import {
 } from '@reown/appkit-common'
 import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
 import {
+  AccountController,
   OptionsController,
   ThemeController,
+  type AccountType,
+  type AccountControllerState,
   type Connector as AppKitConnector,
   type AuthConnector,
   type Metadata,
@@ -18,7 +21,7 @@ import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { AppKitOptions } from '../utils/index.js'
 import type { AppKit } from '../client.js'
-import { snapshot } from 'valtio'
+import { snapshot } from 'valtio/vanilla'
 
 type EventName = 'disconnect' | 'accountChanged' | 'switchNetwork'
 type EventData = {
@@ -139,12 +142,21 @@ export abstract class AdapterBlueprint<
         w3mThemeVariables: getW3mThemeVariables(themeVariables, themeMode)
       })
     }
-    this.availableConnectors = [
-      ...this.availableConnectors.filter(
-        existing => !connectors.some(newConnector => newConnector.id === existing.id)
-      ),
-      ...connectors
-    ]
+
+    const connectorsAdded = new Set<string>()
+    this.availableConnectors = [...connectors, ...this.availableConnectors].filter(connector => {
+      if (connectorsAdded.has(connector.id)) {
+        return false
+      }
+
+      connectorsAdded.add(connector.id)
+
+      return true
+    })
+  }
+
+  protected setStatus(status: AccountControllerState['status'], chainNamespace?: ChainNamespace) {
+    AccountController.setStatus(status, chainNamespace)
   }
 
   /**
@@ -205,6 +217,15 @@ export abstract class AdapterBlueprint<
   public abstract connect(
     params: AdapterBlueprint.ConnectParams
   ): Promise<AdapterBlueprint.ConnectResult>
+
+  /**
+   * Gets the accounts for the connected wallet.
+   * @returns {Promise<AccountType[]>} An array of account objects with their associated type and namespace
+   */
+
+  public abstract getAccounts(
+    params: AdapterBlueprint.GetAccountsParams
+  ): Promise<AdapterBlueprint.GetAccountsResult>
 
   /**
    * Switches the network.
@@ -501,5 +522,11 @@ export namespace AdapterBlueprint {
     provider: AppKitConnector['provider']
     chainId: number | string
     address: string
+  }
+
+  export type GetAccountsResult = { accounts: AccountType[] }
+  export type GetAccountsParams = {
+    id: AppKitConnector['id']
+    namespace?: ChainNamespace
   }
 }

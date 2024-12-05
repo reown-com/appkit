@@ -559,6 +559,9 @@ export type Event =
   | {
       type: 'track'
       event: 'EMAIL_VERIFICATION_CODE_FAIL'
+      properties: {
+        message: string
+      }
     }
   | {
       type: 'track'
@@ -679,6 +682,20 @@ export type Event =
   | {
       type: 'track'
       event: 'SOCIAL_LOGIN_ERROR'
+      properties: {
+        provider: SocialProvider
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SOCIAL_LOGIN_REQUEST_USER_DATA'
+      properties: {
+        provider: SocialProvider
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SOCIAL_LOGIN_CANCELED'
       properties: {
         provider: SocialProvider
       }
@@ -836,11 +853,23 @@ export type GetQuoteArgs = {
   amount: string
   network: string
 }
-export type AccountType = {
-  address: string
-  type: 'eoa' | 'smartAccount'
+
+export type NamespaceTypeMap = {
+  eip155: 'eoa' | 'smartAccount'
+  solana: 'eoa'
+  bip122: 'payment' | 'ordinal' | 'stx'
+  polkadot: 'eoa'
 }
 
+export type AccountTypeMap = {
+  [K in ChainNamespace]: {
+    namespace: K
+    address: string
+    type: NamespaceTypeMap[K]
+  }
+}
+
+export type AccountType = AccountTypeMap[ChainNamespace]
 export type SendTransactionArgs =
   | {
       chainNamespace?: undefined | 'eip155'
@@ -926,7 +955,7 @@ export type ChainAdapter = {
   adapterType?: string
 }
 
-type ProviderEventListener = {
+export type ProviderEventListener = {
   connect: (connectParams: { chainId: number }) => void
   disconnect: (error: Error) => void
   display_uri: (uri: string) => void
@@ -946,7 +975,7 @@ export interface Provider {
   request: <T>(args: RequestArguments) => Promise<T>
   on<T extends keyof ProviderEventListener>(event: T, listener: ProviderEventListener[T]): void
   removeListener: <T>(event: string, listener: (data: T) => void) => void
-  emit: (event: string) => void
+  emit: (event: string, data?: unknown) => void
 }
 
 export type CombinedProvider = W3mFrameProvider & Provider
@@ -1035,3 +1064,5 @@ export type UseAppKitNetworkReturn = {
 }
 
 export type BadgeType = 'none' | 'certified'
+
+export type ConnectionStatus = 'connected' | 'disconnected' | 'connecting' | 'reconnecting'
