@@ -174,7 +174,7 @@ export namespace CloudAuthSIWX {
 
   export type Requests = {
     nonce: Request<'GET', undefined, { nonce: string; token: string }>
-    me: Request<'GET', undefined, { address: string; chainId: string }>
+    me: Request<'GET', undefined, { address: string; chainId: number }>
     authenticate: Request<
       'POST',
       {
