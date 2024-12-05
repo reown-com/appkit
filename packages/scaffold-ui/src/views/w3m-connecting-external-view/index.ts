@@ -3,7 +3,7 @@ import {
   ChainController,
   ConnectionController,
   EventsController,
-  ModalController
+  RouterController
 } from '@reown/appkit-core'
 import { ConstantsUtil } from '@reown/appkit-utils'
 import { customElement } from '@reown/appkit-ui'
@@ -34,7 +34,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
     this.externalViewUnsubscribe.push(
       ChainController.subscribeKey('activeCaipAddress', val => {
         if (val) {
-          ModalController.close()
+          RouterController.replace('Account')
         }
       })
     )
