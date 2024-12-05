@@ -80,7 +80,7 @@ export class W3mSocialLoginWidget extends LitElement {
     if (!isSocialDisabled && isCreateWalletPage) {
       socials = ConstantsUtil.DEFAULT_FEATURES.socials
 
-      return this.renderTopViewContent(socials as SocialProvider[])
+      return this.renderTopViewContent(socials)
     }
 
     if (!isSocialDisabled) {
