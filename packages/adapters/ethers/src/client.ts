@@ -550,7 +550,11 @@ export class EthersAdapter extends AdapterBlueprint {
           switchError?.data?.originalError?.code ===
             WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
         ) {
-          await EthersHelpersUtil.addEthereumChain(provider as Provider, caipNetwork)
+          try {
+            await EthersHelpersUtil.addEthereumChain(provider as Provider, caipNetwork)
+          } catch (e) {
+            console.warn('Could not add chain to wallet', e)
+          }
         } else if (
           providerType === 'ANNOUNCED' ||
           providerType === 'EXTERNAL' ||
