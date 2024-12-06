@@ -34,7 +34,7 @@ export function PreviewContent() {
             {/* @ts-ignore */}
             <w3m-modal
               style={{ positive: 'relative', width: '100%' }}
-              embedded={true}
+              enableEmbedded={true}
               class="embedded"
             />
           </>
