@@ -195,7 +195,10 @@ export class W3mConnectView extends LitElement {
         }
 
         return isEmailEnabled && !isNextMethodSocial && nextEnabledMethod
-          ? html`<wui-separator text="or"></wui-separator>`
+          ? html`<wui-separator
+              data-testid="w3m-email-login-or-separator"
+              text="or"
+            ></wui-separator>`
           : null
       }
       case 'social': {
@@ -245,7 +248,9 @@ export class W3mConnectView extends LitElement {
 
   private walletListTemplate(tabIndex?: number) {
     const enableWallets = this.enableWallets
+    const collapseWalletsOldProp = this.features?.emailShowWallets === false
     const collapseWallets = this.features?.experimental_collapseWallets
+    const shouldCollapseWallets = collapseWalletsOldProp || collapseWallets
 
     if (!enableWallets) {
       return null
@@ -263,7 +268,7 @@ export class W3mConnectView extends LitElement {
     const hasSocials = this.features?.socials && this.features.socials.length > 0
     const hasOtherMethods = hasEmail || hasSocials
 
-    if (hasOtherMethods && collapseWallets) {
+    if (hasOtherMethods && shouldCollapseWallets) {
       return html`<wui-list-button
         tabIdx=${ifDefined(tabIndex)}
         @click=${this.onContinueWalletClick.bind(this)}
