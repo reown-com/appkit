@@ -10,7 +10,7 @@ export class W3mWalletGuide extends LitElement {
   public static override styles = styles
 
   // -- State & Properties -------------------------------- //
-  @property() public tabIdx?: boolean
+  @property() public tabIdx?: -1 | boolean
 
   @property() public walletGuide: WalletGuideType = 'get-started'
 
