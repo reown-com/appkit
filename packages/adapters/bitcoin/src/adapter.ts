@@ -3,7 +3,8 @@ import {
   WcHelpersUtil,
   type AppKit,
   type AppKitOptions,
-  type Provider
+  type Provider,
+  BlockchainApiController
 } from '@reown/appkit'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import type { BitcoinConnector } from './utils/BitcoinConnector.js'
@@ -156,9 +157,38 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
   // -- Unused => Refactor ------------------------------------------- //
 
-  override getBalance(
-    _params: AdapterBlueprint.GetBalanceParams
+  override async getBalance(
+    params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
+    const network = params.caipNetwork
+
+    if (network?.chainNamespace === 'bip122') {
+      const rpcUrl = network.rpcUrls.default.http[0]
+      console.log({ network, rpcUrl })
+
+      if (rpcUrl) {
+        const response = await fetch(rpcUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 1,
+            method: 'getbalance',
+            params: [params.address]
+          })
+        }).then(async res => {
+          if (res.headers.get('content-type')?.includes('application/json')) {
+            return res.json()
+          }
+          throw new Error(await res.text())
+        })
+
+        console.log(response)
+      }
+    }
+
     // Get balance
     return Promise.resolve({} as unknown as AdapterBlueprint.GetBalanceResult)
   }
