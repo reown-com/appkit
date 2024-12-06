@@ -1,5 +1,10 @@
 import type { BaseError } from '@reown/appkit-core'
-import { ChainController, ConnectionController, EventsController } from '@reown/appkit-core'
+import {
+  ChainController,
+  ConnectionController,
+  EventsController,
+  ModalController
+} from '@reown/appkit-core'
 import { ConstantsUtil } from '@reown/appkit-utils'
 import { customElement } from '@reown/appkit-ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
