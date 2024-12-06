@@ -32,11 +32,11 @@ export function PreviewContent() {
         {isInitialized ? (
           <>
             {/* @ts-ignore */}
-            {/* <w3m-modal
+            <w3m-modal
               style={{ positive: 'relative', width: '100%' }}
               embedded={true}
               class="embedded"
-            /> */}
+            />
           </>
         ) : null}
       </div>
