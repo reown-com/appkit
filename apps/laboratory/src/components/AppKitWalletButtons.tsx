@@ -1,4 +1,12 @@
-import { Box, Flex, Heading } from '@chakra-ui/react'
+import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react'
+import { useAppKitWallet } from '@reown/appkit-wallet-button/react'
+import type { Wallet } from '@reown/appkit-wallet-button'
+import { useState } from 'react'
+
+interface CustomAppKitWalletButtonProps {
+  heading: string
+  wallets: Wallet[]
+}
 
 export function AppKitWalletButtons() {
   return (
@@ -37,7 +45,7 @@ export function AppKitWalletButtons() {
         <w3m-wallet-button wallet="coinbase" />
         <w3m-wallet-button wallet="trust" /> */}
 
-      <Box display="flex" flexDirection="column" gap="4">
+      <Box display="flex" flexDirection="column" gap="5">
         <Box display="flex" flexDirection="column" gap="1">
           <Heading size="xs" textTransform="uppercase" pb="2">
             QR Code
@@ -81,6 +89,55 @@ export function AppKitWalletButtons() {
             <w3m-wallet-button wallet="facebook" />
           </Flex>
         </Box>
+
+        <CustomAppKitWalletButton heading="Hooks (WalletConnect)" wallets={['walletConnect']} />
+
+        <CustomAppKitWalletButton
+          heading="Hooks (Wallets)"
+          wallets={['walletConnect', 'metamask', 'coinbase', 'rainbow', 'safe', 'jupiter']}
+        />
+        <CustomAppKitWalletButton
+          heading="Hooks (Wallets)"
+          wallets={['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook']}
+        />
+      </Box>
+    </Box>
+  )
+}
+
+function CustomAppKitWalletButton({ heading, wallets }: CustomAppKitWalletButtonProps) {
+  const [pendingWallet, setPendingWallet] = useState<Wallet>()
+
+  const { data, isLoading, isSuccess, isError, connect } = useAppKitWallet({
+    onError: err => {
+      console.log('err', err.message)
+    },
+    onSuccess: data => {
+      console.log('data', data)
+    }
+  })
+
+  return (
+    <Box display="flex" flexDirection="column" gap="1">
+      <Heading size="xs" textTransform="uppercase" pb="2">
+        {heading}
+      </Heading>
+
+      <Box display="flex" alignItems="center" columnGap={3} flexWrap="wrap" gap="4">
+        {wallets.map(wallet => (
+          <Button
+            key={wallet}
+            onClick={() => {
+              setPendingWallet(wallet)
+              connect(wallet)
+            }}
+            size="sm"
+            isLoading={isLoading && pendingWallet === wallet}
+            textTransform="capitalize"
+          >
+            {wallet}
+          </Button>
+        ))}
       </Box>
     </Box>
   )

@@ -2,12 +2,13 @@ import { proxy, subscribe as sub } from 'valtio/vanilla'
 
 // -- Types --------------------------------------------- //
 export interface WalletButtonControllerState {
-  error?: string
+  error: boolean
   loading: boolean
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<WalletButtonControllerState>({
+  error: false,
   loading: false
 })
 
@@ -22,5 +23,8 @@ export const WalletButtonController = {
   setLoading(loading: boolean) {
     state.loading = loading
   },
-  
+
+  setError(loading: boolean) {
+    state.error = loading
+  }
 }
