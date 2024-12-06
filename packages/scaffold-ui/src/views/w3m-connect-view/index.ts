@@ -96,6 +96,7 @@ export class W3mConnectView extends LitElement {
           class=${classMap(classes)}
         >
           <wui-flex
+            class="connect-methods"
             flexDirection="column"
             gap="s"
             .padding=${socialOrEmailLoginEnabled &&
@@ -181,7 +182,7 @@ export class W3mConnectView extends LitElement {
         const isWalletEnable = this.enableWallets
 
         return isWalletEnable && nextEnabledMethod && !isExplore
-          ? html`<wui-separator text="or"></wui-separator>`
+          ? html`<wui-separator data-testid="wui-separator" text="or"></wui-separator>`
           : null
       }
       case 'email': {
@@ -208,7 +209,7 @@ export class W3mConnectView extends LitElement {
         }
 
         return isSocialEnabled && !isNextMethodEmail && nextEnabledMethod
-          ? html`<wui-separator text="or"></wui-separator>`
+          ? html`<wui-separator data-testid="wui-separator" text="or"></wui-separator>`
           : null
       }
       default:
@@ -268,6 +269,7 @@ export class W3mConnectView extends LitElement {
 
     if (hasOtherMethods && shouldCollapseWallets) {
       return html`<wui-list-button
+        data-testid="w3m-collapse-wallets-button"
         tabIdx=${ifDefined(tabIndex)}
         @click=${this.onContinueWalletClick.bind(this)}
         text="Continue with a wallet"
@@ -294,7 +296,7 @@ export class W3mConnectView extends LitElement {
 
     return html`
       ${this.walletGuide === 'explore'
-        ? html`<wui-separator id="explore" text="or"></wui-separator>`
+        ? html`<wui-separator data-testid="wui-separator" id="explore" text="or"></wui-separator>`
         : null}
       <wui-flex
         flexDirection="column"
