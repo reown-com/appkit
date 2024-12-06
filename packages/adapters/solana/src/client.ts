@@ -360,6 +360,9 @@ export class SolanaAdapter extends AdapterBlueprint {
     provider.on('disconnect', disconnectHandler)
     provider.on('accountsChanged', accountsChangedHandler)
     provider.on('connect', accountsChangedHandler)
+    provider.on('pendingTransaction', () => {
+      this.emit('pendingTransactions')
+    })
 
     this.providerHandlers = {
       disconnect: disconnectHandler,
