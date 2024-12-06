@@ -2,6 +2,7 @@ import { AdapterBlueprint } from '@reown/appkit/adapters'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
+  AlertController,
   CoreHelperUtil,
   type CombinedProvider,
   type Connector,
@@ -483,6 +484,25 @@ export class Ethers5Adapter extends AdapterBlueprint {
     return { profileName: undefined, profileImage: undefined }
   }
 
+  private listenPendingTransactions(provider: Provider) {
+    const web3Provider = new ethers.providers.Web3Provider(provider)
+
+    try {
+      web3Provider.on('pending', () => {
+        this.emit('pendingTransactions')
+      })
+    } catch (error) {
+      AlertController.open(
+        {
+          shortMessage: 'Error listening to pending transactions',
+          longMessage:
+            'The Web3Provider in the Ethers5Adapter failed to listen to pending transactions.'
+        },
+        'error'
+      )
+    }
+  }
+
   private providerHandlers: {
     disconnect: () => void
     accountsChanged: (accounts: string[]) => void
@@ -509,6 +529,8 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
       this.emit('switchNetwork', { chainId: chainIdNumber })
     }
+
+    this.listenPendingTransactions(provider)
 
     provider.on('disconnect', disconnectHandler)
     provider.on('accountsChanged', accountsChangedHandler)
