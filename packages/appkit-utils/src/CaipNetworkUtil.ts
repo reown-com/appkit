@@ -148,6 +148,10 @@ export const CaipNetworksUtil = {
         ...caipNetwork.rpcUrls,
         default: {
           http: [rpcUrl]
+        },
+        // Save the networks original RPC URL default
+        chainDefault: {
+          http: [caipNetwork.rpcUrls.default.http[0] || '']
         }
       }
     }

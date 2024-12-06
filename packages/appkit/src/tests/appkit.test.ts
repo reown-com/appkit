@@ -56,6 +56,11 @@ describe('Base', () => {
       expect(OptionsController.setSdkVersion).toHaveBeenCalledWith(mockOptions.sdkVersion)
       expect(OptionsController.setProjectId).toHaveBeenCalledWith(mockOptions.projectId)
       expect(OptionsController.setMetadata).toHaveBeenCalledWith(mockOptions.metadata)
+
+      const copyMockOptions = { ...mockOptions }
+      delete copyMockOptions.adapters
+
+      expect(EventsController.sendEvent).toHaveBeenCalledWith(mockOptions)
     })
 
     it('should initialize adapters in ChainController', () => {
@@ -522,6 +527,28 @@ describe('Base', () => {
         }),
         'eip155'
       )
+    })
+
+    it('should sync identity only if address changed', async () => {
+      const mockAccountData = {
+        address: '0x123',
+        chainId: '1',
+        chainNamespace: 'eip155' as const
+      }
+      vi.mocked(BlockchainApiController.fetchIdentity).mockResolvedValue({
+        name: 'John Doe',
+        avatar: null
+      })
+
+      vi.mocked(AccountController).state = { address: '0x123' } as any
+
+      await appKit['syncAccount'](mockAccountData)
+
+      expect(BlockchainApiController.fetchIdentity).not.toHaveBeenCalled()
+
+      await appKit['syncAccount']({ ...mockAccountData, address: '0x456' })
+
+      expect(BlockchainApiController.fetchIdentity).toHaveBeenCalledOnce()
     })
 
     it('should disconnect correctly', async () => {
