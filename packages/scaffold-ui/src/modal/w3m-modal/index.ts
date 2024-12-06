@@ -4,6 +4,7 @@ import {
   CoreHelperUtil,
   EventsController,
   ModalController,
+  OptionsController,
   RouterController,
   SIWXUtil,
   SnackController,
@@ -28,7 +29,7 @@ export class W3mModal extends LitElement {
   private abortController?: AbortController = undefined
 
   // -- State & Properties -------------------------------- //
-  @property() private embedded = false
+  @property() private enableEmbedded = OptionsController.state.enableEmbedded
 
   @state() private open = ModalController.state.open
 
@@ -47,7 +48,8 @@ export class W3mModal extends LitElement {
         ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
         ModalController.subscribeKey('shake', val => (this.shake = val)),
         ChainController.subscribeKey('activeCaipNetwork', val => this.onNewNetwork(val)),
-        ChainController.subscribeKey('activeCaipAddress', val => this.onNewAddress(val))
+        ChainController.subscribeKey('activeCaipAddress', val => this.onNewAddress(val)),
+        OptionsController.subscribeKey('enableEmbedded', val => (this.enableEmbedded = val))
       ]
     )
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })
@@ -60,7 +62,7 @@ export class W3mModal extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    if (this.embedded) {
+    if (this.enableEmbedded) {
       return html`${this.contentTemplate()}
         <w3m-tooltip></w3m-tooltip> `
     }

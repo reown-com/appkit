@@ -11,7 +11,8 @@ import {
   ConstantsUtil as CommonConstantsUtil,
   OptionsController,
   ChainController,
-  type AccountType
+  type AccountType,
+  ConstantsUtil as CoreConstantsUtil
 } from '@reown/appkit-core'
 import { customElement, UiHelperUtil } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
@@ -151,12 +152,8 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private orderedFeaturesTemplate() {
-    const featuresOrder = this.features?.experimental_walletFeaturesOrder || [
-      'onramp',
-      'swaps',
-      'receive',
-      'send'
-    ]
+    const featuresOrder =
+      this.features?.walletFeaturesOrder || CoreConstantsUtil.DEFAULT_FEATURES.walletFeaturesOrder
 
     return featuresOrder.map(feature => {
       switch (feature) {

@@ -15,7 +15,7 @@ import { classMap } from 'lit/directives/class-map.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { ConstantsUtil } from '@reown/appkit-core'
 
-const defaultConnectMethodOrder = ConstantsUtil.DEFAULT_FEATURES.experimental_connectMethodOrder
+const defaultConnectMethodsOrder = ConstantsUtil.DEFAULT_FEATURES.connectMethodsOrder
 
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
@@ -96,6 +96,7 @@ export class W3mConnectView extends LitElement {
           class=${classMap(classes)}
         >
           <wui-flex
+            class="connect-methods"
             flexDirection="column"
             gap="s"
             .padding=${socialOrEmailLoginEnabled &&
@@ -115,14 +116,13 @@ export class W3mConnectView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private renderConnectMethod(tabIndex?: number) {
-    const connectMethodOrder =
-      this.features?.experimental_connectMethodOrder || defaultConnectMethodOrder
+    const connectMethodsOrder = this.features?.connectMethodsOrder || defaultConnectMethodsOrder
 
-    if (!connectMethodOrder) {
+    if (!connectMethodsOrder) {
       return null
     }
 
-    return html`${connectMethodOrder.map((method, index) => {
+    return html`${connectMethodsOrder.map((method, index) => {
       switch (method) {
         case 'email':
           return html`${this.emailTemplate(tabIndex)} ${this.separatorTemplate(index, 'email')}`
@@ -152,10 +152,9 @@ export class W3mConnectView extends LitElement {
   }
 
   private checkIsThereNextMethod(currentIndex: number): string | undefined {
-    const connectMethodOrder =
-      this.features?.experimental_connectMethodOrder || defaultConnectMethodOrder
+    const connectMethodsOrder = this.features?.connectMethodsOrder || defaultConnectMethodsOrder
 
-    const nextMethod = connectMethodOrder[currentIndex + 1] as
+    const nextMethod = connectMethodsOrder[currentIndex + 1] as
       | 'wallet'
       | 'social'
       | 'email'
@@ -183,7 +182,7 @@ export class W3mConnectView extends LitElement {
         const isWalletEnable = this.enableWallets
 
         return isWalletEnable && nextEnabledMethod && !isExplore
-          ? html`<wui-separator text="or"></wui-separator>`
+          ? html`<wui-separator data-testid="wui-separator" text="or"></wui-separator>`
           : null
       }
       case 'email': {
@@ -195,7 +194,10 @@ export class W3mConnectView extends LitElement {
         }
 
         return isEmailEnabled && !isNextMethodSocial && nextEnabledMethod
-          ? html`<wui-separator text="or"></wui-separator>`
+          ? html`<wui-separator
+              data-testid="w3m-email-login-or-separator"
+              text="or"
+            ></wui-separator>`
           : null
       }
       case 'social': {
@@ -207,7 +209,7 @@ export class W3mConnectView extends LitElement {
         }
 
         return isSocialEnabled && !isNextMethodEmail && nextEnabledMethod
-          ? html`<wui-separator text="or"></wui-separator>`
+          ? html`<wui-separator data-testid="wui-separator" text="or"></wui-separator>`
           : null
       }
       default:
@@ -245,7 +247,9 @@ export class W3mConnectView extends LitElement {
 
   private walletListTemplate(tabIndex?: number) {
     const enableWallets = this.enableWallets
-    const collapseWallets = this.features?.experimental_collapseWallets
+    const collapseWalletsOldProp = this.features?.emailShowWallets === false
+    const collapseWallets = this.features?.collapseWallets
+    const shouldCollapseWallets = collapseWalletsOldProp || collapseWallets
 
     if (!enableWallets) {
       return null
@@ -263,8 +267,9 @@ export class W3mConnectView extends LitElement {
     const hasSocials = this.features?.socials && this.features.socials.length > 0
     const hasOtherMethods = hasEmail || hasSocials
 
-    if (hasOtherMethods && collapseWallets) {
+    if (hasOtherMethods && shouldCollapseWallets) {
       return html`<wui-list-button
+        data-testid="w3m-collapse-wallets-button"
         tabIdx=${ifDefined(tabIndex)}
         @click=${this.onContinueWalletClick.bind(this)}
         text="Continue with a wallet"
@@ -291,7 +296,7 @@ export class W3mConnectView extends LitElement {
 
     return html`
       ${this.walletGuide === 'explore'
-        ? html`<wui-separator id="explore" text="or"></wui-separator>`
+        ? html`<wui-separator data-testid="wui-separator" id="explore" text="or"></wui-separator>`
         : null}
       <wui-flex
         flexDirection="column"

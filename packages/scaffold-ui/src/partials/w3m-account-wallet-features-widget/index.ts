@@ -120,8 +120,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   // -- Private ------------------------------------------- //
   private orderedWalletFeatures() {
     const walletFeaturesOrder =
-      this.features?.experimental_walletFeaturesOrder ||
-      CoreConstantsUtil.DEFAULT_FEATURES.experimental_walletFeaturesOrder
+      this.features?.walletFeaturesOrder || CoreConstantsUtil.DEFAULT_FEATURES.walletFeaturesOrder
     const isAllDisabled = walletFeaturesOrder.every(feature => !this.features?.[feature])
 
     if (isAllDisabled) {

@@ -1015,6 +1015,7 @@ export type Features = {
   email?: boolean
   /**
    * @description Show or hide the regular wallet options when email is enabled. Enabled by default.
+   * @deprecated - This property will be removed in the next major release. Please use `features.collapseWallets` instead.
    * @type {boolean}
    */
   emailShowWallets?: boolean
@@ -1053,20 +1054,20 @@ export type Features = {
    * @default ['email', 'social', 'wallet']
    * @type {('email' | 'social' | 'wallet')[]}
    */
-  experimental_connectMethodOrder?: ConnectMethod[]
+  connectMethodsOrder?: ConnectMethod[]
   /**
    * @
    * @description The order of the wallet features. This is experimental and subject to change.
    * @default ['receive' | 'onramp' | 'swaps' | 'send']
    * @type {('receive' | 'onramp' | 'swaps' | 'send')[]}
    */
-  experimental_walletFeaturesOrder?: WalletFeature[]
+  walletFeaturesOrder?: WalletFeature[]
   /**
-   * @description Enable or disable the collapse wallets as an single "Continue with wallet" button for simple UI in connect page.
-   * This can be activated when only have another connect method like email or social activated as well.
+   * @description Enable or disable the collapse wallets as a single "Continue with wallet" button for simple UI in connect page.
+   * This can be activated when only have another connect method like email or social activated along with wallets.
    * @default false
    */
-  experimental_collapseWallets?: boolean
+  collapseWallets?: boolean
 }
 
 export type FeaturesKeys = keyof Features

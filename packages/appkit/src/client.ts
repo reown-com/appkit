@@ -74,7 +74,7 @@ import {
   type W3mFrameProvider,
   type W3mFrameTypes
 } from '@reown/appkit-wallet'
-import { ProviderUtil } from './store/ProviderUtil.js'
+import { ProviderUtil, type ProviderStoreUtilState } from './store/ProviderUtil.js'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 import type { AdapterBlueprint } from './adapters/ChainAdapterBlueprint.js'
 import UniversalProvider from '@walletconnect/universal-provider'
@@ -282,8 +282,8 @@ export class AppKit {
       : null
   }
 
-  public subscribeProvider() {
-    return null
+  public subscribeProviders(callback: (providers: ProviderStoreUtilState['providers']) => void) {
+    return ProviderUtil.subscribeProviders(callback)
   }
 
   public getThemeMode() {
@@ -620,12 +620,12 @@ export class AppKit {
     OptionsController.setOptions(updatedOptions)
   }
 
-  public setConnectMethodOrder(connectMethodOrder: ConnectMethod[]) {
-    OptionsController.setConnectMethodOrder(connectMethodOrder)
+  public setConnectMethodsOrder(connectMethodsOrder: ConnectMethod[]) {
+    OptionsController.setConnectMethodsOrder(connectMethodsOrder)
   }
 
-  public setWalletFeatureOrder(walletFeatureOrder: WalletFeature[]) {
-    OptionsController.setWalletFeatureOrder(walletFeatureOrder)
+  public setWalletFeaturesOrder(walletFeaturesOrder: WalletFeature[]) {
+    OptionsController.setWalletFeaturesOrder(walletFeaturesOrder)
   }
 
   public setCollapseWallets(collapseWallets: boolean) {
@@ -651,7 +651,7 @@ export class AppKit {
     OptionsController.setDebug(options.debug)
     OptionsController.setProjectId(options.projectId)
     OptionsController.setSdkVersion(options.sdkVersion)
-    OptionsController.setExperimentalEnableEmbedded(options.experimental_enableEmbedded)
+    OptionsController.setEnableEmbedded(options.enableEmbedded)
 
     if (!options.projectId) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
@@ -1151,8 +1151,14 @@ export class AppKit {
       }
       if (this.isTransactionStackEmpty()) {
         this.close()
+        if (AccountController.state.address && ChainController.state.activeCaipNetwork?.id) {
+          this.updateBalance()
+        }
       } else {
         this.popTransactionStack()
+        if (AccountController.state.address && ChainController.state.activeCaipNetwork?.id) {
+          this.updateBalance()
+        }
       }
     })
     provider.onNotConnected(() => {
@@ -1266,6 +1272,11 @@ export class AppKit {
 
   private listenAdapter(chainNamespace: ChainNamespace) {
     const adapter = this.getAdapter(chainNamespace)
+
+    if (!adapter) {
+      return
+    }
+
     const connectionStatus = StorageUtil.getConnectionStatus()
 
     if (connectionStatus === 'connected') {
@@ -1274,7 +1285,7 @@ export class AppKit {
       this.setStatus(connectionStatus, chainNamespace)
     }
 
-    adapter?.on('switchNetwork', ({ address, chainId }) => {
+    adapter.on('switchNetwork', ({ address, chainId }) => {
       if (chainId && this.caipNetworks?.find(n => n.id === chainId)) {
         if (ChainController.state.activeChain === chainNamespace && address) {
           this.syncAccount({ address, chainId, chainNamespace })
@@ -1293,13 +1304,24 @@ export class AppKit {
       }
     })
 
-    adapter?.on('disconnect', () => {
+    adapter.on('disconnect', () => {
       if (ChainController.state.activeChain === chainNamespace) {
         this.handleDisconnect()
       }
     })
 
-    adapter?.on('accountChanged', ({ address, chainId }) => {
+    adapter.on('pendingTransactions', () => {
+      const address = AccountController.state.address
+      const activeCaipNetwork = ChainController.state.activeCaipNetwork
+
+      if (!address || !activeCaipNetwork?.id) {
+        return
+      }
+
+      this.updateBalance()
+    })
+
+    adapter.on('accountChanged', ({ address, chainId }) => {
       if (ChainController.state.activeChain === chainNamespace && chainId) {
         this.syncAccount({
           address,
@@ -1317,6 +1339,18 @@ export class AppKit {
         })
       }
     })
+  }
+
+  private updateBalance() {
+    const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+    if (adapter) {
+      adapter.getBalance({
+        address: AccountController.state.address as string,
+        chainId: ChainController.state.activeCaipNetwork?.id as string | number,
+        caipNetwork: this.getCaipNetwork(),
+        tokens: this.options.tokens
+      })
+    }
   }
 
   private getChainsFromNamespaces(namespaces: SessionTypes.Namespaces = {}): CaipNetworkId[] {
@@ -1458,17 +1492,11 @@ export class AppKit {
   }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
     chainNamespace: ChainNamespace
   }) {
-    this.setPreferredAccountType(
-      AccountController.state.preferredAccountType
-        ? AccountController.state.preferredAccountType
-        : 'eoa',
-      ChainController.state.activeChain as ChainNamespace
-    )
-
-    this.setCaipAddress(
-      `${chainNamespace}:${chainId}:${address}` as `${ChainNamespace}:${string}:${string}`,
-      chainNamespace
-    )
+    // Only update state when needed
+    if (address.toLowerCase() !== AccountController.state.address?.toLowerCase()) {
+      this.setCaipAddress(`${chainNamespace}:${chainId}:${address}`, chainNamespace)
+      await this.syncIdentity({ address, chainId: Number(chainId), chainNamespace })
+    }
 
     this.setStatus('connected', chainNamespace)
 
@@ -1476,26 +1504,31 @@ export class AppKit {
       const caipNetwork = this.caipNetworks?.find(
         n => n.id === chainId && n.chainNamespace === chainNamespace
       )
+      const fallBackCaipNetwork = this.caipNetworks?.find(n => n.chainNamespace === chainNamespace)
 
-      if (caipNetwork) {
-        this.setCaipNetwork(caipNetwork)
-      } else {
-        this.setCaipNetwork(this.caipNetworks?.find(n => n.chainNamespace === chainNamespace))
-      }
-
+      this.setCaipNetwork(caipNetwork || fallBackCaipNetwork)
       this.syncConnectedWalletInfo(chainNamespace)
-      const adapter = this.getAdapter(chainNamespace)
+      await this.syncBalance({ address, chainId, chainNamespace })
+    }
+  }
 
-      const balance = await adapter?.getBalance({
-        address,
-        chainId,
-        caipNetwork: caipNetwork || this.getCaipNetwork(),
-        tokens: this.options.tokens
-      })
-      if (balance) {
-        this.setBalance(balance.balance, balance.symbol, chainNamespace)
-      }
-      await this.syncIdentity({ address, chainId: Number(chainId), chainNamespace })
+  private async syncBalance(params: {
+    address: string
+    chainId: string | number
+    chainNamespace: ChainNamespace
+  }) {
+    const adapter = this.getAdapter(params.chainNamespace)
+    const caipNetwork = this.caipNetworks?.find(
+      c => c.chainNamespace === params.chainNamespace && c.id === params.chainId
+    )
+    const balance = await adapter?.getBalance({
+      address: params.address,
+      chainId: params.chainId,
+      caipNetwork: caipNetwork || this.getCaipNetwork(),
+      tokens: this.options.tokens
+    })
+    if (balance) {
+      this.setBalance(balance.balance, balance.symbol, params.chainNamespace)
     }
   }
 
