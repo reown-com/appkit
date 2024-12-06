@@ -185,7 +185,7 @@ export class W3mModal extends LitElement {
     await SIWXUtil.initializeIfEnabled()
 
     if (!nextConnected) {
-      RouterController.replace('Connect')
+      ModalController.close()
     }
   }
 

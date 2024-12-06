@@ -111,9 +111,9 @@ export class W3mSocialLoginWidget extends LitElement {
       @click=${() => {
         this.onSocialClick(socials[0])
       }}
-      logo=${ifDefined((socials as SocialProvider[])[0])}
+      logo=${ifDefined(socials[0])}
       align="center"
-      name=${`Continue with ${(socials as SocialProvider[])[0]}`}
+      name=${`Continue with ${socials[0]}`}
       tabIdx=${ifDefined(this.tabIdx)}
     ></wui-list-social>`
   }
