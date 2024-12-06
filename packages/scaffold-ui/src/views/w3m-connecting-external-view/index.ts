@@ -1,10 +1,5 @@
 import type { BaseError } from '@reown/appkit-core'
-import {
-  ChainController,
-  ConnectionController,
-  EventsController,
-  RouterController
-} from '@reown/appkit-core'
+import { ChainController, ConnectionController, EventsController } from '@reown/appkit-core'
 import { ConstantsUtil } from '@reown/appkit-utils'
 import { customElement } from '@reown/appkit-ui'
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
@@ -34,7 +29,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
     this.externalViewUnsubscribe.push(
       ChainController.subscribeKey('activeCaipAddress', val => {
         if (val) {
-          RouterController.replace('Account')
+          ModalController.close()
         }
       })
     )
