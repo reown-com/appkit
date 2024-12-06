@@ -27,8 +27,6 @@ const metadata = {
 
 const initialConfig = urlStateUtils.getStateFromURL()
 
-console.log('>>> HAVE WALLET', initialConfig?.enableWallets)
-
 export const modal = createAppKit({
   adapters: [wagmiAdapter],
   projectId,
