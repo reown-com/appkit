@@ -256,14 +256,14 @@ export const OptionsController = {
   setconnectMethodsOrder(connectMethodsOrder: ConnectMethod[]) {
     state.features = {
       ...state.features,
-      connectMethodsOrder: connectMethodsOrder
+      connectMethodsOrder
     }
   },
 
   setwalletFeaturesOrder(walletFeaturesOrder: WalletFeature[]) {
     state.features = {
       ...state.features,
-      walletFeaturesOrder: walletFeaturesOrder
+      walletFeaturesOrder
     }
   },
 
@@ -277,7 +277,7 @@ export const OptionsController = {
   setCollapseWallets(collapseWallets: boolean) {
     state.features = {
       ...state.features,
-      collapseWallets: collapseWallets
+      collapseWallets
     }
   },
 
