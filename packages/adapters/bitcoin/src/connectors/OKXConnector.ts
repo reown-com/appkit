@@ -1,0 +1,141 @@
+import type { CaipNetwork } from '@reown/appkit-common'
+import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
+import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
+import type { RequestArguments } from '@reown/appkit-core'
+import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
+
+export class OKXConnector extends ProviderEventEmitter implements BitcoinConnector {
+  public readonly id = 'OKX'
+  public readonly name = 'OKX Wallet'
+  public readonly chain = 'bip122'
+  public readonly type = 'ANNOUNCED'
+  public readonly imageUrl = ''
+
+  public readonly provider = this
+
+  private readonly wallet: OKXConnector.Wallet
+  private readonly requestedChains: CaipNetwork[] = []
+  private readonly getActiveNetwork: () => CaipNetwork | undefined
+
+  constructor({ wallet, requestedChains, getActiveNetwork }: OKXConnector.ConstructorParams) {
+    super()
+    this.wallet = wallet
+    this.requestedChains = requestedChains
+    this.getActiveNetwork = getActiveNetwork
+  }
+
+  public get chains() {
+    return this.requestedChains
+  }
+
+  public async connect(): Promise<string> {
+    const result = await this.wallet.connect()
+
+    return result.address
+  }
+
+  public async disconnect(): Promise<void> {
+    await this.wallet.disconnect()
+  }
+
+  public async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {
+    const accounts = await this.wallet.getAccounts()
+
+    return accounts.map(account => ({
+      address: account,
+      purpose: 'payment'
+    }))
+  }
+
+  public async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
+    return this.wallet.signMessage(params.message)
+  }
+
+  public async sendTransfer(params: BitcoinConnector.SendTransferParams): Promise<string> {
+    const network = this.getActiveNetwork()
+
+    if (!network) {
+      throw new Error('No active network available')
+    }
+
+    const from = (await this.wallet.getAccounts())[0]
+
+    if (!from) {
+      throw new Error('No account available')
+    }
+
+    const value = (Number(params.amount) / 10 ** network.nativeCurrency.decimals).toString()
+
+    const result = await this.wallet.send({
+      from,
+      to: params.recipient,
+      value
+    })
+
+    return result.txhash
+  }
+
+  public async signPSBT(
+    params: BitcoinConnector.SignPSBTParams
+  ): Promise<BitcoinConnector.SignPSBTResponse> {
+    const psbtHex = Buffer.from(params.psbt, 'base64').toString('hex')
+
+    const signedPsbtHex = await this.wallet.signPSBT(psbtHex)
+
+    let txid: string | undefined = undefined
+    if (params.broadcast) {
+      txid = await this.wallet.pushPSBT(signedPsbtHex)
+    }
+
+    return {
+      psbt: Buffer.from(signedPsbtHex, 'hex').toString('base64'),
+      txid
+    }
+  }
+
+  public request<T>(_args: RequestArguments): Promise<T> {
+    return Promise.reject(new MethodNotSupportedError(this.id, 'request'))
+  }
+
+  public static getWallet(params: OKXConnector.GetWalletParams): OKXConnector | undefined {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const wallet = (window as any)?.okxwallet?.bitcoin
+
+    if (wallet) {
+      return new OKXConnector({ wallet, ...params })
+    }
+
+    return undefined
+  }
+}
+
+export namespace OKXConnector {
+  export type ConstructorParams = {
+    wallet: Wallet
+    requestedChains: CaipNetwork[]
+    getActiveNetwork: () => CaipNetwork | undefined
+  }
+
+  export type Wallet = {
+    /*
+     * This interface doesn't include all available methods
+     * Reference: https://www.okx.com/web3/build/docs/sdks/chains/bitcoin/provider
+     */
+    connect(): Promise<{ address: string; publicKey: string }>
+    disconnect(): Promise<void>
+    getAccounts(): Promise<string[]>
+    signMessage(signStr: string, type?: 'ecdsa' | 'bip322-simple'): Promise<string>
+    signPSBT(psbtHex: string): Promise<string>
+    pushPSBT(psbtHex: string): Promise<string>
+    send(params: {
+      from: string
+      to: string
+      value: string
+      satBytes?: string
+      memo?: string
+      memoPos?: number
+    }): Promise<{ txhash: string }>
+  }
+
+  export type GetWalletParams = Omit<ConstructorParams, 'wallet'>
+}
