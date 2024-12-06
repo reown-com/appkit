@@ -10,7 +10,6 @@
   "updateInternalDependencies": "patch",
   "ignore": [
     "@examples/*", 
-    "@apps/demo", 
     "@apps/gallery", 
     "@apps/gallery-new", 
     "@apps/laboratory", 
