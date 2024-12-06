@@ -253,14 +253,14 @@ export const OptionsController = {
     state.siwx = siwx
   },
 
-  setconnectMethodsOrder(connectMethodsOrder: ConnectMethod[]) {
+  setConnectMethodsOrder(connectMethodsOrder: ConnectMethod[]) {
     state.features = {
       ...state.features,
       connectMethodsOrder
     }
   },
 
-  setwalletFeaturesOrder(walletFeaturesOrder: WalletFeature[]) {
+  setWalletFeaturesOrder(walletFeaturesOrder: WalletFeature[]) {
     state.features = {
       ...state.features,
       walletFeaturesOrder
@@ -281,7 +281,7 @@ export const OptionsController = {
     }
   },
 
-  setExperimentalEnableEmbedded(enableEmbedded: OptionsControllerState['enableEmbedded']) {
+  setEnableEmbedded(enableEmbedded: OptionsControllerState['enableEmbedded']) {
     state.enableEmbedded = enableEmbedded
   }
 }
