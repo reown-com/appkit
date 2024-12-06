@@ -72,6 +72,8 @@ export type AppKitOptions = {
    * @see https://cloud.walletconnect.com/
    */
   metadata?: Metadata
+
+  useWalletConnectRpc?: boolean
 } & OptionsControllerState
 
 export type AppKitOptionsWithCaipNetworks = Omit<AppKitOptions, 'defaultNetwork' | 'networks'> & {

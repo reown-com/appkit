@@ -1,50 +1,49 @@
-import type UniversalProvider from '@walletconnect/universal-provider'
 import type { AppKitNetwork, BaseNetwork, CaipNetwork } from '@reown/appkit-common'
-import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { CoreHelperUtil } from '@reown/appkit-core'
+import { AdapterBlueprint } from '@reown/appkit/adapters'
 import {
   connect,
-  disconnect as wagmiDisconnect,
   createConfig,
-  type Config,
-  type CreateConfigParameters,
-  type CreateConnectorFn,
-  getConnections,
-  switchChain,
-  injected,
-  type Connector,
-  watchAccount,
-  watchConnections,
+  getAccount,
   getBalance,
-  getEnsName,
+  getConnections,
   getEnsAvatar,
+  getEnsName,
+  injected,
+  prepareTransactionRequest,
+  reconnect,
   signMessage,
+  switchChain,
+  disconnect as wagmiDisconnect,
   estimateGas as wagmiEstimateGas,
-  sendTransaction as wagmiSendTransaction,
   getEnsAddress as wagmiGetEnsAddress,
+  sendTransaction as wagmiSendTransaction,
   writeContract as wagmiWriteContract,
   waitForTransactionReceipt,
-  getAccount,
-  prepareTransactionRequest,
-  reconnect
+  watchAccount,
+  watchConnections,
+  type Config,
+  type Connector,
+  type CreateConfigParameters,
+  type CreateConnectorFn
 } from '@wagmi/core'
 import { type Chain } from '@wagmi/core/chains'
+import type UniversalProvider from '@walletconnect/universal-provider'
 
+import { AppKit, WcHelpersUtil, type AppKitOptions } from '@reown/appkit'
 import {
   ConstantsUtil as CommonConstantsUtil,
   isReownName,
   NetworkUtil
 } from '@reown/appkit-common'
-import { authConnector } from './connectors/AuthConnector.js'
-import { AppKit, WcHelpersUtil, type AppKitOptions } from '@reown/appkit'
-import { walletConnect } from './connectors/UniversalConnector.js'
-import { coinbaseWallet } from '@wagmi/connectors'
 import {
   ConstantsUtil as CoreConstantsUtil,
   type ConnectorType,
   type Provider
 } from '@reown/appkit-core'
 import { CaipNetworksUtil, ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
+import { coinbaseWallet } from '@wagmi/connectors'
 import {
   formatUnits,
   parseUnits,
@@ -52,8 +51,9 @@ import {
   type Hex,
   type HttpTransport
 } from 'viem'
-import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { normalize } from 'viem/ens'
+import { authConnector } from './connectors/AuthConnector.js'
+import { walletConnect } from './connectors/UniversalConnector.js'
 import { parseWalletCapabilities } from './utils/helpers.js'
 
 export class WagmiAdapter extends AdapterBlueprint {
@@ -65,13 +65,15 @@ export class WagmiAdapter extends AdapterBlueprint {
     configParams: Partial<CreateConfigParameters> & {
       networks: AppKitNetwork[]
       projectId: string
+      useWalletConnectRpc?: boolean
     }
   ) {
     super({
       projectId: configParams.projectId,
       networks: CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
         projectId: configParams.projectId,
-        customNetworkImageUrls: {}
+        customNetworkImageUrls: {},
+        useWalletConnectRpc: configParams.useWalletConnectRpc
       }) as [CaipNetwork, ...CaipNetwork[]]
     })
     this.namespace = CommonConstantsUtil.CHAIN.EVM
@@ -79,7 +81,8 @@ export class WagmiAdapter extends AdapterBlueprint {
       ...configParams,
       networks: CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
         projectId: configParams.projectId,
-        customNetworkImageUrls: {}
+        customNetworkImageUrls: {},
+        useWalletConnectRpc: configParams.useWalletConnectRpc
       }) as [CaipNetwork, ...CaipNetwork[]],
       projectId: configParams.projectId
     })
@@ -118,11 +121,13 @@ export class WagmiAdapter extends AdapterBlueprint {
     configParams: Partial<CreateConfigParameters> & {
       networks: CaipNetwork[]
       projectId: string
+      useWalletConnectRpc?: boolean
     }
   ) {
     this.caipNetworks = CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
       projectId: configParams.projectId,
-      customNetworkImageUrls: {}
+      customNetworkImageUrls: {},
+      useWalletConnectRpc: configParams.useWalletConnectRpc
     }) as [CaipNetwork, ...CaipNetwork[]]
 
     this.wagmiChains = this.caipNetworks.filter(

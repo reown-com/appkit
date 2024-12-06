@@ -1,24 +1,24 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { WagmiAdapter } from '../client'
+import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type { Config } from '@wagmi/core'
 import {
-  disconnect as wagmiDisconnect,
-  getConnections,
-  switchChain,
-  getBalance,
-  getEnsName,
-  getEnsAvatar,
-  signMessage,
   estimateGas,
-  sendTransaction as wagmiSendTransaction,
+  getAccount,
+  getBalance,
+  getConnections,
+  getEnsAvatar,
+  getEnsName,
+  signMessage,
+  switchChain,
+  disconnect as wagmiDisconnect,
   getEnsAddress as wagmiGetEnsAddress,
+  sendTransaction as wagmiSendTransaction,
   writeContract as wagmiWriteContract,
-  waitForTransactionReceipt,
-  getAccount
+  waitForTransactionReceipt
 } from '@wagmi/core'
 import { mainnet } from '@wagmi/core/chains'
-import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type UniversalProvider from '@walletconnect/universal-provider'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { WagmiAdapter } from '../client'
 
 vi.mock('@wagmi/core', async () => {
   const actual = await vi.importActual('@wagmi/core')
@@ -51,7 +51,8 @@ const mockProjectId = 'test-project-id'
 const mockNetworks = [mainnet]
 const mockCaipNetworks = CaipNetworksUtil.extendCaipNetworks(mockNetworks, {
   projectId: mockProjectId,
-  customNetworkImageUrls: {}
+  customNetworkImageUrls: {},
+  useWalletConnectRpc: false
 })
 
 const mockWagmiConfig = {
@@ -91,7 +92,19 @@ describe('WagmiAdapter', () => {
       expect(adapter.adapterType).toBe('wagmi')
       expect(adapter.namespace).toBe('eip155')
     })
-
+    it('should be set to custom url if provided', () => {
+      expect(adapter.wagmiChains?.[0].rpcUrls.default.http[0]).toBe('https://cloudflare-eth.com')
+    })
+    it('should be set to walletConnect rpc if useWalletConnectRpc is true', () => {
+      const withWalletConnectRpc = new WagmiAdapter({
+        networks: mockNetworks,
+        projectId: mockProjectId,
+        useWalletConnectRpc: true
+      })
+      expect(withWalletConnectRpc.wagmiChains?.[0].rpcUrls.default.http[0]).toBe(
+        `https://rpc.walletconnect.org/v1/?chainId=${withWalletConnectRpc.namespace}%3A${withWalletConnectRpc.wagmiChains?.[0].id}&projectId=${withWalletConnectRpc.projectId}`
+      )
+    })
     it('should not set info property for injected connector', () => {
       const mockConnectors = [
         {
