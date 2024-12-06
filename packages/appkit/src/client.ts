@@ -620,12 +620,12 @@ export class AppKit {
     OptionsController.setOptions(updatedOptions)
   }
 
-  public setConnectMethodOrder(connectMethodOrder: ConnectMethod[]) {
-    OptionsController.setConnectMethodOrder(connectMethodOrder)
+  public setconnectMethodsOrder(connectMethodsOrder: ConnectMethod[]) {
+    OptionsController.setconnectMethodsOrder(connectMethodsOrder)
   }
 
-  public setWalletFeatureOrder(walletFeatureOrder: WalletFeature[]) {
-    OptionsController.setWalletFeatureOrder(walletFeatureOrder)
+  public setwalletFeaturesOrder(walletFeaturesOrder: WalletFeature[]) {
+    OptionsController.setwalletFeaturesOrder(walletFeaturesOrder)
   }
 
   public setCollapseWallets(collapseWallets: boolean) {
@@ -651,7 +651,7 @@ export class AppKit {
     OptionsController.setDebug(options.debug)
     OptionsController.setProjectId(options.projectId)
     OptionsController.setSdkVersion(options.sdkVersion)
-    OptionsController.setExperimentalEnableEmbedded(options.experimental_enableEmbedded)
+    OptionsController.setExperimentalEnableEmbedded(options.enableEmbedded)
 
     if (!options.projectId) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')

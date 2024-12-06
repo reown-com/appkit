@@ -153,8 +153,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   private orderedFeaturesTemplate() {
     const featuresOrder =
-      this.features?.experimental_walletFeaturesOrder ||
-      CoreConstantsUtil.DEFAULT_FEATURES.experimental_walletFeaturesOrder
+      this.features?.walletFeaturesOrder || CoreConstantsUtil.DEFAULT_FEATURES.walletFeaturesOrder
 
     return featuresOrder.map(feature => {
       switch (feature) {

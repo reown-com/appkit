@@ -124,7 +124,7 @@ export interface OptionsControllerStatePublic {
    * Renders the AppKit to DOM instead of the default modal.
    * @default false
    */
-  experimental_enableEmbedded?: boolean
+  enableEmbedded?: boolean
 }
 
 export interface OptionsControllerStateInternal {
@@ -253,17 +253,17 @@ export const OptionsController = {
     state.siwx = siwx
   },
 
-  setConnectMethodOrder(connectMethodOrder: ConnectMethod[]) {
+  setconnectMethodsOrder(connectMethodsOrder: ConnectMethod[]) {
     state.features = {
       ...state.features,
-      experimental_connectMethodOrder: connectMethodOrder
+      connectMethodsOrder: connectMethodsOrder
     }
   },
 
-  setWalletFeatureOrder(walletFeatureOrder: WalletFeature[]) {
+  setwalletFeaturesOrder(walletFeaturesOrder: WalletFeature[]) {
     state.features = {
       ...state.features,
-      experimental_walletFeaturesOrder: walletFeatureOrder
+      walletFeaturesOrder: walletFeaturesOrder
     }
   },
 
@@ -277,13 +277,11 @@ export const OptionsController = {
   setCollapseWallets(collapseWallets: boolean) {
     state.features = {
       ...state.features,
-      experimental_collapseWallets: collapseWallets
+      collapseWallets: collapseWallets
     }
   },
 
-  setExperimentalEnableEmbedded(
-    experimental_enableEmbedded: OptionsControllerState['experimental_enableEmbedded']
-  ) {
-    state.experimental_enableEmbedded = experimental_enableEmbedded
+  setExperimentalEnableEmbedded(enableEmbedded: OptionsControllerState['enableEmbedded']) {
+    state.enableEmbedded = enableEmbedded
   }
 }

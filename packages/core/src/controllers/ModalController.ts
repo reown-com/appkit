@@ -68,7 +68,7 @@ export const ModalController = {
   },
 
   close() {
-    const isEmbeddedEnabled = OptionsController.state.experimental_enableEmbedded
+    const isEmbeddedEnabled = OptionsController.state.enableEmbedded
     const connected = Boolean(ChainController.state.activeCaipAddress)
 
     state.open = false

@@ -15,7 +15,7 @@ import { classMap } from 'lit/directives/class-map.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { ConstantsUtil } from '@reown/appkit-core'
 
-const defaultConnectMethodOrder = ConstantsUtil.DEFAULT_FEATURES.experimental_connectMethodOrder
+const defaultConnectMethodsOrder = ConstantsUtil.DEFAULT_FEATURES.connectMethodsOrder
 
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
@@ -115,14 +115,13 @@ export class W3mConnectView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private renderConnectMethod(tabIndex?: number) {
-    const connectMethodOrder =
-      this.features?.experimental_connectMethodOrder || defaultConnectMethodOrder
+    const connectMethodsOrder = this.features?.connectMethodsOrder || defaultConnectMethodsOrder
 
-    if (!connectMethodOrder) {
+    if (!connectMethodsOrder) {
       return null
     }
 
-    return html`${connectMethodOrder.map((method, index) => {
+    return html`${connectMethodsOrder.map((method, index) => {
       switch (method) {
         case 'email':
           return html`${this.emailTemplate(tabIndex)} ${this.separatorTemplate(index, 'email')}`
@@ -152,10 +151,9 @@ export class W3mConnectView extends LitElement {
   }
 
   private checkIsThereNextMethod(currentIndex: number): string | undefined {
-    const connectMethodOrder =
-      this.features?.experimental_connectMethodOrder || defaultConnectMethodOrder
+    const connectMethodsOrder = this.features?.connectMethodsOrder || defaultConnectMethodsOrder
 
-    const nextMethod = connectMethodOrder[currentIndex + 1] as
+    const nextMethod = connectMethodsOrder[currentIndex + 1] as
       | 'wallet'
       | 'social'
       | 'email'
@@ -249,7 +247,7 @@ export class W3mConnectView extends LitElement {
   private walletListTemplate(tabIndex?: number) {
     const enableWallets = this.enableWallets
     const collapseWalletsOldProp = this.features?.emailShowWallets === false
-    const collapseWallets = this.features?.experimental_collapseWallets
+    const collapseWallets = this.features?.collapseWallets
     const shouldCollapseWallets = collapseWalletsOldProp || collapseWallets
 
     if (!enableWallets) {
