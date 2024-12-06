@@ -20,8 +20,13 @@ import {
   type EstimateGasTransactionArgs,
   type AccountControllerState,
   type AdapterNetworkState,
+  type Features,
   SIWXUtil,
-  type ConnectionStatus
+  type ConnectionStatus,
+  type OptionsControllerState,
+  type WalletFeature,
+  type ConnectMethod,
+  type SocialProvider
 } from '@reown/appkit-core'
 import {
   AccountController,
@@ -292,6 +297,14 @@ export class AppKit {
   public setThemeMode(themeMode: ThemeControllerState['themeMode']) {
     ThemeController.setThemeMode(themeMode)
     setColorTheme(ThemeController.state.themeMode)
+  }
+
+  public setTermsConditionsUrl(termsConditionsUrl: string) {
+    OptionsController.setTermsConditionsUrl(termsConditionsUrl)
+  }
+
+  public setPrivacyPolicyUrl(privacyPolicyUrl: string) {
+    OptionsController.setPrivacyPolicyUrl(privacyPolicyUrl)
   }
 
   public setThemeVariables(themeVariables: ThemeControllerState['themeVariables']) {
@@ -597,6 +610,32 @@ export class AppKit {
     }
   }
 
+  public updateFeatures(newFeatures: Partial<Features>) {
+    OptionsController.setFeatures(newFeatures)
+  }
+
+  public updateOptions(newOptions: Partial<OptionsControllerState>) {
+    const currentOptions = OptionsController.state || {}
+    const updatedOptions = { ...currentOptions, ...newOptions }
+    OptionsController.setOptions(updatedOptions)
+  }
+
+  public setConnectMethodsOrder(connectMethodsOrder: ConnectMethod[]) {
+    OptionsController.setConnectMethodsOrder(connectMethodsOrder)
+  }
+
+  public setWalletFeaturesOrder(walletFeaturesOrder: WalletFeature[]) {
+    OptionsController.setWalletFeaturesOrder(walletFeaturesOrder)
+  }
+
+  public setCollapseWallets(collapseWallets: boolean) {
+    OptionsController.setCollapseWallets(collapseWallets)
+  }
+
+  public setSocialsOrder(socialsOrder: SocialProvider[]) {
+    OptionsController.setSocialsOrder(socialsOrder)
+  }
+
   public async disconnect() {
     await this.connectionControllerClient?.disconnect()
   }
@@ -612,6 +651,7 @@ export class AppKit {
     OptionsController.setDebug(options.debug)
     OptionsController.setProjectId(options.projectId)
     OptionsController.setSdkVersion(options.sdkVersion)
+    OptionsController.setEnableEmbedded(options.enableEmbedded)
 
     if (!options.projectId) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
