@@ -26,13 +26,12 @@ const SortableConnectMethodList = dynamic(
 
 export function SectionConnectOptions() {
   const { config, updateFeatures, updateSocials, updateEnableWallets } = useAppKitContext()
-  const collapseWallets = config.features.experimental_collapseWallets
-  const connectMethodOrder =
-    config.features.experimental_connectMethodOrder ||
-    ConstantsUtil.DEFAULT_FEATURES.experimental_connectMethodOrder
+  const collapseWallets = config.features.collapseWallets
+  const connectMethodsOrder =
+    config.features.connectMethodsOrder || ConstantsUtil.DEFAULT_FEATURES.connectMethodsOrder
 
   function toggleCollapseWallets() {
-    updateFeatures({ experimental_collapseWallets: !collapseWallets })
+    updateFeatures({ collapseWallets: !collapseWallets })
   }
 
   function handleNewOrder(items: UniqueIdentifier[]) {
@@ -40,7 +39,7 @@ export function SectionConnectOptions() {
       urlStateUtils.getStateFromURL()?.features || ConstantsUtil.DEFAULT_FEATURES
     updateFeatures({
       ...currentFeatures,
-      experimental_connectMethodOrder: items as ConnectMethod[]
+      connectMethodsOrder: items as ConnectMethod[]
     })
   }
 
@@ -63,7 +62,7 @@ export function SectionConnectOptions() {
   return (
     <div className="flex-grow">
       <SortableConnectMethodList
-        items={connectMethodOrder}
+        items={connectMethodsOrder}
         onToggleOption={handleToggleOption}
         handleNewOrder={handleNewOrder}
         handle={true}

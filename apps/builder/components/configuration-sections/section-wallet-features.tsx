@@ -15,8 +15,7 @@ const defaultWalletFeaturesOrder = ['onramp', 'swaps', 'receive', 'send']
 
 export function SectionWalletFeatures() {
   const { config, updateFeatures } = useAppKitContext()
-  const connectMethodOrder =
-    config.features.experimental_walletFeaturesOrder || defaultWalletFeaturesOrder
+  const connectMethodsOrder = config.features.walletFeaturesOrder || defaultWalletFeaturesOrder
 
   function handleNewOrder(items: UniqueIdentifier[]) {
     const titleValueMap = {
@@ -29,7 +28,7 @@ export function SectionWalletFeatures() {
 
     const currentFeatures =
       urlStateUtils.getStateFromURL()?.features || ConstantsUtil.DEFAULT_FEATURES
-    updateFeatures({ ...currentFeatures, experimental_walletFeaturesOrder: newOrder })
+    updateFeatures({ ...currentFeatures, walletFeaturesOrder: newOrder })
   }
 
   function handleToggleOption(name: WalletFeatureName) {
@@ -51,7 +50,7 @@ export function SectionWalletFeatures() {
     }
   }
 
-  const featureNameMap = connectMethodOrder.map(name => {
+  const featureNameMap = connectMethodsOrder.map(name => {
     switch (name) {
       case 'onramp':
         return 'Buy'

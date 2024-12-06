@@ -14,8 +14,8 @@ export type URLState = {
   enableWallets: boolean
   termsConditionsUrl?: string
   privacyPolicyUrl?: string
-  walletFeatureOrder?: WalletFeature[]
-  connectMethodOrder?: ConnectMethod[]
+  walletFeaturesOrder?: WalletFeature[]
+  connectMethodsOrder?: ConnectMethod[]
   collapseWallets?: boolean
   mixColor?: string
   accentColor?: string
