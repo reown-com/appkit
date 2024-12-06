@@ -7,7 +7,8 @@ import {
   featuredSdkOptions,
   multichainSdkOptions,
   testingSdkOptions,
-  bitcoinSdkOptions
+  bitcoinSdkOptions,
+  siwxSdkOptions
 } from '../utils/DataUtil'
 import { ConfigurationList } from '../components/ConfigurationList'
 
@@ -29,6 +30,7 @@ export default function HomePage() {
         }
         sdkOptions={multichainSdkOptions}
       />
+      <ConfigurationList title="SIWX" sdkOptions={siwxSdkOptions} />
     </>
   )
 }

@@ -12,7 +12,7 @@
     "build:clean": "rm -rf dist",
     "build": "tsc --build",
     "watch": "tsc --watch",
-    "test": "vitest run --dir tests --coverage.enabled=true --coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true",
+    "test": "vitest run --coverage.enabled=true -- coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "@vitest/coverage-v8": "2.1.3",
+    "happy-dom": "15.11.7",
     "vitest": "2.1.3"
   }
 }

@@ -83,7 +83,10 @@ export class W3mSnackBar extends LitElement {
       if (this.timeout) {
         clearTimeout(this.timeout)
       }
-      this.timeout = setTimeout(() => SnackController.hide(), 2500)
+
+      if (SnackController.state.autoClose) {
+        this.timeout = setTimeout(() => SnackController.hide(), 2500)
+      }
     } else {
       this.animate(
         [

@@ -1,10 +1,9 @@
 import { describe, test, expect, beforeAll, vi, afterAll } from 'vitest'
 import { type SIWXMessage } from '@reown/appkit-core'
 import { InformalMessenger } from '../../src/index.js'
-import type { SIWXMessenger } from '../../src/core/SIWXMessenger.js'
 
 type Case = {
-  params: SIWXMessage.Input & SIWXMessenger.ConstructorParams
+  params: SIWXMessage.Input & InformalMessenger.ConstructorParams
   expected: string
 }
 
@@ -25,9 +24,9 @@ This is a statement
 
 URI: siwx://example.com
 Version: 1
+Chain ID: eip155:1
 Nonce: 123
-Issued At: 2024-01-01T00:00:00.000Z
-Chain ID: eip155:1`
+Issued At: 2024-01-01T00:00:00.000Z`
   },
   {
     params: {
@@ -46,12 +45,40 @@ Chain ID: eip155:1`
 
 URI: siwx://example.com
 Version: 1
+Chain ID: eip155:1
 Nonce: 123
 Issued At: 2024-01-01T00:00:00.000Z
 Expiration Time: 2022-01-03T00:00:00.000Z
 Not Before: 2022-01-02T00:00:00.000Z
 Request ID: 123
-Chain ID: eip155:1
+Resources:
+- resource1
+- resource2`
+  },
+  {
+    params: {
+      domain: 'example.com',
+      accountAddress: '0x1234567890abcdef1234567890abcdef12345678',
+      chainId: 'eip155:1',
+      uri: 'siwx://example.com',
+      getNonce: () => Promise.resolve('123'),
+      getRequestId: () => Promise.resolve('123'),
+      expiration: 24 * 60 * 60 * 1000,
+      notBefore: '2022-01-02T00:00:00Z',
+      resources: ['resource1', 'resource2'],
+      clearChainIdNamespace: true
+    },
+    expected: `example.com wants you to sign in with your **blockchain** account:
+0x1234567890abcdef1234567890abcdef12345678
+
+URI: siwx://example.com
+Version: 1
+Chain ID: 1
+Nonce: 123
+Issued At: 2024-01-01T00:00:00.000Z
+Expiration Time: 2022-01-03T00:00:00.000Z
+Not Before: 2022-01-02T00:00:00.000Z
+Request ID: 123
 Resources:
 - resource1
 - resource2`

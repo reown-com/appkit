@@ -27,7 +27,7 @@ importers:
         version: 6.18.1(eslint@8.56.0)(typescript@5.3.3)
       '@vitest/coverage-v8':
         specifier: 2.1.3
-        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
+        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
       '@vitest/ui':
         specifier: 2.1.8
         version: 2.1.8(vitest@2.1.3)
@@ -75,7 +75,7 @@ importers:
         version: 0.22.0(rollup@4.28.0)(vite@5.2.11(@types/node@20.11.5)(lightningcss@1.28.2)(terser@5.36.0))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
+        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
 
   apps/demo:
     dependencies:
@@ -1172,7 +1172,7 @@ importers:
         version: 2.1.21
       '@vitest/coverage-v8':
         specifier: 2.1.3
-        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
+        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
       '@wallet-standard/features':
         specifier: 1.0.3
         version: 1.0.3
@@ -1181,7 +1181,7 @@ importers:
         version: 2.17.0
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
+        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
 
   packages/adapters/ethers:
     dependencies:
@@ -1230,13 +1230,13 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.1.3
-        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
+        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
       '@walletconnect/types':
         specifier: 2.17.0
         version: 2.17.0
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
+        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
 
   packages/adapters/ethers5:
     dependencies:
@@ -1285,13 +1285,13 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.1.3
-        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
+        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
       '@walletconnect/types':
         specifier: 2.17.0
         version: 2.17.0
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
+        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
 
   packages/adapters/polkadot:
     dependencies:
@@ -1307,10 +1307,10 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.1.3
-        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
+        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
+        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
 
   packages/adapters/solana:
     dependencies:
@@ -1390,7 +1390,7 @@ importers:
         version: 18.3.1
       '@vitest/coverage-v8':
         specifier: 2.1.3
-        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
+        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
       '@vue/runtime-core':
         specifier: 3.4.3
         version: 3.4.3
@@ -1402,7 +1402,7 @@ importers:
         version: 18.3.1(react@18.3.1)
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
+        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
       vue:
         specifier: 3.4.3
         version: 3.4.3(typescript@5.3.3)
@@ -1466,13 +1466,13 @@ importers:
         version: 18.3.1
       '@vitest/coverage-v8':
         specifier: 2.1.3
-        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
+        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
       '@walletconnect/types':
         specifier: 2.17.0
         version: 2.17.0
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
+        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
 
   packages/appkit:
     dependencies:
@@ -1527,7 +1527,7 @@ importers:
         version: 18.3.1
       '@vitest/coverage-v8':
         specifier: 2.1.3
-        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
+        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
       '@vue/runtime-core':
         specifier: 3.4.3
         version: 3.4.3
@@ -1539,7 +1539,7 @@ importers:
         version: 18.3.1(react@18.3.1)
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
+        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
       vue:
         specifier: 3.x
         version: 3.4.3(typescript@5.3.3)
@@ -1597,7 +1597,7 @@ importers:
         version: 18.3.1
       '@vitest/coverage-v8':
         specifier: 2.1.3
-        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
+        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
       '@vue/runtime-core':
         specifier: 3.4.3
         version: 3.4.3
@@ -1609,7 +1609,7 @@ importers:
         version: 18.3.1(react@18.3.1)
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
+        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
       vue:
         specifier: 3.x
         version: 3.4.3(typescript@5.3.3)
@@ -1652,10 +1652,10 @@ importers:
         version: 1.95.8(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@vitest/coverage-v8':
         specifier: 2.1.3
-        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
+        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
+        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
 
   packages/cdn:
     dependencies:
@@ -1751,10 +1751,10 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.1.3
-        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
+        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
+        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
 
   packages/core:
     dependencies:
@@ -1776,10 +1776,10 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.1.3
-        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
+        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
+        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
       vue:
         specifier: 3.x
         version: 3.4.3(typescript@5.3.3)
@@ -1810,10 +1810,10 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.1.3
-        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
+        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
+        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
 
   packages/polyfills:
     dependencies:
@@ -1851,10 +1851,10 @@ importers:
         version: 4.0.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@vitest/coverage-v8':
         specifier: 2.1.3
-        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
+        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
+        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
 
   packages/scaffold-ui-new:
     dependencies:
@@ -1879,7 +1879,7 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.1.3
-        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
+        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
 
   packages/siwe:
     dependencies:
@@ -1931,10 +1931,13 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.1.3
-        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
+        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
+      happy-dom:
+        specifier: 15.11.7
+        version: 15.11.7
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
+        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
 
   packages/ui:
     dependencies:
@@ -1959,7 +1962,7 @@ importers:
         version: 1.5.5
       '@vitest/coverage-v8':
         specifier: 2.1.3
-        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
+        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
       eslint-plugin-lit:
         specifier: 1.11.0
         version: 1.11.0(eslint@8.57.0)
@@ -1968,7 +1971,7 @@ importers:
         version: 2.0.4(eslint@8.57.0)
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
+        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
 
   packages/ui-new:
     dependencies:
@@ -1993,7 +1996,7 @@ importers:
         version: 1.5.5
       '@vitest/coverage-v8':
         specifier: 2.1.3
-        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
+        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
       eslint-plugin-lit:
         specifier: 1.11.0
         version: 1.11.0(eslint@8.57.0)
@@ -2002,7 +2005,7 @@ importers:
         version: 2.0.4(eslint@8.57.0)
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
+        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
 
   packages/wallet:
     dependencies:
@@ -2021,13 +2024,13 @@ importers:
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.1.3
-        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
+        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))
       jsdom:
         specifier: 24.1.0
         version: 24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       vitest:
         specifier: 2.1.3
-        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
+        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
 
   services/id-allocation-service:
     dependencies:
@@ -10514,6 +10517,10 @@ packages:
     engines: {node: '>=0.4.7'}
     hasBin: true
 
+  happy-dom@15.11.7:
+    resolution: {integrity: sha512-KyrFvnl+J9US63TEzwoiJOQzZBJY7KgBushJA8X61DMbNsH+2ONkDuLDnCnwUiPTF42tLoEmrPyoqbenVA5zrg==}
+    engines: {node: '>=18.0.0'}
+
   has-bigints@1.0.2:
     resolution: {integrity: sha512-tSvCKtBr9lkF0Ex0aQiP9N+OpV4zi2r/Nee5VkRDbaqv35RLYMzbwQfFSZZH0kR+Rd6302UJZ2p/bJCEoR3VoQ==}
 
@@ -14481,6 +14488,10 @@ packages:
 
   whatwg-fetch@3.6.20:
     resolution: {integrity: sha512-EqhiFU6daOA8kpjOWTL0olhVOF3i7OrFzSYiGsEMB8GcXS+RrzauAERX65xMeNWVqxA6HXH2m69Z9LaKKdisfg==}
+
+  whatwg-mimetype@3.0.0:
+    resolution: {integrity: sha512-nt+N2dzIutVRxARx1nghPKGv1xHikU7HKdfafKkLNLindmPU/ch3U31NOCGGA/dmPcmb1VlofO0vnKAcsm0o/Q==}
+    engines: {node: '>=12'}
 
   whatwg-mimetype@4.0.0:
     resolution: {integrity: sha512-QaKxh0eNIi2mE9p2vEdzfagOKHCcj1pJ56EEHGQOVxp8r9/iszLUUV7v89x9O1p/T+NlTM5W7jW6+cz4Fq1YVg==}
@@ -23571,7 +23582,7 @@ snapshots:
       vite: 5.4.10(@types/node@20.11.5)(lightningcss@1.28.2)(terser@5.36.0)
       vue: 3.4.3(typescript@5.3.3)
 
-  '@vitest/coverage-v8@2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))':
+  '@vitest/coverage-v8@2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -23585,7 +23596,7 @@ snapshots:
       std-env: 3.8.0
       test-exclude: 7.0.1
       tinyrainbow: 1.2.0
-      vitest: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
+      vitest: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -23636,7 +23647,7 @@ snapshots:
       sirv: 3.0.0
       tinyglobby: 0.2.10
       tinyrainbow: 1.2.0
-      vitest: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
+      vitest: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0)
 
   '@vitest/utils@2.1.3':
     dependencies:
@@ -27651,6 +27662,12 @@ snapshots:
       wordwrap: 1.0.0
     optionalDependencies:
       uglify-js: 3.19.3
+
+  happy-dom@15.11.7:
+    dependencies:
+      entities: 4.5.0
+      webidl-conversions: 7.0.0
+      whatwg-mimetype: 3.0.0
 
   has-bigints@1.0.2: {}
 
@@ -32138,7 +32155,7 @@ snapshots:
       lightningcss: 1.28.2
       terser: 5.36.0
 
-  vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0):
+  vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(lightningcss@1.28.2)(terser@5.36.0):
     dependencies:
       '@vitest/expect': 2.1.3
       '@vitest/mocker': 2.1.3(@vitest/spy@2.1.3)(vite@5.4.10(@types/node@20.11.5)(lightningcss@1.28.2)(terser@5.36.0))
@@ -32162,6 +32179,7 @@ snapshots:
     optionalDependencies:
       '@types/node': 20.11.5
       '@vitest/ui': 2.1.8(vitest@2.1.3)
+      happy-dom: 15.11.7
       jsdom: 24.1.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
       - less
@@ -32438,6 +32456,8 @@ snapshots:
       iconv-lite: 0.6.3
 
   whatwg-fetch@3.6.20: {}
+
+  whatwg-mimetype@3.0.0: {}
 
   whatwg-mimetype@4.0.0: {}
 

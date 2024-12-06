@@ -1,29 +1,19 @@
 import { createAppKit } from '@reown/appkit/react'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
-import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 
 import { AppKitButtons } from '../../components/AppKitButtons'
-import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsEthersSolana } from '../../components/MultiChainTestsEthersSolana'
 import { mainnet } from '@reown/appkit/networks'
-import { DefaultSIWX } from '@reown/appkit-siwx'
-import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
+import { CloudAuthSIWX } from '@reown/appkit-siwx'
 
-const networks = ConstantsUtil.AllNetworks
-networks.push(...ConstantsUtil.BitcoinNetworks)
+const networks = ConstantsUtil.EvmNetworks
 
 const etherAdapter = new EthersAdapter()
 
-const solanaWeb3JsAdapter = new SolanaAdapter({
-  wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
-})
-
-const bitcoinAdapter = new BitcoinAdapter({})
-
 const modal = createAppKit({
-  adapters: [etherAdapter, solanaWeb3JsAdapter, bitcoinAdapter],
+  adapters: [etherAdapter],
   projectId: ConstantsUtil.ProjectId,
   networks,
   defaultNetwork: mainnet,
@@ -32,12 +22,12 @@ const modal = createAppKit({
   },
   termsConditionsUrl: 'https://reown.com/terms-of-service',
   privacyPolicyUrl: 'https://reown.com/privacy-policy',
-  siwx: new DefaultSIWX()
+  siwx: new CloudAuthSIWX()
 })
 
 ThemeStore.setModal(modal)
 
-export default function MultiChainEthersSolana() {
+export default function SIWXCloudAuth() {
   return (
     <>
       <AppKitButtons />
