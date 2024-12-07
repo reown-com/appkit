@@ -29,7 +29,7 @@ export class W3mModal extends LitElement {
   private abortController?: AbortController = undefined
 
   // -- State & Properties -------------------------------- //
-  @property() private enableEmbedded = OptionsController.state.enableEmbedded
+  @property({ type: Boolean }) private enableEmbedded = OptionsController.state.enableEmbedded
 
   @state() private open = ModalController.state.open
 
@@ -52,6 +52,10 @@ export class W3mModal extends LitElement {
       ]
     )
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })
+  }
+
+  public override firstUpdated() {
+    OptionsController.setEnableEmbedded(this.enableEmbedded)
   }
 
   public override disconnectedCallback() {
