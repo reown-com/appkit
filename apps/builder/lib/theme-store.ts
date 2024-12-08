@@ -15,9 +15,9 @@ interface ThemeState {
 
 export const state = proxy<ThemeState>({
   mixColorStrength: 0,
-  mixColor: '#FFFFFF',
-  accentColor: '#3B82F6',
-  borderRadius: '12px',
+  mixColor: '',
+  accentColor: '',
+  borderRadius: '2px',
   themeVariables: {},
   modal: undefined,
   fontFamily: ''

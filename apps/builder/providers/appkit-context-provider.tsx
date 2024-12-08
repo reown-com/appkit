@@ -96,16 +96,8 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
     ThemeStore.setAccentColor(variables['--w3m-accent'] || '')
     ThemeStore.setMixColor(variables['--w3m-color-mix'] || '')
     ThemeStore.setMixColorStrength(variables['--w3m-color-mix-strength'] || 0)
-    ThemeStore.setBorderRadius(variables['--w3m-border-radius-master'] || '')
+    ThemeStore.setBorderRadius(variables['--w3m-border-radius-master'] || '2px')
     ThemeStore.setFontFamily(variables['--w3m-font-family'] || '')
-  }
-
-  function initializeThemeStore(variables: ThemeVariables) {
-    ThemeStore.state.accentColor = variables['--w3m-accent'] || ''
-    ThemeStore.state.mixColor = variables['--w3m-color-mix'] || ''
-    ThemeStore.state.mixColorStrength = variables['--w3m-color-mix-strength'] || 0
-    ThemeStore.state.borderRadius = variables['--w3m-border-radius-master'] || ''
-    ThemeStore.state.fontFamily = variables['--w3m-font-family'] || ''
   }
 
   function resetConfigs() {
@@ -120,7 +112,6 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
   }
 
   useEffect(() => {
-    initializeThemeStore(initialConfig?.themeVariables || {})
     setTheme(theme as ThemeMode)
     setIsInitialized(true)
   }, [])
