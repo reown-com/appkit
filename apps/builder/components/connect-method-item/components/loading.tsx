@@ -5,7 +5,7 @@ export function ConnectMethodItemLoading() {
     <button
       className={cn(
         'flex items-center justify-between rounded-xl p-3 w-full animate-pulse',
-        'bg-foreground/5 dark:bg-foreground/5'
+        'bg-fg-secondary'
       )}
     >
       <span className="flex items-center gap-2 animation-pulse w-full">

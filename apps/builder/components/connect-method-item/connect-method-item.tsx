@@ -85,9 +85,7 @@ export const ConnectMethodItem = React.memo(
             sorting && styles.sorting,
             dragOverlay && styles.dragOverlay,
             dragging && styles.dragging,
-            featureEnabledMap[value as ConnectMethod]
-              ? 'bg-foreground/5 dark:bg-foreground/5'
-              : 'bg-foreground/[2%] dark:bg-foreground/[2%]',
+            'bg-fg-secondary',
             themeMode
           )}
           style={

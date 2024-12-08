@@ -105,9 +105,7 @@ export const WalletFeatureItem = React.memo(
             onClick={() => onToggleOption?.(value as WalletFeatureName)}
             className={classNames(
               'h-[52px] list-none flex items-center justify-between rounded-2xl p-3 w-full',
-              featureEnabledMap[value as WalletFeatureName]
-                ? 'bg-foreground/5 dark:bg-foreground/5'
-                : 'bg-foreground/[2%] dark:bg-foreground/[2%]'
+              'bg-fg-secondary'
             )}
           >
             <div

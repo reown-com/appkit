@@ -34,10 +34,8 @@
   }
 
   &.dragOverlay {
-    --scale: 1.05;
-    --box-shadow: $box-shadow;
-    --box-shadow-picked-up: $box-shadow-border, -1px 0 15px 0 rgba(34, 33, 81, 0.01),
-      0px 15px 15px 0 rgba(34, 33, 81, 0.25);
+    transition: box-shadow 200ms cubic-bezier(0.18, 0.67, 0.6, 1.22);
+    box-shadow: var(--box-shadow-picked-up);
     z-index: 999;
     opacity: 1;
   }
@@ -67,8 +65,6 @@
   list-style: none;
   transform-origin: 50% 50%;
 
-  -webkit-tap-highlight-color: transparent;
-
   white-space: nowrap;
   transform: scale(var(--scale, 1));
   transition: box-shadow 200ms cubic-bezier(0.18, 0.67, 0.6, 1.22);
@@ -82,35 +78,6 @@
     color: #999;
     background-color: #f1f1f1;
     cursor: not-allowed;
-  }
-
-  &.dragOverlay {
-    cursor: inherit;
-    /* box-shadow: 0 0px 6px 2px $focused-outline-color; */
-    animation: pop 200ms cubic-bezier(0.18, 0.67, 0.6, 1.22);
-    transform: scale(var(--scale));
-    box-shadow: var(--box-shadow-picked-up);
-    opacity: 1;
-  }
-
-  &.color:before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: 0;
-    height: 100%;
-    width: 3px;
-    display: block;
-    border-top-left-radius: 3px;
-    border-bottom-left-radius: 3px;
-    background-color: var(--color);
-  }
-
-  &:hover {
-    .Remove {
-      visibility: visible;
-    }
   }
 
   & span {

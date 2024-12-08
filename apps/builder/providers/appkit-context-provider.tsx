@@ -32,7 +32,9 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
     initialConfig?.termsConditionsUrl || ''
   )
   const [privacyPolicyUrl, setPrivacyPolicyUrl] = useState(initialConfig?.privacyPolicyUrl || '')
-  const [enableWallets, setEnableWallets] = useState<boolean>(Boolean(initialConfig?.enableWallets))
+  const [enableWallets, setEnableWallets] = useState<boolean>(
+    Boolean(initialConfig?.enableWallets) || true
+  )
   const [isDraggingByKey, setIsDraggingByKey] = useState<Record<string, boolean>>({})
   const themeStore = useSnapshot(ThemeStore.state)
   const appKit = themeStore.modal

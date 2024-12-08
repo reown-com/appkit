@@ -34,8 +34,8 @@ export const modal = createAppKit({
   defaultNetwork: mainnet,
   metadata: metadata,
   features: initialConfig?.features || ConstantsUtil.DEFAULT_FEATURES,
-  enableWallets: initialConfig?.enableWallets,
-  themeMode: initialConfig?.themeMode || 'light',
+  enableWallets: initialConfig?.enableWallets || true,
+  themeMode: initialConfig?.themeMode || 'dark',
   themeVariables: initialConfig?.themeVariables || {},
   termsConditionsUrl: initialConfig?.termsConditionsUrl || '',
   privacyPolicyUrl: initialConfig?.privacyPolicyUrl || ''

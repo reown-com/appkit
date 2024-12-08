@@ -23,9 +23,7 @@ export function FeatureButton({
     <div
       className={cn(
         'flex items-center justify-between rounded-xl p-3 w-full h-[52px]',
-        'bg-foreground/5 dark:bg-foreground/5'
-        // isEnabled
-        //   : 'bg-foreground/[2%] dark:bg-foreground/[2%]'
+        'bg-fg-secondary'
       )}
       onClick={onClick}
     >
