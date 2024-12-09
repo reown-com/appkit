@@ -31,10 +31,13 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
   public async connect(): Promise<string> {
     const result = await this.wallet.connect()
 
+    this.bindEvents()
+
     return result.address
   }
 
   public async disconnect(): Promise<void> {
+    this.unbindEvents()
     await this.wallet.disconnect()
   }
 
@@ -80,11 +83,11 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
   ): Promise<BitcoinConnector.SignPSBTResponse> {
     const psbtHex = Buffer.from(params.psbt, 'base64').toString('hex')
 
-    const signedPsbtHex = await this.wallet.signPSBT(psbtHex)
+    const signedPsbtHex = await this.wallet.signPsbt(psbtHex)
 
     let txid: string | undefined = undefined
     if (params.broadcast) {
-      txid = await this.wallet.pushPSBT(signedPsbtHex)
+      txid = await this.wallet.pushPsbt(signedPsbtHex)
     }
 
     return {
@@ -95,6 +98,23 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
 
   public request<T>(_args: RequestArguments): Promise<T> {
     return Promise.reject(new MethodNotSupportedError(this.id, 'request'))
+  }
+
+  public bindEvents(): void {
+    this.unbindEvents()
+
+    this.wallet.on('accountChanged', account => {
+      if (typeof account === 'object' && account && 'address' in account) {
+        this.emit('accountsChanged', [account.address])
+      }
+    })
+    this.wallet.on('disconnect', () => {
+      this.emit('disconnect')
+    })
+  }
+
+  public unbindEvents(): void {
+    this.wallet.removeAllListeners()
   }
 
   public static getWallet(params: OKXConnector.GetWalletParams): OKXConnector | undefined {
@@ -125,8 +145,8 @@ export namespace OKXConnector {
     disconnect(): Promise<void>
     getAccounts(): Promise<string[]>
     signMessage(signStr: string, type?: 'ecdsa' | 'bip322-simple'): Promise<string>
-    signPSBT(psbtHex: string): Promise<string>
-    pushPSBT(psbtHex: string): Promise<string>
+    signPsbt(psbtHex: string): Promise<string>
+    pushPsbt(psbtHex: string): Promise<string>
     send(params: {
       from: string
       to: string
@@ -135,6 +155,8 @@ export namespace OKXConnector {
       memo?: string
       memoPos?: number
     }): Promise<{ txhash: string }>
+    on(event: string, listener: (param?: unknown) => void): void
+    removeAllListeners(): void
   }
 
   export type GetWalletParams = Omit<ConstructorParams, 'wallet'>
