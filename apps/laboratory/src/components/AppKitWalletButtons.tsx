@@ -1,7 +1,7 @@
 import { Button, Flex, Heading, Stack, StackDivider } from '@chakra-ui/react'
 import { useAppKitWallet } from '@reown/appkit-wallet-button/react'
 import type { Wallet } from '@reown/appkit-wallet-button'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { useAppKitAccount } from '@reown/appkit/react'
 import { useChakraToast } from './Toast'
 
@@ -59,9 +59,9 @@ export function AppKitWalletButtons() {
 
 function WalletButtonComponents({ wallets }: WalletButtonComponentsProps) {
   return wallets.map(wallet => (
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    <appkit-wallet-button key={wallet} wallet={wallet} />
+    <Fragment key={wallet}>
+      <appkit-wallet-button wallet={wallet} />
+    </Fragment>
   ))
 }
 

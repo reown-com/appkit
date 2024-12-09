@@ -243,8 +243,6 @@ export class W3mConnectingFarcasterView extends LitElement {
       return null
     }
 
-    const themeVariables = ThemeController.state.themeVariables
-
     const size = this.getBoundingClientRect().width - 40
 
     return html` <wui-qr-code
@@ -253,7 +251,7 @@ export class W3mConnectingFarcasterView extends LitElement {
       uri=${this.uri}
       ?farcaster=${true}
       data-testid="wui-qr-code"
-      color=${ifDefined(themeVariables['--w3m-qr-color'])}
+      color=${ifDefined(ThemeController.state.themeVariables['--w3m-qr-color'])}
     ></wui-qr-code>`
   }
 

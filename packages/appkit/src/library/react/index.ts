@@ -34,7 +34,6 @@ declare global {
       'appkit-account-button': Pick<AppKitAccountButton, 'disabled' | 'balance'>
       'appkit-network-button': Pick<AppKitNetworkButton, 'disabled'>
       'w3m-connect-button': Pick<W3mConnectButton, 'size' | 'label' | 'loadingLabel'>
-      // @TODO: add <w3m-wallet-button> here
       'w3m-account-button': Pick<W3mAccountButton, 'disabled' | 'balance'>
       'w3m-button': Pick<W3mButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
       'w3m-network-button': Pick<W3mNetworkButton, 'disabled'>

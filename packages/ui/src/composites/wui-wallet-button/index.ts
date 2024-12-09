@@ -69,9 +69,9 @@ export class WuiWalletButton extends LitElement {
   }
 
   private rightViewTemplate() {
-    return html`<wui-text variant="paragraph-500" color="fg-100"
-      >${this.name || 'Unknown'}</wui-text
-    >`
+    return html`
+      <wui-text variant="paragraph-500" color="fg-100">${this.name || 'Unknown'} </wui-text>
+    `
   }
 }
 

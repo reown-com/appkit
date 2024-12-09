@@ -274,7 +274,6 @@ export const ApiController = {
   prefetch() {
     const promises = [
       ApiController.fetchFeaturedWallets(),
-      ApiController.fetchFeaturedWallets(),
       ApiController.fetchRecommendedWallets(),
       ApiController.fetchNetworkImages(),
       ApiController.fetchConnectorImages()

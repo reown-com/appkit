@@ -8,6 +8,9 @@ import type { ThemeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
+// -- Constants ---------------------------------------------- //
+
+const DEFAULT_ICON_COLOR = '#3396ff'
 @customElement('wui-qr-code')
 export class WuiQrCode extends LitElement {
   public static override styles = [resetStyles, styles]
@@ -35,7 +38,7 @@ export class WuiQrCode extends LitElement {
     this.dataset['clear'] = String(this.arenaClear)
     this.style.cssText = `
      --local-size: ${this.size}px;
-     --local-icon-color: ${this.color ?? '#3396ff'}
+     --local-icon-color: ${this.color ?? DEFAULT_ICON_COLOR}
     `
 
     return html`${this.templateVisual()} ${this.templateSvg()}`

@@ -62,8 +62,6 @@ export class W3mWalletReceiveView extends LitElement {
       throw new Error('w3m-wallet-receive-view: No account provided')
     }
 
-    const themeVariables = ThemeController.state.themeVariables
-
     const networkImage = AssetUtil.getNetworkImage(this.network)
 
     return html` <wui-flex
@@ -96,7 +94,7 @@ export class W3mWalletReceiveView extends LitElement {
           theme=${ThemeController.state.themeMode}
           uri=${this.address}
           ?arenaClear=${true}
-          color=${ifDefined(themeVariables['--w3m-qr-color'])}
+          color=${ifDefined(ThemeController.state.themeVariables['--w3m-qr-color'])}
           data-testid="wui-qr-code"
         ></wui-qr-code>
         <wui-text variant="paragraph-500" color="fg-100" align="center">

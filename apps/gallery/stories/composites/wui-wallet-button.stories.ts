@@ -11,7 +11,6 @@ export default {
   args: {
     name: 'Rainbow',
     imageSrc: walletImageSrc,
-
     loading: false,
     error: false,
     icon: undefined,

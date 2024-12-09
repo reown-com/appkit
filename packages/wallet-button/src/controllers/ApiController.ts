@@ -36,7 +36,6 @@ export const ApiController = {
   },
 
   async fetchWalletButtons() {
-    // Only fetch once. This is necessary if the wallet button react hook is called multiple times
     if (state.fetching) {
       return
     }
