@@ -11,6 +11,7 @@ export interface WalletButtonControllerState {
 
 // -- State --------------------------------------------- //
 const state = proxy<WalletButtonControllerState>({
+  ready: false,
   pending: false
 })
 
@@ -32,5 +33,5 @@ export const WalletButtonController = {
 
   setData(data: ParsedCaipAddress) {
     state.data = data
-  },
+  }
 }
