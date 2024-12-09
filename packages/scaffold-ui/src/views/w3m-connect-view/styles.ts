@@ -43,4 +43,9 @@ export default css`
     pointer-events: none;
     user-select: none;
   }
+
+  wui-separator {
+    margin: var(--wui-spacing-s) calc(var(--wui-spacing-s) * -1);
+    width: calc(100% + var(--wui-spacing-s) * 2);
+  }
 `
