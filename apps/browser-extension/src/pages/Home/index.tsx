@@ -70,8 +70,8 @@ export function Home() {
       display="flex"
       alignItems="center"
       flexDirection="column"
-      background="backgroundPrimary"
-      paddingY="36"
+      background="accent100"
+      paddingY="32"
       paddingX="8"
     >
       <Box
@@ -90,7 +90,7 @@ export function Home() {
           gap="12"
         >
           <Zorb />
-          <Text as="h1" textAlign="center" fontSize="18" color="textPrimary">
+          <Text as="h1" textAlign="center" fontSize="18" color="accent010">
             {HelperUtil.shortenAddress(account)}
           </Text>
           <Box display="flex" alignItems="center" gap="12">
