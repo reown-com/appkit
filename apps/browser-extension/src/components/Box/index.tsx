@@ -2,9 +2,8 @@ import { createElement, forwardRef, type AllHTMLAttributes, type ElementType } f
 import clsx, { type ClassValue } from 'clsx'
 import { atoms, type Atoms } from '../../css/atoms'
 import { sprinkles } from '../../css/sprinkless.css'
-import { ReactHTMLElement } from 'react'
 
-type HTMLProperties = Omit<AllHTMLAttributes<ReactHTMLElement<any>>, 'as' | 'className'>
+type HTMLProperties = Omit<AllHTMLAttributes<HTMLElement>, 'as' | 'className'>
 
 // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 type Props = Atoms &
@@ -14,7 +13,7 @@ type Props = Atoms &
     className?: ClassValue
   }
 
-export const Box = forwardRef<ReactHTMLElement<any>, Props>(
+export const Box = forwardRef<HTMLElement, Props>(
   ({ as = 'div', testId, className, ...props }: Props, ref) => {
     const atomProps: Record<string, unknown> = {}
     const nativeProps: Record<string, unknown> = {}
