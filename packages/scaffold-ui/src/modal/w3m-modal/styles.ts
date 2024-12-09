@@ -37,6 +37,7 @@ export default css`
     animation: zoom-in 0.2s var(--wui-ease-out-power-2);
     animation-fill-mode: backwards;
     outline: none;
+    transition: border-radius var(--wui-duration-lg) var(--wui-ease-out-power-1);
   }
 
   :host(.embedded) wui-card {

@@ -55,6 +55,13 @@ export class W3mModal extends LitElement {
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })
   }
 
+  public override firstUpdated() {
+    OptionsController.setEnableEmbedded(this.enableEmbedded)
+    if (this.enableEmbedded && this.caipAddress) {
+      ModalController.close()
+    }
+  }
+
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
     this.onRemoveKeyboardListener()
@@ -184,7 +191,7 @@ export class W3mModal extends LitElement {
 
     await SIWXUtil.initializeIfEnabled()
 
-    if (!nextConnected) {
+    if (!nextConnected || this.enableEmbedded) {
       ModalController.close()
     }
   }
