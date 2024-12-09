@@ -127,6 +127,10 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const okxwallet = (window as any)?.okxwallet
     const wallet = okxwallet?.bitcoin
+    /**
+     * OKX doesn't provide a way to get the image URL specifally for bitcoin
+     * so we use the icon for cardano as a fallback
+     */
     const imageUrl = okxwallet?.cardano?.icon || ''
 
     if (wallet) {
