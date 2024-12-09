@@ -25,7 +25,7 @@ export class AppKitWalletButton extends LitElement {
 
   @state() private error = false
 
-  @state() private ready = ApiController.state.walletButtons.length > 0
+  @state() private ready = WalletUtil.isWalletButtonReady(this.wallet)
 
   public constructor() {
     super()
@@ -38,10 +38,8 @@ export class AppKitWalletButton extends LitElement {
           }
           this.caipAddress = val
         }),
-        ApiController.subscribeKey('walletButtons', val => {
-          if (val.length) {
-            this.ready = true
-          }
+        ApiController.subscribeKey('walletButtons', () => {
+          this.ready = WalletUtil.isWalletButtonReady(this.wallet)
         })
       ]
     )

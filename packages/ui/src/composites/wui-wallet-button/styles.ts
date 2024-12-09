@@ -55,6 +55,6 @@ export default css`
   }
 
   :host > button:disabled > wui-icon {
-    opacity: 0.5;
+    filter: grayscale(1);
   }
 `

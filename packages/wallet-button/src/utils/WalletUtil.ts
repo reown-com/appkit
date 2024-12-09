@@ -12,5 +12,12 @@ export const WalletUtil = {
     }
 
     return undefined
+  },
+  isWalletButtonReady(wallet: string) {
+    if (wallet in ConstantsUtil.WalletButtonsIds) {
+      return Boolean(WalletUtil.getWalletButton(wallet))
+    }
+
+    return true
   }
 }

@@ -25,20 +25,20 @@ export function useAppKitWallet(parameters?: {
 }) {
   const { connectors } = useSnapshot(ConnectorController.state)
   const {
-    pending: isPending,
-    ready: isReady,
-    error,
-    data
+    pending: isWalletButtonConnecting,
+    ready: isWalletButtonReady,
+    error: walletButtonError,
+    data: walletButtonData
   } = useSnapshot(WalletButtonController.state)
 
   const { onSuccess, onError } = parameters ?? {}
 
   // Prefetch wallet buttons
   useEffect(() => {
-    if (!isReady) {
+    if (!isWalletButtonReady) {
       ApiController.fetchWalletButtons()
     }
-  }, [isReady])
+  }, [isWalletButtonReady])
 
   useEffect(
     () =>
@@ -117,12 +117,12 @@ export function useAppKitWallet(parameters?: {
   )
 
   return {
-    data,
-    error,
-    isReady,
-    isPending,
-    isError: Boolean(error),
-    isSuccess: Boolean(data),
+    data: walletButtonData,
+    error: walletButtonError,
+    isReady: isWalletButtonReady,
+    isPending: isWalletButtonConnecting,
+    isError: Boolean(walletButtonError),
+    isSuccess: Boolean(walletButtonData),
     connect
   }
 }
