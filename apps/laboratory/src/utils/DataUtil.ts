@@ -47,6 +47,11 @@ export const wagmiSdkOptions: SdkOption[] = [
     description: 'Configuration using wagmi without socials'
   },
   {
+    title: 'Wallet Button',
+    link: '/library/wagmi-wallet-button/',
+    description: 'Configuration using wagmi with wallet buttons'
+  },
+  {
     title: 'Permissions(Sync)',
     link: '/library/wagmi-permissions-sync/',
     description: 'Configuration using wagmi and implementing ERC-7715 with passkey'
@@ -78,6 +83,11 @@ export const ethersSdkOptions: SdkOption[] = [
     title: 'Without Socials',
     link: '/library/ethers-no-socials/',
     description: 'Configuration using ethers without socials'
+  },
+  {
+    title: 'Wallet Button',
+    link: '/library/ethers-wallet-button/',
+    description: 'Configuration using ethers with wallet buttons'
   }
 ]
 
@@ -96,6 +106,11 @@ export const ethers5SdkOptions: SdkOption[] = [
     title: 'Without Socials',
     link: '/library/ethers5-no-socials/',
     description: 'Configuration using ethers without socials'
+  },
+  {
+    title: 'Wallet Button',
+    link: '/library/ethers5-wallet-button/',
+    description: 'Configuration using ethers with socials'
   }
 ]
 
@@ -114,6 +129,11 @@ export const solanaSdkOptions: SdkOption[] = [
     title: 'Without Socials',
     link: '/library/solana-no-socials/',
     description: 'Configuration using ethers without socials'
+  },
+  {
+    title: 'Wallet Button',
+    link: '/library/solana-wallet-button/',
+    description: 'Configuration using solana with wallet buttons'
   }
 ]
 

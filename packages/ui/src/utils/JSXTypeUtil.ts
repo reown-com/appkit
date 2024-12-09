@@ -75,6 +75,7 @@ import type { WuiSeparator } from '../layout/wui-separator/index.js'
 import type { WuiCheckBox } from '../composites/wui-checkbox/index.js'
 import type { WuiSwitch } from '../composites/wui-switch/index.js'
 import type { WuiCertifiedSwitch } from '../composites/wui-certified-switch/index.js'
+import type { WuiWalletButton } from '../composites/wui-wallet-button/index.js'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type CustomElement<E> = Partial<E & { children?: any; onClick: any }>
@@ -152,6 +153,7 @@ declare global {
       'wui-transaction-visual': CustomElement<WuiTransactionVisual>
       'wui-visual-thumbnail': CustomElement<WuiVisualThumbnail>
       'wui-wallet-image': CustomElement<WuiWalletImage>
+      'wui-wallet-button': CustomElement<WuiWalletButton>
       'wui-banner': CustomElement<WuiBanner>
       'wui-list-account': CustomElement<WuiListAccount>
       'wui-checkbox': CustomElement<WuiCheckBox>

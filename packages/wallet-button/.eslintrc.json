@@ -1,0 +1,11 @@
+{
+  "extends": [
+    "plugin:require-extensions/recommended",
+    "../../.eslintrc.json",
+    "plugin:react-hooks/recommended"
+  ],
+  "plugins": ["require-extensions", "react-hooks"],
+  "rules": {
+    "react-hooks/exhaustive-deps": "warn"
+  }
+}

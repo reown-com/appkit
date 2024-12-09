@@ -12,6 +12,7 @@ import { LitElement, html } from 'lit'
 import styles from './styles.js'
 import { state } from 'lit/decorators.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-wallet-receive-view')
 export class W3mWalletReceiveView extends LitElement {
@@ -93,6 +94,7 @@ export class W3mWalletReceiveView extends LitElement {
           theme=${ThemeController.state.themeMode}
           uri=${this.address}
           ?arenaClear=${true}
+          color=${ifDefined(ThemeController.state.themeVariables['--w3m-qr-color'])}
           data-testid="wui-qr-code"
         ></wui-qr-code>
         <wui-text variant="paragraph-500" color="fg-100" align="center">

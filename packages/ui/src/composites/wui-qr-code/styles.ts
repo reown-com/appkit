@@ -43,7 +43,7 @@ export default css`
   wui-icon {
     width: 100%;
     height: 100%;
-    color: #3396ff !important;
+    color: var(--local-icon-color) !important;
     transform: translateY(-50%) translateX(-50%) scale(0.25);
   }
 `

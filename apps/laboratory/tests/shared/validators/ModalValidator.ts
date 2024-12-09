@@ -107,6 +107,17 @@ export class ModalValidator {
     )
   }
 
+  async expectWalletButtonHook(id: string, disabled: boolean) {
+    const walletButtonHook = this.page.getByTestId(`wallet-button-hook-${id}`)
+    await expect(walletButtonHook).toBeVisible({ timeout: 20_000 })
+
+    if (disabled) {
+      await expect(walletButtonHook).toBeDisabled({ timeout: 20_000 })
+    } else {
+      await expect(walletButtonHook).toBeEnabled({ timeout: 20_000 })
+    }
+  }
+
   async expectAcceptedSign() {
     // We use Chakra Toast and it's not quite straightforward to set the `data-testid` attribute on the toast element.
     await expect(this.page.getByText(ConstantsUtil.SigningSucceededToastTitle)).toBeVisible({

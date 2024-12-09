@@ -103,6 +103,7 @@
     "@reown/appkit-scaffold-ui": "workspace:*",
     "@reown/appkit-siwe": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
+    "@reown/appkit-wallet-button": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/types": "2.17.0",

@@ -322,6 +322,7 @@ export interface ThemeVariables {
   '--w3m-font-size-master'?: string
   '--w3m-border-radius-master'?: string
   '--w3m-z-index'?: number
+  '--w3m-qr-color'?: string
 }
 
 export type IconBoxBorderType = 'wui-color-bg-125' | 'wui-accent-glass-010'
