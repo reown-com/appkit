@@ -70,7 +70,7 @@ export function AppKitWalletButtons({ wallets }: AppKitWalletButtonsProps) {
 
 function WalletButtonComponents({ wallets }: WalletButtonComponentsProps) {
   return wallets.map(wallet => (
-    <Fragment key={wallet}>
+    <Fragment key={`wallet-button-${wallet}`}>
       <appkit-wallet-button wallet={wallet} data-testid={`wallet-button-${wallet}`} />
     </Fragment>
   ))
@@ -105,7 +105,7 @@ function WalletButtonHooks({
 
   return wallets.map(wallet => (
     <Button
-      key={wallet}
+      key={`wallet-button-hook-${wallet}`}
       onClick={() => {
         setPendingWallet(wallet)
         connect(wallet)
