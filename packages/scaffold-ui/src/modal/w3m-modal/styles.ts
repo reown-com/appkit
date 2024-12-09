@@ -37,6 +37,7 @@ export default css`
     animation: zoom-in 0.2s var(--wui-ease-out-power-2);
     animation-fill-mode: backwards;
     outline: none;
+    transition: border-radius var(--wui-duration-lg) var(--wui-ease-out-power-1);
   }
 
   :host(.embedded) wui-card {
@@ -76,8 +77,8 @@ export default css`
 
     wui-card {
       max-width: 100%;
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
+      border-bottom-left-radius: var(--local-border-bottom-mobile-radius);
+      border-bottom-right-radius: var(--local-border-bottom-mobile-radius);
       border-bottom: none;
       animation: slide-in 0.2s var(--wui-ease-out-power-2);
     }
