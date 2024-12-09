@@ -73,9 +73,9 @@ export const SocialOptionItem = React.memo(
       const { config, updateFeatures } = useAppKitContext()
       const socials = config.features.socials || []
       const { isDraggingByKey } = useAppKitContext()
-      const emailDragging = isDraggingByKey['Email']
-      const walletsDragging = isDraggingByKey['Wallets']
-      const socialsDragging = isDraggingByKey['Socials']
+      const emailDragging = isDraggingByKey['email']
+      const walletsDragging = isDraggingByKey['wallets']
+      const socialsDragging = isDraggingByKey['socials']
       const isAnyDragging = emailDragging || walletsDragging || socialsDragging
 
       useEffect(() => {

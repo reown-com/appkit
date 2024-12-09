@@ -2,7 +2,7 @@
 
 import { ReactNode, useEffect, useState } from 'react'
 import { Features, ThemeMode, ThemeVariables, type AppKit } from '@reown/appkit/react'
-import { ConstantsUtil } from '@reown/appkit-core'
+import { ConnectMethod, ConstantsUtil } from '@reown/appkit-core'
 import { ThemeStore } from '../lib/theme-store'
 import { URLState, urlStateUtils } from '@/lib/url-state'
 import { AppKitContext } from '@/contexts/appkit-context'
@@ -35,7 +35,11 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
   const [enableWallets, setEnableWallets] = useState<boolean>(
     Boolean(initialConfig?.enableWallets) || true
   )
-  const [isDraggingByKey, setIsDraggingByKey] = useState<Record<string, boolean>>({})
+  const [isDraggingByKey, setIsDraggingByKey] = useState<Record<ConnectMethod, boolean>>({
+    email: false,
+    wallet: false,
+    social: false
+  })
   const themeStore = useSnapshot(ThemeStore.state)
   const appKit = themeStore.modal
 
