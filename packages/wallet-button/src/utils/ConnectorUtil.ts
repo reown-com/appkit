@@ -39,7 +39,9 @@ export const ConnectorUtil = {
 
       const unsubscribeModalController = ModalController.subscribeKey('open', val => {
         if (!val) {
-          RouterController.push('Connect')
+          if (RouterController.state.view !== 'Connect') {
+            RouterController.push('Connect')
+          }
           unsubscribeModalController()
           reject(new Error('Modal closed'))
         }

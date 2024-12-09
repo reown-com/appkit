@@ -25,7 +25,7 @@ export class AppKitWalletButton extends LitElement {
 
   @state() private error = false
 
-  @state() private ready = false
+  @state() private ready = ApiController.state.walletButtons.length > 0
 
   public constructor() {
     super()
@@ -36,7 +36,6 @@ export class AppKitWalletButton extends LitElement {
           if (val) {
             this.error = false
           }
-
           this.caipAddress = val
         }),
         ApiController.subscribeKey('walletButtons', val => {
@@ -90,6 +89,7 @@ export class AppKitWalletButton extends LitElement {
 
     return html`
       <wui-wallet-button
+        data-testid="apkt-wallet-button"
         name=${!this.ready && !walletName ? 'Loading...' : ifDefined(walletName)}
         @click=${async () => {
           this.loading = true
@@ -120,6 +120,7 @@ export class AppKitWalletButton extends LitElement {
 
     return html`
       <wui-wallet-button
+        data-testid="apkt-wallet-button-external"
         name=${ifDefined(connector.name)}
         @click=${async () => {
           this.loading = true
@@ -138,6 +139,7 @@ export class AppKitWalletButton extends LitElement {
 
   private socialTemplate() {
     return html`<wui-wallet-button
+      data-testid="apkt-wallet-button-social"
       name=${this.wallet}
       @click=${async () => {
         this.loading = true
