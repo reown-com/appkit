@@ -18,9 +18,7 @@ export function createReownTransport() {
       const { sendTransaction } = createWalletClient({
         account,
         chain: sepolia,
-        transport: http(
-          'https://frosty-dawn-sound.ethereum-sepolia.quiknode.pro/ea3a5d5f833bab8bb6f229d80756cbd2471e31a8'
-        )
+        transport: http()
       })
 
       const chainId = (localStorage.getItem('chainId') as ChainId | null) ?? '1'

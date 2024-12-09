@@ -2,7 +2,7 @@ import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
-import { resetStyles } from '../../utils/ThemeUtil.js'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { BorderRadiusType, IconType, SizeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-icon-box/index.js'
@@ -10,7 +10,7 @@ import styles from './styles.js'
 
 @customElement('wui-wallet-image')
 export class WuiWalletImage extends LitElement {
-  public static override styles = [resetStyles, styles]
+  public static override styles = [elementStyles, resetStyles, styles]
 
   // -- State & Properties -------------------------------- //
   @property() public size: Exclude<SizeType, 'xl' | 'xs' | 'xxs'> = 'md'

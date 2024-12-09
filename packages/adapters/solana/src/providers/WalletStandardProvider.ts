@@ -147,6 +147,8 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
       throw new WalletSignTransactionError('Empty result')
     }
 
+    this.emit('pendingTransaction', undefined)
+
     if (isVersionedTransaction(transaction)) {
       return VersionedTransaction.deserialize(result.signedTransaction) as T
     }
@@ -174,6 +176,8 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
     if (!result) {
       throw new WalletSendTransactionError('Empty result')
     }
+
+    this.emit('pendingTransaction', undefined)
 
     return base58.encode(result.signature)
   }
@@ -209,6 +213,8 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
       if (!transaction) {
         throw new WalletSignTransactionError('Invalid transaction signature response')
       }
+
+      this.emit('pendingTransaction', undefined)
 
       if (isVersionedTransaction(transaction)) {
         return VersionedTransaction.deserialize(signedTransaction)

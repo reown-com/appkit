@@ -23,7 +23,6 @@
     "build:gallery-new": "pnpm build; pnpm --filter=./apps/gallery-new build",
     "build:laboratory": "pnpm build; pnpm --filter=./apps/laboratory build",
     "build:laboratory-new": "pnpm build; pnpm --filter=./apps/laboratory-new build",
-    "build:demo": "pnpm build; pnpm --filter=./apps/demo build",
     "build:examples": "pnpm build; pnpm --filter=./examples -r build",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage.enabled=true --coverage.reporter=html --coverage.reportOnFailure=true --coverage.all=false --coverage.reportsDirectory=.coverage && vite preview --outDir .coverage --open --port 4777",
