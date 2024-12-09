@@ -32,7 +32,7 @@ export function Token({ token, balance }: TokenProps) {
       background="neutrals1000"
       borderStyle="solid"
       borderWidth="1"
-      borderColor="borderPrimary"
+      borderColor="accent020"
       padding="12"
       borderRadius="16"
       transition="transform"
@@ -40,9 +40,9 @@ export function Token({ token, balance }: TokenProps) {
       userSelect="none"
       className={touchableStyles({ active: 'shrink', hover: 'grow' })}
     >
-      <Box as="img" height="36" width="36" borderRadius="full" src={tokens[token].src} />
+      <Box as="img" height="36" width="36" borderRadius="round" src={tokens[token].src} />
       <Box display="flex" flexDirection="column">
-        <Text textAlign="left" color="textPrimary" fontSize="14">
+        <Text textAlign="left" color="accent010" fontSize="14">
           {tokens[token].title}
         </Text>
         <Text textAlign="left" fontSize="12">
