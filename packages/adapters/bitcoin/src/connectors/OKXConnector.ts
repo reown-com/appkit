@@ -4,6 +4,7 @@ import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 import type { RequestArguments } from '@reown/appkit-core'
 import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
 import { bitcoin } from '@reown/appkit/networks'
+import { UnitsUtil } from '../utils/UnitsUtil.js'
 
 export class OKXConnector extends ProviderEventEmitter implements BitcoinConnector {
   public readonly id = 'OKX'
@@ -74,12 +75,10 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
       throw new Error('No account available')
     }
 
-    const value = (Number(params.amount) / 10 ** network.nativeCurrency.decimals).toString()
-
     const result = await this.wallet.send({
       from,
       to: params.recipient,
-      value
+      value: UnitsUtil.parseSatoshis(params.amount, network)
     })
 
     return result.txhash
