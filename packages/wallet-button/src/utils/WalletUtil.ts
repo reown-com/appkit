@@ -5,7 +5,7 @@ export const WalletUtil = {
   getWalletButton(wallet: string) {
     const walletButtonIds = ConstantsUtil.WalletButtonsIds
 
-    if (wallet && wallet in walletButtonIds) {
+    if (wallet in walletButtonIds) {
       return ApiController.state.walletButtons.find(
         walletButton => walletButton.id === walletButtonIds[wallet as keyof typeof walletButtonIds]
       )

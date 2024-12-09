@@ -1,7 +1,7 @@
 import type { Meta } from '@storybook/web-components'
 import '@reown/appkit-ui/src/composites/wui-wallet-button'
 import { html } from 'lit'
-import { walletImageSrc } from '../../utils/PresetUtils'
+import { iconOptions, walletImageSrc } from '../../utils/PresetUtils'
 import type { WuiWalletButton } from '@reown/appkit-ui/dist/types/src/composites/wui-wallet-button'
 
 type Component = Meta<WuiWalletButton>
@@ -9,18 +9,19 @@ type Component = Meta<WuiWalletButton>
 export default {
   title: 'Composites/wui-wallet-button',
   args: {
-    imageSrc: walletImageSrc,
     name: 'Rainbow',
-    size: 'md',
+    imageSrc: walletImageSrc,
+
     loading: false,
     error: false,
+    icon: undefined,
     disabled: false
   },
   argTypes: {
-    imageSrc: {
+    name: {
       control: { type: 'text' }
     },
-    name: {
+    imageSrc: {
       control: { type: 'text' }
     },
     loading: {
@@ -28,6 +29,10 @@ export default {
     },
     error: {
       control: { type: 'boolean' }
+    },
+    icon: {
+      options: [undefined, ...iconOptions],
+      control: { type: 'select' }
     },
     disabled: {
       control: { type: 'boolean' }
@@ -43,8 +48,8 @@ export const Default: Component = {
   render: args =>
     html`<wui-wallet-button
       .imageSrc=${args.imageSrc}
+      .icon=${args.icon}
       name=${args.name}
-      size=${args.size}
       ?loading=${args.loading}
       ?error=${args.error}
       ?disabled=${args.disabled}

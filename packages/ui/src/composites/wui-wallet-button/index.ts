@@ -7,6 +7,7 @@ import '../../composites/wui-icon-box/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
+import type { IconType } from '../../utils/TypeUtil.js'
 
 @customElement('wui-wallet-button')
 export class WuiWalletButton extends LitElement {
@@ -19,7 +20,7 @@ export class WuiWalletButton extends LitElement {
 
   @property({ type: Boolean }) public walletConnect = false
 
-  @property({ type: Boolean }) public social = false
+  @property({ type: Boolean }) public icon?: IconType
 
   @property({ type: Boolean }) public loading = false
 
@@ -56,19 +57,15 @@ export class WuiWalletButton extends LitElement {
       return html`<wui-loading-spinner size="md" color="fg-100"></wui-loading-spinner>`
     }
 
-    if (this.social) {
-      return html`<wui-icon size="xl" color="inherit" name=${this.name}></wui-icon>`
+    if (this.icon) {
+      return html`<wui-icon size="xl" color="inherit" name=${this.icon}></wui-icon>`
     }
 
-    if (this.walletConnect) {
-      return html`<wui-icon size="xl" color="inherit" name="walletConnect"></wui-icon>`
+    if (this.imageSrc) {
+      return html`<wui-image src=${this.imageSrc} alt=${this.name}></wui-image>`
     }
 
-    if (!this.imageSrc) {
-      return html`<wui-icon size="xl" color="fg-100" name="walletPlaceholder"></wui-icon>`
-    }
-
-    return html`<wui-image src=${this.imageSrc} alt=${this.name}></wui-image>`
+    return html`<wui-icon size="xl" color="fg-100" name="walletPlaceholder"></wui-icon>`
   }
 
   private rightViewTemplate() {

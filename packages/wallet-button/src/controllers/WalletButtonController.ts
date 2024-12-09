@@ -1,30 +1,36 @@
-import { proxy, subscribe as sub } from 'valtio/vanilla'
+import type { ParsedCaipAddress } from '@reown/appkit-common'
+import { proxy } from 'valtio/vanilla'
 
 // -- Types --------------------------------------------- //
 export interface WalletButtonControllerState {
-  error: boolean
-  loading: boolean
+  data?: ParsedCaipAddress
+  error?: Error
+  ready?: boolean
+  pending: boolean
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<WalletButtonControllerState>({
-  error: false,
-  loading: false
+  pending: false
 })
 
 // -- Controller ---------------------------------------- //
 export const WalletButtonController = {
   state,
 
-  subscribe(callback: (newState: WalletButtonControllerState) => void) {
-    return sub(state, () => callback(state))
+  setReady(ready: boolean) {
+    state.ready = ready
   },
 
-  setLoading(loading: boolean) {
-    state.loading = loading
+  setPending(pending: boolean) {
+    state.pending = pending
   },
 
-  setError(loading: boolean) {
-    state.error = loading
-  }
+  setError(error?: Error) {
+    state.error = error
+  },
+
+  setData(data: ParsedCaipAddress) {
+    state.data = data
+  },
 }

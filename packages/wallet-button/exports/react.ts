@@ -1,32 +1,69 @@
 /* eslint-disable consistent-return */
 import { useSnapshot } from 'valtio'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import { ConstantsUtil } from '../src/utils/ConstantsUtil.js'
-import type { Wallet } from './index.js'
+import type { AppKitWalletButton, Wallet } from './index.js'
 import { ConnectorUtil } from '../src/utils/ConnectorUtil.js'
-import { ConnectorController, type Connector } from '@reown/appkit-core'
+import { ConnectorController, type Connector, ChainController } from '@reown/appkit-core'
 import { WalletUtil } from '../src/utils/WalletUtil.js'
 import type { SocialProvider } from '../src/utils/TypeUtil.js'
 import type { ParsedCaipAddress } from '@reown/appkit-common'
 import { ApiController } from '../src/controllers/ApiController.js'
+import { WalletButtonController } from '../src/controllers/WalletButtonController.js'
 
-interface UseAppKitWalletParameters {
-  onSuccess?: (datat: ParsedCaipAddress) => void
-  onError?: (error: Error) => void
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'appkit-wallet-button': Pick<AppKitWalletButton, 'wallet'>
+    }
+  }
 }
 
-export function useAppKitWallet(parameters?: UseAppKitWalletParameters) {
+export function useAppKitWallet(parameters?: {
+  onSuccess?: (data: ParsedCaipAddress) => void
+  onError?: (error: Error) => void
+}) {
   const { connectors } = useSnapshot(ConnectorController.state)
+  const {
+    pending: isPending,
+    ready: isReady,
+    error,
+    data
+  } = useSnapshot(WalletButtonController.state)
 
   const { onSuccess, onError } = parameters ?? {}
 
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<Error>()
-  const [data, setData] = useState<ParsedCaipAddress>()
+  // Prefetch wallet buttons
+  useEffect(() => {
+    if (!isReady) {
+      ApiController.fetchWalletButtons()
+    }
+  }, [isReady])
+
+  useEffect(
+    () =>
+      ChainController.subscribeKey('activeCaipAddress', val => {
+        if (val) {
+          WalletButtonController.setError(undefined)
+          WalletButtonController.setPending(false)
+        }
+      }),
+    []
+  )
+
+  useEffect(
+    () =>
+      ApiController.subscribeKey('walletButtons', val => {
+        if (val.length) {
+          WalletButtonController.setReady(true)
+        }
+      }),
+    []
+  )
 
   const handleSuccess = useCallback(
     (caipAddress: ParsedCaipAddress) => {
-      setData(caipAddress)
+      WalletButtonController.setData(caipAddress)
       onSuccess?.(caipAddress)
     },
     [onSuccess]
@@ -35,7 +72,7 @@ export function useAppKitWallet(parameters?: UseAppKitWalletParameters) {
   const handleError = useCallback(
     (err: unknown) => {
       const finalError = err instanceof Error ? err : new Error('Something went wrong')
-      setError(finalError)
+      WalletButtonController.setError(finalError)
       onError?.(finalError)
     },
     [onError]
@@ -44,44 +81,48 @@ export function useAppKitWallet(parameters?: UseAppKitWalletParameters) {
   const connect = useCallback(
     async (wallet: Wallet) => {
       try {
-        setIsLoading(true)
+        WalletButtonController.setPending(true)
+        WalletButtonController.setError(undefined)
 
-        await ApiController.fetchWalletButtons()
+        if (ConstantsUtil.Socials.some(social => social === wallet)) {
+          await ConnectorUtil.connectSocial(wallet as SocialProvider).then(handleSuccess)
 
-        const walletButton = WalletUtil.getWalletButton(wallet as string)
+          return
+        }
+
+        const walletButton = WalletUtil.getWalletButton(wallet)
 
         const connector = walletButton
           ? ConnectorController.getConnector(walletButton.id, walletButton.rdns)
           : undefined
 
-        if (ConstantsUtil.Socials.some(social => social === wallet)) {
-          const socialData = await ConnectorUtil.connectSocial(wallet as SocialProvider)
-          handleSuccess(socialData)
-
-          return
-        }
-
         if (connector) {
-          const externalData = await ConnectorUtil.connectExternal(connector)
-          handleSuccess(externalData)
+          await ConnectorUtil.connectExternal(connector).then(handleSuccess)
 
           return
         }
 
-        const walletConnectData = await ConnectorUtil.connectWalletConnect({
+        await ConnectorUtil.connectWalletConnect({
           walletConnect: wallet === 'walletConnect',
           connector: connectors.find(c => c.id === 'walletConnect') as Connector | undefined,
           wallet: walletButton
-        })
-        handleSuccess(walletConnectData)
+        }).then(handleSuccess)
       } catch (err) {
         handleError(err)
       } finally {
-        setIsLoading(false)
+        WalletButtonController.setPending(false)
       }
     },
     [connectors, handleSuccess, handleError]
   )
 
-  return { data, error, isLoading, isError: Boolean(error), isSuccess: Boolean(data), connect }
+  return {
+    data,
+    error,
+    isReady,
+    isPending,
+    isError: Boolean(error),
+    isSuccess: Boolean(data),
+    connect
+  }
 }

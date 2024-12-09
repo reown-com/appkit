@@ -40,16 +40,16 @@ export const ConnectorUtil = {
       const unsubscribeModalController = ModalController.subscribeKey('open', val => {
         if (!val) {
           RouterController.push('Connect')
-          reject(new Error('Modal closed'))
           unsubscribeModalController()
+          reject(new Error('Modal closed'))
         }
       })
 
       const unsubscribeChainController = ChainController.subscribeKey('activeCaipAddress', val => {
         if (val) {
           ModalController.close()
-          resolve(ParseUtil.parseCaipAddress(val))
           unsubscribeChainController()
+          resolve(ParseUtil.parseCaipAddress(val))
         }
       })
     })
@@ -65,8 +65,8 @@ export const ConnectorUtil = {
       })
 
       ConnectionController.connectExternal(connector, connector.chain).catch(() => {
-        reject(new Error('Connection rejected'))
         unsubscribeChainController()
+        reject(new Error('Connection rejected'))
       })
     })
   },

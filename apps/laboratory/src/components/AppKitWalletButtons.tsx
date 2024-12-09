@@ -1,144 +1,111 @@
-import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react'
+import { Button, Flex, Heading, Stack, StackDivider } from '@chakra-ui/react'
 import { useAppKitWallet } from '@reown/appkit-wallet-button/react'
 import type { Wallet } from '@reown/appkit-wallet-button'
 import { useState } from 'react'
+import { useAppKitAccount } from '@reown/appkit/react'
+import { useChakraToast } from './Toast'
 
-interface CustomAppKitWalletButtonProps {
-  heading: string
+interface WalletButtonHooksProps {
+  isSocials?: boolean
+  isWalletConnect?: boolean
   wallets: Wallet[]
 }
 
+interface WalletButtonComponentsProps {
+  wallets: Wallet[]
+}
+
+const socialWallets: Wallet[] = [
+  'google',
+  'x',
+  'discord',
+  'farcaster',
+  'github',
+  'apple',
+  'facebook'
+]
+
+const popularWallets: Wallet[] = ['metamask', 'trust', 'coinbase', 'rainbow', 'jupiter']
+
 export function AppKitWalletButtons() {
   return (
-    <Box>
-      <Heading size="sm" textTransform="uppercase" pb="5">
-        Wallet Buttons
-      </Heading>
+    <Stack divider={<StackDivider />} spacing="4" flexWrap="wrap">
+      <Flex flexDirection="column" gap="4">
+        <Heading size="xs" textTransform="uppercase">
+          Wallet Buttons (Components)
+        </Heading>
 
-      {/*      <w3m-wallet-button wallet="metamask" />
-        <w3m-wallet-button wallet="walletConnect" />
-        <w3m-wallet-button wallet="coinbase" />
-        <w3m-wallet-button wallet="trust" />
-        <w3m-wallet-button wallet="okx" />
-        <w3m-wallet-button wallet="bitget" />
-        <w3m-wallet-button wallet="binance" />
-        <w3m-wallet-button wallet="uniswap" />
-        <w3m-wallet-button wallet="safepal" />
-        <w3m-wallet-button wallet="rainbow" />
-        <w3m-wallet-button wallet="bybit" />
-        <w3m-wallet-button wallet="tokenpocket" />
-        <w3m-wallet-button wallet="ledger" />
-        <w3m-wallet-button wallet="timeless-x" />
-        <w3m-wallet-button wallet="safe" />
-        <w3m-wallet-button wallet="zerion" />
-        <w3m-wallet-button wallet="oneinch" />
-        <w3m-wallet-button wallet="crypto-com" />
-        <w3m-wallet-button wallet="imtoken" />
-        <w3m-wallet-button wallet="kraken" />
-        <w3m-wallet-button wallet="ronin" />
-        <w3m-wallet-button wallet="robinhood" />
-        <w3m-wallet-button wallet="exodus" />
-        <w3m-wallet-button wallet="argent" /> */}
+        <Flex display="flex" flexWrap="wrap" gap="4">
+          <WalletButtonComponents wallets={['walletConnect']} />
+          <WalletButtonComponents wallets={popularWallets} />
+          <WalletButtonComponents wallets={socialWallets} />
+        </Flex>
+      </Flex>
 
-      {/*         <w3m-wallet-button wallet="metamask" />
-        <w3m-wallet-button wallet="walletConnect" />
-        <w3m-wallet-button wallet="coinbase" />
-        <w3m-wallet-button wallet="trust" /> */}
+      <Flex flexDirection="column" gap="4">
+        <Heading size="xs" textTransform="uppercase">
+          Wallet Buttons (Hooks)
+        </Heading>
 
-      <Box display="flex" flexDirection="column" gap="5">
-        <Box display="flex" flexDirection="column" gap="1">
-          <Heading size="xs" textTransform="uppercase" pb="2">
-            QR Code
-          </Heading>
-
-          <w3m-wallet-button wallet="walletConnect" />
-        </Box>
-
-        <Box display="flex" flexDirection="column" gap="1">
-          <Heading size="xs" textTransform="uppercase" pb="2">
-            Wallets
-          </Heading>
-
-          <Flex flexWrap="wrap" alignItems="center" gap="3">
-            <w3m-wallet-button wallet="metamask" />
-            <w3m-wallet-button wallet="coinbase" />
-            <w3m-wallet-button wallet="trust" />
-            <w3m-wallet-button wallet="okx" />
-            <w3m-wallet-button wallet="binance" />
-            <w3m-wallet-button wallet="uniswap" />
-            <w3m-wallet-button wallet="rainbow" />
-            <w3m-wallet-button wallet="ledger" />
-            <w3m-wallet-button wallet="safe" />
-            <w3m-wallet-button wallet="argent" />
-            <w3m-wallet-button wallet="jupiter" />
-          </Flex>
-        </Box>
-
-        <Box display="flex" flexDirection="column" gap="1">
-          <Heading size="xs" textTransform="uppercase" pb="2">
-            Socials
-          </Heading>
-
-          <Flex flexWrap="wrap" alignItems="center" gap="3">
-            <w3m-wallet-button wallet="google" />
-            <w3m-wallet-button wallet="x" />
-            <w3m-wallet-button wallet="discord" />
-            <w3m-wallet-button wallet="farcaster" />
-            <w3m-wallet-button wallet="github" />
-            <w3m-wallet-button wallet="apple" />
-            <w3m-wallet-button wallet="facebook" />
-          </Flex>
-        </Box>
-
-        <CustomAppKitWalletButton heading="Hooks (WalletConnect)" wallets={['walletConnect']} />
-
-        <CustomAppKitWalletButton
-          heading="Hooks (Wallets)"
-          wallets={['walletConnect', 'metamask', 'coinbase', 'rainbow', 'safe', 'jupiter']}
-        />
-        <CustomAppKitWalletButton
-          heading="Hooks (Wallets)"
-          wallets={['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook']}
-        />
-      </Box>
-    </Box>
+        <Flex display="flex" flexWrap="wrap" gap="4">
+          <WalletButtonHooks wallets={['walletConnect']} isWalletConnect />
+          <WalletButtonHooks wallets={popularWallets} />
+          <WalletButtonHooks wallets={socialWallets} isSocials />
+        </Flex>
+      </Flex>
+    </Stack>
   )
 }
 
-function CustomAppKitWalletButton({ heading, wallets }: CustomAppKitWalletButtonProps) {
+function WalletButtonComponents({ wallets }: WalletButtonComponentsProps) {
+  return wallets.map(wallet => (
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    <appkit-wallet-button key={wallet} wallet={wallet} />
+  ))
+}
+
+function WalletButtonHooks({
+  isSocials = false,
+  isWalletConnect = false,
+  wallets
+}: WalletButtonHooksProps) {
   const [pendingWallet, setPendingWallet] = useState<Wallet>()
 
-  const { data, isLoading, isSuccess, isError, connect } = useAppKitWallet({
-    onError: err => {
-      console.log('err', err.message)
+  const toast = useChakraToast()
+
+  const { caipAddress } = useAppKitAccount()
+
+  const { isReady, isPending, connect } = useAppKitWallet({
+    onSuccess() {
+      setPendingWallet(undefined)
     },
-    onSuccess: data => {
-      console.log('data', data)
+    onError(error) {
+      toast({
+        title: 'Wallet Button',
+        description: error.message,
+        type: 'error'
+      })
+      setPendingWallet(undefined)
     }
   })
 
-  return (
-    <Box display="flex" flexDirection="column" gap="1">
-      <Heading size="xs" textTransform="uppercase" pb="2">
-        {heading}
-      </Heading>
+  const isWalletButtonDisabled = !isWalletConnect && !isSocials && !isReady
 
-      <Box display="flex" alignItems="center" columnGap={3} flexWrap="wrap" gap="4">
-        {wallets.map(wallet => (
-          <Button
-            key={wallet}
-            onClick={() => {
-              setPendingWallet(wallet)
-              connect(wallet)
-            }}
-            size="sm"
-            isLoading={isLoading && pendingWallet === wallet}
-            textTransform="capitalize"
-          >
-            {wallet}
-          </Button>
-        ))}
-      </Box>
-    </Box>
-  )
+  return wallets.map(wallet => (
+    <Button
+      key={wallet}
+      onClick={() => {
+        setPendingWallet(wallet)
+        connect(wallet)
+      }}
+      maxW="fit-content"
+      size="md"
+      isLoading={isPending && pendingWallet === wallet}
+      isDisabled={Boolean(caipAddress) || isWalletButtonDisabled}
+      textTransform="capitalize"
+    >
+      {wallet}
+    </Button>
+  ))
 }

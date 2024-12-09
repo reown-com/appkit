@@ -53,4 +53,8 @@ export default css`
   :host > button:disabled {
     cursor: default;
   }
+
+  :host > button:disabled > wui-icon {
+    opacity: 0.5;
+  }
 `
