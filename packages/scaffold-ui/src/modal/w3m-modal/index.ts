@@ -56,6 +56,9 @@ export class W3mModal extends LitElement {
 
   public override firstUpdated() {
     OptionsController.setEnableEmbedded(this.enableEmbedded)
+    if (this.enableEmbedded && this.caipAddress) {
+      ModalController.close()
+    }
   }
 
   public override disconnectedCallback() {
@@ -65,6 +68,12 @@ export class W3mModal extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    this.style.cssText = `
+      --local-border-bottom-mobile-radius: ${
+        this.enableEmbedded ? 'clamp(0px, var(--wui-border-radius-l), 44px)' : '0px'
+      };
+    `
+
     if (this.enableEmbedded) {
       return html`${this.contentTemplate()}
         <w3m-tooltip></w3m-tooltip> `
@@ -187,7 +196,7 @@ export class W3mModal extends LitElement {
 
     await SIWXUtil.initializeIfEnabled()
 
-    if (!nextConnected) {
+    if (!nextConnected || this.enableEmbedded) {
       ModalController.close()
     }
   }
