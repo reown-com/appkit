@@ -57,17 +57,17 @@ import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { normalize } from 'viem/ens'
 import { parseWalletCapabilities } from './utils/helpers.js'
 
+export type WagmiAdapterOptions = Partial<CreateConfigParameters> & {
+  networks: AppKitNetwork[]
+  projectId: string
+}
+
 export class WagmiAdapter extends AdapterBlueprint {
   public wagmiChains: readonly [Chain, ...Chain[]] | undefined
   public wagmiConfig!: Config
   public adapterType = 'wagmi'
 
-  constructor(
-    configParams: Partial<CreateConfigParameters> & {
-      networks: AppKitNetwork[]
-      projectId: string
-    }
-  ) {
+  constructor(configParams: WagmiAdapterOptions) {
     super({
       projectId: configParams.projectId,
       networks: CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
