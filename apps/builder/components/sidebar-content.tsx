@@ -7,12 +7,11 @@ import { useAppKitContext } from '@/hooks/use-appkit'
 import { cn } from '@/lib/utils'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { BookIcon } from '@/components/icon/book'
 import { SectionWalletFeatures } from '@/components/configuration-sections/section-wallet-features'
 import { SectionConnectOptions } from '@/components/configuration-sections/section-connect-options'
 import { SectionDesign } from '@/components/configuration-sections/section-design'
-import { AppKitButtonMobile } from '@/components/appkit-button-mobile'
+import { BrandingHeader } from '@/components/branding-header'
 
 export function SidebarContent() {
   const { config } = useAppKitContext()
@@ -22,20 +21,7 @@ export function SidebarContent() {
   return (
     <div className={cn('flex flex-col justify-between min-h-full')}>
       <div className="flex flex-col">
-        <Image
-          src="/reown-logo.png"
-          alt="Reown logo"
-          width={150}
-          height={40}
-          className="hidden md:flex mb-12"
-        />
-
-        <div className="flex-col items-start hidden md:flex mb-12 gap-2">
-          <h4 className="text-3xl text-text-primary">AppKit demo</h4>
-          <p className="text-sm text-text-secondary">
-            Use our AppKit demo to test and design onchain UX
-          </p>
-        </div>
+        <BrandingHeader className="hidden md:flex" />
 
         <div className="flex flex-col">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6 w-full">
@@ -75,14 +61,10 @@ export function SidebarContent() {
           href="https://cloud.reown.com/"
           target="_blank"
           rel="noopener noreferrer"
-          className={cn(
-            buttonVariants({ variant: 'neutral', size: 'lg' }),
-            'w-full hidden md:flex'
-          )}
+          className={cn(buttonVariants({ variant: 'neutral', size: 'lg' }), 'w-full')}
         >
           Get started
         </Link>
-        {isInitialized && <AppKitButtonMobile />}
       </div>
     </div>
   )

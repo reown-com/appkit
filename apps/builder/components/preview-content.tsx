@@ -20,15 +20,7 @@ export function PreviewContent() {
 
   return (
     <>
-      <Image
-        src="/reown-logo.png"
-        alt="Reown logo"
-        width={150}
-        height={40}
-        className="flex md:hidden mb-12"
-      />
-
-      <div className="w-full max-w-[400px] py-8 mx-auto flex-grow items-center justify-center hidden md:flex">
+      <div className="w-full max-w-[400px] py-8 mx-auto flex-grow items-center justify-center flex-1 flex items-center justify-center">
         {isInitialized ? (
           <>
             {/* @ts-ignore */}

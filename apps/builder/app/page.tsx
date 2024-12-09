@@ -4,7 +4,7 @@ import { useAppKitContext } from '@/hooks/use-appkit'
 import { SidebarContent } from '@/components/sidebar-content'
 import { PreviewContent } from '@/components/preview-content'
 import { cn } from '@/lib/utils'
-import Image from 'next/image'
+import { BrandingHeader } from '@/components/branding-header'
 
 export default function Page() {
   const { config } = useAppKitContext()
@@ -12,31 +12,18 @@ export default function Page() {
   return (
     <div
       className={cn(
-        'flex flex-col items-center md:items-start md:flex-row p-4 bg-background gap-4 pt-10 md:pt-4 h-full'
+        'flex flex-col-reverse items-center md:items-start md:flex-row p-4 bg-background gap-4 pt-10 md:pt-4 h-full overflow-auto'
       )}
     >
-      <Image
-        src={config.themeMode === 'light' ? '/reown-logo-dark.png' : '/reown-logo.png'}
-        alt="Reown logo"
-        width={150}
-        height={40}
-        className="flex md:hidden mb-2"
-      />
-
-      <div className="flex-col gap-2 items-center flex md:hidden">
-        <h4 className="text-3xl text-text-primary mb-1 text-center">AppKit demo</h4>
-        <p className="text-sm text-text-secondary mb-6 text-center">
-          Use our AppKit demo to test and design onchain UX
-        </p>
-      </div>
-
       <div className="flex max-w-[450px] md:max-w-[340px] w-full bg-transparent md:bg-fg-primary h-none md:h-full text-foreground p-0 md:p-6 flex-col rounded-2xl overflow-none md:overflow-y-auto h-auto pb-20">
         <SidebarContent />
       </div>
 
-      <div className="flex-col max-w-[360px] md:max-w-none w-full h-none md:h-full hidden md:flex">
+      <div className="max-w-[360px] md:max-w-none w-full h-none md:h-full flex flex-col">
         <PreviewContent />
       </div>
+
+      <BrandingHeader className="flex md:hidden" />
     </div>
   )
 }

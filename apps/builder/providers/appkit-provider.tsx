@@ -38,7 +38,8 @@ export const modal = createAppKit({
   themeMode: initialConfig?.themeMode || 'dark',
   themeVariables: initialConfig?.themeVariables || {},
   termsConditionsUrl: initialConfig?.termsConditionsUrl || '',
-  privacyPolicyUrl: initialConfig?.privacyPolicyUrl || ''
+  privacyPolicyUrl: initialConfig?.privacyPolicyUrl || '',
+  disableAppend: true
 })
 
 ThemeStore.setModal(modal)
