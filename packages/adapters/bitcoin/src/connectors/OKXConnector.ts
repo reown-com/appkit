@@ -3,6 +3,7 @@ import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 import type { RequestArguments } from '@reown/appkit-core'
 import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
+import { bitcoin } from '@reown/appkit/networks'
 
 export class OKXConnector extends ProviderEventEmitter implements BitcoinConnector {
   public readonly id = 'OKX'
@@ -25,7 +26,7 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
   }
 
   public get chains() {
-    return this.requestedChains
+    return this.requestedChains.filter(chain => chain.caipNetworkId === bitcoin.caipNetworkId)
   }
 
   public async connect(): Promise<string> {

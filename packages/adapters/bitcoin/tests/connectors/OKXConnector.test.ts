@@ -39,6 +39,10 @@ describe('OKXConnector', () => {
     expect(connector.imageUrl).toBe('')
   })
 
+  it('should return only mainnet chain', () => {
+    expect(connector.chains).toEqual([bitcoin])
+  })
+
   describe('connect', () => {
     it('should connect the wallet', async () => {
       const address = await connector.connect()
