@@ -100,7 +100,7 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
     return Promise.reject(new MethodNotSupportedError(this.id, 'request'))
   }
 
-  public bindEvents(): void {
+  private bindEvents(): void {
     this.unbindEvents()
 
     this.wallet.on('accountChanged', account => {
@@ -113,7 +113,7 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
     })
   }
 
-  public unbindEvents(): void {
+  private unbindEvents(): void {
     this.wallet.removeAllListeners()
   }
 
