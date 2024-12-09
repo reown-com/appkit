@@ -586,4 +586,10 @@ export class ModalPage {
   async switchNetworkWithHook() {
     await this.page.getByTestId('switch-network-hook-button').click()
   }
+
+  async connectWithExtensionFlow() {
+    await this.connectButton.click()
+    const reownExtensionButton = this.page.getByTestId('wallet-selector-reown.com')
+    await reownExtensionButton.click()
+  }
 }
