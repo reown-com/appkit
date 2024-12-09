@@ -54,6 +54,7 @@ export class AppKitWalletButton extends LitElement {
   }
 
   public override firstUpdated() {
+    // Prefetch wallet buttons
     ApiController.fetchWalletButtons()
   }
 
