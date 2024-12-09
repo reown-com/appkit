@@ -16,6 +16,7 @@ packages:
   - 'packages/wallet-button'
   - 'packages/cdn'
   - 'packages/experimental'
+  - 'packages/cli'
   - 'apps/*'
   - 'examples/*'
   - 'services/*'

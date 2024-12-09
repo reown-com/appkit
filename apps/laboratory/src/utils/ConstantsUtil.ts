@@ -14,6 +14,7 @@ import {
   unichainSepolia,
   hedera,
   aurora,
+  mantle,
   bitcoin,
   bitcoinTestnet
 } from '@reown/appkit/networks'
@@ -68,7 +69,8 @@ const EvmNetworks = [
   sepolia,
   gnosis,
   hedera,
-  aurora
+  aurora,
+  mantle
 ] as [AppKitNetwork, ...AppKitNetwork[]]
 
 export const solanaNotExist = {

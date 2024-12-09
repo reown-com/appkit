@@ -15,6 +15,7 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 const TABS = 3
@@ -37,15 +38,11 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private profileName = AccountController.state.profileName
 
-  @state() private smartAccountDeployed = AccountController.state.smartAccountDeployed
-
   @state() private network = ChainController.state.activeCaipNetwork
 
   @state() private currentTab = AccountController.state.currentTab
 
   @state() private tokenBalance = AccountController.state.tokenBalance
-
-  @state() private preferredAccountType = AccountController.state.preferredAccountType
 
   @state() private features = OptionsController.state.features
 
@@ -60,8 +57,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
             this.profileName = val.profileName
             this.currentTab = val.currentTab
             this.tokenBalance = val.tokenBalance
-            this.smartAccountDeployed = val.smartAccountDeployed
-            this.preferredAccountType = val.preferredAccountType
           } else {
             ModalController.close()
           }
@@ -95,44 +90,20 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       .padding=${['0', 'xl', 'm', 'xl'] as const}
       alignItems="center"
       gap="m"
+      data-testid="w3m-account-wallet-features-widget"
     >
       ${this.network && html`<wui-network-icon .network=${this.network}></wui-network-icon>`}
-      ${this.activateAccountTemplate()}
       <wui-profile-button
         @click=${this.onProfileButtonClick.bind(this)}
         address=${ifDefined(this.address)}
         networkSrc=${ifDefined(networkImage)}
         icon="chevronBottom"
         avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
-        profileName=${this.profileName}
+        profileName=${ifDefined(this.profileName ?? undefined)}
         data-testid="w3m-profile-button"
       ></wui-profile-button>
-      ${this.tokenBalanceTemplate()}
-      <wui-flex gap="s">
-        <w3m-tooltip-trigger text="Buy">
-          <wui-icon-button
-            data-testid="wallet-features-onramp-button"
-            @click=${this.onBuyClick.bind(this)}
-            icon="card"
-          ></wui-icon-button>
-        </w3m-tooltip-trigger>
-        ${this.swapsTemplate()}
-        <w3m-tooltip-trigger text="Receive">
-          <wui-icon-button
-            data-testid="wallet-features-receive-button"
-            @click=${this.onReceiveClick.bind(this)}
-            icon="arrowBottomCircle"
-          >
-          </wui-icon-button>
-        </w3m-tooltip-trigger>
-        <w3m-tooltip-trigger text="Send">
-          <wui-icon-button
-            data-testid="wallet-features-send-button"
-            @click=${this.onSendClick.bind(this)}
-            icon="send"
-          ></wui-icon-button>
-        </w3m-tooltip-trigger>
-      </wui-flex>
+
+      ${this.tokenBalanceTemplate()} ${this.orderedWalletFeatures()}
 
       <wui-tabs
         .onTabChange=${this.onTabChange.bind(this)}
@@ -147,10 +118,56 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private orderedWalletFeatures() {
+    const walletFeaturesOrder =
+      this.features?.walletFeaturesOrder || CoreConstantsUtil.DEFAULT_FEATURES.walletFeaturesOrder
+    const isAllDisabled = walletFeaturesOrder.every(feature => !this.features?.[feature])
+
+    if (isAllDisabled) {
+      return null
+    }
+
+    return html`<wui-flex gap="s">
+      ${walletFeaturesOrder.map(feature => {
+        switch (feature) {
+          case 'onramp':
+            return this.onrampTemplate()
+          case 'swaps':
+            return this.swapsTemplate()
+          case 'receive':
+            return this.receiveTemplate()
+          case 'send':
+            return this.sendTemplate()
+          default:
+            return null
+        }
+      })}
+    </wui-flex>`
+  }
+
+  private onrampTemplate() {
+    const onramp = this.features?.onramp
+
+    if (!onramp) {
+      return null
+    }
+
+    return html`
+      <w3m-tooltip-trigger text="Buy">
+        <wui-icon-button
+          data-testid="wallet-features-onramp-button"
+          @click=${this.onBuyClick.bind(this)}
+          icon="card"
+        ></wui-icon-button>
+      </w3m-tooltip-trigger>
+    `
+  }
+
   private swapsTemplate() {
     const swaps = this.features?.swaps
+    const isEvm = ChainController.state.activeChain === CommonConstantsUtil.CHAIN.EVM
 
-    if (!swaps) {
+    if (!swaps || !isEvm) {
       return null
     }
 
@@ -162,6 +179,44 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
           icon="recycleHorizontal"
         >
         </wui-icon-button>
+      </w3m-tooltip-trigger>
+    `
+  }
+
+  private receiveTemplate() {
+    const receive = this.features?.receive
+
+    if (!receive) {
+      return null
+    }
+
+    return html`
+      <w3m-tooltip-trigger text="Receive">
+        <wui-icon-button
+          data-testid="wallet-features-receive-button"
+          @click=${this.onReceiveClick.bind(this)}
+          icon="arrowBottomCircle"
+        >
+        </wui-icon-button>
+      </w3m-tooltip-trigger>
+    `
+  }
+
+  private sendTemplate() {
+    const send = this.features?.send
+    const isEvm = ChainController.state.activeChain === CommonConstantsUtil.CHAIN.EVM
+
+    if (!send || !isEvm) {
+      return null
+    }
+
+    return html`
+      <w3m-tooltip-trigger text="Send">
+        <wui-icon-button
+          data-testid="wallet-features-send-button"
+          @click=${this.onSendClick.bind(this)}
+          icon="send"
+        ></wui-icon-button>
       </w3m-tooltip-trigger>
     `
   }
@@ -193,24 +248,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     }
 
     return html`<wui-balance dollars="0" pennies="00"></wui-balance>`
-  }
-
-  private activateAccountTemplate() {
-    const smartAccountEnabled = ChainController.checkIfSmartAccountEnabled()
-
-    if (
-      !smartAccountEnabled ||
-      this.preferredAccountType !== W3mFrameRpcConstants.ACCOUNT_TYPES.EOA ||
-      this.smartAccountDeployed
-    ) {
-      return null
-    }
-
-    return html` <wui-promo
-      text=${'Activate your account'}
-      @click=${this.onUpdateToSmartAccount.bind(this)}
-      data-testid="activate-smart-account-promo"
-    ></wui-promo>`
   }
 
   private onTabChange(index: number) {
@@ -264,10 +301,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       }
     })
     RouterController.push('WalletSend')
-  }
-
-  private onUpdateToSmartAccount() {
-    RouterController.push('UpgradeToSmartAccount')
   }
 }
 

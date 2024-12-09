@@ -3,6 +3,7 @@ import {
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
+  EventsController,
   ModalController,
   RouterController,
   SnackController,
@@ -181,12 +182,32 @@ export class W3mConnectingFarcasterView extends LitElement {
 
         if (this.socialProvider) {
           StorageUtil.setConnectedSocialProvider(this.socialProvider)
+
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'SOCIAL_LOGIN_REQUEST_USER_DATA',
+            properties: { provider: this.socialProvider }
+          })
         }
         this.loading = true
         await ConnectionController.connectExternal(this.authConnector, this.authConnector.chain)
+        if (this.socialProvider) {
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'SOCIAL_LOGIN_SUCCESS',
+            properties: { provider: this.socialProvider }
+          })
+        }
         this.loading = false
         ModalController.close()
       } catch (error) {
+        if (this.socialProvider) {
+          EventsController.sendEvent({
+            type: 'track',
+            event: 'SOCIAL_LOGIN_ERROR',
+            properties: { provider: this.socialProvider }
+          })
+        }
         RouterController.goBack()
         SnackController.showError(error)
       }

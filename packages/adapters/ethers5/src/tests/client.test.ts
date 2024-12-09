@@ -22,6 +22,13 @@ vi.mock('ethers', async importOriginal => {
       })),
       JsonRpcProvider: vi.fn(() => ({
         getBalance: vi.fn()
+      })),
+      Web3Provider: vi.fn(() => ({
+        on: vi.fn((event, callback) => {
+          if (event === 'pending') {
+            callback()
+          }
+        })
       }))
     }
   }
@@ -398,6 +405,36 @@ describe('Ethers5Adapter', () => {
         params: [mockParams]
       })
       expect(result).toBe('0x123')
+    })
+  })
+
+  describe('Ethers5Adapter - ListenPendingTransactions', () => {
+    it('should listen for pending transactions and emit event', () => {
+      const adapter = new Ethers5Adapter()
+      const mockProvider = {
+        request: vi.fn(),
+        on: vi.fn(),
+        removeListener: vi.fn(),
+        send: vi.fn(),
+        sendAsync: vi.fn()
+      } as unknown as Provider
+
+      const emitSpy = vi.spyOn(adapter, 'emit' as any)
+
+      vi.mocked(providers.Web3Provider).mockImplementation(
+        () =>
+          ({
+            on: vi.fn((event, callback) => {
+              if (event === 'pending') {
+                callback()
+              }
+            })
+          }) as any
+      )
+      ;(adapter as any).listenPendingTransactions(mockProvider)
+
+      expect(providers.Web3Provider).toHaveBeenCalledWith(mockProvider)
+      expect(emitSpy).toHaveBeenCalledWith('pendingTransactions')
     })
   })
 })
