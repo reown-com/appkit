@@ -12,10 +12,10 @@ export function ChooseNetwork() {
         alignItems="center"
         justifyContent="center"
         flexDirection="column"
-        gap="24"
-        background="foregroundPrimary"
-        padding="24"
-        borderRadius="24"
+        gap="20"
+        background="black"
+        padding="20"
+        borderRadius="20"
       >
         <Logo height="137" width="36" />
         <Box
@@ -25,7 +25,7 @@ export function ChooseNetwork() {
           flexDirection="column"
           gap="4"
         >
-          <Text as="h1" fontSize="18" color="textPrimary">
+          <Text as="h1" fontSize="18" color="accent030">
             Reown BX Wallet
           </Text>
           <Text as="p" fontSize="14" textAlign="center">

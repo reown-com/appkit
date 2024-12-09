@@ -2,7 +2,7 @@ import { Box, BoxProps } from '../Box'
 
 const defaultProps: BoxProps = {
   as: 'p',
-  color: 'textSecondary',
+  color: 'neutrals1000',
   fontSize: '16',
   fontWeight: 'regular'
 }

@@ -27,10 +27,10 @@ export function IconButton({ onClick, icon, text }: IconButtonProps) {
       <Button
         height="36"
         width="36"
-        borderRadius="full"
+        borderRadius="round"
         active="shrink"
         hover="grow"
-        padding="0"
+        padding="1"
         onClick={onClick}
       >
         {icons[icon]}
