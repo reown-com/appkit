@@ -51,6 +51,7 @@ const SINGLE_ADAPTER_EVM_TESTS = [
   'smart-account.spec.ts',
   'wallet-features.spec.ts',
   'wallet.spec.ts',
+  'wallet-button.spec',
   'verify.spec.ts'
 ]
 

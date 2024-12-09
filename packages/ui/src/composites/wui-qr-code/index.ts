@@ -9,8 +9,8 @@ import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
 // -- Constants ---------------------------------------------- //
-
 const DEFAULT_ICON_COLOR = '#3396ff'
+
 @customElement('wui-qr-code')
 export class WuiQrCode extends LitElement {
   public static override styles = [resetStyles, styles]

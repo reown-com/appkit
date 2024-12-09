@@ -10,9 +10,12 @@ export const PresetsUtil = {
     [ConstantsUtil.SAFE_CONNECTOR_ID]:
       '225affb176778569276e484e1b92637ad061b01e13a048b35a9d280c3b58970f',
     [ConstantsUtil.LEDGER_CONNECTOR_ID]:
-      '19177a98252e07ddfc9af2083ba8e07ef627cb6103467ffebb3f8f4205fd7927'
+      '19177a98252e07ddfc9af2083ba8e07ef627cb6103467ffebb3f8f4205fd7927',
+    [ConstantsUtil.METMASK_CONNECTOR_NAME]:
+      'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96',
+    [ConstantsUtil.TRUST_CONNECTOR_NAME]:
+      '4622a2b2d6af1c9844944291e5e7351a6aa24cd7b23099efac1b2fd875da31a0'
   } as Record<string, string>,
-
   NetworkImageIds: {
     // Ethereum
     1: 'ba0ba0cd-17c6-4806-ad93-f9d174f17900',

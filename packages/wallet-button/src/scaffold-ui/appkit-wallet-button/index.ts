@@ -1,7 +1,13 @@
 import { LitElement, html } from 'lit'
 import { customElement } from '@reown/appkit-ui'
 import { property, state } from 'lit/decorators.js'
-import { AssetUtil, ChainController, ConnectorController, type Connector } from '@reown/appkit-core'
+import {
+  AssetUtil,
+  ChainController,
+  ConnectorController,
+  type Connector,
+  ModalController
+} from '@reown/appkit-core'
 import type { SocialProvider, Wallet } from '../../utils/TypeUtil.js'
 import { ApiController } from '../../controllers/ApiController.js'
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
@@ -27,10 +33,13 @@ export class AppKitWalletButton extends LitElement {
 
   @state() private ready = WalletUtil.isWalletButtonReady(this.wallet)
 
+  @state() private modalLoading = ModalController.state.loading
+
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
+        ModalController.subscribeKey('loading', val => (this.modalLoading = val)),
         ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
         ChainController.subscribeKey('activeCaipAddress', val => {
           if (val) {
@@ -88,7 +97,7 @@ export class AppKitWalletButton extends LitElement {
     return html`
       <wui-wallet-button
         data-testid="apkt-wallet-button"
-        name=${!this.ready && !walletName ? 'Loading...' : ifDefined(walletName)}
+        name=${!this.ready || this.modalLoading ? 'Loading...' : ifDefined(walletName)}
         @click=${async () => {
           this.loading = true
           await ConnectorUtil.connectWalletConnect({
@@ -103,8 +112,8 @@ export class AppKitWalletButton extends LitElement {
         }}
         .icon=${ifDefined(this.wallet === 'walletConnect' ? 'walletConnect' : undefined)}
         .imageSrc=${ifDefined(walletImage)}
-        ?disabled=${Boolean(this.caipAddress) || loading}
-        ?loading=${loading}
+        ?disabled=${Boolean(this.caipAddress) || loading || this.modalLoading}
+        ?loading=${loading || this.modalLoading}
       ></wui-wallet-button>
     `
   }
@@ -119,7 +128,7 @@ export class AppKitWalletButton extends LitElement {
     return html`
       <wui-wallet-button
         data-testid="apkt-wallet-button-external"
-        name=${ifDefined(connector.name)}
+        name=${this.modalLoading ? 'Loading...' : ifDefined(connector.name)}
         @click=${async () => {
           this.loading = true
           this.error = false
@@ -128,8 +137,8 @@ export class AppKitWalletButton extends LitElement {
             .finally(() => (this.loading = false))
         }}
         .imageSrc=${ifDefined(connectorImage ?? walletImage)}
-        ?disabled=${Boolean(this.caipAddress) || this.loading}
-        ?loading=${this.loading}
+        ?disabled=${Boolean(this.caipAddress) || this.loading || this.modalLoading}
+        ?loading=${this.loading || this.modalLoading}
         ?error=${this.error}
       ></wui-wallet-button>
     `
@@ -138,7 +147,7 @@ export class AppKitWalletButton extends LitElement {
   private socialTemplate() {
     return html`<wui-wallet-button
       data-testid="apkt-wallet-button-social"
-      name=${this.wallet}
+      name=${this.modalLoading ? 'Loading...' : this.wallet}
       @click=${async () => {
         this.loading = true
         this.error = false
@@ -147,8 +156,8 @@ export class AppKitWalletButton extends LitElement {
           .finally(() => (this.loading = false))
       }}
       .icon=${this.wallet}
-      ?disabled=${Boolean(this.caipAddress) || this.loading}
-      ?loading=${this.loading}
+      ?disabled=${Boolean(this.caipAddress) || this.loading || this.modalLoading}
+      ?loading=${this.loading || this.modalLoading}
       ?error=${this.error}
     ></wui-wallet-button>`
   }

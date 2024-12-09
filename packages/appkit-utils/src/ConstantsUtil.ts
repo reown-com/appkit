@@ -8,6 +8,8 @@ export const ConstantsUtil = {
   COINBASE_SDK_CONNECTOR_ID: 'coinbaseWalletSDK',
   SAFE_CONNECTOR_ID: 'safe',
   LEDGER_CONNECTOR_ID: 'ledger',
+  METMASK_CONNECTOR_NAME: 'MetaMask',
+  TRUST_CONNECTOR_NAME: 'Trust Wallet',
   EIP6963_CONNECTOR_ID: 'eip6963',
   AUTH_CONNECTOR_ID: 'ID_AUTH',
   EIP155: 'eip155' as ChainNamespace,

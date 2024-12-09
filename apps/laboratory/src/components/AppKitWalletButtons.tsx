@@ -1,9 +1,22 @@
-import { Button, Flex, Heading, Stack, StackDivider } from '@chakra-ui/react'
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Flex,
+  Heading,
+  Stack,
+  StackDivider
+} from '@chakra-ui/react'
 import { useAppKitWallet } from '@reown/appkit-wallet-button/react'
 import type { Wallet } from '@reown/appkit-wallet-button'
 import { Fragment, useState } from 'react'
 import { useAppKitAccount } from '@reown/appkit/react'
 import { useChakraToast } from './Toast'
+
+interface AppKitWalletButtonsProps {
+  wallets: Wallet[]
+}
 
 interface WalletButtonHooksProps {
   isSocials?: boolean
@@ -15,52 +28,50 @@ interface WalletButtonComponentsProps {
   wallets: Wallet[]
 }
 
-const socialWallets: Wallet[] = [
-  'google',
-  'x',
-  'discord',
-  'farcaster',
-  'github',
-  'apple',
-  'facebook'
-]
+const socials: Wallet[] = ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook']
 
-const popularWallets: Wallet[] = ['metamask', 'trust', 'coinbase', 'rainbow', 'jupiter']
-
-export function AppKitWalletButtons() {
+export function AppKitWalletButtons({ wallets }: AppKitWalletButtonsProps) {
   return (
-    <Stack divider={<StackDivider />} spacing="4" flexWrap="wrap">
-      <Flex flexDirection="column" gap="4">
-        <Heading size="xs" textTransform="uppercase">
-          Wallet Buttons (Components)
-        </Heading>
+    <Card marginTop={10} marginBottom={10}>
+      <CardHeader>
+        <Heading size="md">Wallet Buttons</Heading>
+      </CardHeader>
 
-        <Flex display="flex" flexWrap="wrap" gap="4">
-          <WalletButtonComponents wallets={['walletConnect']} />
-          <WalletButtonComponents wallets={popularWallets} />
-          <WalletButtonComponents wallets={socialWallets} />
-        </Flex>
-      </Flex>
+      <CardBody>
+        <Stack divider={<StackDivider />} spacing="4" flexWrap="wrap">
+          <Flex flexDirection="column" gap="4">
+            <Heading size="xs" textTransform="uppercase">
+              Components
+            </Heading>
 
-      <Flex flexDirection="column" gap="4">
-        <Heading size="xs" textTransform="uppercase">
-          Wallet Buttons (Hooks)
-        </Heading>
+            <Flex display="flex" flexWrap="wrap" gap="4">
+              <WalletButtonComponents wallets={['walletConnect']} />
+              <WalletButtonComponents wallets={wallets} />
+              <WalletButtonComponents wallets={socials} />
+            </Flex>
+          </Flex>
 
-        <Flex display="flex" flexWrap="wrap" gap="4">
-          <WalletButtonHooks wallets={['walletConnect']} isWalletConnect />
-          <WalletButtonHooks wallets={popularWallets} />
-          <WalletButtonHooks wallets={socialWallets} isSocials />
-        </Flex>
-      </Flex>
-    </Stack>
+          <Flex flexDirection="column" gap="4">
+            <Heading size="xs" textTransform="uppercase">
+              Hooks Interactions
+            </Heading>
+
+            <Flex display="flex" flexWrap="wrap" gap="4">
+              <WalletButtonHooks wallets={['walletConnect']} isWalletConnect />
+              <WalletButtonHooks wallets={wallets} />
+              <WalletButtonHooks wallets={socials} isSocials />
+            </Flex>
+          </Flex>
+        </Stack>
+      </CardBody>
+    </Card>
   )
 }
 
 function WalletButtonComponents({ wallets }: WalletButtonComponentsProps) {
   return wallets.map(wallet => (
     <Fragment key={wallet}>
-      <appkit-wallet-button wallet={wallet} />
+      <appkit-wallet-button wallet={wallet} data-testid={`wallet-button-${wallet}`} />
     </Fragment>
   ))
 }
@@ -104,6 +115,7 @@ function WalletButtonHooks({
       isLoading={isPending && pendingWallet === wallet}
       isDisabled={Boolean(caipAddress) || isWalletButtonDisabled}
       textTransform="capitalize"
+      data-testid={`wallet-button-hook-${wallet}`}
     >
       {wallet}
     </Button>
