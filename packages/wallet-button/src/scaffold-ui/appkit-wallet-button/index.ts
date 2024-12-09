@@ -97,7 +97,9 @@ export class AppKitWalletButton extends LitElement {
     return html`
       <wui-wallet-button
         data-testid="apkt-wallet-button"
-        name=${!this.ready || this.modalLoading ? 'Loading...' : ifDefined(walletName)}
+        name=${(!this.ready && !walletConnect) || this.modalLoading
+          ? 'Loading...'
+          : ifDefined(walletName)}
         @click=${async () => {
           this.loading = true
           await ConnectorUtil.connectWalletConnect({
