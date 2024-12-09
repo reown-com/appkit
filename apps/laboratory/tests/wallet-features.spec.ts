@@ -54,7 +54,7 @@ walletFeaturesTest.afterAll(async () => {
 
 walletFeaturesTest('it should initialize swap as expected', async () => {
   await page.openAccount()
-  const walletFeatureButton = await page.getWalletFeaturesButton('swap')
+  const walletFeatureButton = await page.getWalletFeaturesButton('swaps')
   await walletFeatureButton.click()
   await expect(page.page.getByTestId('swap-input-sourceToken')).toHaveValue('1')
   await expect(page.page.getByTestId('swap-input-token-sourceToken')).toHaveText('ETH')
