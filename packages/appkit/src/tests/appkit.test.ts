@@ -66,6 +66,23 @@ describe('Base', () => {
     it('should initialize adapters in ChainController', () => {
       expect(ChainController.initialize).toHaveBeenCalledWith(mockOptions.adapters)
     })
+
+    it('should set EIP6963 enabled by default', () => {
+      new AppKit({
+        ...mockOptions
+      })
+
+      expect(OptionsController.setEIP6963Enabled).toHaveBeenCalledWith(true)
+    })
+
+    it('should set EIP6963 disabled when option is disabled in config', () => {
+      new AppKit({
+        ...mockOptions,
+        enableEIP6963: false
+      })
+
+      expect(OptionsController.setEIP6963Enabled).toHaveBeenCalledWith(false)
+    })
   })
 
   describe('Base Public methods', () => {

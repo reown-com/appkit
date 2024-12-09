@@ -683,6 +683,7 @@ export class AppKit {
     OptionsController.setFeatures(options.features)
     OptionsController.setEnableWalletConnect(options.enableWalletConnect !== false)
     OptionsController.setEnableWallets(options.enableWallets !== false)
+    OptionsController.setEIP6963Enabled(options.enableEIP6963 !== false)
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)
