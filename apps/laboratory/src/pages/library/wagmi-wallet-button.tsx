@@ -4,25 +4,21 @@ import { WagmiProvider } from 'wagmi'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { baseSepolia, sepolia, type AppKitNetwork } from '@reown/appkit/networks'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { AppKitWalletButtons } from '../../components/AppKitWalletButtons'
 
 const queryClient = new QueryClient()
 
-const networks = [baseSepolia, sepolia] as [AppKitNetwork, ...AppKitNetwork[]]
-
 const wagmiAdapter = new WagmiAdapter({
   ssr: true,
-  networks,
+  networks: ConstantsUtil.EvmNetworks,
   projectId: ConstantsUtil.ProjectId
 })
 
 const modal = createAppKit({
   adapters: [wagmiAdapter],
-  networks,
-  defaultNetwork: sepolia,
+  networks: ConstantsUtil.EvmNetworks,
   projectId: ConstantsUtil.ProjectId
 })
 
@@ -33,7 +29,7 @@ export default function Wagmi() {
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtons />
-        <AppKitWalletButtons wallets={ConstantsUtil.SolanaWalletButtons} />
+        <AppKitWalletButtons wallets={ConstantsUtil.EvmWalletButtons} />
         <WagmiModalInfo />
       </QueryClientProvider>
     </WagmiProvider>

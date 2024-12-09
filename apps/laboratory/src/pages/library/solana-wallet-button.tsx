@@ -28,7 +28,7 @@ export default function Solana() {
   return (
     <>
       <AppKitButtons />
-      <AppKitWalletButtons wallets={ConstantsUtil.EvmWalletButtons} />
+      <AppKitWalletButtons wallets={ConstantsUtil.SolanaWalletButtons} />
       <SolanaTests />
     </>
   )
