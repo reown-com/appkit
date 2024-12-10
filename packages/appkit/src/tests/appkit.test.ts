@@ -30,6 +30,7 @@ import {
 import { mockOptions } from './mocks/Options'
 import { UniversalAdapter } from '../universal-adapter/client'
 import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint'
+import { ProviderUtil } from '../store'
 
 // Mock all controllers and UniversalAdapterClient
 vi.mock('@reown/appkit-core')
@@ -55,10 +56,32 @@ describe('Base', () => {
       expect(OptionsController.setSdkVersion).toHaveBeenCalledWith(mockOptions.sdkVersion)
       expect(OptionsController.setProjectId).toHaveBeenCalledWith(mockOptions.projectId)
       expect(OptionsController.setMetadata).toHaveBeenCalledWith(mockOptions.metadata)
+
+      const copyMockOptions = { ...mockOptions }
+      delete copyMockOptions.adapters
+
+      expect(EventsController.sendEvent).toHaveBeenCalledWith(mockOptions)
     })
 
     it('should initialize adapters in ChainController', () => {
       expect(ChainController.initialize).toHaveBeenCalledWith(mockOptions.adapters)
+    })
+
+    it('should set EIP6963 enabled by default', () => {
+      new AppKit({
+        ...mockOptions
+      })
+
+      expect(OptionsController.setEIP6963Enabled).toHaveBeenCalledWith(true)
+    })
+
+    it('should set EIP6963 disabled when option is disabled in config', () => {
+      new AppKit({
+        ...mockOptions,
+        enableEIP6963: false
+      })
+
+      expect(OptionsController.setEIP6963Enabled).toHaveBeenCalledWith(false)
     })
   })
 
@@ -523,6 +546,28 @@ describe('Base', () => {
       )
     })
 
+    it('should sync identity only if address changed', async () => {
+      const mockAccountData = {
+        address: '0x123',
+        chainId: '1',
+        chainNamespace: 'eip155' as const
+      }
+      vi.mocked(BlockchainApiController.fetchIdentity).mockResolvedValue({
+        name: 'John Doe',
+        avatar: null
+      })
+
+      vi.mocked(AccountController).state = { address: '0x123' } as any
+
+      await appKit['syncAccount'](mockAccountData)
+
+      expect(BlockchainApiController.fetchIdentity).not.toHaveBeenCalled()
+
+      await appKit['syncAccount']({ ...mockAccountData, address: '0x456' })
+
+      expect(BlockchainApiController.fetchIdentity).toHaveBeenCalledOnce()
+    })
+
     it('should disconnect correctly', async () => {
       vi.mocked(ChainController).state = {
         chains: new Map([['eip155', { namespace: 'eip155' }]]),
@@ -587,6 +632,29 @@ describe('Base', () => {
 
       expect((appKit as any).setUnsupportedNetwork).toHaveBeenCalled()
       expect(isClientSpy).toHaveBeenCalled()
+    })
+
+    it('should subscribe to providers', () => {
+      const callback = vi.fn()
+      const providers = {
+        eip155: { provider: {} },
+        solana: {},
+        polkadot: {},
+        bip122: {}
+      }
+
+      const mockSubscribeProviders = vi.fn().mockImplementation(cb => {
+        cb(providers)
+        return () => {}
+      })
+
+      // Mock the entire ProviderUtil
+      vi.mocked(ProviderUtil).subscribeProviders = mockSubscribeProviders
+
+      appKit.subscribeProviders(callback)
+
+      expect(mockSubscribeProviders).toHaveBeenCalled()
+      expect(callback).toHaveBeenCalledWith(providers)
     })
   })
   describe('syncExistingConnection', () => {

@@ -5,6 +5,7 @@ import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
 import type { AccountTypeMap, ChainAdapter, LinkingRecord, NamespaceTypeMap } from './TypeUtil.js'
 
 type SDKFramework = 'html' | 'react' | 'vue'
+type OpenTarget = '_blank' | '_self' | 'popupWindow' | '_top'
 
 export const CoreHelperUtil = {
   isMobile() {
@@ -48,6 +49,14 @@ export const CoreHelperUtil = {
 
   copyToClopboard(text: string) {
     navigator.clipboard.writeText(text)
+  },
+
+  isIframe() {
+    try {
+      return window.self !== window.top
+    } catch (e) {
+      return false
+    }
   },
 
   getPairingExpiry() {
@@ -136,11 +145,11 @@ export const CoreHelperUtil = {
 
     return target
   },
-  openHref(href: string, target: '_blank' | '_self' | 'popupWindow', features?: string) {
+  openHref(href: string, target: OpenTarget, features?: string) {
     window.open(href, this.getOpenTargetForPlatform(target), features || 'noreferrer noopener')
   },
 
-  returnOpenHref(href: string, target: '_blank' | '_self' | 'popupWindow', features?: string) {
+  returnOpenHref(href: string, target: OpenTarget, features?: string) {
     return window.open(
       href,
       this.getOpenTargetForPlatform(target),

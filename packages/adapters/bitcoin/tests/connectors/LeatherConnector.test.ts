@@ -109,4 +109,72 @@ describe('LeatherConnector', () => {
   it('should disconnect', async () => {
     await expect(connector.disconnect()).resolves.not.toThrow()
   })
+
+  it('should keep accounts and reuse if getAccountAddresses is called multiple times', async () => {
+    const requestSpy = vi.spyOn(mocks.wallet, 'request')
+
+    requestSpy.mockResolvedValueOnce(
+      mockSatsConnectProvider.mockRequestResolve({
+        addresses: [
+          {
+            address: 'mock_address',
+            purpose: 'receive',
+            addressType: 'p2pkh',
+            gaiaAppKey: 'mock_gaia_app_key',
+            gaiaHubUrl: 'mock_gaia_hub_url',
+            publicKey: 'mock_public_key'
+          }
+        ]
+      })
+    )
+
+    const addressesFirstCall = await connector.getAccountAddresses()
+    const addressesSecondCall = await connector.getAccountAddresses()
+
+    expect(requestSpy).toHaveBeenCalledTimes(1)
+    expect(addressesFirstCall).toEqual(addressesSecondCall)
+  })
+
+  it('should clean up accounts after disconnection', async () => {
+    const requestSpy = vi.spyOn(mocks.wallet, 'request')
+
+    requestSpy.mockResolvedValueOnce(
+      mockSatsConnectProvider.mockRequestResolve({
+        addresses: [
+          {
+            address: 'mock_address',
+            purpose: 'receive',
+            addressType: 'p2pkh',
+            gaiaAppKey: 'mock_gaia_app_key',
+            gaiaHubUrl: 'mock_gaia_hub_url',
+            publicKey: 'mock_public_key'
+          }
+        ]
+      })
+    )
+
+    const addressesFirstCall = await connector.getAccountAddresses()
+    await connector.disconnect()
+
+    requestSpy.mockResolvedValueOnce(
+      mockSatsConnectProvider.mockRequestResolve({
+        addresses: [
+          {
+            address: 'mock_address_2',
+            purpose: 'receive',
+            addressType: 'p2pkh',
+            gaiaAppKey: 'mock_gaia_app_key',
+            gaiaHubUrl: 'mock_gaia_hub_url',
+            publicKey: 'mock_public_key'
+          }
+        ]
+      })
+    )
+    const addressesSecondCall = await connector.getAccountAddresses()
+
+    expect(requestSpy).toHaveBeenCalledTimes(2)
+    expect(addressesFirstCall).not.toBe(addressesSecondCall)
+
+    requestSpy.mockRestore()
+  })
 })

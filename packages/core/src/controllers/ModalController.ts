@@ -7,6 +7,7 @@ import type { RouterControllerState } from './RouterController.js'
 import { RouterController } from './RouterController.js'
 import { ChainController } from './ChainController.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { OptionsController } from './OptionsController.js'
 
 // -- Types --------------------------------------------- //
 export interface ModalControllerState {
@@ -67,9 +68,21 @@ export const ModalController = {
   },
 
   close() {
+    const isEmbeddedEnabled = OptionsController.state.enableEmbedded
     const connected = Boolean(ChainController.state.activeCaipAddress)
+
     state.open = false
-    PublicStateController.set({ open: false })
+
+    if (isEmbeddedEnabled) {
+      if (connected) {
+        RouterController.replace('Account')
+      } else {
+        RouterController.push('Connect')
+      }
+    } else {
+      PublicStateController.set({ open: false })
+    }
+
     EventsController.sendEvent({
       type: 'track',
       event: 'MODAL_CLOSE',
