@@ -982,14 +982,9 @@ export type CombinedProvider = W3mFrameProvider & Provider
 export type CoinbasePaySDKChainNameValues =
   keyof typeof ConstantsUtil.WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP
 
-export type FeaturesSocials =
-  | 'google'
-  | 'x'
-  | 'discord'
-  | 'farcaster'
-  | 'github'
-  | 'apple'
-  | 'facebook'
+export type WalletFeature = 'swaps' | 'send' | 'receive' | 'onramp'
+
+export type ConnectMethod = 'email' | 'social' | 'wallet'
 
 export type Features = {
   /**
@@ -1003,20 +998,32 @@ export type Features = {
    */
   onramp?: boolean
   /**
+   * @description Enable or disable the receive feature. Enabled by default.
+   * This feature is only visible when connected with email/social. It's not possible to configure when connected with wallet, which is enabled by default.
+   * @type {boolean}
+   */
+  receive?: boolean
+  /**
+   * @description Enable or disable the send feature. Enabled by default.
+   * @type {boolean}
+   */
+  send?: boolean
+  /**
    * @description Enable or disable the email feature. Enabled by default.
    * @type {boolean}
    */
   email?: boolean
   /**
    * @description Show or hide the regular wallet options when email is enabled. Enabled by default.
+   * @deprecated - This property will be removed in the next major release. Please use `features.collapseWallets` instead.
    * @type {boolean}
    */
   emailShowWallets?: boolean
   /**
    * @description Enable or disable the socials feature. Enabled by default.
-   * @type {FeaturesSocials[]}
+   * @type {SocialProvider[]}
    */
-  socials?: FeaturesSocials[] | false
+  socials?: SocialProvider[] | false
   /**
    * @description Enable or disable the history feature. Enabled by default.
    * @type {boolean}
@@ -1042,6 +1049,25 @@ export type Features = {
    * @default false
    */
   legalCheckbox?: boolean
+  /**
+   * @description The order of the connect methods. This is experimental and subject to change.
+   * @default ['email', 'social', 'wallet']
+   * @type {('email' | 'social' | 'wallet')[]}
+   */
+  connectMethodsOrder?: ConnectMethod[]
+  /**
+   * @
+   * @description The order of the wallet features. This is experimental and subject to change.
+   * @default ['receive' | 'onramp' | 'swaps' | 'send']
+   * @type {('receive' | 'onramp' | 'swaps' | 'send')[]}
+   */
+  walletFeaturesOrder?: WalletFeature[]
+  /**
+   * @description Enable or disable the collapse wallets as a single "Continue with wallet" button for simple UI in connect page.
+   * This can be activated when only have another connect method like email or social activated along with wallets.
+   * @default false
+   */
+  collapseWallets?: boolean
 }
 
 export type FeaturesKeys = keyof Features
