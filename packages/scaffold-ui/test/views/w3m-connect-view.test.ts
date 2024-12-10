@@ -172,7 +172,12 @@ describe('W3mConnectView - Connection Methods', () => {
 })
 
 describe('W3mConnectView - Explore Mode', () => {
-  it('should not render separators in explore mode', async () => {
+  it('should not render separators in explore mode if wallet guide is enabled', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      enableWalletGuide: true
+    })
+
     const element: W3mConnectView = await fixture(
       html`<w3m-connect-view .walletGuide=${'explore'}></w3m-connect-view>`
     )
@@ -188,5 +193,40 @@ describe('W3mConnectView - Explore Mode', () => {
     )
 
     expect(HelpersUtil.querySelect(element, WALLET_LOGIN_LIST)).toBeNull()
+  })
+})
+
+describe('W3mConnectView - Wallet Guide Mode', () => {
+  it('should render wallet guide if enableWalletGuide is true', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      features: {
+        email: true,
+        socials: ['google']
+      },
+      enableWalletGuide: true
+    })
+
+    const element: W3mConnectView = await fixture(
+      html`<w3m-connect-view .walletGuide=${'get-started'}></w3m-connect-view>`
+    )
+    expect(HelpersUtil.querySelect(element, 'w3m-wallet-guide')).not.toBeNull()
+  })
+
+  it('should not render wallet guide if enableWalletGuide is false', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      features: {
+        email: true,
+        socials: ['google']
+      },
+      enableWalletGuide: false
+    })
+
+    const element: W3mConnectView = await fixture(
+      html`<w3m-connect-view .walletGuide=${'get-started'}></w3m-connect-view>`
+    )
+
+    expect(HelpersUtil.querySelect(element, 'w3m-wallet-guide')).toBeNull()
   })
 })

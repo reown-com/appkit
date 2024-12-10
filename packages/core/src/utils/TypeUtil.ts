@@ -666,6 +666,19 @@ export type Event =
     }
   | {
       type: 'track'
+      event: 'SWAP_APPROVAL_ERROR'
+      properties: {
+        isSmartAccount: boolean
+        network: string
+        swapFromToken: string
+        swapToToken: string
+        swapFromAmount: string
+        swapToAmount: string
+        message: string
+      }
+    }
+  | {
+      type: 'track'
       event: 'SOCIAL_LOGIN_STARTED'
       properties: {
         provider: SocialProvider
