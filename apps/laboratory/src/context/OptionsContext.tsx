@@ -3,17 +3,17 @@
  */
 
 import type { AppKitOptions } from '@reown/appkit'
-import { createContext, useState } from 'react'
+import { createContext, useContext, useState } from 'react'
 import { ConstantsUtil } from '../utils/ConstantsUtil'
 
 export type AppKitConfig = {
   options: AppKitOptions
-  setOptions: (options: AppKitOptions) => void
+  updateOptions: (options: AppKitOptions) => void
 }
 
-export const ConfigContext = createContext<AppKitConfig | undefined>(undefined)
+export const OptionsContext = createContext<AppKitConfig | undefined>(undefined)
 
-export function ConfigProvider({ children }: { children: React.ReactNode }) {
+export function OptionsProvider({ children }: { children: React.ReactNode }) {
   const [options, setOptions] = useState<AppKitOptions>({
     // Only show this config if email or social login is enabled
     showWallets: true,
@@ -27,7 +27,7 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
       icons: ['https://test-app.com/icon.png']
     },
     allWallets: 'SHOW',
-    projectId: 'your-project-id',
+    projectId: process.env['NEXT_PUBLIC_PROJECT_ID'] as string,
     featuredWalletIds: [],
     includeWalletIds: [],
     excludeWalletIds: [],
@@ -54,5 +54,20 @@ export function ConfigProvider({ children }: { children: React.ReactNode }) {
     siweConfig: undefined
   })
 
-  return <ConfigContext.Provider value={{ setOptions, options }}>{children}</ConfigContext.Provider>
+  function updateOptions(newOptions: Partial<AppKitOptions>) {
+    setOptions(prev => ({ ...prev, ...newOptions }))
+  }
+
+  return (
+    <OptionsContext.Provider value={{ updateOptions, options }}>{children}</OptionsContext.Provider>
+  )
+}
+
+export function useOptions() {
+  const context = useContext(OptionsContext)
+  if (!context) {
+    throw new Error('useOptions must be used within an OptionsProvider')
+  }
+
+  return context
 }

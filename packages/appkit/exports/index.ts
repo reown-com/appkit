@@ -15,6 +15,8 @@ export { CoreHelperUtil, AccountController } from '@reown/appkit-core'
 type CreateAppKit = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
 
 export function createAppKit(options: CreateAppKit) {
+  console.log('>> Creating a new appkit')
+
   return new AppKit({
     ...options,
     sdkVersion: CoreHelperUtil.generateSdkVersion(options.adapters ?? [], 'html', PACKAGE_VERSION)

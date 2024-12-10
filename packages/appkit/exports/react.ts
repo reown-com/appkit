@@ -24,16 +24,18 @@ type CreateAppKit = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
 
 export function createAppKit(options: CreateAppKit) {
   if (!modal) {
-    modal = new AppKit({
-      ...options,
-      sdkVersion: CoreHelperUtil.generateSdkVersion(
-        options.adapters ?? [],
-        'react',
-        PACKAGE_VERSION
-      )
-    })
-    getAppKit(modal)
+    resetAppKit(options)
   }
+
+  return modal
+}
+
+export function resetAppKit(options: CreateAppKit) {
+  modal = new AppKit({
+    ...options,
+    sdkVersion: CoreHelperUtil.generateSdkVersion(options.adapters ?? [], 'react', PACKAGE_VERSION)
+  })
+  getAppKit(modal)
 
   return modal
 }

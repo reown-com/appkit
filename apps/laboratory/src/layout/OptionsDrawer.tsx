@@ -16,6 +16,7 @@ import BorderRadiusInput from '../components/Theming/BorderRadiusInput'
 import MixColorInput from '../components/Theming/MixColorInput'
 import { useEffect } from 'react'
 import { ThemeStore } from '../utils/StoreUtil'
+import OptionsPage from '../pages/options'
 
 interface Props {
   controls: ReturnType<typeof useDisclosure>
@@ -79,6 +80,7 @@ export function OptionsDrawer({ controls }: Props) {
               <BorderRadiusInput />
             </Flex>
           </Flex>
+          <OptionsPage />
         </DrawerBody>
       </DrawerContent>
     </Drawer>

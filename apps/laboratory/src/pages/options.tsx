@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { AppKitOptions } from '@reown/appkit'
-import React, { useState } from 'react'
-import { ConstantsUtil } from '../utils/ConstantsUtil'
+import React from 'react'
 import {
   Box,
   Grid,
@@ -12,7 +12,6 @@ import {
   FormControl,
   FormLabel,
   Switch,
-  Input,
   Select,
   Textarea,
   Collapse,
@@ -24,81 +23,27 @@ import {
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons'
 import { siweConfig } from '../utils/SiweUtils'
 import { DefaultSIWX } from '@reown/appkit-siwx'
+import { useOptions } from '../context/OptionsContext'
 
 function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
 function OptionsPage() {
-  const [options, setOptions] = useState<AppKitOptions>({
-    // Only show this config if email or social login is enabled
-    showWallets: true,
-    allowUnsupportedChain: false,
-    networks: ConstantsUtil.EvmNetworks,
-    defaultNetwork: ConstantsUtil.EvmNetworks[0],
-    metadata: {
-      name: 'Test App',
-      description: 'Test App Description',
-      url: 'https://test-app.com',
-      icons: ['https://test-app.com/icon.png']
-    },
-    allWallets: 'SHOW',
-    projectId: 'your-project-id',
-    featuredWalletIds: [],
-    includeWalletIds: [],
-    excludeWalletIds: [],
-    customWallets: [],
-    termsConditionsUrl: undefined,
-    privacyPolicyUrl: undefined,
-    enableWallets: true,
-    enableEIP6963: false,
-    enableCoinbase: true,
-    enableInjected: true,
-    enableWalletConnect: true,
-    debug: true,
-    features: {
-      swaps: true,
-      onramp: true,
-      email: true,
-      socials: ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook'],
-      history: true,
-      analytics: true,
-      allWallets: true
-    },
-    // These two should be boolean configurations. If true, map to their configs when true
-    siwx: undefined,
-    siweConfig: undefined
-  })
-
+  const { options, updateOptions } = useOptions()
   const jsonEditorDisclosure = useDisclosure()
 
   function handleChange(key: keyof AppKitOptions, value: any) {
-    setOptions(prevOptions => ({
-      ...prevOptions,
-      [key]: value
-    }))
+    updateOptions({ [key]: value })
   }
 
-  function handleJsonInput(key: keyof AppKitOptions, value: string) {
-    try {
-      const parsed = JSON.parse(value)
-      setOptions(prevOptions => ({
-        ...prevOptions,
-        [key]: parsed
-      }))
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
-  function handleFeatureChange(key: keyof typeof options.features, value: boolean) {
-    setOptions(prevOptions => ({
-      ...prevOptions,
+  function handleFeatureChange(key: keyof typeof options.features, value: any) {
+    updateOptions({
       features: {
-        ...prevOptions.features,
+        ...options.features,
         [key]: value
       }
-    }))
+    })
   }
 
   return (

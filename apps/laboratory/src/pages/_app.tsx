@@ -5,6 +5,7 @@ import { bootstrapSentry } from '../utils/SentryUtil'
 import { SessionProvider } from 'next-auth/react'
 import type { Session } from 'next-auth'
 import Head from 'next/head'
+import { OptionsProvider } from '../context/OptionsContext'
 
 bootstrapSentry()
 
@@ -16,19 +17,21 @@ export default function App({
 }>) {
   return (
     <ChakraProvider>
-      <Head>
-        <title>AppKit Lab</title>
-        <meta
-          property="og:description"
-          content="Explore the AppKit Lab to test the latest AppKit features."
-        />
-        <link rel="icon" href="/favicon.svg" />
-      </Head>
-      <Layout>
-        <SessionProvider session={pageProps.session} refetchInterval={0}>
-          <Component {...pageProps} />
-        </SessionProvider>
-      </Layout>
+      <OptionsProvider>
+        <Head>
+          <title>AppKit Lab</title>
+          <meta
+            property="og:description"
+            content="Explore the AppKit Lab to test the latest AppKit features."
+          />
+          <link rel="icon" href="/favicon.svg" />
+        </Head>
+        <Layout>
+          <SessionProvider session={pageProps.session} refetchInterval={0}>
+            <Component {...pageProps} />
+          </SessionProvider>
+        </Layout>
+      </OptionsProvider>
     </ChakraProvider>
   )
 }

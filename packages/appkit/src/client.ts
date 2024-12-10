@@ -1837,8 +1837,11 @@ export class AppKit {
   }
 
   private async initOrContinue() {
+    console.log('>> initOrContinue', isInitialized, this.initPromise)
     if (!this.initPromise && !isInitialized && CoreHelperUtil.isClient()) {
+      console.log('>> Init')
       isInitialized = true
+
       this.initPromise = new Promise<void>(async resolve => {
         await Promise.all([
           import('@reown/appkit-ui'),
