@@ -18,6 +18,9 @@ const wagmiAdapter = new WagmiAdapter({
 
 const modal = createAppKit({
   adapters: [wagmiAdapter],
+  features: {
+    walletButton: true
+  },
   networks: ConstantsUtil.EvmNetworks,
   projectId: ConstantsUtil.ProjectId
 })
