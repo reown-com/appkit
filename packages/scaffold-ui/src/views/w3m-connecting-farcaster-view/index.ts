@@ -234,7 +234,7 @@ export class W3mConnectingFarcasterView extends LitElement {
       // This setTimeout needed to avoid the beginning of the animation from not starting to resize immediately and some weird svg errors
       this.timeout = setTimeout(() => {
         this.ready = true
-      }, 0)
+      }, 200)
     }
   }
 

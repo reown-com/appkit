@@ -20,7 +20,7 @@ import {
 } from '@reown/appkit/networks'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 import { getLocalStorageItem } from './LocalStorage'
-import type { CaipNetwork } from '@reown/appkit'
+import type { CaipNetwork, SocialProvider } from '@reown/appkit'
 import type { Wallet } from '@reown/appkit-wallet-button'
 
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
@@ -151,7 +151,14 @@ export const ConstantsUtil = {
   SolanaNetworks,
   BitcoinNetworks,
   AllNetworks: [...EvmNetworks, ...SolanaNetworks] as [AppKitNetwork, ...AppKitNetwork[]],
-  EvmWalletButtons: ['metamask', 'trust', 'coinbase', 'rainbow', 'phantom'] as Wallet[],
+  EvmWalletButtons: [
+    'walletConnect',
+    'metamask',
+    'trust',
+    'coinbase',
+    'rainbow',
+    'phantom'
+  ] as Wallet[],
   SolanaWalletButtons: [
     'metamask',
     'trust',
@@ -163,5 +170,14 @@ export const ConstantsUtil = {
     'magic-eden',
     'backpack',
     'frontier'
-  ] as Wallet[]
+  ] as Wallet[],
+  Socials: [
+    'google',
+    'github',
+    'apple',
+    'facebook',
+    'x',
+    'discord',
+    'farcaster'
+  ] as SocialProvider[]
 }

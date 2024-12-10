@@ -29,7 +29,9 @@ export default function Wagmi() {
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtons />
-        <AppKitWalletButtons wallets={ConstantsUtil.EvmWalletButtons} />
+        <AppKitWalletButtons
+          wallets={[...ConstantsUtil.EvmWalletButtons, ...ConstantsUtil.Socials]}
+        />
         <WagmiModalInfo />
       </QueryClientProvider>
     </WagmiProvider>

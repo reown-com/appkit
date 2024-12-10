@@ -11,24 +11,21 @@ import {
 import { useAppKitWallet } from '@reown/appkit-wallet-button/react'
 import type { Wallet } from '@reown/appkit-wallet-button'
 import { Fragment, useState } from 'react'
-import { useAppKitAccount } from '@reown/appkit/react'
+import { useAppKitAccount, type SocialProvider } from '@reown/appkit/react'
 import { useChakraToast } from './Toast'
+import { ConstantsUtil } from '../utils/ConstantsUtil'
 
 interface AppKitWalletButtonsProps {
   wallets: Wallet[]
 }
 
 interface WalletButtonHooksProps {
-  isSocials?: boolean
-  isWalletConnect?: boolean
   wallets: Wallet[]
 }
 
 interface WalletButtonComponentsProps {
   wallets: Wallet[]
 }
-
-const socials: Wallet[] = ['google', 'x', 'discord', 'farcaster', 'github', 'apple', 'facebook']
 
 export function AppKitWalletButtons({ wallets }: AppKitWalletButtonsProps) {
   return (
@@ -45,9 +42,7 @@ export function AppKitWalletButtons({ wallets }: AppKitWalletButtonsProps) {
             </Heading>
 
             <Flex display="flex" flexWrap="wrap" gap="4">
-              <WalletButtonComponents wallets={['walletConnect']} />
               <WalletButtonComponents wallets={wallets} />
-              <WalletButtonComponents wallets={socials} />
             </Flex>
           </Flex>
 
@@ -57,9 +52,7 @@ export function AppKitWalletButtons({ wallets }: AppKitWalletButtonsProps) {
             </Heading>
 
             <Flex display="flex" flexWrap="wrap" gap="4">
-              <WalletButtonHooks wallets={['walletConnect']} isWalletConnect />
               <WalletButtonHooks wallets={wallets} />
-              <WalletButtonHooks wallets={socials} isSocials />
             </Flex>
           </Flex>
         </Stack>
@@ -76,11 +69,7 @@ function WalletButtonComponents({ wallets }: WalletButtonComponentsProps) {
   ))
 }
 
-function WalletButtonHooks({
-  isSocials = false,
-  isWalletConnect = false,
-  wallets
-}: WalletButtonHooksProps) {
+function WalletButtonHooks({ wallets }: WalletButtonHooksProps) {
   const [pendingWallet, setPendingWallet] = useState<Wallet>()
 
   const toast = useChakraToast()
@@ -101,23 +90,28 @@ function WalletButtonHooks({
     }
   })
 
-  const isWalletButtonDisabled = !isWalletConnect && !isSocials && !isReady
+  return wallets.map(wallet => {
+    const isSocial = ConstantsUtil.Socials.includes(wallet as SocialProvider)
+    const isWalletConnect = wallet === 'walletConnect'
 
-  return wallets.map(wallet => (
-    <Button
-      key={`wallet-button-hook-${wallet}`}
-      onClick={() => {
-        setPendingWallet(wallet)
-        connect(wallet)
-      }}
-      maxW="fit-content"
-      size="md"
-      isLoading={isPending && pendingWallet === wallet}
-      isDisabled={Boolean(caipAddress) || isWalletButtonDisabled}
-      textTransform="capitalize"
-      data-testid={`wallet-button-hook-${wallet}`}
-    >
-      {wallet}
-    </Button>
-  ))
+    const isWalletButtonDisabled = !isWalletConnect && !isSocial && !isReady
+
+    return (
+      <Button
+        key={`wallet-button-hook-${wallet}`}
+        onClick={() => {
+          setPendingWallet(wallet)
+          connect(wallet)
+        }}
+        maxW="fit-content"
+        size="md"
+        isLoading={isPending && pendingWallet === wallet}
+        isDisabled={Boolean(caipAddress) || isWalletButtonDisabled}
+        textTransform="capitalize"
+        data-testid={`wallet-button-hook-${wallet}`}
+      >
+        {wallet}
+      </Button>
+    )
+  })
 }

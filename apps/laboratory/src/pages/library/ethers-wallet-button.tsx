@@ -24,7 +24,9 @@ export default function Ethers() {
   return (
     <>
       <AppKitButtons />
-      <AppKitWalletButtons wallets={ConstantsUtil.EvmWalletButtons} />
+      <AppKitWalletButtons
+        wallets={[...ConstantsUtil.EvmWalletButtons, ...ConstantsUtil.Socials]}
+      />
       <EthersModalInfo />
     </>
   )
