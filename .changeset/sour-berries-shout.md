@@ -48,8 +48,6 @@ export function YourApp() {
 ```
 
 Hook example:
-
-
 ```tsx
 import { useAppKitWallet } from '@reown/appkit-wallet-button/react'
 
@@ -72,7 +70,6 @@ export function YourApp() {
   )
 }
 ```
-
 
 Additionally a new theme variable property called `--w3m-qr-color` was added where you can configure a custom color for the QR code.
 
