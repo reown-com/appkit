@@ -1078,34 +1078,36 @@ export class AppKit {
       provider.connect()
     })
     provider.onConnect(async user => {
+      const namespace = ChainController.state.activeChain as ChainNamespace
       this.syncProvider({
         type: 'AUTH',
         provider,
         id: 'ID_AUTH',
-        chainNamespace: ChainController.state.activeChain as ChainNamespace
+        chainNamespace: namespace
       })
 
       const caipAddress =
         ChainController.state.activeChain === 'eip155'
           ? (`eip155:${user.chainId}:${user.address}` as CaipAddress)
           : (`${user.chainId}:${user.address}` as CaipAddress)
-      this.setCaipAddress(caipAddress, ChainController.state.activeChain as ChainNamespace)
-      this.setSmartAccountDeployed(
-        Boolean(user.smartAccountDeployed),
-        ChainController.state.activeChain as ChainNamespace
-      )
-      this.setPreferredAccountType(
-        user.preferredAccountType as W3mFrameTypes.AccountType,
-        ChainController.state.activeChain as ChainNamespace
+      this.setCaipAddress(caipAddress, namespace)
+      this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
+
+      const preferredAccountType = (user.preferredAccountType || 'eoa') as W3mFrameTypes.AccountType
+      this.setPreferredAccountType(preferredAccountType, namespace)
+
+      const userAccounts = user.accounts?.map(account =>
+        CoreHelperUtil.createAccount(
+          namespace,
+          account.address,
+          namespace === 'eip155' ? preferredAccountType : 'eoa'
+        )
       )
       this.setAllAccounts(
-        user.accounts || [
-          {
-            address: user.address,
-            type: (user.preferredAccountType || 'eoa') as W3mFrameTypes.AccountType
-          }
+        userAccounts || [
+          CoreHelperUtil.createAccount(namespace, user.address, preferredAccountType)
         ],
-        ChainController.state.activeChain as ChainNamespace
+        namespace
       )
 
       await provider.getSmartAccountEnabledNetworks()
@@ -1327,7 +1329,13 @@ export class AppKit {
 
     if (addresses) {
       this.setAllAccounts(
-        addresses.map(address => ({ address, type: 'eoa' })),
+        addresses.map(address =>
+          CoreHelperUtil.createAccount(
+            chainNamespace,
+            address,
+            chainNamespace === 'bip122' ? 'payment' : 'eoa'
+          )
+        ),
         chainNamespace
       )
     }

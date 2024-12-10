@@ -1,7 +1,8 @@
 import type { SIWXSession } from '@reown/appkit-core'
 import { SIWXVerifier } from '../core/SIWXVerifier.js'
 import { ConstantsUtil } from '@reown/appkit-common'
-import bitcoinMessage from 'bitcoinjs-message'
+
+import { Verifier } from 'bip322-js'
 
 export class BIP122Verifier extends SIWXVerifier {
   public readonly chainNamespace = ConstantsUtil.CHAIN.BITCOIN
@@ -9,7 +10,7 @@ export class BIP122Verifier extends SIWXVerifier {
   public async verify(session: SIWXSession): Promise<boolean> {
     try {
       return Promise.resolve(
-        bitcoinMessage.verify(session.message, session.data.accountAddress, session.signature)
+        Verifier.verifySignature(session.data.accountAddress, session.message, session.signature)
       )
     } catch (error) {
       return false

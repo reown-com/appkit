@@ -9,6 +9,7 @@ import type { TimingRecords } from '../fixtures/timing-fixture'
 import { WalletPage } from './WalletPage'
 import { WalletValidator } from '../validators/WalletValidator'
 import { routeInterceptUrl } from '../utils/verify'
+import type { WalletFeature } from '@reown/appkit'
 
 const maliciousUrl = 'https://malicious-app-verify-simulation.vercel.app'
 
@@ -535,7 +536,7 @@ export class ModalPage {
     await this.page.getByTestId('wui-profile-button').click()
   }
 
-  async getWalletFeaturesButton(feature: 'onramp' | 'swap' | 'receive' | 'send') {
+  async getWalletFeaturesButton(feature: WalletFeature) {
     const walletFeatureButton = this.page.getByTestId(`wallet-features-${feature}-button`)
     await expect(walletFeatureButton).toBeVisible()
 
@@ -585,18 +586,5 @@ export class ModalPage {
 
   async switchNetworkWithHook() {
     await this.page.getByTestId('switch-network-hook-button').click()
-  }
-
-  async clickLegalCheckbox() {
-    const legalCheckbox = this.page.getByTestId('w3m-legal-checkbox')
-    await expect(legalCheckbox).toBeVisible()
-    const boundingBox = await legalCheckbox.boundingBox()
-    if (!boundingBox) {
-      throw new Error('Legal checkbox bounding box not found')
-    }
-    const x = boundingBox.x + boundingBox.width / 2 - 100
-    const y = boundingBox.y + boundingBox.height / 2
-    // Click on the left side of the checkbox to avoid clicking on links
-    await this.page.mouse.click(x, y)
   }
 }

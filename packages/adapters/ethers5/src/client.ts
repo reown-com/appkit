@@ -2,6 +2,8 @@ import { AdapterBlueprint } from '@reown/appkit/adapters'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
+  AlertController,
+  CoreHelperUtil,
   type CombinedProvider,
   type Connector,
   type ConnectorType,
@@ -376,6 +378,36 @@ export class Ethers5Adapter extends AdapterBlueprint {
     }
   }
 
+  public async getAccounts(
+    params: AdapterBlueprint.GetAccountsParams
+  ): Promise<AdapterBlueprint.GetAccountsResult> {
+    const connector = this.connectors.find(c => c.id === params.id)
+    const selectedProvider = connector?.provider as Provider
+
+    if (!selectedProvider || !connector) {
+      throw new Error('Provider not found')
+    }
+
+    if (params.id === ConstantsUtil.AUTH_CONNECTOR_ID) {
+      const provider = connector['provider'] as W3mFrameProvider
+      const { address, accounts } = await provider.connect()
+
+      return Promise.resolve({
+        accounts: (accounts || [{ address, type: 'eoa' }]).map(account =>
+          CoreHelperUtil.createAccount('eip155', account.address, account.type)
+        )
+      })
+    }
+
+    const accounts: string[] = await selectedProvider.request({
+      method: 'eth_requestAccounts'
+    })
+
+    return {
+      accounts: accounts.map(account => CoreHelperUtil.createAccount('eip155', account, 'eoa'))
+    }
+  }
+
   public override async reconnect(params: AdapterBlueprint.ConnectParams): Promise<void> {
     const { id, chainId } = params
 
@@ -452,6 +484,25 @@ export class Ethers5Adapter extends AdapterBlueprint {
     return { profileName: undefined, profileImage: undefined }
   }
 
+  private listenPendingTransactions(provider: Provider) {
+    const web3Provider = new ethers.providers.Web3Provider(provider)
+
+    try {
+      web3Provider.on('pending', () => {
+        this.emit('pendingTransactions')
+      })
+    } catch (error) {
+      AlertController.open(
+        {
+          shortMessage: 'Error listening to pending transactions',
+          longMessage:
+            'The Web3Provider in the Ethers5Adapter failed to listen to pending transactions.'
+        },
+        'error'
+      )
+    }
+  }
+
   private providerHandlers: {
     disconnect: () => void
     accountsChanged: (accounts: string[]) => void
@@ -478,6 +529,8 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
       this.emit('switchNetwork', { chainId: chainIdNumber })
     }
+
+    this.listenPendingTransactions(provider)
 
     provider.on('disconnect', disconnectHandler)
     provider.on('accountsChanged', accountsChangedHandler)

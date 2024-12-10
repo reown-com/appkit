@@ -1,4 +1,4 @@
-import { AdapterBlueprint } from '@reown/appkit/adapters'
+import { WcHelpersUtil, type AppKit, type AppKitOptions } from '@reown/appkit'
 import {
   ConstantsUtil as CommonConstantsUtil,
   type CaipNetwork,
@@ -12,27 +12,27 @@ import {
   type Provider
 } from '@reown/appkit-core'
 import { ConstantsUtil, ErrorUtil } from '@reown/appkit-utils'
-import { Connection, PublicKey } from '@solana/web3.js'
-import type { Commitment, ConnectionConfig } from '@solana/web3.js'
 import { SolConstantsUtil } from '@reown/appkit-utils/solana'
-import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
-import { watchStandard } from './utils/watchStandard.js'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
+import { AdapterBlueprint } from '@reown/appkit/adapters'
+import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
+import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
+import type { Commitment, ConnectionConfig } from '@solana/web3.js'
+import { Connection, PublicKey } from '@solana/web3.js'
+import UniversalProvider from '@walletconnect/universal-provider'
+import bs58 from 'bs58'
 import { AuthProvider } from './providers/AuthProvider.js'
 import {
   CoinbaseWalletProvider,
   type SolanaCoinbaseWallet
 } from './providers/CoinbaseWalletProvider.js'
-import type { W3mFrameProvider } from '@reown/appkit-wallet'
-import { WcHelpersUtil, type AppKit, type AppKitOptions } from '@reown/appkit'
-import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
-import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
-import UniversalProvider from '@walletconnect/universal-provider'
-import { createSendTransaction } from './utils/createSendTransaction.js'
-import type { WalletStandardProvider } from './providers/WalletStandardProvider.js'
-import { handleMobileWalletRedirection } from './utils/handleMobileWalletRedirection.js'
-import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import { WalletConnectProvider } from './providers/WalletConnectProvider.js'
-import bs58 from 'bs58'
+import type { WalletStandardProvider } from './providers/WalletStandardProvider.js'
+import { createSendTransaction } from './utils/createSendTransaction.js'
+import { handleMobileWalletRedirection } from './utils/handleMobileWalletRedirection.js'
+import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
+import { watchStandard } from './utils/watchStandard.js'
+import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
@@ -173,6 +173,12 @@ export class SolanaAdapter extends AdapterBlueprint {
 
   public async revokePermissions(): Promise<`0x${string}`> {
     return Promise.resolve('0x')
+  }
+
+  public async getAccounts(): Promise<AdapterBlueprint.GetAccountsResult> {
+    return Promise.resolve({
+      accounts: []
+    })
   }
 
   public async signMessage(
@@ -354,6 +360,9 @@ export class SolanaAdapter extends AdapterBlueprint {
     provider.on('disconnect', disconnectHandler)
     provider.on('accountsChanged', accountsChangedHandler)
     provider.on('connect', accountsChangedHandler)
+    provider.on('pendingTransaction', () => {
+      this.emit('pendingTransactions')
+    })
 
     this.providerHandlers = {
       disconnect: disconnectHandler,

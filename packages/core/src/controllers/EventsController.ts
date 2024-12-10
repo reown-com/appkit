@@ -47,6 +47,7 @@ export const EventsController = {
       if (excluded.includes(payload.data.event) || typeof window === 'undefined') {
         return
       }
+
       await api.post({
         path: '/e',
         headers: EventsController._getApiHeaders(),
