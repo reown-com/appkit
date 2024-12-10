@@ -68,7 +68,7 @@ const adapters = [evmAdapter] as ChainAdapter[]
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize(adapters)
+  ChainController.initialize(adapters, [])
   ConnectionController.setClient(evmAdapter.connectionControllerClient)
 })
 
