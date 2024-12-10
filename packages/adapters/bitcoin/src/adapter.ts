@@ -3,8 +3,7 @@ import {
   WcHelpersUtil,
   type AppKit,
   type AppKitOptions,
-  type Provider,
-  BlockchainApiController
+  type Provider
 } from '@reown/appkit'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import type { BitcoinConnector } from './utils/BitcoinConnector.js'
@@ -14,15 +13,22 @@ import { WalletStandardConnector } from './connectors/WalletStandardConnector.js
 import { WalletConnectProvider } from './utils/WalletConnectProvider.js'
 import { LeatherConnector } from './connectors/LeatherConnector.js'
 import { OKXConnector } from './connectors/OKXConnector.js'
+import { UnitsUtil } from './utils/UnitsUtil.js'
+import { BitcoinApi } from './utils/BitcoinApi.js'
 
 export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   private eventsToUnbind: (() => void)[] = []
+  private api: typeof BitcoinApi
 
-  constructor(params: BitcoinAdapter.ConstructorParams) {
+  constructor({ api = {}, ...params }: BitcoinAdapter.ConstructorParams) {
     super({
       namespace: 'bip122',
       ...params
     })
+    this.api = {
+      ...BitcoinApi,
+      ...api
+    }
   }
 
   public async connectWalletConnect(onUri: (uri: string) => void): Promise<void> {
@@ -176,29 +182,16 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     const network = params.caipNetwork
 
     if (network?.chainNamespace === 'bip122') {
-      const rpcUrl = network.rpcUrls.default.http[0]
-      console.log({ network, rpcUrl })
+      const utxos = await this.api.getUTXOs({
+        network,
+        address: params.address
+      })
 
-      if (rpcUrl) {
-        const response = await fetch(rpcUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            jsonrpc: '2.0',
-            id: 1,
-            method: 'getbalance',
-            params: [params.address]
-          })
-        }).then(async res => {
-          if (res.headers.get('content-type')?.includes('application/json')) {
-            return res.json()
-          }
-          throw new Error(await res.text())
-        })
+      const balance = utxos.reduce((acc, utxo) => acc + utxo.value, 0)
 
-        console.log(response)
+      return {
+        balance: UnitsUtil.parseSatoshis(balance.toString(), network),
+        symbol: network.nativeCurrency.symbol
       }
     }
 
@@ -304,5 +297,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 }
 
 export namespace BitcoinAdapter {
-  export type ConstructorParams = Omit<AdapterBlueprint.Params, 'namespace'>
+  export type ConstructorParams = Omit<AdapterBlueprint.Params, 'namespace'> & {
+    api?: Partial<typeof BitcoinApi>
+  }
 }
