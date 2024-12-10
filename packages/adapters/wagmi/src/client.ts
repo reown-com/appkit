@@ -72,18 +72,27 @@ export class WagmiAdapter extends AdapterBlueprint {
       projectId: configParams.projectId,
       networks: CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
         projectId: configParams.projectId,
-        customNetworkImageUrls: {}
+        customNetworkImageUrls: {},
+        customRpcChainIds: configParams.transports
+          ? Object.keys(configParams.transports).map(Number)
+          : []
       }) as [CaipNetwork, ...CaipNetwork[]]
     })
+
     this.namespace = CommonConstantsUtil.CHAIN.EVM
+
     this.createConfig({
       ...configParams,
       networks: CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
         projectId: configParams.projectId,
-        customNetworkImageUrls: {}
+        customNetworkImageUrls: {},
+        customRpcChainIds: configParams.transports
+          ? Object.keys(configParams.transports).map(Number)
+          : []
       }) as [CaipNetwork, ...CaipNetwork[]],
       projectId: configParams.projectId
     })
+
     this.setupWatchers()
   }
 
@@ -121,11 +130,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       projectId: string
     }
   ) {
-    this.caipNetworks = CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
-      projectId: configParams.projectId,
-      customNetworkImageUrls: {}
-    }) as [CaipNetwork, ...CaipNetwork[]]
-
+    this.caipNetworks = configParams.networks
     this.wagmiChains = this.caipNetworks.filter(
       caipNetwork => caipNetwork.chainNamespace === CommonConstantsUtil.CHAIN.EVM
     ) as unknown as [BaseNetwork, ...BaseNetwork[]]

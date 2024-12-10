@@ -59,6 +59,7 @@ const WC_HTTP_RPC_SUPPORTED_CHAINS = [
 type ExtendCaipNetworkParams = {
   customNetworkImageUrls: Record<number | string, string> | undefined
   projectId: string
+  customRpc?: boolean
 }
 
 export const CaipNetworksUtil = {
@@ -109,10 +110,18 @@ export const CaipNetworksUtil = {
     return `${ConstantsUtil.CHAIN.EVM}:${network.id}` as CaipNetworkId
   },
 
-  getRpcUrl(caipNetwork: AppKitNetwork, caipNetworkId: CaipNetworkId, projectId: string) {
+  // eslint-disable-next-line max-params
+  getRpcUrl(
+    caipNetwork: AppKitNetwork,
+    caipNetworkId: CaipNetworkId,
+    projectId: string,
+    customRpc?: boolean
+  ) {
     const defaultRpcUrl = caipNetwork.rpcUrls?.default?.http?.[0]
 
-    if (WC_HTTP_RPC_SUPPORTED_CHAINS.includes(caipNetworkId)) {
+    if (customRpc) {
+      return defaultRpcUrl || ''
+    } else if (WC_HTTP_RPC_SUPPORTED_CHAINS.includes(caipNetworkId)) {
       return getBlockchainApiRpcUrl(caipNetworkId, projectId)
     }
 
@@ -126,15 +135,17 @@ export const CaipNetworksUtil = {
    * @param params.networkImageIds - The network image IDs
    * @param params.customNetworkImageUrls - The custom network image URLs
    * @param params.projectId - The project ID
+   * @param params.customRpc - Boolean to indicate if the custom RPC URL should be used
    * @returns The extended array of CaipNetwork objects
    */
   extendCaipNetwork(
     caipNetwork: AppKitNetwork,
-    { customNetworkImageUrls, projectId }: ExtendCaipNetworkParams
+    { customNetworkImageUrls, projectId, customRpc }: ExtendCaipNetworkParams
   ): CaipNetwork {
     const caipNetworkId = this.getCaipNetworkId(caipNetwork)
     const chainNamespace = this.getChainNamespace(caipNetwork)
-    const rpcUrl = this.getRpcUrl(caipNetwork, caipNetworkId, projectId)
+
+    const rpcUrl = this.getRpcUrl(caipNetwork, caipNetworkId, projectId, customRpc)
 
     return {
       ...caipNetwork,
@@ -168,12 +179,17 @@ export const CaipNetworksUtil = {
    */
   extendCaipNetworks(
     caipNetworks: AppKitNetwork[],
-    { customNetworkImageUrls, projectId }: ExtendCaipNetworkParams
+    {
+      customNetworkImageUrls,
+      projectId,
+      customRpcChainIds
+    }: ExtendCaipNetworkParams & { customRpcChainIds?: number[] }
   ) {
     return caipNetworks.map(caipNetwork =>
       CaipNetworksUtil.extendCaipNetwork(caipNetwork, {
         customNetworkImageUrls,
-        projectId
+        projectId,
+        customRpc: customRpcChainIds?.includes(caipNetwork.id as number)
       })
     ) as [CaipNetwork, ...CaipNetwork[]]
   },
