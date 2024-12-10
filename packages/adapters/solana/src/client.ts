@@ -34,6 +34,7 @@ import { handleMobileWalletRedirection } from './utils/handleMobileWalletRedirec
 import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
 import { watchStandard } from './utils/watchStandard.js'
 import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
+import { solana } from '@reown/appkit/networks'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
