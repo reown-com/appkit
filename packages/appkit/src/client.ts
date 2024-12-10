@@ -53,8 +53,6 @@ import {
   ConstantsUtil,
   type CaipNetwork,
   type ChainNamespace,
-  SafeLocalStorage,
-  SafeLocalStorageKeys,
   type CaipAddress,
   type CaipNetworkId,
   NetworkUtil
@@ -184,7 +182,6 @@ export class AppKit {
   public constructor(
     options: AppKitOptions & {
       adapters?: ChainAdapter[]
-    } & {
       sdkVersion: SdkVersion
     }
   ) {
@@ -199,7 +196,6 @@ export class AppKit {
   private async initialize(
     options: AppKitOptions & {
       adapters?: ChainAdapter[]
-    } & {
       sdkVersion: SdkVersion
     }
   ) {
@@ -1512,7 +1508,7 @@ export class AppKit {
         this.setCaipNetwork(caipNetwork || fallBackCaipNetwork)
         this.syncConnectedWalletInfo(chainNamespace)
       }
-        await this.syncBalance({ address, chainId, chainNamespace })
+      await this.syncBalance({ address, chainId, chainNamespace })
     }
   }
 

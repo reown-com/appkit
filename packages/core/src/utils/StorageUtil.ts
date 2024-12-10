@@ -60,6 +60,7 @@ export const StorageUtil = {
       return SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
     } catch {
       console.info('Unable to get active caip network id')
+
       return undefined
     }
   },
