@@ -73,6 +73,10 @@ export type AppKitOptions = {
    */
   metadata?: Metadata
 
+  /**
+   * Use WalletConnect RPC
+   * @default true
+   */
   useWalletConnectRpc?: boolean
 } & OptionsControllerState
 

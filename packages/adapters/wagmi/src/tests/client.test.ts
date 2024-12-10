@@ -13,7 +13,8 @@ import {
   getEnsAddress as wagmiGetEnsAddress,
   sendTransaction as wagmiSendTransaction,
   writeContract as wagmiWriteContract,
-  waitForTransactionReceipt
+  waitForTransactionReceipt,
+  watchPendingTransactions
 } from '@wagmi/core'
 import { mainnet } from '@wagmi/core/chains'
 import type UniversalProvider from '@walletconnect/universal-provider'
@@ -43,7 +44,10 @@ vi.mock('@wagmi/core', async () => {
     prepareTransactionRequest: vi.fn(),
     reconnect: vi.fn(),
     watchAccount: vi.fn(),
-    watchConnections: vi.fn()
+    watchConnections: vi.fn(),
+    watchPendingTransactions: vi.fn((_: any, callbacks: any) => {
+      return callbacks
+    })
   }
 })
 
@@ -92,17 +96,19 @@ describe('WagmiAdapter', () => {
       expect(adapter.adapterType).toBe('wagmi')
       expect(adapter.namespace).toBe('eip155')
     })
-    it('should be set to custom url if provided', () => {
-      expect(adapter.wagmiChains?.[0].rpcUrls.default.http[0]).toBe('https://cloudflare-eth.com')
+    it('should be set to walletconnect by default', () => {
+      expect(adapter.wagmiChains?.[0].rpcUrls.default.http[0]).toBe(
+        `https://rpc.walletconnect.org/v1/?chainId=eip155%3A1&projectId=${mockProjectId}`
+      )
     })
-    it('should be set to walletConnect rpc if useWalletConnectRpc is true', () => {
-      const withWalletConnectRpc = new WagmiAdapter({
+    it('should be set to customRPC rpc if useWalletConnectRpc is false', () => {
+      const adapterWithCustomRpc = new WagmiAdapter({
         networks: mockNetworks,
         projectId: mockProjectId,
-        useWalletConnectRpc: true
+        useWalletConnectRpc: false
       })
-      expect(withWalletConnectRpc.wagmiChains?.[0].rpcUrls.default.http[0]).toBe(
-        `https://rpc.walletconnect.org/v1/?chainId=${withWalletConnectRpc.namespace}%3A${withWalletConnectRpc.wagmiChains?.[0].id}&projectId=${withWalletConnectRpc.projectId}`
+      expect(adapterWithCustomRpc.wagmiChains?.[0].rpcUrls.default.http[0]).toBe(
+        `https://cloudflare-eth.com`
       )
     })
     it('should not set info property for injected connector', () => {
@@ -408,6 +414,18 @@ describe('WagmiAdapter', () => {
         method: 'wallet_revokePermissions',
         params: mockParams
       })
+    })
+  })
+
+  describe('WagmiAdapter - watchPendingTransactions', () => {
+    it('should emit pendingTransactions when transactions are pending', () => {
+      const emitSpy = vi.spyOn(adapter, 'emit' as any)
+
+      const watchPendingTransactionsCallback =
+        vi.mocked(watchPendingTransactions).mock?.calls?.[0]?.[1]
+      watchPendingTransactionsCallback?.onTransactions(['0xtx1', '0xtx2'])
+
+      expect(emitSpy).toHaveBeenCalledWith('pendingTransactions')
     })
   })
 })

@@ -12,6 +12,7 @@ import { SatsConnectConnector } from './connectors/SatsConnectConnector.js'
 import { WalletStandardConnector } from './connectors/WalletStandardConnector.js'
 import { WalletConnectProvider } from './utils/WalletConnectProvider.js'
 import { LeatherConnector } from './connectors/LeatherConnector.js'
+import { OKXConnector } from './connectors/OKXConnector.js'
 
 export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   private eventsToUnbind: (() => void)[] = []
@@ -78,6 +79,10 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     }
   }
   override syncConnectors(_options?: AppKitOptions, appKit?: AppKit): void {
+    function getActiveNetwork() {
+      return appKit?.getCaipNetwork()
+    }
+
     WalletStandardConnector.watchWallets({
       callback: this.addConnector.bind(this),
       requestedChains: this.networks
@@ -86,7 +91,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     this.addConnector(
       ...SatsConnectConnector.getWallets({
         requestedChains: this.networks,
-        getActiveNetwork: () => appKit?.getCaipNetwork()
+        getActiveNetwork
       }).map(connector => {
         switch (connector.wallet.id) {
           case LeatherConnector.ProviderId:
@@ -99,6 +104,14 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
         }
       })
     )
+
+    const okxConnector = OKXConnector.getWallet({
+      requestedChains: this.networks,
+      getActiveNetwork
+    })
+    if (okxConnector) {
+      this.addConnector(okxConnector)
+    }
   }
 
   override syncConnection(

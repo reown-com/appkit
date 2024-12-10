@@ -174,6 +174,8 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
       sendOptions
     })
 
+    this.emit('pendingTransaction', undefined)
+
     return result.signature
   }
 
@@ -184,6 +186,8 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
   ) {
     const signedTransaction = await this.signTransaction(transaction)
     const signature = await connection.sendRawTransaction(signedTransaction.serialize(), options)
+
+    this.emit('pendingTransaction', undefined)
 
     return signature
   }
@@ -208,6 +212,8 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
         if (isVersionedTransaction(transaction)) {
           return VersionedTransaction.deserialize(decodedTransaction)
         }
+
+        this.emit('pendingTransaction', undefined)
 
         return Transaction.from(decodedTransaction)
       }) as T

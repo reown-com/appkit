@@ -116,11 +116,12 @@ export const CaipNetworksUtil = {
     extraParam: { projectId: string; useWalletConnectRpc?: boolean }
   ) {
     const defaultRpcUrl = caipNetwork.rpcUrls?.default?.http?.[0]
-
     if (WC_HTTP_RPC_SUPPORTED_CHAINS.includes(caipNetworkId)) {
-      return extraParam.useWalletConnectRpc
-        ? getBlockchainApiRpcUrl(caipNetworkId, extraParam.projectId)
-        : defaultRpcUrl || ''
+      if (extraParam.useWalletConnectRpc === false) {
+        return defaultRpcUrl || ''
+      }
+
+      return getBlockchainApiRpcUrl(caipNetworkId, extraParam.projectId)
     }
 
     return defaultRpcUrl || ''
@@ -137,7 +138,7 @@ export const CaipNetworksUtil = {
    */
   extendCaipNetwork(
     caipNetwork: AppKitNetwork,
-    { customNetworkImageUrls, projectId, useWalletConnectRpc }: ExtendCaipNetworkParams
+    { customNetworkImageUrls, projectId, useWalletConnectRpc = true }: ExtendCaipNetworkParams
   ): CaipNetwork {
     const caipNetworkId = this.getCaipNetworkId(caipNetwork)
     const chainNamespace = this.getChainNamespace(caipNetwork)
@@ -155,6 +156,10 @@ export const CaipNetworksUtil = {
         ...caipNetwork.rpcUrls,
         default: {
           http: [rpcUrl]
+        },
+        // Save the networks original RPC URL default
+        chainDefault: {
+          http: [caipNetwork.rpcUrls.default.http[0] || '']
         }
       }
     }

@@ -58,7 +58,8 @@ const mockAuthProvider = {
 const mockNetworks = [solana]
 const mockCaipNetworks = CaipNetworksUtil.extendCaipNetworks(mockNetworks, {
   projectId: 'test-project-id',
-  customNetworkImageUrls: {}
+  customNetworkImageUrls: {},
+  useWalletConnectRpc: true
 })
 
 describe('SolanaAdapter', () => {

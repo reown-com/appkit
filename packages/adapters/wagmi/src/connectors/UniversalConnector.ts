@@ -308,13 +308,16 @@ export function walletConnect(
               : []
           }
 
+          // Use original rpc to prevent leaking project ID
+          const rpcUrls = chainToSwitch.rpcUrls?.['chainDefault']?.http || []
+
           const addEthereumChain = {
             blockExplorerUrls,
             chainId: numberToHex(chainId),
             chainName: chainToSwitch.name,
             iconUrls: addEthereumChainParameter?.iconUrls,
             nativeCurrency: chainToSwitch.nativeCurrency,
-            rpcUrls: chainToSwitch.rpcUrls.default.http
+            rpcUrls
           } satisfies AddEthereumChainParameter
 
           await provider.request({

@@ -768,13 +768,19 @@ export const elementStyles = css`
       color var(--wui-duration-lg) var(--wui-ease-out-power-1),
       background-color var(--wui-duration-lg) var(--wui-ease-out-power-1),
       border var(--wui-duration-lg) var(--wui-ease-out-power-1),
+      border-radius var(--wui-duration-lg) var(--wui-ease-out-power-1),
       box-shadow var(--wui-duration-lg) var(--wui-ease-out-power-1);
-    will-change: background-color, color, border, box-shadow;
+    will-change: background-color, color, border, box-shadow, border-radius;
     outline: none;
     border: none;
     column-gap: var(--wui-spacing-3xs);
     background-color: transparent;
     text-decoration: none;
+  }
+
+  wui-flex {
+    transition: border-radius var(--wui-duration-lg) var(--wui-ease-out-power-1);
+    will-change: border-radius;
   }
 
   button:disabled > wui-wallet-image,

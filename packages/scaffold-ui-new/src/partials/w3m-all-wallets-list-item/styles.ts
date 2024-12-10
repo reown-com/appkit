@@ -12,7 +12,11 @@ export default css`
     padding: var(--wui-spacing-s) var(--wui-spacing-0);
     background-color: var(--wui-color-gray-glass-002);
     border-radius: clamp(0px, var(--wui-border-radius-xs), 20px);
-    will-change: background-color, color;
+    transition:
+      color var(--wui-duration-lg) var(--wui-ease-out-power-1),
+      background-color var(--wui-duration-lg) var(--wui-ease-out-power-1),
+      border-radius var(--wui-duration-lg) var(--wui-ease-out-power-1);
+    will-change: background-color, color, border-radius;
     outline: none;
     border: none;
   }
