@@ -74,7 +74,7 @@ export type AppKitOptions = {
   metadata?: Metadata
 
   /**
-   * Use custom RPC in stead of Reown's default RPC.
+   * Returns the Chain custom RPC URL instead of Reown's default RPC.
    * @default false
    */
   enableCustomRpc?: boolean
