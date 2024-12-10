@@ -16,11 +16,8 @@ describe('WalletStandardProvider specific tests', () => {
   let wallet = mockWalletStandard()
   let getActiveChain = vi.fn(() => TestConstants.chains[0])
   let requestedChains = vi.mocked(structuredClone(TestConstants.chains))
-  let walletStandardProvider = new WalletStandardProvider({
-    wallet,
-    getActiveChain,
-    requestedChains
-  })
+  let walletStandardProvider: WalletStandardProvider
+  let emitSpy: ReturnType<typeof vi.spyOn>
 
   beforeEach(() => {
     wallet = mockWalletStandard()
@@ -29,6 +26,7 @@ describe('WalletStandardProvider specific tests', () => {
       getActiveChain,
       requestedChains
     })
+    emitSpy = vi.spyOn(walletStandardProvider, 'emit' as any)
   })
 
   it('should call connect', async () => {
@@ -53,7 +51,7 @@ describe('WalletStandardProvider specific tests', () => {
     })
   })
 
-  it('should call signTransaction with correct params', async () => {
+  it('should call signTransaction with correct params and emit pendingTransaction', async () => {
     const transaction = mockLegacyTransaction()
     await walletStandardProvider.signTransaction(transaction)
 
@@ -62,6 +60,7 @@ describe('WalletStandardProvider specific tests', () => {
       account: wallet.accounts[0],
       chain: 'solana:mainnet'
     })
+    expect(emitSpy).toHaveBeenCalledWith('pendingTransaction', undefined)
   })
 
   it('should call signTransaction with correct params for VersionedTransaction', async () => {
@@ -75,7 +74,7 @@ describe('WalletStandardProvider specific tests', () => {
     })
   })
 
-  it('should call signAndSendTransaction with correct params', async () => {
+  it('should call signAndSendTransaction with correct params and emit pendingTransaction', async () => {
     const transaction = mockLegacyTransaction()
 
     await walletStandardProvider.signAndSendTransaction(transaction)
@@ -87,6 +86,7 @@ describe('WalletStandardProvider specific tests', () => {
       chain: 'solana:mainnet',
       options: { preflighCommitment: undefined }
     })
+    expect(emitSpy).toHaveBeenCalledWith('pendingTransaction', undefined)
 
     await walletStandardProvider.signAndSendTransaction(transaction, {
       preflightCommitment: 'singleGossip',
@@ -107,6 +107,7 @@ describe('WalletStandardProvider specific tests', () => {
         skipPreflight: true
       }
     })
+    expect(emitSpy).toHaveBeenCalledWith('pendingTransaction', undefined)
   })
 
   it('should throw if features are not available', async () => {
@@ -130,7 +131,7 @@ describe('WalletStandardProvider specific tests', () => {
     ).rejects.toThrowError(WalletStandardFeatureNotSupportedError)
   })
 
-  it('should call signTransaction with correct params for multiple transactions over singAllTransactions method', async () => {
+  it('should call signAllTransactions with correct params and emit pendingTransaction', async () => {
     const transactions = [mockLegacyTransaction(), mockVersionedTransaction()]
     await walletStandardProvider.signAllTransactions(transactions)
 
@@ -141,6 +142,9 @@ describe('WalletStandardProvider specific tests', () => {
         chain: 'solana:mainnet'
       }))
     )
+    transactions.forEach(() => {
+      expect(emitSpy).toHaveBeenCalledWith('pendingTransaction', undefined)
+    })
   })
 
   it('should use the same requestedChains to return chains', () => {

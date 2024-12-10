@@ -1,12 +1,15 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
 import type {
+  ConnectMethod,
   CustomWallet,
   Features,
   Metadata,
   ProjectId,
   SdkVersion,
-  Tokens
+  SocialProvider,
+  Tokens,
+  WalletFeature
 } from '../utils/TypeUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import type { SIWXConfig } from '../utils/SIWXUtil.js'
@@ -101,6 +104,11 @@ export interface OptionsControllerStatePublic {
    */
   enableWalletConnect?: boolean
   /**
+   * Enable or disable the wallet guide footer in AppKit if you have email or social login configured.
+   * @default true
+   */
+  enableWalletGuide?: boolean
+  /**
    * Enable or disable debug mode in your AppKit. This is useful if you want to see UI alerts when debugging.
    * @default false
    */
@@ -117,6 +125,11 @@ export interface OptionsControllerStatePublic {
    * @default undefined
    */
   siwx?: SIWXConfig
+  /**
+   * Renders the AppKit to DOM instead of the default modal.
+   * @default false
+   */
+  enableEmbedded?: boolean
 }
 
 export interface OptionsControllerStateInternal {
@@ -155,15 +168,14 @@ export const OptionsController = {
       return
     }
 
-    Object.entries(features).forEach(([key, value]) => {
-      if (!state.features) {
-        state.features = ConstantsUtil.DEFAULT_FEATURES
-      }
+    if (!state.features) {
+      state.features = ConstantsUtil.DEFAULT_FEATURES
 
-      if (key in state.features) {
-        ;(state.features as Record<keyof Features, unknown>)[key as keyof Features] = value
-      }
-    })
+      return
+    }
+
+    const newFeatures = { ...state.features, ...features }
+    state.features = newFeatures
   },
 
   setProjectId(projectId: OptionsControllerState['projectId']) {
@@ -234,6 +246,10 @@ export const OptionsController = {
     state.enableWalletConnect = enableWalletConnect
   },
 
+  setEnableWalletGuide(enableWalletGuide: OptionsControllerState['enableWalletGuide']) {
+    state.enableWalletGuide = enableWalletGuide
+  },
+
   setEnableWallets(enableWallets: OptionsControllerState['enableWallets']) {
     state.enableWallets = enableWallets
   },
@@ -244,5 +260,37 @@ export const OptionsController = {
 
   setSIWX(siwx: OptionsControllerState['siwx']) {
     state.siwx = siwx
+  },
+
+  setConnectMethodsOrder(connectMethodsOrder: ConnectMethod[]) {
+    state.features = {
+      ...state.features,
+      connectMethodsOrder
+    }
+  },
+
+  setWalletFeaturesOrder(walletFeaturesOrder: WalletFeature[]) {
+    state.features = {
+      ...state.features,
+      walletFeaturesOrder
+    }
+  },
+
+  setSocialsOrder(socialsOrder: SocialProvider[]) {
+    state.features = {
+      ...state.features,
+      socials: socialsOrder
+    }
+  },
+
+  setCollapseWallets(collapseWallets: boolean) {
+    state.features = {
+      ...state.features,
+      collapseWallets
+    }
+  },
+
+  setEnableEmbedded(enableEmbedded: OptionsControllerState['enableEmbedded']) {
+    state.enableEmbedded = enableEmbedded
   }
 }

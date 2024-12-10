@@ -80,7 +80,7 @@ export namespace ProviderEventEmitterMethods {
     disconnect: undefined
     accountsChanged: PublicKey
     chainChanged: string
-
+    pendingTransaction: undefined
     auth_rpcRequest: W3mFrameTypes.RPCRequest
     auth_rpcSuccess: W3mFrameTypes.FrameEvent
     auth_rpcError: Error
