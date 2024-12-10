@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
-import { NetworkUtil } from '../src/utils/NetworkUtil'
-import type { CaipNetwork } from '@reown/appkit'
+import { NetworkUtil } from '../src/utils/NetworkUtil.js'
+import { type CaipNetwork } from '../src/utils/TypeUtil.js'
 
 describe('NetworkUtil', () => {
   const mockNetworks: CaipNetwork[] = [
@@ -34,7 +34,7 @@ describe('NetworkUtil', () => {
     })
 
     test('should return empty array for non-existent namespace', () => {
-      const networks = NetworkUtil.getNetworksByNamespace(mockNetworks, 'cosmos')
+      const networks = NetworkUtil.getNetworksByNamespace(mockNetworks, 'bip122')
       expect(networks).toHaveLength(0)
     })
   })
