@@ -25,6 +25,7 @@ export type ModalFlavor =
   | 'ethers-verify-evil'
   | 'no-email'
   | 'no-socials'
+  | 'wallet-button'
   | 'siwe'
   | 'all'
 
@@ -92,6 +93,24 @@ export class ModalPage {
     const qrLoadInitiatedTime = new Date()
 
     // Using getByTestId() doesn't work on my machine, I'm guessing because this element is inside of a <slot>
+    const qrCode = this.page.locator('wui-qr-code')
+    await expect(qrCode).toBeVisible()
+
+    const uri = this.assertDefined(await qrCode.getAttribute('uri'))
+    const qrLoadedTime = new Date()
+    if (timingRecords) {
+      timingRecords.push({
+        item: 'qrLoad',
+        timeMs: qrLoadedTime.getTime() - qrLoadInitiatedTime.getTime()
+      })
+    }
+
+    return uri
+  }
+
+  async getConnectUriFromQRModal(timingRecords?: TimingRecords): Promise<string> {
+    const qrLoadInitiatedTime = new Date()
+
     const qrCode = this.page.locator('wui-qr-code')
     await expect(qrCode).toBeVisible()
 
@@ -461,6 +480,10 @@ export class ModalPage {
     const tabWebApp = this.page.getByTestId('tab-webapp')
     await expect(tabWebApp).toBeVisible()
     await tabWebApp.click()
+  }
+
+  async clickWalletButton(id: string) {
+    await this.page.getByTestId(`wallet-button-${id}`).click()
   }
 
   async clickHookDisconnectButton() {

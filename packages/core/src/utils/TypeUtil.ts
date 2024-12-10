@@ -183,6 +183,7 @@ export interface ThemeVariables {
   '--w3m-font-size-master'?: string
   '--w3m-border-radius-master'?: string
   '--w3m-z-index'?: number
+  '--w3m-qr-color'?: string
 }
 
 // -- BlockchainApiController Types ---------------------------------------------
@@ -654,6 +655,19 @@ export type Event =
   | {
       type: 'track'
       event: 'SWAP_ERROR'
+      properties: {
+        isSmartAccount: boolean
+        network: string
+        swapFromToken: string
+        swapToToken: string
+        swapFromAmount: string
+        swapToAmount: string
+        message: string
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SWAP_APPROVAL_ERROR'
       properties: {
         isSmartAccount: boolean
         network: string

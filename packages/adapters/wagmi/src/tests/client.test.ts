@@ -15,7 +15,8 @@ import {
   writeContract as wagmiWriteContract,
   waitForTransactionReceipt,
   getAccount,
-  watchPendingTransactions
+  watchPendingTransactions,
+  http
 } from '@wagmi/core'
 import { mainnet } from '@wagmi/core/chains'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
@@ -111,6 +112,25 @@ describe('WagmiAdapter', () => {
       const injectedConnector = mockConnectors.filter((c: any) => c.id === 'injected')[0]
 
       expect(injectedConnector?.info).toBeUndefined()
+    })
+
+    it('should return reown RPC by default', () => {
+      expect(adapter.wagmiChains?.[0].rpcUrls.default.http[0]).toBe(
+        `https://rpc.walletconnect.org/v1/?chainId=eip155%3A1&projectId=${mockProjectId}`
+      )
+    })
+    it('should return custom RPC if transports is provided', () => {
+      const adapterWithCustomRpc = new WagmiAdapter({
+        networks: mockNetworks,
+        projectId: mockProjectId,
+        transports: {
+          [mainnet.id]: http('https://cloudflare-eth.com')
+        }
+      })
+
+      expect(adapterWithCustomRpc.wagmiChains?.[0].rpcUrls.default.http[0]).toBe(
+        `https://cloudflare-eth.com`
+      )
     })
   })
 

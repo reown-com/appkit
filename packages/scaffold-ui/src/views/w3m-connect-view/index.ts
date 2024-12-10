@@ -79,6 +79,8 @@ export class W3mConnectView extends LitElement {
       disabled
     }
 
+    const enableWalletGuide = OptionsController.state.enableWalletGuide
+
     const socials = this.features?.socials
     const enableWallets = this.enableWallets
 
@@ -101,6 +103,7 @@ export class W3mConnectView extends LitElement {
             gap="s"
             .padding=${socialOrEmailLoginEnabled &&
             enableWallets &&
+            enableWalletGuide &&
             this.walletGuide === 'get-started'
               ? ['3xs', 's', '0', 's']
               : ['3xs', 's', 's', 's']}
@@ -280,6 +283,12 @@ export class W3mConnectView extends LitElement {
   }
 
   private guideTemplate(disabled = false) {
+    const enableWalletGuide = OptionsController.state.enableWalletGuide
+
+    if (!enableWalletGuide) {
+      return null
+    }
+
     const socials = this.features?.socials
     const socialsExist = socials && socials.length
 
@@ -298,11 +307,7 @@ export class W3mConnectView extends LitElement {
       ${this.walletGuide === 'explore'
         ? html`<wui-separator data-testid="wui-separator" id="explore" text="or"></wui-separator>`
         : null}
-      <wui-flex
-        flexDirection="column"
-        .padding=${['xl', '0', 'xl', '0']}
-        class=${classMap(classes)}
-      >
+      <wui-flex flexDirection="column" .padding=${['s', '0', 'xl', '0']} class=${classMap(classes)}>
         <w3m-wallet-guide
           tabIdx=${ifDefined(tabIndex)}
           walletGuide=${this.walletGuide}

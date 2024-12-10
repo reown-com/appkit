@@ -14,7 +14,7 @@ import {
   type ConnectorType,
   type Provider
 } from '@reown/appkit-core'
-import { ConstantsUtil, ErrorUtil } from '@reown/appkit-utils'
+import { ConstantsUtil, ErrorUtil, PresetsUtil } from '@reown/appkit-utils'
 import { SolConstantsUtil } from '@reown/appkit-utils/solana'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
@@ -124,6 +124,7 @@ export class SolanaAdapter extends AdapterBlueprint {
         }),
         name: 'Coinbase Wallet',
         chain: this.namespace as ChainNamespace,
+        explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID],
         chains: []
       })
     }
@@ -141,6 +142,7 @@ export class SolanaAdapter extends AdapterBlueprint {
             imageUrl: provider.icon,
             name: provider.name,
             chain: CommonConstantsUtil.CHAIN.SOLANA,
+            explorerId: PresetsUtil.ConnectorExplorerIds[provider.name],
             chains: []
           })
         })
@@ -398,12 +400,14 @@ export class SolanaAdapter extends AdapterBlueprint {
       )
     }
 
-    provider.on('display_uri', (uri: string) => {
-      onUri(uri)
-    })
+    provider.on('display_uri', onUri)
 
     const namespaces = WcHelpersUtil.createNamespaces(this.caipNetworks)
     await provider.connect({ optionalNamespaces: namespaces })
+    const rpcUrl = this.caipNetworks[0]?.rpcUrls?.default?.http?.[0] as string
+    const connection = new Connection(rpcUrl, 'confirmed')
+
+    SolStoreUtil.setConnection(connection)
   }
 
   public async disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
