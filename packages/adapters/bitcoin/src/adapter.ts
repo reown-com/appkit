@@ -15,16 +15,18 @@ import { LeatherConnector } from './connectors/LeatherConnector.js'
 import { OKXConnector } from './connectors/OKXConnector.js'
 import { UnitsUtil } from './utils/UnitsUtil.js'
 import { BitcoinApi } from './utils/BitcoinApi.js'
+import { bitcoin } from '@reown/appkit/networks'
 
 export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   private eventsToUnbind: (() => void)[] = []
   private api: BitcoinApi.Interface
 
-  constructor({ api = {}, ...params }: BitcoinAdapter.ConstructorParams) {
+  constructor({ api = {}, ...params }: BitcoinAdapter.ConstructorParams = {}) {
     super({
       namespace: 'bip122',
       ...params
     })
+
     this.api = {
       ...BitcoinApi,
       ...api
@@ -196,7 +198,10 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     }
 
     // Get balance
-    return Promise.resolve({} as unknown as AdapterBlueprint.GetBalanceResult)
+    return Promise.resolve({
+      balance: '0',
+      symbol: bitcoin.nativeCurrency.symbol
+    })
   }
 
   override getProfile(
