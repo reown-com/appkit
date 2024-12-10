@@ -104,6 +104,11 @@ export interface OptionsControllerStatePublic {
    */
   enableWalletConnect?: boolean
   /**
+   * Enable or disable the wallet guide footer in AppKit if you have email or social login configured.
+   * @default true
+   */
+  enableWalletGuide?: boolean
+  /**
    * Enable or disable debug mode in your AppKit. This is useful if you want to see UI alerts when debugging.
    * @default false
    */
@@ -239,6 +244,10 @@ export const OptionsController = {
 
   setEnableWalletConnect(enableWalletConnect: OptionsControllerState['enableWalletConnect']) {
     state.enableWalletConnect = enableWalletConnect
+  },
+
+  setEnableWalletGuide(enableWalletGuide: OptionsControllerState['enableWalletGuide']) {
+    state.enableWalletGuide = enableWalletGuide
   },
 
   setEnableWallets(enableWallets: OptionsControllerState['enableWallets']) {
