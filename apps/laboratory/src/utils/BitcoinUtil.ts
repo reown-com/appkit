@@ -2,13 +2,16 @@ import type { BitcoinConnector } from '@reown/appkit-adapter-bitcoin'
 import type { CaipNetwork, CaipNetworkId } from '@reown/appkit'
 import * as networks from '@reown/appkit/networks'
 import * as bitcoin from 'bitcoinjs-lib'
+import * as bitcoinPSBTUtils from 'bitcoinjs-lib/src/psbt/psbtutils'
+import ecc from '@bitcoinerlab/secp256k1'
+
+bitcoin.initEccLib(ecc)
 
 export const BitcoinUtil = {
   createSignPSBTParams(params: BitcoinUtil.CreateSignPSBTParams): BitcoinConnector.SignPSBTParams {
     const network = this.getBitcoinNetwork(params.network.caipNetworkId)
-
+    const payment = this.getPaymentByAddress(params.senderAddress, network)
     const psbt = new bitcoin.Psbt({ network })
-    const payment = bitcoin.payments.p2wpkh({ address: params.senderAddress, network })
 
     if (!payment.output) {
       throw new Error('Invalid payment output')
@@ -113,6 +116,31 @@ export const BitcoinUtil = {
 
   getBitcoinNetwork(networkId: CaipNetworkId): bitcoin.Network {
     return this.isTestnet(networkId) ? bitcoin.networks.testnet : bitcoin.networks.bitcoin
+  },
+
+  getPaymentByAddress(
+    address: string,
+    network: bitcoin.networks.Network
+  ): bitcoin.payments.Payment {
+    const output = bitcoin.address.toOutputScript(address, network)
+
+    if (bitcoinPSBTUtils.isP2MS(output)) {
+      return bitcoin.payments.p2ms({ output, network })
+    } else if (bitcoinPSBTUtils.isP2PK(output)) {
+      return bitcoin.payments.p2pk({ output, network })
+    } else if (bitcoinPSBTUtils.isP2PKH(output)) {
+      return bitcoin.payments.p2pkh({ output, network })
+    } else if (bitcoinPSBTUtils.isP2WPKH(output)) {
+      return bitcoin.payments.p2wpkh({ output, network })
+    } else if (bitcoinPSBTUtils.isP2WSHScript(output)) {
+      return bitcoin.payments.p2wsh({ output, network })
+    } else if (bitcoinPSBTUtils.isP2SHScript(output)) {
+      return bitcoin.payments.p2sh({ output, network })
+    } else if (bitcoinPSBTUtils.isP2TR(output)) {
+      return bitcoin.payments.p2tr({ output, network })
+    }
+
+    throw new Error('Unsupported payment type')
   }
 }
 
