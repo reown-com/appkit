@@ -169,8 +169,9 @@ export interface ApiGetWalletsResponse {
   count: number
 }
 
-export interface ApiGetAnalyticsConfigResponse {
+export interface ApiGetProjectConfigResponse {
   isAnalyticsEnabled: boolean
+  isAppKitAuthEnabled: boolean
 }
 
 export type ThemeMode = 'dark' | 'light'
@@ -1068,6 +1069,12 @@ export type Features = {
    * @default false
    */
   collapseWallets?: boolean
+  /**
+   * @description Enable or disable the AppKit Auth feature. Disabled by default.
+   * This will enable SIWX configuration using Cloud Auth. You can configure this flag through the Project Cloud dashboard.
+   * @default false
+   */
+  auth?: boolean
 }
 
 export type FeaturesKeys = keyof Features

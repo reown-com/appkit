@@ -680,7 +680,6 @@ export class AppKit {
     OptionsController.setTermsConditionsUrl(options.termsConditionsUrl)
     OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
     OptionsController.setCustomWallets(options.customWallets)
-    OptionsController.setFeatures(options.features)
     OptionsController.setEnableWalletConnect(options.enableWalletConnect !== false)
     OptionsController.setEnableWallets(options.enableWallets !== false)
     OptionsController.setEIP6963Enabled(options.enableEIP6963 !== false)
@@ -724,6 +723,20 @@ export class AppKit {
         OptionsController.setSIWX(siwe.mapToSIWX(options.siweConfig))
       }
     }
+
+    OptionsController.subscribeKey('features', async features => {
+      if (features?.auth) {
+        if (OptionsController.state.siwx) {
+          console.warn("SIWX config already enabled, 'auth' feature will not be enabled")
+
+          return
+        }
+
+        const siwx = await import('@reown/appkit-siwx')
+        OptionsController.setSIWX(new siwx.CloudAuthSIWX())
+      }
+    })
+    OptionsController.setFeatures(options.features)
   }
 
   private getDefaultMetaData() {
