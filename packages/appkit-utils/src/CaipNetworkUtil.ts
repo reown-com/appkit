@@ -111,17 +111,10 @@ export const CaipNetworksUtil = {
   },
 
   // eslint-disable-next-line max-params
-  getRpcUrl(
-    caipNetwork: AppKitNetwork,
-    caipNetworkId: CaipNetworkId,
-    projectId: string,
-    customRpc?: boolean
-  ) {
+  getDefaultRpcUrl(caipNetwork: AppKitNetwork, caipNetworkId: CaipNetworkId, projectId: string) {
     const defaultRpcUrl = caipNetwork.rpcUrls?.default?.http?.[0]
 
-    if (customRpc) {
-      return defaultRpcUrl || ''
-    } else if (WC_HTTP_RPC_SUPPORTED_CHAINS.includes(caipNetworkId)) {
+    if (WC_HTTP_RPC_SUPPORTED_CHAINS.includes(caipNetworkId)) {
       return getBlockchainApiRpcUrl(caipNetworkId, projectId)
     }
 
@@ -145,7 +138,14 @@ export const CaipNetworksUtil = {
     const caipNetworkId = this.getCaipNetworkId(caipNetwork)
     const chainNamespace = this.getChainNamespace(caipNetwork)
 
-    const rpcUrl = this.getRpcUrl(caipNetwork, caipNetworkId, projectId, customRpc)
+    let rpcUrl = ''
+    if (customRpc) {
+      // If custom RPC is enabled, use the original RPC URL
+      rpcUrl = caipNetwork.rpcUrls.default.http?.[0] || ''
+    } else {
+      // If custom RPC is not enabled, get the default Reown RPC URL
+      rpcUrl = this.getDefaultRpcUrl(caipNetwork, caipNetworkId, projectId)
+    }
 
     return {
       ...caipNetwork,
