@@ -60,8 +60,10 @@ export class AppKitWalletButton extends LitElement {
   }
 
   public override firstUpdated() {
-    // Prefetch wallet buttons
-    ApiController.fetchWalletButtons()
+    if (!WalletUtil.isWalletButtonReady(this.wallet)) {
+      // Prefetch wallet buttons
+      ApiController.fetchWalletButtons()
+    }
   }
 
   // -- Render -------------------------------------------- //
@@ -138,7 +140,7 @@ export class AppKitWalletButton extends LitElement {
             .catch(() => (this.error = true))
             .finally(() => (this.loading = false))
         }}
-        .imageSrc=${ifDefined(connectorImage ?? walletImage)}
+        .imageSrc=${ifDefined(walletImage ?? connectorImage)}
         ?disabled=${Boolean(this.caipAddress) || this.loading || this.modalLoading}
         ?loading=${this.loading || this.modalLoading}
         ?error=${this.error}
