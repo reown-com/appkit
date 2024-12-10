@@ -1,7 +1,6 @@
 import { WcHelpersUtil, type AppKit, type AppKitOptions } from '@reown/appkit'
 import {
   ConstantsUtil as CommonConstantsUtil,
-  NetworkUtil,
   type CaipNetwork,
   type ChainNamespace
 } from '@reown/appkit-common'

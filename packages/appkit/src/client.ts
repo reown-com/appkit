@@ -1497,7 +1497,7 @@ export class AppKit {
     // Only update state when needed
     if (address.toLowerCase() !== AccountController.state.address?.toLowerCase()) {
       this.setCaipAddress(`${chainNamespace}:${chainId}:${address}`, chainNamespace)
-      await this.syncIdentity({ address, chainId: chainId, chainNamespace })
+      await this.syncIdentity({ address, chainId, chainNamespace })
     }
 
     this.setStatus('connected', chainNamespace)
