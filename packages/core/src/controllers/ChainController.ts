@@ -100,9 +100,9 @@ export const ChainController = {
     })
   },
 
-  initialize(adapters: ChainAdapter[], caipNetworks: CaipNetwork[]) {
+  initialize(adapters: ChainAdapter[], caipNetworks: CaipNetwork[] | undefined) {
     const activeNamespace = StorageUtil.getActiveNamespace()
-    const activeCaipNetwork = caipNetworks.find(
+    const activeCaipNetwork = caipNetworks?.find(
       network => network.chainNamespace === activeNamespace
     )
     const activeAdapterFromStorage = adapters.find(

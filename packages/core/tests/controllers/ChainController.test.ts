@@ -128,7 +128,7 @@ const solanaAdapter = {
 }
 
 beforeAll(() => {
-  ChainController.initialize([evmAdapter])
+  ChainController.initialize([evmAdapter], requestedCaipNetworks)
 })
 
 // -- Tests --------------------------------------------------------------------
@@ -170,7 +170,7 @@ describe('ChainController', () => {
     }
 
     // Need to re-initialize to set the spy properly
-    ChainController.initialize([evmAdapter])
+    ChainController.initialize([evmAdapter], requestedCaipNetworks)
     await ChainController.setApprovedCaipNetworksData(namespace)
 
     expect(ChainController.getApprovedCaipNetworkIds(namespace)).toEqual(approvedCaipNetworkIds)
@@ -316,11 +316,11 @@ describe('ChainController', () => {
   })
 
   it('should initialize with active network from local storage', () => {
-    const getItemSpy = vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValue('eip155:1')
+    const getItemSpy = vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValue('eip155')
 
-    ChainController.initialize([evmAdapter])
+    ChainController.initialize([evmAdapter], requestedCaipNetworks)
 
-    expect(getItemSpy).toHaveBeenCalledWith(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
+    expect(getItemSpy).toHaveBeenCalledWith(SafeLocalStorageKeys.ACTIVE_NAMESPACE)
     expect(ChainController.state.activeChain).toEqual(ConstantsUtil.CHAIN.EVM)
 
     getItemSpy.mockRestore()
@@ -329,21 +329,21 @@ describe('ChainController', () => {
   it('should initialize with first adapter when stored network not found', () => {
     const getItemSpy = vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValue('solana')
 
-    ChainController.initialize([solanaAdapter, evmAdapter])
+    ChainController.initialize([solanaAdapter, evmAdapter], requestedCaipNetworks)
 
-    expect(getItemSpy).toHaveBeenCalledWith(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
+    expect(getItemSpy).toHaveBeenCalledWith(SafeLocalStorageKeys.ACTIVE_NAMESPACE)
     expect(ChainController.state.activeChain).toEqual(ConstantsUtil.CHAIN.SOLANA)
 
     getItemSpy.mockRestore()
   })
 
   it('should set noAdapters flag when no adapters provided', () => {
-    ChainController.initialize([])
+    ChainController.initialize([], requestedCaipNetworks)
     expect(ChainController.state.noAdapters).toBe(true)
   })
 
   it('should set noAdapters flag when no adapter provided', () => {
-    ChainController.initialize([])
+    ChainController.initialize([], requestedCaipNetworks)
     expect(ChainController.state.noAdapters).toBe(true)
   })
 })
