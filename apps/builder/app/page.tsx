@@ -1,14 +1,11 @@
 'use client'
 
-import { useAppKitContext } from '@/hooks/use-appkit'
 import { SidebarContent } from '@/components/sidebar-content'
 import { PreviewContent } from '@/components/preview-content'
 import { cn } from '@/lib/utils'
 import { BrandingHeader } from '@/components/branding-header'
 
 export default function Page() {
-  const { config } = useAppKitContext()
-
   return (
     <div
       className={cn(
