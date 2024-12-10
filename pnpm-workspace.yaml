@@ -17,6 +17,7 @@ packages:
   - 'packages/experimental'
   - 'packages/cli'
   - 'apps/*'
+  - '!apps/gallery-new'
   - '!apps/laboratory-new'
   - 'examples/*'
   - 'services/*'
