@@ -101,14 +101,11 @@ export const ChainController = {
   },
 
   initialize(adapters: ChainAdapter[], caipNetworks: CaipNetwork[] | undefined) {
-    const activeNamespace = StorageUtil.getActiveNamespace()
-    const activeCaipNetwork = caipNetworks?.find(
-      network => network.chainNamespace === activeNamespace
-    )
-    const activeAdapterFromStorage = adapters.find(
-      adapter => adapter?.namespace === activeNamespace
-    )
-    const adapterToActivate = activeAdapterFromStorage || adapters?.[0]
+    const { chainId: activeChainId, namespace: activeNamespace } =
+      StorageUtil.getActiveNetworkProps()
+    const activeCaipNetwork = caipNetworks?.find(network => network.id === activeChainId)
+    const defaultAdapter = adapters.find(adapter => adapter?.namespace === activeNamespace)
+    const adapterToActivate = defaultAdapter || adapters?.[0]
 
     if (adapters?.length === 0 || !adapterToActivate) {
       state.noAdapters = true

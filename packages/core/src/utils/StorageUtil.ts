@@ -9,6 +9,20 @@ import type { WcWallet, ConnectorType, SocialProvider, ConnectionStatus } from '
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
+  getActiveNetworkProps() {
+    const activeNamespace = StorageUtil.getActiveNamespace()
+    const activeCaipNetworkId = StorageUtil.getActiveCaipNetworkId()
+    const caipNetworkIdFromStorage = activeCaipNetworkId
+      ? activeCaipNetworkId.split(':')[1]
+      : undefined
+
+    return {
+      namespace: activeNamespace,
+      caipNetworkId: activeCaipNetworkId,
+      chainId: caipNetworkIdFromStorage
+    }
+  },
+
   setWalletConnectDeepLink({ name, href }: { href: string; name: string }) {
     try {
       SafeLocalStorage.setItem(SafeLocalStorageKeys.DEEPLINK_CHOICE, JSON.stringify({ href, name }))

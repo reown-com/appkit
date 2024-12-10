@@ -1024,6 +1024,7 @@ export class AppKit {
           const providerType =
             ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
 
+          console.log('>>> adapter?.switchNetwork', caipNetwork)
           await adapter?.switchNetwork({ caipNetwork, provider, providerType })
           this.setCaipNetwork(caipNetwork)
           await this.syncAccount({
@@ -1489,26 +1490,25 @@ export class AppKit {
   }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
     chainNamespace: ChainNamespace
   }) {
-    const activeNamespace = StorageUtil.getActiveNamespace()
+    const { namespace: activeNamespace, chainId: activeChainId } =
+      StorageUtil.getActiveNetworkProps()
+    const chainIdToUse = chainId || activeChainId
+
     // Only update state when needed
     if (address.toLowerCase() !== AccountController.state.address?.toLowerCase()) {
       this.setCaipAddress(`${chainNamespace}:${chainId}:${address}`, chainNamespace)
-      await this.syncIdentity({ address, chainId, chainNamespace })
+      await this.syncIdentity({ address, chainId: chainId, chainNamespace })
     }
 
     this.setStatus('connected', chainNamespace)
 
-    if (chainNamespace === ChainController.state.activeChain) {
-      const caipNetwork = this.caipNetworks?.find(
-        n => n.id === chainId && n.chainNamespace === chainNamespace
-      )
+    if (chainIdToUse && chainNamespace === activeNamespace) {
+      const caipNetwork = this.caipNetworks?.find(n => n.id === chainIdToUse)
       const fallBackCaipNetwork = this.caipNetworks?.find(n => n.chainNamespace === chainNamespace)
-
-      if (activeNamespace === chainNamespace) {
-        this.setCaipNetwork(caipNetwork || fallBackCaipNetwork)
-        this.syncConnectedWalletInfo(chainNamespace)
-      }
-      await this.syncBalance({ address, chainId, chainNamespace })
+      console.log('>>> THIS', caipNetwork || fallBackCaipNetwork)
+      this.setCaipNetwork(caipNetwork || fallBackCaipNetwork)
+      this.syncConnectedWalletInfo(chainNamespace)
+      await this.syncBalance({ address, chainId: chainIdToUse, chainNamespace })
     }
   }
 

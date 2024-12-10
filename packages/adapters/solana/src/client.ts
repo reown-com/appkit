@@ -9,6 +9,7 @@ import {
   AlertController,
   CoreHelperUtil,
   EventsController,
+  StorageUtil,
   type ConnectorType,
   type Provider
 } from '@reown/appkit-core'
@@ -331,6 +332,7 @@ export class SolanaAdapter extends AdapterBlueprint {
     const { caipNetwork, provider, providerType } = params
 
     if (providerType === 'ID_AUTH') {
+      console.log('>>> solana.switchNetwork', caipNetwork)
       await (provider as unknown as W3mFrameProvider).switchNetwork(caipNetwork.id)
       const user = await (provider as unknown as W3mFrameProvider).getUser({
         chainId: caipNetwork.id
@@ -452,10 +454,8 @@ export class SolanaAdapter extends AdapterBlueprint {
 
     // For standard Solana wallets
     const address = await selectedProvider.connect()
-    const caipNetwork =
-      NetworkUtil.getFirstNetworkByNamespace(this.caipNetworks, CommonConstantsUtil.CHAIN.SOLANA) ||
-      solana
-    const chainId = caipNetwork.id as string
+    const { chainId: activeChainId } = StorageUtil.getActiveNetworkProps()
+    const chainId = activeChainId || solana.id
 
     this.listenProviderEvents(selectedProvider as unknown as WalletStandardProvider)
 
