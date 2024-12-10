@@ -14,6 +14,7 @@ import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connecting-farcaster-view')
 export class W3mConnectingFarcasterView extends LitElement {
@@ -233,7 +234,7 @@ export class W3mConnectingFarcasterView extends LitElement {
       // This setTimeout needed to avoid the beginning of the animation from not starting to resize immediately and some weird svg errors
       this.timeout = setTimeout(() => {
         this.ready = true
-      }, 0)
+      }, 200)
     }
   }
 
@@ -250,6 +251,7 @@ export class W3mConnectingFarcasterView extends LitElement {
       uri=${this.uri}
       ?farcaster=${true}
       data-testid="wui-qr-code"
+      color=${ifDefined(ThemeController.state.themeVariables['--w3m-qr-color'])}
     ></wui-qr-code>`
   }
 

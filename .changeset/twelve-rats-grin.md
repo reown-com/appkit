@@ -8,7 +8,7 @@
 '@reown/appkit': patch
 '@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
-'appkit-cli': patch
+'@reown/appkit-cli': patch
 '@reown/appkit-common': patch
 '@reown/appkit-core': patch
 '@reown/appkit-experimental': patch
