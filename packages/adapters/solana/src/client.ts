@@ -394,12 +394,14 @@ export class SolanaAdapter extends AdapterBlueprint {
       )
     }
 
-    provider.on('display_uri', (uri: string) => {
-      onUri(uri)
-    })
+    provider.on('display_uri', onUri)
 
     const namespaces = WcHelpersUtil.createNamespaces(this.caipNetworks)
     await provider.connect({ optionalNamespaces: namespaces })
+    const rpcUrl = this.caipNetworks[0]?.rpcUrls?.default?.http?.[0] as string
+    const connection = new Connection(rpcUrl, 'confirmed')
+
+    SolStoreUtil.setConnection(connection)
   }
 
   public async disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
