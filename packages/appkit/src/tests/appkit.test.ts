@@ -30,6 +30,7 @@ import {
 import { mockOptions } from './mocks/Options'
 import { UniversalAdapter } from '../universal-adapter/client'
 import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint'
+import { ProviderUtil } from '../store'
 
 // Mock all controllers and UniversalAdapterClient
 vi.mock('@reown/appkit-core')
@@ -64,6 +65,23 @@ describe('Base', () => {
 
     it('should initialize adapters in ChainController', () => {
       expect(ChainController.initialize).toHaveBeenCalledWith(mockOptions.adapters)
+    })
+
+    it('should set EIP6963 enabled by default', () => {
+      new AppKit({
+        ...mockOptions
+      })
+
+      expect(OptionsController.setEIP6963Enabled).toHaveBeenCalledWith(true)
+    })
+
+    it('should set EIP6963 disabled when option is disabled in config', () => {
+      new AppKit({
+        ...mockOptions,
+        enableEIP6963: false
+      })
+
+      expect(OptionsController.setEIP6963Enabled).toHaveBeenCalledWith(false)
     })
   })
 
@@ -614,6 +632,29 @@ describe('Base', () => {
 
       expect((appKit as any).setUnsupportedNetwork).toHaveBeenCalled()
       expect(isClientSpy).toHaveBeenCalled()
+    })
+
+    it('should subscribe to providers', () => {
+      const callback = vi.fn()
+      const providers = {
+        eip155: { provider: {} },
+        solana: {},
+        polkadot: {},
+        bip122: {}
+      }
+
+      const mockSubscribeProviders = vi.fn().mockImplementation(cb => {
+        cb(providers)
+        return () => {}
+      })
+
+      // Mock the entire ProviderUtil
+      vi.mocked(ProviderUtil).subscribeProviders = mockSubscribeProviders
+
+      appKit.subscribeProviders(callback)
+
+      expect(mockSubscribeProviders).toHaveBeenCalled()
+      expect(callback).toHaveBeenCalledWith(providers)
     })
   })
   describe('syncExistingConnection', () => {

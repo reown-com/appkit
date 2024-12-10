@@ -11,6 +11,8 @@ import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 export class LeatherConnector extends SatsConnectConnector {
   static readonly ProviderId = 'LeatherProvider'
 
+  private connectedAccounts?: BitcoinConnector.AccountAddress[]
+
   constructor({ connector }: LeatherConnector.ConstructorParams) {
     if (connector.wallet.id !== LeatherConnector.ProviderId) {
       throw new Error('LeatherConnector: wallet must be a LeatherProvider')
@@ -23,8 +25,21 @@ export class LeatherConnector extends SatsConnectConnector {
     })
   }
 
+  override async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {
+    // Keep the connected accounts in memory to avoid repeated requests because Leather doesn't have a connect method
+    if (this.connectedAccounts) {
+      return this.connectedAccounts
+    }
+
+    this.connectedAccounts = await super.getAccountAddresses()
+
+    return this.connectedAccounts
+  }
+
   public override disconnect(): Promise<void> {
     // Leather doesn't have disconnect method
+    this.connectedAccounts = undefined
+
     return Promise.resolve()
   }
 

@@ -71,6 +71,7 @@
     "playwright:debug:multichain-ethers5-siwe": "pnpm playwright:test:multichain-ethers5-siwe --debug"
   },
   "dependencies": {
+    "@bitcoinerlab/secp256k1": "1.1.1",
     "@chakra-ui/icons": "2.1.1",
     "@chakra-ui/react": "2.8.2",
     "@emotion/react": "11.11.3",
