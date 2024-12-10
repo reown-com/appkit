@@ -209,7 +209,7 @@ export class AppKit {
     this.createAuthProvider()
     await this.createUniversalProvider()
     this.createClients()
-    ChainController.initialize(options.adapters ?? [])
+    ChainController.initialize(options.adapters ?? [], this.caipNetworks)
     this.chainAdapters = await this.createAdapters(
       options.adapters as unknown as AdapterBlueprint[]
     )
@@ -887,8 +887,8 @@ export class AppKit {
 
         this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
 
-        SafeLocalStorage.removeItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
-        SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
+        StorageUtil.deleteConnectedConnector()
+        StorageUtil.deleteActiveCaipNetworkId()
 
         ChainController.state.chains.forEach(chain => {
           this.resetAccount(chain.namespace as ChainNamespace)
@@ -1164,7 +1164,7 @@ export class AppKit {
       }
     })
     provider.onNotConnected(() => {
-      const connectedConnector = SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
+      const connectedConnector = StorageUtil.getConnectedConnector()
       const isConnectedWithAuth = connectedConnector === UtilConstantsUtil.AUTH_CONNECTOR_ID
       if (!isConnected && isConnectedWithAuth) {
         this.setCaipAddress(undefined, ChainController.state.activeChain as ChainNamespace)
@@ -1511,8 +1511,8 @@ export class AppKit {
       if (activeNamespace === chainNamespace) {
         this.setCaipNetwork(caipNetwork || fallBackCaipNetwork)
         this.syncConnectedWalletInfo(chainNamespace)
-        await this.syncBalance({ address, chainId, chainNamespace })
       }
+        await this.syncBalance({ address, chainId, chainNamespace })
     }
   }
 
@@ -1544,7 +1544,7 @@ export class AppKit {
   }
 
   private syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
-    const currentActiveWallet = SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
+    const currentActiveWallet = StorageUtil.getConnectedConnector()
     const providerType = ProviderUtil.state.providerIds[chainNamespace]
 
     if (
@@ -1829,7 +1829,7 @@ export class AppKit {
   }
 
   private setDefaultNetwork() {
-    const previousNetwork = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
+    const previousNetwork = StorageUtil.getActiveCaipNetworkId()
     const caipNetwork =
       previousNetwork && this.caipNetworks?.length
         ? this.caipNetworks.find(n => n.caipNetworkId === previousNetwork)

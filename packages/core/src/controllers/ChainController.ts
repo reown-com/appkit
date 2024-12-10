@@ -11,8 +11,6 @@ import { AccountController, type AccountControllerState } from './AccountControl
 import { PublicStateController } from './PublicStateController.js'
 import {
   NetworkUtil,
-  SafeLocalStorage,
-  SafeLocalStorageKeys,
   type CaipAddress,
   type CaipNetwork,
   type CaipNetworkId,
@@ -102,8 +100,11 @@ export const ChainController = {
     })
   },
 
-  initialize(adapters: ChainAdapter[]) {
+  initialize(adapters: ChainAdapter[], caipNetworks: CaipNetwork[]) {
     const activeNamespace = StorageUtil.getActiveNamespace()
+    const activeCaipNetwork = caipNetworks.find(
+      network => network.chainNamespace === activeNamespace
+    )
     const activeAdapterFromStorage = adapters.find(
       adapter => adapter?.namespace === activeNamespace
     )
@@ -115,6 +116,8 @@ export const ChainController = {
 
     if (!state.noAdapters) {
       state.activeChain = adapterToActivate?.namespace
+      state.activeCaipNetwork = activeCaipNetwork
+
       if (state.activeChain) {
         PublicStateController.set({ activeChain: adapterToActivate?.namespace })
       }
@@ -196,10 +199,7 @@ export const ChainController = {
     if (caipNetwork?.id && chain) {
       state.activeCaipAddress = newAdapter?.accountState?.caipAddress
       state.activeCaipNetwork = caipNetwork
-      SafeLocalStorage.setItem(
-        SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID,
-        caipNetwork?.caipNetworkId
-      )
+      StorageUtil.setActiveCaipNetworkId(caipNetwork?.caipNetworkId)
       PublicStateController.set({
         activeChain: chain,
         selectedNetworkId: caipNetwork?.caipNetworkId
@@ -230,7 +230,7 @@ export const ChainController = {
       activeChain: state.activeChain,
       selectedNetworkId: state.activeCaipNetwork?.caipNetworkId
     })
-    SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetwork.caipNetworkId)
+    StorageUtil.setActiveCaipNetworkId(caipNetwork.caipNetworkId)
 
     const isSupported = this.checkIfSupportedNetwork(caipNetwork.chainNamespace)
 

@@ -38,6 +38,48 @@ export const StorageUtil = {
     }
   },
 
+  setActiveNamespace(namespace: ChainNamespace) {
+    try {
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_NAMESPACE, namespace)
+    } catch {
+      console.info('Unable to set active namespace')
+    }
+  },
+
+  setActiveCaipNetworkId(caipNetworkId: CaipNetworkId) {
+    try {
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetworkId)
+      StorageUtil.setActiveNamespace(caipNetworkId.split(':')[0] as ChainNamespace)
+    } catch {
+      console.info('Unable to set active caip network id')
+    }
+  },
+
+  getActiveCaipNetworkId() {
+    try {
+      return SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
+    } catch {
+      console.info('Unable to get active caip network id')
+      return undefined
+    }
+  },
+
+  deleteActiveCaipNetworkId() {
+    try {
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
+    } catch {
+      console.info('Unable to delete active caip network id')
+    }
+  },
+
+  deleteConnectedConnector() {
+    try {
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
+    } catch {
+      console.info('Unable to delete connected connector')
+    }
+  },
+
   setAppKitRecent(wallet: WcWallet) {
     try {
       const recentWallets = StorageUtil.getRecentWallets()
@@ -76,14 +118,9 @@ export const StorageUtil = {
 
   getActiveNamespace() {
     try {
-      const activeCaipNetworkId = SafeLocalStorage.getItem(
-        SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID
-      ) as CaipNetworkId | undefined
-      if (activeCaipNetworkId) {
-        return activeCaipNetworkId.split(':')[0] as ChainNamespace
-      }
+      const activeNamespace = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_NAMESPACE)
 
-      return undefined
+      return activeNamespace as ChainNamespace | undefined
     } catch {
       console.info('Unable to get active namespace')
     }
@@ -95,7 +132,7 @@ export const StorageUtil = {
     try {
       return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR) as ConnectorType
     } catch {
-      console.info('Unable to get Connected Connector')
+      console.info('Unable to get connected connector')
     }
 
     return undefined
@@ -105,7 +142,7 @@ export const StorageUtil = {
     try {
       SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_SOCIAL, socialProvider)
     } catch {
-      console.info('Unable to set Connected Social Provider')
+      console.info('Unable to set connected social provider')
     }
   },
 
@@ -113,7 +150,7 @@ export const StorageUtil = {
     try {
       return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_SOCIAL)
     } catch {
-      console.info('Unable to get Connected Social Provider')
+      console.info('Unable to get connected social provider')
     }
 
     return undefined
@@ -123,7 +160,7 @@ export const StorageUtil = {
     try {
       return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_SOCIAL_USERNAME)
     } catch {
-      console.info('Unable to get Connected Social Username')
+      console.info('Unable to get connected social username')
     }
 
     return undefined
@@ -142,7 +179,7 @@ export const StorageUtil = {
     try {
       SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTION_STATUS, status)
     } catch {
-      console.info('Unable to set Connection Status')
+      console.info('Unable to set connection status')
     }
   },
 
