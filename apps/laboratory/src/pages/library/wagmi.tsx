@@ -21,7 +21,8 @@ const modal = createAppKit({
   networks: ConstantsUtil.EvmNetworks,
   projectId: ConstantsUtil.ProjectId,
   features: {
-    analytics: true
+    analytics: true,
+    auth: true
   },
   customWallets: ConstantsUtil.CustomWallets
 })

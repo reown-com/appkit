@@ -237,6 +237,7 @@ export const ConstantsUtil = {
     smartSessions: false,
     collapseWallets: false,
     connectMethodsOrder: ['email', 'social', 'wallet'],
-    walletFeaturesOrder: ['onramp', 'swaps', 'receive', 'send']
+    walletFeaturesOrder: ['onramp', 'swaps', 'receive', 'send'],
+    auth: false
   } satisfies Features
 }

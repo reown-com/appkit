@@ -5,6 +5,7 @@ import { FetchUtil } from '../utils/FetchUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   ApiGetAnalyticsConfigResponse,
+  ApiGetProjectConfigResponse,
   ApiGetWalletsRequest,
   ApiGetWalletsResponse,
   WcWallet
@@ -276,7 +277,8 @@ export const ApiController = {
       ApiController.fetchFeaturedWallets(),
       ApiController.fetchRecommendedWallets(),
       ApiController.fetchNetworkImages(),
-      ApiController.fetchConnectorImages()
+      ApiController.fetchConnectorImages(),
+      ApiController.fetchProjectConfig()
     ]
     if (OptionsController.state.features?.analytics) {
       promises.push(ApiController.fetchAnalyticsConfig())
@@ -290,5 +292,14 @@ export const ApiController = {
       params: ApiController._getSdkProperties()
     })
     OptionsController.setFeatures({ analytics: isAnalyticsEnabled })
+  },
+
+  async fetchProjectConfig() {
+    const { isAnalyticsEnabled, isAppKitAuthEnabled } = await api.get<ApiGetProjectConfigResponse>({
+      path: '/getProjectConfig',
+      params: ApiController._getSdkProperties()
+    })
+    console.log({ isAnalyticsEnabled, isAppKitAuthEnabled })
+    OptionsController.setFeatures({ analytics: isAnalyticsEnabled, auth: isAppKitAuthEnabled })
   }
 }
