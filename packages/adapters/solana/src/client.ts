@@ -175,6 +175,12 @@ export class SolanaAdapter extends AdapterBlueprint {
     return Promise.resolve('0x')
   }
 
+  public async getAccounts(): Promise<AdapterBlueprint.GetAccountsResult> {
+    return Promise.resolve({
+      accounts: []
+    })
+  }
+
   public async signMessage(
     params: AdapterBlueprint.SignMessageParams
   ): Promise<AdapterBlueprint.SignMessageResult> {
@@ -354,6 +360,9 @@ export class SolanaAdapter extends AdapterBlueprint {
     provider.on('disconnect', disconnectHandler)
     provider.on('accountsChanged', accountsChangedHandler)
     provider.on('connect', accountsChangedHandler)
+    provider.on('pendingTransaction', () => {
+      this.emit('pendingTransactions')
+    })
 
     this.providerHandlers = {
       disconnect: disconnectHandler,

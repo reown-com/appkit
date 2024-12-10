@@ -32,10 +32,13 @@
     "@wallet-standard/app": "1.0.1",
     "@wallet-standard/base": "1.0.1",
     "@walletconnect/universal-provider": "2.17.0",
+    "bitcoinjs-lib": "6.1.7",
     "sats-connect": "3.0.1"
   },
   "devDependencies": {
+    "@leather.io/rpc": "2.1.21",
     "@vitest/coverage-v8": "2.1.3",
+    "@wallet-standard/features": "1.0.3",
     "@walletconnect/types": "2.17.0",
     "vitest": "2.1.3"
   },

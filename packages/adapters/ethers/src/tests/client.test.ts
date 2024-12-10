@@ -4,10 +4,20 @@ import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type { Provider } from '@reown/appkit-core'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import UniversalProvider from '@walletconnect/universal-provider'
-import { JsonRpcProvider, InfuraProvider } from 'ethers'
+import { JsonRpcProvider, InfuraProvider, BrowserProvider } from 'ethers'
 import { mainnet } from '@reown/appkit/networks'
 import { EthersMethods } from '../utils/EthersMethods'
 import { ProviderUtil } from '@reown/appkit/store'
+import { WcConstantsUtil } from '@reown/appkit'
+
+class ErrorWithCode extends Error {
+  code: number
+
+  constructor(message: string, code: number) {
+    super(message)
+    this.code = code
+  }
+}
 
 // Mock external dependencies
 vi.mock('ethers', async importOriginal => {
@@ -21,6 +31,13 @@ vi.mock('ethers', async importOriginal => {
     })),
     JsonRpcProvider: vi.fn(() => ({
       getBalance: vi.fn()
+    })),
+    BrowserProvider: vi.fn(() => ({
+      on: vi.fn((event, callback) => {
+        if (event === 'pending') {
+          callback()
+        }
+      })
     }))
   }
 })
@@ -297,6 +314,44 @@ describe('EthersAdapter', () => {
       expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith(1)
       expect(mockAuthProvider.connect).toHaveBeenCalledWith({ chainId: 1 })
     })
+
+    it('should add Ethereum chain with external provider and use chain default', async () => {
+      // Mock request so that switchEthereumChain throws with code: WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+      vi.mocked(mockProvider.request).mockImplementation(request => {
+        if (request.method === 'wallet_switchEthereumChain') {
+          throw new ErrorWithCode(
+            'Unrecognized chain ID',
+            WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+          )
+        }
+        return Promise.resolve(null)
+      })
+
+      const mockCaipNetwork = mockCaipNetworks[0]
+      await adapter.switchNetwork({
+        caipNetwork: mockCaipNetwork,
+        provider: mockProvider,
+        providerType: 'EXTERNAL'
+      })
+
+      expect(mockProvider.request).toHaveBeenCalledWith({
+        method: 'wallet_addEthereumChain',
+        params: [
+          {
+            chainId: '0x1',
+            rpcUrls: [mockCaipNetwork.rpcUrls['chainDefault']?.http[0]],
+            chainName: 'Ethereum',
+            iconUrls: ['ba0ba0cd-17c6-4806-ad93-f9d174f17900'],
+            nativeCurrency: {
+              name: 'Ether',
+              decimals: 18,
+              symbol: 'ETH'
+            },
+            blockExplorerUrls: ['https://etherscan.io']
+          }
+        ]
+      })
+    })
   })
 
   describe('EthersAdapter -getWalletConnectProvider', () => {
@@ -396,6 +451,36 @@ describe('EthersAdapter', () => {
         params: [mockParams]
       })
       expect(result).toBe('0x123')
+    })
+  })
+
+  describe('EthersAdapter - ListenPendingTransactions', () => {
+    it('should listen for pending transactions and emit event', () => {
+      const adapter = new EthersAdapter()
+      const mockProvider = {
+        request: vi.fn(),
+        on: vi.fn(),
+        removeListener: vi.fn(),
+        send: vi.fn(),
+        sendAsync: vi.fn()
+      } as unknown as Provider
+
+      const emitSpy = vi.spyOn(adapter, 'emit' as any)
+
+      vi.mocked(BrowserProvider).mockImplementation(
+        () =>
+          ({
+            on: vi.fn((event, callback) => {
+              if (event === 'pending') {
+                callback()
+              }
+            })
+          }) as any
+      )
+      ;(adapter as any).listenPendingTransactions(mockProvider)
+
+      expect(BrowserProvider).toHaveBeenCalledWith(mockProvider)
+      expect(emitSpy).toHaveBeenCalledWith('pendingTransactions')
     })
   })
 })

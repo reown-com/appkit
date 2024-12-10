@@ -59,7 +59,6 @@ function headings() {
     Transactions: 'Activity',
     UnsupportedChain: 'Switch Network',
     UpgradeEmailWallet: 'Upgrade your Wallet',
-    UpgradeToSmartAccount: undefined,
     UpdateEmailWallet: 'Edit Email',
     UpdateEmailPrimaryOtp: 'Confirm Current Email',
     UpdateEmailSecondaryOtp: 'Confirm New Email',
@@ -211,11 +210,10 @@ export class W3mHeader extends LitElement {
     const { view } = RouterController.state
     const isConnectHelp = view === 'Connect'
     const isApproveTransaction = view === 'ApproveTransaction'
-    const isUpgradeToSmartAccounts = view === 'UpgradeToSmartAccount'
     const isConnectingSIWEView = view === 'ConnectingSiwe'
     const isAccountView = view === 'Account'
 
-    const shouldHideBack = isApproveTransaction || isUpgradeToSmartAccounts || isConnectingSIWEView
+    const shouldHideBack = isApproveTransaction || isConnectingSIWEView
 
     if (isAccountView) {
       return html`<wui-select

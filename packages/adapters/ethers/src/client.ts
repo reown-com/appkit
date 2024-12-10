@@ -5,7 +5,9 @@ import {
   type CombinedProvider,
   type Connector,
   type ConnectorType,
-  type Provider
+  type Provider,
+  AlertController,
+  CoreHelperUtil
 } from '@reown/appkit-core'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
@@ -16,6 +18,7 @@ import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { EthersMethods } from './utils/EthersMethods.js'
 import { ProviderUtil } from '@reown/appkit/store'
+import { BrowserProvider } from 'ethers'
 
 export interface EIP6963ProviderDetail {
   info: Connector['info']
@@ -385,6 +388,36 @@ export class EthersAdapter extends AdapterBlueprint {
     }
   }
 
+  public async getAccounts(
+    params: AdapterBlueprint.GetAccountsParams
+  ): Promise<AdapterBlueprint.GetAccountsResult> {
+    const connector = this.connectors.find(c => c.id === params.id)
+    const selectedProvider = connector?.provider as Provider
+
+    if (!selectedProvider || !connector) {
+      throw new Error('Provider not found')
+    }
+
+    if (params.id === ConstantsUtil.AUTH_CONNECTOR_ID) {
+      const provider = connector['provider'] as W3mFrameProvider
+      const { address, accounts } = await provider.connect()
+
+      return Promise.resolve({
+        accounts: (accounts || [{ address, type: 'eoa' }]).map(account =>
+          CoreHelperUtil.createAccount('eip155', account.address, account.type)
+        )
+      })
+    }
+
+    const accounts: string[] = await selectedProvider.request({
+      method: 'eth_requestAccounts'
+    })
+
+    return {
+      accounts: accounts.map(account => CoreHelperUtil.createAccount('eip155', account, 'eoa'))
+    }
+  }
+
   public async disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
     if (!params.provider || !params.providerType) {
       throw new Error('Provider or providerType not provided')
@@ -448,6 +481,26 @@ export class EthersAdapter extends AdapterBlueprint {
     return { profileName: undefined, profileImage: undefined }
   }
 
+  private listenPendingTransactions(provider: Provider) {
+    const browserProvider = new BrowserProvider(provider)
+
+    try {
+      browserProvider.on('pending', () => {
+        this.emit('pendingTransactions')
+      })
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      AlertController.open(
+        {
+          shortMessage: 'Error listening to pending transactions',
+          longMessage:
+            'The BrowserProvider in the EthersAdapter failed to listen to pending transactions.'
+        },
+        'error'
+      )
+    }
+  }
+
   private providerHandlers: {
     disconnect: () => void
     accountsChanged: (accounts: string[]) => void
@@ -474,6 +527,8 @@ export class EthersAdapter extends AdapterBlueprint {
 
       this.emit('switchNetwork', { chainId: chainIdNumber })
     }
+
+    this.listenPendingTransactions(provider)
 
     provider.on('disconnect', disconnectHandler)
     provider.on('accountsChanged', accountsChangedHandler)
@@ -519,7 +574,11 @@ export class EthersAdapter extends AdapterBlueprint {
           switchError?.data?.originalError?.code ===
             WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
         ) {
-          await EthersHelpersUtil.addEthereumChain(provider as Provider, caipNetwork)
+          try {
+            await EthersHelpersUtil.addEthereumChain(provider as Provider, caipNetwork)
+          } catch (e) {
+            console.warn('Could not add chain to wallet', e)
+          }
         } else if (
           providerType === 'ANNOUNCED' ||
           providerType === 'EXTERNAL' ||
