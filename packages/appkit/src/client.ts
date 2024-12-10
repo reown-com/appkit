@@ -1534,7 +1534,7 @@ export class AppKit {
     const balance = await adapter?.getBalance({
       address: params.address,
       chainId: params.chainId,
-      caipNetwork: caipNetwork,
+      caipNetwork,
       tokens: this.options.tokens
     })
 
