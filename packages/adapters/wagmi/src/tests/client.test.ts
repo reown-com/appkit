@@ -56,7 +56,7 @@ const mockNetworks = [mainnet]
 const mockCaipNetworks = CaipNetworksUtil.extendCaipNetworks(mockNetworks, {
   projectId: mockProjectId,
   customNetworkImageUrls: {},
-  useWalletConnectRpc: false
+  enableCustomRpc: false
 })
 
 const mockWagmiConfig = {
@@ -96,16 +96,16 @@ describe('WagmiAdapter', () => {
       expect(adapter.adapterType).toBe('wagmi')
       expect(adapter.namespace).toBe('eip155')
     })
-    it('should be set to walletconnect by default', () => {
+    it('should be set to reown RPC by default', () => {
       expect(adapter.wagmiChains?.[0].rpcUrls.default.http[0]).toBe(
         `https://rpc.walletconnect.org/v1/?chainId=eip155%3A1&projectId=${mockProjectId}`
       )
     })
-    it('should be set to customRPC rpc if useWalletConnectRpc is false', () => {
+    it('should be set to customRPC rpc if enableCustomRpc is true', () => {
       const adapterWithCustomRpc = new WagmiAdapter({
         networks: mockNetworks,
         projectId: mockProjectId,
-        useWalletConnectRpc: false
+        enableCustomRpc: true
       })
       expect(adapterWithCustomRpc.wagmiChains?.[0].rpcUrls.default.http[0]).toBe(
         `https://cloudflare-eth.com`

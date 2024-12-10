@@ -684,7 +684,7 @@ export class AppKit {
     const extendedNetworks = CaipNetworksUtil.extendCaipNetworks(options.networks, {
       customNetworkImageUrls: options.chainImages,
       projectId: options.projectId,
-      useWalletConnectRpc: options.useWalletConnectRpc
+      enableCustomRpc: options.enableCustomRpc
     })
 
     return extendedNetworks
@@ -696,7 +696,7 @@ export class AppKit {
       ? CaipNetworksUtil.extendCaipNetwork(defaultNetwork, {
           customNetworkImageUrls: options.chainImages,
           projectId: options.projectId,
-          useWalletConnectRpc: options.useWalletConnectRpc
+          enableCustomRpc: options.enableCustomRpc
         })
       : undefined
 

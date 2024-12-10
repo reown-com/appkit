@@ -66,7 +66,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     configParams: Partial<CreateConfigParameters> & {
       networks: AppKitNetwork[]
       projectId: string
-      useWalletConnectRpc?: boolean
+      enableCustomRpc?: boolean
     }
   ) {
     super({
@@ -74,7 +74,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       networks: CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
         projectId: configParams.projectId,
         customNetworkImageUrls: {},
-        useWalletConnectRpc: configParams.useWalletConnectRpc
+        enableCustomRpc: configParams.enableCustomRpc
       }) as [CaipNetwork, ...CaipNetwork[]]
     })
     this.namespace = CommonConstantsUtil.CHAIN.EVM
@@ -83,7 +83,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       networks: CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
         projectId: configParams.projectId,
         customNetworkImageUrls: {},
-        useWalletConnectRpc: configParams.useWalletConnectRpc
+        enableCustomRpc: configParams.enableCustomRpc
       }) as [CaipNetwork, ...CaipNetwork[]],
       projectId: configParams.projectId
     })
@@ -122,13 +122,13 @@ export class WagmiAdapter extends AdapterBlueprint {
     configParams: Partial<CreateConfigParameters> & {
       networks: CaipNetwork[]
       projectId: string
-      useWalletConnectRpc?: boolean
+      enableCustomRpc?: boolean
     }
   ) {
     this.caipNetworks = CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
       projectId: configParams.projectId,
       customNetworkImageUrls: {},
-      useWalletConnectRpc: configParams.useWalletConnectRpc
+      enableCustomRpc: configParams.enableCustomRpc
     }) as [CaipNetwork, ...CaipNetwork[]]
 
     this.wagmiChains = this.caipNetworks.filter(

@@ -73,7 +73,7 @@ export type AppKitOptions = {
    */
   metadata?: Metadata
 
-  useWalletConnectRpc?: boolean
+  enableCustomRpc?: boolean
 } & OptionsControllerState
 
 export type AppKitOptionsWithCaipNetworks = Omit<AppKitOptions, 'defaultNetwork' | 'networks'> & {

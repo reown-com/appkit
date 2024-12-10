@@ -74,10 +74,10 @@ export type AppKitOptions = {
   metadata?: Metadata
 
   /**
-   * Use WalletConnect RPC
-   * @default true
+   * Use custom RPC in stead of Reown's default RPC.
+   * @default false
    */
-  useWalletConnectRpc?: boolean
+  enableCustomRpc?: boolean
 } & OptionsControllerState
 
 export type AppKitOptionsWithCaipNetworks = Omit<AppKitOptions, 'defaultNetwork' | 'networks'> & {

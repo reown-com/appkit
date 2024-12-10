@@ -73,7 +73,7 @@ const mockNetworks = [mainnet]
 const mockCaipNetworks = CaipNetworksUtil.extendCaipNetworks(mockNetworks, {
   projectId: 'test-project-id',
   customNetworkImageUrls: {},
-  useWalletConnectRpc: true
+  enableCustomRpc: true
 })
 
 describe('Ethers5Adapter', () => {
