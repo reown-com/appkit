@@ -18,7 +18,7 @@ import { BitcoinApi } from './utils/BitcoinApi.js'
 
 export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   private eventsToUnbind: (() => void)[] = []
-  private api: typeof BitcoinApi
+  private api: BitcoinApi.Interface
 
   constructor({ api = {}, ...params }: BitcoinAdapter.ConstructorParams) {
     super({
@@ -298,6 +298,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
 export namespace BitcoinAdapter {
   export type ConstructorParams = Omit<AdapterBlueprint.Params, 'namespace'> & {
-    api?: Partial<typeof BitcoinApi>
+    api?: Partial<BitcoinApi.Interface>
   }
 }

@@ -1,7 +1,7 @@
 import type { CaipNetwork } from '@reown/appkit-common'
 import { bitcoinTestnet } from '@reown/appkit/networks'
 
-export const BitcoinApi = {
+export const BitcoinApi: BitcoinApi.Interface = {
   getUTXOs: async ({ network, address }: BitcoinApi.GetUTXOsParams): Promise<BitcoinApi.UTXO[]> => {
     const isTestnet = network.caipNetworkId === bitcoinTestnet.caipNetworkId
     // Make chain dynamic
@@ -11,7 +11,7 @@ export const BitcoinApi = {
     )
 
     if (!response.ok) {
-      throw new Error('Failed to fetch UTXOs')
+      throw new Error(`Failed to fetch UTXOs: ${await response.text()}`)
     }
 
     return (await response.json()) as BitcoinApi.UTXO[]
@@ -19,6 +19,10 @@ export const BitcoinApi = {
 }
 
 export namespace BitcoinApi {
+  export type Interface = {
+    getUTXOs: (params: GetUTXOsParams) => Promise<UTXO[]>
+  }
+
   export type GetUTXOsParams = {
     network: CaipNetwork
     address: string
