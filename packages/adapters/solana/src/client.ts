@@ -1,6 +1,7 @@
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import {
   ConstantsUtil as CommonConstantsUtil,
+  NetworkUtil,
   type CaipNetwork,
   type ChainNamespace
 } from '@reown/appkit-common'
@@ -24,6 +25,7 @@ import {
 } from './providers/CoinbaseWalletProvider.js'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { WcHelpersUtil, type AppKit, type AppKitOptions } from '@reown/appkit'
+import { solana } from '@reown/appkit/networks'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
 import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
 import UniversalProvider from '@walletconnect/universal-provider'
@@ -450,7 +452,10 @@ export class SolanaAdapter extends AdapterBlueprint {
 
     // For standard Solana wallets
     const address = await selectedProvider.connect()
-    const chainId = this.caipNetworks?.[0]?.id || 1
+    const caipNetwork =
+      NetworkUtil.getFirstNetworkByNamespace(this.caipNetworks, CommonConstantsUtil.CHAIN.SOLANA) ||
+      solana
+    const chainId = caipNetwork.id as string
 
     this.listenProviderEvents(selectedProvider as unknown as WalletStandardProvider)
 

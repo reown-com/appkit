@@ -1,7 +1,11 @@
 /* eslint-disable no-console */
-import { SafeLocalStorage, SafeLocalStorageKeys, type ChainNamespace } from '@reown/appkit-common'
+import {
+  SafeLocalStorage,
+  SafeLocalStorageKeys,
+  type CaipNetworkId,
+  type ChainNamespace
+} from '@reown/appkit-common'
 import type { WcWallet, ConnectorType, SocialProvider, ConnectionStatus } from './TypeUtil.js'
-import { ChainController } from '../controllers/ChainController.js'
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
@@ -70,12 +74,21 @@ export const StorageUtil = {
     }
   },
 
-  setConnectedNamespace(namespace: ChainNamespace) {
+  getActiveNamespace() {
     try {
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_NAMESPACE, namespace)
+      const activeCaipNetworkId = SafeLocalStorage.getItem(
+        SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID
+      ) as CaipNetworkId | undefined
+      if (activeCaipNetworkId) {
+        return activeCaipNetworkId.split(':')[0] as ChainNamespace
+      }
+
+      return undefined
     } catch {
-      console.info('Unable to set Connected Namespace')
+      console.info('Unable to get active namespace')
     }
+
+    return undefined
   },
 
   getConnectedConnector() {
@@ -116,16 +129,13 @@ export const StorageUtil = {
     return undefined
   },
 
-  getStoredActiveCaipNetwork() {
+  getStoredActiveCaipNetworkId() {
     const storedCaipNetworkId = SafeLocalStorage.getItem(
       SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID
     )
-    const allRequestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
-    const storedCaipNetwork = allRequestedCaipNetworks?.find(
-      c => c.caipNetworkId === storedCaipNetworkId
-    )
+    const networkId = storedCaipNetworkId?.split(':')?.[1]
 
-    return storedCaipNetwork
+    return networkId
   },
 
   setConnectionStatus(status: ConnectionStatus) {
