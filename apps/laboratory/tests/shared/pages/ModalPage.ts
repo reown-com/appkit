@@ -9,6 +9,7 @@ import type { TimingRecords } from '../fixtures/timing-fixture'
 import { WalletPage } from './WalletPage'
 import { WalletValidator } from '../validators/WalletValidator'
 import { routeInterceptUrl } from '../utils/verify'
+import type { WalletFeature } from '@reown/appkit'
 
 const maliciousUrl = 'https://malicious-app-verify-simulation.vercel.app'
 
@@ -535,7 +536,7 @@ export class ModalPage {
     await this.page.getByTestId('wui-profile-button').click()
   }
 
-  async getWalletFeaturesButton(feature: 'onramp' | 'swap' | 'receive' | 'send') {
+  async getWalletFeaturesButton(feature: WalletFeature) {
     const walletFeatureButton = this.page.getByTestId(`wallet-features-${feature}-button`)
     await expect(walletFeatureButton).toBeVisible()
 
