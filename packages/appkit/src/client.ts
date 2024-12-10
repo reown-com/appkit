@@ -1024,7 +1024,6 @@ export class AppKit {
           const providerType =
             ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
 
-          console.log('>>> adapter?.switchNetwork', caipNetwork)
           await adapter?.switchNetwork({ caipNetwork, provider, providerType })
           this.setCaipNetwork(caipNetwork)
           await this.syncAccount({
