@@ -1,10 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { SolanaAdapter } from '../client'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
 import { solana } from '@reown/appkit/networks'
-import type { Provider } from '@reown/appkit-core'
+import type { ConnectorType, Provider } from '@reown/appkit-core'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import UniversalProvider from '@walletconnect/universal-provider'
+import type { ChainNamespace } from '@reown/appkit-common'
+import { SolanaAdapter } from '../client'
 import { SolStoreUtil } from '../utils/SolanaStoreUtil'
 import type { WalletStandardProvider } from '../providers/WalletStandardProvider'
 
@@ -61,12 +62,25 @@ const mockCaipNetworks = CaipNetworksUtil.extendCaipNetworks(mockNetworks, {
   customNetworkImageUrls: {}
 })
 
+const mockWalletConnectConnector = {
+  id: 'walletconnect',
+  provider: mockWalletConnectProvider,
+  type: 'WALLET_CONNECT' as ConnectorType,
+  chains: mockNetworks,
+  chain: 'solana' as ChainNamespace
+}
+
 describe('SolanaAdapter', () => {
   let adapter: SolanaAdapter
 
   beforeEach(() => {
     vi.clearAllMocks()
     adapter = new SolanaAdapter()
+    adapter.construct({
+      networks: mockNetworks,
+      projectId: 'test-project-id',
+      namespace: 'solana'
+    })
   })
 
   describe('SolanaAdapter - constructor', () => {
@@ -151,6 +165,18 @@ describe('SolanaAdapter', () => {
       })
 
       expect(mockAuthProvider.switchNetwork).toHaveBeenCalled()
+      expect(SolStoreUtil.setConnection).toHaveBeenCalled()
+    })
+  })
+
+  describe('SolanaAdapter - connectWalletConnect', () => {
+    it('should connect WalletConnect provider', async () => {
+      const onUri = vi.fn()
+      vi.mocked(adapter['connectors']).push(mockWalletConnectConnector)
+      await adapter.connectWalletConnect(onUri)
+
+      expect(mockWalletConnectProvider.connect).toHaveBeenCalled()
+      expect(mockWalletConnectProvider.on).toHaveBeenCalledWith('display_uri', onUri)
       expect(SolStoreUtil.setConnection).toHaveBeenCalled()
     })
   })
