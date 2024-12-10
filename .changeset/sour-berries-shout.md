@@ -32,12 +32,12 @@ export function YourApp() {
       {/* QR Code (WalletConnect) */}
       <appkit-wallet-button wallet="walletConnect" />
 
-      {/* QR Code (WalletConnect) */}
+      {/* Wallets */}
       <appkit-wallet-button wallet="metamask" />
       <appkit-wallet-button wallet="trust" />
       <appkit-wallet-button wallet="coinbase" />
 
-      {/* QR Code (WalletConnect) */}
+      {/* Socials */}
       <appkit-wallet-button wallet="google" />
       <appkit-wallet-button wallet="x" />
       <appkit-wallet-button wallet="discord" />
