@@ -4,7 +4,10 @@ export type SafeLocalStorageItems = {
   '@appkit/solana_wallet': string
   '@appkit/solana_caip_chain': string
   '@appkit/active_caip_network_id': string
-  '@appkit/connected_connector': string
+  '@appkit/connected_connector_eip155': string
+  '@appkit/connected_connector_solana': string
+  '@appkit/connected_connector_bip122': string
+  '@appkit/connected_connector_polkadot': string
   '@appkit/connected_social': string
   '@appkit/connected_social_username': string
   '@appkit/recent_wallets': string
@@ -23,7 +26,10 @@ export const SafeLocalStorageKeys = {
   SOLANA_WALLET: '@appkit/solana_wallet',
   SOLANA_CAIP_CHAIN: '@appkit/solana_caip_chain',
   ACTIVE_CAIP_NETWORK_ID: '@appkit/active_caip_network_id',
-  CONNECTED_CONNECTOR: '@appkit/connected_connector',
+  CONNECTED_CONNECTOR_eip155: '@appkit/connected_connector_eip155',
+  CONNECTED_CONNECTOR_solana: '@appkit/connected_connector_solana',
+  CONNECTED_CONNECTOR_bip122: '@appkit/connected_connector_bip122',
+  CONNECTED_CONNECTOR_polkadot: '@appkit/connected_connector_polkadot',
   CONNECTED_SOCIAL: '@appkit/connected_social',
   CONNECTED_SOCIAL_USERNAME: '@appkit/connected_social_username',
   RECENT_WALLETS: '@appkit/recent_wallets',
