@@ -108,7 +108,7 @@ export class SolanaAdapter extends AdapterBlueprint {
     }
 
     // Add Coinbase Wallet if available
-    if (typeof window !== 'undefined' && 'coinbaseSolana' in window) {
+    if (CoreHelperUtil.isClient() && 'coinbaseSolana' in window) {
       this.addConnector({
         id: 'coinbaseWallet',
         type: 'EXTERNAL',
