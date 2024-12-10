@@ -731,6 +731,21 @@ export const SwapController = {
       state.transactionError = error?.shortMessage as unknown as string
       state.loadingApprovalTransaction = false
       SnackController.showError(error?.shortMessage || 'Transaction error')
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SWAP_APPROVAL_ERROR',
+        properties: {
+          message: error?.shortMessage || error?.message || 'Unknown',
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
+          swapFromToken: this.state.sourceToken?.symbol || '',
+          swapToToken: this.state.toToken?.symbol || '',
+          swapFromAmount: this.state.sourceTokenAmount || '',
+          swapToAmount: this.state.toTokenAmount || '',
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        }
+      })
     }
   },
 
