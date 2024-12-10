@@ -182,7 +182,6 @@ export class UniversalAdapter extends AdapterBlueprint {
   // eslint-disable-next-line @typescript-eslint/require-await
   public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
     const { caipNetwork } = params
-    console.log('>>> upa.switchNetwork', caipNetwork)
     const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
     const provider = connector?.provider as UniversalProvider
 

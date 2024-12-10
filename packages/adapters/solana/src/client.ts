@@ -479,9 +479,7 @@ export class SolanaAdapter extends AdapterBlueprint {
     const walletConnectProvider = new WalletConnectProvider({
       provider: params.provider as UniversalProvider,
       chains: params.caipNetworks,
-      getActiveChain: () => {
-        return ChainController.state.activeCaipNetwork
-      }
+      getActiveChain: () => ChainController.state.activeCaipNetwork
     })
 
     return walletConnectProvider as unknown as UniversalProvider

@@ -1505,7 +1505,6 @@ export class AppKit {
     if (chainIdToUse && chainNamespace === activeNamespace) {
       const caipNetwork = this.caipNetworks?.find(n => n.id === chainIdToUse)
       const fallBackCaipNetwork = this.caipNetworks?.find(n => n.chainNamespace === chainNamespace)
-      console.log('>>> THIS', caipNetwork || fallBackCaipNetwork)
       this.setCaipNetwork(caipNetwork || fallBackCaipNetwork)
       this.syncConnectedWalletInfo(chainNamespace)
       await this.syncBalance({ address, chainId: chainIdToUse, chainNamespace })
