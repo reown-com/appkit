@@ -46,6 +46,7 @@ export function BitcoinSignPSBTTest() {
     }
 
     try {
+      setLoading(true)
       const utxos = await BitcoinUtil.getUTXOs(address, caipNetwork.caipNetworkId)
       const feeRate = await BitcoinUtil.getFeeRate()
 
