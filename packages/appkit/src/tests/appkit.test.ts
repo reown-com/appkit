@@ -612,7 +612,6 @@ describe('Base', () => {
       vi.spyOn(appKit as any, 'getAdapter').mockReturnValue(mockAdapter)
 
       vi.spyOn(StorageUtil, 'setConnectedConnector').mockImplementation(vi.fn())
-      vi.spyOn(StorageUtil, 'setConnectedNamespace').mockImplementation(vi.fn())
 
       vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
 
@@ -620,8 +619,8 @@ describe('Base', () => {
         if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
           return 'test-wallet'
         }
-        if (key === SafeLocalStorageKeys.CONNECTED_NAMESPACE) {
-          return 'eip155'
+        if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
+          return 'eip155:1'
         }
         return undefined
       })
@@ -664,8 +663,8 @@ describe('Base', () => {
         if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
           return 'test-wallet'
         }
-        if (key === SafeLocalStorageKeys.CONNECTED_NAMESPACE) {
-          return 'eip155'
+        if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
+          return 'eip155:1'
         }
         return undefined
       })
@@ -704,8 +703,8 @@ describe('Base', () => {
         if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
           return 'AUTH'
         }
-        if (key === SafeLocalStorageKeys.CONNECTED_NAMESPACE) {
-          return 'eip155'
+        if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
+          return 'eip155:1'
         }
         return undefined
       })

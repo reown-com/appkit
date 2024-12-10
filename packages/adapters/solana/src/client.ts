@@ -6,8 +6,10 @@ import {
 } from '@reown/appkit-common'
 import {
   AlertController,
+  ChainController,
   CoreHelperUtil,
   EventsController,
+  StorageUtil,
   type ConnectorType,
   type Provider
 } from '@reown/appkit-core'
@@ -33,6 +35,7 @@ import { handleMobileWalletRedirection } from './utils/handleMobileWalletRedirec
 import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
 import { watchStandard } from './utils/watchStandard.js'
 import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
+import { solana } from '@reown/appkit/networks'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
@@ -454,7 +457,8 @@ export class SolanaAdapter extends AdapterBlueprint {
 
     // For standard Solana wallets
     const address = await selectedProvider.connect()
-    const chainId = this.caipNetworks?.[0]?.id || 1
+    const { chainId: activeChainId } = StorageUtil.getActiveNetworkProps()
+    const chainId = activeChainId || solana.id
 
     this.listenProviderEvents(selectedProvider as unknown as WalletStandardProvider)
 
@@ -475,7 +479,7 @@ export class SolanaAdapter extends AdapterBlueprint {
     const walletConnectProvider = new WalletConnectProvider({
       provider: params.provider as UniversalProvider,
       chains: params.caipNetworks,
-      getActiveChain: () => params.activeCaipNetwork
+      getActiveChain: () => ChainController.state.activeCaipNetwork
     })
 
     return walletConnectProvider as unknown as UniversalProvider
