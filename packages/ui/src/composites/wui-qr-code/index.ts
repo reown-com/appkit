@@ -8,6 +8,9 @@ import type { ThemeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
+// -- Constants ---------------------------------------------- //
+const DEFAULT_ICON_COLOR = '#3396ff'
+
 @customElement('wui-qr-code')
 export class WuiQrCode extends LitElement {
   public static override styles = [resetStyles, styles]
@@ -23,6 +26,8 @@ export class WuiQrCode extends LitElement {
 
   @property() public alt?: string = undefined
 
+  @property() public color?: string
+
   @property({ type: Boolean }) public arenaClear?: boolean = undefined
 
   @property({ type: Boolean }) public farcaster?: boolean = undefined
@@ -31,7 +36,10 @@ export class WuiQrCode extends LitElement {
   public override render() {
     this.dataset['theme'] = this.theme
     this.dataset['clear'] = String(this.arenaClear)
-    this.style.cssText = `--local-size: ${this.size}px`
+    this.style.cssText = `
+     --local-size: ${this.size}px;
+     --local-icon-color: ${this.color ?? DEFAULT_ICON_COLOR}
+    `
 
     return html`${this.templateVisual()} ${this.templateSvg()}`
   }
@@ -42,7 +50,12 @@ export class WuiQrCode extends LitElement {
 
     return svg`
       <svg height=${size} width=${size}>
-        ${QrCodeUtil.generate(this.uri, size, this.arenaClear ? 0 : size / 4)}
+        ${QrCodeUtil.generate({
+          uri: this.uri,
+          size,
+          logoSize: this.arenaClear ? 0 : size / 4,
+          dotColor: this.color
+        })}
       </svg>
     `
   }

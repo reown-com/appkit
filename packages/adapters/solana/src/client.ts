@@ -11,7 +11,7 @@ import {
   type ConnectorType,
   type Provider
 } from '@reown/appkit-core'
-import { ConstantsUtil, ErrorUtil } from '@reown/appkit-utils'
+import { ConstantsUtil, ErrorUtil, PresetsUtil } from '@reown/appkit-utils'
 import { SolConstantsUtil } from '@reown/appkit-utils/solana'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
@@ -120,6 +120,7 @@ export class SolanaAdapter extends AdapterBlueprint {
         }),
         name: 'Coinbase Wallet',
         chain: this.namespace as ChainNamespace,
+        explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID],
         chains: []
       })
     }
@@ -137,6 +138,7 @@ export class SolanaAdapter extends AdapterBlueprint {
             imageUrl: provider.icon,
             name: provider.name,
             chain: CommonConstantsUtil.CHAIN.SOLANA,
+            explorerId: PresetsUtil.ConnectorExplorerIds[provider.name],
             chains: []
           })
         })
