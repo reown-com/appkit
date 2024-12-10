@@ -157,11 +157,6 @@ export const multichainSdkOptions: SdkOption[] = [
     title: 'Basic',
     link: '/library/multichain-basic',
     description: 'Configuration with no adapters enabled for AppKit'
-  },
-  {
-    title: '[Experimental] SIWX',
-    link: '/library/multichain-siwx',
-    description: 'Configuration with SIWX adapters enabled for AppKit'
   }
 ]
 
@@ -204,5 +199,19 @@ export const bitcoinSdkOptions: SdkOption[] = [
     title: 'Default',
     link: '/library/bitcoin',
     description: 'Basic configuration using bitcoin as a driving library'
+  }
+]
+
+export const siwxSdkOptions: SdkOption[] = [
+  {
+    title: 'Default SIWX',
+    link: '/library/siwx-default',
+    description:
+      'Multichain SIWX configuration with Ethers, Solana and Bitcoin adapters enabled for AppKit'
+  },
+  {
+    title: 'Cloud Auth SIWX',
+    link: '/library/siwx-cloud-auth',
+    description: 'EVM SIWX configuration with Ethers and Cloud Auth'
   }
 ]
