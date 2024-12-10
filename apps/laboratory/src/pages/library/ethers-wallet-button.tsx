@@ -14,9 +14,6 @@ const ethersAdapter = new EthersAdapter()
 const modal = createAppKit({
   adapters: [ethersAdapter],
   networks,
-  features: {
-    walletButton: true
-  },
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId
 })

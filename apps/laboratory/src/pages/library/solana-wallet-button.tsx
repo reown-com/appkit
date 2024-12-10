@@ -18,9 +18,6 @@ const solanaWeb3JsAdapter = new SolanaAdapter({
 const modal = createAppKit({
   adapters: [solanaWeb3JsAdapter],
   projectId: ConstantsUtil.ProjectId,
-  features: {
-    walletButton: true
-  },
   networks,
   defaultNetwork: solana
 })

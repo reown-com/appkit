@@ -8,7 +8,7 @@ import {
   Stack,
   StackDivider
 } from '@chakra-ui/react'
-import { useAppKitWallet } from '@reown/appkit-wallet-button/react'
+import * as AppKitWalletButton from '@reown/appkit-wallet-button/react'
 import type { Wallet } from '@reown/appkit-wallet-button'
 import { Fragment, useState } from 'react'
 import { useAppKitAccount, type SocialProvider } from '@reown/appkit/react'
@@ -76,7 +76,7 @@ function WalletButtonHooks({ wallets }: WalletButtonHooksProps) {
 
   const { caipAddress } = useAppKitAccount()
 
-  const { isReady, isPending, connect } = useAppKitWallet({
+  const { isReady, isPending, connect } = AppKitWalletButton.useAppKitWallet({
     onSuccess() {
       setPendingWallet(undefined)
     },

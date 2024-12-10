@@ -11,6 +11,8 @@ import type { ParsedCaipAddress } from '@reown/appkit-common'
 import { ApiController } from '../src/controllers/ApiController.js'
 import { WalletButtonController } from '../src/controllers/WalletButtonController.js'
 
+export * from './index.js'
+
 declare global {
   namespace JSX {
     interface IntrinsicElements {

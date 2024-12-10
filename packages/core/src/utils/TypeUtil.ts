@@ -1051,11 +1051,6 @@ export type Features = {
    */
   legalCheckbox?: boolean
   /**
-   * Enable or disable wallet button in your AppKit.
-   * @default false
-   */
-  walletButton?: boolean
-  /**
    * @description The order of the connect methods. This is experimental and subject to change.
    * @default ['email', 'social', 'wallet']
    * @type {('email' | 'social' | 'wallet')[]}

@@ -1844,11 +1844,6 @@ export class AppKit {
           import('@reown/appkit-ui'),
           import('@reown/appkit-scaffold-ui/w3m-modal')
         ])
-
-        if (OptionsController.state.features?.walletButton) {
-          await import('@reown/appkit-wallet-button')
-        }
-
         const modal = document.createElement('w3m-modal')
         if (!OptionsController.state.disableAppend) {
           document.body.insertAdjacentElement('beforeend', modal)
