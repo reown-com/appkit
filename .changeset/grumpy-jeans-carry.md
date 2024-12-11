@@ -1,6 +1,5 @@
 ---
 '@reown/appkit-adapter-solana': patch
-'@apps/builder': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-wagmi': patch
