@@ -65,6 +65,7 @@ import {
 import {
   CaipNetworksUtil,
   ErrorUtil,
+  LoggerUtil,
   ConstantsUtil as UtilConstantsUtil
 } from '@reown/appkit-utils'
 import {
@@ -174,6 +175,8 @@ export class AppKit {
   public version?: SdkVersion
 
   public adapter?: ChainAdapter
+
+  public reportedAlertErrors: Record<string, boolean> = {}
 
   private caipNetworks?: [CaipNetwork, ...CaipNetwork[]]
 
@@ -645,7 +648,7 @@ export class AppKit {
       sdkVersion: SdkVersion
     }
   ) {
-    OptionsController.setDebug(options.debug)
+    OptionsController.setDebug(options.debug !== false)
     OptionsController.setProjectId(options.projectId)
     OptionsController.setSdkVersion(options.sdkVersion)
     OptionsController.setEnableEmbedded(options.enableEmbedded)
@@ -1714,7 +1717,35 @@ export class AppKit {
     return this.universalProviderInitPromise
   }
 
+  private handleAlertError(error: Error) {
+    const matchedUniversalProviderError = Object.entries(ErrorUtil.UniversalProviderErrors).find(
+      ([, { message }]) => error.message.includes(message)
+    )
+
+    const [errorKey, errorValue] = matchedUniversalProviderError ?? []
+
+    const { message, alertErrorKey } = errorValue ?? {}
+
+    if (errorKey && message && !this.reportedAlertErrors[errorKey]) {
+      const alertError =
+        ErrorUtil.ALERT_ERRORS[alertErrorKey as keyof typeof ErrorUtil.ALERT_ERRORS]
+
+      if (alertError) {
+        AlertController.open(alertError, 'error')
+        this.reportedAlertErrors[errorKey] = true
+      }
+    }
+  }
+
   private async initializeUniversalAdapter() {
+    const logger = LoggerUtil.createLogger((error, ...args) => {
+      if (error) {
+        this.handleAlertError(error)
+      }
+      // eslint-disable-next-line no-console
+      console.error(...args)
+    })
+
     const universalProviderOptions: UniversalProviderOpts = {
       projectId: this.options?.projectId,
       metadata: {
@@ -1722,7 +1753,8 @@ export class AppKit {
         description: this.options?.metadata ? this.options?.metadata.description : '',
         url: this.options?.metadata ? this.options?.metadata.url : '',
         icons: this.options?.metadata ? this.options?.metadata.icons : ['']
-      }
+      },
+      logger
     }
 
     this.universalProvider = await UniversalProvider.init(universalProviderOptions)
@@ -1750,7 +1782,10 @@ export class AppKit {
       : CoreConstantsUtil.DEFAULT_FEATURES.socials
     if (this.options?.projectId && (emailEnabled || socialsEnabled)) {
       this.authProvider = W3mFrameProviderSingleton.getInstance({
-        projectId: this.options.projectId
+        projectId: this.options.projectId,
+        onTimeout: () => {
+          AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
+        }
       })
       this.listenAuthConnector(this.authProvider)
     }

@@ -85,7 +85,7 @@ export class SolanaAdapter extends AdapterBlueprint {
         projectId: options.projectId,
         chainId: withSolanaNamespace(appKit?.getCaipNetwork(this.namespace)?.id),
         onTimeout: () => {
-          AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
+          AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
         }
       })
 
