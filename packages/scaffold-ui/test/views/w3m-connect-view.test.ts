@@ -27,7 +27,7 @@ describe('W3mConnectView - Connection Methods', () => {
     })
   })
 
-  it('should render connection methods in specified order', async () => {
+  it('should render connection methods in specified order based on features.connectMethodsOrder option', async () => {
     const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
 
     const children = Array.from(
@@ -42,6 +42,32 @@ describe('W3mConnectView - Connection Methods', () => {
     // Check order
     expect(widgets.indexOf(WALLET_LOGIN_LIST)).toBeLessThan(widgets.indexOf(EMAIL_LOGIN_WIDGET))
     expect(widgets.indexOf(EMAIL_LOGIN_WIDGET)).toBeLessThan(widgets.indexOf(SOCIAL_LOGIN_WIDGET))
+  })
+
+  it('should render connection methods in specified order without features.connectMethodsOrder option', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      enableWallets: true,
+      features: {
+        email: true,
+        socials: ['google', 'facebook']
+      }
+    })
+
+    const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
+
+    const children = Array.from(
+      element.shadowRoot?.querySelector('.connect-methods')?.children ?? []
+    )
+    const widgets = children.map(child => child.tagName.toLowerCase())
+
+    expect(widgets).toContain(EMAIL_LOGIN_WIDGET)
+    expect(widgets).toContain(WALLET_LOGIN_LIST)
+    expect(widgets).toContain(SOCIAL_LOGIN_WIDGET)
+
+    // Check order
+    expect(widgets.indexOf(EMAIL_LOGIN_WIDGET)).toBeLessThan(widgets.indexOf(SOCIAL_LOGIN_WIDGET))
+    expect(widgets.indexOf(SOCIAL_LOGIN_WIDGET)).toBeLessThan(widgets.indexOf(WALLET_LOGIN_LIST))
   })
 
   it('should render "Continue with wallet" button when collapseWallets is true', async () => {
