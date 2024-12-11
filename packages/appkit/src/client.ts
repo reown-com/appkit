@@ -206,12 +206,13 @@ export class AppKit {
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
     await this.initControllers(options)
     this.createAuthProvider()
-    await this.createUniversalProvider()
-    this.createClients()
-    ChainController.initialize(options.adapters ?? [], this.caipNetworks)
     this.chainAdapters = await this.createAdapters(
       options.adapters as unknown as AdapterBlueprint[]
     )
+    await this.createUniversalProvider()
+    this.createClients()
+    ChainController.initialize(options.adapters ?? [], this.caipNetworks)
+
     await this.initChainAdapters()
     this.syncRequestedNetworks()
     await this.initOrContinue()
@@ -1792,13 +1793,9 @@ export class AppKit {
   }
 
   private async createAdapters(blueprints?: AdapterBlueprint[]): Promise<Adapters> {
-    if (!this.universalProvider) {
-      this.universalProvider = await this.getUniversalProvider()
-    }
-
     this.syncRequestedNetworks()
 
-    return this.chainNamespaces.reduce<Adapters>((adapters, namespace) => {
+    return this.chainNamespaces.reduce<Adapters>(async (adapters, namespace) => {
       const blueprint = blueprints?.find(b => b.namespace === namespace)
 
       if (blueprint) {
@@ -1809,14 +1806,19 @@ export class AppKit {
           projectId: this.options?.projectId,
           networks: this.caipNetworks
         })
+
+        adapters[namespace].syncConnectors(this.options, this)
+
+        if (!this.universalProvider) {
+          this.universalProvider = await this.getUniversalProvider()
+        }
+
         if (this.universalProvider) {
           adapters[namespace].setUniversalProvider(this.universalProvider)
         }
         if (this.authProvider) {
           adapters[namespace].setAuthProvider(this.authProvider)
         }
-
-        adapters[namespace].syncConnectors(this.options, this)
       } else {
         adapters[namespace] = new UniversalAdapter({
           namespace,
