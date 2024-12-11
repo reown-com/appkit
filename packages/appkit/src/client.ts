@@ -1514,7 +1514,6 @@ export class AppKit {
 
     if (chainIdToUse && chainNamespace === activeNamespace && chainIdToUse === activeChainId) {
       const caipNetwork = this.caipNetworks?.find(n => n.id.toString() === chainIdToUse.toString())
-      console.log('>> Sync Account', caipNetwork)
       const fallBackCaipNetwork = this.caipNetworks?.find(n => n.chainNamespace === chainNamespace)
       this.setCaipNetwork(caipNetwork || fallBackCaipNetwork)
       this.syncConnectedWalletInfo(chainNamespace)
@@ -1671,7 +1670,6 @@ export class AppKit {
     connectorId: string
     active?: boolean
   }) {
-    console.log('>> Sync External Account', params.namespace)
     this.setStatus('connecting', params.namespace)
     const adapter = this.getAdapter(params.namespace)
     const res = await adapter?.syncConnection({
@@ -1682,7 +1680,6 @@ export class AppKit {
     })
 
     if (res?.address) {
-      console.log('>> Sync External Account Success', res)
       this.syncProvider({ ...res, chainNamespace: params.namespace, active: params.active })
 
       await this.syncAccount({ ...res, chainNamespace: params.namespace })
@@ -1799,14 +1796,14 @@ export class AppKit {
   }
 
   private createAuthProvider() {
-    const emailEnabled =
+    const isEmailEnabled =
       this.options?.features?.email === undefined
         ? CoreConstantsUtil.DEFAULT_FEATURES.email
         : this.options?.features?.email
     const socialsEnabled = this.options?.features?.socials
       ? this.options?.features?.socials?.length > 0
       : CoreConstantsUtil.DEFAULT_FEATURES.socials
-    if (this.options?.projectId && (emailEnabled || socialsEnabled)) {
+    if (this.options?.projectId && (isEmailEnabled || socialsEnabled)) {
       this.authProvider = W3mFrameProviderSingleton.getInstance({
         projectId: this.options.projectId,
         onTimeout: () => {
