@@ -11,8 +11,6 @@ import { AccountController, type AccountControllerState } from './AccountControl
 import { PublicStateController } from './PublicStateController.js'
 import {
   NetworkUtil,
-  SafeLocalStorage,
-  SafeLocalStorageKeys,
   type CaipAddress,
   type CaipNetwork,
   type CaipNetworkId,
@@ -23,6 +21,7 @@ import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { ModalController } from './ModalController.js'
 import { EventsController } from './EventsController.js'
 import { RouterController } from './RouterController.js'
+import { StorageUtil } from '../utils/StorageUtil.js'
 
 // -- Constants ----------------------------------------- //
 const accountState: AccountControllerState = {
@@ -101,14 +100,26 @@ export const ChainController = {
     })
   },
 
-  initialize(adapters: ChainAdapter[]) {
-    const adapterToActivate = adapters?.[0]
+  initialize(adapters: ChainAdapter[], caipNetworks: CaipNetwork[] | undefined) {
+    const { chainId: activeChainId, namespace: activeNamespace } =
+      StorageUtil.getActiveNetworkProps()
+    const activeCaipNetwork = caipNetworks?.find(
+      network => network.id.toString() === activeChainId?.toString()
+    )
+    const defaultAdapter = adapters.find(adapter => adapter?.namespace === activeNamespace)
+    const adapterToActivate = defaultAdapter || adapters?.[0]
+
     if (adapters?.length === 0 || !adapterToActivate) {
       state.noAdapters = true
     }
+
     if (!state.noAdapters) {
       state.activeChain = adapterToActivate?.namespace
-      PublicStateController.set({ activeChain: adapterToActivate?.namespace })
+      state.activeCaipNetwork = activeCaipNetwork
+
+      if (state.activeChain) {
+        PublicStateController.set({ activeChain: adapterToActivate?.namespace })
+      }
       adapters.forEach((adapter: ChainAdapter) => {
         state.chains.set(adapter.namespace as ChainNamespace, {
           namespace: adapter.namespace,
@@ -184,13 +195,10 @@ export const ChainController = {
     const newAdapter = chain ? state.chains.get(chain) : undefined
     const caipNetwork = newAdapter?.networkState?.caipNetwork
 
-    if (caipNetwork?.id) {
+    if (caipNetwork?.id && chain) {
       state.activeCaipAddress = newAdapter?.accountState?.caipAddress
       state.activeCaipNetwork = caipNetwork
-      SafeLocalStorage.setItem(
-        SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID,
-        caipNetwork?.caipNetworkId
-      )
+      StorageUtil.setActiveCaipNetworkId(caipNetwork?.caipNetworkId)
       PublicStateController.set({
         activeChain: chain,
         selectedNetworkId: caipNetwork?.caipNetworkId
@@ -221,7 +229,7 @@ export const ChainController = {
       activeChain: state.activeChain,
       selectedNetworkId: state.activeCaipNetwork?.caipNetworkId
     })
-    SafeLocalStorage.setItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID, caipNetwork.caipNetworkId)
+    StorageUtil.setActiveCaipNetworkId(caipNetwork.caipNetworkId)
 
     const isSupported = this.checkIfSupportedNetwork(caipNetwork.chainNamespace)
 

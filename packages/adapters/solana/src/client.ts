@@ -6,12 +6,14 @@ import {
 } from '@reown/appkit-common'
 import {
   AlertController,
+  ChainController,
   CoreHelperUtil,
   EventsController,
+  StorageUtil,
   type ConnectorType,
   type Provider
 } from '@reown/appkit-core'
-import { ConstantsUtil, ErrorUtil } from '@reown/appkit-utils'
+import { ConstantsUtil, ErrorUtil, PresetsUtil } from '@reown/appkit-utils'
 import { SolConstantsUtil } from '@reown/appkit-utils/solana'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
@@ -33,6 +35,7 @@ import { handleMobileWalletRedirection } from './utils/handleMobileWalletRedirec
 import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
 import { watchStandard } from './utils/watchStandard.js'
 import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
+import { solana } from '@reown/appkit/networks'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
@@ -82,7 +85,7 @@ export class SolanaAdapter extends AdapterBlueprint {
         projectId: options.projectId,
         chainId: withSolanaNamespace(appKit?.getCaipNetwork(this.namespace)?.id),
         onTimeout: () => {
-          AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
+          AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
         }
       })
 
@@ -120,6 +123,7 @@ export class SolanaAdapter extends AdapterBlueprint {
         }),
         name: 'Coinbase Wallet',
         chain: this.namespace as ChainNamespace,
+        explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID],
         chains: []
       })
     }
@@ -131,12 +135,13 @@ export class SolanaAdapter extends AdapterBlueprint {
       (...providers: WalletStandardProvider[]) => {
         providers.forEach(provider => {
           this.addConnector({
-            id: provider.name,
+            id: PresetsUtil.ConnectorExplorerIds[provider.name] || provider.name,
             type: 'ANNOUNCED',
             provider: provider as unknown as Provider,
             imageUrl: provider.icon,
             name: provider.name,
             chain: CommonConstantsUtil.CHAIN.SOLANA,
+            explorerId: PresetsUtil.ConnectorExplorerIds[provider.name],
             chains: []
           })
         })
@@ -452,7 +457,8 @@ export class SolanaAdapter extends AdapterBlueprint {
 
     // For standard Solana wallets
     const address = await selectedProvider.connect()
-    const chainId = this.caipNetworks?.[0]?.id || 1
+    const { chainId: activeChainId } = StorageUtil.getActiveNetworkProps()
+    const chainId = activeChainId || solana.id
 
     this.listenProviderEvents(selectedProvider as unknown as WalletStandardProvider)
 
@@ -473,7 +479,7 @@ export class SolanaAdapter extends AdapterBlueprint {
     const walletConnectProvider = new WalletConnectProvider({
       provider: params.provider as UniversalProvider,
       chains: params.caipNetworks,
-      getActiveChain: () => params.activeCaipNetwork
+      getActiveChain: () => ChainController.state.activeCaipNetwork
     })
 
     return walletConnectProvider as unknown as UniversalProvider
