@@ -209,11 +209,13 @@ export class W3mHeader extends LitElement {
   private leftHeaderTemplate() {
     const { view } = RouterController.state
     const isConnectHelp = view === 'Connect'
+    const isEmbeddedEnable = OptionsController.state.enableEmbedded
     const isApproveTransaction = view === 'ApproveTransaction'
     const isConnectingSIWEView = view === 'ConnectingSiwe'
     const isAccountView = view === 'Account'
 
-    const shouldHideBack = isApproveTransaction || isConnectingSIWEView
+    const shouldHideBack =
+      isApproveTransaction || isConnectingSIWEView || (isConnectHelp && isEmbeddedEnable)
 
     if (isAccountView) {
       return html`<wui-select
