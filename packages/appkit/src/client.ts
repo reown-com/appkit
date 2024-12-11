@@ -836,7 +836,7 @@ export class AppKit {
           throw new Error('Adapter not found')
         }
 
-        let res
+        let res: AdapterBlueprint.ConnectResult | undefined = undefined
         try {
           res = await adapter.connect({
             id,
@@ -848,11 +848,18 @@ export class AppKit {
               caipNetwork?.rpcUrls?.default?.http?.[0] ||
               this.getCaipNetwork()?.rpcUrls?.default?.http?.[0]
           })
+          /**
+           * In some cases with wagmi connectors, the connector is already connected
+           * which throws an `Is already connected`error. In such cases, we need to reconnect
+           * to restore the session.
+           * We check if the reconnect method exists (which it does for wagmi connectors) and if so
+           * we attempt to reconnect and restore the session state.
+           */
         } catch (error) {
           if (!adapter?.reconnect) {
             throw new Error('Adapter is not able to connect')
           }
-          res = await adapter.reconnect({
+          await adapter.reconnect({
             id,
             info,
             type,
