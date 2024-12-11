@@ -836,16 +836,30 @@ export class AppKit {
           throw new Error('Adapter not found')
         }
 
-        const res = await adapter.connect({
-          id,
-          info,
-          type,
-          provider,
-          chainId: caipNetwork?.id || this.getCaipNetwork()?.id,
-          rpcUrl:
-            caipNetwork?.rpcUrls?.default?.http?.[0] ||
-            this.getCaipNetwork()?.rpcUrls?.default?.http?.[0]
-        })
+        let res
+        try {
+          res = await adapter.connect({
+            id,
+            info,
+            type,
+            provider,
+            chainId: caipNetwork?.id || this.getCaipNetwork()?.id,
+            rpcUrl:
+              caipNetwork?.rpcUrls?.default?.http?.[0] ||
+              this.getCaipNetwork()?.rpcUrls?.default?.http?.[0]
+          })
+        } catch (error) {
+          if (!adapter?.reconnect) {
+            throw new Error('Adapter is not able to connect')
+          }
+          res = await adapter.reconnect({
+            id,
+            info,
+            type,
+            provider,
+            chainId: this.getCaipNetwork()?.id
+          })
+        }
 
         if (res) {
           this.syncProvider({
