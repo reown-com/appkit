@@ -232,6 +232,7 @@ export const ChainController = {
     StorageUtil.setActiveCaipNetworkId(caipNetwork.caipNetworkId)
 
     const isSupported = this.checkIfSupportedNetwork(caipNetwork.chainNamespace)
+    console.trace('>> Active caip network set', caipNetwork, isSupported)
 
     if (!isSupported) {
       this.showUnsupportedChainUI()
@@ -419,11 +420,18 @@ export const ChainController = {
     const activeCaipNetwork = this.state.activeCaipNetwork
     const requestedCaipNetworks = this.getRequestedCaipNetworks(namespace)
 
+    console.log('>> Check if supported network', {
+      activeCaipNetwork,
+      requestedCaipNetworks
+    })
+
     if (!requestedCaipNetworks.length) {
       return true
     }
 
-    return requestedCaipNetworks?.some(network => network.id === activeCaipNetwork?.id)
+    return requestedCaipNetworks?.some(
+      network => String(network.id) === String(activeCaipNetwork?.id)
+    )
   },
 
   checkIfSupportedChainId(chainId: number | string) {

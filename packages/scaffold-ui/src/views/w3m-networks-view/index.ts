@@ -162,6 +162,15 @@ export class W3mNetworksView extends LitElement {
     const isCurrentNetworkConnected = AccountController.state.caipAddress
     const isAuthConnected = StorageUtil.getConnectedConnector(network.chainNamespace) === 'ID_AUTH'
 
+    console.log('>> Should switch network', {
+      namespace: network.chainNamespace,
+      isDifferentNamespace,
+      isNewNetworkConnected,
+      isCurrentNetworkConnected,
+      isAuthConnected,
+      chainState: ChainController.state
+    })
+
     if (
       isDifferentNamespace &&
       isCurrentNetworkConnected &&

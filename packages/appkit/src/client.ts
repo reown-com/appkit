@@ -1478,15 +1478,19 @@ export class AppKit {
     type,
     provider,
     id,
-    chainNamespace
+    chainNamespace,
+    active = true
   }: Pick<AdapterBlueprint.ConnectResult, 'type' | 'provider' | 'id'> & {
     chainNamespace: ChainNamespace
+    active?: boolean
   }) {
     ProviderUtil.setProviderId(chainNamespace, type)
     ProviderUtil.setProvider(chainNamespace, provider)
 
     StorageUtil.setConnectedConnector(id as ConnectorType, chainNamespace)
-    StorageUtil.setConnectedNamespace(chainNamespace as ChainNamespace)
+    if (active) {
+      StorageUtil.setActiveNamespace(chainNamespace as ChainNamespace)
+    }
   }
 
   private async syncAccount({
@@ -1508,8 +1512,9 @@ export class AppKit {
 
     this.setStatus('connected', chainNamespace)
 
-    if (chainIdToUse && chainNamespace === activeNamespace) {
+    if (chainIdToUse && chainNamespace === activeNamespace && chainIdToUse === activeChainId) {
       const caipNetwork = this.caipNetworks?.find(n => n.id.toString() === chainIdToUse.toString())
+      console.log('>> Sync Account', caipNetwork)
       const fallBackCaipNetwork = this.caipNetworks?.find(n => n.chainNamespace === chainNamespace)
       this.setCaipNetwork(caipNetwork || fallBackCaipNetwork)
       this.syncConnectedWalletInfo(chainNamespace)
@@ -1661,7 +1666,12 @@ export class AppKit {
     )
   }
 
-  private async syncExternalAccount(params: { namespace: ChainNamespace; connectorId: string }) {
+  private async syncExternalAccount(params: {
+    namespace: ChainNamespace
+    connectorId: string
+    active?: boolean
+  }) {
+    console.log('>> Sync External Account', params.namespace)
     this.setStatus('connecting', params.namespace)
     const adapter = this.getAdapter(params.namespace)
     const res = await adapter?.syncConnection({
@@ -1672,7 +1682,9 @@ export class AppKit {
     })
 
     if (res?.address) {
-      this.syncProvider({ ...res, chainNamespace: params.namespace })
+      console.log('>> Sync External Account Success', res)
+      this.syncProvider({ ...res, chainNamespace: params.namespace, active: params.active })
+
       await this.syncAccount({ ...res, chainNamespace: params.namespace })
       const accounts = await adapter?.getAccounts({
         namespace: params.namespace,
@@ -1684,7 +1696,7 @@ export class AppKit {
       this.setStatus('disconnected', params.namespace)
     }
 
-    if (!this.caipNetworks?.some(network => network.id === res?.chainId)) {
+    if (!this.caipNetworks?.some(network => String(network.id) === String(res?.chainId))) {
       if (res?.chainId) {
         this.setUnsupportedNetwork(res.chainId)
       }
@@ -1693,24 +1705,26 @@ export class AppKit {
 
   private async syncExistingConnection() {
     const connectedNamespace = StorageUtil.getActiveNamespace()
-
-    if (connectedNamespace) {
-      const connectedConnector = StorageUtil.getConnectedConnector(connectedNamespace)
-      if (!connectedConnector) {
-        this.setStatus('disconnected', connectedNamespace as ChainNamespace)
-
-        return
-      }
-
-      if (connectedConnector === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
-        await this.syncWalletConnectAccount()
-      } else if (connectedConnector !== UtilConstantsUtil.CONNECTOR_TYPE_W3M_AUTH) {
-        await this.syncExternalAccount({
-          namespace: connectedNamespace,
-          connectorId: connectedConnector
-        })
-      }
-    }
+    /*
+     * For all namespaces, check if there is a connected connector
+     * If there is, sync the connection but only update state if the chainId matches the active chain
+     */
+    await Promise.all(
+      this.chainNamespaces.map(async chainNamespace => {
+        const connectedConnector = StorageUtil.getConnectedConnector(chainNamespace)
+        if (connectedConnector) {
+          if (connectedConnector === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
+            await this.syncWalletConnectAccount()
+          } else if (connectedConnector !== UtilConstantsUtil.CONNECTOR_TYPE_W3M_AUTH) {
+            await this.syncExternalAccount({
+              namespace: chainNamespace,
+              connectorId: connectedConnector,
+              active: chainNamespace === connectedNamespace
+            })
+          }
+        }
+      })
+    )
   }
 
   private getAdapter(namespace: ChainNamespace) {
