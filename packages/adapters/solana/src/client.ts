@@ -135,7 +135,7 @@ export class SolanaAdapter extends AdapterBlueprint {
       (...providers: WalletStandardProvider[]) => {
         providers.forEach(provider => {
           this.addConnector({
-            id: provider.name,
+            id: PresetsUtil.ConnectorExplorerIds[provider.name] || provider.name,
             type: 'ANNOUNCED',
             provider: provider as unknown as Provider,
             imageUrl: provider.icon,
