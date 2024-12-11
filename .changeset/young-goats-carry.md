@@ -4,7 +4,6 @@
 '@reown/appkit-scaffold-ui': minor
 '@reown/appkit': minor
 '@reown/appkit-core': minor
-'@apps/builder': minor
 '@reown/appkit-adapter-ethers': minor
 '@reown/appkit-adapter-ethers5': minor
 '@reown/appkit-utils': minor
