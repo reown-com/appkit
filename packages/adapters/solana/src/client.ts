@@ -2,7 +2,8 @@ import { WcHelpersUtil, type AppKit, type AppKitOptions } from '@reown/appkit'
 import {
   ConstantsUtil as CommonConstantsUtil,
   type CaipNetwork,
-  type ChainNamespace
+  type ChainNamespace,
+  UnitsUtil
 } from '@reown/appkit-common'
 import {
   AlertController,
@@ -134,16 +135,18 @@ export class SolanaAdapter extends AdapterBlueprint {
       () => appKit.getCaipNetwork(this.namespace),
       (...providers: WalletStandardProvider[]) => {
         providers.forEach(provider => {
-          this.addConnector({
-            id: provider.name,
-            type: 'ANNOUNCED',
-            provider: provider as unknown as Provider,
-            imageUrl: provider.icon,
-            name: provider.name,
-            chain: CommonConstantsUtil.CHAIN.SOLANA,
-            explorerId: PresetsUtil.ConnectorExplorerIds[provider.name],
-            chains: []
-          })
+          if (provider.chains.length !== 0) {
+            this.addConnector({
+              id: provider.name,
+              type: 'ANNOUNCED',
+              provider: provider as unknown as Provider,
+              imageUrl: provider.icon,
+              name: provider.name,
+              chain: CommonConstantsUtil.CHAIN.SOLANA,
+              explorerId: PresetsUtil.ConnectorExplorerIds[provider.name],
+              chains: []
+            })
+          }
         })
       }
     )
@@ -293,11 +296,13 @@ export class SolanaAdapter extends AdapterBlueprint {
 
       address = data
     } else {
+      console.log('>> Connecting provider', selectedProvider)
       address = await selectedProvider.connect()
     }
 
     this.listenProviderEvents(selectedProvider as unknown as WalletStandardProvider)
 
+    console.log('>> Setting connection', rpcUrl)
     SolStoreUtil.setConnection(new Connection(rpcUrl as string, 'confirmed'))
 
     return {
@@ -312,17 +317,19 @@ export class SolanaAdapter extends AdapterBlueprint {
   public async getBalance(
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
+    if (!params.caipNetwork) {
+      throw new Error('caipNetwork is required')
+    }
+
     const connection = new Connection(
-      params.caipNetwork?.rpcUrls?.default?.http?.[0] as string,
+      params.caipNetwork.rpcUrls?.default?.http?.[0] as string,
       this.connectionSettings
     )
 
     const balance = await connection.getBalance(new PublicKey(params.address))
-    const formattedBalance = (balance / SolConstantsUtil.LAMPORTS_PER_SOL).toString()
-
-    if (!params.caipNetwork) {
-      throw new Error('caipNetwork is required')
-    }
+    console.log('>> Balance', balance)
+    const formattedBalance = UnitsUtil.toDecimal(balance.toString(), params.caipNetwork)
+    console.log('>> Formatted balance', formattedBalance)
 
     return {
       balance: formattedBalance,
@@ -462,6 +469,7 @@ export class SolanaAdapter extends AdapterBlueprint {
 
     this.listenProviderEvents(selectedProvider as unknown as WalletStandardProvider)
 
+    console.log('>> Setting connection', rpcUrl)
     SolStoreUtil.setConnection(new Connection(rpcUrl, 'confirmed'))
 
     return {

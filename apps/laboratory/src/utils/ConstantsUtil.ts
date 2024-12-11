@@ -16,7 +16,8 @@ import {
   aurora,
   mantle,
   bitcoin,
-  bitcoinTestnet
+  bitcoinTestnet,
+  eclipseDevnet
 } from '@reown/appkit/networks'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 import { getLocalStorageItem } from './LocalStorage'
@@ -86,7 +87,7 @@ export const solanaNotExist = {
   rpcUrls: { default: { http: ['https://api.unsupported.solana.com'] } }
 } as CaipNetwork
 
-const SolanaNetworks = [solana, solanaTestnet, solanaDevnet, solanaNotExist] as [
+const SolanaNetworks = [solana, solanaTestnet, solanaDevnet, eclipseDevnet, solanaNotExist] as [
   AppKitNetwork,
   ...AppKitNetwork[]
 ]

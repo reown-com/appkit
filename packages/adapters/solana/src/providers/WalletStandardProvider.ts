@@ -56,6 +56,7 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
   constructor({ wallet, getActiveChain, requestedChains }: WalletStandardProviderConfig) {
     super()
 
+    console.log('>> WalletStandardProvider > constructor > wallet: ', wallet.chains)
     this.wallet = wallet
     this.getActiveChain = getActiveChain
     this.requestedChains = requestedChains
@@ -103,6 +104,7 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
 
   public async connect(): Promise<string> {
     const feature = this.getWalletFeature(StandardConnect)
+
     await feature.connect()
 
     const account = this.getAccount(true)
