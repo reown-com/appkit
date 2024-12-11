@@ -9,7 +9,8 @@
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "ignore": [
-    "@examples/*", 
+    "@examples/*",
+    "@apps/*",
     "@apps/gallery", 
     "@apps/laboratory", 
     "@reown/appkit-adapter-bitcoin",
