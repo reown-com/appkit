@@ -110,7 +110,7 @@ export interface OptionsControllerStatePublic {
   enableWalletGuide?: boolean
   /**
    * Enable or disable debug mode in your AppKit. This is useful if you want to see UI alerts when debugging.
-   * @default false
+   * @default true
    */
   debug?: boolean
   /**

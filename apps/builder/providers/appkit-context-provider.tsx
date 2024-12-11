@@ -10,6 +10,7 @@ import { useSnapshot } from 'valtio'
 import { UniqueIdentifier } from '@dnd-kit/core'
 import { defaultCustomizationConfig } from '@/lib/config'
 import { useTheme } from 'next-themes'
+import { inter } from '@/lib/fonts'
 
 interface AppKitProviderProps {
   children: ReactNode
@@ -101,7 +102,7 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
     ThemeStore.setMixColor(variables['--w3m-color-mix'] || '')
     ThemeStore.setMixColorStrength(variables['--w3m-color-mix-strength'] || 0)
     ThemeStore.setBorderRadius(variables['--w3m-border-radius-master'] || '2px')
-    ThemeStore.setFontFamily(variables['--w3m-font-family'] || '')
+    ThemeStore.setFontFamily(variables['--w3m-font-family'] || inter.style.fontFamily)
   }
 
   function resetConfigs() {
