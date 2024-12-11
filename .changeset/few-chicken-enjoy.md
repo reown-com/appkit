@@ -8,7 +8,7 @@
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-utils': patch
 '@reown/appkit-cdn': patch
-'appkit-cli': patch
+'@reown/appkit-cli': patch
 '@reown/appkit-experimental': patch
 '@reown/appkit-polyfills': patch
 '@reown/appkit-scaffold-ui': patch

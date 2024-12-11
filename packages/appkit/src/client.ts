@@ -1503,9 +1503,8 @@ export class AppKit {
     this.setStatus('connected', chainNamespace)
 
     if (chainIdToUse && chainNamespace === activeNamespace) {
-      const caipNetwork = this.caipNetworks?.find(n => n.id === chainIdToUse)
+      const caipNetwork = this.caipNetworks?.find(n => n.id.toString() === chainIdToUse.toString())
       const fallBackCaipNetwork = this.caipNetworks?.find(n => n.chainNamespace === chainNamespace)
-      console.log('>>> THIS', caipNetwork || fallBackCaipNetwork)
       this.setCaipNetwork(caipNetwork || fallBackCaipNetwork)
       this.syncConnectedWalletInfo(chainNamespace)
       await this.syncBalance({ address, chainId: chainIdToUse, chainNamespace })
@@ -1521,7 +1520,7 @@ export class AppKit {
     const caipNetwork = NetworkUtil.getNetworksByNamespace(
       this.caipNetworks,
       params.chainNamespace
-    ).find(n => n.id === params.chainId)
+    ).find(n => n.id.toString() === params.chainId.toString())
 
     if (!caipNetwork) {
       return

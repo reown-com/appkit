@@ -1,16 +1,18 @@
 ---
-'@reown/appkit-scaffold-ui': patch
-'@reown/appkit': patch
-'@reown/appkit-core': patch
-'@reown/appkit-ui': patch
-'@reown/appkit-adapter-ethers': patch
-'@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-solana': patch
 '@reown/appkit-adapter-wagmi': patch
+'@reown/appkit-wallet-button': patch
 '@reown/appkit-utils': patch
-'@reown/appkit-cdn': patch
-'@reown/appkit-cli': patch
+'@reown/appkit-scaffold-ui': patch
+'@reown/appkit': patch
 '@reown/appkit-common': patch
+'@reown/appkit-core': patch
+'@reown/appkit-cli': patch
+'@reown/appkit-ui': patch
+'@apps/builder': patch
+'@reown/appkit-adapter-ethers': patch
+'@reown/appkit-adapter-ethers5': patch
+'@reown/appkit-cdn': patch
 '@reown/appkit-experimental': patch
 '@reown/appkit-polyfills': patch
 '@reown/appkit-siwe': patch
@@ -18,4 +20,4 @@
 '@reown/appkit-wallet': patch
 ---
 
-Add Bitcoin OKX Wallet connector
+Add BitcoinAdapter.getBalance implementation based on BitcoinApi
