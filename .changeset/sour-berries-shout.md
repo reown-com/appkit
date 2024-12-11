@@ -7,7 +7,6 @@
 '@reown/appkit-core': patch
 '@reown/appkit-siwx': patch
 '@reown/appkit-ui': patch
-'@apps/builder': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-wagmi': patch

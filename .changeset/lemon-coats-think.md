@@ -9,7 +9,6 @@
 '@reown/appkit-core': patch
 '@reown/appkit-cli': patch
 '@reown/appkit-ui': patch
-'@apps/builder': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-cdn': patch
