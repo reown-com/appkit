@@ -12,15 +12,25 @@ import { SatsConnectConnector } from './connectors/SatsConnectConnector.js'
 import { WalletStandardConnector } from './connectors/WalletStandardConnector.js'
 import { WalletConnectProvider } from './utils/WalletConnectProvider.js'
 import { LeatherConnector } from './connectors/LeatherConnector.js'
+import { OKXConnector } from './connectors/OKXConnector.js'
+import { UnitsUtil } from './utils/UnitsUtil.js'
+import { BitcoinApi } from './utils/BitcoinApi.js'
+import { bitcoin } from '@reown/appkit/networks'
 
 export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   private eventsToUnbind: (() => void)[] = []
+  private api: BitcoinApi.Interface
 
-  constructor(params: BitcoinAdapter.ConstructorParams) {
+  constructor({ api = {}, ...params }: BitcoinAdapter.ConstructorParams = {}) {
     super({
       namespace: 'bip122',
       ...params
     })
+
+    this.api = {
+      ...BitcoinApi,
+      ...api
+    }
   }
 
   public async connectWalletConnect(onUri: (uri: string) => void): Promise<void> {
@@ -78,6 +88,10 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     }
   }
   override syncConnectors(_options?: AppKitOptions, appKit?: AppKit): void {
+    function getActiveNetwork() {
+      return appKit?.getCaipNetwork()
+    }
+
     WalletStandardConnector.watchWallets({
       callback: this.addConnector.bind(this),
       requestedChains: this.networks
@@ -86,7 +100,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     this.addConnector(
       ...SatsConnectConnector.getWallets({
         requestedChains: this.networks,
-        getActiveNetwork: () => appKit?.getCaipNetwork()
+        getActiveNetwork
       }).map(connector => {
         switch (connector.wallet.id) {
           case LeatherConnector.ProviderId:
@@ -99,6 +113,14 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
         }
       })
     )
+
+    const okxConnector = OKXConnector.getWallet({
+      requestedChains: this.networks,
+      getActiveNetwork
+    })
+    if (okxConnector) {
+      this.addConnector(okxConnector)
+    }
   }
 
   override syncConnection(
@@ -156,11 +178,30 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
   // -- Unused => Refactor ------------------------------------------- //
 
-  override getBalance(
-    _params: AdapterBlueprint.GetBalanceParams
+  override async getBalance(
+    params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
+    const network = params.caipNetwork
+
+    if (network?.chainNamespace === 'bip122') {
+      const utxos = await this.api.getUTXOs({
+        network,
+        address: params.address
+      })
+
+      const balance = utxos.reduce((acc, utxo) => acc + utxo.value, 0)
+
+      return {
+        balance: UnitsUtil.parseSatoshis(balance.toString(), network),
+        symbol: network.nativeCurrency.symbol
+      }
+    }
+
     // Get balance
-    return Promise.resolve({} as unknown as AdapterBlueprint.GetBalanceResult)
+    return Promise.resolve({
+      balance: '0',
+      symbol: bitcoin.nativeCurrency.symbol
+    })
   }
 
   override getProfile(
@@ -261,5 +302,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 }
 
 export namespace BitcoinAdapter {
-  export type ConstructorParams = Omit<AdapterBlueprint.Params, 'namespace'>
+  export type ConstructorParams = Omit<AdapterBlueprint.Params, 'namespace'> & {
+    api?: Partial<BitcoinApi.Interface>
+  }
 }

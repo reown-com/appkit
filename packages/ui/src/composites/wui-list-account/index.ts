@@ -24,7 +24,7 @@ export class WuiListAccount extends LitElement {
 
   @property() public accountType = ''
 
-  private connectedConnector = StorageUtil.getConnectedConnector()
+  private connectedConnector: string | undefined
 
   private labels = AccountController.state.addressLabels
 
@@ -44,6 +44,26 @@ export class WuiListAccount extends LitElement {
     { address, type }: { address: string; type: string },
     selected: boolean
   ) => void
+
+  public constructor() {
+    super()
+    if (this.caipNetwork) {
+      this.connectedConnector = StorageUtil.getConnectedConnector(this.caipNetwork.chainNamespace)
+    }
+
+    // Only show icon for AUTH accounts
+    this.shouldShowIcon = this.connectedConnector === 'ID_AUTH'
+
+    AccountController.subscribeKey('addressLabels', labels => {
+      this.labels = labels
+    })
+    ChainController.subscribe(chainState => {
+      this.caipNetwork = chainState.activeCaipNetwork
+      if (chainState.activeChain) {
+        this.connectedConnector = StorageUtil.getConnectedConnector(chainState.activeChain)
+      }
+    })
+  }
 
   public override connectedCallback() {
     super.connectedCallback()

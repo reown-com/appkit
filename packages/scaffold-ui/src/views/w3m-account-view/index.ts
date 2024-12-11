@@ -1,13 +1,37 @@
-import { ConnectorController, StorageUtil } from '@reown/appkit-core'
+import { ChainController, ConnectorController, StorageUtil } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
 
 @customElement('w3m-account-view')
 export class W3mAccountView extends LitElement {
+  // -- Members -------------------------------------------- //
+  private unsubscribe: (() => void)[] = []
+
+  // -- State & Properties --------------------------------- //
+  @state() private activeNetwork = ChainController.state.activeChain
+
+  // -- Lifecycle ------------------------------------------ //
+  public constructor() {
+    super()
+    this.unsubscribe.push(
+      ChainController.subscribeKey('activeChain', val => {
+        this.activeNetwork = val
+      })
+    )
+  }
+
+  public override disconnectedCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
+  }
+
   // -- Render -------------------------------------------- //
 
   public override render() {
-    const connectedConnectorType = StorageUtil.getConnectedConnector()
+    if (!this.activeNetwork) {
+      return null
+    }
+    const connectedConnectorType = StorageUtil.getConnectedConnector(this.activeNetwork)
     const authConnector = ConnectorController.getAuthConnector()
 
     return html`

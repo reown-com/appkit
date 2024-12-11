@@ -152,7 +152,10 @@ export class W3mAccountSettingsView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private chooseNameButtonTemplate() {
-    const type = StorageUtil.getConnectedConnector()
+    if (!this.network) {
+      return null
+    }
+    const type = StorageUtil.getConnectedConnector(this.network.chainNamespace)
     const authConnector = ConnectorController.getAuthConnector()
     const hasNetworkSupport = ChainController.checkIfNamesSupported()
     if (!hasNetworkSupport || !authConnector || type !== 'ID_AUTH' || this.profileName) {
@@ -175,7 +178,10 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private authCardTemplate() {
-    const type = StorageUtil.getConnectedConnector()
+    if (!this.network) {
+      return null
+    }
+    const type = StorageUtil.getConnectedConnector(this.network.chainNamespace)
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
     if (!authConnector || type !== 'ID_AUTH' || origin.includes(ConstantsUtil.SECURE_SITE)) {
@@ -213,11 +219,15 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private togglePreferredAccountBtnTemplate() {
-    const networkEnabled = ChainController.checkIfSmartAccountEnabled()
-    const type = StorageUtil.getConnectedConnector()
+    if (!this.network) {
+      return null
+    }
+
+    const isNetworkEnabled = ChainController.checkIfSmartAccountEnabled()
+    const type = StorageUtil.getConnectedConnector(this.network.chainNamespace)
     const authConnector = ConnectorController.getAuthConnector()
 
-    if (!authConnector || type !== 'ID_AUTH' || !networkEnabled) {
+    if (!authConnector || type !== 'ID_AUTH' || !isNetworkEnabled) {
       return null
     }
 
@@ -249,11 +259,11 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private async changePreferredAccountType() {
-    const smartAccountEnabled = ChainController.checkIfSmartAccountEnabled()
+    const isSmartAccountEnabled = ChainController.checkIfSmartAccountEnabled()
 
     const accountTypeTarget =
       this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT ||
-      !smartAccountEnabled
+      !isSmartAccountEnabled
         ? W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
         : W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     const authConnector = ConnectorController.getAuthConnector()

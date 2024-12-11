@@ -172,9 +172,19 @@ export const SwapController = {
 
   getParams() {
     const caipAddress = ChainController.state.activeCaipAddress
+    const namespace = ChainController.state.activeChain
+
+    if (!caipAddress) {
+      throw new Error('No address found to swap the tokens from')
+    }
+
+    if (!namespace) {
+      throw new Error('No active network found to swap the tokens from')
+    }
+
     const address = CoreHelperUtil.getPlainAddress(caipAddress)
     const networkAddress = ChainController.getActiveNetworkTokenAddress()
-    const type = StorageUtil.getConnectedConnector()
+    const type = StorageUtil.getConnectedConnector(namespace)
 
     if (!address) {
       throw new Error('No address found to swap the tokens from.')
@@ -731,6 +741,21 @@ export const SwapController = {
       state.transactionError = error?.shortMessage as unknown as string
       state.loadingApprovalTransaction = false
       SnackController.showError(error?.shortMessage || 'Transaction error')
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SWAP_APPROVAL_ERROR',
+        properties: {
+          message: error?.shortMessage || error?.message || 'Unknown',
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
+          swapFromToken: this.state.sourceToken?.symbol || '',
+          swapToToken: this.state.toToken?.symbol || '',
+          swapFromAmount: this.state.sourceTokenAmount || '',
+          swapToAmount: this.state.toTokenAmount || '',
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        }
+      })
     }
   },
 

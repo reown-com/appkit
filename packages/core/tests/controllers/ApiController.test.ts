@@ -14,12 +14,15 @@ const chain = ConstantsUtil.CHAIN.EVM
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize([
-    {
-      namespace: ConstantsUtil.CHAIN.EVM,
-      caipNetworks: []
-    }
-  ])
+  ChainController.initialize(
+    [
+      {
+        namespace: ConstantsUtil.CHAIN.EVM,
+        caipNetworks: []
+      }
+    ],
+    []
+  )
 })
 
 describe('ApiController', () => {

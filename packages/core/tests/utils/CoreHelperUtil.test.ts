@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
 import { CoreHelperUtil } from '../../src/utils/CoreHelperUtil.js'
 
@@ -28,4 +29,32 @@ describe('CoreHelperUtil', () => {
       expect(CoreHelperUtil.isAddress(address, chain)).toBe(expected)
     }
   )
+
+  it('should return true when inside an iframe', () => {
+    const originalTop = global.window.top
+    const originalSelf = global.window.self
+    try {
+      ;(global.window as any).top = { name: 'top' }
+      ;(global.window as any).self = { name: 'self' }
+
+      expect(CoreHelperUtil.isIframe()).toBe(true)
+    } finally {
+      global.window.top = originalTop
+      global.window.self = originalSelf
+    }
+  })
+
+  it('should return false when not inside an iframe', () => {
+    const originalTop = global.window.top
+    const originalSelf = global.window.self
+
+    try {
+      global.window.top = global.window.self
+
+      expect(CoreHelperUtil.isIframe()).toBe(false)
+    } finally {
+      global.window.top = originalTop
+      global.window.self = originalSelf
+    }
+  })
 })

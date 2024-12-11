@@ -19,7 +19,8 @@ import {
   ChainController,
   type Connector,
   StorageUtil,
-  CoreHelperUtil
+  CoreHelperUtil,
+  AlertController
 } from '@reown/appkit-core'
 import {
   SafeLocalStorage,
@@ -30,6 +31,8 @@ import {
 import { mockOptions } from './mocks/Options'
 import { UniversalAdapter } from '../universal-adapter/client'
 import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint'
+import { ProviderUtil } from '../store'
+import { ErrorUtil } from '@reown/appkit-utils'
 
 // Mock all controllers and UniversalAdapterClient
 vi.mock('@reown/appkit-core')
@@ -64,6 +67,23 @@ describe('Base', () => {
 
     it('should initialize adapters in ChainController', () => {
       expect(ChainController.initialize).toHaveBeenCalledWith(mockOptions.adapters)
+    })
+
+    it('should set EIP6963 enabled by default', () => {
+      new AppKit({
+        ...mockOptions
+      })
+
+      expect(OptionsController.setEIP6963Enabled).toHaveBeenCalledWith(true)
+    })
+
+    it('should set EIP6963 disabled when option is disabled in config', () => {
+      new AppKit({
+        ...mockOptions,
+        enableEIP6963: false
+      })
+
+      expect(OptionsController.setEIP6963Enabled).toHaveBeenCalledWith(false)
     })
   })
 
@@ -594,7 +614,6 @@ describe('Base', () => {
       vi.spyOn(appKit as any, 'getAdapter').mockReturnValue(mockAdapter)
 
       vi.spyOn(StorageUtil, 'setConnectedConnector').mockImplementation(vi.fn())
-      vi.spyOn(StorageUtil, 'setConnectedNamespace').mockImplementation(vi.fn())
 
       vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
 
@@ -602,8 +621,8 @@ describe('Base', () => {
         if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR_eip155) {
           return 'test-wallet'
         }
-        if (key === SafeLocalStorageKeys.CONNECTED_NAMESPACE) {
-          return 'eip155'
+        if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
+          return 'eip155:1'
         }
         return undefined
       })
@@ -615,6 +634,29 @@ describe('Base', () => {
       expect((appKit as any).setUnsupportedNetwork).toHaveBeenCalled()
       expect(isClientSpy).toHaveBeenCalled()
     })
+
+    it('should subscribe to providers', () => {
+      const callback = vi.fn()
+      const providers = {
+        eip155: { provider: {} },
+        solana: {},
+        polkadot: {},
+        bip122: {}
+      }
+
+      const mockSubscribeProviders = vi.fn().mockImplementation(cb => {
+        cb(providers)
+        return () => {}
+      })
+
+      // Mock the entire ProviderUtil
+      vi.mocked(ProviderUtil).subscribeProviders = mockSubscribeProviders
+
+      appKit.subscribeProviders(callback)
+
+      expect(mockSubscribeProviders).toHaveBeenCalled()
+      expect(callback).toHaveBeenCalledWith(providers)
+    })
   })
   describe('syncExistingConnection', () => {
     it('should set status to "connecting" and sync the connection when a connector and namespace are present', async () => {
@@ -623,8 +665,8 @@ describe('Base', () => {
         if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR_eip155) {
           return 'test-wallet'
         }
-        if (key === SafeLocalStorageKeys.CONNECTED_NAMESPACE) {
-          return 'eip155'
+        if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
+          return 'eip155:1'
         }
         return undefined
       })
@@ -663,8 +705,8 @@ describe('Base', () => {
         if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR_eip155) {
           return 'AUTH'
         }
-        if (key === SafeLocalStorageKeys.CONNECTED_NAMESPACE) {
-          return 'eip155'
+        if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
+          return 'eip155:1'
         }
         return undefined
       })
@@ -822,6 +864,29 @@ describe('Base', () => {
           caipNetworks: expect.any(Array)
         })
       )
+    })
+  })
+
+  describe('Alert Errors', () => {
+    it('should handle alert errors based on error messages', () => {
+      const errors = [
+        {
+          alert: ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION,
+          message:
+            'Error: WebSocket connection closed abnormally with code: 3000 (Unauthorized: origin not allowed)'
+        },
+        {
+          alert: ErrorUtil.ALERT_ERRORS.JWT_TOKEN_NOT_VALID,
+          message:
+            'WebSocket connection closed abnormally with code: 3000 (JWT validation error: JWT Token is not yet valid:)'
+        }
+      ]
+
+      for (const { alert, message } of errors) {
+        // @ts-expect-error
+        appKit.handleAlertError(new Error(message))
+        expect(AlertController.open).toHaveBeenCalledWith(alert, 'error')
+      }
     })
   })
 })

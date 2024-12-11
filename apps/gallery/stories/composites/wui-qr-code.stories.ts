@@ -3,6 +3,7 @@ import '@reown/appkit-ui/src/composites/wui-qr-code'
 import type { WuiQrCode } from '@reown/appkit-ui/src/composites/wui-qr-code'
 import { html } from 'lit'
 import { themeOptions, walletImageSrc } from '../../utils/PresetUtils'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 type Component = Meta<WuiQrCode>
 
@@ -19,6 +20,9 @@ export default {
     theme: {
       options: themeOptions,
       control: { type: 'select' }
+    },
+    color: {
+      control: { type: 'color' }
     }
   }
 } as Component
@@ -31,5 +35,6 @@ export const Default: Component = {
       theme=${args.theme}
       uri=${args.uri}
       size=${args.size}
+      color=${ifDefined(args.color)}
     ></wui-qr-code>`
 }

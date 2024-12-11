@@ -1,5 +1,5 @@
 import { html, LitElement } from 'lit'
-import { property } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'
 import '../../components/wui-image/index.js'
@@ -11,11 +11,14 @@ import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 import type { IconType } from '../../utils/TypeUtil.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
-import { StorageUtil } from '@reown/appkit-core'
+import { ChainController, StorageUtil } from '@reown/appkit-core'
 
 @customElement('wui-profile-button-v2')
 export class WuiProfileButtonV2 extends LitElement {
   public static override styles = [resetStyles, elementStyles, styles]
+
+  // -- Members ------------------------------------------- //
+  private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
   @property() public avatarSrc?: string = undefined
@@ -30,9 +33,29 @@ export class WuiProfileButtonV2 extends LitElement {
 
   @property() public onCopyClick?: (event: Event) => void
 
-  private connectedConnector = StorageUtil.getConnectedConnector()
+  @state() public namespace = ChainController.state.activeChain
 
-  private shouldShowIcon = this.connectedConnector === 'AUTH'
+  private connectedConnector: string | undefined
+
+  private shouldShowIcon = false
+
+  public constructor() {
+    super()
+    if (this.namespace) {
+      this.connectedConnector = StorageUtil.getConnectedConnector(this.namespace)
+    }
+    this.shouldShowIcon = this.connectedConnector === 'ID_AUTH'
+
+    this.unsubscribe.push(
+      ChainController.subscribe(chainState => {
+        this.namespace = chainState.activeChain
+        if (this.namespace) {
+          this.connectedConnector = StorageUtil.getConnectedConnector(this.namespace)
+        }
+        this.shouldShowIcon = this.connectedConnector === 'ID_AUTH'
+      })
+    )
+  }
 
   // -- Render -------------------------------------------- //
   public override render() {

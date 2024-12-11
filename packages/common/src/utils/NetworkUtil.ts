@@ -1,4 +1,4 @@
-import type { CaipNetworkId } from './TypeUtil.js'
+import type { CaipNetwork, CaipNetworkId, ChainNamespace } from './TypeUtil.js'
 
 export const NetworkUtil = {
   caipNetworkIdToNumber(caipnetworkId?: CaipNetworkId) {
@@ -9,5 +9,13 @@ export const NetworkUtil = {
     return typeof chainId === 'string'
       ? this.caipNetworkIdToNumber(chainId as CaipNetworkId)
       : chainId
+  },
+
+  getNetworksByNamespace(networks: CaipNetwork[] | undefined, namespace: ChainNamespace) {
+    return networks?.filter(network => network.chainNamespace === namespace) || []
+  },
+
+  getFirstNetworkByNamespace(networks: CaipNetwork[] | undefined, namespace: ChainNamespace) {
+    return this.getNetworksByNamespace(networks, namespace)[0]
   }
 }

@@ -1608,7 +1608,7 @@ export class AppKit {
   }
 
   private async syncExistingConnection() {
-    const connectedNamespace = StorageUtil.getConnectedNamespace()
+    const connectedNamespace = StorageUtil.getActiveNamespace()
 
     if (connectedNamespace) {
       const connectedConnector = StorageUtil.getConnectedConnector(connectedNamespace)

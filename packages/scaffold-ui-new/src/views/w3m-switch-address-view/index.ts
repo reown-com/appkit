@@ -28,17 +28,29 @@ export class W3mSwitchAddressView extends LitElement {
 
   public readonly currentAddress: string = AccountController.state.address || ''
 
-  private connectedConnector = StorageUtil.getConnectedConnector()
+  private connectedConnector: string | undefined
 
-  // Only show icon for AUTH accounts
-  private shouldShowIcon = this.connectedConnector === 'AUTH'
+  private shouldShowIcon = false
 
   private caipNetwork = ChainController.state.activeCaipNetwork
 
   constructor() {
     super()
+    if (this.caipNetwork) {
+      this.connectedConnector = StorageUtil.getConnectedConnector(this.caipNetwork.chainNamespace)
+    }
+
+    // Only show icon for AUTH accounts
+    this.shouldShowIcon = this.connectedConnector === 'ID_AUTH'
+
     AccountController.subscribeKey('allAccounts', allAccounts => {
       this.allAccounts = allAccounts
+    })
+    ChainController.subscribe(chainState => {
+      this.caipNetwork = chainState.activeCaipNetwork
+      if (chainState.activeChain) {
+        this.connectedConnector = StorageUtil.getConnectedConnector(chainState.activeChain)
+      }
     })
   }
 
