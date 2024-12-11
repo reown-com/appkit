@@ -50,7 +50,8 @@ const state = proxy<AccountControllerState>({
   tokenBalance: [],
   smartAccountDeployed: false,
   addressLabels: new Map(),
-  allAccounts: []
+  allAccounts: [],
+  status: 'disconnected'
 })
 
 // -- Controller ---------------------------------------- //

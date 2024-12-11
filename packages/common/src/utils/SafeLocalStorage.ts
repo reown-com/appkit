@@ -1,3 +1,5 @@
+import { CookiesStorage } from './CookiesStorage'
+
 export type SafeLocalStorageItems = {
   '@appkit/wallet_id': string
   '@appkit/wallet_name': string
@@ -40,6 +42,7 @@ export const SafeLocalStorage = {
     if (isSafe()) {
       localStorage.setItem(key, value)
     }
+    CookiesStorage.setItem(key, value)
   },
   getItem<Key extends keyof SafeLocalStorageItems>(
     key: Key
@@ -54,11 +57,13 @@ export const SafeLocalStorage = {
     if (isSafe()) {
       localStorage.removeItem(key)
     }
+    CookiesStorage.removeItem(key)
   },
   clear(): void {
     if (isSafe()) {
       localStorage.clear()
     }
+    CookiesStorage.clear()
   }
 }
 

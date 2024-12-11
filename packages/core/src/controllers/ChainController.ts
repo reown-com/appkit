@@ -10,7 +10,9 @@ import type {
 import { AccountController, type AccountControllerState } from './AccountController.js'
 import { PublicStateController } from './PublicStateController.js'
 import {
+  CookiesStorage,
   NetworkUtil,
+  SafeLocalStorageKeys,
   type CaipAddress,
   type CaipNetwork,
   type CaipNetworkId,
@@ -132,6 +134,15 @@ export const ChainController = {
         })
       })
     }
+  },
+
+  initialStateFromCookies(adapters: ChainAdapter[], caipNetworks: CaipNetwork[] | undefined) {
+    // const activeNamespace = CookiesStorage.getItem(SafeLocalStorageKeys.ACTIVE_NAMESPACE) as ChainNamespace | undefined
+    // const activeChainId = CookiesStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
+    // const activeAdapter = activeNamespace ? state.chains.get(activeNamespace) : undefined
+    // if(activeAdapter) {
+    //     this.setActiveNamespace(activeNamespace)
+    // }
   },
 
   setAdapterNetworkState(chain: ChainNamespace, props: Partial<AdapterNetworkState>) {

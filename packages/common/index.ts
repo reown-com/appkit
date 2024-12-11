@@ -1,4 +1,5 @@
 // -- Utils -------------------------------------------------------------------
+export { CookiesStorage } from './src/utils/CookiesStorage.js'
 export { DateUtil } from './src/utils/DateUtil.js'
 export { NetworkUtil } from './src/utils/NetworkUtil.js'
 export { NumberUtil } from './src/utils/NumberUtil.js'
