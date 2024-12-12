@@ -31,7 +31,7 @@
   },
   "peerDependencies": {
     "@ethersproject/sha2": "5.7.0",
-    "@coinbase/wallet-sdk": "4.0.3",
+    "@coinbase/wallet-sdk": "4.2.3",
     "ethers": ">=6"
   },
   "devDependencies": {
