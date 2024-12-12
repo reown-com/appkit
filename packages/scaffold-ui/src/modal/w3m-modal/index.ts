@@ -1,5 +1,4 @@
 import {
-  AccountController,
   ApiController,
   ChainController,
   CoreHelperUtil,
@@ -7,19 +6,15 @@ import {
   ModalController,
   OptionsController,
   RouterController,
+  SIWXUtil,
   SnackController,
   ThemeController
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import styles from './styles.js'
-import {
-  ConstantsUtil,
-  type CaipAddress,
-  type CaipNetwork,
-  type SIWEStatus
-} from '@reown/appkit-common'
+import { type CaipAddress, type CaipNetwork } from '@reown/appkit-common'
 
 // -- Helpers --------------------------------------------- //
 const SCROLL_LOCK = 'scroll-lock'
@@ -34,13 +29,13 @@ export class W3mModal extends LitElement {
   private abortController?: AbortController = undefined
 
   // -- State & Properties -------------------------------- //
+  @property({ type: Boolean }) private enableEmbedded = OptionsController.state.enableEmbedded
+
   @state() private open = ModalController.state.open
 
   @state() private caipAddress = ChainController.state.activeCaipAddress
 
   @state() private caipNetwork = ChainController.state.activeCaipNetwork
-
-  @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
 
   @state() private shake = ModalController.state.shake
 
@@ -52,13 +47,18 @@ export class W3mModal extends LitElement {
       ...[
         ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
         ModalController.subscribeKey('shake', val => (this.shake = val)),
-        AccountController.subscribeKey('siweStatus', val => this.onSiweStatusChange(val), 'eip155'),
         ChainController.subscribeKey('activeCaipNetwork', val => this.onNewNetwork(val)),
-        ChainController.subscribeKey('activeCaipAddress', val => this.onNewAddress(val)),
-        OptionsController.subscribeKey('isSiweEnabled', val => (this.isSiweEnabled = val))
+        ChainController.subscribeKey('activeCaipAddress', val => this.onNewAddress(val))
       ]
     )
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })
+  }
+
+  public override firstUpdated() {
+    OptionsController.setEnableEmbedded(this.enableEmbedded)
+    if (this.enableEmbedded && this.caipAddress) {
+      ModalController.close()
+    }
   }
 
   public override disconnectedCallback() {
@@ -68,21 +68,21 @@ export class W3mModal extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    this.style.cssText = `
+      --local-border-bottom-mobile-radius: ${
+        this.enableEmbedded ? 'clamp(0px, var(--wui-border-radius-l), 44px)' : '0px'
+      };
+    `
+
+    if (this.enableEmbedded) {
+      return html`${this.contentTemplate()}
+        <w3m-tooltip></w3m-tooltip> `
+    }
+
     return this.open
       ? html`
           <wui-flex @click=${this.onOverlayClick.bind(this)} data-testid="w3m-modal-overlay">
-            <wui-card
-              shake="${this.shake}"
-              role="alertdialog"
-              aria-modal="true"
-              tabindex="0"
-              data-testid="w3m-modal-card"
-            >
-              <w3m-header></w3m-header>
-              <w3m-router></w3m-router>
-              <w3m-snackbar></w3m-snackbar>
-              <w3m-alertbar></w3m-alertbar>
-            </wui-card>
+            ${this.contentTemplate()}
           </wui-flex>
           <w3m-tooltip></w3m-tooltip>
         `
@@ -90,6 +90,21 @@ export class W3mModal extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private contentTemplate() {
+    return html` <wui-card
+      shake="${this.shake}"
+      role="alertdialog"
+      aria-modal="true"
+      tabindex="0"
+      data-testid="w3m-modal-card"
+    >
+      <w3m-header></w3m-header>
+      <w3m-router></w3m-router>
+      <w3m-snackbar></w3m-snackbar>
+      <w3m-alertbar></w3m-alertbar>
+    </wui-card>`
+  }
+
   private async onOverlayClick(event: PointerEvent) {
     if (event.target === event.currentTarget) {
       await this.handleClose()
@@ -97,17 +112,9 @@ export class W3mModal extends LitElement {
   }
 
   private async handleClose() {
-    const isSiweSignScreen = RouterController.state.view === 'ConnectingSiwe'
-    const isApproveSignScreen = RouterController.state.view === 'ApproveTransaction'
-
-    if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@reown/appkit-siwe')
-      const isUnauthenticated = SIWEController.state.status !== 'success'
-      if (isUnauthenticated && (isSiweSignScreen || isApproveSignScreen)) {
-        ModalController.shake()
-      } else {
-        ModalController.close()
-      }
+    const isUnsupportedChain = RouterController.state.view === 'UnsupportedChain'
+    if (isUnsupportedChain || (await SIWXUtil.isSIWXCloseDisabled())) {
+      ModalController.shake()
     } else {
       ModalController.close()
     }
@@ -182,47 +189,19 @@ export class W3mModal extends LitElement {
     this.abortController = undefined
   }
 
-  private onSiweStatusChange(nextStatus: SIWEStatus | undefined) {
-    if (nextStatus === 'success') {
-      ModalController.close()
-    }
-  }
-
   private async onNewAddress(caipAddress?: CaipAddress) {
-    const prevCaipAddress = this.caipAddress
-    const prevConnected = prevCaipAddress
-      ? CoreHelperUtil.getPlainAddress(prevCaipAddress)
-      : undefined
-    const nextConnected = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
-    const isSameAddress = prevConnected === nextConnected
+    const nextConnected = CoreHelperUtil.getPlainAddress(caipAddress)
 
     this.caipAddress = caipAddress
 
-    if (nextConnected && !isSameAddress && this.isSiweEnabled) {
-      try {
-        const { SIWEController } = await import('@reown/appkit-siwe')
-        const signed = AccountController.state.siweStatus === 'success'
+    await SIWXUtil.initializeIfEnabled()
 
-        if (!prevConnected && nextConnected) {
-          this.onSiweNavigation()
-        } else if (signed && prevConnected && nextConnected && prevConnected !== nextConnected) {
-          if (SIWEController.state._client?.options.signOutOnAccountChange) {
-            await SIWEController.signOut()
-            this.onSiweNavigation()
-          }
-        }
-      } catch (err) {
-        this.caipAddress = prevCaipAddress
-        throw err
-      }
-    }
-
-    if (!nextConnected) {
+    if (!nextConnected || this.enableEmbedded) {
       ModalController.close()
     }
   }
 
-  private async onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {
+  private onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {
     if (!this.caipAddress) {
       this.caipNetwork = nextCaipNetwork
       RouterController.goBack()
@@ -233,38 +212,15 @@ export class W3mModal extends LitElement {
     const prevCaipNetworkId = this.caipNetwork?.caipNetworkId?.toString()
     const nextNetworkId = nextCaipNetwork?.caipNetworkId?.toString()
 
-    if (prevCaipNetworkId && nextNetworkId && prevCaipNetworkId !== nextNetworkId) {
-      if (this.isSiweEnabled) {
-        const { SIWEController } = await import('@reown/appkit-siwe')
-
-        if (SIWEController.state._client?.options.signOutOnNetworkChange) {
-          await SIWEController.signOut()
-          this.onSiweNavigation()
-        } else {
-          RouterController.goBack()
-        }
-      } else {
-        RouterController.goBack()
-      }
-    }
-    this.caipNetwork = nextCaipNetwork
-  }
-
-  private onSiweNavigation() {
-    const isEIP155Namespace = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
-    const authenticated = AccountController.state.siweStatus === 'success'
-
-    if (!authenticated && isEIP155Namespace) {
-      if (this.open) {
-        RouterController.replace('ConnectingSiwe')
-      } else {
-        ModalController.open({
-          view: 'ConnectingSiwe'
-        })
-      }
-    } else {
+    if (
+      prevCaipNetworkId &&
+      nextNetworkId &&
+      prevCaipNetworkId !== nextNetworkId &&
+      this.caipNetwork?.name !== 'Unknown Network'
+    ) {
       RouterController.goBack()
     }
+    this.caipNetwork = nextCaipNetwork
   }
 }
 

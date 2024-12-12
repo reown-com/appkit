@@ -15,7 +15,7 @@ import { type W3mFrameTypes } from '@reown/appkit-wallet'
 import { ModalController } from './ModalController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
-import type { ChainNamespace } from '@reown/appkit-common'
+import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import { OptionsController } from './OptionsController.js'
 
 // -- Types --------------------------------------------- //
@@ -24,6 +24,9 @@ export interface ConnectExternalOptions {
   type: Connector['type']
   provider?: Connector['provider']
   info?: Connector['info']
+  chain?: ChainNamespace
+  chainId?: number | string
+  caipNetwork?: CaipNetwork
 }
 
 export interface ConnectionControllerClient {
@@ -63,6 +66,7 @@ export interface ConnectionControllerState {
   buffering: boolean
   status?: 'connecting' | 'connected' | 'disconnected'
   manualControl?: boolean
+  connectionControllerClient?: ConnectionControllerClient
 }
 
 type StateKey = keyof ConnectionControllerState
@@ -86,8 +90,8 @@ export const ConnectionController = {
     return subKey(state, key, callback)
   },
 
-  _getClient(chain?: ChainNamespace) {
-    return ChainController.getConnectionControllerClient(chain)
+  _getClient() {
+    return state._client
   },
 
   setClient(client: ConnectionControllerClient) {
@@ -116,7 +120,7 @@ export const ConnectionController = {
         return
       }
       wcConnectionPromise = new Promise(async (resolve, reject) => {
-        await ChainController.state?.universalAdapter?.connectionControllerClient
+        await this._getClient()
           ?.connectWalletConnect?.(uri => {
             state.wcUri = uri
             state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
@@ -130,29 +134,21 @@ export const ConnectionController = {
       state.wcPairingExpiry = undefined
       this.state.status = 'connected'
     } else {
-      await ChainController.state?.universalAdapter?.connectionControllerClient?.connectWalletConnect?.(
-        uri => {
-          this.setUri(uri)
-        }
-      )
+      await this._getClient()?.connectWalletConnect?.(uri => this.setUri(uri))
     }
-
-    await this.initializeSWIXIfAvailable()
   },
 
   async connectExternal(options: ConnectExternalOptions, chain: ChainNamespace, setChain = true) {
-    await this._getClient(chain).connectExternal?.(options)
+    await this._getClient()?.connectExternal?.(options)
+
     if (setChain) {
       ChainController.setActiveNamespace(chain)
-      StorageUtil.setConnectedConnector(options.type)
     }
-
-    await this.initializeSWIXIfAvailable()
   },
 
   async reconnectExternal(options: ConnectExternalOptions) {
-    await this._getClient().reconnectExternal?.(options)
-    StorageUtil.setConnectedConnector(options.type)
+    await this._getClient()?.reconnectExternal?.(options)
+    StorageUtil.setConnectedConnector(options.type === 'AUTH' ? 'ID_AUTH' : options.type)
   },
 
   async setPreferredAccountType(accountType: W3mFrameTypes.AccountType) {
@@ -175,47 +171,47 @@ export const ConnectionController = {
   },
 
   async signMessage(message: string) {
-    return this._getClient().signMessage(message)
+    return this._getClient()?.signMessage(message)
   },
 
   parseUnits(value: string, decimals: number) {
-    return this._getClient().parseUnits(value, decimals)
+    return this._getClient()?.parseUnits(value, decimals)
   },
 
   formatUnits(value: bigint, decimals: number) {
-    return this._getClient().formatUnits(value, decimals)
+    return this._getClient()?.formatUnits(value, decimals)
   },
 
   async sendTransaction(args: SendTransactionArgs) {
-    return this._getClient().sendTransaction(args)
+    return this._getClient()?.sendTransaction(args)
   },
 
   async getCapabilities(params: string) {
-    return this._getClient().getCapabilities(params)
+    return this._getClient()?.getCapabilities(params)
   },
 
   async grantPermissions(params: object | readonly unknown[]) {
-    return this._getClient().grantPermissions(params)
+    return this._getClient()?.grantPermissions(params)
   },
 
   async estimateGas(args: EstimateGasTransactionArgs) {
-    return this._getClient().estimateGas(args)
+    return this._getClient()?.estimateGas(args)
   },
 
   async writeContract(args: WriteContractArgs) {
-    return this._getClient().writeContract(args)
+    return this._getClient()?.writeContract(args)
   },
 
   async getEnsAddress(value: string) {
-    return this._getClient().getEnsAddress(value)
+    return this._getClient()?.getEnsAddress(value)
   },
 
   async getEnsAvatar(value: string) {
-    return this._getClient().getEnsAvatar(value)
+    return this._getClient()?.getEnsAvatar(value)
   },
 
-  checkInstalled(ids?: string[], chain?: ChainNamespace) {
-    return this._getClient(chain).checkInstalled?.(ids) || false
+  checkInstalled(ids?: string[]) {
+    return this._getClient()?.checkInstalled?.(ids) || false
   },
 
   resetWcConnection() {
@@ -254,80 +250,24 @@ export const ConnectionController = {
   },
 
   async disconnect() {
-    const connectionControllerClient = this._getClient()
-
-    const siwx = OptionsController.state.siwx
-    if (siwx) {
-      const activeCaipNetwork = ChainController.getActiveCaipNetwork()
-      const address = ChainController.getActiveCaipAddress()?.split(':')[2] || ''
-
-      if (activeCaipNetwork && address) {
-        siwx.revokeSession(activeCaipNetwork.caipNetworkId, address)
-      }
-    }
-
     try {
+      const connectionControllerClient = this._getClient()
+
+      const siwx = OptionsController.state.siwx
+      if (siwx) {
+        const activeCaipNetwork = ChainController.getActiveCaipNetwork()
+        const address = CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress())
+
+        if (activeCaipNetwork && address) {
+          await siwx.revokeSession(activeCaipNetwork.caipNetworkId, address)
+        }
+      }
+
       await connectionControllerClient?.disconnect()
+
       this.resetWcConnection()
     } catch (error) {
       throw new Error('Failed to disconnect')
-    }
-  },
-
-  /**
-   * @experimental - This is an experimental feature and may be subject to change.
-   * Initializes SIWX if available.
-   * This is not yet considering One Click Auth.
-   */
-  async initializeSWIXIfAvailable() {
-    const siwx = OptionsController.state.siwx
-    if (!siwx) {
-      return
-    }
-
-    if (OptionsController.state.isSiweEnabled) {
-      console.warn('SIWE is enabled skipping experimental SIWX initialization')
-
-      return
-    }
-
-    const activeCaipNetwork = ChainController.getActiveCaipNetwork()
-    const client = this._getClient(activeCaipNetwork?.chainNamespace)
-
-    try {
-      if (!activeCaipNetwork) {
-        throw new Error('No active chain')
-      }
-
-      const address = ChainController.getActiveCaipAddress()?.split(':')[2] || ''
-
-      const sessions = await siwx.getSessions(activeCaipNetwork.caipNetworkId, address)
-      if (sessions.length) {
-        return
-      }
-
-      ModalController.open({ view: 'SIWXSignMessage' })
-
-      const message = await siwx.createMessage({
-        chainId: activeCaipNetwork.caipNetworkId,
-        accountAddress: address
-      })
-
-      const signature = await client.signMessage(message.toString())
-
-      await siwx.addSession({
-        message,
-        signature
-      })
-
-      ModalController.close()
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Failed to initialize SIWX', error)
-
-      await client.disconnect()
-
-      throw error
     }
   }
 }

@@ -16,7 +16,7 @@ import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 const chain = CommonConstantsUtil.CHAIN.EVM
 const walletConnectUri = 'wc://uri?=123'
 const externalId = 'coinbaseWallet'
-const type = 'AUTH' as ConnectorType
+const type = 'WALLET_CONNECT' as ConnectorType
 const storageSpy = vi.spyOn(StorageUtil, 'setConnectedConnector')
 
 const client: ConnectionControllerClient = {
@@ -61,36 +61,35 @@ const partialClient: ConnectionControllerClient = {
 }
 
 const evmAdapter = {
-  chainNamespace: CommonConstantsUtil.CHAIN.EVM,
+  namespace: CommonConstantsUtil.CHAIN.EVM,
   connectionControllerClient: client
 }
 const adapters = [evmAdapter] as ChainAdapter[]
-const universalAdapter = {
-  chainNamespace: 'eip155',
-  connectionControllerClient: client,
-  caipNetworks: []
-} as ChainAdapter
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize(adapters)
-  ChainController.initializeUniversalAdapter(universalAdapter, adapters)
+  ChainController.initialize(adapters, [])
+  ConnectionController.setClient(evmAdapter.connectionControllerClient)
 })
 
 describe('ConnectionController', () => {
   it('should have valid default state', () => {
-    ChainController.initialize([
-      {
-        chainNamespace: CommonConstantsUtil.CHAIN.EVM,
-        connectionControllerClient: client,
-        caipNetworks: []
-      }
-    ])
+    ChainController.initialize(
+      [
+        {
+          namespace: CommonConstantsUtil.CHAIN.EVM,
+          connectionControllerClient: client,
+          caipNetworks: []
+        }
+      ],
+      []
+    )
 
     expect(ConnectionController.state).toEqual({
       wcError: false,
       buffering: false,
-      status: 'disconnected'
+      status: 'disconnected',
+      _client: evmAdapter.connectionControllerClient
     })
   })
 
@@ -135,18 +134,21 @@ describe('ConnectionController', () => {
   })
 
   it('should not throw when optional methods are undefined', async () => {
-    ChainController.initialize([
-      {
-        chainNamespace: CommonConstantsUtil.CHAIN.EVM,
-        connectionControllerClient: partialClient,
-        caipNetworks: []
-      }
-    ])
+    ChainController.initialize(
+      [
+        {
+          namespace: CommonConstantsUtil.CHAIN.EVM,
+          connectionControllerClient: partialClient,
+          caipNetworks: []
+        }
+      ],
+      []
+    )
     await ConnectionController.connectExternal({ id: externalId, type }, chain)
     ConnectionController.checkInstalled([externalId])
     expect(clientCheckInstalledSpy).toHaveBeenCalledWith([externalId])
     expect(clientCheckInstalledSpy).toHaveBeenCalledWith(undefined)
-    expect(ConnectionController._getClient()).toEqual(partialClient)
+    expect(ConnectionController._getClient()).toEqual(evmAdapter.connectionControllerClient)
   })
 
   it('should update state correctly on resetWcConnection()', () => {

@@ -79,7 +79,7 @@ export class W3mConnectingSiweView extends LitElement {
   private async onSign() {
     this.isSigning = true
     EventsController.sendEvent({
-      event: 'CLICK_SIGN_SIWE_MESSAGE',
+      event: 'CLICK_SIGN_SIWX_MESSAGE',
       type: 'track',
       properties: {
         network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
@@ -93,7 +93,7 @@ export class W3mConnectingSiweView extends LitElement {
       const session = await SIWEController.signIn()
       SIWEController.setStatus('success')
       EventsController.sendEvent({
-        event: 'SIWE_AUTH_SUCCESS',
+        event: 'SIWX_AUTH_SUCCESS',
         type: 'track',
         properties: {
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
@@ -116,7 +116,7 @@ export class W3mConnectingSiweView extends LitElement {
       SIWEController.setStatus('error')
 
       return EventsController.sendEvent({
-        event: 'SIWE_AUTH_ERROR',
+        event: 'SIWX_AUTH_ERROR',
         type: 'track',
         properties: {
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
@@ -139,7 +139,7 @@ export class W3mConnectingSiweView extends LitElement {
     }
     this.isCancelling = false
     EventsController.sendEvent({
-      event: 'CLICK_CANCEL_SIWE',
+      event: 'CLICK_CANCEL_SIWX',
       type: 'track',
       properties: {
         network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',

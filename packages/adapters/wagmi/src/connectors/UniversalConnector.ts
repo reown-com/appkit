@@ -23,7 +23,7 @@ import { StorageUtil } from '@reown/appkit-core'
 import type { AppKitOptions } from '@reown/appkit'
 import type { AppKit } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
-import type { CaipNetwork } from '@reown/appkit-common'
+import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 
 type UniversalConnector = Connector & {
   onDisplayUri(uri: string): void
@@ -63,7 +63,6 @@ export function walletConnect(
   }
 
   let provider_: Provider | undefined
-  let providerPromise: Promise<typeof provider_>
 
   let accountsChanged: UniversalConnector['onAccountsChanged'] | undefined
   let chainChanged: UniversalConnector['onChainChanged'] | undefined
@@ -202,46 +201,28 @@ export function walletConnect(
         return []
       }
 
-      const accountsList = provider?.session?.namespaces['eip155']?.accounts
+      const accountsList = provider?.session?.namespaces[ConstantsUtil.CHAIN.EVM]?.accounts
 
       const accounts = accountsList?.map(account => account.split(':')[2]) ?? []
 
       return accounts as `0x${string}`[]
     },
     async getProvider({ chainId } = {}) {
-      async function initProvider() {
-        const optionalChains = caipNetworks.map(x => Number(x.id))
-
-        if (!optionalChains.length) {
-          return undefined
-        }
-
-        const provider = appKit.universalAdapter?.getWalletConnectProvider()
-
-        if (!provider) {
-          throw new Error('Provider not found')
-        }
-
-        return provider
-      }
-
       if (!provider_) {
-        if (!providerPromise) {
-          providerPromise = initProvider()
-        }
-        provider_ = await providerPromise
+        provider_ = await appKit.getUniversalProvider()
         provider_?.events.setMaxListeners(Number.POSITIVE_INFINITY)
       }
 
+      const activeNamespace = StorageUtil.getActiveNamespace()
       const currentChainId = appKit.getCaipNetwork()?.id
 
-      if (chainId && currentChainId !== chainId) {
-        const storedCaipNetwork = StorageUtil.getStoredActiveCaipNetwork()
+      if (chainId && currentChainId !== chainId && activeNamespace) {
+        const storedCaipNetworkId = StorageUtil.getStoredActiveCaipNetworkId()
+        const appKitCaipNetworks = appKit?.getCaipNetworks(activeNamespace as ChainNamespace)
+        const storedCaipNetwork = appKitCaipNetworks?.find(n => n.id === storedCaipNetworkId)
 
         if (storedCaipNetwork && storedCaipNetwork.chainNamespace === ConstantsUtil.CHAIN.EVM) {
           await this.switchChain?.({ chainId: Number(storedCaipNetwork.id) })
-        } else {
-          await this.switchChain?.({ chainId })
         }
       }
 
@@ -256,7 +237,7 @@ export function walletConnect(
       }
 
       const provider = await this.getProvider()
-      const chain = provider.session?.namespaces['eip155']?.chains?.[0]
+      const chain = provider.session?.namespaces[ConstantsUtil.CHAIN.EVM]?.chains?.[0]
 
       const network = caipNetworks.find(c => c.id === chain)
 
@@ -298,14 +279,14 @@ export function walletConnect(
       }
 
       try {
-        if (chainToSwitch?.caipNetworkId) {
-          provider.setDefaultChain(chainToSwitch?.caipNetworkId as string)
-        }
-
         await provider.request({
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: numberToHex(chainId) }]
         })
+
+        if (chainToSwitch?.caipNetworkId) {
+          provider.setDefaultChain(chainToSwitch?.caipNetworkId as string)
+        }
         config.emitter.emit('change', { chainId: Number(chainId) })
 
         const requestedChains = await this.getRequestedChainsIds()
@@ -330,13 +311,16 @@ export function walletConnect(
               : []
           }
 
+          // Use original rpc to prevent leaking project ID
+          const rpcUrls = chainToSwitch.rpcUrls?.['chainDefault']?.http || []
+
           const addEthereumChain = {
             blockExplorerUrls,
             chainId: numberToHex(chainId),
             chainName: chainToSwitch.name,
             iconUrls: addEthereumChainParameter?.iconUrls,
             nativeCurrency: chainToSwitch.nativeCurrency,
-            rpcUrls: chainToSwitch.rpcUrls.default.http
+            rpcUrls
           } satisfies AddEthereumChainParameter
 
           await provider.request({
@@ -367,10 +351,8 @@ export function walletConnect(
 
       config.emitter.emit('change', { chainId })
     },
-    async onConnect(connectInfo) {
-      const chainId = Number(connectInfo.chainId)
-      const accounts = await this.getAccounts()
-      config.emitter.emit('connect', { accounts, chainId })
+    onConnect(_connectInfo) {
+      this.setRequestedChainsIds(caipNetworks.map(x => Number(x.id)))
     },
     async onDisconnect(_error) {
       this.setRequestedChainsIds([])
@@ -409,7 +391,7 @@ export function walletConnect(
         return []
       }
 
-      const accounts = provider_?.session?.namespaces['eip155']?.accounts
+      const accounts = provider_?.session?.namespaces[ConstantsUtil.CHAIN.EVM]?.accounts
 
       // eslint-disable-next-line radix
       const chainIds = accounts?.map(account => Number.parseInt(account.split(':')[1] ?? '')) ?? []
@@ -439,6 +421,7 @@ export function walletConnect(
       }
 
       const connectorChains = config.chains.map(x => x.id)
+
       const namespaceChains = this.getNamespaceChainsIds()
 
       if (namespaceChains.length && !namespaceChains.some(id => connectorChains.includes(id))) {

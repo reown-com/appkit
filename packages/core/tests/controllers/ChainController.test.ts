@@ -1,6 +1,7 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 import {
   ConstantsUtil,
+  SafeLocalStorageKeys,
   type CaipNetwork,
   type CaipNetworkId,
   type ChainNamespace
@@ -8,6 +9,8 @@ import {
 import { ChainController } from '../../src/controllers/ChainController.js'
 import { type ConnectionControllerClient } from '../../src/controllers/ConnectionController.js'
 import type { NetworkControllerClient } from '../../exports/index.js'
+import { RouterController } from '../../src/controllers/RouterController.js'
+import { SafeLocalStorage } from '@reown/appkit-common'
 
 // -- Setup --------------------------------------------------------------------
 const chainNamespace = 'eip155' as ChainNamespace
@@ -68,7 +71,7 @@ const requestedCaipNetworks = [
   }
 ] as CaipNetwork[]
 
-const caipNetwork = {
+const mainnetCaipNetwork = {
   id: 1,
   name: 'Ethereum',
   chainNamespace: ConstantsUtil.CHAIN.EVM,
@@ -111,14 +114,21 @@ const networkControllerClient: NetworkControllerClient = {
 }
 
 const evmAdapter = {
-  chainNamespace,
+  namespace: ConstantsUtil.CHAIN.EVM,
   connectionControllerClient,
   networkControllerClient,
-  caipNetworks: []
+  caipNetworks: [mainnetCaipNetwork]
+}
+
+const solanaAdapter = {
+  namespace: ConstantsUtil.CHAIN.SOLANA,
+  connectionControllerClient,
+  networkControllerClient,
+  caipNetworks: [solanaCaipNetwork] as unknown as CaipNetwork[]
 }
 
 beforeAll(() => {
-  ChainController.initialize([evmAdapter])
+  ChainController.initialize([evmAdapter], requestedCaipNetworks)
 })
 
 // -- Tests --------------------------------------------------------------------
@@ -160,7 +170,7 @@ describe('ChainController', () => {
     }
 
     // Need to re-initialize to set the spy properly
-    ChainController.initialize([evmAdapter])
+    ChainController.initialize([evmAdapter], requestedCaipNetworks)
     await ChainController.setApprovedCaipNetworksData(namespace)
 
     expect(ChainController.getApprovedCaipNetworkIds(namespace)).toEqual(approvedCaipNetworkIds)
@@ -177,11 +187,11 @@ describe('ChainController', () => {
       rpcUrls: { default: { http: ['https://rpc.infura.com/v1/'] } },
       blockExplorers: { default: { name: 'Etherscan', url: 'https://etherscan.io' } }
     })
-    expect(ChainController.state.activeCaipNetwork).toEqual(caipNetwork)
+    expect(ChainController.state.activeCaipNetwork).toEqual(mainnetCaipNetwork)
   })
 
   it('should check correctly if smart accounts are enabled on the network', () => {
-    ChainController.setActiveCaipNetwork(caipNetwork)
+    ChainController.setActiveCaipNetwork(mainnetCaipNetwork)
     ChainController.setSmartAccountEnabledNetworks([1], chainNamespace)
     expect(ChainController.checkIfSmartAccountEnabled()).toEqual(true)
     ChainController.setSmartAccountEnabledNetworks([], chainNamespace)
@@ -200,7 +210,7 @@ describe('ChainController', () => {
   })
 
   it('should check if network supports names feature', () => {
-    ChainController.setActiveCaipNetwork(caipNetwork)
+    ChainController.setActiveCaipNetwork(mainnetCaipNetwork)
     expect(ChainController.checkIfNamesSupported()).toEqual(true)
     ChainController.setActiveCaipNetwork(solanaCaipNetwork)
     expect(ChainController.checkIfNamesSupported()).toEqual(false)
@@ -214,7 +224,7 @@ describe('ChainController', () => {
       'eip155:1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
     )
 
-    mock.mockReturnValue(caipNetwork)
+    mock.mockReturnValue(mainnetCaipNetwork)
     expect(ChainController.getActiveNetworkTokenAddress()).toEqual(
       'eip155:1:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
     )
@@ -265,5 +275,75 @@ describe('ChainController', () => {
     )
     expect(ChainController.getAccountProp('socialProvider', chainNamespace)).toEqual(undefined)
     expect(ChainController.getAccountProp('socialWindow', chainNamespace)).toEqual(undefined)
+  })
+
+  it('Expect modal to close after switching from unsupported network to supported network', async () => {
+    // Mock RouterController.goBack
+    const routerGoBackSpy = vi.spyOn(RouterController, 'goBack')
+
+    // Setup adapter with limited network support
+    const limitedEvmAdapter = {
+      namespace: ConstantsUtil.CHAIN.EVM,
+      connectionControllerClient,
+      networkControllerClient,
+      caipNetworks: [
+        {
+          id: 1,
+          caipNetworkId: 'eip155:1',
+          name: 'Ethereum',
+          chainNamespace: ConstantsUtil.CHAIN.EVM
+        }
+      ] as unknown as CaipNetwork[]
+    }
+
+    ChainController.state.activeCaipNetwork = {
+      id: 42161,
+      caipNetworkId: 'eip155:42161',
+      name: 'Arbitrum One',
+      chainNamespace: ConstantsUtil.CHAIN.EVM,
+      nativeCurrency: {
+        name: 'Arbitrum',
+        symbol: 'ARB',
+        decimals: 18
+      }
+    } as unknown as CaipNetwork
+    ChainController.state.chains.set(ConstantsUtil.CHAIN.EVM, limitedEvmAdapter)
+    await ChainController.switchActiveNetwork(mainnetCaipNetwork)
+
+    expect(routerGoBackSpy).toHaveBeenCalled()
+
+    routerGoBackSpy.mockRestore()
+  })
+
+  it('should initialize with active network from local storage', () => {
+    const getItemSpy = vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValue('eip155')
+
+    ChainController.initialize([evmAdapter], requestedCaipNetworks)
+
+    expect(getItemSpy).toHaveBeenCalledWith(SafeLocalStorageKeys.ACTIVE_NAMESPACE)
+    expect(ChainController.state.activeChain).toEqual(ConstantsUtil.CHAIN.EVM)
+
+    getItemSpy.mockRestore()
+  })
+
+  it('should initialize with first adapter when stored network not found', () => {
+    const getItemSpy = vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValue('solana')
+
+    ChainController.initialize([solanaAdapter, evmAdapter], requestedCaipNetworks)
+
+    expect(getItemSpy).toHaveBeenCalledWith(SafeLocalStorageKeys.ACTIVE_NAMESPACE)
+    expect(ChainController.state.activeChain).toEqual(ConstantsUtil.CHAIN.SOLANA)
+
+    getItemSpy.mockRestore()
+  })
+
+  it('should set noAdapters flag when no adapters provided', () => {
+    ChainController.initialize([], requestedCaipNetworks)
+    expect(ChainController.state.noAdapters).toBe(true)
+  })
+
+  it('should set noAdapters flag when no adapter provided', () => {
+    ChainController.initialize([], requestedCaipNetworks)
+    expect(ChainController.state.noAdapters).toBe(true)
   })
 })

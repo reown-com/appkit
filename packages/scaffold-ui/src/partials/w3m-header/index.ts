@@ -7,7 +7,8 @@ import {
   EventsController,
   ModalController,
   OptionsController,
-  RouterController
+  RouterController,
+  SIWXUtil
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
@@ -59,7 +60,6 @@ function headings() {
     Transactions: 'Activity',
     UnsupportedChain: 'Switch Network',
     UpgradeEmailWallet: 'Upgrade your Wallet',
-    UpgradeToSmartAccount: undefined,
     UpdateEmailWallet: 'Edit Email',
     UpdateEmailPrimaryOtp: 'Confirm Current Email',
     UpdateEmailSecondaryOtp: 'Confirm New Email',
@@ -105,8 +105,6 @@ export class W3mHeader extends LitElement {
   @state() private buffering = false
 
   @state() private showBack = false
-
-  @state() private isSiweEnabled = OptionsController.state.isSiweEnabled
 
   @state() private prevHistoryLength = 1
 
@@ -154,16 +152,10 @@ export class W3mHeader extends LitElement {
   }
 
   private async onClose() {
-    if (this.isSiweEnabled) {
-      const { SIWEController } = await import('@reown/appkit-siwe')
-      const isApproveSignScreen = RouterController.state.view === 'ApproveTransaction'
-      const isUnauthenticated = SIWEController.state.status !== 'success'
+    const isUnsupportedChain = RouterController.state.view === 'UnsupportedChain'
 
-      if (isUnauthenticated && isApproveSignScreen) {
-        RouterController.popTransactionStack(true)
-      } else {
-        ModalController.close()
-      }
+    if (isUnsupportedChain || (await SIWXUtil.isSIWXCloseDisabled())) {
+      ModalController.shake()
     } else {
       ModalController.close()
     }
@@ -187,12 +179,6 @@ export class W3mHeader extends LitElement {
   }
 
   private closeButtonTemplate() {
-    const isSiweSignScreen = RouterController.state.view === 'ConnectingSiwe'
-
-    if (this.isSiweEnabled && isSiweSignScreen) {
-      return html`<div style="width:40px" />`
-    }
-
     return html`
       <wui-icon-link
         ?disabled=${this.buffering}
@@ -224,12 +210,13 @@ export class W3mHeader extends LitElement {
   private leftHeaderTemplate() {
     const { view } = RouterController.state
     const isConnectHelp = view === 'Connect'
+    const isEmbeddedEnable = OptionsController.state.enableEmbedded
     const isApproveTransaction = view === 'ApproveTransaction'
-    const isUpgradeToSmartAccounts = view === 'UpgradeToSmartAccount'
     const isConnectingSIWEView = view === 'ConnectingSiwe'
     const isAccountView = view === 'Account'
 
-    const shouldHideBack = isApproveTransaction || isUpgradeToSmartAccounts || isConnectingSIWEView
+    const shouldHideBack =
+      isApproveTransaction || isConnectingSIWEView || (isConnectHelp && isEmbeddedEnable)
 
     if (isAccountView) {
       return html`<wui-select

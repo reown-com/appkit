@@ -2,12 +2,12 @@ import { getCsrfToken, signIn, signOut, getSession } from 'next-auth/react'
 import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs, SIWESession } from '@reown/appkit-siwe'
 import { createSIWEConfig, formatMessage } from '@reown/appkit-siwe'
 import { ConstantsUtil } from './ConstantsUtil'
-
 const chains = ConstantsUtil.EvmNetworks
 
 export const siweConfig = createSIWEConfig({
   signOutOnAccountChange: true,
   signOutOnNetworkChange: true,
+  signOutOnDisconnect: true,
   // We don't require any async action to populate params but other apps might
   // eslint-disable-next-line @typescript-eslint/require-await
   getMessageParams: async () => ({
@@ -29,7 +29,7 @@ export const siweConfig = createSIWEConfig({
   getSession: async () => {
     const session = await getSession()
     if (!session) {
-      throw new Error('Failed to get session!')
+      return null
     }
 
     const { address, chainId } = session as unknown as SIWESession
@@ -66,6 +66,18 @@ export const siweConfig = createSIWEConfig({
       return true
     } catch (error) {
       return false
+    }
+  },
+  onSignOut() {
+    const element = document.querySelector("[data-testid='siwe-event-onSignOut']")
+    if (element) {
+      element.textContent = 'true'
+    }
+  },
+  onSignIn() {
+    const element = document?.querySelector("[data-testid='siwe-event-onSignIn']")
+    if (element) {
+      element.textContent = 'true'
     }
   }
 })

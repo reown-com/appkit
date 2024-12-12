@@ -8,13 +8,38 @@ import type {
   CaipAddress,
   AdapterType,
   SdkFramework,
-  AppKitSdkVersion
+  AppKitSdkVersion,
+  AppKitNetwork
 } from '@reown/appkit-common'
 import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
 import type { AccountControllerState } from '../controllers/AccountController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
 import type { ConstantsUtil } from './ConstantsUtil.js'
 import type { ReownName } from '../controllers/EnsController.js'
+import type UniversalProvider from '@walletconnect/universal-provider'
+
+type InitializeAppKitConfigs = {
+  showWallets?: boolean
+  siweConfig?: {
+    options: {
+      enabled?: boolean
+      nonceRefetchIntervalMs?: number
+      sessionRefetchIntervalMs?: number
+      signOutOnDisconnect?: boolean
+      signOutOnAccountChange?: boolean
+      signOutOnNetworkChange?: boolean
+    }
+  }
+  themeMode?: 'dark' | 'light'
+  themeVariables?: ThemeVariables
+  allowUnsupportedChain?: boolean
+  networks: (string | number)[]
+  defaultNetwork?: AppKitNetwork
+  chainImages?: Record<number | string, string>
+  connectorImages?: Record<string, string>
+  coinbasePreference?: 'all' | 'smartWalletOnly' | 'eoaOnly'
+  metadata?: Metadata
+}
 
 export type CaipNetworkCoinbaseNetwork =
   | 'Ethereum'
@@ -48,6 +73,7 @@ export type ConnectorType =
   | 'ANNOUNCED'
   | 'AUTH'
   | 'MULTI_CHAIN'
+  | 'ID_AUTH'
 
 export type SocialProvider =
   | 'google'
@@ -71,7 +97,7 @@ export type Connector = {
     icon?: string
     rdns?: string
   }
-  provider?: unknown
+  provider?: Provider | W3mFrameProvider | UniversalProvider
   chain: ChainNamespace
   connectors?: Connector[]
 }
@@ -108,6 +134,7 @@ export type Metadata = {
 export interface WcWallet {
   id: string
   name: string
+  badge_type?: BadgeType
   homepage?: string
   image_id?: string
   image_url?: string
@@ -132,6 +159,7 @@ export interface ApiGetWalletsRequest {
   chains: string
   entries: number
   search?: string
+  badge?: BadgeType
   include?: string[]
   exclude?: string[]
 }
@@ -155,6 +183,7 @@ export interface ThemeVariables {
   '--w3m-font-size-master'?: string
   '--w3m-border-radius-master'?: string
   '--w3m-z-index'?: number
+  '--w3m-qr-color'?: string
 }
 
 // -- BlockchainApiController Types ---------------------------------------------
@@ -473,7 +502,7 @@ export type Event =
     }
   | {
       type: 'track'
-      event: 'CLICK_SIGN_SIWE_MESSAGE'
+      event: 'CLICK_SIGN_SIWX_MESSAGE'
       properties: {
         network: string
         isSmartAccount: boolean
@@ -481,7 +510,7 @@ export type Event =
     }
   | {
       type: 'track'
-      event: 'CLICK_CANCEL_SIWE'
+      event: 'CLICK_CANCEL_SIWX'
       properties: {
         network: string
         isSmartAccount: boolean
@@ -493,7 +522,7 @@ export type Event =
     }
   | {
       type: 'track'
-      event: 'SIWE_AUTH_SUCCESS'
+      event: 'SIWX_AUTH_SUCCESS'
       properties: {
         network: string
         isSmartAccount: boolean
@@ -501,7 +530,7 @@ export type Event =
     }
   | {
       type: 'track'
-      event: 'SIWE_AUTH_ERROR'
+      event: 'SIWX_AUTH_ERROR'
       properties: {
         network: string
         isSmartAccount: boolean
@@ -530,6 +559,9 @@ export type Event =
   | {
       type: 'track'
       event: 'EMAIL_VERIFICATION_CODE_FAIL'
+      properties: {
+        message: string
+      }
     }
   | {
       type: 'track'
@@ -630,6 +662,20 @@ export type Event =
         swapToToken: string
         swapFromAmount: string
         swapToAmount: string
+        message: string
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SWAP_APPROVAL_ERROR'
+      properties: {
+        isSmartAccount: boolean
+        network: string
+        swapFromToken: string
+        swapToToken: string
+        swapFromAmount: string
+        swapToAmount: string
+        message: string
       }
     }
   | {
@@ -649,6 +695,20 @@ export type Event =
   | {
       type: 'track'
       event: 'SOCIAL_LOGIN_ERROR'
+      properties: {
+        provider: SocialProvider
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SOCIAL_LOGIN_REQUEST_USER_DATA'
+      properties: {
+        provider: SocialProvider
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SOCIAL_LOGIN_CANCELED'
       properties: {
         provider: SocialProvider
       }
@@ -733,6 +793,19 @@ export type Event =
         name: string
       }
     }
+  | {
+      type: 'track'
+      event: 'SEARCH_WALLET'
+      properties: {
+        badge: string
+        search: string
+      }
+    }
+  | {
+      type: 'track'
+      event: 'INITIALIZE'
+      properties: InitializeAppKitConfigs
+    }
 // Onramp Types
 export type DestinationWallet = {
   address: string
@@ -793,11 +866,23 @@ export type GetQuoteArgs = {
   amount: string
   network: string
 }
-export type AccountType = {
-  address: string
-  type: 'eoa' | 'smartAccount'
+
+export type NamespaceTypeMap = {
+  eip155: 'eoa' | 'smartAccount'
+  solana: 'eoa'
+  bip122: 'payment' | 'ordinal' | 'stx'
+  polkadot: 'eoa'
 }
 
+export type AccountTypeMap = {
+  [K in ChainNamespace]: {
+    namespace: K
+    address: string
+    type: NamespaceTypeMap[K]
+  }
+}
+
+export type AccountType = AccountTypeMap[ChainNamespace]
 export type SendTransactionArgs =
   | {
       chainNamespace?: undefined | 'eip155'
@@ -870,32 +955,23 @@ export type AdapterAccountState = {
   socialWindow?: Window
   farcasterUrl?: string
   status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
-  siweStatus?: 'uninitialized' | 'ready' | 'loading' | 'success' | 'rejected' | 'error'
 }
 
 export type ChainAdapter = {
   connectionControllerClient?: ConnectionControllerClient
   networkControllerClient?: NetworkControllerClient
-  accountState?: AccountControllerState
+  accountState?: AdapterAccountState
   networkState?: AdapterNetworkState
-  defaultNetwork?: CaipNetwork
-  chainNamespace: ChainNamespace
-  isUniversalAdapterClient?: boolean
-  adapterType?: AdapterType
-  caipNetworks: CaipNetwork[]
-  getAddress?: () => string | undefined
-  getError?: () => unknown
-  getChainId?: () => number | string | undefined
-  switchNetwork?: ((caipNetwork: CaipNetwork) => void) | undefined
-  getIsConnected?: () => boolean | undefined
-  getWalletProvider?: () => unknown
-  getWalletProviderType?: () => string | undefined
-  subscribeProvider?: (callback: (newState: unknown) => void) => void
+  namespace?: ChainNamespace
+  caipNetworks?: CaipNetwork[] | AppKitNetwork[]
+  projectId?: string
+  adapterType?: string
 }
 
-type ProviderEventListener = {
+export type ProviderEventListener = {
   connect: (connectParams: { chainId: number }) => void
   disconnect: (error: Error) => void
+  display_uri: (uri: string) => void
   chainChanged: (chainId: string) => void
   accountsChanged: (accounts: string[]) => void
   message: (message: { type: string; data: unknown }) => void
@@ -907,10 +983,12 @@ export interface RequestArguments {
 }
 
 export interface Provider {
+  connect: (params?: { onUri?: (uri: string) => void }) => Promise<string>
+  disconnect: () => Promise<void>
   request: <T>(args: RequestArguments) => Promise<T>
   on<T extends keyof ProviderEventListener>(event: T, listener: ProviderEventListener[T]): void
   removeListener: <T>(event: string, listener: (data: T) => void) => void
-  emit: (event: string) => void
+  emit: (event: string, data?: unknown) => void
 }
 
 export type CombinedProvider = W3mFrameProvider & Provider
@@ -918,14 +996,9 @@ export type CombinedProvider = W3mFrameProvider & Provider
 export type CoinbasePaySDKChainNameValues =
   keyof typeof ConstantsUtil.WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP
 
-export type FeaturesSocials =
-  | 'google'
-  | 'x'
-  | 'discord'
-  | 'farcaster'
-  | 'github'
-  | 'apple'
-  | 'facebook'
+export type WalletFeature = 'swaps' | 'send' | 'receive' | 'onramp'
+
+export type ConnectMethod = 'email' | 'social' | 'wallet'
 
 export type Features = {
   /**
@@ -939,20 +1012,32 @@ export type Features = {
    */
   onramp?: boolean
   /**
+   * @description Enable or disable the receive feature. Enabled by default.
+   * This feature is only visible when connected with email/social. It's not possible to configure when connected with wallet, which is enabled by default.
+   * @type {boolean}
+   */
+  receive?: boolean
+  /**
+   * @description Enable or disable the send feature. Enabled by default.
+   * @type {boolean}
+   */
+  send?: boolean
+  /**
    * @description Enable or disable the email feature. Enabled by default.
    * @type {boolean}
    */
   email?: boolean
   /**
    * @description Show or hide the regular wallet options when email is enabled. Enabled by default.
+   * @deprecated - This property will be removed in the next major release. Please use `features.collapseWallets` instead.
    * @type {boolean}
    */
   emailShowWallets?: boolean
   /**
    * @description Enable or disable the socials feature. Enabled by default.
-   * @type {FeaturesSocials[]}
+   * @type {SocialProvider[]}
    */
-  socials?: FeaturesSocials[] | false
+  socials?: SocialProvider[] | false
   /**
    * @description Enable or disable the history feature. Enabled by default.
    * @type {boolean}
@@ -973,6 +1058,30 @@ export type Features = {
    * @type {boolean}
    */
   smartSessions?: boolean
+  /**
+   * Enable or disable the terms of service and/or privacy policy checkbox.
+   * @default false
+   */
+  legalCheckbox?: boolean
+  /**
+   * @description The order of the connect methods. This is experimental and subject to change.
+   * @default ['email', 'social', 'wallet']
+   * @type {('email' | 'social' | 'wallet')[]}
+   */
+  connectMethodsOrder?: ConnectMethod[]
+  /**
+   * @
+   * @description The order of the wallet features. This is experimental and subject to change.
+   * @default ['receive' | 'onramp' | 'swaps' | 'send']
+   * @type {('receive' | 'onramp' | 'swaps' | 'send')[]}
+   */
+  walletFeaturesOrder?: WalletFeature[]
+  /**
+   * @description Enable or disable the collapse wallets as a single "Continue with wallet" button for simple UI in connect page.
+   * This can be activated when only have another connect method like email or social activated along with wallets.
+   * @default false
+   */
+  collapseWallets?: boolean
 }
 
 export type FeaturesKeys = keyof Features
@@ -990,4 +1099,9 @@ export type UseAppKitNetworkReturn = {
   caipNetwork: CaipNetwork | undefined
   chainId: number | string | undefined
   caipNetworkId: CaipNetworkId | undefined
+  switchNetwork: (network: AppKitNetwork) => void
 }
+
+export type BadgeType = 'none' | 'certified'
+
+export type ConnectionStatus = 'connected' | 'disconnected' | 'connecting' | 'reconnecting'

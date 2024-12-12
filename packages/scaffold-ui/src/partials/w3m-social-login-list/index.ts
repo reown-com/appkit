@@ -2,18 +2,20 @@ import {
   AccountController,
   ChainController,
   ConnectorController,
+  ConstantsUtil,
   CoreHelperUtil,
   EventsController,
   OptionsController,
   RouterController,
-  SnackController
+  SnackController,
+  type SocialProvider
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import styles from './styles.js'
-import type { SocialProvider } from '@reown/appkit-utils'
 import { SocialProviderEnum } from '@reown/appkit-utils'
+import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-social-login-list')
 export class W3mSocialLoginList extends LitElement {
@@ -25,6 +27,8 @@ export class W3mSocialLoginList extends LitElement {
   private popupWindow?: Window | null
 
   // -- State & Properties -------------------------------- //
+  @property() public tabIdx?: number = undefined
+
   @state() private connectors = ConnectorController.state.connectors
 
   @state() private authConnector = this.connectors.find(c => c.type === 'AUTH')
@@ -48,10 +52,17 @@ export class W3mSocialLoginList extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const socials = this.features?.socials
+    let socials = this.features?.socials || []
+    const isAuthConnectorExist = Boolean(this.authConnector)
+    const isSocialsEnabled = socials?.length
+    const isConnectSocialsView = RouterController.state.view === 'ConnectSocials'
 
-    if (!this.authConnector || !socials || !socials?.length) {
+    if ((!isAuthConnectorExist || !isSocialsEnabled) && !isConnectSocialsView) {
       return null
+    }
+
+    if (isConnectSocialsView && !isSocialsEnabled) {
+      socials = ConstantsUtil.DEFAULT_FEATURES.socials
     }
 
     return html` <wui-flex flexDirection="column" gap="xs">
@@ -63,6 +74,7 @@ export class W3mSocialLoginList extends LitElement {
             }}
             name=${social}
             logo=${social}
+            tabIdx=${ifDefined(this.tabIdx)}
           ></wui-list-social>`
       )}
     </wui-flex>`

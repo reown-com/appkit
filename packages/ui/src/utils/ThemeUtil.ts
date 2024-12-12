@@ -170,6 +170,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-icon-box-size-xs: 20px;
         --wui-icon-box-size-sm: 24px;
         --wui-icon-box-size-md: 32px;
+        --wui-icon-box-size-mdl: 36px;
         --wui-icon-box-size-lg: 40px;
         --wui-icon-box-size-2lg: 48px;
         --wui-icon-box-size-xl: 64px;
@@ -257,6 +258,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-error-125: var(--wui-color-error-base-125);
 
         --wui-color-blue-100: var(--wui-color-blue-base-100);
+        --wui-color-blue-90: var(--wui-color-blue-base-90);
 
         --wui-icon-box-bg-error-100: var(--wui-icon-box-bg-error-base-100);
         --wui-icon-box-bg-blue-100: var(--wui-icon-box-bg-blue-base-100);
@@ -268,6 +270,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-avatar-border: var(--wui-avatar-border-base);
 
         --wui-thumbnail-border: var(--wui-thumbnail-border-base);
+
+        --wui-wallet-button-bg: var(--wui-wallet-button-bg-base);
 
         --wui-box-shadow-blue: var(--wui-color-accent-glass-020);
       }
@@ -472,6 +476,11 @@ function createRootStyles(themeVariables?: ThemeVariables) {
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
             var(--wui-color-blue-base-100)
           );
+          --wui-color-blue-90: color-mix(
+            in srgb,
+            var(--w3m-color-mix) var(--w3m-color-mix-strength),
+            var(--wui-color-blue-base-90)
+          );
           --wui-color-error-125: color-mix(
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
@@ -515,6 +524,12 @@ function createRootStyles(themeVariables?: ThemeVariables) {
             in srgb,
             var(--w3m-color-mix) var(--w3m-color-mix-strength),
             var(--wui-thumbnail-border-base)
+          );
+
+          --wui-wallet-button-bg: color-mix(
+            in srgb,
+            var(--w3m-color-mix) var(--w3m-color-mix-strength),
+            var(--wui-wallet-button-bg-base)
           );
         }
       }
@@ -567,7 +582,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-error-base-100: #f25a67;
         --wui-color-error-base-125: #df4a34;
 
-        --wui-color-blue-base-100: #667dff;
+        --wui-color-blue-base-100: rgba(102, 125, 255, 1);
+        --wui-color-blue-base-90: rgba(102, 125, 255, 0.9);
 
         --wui-color-success-glass-001: rgba(38, 217, 98, 0.01);
         --wui-color-success-glass-002: rgba(38, 217, 98, 0.02);
@@ -621,6 +637,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-avatar-border-base: #252525;
 
         --wui-thumbnail-border-base: #252525;
+
+        --wui-wallet-button-bg-base: var(--wui-color-bg-125);
       }
     `,
     dark: css`
@@ -670,7 +688,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-error-base-100: #f05142;
         --wui-color-error-base-125: #df4a34;
 
-        --wui-color-blue-base-100: #667dff;
+        --wui-color-blue-base-100: rgba(102, 125, 255, 1);
+        --wui-color-blue-base-90: rgba(102, 125, 255, 0.9);
 
         --wui-color-success-glass-001: rgba(38, 181, 98, 0.01);
         --wui-color-success-glass-002: rgba(38, 181, 98, 0.02);
@@ -710,6 +729,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-avatar-border-base: #f3f4f4;
 
         --wui-thumbnail-border-base: #eaefef;
+
+        --wui-wallet-button-bg-base: var(--wui-color-bg-125);
 
         --wui-color-gray-glass-001: rgba(0, 0, 0, 0.01);
         --wui-color-gray-glass-002: rgba(0, 0, 0, 0.02);
@@ -760,13 +781,19 @@ export const elementStyles = css`
       color var(--wui-duration-lg) var(--wui-ease-out-power-1),
       background-color var(--wui-duration-lg) var(--wui-ease-out-power-1),
       border var(--wui-duration-lg) var(--wui-ease-out-power-1),
+      border-radius var(--wui-duration-lg) var(--wui-ease-out-power-1),
       box-shadow var(--wui-duration-lg) var(--wui-ease-out-power-1);
-    will-change: background-color, color, border, box-shadow;
+    will-change: background-color, color, border, box-shadow, border-radius;
     outline: none;
     border: none;
     column-gap: var(--wui-spacing-3xs);
     background-color: transparent;
     text-decoration: none;
+  }
+
+  wui-flex {
+    transition: border-radius var(--wui-duration-lg) var(--wui-ease-out-power-1);
+    will-change: border-radius;
   }
 
   button:disabled > wui-wallet-image,
@@ -814,6 +841,10 @@ export const colorStyles = css`
 
   .wui-color-blue-100 {
     color: var(--wui-color-blue-100);
+  }
+
+  .wui-color-blue-90 {
+    color: var(--wui-color-blue-90);
   }
 
   .wui-color-error-125 {

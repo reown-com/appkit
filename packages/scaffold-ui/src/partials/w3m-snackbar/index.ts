@@ -48,15 +48,18 @@ export class W3mSnackBar extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const { message, variant } = SnackController.state
+    const { message, variant, svg } = SnackController.state
+
     const preset = presets[variant]
+
+    const { icon, iconColor } = svg ?? preset ?? {}
 
     return html`
       <wui-snackbar
         message=${message}
         backgroundColor=${preset?.backgroundColor}
-        iconColor=${preset?.iconColor}
-        icon=${preset?.icon}
+        iconColor=${iconColor}
+        icon=${icon}
         .loading=${variant === 'loading'}
       ></wui-snackbar>
     `
@@ -80,7 +83,10 @@ export class W3mSnackBar extends LitElement {
       if (this.timeout) {
         clearTimeout(this.timeout)
       }
-      this.timeout = setTimeout(() => SnackController.hide(), 2500)
+
+      if (SnackController.state.autoClose) {
+        this.timeout = setTimeout(() => SnackController.hide(), 2500)
+      }
     } else {
       this.animate(
         [

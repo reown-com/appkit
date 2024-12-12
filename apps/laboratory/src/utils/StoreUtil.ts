@@ -8,11 +8,13 @@ interface ThemeVariables {
   '--w3m-font-size-master'?: string
   '--w3m-border-radius-master'?: string
   '--w3m-z-index'?: number
+  '--w3m-qr-color'?: string
 }
 interface ThemeStoreState {
   mixColorStrength: number
   mixColor?: string
   accentColor?: string
+  qrColor?: string
   borderRadius: string
   themeVariables: ThemeVariables
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -23,6 +25,7 @@ const state = proxy<ThemeStoreState>({
   mixColorStrength: 0,
   mixColor: undefined,
   accentColor: undefined,
+  qrColor: undefined,
   borderRadius: '4px',
   themeVariables: {},
   modal: undefined
@@ -49,6 +52,13 @@ export const ThemeStore = {
     state.accentColor = value
     if (state.modal) {
       state.modal.setThemeVariables({ '--w3m-accent': value })
+    }
+  },
+
+  setQRColor(value: ThemeStoreState['accentColor']) {
+    state.qrColor = value
+    if (state.modal) {
+      state.modal.setThemeVariables({ '--w3m-qr-color': value })
     }
   },
 

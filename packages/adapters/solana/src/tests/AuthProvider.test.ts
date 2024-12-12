@@ -42,8 +42,11 @@ describe('AuthProvider specific tests', () => {
   })
 
   it('should call disconnect', async () => {
+    const setSessionSpy = vi.spyOn(authProvider, 'setSession' as any)
     await authProvider.disconnect()
 
+    expect(setSessionSpy).toHaveBeenCalledOnce()
+    expect(setSessionSpy).toHaveBeenCalledWith(undefined)
     expect(provider.disconnect).toHaveBeenCalled()
   })
 

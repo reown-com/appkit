@@ -18,11 +18,12 @@ const wagmiAdapter = new WagmiAdapter({
 
 const modal = createAppKit({
   adapters: [wagmiAdapter],
-  networks: wagmiAdapter.caipNetworks,
+  networks: ConstantsUtil.EvmNetworks,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true
-  }
+  },
+  customWallets: ConstantsUtil.CustomWallets
 })
 
 const config = wagmiAdapter.wagmiConfig

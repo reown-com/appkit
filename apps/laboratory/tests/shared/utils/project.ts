@@ -50,7 +50,9 @@ const SINGLE_ADAPTER_EVM_TESTS = [
   'siwe.spec.ts',
   'smart-account.spec.ts',
   'wallet-features.spec.ts',
-  'wallet.spec.ts'
+  'wallet.spec.ts',
+  'wallet-button.spec',
+  'verify.spec.ts'
 ]
 
 const SINGLE_ADAPTER_EVM_MOBILE_TESTS = ['mobile-wallet-features.spec.ts']
