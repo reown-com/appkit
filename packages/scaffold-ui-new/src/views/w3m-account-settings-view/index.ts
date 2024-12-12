@@ -210,7 +210,7 @@ export class W3mAccountSettingsView extends LitElement {
   private onCopyAddress() {
     try {
       if (this.address) {
-        CoreHelperUtil.copyToClopboard(this.address)
+        CoreHelperUtil.copyToClipboard(this.address)
         SnackController.showSuccess('Address copied')
       }
     } catch {
