@@ -62,7 +62,7 @@ export const AppSyncDappDataRequest = z.object({
       icons: z.array(z.string())
     })
     .optional(),
-  sdkVersion: z.string().optional() as z.ZodType<SdkVersion>,
+  sdkVersion: (z.string() as z.ZodType<SdkVersion>).optional(),
   sdkType: (z.string() as z.ZodType<SdkType>).optional(),
   projectId: z.string()
 })

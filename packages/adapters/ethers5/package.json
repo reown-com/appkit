@@ -27,7 +27,7 @@
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/utils": "2.17.2",
     "@walletconnect/universal-provider": "2.17.2",
-    "valtio": "2.1.2"
+    "valtio": "1.11.2"
   },
   "peerDependencies": {
     "@ethersproject/sha2": "5.7.0",

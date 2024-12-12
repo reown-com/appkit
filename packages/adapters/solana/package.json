@@ -63,7 +63,7 @@
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "valtio": "2.1.2"
+    "valtio": "1.11.2"
   },
   "optionalDependencies": {
     "borsh": "2.0.0",

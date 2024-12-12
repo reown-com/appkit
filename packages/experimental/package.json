@@ -43,7 +43,7 @@
     "axios": "1.7.8",
     "zod": "3.22.4",
     "lit": "3.2.1",
-    "valtio": "2.1.2"
+    "valtio": "1.11.2"
   },
   "devDependencies": {
     "@types/axios-mock-adapter": "1.10.4",
