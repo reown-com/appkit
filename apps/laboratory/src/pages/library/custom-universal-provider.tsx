@@ -1,4 +1,4 @@
-import { AppKit, createAppKit, type CaipNetwork } from '@reown/appkit/react'
+import { AppKit, createAppKit } from '@reown/appkit/react'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { AppKitButtons } from '../../components/AppKitButtons'
@@ -9,50 +9,36 @@ import Provider, { UniversalProvider } from '@walletconnect/universal-provider'
 import { useEffect, useState } from 'react'
 
 const networks = ConstantsUtil.EvmNetworks
-let started = false
-let uprovider: Provider | null = null
-let appkit: AppKit | null = null
-let uri = ''
 
 export default function MultiChainWagmiAdapterOnly() {
-  const [init, setInit] = useState(false)
-  useEffect(() => {
-    if (started) {
-      return
-    }
+  const [uprovider, setUprovider] = useState<Provider | null>(null)
+  const [uri, setUri] = useState('')
+  const [appkit, setAppKit] = useState<AppKit | null>(null)
 
-    console.log('networks', networks)
-    started = true
-    UniversalProvider.init({
+  async function initializeUniversalProvider() {
+    const provider = await UniversalProvider.init({
       projectId: ConstantsUtil.ProjectId
-    }).then(provider => {
-      uprovider = provider
-      const parsedNetworks = networks.map(n => ({
-        id: n.id,
-        name: n.name,
-        caipNetworkId: `eip155:${n.id}`
-      })) as [CaipNetwork, ...CaipNetwork[]]
-      console.log('parsedNetworks', parsedNetworks)
-
-      const modal = createAppKit({
-        networks,
-        defaultNetwork: mainnet,
-        projectId: ConstantsUtil.ProjectId,
-        metadata: ConstantsUtil.Metadata,
-        manualControl: true,
-        walletConnectProvider: provider
-      })
-      appkit = modal
-      ThemeStore.setModal(modal)
-
-      provider.on('display_uri', connection => {
-        console.log('display_uri', connection)
-        uri = connection
-        modal.open({ view: 'ConnectingWalletConnectBasic', uri: connection })
-      })
-      setInit(true)
     })
-  }, [])
+
+    const modal = createAppKit({
+      networks,
+      defaultNetwork: mainnet,
+      projectId: ConstantsUtil.ProjectId,
+      metadata: ConstantsUtil.Metadata,
+      manualControl: true,
+      walletConnectProvider: provider
+    })
+
+    ThemeStore.setModal(modal)
+    setAppKit(modal)
+
+    provider.on('display_uri', (connection: string) => {
+      setUri(connection)
+      modal.open({ view: 'ConnectingWalletConnectBasic', uri: connection })
+    })
+
+    setUprovider(provider)
+  }
 
   async function connect() {
     if (uprovider) {
@@ -73,9 +59,13 @@ export default function MultiChainWagmiAdapterOnly() {
     appkit?.open({ uri, view: 'ConnectingWalletConnectBasic' })
   }
 
+  useEffect(() => {
+    initializeUniversalProvider()
+  }, [])
+
   return (
     <>
-      {init ? (
+      {uprovider && appkit ? (
         <>
           <AppKitButtons />
           <button onClick={connect}>Connect</button>
