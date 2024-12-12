@@ -7,9 +7,6 @@ import { state } from 'lit/decorators.js'
 export class W3mConnectingWcBasicView extends LitElement {
   @state() private isMobile = CoreHelperUtil.isMobile()
 
-  public constructor() {
-    super()
-  }
   // -- Render -------------------------------------------- //
   public override render() {
     // eslint-disable-next-line no-console
@@ -35,7 +32,11 @@ export class W3mConnectingWcBasicView extends LitElement {
       </wui-flex>`
     }
 
-    return html`<w3m-connecting-wc-view></w3m-connecting-wc-view>`
+    return html`<wui-flex flexDirection="column" .padding=${['0', '0', 'l', '0'] as const}>
+      <w3m-connecting-wc-view></w3m-connecting-wc-view>
+      <wui-flex flexDirection="column" .padding=${['0', 'm', '0', 'm'] as const}>
+        <w3m-all-wallets-widget></w3m-all-wallets-widget> </wui-flex
+    ></wui-flex>`
   }
 }
 declare global {
