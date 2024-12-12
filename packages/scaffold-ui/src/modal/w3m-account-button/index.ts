@@ -40,7 +40,12 @@ class W3mAccountButtonBase extends LitElement {
 
   @state() private networkImage = AssetUtil.getNetworkImage(this.network)
 
-  @state() private isSupported = true
+  // eslint-disable-next-line no-nested-ternary
+  @state() private isSupported = OptionsController.state.allowUnsupportedChain
+    ? true
+    : ChainController.state.activeChain
+      ? ChainController.checkIfSupportedNetwork(ChainController.state.activeChain)
+      : true
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
