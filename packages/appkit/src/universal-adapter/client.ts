@@ -6,10 +6,12 @@ import bs58 from 'bs58'
 import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
 
 export class UniversalAdapter extends AdapterBlueprint {
-  private manualControl: boolean
+  private enableUniversalProviderManualControl: boolean
   public constructor(options?: AdapterBlueprint.Params) {
     super(options)
-    this.manualControl = Boolean(options?.manualControl)
+    this.enableUniversalProviderManualControl = Boolean(
+      options?.enableUniversalProviderManualControl
+    )
   }
   public async connectWalletConnect(onUri: (uri: string) => void) {
     const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
@@ -22,8 +24,7 @@ export class UniversalAdapter extends AdapterBlueprint {
       )
     }
 
-    if (this.manualControl && ConnectionController.state.wcUri) {
-      console.log('on Connect WalletConnect, onUri', ConnectionController.state.wcUri)
+    if (this.enableUniversalProviderManualControl && ConnectionController.state.wcUri) {
       onUri(ConnectionController.state.wcUri)
 
       return

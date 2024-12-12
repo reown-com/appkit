@@ -134,7 +134,7 @@ export interface OptionsControllerStatePublic {
    * Enable manual control of WalletConnect connections.
    * @default false
    */
-  manualControl?: boolean
+  enableUniversalProviderManualControl?: boolean
 }
 
 export interface OptionsControllerStateInternal {

@@ -24,7 +24,7 @@ export default function MultiChainWagmiAdapterOnly() {
       defaultNetwork: mainnet,
       projectId: ConstantsUtil.ProjectId,
       metadata: ConstantsUtil.Metadata,
-      manualControl: true,
+      enableUniversalProviderManualControl: true,
       walletConnectProvider: provider
     })
 

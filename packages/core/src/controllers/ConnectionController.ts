@@ -65,7 +65,7 @@ export interface ConnectionControllerState {
   recentWallet?: WcWallet
   buffering: boolean
   status?: 'connecting' | 'connected' | 'disconnected'
-  manualControl?: boolean
+  enableUniversalProviderManualControl?: boolean
   connectionControllerClient?: ConnectionControllerClient
 }
 

@@ -16,7 +16,8 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
   public static override styles = styles
 
   // -- State & Properties -------------------------------- //
-  @state() private manualControl = ConnectionController.state.manualControl
+  @state() private enableUniversalProviderManualControl =
+    ConnectionController.state.enableUniversalProviderManualControl
 
   public constructor() {
     super()
@@ -52,7 +53,7 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
         ${this.copyTemplate()}
       </wui-flex>
       <w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links>
-      ${this.manualControl
+      ${this.enableUniversalProviderManualControl
         ? html`<wui-flex flexDirection="column" .padding=${['0', 'xl', 'xl', 'xl']} gap="xl">
             <w3m-all-wallets-widget></w3m-all-wallets-widget>
           </wui-flex>`
