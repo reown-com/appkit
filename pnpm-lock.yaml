@@ -1070,8 +1070,8 @@ importers:
   packages/adapters/ethers:
     dependencies:
       '@coinbase/wallet-sdk':
-        specifier: 4.2.3
-        version: 4.2.3
+        specifier: 4.2.4
+        version: 4.2.4
       '@ethersproject/sha2':
         specifier: 5.7.0
         version: 5.7.0
@@ -1125,8 +1125,8 @@ importers:
   packages/adapters/ethers5:
     dependencies:
       '@coinbase/wallet-sdk':
-        specifier: 4.2.3
-        version: 4.2.3
+        specifier: 4.2.4
+        version: 4.2.4
       '@ethersproject/sha2':
         specifier: 5.7.0
         version: 5.7.0
@@ -1294,8 +1294,8 @@ importers:
   packages/adapters/wagmi:
     dependencies:
       '@coinbase/wallet-sdk':
-        specifier: 4.2.3
-        version: 4.2.3
+        specifier: 4.2.4
+        version: 4.2.4
       '@reown/appkit':
         specifier: workspace:*
         version: link:../../appkit
@@ -1456,8 +1456,8 @@ importers:
         version: 2.21.34(bufferutil@4.0.8)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8)
     devDependencies:
       '@coinbase/wallet-sdk':
-        specifier: 4.2.3
-        version: 4.2.3
+        specifier: 4.2.4
+        version: 4.2.4
       '@solana/wallet-adapter-base':
         specifier: 0.9.23
         version: 0.9.23(@solana/web3.js@1.95.8(bufferutil@4.0.8)(utf-8-validate@5.0.10))
@@ -3252,8 +3252,8 @@ packages:
   '@coinbase/wallet-sdk@4.1.0':
     resolution: {integrity: sha512-SkJJ72X/AA3+aS21sPs/4o4t6RVeDSA7HuBW4zauySX3eBiPU0zmVw95tXH/eNSX50agKz9WzeN8P5F+HcwLOw==}
 
-  '@coinbase/wallet-sdk@4.2.3':
-    resolution: {integrity: sha512-BcyHZ/Ec84z0emORzqdXDv4P0oV+tV3a0OirfA8Ko1JGBIAVvB+hzLvZzCDvnuZx7MTK+Dd8Y9Tjlo446BpCIg==}
+  '@coinbase/wallet-sdk@4.2.4':
+    resolution: {integrity: sha512-wJ9QOXOhRdGermKAoJSr4JgGqZm/Um0m+ecywzEC9qSOu3TXuVcG3k0XXTXW11UBgjdoPRuf5kAwRX3T9BynFA==}
 
   '@colors/colors@1.5.0':
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
@@ -17212,7 +17212,7 @@ snapshots:
       eventemitter3: 5.0.1
       preact: 10.25.2
 
-  '@coinbase/wallet-sdk@4.2.3':
+  '@coinbase/wallet-sdk@4.2.4':
     dependencies:
       '@noble/hashes': 1.6.1
       clsx: 1.2.1
