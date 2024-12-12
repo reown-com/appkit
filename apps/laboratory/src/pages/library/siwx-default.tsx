@@ -1,4 +1,4 @@
-import { createAppKit } from '@reown/appkit/react'
+import { createAppKit, useAppKitNetwork } from '@reown/appkit/react'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { ThemeStore } from '../../utils/StoreUtil'
@@ -9,6 +9,10 @@ import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapte
 import { mainnet } from '@reown/appkit/networks'
 import { DefaultSIWX } from '@reown/appkit-siwx'
 import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
+import { DefaultSIWXStatus } from '../../components/DefaultSIWXStatus'
+import { EthersTests } from '../../components/Ethers/EthersTests'
+import { SolanaTests } from '../../components/Solana/SolanaTests'
+import { BitcoinTests } from '../../components/Bitcoin/BitcoinTests'
 
 const networks = ConstantsUtil.AllNetworks
 networks.push(...ConstantsUtil.BitcoinNetworks)
@@ -37,9 +41,16 @@ const modal = createAppKit({
 ThemeStore.setModal(modal)
 
 export default function SIWXDefault() {
+  const { caipNetwork } = useAppKitNetwork()
+
   return (
     <>
       <AppKitButtons />
+      <DefaultSIWXStatus />
+
+      {caipNetwork?.chainNamespace === 'eip155' && <EthersTests />}
+      {caipNetwork?.chainNamespace === 'solana' && <SolanaTests />}
+      {caipNetwork?.chainNamespace === 'bip122' && <BitcoinTests />}
     </>
   )
 }
