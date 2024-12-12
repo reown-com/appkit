@@ -70,11 +70,21 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   }
 
   async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {
-    const mappedAccounts = this.wallet.accounts.map<BitcoinConnector.AccountAddress>(acc => ({
-      address: acc.address,
-      purpose: 'payment',
-      publicKey: Buffer.from(acc.publicKey).toString('hex')
-    }))
+    const addresses = new Set<string>()
+    const mappedAccounts = this.wallet.accounts
+      .map<BitcoinConnector.AccountAddress>(acc => ({
+        address: acc.address,
+        purpose: 'payment',
+        publicKey: Buffer.from(acc.publicKey).toString('hex')
+      }))
+      .filter(acc => {
+        if (addresses.has(acc.address)) {
+          return false
+        }
+        addresses.add(acc.address)
+
+        return true
+      })
 
     return Promise.resolve(mappedAccounts)
   }
