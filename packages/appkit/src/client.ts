@@ -653,6 +653,10 @@ export class AppKit {
     OptionsController.setSdkVersion(options.sdkVersion)
     OptionsController.setEnableEmbedded(options.enableEmbedded)
 
+    if (options.allowUnsupportedChain) {
+      OptionsController.setAllowUnsupportedChain(options.allowUnsupportedChain)
+    }
+
     if (!options.projectId) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
 

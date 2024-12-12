@@ -22,6 +22,7 @@ import { ModalController } from './ModalController.js'
 import { EventsController } from './EventsController.js'
 import { RouterController } from './RouterController.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
+import { OptionsController } from './OptionsController.js'
 
 // -- Constants ----------------------------------------- //
 const accountState: AccountControllerState = {
@@ -233,7 +234,7 @@ export const ChainController = {
 
     const isSupported = this.checkIfSupportedNetwork(caipNetwork.chainNamespace)
 
-    if (!isSupported) {
+    if (!isSupported && !OptionsController.state.allowUnsupportedChain) {
       this.showUnsupportedChainUI()
     }
   },
