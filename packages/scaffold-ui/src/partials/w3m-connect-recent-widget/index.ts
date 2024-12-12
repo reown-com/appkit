@@ -1,20 +1,39 @@
 import type { WcWallet } from '@reown/appkit-core'
-import { AssetUtil, RouterController, StorageUtil } from '@reown/appkit-core'
+import { AssetUtil, ConnectorController, RouterController, StorageUtil } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { property } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connect-recent-widget')
 export class W3mConnectRecentWidget extends LitElement {
+  // -- Members ------------------------------------------- //
+  private unsubscribe: (() => void)[] = []
+
   // -- State & Properties -------------------------------- //
   @property() public tabIdx?: number = undefined
 
+  @state() private connectors = ConnectorController.state.connectors
+
+  // -- Lifecycle ----------------------------------------- //
+  public constructor() {
+    super()
+    this.unsubscribe.push(
+      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
+    )
+  }
+
   // -- Render -------------------------------------------- //
   public override render() {
-    const recent = StorageUtil.getRecentWallets()
+    const recentWallets = StorageUtil.getRecentWallets()
+    const filteredRecentWallets = recentWallets.filter(
+      wallet =>
+        !this.connectors.some(
+          connector => connector.id === wallet.id || connector.name === wallet.name
+        )
+    )
 
-    if (!recent?.length) {
+    if (!filteredRecentWallets.length) {
       this.style.cssText = `display: none`
 
       return null
@@ -22,7 +41,7 @@ export class W3mConnectRecentWidget extends LitElement {
 
     return html`
       <wui-flex flexDirection="column" gap="xs">
-        ${recent.map(
+        ${filteredRecentWallets.map(
           wallet => html`
             <wui-list-wallet
               imageSrc=${ifDefined(AssetUtil.getWalletImage(wallet))}
