@@ -204,15 +204,12 @@ export class AppKit {
   ) {
     this.caipNetworks = this.extendCaipNetworks(options)
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
-    await this.initControllers(options)
+    this.initControllers(options)
     this.createAuthProvider()
-    await this.createUniversalProvider()
     this.createClients()
     ChainController.initialize(options.adapters ?? [], this.caipNetworks)
-    this.chainAdapters = await this.createAdapters(
-      options.adapters as unknown as AdapterBlueprint[]
-    )
-    await this.initChainAdapters()
+    this.chainAdapters = this.createAdapters(options.adapters as unknown as AdapterBlueprint[])
+    this.initChainAdapters()
     this.syncRequestedNetworks()
     await this.initOrContinue()
     await this.syncExistingConnection()
@@ -1816,24 +1813,15 @@ export class AppKit {
     }
   }
 
-  private async createAdapters(blueprints?: AdapterBlueprint[]): Promise<Adapters> {
+  private async setProvidersForAdapters(blueprints?: AdapterBlueprint[]) {
     if (!this.universalProvider) {
       this.universalProvider = await this.getUniversalProvider()
     }
-
-    this.syncRequestedNetworks()
 
     return this.chainNamespaces.reduce<Adapters>((adapters, namespace) => {
       const blueprint = blueprints?.find(b => b.namespace === namespace)
 
       if (blueprint) {
-        adapters[namespace] = blueprint
-        adapters[namespace].namespace = namespace
-        adapters[namespace].construct({
-          namespace,
-          projectId: this.options?.projectId,
-          networks: this.caipNetworks
-        })
         if (this.universalProvider) {
           adapters[namespace].setUniversalProvider(this.universalProvider)
         }
@@ -1855,6 +1843,30 @@ export class AppKit {
         }
       }
 
+      return adapters
+      // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
+    }, {} as Adapters)
+  }
+
+  private createAdapters(blueprints?: AdapterBlueprint[]) {
+    this.syncRequestedNetworks()
+    this.setProvidersForAdapters()
+
+    return this.chainNamespaces.reduce<Adapters>((adapters, namespace) => {
+      const blueprint = blueprints?.find(b => b.namespace === namespace)
+
+      if (blueprint) {
+        adapters[namespace] = blueprint
+        adapters[namespace].namespace = namespace
+        adapters[namespace].construct({
+          namespace,
+          projectId: this.options?.projectId,
+          networks: this.caipNetworks
+        })
+
+        adapters[namespace].syncConnectors(this.options, this)
+      }
+
       ChainController.state.chains.set(namespace, {
         namespace,
         connectionControllerClient: this.connectionControllerClient,
@@ -1869,17 +1881,15 @@ export class AppKit {
     }, {} as Adapters)
   }
 
-  private async initChainAdapters() {
-    await Promise.all(
-      // eslint-disable-next-line @typescript-eslint/require-await
-      this.chainNamespaces.map(async namespace => {
-        if (this.options) {
-          this.listenAdapter(namespace)
+  private initChainAdapters() {
+    this.chainNamespaces.forEach(namespace => {
+      if (this.options) {
+        this.listenAdapter(namespace)
 
-          this.setConnectors(this.chainAdapters?.[namespace]?.connectors || [])
-        }
-      })
-    )
+        this.setConnectors(this.chainAdapters?.[namespace]?.connectors || [])
+      }
+    })
+
     this.listenWalletConnect()
   }
 
