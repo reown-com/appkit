@@ -14,8 +14,7 @@
     "react-dom": "18.3.1",
     "vite": "5.2.11",
     "@solana/wallet-adapter-backpack": "0.1.14",
-    "@solana/wallet-adapter-wallets": "0.19.32",
-    "@solana/web3.js": "1.95.8"
+    "@solana/wallet-adapter-wallets": "0.19.32"
   },
   "devDependencies": {
     "@types/react": "18.2.62",
