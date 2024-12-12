@@ -130,6 +130,11 @@ export interface OptionsControllerStatePublic {
    * @default false
    */
   enableEmbedded?: boolean
+  /**
+   * Allow users to switch to an unsupported chain.
+   * @default false
+   */
+  allowUnsupportedChain?: boolean
 }
 
 export interface OptionsControllerStateInternal {
@@ -292,5 +297,9 @@ export const OptionsController = {
 
   setEnableEmbedded(enableEmbedded: OptionsControllerState['enableEmbedded']) {
     state.enableEmbedded = enableEmbedded
+  },
+
+  setAllowUnsupportedChain(allowUnsupportedChain: OptionsControllerState['allowUnsupportedChain']) {
+    state.allowUnsupportedChain = allowUnsupportedChain
   }
 }

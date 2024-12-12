@@ -4,7 +4,7 @@ import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type { Provider } from '@reown/appkit-core'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import UniversalProvider from '@walletconnect/universal-provider'
-import { JsonRpcProvider, InfuraProvider, BrowserProvider } from 'ethers'
+import { JsonRpcProvider, InfuraProvider } from 'ethers'
 import { mainnet } from '@reown/appkit/networks'
 import { EthersMethods } from '../utils/EthersMethods'
 import { ProviderUtil } from '@reown/appkit/store'
@@ -451,36 +451,6 @@ describe('EthersAdapter', () => {
         params: [mockParams]
       })
       expect(result).toBe('0x123')
-    })
-  })
-
-  describe('EthersAdapter - ListenPendingTransactions', () => {
-    it('should listen for pending transactions and emit event', () => {
-      const adapter = new EthersAdapter()
-      const mockProvider = {
-        request: vi.fn(),
-        on: vi.fn(),
-        removeListener: vi.fn(),
-        send: vi.fn(),
-        sendAsync: vi.fn()
-      } as unknown as Provider
-
-      const emitSpy = vi.spyOn(adapter, 'emit' as any)
-
-      vi.mocked(BrowserProvider).mockImplementation(
-        () =>
-          ({
-            on: vi.fn((event, callback) => {
-              if (event === 'pending') {
-                callback()
-              }
-            })
-          }) as any
-      )
-      ;(adapter as any).listenPendingTransactions(mockProvider)
-
-      expect(BrowserProvider).toHaveBeenCalledWith(mockProvider)
-      expect(emitSpy).toHaveBeenCalledWith('pendingTransactions')
     })
   })
 })

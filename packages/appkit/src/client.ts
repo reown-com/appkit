@@ -653,6 +653,10 @@ export class AppKit {
     OptionsController.setSdkVersion(options.sdkVersion)
     OptionsController.setEnableEmbedded(options.enableEmbedded)
 
+    if (options.allowUnsupportedChain) {
+      OptionsController.setAllowUnsupportedChain(options.allowUnsupportedChain)
+    }
+
     if (!options.projectId) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
 
@@ -836,16 +840,37 @@ export class AppKit {
           throw new Error('Adapter not found')
         }
 
-        const res = await adapter.connect({
-          id,
-          info,
-          type,
-          provider,
-          chainId: caipNetwork?.id || this.getCaipNetwork()?.id,
-          rpcUrl:
-            caipNetwork?.rpcUrls?.default?.http?.[0] ||
-            this.getCaipNetwork()?.rpcUrls?.default?.http?.[0]
-        })
+        let res: AdapterBlueprint.ConnectResult | undefined = undefined
+        try {
+          res = await adapter.connect({
+            id,
+            info,
+            type,
+            provider,
+            chainId: caipNetwork?.id || this.getCaipNetwork()?.id,
+            rpcUrl:
+              caipNetwork?.rpcUrls?.default?.http?.[0] ||
+              this.getCaipNetwork()?.rpcUrls?.default?.http?.[0]
+          })
+          /**
+           * In some cases with wagmi connectors, the connector is already connected
+           * which throws an `Is already connected`error. In such cases, we need to reconnect
+           * to restore the session.
+           * We check if the reconnect method exists (which it does for wagmi connectors) and if so
+           * we attempt to reconnect and restore the session state.
+           */
+        } catch (error) {
+          if (!adapter?.reconnect) {
+            throw new Error('Adapter is not able to connect')
+          }
+          await adapter.reconnect({
+            id,
+            info,
+            type,
+            provider,
+            chainId: this.getCaipNetwork()?.id
+          })
+        }
 
         if (res) {
           this.syncProvider({
