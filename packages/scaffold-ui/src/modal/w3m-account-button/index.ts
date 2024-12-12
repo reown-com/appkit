@@ -5,7 +5,8 @@ import {
   AssetUtil,
   ChainController,
   CoreHelperUtil,
-  ModalController
+  ModalController,
+  OptionsController
 } from '@reown/appkit-core'
 import type { WuiAccountButton } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
@@ -82,7 +83,9 @@ class W3mAccountButtonBase extends LitElement {
     return html`
       <wui-account-button
         .disabled=${Boolean(this.disabled)}
-        .isUnsupportedChain=${!this.isSupported}
+        .isUnsupportedChain=${OptionsController.state.allowUnsupportedChain
+          ? false
+          : !this.isSupported}
         address=${ifDefined(CoreHelperUtil.getPlainAddress(this.caipAddress))}
         profileName=${ifDefined(this.profileName)}
         networkSrc=${ifDefined(this.networkImage)}
@@ -101,7 +104,7 @@ class W3mAccountButtonBase extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onClick() {
-    if (this.isSupported) {
+    if (this.isSupported || OptionsController.state.allowUnsupportedChain) {
       ModalController.open()
     } else {
       ModalController.open({ view: 'UnsupportedChain' })

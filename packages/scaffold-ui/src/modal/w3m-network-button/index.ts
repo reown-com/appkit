@@ -4,7 +4,8 @@ import {
   AssetUtil,
   ChainController,
   EventsController,
-  ModalController
+  ModalController,
+  OptionsController
 } from '@reown/appkit-core'
 import type { WuiNetworkButton } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
@@ -69,7 +70,7 @@ class W3mNetworkButtonBase extends LitElement {
     return html`
       <wui-network-button
         .disabled=${Boolean(this.disabled || this.loading)}
-        .isUnsupportedChain=${!isSupported}
+        .isUnsupportedChain=${OptionsController.state.allowUnsupportedChain ? false : !isSupported}
         imageSrc=${ifDefined(this.networkImage)}
         @click=${this.onClick.bind(this)}
       >
@@ -82,7 +83,7 @@ class W3mNetworkButtonBase extends LitElement {
   // -- Private ------------------------------------------- //
   private getLabel() {
     if (this.network) {
-      if (!this.isSupported) {
+      if (!this.isSupported && !OptionsController.state.allowUnsupportedChain) {
         return 'Switch Network'
       }
 
