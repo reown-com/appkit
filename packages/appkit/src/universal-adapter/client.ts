@@ -7,9 +7,9 @@ import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
 
 export class UniversalAdapter extends AdapterBlueprint {
   private manualControl: boolean
-  public constructor(options: AdapterBlueprint.Params) {
+  public constructor(options?: AdapterBlueprint.Params) {
     super(options)
-    this.manualControl = Boolean(options.manualControl)
+    this.manualControl = Boolean(options?.manualControl)
   }
   public async connectWalletConnect(onUri: (uri: string) => void) {
     const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
