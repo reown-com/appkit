@@ -31,7 +31,7 @@
     "@reown/appkit-core": "workspace:*",
     "@wallet-standard/app": "1.1.0",
     "@wallet-standard/base": "1.1.0",
-    "@walletconnect/universal-provider": "2.17.2",
+    "@walletconnect/universal-provider": "2.17.0",
     "bitcoinjs-lib": "6.1.7",
     "sats-connect": "3.0.1"
   },
