@@ -12,7 +12,6 @@ const networks = ConstantsUtil.EvmNetworks
 
 export default function MultiChainWagmiAdapterOnly() {
   const [uprovider, setUprovider] = useState<Provider | null>(null)
-  const [uri, setUri] = useState('')
   const [appkit, setAppKit] = useState<AppKit | null>(null)
 
   async function initializeUniversalProvider() {
@@ -33,30 +32,10 @@ export default function MultiChainWagmiAdapterOnly() {
     setAppKit(modal)
 
     provider.on('display_uri', (connection: string) => {
-      setUri(connection)
       modal.open({ view: 'ConnectingWalletConnectBasic', uri: connection })
     })
 
     setUprovider(provider)
-  }
-
-  async function connect() {
-    if (uprovider) {
-      await uprovider.connect({
-        optionalNamespaces: {
-          eip155: {
-            chains: ['eip155:1'],
-            methods: ['personal_sign'],
-            events: ['chainChanged']
-          }
-        }
-      })
-      appkit?.close()
-    }
-  }
-
-  function open() {
-    appkit?.open({ uri, view: 'ConnectingWalletConnectBasic' })
   }
 
   useEffect(() => {
@@ -68,8 +47,6 @@ export default function MultiChainWagmiAdapterOnly() {
       {uprovider && appkit ? (
         <>
           <AppKitButtons />
-          <button onClick={connect}>Connect</button>
-          <button onClick={open}>Open Hook</button>
           <MultiChainInfo />
           <UpaTests />
         </>
