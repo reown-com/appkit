@@ -666,7 +666,7 @@ describe('Base', () => {
       vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
 
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation((key: string) => {
-        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
+        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR_eip155) {
           return 'test-wallet'
         }
         if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
