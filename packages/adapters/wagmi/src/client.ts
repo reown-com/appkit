@@ -162,6 +162,7 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   private setupWatchers() {
     watchPendingTransactions(this.wagmiConfig, {
+      pollingInterval: 15_000,
       /* Magic RPC does not support the pending transactions. We handle transaction for the AuthConnector cases in AppKit client to handle all clients at once. Adding the onError handler to avoid the error to throw. */
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onError: () => {},
