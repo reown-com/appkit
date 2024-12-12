@@ -98,6 +98,7 @@ export class W3mConnectingWcView extends LitElement {
     if (wcLinking) {
       StorageUtil.setWalletConnectDeepLink(wcLinking)
     }
+
     if (recentWallet) {
       StorageUtil.setAppKitRecent(recentWallet)
     }

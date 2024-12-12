@@ -1,7 +1,7 @@
 import { customElement } from '@reown/appkit-ui'
 import { W3mEmailOtpWidget } from '../../utils/w3m-email-otp-widget/index.js'
 import type { OnOtpSubmitFn } from '../../utils/w3m-email-otp-widget/index.js'
-import { EventsController, RouterController } from '@reown/appkit-core'
+import { CoreHelperUtil, EventsController, RouterController } from '@reown/appkit-core'
 
 @customElement('w3m-update-email-primary-otp-view')
 export class W3mUpdateEmailPrimaryOtpView extends W3mEmailOtpWidget {
@@ -20,7 +20,11 @@ export class W3mUpdateEmailPrimaryOtpView extends W3mEmailOtpWidget {
         RouterController.replace('UpdateEmailSecondaryOtp', RouterController.state.data)
       }
     } catch (error) {
-      EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_FAIL' })
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'EMAIL_VERIFICATION_CODE_FAIL',
+        properties: { message: CoreHelperUtil.parseError(error) }
+      })
       throw error
     }
   }

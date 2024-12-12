@@ -1,17 +1,36 @@
-import { WcHelpersUtil, type AppKit, type AppKitOptions, type Provider } from '@reown/appkit'
+import {
+  CoreHelperUtil,
+  WcHelpersUtil,
+  type AppKit,
+  type AppKitOptions,
+  type Provider
+} from '@reown/appkit'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import type { BitcoinConnector } from './utils/BitcoinConnector.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { SatsConnectConnector } from './connectors/SatsConnectConnector.js'
 import { WalletStandardConnector } from './connectors/WalletStandardConnector.js'
 import { WalletConnectProvider } from './utils/WalletConnectProvider.js'
+import { LeatherConnector } from './connectors/LeatherConnector.js'
+import { OKXConnector } from './connectors/OKXConnector.js'
+import { UnitsUtil } from './utils/UnitsUtil.js'
+import { BitcoinApi } from './utils/BitcoinApi.js'
+import { bitcoin } from '@reown/appkit/networks'
 
 export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
-  constructor(params: BitcoinAdapter.ConstructorParams) {
+  private eventsToUnbind: (() => void)[] = []
+  private api: BitcoinApi.Interface
+
+  constructor({ api = {}, ...params }: BitcoinAdapter.ConstructorParams = {}) {
     super({
       namespace: 'bip122',
       ...params
     })
+
+    this.api = {
+      ...BitcoinApi,
+      ...api
+    }
   }
 
   public async connectWalletConnect(onUri: (uri: string) => void): Promise<void> {
@@ -42,6 +61,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     const address = await connector.connect()
 
     this.connector = connector
+    this.bindEvents(this.connector)
 
     return {
       id: connector.id,
@@ -51,8 +71,27 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       provider: connector.provider
     }
   }
+  override async getAccounts(
+    _params: AdapterBlueprint.GetAccountsParams
+  ): Promise<AdapterBlueprint.GetAccountsResult> {
+    const addresses = await this.connector?.getAccountAddresses()
+    const accounts = addresses?.map(a =>
+      CoreHelperUtil.createAccount(
+        'bip122',
+        a.address,
+        (a.purpose || 'payment') as BitcoinConnector.AccountAddress['purpose']
+      )
+    )
 
-  override syncConnectors(_options?: AppKitOptions, _appKit?: AppKit): void {
+    return {
+      accounts: accounts || []
+    }
+  }
+  override syncConnectors(_options?: AppKitOptions, appKit?: AppKit): void {
+    function getActiveNetwork() {
+      return appKit?.getCaipNetwork()
+    }
+
     WalletStandardConnector.watchWallets({
       callback: this.addConnector.bind(this),
       requestedChains: this.networks
@@ -60,9 +99,28 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
 
     this.addConnector(
       ...SatsConnectConnector.getWallets({
-        requestedChains: this.networks
+        requestedChains: this.networks,
+        getActiveNetwork
+      }).map(connector => {
+        switch (connector.wallet.id) {
+          case LeatherConnector.ProviderId:
+            return new LeatherConnector({
+              connector
+            })
+
+          default:
+            return connector
+        }
       })
     )
+
+    const okxConnector = OKXConnector.getWallet({
+      requestedChains: this.networks,
+      getActiveNetwork
+    })
+    if (okxConnector) {
+      this.addConnector(okxConnector)
+    }
   }
 
   override syncConnection(
@@ -109,18 +167,41 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     return Promise.resolve()
   }
 
-  override disconnect(): Promise<void> {
-    // Disconnect
-    return Promise.resolve()
+  override async disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
+    if (params?.provider) {
+      await params.provider.disconnect()
+    } else if (this.connector) {
+      await this.connector.disconnect()
+    }
+    this.unbindEvents()
   }
 
   // -- Unused => Refactor ------------------------------------------- //
 
-  override getBalance(
-    _params: AdapterBlueprint.GetBalanceParams
+  override async getBalance(
+    params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
+    const network = params.caipNetwork
+
+    if (network?.chainNamespace === 'bip122') {
+      const utxos = await this.api.getUTXOs({
+        network,
+        address: params.address
+      })
+
+      const balance = utxos.reduce((acc, utxo) => acc + utxo.value, 0)
+
+      return {
+        balance: UnitsUtil.parseSatoshis(balance.toString(), network),
+        symbol: network.nativeCurrency.symbol
+      }
+    }
+
     // Get balance
-    return Promise.resolve({} as unknown as AdapterBlueprint.GetBalanceResult)
+    return Promise.resolve({
+      balance: '0',
+      symbol: bitcoin.nativeCurrency.symbol
+    })
   }
 
   override getProfile(
@@ -184,8 +265,44 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     // Get capabilities
     return Promise.resolve('0x')
   }
+
+  // -- Private ------------------------------------------ //
+  private bindEvents(connector: BitcoinConnector) {
+    this.unbindEvents()
+
+    const accountsChanged = (data: string[]) => {
+      const [newAccount] = data
+      if (newAccount) {
+        this.emit('accountChanged', {
+          address: newAccount,
+          chainId: this.networks[0]?.id || ''
+        })
+      }
+    }
+    connector.on('accountsChanged', accountsChanged)
+    this.eventsToUnbind.push(() => connector.removeListener('accountsChanged', accountsChanged))
+
+    const chainChanged = (data: string) => {
+      this.emit('switchNetwork', { chainId: data })
+    }
+    connector.on('chainChanged', chainChanged)
+    this.eventsToUnbind.push(() => connector.removeListener('chainChanged', chainChanged))
+
+    const disconnect = () => {
+      this.emit('disconnect')
+    }
+    connector.on('disconnect', disconnect)
+    this.eventsToUnbind.push(() => connector.removeListener('disconnect', disconnect))
+  }
+
+  private unbindEvents() {
+    this.eventsToUnbind.forEach(unsubscribe => unsubscribe())
+    this.eventsToUnbind = []
+  }
 }
 
 export namespace BitcoinAdapter {
-  export type ConstructorParams = Omit<AdapterBlueprint.Params, 'namespace'>
+  export type ConstructorParams = Omit<AdapterBlueprint.Params, 'namespace'> & {
+    api?: Partial<BitcoinApi.Interface>
+  }
 }

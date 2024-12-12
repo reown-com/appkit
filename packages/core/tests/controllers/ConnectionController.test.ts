@@ -68,19 +68,22 @@ const adapters = [evmAdapter] as ChainAdapter[]
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize(adapters)
+  ChainController.initialize(adapters, [])
   ConnectionController.setClient(evmAdapter.connectionControllerClient)
 })
 
 describe('ConnectionController', () => {
   it('should have valid default state', () => {
-    ChainController.initialize([
-      {
-        namespace: CommonConstantsUtil.CHAIN.EVM,
-        connectionControllerClient: client,
-        caipNetworks: []
-      }
-    ])
+    ChainController.initialize(
+      [
+        {
+          namespace: CommonConstantsUtil.CHAIN.EVM,
+          connectionControllerClient: client,
+          caipNetworks: []
+        }
+      ],
+      []
+    )
 
     expect(ConnectionController.state).toEqual({
       wcError: false,
@@ -131,13 +134,16 @@ describe('ConnectionController', () => {
   })
 
   it('should not throw when optional methods are undefined', async () => {
-    ChainController.initialize([
-      {
-        namespace: CommonConstantsUtil.CHAIN.EVM,
-        connectionControllerClient: partialClient,
-        caipNetworks: []
-      }
-    ])
+    ChainController.initialize(
+      [
+        {
+          namespace: CommonConstantsUtil.CHAIN.EVM,
+          connectionControllerClient: partialClient,
+          caipNetworks: []
+        }
+      ],
+      []
+    )
     await ConnectionController.connectExternal({ id: externalId, type }, chain)
     ConnectionController.checkInstalled([externalId])
     expect(clientCheckInstalledSpy).toHaveBeenCalledWith([externalId])

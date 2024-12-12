@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-experimental",
-  "version": "1.5.3",
+  "version": "1.6.0",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -37,8 +37,8 @@
   },
   "dependencies": {
     "@reown/appkit": "workspace:*",
-    "@reown/appkit-core": "workspace:*",
     "@reown/appkit-common": "workspace:*",
+    "@reown/appkit-core": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
     "axios": "1.7.8",
     "zod": "3.23.8",

@@ -42,6 +42,17 @@ const cases: Case[] = [
         'KML3pFh5aNynPZKegsEcasua2W17sKRhpsNgP/jMMbT3LR4N6jXM9Yl9n7hdHNJdff4clSAzvE/rICl/FsSu5uo='
     }),
     expected: false
+  },
+  {
+    reason: 'different signature type',
+    session: mockSession({
+      data: {
+        accountAddress: 'bc1qczn7zmd0n8rddeyhfjm9vz5edwznd4vsce4w7a'
+      },
+      signature:
+        'AkcwRAIgIB8eAIUCg4bHJm7IuOktrosDZn4A0wUrlAxSU8WySNgCIBecJ7eTrlzNGvzXcLAxIC44STrZm+MsCNDGr4IYwTIbASECBPlzqRYbRCAR7uxM+u3okxS8AeBojHtyHstbbC4/6EU='
+    }),
+    expected: true
   }
 ]
 
