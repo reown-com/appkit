@@ -19,6 +19,8 @@ const mockCaipNetwork: CaipNetwork = {
   nativeCurrency: { name: '', symbol: '', decimals: 0 },
   rpcUrls: { default: { http: [], webSocket: undefined } }
 }
+
+const mockCaipAddress = 'eip155:1:0x0000000000000000000000000000000000000000'
 describe('W3mAccountButton', () => {
   afterEach(() => {
     vi.clearAllMocks()
@@ -69,9 +71,7 @@ describe('W3mAccountButton', () => {
     it('should open modal normally when chain is supported', async () => {
       vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
       vi.spyOn(ChainController, 'checkIfSupportedNetwork').mockReturnValue(true)
-      vi.spyOn(ChainController.state, 'activeCaipAddress', 'get').mockReturnValue(
-        'eip155:1:0x0000000000000000000000000000000000000000'
-      )
+      vi.spyOn(ChainController.state, 'activeCaipAddress', 'get').mockReturnValue(mockCaipAddress)
 
       vi.spyOn(ModalController, 'open')
 
@@ -90,9 +90,7 @@ describe('W3mAccountButton', () => {
         ...OptionsController.state,
         allowUnsupportedChain: true
       })
-      vi.spyOn(ChainController.state, 'activeCaipAddress', 'get').mockReturnValue(
-        'eip155:1:0x0000000000000000000000000000000000000000'
-      )
+      vi.spyOn(ChainController.state, 'activeCaipAddress', 'get').mockReturnValue(mockCaipAddress)
 
       vi.spyOn(ModalController, 'open')
 
@@ -111,9 +109,7 @@ describe('W3mAccountButton', () => {
         ...OptionsController.state,
         allowUnsupportedChain: false
       })
-      vi.spyOn(ChainController.state, 'activeCaipAddress', 'get').mockReturnValue(
-        'eip155:1:0x0000000000000000000000000000000000000000'
-      )
+      vi.spyOn(ChainController.state, 'activeCaipAddress', 'get').mockReturnValue(mockCaipAddress)
 
       vi.spyOn(ModalController, 'open')
 
