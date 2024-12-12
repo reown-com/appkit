@@ -42,7 +42,7 @@ export const ConnectorUtil = {
 
       const walletRDNS = connector.info?.rdns
 
-      if (!walletRDNS && !ConnectionController.checkInstalled(undefined)) {
+      if (!walletRDNS && !ConnectionController.checkInstalled()) {
         return false
       }
 

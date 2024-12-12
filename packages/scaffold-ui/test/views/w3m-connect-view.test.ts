@@ -62,7 +62,7 @@ describe('W3mConnectView - Connection Methods', () => {
     expect(widgets.indexOf(WALLET_LOGIN_LIST)).toBeLessThan(widgets.indexOf(SOCIAL_LOGIN_WIDGET))
   })
 
-  it('should render connection methods in the correct order based on if installed wallet exist', async () => {
+  it('should render connection methods in the correct order based on if there are installed wallets', async () => {
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
       features: {
