@@ -218,7 +218,7 @@ export class W3mBuyInProgressView extends LitElement {
     }
 
     try {
-      CoreHelperUtil.copyToClopboard(this.selectedOnRampProvider.url)
+      CoreHelperUtil.copyToClipboard(this.selectedOnRampProvider.url)
       SnackController.showSuccess('Link copied')
     } catch {
       SnackController.showError('Failed to copy')

@@ -208,7 +208,7 @@ export class W3mConnectingWidget extends LitElement {
   protected onCopyUri() {
     try {
       if (this.uri) {
-        CoreHelperUtil.copyToClopboard(this.uri)
+        CoreHelperUtil.copyToClipboard(this.uri)
         SnackController.showSuccess('Link copied')
       }
     } catch {
