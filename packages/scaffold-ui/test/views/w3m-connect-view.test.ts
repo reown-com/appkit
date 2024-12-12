@@ -1,6 +1,6 @@
 import { W3mConnectView } from '../../src/views/w3m-connect-view/index'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { elementUpdated, fixture } from '@open-wc/testing'
+import { fixture } from '@open-wc/testing'
 import { html } from 'lit'
 import { HelpersUtil } from '../utils/HelpersUtil'
 import {
