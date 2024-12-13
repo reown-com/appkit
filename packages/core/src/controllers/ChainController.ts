@@ -23,6 +23,7 @@ import { EventsController } from './EventsController.js'
 import { RouterController } from './RouterController.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import { OptionsController } from './OptionsController.js'
+import { ConnectionController } from './ConnectionController.js'
 
 // -- Constants ----------------------------------------- //
 const accountState: AccountControllerState = {
@@ -519,5 +520,44 @@ export const ChainController = {
         allAccounts: []
       })
     )
+  },
+
+  async disconnect() {
+    try {
+      const disconnectPromises = Array.from(state.chains.entries()).map(
+        async ([namespace, adapter]) => {
+          try {
+            if (adapter.connectionControllerClient?.disconnect) {
+              await adapter.connectionControllerClient.disconnect()
+            }
+            this.resetAccount(namespace)
+            this.resetNetwork(namespace)
+          } catch (error) {
+            console.error(`Failed to disconnect chain ${namespace}`, error)
+          }
+        }
+      )
+
+      await Promise.allSettled(disconnectPromises)
+
+      StorageUtil.deleteConnectedConnector()
+      StorageUtil.deleteWalletConnectDeepLink()
+
+      ConnectionController.resetWcConnection()
+
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'DISCONNECT_SUCCESS'
+      })
+    } catch (error) {
+      console.error('Failed to disconnect chains', error)
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'DISCONNECT_ERROR',
+        properties: {
+          message: (error as Error).message || 'Failed to disconnect chains'
+        }
+      })
+    }
   }
 }

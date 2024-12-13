@@ -460,6 +460,9 @@ export type Event =
   | {
       type: 'track'
       event: 'DISCONNECT_ERROR'
+      properties?: {
+        message: string
+      }
     }
   | {
       type: 'track'
