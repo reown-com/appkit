@@ -6,11 +6,8 @@ import {
   ChainController,
   ConnectionController,
   ConnectorController,
-  EventsController,
-  ModalController,
   OptionsController,
   RouterController,
-  SnackController,
   StorageUtil,
   CoreHelperUtil,
   type ChainControllerState,
@@ -180,7 +177,7 @@ describe('W3mAccountDefaultWidget', () => {
       const element = await fixture(html`<w3m-account-default-widget></w3m-account-default-widget>`)
       const swapButton = Array.from(
         element.shadowRoot?.querySelectorAll('wui-list-item') || []
-      ).find(item => item.textContent?.includes('Swap'))
+      ).find(item => item.textContent?.includes('Swap')) as HTMLElement
 
       swapButton?.click()
 
