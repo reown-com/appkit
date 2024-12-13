@@ -57,4 +57,37 @@ describe('CoreHelperUtil', () => {
       global.window.self = originalSelf
     }
   })
+
+  it.each([
+    [undefined, false],
+    [{}, false],
+    ['0x0', false],
+    ['invalid_namespace:mock_chain_id:address', false],
+    ['eip155:mock_chain_id:mock_address', true],
+    ['solana:mock_chain_id:mock_address', true],
+    ['bip122:mock_chain_id:mock_address', true]
+  ])('should validate the value $s is valid caip address $b', (caipAddress, expected) => {
+    expect(CoreHelperUtil.isCaipAddress(caipAddress)).toEqual(expected)
+  })
+
+  it.each([
+    [undefined, undefined],
+    [{}, undefined],
+    ['0x0', undefined],
+    ['invalid_namespace:mock_chain_id:address', undefined],
+    [
+      'eip155:mock_chain_id:mock_address',
+      { chainNamespace: 'eip155', chainId: 'mock_chain_id', address: 'mock_address' }
+    ],
+    [
+      'solana:mock_chain_id:mock_address',
+      { chainNamespace: 'solana', chainId: 'mock_chain_id', address: 'mock_address' }
+    ],
+    [
+      'bip122:mock_chain_id:mock_address',
+      { chainNamespace: 'bip122', chainId: 'mock_chain_id', address: 'mock_address' }
+    ]
+  ])('should validate the value $s is valid caip address $b', (caipAddress, expected) => {
+    expect(CoreHelperUtil.parseCaipAddress(caipAddress)).toEqual(expected)
+  })
 })

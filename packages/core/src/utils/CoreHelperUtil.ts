@@ -357,5 +357,36 @@ export const CoreHelperUtil = {
       address,
       type
     } as AccountTypeMap[N]
+  },
+
+  isCaipAddress(address?: unknown): address is CaipAddress {
+    if (typeof address !== 'string') {
+      return false
+    }
+
+    const sections = address.split(':')
+    const namespace = sections[0]
+
+    return sections.length === 3 && (namespace as string) in CommonConstants.CHAIN_NAME_MAP
+  },
+
+  parseCaipAddress(
+    caipAddress?: unknown
+  ): { chainNamespace: ChainNamespace; chainId: string; address: string } | undefined {
+    if (CoreHelperUtil.isCaipAddress(caipAddress)) {
+      const [chainNamespace, chainId, address] = caipAddress.split(':') as [
+        ChainNamespace,
+        string,
+        string
+      ]
+
+      return {
+        chainNamespace,
+        chainId,
+        address
+      }
+    }
+
+    return undefined
   }
 }
