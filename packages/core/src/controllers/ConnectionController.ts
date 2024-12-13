@@ -249,8 +249,6 @@ export const ConnectionController = {
 
   async disconnect() {
     try {
-      const connectionControllerClient = this._getClient()
-
       const siwx = OptionsController.state.siwx
       if (siwx) {
         const activeCaipNetwork = ChainController.getActiveCaipNetwork()
@@ -261,9 +259,7 @@ export const ConnectionController = {
         }
       }
 
-      await connectionControllerClient?.disconnect()
-
-      this.resetWcConnection()
+      await ChainController.disconnect()
     } catch (error) {
       throw new Error('Failed to disconnect')
     }
