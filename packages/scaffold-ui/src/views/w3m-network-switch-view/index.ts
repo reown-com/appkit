@@ -69,8 +69,20 @@ export class W3mNetworkSwitchView extends LitElement {
         </wui-flex>
 
         <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-text align="center" variant="paragraph-500" color="fg-100">${label}</wui-text>
-          <wui-text align="center" variant="small-500" color="fg-200">${subLabel}</wui-text>
+          <wui-text
+            align="center"
+            variant="paragraph-500"
+            color="fg-100"
+            data-testid="switching-network-label"
+            >${label}</wui-text
+          >
+          <wui-text
+            align="center"
+            variant="small-500"
+            color="fg-200"
+            data-testid="switching-network-sublabel"
+            >${subLabel}</wui-text
+          >
         </wui-flex>
 
         <wui-button
@@ -121,7 +133,7 @@ export class W3mNetworkSwitchView extends LitElement {
     if (this.error && !this.showRetry) {
       this.showRetry = true
       const retryButton = this.shadowRoot?.querySelector('wui-button') as HTMLElement
-      retryButton?.animate([{ opacity: 0 }, { opacity: 1 }], {
+      retryButton?.animate?.([{ opacity: 0 }, { opacity: 1 }], {
         fill: 'forwards',
         easing: 'ease'
       })
