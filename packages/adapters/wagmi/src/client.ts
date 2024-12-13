@@ -1,6 +1,6 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
-import type { AppKitNetwork, BaseNetwork, CaipNetwork } from '@reown/appkit-common'
-import { AdapterBlueprint } from '@reown/appkit/adapters'
+import type { AppKitNetwork, BaseNetwork, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import { AdapterBlueprint, type ChainAdapterConnector } from '@reown/appkit/adapters'
 import { CoreHelperUtil } from '@reown/appkit-core'
 import {
   connect,
@@ -27,7 +27,8 @@ import {
   getAccount,
   prepareTransactionRequest,
   reconnect,
-  watchPendingTransactions
+  watchPendingTransactions,
+  watchConnectors
 } from '@wagmi/core'
 import { type Chain } from '@wagmi/core/chains'
 
@@ -186,7 +187,6 @@ export class WagmiAdapter extends AdapterBlueprint {
         }
       }
     })
-
     watchConnections(this.wagmiConfig, {
       onChange: connections => {
         if (connections.length === 0) {
@@ -232,9 +232,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       customConnectors.push(
         authConnector({
           chains: this.wagmiChains,
-          options: { projectId: options.projectId },
-          provider: this.availableConnectors.find(c => c.id === ConstantsUtil.AUTH_CONNECTOR_ID)
-            ?.provider as W3mFrameProvider
+          options: { projectId: options.projectId }
         })
       )
     }
@@ -359,40 +357,41 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public syncConnectors(options: AppKitOptions, appKit: AppKit) {
-    this.addWagmiConnectors(options, appKit)
+    watchConnectors(this.wagmiConfig, {
+      onChange: async connectors => {
+        const prepareConnectors = connectors.map(async connector => {
+          let provider: Provider | W3mFrameProvider | UniversalProvider | undefined = undefined
 
-    const connectors = this.wagmiConfig.connectors.map(connector => ({
-      ...connector,
-      chain: this.namespace
-    }))
+          if (connector.id === ConstantsUtil.AUTH_CONNECTOR_ID) {
+            provider = (await connector.getProvider().catch(() => undefined)) as W3mFrameProvider
+          }
 
-    const uniqueIds = new Set()
-    const filteredConnectors = connectors.filter(item => {
-      const isDuplicate = uniqueIds.has(item.id)
-      uniqueIds.add(item.id)
+          const preparedConnector: ChainAdapterConnector = {
+            id: connector.id,
+            explorerId: PresetsUtil.ConnectorExplorerIds[connector.id],
+            imageUrl: options?.connectorImages?.[connector.id] ?? connector.icon,
+            name: PresetsUtil.ConnectorNamesMap[connector.id] ?? connector.name,
+            imageId: PresetsUtil.ConnectorImageIds[connector.id],
+            type: PresetsUtil.ConnectorTypesMap[connector.type] ?? 'EXTERNAL',
+            info:
+              connector.id === ConstantsUtil.INJECTED_CONNECTOR_ID
+                ? undefined
+                : { rdns: connector.id },
+            provider,
+            chain: this.namespace as ChainNamespace,
+            chains: []
+          }
 
-      return !isDuplicate
-    })
-
-    filteredConnectors.forEach(connector => {
-      const shouldSkip = ConstantsUtil.AUTH_CONNECTOR_ID === connector.id
-
-      const injectedConnector = connector.id === ConstantsUtil.INJECTED_CONNECTOR_ID
-
-      if (!shouldSkip && this.namespace) {
-        this.addConnector({
-          id: connector.id,
-          explorerId: PresetsUtil.ConnectorExplorerIds[connector.id],
-          imageUrl: options?.connectorImages?.[connector.id] ?? connector.icon,
-          name: PresetsUtil.ConnectorNamesMap[connector.id] ?? connector.name,
-          imageId: PresetsUtil.ConnectorImageIds[connector.id],
-          type: PresetsUtil.ConnectorTypesMap[connector.type] ?? 'EXTERNAL',
-          info: injectedConnector ? undefined : { rdns: connector.id },
-          chain: this.namespace,
-          chains: []
+          return preparedConnector
         })
+
+        const preparedConnectors = await Promise.all(prepareConnectors)
+
+        this.addConnector(preparedConnectors)
       }
     })
+
+    this.addWagmiConnectors(options, appKit)
   }
 
   public async syncConnection(
