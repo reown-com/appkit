@@ -541,10 +541,7 @@ export const ChainController = {
       await Promise.allSettled(disconnectPromises)
 
       StorageUtil.deleteConnectedConnector()
-      StorageUtil.deleteWalletConnectDeepLink()
-
       ConnectionController.resetWcConnection()
-
       EventsController.sendEvent({
         type: 'track',
         event: 'DISCONNECT_SUCCESS'
