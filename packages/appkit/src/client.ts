@@ -81,6 +81,7 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import type { SessionTypes } from '@walletconnect/types'
 import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
 import { W3mFrameProviderSingleton } from './auth-provider/W3MFrameProviderSingleton.js'
+import { WcHelpersUtil } from './utils/HelpersUtil.js'
 
 declare global {
   interface Window {
@@ -1292,6 +1293,20 @@ export class AppKit {
 
         if (!currentCaipNetwork || currentCaipNetwork?.id !== caipNetwork?.id) {
           this.setCaipNetwork(caipNetwork)
+        }
+      })
+
+      this.universalProvider.on('session_event', (callbackData: unknown) => {
+        if (WcHelpersUtil.isSessionEventData(callbackData)) {
+          const { name, data } = callbackData.params.event
+
+          if (name === 'accountsChanged' && Array.isArray(data)) {
+            const caipAddress = CoreHelperUtil.parseCaipAddress(data[0])
+
+            if (caipAddress) {
+              this.syncAccount(caipAddress)
+            }
+          }
         }
       })
     }
