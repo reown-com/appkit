@@ -106,7 +106,11 @@ export class W3mBuyInProgressView extends LitElement {
         </wui-flex>
 
         <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-text variant="paragraph-500" color=${this.error ? 'error-100' : 'fg-100'}>
+          <wui-text
+            variant="paragraph-500"
+            color=${this.error ? 'error-100' : 'fg-100'}
+            data-testid="w3m-buy-in-progress-label"
+          >
             ${label}
           </wui-text>
           <wui-text align="center" variant="small-500" color="fg-200">${subLabel}</wui-text>
