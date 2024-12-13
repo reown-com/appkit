@@ -424,7 +424,7 @@ describe('ChainController', () => {
 
     await ChainController.disconnect()
 
-    expect(consoleSpy).toHaveBeenCalledWith('Failed to disconnect chains', expect.any(Error))
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('EVM disconnect failed'))
     expect(sendEventSpy).toHaveBeenCalledWith({
       type: 'track',
       event: 'DISCONNECT_ERROR',
