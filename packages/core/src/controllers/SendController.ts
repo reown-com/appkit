@@ -235,7 +235,7 @@ export const SendController = {
           fromAddress: AccountController.state.address as `0x${string}`,
           tokenAddress,
           args: [params.receiverAddress as `0x${string}`, amount ?? BigInt(0)],
-          method: 'approve',
+          method: 'transfer',
           abi: ContractUtil.getERC20Abi(tokenAddress),
           chainNamespace: 'eip155'
         })

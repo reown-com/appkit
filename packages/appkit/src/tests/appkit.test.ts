@@ -19,7 +19,8 @@ import {
   ChainController,
   type Connector,
   StorageUtil,
-  CoreHelperUtil
+  CoreHelperUtil,
+  AlertController
 } from '@reown/appkit-core'
 import {
   SafeLocalStorage,
@@ -30,6 +31,8 @@ import {
 import { mockOptions } from './mocks/Options'
 import { UniversalAdapter } from '../universal-adapter/client'
 import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint'
+import { ProviderUtil } from '../store'
+import { ErrorUtil } from '@reown/appkit-utils'
 
 // Mock all controllers and UniversalAdapterClient
 vi.mock('@reown/appkit-core')
@@ -55,10 +58,32 @@ describe('Base', () => {
       expect(OptionsController.setSdkVersion).toHaveBeenCalledWith(mockOptions.sdkVersion)
       expect(OptionsController.setProjectId).toHaveBeenCalledWith(mockOptions.projectId)
       expect(OptionsController.setMetadata).toHaveBeenCalledWith(mockOptions.metadata)
+
+      const copyMockOptions = { ...mockOptions }
+      delete copyMockOptions.adapters
+
+      expect(EventsController.sendEvent).toHaveBeenCalledWith(mockOptions)
     })
 
     it('should initialize adapters in ChainController', () => {
       expect(ChainController.initialize).toHaveBeenCalledWith(mockOptions.adapters)
+    })
+
+    it('should set EIP6963 enabled by default', () => {
+      new AppKit({
+        ...mockOptions
+      })
+
+      expect(OptionsController.setEIP6963Enabled).toHaveBeenCalledWith(true)
+    })
+
+    it('should set EIP6963 disabled when option is disabled in config', () => {
+      new AppKit({
+        ...mockOptions,
+        enableEIP6963: false
+      })
+
+      expect(OptionsController.setEIP6963Enabled).toHaveBeenCalledWith(false)
     })
   })
 
@@ -523,6 +548,28 @@ describe('Base', () => {
       )
     })
 
+    it('should sync identity only if address changed', async () => {
+      const mockAccountData = {
+        address: '0x123',
+        chainId: '1',
+        chainNamespace: 'eip155' as const
+      }
+      vi.mocked(BlockchainApiController.fetchIdentity).mockResolvedValue({
+        name: 'John Doe',
+        avatar: null
+      })
+
+      vi.mocked(AccountController).state = { address: '0x123' } as any
+
+      await appKit['syncAccount'](mockAccountData)
+
+      expect(BlockchainApiController.fetchIdentity).not.toHaveBeenCalled()
+
+      await appKit['syncAccount']({ ...mockAccountData, address: '0x456' })
+
+      expect(BlockchainApiController.fetchIdentity).toHaveBeenCalledOnce()
+    })
+
     it('should disconnect correctly', async () => {
       vi.mocked(ChainController).state = {
         chains: new Map([['eip155', { namespace: 'eip155' }]]),
@@ -567,7 +614,6 @@ describe('Base', () => {
       vi.spyOn(appKit as any, 'getAdapter').mockReturnValue(mockAdapter)
 
       vi.spyOn(StorageUtil, 'setConnectedConnector').mockImplementation(vi.fn())
-      vi.spyOn(StorageUtil, 'setConnectedNamespace').mockImplementation(vi.fn())
 
       vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
 
@@ -575,8 +621,8 @@ describe('Base', () => {
         if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
           return 'test-wallet'
         }
-        if (key === SafeLocalStorageKeys.CONNECTED_NAMESPACE) {
-          return 'eip155'
+        if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
+          return 'eip155:1'
         }
         return undefined
       })
@@ -588,6 +634,76 @@ describe('Base', () => {
       expect((appKit as any).setUnsupportedNetwork).toHaveBeenCalled()
       expect(isClientSpy).toHaveBeenCalled()
     })
+
+    it('should not show unsupported chain UI when allowUnsupportedChain is true', async () => {
+      vi.mocked(ChainController).state = {
+        chains: new Map([['eip155', { namespace: 'eip155' }]]),
+        activeChain: 'eip155'
+      } as any
+      ;(appKit as any).caipNetworks = [{ id: 'eip155:1', chainNamespace: 'eip155' }]
+
+      vi.mocked(OptionsController).state = {
+        allowUnsupportedChain: true
+      } as any
+
+      const mockAdapter = {
+        getAccounts: vi.fn().mockResolvedValue([]),
+        syncConnection: vi.fn().mockResolvedValue({
+          chainId: 'eip155:999', // Unsupported chain
+          address: '0x123'
+        }),
+        getBalance: vi.fn().mockResolvedValue({ balance: '0', symbol: 'ETH' }),
+        getProfile: vi.fn().mockResolvedValue({}),
+        on: vi.fn(),
+        off: vi.fn(),
+        emit: vi.fn()
+      }
+
+      vi.spyOn(appKit as any, 'getAdapter').mockReturnValue(mockAdapter)
+
+      vi.spyOn(StorageUtil, 'setConnectedConnector').mockImplementation(vi.fn())
+
+      vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
+
+      vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation((key: string) => {
+        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
+          return 'test-wallet'
+        }
+        if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
+          return 'eip155:1'
+        }
+        return undefined
+      })
+
+      vi.mocked(ChainController.showUnsupportedChainUI).mockImplementation(vi.fn())
+
+      await (appKit as any).syncExistingConnection()
+
+      expect(ChainController.showUnsupportedChainUI).not.toHaveBeenCalled()
+    })
+
+    it('should subscribe to providers', () => {
+      const callback = vi.fn()
+      const providers = {
+        eip155: { provider: {} },
+        solana: {},
+        polkadot: {},
+        bip122: {}
+      }
+
+      const mockSubscribeProviders = vi.fn().mockImplementation(cb => {
+        cb(providers)
+        return () => {}
+      })
+
+      // Mock the entire ProviderUtil
+      vi.mocked(ProviderUtil).subscribeProviders = mockSubscribeProviders
+
+      appKit.subscribeProviders(callback)
+
+      expect(mockSubscribeProviders).toHaveBeenCalled()
+      expect(callback).toHaveBeenCalledWith(providers)
+    })
   })
   describe('syncExistingConnection', () => {
     it('should set status to "connecting" and sync the connection when a connector and namespace are present', async () => {
@@ -596,8 +712,8 @@ describe('Base', () => {
         if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
           return 'test-wallet'
         }
-        if (key === SafeLocalStorageKeys.CONNECTED_NAMESPACE) {
-          return 'eip155'
+        if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
+          return 'eip155:1'
         }
         return undefined
       })
@@ -636,8 +752,8 @@ describe('Base', () => {
         if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
           return 'AUTH'
         }
-        if (key === SafeLocalStorageKeys.CONNECTED_NAMESPACE) {
-          return 'eip155'
+        if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
+          return 'eip155:1'
         }
         return undefined
       })
@@ -795,6 +911,29 @@ describe('Base', () => {
           caipNetworks: expect.any(Array)
         })
       )
+    })
+  })
+
+  describe('Alert Errors', () => {
+    it('should handle alert errors based on error messages', () => {
+      const errors = [
+        {
+          alert: ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION,
+          message:
+            'Error: WebSocket connection closed abnormally with code: 3000 (Unauthorized: origin not allowed)'
+        },
+        {
+          alert: ErrorUtil.ALERT_ERRORS.JWT_TOKEN_NOT_VALID,
+          message:
+            'WebSocket connection closed abnormally with code: 3000 (JWT validation error: JWT Token is not yet valid:)'
+        }
+      ]
+
+      for (const { alert, message } of errors) {
+        // @ts-expect-error
+        appKit.handleAlertError(new Error(message))
+        expect(AlertController.open).toHaveBeenCalledWith(alert, 'error')
+      }
     })
   })
 })

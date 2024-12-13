@@ -36,12 +36,13 @@ export const EthersHelpersUtil = {
     return addresses
   },
   async addEthereumChain(provider: Provider, caipNetwork: CaipNetwork) {
+    const rpcUrls = caipNetwork.rpcUrls['chainDefault']?.http || []
     await provider.request({
       method: 'wallet_addEthereumChain',
       params: [
         {
           chainId: EthersHelpersUtil.numberToHexString(caipNetwork.id),
-          rpcUrls: [caipNetwork.rpcUrls.default.http[0]],
+          rpcUrls: [...rpcUrls],
           chainName: caipNetwork.name,
           nativeCurrency: {
             name: caipNetwork.nativeCurrency.name,

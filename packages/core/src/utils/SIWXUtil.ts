@@ -185,7 +185,7 @@ export const SIWXUtil = {
 
     const namespaces = new Set(chains.map(chain => chain.split(':')[0]))
 
-    if (!siwx || namespaces.size !== 1) {
+    if (!siwx || namespaces.size !== 1 || !namespaces.has('eip155')) {
       return false
     }
 
@@ -211,6 +211,8 @@ export const SIWXUtil = {
       methods,
       chains
     })
+
+    SnackController.showLoading('Authenticating...', { autoClose: false })
 
     if (result?.auths?.length) {
       const sessions = result.auths.map<SIWXSession>(cacao => {
@@ -257,6 +259,8 @@ export const SIWXUtil = {
         // eslint-disable-next-line no-console
         await universalProvider.disconnect().catch(console.error)
         throw error
+      } finally {
+        SnackController.hide()
       }
     }
 

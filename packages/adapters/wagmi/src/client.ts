@@ -26,7 +26,8 @@ import {
   waitForTransactionReceipt,
   getAccount,
   prepareTransactionRequest,
-  reconnect
+  reconnect,
+  watchPendingTransactions
 } from '@wagmi/core'
 import { type Chain } from '@wagmi/core/chains'
 
@@ -71,18 +72,27 @@ export class WagmiAdapter extends AdapterBlueprint {
       projectId: configParams.projectId,
       networks: CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
         projectId: configParams.projectId,
-        customNetworkImageUrls: {}
+        customNetworkImageUrls: {},
+        customRpcChainIds: configParams.transports
+          ? Object.keys(configParams.transports).map(Number)
+          : []
       }) as [CaipNetwork, ...CaipNetwork[]]
     })
+
     this.namespace = CommonConstantsUtil.CHAIN.EVM
+
     this.createConfig({
       ...configParams,
       networks: CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
         projectId: configParams.projectId,
-        customNetworkImageUrls: {}
+        customNetworkImageUrls: {},
+        customRpcChainIds: configParams.transports
+          ? Object.keys(configParams.transports).map(Number)
+          : []
       }) as [CaipNetwork, ...CaipNetwork[]],
       projectId: configParams.projectId
     })
+
     this.setupWatchers()
   }
 
@@ -120,11 +130,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       projectId: string
     }
   ) {
-    this.caipNetworks = CaipNetworksUtil.extendCaipNetworks(configParams.networks, {
-      projectId: configParams.projectId,
-      customNetworkImageUrls: {}
-    }) as [CaipNetwork, ...CaipNetwork[]]
-
+    this.caipNetworks = configParams.networks
     this.wagmiChains = this.caipNetworks.filter(
       caipNetwork => caipNetwork.chainNamespace === CommonConstantsUtil.CHAIN.EVM
     ) as unknown as [BaseNetwork, ...BaseNetwork[]]
@@ -155,6 +161,15 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   private setupWatchers() {
+    watchPendingTransactions(this.wagmiConfig, {
+      pollingInterval: 15_000,
+      /* Magic RPC does not support the pending transactions. We handle transaction for the AuthConnector cases in AppKit client to handle all clients at once. Adding the onError handler to avoid the error to throw. */
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onError: () => {},
+      onTransactions: () => {
+        this.emit('pendingTransactions')
+      }
+    })
     watchAccount(this.wagmiConfig, {
       onChange: accountData => {
         if (accountData.address) {

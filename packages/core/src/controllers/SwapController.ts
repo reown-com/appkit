@@ -713,13 +713,14 @@ export const SwapController = {
     }
 
     try {
-      await ConnectionController.writeContract({
-        fromAddress: fromAddress as `0x${string}`,
-        tokenAddress: data.to as `0x${string}`,
-        abi: ContractUtil.getSwapAbi(),
-        method: 'approve',
-        chainNamespace: 'eip155',
-        args: [data.to, BigInt(data.value)]
+      await ConnectionController.sendTransaction({
+        address: fromAddress as `0x${string}`,
+        to: data.to as `0x${string}`,
+        data: data.data as `0x${string}`,
+        gas: data.gas,
+        gasPrice: BigInt(data.gasPrice),
+        value: data.value,
+        chainNamespace: 'eip155'
       })
 
       await this.swapTokens()
@@ -731,6 +732,21 @@ export const SwapController = {
       state.transactionError = error?.shortMessage as unknown as string
       state.loadingApprovalTransaction = false
       SnackController.showError(error?.shortMessage || 'Transaction error')
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SWAP_APPROVAL_ERROR',
+        properties: {
+          message: error?.shortMessage || error?.message || 'Unknown',
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
+          swapFromToken: this.state.sourceToken?.symbol || '',
+          swapToToken: this.state.toToken?.symbol || '',
+          swapFromAmount: this.state.sourceTokenAmount || '',
+          swapToAmount: this.state.toTokenAmount || '',
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        }
+      })
     }
   },
 

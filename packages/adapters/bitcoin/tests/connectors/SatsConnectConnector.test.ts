@@ -3,7 +3,7 @@ import { SatsConnectConnector } from '../../src/connectors/SatsConnectConnector'
 import { mockSatsConnectProvider } from '../mocks/mockSatsConnect'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { MessageSigningProtocols } from 'sats-connect'
-import { bitcoin } from '@reown/appkit/networks'
+import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
 
 describe('SatsConnectConnector', () => {
   let connector: SatsConnectConnector
@@ -12,7 +12,12 @@ describe('SatsConnectConnector', () => {
   let getActiveNetwork: Mock<() => CaipNetwork | undefined>
 
   beforeEach(() => {
-    requestedChains = []
+    // requested chains may contain not bip122 chains
+    requestedChains = [
+      { ...mainnet, caipNetworkId: 'eip155:1', chainNamespace: 'eip155' },
+      bitcoin,
+      bitcoinTestnet
+    ]
     mocks = mockSatsConnectProvider()
     getActiveNetwork = vi.fn(() => bitcoin)
     connector = new SatsConnectConnector({
@@ -39,7 +44,7 @@ describe('SatsConnectConnector', () => {
     expect(connector.id).toBe(mocks.provider.name)
     expect(connector.name).toBe(mocks.provider.name)
     expect(connector.imageUrl).toBe(mocks.provider.icon)
-    expect(connector.chains).toEqual(requestedChains)
+    expect(connector.chains).toEqual([bitcoin, bitcoinTestnet])
   })
 
   it('should disconnect correctly', async () => {
@@ -309,7 +314,7 @@ describe('SatsConnectConnector', () => {
 
       await callback?.({ type: 'networkChange' })
 
-      expect(emitSpy).toHaveBeenCalledWith('chainChanged', requestedChains)
+      expect(emitSpy).toHaveBeenCalledWith('chainChanged', [bitcoin, bitcoinTestnet])
     })
   })
 })

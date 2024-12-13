@@ -22,6 +22,13 @@ vi.mock('ethers', async importOriginal => {
       })),
       JsonRpcProvider: vi.fn(() => ({
         getBalance: vi.fn()
+      })),
+      Web3Provider: vi.fn(() => ({
+        on: vi.fn((event, callback) => {
+          if (event === 'pending') {
+            callback()
+          }
+        })
       }))
     }
   }
