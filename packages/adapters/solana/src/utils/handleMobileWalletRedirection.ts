@@ -3,7 +3,7 @@ export function handleMobileWalletRedirection(properties: {
   platform: string
 }): void {
   if (properties?.name === 'Phantom' && !('phantom' in window)) {
-    const href = window.location.href
+    const href = encodeURIComponent(window.location.href)
     const protocol = href.startsWith('https') ? 'https' : 'http'
     const host = href.split('/')[2]
     const ref = `${protocol}://${host}`
@@ -11,7 +11,7 @@ export function handleMobileWalletRedirection(properties: {
   }
 
   if (properties?.name === 'Coinbase Wallet' && !('coinbaseSolana' in window)) {
-    const href = window.location.href
+    const href = encodeURIComponent(window.location.href)
     window.location.href = `https://go.cb-w.com/dapp?cb_url=${href}`
   }
 }

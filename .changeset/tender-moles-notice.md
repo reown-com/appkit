@@ -1,6 +1,4 @@
 ---
-'@reown/appkit-core': patch
-'@apps/builder': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-solana': patch
@@ -10,6 +8,7 @@
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
 '@reown/appkit-common': patch
+'@reown/appkit-core': patch
 '@reown/appkit-experimental': patch
 '@reown/appkit-polyfills': patch
 '@reown/appkit-scaffold-ui': patch
@@ -17,6 +16,7 @@
 '@reown/appkit-siwx': patch
 '@reown/appkit-ui': patch
 '@reown/appkit-wallet': patch
+'@reown/appkit-wallet-button': patch
 ---
 
-Adds separate event for swap approval process
+Fix the chainId response when connecting to bitcoin with multichain adapters

@@ -19,7 +19,8 @@ import {
   ChainController,
   type Connector,
   StorageUtil,
-  CoreHelperUtil
+  CoreHelperUtil,
+  AlertController
 } from '@reown/appkit-core'
 import {
   SafeLocalStorage,
@@ -31,6 +32,7 @@ import { mockOptions } from './mocks/Options'
 import { UniversalAdapter } from '../universal-adapter/client'
 import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint'
 import { ProviderUtil } from '../store'
+import { ErrorUtil } from '@reown/appkit-utils'
 
 // Mock all controllers and UniversalAdapterClient
 vi.mock('@reown/appkit-core')
@@ -633,6 +635,53 @@ describe('Base', () => {
       expect(isClientSpy).toHaveBeenCalled()
     })
 
+    it('should not show unsupported chain UI when allowUnsupportedChain is true', async () => {
+      vi.mocked(ChainController).state = {
+        chains: new Map([['eip155', { namespace: 'eip155' }]]),
+        activeChain: 'eip155'
+      } as any
+      ;(appKit as any).caipNetworks = [{ id: 'eip155:1', chainNamespace: 'eip155' }]
+
+      vi.mocked(OptionsController).state = {
+        allowUnsupportedChain: true
+      } as any
+
+      const mockAdapter = {
+        getAccounts: vi.fn().mockResolvedValue([]),
+        syncConnection: vi.fn().mockResolvedValue({
+          chainId: 'eip155:999', // Unsupported chain
+          address: '0x123'
+        }),
+        getBalance: vi.fn().mockResolvedValue({ balance: '0', symbol: 'ETH' }),
+        getProfile: vi.fn().mockResolvedValue({}),
+        on: vi.fn(),
+        off: vi.fn(),
+        emit: vi.fn()
+      }
+
+      vi.spyOn(appKit as any, 'getAdapter').mockReturnValue(mockAdapter)
+
+      vi.spyOn(StorageUtil, 'setConnectedConnector').mockImplementation(vi.fn())
+
+      vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
+
+      vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation((key: string) => {
+        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
+          return 'test-wallet'
+        }
+        if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
+          return 'eip155:1'
+        }
+        return undefined
+      })
+
+      vi.mocked(ChainController.showUnsupportedChainUI).mockImplementation(vi.fn())
+
+      await (appKit as any).syncExistingConnection()
+
+      expect(ChainController.showUnsupportedChainUI).not.toHaveBeenCalled()
+    })
+
     it('should subscribe to providers', () => {
       const callback = vi.fn()
       const providers = {
@@ -862,6 +911,29 @@ describe('Base', () => {
           caipNetworks: expect.any(Array)
         })
       )
+    })
+  })
+
+  describe('Alert Errors', () => {
+    it('should handle alert errors based on error messages', () => {
+      const errors = [
+        {
+          alert: ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION,
+          message:
+            'Error: WebSocket connection closed abnormally with code: 3000 (Unauthorized: origin not allowed)'
+        },
+        {
+          alert: ErrorUtil.ALERT_ERRORS.JWT_TOKEN_NOT_VALID,
+          message:
+            'WebSocket connection closed abnormally with code: 3000 (JWT validation error: JWT Token is not yet valid:)'
+        }
+      ]
+
+      for (const { alert, message } of errors) {
+        // @ts-expect-error
+        appKit.handleAlertError(new Error(message))
+        expect(AlertController.open).toHaveBeenCalledWith(alert, 'error')
+      }
     })
   })
 })

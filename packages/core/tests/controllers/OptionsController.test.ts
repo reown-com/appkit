@@ -22,4 +22,9 @@ describe('OptionsController', () => {
     OptionsController.setSdkVersion('react-wagmi-3.0.0')
     expect(OptionsController.state.sdkVersion).toEqual('react-wagmi-3.0.0')
   })
+
+  it('should update state correctly on setAllowUnsupportedChain()', () => {
+    OptionsController.setAllowUnsupportedChain(true)
+    expect(OptionsController.state.allowUnsupportedChain).toEqual(true)
+  })
 })

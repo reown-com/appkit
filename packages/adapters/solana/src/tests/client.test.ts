@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { CaipNetworksUtil } from '@reown/appkit-utils'
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest'
+import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
 import { solana } from '@reown/appkit/networks'
 import type { ConnectorType, Provider } from '@reown/appkit-core'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
@@ -8,6 +8,7 @@ import type { ChainNamespace } from '@reown/appkit-common'
 import { SolanaAdapter } from '../client'
 import { SolStoreUtil } from '../utils/SolanaStoreUtil'
 import type { WalletStandardProvider } from '../providers/WalletStandardProvider'
+import { watchStandard } from '../utils/watchStandard'
 
 // Mock external dependencies
 vi.mock('@solana/web3.js', () => ({
@@ -25,6 +26,10 @@ vi.mock('../utils/SolanaStoreUtil', () => ({
     },
     setConnection: vi.fn()
   }
+}))
+
+vi.mock('../utils/watchStandard', () => ({
+  watchStandard: vi.fn()
 }))
 
 const mockProvider = {
@@ -191,5 +196,25 @@ describe('SolanaAdapter', () => {
 
       expect(result).toBeDefined()
     })
+  })
+
+  describe('SolanaAdapter - syncConnectors', () => {
+    it.each(['Phantom', 'Trust Wallet', 'Solflare', 'unknown wallet'])(
+      'should parse watchStandard ids from cloud',
+      walletName => {
+        adapter.syncConnectors({ features: { email: false, socials: false } } as any, {} as any)
+        const watchStandardSpy = watchStandard as Mock<typeof watchStandard>
+        const addProviderSpy = vi.spyOn(adapter as any, 'addConnector')
+
+        const callback = watchStandardSpy.mock.calls[0]![2]
+        callback({ name: walletName } as any)
+
+        expect(addProviderSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            id: PresetsUtil.ConnectorExplorerIds[walletName] || walletName
+          })
+        )
+      }
+    )
   })
 })
