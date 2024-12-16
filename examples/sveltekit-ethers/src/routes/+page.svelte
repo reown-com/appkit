@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { browser } from '$app/environment';
 	import { modal } from '$lib/appkit';
 	import { mainnet, polygon, base } from '@reown/appkit/networks';
 
@@ -10,11 +11,19 @@
 	let events = [];
 	let walletInfo = {};
 
+	// Only update theme in browser
+	$: if (browser) {
+		document.documentElement.setAttribute('data-theme', themeState.themeMode);
+	}
+
 	onMount(() => {
 		if (!modal) return;
 
-		// Set initial theme
-		document.body.className = themeState.themeMode;
+		// Set initial theme in browser
+		if (browser) {
+			document.documentElement.setAttribute('data-theme', themeState.themeMode);
+			document.body.className = themeState.themeMode;
+		}
 
 		// Subscribe to all state changes
 		modal.subscribeAccount((state) => {
@@ -31,7 +40,10 @@
 
 		modal.subscribeTheme((state) => {
 			themeState = state;
-			document.body.className = state.themeMode;
+			if (browser) {
+				document.documentElement.setAttribute('data-theme', state.themeMode);
+				document.body.className = state.themeMode;
+			}
 		});
 
 		modal.subscribeEvents((state) => {
@@ -47,6 +59,10 @@
 		const newTheme = themeState.themeMode === 'dark' ? 'light' : 'dark';
 		modal?.setThemeMode(newTheme);
 		themeState = { ...themeState, themeMode: newTheme };
+		if (browser) {
+			document.documentElement.setAttribute('data-theme', newTheme);
+			document.body.className = newTheme;
+		}
 	}
 
 	function switchNetwork() {
@@ -55,7 +71,7 @@
 	}
 </script>
 
-<div class="container">
+<div class="container" data-theme={themeState.themeMode}>
 	<h1>SvelteKit Ethers Example</h1>
 
 	<!-- AppKit UI Components -->
@@ -122,12 +138,12 @@
 	}
 
 	/* Theme styles */
-	:global(body.dark) {
+	:global([data-theme='dark']) {
 		background-color: #333;
 		color: #fff;
 	}
 
-	:global(body.light) {
+	:global([data-theme='light']) {
 		background-color: #fff;
 		color: #000;
 	}
@@ -171,25 +187,24 @@
 		font-size: 0.875rem;
 	}
 
-	/* Light theme button styles */
-	:global(body.light) button {
+	/* Button theme styles */
+	:global([data-theme='light']) button {
 		background: white;
 		color: black;
 		border-color: #ddd;
 	}
 
-	:global(body.light) button:hover {
+	:global([data-theme='light']) button:hover {
 		background: #f5f5f5;
 	}
 
-	/* Dark theme button styles */
-	:global(body.dark) button {
+	:global([data-theme='dark']) button {
 		background: #444;
 		color: white;
 		border-color: #666;
 	}
 
-	:global(body.dark) button:hover {
+	:global([data-theme='dark']) button:hover {
 		background: #555;
 	}
 

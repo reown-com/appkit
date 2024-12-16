@@ -26,6 +26,7 @@ if (browser) {
 			email: false,
 			socials: false
 		},
+		themeMode: 'light',
 		metadata: {
 			name: 'SvelteKit Example',
 			description: 'SvelteKit Example using Ethers adapter',
