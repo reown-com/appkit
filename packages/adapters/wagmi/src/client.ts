@@ -97,14 +97,12 @@ export class WagmiAdapter extends AdapterBlueprint {
     this.setupWatchers()
   }
 
-  /*
-   * We don't want to set auth provider or universal provider
-   * since it's already done wagmi
-   */
+  // We already set auth provider in wagmi
   override setAuthProvider() {
     return undefined
   }
 
+  // We already set universal provider in wagmi
   override setUniversalProvider() {
     return undefined
   }
@@ -398,10 +396,16 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public syncConnectors(options: AppKitOptions, appKit: AppKit) {
+    // Add wagmi connectors
     this.addWagmiConnectors(options, appKit)
 
+    // Add current wagmi connectors to chain adapter
     this.wagmiConfig.connectors.forEach(connector => this.addWagmiConnector(connector, options))
 
+    /*
+     * Watch for new connectors. This is useful if some EIP6963 connectors
+     * are added after the initial setup
+     */
     watchConnectors(this.wagmiConfig, {
       onChange: connectors =>
         connectors.forEach(connector => this.addWagmiConnector(connector, options))
