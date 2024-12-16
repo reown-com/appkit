@@ -1,8 +1,18 @@
-import { CoreHelperUtil, WcHelpersUtil, type AppKitOptions, type Provider } from '@reown/appkit'
+import {
+  CoreHelperUtil,
+  WcHelpersUtil,
+  type AppKit,
+  type AppKitOptions,
+  type Provider
+} from '@reown/appkit'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import type { BitcoinConnector } from './utils/BitcoinConnector.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
+import { SatsConnectConnector } from './connectors/SatsConnectConnector.js'
+import { WalletStandardConnector } from './connectors/WalletStandardConnector.js'
 import { WalletConnectProvider } from './utils/WalletConnectProvider.js'
+import { LeatherConnector } from './connectors/LeatherConnector.js'
+import { OKXConnector } from './connectors/OKXConnector.js'
 import { UnitsUtil } from './utils/UnitsUtil.js'
 import { BitcoinApi } from './utils/BitcoinApi.js'
 import { bitcoin } from '@reown/appkit/networks'
@@ -83,8 +93,40 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       accounts: accounts || []
     }
   }
-  override syncConnectors(_options?: AppKitOptions): void {
-    return undefined
+  override syncConnectors(_options?: AppKitOptions, appKit?: AppKit): void {
+    function getActiveNetwork() {
+      return appKit?.getCaipNetwork()
+    }
+
+    WalletStandardConnector.watchWallets({
+      callback: wallets => this.addConnector([wallets]),
+      requestedChains: this.networks
+    })
+
+    this.addConnector([
+      ...SatsConnectConnector.getWallets({
+        requestedChains: this.networks,
+        getActiveNetwork
+      }).map(connector => {
+        switch (connector.wallet.id) {
+          case LeatherConnector.ProviderId:
+            return new LeatherConnector({
+              connector
+            })
+
+          default:
+            return connector
+        }
+      })
+    ])
+
+    const okxConnector = OKXConnector.getWallet({
+      requestedChains: this.networks,
+      getActiveNetwork
+    })
+    if (okxConnector) {
+      this.addConnector([okxConnector])
+    }
   }
 
   override syncConnection(
