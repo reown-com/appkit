@@ -54,7 +54,8 @@ import {
   type ChainNamespace,
   type CaipAddress,
   type CaipNetworkId,
-  NetworkUtil
+  NetworkUtil,
+  ConstantsUtil
 } from '@reown/appkit-common'
 import type { AppKitOptions } from './utils/TypesUtil.js'
 import {
@@ -203,7 +204,7 @@ export class AppKit {
   ) {
     this.caipNetworks = this.extendCaipNetworks(options)
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
-    this.initControllers(options)
+    await this.initControllers(options)
     this.createClients()
     ChainController.initialize(options.adapters ?? [], this.caipNetworks)
     this.chainAdapters = this.createAdapters(options.adapters as unknown as AdapterBlueprint[])
@@ -636,7 +637,7 @@ export class AppKit {
   }
 
   // -- Private ------------------------------------------------------------------
-  private initControllers(
+  private async initControllers(
     options: AppKitOptions & {
       adapters?: ChainAdapter[]
     } & {
@@ -703,27 +704,25 @@ export class AppKit {
       OptionsController.setSIWX(options.siwx)
     }
 
-    /*
-     * Const evmAdapter = options.adapters?.find(
-     * adapter => adapter.namespace === ConstantsUtil.CHAIN.EVM
-     * )
-     *
-     * // Set the SIWE client for EVM chains
-     * if (evmAdapter) {
-     * if (options.siweConfig) {
-     *  if (options.siwx) {
-     *    throw new Error('Cannot set both `siweConfig` and `siwx` options')
-     *  }
-     *
-     *  const siwe = await import('@reown/appkit-siwe')
-     *  if (typeof siwe.mapToSIWX !== 'function') {
-     *    throw new Error('Please update the `@reown/appkit-siwe` package to the latest version')
-     *  }
-     *
-     *  OptionsController.setSIWX(siwe.mapToSIWX(options.siweConfig))
-     * }
-     * }
-     */
+    const evmAdapter = options.adapters?.find(
+      adapter => adapter.namespace === ConstantsUtil.CHAIN.EVM
+    )
+
+    // Set the SIWE client for EVM chains
+    if (evmAdapter) {
+      if (options.siweConfig) {
+        if (options.siwx) {
+          throw new Error('Cannot set both `siweConfig` and `siwx` options')
+        }
+
+        const siwe = await import('@reown/appkit-siwe')
+        if (typeof siwe.mapToSIWX !== 'function') {
+          throw new Error('Please update the `@reown/appkit-siwe` package to the latest version')
+        }
+
+        OptionsController.setSIWX(siwe.mapToSIWX(options.siweConfig))
+      }
+    }
   }
 
   private getDefaultMetaData() {
