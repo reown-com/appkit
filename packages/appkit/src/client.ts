@@ -906,20 +906,12 @@ export class AppKit {
         const provider = ProviderUtil.getProvider<UniversalProvider | Provider | W3mFrameProvider>(
           ChainController.state.activeChain as ChainNamespace
         )
-
         const providerType =
           ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
 
         await adapter?.disconnect({ provider, providerType })
 
         this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
-
-        StorageUtil.deleteConnectedConnector()
-        StorageUtil.deleteActiveCaipNetworkId()
-
-        ChainController.state.chains.forEach(chain => {
-          this.resetAccount(chain.namespace as ChainNamespace)
-        })
       },
       checkInstalled: (ids?: string[]) => {
         if (!ids) {
