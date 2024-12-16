@@ -97,6 +97,16 @@ export class WagmiAdapter extends AdapterBlueprint {
     this.setupWatchers()
   }
 
+  // Ignoring adding auth provider since we already add it in wagmi
+  override addAuthProvider() {
+    return undefined
+  }
+
+  // Ignoring adding universal provider since we already add it in wagmi
+  override addUniversalProvider() {
+    return undefined
+  }
+
   override async getAccounts(
     params: AdapterBlueprint.GetAccountsParams
   ): Promise<AdapterBlueprint.GetAccountsResult> {
@@ -360,10 +370,16 @@ export class WagmiAdapter extends AdapterBlueprint {
     watchConnectors(this.wagmiConfig, {
       onChange: async connectors => {
         const prepareConnectors = connectors.map(async connector => {
-          let provider: Provider | W3mFrameProvider | UniversalProvider | undefined = undefined
+          let provider: W3mFrameProvider | UniversalProvider | undefined = undefined
 
-          if (connector.id === ConstantsUtil.AUTH_CONNECTOR_ID) {
-            provider = (await connector.getProvider().catch(() => undefined)) as W3mFrameProvider
+          if (
+            connector.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID ||
+            connector.id === ConstantsUtil.AUTH_CONNECTOR_ID
+          ) {
+            provider = (await connector.getProvider().catch(() => undefined)) as
+              | W3mFrameProvider
+              | UniversalProvider
+              | undefined
           }
 
           const preparedConnector: ChainAdapterConnector = {

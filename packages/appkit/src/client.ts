@@ -19,6 +19,7 @@ import {
   type EstimateGasTransactionArgs,
   type AccountControllerState,
   type AdapterNetworkState,
+  ConstantsUtil as CoreConstantsUtil,
   type Features,
   SIWXUtil,
   type ConnectionStatus,
@@ -78,6 +79,7 @@ import type { AdapterBlueprint } from './adapters/ChainAdapterBlueprint.js'
 import UniversalProvider from '@walletconnect/universal-provider'
 import type { SessionTypes } from '@walletconnect/types'
 import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
+import { W3mFrameProviderSingleton } from './auth-provider/W3MFrameProviderSingleton.js'
 
 declare global {
   interface Window {
@@ -179,8 +181,6 @@ export class AppKit {
 
   private defaultCaipNetwork?: CaipNetwork
 
-  private isListeningToAuthProvider = false
-
   public constructor(
     options: AppKitOptions & {
       adapters?: ChainAdapter[]
@@ -207,7 +207,7 @@ export class AppKit {
     this.createClients()
     ChainController.initialize(options.adapters ?? [], this.caipNetworks)
     this.chainAdapters = this.createAdapters(options.adapters as unknown as AdapterBlueprint[])
-    this.initChainAdapters(options.adapters as unknown as AdapterBlueprint[])
+    this.initChainAdapters()
     this.syncRequestedNetworks()
     await this.initOrContinue()
     await this.syncExistingConnection()
@@ -658,8 +658,6 @@ export class AppKit {
       return
     }
 
-    this.adapters = options.adapters
-
     const defaultMetaData = this.getDefaultMetaData()
 
     if (!options.metadata && defaultMetaData) {
@@ -1108,12 +1106,6 @@ export class AppKit {
   }
 
   private async listenAuthConnector(provider: W3mFrameProvider) {
-    if (this.isListeningToAuthProvider) {
-      return
-    }
-
-    this.isListeningToAuthProvider = true
-
     this.setLoading(true)
     const isLoginEmailUsed = provider.getLoginEmailUsed()
     this.setLoading(isLoginEmailUsed)
@@ -1741,7 +1733,9 @@ export class AppKit {
       logger
     }
 
-    this.universalProvider = await UniversalProvider.init(universalProviderOptions)
+    const universalProvider = await UniversalProvider.init(universalProviderOptions)
+    this.universalProvider = universalProvider
+    this.listenWalletConnect()
   }
 
   public async getUniversalProvider() {
@@ -1754,6 +1748,38 @@ export class AppKit {
     }
 
     return this.universalProvider
+  }
+
+  private createAuthProvider() {
+    const isEmailEnabled =
+      this.options?.features?.email === undefined
+        ? CoreConstantsUtil.DEFAULT_FEATURES.email
+        : this.options?.features?.email
+    const isSocialsEnabled = this.options?.features?.socials
+      ? this.options?.features?.socials?.length > 0
+      : CoreConstantsUtil.DEFAULT_FEATURES.socials
+    if (this.options?.projectId && (isEmailEnabled || isSocialsEnabled)) {
+      this.authProvider = W3mFrameProviderSingleton.getInstance({
+        projectId: this.options.projectId,
+        onTimeout: () => {
+          AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
+        }
+      })
+      this.listenAuthConnector(this.authProvider)
+    }
+  }
+
+  private async createUniversalProviderForAdapter(chainNamespace: ChainNamespace) {
+    await this.getUniversalProvider()
+
+    if (this.universalProvider) {
+      this.chainAdapters?.[chainNamespace].addUniversalProvider(this.universalProvider)
+    }
+  }
+
+  private createAuthProviderForAdapter(chainNamespace: ChainNamespace) {
+    this.createAuthProvider()
+    this.chainAdapters?.[chainNamespace].addAuthProvider(this.authProvider as W3mFrameProvider)
   }
 
   private createAdapters(blueprints?: AdapterBlueprint[]) {
@@ -1770,6 +1796,12 @@ export class AppKit {
           projectId: this.options?.projectId,
           networks: this.caipNetworks
         })
+        if (this.universalProvider) {
+          adapters[namespace].addUniversalProvider(this.universalProvider)
+        }
+        if (this.authProvider) {
+          adapters[namespace].addAuthProvider(this.authProvider)
+        }
       } else {
         adapters[namespace] = new UniversalAdapter({
           namespace,
@@ -1791,38 +1823,38 @@ export class AppKit {
     }, {} as Adapters)
   }
 
-  private listenConnectors(chainNamespace: ChainNamespace) {
+  private createConnectorsForAdapter(namespace: ChainNamespace) {
+    this.createUniversalProviderForAdapter(namespace)
+    this.createAuthProviderForAdapter(namespace)
+  }
+
+  private onConnectors(chainNamespace: ChainNamespace) {
     const adapter = this.getAdapter(chainNamespace)
 
-    if (!adapter) {
-      return
-    }
-
-    adapter.on('addConnectors', connectors => {
-      const authConnector = connectors.find(c => c.id === UtilConstantsUtil.AUTH_CONNECTOR_ID)
-
-      if (authConnector) {
-        this.listenAuthConnector(authConnector.provider as W3mFrameProvider)
-      }
-
+    adapter?.on('addConnectors', connectors => {
       this.setConnectors(connectors)
+
+      const walletConnect = connectors.find(
+        ({ id }) => id === UtilConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
+      )
+
+      /*
+       * Sometimes w3m-modal doesn't have all connectors at once, and we need to check if
+       * walletConnect connector image exists and fetch the image if it doesn't.
+       */
+      if (walletConnect && !AssetUtil.getWalletImageById(walletConnect.imageId)) {
+        ApiController._fetchConnectorImage(walletConnect.imageId as string)
+      }
     })
   }
 
-  private initChainAdapters(blueprints: AdapterBlueprint[]) {
+  private initChainAdapters() {
     this.chainNamespaces.forEach(namespace => {
-      const blueprint = blueprints?.find(b => b.namespace === namespace)
-
-      this.listenConnectors(namespace)
-
-      if (blueprint) {
-        this.chainAdapters?.[namespace].syncConnectors(this.options, this)
-      }
-
+      this.onConnectors(namespace)
+      this.chainAdapters?.[namespace].syncConnectors(this.options, this)
+      this.createConnectorsForAdapter(namespace)
       this.listenAdapter(namespace)
     })
-
-    this.listenWalletConnect()
   }
 
   private setDefaultNetwork() {

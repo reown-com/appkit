@@ -20,6 +20,9 @@ import {
 import type { AppKitOptions } from '../utils/index.js'
 import type { AppKit } from '../client.js'
 import { snapshot } from 'valtio/vanilla'
+import type UniversalProvider from '@walletconnect/universal-provider'
+import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 type EventName =
   | 'disconnect'
@@ -89,6 +92,42 @@ export abstract class AdapterBlueprint<
    */
   public get networks(): CaipNetwork[] {
     return this.caipNetworks || []
+  }
+
+  /**
+   * Sets the universal provider for WalletConnect.
+   * @param {UniversalProvider} addUniversalProvider - The universal provider instance
+   */
+  public addUniversalProvider(universalProvider: UniversalProvider) {
+    this.addConnector([
+      {
+        id: ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID,
+        type: 'WALLET_CONNECT',
+        name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
+        provider: universalProvider,
+        imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
+        chain: this.namespace,
+        chains: []
+      } as unknown as Connector
+    ])
+  }
+
+  /**
+   * Sets the auth provider.
+   * @param {W3mFrameProvider} addAuthConnector - The auth provider instance
+   */
+  public addAuthProvider(authProvider: W3mFrameProvider): void {
+    this.addConnector([
+      {
+        id: ConstantsUtil.AUTH_CONNECTOR_ID,
+        type: 'AUTH',
+        name: 'Auth',
+        provider: authProvider,
+        imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.AUTH_CONNECTOR_ID],
+        chain: this.namespace,
+        chains: []
+      } as unknown as Connector
+    ])
   }
 
   /**
