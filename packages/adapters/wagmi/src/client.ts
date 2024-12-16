@@ -97,16 +97,6 @@ export class WagmiAdapter extends AdapterBlueprint {
     this.setupWatchers()
   }
 
-  // We already set auth provider in wagmi
-  override setAuthProvider() {
-    return undefined
-  }
-
-  // We already set universal provider in wagmi
-  override setUniversalProvider() {
-    return undefined
-  }
-
   override async getAccounts(
     params: AdapterBlueprint.GetAccountsParams
   ): Promise<AdapterBlueprint.GetAccountsResult> {
