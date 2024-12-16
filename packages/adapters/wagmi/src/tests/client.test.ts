@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { WagmiAdapter } from '../client'
-import type { Config } from '@wagmi/core'
+import type { Config, Connector } from '@wagmi/core'
 import {
   disconnect as wagmiDisconnect,
   getConnections,
@@ -16,11 +16,15 @@ import {
   waitForTransactionReceipt,
   getAccount,
   watchPendingTransactions,
-  http
+  http,
+  watchConnectors,
+  mock
 } from '@wagmi/core'
+import * as wagmiCore from '@wagmi/core'
 import { mainnet } from '@wagmi/core/chains'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type UniversalProvider from '@walletconnect/universal-provider'
+import { mockAppKit } from './mocks/AppKit'
 
 vi.mock('@wagmi/core', async () => {
   const actual = await vi.importActual('@wagmi/core')
@@ -95,6 +99,38 @@ describe('WagmiAdapter', () => {
       expect(adapter.projectId).toBe(mockProjectId)
       expect(adapter.adapterType).toBe('wagmi')
       expect(adapter.namespace).toBe('eip155')
+    })
+
+    it('should set wagmi connectors', () => {
+      const addWagmiConnector = vi.spyOn(adapter, 'addWagmiConnector' as any)
+
+      vi.spyOn(wagmiCore, 'watchConnectors').mockResolvedValue(vi.fn)
+      ;(adapter as any).syncConnectors({}, mockAppKit)
+
+      expect(addWagmiConnector).toHaveBeenCalledWith(
+        {
+          id: 'test-connector'
+        },
+        {}
+      )
+    })
+
+    it('should listen for wagmi connector changes', () => {
+      const onConnectors = vi.fn()
+
+      vi.spyOn(wagmiCore, 'watchConnectors').mockImplementation(onConnectors)
+      ;(adapter as any).syncConnectors({}, mockAppKit)
+
+      adapter.wagmiConfig._internal.connectors.setState(() => [
+        ...adapter.wagmiConfig.connectors,
+        adapter.wagmiConfig._internal.connectors.setup(mock({ accounts: ['0x123'] }))
+      ])
+
+      watchConnectors(adapter.wagmiConfig, {
+        onChange: onConnectors
+      })
+
+      expect(onConnectors).toHaveBeenCalled()
     })
 
     it('should not set info property for injected connector', () => {
