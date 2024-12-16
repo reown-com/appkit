@@ -368,42 +368,44 @@ export class WagmiAdapter extends AdapterBlueprint {
     return formatUnits(params.value, params.decimals)
   }
 
-  public syncConnectors(options: AppKitOptions, appKit: AppKit) {
-    watchConnectors(this.wagmiConfig, {
-      onChange: connectors => {
-        connectors.forEach(async connector => {
-          let provider: W3mFrameProvider | UniversalProvider | undefined = undefined
+  private async addWagmiConnector(connector: Connector, options: AppKitOptions) {
+    let provider: W3mFrameProvider | UniversalProvider | undefined = undefined
 
-          if (
-            connector.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID ||
-            connector.id === ConstantsUtil.AUTH_CONNECTOR_ID
-          ) {
-            provider = (await connector.getProvider().catch(() => undefined)) as
-              | W3mFrameProvider
-              | UniversalProvider
-              | undefined
-          }
+    const shouldFetchProvider =
+      connector.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID ||
+      connector.id === ConstantsUtil.AUTH_CONNECTOR_ID
 
-          this.addConnector({
-            id: connector.id,
-            explorerId: PresetsUtil.ConnectorExplorerIds[connector.id],
-            imageUrl: options?.connectorImages?.[connector.id] ?? connector.icon,
-            name: PresetsUtil.ConnectorNamesMap[connector.id] ?? connector.name,
-            imageId: PresetsUtil.ConnectorImageIds[connector.id],
-            type: PresetsUtil.ConnectorTypesMap[connector.type] ?? 'EXTERNAL',
-            info:
-              connector.id === ConstantsUtil.INJECTED_CONNECTOR_ID
-                ? undefined
-                : { rdns: connector.id },
-            provider,
-            chain: this.namespace as ChainNamespace,
-            chains: []
-          })
-        })
-      }
+    if (shouldFetchProvider) {
+      provider = (await connector.getProvider().catch(() => undefined)) as
+        | W3mFrameProvider
+        | UniversalProvider
+        | undefined
+    }
+
+    this.addConnector({
+      id: connector.id,
+      explorerId: PresetsUtil.ConnectorExplorerIds[connector.id],
+      imageUrl: options?.connectorImages?.[connector.id] ?? connector.icon,
+      name: PresetsUtil.ConnectorNamesMap[connector.id] ?? connector.name,
+      imageId: PresetsUtil.ConnectorImageIds[connector.id],
+      type: PresetsUtil.ConnectorTypesMap[connector.type] ?? 'EXTERNAL',
+      info:
+        connector.id === ConstantsUtil.INJECTED_CONNECTOR_ID ? undefined : { rdns: connector.id },
+      provider,
+      chain: this.namespace as ChainNamespace,
+      chains: []
     })
+  }
 
+  public syncConnectors(options: AppKitOptions, appKit: AppKit) {
     this.addWagmiConnectors(options, appKit)
+
+    this.wagmiConfig.connectors.forEach(connector => this.addWagmiConnector(connector, options))
+
+    watchConnectors(this.wagmiConfig, {
+      onChange: connectors =>
+        connectors.forEach(connector => this.addWagmiConnector(connector, options))
+    })
   }
 
   public async syncConnection(
