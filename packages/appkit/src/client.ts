@@ -1796,12 +1796,6 @@ export class AppKit {
           projectId: this.options?.projectId,
           networks: this.caipNetworks
         })
-        if (this.universalProvider) {
-          adapters[namespace].addUniversalProvider(this.universalProvider)
-        }
-        if (this.authProvider) {
-          adapters[namespace].addAuthProvider(this.authProvider)
-        }
       } else {
         adapters[namespace] = new UniversalAdapter({
           namespace,
