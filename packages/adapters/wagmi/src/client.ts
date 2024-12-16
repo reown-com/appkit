@@ -404,7 +404,7 @@ export class WagmiAdapter extends AdapterBlueprint {
 
     /*
      * Watch for new connectors. This is useful if some EIP6963 connectors
-     * are added after the initial setup
+     * that are added after the initial setup
      */
     watchConnectors(this.wagmiConfig, {
       onChange: connectors =>
