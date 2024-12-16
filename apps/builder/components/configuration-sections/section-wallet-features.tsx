@@ -40,10 +40,7 @@ export function SectionWalletFeatures() {
         updateFeatures({ swaps: !config.features.swaps })
         return
       case 'Receive':
-        updateFeatures({ receive: !config.features.receive })
-        return
       case 'Send':
-        updateFeatures({ send: !config.features.send })
         return
       default:
         return
