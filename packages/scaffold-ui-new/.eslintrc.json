@@ -1,7 +1,0 @@
-{
-  "extends": ["plugin:require-extensions/recommended", "../../.eslintrc.json"],
-  "plugins": ["require-extensions"],
-  "rules": {
-    "max-classes-per-file": "off"
-  }
-}
