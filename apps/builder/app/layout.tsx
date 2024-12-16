@@ -39,15 +39,14 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const cookies = headers().get('cookie')
 
   return (
-    <html lang="en">
-      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-        <Toaster />
-        <AppKitProvider cookies={cookies}>
-          <ContextProvider>
-            <body className={cn(khTeka.className)}>{children}</body>
-          </ContextProvider>
-        </AppKitProvider>
-      </ThemeProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className={cn(khTeka.className)}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+          <AppKitProvider cookies={cookies}>
+            <ContextProvider>{children}</ContextProvider>
+          </AppKitProvider>
+        </ThemeProvider>
+      </body>
     </html>
   )
 }
