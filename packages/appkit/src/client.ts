@@ -55,7 +55,8 @@ import {
   type ChainNamespace,
   type CaipAddress,
   type CaipNetworkId,
-  NetworkUtil
+  NetworkUtil,
+  ParseUtil
 } from '@reown/appkit-common'
 import type { AppKitOptions } from './utils/TypesUtil.js'
 import {
@@ -1300,12 +1301,12 @@ export class AppKit {
         if (WcHelpersUtil.isSessionEventData(callbackData)) {
           const { name, data } = callbackData.params.event
 
-          if (name === 'accountsChanged' && Array.isArray(data)) {
-            const caipAddress = CoreHelperUtil.parseCaipAddress(data[0])
-
-            if (caipAddress) {
-              this.syncAccount(caipAddress)
-            }
+          if (
+            name === 'accountsChanged' &&
+            Array.isArray(data) &&
+            CoreHelperUtil.isCaipAddress(data[0])
+          ) {
+            this.syncAccount(ParseUtil.parseCaipAddress(data[0]))
           }
         }
       })
