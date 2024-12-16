@@ -1,4 +1,4 @@
-import { WcHelpersUtil, AppKit, type AppKitOptions } from '@reown/appkit'
+import { WcHelpersUtil, type AppKit, type AppKitOptions } from '@reown/appkit'
 import {
   ConstantsUtil as CommonConstantsUtil,
   type CaipNetwork,
@@ -100,36 +100,32 @@ export class SolanaAdapter extends AdapterBlueprint {
         chains: this.caipNetworks as CaipNetwork[]
       })
 
-      this.addConnector([
-        {
-          id: ConstantsUtil.AUTH_CONNECTOR_ID,
-          type: 'AUTH',
-          provider: this.authProvider as unknown as W3mFrameProvider,
-          name: 'Auth',
-          chain: this.namespace as ChainNamespace,
-          chains: []
-        }
-      ])
+      this.addConnector({
+        id: ConstantsUtil.AUTH_CONNECTOR_ID,
+        type: 'AUTH',
+        provider: this.authProvider as unknown as W3mFrameProvider,
+        name: 'Auth',
+        chain: this.namespace as ChainNamespace,
+        chains: []
+      })
     }
 
     // Add Coinbase Wallet if available
     if (typeof window !== 'undefined' && 'coinbaseSolana' in window) {
-      this.addConnector([
-        {
-          id: 'coinbaseWallet',
-          type: 'EXTERNAL',
-          // @ts-expect-error window.coinbaseSolana exists
-          provider: new CoinbaseWalletProvider({
-            provider: window.coinbaseSolana as SolanaCoinbaseWallet,
-            chains: this.caipNetworks as CaipNetwork[],
-            getActiveChain: () => appKit.getCaipNetwork(this.namespace) as CaipNetwork
-          }),
-          name: 'Coinbase Wallet',
-          chain: this.namespace as ChainNamespace,
-          explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID],
-          chains: []
-        }
-      ])
+      this.addConnector({
+        id: 'coinbaseWallet',
+        type: 'EXTERNAL',
+        // @ts-expect-error window.coinbaseSolana exists
+        provider: new CoinbaseWalletProvider({
+          provider: window.coinbaseSolana as SolanaCoinbaseWallet,
+          chains: this.caipNetworks as CaipNetwork[],
+          getActiveChain: () => appKit.getCaipNetwork(this.namespace) as CaipNetwork
+        }),
+        name: 'Coinbase Wallet',
+        chain: this.namespace as ChainNamespace,
+        explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID],
+        chains: []
+      })
     }
 
     // Watch for standard wallet adapters
@@ -138,18 +134,16 @@ export class SolanaAdapter extends AdapterBlueprint {
       () => appKit.getCaipNetwork(this.namespace),
       (...providers: WalletStandardProvider[]) => {
         providers.forEach(provider => {
-          this.addConnector([
-            {
-              id: PresetsUtil.ConnectorExplorerIds[provider.name] || provider.name,
-              type: 'ANNOUNCED',
-              provider: provider as unknown as Provider,
-              imageUrl: provider.icon,
-              name: provider.name,
-              chain: CommonConstantsUtil.CHAIN.SOLANA,
-              explorerId: PresetsUtil.ConnectorExplorerIds[provider.name],
-              chains: []
-            }
-          ])
+          this.addConnector({
+            id: PresetsUtil.ConnectorExplorerIds[provider.name] || provider.name,
+            type: 'ANNOUNCED',
+            provider: provider as unknown as Provider,
+            imageUrl: provider.icon,
+            name: provider.name,
+            chain: CommonConstantsUtil.CHAIN.SOLANA,
+            explorerId: PresetsUtil.ConnectorExplorerIds[provider.name],
+            chains: []
+          })
         })
       }
     )

@@ -1,4 +1,4 @@
-import { AdapterBlueprint, type ChainAdapterConnector } from '@reown/appkit/adapters'
+import { AdapterBlueprint } from '@reown/appkit/adapters'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
@@ -257,36 +257,30 @@ export class Ethers5Adapter extends AdapterBlueprint {
       this.listenInjectedConnector(true)
     }
 
-    const validConnectors = Object.keys(this.ethersConfig || {}).filter(
+    const connectors = Object.keys(this.ethersConfig || {}).filter(
       key => key !== 'metadata' && key !== 'EIP6963'
     )
 
-    const connectors = validConnectors
-      .map(connector => {
-        const key = connector === 'coinbase' ? 'coinbaseWalletSDK' : connector
+    connectors.forEach(connector => {
+      const key = connector === 'coinbase' ? 'coinbaseWalletSDK' : connector
 
-        const isInjected = connector === ConstantsUtil.INJECTED_CONNECTOR_ID
+      const injectedConnector = connector === ConstantsUtil.INJECTED_CONNECTOR_ID
 
-        if (this.namespace) {
-          return {
-            id: key,
-            explorerId: PresetsUtil.ConnectorExplorerIds[key],
-            imageUrl: options?.connectorImages?.[key],
-            name: PresetsUtil.ConnectorNamesMap[key],
-            imageId: PresetsUtil.ConnectorImageIds[key],
-            type: PresetsUtil.ConnectorTypesMap[key] ?? 'EXTERNAL',
-            info: isInjected ? undefined : { rdns: key },
-            chain: this.namespace,
-            chains: [],
-            provider: this.ethersConfig?.[connector as keyof ProviderType] as Provider
-          } as ChainAdapterConnector
-        }
-
-        return undefined
-      })
-      .filter(Boolean)
-
-    this.addConnector(connectors as ChainAdapterConnector[])
+      if (this.namespace) {
+        this.addConnector({
+          id: key,
+          explorerId: PresetsUtil.ConnectorExplorerIds[key],
+          imageUrl: options?.connectorImages?.[key],
+          name: PresetsUtil.ConnectorNamesMap[key],
+          imageId: PresetsUtil.ConnectorImageIds[key],
+          type: PresetsUtil.ConnectorTypesMap[key] ?? 'EXTERNAL',
+          info: injectedConnector ? undefined : { rdns: key },
+          chain: this.namespace,
+          chains: [],
+          provider: this.ethersConfig?.[connector as keyof ProviderType] as Provider
+        })
+      }
+    })
   }
 
   public async connectWalletConnect(onUri: (uri: string) => void) {
@@ -318,18 +312,16 @@ export class Ethers5Adapter extends AdapterBlueprint {
         const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EIP6963_CONNECTOR_ID]
 
         if (type && this.namespace) {
-          this.addConnector([
-            {
-              id: info?.rdns || '',
-              type,
-              imageUrl: info?.icon,
-              name: info?.name,
-              provider,
-              info,
-              chain: this.namespace,
-              chains: []
-            }
-          ])
+          this.addConnector({
+            id: info?.rdns || '',
+            type,
+            imageUrl: info?.icon,
+            name: info?.name,
+            provider,
+            info,
+            chain: this.namespace,
+            chains: []
+          })
         }
       }
     }

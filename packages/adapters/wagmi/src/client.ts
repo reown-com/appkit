@@ -1,6 +1,6 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type { AppKitNetwork, BaseNetwork, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
-import { AdapterBlueprint, type ChainAdapterConnector } from '@reown/appkit/adapters'
+import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { CoreHelperUtil } from '@reown/appkit-core'
 import {
   connect,
@@ -97,13 +97,15 @@ export class WagmiAdapter extends AdapterBlueprint {
     this.setupWatchers()
   }
 
-  // Ignoring adding auth provider since we already add it in wagmi
-  override addAuthProvider() {
+  /*
+   * We don't want to set auth provider or universal provider
+   * since it's already done wagmi
+   */
+  override setAuthProvider() {
     return undefined
   }
 
-  // Ignoring adding universal provider since we already add it in wagmi
-  override addUniversalProvider() {
+  override setUniversalProvider() {
     return undefined
   }
 
@@ -368,8 +370,8 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   public syncConnectors(options: AppKitOptions, appKit: AppKit) {
     watchConnectors(this.wagmiConfig, {
-      onChange: async connectors => {
-        const prepareConnectors = connectors.map(async connector => {
+      onChange: connectors => {
+        connectors.forEach(async connector => {
           let provider: W3mFrameProvider | UniversalProvider | undefined = undefined
 
           if (
@@ -382,7 +384,7 @@ export class WagmiAdapter extends AdapterBlueprint {
               | undefined
           }
 
-          const preparedConnector: ChainAdapterConnector = {
+          this.addConnector({
             id: connector.id,
             explorerId: PresetsUtil.ConnectorExplorerIds[connector.id],
             imageUrl: options?.connectorImages?.[connector.id] ?? connector.icon,
@@ -396,14 +398,8 @@ export class WagmiAdapter extends AdapterBlueprint {
             provider,
             chain: this.namespace as ChainNamespace,
             chains: []
-          }
-
-          return preparedConnector
+          })
         })
-
-        const preparedConnectors = await Promise.all(prepareConnectors)
-
-        this.addConnector(preparedConnectors)
       }
     })
 

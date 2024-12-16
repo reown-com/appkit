@@ -14,31 +14,28 @@ import {
   type Connector as AppKitConnector,
   type AuthConnector,
   type Metadata,
-  type Tokens,
-  type ConnectorWithProviders
+  type Tokens
 } from '@reown/appkit-core'
+import type UniversalProvider from '@walletconnect/universal-provider'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
+import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { AppKitOptions } from '../utils/index.js'
 import type { AppKit } from '../client.js'
 import { snapshot } from 'valtio/vanilla'
-import type UniversalProvider from '@walletconnect/universal-provider'
-import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
-import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 type EventName =
   | 'disconnect'
   | 'accountChanged'
   | 'switchNetwork'
+  | 'connectors'
   | 'pendingTransactions'
-  | 'addConnectors'
-
 type EventData = {
   disconnect: () => void
   accountChanged: { address: string; chainId?: number | string }
   switchNetwork: { address?: string; chainId: number | string }
+  connectors: ChainAdapterConnector[]
   pendingTransactions: () => void
-  addConnectors: ConnectorWithProviders[]
 }
-
 type EventCallback<T extends EventName> = (data: EventData[T]) => void
 
 /**
@@ -52,7 +49,7 @@ export abstract class AdapterBlueprint<
   public caipNetworks?: CaipNetwork[]
   public projectId?: string
 
-  protected allConnectors: Connector[] = []
+  protected availableConnectors: Connector[] = []
   protected connector?: Connector
   protected provider?: Connector['provider']
 
@@ -83,7 +80,7 @@ export abstract class AdapterBlueprint<
    * @returns {Connector[]} An array of available connectors
    */
   public get connectors(): Connector[] {
-    return this.allConnectors
+    return this.availableConnectors
   }
 
   /**
@@ -96,45 +93,41 @@ export abstract class AdapterBlueprint<
 
   /**
    * Sets the universal provider for WalletConnect.
-   * @param {UniversalProvider} addUniversalProvider - The universal provider instance
+   * @param {UniversalProvider} universalProvider - The universal provider instance
    */
-  public addUniversalProvider(universalProvider: UniversalProvider) {
-    this.addConnector([
-      {
-        id: ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID,
-        type: 'WALLET_CONNECT',
-        name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
-        provider: universalProvider,
-        imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
-        chain: this.namespace,
-        chains: []
-      } as unknown as Connector
-    ])
+  public setUniversalProvider(universalProvider: UniversalProvider) {
+    this.addConnector({
+      id: ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID,
+      type: 'WALLET_CONNECT',
+      name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
+      provider: universalProvider,
+      imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
+      chain: this.namespace,
+      chains: []
+    } as unknown as Connector)
   }
 
   /**
    * Sets the auth provider.
-   * @param {W3mFrameProvider} addAuthConnector - The auth provider instance
+   * @param {W3mFrameProvider} authProvider - The auth provider instance
    */
-  public addAuthProvider(authProvider: W3mFrameProvider): void {
-    this.addConnector([
-      {
-        id: ConstantsUtil.AUTH_CONNECTOR_ID,
-        type: 'AUTH',
-        name: 'Auth',
-        provider: authProvider,
-        imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.AUTH_CONNECTOR_ID],
-        chain: this.namespace,
-        chains: []
-      } as unknown as Connector
-    ])
+  public setAuthProvider(authProvider: W3mFrameProvider): void {
+    this.addConnector({
+      id: ConstantsUtil.AUTH_CONNECTOR_ID,
+      type: 'AUTH',
+      name: 'Auth',
+      provider: authProvider,
+      imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.AUTH_CONNECTOR_ID],
+      chain: this.namespace,
+      chains: []
+    } as unknown as Connector)
   }
 
   /**
    * Adds one or more connectors to the available connectors list.
    * @param {...Connector} connectors - The connectors to add
    */
-  protected addConnector(connectors: Connector[]) {
+  protected addConnector(...connectors: Connector[]) {
     if (connectors.some(connector => connector.id === 'ID_AUTH')) {
       const authConnector = connectors.find(
         connector => connector.id === 'ID_AUTH'
@@ -158,8 +151,7 @@ export abstract class AdapterBlueprint<
     }
 
     const connectorsAdded = new Set<string>()
-
-    this.allConnectors = [...this.allConnectors, ...connectors].filter(connector => {
+    this.availableConnectors = [...connectors, ...this.availableConnectors].filter(connector => {
       if (connectorsAdded.has(connector.id)) {
         return false
       }
@@ -169,7 +161,7 @@ export abstract class AdapterBlueprint<
       return true
     })
 
-    this.emit('addConnectors', this.allConnectors)
+    this.emit('connectors', this.availableConnectors)
   }
 
   protected setStatus(status: AccountControllerState['status'], chainNamespace?: ChainNamespace) {

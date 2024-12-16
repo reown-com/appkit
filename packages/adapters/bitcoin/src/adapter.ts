@@ -99,11 +99,11 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     }
 
     WalletStandardConnector.watchWallets({
-      callback: wallets => this.addConnector([wallets]),
+      callback: this.addConnector.bind(this),
       requestedChains: this.networks
     })
 
-    this.addConnector([
+    this.addConnector(
       ...SatsConnectConnector.getWallets({
         requestedChains: this.networks,
         getActiveNetwork
@@ -118,14 +118,14 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
             return connector
         }
       })
-    ])
+    )
 
     const okxConnector = OKXConnector.getWallet({
       requestedChains: this.networks,
       getActiveNetwork
     })
     if (okxConnector) {
-      this.addConnector([okxConnector])
+      this.addConnector(okxConnector)
     }
   }
 

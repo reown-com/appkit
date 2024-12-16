@@ -7,7 +7,7 @@ import { ThemeController } from './ThemeController.js'
 import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
-export interface ConnectorWithProviders extends Connector {
+interface ConnectorWithProviders extends Connector {
   connectors?: Connector[]
 }
 export interface ConnectorControllerState {
@@ -158,7 +158,6 @@ export const ConnectorController = {
   getAuthConnector(): AuthConnector | undefined {
     const activeNamespace = ChainController.state.activeChain
     const authConnector = state.connectors.find(c => c.id === 'ID_AUTH')
-
     if (!authConnector) {
       return undefined
     }

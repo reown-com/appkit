@@ -1764,13 +1764,13 @@ export class AppKit {
     await this.getUniversalProvider()
 
     if (this.universalProvider) {
-      this.chainAdapters?.[chainNamespace].addUniversalProvider(this.universalProvider)
+      this.chainAdapters?.[chainNamespace].setUniversalProvider(this.universalProvider)
     }
   }
 
   private createAuthProviderForAdapter(chainNamespace: ChainNamespace) {
     this.createAuthProvider()
-    this.chainAdapters?.[chainNamespace].addAuthProvider(this.authProvider as W3mFrameProvider)
+    this.chainAdapters?.[chainNamespace].setAuthProvider(this.authProvider as W3mFrameProvider)
   }
 
   private createAdapters(blueprints?: AdapterBlueprint[]) {
@@ -1816,7 +1816,7 @@ export class AppKit {
   private onConnectors(chainNamespace: ChainNamespace) {
     const adapter = this.getAdapter(chainNamespace)
 
-    adapter?.on('addConnectors', connectors => {
+    adapter?.on('connectors', connectors => {
       this.setConnectors(connectors)
 
       const walletConnect = connectors.find(
