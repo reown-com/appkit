@@ -138,13 +138,18 @@ export const ChainController = {
     }
   },
 
-  initialStateFromCookies(adapters: ChainAdapter[], caipNetworks: CaipNetwork[] | undefined) {
-    // const activeNamespace = CookiesStorage.getItem(SafeLocalStorageKeys.ACTIVE_NAMESPACE) as ChainNamespace | undefined
-    // const activeChainId = CookiesStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
-    // const activeAdapter = activeNamespace ? state.chains.get(activeNamespace) : undefined
-    // if(activeAdapter) {
-    //     this.setActiveNamespace(activeNamespace)
-    // }
+  initialStateFromCookies(caipNetworks: CaipNetwork[] | undefined) {
+    const activeNamespace = CookiesStorage.getItem(SafeLocalStorageKeys.ACTIVE_NAMESPACE) as
+      | ChainNamespace
+      | undefined
+    const activeCaipNetworkId = CookiesStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
+    const activeAdapter = activeNamespace ? state.chains.get(activeNamespace) : undefined
+    const activeCaipNetwork = caipNetworks?.find(
+      network => network.caipNetworkId === activeCaipNetworkId
+    )
+    if (activeAdapter) {
+      this.setActiveCaipNetwork(activeCaipNetwork)
+    }
   },
 
   setAdapterNetworkState(chain: ChainNamespace, props: Partial<AdapterNetworkState>) {
