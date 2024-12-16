@@ -276,6 +276,13 @@ export const SIWXUtil = {
         AccountController.state.preferredAccountType ===
         W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     }
+  },
+  async clearSessions() {
+    const siwx = this.getSIWX()
+
+    if (siwx) {
+      await siwx.setSessions([])
+    }
   }
 }
 
