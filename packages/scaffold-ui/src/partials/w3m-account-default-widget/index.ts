@@ -361,7 +361,12 @@ export class W3mAccountDefaultWidget extends LitElement {
             truncate: this.profileName ? 'end' : 'middle'
           })}
         </wui-text>
-        <wui-icon size="sm" color="fg-200" name="copy" id="copy-address"></wui-icon>
+        <wui-icon-link
+          size="md"
+          icon="copy"
+          iconColor="fg-200"
+          @click=${this.onCopyAddress}
+        ></wui-icon-link>
       </wui-flex>
     </wui-flex>`
   }
