@@ -12,6 +12,9 @@ import { AccountController } from '../controllers/AccountController.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 import { StorageUtil } from './StorageUtil.js'
 
+/**
+ * SIWXUtil holds the methods to interact with the SIWX plugin and must be called internally on AppKit.
+ */
 export const SIWXUtil = {
   getSIWX() {
     return OptionsController.state.siwx
@@ -284,18 +287,71 @@ export const SIWXUtil = {
 }
 
 /**
- * @experimental - This is an experimental feature and it is not production ready
+ * This interface represents the SIWX configuration plugin, which is used to create and manage SIWX messages and sessions.
+ * AppKit provides predefined implementations for this interface through `@reown/appkit-siwx`.
+ * You may use it to create a custom implementation following your needs, but watch close for the methods requirements.
  */
 export interface SIWXConfig {
+  /**
+   * This method will be called to create a new message to be signed by the user.
+   *
+   * Constraints:
+   * - The message MUST be unique and contain all the necessary information to verify the user's identity.
+   * - SIWXMessage.toString() method MUST be implemented to return the message string.
+   *
+   * @param input SIWXMessage.Input
+   * @returns SIWXMessage
+   */
   createMessage: (input: SIWXMessage.Input) => Promise<SIWXMessage>
+
+  /**
+   * This method will be called to store a new single session.
+   *
+   * Constraints:
+   * - This method MUST verify if the session is valid and store it in the storage successfully.
+   *
+   * @param session SIWXSession
+   */
   addSession: (session: SIWXSession) => Promise<void>
+
+  /**
+   * This method will be called to revoke all the sessions stored for a specific chain and address.
+   *
+   * Constraints:
+   * - This method MUST delete all the sessions stored for the specific chain and address successfully.
+   *
+   * @param chainId CaipNetworkId
+   * @param address string
+   */
   revokeSession: (chainId: CaipNetworkId, address: string) => Promise<void>
+
+  /**
+   * This method will be called to replace all the sessions in the storage with the new ones.
+   *
+   * Constraints:
+   * - This method MUST verify all the sessions before storing them in the storage;
+   * - This method MUST replace all the sessions in the storage with the new ones succesfully otherwise it MUST throw an error.
+   *
+   * @param sessions SIWXSession[]
+   */
   setSessions: (sessions: SIWXSession[]) => Promise<void>
+
+  /**
+   * This method will be called to get all the sessions stored for a specific chain and address.
+   *
+   * Constraints:
+   * - This method MUST return only sessions that are verified and valid;
+   * - This method MUST NOT return expired sessions.
+   *
+   * @param chainId CaipNetworkId
+   * @param address string
+   * @returns
+   */
   getSessions: (chainId: CaipNetworkId, address: string) => Promise<SIWXSession[]>
 }
 
 /**
- * @experimental - This is an experimental feature and it is not production ready
+ * This interface represents a SIWX session, which is used to store the user's identity information.
  */
 export interface SIWXSession {
   data: SIWXMessage.Data
@@ -305,18 +361,20 @@ export interface SIWXSession {
 }
 
 /**
- * @experimental - This is an experimental feature and it is not production ready
+ * This interface represents a SIWX message, which is used to create a message to be signed by the user.
+ * This must contain the necessary information to verify the user's identity and how to generate the string message.
  */
 export interface SIWXMessage extends SIWXMessage.Data, SIWXMessage.Methods {}
 
 export namespace SIWXMessage {
   /**
-   * @experimental - This is an experimental feature and it is not production ready
+   * This interface represents the SIWX message data, which is used to create a message to be signed by the user.
    */
   export interface Data extends Input, Metadata, Identifier {}
 
   /**
-   * @experimental - This is an experimental feature and it is not production ready
+   * This interface represents the SIWX message input.
+   * Here must contain what is different for each user of the application.
    */
   export interface Input {
     accountAddress: string
@@ -325,7 +383,8 @@ export namespace SIWXMessage {
   }
 
   /**
-   * @experimental - This is an experimental feature and it is not production ready
+   * This interface represents the SIWX message metadata.
+   * Here must contain the main data related to the app.
    */
   export interface Metadata {
     domain: string
@@ -337,7 +396,8 @@ export namespace SIWXMessage {
   }
 
   /**
-   * @experimental - This is an experimental feature and it is not production ready
+   * This interface represents the SIWX message identifier.
+   * Here must contain the request id and the timestamps.
    */
   export interface Identifier {
     requestId?: string
@@ -346,18 +406,23 @@ export namespace SIWXMessage {
   }
 
   /**
-   * @experimental - This is an experimental feature and it is not production ready
+   * This interface represents the SIWX message methods.
+   * Here must contain the method to generate the message string and any other method performed by the SIWX message.
    */
   export interface Methods {
     toString: () => string
   }
 
   /**
-   * @experimental - This is an experimental feature and it is not production ready
+   * The timestamp is a UTC string representing the time in ISO 8601 format.
    */
   export type Timestamp = string
 }
 
+/**
+ * The Cacao interface is a reference of CAIP-74 and represents a chain-agnostic Object Capability (OCAP).
+ * https://chainagnostic.org/CAIPs/caip-74
+ */
 export interface Cacao {
   h: Cacao.Header
   p: Cacao.Payload
