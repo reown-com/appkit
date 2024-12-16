@@ -1,4 +1,4 @@
-import { ConstantsUtil, type CaipNetworkId } from '@reown/appkit-common'
+import { type CaipNetworkId } from '@reown/appkit-common'
 import {
   AccountController,
   ApiController,
@@ -85,11 +85,11 @@ export class CloudAuthSIWX implements SIWXConfig {
     key: Key,
     params: CloudAuthSIWX.Requests[Key]['body']
   ): Promise<CloudAuthSIWX.Requests[Key]['response']> {
-    const { projectId, st, sv } = this.getSDKProperties()
+    const { st, sv } = this.getSDKProperties()
     const token = this.getStorageToken()
 
     const response = await fetch(
-      `${ConstantsUtil.W3M_API_URL}/auth/v1/${key}?projectId=${projectId}&st=${st}&sv=${sv}`,
+      `https://api-web3modal-staging.walletconnect-v1-bridge.workers.dev/auth/v1/${key}?projectId=f5b3ae2fcb87d796d3e565dba18047e2&st=${st}&sv=${sv}`,
       {
         method: RequestMethod[key],
         body: params ? JSON.stringify(params) : undefined,
