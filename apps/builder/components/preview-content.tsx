@@ -2,7 +2,6 @@
 
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
-import Image from 'next/image'
 import { Link1Icon, ResetIcon } from '@radix-ui/react-icons'
 import { useAppKitContext } from '@/hooks/use-appkit'
 
