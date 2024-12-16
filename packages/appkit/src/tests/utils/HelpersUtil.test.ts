@@ -205,4 +205,27 @@ describe('WcHelpersUtil', () => {
       ])
     })
   })
+
+  describe('isSessionEventData', () => {
+    test.each([
+      [undefined, false],
+      [{}, false],
+      [
+        {
+          id: 1734112958243866,
+          topic: 'b2cb2748499532d9c307846c444b364dd881c959d9a080e30d63b6a76270a0f8',
+          params: {
+            event: {
+              name: 'accountsChanged',
+              data: ['eip155:1:0x53F31e8972Ebddac1553E37887C25C1b748485A6']
+            },
+            chainId: 'eip155:1'
+          }
+        },
+        true
+      ]
+    ])('should validate session event data', (data, expected) => {
+      expect(WcHelpersUtil.isSessionEventData(data)).toBe(expected)
+    })
+  })
 })
