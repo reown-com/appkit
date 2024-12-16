@@ -1,11 +1,10 @@
-// place files you want to import through the `$lib` alias in this folder.
 import { createAppKit } from '@reown/appkit'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { arbitrum, mainnet, optimism, polygon } from '@reown/appkit/networks'
 import { browser } from '$app/environment'
 
 // Only initialize in browser environment
-let modal: ReturnType<typeof createAppKit> | undefined
+let modal: ReturnType<typeof createAppKit> | undefined = undefined
 
 if (browser) {
   const projectId = import.meta.env.VITE_PROJECT_ID
