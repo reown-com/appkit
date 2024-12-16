@@ -204,7 +204,7 @@ export class AppKit {
   ) {
     this.caipNetworks = this.extendCaipNetworks(options)
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
-    await this.initControllers(options)
+    this.initControllers(options)
     this.createClients()
     ChainController.initialize(options.adapters ?? [], this.caipNetworks)
     this.chainAdapters = this.createAdapters(options.adapters as unknown as AdapterBlueprint[])
@@ -637,7 +637,7 @@ export class AppKit {
   }
 
   // -- Private ------------------------------------------------------------------
-  private async initControllers(
+  private initControllers(
     options: AppKitOptions & {
       adapters?: ChainAdapter[]
     } & {
@@ -715,12 +715,7 @@ export class AppKit {
           throw new Error('Cannot set both `siweConfig` and `siwx` options')
         }
 
-        const siwe = await import('@reown/appkit-siwe')
-        if (typeof siwe.mapToSIWX !== 'function') {
-          throw new Error('Please update the `@reown/appkit-siwe` package to the latest version')
-        }
-
-        OptionsController.setSIWX(siwe.mapToSIWX(options.siweConfig))
+        OptionsController.setSIWX(options.siweConfig.mapToSIWX())
       }
     }
   }
