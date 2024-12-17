@@ -224,7 +224,6 @@ export class AppKit {
     const { ...optionsCopy } = options
     delete optionsCopy.adapters
 
-    console.log('>> Sending event')
     EventsController.sendEvent({
       type: 'track',
       event: 'INITIALIZE',
@@ -642,7 +641,6 @@ export class AppKit {
   }
 
   public async disconnect() {
-    console.log('>> Disconnecting', this.connectionControllerClient)
     await this.connectionControllerClient?.disconnect()
   }
 
@@ -920,7 +918,6 @@ export class AppKit {
         )
         const providerType = ProviderUtil.state.providerIds[namespace]
 
-        console.log('>> Disconnecting')
         await adapter?.disconnect({ provider, providerType })
         StorageUtil.deleteConnectedConnector()
         StorageUtil.deleteActiveCaipNetworkId()
@@ -1712,7 +1709,6 @@ export class AppKit {
     const connectedConnector = StorageUtil.getConnectedConnector() as ConnectorType
     const activeNamespace = StorageUtil.getActiveNamespace()
 
-    console.log('syncExistingConnection', connectedConnector, activeNamespace)
     if (connectedConnector === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT && activeNamespace) {
       this.syncWalletConnectAccount()
     } else if (
