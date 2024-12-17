@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { WagmiAdapter } from '../client'
-import type { Config, Connector } from '@wagmi/core'
+import type { Config } from '@wagmi/core'
 import {
   disconnect as wagmiDisconnect,
   getConnections,
