@@ -208,7 +208,7 @@ export class AppKit {
     this.createClients()
     ChainController.initialize(options.adapters ?? [], this.caipNetworks)
     this.chainAdapters = this.createAdapters(options.adapters as unknown as AdapterBlueprint[])
-    this.initChainAdapters()
+    await this.initChainAdapters()
     this.syncRequestedNetworks()
     await this.initOrContinue()
     await this.syncExistingConnection()
@@ -1803,38 +1803,26 @@ export class AppKit {
     }, {} as Adapters)
   }
 
-  private createConnectorsForAdapter(namespace: ChainNamespace) {
-    this.createUniversalProviderForAdapter(namespace)
+  private async createConnectorsForAdapter(namespace: ChainNamespace) {
+    await this.createUniversalProviderForAdapter(namespace)
     this.createAuthProviderForAdapter(namespace)
   }
 
   private onConnectors(chainNamespace: ChainNamespace) {
     const adapter = this.getAdapter(chainNamespace)
 
-    adapter?.on('connectors', connectors => {
-      this.setConnectors(connectors)
-
-      const walletConnect = connectors.find(
-        ({ id }) => id === UtilConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
-      )
-
-      /*
-       * Sometimes w3m-modal doesn't have all connectors at once, and we need to check if
-       * walletConnect connector image exists and fetch the image if it doesn't.
-       */
-      if (walletConnect && !AssetUtil.getWalletImageById(walletConnect.imageId)) {
-        ApiController._fetchConnectorImage(walletConnect.imageId as string)
-      }
-    })
+    adapter?.on('connectors', this.setConnectors.bind(this))
   }
 
-  private initChainAdapters() {
-    this.chainNamespaces.forEach(namespace => {
-      this.onConnectors(namespace)
-      this.chainAdapters?.[namespace].syncConnectors(this.options, this)
-      this.createConnectorsForAdapter(namespace)
-      this.listenAdapter(namespace)
-    })
+  private async initChainAdapters() {
+    await Promise.all(
+      this.chainNamespaces.map(async namespace => {
+        this.onConnectors(namespace)
+        this.listenAdapter(namespace)
+        this.chainAdapters?.[namespace].syncConnectors(this.options, this)
+        await this.createConnectorsForAdapter(namespace)
+      })
+    )
   }
 
   private setDefaultNetwork() {
