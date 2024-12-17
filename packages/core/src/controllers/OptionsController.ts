@@ -135,11 +135,6 @@ export interface OptionsControllerStatePublic {
    * @default false
    */
   allowUnsupportedChain?: boolean
-  /**
-   * Enable manual control of WalletConnect connections.
-   * @default false
-   */
-  useInjectedUniversalProvider?: boolean
 }
 
 export interface OptionsControllerStateInternal {
@@ -148,6 +143,7 @@ export interface OptionsControllerStateInternal {
   isSiweEnabled?: boolean
   isUniversalProvider?: boolean
   hasMultipleAddresses?: boolean
+  useInjectedUniversalProvider?: boolean
 }
 
 type StateKey = keyof OptionsControllerStatePublic | keyof OptionsControllerStateInternal
