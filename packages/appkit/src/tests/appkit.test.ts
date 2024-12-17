@@ -608,6 +608,58 @@ describe('Base', () => {
       expect(BlockchainApiController.fetchIdentity).not.toHaveBeenCalled()
     })
 
+    it('should  sync balance correctly', async () => {
+      const mockAccountData = {
+        address: '0x123',
+        chainId: '1',
+        chainNamespace: 'eip155' as const
+      }
+
+      const mockAdapter = {
+        getAccounts: vi.fn().mockResolvedValue([]),
+        syncConnection: vi.fn(),
+        getBalance: vi.fn().mockResolvedValue({ balance: '0', symbol: 'ETH' }),
+        getProfile: vi.fn().mockResolvedValue({}),
+        on: vi.fn(),
+        off: vi.fn(),
+        emit: vi.fn()
+      }
+
+      vi.spyOn(appKit as any, 'getAdapter').mockReturnValue(mockAdapter)
+
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue(mockAccountData as any)
+
+      await appKit['syncAccount'](mockAccountData)
+
+      expect(mockAdapter.getBalance).toHaveBeenCalledWith('0x123', 'eip155')
+    })
+
+    it('should not sync balance on testnets', async () => {
+      const mockAccountData = {
+        address: '0x123',
+        chainId: '11155111',
+        chainNamespace: 'eip155' as const
+      }
+
+      const mockAdapter = {
+        getAccounts: vi.fn().mockResolvedValue([]),
+        syncConnection: vi.fn(),
+        getBalance: vi.fn().mockResolvedValue({ balance: '0', symbol: 'ETH' }),
+        getProfile: vi.fn().mockResolvedValue({}),
+        on: vi.fn(),
+        off: vi.fn(),
+        emit: vi.fn()
+      }
+
+      vi.spyOn(appKit as any, 'getAdapter').mockReturnValue(mockAdapter)
+
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue(mockAccountData as any)
+
+      await appKit['syncAccount'](mockAccountData)
+
+      expect(mockAdapter.getBalance).not.toHaveBeenCalled()
+    })
+
     it('should disconnect correctly', async () => {
       vi.mocked(ChainController).state = {
         chains: new Map([['eip155', { namespace: 'eip155' }]]),

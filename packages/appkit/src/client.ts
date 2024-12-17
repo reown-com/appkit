@@ -1584,6 +1584,10 @@ export class AppKit {
       return
     }
 
+    if (caipNetwork.testnet) {
+      return
+    }
+
     const balance = await adapter?.getBalance({
       address: params.address,
       chainId: params.chainId,
