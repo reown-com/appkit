@@ -101,7 +101,7 @@ describe('WagmiAdapter', () => {
 
     it('should set wagmi connectors', () => {
       vi.spyOn(wagmiCore, 'watchConnectors').mockImplementation(vi.fn())
-      
+
       adapter.syncConnectors({ networks: [mainnet], projectId: 'YOUR_PROJECT_ID' }, mockAppKit)
 
       expect(adapter.connectors).toStrictEqual([
