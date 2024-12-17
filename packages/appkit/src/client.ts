@@ -755,7 +755,7 @@ export class AppKit {
   private getDefaultMetaData() {
     if (typeof window !== 'undefined' && typeof document !== 'undefined') {
       return {
-        name: document.getElementsByTagName('title')[0]?.textContent || '',
+        name: document.getElementsByTagName('title')?.[0]?.textContent || '',
         description:
           document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.content || '',
         url: window.location.origin,
@@ -1761,6 +1761,12 @@ export class AppKit {
   }
 
   private createUniversalProvider() {
+    console.log(
+      '>> CreateUP',
+      this.universalProviderInitPromise,
+      typeof window,
+      this.options?.projectId
+    )
     if (
       !this.universalProviderInitPromise &&
       typeof window !== 'undefined' &&
@@ -1811,6 +1817,8 @@ export class AppKit {
       },
       logger
     }
+
+    console.log('>> Initialize UP', this.options.universalProvider)
 
     OptionsController.setUsingInjectedUniversalProvider(Boolean(this.options?.universalProvider))
     this.universalProvider =
