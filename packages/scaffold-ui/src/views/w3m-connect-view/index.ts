@@ -7,15 +7,13 @@ import {
   CoreHelperUtil,
   OptionsController,
   RouterController,
-  type ConnectMethod,
   type WalletGuideType
 } from '@reown/appkit-core'
 import { state } from 'lit/decorators/state.js'
 import { property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
-import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import { WalletUtil } from '../../utils/WalletUtil.js'
 
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
@@ -119,7 +117,7 @@ export class W3mConnectView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private renderConnectMethod(tabIndex?: number) {
-    const connectMethodsOrder = this.getConnectOrderMethod()
+    const connectMethodsOrder = WalletUtil.getConnectOrderMethod(this.features, this.connectors)
 
     return html`${connectMethodsOrder.map((method, index) => {
       switch (method) {
@@ -151,7 +149,7 @@ export class W3mConnectView extends LitElement {
   }
 
   private checkIsThereNextMethod(currentIndex: number): string | undefined {
-    const connectMethodsOrder = this.getConnectOrderMethod()
+    const connectMethodsOrder = WalletUtil.getConnectOrderMethod(this.features, this.connectors)
 
     const nextMethod = connectMethodsOrder[currentIndex + 1] as
       | 'wallet'
@@ -343,25 +341,6 @@ export class W3mConnectView extends LitElement {
         connectEl.scrollHeight - connectEl.scrollTop - connectEl.offsetHeight
       ).toString()
     )
-  }
-
-  private getConnectOrderMethod() {
-    const connectMethodOrder = this.features?.connectMethodsOrder
-
-    if (connectMethodOrder) {
-      return connectMethodOrder
-    }
-
-    const { injected, announced } = ConnectorUtil.getConnectorsByType(this.connectors)
-
-    const shownInjected = injected.filter(ConnectorUtil.showConnector)
-    const shownAnnounced = announced.filter(ConnectorUtil.showConnector)
-
-    if (shownInjected.length || shownAnnounced.length) {
-      return ['wallet', 'email', 'social'] as ConnectMethod[]
-    }
-
-    return ConstantsUtil.DEFAULT_CONNECT_METHOD_ORDER
   }
 
   // -- Private Methods ----------------------------------- //
