@@ -1,6 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { AppKit } from '../client'
-import { mainnet, polygon } from '../networks/index.js'
+import { AppKit } from '../src/client'
+import { mainnet, polygon } from '../src/networks'
+import { UniversalAdapter } from '../src/universal-adapter/client'
+import type { AdapterBlueprint } from '../src/adapters/ChainAdapterBlueprint'
+import { ProviderUtil } from '../src/store'
+
 import {
   AccountController,
   ModalController,
@@ -25,9 +29,7 @@ import {
 } from '@reown/appkit-core'
 import { SafeLocalStorage, SafeLocalStorageKeys, type CaipNetwork } from '@reown/appkit-common'
 import { mockOptions } from './mocks/Options'
-import { UniversalAdapter } from '../universal-adapter/client'
-import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint'
-import { ProviderUtil } from '../store'
+
 import { ErrorUtil } from '@reown/appkit-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
 
