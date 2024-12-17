@@ -3,6 +3,8 @@ import { BitcoinAdapter } from '../src'
 import type { BitcoinApi } from '../src/utils/BitcoinApi'
 import { bitcoin, mainnet } from '@reown/appkit/networks'
 import { mockUTXO } from './mocks/mockUTXO'
+import { SatsConnectConnector } from '../src/connectors/SatsConnectConnector'
+import { mockSatsConnectProvider } from './mocks/mockSatsConnect'
 
 function mockBitcoinApi(): { [K in keyof BitcoinApi.Interface]: Mock<BitcoinApi.Interface[K]> } {
   return {
@@ -17,6 +19,34 @@ describe('BitcoinAdapter', () => {
   beforeEach(() => {
     api = mockBitcoinApi()
     adapter = new BitcoinAdapter({ api })
+  })
+
+  describe('connect', () => {
+    it('should return the chainId of the available chain from connector', async () => {
+      const connector = new SatsConnectConnector({
+        provider: mockSatsConnectProvider().provider,
+        requestedChains: [bitcoin],
+        getActiveNetwork: () => bitcoin
+      })
+      vi.spyOn(connector, 'connect').mockResolvedValueOnce('mock_address')
+
+      adapter.connectors.push(connector)
+
+      const result = await adapter.connect({
+        id: connector.id,
+        chainId: 'bitcoin:any_chain_id',
+        provider: connector.provider,
+        type: 'mock_type'
+      })
+
+      expect(result).toEqual({
+        id: connector.id,
+        type: connector.type,
+        address: 'mock_address',
+        chainId: bitcoin.id,
+        provider: connector.provider
+      })
+    })
   })
 
   describe('getBalance', () => {

@@ -131,6 +131,11 @@ export interface OptionsControllerStatePublic {
    */
   enableEmbedded?: boolean
   /**
+   * Allow users to switch to an unsupported chain.
+   * @default false
+   */
+  allowUnsupportedChain?: boolean
+  /**
    * Enable manual control of WalletConnect connections.
    * @default false
    */
@@ -297,5 +302,9 @@ export const OptionsController = {
 
   setEnableEmbedded(enableEmbedded: OptionsControllerState['enableEmbedded']) {
     state.enableEmbedded = enableEmbedded
+  },
+
+  setAllowUnsupportedChain(allowUnsupportedChain: OptionsControllerState['allowUnsupportedChain']) {
+    state.allowUnsupportedChain = allowUnsupportedChain
   }
 }

@@ -2,15 +2,10 @@ import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 
 import styles from './styles.js'
-import {
-  ApiController,
-  ConnectorController,
-  OptionsController,
-  StorageUtil
-} from '@reown/appkit-core'
+import { ConnectorController, OptionsController } from '@reown/appkit-core'
 import { property, state } from 'lit/decorators.js'
-import { WalletUtil } from '../../utils/WalletUtil.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 @customElement('w3m-connector-list')
 export class W3mConnectorList extends LitElement {
   public static override styles = styles
@@ -37,7 +32,7 @@ export class W3mConnectorList extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     const { custom, recent, announced, injected, multiChain, recommended, featured, external } =
-      this.getConnectorsByType()
+      ConnectorUtil.getConnectorsByType(this.connectors)
 
     const enableWalletConnect = OptionsController.state.enableWalletConnect
 
@@ -90,31 +85,6 @@ export class W3mConnectorList extends LitElement {
           : null}
       </wui-flex>
     `
-  }
-
-  private getConnectorsByType() {
-    const { featured, recommended } = ApiController.state
-    const { customWallets: custom } = OptionsController.state
-    const recent = StorageUtil.getRecentWallets()
-
-    const filteredRecommended = WalletUtil.filterOutDuplicateWallets(recommended)
-    const filteredFeatured = WalletUtil.filterOutDuplicateWallets(featured)
-
-    const multiChain = this.connectors.filter(connector => connector.type === 'MULTI_CHAIN')
-    const announced = this.connectors.filter(connector => connector.type === 'ANNOUNCED')
-    const injected = this.connectors.filter(connector => connector.type === 'INJECTED')
-    const external = this.connectors.filter(connector => connector.type === 'EXTERNAL')
-
-    return {
-      custom,
-      recent,
-      external,
-      multiChain,
-      announced,
-      injected,
-      recommended: filteredRecommended,
-      featured: filteredFeatured
-    }
   }
 }
 

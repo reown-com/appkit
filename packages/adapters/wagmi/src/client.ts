@@ -291,11 +291,11 @@ export class WagmiAdapter extends AdapterBlueprint {
     const tx = await wagmiWriteContract(this.wagmiConfig, {
       chain: this.wagmiChains?.[chainId],
       chainId,
-      address: data.tokenAddress as Hex,
-      account: data.fromAddress as Hex,
+      address: data.tokenAddress,
+      account: data.fromAddress,
       abi: data.abi,
       functionName: data.method,
-      args: [data.receiverAddress, data.tokenAmount]
+      args: data.args
     })
 
     return { hash: tx }

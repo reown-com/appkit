@@ -13,9 +13,7 @@ import { state } from 'lit/decorators/state.js'
 import { property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { ConstantsUtil } from '@reown/appkit-core'
-
-const defaultConnectMethodsOrder = ConstantsUtil.DEFAULT_FEATURES.connectMethodsOrder
+import { WalletUtil } from '../../utils/WalletUtil.js'
 
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
@@ -119,11 +117,7 @@ export class W3mConnectView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private renderConnectMethod(tabIndex?: number) {
-    const connectMethodsOrder = this.features?.connectMethodsOrder || defaultConnectMethodsOrder
-
-    if (!connectMethodsOrder) {
-      return null
-    }
+    const connectMethodsOrder = WalletUtil.getConnectOrderMethod(this.features, this.connectors)
 
     return html`${connectMethodsOrder.map((method, index) => {
       switch (method) {
@@ -155,7 +149,7 @@ export class W3mConnectView extends LitElement {
   }
 
   private checkIsThereNextMethod(currentIndex: number): string | undefined {
-    const connectMethodsOrder = this.features?.connectMethodsOrder || defaultConnectMethodsOrder
+    const connectMethodsOrder = WalletUtil.getConnectOrderMethod(this.features, this.connectors)
 
     const nextMethod = connectMethodsOrder[currentIndex + 1] as
       | 'wallet'
