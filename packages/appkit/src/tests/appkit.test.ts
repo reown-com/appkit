@@ -45,6 +45,16 @@ vi.mock('../client.ts', async () => {
   }
 })
 
+vi.mocked(global).window = { location: { origin: '' } } as any
+vi.mocked(global).document = {
+  body: {
+    injectAdjacentElement: vi.fn()
+  } as any,
+  createElement: vi.fn().mockReturnValue({ appendChild: vi.fn() }),
+  getElementsByTagName: vi.fn().mockReturnValue([{ textContent: '' }]),
+  querySelector: vi.fn()
+} as any
+
 describe('Base', () => {
   let appKit: AppKit
 
@@ -278,7 +288,8 @@ describe('Base', () => {
     it('should get CAIP address', () => {
       vi.mocked(ChainController).state = {
         activeChain: 'eip155',
-        activeCaipAddress: 'eip155:1:0x123'
+        activeCaipAddress: 'eip155:1:0x123',
+        chains: new Map([['eip155', { namespace: 'eip155' }]])
       } as any
       expect(appKit.getCaipAddress()).toBe('eip155:1:0x123')
     })
@@ -304,7 +315,8 @@ describe('Base', () => {
       vi.mocked(AccountController.setCaipAddress).mockImplementation(() => {
         vi.mocked(ChainController).state = {
           ...vi.mocked(ChainController).state,
-          activeCaipAddress: 'eip155:1:0x123'
+          activeCaipAddress: 'eip155:1:0x123',
+          chains: new Map([['eip155', { namespace: 'eip155' }]])
         } as any
       })
 
@@ -352,7 +364,8 @@ describe('Base', () => {
 
     it('should get CAIP network', () => {
       vi.mocked(ChainController).state = {
-        activeCaipNetwork: { id: 'eip155:1', name: 'Ethereum' }
+        activeCaipNetwork: { id: 'eip155:1', name: 'Ethereum' },
+        chains: new Map([['eip155', { namespace: 'eip155' }]])
       } as any
       expect(appKit.getCaipNetwork()).toEqual({ id: 'eip155:1', name: 'Ethereum' })
     })
@@ -900,6 +913,30 @@ describe('Base', () => {
         namespace: 'eip155',
         networks: [{ id: 'eip155:1', chainNamespace: 'eip155' } as CaipNetwork]
       })
+    })
+
+    it('should initialize UniversalProvider when not provided in options', () => {
+      const upSpy = vi.spyOn(UniversalProvider, 'init')
+      new AppKit({
+        ...mockOptions,
+        adapters: [mockAdapter]
+      })
+
+      expect(OptionsController.setUsingInjectedUniversalProvider).toHaveBeenCalled()
+      expect(upSpy).toHaveBeenCalled()
+    })
+
+    it('should not initialize UniversalProvider when provided in options', async () => {
+      const up = await UniversalProvider.init({})
+      const upSpy = vi.spyOn(UniversalProvider, 'init')
+      new AppKit({
+        ...mockOptions,
+        universalProvider: up,
+        adapters: [mockAdapter]
+      })
+
+      expect(upSpy).not.toHaveBeenCalled()
+      expect(OptionsController.setUsingInjectedUniversalProvider).toHaveBeenCalled()
     })
 
     it('should initialize multiple adapters for different namespaces', async () => {
