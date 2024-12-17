@@ -7,7 +7,7 @@ import { ThemeController } from './ThemeController.js'
 import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
-interface ConnectorWithProviders extends Connector {
+export interface ConnectorWithProviders extends Connector {
   connectors?: Connector[]
 }
 export interface ConnectorControllerState {
