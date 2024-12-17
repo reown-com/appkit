@@ -1,7 +1,7 @@
 'use client'
 
 import { ReactNode, useEffect, useState } from 'react'
-import { Features, ThemeMode, ThemeVariables, type AppKit } from '@reown/appkit/react'
+import { Features, ThemeMode, ThemeVariables, useAppKitState } from '@reown/appkit/react'
 import { ConnectMethod, ConstantsUtil } from '@reown/appkit-core'
 import { ThemeStore } from '../lib/theme-store'
 import { URLState, urlStateUtils } from '@/lib/url-state'
@@ -24,7 +24,8 @@ interface AppKitProviderProps {
 const initialConfig = urlStateUtils.getStateFromURL()
 
 export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => {
-  const [isInitialized, setIsInitialized] = useState(false)
+  const { initialized } = useAppKitState()
+
   const [features, setFeatures] = useState<Features>(
     initialConfig?.features || ConstantsUtil.DEFAULT_FEATURES
   )
@@ -118,8 +119,15 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
 
   useEffect(() => {
     setTheme(theme as ThemeMode)
-    setIsInitialized(true)
   }, [])
+
+  useEffect(() => {
+    if (initialized) {
+      const connectMethodsOrder = appKit?.getConnectMethodsOrder()
+      const order = connectMethodsOrder
+      updateFeatures({ connectMethodsOrder: order })
+    }
+  }, [initialized])
 
   const socialsEnabled = Array.isArray(features.socials)
 
@@ -143,7 +151,6 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
         socialsEnabled,
         enableWallets,
         isDraggingByKey,
-        isInitialized,
         updateFeatures,
         updateThemeMode,
         updateSocials,
