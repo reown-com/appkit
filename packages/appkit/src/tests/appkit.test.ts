@@ -503,7 +503,12 @@ describe('Base', () => {
 
     it('should get connector image', () => {
       vi.mocked(AssetUtil.getConnectorImage).mockReturnValue('connector-image-url')
-      const result = appKit.getConnectorImage({ id: 'metamask', type: 'INJECTED', chain: 'eip155' })
+      const result = appKit.getConnectorImage({
+        id: 'metamask',
+        type: 'INJECTED',
+        chain: 'eip155',
+        name: 'Metamask'
+      })
       expect(AssetUtil.getConnectorImage).toHaveBeenCalledWith({
         id: 'metamask',
         type: 'INJECTED',
