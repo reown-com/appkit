@@ -28,10 +28,10 @@ export class W3mSwitchAddressView extends LitElement {
 
   public readonly currentAddress: string = AccountController.state.address || ''
 
-  private connectedConnector = StorageUtil.getConnectedConnector()
+  private connectedConnector = StorageUtil.getConnectedConnectorId()
 
   // Only show icon for AUTH accounts
-  private shouldShowIcon = this.connectedConnector === 'AUTH'
+  private shouldShowIcon = this.connectedConnector === 'ID_AUTH'
 
   private caipNetwork = ChainController.state.activeCaipNetwork
 

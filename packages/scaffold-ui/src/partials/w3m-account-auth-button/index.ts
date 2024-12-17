@@ -17,7 +17,7 @@ export class W3mAccountAuthButton extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const type = StorageUtil.getConnectedConnector()
+    const type = StorageUtil.getConnectedConnectorId()
     const authConnector = ConnectorController.getAuthConnector()
 
     if (!authConnector || type !== 'ID_AUTH') {

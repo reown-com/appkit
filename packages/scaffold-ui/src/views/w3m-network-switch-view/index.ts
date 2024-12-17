@@ -95,9 +95,9 @@ export class W3mNetworkSwitchView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private getSubLabel() {
-    const type = StorageUtil.getConnectedConnector()
+    const connector = StorageUtil.getConnectedConnectorId()
     const authConnector = ConnectorController.getAuthConnector()
-    if (authConnector && type === 'AUTH') {
+    if (authConnector && connector === 'AUTH') {
       return ''
     }
 
@@ -107,9 +107,9 @@ export class W3mNetworkSwitchView extends LitElement {
   }
 
   private getLabel() {
-    const type = StorageUtil.getConnectedConnector()
+    const connector = StorageUtil.getConnectedConnectorId()
     const authConnector = ConnectorController.getAuthConnector()
-    if (authConnector && type === 'AUTH') {
+    if (authConnector && connector === 'ID_AUTH') {
       return `Switching to ${this.network?.name ?? 'Unknown'} network...`
     }
 

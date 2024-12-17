@@ -1205,7 +1205,7 @@ export class AppKit {
       }
     })
     provider.onNotConnected(() => {
-      const connectedConnector = StorageUtil.getConnectedConnector()
+      const connectedConnector = StorageUtil.getConnectedConnectorId()
       const isConnectedWithAuth = connectedConnector === UtilConstantsUtil.AUTH_CONNECTOR_ID
       if (!isConnected && isConnectedWithAuth) {
         this.setCaipAddress(undefined, ChainController.state.activeChain as ChainNamespace)
@@ -1451,9 +1451,7 @@ export class AppKit {
           ProviderUtil.setProvider(chainNamespace, this.universalProvider)
         }
 
-        StorageUtil.setConnectedConnector(
-          UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT as ConnectorType
-        )
+        StorageUtil.setConnectedConnectorId(UtilConstantsUtil.WALLET_CONNECT_CONNECTOR_ID)
 
         let address = ''
 
@@ -1538,7 +1536,7 @@ export class AppKit {
     ProviderUtil.setProviderId(chainNamespace, type)
     ProviderUtil.setProvider(chainNamespace, provider)
 
-    StorageUtil.setConnectedConnector(id as ConnectorType)
+    StorageUtil.setConnectedConnectorId(id)
   }
 
   private async syncAccount({
@@ -1597,7 +1595,7 @@ export class AppKit {
   }
 
   private syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
-    const currentActiveWallet = StorageUtil.getConnectedConnector()
+    const currentActiveWallet = StorageUtil.getConnectedConnectorId()
     const providerType = ProviderUtil.state.providerIds[chainNamespace]
 
     if (
@@ -1714,10 +1712,10 @@ export class AppKit {
   }
 
   private async syncExistingConnection() {
-    const connectedConnector = StorageUtil.getConnectedConnector() as ConnectorType
+    const connectedConnector = StorageUtil.getConnectedConnectorId() as ConnectorType
     const activeNamespace = StorageUtil.getActiveNamespace()
 
-    if (connectedConnector === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT && activeNamespace) {
+    if (connectedConnector === UtilConstantsUtil.WALLET_CONNECT_CONNECTOR_ID && activeNamespace) {
       this.syncWalletConnectAccount()
     } else if (
       connectedConnector &&

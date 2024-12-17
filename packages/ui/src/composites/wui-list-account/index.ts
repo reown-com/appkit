@@ -24,7 +24,7 @@ export class WuiListAccount extends LitElement {
 
   @property() public accountType = ''
 
-  private connectedConnector = StorageUtil.getConnectedConnector()
+  private connectedConnector = StorageUtil.getConnectedConnectorId()
 
   private labels = AccountController.state.addressLabels
 

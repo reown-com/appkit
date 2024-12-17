@@ -131,6 +131,14 @@ export const StorageUtil = {
     }
   },
 
+  setConnectedConnectorId(connectorId: string) {
+    try {
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID, connectorId)
+    } catch {
+      console.info('Unable to set Connected Connector Id')
+    }
+  },
+
   getActiveNamespace() {
     try {
       const activeNamespace = SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_NAMESPACE)
@@ -148,6 +156,16 @@ export const StorageUtil = {
       return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR) as ConnectorType
     } catch {
       console.info('Unable to get connected connector')
+    }
+
+    return undefined
+  },
+
+  getConnectedConnectorId() {
+    try {
+      return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID) as ConnectorType
+    } catch {
+      console.info('Unable to get connected connector id')
     }
 
     return undefined

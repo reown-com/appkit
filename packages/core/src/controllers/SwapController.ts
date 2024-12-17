@@ -174,7 +174,7 @@ export const SwapController = {
     const caipAddress = ChainController.state.activeCaipAddress
     const address = CoreHelperUtil.getPlainAddress(caipAddress)
     const networkAddress = ChainController.getActiveNetworkTokenAddress()
-    const type = StorageUtil.getConnectedConnector()
+    const connector = StorageUtil.getConnectedConnectorId()
 
     if (!address) {
       throw new Error('No address found to swap the tokens from.')
@@ -202,7 +202,7 @@ export const SwapController = {
       invalidSourceTokenAmount,
       availableToSwap:
         caipAddress && !invalidToToken && !invalidSourceToken && !invalidSourceTokenAmount,
-      isAuthConnector: type === 'ID_AUTH'
+      isAuthConnector: connector === 'ID_AUTH'
     }
   },
 
