@@ -163,10 +163,9 @@ export function SectionDesign() {
               <Image
                 src="/color-picker-icon.png"
                 alt="Color picker icon"
-                objectFit="cover"
                 width={16}
                 height={16}
-                className="rounded-2xl aspect-square"
+                className="rounded-2xl aspect-square object-cover"
               />
             </button>
             <input
