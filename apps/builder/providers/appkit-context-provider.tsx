@@ -54,10 +54,21 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
 
   function updateFeatures(newFeatures: Partial<Features>) {
     setFeatures(prev => {
-      const newValue = { ...prev, ...newFeatures }
-      appKit?.updateFeatures(newValue)
-      urlStateUtils.updateURLWithState({ features: newValue })
-      return newValue
+      // Update the AppKit state first
+      const newAppKitValue = { ...prev, ...newFeatures }
+      appKit?.updateFeatures(newAppKitValue)
+
+      // Get the connection methods order since it's calculated based on injected connectors dynamically
+      const order =
+        newFeatures?.connectMethodsOrder === undefined
+          ? appKit?.getConnectMethodsOrder()
+          : newFeatures.connectMethodsOrder
+
+      // Define and set new internal value with the order
+      const newInternalValue = { ...newAppKitValue, connectMethodsOrder: order }
+      urlStateUtils.updateURLWithState({ features: newInternalValue })
+
+      return newInternalValue
     })
   }
 
