@@ -357,16 +357,11 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   private async addWagmiConnector(connector: Connector, options: AppKitOptions) {
-    let provider: W3mFrameProvider | UniversalProvider | undefined = undefined
+    let provider: W3mFrameProvider | undefined = undefined
 
-    const shouldFetchProvider =
-      connector.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID ||
-      connector.id === ConstantsUtil.AUTH_CONNECTOR_ID
-
-    if (shouldFetchProvider) {
+    if (connector.id === ConstantsUtil.AUTH_CONNECTOR_ID) {
       provider = (await connector.getProvider().catch(() => undefined)) as
         | W3mFrameProvider
-        | UniversalProvider
         | undefined
     }
 
