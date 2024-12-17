@@ -143,6 +143,7 @@ export interface OptionsControllerStateInternal {
   isSiweEnabled?: boolean
   isUniversalProvider?: boolean
   hasMultipleAddresses?: boolean
+  useInjectedUniversalProvider?: boolean
 }
 
 type StateKey = keyof OptionsControllerStatePublic | keyof OptionsControllerStateInternal
@@ -301,5 +302,11 @@ export const OptionsController = {
 
   setAllowUnsupportedChain(allowUnsupportedChain: OptionsControllerState['allowUnsupportedChain']) {
     state.allowUnsupportedChain = allowUnsupportedChain
+  },
+
+  setUsingInjectedUniversalProvider(
+    useInjectedUniversalProvider: OptionsControllerState['useInjectedUniversalProvider']
+  ) {
+    state.useInjectedUniversalProvider = useInjectedUniversalProvider
   }
 }

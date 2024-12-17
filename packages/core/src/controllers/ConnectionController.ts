@@ -133,10 +133,7 @@ export const ConnectionController = {
       state.wcPairingExpiry = undefined
       this.state.status = 'connected'
     } else {
-      await this._getClient()?.connectWalletConnect?.(uri => {
-        state.wcUri = uri
-        state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
-      })
+      await this._getClient()?.connectWalletConnect?.(uri => this.setUri(uri))
     }
   },
 
@@ -224,6 +221,11 @@ export const ConnectionController = {
     state.status = 'disconnected'
     TransactionsController.resetTransactions()
     StorageUtil.deleteWalletConnectDeepLink()
+  },
+
+  setUri(uri: string) {
+    state.wcUri = uri
+    state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
   },
 
   setWcLinking(wcLinking: ConnectionControllerState['wcLinking']) {
