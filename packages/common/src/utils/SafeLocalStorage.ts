@@ -37,7 +37,7 @@ export const SafeLocalStorage = {
     key: Key,
     value: SafeLocalStorageItems[Key]
   ): void {
-    if (isSafe()) {
+    if (isSafe() && value !== undefined) {
       localStorage.setItem(key, value)
     }
   },
