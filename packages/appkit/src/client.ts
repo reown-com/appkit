@@ -1815,7 +1815,6 @@ export class AppKit {
     }
 
     OptionsController.setUsingInjectedUniversalProvider(Boolean(this.options?.universalProvider))
-    console.log('>> Should call init', this.options.universalProvider)
     this.universalProvider =
       this.options.universalProvider ?? (await UniversalProvider.init(universalProviderOptions))
   }
