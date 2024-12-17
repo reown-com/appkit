@@ -958,7 +958,7 @@ describe('Base', () => {
       }
 
       vi.spyOn(appKit as any, 'initialize').mockResolvedValue(undefined)
-      vi.spyOn(appKit as any, 'isSafe').mockReturnValue(true)
+      vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
       vi.spyOn(UniversalProvider, 'init').mockResolvedValue(mockUniversalProvider as any)
 
       const initChainAdapters = (appKit as any).initChainAdapters.bind(appKit)

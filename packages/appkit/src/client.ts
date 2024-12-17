@@ -1695,12 +1695,12 @@ export class AppKit {
     return this.chainAdapters?.[namespace]
   }
 
-  private isSafe() {
-    return typeof window !== 'undefined'
-  }
-
   private createUniversalProvider() {
-    if (!this.universalProviderInitPromise && this.isSafe() && this.options?.projectId) {
+    if (
+      !this.universalProviderInitPromise &&
+      CoreHelperUtil.isClient() &&
+      this.options?.projectId
+    ) {
       this.universalProviderInitPromise = this.initializeUniversalAdapter()
     }
 

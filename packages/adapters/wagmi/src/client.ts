@@ -356,13 +356,13 @@ export class WagmiAdapter extends AdapterBlueprint {
     return formatUnits(params.value, params.decimals)
   }
 
-  private async addWagmiConnector(connector: Connector, options: AppKitOptions) {
-    let provider: W3mFrameProvider | undefined = undefined
-
+  private addWagmiConnector(connector: Connector, options: AppKitOptions) {
+    /*
+     * We don't need to set auth connector from wagmi
+     * since we already set it in chain adapter blueprint
+     */
     if (connector.id === ConstantsUtil.AUTH_CONNECTOR_ID) {
-      provider = (await connector.getProvider().catch(() => undefined)) as
-        | W3mFrameProvider
-        | undefined
+      return
     }
 
     this.addConnector({
@@ -374,7 +374,6 @@ export class WagmiAdapter extends AdapterBlueprint {
       type: PresetsUtil.ConnectorTypesMap[connector.type] ?? 'EXTERNAL',
       info:
         connector.id === ConstantsUtil.INJECTED_CONNECTOR_ID ? undefined : { rdns: connector.id },
-      provider,
       chain: this.namespace as ChainNamespace,
       chains: []
     })

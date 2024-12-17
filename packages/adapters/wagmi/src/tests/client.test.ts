@@ -102,17 +102,21 @@ describe('WagmiAdapter', () => {
     })
 
     it('should set wagmi connectors', () => {
-      const addWagmiConnector = vi.spyOn(adapter, 'addWagmiConnector' as any)
+      adapter.syncConnectors({ networks: [mainnet], projectId: 'YOUR_PROJECT_ID' }, mockAppKit)
 
-      vi.spyOn(wagmiCore, 'watchConnectors').mockResolvedValue(vi.fn)
-      ;(adapter as any).syncConnectors({}, mockAppKit)
-
-      expect(addWagmiConnector).toHaveBeenCalledWith(
+      expect(adapter.connectors).toStrictEqual([
         {
-          id: 'test-connector'
-        },
-        {}
-      )
+          chain: 'eip155',
+          chains: [],
+          explorerId: undefined,
+          id: 'test-connector',
+          imageId: undefined,
+          imageUrl: undefined,
+          info: { rdns: 'test-connector' },
+          name: undefined,
+          type: 'EXTERNAL'
+        }
+      ])
     })
 
     it('should listen for wagmi connector changes', () => {
