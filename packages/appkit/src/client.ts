@@ -55,7 +55,8 @@ import {
   type ChainNamespace,
   type CaipAddress,
   type CaipNetworkId,
-  NetworkUtil
+  NetworkUtil,
+  ParseUtil
 } from '@reown/appkit-common'
 import type { AppKitOptions } from './utils/TypesUtil.js'
 import {
@@ -81,6 +82,7 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import type { SessionTypes } from '@walletconnect/types'
 import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
 import { W3mFrameProviderSingleton } from './auth-provider/W3MFrameProviderSingleton.js'
+import { WcHelpersUtil } from './utils/HelpersUtil.js'
 
 declare global {
   interface Window {
@@ -911,13 +913,6 @@ export class AppKit {
         await adapter?.disconnect({ provider, providerType })
 
         this.setStatus('disconnected', namespace)
-
-        StorageUtil.removeConnectedConnector(namespace)
-        StorageUtil.removeActiveCaipNetworkId()
-
-        ChainController.state.chains.forEach(chain => {
-          this.resetAccount(chain.namespace as ChainNamespace)
-        })
       },
       checkInstalled: (ids?: string[]) => {
         if (!ids) {
@@ -940,7 +935,10 @@ export class AppKit {
         if (args.chainNamespace === 'eip155') {
           const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
-          const result = await adapter?.sendTransaction(args)
+          const provider = ProviderUtil.getProvider(
+            ChainController.state.activeChain as ChainNamespace
+          )
+          const result = await adapter?.sendTransaction({ ...args, provider })
 
           return result?.hash || ''
         }
@@ -1293,6 +1291,20 @@ export class AppKit {
 
         if (!currentCaipNetwork || currentCaipNetwork?.id !== caipNetwork?.id) {
           this.setCaipNetwork(caipNetwork)
+        }
+      })
+
+      this.universalProvider.on('session_event', (callbackData: unknown) => {
+        if (WcHelpersUtil.isSessionEventData(callbackData)) {
+          const { name, data } = callbackData.params.event
+
+          if (
+            name === 'accountsChanged' &&
+            Array.isArray(data) &&
+            CoreHelperUtil.isCaipAddress(data[0])
+          ) {
+            this.syncAccount(ParseUtil.parseCaipAddress(data[0]))
+          }
         }
       })
     }

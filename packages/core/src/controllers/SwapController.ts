@@ -727,8 +727,9 @@ export const SwapController = {
         address: fromAddress as `0x${string}`,
         to: data.to as `0x${string}`,
         data: data.data as `0x${string}`,
-        value: BigInt(data.value),
+        gas: data.gas,
         gasPrice: BigInt(data.gasPrice),
+        value: data.value,
         chainNamespace: 'eip155'
       })
 

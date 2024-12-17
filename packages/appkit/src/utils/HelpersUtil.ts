@@ -101,5 +101,29 @@ export const WcHelpersUtil = {
 
       return Array.from(new Set([...chains, ...accountsChains]))
     })
+  },
+
+  isSessionEventData(data: unknown): data is WcHelpersUtil.SessionEventData {
+    return (
+      typeof data === 'object' &&
+      data !== null &&
+      'id' in data &&
+      'topic' in data &&
+      'params' in data &&
+      typeof data.params === 'object' &&
+      data.params !== null &&
+      'chainId' in data.params &&
+      'event' in data.params &&
+      typeof data.params.event === 'object' &&
+      data.params.event !== null
+    )
+  }
+}
+
+export namespace WcHelpersUtil {
+  export type SessionEventData = {
+    id: string
+    topic: string
+    params: { chainId: string; event: { data: unknown; name: string } }
   }
 }

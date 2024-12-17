@@ -130,6 +130,28 @@ describe('WalletStandardConnector', () => {
         }
       ])
     })
+
+    it('should filter duplicate addresses', async () => {
+      vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([
+        mockWalletStandardProvider.mockAccount({
+          address: 'address1',
+          publicKey: Buffer.from('publicKey1')
+        }),
+        mockWalletStandardProvider.mockAccount({
+          address: 'address1',
+          publicKey: Buffer.from('publicKey2')
+        })
+      ])
+
+      const accounts = await connector.getAccountAddresses()
+      expect(accounts).toEqual([
+        {
+          address: 'address1',
+          publicKey: '7075626c69634b657931',
+          purpose: 'payment'
+        }
+      ])
+    })
   })
 
   describe('signMessage', () => {

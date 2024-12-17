@@ -234,10 +234,10 @@ export const SendController = {
         await ConnectionController.writeContract({
           fromAddress: AccountController.state.address as `0x${string}`,
           tokenAddress,
-          receiverAddress: params.receiverAddress as `0x${string}`,
-          tokenAmount: amount ?? BigInt(0),
+          args: [params.receiverAddress as `0x${string}`, amount ?? BigInt(0)],
           method: 'transfer',
-          abi: ContractUtil.getERC20Abi(tokenAddress)
+          abi: ContractUtil.getERC20Abi(tokenAddress),
+          chainNamespace: 'eip155'
         })
 
         SnackController.showSuccess('Transaction started')

@@ -9,7 +9,6 @@ import {
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
-  EventsController,
   RouterController,
   StorageUtil,
   type AccountControllerState,
@@ -228,14 +227,12 @@ describe('W3mAccountSettingsView', () => {
 
   it('disconnects wallet and closes modal', async () => {
     const disconnectSpy = vi.spyOn(ConnectionController, 'disconnect')
-    const eventSpy = vi.spyOn(EventsController, 'sendEvent')
 
     const element = await fixture(html`<w3m-account-settings-view></w3m-account-settings-view>`)
     const disconnectButton = HelpersUtil.querySelect(element, '[data-testid="disconnect-button"]')
     await disconnectButton?.click()
 
     expect(disconnectSpy).toHaveBeenCalled()
-    expect(eventSpy).toHaveBeenCalledWith({ type: 'track', event: 'DISCONNECT_SUCCESS' })
   })
 
   it('navigates to upgrade view when upgrade card is clicked', async () => {
