@@ -1,5 +1,5 @@
 import { W3mConnectView } from '../../src/views/w3m-connect-view/index'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest'
 import { fixture } from '@open-wc/testing'
 import { html } from 'lit'
 import { HelpersUtil } from '../utils/HelpersUtil'
@@ -23,6 +23,15 @@ const INSTALLED_WALLET = {
   name: 'MetaMask',
   type: 'ANNOUNCED'
 } as ConnectorWithProviders
+
+// Mock ResizeObserver
+beforeAll(() => {
+  global.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+})
 
 describe('W3mConnectView - Connection Methods', () => {
   beforeEach(() => {

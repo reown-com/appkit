@@ -13,6 +13,7 @@ import {
 import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 import { type CaipAddress, type CaipNetwork } from '@reown/appkit-common'
 
@@ -93,6 +94,7 @@ export class W3mModal extends LitElement {
   private contentTemplate() {
     return html` <wui-card
       shake="${this.shake}"
+      data-embedded="${ifDefined(this.enableEmbedded)}"
       role="alertdialog"
       aria-modal="true"
       tabindex="0"

@@ -18,6 +18,11 @@
       "types": "./dist/types/exports/w3m-modal.d.ts",
       "import": "./dist/esm/exports/w3m-modal.js",
       "default": "./dist/esm/exports/w3m-modal.js"
+    },
+    "./utils": {
+      "types": "./dist/types/exports/utils.d.ts",
+      "import": "./dist/esm/exports/utils.js",
+      "default": "./dist/esm/exports/utils.js"
     }
   },
   "scripts": {
