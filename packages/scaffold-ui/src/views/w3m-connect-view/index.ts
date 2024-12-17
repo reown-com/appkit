@@ -52,11 +52,16 @@ export class W3mConnectView extends LitElement {
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
     this.resizeObserver?.disconnect()
+    const connectEl = this.shadowRoot?.querySelector('.connect')
+    connectEl?.removeEventListener('scroll', this.handleConnectListScroll.bind(this))
   }
 
   public override firstUpdated() {
     const connectEl = this.shadowRoot?.querySelector('.connect')
     if (connectEl) {
+      // Use requestAnimationFrame to access scroll properties before the next repaint
+      requestAnimationFrame(this.handleConnectListScroll.bind(this))
+      connectEl?.addEventListener('scroll', this.handleConnectListScroll.bind(this))
       this.resizeObserver = new ResizeObserver(() => {
         this.handleConnectListScroll()
       })
