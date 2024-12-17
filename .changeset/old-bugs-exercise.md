@@ -19,4 +19,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Filter out when there is duplicate wallet items in recents and injected wallets
+Refactors connect view's mask image styling with resize observer for dynamic masking

@@ -4,9 +4,14 @@ import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { Link1Icon, ResetIcon } from '@radix-ui/react-icons'
 import { useAppKitContext } from '@/hooks/use-appkit'
+import { useAppKitState } from '@reown/appkit/react'
+import { useEffect } from 'react'
+import { useState } from 'react'
 
 export function PreviewContent() {
-  const { isInitialized, resetConfigs } = useAppKitContext()
+  const [shouldRender, setShouldRender] = useState(false)
+  const { initialized } = useAppKitState()
+  const { resetConfigs } = useAppKitContext()
 
   async function handleShare() {
     try {
@@ -17,10 +22,18 @@ export function PreviewContent() {
     }
   }
 
+  useEffect(() => {
+    setShouldRender(initialized)
+  }, [initialized])
+
+  if (!shouldRender) {
+    return null
+  }
+
   return (
     <>
-      <div className="w-full max-w-[400px] py-8 mx-auto flex-grow items-center justify-center flex-1 flex items-center justify-center">
-        {isInitialized ? (
+      <div className="w-full max-w-[400px] py-8 mx-auto flex-grow flex-1 flex items-center justify-center">
+        {shouldRender ? (
           <>
             {/* @ts-ignore */}
             <w3m-modal
