@@ -15,6 +15,9 @@ import { classMap } from 'lit/directives/class-map.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { WalletUtil } from '../../utils/WalletUtil.js'
 
+// -- Constants ----------------------------------------- //
+const SCROLL_THRESHOLD = 470
+
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
   public static override styles = styles
@@ -338,7 +341,7 @@ export class W3mConnectView extends LitElement {
       return
     }
 
-    const shouldApplyMask = connectEl.scrollHeight > 470
+    const shouldApplyMask = connectEl.scrollHeight > SCROLL_THRESHOLD
 
     if (shouldApplyMask) {
       connectEl.style.setProperty(
