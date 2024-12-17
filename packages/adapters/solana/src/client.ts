@@ -85,7 +85,7 @@ export class SolanaAdapter extends AdapterBlueprint {
         projectId: options.projectId,
         chainId: withSolanaNamespace(appKit?.getCaipNetwork(this.namespace)?.id),
         onTimeout: () => {
-          AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
+          AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
         }
       })
 
@@ -135,7 +135,7 @@ export class SolanaAdapter extends AdapterBlueprint {
       (...providers: WalletStandardProvider[]) => {
         providers.forEach(provider => {
           this.addConnector({
-            id: provider.name,
+            id: PresetsUtil.ConnectorExplorerIds[provider.name] || provider.name,
             type: 'ANNOUNCED',
             provider: provider as unknown as Provider,
             imageUrl: provider.icon,

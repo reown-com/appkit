@@ -63,11 +63,17 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     this.connector = connector
     this.bindEvents(this.connector)
 
+    const chain = connector.chains.find(c => c.id === params.chainId) || connector.chains[0]
+
+    if (!chain) {
+      throw new Error('The connector does not support any of the requested chains')
+    }
+
     return {
       id: connector.id,
       type: connector.type,
       address,
-      chainId: this.networks[0]?.id || '',
+      chainId: chain.id,
       provider: connector.provider
     }
   }

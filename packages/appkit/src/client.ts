@@ -55,7 +55,8 @@ import {
   type ChainNamespace,
   type CaipAddress,
   type CaipNetworkId,
-  NetworkUtil
+  NetworkUtil,
+  ParseUtil
 } from '@reown/appkit-common'
 import type { AppKitOptions } from './utils/TypesUtil.js'
 import {
@@ -65,6 +66,7 @@ import {
 import {
   CaipNetworksUtil,
   ErrorUtil,
+  LoggerUtil,
   ConstantsUtil as UtilConstantsUtil
 } from '@reown/appkit-utils'
 import {
@@ -80,6 +82,7 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import type { SessionTypes } from '@walletconnect/types'
 import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
 import { W3mFrameProviderSingleton } from './auth-provider/W3MFrameProviderSingleton.js'
+import { WcHelpersUtil } from './utils/HelpersUtil.js'
 
 declare global {
   interface Window {
@@ -174,6 +177,8 @@ export class AppKit {
   public version?: SdkVersion
 
   public adapter?: ChainAdapter
+
+  public reportedAlertErrors: Record<string, boolean> = {}
 
   private caipNetworks?: [CaipNetwork, ...CaipNetwork[]]
 
@@ -645,10 +650,14 @@ export class AppKit {
       sdkVersion: SdkVersion
     }
   ) {
-    OptionsController.setDebug(options.debug)
+    OptionsController.setDebug(options.debug !== false)
     OptionsController.setProjectId(options.projectId)
     OptionsController.setSdkVersion(options.sdkVersion)
     OptionsController.setEnableEmbedded(options.enableEmbedded)
+
+    if (options.allowUnsupportedChain) {
+      OptionsController.setAllowUnsupportedChain(options.allowUnsupportedChain)
+    }
 
     if (!options.projectId) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
@@ -833,16 +842,37 @@ export class AppKit {
           throw new Error('Adapter not found')
         }
 
-        const res = await adapter.connect({
-          id,
-          info,
-          type,
-          provider,
-          chainId: caipNetwork?.id || this.getCaipNetwork()?.id,
-          rpcUrl:
-            caipNetwork?.rpcUrls?.default?.http?.[0] ||
-            this.getCaipNetwork()?.rpcUrls?.default?.http?.[0]
-        })
+        let res: AdapterBlueprint.ConnectResult | undefined = undefined
+        try {
+          res = await adapter.connect({
+            id,
+            info,
+            type,
+            provider,
+            chainId: caipNetwork?.id || this.getCaipNetwork()?.id,
+            rpcUrl:
+              caipNetwork?.rpcUrls?.default?.http?.[0] ||
+              this.getCaipNetwork()?.rpcUrls?.default?.http?.[0]
+          })
+          /**
+           * In some cases with wagmi connectors, the connector is already connected
+           * which throws an `Is already connected`error. In such cases, we need to reconnect
+           * to restore the session.
+           * We check if the reconnect method exists (which it does for wagmi connectors) and if so
+           * we attempt to reconnect and restore the session state.
+           */
+        } catch (error) {
+          if (!adapter?.reconnect) {
+            throw new Error('Adapter is not able to connect')
+          }
+          await adapter.reconnect({
+            id,
+            info,
+            type,
+            provider,
+            chainId: this.getCaipNetwork()?.id
+          })
+        }
 
         if (res) {
           this.syncProvider({
@@ -876,20 +906,12 @@ export class AppKit {
         const provider = ProviderUtil.getProvider<UniversalProvider | Provider | W3mFrameProvider>(
           ChainController.state.activeChain as ChainNamespace
         )
-
         const providerType =
           ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
 
         await adapter?.disconnect({ provider, providerType })
 
         this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
-
-        StorageUtil.deleteConnectedConnector()
-        StorageUtil.deleteActiveCaipNetworkId()
-
-        ChainController.state.chains.forEach(chain => {
-          this.resetAccount(chain.namespace as ChainNamespace)
-        })
       },
       checkInstalled: (ids?: string[]) => {
         if (!ids) {
@@ -912,7 +934,10 @@ export class AppKit {
         if (args.chainNamespace === 'eip155') {
           const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
-          const result = await adapter?.sendTransaction(args)
+          const provider = ProviderUtil.getProvider(
+            ChainController.state.activeChain as ChainNamespace
+          )
+          const result = await adapter?.sendTransaction({ ...args, provider })
 
           return result?.hash || ''
         }
@@ -1264,6 +1289,20 @@ export class AppKit {
 
         if (!currentCaipNetwork || currentCaipNetwork?.id !== caipNetwork?.id) {
           this.setCaipNetwork(caipNetwork)
+        }
+      })
+
+      this.universalProvider.on('session_event', (callbackData: unknown) => {
+        if (WcHelpersUtil.isSessionEventData(callbackData)) {
+          const { name, data } = callbackData.params.event
+
+          if (
+            name === 'accountsChanged' &&
+            Array.isArray(data) &&
+            CoreHelperUtil.isCaipAddress(data[0])
+          ) {
+            this.syncAccount(ParseUtil.parseCaipAddress(data[0]))
+          }
         }
       })
     }
@@ -1714,7 +1753,35 @@ export class AppKit {
     return this.universalProviderInitPromise
   }
 
+  private handleAlertError(error: Error) {
+    const matchedUniversalProviderError = Object.entries(ErrorUtil.UniversalProviderErrors).find(
+      ([, { message }]) => error.message.includes(message)
+    )
+
+    const [errorKey, errorValue] = matchedUniversalProviderError ?? []
+
+    const { message, alertErrorKey } = errorValue ?? {}
+
+    if (errorKey && message && !this.reportedAlertErrors[errorKey]) {
+      const alertError =
+        ErrorUtil.ALERT_ERRORS[alertErrorKey as keyof typeof ErrorUtil.ALERT_ERRORS]
+
+      if (alertError) {
+        AlertController.open(alertError, 'error')
+        this.reportedAlertErrors[errorKey] = true
+      }
+    }
+  }
+
   private async initializeUniversalAdapter() {
+    const logger = LoggerUtil.createLogger((error, ...args) => {
+      if (error) {
+        this.handleAlertError(error)
+      }
+      // eslint-disable-next-line no-console
+      console.error(...args)
+    })
+
     const universalProviderOptions: UniversalProviderOpts = {
       projectId: this.options?.projectId,
       metadata: {
@@ -1722,7 +1789,8 @@ export class AppKit {
         description: this.options?.metadata ? this.options?.metadata.description : '',
         url: this.options?.metadata ? this.options?.metadata.url : '',
         icons: this.options?.metadata ? this.options?.metadata.icons : ['']
-      }
+      },
+      logger
     }
 
     this.universalProvider = await UniversalProvider.init(universalProviderOptions)
@@ -1750,7 +1818,10 @@ export class AppKit {
       : CoreConstantsUtil.DEFAULT_FEATURES.socials
     if (this.options?.projectId && (emailEnabled || socialsEnabled)) {
       this.authProvider = W3mFrameProviderSingleton.getInstance({
-        projectId: this.options.projectId
+        projectId: this.options.projectId,
+        onTimeout: () => {
+          AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
+        }
       })
       this.listenAuthConnector(this.authProvider)
     }

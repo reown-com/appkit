@@ -52,7 +52,7 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
   }
 
   public get chains() {
-    return this.requestedChains
+    return this.requestedChains.filter(chain => chain.chainNamespace === 'bip122')
   }
 
   async request<T>(args: RequestArguments) {

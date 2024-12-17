@@ -22,6 +22,8 @@ import { ModalController } from './ModalController.js'
 import { EventsController } from './EventsController.js'
 import { RouterController } from './RouterController.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
+import { OptionsController } from './OptionsController.js'
+import { ConnectionController } from './ConnectionController.js'
 
 // -- Constants ----------------------------------------- //
 const accountState: AccountControllerState = {
@@ -233,7 +235,7 @@ export const ChainController = {
 
     const isSupported = this.checkIfSupportedNetwork(caipNetwork.chainNamespace)
 
-    if (!isSupported) {
+    if (!isSupported && !OptionsController.state.allowUnsupportedChain) {
       this.showUnsupportedChainUI()
     }
   },
@@ -518,5 +520,48 @@ export const ChainController = {
         allAccounts: []
       })
     )
+  },
+
+  async disconnect() {
+    try {
+      const disconnectResults = await Promise.allSettled(
+        Array.from(state.chains.entries()).map(async ([namespace, adapter]) => {
+          try {
+            if (adapter.connectionControllerClient?.disconnect) {
+              await adapter.connectionControllerClient.disconnect()
+            }
+            this.resetAccount(namespace)
+            this.resetNetwork(namespace)
+          } catch (error) {
+            throw new Error(`Failed to disconnect chain ${namespace}: ${(error as Error).message}`)
+          }
+        })
+      )
+
+      const failures = disconnectResults.filter(
+        (result): result is PromiseRejectedResult => result.status === 'rejected'
+      )
+
+      if (failures.length > 0) {
+        throw new Error(failures.map(f => f.reason.message).join(', '))
+      }
+
+      StorageUtil.deleteConnectedConnector()
+      ConnectionController.resetWcConnection()
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'DISCONNECT_SUCCESS'
+      })
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error((error as Error).message || 'Failed to disconnect chains')
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'DISCONNECT_ERROR',
+        properties: {
+          message: (error as Error).message || 'Failed to disconnect chains'
+        }
+      })
+    }
   }
 }

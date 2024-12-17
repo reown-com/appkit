@@ -6,7 +6,6 @@ import {
   type Connector,
   type ConnectorType,
   type Provider,
-  AlertController,
   CoreHelperUtil
 } from '@reown/appkit-core'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
@@ -18,7 +17,6 @@ import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { EthersMethods } from './utils/EthersMethods.js'
 import { ProviderUtil } from '@reown/appkit/store'
-import { BrowserProvider } from 'ethers'
 
 export interface EIP6963ProviderDetail {
   info: Connector['info']
@@ -148,14 +146,7 @@ export class EthersAdapter extends AdapterBlueprint {
     }
 
     const result = await EthersMethods.writeContract(
-      {
-        abi: params.abi,
-        method: params.method,
-        fromAddress: params.caipAddress as `0x${string}`,
-        receiverAddress: params.receiverAddress as `0x${string}`,
-        tokenAmount: params.tokenAmount,
-        tokenAddress: params.tokenAddress as `0x${string}`
-      },
+      params,
       params.provider as Provider,
       params.caipAddress,
       Number(params.caipNetwork?.id)
@@ -481,26 +472,6 @@ export class EthersAdapter extends AdapterBlueprint {
     return { profileName: undefined, profileImage: undefined }
   }
 
-  private listenPendingTransactions(provider: Provider) {
-    const browserProvider = new BrowserProvider(provider)
-
-    try {
-      browserProvider.on('pending', () => {
-        this.emit('pendingTransactions')
-      })
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      AlertController.open(
-        {
-          shortMessage: 'Error listening to pending transactions',
-          longMessage:
-            'The BrowserProvider in the EthersAdapter failed to listen to pending transactions.'
-        },
-        'error'
-      )
-    }
-  }
-
   private providerHandlers: {
     disconnect: () => void
     accountsChanged: (accounts: string[]) => void
@@ -527,8 +498,6 @@ export class EthersAdapter extends AdapterBlueprint {
 
       this.emit('switchNetwork', { chainId: chainIdNumber })
     }
-
-    this.listenPendingTransactions(provider)
 
     provider.on('disconnect', disconnectHandler)
     provider.on('accountsChanged', accountsChangedHandler)

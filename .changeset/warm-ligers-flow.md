@@ -1,6 +1,6 @@
 ---
 '@reown/appkit-scaffold-ui': patch
-'@reown/appkit-ui': patch
+'@apps/builder': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-solana': patch
@@ -15,7 +15,9 @@
 '@reown/appkit-polyfills': patch
 '@reown/appkit-siwe': patch
 '@reown/appkit-siwx': patch
+'@reown/appkit-ui': patch
 '@reown/appkit-wallet': patch
+'@reown/appkit-wallet-button': patch
 ---
 
-Fixes embedded mode route redirection issue and adds transition for border radius values
+Filter out when there is duplicate wallet items in recents and injected wallets

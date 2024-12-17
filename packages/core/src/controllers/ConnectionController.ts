@@ -16,7 +16,7 @@ import { ModalController } from './ModalController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
-import { OptionsController } from './OptionsController.js'
+import { SIWXUtil } from '../utils/SIWXUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -249,21 +249,8 @@ export const ConnectionController = {
 
   async disconnect() {
     try {
-      const connectionControllerClient = this._getClient()
-
-      const siwx = OptionsController.state.siwx
-      if (siwx) {
-        const activeCaipNetwork = ChainController.getActiveCaipNetwork()
-        const address = CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress())
-
-        if (activeCaipNetwork && address) {
-          await siwx.revokeSession(activeCaipNetwork.caipNetworkId, address)
-        }
-      }
-
-      await connectionControllerClient?.disconnect()
-
-      this.resetWcConnection()
+      await SIWXUtil.clearSessions()
+      await ChainController.disconnect()
     } catch (error) {
       throw new Error('Failed to disconnect')
     }
