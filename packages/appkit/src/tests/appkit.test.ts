@@ -584,6 +584,30 @@ describe('Base', () => {
       expect(BlockchainApiController.fetchIdentity).toHaveBeenCalledOnce()
     })
 
+    it('should not sync identity on non-evm network', async () => {
+      const mockAccountData = {
+        address: '0x123',
+        chainId: '1',
+        chainNamespace: 'solana' as const
+      }
+
+      await appKit['syncAccount'](mockAccountData)
+
+      expect(BlockchainApiController.fetchIdentity).not.toHaveBeenCalled()
+    })
+
+    it('should not sync identity on a test network', async () => {
+      const mockAccountData = {
+        address: '0x123',
+        chainId: '1',
+        chainNamespace: 'eip155' as const
+      }
+
+      await appKit['syncAccount'](mockAccountData)
+
+      expect(BlockchainApiController.fetchIdentity).not.toHaveBeenCalled()
+    })
+
     it('should disconnect correctly', async () => {
       vi.mocked(ChainController).state = {
         chains: new Map([['eip155', { namespace: 'eip155' }]]),

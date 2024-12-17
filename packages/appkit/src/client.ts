@@ -1645,7 +1645,8 @@ export class AppKit {
   }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
     chainNamespace: ChainNamespace
   }) {
-    if (chainNamespace !== 'eip155') {
+    const chain = this.caipNetworks?.find(n => n.caipNetworkId === `${chainNamespace}:${chainId}`)
+    if (chainNamespace !== 'eip155' || chain?.testnet) {
       return
     }
     try {
