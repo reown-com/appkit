@@ -19,4 +19,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Adds internal query parameter to BlockchainApi requests
+Adds source: 'appkit' query parameter to BlockchainApi requests
