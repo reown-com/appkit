@@ -934,7 +934,10 @@ export class AppKit {
         if (args.chainNamespace === 'eip155') {
           const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
-          const result = await adapter?.sendTransaction(args)
+          const provider = ProviderUtil.getProvider(
+            ChainController.state.activeChain as ChainNamespace
+          )
+          const result = await adapter?.sendTransaction({ ...args, provider })
 
           return result?.hash || ''
         }
