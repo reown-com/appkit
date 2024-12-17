@@ -41,7 +41,7 @@ export function SidebarContent() {
         </div>
       </div>
 
-      <div className="flex flex-col items-center w-full gap-2 mt-8">
+      <div className="flex flex-col items-center w-full gap-2 mt-8 pb-2">
         <Link
           href="https://docs.reown.com/appkit/overview"
           target="_blank"
