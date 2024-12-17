@@ -21,8 +21,7 @@ import {
   StorageUtil,
   CoreHelperUtil,
   AlertController,
-  type ConnectorType,
-  type ChainAdapter
+  type ConnectorType
 } from '@reown/appkit-core'
 import { SafeLocalStorage, SafeLocalStorageKeys, type CaipNetwork } from '@reown/appkit-common'
 import { mockOptions } from './mocks/Options'

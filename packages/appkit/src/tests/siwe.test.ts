@@ -1,12 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
+  ChainController,
   ConnectionController,
   ModalController,
   OptionsController,
   RouterController,
   SIWXUtil
 } from '@reown/appkit-core'
-import { AppKit } from '@reown/appkit'
+import { AppKit, type CaipNetwork } from '@reown/appkit'
 import * as networks from '@reown/appkit/networks'
 import { createSIWEConfig, type AppKitSIWEClient } from '@reown/appkit-siwe'
 import { mockUniversalAdapter } from './mocks/Adapter'
