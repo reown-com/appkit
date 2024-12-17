@@ -19,4 +19,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Adds walletConnectProvider and enableUniversalProviderManualControl flags to inject a UniversalProvider instance to be used by AppKit'
+Adds walletConnectProvider flag to inject a UniversalProvider instance to be used by AppKit'

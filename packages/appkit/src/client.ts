@@ -249,7 +249,6 @@ export class AppKit {
   public async open(options?: OpenOptions) {
     await this.initOrContinue()
     if (options?.uri && this.universalAdapter) {
-      console.log('options.uri', options.uri)
       ConnectionController.setUri(options.uri)
     }
     ModalController.open(options)
@@ -1813,8 +1812,9 @@ export class AppKit {
       logger
     }
 
+    OptionsController.setUsingInjectedUniversalProvider(Boolean(this.options?.universalProvider))
     this.universalProvider =
-      this.options.walletConnectProvider ?? (await UniversalProvider.init(universalProviderOptions))
+      this.options.universalProvider ?? (await UniversalProvider.init(universalProviderOptions))
   }
 
   public async getUniversalProvider() {

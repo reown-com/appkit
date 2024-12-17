@@ -32,7 +32,7 @@ export class W3mConnectingWidget extends LitElement {
 
   protected isWalletConnect = true
 
-  private unsubscribe: (() => void)[] = []
+  protected unsubscribe: (() => void)[] = []
 
   private imageSrc =
     AssetUtil.getWalletImage(this.wallet) ?? AssetUtil.getConnectorImage(this.connector)

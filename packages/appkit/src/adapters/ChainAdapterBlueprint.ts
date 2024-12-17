@@ -368,7 +368,6 @@ export namespace AdapterBlueprint {
     namespace?: ChainNamespace
     networks?: CaipNetwork[]
     projectId?: string
-    enableUniversalProviderManualControl?: boolean
   }
 
   export type SwitchNetworkParams = {

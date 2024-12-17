@@ -1,17 +1,18 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import { WcHelpersUtil } from '../utils/index.js'
-import { ChainController, CoreHelperUtil, ConnectionController } from '@reown/appkit-core'
+import {
+  ChainController,
+  CoreHelperUtil,
+  ConnectionController,
+  OptionsController
+} from '@reown/appkit-core'
 import bs58 from 'bs58'
 import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
 
 export class UniversalAdapter extends AdapterBlueprint {
-  private enableUniversalProviderManualControl: boolean
   public constructor(options?: AdapterBlueprint.Params) {
     super(options)
-    this.enableUniversalProviderManualControl = Boolean(
-      options?.enableUniversalProviderManualControl
-    )
   }
   public async connectWalletConnect(onUri: (uri: string) => void) {
     const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
@@ -24,7 +25,7 @@ export class UniversalAdapter extends AdapterBlueprint {
       )
     }
 
-    if (this.enableUniversalProviderManualControl && ConnectionController.state.wcUri) {
+    if (OptionsController.state.useInjectedUniversalProvider && ConnectionController.state.wcUri) {
       onUri(ConnectionController.state.wcUri)
 
       return

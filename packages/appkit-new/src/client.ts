@@ -1580,8 +1580,9 @@ export class AppKit {
       }
     }
 
+    OptionsController.setUsingInjectedUniversalProvider(Boolean(this.options?.universalProvider))
     this.universalProvider =
-      this.options.walletConnectProvider ?? (await UniversalProvider.init(universalProviderOptions))
+      this.options.universalProvider ?? (await UniversalProvider.init(universalProviderOptions))
   }
 
   public async getUniversalProvider() {

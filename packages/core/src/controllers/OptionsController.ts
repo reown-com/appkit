@@ -139,7 +139,7 @@ export interface OptionsControllerStatePublic {
    * Enable manual control of WalletConnect connections.
    * @default false
    */
-  enableUniversalProviderManualControl?: boolean
+  useInjectedUniversalProvider?: boolean
 }
 
 export interface OptionsControllerStateInternal {
@@ -306,5 +306,11 @@ export const OptionsController = {
 
   setAllowUnsupportedChain(allowUnsupportedChain: OptionsControllerState['allowUnsupportedChain']) {
     state.allowUnsupportedChain = allowUnsupportedChain
+  },
+
+  setUsingInjectedUniversalProvider(
+    useInjectedUniversalProvider: OptionsControllerState['useInjectedUniversalProvider']
+  ) {
+    state.useInjectedUniversalProvider = useInjectedUniversalProvider
   }
 }

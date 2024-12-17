@@ -24,8 +24,7 @@ export default function MultiChainWagmiAdapterOnly() {
       defaultNetwork: mainnet,
       projectId: ConstantsUtil.ProjectId,
       metadata: ConstantsUtil.Metadata,
-      enableUniversalProviderManualControl: true,
-      walletConnectProvider: provider
+      universalProvider: provider
     })
 
     ThemeStore.setModal(modal)

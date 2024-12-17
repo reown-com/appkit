@@ -78,5 +78,5 @@ export type AppKitOptions = {
    * AppKit will generate its own instance by default in none provided
    * @default undefined
    */
-  walletConnectProvider?: IUniversalProvider
+  universalProvider?: IUniversalProvider
 } & OptionsControllerState
