@@ -15,7 +15,7 @@ const WALLET = {
 } as WcWallet
 
 describe('W3mConnectingWcView - Render', () => {
-  test.skip('should render walletConnect widget if no wallet is give', async () => {
+  test('should render walletConnect widget if no wallet is given', async () => {
     const element: W3mConnectingWcView = await fixture(
       html`<w3m-connecting-wc-view></w3m-connecting-wc-view>`
     )
@@ -23,7 +23,7 @@ describe('W3mConnectingWcView - Render', () => {
     expect(HelpersUtil.querySelect(element, 'w3m-connecting-wc-qrcode')).not.toBeNull()
   })
 
-  test('should render web and browser platforms if rdns and webapp_link is present', async () => {
+  test('should render web and browser platforms', async () => {
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
 
     vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
@@ -57,7 +57,7 @@ describe('W3mConnectingWcView - Render', () => {
     ])
   })
 
-  test('should render web,mo browser platforms if rdns and webapp_link is present', async () => {
+  test('should render mobile and browser platforms', async () => {
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(true)
 
     vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
@@ -87,7 +87,6 @@ describe('W3mConnectingWcView - Render', () => {
 
     expect(tabsProperty).toStrictEqual([
       { label: 'Mobile', icon: 'mobile', platform: 'mobile' },
-      { label: 'Browser', icon: 'extension', platform: 'unsupported' },
       { label: 'Webapp', icon: 'browser', platform: 'web' }
     ])
   })
