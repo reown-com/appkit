@@ -1761,12 +1761,6 @@ export class AppKit {
   }
 
   private createUniversalProvider() {
-    console.log(
-      '>> CreateUP',
-      this.universalProviderInitPromise,
-      typeof window,
-      this.options?.projectId
-    )
     if (
       !this.universalProviderInitPromise &&
       typeof window !== 'undefined' &&
@@ -1817,8 +1811,6 @@ export class AppKit {
       },
       logger
     }
-
-    console.log('>> Initialize UP', this.options.universalProvider)
 
     OptionsController.setUsingInjectedUniversalProvider(Boolean(this.options?.universalProvider))
     this.universalProvider =

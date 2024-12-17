@@ -867,6 +867,7 @@ describe('Base', () => {
         adapters: [mockAdapter]
       })
 
+      expect(OptionsController.setUsingInjectedUniversalProvider).toHaveBeenCalled()
       expect(upSpy).toHaveBeenCalled()
     })
 
@@ -880,6 +881,7 @@ describe('Base', () => {
       })
 
       expect(upSpy).not.toHaveBeenCalled()
+      expect(OptionsController.setUsingInjectedUniversalProvider).toHaveBeenCalled()
     })
 
     it('should initialize multiple adapters for different namespaces', async () => {
