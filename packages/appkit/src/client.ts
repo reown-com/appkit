@@ -224,6 +224,7 @@ export class AppKit {
     const { ...optionsCopy } = options
     delete optionsCopy.adapters
 
+    console.log('>> Sending event')
     EventsController.sendEvent({
       type: 'track',
       event: 'INITIALIZE',
@@ -641,6 +642,7 @@ export class AppKit {
   }
 
   public async disconnect() {
+    console.log('>> Disconnecting', this.connectionControllerClient)
     await this.connectionControllerClient?.disconnect()
   }
 
@@ -745,7 +747,7 @@ export class AppKit {
   private getDefaultMetaData() {
     if (typeof window !== 'undefined' && typeof document !== 'undefined') {
       return {
-        name: document.getElementsByTagName('title')[0]?.textContent || '',
+        name: document.getElementsByTagName('title')?.[0]?.textContent || '',
         description:
           document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.content || '',
         url: window.location.origin,
@@ -911,16 +913,19 @@ export class AppKit {
         }
       },
       disconnect: async () => {
-        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+        const namespace = ChainController.state.activeChain as ChainNamespace
+        const adapter = this.getAdapter(namespace)
         const provider = ProviderUtil.getProvider<UniversalProvider | Provider | W3mFrameProvider>(
-          ChainController.state.activeChain as ChainNamespace
+          namespace
         )
-        const providerType =
-          ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
+        const providerType = ProviderUtil.state.providerIds[namespace]
 
+        console.log('>> Disconnecting')
         await adapter?.disconnect({ provider, providerType })
-
-        this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
+        StorageUtil.deleteConnectedConnector()
+        StorageUtil.deleteActiveCaipNetworkId()
+        AccountController.resetAccount(namespace)
+        this.setStatus('disconnected', namespace)
       },
       checkInstalled: (ids?: string[]) => {
         if (!ids) {
@@ -1707,6 +1712,7 @@ export class AppKit {
     const connectedConnector = StorageUtil.getConnectedConnector() as ConnectorType
     const activeNamespace = StorageUtil.getActiveNamespace()
 
+    console.log('syncExistingConnection', connectedConnector, activeNamespace)
     if (connectedConnector === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT && activeNamespace) {
       this.syncWalletConnectAccount()
     } else if (
