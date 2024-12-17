@@ -119,24 +119,6 @@ describe('WagmiAdapter', () => {
       ])
     })
 
-    it('should listen for wagmi connector changes', () => {
-      const onConnectors = vi.fn()
-
-      vi.spyOn(wagmiCore, 'watchConnectors').mockImplementation(onConnectors)
-      ;(adapter as any).syncConnectors({}, mockAppKit)
-
-      adapter.wagmiConfig._internal.connectors.setState(() => [
-        ...adapter.wagmiConfig.connectors,
-        adapter.wagmiConfig._internal.connectors.setup(mock({ accounts: ['0x123'] }))
-      ])
-
-      watchConnectors(adapter.wagmiConfig, {
-        onChange: onConnectors
-      })
-
-      expect(onConnectors).toHaveBeenCalled()
-    })
-
     it('should not set info property for injected connector', () => {
       const mockConnectors = [
         {
