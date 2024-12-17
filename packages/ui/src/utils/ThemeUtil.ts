@@ -748,7 +748,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
 
         --wui-color-dark-glass-100: rgba(233, 233, 233, 1);
 
-        --w3m-card-embedded-shadow-color: rgb(224 225 233 / 35%);
+        --w3m-card-embedded-shadow-color: rgb(224 225 233 / 25%);
       }
     `
   }

@@ -64,7 +64,7 @@ body {
     --box-shadow-picked-up: 0px 2px 8px 2px hsl(var(--apkt-background-primary) / 0.5);
 
     /* Page Background */
-    --page-background-image-color: hsl(0deg 0% 82.75%);
+    --page-background-image-color: hsl(0, 0%, 87%);
   }
   .dark {
     --apkt-background-primary: 0 0% 13%;
