@@ -360,7 +360,7 @@ export class AppKit {
     })
   }
 
-  public subscribeWalletInfo(callback: (newState: ConnectedWalletInfo) => void) {
+  public subscribeWalletInfo(callback: (newState?: ConnectedWalletInfo) => void) {
     return AccountController.subscribeKey('connectedWalletInfo', callback)
   }
 
@@ -1599,17 +1599,15 @@ export class AppKit {
   private syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
     const currentActiveWallet = StorageUtil.getConnectedConnector()
     const providerType = ProviderUtil.state.providerIds[chainNamespace]
-
     if (
       providerType === UtilConstantsUtil.CONNECTOR_TYPE_ANNOUNCED ||
       providerType === UtilConstantsUtil.CONNECTOR_TYPE_INJECTED
     ) {
-      if (currentActiveWallet) {
-        const connector = this.getConnectors().find(c => c.id === currentActiveWallet)
-
-        if (connector?.info) {
-          this.setConnectedWalletInfo({ ...connector.info }, chainNamespace)
-        }
+      const connector = this.getConnectors().find(c => c.id === currentActiveWallet)
+      if (connector) {
+        const { info, name, imageUrl } = connector
+        const icon = imageUrl || this.getConnectorImage(connector)
+        this.setConnectedWalletInfo({ name, icon, ...info }, chainNamespace)
       }
     } else if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
       const provider = ProviderUtil.getProvider(chainNamespace)
@@ -1830,14 +1828,14 @@ export class AppKit {
   }
 
   private createAuthProvider() {
-    const emailEnabled =
+    const isEmailEnabled =
       this.options?.features?.email === undefined
         ? CoreConstantsUtil.DEFAULT_FEATURES.email
         : this.options?.features?.email
     const socialsEnabled = this.options?.features?.socials
       ? this.options?.features?.socials?.length > 0
       : CoreConstantsUtil.DEFAULT_FEATURES.socials
-    if (this.options?.projectId && (emailEnabled || socialsEnabled)) {
+    if (this.options?.projectId && (isEmailEnabled || socialsEnabled)) {
       this.authProvider = W3mFrameProviderSingleton.getInstance({
         projectId: this.options.projectId,
         onTimeout: () => {
