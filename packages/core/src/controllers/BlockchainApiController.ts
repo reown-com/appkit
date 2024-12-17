@@ -133,7 +133,7 @@ export const BlockchainApiController = {
     state.api.get<T>({
       ...request,
       params: {
-        internal: 'true',
+        source: 'appkit',
         ...request.params
       }
     }),
@@ -142,7 +142,7 @@ export const BlockchainApiController = {
     state.api.post<T>({
       ...request,
       params: {
-        internal: 'true',
+        source: 'appkit',
         ...request.params
       }
     }),
