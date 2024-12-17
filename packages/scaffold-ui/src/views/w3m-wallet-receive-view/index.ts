@@ -144,7 +144,7 @@ export class W3mWalletReceiveView extends LitElement {
   onCopyClick() {
     try {
       if (this.address) {
-        CoreHelperUtil.copyToClopboard(this.address)
+        CoreHelperUtil.copyToClipboard(this.address)
         SnackController.showSuccess('Address copied')
       }
     } catch {

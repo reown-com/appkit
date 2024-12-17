@@ -79,19 +79,11 @@ export const StorageUtil = {
     }
   },
 
-  deleteActiveCaipNetworkId() {
+  removeActiveCaipNetworkId() {
     try {
       SafeLocalStorage.removeItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
     } catch {
       console.info('Unable to delete active caip network id')
-    }
-  },
-
-  deleteConnectedConnector() {
-    try {
-      SafeLocalStorage.removeItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
-    } catch {
-      console.info('Unable to delete connected connector')
     }
   },
 
@@ -123,9 +115,12 @@ export const StorageUtil = {
     return []
   },
 
-  setConnectedConnector(connectorType: ConnectorType) {
+  setConnectedConnector(connectorType: ConnectorType, namespace: ChainNamespace) {
     try {
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR, connectorType)
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys[`CONNECTED_CONNECTOR_${namespace}`],
+        connectorType
+      )
     } catch {
       console.info('Unable to set Connected Connector')
     }
@@ -143,14 +138,24 @@ export const StorageUtil = {
     return undefined
   },
 
-  getConnectedConnector() {
+  getConnectedConnector(namespace: ChainNamespace) {
     try {
-      return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR) as ConnectorType
+      return SafeLocalStorage.getItem(
+        SafeLocalStorageKeys[`CONNECTED_CONNECTOR_${namespace}`]
+      ) as ConnectorType
     } catch {
       console.info('Unable to get connected connector')
     }
 
     return undefined
+  },
+
+  removeConnectedConnector(namespace: ChainNamespace) {
+    try {
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys[`CONNECTED_CONNECTOR_${namespace}`])
+    } catch {
+      console.info('Unable to remove Connected Connector')
+    }
   },
 
   setConnectedSocialProvider(socialProvider: SocialProvider) {

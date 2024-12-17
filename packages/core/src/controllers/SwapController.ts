@@ -172,9 +172,19 @@ export const SwapController = {
 
   getParams() {
     const caipAddress = ChainController.state.activeCaipAddress
+    const namespace = ChainController.state.activeChain
+
+    if (!caipAddress) {
+      throw new Error('No address found to swap the tokens from')
+    }
+
+    if (!namespace) {
+      throw new Error('No active network found to swap the tokens from')
+    }
+
     const address = CoreHelperUtil.getPlainAddress(caipAddress)
     const networkAddress = ChainController.getActiveNetworkTokenAddress()
-    const type = StorageUtil.getConnectedConnector()
+    const type = StorageUtil.getConnectedConnector(namespace)
 
     if (!address) {
       throw new Error('No address found to swap the tokens from.')

@@ -60,7 +60,7 @@ describe('SafeLocalStorage safe', () => {
   })
 
   it('getItem should return undefined if the value not exist', () => {
-    expect(SafeLocalStorage.getItem('@appkit/connected_connector')).toBe(undefined)
-    expect(getItem).toHaveBeenCalledWith('@appkit/connected_connector')
+    expect(SafeLocalStorage.getItem('@appkit/connected_connector_eip155')).toBe(undefined)
+    expect(getItem).toHaveBeenCalledWith('@appkit/connected_connector_eip155')
   })
 })

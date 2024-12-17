@@ -88,7 +88,7 @@ export const SIWXUtil = {
 
       const message = siwxMessage.toString()
 
-      if (StorageUtil.getConnectedConnector() === 'ID_AUTH') {
+      if (StorageUtil.getConnectedConnector(network.chainNamespace) === 'ID_AUTH') {
         RouterController.pushTransactionStack({
           view: null,
           goBack: false,

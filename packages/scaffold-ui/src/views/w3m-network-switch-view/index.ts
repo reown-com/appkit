@@ -18,8 +18,6 @@ export class W3mNetworkSwitchView extends LitElement {
   // -- Members ------------------------------------------- //
   private network = RouterController.state.data?.network
 
-  private unsubscribe: (() => void)[] = []
-
   // -- State & Properties -------------------------------- //
   @state() private showRetry = false
 
@@ -27,10 +25,6 @@ export class W3mNetworkSwitchView extends LitElement {
 
   public constructor() {
     super()
-  }
-
-  public override disconnectedCallback() {
-    this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }
 
   public override firstUpdated() {
@@ -75,8 +69,20 @@ export class W3mNetworkSwitchView extends LitElement {
         </wui-flex>
 
         <wui-flex flexDirection="column" alignItems="center" gap="xs">
-          <wui-text align="center" variant="paragraph-500" color="fg-100">${label}</wui-text>
-          <wui-text align="center" variant="small-500" color="fg-200">${subLabel}</wui-text>
+          <wui-text
+            align="center"
+            variant="paragraph-500"
+            color="fg-100"
+            data-testid="switching-network-label"
+            >${label}</wui-text
+          >
+          <wui-text
+            align="center"
+            variant="small-500"
+            color="fg-200"
+            data-testid="switching-network-sublabel"
+            >${subLabel}</wui-text
+          >
         </wui-flex>
 
         <wui-button
@@ -95,7 +101,11 @@ export class W3mNetworkSwitchView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private getSubLabel() {
-    const type = StorageUtil.getConnectedConnector()
+    if (!this.network) {
+      return ''
+    }
+
+    const type = StorageUtil.getConnectedConnector(this.network?.chainNamespace)
     const authConnector = ConnectorController.getAuthConnector()
     if (authConnector && type === 'AUTH') {
       return ''
@@ -107,7 +117,10 @@ export class W3mNetworkSwitchView extends LitElement {
   }
 
   private getLabel() {
-    const type = StorageUtil.getConnectedConnector()
+    if (!this.network) {
+      return ''
+    }
+    const type = StorageUtil.getConnectedConnector(this.network?.chainNamespace)
     const authConnector = ConnectorController.getAuthConnector()
     if (authConnector && type === 'AUTH') {
       return `Switching to ${this.network?.name ?? 'Unknown'} network...`
@@ -120,7 +133,7 @@ export class W3mNetworkSwitchView extends LitElement {
     if (this.error && !this.showRetry) {
       this.showRetry = true
       const retryButton = this.shadowRoot?.querySelector('wui-button') as HTMLElement
-      retryButton?.animate([{ opacity: 0 }, { opacity: 1 }], {
+      retryButton?.animate?.([{ opacity: 0 }, { opacity: 1 }], {
         fill: 'forwards',
         easing: 'ease'
       })

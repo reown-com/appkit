@@ -425,7 +425,9 @@ export const ChainController = {
       return true
     }
 
-    return requestedCaipNetworks?.some(network => network.id === activeCaipNetwork?.id)
+    return requestedCaipNetworks?.some(
+      network => String(network.id) === String(activeCaipNetwork?.id)
+    )
   },
 
   checkIfSupportedChainId(chainId: number | string) {
@@ -532,6 +534,7 @@ export const ChainController = {
             }
             this.resetAccount(namespace)
             this.resetNetwork(namespace)
+            StorageUtil.removeConnectedConnector(namespace)
           } catch (error) {
             throw new Error(`Failed to disconnect chain ${namespace}: ${(error as Error).message}`)
           }
@@ -546,7 +549,6 @@ export const ChainController = {
         throw new Error(failures.map(f => f.reason.message).join(', '))
       }
 
-      StorageUtil.deleteConnectedConnector()
       ConnectionController.resetWcConnection()
       EventsController.sendEvent({
         type: 'track',

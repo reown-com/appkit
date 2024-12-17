@@ -133,13 +133,13 @@ export class W3mNetworksView extends LitElement {
     const networkNamespace = network.chainNamespace
     const isNamespaceConnected = AccountController.getCaipAddress(networkNamespace)
     const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
-    const supportsAllNetworks =
+    const shouldSupportAllNetworks =
       ChainController.getNetworkProp('supportsAllNetworks', networkNamespace) !== false
-    const type = StorageUtil.getConnectedConnector()
+    const type = StorageUtil.getConnectedConnector(networkNamespace)
     const authConnector = ConnectorController.getAuthConnector()
     const isConnectedWithAuth = type === 'ID_AUTH' && authConnector
 
-    if (!isNamespaceConnected || supportsAllNetworks || isConnectedWithAuth) {
+    if (!isNamespaceConnected || shouldSupportAllNetworks || isConnectedWithAuth) {
       return false
     }
 
@@ -160,7 +160,7 @@ export class W3mNetworksView extends LitElement {
       network.chainNamespace
     )
     const isCurrentNetworkConnected = AccountController.state.caipAddress
-    const isAuthConnected = StorageUtil.getConnectedConnector() === 'ID_AUTH'
+    const isAuthConnected = StorageUtil.getConnectedConnector(network.chainNamespace) === 'ID_AUTH'
 
     if (
       isDifferentNamespace &&

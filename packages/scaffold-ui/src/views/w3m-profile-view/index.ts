@@ -160,10 +160,10 @@ export class W3mProfileView extends LitElement {
   private onCopyAddress() {
     try {
       if (this.profileName) {
-        CoreHelperUtil.copyToClopboard(this.profileName)
+        CoreHelperUtil.copyToClipboard(this.profileName)
         SnackController.showSuccess('Name copied')
       } else if (this.address) {
-        CoreHelperUtil.copyToClopboard(this.address)
+        CoreHelperUtil.copyToClipboard(this.address)
         SnackController.showSuccess('Address copied')
       }
     } catch {

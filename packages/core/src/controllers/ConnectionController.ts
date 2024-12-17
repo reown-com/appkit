@@ -98,7 +98,10 @@ export const ConnectionController = {
   },
 
   async connectWalletConnect() {
-    StorageUtil.setConnectedConnector('WALLET_CONNECT')
+    StorageUtil.setConnectedConnector(
+      'WALLET_CONNECT',
+      ChainController.state.activeChain as ChainNamespace
+    )
 
     if (CoreHelperUtil.isTelegram()) {
       if (wcConnectionPromise) {
@@ -150,7 +153,8 @@ export const ConnectionController = {
 
   async reconnectExternal(options: ConnectExternalOptions) {
     await this._getClient()?.reconnectExternal?.(options)
-    StorageUtil.setConnectedConnector(options.type === 'AUTH' ? 'ID_AUTH' : options.type)
+    const namespace = options.chain || (ChainController.state.activeChain as ChainNamespace)
+    StorageUtil.setConnectedConnector(options.type === 'AUTH' ? 'ID_AUTH' : options.type, namespace)
   },
 
   async setPreferredAccountType(accountType: W3mFrameTypes.AccountType) {

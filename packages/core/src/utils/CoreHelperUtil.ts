@@ -47,7 +47,7 @@ export const CoreHelperUtil = {
     return Date.now() - lastRetry >= differenceMs
   },
 
-  copyToClopboard(text: string) {
+  copyToClipboard(text: string) {
     navigator.clipboard.writeText(text)
   },
 

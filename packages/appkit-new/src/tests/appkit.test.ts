@@ -55,6 +55,11 @@ describe('Base', () => {
       expect(OptionsController.setSdkVersion).toHaveBeenCalledWith(mockOptions.sdkVersion)
       expect(OptionsController.setProjectId).toHaveBeenCalledWith(mockOptions.projectId)
       expect(OptionsController.setMetadata).toHaveBeenCalledWith(mockOptions.metadata)
+
+      const copyMockOptions = { ...mockOptions }
+      delete copyMockOptions.adapters
+
+      expect(EventsController.sendEvent).toHaveBeenCalledWith(mockOptions)
     })
 
     it('should initialize adapters in ChainController', () => {
@@ -506,7 +511,7 @@ describe('Base', () => {
 
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation(
         (key: keyof SafeLocalStorageItems) => {
-          if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
+          if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR_eip155) {
             return mockConnector.id
           }
           return undefined
@@ -523,6 +528,28 @@ describe('Base', () => {
       )
     })
 
+    it('should sync identity only if address changed', async () => {
+      const mockAccountData = {
+        address: '0x123',
+        chainId: '1',
+        chainNamespace: 'eip155' as const
+      }
+      vi.mocked(BlockchainApiController.fetchIdentity).mockResolvedValue({
+        name: 'John Doe',
+        avatar: null
+      })
+
+      vi.mocked(AccountController).state = { address: '0x123' } as any
+
+      await appKit['syncAccount'](mockAccountData)
+
+      expect(BlockchainApiController.fetchIdentity).not.toHaveBeenCalled()
+
+      await appKit['syncAccount']({ ...mockAccountData, address: '0x456' })
+
+      expect(BlockchainApiController.fetchIdentity).toHaveBeenCalledOnce()
+    })
+
     it('should disconnect correctly', async () => {
       vi.mocked(ChainController).state = {
         chains: new Map([['eip155', { namespace: 'eip155' }]]),
@@ -534,7 +561,7 @@ describe('Base', () => {
 
       await appKit.disconnect()
 
-      expect(mockRemoveItem).toHaveBeenCalledWith(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
+      expect(mockRemoveItem).toHaveBeenCalledWith(SafeLocalStorageKeys.CONNECTED_CONNECTOR_eip155)
       expect(mockRemoveItem).toHaveBeenCalledWith(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
 
       expect(AccountController.resetAccount).toHaveBeenCalledWith('eip155')
@@ -543,7 +570,7 @@ describe('Base', () => {
       expect(AccountController.resetAccount).toHaveBeenCalledWith('eip155')
     })
 
-    it('should show unsupported chain UI when synced chainId is not supported', async () => {
+    it('should set unsupported chain when synced chainId is not supported', async () => {
       const isClientSpy = vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
       vi.mocked(ChainController).state = {
         chains: new Map([['eip155', { namespace: 'eip155' }]]),
@@ -566,13 +593,13 @@ describe('Base', () => {
 
       vi.spyOn(appKit as any, 'getAdapter').mockReturnValue(mockAdapter)
 
-      vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
-
       vi.spyOn(StorageUtil, 'setConnectedConnector').mockImplementation(vi.fn())
       vi.spyOn(StorageUtil, 'setConnectedNamespace').mockImplementation(vi.fn())
 
+      vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
+
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation((key: string) => {
-        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
+        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR_eip155) {
           return 'test-wallet'
         }
         if (key === SafeLocalStorageKeys.CONNECTED_NAMESPACE) {
@@ -581,9 +608,11 @@ describe('Base', () => {
         return undefined
       })
 
+      vi.mocked(ChainController.showUnsupportedChainUI).mockImplementation(vi.fn())
+
       await (appKit as any).syncExistingConnection()
 
-      expect(ChainController.showUnsupportedChainUI).toHaveBeenCalled()
+      expect((appKit as any).setUnsupportedNetwork).toHaveBeenCalled()
       expect(isClientSpy).toHaveBeenCalled()
     })
   })
@@ -591,7 +620,7 @@ describe('Base', () => {
     it('should set status to "connecting" and sync the connection when a connector and namespace are present', async () => {
       vi.mocked(CoreHelperUtil.isClient).mockReturnValueOnce(true)
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation(key => {
-        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
+        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR_eip155) {
           return 'test-wallet'
         }
         if (key === SafeLocalStorageKeys.CONNECTED_NAMESPACE) {
@@ -631,7 +660,7 @@ describe('Base', () => {
     it('should set status to "disconnected" if the connector is set to "AUTH" and the adapter fails to sync', async () => {
       vi.mocked(CoreHelperUtil.isClient).mockReturnValueOnce(true)
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation(key => {
-        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
+        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR_eip155) {
           return 'AUTH'
         }
         if (key === SafeLocalStorageKeys.CONNECTED_NAMESPACE) {

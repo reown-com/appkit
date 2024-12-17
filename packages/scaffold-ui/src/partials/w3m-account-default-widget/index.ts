@@ -226,7 +226,11 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private authCardTemplate() {
-    const type = StorageUtil.getConnectedConnector()
+    const namespace = ChainController.state.activeChain
+    if (!namespace) {
+      return null
+    }
+    const type = StorageUtil.getConnectedConnector(namespace)
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
     if (!authConnector || type !== 'ID_AUTH' || origin.includes(CommonConstantsUtil.SECURE_SITE)) {
@@ -374,7 +378,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   private onCopyAddress() {
     try {
       if (this.address) {
-        CoreHelperUtil.copyToClopboard(this.address)
+        CoreHelperUtil.copyToClipboard(this.address)
         SnackController.showSuccess('Address copied')
       }
     } catch {

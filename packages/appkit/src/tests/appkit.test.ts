@@ -531,7 +531,7 @@ describe('Base', () => {
 
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation(
         (key: keyof SafeLocalStorageItems) => {
-          if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
+          if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR_eip155) {
             return mockConnector.id
           }
           return undefined
@@ -581,7 +581,7 @@ describe('Base', () => {
 
       await appKit.disconnect()
 
-      expect(mockRemoveItem).toHaveBeenCalledWith(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
+      expect(mockRemoveItem).toHaveBeenCalledWith(SafeLocalStorageKeys.CONNECTED_CONNECTOR_eip155)
       expect(mockRemoveItem).toHaveBeenCalledWith(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
 
       expect(AccountController.resetAccount).toHaveBeenCalledWith('eip155')
@@ -618,7 +618,7 @@ describe('Base', () => {
       vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
 
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation((key: string) => {
-        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
+        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR_eip155) {
           return 'test-wallet'
         }
         if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
@@ -666,7 +666,7 @@ describe('Base', () => {
       vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
 
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation((key: string) => {
-        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
+        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR_eip155) {
           return 'test-wallet'
         }
         if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
@@ -709,7 +709,7 @@ describe('Base', () => {
     it('should set status to "connecting" and sync the connection when a connector and namespace are present', async () => {
       vi.mocked(CoreHelperUtil.isClient).mockReturnValueOnce(true)
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation(key => {
-        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
+        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR_eip155) {
           return 'test-wallet'
         }
         if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
@@ -749,7 +749,7 @@ describe('Base', () => {
     it('should set status to "disconnected" if the connector is set to "AUTH" and the adapter fails to sync', async () => {
       vi.mocked(CoreHelperUtil.isClient).mockReturnValueOnce(true)
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation(key => {
-        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
+        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR_eip155) {
           return 'AUTH'
         }
         if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {

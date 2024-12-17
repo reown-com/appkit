@@ -109,7 +109,7 @@ describe('ConnectionController', () => {
     await ConnectionController.connectWalletConnect()
     expect(ConnectionController.state.wcUri).toEqual(walletConnectUri)
     expect(ConnectionController.state.wcPairingExpiry).toEqual(ConstantsUtil.FOUR_MINUTES_MS)
-    expect(storageSpy).toHaveBeenCalledWith('WALLET_CONNECT')
+    expect(storageSpy).toHaveBeenCalledWith('WALLET_CONNECT', 'eip155')
     expect(clientConnectWalletConnectSpy).toHaveBeenCalled()
 
     // Just in case
@@ -119,7 +119,7 @@ describe('ConnectionController', () => {
   it('connectExternal() should trigger internal client call and set connector in storage', async () => {
     const options = { id: externalId, type }
     await ConnectionController.connectExternal(options, chain)
-    expect(storageSpy).toHaveBeenCalledWith(type)
+    expect(storageSpy).toHaveBeenCalledWith(type, 'eip155')
     expect(clientConnectExternalSpy).toHaveBeenCalledWith(options)
   })
 
