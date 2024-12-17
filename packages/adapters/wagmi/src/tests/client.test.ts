@@ -16,11 +16,8 @@ import {
   waitForTransactionReceipt,
   getAccount,
   watchPendingTransactions,
-  http,
-  watchConnectors,
-  mock
+  http
 } from '@wagmi/core'
-import * as wagmiCore from '@wagmi/core'
 import { mainnet } from '@wagmi/core/chains'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type UniversalProvider from '@walletconnect/universal-provider'
