@@ -1792,7 +1792,10 @@ export class AppKit {
 
   private createAuthProviderForAdapter(chainNamespace: ChainNamespace) {
     this.createAuthProvider()
-    this.chainAdapters?.[chainNamespace].setAuthProvider(this.authProvider as W3mFrameProvider)
+
+    if (this.authProvider) {
+      this.chainAdapters?.[chainNamespace].setAuthProvider(this.authProvider)
+    }
   }
 
   private createAdapters(blueprints?: AdapterBlueprint[]) {
