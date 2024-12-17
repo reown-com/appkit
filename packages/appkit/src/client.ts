@@ -83,6 +83,7 @@ import type { SessionTypes } from '@walletconnect/types'
 import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
 import { W3mFrameProviderSingleton } from './auth-provider/W3MFrameProviderSingleton.js'
 import { WcHelpersUtil } from './utils/HelpersUtil.js'
+import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
 
 declare global {
   interface Window {
@@ -234,6 +235,7 @@ export class AppKit {
         }
       }
     })
+    PublicStateController.set({ initialized: true })
   }
 
   // -- Public -------------------------------------------------------------------
@@ -640,6 +642,13 @@ export class AppKit {
 
   public async disconnect() {
     await this.connectionControllerClient?.disconnect()
+  }
+
+  public getConnectMethodsOrder() {
+    return WalletUtil.getConnectOrderMethod(
+      OptionsController.state.features,
+      ConnectorController.getConnectors()
+    )
   }
 
   // -- Private ------------------------------------------------------------------
