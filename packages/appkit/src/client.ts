@@ -1747,8 +1747,7 @@ export class AppKit {
       logger
     }
 
-    const universalProvider = await UniversalProvider.init(universalProviderOptions)
-    this.universalProvider = universalProvider
+    this.universalProvider = await UniversalProvider.init(universalProviderOptions)
     this.listenWalletConnect()
   }
 
