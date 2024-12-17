@@ -173,7 +173,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
       const fetchSpy = vi.spyOn(global, 'fetch')
 
       vi.spyOn(localStorage, 'getItem').mockReturnValueOnce('mock_nonce_token')
-      AccountController.state.connectedWalletInfo = {}
+      AccountController.state.connectedWalletInfo = undefined
       vi.spyOn(AccountController.state, 'connectedWalletInfo', 'get').mockReturnValueOnce({
         name: 'mock_wallet_name',
         icon: 'mock_wallet_icon'

@@ -193,6 +193,7 @@ describe('EnsController', () => {
       provider: { getEmail: () => 'test@walletconnect.com' } as unknown as W3mFrameProvider,
       id: 'ID_AUTH',
       type: 'AUTH',
+      name: 'AuthPovider',
       chain: ConstantsUtil.CHAIN.EVM
     })
 

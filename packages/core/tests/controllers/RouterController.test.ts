@@ -69,7 +69,12 @@ describe('RouterController', () => {
 
   it('should update state correctly on push() with data', () => {
     RouterController.push('ConnectingExternal', {
-      connector: { id: 'test', type: 'WALLET_CONNECT', chain: ConstantsUtil.CHAIN.EVM }
+      connector: {
+        id: 'test',
+        name: 'wcConnector',
+        type: 'WALLET_CONNECT',
+        chain: ConstantsUtil.CHAIN.EVM
+      }
     })
     expect(RouterController.state).toEqual({
       view: 'ConnectingExternal',

@@ -49,13 +49,11 @@ export type CaipNetworkCoinbaseNetwork =
   | 'OP Mainnet'
   | 'Celo'
 
-export type ConnectedWalletInfo =
-  | {
-      name?: string
-      icon?: string
-      [key: string]: unknown
-    }
-  | undefined
+export type ConnectedWalletInfo = {
+  name: string
+  icon?: string
+  [key: string]: unknown
+}
 
 export interface LinkingRecord {
   redirect: string
@@ -87,7 +85,7 @@ export type SocialProvider =
 export type Connector = {
   id: string
   type: ConnectorType
-  name?: string
+  name: string
   imageId?: string
   explorerId?: string
   imageUrl?: string
