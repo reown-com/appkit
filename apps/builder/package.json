@@ -28,6 +28,7 @@
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@reown/appkit-core": "workspace:*",
     "@reown/appkit-scaffold-ui": "workspace:*",
+    "@sentry/nextjs": "8.45.1",
     "@tanstack/react-query": "5.56.2",
     "@wagmi/core": "2.13.8",
     "class-variance-authority": "0.7.0",
