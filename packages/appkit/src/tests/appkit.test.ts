@@ -21,8 +21,7 @@ import {
   StorageUtil,
   CoreHelperUtil,
   AlertController,
-  type ConnectorType,
-  type OptionsControllerState
+  type ConnectorType
 } from '@reown/appkit-core'
 import { SafeLocalStorage, SafeLocalStorageKeys, type CaipNetwork } from '@reown/appkit-common'
 import { mockOptions } from './mocks/Options'
@@ -31,7 +30,6 @@ import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint'
 import { ProviderUtil } from '../store'
 import { ErrorUtil } from '@reown/appkit-utils'
 import UniversalProvider from '@walletconnect/universal-provider'
-import type { OptionsControllerStateInternal } from '../../../core/dist/types/src/controllers/OptionsController'
 
 // Mock all controllers and UniversalAdapterClient
 vi.mock('@reown/appkit-core')
@@ -817,8 +815,7 @@ describe('Base', () => {
         getElementsByTagName: vi.fn().mockReturnValue([{ textContent: '' }]),
         querySelector: vi.fn()
       } as any
-      vi.mocked(OptionsController).state = { disableAppend: true } as OptionsControllerState &
-        OptionsControllerStateInternal
+      vi.mocked(OptionsController).state = { disableAppend: true } as any
 
       vi.mocked(ChainController).state = {
         chains: new Map(),
