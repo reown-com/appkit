@@ -5,8 +5,8 @@ import {
   StorageUtil
 } from '@reown/appkit-core'
 import type { ConnectMethod, Connector, Features, WcWallet } from '@reown/appkit-core'
-import { ConnectorUtil } from './ConnectorUtil'
-import { ConstantsUtil } from './ConstantsUtil'
+import { ConnectorUtil } from './ConnectorUtil.js'
+import { ConstantsUtil } from './ConstantsUtil.js'
 
 interface AppKitWallet extends WcWallet {
   installed: boolean
