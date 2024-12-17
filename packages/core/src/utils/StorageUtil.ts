@@ -123,14 +123,6 @@ export const StorageUtil = {
     return []
   },
 
-  setConnectedConnector(connectorType: ConnectorType) {
-    try {
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR, connectorType)
-    } catch {
-      console.info('Unable to set Connected Connector')
-    }
-  },
-
   setConnectedConnectorId(connectorId: string) {
     try {
       SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID, connectorId)

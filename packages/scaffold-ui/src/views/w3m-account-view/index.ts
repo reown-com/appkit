@@ -7,11 +7,11 @@ export class W3mAccountView extends LitElement {
   // -- Render -------------------------------------------- //
 
   public override render() {
-    const connector = StorageUtil.getConnectedConnectorId()
+    const connectorId = StorageUtil.getConnectedConnectorId()
     const authConnector = ConnectorController.getAuthConnector()
 
     return html`
-      ${authConnector && connector === 'ID_AUTH'
+      ${authConnector && connectorId === 'ID_AUTH'
         ? this.walletFeaturesTemplate()
         : this.defaultTemplate()}
     `

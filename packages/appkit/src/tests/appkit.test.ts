@@ -627,8 +627,6 @@ describe('Base', () => {
 
       vi.spyOn(appKit as any, 'getAdapter').mockReturnValue(mockAdapter)
 
-      vi.spyOn(StorageUtil, 'setConnectedConnector').mockImplementation(vi.fn())
-
       vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
 
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation((key: string) => {
@@ -674,8 +672,6 @@ describe('Base', () => {
       }
 
       vi.spyOn(appKit as any, 'getAdapter').mockReturnValue(mockAdapter)
-
-      vi.spyOn(StorageUtil, 'setConnectedConnector').mockImplementation(vi.fn())
 
       vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
 

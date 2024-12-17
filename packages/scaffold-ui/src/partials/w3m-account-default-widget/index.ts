@@ -226,12 +226,12 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private authCardTemplate() {
-    const connector = StorageUtil.getConnectedConnectorId()
+    const connectorId = StorageUtil.getConnectedConnectorId()
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
     if (
       !authConnector ||
-      connector !== 'ID_AUTH' ||
+      connectorId !== 'ID_AUTH' ||
       origin.includes(CommonConstantsUtil.SECURE_SITE)
     ) {
       return null

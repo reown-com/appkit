@@ -152,10 +152,10 @@ export class W3mAccountSettingsView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private chooseNameButtonTemplate() {
-    const connector = StorageUtil.getConnectedConnectorId()
+    const connectorId = StorageUtil.getConnectedConnectorId()
     const authConnector = ConnectorController.getAuthConnector()
     const hasNetworkSupport = ChainController.checkIfNamesSupported()
-    if (!hasNetworkSupport || !authConnector || connector !== 'ID_AUTH' || this.profileName) {
+    if (!hasNetworkSupport || !authConnector || connectorId !== 'ID_AUTH' || this.profileName) {
       return null
     }
 
@@ -175,10 +175,10 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private authCardTemplate() {
-    const connector = StorageUtil.getConnectedConnectorId()
+    const connectorId = StorageUtil.getConnectedConnectorId()
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
-    if (!authConnector || connector !== 'ID_AUTH' || origin.includes(ConstantsUtil.SECURE_SITE)) {
+    if (!authConnector || connectorId !== 'ID_AUTH' || origin.includes(ConstantsUtil.SECURE_SITE)) {
       return null
     }
 
@@ -214,10 +214,10 @@ export class W3mAccountSettingsView extends LitElement {
 
   private togglePreferredAccountBtnTemplate() {
     const networkEnabled = ChainController.checkIfSmartAccountEnabled()
-    const connector = StorageUtil.getConnectedConnectorId()
+    const connectorId = StorageUtil.getConnectedConnectorId()
     const authConnector = ConnectorController.getAuthConnector()
 
-    if (!authConnector || connector !== 'ID_AUTH' || !networkEnabled) {
+    if (!authConnector || connectorId !== 'ID_AUTH' || !networkEnabled) {
       return null
     }
 
