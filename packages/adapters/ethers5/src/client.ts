@@ -147,14 +147,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
     }
 
     const result = await Ethers5Methods.writeContract(
-      {
-        abi: params.abi,
-        method: params.method,
-        fromAddress: params.caipAddress as `0x${string}`,
-        receiverAddress: params.receiverAddress as `0x${string}`,
-        tokenAmount: params.tokenAmount,
-        tokenAddress: params.tokenAddress as `0x${string}`
-      },
+      params,
       params.provider as Provider,
       params.caipAddress,
       Number(params.caipNetwork?.id)

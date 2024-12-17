@@ -8,8 +8,6 @@ import { ThemeMode } from '@reown/appkit/react'
 import { cn } from '@/lib/utils'
 import { useSnapshot } from 'valtio'
 import { ThemeStore } from '@/lib/theme-store'
-import { HexColorPicker } from 'react-colorful'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import Image from 'next/image'
 import { ACCENT_COLORS, BG_COLORS, RADIUS_NAME_VALUE_MAP, FONT_OPTIONS } from '@/lib/constants'
 
@@ -17,6 +15,26 @@ export function SectionDesign() {
   const { config, updateThemeMode } = useAppKitContext()
   const { fontFamily, mixColor, accentColor, borderRadius } = useSnapshot(ThemeStore.state)
   const [radius, setRadius] = React.useState('M')
+
+  function handleColorPickerClick(inputId: string) {
+    const input = document.getElementById(inputId)
+    input?.click()
+  }
+
+  function handleAccentColorChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const newColor = e.target.value
+    if (/^#[0-9A-F]{6}$/i.test(newColor)) {
+      ThemeStore.setAccentColor(newColor)
+    }
+  }
+
+  function handleMixColorChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const newColor = e.target.value
+    if (/^#[0-9A-F]{6}$/i.test(newColor)) {
+      ThemeStore.setMixColor(newColor)
+      ThemeStore.setMixColorStrength(8)
+    }
+  }
 
   return (
     <div className="space-y-4">
@@ -109,7 +127,7 @@ export function SectionDesign() {
       </div>
 
       <div className="space-y-2">
-        <Label className="text-sm text-text-secondary">Main</Label>
+        <Label className="text-sm text-text-secondary">Accent</Label>
         <div className="grid grid-cols-5 gap-2">
           {ACCENT_COLORS.map((color, index) => (
             <button
@@ -131,31 +149,33 @@ export function SectionDesign() {
               ></div>
             </button>
           ))}
-          <Popover>
-            <PopoverTrigger asChild>
-              <button
-                className={cn(
-                  'flex items-center justify-center p-4 rounded-2xl transition-colors bg-fg-secondary hover:bg-fg-tertiary border border-transparent h-[38px]',
-                  !ACCENT_COLORS.includes(accentColor) && accentColor !== ''
-                    ? 'border-fg-accent bg-fg-accent/10 hover:bg-fg-accent/10'
-                    : null
-                )}
-                aria-label="Custom color picker"
-              >
-                <Image
-                  src="/color-picker-icon.png"
-                  alt="Color picker icon"
-                  objectFit="cover"
-                  width={16}
-                  height={16}
-                  className="rounded-2xl aspect-square"
-                />
-              </button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-3">
-              <HexColorPicker color={accentColor} onChange={ThemeStore.setAccentColor} />
-            </PopoverContent>
-          </Popover>
+          <div className="relative">
+            <button
+              onClick={() => handleColorPickerClick('accent-color-input')}
+              className={cn(
+                'w-full flex items-center justify-center p-4 rounded-2xl transition-colors bg-fg-secondary hover:bg-fg-tertiary border border-transparent h-[38px]',
+                !ACCENT_COLORS.includes(accentColor) && accentColor !== ''
+                  ? 'border-fg-accent bg-fg-accent/10 hover:bg-fg-accent/10'
+                  : null
+              )}
+              aria-label="Custom color picker"
+            >
+              <Image
+                src="/color-picker-icon.png"
+                alt="Color picker icon"
+                width={16}
+                height={16}
+                className="rounded-2xl aspect-square object-cover"
+              />
+            </button>
+            <input
+              id="accent-color-input"
+              type="color"
+              value={accentColor}
+              onChange={handleAccentColorChange}
+              className="absolute invisible"
+            />
+          </div>
         </div>
       </div>
 
@@ -181,37 +201,34 @@ export function SectionDesign() {
               ></div>
             </button>
           ))}
-          <Popover>
-            <PopoverTrigger asChild>
-              <button
-                className={cn(
-                  'flex items-center justify-center p-4 rounded-2xl transition-colors bg-fg-secondary hover:bg-fg-tertiary border border-transparent h-[38px]',
-                  !BG_COLORS.includes(mixColor) && mixColor !== ''
-                    ? 'border-fg-accent bg-fg-accent/10 hover:bg-fg-accent/10'
-                    : null
-                )}
-                aria-label="Custom background color picker"
-              >
-                <Image
-                  src="/color-picker-icon.png"
-                  alt="Color picker icon"
-                  objectFit="cover"
-                  width={16}
-                  height={16}
-                  className="rounded-2xl aspect-square"
-                />
-              </button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-3">
-              <HexColorPicker
-                color={mixColor}
-                onChange={color => {
-                  ThemeStore.setMixColor(color)
-                  ThemeStore.setMixColorStrength(8)
-                }}
+          <div className="relative">
+            <button
+              onClick={() => handleColorPickerClick('mix-color-input')}
+              className={cn(
+                'w-full flex items-center justify-center p-4 rounded-2xl transition-colors bg-fg-secondary hover:bg-fg-tertiary border border-transparent h-[38px]',
+                !BG_COLORS.includes(mixColor) && mixColor !== ''
+                  ? 'border-fg-accent bg-fg-accent/10 hover:bg-fg-accent/10'
+                  : null
+              )}
+              aria-label="Custom background color picker"
+            >
+              <Image
+                src="/color-picker-icon.png"
+                alt="Color picker icon"
+                objectFit="cover"
+                width={16}
+                height={16}
+                className="rounded-2xl aspect-square"
               />
-            </PopoverContent>
-          </Popover>
+            </button>
+            <input
+              id="mix-color-input"
+              type="color"
+              value={mixColor}
+              onChange={handleMixColorChange}
+              className="absolute invisible"
+            />
+          </div>
         </div>
       </div>
     </div>

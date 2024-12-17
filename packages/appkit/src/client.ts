@@ -55,7 +55,8 @@ import {
   type ChainNamespace,
   type CaipAddress,
   type CaipNetworkId,
-  NetworkUtil
+  NetworkUtil,
+  ParseUtil
 } from '@reown/appkit-common'
 import type { AppKitOptions } from './utils/TypesUtil.js'
 import {
@@ -81,6 +82,8 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import type { SessionTypes } from '@walletconnect/types'
 import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
 import { W3mFrameProviderSingleton } from './auth-provider/W3MFrameProviderSingleton.js'
+import { WcHelpersUtil } from './utils/HelpersUtil.js'
+import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
 
 declare global {
   interface Window {
@@ -93,7 +96,14 @@ export { AccountController }
 
 // -- Types --------------------------------------------------------------------
 export interface OpenOptions {
-  view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'
+  view:
+    | 'Account'
+    | 'Connect'
+    | 'Networks'
+    | 'ApproveTransaction'
+    | 'OnRampProviders'
+    | 'ConnectingWalletConnectBasic'
+  uri?: string
 }
 
 type Adapters = Record<ChainNamespace, AdapterBlueprint>
@@ -232,11 +242,15 @@ export class AppKit {
         }
       }
     })
+    PublicStateController.set({ initialized: true })
   }
 
   // -- Public -------------------------------------------------------------------
   public async open(options?: OpenOptions) {
     await this.initOrContinue()
+    if (options?.uri && this.universalAdapter) {
+      ConnectionController.setUri(options.uri)
+    }
     ModalController.open(options)
   }
 
@@ -640,6 +654,13 @@ export class AppKit {
     await this.connectionControllerClient?.disconnect()
   }
 
+  public getConnectMethodsOrder() {
+    return WalletUtil.getConnectOrderMethod(
+      OptionsController.state.features,
+      ConnectorController.getConnectors()
+    )
+  }
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(
     options: AppKitOptions & {
@@ -734,7 +755,7 @@ export class AppKit {
   private getDefaultMetaData() {
     if (typeof window !== 'undefined' && typeof document !== 'undefined') {
       return {
-        name: document.getElementsByTagName('title')[0]?.textContent || '',
+        name: document.getElementsByTagName('title')?.[0]?.textContent || '',
         description:
           document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.content || '',
         url: window.location.origin,
@@ -932,7 +953,10 @@ export class AppKit {
         if (args.chainNamespace === 'eip155') {
           const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
-          const result = await adapter?.sendTransaction(args)
+          const provider = ProviderUtil.getProvider(
+            ChainController.state.activeChain as ChainNamespace
+          )
+          const result = await adapter?.sendTransaction({ ...args, provider })
 
           return result?.hash || ''
         }
@@ -1284,6 +1308,20 @@ export class AppKit {
 
         if (!currentCaipNetwork || currentCaipNetwork?.id !== caipNetwork?.id) {
           this.setCaipNetwork(caipNetwork)
+        }
+      })
+
+      this.universalProvider.on('session_event', (callbackData: unknown) => {
+        if (WcHelpersUtil.isSessionEventData(callbackData)) {
+          const { name, data } = callbackData.params.event
+
+          if (
+            name === 'accountsChanged' &&
+            Array.isArray(data) &&
+            CoreHelperUtil.isCaipAddress(data[0])
+          ) {
+            this.syncAccount(ParseUtil.parseCaipAddress(data[0]))
+          }
         }
       })
     }
@@ -1774,7 +1812,9 @@ export class AppKit {
       logger
     }
 
-    this.universalProvider = await UniversalProvider.init(universalProviderOptions)
+    OptionsController.setUsingInjectedUniversalProvider(Boolean(this.options?.universalProvider))
+    this.universalProvider =
+      this.options.universalProvider ?? (await UniversalProvider.init(universalProviderOptions))
   }
 
   public async getUniversalProvider() {

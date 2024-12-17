@@ -1,5 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { ModalController, OptionsController, RouterController, SIWXUtil } from '@reown/appkit-core'
+import {
+  ConnectionController,
+  ModalController,
+  OptionsController,
+  RouterController,
+  SIWXUtil
+} from '@reown/appkit-core'
 import { AppKit } from '@reown/appkit'
 import * as networks from '@reown/appkit/networks'
 import { createSIWEConfig, type AppKitSIWEClient } from '@reown/appkit-siwe'
@@ -57,10 +63,15 @@ describe('SIWE mapped to SIWX', () => {
     })
 
     // Wait for the appkit to be ready
-    await new Promise(resolve => setTimeout(resolve, 1))
+    await new Promise(resolve => setTimeout(resolve, 100))
 
     // Set CAIP address to represent connected state
     appkit.setCaipAddress('eip155:1:mock-address', 'eip155')
+    appkit.setCaipNetwork({
+      ...networks.mainnet,
+      caipNetworkId: 'eip155:1',
+      chainNamespace: 'eip155'
+    })
   })
 
   it('should fulfill siwx', () => {
@@ -169,6 +180,16 @@ describe('SIWE mapped to SIWX', () => {
         message: 'Formatted auth message',
         signature: 'mock-signature'
       })
+    })
+
+    it('should clear sessions on Connection.disconnect', async () => {
+      const signOutSpy = vi.spyOn(siweConfig.methods, 'signOut')
+      const setSessionsSpy = vi.spyOn(OptionsController.state.siwx!, 'setSessions')
+
+      await ConnectionController.disconnect()
+
+      expect(signOutSpy).toHaveBeenCalled()
+      expect(setSessionsSpy).toHaveBeenCalledWith([])
     })
   })
 
