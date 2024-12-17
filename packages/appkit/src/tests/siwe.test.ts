@@ -1,6 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { ModalController, OptionsController, RouterController, SIWXUtil } from '@reown/appkit-core'
-import { AppKit } from '@reown/appkit'
+import {
+  ModalController,
+  OptionsController,
+  RouterController,
+  SIWXUtil,
+  ChainController
+} from '@reown/appkit-core'
+import { AppKit, type CaipNetwork } from '@reown/appkit'
 import * as networks from '@reown/appkit/networks'
 import { createSIWEConfig, type AppKitSIWEClient } from '@reown/appkit-siwe'
 import { mockUniversalAdapter } from './mocks/Adapter'
@@ -73,7 +79,12 @@ describe('SIWE mapped to SIWX', () => {
     })
 
     it('should initializeIfEnabled', async () => {
-      vi.spyOn(siweConfig.methods, 'getSession').mockResolvedValueOnce(null)
+      vi.spyOn(ChainController, 'checkIfSupportedNetwork').mockReturnValue(true)
+
+      OptionsController.state.siwx = {
+        getSessions: vi.fn().mockResolvedValueOnce([])
+      } as any
+
       await SIWXUtil.initializeIfEnabled()
 
       expect(RouterController.state.view).toBe('SIWXSignMessage')
@@ -84,6 +95,12 @@ describe('SIWE mapped to SIWX', () => {
       const getNonceSpy = vi.spyOn(siweConfig.methods, 'getNonce')
       const createMessageSpy = vi.spyOn(siweConfig.methods, 'createMessage')
       const verifyMessageSpy = vi.spyOn(siweConfig.methods, 'verifyMessage')
+
+      vi.spyOn(ChainController, 'getActiveCaipNetwork').mockReturnValue({
+        id: '1',
+        name: 'Ethereum',
+        caipNetworkId: 'eip155:1'
+      } as unknown as CaipNetwork)
 
       await SIWXUtil.requestSignMessage()
 
