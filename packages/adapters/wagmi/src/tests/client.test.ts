@@ -18,6 +18,7 @@ import {
   watchPendingTransactions,
   http
 } from '@wagmi/core'
+import * as wagmiCore from '@wagmi/core'
 import { mainnet } from '@wagmi/core/chains'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type UniversalProvider from '@walletconnect/universal-provider'
@@ -99,6 +100,8 @@ describe('WagmiAdapter', () => {
     })
 
     it('should set wagmi connectors', () => {
+      vi.spyOn(wagmiCore, 'watchConnectors').mockImplementation(vi.fn())
+      
       adapter.syncConnectors({ networks: [mainnet], projectId: 'YOUR_PROJECT_ID' }, mockAppKit)
 
       expect(adapter.connectors).toStrictEqual([
