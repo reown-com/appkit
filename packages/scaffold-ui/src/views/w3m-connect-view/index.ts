@@ -35,6 +35,8 @@ export class W3mConnectView extends LitElement {
 
   @state() private checked = false
 
+  private resizeObserver?: ResizeObserver
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -49,15 +51,18 @@ export class W3mConnectView extends LitElement {
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
-    const connectEl = this.shadowRoot?.querySelector('.connect')
-    connectEl?.removeEventListener('scroll', this.handleConnectListScroll.bind(this))
+    this.resizeObserver?.disconnect()
   }
 
   public override firstUpdated() {
     const connectEl = this.shadowRoot?.querySelector('.connect')
-    // Use requestAnimationFrame to access scroll properties before the next repaint
-    requestAnimationFrame(this.handleConnectListScroll.bind(this))
-    connectEl?.addEventListener('scroll', this.handleConnectListScroll.bind(this))
+    if (connectEl) {
+      this.resizeObserver = new ResizeObserver(() => {
+        this.handleConnectListScroll()
+      })
+      this.resizeObserver.observe(connectEl)
+      this.handleConnectListScroll()
+    }
   }
 
   // -- Render -------------------------------------------- //
@@ -324,23 +329,43 @@ export class W3mConnectView extends LitElement {
   private handleConnectListScroll() {
     const connectEl = this.shadowRoot?.querySelector('.connect') as HTMLElement | undefined
 
-    // If connect element is not found or is not overflowing do not apply the mask
-    if (!connectEl || connectEl.scrollHeight <= 470) {
+    if (!connectEl) {
       return
     }
 
-    connectEl.style.setProperty(
-      '--connect-scroll--top-opacity',
-      MathUtil.interpolate([0, 50], [0, 1], connectEl.scrollTop).toString()
-    )
-    connectEl.style.setProperty(
-      '--connect-scroll--bottom-opacity',
-      MathUtil.interpolate(
-        [0, 50],
-        [0, 1],
-        connectEl.scrollHeight - connectEl.scrollTop - connectEl.offsetHeight
-      ).toString()
-    )
+    const shouldApplyMask = connectEl.scrollHeight > 470
+
+    if (shouldApplyMask) {
+      connectEl.style.setProperty(
+        '--connect-mask-image',
+        `linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, calc(1 - var(--connect-scroll--top-opacity))) 0px,
+          rgba(200, 200, 200, calc(1 - var(--connect-scroll--top-opacity))) 1px,
+          black 40px,
+          black calc(100% - 40px),
+          rgba(155, 155, 155, calc(1 - var(--connect-scroll--bottom-opacity))) calc(100% - 1px),
+          rgba(0, 0, 0, calc(1 - var(--connect-scroll--bottom-opacity))) 100%
+        )`
+      )
+
+      connectEl.style.setProperty(
+        '--connect-scroll--top-opacity',
+        MathUtil.interpolate([0, 50], [0, 1], connectEl.scrollTop).toString()
+      )
+      connectEl.style.setProperty(
+        '--connect-scroll--bottom-opacity',
+        MathUtil.interpolate(
+          [0, 50],
+          [0, 1],
+          connectEl.scrollHeight - connectEl.scrollTop - connectEl.offsetHeight
+        ).toString()
+      )
+    } else {
+      connectEl.style.setProperty('--connect-mask-image', 'none')
+      connectEl.style.setProperty('--connect-scroll--top-opacity', '0')
+      connectEl.style.setProperty('--connect-scroll--bottom-opacity', '0')
+    }
   }
 
   // -- Private Methods ----------------------------------- //
