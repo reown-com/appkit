@@ -1,5 +1,6 @@
 ---
 '@reown/appkit-scaffold-ui': patch
+'@reown/appkit-ui': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-solana': patch
@@ -14,9 +15,8 @@
 '@reown/appkit-polyfills': patch
 '@reown/appkit-siwe': patch
 '@reown/appkit-siwx': patch
-'@reown/appkit-ui': patch
 '@reown/appkit-wallet': patch
 '@reown/appkit-wallet-button': patch
 ---
 
-Filter out when there is duplicate wallet items in recents and injected wallets
+refactor: adds background transition

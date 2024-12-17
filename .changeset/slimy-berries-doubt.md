@@ -1,5 +1,6 @@
 ---
 '@reown/appkit-scaffold-ui': patch
+'@reown/appkit-core': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
 '@reown/appkit-adapter-solana': patch
@@ -9,7 +10,6 @@
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
 '@reown/appkit-common': patch
-'@reown/appkit-core': patch
 '@reown/appkit-experimental': patch
 '@reown/appkit-polyfills': patch
 '@reown/appkit-siwe': patch
@@ -19,4 +19,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Filter out when there is duplicate wallet items in recents and injected wallets
+refactor: make the wallet image listen state updates for embedded use case
