@@ -12,7 +12,7 @@ export const mockOptions = {
       construct: vi.fn(),
       on: vi.fn(),
       syncConnectors: vi.fn(),
-      setAuthProvider: vi.fn(),
+      setAuthProvider: vi.fn()
     } as unknown as ChainAdapter
   ],
   networks: [mainnet, solana],

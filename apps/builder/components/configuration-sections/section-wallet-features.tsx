@@ -2,20 +2,14 @@ import { UniqueIdentifier } from '@dnd-kit/core'
 import { useAppKitContext } from '@/hooks/use-appkit'
 import { WalletFeatureName } from '@/lib/types'
 import { ConstantsUtil, WalletFeature } from '@reown/appkit-core'
-import dynamic from 'next/dynamic'
 import { urlStateUtils } from '@/lib/url-state'
-
-const SortableWalletFeatureList = dynamic(
-  () =>
-    import('@/components/sortable-list-wallet-features').then(mod => mod.SortableWalletFeatureList),
-  { ssr: false }
-)
+import { SortableWalletFeatureList } from '@/components/sortable-list-wallet-features'
 
 const defaultWalletFeaturesOrder = ['onramp', 'swaps', 'receive', 'send']
 
 export function SectionWalletFeatures() {
   const { config, updateFeatures } = useAppKitContext()
-  const connectMethodsOrder = config.features.walletFeaturesOrder || defaultWalletFeaturesOrder
+  const walletFeaturesOrder = config.features.walletFeaturesOrder || defaultWalletFeaturesOrder
 
   function handleNewOrder(items: UniqueIdentifier[]) {
     const titleValueMap = {
@@ -39,18 +33,12 @@ export function SectionWalletFeatures() {
       case 'Swap':
         updateFeatures({ swaps: !config.features.swaps })
         return
-      case 'Receive':
-        updateFeatures({ receive: !config.features.receive })
-        return
-      case 'Send':
-        updateFeatures({ send: !config.features.send })
-        return
       default:
         return
     }
   }
 
-  const featureNameMap = connectMethodsOrder.map(name => {
+  const featureNameMap = walletFeaturesOrder.map(name => {
     switch (name) {
       case 'onramp':
         return 'Buy'

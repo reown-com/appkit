@@ -225,10 +225,10 @@ describe('WagmiAdapter', () => {
         caipAddress: 'eip155:1:0x123',
         tokenAddress: '0x123',
         fromAddress: '0x456',
-        receiverAddress: '0x789',
-        tokenAmount: BigInt(1000),
+        args: ['0x789', BigInt(1000)],
         abi: [],
-        method: 'transfer'
+        method: 'transfer',
+        chainNamespace: 'eip155'
       })
 
       expect(result.hash).toBe(mockTxHash)
