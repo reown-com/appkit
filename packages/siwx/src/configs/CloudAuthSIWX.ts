@@ -11,6 +11,12 @@ import {
 import type { SIWXMessenger } from '../core/SIWXMessenger.js'
 import { InformalMessenger } from '../index.js'
 
+/**
+ * This is the configuration for using SIWX with Cloud Auth service.
+ * It allows you to authenticate and capture user sessions through the Cloud Dashboard.
+ *
+ * WARNING: The Claud Auth is only available in EVM networks.
+ */
 export class CloudAuthSIWX implements SIWXConfig {
   private readonly localStorageKey: string
   private readonly messenger: SIWXMessenger
@@ -163,6 +169,10 @@ const RequestMethod = {
 
 export namespace CloudAuthSIWX {
   export type ConstructorParams = {
+    /**
+     * The key to use for storing the session token in local storage.
+     * @default '@appkit/siwx-token'
+     */
     localStorageKey?: string
   }
 
