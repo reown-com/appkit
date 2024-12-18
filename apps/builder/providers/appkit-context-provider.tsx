@@ -11,6 +11,7 @@ import { UniqueIdentifier } from '@dnd-kit/core'
 import { defaultCustomizationConfig } from '@/lib/config'
 import { useTheme } from 'next-themes'
 import { inter } from '@/lib/fonts'
+import { Toaster } from 'sonner'
 
 interface AppKitProviderProps {
   children: ReactNode
@@ -129,16 +130,16 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
   }
 
   useEffect(() => {
-    setTheme(theme as ThemeMode)
-  }, [])
-
-  useEffect(() => {
     if (initialized) {
       const connectMethodsOrder = appKit?.getConnectMethodsOrder()
       const order = connectMethodsOrder
       updateFeatures({ connectMethodsOrder: order })
     }
   }, [initialized])
+
+  useEffect(() => {
+    appKit?.setThemeMode(theme as ThemeMode)
+  }, [])
 
   const socialsEnabled = Array.isArray(features.socials)
 
@@ -173,6 +174,7 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
         resetConfigs
       }}
     >
+      <Toaster theme={theme as ThemeMode} />
       {children}
     </AppKitContext.Provider>
   )
