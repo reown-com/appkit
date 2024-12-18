@@ -57,8 +57,14 @@ export class W3mModal extends LitElement {
 
   public override firstUpdated() {
     OptionsController.setEnableEmbedded(this.enableEmbedded)
-    if (this.enableEmbedded && this.caipAddress) {
-      ModalController.close()
+    if (this.caipAddress) {
+      if (this.enableEmbedded) {
+        ModalController.close()
+
+        return
+      }
+
+      this.onNewAddress(this.caipAddress)
     }
   }
 

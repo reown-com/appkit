@@ -16,7 +16,6 @@ interface W3mFrameProviderOptions {
 export type AuthParameters = {
   chains?: CreateConfigParameters['chains']
   options: W3mFrameProviderOptions
-  provider: W3mFrameProvider
 }
 
 // -- Connector ------------------------------------------------------------------------------------

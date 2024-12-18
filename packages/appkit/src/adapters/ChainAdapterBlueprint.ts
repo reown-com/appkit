@@ -25,11 +25,17 @@ import type { AppKitOptions } from '../utils/index.js'
 import type { AppKit } from '../client.js'
 import { snapshot } from 'valtio/vanilla'
 
-type EventName = 'disconnect' | 'accountChanged' | 'switchNetwork' | 'pendingTransactions'
+type EventName =
+  | 'disconnect'
+  | 'accountChanged'
+  | 'switchNetwork'
+  | 'connectors'
+  | 'pendingTransactions'
 type EventData = {
   disconnect: () => void
   accountChanged: { address: string; chainId?: number | string }
   switchNetwork: { address?: string; chainId: number | string }
+  connectors: ChainAdapterConnector[]
   pendingTransactions: () => void
 }
 type EventCallback<T extends EventName> = (data: EventData[T]) => void
@@ -156,6 +162,8 @@ export abstract class AdapterBlueprint<
 
       return true
     })
+
+    this.emit('connectors', this.availableConnectors)
   }
 
   protected setStatus(status: AccountControllerState['status'], chainNamespace?: ChainNamespace) {
