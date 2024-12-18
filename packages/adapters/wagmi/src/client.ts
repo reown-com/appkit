@@ -390,8 +390,8 @@ export class WagmiAdapter extends AdapterBlueprint {
     this.wagmiConfig.connectors.forEach(connector => this.addWagmiConnector(connector, options))
 
     /*
-     * Watch for new connectors. This is needed because some EIP6963 connectors
-     * that are added later in the process the initial setup
+     * Watch for new connectors. This is needed because some EIP6963
+     * connectors are added later in the process the initial setup
      */
     watchConnectors(this.wagmiConfig, {
       onChange: connectors =>
