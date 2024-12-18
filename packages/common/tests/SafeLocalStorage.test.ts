@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { SafeLocalStorage } from '../src/utils/SafeLocalStorage'
 
@@ -34,11 +34,11 @@ describe('SafeLocalStorage safe', () => {
   let setItem = vi.fn()
   let removeItem = vi.fn()
 
-  beforeAll(() => {
+  beforeEach(() => {
     Object.assign(globalThis, { window: {}, localStorage: { getItem, setItem, removeItem } })
   })
 
-  afterAll(() => {
+  afterEach(() => {
     getItem.mockClear()
     setItem.mockClear()
     removeItem.mockClear()
