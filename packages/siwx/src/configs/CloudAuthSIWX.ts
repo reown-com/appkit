@@ -23,7 +23,7 @@ export class CloudAuthSIWX implements SIWXConfig {
   private readonly messenger: SIWXMessenger
 
   constructor(params: CloudAuthSIWX.ConstructorParams = {}) {
-    this.localAuthStorageKey = params.localAuthStorageKey || '@appkit/siwx-token'
+    this.localAuthStorageKey = params.localAuthStorageKey || '@appkit/siwx-auth-token'
     this.localNonceStorageKey = params.localNonceStorageKey || '@appkit/siwx-nonce-token'
 
     this.messenger = new InformalMessenger({
@@ -49,7 +49,7 @@ export class CloudAuthSIWX implements SIWXConfig {
       },
       'nonceJwt'
     )
-    this.setStorageToken(response.token)
+    this.setStorageToken(response.token, this.localAuthStorageKey)
   }
 
   async getSessions(chainId: CaipNetworkId, address: string): Promise<SIWXSession[]> {
@@ -78,12 +78,12 @@ export class CloudAuthSIWX implements SIWXConfig {
   }
 
   async revokeSession(_chainId: CaipNetworkId, _address: string): Promise<void> {
-    return Promise.resolve(this.clearStorageToken())
+    return Promise.resolve(this.clearStorageTokens())
   }
 
   async setSessions(sessions: SIWXSession[]): Promise<void> {
     if (sessions.length === 0) {
-      this.clearStorageToken()
+      this.clearStorageTokens()
     } else {
       const session = (sessions.find(
         s => s.data.chainId === ChainController.getActiveCaipNetwork()?.caipNetworkId
@@ -100,15 +100,18 @@ export class CloudAuthSIWX implements SIWXConfig {
   ): Promise<CloudAuthSIWX.Requests[Key]['response']> {
     const { projectId, st, sv } = this.getSDKProperties()
 
-    const authToken = this.getStorageToken()
-    const nonceToken = this.getStorageToken(this.localNonceStorageKey)
+    const token =
+      tokenType === 'nonceJwt'
+        ? this.getStorageToken(this.localNonceStorageKey)
+        : this.getStorageToken(this.localAuthStorageKey)
+
     const jwtHeader: { 'x-nonce-jwt': string } | { Authorization: string } =
       tokenType === 'nonceJwt'
         ? {
-            'x-nonce-jwt': `Bearer ${nonceToken}`
+            'x-nonce-jwt': `Bearer ${token}`
           }
         : {
-            Authorization: `Bearer ${authToken}`
+            Authorization: `Bearer ${token}`
           }
 
     const response = await fetch(
@@ -116,7 +119,7 @@ export class CloudAuthSIWX implements SIWXConfig {
       {
         method: RequestMethod[key],
         body: params ? JSON.stringify(params) : undefined,
-        headers: authToken || nonceToken ? jwtHeader : undefined
+        headers: token ? jwtHeader : undefined
       }
     )
 
@@ -127,16 +130,17 @@ export class CloudAuthSIWX implements SIWXConfig {
     throw new Error(await response.text())
   }
 
-  private getStorageToken(key: string = this.localAuthStorageKey): string | undefined {
+  private getStorageToken(key: string): string | undefined {
     return localStorage.getItem(key) || undefined
   }
 
-  private setStorageToken(token: string, key: string = this.localAuthStorageKey): void {
+  private setStorageToken(token: string, key: string): void {
     localStorage.setItem(key, token)
   }
 
-  private clearStorageToken(key = this.localAuthStorageKey): void {
-    localStorage.removeItem(key)
+  private clearStorageTokens(): void {
+    localStorage.removeItem(this.localAuthStorageKey)
+    localStorage.removeItem(this.localNonceStorageKey)
   }
 
   private async getNonce(): Promise<string> {
@@ -184,7 +188,7 @@ export namespace CloudAuthSIWX {
   export type ConstructorParams = {
     /**
      * The key to use for storing the session token in local storage.
-     * @default '@appkit/siwx-token'
+     * @default '@appkit/siwx-auth-token'
      */
     localAuthStorageKey?: string
     /**
