@@ -2,7 +2,7 @@ import { W3mConnectButton } from '../../src/modal/w3m-connect-button'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { elementUpdated, fixture } from '@open-wc/testing'
 import { html } from 'lit'
-import { ModalController, type ModalControllerState } from '@reown/appkit-core'
+import { ModalController } from '@reown/appkit-core'
 import { HelpersUtil } from '../utils/HelpersUtil'
 import type { WuiConnectButton } from '@reown/appkit-ui'
 
