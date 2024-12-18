@@ -1,13 +1,18 @@
 import type { ChainNamespace } from '@reown/appkit-common'
 
 export const ConstantsUtil = {
-  WALLET_CONNECT_CONNECTOR_ID: 'walletConnect',
-  INJECTED_CONNECTOR_ID: 'injected',
-  WALLET_STANDARD_CONNECTOR_ID: 'announced',
-  COINBASE_CONNECTOR_ID: 'coinbaseWallet',
-  COINBASE_SDK_CONNECTOR_ID: 'coinbaseWalletSDK',
-  SAFE_CONNECTOR_ID: 'safe',
-  LEDGER_CONNECTOR_ID: 'ledger',
+  /* Connector IDs */
+  CONNECTOR_ID: {
+    WALLET_CONNECT_CONNECTOR_ID: 'walletConnect',
+    INJECTED_CONNECTOR_ID: 'injected',
+    WALLET_STANDARD_CONNECTOR_ID: 'announced',
+    COINBASE_CONNECTOR_ID: 'coinbaseWallet',
+    COINBASE_SDK_CONNECTOR_ID: 'coinbaseWalletSDK',
+    SAFE_CONNECTOR_ID: 'safe',
+    LEDGER_CONNECTOR_ID: 'ledger',
+    EIP6963_CONNECTOR_ID: 'eip6963',
+    AUTH_CONNECTOR_ID: 'ID_AUTH'
+  },
 
   /* Connector names */
   METMASK_CONNECTOR_NAME: 'MetaMask',
@@ -20,8 +25,6 @@ export const ConstantsUtil = {
   BITGET_CONNECTOR_NAME: 'Bitget Wallet',
   FRONTIER_CONNECTOR_NAME: 'Frontier',
 
-  EIP6963_CONNECTOR_ID: 'eip6963',
-  AUTH_CONNECTOR_ID: 'ID_AUTH',
   EIP155: 'eip155' as ChainNamespace,
   ADD_CHAIN_METHOD: 'wallet_addEthereumChain',
   EIP6963_ANNOUNCE_EVENT: 'eip6963:announceProvider',

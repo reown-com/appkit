@@ -92,11 +92,12 @@ export abstract class AdapterBlueprint<
    */
   public setUniversalProvider(universalProvider: UniversalProvider) {
     this.addConnector({
-      id: ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID,
+      id: ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT_CONNECTOR_ID,
       type: 'WALLET_CONNECT',
-      name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
+      name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT_CONNECTOR_ID],
       provider: universalProvider,
-      imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
+      imageId:
+        PresetsUtil.ConnectorImageIds[ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT_CONNECTOR_ID],
       chain: this.namespace,
       chains: []
     } as unknown as Connector)
@@ -108,11 +109,11 @@ export abstract class AdapterBlueprint<
    */
   public setAuthProvider(authProvider: W3mFrameProvider): void {
     this.addConnector({
-      id: ConstantsUtil.AUTH_CONNECTOR_ID,
+      id: ConstantsUtil.CONNECTOR_ID.AUTH_CONNECTOR_ID,
       type: 'AUTH',
       name: 'Auth',
       provider: authProvider,
-      imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.AUTH_CONNECTOR_ID],
+      imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.CONNECTOR_ID.AUTH_CONNECTOR_ID],
       chain: this.namespace,
       chains: []
     } as unknown as Connector)

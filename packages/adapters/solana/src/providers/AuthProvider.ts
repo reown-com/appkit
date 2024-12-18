@@ -26,7 +26,7 @@ export type AuthProviderConfig = {
 }
 
 export class AuthProvider extends ProviderEventEmitter implements Provider, ProviderAuthMethods {
-  public readonly name = ConstantsUtil.AUTH_CONNECTOR_ID
+  public readonly name = ConstantsUtil.CONNECTOR_ID.AUTH_CONNECTOR_ID
   public readonly type = 'AUTH'
 
   private readonly getProvider: AuthProviderConfig['getProvider']

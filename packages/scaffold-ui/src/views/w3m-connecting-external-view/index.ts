@@ -54,7 +54,10 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
          * Instead of opening a popup in first render for `W3mConnectingWidget`, we need to trigger connection for Coinbase connector specifically when users select it.
          * And if there is an error, this condition will be skipped and the connection will be triggered as usual because we have `Try again` button in this view which is a user interaction as well.
          */
-        if (this.connector.id !== ConstantsUtil.COINBASE_SDK_CONNECTOR_ID || !this.error) {
+        if (
+          this.connector.id !== ConstantsUtil.CONNECTOR_ID.COINBASE_SDK_CONNECTOR_ID ||
+          !this.error
+        ) {
           await ConnectionController.connectExternal(this.connector, this.connector.chain)
 
           EventsController.sendEvent({

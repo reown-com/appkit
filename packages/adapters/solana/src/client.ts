@@ -101,7 +101,7 @@ export class SolanaAdapter extends AdapterBlueprint {
       })
 
       this.addConnector({
-        id: ConstantsUtil.AUTH_CONNECTOR_ID,
+        id: ConstantsUtil.CONNECTOR_ID.AUTH_CONNECTOR_ID,
         type: 'AUTH',
         provider: this.authProvider as unknown as W3mFrameProvider,
         name: 'Auth',
@@ -123,7 +123,8 @@ export class SolanaAdapter extends AdapterBlueprint {
         }),
         name: 'Coinbase Wallet',
         chain: this.namespace as ChainNamespace,
-        explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID],
+        explorerId:
+          PresetsUtil.ConnectorExplorerIds[ConstantsUtil.CONNECTOR_ID.COINBASE_SDK_CONNECTOR_ID],
         chains: []
       })
     }
