@@ -19,4 +19,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fix logic for authentication header on CloudAuthSIWX"
+Fix logic for authentication header on CloudAuthSIWX
