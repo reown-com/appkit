@@ -147,11 +147,21 @@ describe('StorageUtil', () => {
     })
   })
 
+  describe('setConnectedConnectorId', () => {
+    it('should set connected connector', () => {
+      const connectorId = 'io.metamask'
+      StorageUtil.setConnectedConnectorId(connectorId)
+      expect(SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID)).toBe(
+        connectorId
+      )
+    })
+  })
+
   describe('getConnectedConnector', () => {
     it('should get connected connector', () => {
-      const connector: ConnectorType = 'INJECTED'
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR, connector)
-      expect(StorageUtil.getConnectedConnector()).toBe(connector)
+      const connectorId = 'io.metamask'
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID, connectorId)
+      expect(StorageUtil.getConnectedConnectorId()).toBe(connectorId)
     })
   })
 

@@ -87,11 +87,11 @@ export const StorageUtil = {
     }
   },
 
-  deleteConnectedConnector() {
+  deleteConnectedConnectorId() {
     try {
-      SafeLocalStorage.removeItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID)
     } catch {
-      console.info('Unable to delete connected connector')
+      console.info('Unable to delete connected connector id')
     }
   },
 
@@ -138,16 +138,6 @@ export const StorageUtil = {
       return activeNamespace as ChainNamespace | undefined
     } catch {
       console.info('Unable to get active namespace')
-    }
-
-    return undefined
-  },
-
-  getConnectedConnector() {
-    try {
-      return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR) as ConnectorType
-    } catch {
-      console.info('Unable to get connected connector')
     }
 
     return undefined

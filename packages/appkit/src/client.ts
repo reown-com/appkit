@@ -1624,9 +1624,9 @@ export class AppKit {
           chainNamespace
         )
       }
-    } else if (providerType === UtilConstantsUtil.COINBASE_CONNECTOR_ID) {
+    } else if (providerType === UtilConstantsUtil.CONNECTOR_ID.COINBASE_CONNECTOR_ID) {
       const connector = this.getConnectors().find(
-        c => c.id === UtilConstantsUtil.COINBASE_CONNECTOR_ID
+        c => c.id === UtilConstantsUtil.CONNECTOR_ID.COINBASE_CONNECTOR_ID
       )
 
       this.setConnectedWalletInfo(
