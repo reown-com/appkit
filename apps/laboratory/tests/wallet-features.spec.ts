@@ -95,7 +95,7 @@ walletFeaturesTest('it should open web app wallet', async () => {
   await validator.expectAllWallets()
   await page.openAllWallets()
   await page.page.waitForTimeout(500)
-  await page.search('absolute wallet')
+  await page.search('MathWallet')
   await page.clickAllWalletsListSearchItem(MATH_WALLET_ID)
   await page.page.waitForTimeout(500)
   await page.clickTabWebApp()
