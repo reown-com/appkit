@@ -20,7 +20,6 @@ import {
   type Connector,
   CoreHelperUtil,
   AlertController,
-  type ConnectorType,
   StorageUtil
 } from '@reown/appkit-core'
 import { SafeLocalStorage, SafeLocalStorageKeys, type CaipNetwork } from '@reown/appkit-common'
