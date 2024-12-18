@@ -1,60 +1,89 @@
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
-import { mainnet, arbitrum } from '@reown/appkit/networks'
+import { mainnet, polygon, base } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit'
 
-// @ts-expect-error 1. Get projectId
+// Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
 if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
 }
 
-// 2. Create wagmiConfig
-const ethers5Adapter = new EthersAdapter()
+// Initialize Ethers adapter
+const ethersAdapter = new EthersAdapter()
 
-// 3. Create modal
+// Initialize AppKit
 const modal = createAppKit({
-  adapters: [ethers5Adapter],
-  networks: [mainnet, arbitrum],
+  adapters: [ethersAdapter],
+  networks: [mainnet, polygon, base],
+  projectId,
   metadata: {
-    name: 'AppKit',
-    description: 'AppKit Laboratory',
-    url: 'https://example.com',
+    name: 'AppKit HTML Ethers Example',
+    description: 'AppKit HTML Ethers Example',
+    url: 'https://reown.com/appkit',
     icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
   },
-  projectId,
-  metadata,
-  chains,
   themeMode: 'light'
 })
 
-// 4. Trigger modal programaticaly
-const openConnectModalBtn = document.getElementById('open-connect-modal')
-const openNetworkModalBtn = document.getElementById('open-network-modal')
+// Theme state
+let themeMode = 'light'
 
-openConnectModalBtn.addEventListener('click', () => modal.open())
-openNetworkModalBtn.addEventListener('click', () => modal.open({ view: 'Networks' }))
-
+// Helper function to update element content
 const updateElement = (id, content) => {
   const element = document.getElementById(id)
   if (element) {
-    element.innerHTML = content
+    element.innerHTML = typeof content === 'string' ? content : JSON.stringify(content, null, 2)
   }
 }
 
-const intervalId = setInterval(() => {
-  updateElement('getError', JSON.stringify(modal.getError(), null, 2))
-  updateElement('getChainId', JSON.stringify(modal.getChainId(), null, 2))
-  updateElement('getAddress', JSON.stringify(modal.getAddress(), null, 2))
-  updateElement('switchNetwork', JSON.stringify(modal.switchNetwork(), null, 2))
-  updateElement('getIsConnected', JSON.stringify(modal.getIsConnected(), null, 2))
-  updateElement('getWalletProvider', JSON.stringify(modal.getWalletProvider(), null, 2))
-  updateElement('getWalletProviderType', JSON.stringify(modal.getWalletProviderType(), null, 2))
-}, 2000)
+// Button event listeners
+document.getElementById('open-connect-modal').addEventListener('click', () => modal.open())
+document
+  .getElementById('open-network-modal')
+  .addEventListener('click', () => modal.open({ view: 'Networks' }))
 
-window.addEventListener('beforeunload', () => {
-  clearInterval(intervalId)
+document.getElementById('toggle-theme').addEventListener('click', () => {
+  themeMode = themeMode === 'dark' ? 'light' : 'dark'
+  document.body.className = themeMode
+  modal.setThemeMode(themeMode)
+  updateThemeState()
 })
 
-modal.subscribeProvider(state => {
-  updateElement('subscribeProvider', JSON.stringify(state, null, 2))
+document.getElementById('switch-network').addEventListener('click', async () => {
+  const currentChainId = modal.getChainId()
+  const targetNetwork = currentChainId === polygon.id ? mainnet : polygon
+  await modal.switchNetwork(targetNetwork)
+})
+
+// Update state displays
+const updateThemeState = () => {
+  updateElement('theme', {
+    themeMode,
+    themeVariables: {}
+  })
+}
+
+// Set up subscriptions
+modal.subscribeAccount(state => {
+  updateElement('account', state)
+})
+
+modal.subscribeNetwork(state => {
+  updateElement('network', state)
+})
+
+modal.subscribeState(state => {
+  updateElement('modal-state', state)
+})
+
+modal.subscribeTheme(state => {
+  updateElement('theme', state)
+})
+
+modal.subscribeEvents(state => {
+  updateElement('events', state)
+})
+
+modal.subscribeWalletInfo(state => {
+  updateElement('wallet-info', state)
 })
