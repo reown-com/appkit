@@ -24,7 +24,7 @@ export class CloudAuthSIWX implements SIWXConfig {
 
   constructor(params: CloudAuthSIWX.ConstructorParams = {}) {
     this.localAuthStorageKey = params.localAuthStorageKey || '@appkit/siwx-token'
-    this.localNonceStorageKey = '@appkit/siwx-nonce-token'
+    this.localNonceStorageKey = params.localNonceStorageKey || '@appkit/siwx-nonce-token'
 
     this.messenger = new InformalMessenger({
       domain: typeof document === 'undefined' ? 'Unknown Domain' : document.location.host,
@@ -187,6 +187,11 @@ export namespace CloudAuthSIWX {
      * @default '@appkit/siwx-token'
      */
     localAuthStorageKey?: string
+    /**
+     * The key to use for storing the nonce token in local storage.
+     * @default '@appkit/siwx-nonce-token'
+     */
+    localNonceStorageKey?: string
   }
 
   export type Request<Method extends 'GET' | 'POST' | 'PATCH', Params, Response> = {
