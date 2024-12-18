@@ -5,7 +5,7 @@ import {
   type CaipNetworkId,
   type ChainNamespace
 } from '@reown/appkit-common'
-import type { WcWallet, ConnectorType, SocialProvider, ConnectionStatus } from './TypeUtil.js'
+import type { WcWallet, SocialProvider, ConnectionStatus } from './TypeUtil.js'
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
