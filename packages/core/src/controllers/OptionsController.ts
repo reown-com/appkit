@@ -297,7 +297,6 @@ export const OptionsController = {
   },
 
   setEnableEmbedded(enableEmbedded: OptionsControllerState['enableEmbedded']) {
-    console.log('>> Setting enableEmbedded', enableEmbedded)
     state.enableEmbedded = enableEmbedded
   },
 
