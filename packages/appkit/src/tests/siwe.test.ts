@@ -171,14 +171,14 @@ describe('SIWE mapped to SIWX', () => {
         }
       } as const
 
-      vi.spyOn(mockProvider, 'authenticate').mockResolvedValueOnce({
+      const authenticateSpy = vi.spyOn(mockProvider, 'authenticate').mockResolvedValueOnce({
         session: {} as any,
         auths: [cacao]
       })
 
       await SIWXUtil.universalProviderAuthenticate({
         universalProvider: mockProvider,
-        chains: ['eip155:1'],
+        chains: ['eip155:10', 'eip155:137', 'eip155:1'],
         methods: ['eth_sign']
       })
 
@@ -191,6 +191,21 @@ describe('SIWE mapped to SIWX', () => {
         }),
         message: 'Formatted auth message',
         signature: 'mock-signature'
+      })
+      expect(authenticateSpy).toHaveBeenCalledWith({
+        chainId: 'eip155:1',
+        chains: ['eip155:1', 'eip155:10', 'eip155:137'], // must be active chain first
+        domain: 'mock-domain',
+        exp: undefined,
+        iat: expect.stringMatching(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/),
+        methods: ['eth_sign'],
+        nbf: undefined,
+        nonce: 'mock-nonce',
+        requestId: undefined,
+        resources: undefined,
+        statement: undefined,
+        uri: 'mock-uri',
+        version: '1'
       })
     })
 
