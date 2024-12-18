@@ -18,11 +18,13 @@ import { InformalMessenger } from '../index.js'
  * WARNING: The Claud Auth is only available in EVM networks.
  */
 export class CloudAuthSIWX implements SIWXConfig {
-  private readonly localStorageKey: string
+  private readonly localAuthStorageKey: string
+  private readonly localNonceStorageKey: string
   private readonly messenger: SIWXMessenger
 
   constructor(params: CloudAuthSIWX.ConstructorParams = {}) {
-    this.localStorageKey = params.localStorageKey || '@appkit/siwx-token'
+    this.localAuthStorageKey = params.localAuthStorageKey || '@appkit/siwx-token'
+    this.localNonceStorageKey = '@appkit/siwx-nonce-token'
 
     this.messenger = new InformalMessenger({
       domain: typeof document === 'undefined' ? 'Unknown Domain' : document.location.host,
@@ -37,12 +39,16 @@ export class CloudAuthSIWX implements SIWXConfig {
   }
 
   async addSession(session: SIWXSession): Promise<void> {
-    const response = await this.request('authenticate', {
-      message: session.message,
-      signature: session.signature,
-      clientId: this.getClientId(),
-      walletInfo: this.getWalletInfo()
-    })
+    const response = await this.request(
+      'authenticate',
+      {
+        message: session.message,
+        signature: session.signature,
+        clientId: this.getClientId(),
+        walletInfo: this.getWalletInfo()
+      },
+      'nonceJwt'
+    )
     this.setStorageToken(response.token)
   }
 
@@ -89,21 +95,28 @@ export class CloudAuthSIWX implements SIWXConfig {
 
   private async request<Key extends CloudAuthSIWX.RequestKey>(
     key: Key,
-    params: CloudAuthSIWX.Requests[Key]['body']
+    params: CloudAuthSIWX.Requests[Key]['body'],
+    tokenType: 'authJwt' | 'nonceJwt' = 'authJwt'
   ): Promise<CloudAuthSIWX.Requests[Key]['response']> {
     const { projectId, st, sv } = this.getSDKProperties()
-    const token = this.getStorageToken()
+
+    const authToken = this.getStorageToken()
+    const nonceToken = this.getStorageToken(this.localNonceStorageKey)
+    const jwtHeader: { 'x-nonce-jwt': string } | { Authorization: string } =
+      tokenType === 'nonceJwt'
+        ? {
+            'x-nonce-jwt': `Bearer ${nonceToken}`
+          }
+        : {
+            Authorization: `Bearer ${authToken}`
+          }
 
     const response = await fetch(
       `${ConstantsUtil.W3M_API_URL}/auth/v1/${key}?projectId=${projectId}&st=${st}&sv=${sv}`,
       {
         method: RequestMethod[key],
         body: params ? JSON.stringify(params) : undefined,
-        headers: token
-          ? {
-              Authorization: `Bearer ${token}`
-            }
-          : undefined
+        headers: authToken || nonceToken ? jwtHeader : undefined
       }
     )
 
@@ -114,22 +127,22 @@ export class CloudAuthSIWX implements SIWXConfig {
     throw new Error(await response.text())
   }
 
-  private getStorageToken(): string | undefined {
-    return localStorage.getItem(this.localStorageKey) || undefined
+  private getStorageToken(key: string = this.localAuthStorageKey): string | undefined {
+    return localStorage.getItem(key) || undefined
   }
 
-  private setStorageToken(token: string): void {
-    localStorage.setItem(this.localStorageKey, token)
+  private setStorageToken(token: string, key: string = this.localAuthStorageKey): void {
+    localStorage.setItem(key, token)
   }
 
-  private clearStorageToken(): void {
-    localStorage.removeItem(this.localStorageKey)
+  private clearStorageToken(key = this.localAuthStorageKey): void {
+    localStorage.removeItem(key)
   }
 
   private async getNonce(): Promise<string> {
     const { nonce, token } = await this.request('nonce', undefined)
 
-    this.setStorageToken(token)
+    this.setStorageToken(token, this.localNonceStorageKey)
 
     return nonce
   }
@@ -173,7 +186,7 @@ export namespace CloudAuthSIWX {
      * The key to use for storing the session token in local storage.
      * @default '@appkit/siwx-token'
      */
-    localStorageKey?: string
+    localAuthStorageKey?: string
   }
 
   export type Request<Method extends 'GET' | 'POST' | 'PATCH', Params, Response> = {
