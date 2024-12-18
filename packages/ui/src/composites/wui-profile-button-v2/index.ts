@@ -30,9 +30,9 @@ export class WuiProfileButtonV2 extends LitElement {
 
   @property() public onCopyClick?: (event: Event) => void
 
-  private connectedConnector = StorageUtil.getConnectedConnectorId()
+  private connectorId = StorageUtil.getConnectedConnectorId()
 
-  private shouldShowIcon = this.connectedConnector === 'ID_AUTH'
+  private shouldShowIcon = this.connectorId === 'ID_AUTH'
 
   // -- Render -------------------------------------------- //
   public override render() {

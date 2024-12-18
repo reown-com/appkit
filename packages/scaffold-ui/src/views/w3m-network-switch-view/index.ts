@@ -97,7 +97,7 @@ export class W3mNetworkSwitchView extends LitElement {
   private getSubLabel() {
     const connectorId = StorageUtil.getConnectedConnectorId()
     const authConnector = ConnectorController.getAuthConnector()
-    if (authConnector && connectorId === 'AUTH') {
+    if (authConnector && connectorId === 'ID_AUTH') {
       return ''
     }
 
