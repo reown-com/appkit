@@ -267,7 +267,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     const txParams = {
       account: params.address,
       to: params.to as Hex,
-      input: params.data as Hex,
+      value: params.value as bigint,
       gas: params.gas as bigint,
       gasPrice: params.gasPrice as bigint,
       data: params.data as Hex,
