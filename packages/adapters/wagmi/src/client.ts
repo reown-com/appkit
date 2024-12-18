@@ -100,9 +100,10 @@ export class WagmiAdapter extends AdapterBlueprint {
   override async getAccounts(
     params: AdapterBlueprint.GetAccountsParams
   ): Promise<AdapterBlueprint.GetAccountsResult> {
-    const connector = this.wagmiConfig.connectors.find(c => c.id === params.id)
+    const connector = this.getWagmiConnector(params.id)
+
     if (!connector) {
-      throw new Error('WagmiAdapter:getAccounts - connector is undefined')
+      return { accounts: [] }
     }
 
     if (connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
@@ -123,6 +124,10 @@ export class WagmiAdapter extends AdapterBlueprint {
         CoreHelperUtil.createAccount('eip155', val || '', 'eoa')
       )
     })
+  }
+
+  private getWagmiConnector(id: string) {
+    return this.wagmiConfig.connectors.find(c => c.id === id)
   }
 
   private createConfig(
@@ -173,17 +178,23 @@ export class WagmiAdapter extends AdapterBlueprint {
     })
     watchAccount(this.wagmiConfig, {
       onChange: accountData => {
-        if (accountData.address) {
-          this.emit('accountChanged', {
-            address: accountData.address,
-            chainId: accountData.chainId
-          })
+        if (accountData.status === 'disconnected') {
+          this.emit('disconnect')
         }
-        if (accountData.chainId) {
-          this.emit('switchNetwork', {
-            address: accountData.address,
-            chainId: accountData.chainId
-          })
+        if (accountData.status === 'connected') {
+          if (accountData.address) {
+            this.emit('accountChanged', {
+              address: accountData.address,
+              chainId: accountData.chainId
+            })
+          }
+
+          if (accountData.chainId) {
+            this.emit('switchNetwork', {
+              address: accountData.address,
+              chainId: accountData.chainId
+            })
+          }
         }
       }
     })
@@ -407,7 +418,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     const { id } = params
     const connections = getConnections(this.wagmiConfig)
     const connection = connections.find(c => c.connector.id === id)
-    const connector = this.wagmiConfig.connectors.find(c => c.id === id)
+    const connector = this.getWagmiConnector(id)
     const provider = (await connector?.getProvider()) as Provider
 
     return {
@@ -420,9 +431,11 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public async connectWalletConnect(onUri: (uri: string) => void, chainId?: number | string) {
-    const connector = this.wagmiConfig.connectors.find(
-      c => c.type === 'walletConnect'
-    ) as unknown as Connector
+    const connector = this.getWagmiConnector('walletConnect')
+
+    if (!connector) {
+      throw new Error('UniversalAdapter:connectWalletConnect - connector not found')
+    }
 
     const provider = (await connector.getProvider()) as UniversalProvider
 
@@ -444,7 +457,8 @@ export class WagmiAdapter extends AdapterBlueprint {
   ): Promise<AdapterBlueprint.ConnectResult> {
     const { id, provider, type, info, chainId } = params
 
-    const connector = this.wagmiConfig.connectors.find(c => c.id === id)
+    const connector = this.getWagmiConnector(id)
+
     if (!connector) {
       throw new Error('connectionControllerClient:connectExternal - connector is undefined')
     }
@@ -471,7 +485,8 @@ export class WagmiAdapter extends AdapterBlueprint {
   public override async reconnect(params: AdapterBlueprint.ConnectParams): Promise<void> {
     const { id } = params
 
-    const connector = this.wagmiConfig.connectors.find(c => c.id === id)
+    const connector = this.getWagmiConnector(id)
+
     if (!connector) {
       throw new Error('connectionControllerClient:connectExternal - connector is undefined')
     }
@@ -522,16 +537,15 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public getWalletConnectProvider(): AdapterBlueprint.GetWalletConnectProviderResult {
-    return this.wagmiConfig.connectors.find(c => c.type === 'walletConnect')?.[
-      'provider'
-    ] as UniversalProvider
+    return this.getWagmiConnector('walletConnect')?.['provider'] as UniversalProvider
   }
 
   public async disconnect() {
     const connections = getConnections(this.wagmiConfig)
     await Promise.all(
       connections.map(async connection => {
-        const connector = connection?.connector
+        const connector = this.getWagmiConnector(connection.connector.id)
+
         if (connector) {
           await wagmiDisconnect(this.wagmiConfig, { connector })
         }
@@ -551,11 +565,13 @@ export class WagmiAdapter extends AdapterBlueprint {
     const connections = getConnections(this.wagmiConfig)
     const connection = connections[0]
 
-    if (!connection?.connector) {
+    const connector = connection ? this.getWagmiConnector(connection.connector.id) : null
+
+    if (!connector) {
       throw new Error('connectionControllerClient:getCapabilities - connector is undefined')
     }
 
-    const provider = (await connection.connector.getProvider()) as UniversalProvider
+    const provider = (await connector.getProvider()) as UniversalProvider
 
     if (!provider) {
       throw new Error('connectionControllerClient:getCapabilities - provider is undefined')
@@ -581,11 +597,13 @@ export class WagmiAdapter extends AdapterBlueprint {
     const connections = getConnections(this.wagmiConfig)
     const connection = connections[0]
 
-    if (!connection?.connector) {
+    const connector = connection ? this.getWagmiConnector(connection.connector.id) : null
+
+    if (!connector) {
       throw new Error('connectionControllerClient:grantPermissions - connector is undefined')
     }
 
-    const provider = (await connection.connector.getProvider()) as UniversalProvider
+    const provider = (await connector.getProvider()) as UniversalProvider
 
     if (!provider) {
       throw new Error('connectionControllerClient:grantPermissions - provider is undefined')
@@ -604,11 +622,13 @@ export class WagmiAdapter extends AdapterBlueprint {
     const connections = getConnections(this.wagmiConfig)
     const connection = connections[0]
 
-    if (!connection?.connector) {
+    const connector = connection ? this.getWagmiConnector(connection.connector.id) : null
+
+    if (!connector) {
       throw new Error('connectionControllerClient:revokePermissions - connector is undefined')
     }
 
-    const provider = (await connection.connector.getProvider()) as UniversalProvider
+    const provider = (await connector.getProvider()) as UniversalProvider
 
     if (!provider) {
       throw new Error('connectionControllerClient:revokePermissions - provider is undefined')
