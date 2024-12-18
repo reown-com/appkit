@@ -6,7 +6,8 @@ import {
   CoreHelperUtil,
   RouterController,
   SendController,
-  ChainController
+  ChainController,
+  AccountController
 } from '@reown/appkit-core'
 import { state } from 'lit/decorators.js'
 
@@ -45,6 +46,7 @@ export class W3mWalletSendView extends LitElement {
   public constructor() {
     super()
     this.fetchNetworkPrice()
+    this.fetchBalances()
     this.unsubscribe.push(
       ...[
         SendController.subscribe(val => {
@@ -103,6 +105,9 @@ export class W3mWalletSendView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private async fetchBalances() {
+    await AccountController.fetchTokenBalance()
+  }
 
   private async fetchNetworkPrice() {
     await SwapController.getNetworkTokenPrice()
