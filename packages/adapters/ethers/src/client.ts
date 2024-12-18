@@ -210,6 +210,7 @@ export class EthersAdapter extends AdapterBlueprint {
     const { id, chainId } = params
 
     const connector = this.connectors.find(c => c.id === id)
+    
     const selectedProvider = connector?.provider as Provider
 
     if (!selectedProvider) {
