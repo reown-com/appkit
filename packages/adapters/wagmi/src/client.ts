@@ -444,7 +444,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       throw new Error('connectionControllerClient:connectExternal - connector is undefined')
     }
 
-    if (provider && info && connector.id === ConstantsUtil.EIP6963_CONNECTOR_ID) {
+    if (provider && info && connector.id === ConstantsUtil.CONNECTOR_ID.EIP6963_CONNECTOR_ID) {
       // @ts-expect-error Exists on EIP6963Connector
       connector.setEip6963Wallet?.({ provider, info })
     }

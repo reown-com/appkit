@@ -302,7 +302,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
       const existingConnector = this.connectors?.find(c => c.name === info?.name)
 
       if (!existingConnector) {
-        const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EIP6963_CONNECTOR_ID]
+        const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.CONNECTOR_ID.EIP6963_CONNECTOR_ID]
 
         if (type && this.namespace) {
           this.addConnector({
