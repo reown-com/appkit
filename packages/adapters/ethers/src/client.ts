@@ -439,14 +439,14 @@ export class EthersAdapter extends AdapterBlueprint {
     const caipNetwork = this.caipNetworks?.find((c: CaipNetwork) => c.id === params.chainId)
 
     if (caipNetwork && caipNetwork.chainNamespace === 'eip155') {
-      const jsonRpcProvider = new JsonRpcProvider(caipNetwork.rpcUrls.default.http[0], {
-        chainId: caipNetwork.id as number,
-        name: caipNetwork.name
-      })
+      const provider = createProviderWrapper(
+        caipNetwork.rpcUrls.default.http[0] as string,
+        caipNetwork as BaseNetwork
+      )
 
-      if (jsonRpcProvider) {
+      if (provider && params.address) {
         try {
-          const balance = await jsonRpcProvider.getBalance(params.address)
+          const balance = await provider.getBalance(params.address as `0x${string}`)
           const formattedBalance = formatEther(balance)
 
           return { balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol }
