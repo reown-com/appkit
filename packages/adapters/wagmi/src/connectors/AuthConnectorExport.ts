@@ -1,8 +1,5 @@
 import type { CreateConfigParameters } from '@wagmi/core'
 import { authConnector as authConnectorWagmi } from './AuthConnector.js'
-import { ErrorUtil } from '@reown/appkit-utils'
-import { AlertController } from '@reown/appkit-core'
-import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
 
 interface W3mFrameProviderOptions {
   projectId: string
@@ -14,13 +11,5 @@ export type AuthParameters = {
 }
 
 export function authConnector(parameters: AuthParameters) {
-  return authConnectorWagmi({
-    ...parameters,
-    provider: W3mFrameProviderSingleton.getInstance({
-      projectId: parameters.options.projectId,
-      onTimeout: () => {
-        AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
-      }
-    })
-  })
+  return authConnectorWagmi(parameters)
 }
