@@ -83,6 +83,7 @@ import type { SessionTypes } from '@walletconnect/types'
 import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
 import { W3mFrameProviderSingleton } from './auth-provider/W3MFrameProviderSingleton.js'
 import { WcHelpersUtil } from './utils/HelpersUtil.js'
+import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
 
 declare global {
   interface Window {
@@ -95,7 +96,14 @@ export { AccountController }
 
 // -- Types --------------------------------------------------------------------
 export interface OpenOptions {
-  view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'
+  view:
+    | 'Account'
+    | 'Connect'
+    | 'Networks'
+    | 'ApproveTransaction'
+    | 'OnRampProviders'
+    | 'ConnectingWalletConnectBasic'
+  uri?: string
 }
 
 type Adapters = Record<ChainNamespace, AdapterBlueprint>
@@ -234,11 +242,15 @@ export class AppKit {
         }
       }
     })
+    PublicStateController.set({ initialized: true })
   }
 
   // -- Public -------------------------------------------------------------------
   public async open(options?: OpenOptions) {
     await this.initOrContinue()
+    if (options?.uri && this.universalAdapter) {
+      ConnectionController.setUri(options.uri)
+    }
     ModalController.open(options)
   }
 
@@ -642,6 +654,13 @@ export class AppKit {
     await this.connectionControllerClient?.disconnect()
   }
 
+  public getConnectMethodsOrder() {
+    return WalletUtil.getConnectOrderMethod(
+      OptionsController.state.features,
+      ConnectorController.getConnectors()
+    )
+  }
+
   // -- Private ------------------------------------------------------------------
   private async initControllers(
     options: AppKitOptions & {
@@ -736,7 +755,7 @@ export class AppKit {
   private getDefaultMetaData() {
     if (typeof window !== 'undefined' && typeof document !== 'undefined') {
       return {
-        name: document.getElementsByTagName('title')[0]?.textContent || '',
+        name: document.getElementsByTagName('title')?.[0]?.textContent || '',
         description:
           document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.content || '',
         url: window.location.origin,
@@ -1793,7 +1812,9 @@ export class AppKit {
       logger
     }
 
-    this.universalProvider = await UniversalProvider.init(universalProviderOptions)
+    OptionsController.setUsingInjectedUniversalProvider(Boolean(this.options?.universalProvider))
+    this.universalProvider =
+      this.options.universalProvider ?? (await UniversalProvider.init(universalProviderOptions))
   }
 
   public async getUniversalProvider() {
