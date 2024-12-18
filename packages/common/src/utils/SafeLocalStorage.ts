@@ -10,6 +10,8 @@ export type SafeLocalStorageItems = {
   '@appkit/recent_wallets': string
   '@appkit/active_namespace': string
   '@appkit/connection_status': string
+  '@appkit/siwx-auth-token': string
+  '@appkit/siwx-nonce-token': string
   /*
    * DO NOT CHANGE: @walletconnect/universal-provider requires us to set this specific key
    *  This value is a stringified version of { href: stiring; name: string }
@@ -29,8 +31,10 @@ export const SafeLocalStorageKeys = {
   RECENT_WALLETS: '@appkit/recent_wallets',
   DEEPLINK_CHOICE: 'WALLETCONNECT_DEEPLINK_CHOICE',
   ACTIVE_NAMESPACE: '@appkit/active_namespace',
-  CONNECTION_STATUS: '@appkit/connection_status'
-} as const
+  CONNECTION_STATUS: '@appkit/connection_status',
+  SIWX_AUTH_TOKEN: '@appkit/siwx-auth-token',
+  SIWX_NONCE_TOKEN: '@appkit/siwx-nonce-token'
+} as const satisfies Record<string, keyof SafeLocalStorageItems>
 
 export const SafeLocalStorage = {
   setItem<Key extends keyof SafeLocalStorageItems>(

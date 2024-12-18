@@ -80,7 +80,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
         }
       )
 
-      expect(setItemSpy).toHaveBeenCalledWith('@appkit/siwx-token', 'mock_token')
+      expect(setItemSpy).toHaveBeenCalledWith('@appkit/siwx-nonce-token', 'mock_token')
     })
 
     it('should throw an text error if response is not json', async () => {
@@ -137,12 +137,12 @@ Issued At: 2024-12-05T16:02:32.905Z`)
         {
           body: '{"message":"Hello AppKit!","signature":"0x3c70e0a2d87f677dc0c3faf98fdf6313e99a3d9191bb79f7ecfce0c2cf46b7b33fd4c4bb83bca82fe872e35963382027d0d18018342d7dc36a675918cb73e9061c","clientId":null}',
           headers: {
-            Authorization: 'Bearer mock_nonce_token'
+            'x-nonce-jwt': 'Bearer mock_nonce_token'
           },
           method: 'POST'
         }
       )
-      expect(setItemSpy).toHaveBeenCalledWith('@appkit/siwx-token', 'mock_authenticate_token')
+      expect(setItemSpy).toHaveBeenCalledWith('@appkit/siwx-auth-token', 'mock_authenticate_token')
     })
 
     it('should use correct client id', async () => {
@@ -162,7 +162,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
         {
           body: '{"message":"Hello AppKit!","signature":"0x3c70e0a2d87f677dc0c3faf98fdf6313e99a3d9191bb79f7ecfce0c2cf46b7b33fd4c4bb83bca82fe872e35963382027d0d18018342d7dc36a675918cb73e9061c","clientId":"mock_client_id"}',
           headers: {
-            Authorization: 'Bearer mock_nonce_token'
+            'x-nonce-jwt': 'Bearer mock_nonce_token'
           },
           method: 'POST'
         }
@@ -188,7 +188,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
         {
           body: '{"message":"Hello AppKit!","signature":"0x3c70e0a2d87f677dc0c3faf98fdf6313e99a3d9191bb79f7ecfce0c2cf46b7b33fd4c4bb83bca82fe872e35963382027d0d18018342d7dc36a675918cb73e9061c","walletInfo":{"name":"mock_wallet_name","icon":"mock_wallet_icon"}}',
           headers: {
-            Authorization: 'Bearer mock_nonce_token'
+            'x-nonce-jwt': 'Bearer mock_nonce_token'
           },
           method: 'POST'
         }
@@ -280,7 +280,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
 
       await siwx.revokeSession('eip155:1', '0x1234567890abcdef1234567890abcdef12345678')
 
-      expect(removeItemSpy).toHaveBeenCalledWith('@appkit/siwx-token')
+      expect(removeItemSpy).toHaveBeenCalledWith('@appkit/siwx-auth-token')
     })
   })
 
@@ -290,7 +290,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
 
       await siwx.setSessions([])
 
-      expect(removeItemSpy).toHaveBeenCalledWith('@appkit/siwx-token')
+      expect(removeItemSpy).toHaveBeenCalledWith('@appkit/siwx-auth-token')
     })
 
     it('adds a session with default first item', async () => {
