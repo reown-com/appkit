@@ -647,7 +647,7 @@ export class AppKit {
   }
 
   public async disconnect() {
-    await this.connectionControllerClient?.disconnect()
+    await Promise.all([this.connectionControllerClient?.disconnect(), ChainController.disconnect()])
   }
 
   public getConnectMethodsOrder() {
@@ -897,7 +897,6 @@ export class AppKit {
         await adapter?.disconnect({ provider, providerType })
 
         ProviderUtil.resetChain(ChainController.state.activeChain as ChainNamespace)
-
         this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
       },
       checkInstalled: (ids?: string[]) => {
@@ -1113,10 +1112,6 @@ export class AppKit {
     }
   }
 
-  private async handleDisconnect() {
-    await this.connectionControllerClient?.disconnect()
-  }
-
   private async listenAuthConnector(provider: W3mFrameProvider) {
     this.setLoading(true)
     const isLoginEmailUsed = provider.getLoginEmailUsed()
@@ -1329,11 +1324,7 @@ export class AppKit {
       }
     })
 
-    adapter.on('disconnect', () => {
-      if (ChainController.state.activeChain === chainNamespace) {
-        this.handleDisconnect()
-      }
-    })
+    adapter.on('disconnect', this.disconnect.bind(this))
 
     adapter.on('pendingTransactions', () => {
       const address = AccountController.state.address
@@ -1702,9 +1693,16 @@ export class AppKit {
           namespace: activeNamespace as ChainNamespace,
           id: connectorId
         })
+
+        if (!accounts || accounts.accounts.length === 0) {
+          await this.disconnect()
+
+          return
+        }
+
         this.syncProvider({ ...res, chainNamespace: activeNamespace as ChainNamespace })
         await this.syncAccount({ ...res, chainNamespace: activeNamespace as ChainNamespace })
-        this.setAllAccounts(accounts?.accounts || [], activeNamespace as ChainNamespace)
+        this.setAllAccounts(accounts.accounts, activeNamespace as ChainNamespace)
         this.setStatus('connected', activeNamespace as ChainNamespace)
       } else {
         this.setStatus('disconnected', activeNamespace as ChainNamespace)

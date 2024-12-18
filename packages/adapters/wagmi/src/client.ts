@@ -101,9 +101,8 @@ export class WagmiAdapter extends AdapterBlueprint {
     params: AdapterBlueprint.GetAccountsParams
   ): Promise<AdapterBlueprint.GetAccountsResult> {
     const connector = this.getWagmiConnector(params.id)
-
     if (!connector) {
-      throw new Error('WagmiAdapter:getAccounts - connector is undefined')
+      return { accounts: [] }
     }
 
     if (connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
@@ -178,17 +177,26 @@ export class WagmiAdapter extends AdapterBlueprint {
     })
     watchAccount(this.wagmiConfig, {
       onChange: accountData => {
-        if (accountData.address) {
-          this.emit('accountChanged', {
-            address: accountData.address,
-            chainId: accountData.chainId
-          })
+        console.log('accountData', accountData)
+
+        if (accountData.status === 'disconnected') {
+          console.log('disconnected from wagmi')
+          this.emit('disconnect')
         }
-        if (accountData.chainId) {
-          this.emit('switchNetwork', {
-            address: accountData.address,
-            chainId: accountData.chainId
-          })
+        if (accountData.status === 'connected') {
+          if (accountData.address) {
+            this.emit('accountChanged', {
+              address: accountData.address,
+              chainId: accountData.chainId
+            })
+          }
+
+          if (accountData.chainId) {
+            this.emit('switchNetwork', {
+              address: accountData.address,
+              chainId: accountData.chainId
+            })
+          }
         }
       }
     })
@@ -539,6 +547,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     await Promise.all(
       connections.map(async connection => {
         const connector = this.getWagmiConnector(connection.connector.id)
+
         if (connector) {
           await wagmiDisconnect(this.wagmiConfig, { connector })
         }
