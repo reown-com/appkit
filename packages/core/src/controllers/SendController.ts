@@ -1,6 +1,6 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
-import { type Balance, type CaipAddress } from '@reown/appkit-common'
+import { NumberUtil, type Balance, type CaipAddress } from '@reown/appkit-common'
 import { ContractUtil } from '@reown/appkit-common'
 import { RouterController } from './RouterController.js'
 import { AccountController } from './AccountController.js'
@@ -152,6 +152,16 @@ export const SendController = {
         decimals: this.state.token.quantity.decimals
       })
     }
+  },
+
+  isInsufficientNetworkTokenForGas(networkBalanceInUSD: string, gasPriceInUSD: number | undefined) {
+    const gasPrice = gasPriceInUSD || '0'
+
+    if (NumberUtil.bigNumber(networkBalanceInUSD).isZero()) {
+      return true
+    }
+
+    return NumberUtil.bigNumber(NumberUtil.bigNumber(gasPrice)).isGreaterThan(networkBalanceInUSD)
   },
 
   async sendNativeToken(params: TxParams) {
