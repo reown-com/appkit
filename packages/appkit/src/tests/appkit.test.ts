@@ -18,10 +18,9 @@ import {
   ConnectorController,
   ChainController,
   type Connector,
-  StorageUtil,
   CoreHelperUtil,
   AlertController,
-  type ConnectorType
+  StorageUtil
 } from '@reown/appkit-core'
 import { SafeLocalStorage, SafeLocalStorageKeys, type CaipNetwork } from '@reown/appkit-common'
 import { mockOptions } from './mocks/Options'
@@ -31,6 +30,7 @@ import { ProviderUtil } from '../store'
 import { CaipNetworksUtil, ErrorUtil } from '@reown/appkit-utils'
 import mockUniversalAdapter from './mocks/Adapter'
 import { UniversalProvider } from '@walletconnect/universal-provider'
+import mockProvider from './mocks/UniversalProvider'
 
 // Mock all controllers and UniversalAdapterClient
 vi.mock('@reown/appkit-core')
@@ -569,9 +569,7 @@ describe('Base', () => {
         chainNamespace: 'eip155' as const
       }
 
-      vi.spyOn(StorageUtil, 'getConnectedConnector').mockReturnValue(
-        mockConnector.id as ConnectorType
-      )
+      vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue(mockConnector.id)
 
       await appKit['syncAccount'](mockAccountData)
 
@@ -640,7 +638,7 @@ describe('Base', () => {
     })
 
     it('should set unsupported chain when synced chainId is not supported', async () => {
-      vi.mocked(StorageUtil.getConnectedConnector).mockReturnValue('EXTERNAL')
+      vi.mocked(StorageUtil.getConnectedConnectorId).mockReturnValue('EXTERNAL')
       vi.mocked(StorageUtil.getActiveNamespace).mockReturnValue('eip155')
       vi.mocked(ChainController).state = {
         chains: new Map([['eip155', { namespace: 'eip155' }]]),
@@ -663,14 +661,14 @@ describe('Base', () => {
 
       vi.spyOn(appKit as any, 'getAdapter').mockReturnValue(mockAdapter)
 
-      vi.spyOn(StorageUtil, 'setConnectedConnector').mockImplementation(vi.fn())
+      vi.spyOn(StorageUtil, 'setConnectedConnectorId').mockImplementation(vi.fn())
 
       vi.spyOn(appKit as any, 'syncAccount').mockImplementation(vi.fn())
 
       vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
 
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation((key: string) => {
-        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
+        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID) {
           return 'test-wallet'
         }
         if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
@@ -712,12 +710,10 @@ describe('Base', () => {
 
       vi.spyOn(appKit as any, 'getAdapter').mockReturnValue(mockAdapter)
 
-      vi.spyOn(StorageUtil, 'setConnectedConnector').mockImplementation(vi.fn())
-
       vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
 
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation((key: string) => {
-        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
+        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID) {
           return 'test-wallet'
         }
         if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
@@ -760,7 +756,7 @@ describe('Base', () => {
     it('should set status to "connecting" and sync the connection when a connector and namespace are present', async () => {
       vi.mocked(CoreHelperUtil.isClient).mockReturnValueOnce(true)
       vi.spyOn(StorageUtil, 'getActiveNamespace').mockReturnValue('eip155')
-      vi.spyOn(StorageUtil, 'getConnectedConnector').mockReturnValue('EXTERNAL')
+      vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('test-connector')
       vi.mocked(StorageUtil.getActiveNetworkProps).mockReturnValue({
         namespace: 'eip155',
         chainId: '1',
@@ -798,7 +794,7 @@ describe('Base', () => {
     it('should set status to "disconnected" if the connector is set to "AUTH" and the adapter fails to sync', async () => {
       vi.mocked(CoreHelperUtil.isClient).mockReturnValueOnce(true)
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation(key => {
-        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR) {
+        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID) {
           return 'AUTH'
         }
         if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
@@ -916,9 +912,17 @@ describe('Base', () => {
     })
 
     it('should initialize UniversalProvider when not provided in options', () => {
+      vi.mocked(CaipNetworksUtil.extendCaipNetworks).mockReturnValue([
+        { id: 'eip155:1', chainNamespace: 'eip155' } as CaipNetwork
+      ])
+      vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
+
       const upSpy = vi.spyOn(UniversalProvider, 'init')
+
       new AppKit({
         ...mockOptions,
+        projectId: '123',
+        networks: [mainnet],
         adapters: [mockAdapter]
       })
 
@@ -927,11 +931,18 @@ describe('Base', () => {
     })
 
     it('should not initialize UniversalProvider when provided in options', async () => {
-      const up = await UniversalProvider.init({})
+      vi.mocked(CaipNetworksUtil.extendCaipNetworks).mockReturnValue([
+        { id: 'eip155:1', chainNamespace: 'eip155' } as CaipNetwork
+      ])
+      vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
+
       const upSpy = vi.spyOn(UniversalProvider, 'init')
+
       new AppKit({
         ...mockOptions,
-        universalProvider: up,
+        projectId: 'test',
+        networks: [mainnet],
+        universalProvider: mockProvider,
         adapters: [mockAdapter]
       })
 

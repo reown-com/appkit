@@ -46,7 +46,7 @@ import {
   type ConnectorType,
   type Provider
 } from '@reown/appkit-core'
-import { CaipNetworksUtil, ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
 import {
   formatUnits,
   parseUnits,
@@ -105,7 +105,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       throw new Error('WagmiAdapter:getAccounts - connector is undefined')
     }
 
-    if (connector.id === ConstantsUtil.AUTH_CONNECTOR_ID) {
+    if (connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       const provider = connector['provider'] as W3mFrameProvider
       const { address, accounts } = await provider.connect()
 
@@ -362,8 +362,8 @@ export class WagmiAdapter extends AdapterBlueprint {
      * from wagmi since we already set it in chain adapter blueprint
      */
     if (
-      connector.id === ConstantsUtil.AUTH_CONNECTOR_ID ||
-      connector.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
+      connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH ||
+      connector.id === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
     ) {
       return
     }
@@ -376,7 +376,9 @@ export class WagmiAdapter extends AdapterBlueprint {
       imageId: PresetsUtil.ConnectorImageIds[connector.id],
       type: PresetsUtil.ConnectorTypesMap[connector.type] ?? 'EXTERNAL',
       info:
-        connector.id === ConstantsUtil.INJECTED_CONNECTOR_ID ? undefined : { rdns: connector.id },
+        connector.id === CommonConstantsUtil.CONNECTOR_ID.INJECTED
+          ? undefined
+          : { rdns: connector.id },
       chain: this.namespace as ChainNamespace,
       chains: []
     })
@@ -447,7 +449,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       throw new Error('connectionControllerClient:connectExternal - connector is undefined')
     }
 
-    if (provider && info && connector.id === ConstantsUtil.EIP6963_CONNECTOR_ID) {
+    if (provider && info && connector.id === CommonConstantsUtil.CONNECTOR_ID.EIP6963) {
       // @ts-expect-error Exists on EIP6963Connector
       connector.setEip6963Wallet?.({ provider, info })
     }
