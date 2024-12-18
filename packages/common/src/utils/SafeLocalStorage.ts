@@ -39,9 +39,9 @@ export const SafeLocalStorageKeys = {
 export const SafeLocalStorage = {
   setItem<Key extends keyof SafeLocalStorageItems>(
     key: Key,
-    value: SafeLocalStorageItems[Key]
+    value?: SafeLocalStorageItems[Key]
   ): void {
-    if (isSafe()) {
+    if (isSafe() && value !== undefined) {
       localStorage.setItem(key, value)
     }
   },
