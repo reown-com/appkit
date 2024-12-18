@@ -15,7 +15,7 @@ import { type W3mFrameTypes } from '@reown/appkit-wallet'
 import { ModalController } from './ModalController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
-import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import { ConstantsUtil, type CaipNetwork, type ChainNamespace } from '@reown/appkit-common'
 import { SIWXUtil } from '../utils/SIWXUtil.js'
 
 // -- Types --------------------------------------------- //
@@ -98,7 +98,7 @@ export const ConnectionController = {
   },
 
   async connectWalletConnect() {
-    StorageUtil.setConnectedConnectorId('walletConnect')
+    StorageUtil.setConnectedConnectorId(ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)
 
     if (CoreHelperUtil.isTelegram()) {
       if (wcConnectionPromise) {
