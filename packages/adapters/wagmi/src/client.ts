@@ -358,10 +358,13 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   private addWagmiConnector(connector: Connector, options: AppKitOptions) {
     /*
-     * We don't need to set auth connector from wagmi
-     * since we already set it in chain adapter blueprint
+     * We don't need to set auth connector or walletConnect connector
+     * from wagmi since we already set it in chain adapter blueprint
      */
-    if (connector.id === ConstantsUtil.AUTH_CONNECTOR_ID) {
+    if (
+      connector.id === ConstantsUtil.AUTH_CONNECTOR_ID ||
+      connector.id === ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID
+    ) {
       return
     }
 
