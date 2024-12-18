@@ -16,6 +16,7 @@ import { EventsController } from './EventsController.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import { ChainController } from './ChainController.js'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000
@@ -202,7 +203,7 @@ export const SwapController = {
       invalidSourceTokenAmount,
       availableToSwap:
         caipAddress && !invalidToToken && !invalidSourceToken && !invalidSourceTokenAmount,
-      isAuthConnector: connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
+      isAuthConnector: connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
     }
   },
 
