@@ -1,5 +1,5 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
-import type { AppKitNetwork, BaseNetwork, CaipNetwork } from '@reown/appkit-common'
+import type { AppKitNetwork, BaseNetwork, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { CoreHelperUtil } from '@reown/appkit-core'
 import {
@@ -27,7 +27,8 @@ import {
   getAccount,
   prepareTransactionRequest,
   reconnect,
-  watchPendingTransactions
+  watchPendingTransactions,
+  watchConnectors
 } from '@wagmi/core'
 import { type Chain } from '@wagmi/core/chains'
 
@@ -45,7 +46,7 @@ import {
   type ConnectorType,
   type Provider
 } from '@reown/appkit-core'
-import { CaipNetworksUtil, ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
 import {
   formatUnits,
   parseUnits,
@@ -104,7 +105,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       throw new Error('WagmiAdapter:getAccounts - connector is undefined')
     }
 
-    if (connector.id === ConstantsUtil.AUTH_CONNECTOR_ID) {
+    if (connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       const provider = connector['provider'] as W3mFrameProvider
       const { address, accounts } = await provider.connect()
 
@@ -186,7 +187,6 @@ export class WagmiAdapter extends AdapterBlueprint {
         }
       }
     })
-
     watchConnections(this.wagmiConfig, {
       onChange: connections => {
         if (connections.length === 0) {
@@ -232,9 +232,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       customConnectors.push(
         authConnector({
           chains: this.wagmiChains,
-          options: { projectId: options.projectId },
-          provider: this.availableConnectors.find(c => c.id === ConstantsUtil.AUTH_CONNECTOR_ID)
-            ?.provider as W3mFrameProvider
+          options: { projectId: options.projectId }
         })
       )
     }
@@ -358,40 +356,48 @@ export class WagmiAdapter extends AdapterBlueprint {
     return formatUnits(params.value, params.decimals)
   }
 
+  private addWagmiConnector(connector: Connector, options: AppKitOptions) {
+    /*
+     * We don't need to set auth connector or walletConnect connector
+     * from wagmi since we already set it in chain adapter blueprint
+     */
+    if (
+      connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH ||
+      connector.id === CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+    ) {
+      return
+    }
+
+    this.addConnector({
+      id: connector.id,
+      explorerId: PresetsUtil.ConnectorExplorerIds[connector.id],
+      imageUrl: options?.connectorImages?.[connector.id] ?? connector.icon,
+      name: PresetsUtil.ConnectorNamesMap[connector.id] ?? connector.name,
+      imageId: PresetsUtil.ConnectorImageIds[connector.id],
+      type: PresetsUtil.ConnectorTypesMap[connector.type] ?? 'EXTERNAL',
+      info:
+        connector.id === CommonConstantsUtil.CONNECTOR_ID.INJECTED
+          ? undefined
+          : { rdns: connector.id },
+      chain: this.namespace as ChainNamespace,
+      chains: []
+    })
+  }
+
   public syncConnectors(options: AppKitOptions, appKit: AppKit) {
+    // Add wagmi connectors
     this.addWagmiConnectors(options, appKit)
 
-    const connectors = this.wagmiConfig.connectors.map(connector => ({
-      ...connector,
-      chain: this.namespace
-    }))
+    // Add current wagmi connectors to chain adapter blueprint
+    this.wagmiConfig.connectors.forEach(connector => this.addWagmiConnector(connector, options))
 
-    const uniqueIds = new Set()
-    const filteredConnectors = connectors.filter(item => {
-      const isDuplicate = uniqueIds.has(item.id)
-      uniqueIds.add(item.id)
-
-      return !isDuplicate
-    })
-
-    filteredConnectors.forEach(connector => {
-      const shouldSkip = ConstantsUtil.AUTH_CONNECTOR_ID === connector.id
-
-      const injectedConnector = connector.id === ConstantsUtil.INJECTED_CONNECTOR_ID
-
-      if (!shouldSkip && this.namespace) {
-        this.addConnector({
-          id: connector.id,
-          explorerId: PresetsUtil.ConnectorExplorerIds[connector.id],
-          imageUrl: options?.connectorImages?.[connector.id] ?? connector.icon,
-          name: PresetsUtil.ConnectorNamesMap[connector.id] ?? connector.name,
-          imageId: PresetsUtil.ConnectorImageIds[connector.id],
-          type: PresetsUtil.ConnectorTypesMap[connector.type] ?? 'EXTERNAL',
-          info: injectedConnector ? undefined : { rdns: connector.id },
-          chain: this.namespace,
-          chains: []
-        })
-      }
+    /*
+     * Watch for new connectors. This is needed because some EIP6963
+     * connectors are added later in the process the initial setup
+     */
+    watchConnectors(this.wagmiConfig, {
+      onChange: connectors =>
+        connectors.forEach(connector => this.addWagmiConnector(connector, options))
     })
   }
 
@@ -443,7 +449,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       throw new Error('connectionControllerClient:connectExternal - connector is undefined')
     }
 
-    if (provider && info && connector.id === ConstantsUtil.EIP6963_CONNECTOR_ID) {
+    if (provider && info && connector.id === CommonConstantsUtil.CONNECTOR_ID.EIP6963) {
       // @ts-expect-error Exists on EIP6963Connector
       connector.setEip6963Wallet?.({ provider, info })
     }

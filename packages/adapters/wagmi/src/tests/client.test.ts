@@ -18,9 +18,11 @@ import {
   watchPendingTransactions,
   http
 } from '@wagmi/core'
+import * as wagmiCore from '@wagmi/core'
 import { mainnet } from '@wagmi/core/chains'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type UniversalProvider from '@walletconnect/universal-provider'
+import { mockAppKit } from './mocks/AppKit'
 
 vi.mock('@wagmi/core', async () => {
   const actual = await vi.importActual('@wagmi/core')
@@ -95,6 +97,26 @@ describe('WagmiAdapter', () => {
       expect(adapter.projectId).toBe(mockProjectId)
       expect(adapter.adapterType).toBe('wagmi')
       expect(adapter.namespace).toBe('eip155')
+    })
+
+    it('should set wagmi connectors', () => {
+      vi.spyOn(wagmiCore, 'watchConnectors').mockImplementation(vi.fn())
+
+      adapter.syncConnectors({ networks: [mainnet], projectId: 'YOUR_PROJECT_ID' }, mockAppKit)
+
+      expect(adapter.connectors).toStrictEqual([
+        {
+          chain: 'eip155',
+          chains: [],
+          explorerId: undefined,
+          id: 'test-connector',
+          imageId: undefined,
+          imageUrl: undefined,
+          info: { rdns: 'test-connector' },
+          name: undefined,
+          type: 'EXTERNAL'
+        }
+      ])
     })
 
     it('should not set info property for injected connector', () => {
