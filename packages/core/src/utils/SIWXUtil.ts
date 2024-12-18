@@ -213,9 +213,9 @@ export const SIWXUtil = {
       resources: siwxMessage.resources,
       statement: siwxMessage.statement,
       chainId: siwxMessage.chainId,
-
       methods,
-      chains
+      // The first chainId is what is used for universal provider to build the message
+      chains: [siwxMessage.chainId, ...chains.filter(chain => chain !== siwxMessage.chainId)]
     })
 
     SnackController.showLoading('Authenticating...', { autoClose: false })
