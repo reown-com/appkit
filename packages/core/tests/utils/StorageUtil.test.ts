@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach, beforeEach, beforeAll, afterAll } from 'vitest'
 import { StorageUtil } from '../../src/utils/StorageUtil'
-import type { WcWallet, ConnectorType, SocialProvider } from '../../src/utils/TypeUtil'
+import type { WcWallet, SocialProvider } from '../../src/utils/TypeUtil'
 import { SafeLocalStorage } from '@reown/appkit-common'
 import { SafeLocalStorageKeys } from '@reown/appkit-common'
 
