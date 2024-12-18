@@ -202,7 +202,7 @@ export const SwapController = {
       invalidSourceTokenAmount,
       availableToSwap:
         caipAddress && !invalidToToken && !invalidSourceToken && !invalidSourceTokenAmount,
-      isAuthConnector: connectorId === 'ID_AUTH'
+      isAuthConnector: connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
     }
   },
 

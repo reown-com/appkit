@@ -1,4 +1,4 @@
-import { type CaipNetwork } from '@reown/appkit-common'
+import { ConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
   AssetUtil,
@@ -137,7 +137,7 @@ export class W3mNetworksView extends LitElement {
       ChainController.getNetworkProp('supportsAllNetworks', networkNamespace) !== false
     const connectorId = StorageUtil.getConnectedConnectorId()
     const authConnector = ConnectorController.getAuthConnector()
-    const isConnectedWithAuth = connectorId === 'ID_AUTH' && authConnector
+    const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH && authConnector
 
     if (!isNamespaceConnected || supportsAllNetworks || isConnectedWithAuth) {
       return false
@@ -160,7 +160,8 @@ export class W3mNetworksView extends LitElement {
       network.chainNamespace
     )
     const isCurrentNetworkConnected = AccountController.state.caipAddress
-    const isAuthConnected = StorageUtil.getConnectedConnectorId() === 'ID_AUTH'
+    const isAuthConnected =
+      StorageUtil.getConnectedConnectorId() === ConstantsUtil.CONNECTOR_ID.AUTH
 
     if (
       isDifferentNamespace &&

@@ -13,7 +13,7 @@ import {
   type ConnectorType,
   type Provider
 } from '@reown/appkit-core'
-import { ConstantsUtil, ErrorUtil, PresetsUtil } from '@reown/appkit-utils'
+import { ErrorUtil, PresetsUtil } from '@reown/appkit-utils'
 import { SolConstantsUtil } from '@reown/appkit-utils/solana'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
@@ -101,7 +101,7 @@ export class SolanaAdapter extends AdapterBlueprint {
       })
 
       this.addConnector({
-        id: ConstantsUtil.CONNECTOR_ID.AUTH_CONNECTOR_ID,
+        id: CommonConstantsUtil.CONNECTOR_ID.AUTH,
         type: 'AUTH',
         provider: this.authProvider as unknown as W3mFrameProvider,
         name: 'Auth',
@@ -123,8 +123,7 @@ export class SolanaAdapter extends AdapterBlueprint {
         }),
         name: 'Coinbase Wallet',
         chain: this.namespace as ChainNamespace,
-        explorerId:
-          PresetsUtil.ConnectorExplorerIds[ConstantsUtil.CONNECTOR_ID.COINBASE_SDK_CONNECTOR_ID],
+        explorerId: PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK],
         chains: []
       })
     }
@@ -334,7 +333,7 @@ export class SolanaAdapter extends AdapterBlueprint {
   public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
     const { caipNetwork, provider, providerType } = params
 
-    if (providerType === 'ID_AUTH') {
+    if (providerType === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       await (provider as unknown as W3mFrameProvider).switchNetwork(caipNetwork.id)
       const user = await (provider as unknown as W3mFrameProvider).getUser({
         chainId: caipNetwork.id

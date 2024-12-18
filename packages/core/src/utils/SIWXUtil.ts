@@ -10,6 +10,7 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import { EventsController } from '../controllers/EventsController.js'
 import { AccountController } from '../controllers/AccountController.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { StorageUtil } from './StorageUtil.js'
 
 /**
@@ -90,7 +91,7 @@ export const SIWXUtil = {
 
       const connectorId = StorageUtil.getConnectedConnectorId()
 
-      if (connectorId === 'ID_AUTH') {
+      if (connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
         RouterController.pushTransactionStack({
           view: null,
           goBack: false,

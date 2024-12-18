@@ -1,6 +1,7 @@
 import { ConnectorController, StorageUtil } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 
 @customElement('w3m-account-view')
 export class W3mAccountView extends LitElement {
@@ -11,7 +12,7 @@ export class W3mAccountView extends LitElement {
     const authConnector = ConnectorController.getAuthConnector()
 
     return html`
-      ${authConnector && connectorId === 'ID_AUTH'
+      ${authConnector && connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
         ? this.walletFeaturesTemplate()
         : this.defaultTemplate()}
     `

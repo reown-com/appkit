@@ -12,6 +12,7 @@ import styles from './styles.js'
 import type { IconType } from '../../utils/TypeUtil.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { StorageUtil } from '@reown/appkit-core'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 @customElement('wui-profile-button-v2')
 export class WuiProfileButtonV2 extends LitElement {
@@ -32,7 +33,7 @@ export class WuiProfileButtonV2 extends LitElement {
 
   private connectorId = StorageUtil.getConnectedConnectorId()
 
-  private shouldShowIcon = this.connectorId === 'ID_AUTH'
+  private shouldShowIcon = this.connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
 
   // -- Render -------------------------------------------- //
   public override render() {

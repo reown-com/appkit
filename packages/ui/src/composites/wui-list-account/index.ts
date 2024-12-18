@@ -14,6 +14,7 @@ import {
   ChainController,
   StorageUtil
 } from '@reown/appkit-core'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 @customElement('wui-list-account')
 export class WuiListAccount extends LitElement {
@@ -68,7 +69,7 @@ export class WuiListAccount extends LitElement {
     const label = this.getLabel()
 
     // Only show icon for AUTH accounts
-    this.shouldShowIcon = this.connectorId === 'ID_AUTH'
+    this.shouldShowIcon = this.connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
 
     return html`
       <wui-flex
@@ -116,7 +117,7 @@ export class WuiListAccount extends LitElement {
   private getLabel() {
     let label = this.labels?.get(this.accountAddress)
 
-    if (!label && this.connectorId === 'ID_AUTH') {
+    if (!label && this.connectorId === ConstantsUtil.CONNECTOR_ID.AUTH) {
       label = `${this.accountType === 'eoa' ? this.socialProvider ?? 'Email' : 'Smart'} Account`
     } else if (!label) {
       label = 'EOA'

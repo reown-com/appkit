@@ -3,7 +3,7 @@ import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { SwitchChainError, getAddress } from 'viem'
 import type { Address } from 'viem'
-import { ConstantsUtil, ErrorUtil } from '@reown/appkit-utils'
+import { ErrorUtil } from '@reown/appkit-utils'
 import { NetworkUtil } from '@reown/appkit-common'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
 import { AlertController } from '@reown/appkit-core'
@@ -32,9 +32,9 @@ export function authConnector(parameters: AuthParameters) {
   }
 
   return createConnector<W3mFrameProvider, Properties>(config => ({
-    id: ConstantsUtil.CONNECTOR_ID.AUTH_CONNECTOR_ID,
+    id: CommonConstantsUtil.CONNECTOR_ID.AUTH,
     name: 'AppKit Auth',
-    type: 'ID_AUTH',
+    type: CommonConstantsUtil.CONNECTOR_ID.AUTH,
     chain: CommonConstantsUtil.CHAIN.EVM,
 
     async connect(options = {}) {

@@ -45,7 +45,7 @@ import {
   type ConnectorType,
   type Provider
 } from '@reown/appkit-core'
-import { CaipNetworksUtil, ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
 import {
   formatUnits,
   parseUnits,
@@ -104,7 +104,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       throw new Error('WagmiAdapter:getAccounts - connector is undefined')
     }
 
-    if (connector.id === ConstantsUtil.CONNECTOR_ID.AUTH_CONNECTOR_ID) {
+    if (connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       const provider = connector['provider'] as W3mFrameProvider
       const { address, accounts } = await provider.connect()
 
@@ -234,7 +234,7 @@ export class WagmiAdapter extends AdapterBlueprint {
           chains: this.wagmiChains,
           options: { projectId: options.projectId },
           provider: this.availableConnectors.find(
-            c => c.id === ConstantsUtil.CONNECTOR_ID.AUTH_CONNECTOR_ID
+            c => c.id === CommonConstantsUtil.CONNECTOR_ID.AUTH
           )?.provider as W3mFrameProvider
         })
       )
@@ -376,9 +376,9 @@ export class WagmiAdapter extends AdapterBlueprint {
     })
 
     filteredConnectors.forEach(connector => {
-      const shouldSkip = ConstantsUtil.CONNECTOR_ID.AUTH_CONNECTOR_ID === connector.id
+      const shouldSkip = CommonConstantsUtil.CONNECTOR_ID.AUTH === connector.id
 
-      const injectedConnector = connector.id === ConstantsUtil.CONNECTOR_ID.INJECTED_CONNECTOR_ID
+      const injectedConnector = connector.id === CommonConstantsUtil.CONNECTOR_ID.INJECTED
 
       if (!shouldSkip && this.namespace) {
         this.addConnector({
@@ -444,7 +444,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       throw new Error('connectionControllerClient:connectExternal - connector is undefined')
     }
 
-    if (provider && info && connector.id === ConstantsUtil.CONNECTOR_ID.EIP6963_CONNECTOR_ID) {
+    if (provider && info && connector.id === CommonConstantsUtil.CONNECTOR_ID.EIP6963) {
       // @ts-expect-error Exists on EIP6963Connector
       connector.setEip6963Wallet?.({ provider, info })
     }

@@ -231,7 +231,7 @@ export class W3mAccountDefaultWidget extends LitElement {
     const { origin } = location
     if (
       !authConnector ||
-      connectorId !== 'ID_AUTH' ||
+      connectorId !== ConstantsUtil.CONNECTOR_ID.AUTH ||
       origin.includes(CommonConstantsUtil.SECURE_SITE)
     ) {
       return null

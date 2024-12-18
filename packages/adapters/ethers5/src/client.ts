@@ -257,7 +257,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
     connectors.forEach(connector => {
       const key = connector === 'coinbase' ? 'coinbaseWalletSDK' : connector
 
-      const injectedConnector = connector === ConstantsUtil.CONNECTOR_ID.INJECTED_CONNECTOR_ID
+      const injectedConnector = connector === CommonConstantsUtil.CONNECTOR_ID.INJECTED
 
       if (this.namespace) {
         this.addConnector({
@@ -302,7 +302,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
       const existingConnector = this.connectors?.find(c => c.name === info?.name)
 
       if (!existingConnector) {
-        const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.CONNECTOR_ID.EIP6963_CONNECTOR_ID]
+        const type = PresetsUtil.ConnectorTypesMap[CommonConstantsUtil.CONNECTOR_ID.EIP6963]
 
         if (type && this.namespace) {
           this.addConnector({
@@ -380,7 +380,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
       throw new Error('Provider not found')
     }
 
-    if (params.id === ConstantsUtil.CONNECTOR_ID.AUTH_CONNECTOR_ID) {
+    if (params.id === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       const provider = connector['provider'] as W3mFrameProvider
       const { address, accounts } = await provider.connect()
 
