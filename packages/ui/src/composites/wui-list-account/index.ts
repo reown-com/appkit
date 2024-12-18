@@ -118,8 +118,6 @@ export class WuiListAccount extends LitElement {
 
     if (!label && this.connectorId === 'ID_AUTH') {
       label = `${this.accountType === 'eoa' ? this.socialProvider ?? 'Email' : 'Smart'} Account`
-    } else if ((!label && this.connectorId === 'INJECTED') || this.connectorId === 'ANNOUNCED') {
-      label = `Injected Account`
     } else if (!label) {
       label = 'EOA'
     }

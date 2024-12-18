@@ -145,7 +145,7 @@ export const StorageUtil = {
 
   getConnectedConnectorId() {
     try {
-      return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID) as ConnectorType
+      return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID)
     } catch {
       console.info('Unable to get connected connector id')
     }

@@ -88,7 +88,9 @@ export const SIWXUtil = {
 
       const message = siwxMessage.toString()
 
-      if (StorageUtil.getConnectedConnectorId() === 'ID_AUTH') {
+      const connectorId = StorageUtil.getConnectedConnectorId()
+
+      if (connectorId === 'ID_AUTH') {
         RouterController.pushTransactionStack({
           view: null,
           goBack: false,
