@@ -12,7 +12,6 @@ import {
   type UseAppKitNetworkReturn,
   type NetworkControllerClient,
   type ConnectionControllerClient,
-  ConstantsUtil as CoreConstantsUtil,
   type ConnectorType,
   type WriteContractArgs,
   type Provider,
@@ -20,6 +19,7 @@ import {
   type EstimateGasTransactionArgs,
   type AccountControllerState,
   type AdapterNetworkState,
+  ConstantsUtil as CoreConstantsUtil,
   type Features,
   SIWXUtil,
   type ConnectionStatus,
@@ -50,12 +50,12 @@ import {
 } from '@reown/appkit-core'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
 import {
-  ConstantsUtil,
   type CaipNetwork,
   type ChainNamespace,
   type CaipAddress,
   type CaipNetworkId,
   NetworkUtil,
+  ConstantsUtil,
   ParseUtil
 } from '@reown/appkit-common'
 import type { AppKitOptions } from './utils/TypesUtil.js'
@@ -96,7 +96,14 @@ export { AccountController }
 
 // -- Types --------------------------------------------------------------------
 export interface OpenOptions {
-  view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'
+  view:
+    | 'Account'
+    | 'Connect'
+    | 'Networks'
+    | 'ApproveTransaction'
+    | 'OnRampProviders'
+    | 'ConnectingWalletConnectBasic'
+  uri?: string
 }
 
 type Adapters = Record<ChainNamespace, AdapterBlueprint>
@@ -207,14 +214,10 @@ export class AppKit {
   ) {
     this.caipNetworks = this.extendCaipNetworks(options)
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
-    await this.initControllers(options)
-    this.createAuthProvider()
-    await this.createUniversalProvider()
+    this.initControllers(options)
     this.createClients()
     ChainController.initialize(options.adapters ?? [], this.caipNetworks)
-    this.chainAdapters = await this.createAdapters(
-      options.adapters as unknown as AdapterBlueprint[]
-    )
+    this.chainAdapters = this.createAdapters(options.adapters as unknown as AdapterBlueprint[])
     await this.initChainAdapters()
     this.syncRequestedNetworks()
     await this.initOrContinue()
@@ -241,6 +244,9 @@ export class AppKit {
   // -- Public -------------------------------------------------------------------
   public async open(options?: OpenOptions) {
     await this.initOrContinue()
+    if (options?.uri && this.universalAdapter) {
+      ConnectionController.setUri(options.uri)
+    }
     ModalController.open(options)
   }
 
@@ -652,7 +658,7 @@ export class AppKit {
   }
 
   // -- Private ------------------------------------------------------------------
-  private async initControllers(
+  private initControllers(
     options: AppKitOptions & {
       adapters?: ChainAdapter[]
     } & {
@@ -673,8 +679,6 @@ export class AppKit {
 
       return
     }
-
-    this.adapters = options.adapters
 
     const defaultMetaData = this.getDefaultMetaData()
 
@@ -732,12 +736,7 @@ export class AppKit {
           throw new Error('Cannot set both `siweConfig` and `siwx` options')
         }
 
-        const siwe = await import('@reown/appkit-siwe')
-        if (typeof siwe.mapToSIWX !== 'function') {
-          throw new Error('Please update the `@reown/appkit-siwe` package to the latest version')
-        }
-
-        OptionsController.setSIWX(siwe.mapToSIWX(options.siweConfig))
+        OptionsController.setSIWX(options.siweConfig.mapToSIWX())
       }
     }
   }
@@ -745,7 +744,7 @@ export class AppKit {
   private getDefaultMetaData() {
     if (typeof window !== 'undefined' && typeof document !== 'undefined') {
       return {
-        name: document.getElementsByTagName('title')[0]?.textContent || '',
+        name: document.getElementsByTagName('title')?.[0]?.textContent || '',
         description:
           document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.content || '',
         url: window.location.origin,
@@ -805,9 +804,7 @@ export class AppKit {
       connectWalletConnect: async (onUri: (uri: string) => void) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
-        this.universalProvider?.on('display_uri', (uri: string) => {
-          onUri(uri)
-        })
+        this.universalProvider?.on('display_uri', onUri)
 
         this.setClientId(
           (await this.universalProvider?.client?.core?.crypto?.getClientId()) || null
@@ -851,37 +848,16 @@ export class AppKit {
           throw new Error('Adapter not found')
         }
 
-        let res: AdapterBlueprint.ConnectResult | undefined = undefined
-        try {
-          res = await adapter.connect({
-            id,
-            info,
-            type,
-            provider,
-            chainId: caipNetwork?.id || this.getCaipNetwork()?.id,
-            rpcUrl:
-              caipNetwork?.rpcUrls?.default?.http?.[0] ||
-              this.getCaipNetwork()?.rpcUrls?.default?.http?.[0]
-          })
-          /**
-           * In some cases with wagmi connectors, the connector is already connected
-           * which throws an `Is already connected`error. In such cases, we need to reconnect
-           * to restore the session.
-           * We check if the reconnect method exists (which it does for wagmi connectors) and if so
-           * we attempt to reconnect and restore the session state.
-           */
-        } catch (error) {
-          if (!adapter?.reconnect) {
-            throw new Error('Adapter is not able to connect')
-          }
-          await adapter.reconnect({
-            id,
-            info,
-            type,
-            provider,
-            chainId: this.getCaipNetwork()?.id
-          })
-        }
+        const res = await adapter.connect({
+          id,
+          info,
+          type,
+          provider,
+          chainId: caipNetwork?.id || this.getCaipNetwork()?.id,
+          rpcUrl:
+            caipNetwork?.rpcUrls?.default?.http?.[0] ||
+            this.getCaipNetwork()?.rpcUrls?.default?.http?.[0]
+        })
 
         if (res) {
           this.syncProvider({
@@ -919,6 +895,8 @@ export class AppKit {
           ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
 
         await adapter?.disconnect({ provider, providerType })
+
+        ProviderUtil.resetChain(ChainController.state.activeChain as ChainNamespace)
 
         this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
       },
@@ -1753,7 +1731,7 @@ export class AppKit {
   private createUniversalProvider() {
     if (
       !this.universalProviderInitPromise &&
-      typeof window !== 'undefined' &&
+      CoreHelperUtil.isClient() &&
       this.options?.projectId
     ) {
       this.universalProviderInitPromise = this.initializeUniversalAdapter()
@@ -1802,7 +1780,10 @@ export class AppKit {
       logger
     }
 
-    this.universalProvider = await UniversalProvider.init(universalProviderOptions)
+    OptionsController.setUsingInjectedUniversalProvider(Boolean(this.options?.universalProvider))
+    this.universalProvider =
+      this.options.universalProvider ?? (await UniversalProvider.init(universalProviderOptions))
+    this.listenWalletConnect()
   }
 
   public async getUniversalProvider() {
@@ -1818,14 +1799,14 @@ export class AppKit {
   }
 
   private createAuthProvider() {
-    const emailEnabled =
+    const isEmailEnabled =
       this.options?.features?.email === undefined
         ? CoreConstantsUtil.DEFAULT_FEATURES.email
         : this.options?.features?.email
-    const socialsEnabled = this.options?.features?.socials
+    const isSocialsEnabled = this.options?.features?.socials
       ? this.options?.features?.socials?.length > 0
       : CoreConstantsUtil.DEFAULT_FEATURES.socials
-    if (this.options?.projectId && (emailEnabled || socialsEnabled)) {
+    if (!this.authProvider && this.options?.projectId && (isEmailEnabled || isSocialsEnabled)) {
       this.authProvider = W3mFrameProviderSingleton.getInstance({
         projectId: this.options.projectId,
         onTimeout: () => {
@@ -1836,11 +1817,23 @@ export class AppKit {
     }
   }
 
-  private async createAdapters(blueprints?: AdapterBlueprint[]): Promise<Adapters> {
-    if (!this.universalProvider) {
-      this.universalProvider = await this.getUniversalProvider()
-    }
+  private async createUniversalProviderForAdapter(chainNamespace: ChainNamespace) {
+    await this.getUniversalProvider()
 
+    if (this.universalProvider) {
+      this.chainAdapters?.[chainNamespace]?.setUniversalProvider?.(this.universalProvider)
+    }
+  }
+
+  private createAuthProviderForAdapter(chainNamespace: ChainNamespace) {
+    this.createAuthProvider()
+
+    if (this.authProvider) {
+      this.chainAdapters?.[chainNamespace]?.setAuthProvider?.(this.authProvider)
+    }
+  }
+
+  private createAdapters(blueprints?: AdapterBlueprint[]) {
     this.syncRequestedNetworks()
 
     return this.chainNamespaces.reduce<Adapters>((adapters, namespace) => {
@@ -1854,25 +1847,11 @@ export class AppKit {
           projectId: this.options?.projectId,
           networks: this.caipNetworks
         })
-        if (this.universalProvider) {
-          adapters[namespace].setUniversalProvider(this.universalProvider)
-        }
-        if (this.authProvider) {
-          adapters[namespace].setAuthProvider(this.authProvider)
-        }
-
-        adapters[namespace].syncConnectors(this.options, this)
       } else {
         adapters[namespace] = new UniversalAdapter({
           namespace,
           networks: this.caipNetworks
         })
-        if (this.universalProvider) {
-          adapters[namespace].setUniversalProvider(this.universalProvider)
-        }
-        if (this.authProvider) {
-          adapters[namespace].setAuthProvider(this.authProvider)
-        }
       }
 
       ChainController.state.chains.set(namespace, {
@@ -1889,18 +1868,26 @@ export class AppKit {
     }, {} as Adapters)
   }
 
+  private async createConnectorsForAdapter(namespace: ChainNamespace) {
+    await this.createUniversalProviderForAdapter(namespace)
+    this.createAuthProviderForAdapter(namespace)
+  }
+
+  private onConnectors(chainNamespace: ChainNamespace) {
+    const adapter = this.getAdapter(chainNamespace)
+
+    adapter?.on('connectors', this.setConnectors.bind(this))
+  }
+
   private async initChainAdapters() {
     await Promise.all(
-      // eslint-disable-next-line @typescript-eslint/require-await
       this.chainNamespaces.map(async namespace => {
-        if (this.options) {
-          this.listenAdapter(namespace)
-
-          this.setConnectors(this.chainAdapters?.[namespace]?.connectors || [])
-        }
+        this.onConnectors(namespace)
+        this.listenAdapter(namespace)
+        this.chainAdapters?.[namespace].syncConnectors(this.options, this)
+        await this.createConnectorsForAdapter(namespace)
       })
     )
-    this.listenWalletConnect()
   }
 
   private setDefaultNetwork() {

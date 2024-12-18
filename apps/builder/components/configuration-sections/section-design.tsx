@@ -16,11 +16,6 @@ export function SectionDesign() {
   const { fontFamily, mixColor, accentColor, borderRadius } = useSnapshot(ThemeStore.state)
   const [radius, setRadius] = React.useState('M')
 
-  function handleColorPickerClick(inputId: string) {
-    const input = document.getElementById(inputId)
-    input?.click()
-  }
-
   function handleAccentColorChange(e: React.ChangeEvent<HTMLInputElement>) {
     const newColor = e.target.value
     if (/^#[0-9A-F]{6}$/i.test(newColor)) {
@@ -150,31 +145,29 @@ export function SectionDesign() {
             </button>
           ))}
           <div className="relative">
-            <button
-              onClick={() => handleColorPickerClick('accent-color-input')}
+            <Label
+              htmlFor="accent-color-input"
               className={cn(
                 'w-full flex items-center justify-center p-4 rounded-2xl transition-colors bg-fg-secondary hover:bg-fg-tertiary border border-transparent h-[38px]',
                 !ACCENT_COLORS.includes(accentColor) && accentColor !== ''
                   ? 'border-fg-accent bg-fg-accent/10 hover:bg-fg-accent/10'
                   : null
               )}
-              aria-label="Custom color picker"
             >
               <Image
                 src="/color-picker-icon.png"
                 alt="Color picker icon"
-                objectFit="cover"
                 width={16}
                 height={16}
-                className="rounded-2xl aspect-square"
+                className="rounded-2xl aspect-square object-cover"
               />
-            </button>
+            </Label>
             <input
               id="accent-color-input"
               type="color"
               value={accentColor}
               onChange={handleAccentColorChange}
-              className="absolute invisible"
+              className="absolute !h-0 !w-0"
             />
           </div>
         </div>
@@ -203,15 +196,14 @@ export function SectionDesign() {
             </button>
           ))}
           <div className="relative">
-            <button
-              onClick={() => handleColorPickerClick('mix-color-input')}
+            <Label
+              htmlFor="mix-color-input"
               className={cn(
                 'w-full flex items-center justify-center p-4 rounded-2xl transition-colors bg-fg-secondary hover:bg-fg-tertiary border border-transparent h-[38px]',
                 !BG_COLORS.includes(mixColor) && mixColor !== ''
                   ? 'border-fg-accent bg-fg-accent/10 hover:bg-fg-accent/10'
                   : null
               )}
-              aria-label="Custom background color picker"
             >
               <Image
                 src="/color-picker-icon.png"
@@ -221,13 +213,13 @@ export function SectionDesign() {
                 height={16}
                 className="rounded-2xl aspect-square"
               />
-            </button>
+            </Label>
             <input
               id="mix-color-input"
               type="color"
               value={mixColor}
               onChange={handleMixColorChange}
-              className="absolute invisible"
+              className="absolute !h-0 !w-0"
             />
           </div>
         </div>

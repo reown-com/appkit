@@ -46,10 +46,6 @@ export class W3mConnectingWcView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    if (!this.wallet) {
-      return html`<w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode>`
-    }
-
     return html`
       ${this.headerTemplate()}
       <div>${this.platformTemplate()}</div>
