@@ -896,6 +896,8 @@ export class AppKit {
 
         await adapter?.disconnect({ provider, providerType })
 
+        ProviderUtil.resetChain(ChainController.state.activeChain as ChainNamespace)
+
         this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
       },
       checkInstalled: (ids?: string[]) => {
@@ -1804,7 +1806,7 @@ export class AppKit {
     const isSocialsEnabled = this.options?.features?.socials
       ? this.options?.features?.socials?.length > 0
       : CoreConstantsUtil.DEFAULT_FEATURES.socials
-    if (this.options?.projectId && (isEmailEnabled || isSocialsEnabled)) {
+    if (!this.authProvider && this.options?.projectId && (isEmailEnabled || isSocialsEnabled)) {
       this.authProvider = W3mFrameProviderSingleton.getInstance({
         projectId: this.options.projectId,
         onTimeout: () => {
@@ -1819,7 +1821,7 @@ export class AppKit {
     await this.getUniversalProvider()
 
     if (this.universalProvider) {
-      this.chainAdapters?.[chainNamespace].setUniversalProvider(this.universalProvider)
+      this.chainAdapters?.[chainNamespace]?.setUniversalProvider?.(this.universalProvider)
     }
   }
 
@@ -1827,7 +1829,7 @@ export class AppKit {
     this.createAuthProvider()
 
     if (this.authProvider) {
-      this.chainAdapters?.[chainNamespace].setAuthProvider(this.authProvider)
+      this.chainAdapters?.[chainNamespace]?.setAuthProvider?.(this.authProvider)
     }
   }
 
