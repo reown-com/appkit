@@ -101,7 +101,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     params: AdapterBlueprint.GetAccountsParams
   ): Promise<AdapterBlueprint.GetAccountsResult> {
     const connector = this.getWagmiConnector(params.id)
-    
+
     if (!connector) {
       return { accounts: [] }
     }
