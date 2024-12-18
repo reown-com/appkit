@@ -647,7 +647,7 @@ export class AppKit {
   }
 
   public async disconnect() {
-    await Promise.all([this.connectionControllerClient?.disconnect(), ChainController.disconnect()])
+    await ChainController.disconnect()
   }
 
   public getConnectMethodsOrder() {
