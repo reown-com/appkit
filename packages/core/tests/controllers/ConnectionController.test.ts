@@ -4,7 +4,12 @@ import type {
   ConnectionControllerClient,
   ConnectorType
 } from '../../exports/index.js'
-import { ChainController, ConnectionController, ConstantsUtil } from '../../exports/index.js'
+import {
+  ChainController,
+  ConnectionController,
+  ConstantsUtil,
+  StorageUtil
+} from '../../exports/index.js'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 
 // -- Setup --------------------------------------------------------------------
@@ -12,6 +17,7 @@ const chain = CommonConstantsUtil.CHAIN.EVM
 const walletConnectUri = 'wc://uri?=123'
 const externalId = 'coinbaseWallet'
 const type = 'WALLET_CONNECT' as ConnectorType
+const storageSpy = vi.spyOn(StorageUtil, 'setConnectedConnectorId')
 
 const client: ConnectionControllerClient = {
   connectWalletConnect: async onUri => {
@@ -103,6 +109,7 @@ describe('ConnectionController', () => {
     await ConnectionController.connectWalletConnect()
     expect(ConnectionController.state.wcUri).toEqual(walletConnectUri)
     expect(ConnectionController.state.wcPairingExpiry).toEqual(ConstantsUtil.FOUR_MINUTES_MS)
+    expect(storageSpy).toHaveBeenCalledWith('walletConnect')
     expect(clientConnectWalletConnectSpy).toHaveBeenCalled()
 
     // Just in case
