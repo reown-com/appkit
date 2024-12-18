@@ -5,7 +5,8 @@ import {
   type CombinedProvider,
   type Connector,
   type ConnectorType,
-  type Provider
+  type Provider,
+  CoreHelperUtil
 } from '@reown/appkit-core'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
@@ -146,14 +147,7 @@ export class EthersAdapter extends AdapterBlueprint {
     }
 
     const result = await EthersMethods.writeContract(
-      {
-        abi: params.abi,
-        method: params.method,
-        fromAddress: params.caipAddress as `0x${string}`,
-        receiverAddress: params.receiverAddress as `0x${string}`,
-        tokenAmount: params.tokenAmount,
-        tokenAddress: params.tokenAddress as `0x${string}`
-      },
+      params,
       params.provider as Provider,
       params.caipAddress,
       Number(params.caipNetwork?.id)
@@ -386,6 +380,36 @@ export class EthersAdapter extends AdapterBlueprint {
     }
   }
 
+  public async getAccounts(
+    params: AdapterBlueprint.GetAccountsParams
+  ): Promise<AdapterBlueprint.GetAccountsResult> {
+    const connector = this.connectors.find(c => c.id === params.id)
+    const selectedProvider = connector?.provider as Provider
+
+    if (!selectedProvider || !connector) {
+      throw new Error('Provider not found')
+    }
+
+    if (params.id === ConstantsUtil.AUTH_CONNECTOR_ID) {
+      const provider = connector['provider'] as W3mFrameProvider
+      const { address, accounts } = await provider.connect()
+
+      return Promise.resolve({
+        accounts: (accounts || [{ address, type: 'eoa' }]).map(account =>
+          CoreHelperUtil.createAccount('eip155', account.address, account.type)
+        )
+      })
+    }
+
+    const accounts: string[] = await selectedProvider.request({
+      method: 'eth_requestAccounts'
+    })
+
+    return {
+      accounts: accounts.map(account => CoreHelperUtil.createAccount('eip155', account, 'eoa'))
+    }
+  }
+
   public async disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
     if (!params.provider || !params.providerType) {
       throw new Error('Provider or providerType not provided')
@@ -414,16 +438,22 @@ export class EthersAdapter extends AdapterBlueprint {
   ): Promise<AdapterBlueprint.GetBalanceResult> {
     const caipNetwork = this.caipNetworks?.find((c: CaipNetwork) => c.id === params.chainId)
 
-    if (caipNetwork) {
-      const provider = createProviderWrapper(
-        caipNetwork.rpcUrls.default.http[0] as string,
-        caipNetwork as BaseNetwork
-      )
+    if (caipNetwork && caipNetwork.chainNamespace === 'eip155') {
+      const jsonRpcProvider = new JsonRpcProvider(caipNetwork.rpcUrls.default.http[0], {
+        chainId: caipNetwork.id as number,
+        name: caipNetwork.name
+      })
 
-      const balance = await provider.getBalance(params.address as `0x${string}`)
-      const formattedBalance = formatEther(balance)
+      if (jsonRpcProvider) {
+        try {
+          const balance = await jsonRpcProvider.getBalance(params.address)
+          const formattedBalance = formatEther(balance)
 
-      return { balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol }
+          return { balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol }
+        } catch (error) {
+          return { balance: '', symbol: '' }
+        }
+      }
     }
 
     return { balance: '', symbol: '' }
@@ -518,7 +548,11 @@ export class EthersAdapter extends AdapterBlueprint {
           switchError?.data?.originalError?.code ===
             WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
         ) {
-          await EthersHelpersUtil.addEthereumChain(provider as Provider, caipNetwork)
+          try {
+            await EthersHelpersUtil.addEthereumChain(provider as Provider, caipNetwork)
+          } catch (e) {
+            console.warn('Could not add chain to wallet', e)
+          }
         } else if (
           providerType === 'ANNOUNCED' ||
           providerType === 'EXTERNAL' ||

@@ -6,25 +6,30 @@ import {
 } from '@reown/appkit-common'
 import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
 import {
+  AccountController,
   OptionsController,
   ThemeController,
+  type AccountType,
+  type AccountControllerState,
   type Connector as AppKitConnector,
   type AuthConnector,
   type Metadata,
-  type Tokens
+  type Tokens,
+  type WriteContractArgs
 } from '@reown/appkit-core'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { AppKitOptions } from '../utils/index.js'
 import type { AppKit } from '../client.js'
-import { snapshot } from 'valtio'
+import { snapshot } from 'valtio/vanilla'
 
-type EventName = 'disconnect' | 'accountChanged' | 'switchNetwork'
+type EventName = 'disconnect' | 'accountChanged' | 'switchNetwork' | 'pendingTransactions'
 type EventData = {
   disconnect: () => void
   accountChanged: { address: string; chainId?: number | string }
   switchNetwork: { address?: string; chainId: number | string }
+  pendingTransactions: () => void
 }
 type EventCallback<T extends EventName> = (data: EventData[T]) => void
 
@@ -152,6 +157,10 @@ export abstract class AdapterBlueprint<
     })
   }
 
+  protected setStatus(status: AccountControllerState['status'], chainNamespace?: ChainNamespace) {
+    AccountController.setStatus(status, chainNamespace)
+  }
+
   /**
    * Adds an event listener for a specific event.
    * @template T
@@ -210,6 +219,15 @@ export abstract class AdapterBlueprint<
   public abstract connect(
     params: AdapterBlueprint.ConnectParams
   ): Promise<AdapterBlueprint.ConnectResult>
+
+  /**
+   * Gets the accounts for the connected wallet.
+   * @returns {Promise<AccountType[]>} An array of account objects with their associated type and namespace
+   */
+
+  public abstract getAccounts(
+    params: AdapterBlueprint.GetAccountsParams
+  ): Promise<AdapterBlueprint.GetAccountsResult>
 
   /**
    * Switches the network.
@@ -416,17 +434,11 @@ export namespace AdapterBlueprint {
     gas: bigint
   }
 
-  export type WriteContractParams = {
-    receiverAddress: string
-    tokenAmount: bigint
-    tokenAddress: string
-    fromAddress: string
-    method: 'send' | 'transfer' | 'call'
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    abi: any
+  export type WriteContractParams = WriteContractArgs & {
     caipNetwork: CaipNetwork
     provider?: AppKitConnector['provider']
     caipAddress: CaipAddress
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }
 
   export type WriteContractResult = {
@@ -506,5 +518,11 @@ export namespace AdapterBlueprint {
     provider: AppKitConnector['provider']
     chainId: number | string
     address: string
+  }
+
+  export type GetAccountsResult = { accounts: AccountType[] }
+  export type GetAccountsParams = {
+    id: AppKitConnector['id']
+    namespace?: ChainNamespace
   }
 }

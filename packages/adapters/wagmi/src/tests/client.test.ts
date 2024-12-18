@@ -14,7 +14,9 @@ import {
   getEnsAddress as wagmiGetEnsAddress,
   writeContract as wagmiWriteContract,
   waitForTransactionReceipt,
-  getAccount
+  getAccount,
+  watchPendingTransactions,
+  http
 } from '@wagmi/core'
 import { mainnet } from '@wagmi/core/chains'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
@@ -43,7 +45,10 @@ vi.mock('@wagmi/core', async () => {
     prepareTransactionRequest: vi.fn(),
     reconnect: vi.fn(),
     watchAccount: vi.fn(),
-    watchConnections: vi.fn()
+    watchConnections: vi.fn(),
+    watchPendingTransactions: vi.fn((_: any, callbacks: any) => {
+      return callbacks
+    })
   }
 })
 
@@ -108,6 +113,25 @@ describe('WagmiAdapter', () => {
 
       expect(injectedConnector?.info).toBeUndefined()
     })
+
+    it('should return reown RPC by default', () => {
+      expect(adapter.wagmiChains?.[0].rpcUrls.default.http[0]).toBe(
+        `https://rpc.walletconnect.org/v1/?chainId=eip155%3A1&projectId=${mockProjectId}`
+      )
+    })
+    it('should return custom RPC if transports is provided', () => {
+      const adapterWithCustomRpc = new WagmiAdapter({
+        networks: mockNetworks,
+        projectId: mockProjectId,
+        transports: {
+          [mainnet.id]: http('https://cloudflare-eth.com')
+        }
+      })
+
+      expect(adapterWithCustomRpc.wagmiChains?.[0].rpcUrls.default.http[0]).toBe(
+        `https://cloudflare-eth.com`
+      )
+    })
   })
 
   describe('WagmiAdapter - signMessage', () => {
@@ -165,10 +189,10 @@ describe('WagmiAdapter', () => {
         caipAddress: 'eip155:1:0x123',
         tokenAddress: '0x123',
         fromAddress: '0x456',
-        receiverAddress: '0x789',
-        tokenAmount: BigInt(1000),
+        args: ['0x789', BigInt(1000)],
         abi: [],
-        method: 'transfer'
+        method: 'transfer',
+        chainNamespace: 'eip155'
       })
 
       expect(result.hash).toBe(mockTxHash)
@@ -395,6 +419,18 @@ describe('WagmiAdapter', () => {
         method: 'wallet_revokePermissions',
         params: mockParams
       })
+    })
+  })
+
+  describe('WagmiAdapter - watchPendingTransactions', () => {
+    it('should emit pendingTransactions when transactions are pending', () => {
+      const emitSpy = vi.spyOn(adapter, 'emit' as any)
+
+      const watchPendingTransactionsCallback =
+        vi.mocked(watchPendingTransactions).mock?.calls?.[0]?.[1]
+      watchPendingTransactionsCallback?.onTransactions(['0xtx1', '0xtx2'])
+
+      expect(emitSpy).toHaveBeenCalledWith('pendingTransactions')
     })
   })
 })

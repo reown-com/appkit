@@ -14,11 +14,14 @@ import {
   unichainSepolia,
   hedera,
   aurora,
-  bitcoin
+  mantle,
+  bitcoin,
+  bitcoinTestnet
 } from '@reown/appkit/networks'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 import { getLocalStorageItem } from './LocalStorage'
-import type { CaipNetwork } from '@reown/appkit'
+import type { CaipNetwork, SocialProvider } from '@reown/appkit'
+import type { Wallet } from '@reown/appkit-wallet-button'
 
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 if (!projectId) {
@@ -67,7 +70,8 @@ const EvmNetworks = [
   sepolia,
   gnosis,
   hedera,
-  aurora
+  aurora,
+  mantle
 ] as [AppKitNetwork, ...AppKitNetwork[]]
 
 export const solanaNotExist = {
@@ -87,7 +91,7 @@ const SolanaNetworks = [solana, solanaTestnet, solanaDevnet, solanaNotExist] as 
   ...AppKitNetwork[]
 ]
 
-const BitcoinNetworks = [bitcoin] as [AppKitNetwork, ...AppKitNetwork[]]
+const BitcoinNetworks = [bitcoin, bitcoinTestnet] as [AppKitNetwork, ...AppKitNetwork[]]
 
 export const ConstantsUtil = {
   SigningSucceededToastTitle: 'Signing Succeeded',
@@ -146,5 +150,34 @@ export const ConstantsUtil = {
   EvmNetworks,
   SolanaNetworks,
   BitcoinNetworks,
-  AllNetworks: [...EvmNetworks, ...SolanaNetworks] as [AppKitNetwork, ...AppKitNetwork[]]
+  AllNetworks: [...EvmNetworks, ...SolanaNetworks] as [AppKitNetwork, ...AppKitNetwork[]],
+  EvmWalletButtons: [
+    'walletConnect',
+    'metamask',
+    'trust',
+    'coinbase',
+    'rainbow',
+    'phantom'
+  ] as Wallet[],
+  SolanaWalletButtons: [
+    'metamask',
+    'trust',
+    'coinbase',
+    'jupiter',
+    'solflare',
+    'phantom',
+    'coin98',
+    'magic-eden',
+    'backpack',
+    'frontier'
+  ] as Wallet[],
+  Socials: [
+    'google',
+    'github',
+    'apple',
+    'facebook',
+    'x',
+    'discord',
+    'farcaster'
+  ] as SocialProvider[]
 }

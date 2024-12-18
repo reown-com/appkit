@@ -1,11 +1,19 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import { WcHelpersUtil } from '../utils/index.js'
-import { ChainController } from '@reown/appkit-core'
+import {
+  ChainController,
+  CoreHelperUtil,
+  ConnectionController,
+  OptionsController
+} from '@reown/appkit-core'
 import bs58 from 'bs58'
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
 
 export class UniversalAdapter extends AdapterBlueprint {
+  public constructor(options?: AdapterBlueprint.Params) {
+    super(options)
+  }
   public async connectWalletConnect(onUri: (uri: string) => void) {
     const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
 
@@ -15,6 +23,12 @@ export class UniversalAdapter extends AdapterBlueprint {
       throw new Error(
         'UniversalAdapter:connectWalletConnect - caipNetworks or provider is undefined'
       )
+    }
+
+    if (OptionsController.state.useInjectedUniversalProvider && ConnectionController.state.wcUri) {
+      onUri(ConnectionController.state.wcUri)
+
+      return
     }
 
     provider.on('display_uri', (uri: string) => {
@@ -41,6 +55,27 @@ export class UniversalAdapter extends AdapterBlueprint {
     const connector = this.connectors.find(c => c.id === 'WALLET_CONNECT')
     const provider = connector?.provider
     await provider?.disconnect()
+  }
+
+  public async getAccounts({
+    namespace
+  }: AdapterBlueprint.GetAccountsParams & {
+    namespace: ChainNamespace
+  }): Promise<AdapterBlueprint.GetAccountsResult> {
+    const provider = this.provider as UniversalProvider
+    const addresses = provider?.session?.namespaces?.[namespace]?.accounts
+      ?.map(account => {
+        const [, , address] = account.split(':')
+
+        return address
+      })
+      .filter((address, index, self) => self.indexOf(address) === index) as string[]
+
+    return Promise.resolve({
+      accounts: addresses.map(address =>
+        CoreHelperUtil.createAccount(namespace, address, namespace === 'bip122' ? 'payment' : 'eoa')
+      )
+    })
   }
 
   public async syncConnectors() {

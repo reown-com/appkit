@@ -11,13 +11,14 @@ import {
   ConstantsUtil as CommonConstantsUtil,
   OptionsController,
   ChainController,
-  type AccountType
+  type AccountType,
+  ConstantsUtil as CoreConstantsUtil
 } from '@reown/appkit-core'
 import { customElement, UiHelperUtil } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 import styles from './styles.js'
@@ -48,6 +49,10 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   @state() private features = OptionsController.state.features
 
+  @state() private namespace = ChainController.state.activeChain
+
+  @state() private chainId = ChainController.state.activeCaipNetwork?.id
+
   public constructor() {
     super()
     this.unsubscribe.push(
@@ -63,6 +68,16 @@ export class W3mAccountDefaultWidget extends LitElement {
         OptionsController.subscribeKey('features', val => (this.features = val)),
         AccountController.subscribeKey('allAccounts', allAccounts => {
           this.allAccounts = allAccounts
+        }),
+        ChainController.subscribeKey('activeChain', val => (this.namespace = val)),
+        ChainController.subscribeKey('activeCaipNetwork', val => {
+          if (val) {
+            const [namespace, chainId] = val?.caipNetworkId?.split(':') || []
+            if (namespace && chainId) {
+              this.namespace = namespace as ChainNamespace
+              this.chainId = chainId
+            }
+          }
         })
       ]
     )
@@ -79,7 +94,8 @@ export class W3mAccountDefaultWidget extends LitElement {
     }
 
     const shouldShowMultiAccount =
-      ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM && this.allAccounts.length > 1
+      ChainController.state.activeChain !== ConstantsUtil.CHAIN.SOLANA &&
+      this.allAccounts.length > 1
 
     return html`<wui-flex
         flexDirection="column"
@@ -98,7 +114,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
         ${this.authCardTemplate()} <w3m-account-auth-button></w3m-account-auth-button>
-        ${this.onrampTemplate()} ${this.swapsTemplate()} ${this.activityTemplate()}
+        ${this.orderedFeaturesTemplate()} ${this.activityTemplate()}
         <wui-list-item
           variant="icon"
           iconVariant="overlay"
@@ -116,8 +132,9 @@ export class W3mAccountDefaultWidget extends LitElement {
   // -- Private ------------------------------------------- //
   private onrampTemplate() {
     const onramp = this.features?.onramp
+    const isBitcoin = ChainController.state.activeChain === 'bip122'
 
-    if (!onramp) {
+    if (!onramp || isBitcoin) {
       return null
     }
 
@@ -132,6 +149,24 @@ export class W3mAccountDefaultWidget extends LitElement {
         <wui-text variant="paragraph-500" color="fg-100">Buy crypto</wui-text>
       </wui-list-item>
     `
+  }
+
+  private orderedFeaturesTemplate() {
+    const featuresOrder =
+      this.features?.walletFeaturesOrder || CoreConstantsUtil.DEFAULT_FEATURES.walletFeaturesOrder
+
+    return featuresOrder.map(feature => {
+      switch (feature) {
+        case 'onramp':
+          return this.onrampTemplate()
+        case 'swaps':
+          return this.swapsTemplate()
+        case 'send':
+          return this.sendTemplate()
+        default:
+          return null
+      }
+    })
   }
 
   private activityTemplate() {
@@ -152,9 +187,9 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   private swapsTemplate() {
     const swaps = this.features?.swaps
-    const isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
+    const isEvm = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
 
-    if (!swaps || isSolana) {
+    if (!swaps || !isEvm) {
       return null
     }
 
@@ -166,6 +201,26 @@ export class W3mAccountDefaultWidget extends LitElement {
         @click=${this.handleClickSwap.bind(this)}
       >
         <wui-text variant="paragraph-500" color="fg-100">Swap</wui-text>
+      </wui-list-item>
+    `
+  }
+
+  private sendTemplate() {
+    const send = this.features?.send
+    const isEvm = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
+
+    if (!send || !isEvm) {
+      return null
+    }
+
+    return html`
+      <wui-list-item
+        iconVariant="blue"
+        icon="send"
+        ?chevron=${true}
+        @click=${this.handleClickSend.bind(this)}
+      >
+        <wui-text variant="paragraph-500" color="fg-100">Send</wui-text>
       </wui-list-item>
     `
   }
@@ -199,6 +254,10 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   private handleClickSwap() {
     RouterController.push('Swap')
+  }
+
+  private handleClickSend() {
+    RouterController.push('WalletSend')
   }
 
   private explorerBtnTemplate() {
@@ -259,6 +318,9 @@ export class W3mAccountDefaultWidget extends LitElement {
 
     const account = this.allAccounts.find(acc => acc.address === this.address)
     const label = AccountController.state.addressLabels.get(this.address)
+    if (this.namespace === 'bip122') {
+      return this.btcAccountsTemplate()
+    }
 
     return html`
       <wui-profile-button-v2
@@ -273,6 +335,40 @@ export class W3mAccountDefaultWidget extends LitElement {
         .onCopyClick=${this.onCopyAddress.bind(this)}
       ></wui-profile-button-v2>
     `
+  }
+
+  private btcAccountsTemplate() {
+    return html`<wui-flex gap="m" alignItems="center" flexDirection="column">
+      <wui-avatar
+        .imageSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
+        alt=${this.address}
+        address=${this.address}
+      ></wui-avatar>
+      <wui-tabs
+        .tabs=${[{ label: 'Payment' }, { label: 'Ordinals' }]}
+        .onTabChange=${(index: number) =>
+          AccountController.setCaipAddress(
+            `bip122:${this.chainId}:${this.allAccounts[index]?.address || ''}`,
+            this.namespace
+          )}
+      ></wui-tabs>
+      <wui-flex gap="xs" alignItems="center" justifyContent="center">
+        <wui-text variant="large-600" color="fg-100">
+          ${UiHelperUtil.getTruncateString({
+            string: this.profileName || this.address || '',
+            charsStart: this.profileName ? 18 : 4,
+            charsEnd: this.profileName ? 0 : 4,
+            truncate: this.profileName ? 'end' : 'middle'
+          })}
+        </wui-text>
+        <wui-icon-link
+          size="md"
+          icon="copy"
+          iconColor="fg-200"
+          @click=${this.onCopyAddress}
+        ></wui-icon-link>
+      </wui-flex>
+    </wui-flex>`
   }
 
   private onCopyAddress() {

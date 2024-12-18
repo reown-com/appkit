@@ -107,6 +107,17 @@ export class ModalValidator {
     )
   }
 
+  async expectWalletButtonHook(id: string, disabled: boolean) {
+    const walletButtonHook = this.page.getByTestId(`wallet-button-hook-${id}`)
+    await expect(walletButtonHook).toBeVisible({ timeout: 20_000 })
+
+    if (disabled) {
+      await expect(walletButtonHook).toBeDisabled({ timeout: 20_000 })
+    } else {
+      await expect(walletButtonHook).toBeEnabled({ timeout: 20_000 })
+    }
+  }
+
   async expectAcceptedSign() {
     // We use Chakra Toast and it's not quite straightforward to set the `data-testid` attribute on the toast element.
     await expect(this.page.getByText(ConstantsUtil.SigningSucceededToastTitle)).toBeVisible({
@@ -135,6 +146,14 @@ export class ModalValidator {
   async expectSwitchChainView(chainName: string) {
     const title = this.page.getByTestId(`w3m-switch-active-chain-to-${chainName}`)
     await expect(title).toBeVisible()
+  }
+
+  async expectSwitchedNetworkWithNetworkView() {
+    const switchNetworkViewLocator = this.page.locator('w3m-network-switch-view')
+    await expect(switchNetworkViewLocator).toBeVisible()
+    await expect(switchNetworkViewLocator).not.toBeVisible({
+      timeout: 20_000
+    })
   }
 
   async expectSwitchedNetworkOnNetworksView(name: string) {
@@ -356,15 +375,5 @@ export class ModalValidator {
     await expect(this.page.getByTestId('wui-snackbar-message')).toHaveText(message, {
       timeout: MAX_WAIT
     })
-  }
-
-  async expectConnectViewToBeDisabled() {
-    const connectDisabled = this.page.locator('.connect.disabled')
-    await expect(connectDisabled).toBeVisible()
-  }
-
-  async expectConnectViewNotToBeDisabled() {
-    const connectDisabled = this.page.locator('.connect.disabled')
-    await expect(connectDisabled).not.toBeVisible()
   }
 }

@@ -79,6 +79,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-connect-view walletGuide="explore"></w3m-connect-view>`
       case 'ConnectingWalletConnect':
         return html`<w3m-connecting-wc-view></w3m-connecting-wc-view>`
+      case 'ConnectingWalletConnectBasic':
+        return html`<w3m-connecting-wc-basic-view></w3m-connecting-wc-basic-view>`
       case 'ConnectingExternal':
         return html`<w3m-connecting-external-view></w3m-connecting-external-view>`
       case 'ConnectingSiwe':
@@ -117,8 +119,6 @@ export class W3mRouter extends LitElement {
         return html`<w3m-onramp-fiat-select-view></w3m-onramp-fiat-select-view>`
       case 'UpgradeEmailWallet':
         return html`<w3m-upgrade-wallet-view></w3m-upgrade-wallet-view>`
-      case 'UpgradeToSmartAccount':
-        return html`<w3m-upgrade-to-smart-account-view></w3m-upgrade-to-smart-account-view>`
       case 'UpdateEmailWallet':
         return html`<w3m-update-email-wallet-view></w3m-update-email-wallet-view>`
       case 'UpdateEmailPrimaryOtp':

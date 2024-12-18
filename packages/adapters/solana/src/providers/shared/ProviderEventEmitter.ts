@@ -12,7 +12,7 @@ export class ProviderEventEmitter implements ProviderEventEmitterMethods {
     chainChanged: [],
     connect: [],
     disconnect: [],
-
+    pendingTransaction: [],
     auth_rpcRequest: [],
     auth_rpcSuccess: [],
     auth_rpcError: []
