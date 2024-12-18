@@ -1,9 +1,10 @@
 import type { ChainAdapter } from '@reown/appkit-core'
-import type { AppKitOptions } from '../../utils/index.js'
-import { mainnet, solana } from '../../networks/index.js'
+import { mainnet, solana } from '../../src/networks/index.js'
 import type { SdkVersion } from '@reown/appkit-core'
+import type { AppKitOptions } from '../../exports/index.js'
 
 export const mockOptions = {
+  sdkType: 'appkit',
   projectId: 'test-project-id',
   adapters: [{ chainNamespace: 'eip155' } as unknown as ChainAdapter],
   networks: [mainnet, solana],
@@ -13,7 +14,5 @@ export const mockOptions = {
     url: 'https://test-app.com',
     icons: ['https://test-app.com/icon.png']
   },
-  sdkVersion: `html-wagmi-5.1.6` as SdkVersion
-} as unknown as AppKitOptions & {
-  sdkVersion: SdkVersion
-}
+  sdkVersion: `html-wagmi-5.1.6`
+} as AppKitOptions & { sdkVersion: SdkVersion }

@@ -921,16 +921,18 @@ export class AppKit {
         }
       },
       disconnect: async () => {
-        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+        const namespace = ChainController.state.activeChain as ChainNamespace
+        const adapter = this.getAdapter(namespace)
         const provider = ProviderUtil.getProvider<UniversalProvider | Provider | W3mFrameProvider>(
-          ChainController.state.activeChain as ChainNamespace
+          namespace
         )
-        const providerType =
-          ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
+        const providerType = ProviderUtil.state.providerIds[namespace]
 
         await adapter?.disconnect({ provider, providerType })
-
-        this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
+        StorageUtil.deleteConnectedConnector()
+        StorageUtil.deleteActiveCaipNetworkId()
+        AccountController.resetAccount(namespace)
+        this.setStatus('disconnected', namespace)
       },
       checkInstalled: (ids?: string[]) => {
         if (!ids) {
