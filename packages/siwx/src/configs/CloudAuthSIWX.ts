@@ -1,4 +1,10 @@
-import { ConstantsUtil, type CaipNetworkId } from '@reown/appkit-common'
+import {
+  ConstantsUtil,
+  type CaipNetworkId,
+  SafeLocalStorage,
+  SafeLocalStorageKeys,
+  type SafeLocalStorageItems
+} from '@reown/appkit-common'
 import {
   AccountController,
   ApiController,
@@ -18,13 +24,17 @@ import { InformalMessenger } from '../index.js'
  * WARNING: The Claud Auth is only available in EVM networks.
  */
 export class CloudAuthSIWX implements SIWXConfig {
-  private readonly localAuthStorageKey: string
-  private readonly localNonceStorageKey: string
+  private readonly localAuthStorageKey: keyof SafeLocalStorageItems
+  private readonly localNonceStorageKey: keyof SafeLocalStorageItems
   private readonly messenger: SIWXMessenger
 
   constructor(params: CloudAuthSIWX.ConstructorParams = {}) {
-    this.localAuthStorageKey = params.localAuthStorageKey || '@appkit/siwx-auth-token'
-    this.localNonceStorageKey = params.localNonceStorageKey || '@appkit/siwx-nonce-token'
+    this.localAuthStorageKey =
+      (params.localAuthStorageKey as keyof SafeLocalStorageItems) ||
+      SafeLocalStorageKeys.SIWX_AUTH_TOKEN
+    this.localNonceStorageKey =
+      (params.localNonceStorageKey as keyof SafeLocalStorageItems) ||
+      SafeLocalStorageKeys.SIWX_NONCE_TOKEN
 
     this.messenger = new InformalMessenger({
       domain: typeof document === 'undefined' ? 'Unknown Domain' : document.location.host,
@@ -130,17 +140,17 @@ export class CloudAuthSIWX implements SIWXConfig {
     throw new Error(await response.text())
   }
 
-  private getStorageToken(key: string): string | undefined {
-    return localStorage.getItem(key) || undefined
+  private getStorageToken(key: keyof SafeLocalStorageItems): string | undefined {
+    return SafeLocalStorage.getItem(key)
   }
 
-  private setStorageToken(token: string, key: string): void {
-    localStorage.setItem(key, token)
+  private setStorageToken(token: string, key: keyof SafeLocalStorageItems): void {
+    SafeLocalStorage.setItem(key, token)
   }
 
   private clearStorageTokens(): void {
-    localStorage.removeItem(this.localAuthStorageKey)
-    localStorage.removeItem(this.localNonceStorageKey)
+    SafeLocalStorage.removeItem(this.localAuthStorageKey)
+    SafeLocalStorage.removeItem(this.localNonceStorageKey)
   }
 
   private async getNonce(): Promise<string> {
