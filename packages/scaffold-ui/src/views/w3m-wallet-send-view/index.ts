@@ -133,7 +133,7 @@ export class W3mWalletSendView extends LitElement {
       this.message = 'Add Address'
     }
 
-    if (SendController.hasInsufficientToken()) {
+    if (SendController.hasInsufficientGasFunds()) {
       this.message = 'Insufficient Gas Funds'
     }
 

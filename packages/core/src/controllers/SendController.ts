@@ -190,7 +190,7 @@ export const SendController = {
     return NumberUtil.bigNumber(NumberUtil.bigNumber(gasPrice)).isGreaterThan(networkBalanceInUSD)
   },
 
-  hasInsufficientToken() {
+  hasInsufficientGasFunds() {
     let insufficientNetworkTokenForGas = true
     if (
       AccountController.state.preferredAccountType ===
