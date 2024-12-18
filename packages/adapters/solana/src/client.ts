@@ -68,6 +68,11 @@ export class SolanaAdapter extends AdapterBlueprint {
     })
   }
 
+  // We don't need to set auth provider since we already set it in syncConnectors
+  public override setAuthProvider() {
+    return undefined
+  }
+
   public syncConnectors(options: AppKitOptions, appKit: AppKit) {
     if (!options.projectId) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
@@ -111,7 +116,7 @@ export class SolanaAdapter extends AdapterBlueprint {
     }
 
     // Add Coinbase Wallet if available
-    if (typeof window !== 'undefined' && 'coinbaseSolana' in window) {
+    if (CoreHelperUtil.isClient() && 'coinbaseSolana' in window) {
       this.addConnector({
         id: 'coinbaseWallet',
         type: 'EXTERNAL',

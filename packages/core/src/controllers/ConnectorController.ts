@@ -144,7 +144,7 @@ export const ConnectorController = {
         projectId: optionsState.projectId,
         sdkType: optionsState.sdkType
       })
-      authConnector.provider.syncTheme({
+      authConnector?.provider?.syncTheme({
         themeMode,
         themeVariables,
         w3mThemeVariables: getW3mThemeVariables(themeVariables, themeMode)
