@@ -5,7 +5,7 @@ import {
   type CaipNetworkId,
   type ChainNamespace
 } from '@reown/appkit-common'
-import type { WcWallet, ConnectorType, SocialProvider, ConnectionStatus } from './TypeUtil.js'
+import type { WcWallet, SocialProvider, ConnectionStatus } from './TypeUtil.js'
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
@@ -87,11 +87,11 @@ export const StorageUtil = {
     }
   },
 
-  deleteConnectedConnector() {
+  deleteConnectedConnectorId() {
     try {
-      SafeLocalStorage.removeItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID)
     } catch {
-      console.info('Unable to delete connected connector')
+      console.info('Unable to delete connected connector id')
     }
   },
 
@@ -123,11 +123,11 @@ export const StorageUtil = {
     return []
   },
 
-  setConnectedConnector(connectorType: ConnectorType) {
+  setConnectedConnectorId(connectorId: string) {
     try {
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR, connectorType)
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID, connectorId)
     } catch {
-      console.info('Unable to set Connected Connector')
+      console.info('Unable to set Connected Connector Id')
     }
   },
 
@@ -143,11 +143,11 @@ export const StorageUtil = {
     return undefined
   },
 
-  getConnectedConnector() {
+  getConnectedConnectorId() {
     try {
-      return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR) as ConnectorType
+      return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID)
     } catch {
-      console.info('Unable to get connected connector')
+      console.info('Unable to get connected connector id')
     }
 
     return undefined

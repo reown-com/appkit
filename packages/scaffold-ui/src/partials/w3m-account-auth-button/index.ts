@@ -7,6 +7,7 @@ import {
   StorageUtil,
   type SocialProvider
 } from '@reown/appkit-core'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 
 @customElement('w3m-account-auth-button')
 export class W3mAccountAuthButton extends LitElement {
@@ -17,10 +18,10 @@ export class W3mAccountAuthButton extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const type = StorageUtil.getConnectedConnector()
+    const connectorId = StorageUtil.getConnectedConnectorId()
     const authConnector = ConnectorController.getAuthConnector()
 
-    if (!authConnector || type !== 'ID_AUTH') {
+    if (!authConnector || connectorId !== CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       this.style.cssText = `display: none`
 
       return null
