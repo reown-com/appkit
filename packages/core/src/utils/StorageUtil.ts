@@ -3,7 +3,8 @@ import {
   SafeLocalStorage,
   SafeLocalStorageKeys,
   type CaipNetworkId,
-  type ChainNamespace
+  type ChainNamespace,
+  getSafeConnectorIdKey
 } from '@reown/appkit-common'
 import type { WcWallet, SocialProvider, ConnectionStatus } from './TypeUtil.js'
 
@@ -87,9 +88,10 @@ export const StorageUtil = {
     }
   },
 
-  deleteConnectedConnectorId() {
+  deleteConnectedConnectorId(namespace: ChainNamespace) {
     try {
-      SafeLocalStorage.removeItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID)
+      const key = getSafeConnectorIdKey(namespace)
+      SafeLocalStorage.removeItem(key)
     } catch {
       console.info('Unable to delete connected connector id')
     }
@@ -123,9 +125,10 @@ export const StorageUtil = {
     return []
   },
 
-  setConnectedConnectorId(connectorId: string) {
+  setConnectedConnectorId(namespace: ChainNamespace, connectorId: string) {
     try {
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID, connectorId)
+      const key = getSafeConnectorIdKey(namespace)
+      SafeLocalStorage.setItem(key, connectorId)
     } catch {
       console.info('Unable to set Connected Connector Id')
     }
@@ -143,9 +146,11 @@ export const StorageUtil = {
     return undefined
   },
 
-  getConnectedConnectorId() {
+  getConnectedConnectorId(namespace: ChainNamespace) {
     try {
-      return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID)
+      const key = getSafeConnectorIdKey(namespace)
+
+      return SafeLocalStorage.getItem(key)
     } catch {
       console.info('Unable to get connected connector id')
     }
@@ -203,6 +208,28 @@ export const StorageUtil = {
       return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTION_STATUS) as ConnectionStatus
     } catch {
       return undefined
+    }
+  },
+
+  getConnectedNamespaces() {
+    try {
+      const namespaces = SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_NAMESPACES)
+
+      if (!namespaces?.length) {
+        return []
+      }
+
+      return namespaces.split(',') as ChainNamespace[]
+    } catch {
+      return []
+    }
+  },
+
+  setConnectedNamespaces(namespaces: ChainNamespace[]) {
+    try {
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_NAMESPACES, namespaces.join(','))
+    } catch {
+      console.info('Unable to set namespaces in storage')
     }
   }
 }

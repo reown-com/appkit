@@ -89,7 +89,7 @@ export const SIWXUtil = {
 
       const message = siwxMessage.toString()
 
-      const connectorId = StorageUtil.getConnectedConnectorId()
+      const connectorId = StorageUtil.getConnectedConnectorId(network.chainNamespace)
 
       if (connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
         RouterController.pushTransactionStack({

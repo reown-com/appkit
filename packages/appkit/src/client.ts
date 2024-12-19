@@ -504,7 +504,7 @@ export class AppKit {
       )?.[0]
     }
 
-    return ChainController.state.activeCaipNetwork
+    return ChainController.state.activeCaipNetwork || this.defaultCaipNetwork
   }
 
   public getCaipNetworkId = <T extends number | string>(): T | undefined => {
@@ -1168,10 +1168,11 @@ export class AppKit {
       }
     })
     provider.onNotConnected(() => {
-      const connectorId = StorageUtil.getConnectedConnectorId()
+      const namespace = ChainController.state.activeChain as ChainNamespace
+      const connectorId = StorageUtil.getConnectedConnectorId(namespace)
       const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
       if (!isConnected && isConnectedWithAuth) {
-        this.setCaipAddress(undefined, ChainController.state.activeChain as ChainNamespace)
+        this.setCaipAddress(undefined, namespace)
         this.setLoading(false)
       }
     })
@@ -1410,7 +1411,10 @@ export class AppKit {
           ProviderUtil.setProvider(chainNamespace, this.universalProvider)
         }
 
-        StorageUtil.setConnectedConnectorId(ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)
+        StorageUtil.setConnectedConnectorId(
+          chainNamespace,
+          ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+        )
 
         let address = ''
 
@@ -1495,7 +1499,7 @@ export class AppKit {
     ProviderUtil.setProviderId(chainNamespace, type)
     ProviderUtil.setProvider(chainNamespace, provider)
 
-    StorageUtil.setConnectedConnectorId(id)
+    StorageUtil.setConnectedConnectorId(chainNamespace, id)
   }
 
   private async syncAccount({
@@ -1554,7 +1558,7 @@ export class AppKit {
   }
 
   private syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
-    const connectorId = StorageUtil.getConnectedConnectorId()
+    const connectorId = StorageUtil.getConnectedConnectorId(chainNamespace)
     const providerType = ProviderUtil.state.providerIds[chainNamespace]
 
     if (
@@ -1672,59 +1676,79 @@ export class AppKit {
     )
   }
 
-  private async syncExistingConnection() {
-    try {
-      const connectorId = StorageUtil.getConnectedConnectorId()
-      const activeNamespace = StorageUtil.getActiveNamespace()
+  private async syncAdapterConnection(namespace: ChainNamespace) {
+    const adapter = this.getAdapter(namespace)
+    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const activeNamespace = StorageUtil.getActiveNamespace()
+    const caipNetwork = this.getCaipNetwork()
+    if (!adapter || !connectorId) {
+      throw new Error(`Adapter or connectorId not found for namespace ${namespace}`)
+    }
+    const res = await adapter?.syncConnection({
+      namespace,
+      id: connectorId,
+      chainId: caipNetwork?.id,
+      rpcUrl: caipNetwork?.rpcUrls?.default?.http?.[0] as string
+    })
 
-      if (connectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT && activeNamespace) {
+    if (res) {
+      const accounts = await adapter?.getAccounts({
+        namespace,
+        id: connectorId
+      })
+
+      if (!accounts || accounts.accounts.length === 0) {
+        throw new Error('No accounts found')
+      }
+
+      if (activeNamespace === namespace) {
+        this.syncProvider({ ...res, chainNamespace: namespace })
+        await this.syncAccount({ ...res, chainNamespace: namespace })
+        this.setAllAccounts(accounts.accounts, namespace)
+      }
+      this.setStatus('connected', namespace)
+    } else {
+      this.setStatus('disconnected', namespace)
+    }
+
+    if (!this.caipNetworks?.some(network => network.id === res?.chainId)) {
+      if (res?.chainId) {
+        this.setUnsupportedNetwork(res.chainId)
+      }
+    }
+  }
+
+  private syncNamespaceConnection(namespace: ChainNamespace) {
+    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+    this.setStatus('connecting', namespace)
+    switch (connectorId) {
+      case ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT:
         this.syncWalletConnectAccount()
-      } else if (
-        connectorId &&
-        connectorId !== ConstantsUtil.CONNECTOR_ID.AUTH &&
-        activeNamespace
-      ) {
-        this.setStatus('connecting', activeNamespace as ChainNamespace)
-        const adapter = this.getAdapter(activeNamespace as ChainNamespace)
-        const res = await adapter?.syncConnection({
-          id: connectorId,
-          chainId: this.getCaipNetwork()?.id,
-          namespace: activeNamespace as ChainNamespace,
-          rpcUrl: this.getCaipNetwork()?.rpcUrls?.default?.http?.[0] as string
-        })
+        break
+      case ConstantsUtil.CONNECTOR_ID.AUTH:
+        // Handled during initialization of adapters' auth provider
+        break
+      default:
+        this.syncAdapterConnection(namespace)
+    }
+  }
 
-        if (res) {
-          const accounts = await adapter?.getAccounts({
-            namespace: activeNamespace as ChainNamespace,
-            id: connectorId
-          })
-
-          if (!accounts || accounts.accounts.length === 0) {
-            throw new Error('No accounts found')
-          }
-
-          this.syncProvider({ ...res, chainNamespace: activeNamespace as ChainNamespace })
-          await this.syncAccount({ ...res, chainNamespace: activeNamespace as ChainNamespace })
-          this.setAllAccounts(accounts.accounts, activeNamespace as ChainNamespace)
-          this.setStatus('connected', activeNamespace as ChainNamespace)
-        } else {
-          this.setStatus('disconnected', activeNamespace as ChainNamespace)
-        }
-
-        if (!this.caipNetworks?.some(network => network.id === res?.chainId)) {
-          if (res?.chainId) {
-            this.setUnsupportedNetwork(res.chainId)
-          }
-        }
-      } else if (connectorId !== ConstantsUtil.CONNECTOR_ID.AUTH) {
-        this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
+  private async syncExistingConnection() {
+    const connectedNamespaces = StorageUtil.getConnectedNamespaces()
+    try {
+      if (connectedNamespaces?.length > 0) {
+        await Promise.all(
+          connectedNamespaces.map(namespace => this.syncNamespaceConnection(namespace))
+        )
       }
     } catch (err) {
       // eslint-disable-next-line no-console
       console.log("AppKit:syncExistingConnection - couldn't sync existing connection", err)
       this.disconnect().finally(() => {
-        StorageUtil.deleteConnectedConnectorId()
-        this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
+        connectedNamespaces.forEach(namespace => {
+          StorageUtil.deleteConnectedConnectorId(namespace)
+          this.setStatus('disconnected', namespace)
+        })
       })
     }
   }
@@ -1808,10 +1832,14 @@ export class AppKit {
       this.options?.features?.email === undefined
         ? CoreConstantsUtil.DEFAULT_FEATURES.email
         : this.options?.features?.email
+
     const isSocialsEnabled = this.options?.features?.socials
       ? this.options?.features?.socials?.length > 0
       : CoreConstantsUtil.DEFAULT_FEATURES.socials
-    if (!this.authProvider && this.options?.projectId && (isEmailEnabled || isSocialsEnabled)) {
+
+    const isAuthEnabled = isEmailEnabled || isSocialsEnabled
+
+    if (!this.authProvider && this.options?.projectId && isAuthEnabled) {
       this.authProvider = W3mFrameProviderSingleton.getInstance({
         projectId: this.options.projectId,
         onTimeout: () => {
