@@ -22,7 +22,7 @@
 
 Fixed an issue where the `pendingTransactions` event was being emitted infinitely in wagmi adapter.
 
-Additionally another parameter was added to wagmi adapter called `pendingTransactionFilter`.
+Additionally another option was added to wagmi adapter called `pendingTransactionFilter`.
 
 **Example usage**
 
