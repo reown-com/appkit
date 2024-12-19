@@ -859,6 +859,8 @@ export class AppKit {
             this.getCaipNetwork()?.rpcUrls?.default?.http?.[0]
         })
 
+        StorageUtil.addConnectedNamespace(chainToUse)
+
         if (res) {
           this.syncProvider({
             ...res,
@@ -881,23 +883,26 @@ export class AppKit {
         }
       },
       reconnectExternal: async ({ id, info, type, provider }) => {
-        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+        const namespace = ChainController.state.activeChain as ChainNamespace
+        const adapter = this.getAdapter(namespace)
         if (adapter?.reconnect) {
           await adapter?.reconnect({ id, info, type, provider, chainId: this.getCaipNetwork()?.id })
+          StorageUtil.addConnectedNamespace(namespace)
         }
       },
       disconnect: async () => {
-        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+        const namespace = ChainController.state.activeChain as ChainNamespace
+        const adapter = this.getAdapter(namespace)
         const provider = ProviderUtil.getProvider<UniversalProvider | Provider | W3mFrameProvider>(
-          ChainController.state.activeChain as ChainNamespace
+          namespace
         )
-        const providerType =
-          ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
+        const providerType = ProviderUtil.state.providerIds[namespace]
 
         await adapter?.disconnect({ provider, providerType })
 
-        ProviderUtil.resetChain(ChainController.state.activeChain as ChainNamespace)
-        this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
+        StorageUtil.removeConnectedNamespace(namespace)
+        ProviderUtil.resetChain(namespace)
+        this.setStatus('disconnected', namespace)
       },
       checkInstalled: (ids?: string[]) => {
         if (!ids) {
@@ -1178,6 +1183,7 @@ export class AppKit {
     })
     provider.onIsConnected(() => {
       provider.connect()
+      StorageUtil.addConnectedNamespace(ChainController.state.activeChain as ChainNamespace)
     })
     provider.onConnect(async user => {
       const namespace = ChainController.state.activeChain as ChainNamespace
@@ -1232,6 +1238,7 @@ export class AppKit {
       )
     })
 
+    const namespace = ChainController.state.activeChain as ChainNamespace
     if (isConnected && this.connectionControllerClient?.connectExternal) {
       await this.connectionControllerClient?.connectExternal({
         id: ConstantsUtil.CONNECTOR_ID.AUTH,
@@ -1241,10 +1248,11 @@ export class AppKit {
         chainId: ChainController.state.activeCaipNetwork?.id
       })
       this.setLoading(false)
-      this.setStatus('connected', ChainController.state.activeChain as ChainNamespace)
+      this.setStatus('connected', namespace)
     } else {
       this.setLoading(false)
-      this.setStatus('disconnected', ChainController.state.activeChain as ChainNamespace)
+      this.setStatus('disconnected', namespace)
+      StorageUtil.removeConnectedNamespace(namespace)
     }
   }
 
@@ -1679,11 +1687,12 @@ export class AppKit {
   private async syncAdapterConnection(namespace: ChainNamespace) {
     const adapter = this.getAdapter(namespace)
     const connectorId = StorageUtil.getConnectedConnectorId(namespace)
-    const activeNamespace = StorageUtil.getActiveNamespace()
     const caipNetwork = this.getCaipNetwork()
     if (!adapter || !connectorId) {
       throw new Error(`Adapter or connectorId not found for namespace ${namespace}`)
     }
+
+    console.log('>> syncAdapterConnection', namespace, connectorId, adapter)
     const res = await adapter?.syncConnection({
       namespace,
       id: connectorId,
@@ -1691,21 +1700,27 @@ export class AppKit {
       rpcUrl: caipNetwork?.rpcUrls?.default?.http?.[0] as string
     })
 
+    console.log('>> syncAdapterConnection res', res)
+
     if (res) {
       const accounts = await adapter?.getAccounts({
         namespace,
         id: connectorId
       })
 
-      if (!accounts || accounts.accounts.length === 0) {
-        throw new Error('No accounts found')
+      console.log('>> syncAdapterConnection accounts', accounts)
+
+      if (accounts && accounts.accounts.length > 0) {
+        this.setAllAccounts(accounts.accounts, namespace)
+      } else {
+        this.setAllAccounts(
+          [CoreHelperUtil.createAccount(namespace, res.address, 'eoa')],
+          namespace
+        )
       }
 
-      if (activeNamespace === namespace) {
-        this.syncProvider({ ...res, chainNamespace: namespace })
-        await this.syncAccount({ ...res, chainNamespace: namespace })
-        this.setAllAccounts(accounts.accounts, namespace)
-      }
+      this.syncProvider({ ...res, chainNamespace: namespace })
+      await this.syncAccount({ ...res, chainNamespace: namespace })
       this.setStatus('connected', namespace)
     } else {
       this.setStatus('disconnected', namespace)

@@ -228,9 +228,38 @@ export const StorageUtil = {
 
   setConnectedNamespaces(namespaces: ChainNamespace[]) {
     try {
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_NAMESPACES, namespaces.join(','))
+      const uniqueNamespaces = Array.from(new Set(namespaces))
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.CONNECTED_NAMESPACES,
+        uniqueNamespaces.join(',')
+      )
     } catch {
       console.info('Unable to set namespaces in storage')
+    }
+  },
+
+  addConnectedNamespace(namespace: ChainNamespace) {
+    try {
+      const namespaces = StorageUtil.getConnectedNamespaces()
+      if (!namespaces.includes(namespace)) {
+        namespaces.push(namespace)
+        StorageUtil.setConnectedNamespaces(namespaces)
+      }
+    } catch {
+      console.info('Unable to add connected namespace')
+    }
+  },
+
+  removeConnectedNamespace(namespace: ChainNamespace) {
+    try {
+      const namespaces = StorageUtil.getConnectedNamespaces()
+      const index = namespaces.indexOf(namespace)
+      if (index > -1) {
+        namespaces.splice(index, 1)
+        StorageUtil.setConnectedNamespaces(namespaces)
+      }
+    } catch {
+      console.info('Unable to remove connected namespace')
     }
   }
 }
