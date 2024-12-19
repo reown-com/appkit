@@ -57,7 +57,7 @@ import {
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { normalize } from 'viem/ens'
 import { parseWalletCapabilities } from './utils/helpers.js'
-import { LimitUtil } from './utils/LimitUtil.js'
+import { LimitterUtil } from './utils/LimitterUtil.js'
 
 export class WagmiAdapter extends AdapterBlueprint {
   public wagmiChains: readonly [Chain, ...Chain[]] | undefined
@@ -174,11 +174,11 @@ export class WagmiAdapter extends AdapterBlueprint {
       onError: () => {},
       onTransactions: () => {
         this.emit('pendingTransactions')
-        LimitUtil.increase('pendingTransactions')
+        LimitterUtil.increase('pendingTransactions')
       }
     })
 
-    const unsubscribe = LimitUtil.subscribeKey('pendingTransactions', val => {
+    const unsubscribe = LimitterUtil.subscribeKey('pendingTransactions', val => {
       if (val >= CommonConstantsUtil.LIMITS.PENDING_TRANSACTIONS) {
         unwatch()
         unsubscribe()

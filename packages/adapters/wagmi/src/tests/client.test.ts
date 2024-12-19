@@ -23,7 +23,7 @@ import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { mockAppKit } from './mocks/AppKit'
 import { ConstantsUtil } from '@reown/appkit-common'
-import { LimitUtil } from '../utils/LimitUtil'
+import { LimitterUtil } from '../utils/LimitterUtil'
 
 vi.mock('@wagmi/core', async () => {
   const actual = await vi.importActual('@wagmi/core')
@@ -565,7 +565,7 @@ describe('WagmiAdapter', () => {
       })
 
       // Set state to maximum limit so we know once we reach the limit it'll unsubscribe the watchPendingTransactions
-      LimitUtil.state.pendingTransactions = ConstantsUtil.LIMITS.PENDING_TRANSACTIONS
+      LimitterUtil.state.pendingTransactions = ConstantsUtil.LIMITS.PENDING_TRANSACTIONS
 
       // Wait for valtio to check for updated state and unsubscribe watchPendingTransactions
       await new Promise(resolve => setTimeout(resolve, 100))

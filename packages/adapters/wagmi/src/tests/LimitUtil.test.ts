@@ -1,29 +1,29 @@
 import { describe, expect, it } from 'vitest'
-import { LimitUtil } from '../utils/LimitUtil'
+import { LimitterUtil } from '../utils/LimitterUtil'
 
 // -- Tests --------------------------------------------------------------------
-describe('LimitUtil', () => {
+describe('LimitterUtil', () => {
   it('should have valid default state', () => {
-    expect(LimitUtil.state).toEqual({
+    expect(LimitterUtil.state).toEqual({
       pendingTransactions: 0
     })
   })
 
   it('should increase state limit', () => {
-    LimitUtil.increase('pendingTransactions')
-    expect(LimitUtil.state.pendingTransactions).toBe(1)
+    LimitterUtil.increase('pendingTransactions')
+    expect(LimitterUtil.state.pendingTransactions).toBe(1)
   })
 
   it('should decrease state limit', () => {
-    expect(LimitUtil.state.pendingTransactions).toBe(1)
-    LimitUtil.decrease('pendingTransactions')
-    expect(LimitUtil.state.pendingTransactions).toBe(0)
+    expect(LimitterUtil.state.pendingTransactions).toBe(1)
+    LimitterUtil.decrease('pendingTransactions')
+    expect(LimitterUtil.state.pendingTransactions).toBe(0)
   })
 
   it('should reset state limit', () => {
-    LimitUtil.increase('pendingTransactions')
-    expect(LimitUtil.state.pendingTransactions).toEqual(1)
-    LimitUtil.reset('pendingTransactions')
-    expect(LimitUtil.state.pendingTransactions).toEqual(0)
+    LimitterUtil.increase('pendingTransactions')
+    expect(LimitterUtil.state.pendingTransactions).toEqual(1)
+    LimitterUtil.reset('pendingTransactions')
+    expect(LimitterUtil.state.pendingTransactions).toEqual(0)
   })
 })
