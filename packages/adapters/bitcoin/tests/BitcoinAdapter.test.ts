@@ -25,6 +25,37 @@ describe('BitcoinAdapter', () => {
     adapter = new BitcoinAdapter({ api, networks: [bitcoin] })
   })
 
+  describe('connectWalletConnect', () => {
+    const mockWalletConnect = {
+      type: 'WALLET_CONNECT',
+      provider: {
+        on: vi.fn(),
+        connect: vi.fn()
+      }
+    }
+
+    beforeEach(() => {
+      adapter.connectors.push(mockWalletConnect as any)
+    })
+
+    it('should call connect from WALLET_CONNECT connector', async () => {
+      const onUri = vi.fn()
+      await adapter.connectWalletConnect(onUri)
+
+      mockWalletConnect.provider.on.mock.calls.find(([name]) => name === 'display_uri')![1](
+        'mock_uri'
+      )
+
+      expect(onUri).toHaveBeenCalled()
+      expect(mockWalletConnect.provider.connect).toHaveBeenCalled()
+    })
+
+    it('should throw if caipNetworks is not defined', async () => {
+      adapter = new BitcoinAdapter({ api })
+      await expect(adapter.connectWalletConnect(vi.fn())).rejects.toThrow()
+    })
+  })
+
   describe('connect', () => {
     it('should return the chainId of the available chain from connector', async () => {
       const connector = new SatsConnectConnector({
@@ -123,6 +154,26 @@ describe('BitcoinAdapter', () => {
       const accounts = await adapter.getAccounts({ id: 'invalid_id' })
 
       expect(accounts).toEqual({ accounts: [] })
+    })
+
+    it('should return empty accounts if connector.getAccountsAddresses throws', async () => {
+      vi.spyOn(connector, 'getAccountAddresses').mockRejectedValueOnce(new Error('mock_error'))
+
+      const accounts = await adapter.getAccounts({ id: connector.id })
+
+      expect(accounts).toEqual({ accounts: [] })
+    })
+
+    it('should attach payment type if purpose is not found', async () => {
+      vi.spyOn(connector, 'getAccountAddresses').mockResolvedValueOnce([
+        { address: 'mock_address' } as any
+      ])
+
+      const accounts = await adapter.getAccounts({ id: connector.id })
+
+      expect(accounts).toEqual({
+        accounts: [{ address: 'mock_address', type: 'payment', namespace: 'bip122' }]
+      })
     })
   })
 

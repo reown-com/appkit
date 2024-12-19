@@ -134,7 +134,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   ): Promise<AdapterBlueprint.ConnectResult> {
     return this.connect({
       id: params.id,
-      chainId: params.chainId || this.networks[0]?.id || '',
+      chainId: params.chainId,
       type: ''
     })
   }
@@ -280,8 +280,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       const [newAccount] = data
       if (newAccount) {
         this.emit('accountChanged', {
-          address: newAccount,
-          chainId: this.networks[0]?.id || ''
+          address: newAccount
         })
       }
     }
