@@ -493,13 +493,11 @@ describe('Base', () => {
         preferredAccountType: 'eoa'
       }
 
-      // Setup ChainController state
       vi.mocked(ChainController).state = {
         activeChain: 'eip155',
         chains: new Map([['eip155', { namespace: 'eip155' }]])
       } as any
 
-      // Mock CoreHelperUtil.createAccount
       vi.mocked(CoreHelperUtil.createAccount).mockImplementation((namespace, address, type) => {
         if (namespace === 'eip155') {
           return {
@@ -511,7 +509,6 @@ describe('Base', () => {
         throw new Error('Unexpected namespace')
       })
 
-      // Create a mock auth provider with event handlers
       const mockAuthProvider = {
         onConnect: vi.fn(callback => callback(mockUser)),
         connect: vi.fn(),
@@ -527,7 +524,6 @@ describe('Base', () => {
         isConnected: vi.fn().mockResolvedValue({ isConnected: false })
       }
 
-      // Initialize AppKit with the mock auth provider
       const appKitWithAuth = new AppKit({
         ...mockOptions,
         features: {
@@ -536,14 +532,11 @@ describe('Base', () => {
       })
       ;(appKitWithAuth as any).authProvider = mockAuthProvider
 
-      // Simulate the auth provider initialization
       await (appKitWithAuth as any).listenAuthConnector(mockAuthProvider)
 
-      // Verify createAccount was called with correct types for each account
       expect(CoreHelperUtil.createAccount).toHaveBeenCalledWith('eip155', '0x1', 'eoa')
       expect(CoreHelperUtil.createAccount).toHaveBeenCalledWith('eip155', '0x2', 'smartAccount')
 
-      // Verify setAllAccounts was called with the created accounts
       expect(AccountController.setAllAccounts).toHaveBeenCalledWith(
         [
           { address: '0x1', type: 'eoa', namespace: 'eip155' },
@@ -552,7 +545,6 @@ describe('Base', () => {
         'eip155'
       )
 
-      // Verify preferred account type was set
       expect(AccountController.setPreferredAccountType).toHaveBeenCalledWith('eoa', 'eip155')
     })
 
