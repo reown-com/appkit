@@ -369,7 +369,7 @@ describe('ChainController', () => {
 
     const resetAccountSpy = vi.spyOn(ChainController, 'resetAccount')
     const resetNetworkSpy = vi.spyOn(ChainController, 'resetNetwork')
-    const deleteConnectorSpy = vi.spyOn(StorageUtil, 'deleteConnectedConnector')
+    const deleteConnectorSpy = vi.spyOn(StorageUtil, 'deleteConnectedConnectorId')
     const resetWcConnectionSpy = vi.spyOn(ConnectionController, 'resetWcConnection')
     const sendEventSpy = vi.spyOn(EventsController, 'sendEvent')
 
