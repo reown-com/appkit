@@ -549,7 +549,7 @@ describe('WagmiAdapter', () => {
       const adapter = new WagmiAdapter({
         networks: mockNetworks,
         projectId: mockProjectId,
-        pendingTransactionFilter: {
+        pendingTransactionsFilter: {
           enable: true,
           pollingInterval: 5000
         }
@@ -580,7 +580,7 @@ describe('WagmiAdapter', () => {
       new WagmiAdapter({
         networks: mockNetworks,
         projectId: mockProjectId,
-        pendingTransactionFilter: {
+        pendingTransactionsFilter: {
           enable: true,
           pollingInterval: 500
         }
