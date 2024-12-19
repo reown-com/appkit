@@ -4,12 +4,14 @@ export type SafeLocalStorageItems = {
   '@appkit/solana_wallet': string
   '@appkit/solana_caip_chain': string
   '@appkit/active_caip_network_id': string
-  '@appkit/connected_connector': string
+  '@appkit/connected_connector_id': string
   '@appkit/connected_social': string
   '@appkit/connected_social_username': string
   '@appkit/recent_wallets': string
   '@appkit/active_namespace': string
   '@appkit/connection_status': string
+  '@appkit/siwx-auth-token': string
+  '@appkit/siwx-nonce-token': string
   /*
    * DO NOT CHANGE: @walletconnect/universal-provider requires us to set this specific key
    *  This value is a stringified version of { href: stiring; name: string }
@@ -23,21 +25,23 @@ export const SafeLocalStorageKeys = {
   SOLANA_WALLET: '@appkit/solana_wallet',
   SOLANA_CAIP_CHAIN: '@appkit/solana_caip_chain',
   ACTIVE_CAIP_NETWORK_ID: '@appkit/active_caip_network_id',
-  CONNECTED_CONNECTOR: '@appkit/connected_connector',
+  CONNECTED_CONNECTOR_ID: '@appkit/connected_connector_id',
   CONNECTED_SOCIAL: '@appkit/connected_social',
   CONNECTED_SOCIAL_USERNAME: '@appkit/connected_social_username',
   RECENT_WALLETS: '@appkit/recent_wallets',
   DEEPLINK_CHOICE: 'WALLETCONNECT_DEEPLINK_CHOICE',
   ACTIVE_NAMESPACE: '@appkit/active_namespace',
-  CONNECTION_STATUS: '@appkit/connection_status'
-} as const
+  CONNECTION_STATUS: '@appkit/connection_status',
+  SIWX_AUTH_TOKEN: '@appkit/siwx-auth-token',
+  SIWX_NONCE_TOKEN: '@appkit/siwx-nonce-token'
+} as const satisfies Record<string, keyof SafeLocalStorageItems>
 
 export const SafeLocalStorage = {
   setItem<Key extends keyof SafeLocalStorageItems>(
     key: Key,
-    value: SafeLocalStorageItems[Key]
+    value?: SafeLocalStorageItems[Key]
   ): void {
-    if (isSafe()) {
+    if (isSafe() && value !== undefined) {
       localStorage.setItem(key, value)
     }
   },

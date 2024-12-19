@@ -10,6 +10,7 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import { EventsController } from '../controllers/EventsController.js'
 import { AccountController } from '../controllers/AccountController.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { StorageUtil } from './StorageUtil.js'
 
 /**
@@ -88,7 +89,9 @@ export const SIWXUtil = {
 
       const message = siwxMessage.toString()
 
-      if (StorageUtil.getConnectedConnector() === 'ID_AUTH') {
+      const connectorId = StorageUtil.getConnectedConnectorId()
+
+      if (connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
         RouterController.pushTransactionStack({
           view: null,
           goBack: false,
@@ -210,9 +213,9 @@ export const SIWXUtil = {
       resources: siwxMessage.resources,
       statement: siwxMessage.statement,
       chainId: siwxMessage.chainId,
-
       methods,
-      chains
+      // The first chainId is what is used for universal provider to build the message
+      chains: [siwxMessage.chainId, ...chains.filter(chain => chain !== siwxMessage.chainId)]
     })
 
     SnackController.showLoading('Authenticating...', { autoClose: false })
