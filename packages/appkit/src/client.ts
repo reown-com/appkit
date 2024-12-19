@@ -1542,6 +1542,10 @@ export class AppKit {
       return
     }
 
+    if (caipNetwork.testnet) {
+      return
+    }
+
     const balance = await adapter?.getBalance({
       address: params.address,
       chainId: params.chainId,
@@ -1605,7 +1609,8 @@ export class AppKit {
   }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
     chainNamespace: ChainNamespace
   }) {
-    if (chainNamespace !== 'eip155') {
+    const chain = this.caipNetworks?.find(n => n.caipNetworkId === `${chainNamespace}:${chainId}`)
+    if (chainNamespace !== 'eip155' || chain?.testnet) {
       return
     }
     try {
