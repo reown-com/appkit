@@ -22,7 +22,7 @@ describe('BitcoinAdapter', () => {
 
   beforeEach(() => {
     api = mockBitcoinApi()
-    adapter = new BitcoinAdapter({ api })
+    adapter = new BitcoinAdapter({ api, networks: [bitcoin] })
   })
 
   describe('connect', () => {
@@ -163,9 +163,13 @@ describe('BitcoinAdapter', () => {
     })
 
     it('should pass correct getActiveNetwork to SatsConnectConnector', () => {
-      mockSatsConnectProvider({ id: LeatherConnector.ProviderId, name: 'Leather' })
+      const mocks = mockSatsConnectProvider({ id: LeatherConnector.ProviderId, name: 'Leather' })
       const getCaipNetwork = vi.fn(() => bitcoin)
       adapter.syncConnectors(undefined, { getCaipNetwork } as any)
+
+      vi.spyOn(mocks.wallet, 'request').mockResolvedValueOnce(
+        mockSatsConnectProvider.mockRequestResolve({ hex: 'mock_hex', txid: 'mock_txid' })
+      )
 
       const connector = adapter.connectors.find(
         c => c instanceof LeatherConnector
@@ -340,6 +344,75 @@ describe('BitcoinAdapter', () => {
       await adapter.disconnect({})
 
       expect(connector.disconnect).toHaveBeenCalled()
+    })
+  })
+
+  describe('connector events', () => {
+    let mocks: ReturnType<typeof mockSatsConnectProvider>
+    const listeners = {
+      accountChanged: vi.fn(),
+      disconnect: vi.fn(),
+      switchNetwork: vi.fn()
+    }
+
+    beforeEach(async () => {
+      mocks = mockSatsConnectProvider()
+      adapter.syncConnectors()
+
+      vi.spyOn(mocks.wallet, 'request').mockResolvedValue(
+        mockSatsConnectProvider.mockRequestResolve({
+          addresses: [{ address: 'mock_address' } as any]
+        })
+      )
+
+      listeners.accountChanged = vi.fn(() => console.log('meu pau'))
+      adapter.on('accountChanged', listeners.accountChanged)
+      listeners.disconnect = vi.fn()
+      adapter.on('disconnect', listeners.disconnect)
+      listeners.switchNetwork = vi.fn()
+      adapter.on('switchNetwork', listeners.switchNetwork)
+
+      await adapter.connect({
+        id: mocks.provider.name,
+        chainId: bitcoin.id,
+        type: ''
+      })
+    })
+
+    it('should have bound events', () => {
+      expect(mocks.wallet.addListener).toHaveBeenCalledWith('accountChange', expect.any(Function))
+      expect(mocks.wallet.addListener).toHaveBeenCalledWith('disconnect', expect.any(Function))
+      expect(mocks.wallet.addListener).toHaveBeenCalledWith('networkChange', expect.any(Function))
+    })
+
+    it('should emit accountsChanged on accountChange', async () => {
+      const callback = mocks.wallet.addListener.mock.calls.find(
+        ([name]) => name === 'accountChange'
+      )![1]
+
+      await callback({ type: 'accountChange' })
+
+      expect(listeners.accountChanged).toHaveBeenCalled()
+    })
+
+    it('should emit disconnect on disconnect', () => {
+      const callback = mocks.wallet.addListener.mock.calls.find(
+        ([name]) => name === 'disconnect'
+      )![1]
+
+      callback({ type: 'disconnect' })
+
+      expect(listeners.disconnect).toHaveBeenCalled()
+    })
+
+    it('should emit switchNetwork on networkChange', () => {
+      const callback = mocks.wallet.addListener.mock.calls.find(
+        ([name]) => name === 'networkChange'
+      )![1]
+
+      callback({ type: 'networkChange' })
+
+      expect(listeners.switchNetwork).toHaveBeenCalled()
     })
   })
 
