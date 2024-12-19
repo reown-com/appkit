@@ -1,5 +1,11 @@
 # @reown/appkit-polyfills
 
+## 1.6.2
+
+### Patch Changes
+
+- [#3509](https://github.com/reown-com/appkit/pull/3509) [`0926b4d`](https://github.com/reown-com/appkit/commit/0926b4d7286ce82d58e2acd85b108f69c8823867) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix issue where accounts were not correctly set
+
 ## 1.6.1
 
 ### Patch Changes
