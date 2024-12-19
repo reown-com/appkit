@@ -66,6 +66,8 @@ describe('W3mWalletSendView', () => {
   })
 
   describe('Message States', () => {
+    vi.spyOn(SendController, 'hasInsufficientGasFunds').mockReturnValue(false)
+
     it('shows "Select Token" when no token selected', async () => {
       const element: W3mWalletSendView = await fixture(
         html`<w3m-wallet-send-view></w3m-wallet-send-view>`
@@ -133,6 +135,23 @@ describe('W3mWalletSendView', () => {
       )
       const button = HelpersUtil.querySelect(element, 'wui-button')
       expect(button?.textContent?.trim()).toBe('Insufficient Funds')
+      expect(button?.hasAttribute('disabled')).toBe(true)
+    })
+
+    it('shows "Insufficient Gas Funds" when gas funds are insufficient', async () => {
+      vi.spyOn(SendController, 'hasInsufficientGasFunds').mockReturnValueOnce(true)
+      vi.spyOn(SendController, 'state', 'get').mockReturnValue({
+        ...SendController.state,
+        token: mockToken,
+        sendTokenAmount: 50,
+        receiverAddress: '0x123'
+      })
+
+      const element: W3mWalletSendView = await fixture(
+        html`<w3m-wallet-send-view></w3m-wallet-send-view>`
+      )
+      const button = HelpersUtil.querySelect(element, 'wui-button')
+      expect(button?.textContent?.trim()).toBe('Insufficient Gas Funds')
       expect(button?.hasAttribute('disabled')).toBe(true)
     })
 
