@@ -6,6 +6,7 @@ import type { BitcoinFeatures } from '../utils/wallet-standard/WalletFeatures.js
 import type { Provider, RequestArguments } from '@reown/appkit-core'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
+import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 
 export class WalletStandardConnector extends ProviderEventEmitter implements BitcoinConnector {
   public readonly chain = 'bip122'
@@ -39,7 +40,18 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
 
   public get chains() {
     return this.wallet.chains
-      .map(chainId => this.requestedChains.find(chain => chain.caipNetworkId === chainId))
+      .map(chainId =>
+        this.requestedChains.find(chain => {
+          switch (chainId) {
+            case 'bitcoin:mainnet':
+              return chain.caipNetworkId === bitcoin.caipNetworkId
+            case 'bitcoin:testnet':
+              return chain.caipNetworkId === bitcoinTestnet.caipNetworkId
+            default:
+              return chain.caipNetworkId === chainId
+          }
+        })
+      )
       .filter(Boolean) as CaipNetwork[]
   }
 
@@ -58,11 +70,21 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   }
 
   async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {
-    const mappedAccounts = this.wallet.accounts.map<BitcoinConnector.AccountAddress>(acc => ({
-      address: acc.address,
-      purpose: 'payment',
-      publicKey: Buffer.from(acc.publicKey).toString('hex')
-    }))
+    const addresses = new Set<string>()
+    const mappedAccounts = this.wallet.accounts
+      .map<BitcoinConnector.AccountAddress>(acc => ({
+        address: acc.address,
+        purpose: 'payment',
+        publicKey: Buffer.from(acc.publicKey).toString('hex')
+      }))
+      .filter(acc => {
+        if (addresses.has(acc.address)) {
+          return false
+        }
+        addresses.add(acc.address)
+
+        return true
+      })
 
     return Promise.resolve(mappedAccounts)
   }

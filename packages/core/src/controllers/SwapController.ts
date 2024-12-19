@@ -16,6 +16,7 @@ import { EventsController } from './EventsController.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import { ChainController } from './ChainController.js'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000
@@ -174,7 +175,7 @@ export const SwapController = {
     const caipAddress = ChainController.state.activeCaipAddress
     const address = CoreHelperUtil.getPlainAddress(caipAddress)
     const networkAddress = ChainController.getActiveNetworkTokenAddress()
-    const type = StorageUtil.getConnectedConnector()
+    const connectorId = StorageUtil.getConnectedConnectorId()
 
     if (!address) {
       throw new Error('No address found to swap the tokens from.')
@@ -202,7 +203,7 @@ export const SwapController = {
       invalidSourceTokenAmount,
       availableToSwap:
         caipAddress && !invalidToToken && !invalidSourceToken && !invalidSourceTokenAmount,
-      isAuthConnector: type === 'ID_AUTH'
+      isAuthConnector: connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
     }
   },
 
@@ -717,8 +718,9 @@ export const SwapController = {
         address: fromAddress as `0x${string}`,
         to: data.to as `0x${string}`,
         data: data.data as `0x${string}`,
-        value: BigInt(data.value),
+        gas: data.gas,
         gasPrice: BigInt(data.gasPrice),
+        value: data.value,
         chainNamespace: 'eip155'
       })
 

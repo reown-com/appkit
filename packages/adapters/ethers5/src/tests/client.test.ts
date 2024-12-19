@@ -174,11 +174,11 @@ describe('Ethers5Adapter', () => {
         method: 'transfer',
         caipAddress: 'eip155:1:0x123',
         fromAddress: '0x123',
-        receiverAddress: '0x456',
-        tokenAmount: BigInt(1000),
+        args: ['0x789', BigInt(1000)],
         tokenAddress: '0x789',
         provider: mockProvider,
-        caipNetwork: mockCaipNetworks[0]
+        caipNetwork: mockCaipNetworks[0],
+        chainNamespace: 'eip155'
       })
 
       expect(result.hash).toBe(mockTxHash)
