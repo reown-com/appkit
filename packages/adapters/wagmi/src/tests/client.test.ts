@@ -559,7 +559,7 @@ describe('WagmiAdapter', () => {
 
       vi.mocked(watchPendingTransactions).mockImplementation((_, { onTransactions }) => {
         onTransactions(['0xtx1', '0xtx2'])
-        return () => {}
+        return vi.fn()
       })
 
       adapter['setupWatchPendingTransactions']()
@@ -572,7 +572,7 @@ describe('WagmiAdapter', () => {
 
       vi.mocked(watchAccount).mockImplementation((_, { onChange }) => {
         onChange({ address: '0x123', status: 'connected' } as any, {} as any)
-        return () => {}
+        return vi.fn()
       })
 
       vi.spyOn(wagmiCore, 'watchPendingTransactions').mockReturnValue(unsubscribe)
