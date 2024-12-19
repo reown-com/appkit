@@ -50,7 +50,7 @@ mockSatsConnectProvider.mockRequestReject = (error: Partial<RpcError> = {}) => (
 
 export function mockSatsConnectWindowProvider(id: string) {
   const windowProvider: BitcoinProvider = {
-    addListener: vi.fn(),
+    addListener: vi.fn(() => () => undefined),
     connect: vi.fn(),
     createInscription: vi.fn(),
     createRepeatInscriptions: vi.fn(),

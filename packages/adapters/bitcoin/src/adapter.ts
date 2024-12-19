@@ -78,15 +78,15 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     }
   }
   override async getAccounts(
-    _params: AdapterBlueprint.GetAccountsParams
+    params: AdapterBlueprint.GetAccountsParams
   ): Promise<AdapterBlueprint.GetAccountsResult> {
-    const addresses = await this.connector?.getAccountAddresses()
+    const addresses = await this.connectors
+      .find(connector => connector.id === params.id)
+      ?.getAccountAddresses()
+      .catch(() => [])
+
     const accounts = addresses?.map(a =>
-      CoreHelperUtil.createAccount(
-        'bip122',
-        a.address,
-        (a.purpose || 'payment') as BitcoinConnector.AccountAddress['purpose']
-      )
+      CoreHelperUtil.createAccount('bip122', a.address, a.purpose || 'payment')
     )
 
     return {
@@ -182,8 +182,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     this.unbindEvents()
   }
 
-  // -- Unused => Refactor ------------------------------------------- //
-
   override async getBalance(
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
@@ -209,6 +207,8 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       symbol: bitcoin.nativeCurrency.symbol
     })
   }
+
+  // -- Unused => Refactor ------------------------------------------- //
 
   override getProfile(
     _params: AdapterBlueprint.GetProfileParams
