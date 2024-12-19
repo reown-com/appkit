@@ -1721,15 +1721,10 @@ export class AppKit {
 
       this.syncProvider({ ...res, chainNamespace: namespace })
       await this.syncAccount({ ...res, chainNamespace: namespace })
+
       this.setStatus('connected', namespace)
     } else {
       this.setStatus('disconnected', namespace)
-    }
-
-    if (!this.caipNetworks?.some(network => network.id === res?.chainId)) {
-      if (res?.chainId) {
-        this.setUnsupportedNetwork(res.chainId)
-      }
     }
   }
 
