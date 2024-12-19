@@ -1202,9 +1202,10 @@ export class AppKit {
         CoreHelperUtil.createAccount(
           namespace,
           account.address,
-          namespace === 'eip155' ? preferredAccountType : 'eoa'
+          namespace === 'eip155' ? account.type : 'eoa'
         )
       )
+
       this.setAllAccounts(
         userAccounts || [
           CoreHelperUtil.createAccount(namespace, user.address, preferredAccountType)
