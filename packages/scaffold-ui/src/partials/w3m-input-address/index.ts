@@ -97,7 +97,7 @@ ${this.value ?? ''}</textarea
 
   private async toggleInstructionFocus(focus: boolean) {
     if (this.instructionElementRef.value) {
-      await this.instructionElementRef.value.animate(
+      await this.instructionElementRef.value.animate?.(
         [{ opacity: focus ? 0 : 1 }, { opacity: focus ? 1 : 0 }],
         {
           duration: 100,
