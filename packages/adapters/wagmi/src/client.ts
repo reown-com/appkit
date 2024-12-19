@@ -177,9 +177,10 @@ export class WagmiAdapter extends AdapterBlueprint {
       }
     })
 
-    LimitController.subscribeKey('pendingTransactions', val => {
+    const unsubscribe = LimitController.subscribeKey('pendingTransactions', val => {
       if (val >= CommonConstantsUtil.LIMITS.PENDING_TRANSACTIONS) {
         unwatch()
+        unsubscribe()
       }
     })
   }
