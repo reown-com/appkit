@@ -483,6 +483,71 @@ describe('Base', () => {
       expect(AccountController.setPreferredAccountType).toHaveBeenCalledWith('eoa', 'eip155')
     })
 
+    it('should create accounts with correct account types from user accounts', async () => {
+      const mockUser = {
+        address: '0x123',
+        accounts: [
+          { address: '0x1', type: 'eoa' },
+          { address: '0x2', type: 'smartAccount' }
+        ],
+        preferredAccountType: 'eoa'
+      }
+
+      vi.mocked(ChainController).state = {
+        activeChain: 'eip155',
+        chains: new Map([['eip155', { namespace: 'eip155' }]])
+      } as any
+
+      vi.mocked(CoreHelperUtil.createAccount).mockImplementation((namespace, address, type) => {
+        if (namespace === 'eip155') {
+          return {
+            address,
+            type: type as 'eoa' | 'smartAccount',
+            namespace: 'eip155' as const
+          }
+        }
+        throw new Error('Unexpected namespace')
+      })
+
+      const mockAuthProvider = {
+        onConnect: vi.fn(callback => callback(mockUser)),
+        connect: vi.fn(),
+        getSmartAccountEnabledNetworks: vi.fn(),
+        onGetSmartAccountEnabledNetworks: vi.fn(),
+        onSetPreferredAccount: vi.fn(),
+        onRpcRequest: vi.fn(),
+        onRpcError: vi.fn(),
+        onRpcSuccess: vi.fn(),
+        onNotConnected: vi.fn(),
+        onIsConnected: vi.fn(),
+        getLoginEmailUsed: vi.fn().mockReturnValue(false),
+        isConnected: vi.fn().mockResolvedValue({ isConnected: false })
+      }
+
+      const appKitWithAuth = new AppKit({
+        ...mockOptions,
+        features: {
+          email: true
+        }
+      })
+      ;(appKitWithAuth as any).authProvider = mockAuthProvider
+
+      await (appKitWithAuth as any).listenAuthConnector(mockAuthProvider)
+
+      expect(CoreHelperUtil.createAccount).toHaveBeenCalledWith('eip155', '0x1', 'eoa')
+      expect(CoreHelperUtil.createAccount).toHaveBeenCalledWith('eip155', '0x2', 'smartAccount')
+
+      expect(AccountController.setAllAccounts).toHaveBeenCalledWith(
+        [
+          { address: '0x1', type: 'eoa', namespace: 'eip155' },
+          { address: '0x2', type: 'smartAccount', namespace: 'eip155' }
+        ],
+        'eip155'
+      )
+
+      expect(AccountController.setPreferredAccountType).toHaveBeenCalledWith('eoa', 'eip155')
+    })
+
     it('should get Reown name', async () => {
       vi.mocked(EnsController.getNamesForAddress).mockResolvedValue([
         {
