@@ -20,4 +20,26 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where the `pendingTransactions` event was emitted infinitely in the wagmi adapter
+Fixed an issue where the `pendingTransactions` event was being emitted infinitely in wagmi adapter.
+
+Additionally another parameter was added to wagmi adapter called `pendingTransactionFilter`.
+
+**Example usage**
+
+```ts
+const wagmiAdapter = new WagmiAdapter({
+  networks: [/* Your Networks */],
+  projectId: "YOUR_PROJECT_ID",
+  pendingTransactionFilter: {
+    enable: true,
+    pollingInterval: 15_000
+  }
+});
+
+createAppKit({
+  adapters: [wagmiAdapter],
+  networks: [/* Your Networks */],
+  projectId: "YOUR_PROJECT_ID"
+});
+```
+

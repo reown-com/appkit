@@ -61,7 +61,7 @@ import { LimitterUtil } from './utils/LimitterUtil.js'
 
 interface PendingTransactionFilter {
   enable: boolean
-  pollingInterval: number
+  pollingInterval?: number
 }
 
 // --- Constants ---------------------------------------------------- //
@@ -96,8 +96,10 @@ export class WagmiAdapter extends AdapterBlueprint {
       }) as [CaipNetwork, ...CaipNetwork[]]
     })
 
-    this.pendingTransactionFilter =
-      configParams.pendingTransactionFilter ?? DEFAULT_PENDING_TRANSACTION_FILTER
+    this.pendingTransactionFilter = {
+      ...DEFAULT_PENDING_TRANSACTION_FILTER,
+      ...(configParams.pendingTransactionFilter ?? {})
+    }
 
     this.namespace = CommonConstantsUtil.CHAIN.EVM
 
