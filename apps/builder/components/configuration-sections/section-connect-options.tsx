@@ -27,8 +27,7 @@ const SortableConnectMethodList = dynamic(
 export function SectionConnectOptions() {
   const { config, updateFeatures, updateSocials, updateEnableWallets } = useAppKitContext()
   const collapseWallets = config.features.collapseWallets
-  const connectMethodsOrder =
-    config.features.connectMethodsOrder || ConstantsUtil.DEFAULT_FEATURES.connectMethodsOrder
+  const connectMethodsOrder = config.features.connectMethodsOrder
 
   function toggleCollapseWallets() {
     updateFeatures({ collapseWallets: !collapseWallets })

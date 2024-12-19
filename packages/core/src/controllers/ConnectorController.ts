@@ -1,13 +1,13 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, snapshot } from 'valtio/vanilla'
 import type { AuthConnector, Connector } from '../utils/TypeUtil.js'
-import { getW3mThemeVariables } from '@reown/appkit-common'
+import { ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
 import { OptionsController } from './OptionsController.js'
 import { ThemeController } from './ThemeController.js'
 import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
-interface ConnectorWithProviders extends Connector {
+export interface ConnectorWithProviders extends Connector {
   connectors?: Connector[]
 }
 export interface ConnectorControllerState {
@@ -63,7 +63,7 @@ export const ConnectorController = {
     connectorsByNameMap.forEach(keyConnectors => {
       const firstItem = keyConnectors[0]
 
-      const isAuthConnector = firstItem?.id === 'ID_AUTH'
+      const isAuthConnector = firstItem?.id === ConstantsUtil.CONNECTOR_ID.AUTH
 
       if (keyConnectors.length > 1) {
         mergedConnectors.push({
@@ -131,7 +131,7 @@ export const ConnectorController = {
   },
 
   addConnector(connector: Connector | AuthConnector) {
-    if (connector.id === 'ID_AUTH') {
+    if (connector.id === ConstantsUtil.CONNECTOR_ID.AUTH) {
       const authConnector = connector as AuthConnector
 
       const optionsState = snapshot(OptionsController.state) as typeof OptionsController.state
@@ -144,7 +144,7 @@ export const ConnectorController = {
         projectId: optionsState.projectId,
         sdkType: optionsState.sdkType
       })
-      authConnector.provider.syncTheme({
+      authConnector?.provider?.syncTheme({
         themeMode,
         themeVariables,
         w3mThemeVariables: getW3mThemeVariables(themeVariables, themeMode)
@@ -157,7 +157,7 @@ export const ConnectorController = {
 
   getAuthConnector(): AuthConnector | undefined {
     const activeNamespace = ChainController.state.activeChain
-    const authConnector = state.connectors.find(c => c.id === 'ID_AUTH')
+    const authConnector = state.connectors.find(c => c.id === ConstantsUtil.CONNECTOR_ID.AUTH)
     if (!authConnector) {
       return undefined
     }

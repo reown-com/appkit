@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { SafeLocalStorage } from '../src/utils/SafeLocalStorage'
 
@@ -34,11 +34,11 @@ describe('SafeLocalStorage safe', () => {
   let setItem = vi.fn()
   let removeItem = vi.fn()
 
-  beforeAll(() => {
+  beforeEach(() => {
     Object.assign(globalThis, { window: {}, localStorage: { getItem, setItem, removeItem } })
   })
 
-  afterAll(() => {
+  afterEach(() => {
     getItem.mockClear()
     setItem.mockClear()
     removeItem.mockClear()
@@ -47,6 +47,11 @@ describe('SafeLocalStorage safe', () => {
   it('should setItem', () => {
     expect(SafeLocalStorage.setItem('@appkit/wallet_id', 'test')).toBe(undefined)
     expect(setItem).toHaveBeenCalledWith('@appkit/wallet_id', 'test')
+  })
+
+  it('should not setItem if value is undefined', () => {
+    expect(SafeLocalStorage.setItem('@appkit/wallet_id', undefined)).toBe(undefined)
+    expect(setItem).not.toHaveBeenCalled()
   })
 
   it('should getItem ', () => {
@@ -60,7 +65,7 @@ describe('SafeLocalStorage safe', () => {
   })
 
   it('getItem should return undefined if the value not exist', () => {
-    expect(SafeLocalStorage.getItem('@appkit/connected_connector')).toBe(undefined)
-    expect(getItem).toHaveBeenCalledWith('@appkit/connected_connector')
+    expect(SafeLocalStorage.getItem('@appkit/connected_connector_id')).toBe(undefined)
+    expect(getItem).toHaveBeenCalledWith('@appkit/connected_connector_id')
   })
 })

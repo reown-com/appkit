@@ -4,6 +4,7 @@ export default css`
   :host {
     --connect-scroll--top-opacity: 0;
     --connect-scroll--bottom-opacity: 0;
+    --connect-mask-image: none;
   }
 
   .connect {
@@ -13,15 +14,7 @@ export default css`
     overflow-x: hidden;
     transition: opacity var(--wui-ease-out-power-1) var(--wui-duration-md);
     will-change: opacity;
-    mask-image: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, calc(1 - var(--connect-scroll--top-opacity))) 0px,
-      rgba(200, 200, 200, calc(1 - var(--connect-scroll--top-opacity))) 1px,
-      black 40px,
-      black calc(100% - 40px),
-      rgba(155, 155, 155, calc(1 - var(--connect-scroll--bottom-opacity))) calc(100% - 1px),
-      rgba(0, 0, 0, calc(1 - var(--connect-scroll--bottom-opacity))) 100%
-    );
+    mask-image: var(--connect-mask-image);
   }
 
   .guide {
