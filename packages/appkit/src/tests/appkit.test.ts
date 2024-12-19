@@ -1075,7 +1075,7 @@ describe('Base', () => {
 })
 
 describe('Listeners', () => {
-  it('should listen set caip address, profile name and profile image on accountChanged event', async () => {
+  it('should set caip address, profile name and profile image on accountChanged event', async () => {
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       address: '0x'
     } as unknown as typeof AccountController.state)
