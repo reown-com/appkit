@@ -70,9 +70,6 @@ export type { EnsControllerState } from '../src/controllers/EnsController.js'
 export { AlertController } from '../src/controllers/AlertController.js'
 export type { AlertControllerState } from '../src/controllers/AlertController.js'
 
-export { LimitController } from '../src/controllers/LimitController.js'
-export type { LimitControllerState } from '../src/controllers/LimitController.js'
-
 // -- Utils -------------------------------------------------------------------
 export { AssetUtil } from '../src/utils/AssetUtil.js'
 export { ConstantsUtil } from '../src/utils/ConstantsUtil.js'

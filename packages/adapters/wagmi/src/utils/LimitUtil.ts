@@ -2,22 +2,22 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
 
 // -- Types --------------------------------------------- //
-export interface LimitControllerState {
+export interface LimitStoreUtilState {
   pendingTransactions: number
 }
 
-type StateKey = keyof LimitControllerState
+type StateKey = keyof LimitStoreUtilState
 
 // -- State --------------------------------------------- //
-const state = proxy<LimitControllerState>({
+const state = proxy<LimitStoreUtilState>({
   pendingTransactions: 0
 })
 
 // -- Controller ---------------------------------------- //
-export const LimitController = {
+export const LimitUtil = {
   state,
 
-  subscribeKey<K extends StateKey>(key: K, callback: (value: LimitControllerState[K]) => void) {
+  subscribeKey<K extends StateKey>(key: K, callback: (value: LimitStoreUtilState[K]) => void) {
     return subKey(state, key, callback)
   },
 

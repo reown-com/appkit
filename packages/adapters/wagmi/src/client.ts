@@ -1,7 +1,7 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type { AppKitNetwork, BaseNetwork, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
-import { CoreHelperUtil, LimitController } from '@reown/appkit-core'
+import { CoreHelperUtil } from '@reown/appkit-core'
 import {
   connect,
   disconnect as wagmiDisconnect,
@@ -57,6 +57,7 @@ import {
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { normalize } from 'viem/ens'
 import { parseWalletCapabilities } from './utils/helpers.js'
+import { LimitUtil } from './utils/LimitUtil.js'
 
 export class WagmiAdapter extends AdapterBlueprint {
   public wagmiChains: readonly [Chain, ...Chain[]] | undefined
@@ -173,11 +174,11 @@ export class WagmiAdapter extends AdapterBlueprint {
       onError: () => {},
       onTransactions: () => {
         this.emit('pendingTransactions')
-        LimitController.increase('pendingTransactions')
+        LimitUtil.increase('pendingTransactions')
       }
     })
 
-    const unsubscribe = LimitController.subscribeKey('pendingTransactions', val => {
+    const unsubscribe = LimitUtil.subscribeKey('pendingTransactions', val => {
       if (val >= CommonConstantsUtil.LIMITS.PENDING_TRANSACTIONS) {
         unwatch()
         unsubscribe()
