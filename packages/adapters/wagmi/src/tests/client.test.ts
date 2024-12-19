@@ -13,6 +13,7 @@ import {
   getEnsAddress as wagmiGetEnsAddress,
   writeContract as wagmiWriteContract,
   waitForTransactionReceipt,
+  watchAccount,
   getAccount,
   watchPendingTransactions,
   http
@@ -544,12 +545,24 @@ describe('WagmiAdapter', () => {
   })
 
   describe('WagmiAdapter - watchPendingTransactions', () => {
-    it('should emit pendingTransactions when transactions are pending', () => {
+    it('should emit pendingTransactions when transactions are pending', async () => {
+      const adapter = new WagmiAdapter({
+        networks: mockNetworks,
+        projectId: mockProjectId,
+        pendingTransactionFilter: {
+          enable: true,
+          pollingInterval: 5000
+        }
+      })
+
       const emitSpy = vi.spyOn(adapter, 'emit' as any)
 
-      const watchPendingTransactionsCallback =
-        vi.mocked(watchPendingTransactions).mock?.calls?.[0]?.[1]
-      watchPendingTransactionsCallback?.onTransactions(['0xtx1', '0xtx2'])
+      vi.mocked(watchPendingTransactions).mockImplementation((_, { onTransactions }) => {
+        onTransactions(['0xtx1', '0xtx2'])
+        return () => {}
+      })
+
+      adapter['setupWatchPendingTransactions']()
 
       expect(emitSpy).toHaveBeenCalledWith('pendingTransactions')
     })
@@ -557,11 +570,20 @@ describe('WagmiAdapter', () => {
     it('should limit the amount of pendingTransactions calls', async () => {
       const unsubscribe = vi.fn()
 
+      vi.mocked(watchAccount).mockImplementation((_, { onChange }) => {
+        onChange({ address: '0x123', status: 'connected' } as any, {} as any)
+        return () => {}
+      })
+
       vi.spyOn(wagmiCore, 'watchPendingTransactions').mockReturnValue(unsubscribe)
 
       new WagmiAdapter({
         networks: mockNetworks,
-        projectId: mockProjectId
+        projectId: mockProjectId,
+        pendingTransactionFilter: {
+          enable: true,
+          pollingInterval: 500
+        }
       })
 
       // Set state to maximum limit so we know once we reach the limit it'll unsubscribe the watchPendingTransactions
