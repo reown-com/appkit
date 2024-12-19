@@ -80,7 +80,12 @@ describe('RouterController', () => {
       view: 'ConnectingExternal',
       history: ['Account', 'Networks', 'ConnectingExternal'],
       data: {
-        connector: { id: 'test', type: 'WALLET_CONNECT', chain: ConstantsUtil.CHAIN.EVM }
+        connector: {
+          id: 'test',
+          type: 'WALLET_CONNECT',
+          chain: ConstantsUtil.CHAIN.EVM,
+          name: 'wcConnector'
+        }
       },
       transactionStack: []
     })
