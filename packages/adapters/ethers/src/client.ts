@@ -463,9 +463,10 @@ export class EthersAdapter extends AdapterBlueprint {
     params: AdapterBlueprint.GetProfileParams
   ): Promise<AdapterBlueprint.GetProfileResult> {
     if (params.chainId === 1) {
+      const caipNetwork = this.caipNetworks?.find((c: CaipNetwork) => c.id === 1)
       const provider = createProviderWrapper(
-        'https://mainnet.infura.io/v3/your-key', // You'll need to handle this appropriately
-        this.caipNetworks?.find((c: CaipNetwork) => c.id === 1) as BaseNetwork
+        caipNetwork?.rpcUrls.default.http[0] as string,
+        caipNetwork as BaseNetwork
       )
 
       const name = await provider.lookupAddress(params.address as `0x${string}`)

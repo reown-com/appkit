@@ -15,11 +15,11 @@ if (!projectId) {
 }
 
 // 2. Set Ethers adapter
-const ethers5Adapter = new EthersAdapter()
+const ethersAdapter = new EthersAdapter()
 
 // 3. Create modal
 createAppKit({
-  adapters: [ethers5Adapter],
+  adapters: [ethersAdapter],
   metadata: {
     name: 'AppKit',
     description: 'AppKit Laboratory',

@@ -16,7 +16,7 @@ if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
 }
 
-// Initialize Ethers5 adapter
+// Initialize Ethers adapter
 const ethersAdapter = new EthersAdapter()
 
 // Initialize AppKit
