@@ -149,10 +149,11 @@ export const StorageUtil = {
   getConnectedConnectorId(namespace: ChainNamespace) {
     try {
       const key = getSafeConnectorIdKey(namespace)
+      console.log('>> key', key)
 
       return SafeLocalStorage.getItem(key)
-    } catch {
-      console.info('Unable to get connected connector id')
+    } catch (e) {
+      console.trace('Unable to get connected connector id in namespace ', namespace)
     }
 
     return undefined

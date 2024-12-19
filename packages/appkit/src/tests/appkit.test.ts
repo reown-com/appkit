@@ -22,7 +22,12 @@ import {
   AlertController,
   StorageUtil
 } from '@reown/appkit-core'
-import { SafeLocalStorage, SafeLocalStorageKeys, type CaipNetwork } from '@reown/appkit-common'
+import {
+  getSafeConnectorIdKey,
+  SafeLocalStorage,
+  SafeLocalStorageKeys,
+  type CaipNetwork
+} from '@reown/appkit-common'
 import { mockOptions } from './mocks/Options'
 import { UniversalAdapter } from '../universal-adapter/client'
 import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint'
@@ -668,7 +673,8 @@ describe('Base', () => {
       vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
 
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation((key: string) => {
-        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID) {
+        const connectorKey = getSafeConnectorIdKey('eip155')
+        if (key === connectorKey) {
           return 'test-wallet'
         }
         if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
@@ -713,7 +719,8 @@ describe('Base', () => {
       vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
 
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation((key: string) => {
-        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID) {
+        const connectorKey = getSafeConnectorIdKey('eip155')
+        if (key === connectorKey) {
           return 'test-wallet'
         }
         if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
@@ -794,7 +801,8 @@ describe('Base', () => {
     it('should set status to "disconnected" if the connector is set to "AUTH" and the adapter fails to sync', async () => {
       vi.mocked(CoreHelperUtil.isClient).mockReturnValueOnce(true)
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation(key => {
-        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID) {
+        const connectorKey = getSafeConnectorIdKey('eip155')
+        if (key === connectorKey) {
           return 'AUTH'
         }
         if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
