@@ -1191,6 +1191,11 @@ export class AppKit {
         id: ConstantsUtil.CONNECTOR_ID.AUTH,
         chainNamespace: namespace
       })
+      this.syncAccount({
+        address: user.address,
+        chainId: user.chainId,
+        chainNamespace: namespace
+      })
 
       // To keep backwards compatibility, eip155 chainIds are numbers and not actual caipChainIds
       const caipAddress =
