@@ -30,7 +30,7 @@ Additionally another option was added to wagmi adapter called `pendingTransactio
 const wagmiAdapter = new WagmiAdapter({
   networks: [/* Your Networks */],
   projectId: "YOUR_PROJECT_ID",
-  pendingTransactionFilter: {
+  pendingTransactionsFilter: {
     enable: true,
     pollingInterval: 15_000
   }

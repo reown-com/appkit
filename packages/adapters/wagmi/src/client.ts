@@ -59,13 +59,13 @@ import { normalize } from 'viem/ens'
 import { parseWalletCapabilities } from './utils/helpers.js'
 import { LimitterUtil } from './utils/LimitterUtil.js'
 
-interface PendingTransactionFilter {
+interface PendingTransactionsFilter {
   enable: boolean
   pollingInterval?: number
 }
 
 // --- Constants ---------------------------------------------------- //
-const DEFAULT_PENDING_TRANSACTION_FILTER = {
+const DEFAULT_PENDING_TRANSACTIONS_FILTER = {
   enable: false,
   pollingInterval: 30_000
 }
@@ -75,13 +75,13 @@ export class WagmiAdapter extends AdapterBlueprint {
   public wagmiConfig!: Config
   public adapterType = 'wagmi'
 
-  private pendingTransactionFilter: PendingTransactionFilter
+  private pendingTransactionsFilter: PendingTransactionsFilter
   private unwatchPendingTransactions: (() => void) | undefined
 
   constructor(
     configParams: Partial<CreateConfigParameters> & {
       networks: AppKitNetwork[]
-      pendingTransactionFilter?: PendingTransactionFilter
+      pendingTransactionsFilter?: PendingTransactionsFilter
       projectId: string
     }
   ) {
@@ -96,9 +96,9 @@ export class WagmiAdapter extends AdapterBlueprint {
       }) as [CaipNetwork, ...CaipNetwork[]]
     })
 
-    this.pendingTransactionFilter = {
-      ...DEFAULT_PENDING_TRANSACTION_FILTER,
-      ...(configParams.pendingTransactionFilter ?? {})
+    this.pendingTransactionsFilter = {
+      ...DEFAULT_PENDING_TRANSACTIONS_FILTER,
+      ...(configParams.pendingTransactionsFilter ?? {})
     }
 
     this.namespace = CommonConstantsUtil.CHAIN.EVM
@@ -188,12 +188,12 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   private setupWatchPendingTransactions() {
-    if (!this.pendingTransactionFilter.enable || this.unwatchPendingTransactions) {
+    if (!this.pendingTransactionsFilter.enable || this.unwatchPendingTransactions) {
       return
     }
 
     this.unwatchPendingTransactions = watchPendingTransactions(this.wagmiConfig, {
-      pollingInterval: this.pendingTransactionFilter.pollingInterval,
+      pollingInterval: this.pendingTransactionsFilter.pollingInterval,
       /* Magic RPC does not support the pending transactions. We handle transaction for the AuthConnector cases in AppKit client to handle all clients at once. Adding the onError handler to avoid the error to throw. */
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onError: () => {},
