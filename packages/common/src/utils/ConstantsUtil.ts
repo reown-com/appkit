@@ -18,6 +18,9 @@ export const ConstantsUtil = {
     EIP6963: 'eip6963',
     AUTH: 'ID_AUTH'
   },
+  LIMITS: {
+    PENDING_TRANSACTIONS: 99
+  },
   CHAIN: {
     EVM: 'eip155',
     SOLANA: 'solana',

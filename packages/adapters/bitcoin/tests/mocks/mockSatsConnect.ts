@@ -1,9 +1,13 @@
 import type { Provider as SatsConnectProvider, BitcoinProvider, RpcError } from 'sats-connect'
-import { vi } from 'vitest'
+import { vi, type Mock } from 'vitest'
+
+type SatsConnectWindowProviderMock = {
+  [K in keyof Omit<BitcoinProvider, 'getCapabilities'>]: Mock<BitcoinProvider[K]>
+}
 
 export function mockSatsConnectProvider(replaces: Partial<SatsConnectProvider> = {}): {
   provider: SatsConnectProvider
-  wallet: BitcoinProvider
+  wallet: SatsConnectWindowProviderMock
 } {
   const id = replaces.id || 'mock_provider_id'
 
@@ -48,9 +52,9 @@ mockSatsConnectProvider.mockRequestReject = (error: Partial<RpcError> = {}) => (
   } satisfies RpcError
 })
 
-export function mockSatsConnectWindowProvider(id: string) {
-  const windowProvider: BitcoinProvider = {
-    addListener: vi.fn(),
+export function mockSatsConnectWindowProvider(id: string): SatsConnectWindowProviderMock {
+  const windowProvider = {
+    addListener: vi.fn(() => () => undefined),
     connect: vi.fn(),
     createInscription: vi.fn(),
     createRepeatInscriptions: vi.fn(),
@@ -65,8 +69,7 @@ export function mockSatsConnectWindowProvider(id: string) {
     sendBtcTransaction: vi.fn(),
     signMessage: vi.fn(),
     signMultipleTransactions: vi.fn(),
-    signTransaction: vi.fn(),
-    getCapabilities: vi.fn()
+    signTransaction: vi.fn()
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
