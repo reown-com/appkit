@@ -6,7 +6,7 @@ import {
   useAppKitState,
   useAppKitTheme
 } from '@reown/appkit/react'
-import { mainnet, arbitrum } from '@reown/appkit/networks'
+import { mainnet, polygon, optimism, arbitrum } from '@reown/appkit/networks'
 
 // @ts-expect-error 1. Get projectId
 const projectId = import.meta.env.VITE_PROJECT_ID
@@ -26,7 +26,7 @@ createAppKit({
     url: 'https://example.com',
     icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
   },
-  networks: [mainnet, arbitrum],
+  networks: [mainnet, polygon, optimism, arbitrum],
   projectId,
   themeMode: 'light',
   themeVariables: {

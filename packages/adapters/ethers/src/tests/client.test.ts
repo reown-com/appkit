@@ -8,7 +8,7 @@ import { mainnet, polygon } from '@reown/appkit/networks'
 import { EthersMethods } from '../utils/EthersMethods'
 import { ProviderUtil } from '@reown/appkit/store'
 import { WcConstantsUtil } from '@reown/appkit'
-import { createProviderWrapper } from '../providers'
+import { BlockchainApiController } from '@reown/appkit-core'
 
 class ErrorWithCode extends Error {
   code: number
@@ -86,6 +86,35 @@ const mockCaipNetworks = CaipNetworksUtil.extendCaipNetworks(mockNetworks, {
 const polygonCaipNetworks = CaipNetworksUtil.extendCaipNetworks([polygon], {
   projectId: 'test-project-id',
   customNetworkImageUrls: {}
+})
+
+vi.mock('@reown/appkit-core', async () => {
+  const actual = await vi.importActual('@reown/appkit-core')
+  return {
+    ...actual,
+    BlockchainApiController: {
+      fetchIdentity: vi.fn().mockResolvedValue({
+        avatar: 'https://avatar.com/test.jpg',
+        name: 'test.eth'
+      }),
+      getBalance: vi.fn().mockResolvedValue({
+        balances: [
+          {
+            name: 'Ethereum',
+            symbol: 'ETH',
+            chainId: 'eip155:1',
+            value: 5432.1234,
+            price: 3700.630000000001,
+            quantity: {
+              decimals: '18',
+              numeric: '1.5'
+            },
+            iconUrl: 'https://cdn.zerion.io/eth.png'
+          }
+        ]
+      })
+    }
+  }
 })
 
 describe('EthersAdapter', () => {
@@ -258,7 +287,9 @@ describe('EthersAdapter', () => {
         address: '0x123',
         chainId: 1
       })
+      console.log('>>> result', result)
 
+      expect(BlockchainApiController.getBalance).toHaveBeenCalledWith('0x123', 'eip155:1')
       expect(result).toEqual({
         balance: '1.5',
         symbol: 'ETH'
@@ -293,14 +324,12 @@ describe('EthersAdapter', () => {
       })
     })
 
-    it('should return empty balance if provider throws error', async () => {
+    it('should return empty balance if API throws error', async () => {
       adapter.caipNetworks = mockCaipNetworks
 
-      vi.mocked(createProviderWrapper).mockImplementationOnce(() => ({
-        getBalance: vi.fn().mockRejectedValue(new Error('Failed to get balance')),
-        lookupAddress: vi.fn(),
-        getAvatar: vi.fn()
-      }))
+      vi.mocked(BlockchainApiController.getBalance).mockRejectedValueOnce(
+        new Error('Failed to get balance')
+      )
 
       const result = await adapter.getBalance({
         address: '0x123',
@@ -316,23 +345,25 @@ describe('EthersAdapter', () => {
 
   describe('EthersAdapter - getProfile', () => {
     it('should get profile successfully for mainnet', async () => {
-      const mockEnsName = 'test.eth'
-      const mockAvatar = 'https://avatar.com/test.jpg'
-
       adapter.caipNetworks = mockCaipNetworks
+
       const result = await adapter.getProfile({
         address: '0x123',
         chainId: 1
       })
 
+      expect(BlockchainApiController.fetchIdentity).toHaveBeenCalledWith({
+        address: '0x123'
+      })
       expect(result).toEqual({
-        profileName: mockEnsName,
-        profileImage: mockAvatar
+        profileName: 'test.eth',
+        profileImage: 'https://avatar.com/test.jpg'
       })
     })
 
     it('should return undefined values if not mainnet', async () => {
       adapter.caipNetworks = polygonCaipNetworks
+
       const result = await adapter.getProfile({
         address: '0x123',
         chainId: polygon.id
@@ -346,6 +377,25 @@ describe('EthersAdapter', () => {
 
     it('should return undefined values if caipNetwork not found', async () => {
       adapter.caipNetworks = polygonCaipNetworks
+
+      const result = await adapter.getProfile({
+        address: '0x123',
+        chainId: 1
+      })
+
+      expect(result).toEqual({
+        profileName: undefined,
+        profileImage: undefined
+      })
+    })
+
+    it('should return undefined values if API throws error', async () => {
+      adapter.caipNetworks = mockCaipNetworks
+
+      vi.mocked(BlockchainApiController.fetchIdentity).mockRejectedValueOnce(
+        new Error('Failed to fetch identity')
+      )
+
       const result = await adapter.getProfile({
         address: '0x123',
         chainId: 1

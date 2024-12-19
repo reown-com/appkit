@@ -1,23 +1,22 @@
 import { AdapterBlueprint } from '@reown/appkit/adapters'
-import type { BaseNetwork, CaipNetwork } from '@reown/appkit-common'
+import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   type CombinedProvider,
   type Connector,
   type ConnectorType,
   type Provider,
+  BlockchainApiController,
   CoreHelperUtil
 } from '@reown/appkit-core'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
-import { EthersHelpersUtil, type Address, type ProviderType } from '@reown/appkit-utils/ethers'
+import { EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
 import { WcConstantsUtil, WcHelpersUtil, type AppKitOptions } from '@reown/appkit'
 import UniversalProvider from '@walletconnect/universal-provider'
-import { formatEther } from 'viem/utils'
 import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { EthersMethods } from './utils/EthersMethods.js'
 import { ProviderUtil } from '@reown/appkit/store'
-import { createProviderWrapper } from './providers.js'
 
 export interface EIP6963ProviderDetail {
   info: Connector['info']
@@ -443,16 +442,17 @@ export class EthersAdapter extends AdapterBlueprint {
       return { balance: '', symbol: '' }
     }
 
-    const provider = createProviderWrapper(
-      caipNetwork.rpcUrls.default.http[0] as string,
-      caipNetwork as BaseNetwork
-    )
-
     try {
-      const balance = await provider.getBalance(params.address as `0x${string}`)
-      const formattedBalance = formatEther(balance)
+      const { balances } = await BlockchainApiController.getBalance(
+        params.address,
+        caipNetwork.caipNetworkId
+      )
+      const balance = balances.find(b => b.symbol === caipNetwork.nativeCurrency.symbol)
 
-      return { balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol }
+      return {
+        balance: balance?.quantity?.numeric || '0',
+        symbol: caipNetwork.nativeCurrency.symbol
+      }
     } catch (error) {
       return { balance: '', symbol: '' }
     }
@@ -468,14 +468,10 @@ export class EthersAdapter extends AdapterBlueprint {
         return { profileName: undefined, profileImage: undefined }
       }
 
-      const provider = createProviderWrapper(
-        caipNetwork.rpcUrls.default.http[0] as string,
-        caipNetwork as BaseNetwork
-      )
-
       try {
-        const name = await provider.lookupAddress(params.address as Address)
-        const avatar = await provider.getAvatar(name)
+        const { avatar, name } = await BlockchainApiController.fetchIdentity({
+          address: params.address
+        })
 
         return { profileName: name || undefined, profileImage: avatar || undefined }
       } catch (error) {
