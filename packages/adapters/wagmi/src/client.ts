@@ -1,7 +1,7 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type { AppKitNetwork, BaseNetwork, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
-import { CoreHelperUtil } from '@reown/appkit-core'
+import { CoreHelperUtil, LimitController } from '@reown/appkit-core'
 import {
   connect,
   disconnect as wagmiDisconnect,
@@ -165,17 +165,27 @@ export class WagmiAdapter extends AdapterBlueprint {
       connectors
     })
   }
-
-  private setupWatchers() {
-    watchPendingTransactions(this.wagmiConfig, {
-      pollingInterval: 15_000,
+  private setupWatchPendingTransactions() {
+    const unwatch = watchPendingTransactions(this.wagmiConfig, {
+      pollingInterval: 30_000,
       /* Magic RPC does not support the pending transactions. We handle transaction for the AuthConnector cases in AppKit client to handle all clients at once. Adding the onError handler to avoid the error to throw. */
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onError: () => {},
       onTransactions: () => {
         this.emit('pendingTransactions')
+        LimitController.increase('pendingTransactions')
       }
     })
+
+    LimitController.subscribeKey('pendingTransactions', val => {
+      if (val >= CommonConstantsUtil.LIMITS.PENDING_TRANSACTIONS) {
+        unwatch()
+      }
+    })
+  }
+
+  private setupWatchers() {
+    this.setupWatchPendingTransactions()
     watchAccount(this.wagmiConfig, {
       onChange: accountData => {
         if (accountData.status === 'disconnected') {

@@ -22,6 +22,8 @@ import { mainnet } from '@wagmi/core/chains'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { mockAppKit } from './mocks/AppKit'
+import { LimitController } from '@reown/appkit-core'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 vi.mock('@wagmi/core', async () => {
   const actual = await vi.importActual('@wagmi/core')
@@ -47,9 +49,7 @@ vi.mock('@wagmi/core', async () => {
     reconnect: vi.fn(),
     watchAccount: vi.fn(),
     watchConnections: vi.fn(),
-    watchPendingTransactions: vi.fn((_: any, callbacks: any) => {
-      return callbacks
-    })
+    watchPendingTransactions: vi.fn().mockReturnValue(vi.fn())
   }
 })
 
@@ -552,6 +552,25 @@ describe('WagmiAdapter', () => {
       watchPendingTransactionsCallback?.onTransactions(['0xtx1', '0xtx2'])
 
       expect(emitSpy).toHaveBeenCalledWith('pendingTransactions')
+    })
+
+    it('should limit the amount of pendingTransactions calls', async () => {
+      const unsubscribe = vi.fn()
+
+      vi.spyOn(wagmiCore, 'watchPendingTransactions').mockReturnValue(unsubscribe)
+
+      new WagmiAdapter({
+        networks: mockNetworks,
+        projectId: mockProjectId
+      })
+
+      // Set state to maximum limit so we know once we reach the limit it'll unsubscribe the watchPendingTransactions
+      LimitController.state.pendingTransactions = ConstantsUtil.LIMITS.PENDING_TRANSACTIONS
+
+      // Wait for valtio to check for updated state and unsubscribe watchPendingTransactions
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      expect(unsubscribe).toHaveBeenCalled()
     })
   })
 })
