@@ -20,7 +20,8 @@ import {
   type Connector,
   CoreHelperUtil,
   AlertController,
-  StorageUtil
+  StorageUtil,
+  type ChainAdapter
 } from '@reown/appkit-core'
 import { SafeLocalStorage, SafeLocalStorageKeys, type CaipNetwork } from '@reown/appkit-common'
 import { mockOptions } from './mocks/Options'
@@ -31,6 +32,7 @@ import { CaipNetworksUtil, ErrorUtil } from '@reown/appkit-utils'
 import mockUniversalAdapter from './mocks/Adapter'
 import { UniversalProvider } from '@walletconnect/universal-provider'
 import mockProvider from './mocks/UniversalProvider'
+import { MockEmitter } from './mocks/Emitter'
 
 // Mock all controllers and UniversalAdapterClient
 vi.mock('@reown/appkit-core')
@@ -1134,5 +1136,82 @@ describe('Base', () => {
         expect(AlertController.open).toHaveBeenCalledWith(alert, 'error')
       }
     })
+  })
+})
+
+describe('Listeners', () => {
+  it('should set caip address, profile name and profile image on accountChanged event', async () => {
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      address: '0x'
+    } as unknown as typeof AccountController.state)
+    vi.spyOn(CaipNetworksUtil, 'extendCaipNetworks').mockReturnValueOnce([
+      { id: '1', chainNamespace: 'eip155' } as CaipNetwork
+    ])
+    vi.spyOn(StorageUtil, 'getActiveNetworkProps').mockReturnValueOnce({
+      namespace: 'eip155',
+      chainId: '1',
+      caipNetworkId: '1'
+    })
+
+    const mockAccount = {
+      address: '0x123',
+      chainId: '1',
+      chainNamespace: 'eip155'
+    }
+
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      activeChain: mockAccount.chainNamespace,
+      activeCaipAddress: `${mockAccount.chainNamespace}:${mockAccount.chainId}:${mockAccount.address}`,
+      chains: new Map([])
+    } as unknown as typeof ChainController.state)
+
+    const emitter = new MockEmitter()
+
+    const mockAdapter = {
+      namespace: 'eip155',
+      construct: vi.fn(),
+      syncConnectors: vi.fn(),
+      getAccounts: vi.fn().mockResolvedValue([]),
+      syncConnection: vi.fn(),
+      getBalance: vi.fn().mockResolvedValue({ balance: '0', symbol: 'ETH' }),
+      getProfile: vi.fn(),
+      on: emitter.on,
+      emit: emitter.emit
+    }
+
+    // Initialize AppKit
+    const appKit = new AppKit({
+      ...mockOptions,
+      networks: [mainnet],
+      projectId: 'YOUR_PROJECT_ID',
+      features: {
+        email: false,
+        socials: []
+      },
+      adapters: [mockAdapter as ChainAdapter]
+    })
+
+    const identity = { name: 'vitalik.eth', avatar: null } as const
+
+    const setCaipAddressSpy = vi.spyOn(AccountController, 'setCaipAddress')
+    const fetchIdentitySpy = vi
+      .spyOn(BlockchainApiController, 'fetchIdentity')
+      .mockResolvedValueOnce(identity)
+    const setProfileNameSpy = vi.spyOn(appKit, 'setProfileName')
+    const setProfileImageSpy = vi.spyOn(appKit, 'setProfileImage')
+
+    emitter.emit('accountChanged', mockAccount)
+
+    expect(setCaipAddressSpy).toHaveBeenCalledWith(
+      `${mockAccount.chainNamespace}:${mockAccount.chainId}:${mockAccount.address}`,
+      'eip155'
+    )
+
+    // Wait for the promise to fetchIdentity to resolve
+    await new Promise(resolve => setTimeout(resolve, 10))
+
+    expect(fetchIdentitySpy).toHaveBeenCalledWith({ address: mockAccount.address })
+    expect(setProfileNameSpy).toHaveBeenCalledWith(identity.name, 'eip155')
+    expect(setProfileImageSpy).toHaveBeenCalledWith(identity.avatar, 'eip155')
   })
 })
