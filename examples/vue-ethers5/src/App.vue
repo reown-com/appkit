@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import { mainnet, polygon, base } from '@reown/appkit/networks'
-import { Ethers5Adapter } from '@reown/appkit-adapter-ethers5'
+import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import {
   createAppKit,
   useAppKitEvents,
@@ -16,8 +16,8 @@ if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
 }
 
-// Initialize Ethers5 adapter
-const ethersAdapter = new Ethers5Adapter()
+// Initialize Ethers adapter
+const ethersAdapter = new EthersAdapter()
 
 // Initialize AppKit
 const modal = createAppKit({

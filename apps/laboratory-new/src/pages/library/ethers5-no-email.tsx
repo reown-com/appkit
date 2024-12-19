@@ -1,5 +1,5 @@
 import { createAppKit } from '@reown/appkit-new/react'
-import { Ethers5Adapter } from '@reown/appkit-adapter-ethers5'
+import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { ThemeStore } from '../../utils/StoreUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { Ethers5ModalInfo } from '../../components/Ethers/Ethers5ModalInfo'
@@ -9,7 +9,7 @@ import { mainnet } from '@reown/appkit-new/networks'
 
 const networks = ConstantsUtil.EvmNetworks
 
-const ethers5Adapter = new Ethers5Adapter()
+const ethers5Adapter = new EthersAdapter()
 
 const modal = createAppKit({
   adapters: [ethers5Adapter],

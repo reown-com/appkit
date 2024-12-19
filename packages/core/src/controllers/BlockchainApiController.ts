@@ -128,6 +128,7 @@ const state = proxy<BlockchainApiControllerState>({
 // -- Controller ---------------------------------------- //
 export const BlockchainApiController = {
   state,
+
   fetchIdentity({ address }: BlockchainApiIdentityRequest) {
     return state.api.get<BlockchainApiIdentityResponse>({
       path: `/v1/identity/${address}`,
