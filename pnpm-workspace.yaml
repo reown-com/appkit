@@ -19,6 +19,5 @@ packages:
   - 'services/*'
   - '!packages/appkit-new'
   - '!packages/ui-new'
-  - '!packages/scaffold-ui-new'
   - '!apps/gallery-new'
   - '!apps/laboratory-new'
