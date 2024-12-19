@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { WagmiAdapter } from '../client'
 import type { Config } from '@wagmi/core'
 import {
-  disconnect as wagmiDisconnect,
   getConnections,
   switchChain,
   getBalance,
@@ -364,11 +363,24 @@ describe('WagmiAdapter', () => {
         { connector: { id: 'connector1' } },
         { connector: { id: 'connector2' } }
       ]
-      vi.mocked(getConnections).mockReturnValue(mockConnections as any)
+
+      vi.spyOn(wagmiCore, 'getConnections').mockReturnValue(mockConnections as any)
+      vi.spyOn(wagmiCore, 'createConfig').mockReturnValue({
+        connectors: mockConnections.map(
+          ({ connector }) => connector as unknown as wagmiCore.Connector
+        )
+      } as any)
+
+      const adapter = new WagmiAdapter({
+        networks: mockNetworks,
+        projectId: mockProjectId
+      })
+
+      const disconnectSpy = vi.spyOn(wagmiCore, 'disconnect').mockImplementationOnce(vi.fn())
 
       await adapter.disconnect()
 
-      expect(vi.mocked(wagmiDisconnect)).toHaveBeenCalledTimes(2)
+      expect(disconnectSpy).toHaveBeenCalledTimes(2)
     })
   })
 
@@ -403,15 +415,68 @@ describe('WagmiAdapter', () => {
     })
 
     it('should get capabilities from session properties', async () => {
+      const mockRequest = vi.fn()
+
+      const mockConnections = [
+        {
+          connector: {
+            id: 'test-connector',
+            getProvider: vi.fn().mockReturnValue({
+              session: {
+                sessionProperties: {}
+              },
+              request: mockRequest
+            })
+          }
+        }
+      ]
+
+      vi.spyOn(wagmiCore, 'getConnections').mockReturnValue(mockConnections as any)
+
+      vi.spyOn(wagmiCore, 'createConfig').mockReturnValue({
+        connectors: mockConnections.map(
+          ({ connector }) => connector as unknown as wagmiCore.Connector
+        )
+      } as any)
+
+      const adapter = new WagmiAdapter({
+        networks: mockNetworks,
+        projectId: mockProjectId
+      })
+
       await adapter.getCapabilities('eip155:1:0x123')
 
-      expect(mockProvider.request).toHaveBeenCalledWith({
+      expect(mockRequest).toHaveBeenCalledWith({
         method: 'wallet_getCapabilities',
         params: ['eip155:1:0x123']
       })
     })
 
     it('should call provider request with correct params', async () => {
+      const mockRequest = vi.fn()
+
+      const mockConnections = [
+        {
+          connector: {
+            id: 'test-connector',
+            getProvider: vi.fn().mockReturnValue({
+              session: {
+                sessionProperties: {}
+              },
+              request: mockRequest
+            })
+          }
+        }
+      ]
+
+      vi.spyOn(wagmiCore, 'getConnections').mockReturnValue(mockConnections as any)
+
+      vi.spyOn(wagmiCore, 'createConfig').mockReturnValue({
+        connectors: mockConnections.map(
+          ({ connector }) => connector as unknown as wagmiCore.Connector
+        )
+      } as any)
+
       const mockParams = {
         pci: 'test-pci',
         expiry: 1234567890,
@@ -419,9 +484,14 @@ describe('WagmiAdapter', () => {
         permissions: ['eth_accounts']
       }
 
+      const adapter = new WagmiAdapter({
+        networks: mockNetworks,
+        projectId: mockProjectId
+      })
+
       await adapter.grantPermissions(mockParams)
 
-      expect(mockProvider.request).toHaveBeenCalledWith({
+      expect(mockRequest).toHaveBeenCalledWith({
         method: 'wallet_grantPermissions',
         params: mockParams
       })
@@ -435,9 +505,38 @@ describe('WagmiAdapter', () => {
         permissions: ['eth_accounts']
       }
 
+      const mockRequest = vi.fn()
+
+      const mockConnections = [
+        {
+          connector: {
+            id: 'test-connector',
+            getProvider: vi.fn().mockReturnValue({
+              session: {
+                sessionProperties: {}
+              },
+              request: mockRequest
+            })
+          }
+        }
+      ]
+
+      vi.spyOn(wagmiCore, 'getConnections').mockReturnValue(mockConnections as any)
+
+      vi.spyOn(wagmiCore, 'createConfig').mockReturnValue({
+        connectors: mockConnections.map(
+          ({ connector }) => connector as unknown as wagmiCore.Connector
+        )
+      } as any)
+
+      const adapter = new WagmiAdapter({
+        networks: mockNetworks,
+        projectId: mockProjectId
+      })
+
       await adapter.revokePermissions(mockParams)
 
-      expect(mockProvider.request).toHaveBeenCalledWith({
+      expect(mockRequest).toHaveBeenCalledWith({
         method: 'wallet_revokePermissions',
         params: mockParams
       })
