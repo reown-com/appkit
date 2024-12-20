@@ -1,6 +1,6 @@
 import { vi } from 'vitest'
-import type { AppKit } from '../../client.js'
-import { mainnet } from '../../networks/index.js'
+import type { AppKit } from '../../src/client.js'
+import { mainnet } from '../../src/networks/index.js'
 
 export const mockAppKit = {
   setIsConnected: vi.fn(),

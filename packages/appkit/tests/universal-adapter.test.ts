@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { UniversalAdapter } from '../universal-adapter/client'
+import { UniversalAdapter } from '../src/universal-adapter/client'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type { CaipNetwork } from '@reown/appkit-common'
 
