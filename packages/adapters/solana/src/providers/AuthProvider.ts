@@ -2,71 +2,46 @@ import type {
   AnyTransaction,
   Connection,
   GetActiveChain,
-  Provider
+  Provider as SolanaProvider
 } from '@reown/appkit-utils/solana'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 import { PublicKey, Transaction, VersionedTransaction, type SendOptions } from '@solana/web3.js'
-import {
-  W3mFrameProvider,
-  type W3mFrameProviderMethods as ProviderAuthMethods
-} from '@reown/appkit-wallet'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 import base58 from 'bs58'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
-import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import type { CaipNetwork, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 import { ConstantsUtil } from '@reown/appkit-common'
+import type { RequestArguments } from '@reown/appkit-core'
 
-export type AuthProviderConfig = {
-  getProvider: () => W3mFrameProvider
-  getActiveChain: GetActiveChain
-  getActiveNamespace: () => ChainNamespace | undefined
-  getSession: () => AuthProvider.Session | undefined
-  setSession: (session: AuthProvider.Session | undefined) => void
-  chains: CaipNetwork[]
-}
-
-export class AuthProvider extends ProviderEventEmitter implements Provider, ProviderAuthMethods {
+export class AuthProvider extends ProviderEventEmitter implements SolanaProvider {
+  public readonly id = ConstantsUtil.CONNECTOR_ID.AUTH
   public readonly name = ConstantsUtil.CONNECTOR_ID.AUTH
   public readonly type = 'AUTH'
+  public readonly chain: ChainNamespace = 'solana'
+  public readonly provider: W3mFrameProvider
 
-  private readonly getProvider: AuthProviderConfig['getProvider']
-  private readonly getActiveChain: AuthProviderConfig['getActiveChain']
-  private readonly getActiveNamespace: AuthProviderConfig['getActiveNamespace']
   private readonly requestedChains: CaipNetwork[]
-  private readonly getSession: AuthProviderConfig['getSession']
-  private readonly setSession: AuthProviderConfig['setSession']
+  private readonly getActiveChain: GetActiveChain
 
-  constructor({
-    getProvider,
-    getActiveChain,
-    getActiveNamespace,
-    getSession,
-    setSession,
-    chains
-  }: AuthProviderConfig) {
+  private session: AuthProvider.Session | undefined
+
+  constructor(params: AuthProvider.ConstructorParams) {
     super()
 
-    this.getProvider = getProvider
-    this.getActiveChain = getActiveChain
-    this.getActiveNamespace = getActiveNamespace
-    this.requestedChains = chains
-    this.getSession = getSession
-    this.setSession = setSession
+    this.provider = params.w3mFrameProvider
+    this.requestedChains = params.chains
+    this.getActiveChain = params.getActiveChain
+
     this.bindEvents()
   }
 
   get publicKey(): PublicKey | undefined {
-    const session = this.getSession()
-    const namespace = this.getActiveNamespace()
-    if (session && namespace === 'solana') {
-      return new PublicKey(session.address)
-    }
-
-    return undefined
+    return this.getPublicKey(false)
   }
 
   get chains() {
-    const availableChainIds = this.getProvider().getAvailableChainIds()
+    const availableChainIds = this.provider.getAvailableChainIds()
 
     return this.requestedChains.filter(requestedChain =>
       availableChainIds.includes(withSolanaNamespace(requestedChain.id) as string)
@@ -74,10 +49,11 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   }
 
   public async connect() {
-    const session = await this.getProvider().connect({
+    const session = await this.provider.connect({
       chainId: withSolanaNamespace(this.getActiveChain()?.id)
     })
-    this.setSession(session)
+
+    this.session = session
 
     const publicKey = this.getPublicKey(true)
 
@@ -87,13 +63,13 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   }
 
   public async disconnect() {
-    await this.getProvider().disconnect()
-    this.setSession(undefined)
+    await this.provider.disconnect()
+    this.session = undefined
     this.emit('disconnect', undefined)
   }
 
   public async signMessage(message: Uint8Array) {
-    const result = await this.getProvider().request({
+    const result = await this.provider.request({
       method: 'solana_signMessage',
       params: { message: base58.encode(message), pubkey: this.getPublicKey(true).toBase58() }
     })
@@ -102,7 +78,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   }
 
   public async signTransaction<T extends AnyTransaction>(transaction: T) {
-    const result = await this.getProvider().request({
+    const result = await this.provider.request({
       method: 'solana_signTransaction',
       params: { transaction: this.serializeTransaction(transaction) }
     })
@@ -122,7 +98,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   ) {
     const serializedTransaction = this.serializeTransaction(transaction)
 
-    const result = await this.getProvider().request({
+    const result = await this.provider.request({
       method: 'solana_signAndSendTransaction',
       params: {
         transaction: serializedTransaction,
@@ -145,7 +121,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   }
 
   public async signAllTransactions<T extends AnyTransaction[]>(transactions: T): Promise<T> {
-    const result = await this.getProvider().request({
+    const result = await this.provider.request({
       method: 'solana_signAllTransactions',
       params: {
         transactions: transactions.map(transaction => this.serializeTransaction(transaction))
@@ -169,39 +145,25 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     }) as T
   }
 
-  // -- W3mFrameProvider methods ------------------------------------------- //
-  connectEmail: ProviderAuthMethods['connectEmail'] = args => this.getProvider().connectEmail(args)
-  connectOtp: ProviderAuthMethods['connectOtp'] = args => this.getProvider().connectOtp(args)
-  updateEmail: ProviderAuthMethods['updateEmail'] = args => this.getProvider().updateEmail(args)
-  updateEmailPrimaryOtp: ProviderAuthMethods['updateEmailPrimaryOtp'] = args =>
-    this.getProvider().updateEmailPrimaryOtp(args)
-  updateEmailSecondaryOtp: ProviderAuthMethods['updateEmailSecondaryOtp'] = args =>
-    this.getProvider().updateEmailSecondaryOtp(args)
-  getEmail: ProviderAuthMethods['getEmail'] = () => this.getProvider().getEmail()
-  getSocialRedirectUri: ProviderAuthMethods['getSocialRedirectUri'] = args =>
-    this.getProvider().getSocialRedirectUri(args)
-  connectDevice: ProviderAuthMethods['connectDevice'] = () => this.getProvider().connectDevice()
-  connectSocial: ProviderAuthMethods['connectSocial'] = args =>
-    this.getProvider().connectSocial(args)
-  connectFarcaster: ProviderAuthMethods['connectFarcaster'] = () =>
-    this.getProvider().connectFarcaster()
-  getFarcasterUri: ProviderAuthMethods['getFarcasterUri'] = () =>
-    this.getProvider().getFarcasterUri()
-  syncTheme: ProviderAuthMethods['syncTheme'] = args => this.getProvider().syncTheme(args)
-  syncDappData: ProviderAuthMethods['syncDappData'] = args => this.getProvider().syncDappData(args)
-  switchNetwork: ProviderAuthMethods['switchNetwork'] = async args => {
-    const result = await this.getProvider().switchNetwork(args)
-    this.emit('chainChanged', args as string)
+  public async request<T>(args: RequestArguments): Promise<T> {
+    // @ts-expect-error - There is a miss match in `args` from CoreProvider and W3mFrameProvider
+    return this.provider.request({ method: args.method, params: args.params })
+  }
 
-    return result
+  public async switchNetwork(chainId: CaipNetworkId) {
+    const switchNetworkResponse = await this.provider.switchNetwork(chainId)
+    const user = await this.provider.getUser({ chainId: switchNetworkResponse.chainId })
+    this.session = user
+    this.emit('chainChanged', chainId)
+
+    return user
   }
 
   // -- Private ------------------------------------------- //
   private getPublicKey<Required extends boolean>(
     required?: Required
   ): Required extends true ? PublicKey : PublicKey | undefined {
-    const session = this.getSession()
-    if (!session) {
+    if (!this.session) {
       if (required) {
         throw new Error('Account is required')
       }
@@ -209,7 +171,7 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
       return undefined as Required extends true ? PublicKey : PublicKey | undefined
     }
 
-    return new PublicKey(session.address)
+    return new PublicKey(this.session.address)
   }
 
   private serializeTransaction(transaction: AnyTransaction) {
@@ -217,34 +179,40 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   }
 
   private bindEvents() {
-    this.getProvider().onRpcRequest(request => {
+    this.provider.onRpcRequest(request => {
       this.emit('auth_rpcRequest', request)
     })
 
-    this.getProvider().onRpcSuccess(response => {
+    this.provider.onRpcSuccess(response => {
       this.emit('auth_rpcSuccess', response)
     })
 
-    this.getProvider().onRpcError(error => {
+    this.provider.onRpcError(error => {
       this.emit('auth_rpcError', error)
     })
 
-    this.getProvider().onConnect(response => {
+    this.provider.onConnect(response => {
       const isSolanaNamespace =
         typeof response.chainId === 'string' ? response.chainId?.startsWith('solana') : false
 
       if (isSolanaNamespace) {
-        this.setSession(response)
+        this.session = response
         this.emit('connect', this.getPublicKey(true))
       }
     })
 
-    this.getProvider().onNotConnected(() => {
+    this.provider.onNotConnected(() => {
       this.emit('disconnect', undefined)
     })
   }
 }
 
 export namespace AuthProvider {
+  export type ConstructorParams = {
+    w3mFrameProvider: W3mFrameProvider
+    getActiveChain: GetActiveChain
+    chains: CaipNetwork[]
+  }
+
   export type Session = Awaited<ReturnType<W3mFrameProvider['connect']>>
 }
