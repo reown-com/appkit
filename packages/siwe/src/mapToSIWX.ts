@@ -6,7 +6,7 @@ import {
   type SIWXSession
 } from '@reown/appkit-core'
 import type { AppKitSIWEClient } from '../exports/index.js'
-import { NetworkUtil } from '@reown/appkit-common'
+import { ConstantsUtil, NetworkUtil } from '@reown/appkit-common'
 
 const subscriptions: (() => void)[] = []
 
@@ -183,15 +183,22 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
         }
 
         const siweSession = await getSession()
-        const siweCaipNetworkId = `eip155:${siweSession?.chainId}`
-        const lowercaseSessionAddress = siweSession?.address?.toLowerCase()
-        const lowercaseCaipAddress = address?.toLowerCase()
+        const siweCaipNetworkId = `${ConstantsUtil.CHAIN.EVM}:${siweSession?.chainId}`
 
-        if (
-          !siweSession ||
-          lowercaseSessionAddress !== lowercaseCaipAddress ||
-          siweCaipNetworkId !== chainId
-        ) {
+        const lowercaseSessionAddress = siweSession?.address?.toLowerCase()
+        const caipSessionAddress = `${siweCaipNetworkId}:${siweSession?.address}`
+
+        const lowercaseAddress = address?.toLowerCase()
+        const caipAddress = `${chainId}:${address}`
+
+        const signOutOnNetworkChange = siwe.options.signOutOnNetworkChange
+
+        const shouldSignOut = signOutOnNetworkChange
+          ? caipSessionAddress !== caipAddress
+          : lowercaseSessionAddress !== lowercaseAddress
+        console.log('caipSessionAddress', signOutOnNetworkChange)
+
+        if (!siweSession || shouldSignOut) {
           return []
         }
 
