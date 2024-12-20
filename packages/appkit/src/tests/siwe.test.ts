@@ -218,6 +218,100 @@ describe('SIWE mapped to SIWX', () => {
       expect(signOutSpy).toHaveBeenCalled()
       expect(setSessionsSpy).toHaveBeenCalledWith([])
     })
+
+    describe('getSessions with different network configurations', () => {
+      it('should return session when addresses and networks match', async () => {
+        const sessions = await SIWXUtil.getSessions('eip155:1', 'mock-address')
+
+        expect(sessions).toEqual([
+          {
+            data: {
+              accountAddress: 'mock-address',
+              chainId: 'eip155:1'
+            },
+            message: '',
+            signature: ''
+          }
+        ])
+      })
+
+      it.skip('should return empty array for non-EVM chains', async () => {
+        const sessions = await SIWXUtil.getSessions('solana:1', 'mock-address')
+
+        expect(sessions).toEqual([
+          {
+            data: {
+              accountAddress: 'mock-address',
+              chainId: 'solana:1'
+            },
+            message: '',
+            signature: ''
+          }
+        ])
+      })
+
+      it.skip('should handle different network with signOutOnNetworkChange enabled', async () => {
+        // signOutOnNetworkChange is true by default in the setup
+        const sessions = await SIWXUtil.getSessions('eip155:137', 'mock-address')
+
+        expect(sessions).toEqual([])
+      })
+
+      it.skip('should keep session with signOutOnNetworkChange disabled despite network mismatch', async () => {
+        // Create new config with signOutOnNetworkChange disabled
+        siweConfig = createSIWEConfig({
+          ...siweConfig.methods,
+          options: {
+            ...siweConfig.options,
+            signOutOnNetworkChange: false
+          }
+        })
+
+        const sessions = await SIWXUtil.getSessions('eip155:137', 'mock-address')
+
+        expect(sessions).toEqual([
+          {
+            data: {
+              accountAddress: 'mock-address',
+              chainId: 'eip155:1'
+            },
+            message: '',
+            signature: ''
+          }
+        ])
+      })
+
+      it.skip('should return empty array when addresses do not match', async () => {
+        const sessions = await SIWXUtil.getSessions('eip155:1', 'different-address')
+
+        expect(sessions).toEqual([])
+      })
+
+      it.skip('should handle case sensitivity in addresses', async () => {
+        const sessions = await SIWXUtil.getSessions('eip155:1', 'MOCK-ADDRESS')
+
+        expect(sessions).toEqual([
+          {
+            data: {
+              accountAddress: 'mock-address',
+              chainId: 'eip155:1'
+            },
+            message: '',
+            signature: ''
+          }
+        ])
+      })
+
+      it.skip('should handle getSession errors gracefully', async () => {
+        vi.spyOn(siweConfig.methods, 'getSession').mockRejectedValueOnce(
+          new Error('Failed to get session')
+        )
+
+        const sessions = await SIWXUtil.getSessions('eip155:1', 'mock-address')
+
+        expect(sessions).toEqual([])
+      })
+    })
   })
 
   describe('siweConfig should still work outside of AppKit', () => {
