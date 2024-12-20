@@ -1,5 +1,21 @@
 # @reown/appkit-experimental
 
+## 1.6.3
+
+### Patch Changes
+
+- [#3492](https://github.com/reown-com/appkit/pull/3492) [`8569d56`](https://github.com/reown-com/appkit/commit/8569d56a3c6ab41833c7ef6a21712afee4bbcec0) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where non-embedded wallets would show an empty list on send flow
+
+- [#3521](https://github.com/reown-com/appkit/pull/3521) [`60c1715`](https://github.com/reown-com/appkit/commit/60c17150bb29765bfc88e0f522484e59c3bdd1fe) Thanks [@zoruka](https://github.com/zoruka)! - Set connected wallet info when going to authenticate flow.
+
+- [#3512](https://github.com/reown-com/appkit/pull/3512) [`7459461`](https://github.com/reown-com/appkit/commit/7459461eed6786a17c251c40aab153572ecda45f) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where profile name and profile image was not displayed after connecting via social or email login
+
+- Updated dependencies [[`8569d56`](https://github.com/reown-com/appkit/commit/8569d56a3c6ab41833c7ef6a21712afee4bbcec0), [`60c1715`](https://github.com/reown-com/appkit/commit/60c17150bb29765bfc88e0f522484e59c3bdd1fe), [`7459461`](https://github.com/reown-com/appkit/commit/7459461eed6786a17c251c40aab153572ecda45f)]:
+  - @reown/appkit@1.6.3
+  - @reown/appkit-common@1.6.3
+  - @reown/appkit-core@1.6.3
+  - @reown/appkit-ui@1.6.3
+
 ## 1.6.2
 
 ### Patch Changes
