@@ -189,7 +189,7 @@ export const SIWXUtil = {
   }) {
     const siwx = SIWXUtil.getSIWX()
 
-    const namespaces = new Set(chains.map(chain => chain.split(':')[0]))
+    const namespaces = new Set(chains.map(chain => chain.split(':')[0] as ChainNamespace))
 
     if (!siwx || namespaces.size !== 1 || !namespaces.has('eip155')) {
       return false
@@ -219,6 +219,15 @@ export const SIWXUtil = {
     })
 
     SnackController.showLoading('Authenticating...', { autoClose: false })
+
+    AccountController.setConnectedWalletInfo(
+      {
+        ...result.session.peer.metadata,
+        name: result.session.peer.metadata.name,
+        icon: result.session.peer.metadata.icons?.[0]
+      },
+      Array.from(namespaces)[0] as ChainNamespace
+    )
 
     if (result?.auths?.length) {
       const sessions = result.auths.map<SIWXSession>(cacao => {
