@@ -1,5 +1,46 @@
 # @reown/appkit-core
 
+## 1.6.2
+
+### Patch Changes
+
+- [#3491](https://github.com/reown-com/appkit/pull/3491) [`0a8ead2`](https://github.com/reown-com/appkit/commit/0a8ead262ee0a2e0c116b1eaeb80fd5086d0298f) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where browser tab option was showing for all wallets
+
+- [#3509](https://github.com/reown-com/appkit/pull/3509) [`0926b4d`](https://github.com/reown-com/appkit/commit/0926b4d7286ce82d58e2acd85b108f69c8823867) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix issue where accounts were not correctly set
+
+- [#3516](https://github.com/reown-com/appkit/pull/3516) [`04208c8`](https://github.com/reown-com/appkit/commit/04208c86b4b2ce6621561b121a8a620687a58728) Thanks [@zoruka](https://github.com/zoruka)! - Add unit testing for Bitcoin adapter and fix unused default values
+
+- [#3514](https://github.com/reown-com/appkit/pull/3514) [`15bfe49`](https://github.com/reown-com/appkit/commit/15bfe4963087e3002df989f497a18a7d126c8c72) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where the `pendingTransactions` event was being emitted infinitely in wagmi adapter.
+
+  Additionally another option was added to wagmi adapter called `pendingTransactionsFilter`.
+
+  **Example usage**
+
+  ```ts
+  const wagmiAdapter = new WagmiAdapter({
+    networks: [
+      /* Your Networks */
+    ],
+    projectId: 'YOUR_PROJECT_ID',
+    pendingTransactionsFilter: {
+      enable: true,
+      pollingInterval: 15_000
+    }
+  })
+
+  createAppKit({
+    adapters: [wagmiAdapter],
+    networks: [
+      /* Your Networks */
+    ],
+    projectId: 'YOUR_PROJECT_ID'
+  })
+  ```
+
+- Updated dependencies [[`0a8ead2`](https://github.com/reown-com/appkit/commit/0a8ead262ee0a2e0c116b1eaeb80fd5086d0298f), [`0926b4d`](https://github.com/reown-com/appkit/commit/0926b4d7286ce82d58e2acd85b108f69c8823867), [`04208c8`](https://github.com/reown-com/appkit/commit/04208c86b4b2ce6621561b121a8a620687a58728), [`15bfe49`](https://github.com/reown-com/appkit/commit/15bfe4963087e3002df989f497a18a7d126c8c72)]:
+  - @reown/appkit-common@1.6.2
+  - @reown/appkit-wallet@1.6.2
+
 ## 1.6.1
 
 ### Patch Changes
