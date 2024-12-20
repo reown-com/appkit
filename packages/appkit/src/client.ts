@@ -1187,12 +1187,6 @@ export class AppKit {
         chainNamespace: namespace
       })
 
-      // To keep backwards compatibility, eip155 chainIds are numbers and not actual caipChainIds
-      const caipAddress =
-        namespace === 'eip155'
-          ? (`eip155:${user.chainId}:${user.address}` as CaipAddress)
-          : (`${user.chainId}:${user.address}` as CaipAddress)
-      this.setCaipAddress(caipAddress, namespace)
       this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
 
       const preferredAccountType = (user.preferredAccountType || 'eoa') as W3mFrameTypes.AccountType
