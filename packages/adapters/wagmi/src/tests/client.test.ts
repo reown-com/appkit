@@ -13,6 +13,7 @@ import {
   getEnsAddress as wagmiGetEnsAddress,
   writeContract as wagmiWriteContract,
   waitForTransactionReceipt,
+  watchAccount,
   getAccount,
   watchPendingTransactions,
   http
@@ -22,6 +23,8 @@ import { mainnet } from '@wagmi/core/chains'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { mockAppKit } from './mocks/AppKit'
+import { ConstantsUtil } from '@reown/appkit-common'
+import { LimitterUtil } from '../utils/LimitterUtil'
 
 vi.mock('@wagmi/core', async () => {
   const actual = await vi.importActual('@wagmi/core')
@@ -47,9 +50,7 @@ vi.mock('@wagmi/core', async () => {
     reconnect: vi.fn(),
     watchAccount: vi.fn(),
     watchConnections: vi.fn(),
-    watchPendingTransactions: vi.fn((_: any, callbacks: any) => {
-      return callbacks
-    })
+    watchPendingTransactions: vi.fn().mockReturnValue(vi.fn())
   }
 })
 
@@ -544,14 +545,54 @@ describe('WagmiAdapter', () => {
   })
 
   describe('WagmiAdapter - watchPendingTransactions', () => {
-    it('should emit pendingTransactions when transactions are pending', () => {
+    it('should emit pendingTransactions when transactions are pending', async () => {
+      const adapter = new WagmiAdapter({
+        networks: mockNetworks,
+        projectId: mockProjectId,
+        pendingTransactionsFilter: {
+          enable: true,
+          pollingInterval: 5000
+        }
+      })
+
       const emitSpy = vi.spyOn(adapter, 'emit' as any)
 
-      const watchPendingTransactionsCallback =
-        vi.mocked(watchPendingTransactions).mock?.calls?.[0]?.[1]
-      watchPendingTransactionsCallback?.onTransactions(['0xtx1', '0xtx2'])
+      vi.mocked(watchPendingTransactions).mockImplementation((_, { onTransactions }) => {
+        onTransactions(['0xtx1', '0xtx2'])
+        return vi.fn()
+      })
+
+      adapter['setupWatchPendingTransactions']()
 
       expect(emitSpy).toHaveBeenCalledWith('pendingTransactions')
+    })
+
+    it('should limit the amount of pendingTransactions calls', async () => {
+      const unsubscribe = vi.fn()
+
+      vi.mocked(watchAccount).mockImplementation((_, { onChange }) => {
+        onChange({ address: '0x123', status: 'connected' } as any, {} as any)
+        return vi.fn()
+      })
+
+      vi.spyOn(wagmiCore, 'watchPendingTransactions').mockReturnValue(unsubscribe)
+
+      new WagmiAdapter({
+        networks: mockNetworks,
+        projectId: mockProjectId,
+        pendingTransactionsFilter: {
+          enable: true,
+          pollingInterval: 500
+        }
+      })
+
+      // Set state to maximum limit so we know once we reach the limit it'll unsubscribe the watchPendingTransactions
+      LimitterUtil.state.pendingTransactions = ConstantsUtil.LIMITS.PENDING_TRANSACTIONS
+
+      // Wait for valtio to check for updated state and unsubscribe watchPendingTransactions
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      expect(unsubscribe).toHaveBeenCalled()
     })
   })
 })
