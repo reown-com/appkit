@@ -78,15 +78,15 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     }
   }
   override async getAccounts(
-    _params: AdapterBlueprint.GetAccountsParams
+    params: AdapterBlueprint.GetAccountsParams
   ): Promise<AdapterBlueprint.GetAccountsResult> {
-    const addresses = await this.connector?.getAccountAddresses()
+    const addresses = await this.connectors
+      .find(connector => connector.id === params.id)
+      ?.getAccountAddresses()
+      .catch(() => [])
+
     const accounts = addresses?.map(a =>
-      CoreHelperUtil.createAccount(
-        'bip122',
-        a.address,
-        (a.purpose || 'payment') as BitcoinConnector.AccountAddress['purpose']
-      )
+      CoreHelperUtil.createAccount('bip122', a.address, a.purpose || 'payment')
     )
 
     return {
@@ -134,7 +134,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   ): Promise<AdapterBlueprint.ConnectResult> {
     return this.connect({
       id: params.id,
-      chainId: params.chainId || this.networks[0]?.id || '',
+      chainId: params.chainId,
       type: ''
     })
   }
@@ -182,8 +182,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     this.unbindEvents()
   }
 
-  // -- Unused => Refactor ------------------------------------------- //
-
   override async getBalance(
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
@@ -209,6 +207,8 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       symbol: bitcoin.nativeCurrency.symbol
     })
   }
+
+  // -- Unused => Refactor ------------------------------------------- //
 
   override getProfile(
     _params: AdapterBlueprint.GetProfileParams
@@ -280,8 +280,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       const [newAccount] = data
       if (newAccount) {
         this.emit('accountChanged', {
-          address: newAccount,
-          chainId: this.networks[0]?.id || ''
+          address: newAccount
         })
       }
     }

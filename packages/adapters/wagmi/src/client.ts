@@ -57,15 +57,31 @@ import {
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { normalize } from 'viem/ens'
 import { parseWalletCapabilities } from './utils/helpers.js'
+import { LimitterUtil } from './utils/LimitterUtil.js'
+
+interface PendingTransactionsFilter {
+  enable: boolean
+  pollingInterval?: number
+}
+
+// --- Constants ---------------------------------------------------- //
+const DEFAULT_PENDING_TRANSACTIONS_FILTER = {
+  enable: false,
+  pollingInterval: 30_000
+}
 
 export class WagmiAdapter extends AdapterBlueprint {
   public wagmiChains: readonly [Chain, ...Chain[]] | undefined
   public wagmiConfig!: Config
   public adapterType = 'wagmi'
 
+  private pendingTransactionsFilter: PendingTransactionsFilter
+  private unwatchPendingTransactions: (() => void) | undefined
+
   constructor(
     configParams: Partial<CreateConfigParameters> & {
       networks: AppKitNetwork[]
+      pendingTransactionsFilter?: PendingTransactionsFilter
       projectId: string
     }
   ) {
@@ -79,6 +95,11 @@ export class WagmiAdapter extends AdapterBlueprint {
           : []
       }) as [CaipNetwork, ...CaipNetwork[]]
     })
+
+    this.pendingTransactionsFilter = {
+      ...DEFAULT_PENDING_TRANSACTIONS_FILTER,
+      ...(configParams.pendingTransactionsFilter ?? {})
+    }
 
     this.namespace = CommonConstantsUtil.CHAIN.EVM
 
@@ -166,16 +187,31 @@ export class WagmiAdapter extends AdapterBlueprint {
     })
   }
 
-  private setupWatchers() {
-    watchPendingTransactions(this.wagmiConfig, {
-      pollingInterval: 15_000,
+  private setupWatchPendingTransactions() {
+    if (!this.pendingTransactionsFilter.enable || this.unwatchPendingTransactions) {
+      return
+    }
+
+    this.unwatchPendingTransactions = watchPendingTransactions(this.wagmiConfig, {
+      pollingInterval: this.pendingTransactionsFilter.pollingInterval,
       /* Magic RPC does not support the pending transactions. We handle transaction for the AuthConnector cases in AppKit client to handle all clients at once. Adding the onError handler to avoid the error to throw. */
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onError: () => {},
       onTransactions: () => {
         this.emit('pendingTransactions')
+        LimitterUtil.increase('pendingTransactions')
       }
     })
+
+    const unsubscribe = LimitterUtil.subscribeKey('pendingTransactions', val => {
+      if (val >= CommonConstantsUtil.LIMITS.PENDING_TRANSACTIONS) {
+        this.unwatchPendingTransactions?.()
+        unsubscribe()
+      }
+    })
+  }
+
+  private setupWatchers() {
     watchAccount(this.wagmiConfig, {
       onChange: accountData => {
         if (accountData.status === 'disconnected') {
@@ -183,6 +219,8 @@ export class WagmiAdapter extends AdapterBlueprint {
         }
         if (accountData.status === 'connected') {
           if (accountData.address) {
+            this.setupWatchPendingTransactions()
+
             this.emit('accountChanged', {
               address: accountData.address,
               chainId: accountData.chainId
