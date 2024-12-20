@@ -9,7 +9,7 @@ let validator: ModalWalletValidator
 let context: BrowserContext
 /* eslint-enable init-declarations */
 
-const ABSOLUTE_WALLET_ID = 'bfa6967fd05add7bb2b19a442ac37cedb6a6b854483729194f5d7185272c5594'
+const MATH_WALLET_ID = '7674bb4e353bf52886768a3ddc2a4562ce2f4191c80831291218ebd90f5f5e26'
 const METAMASK_WALLET_ID = 'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96'
 
 // -- Setup --------------------------------------------------------------------
@@ -95,8 +95,8 @@ walletFeaturesTest('it should open web app wallet', async () => {
   await validator.expectAllWallets()
   await page.openAllWallets()
   await page.page.waitForTimeout(500)
-  await page.search('absolute wallet')
-  await page.clickAllWalletsListSearchItem(ABSOLUTE_WALLET_ID)
+  await page.search('MathWallet')
+  await page.clickAllWalletsListSearchItem(MATH_WALLET_ID)
   await page.page.waitForTimeout(500)
   await page.clickTabWebApp()
   const copiedLink = await page.clickCopyLink()

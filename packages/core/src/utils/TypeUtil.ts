@@ -183,6 +183,7 @@ export interface ThemeVariables {
   '--w3m-font-size-master'?: string
   '--w3m-border-radius-master'?: string
   '--w3m-z-index'?: number
+  '--w3m-qr-color'?: string
 }
 
 // -- BlockchainApiController Types ---------------------------------------------
@@ -459,6 +460,9 @@ export type Event =
   | {
       type: 'track'
       event: 'DISCONNECT_ERROR'
+      properties?: {
+        message: string
+      }
     }
   | {
       type: 'track'
@@ -654,6 +658,19 @@ export type Event =
   | {
       type: 'track'
       event: 'SWAP_ERROR'
+      properties: {
+        isSmartAccount: boolean
+        network: string
+        swapFromToken: string
+        swapToToken: string
+        swapFromAmount: string
+        swapToAmount: string
+        message: string
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SWAP_APPROVAL_ERROR'
       properties: {
         isSmartAccount: boolean
         network: string
@@ -893,13 +910,13 @@ export type EstimateGasTransactionArgs =
     }
 
 export interface WriteContractArgs {
-  receiverAddress: `0x${string}`
-  tokenAmount: bigint
   tokenAddress: `0x${string}`
   fromAddress: `0x${string}`
-  method: 'send' | 'transfer' | 'call'
+  method: 'send' | 'transfer' | 'call' | 'approve'
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   abi: any
+  args: unknown[]
+  chainNamespace: ChainNamespace
 }
 
 export interface NetworkControllerClient {

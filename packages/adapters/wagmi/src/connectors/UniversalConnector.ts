@@ -23,7 +23,7 @@ import { StorageUtil } from '@reown/appkit-core'
 import type { AppKitOptions } from '@reown/appkit'
 import type { AppKit } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
-import type { CaipNetwork } from '@reown/appkit-common'
+import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 
 type UniversalConnector = Connector & {
   onDisplayUri(uri: string): void
@@ -201,7 +201,7 @@ export function walletConnect(
         return []
       }
 
-      const accountsList = provider?.session?.namespaces['eip155']?.accounts
+      const accountsList = provider?.session?.namespaces[ConstantsUtil.CHAIN.EVM]?.accounts
 
       const accounts = accountsList?.map(account => account.split(':')[2]) ?? []
 
@@ -213,10 +213,13 @@ export function walletConnect(
         provider_?.events.setMaxListeners(Number.POSITIVE_INFINITY)
       }
 
+      const activeNamespace = StorageUtil.getActiveNamespace()
       const currentChainId = appKit.getCaipNetwork()?.id
 
-      if (chainId && currentChainId !== chainId) {
-        const storedCaipNetwork = StorageUtil.getStoredActiveCaipNetwork()
+      if (chainId && currentChainId !== chainId && activeNamespace) {
+        const storedCaipNetworkId = StorageUtil.getStoredActiveCaipNetworkId()
+        const appKitCaipNetworks = appKit?.getCaipNetworks(activeNamespace as ChainNamespace)
+        const storedCaipNetwork = appKitCaipNetworks?.find(n => n.id === storedCaipNetworkId)
 
         if (storedCaipNetwork && storedCaipNetwork.chainNamespace === ConstantsUtil.CHAIN.EVM) {
           await this.switchChain?.({ chainId: Number(storedCaipNetwork.id) })
@@ -234,7 +237,7 @@ export function walletConnect(
       }
 
       const provider = await this.getProvider()
-      const chain = provider.session?.namespaces['eip155']?.chains?.[0]
+      const chain = provider.session?.namespaces[ConstantsUtil.CHAIN.EVM]?.chains?.[0]
 
       const network = caipNetworks.find(c => c.id === chain)
 
@@ -388,7 +391,7 @@ export function walletConnect(
         return []
       }
 
-      const accounts = provider_?.session?.namespaces['eip155']?.accounts
+      const accounts = provider_?.session?.namespaces[ConstantsUtil.CHAIN.EVM]?.accounts
 
       // eslint-disable-next-line radix
       const chainIds = accounts?.map(account => Number.parseInt(account.split(':')[1] ?? '')) ?? []

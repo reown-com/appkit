@@ -174,11 +174,11 @@ describe('Ethers5Adapter', () => {
         method: 'transfer',
         caipAddress: 'eip155:1:0x123',
         fromAddress: '0x123',
-        receiverAddress: '0x456',
-        tokenAmount: BigInt(1000),
+        args: ['0x789', BigInt(1000)],
         tokenAddress: '0x789',
         provider: mockProvider,
-        caipNetwork: mockCaipNetworks[0]
+        caipNetwork: mockCaipNetworks[0],
+        chainNamespace: 'eip155'
       })
 
       expect(result.hash).toBe(mockTxHash)
@@ -405,36 +405,6 @@ describe('Ethers5Adapter', () => {
         params: [mockParams]
       })
       expect(result).toBe('0x123')
-    })
-  })
-
-  describe('Ethers5Adapter - ListenPendingTransactions', () => {
-    it('should listen for pending transactions and emit event', () => {
-      const adapter = new Ethers5Adapter()
-      const mockProvider = {
-        request: vi.fn(),
-        on: vi.fn(),
-        removeListener: vi.fn(),
-        send: vi.fn(),
-        sendAsync: vi.fn()
-      } as unknown as Provider
-
-      const emitSpy = vi.spyOn(adapter, 'emit' as any)
-
-      vi.mocked(providers.Web3Provider).mockImplementation(
-        () =>
-          ({
-            on: vi.fn((event, callback) => {
-              if (event === 'pending') {
-                callback()
-              }
-            })
-          }) as any
-      )
-      ;(adapter as any).listenPendingTransactions(mockProvider)
-
-      expect(providers.Web3Provider).toHaveBeenCalledWith(mockProvider)
-      expect(emitSpy).toHaveBeenCalledWith('pendingTransactions')
     })
   })
 })

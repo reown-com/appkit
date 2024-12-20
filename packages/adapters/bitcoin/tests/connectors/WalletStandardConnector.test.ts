@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { CaipNetwork } from '@reown/appkit-common'
-import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
+import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
 import { WalletStandardConnector } from '../../src/connectors/WalletStandardConnector'
 import { mockWalletStandardProvider } from '../mocks/mockWalletStandard'
 import { MethodNotSupportedError } from '../../src/errors/MethodNotSupportedError'
@@ -20,7 +20,12 @@ describe('WalletStandardConnector', () => {
   let requestedChains: CaipNetwork[]
 
   beforeEach(() => {
-    requestedChains = [bitcoin, bitcoinTestnet]
+    // requested chains may contain not bip122 chains
+    requestedChains = [
+      { ...mainnet, caipNetworkId: 'eip155:1', chainNamespace: 'eip155' },
+      bitcoin,
+      bitcoinTestnet
+    ]
     wallet = mockWalletStandardProvider()
     connector = new WalletStandardConnector({
       wallet,
@@ -40,10 +45,6 @@ describe('WalletStandardConnector', () => {
     expect(connector.imageUrl).toBe(wallet.icon)
   })
 
-  it('should map correctly only chains that are requested and the wallet supports', async () => {
-    expect(connector.chains).toEqual([bitcoin])
-  })
-
   it('should throw if feature is not available', async () => {
     wallet = mockWalletStandardProvider({
       features: {}
@@ -53,6 +54,18 @@ describe('WalletStandardConnector', () => {
       requestedChains
     })
     await expect(connector.connect()).rejects.toThrow(MethodNotSupportedError)
+  })
+
+  describe('chains', () => {
+    it('should map correctly only chains that are requested and the wallet supports', async () => {
+      expect(connector.chains).toEqual([bitcoin])
+    })
+
+    it('should map network id aliases', async () => {
+      vi.spyOn(wallet, 'chains', 'get').mockReturnValueOnce(['bitcoin:mainnet', 'bitcoin:testnet'])
+
+      expect(connector.chains).toEqual([bitcoin, bitcoinTestnet])
+    })
   })
 
   describe('watchWallets', () => {
@@ -105,6 +118,28 @@ describe('WalletStandardConnector', () => {
         mockWalletStandardProvider.mockAccount({
           address: 'address1',
           publicKey: Buffer.from('publicKey1')
+        })
+      ])
+
+      const accounts = await connector.getAccountAddresses()
+      expect(accounts).toEqual([
+        {
+          address: 'address1',
+          publicKey: '7075626c69634b657931',
+          purpose: 'payment'
+        }
+      ])
+    })
+
+    it('should filter duplicate addresses', async () => {
+      vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([
+        mockWalletStandardProvider.mockAccount({
+          address: 'address1',
+          publicKey: Buffer.from('publicKey1')
+        }),
+        mockWalletStandardProvider.mockAccount({
+          address: 'address1',
+          publicKey: Buffer.from('publicKey2')
         })
       ])
 
