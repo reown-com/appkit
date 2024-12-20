@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { AppKit } from '../client'
-import { base, mainnet, polygon, solana } from '../networks/index.js'
+import { AppKit } from '../src/client'
+import { base, mainnet, polygon, solana } from '../src/networks/index.js'
 import {
   AccountController,
   ModalController,
@@ -23,11 +23,16 @@ import {
   StorageUtil,
   type ChainAdapter
 } from '@reown/appkit-core'
-import { SafeLocalStorage, SafeLocalStorageKeys, type CaipNetwork } from '@reown/appkit-common'
+import {
+  SafeLocalStorage,
+  SafeLocalStorageKeys,
+  type AppKitNetwork,
+  type CaipNetwork
+} from '@reown/appkit-common'
 import { mockOptions } from './mocks/Options'
-import { UniversalAdapter } from '../universal-adapter/client'
-import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint'
-import { ProviderUtil } from '../store'
+import { UniversalAdapter } from '../src/universal-adapter/client'
+import type { AdapterBlueprint } from '../src/adapters/ChainAdapterBlueprint'
+import { ProviderUtil } from '../src/store'
 import { CaipNetworksUtil, ErrorUtil } from '@reown/appkit-utils'
 import mockUniversalAdapter from './mocks/Adapter'
 import { UniversalProvider } from '@walletconnect/universal-provider'
@@ -36,9 +41,9 @@ import { MockEmitter } from './mocks/Emitter'
 
 // Mock all controllers and UniversalAdapterClient
 vi.mock('@reown/appkit-core')
-vi.mock('../universal-adapter/client')
-vi.mock('../client.ts', async () => {
-  const actual = await vi.importActual('../client.ts')
+vi.mock('../src/universal-adapter/client')
+vi.mock('../src/client.ts', async () => {
+  const actual = await vi.importActual('../src/client.ts')
 
   return {
     ...actual,
@@ -86,7 +91,7 @@ describe('Base', () => {
         event: 'INITIALIZE',
         properties: {
           ...copyMockOptions,
-          networks: copyMockOptions.networks.map(n => n.id),
+          networks: copyMockOptions.networks.map((n: AppKitNetwork) => n.id),
           siweConfig: {
             options: copyMockOptions.siweConfig?.options || {}
           }

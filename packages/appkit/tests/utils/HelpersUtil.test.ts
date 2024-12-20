@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest'
-import { WcHelpersUtil } from '../../utils/HelpersUtil'
+import { WcHelpersUtil } from '../../src/utils/HelpersUtil'
 import { ConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
 import type { SessionTypes } from '@walletconnect/types'
 
