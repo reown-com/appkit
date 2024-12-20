@@ -8,9 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "postinstall": "pnpm build"
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
   },
   "dependencies": {
     "@reown/appkit": "workspace:*",
