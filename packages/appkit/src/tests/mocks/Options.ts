@@ -10,9 +10,18 @@ export const mockOptions = {
     {
       chainNamespace: 'eip155',
       construct: vi.fn(),
-      on: vi.fn(),
       syncConnectors: vi.fn(),
-      setAuthProvider: vi.fn()
+      setAuthProvider: vi.fn(),
+      getAccounts: vi.fn().mockResolvedValue({ accounts: [{ address: '0x123', type: 'eoa' }] }),
+      syncConnection: vi.fn().mockResolvedValue({
+        chainId: 'eip155:1',
+        address: '0x123'
+      }),
+      getBalance: vi.fn().mockResolvedValue({ balance: '0', symbol: 'ETH' }),
+      getProfile: vi.fn().mockResolvedValue({}),
+      on: vi.fn(),
+      off: vi.fn(),
+      emit: vi.fn()
     } as unknown as ChainAdapter
   ],
   networks: [mainnet, solana],

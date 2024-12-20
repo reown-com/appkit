@@ -700,7 +700,7 @@ describe('Base', () => {
 
       await appKit.disconnect()
 
-      expect(mockUniversalAdapter.disconnect).toHaveBeenCalled()
+      expect(ChainController.disconnect).toHaveBeenCalled()
       expect(AccountController.setStatus).toHaveBeenCalledWith('disconnected', 'eip155')
     })
 
@@ -713,8 +713,8 @@ describe('Base', () => {
       } as any
       ;(appKit as any).caipNetworks = [{ id: 'eip155:1', chainNamespace: 'eip155' }]
 
-      const mockAdapter = {
-        getAccounts: vi.fn().mockResolvedValue([]),
+      const overrideAdapter = {
+        getAccounts: vi.fn().mockResolvedValue({ accounts: [{ address: '0x123', type: 'eoa' }] }),
         syncConnection: vi.fn().mockResolvedValue({
           chainId: 'eip155:999', // Unsupported chain
           address: '0x123'
@@ -726,7 +726,7 @@ describe('Base', () => {
         emit: vi.fn()
       }
 
-      vi.spyOn(appKit as any, 'getAdapter').mockReturnValue(mockAdapter)
+      vi.spyOn(appKit as any, 'getAdapter').mockReturnValueOnce(overrideAdapter)
 
       vi.spyOn(StorageUtil, 'setConnectedConnectorId').mockImplementation(vi.fn())
 
@@ -762,11 +762,12 @@ describe('Base', () => {
         allowUnsupportedChain: true
       } as any
 
-      const mockAdapter = {
-        getAccounts: vi.fn().mockResolvedValue([]),
+      const overrideAdapter = {
+        getAccounts: vi.fn().mockResolvedValue({ accounts: [] }),
         syncConnection: vi.fn().mockResolvedValue({
           chainId: 'eip155:999', // Unsupported chain
-          address: '0x123'
+          address: '0x123',
+          accounts: [{ address: '0x123', type: 'eoa' }]
         }),
         getBalance: vi.fn().mockResolvedValue({ balance: '0', symbol: 'ETH' }),
         getProfile: vi.fn().mockResolvedValue({}),
@@ -775,7 +776,7 @@ describe('Base', () => {
         emit: vi.fn()
       }
 
-      vi.spyOn(appKit as any, 'getAdapter').mockReturnValue(mockAdapter)
+      vi.spyOn(appKit as any, 'getAdapter').mockReturnValueOnce(overrideAdapter)
 
       vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
 
@@ -831,22 +832,23 @@ describe('Base', () => {
       })
 
       const mockAdapter = {
-        getAccounts: vi.fn().mockResolvedValue([]),
+        getAccounts: vi.fn().mockResolvedValue({ accounts: [{ address: '0x123', type: 'eoa' }] }),
         syncConnection: vi.fn().mockResolvedValue({
           address: '0x123',
           chainId: '1',
-          chainNamespace: 'eip155'
+          chainNamespace: 'eip155',
+          accounts: [{ address: '0x123', type: 'eoa' }]
         }),
         on: vi.fn(),
         getBalance: vi.fn().mockResolvedValue({ balance: '0', symbol: 'ETH' })
       }
-      vi.spyOn(appKit as any, 'getAdapter').mockReturnValue(mockAdapter)
+      vi.spyOn(appKit as any, 'getAdapter').mockReturnValueOnce(mockAdapter)
 
       await appKit['syncExistingConnection']()
 
-      expect(AccountController.setStatus).toHaveBeenCalledWith('connecting', 'eip155')
       expect(mockAdapter.syncConnection).toHaveBeenCalled()
       expect(AccountController.setStatus).toHaveBeenCalledWith('connected', 'eip155')
+      expect(AccountController.setStatus).toHaveBeenCalledWith('connecting', 'eip155')
     })
 
     it('should set status to "disconnected" when no connector is present', async () => {
@@ -871,11 +873,11 @@ describe('Base', () => {
       })
 
       const mockAdapter = {
-        getAccounts: vi.fn().mockResolvedValue([]),
+        getAccounts: vi.fn().mockResolvedValue({ accounts: [] }),
         syncConnection: vi.fn().mockResolvedValue(null),
         on: vi.fn()
       }
-      vi.spyOn(appKit as any, 'getAdapter').mockReturnValue(mockAdapter)
+      vi.spyOn(appKit as any, 'getAdapter').mockReturnValueOnce(mockAdapter)
 
       await appKit['syncExistingConnection']()
 
@@ -898,7 +900,7 @@ describe('Base', () => {
       vi.mocked(ConnectorController).getConnectors = vi.fn().mockReturnValue([])
 
       mockAdapter = {
-        getAccounts: vi.fn().mockResolvedValue([]),
+        getAccounts: vi.fn().mockResolvedValue({ accounts: [] }),
         namespace: 'eip155',
         construct: vi.fn(),
         setUniversalProvider: vi.fn(),
@@ -1171,7 +1173,7 @@ describe('Listeners', () => {
       namespace: 'eip155',
       construct: vi.fn(),
       syncConnectors: vi.fn(),
-      getAccounts: vi.fn().mockResolvedValue([]),
+      getAccounts: vi.fn().mockResolvedValue({ accounts: [] }),
       syncConnection: vi.fn(),
       getBalance: vi.fn().mockResolvedValue({ balance: '0', symbol: 'ETH' }),
       getProfile: vi.fn(),
