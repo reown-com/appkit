@@ -71,6 +71,7 @@ const mockCaipNetworks = CaipNetworksUtil.extendCaipNetworks(mockNetworks, {
 
 const mockWalletConnectConnector = {
   id: 'walletconnect',
+  name: 'WalletConnect',
   provider: mockWalletConnectProvider,
   type: 'WALLET_CONNECT' as ConnectorType,
   chains: mockNetworks,
