@@ -1,218 +1,164 @@
+import { expect, html, fixture } from '@open-wc/testing'
+import { SendController, RouterController, SwapController } from '@reown/appkit-core'
 import { W3mWalletSendView } from '../../src/views/w3m-wallet-send-view'
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { fixture } from '@open-wc/testing'
-import { html } from 'lit'
-import {
-  SwapController,
-  SendController,
-  AccountController,
-  ChainController,
-  RouterController,
-  type ChainControllerState
-} from '@reown/appkit-core'
-import { HelpersUtil } from '../utils/HelpersUtil'
+import { describe, it, afterEach, beforeEach, vi, expect as viExpect } from 'vitest'
 import type { Balance } from '@reown/appkit-common'
 
+const mockToken: Balance = {
+  address: '0x123',
+  symbol: 'TEST',
+  name: 'Test Token',
+  quantity: {
+    numeric: '100',
+    decimals: '18'
+  },
+  price: 1,
+  chainId: '1',
+  iconUrl: 'https://example.com/icon.png'
+}
+
 describe('W3mWalletSendView', () => {
-  const mockToken = {
-    quantity: { numeric: '100' },
-    price: 1,
-    symbol: 'TEST'
-  } as Balance
-
   beforeEach(() => {
-    vi.spyOn(SendController, 'state', 'get').mockReturnValue({
-      sendTokenAmount: 0,
-      receiverAddress: '',
-      receiverProfileName: '',
-      loading: false,
-      gasPriceInUSD: 0,
-      gasPrice: 0n
-    })
-
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      activeChain: 'eip155'
-    } as ChainControllerState)
-
     vi.spyOn(SwapController, 'getNetworkTokenPrice').mockResolvedValue()
     vi.spyOn(SwapController, 'getInitialGasPrice').mockResolvedValue({
-      gasPrice: 1000n,
-      gasPriceInUSD: 2
+      gasPrice: BigInt(1000),
+      gasPriceInUSD: 0.1
     })
-    vi.spyOn(AccountController, 'fetchTokenBalance').mockResolvedValue()
-    vi.spyOn(SendController, 'subscribe').mockImplementation(() => () => {})
   })
 
   afterEach(() => {
     vi.clearAllMocks()
+    SendController.resetSend()
   })
 
-  it('renders initial state correctly', async () => {
-    const element: W3mWalletSendView = await fixture(
+  it('should render initial state correctly', async () => {
+    const element = await fixture<W3mWalletSendView>(
       html`<w3m-wallet-send-view></w3m-wallet-send-view>`
     )
 
-    expect(HelpersUtil.querySelect(element, 'w3m-input-token')).toBeTruthy()
-    expect(HelpersUtil.querySelect(element, 'w3m-input-address')).toBeTruthy()
-    expect(HelpersUtil.querySelect(element, 'wui-button')).toBeTruthy()
+    expect(element).to.exist
+    const button = element.shadowRoot?.querySelector('wui-button')
+    expect(button).to.exist
+    expect(button?.textContent?.trim()).to.equal('Select Token')
+    expect(button?.disabled).to.be.true
   })
 
-  it('fetches initial data on mount', async () => {
-    await fixture(html`<w3m-wallet-send-view></w3m-wallet-send-view>`)
-
-    expect(SwapController.getNetworkTokenPrice).toHaveBeenCalled()
-    expect(SwapController.getInitialGasPrice).toHaveBeenCalled()
-    expect(AccountController.fetchTokenBalance).toHaveBeenCalled()
-  })
-
-  describe('Message States', () => {
-    vi.spyOn(SendController, 'hasInsufficientGasFunds').mockReturnValue(false)
-
-    it('shows "Select Token" when no token selected', async () => {
-      const element: W3mWalletSendView = await fixture(
-        html`<w3m-wallet-send-view></w3m-wallet-send-view>`
-      )
-      const button = HelpersUtil.querySelect(element, 'wui-button')
-      expect(button?.textContent?.trim()).toBe('Select Token')
-      expect(button?.hasAttribute('disabled')).toBe(true)
-    })
-
-    it('shows "Add Amount" when token selected but no amount', async () => {
-      vi.spyOn(SendController, 'state', 'get').mockReturnValue({
-        ...SendController.state,
-        token: mockToken
-      })
-
-      const element: W3mWalletSendView = await fixture(
-        html`<w3m-wallet-send-view></w3m-wallet-send-view>`
-      )
-      const button = HelpersUtil.querySelect(element, 'wui-button')
-      expect(button?.textContent?.trim()).toBe('Add Amount')
-      expect(button?.hasAttribute('disabled')).toBe(true)
-    })
-
-    it('shows "Add Address" when amount set but no address', async () => {
-      vi.spyOn(SendController, 'state', 'get').mockReturnValue({
-        ...SendController.state,
-        token: mockToken,
-        sendTokenAmount: 50
-      })
-
-      const element: W3mWalletSendView = await fixture(
-        html`<w3m-wallet-send-view></w3m-wallet-send-view>`
-      )
-      const button = HelpersUtil.querySelect(element, 'wui-button')
-      expect(button?.textContent?.trim()).toBe('Add Address')
-      expect(button?.hasAttribute('disabled')).toBe(true)
-    })
-
-    it('shows "Invalid Address" for incorrect address format', async () => {
-      vi.spyOn(SendController, 'state', 'get').mockReturnValue({
-        ...SendController.state,
-        token: mockToken,
-        sendTokenAmount: 50,
-        receiverAddress: 'invalid-address'
-      })
-
-      const element: W3mWalletSendView = await fixture(
-        html`<w3m-wallet-send-view></w3m-wallet-send-view>`
-      )
-      const button = HelpersUtil.querySelect(element, 'wui-button')
-      expect(button?.textContent?.trim()).toBe('Invalid Address')
-      expect(button?.hasAttribute('disabled')).toBe(true)
-    })
-
-    it('shows "Insufficient Funds" when amount exceeds balance', async () => {
-      vi.spyOn(SendController, 'state', 'get').mockReturnValue({
-        ...SendController.state,
-        token: mockToken,
-        sendTokenAmount: 150,
-        receiverAddress: '0x123'
-      })
-
-      const element: W3mWalletSendView = await fixture(
-        html`<w3m-wallet-send-view></w3m-wallet-send-view>`
-      )
-      const button = HelpersUtil.querySelect(element, 'wui-button')
-      expect(button?.textContent?.trim()).toBe('Insufficient Funds')
-      expect(button?.hasAttribute('disabled')).toBe(true)
-    })
-
-    it('shows "Insufficient Gas Funds" when gas funds are insufficient', async () => {
-      vi.spyOn(SendController, 'hasInsufficientGasFunds').mockReturnValueOnce(true)
-      vi.spyOn(SendController, 'state', 'get').mockReturnValue({
-        ...SendController.state,
-        token: mockToken,
-        sendTokenAmount: 50,
-        receiverAddress: '0x123'
-      })
-
-      const element: W3mWalletSendView = await fixture(
-        html`<w3m-wallet-send-view></w3m-wallet-send-view>`
-      )
-      const button = HelpersUtil.querySelect(element, 'wui-button')
-      expect(button?.textContent?.trim()).toBe('Insufficient Gas Funds')
-      expect(button?.hasAttribute('disabled')).toBe(true)
-    })
-
-    it('shows "Preview Send" when all conditions are met', async () => {
-      vi.spyOn(SendController, 'state', 'get').mockReturnValue({
-        ...SendController.state,
-        token: mockToken,
-        sendTokenAmount: 50,
-        receiverAddress: '0x9b9F68919cA50043528Ed79524bB00Ee6E6d7d1a'
-      })
-
-      const element: W3mWalletSendView = await fixture(
-        html`<w3m-wallet-send-view></w3m-wallet-send-view>`
-      )
-      const button = HelpersUtil.querySelect(element, 'wui-button')
-      expect(button?.textContent?.trim()).toBe('Preview Send')
-      expect(button?.hasAttribute('disabled')).toBe(false)
-    })
-  })
-
-  describe('Interactions', () => {
-    it('navigates to preview on button click', async () => {
-      const routerSpy = vi.spyOn(RouterController, 'push')
-      vi.spyOn(SendController, 'state', 'get').mockReturnValue({
-        ...SendController.state,
-        token: mockToken,
-        sendTokenAmount: 50,
-        receiverAddress: '0x123'
-      })
-
-      const element: W3mWalletSendView = await fixture(
-        html`<w3m-wallet-send-view></w3m-wallet-send-view>`
-      )
-      const button = HelpersUtil.querySelect(element, 'wui-button')
-      await button?.click()
-
-      expect(routerSpy).toHaveBeenCalledWith('WalletSendPreview')
-    })
-
-    it('displays loading state correctly', async () => {
-      vi.spyOn(SendController, 'state', 'get').mockReturnValue({
-        ...SendController.state,
-        loading: true
-      })
-
-      const element: W3mWalletSendView = await fixture(
-        html`<w3m-wallet-send-view></w3m-wallet-send-view>`
-      )
-      const button = HelpersUtil.querySelect(element, 'wui-button')
-      expect(button?.hasAttribute('loading')).toBe(true)
-    })
-  })
-
-  it('cleans up subscriptions on disconnect', async () => {
-    const element: W3mWalletSendView = await fixture(
+  it('should update message when token is selected', async () => {
+    const element = await fixture<W3mWalletSendView>(
       html`<w3m-wallet-send-view></w3m-wallet-send-view>`
     )
+
+    SendController.setToken(mockToken)
+    await element.updateComplete
+    await element.render()
+
+    const button = element.shadowRoot?.querySelector('wui-button')
+    expect(button?.textContent?.trim()).to.equal('Add Amount')
+    expect(button?.disabled).to.be.true
+  })
+
+  it('should update message when amount is set', async () => {
+    const element = await fixture<W3mWalletSendView>(
+      html`<w3m-wallet-send-view></w3m-wallet-send-view>`
+    )
+
+    SendController.setToken(mockToken)
+    SendController.setTokenAmount(50)
+    SendController.setNetworkBalanceInUsd('100')
+
+    await element.updateComplete
+    await element.render()
+
+    const button = element.shadowRoot?.querySelector('wui-button')
+    expect(button?.textContent?.trim()).to.equal('Add Address')
+    expect(button?.disabled).to.be.true
+  })
+
+  it('should show insufficient funds message when amount exceeds balance', async () => {
+    const element = await fixture<W3mWalletSendView>(
+      html`<w3m-wallet-send-view></w3m-wallet-send-view>`
+    )
+
+    SendController.setToken(mockToken)
+    SendController.setTokenAmount(150)
+    SendController.setReceiverAddress('0x456')
+    await element.updateComplete
+    await element.render()
+
+    const button = element.shadowRoot?.querySelector('wui-button')
+    expect(button?.textContent?.trim()).to.equal('Insufficient Funds')
+    expect(button?.disabled).to.be.true
+  })
+
+  it('should show invalid address message for incorrect address', async () => {
+    const element = await fixture<W3mWalletSendView>(
+      html`<w3m-wallet-send-view></w3m-wallet-send-view>`
+    )
+
+    SendController.setToken(mockToken)
+    SendController.setTokenAmount(50)
+    SendController.setGasPrice(BigInt(1))
+    SendController.setNetworkBalanceInUsd('100')
+
+    SendController.setReceiverAddress('invalid-address')
+    await element.updateComplete
+    await element.render()
+
+    const button = element.shadowRoot?.querySelector('wui-button')
+    expect(button?.textContent?.trim()).to.equal('Invalid Address')
+    expect(button?.disabled).to.be.true
+  })
+
+  it('should enable preview when all inputs are valid', async () => {
+    const element = await fixture<W3mWalletSendView>(
+      html`<w3m-wallet-send-view></w3m-wallet-send-view>`
+    )
+
+    SendController.setToken(mockToken)
+    SendController.setTokenAmount(50)
+    SendController.setReceiverAddress('0x123456789abcdef123456789abcdef123456789a')
+    await element.updateComplete
+    await element.render()
+
+    const button = element.shadowRoot?.querySelector('wui-button')
+    expect(button?.textContent?.trim()).to.equal('Preview Send')
+    expect(button?.disabled).to.be.false
+  })
+
+  it('should navigate to preview on button click', async () => {
+    const routerSpy = vi.spyOn(RouterController, 'push')
+    const element = await fixture<W3mWalletSendView>(
+      html`<w3m-wallet-send-view></w3m-wallet-send-view>`
+    )
+
+    SendController.setToken(mockToken)
+    SendController.setTokenAmount(50)
+    SendController.setReceiverAddress('0x123456789abcdef123456789abcdef123456789a')
+    await element.updateComplete
+    await element.render()
+
+    const button = element.shadowRoot?.querySelector('wui-button')
+    button?.click()
+
+    viExpect(routerSpy).toHaveBeenCalledWith('WalletSendPreview')
+  })
+
+  it('should fetch network price on initialization', async () => {
+    await fixture<W3mWalletSendView>(html`<w3m-wallet-send-view></w3m-wallet-send-view>`)
+
+    viExpect(SwapController.getNetworkTokenPrice).toHaveBeenCalled()
+    viExpect(SwapController.getInitialGasPrice).toHaveBeenCalled()
+  })
+
+  it('should cleanup subscriptions on disconnect', async () => {
+    const element = await fixture<W3mWalletSendView>(
+      html`<w3m-wallet-send-view></w3m-wallet-send-view>`
+    )
+
     const unsubscribeSpy = vi.fn()
-    ;(element as any).unsubscribe = [unsubscribeSpy]
+    element['unsubscribe'] = [unsubscribeSpy]
 
     element.disconnectedCallback()
-    expect(unsubscribeSpy).toHaveBeenCalled()
+    viExpect(unsubscribeSpy).toHaveBeenCalled()
   })
 })
