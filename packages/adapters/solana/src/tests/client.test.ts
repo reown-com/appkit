@@ -9,6 +9,8 @@ import { SolanaAdapter } from '../client'
 import { SolStoreUtil } from '../utils/SolanaStoreUtil'
 import type { WalletStandardProvider } from '../providers/WalletStandardProvider'
 import { watchStandard } from '../utils/watchStandard'
+import mockAppKit from './mocks/AppKit'
+import { mockCoinbaseWallet } from './mocks/CoinbaseWallet'
 
 // Mock external dependencies
 vi.mock('@solana/web3.js', () => ({
@@ -85,6 +87,36 @@ describe('SolanaAdapter', () => {
       networks: mockNetworks,
       projectId: 'test-project-id',
       namespace: 'solana'
+    })
+  })
+
+  describe('SolanaAdapter - syncConnectors', () => {
+    it('should not add coinbase connector if window.coinbaseSolana does not exist', async () => {
+      const addConnectorSpy = vi.spyOn(adapter, 'addConnector' as any)
+      adapter.syncConnectors(
+        { networks: [solana], projectId: '123', features: { email: false } },
+        mockAppKit
+      )
+      expect(addConnectorSpy).not.toHaveBeenCalled()
+    })
+
+    it('should add coinbase connector if window.coinbaseSolana exist', async () => {
+      ;(window as any).coinbaseSolana = mockCoinbaseWallet()
+      const addConnectorSpy = vi.spyOn(adapter, 'addConnector' as any)
+      adapter.syncConnectors(
+        { networks: [solana], projectId: '123', features: { email: false } },
+        mockAppKit
+      )
+      expect(addConnectorSpy).toHaveBeenCalledOnce()
+      expect(addConnectorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: 'coinbaseWallet',
+          type: 'EXTERNAL',
+          name: 'Coinbase Wallet',
+          chain: 'solana',
+          chains: []
+        })
+      )
     })
   })
 
