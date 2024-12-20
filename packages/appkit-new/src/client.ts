@@ -616,7 +616,7 @@ export class AppKit {
     OptionsController.setIncludeWalletIds(options.includeWalletIds)
     OptionsController.setExcludeWalletIds(options.excludeWalletIds)
     if (options.excludeWalletIds) {
-      ApiController.searchWalletByIds({ ids: options.excludeWalletIds })
+      ApiController.initializeExcludedWalletRdns({ ids: options.excludeWalletIds })
     }
     OptionsController.setFeaturedWalletIds(options.featuredWalletIds)
     OptionsController.setTokens(options.tokens)

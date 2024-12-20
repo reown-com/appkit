@@ -489,9 +489,9 @@ describe('ApiController', () => {
     OptionsController.setExcludeWalletIds(excludeWalletIds)
 
     const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data, count: data.length })
-    const fetchWalletsSpy = vi.spyOn(ApiController, 'searchWalletByIds')
+    const fetchWalletsSpy = vi.spyOn(ApiController, 'initializeExcludedWalletRdns')
 
-    await ApiController.searchWalletByIds({ ids: excludeWalletIds })
+    await ApiController.initializeExcludedWalletRdns({ ids: excludeWalletIds })
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',

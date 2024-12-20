@@ -1,3 +1,20 @@
 import { defineProject } from 'vitest/config'
 
-export default defineProject({})
+// Exclude the exports directory from the test suite
+export default defineProject({
+  test: {
+    // @ts-ignore
+    coverage: {
+      exclude: [
+        'exports',
+        'node_modules',
+        'dist',
+        'tests/**',
+        './*.ts',
+        './*.json',
+        './*.ts',
+        './*.md'
+      ]
+    }
+  }
+})
