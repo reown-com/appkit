@@ -139,10 +139,15 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     return Promise.resolve('0x')
   }
 
-  public async getAccounts(): Promise<AdapterBlueprint.GetAccountsResult> {
-    return Promise.resolve({
-      accounts: []
-    })
+  public async getAccounts(
+    params: AdapterBlueprint.GetAccountsParams
+  ): Promise<AdapterBlueprint.GetAccountsResult> {
+    const connector = this.connectors.find(c => c.id === params.id)
+    if (!connector) {
+      return { accounts: [] }
+    }
+
+    return { accounts: await connector.getAccounts() }
   }
 
   public async signMessage(

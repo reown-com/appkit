@@ -115,6 +115,21 @@ export class CoinbaseWalletProvider extends ProviderEventEmitter implements Sola
     return Promise.reject(new Error('The "request" method is not supported on Coinbase Wallet'))
   }
 
+  public async getAccounts() {
+    const account = this.getAccount()
+    if (!account) {
+      return Promise.resolve([])
+    }
+
+    return Promise.resolve([
+      {
+        namespace: this.chain,
+        address: account.toBase58(),
+        type: 'eoa'
+      } as const
+    ])
+  }
+
   private getAccount<Required extends boolean>(
     required?: Required
   ): Required extends true ? PublicKey : PublicKey | undefined {

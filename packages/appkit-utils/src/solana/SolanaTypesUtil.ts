@@ -62,6 +62,13 @@ export interface Provider
     options?: SendTransactionOptions
   ) => Promise<TransactionSignature>
   signAllTransactions: <T extends AnyTransaction[]>(transactions: T) => Promise<T>
+  getAccounts: () => Promise<
+    {
+      namespace: 'solana'
+      address: string
+      type: 'eoa'
+    }[]
+  >
 }
 
 export interface ProviderEventEmitterMethods {

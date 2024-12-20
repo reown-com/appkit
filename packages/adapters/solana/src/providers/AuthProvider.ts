@@ -10,7 +10,7 @@ import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 import base58 from 'bs58'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
-import type { CaipNetwork, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
+import type { CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
 import { ConstantsUtil } from '@reown/appkit-common'
 import type { RequestArguments } from '@reown/appkit-core'
 
@@ -18,7 +18,7 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
   public readonly id = ConstantsUtil.CONNECTOR_ID.AUTH
   public readonly name = ConstantsUtil.CONNECTOR_ID.AUTH
   public readonly type = 'AUTH'
-  public readonly chain: ChainNamespace = 'solana'
+  public readonly chain = ConstantsUtil.CHAIN.SOLANA
   public readonly provider: W3mFrameProvider
 
   private readonly requestedChains: CaipNetwork[]
@@ -157,6 +157,20 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
     this.emit('chainChanged', chainId)
 
     return user
+  }
+
+  public async getAccounts() {
+    if (!this.session) {
+      return Promise.resolve([])
+    }
+
+    return Promise.resolve([
+      {
+        namespace: this.chain,
+        address: this.session.address,
+        type: 'eoa'
+      } as const
+    ])
   }
 
   // -- Private ------------------------------------------- //

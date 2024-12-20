@@ -247,8 +247,14 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Sola
     return Promise.reject(new WalletStandardFeatureNotSupportedError('request'))
   }
 
-  public getCoreProvider() {
-    return this as SolanaProvider
+  public async getAccounts() {
+    return Promise.resolve(
+      this.wallet.accounts.map(account => ({
+        namespace: this.chain,
+        address: account.address,
+        type: 'eoa' as const
+      }))
+    )
   }
 
   // -- Private ------------------------------------------- //

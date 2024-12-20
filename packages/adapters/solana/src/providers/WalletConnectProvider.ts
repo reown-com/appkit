@@ -12,7 +12,7 @@ import {
   type SendOptions
 } from '@solana/web3.js'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
-import { ConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
+import { ConstantsUtil, type CaipNetwork, ParseUtil, type CaipAddress } from '@reown/appkit-common'
 import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 import { WcHelpersUtil, type RequestArguments } from '@reown/appkit'
 import { WalletConnectMethodNotSupportedError } from './shared/Errors.js'
@@ -219,6 +219,18 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
   public request<T>(args: RequestArguments): Promise<T> {
     // @ts-expect-error - There is a miss match in `args` from CoreProvider and internalRequest
     return this.internalRequest(args.method, args.params)
+  }
+
+  public async getAccounts() {
+    const accounts = (this.session?.namespaces['solana']?.accounts || []) as CaipAddress[]
+
+    return Promise.resolve(
+      accounts.map(account => ({
+        namespace: this.chain,
+        address: ParseUtil.parseCaipAddress(account).address,
+        type: 'eoa' as const
+      }))
+    )
   }
 
   // -- Private ------------------------------------------ //
