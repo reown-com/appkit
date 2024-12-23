@@ -189,15 +189,15 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
         const sessionAddress = siweSession?.address
         const requestedCaipNetworkId = chainId
 
-        const signOutOnNetworkChange = siwe.options.signOutOnNetworkChange
-        const signOutOnAccountChange = siwe.options.signOutOnAccountChange
+        const shouldSignOutOnNetworkChange = siwe.options.signOutOnNetworkChange
+        const shouldSignOutOnAccountChange = siwe.options.signOutOnAccountChange
 
-        const networkMismatch =
-          signOutOnNetworkChange && siweCaipNetworkId !== requestedCaipNetworkId
-        const addressMismatch =
-          signOutOnAccountChange && !HelpersUtil.isLowerCaseMatch(sessionAddress, address)
+        const isNetworkMismatch =
+          shouldSignOutOnNetworkChange && siweCaipNetworkId !== requestedCaipNetworkId
+        const isAddressMismatch =
+          shouldSignOutOnAccountChange && !HelpersUtil.isLowerCaseMatch(sessionAddress, address)
 
-        const shouldSignOut = networkMismatch || addressMismatch
+        const shouldSignOut = isNetworkMismatch || isAddressMismatch
 
         if (!siweSession || shouldSignOut) {
           return []
