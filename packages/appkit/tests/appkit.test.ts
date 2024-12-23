@@ -666,7 +666,7 @@ describe('Base', () => {
         chainNamespace: 'eip155' as const
       }
 
-      vi.spyOn(StorageUtil, 'getActiveNetworkProps').mockReturnValueOnce({
+      vi.spyOn(StorageUtil, 'getActiveNetworkProps').mockReturnValue({
         namespace: 'eip155',
         chainId: '1',
         caipNetworkId: '1'
@@ -943,6 +943,11 @@ describe('Base', () => {
   })
   describe('syncExistingConnection', () => {
     it('should set status to "connecting" and sync the connection when a connector and namespace are present', async () => {
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValueOnce({
+        currentTab: 0,
+        addressLabels: new Map(),
+        allAccounts: []
+      })
       vi.mocked(CoreHelperUtil.isClient).mockReturnValueOnce(true)
       vi.spyOn(StorageUtil, 'getActiveNamespace').mockReturnValue('eip155')
       vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('test-connector')
