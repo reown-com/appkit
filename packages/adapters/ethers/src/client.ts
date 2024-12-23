@@ -264,7 +264,7 @@ export class EthersAdapter extends AdapterBlueprint {
           id: key,
           explorerId: PresetsUtil.ConnectorExplorerIds[key],
           imageUrl: options?.connectorImages?.[key],
-          name: PresetsUtil.ConnectorNamesMap[key] || key,
+          name: PresetsUtil.ConnectorNamesMap[key] || 'Unknown',
           imageId: PresetsUtil.ConnectorImageIds[key],
           type: PresetsUtil.ConnectorTypesMap[key] ?? 'EXTERNAL',
           info: isInjectedConnector ? undefined : { rdns: key },
@@ -304,9 +304,10 @@ export class EthersAdapter extends AdapterBlueprint {
       if (!existingConnector) {
         const type = PresetsUtil.ConnectorTypesMap[CommonConstantsUtil.CONNECTOR_ID.EIP6963]
 
-        if (type && this.namespace) {
+        const id = info?.rdns || info?.name || info?.uuid
+        if (type && this.namespace && id) {
           this.addConnector({
-            id: info?.rdns || '',
+            id,
             type,
             imageUrl: info?.icon,
             name: info?.name || 'Unknown',

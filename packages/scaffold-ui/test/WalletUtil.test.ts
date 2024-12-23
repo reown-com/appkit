@@ -206,7 +206,7 @@ describe('WalletUtil', () => {
         {
           type: 'ANNOUNCED' as const,
           info: { rdns: 'io.someotherwallet' },
-          name: '',
+          name: 'Test Wallet',
           id: '1233',
           chain: 'eip155' as const
         }
