@@ -65,11 +65,11 @@ export const ConnectorController = {
 
       const isAuthConnector = firstItem?.id === ConstantsUtil.CONNECTOR_ID.AUTH
 
-      if (keyConnectors.length > 1) {
+      if (keyConnectors.length > 1 && firstItem) {
         mergedConnectors.push({
-          name: firstItem?.name,
-          imageUrl: firstItem?.imageUrl,
-          imageId: firstItem?.imageId,
+          name: firstItem.name,
+          imageUrl: firstItem.imageUrl,
+          imageId: firstItem.imageId,
           connectors: [...keyConnectors],
           type: isAuthConnector ? 'AUTH' : 'MULTI_CHAIN',
           // These values are just placeholders, we don't use them in multi-chain connector select screen
