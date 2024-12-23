@@ -919,7 +919,7 @@ export class AppKit {
         return result?.signature || ''
       },
       sendTransaction: async (args: SendTransactionArgs) => {
-        if (args.chainNamespace === 'eip155') {
+        if (args.chainNamespace === ConstantsUtil.CHAIN.EVM) {
           const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
           const provider = ProviderUtil.getProvider(
@@ -933,7 +933,7 @@ export class AppKit {
         return ''
       },
       estimateGas: async (args: EstimateGasTransactionArgs) => {
-        if (args.chainNamespace === 'eip155') {
+        if (args.chainNamespace === ConstantsUtil.CHAIN.EVM) {
           const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
           const provider = ProviderUtil.getProvider(
             ChainController.state.activeChain as ChainNamespace
@@ -1191,7 +1191,7 @@ export class AppKit {
 
       // To keep backwards compatibility, eip155 chainIds are numbers and not actual caipChainIds
       const caipAddress =
-        namespace === 'eip155'
+        namespace === ConstantsUtil.CHAIN.EVM
           ? (`eip155:${user.chainId}:${user.address}` as CaipAddress)
           : (`${user.chainId}:${user.address}` as CaipAddress)
       this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
@@ -1211,7 +1211,7 @@ export class AppKit {
         CoreHelperUtil.createAccount(
           namespace,
           account.address,
-          namespace === 'eip155' ? account.type : 'eoa'
+          namespace === ConstantsUtil.CHAIN.EVM ? account.type : 'eoa'
         )
       )
 
@@ -1408,7 +1408,7 @@ export class AppKit {
         if (
           this.caipNetworks &&
           ChainController.state.activeCaipNetwork &&
-          (adapter as ChainAdapter)?.namespace !== 'eip155'
+          (adapter as ChainAdapter)?.namespace !== ConstantsUtil.CHAIN.EVM
         ) {
           const provider = adapter?.getWalletConnectProvider({
             caipNetworks: this.caipNetworks,
@@ -1508,13 +1508,13 @@ export class AppKit {
     StorageUtil.setConnectedConnectorId(id)
   }
 
-  private async syncAccount({
-    address,
-    chainId,
-    chainNamespace
-  }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
-    chainNamespace: ChainNamespace
-  }) {
+  private async syncAccount(
+    params: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
+      chainNamespace: ChainNamespace
+    }
+  ) {
+    const { address, chainId, chainNamespace } = params
+
     const { namespace: activeNamespace, chainId: activeChainId } =
       StorageUtil.getActiveNetworkProps()
     const chainIdToUse = chainId || activeChainId
@@ -1551,6 +1551,12 @@ export class AppKit {
       return
     }
 
+    if (caipNetwork.testnet) {
+      this.setBalance('0.00', caipNetwork.nativeCurrency.symbol, caipNetwork.chainNamespace)
+
+      return
+    }
+
     const balance = await adapter?.getBalance({
       address: params.address,
       chainId: params.chainId,
@@ -1570,11 +1576,13 @@ export class AppKit {
       providerType === UtilConstantsUtil.CONNECTOR_TYPE_ANNOUNCED ||
       providerType === UtilConstantsUtil.CONNECTOR_TYPE_INJECTED
     ) {
-      const connector = this.getConnectors().find(c => c.id === connectorId)
-      if (connector) {
-        const { info, name, imageUrl } = connector
-        const icon = imageUrl || this.getConnectorImage(connector)
-        this.setConnectedWalletInfo({ name, icon, ...info }, chainNamespace)
+      if (connectorId) {
+        const connector = this.getConnectors().find(c => c.id === connectorId)
+        if (connector) {
+          const { info, name, imageUrl } = connector
+          const icon = imageUrl || this.getConnectorImage(connector)
+          this.setConnectedWalletInfo({ name, icon, ...info }, chainNamespace)
+        }
       }
     } else if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
       const provider = ProviderUtil.getProvider(chainNamespace)
@@ -1612,7 +1620,10 @@ export class AppKit {
   }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
     chainNamespace: ChainNamespace
   }) {
-    if (chainNamespace !== 'eip155') {
+    const activeCaipNetwork = this.caipNetworks?.find(
+      n => n.caipNetworkId === `${chainNamespace}:${chainId}`
+    )
+    if (chainNamespace !== ConstantsUtil.CHAIN.EVM || activeCaipNetwork?.testnet) {
       return
     }
     try {
