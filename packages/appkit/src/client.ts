@@ -66,6 +66,7 @@ import {
 import {
   CaipNetworksUtil,
   ErrorUtil,
+  HelpersUtil,
   LoggerUtil,
   ConstantsUtil as UtilConstantsUtil
 } from '@reown/appkit-utils'
@@ -1192,8 +1193,15 @@ export class AppKit {
         namespace === 'eip155'
           ? (`eip155:${user.chainId}:${user.address}` as CaipAddress)
           : (`${user.chainId}:${user.address}` as CaipAddress)
-      this.setCaipAddress(caipAddress, namespace)
       this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
+      if (!HelpersUtil.isLowerCaseMatch(user.address, AccountController.state.address)) {
+        this.syncIdentity({
+          address: user.address,
+          chainId: user.chainId,
+          chainNamespace: namespace
+        })
+      }
+      this.setCaipAddress(caipAddress, namespace)
 
       const preferredAccountType = (user.preferredAccountType || 'eoa') as W3mFrameTypes.AccountType
       this.setPreferredAccountType(preferredAccountType, namespace)
@@ -1511,7 +1519,7 @@ export class AppKit {
     const chainIdToUse = chainId || activeChainId
 
     // Only update state when needed
-    if (address?.toLowerCase() !== AccountController.state.address?.toLowerCase()) {
+    if (!HelpersUtil.isLowerCaseMatch(address, AccountController.state.address)) {
       this.setCaipAddress(`${chainNamespace}:${chainId}:${address}`, chainNamespace)
       await this.syncIdentity({ address, chainId, chainNamespace })
     }
