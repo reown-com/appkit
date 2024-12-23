@@ -6,7 +6,7 @@ import { html } from 'lit'
 type Component = Meta<WuiTabs>
 
 export default {
-  title: 'Composites/wui-tabs',
+  title: 'Components/Tabs',
   args: {
     size: 'md',
     tabs: [
