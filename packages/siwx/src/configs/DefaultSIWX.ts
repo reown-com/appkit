@@ -1,6 +1,7 @@
 import { SIWXConfig } from '../core/SIWXConfig.js'
 import { InformalMessenger } from '../messengers/index.js'
 import { LocalStorage } from '../storages/index.js'
+import { BIP122Verifier } from '../verifiers/BIP122Verifier.js'
 import { EIP155Verifier, SolanaVerifier } from '../verifiers/index.js'
 
 const DEFAULTS = {
@@ -11,11 +12,18 @@ const DEFAULTS = {
       getNonce: async () => Promise.resolve(Math.round(Math.random() * 10000).toString())
     }),
 
-  getDefaultVerifiers: () => [new EIP155Verifier(), new SolanaVerifier()],
+  getDefaultVerifiers: () => [new EIP155Verifier(), new SolanaVerifier(), new BIP122Verifier()],
 
   getDefaultStorage: () => new LocalStorage({ key: '@appkit/siwx' })
 }
 
+/**
+ * This is the default configuration for SIWX.
+ *
+ * This configuration is split in three pieces `messenger`, `verifiers` and `storage`.
+ * By default it uses InformalMessenger, EIP155Verifier, SolanaVerifier, BIP122Verifier, and LocalStorage.
+ * You may override any of these defaults by passing your own configuration for the constructor.
+ */
 export class DefaultSIWX extends SIWXConfig {
   constructor(params: Partial<SIWXConfig.ConstructorParams> = {}) {
     super({

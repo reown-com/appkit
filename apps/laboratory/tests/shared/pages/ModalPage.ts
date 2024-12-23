@@ -9,6 +9,7 @@ import type { TimingRecords } from '../fixtures/timing-fixture'
 import { WalletPage } from './WalletPage'
 import { WalletValidator } from '../validators/WalletValidator'
 import { routeInterceptUrl } from '../utils/verify'
+import type { WalletFeature } from '@reown/appkit'
 
 const maliciousUrl = 'https://malicious-app-verify-simulation.vercel.app'
 
@@ -16,11 +17,15 @@ export type ModalFlavor =
   | 'default'
   | 'external'
   | 'debug-mode'
-  | 'verify-valid'
-  | 'verify-domain-mismatch'
-  | 'verify-evil'
+  | 'wagmi-verify-valid'
+  | 'wagmi-verify-domain-mismatch'
+  | 'wagmi-verify-evil'
+  | 'ethers-verify-valid'
+  | 'ethers-verify-domain-mismatch'
+  | 'ethers-verify-evil'
   | 'no-email'
   | 'no-socials'
+  | 'wallet-button'
   | 'siwe'
   | 'all'
 
@@ -28,9 +33,12 @@ function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
   const urlsByFlavor: Partial<Record<ModalFlavor, string>> = {
     default: `${baseUrl}library/${library}/`,
     external: `${baseUrl}library/external/`,
-    'verify-valid': `${baseUrl}library/verify-valid/`,
-    'verify-domain-mismatch': `${baseUrl}library/verify-domain-mismatch/`,
-    'verify-evil': maliciousUrl
+    'wagmi-verify-valid': `${baseUrl}library/wagmi-verify-valid/`,
+    'wagmi-verify-domain-mismatch': `${baseUrl}library/wagmi-verify-domain-mismatch/`,
+    'wagmi-verify-evil': maliciousUrl,
+    'ethers-verify-valid': `${baseUrl}library/ethers-verify-valid/`,
+    'ethers-verify-domain-mismatch': `${baseUrl}library/ethers-verify-domain-mismatch/`,
+    'ethers-verify-evil': maliciousUrl
   }
 
   return urlsByFlavor[flavor] || `${baseUrl}library/${library}-${flavor}/`
@@ -57,8 +65,11 @@ export class ModalPage {
   }
 
   async load() {
-    if (this.flavor === 'verify-evil') {
-      await routeInterceptUrl(this.page, maliciousUrl, this.baseURL, '/library/verify-evil/')
+    if (this.flavor === 'wagmi-verify-evil') {
+      await routeInterceptUrl(this.page, maliciousUrl, this.baseURL, '/library/wagmi-verify-evil/')
+    }
+    if (this.flavor === 'ethers-verify-evil') {
+      await routeInterceptUrl(this.page, maliciousUrl, this.baseURL, '/library/ethers-verify-evil/')
     }
 
     await this.page.goto(this.url)
@@ -82,6 +93,24 @@ export class ModalPage {
     const qrLoadInitiatedTime = new Date()
 
     // Using getByTestId() doesn't work on my machine, I'm guessing because this element is inside of a <slot>
+    const qrCode = this.page.locator('wui-qr-code')
+    await expect(qrCode).toBeVisible()
+
+    const uri = this.assertDefined(await qrCode.getAttribute('uri'))
+    const qrLoadedTime = new Date()
+    if (timingRecords) {
+      timingRecords.push({
+        item: 'qrLoad',
+        timeMs: qrLoadedTime.getTime() - qrLoadInitiatedTime.getTime()
+      })
+    }
+
+    return uri
+  }
+
+  async getConnectUriFromQRModal(timingRecords?: TimingRecords): Promise<string> {
+    const qrLoadInitiatedTime = new Date()
+
     const qrCode = this.page.locator('wui-qr-code')
     await expect(qrCode).toBeVisible()
 
@@ -453,6 +482,10 @@ export class ModalPage {
     await tabWebApp.click()
   }
 
+  async clickWalletButton(id: string) {
+    await this.page.getByTestId(`wallet-button-${id}`).click()
+  }
+
   async clickHookDisconnectButton() {
     const disconnectHookButton = this.page.getByTestId('disconnect-hook-button')
     await expect(disconnectHookButton).toBeVisible()
@@ -526,7 +559,7 @@ export class ModalPage {
     await this.page.getByTestId('wui-profile-button').click()
   }
 
-  async getWalletFeaturesButton(feature: 'onramp' | 'swap' | 'receive' | 'send') {
+  async getWalletFeaturesButton(feature: WalletFeature) {
     const walletFeatureButton = this.page.getByTestId(`wallet-features-${feature}-button`)
     await expect(walletFeatureButton).toBeVisible()
 
@@ -576,18 +609,5 @@ export class ModalPage {
 
   async switchNetworkWithHook() {
     await this.page.getByTestId('switch-network-hook-button').click()
-  }
-
-  async clickLegalCheckbox() {
-    const legalCheckbox = this.page.getByTestId('w3m-legal-checkbox')
-    await expect(legalCheckbox).toBeVisible()
-    const boundingBox = await legalCheckbox.boundingBox()
-    if (!boundingBox) {
-      throw new Error('Legal checkbox bounding box not found')
-    }
-    const x = boundingBox.x + boundingBox.width / 2 - 100
-    const y = boundingBox.y + boundingBox.height / 2
-    // Click on the left side of the checkbox to avoid clicking on links
-    await this.page.mouse.click(x, y)
   }
 }

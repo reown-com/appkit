@@ -40,6 +40,7 @@ function headings() {
     BuyInProgress: 'Buy',
     ConnectingExternal: name ?? 'Connect Wallet',
     ConnectingWalletConnect: name ?? 'WalletConnect',
+    ConnectingWalletConnectBasic: 'WalletConnect',
     ConnectingSiwe: 'Sign In',
     Convert: 'Convert',
     ConvertSelectToken: 'Select token',
@@ -59,7 +60,6 @@ function headings() {
     Transactions: 'Activity',
     UnsupportedChain: 'Switch Network',
     UpgradeEmailWallet: 'Upgrade your Wallet',
-    UpgradeToSmartAccount: undefined,
     UpdateEmailWallet: 'Edit Email',
     UpdateEmailPrimaryOtp: 'Confirm Current Email',
     UpdateEmailSecondaryOtp: 'Confirm New Email',
@@ -210,12 +210,13 @@ export class W3mHeader extends LitElement {
   private leftHeaderTemplate() {
     const { view } = RouterController.state
     const isConnectHelp = view === 'Connect'
+    const isEmbeddedEnable = OptionsController.state.enableEmbedded
     const isApproveTransaction = view === 'ApproveTransaction'
-    const isUpgradeToSmartAccounts = view === 'UpgradeToSmartAccount'
     const isConnectingSIWEView = view === 'ConnectingSiwe'
     const isAccountView = view === 'Account'
 
-    const shouldHideBack = isApproveTransaction || isUpgradeToSmartAccounts || isConnectingSIWEView
+    const shouldHideBack =
+      isApproveTransaction || isConnectingSIWEView || (isConnectHelp && isEmbeddedEnable)
 
     if (isAccountView) {
       return html`<wui-select

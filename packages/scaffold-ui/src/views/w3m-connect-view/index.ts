@@ -13,6 +13,10 @@ import { state } from 'lit/decorators/state.js'
 import { property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+import { WalletUtil } from '../../utils/WalletUtil.js'
+
+// -- Constants ----------------------------------------- //
+const SCROLL_THRESHOLD = 470
 
 @customElement('w3m-connect-view')
 export class W3mConnectView extends LitElement {
@@ -28,9 +32,13 @@ export class W3mConnectView extends LitElement {
 
   @state() private features = OptionsController.state.features
 
+  @state() private enableWallets = OptionsController.state.enableWallets
+
   @property() private walletGuide: WalletGuideType = 'get-started'
 
   @state() private checked = false
+
+  private resizeObserver?: ResizeObserver
 
   public constructor() {
     super()
@@ -39,21 +47,30 @@ export class W3mConnectView extends LitElement {
         this.connectors = val
         this.authConnector = this.connectors.find(c => c.type === 'AUTH')
       }),
-      OptionsController.subscribeKey('features', val => (this.features = val))
+      OptionsController.subscribeKey('features', val => (this.features = val)),
+      OptionsController.subscribeKey('enableWallets', val => (this.enableWallets = val))
     )
   }
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
+    this.resizeObserver?.disconnect()
     const connectEl = this.shadowRoot?.querySelector('.connect')
     connectEl?.removeEventListener('scroll', this.handleConnectListScroll.bind(this))
   }
 
   public override firstUpdated() {
     const connectEl = this.shadowRoot?.querySelector('.connect')
-    // Use requestAnimationFrame to access scroll properties before the next repaint
-    requestAnimationFrame(this.handleConnectListScroll.bind(this))
-    connectEl?.addEventListener('scroll', this.handleConnectListScroll.bind(this))
+    if (connectEl) {
+      // Use requestAnimationFrame to access scroll properties before the next repaint
+      requestAnimationFrame(this.handleConnectListScroll.bind(this))
+      connectEl?.addEventListener('scroll', this.handleConnectListScroll.bind(this))
+      this.resizeObserver = new ResizeObserver(() => {
+        this.handleConnectListScroll()
+      })
+      this.resizeObserver.observe(connectEl)
+      this.handleConnectListScroll()
+    }
   }
 
   // -- Render -------------------------------------------- //
@@ -73,8 +90,10 @@ export class W3mConnectView extends LitElement {
       disabled
     }
 
+    const enableWalletGuide = OptionsController.state.enableWalletGuide
+
     const socials = this.features?.socials
-    const enableWallets = OptionsController.state.enableWallets
+    const enableWallets = this.enableWallets
 
     const socialsExist = socials && socials.length
     const socialOrEmailLoginEnabled = socialsExist || this.authConnector
@@ -84,21 +103,23 @@ export class W3mConnectView extends LitElement {
     return html`
       <wui-flex flexDirection="column">
         ${this.legalCheckboxTemplate()}
-        <wui-flex flexDirection="column" class=${classMap(classes)}>
+        <wui-flex
+          data-testid="w3m-connect-scroll-view"
+          flexDirection="column"
+          class=${classMap(classes)}
+        >
           <wui-flex
+            class="connect-methods"
             flexDirection="column"
+            gap="s"
             .padding=${socialOrEmailLoginEnabled &&
             enableWallets &&
+            enableWalletGuide &&
             this.walletGuide === 'get-started'
               ? ['3xs', 's', '0', 's']
               : ['3xs', 's', 's', 's']}
           >
-            <w3m-email-login-widget
-              walletGuide=${this.walletGuide}
-              tabIdx=${ifDefined(tabIndex)}
-            ></w3m-email-login-widget>
-            <w3m-social-login-widget tabIdx=${ifDefined(tabIndex)}></w3m-social-login-widget>
-            ${this.walletListTemplate(tabIndex)}
+            ${this.renderConnectMethod(tabIndex)}
           </wui-flex>
         </wui-flex>
         ${this.guideTemplate(disabled)}
@@ -108,10 +129,137 @@ export class W3mConnectView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private renderConnectMethod(tabIndex?: number) {
+    const connectMethodsOrder = WalletUtil.getConnectOrderMethod(this.features, this.connectors)
+
+    return html`${connectMethodsOrder.map((method, index) => {
+      switch (method) {
+        case 'email':
+          return html`${this.emailTemplate(tabIndex)} ${this.separatorTemplate(index, 'email')}`
+        case 'social':
+          return html`${this.socialListTemplate(tabIndex)}
+          ${this.separatorTemplate(index, 'social')}`
+        case 'wallet':
+          return html`${this.walletListTemplate(tabIndex)}
+          ${this.separatorTemplate(index, 'wallet')}`
+        default:
+          return null
+      }
+    })}`
+  }
+
+  private checkMethodEnabled(name: 'wallet' | 'social' | 'email') {
+    switch (name) {
+      case 'wallet':
+        return this.enableWallets
+      case 'social':
+        return this.features?.socials && this.features?.socials.length > 0
+      case 'email':
+        return this.features?.email
+      default:
+        return null
+    }
+  }
+
+  private checkIsThereNextMethod(currentIndex: number): string | undefined {
+    const connectMethodsOrder = WalletUtil.getConnectOrderMethod(this.features, this.connectors)
+
+    const nextMethod = connectMethodsOrder[currentIndex + 1] as
+      | 'wallet'
+      | 'social'
+      | 'email'
+      | undefined
+
+    if (!nextMethod) {
+      return undefined
+    }
+
+    const isNextMethodEnabled = this.checkMethodEnabled(nextMethod)
+
+    if (isNextMethodEnabled) {
+      return nextMethod
+    }
+
+    return this.checkIsThereNextMethod(currentIndex + 1)
+  }
+
+  private separatorTemplate(index: number, type: 'wallet' | 'email' | 'social') {
+    const nextEnabledMethod = this.checkIsThereNextMethod(index)
+    const isExplore = this.walletGuide === 'explore'
+
+    switch (type) {
+      case 'wallet': {
+        const isWalletEnable = this.enableWallets
+
+        return isWalletEnable && nextEnabledMethod && !isExplore
+          ? html`<wui-separator data-testid="wui-separator" text="or"></wui-separator>`
+          : null
+      }
+      case 'email': {
+        const isEmailEnabled = this.features?.email
+        const isNextMethodSocial = nextEnabledMethod === 'social'
+
+        if (isExplore) {
+          return null
+        }
+
+        return isEmailEnabled && !isNextMethodSocial && nextEnabledMethod
+          ? html`<wui-separator
+              data-testid="w3m-email-login-or-separator"
+              text="or"
+            ></wui-separator>`
+          : null
+      }
+      case 'social': {
+        const isSocialEnabled = this.features?.socials && this.features?.socials.length > 0
+        const isNextMethodEmail = nextEnabledMethod === 'email'
+
+        if (isExplore) {
+          return null
+        }
+
+        return isSocialEnabled && !isNextMethodEmail && nextEnabledMethod
+          ? html`<wui-separator data-testid="wui-separator" text="or"></wui-separator>`
+          : null
+      }
+      default:
+        return null
+    }
+  }
+
+  private emailTemplate(tabIndex?: number) {
+    const emailEnabled = this.features?.email
+    const isCreateWalletPage = this.walletGuide === 'explore'
+
+    if (!isCreateWalletPage && !emailEnabled) {
+      return null
+    }
+
+    return html`<w3m-email-login-widget
+      walletGuide=${this.walletGuide}
+      tabIdx=${ifDefined(tabIndex)}
+    ></w3m-email-login-widget>`
+  }
+
+  private socialListTemplate(tabIndex?: number) {
+    const isSocialsEnabled = this.features?.socials && this.features?.socials.length > 0
+    const isCreateWalletPage = this.walletGuide === 'explore'
+
+    if (!isCreateWalletPage && !isSocialsEnabled) {
+      return null
+    }
+
+    return html`<w3m-social-login-widget
+      walletGuide=${this.walletGuide}
+      tabIdx=${ifDefined(tabIndex)}
+    ></w3m-social-login-widget>`
+  }
+
   private walletListTemplate(tabIndex?: number) {
-    const socials = this.features?.socials
-    const emailShowWallets = this.features?.emailShowWallets
-    const enableWallets = OptionsController.state.enableWallets
+    const enableWallets = this.enableWallets
+    const collapseWalletsOldProp = this.features?.emailShowWallets === false
+    const collapseWallets = this.features?.collapseWallets
+    const shouldCollapseWallets = collapseWalletsOldProp || collapseWallets
 
     if (!enableWallets) {
       return null
@@ -125,19 +273,13 @@ export class W3mConnectView extends LitElement {
       return null
     }
 
-    if (this.authConnector && socials) {
-      if (this.authConnector && emailShowWallets) {
-        return html`
-          <wui-flex flexDirection="column" gap="xs" .margin=${['xs', '0', '0', '0'] as const}>
-            <w3m-connector-list tabIdx=${ifDefined(tabIndex)}></w3m-connector-list>
-            <wui-flex class="all-wallets">
-              <w3m-all-wallets-widget tabIdx=${ifDefined(tabIndex)}></w3m-all-wallets-widget>
-            </wui-flex>
-          </wui-flex>
-        `
-      }
+    const hasEmail = this.features?.email
+    const hasSocials = this.features?.socials && this.features.socials.length > 0
+    const hasOtherMethods = hasEmail || hasSocials
 
+    if (hasOtherMethods && shouldCollapseWallets) {
       return html`<wui-list-button
+        data-testid="w3m-collapse-wallets-button"
         tabIdx=${ifDefined(tabIndex)}
         @click=${this.onContinueWalletClick.bind(this)}
         text="Continue with a wallet"
@@ -148,9 +290,13 @@ export class W3mConnectView extends LitElement {
   }
 
   private guideTemplate(disabled = false) {
-    const socials = this.features?.socials
-    const enableWallets = OptionsController.state.enableWallets
+    const enableWalletGuide = OptionsController.state.enableWalletGuide
 
+    if (!enableWalletGuide) {
+      return null
+    }
+
+    const socials = this.features?.socials
     const socialsExist = socials && socials.length
 
     const classes = {
@@ -164,28 +310,11 @@ export class W3mConnectView extends LitElement {
       return null
     }
 
-    if (!enableWallets) {
-      return null
-    }
-
-    if (this.walletGuide === 'explore') {
-      return html`
-        <wui-flex
-          flexDirection="column"
-          .padding=${['0', '0', 'xl', '0']}
-          class=${classMap(classes)}
-        >
-          <w3m-wallet-guide walletGuide=${this.walletGuide}></w3m-wallet-guide>
-        </wui-flex>
-      `
-    }
-
     return html`
-      <wui-flex
-        flexDirection="column"
-        .padding=${['xl', '0', 'xl', '0']}
-        class=${classMap(classes)}
-      >
+      ${this.walletGuide === 'explore'
+        ? html`<wui-separator data-testid="wui-separator" id="explore" text="or"></wui-separator>`
+        : null}
+      <wui-flex flexDirection="column" .padding=${['s', '0', 'xl', '0']} class=${classMap(classes)}>
         <w3m-wallet-guide
           tabIdx=${ifDefined(tabIndex)}
           walletGuide=${this.walletGuide}
@@ -208,23 +337,43 @@ export class W3mConnectView extends LitElement {
   private handleConnectListScroll() {
     const connectEl = this.shadowRoot?.querySelector('.connect') as HTMLElement | undefined
 
-    // If connect element is not found or is not overflowing do not apply the mask
-    if (!connectEl || connectEl.scrollHeight <= 470) {
+    if (!connectEl) {
       return
     }
 
-    connectEl.style.setProperty(
-      '--connect-scroll--top-opacity',
-      MathUtil.interpolate([0, 50], [0, 1], connectEl.scrollTop).toString()
-    )
-    connectEl.style.setProperty(
-      '--connect-scroll--bottom-opacity',
-      MathUtil.interpolate(
-        [0, 50],
-        [0, 1],
-        connectEl.scrollHeight - connectEl.scrollTop - connectEl.offsetHeight
-      ).toString()
-    )
+    const shouldApplyMask = connectEl.scrollHeight > SCROLL_THRESHOLD
+
+    if (shouldApplyMask) {
+      connectEl.style.setProperty(
+        '--connect-mask-image',
+        `linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, calc(1 - var(--connect-scroll--top-opacity))) 0px,
+          rgba(200, 200, 200, calc(1 - var(--connect-scroll--top-opacity))) 1px,
+          black 40px,
+          black calc(100% - 40px),
+          rgba(155, 155, 155, calc(1 - var(--connect-scroll--bottom-opacity))) calc(100% - 1px),
+          rgba(0, 0, 0, calc(1 - var(--connect-scroll--bottom-opacity))) 100%
+        )`
+      )
+
+      connectEl.style.setProperty(
+        '--connect-scroll--top-opacity',
+        MathUtil.interpolate([0, 50], [0, 1], connectEl.scrollTop).toString()
+      )
+      connectEl.style.setProperty(
+        '--connect-scroll--bottom-opacity',
+        MathUtil.interpolate(
+          [0, 50],
+          [0, 1],
+          connectEl.scrollHeight - connectEl.scrollTop - connectEl.offsetHeight
+        ).toString()
+      )
+    } else {
+      connectEl.style.setProperty('--connect-mask-image', 'none')
+      connectEl.style.setProperty('--connect-scroll--top-opacity', '0')
+      connectEl.style.setProperty('--connect-scroll--bottom-opacity', '0')
+    }
   }
 
   // -- Private Methods ----------------------------------- //

@@ -2,11 +2,12 @@ import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import { colorStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { IconType, SizeType } from '../../utils/TypeUtil.js'
+import type { IconColorType, IconType, SizeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
 // -- Svg's-------------------------------- //
+import { arrowTopRightSvg } from '../../assets/svg/arrow-top-right.js'
 import { addSvg } from '../../assets/svg/add.js'
 import { allWalletsSvg } from '../../assets/svg/all-wallets.js'
 import { arrowBottomCircleSvg } from '../../assets/svg/arrow-bottom-circle.js'
@@ -20,6 +21,7 @@ import { bankSvg } from '../../assets/svg/bank.js'
 import { browserSvg } from '../../assets/svg/browser.js'
 import { cardSvg } from '../../assets/svg/card.js'
 import { checkmarkBoldSvg } from '../../assets/svg/checkmark-bold.js'
+import { checkmarkVerifiedSvg } from '../../assets/svg/checkmark-verified.js'
 import { checkmarkSvg } from '../../assets/svg/checkmark.js'
 import { chevronBottomSvg } from '../../assets/svg/chevron-bottom.js'
 import { chevronLeftSvg } from '../../assets/svg/chevron-left.js'
@@ -36,6 +38,8 @@ import { desktopSvg } from '../../assets/svg/desktop.js'
 import { disconnectSvg } from '../../assets/svg/disconnect.js'
 import { discordSvg } from '../../assets/svg/discord.js'
 import { etherscanSvg } from '../../assets/svg/etherscan.js'
+import { exclamationTriangleSvg } from '../../assets/svg/exclamation-triangle.js'
+import { exclamationCircleSvg } from '../../assets/svg/exclamation-circle.js'
 import { extensionSvg } from '../../assets/svg/extension.js'
 import { externalLinkSvg } from '../../assets/svg/external-link.js'
 import { facebookSvg } from '../../assets/svg/facebook.js'
@@ -88,7 +92,9 @@ import { arrowTopRightSvg } from '../../assets/svg/arrow-top-right.js'
 import { dollarSvg } from '../../assets/svg/dollar.js'
 import { questionMarkSvg } from '../../assets/svg/question-mark.js'
 import { arrowClockWiseSvg } from '../../assets/svg/arrows-clock-wise.js'
+import { vars } from '../../utils/ThemeHelperUtil.js'
 
+// -- Constants ------------------------------------------ //
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   add: addSvg,
   allWallets: allWalletsSvg,
@@ -106,6 +112,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   card: cardSvg,
   checkmark: checkmarkSvg,
   checkmarkBold: checkmarkBoldSvg,
+  checkmarkVerified: checkmarkVerifiedSvg,
   chevronBottom: chevronBottomSvg,
   chevronLeft: chevronLeftSvg,
   chevronRight: chevronRightSvg,
@@ -122,6 +129,8 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   discord: discordSvg,
   dollar: dollarSvg,
   etherscan: etherscanSvg,
+  exclamationTriangle: exclamationTriangleSvg,
+  exclamationCircle: exclamationCircleSvg,
   extension: extensionSvg,
   externalLink: externalLinkSvg,
   facebook: facebookSvg,
@@ -168,11 +177,20 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   walletPlaceholder: walletPlaceholderSvg,
   warningCircle: warningCircleSvg,
   x: xSvg,
-  info: infoSvg,
-  exclamationTriangle: exclamationTriangleSvg
+  info: infoSvg
 }
 
-// @TODO: Add color property
+// -- Constants ------------------------------------------ //
+export const ICON_COLOR = {
+  'accent-primary': vars.tokens.core.iconAccentPrimary,
+  'accent-certified': vars.tokens.core.iconAccentCertified,
+  default: vars.tokens.theme.iconDefault,
+  success: vars.tokens.core.iconSuccess,
+  error: vars.tokens.core.iconError,
+  warning: vars.tokens.core.iconWarning,
+  inverse: vars.tokens.theme.iconInverse
+}
+
 @customElement('wui-icon')
 export class WuiIcon extends LitElement {
   public static override styles = [resetStyles, colorStyles, styles]
@@ -182,10 +200,13 @@ export class WuiIcon extends LitElement {
 
   @property() public name: IconType = 'copy'
 
+  @property() public color: IconColorType = 'inherit'
+
   // -- Render -------------------------------------------- //
   public override render() {
     this.style.cssText = `
       --local-width: ${`var(--wui-icon-size-${this.size});`}
+      --local-color: ${this.color === 'inherit' ? 'inherit' : ICON_COLOR[this.color]}
     `
 
     return html`${svgOptions[this.name]}`

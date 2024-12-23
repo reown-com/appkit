@@ -4,7 +4,15 @@ export type ColorType = string
 
 export type BackgroundColorType = 'foregroundSecondary' | 'foregroundAccent010'
 
-export type IconColorType = 'inverse'
+export type IconColorType =
+  | 'inherit'
+  | 'accent-primary'
+  | 'accent-certified'
+  | 'success'
+  | 'error'
+  | 'warning'
+  | 'default'
+  | 'inverse'
 
 export type TextColorType =
   | 'inherit'
@@ -87,6 +95,8 @@ export interface IWalletImage {
 
 export type TabSize = 'sm' | 'md' | 'lg'
 
+export type ToastMessageVariant = 'info' | 'success' | 'warning' | 'error'
+
 export type GridContentType =
   | 'center'
   | 'end'
@@ -116,6 +126,7 @@ export type IconType =
   | 'card'
   | 'checkmark'
   | 'checkmarkBold'
+  | 'checkmarkVerified'
   | 'chevronBottom'
   | 'chevronLeft'
   | 'chevronRight'
@@ -133,6 +144,8 @@ export type IconType =
   | 'etherscan'
   | 'extension'
   | 'externalLink'
+  | 'exclamationCircle'
+  | 'exclamationTriangle'
   | 'facebook'
   | 'farcaster'
   | 'filters'
@@ -178,7 +191,6 @@ export type IconType =
   | 'warningCircle'
   | 'x'
   | 'info'
-  | 'exclamationTriangle'
 
 export type VisualType =
   | 'browser'
@@ -223,7 +235,13 @@ export type PlacementType = 'bottom' | 'left' | 'right' | 'top'
 
 export type ChipType = 'fill' | 'shade' | 'shadeSmall' | 'transparent' | 'success' | 'error'
 
-export type ChipButtonVariant = 'accent' | 'main' | 'shade' | 'gray'
+export type ChipButtonVariant = 'main' | 'accent' | 'primary'
+
+export type ChipButtonSize = 'sm' | 'md'
+
+export type DomainChipVariant = 'success' | 'warning' | 'error'
+
+export type DomainChipSize = 'sm' | 'md'
 
 export type ButtonSize = 'lg' | 'md' | 'sm'
 
@@ -236,6 +254,10 @@ export type TooltipSize = 'md' | 'sm'
 export type TagVariant = 'accent' | 'info' | 'success' | 'warning' | 'error' | 'certified'
 
 export type TagSize = 'md' | 'sm'
+
+export type IconButtonVariant = 'neutral-primary' | 'neutral-secondary' | 'accent-primary'
+
+export type IconButtonSize = 'xs' | 'sm' | 'md' | 'lg'
 
 export type ButtonVariant =
   | 'accent-primary'

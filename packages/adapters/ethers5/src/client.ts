@@ -2,6 +2,7 @@ import { AdapterBlueprint } from '@reown/appkit/adapters'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
+  CoreHelperUtil,
   type CombinedProvider,
   type Connector,
   type ConnectorType,
@@ -146,14 +147,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
     }
 
     const result = await Ethers5Methods.writeContract(
-      {
-        abi: params.abi,
-        method: params.method,
-        fromAddress: params.caipAddress as `0x${string}`,
-        receiverAddress: params.receiverAddress as `0x${string}`,
-        tokenAmount: params.tokenAmount,
-        tokenAddress: params.tokenAddress as `0x${string}`
-      },
+      params,
       params.provider as Provider,
       params.caipAddress,
       Number(params.caipNetwork?.id)
@@ -263,11 +257,11 @@ export class Ethers5Adapter extends AdapterBlueprint {
     connectors.forEach(connector => {
       const key = connector === 'coinbase' ? 'coinbaseWalletSDK' : connector
 
-      const injectedConnector = connector === ConstantsUtil.INJECTED_CONNECTOR_ID
+      const injectedConnector = connector === CommonConstantsUtil.CONNECTOR_ID.INJECTED
 
       if (this.namespace) {
         this.addConnector({
-          id: connector,
+          id: key,
           explorerId: PresetsUtil.ConnectorExplorerIds[key],
           imageUrl: options?.connectorImages?.[key],
           name: PresetsUtil.ConnectorNamesMap[key],
@@ -306,16 +300,9 @@ export class Ethers5Adapter extends AdapterBlueprint {
     if (event.detail) {
       const { info, provider } = event.detail
       const existingConnector = this.connectors?.find(c => c.name === info?.name)
-      const coinbaseConnector = this.connectors?.find(
-        c => c.id === ConstantsUtil.COINBASE_SDK_CONNECTOR_ID
-      )
-      const isCoinbaseDuplicated =
-        coinbaseConnector &&
-        event.detail.info?.rdns ===
-          ConstantsUtil.CONNECTOR_RDNS_MAP[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]
 
-      if (!existingConnector && !isCoinbaseDuplicated) {
-        const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EIP6963_CONNECTOR_ID]
+      if (!existingConnector) {
+        const type = PresetsUtil.ConnectorTypesMap[CommonConstantsUtil.CONNECTOR_ID.EIP6963]
 
         if (type && this.namespace) {
           this.addConnector({
@@ -383,6 +370,36 @@ export class Ethers5Adapter extends AdapterBlueprint {
     }
   }
 
+  public async getAccounts(
+    params: AdapterBlueprint.GetAccountsParams
+  ): Promise<AdapterBlueprint.GetAccountsResult> {
+    const connector = this.connectors.find(c => c.id === params.id)
+    const selectedProvider = connector?.provider as Provider
+
+    if (!selectedProvider || !connector) {
+      throw new Error('Provider not found')
+    }
+
+    if (params.id === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
+      const provider = connector['provider'] as W3mFrameProvider
+      const { address, accounts } = await provider.connect()
+
+      return Promise.resolve({
+        accounts: (accounts || [{ address, type: 'eoa' }]).map(account =>
+          CoreHelperUtil.createAccount('eip155', account.address, account.type)
+        )
+      })
+    }
+
+    const accounts: string[] = await selectedProvider.request({
+      method: 'eth_requestAccounts'
+    })
+
+    return {
+      accounts: accounts.map(account => CoreHelperUtil.createAccount('eip155', account, 'eoa'))
+    }
+  }
+
   public override async reconnect(params: AdapterBlueprint.ConnectParams): Promise<void> {
     const { id, chainId } = params
 
@@ -430,10 +447,16 @@ export class Ethers5Adapter extends AdapterBlueprint {
         }
       )
 
-      const balance = await jsonRpcProvider.getBalance(params.address)
-      const formattedBalance = formatEther(balance)
+      if (jsonRpcProvider) {
+        try {
+          const balance = await jsonRpcProvider.getBalance(params.address)
+          const formattedBalance = formatEther(balance)
 
-      return { balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol }
+          return { balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol }
+        } catch (error) {
+          return { balance: '', symbol: '' }
+        }
+      }
     }
 
     return { balance: '', symbol: '' }

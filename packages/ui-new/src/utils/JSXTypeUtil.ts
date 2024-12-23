@@ -68,7 +68,7 @@ import type { WuiPromo } from '../composites/wui-promo/index.js'
 import type { WuiProfileButton } from '../composites/wui-profile-button/index.js'
 import type { WuiProfileButtonV2 } from '../composites/wui-profile-button-v2/index.js'
 import type { WuiPreviewItem } from '../composites/wui-preview-item/index.js'
-import type { WuiAlertBar } from '../composites/wui-alertbar/index.js'
+import type { WuiToastMessage } from '../composites/wui-toast-message/index.js'
 import type { WuiFlex } from '../layout/wui-flex/index.js'
 import type { WuiGrid } from '../layout/wui-grid/index.js'
 import type { WuiCheckBox } from '../composites/wui-checkbox/index.js'
@@ -142,7 +142,7 @@ declare global {
       'wui-network-switch': CustomElement<WuiNetworkSwitch>
       'wui-snackbar': CustomElement<WuiSnackbar>
       'wui-tab-item': CustomElement<WuiTab>
-      'wui-alertbar': CustomElement<WuiAlertBar>
+      'wui-toast-message': CustomElement<WuiToastMessage>
       'wui-tabs': CustomElement<WuiTabs>
       'wui-tag': CustomElement<WuiTag>
       'wui-token-button': CustomElement<WuiTokenButton>

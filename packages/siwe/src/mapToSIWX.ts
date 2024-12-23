@@ -8,10 +8,26 @@ import {
 import type { AppKitSIWEClient } from '../exports/index.js'
 import { NetworkUtil } from '@reown/appkit-common'
 
+const subscriptions: (() => void)[] = []
+
 export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
   async function getSession() {
     try {
-      return await siwe.methods.getSession()
+      const response = await siwe.methods.getSession()
+
+      if (!response) {
+        return undefined
+      }
+
+      if (!response?.address) {
+        throw new Error('SIWE session is missing address')
+      }
+
+      if (!response?.chainId) {
+        throw new Error('SIWE session is missing chainId')
+      }
+
+      return response
     } catch (error) {
       console.warn('AppKit:SIWE:getSession - error:', error)
 
@@ -19,34 +35,52 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
     }
   }
 
-  ChainController.subscribeKey('activeCaipNetwork', async activeCaipNetwork => {
-    if (!siwe.options.signOutOnNetworkChange) {
-      return
-    }
+  async function signOut() {
+    await siwe.methods.signOut()
+    siwe.methods.onSignOut?.()
+  }
 
-    const session = await getSession()
-    const isDiffernetNetwork =
-      session &&
-      session.chainId !== NetworkUtil.caipNetworkIdToNumber(activeCaipNetwork?.caipNetworkId)
+  subscriptions.forEach(unsubscribe => unsubscribe())
+  subscriptions.push(
+    ChainController.subscribeKey('activeCaipNetwork', async activeCaipNetwork => {
+      if (!siwe.options.signOutOnNetworkChange) {
+        return
+      }
 
-    if (isDiffernetNetwork) {
-      await siwe.methods.signOut()
-    }
-  })
+      const session = await getSession()
+      const isDifferentNetwork =
+        session &&
+        session.chainId !== NetworkUtil.caipNetworkIdToNumber(activeCaipNetwork?.caipNetworkId)
 
-  ChainController.subscribeKey('activeCaipAddress', async activeCaipAddress => {
-    if (!siwe.options.signOutOnAccountChange) {
-      return
-    }
+      if (isDifferentNetwork) {
+        await signOut()
+      }
+    }),
+    ChainController.subscribeKey('activeCaipAddress', async activeCaipAddress => {
+      if (siwe.options.signOutOnDisconnect && !activeCaipAddress) {
+        const session = await getSession()
+        if (session) {
+          await signOut()
+        }
 
-    const session = await getSession()
-    const isDifferentAddress =
-      session && session.address !== CoreHelperUtil.getPlainAddress(activeCaipAddress)
+        return
+      }
 
-    if (isDifferentAddress) {
-      await siwe.methods.signOut()
-    }
-  })
+      if (siwe.options.signOutOnAccountChange) {
+        const session = await getSession()
+
+        const lowercaseSessionAddress = session?.address?.toLowerCase()
+        const lowercaseCaipAddress =
+          CoreHelperUtil?.getPlainAddress(activeCaipAddress)?.toLowerCase()
+
+        const isDifferentAddress = session && lowercaseSessionAddress !== lowercaseCaipAddress
+
+        if (isDifferentAddress) {
+          await signOut()
+        }
+      }
+    })
+  )
 
   return {
     async createMessage(input) {
@@ -102,13 +136,12 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
         return Promise.resolve()
       }
 
-      throw new Error('Failed to add session')
+      throw new Error('Failed to verify message')
     },
 
     async revokeSession(_chainId, _address) {
       try {
-        await siwe.methods.signOut()
-        siwe.methods.onSignOut?.()
+        await signOut()
       } catch (error) {
         console.warn('AppKit:SIWE:revokeSession - signOut error', error)
       }
@@ -117,13 +150,19 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
     async setSessions(sessions) {
       if (sessions.length === 0) {
         try {
-          await siwe.methods.signOut()
+          await signOut()
         } catch (error) {
           console.warn('AppKit:SIWE:setSessions - signOut error', error)
         }
       } else {
-        const addingSessions = sessions.map(session => this.addSession(session))
-        await Promise.all(addingSessions)
+        /*
+         * The default SIWE implementation would only support one session
+         * So we only add the first session to keep backwards compatibility
+         */
+        const session = (sessions.find(
+          s => s.data.chainId === ChainController.getActiveCaipNetwork()?.caipNetworkId
+        ) || sessions[0]) as SIWXSession
+        await this.addSession(session)
       }
     },
 
@@ -144,9 +183,15 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
         }
 
         const siweSession = await getSession()
-
         const siweCaipNetworkId = `eip155:${siweSession?.chainId}`
-        if (!siweSession || siweSession.address !== address || siweCaipNetworkId !== chainId) {
+        const lowercaseSessionAddress = siweSession?.address?.toLowerCase()
+        const lowercaseCaipAddress = address?.toLowerCase()
+
+        if (
+          !siweSession ||
+          lowercaseSessionAddress !== lowercaseCaipAddress ||
+          siweCaipNetworkId !== chainId
+        ) {
           return []
         }
 

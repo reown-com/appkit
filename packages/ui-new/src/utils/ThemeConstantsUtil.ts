@@ -193,6 +193,7 @@ export const borderRadius = {
   '10': '10px',
   '3': '12px',
   '4': '16px',
+  '5': '20px',
   '8': '32px',
   '16': '64px',
   '20': '80px',
