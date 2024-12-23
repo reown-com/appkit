@@ -185,17 +185,16 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
         const siweSession = await getSession()
         const siweCaipNetworkId = `${ConstantsUtil.CHAIN.EVM}:${siweSession?.chainId}`
 
-        const lowercaseSessionAddress = siweSession?.address?.toLowerCase()
-        const caipSessionAddress = `${siweCaipNetworkId}:${siweSession?.address}`
+        const sessionAddress = siweSession?.address
+        const caipSessionAddress = `${siweCaipNetworkId}:${sessionAddress}`
 
-        const lowercaseAddress = address?.toLowerCase()
         const caipAddress = `${chainId}:${address}`
 
         const signOutOnNetworkChange = siwe.options.signOutOnNetworkChange
 
         const shouldSignOut = signOutOnNetworkChange
           ? caipSessionAddress !== caipAddress
-          : lowercaseSessionAddress !== lowercaseAddress
+          : sessionAddress !== address
 
         if (!siweSession || shouldSignOut) {
           return []
