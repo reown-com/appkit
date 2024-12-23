@@ -38,7 +38,7 @@ export class W3mFrame {
     projectId,
     isAppClient = false,
     chainId = 'eip155:1',
-    enableLogger
+    enableLogger = true
   }: W3mFrameConfig) {
     this.projectId = projectId
     this.frameLoadPromise = new Promise((resolve, reject) => {
