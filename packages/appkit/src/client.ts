@@ -1620,8 +1620,10 @@ export class AppKit {
   }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
     chainNamespace: ChainNamespace
   }) {
-    const chain = this.caipNetworks?.find(n => n.caipNetworkId === `${chainNamespace}:${chainId}`)
-    if (chainNamespace !== ConstantsUtil.CHAIN.EVM || chain?.testnet) {
+    const activeCaipNetwork = this.caipNetworks?.find(
+      n => n.caipNetworkId === `${chainNamespace}:${chainId}`
+    )
+    if (chainNamespace !== ConstantsUtil.CHAIN.EVM || activeCaipNetwork?.testnet) {
       return
     }
     try {
