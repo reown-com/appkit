@@ -39,7 +39,6 @@ export class W3mFrameProvider {
     if (enableLogger) {
       this.w3mLogger = new W3mFrameLogger(projectId)
     }
-
     this.w3mFrame = new W3mFrame({ projectId, isAppClient: true, chainId, enableLogger })
     this.onTimeout = onTimeout
     if (this.getLoginEmailUsed()) {
