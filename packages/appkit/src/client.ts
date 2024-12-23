@@ -357,7 +357,7 @@ export class AppKit {
     })
   }
 
-  public subscribeWalletInfo(callback: (newState: ConnectedWalletInfo) => void) {
+  public subscribeWalletInfo(callback: (newState?: ConnectedWalletInfo) => void) {
     return AccountController.subscribeKey('connectedWalletInfo', callback)
   }
 
@@ -705,6 +705,7 @@ export class AppKit {
     OptionsController.setEnableWalletGuide(options.enableWalletGuide !== false)
     OptionsController.setEnableWallets(options.enableWallets !== false)
     OptionsController.setEIP6963Enabled(options.enableEIP6963 !== false)
+    OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)
@@ -1565,17 +1566,15 @@ export class AppKit {
   private syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
     const connectorId = StorageUtil.getConnectedConnectorId()
     const providerType = ProviderUtil.state.providerIds[chainNamespace]
-
     if (
       providerType === UtilConstantsUtil.CONNECTOR_TYPE_ANNOUNCED ||
       providerType === UtilConstantsUtil.CONNECTOR_TYPE_INJECTED
     ) {
-      if (connectorId) {
-        const connector = this.getConnectors().find(c => c.id === connectorId)
-
-        if (connector?.info) {
-          this.setConnectedWalletInfo({ ...connector.info }, chainNamespace)
-        }
+      const connector = this.getConnectors().find(c => c.id === connectorId)
+      if (connector) {
+        const { info, name, imageUrl } = connector
+        const icon = imageUrl || this.getConnectorImage(connector)
+        this.setConnectedWalletInfo({ name, icon, ...info }, chainNamespace)
       }
     } else if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
       const provider = ProviderUtil.getProvider(chainNamespace)
@@ -1823,6 +1822,7 @@ export class AppKit {
     if (!this.authProvider && this.options?.projectId && (isEmailEnabled || isSocialsEnabled)) {
       this.authProvider = W3mFrameProviderSingleton.getInstance({
         projectId: this.options.projectId,
+        enableLogger: this.options.enableAuthLogger,
         onTimeout: () => {
           AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
         }
