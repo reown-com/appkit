@@ -3,6 +3,9 @@ import { SIWXVerifier } from '../core/SIWXVerifier.js'
 import { verifyMessage } from 'viem'
 import { ConstantsUtil } from '@reown/appkit-common'
 
+/**
+ * Default verifier for EIP155 sessions.
+ */
 export class EIP155Verifier extends SIWXVerifier {
   public readonly chainNamespace = ConstantsUtil.CHAIN.EVM
 

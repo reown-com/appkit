@@ -18,7 +18,9 @@ export function BrandingHeader({ className }: { className?: string }) {
       />
 
       <div className="flex-col gap-2 items-center md:items-start mb-0 md:mb-12">
-        <h4 className="text-3xl text-text-primary text-center md:text-left">AppKit demo</h4>
+        <h4 className="text-3xl text-text-primary text-center md:text-left capitalize">
+          AppKit Demo
+        </h4>
         <p className="text-sm text-text-secondary text-center md:text-left">
           Use our AppKit demo to test and design onchain UX
         </p>

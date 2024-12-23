@@ -130,7 +130,7 @@ export const tokens = {
     iconAccentPrimary: '#0988F0',
     iconAccentCertified: '#C7B994',
 
-    iconSuccess: '#0988F0',
+    iconSuccess: '#30A46B',
     iconError: '#DF4A34',
     iconWarning: '#F3A13F'
   },

@@ -7,7 +7,7 @@ import type {
   SIWESession,
   SIWEVerifyMessageArgs
 } from '../core/utils/TypeUtils.js'
-
+import { mapToSIWX } from '../src/mapToSIWX.js'
 import { SIWXUtil } from '@reown/appkit-core'
 import { ConstantsUtil } from '../core/utils/ConstantsUtil.js'
 
@@ -39,6 +39,10 @@ export class AppKitSIWEClient {
     }
 
     this.methods = siweConfigMethods
+  }
+
+  public mapToSIWX() {
+    return mapToSIWX(this)
   }
 
   async getNonce(address?: string) {

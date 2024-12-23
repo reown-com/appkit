@@ -1,12 +1,33 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
-import type { CaipNetworkId } from '@reown/appkit-common'
+import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 
 // -- Types --------------------------------------------- //
 export interface PublicStateControllerState {
+  /**
+   * @description Indicates if the AppKit is loading.
+   * @type {boolean}
+   */
   loading: boolean
+  /**
+   * @description Indicates if the AppKit modal is open.
+   * @type {boolean}
+   */
   open: boolean
-  selectedNetworkId?: CaipNetworkId
-  activeChain?: string
+  /**
+   * @description Indicates the selected network id in CAIP-2 format.
+   * @type {CaipNetworkId | undefined}
+   */
+  selectedNetworkId?: CaipNetworkId | undefined
+  /**
+   * @description Indicates the active chain namespace.
+   * @type {ChainNamespace | undefined}
+   */
+  activeChain?: ChainNamespace | undefined
+  /**
+   * @description Indicates if the AppKit has been initialized. This sets to true when all controllers, adapters and internal state is ready.
+   * @type {boolean}
+   */
+  initialized: boolean
 }
 
 // -- State --------------------------------------------- //
@@ -14,7 +35,8 @@ const state = proxy<PublicStateControllerState>({
   loading: false,
   open: false,
   selectedNetworkId: undefined,
-  activeChain: undefined
+  activeChain: undefined,
+  initialized: false
 })
 
 // -- Controller ---------------------------------------- //

@@ -10,7 +10,6 @@ interface AppKitContextType {
   enableWallets: boolean
   socialsEnabled: boolean
   isDraggingByKey: Record<string, boolean>
-  isInitialized: boolean
   updateThemeMode: (mode: ThemeMode) => void
   updateFeatures: (features: Partial<Features>) => void
   updateSocials: (enabled: boolean) => void

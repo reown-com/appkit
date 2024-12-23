@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-scaffold-ui",
-  "version": "1.6.0",
+  "version": "1.6.2",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -18,6 +18,11 @@
       "types": "./dist/types/exports/w3m-modal.d.ts",
       "import": "./dist/esm/exports/w3m-modal.js",
       "default": "./dist/esm/exports/w3m-modal.js"
+    },
+    "./utils": {
+      "types": "./dist/types/exports/utils.d.ts",
+      "import": "./dist/esm/exports/utils.js",
+      "default": "./dist/esm/exports/utils.js"
     }
   },
   "scripts": {

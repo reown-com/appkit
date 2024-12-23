@@ -1,6 +1,6 @@
 import type { Connector } from '@reown/appkit-core'
 import {
-  AssetUtil,
+  AssetController,
   ChainController,
   ConnectorController,
   CoreHelperUtil,
@@ -21,10 +21,13 @@ export class W3mConnectWalletConnectWidget extends LitElement {
 
   @state() private connectors = ConnectorController.state.connectors
 
+  @state() private connectorImages = AssetController.state.connectorImages
+
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
+      ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
+      AssetController.subscribeKey('connectorImages', val => (this.connectorImages = val))
     )
   }
 
@@ -41,16 +44,17 @@ export class W3mConnectWalletConnectWidget extends LitElement {
     }
 
     const connector = this.connectors.find(c => c.id === 'walletConnect')
-
     if (!connector) {
       this.style.cssText = `display: none`
 
       return null
     }
 
+    const connectorImage = connector.imageUrl || this.connectorImages[connector?.imageId ?? '']
+
     return html`
       <wui-list-wallet
-        imageSrc=${ifDefined(AssetUtil.getConnectorImage(connector))}
+        imageSrc=${ifDefined(connectorImage)}
         name=${connector.name ?? 'Unknown'}
         @click=${() => this.onConnector(connector)}
         tagLabel="qr code"

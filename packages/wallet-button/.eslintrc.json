@@ -1,8 +1,8 @@
 {
   "extends": [
     "plugin:require-extensions/recommended",
-    "../../.eslintrc.json",
-    "plugin:react-hooks/recommended"
+    "plugin:react-hooks/recommended",
+    "../../.eslintrc.json"
   ],
   "plugins": ["require-extensions", "react-hooks"],
   "rules": {

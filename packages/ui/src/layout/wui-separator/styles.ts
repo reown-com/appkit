@@ -15,5 +15,7 @@ export default css`
     position: absolute;
     padding: 0px 10px;
     background-color: var(--wui-color-modal-bg);
+    transition: background-color var(--wui-duration-lg) var(--wui-ease-out-power-1);
+    will-change: background-color;
   }
 `

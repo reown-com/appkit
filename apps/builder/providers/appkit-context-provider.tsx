@@ -1,7 +1,7 @@
 'use client'
 
 import { ReactNode, useEffect, useState } from 'react'
-import { Features, ThemeMode, ThemeVariables, type AppKit } from '@reown/appkit/react'
+import { Features, ThemeMode, ThemeVariables, useAppKitState } from '@reown/appkit/react'
 import { ConnectMethod, ConstantsUtil } from '@reown/appkit-core'
 import { ThemeStore } from '../lib/theme-store'
 import { URLState, urlStateUtils } from '@/lib/url-state'
@@ -11,6 +11,7 @@ import { UniqueIdentifier } from '@dnd-kit/core'
 import { defaultCustomizationConfig } from '@/lib/config'
 import { useTheme } from 'next-themes'
 import { inter } from '@/lib/fonts'
+import { Toaster } from 'sonner'
 
 interface AppKitProviderProps {
   children: ReactNode
@@ -24,7 +25,8 @@ interface AppKitProviderProps {
 const initialConfig = urlStateUtils.getStateFromURL()
 
 export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => {
-  const [isInitialized, setIsInitialized] = useState(false)
+  const { initialized } = useAppKitState()
+
   const [features, setFeatures] = useState<Features>(
     initialConfig?.features || ConstantsUtil.DEFAULT_FEATURES
   )
@@ -53,10 +55,21 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
 
   function updateFeatures(newFeatures: Partial<Features>) {
     setFeatures(prev => {
-      const newValue = { ...prev, ...newFeatures }
-      appKit?.updateFeatures(newValue)
-      urlStateUtils.updateURLWithState({ features: newValue })
-      return newValue
+      // Update the AppKit state first
+      const newAppKitValue = { ...prev, ...newFeatures }
+      appKit?.updateFeatures(newAppKitValue)
+
+      // Get the connection methods order since it's calculated based on injected connectors dynamically
+      const order =
+        newFeatures?.connectMethodsOrder === undefined
+          ? appKit?.getConnectMethodsOrder()
+          : newFeatures.connectMethodsOrder
+
+      // Define and set new internal value with the order
+      const newInternalValue = { ...newAppKitValue, connectMethodsOrder: order }
+      urlStateUtils.updateURLWithState({ features: newInternalValue })
+
+      return newInternalValue
     })
   }
 
@@ -117,8 +130,15 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
   }
 
   useEffect(() => {
-    setTheme(theme as ThemeMode)
-    setIsInitialized(true)
+    if (initialized) {
+      const connectMethodsOrder = appKit?.getConnectMethodsOrder()
+      const order = connectMethodsOrder
+      updateFeatures({ connectMethodsOrder: order })
+    }
+  }, [initialized])
+
+  useEffect(() => {
+    appKit?.setThemeMode(theme as ThemeMode)
   }, [])
 
   const socialsEnabled = Array.isArray(features.socials)
@@ -143,7 +163,6 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
         socialsEnabled,
         enableWallets,
         isDraggingByKey,
-        isInitialized,
         updateFeatures,
         updateThemeMode,
         updateSocials,
@@ -155,6 +174,7 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
         resetConfigs
       }}
     >
+      <Toaster theme={theme as ThemeMode} />
       {children}
     </AppKitContext.Provider>
   )

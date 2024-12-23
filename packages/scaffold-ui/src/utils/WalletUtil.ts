@@ -4,7 +4,9 @@ import {
   OptionsController,
   StorageUtil
 } from '@reown/appkit-core'
-import type { WcWallet } from '@reown/appkit-core'
+import type { ConnectMethod, Connector, Features, WcWallet } from '@reown/appkit-core'
+import { ConnectorUtil } from './ConnectorUtil.js'
+import { ConstantsUtil } from './ConstantsUtil.js'
 
 interface AppKitWallet extends WcWallet {
   installed: boolean
@@ -79,5 +81,26 @@ export const WalletUtil = {
     )
 
     return sortedWallets
+  },
+
+  getConnectOrderMethod(_features: Features | undefined, _connectors: Connector[]) {
+    const connectMethodOrder =
+      _features?.connectMethodsOrder || OptionsController.state.features?.connectMethodsOrder
+    const connectors = _connectors || ConnectorController.state.connectors
+
+    if (connectMethodOrder) {
+      return connectMethodOrder
+    }
+
+    const { injected, announced } = ConnectorUtil.getConnectorsByType(connectors)
+
+    const shownInjected = injected.filter(ConnectorUtil.showConnector)
+    const shownAnnounced = announced.filter(ConnectorUtil.showConnector)
+
+    if (shownInjected.length || shownAnnounced.length) {
+      return ['wallet', 'email', 'social'] as ConnectMethod[]
+    }
+
+    return ConstantsUtil.DEFAULT_CONNECT_METHOD_ORDER
   }
 }

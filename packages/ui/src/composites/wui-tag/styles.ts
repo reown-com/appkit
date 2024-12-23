@@ -8,6 +8,10 @@ export default css`
     height: var(--wui-spacing-m);
     padding: 0 var(--wui-spacing-3xs) !important;
     border-radius: var(--wui-border-radius-5xs);
+    transition:
+      border-radius var(--wui-duration-lg) var(--wui-ease-out-power-1),
+      background-color var(--wui-duration-lg) var(--wui-ease-out-power-1);
+    will-change: border-radius, background-color;
   }
 
   :host > wui-text {

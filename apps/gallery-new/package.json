@@ -16,6 +16,7 @@
     "storybook": "7.6.7"
   },
   "devDependencies": {
+    "@storybook/manager-api": "7.6.7",
     "@storybook/addon-essentials": "7.6.7",
     "@storybook/addon-links": "7.6.7",
     "@storybook/blocks": "7.6.7",

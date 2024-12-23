@@ -62,6 +62,9 @@ body {
     --apkt-border-lg: 16px;
 
     --box-shadow-picked-up: 0px 2px 8px 2px hsl(var(--apkt-background-primary) / 0.5);
+
+    /* Page Background */
+    --page-background-image-color: hsl(0, 0%, 87%);
   }
   .dark {
     --apkt-background-primary: 0 0% 13%;
@@ -105,6 +108,9 @@ body {
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
+
+    /* Page Background */
+    --page-background-image-color: hsl(0deg 0% 17.25%);
   }
 }
 
@@ -123,5 +129,10 @@ body {
   }
   .ease {
     transition-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+  }
+  .page-container {
+    background-image: radial-gradient(var(--page-background-image-color) 1px, #ffffff00 1px);
+    background-size: 16px 16px;
+    background-position: -16px -8px;
   }
 }

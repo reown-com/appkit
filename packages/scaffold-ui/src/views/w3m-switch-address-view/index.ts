@@ -13,6 +13,7 @@ import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import type { CaipAddress } from '@reown/appkit-common'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 @customElement('w3m-switch-address-view')
 export class W3mSwitchAddressView extends LitElement {
@@ -28,10 +29,10 @@ export class W3mSwitchAddressView extends LitElement {
 
   public readonly currentAddress: string = AccountController.state.address || ''
 
-  private connectedConnector = StorageUtil.getConnectedConnector()
+  private connectorId = StorageUtil.getConnectedConnectorId()
 
   // Only show icon for AUTH accounts
-  private shouldShowIcon = this.connectedConnector === 'AUTH'
+  private shouldShowIcon = this.connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
 
   private caipNetwork = ChainController.state.activeCaipNetwork
 

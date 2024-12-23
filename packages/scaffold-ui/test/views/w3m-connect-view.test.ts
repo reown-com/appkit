@@ -1,9 +1,14 @@
 import { W3mConnectView } from '../../src/views/w3m-connect-view/index'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest'
 import { fixture } from '@open-wc/testing'
 import { html } from 'lit'
 import { HelpersUtil } from '../utils/HelpersUtil'
-import { OptionsController } from '@reown/appkit-core'
+import {
+  OptionsController,
+  type ConnectorWithProviders,
+  ConnectorController,
+  CoreHelperUtil
+} from '@reown/appkit-core'
 
 // --- Constants ---------------------------------------------------- //
 const EMAIL_LOGIN_WIDGET = 'w3m-email-login-widget'
@@ -13,21 +18,43 @@ const COLLAPSE_WALLETS_BUTTON = 'w3m-collapse-wallets-button'
 const SEPARATOR = 'wui-separator'
 const EMAIL_SEPARATOR = 'w3m-email-login-or-separator'
 
+const INSTALLED_WALLET = {
+  id: 'metamask',
+  name: 'MetaMask',
+  type: 'ANNOUNCED'
+} as ConnectorWithProviders
+
+// Mock ResizeObserver
+beforeAll(() => {
+  global.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+})
+
 describe('W3mConnectView - Connection Methods', () => {
   beforeEach(() => {
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
+
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
       enableWallets: true,
       features: {
         email: true,
         socials: ['google', 'facebook'],
-        connectMethodsOrder: ['wallet', 'email', 'social'],
+        connectMethodsOrder: ['email', 'wallet', 'social'],
         collapseWallets: false
       }
     })
   })
 
-  it('should render connection methods in specified order', async () => {
+  it('should render connection methods in specified order based on connectMethodsOrder option', async () => {
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      connectors: [INSTALLED_WALLET]
+    })
+
     const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
 
     const children = Array.from(
@@ -37,6 +64,37 @@ describe('W3mConnectView - Connection Methods', () => {
 
     expect(widgets).toContain(WALLET_LOGIN_LIST)
     expect(widgets).toContain(EMAIL_LOGIN_WIDGET)
+    expect(widgets).toContain(SOCIAL_LOGIN_WIDGET)
+
+    // Check order
+    expect(widgets.indexOf(EMAIL_LOGIN_WIDGET)).toBeLessThan(widgets.indexOf(WALLET_LOGIN_LIST))
+    expect(widgets.indexOf(WALLET_LOGIN_LIST)).toBeLessThan(widgets.indexOf(SOCIAL_LOGIN_WIDGET))
+  })
+
+  it('should render connection methods in the correct order based on if there are installed wallets', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      features: {
+        email: true,
+        socials: ['google', 'facebook']
+      }
+    })
+
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      connectors: [INSTALLED_WALLET]
+    })
+
+    const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
+
+    const children = Array.from(
+      element.shadowRoot?.querySelector('.connect-methods')?.children ?? []
+    )
+    const widgets = children.map(child => child.tagName.toLowerCase())
+
+    // Assertions
+    expect(widgets).toContain(EMAIL_LOGIN_WIDGET)
+    expect(widgets).toContain(WALLET_LOGIN_LIST)
     expect(widgets).toContain(SOCIAL_LOGIN_WIDGET)
 
     // Check order
@@ -64,6 +122,16 @@ describe('W3mConnectView - Connection Methods', () => {
   })
 
   it('should render one separator between wallet and email/social group', async () => {
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      enableWallets: true,
+      features: {
+        email: true,
+        socials: ['google'],
+        connectMethodsOrder: ['wallet', 'email', 'social']
+      }
+    })
+
     const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
 
     const separators = Array.from(element.shadowRoot?.querySelectorAll(SEPARATOR) ?? [])

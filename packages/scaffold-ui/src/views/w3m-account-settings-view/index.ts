@@ -18,6 +18,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 
 @customElement('w3m-account-settings-view')
 export class W3mAccountSettingsView extends LitElement {
@@ -152,10 +153,15 @@ export class W3mAccountSettingsView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private chooseNameButtonTemplate() {
-    const type = StorageUtil.getConnectedConnector()
+    const connectorId = StorageUtil.getConnectedConnectorId()
     const authConnector = ConnectorController.getAuthConnector()
     const hasNetworkSupport = ChainController.checkIfNamesSupported()
-    if (!hasNetworkSupport || !authConnector || type !== 'ID_AUTH' || this.profileName) {
+    if (
+      !hasNetworkSupport ||
+      !authConnector ||
+      connectorId !== CommonConstantsUtil.CONNECTOR_ID.AUTH ||
+      this.profileName
+    ) {
       return null
     }
 
@@ -175,10 +181,14 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private authCardTemplate() {
-    const type = StorageUtil.getConnectedConnector()
+    const connectorId = StorageUtil.getConnectedConnectorId()
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
-    if (!authConnector || type !== 'ID_AUTH' || origin.includes(ConstantsUtil.SECURE_SITE)) {
+    if (
+      !authConnector ||
+      connectorId !== CommonConstantsUtil.CONNECTOR_ID.AUTH ||
+      origin.includes(ConstantsUtil.SECURE_SITE)
+    ) {
       return null
     }
 
@@ -214,10 +224,14 @@ export class W3mAccountSettingsView extends LitElement {
 
   private togglePreferredAccountBtnTemplate() {
     const networkEnabled = ChainController.checkIfSmartAccountEnabled()
-    const type = StorageUtil.getConnectedConnector()
+    const connectorId = StorageUtil.getConnectedConnectorId()
     const authConnector = ConnectorController.getAuthConnector()
 
-    if (!authConnector || type !== 'ID_AUTH' || !networkEnabled) {
+    if (
+      !authConnector ||
+      connectorId !== CommonConstantsUtil.CONNECTOR_ID.AUTH ||
+      !networkEnabled
+    ) {
       return null
     }
 

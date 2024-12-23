@@ -639,6 +639,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-thumbnail-border-base: #252525;
 
         --wui-wallet-button-bg-base: var(--wui-color-bg-125);
+
+        --w3m-card-embedded-shadow-color: rgb(17 17 18 / 25%);
       }
     `,
     dark: css`
@@ -745,6 +747,8 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-color-gray-glass-090: rgba(0, 0, 0, 0.9);
 
         --wui-color-dark-glass-100: rgba(233, 233, 233, 1);
+
+        --w3m-card-embedded-shadow-color: rgb(224 225 233 / 25%);
       }
     `
   }
