@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { W3mFrameProvider } from '../src/W3mFrameProvider.js'
 import { W3mFrameStorage } from '../src/W3mFrameStorage.js'
+import * as logger from '@walletconnect/logger'
 
 // Mocks
 import { W3mFrameHelpers } from './mocks/W3mFrameHelpers.mock.js'
@@ -121,4 +122,22 @@ describe('W3mFrameProvider', () => {
     },
     { timeout: 35_000 }
   )
+
+  it('should create logger if enableLogger is undefined', async () => {
+    const generateChildLoggerSpy = vi.spyOn(logger, 'generateChildLogger')
+    provider = new W3mFrameProvider({ projectId, enableLogger: true })
+    expect(generateChildLoggerSpy).toHaveBeenCalled()
+  })
+
+  it('should create logger if enableLogger is true', async () => {
+    const generatePlatformLoggerSpy = vi.spyOn(logger, 'generatePlatformLogger')
+    provider = new W3mFrameProvider({ projectId, enableLogger: true })
+    expect(generatePlatformLoggerSpy).toHaveBeenCalled()
+  })
+
+  it('should not create logger if enableLogger is false', async () => {
+    const generatePlatformLoggerSpy = vi.spyOn(logger, 'generatePlatformLogger')
+    provider = new W3mFrameProvider({ projectId, enableLogger: false })
+    expect(generatePlatformLoggerSpy).not.toHaveBeenCalled()
+  })
 })

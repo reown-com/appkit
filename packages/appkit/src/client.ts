@@ -705,6 +705,7 @@ export class AppKit {
     OptionsController.setEnableWalletGuide(options.enableWalletGuide !== false)
     OptionsController.setEnableWallets(options.enableWallets !== false)
     OptionsController.setEIP6963Enabled(options.enableEIP6963 !== false)
+    OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
 
     if (options.metadata) {
       OptionsController.setMetadata(options.metadata)
@@ -1821,6 +1822,7 @@ export class AppKit {
     if (!this.authProvider && this.options?.projectId && (isEmailEnabled || isSocialsEnabled)) {
       this.authProvider = W3mFrameProviderSingleton.getInstance({
         projectId: this.options.projectId,
+        enableLogger: this.options.enableAuthLogger,
         onTimeout: () => {
           AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
         }
