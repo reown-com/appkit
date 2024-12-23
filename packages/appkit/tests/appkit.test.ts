@@ -599,7 +599,8 @@ describe('Base', () => {
       expect(AssetUtil.getConnectorImage).toHaveBeenCalledWith({
         id: 'metamask',
         type: 'INJECTED',
-        chain: 'eip155'
+        chain: 'eip155',
+        name: 'Metamask'
       })
       expect(result).toBe('connector-image-url')
     })
