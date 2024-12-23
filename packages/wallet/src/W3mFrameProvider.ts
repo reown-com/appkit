@@ -102,7 +102,7 @@ export class W3mFrameProvider {
   public async isConnected() {
     try {
       if (!this.getLoginEmailUsed()) {
-        return false
+        return { isConnected: false }
       }
       const response = await this.appEvent<'IsConnected'>({
         type: W3mFrameConstants.APP_IS_CONNECTED
