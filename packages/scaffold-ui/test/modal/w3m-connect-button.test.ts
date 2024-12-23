@@ -7,9 +7,11 @@ import { HelpersUtil } from '../utils/HelpersUtil'
 import type { WuiConnectButton } from '@reown/appkit-ui'
 
 describe('W3mConnectButton', () => {
-  beforeEach(() => {
+  let element: W3mConnectButton
+  beforeEach(async () => {
     ModalController.close()
     ModalController.setLoading(false)
+    element = await fixture(html`<w3m-connect-button></w3m-connect-button>`)
   })
 
   afterEach(() => {
@@ -18,9 +20,6 @@ describe('W3mConnectButton', () => {
 
   describe('Rendering', () => {
     it('renders with default props', async () => {
-      const element: W3mConnectButton = await fixture(
-        html`<w3m-connect-button></w3m-connect-button>`
-      )
       const button = HelpersUtil.getByTestId(element, 'connect-button')
 
       expect(button).toBeTruthy()
@@ -45,10 +44,6 @@ describe('W3mConnectButton', () => {
 
   describe('State Changes', () => {
     it('updates button text when loading', async () => {
-      const element: W3mConnectButton = await fixture(
-        html`<w3m-connect-button></w3m-connect-button>`
-      )
-
       ModalController.setLoading(true)
 
       element.requestUpdate()
@@ -60,10 +55,6 @@ describe('W3mConnectButton', () => {
     })
 
     it('updates button text when modal is open', async () => {
-      const element: W3mConnectButton = await fixture(
-        html`<w3m-connect-button></w3m-connect-button>`
-      )
-
       ModalController.open()
       element.requestUpdate()
       await elementUpdated(element)
@@ -76,9 +67,6 @@ describe('W3mConnectButton', () => {
 
   describe('Interactions', () => {
     it('opens modal on click when closed', async () => {
-      const element: W3mConnectButton = await fixture(
-        html`<w3m-connect-button></w3m-connect-button>`
-      )
       const button = HelpersUtil.getByTestId(element, 'connect-button') as WuiConnectButton
 
       button?.click()
@@ -89,10 +77,6 @@ describe('W3mConnectButton', () => {
     })
 
     it('does not toggle modal when loading', async () => {
-      const element: W3mConnectButton = await fixture(
-        html`<w3m-connect-button></w3m-connect-button>`
-      )
-
       ModalController.setLoading(true)
       element.requestUpdate()
       await elementUpdated(element)
@@ -107,9 +91,6 @@ describe('W3mConnectButton', () => {
 
   describe('Cleanup', () => {
     it('cleans up subscriptions on disconnect', async () => {
-      const element: W3mConnectButton = await fixture(
-        html`<w3m-connect-button></w3m-connect-button>`
-      )
       const unsubscribeSpy = vi.fn()
       ;(element as any).unsubscribe = [unsubscribeSpy]
 
@@ -121,9 +102,6 @@ describe('W3mConnectButton', () => {
 
   describe('AppKitConnectButton', () => {
     it('renders same functionality with different tag', async () => {
-      const element: W3mConnectButton = await fixture(
-        html`<appkit-connect-button></appkit-connect-button>`
-      )
       const button = HelpersUtil.getByTestId(element, 'connect-button')
 
       expect(button).toBeTruthy()
