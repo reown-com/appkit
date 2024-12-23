@@ -479,7 +479,6 @@ export class AppKit {
   }
 
   public setBalance: (typeof AccountController)['setBalance'] = (balance, balanceSymbol, chain) => {
-    console.log('>> Appkit setBalance', balance, balanceSymbol, chain)
     AccountController.setBalance(balance, balanceSymbol, chain)
   }
 
