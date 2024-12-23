@@ -109,7 +109,7 @@ export interface OptionsControllerStatePublic {
    */
   enableWalletGuide?: boolean
   /**
-   * Enable or disable logger for email and social login in your AppKit.
+   * Enable or disable logs when using email and social login.
    * @default true
    */
   enableAuthLogger?: boolean
