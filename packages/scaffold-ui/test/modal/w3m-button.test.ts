@@ -1,5 +1,5 @@
-import { fixture, expect, html } from '@open-wc/testing'
-import { vi, describe, it, beforeEach, afterEach } from 'vitest'
+import { fixture, html } from '@open-wc/testing'
+import { vi, describe, it, beforeEach, afterEach, expect } from 'vitest'
 import { W3mButton } from '../../src/modal/w3m-button'
 import {
   ChainController,
@@ -79,10 +79,10 @@ describe('W3mButton', () => {
       element,
       'appkit-account-button'
     ) as W3mAccountButton | null
-    expect(accountButton?.getAttribute('balance')).to.equal('1 ETH')
-    expect(accountButton?.charsStart).to.equal(2)
-    expect(accountButton?.charsEnd).to.equal(4)
-    expect(accountButton?.disabled).to.equal(true)
+    expect(accountButton?.getAttribute('balance')).toBe('1 ETH')
+    expect(accountButton?.charsStart).toBe(2)
+    expect(accountButton?.charsEnd).toBe(4)
+    expect(accountButton?.disabled).toBe(true)
   })
 
   it('passes properties to connect button correctly', async () => {
@@ -91,8 +91,19 @@ describe('W3mButton', () => {
     )
 
     const connectButton = HelpersUtil.querySelect(element, 'appkit-connect-button')
-    expect(connectButton?.getAttribute('size')).to.equal('md')
-    expect(connectButton?.getAttribute('label')).to.equal('Connect')
-    expect(connectButton?.getAttribute('loadingLabel')).to.equal('Connecting...')
+    expect(connectButton?.getAttribute('size')).toBe('md')
+    expect(connectButton?.getAttribute('label')).toBe('Connect')
+    expect(connectButton?.getAttribute('loadingLabel')).toBe('Connecting...')
+  })
+
+  it('unsubscribe from state changes on disconnect', async () => {
+    const mockUnsubscribeChain = vi.fn()
+    const mockUnsubscribeModal = vi.fn()
+    vi.spyOn(ChainController, 'subscribeKey').mockReturnValue(mockUnsubscribeChain)
+    vi.spyOn(ModalController, 'subscribeKey').mockReturnValue(mockUnsubscribeModal)
+    const element: W3mButton = await fixture(html`<appkit-button></appkit-button>`)
+    element.disconnectedCallback()
+    expect(mockUnsubscribeChain).toHaveBeenCalled()
+    expect(mockUnsubscribeModal).toHaveBeenCalled()
   })
 })
