@@ -35,10 +35,17 @@ describe('W3mConnectButton', () => {
           loadingLabel="Custom Loading..."
         ></w3m-connect-button>`
       )
-      const button = HelpersUtil.getByTestId(element, 'connect-button')
-
+      const button = HelpersUtil.getByTestId(element, 'connect-button') as WuiConnectButton
       expect(button?.textContent?.trim()).toBe('Custom Connect')
       expect(button?.getAttribute('size')).toBe('sm')
+
+      ModalController.setLoading(true)
+
+      element.requestUpdate()
+      await elementUpdated(element)
+
+      expect(button?.textContent?.trim()).toBe('Custom Loading...')
+      expect(button?.loading).toBe(true)
     })
   })
 
@@ -86,6 +93,17 @@ describe('W3mConnectButton', () => {
 
       expect(ModalController.state.open).toBe(false)
       expect(ModalController.state.loading).toBe(true)
+    })
+
+    it('closes modal when open', async () => {
+      ModalController.open()
+      element.requestUpdate()
+      await elementUpdated(element)
+
+      const button = HelpersUtil.getByTestId(element, 'connect-button')
+      button?.click()
+
+      expect(ModalController.state.open).toBe(false)
     })
   })
 
