@@ -1,5 +1,5 @@
 import { W3mAccountWalletFeaturesWidget } from '../../src/partials/w3m-account-wallet-features-widget'
-import { describe, it, expect, vi, beforeAll } from 'vitest'
+import { describe, it, expect, vi, beforeAll, afterEach } from 'vitest'
 import { fixture, elementUpdated } from '@open-wc/testing'
 import { AccountController, CoreHelperUtil, RouterController } from '@reown/appkit-core'
 import { html } from 'lit'
@@ -19,13 +19,17 @@ const ACCOUNT = {
 describe('W3mAccountWalletFeaturesWidget', () => {
   beforeAll(() => {
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
+  })
+
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('it should not return any components if address is not provided in AccountController', () => {
     vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,
       address: undefined
     })
-  })
-
-  it('it should not return any components if address is not provided in AccountController', () => {
     expect(() =>
       fixture(html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`)
     ).rejects.toThrow('w3m-account-view: No account provided')
