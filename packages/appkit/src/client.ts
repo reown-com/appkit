@@ -1516,7 +1516,6 @@ export class AppKit {
 
     const { namespace: activeNamespace, chainId: activeChainId } =
       StorageUtil.getActiveNetworkProps()
-    console.log('>> syncAccount', activeChainId, activeNamespace, chainNamespace)
     const chainIdToUse = chainId || activeChainId
 
     // Only update state when needed
@@ -1528,7 +1527,6 @@ export class AppKit {
     this.setStatus('connected', chainNamespace)
 
     if (chainIdToUse && chainNamespace === activeNamespace) {
-      console.log('>> Sync balance', chainIdToUse, chainNamespace, address)
       const caipNetwork = this.caipNetworks?.find(n => n.id.toString() === chainIdToUse.toString())
       const fallBackCaipNetwork = this.caipNetworks?.find(n => n.chainNamespace === chainNamespace)
       this.setCaipNetwork(caipNetwork || fallBackCaipNetwork)
@@ -1548,13 +1546,6 @@ export class AppKit {
       params.chainNamespace
     ).find(n => n.id.toString() === params.chainId.toString())
 
-    console.log(
-      '>> syncBalance',
-      params.chainId,
-      params.chainNamespace,
-      this.caipNetworks,
-      caipNetwork
-    )
     if (!caipNetwork) {
       return
     }
@@ -1563,7 +1554,6 @@ export class AppKit {
       return
     }
 
-    console.log('>> Syncincbalance from adapter', adapter)
     const balance = await adapter?.getBalance({
       address: params.address,
       chainId: params.chainId,
