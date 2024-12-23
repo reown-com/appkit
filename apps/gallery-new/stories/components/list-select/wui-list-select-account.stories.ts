@@ -1,14 +1,14 @@
 import { html } from 'lit'
 import type { Meta } from '@storybook/web-components'
 import '@reown/appkit-ui-new/src/composites/wui-list-select-account'
-import '../../components/gallery-container'
 import type { WuiListSelectAccount } from '@reown/appkit-ui-new'
-import { iconOptions } from '../../utils/PresetUtils'
+import '../../../components/gallery-container'
+import { iconOptions } from '../../../utils/PresetUtils'
 
 type Component = Meta<WuiListSelectAccount>
 
 export default {
-  title: 'Composites/wui-list-select-account',
+  title: 'Components/List Select/Account',
   args: {
     amount: 1740.72,
     currency: 'USD',

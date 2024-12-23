@@ -12,7 +12,7 @@ import {
 type Component = Meta<WuiChip>
 
 export default {
-  title: 'Composites/wui-chip',
+  title: 'Components/Chip',
   args: {
     variant: 'fill',
     disabled: false,

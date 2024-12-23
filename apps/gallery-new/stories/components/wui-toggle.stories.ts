@@ -7,7 +7,7 @@ import '../../components/gallery-container'
 type Component = Meta<WuiToggle>
 
 export default {
-  title: 'Composites/wui-toggle',
+  title: 'Components/Toggle',
   args: {
     size: 'sm',
     disabled: false
