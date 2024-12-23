@@ -7,7 +7,7 @@ import { colorOptions } from '../../utils/PresetUtils'
 type Component = Meta<WuiLoadingSpinner>
 
 export default {
-  title: 'Components/wui-loading-spinner',
+  title: 'Composites/wui-loading-spinner',
   args: {
     color: 'accent-100',
     size: 'lg'
