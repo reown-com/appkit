@@ -21,4 +21,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Updated social/email login modal to show a single account view instead of the multi account view when only one address is connected
+Updated account modal to redirect to the settings view instead of the profile view when only one social/email account is connected
