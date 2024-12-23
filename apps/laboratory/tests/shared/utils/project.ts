@@ -42,6 +42,7 @@ const SINGLE_ADAPTER_EVM_TESTS = [
   'basic-tests.spec.ts',
   'canary.spec.ts',
   'email.spec.ts',
+  'email-after-farcaster.spec.ts',
   'no-email.spec.ts',
   'no-socials.spec.ts',
   'debug-mode.spec.ts',
