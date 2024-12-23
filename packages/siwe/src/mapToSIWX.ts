@@ -196,7 +196,6 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
         const shouldSignOut = signOutOnNetworkChange
           ? caipSessionAddress !== caipAddress
           : lowercaseSessionAddress !== lowercaseAddress
-        console.log('caipSessionAddress', signOutOnNetworkChange)
 
         if (!siweSession || shouldSignOut) {
           return []
