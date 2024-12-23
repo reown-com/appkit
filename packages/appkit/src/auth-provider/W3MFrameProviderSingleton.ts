@@ -4,6 +4,7 @@ import { W3mFrameProvider } from '@reown/appkit-wallet'
 interface W3mFrameProviderConfig {
   projectId: string
   chainId?: number | CaipNetworkId
+  enableLogger?: boolean
   onTimeout?: () => void
 }
 
@@ -16,10 +17,16 @@ export class W3mFrameProviderSingleton {
   public static getInstance({
     projectId,
     chainId,
+    enableLogger,
     onTimeout
   }: W3mFrameProviderConfig): W3mFrameProvider {
     if (!W3mFrameProviderSingleton.instance) {
-      W3mFrameProviderSingleton.instance = new W3mFrameProvider({ projectId, chainId, onTimeout })
+      W3mFrameProviderSingleton.instance = new W3mFrameProvider({
+        projectId,
+        chainId,
+        enableLogger,
+        onTimeout
+      })
     }
 
     return W3mFrameProviderSingleton.instance
