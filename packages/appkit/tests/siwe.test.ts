@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
+  AccountController,
   ChainController,
   ConnectionController,
   ModalController,
@@ -153,6 +154,7 @@ describe('SIWE mapped to SIWX', () => {
     it('should universalProviderAuthenticate', async () => {
       const getNonceSpy = vi.spyOn(siweConfig.methods, 'getNonce')
       const verifyMessageSpy = vi.spyOn(siweConfig.methods, 'verifyMessage')
+      const setConnectedWalletInfoSpy = vi.spyOn(AccountController, 'setConnectedWalletInfo')
 
       const cacao = {
         h: {
@@ -172,7 +174,17 @@ describe('SIWE mapped to SIWX', () => {
       } as const
 
       const authenticateSpy = vi.spyOn(mockProvider, 'authenticate').mockResolvedValueOnce({
-        session: {} as any,
+        session: {
+          peer: {
+            metadata: {
+              icons: ['mock-icon'],
+              name: 'mock-name',
+              url: 'mock-url',
+              description: 'mock-description'
+            },
+            publicKey: 'mock-public'
+          }
+        } as any,
         auths: [cacao]
       })
 
@@ -207,6 +219,16 @@ describe('SIWE mapped to SIWX', () => {
         uri: 'mock-uri',
         version: '1'
       })
+      expect(setConnectedWalletInfoSpy).toHaveBeenCalledWith(
+        {
+          icons: ['mock-icon'],
+          name: 'mock-name',
+          url: 'mock-url',
+          description: 'mock-description',
+          icon: 'mock-icon'
+        },
+        'eip155'
+      )
     })
 
     it('should clear sessions on Connection.disconnect', async () => {
