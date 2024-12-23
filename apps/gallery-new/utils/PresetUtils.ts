@@ -30,6 +30,8 @@ import type {
   VisualType,
   ButtonLinkVariant,
   IconColorType
+  DomainChipVariant,
+  ToastMessageVariant
 } from '@reown/appkit-ui-new/src/utils/TypeUtil'
 import type { TransactionStatus, TransactionDirection } from '@reown/appkit-common'
 
@@ -203,6 +205,8 @@ export const spacingOptions: SpacingType[] = [
   '3xl'
 ]
 
+export const toastMessageOptions: ToastMessageVariant[] = ['info', 'success', 'warning', 'error']
+
 export const iconOptions: IconType[] = [
   'allWallets',
   'apple',
@@ -212,6 +216,7 @@ export const iconOptions: IconType[] = [
   'arrowTop',
   'browser',
   'checkmark',
+  'checkmarkVerified',
   'chevronBottom',
   'chevronLeft',
   'chevronRight',
@@ -289,7 +294,9 @@ export const logoOptions: LogoType[] = [
 
 export const placementOptions: PlacementType[] = ['top', 'right', 'bottom', 'left']
 
-export const chipButtonVariants: ChipButtonVariant[] = ['main', 'accent', 'shade', 'gray', 'shade']
+export const chipButtonVariants: ChipButtonVariant[] = ['main', 'accent', 'primary']
+
+export const domainChipVariants: DomainChipVariant[] = ['success', 'warning', 'error']
 
 export const chipVariants: ChipType[] = [
   'fill',

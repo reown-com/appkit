@@ -1,18 +1,38 @@
 import type { ConnectorType } from '@reown/appkit-core'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { ConstantsUtil } from './ConstantsUtil.js'
 
 export const PresetsUtil = {
   ConnectorExplorerIds: {
-    [ConstantsUtil.COINBASE_CONNECTOR_ID]:
+    [CommonConstantsUtil.CONNECTOR_ID.COINBASE]:
       'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
-    [ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]:
+    [CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK]:
       'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
-    [ConstantsUtil.SAFE_CONNECTOR_ID]:
+    [CommonConstantsUtil.CONNECTOR_ID.SAFE]:
       '225affb176778569276e484e1b92637ad061b01e13a048b35a9d280c3b58970f',
-    [ConstantsUtil.LEDGER_CONNECTOR_ID]:
-      '19177a98252e07ddfc9af2083ba8e07ef627cb6103467ffebb3f8f4205fd7927'
-  } as Record<string, string>,
+    [CommonConstantsUtil.CONNECTOR_ID.LEDGER]:
+      '19177a98252e07ddfc9af2083ba8e07ef627cb6103467ffebb3f8f4205fd7927',
 
+    /* Connector names */
+    [ConstantsUtil.METMASK_CONNECTOR_NAME]:
+      'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96',
+    [ConstantsUtil.TRUST_CONNECTOR_NAME]:
+      '4622a2b2d6af1c9844944291e5e7351a6aa24cd7b23099efac1b2fd875da31a0',
+    [ConstantsUtil.SOLFLARE_CONNECTOR_NAME]:
+      '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79',
+    [ConstantsUtil.PHANTOM_CONNECTOR_NAME]:
+      'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
+    [ConstantsUtil.COIN98_CONNECTOR_NAME]:
+      '2a3c89040ac3b723a1972a33a125b1db11e258a6975d3a61252cd64e6ea5ea01',
+    [ConstantsUtil.MAGIC_EDEN_CONNECTOR_NAME]:
+      '8b830a2b724a9c3fbab63af6f55ed29c9dfa8a55e732dc88c80a196a2ba136c6',
+    [ConstantsUtil.BACKPACK_CONNECTOR_NAME]:
+      '2bd8c14e035c2d48f184aaa168559e86b0e3433228d3c4075900a221785019b0',
+    [ConstantsUtil.BITGET_CONNECTOR_NAME]:
+      '38f5d18bd8522c244bdd70cb4a68e0e718865155811c043f052fb9f1c51de662',
+    [ConstantsUtil.FRONTIER_CONNECTOR_NAME]:
+      '85db431492aa2e8672e93f4ea7acf10c88b97b867b0d373107af63dc4880f041'
+  } as Record<string, string>,
   NetworkImageIds: {
     // Ethereum
     1: 'ba0ba0cd-17c6-4806-ad93-f9d174f17900',
@@ -59,32 +79,34 @@ export const PresetsUtil = {
     // Solana networks
     '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'a1b58899-f671-4276-6a5e-56ca5bd59700',
     '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z': 'a1b58899-f671-4276-6a5e-56ca5bd59700',
-    EtWTRABZaYq6iMfeYKouRu166VU2xqa1: 'a1b58899-f671-4276-6a5e-56ca5bd59700'
+    EtWTRABZaYq6iMfeYKouRu166VU2xqa1: 'a1b58899-f671-4276-6a5e-56ca5bd59700',
+    // Bitcoin
+    '000000000019d6689c085ae165831e93': '21c895fa-e105-4829-9434-378bb54fa600'
   } as Record<string, string>,
 
   ConnectorImageIds: {
-    [ConstantsUtil.COINBASE_CONNECTOR_ID]: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
-    [ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
-    [ConstantsUtil.SAFE_CONNECTOR_ID]: '461db637-8616-43ce-035a-d89b8a1d5800',
-    [ConstantsUtil.LEDGER_CONNECTOR_ID]: '54a1aa77-d202-4f8d-0fb2-5d2bb6db0300',
-    [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: 'ef1a1fcf-7fe8-4d69-bd6d-fda1345b4400',
-    [ConstantsUtil.INJECTED_CONNECTOR_ID]: '07ba87ed-43aa-4adf-4540-9e6a2b9cae00'
+    [CommonConstantsUtil.CONNECTOR_ID.COINBASE]: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
+    [CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK]: '0c2840c3-5b04-4c44-9661-fbd4b49e1800',
+    [CommonConstantsUtil.CONNECTOR_ID.SAFE]: '461db637-8616-43ce-035a-d89b8a1d5800',
+    [CommonConstantsUtil.CONNECTOR_ID.LEDGER]: '54a1aa77-d202-4f8d-0fb2-5d2bb6db0300',
+    [CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT]: 'ef1a1fcf-7fe8-4d69-bd6d-fda1345b4400',
+    [CommonConstantsUtil.CONNECTOR_ID.INJECTED]: '07ba87ed-43aa-4adf-4540-9e6a2b9cae00'
   } as Record<string, string>,
 
   ConnectorNamesMap: {
-    [ConstantsUtil.INJECTED_CONNECTOR_ID]: 'Browser Wallet',
-    [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: 'WalletConnect',
-    [ConstantsUtil.COINBASE_CONNECTOR_ID]: 'Coinbase',
-    [ConstantsUtil.COINBASE_SDK_CONNECTOR_ID]: 'Coinbase',
-    [ConstantsUtil.LEDGER_CONNECTOR_ID]: 'Ledger',
-    [ConstantsUtil.SAFE_CONNECTOR_ID]: 'Safe'
+    [CommonConstantsUtil.CONNECTOR_ID.INJECTED]: 'Browser Wallet',
+    [CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT]: 'WalletConnect',
+    [CommonConstantsUtil.CONNECTOR_ID.COINBASE]: 'Coinbase',
+    [CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK]: 'Coinbase',
+    [CommonConstantsUtil.CONNECTOR_ID.LEDGER]: 'Ledger',
+    [CommonConstantsUtil.CONNECTOR_ID.SAFE]: 'Safe'
   } as Record<string, string>,
 
   ConnectorTypesMap: {
-    [ConstantsUtil.INJECTED_CONNECTOR_ID]: 'INJECTED',
-    [ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID]: 'WALLET_CONNECT',
-    [ConstantsUtil.EIP6963_CONNECTOR_ID]: 'ANNOUNCED',
-    [ConstantsUtil.AUTH_CONNECTOR_ID]: 'AUTH'
+    [CommonConstantsUtil.CONNECTOR_ID.INJECTED]: 'INJECTED',
+    [CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT]: 'WALLET_CONNECT',
+    [CommonConstantsUtil.CONNECTOR_ID.EIP6963]: 'ANNOUNCED',
+    [CommonConstantsUtil.CONNECTOR_ID.AUTH]: 'AUTH'
   } as Record<string, ConnectorType>,
 
   WalletConnectRpcChainIds: [

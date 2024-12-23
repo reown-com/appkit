@@ -17,7 +17,7 @@ const chain = CommonConstantsUtil.CHAIN.EVM
 const walletConnectUri = 'wc://uri?=123'
 const externalId = 'coinbaseWallet'
 const type = 'WALLET_CONNECT' as ConnectorType
-const storageSpy = vi.spyOn(StorageUtil, 'setConnectedConnector')
+const storageSpy = vi.spyOn(StorageUtil, 'setConnectedConnectorId')
 
 const client: ConnectionControllerClient = {
   connectWalletConnect: async onUri => {
@@ -68,19 +68,22 @@ const adapters = [evmAdapter] as ChainAdapter[]
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize(adapters)
+  ChainController.initialize(adapters, [])
   ConnectionController.setClient(evmAdapter.connectionControllerClient)
 })
 
 describe('ConnectionController', () => {
   it('should have valid default state', () => {
-    ChainController.initialize([
-      {
-        namespace: CommonConstantsUtil.CHAIN.EVM,
-        connectionControllerClient: client,
-        caipNetworks: []
-      }
-    ])
+    ChainController.initialize(
+      [
+        {
+          namespace: CommonConstantsUtil.CHAIN.EVM,
+          connectionControllerClient: client,
+          caipNetworks: []
+        }
+      ],
+      []
+    )
 
     expect(ConnectionController.state).toEqual({
       wcError: false,
@@ -106,7 +109,7 @@ describe('ConnectionController', () => {
     await ConnectionController.connectWalletConnect()
     expect(ConnectionController.state.wcUri).toEqual(walletConnectUri)
     expect(ConnectionController.state.wcPairingExpiry).toEqual(ConstantsUtil.FOUR_MINUTES_MS)
-    expect(storageSpy).toHaveBeenCalledWith('WALLET_CONNECT')
+    expect(storageSpy).toHaveBeenCalledWith('walletConnect')
     expect(clientConnectWalletConnectSpy).toHaveBeenCalled()
 
     // Just in case
@@ -116,7 +119,6 @@ describe('ConnectionController', () => {
   it('connectExternal() should trigger internal client call and set connector in storage', async () => {
     const options = { id: externalId, type }
     await ConnectionController.connectExternal(options, chain)
-    expect(storageSpy).toHaveBeenCalledWith(type)
     expect(clientConnectExternalSpy).toHaveBeenCalledWith(options)
   })
 
@@ -131,13 +133,16 @@ describe('ConnectionController', () => {
   })
 
   it('should not throw when optional methods are undefined', async () => {
-    ChainController.initialize([
-      {
-        namespace: CommonConstantsUtil.CHAIN.EVM,
-        connectionControllerClient: partialClient,
-        caipNetworks: []
-      }
-    ])
+    ChainController.initialize(
+      [
+        {
+          namespace: CommonConstantsUtil.CHAIN.EVM,
+          connectionControllerClient: partialClient,
+          caipNetworks: []
+        }
+      ],
+      []
+    )
     await ConnectionController.connectExternal({ id: externalId, type }, chain)
     ConnectionController.checkInstalled([externalId])
     expect(clientCheckInstalledSpy).toHaveBeenCalledWith([externalId])

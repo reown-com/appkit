@@ -6,10 +6,26 @@ export const ConstantsUtil = {
   BLOCKCHAIN_API_RPC_URL: 'https://rpc.walletconnect.org',
   PULSE_API_URL: 'https://pulse.walletconnect.org',
   W3M_API_URL: 'https://api.web3modal.org',
+  /* Connector IDs */
+  CONNECTOR_ID: {
+    WALLET_CONNECT: 'walletConnect',
+    INJECTED: 'injected',
+    WALLET_STANDARD: 'announced',
+    COINBASE: 'coinbaseWallet',
+    COINBASE_SDK: 'coinbaseWalletSDK',
+    SAFE: 'safe',
+    LEDGER: 'ledger',
+    EIP6963: 'eip6963',
+    AUTH: 'ID_AUTH'
+  },
+  LIMITS: {
+    PENDING_TRANSACTIONS: 99
+  },
   CHAIN: {
     EVM: 'eip155',
     SOLANA: 'solana',
-    POLKADOT: 'polkadot'
+    POLKADOT: 'polkadot',
+    BITCOIN: 'bip122'
   } as const satisfies Record<string, ChainNamespace>,
   CHAIN_NAME_MAP: {
     eip155: 'Ethereum',

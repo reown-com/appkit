@@ -4,6 +4,7 @@ import {
   CoreHelperUtil,
   EventsController,
   ModalController,
+  OptionsController,
   RouterController,
   SIWXUtil,
   SnackController,
@@ -11,7 +12,8 @@ import {
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 import { type CaipAddress, type CaipNetwork } from '@reown/appkit-common'
 
@@ -28,6 +30,8 @@ export class W3mModal extends LitElement {
   private abortController?: AbortController = undefined
 
   // -- State & Properties -------------------------------- //
+  @property({ type: Boolean }) private enableEmbedded = OptionsController.state.enableEmbedded
+
   @state() private open = ModalController.state.open
 
   @state() private caipAddress = ChainController.state.activeCaipAddress
@@ -51,6 +55,19 @@ export class W3mModal extends LitElement {
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })
   }
 
+  public override firstUpdated() {
+    OptionsController.setEnableEmbedded(this.enableEmbedded)
+    if (this.caipAddress) {
+      if (this.enableEmbedded) {
+        ModalController.close()
+
+        return
+      }
+
+      this.onNewAddress(this.caipAddress)
+    }
+  }
+
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
     this.onRemoveKeyboardListener()
@@ -58,21 +75,21 @@ export class W3mModal extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    this.style.cssText = `
+      --local-border-bottom-mobile-radius: ${
+        this.enableEmbedded ? 'clamp(0px, var(--wui-border-radius-l), 44px)' : '0px'
+      };
+    `
+
+    if (this.enableEmbedded) {
+      return html`${this.contentTemplate()}
+        <w3m-tooltip></w3m-tooltip> `
+    }
+
     return this.open
       ? html`
           <wui-flex @click=${this.onOverlayClick.bind(this)} data-testid="w3m-modal-overlay">
-            <wui-card
-              shake="${this.shake}"
-              role="alertdialog"
-              aria-modal="true"
-              tabindex="0"
-              data-testid="w3m-modal-card"
-            >
-              <w3m-header></w3m-header>
-              <w3m-router></w3m-router>
-              <w3m-snackbar></w3m-snackbar>
-              <w3m-alertbar></w3m-alertbar>
-            </wui-card>
+            ${this.contentTemplate()}
           </wui-flex>
           <w3m-tooltip></w3m-tooltip>
         `
@@ -80,6 +97,22 @@ export class W3mModal extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private contentTemplate() {
+    return html` <wui-card
+      shake="${this.shake}"
+      data-embedded="${ifDefined(this.enableEmbedded)}"
+      role="alertdialog"
+      aria-modal="true"
+      tabindex="0"
+      data-testid="w3m-modal-card"
+    >
+      <w3m-header></w3m-header>
+      <w3m-router></w3m-router>
+      <w3m-snackbar></w3m-snackbar>
+      <w3m-alertbar></w3m-alertbar>
+    </wui-card>`
+  }
+
   private async onOverlayClick(event: PointerEvent) {
     if (event.target === event.currentTarget) {
       await this.handleClose()
@@ -171,7 +204,7 @@ export class W3mModal extends LitElement {
 
     await SIWXUtil.initializeIfEnabled()
 
-    if (!nextConnected) {
+    if (!nextConnected || this.enableEmbedded) {
       ModalController.close()
     }
   }
