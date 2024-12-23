@@ -7,6 +7,7 @@ import {
 } from '@reown/appkit-core'
 import type { AppKitSIWEClient } from '../exports/index.js'
 import { ConstantsUtil, NetworkUtil } from '@reown/appkit-common'
+import { HelpersUtil } from '@reown/appkit-utils'
 
 const subscriptions: (() => void)[] = []
 
@@ -186,15 +187,17 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
         const siweCaipNetworkId = `${ConstantsUtil.CHAIN.EVM}:${siweSession?.chainId}`
 
         const sessionAddress = siweSession?.address
-        const caipSessionAddress = `${siweCaipNetworkId}:${sessionAddress}`
-
-        const caipAddress = `${chainId}:${address}`
+        const requestedCaipNetworkId = chainId
 
         const signOutOnNetworkChange = siwe.options.signOutOnNetworkChange
+        const signOutOnAccountChange = siwe.options.signOutOnAccountChange
 
-        const shouldSignOut = signOutOnNetworkChange
-          ? caipSessionAddress !== caipAddress
-          : sessionAddress !== address
+        const networkMismatch =
+          signOutOnNetworkChange && siweCaipNetworkId !== requestedCaipNetworkId
+        const addressMismatch =
+          signOutOnAccountChange && !HelpersUtil.isLowerCaseMatch(sessionAddress, address)
+
+        const shouldSignOut = networkMismatch || addressMismatch
 
         if (!siweSession || shouldSignOut) {
           return []

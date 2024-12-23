@@ -510,5 +510,45 @@ describe('SIWE: mapToSIWX', () => {
 
       siweConfig.options.signOutOnAccountChange = true
     })
+
+    // New test case for case-insensitive address comparison
+    it('should handle case-insensitive address comparison', async () => {
+      const siwx = mapToSIWX(siweConfig)
+
+      vi.spyOn(siweConfig.methods, 'getSession').mockResolvedValue({
+        address: 'MOCK-ADDRESS',
+        chainId: 1
+      })
+      const signOutSpy = vi.spyOn(siweConfig.methods, 'signOut')
+      const onSignOutSpy = vi.spyOn(siweConfig.methods, 'onSignOut')
+
+      OptionsController.setSIWX(siwx)
+      AccountController.setCaipAddress('eip155:1:mock-address', 'eip155')
+
+      // Wait for the event loop to finish
+      await new Promise(resolve => setTimeout(resolve, 10))
+      expect(signOutSpy).not.toHaveBeenCalled()
+      expect(onSignOutSpy).not.toHaveBeenCalled()
+    })
+
+    // New test case for unchanged account
+    it('should not sign out if account remains unchanged', async () => {
+      const siwx = mapToSIWX(siweConfig)
+
+      vi.spyOn(siweConfig.methods, 'getSession').mockResolvedValue({
+        address: 'mock-address',
+        chainId: 1
+      })
+      const signOutSpy = vi.spyOn(siweConfig.methods, 'signOut')
+      const onSignOutSpy = vi.spyOn(siweConfig.methods, 'onSignOut')
+
+      OptionsController.setSIWX(siwx)
+      AccountController.setCaipAddress('eip155:1:mock-address', 'eip155')
+
+      // Wait for the event loop to finish
+      await new Promise(resolve => setTimeout(resolve, 10))
+      expect(signOutSpy).not.toHaveBeenCalled()
+      expect(onSignOutSpy).not.toHaveBeenCalled()
+    })
   })
 })
