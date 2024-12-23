@@ -479,6 +479,7 @@ export class AppKit {
   }
 
   public setBalance: (typeof AccountController)['setBalance'] = (balance, balanceSymbol, chain) => {
+    console.log('>> Appkit setBalance', balance, balanceSymbol, chain)
     AccountController.setBalance(balance, balanceSymbol, chain)
   }
 
@@ -1552,6 +1553,8 @@ export class AppKit {
     }
 
     if (caipNetwork.testnet) {
+      this.setBalance('0.00', caipNetwork.nativeCurrency.symbol, caipNetwork.chainNamespace)
+
       return
     }
 

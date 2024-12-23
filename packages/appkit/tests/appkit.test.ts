@@ -776,8 +776,17 @@ describe('Base', () => {
       vi.spyOn(StorageUtil, 'getActiveNetworkProps').mockReturnValueOnce({
         namespace: 'eip155',
         chainId: '11155111',
-        caipNetworkId: '11155111'
+        caipNetworkId: 'eip155:11155111'
       })
+
+      vi.spyOn(CaipNetworksUtil, 'extendCaipNetworks').mockReturnValueOnce([
+        {
+          id: '11155111',
+          chainNamespace: 'eip155',
+          testnet: true,
+          nativeCurrency: { symbol: 'sETH' }
+        } as CaipNetwork
+      ])
 
       const mockAdapter = {
         getAccounts: vi.fn().mockResolvedValue([]),
@@ -789,13 +798,16 @@ describe('Base', () => {
         emit: vi.fn()
       }
 
-      vi.spyOn(appKit as any, 'getAdapter').mockReturnValue(mockAdapter)
-
       vi.spyOn(AccountController, 'state', 'get').mockReturnValue(mockAccountData as any)
+
+      appKit = new AppKit({ ...mockOptions, adapters: [mockAdapter as ChainAdapter] })
+
+      vi.spyOn(appKit as any, 'getAdapter').mockReturnValue(mockAdapter)
 
       await appKit['syncAccount'](mockAccountData)
 
       expect(mockAdapter.getBalance).not.toHaveBeenCalled()
+      expect(AccountController.setBalance).toHaveBeenCalledWith('0.00', 'sETH', 'eip155')
     })
 
     it('should disconnect correctly', async () => {
