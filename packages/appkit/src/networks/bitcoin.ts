@@ -27,5 +27,6 @@ export const bitcoinTestnet = defineChain({
   },
   rpcUrls: {
     default: { http: ['https://rpc.walletconnect.org/v1'] }
-  }
+  },
+  testnet: true
 })
