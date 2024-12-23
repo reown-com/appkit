@@ -9,7 +9,7 @@ import type {
 } from '@reown/appkit-common'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import '../../components/wui-text/index.js'
-import '../wui-transaction-visual/index.js'
+import '../wui-transaction-thumbnail/index.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 

@@ -120,6 +120,7 @@ export type IconType =
   | 'arrowRight'
   | 'arrowTop'
   | 'arrowTopRight'
+  | 'arrowClockWise'
   | 'bank'
   | 'browser'
   | 'card'
@@ -139,6 +140,7 @@ export type IconType =
   | 'desktop'
   | 'disconnect'
   | 'discord'
+  | 'dollar'
   | 'etherscan'
   | 'extension'
   | 'externalLink'
@@ -163,6 +165,7 @@ export type IconType =
   | 'playStore'
   | 'plus'
   | 'qrCode'
+  | 'questionMark'
   | 'recycleHorizontal'
   | 'refresh'
   | 'search'
@@ -267,6 +270,10 @@ export type ButtonVariant =
 export type ButtonShortcutVariant = 'accent' | 'secondary'
 export type ButtonLinkVariant = 'accent' | 'secondary'
 
+export type TransactionThumbnailType = TransactionType | 'fiat' | 'unknown' | 'nft'
+export type TransactionThumbnailSize = 'sm' | 'lg'
+
+// @TODO: Remove this everywhere in the code and use TransactionThumbnailType type instead
 export type TransactionType =
   | 'approve'
   | 'bought'
