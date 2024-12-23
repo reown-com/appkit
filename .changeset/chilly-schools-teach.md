@@ -21,7 +21,7 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Added a new option to enable or disable logs when using email and/or social login.
+Added a new option to enable or disable logs from email/social login.
 
 **Example usage**
 
