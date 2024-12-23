@@ -7,7 +7,7 @@ import '../../components/gallery-placeholder'
 type Component = Meta<WuiCard>
 
 export default {
-  title: 'Components/wui-card'
+  title: 'Composites/wui-card'
 } as Component
 
 export const Default: Component = {
