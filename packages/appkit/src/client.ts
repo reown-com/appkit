@@ -357,7 +357,7 @@ export class AppKit {
     })
   }
 
-  public subscribeWalletInfo(callback: (newState: ConnectedWalletInfo) => void) {
+  public subscribeWalletInfo(callback: (newState?: ConnectedWalletInfo) => void) {
     return AccountController.subscribeKey('connectedWalletInfo', callback)
   }
 
@@ -1569,19 +1569,16 @@ export class AppKit {
   private syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
     const connectorId = StorageUtil.getConnectedConnectorId()
     const providerType = ProviderUtil.state.providerIds[chainNamespace]
-
     if (
       providerType === UtilConstantsUtil.CONNECTOR_TYPE_ANNOUNCED ||
       providerType === UtilConstantsUtil.CONNECTOR_TYPE_INJECTED
     ) {
       if (connectorId) {
         const connector = this.getConnectors().find(c => c.id === connectorId)
-
-        if (connector?.info) {
-          this.setConnectedWalletInfo(
-            { ...connector.info, name: connector?.info?.name || 'Unknown' },
-            chainNamespace
-          )
+        if (connector) {
+          const { info, name, imageUrl } = connector
+          const icon = imageUrl || this.getConnectorImage(connector)
+          this.setConnectedWalletInfo({ name, icon, ...info }, chainNamespace)
         }
       }
     } else if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
