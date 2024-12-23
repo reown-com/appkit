@@ -109,7 +109,7 @@ export interface OptionsControllerStatePublic {
    */
   enableWalletGuide?: boolean
   /**
-   * Enable or disable logs when using email and social login.
+   * Enable or disable logs when using email and/or social login.
    * @default true
    */
   enableAuthLogger?: boolean
