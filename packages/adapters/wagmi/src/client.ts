@@ -281,7 +281,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       customConnectors.push(
         authConnector({
           chains: this.wagmiChains,
-          options: { projectId: options.projectId }
+          options: { projectId: options.projectId, enableAuthLogger: options.enableAuthLogger }
         })
       )
     }
