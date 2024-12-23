@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 import { AppKit } from '../src/client'
 import { base, mainnet, polygon, solana } from '../src/networks/index.js'
 import {
@@ -47,7 +47,7 @@ vi.mock('../src/client.ts', async () => {
 
   return {
     ...actual,
-    initOrContinue: vi.fn(),
+    injectModalUi: vi.fn(),
     syncExistingConnection: vi.fn()
   }
 })
@@ -66,8 +66,6 @@ describe('Base', () => {
   let appKit: AppKit
 
   beforeEach(() => {
-    vi.resetAllMocks()
-
     vi.mocked(ChainController).state = {
       chains: new Map(),
       activeChain: 'eip155'
@@ -77,6 +75,10 @@ describe('Base', () => {
     vi.mocked(CaipNetworksUtil).extendCaipNetworks = vi.fn().mockReturnValue([])
 
     appKit = new AppKit(mockOptions)
+  })
+
+  afterEach(() => {
+    vi.clearAllMocks()
   })
 
   describe('Base Initialization', () => {
@@ -895,7 +897,7 @@ describe('Base', () => {
     let mockUniversalAdapter: any
 
     beforeEach(() => {
-      vi.resetAllMocks()
+      vi.restoreAllMocks()
 
       vi.mocked(ChainController).state = {
         chains: new Map(),
