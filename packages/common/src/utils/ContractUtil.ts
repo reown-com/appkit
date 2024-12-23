@@ -1,4 +1,5 @@
 import { erc20ABI } from '../contracts/erc20.js'
+import { swapABI } from '../contracts/swap.js'
 import { usdtABI } from '../contracts/usdt.js'
 import { ConstantsUtil } from './ConstantsUtil.js'
 
@@ -10,5 +11,7 @@ export const ContractUtil = {
     }
 
     return erc20ABI
-  }
+  },
+
+  getSwapAbi: () => swapABI
 }

@@ -11,7 +11,8 @@ import {
   ConstantsUtil as CommonConstantsUtil,
   OptionsController,
   ChainController,
-  type AccountType
+  type AccountType,
+  ConstantsUtil as CoreConstantsUtil
 } from '@reown/appkit-core'
 import { customElement, UiHelperUtil } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
@@ -113,7 +114,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
         ${this.authCardTemplate()} <w3m-account-auth-button></w3m-account-auth-button>
-        ${this.onrampTemplate()} ${this.swapsTemplate()} ${this.activityTemplate()}
+        ${this.orderedFeaturesTemplate()} ${this.activityTemplate()}
         <wui-list-item
           variant="icon"
           iconVariant="overlay"
@@ -148,6 +149,24 @@ export class W3mAccountDefaultWidget extends LitElement {
         <wui-text variant="paragraph-500" color="fg-100">Buy crypto</wui-text>
       </wui-list-item>
     `
+  }
+
+  private orderedFeaturesTemplate() {
+    const featuresOrder =
+      this.features?.walletFeaturesOrder || CoreConstantsUtil.DEFAULT_FEATURES.walletFeaturesOrder
+
+    return featuresOrder.map(feature => {
+      switch (feature) {
+        case 'onramp':
+          return this.onrampTemplate()
+        case 'swaps':
+          return this.swapsTemplate()
+        case 'send':
+          return this.sendTemplate()
+        default:
+          return null
+      }
+    })
   }
 
   private activityTemplate() {
@@ -186,11 +205,35 @@ export class W3mAccountDefaultWidget extends LitElement {
     `
   }
 
+  private sendTemplate() {
+    const send = this.features?.send
+    const isEvm = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
+
+    if (!send || !isEvm) {
+      return null
+    }
+
+    return html`
+      <wui-list-item
+        iconVariant="blue"
+        icon="send"
+        ?chevron=${true}
+        @click=${this.handleClickSend.bind(this)}
+      >
+        <wui-text variant="paragraph-500" color="fg-100">Send</wui-text>
+      </wui-list-item>
+    `
+  }
+
   private authCardTemplate() {
-    const type = StorageUtil.getConnectedConnector()
+    const connectorId = StorageUtil.getConnectedConnectorId()
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
-    if (!authConnector || type !== 'ID_AUTH' || origin.includes(CommonConstantsUtil.SECURE_SITE)) {
+    if (
+      !authConnector ||
+      connectorId !== ConstantsUtil.CONNECTOR_ID.AUTH ||
+      origin.includes(CommonConstantsUtil.SECURE_SITE)
+    ) {
       return null
     }
 
@@ -215,6 +258,10 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   private handleClickSwap() {
     RouterController.push('Swap')
+  }
+
+  private handleClickSend() {
+    RouterController.push('WalletSend')
   }
 
   private explorerBtnTemplate() {
@@ -318,7 +365,12 @@ export class W3mAccountDefaultWidget extends LitElement {
             truncate: this.profileName ? 'end' : 'middle'
           })}
         </wui-text>
-        <wui-icon size="sm" color="fg-200" name="copy" id="copy-address"></wui-icon>
+        <wui-icon-link
+          size="md"
+          icon="copy"
+          iconColor="fg-200"
+          @click=${this.onCopyAddress}
+        ></wui-icon-link>
       </wui-flex>
     </wui-flex>`
   }

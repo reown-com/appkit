@@ -16,6 +16,7 @@ import BorderRadiusInput from '../components/Theming/BorderRadiusInput'
 import MixColorInput from '../components/Theming/MixColorInput'
 import { useEffect } from 'react'
 import { ThemeStore } from '../utils/StoreUtil'
+import QrColorInput from '../components/Theming/QrColorInput'
 
 interface Props {
   controls: ReturnType<typeof useDisclosure>
@@ -74,6 +75,9 @@ export function OptionsDrawer({ controls }: Props) {
             </Flex>
             <Flex gridGap="4" flexDirection="column">
               <AccentColorInput />
+            </Flex>
+            <Flex gridGap="4" flexDirection="column">
+              <QrColorInput />
             </Flex>
             <Flex gridGap="4" flexDirection="column">
               <BorderRadiusInput />

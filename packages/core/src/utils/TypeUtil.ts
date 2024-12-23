@@ -18,6 +18,29 @@ import type { ConstantsUtil } from './ConstantsUtil.js'
 import type { ReownName } from '../controllers/EnsController.js'
 import type UniversalProvider from '@walletconnect/universal-provider'
 
+type InitializeAppKitConfigs = {
+  showWallets?: boolean
+  siweConfig?: {
+    options: {
+      enabled?: boolean
+      nonceRefetchIntervalMs?: number
+      sessionRefetchIntervalMs?: number
+      signOutOnDisconnect?: boolean
+      signOutOnAccountChange?: boolean
+      signOutOnNetworkChange?: boolean
+    }
+  }
+  themeMode?: 'dark' | 'light'
+  themeVariables?: ThemeVariables
+  allowUnsupportedChain?: boolean
+  networks: (string | number)[]
+  defaultNetwork?: AppKitNetwork
+  chainImages?: Record<number | string, string>
+  connectorImages?: Record<string, string>
+  coinbasePreference?: 'all' | 'smartWalletOnly' | 'eoaOnly'
+  metadata?: Metadata
+}
+
 export type CaipNetworkCoinbaseNetwork =
   | 'Ethereum'
   | 'Arbitrum One'
@@ -160,6 +183,7 @@ export interface ThemeVariables {
   '--w3m-font-size-master'?: string
   '--w3m-border-radius-master'?: string
   '--w3m-z-index'?: number
+  '--w3m-qr-color'?: string
 }
 
 // -- BlockchainApiController Types ---------------------------------------------
@@ -436,6 +460,9 @@ export type Event =
   | {
       type: 'track'
       event: 'DISCONNECT_ERROR'
+      properties?: {
+        message: string
+      }
     }
   | {
       type: 'track'
@@ -535,6 +562,9 @@ export type Event =
   | {
       type: 'track'
       event: 'EMAIL_VERIFICATION_CODE_FAIL'
+      properties: {
+        message: string
+      }
     }
   | {
       type: 'track'
@@ -628,6 +658,19 @@ export type Event =
   | {
       type: 'track'
       event: 'SWAP_ERROR'
+      properties: {
+        isSmartAccount: boolean
+        network: string
+        swapFromToken: string
+        swapToToken: string
+        swapFromAmount: string
+        swapToAmount: string
+        message: string
+      }
+    }
+  | {
+      type: 'track'
+      event: 'SWAP_APPROVAL_ERROR'
       properties: {
         isSmartAccount: boolean
         network: string
@@ -761,6 +804,11 @@ export type Event =
         search: string
       }
     }
+  | {
+      type: 'track'
+      event: 'INITIALIZE'
+      properties: InitializeAppKitConfigs
+    }
 // Onramp Types
 export type DestinationWallet = {
   address: string
@@ -862,13 +910,13 @@ export type EstimateGasTransactionArgs =
     }
 
 export interface WriteContractArgs {
-  receiverAddress: `0x${string}`
-  tokenAmount: bigint
   tokenAddress: `0x${string}`
   fromAddress: `0x${string}`
-  method: 'send' | 'transfer' | 'call'
+  method: 'send' | 'transfer' | 'call' | 'approve'
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   abi: any
+  args: unknown[]
+  chainNamespace: ChainNamespace
 }
 
 export interface NetworkControllerClient {
@@ -951,14 +999,9 @@ export type CombinedProvider = W3mFrameProvider & Provider
 export type CoinbasePaySDKChainNameValues =
   keyof typeof ConstantsUtil.WC_COINBASE_PAY_SDK_CHAIN_NAME_MAP
 
-export type FeaturesSocials =
-  | 'google'
-  | 'x'
-  | 'discord'
-  | 'farcaster'
-  | 'github'
-  | 'apple'
-  | 'facebook'
+export type WalletFeature = 'swaps' | 'send' | 'receive' | 'onramp'
+
+export type ConnectMethod = 'email' | 'social' | 'wallet'
 
 export type Features = {
   /**
@@ -972,20 +1015,32 @@ export type Features = {
    */
   onramp?: boolean
   /**
+   * @description Enable or disable the receive feature. Enabled by default.
+   * This feature is only visible when connected with email/social. It's not possible to configure when connected with wallet, which is enabled by default.
+   * @type {boolean}
+   */
+  receive?: boolean
+  /**
+   * @description Enable or disable the send feature. Enabled by default.
+   * @type {boolean}
+   */
+  send?: boolean
+  /**
    * @description Enable or disable the email feature. Enabled by default.
    * @type {boolean}
    */
   email?: boolean
   /**
    * @description Show or hide the regular wallet options when email is enabled. Enabled by default.
+   * @deprecated - This property will be removed in the next major release. Please use `features.collapseWallets` instead.
    * @type {boolean}
    */
   emailShowWallets?: boolean
   /**
    * @description Enable or disable the socials feature. Enabled by default.
-   * @type {FeaturesSocials[]}
+   * @type {SocialProvider[]}
    */
-  socials?: FeaturesSocials[] | false
+  socials?: SocialProvider[] | false
   /**
    * @description Enable or disable the history feature. Enabled by default.
    * @type {boolean}
@@ -1011,6 +1066,25 @@ export type Features = {
    * @default false
    */
   legalCheckbox?: boolean
+  /**
+   * @description The order of the connect methods. This is experimental and subject to change.
+   * @default ['email', 'social', 'wallet']
+   * @type {('email' | 'social' | 'wallet')[]}
+   */
+  connectMethodsOrder?: ConnectMethod[]
+  /**
+   * @
+   * @description The order of the wallet features. This is experimental and subject to change.
+   * @default ['receive' | 'onramp' | 'swaps' | 'send']
+   * @type {('receive' | 'onramp' | 'swaps' | 'send')[]}
+   */
+  walletFeaturesOrder?: WalletFeature[]
+  /**
+   * @description Enable or disable the collapse wallets as a single "Continue with wallet" button for simple UI in connect page.
+   * This can be activated when only have another connect method like email or social activated along with wallets.
+   * @default false
+   */
+  collapseWallets?: boolean
 }
 
 export type FeaturesKeys = keyof Features

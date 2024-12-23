@@ -1,4 +1,3 @@
-import { ConstantsUtil } from '@reown/appkit-utils'
 import type {
   AnyTransaction,
   Connection,
@@ -15,6 +14,7 @@ import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 import base58 from 'bs58'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 export type AuthProviderConfig = {
   getProvider: () => W3mFrameProvider
@@ -26,7 +26,7 @@ export type AuthProviderConfig = {
 }
 
 export class AuthProvider extends ProviderEventEmitter implements Provider, ProviderAuthMethods {
-  public readonly name = ConstantsUtil.AUTH_CONNECTOR_ID
+  public readonly name = ConstantsUtil.CONNECTOR_ID.AUTH
   public readonly type = 'AUTH'
 
   private readonly getProvider: AuthProviderConfig['getProvider']

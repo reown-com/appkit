@@ -24,7 +24,10 @@ export type {
 } from '../src/controllers/ConnectionController.js'
 
 export { ConnectorController } from '../src/controllers/ConnectorController.js'
-export type { ConnectorControllerState } from '../src/controllers/ConnectorController.js'
+export type {
+  ConnectorControllerState,
+  ConnectorWithProviders
+} from '../src/controllers/ConnectorController.js'
 
 export { SnackController } from '../src/controllers/SnackController.js'
 export type { SnackControllerState } from '../src/controllers/SnackController.js'
@@ -75,6 +78,8 @@ export { StorageUtil } from '../src/utils/StorageUtil.js'
 export { RouterUtil } from '../src/utils/RouterUtil.js'
 export { OptionsUtil } from '../src/utils/OptionsUtil.js'
 export { SIWXUtil } from '../src/utils/SIWXUtil.js'
+
+export { FetchUtil } from '../src/utils/FetchUtil.js'
 
 export type * from '../src/utils/TypeUtil.js'
 export type * from '../src/utils/SIWXUtil.js'

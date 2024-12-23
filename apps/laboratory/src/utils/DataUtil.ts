@@ -47,6 +47,11 @@ export const wagmiSdkOptions: SdkOption[] = [
     description: 'Configuration using wagmi without socials'
   },
   {
+    title: 'Wallet Button',
+    link: '/library/wagmi-wallet-button/',
+    description: 'Configuration using wagmi with wallet buttons'
+  },
+  {
     title: 'Permissions(Sync)',
     link: '/library/wagmi-permissions-sync/',
     description: 'Configuration using wagmi and implementing ERC-7715 with passkey'
@@ -78,6 +83,11 @@ export const ethersSdkOptions: SdkOption[] = [
     title: 'Without Socials',
     link: '/library/ethers-no-socials/',
     description: 'Configuration using ethers without socials'
+  },
+  {
+    title: 'Wallet Button',
+    link: '/library/ethers-wallet-button/',
+    description: 'Configuration using ethers with wallet buttons'
   }
 ]
 
@@ -96,6 +106,11 @@ export const ethers5SdkOptions: SdkOption[] = [
     title: 'Without Socials',
     link: '/library/ethers5-no-socials/',
     description: 'Configuration using ethers without socials'
+  },
+  {
+    title: 'Wallet Button',
+    link: '/library/ethers5-wallet-button/',
+    description: 'Configuration using ethers with socials'
   }
 ]
 
@@ -114,6 +129,11 @@ export const solanaSdkOptions: SdkOption[] = [
     title: 'Without Socials',
     link: '/library/solana-no-socials/',
     description: 'Configuration using ethers without socials'
+  },
+  {
+    title: 'Wallet Button',
+    link: '/library/solana-wallet-button/',
+    description: 'Configuration using solana with wallet buttons'
   }
 ]
 
@@ -137,11 +157,6 @@ export const multichainSdkOptions: SdkOption[] = [
     title: 'Basic',
     link: '/library/multichain-basic',
     description: 'Configuration with no adapters enabled for AppKit'
-  },
-  {
-    title: '[Experimental] SIWX',
-    link: '/library/multichain-siwx',
-    description: 'Configuration with SIWX adapters enabled for AppKit'
   }
 ]
 
@@ -184,5 +199,19 @@ export const bitcoinSdkOptions: SdkOption[] = [
     title: 'Default',
     link: '/library/bitcoin',
     description: 'Basic configuration using bitcoin as a driving library'
+  }
+]
+
+export const siwxSdkOptions: SdkOption[] = [
+  {
+    title: 'Default SIWX',
+    link: '/library/siwx-default',
+    description:
+      'Multichain SIWX configuration with Ethers, Solana and Bitcoin adapters enabled for AppKit'
+  },
+  {
+    title: 'Cloud Auth SIWX',
+    link: '/library/siwx-cloud-auth',
+    description: 'EVM SIWX configuration with Ethers and Cloud Auth'
   }
 ]
