@@ -29,7 +29,7 @@ import type {
   TransactionType,
   VisualType,
   ButtonLinkVariant,
-  IconColorType
+  IconColorType,
   DomainChipVariant,
   ToastMessageVariant
 } from '@reown/appkit-ui-new/src/utils/TypeUtil'
