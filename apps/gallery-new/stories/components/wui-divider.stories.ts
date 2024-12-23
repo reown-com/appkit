@@ -8,7 +8,7 @@ import '../../components/gallery-container'
 type Component = Meta<WuiDivider>
 
 export default {
-  title: 'Components/wui-divider',
+  title: 'Components/Divider',
   args: {
     text: 'or'
   }

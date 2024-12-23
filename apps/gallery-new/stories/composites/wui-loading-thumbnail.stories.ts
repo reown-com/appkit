@@ -6,7 +6,7 @@ import { html } from 'lit'
 type Component = Meta<WuiLoadingThumbnail>
 
 export default {
-  title: 'Components/wui-loading-thumbnail',
+  title: 'Composites/wui-loading-thumbnail',
   args: {
     radius: 36
   }

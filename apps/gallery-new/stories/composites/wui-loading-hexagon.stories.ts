@@ -6,7 +6,7 @@ import { html } from 'lit'
 type Component = Meta<WuiLoadingHexagon>
 
 export default {
-  title: 'Components/wui-loading-hexagon'
+  title: 'Composites/wui-loading-hexagon'
 } as Component
 
 export const Default: Component = {

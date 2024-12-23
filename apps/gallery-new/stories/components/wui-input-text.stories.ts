@@ -5,10 +5,10 @@ import { html } from 'lit'
 import '../../components/gallery-container'
 import { iconOptions } from '../../utils/PresetUtils'
 
-type Component = Meta<WuiInputText>
+type Component = Meta<WuiInputText & { showSubmitButton: boolean }>
 
 export default {
-  title: 'Composites/wui-input-text',
+  title: 'Components/Input',
   args: {
     placeholder: 'Search wallet',
     icon: 'search',

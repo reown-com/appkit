@@ -2,13 +2,13 @@ import type { Meta } from '@storybook/web-components'
 import '@reown/appkit-ui-new/src/composites/wui-list-select-wallet'
 import type { WuiListSelectWallet } from '@reown/appkit-ui-new/src/composites/wui-list-select-wallet'
 import { html } from 'lit'
-import '../../components/gallery-container'
-import { walletImagesOptions } from '../../utils/PresetUtils'
+import '../../../components/gallery-container'
+import { walletImagesOptions } from '../../../utils/PresetUtils'
 
 type Component = Meta<WuiListSelectWallet>
 
 export default {
-  title: 'Composites/wui-list-select-wallet',
+  title: 'Components/List Select/Wallet',
   args: {
     imageSrc: walletImagesOptions[0]?.src,
     name: 'MetaMask',
