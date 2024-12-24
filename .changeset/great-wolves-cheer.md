@@ -21,4 +21,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where disconnecting the injected wallet did not update the state as disconnected for ethers/ethers5 adapter
+Fixed an issue where disconnecting the injected wallet did not update the state as disconnected for ethers/ethers5 adapters
