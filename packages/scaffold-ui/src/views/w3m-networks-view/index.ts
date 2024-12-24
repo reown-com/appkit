@@ -135,7 +135,7 @@ export class W3mNetworksView extends LitElement {
     const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
     const supportsAllNetworks =
       ChainController.getNetworkProp('supportsAllNetworks', networkNamespace) !== false
-    const connectorId = StorageUtil.getConnectedConnectorId()
+    const connectorId = StorageUtil.getConnectedConnectorId(networkNamespace)
     const authConnector = ConnectorController.getAuthConnector()
     const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH && authConnector
 
@@ -161,7 +161,8 @@ export class W3mNetworksView extends LitElement {
     )
     const isCurrentNetworkConnected = AccountController.state.caipAddress
     const isAuthConnected =
-      StorageUtil.getConnectedConnectorId() === ConstantsUtil.CONNECTOR_ID.AUTH
+      StorageUtil.getConnectedConnectorId(network.chainNamespace) ===
+      ConstantsUtil.CONNECTOR_ID.AUTH
 
     if (
       isDifferentNamespace &&

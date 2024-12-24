@@ -11,8 +11,8 @@ import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 import type { IconType } from '../../utils/TypeUtil.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
-import { StorageUtil } from '@reown/appkit-core'
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ChainController, StorageUtil } from '@reown/appkit-core'
+import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
 
 @customElement('wui-profile-button-v2')
 export class WuiProfileButtonV2 extends LitElement {
@@ -31,12 +31,12 @@ export class WuiProfileButtonV2 extends LitElement {
 
   @property() public onCopyClick?: (event: Event) => void
 
-  private connectorId = StorageUtil.getConnectedConnectorId()
-
-  private shouldShowIcon = this.connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
-
   // -- Render -------------------------------------------- //
   public override render() {
+    const namespace = ChainController.state.activeChain as ChainNamespace
+    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const shouldShowIcon = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
+
     return html`<button ontouchstart data-testid="wui-profile-button" @click=${this.handleClick}>
       <wui-flex gap="xs" alignItems="center">
         <wui-avatar
@@ -44,7 +44,7 @@ export class WuiProfileButtonV2 extends LitElement {
           alt=${this.address}
           address=${this.address}
         ></wui-avatar>
-        ${this.shouldShowIcon ? this.getIconTemplate(this.icon) : ''}
+        ${shouldShowIcon ? this.getIconTemplate(this.icon) : ''}
         <wui-flex gap="xs" alignItems="center">
           <wui-text variant="large-600" color="fg-100">
             ${UiHelperUtil.getTruncateString({

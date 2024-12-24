@@ -2,23 +2,43 @@ import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 
 import {
+  ChainController,
   ConnectorController,
   RouterController,
   StorageUtil,
   type SocialProvider
 } from '@reown/appkit-core'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
+import { state } from 'lit/decorators.js'
 
 @customElement('w3m-account-auth-button')
 export class W3mAccountAuthButton extends LitElement {
   // -- Members ------------------------------------------- //
+  private unsubscribe: (() => void)[] = []
   private socialProvider = StorageUtil.getConnectedSocialProvider() as SocialProvider | null
 
   private socialUsername = StorageUtil.getConnectedSocialUsername()
 
+  @state() namespace = ChainController.state.activeChain
+
+  // -- Lifecycle ----------------------------------------- //
+  public constructor() {
+    super()
+
+    this.unsubscribe.push(
+      ChainController.subscribeKey('activeChain', namespace => {
+        this.namespace = namespace
+      })
+    )
+  }
+
+  public override disconnectedCallback() {
+    this.unsubscribe.forEach(unsub => unsub())
+  }
+
   // -- Render -------------------------------------------- //
   public override render() {
-    const connectorId = StorageUtil.getConnectedConnectorId()
+    const connectorId = StorageUtil.getConnectedConnectorId(this.namespace as ChainNamespace)
     const authConnector = ConnectorController.getAuthConnector()
 
     if (!authConnector || connectorId !== CommonConstantsUtil.CONNECTOR_ID.AUTH) {

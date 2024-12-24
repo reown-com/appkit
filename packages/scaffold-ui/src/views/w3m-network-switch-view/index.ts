@@ -6,7 +6,7 @@ import {
   StorageUtil
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
@@ -96,7 +96,8 @@ export class W3mNetworkSwitchView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private getSubLabel() {
-    const connectorId = StorageUtil.getConnectedConnectorId()
+    const namespace = ChainController.state.activeChain as ChainNamespace
+    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
     if (authConnector && connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       return ''
@@ -108,7 +109,8 @@ export class W3mNetworkSwitchView extends LitElement {
   }
 
   private getLabel() {
-    const connectorId = StorageUtil.getConnectedConnectorId()
+    const namespace = ChainController.state.activeChain as ChainNamespace
+    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
     if (authConnector && connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       return `Switching to ${this.network?.name ?? 'Unknown'} network...`

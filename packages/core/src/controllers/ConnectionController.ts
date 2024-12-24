@@ -98,7 +98,11 @@ export const ConnectionController = {
   },
 
   async connectWalletConnect() {
-    StorageUtil.setConnectedConnectorId(ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)
+    // Connect all namespaces to WalletConnect
+    const namespaces = [...ChainController.state.chains.keys()]
+    namespaces.forEach(namespace => {
+      StorageUtil.setConnectedConnectorId(namespace, ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)
+    })
 
     if (CoreHelperUtil.isTelegram()) {
       if (wcConnectionPromise) {
@@ -147,7 +151,10 @@ export const ConnectionController = {
 
   async reconnectExternal(options: ConnectExternalOptions) {
     await this._getClient()?.reconnectExternal?.(options)
-    StorageUtil.setConnectedConnectorId(options.id)
+    const namespace = options.chain || ChainController.state.activeChain
+    if (namespace) {
+      StorageUtil.setConnectedConnectorId(namespace, options.id)
+    }
   },
 
   async setPreferredAccountType(accountType: W3mFrameTypes.AccountType) {

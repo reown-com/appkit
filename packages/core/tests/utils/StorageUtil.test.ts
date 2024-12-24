@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach, beforeEach, beforeAll, afterAll } from 'vitest'
 import { StorageUtil } from '../../src/utils/StorageUtil'
 import type { WcWallet, SocialProvider } from '../../src/utils/TypeUtil'
-import { SafeLocalStorage } from '@reown/appkit-common'
+import { getSafeConnectorIdKey, SafeLocalStorage } from '@reown/appkit-common'
 import { SafeLocalStorageKeys } from '@reown/appkit-common'
 
 const previousLocalStorage = globalThis.localStorage
@@ -150,18 +150,19 @@ describe('StorageUtil', () => {
   describe('setConnectedConnectorId', () => {
     it('should set connected connector', () => {
       const connectorId = 'io.metamask'
-      StorageUtil.setConnectedConnectorId(connectorId)
-      expect(SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID)).toBe(
-        connectorId
-      )
+
+      StorageUtil.setConnectedConnectorId('eip155', connectorId)
+      const key = getSafeConnectorIdKey('eip155')
+      expect(SafeLocalStorage.getItem(key)).toBe(connectorId)
     })
   })
 
   describe('getConnectedConnector', () => {
     it('should get connected connector', () => {
       const connectorId = 'io.metamask'
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID, connectorId)
-      expect(StorageUtil.getConnectedConnectorId()).toBe(connectorId)
+      const key = getSafeConnectorIdKey('eip155')
+      SafeLocalStorage.setItem(key, connectorId)
+      expect(StorageUtil.getConnectedConnectorId('eip155')).toBe(connectorId)
     })
   })
 
