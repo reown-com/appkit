@@ -152,11 +152,9 @@ export const ConnectionController = {
   async reconnectExternal(options: ConnectExternalOptions) {
     await this._getClient()?.reconnectExternal?.(options)
     const namespace = options.chain || ChainController.state.activeChain
-    if (!namespace) {
-      // Should we throw?
-      return
+    if (namespace) {
+      StorageUtil.setConnectedConnectorId(namespace, options.id)
     }
-    StorageUtil.setConnectedConnectorId(namespace, options.id)
   },
 
   async setPreferredAccountType(accountType: W3mFrameTypes.AccountType) {
