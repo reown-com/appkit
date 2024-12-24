@@ -37,7 +37,7 @@ import type { AdapterBlueprint } from '../src/adapters/ChainAdapterBlueprint'
 import { ProviderUtil } from '../src/store'
 import { CaipNetworksUtil, ErrorUtil } from '@reown/appkit-utils'
 import mockUniversalAdapter from './mocks/Adapter'
-import Provider, { UniversalProvider } from '@walletconnect/universal-provider'
+import { UniversalProvider } from '@walletconnect/universal-provider'
 import mockProvider from './mocks/UniversalProvider'
 import { MockEmitter } from './mocks/Emitter'
 
