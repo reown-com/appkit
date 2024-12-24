@@ -80,7 +80,8 @@ smartAccountTest('it should switch to a not enabled network and sign with EOA', 
   await validator.expectSwitchedNetwork(targetChain)
   await page.closeModal()
 
-  await page.goToSettings()
+  await page.openAccount()
+  await page.openProfileView()
   await validator.expectTogglePreferredTypeVisible(false)
   await page.closeModal()
 
@@ -125,8 +126,7 @@ smartAccountTest('it should switch to eoa and sign', async () => {
 })
 
 smartAccountTest('it should disconnect correctly', async () => {
-  await page.openAccount()
-  await page.openProfileView()
+  await page.goToSettings()
   await page.disconnect()
   await validator.expectDisconnected()
 })
