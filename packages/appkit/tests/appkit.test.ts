@@ -70,10 +70,10 @@ describe('Base', () => {
   beforeEach(() => {
     vi.resetAllMocks()
 
-    vi.mocked(ChainController).state = {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       chains: new Map(),
       activeChain: 'eip155'
-    } as any
+    } as any)
 
     vi.mocked(ConnectorController).getConnectors = vi.fn().mockReturnValue([])
     vi.mocked(CaipNetworksUtil).extendCaipNetworks = vi.fn().mockReturnValue([])
@@ -295,11 +295,11 @@ describe('Base', () => {
     })
 
     it('should get CAIP address', () => {
-      vi.mocked(ChainController).state = {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         activeChain: 'eip155',
         activeCaipAddress: 'eip155:1:0x123',
         chains: new Map([['eip155', { namespace: 'eip155' }]])
-      } as any
+      } as any)
       expect(appKit.getCaipAddress()).toBe('eip155:1:0x123')
     })
 
@@ -322,11 +322,11 @@ describe('Base', () => {
     it('should set CAIP address', () => {
       // First mock AccountController.setCaipAddress to update ChainController state
       vi.mocked(AccountController.setCaipAddress).mockImplementation(() => {
-        vi.mocked(ChainController).state = {
-          ...vi.mocked(ChainController).state,
+        vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
+          ...ChainController.state,
           activeCaipAddress: 'eip155:1:0x123',
           chains: new Map([['eip155', { namespace: 'eip155' }]])
-        } as any
+        }) as any
       })
 
       appKit.setCaipAddress('eip155:1:0x123', 'eip155')
@@ -372,10 +372,10 @@ describe('Base', () => {
     })
 
     it('should get CAIP network', () => {
-      vi.mocked(ChainController).state = {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         activeCaipNetwork: { id: 'eip155:1', name: 'Ethereum' },
         chains: new Map([['eip155', { namespace: 'eip155' }]])
-      } as any
+      } as any)
       expect(appKit.getCaipNetwork()).toEqual({ id: 'eip155:1', name: 'Ethereum' })
     })
 
@@ -502,10 +502,10 @@ describe('Base', () => {
         preferredAccountType: 'eoa'
       }
 
-      vi.mocked(ChainController).state = {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         activeChain: 'eip155',
         chains: new Map([['eip155', { namespace: 'eip155' }]])
-      } as any
+      } as any)
 
       vi.mocked(CoreHelperUtil.createAccount).mockImplementation((namespace, address, type) => {
         if (namespace === 'eip155') {
@@ -817,10 +817,10 @@ describe('Base', () => {
         { id: 'eip155:1', chainNamespace: 'eip155' } as CaipNetwork
       ])
 
-      vi.mocked(ChainController).state = {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         chains: new Map([['eip155', { namespace: 'eip155' }]]),
         activeChain: 'eip155'
-      } as any
+      } as any)
 
       const mockRemoveItem = vi.fn()
 
@@ -842,10 +842,10 @@ describe('Base', () => {
     it('should set unsupported chain when synced chainId is not supported', async () => {
       vi.mocked(StorageUtil.getConnectedConnectorId).mockReturnValue('EXTERNAL')
       vi.mocked(StorageUtil.getActiveNamespace).mockReturnValue('eip155')
-      vi.mocked(ChainController).state = {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         chains: new Map([['eip155', { namespace: 'eip155' }]]),
         activeChain: 'eip155'
-      } as any
+      } as any)
       ;(appKit as any).caipNetworks = [{ id: 'eip155:1', chainNamespace: 'eip155' }]
 
       const overrideAdapter = {
@@ -888,10 +888,10 @@ describe('Base', () => {
     })
 
     it('should not show unsupported chain UI when allowUnsupportedChain is true', async () => {
-      vi.mocked(ChainController).state = {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         chains: new Map([['eip155', { namespace: 'eip155' }]]),
         activeChain: 'eip155'
-      } as any
+      } as any)
       ;(appKit as any).caipNetworks = [{ id: 'eip155:1', chainNamespace: 'eip155' }]
 
       vi.mocked(OptionsController).state = {
@@ -1041,10 +1041,10 @@ describe('Base', () => {
     beforeEach(() => {
       vi.resetAllMocks()
 
-      vi.mocked(ChainController).state = {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         chains: new Map(),
         activeChain: 'eip155'
-      } as any
+      } as any)
 
       vi.mocked(ConnectorController).getConnectors = vi.fn().mockReturnValue([])
 
