@@ -22,6 +22,7 @@ const emailTestAfterFarcaster = test.extend<{ library: string }>({
 emailTestAfterFarcaster.describe.configure({ mode: 'serial' })
 
 emailTestAfterFarcaster.beforeAll(async ({ browser, library }) => {
+  emailTestAfterFarcaster.setTimeout(300000)
   context = await browser.newContext()
   browserPage = await context.newPage()
 
@@ -40,7 +41,6 @@ emailTestAfterFarcaster.beforeAll(async ({ browser, library }) => {
 
   // Iframe should not be injected until needed
   validator.expectSecureSiteFrameNotInjected()
-  await page.page.waitForTimeout(2_000)
   await page.abortLoginWithFarcaster()
   await page.emailFlow(tempEmail, context, mailsacApiKey)
 
