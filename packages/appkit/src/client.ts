@@ -828,6 +828,7 @@ export class AppKit {
           this.close()
         } else {
           await adapter?.connectWalletConnect(onUri, this.getCaipNetwork()?.id)
+          StorageUtil.setConnectedNamespaces(ChainController.state.chains.keys().toArray())
         }
 
         await this.syncWalletConnectAccount()
@@ -1434,6 +1435,8 @@ export class AppKit {
           ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
         )
 
+        StorageUtil.addConnectedNamespace(chainNamespace)
+
         let address = ''
 
         if (caipAddress.split(':').length === 3) {
@@ -1719,8 +1722,6 @@ export class AppKit {
         rpcUrl: caipNetwork?.rpcUrls?.default?.http?.[0] as string
       })
 
-      console.log('>> Synced connection', connection)
-
       if (connection) {
         const accounts = await adapter?.getAccounts({
           namespace,
@@ -1752,7 +1753,6 @@ export class AppKit {
 
   private async syncNamespaceConnection(namespace: ChainNamespace) {
     const connectorId = StorageUtil.getConnectedConnectorId(namespace)
-    console.log('>> Syncing connection', namespace, connectorId)
     this.setStatus('connecting', namespace)
     switch (connectorId) {
       case ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT:
