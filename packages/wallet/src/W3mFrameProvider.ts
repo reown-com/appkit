@@ -62,7 +62,7 @@ export class W3mFrameProvider {
         type: W3mFrameConstants.APP_RELOAD
       } as W3mFrameTypes.AppEvent)
     } catch (error) {
-      this.w3mLogger.logger.error({ error }, 'Error reloading iframe')
+      this.w3mLogger?.logger.error({ error }, 'Error reloading iframe')
       throw error
     }
   }
