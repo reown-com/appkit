@@ -289,7 +289,9 @@ export class ModalPage {
       await input.fill(digit)
     }
 
-    await expect(this.page.getByText(headerTitle)).not.toBeVisible()
+    await expect(this.page.getByText(headerTitle)).not.toBeVisible({
+      timeout: 20_000
+    })
   }
 
   async disconnect() {

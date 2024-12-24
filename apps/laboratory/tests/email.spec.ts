@@ -28,7 +28,7 @@ emailTest.beforeAll(async ({ browser, library }) => {
   page = new ModalWalletPage(browserPage, library, 'default')
   validator = new ModalWalletValidator(browserPage)
 
-  await page.page.context().setOffline(false)
+  await context.setOffline(false)
   await page.load()
 
   const mailsacApiKey = process.env['MAILSAC_API_KEY']
@@ -107,21 +107,21 @@ emailTest('it should show loading on page refresh', async () => {
 })
 
 emailTest('it should show snackbar error if failed to fetch token balance', async () => {
-  await page.page.context().setOffline(true)
+  await context.setOffline(true)
   await page.openAccount()
   await validator.expectSnackbar('Token Balance Unavailable')
   await page.closeModal()
 })
 
 emailTest('it should disconnect correctly', async () => {
-  await page.page.context().setOffline(false)
+  await context.setOffline(false)
   await page.goToSettings()
   await page.disconnect()
   await validator.expectDisconnected()
 })
 
 emailTest('it should abort request if it takes more than 30 seconds', async () => {
-  await page.page.context().setOffline(true)
+  await context.setOffline(true)
   await page.loginWithEmail(tempEmail, false)
   await page.page.waitForTimeout(30_000)
   await validator.expectSnackbar('Something went wrong')
