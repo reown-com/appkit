@@ -1712,14 +1712,16 @@ export class AppKit {
         throw new Error(`Adapter or connectorId not found for namespace ${namespace}`)
       }
 
-      const res = await adapter?.syncConnection({
+      const connection = await adapter?.syncConnection({
         namespace,
         id: connectorId,
         chainId: caipNetwork?.id,
         rpcUrl: caipNetwork?.rpcUrls?.default?.http?.[0] as string
       })
 
-      if (res) {
+      console.log('>> Synced connection', connection)
+
+      if (connection) {
         const accounts = await adapter?.getAccounts({
           namespace,
           id: connectorId
@@ -1729,13 +1731,13 @@ export class AppKit {
           this.setAllAccounts(accounts.accounts, namespace)
         } else {
           this.setAllAccounts(
-            [CoreHelperUtil.createAccount(namespace, res.address, 'eoa')],
+            [CoreHelperUtil.createAccount(namespace, connection.address, 'eoa')],
             namespace
           )
         }
 
-        this.syncProvider({ ...res, chainNamespace: namespace })
-        await this.syncAccount({ ...res, chainNamespace: namespace })
+        this.syncProvider({ ...connection, chainNamespace: namespace })
+        await this.syncAccount({ ...connection, chainNamespace: namespace })
 
         this.setStatus('connected', namespace)
       } else {
@@ -1750,6 +1752,7 @@ export class AppKit {
 
   private async syncNamespaceConnection(namespace: ChainNamespace) {
     const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+    console.log('>> Syncing connection', namespace, connectorId)
     this.setStatus('connecting', namespace)
     switch (connectorId) {
       case ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT:
