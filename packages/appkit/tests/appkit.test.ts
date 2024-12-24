@@ -37,7 +37,7 @@ import type { AdapterBlueprint } from '../src/adapters/ChainAdapterBlueprint'
 import { ProviderUtil } from '../src/store'
 import { CaipNetworksUtil, ErrorUtil } from '@reown/appkit-utils'
 import mockUniversalAdapter from './mocks/Adapter'
-import { UniversalProvider } from '@walletconnect/universal-provider'
+import Provider, { UniversalProvider } from '@walletconnect/universal-provider'
 import mockProvider from './mocks/UniversalProvider'
 import { MockEmitter } from './mocks/Emitter'
 
@@ -983,6 +983,68 @@ describe('Base', () => {
       await appKit['syncExistingConnection']()
 
       expect(AccountController.setStatus).toHaveBeenCalledWith('disconnected', 'eip155')
+    })
+
+    it('should reconnect to multiple namespaces if previously connected', async () => {
+      vi.spyOn(ProviderUtil, 'setProviderId').mockImplementation(vi.fn())
+      vi.spyOn(StorageUtil, 'getActiveNetworkProps').mockReturnValue({
+        namespace: 'eip155',
+        chainId: '1',
+        caipNetworkId: '1'
+      })
+      vi.spyOn(StorageUtil, 'getConnectedNamespaces').mockReturnValueOnce(['eip155', 'solana'])
+      vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockImplementation(namespace => {
+        if (namespace === 'eip155') {
+          return 'evm-connector'
+        }
+        return 'solana-connector'
+      })
+
+      const mockEvmAdapter = {
+        getAccounts: vi.fn().mockResolvedValue({ accounts: [{ address: '0x123', type: 'eoa' }] }),
+        syncConnection: vi.fn().mockResolvedValue({
+          address: '0x123',
+          chainId: '1',
+          chainNamespace: 'eip155',
+          accounts: [{ address: '0x123', type: 'eoa' }],
+          type: 'EXTERNAL',
+          id: 'evm-connector'
+        }),
+        on: vi.fn()
+      }
+
+      const mockSolanaAdapter = {
+        getAccounts: vi.fn().mockResolvedValue({ accounts: [{ address: 'Hgbsh1', type: 'eoa' }] }),
+        syncConnection: vi.fn().mockResolvedValue({
+          address: 'Hgbsh1',
+          chainId: '1',
+          chainNamespace: 'solana',
+          accounts: [{ address: 'Hgbsh1', type: 'eoa' }],
+          type: 'EXTERNAL',
+          id: 'solana-connector'
+        }),
+        on: vi.fn()
+      }
+
+      vi.spyOn(appKit as any, 'getAdapter').mockImplementation(namespace => {
+        if (namespace === 'eip155') {
+          return mockEvmAdapter
+        }
+        return mockSolanaAdapter
+      })
+
+      await appKit['syncExistingConnection']()
+
+      expect(mockEvmAdapter.syncConnection).toHaveBeenCalled()
+      expect(mockSolanaAdapter.syncConnection).toHaveBeenCalled()
+
+      expect(mockEvmAdapter.getAccounts).toHaveBeenCalled()
+      expect(mockSolanaAdapter.getAccounts).toHaveBeenCalled()
+
+      expect(ProviderUtil.setProviderId).toHaveBeenCalledWith('eip155', 'EXTERNAL')
+      expect(ProviderUtil.setProviderId).toHaveBeenCalledWith('solana', 'EXTERNAL')
+      expect(StorageUtil.setConnectedConnectorId).toHaveBeenCalledWith('eip155', 'evm-connector')
+      expect(StorageUtil.setConnectedConnectorId).toHaveBeenCalledWith('solana', 'solana-connector')
     })
   })
   describe('Base Initialization', () => {
