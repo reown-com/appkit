@@ -1742,7 +1742,7 @@ export class AppKit {
         this.setStatus('disconnected', namespace)
       }
     } catch (e) {
-      console.warn(`Error syncinc connection for namespace ${namespace}`, e)
+      console.warn(`Error syncing connection for namespace ${namespace}`, e)
       StorageUtil.deleteConnectedConnectorId(namespace)
       this.setStatus('disconnected', namespace)
     }
