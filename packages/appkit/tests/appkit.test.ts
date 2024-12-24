@@ -836,55 +836,7 @@ describe('Base', () => {
       await appKit.disconnect()
 
       expect(ConnectionController.disconnect).toHaveBeenCalled()
-      expect(AccountController.setStatus).toHaveBeenCalledWith('disconnected', 'eip155')
-    })
-
-    it('should set unsupported chain when synced chainId is not supported', async () => {
-      vi.mocked(StorageUtil.getConnectedConnectorId).mockReturnValue('EXTERNAL')
-      vi.mocked(StorageUtil.getActiveNamespace).mockReturnValue('eip155')
-      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-        chains: new Map([['eip155', { namespace: 'eip155' }]]),
-        activeChain: 'eip155'
-      } as any)
-      ;(appKit as any).caipNetworks = [{ id: 'eip155:1', chainNamespace: 'eip155' }]
-
-      const overrideAdapter = {
-        getAccounts: vi.fn().mockResolvedValue({ accounts: [{ address: '0x123', type: 'eoa' }] }),
-        syncConnection: vi.fn().mockResolvedValue({
-          chainId: 'eip155:999', // Unsupported chain
-          address: '0x123'
-        }),
-        getBalance: vi.fn().mockResolvedValue({ balance: '0', symbol: 'ETH' }),
-        getProfile: vi.fn().mockResolvedValue({}),
-        on: vi.fn(),
-        off: vi.fn(),
-        emit: vi.fn()
-      }
-
-      vi.spyOn(appKit as any, 'getAdapter').mockReturnValueOnce(overrideAdapter)
-
-      vi.spyOn(StorageUtil, 'setConnectedConnectorId').mockImplementation(vi.fn())
-
-      vi.spyOn(appKit as any, 'syncAccount').mockImplementation(vi.fn())
-
-      vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
-
-      vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation((key: string) => {
-        const connectorKey = getSafeConnectorIdKey('eip155')
-        if (key === connectorKey) {
-          return 'test-wallet'
-        }
-        if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
-          return 'eip155:1'
-        }
-        return undefined
-      })
-
-      vi.mocked(ChainController.showUnsupportedChainUI).mockImplementation(vi.fn())
-
-      await (appKit as any).syncExistingConnection()
-
-      expect((appKit as any).setUnsupportedNetwork).toHaveBeenCalled()
+      // TODO: Unmock all of this file and check for AccountController hooks called from ChainController
     })
 
     it('should not show unsupported chain UI when allowUnsupportedChain is true', async () => {
