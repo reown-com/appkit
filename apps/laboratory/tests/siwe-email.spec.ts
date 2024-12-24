@@ -55,8 +55,8 @@ emailSiweTest('it should sign', async () => {
   await validator.expectAcceptedSign()
 })
 
-emailSiweTest('it should upgrade wallet', async () => {
-  const walletUpgradePage = await page.clickWalletUpgradeCard(context)
+emailSiweTest('it should upgrade wallet', async ({ library }) => {
+  const walletUpgradePage = await page.clickWalletUpgradeCard(context, library)
   expect(walletUpgradePage.url()).toContain(SECURE_WEBSITE_URL)
   await walletUpgradePage.close()
   await page.closeModal()
@@ -91,9 +91,7 @@ emailSiweTest('it should switch network and sign', async () => {
 })
 
 emailSiweTest('it should disconnect correctly', async () => {
-  await page.openAccount()
-  await page.openProfileView()
-  await page.openSettings()
+  await page.goToSettings()
   await page.disconnect()
   await validator.expectDisconnected()
 })

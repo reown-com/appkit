@@ -1,5 +1,6 @@
 import {
   getW3mThemeVariables,
+  ConstantsUtil as CommonConstantsUtil,
   type CaipAddress,
   type CaipNetwork,
   type ChainNamespace
@@ -14,20 +15,27 @@ import {
   type Connector as AppKitConnector,
   type AuthConnector,
   type Metadata,
-  type Tokens
+  type Tokens,
+  type WriteContractArgs
 } from '@reown/appkit-core'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
-import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
+import { PresetsUtil } from '@reown/appkit-utils'
 import type { AppKitOptions } from '../utils/index.js'
 import type { AppKit } from '../client.js'
 import { snapshot } from 'valtio/vanilla'
 
-type EventName = 'disconnect' | 'accountChanged' | 'switchNetwork' | 'pendingTransactions'
+type EventName =
+  | 'disconnect'
+  | 'accountChanged'
+  | 'switchNetwork'
+  | 'connectors'
+  | 'pendingTransactions'
 type EventData = {
   disconnect: () => void
   accountChanged: { address: string; chainId?: number | string }
   switchNetwork: { address?: string; chainId: number | string }
+  connectors: ChainAdapterConnector[]
   pendingTransactions: () => void
 }
 type EventCallback<T extends EventName> = (data: EventData[T]) => void
@@ -91,11 +99,11 @@ export abstract class AdapterBlueprint<
    */
   public setUniversalProvider(universalProvider: UniversalProvider) {
     this.addConnector({
-      id: ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID,
+      id: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
       type: 'WALLET_CONNECT',
-      name: PresetsUtil.ConnectorNamesMap[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
+      name: PresetsUtil.ConnectorNamesMap[CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT],
       provider: universalProvider,
-      imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.WALLET_CONNECT_CONNECTOR_ID],
+      imageId: PresetsUtil.ConnectorImageIds[CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT],
       chain: this.namespace,
       chains: []
     } as unknown as Connector)
@@ -107,11 +115,11 @@ export abstract class AdapterBlueprint<
    */
   public setAuthProvider(authProvider: W3mFrameProvider): void {
     this.addConnector({
-      id: ConstantsUtil.AUTH_CONNECTOR_ID,
+      id: CommonConstantsUtil.CONNECTOR_ID.AUTH,
       type: 'AUTH',
       name: 'Auth',
       provider: authProvider,
-      imageId: PresetsUtil.ConnectorImageIds[ConstantsUtil.AUTH_CONNECTOR_ID],
+      imageId: PresetsUtil.ConnectorImageIds[CommonConstantsUtil.CONNECTOR_ID.AUTH],
       chain: this.namespace,
       chains: []
     } as unknown as Connector)
@@ -122,9 +130,9 @@ export abstract class AdapterBlueprint<
    * @param {...Connector} connectors - The connectors to add
    */
   protected addConnector(...connectors: Connector[]) {
-    if (connectors.some(connector => connector.id === 'ID_AUTH')) {
+    if (connectors.some(connector => connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH)) {
       const authConnector = connectors.find(
-        connector => connector.id === 'ID_AUTH'
+        connector => connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH
       ) as AuthConnector
 
       const optionsState = snapshot(OptionsController.state)
@@ -154,6 +162,8 @@ export abstract class AdapterBlueprint<
 
       return true
     })
+
+    this.emit('connectors', this.availableConnectors)
   }
 
   protected setStatus(status: AccountControllerState['status'], chainNamespace?: ChainNamespace) {
@@ -433,17 +443,11 @@ export namespace AdapterBlueprint {
     gas: bigint
   }
 
-  export type WriteContractParams = {
-    receiverAddress: string
-    tokenAmount: bigint
-    tokenAddress: string
-    fromAddress: string
-    method: 'send' | 'transfer' | 'call'
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    abi: any
+  export type WriteContractParams = WriteContractArgs & {
     caipNetwork: CaipNetwork
     provider?: AppKitConnector['provider']
     caipAddress: CaipAddress
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }
 
   export type WriteContractResult = {

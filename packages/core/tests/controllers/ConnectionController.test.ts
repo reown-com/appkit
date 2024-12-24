@@ -8,6 +8,8 @@ import {
   ChainController,
   ConnectionController,
   ConstantsUtil,
+  ModalController,
+  SIWXUtil,
   StorageUtil
 } from '../../exports/index.js'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
@@ -17,7 +19,7 @@ const chain = CommonConstantsUtil.CHAIN.EVM
 const walletConnectUri = 'wc://uri?=123'
 const externalId = 'coinbaseWallet'
 const type = 'WALLET_CONNECT' as ConnectorType
-const storageSpy = vi.spyOn(StorageUtil, 'setConnectedConnector')
+const storageSpy = vi.spyOn(StorageUtil, 'setConnectedConnectorId')
 
 const client: ConnectionControllerClient = {
   connectWalletConnect: async onUri => {
@@ -109,7 +111,7 @@ describe('ConnectionController', () => {
     await ConnectionController.connectWalletConnect()
     expect(ConnectionController.state.wcUri).toEqual(walletConnectUri)
     expect(ConnectionController.state.wcPairingExpiry).toEqual(ConstantsUtil.FOUR_MINUTES_MS)
-    expect(storageSpy).toHaveBeenCalledWith('WALLET_CONNECT')
+    expect(storageSpy).toHaveBeenCalledWith('walletConnect')
     expect(clientConnectWalletConnectSpy).toHaveBeenCalled()
 
     // Just in case
@@ -119,7 +121,6 @@ describe('ConnectionController', () => {
   it('connectExternal() should trigger internal client call and set connector in storage', async () => {
     const options = { id: externalId, type }
     await ConnectionController.connectExternal(options, chain)
-    expect(storageSpy).toHaveBeenCalledWith(type)
     expect(clientConnectExternalSpy).toHaveBeenCalledWith(options)
   })
 
@@ -155,5 +156,17 @@ describe('ConnectionController', () => {
     ConnectionController.resetWcConnection()
     expect(ConnectionController.state.wcUri).toEqual(undefined)
     expect(ConnectionController.state.wcPairingExpiry).toEqual(undefined)
+  })
+
+  it('should disconnect correctly', async () => {
+    vi.spyOn(ModalController, 'setLoading')
+    vi.spyOn(ChainController, 'disconnect')
+    vi.spyOn(SIWXUtil, 'clearSessions')
+
+    await ConnectionController.disconnect()
+    expect(ModalController.setLoading).toHaveBeenCalledWith(true)
+    expect(SIWXUtil.clearSessions).toHaveBeenCalled()
+    expect(ChainController.disconnect).toHaveBeenCalled()
+    expect(ModalController.setLoading).toHaveBeenCalledWith(false)
   })
 })

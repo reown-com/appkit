@@ -562,7 +562,8 @@ export const ChainController = {
         throw new Error(failures.map(f => f.reason.message).join(', '))
       }
 
-      StorageUtil.deleteConnectedConnector()
+      StorageUtil.deleteConnectedSocialProvider()
+      StorageUtil.deleteConnectedConnectorId()
       ConnectionController.resetWcConnection()
       EventsController.sendEvent({
         type: 'track',

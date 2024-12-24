@@ -146,14 +146,7 @@ export class EthersAdapter extends AdapterBlueprint {
     }
 
     const result = await EthersMethods.writeContract(
-      {
-        abi: params.abi,
-        method: params.method,
-        fromAddress: params.caipAddress as `0x${string}`,
-        receiverAddress: params.receiverAddress as `0x${string}`,
-        tokenAmount: params.tokenAmount,
-        tokenAddress: params.tokenAddress as `0x${string}`
-      },
+      params,
       params.provider as Provider,
       params.caipAddress,
       Number(params.caipNetwork?.id)
@@ -217,6 +210,7 @@ export class EthersAdapter extends AdapterBlueprint {
     const { id, chainId } = params
 
     const connector = this.connectors.find(c => c.id === id)
+
     const selectedProvider = connector?.provider as Provider
 
     if (!selectedProvider) {
@@ -263,17 +257,17 @@ export class EthersAdapter extends AdapterBlueprint {
     connectors.forEach(connector => {
       const key = connector === 'coinbase' ? 'coinbaseWalletSDK' : connector
 
-      const injectedConnector = connector === ConstantsUtil.INJECTED_CONNECTOR_ID
+      const isInjectedConnector = connector === CommonConstantsUtil.CONNECTOR_ID.INJECTED
 
       if (this.namespace) {
         this.addConnector({
           id: key,
           explorerId: PresetsUtil.ConnectorExplorerIds[key],
           imageUrl: options?.connectorImages?.[key],
-          name: PresetsUtil.ConnectorNamesMap[key],
+          name: PresetsUtil.ConnectorNamesMap[key] || 'Unknown',
           imageId: PresetsUtil.ConnectorImageIds[key],
           type: PresetsUtil.ConnectorTypesMap[key] ?? 'EXTERNAL',
-          info: injectedConnector ? undefined : { rdns: key },
+          info: isInjectedConnector ? undefined : { rdns: key },
           chain: this.namespace,
           chains: [],
           provider: this.ethersConfig?.[connector as keyof ProviderType] as Provider
@@ -308,14 +302,15 @@ export class EthersAdapter extends AdapterBlueprint {
       const existingConnector = this.connectors?.find(c => c.name === info?.name)
 
       if (!existingConnector) {
-        const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EIP6963_CONNECTOR_ID]
+        const type = PresetsUtil.ConnectorTypesMap[CommonConstantsUtil.CONNECTOR_ID.EIP6963]
 
-        if (type && this.namespace) {
+        const id = info?.rdns || info?.name || info?.uuid
+        if (type && this.namespace && id) {
           this.addConnector({
-            id: info?.rdns || '',
+            id,
             type,
             imageUrl: info?.icon,
-            name: info?.name,
+            name: info?.name || 'Unknown',
             provider,
             info,
             chain: this.namespace,
@@ -396,7 +391,7 @@ export class EthersAdapter extends AdapterBlueprint {
       throw new Error('Provider not found')
     }
 
-    if (params.id === ConstantsUtil.AUTH_CONNECTOR_ID) {
+    if (params.id === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       const provider = connector['provider'] as W3mFrameProvider
       const { address, accounts } = await provider.connect()
 
