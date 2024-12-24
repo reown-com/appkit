@@ -1748,18 +1748,18 @@ export class AppKit {
     }
   }
 
-  private syncNamespaceConnection(namespace: ChainNamespace) {
+  private async syncNamespaceConnection(namespace: ChainNamespace) {
     const connectorId = StorageUtil.getConnectedConnectorId(namespace)
     this.setStatus('connecting', namespace)
     switch (connectorId) {
       case ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT:
-        this.syncWalletConnectAccount()
+        await this.syncWalletConnectAccount()
         break
       case ConstantsUtil.CONNECTOR_ID.AUTH:
         // Handled during initialization of adapters' auth provider
         break
       default:
-        this.syncAdapterConnection(namespace)
+        await this.syncAdapterConnection(namespace)
     }
   }
 

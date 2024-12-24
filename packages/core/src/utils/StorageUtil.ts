@@ -152,7 +152,7 @@ export const StorageUtil = {
 
       return SafeLocalStorage.getItem(key)
     } catch (e) {
-      console.trace('Unable to get connected connector id in namespace ', namespace)
+      console.info('Unable to get connected connector id in namespace ', namespace)
     }
 
     return undefined
