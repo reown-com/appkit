@@ -221,6 +221,8 @@ export class W3mFrameProvider {
     payload: W3mFrameTypes.Requests['AppSyncDappDataRequest']
   ): Promise<W3mFrameTypes.Responses['FrameSyncDappDataResponse']> {
     try {
+      this.w3mFrame.initFrame()
+
       return this.appEvent<'SyncDappData'>({
         type: W3mFrameConstants.APP_SYNC_DAPP_DATA,
         payload
