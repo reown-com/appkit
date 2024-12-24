@@ -481,7 +481,7 @@ export class EthersAdapter extends AdapterBlueprint {
   } | null = null
 
   private listenProviderEvents(provider: Provider | CombinedProvider) {
-    const disconnectHandler = () => {
+    const disconnect = () => {
       this.removeProviderListeners(provider)
       this.emit('disconnect')
     }
@@ -491,6 +491,8 @@ export class EthersAdapter extends AdapterBlueprint {
         this.emit('accountChanged', {
           address: accounts[0] as `0x${string}`
         })
+      } else {
+        disconnect()
       }
     }
 
@@ -501,12 +503,12 @@ export class EthersAdapter extends AdapterBlueprint {
       this.emit('switchNetwork', { chainId: chainIdNumber })
     }
 
-    provider.on('disconnect', disconnectHandler)
+    provider.on('disconnect', disconnect)
     provider.on('accountsChanged', accountsChangedHandler)
     provider.on('chainChanged', chainChangedHandler)
 
     this.providerHandlers = {
-      disconnect: disconnectHandler,
+      disconnect,
       accountsChanged: accountsChangedHandler,
       chainChanged: chainChangedHandler
     }
