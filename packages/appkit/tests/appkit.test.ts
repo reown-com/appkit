@@ -833,7 +833,7 @@ describe('Base', () => {
 
       await appKit.disconnect()
 
-      expect(ChainController.disconnect).toHaveBeenCalled()
+      expect(ConnectionController.disconnect).toHaveBeenCalled()
       expect(AccountController.setStatus).toHaveBeenCalledWith('disconnected', 'eip155')
     })
 
