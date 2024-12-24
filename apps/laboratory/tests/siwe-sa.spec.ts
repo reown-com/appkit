@@ -98,7 +98,8 @@ smartAccountSiweTest('it should switch to a not enabled network and sign with EO
 })
 
 smartAccountSiweTest('it should disconnect correctly', async () => {
-  await page.goToSettings()
+  await page.openAccount()
+  await page.openProfileView()
   await page.disconnect()
   await validator.expectDisconnected()
 })

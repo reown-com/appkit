@@ -125,7 +125,8 @@ smartAccountTest('it should switch to eoa and sign', async () => {
 })
 
 smartAccountTest('it should disconnect correctly', async () => {
-  await page.goToSettings()
+  await page.openAccount()
+  await page.openProfileView()
   await page.disconnect()
   await validator.expectDisconnected()
 })

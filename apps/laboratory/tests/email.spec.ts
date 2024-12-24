@@ -115,7 +115,8 @@ emailTest('it should show snackbar error if failed to fetch token balance', asyn
 
 emailTest('it should disconnect correctly', async () => {
   await context.setOffline(false)
-  await page.goToSettings()
+  await page.openAccount()
+  await page.openProfileView()
   await page.disconnect()
   await validator.expectDisconnected()
 })

@@ -93,7 +93,6 @@ emailSiweTest('it should switch network and sign', async () => {
 emailSiweTest('it should disconnect correctly', async () => {
   await page.openAccount()
   await page.openProfileView()
-  await page.openSettings()
   await page.disconnect()
   await validator.expectDisconnected()
 })
