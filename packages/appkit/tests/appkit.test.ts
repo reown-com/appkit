@@ -29,7 +29,8 @@ import {
   SafeLocalStorage,
   SafeLocalStorageKeys,
   type AppKitNetwork,
-  type CaipNetwork
+  type CaipNetwork,
+  Emitter
 } from '@reown/appkit-common'
 import { mockOptions } from './mocks/Options'
 import { UniversalAdapter } from '../src/universal-adapter/client'
@@ -39,7 +40,6 @@ import { CaipNetworksUtil, ErrorUtil } from '@reown/appkit-utils'
 import mockUniversalAdapter from './mocks/Adapter'
 import Provider, { UniversalProvider } from '@walletconnect/universal-provider'
 import mockProvider from './mocks/UniversalProvider'
-import { MockEmitter } from './mocks/Emitter'
 
 // Mock all controllers and UniversalAdapterClient
 vi.mock('@reown/appkit-core')
@@ -1330,7 +1330,7 @@ describe('Listeners', () => {
       chains: new Map([])
     } as unknown as typeof ChainController.state)
 
-    const emitter = new MockEmitter()
+    const emitter = new Emitter()
 
     const mockAdapter = {
       namespace: 'eip155',
