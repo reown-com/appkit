@@ -40,6 +40,7 @@ emailTestAfterFarcaster.beforeAll(async ({ browser, library }) => {
 
   // Iframe should not be injected until needed
   validator.expectSecureSiteFrameNotInjected()
+  await page.page.waitForTimeout(2_000)
   await page.abortLoginWithFarcaster()
   await page.emailFlow(tempEmail, context, mailsacApiKey)
 
