@@ -177,6 +177,14 @@ export const StorageUtil = {
     return undefined
   },
 
+  deleteConnectedSocialProvider() {
+    try {
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys.CONNECTED_SOCIAL)
+    } catch {
+      console.info('Unable to delete connected social provider')
+    }
+  },
+
   getConnectedSocialUsername() {
     try {
       return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_SOCIAL_USERNAME)

@@ -260,8 +260,10 @@ export const ConnectionController = {
 
   async disconnect() {
     try {
+      ModalController.setLoading(true)
       await SIWXUtil.clearSessions()
       await ChainController.disconnect()
+      ModalController.setLoading(false)
     } catch (error) {
       throw new Error('Failed to disconnect')
     }
