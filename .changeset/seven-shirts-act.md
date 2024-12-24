@@ -21,4 +21,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where an incorrect EOA account was displayed in the profile view after reconnecting via social or email login.
+Fixed an issue where an incorrect EOA label and icon were displayed in the profile view after reconnecting through social/email login
