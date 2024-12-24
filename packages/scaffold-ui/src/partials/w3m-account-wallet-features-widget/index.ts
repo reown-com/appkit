@@ -255,7 +255,13 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onProfileButtonClick() {
-    RouterController.push('Profile')
+    const { allAccounts } = AccountController.state
+
+    if (allAccounts.length > 1) {
+      RouterController.push('Profile')
+    } else {
+      RouterController.push('AccountSettings')
+    }
   }
 
   private onBuyClick() {
