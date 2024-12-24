@@ -61,8 +61,8 @@ smartAccountSiweTest('it should sign with siwe + smart account', async () => {
   await validator.expectAcceptedSign()
 })
 
-smartAccountSiweTest('it should upgrade wallet', async () => {
-  const walletUpgradePage = await page.clickWalletUpgradeCard(context)
+smartAccountSiweTest('it should upgrade wallet', async ({ library }) => {
+  const walletUpgradePage = await page.clickWalletUpgradeCard(context, library)
   expect(walletUpgradePage.url()).toContain(SECURE_WEBSITE_URL)
   await walletUpgradePage.close()
   await page.closeModal()
