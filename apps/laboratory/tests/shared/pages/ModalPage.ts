@@ -614,4 +614,16 @@ export class ModalPage {
   async switchNetworkWithHook() {
     await this.page.getByTestId('switch-network-hook-button').click()
   }
+
+  async abortLoginWithFarcaster() {
+    await this.page
+      .getByTestId('connect-button')
+      .getByRole('button', { name: 'Connect Wallet' })
+      .click()
+    await this.page.getByTestId('social-selector-farcaster').click()
+    await this.page.waitForTimeout(500)
+    await this.page.getByTestId('header-back').click()
+    await this.page.waitForTimeout(500)
+    await this.closeModal()
+  }
 }

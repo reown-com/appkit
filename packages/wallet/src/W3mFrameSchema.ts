@@ -553,6 +553,12 @@ export const W3mFrameSchema = {
         type: zType('APP_SYNC_DAPP_DATA'),
         payload: AppSyncDappDataRequest
       })
+    )
+
+    .or(
+      EventSchema.extend({
+        type: zType('APP_RELOAD')
+      })
     ),
 
   // -- Frame Events ---------------------------------------------------------
@@ -731,4 +737,12 @@ export const W3mFrameSchema = {
       })
     )
     .or(EventSchema.extend({ type: zType('FRAME_READY'), payload: FrameReadyResponse }))
+
+    .or(
+      EventSchema.extend({
+        type: zType('FRAME_RELOAD_ERROR'),
+        payload: zError
+      })
+    )
+    .or(EventSchema.extend({ type: zType('FRAME_RELOAD_SUCCESS') }))
 }
