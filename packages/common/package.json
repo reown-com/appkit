@@ -19,7 +19,7 @@
   "dependencies": {
     "bignumber.js": "9.1.2",
     "dayjs": "1.11.10",
-    "js-cookie": "^3.0.5",
+    "js-cookie": "3.0.5",
     "viem": "2.x"
   },
   "devDependencies": {

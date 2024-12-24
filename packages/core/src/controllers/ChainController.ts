@@ -10,9 +10,9 @@ import type {
 import { AccountController, type AccountControllerState } from './AccountController.js'
 import { PublicStateController } from './PublicStateController.js'
 import {
-  CookiesStorage,
   NetworkUtil,
   SafeLocalStorageKeys,
+  StorageManager,
   type CaipAddress,
   type CaipNetwork,
   type CaipNetworkId,
@@ -105,6 +105,16 @@ export const ChainController = {
   },
 
   initialize(adapters: ChainAdapter[], caipNetworks: CaipNetwork[] | undefined) {
+    const activeCaipNetworkId = StorageManager.getInstance()
+      .getStorage()
+      .getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
+    const currentNetwork = caipNetworks?.find(n => n.caipNetworkId === activeCaipNetworkId)
+
+    if (currentNetwork) {
+      state.activeCaipNetwork = currentNetwork
+      state.activeChain = currentNetwork.chainNamespace
+    }
+
     const { chainId: activeChainId, namespace: activeNamespace } =
       StorageUtil.getActiveNetworkProps()
     const activeCaipNetwork = caipNetworks?.find(
@@ -118,11 +128,13 @@ export const ChainController = {
     }
 
     if (!state.noAdapters) {
-      state.activeChain = adapterToActivate?.namespace
-      state.activeCaipNetwork = activeCaipNetwork
+      if (!currentNetwork) {
+        state.activeChain = adapterToActivate?.namespace
+        state.activeCaipNetwork = activeCaipNetwork
 
-      if (state.activeChain) {
-        PublicStateController.set({ activeChain: adapterToActivate?.namespace })
+        if (state.activeChain) {
+          PublicStateController.set({ activeChain: adapterToActivate?.namespace })
+        }
       }
       adapters.forEach((adapter: ChainAdapter) => {
         state.chains.set(adapter.namespace as ChainNamespace, {
@@ -138,18 +150,30 @@ export const ChainController = {
     }
   },
 
-  initialStateFromCookies(caipNetworks: CaipNetwork[] | undefined) {
-    const activeNamespace = CookiesStorage.getItem(SafeLocalStorageKeys.ACTIVE_NAMESPACE) as
-      | ChainNamespace
-      | undefined
-    const activeCaipNetworkId = CookiesStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
-    const activeAdapter = activeNamespace ? state.chains.get(activeNamespace) : undefined
+  initialStateFromCookies(caipNetworks: CaipNetwork[] | undefined, initialStorageValues: string) {
+    const storageValues = initialStorageValues.split('; ').reduce(
+      (acc, curr) => {
+        const [key, value] = curr.split('=')
+        acc[key] = value
+        return acc
+      },
+      {} as Record<string, string>
+    )
+    console.log('>>> storageValues', storageValues)
+
+    const activeNamespace = storageValues[
+      SafeLocalStorageKeys.ACTIVE_NAMESPACE.replace('@', '').replace('/', '.')
+    ] as ChainNamespace | undefined
+    const activeCaipNetworkId =
+      storageValues[SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID.replace('@', '').replace('/', '.')]
     const activeCaipNetwork = caipNetworks?.find(
       network => network.caipNetworkId === activeCaipNetworkId
     )
-    if (activeAdapter) {
-      this.setActiveCaipNetwork(activeCaipNetwork)
-    }
+    console.log('>>> initial values', {
+      activeNamespace,
+      activeCaipNetworkId,
+      activeCaipNetwork
+    })
   },
 
   setAdapterNetworkState(chain: ChainNamespace, props: Partial<AdapterNetworkState>) {

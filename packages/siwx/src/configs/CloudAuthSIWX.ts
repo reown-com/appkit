@@ -112,8 +112,8 @@ export class CloudAuthSIWX implements SIWXConfig {
 
     const token =
       tokenType === 'nonceJwt'
-        ? this.getStorageToken(this.localNonceStorageKey)
-        : this.getStorageToken(this.localAuthStorageKey)
+        ? await this.getStorageToken(this.localNonceStorageKey)
+        : await this.getStorageToken(this.localAuthStorageKey)
 
     const jwtHeader: { 'x-nonce-jwt': string } | { Authorization: string } =
       tokenType === 'nonceJwt'
@@ -140,7 +140,7 @@ export class CloudAuthSIWX implements SIWXConfig {
     throw new Error(await response.text())
   }
 
-  private getStorageToken(key: keyof SafeLocalStorageItems): string | undefined {
+  private async getStorageToken(key: keyof SafeLocalStorageItems): Promise<string | null> {
     return SafeLocalStorage.getItem(key)
   }
 

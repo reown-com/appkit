@@ -56,7 +56,10 @@ import {
   type CaipNetworkId,
   NetworkUtil,
   ConstantsUtil,
-  ParseUtil
+  ParseUtil,
+  StorageManager,
+  SafeLocalStorage,
+  SafeLocalStorageKeys
 } from '@reown/appkit-common'
 import type { AppKitOptions } from './utils/TypesUtil.js'
 import {
@@ -213,8 +216,12 @@ export class AppKit {
       sdkVersion: SdkVersion
     }
   ) {
+    // Initialize StorageManager with provided storage
+    StorageManager.getInstance(options.storage)
+
     this.caipNetworks = this.extendCaipNetworks(options)
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
+
     this.initControllers(options)
     this.createClients()
     ChainController.initialize(options.adapters ?? [], this.caipNetworks)
@@ -243,6 +250,10 @@ export class AppKit {
   }
 
   // -- Public -------------------------------------------------------------------
+  public setInitialState(storageValues: string) {
+    ChainController.initialStateFromCookies(this.caipNetworks, storageValues)
+  }
+
   public async open(options?: OpenOptions) {
     await this.initOrContinue()
     if (options?.uri && this.universalAdapter) {
@@ -1531,7 +1542,7 @@ export class AppKit {
       const caipNetwork = this.caipNetworks?.find(n => n.id.toString() === chainIdToUse.toString())
       const fallBackCaipNetwork = this.caipNetworks?.find(n => n.chainNamespace === chainNamespace)
       this.setCaipNetwork(caipNetwork || fallBackCaipNetwork)
-      this.syncConnectedWalletInfo(chainNamespace)
+      await this.syncConnectedWalletInfo(chainNamespace)
       await this.syncBalance({ address, chainId: chainIdToUse, chainNamespace })
     }
   }
@@ -1569,8 +1580,8 @@ export class AppKit {
     }
   }
 
-  private syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
-    const connectorId = StorageUtil.getConnectedConnectorId()
+  private async syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
+    const connectorId = await StorageUtil.getConnectedConnectorId()
     const providerType = ProviderUtil.state.providerIds[chainNamespace]
     if (
       providerType === UtilConstantsUtil.CONNECTOR_TYPE_ANNOUNCED ||
@@ -1693,7 +1704,7 @@ export class AppKit {
 
   private async syncExistingConnection() {
     try {
-      const connectorId = StorageUtil.getConnectedConnectorId()
+      const connectorId = await StorageUtil.getConnectedConnectorId()
       const activeNamespace = StorageUtil.getActiveNamespace()
 
       if (connectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT && activeNamespace) {

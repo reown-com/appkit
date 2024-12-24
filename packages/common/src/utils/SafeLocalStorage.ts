@@ -1,4 +1,4 @@
-import { CookiesStorage } from './CookiesStorage'
+import { StorageManager } from './StorageManager'
 
 export type SafeLocalStorageItems = {
   '@appkit/wallet_id': string
@@ -38,39 +38,56 @@ export const SafeLocalStorageKeys = {
   SIWX_NONCE_TOKEN: '@appkit/siwx-nonce-token'
 } as const satisfies Record<string, keyof SafeLocalStorageItems>
 
-export const SafeLocalStorage = {
-  setItem<Key extends keyof SafeLocalStorageItems>(
+export class SafeLocalStorage {
+  public static setItem<Key extends keyof SafeLocalStorageItems>(
     key: Key,
     value?: SafeLocalStorageItems[Key]
-  ): void {
-    if (isSafe() && value !== undefined) {
-      localStorage.setItem(key, value)
+  ): void | Promise<void> {
+    if (value !== undefined) {
+      const storage = StorageManager.getInstance().getStorage()
+      const result = storage.setItem(key, value)
+      if (result instanceof Promise) {
+        return result.catch(() => {
+          console.info(`Unable to set item with key: ${key}`)
+        })
+      }
     }
-    CookiesStorage.setItem(key, value)
-  },
-  getItem<Key extends keyof SafeLocalStorageItems>(
-    key: Key
-  ): SafeLocalStorageItems[Key] | undefined {
-    if (isSafe()) {
-      return localStorage.getItem(key) || undefined
-    }
-
-    return undefined
-  },
-  removeItem<Key extends keyof SafeLocalStorageItems>(key: Key): void {
-    if (isSafe()) {
-      localStorage.removeItem(key)
-    }
-    CookiesStorage.removeItem(key)
-  },
-  clear(): void {
-    if (isSafe()) {
-      localStorage.clear()
-    }
-    CookiesStorage.clear()
   }
-}
 
-function isSafe(): boolean {
-  return typeof window !== 'undefined' && typeof localStorage !== 'undefined'
+  public static getItem<Key extends keyof SafeLocalStorageItems>(
+    key: Key
+  ): SafeLocalStorageItems[Key] | undefined | Promise<SafeLocalStorageItems[Key] | undefined> {
+    const storage = StorageManager.getInstance().getStorage()
+    const result = storage.getItem(key)
+    if (result instanceof Promise) {
+      return result.then(value => {
+        if (value !== null && value !== undefined) {
+          return value as SafeLocalStorageItems[Key]
+        }
+        return undefined
+      })
+    }
+    return result === null ? undefined : (result as SafeLocalStorageItems[Key])
+  }
+
+  public static removeItem<Key extends keyof SafeLocalStorageItems>(
+    key: Key
+  ): void | Promise<void> {
+    const storage = StorageManager.getInstance().getStorage()
+    const result = storage.removeItem(key)
+    if (result instanceof Promise) {
+      return result.catch(() => {
+        console.info(`Unable to remove item with key: ${key}`)
+      })
+    }
+  }
+
+  public static async clear(): Promise<void> {
+    const storage = StorageManager.getInstance().getStorage()
+    const promises: Array<void | Promise<void>> = []
+    for (const key of Object.values(SafeLocalStorageKeys)) {
+      promises.push(storage.removeItem(key))
+    }
+    await Promise.all(promises)
+  }
 }
