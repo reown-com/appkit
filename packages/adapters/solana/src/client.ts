@@ -88,6 +88,7 @@ export class SolanaAdapter extends AdapterBlueprint {
     if (emailEnabled || socialsEnabled) {
       this.w3mFrameProvider = W3mFrameProviderSingleton.getInstance({
         projectId: options.projectId,
+        enableLogger: appKit.options.enableAuthLogger,
         chainId: withSolanaNamespace(appKit?.getCaipNetwork(this.namespace)?.id),
         onTimeout: () => {
           AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
