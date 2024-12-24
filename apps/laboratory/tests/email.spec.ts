@@ -56,8 +56,8 @@ emailTest('it should sign', async () => {
   await validator.expectAcceptedSign()
 })
 
-emailTest('it should upgrade wallet', async () => {
-  const walletUpgradePage = await page.clickWalletUpgradeCard(context)
+emailTest('it should upgrade wallet', async ({ library }) => {
+  const walletUpgradePage = await page.clickWalletUpgradeCard(context, library)
   expect(walletUpgradePage.url()).toContain(SECURE_WEBSITE_URL)
   await walletUpgradePage.close()
   await page.closeModal()
@@ -95,7 +95,12 @@ emailTest('it should switch network and sign', async ({ library }) => {
 })
 
 emailTest('it should show names feature only for EVM networks', async ({ library }) => {
-  await page.goToSettings()
+  if (library === 'solana') {
+    await page.openAccount()
+    await page.openProfileView()
+  } else {
+    await page.goToSettings()
+  }
   await validator.expectNamesFeatureVisible(library !== 'solana')
   await page.closeModal()
 })
@@ -113,9 +118,14 @@ emailTest('it should show snackbar error if failed to fetch token balance', asyn
   await page.closeModal()
 })
 
-emailTest('it should disconnect correctly', async () => {
+emailTest('it should disconnect correctly', async ({ library }) => {
   await context.setOffline(false)
-  await page.goToSettings()
+  if (library === 'solana') {
+    await page.openAccount()
+    await page.openProfileView()
+  } else {
+    await page.goToSettings()
+  }
   await page.disconnect()
   await validator.expectDisconnected()
 })
