@@ -149,7 +149,6 @@ export const StorageUtil = {
   getConnectedConnectorId(namespace: ChainNamespace) {
     try {
       const key = getSafeConnectorIdKey(namespace)
-      console.log('>> key', key)
 
       return SafeLocalStorage.getItem(key)
     } catch (e) {

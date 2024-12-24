@@ -1707,42 +1707,43 @@ export class AppKit {
     const adapter = this.getAdapter(namespace)
     const connectorId = StorageUtil.getConnectedConnectorId(namespace)
     const caipNetwork = this.getCaipNetwork()
-    if (!adapter || !connectorId) {
-      throw new Error(`Adapter or connectorId not found for namespace ${namespace}`)
-    }
-
-    console.log('>> syncAdapterConnection', namespace, connectorId, adapter)
-    const res = await adapter?.syncConnection({
-      namespace,
-      id: connectorId,
-      chainId: caipNetwork?.id,
-      rpcUrl: caipNetwork?.rpcUrls?.default?.http?.[0] as string
-    })
-
-    console.log('>> syncAdapterConnection res', res)
-
-    if (res) {
-      const accounts = await adapter?.getAccounts({
-        namespace,
-        id: connectorId
-      })
-
-      console.log('>> syncAdapterConnection accounts', accounts)
-
-      if (accounts && accounts.accounts.length > 0) {
-        this.setAllAccounts(accounts.accounts, namespace)
-      } else {
-        this.setAllAccounts(
-          [CoreHelperUtil.createAccount(namespace, res.address, 'eoa')],
-          namespace
-        )
+    try {
+      if (!adapter || !connectorId) {
+        throw new Error(`Adapter or connectorId not found for namespace ${namespace}`)
       }
 
-      this.syncProvider({ ...res, chainNamespace: namespace })
-      await this.syncAccount({ ...res, chainNamespace: namespace })
+      const res = await adapter?.syncConnection({
+        namespace,
+        id: connectorId,
+        chainId: caipNetwork?.id,
+        rpcUrl: caipNetwork?.rpcUrls?.default?.http?.[0] as string
+      })
 
-      this.setStatus('connected', namespace)
-    } else {
+      if (res) {
+        const accounts = await adapter?.getAccounts({
+          namespace,
+          id: connectorId
+        })
+
+        if (accounts && accounts.accounts.length > 0) {
+          this.setAllAccounts(accounts.accounts, namespace)
+        } else {
+          this.setAllAccounts(
+            [CoreHelperUtil.createAccount(namespace, res.address, 'eoa')],
+            namespace
+          )
+        }
+
+        this.syncProvider({ ...res, chainNamespace: namespace })
+        await this.syncAccount({ ...res, chainNamespace: namespace })
+
+        this.setStatus('connected', namespace)
+      } else {
+        this.setStatus('disconnected', namespace)
+      }
+    } catch (e) {
+      console.warn(`Error syncinc connection for namespace ${namespace}`, e)
+      StorageUtil.deleteConnectedConnectorId(namespace)
       this.setStatus('disconnected', namespace)
     }
   }
@@ -1772,7 +1773,7 @@ export class AppKit {
       }
     } catch (err) {
       // eslint-disable-next-line no-console
-      console.log("AppKit:syncExistingConnection - couldn't sync existing connection", err)
+      console.warn("AppKit couldn't sync existing connection", err)
       this.disconnect().finally(() => {
         connectedNamespaces.forEach(namespace => {
           StorageUtil.deleteConnectedConnectorId(namespace)
