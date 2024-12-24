@@ -1,5 +1,5 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { proxy } from 'valtio/vanilla'
+import { proxy, snapshot } from 'valtio/vanilla'
 import type { Connector, Metadata, WcWallet } from '../utils/TypeUtil.js'
 import type { SwapInputTarget } from './SwapController.js'
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
@@ -208,20 +208,13 @@ export const RouterController = {
         AccountController.setFarcasterUrl(undefined, ChainController.state.activeChain)
         const authConnector = ConnectorController.getAuthConnector()
         authConnector?.provider?.reload()
-        setTimeout(async () => {
-          console.log(
-            'syncing dapp data',
-            OptionsController.state.metadata,
-            OptionsController.state.sdkVersion,
-            OptionsController.state.projectId,
-            OptionsController.state.sdkType
-          )
 
-          await authConnector?.provider?.syncDappData?.({
-            sdkVersion: OptionsController.state.sdkVersion,
-            projectId: OptionsController.state.projectId,
-            sdkType: OptionsController.state.sdkType
-          })
+        const optionsState = snapshot(OptionsController.state)
+        authConnector?.provider?.syncDappData?.({
+          metadata: optionsState.metadata as Metadata,
+          sdkVersion: optionsState.sdkVersion,
+          projectId: optionsState.projectId,
+          sdkType: optionsState.sdkType
         })
       }
     }, 100)
