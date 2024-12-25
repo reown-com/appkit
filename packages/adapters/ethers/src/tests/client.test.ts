@@ -9,6 +9,7 @@ import { mainnet } from '@reown/appkit/networks'
 import { EthersMethods } from '../utils/EthersMethods'
 import { ProviderUtil } from '@reown/appkit/store'
 import { WcConstantsUtil } from '@reown/appkit'
+import { Emitter } from '@reown/appkit-common'
 
 class ErrorWithCode extends Error {
   code: number
@@ -451,6 +452,40 @@ describe('EthersAdapter', () => {
         params: [mockParams]
       })
       expect(result).toBe('0x123')
+    })
+  })
+
+  describe('EthersAdapter - provider listener', () => {
+    it('should disconnect if accountsChanged event emits no accounts', async () => {
+      const emitter = new Emitter()
+
+      const mockProvider = {
+        connect: vi.fn(),
+        request: vi.fn().mockResolvedValue(['0x123']),
+        removeListener: vi.fn(),
+        on: emitter.on.bind(emitter),
+        off: emitter.off.bind(emitter),
+        emit: emitter.emit.bind(emitter)
+      } as unknown as Provider
+
+      Object.defineProperty(adapter, 'connectors', {
+        value: [{ id: 'test', provider: mockProvider }]
+      })
+
+      await adapter.connect({
+        id: 'test',
+        type: 'EXTERNAL',
+        chainId: 1
+      })
+
+      const disconnect = vi.fn()
+
+      adapter.on('disconnect', disconnect)
+
+      mockProvider.emit('accountsChanged', [])
+
+      expect(disconnect).toHaveBeenCalled()
+      expect(mockProvider.removeListener).toHaveBeenCalledWith('disconnect', expect.any(Function))
     })
   })
 })

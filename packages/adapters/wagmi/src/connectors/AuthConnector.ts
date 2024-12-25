@@ -11,6 +11,7 @@ import { AlertController } from '@reown/appkit-core'
 // -- Types ----------------------------------------------------------------------------------------
 interface W3mFrameProviderOptions {
   projectId: string
+  enableAuthLogger?: boolean
 }
 
 export type AuthParameters = {
@@ -90,6 +91,7 @@ export function authConnector(parameters: AuthParameters) {
       if (!this.provider) {
         this.provider = W3mFrameProviderSingleton.getInstance({
           projectId: parameters.options.projectId,
+          enableLogger: parameters.options.enableAuthLogger,
           onTimeout: () => {
             AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
           }
