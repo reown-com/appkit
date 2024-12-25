@@ -87,11 +87,11 @@ a {
 button {
   display: inline-flex;
   font-size: 14px;
-  padding: var(--spacing-spacing-4, 16px) var(--spacing-spacing-5, 20px);
+  padding: 1rem 1.5rem;
   justify-content: center;
   align-items: center;
-  gap: var(--spacing-spacing-2, 8px);
-  border-radius: var(--radius-16, 16px);
+  gap: 0.5rem;
+  border-radius: 16px;
   background: var(--apkt-foreground-accent-primary-010);
   color: var(--apkt-text-accent-primary);
   border: none;
@@ -223,8 +223,8 @@ a:disabled {
   font-size: 1.25rem;
   font-weight: bold;
   margin-bottom: 10px;
-  padding: var(--apkt-spacing-4, 4px);
-  padding-bottom: var(--apkt-spacing-2, 8px);
+  padding: 0.25rem;
+  padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--apkt-border-secondary);
   font-family: 'JetBrains Mono', monospace;
 }
