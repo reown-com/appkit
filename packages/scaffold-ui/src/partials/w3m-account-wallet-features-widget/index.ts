@@ -174,7 +174,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
     return html`
       <w3m-tooltip-trigger text="Swap">
         <wui-icon-button
-          data-testid="wallet-features-swap-button"
+          data-testid="wallet-features-swaps-button"
           @click=${this.onSwapClick.bind(this)}
           icon="recycleHorizontal"
         >
@@ -255,7 +255,13 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onProfileButtonClick() {
-    RouterController.push('Profile')
+    const { allAccounts } = AccountController.state
+
+    if (allAccounts.length > 1) {
+      RouterController.push('Profile')
+    } else {
+      RouterController.push('AccountSettings')
+    }
   }
 
   private onBuyClick() {

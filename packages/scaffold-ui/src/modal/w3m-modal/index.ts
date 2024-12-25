@@ -13,6 +13,7 @@ import {
 import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
 import { type CaipAddress, type CaipNetwork } from '@reown/appkit-common'
 
@@ -29,7 +30,7 @@ export class W3mModal extends LitElement {
   private abortController?: AbortController = undefined
 
   // -- State & Properties -------------------------------- //
-  @property() private enableEmbedded = OptionsController.state.enableEmbedded
+  @property({ type: Boolean }) private enableEmbedded = OptionsController.state.enableEmbedded
 
   @state() private open = ModalController.state.open
 
@@ -48,8 +49,7 @@ export class W3mModal extends LitElement {
         ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
         ModalController.subscribeKey('shake', val => (this.shake = val)),
         ChainController.subscribeKey('activeCaipNetwork', val => this.onNewNetwork(val)),
-        ChainController.subscribeKey('activeCaipAddress', val => this.onNewAddress(val)),
-        OptionsController.subscribeKey('enableEmbedded', val => (this.enableEmbedded = val))
+        ChainController.subscribeKey('activeCaipAddress', val => this.onNewAddress(val))
       ]
     )
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })
@@ -57,8 +57,14 @@ export class W3mModal extends LitElement {
 
   public override firstUpdated() {
     OptionsController.setEnableEmbedded(this.enableEmbedded)
-    if (this.enableEmbedded && this.caipAddress) {
-      ModalController.close()
+    if (this.caipAddress) {
+      if (this.enableEmbedded) {
+        ModalController.close()
+
+        return
+      }
+
+      this.onNewAddress(this.caipAddress)
     }
   }
 
@@ -94,6 +100,7 @@ export class W3mModal extends LitElement {
   private contentTemplate() {
     return html` <wui-card
       shake="${this.shake}"
+      data-embedded="${ifDefined(this.enableEmbedded)}"
       role="alertdialog"
       aria-modal="true"
       tabindex="0"

@@ -17,6 +17,13 @@ const DEFAULTS = {
   getDefaultStorage: () => new LocalStorage({ key: '@appkit/siwx' })
 }
 
+/**
+ * This is the default configuration for SIWX.
+ *
+ * This configuration is split in three pieces `messenger`, `verifiers` and `storage`.
+ * By default it uses InformalMessenger, EIP155Verifier, SolanaVerifier, BIP122Verifier, and LocalStorage.
+ * You may override any of these defaults by passing your own configuration for the constructor.
+ */
 export class DefaultSIWX extends SIWXConfig {
   constructor(params: Partial<SIWXConfig.ConstructorParams> = {}) {
     super({

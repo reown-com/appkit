@@ -9,6 +9,7 @@ import type { TimingRecords } from '../fixtures/timing-fixture'
 import { WalletPage } from './WalletPage'
 import { WalletValidator } from '../validators/WalletValidator'
 import { routeInterceptUrl } from '../utils/verify'
+import type { WalletFeature } from '@reown/appkit'
 
 const maliciousUrl = 'https://malicious-app-verify-simulation.vercel.app'
 
@@ -24,6 +25,7 @@ export type ModalFlavor =
   | 'ethers-verify-evil'
   | 'no-email'
   | 'no-socials'
+  | 'wallet-button'
   | 'siwe'
   | 'all'
 
@@ -91,6 +93,24 @@ export class ModalPage {
     const qrLoadInitiatedTime = new Date()
 
     // Using getByTestId() doesn't work on my machine, I'm guessing because this element is inside of a <slot>
+    const qrCode = this.page.locator('wui-qr-code')
+    await expect(qrCode).toBeVisible()
+
+    const uri = this.assertDefined(await qrCode.getAttribute('uri'))
+    const qrLoadedTime = new Date()
+    if (timingRecords) {
+      timingRecords.push({
+        item: 'qrLoad',
+        timeMs: qrLoadedTime.getTime() - qrLoadInitiatedTime.getTime()
+      })
+    }
+
+    return uri
+  }
+
+  async getConnectUriFromQRModal(timingRecords?: TimingRecords): Promise<string> {
+    const qrLoadInitiatedTime = new Date()
+
     const qrCode = this.page.locator('wui-qr-code')
     await expect(qrCode).toBeVisible()
 
@@ -269,7 +289,9 @@ export class ModalPage {
       await input.fill(digit)
     }
 
-    await expect(this.page.getByText(headerTitle)).not.toBeVisible()
+    await expect(this.page.getByText(headerTitle)).not.toBeVisible({
+      timeout: 20_000
+    })
   }
 
   async disconnect() {
@@ -321,11 +343,13 @@ export class ModalPage {
     await this.clickSignatureRequestButton('Approve')
   }
 
-  async clickWalletUpgradeCard(context: BrowserContext) {
+  async clickWalletUpgradeCard(context: BrowserContext, library: string) {
     await this.page.getByTestId('account-button').click()
 
     await this.page.getByTestId('w3m-profile-button').click()
-    await this.page.getByTestId('account-settings-button').click()
+    if (library !== 'solana') {
+      await this.page.getByTestId('account-settings-button').click()
+    }
     await this.page.getByTestId('w3m-wallet-upgrade-card').click()
 
     const page = await doActionAndWaitForNewPage(
@@ -462,6 +486,10 @@ export class ModalPage {
     await tabWebApp.click()
   }
 
+  async clickWalletButton(id: string) {
+    await this.page.getByTestId(`wallet-button-${id}`).click()
+  }
+
   async clickHookDisconnectButton() {
     const disconnectHookButton = this.page.getByTestId('disconnect-hook-button')
     await expect(disconnectHookButton).toBeVisible()
@@ -535,7 +563,7 @@ export class ModalPage {
     await this.page.getByTestId('wui-profile-button').click()
   }
 
-  async getWalletFeaturesButton(feature: 'onramp' | 'swap' | 'receive' | 'send') {
+  async getWalletFeaturesButton(feature: WalletFeature) {
     const walletFeatureButton = this.page.getByTestId(`wallet-features-${feature}-button`)
     await expect(walletFeatureButton).toBeVisible()
 

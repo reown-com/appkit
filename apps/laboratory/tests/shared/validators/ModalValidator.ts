@@ -61,12 +61,21 @@ export class ModalValidator {
   }
 
   async expectDisconnected() {
-    await expect(
-      this.page.getByTestId('connect-button'),
-      'Connect button should be present'
-    ).toBeVisible({
+    const connectButton = this.page.getByTestId('connect-button')
+    await expect(connectButton, 'Connect button should be present').toBeVisible({
       timeout: MAX_WAIT
     })
+
+    await expect(connectButton, 'Connect button should be enabled').toBeEnabled({
+      timeout: MAX_WAIT
+    })
+
+    await expect(connectButton, 'Connect button should contain text Connect').toHaveText(
+      'Connect Wallet',
+      {
+        timeout: MAX_WAIT
+      }
+    )
   }
 
   async expectSingleAccount() {
@@ -105,6 +114,17 @@ export class ModalValidator {
         timeout: 5000
       }
     )
+  }
+
+  async expectWalletButtonHook(id: string, disabled: boolean) {
+    const walletButtonHook = this.page.getByTestId(`wallet-button-hook-${id}`)
+    await expect(walletButtonHook).toBeVisible({ timeout: 20_000 })
+
+    if (disabled) {
+      await expect(walletButtonHook).toBeDisabled({ timeout: 20_000 })
+    } else {
+      await expect(walletButtonHook).toBeEnabled({ timeout: 20_000 })
+    }
   }
 
   async expectAcceptedSign() {

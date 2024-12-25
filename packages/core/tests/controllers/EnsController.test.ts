@@ -70,12 +70,15 @@ vi.mock('../../src/controllers/BlockchainApiController.js', async importOriginal
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize([
-    {
-      namespace: ConstantsUtil.CHAIN.EVM,
-      caipNetworks: []
-    }
-  ])
+  ChainController.initialize(
+    [
+      {
+        namespace: ConstantsUtil.CHAIN.EVM,
+        caipNetworks: []
+      }
+    ],
+    []
+  )
 })
 
 describe('EnsController', () => {
@@ -190,6 +193,7 @@ describe('EnsController', () => {
       provider: { getEmail: () => 'test@walletconnect.com' } as unknown as W3mFrameProvider,
       id: 'ID_AUTH',
       type: 'AUTH',
+      name: 'AuthPovider',
       chain: ConstantsUtil.CHAIN.EVM
     })
 

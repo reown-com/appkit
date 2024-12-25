@@ -8,6 +8,7 @@ import { providers } from 'ethers'
 import { mainnet } from '@reown/appkit/networks'
 import { Ethers5Methods } from '../utils/Ethers5Methods'
 import { ProviderUtil } from '@reown/appkit/store'
+import { Emitter } from '@reown/appkit-common'
 
 // Mock external dependencies
 vi.mock('ethers', async importOriginal => {
@@ -174,11 +175,11 @@ describe('Ethers5Adapter', () => {
         method: 'transfer',
         caipAddress: 'eip155:1:0x123',
         fromAddress: '0x123',
-        receiverAddress: '0x456',
-        tokenAmount: BigInt(1000),
+        args: ['0x789', BigInt(1000)],
         tokenAddress: '0x789',
         provider: mockProvider,
-        caipNetwork: mockCaipNetworks[0]
+        caipNetwork: mockCaipNetworks[0],
+        chainNamespace: 'eip155'
       })
 
       expect(result.hash).toBe(mockTxHash)
@@ -408,33 +409,37 @@ describe('Ethers5Adapter', () => {
     })
   })
 
-  describe('Ethers5Adapter - ListenPendingTransactions', () => {
-    it('should listen for pending transactions and emit event', () => {
-      const adapter = new Ethers5Adapter()
+  describe('EthersAdapter - provider listener', () => {
+    it('should disconnect if accountsChanged event emits no accounts', async () => {
+      const emitter = new Emitter()
+
       const mockProvider = {
-        request: vi.fn(),
-        on: vi.fn(),
+        connect: vi.fn(),
+        request: vi.fn().mockResolvedValue(['0x123']),
         removeListener: vi.fn(),
-        send: vi.fn(),
-        sendAsync: vi.fn()
+        on: emitter.on.bind(emitter),
+        off: emitter.off.bind(emitter),
+        emit: emitter.emit.bind(emitter)
       } as unknown as Provider
 
-      const emitSpy = vi.spyOn(adapter, 'emit' as any)
+      Object.defineProperty(adapter, 'connectors', {
+        value: [{ id: 'test', provider: mockProvider }]
+      })
 
-      vi.mocked(providers.Web3Provider).mockImplementation(
-        () =>
-          ({
-            on: vi.fn((event, callback) => {
-              if (event === 'pending') {
-                callback()
-              }
-            })
-          }) as any
-      )
-      ;(adapter as any).listenPendingTransactions(mockProvider)
+      await adapter.connect({
+        id: 'test',
+        type: 'EXTERNAL',
+        chainId: 1
+      })
 
-      expect(providers.Web3Provider).toHaveBeenCalledWith(mockProvider)
-      expect(emitSpy).toHaveBeenCalledWith('pendingTransactions')
+      const disconnect = vi.fn()
+
+      adapter.on('disconnect', disconnect)
+
+      mockProvider.emit('accountsChanged', [])
+
+      expect(disconnect).toHaveBeenCalled()
+      expect(mockProvider.removeListener).toHaveBeenCalledWith('disconnect', expect.any(Function))
     })
   })
 })
