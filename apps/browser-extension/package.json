@@ -28,21 +28,17 @@
     "clsx": "2.1.0",
     "copy-webpack-plugin": "12.0.2",
     "css-loader": "7.1.2",
-    "ethers": "5.x",
     "eventemitter3": "5.0.1",
     "html-webpack-plugin": "5.6.0",
     "mini-css-extract-plugin": "2.9.2",
     "mipd": "0.0.5",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "ts-loader": "9.5.1",
     "tweetnacl": "1.0.3",
-    "typescript": "5.3.3",
     "uuid": "10.0.0",
     "viem": "2.21.26",
     "wagmi": "2.12.17",
-    "webpack": "5.92.1",
-    "zustand": "5.0.1"
+    "webpack": "5.92.1"
   },
   "devDependencies": {
     "@types/big.js": "6.2.2",
@@ -52,6 +48,8 @@
     "@types/react-dom": "18.2.7",
     "@types/uuid": "10.0.0",
     "dotenv-webpack": "8.1.0",
-    "webpack-cli": "5.1.4"
+    "webpack-cli": "5.1.4",
+    "ts-loader": "9.5.1",
+    "typescript": "5.3.3"
   }
 }
