@@ -4,16 +4,16 @@ export function Footer() {
       <div className="footer-links">
         <a href="https://reown.com" target="_blank" rel="noreferrer">
           Reown
-        </a>
-        •
+        </a>{' '}
+        •{' '}
         <a href="https://docs.reown.com" target="_blank" rel="noreferrer">
           Docs
-        </a>
-        •
+        </a>{' '}
+        •{' '}
         <a href="https://github.com/reown-com/appkit" target="_blank" rel="noreferrer">
           GitHub
-        </a>
-        •
+        </a>{' '}
+        •{' '}
         <a href="https://cloud.reown.com" target="_blank" rel="noreferrer">
           Cloud
         </a>
