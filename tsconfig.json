@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "jsx": "react",
     "target": "ES2021",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "module": "ESNext",
