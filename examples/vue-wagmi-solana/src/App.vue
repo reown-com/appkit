@@ -26,7 +26,7 @@
 
 <script>
 import { createAppKit, useAppKitTheme } from '@reown/appkit/vue'
-import { solanaWeb3JsAdapter, wagmiAdapter, networks, projectId } from './config'
+import { wagmiAdapter, solanaWeb3JsAdapter, networks, projectId } from './config'
 
 import ActionButtonList from './components/ActionButton.vue'
 import InfoList from './components/InfoList.vue'
@@ -39,7 +39,7 @@ createAppKit({
   projectId,
   themeMode: 'light',
   features: {
-    analytics: true // Optional - defaults to your Cloud configuration
+    analytics: true
   },
   metadata: {
     name: 'AppKit Vue Example',
