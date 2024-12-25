@@ -20,27 +20,17 @@
 
     <InfoList />
 
-    <div className="footer">
-      <div class="footer-links">
-        <a href="https://reown.com" target="_blank" rel="noreferrer">Reown</a>
-        •
-        <a href="https://docs.reown.com" target="_blank" rel="noreferrer">Docs</a>
-        •
-        <a href="https://github.com/reown-com/appkit" target="_blank" rel="noreferrer">GitHub</a>
-        •
-        <a href="https://cloud.reown.com" target="_blank" rel="noreferrer">Cloud</a>
-      </div>
-      <p class="warning">This project ID only works on localhost. Go to Cloud to get your own.</p>
-    </div>
+    <Footer />
   </div>
 </template>
 
 <script>
 import { createAppKit, useAppKitTheme } from '@reown/appkit/vue'
-import { solanaWeb3JsAdapter, wagmiAdapter, networks, projectId } from './config/index'
+import { solanaWeb3JsAdapter, wagmiAdapter, networks, projectId } from './config'
 
 import ActionButtonList from './components/ActionButton.vue'
 import InfoList from './components/InfoList.vue'
+import Footer from './components/Footer.vue'
 
 // Initialize AppKit
 createAppKit({
@@ -63,7 +53,8 @@ export default {
   name: 'App',
   components: {
     ActionButtonList,
-    InfoList
+    InfoList,
+    Footer
   },
   setup() {
     const themeState = useAppKitTheme()
