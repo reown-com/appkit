@@ -71,7 +71,7 @@ export function Home() {
       background="black"
       color="white"
       paddingTop="12"
-      paddingX="8"
+      paddingX="5"
     >
       <Box
         width="full"

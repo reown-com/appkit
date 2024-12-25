@@ -39,7 +39,6 @@ export type CustomProjectProperties = {
 }
 
 const SINGLE_ADAPTER_EVM_TESTS = [
-  'extension.spec.ts',
   'basic-tests.spec.ts',
   'canary.spec.ts',
   'email.spec.ts',
@@ -59,7 +58,6 @@ const SINGLE_ADAPTER_EVM_TESTS = [
 const SINGLE_ADAPTER_EVM_MOBILE_TESTS = ['mobile-wallet-features.spec.ts']
 
 const SINGLE_ADAPTER_SOLANA_TESTS = [
-  'extension.spec.ts',
   'basic-tests.spec.ts',
   'email.spec.ts',
   'no-email.spec.ts',
@@ -92,22 +90,19 @@ const customProjectProperties: CustomProjectProperties = {
     testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Firefox/ethers': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: 'extension.spec.ts'
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Chrome/ethers5': {
     testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Firefox/ethers5': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: 'extension.spec.ts'
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Chrome/wagmi': {
     testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Firefox/wagmi': {
-    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX,
-    testIgnore: 'extension.spec.ts'
+    testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Chrome/solana': {
     testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
@@ -115,23 +110,19 @@ const customProjectProperties: CustomProjectProperties = {
   },
   'Desktop Firefox/solana': {
     testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
-    testIgnore: /siwe-email.spec.ts|extension.spec.ts/u
+    testIgnore: 'siwe-email.spec.ts'
   },
   'Desktop Firefox/multichain-ethers-solana': {
-    testMatch: /^.*\/multichain-ethers-.*\.spec\.ts$/u,
-    testIgnore: 'extension.spec.ts'
+    testMatch: /^.*\/multichain-ethers-.*\.spec\.ts$/u
   },
   'Desktop Firefox/multichain-wagmi-solana': {
-    testMatch: /^.*\/multichain-wagmi-.*\.spec\.ts$/u,
-    testIgnore: 'extension.spec.ts'
+    testMatch: /^.*\/multichain-wagmi-.*\.spec\.ts$/u
   },
   'Desktop Firefox/multichain-ethers5-solana': {
-    testMatch: /^.*\/multichain-ethers5-.*\.spec\.ts$/u,
-    testIgnore: 'extension.spec.ts'
+    testMatch: /^.*\/multichain-ethers5-.*\.spec\.ts$/u
   },
   'Desktop Firefox/multichain-basic': {
-    testMatch: /^.*\/multichain-basic\.spec\.ts$/u,
-    testIgnore: 'extension.spec.ts'
+    testMatch: /^.*\/multichain-basic\.spec\.ts$/u
   },
   'Desktop Chrome/multichain-ethers-solana': {
     testMatch: /^.*\/multichain-ethers-.*\.spec\.ts$/u

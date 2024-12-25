@@ -13,8 +13,6 @@
     "synpress": "synpress ./tests/wallet-setup",
     "playwright:test": "playwright test",
     "playwright:test:metamask": "playwright test --grep 'metamask.spec.ts'",
-    "playwright:test:extension": "playwright test --grep extension.spec.ts",
-    "playwright:debug:extension": "pnpm playwright:test:extension --debug",
     "playwright:test:mobile-wallet-features": "playwright test --grep 'mobile-wallet-features.spec.ts'",
     "playwright:test:basic": "playwright test --grep 'basic-tests.spec.ts'",
     "playwright:test:wallet-button": "playwright test --grep 'wallet-button.spec.ts'",
