@@ -1,4 +1,3 @@
-import { PageController } from '../../controllers/PageController'
 import { Box } from '../../components/Box'
 import { Text } from '../../components/Text'
 import { Zorb } from '../../components/Zorb'
@@ -7,11 +6,10 @@ import { AccountUtil } from '../../utils/AccountUtil'
 import { Keypair } from '@solana/web3.js'
 import { HelperUtil } from '../../utils/HelperUtil'
 import { useMemo, useState } from 'react'
-import { IconButton, IconButtonIconKey } from '../../components/IconButton'
-import { useSnapshot } from 'valtio'
 import { Token } from '../../components/Token'
 import { useBalance } from '../../hooks/useBalance'
 import Big from 'big.js'
+import { IconButton, IconButtonKey } from '../../components/IconButton'
 
 // EVM
 const { address } = privateKeyToAccount(AccountUtil.privateKeyEvm)
@@ -22,7 +20,7 @@ const publicKey = keypair.publicKey
 
 export function Home() {
   const [copied, setCopied] = useState(false)
-  const { page } = useSnapshot(PageController.state)
+  const [page, setPage] = useState<'ethereum' | 'solana'>('ethereum')
 
   const isEVM = page === 'ethereum'
 
@@ -35,7 +33,7 @@ export function Home() {
   const iconOptions = useMemo(
     () => ({
       [copied ? 'checkmark' : 'copy']: {
-        text: 'Copy',
+        label: 'Copy',
         onClick: () => {
           setCopied(true)
           navigator.clipboard.writeText(account)
@@ -43,13 +41,13 @@ export function Home() {
         }
       },
       switch: {
-        text: 'Switch',
+        label: 'Switch',
         onClick: () => {
-          PageController.setPage(isEVM ? 'solana' : 'ethereum')
+          setPage(isEVM ? 'solana' : 'ethereum')
         }
       },
       arrowRightUp: {
-        text: 'View',
+        label: 'View',
         onClick: () => {
           window.open(
             isEVM
@@ -72,7 +70,7 @@ export function Home() {
       flexDirection="column"
       background="black"
       color="white"
-      paddingY="32"
+      paddingTop="12"
       paddingX="8"
     >
       <Box
@@ -81,21 +79,23 @@ export function Home() {
         alignItems="center"
         justifyContent="center"
         flexDirection="column"
-        gap="20"
+        gap="8"
       >
         <Box
           display="flex"
           alignItems="center"
           justifyContent="center"
           flexDirection="column"
-          gap="12"
+          gap="4"
         >
           <Zorb />
           <Text as="h1" textAlign="center" fontSize="18" color="white">
             {HelperUtil.shortenAddress(account)}
           </Text>
-          <Box display="flex" alignItems="center" gap="12">
-            {Object.entries(iconOptions).map(([icon, { text, onClick }]) => '')}
+          <Box display="flex" alignItems="center" gap="4">
+            {Object.entries(iconOptions).map(([icon, { label, onClick }]) => (
+              <IconButton key={icon} label={label} onClick={onClick} icon={icon as IconButtonKey} />
+            ))}
           </Box>
         </Box>
 

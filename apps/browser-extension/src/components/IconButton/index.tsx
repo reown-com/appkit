@@ -1,10 +1,10 @@
 import { Box } from '../Box'
-import { Button } from '../Button'
 import { ArrowRightUp } from '../ArrowRightUp'
 import { Copy } from '../Copy'
 import { Text } from '../Text'
 import { Checkmark } from '../Checkmark'
 import { Switch } from '../Switch'
+import { touchableStyles } from '../../css/touchableStyles'
 
 const icons = {
   copy: <Copy />,
@@ -13,29 +13,41 @@ const icons = {
   switch: <Switch />
 }
 
-export type IconButtonIconKey = keyof typeof icons
+export type IconButtonKey = keyof typeof icons
 
 interface IconButtonProps {
   onClick: () => void
-  icon: IconButtonIconKey
-  text: string
+  icon: IconButtonKey
+  label: string
 }
 
-export function IconButton({ onClick, icon, text }: IconButtonProps) {
+export function IconButton({ onClick, icon, label }: IconButtonProps) {
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="10">
-      <Button
-        height="36"
-        width="36"
-        borderRadius="round"
-        active="shrink"
-        hover="grow"
-        padding="1"
+    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="2">
+      <Box
+        as="button"
+        background="neutrals1000"
+        color="white"
+        fontSize="16"
+        fontWeight="regular"
+        textAlign="center"
+        padding="3"
+        borderRadius="16"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        className={touchableStyles({
+          active: 'shrink',
+          hover: 'grow'
+        })}
         onClick={onClick}
       >
         {icons[icon]}
-      </Button>
-      <Text fontSize="14">{text}</Text>
+      </Box>
+
+      <Text fontSize="14" color="neutrals400">
+        {label}
+      </Text>
     </Box>
   )
 }

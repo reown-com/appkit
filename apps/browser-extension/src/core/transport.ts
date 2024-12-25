@@ -1,9 +1,9 @@
 import { createWalletClient, EIP1193Parameters, EIP1193Provider, fromHex, http, toHex } from 'viem'
-import { ProviderUtil } from '../utils/ProviderUtil'
-import { ChainId } from './wagmi'
+import { ChainId, wagmiConfig } from './wagmi'
 import { AccountUtil } from '../utils/AccountUtil'
 import { privateKeyToAccount } from 'viem/accounts'
 import { sepolia } from 'viem/chains'
+import { getPublicClient } from '@wagmi/core'
 
 export function createReownTransport() {
   return {
@@ -24,9 +24,7 @@ export function createReownTransport() {
       const chainId = (localStorage.getItem('chainId') as ChainId | null) ?? '1'
       const hasConnected = localStorage.getItem('hasConnected')
 
-      const publicClient = ProviderUtil.createPublicClient(
-        Number(chainId) as ChainId
-      ) as NonNullable<ReturnType<typeof ProviderUtil.createPublicClient>>
+      const publicClient = getPublicClient(wagmiConfig, { chainId: chainId as ChainId })
 
       switch (method) {
         case 'eth_chainId':

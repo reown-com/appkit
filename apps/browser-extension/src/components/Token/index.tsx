@@ -28,12 +28,9 @@ export function Token({ token, balance }: TokenProps) {
       width="full"
       display="flex"
       alignItems="center"
-      gap="8"
+      gap="2"
       background="neutrals1000"
-      borderStyle="solid"
-      borderWidth="1"
-      borderColor="accent020"
-      padding="12"
+      padding="3"
       borderRadius="16"
       transition="transform"
       cursor="pointer"
@@ -42,10 +39,10 @@ export function Token({ token, balance }: TokenProps) {
     >
       <Box as="img" height="36" width="36" borderRadius="round" src={tokens[token].src} />
       <Box display="flex" flexDirection="column">
-        <Text textAlign="left" color="accent010" fontSize="14">
+        <Text textAlign="left" color="white" fontSize="14">
           {tokens[token].title}
         </Text>
-        <Text textAlign="left" fontSize="12">
+        <Text textAlign="left" color="neutrals400" fontSize="12">
           {balance} {tokens[token].symbol}
         </Text>
       </Box>

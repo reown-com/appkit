@@ -5,7 +5,6 @@ import { sprinkles } from '../../css/sprinkless.css'
 
 type HTMLProperties = Omit<AllHTMLAttributes<HTMLElement>, 'as' | 'className'>
 
-// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 type Props = Atoms &
   HTMLProperties & {
     as?: ElementType

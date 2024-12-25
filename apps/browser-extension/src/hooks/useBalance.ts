@@ -2,10 +2,10 @@ import { clusterApiUrl, Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/
 import { useQuery } from '@tanstack/react-query'
 import Big from 'big.js'
 import { Address, formatEther } from 'viem'
-import { useBalance as useBalance_wagmi } from 'wagmi'
+import { useBalance as useWagmiBalance } from 'wagmi'
 
 export function useBalance(chain: 'ethereum' | 'solana', account: string) {
-  const { data: ethereumBalance } = useBalance_wagmi({
+  const { data: ethereumBalance } = useWagmiBalance({
     address: account as Address,
     query: {
       enabled: chain === 'ethereum'

@@ -1,38 +1,11 @@
-import { globalFontFace, globalStyle } from '@vanilla-extract/css'
-
-globalFontFace('KHTeka', {
-  fontDisplay: 'auto',
-  fontStyle: 'normal',
-  fontWeight: 500,
-  src: "url('/assets/fonts/KHTeka-Medium.otf') format('opentype')"
-})
-
-globalFontFace('KHTekaMono', {
-  fontDisplay: 'auto',
-  fontStyle: 'normal',
-  fontWeight: 400,
-  src: "url('/assets/fonts/KHTekaMono-Regular.otf') format('opentype')"
-})
-
-globalFontFace('KHTeka', {
-  fontDisplay: 'auto',
-  fontStyle: 'normal',
-  fontWeight: 400,
-  src: "url('/assets/fonts/KHTeka-Regular.otf') format('opentype')"
-})
-
-globalFontFace('KHTeka', {
-  fontDisplay: 'auto',
-  fontStyle: 'normal',
-  fontWeight: 300,
-  src: "url('/assets/fonts/KHTeka-Light.otf') format('opentype')"
-})
+import { globalStyle } from '@vanilla-extract/css'
 
 globalStyle('*', {
   margin: 0,
   padding: 0,
   boxSizing: 'border-box',
-  fontFamily: 'KHTeka'
+  fontFamily:
+    'Inter, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif'
 })
 
 globalStyle('body', {
