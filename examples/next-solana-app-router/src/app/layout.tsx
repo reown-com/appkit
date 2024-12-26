@@ -3,8 +3,8 @@ import ContextProvider from '@/context'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'AppKit Next.js Wagmi',
-  description: 'AppKit Next.js App Router Wagmi Example',
+  title: 'AppKit Next.js Solana',
+  description: 'AppKit Next.js App Router Solana Example',
   creator: 'reown, inc.',
   keywords: [
     'appkit',

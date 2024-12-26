@@ -16,9 +16,9 @@ if (!projectId) {
 }
 
 // Set up metadata
-const metadata = {
-  name: 'next-reown-appkit',
-  description: 'next-reown-appkit',
+export const appKitMetadata = {
+  name: 'AppKit Next.js Wagmi',
+  description: 'AppKit Next.js App Router Wagmi Example',
   url: 'https://github.com/0xonerb/next-reown-appkit-ssr', // origin must match your domain & subdomain
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
@@ -29,7 +29,7 @@ export const modal = createAppKit({
   projectId,
   networks,
   defaultNetwork: mainnet,
-  metadata: metadata,
+  metadata: appKitMetadata,
   themeMode: 'light',
   features: {
     analytics: true // Optional - defaults to your Cloud configuration
