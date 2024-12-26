@@ -1,6 +1,6 @@
 /**
  * This script injects the version from the packages/appkit/package.json into the packages/appkit/exports/constants.ts file.
- * This is a alternative solution to not import the package.json file in our packages due to restriction on bundlers.
+ * This is an alternative solution to not import the package.json file in our packages due to restriction on bundlers.
  * It's run before the build process of the packages starts with `prebuild` script.
  * See https://pnpm.io/it/next/cli/run#enable-pre-post-scripts
  */
