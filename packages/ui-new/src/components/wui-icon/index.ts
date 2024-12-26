@@ -7,7 +7,6 @@ import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
 // -- Svg's-------------------------------- //
-import { arrowTopRightSvg } from '../../assets/svg/arrow-top-right.js'
 import { addSvg } from '../../assets/svg/add.js'
 import { allWalletsSvg } from '../../assets/svg/all-wallets.js'
 import { arrowBottomCircleSvg } from '../../assets/svg/arrow-bottom-circle.js'
@@ -87,8 +86,10 @@ import { lightbulbSvg } from '../../assets/svg/lightbulb.js'
 import { idSvg } from '../../assets/svg/id.js'
 import { xSvg } from '../../assets/svg/x.js'
 import { infoSvg } from '../../assets/svg/info.js'
-import { exclamationTriangleSvg } from '../../assets/svg/exclamation-triangle.js'
 import { arrowTopRightSvg } from '../../assets/svg/arrow-top-right.js'
+import { dollarSvg } from '../../assets/svg/dollar.js'
+import { questionMarkSvg } from '../../assets/svg/question-mark.js'
+import { arrowClockWiseSvg } from '../../assets/svg/arrows-clock-wise.js'
 import { vars } from '../../utils/ThemeHelperUtil.js'
 
 // -- Constants ------------------------------------------ //
@@ -103,6 +104,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   arrowRight: arrowRightSvg,
   arrowTop: arrowTopSvg,
   arrowTopRight: arrowTopRightSvg,
+  arrowClockWise: arrowClockWiseSvg,
   bank: bankSvg,
   browser: browserSvg,
   card: cardSvg,
@@ -123,6 +125,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   desktop: desktopSvg,
   disconnect: disconnectSvg,
   discord: discordSvg,
+  dollar: dollarSvg,
   etherscan: etherscanSvg,
   exclamationTriangle: exclamationTriangleSvg,
   exclamationCircle: exclamationCircleSvg,
@@ -147,6 +150,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   playStore: playStoreSvg,
   plus: plusSvg,
   qrCode: qrCodeIcon,
+  questionMark: questionMarkSvg,
   recycleHorizontal: recycleHorizontalSvg,
   refresh: refreshSvg,
   search: searchSvg,

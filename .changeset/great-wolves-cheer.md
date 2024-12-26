@@ -3,7 +3,6 @@
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit': patch
 '@reown/appkit-common': patch
-'sveltekit-ethers': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-solana': patch
 '@reown/appkit-adapter-wagmi': patch
