@@ -1530,6 +1530,7 @@ export class AppKit {
     this.setStatus('connected', chainNamespace)
 
     if (chainIdToUse && chainNamespace === activeNamespace) {
+      // Connection can be requested for a chain that is not supported by the wallet so we need to use approved networks here
       const caipNetworkIds = this.getApprovedCaipNetworkIds()
       const caipNetworkId = caipNetworkIds.find(id => id.split(':')[1] === chainIdToUse.toString())
       const fallBackCaipNetworkId = caipNetworkIds.find(id => id.split(':')[0] === chainNamespace)
