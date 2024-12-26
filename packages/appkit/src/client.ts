@@ -1396,10 +1396,25 @@ export class AppKit {
     const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
     this.chainNamespaces.forEach(async chainNamespace => {
-      const caipAddress = this.universalProvider?.session?.namespaces?.[chainNamespace]
-        ?.accounts[0] as CaipAddress
+      const namespaceAccounts =
+        this.universalProvider?.session?.namespaces?.[chainNamespace]?.accounts || []
+
+      // We try and find the address for this network in the session object.
+
+      const activeCaipNetworkId = ChainController.state.activeCaipNetwork?.id
+
+      const caipAddress =
+        namespaceAccounts.find(account => {
+          const [, chainId] = account.split(':')
+
+          return chainId === activeCaipNetworkId?.toString()
+        }) || namespaceAccounts[0]
 
       if (caipAddress) {
+        if (caipAddress.split(':').length !== 3) {
+          throw new Error('Invalid caip address')
+        }
+        const [, chainId, address] = caipAddress.split(':')
         ProviderUtil.setProviderId(
           chainNamespace,
           UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT as ConnectorType
@@ -1421,14 +1436,6 @@ export class AppKit {
         }
 
         StorageUtil.setConnectedConnectorId(ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)
-
-        let address = ''
-
-        if (caipAddress.split(':').length === 3) {
-          address = caipAddress.split(':')[2] as string
-        } else {
-          address = AccountController.state.address as string
-        }
 
         if ((adapter as ChainAdapter)?.adapterType === 'wagmi') {
           try {
@@ -1454,13 +1461,8 @@ export class AppKit {
         this.syncWalletConnectAccounts(chainNamespace)
 
         await this.syncAccount({
-          address,
-          chainId:
-            ChainController.state.activeChain === chainNamespace
-              ? (ChainController.state.activeCaipNetwork?.id as string | number)
-              : (this.caipNetworks?.find(n => n.chainNamespace === chainNamespace)?.id as
-                  | string
-                  | number),
+          address: address as string,
+          chainId: chainId as string,
           chainNamespace
         })
       }
@@ -1528,11 +1530,19 @@ export class AppKit {
     this.setStatus('connected', chainNamespace)
 
     if (chainIdToUse && chainNamespace === activeNamespace) {
-      const caipNetwork = this.caipNetworks?.find(n => n.id.toString() === chainIdToUse.toString())
-      const fallBackCaipNetwork = this.caipNetworks?.find(n => n.chainNamespace === chainNamespace)
-      this.setCaipNetwork(caipNetwork || fallBackCaipNetwork)
+      const caipNetworkIds = this.getApprovedCaipNetworkIds()
+      const caipNetworkId = caipNetworkIds.find(id => id.split(':')[1] === chainIdToUse.toString())
+      const fallBackCaipNetworkId = caipNetworkIds.find(id => id.split(':')[0] === chainNamespace)
+
+      const caipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
+      const fallBackCaipNetwork = this.caipNetworks?.find(
+        n => n.caipNetworkId === fallBackCaipNetworkId
+      )
+
+      const network = (caipNetwork || fallBackCaipNetwork) as CaipNetwork
+      this.setCaipNetwork(network)
       this.syncConnectedWalletInfo(chainNamespace)
-      await this.syncBalance({ address, chainId: chainIdToUse, chainNamespace })
+      await this.syncBalance({ address, chainId: network.id, chainNamespace })
     }
   }
 
