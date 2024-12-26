@@ -4,7 +4,6 @@
 '@reown/appkit': patch
 '@reown/appkit-wallet': patch
 '@reown/appkit-core': patch
-'sveltekit-ethers': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
