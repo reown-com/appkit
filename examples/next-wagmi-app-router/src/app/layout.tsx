@@ -1,29 +1,41 @@
-import { ReactNode } from 'react'
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
-
-const inter = Inter({ subsets: ['latin'] })
-
-import { headers } from 'next/headers' // added
 import ContextProvider from '@/context'
+import './globals.css'
+import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'AppKit Example App',
-  description: 'Powered by WalletConnect'
+  title: 'AppKit Next.js App Router Example',
+  description: 'AppKit Next.js App Router Example',
+  creator: 'reown, inc.',
+  keywords: [
+    'appkit',
+    'reown',
+    'demo',
+    'wallet',
+    'connect',
+    'web3',
+    'crypto',
+    'blockchain',
+    'dapp'
+  ],
+  icons: {
+    icon: [
+      {
+        url: '/favicon-dark.png',
+        media: '(prefers-color-scheme: light)'
+      },
+      {
+        url: '/favicon.png',
+        media: '(prefers-color-scheme: dark)'
+      }
+    ]
+  }
 }
 
-export default function RootLayout({
-  children
-}: Readonly<{
-  children: ReactNode
-}>) {
-  const cookies = headers().get('cookie')
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <ContextProvider cookies={cookies}>{children}</ContextProvider>
+      <body>
+        <ContextProvider cookies={null}>{children}</ContextProvider>
       </body>
     </html>
   )
