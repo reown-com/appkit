@@ -1,7 +1,7 @@
 <template>
   <div class="code-container-wrapper">
     <section class="code-container">
-      <h2 class="code-container-title">useAppKit()</h2>
+      <h2 class="code-container-title">useAppKitAccount()</h2>
       <div class="code-container-content">
         <pre>{{ JSON.stringify(accountState, null, 2) }}</pre>
       </div>
