@@ -1,5 +1,5 @@
 {
-  "name": "@examples/next-wagmi-app-router",
+  "name": "@examples/next-wagmi-solana-app-router",
   "version": "1.0.5",
   "private": true,
   "scripts": {
