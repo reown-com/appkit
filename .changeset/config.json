@@ -11,9 +11,6 @@
   "ignore": [
     "@examples/*",
     "@apps/*",
-    "@apps/gallery", 
-    "@apps/laboratory", 
-    "@apps/browser-extension", 
     "@reown/appkit-adapter-polkadot",
     "@reown/appkit-ui-new"
   ]
