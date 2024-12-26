@@ -94,12 +94,12 @@ export function useAppKitTheme() {
     unsubscribe?.()
   })
 
-  return {
+  return reactive({
     setThemeMode,
     setThemeVariables,
     themeMode,
     themeVariables
-  }
+  })
 }
 
 export function useAppKit() {
@@ -136,7 +136,7 @@ export function useWalletInfo() {
     unsubscribe?.()
   })
 
-  return { walletInfo }
+  return reactive({ walletInfo })
 }
 
 export function useAppKitState() {
