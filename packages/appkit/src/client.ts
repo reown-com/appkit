@@ -828,7 +828,7 @@ export class AppKit {
           this.close()
         } else {
           await adapter?.connectWalletConnect(onUri, this.getCaipNetwork()?.id)
-          StorageUtil.setConnectedNamespaces(ChainController.state.chains.keys().toArray())
+          StorageUtil.setConnectedNamespaces([...ChainController.state.chains.keys()])
         }
 
         await this.syncWalletConnectAccount()
