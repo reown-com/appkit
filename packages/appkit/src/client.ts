@@ -1778,43 +1778,38 @@ export class AppKit {
   }
 
   private async syncNamespaceConnection(namespace: ChainNamespace) {
-    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
-    const isEmailUsed = this.authProvider?.getLoginEmailUsed()
+    try {
+      const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+      const isEmailUsed = this.authProvider?.getLoginEmailUsed()
 
-    if (isEmailUsed) {
-      return
-    }
+      if (isEmailUsed) {
+        return
+      }
 
-    this.setStatus('connecting', namespace)
-    switch (connectorId) {
-      case ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT:
-        await this.syncWalletConnectAccount()
-        break
-      case ConstantsUtil.CONNECTOR_ID.AUTH:
-        // Handled during initialization of adapters' auth provider
-        break
-      default:
-        await this.syncAdapterConnection(namespace)
+      this.setStatus('connecting', namespace)
+      switch (connectorId) {
+        case ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT:
+          await this.syncWalletConnectAccount()
+          break
+        case ConstantsUtil.CONNECTOR_ID.AUTH:
+          // Handled during initialization of adapters' auth provider
+          break
+        default:
+          await this.syncAdapterConnection(namespace)
+      }
+    } catch (err) {
+      console.warn("AppKit couldn't sync existing connection", err)
+      StorageUtil.deleteConnectedConnectorId(namespace)
+      this.setStatus('disconnected', namespace)
     }
   }
 
   private async syncExistingConnection() {
     const connectedNamespaces = StorageUtil.getConnectedNamespaces()
-    try {
-      if (connectedNamespaces?.length > 0) {
-        await Promise.all(
-          connectedNamespaces.map(namespace => this.syncNamespaceConnection(namespace))
-        )
-      }
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.warn("AppKit couldn't sync existing connection", err)
-      this.disconnect().finally(() => {
-        connectedNamespaces.forEach(namespace => {
-          StorageUtil.deleteConnectedConnectorId(namespace)
-          this.setStatus('disconnected', namespace)
-        })
-      })
+    if (connectedNamespaces?.length > 0) {
+      await Promise.allSettled(
+        connectedNamespaces.map(namespace => this.syncNamespaceConnection(namespace))
+      )
     }
   }
 
