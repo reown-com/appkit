@@ -1753,6 +1753,12 @@ export class AppKit {
 
   private async syncNamespaceConnection(namespace: ChainNamespace) {
     const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const isEmailUsed = this.authProvider?.getLoginEmailUsed()
+
+    if (isEmailUsed) {
+      return
+    }
+
     this.setStatus('connecting', namespace)
     switch (connectorId) {
       case ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT:
