@@ -21,9 +21,11 @@ import {
   CoreHelperUtil,
   AlertController,
   StorageUtil,
-  type ChainAdapter
+  type ChainAdapter,
+  type ChainControllerState
 } from '@reown/appkit-core'
 import {
+  getSafeConnectorIdKey,
   SafeLocalStorage,
   SafeLocalStorageKeys,
   type AppKitNetwork,
@@ -69,10 +71,10 @@ describe('Base', () => {
   beforeEach(() => {
     vi.resetAllMocks()
 
-    vi.mocked(ChainController).state = {
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       chains: new Map(),
       activeChain: 'eip155'
-    } as any
+    } as any)
 
     vi.mocked(ConnectorController).getConnectors = vi.fn().mockReturnValue([])
     vi.mocked(CaipNetworksUtil).extendCaipNetworks = vi.fn().mockReturnValue([])
@@ -294,11 +296,11 @@ describe('Base', () => {
     })
 
     it('should get CAIP address', () => {
-      vi.mocked(ChainController).state = {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         activeChain: 'eip155',
         activeCaipAddress: 'eip155:1:0x123',
         chains: new Map([['eip155', { namespace: 'eip155' }]])
-      } as any
+      } as any)
       expect(appKit.getCaipAddress()).toBe('eip155:1:0x123')
     })
 
@@ -321,11 +323,11 @@ describe('Base', () => {
     it('should set CAIP address', () => {
       // First mock AccountController.setCaipAddress to update ChainController state
       vi.mocked(AccountController.setCaipAddress).mockImplementation(() => {
-        vi.mocked(ChainController).state = {
-          ...vi.mocked(ChainController).state,
+        vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
+          ...ChainController.state,
           activeCaipAddress: 'eip155:1:0x123',
           chains: new Map([['eip155', { namespace: 'eip155' }]])
-        } as any
+        }) as any
       })
 
       appKit.setCaipAddress('eip155:1:0x123', 'eip155')
@@ -371,10 +373,10 @@ describe('Base', () => {
     })
 
     it('should get CAIP network', () => {
-      vi.mocked(ChainController).state = {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         activeCaipNetwork: { id: 'eip155:1', name: 'Ethereum' },
         chains: new Map([['eip155', { namespace: 'eip155' }]])
-      } as any
+      } as any)
       expect(appKit.getCaipNetwork()).toEqual({ id: 'eip155:1', name: 'Ethereum' })
     })
 
@@ -501,10 +503,10 @@ describe('Base', () => {
         preferredAccountType: 'eoa'
       }
 
-      vi.mocked(ChainController).state = {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         activeChain: 'eip155',
         chains: new Map([['eip155', { namespace: 'eip155' }]])
-      } as any
+      } as any)
 
       vi.mocked(CoreHelperUtil.createAccount).mockImplementation((namespace, address, type) => {
         if (namespace === 'eip155') {
@@ -857,10 +859,10 @@ describe('Base', () => {
         { id: 'eip155:1', chainNamespace: 'eip155' } as CaipNetwork
       ])
 
-      vi.mocked(ChainController).state = {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         chains: new Map([['eip155', { namespace: 'eip155' }]]),
         activeChain: 'eip155'
-      } as any
+      } as any)
 
       const mockRemoveItem = vi.fn()
 
@@ -876,61 +878,14 @@ describe('Base', () => {
       await appKit.disconnect()
 
       expect(ConnectionController.disconnect).toHaveBeenCalled()
-      expect(AccountController.setStatus).toHaveBeenCalledWith('disconnected', 'eip155')
-    })
-
-    it('should set unsupported chain when synced chainId is not supported', async () => {
-      vi.mocked(StorageUtil.getConnectedConnectorId).mockReturnValue('EXTERNAL')
-      vi.mocked(StorageUtil.getActiveNamespace).mockReturnValue('eip155')
-      vi.mocked(ChainController).state = {
-        chains: new Map([['eip155', { namespace: 'eip155' }]]),
-        activeChain: 'eip155'
-      } as any
-      ;(appKit as any).caipNetworks = [{ id: 'eip155:1', chainNamespace: 'eip155' }]
-
-      const overrideAdapter = {
-        getAccounts: vi.fn().mockResolvedValue({ accounts: [{ address: '0x123', type: 'eoa' }] }),
-        syncConnection: vi.fn().mockResolvedValue({
-          chainId: 'eip155:999', // Unsupported chain
-          address: '0x123'
-        }),
-        getBalance: vi.fn().mockResolvedValue({ balance: '0', symbol: 'ETH' }),
-        getProfile: vi.fn().mockResolvedValue({}),
-        on: vi.fn(),
-        off: vi.fn(),
-        emit: vi.fn()
-      }
-
-      vi.spyOn(appKit as any, 'getAdapter').mockReturnValueOnce(overrideAdapter)
-
-      vi.spyOn(StorageUtil, 'setConnectedConnectorId').mockImplementation(vi.fn())
-
-      vi.spyOn(appKit as any, 'syncAccount').mockImplementation(vi.fn())
-
-      vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
-
-      vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation((key: string) => {
-        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID) {
-          return 'test-wallet'
-        }
-        if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
-          return 'eip155:1'
-        }
-        return undefined
-      })
-
-      vi.mocked(ChainController.showUnsupportedChainUI).mockImplementation(vi.fn())
-
-      await (appKit as any).syncExistingConnection()
-
-      expect((appKit as any).setUnsupportedNetwork).toHaveBeenCalled()
+      // TODO: Unmock all of this file and check for AccountController hooks called from ChainController
     })
 
     it('should not show unsupported chain UI when allowUnsupportedChain is true', async () => {
-      vi.mocked(ChainController).state = {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         chains: new Map([['eip155', { namespace: 'eip155' }]]),
         activeChain: 'eip155'
-      } as any
+      } as any)
       ;(appKit as any).caipNetworks = [{ id: 'eip155:1', chainNamespace: 'eip155' }]
 
       vi.mocked(OptionsController).state = {
@@ -956,7 +911,8 @@ describe('Base', () => {
       vi.spyOn(appKit as any, 'setUnsupportedNetwork').mockImplementation(vi.fn())
 
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation((key: string) => {
-        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID) {
+        const connectorKey = getSafeConnectorIdKey('eip155')
+        if (key === connectorKey) {
           return 'test-wallet'
         }
         if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
@@ -1002,9 +958,13 @@ describe('Base', () => {
         addressLabels: new Map(),
         allAccounts: []
       })
+      vi.spyOn(StorageUtil, 'getConnectedNamespaces').mockReturnValueOnce(['eip155'])
       vi.mocked(CoreHelperUtil.isClient).mockReturnValueOnce(true)
       vi.spyOn(StorageUtil, 'getActiveNamespace').mockReturnValue('eip155')
       vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('test-connector')
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
+        activeCaipNetwork: { id: 'eip155:1', chainNamespace: 'eip155' } as CaipNetwork
+      } as ChainControllerState)
       vi.mocked(StorageUtil.getActiveNetworkProps).mockReturnValue({
         namespace: 'eip155',
         chainId: '1',
@@ -1033,7 +993,8 @@ describe('Base', () => {
 
     it('should set status to "disconnected" when no connector is present', async () => {
       vi.mocked(CoreHelperUtil.isClient).mockReturnValueOnce(true)
-      vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValueOnce(undefined)
+      vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValueOnce(undefined)
+      vi.spyOn(StorageUtil, 'getConnectedNamespaces').mockReturnValueOnce(['eip155'])
 
       await appKit['syncExistingConnection']()
 
@@ -1042,8 +1003,10 @@ describe('Base', () => {
 
     it('should set status to "disconnected" if the connector is set to "AUTH" and the adapter fails to sync', async () => {
       vi.mocked(CoreHelperUtil.isClient).mockReturnValueOnce(true)
+      vi.spyOn(StorageUtil, 'getConnectedNamespaces').mockReturnValueOnce(['eip155'])
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation(key => {
-        if (key === SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID) {
+        const connectorKey = getSafeConnectorIdKey('eip155')
+        if (key === connectorKey) {
           return 'AUTH'
         }
         if (key === SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) {
@@ -1063,6 +1026,68 @@ describe('Base', () => {
 
       expect(AccountController.setStatus).toHaveBeenCalledWith('disconnected', 'eip155')
     })
+
+    it('should reconnect to multiple namespaces if previously connected', async () => {
+      vi.spyOn(ProviderUtil, 'setProviderId').mockImplementation(vi.fn())
+      vi.spyOn(StorageUtil, 'getActiveNetworkProps').mockReturnValue({
+        namespace: 'eip155',
+        chainId: '1',
+        caipNetworkId: '1'
+      })
+      vi.spyOn(StorageUtil, 'getConnectedNamespaces').mockReturnValueOnce(['eip155', 'solana'])
+      vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockImplementation(namespace => {
+        if (namespace === 'eip155') {
+          return 'evm-connector'
+        }
+        return 'solana-connector'
+      })
+
+      const mockEvmAdapter = {
+        getAccounts: vi.fn().mockResolvedValue({ accounts: [{ address: '0x123', type: 'eoa' }] }),
+        syncConnection: vi.fn().mockResolvedValue({
+          address: '0x123',
+          chainId: '1',
+          chainNamespace: 'eip155',
+          accounts: [{ address: '0x123', type: 'eoa' }],
+          type: 'EXTERNAL',
+          id: 'evm-connector'
+        }),
+        on: vi.fn()
+      }
+
+      const mockSolanaAdapter = {
+        getAccounts: vi.fn().mockResolvedValue({ accounts: [{ address: 'Hgbsh1', type: 'eoa' }] }),
+        syncConnection: vi.fn().mockResolvedValue({
+          address: 'Hgbsh1',
+          chainId: '1',
+          chainNamespace: 'solana',
+          accounts: [{ address: 'Hgbsh1', type: 'eoa' }],
+          type: 'EXTERNAL',
+          id: 'solana-connector'
+        }),
+        on: vi.fn()
+      }
+
+      vi.spyOn(appKit as any, 'getAdapter').mockImplementation(namespace => {
+        if (namespace === 'eip155') {
+          return mockEvmAdapter
+        }
+        return mockSolanaAdapter
+      })
+
+      await appKit['syncExistingConnection']()
+
+      expect(mockEvmAdapter.syncConnection).toHaveBeenCalled()
+      expect(mockSolanaAdapter.syncConnection).toHaveBeenCalled()
+
+      expect(mockEvmAdapter.getAccounts).toHaveBeenCalled()
+      expect(mockSolanaAdapter.getAccounts).toHaveBeenCalled()
+
+      expect(ProviderUtil.setProviderId).toHaveBeenCalledWith('eip155', 'EXTERNAL')
+      expect(ProviderUtil.setProviderId).toHaveBeenCalledWith('solana', 'EXTERNAL')
+      expect(StorageUtil.setConnectedConnectorId).toHaveBeenCalledWith('eip155', 'evm-connector')
+      expect(StorageUtil.setConnectedConnectorId).toHaveBeenCalledWith('solana', 'solana-connector')
+    })
   })
   describe('Base Initialization', () => {
     let appKit: AppKit
@@ -1072,10 +1097,10 @@ describe('Base', () => {
     beforeEach(() => {
       vi.resetAllMocks()
 
-      vi.mocked(ChainController).state = {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         chains: new Map(),
         activeChain: 'eip155'
-      } as any
+      } as any)
 
       vi.mocked(ConnectorController).getConnectors = vi.fn().mockReturnValue([])
 

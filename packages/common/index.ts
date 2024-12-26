@@ -9,7 +9,12 @@ export { NavigationUtil } from './src/utils/NavigationUtil.js'
 export { ConstantsUtil } from './src/utils/ConstantsUtil.js'
 export { Emitter } from './src/utils/EmitterUtil.js'
 export { ParseUtil } from './src/utils/ParseUtil.js'
-export { SafeLocalStorage, SafeLocalStorageKeys } from './src/utils/SafeLocalStorage.js'
+export {
+  SafeLocalStorage,
+  SafeLocalStorageKeys,
+  type SafeLocalStorageKey,
+  getSafeConnectorIdKey
+} from './src/utils/SafeLocalStorage.js'
 export { getW3mThemeVariables } from './src/utils/ThemeUtil.js'
 export { isReownName } from './src/utils/NamesUtil.js'
 

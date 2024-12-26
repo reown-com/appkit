@@ -111,7 +111,7 @@ describe('ConnectionController', () => {
     await ConnectionController.connectWalletConnect()
     expect(ConnectionController.state.wcUri).toEqual(walletConnectUri)
     expect(ConnectionController.state.wcPairingExpiry).toEqual(ConstantsUtil.FOUR_MINUTES_MS)
-    expect(storageSpy).toHaveBeenCalledWith('walletConnect')
+    expect(storageSpy).toHaveBeenCalledWith('eip155', 'walletConnect')
     expect(clientConnectWalletConnectSpy).toHaveBeenCalled()
 
     // Just in case
