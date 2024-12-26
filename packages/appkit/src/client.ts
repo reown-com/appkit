@@ -1264,8 +1264,10 @@ export class AppKit {
       this.setStatus('connected', namespace)
     } else {
       this.setLoading(false)
-      this.setStatus('disconnected', namespace)
-      StorageUtil.removeConnectedNamespace(namespace)
+      if (namespace) {
+        this.setStatus('disconnected', namespace)
+        StorageUtil.removeConnectedNamespace(namespace)
+      }
     }
   }
 
@@ -1546,7 +1548,6 @@ export class AppKit {
 
     this.setStatus('connected', chainNamespace)
 
-    console.trace('>> syncAccount', chainNamespace, chainIdToUse, activeNamespace)
     if (chainIdToUse && chainNamespace === activeNamespace) {
       let caipNetwork = this.caipNetworks?.find(n => n.id.toString() === chainIdToUse.toString())
       let fallbackCaipNetwork = this.caipNetworks?.find(n => n.chainNamespace === chainNamespace)
@@ -1555,12 +1556,6 @@ export class AppKit {
         chainNamespace
       )
 
-      console.log(
-        '>> shouldSupportsAllNetworks',
-        shouldSupportsAllNetworks,
-        chainIdToUse,
-        chainNamespace
-      )
       if (!shouldSupportsAllNetworks) {
         // Connection can be requested for a chain that is not supported by the wallet so we need to use approved networks here
         const caipNetworkIds = this.getApprovedCaipNetworkIds() || []
@@ -1587,7 +1582,6 @@ export class AppKit {
     chainId: string | number
     chainNamespace: ChainNamespace
   }) {
-    console.log('>> syncBalance', params)
     const adapter = this.getAdapter(params.chainNamespace)
     const caipNetwork = NetworkUtil.getNetworksByNamespace(
       this.caipNetworks,
