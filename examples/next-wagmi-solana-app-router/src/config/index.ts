@@ -10,11 +10,29 @@ import {
   useDisconnect
 } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { mainnet, polygon, arbitrum, optimism, AppKitNetwork } from '@reown/appkit/networks'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana'
+import {
+  mainnet,
+  polygon,
+  arbitrum,
+  optimism,
+  AppKitNetwork,
+  solana,
+  solanaDevnet,
+  solanaTestnet
+} from '@reown/appkit/networks'
 
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694' // this is a public projectId only to use on localhost
 
-const networks = [mainnet, polygon, arbitrum, optimism] as [AppKitNetwork, ...AppKitNetwork[]]
+export const networks = [
+  mainnet,
+  polygon,
+  arbitrum,
+  optimism,
+  solana,
+  solanaDevnet,
+  solanaTestnet
+] as [AppKitNetwork, ...AppKitNetwork[]]
 
 // Setup wagmi adapter
 export const wagmiAdapter = new WagmiAdapter({
@@ -22,13 +40,15 @@ export const wagmiAdapter = new WagmiAdapter({
   projectId
 })
 
+export const solanaAdapter = new SolanaAdapter({})
+
 // Create modal
 const modal = createAppKit({
-  adapters: [wagmiAdapter],
+  adapters: [wagmiAdapter, solanaAdapter],
   networks,
   metadata: {
-    name: 'AppKit Next.js Example',
-    description: 'AppKit Next.js App Router Example',
+    name: 'AppKit Next.js Wagmi Solana',
+    description: 'AppKit Next.js App Router with Wagmi Solana Adapters',
     url: 'https://reown.com/appkit',
     icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
   },

@@ -30,8 +30,8 @@ const modal = createAppKit({
   adapters: [wagmiAdapter],
   networks,
   metadata: {
-    name: 'AppKit React Example',
-    description: 'AppKit React Wagmi Example',
+    name: 'AppKit Next.js Wagmi',
+    description: 'AppKit Next.js App Router with Solana Adapter',
     url: 'https://reown.com/appkit',
     icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
   },
