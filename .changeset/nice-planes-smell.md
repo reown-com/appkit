@@ -1,6 +1,5 @@
 ---
 '@reown/appkit': patch
-'sveltekit-ethers': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
@@ -17,7 +16,6 @@
 '@reown/appkit-siwe': patch
 '@reown/appkit-siwx': patch
 '@reown/appkit-ui': patch
-'@reown/appkit-ui-new': patch
 '@reown/appkit-wallet': patch
 '@reown/appkit-wallet-button': patch
 ---

@@ -13,6 +13,7 @@
     "@apps/*",
     "@apps/gallery", 
     "@apps/laboratory", 
-    "@reown/appkit-adapter-polkadot"
+    "@reown/appkit-adapter-polkadot",
+    "@reown/appkit-ui-new"
   ]
 }
