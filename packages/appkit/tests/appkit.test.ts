@@ -542,7 +542,7 @@ describe('Base', () => {
       })
       ;(appKitWithAuth as any).authProvider = mockAuthProvider
 
-      await (appKitWithAuth as any).listenAuthConnector(mockAuthProvider)
+      await (appKitWithAuth as any).syncAuthConnector(mockAuthProvider)
 
       expect(CoreHelperUtil.createAccount).toHaveBeenCalledWith('eip155', '0x1', 'eoa')
       expect(CoreHelperUtil.createAccount).toHaveBeenCalledWith('eip155', '0x2', 'smartAccount')

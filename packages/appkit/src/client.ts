@@ -1120,17 +1120,7 @@ export class AppKit {
     }
   }
 
-  private async listenAuthConnector(provider: W3mFrameProvider) {
-    this.setLoading(true)
-    const isLoginEmailUsed = provider.getLoginEmailUsed()
-    this.setLoading(isLoginEmailUsed)
-
-    if (isLoginEmailUsed) {
-      this.setStatus('connecting', ChainController.state.activeChain as ChainNamespace)
-    }
-
-    const { isConnected } = await provider.isConnected()
-
+  private setupAuthConnectorListeners(provider: W3mFrameProvider) {
     provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
       if (W3mFrameHelpers.checkIfRequestExists(request)) {
         if (!W3mFrameHelpers.checkIfRequestIsSafe(request)) {
@@ -1179,7 +1169,7 @@ export class AppKit {
       const namespace = ChainController.state.activeChain as ChainNamespace
       const connectorId = StorageUtil.getConnectedConnectorId(namespace)
       const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
-      if (!isConnected && isConnectedWithAuth) {
+      if (isConnectedWithAuth) {
         this.setCaipAddress(undefined, namespace)
         this.setLoading(false)
       }
@@ -1248,27 +1238,41 @@ export class AppKit {
         ChainController.state.activeChain as ChainNamespace
       )
     })
+  }
+
+  private async syncAuthConnector(provider: W3mFrameProvider) {
+    this.setLoading(true)
+    const isLoginEmailUsed = provider.getLoginEmailUsed()
+    this.setLoading(isLoginEmailUsed)
+
+    if (isLoginEmailUsed) {
+      this.setStatus('connecting', ChainController.state.activeChain as ChainNamespace)
+    }
+
+    this.setupAuthConnectorListeners(provider)
+
+    const { isConnected } = await provider.isConnected()
 
     const namespace = StorageUtil.getActiveNamespace()
 
-    if (isConnected && this.connectionControllerClient?.connectExternal) {
-      await this.connectionControllerClient?.connectExternal({
-        id: ConstantsUtil.CONNECTOR_ID.AUTH,
-        info: { name: ConstantsUtil.CONNECTOR_ID.AUTH },
-        type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
-        provider,
-        chainId: ChainController.state.activeCaipNetwork?.id,
-        chain: namespace
-      })
-      this.setLoading(false)
-      this.setStatus('connected', namespace)
-    } else {
-      this.setLoading(false)
-      if (namespace) {
+    if (namespace) {
+      if (isConnected && this.connectionControllerClient?.connectExternal) {
+        await this.connectionControllerClient?.connectExternal({
+          id: ConstantsUtil.CONNECTOR_ID.AUTH,
+          info: { name: ConstantsUtil.CONNECTOR_ID.AUTH },
+          type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
+          provider,
+          chainId: ChainController.state.activeCaipNetwork?.id,
+          chain: namespace
+        })
+        this.setStatus('connected', namespace)
+      } else {
         this.setStatus('disconnected', namespace)
         StorageUtil.removeConnectedNamespace(namespace)
       }
     }
+
+    this.setLoading(false)
   }
 
   private listenWalletConnect() {
@@ -1414,14 +1418,13 @@ export class AppKit {
         this.universalProvider?.session?.namespaces?.[chainNamespace]?.accounts || []
 
       // We try and find the address for this network in the session object.
-
-      const activeCaipNetworkId = ChainController.state.activeCaipNetwork?.id
+      const activeChainId = ChainController.state.activeCaipNetwork?.id
 
       const caipAddress =
         namespaceAccounts.find(account => {
           const [, chainId] = account.split(':')
 
-          return chainId === activeCaipNetworkId?.toString()
+          return chainId === activeChainId?.toString()
         }) || namespaceAccounts[0]
 
       if (caipAddress) {
@@ -1907,7 +1910,7 @@ export class AppKit {
           AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
         }
       })
-      this.listenAuthConnector(this.authProvider)
+      this.syncAuthConnector(this.authProvider)
     }
   }
 
