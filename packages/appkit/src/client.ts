@@ -1945,8 +1945,8 @@ export class AppKit {
   }
 
   private async createConnectorsForAdapter(namespace: ChainNamespace) {
-    this.createAuthProviderForAdapter(namespace)
     await this.createUniversalProviderForAdapter(namespace)
+    this.createAuthProviderForAdapter(namespace)
   }
 
   private onConnectors(chainNamespace: ChainNamespace) {
