@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
 import { solana } from '@reown/appkit/networks'
 import type { ConnectorType, Provider as CoreProvider } from '@reown/appkit-core'
-import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import UniversalProvider from '@walletconnect/universal-provider'
 import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
 import { SolanaAdapter } from '../client'
@@ -55,17 +54,6 @@ const mockWalletConnectProvider = {
   session: true,
   setDefaultChain: vi.fn()
 } as unknown as UniversalProvider
-
-const mockAuthProvider = {
-  id: 'auth',
-  connect: vi.fn().mockResolvedValue('mock-auth-address'),
-  disconnect: vi.fn(),
-  switchNetwork: vi.fn(),
-  getUser: vi.fn().mockResolvedValue({
-    address: 'mock-auth-address',
-    chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
-  })
-} as unknown as W3mFrameProvider
 
 const mockNetworks = [solana]
 const mockCaipNetworks = CaipNetworksUtil.extendCaipNetworks(mockNetworks, {
