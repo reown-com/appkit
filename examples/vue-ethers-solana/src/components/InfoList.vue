@@ -58,7 +58,6 @@ import {
 export default {
   name: 'InfoList',
   setup() {
-    const themeState = useAppKitAccount()
     const themeState = useAppKitTheme()
     const appKitState = useAppKitState()
     const accountState = useAppKitAccount()
