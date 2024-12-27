@@ -1537,8 +1537,7 @@ export class AppKit {
   ) {
     const { address, chainId, chainNamespace } = params
 
-    const { namespace: activeNamespace, chainId: activeChainId } =
-      StorageUtil.getActiveNetworkProps()
+    const { chainId: activeChainId } = StorageUtil.getActiveNetworkProps()
     const chainIdToUse = chainId || activeChainId
 
     // Only update state when needed
