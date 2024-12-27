@@ -35,15 +35,9 @@ const providers: { name: string; provider: Provider }[] = [
   {
     name: 'AuthProvider',
     provider: new AuthProvider({
-      getProvider: () => mockW3mFrameProvider(),
       getActiveChain,
-      getActiveNamespace: () => 'solana',
-      getSession: () => ({
-        chainId: 'solana',
-        address: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP'
-      }),
-      setSession: vi.fn(),
-      chains: TestConstants.chains
+      chains: TestConstants.chains,
+      w3mFrameProvider: mockW3mFrameProvider()
     })
   },
   {
@@ -76,12 +70,6 @@ describe.each(providers)('Generic provider tests for $name', ({ provider }) => {
 
     expect(address).toEqual(TestConstants.accounts[0].address)
     expect(events.connect).toHaveBeenCalledWith(TestConstants.accounts[0].publicKey)
-  })
-
-  it('should disconnect and emit event', async () => {
-    await provider.disconnect()
-
-    expect(events.disconnect).toHaveBeenCalledWith(undefined)
   })
 
   it('should signMessage', async () => {
@@ -132,5 +120,11 @@ describe.each(providers)('Generic provider tests for $name', ({ provider }) => {
         expect(result[index]).toBeInstanceOf(Transaction)
       }
     })
+  })
+
+  it('should disconnect and emit event', async () => {
+    await provider.disconnect()
+
+    expect(events.disconnect).toHaveBeenCalledWith(undefined)
   })
 })
