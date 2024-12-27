@@ -4,8 +4,7 @@ import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type { Provider } from '@reown/appkit-core'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import UniversalProvider from '@walletconnect/universal-provider'
-import { JsonRpcProvider, InfuraProvider } from 'ethers'
-import { mainnet } from '@reown/appkit/networks'
+import { mainnet, polygon } from '@reown/appkit/networks'
 import { EthersMethods } from '../utils/EthersMethods'
 import { ProviderUtil } from '@reown/appkit/store'
 import { WcConstantsUtil } from '@reown/appkit'
@@ -26,13 +25,6 @@ vi.mock('ethers', async importOriginal => {
   return {
     ...actual,
     formatEther: vi.fn(() => '1.5'),
-    InfuraProvider: vi.fn(() => ({
-      lookupAddress: vi.fn(),
-      getAvatar: vi.fn()
-    })),
-    JsonRpcProvider: vi.fn(() => ({
-      getBalance: vi.fn()
-    })),
     BrowserProvider: vi.fn(() => ({
       on: vi.fn((event, callback) => {
         if (event === 'pending') {
@@ -55,6 +47,14 @@ vi.mock('../utils/EthersMethods', () => ({
     hexStringToNumber: vi.fn(hex => parseInt(hex, 16)),
     numberToHexString: vi.fn(num => `0x${num.toString(16)}`)
   }
+}))
+
+vi.mock('../providers', () => ({
+  createProviderWrapper: vi.fn(() => ({
+    getBalance: vi.fn().mockResolvedValue(BigInt(1500000000000000000)),
+    lookupAddress: vi.fn().mockResolvedValue('test.eth'),
+    getAvatar: vi.fn().mockResolvedValue('https://avatar.com/test.jpg')
+  }))
 }))
 
 const mockProvider = {
@@ -83,6 +83,39 @@ const mockCaipNetworks = CaipNetworksUtil.extendCaipNetworks(mockNetworks, {
   projectId: 'test-project-id',
   customNetworkImageUrls: {}
 })
+const polygonCaipNetworks = CaipNetworksUtil.extendCaipNetworks([polygon], {
+  projectId: 'test-project-id',
+  customNetworkImageUrls: {}
+})
+
+vi.mock('@reown/appkit-core', async () => {
+  const actual = await vi.importActual('@reown/appkit-core')
+  return {
+    ...actual,
+    BlockchainApiController: {
+      fetchIdentity: vi.fn().mockResolvedValue({
+        avatar: 'https://avatar.com/test.jpg',
+        name: 'test.eth'
+      }),
+      getBalance: vi.fn().mockResolvedValue({
+        balances: [
+          {
+            name: 'Ethereum',
+            symbol: 'ETH',
+            chainId: 'eip155:1',
+            value: 5432.1234,
+            price: 3700.630000000001,
+            quantity: {
+              decimals: '18',
+              numeric: '1.5'
+            },
+            iconUrl: 'https://cdn.zerion.io/eth.png'
+          }
+        ]
+      })
+    }
+  }
+})
 
 describe('EthersAdapter', () => {
   let adapter: EthersAdapter
@@ -92,7 +125,7 @@ describe('EthersAdapter', () => {
     adapter = new EthersAdapter()
   })
 
-  describe('EthersAdapter -constructor', () => {
+  describe('EthersAdapter - constructor', () => {
     it('should initialize with correct parameters', () => {
       expect(adapter.adapterType).toBe('ethers')
       expect(adapter.namespace).toBe('eip155')
@@ -140,7 +173,7 @@ describe('EthersAdapter', () => {
     })
   })
 
-  describe('EthersAdapter -sendTransaction', () => {
+  describe('EthersAdapter - sendTransaction', () => {
     it('should send transaction successfully', async () => {
       const mockTxHash = '0xtxhash'
       vi.mocked(EthersMethods.sendTransaction).mockResolvedValue(mockTxHash)
@@ -173,7 +206,7 @@ describe('EthersAdapter', () => {
     })
   })
 
-  describe('EthersAdapter -writeContract', () => {
+  describe('EthersAdapter - writeContract', () => {
     it('should write contract successfully', async () => {
       const mockTxHash = '0xtxhash'
       vi.mocked(EthersMethods.writeContract).mockResolvedValue(mockTxHash)
@@ -194,7 +227,7 @@ describe('EthersAdapter', () => {
     })
   })
 
-  describe('EthersAdapter -connect', () => {
+  describe('EthersAdapter - connect', () => {
     it('should connect with external provider', async () => {
       vi.mocked(mockProvider.request).mockImplementation(request => {
         if (request.method === 'eth_requestAccounts') return Promise.resolve(['0x123'])
@@ -226,7 +259,7 @@ describe('EthersAdapter', () => {
     })
   })
 
-  describe('EthersAdapter -disconnect', () => {
+  describe('EthersAdapter - disconnect', () => {
     it('should disconnect WalletConnect provider', async () => {
       await adapter.disconnect({
         provider: mockWalletConnectProvider,
@@ -246,15 +279,56 @@ describe('EthersAdapter', () => {
     })
   })
 
-  describe('EthersAdapter -getBalance', () => {
+  describe('EthersAdapter - getBalance', () => {
     it('should get balance successfully', async () => {
       adapter.caipNetworks = mockCaipNetworks
-      const mockBalance = BigInt(1500000000000000000)
-      vi.mocked(JsonRpcProvider).mockImplementation(
-        () =>
-          ({
-            getBalance: vi.fn().mockResolvedValue(mockBalance)
-          }) as any
+
+      const result = await adapter.getBalance({
+        address: '0x123',
+        chainId: 1
+      })
+      console.log('>>> result', result)
+
+      expect(BlockchainApiController.getBalance).toHaveBeenCalledWith('0x123', 'eip155:1')
+      expect(result).toEqual({
+        balance: '1.5',
+        symbol: 'ETH'
+      })
+    })
+
+    it('should return empty balance if caipNetwork not found', async () => {
+      adapter.caipNetworks = mockCaipNetworks
+
+      const result = await adapter.getBalance({
+        address: '0x123',
+        chainId: polygon.id
+      })
+
+      expect(result).toEqual({
+        balance: '',
+        symbol: ''
+      })
+    })
+
+    it('should return empty balance if address not provided', async () => {
+      adapter.caipNetworks = mockCaipNetworks
+
+      const result = await adapter.getBalance({
+        address: '',
+        chainId: 1
+      })
+
+      expect(result).toEqual({
+        balance: '',
+        symbol: ''
+      })
+    })
+
+    it('should return empty balance if API throws error', async () => {
+      adapter.caipNetworks = mockCaipNetworks
+
+      vi.mocked(BlockchainApiController.getBalance).mockRejectedValueOnce(
+        new Error('Failed to get balance')
       )
 
       const result = await adapter.getBalance({
@@ -263,23 +337,63 @@ describe('EthersAdapter', () => {
       })
 
       expect(result).toEqual({
-        balance: '1.5',
-        symbol: 'ETH'
+        balance: '',
+        symbol: ''
       })
     })
   })
 
-  describe('EthersAdapter -getProfile', () => {
-    it('should get profile successfully', async () => {
-      const mockEnsName = 'test.eth'
-      const mockAvatar = 'https://avatar.com/test.jpg'
+  describe('EthersAdapter - getProfile', () => {
+    it('should get profile successfully for mainnet', async () => {
+      adapter.caipNetworks = mockCaipNetworks
 
-      vi.mocked(InfuraProvider).mockImplementation(
-        () =>
-          ({
-            lookupAddress: vi.fn().mockResolvedValue(mockEnsName),
-            getAvatar: vi.fn().mockResolvedValue(mockAvatar)
-          }) as any
+      const result = await adapter.getProfile({
+        address: '0x123',
+        chainId: 1
+      })
+
+      expect(BlockchainApiController.fetchIdentity).toHaveBeenCalledWith({
+        address: '0x123'
+      })
+      expect(result).toEqual({
+        profileName: 'test.eth',
+        profileImage: 'https://avatar.com/test.jpg'
+      })
+    })
+
+    it('should return undefined values if not mainnet', async () => {
+      adapter.caipNetworks = polygonCaipNetworks
+
+      const result = await adapter.getProfile({
+        address: '0x123',
+        chainId: polygon.id
+      })
+
+      expect(result).toEqual({
+        profileName: undefined,
+        profileImage: undefined
+      })
+    })
+
+    it('should return undefined values if caipNetwork not found', async () => {
+      adapter.caipNetworks = polygonCaipNetworks
+
+      const result = await adapter.getProfile({
+        address: '0x123',
+        chainId: 1
+      })
+
+      expect(result).toEqual({
+        profileName: undefined,
+        profileImage: undefined
+      })
+    })
+
+    it('should return undefined values if API throws error', async () => {
+      adapter.caipNetworks = mockCaipNetworks
+
+      vi.mocked(BlockchainApiController.fetchIdentity).mockRejectedValueOnce(
+        new Error('Failed to fetch identity')
       )
 
       const result = await adapter.getProfile({
@@ -288,8 +402,8 @@ describe('EthersAdapter', () => {
       })
 
       expect(result).toEqual({
-        profileName: mockEnsName,
-        profileImage: mockAvatar
+        profileName: undefined,
+        profileImage: undefined
       })
     })
   })
@@ -355,7 +469,7 @@ describe('EthersAdapter', () => {
     })
   })
 
-  describe('EthersAdapter -getWalletConnectProvider', () => {
+  describe('EthersAdapter - getWalletConnectProvider', () => {
     it('should return WalletConnect provider', () => {
       Object.defineProperty(adapter, 'availableConnectors', {
         value: [
@@ -374,7 +488,7 @@ describe('EthersAdapter', () => {
     })
   })
 
-  describe('EthersAdapter -parseUnits and formatUnits', () => {
+  describe('EthersAdapter - parseUnits and formatUnits', () => {
     it('should parse units correctly', () => {
       const mockBigInt = BigInt('1500000000000000000')
       vi.mocked(EthersMethods.parseUnits).mockReturnValue(mockBigInt)

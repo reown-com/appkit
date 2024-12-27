@@ -31,14 +31,7 @@ export type ChainId = string | number
 
 export type ChainNamespace = 'eip155' | 'solana' | 'polkadot' | 'bip122'
 
-export type AdapterType =
-  | 'solana'
-  | 'wagmi'
-  | 'ethers'
-  | 'ethers5'
-  | 'universal'
-  | 'polkadot'
-  | 'bip122'
+export type AdapterType = 'solana' | 'wagmi' | 'ethers' | 'universal' | 'polkadot' | 'bip122'
 
 export type CoinbaseTransactionStatus =
   | 'ONRAMP_TRANSACTION_STATUS_SUCCESS'
