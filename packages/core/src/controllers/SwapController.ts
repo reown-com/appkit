@@ -6,7 +6,7 @@ import { ConnectionController } from './ConnectionController.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import { SnackController } from './SnackController.js'
 import { RouterController } from './RouterController.js'
-import { NumberUtil } from '@reown/appkit-common'
+import { NumberUtil, type ChainNamespace } from '@reown/appkit-common'
 import type { SwapTokenWithBalance } from '../utils/TypeUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
@@ -16,6 +16,7 @@ import { EventsController } from './EventsController.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import { ChainController } from './ChainController.js'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000
@@ -172,9 +173,10 @@ export const SwapController = {
 
   getParams() {
     const caipAddress = ChainController.state.activeCaipAddress
+    const namespace = ChainController.state.activeChain as ChainNamespace
     const address = CoreHelperUtil.getPlainAddress(caipAddress)
     const networkAddress = ChainController.getActiveNetworkTokenAddress()
-    const type = StorageUtil.getConnectedConnector()
+    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
 
     if (!address) {
       throw new Error('No address found to swap the tokens from.')
@@ -202,7 +204,7 @@ export const SwapController = {
       invalidSourceTokenAmount,
       availableToSwap:
         caipAddress && !invalidToToken && !invalidSourceToken && !invalidSourceTokenAmount,
-      isAuthConnector: type === 'ID_AUTH'
+      isAuthConnector: connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
     }
   },
 

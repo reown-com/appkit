@@ -2,6 +2,7 @@
   "name": "@examples/parcel-react-wagmi",
   "version": "1.0.0",
   "source": "src/index.html",
+  "private": "true",
   "scripts": {
     "start": "parcel",
     "build": "parcel build"

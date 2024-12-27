@@ -532,11 +532,14 @@ export const ChainController = {
             }
             this.resetAccount(namespace)
             this.resetNetwork(namespace)
+            StorageUtil.deleteConnectedConnectorId(namespace)
           } catch (error) {
             throw new Error(`Failed to disconnect chain ${namespace}: ${(error as Error).message}`)
           }
         })
       )
+
+      ConnectionController.resetWcConnection()
 
       const failures = disconnectResults.filter(
         (result): result is PromiseRejectedResult => result.status === 'rejected'
@@ -546,7 +549,7 @@ export const ChainController = {
         throw new Error(failures.map(f => f.reason.message).join(', '))
       }
 
-      StorageUtil.deleteConnectedConnector()
+      StorageUtil.deleteConnectedSocialProvider()
       ConnectionController.resetWcConnection()
       EventsController.sendEvent({
         type: 'track',

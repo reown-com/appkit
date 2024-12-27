@@ -130,16 +130,16 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
   }
 
   useEffect(() => {
-    setTheme(theme as ThemeMode)
-  }, [])
-
-  useEffect(() => {
     if (initialized) {
       const connectMethodsOrder = appKit?.getConnectMethodsOrder()
       const order = connectMethodsOrder
       updateFeatures({ connectMethodsOrder: order })
     }
   }, [initialized])
+
+  useEffect(() => {
+    appKit?.setThemeMode(theme as ThemeMode)
+  }, [])
 
   const socialsEnabled = Array.isArray(features.socials)
 

@@ -14,6 +14,7 @@ import {
   ChainController,
   StorageUtil
 } from '@reown/appkit-core'
+import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
 
 @customElement('wui-list-account')
 export class WuiListAccount extends LitElement {
@@ -23,8 +24,6 @@ export class WuiListAccount extends LitElement {
   @property() public accountAddress = ''
 
   @property() public accountType = ''
-
-  private connectedConnector = StorageUtil.getConnectedConnector()
 
   private labels = AccountController.state.addressLabels
 
@@ -66,9 +65,11 @@ export class WuiListAccount extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     const label = this.getLabel()
+    const namespace = ChainController.state.activeChain as ChainNamespace
+    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
 
     // Only show icon for AUTH accounts
-    this.shouldShowIcon = this.connectedConnector === 'ID_AUTH'
+    this.shouldShowIcon = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
 
     return html`
       <wui-flex
@@ -115,14 +116,11 @@ export class WuiListAccount extends LitElement {
 
   private getLabel() {
     let label = this.labels?.get(this.accountAddress)
+    const namespace = ChainController.state.activeChain as ChainNamespace
+    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
 
-    if (!label && this.connectedConnector === 'ID_AUTH') {
+    if (!label && connectorId === ConstantsUtil.CONNECTOR_ID.AUTH) {
       label = `${this.accountType === 'eoa' ? this.socialProvider ?? 'Email' : 'Smart'} Account`
-    } else if (
-      (!label && this.connectedConnector === 'INJECTED') ||
-      this.connectedConnector === 'ANNOUNCED'
-    ) {
-      label = `Injected Account`
     } else if (!label) {
       label = 'EOA'
     }

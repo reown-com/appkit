@@ -2,12 +2,11 @@ import type { TemplateResult } from 'lit'
 import { html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import { colorStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { IconType, SizeType } from '../../utils/TypeUtil.js'
+import type { IconColorType, IconType, SizeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
 // -- Svg's-------------------------------- //
-import { arrowTopRightSvg } from '../../assets/svg/arrow-top-right.js'
 import { addSvg } from '../../assets/svg/add.js'
 import { allWalletsSvg } from '../../assets/svg/all-wallets.js'
 import { arrowBottomCircleSvg } from '../../assets/svg/arrow-bottom-circle.js'
@@ -87,7 +86,13 @@ import { lightbulbSvg } from '../../assets/svg/lightbulb.js'
 import { idSvg } from '../../assets/svg/id.js'
 import { xSvg } from '../../assets/svg/x.js'
 import { infoSvg } from '../../assets/svg/info.js'
+import { arrowTopRightSvg } from '../../assets/svg/arrow-top-right.js'
+import { dollarSvg } from '../../assets/svg/dollar.js'
+import { questionMarkSvg } from '../../assets/svg/question-mark.js'
+import { arrowClockWiseSvg } from '../../assets/svg/arrows-clock-wise.js'
+import { vars } from '../../utils/ThemeHelperUtil.js'
 
+// -- Constants ------------------------------------------ //
 const svgOptions: Record<IconType, TemplateResult<2>> = {
   add: addSvg,
   allWallets: allWalletsSvg,
@@ -99,6 +104,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   arrowRight: arrowRightSvg,
   arrowTop: arrowTopSvg,
   arrowTopRight: arrowTopRightSvg,
+  arrowClockWise: arrowClockWiseSvg,
   bank: bankSvg,
   browser: browserSvg,
   card: cardSvg,
@@ -119,6 +125,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   desktop: desktopSvg,
   disconnect: disconnectSvg,
   discord: discordSvg,
+  dollar: dollarSvg,
   etherscan: etherscanSvg,
   exclamationTriangle: exclamationTriangleSvg,
   exclamationCircle: exclamationCircleSvg,
@@ -143,6 +150,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   playStore: playStoreSvg,
   plus: plusSvg,
   qrCode: qrCodeIcon,
+  questionMark: questionMarkSvg,
   recycleHorizontal: recycleHorizontalSvg,
   refresh: refreshSvg,
   search: searchSvg,
@@ -170,7 +178,17 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   info: infoSvg
 }
 
-// @TODO: Add color property
+// -- Constants ------------------------------------------ //
+export const ICON_COLOR = {
+  'accent-primary': vars.tokens.core.iconAccentPrimary,
+  'accent-certified': vars.tokens.core.iconAccentCertified,
+  default: vars.tokens.theme.iconDefault,
+  success: vars.tokens.core.iconSuccess,
+  error: vars.tokens.core.iconError,
+  warning: vars.tokens.core.iconWarning,
+  inverse: vars.tokens.theme.iconInverse
+}
+
 @customElement('wui-icon')
 export class WuiIcon extends LitElement {
   public static override styles = [resetStyles, colorStyles, styles]
@@ -180,10 +198,13 @@ export class WuiIcon extends LitElement {
 
   @property() public name: IconType = 'copy'
 
+  @property() public color: IconColorType = 'inherit'
+
   // -- Render -------------------------------------------- //
   public override render() {
     this.style.cssText = `
       --local-width: ${`var(--wui-icon-size-${this.size});`}
+      --local-color: ${this.color === 'inherit' ? 'inherit' : ICON_COLOR[this.color]}
     `
 
     return html`${svgOptions[this.name]}`

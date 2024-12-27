@@ -15,7 +15,7 @@ import { type W3mFrameTypes } from '@reown/appkit-wallet'
 import { ModalController } from './ModalController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
-import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import { ConstantsUtil, type CaipNetwork, type ChainNamespace } from '@reown/appkit-common'
 import { SIWXUtil } from '../utils/SIWXUtil.js'
 
 // -- Types --------------------------------------------- //
@@ -98,7 +98,11 @@ export const ConnectionController = {
   },
 
   async connectWalletConnect() {
-    StorageUtil.setConnectedConnector('WALLET_CONNECT')
+    // Connect all namespaces to WalletConnect
+    const namespaces = [...ChainController.state.chains.keys()]
+    namespaces.forEach(namespace => {
+      StorageUtil.setConnectedConnectorId(namespace, ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)
+    })
 
     if (CoreHelperUtil.isTelegram()) {
       if (wcConnectionPromise) {
@@ -147,7 +151,10 @@ export const ConnectionController = {
 
   async reconnectExternal(options: ConnectExternalOptions) {
     await this._getClient()?.reconnectExternal?.(options)
-    StorageUtil.setConnectedConnector(options.type === 'AUTH' ? 'ID_AUTH' : options.type)
+    const namespace = options.chain || ChainController.state.activeChain
+    if (namespace) {
+      StorageUtil.setConnectedConnectorId(namespace, options.id)
+    }
   },
 
   async setPreferredAccountType(accountType: W3mFrameTypes.AccountType) {
@@ -251,8 +258,10 @@ export const ConnectionController = {
 
   async disconnect() {
     try {
+      ModalController.setLoading(true)
       await SIWXUtil.clearSessions()
       await ChainController.disconnect()
+      ModalController.setLoading(false)
     } catch (error) {
       throw new Error('Failed to disconnect')
     }
