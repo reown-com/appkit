@@ -420,7 +420,6 @@ export const ChainController = {
   checkIfSupportedNetwork(namespace: ChainNamespace) {
     const activeCaipNetwork = this.state.activeCaipNetwork
     const requestedCaipNetworks = this.getRequestedCaipNetworks(namespace)
-
     if (!requestedCaipNetworks.length) {
       return true
     }

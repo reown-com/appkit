@@ -30,7 +30,8 @@ import {
   SafeLocalStorageKeys,
   type AppKitNetwork,
   type CaipNetwork,
-  Emitter
+  Emitter,
+  type CaipNetworkId
 } from '@reown/appkit-common'
 import { mockOptions } from './mocks/Options'
 import { UniversalAdapter } from '../src/universal-adapter/client'
@@ -541,7 +542,7 @@ describe('Base', () => {
       })
       ;(appKitWithAuth as any).authProvider = mockAuthProvider
 
-      await (appKitWithAuth as any).listenAuthConnector(mockAuthProvider)
+      await (appKitWithAuth as any).syncAuthConnector(mockAuthProvider)
 
       expect(CoreHelperUtil.createAccount).toHaveBeenCalledWith('eip155', '0x1', 'eoa')
       expect(CoreHelperUtil.createAccount).toHaveBeenCalledWith('eip155', '0x2', 'smartAccount')
@@ -630,7 +631,51 @@ describe('Base', () => {
       expect(ChainController.switchActiveNetwork).toHaveBeenCalledTimes(1)
     })
 
+    it('should use the correct network when syncing account if is does not allow all networks and network is not allowed', async () => {
+      vi.mocked(ChainController.getAllApprovedCaipNetworkIds).mockReturnValue(['eip155:1'])
+      vi.spyOn(ChainController, 'getNetworkProp').mockReturnValue(false)
+      vi.mocked(appKit as any).caipNetworks = [
+        {
+          id: '1',
+          chainNamespace: 'eip155',
+          caipNetworkId: 'eip155:1' as CaipNetworkId
+        }
+      ]
+      const mockAccountData = {
+        address: '0x123',
+        chainId: '2',
+        chainNamespace: 'eip155' as const
+      }
+
+      vi.spyOn(StorageUtil, 'getActiveNetworkProps').mockReturnValueOnce({
+        namespace: 'eip155',
+        chainId: '1',
+        caipNetworkId: 'eip155:1'
+      })
+
+      vi.mocked(OptionsController).state = {
+        allowAllNetworks: false
+      } as any
+
+      await appKit['syncAccount'](mockAccountData)
+
+      expect(ChainController.getNetworkProp).toHaveBeenCalledWith('supportsAllNetworks', 'eip155')
+      expect(ChainController.setActiveCaipNetwork).toHaveBeenCalledWith({
+        id: '1',
+        chainNamespace: 'eip155',
+        caipNetworkId: 'eip155:1'
+      })
+    })
+
     it('should set connected wallet info when syncing account', async () => {
+      vi.spyOn(ChainController, 'getAllApprovedCaipNetworkIds').mockReturnValue(['eip155:1'])
+      vi.mocked(appKit as any).caipNetworks = [
+        {
+          id: '1',
+          chainNamespace: 'eip155',
+          caipNetworkId: 'eip155:1' as CaipNetworkId
+        }
+      ]
       // Mock the connector data
       const mockConnector = {
         id: 'test-wallet'
@@ -662,6 +707,14 @@ describe('Base', () => {
     })
 
     it('should sync identity only if address changed', async () => {
+      vi.spyOn(ChainController, 'getAllApprovedCaipNetworkIds').mockReturnValue(['eip155:1'])
+      vi.mocked(appKit as any).caipNetworks = [
+        {
+          id: '1',
+          chainNamespace: 'eip155',
+          caipNetworkId: 'eip155:1' as CaipNetworkId
+        }
+      ]
       const mockAccountData = {
         address: '0x123',
         chainId: '1',
@@ -691,6 +744,14 @@ describe('Base', () => {
     })
 
     it('should not sync identity on non-evm network', async () => {
+      vi.spyOn(ChainController, 'getAllApprovedCaipNetworkIds').mockReturnValue(['solana:1'])
+      vi.mocked(appKit as any).caipNetworks = [
+        {
+          id: '1',
+          chainNamespace: 'solana',
+          caipNetworkId: 'solana:1' as CaipNetworkId
+        }
+      ]
       const mockAccountData = {
         address: '0x123',
         chainId: '1',
@@ -708,6 +769,14 @@ describe('Base', () => {
     })
 
     it('should not sync identity on a test network', async () => {
+      vi.spyOn(ChainController, 'getAllApprovedCaipNetworkIds').mockReturnValue(['eip155:11155111'])
+      vi.mocked(appKit as any).caipNetworks = [
+        {
+          id: '1',
+          chainNamespace: 'eip155',
+          caipNetworkId: 'eip155:11155111' as CaipNetworkId
+        }
+      ]
       const mockAccountData = {
         address: '0x123',
         chainId: '11155111',
@@ -726,6 +795,12 @@ describe('Base', () => {
     })
 
     it('should  sync balance correctly', async () => {
+      vi.spyOn(ChainController, 'getAllApprovedCaipNetworkIds').mockReturnValue(['eip155:1'])
+      const mockCaipNetwork = {
+        id: '1',
+        chainNamespace: 'eip155',
+        caipNetworkId: 'eip155:1' as CaipNetworkId
+      }
       vi.spyOn(StorageUtil, 'getActiveNetworkProps').mockReturnValueOnce({
         namespace: 'eip155',
         chainId: '1',
@@ -750,7 +825,11 @@ describe('Base', () => {
 
       vi.spyOn(AccountController, 'state', 'get').mockReturnValue(mockAccountData as any)
       vi.spyOn(CaipNetworksUtil, 'extendCaipNetworks').mockReturnValue([
-        { id: '1', chainNamespace: 'eip155' } as CaipNetwork
+        {
+          id: '1',
+          chainNamespace: 'eip155',
+          caipNetworkId: 'eip155:1' as CaipNetworkId
+        } as CaipNetwork
       ])
 
       appKit = new AppKit({ ...mockOptions, adapters: [mockAdapter as ChainAdapter] })
@@ -761,14 +840,12 @@ describe('Base', () => {
       expect(mockAdapter.getBalance).toHaveBeenCalledWith({
         address: '0x1234',
         chainId: '1',
-        caipNetwork: {
-          id: '1',
-          chainNamespace: 'eip155'
-        }
+        caipNetwork: mockCaipNetwork
       })
     })
 
     it('should not sync balance on testnets', async () => {
+      vi.spyOn(ChainController, 'getAllApprovedCaipNetworkIds').mockReturnValue(['eip155:11155111'])
       const mockAccountData = {
         address: '0x123',
         chainId: '11155111',
@@ -785,6 +862,7 @@ describe('Base', () => {
         {
           id: '11155111',
           chainNamespace: 'eip155',
+          caipNetworkId: 'eip155:11155111' as CaipNetworkId,
           testnet: true,
           nativeCurrency: { symbol: 'sETH' }
         } as CaipNetwork
