@@ -1398,16 +1398,16 @@ export class AppKit {
   }
 
   private getChainsFromNamespaces(namespaces: SessionTypes.Namespaces = {}): CaipNetworkId[] {
-    return Object.values(namespaces).flatMap<CaipNetworkId>(namespace => {
+    return Object.values(namespaces).flatMap((namespace: SessionTypes.BaseNamespace) => {
       const chains = (namespace.chains || []) as CaipNetworkId[]
       const accountsChains = namespace.accounts.map(account => {
         const { chainId, chainNamespace } = ParseUtil.parseCaipAddress(account as CaipAddress)
 
-        return `${chainNamespace}:${chainId}` as CaipNetworkId
+        return `${chainNamespace}:${chainId}`
       })
 
       return Array.from(new Set([...chains, ...accountsChains]))
-    })
+    }) as CaipNetworkId[]
   }
 
   private async syncWalletConnectAccount() {
@@ -1420,18 +1420,16 @@ export class AppKit {
       // We try and find the address for this network in the session object.
       const activeChainId = ChainController.state.activeCaipNetwork?.id
 
-      const caipAddress =
+      const sessionAddress =
         namespaceAccounts.find(account => {
           const { chainId } = ParseUtil.parseCaipAddress(account as CaipAddress)
 
           return chainId === activeChainId?.toString()
         }) || namespaceAccounts[0]
 
-      if (caipAddress) {
-        if (caipAddress.split(':').length !== 3) {
-          throw new Error('Invalid caip address')
-        }
-        const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress as CaipAddress)
+      if (sessionAddress) {
+        const caipAddress = ParseUtil.validateCaipAddress(sessionAddress)
+        const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress)
         ProviderUtil.setProviderId(
           chainNamespace,
           UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT as ConnectorType
