@@ -172,6 +172,8 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
   // -- W3mFrameProvider methods ------------------------------------------- //
   connectEmail: ProviderAuthMethods['connectEmail'] = args => this.getProvider().connectEmail(args)
   connectOtp: ProviderAuthMethods['connectOtp'] = args => this.getProvider().connectOtp(args)
+  getUser: ProviderAuthMethods['getUser'] = args =>
+    this.getProvider().getUser({ ...args, chainId: withSolanaNamespace(args.chainId) })
   updateEmail: ProviderAuthMethods['updateEmail'] = args => this.getProvider().updateEmail(args)
   updateEmailPrimaryOtp: ProviderAuthMethods['updateEmailPrimaryOtp'] = args =>
     this.getProvider().updateEmailPrimaryOtp(args)
@@ -189,9 +191,9 @@ export class AuthProvider extends ProviderEventEmitter implements Provider, Prov
     this.getProvider().getFarcasterUri()
   syncTheme: ProviderAuthMethods['syncTheme'] = args => this.getProvider().syncTheme(args)
   syncDappData: ProviderAuthMethods['syncDappData'] = args => this.getProvider().syncDappData(args)
-  switchNetwork: ProviderAuthMethods['switchNetwork'] = async args => {
-    const result = await this.getProvider().switchNetwork(args)
-    this.emit('chainChanged', args as string)
+  switchNetwork: ProviderAuthMethods['switchNetwork'] = async chainId => {
+    const result = await this.getProvider().switchNetwork(withSolanaNamespace(chainId) as string)
+    this.emit('chainChanged', chainId as string)
 
     return result
   }

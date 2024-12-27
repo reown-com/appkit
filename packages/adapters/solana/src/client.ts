@@ -339,7 +339,7 @@ export class SolanaAdapter extends AdapterBlueprint {
   public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
     const { caipNetwork, provider, providerType } = params
 
-    if (providerType === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
+    if (providerType === CommonConstantsUtil.CONNECTOR_TYPE.AUTH) {
       await (provider as unknown as W3mFrameProvider).switchNetwork(caipNetwork.id)
       const user = await (provider as unknown as W3mFrameProvider).getUser({
         chainId: caipNetwork.id

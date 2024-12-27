@@ -6,7 +6,6 @@ export const ConstantsUtil = {
   BLOCKCHAIN_API_RPC_URL: 'https://rpc.walletconnect.org',
   PULSE_API_URL: 'https://pulse.walletconnect.org',
   W3M_API_URL: 'https://api.web3modal.org',
-  /* Connector IDs */
   CONNECTOR_ID: {
     WALLET_CONNECT: 'walletConnect',
     INJECTED: 'injected',
@@ -17,6 +16,9 @@ export const ConstantsUtil = {
     LEDGER: 'ledger',
     EIP6963: 'eip6963',
     AUTH: 'ID_AUTH'
+  },
+  CONNECTOR_TYPE: {
+    AUTH: 'AUTH'
   },
   LIMITS: {
     PENDING_TRANSACTIONS: 99

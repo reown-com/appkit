@@ -599,6 +599,9 @@ export class W3mFrameProvider {
 }
 
 export interface W3mFrameProviderMethods {
+  // User
+  getUser: W3mFrameProvider['getUser']
+
   // Email
   connectEmail: W3mFrameProvider['connectEmail']
   connectOtp: W3mFrameProvider['connectOtp']

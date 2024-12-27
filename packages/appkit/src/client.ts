@@ -1190,9 +1190,12 @@ export class AppKit {
     })
     provider.onConnect(async user => {
       const namespace = ChainController.state.activeChain as ChainNamespace
+
+      const connector = this.getConnectors().find(c => c.id === ConstantsUtil.CONNECTOR_ID.AUTH)
+
       this.syncProvider({
         type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
-        provider,
+        provider: namespace === ConstantsUtil.CHAIN.SOLANA ? connector?.provider : provider,
         id: ConstantsUtil.CONNECTOR_ID.AUTH,
         chainNamespace: namespace
       })
@@ -1942,8 +1945,8 @@ export class AppKit {
   }
 
   private async createConnectorsForAdapter(namespace: ChainNamespace) {
-    await this.createUniversalProviderForAdapter(namespace)
     this.createAuthProviderForAdapter(namespace)
+    await this.createUniversalProviderForAdapter(namespace)
   }
 
   private onConnectors(chainNamespace: ChainNamespace) {
