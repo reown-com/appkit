@@ -205,16 +205,6 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
       this.emit('auth_rpcError', error)
     })
 
-    this.provider.onConnect(response => {
-      const isSolanaNamespace =
-        typeof response.chainId === 'string' ? response.chainId?.startsWith('solana') : false
-
-      if (isSolanaNamespace) {
-        this.session = response
-        this.emit('connect', this.getPublicKey(true))
-      }
-    })
-
     this.provider.onNotConnected(() => {
       this.emit('disconnect', undefined)
     })

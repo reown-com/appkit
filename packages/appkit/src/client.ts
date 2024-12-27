@@ -1549,15 +1549,16 @@ export class AppKit {
 
     this.setStatus('connected', chainNamespace)
 
-    if (chainIdToUse && chainNamespace === activeNamespace) {
+    console.log('>> syncAccount', { chainNamespace, activeNamespace, chainIdToUse })
+    if (chainIdToUse) {
       let caipNetwork = this.caipNetworks?.find(n => n.id.toString() === chainIdToUse.toString())
       let fallbackCaipNetwork = this.caipNetworks?.find(n => n.chainNamespace === chainNamespace)
-      const shouldSupportsAllNetworks = ChainController.getNetworkProp(
+      const shouldSupportAllNetworks = ChainController.getNetworkProp(
         'supportsAllNetworks',
         chainNamespace
       )
 
-      if (!shouldSupportsAllNetworks) {
+      if (!shouldSupportAllNetworks) {
         // Connection can be requested for a chain that is not supported by the wallet so we need to use approved networks here
         const caipNetworkIds = this.getApprovedCaipNetworkIds() || []
         const caipNetworkId = caipNetworkIds.find(

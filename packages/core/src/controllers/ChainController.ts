@@ -256,20 +256,22 @@ export const ChainController = {
       ChainController.state.activeChain as ChainNamespace
     )
 
+    console.log('>> Switching network', network)
+    console.log('>> Active adapter', activeAdapter)
+
     const unsupportedNetwork = !activeAdapter?.caipNetworks?.some(
       caipNetwork => caipNetwork.id === state.activeCaipNetwork?.id
     )
-    const networkControllerClient = this.getNetworkControllerClient(network.chainNamespace)
-
-    if (networkControllerClient) {
-      await networkControllerClient.switchCaipNetwork(network)
-    }
 
     if (unsupportedNetwork) {
       RouterController.goBack()
     }
 
-    this.setActiveCaipNetwork(network)
+    const networkControllerClient = this.getNetworkControllerClient(network.chainNamespace)
+
+    if (networkControllerClient) {
+      await networkControllerClient.switchCaipNetwork(network)
+    }
 
     if (network) {
       EventsController.sendEvent({
