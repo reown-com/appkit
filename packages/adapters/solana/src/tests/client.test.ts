@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { CaipNetworksUtil } from '@reown/appkit-utils'
+import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
 import { solana } from '@reown/appkit/networks'
 import type { ConnectorType, Provider as CoreProvider } from '@reown/appkit-core'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import UniversalProvider from '@walletconnect/universal-provider'
-import type { ChainNamespace } from '@reown/appkit-common'
+import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
 import { SolanaAdapter } from '../client'
 import { SolStoreUtil } from '../utils/SolanaStoreUtil'
 import type { WalletStandardProvider } from '../providers/WalletStandardProvider'
@@ -12,6 +12,7 @@ import { watchStandard } from '../utils/watchStandard'
 import mockAppKit from './mocks/AppKit'
 import { mockCoinbaseWallet } from './mocks/CoinbaseWallet'
 import { type Provider } from '@reown/appkit-utils/solana'
+import { AuthProvider } from '../providers/AuthProvider'
 
 // Mock external dependencies
 vi.mock('@solana/web3.js', () => ({
@@ -128,11 +129,11 @@ describe('SolanaAdapter', () => {
       expect(addConnectorSpy).toHaveBeenCalledOnce()
       expect(addConnectorSpy).toHaveBeenCalledWith(
         expect.objectContaining({
-          id: 'coinbaseWallet',
-          type: 'EXTERNAL',
+          id: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.CONNECTOR_ID.COINBASE_SDK],
+          type: 'ANNOUNCED',
           name: 'Coinbase Wallet',
           chain: 'solana',
-          chains: []
+          requestedChains: [solana]
         })
       )
     })
@@ -151,7 +152,9 @@ describe('SolanaAdapter', () => {
         {
           id: 'test',
           provider: mockProvider,
-          type: 'EXTERNAL'
+          type: 'EXTERNAL',
+          connect: vi.fn().mockResolvedValue('mock-address'),
+          on: vi.fn()
         }
       ]
       Object.defineProperty(adapter, 'connectors', {
@@ -213,13 +216,17 @@ describe('SolanaAdapter', () => {
 
   describe('SolanaAdapter - switchNetwork', () => {
     it('should switch network with auth provider', async () => {
+      const switchNetworkSpy = vi.fn()
+      const provider = Object.assign(Object.create(AuthProvider.prototype), {
+        switchNetwork: switchNetworkSpy
+      })
       await adapter.switchNetwork({
         caipNetwork: mockCaipNetworks[0],
-        provider: mockAuthProvider,
+        provider: provider,
         providerType: 'ID_AUTH'
       })
 
-      expect(mockAuthProvider.switchNetwork).toHaveBeenCalled()
+      expect(switchNetworkSpy).toHaveBeenCalled()
       expect(SolStoreUtil.setConnection).toHaveBeenCalled()
     })
   })
