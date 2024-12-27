@@ -216,6 +216,7 @@ sampleWalletTest('it should connect and disconnect using hook', async () => {
   await modalValidator.expectConnected()
   await modalPage.clickHookDisconnectButton()
   await modalValidator.expectDisconnected()
+  await walletValidator.expectDisconnected()
 })
 
 sampleWalletTest('it should disconnect and close modal when connecting from wallet', async () => {
