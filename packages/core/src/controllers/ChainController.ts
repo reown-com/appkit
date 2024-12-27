@@ -256,9 +256,6 @@ export const ChainController = {
       ChainController.state.activeChain as ChainNamespace
     )
 
-    console.log('>> Switching network', network)
-    console.log('>> Active adapter', activeAdapter)
-
     const unsupportedNetwork = !activeAdapter?.caipNetworks?.some(
       caipNetwork => caipNetwork.id === state.activeCaipNetwork?.id
     )
