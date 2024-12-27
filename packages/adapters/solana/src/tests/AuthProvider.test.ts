@@ -127,8 +127,18 @@ describe('AuthProvider specific tests', () => {
     authProvider.on('chainChanged', listener)
     await authProvider.switchNetwork(newChain.id)
 
-    expect(provider.switchNetwork).toHaveBeenCalledWith(newChain.id)
+    expect(provider.switchNetwork).toHaveBeenCalledWith(`solana:${newChain.id}`)
     expect(listener).toHaveBeenCalledWith(newChain.id)
+  })
+
+  it('should call get user with correct params', async () => {
+    const chain = TestConstants.chains[1]!
+
+    const getUserSpy = vi.spyOn(provider, 'getUser')
+
+    authProvider.getUser({ chainId: chain.id })
+
+    expect(getUserSpy).toHaveBeenCalledWith({ chainId: `solana:${chain.id}` })
   })
 
   it('should call signAllTransactions with correct params', async () => {

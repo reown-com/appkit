@@ -199,7 +199,7 @@ describe('SolanaAdapter', () => {
       await adapter.switchNetwork({
         caipNetwork: mockCaipNetworks[0],
         provider: mockAuthProvider,
-        providerType: 'ID_AUTH'
+        providerType: 'AUTH'
       })
 
       expect(mockAuthProvider.switchNetwork).toHaveBeenCalled()
