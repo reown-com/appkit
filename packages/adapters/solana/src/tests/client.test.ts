@@ -249,7 +249,7 @@ describe('SolanaAdapter', () => {
   })
 
   describe('SolanaAdapter - syncConnectors', () => {
-    it.only.each(['Phantom', 'Trust Wallet', 'Solflare', 'unknown wallet'])(
+    it.each(['Phantom', 'Trust Wallet', 'Solflare', 'unknown wallet'])(
       'should parse watchStandard ids from cloud',
       walletName => {
         const watchStandardSpy = vi.mocked(watchStandard)
