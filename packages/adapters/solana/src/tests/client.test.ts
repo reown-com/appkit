@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest'
-import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { CaipNetworksUtil } from '@reown/appkit-utils'
 import { solana } from '@reown/appkit/networks'
 import type { ConnectorType, Provider as CoreProvider } from '@reown/appkit-core'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
