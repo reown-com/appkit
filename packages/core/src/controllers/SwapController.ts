@@ -6,7 +6,7 @@ import { ConnectionController } from './ConnectionController.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import { SnackController } from './SnackController.js'
 import { RouterController } from './RouterController.js'
-import { NumberUtil } from '@reown/appkit-common'
+import { NumberUtil, type ChainNamespace } from '@reown/appkit-common'
 import type { SwapTokenWithBalance } from '../utils/TypeUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
@@ -173,9 +173,10 @@ export const SwapController = {
 
   getParams() {
     const caipAddress = ChainController.state.activeCaipAddress
+    const namespace = ChainController.state.activeChain as ChainNamespace
     const address = CoreHelperUtil.getPlainAddress(caipAddress)
     const networkAddress = ChainController.getActiveNetworkTokenAddress()
-    const connectorId = StorageUtil.getConnectedConnectorId()
+    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
 
     if (!address) {
       throw new Error('No address found to swap the tokens from.')
