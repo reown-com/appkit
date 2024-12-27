@@ -1401,7 +1401,7 @@ export class AppKit {
     return Object.values(namespaces).flatMap<CaipNetworkId>(namespace => {
       const chains = (namespace.chains || []) as CaipNetworkId[]
       const accountsChains = namespace.accounts.map(account => {
-        const [chainNamespace, chainId] = account.split(':')
+        const { chainId, chainNamespace } = ParseUtil.parseCaipAddress(account as CaipAddress)
 
         return `${chainNamespace}:${chainId}` as CaipNetworkId
       })
@@ -1422,7 +1422,7 @@ export class AppKit {
 
       const caipAddress =
         namespaceAccounts.find(account => {
-          const [, chainId] = account.split(':')
+          const { chainId } = ParseUtil.parseCaipAddress(account as CaipAddress)
 
           return chainId === activeChainId?.toString()
         }) || namespaceAccounts[0]
@@ -1431,7 +1431,7 @@ export class AppKit {
         if (caipAddress.split(':').length !== 3) {
           throw new Error('Invalid caip address')
         }
-        const [, chainId, address] = caipAddress.split(':')
+        const { chainId, address } = ParseUtil.parseCaipAddress(caipAddress as CaipAddress)
         ProviderUtil.setProviderId(
           chainNamespace,
           UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT as ConnectorType
@@ -1483,8 +1483,8 @@ export class AppKit {
         this.syncWalletConnectAccounts(chainNamespace)
 
         await this.syncAccount({
-          address: address as string,
-          chainId: chainId as string,
+          address,
+          chainId,
           chainNamespace
         })
       }
@@ -1498,7 +1498,7 @@ export class AppKit {
   private syncWalletConnectAccounts(chainNamespace: ChainNamespace) {
     const addresses = this.universalProvider?.session?.namespaces?.[chainNamespace]?.accounts
       ?.map(account => {
-        const [, , address] = account.split(':')
+        const { address } = ParseUtil.parseCaipAddress(account as CaipAddress)
 
         return address
       })
@@ -1563,9 +1563,11 @@ export class AppKit {
         // Connection can be requested for a chain that is not supported by the wallet so we need to use approved networks here
         const caipNetworkIds = this.getApprovedCaipNetworkIds() || []
         const caipNetworkId = caipNetworkIds.find(
-          id => id.split(':')[1] === chainIdToUse.toString()
+          id => ParseUtil.parseCaipNetworkId(id)?.chainId === chainIdToUse.toString()
         )
-        const fallBackCaipNetworkId = caipNetworkIds.find(id => id.split(':')[0] === chainNamespace)
+        const fallBackCaipNetworkId = caipNetworkIds.find(
+          id => ParseUtil.parseCaipNetworkId(id)?.chainNamespace === chainNamespace
+        )
 
         caipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
         fallbackCaipNetwork = this.caipNetworks?.find(
