@@ -1267,7 +1267,7 @@ export class AppKit {
     const email = provider.getEmail()
     const username = provider.getUsername()
 
-    this.setUser({ ...(AccountController.state.user || {}), username, email })
+    this.setUser({ ...(AccountController.state?.user || {}), username, email })
 
     this.setupAuthConnectorListeners(provider)
 
