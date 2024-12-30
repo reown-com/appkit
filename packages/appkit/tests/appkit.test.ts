@@ -22,8 +22,7 @@ import {
   AlertController,
   StorageUtil,
   type ChainAdapter,
-  type ChainControllerState,
-  type AccountControllerState
+  type ChainControllerState
 } from '@reown/appkit-core'
 import {
   getSafeConnectorIdKey,
