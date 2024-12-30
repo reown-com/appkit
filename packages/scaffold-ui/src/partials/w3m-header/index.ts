@@ -230,6 +230,7 @@ export class W3mHeader extends LitElement {
 
     if (this.showBack && !shouldHideBack) {
       return html`<wui-icon-link
+        data-testid="header-back"
         id="dynamic"
         icon="chevronLeft"
         ?disabled=${this.buffering}

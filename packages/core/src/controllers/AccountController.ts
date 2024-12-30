@@ -223,9 +223,7 @@ export const AccountController = {
     farcasterUrl: AccountControllerState['farcasterUrl'],
     chain: ChainNamespace | undefined
   ) {
-    if (farcasterUrl) {
-      ChainController.setAccountProp('farcasterUrl', farcasterUrl, chain)
-    }
+    ChainController.setAccountProp('farcasterUrl', farcasterUrl, chain)
   },
 
   async fetchTokenBalance() {
