@@ -36,7 +36,7 @@ export function useAppKitAccount() {
     state.value.embeddedWalletInfo.accountType = val ?? null
   })
 
-  const unsubscribeUserInfo = AccountController.subscribeKey('user', val => {
+  const unsubscribeUser = AccountController.subscribeKey('user', val => {
     state.value.embeddedWalletInfo.user = val ?? null
   })
 
@@ -45,7 +45,7 @@ export function useAppKitAccount() {
     unsubscribeStatus?.()
     unsubscribeAccountDeployed?.()
     unsubscribeAccountType?.()
-    unsubscribeUserInfo?.()
+    unsubscribeUser?.()
   })
 
   return state
