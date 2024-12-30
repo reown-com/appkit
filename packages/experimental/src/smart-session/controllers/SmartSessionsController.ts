@@ -242,21 +242,21 @@ export const SmartSessionsController = {
 
     const interval = getIntervalInSeconds(request.interval)
     const start = Date.now()
-    if (request.asset === 'native') {
-      permissions = [
-        {
-          type: 'native-token-recurring-allowance',
-          data: {
-            allowance: request.amount,
-            start,
-            period: interval
+    switch (request.asset) {
+      case 'native':
+        permissions = [
+          {
+            type: 'native-token-recurring-allowance',
+            data: {
+              allowance: request.amount,
+              start,
+              period: interval
+            }
           }
-        }
-      ]
-    }
-
-    if (!permissions || permissions.length === 0) {
-      throw new Error('Invalid asset')
+        ]
+        break
+      default:
+        throw new Error('Invalid asset')
     }
 
     return await this.grantPermissions({
