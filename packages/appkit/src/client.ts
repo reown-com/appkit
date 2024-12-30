@@ -1932,6 +1932,11 @@ export class AppKit {
           AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
         }
       })
+      this.subscribeState(val => {
+        if (!val.open) {
+          this.authProvider?.rejectRpcRequests()
+        }
+      })
       this.syncAuthConnector(this.authProvider)
     }
   }
