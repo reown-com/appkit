@@ -1266,7 +1266,9 @@ export class AppKit {
           chain: namespace
         })
         this.setStatus('connected', namespace)
-      } else {
+      } else if (
+        StorageUtil.getConnectedConnectorId(namespace) === ConstantsUtil.CONNECTOR_ID.AUTH
+      ) {
         this.setStatus('disconnected', namespace)
         StorageUtil.removeConnectedNamespace(namespace)
       }
