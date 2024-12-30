@@ -43,7 +43,6 @@ emailTest.beforeAll(async ({ browser, library }) => {
   await page.emailFlow(tempEmail, context, mailsacApiKey)
 
   await validator.expectConnected()
-  await validator.expectEmail()
 })
 
 emailTest.afterAll(async () => {
@@ -51,6 +50,12 @@ emailTest.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
+emailTest('it should show user info', async () => {
+  await validator.expectEmail()
+  await validator.expectAuthAccountType()
+  await validator.expectSmartAccountStatus()
+})
+
 emailTest('it should sign', async () => {
   await page.sign()
   await page.approveSign()

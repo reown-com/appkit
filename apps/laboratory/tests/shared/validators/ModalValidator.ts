@@ -390,4 +390,14 @@ export class ModalValidator {
     const email = this.page.getByTestId('w3m-email')
     await expect(email).toBeVisible({ timeout: MAX_WAIT })
   }
+
+  async expectAuthAccountType() {
+    const authAccountType = this.page.getByTestId('w3m-auth-account-type')
+    await expect(authAccountType).toBeVisible({ timeout: MAX_WAIT })
+  }
+
+  async expectSmartAccountStatus() {
+    const smartAccountStatus = this.page.getByTestId('w3m-sa-account-status')
+    await expect(smartAccountStatus).toBeVisible({ timeout: MAX_WAIT })
+  }
 }
