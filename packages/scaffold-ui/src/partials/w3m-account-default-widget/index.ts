@@ -226,7 +226,8 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private authCardTemplate() {
-    const connectorId = StorageUtil.getConnectedConnectorId()
+    const namespace = ChainController.state.activeChain as ChainNamespace
+    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
     if (

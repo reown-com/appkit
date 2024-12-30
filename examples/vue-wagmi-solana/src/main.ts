@@ -1,3 +1,5 @@
+import './assets/main.css'
+
 import { createApp } from 'vue'
 import { WagmiPlugin } from '@wagmi/vue'
 import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
