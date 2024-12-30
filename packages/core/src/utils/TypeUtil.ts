@@ -1098,7 +1098,7 @@ export type UseAppKitAccountReturn = {
   caipAddress: CaipAddress | undefined
   address: string | undefined
   isConnected: boolean
-  embeddedWalletInfo: {
+  embeddedWalletInfo?: {
     user: AccountControllerState['user']
     accountType: W3mFrameTypes.AccountType | undefined
     isSmartAccountDeployed: boolean
