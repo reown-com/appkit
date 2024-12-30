@@ -1,6 +1,4 @@
 ---
-'@reown/appkit-scaffold-ui': patch
-'@reown/appkit-wallet': patch
 '@reown/appkit-core': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
@@ -14,10 +12,12 @@
 '@reown/appkit-common': patch
 '@reown/appkit-experimental': patch
 '@reown/appkit-polyfills': patch
+'@reown/appkit-scaffold-ui': patch
 '@reown/appkit-siwe': patch
 '@reown/appkit-siwx': patch
 '@reown/appkit-ui': patch
+'@reown/appkit-wallet': patch
 '@reown/appkit-wallet-button': patch
 ---
 
-fix reload iframe after aborting farcaster
+Fixed an issue where an incorrect EOA label and icon were displayed in the profile view after reconnecting through social/email login
