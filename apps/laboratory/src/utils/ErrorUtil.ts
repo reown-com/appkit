@@ -4,6 +4,6 @@ export const ErrorUtil = {
       return error.message
     }
 
-    return fallbackErrMessage ?? 'Something went wrong'
+    return fallbackErrMessage ?? 'Unknown Error'
   }
 }
