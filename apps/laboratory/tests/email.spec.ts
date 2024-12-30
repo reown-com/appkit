@@ -94,6 +94,12 @@ emailTest('it should switch network and sign', async ({ library }) => {
   await validator.expectAcceptedSign()
 })
 
+emailTest('should throw an error if modal is closed while signing', async () => {
+  await page.sign()
+  await page.closeModal()
+  await validator.expectRejectedSign()
+})
+
 emailTest('it should show names feature only for EVM networks', async ({ library }) => {
   if (library === 'solana') {
     await page.openAccount()
