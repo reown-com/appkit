@@ -9,15 +9,19 @@ import {
   Stack,
   Text
 } from '@chakra-ui/react'
+import type { useAppKitAccount } from '@reown/appkit/react'
 
 type AppKitInfoProps = {
   caipAddress?: string
   address?: string
   chainId?: number | string
   clientId?: string
+  user: ReturnType<typeof useAppKitAccount>['user']
 }
 
-export function AppKitInfo({ caipAddress, address, chainId, clientId }: AppKitInfoProps) {
+export function AppKitInfo({ caipAddress, address, chainId, clientId, user }: AppKitInfoProps) {
+  const { accountType, email, username, isSmartAccountDeployed } = user
+
   return (
     <Card marginTop={10} marginBottom={10}>
       <CardHeader>
@@ -53,6 +57,44 @@ export function AppKitInfo({ caipAddress, address, chainId, clientId }: AppKitIn
                 Relay Client ID
               </Heading>
               <Text data-testid="w3m-chain-id">{clientId}</Text>
+            </Box>
+          )}
+
+          {accountType && (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Account Type
+              </Heading>
+              <Text data-testid="w3m-chain-id">
+                {accountType === 'eoa' ? 'EOA' : 'Smart Account'}
+              </Text>
+            </Box>
+          )}
+
+          {email && (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Email
+              </Heading>
+              <Text data-testid="w3m-email">{email}</Text>
+            </Box>
+          )}
+
+          {username && (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Username
+              </Heading>
+              <Text>{username}</Text>
+            </Box>
+          )}
+
+          {accountType && (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Smart Account Status
+              </Heading>
+              <Text>{isSmartAccountDeployed ? 'Deployed' : 'Not Deployed'}</Text>
             </Box>
           )}
         </Stack>

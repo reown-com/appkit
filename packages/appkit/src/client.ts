@@ -337,7 +337,13 @@ export class AppKit {
         caipAddress: ChainController.state.activeCaipAddress,
         address: CoreHelperUtil.getPlainAddress(ChainController.state.activeCaipAddress),
         isConnected: Boolean(ChainController.state.activeCaipAddress),
-        status: AccountController.state.status
+        status: AccountController.state.status,
+        user: {
+          email: AccountController.state.email,
+          username: AccountController.state.username,
+          accountType: AccountController.state.preferredAccountType,
+          isSmartAccountDeployed: Boolean(AccountController.state.smartAccountDeployed)
+        }
       })
     }
 
@@ -488,6 +494,14 @@ export class AppKit {
 
   public setProfileImage: (typeof AccountController)['setProfileImage'] = (profileImage, chain) => {
     AccountController.setProfileImage(profileImage, chain)
+  }
+
+  public setEmail: (typeof AccountController)['setEmail'] = (email, chain) => {
+    AccountController.setEmail(email, chain)
+  }
+
+  public setUsername: (typeof AccountController)['setUsername'] = (username, chain) => {
+    AccountController.setUsername(username, chain)
   }
 
   public resetAccount: (typeof AccountController)['resetAccount'] = (chain: ChainNamespace) => {
@@ -905,6 +919,8 @@ export class AppKit {
 
         StorageUtil.removeConnectedNamespace(namespace)
         ProviderUtil.resetChain(namespace)
+        this.setEmail(undefined, namespace)
+        this.setUsername(undefined, namespace)
         this.setStatus('disconnected', namespace)
       },
       checkInstalled: (ids?: string[]) => {
@@ -1201,6 +1217,7 @@ export class AppKit {
         })
       }
       this.setCaipAddress(caipAddress, namespace)
+      this.setEmail(user.email, namespace)
 
       const preferredAccountType = (user.preferredAccountType || 'eoa') as W3mFrameTypes.AccountType
       this.setPreferredAccountType(preferredAccountType, namespace)
@@ -1222,6 +1239,10 @@ export class AppKit {
 
       await provider.getSmartAccountEnabledNetworks()
       this.setLoading(false)
+    })
+    provider.onSocialConnected(({ userName }) => {
+      console.log('hi', userName)
+      this.setUsername(userName, ChainController.state.activeChain as ChainNamespace)
     })
     provider.onGetSmartAccountEnabledNetworks(networks => {
       this.setSmartAccountEnabledNetworks(
@@ -1248,6 +1269,12 @@ export class AppKit {
     if (isLoginEmailUsed) {
       this.setStatus('connecting', ChainController.state.activeChain as ChainNamespace)
     }
+
+    const email = provider.getEmail()
+    const username = provider.getUsername()
+
+    this.setEmail(email, ChainController.state.activeChain as ChainNamespace)
+    this.setUsername(username, ChainController.state.activeChain as ChainNamespace)
 
     this.setupAuthConnectorListeners(provider)
 

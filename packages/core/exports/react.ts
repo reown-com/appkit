@@ -20,14 +20,23 @@ export function useAppKitNetworkCore(): Pick<
 }
 
 export function useAppKitAccount(): UseAppKitAccountReturn {
-  const { status } = useSnapshot(AccountController.state)
+  const { status, email, username, preferredAccountType, smartAccountDeployed } = useSnapshot(
+    AccountController.state
+  )
+
   const { activeCaipAddress } = useSnapshot(ChainController.state)
 
   return {
     caipAddress: activeCaipAddress,
     address: CoreHelperUtil.getPlainAddress(activeCaipAddress),
     isConnected: Boolean(activeCaipAddress),
-    status
+    status,
+    user: {
+      accountType: preferredAccountType,
+      email,
+      username,
+      isSmartAccountDeployed: Boolean(smartAccountDeployed)
+    }
   }
 }
 

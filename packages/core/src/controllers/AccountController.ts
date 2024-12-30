@@ -23,6 +23,8 @@ import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 export interface AccountControllerState {
   currentTab: number
   caipAddress?: CaipAddress
+  email?: string | null
+  username?: string | null
   address?: string
   addressLabels: Map<string, string>
   allAccounts: AccountType[]
@@ -142,6 +144,14 @@ export const AccountController = {
 
   setProfileImage(profileImage: AccountControllerState['profileImage'], chain?: ChainNamespace) {
     ChainController.setAccountProp('profileImage', profileImage, chain)
+  },
+
+  setEmail(email: AccountControllerState['email'], chain: ChainNamespace) {
+    ChainController.setAccountProp('email', email, chain)
+  },
+
+  setUsername(username: AccountControllerState['username'], chain?: ChainNamespace) {
+    ChainController.setAccountProp('username', username, chain)
   },
 
   setAddressExplorerUrl(

@@ -1093,6 +1093,12 @@ export type UseAppKitAccountReturn = {
   caipAddress: CaipAddress | undefined
   address: string | undefined
   isConnected: boolean
+  user: {
+    accountType: W3mFrameTypes.AccountType | undefined
+    email: string | null | undefined
+    username: string | null | undefined
+    isSmartAccountDeployed: boolean
+  }
   status: AccountControllerState['status']
 }
 

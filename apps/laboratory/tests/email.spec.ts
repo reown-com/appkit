@@ -43,6 +43,7 @@ emailTest.beforeAll(async ({ browser, library }) => {
   await page.emailFlow(tempEmail, context, mailsacApiKey)
 
   await validator.expectConnected()
+  await validator.expectEmail()
 })
 
 emailTest.afterAll(async () => {

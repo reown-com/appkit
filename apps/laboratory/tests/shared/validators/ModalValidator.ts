@@ -385,4 +385,9 @@ export class ModalValidator {
       timeout: MAX_WAIT
     })
   }
+
+  async expectEmail() {
+    const email = this.page.getByTestId('w3m-email')
+    await expect(email).toBeVisible({ timeout: MAX_WAIT })
+  }
 }
