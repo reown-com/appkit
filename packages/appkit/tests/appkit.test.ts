@@ -22,7 +22,8 @@ import {
   AlertController,
   StorageUtil,
   type ChainAdapter,
-  type ChainControllerState
+  type ChainControllerState,
+  type AccountControllerState
 } from '@reown/appkit-core'
 import {
   getSafeConnectorIdKey,
@@ -500,7 +501,11 @@ describe('Base', () => {
           { address: '0x1', type: 'eoa' },
           { address: '0x2', type: 'smartAccount' }
         ],
-        preferredAccountType: 'eoa'
+        preferredAccountType: 'eoa',
+        user: {
+          email: 'email@test.com',
+          username: 'test'
+        }
       }
 
       vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
@@ -531,7 +536,10 @@ describe('Base', () => {
         onNotConnected: vi.fn(),
         onIsConnected: vi.fn(),
         getLoginEmailUsed: vi.fn().mockReturnValue(false),
-        isConnected: vi.fn().mockResolvedValue({ isConnected: false })
+        isConnected: vi.fn().mockResolvedValue({ isConnected: false }),
+        getEmail: vi.fn().mockReturnValue('email@email.com'),
+        getUsername: vi.fn().mockReturnValue('test'),
+        onSocialConnected: vi.fn()
       }
 
       const appKitWithAuth = new AppKit({
