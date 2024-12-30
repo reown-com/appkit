@@ -4,10 +4,10 @@ import { useAppKitAccount } from '@reown/appkit/react'
 export function EmbeddedWalletInfo() {
   const { embeddedWalletInfo } = useAppKitAccount()
 
-  const { accountType, userInfo, isSmartAccountDeployed } = embeddedWalletInfo
+  const { accountType, user, isSmartAccountDeployed } = embeddedWalletInfo
 
-  const email = userInfo?.email
-  const username = userInfo?.username
+  const email = user?.email
+  const username = user?.username
 
   return (
     <Stack divider={<StackDivider />} spacing="4">

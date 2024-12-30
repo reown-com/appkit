@@ -55,7 +55,7 @@ export type ConnectedWalletInfo = {
   [key: string]: unknown
 }
 
-export type UserInfo = {
+export type User = {
   email?: string | null | undefined
   username?: string | null | undefined
 }
@@ -1099,7 +1099,7 @@ export type UseAppKitAccountReturn = {
   address: string | undefined
   isConnected: boolean
   embeddedWalletInfo: {
-    userInfo: AccountControllerState['userInfo']
+    user: AccountControllerState['user']
     accountType: W3mFrameTypes.AccountType | undefined
     isSmartAccountDeployed: boolean
   }

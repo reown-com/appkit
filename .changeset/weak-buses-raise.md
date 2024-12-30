@@ -20,7 +20,7 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Added email and other social info to `useAppKitAccount` hook.
+Added embedded wallet info to `useAppKitAccount` hook.
 
 **Example usage**
 
@@ -28,8 +28,10 @@ Added email and other social info to `useAppKitAccount` hook.
 import { useAppKitAccount } from '@reown/appkit/react'
 
 export function YourApp() {
-  const { isConnected, user } = useAppKitAccount()
+  const { embeddedWalletInfo } = useAppKitAccount()
 
-  return <div>{isConnected ? user.email : 'Not connected'}</div>
+  const email = embeddedWalletInfo.user?.email
+
+  return email && <p>Email address: {email}</p>
 }
 ```
