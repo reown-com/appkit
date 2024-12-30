@@ -5,6 +5,7 @@ import { arbitrum, base, optimism, sepolia } from '@reown/appkit/networks'
 import { useChakraToast } from '../Toast'
 import { erc20Abi, type Chain, type Hex } from 'viem'
 import { getWalletClient } from 'wagmi/actions'
+import { ErrorUtil } from '../../utils/ErrorUtil'
 
 const ALLOWED_CHAINS = [sepolia, optimism, base, arbitrum]
 const ALLOWED_CHAINIDS = ALLOWED_CHAINS.map(chain => chain.id) as number[]
@@ -67,9 +68,10 @@ function AvailableTestContent({ chain, config }: IProps) {
       })
     } catch (error) {
       toast({
-        title: 'Error',
-        description: 'Failed to send transaction',
-        type: 'error'
+        title: 'Transaction Error',
+        description: ErrorUtil.getErrorMessage(error, 'Failed to send transaction'),
+        type: 'error',
+        partialDescription: false
       })
     } finally {
       setIsLoading(false)
