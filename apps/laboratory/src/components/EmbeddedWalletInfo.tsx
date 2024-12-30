@@ -4,7 +4,7 @@ import { useAppKitAccount } from '@reown/appkit/react'
 export function EmbeddedWalletInfo() {
   const { embeddedWalletInfo } = useAppKitAccount()
 
-  const { accountType, user, isSmartAccountDeployed } = embeddedWalletInfo
+  const { accountType, user, isSmartAccountDeployed } = embeddedWalletInfo ?? {}
 
   const email = user?.email
   const username = user?.username
