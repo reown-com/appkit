@@ -107,7 +107,7 @@ function ConnectedTestContent({
         signerPublicKey: signer.publicKey,
         interval: '1d',
         asset: 'native',
-        amount: '0x00001',
+        amount: '0x16345785D8A0000',
         expiry: Math.floor(Date.now() / 1000) + 24 * 60 * 60
       })
       setSmartSession({
