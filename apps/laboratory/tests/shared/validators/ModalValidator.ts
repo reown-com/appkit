@@ -391,8 +391,8 @@ export class ModalValidator {
     await expect(email).toBeVisible({ timeout: MAX_WAIT })
   }
 
-  async expectAuthAccountType() {
-    const authAccountType = this.page.getByTestId('w3m-auth-account-type')
+  async expectAccountType() {
+    const authAccountType = this.page.getByTestId('w3m-account-type')
     await expect(authAccountType).toBeVisible({ timeout: MAX_WAIT })
   }
 

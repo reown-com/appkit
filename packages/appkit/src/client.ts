@@ -1241,7 +1241,6 @@ export class AppKit {
       this.setLoading(false)
     })
     provider.onSocialConnected(({ userName }) => {
-      console.log('hi', userName)
       this.setUsername(userName, ChainController.state.activeChain as ChainNamespace)
     })
     provider.onGetSmartAccountEnabledNetworks(networks => {

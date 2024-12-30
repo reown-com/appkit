@@ -52,7 +52,7 @@ emailTest.afterAll(async () => {
 // -- Tests --------------------------------------------------------------------
 emailTest('it should show user info', async () => {
   await validator.expectEmail()
-  await validator.expectAuthAccountType()
+  await validator.expectAccountType()
   await validator.expectSmartAccountStatus()
 })
 
