@@ -4,6 +4,7 @@ import type {
   AccountTypeMap,
   CombinedProvider,
   ConnectedWalletInfo,
+  User,
   Provider,
   SocialProvider
 } from '../utils/TypeUtil.js'
@@ -23,6 +24,7 @@ import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 export interface AccountControllerState {
   currentTab: number
   caipAddress?: CaipAddress
+  user?: User
   address?: string
   addressLabels: Map<string, string>
   allAccounts: AccountType[]
@@ -142,6 +144,10 @@ export const AccountController = {
 
   setProfileImage(profileImage: AccountControllerState['profileImage'], chain?: ChainNamespace) {
     ChainController.setAccountProp('profileImage', profileImage, chain)
+  },
+
+  setUser(user: AccountControllerState['user']) {
+    state.user = user
   },
 
   setAddressExplorerUrl(
