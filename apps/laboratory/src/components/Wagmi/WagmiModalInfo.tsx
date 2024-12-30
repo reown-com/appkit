@@ -6,7 +6,7 @@ import { AppKitInfo } from '../AppKitInfo'
 import { useAppKitAccount } from '@reown/appkit/react'
 
 export function WagmiModalInfo() {
-  const { caipAddress, address, user, isConnected } = useAppKitAccount()
+  const { caipAddress, address, isConnected } = useAppKitAccount()
   const { chainId, connector } = useAccount()
   const [clientId, setClientId] = React.useState<string | null>(null)
 
@@ -31,7 +31,6 @@ export function WagmiModalInfo() {
       address={address}
       chainId={chainId}
       clientId={clientId || undefined}
-      user={user}
     />
   ) : null
 }

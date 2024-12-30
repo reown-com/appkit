@@ -9,19 +9,16 @@ import {
   Stack,
   Text
 } from '@chakra-ui/react'
-import type { useAppKitAccount } from '@reown/appkit/react'
+import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
 
 type AppKitInfoProps = {
   caipAddress?: string
   address?: string
   chainId?: number | string
   clientId?: string
-  user: ReturnType<typeof useAppKitAccount>['user']
 }
 
-export function AppKitInfo({ caipAddress, address, chainId, clientId, user }: AppKitInfoProps) {
-  const { accountType, email, username, isSmartAccountDeployed } = user
-
+export function AppKitInfo({ caipAddress, address, chainId, clientId }: AppKitInfoProps) {
   return (
     <Card marginTop={10} marginBottom={10}>
       <CardHeader>
@@ -60,41 +57,7 @@ export function AppKitInfo({ caipAddress, address, chainId, clientId, user }: Ap
             </Box>
           )}
 
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Account Type
-            </Heading>
-            <Text data-testid="w3m-account-type">
-              {accountType === 'eoa' ? 'EOA' : 'Smart Account'}
-            </Text>
-          </Box>
-
-          {email && (
-            <Box>
-              <Heading size="xs" textTransform="uppercase" pb="2">
-                Email
-              </Heading>
-              <Text data-testid="w3m-email">{email}</Text>
-            </Box>
-          )}
-
-          {username && (
-            <Box>
-              <Heading size="xs" textTransform="uppercase" pb="2">
-                Username
-              </Heading>
-              <Text>{username}</Text>
-            </Box>
-          )}
-
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Smart Account Status
-            </Heading>
-            <Text data-testid="w3m-sa-account-status">
-              {isSmartAccountDeployed ? 'Deployed' : 'Not Deployed'}
-            </Text>
-          </Box>
+          <EmbeddedWalletInfo />
         </Stack>
       </CardBody>
     </Card>

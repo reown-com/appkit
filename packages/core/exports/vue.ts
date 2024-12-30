@@ -11,10 +11,9 @@ export function useAppKitAccount() {
     caipAddress: ChainController.state.activeCaipAddress ?? null,
     status: AccountController.state.status ?? null,
     isConnected: Boolean(ChainController.state.activeCaipAddress),
-    user: {
+    embeddedWalletInfo: {
+      userInfo: AccountController.state.userInfo ?? null,
       accountType: AccountController.state.preferredAccountType ?? null,
-      email: AccountController.state.email ?? null,
-      username: AccountController.state.username ?? null,
       isSmartAccountDeployed: Boolean(AccountController.state.smartAccountDeployed)
     }
   })
@@ -30,19 +29,15 @@ export function useAppKitAccount() {
   })
 
   const unsubscribeAccountDeployed = AccountController.subscribeKey('smartAccountDeployed', val => {
-    state.value.user.isSmartAccountDeployed = Boolean(val)
+    state.value.embeddedWalletInfo.isSmartAccountDeployed = Boolean(val)
   })
 
   const unsubscribeAccountType = AccountController.subscribeKey('preferredAccountType', val => {
-    state.value.user.accountType = val ?? null
+    state.value.embeddedWalletInfo.accountType = val ?? null
   })
 
-  const unsubscribeEmail = AccountController.subscribeKey('email', val => {
-    state.value.user.email = val ?? null
-  })
-
-  const unsubscribeUsername = AccountController.subscribeKey('username', val => {
-    state.value.user.username = val ?? null
+  const unsubscribeUserInfo = AccountController.subscribeKey('userInfo', val => {
+    state.value.embeddedWalletInfo.userInfo = val ?? null
   })
 
   onUnmounted(() => {
@@ -50,8 +45,7 @@ export function useAppKitAccount() {
     unsubscribeStatus?.()
     unsubscribeAccountDeployed?.()
     unsubscribeAccountType?.()
-    unsubscribeEmail?.()
-    unsubscribeUsername?.()
+    unsubscribeUserInfo?.()
   })
 
   return state

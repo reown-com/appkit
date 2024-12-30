@@ -7,7 +7,7 @@ import { AppKitInfo } from '../AppKitInfo'
 export function EthersModalInfo() {
   const [ready, setReady] = React.useState(false)
   const [clientId, setClientId] = React.useState<string | undefined>(undefined)
-  const { isConnected, address, caipAddress, user } = useAppKitAccount()
+  const { isConnected, address, caipAddress } = useAppKitAccount()
   const { chainId } = useAppKitNetwork()
   const { walletProvider, walletProviderType } = useAppKitProvider<UniversalProvider>('eip155')
 
@@ -28,12 +28,6 @@ export function EthersModalInfo() {
   }, [])
 
   return ready && isConnected && chainId ? (
-    <AppKitInfo
-      caipAddress={caipAddress}
-      address={address}
-      chainId={chainId}
-      clientId={clientId}
-      user={user}
-    />
+    <AppKitInfo caipAddress={caipAddress} address={address} chainId={chainId} clientId={clientId} />
   ) : null
 }

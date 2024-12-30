@@ -55,6 +55,11 @@ export type ConnectedWalletInfo = {
   [key: string]: unknown
 }
 
+export type UserInfo = {
+  email?: string | null | undefined
+  username?: string | null | undefined
+}
+
 export interface LinkingRecord {
   redirect: string
   href: string
@@ -1093,10 +1098,9 @@ export type UseAppKitAccountReturn = {
   caipAddress: CaipAddress | undefined
   address: string | undefined
   isConnected: boolean
-  user: {
+  embeddedWalletInfo: {
+    userInfo: AccountControllerState['userInfo']
     accountType: W3mFrameTypes.AccountType | undefined
-    email: string | null | undefined
-    username: string | null | undefined
     isSmartAccountDeployed: boolean
   }
   status: AccountControllerState['status']
