@@ -273,7 +273,7 @@ export class W3mFrameProvider {
       } as W3mFrameTypes.AppEvent)
       this.setLoginSuccess(response.email)
       this.setLastUsedChainId(response.chainId)
-      
+
       return response
     } catch (error) {
       this.w3mLogger?.logger.error({ error }, 'Error connecting')
@@ -444,7 +444,9 @@ export class W3mFrameProvider {
     })
   }
 
-  public onSocialConnected(callback: (user: W3mFrameTypes.Responses['FrameConnectSocialResponse']) => void) {
+  public onSocialConnected(
+    callback: (user: W3mFrameTypes.Responses['FrameConnectSocialResponse']) => void
+  ) {
     this.w3mFrame.events.onFrameEvent(event => {
       if (event.type === W3mFrameConstants.FRAME_CONNECT_SOCIAL_SUCCESS) {
         callback(event.payload)
