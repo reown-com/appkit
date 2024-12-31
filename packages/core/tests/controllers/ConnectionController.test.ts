@@ -8,6 +8,8 @@ import {
   ChainController,
   ConnectionController,
   ConstantsUtil,
+  ModalController,
+  SIWXUtil,
   StorageUtil
 } from '../../exports/index.js'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
@@ -109,7 +111,7 @@ describe('ConnectionController', () => {
     await ConnectionController.connectWalletConnect()
     expect(ConnectionController.state.wcUri).toEqual(walletConnectUri)
     expect(ConnectionController.state.wcPairingExpiry).toEqual(ConstantsUtil.FOUR_MINUTES_MS)
-    expect(storageSpy).toHaveBeenCalledWith('walletConnect')
+    expect(storageSpy).toHaveBeenCalledWith('eip155', 'walletConnect')
     expect(clientConnectWalletConnectSpy).toHaveBeenCalled()
 
     // Just in case
@@ -154,5 +156,17 @@ describe('ConnectionController', () => {
     ConnectionController.resetWcConnection()
     expect(ConnectionController.state.wcUri).toEqual(undefined)
     expect(ConnectionController.state.wcPairingExpiry).toEqual(undefined)
+  })
+
+  it('should disconnect correctly', async () => {
+    vi.spyOn(ModalController, 'setLoading')
+    vi.spyOn(ChainController, 'disconnect')
+    vi.spyOn(SIWXUtil, 'clearSessions')
+
+    await ConnectionController.disconnect()
+    expect(ModalController.setLoading).toHaveBeenCalledWith(true)
+    expect(SIWXUtil.clearSessions).toHaveBeenCalled()
+    expect(ChainController.disconnect).toHaveBeenCalled()
+    expect(ModalController.setLoading).toHaveBeenCalledWith(false)
   })
 })

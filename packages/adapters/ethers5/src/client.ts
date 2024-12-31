@@ -257,17 +257,17 @@ export class Ethers5Adapter extends AdapterBlueprint {
     connectors.forEach(connector => {
       const key = connector === 'coinbase' ? 'coinbaseWalletSDK' : connector
 
-      const injectedConnector = connector === CommonConstantsUtil.CONNECTOR_ID.INJECTED
+      const isInjectedConnector = connector === CommonConstantsUtil.CONNECTOR_ID.INJECTED
 
       if (this.namespace) {
         this.addConnector({
           id: key,
           explorerId: PresetsUtil.ConnectorExplorerIds[key],
           imageUrl: options?.connectorImages?.[key],
-          name: PresetsUtil.ConnectorNamesMap[key],
+          name: PresetsUtil.ConnectorNamesMap[key] || 'Unknown',
           imageId: PresetsUtil.ConnectorImageIds[key],
           type: PresetsUtil.ConnectorTypesMap[key] ?? 'EXTERNAL',
-          info: injectedConnector ? undefined : { rdns: key },
+          info: isInjectedConnector ? undefined : { rdns: key },
           chain: this.namespace,
           chains: [],
           provider: this.ethersConfig?.[connector as keyof ProviderType] as Provider
@@ -304,12 +304,13 @@ export class Ethers5Adapter extends AdapterBlueprint {
       if (!existingConnector) {
         const type = PresetsUtil.ConnectorTypesMap[CommonConstantsUtil.CONNECTOR_ID.EIP6963]
 
-        if (type && this.namespace) {
+        const id = info?.rdns || info?.name || info?.uuid
+        if (type && this.namespace && id) {
           this.addConnector({
-            id: info?.rdns || '',
+            id,
             type,
             imageUrl: info?.icon,
-            name: info?.name,
+            name: info?.name || 'Unknown',
             provider,
             info,
             chain: this.namespace,
@@ -483,7 +484,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
   } | null = null
 
   private listenProviderEvents(provider: Provider | CombinedProvider) {
-    const disconnectHandler = () => {
+    const disconnect = () => {
       this.removeProviderListeners(provider)
       this.emit('disconnect')
     }
@@ -493,6 +494,8 @@ export class Ethers5Adapter extends AdapterBlueprint {
         this.emit('accountChanged', {
           address: accounts[0] as `0x${string}`
         })
+      } else {
+        disconnect()
       }
     }
 
@@ -503,12 +506,12 @@ export class Ethers5Adapter extends AdapterBlueprint {
       this.emit('switchNetwork', { chainId: chainIdNumber })
     }
 
-    provider.on('disconnect', disconnectHandler)
+    provider.on('disconnect', disconnect)
     provider.on('accountsChanged', accountsChangedHandler)
     provider.on('chainChanged', chainChangedHandler)
 
     this.providerHandlers = {
-      disconnect: disconnectHandler,
+      disconnect,
       accountsChanged: accountsChangedHandler,
       chainChanged: chainChangedHandler
     }

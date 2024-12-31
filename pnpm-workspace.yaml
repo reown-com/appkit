@@ -17,7 +17,7 @@ packages:
   - 'apps/*'
   - 'examples/*'
   - 'services/*'
+  - 'packages/ui-new'
   - '!packages/appkit-new'
-  - '!packages/ui-new'
   - '!apps/gallery-new'
   - '!apps/laboratory-new'

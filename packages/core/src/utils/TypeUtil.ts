@@ -49,13 +49,16 @@ export type CaipNetworkCoinbaseNetwork =
   | 'OP Mainnet'
   | 'Celo'
 
-export type ConnectedWalletInfo =
-  | {
-      name?: string
-      icon?: string
-      [key: string]: unknown
-    }
-  | undefined
+export type ConnectedWalletInfo = {
+  name: string
+  icon?: string
+  [key: string]: unknown
+}
+
+export type User = {
+  email?: string | null | undefined
+  username?: string | null | undefined
+}
 
 export interface LinkingRecord {
   redirect: string
@@ -87,7 +90,7 @@ export type SocialProvider =
 export type Connector = {
   id: string
   type: ConnectorType
-  name?: string
+  name: string
   imageId?: string
   explorerId?: string
   imageUrl?: string
@@ -1095,6 +1098,11 @@ export type UseAppKitAccountReturn = {
   caipAddress: CaipAddress | undefined
   address: string | undefined
   isConnected: boolean
+  embeddedWalletInfo?: {
+    user: AccountControllerState['user']
+    accountType: W3mFrameTypes.AccountType | undefined
+    isSmartAccountDeployed: boolean
+  }
   status: AccountControllerState['status']
 }
 
