@@ -647,6 +647,8 @@ export class AppKit {
 
   // -- Private ------------------------------------------------------------------
   private initializeOptionsController(options: AppKitOptionsWithSdk) {
+    OptionsController.setDebug(options.debug !== false)
+
     if (!options.projectId) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
 
@@ -658,7 +660,7 @@ export class AppKit {
     OptionsController.setEnableWalletGuide(options.enableWalletGuide !== false)
     OptionsController.setEnableWallets(options.enableWallets !== false)
     OptionsController.setEIP6963Enabled(options.enableEIP6963 !== false)
-    OptionsController.setDebug(options.debug !== false)
+
     OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
 
     OptionsController.setSdkVersion(options.sdkVersion)
