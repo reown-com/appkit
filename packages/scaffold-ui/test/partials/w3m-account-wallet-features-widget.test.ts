@@ -110,7 +110,7 @@ describe('W3mAccountWalletFeaturesWidget', () => {
     expect(pushSpy).toHaveBeenCalledWith('Profile')
   })
 
-  it('should clearInterval when fetchTokenBalance fails with 503 Service Unavailable after 10 seconds', async () => {
+  it('should clearInterval when fetchTokenBalance fails after 10 seconds', async () => {
     vi.useFakeTimers()
     vi.spyOn(global, 'setInterval')
     vi.spyOn(global, 'clearInterval')
