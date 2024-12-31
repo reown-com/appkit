@@ -234,12 +234,11 @@ export const AccountController = {
     ChainController.setAccountProp('farcasterUrl', farcasterUrl, chain)
   },
 
-  async fetchTokenBalance() {
+  async fetchTokenBalance(onError?: (error: unknown) => void) {
     const chainId = ChainController.state.activeCaipNetwork?.caipNetworkId
     const chain = ChainController.state.activeCaipNetwork?.chainNamespace
     const caipAddress = ChainController.state.activeCaipAddress
     const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
-
     if (
       state.lastRetry &&
       !CoreHelperUtil.isAllowedRetry(state.lastRetry, 30 * ConstantsUtil.ONE_SEC_MS)
@@ -262,6 +261,7 @@ export const AccountController = {
     } catch (error) {
       state.lastRetry = Date.now()
 
+      onError?.(error)
       SnackController.showError('Token Balance Unavailable')
     }
   },
