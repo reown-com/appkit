@@ -14,7 +14,6 @@ import {
   type ConnectionControllerClient,
   type ConnectorType,
   type WriteContractArgs,
-  type Provider,
   type SendTransactionArgs,
   type EstimateGasTransactionArgs,
   ConstantsUtil as CoreConstantsUtil,
@@ -107,6 +106,10 @@ export interface OpenOptions {
 
 type Adapters = Record<ChainNamespace, AdapterBlueprint>
 
+interface AppKitOptionsWithSdk extends AppKitOptions {
+  sdkVersion: SdkVersion
+}
+
 // -- Constants ----------------------------------------- //
 const OPTIONAL_METHODS = [
   'eth_accounts',
@@ -178,12 +181,7 @@ export class AppKit {
 
   private defaultCaipNetwork?: CaipNetwork
 
-  public constructor(
-    options: AppKitOptions & {
-      adapters?: ChainAdapter[]
-      sdkVersion: SdkVersion
-    }
-  ) {
+  public constructor(options: AppKitOptionsWithSdk) {
     this.options = options
     this.version = options.sdkVersion
     this.caipNetworks = this.extendCaipNetworks(options)
@@ -199,12 +197,7 @@ export class AppKit {
     return this.instance
   }
 
-  private async initialize(
-    options: AppKitOptions & {
-      adapters?: ChainAdapter[]
-      sdkVersion: SdkVersion
-    }
-  ) {
+  private async initialize(options: AppKitOptionsWithSdk) {
     this.initControllers(options)
     await this.initChainAdapters()
     await this.injectModalUi()
@@ -653,7 +646,7 @@ export class AppKit {
   }
 
   // -- Private ------------------------------------------------------------------
-  private initializeOptionsController(options: AppKitOptions & { sdkVersion: SdkVersion }) {
+  private initializeOptionsController(options: AppKitOptionsWithSdk) {
     if (!options.projectId) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
 
@@ -730,13 +723,7 @@ export class AppKit {
     }
   }
 
-  private initControllers(
-    options: AppKitOptions & {
-      adapters?: ChainAdapter[]
-    } & {
-      sdkVersion: SdkVersion
-    }
-  ) {
+  private initControllers(options: AppKitOptionsWithSdk) {
     this.initializeOptionsController(options)
     this.initializeChainController(options)
     this.initializeThemeController(options)
@@ -899,9 +886,7 @@ export class AppKit {
       disconnect: async () => {
         const namespace = ChainController.state.activeChain as ChainNamespace
         const adapter = this.getAdapter(namespace)
-        const provider = ProviderUtil.getProvider<UniversalProvider | Provider | W3mFrameProvider>(
-          namespace
-        )
+        const provider = ProviderUtil.getProvider<UniversalProvider | W3mFrameProvider>(namespace)
         const providerType = ProviderUtil.state.providerIds[namespace]
 
         await adapter?.disconnect({ provider, providerType })
@@ -1042,9 +1027,9 @@ export class AppKit {
           caipNetwork.chainNamespace === ChainController.state.activeChain
         ) {
           const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
-          const provider = ProviderUtil.getProvider<
-            UniversalProvider | Provider | W3mFrameProvider
-          >(ChainController.state.activeChain as ChainNamespace)
+          const provider = ProviderUtil.getProvider<UniversalProvider | W3mFrameProvider>(
+            ChainController.state.activeChain as ChainNamespace
+          )
           const providerType =
             ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
 
