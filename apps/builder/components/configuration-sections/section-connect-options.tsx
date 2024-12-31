@@ -8,6 +8,7 @@ import dynamic from 'next/dynamic'
 import { ConnectMethodItemLoading } from '@/components/connect-method-item/components/loading'
 import { ConnectMethod, ConstantsUtil } from '@reown/appkit-core'
 import { urlStateUtils } from '@/lib/url-state'
+import { ChainList } from '@/components/chain-list'
 
 const SortableConnectMethodList = dynamic(
   () =>
@@ -73,6 +74,8 @@ export function SectionConnectOptions() {
         isEnabled={collapseWallets}
         onClick={toggleCollapseWallets}
       />
+      <div className="text-sm text-text-secondary mt-6 mb-2">Chains</div>
+      <ChainList />
     </div>
   )
 }
