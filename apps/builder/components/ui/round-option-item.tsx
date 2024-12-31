@@ -19,18 +19,20 @@ export function RoundOptionItem({
 }: RoundOptionItemProps) {
   return (
     <TooltipProvider>
-      <Tooltip delayDuration={200}>
+      <Tooltip delayDuration={500}>
         <TooltipTrigger asChild>
           <button
             onClick={onChange}
             disabled={disabled}
             className={cn(
-              'w-12 h-12 rounded-full transition-all flex items-center justify-center border border-gray-500',
-              enabled && 'border border-border-accent bg-background-accent-primary/10',
+              'w-12 h-12 rounded-full transition-all flex items-center justify-center',
+              enabled
+                ? 'border border-border-accent bg-background-accent-primary/10 dark:bg-background-accent-primary/10'
+                : 'border border-neutral-300 dark:border-neutral-700',
               disabled && 'opacity-50 cursor-not-allowed'
             )}
           >
-            {/* <Image src={imageSrc} alt={name} width={24} height={24} /> */}
+            <Image src={imageSrc} alt={name} width={32} height={32} />
           </button>
         </TooltipTrigger>
         <TooltipContent>

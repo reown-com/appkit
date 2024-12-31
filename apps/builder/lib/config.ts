@@ -22,6 +22,7 @@ import {
 import { CreateAppKit, ThemeMode } from '@reown/appkit/react'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
+import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 
 import { cookieStorage, createStorage } from '@wagmi/core'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
@@ -69,7 +70,9 @@ export const wagmiAdapter = new WagmiAdapter({
   networks
 })
 
-export const solanaAdapter = new SolanaAdapter({})
+export const solanaAdapter = new SolanaAdapter({
+  wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
+})
 
 export const bitcoinAdapter = new BitcoinAdapter({})
 

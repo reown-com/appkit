@@ -4,9 +4,9 @@ import { RoundOptionItem } from './ui/round-option-item'
 import { useAppKitContext } from '@/hooks/use-appkit'
 
 const CHAIN_OPTIONS = [
-  { id: 'evm', name: 'EVM', imageSrc: '/images/chains/evm.svg' },
-  { id: 'solana', name: 'Solana', imageSrc: '/images/chains/solana.svg' },
-  { id: 'bitcoin', name: 'Bitcoin', imageSrc: '/images/chains/bitcoin.svg' }
+  { id: 'evm', name: 'EVM', imageSrc: '/ethereum.png' },
+  { id: 'solana', name: 'Solana', imageSrc: '/solana.png' },
+  { id: 'bitcoin', name: 'Bitcoin', imageSrc: '/bitcoin.png' }
 ]
 
 export function ChainList() {
@@ -17,12 +17,8 @@ export function ChainList() {
       ? enabledChains.filter(id => id !== chainId)
       : [...enabledChains, chainId]
 
-    console.log('>>> newEnabledChains: ', newEnabledChains)
-
     updateEnabledChains(newEnabledChains)
   }
-
-  console.log('>>> enabledChains: ', enabledChains)
 
   return (
     <div className="flex gap-2">

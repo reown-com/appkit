@@ -32,6 +32,8 @@
     "@reown/appkit-core": "workspace:*",
     "@reown/appkit-scaffold-ui": "workspace:*",
     "@sentry/nextjs": "8.45.1",
+    "@solana/wallet-adapter-wallets": "0.19.32",
+    "@solana/web3.js": "1.95.8",
     "@tanstack/react-query": "5.56.2",
     "@wagmi/core": "2.13.8",
     "class-variance-authority": "0.7.0",
