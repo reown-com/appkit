@@ -20,4 +20,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where the balance endpoint kept retrying every 30 seconds, even after returning a 503 status code.
+Fixed an issue where the balance endpoint was being called every 30 seconds for unsupported networks.
