@@ -200,6 +200,13 @@ export class AppKit {
     }
   ) {
     this.options = options
+    this.version = options.sdkVersion
+    this.caipNetworks = this.extendCaipNetworks(options)
+    this.chainNamespaces = [
+      ...new Set(this.caipNetworks?.map(caipNetwork => caipNetwork.chainNamespace))
+    ]
+    this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
+    this.chainAdapters = this.createAdapters(options.adapters as unknown as AdapterBlueprint[])
     this.initialize(options)
   }
 
@@ -213,11 +220,6 @@ export class AppKit {
       sdkVersion: SdkVersion
     }
   ) {
-    this.caipNetworks = this.extendCaipNetworks(options)
-    this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
-    this.chainAdapters = this.createAdapters(options.adapters as unknown as AdapterBlueprint[])
-    this.version = options.sdkVersion
-
     this.initControllers(options)
     await this.initChainAdapters()
     await this.injectModalUi()
@@ -729,6 +731,14 @@ export class AppKit {
     if (network) {
       ChainController.setActiveCaipNetwork(network)
     }
+
+    this.chainNamespaces.forEach(chainNamespace =>
+      this.setRequestedCaipNetworks(
+        this.caipNetworks?.filter(caipNetwork => caipNetwork.chainNamespace === chainNamespace) ??
+          [],
+        chainNamespace
+      )
+    )
   }
 
   private initControllers(
@@ -1737,21 +1747,6 @@ export class AppKit {
     }
   }
 
-  private syncRequestedNetworks() {
-    const uniqueChainNamespaces = [
-      ...new Set(this.caipNetworks?.map(caipNetwork => caipNetwork.chainNamespace))
-    ]
-    this.chainNamespaces = uniqueChainNamespaces
-
-    uniqueChainNamespaces.forEach(chainNamespace =>
-      this.setRequestedCaipNetworks(
-        this.caipNetworks?.filter(caipNetwork => caipNetwork.chainNamespace === chainNamespace) ??
-          [],
-        chainNamespace
-      )
-    )
-  }
-
   private async syncAdapterConnection(namespace: ChainNamespace) {
     const adapter = this.getAdapter(namespace)
     const connectorId = StorageUtil.getConnectedConnectorId(namespace)
@@ -1954,7 +1949,6 @@ export class AppKit {
 
   private createAdapters(blueprints?: AdapterBlueprint[]) {
     this.createClients()
-    this.syncRequestedNetworks()
 
     return this.chainNamespaces.reduce<Adapters>((adapters, namespace) => {
       const blueprint = blueprints?.find(b => b.namespace === namespace)

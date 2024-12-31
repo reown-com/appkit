@@ -122,6 +122,7 @@ export const ChainController = {
       if (state.activeChain) {
         PublicStateController.set({ activeChain: adapterToActivate?.namespace })
       }
+
       adapters.forEach((adapter: ChainAdapter) => {
         state.chains.set(adapter.namespace as ChainNamespace, {
           namespace: adapter.namespace,
