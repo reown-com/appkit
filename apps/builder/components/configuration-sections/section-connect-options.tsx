@@ -2,6 +2,7 @@
 
 import { useAppKitContext } from '@/hooks/use-appkit'
 import { FeatureButton } from '@/components/feature-button'
+import { NetworkList } from '@/components/network-list'
 
 import { UniqueIdentifier } from '@dnd-kit/core'
 import dynamic from 'next/dynamic'
@@ -24,6 +25,10 @@ const SortableConnectMethodList = dynamic(
     )
   }
 )
+
+const ChainList = dynamic(() => import('@/components/chain-list').then(mod => mod.ChainList), {
+  ssr: false
+})
 
 export function SectionConnectOptions() {
   const { config, updateFeatures, updateSocials, updateEnableWallets } = useAppKitContext()

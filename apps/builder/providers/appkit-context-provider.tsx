@@ -1,14 +1,27 @@
 'use client'
 
 import { ReactNode, useEffect, useState } from 'react'
-import { Features, ThemeMode, ThemeVariables, useAppKitState } from '@reown/appkit/react'
-import { ConnectMethod, ConstantsUtil } from '@reown/appkit-core'
+import {
+  createAppKit,
+  Features,
+  ThemeMode,
+  ThemeVariables,
+  useAppKitState
+} from '@reown/appkit/react'
+import { ChainAdapter, ConnectMethod, ConstantsUtil } from '@reown/appkit-core'
 import { ThemeStore } from '../lib/theme-store'
 import { URLState, urlStateUtils } from '@/lib/url-state'
 import { AppKitContext } from '@/contexts/appkit-context'
 import { useSnapshot } from 'valtio'
 import { UniqueIdentifier } from '@dnd-kit/core'
-import { defaultCustomizationConfig } from '@/lib/config'
+import {
+  appKitConfigs,
+  bitcoinAdapter,
+  defaultCustomizationConfig,
+  initialConfig,
+  solanaAdapter,
+  wagmiAdapter
+} from '@/lib/config'
 import { useTheme } from 'next-themes'
 import { inter } from '@/lib/fonts'
 import { Toaster } from 'sonner'
@@ -21,8 +34,6 @@ interface AppKitProviderProps {
   children: ReactNode
   initialConfig?: URLState | null
 }
-
-const initialConfig = urlStateUtils.getStateFromURL()
 
 export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => {
   const { initialized } = useAppKitState()
@@ -43,6 +54,9 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
     wallet: false,
     social: false
   })
+  const [enabledChains, setEnabledChains] = useState<string[]>(
+    initialConfig?.enabledChains || ['evm', 'solana', 'bitcoin']
+  )
   const themeStore = useSnapshot(ThemeStore.state)
   const appKit = themeStore.modal
 
@@ -51,6 +65,13 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
       ...prev,
       [key]: value
     }))
+  }
+
+  function updateEnabledChains(chains: string[]) {
+    setEnabledChains(() => {
+      urlStateUtils.updateURLWithState({ enabledChains: chains })
+      return chains
+    })
   }
 
   function updateFeatures(newFeatures: Partial<Features>) {
@@ -142,6 +163,24 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
   }, [])
 
   const socialsEnabled = Array.isArray(features.socials)
+  const enabledChainsString = enabledChains.join(',')
+
+  useEffect(() => {
+    const chains = enabledChainsString.split(',')
+    const adapters: ChainAdapter[] = []
+    chains.forEach(chain => {
+      if (chain === 'evm') return adapters.push(wagmiAdapter)
+      if (chain === 'solana') return adapters.push(solanaAdapter)
+      if (chain === 'bitcoin') return adapters.push(bitcoinAdapter)
+    })
+
+    console.log('>>> recreate appkit with: ', adapters)
+    const newAppKit = createAppKit({
+      adapters,
+      ...appKitConfigs
+    })
+    ThemeStore.setModal(newAppKit)
+  }, [enabledChainsString])
 
   return (
     <AppKitContext.Provider
@@ -160,6 +199,7 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
           termsConditionsUrl,
           privacyPolicyUrl
         },
+        enabledChains,
         socialsEnabled,
         enableWallets,
         isDraggingByKey,
@@ -171,7 +211,8 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
         setEnableWallets: updateEnableWallets,
         setSocialsOrder: appKit?.setSocialsOrder,
         updateDraggingState,
-        resetConfigs
+        resetConfigs,
+        updateEnabledChains
       }}
     >
       <Toaster theme={theme as ThemeMode} />

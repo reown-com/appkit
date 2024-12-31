@@ -22,6 +22,7 @@ export type URLState = {
   mixColorStrength?: number
   borderRadius?: string
   fontFamily?: string
+  enabledChains?: string[]
 }
 
 export const urlStateUtils = {

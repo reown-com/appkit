@@ -27,6 +27,8 @@
     "@radix-ui/react-tooltip": "^1.1.6",
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
+    "@reown/appkit-adapter-solana": "workspace:*",
+    "@reown/appkit-adapter-bitcoin": "workspace:*",
     "@reown/appkit-core": "workspace:*",
     "@reown/appkit-scaffold-ui": "workspace:*",
     "@sentry/nextjs": "8.45.1",
