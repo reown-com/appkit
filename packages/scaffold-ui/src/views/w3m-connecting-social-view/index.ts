@@ -28,8 +28,6 @@ export class W3mConnectingSocialView extends LitElement {
   // -- State & Properties -------------------------------- //
   @state() private socialProvider = AccountController.state.socialProvider
 
-  @state() private interval?: ReturnType<typeof setInterval>
-
   @state() private socialWindow = AccountController.state.socialWindow
 
   @state() protected error = false
@@ -67,7 +65,6 @@ export class W3mConnectingSocialView extends LitElement {
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
     window.removeEventListener('message', this.handleSocialConnection, false)
-    clearInterval(this.interval)
     this.socialWindow?.close()
     AccountController.setSocialWindow(undefined, ChainController.state.activeChain)
   }
@@ -178,7 +175,7 @@ export class W3mConnectingSocialView extends LitElement {
   }
 
   private connectSocial() {
-    this.interval = setInterval(() => {
+    const interval = setInterval(() => {
       if (this.socialWindow?.closed) {
         if (!this.connecting && RouterController.state.view === 'ConnectingSocial') {
           if (this.socialProvider) {
@@ -190,7 +187,7 @@ export class W3mConnectingSocialView extends LitElement {
           }
           RouterController.goBack()
         }
-        clearInterval(this.interval)
+        clearInterval(interval)
       }
     }, 1000)
     window.addEventListener('message', this.handleSocialConnection, false)
