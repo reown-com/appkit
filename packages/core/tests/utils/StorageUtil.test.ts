@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, afterEach, beforeEach, beforeAll, afterAll } from 'vitest'
 import { StorageUtil } from '../../src/utils/StorageUtil'
 import type { WcWallet, SocialProvider } from '../../src/utils/TypeUtil'
-import { SafeLocalStorage } from '@reown/appkit-common'
+import { getSafeConnectorIdKey, SafeLocalStorage } from '@reown/appkit-common'
 import { SafeLocalStorageKeys } from '@reown/appkit-common'
+import { W3mFrameConstants, W3mFrameHelpers, W3mFrameStorage } from '@reown/appkit-wallet'
 
 const previousLocalStorage = globalThis.localStorage
 const previousWindow = globalThis.window
@@ -150,18 +151,19 @@ describe('StorageUtil', () => {
   describe('setConnectedConnectorId', () => {
     it('should set connected connector', () => {
       const connectorId = 'io.metamask'
-      StorageUtil.setConnectedConnectorId(connectorId)
-      expect(SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID)).toBe(
-        connectorId
-      )
+
+      StorageUtil.setConnectedConnectorId('eip155', connectorId)
+      const key = getSafeConnectorIdKey('eip155')
+      expect(SafeLocalStorage.getItem(key)).toBe(connectorId)
     })
   })
 
   describe('getConnectedConnector', () => {
     it('should get connected connector', () => {
       const connectorId = 'io.metamask'
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR_ID, connectorId)
-      expect(StorageUtil.getConnectedConnectorId()).toBe(connectorId)
+      const key = getSafeConnectorIdKey('eip155')
+      SafeLocalStorage.setItem(key, connectorId)
+      expect(StorageUtil.getConnectedConnectorId('eip155')).toBe(connectorId)
     })
   })
 
@@ -182,9 +184,10 @@ describe('StorageUtil', () => {
   })
 
   describe('getConnectedSocialUsername', () => {
-    it('should get connected social username', () => {
+    it('should set username on W3mFrameStorage and get connected social username', () => {
       const username = 'testuser'
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_SOCIAL_USERNAME, username)
+      vi.spyOn(W3mFrameHelpers, 'isClient', 'get').mockReturnValue(true)
+      W3mFrameStorage.set(W3mFrameConstants.SOCIAL_USERNAME, username)
       expect(StorageUtil.getConnectedSocialUsername()).toBe(username)
     })
   })

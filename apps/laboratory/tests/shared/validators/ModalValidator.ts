@@ -61,12 +61,21 @@ export class ModalValidator {
   }
 
   async expectDisconnected() {
-    await expect(
-      this.page.getByTestId('connect-button'),
-      'Connect button should be present'
-    ).toBeVisible({
+    const connectButton = this.page.getByTestId('connect-button')
+    await expect(connectButton, 'Connect button should be present').toBeVisible({
       timeout: MAX_WAIT
     })
+
+    await expect(connectButton, 'Connect button should be enabled').toBeEnabled({
+      timeout: MAX_WAIT
+    })
+
+    await expect(connectButton, 'Connect button should contain text Connect').toHaveText(
+      'Connect Wallet',
+      {
+        timeout: MAX_WAIT
+      }
+    )
   }
 
   async expectSingleAccount() {
@@ -375,5 +384,20 @@ export class ModalValidator {
     await expect(this.page.getByTestId('wui-snackbar-message')).toHaveText(message, {
       timeout: MAX_WAIT
     })
+  }
+
+  async expectEmail() {
+    const email = this.page.getByTestId('w3m-email')
+    await expect(email).toBeVisible({ timeout: MAX_WAIT })
+  }
+
+  async expectAccountType() {
+    const authAccountType = this.page.getByTestId('w3m-account-type')
+    await expect(authAccountType).toBeVisible({ timeout: MAX_WAIT })
+  }
+
+  async expectSmartAccountStatus() {
+    const smartAccountStatus = this.page.getByTestId('w3m-sa-account-status')
+    await expect(smartAccountStatus).toBeVisible({ timeout: MAX_WAIT })
   }
 }

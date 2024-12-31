@@ -1,14 +1,17 @@
+import type { ChainNamespace } from './TypeUtil.js'
+
+export type NamespacedConnectorKey = `@appkit/${ChainNamespace}:connected_connector_id`
 export type SafeLocalStorageItems = {
   '@appkit/wallet_id': string
   '@appkit/wallet_name': string
   '@appkit/solana_wallet': string
   '@appkit/solana_caip_chain': string
   '@appkit/active_caip_network_id': string
-  '@appkit/connected_connector_id': string
   '@appkit/connected_social': string
-  '@appkit/connected_social_username': string
+  '@appkit-wallet/SOCIAL_USERNAME': string
   '@appkit/recent_wallets': string
   '@appkit/active_namespace': string
+  '@appkit/connected_namespaces': string
   '@appkit/connection_status': string
   '@appkit/siwx-auth-token': string
   '@appkit/siwx-nonce-token': string
@@ -25,36 +28,41 @@ export const SafeLocalStorageKeys = {
   SOLANA_WALLET: '@appkit/solana_wallet',
   SOLANA_CAIP_CHAIN: '@appkit/solana_caip_chain',
   ACTIVE_CAIP_NETWORK_ID: '@appkit/active_caip_network_id',
-  CONNECTED_CONNECTOR_ID: '@appkit/connected_connector_id',
   CONNECTED_SOCIAL: '@appkit/connected_social',
-  CONNECTED_SOCIAL_USERNAME: '@appkit/connected_social_username',
+  CONNECTED_SOCIAL_USERNAME: '@appkit-wallet/SOCIAL_USERNAME',
   RECENT_WALLETS: '@appkit/recent_wallets',
   DEEPLINK_CHOICE: 'WALLETCONNECT_DEEPLINK_CHOICE',
   ACTIVE_NAMESPACE: '@appkit/active_namespace',
+  CONNECTED_NAMESPACES: '@appkit/connected_namespaces',
   CONNECTION_STATUS: '@appkit/connection_status',
   SIWX_AUTH_TOKEN: '@appkit/siwx-auth-token',
   SIWX_NONCE_TOKEN: '@appkit/siwx-nonce-token'
 } as const satisfies Record<string, keyof SafeLocalStorageItems>
 
+export type SafeLocalStorageKey = keyof SafeLocalStorageItems | NamespacedConnectorKey
+
+export function getSafeConnectorIdKey(namespace?: ChainNamespace): NamespacedConnectorKey {
+  if (!namespace) {
+    throw new Error('Namespace is required for CONNECTED_CONNECTOR_ID')
+  }
+
+  return `@appkit/${namespace}:connected_connector_id`
+}
+
 export const SafeLocalStorage = {
-  setItem<Key extends keyof SafeLocalStorageItems>(
-    key: Key,
-    value?: SafeLocalStorageItems[Key]
-  ): void {
+  setItem(key: SafeLocalStorageKey, value?: string): void {
     if (isSafe() && value !== undefined) {
       localStorage.setItem(key, value)
     }
   },
-  getItem<Key extends keyof SafeLocalStorageItems>(
-    key: Key
-  ): SafeLocalStorageItems[Key] | undefined {
+  getItem(key: SafeLocalStorageKey): string | undefined {
     if (isSafe()) {
       return localStorage.getItem(key) || undefined
     }
 
     return undefined
   },
-  removeItem<Key extends keyof SafeLocalStorageItems>(key: Key): void {
+  removeItem(key: SafeLocalStorageKey): void {
     if (isSafe()) {
       localStorage.removeItem(key)
     }

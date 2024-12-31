@@ -4,6 +4,7 @@ import type {
   AccountTypeMap,
   CombinedProvider,
   ConnectedWalletInfo,
+  User,
   Provider,
   SocialProvider
 } from '../utils/TypeUtil.js'
@@ -23,6 +24,7 @@ import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 export interface AccountControllerState {
   currentTab: number
   caipAddress?: CaipAddress
+  user?: User
   address?: string
   addressLabels: Map<string, string>
   allAccounts: AccountType[]
@@ -144,6 +146,10 @@ export const AccountController = {
     ChainController.setAccountProp('profileImage', profileImage, chain)
   },
 
+  setUser(user: AccountControllerState['user']) {
+    state.user = user
+  },
+
   setAddressExplorerUrl(
     explorerUrl: AccountControllerState['addressExplorerUrl'],
     chain: ChainNamespace | undefined
@@ -223,9 +229,7 @@ export const AccountController = {
     farcasterUrl: AccountControllerState['farcasterUrl'],
     chain: ChainNamespace | undefined
   ) {
-    if (farcasterUrl) {
-      ChainController.setAccountProp('farcasterUrl', farcasterUrl, chain)
-    }
+    ChainController.setAccountProp('farcasterUrl', farcasterUrl, chain)
   },
 
   async fetchTokenBalance() {
