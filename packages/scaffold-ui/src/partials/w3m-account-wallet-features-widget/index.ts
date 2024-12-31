@@ -222,11 +222,10 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private watchSwapValues() {
-    this.watchTokenBalance = setInterval(() => {
-      AccountController.fetchTokenBalance(error => {
-        this.onTokenBalanceError(error)
-      })
-    }, 10_000)
+    this.watchTokenBalance = setInterval(
+      () => AccountController.fetchTokenBalance(error => this.onTokenBalanceError(error)),
+      10_000
+    )
   }
 
   private onTokenBalanceError(error: unknown) {
