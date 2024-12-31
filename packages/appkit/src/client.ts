@@ -684,6 +684,7 @@ export class AppKit {
     OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
 
     OptionsController.setSdkVersion(options.sdkVersion)
+    OptionsController.setProjectId(options.projectId)
     OptionsController.setEnableEmbedded(options.enableEmbedded)
     OptionsController.setAllWallets(options.allWallets)
     OptionsController.setIncludeWalletIds(options.includeWalletIds)
@@ -753,8 +754,8 @@ export class AppKit {
       sdkVersion: SdkVersion
     }
   ) {
-    this.initializeChainController(options)
     this.initializeOptionsController(options)
+    this.initializeChainController(options)
     this.initializeThemeController(options)
 
     if (options.excludeWalletIds) {
@@ -1987,11 +1988,6 @@ export class AppKit {
     }, {} as Adapters)
   }
 
-  private async createConnectorsForAdapter(namespace: ChainNamespace) {
-    await this.createUniversalProviderForAdapter(namespace)
-    this.createAuthProviderForAdapter(namespace)
-  }
-
   private onConnectors(chainNamespace: ChainNamespace) {
     const adapter = this.getAdapter(chainNamespace)
 
@@ -2004,7 +2000,8 @@ export class AppKit {
         this.onConnectors(namespace)
         this.listenAdapter(namespace)
         this.chainAdapters?.[namespace].syncConnectors(this.options, this)
-        await this.createConnectorsForAdapter(namespace)
+        await this.createUniversalProviderForAdapter(namespace)
+        this.createAuthProviderForAdapter(namespace)
       })
     )
   }

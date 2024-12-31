@@ -122,18 +122,6 @@ export const ChainController = {
       if (state.activeChain) {
         PublicStateController.set({ activeChain: adapterToActivate?.namespace })
       }
-
-      adapters.forEach((adapter: ChainAdapter) => {
-        state.chains.set(adapter.namespace as ChainNamespace, {
-          namespace: adapter.namespace,
-          connectionControllerClient: adapter.connectionControllerClient,
-          networkControllerClient: adapter.networkControllerClient,
-          adapterType: adapter.adapterType,
-          accountState,
-          networkState,
-          caipNetworks: adapter.caipNetworks
-        })
-      })
     }
   },
 
@@ -142,7 +130,7 @@ export const ChainController = {
 
     if (chainAdapter) {
       chainAdapter.networkState = ref({
-        ...chainAdapter.networkState,
+        ...(chainAdapter.networkState || networkState),
         ...props
       } as AdapterNetworkState)
 
@@ -163,7 +151,7 @@ export const ChainController = {
 
     if (chainAdapter) {
       chainAdapter.accountState = ref({
-        ...chainAdapter.accountState,
+        ...(chainAdapter.accountState || accountState),
         ...accountProps
       } as AccountControllerState)
       state.chains.set(chain, chainAdapter)
