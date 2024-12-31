@@ -55,6 +55,10 @@ export class W3mFrameProvider {
     return W3mFrameStorage.get(W3mFrameConstants.EMAIL)
   }
 
+  public getUsername() {
+    return W3mFrameStorage.get(W3mFrameConstants.SOCIAL_USERNAME)
+  }
+
   public async reload() {
     try {
       this.w3mFrame.initFrame()
@@ -435,6 +439,16 @@ export class W3mFrameProvider {
   public onConnect(callback: (user: W3mFrameTypes.Responses['FrameGetUserResponse']) => void) {
     this.w3mFrame.events.onFrameEvent(event => {
       if (event.type === W3mFrameConstants.FRAME_GET_USER_SUCCESS) {
+        callback(event.payload)
+      }
+    })
+  }
+
+  public onSocialConnected(
+    callback: (user: W3mFrameTypes.Responses['FrameConnectSocialResponse']) => void
+  ) {
+    this.w3mFrame.events.onFrameEvent(event => {
+      if (event.type === W3mFrameConstants.FRAME_CONNECT_SOCIAL_SUCCESS) {
         callback(event.payload)
       }
     })
