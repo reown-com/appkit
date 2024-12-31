@@ -161,7 +161,7 @@ describe('ChainController', () => {
     ).toEqual(approvedCaipNetworkIds)
   })
 
-  it.only('should update state correctly on setApprovedCaipNetworkIds()', async () => {
+  it('should update state correctly on setApprovedCaipNetworkIds()', async () => {
     const networkController = { ...networkControllerClient }
     const networkControllerSpy = vi
       .spyOn(networkController, 'getApprovedCaipNetworksData')
