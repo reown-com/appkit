@@ -50,6 +50,12 @@ emailTest.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
+emailTest('it should show user info', async () => {
+  await validator.expectEmail()
+  await validator.expectAccountType()
+  await validator.expectSmartAccountStatus()
+})
+
 emailTest('it should sign', async () => {
   await page.sign()
   await page.approveSign()
