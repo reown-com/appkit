@@ -174,7 +174,6 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
       if (chain === 'bitcoin') return adapters.push(bitcoinAdapter)
     })
 
-    console.log('>>> recreate appkit with: ', adapters)
     const newAppKit = createAppKit({
       adapters,
       ...appKitConfigs
