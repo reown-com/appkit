@@ -220,9 +220,11 @@ export const AccountController = {
     socialWindow: AccountControllerState['socialWindow'],
     chain: ChainNamespace | undefined
   ) {
-    if (socialWindow) {
-      ChainController.setAccountProp('socialWindow', ref(socialWindow), chain)
-    }
+    ChainController.setAccountProp(
+      'socialWindow',
+      socialWindow ? ref(socialWindow) : undefined,
+      chain
+    )
   },
 
   setFarcasterUrl(
