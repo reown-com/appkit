@@ -71,11 +71,6 @@ describe('Base', () => {
   beforeEach(() => {
     vi.resetAllMocks()
 
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      chains: new Map(),
-      activeChain: 'eip155'
-    } as any)
-
     vi.mocked(ConnectorController).getConnectors = vi.fn().mockReturnValue([])
     vi.mocked(CaipNetworksUtil).extendCaipNetworks = vi.fn().mockReturnValue([])
 
@@ -106,7 +101,10 @@ describe('Base', () => {
       })
 
       expect(ChainController.initialize).toHaveBeenCalledOnce()
-      expect(ChainController.initialize).toHaveBeenCalledWith(mockOptions.adapters, [])
+      expect(ChainController.initialize).toHaveBeenCalledWith(mockOptions.adapters, [], {
+        connectionControllerClient: expect.any(Object),
+        networkControllerClient: expect.any(Object)
+      })
     })
 
     it('should set EIP6963 enabled by default', () => {
@@ -309,6 +307,10 @@ describe('Base', () => {
     })
 
     it('should get address', () => {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        chains: new Map(),
+        activeChain: 'eip155'
+      } as any)
       vi.mocked(AccountController).state = { address: '0x123' } as any
       expect(appKit.getAddress()).toBe('0x123')
     })
@@ -1075,6 +1077,10 @@ describe('Base', () => {
     })
 
     it('should reconnect to multiple namespaces if previously connected', async () => {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        chains: new Map(),
+        activeChain: 'eip155'
+      } as any)
       vi.spyOn(ProviderUtil, 'setProviderId').mockImplementation(vi.fn())
       vi.spyOn(StorageUtil, 'getActiveNetworkProps').mockReturnValue({
         namespace: 'eip155',
@@ -1192,7 +1198,8 @@ describe('Base', () => {
 
       const initChainAdapters = (appKit as any).initChainAdapters.bind(appKit)
 
-      vi.spyOn(appKit as any, 'createConnectorsForAdapter').mockResolvedValue(undefined)
+      vi.spyOn(appKit as any, 'createUniversalProviderForAdapter').mockResolvedValueOnce(undefined)
+      vi.spyOn(appKit as any, 'createAuthProviderForAdapter').mockReturnValueOnce(undefined)
 
       await initChainAdapters([mockAdapter])
 
@@ -1336,36 +1343,6 @@ describe('Base', () => {
 
       expect(mockAdapter.setUniversalProvider).toHaveBeenCalled()
       expect(mockAdapter.setAuthProvider).toHaveBeenCalled()
-    })
-
-    it('should update ChainController state with initialized adapters', async () => {
-      vi.mocked(CaipNetworksUtil.extendCaipNetworks).mockReturnValue([
-        { id: '1', chainNamespace: 'eip155' } as CaipNetwork
-      ])
-
-      const appKit = new AppKit({
-        ...mockOptions,
-        networks: [mainnet],
-        projectId: 'YOUR_PROJECT_ID',
-        adapters: [mockAdapter]
-      })
-
-      const createAdapters = (appKit as any).createAdapters.bind(appKit)
-
-      vi.spyOn(appKit as any, 'createUniversalProvider').mockResolvedValue(undefined)
-
-      await createAdapters([mockAdapter])
-
-      expect(ChainController.state.chains.get('eip155')).toEqual(
-        expect.objectContaining({
-          namespace: 'eip155',
-          connectionControllerClient: expect.any(Object),
-          networkControllerClient: expect.any(Object),
-          networkState: expect.any(Object),
-          accountState: expect.any(Object),
-          caipNetworks: expect.any(Array)
-        })
-      )
     })
   })
 

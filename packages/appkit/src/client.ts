@@ -17,8 +17,6 @@ import {
   type Provider,
   type SendTransactionArgs,
   type EstimateGasTransactionArgs,
-  type AccountControllerState,
-  type AdapterNetworkState,
   ConstantsUtil as CoreConstantsUtil,
   type Features,
   SIWXUtil,
@@ -110,19 +108,6 @@ export interface OpenOptions {
 type Adapters = Record<ChainNamespace, AdapterBlueprint>
 
 // -- Constants ----------------------------------------- //
-const accountState: AccountControllerState = {
-  currentTab: 0,
-  tokenBalance: [],
-  smartAccountDeployed: false,
-  addressLabels: new Map(),
-  allAccounts: []
-}
-
-const networkState: AdapterNetworkState = {
-  supportsAllNetworks: true,
-  smartAccountEnabledNetworks: []
-}
-
 const OPTIONAL_METHODS = [
   'eth_accounts',
   'eth_requestAccounts',
@@ -732,19 +717,17 @@ export class AppKit {
   }
 
   private initializeChainController(options: AppKitOptions) {
-    ChainController.initialize(options.adapters ?? [], this.caipNetworks)
+    if (!this.connectionControllerClient || !this.networkControllerClient) {
+      throw new Error('ConnectionControllerClient and NetworkControllerClient must be set')
+    }
+    ChainController.initialize(options.adapters ?? [], this.caipNetworks, {
+      connectionControllerClient: this.connectionControllerClient,
+      networkControllerClient: this.networkControllerClient
+    })
     const network = this.getDefaultNetwork()
     if (network) {
       ChainController.setActiveCaipNetwork(network)
     }
-
-    this.chainNamespaces.forEach(chainNamespace =>
-      this.setRequestedCaipNetworks(
-        this.caipNetworks?.filter(caipNetwork => caipNetwork.chainNamespace === chainNamespace) ??
-          [],
-        chainNamespace
-      )
-    )
   }
 
   private initControllers(
@@ -1973,15 +1956,6 @@ export class AppKit {
           networks: this.caipNetworks
         })
       }
-
-      ChainController.state.chains.set(namespace, {
-        namespace,
-        connectionControllerClient: this.connectionControllerClient,
-        networkControllerClient: this.networkControllerClient,
-        networkState,
-        accountState,
-        caipNetworks: this.caipNetworks ?? []
-      })
 
       return adapters
       // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
