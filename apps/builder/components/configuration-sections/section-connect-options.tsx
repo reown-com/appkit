@@ -2,14 +2,12 @@
 
 import { useAppKitContext } from '@/hooks/use-appkit'
 import { FeatureButton } from '@/components/feature-button'
-import { NetworkList } from '@/components/network-list'
 
 import { UniqueIdentifier } from '@dnd-kit/core'
 import dynamic from 'next/dynamic'
 import { ConnectMethodItemLoading } from '@/components/connect-method-item/components/loading'
 import { ConnectMethod, ConstantsUtil } from '@reown/appkit-core'
 import { urlStateUtils } from '@/lib/url-state'
-import { ChainList } from '@/components/chain-list'
 
 const SortableConnectMethodList = dynamic(
   () =>
