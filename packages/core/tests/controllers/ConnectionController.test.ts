@@ -2,7 +2,8 @@ import { beforeAll, describe, expect, it, vi } from 'vitest'
 import type {
   ChainAdapter,
   ConnectionControllerClient,
-  ConnectorType
+  ConnectorType,
+  NetworkControllerClient
 } from '../../exports/index.js'
 import {
   ChainController,
@@ -70,7 +71,10 @@ const adapters = [evmAdapter] as ChainAdapter[]
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize(adapters, [])
+  ChainController.initialize(adapters, [], {
+    connectionControllerClient: client,
+    networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+  })
   ConnectionController.setClient(evmAdapter.connectionControllerClient)
 })
 
@@ -84,7 +88,11 @@ describe('ConnectionController', () => {
           caipNetworks: []
         }
       ],
-      []
+      [],
+      {
+        connectionControllerClient: client,
+        networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+      }
     )
 
     expect(ConnectionController.state).toEqual({
@@ -143,7 +151,11 @@ describe('ConnectionController', () => {
           caipNetworks: []
         }
       ],
-      []
+      [],
+      {
+        connectionControllerClient: partialClient,
+        networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+      }
     )
     await ConnectionController.connectExternal({ id: externalId, type }, chain)
     ConnectionController.checkInstalled([externalId])

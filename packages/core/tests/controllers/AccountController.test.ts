@@ -1,5 +1,10 @@
-import { beforeAll, describe, expect, it } from 'vitest'
-import { AccountController, ChainController } from '../../exports/index.js'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
+import {
+  AccountController,
+  ChainController,
+  type ConnectionControllerClient,
+  type NetworkControllerClient
+} from '../../exports/index.js'
 import { ConstantsUtil } from '@reown/appkit-common'
 
 // -- Setup --------------------------------------------------------------------
@@ -20,7 +25,11 @@ beforeAll(() => {
         caipNetworks: []
       }
     ],
-    []
+    [],
+    {
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
+      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+    }
   )
 })
 
