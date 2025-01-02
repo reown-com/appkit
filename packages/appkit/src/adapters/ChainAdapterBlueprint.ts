@@ -443,11 +443,10 @@ export namespace AdapterBlueprint {
     gas: bigint
   }
 
-  export type WriteContractParams = WriteContractArgs & {
+  export interface WriteContractParams extends WriteContractArgs {
     caipNetwork: CaipNetwork
     provider?: AppKitConnector['provider']
     caipAddress: CaipAddress
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }
 
   export type WriteContractResult = {

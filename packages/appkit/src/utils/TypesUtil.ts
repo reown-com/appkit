@@ -3,7 +3,7 @@ import type { ChainAdapter, Metadata, OptionsControllerState, ThemeMode } from '
 import type { AppKitSIWEClient } from '@reown/appkit-siwe'
 import type UniversalProvider from '@walletconnect/universal-provider'
 
-export type AppKitOptions = {
+export interface AppKitOptions extends OptionsControllerState {
   /**
    * Adapter array to be used by the AppKit.
    * @default []
@@ -79,4 +79,4 @@ export type AppKitOptions = {
    * @default undefined
    */
   universalProvider?: UniversalProvider
-} & OptionsControllerState
+}
