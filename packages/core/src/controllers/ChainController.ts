@@ -118,7 +118,7 @@ export const ChainController = {
     )
     const defaultAdapter = adapters.find(adapter => adapter?.namespace === activeNamespace)
     const adapterToActivate = defaultAdapter || adapters?.[0]
-
+    const namespaces = new Set([...(caipNetworks?.map(network => network.chainNamespace) ?? [])])
     if (adapters?.length === 0 || !adapterToActivate) {
       state.noAdapters = true
     }
@@ -130,21 +130,21 @@ export const ChainController = {
       if (state.activeChain) {
         PublicStateController.set({ activeChain: adapterToActivate?.namespace })
       }
-      adapters.forEach(adapter => {
-        ChainController.state.chains.set(adapter.namespace as ChainNamespace, {
-          namespace: adapter.namespace,
-          networkState,
-          accountState,
-          caipNetworks: caipNetworks ?? [],
-          ...clients
-        })
-        this.setRequestedCaipNetworks(
-          caipNetworks?.filter(caipNetwork => caipNetwork.chainNamespace === adapter?.namespace) ??
-            [],
-          adapter?.namespace as ChainNamespace
-        )
-      })
     }
+
+    namespaces.forEach(namespace => {
+      ChainController.state.chains.set(namespace as ChainNamespace, {
+        namespace,
+        networkState,
+        accountState,
+        caipNetworks: caipNetworks ?? [],
+        ...clients
+      })
+      this.setRequestedCaipNetworks(
+        caipNetworks?.filter(caipNetwork => caipNetwork.chainNamespace === namespace) ?? [],
+        namespace
+      )
+    })
   },
 
   setAdapterNetworkState(chain: ChainNamespace, props: Partial<AdapterNetworkState>) {
