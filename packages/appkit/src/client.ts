@@ -1670,7 +1670,6 @@ export class AppKit {
     const activeCaipNetwork = this.caipNetworks?.find(
       n => n.caipNetworkId === `${chainNamespace}:${chainId}`
     )
-    console.log('activeCaipNetwork', activeCaipNetwork)
 
     if (chainNamespace !== ConstantsUtil.CHAIN.EVM || activeCaipNetwork?.testnet) {
       return
