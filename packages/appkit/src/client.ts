@@ -1039,7 +1039,7 @@ export class AppKit {
           this.setCaipNetwork(caipNetwork)
           await this.syncAccount({
             address: AccountController.state.address,
-            chainId: caipNetwork.id as string | number,
+            chainId: caipNetwork.id,
             chainNamespace: caipNetwork.chainNamespace
           })
         } else if (AccountController.state.address) {
