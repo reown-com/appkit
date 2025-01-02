@@ -4,7 +4,9 @@ import {
   AssetController,
   ChainController,
   ConnectorController,
-  OptionsController
+  OptionsController,
+  type ConnectionControllerClient,
+  type NetworkControllerClient
 } from '../../exports/index.js'
 import { api } from '../../src/controllers/ApiController.js'
 import { ConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
@@ -21,7 +23,11 @@ beforeAll(() => {
         caipNetworks: []
       }
     ],
-    []
+    [],
+    {
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
+      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+    }
   )
 })
 
@@ -489,9 +495,9 @@ describe('ApiController', () => {
     OptionsController.setExcludeWalletIds(excludeWalletIds)
 
     const fetchSpy = vi.spyOn(api, 'get').mockResolvedValue({ data, count: data.length })
-    const fetchWalletsSpy = vi.spyOn(ApiController, 'searchWalletByIds')
+    const fetchWalletsSpy = vi.spyOn(ApiController, 'initializeExcludedWalletRdns')
 
-    await ApiController.searchWalletByIds({ ids: excludeWalletIds })
+    await ApiController.initializeExcludedWalletRdns({ ids: excludeWalletIds })
 
     expect(fetchSpy).toHaveBeenCalledWith({
       path: '/getWallets',

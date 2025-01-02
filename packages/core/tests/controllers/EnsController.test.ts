@@ -4,7 +4,9 @@ import {
   ChainController,
   ConnectionController,
   ConnectorController,
-  EnsController
+  EnsController,
+  type ConnectionControllerClient,
+  type NetworkControllerClient
 } from '../../exports/index.js'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { ConstantsUtil } from '@reown/appkit-common'
@@ -77,7 +79,11 @@ beforeAll(() => {
         caipNetworks: []
       }
     ],
-    []
+    [],
+    {
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
+      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+    }
   )
 })
 

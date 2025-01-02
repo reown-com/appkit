@@ -4,7 +4,8 @@ import type {
   AdapterAccountState,
   AdapterNetworkState,
   ChainAdapter,
-  Connector
+  Connector,
+  NetworkControllerClient
 } from '../utils/TypeUtil.js'
 
 import { AccountController, type AccountControllerState } from './AccountController.js'
@@ -23,7 +24,7 @@ import { EventsController } from './EventsController.js'
 import { RouterController } from './RouterController.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import { OptionsController } from './OptionsController.js'
-import { ConnectionController } from './ConnectionController.js'
+import { ConnectionController, type ConnectionControllerClient } from './ConnectionController.js'
 
 // -- Constants ----------------------------------------- //
 const accountState: AccountControllerState = {
@@ -102,7 +103,14 @@ export const ChainController = {
     })
   },
 
-  initialize(adapters: ChainAdapter[], caipNetworks: CaipNetwork[] | undefined) {
+  initialize(
+    adapters: ChainAdapter[],
+    caipNetworks: CaipNetwork[] | undefined,
+    clients: {
+      connectionControllerClient: ConnectionControllerClient
+      networkControllerClient: NetworkControllerClient
+    }
+  ) {
     const { chainId: activeChainId, namespace: activeNamespace } =
       StorageUtil.getActiveNetworkProps()
     const activeCaipNetwork = caipNetworks?.find(
@@ -122,16 +130,19 @@ export const ChainController = {
       if (state.activeChain) {
         PublicStateController.set({ activeChain: adapterToActivate?.namespace })
       }
-      adapters.forEach((adapter: ChainAdapter) => {
-        state.chains.set(adapter.namespace as ChainNamespace, {
+      adapters.forEach(adapter => {
+        ChainController.state.chains.set(adapter.namespace as ChainNamespace, {
           namespace: adapter.namespace,
-          connectionControllerClient: adapter.connectionControllerClient,
-          networkControllerClient: adapter.networkControllerClient,
-          adapterType: adapter.adapterType,
-          accountState,
           networkState,
-          caipNetworks: adapter.caipNetworks
+          accountState,
+          caipNetworks: caipNetworks ?? [],
+          ...clients
         })
+        this.setRequestedCaipNetworks(
+          caipNetworks?.filter(caipNetwork => caipNetwork.chainNamespace === adapter?.namespace) ??
+            [],
+          adapter?.namespace as ChainNamespace
+        )
       })
     }
   },
@@ -141,7 +152,7 @@ export const ChainController = {
 
     if (chainAdapter) {
       chainAdapter.networkState = ref({
-        ...chainAdapter.networkState,
+        ...(chainAdapter.networkState || networkState),
         ...props
       } as AdapterNetworkState)
 
@@ -159,10 +170,9 @@ export const ChainController = {
     }
 
     const chainAdapter = state.chains.get(chain)
-
     if (chainAdapter) {
       chainAdapter.accountState = ref({
-        ...chainAdapter.accountState,
+        ...(chainAdapter.accountState || accountState),
         ...accountProps
       } as AccountControllerState)
       state.chains.set(chain, chainAdapter)
