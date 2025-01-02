@@ -130,7 +130,7 @@ export const EnsController = {
 
       const signature = await ConnectionController.signMessage(message)
       const networkId = network.id
-
+      console.log('>> Network ID', networkId, network)
       if (!networkId) {
         throw new Error('Network not found')
       }
@@ -146,6 +146,7 @@ export const EnsController = {
       AccountController.setProfileName(name, network.chainNamespace)
       RouterController.replace('RegisterAccountNameSuccess')
     } catch (e) {
+      console.log('>> Error', e)
       const errorMessage = this.parseEnsApiError(e, `Error registering name ${name}`)
       RouterController.replace('RegisterAccountName')
       throw new Error(errorMessage)
