@@ -69,7 +69,7 @@ export const AppSyncDappDataRequest = z.object({
 export const AppSetPreferredAccountRequest = z.object({ type: z.string() })
 
 export const FrameConnectEmailResponse = z.object({
-  action: z.enum(['VERIFY_DEVICE', 'VERIFY_OTP'])
+  action: z.enum(['VERIFY_DEVICE', 'VERIFY_OTP', 'CONNECT'])
 })
 
 export const FrameGetFarcasterUriResponse = z.object({
