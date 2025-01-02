@@ -234,7 +234,7 @@ export const AccountController = {
     ChainController.setAccountProp('farcasterUrl', farcasterUrl, chain)
   },
 
-  async fetchTokenBalance(onError?: (error: unknown) => void) {
+  async fetchTokenBalance(onError?: (error: unknown) => void): Promise<Balance[]> {
     const chainId = ChainController.state.activeCaipNetwork?.caipNetworkId
     const chain = ChainController.state.activeCaipNetwork?.chainNamespace
     const caipAddress = ChainController.state.activeCaipAddress
@@ -243,7 +243,7 @@ export const AccountController = {
       state.lastRetry &&
       !CoreHelperUtil.isAllowedRetry(state.lastRetry, 30 * ConstantsUtil.ONE_SEC_MS)
     ) {
-      return
+      return []
     }
 
     try {
@@ -257,6 +257,8 @@ export const AccountController = {
         this.setTokenBalance(filteredBalances, chain)
         SwapController.setBalances(SwapApiUtil.mapBalancesToSwapTokens(response.balances))
         state.lastRetry = undefined
+
+        return filteredBalances
       }
     } catch (error) {
       state.lastRetry = Date.now()
@@ -264,6 +266,8 @@ export const AccountController = {
       onError?.(error)
       SnackController.showError('Token Balance Unavailable')
     }
+
+    return []
   },
 
   resetAccount(chain: ChainNamespace) {
