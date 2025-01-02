@@ -168,7 +168,7 @@ describe('EnsController', () => {
     expect(result2).toEqual([])
   })
 
-  it.only('should register name', async () => {
+  it('should register name', async () => {
     // Setup
     ChainController.setActiveCaipNetwork({
       ...polygon,

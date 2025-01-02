@@ -394,10 +394,14 @@ describe('ChainController', () => {
       connectionControllerClient: connectionController
     }
 
-    ChainController.initialize([evmAdapterCustom, solanaAdapterCustom], requestedCaipNetworks, {
-      connectionControllerClient: connectionController,
-      networkControllerClient
-    })
+    ChainController.initialize(
+      [evmAdapterCustom, solanaAdapterCustom],
+      [...requestedCaipNetworks, solanaCaipNetwork],
+      {
+        connectionControllerClient: connectionController,
+        networkControllerClient
+      }
+    )
 
     await ChainController.disconnect()
 
