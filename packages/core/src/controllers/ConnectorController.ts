@@ -1,7 +1,7 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, snapshot } from 'valtio/vanilla'
 import type { AuthConnector, Connector } from '../utils/TypeUtil.js'
-import { ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
+import { ConstantsUtil, getW3mThemeVariables, type ChainNamespace } from '@reown/appkit-common'
 import { OptionsController } from './OptionsController.js'
 import { ThemeController } from './ThemeController.js'
 import { ChainController } from './ChainController.js'
@@ -52,6 +52,11 @@ export const ConnectorController = {
       state.allConnectors.push(ref(connector))
     })
 
+    state.connectors = this.mergeMultiChainConnectors(state.allConnectors)
+  },
+
+  removeAdapter(namespace: ChainNamespace) {
+    state.allConnectors = state.allConnectors.filter(connector => connector.chain !== namespace)
     state.connectors = this.mergeMultiChainConnectors(state.allConnectors)
   },
 

@@ -147,6 +147,30 @@ export const ChainController = {
     }
   },
 
+  removeAdapter(adapter: ChainAdapter) {
+    state.chains.delete(adapter.namespace as ChainNamespace)
+  },
+
+  addAdapter(
+    adapter: ChainAdapter,
+    {
+      networkControllerClient,
+      connectionControllerClient
+    }: {
+      networkControllerClient: NetworkControllerClient
+      connectionControllerClient: ConnectionControllerClient
+    }
+  ) {
+    state.chains.set(adapter.namespace as ChainNamespace, {
+      namespace: adapter.namespace,
+      networkState,
+      accountState,
+      caipNetworks: [],
+      connectionControllerClient,
+      networkControllerClient
+    })
+  },
+
   setAdapterNetworkState(chain: ChainNamespace, props: Partial<AdapterNetworkState>) {
     const chainAdapter = state.chains.get(chain)
 

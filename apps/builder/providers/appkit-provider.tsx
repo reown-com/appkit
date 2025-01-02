@@ -6,6 +6,7 @@ import React, { type ReactNode } from 'react'
 import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
 import { wagmiAdapter, appKitConfigs, initialConfig } from '@/lib/config'
 import { ThemeStore } from '@/lib/theme-store'
+import { ref } from 'valtio/vanilla'
 
 const queryClient = new QueryClient()
 
@@ -17,7 +18,7 @@ if (!projectId) {
 
 export const modal = createAppKit(appKitConfigs)
 
-ThemeStore.setModal(modal)
+ThemeStore.setModal(ref(modal))
 ThemeStore.initializeThemeVariables(initialConfig?.themeVariables || {})
 
 type AppKitProviderProps = {

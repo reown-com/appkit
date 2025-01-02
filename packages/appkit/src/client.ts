@@ -171,7 +171,7 @@ export class AppKit {
 
   private initPromise?: Promise<void> = undefined
 
-  public version?: SdkVersion
+  public version: SdkVersion
 
   public adapter?: ChainAdapter
 
@@ -643,6 +643,45 @@ export class AppKit {
       OptionsController.state.features,
       ConnectorController.getConnectors()
     )
+  }
+
+  public removeAdapter(adapter: ChainAdapter) {
+    ChainController.removeAdapter(adapter)
+    if (adapter.namespace) {
+      ConnectorController.removeAdapter(adapter.namespace)
+    }
+    this.chainNamespaces = this.chainNamespaces.filter(namespace => namespace !== adapter.namespace)
+    this.caipNetworks = this.caipNetworks?.filter(
+      network => network.chainNamespace !== adapter.namespace
+    ) as [CaipNetwork, ...CaipNetwork[]]
+    if (this.chainAdapters && adapter.namespace) {
+      delete this.chainAdapters[adapter.namespace]
+    }
+    // TODO(enes): what about the event listeners?
+  }
+
+  public async addAdapter(adapter: ChainAdapter) {
+    const namespace = adapter.namespace
+    if (
+      this.chainAdapters &&
+      this.connectionControllerClient &&
+      this.networkControllerClient &&
+      namespace
+    ) {
+      this.chainAdapters[namespace] = adapter as unknown as AdapterBlueprint
+      this.chainAdapters[namespace].namespace = namespace
+      this.chainAdapters[namespace].construct({
+        namespace,
+        projectId: this.options?.projectId,
+        networks: this.caipNetworks
+      })
+      ChainController.addAdapter(adapter, {
+        connectionControllerClient: this.connectionControllerClient,
+        networkControllerClient: this.networkControllerClient
+      })
+      this.chainAdapters?.[namespace].syncConnectors(this.options, this)
+    }
+    // TODO(enes): what about the event listeners?
   }
 
   // -- Private ------------------------------------------------------------------

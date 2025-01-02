@@ -1,27 +1,15 @@
 'use client'
 
 import { ReactNode, useEffect, useState } from 'react'
-import {
-  createAppKit,
-  Features,
-  ThemeMode,
-  ThemeVariables,
-  useAppKitState
-} from '@reown/appkit/react'
-import { ChainAdapter, ConnectMethod, ConstantsUtil } from '@reown/appkit-core'
+import { Features, ThemeMode, ThemeVariables, useAppKitState } from '@reown/appkit/react'
+import type { ChainNamespace } from '@reown/appkit-common'
+import { ConnectMethod, ConstantsUtil } from '@reown/appkit-core'
 import { ThemeStore } from '../lib/theme-store'
 import { URLState, urlStateUtils } from '@/lib/url-state'
 import { AppKitContext } from '@/contexts/appkit-context'
 import { useSnapshot } from 'valtio'
 import { UniqueIdentifier } from '@dnd-kit/core'
-import {
-  appKitConfigs,
-  bitcoinAdapter,
-  defaultCustomizationConfig,
-  initialConfig,
-  solanaAdapter,
-  wagmiAdapter
-} from '@/lib/config'
+import { allAdapters, defaultCustomizationConfig, initialConfig } from '@/lib/config'
 import { useTheme } from 'next-themes'
 import { inter } from '@/lib/fonts'
 import { Toaster } from 'sonner'
@@ -54,8 +42,8 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
     wallet: false,
     social: false
   })
-  const [enabledChains, setEnabledChains] = useState<string[]>(
-    initialConfig?.enabledChains || ['evm', 'solana', 'bitcoin']
+  const [enabledChains, setEnabledChains] = useState<ChainNamespace[]>(
+    initialConfig?.enabledChains || ['eip155', 'solana', 'bip122']
   )
   const themeStore = useSnapshot(ThemeStore.state)
   const appKit = themeStore.modal
@@ -67,10 +55,27 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
     }))
   }
 
-  function updateEnabledChains(chains: string[]) {
-    setEnabledChains(() => {
-      urlStateUtils.updateURLWithState({ enabledChains: chains })
-      return chains
+  function removeChain(chain: ChainNamespace) {
+    setEnabledChains(prev => {
+      const newEnabledChains = prev.filter(c => c !== chain)
+      const adapter = allAdapters.find(a => a.namespace === chain)
+      if (adapter) {
+        appKit?.removeAdapter(adapter)
+      }
+      urlStateUtils.updateURLWithState({ enabledChains: newEnabledChains })
+      return newEnabledChains
+    })
+  }
+
+  function addChain(chain: ChainNamespace) {
+    setEnabledChains(prev => {
+      const newEnabledChains = [...prev, chain]
+      const adapter = allAdapters.find(a => a.namespace === chain)
+      if (adapter) {
+        appKit?.addAdapter(adapter)
+      }
+      urlStateUtils.updateURLWithState({ enabledChains: newEnabledChains })
+      return newEnabledChains
     })
   }
 
@@ -163,23 +168,6 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
   }, [])
 
   const socialsEnabled = Array.isArray(features.socials)
-  const enabledChainsString = enabledChains.join(',')
-
-  useEffect(() => {
-    const chains = enabledChainsString.split(',')
-    const adapters: ChainAdapter[] = []
-    chains.forEach(chain => {
-      if (chain === 'evm') return adapters.push(wagmiAdapter)
-      if (chain === 'solana') return adapters.push(solanaAdapter)
-      if (chain === 'bitcoin') return adapters.push(bitcoinAdapter)
-    })
-
-    const newAppKit = createAppKit({
-      adapters,
-      ...appKitConfigs
-    })
-    ThemeStore.setModal(newAppKit)
-  }, [enabledChainsString])
 
   return (
     <AppKitContext.Provider
@@ -199,6 +187,8 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
           privacyPolicyUrl
         },
         enabledChains,
+        removeChain,
+        addChain,
         socialsEnabled,
         enableWallets,
         isDraggingByKey,
@@ -210,8 +200,7 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
         setEnableWallets: updateEnableWallets,
         setSocialsOrder: appKit?.setSocialsOrder,
         updateDraggingState,
-        resetConfigs,
-        updateEnabledChains
+        resetConfigs
       }}
     >
       <Toaster theme={theme as ThemeMode} />

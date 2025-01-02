@@ -76,6 +76,8 @@ export const solanaAdapter = new SolanaAdapter({
 
 export const bitcoinAdapter = new BitcoinAdapter({})
 
+export const allAdapters = [wagmiAdapter, solanaAdapter, bitcoinAdapter]
+
 export const wagmiConfig = wagmiAdapter.wagmiConfig
 
 export const defaultCustomizationConfig = {
@@ -97,14 +99,14 @@ const metadata = {
 }
 
 export const initialConfig = urlStateUtils.getStateFromURL()
-const initialEnabledChains = initialConfig?.enabledChains || []
+const initialEnabledChains = initialConfig?.enabledChains || ['eip155', 'solana', 'bip122']
 
 const adapters: ChainAdapter[] = []
 
 initialEnabledChains.forEach(chain => {
-  if (chain === 'evm') return adapters.push(wagmiAdapter)
+  if (chain === 'eip155') return adapters.push(wagmiAdapter)
   if (chain === 'solana') return adapters.push(solanaAdapter)
-  if (chain === 'bitcoin') return adapters.push(bitcoinAdapter)
+  if (chain === 'bip122') return adapters.push(bitcoinAdapter)
 })
 
 export const appKitConfigs = {
