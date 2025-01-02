@@ -21,7 +21,6 @@ import {
   CoreHelperUtil,
   AlertController,
   StorageUtil,
-  type ChainAdapter,
   type ChainControllerState
 } from '@reown/appkit-core'
 import {
@@ -1506,7 +1505,7 @@ describe('Listeners', () => {
         email: false,
         socials: []
       },
-      adapters: [mockAdapter as ChainAdapter]
+      adapters: [mockAdapter as unknown as AdapterBlueprint]
     })
 
     const identity = { name: 'vitalik.eth', avatar: null } as const

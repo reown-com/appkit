@@ -1,14 +1,15 @@
 import type { AppKitNetwork, ThemeVariables } from '@reown/appkit-common'
-import type { ChainAdapter, Metadata, OptionsControllerState, ThemeMode } from '@reown/appkit-core'
+import type { Metadata, OptionsControllerState, ThemeMode } from '@reown/appkit-core'
 import type { AppKitSIWEClient } from '@reown/appkit-siwe'
 import type UniversalProvider from '@walletconnect/universal-provider'
+import type { AdapterBlueprint } from '../adapters/index.js'
 
 export interface AppKitOptions extends OptionsControllerState {
   /**
    * Adapter array to be used by the AppKit.
    * @default []
    */
-  adapters?: ChainAdapter[]
+  adapters?: AdapterBlueprint[]
   /**
    * Show or hide the wallets in the modal. This is available with the email and socials features
    * @default true
