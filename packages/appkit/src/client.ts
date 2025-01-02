@@ -668,6 +668,17 @@ export class AppKit {
   }
 
   // -- Private ------------------------------------------------------------------
+  private reInitializeAdapters(adapters: ChainAdapter[]) {
+    // A) Disconnected case - when user is already disconnected, we could do the following to reinitialize the adapters:
+    // 1. if active network doesn't belong to any of the adapters, then set the first adapter as active, and set the first caipNetwork as active
+    // 2. filter out caipNetworks that doesn't belong to any of the adapters - check caipNetworks.chainNamespace and adapter.namespace
+    // 3. filter out the connectors that doesn't belong to any of the adapters - check connectors.namespace and adapter.namespace
+    // 4. reinitialize the controllers
+    // B) Connected case - when user is already connected, it might be a bit tricky since new adapters might not include the connected namespace
+    // 1. disconnect all adapters first.
+    // 2. follow the steps in A)
+  }
+
   private initControllers(
     options: AppKitOptions & {
       adapters?: ChainAdapter[]
@@ -1125,9 +1136,8 @@ export class AppKit {
         return { supportsAllNetworks: true, approvedCaipNetworkIds: [] }
       }
     }
-    if (this.networkControllerClient && this.connectionControllerClient) {
-      ConnectionController.setClient(this.connectionControllerClient)
-    }
+
+    ConnectionController.setClient(this.connectionControllerClient)
   }
 
   private setupAuthConnectorListeners(provider: W3mFrameProvider) {
