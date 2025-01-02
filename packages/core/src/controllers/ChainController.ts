@@ -533,10 +533,6 @@ export const ChainController = {
 
   async disconnect() {
     try {
-      console.log(
-        '>> Disconnecting chains',
-        [...state.chains.keys()].map(key => key.toString())
-      )
       const disconnectResults = await Promise.allSettled(
         Array.from(state.chains.entries()).map(async ([namespace, adapter]) => {
           try {
