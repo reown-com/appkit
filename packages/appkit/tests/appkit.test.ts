@@ -21,7 +21,6 @@ import {
   CoreHelperUtil,
   AlertController,
   StorageUtil,
-  type ChainAdapter,
   type ChainControllerState
 } from '@reown/appkit-core'
 import {
@@ -1366,16 +1365,26 @@ describe('Base', () => {
         adapters: [mockSolanaAdapter, mockAdapter]
       })
 
-      const createAdapters = (appKit as any).createAdapters.bind(appKit)
+      const initChainAdapters = (appKit as any).initChainAdapters.bind(appKit)
 
-      vi.spyOn(appKit as any, 'createUniversalProvider').mockResolvedValue(undefined)
+      const mockUP = vi.fn()
+      vi.spyOn(appKit as any, 'createUniversalProvider').mockResolvedValue(mockUP)
 
-      const adapters = await createAdapters([mockAdapter, mockSolanaAdapter])
+      await initChainAdapters([mockAdapter, mockSolanaAdapter])
+
+      expect(mockSolanaAdapter.syncConnectors).toHaveBeenCalled()
+      expect(mockSolanaAdapter.on).toHaveBeenCalledWith('connectors', expect.any(Function))
+      expect(mockSolanaAdapter.on).toHaveBeenCalledWith('switchNetwork', expect.any(Function))
+      expect(mockSolanaAdapter.on).toHaveBeenCalledWith('disconnect', expect.any(Function))
+      expect(mockSolanaAdapter.on).toHaveBeenCalledWith('pendingTransactions', expect.any(Function))
+      expect(mockSolanaAdapter.on).toHaveBeenCalledWith('accountChanged', expect.any(Function))
 
       expect(mockAdapter.syncConnectors).toHaveBeenCalled()
-      expect(mockSolanaAdapter.syncConnectors).toHaveBeenCalled()
-      expect(adapters.eip155).toBeDefined()
-      expect(adapters.solana).toBeDefined()
+      expect(mockAdapter.on).toHaveBeenCalledWith('connectors', expect.any(Function))
+      expect(mockAdapter.on).toHaveBeenCalledWith('switchNetwork', expect.any(Function))
+      expect(mockAdapter.on).toHaveBeenCalledWith('disconnect', expect.any(Function))
+      expect(mockAdapter.on).toHaveBeenCalledWith('pendingTransactions', expect.any(Function))
+      expect(mockAdapter.on).toHaveBeenCalledWith('accountChanged', expect.any(Function))
     })
 
     it('should set universal provider and auth provider for each adapter', async () => {
@@ -1496,7 +1505,7 @@ describe('Listeners', () => {
         email: false,
         socials: []
       },
-      adapters: [mockAdapter as ChainAdapter]
+      adapters: [mockAdapter as unknown as AdapterBlueprint]
     })
 
     const identity = { name: 'vitalik.eth', avatar: null } as const
