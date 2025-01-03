@@ -7,6 +7,7 @@ import type {
   ApiGetAnalyticsConfigResponse,
   ApiGetWalletsRequest,
   ApiGetWalletsResponse,
+  ChainAdapter,
   WcWallet
 } from '../utils/TypeUtil.js'
 import { AssetController } from './AssetController.js'
@@ -14,6 +15,7 @@ import { ConnectorController } from './ConnectorController.js'
 import { OptionsController } from './OptionsController.js'
 import { ChainController } from './ChainController.js'
 import { EventsController } from './EventsController.js'
+import type { AppKitNetwork, CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()
@@ -183,6 +185,13 @@ export const ApiController = {
 
   async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
+    const { chains, activeChain, activeCaipNetwork } = ChainController.state
+
+    let networks: CaipNetworkId[] = activeCaipNetwork ? [activeCaipNetwork.caipNetworkId] : []
+    if (activeChain) {
+      const chain = chains.get(activeChain) as ChainAdapter
+      networks = chain.caipNetworks?.map(network => (network as CaipNetwork).caipNetworkId) ?? []
+    }
 
     const exclude = [
       ...state.recommended.map(({ id }) => id),
@@ -195,7 +204,7 @@ export const ApiController = {
         ...ApiController._getSdkProperties(),
         page: String(page),
         entries,
-        chains: ChainController.state.activeCaipNetwork?.caipNetworkId,
+        chains: networks.join(','),
         include: includeWalletIds?.join(','),
         exclude: exclude.join(',')
       }
