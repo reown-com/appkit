@@ -128,11 +128,8 @@ export class W3mAllWalletsList extends LitElement {
 
   private createPaginationObserver() {
     const loaderEl = this.shadowRoot?.querySelector(`#${PAGINATOR_ID}`)
-    console.log('>> Loader element', loaderEl)
     if (loaderEl) {
-      console.log('>> Creating observer')
       this.paginationObserver = new IntersectionObserver(([element]) => {
-        console.log('>> Observer triggered', element)
         if (element?.isIntersecting && !this.loading) {
           const { page, count, wallets } = ApiController.state
           if (wallets.length < count) {
