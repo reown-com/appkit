@@ -121,5 +121,5 @@ export const appKitConfigs = {
   themeVariables: initialConfig?.themeVariables || {},
   termsConditionsUrl: initialConfig?.termsConditionsUrl || '',
   privacyPolicyUrl: initialConfig?.privacyPolicyUrl || '',
-  disableAppend: true
+  enableEmbedded: true
 } as CreateAppKit
