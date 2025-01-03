@@ -15,6 +15,9 @@ import { CosignerService } from '../utils/CosignerService.js'
 import { ProviderUtil } from '@reown/appkit/store'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type {
+  CreateSubscriptionRequest,
+  CreateSubscriptionResponse,
+  Permission,
   SmartSession,
   SmartSessionGrantPermissionsRequest,
   SmartSessionGrantPermissionsResponse
@@ -22,6 +25,7 @@ import type {
 import {
   assertWalletGrantPermissionsResponse,
   extractChainAndAddress,
+  getIntervalInSeconds,
   updateRequestSigner,
   validateRequest
 } from '../helper/index.js'
@@ -230,5 +234,47 @@ export const SmartSessionsController = {
     } catch (e) {
       SnackController.showError('Error revoking smart session')
     }
+  },
+  async createSubscription(
+    request: CreateSubscriptionRequest
+  ): Promise<CreateSubscriptionResponse> {
+    let permissions: Permission[] = []
+
+    const interval = getIntervalInSeconds(request.interval)
+    const start = Date.now()
+    switch (request.asset) {
+      case 'native':
+        permissions = [
+          {
+            type: 'native-token-recurring-allowance',
+            data: {
+              allowance: request.amount,
+              start,
+              period: interval
+            }
+          }
+        ]
+        break
+      default:
+        throw new Error('Invalid asset')
+    }
+
+    return await this.grantPermissions({
+      chainId: request.chainId,
+      expiry: request.expiry,
+      signer: {
+        type: 'keys',
+        data: {
+          keys: [
+            {
+              type: 'secp256k1',
+              publicKey: request.signerPublicKey
+            }
+          ]
+        }
+      },
+      permissions,
+      policies: []
+    })
   }
 }
