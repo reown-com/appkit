@@ -1,6 +1,6 @@
 import {
   AssetUtil,
-  ChainController,
+  ConnectorController,
   CoreHelperUtil,
   RouterController,
   SnackController,
@@ -22,12 +22,12 @@ export class W3mConnectingMultiChainView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() protected activeConnector = ChainController.state.activeConnector
+  @state() protected activeConnector = ConnectorController.state.activeConnector
 
   public constructor() {
     super()
     this.unsubscribe.push(
-      ...[ChainController.subscribeKey('activeConnector', val => (this.activeConnector = val))]
+      ...[ConnectorController.subscribeKey('activeConnector', val => (this.activeConnector = val))]
     )
   }
 

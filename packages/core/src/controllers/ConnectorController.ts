@@ -13,6 +13,7 @@ export interface ConnectorWithProviders extends Connector {
 export interface ConnectorControllerState {
   allConnectors: Connector[]
   connectors: ConnectorWithProviders[]
+  activeConnector: Connector | undefined
 }
 
 type StateKey = keyof ConnectorControllerState
@@ -20,7 +21,8 @@ type StateKey = keyof ConnectorControllerState
 // -- State --------------------------------------------- //
 const state = proxy<ConnectorControllerState>({
   allConnectors: [],
-  connectors: []
+  connectors: [],
+  activeConnector: undefined
 })
 
 // -- Controller ---------------------------------------- //
@@ -29,6 +31,10 @@ export const ConnectorController = {
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: ConnectorControllerState[K]) => void) {
     return subKey(state, key, callback)
+  },
+
+  setActiveConnector(connector: Connector | undefined) {
+    state.activeConnector = connector
   },
 
   setConnectors(connectors: ConnectorControllerState['connectors']) {
@@ -49,13 +55,16 @@ export const ConnectorController = {
      * Check more about ref on https://valtio.dev/docs/api/basic/ref
      */
     newConnectors.forEach(connector => {
-      state.allConnectors.push(ref(connector))
+      if (connector.type !== 'MULTI_CHAIN') {
+        state.allConnectors.push(ref(connector))
+      }
     })
 
     state.connectors = this.mergeMultiChainConnectors(state.allConnectors)
   },
 
   removeAdapter(namespace: ChainNamespace) {
+    console.log('>>> removeAdapter', state.allConnectors)
     state.allConnectors = state.allConnectors.filter(connector => connector.chain !== namespace)
     state.connectors = this.mergeMultiChainConnectors(state.allConnectors)
   },

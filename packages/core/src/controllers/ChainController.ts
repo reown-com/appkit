@@ -314,12 +314,6 @@ export const ChainController = {
     }
   },
 
-  setActiveConnector(connector: ChainControllerState['activeConnector']) {
-    if (connector) {
-      state.activeConnector = ref(connector)
-    }
-  },
-
   getNetworkControllerClient(chainNamespace?: ChainNamespace) {
     const chain = chainNamespace || state.activeChain
 

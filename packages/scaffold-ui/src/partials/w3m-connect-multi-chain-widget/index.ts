@@ -1,10 +1,5 @@
 import type { Connector } from '@reown/appkit-core'
-import {
-  AssetUtil,
-  ChainController,
-  ConnectorController,
-  RouterController
-} from '@reown/appkit-core'
+import { AssetUtil, ConnectorController, RouterController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
@@ -66,7 +61,7 @@ export class W3mConnectMultiChainWidget extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
-    ChainController.setActiveConnector(connector)
+    ConnectorController.setActiveConnector(connector)
     RouterController.push('ConnectingMultiChain')
   }
 }
