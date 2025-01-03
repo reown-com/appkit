@@ -1,4 +1,4 @@
-import { defaultCustomizationConfig } from '@/lib/config'
+import { defaultCustomizationConfig } from '@/lib/defaultConfig'
 import type { ChainNamespace } from '@reown/appkit-common'
 import {
   ConnectMethod,

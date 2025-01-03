@@ -80,17 +80,6 @@ export const allAdapters = [wagmiAdapter, solanaAdapter, bitcoinAdapter]
 
 export const wagmiConfig = wagmiAdapter.wagmiConfig
 
-export const defaultCustomizationConfig = {
-  features: ConstantsUtil.DEFAULT_FEATURES,
-  collapseWallets: false,
-  enableWallets: true,
-  themeMode: 'dark' as ThemeMode,
-  themeVariables: {},
-  termsConditionsUrl: 'https://reown.com/terms-of-service',
-  privacyPolicyUrl: 'https://reown.com/privacy-policy',
-  enableEmbedded: true
-}
-
 const metadata = {
   name: 'AppKit Builder',
   description: 'The full stack toolkit to build onchain app UX',
