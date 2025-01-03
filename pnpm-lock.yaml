@@ -260,6 +260,9 @@ importers:
       '@reown/appkit-adapter-bitcoin':
         specifier: workspace:*
         version: link:../../packages/adapters/bitcoin
+      '@reown/appkit-adapter-ethers':
+        specifier: workspace:*
+        version: link:../../packages/adapters/ethers
       '@reown/appkit-adapter-solana':
         specifier: workspace:*
         version: link:../../packages/adapters/solana
@@ -299,6 +302,9 @@ importers:
       clsx:
         specifier: 2.1.0
         version: 2.1.0
+      ethers:
+        specifier: 6.13.2
+        version: 6.13.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       next:
         specifier: 14.2.3
         version: 14.2.3(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.44.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)

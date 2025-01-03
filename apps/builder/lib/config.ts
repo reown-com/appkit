@@ -26,6 +26,7 @@ import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapte
 
 import { cookieStorage, createStorage } from '@wagmi/core'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { urlStateUtils } from '@/lib/url-state'
 
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
@@ -61,7 +62,10 @@ export const networks = [...evmNetworks, ...solanaNetworks, ...bitcoinNetworks] 
   ...AppKitNetwork[]
 ]
 
+export const evmAdapter = new EthersAdapter()
+
 export const wagmiAdapter = new WagmiAdapter({
+  // TODO(enes): It's problematic when use external storage
   storage: createStorage({
     storage: cookieStorage
   }),
@@ -76,7 +80,8 @@ export const solanaAdapter = new SolanaAdapter({
 
 export const bitcoinAdapter = new BitcoinAdapter({})
 
-export const allAdapters = [wagmiAdapter, solanaAdapter, bitcoinAdapter]
+// TODO(enes): It's problematic when use wagmiAdapter, it's not reconnecting after page refresh on Demo, not happening on lab. It's calling disconnect while syncing accounts, unlike the Ethers
+export const allAdapters = [evmAdapter, solanaAdapter, bitcoinAdapter]
 
 export const wagmiConfig = wagmiAdapter.wagmiConfig
 
@@ -93,7 +98,7 @@ const initialEnabledChains = initialConfig?.enabledChains || ['eip155', 'solana'
 const adapters: ChainAdapter[] = []
 
 initialEnabledChains.forEach(chain => {
-  if (chain === 'eip155') return adapters.push(wagmiAdapter)
+  if (chain === 'eip155') return adapters.push(evmAdapter)
   if (chain === 'solana') return adapters.push(solanaAdapter)
   if (chain === 'bip122') return adapters.push(bitcoinAdapter)
 })
