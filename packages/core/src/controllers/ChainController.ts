@@ -4,7 +4,6 @@ import type {
   AdapterAccountState,
   AdapterNetworkState,
   ChainAdapter,
-  Connector,
   NetworkControllerClient
 } from '../utils/TypeUtil.js'
 
@@ -46,7 +45,6 @@ export interface ChainControllerState {
   activeCaipAddress: CaipAddress | undefined
   activeCaipNetwork?: CaipNetwork
   chains: Map<ChainNamespace, ChainAdapter>
-  activeConnector?: Connector
   universalAdapter: Pick<ChainAdapter, 'networkControllerClient' | 'connectionControllerClient'>
   noAdapters: boolean
 }

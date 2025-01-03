@@ -33,8 +33,10 @@ export const ConnectorController = {
     return subKey(state, key, callback)
   },
 
-  setActiveConnector(connector: Connector | undefined) {
-    state.activeConnector = connector
+  setActiveConnector(connector: ConnectorControllerState['activeConnector']) {
+    if (connector) {
+      state.activeConnector = ref(connector)
+    }
   },
 
   setConnectors(connectors: ConnectorControllerState['connectors']) {

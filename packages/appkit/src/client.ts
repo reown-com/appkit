@@ -2028,7 +2028,7 @@ export class AppKit {
           import('@reown/appkit-scaffold-ui/w3m-modal')
         ])
         const modal = document.createElement('w3m-modal')
-        if (!OptionsController.state.disableAppend && OptionsController.state.enableEmbedded) {
+        if (!OptionsController.state.disableAppend && !OptionsController.state.enableEmbedded) {
           document.body.insertAdjacentElement('beforeend', modal)
         }
         resolve()
