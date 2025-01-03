@@ -4,11 +4,14 @@ import { fixture, elementUpdated } from '@open-wc/testing'
 import { AccountController, CoreHelperUtil, RouterController } from '@reown/appkit-core'
 import { html } from 'lit'
 import { HelpersUtil } from '../utils/HelpersUtil'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 
 // --- Constants ---------------------------------------------------- //
 const WALLET_FEATURE_WIDGET_TEST_ID = 'w3m-account-wallet-features-widget'
 const MOCK_ADDRESS = '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826'
 const PROFILE_BUTTON = 'w3m-profile-button'
+
+const SERVICE_UNAVAILABLE_MESSAGE = 'Service Unavailable'
 
 const ACCOUNT = {
   namespace: 'eip155',
@@ -22,7 +25,7 @@ describe('W3mAccountWalletFeaturesWidget', () => {
   })
 
   afterEach(() => {
-    vi.clearAllMocks()
+    vi.resetAllMocks()
   })
 
   it('it should not return any components if address is not provided in AccountController', () => {
@@ -105,5 +108,38 @@ describe('W3mAccountWalletFeaturesWidget', () => {
     button.click()
 
     expect(pushSpy).toHaveBeenCalledWith('Profile')
+  })
+
+  it('should clearInterval when fetchTokenBalance fails after 10 seconds', async () => {
+    vi.useFakeTimers()
+    vi.spyOn(global, 'setInterval')
+    vi.spyOn(global, 'clearInterval')
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      ...AccountController.state,
+      address: ACCOUNT.address
+    })
+
+    const element: W3mAccountWalletFeaturesWidget = await fixture(
+      html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
+    )
+
+    expect(setInterval).toHaveBeenCalled()
+
+    const response = new Response(SERVICE_UNAVAILABLE_MESSAGE, {
+      status: CommonConstantsUtil.HTTP_STATUS_CODES.SERVICE_UNAVAILABLE
+    })
+
+    const error = new Error(SERVICE_UNAVAILABLE_MESSAGE, { cause: response })
+
+    vi.spyOn(AccountController, 'fetchTokenBalance').mockImplementation(async callback => {
+      callback?.(error)
+      return []
+    })
+
+    vi.advanceTimersByTime(10_000)
+
+    expect(clearInterval).toHaveBeenCalledWith((element as any).watchTokenBalance)
+
+    vi.useRealTimers()
   })
 })
