@@ -77,7 +77,7 @@ export class W3mAllWalletsList extends LitElement {
         easing: 'ease'
       }).finished
       this.loading = false
-      gridEl.animate([{ opacity: 0 }, { opacity: 1 }], {
+      gridEl.animate?.([{ opacity: 0 }, { opacity: 1 }], {
         duration: 200,
         fill: 'forwards',
         easing: 'ease'
@@ -128,8 +128,11 @@ export class W3mAllWalletsList extends LitElement {
 
   private createPaginationObserver() {
     const loaderEl = this.shadowRoot?.querySelector(`#${PAGINATOR_ID}`)
+    console.log('>> Loader element', loaderEl)
     if (loaderEl) {
+      console.log('>> Creating observer')
       this.paginationObserver = new IntersectionObserver(([element]) => {
+        console.log('>> Observer triggered', element)
         if (element?.isIntersecting && !this.loading) {
           const { page, count, wallets } = ApiController.state
           if (wallets.length < count) {
