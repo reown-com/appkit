@@ -722,6 +722,7 @@ export class AppKit {
     }
     OptionsController.setMetadata(options.metadata)
     OptionsController.setDisableAppend(options.disableAppend)
+    OptionsController.setEnableEmbedded(options.enableEmbedded)
     OptionsController.setSIWX(options.siwx)
 
     const evmAdapter = options.adapters?.find(
@@ -2027,7 +2028,7 @@ export class AppKit {
           import('@reown/appkit-scaffold-ui/w3m-modal')
         ])
         const modal = document.createElement('w3m-modal')
-        if (!OptionsController.state.disableAppend) {
+        if (!OptionsController.state.disableAppend && OptionsController.state.enableEmbedded) {
           document.body.insertAdjacentElement('beforeend', modal)
         }
         resolve()
