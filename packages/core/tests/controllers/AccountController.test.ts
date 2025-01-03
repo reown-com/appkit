@@ -5,7 +5,8 @@ import {
   type ConnectionControllerClient,
   type NetworkControllerClient
 } from '../../exports/index.js'
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
+import { mainnet } from 'viem/chains'
 
 // -- Setup --------------------------------------------------------------------
 const caipAddress = 'eip155:1:0x123'
@@ -15,6 +16,9 @@ const profileName = 'john.eth'
 const profileImage = 'https://ipfs.com/0x123.png'
 const explorerUrl = 'https://some.explorer.com/explore'
 const chain = ConstantsUtil.CHAIN.EVM
+const networks = [
+  { ...mainnet, chainNamespace: ConstantsUtil.CHAIN.EVM, caipNetworkId: 'eip155:1' }
+] as CaipNetwork[]
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
@@ -22,10 +26,10 @@ beforeAll(() => {
     [
       {
         namespace: ConstantsUtil.CHAIN.EVM,
-        caipNetworks: []
+        caipNetworks: networks
       }
     ],
-    [],
+    networks,
     {
       connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
       networkControllerClient: vi.fn() as unknown as NetworkControllerClient

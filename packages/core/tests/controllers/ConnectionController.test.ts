@@ -13,7 +13,8 @@ import {
   SIWXUtil,
   StorageUtil
 } from '../../exports/index.js'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
+import { polygon } from 'viem/chains'
 
 // -- Setup --------------------------------------------------------------------
 const chain = CommonConstantsUtil.CHAIN.EVM
@@ -21,6 +22,9 @@ const walletConnectUri = 'wc://uri?=123'
 const externalId = 'coinbaseWallet'
 const type = 'WALLET_CONNECT' as ConnectorType
 const storageSpy = vi.spyOn(StorageUtil, 'setConnectedConnectorId')
+const caipNetworks = [
+  { ...polygon, chainNamespace: chain, caipNetworkId: 'eip155:137' } as CaipNetwork
+]
 
 const client: ConnectionControllerClient = {
   connectWalletConnect: async onUri => {
@@ -85,10 +89,10 @@ describe('ConnectionController', () => {
         {
           namespace: CommonConstantsUtil.CHAIN.EVM,
           connectionControllerClient: client,
-          caipNetworks: []
+          caipNetworks
         }
       ],
-      [],
+      caipNetworks,
       {
         connectionControllerClient: client,
         networkControllerClient: vi.fn() as unknown as NetworkControllerClient
