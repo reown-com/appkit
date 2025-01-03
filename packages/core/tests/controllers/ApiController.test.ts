@@ -13,6 +13,64 @@ import { ConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
 
 // -- Constants ----------------------------------------------------------------
 const chain = ConstantsUtil.CHAIN.EVM
+const networks = [
+  {
+    caipNetworkId: 'eip155:1',
+    id: 1,
+    name: 'Ethereum Mainnet',
+    assets: {
+      imageId: '12341',
+      imageUrl: ''
+    },
+    chainNamespace: chain,
+    nativeCurrency: {
+      name: 'Ethereum',
+      decimals: 18,
+      symbol: 'ETH'
+    },
+    rpcUrls: {
+      default: {
+        http: ['']
+      }
+    }
+  },
+  {
+    caipNetworkId: 'eip155:4',
+    id: 4,
+    name: 'Ethereum Rinkeby',
+    assets: {
+      imageId: '12342',
+      imageUrl: ''
+    },
+    chainNamespace: chain,
+    nativeCurrency: {
+      name: 'Ethereum',
+      decimals: 18,
+      symbol: 'ETH'
+    },
+    rpcUrls: {
+      default: {
+        http: ['']
+      }
+    }
+  },
+  {
+    caipNetworkId: 'eip155:42',
+    id: 42,
+    name: 'Ethereum Kovan',
+    chainNamespace: chain,
+    nativeCurrency: {
+      name: 'Ethereum',
+      decimals: 18,
+      symbol: 'ETH'
+    },
+    rpcUrls: {
+      default: {
+        http: ['']
+      }
+    }
+  }
+] as CaipNetwork[]
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
@@ -206,67 +264,7 @@ describe('ApiController', () => {
   })
 
   it('should only fetch network images for networks with imageIds', async () => {
-    ChainController.setRequestedCaipNetworks(
-      [
-        {
-          caipNetworkId: 'eip155:1',
-          id: 1,
-          name: 'Ethereum Mainnet',
-          assets: {
-            imageId: '12341',
-            imageUrl: ''
-          },
-          chainNamespace: chain,
-          nativeCurrency: {
-            name: 'Ethereum',
-            decimals: 18,
-            symbol: 'ETH'
-          },
-          rpcUrls: {
-            default: {
-              http: ['']
-            }
-          }
-        },
-        {
-          caipNetworkId: 'eip155:4',
-          id: 4,
-          name: 'Ethereum Rinkeby',
-          assets: {
-            imageId: '12342',
-            imageUrl: ''
-          },
-          chainNamespace: chain,
-          nativeCurrency: {
-            name: 'Ethereum',
-            decimals: 18,
-            symbol: 'ETH'
-          },
-          rpcUrls: {
-            default: {
-              http: ['']
-            }
-          }
-        },
-        {
-          caipNetworkId: 'eip155:42',
-          id: 42,
-          name: 'Ethereum Kovan',
-          chainNamespace: chain,
-          nativeCurrency: {
-            name: 'Ethereum',
-            decimals: 18,
-            symbol: 'ETH'
-          },
-          rpcUrls: {
-            default: {
-              http: ['']
-            }
-          }
-        }
-      ],
-      chain
-    )
+    ChainController.setRequestedCaipNetworks(networks, chain)
     const fetchSpy = vi.spyOn(ApiController, '_fetchNetworkImage').mockResolvedValue()
     await ApiController.fetchNetworkImages()
 
