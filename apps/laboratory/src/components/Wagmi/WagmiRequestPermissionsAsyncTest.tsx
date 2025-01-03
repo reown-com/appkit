@@ -105,7 +105,7 @@ function ConnectedTestContent({
       const response = await createSubscription({
         chainId: toHex(chainId),
         signerPublicKey: signer.publicKey,
-        interval: '1d',
+        interval: '1s',
         asset: 'native',
         amount: '0x16345785D8A0000',
         expiry: Math.floor(Date.now() / 1000) + 24 * 60 * 60
