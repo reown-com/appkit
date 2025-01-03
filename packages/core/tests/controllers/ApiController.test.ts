@@ -468,7 +468,6 @@ describe('ApiController', () => {
       path: '/getWallets',
       params: {
         ...ApiController._getSdkProperties(),
-        chains: networks.map(network => network.caipNetworkId).join(','),
         page: '1',
         entries: '40',
         include: '12341,12342',
