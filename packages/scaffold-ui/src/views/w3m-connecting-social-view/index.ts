@@ -64,8 +64,9 @@ export class W3mConnectingSocialView extends LitElement {
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
-
     window.removeEventListener('message', this.handleSocialConnection, false)
+    this.socialWindow?.close()
+    AccountController.setSocialWindow(undefined, ChainController.state.activeChain)
   }
 
   // -- Render -------------------------------------------- //

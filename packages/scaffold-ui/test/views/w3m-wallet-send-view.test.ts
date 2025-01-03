@@ -29,7 +29,7 @@ describe('W3mWalletSendView', () => {
       gasPrice: BigInt(1000),
       gasPriceInUSD: 0.1
     })
-    vi.spyOn(AccountController, 'fetchTokenBalance').mockResolvedValue()
+    vi.spyOn(AccountController, 'fetchTokenBalance').mockResolvedValue([])
   })
 
   afterEach(() => {

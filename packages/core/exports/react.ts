@@ -4,6 +4,7 @@ import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import { ChainController } from '../src/controllers/ChainController.js'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
 import type { UseAppKitAccountReturn, UseAppKitNetworkReturn } from '../src/utils/TypeUtil.js'
+import { ConnectorController } from '../src/controllers/ConnectorController.js'
 
 // -- Hooks ------------------------------------------------------------
 export function useAppKitNetworkCore(): Pick<
@@ -20,14 +21,26 @@ export function useAppKitNetworkCore(): Pick<
 }
 
 export function useAppKitAccount(): UseAppKitAccountReturn {
-  const { status } = useSnapshot(AccountController.state)
+  const { status, user, preferredAccountType, smartAccountDeployed } = useSnapshot(
+    AccountController.state
+  )
+
   const { activeCaipAddress } = useSnapshot(ChainController.state)
+
+  const authConnector = ConnectorController.getAuthConnector()
 
   return {
     caipAddress: activeCaipAddress,
     address: CoreHelperUtil.getPlainAddress(activeCaipAddress),
     isConnected: Boolean(activeCaipAddress),
-    status
+    status,
+    embeddedWalletInfo: authConnector
+      ? {
+          user,
+          accountType: preferredAccountType,
+          isSmartAccountDeployed: Boolean(smartAccountDeployed)
+        }
+      : undefined
   }
 }
 
