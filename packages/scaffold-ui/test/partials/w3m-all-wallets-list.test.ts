@@ -15,7 +15,6 @@ import type {
   Connector,
   WcWallet
 } from '@reown/appkit-core'
-import type { CaipNetwork } from '@reown/appkit-common'
 
 describe('W3mAllWalletsList', () => {
   const mockWallets: WcWallet[] = [
