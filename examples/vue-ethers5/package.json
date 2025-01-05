@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@reown/appkit": "workspace:*",
-    "@reown/appkit-adapter-ethers5": "workspace:*",
+    "@reown/appkit-adapter-ethers": "workspace:*",
     "ethers": "5.7.2",
     "vue": "3.4.3"
   },

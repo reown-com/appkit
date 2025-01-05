@@ -7,11 +7,11 @@ import { siweConfig } from '../../utils/SiweUtils'
 import { Ethers5Tests } from '../../components/Ethers/Ethers5Tests'
 import { Ethers5ModalInfo } from '../../components/Ethers/Ethers5ModalInfo'
 import { mainnet } from '@reown/appkit-new/networks'
-import { Ethers5Adapter } from '@reown/appkit-adapter-ethers5'
+import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 
 const networks = ConstantsUtil.EvmNetworks
 
-const ethers5Adapter = new Ethers5Adapter()
+const ethers5Adapter = new EthersAdapter()
 
 const modal = createAppKit({
   adapters: [ethers5Adapter],
