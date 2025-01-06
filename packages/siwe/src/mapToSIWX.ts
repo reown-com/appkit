@@ -221,6 +221,8 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
       }
     },
 
-    required: siwe.options.required ?? true
+    getRequired() {
+      return siwe.options.required ?? true
+    }
   }
 }

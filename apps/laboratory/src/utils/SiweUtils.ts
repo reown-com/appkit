@@ -5,7 +5,6 @@ import { ConstantsUtil } from './ConstantsUtil'
 const chains = ConstantsUtil.EvmNetworks
 
 export const siweConfig = createSIWEConfig({
-  required: false,
   signOutOnAccountChange: true,
   signOutOnNetworkChange: true,
   signOutOnDisconnect: true,

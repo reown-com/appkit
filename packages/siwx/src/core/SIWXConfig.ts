@@ -123,6 +123,15 @@ export abstract class SIWXConfig implements SIWXConfigInterface {
 
     return verifications.length > 0 && verifications.every(result => result)
   }
+
+  /**
+   * This method determines whether the wallet stays connected when the user denies the signature request.
+   *
+   * @returns {boolean}
+   */
+  getRequired() {
+    return this.required
+  }
 }
 
 export namespace SIWXConfig {
@@ -143,8 +152,7 @@ export namespace SIWXConfig {
     storage: SIWXStorage
 
     /**
-     * If set to false, if the user denies the signature, the application will keep connected.
-     *
+     * If false the wallet stays connected when user denies the signature request.
      * @default true
      */
     required?: boolean
