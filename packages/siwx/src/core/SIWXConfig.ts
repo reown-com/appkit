@@ -1,7 +1,8 @@
-import type {
-  SIWXConfig as SIWXConfigInterface,
-  SIWXMessage,
-  SIWXSession
+import {
+  ChainController,
+  type SIWXConfig as SIWXConfigInterface,
+  type SIWXMessage,
+  type SIWXSession
 } from '@reown/appkit-core'
 import type { SIWXMessenger } from './SIWXMessenger.js'
 import type { SIWXVerifier } from './SIWXVerifier.js'
@@ -119,6 +120,15 @@ export abstract class SIWXConfig implements SIWXConfigInterface {
     )
 
     return verifications.length > 0 && verifications.every(result => result)
+  }
+
+  /**
+   * This method will disconnect all adapters
+   *
+   * @returns Promise<void>
+   */
+  async disconnect() {
+    await ChainController.disconnect()
   }
 }
 

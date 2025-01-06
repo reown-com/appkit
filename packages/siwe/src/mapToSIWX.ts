@@ -219,6 +219,12 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
 
         return []
       }
+    },
+
+    async disconnect() {
+      if (siwe.options.required) {
+        await ChainController.disconnect()
+      }
     }
   }
 }

@@ -103,6 +103,10 @@ export class CloudAuthSIWX implements SIWXConfig {
     }
   }
 
+  async disconnect() {
+    await ChainController.disconnect()
+  }
+
   private async request<Key extends CloudAuthSIWX.RequestKey>(
     key: Key,
     params: CloudAuthSIWX.Requests[Key]['body'],
