@@ -1,5 +1,4 @@
 import {
-  ChainController,
   type SIWXConfig as SIWXConfigInterface,
   type SIWXMessage,
   type SIWXSession
@@ -18,10 +17,13 @@ export abstract class SIWXConfig implements SIWXConfigInterface {
   private verifiers: SIWXVerifier[]
   private storage: SIWXStorage
 
+  public required: boolean
+
   constructor(params: SIWXConfig.ConstructorParams) {
     this.messenger = params.messenger
     this.verifiers = params.verifiers
     this.storage = params.storage
+    this.required = params.required ?? true
   }
 
   /**
@@ -121,15 +123,6 @@ export abstract class SIWXConfig implements SIWXConfigInterface {
 
     return verifications.length > 0 && verifications.every(result => result)
   }
-
-  /**
-   * This method will disconnect all adapters
-   *
-   * @returns Promise<void>
-   */
-  async disconnect() {
-    await ChainController.disconnect()
-  }
 }
 
 export namespace SIWXConfig {
@@ -148,5 +141,12 @@ export namespace SIWXConfig {
      * The storage to store the sessions.
      */
     storage: SIWXStorage
+
+    /**
+     * If set to false, if the user denies the signature, the application will keep connected.
+     *
+     * @default true
+     */
+    required?: boolean
   }
 }

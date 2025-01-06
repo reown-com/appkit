@@ -141,18 +141,19 @@ export const SIWXUtil = {
   },
   async cancelSignMessage() {
     try {
-      const siwx = OptionsController.state.siwx
+      const siwx = this.getSIWX()
 
-      if (siwx) {
-        await siwx.disconnect()
+      if (siwx?.required) {
+        await ConnectionController.disconnect()
         ModalController.close()
         RouterController.reset('Connect')
-        EventsController.sendEvent({
-          event: 'CLICK_CANCEL_SIWX',
-          type: 'track',
-          properties: this.getSIWXEventProperties()
-        })
       }
+
+      EventsController.sendEvent({
+        event: 'CLICK_CANCEL_SIWX',
+        type: 'track',
+        properties: this.getSIWXEventProperties()
+      })
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('SIWXUtil:cancelSignMessage', error)
@@ -367,11 +368,9 @@ export interface SIWXConfig {
   getSessions: (chainId: CaipNetworkId, address: string) => Promise<SIWXSession[]>
 
   /**
-   * This method will disconnect all adapters
-   *
-   * @returns Promise<void>
+   * If set to false, if the user denies the signature, the application will keep connected.
    */
-  disconnect: () => Promise<void>
+  required: boolean
 }
 
 /**
