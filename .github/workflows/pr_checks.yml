@@ -19,6 +19,7 @@ concurrency:
 
 jobs:
   code_style:
+    id: code_style
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -59,6 +60,7 @@ jobs:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
   test:
+    id: test
     runs-on: ubuntu-latest
     continue-on-error: true
     permissions:
@@ -93,8 +95,9 @@ jobs:
         uses: davelosert/vitest-coverage-report-action@v2
 
   ui-test:
+    runs-on: ubuntu-latest
     needs: [code_style, test]
-    if: success() && github.event.pull_request.draft == false
+    if: ${{ always() && contains(join(needs.*.result, ','), 'success') && github.event.pull_request.draft == false }}
     uses: ./.github/workflows/ui_tests.yml
     secrets: inherit
     permissions:
