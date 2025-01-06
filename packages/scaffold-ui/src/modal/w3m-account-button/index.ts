@@ -84,7 +84,7 @@ class W3mAccountButtonBase extends LitElement {
     }
 
     const shouldShowBalance = this.balance === 'show'
-    const shouldShowLoading = typeof this.balanceVal !== 'string'
+    const shouldShowLoading = true
 
     return html`
       <wui-account-button

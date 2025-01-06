@@ -20,4 +20,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Added a loading state to the account button component when the balance has not been fetched.
+Added a loading indicator to the account button component when the balance has not been fetched.
