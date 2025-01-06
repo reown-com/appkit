@@ -19,7 +19,6 @@ concurrency:
 
 jobs:
   code_style:
-    id: code_style
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -60,7 +59,6 @@ jobs:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
   test:
-    id: test
     runs-on: ubuntu-latest
     continue-on-error: true
     permissions:
