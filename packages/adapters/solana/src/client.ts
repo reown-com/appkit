@@ -28,6 +28,7 @@ import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
 import { watchStandard } from './utils/watchStandard.js'
 import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
 import type { Provider as SolanaProvider } from '@reown/appkit-utils/solana'
+import { ProviderUtil } from '@reown/appkit/store'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
@@ -285,6 +286,8 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     if (provider instanceof AuthProvider) {
       const networkSwitched = await provider.switchNetwork(caipNetwork.caipNetworkId)
       this.emit('switchNetwork', networkSwitched)
+      ProviderUtil.setProvider('solana', provider)
+      ProviderUtil.setProviderId('solana', provider.id)
     }
 
     if (caipNetwork?.rpcUrls?.default?.http?.[0]) {

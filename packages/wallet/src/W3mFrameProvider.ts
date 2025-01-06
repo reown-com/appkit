@@ -618,7 +618,10 @@ export class W3mFrameProvider {
   }
 
   public getLastUsedChainId() {
-    return Number(W3mFrameStorage.get(W3mFrameConstants.LAST_USED_CHAIN_KEY))
+    const chainId = W3mFrameStorage.get(W3mFrameConstants.LAST_USED_CHAIN_KEY) ?? undefined
+    const numberChainId = Number(chainId)
+
+    return isNaN(numberChainId) ? chainId : numberChainId
   }
 
   private persistSmartAccountEnabledNetworks(networks: number[]) {

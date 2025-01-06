@@ -1165,10 +1165,6 @@ export class AppKit {
         this.setLoading(false)
       }
     })
-    provider.onIsConnected(() => {
-      provider.connect()
-      StorageUtil.addConnectedNamespace(ChainController.state.activeChain as ChainNamespace)
-    })
     provider.onConnect(async user => {
       const namespace = ChainController.state.activeChain as ChainNamespace
       this.syncProvider({
@@ -1337,7 +1333,10 @@ export class AppKit {
     }
 
     adapter.on('switchNetwork', ({ address, chainId }) => {
-      if (chainId && this.caipNetworks?.find(n => n.id === chainId)) {
+      if (
+        chainId &&
+        this.caipNetworks?.find(n => n.id === chainId || n.caipNetworkId === chainId)
+      ) {
         if (ChainController.state.activeChain === chainNamespace && address) {
           this.syncAccount({ address, chainId, chainNamespace })
         } else if (
