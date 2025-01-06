@@ -180,7 +180,7 @@ export const SIWXUtil = {
       const isSiwxSignMessage = RouterController.state.view === 'SIWXSignMessage'
 
       if (isApproveSignScreen || isSiwxSignMessage) {
-        return (await this.getSessions()).length === 0
+        return siwx.getRequired() && (await this.getSessions()).length === 0
       }
     }
 
