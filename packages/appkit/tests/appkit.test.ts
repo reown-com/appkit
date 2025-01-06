@@ -77,6 +77,18 @@ describe('Base', () => {
     vi.mocked(CaipNetworksUtil).extendCaipNetworks = vi.fn().mockReturnValue([])
 
     appKit = new AppKit(mockOptions)
+
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      chains: new Map(),
+      activeCaipAddress: undefined,
+      activeChain: undefined,
+      activeCaipNetwork: undefined,
+      noAdapters: false,
+      universalAdapter: {
+        networkControllerClient: undefined,
+        connectionControllerClient: undefined
+      }
+    })
   })
 
   afterEach(() => {
@@ -659,6 +671,7 @@ describe('Base', () => {
       ])
       vi.mocked(ChainController.getAllApprovedCaipNetworkIds).mockReturnValue(['eip155:1'])
       vi.spyOn(ChainController, 'getNetworkProp').mockReturnValue(false)
+      vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValueOnce('eip155')
       vi.mocked(appKit as any).caipNetworks = [
         {
           id: '1',
@@ -693,6 +706,7 @@ describe('Base', () => {
     })
 
     it('should set connected wallet info when syncing account', async () => {
+      console.log('-------->', ChainController.state)
       vi.spyOn(NetworkUtil, 'getNetworksByNamespace').mockReturnValue([
         {
           ...sepolia,
