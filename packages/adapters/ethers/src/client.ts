@@ -32,6 +32,10 @@ export class EthersAdapter extends AdapterBlueprint {
     this.namespace = CommonConstantsUtil.CHAIN.EVM
   }
 
+  public async getPublicKey(): Promise<string> {
+    return Promise.resolve('')
+  }
+
   private createEthersConfig(options: AppKitOptions) {
     if (!options.metadata) {
       return undefined

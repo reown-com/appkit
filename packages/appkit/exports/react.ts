@@ -59,4 +59,15 @@ export function useAppKitNetwork(): UseAppKitNetworkReturn {
   }
 }
 
+// TODO(enes): Add Vue hook as well
+export function useAppKitBitcoinPublicKey() {
+  async function getPublicKey() {
+    return await modal?.getBitcoinWalletPublicKey()
+  }
+
+  return {
+    getPublicKey
+  }
+}
+
 export { useAppKitAccount } from '@reown/appkit-core/react'

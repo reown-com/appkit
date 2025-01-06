@@ -80,6 +80,11 @@ export class LeatherConnector extends SatsConnectConnector {
     }
   }
 
+  public override async getPublicKey(): Promise<string> {
+    // TODO(enes): implement getPublicKey for Leather
+    return Promise.resolve('')
+  }
+
   private getNetwork(): LeatherConnector.Network {
     const activeCaipNetwork = this.getActiveNetwork()
 

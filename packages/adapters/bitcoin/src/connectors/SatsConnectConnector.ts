@@ -209,6 +209,11 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
     this.walletUnsubscribes.forEach(unsubscribe => unsubscribe())
     this.walletUnsubscribes = []
   }
+
+  public async getPublicKey(): Promise<string> {
+    // TODO(enes): implement getPublicKey for SatsConnect
+    return Promise.resolve('')
+  }
 }
 
 export namespace SatsConnectConnector {
