@@ -1,7 +1,7 @@
-import {
-  type SIWXConfig as SIWXConfigInterface,
-  type SIWXMessage,
-  type SIWXSession
+import type {
+  SIWXConfig as SIWXConfigInterface,
+  SIWXMessage,
+  SIWXSession
 } from '@reown/appkit-core'
 import type { SIWXMessenger } from './SIWXMessenger.js'
 import type { SIWXVerifier } from './SIWXVerifier.js'
