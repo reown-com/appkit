@@ -1,5 +1,6 @@
 ---
 '@reown/appkit': patch
+'@reown/appkit-wallet': patch
 '@reown/appkit-core': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
@@ -16,8 +17,21 @@
 '@reown/appkit-siwe': patch
 '@reown/appkit-siwx': patch
 '@reown/appkit-ui': patch
-'@reown/appkit-wallet': patch
 '@reown/appkit-wallet-button': patch
 ---
 
-Set connected wallet info when going to authenticate flow.
+Added embedded wallet info to `useAppKitAccount` hook.
+
+**Example usage**
+
+```tsx
+import { useAppKitAccount } from '@reown/appkit/react'
+
+export function YourApp() {
+  const { embeddedWalletInfo } = useAppKitAccount()
+
+  const email = embeddedWalletInfo.user?.email
+
+  return email && <p>Email address: {email}</p>
+}
+```

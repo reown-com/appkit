@@ -1,5 +1,5 @@
 ---
-'@reown/appkit-siwe': patch
+'@reown/appkit-scaffold-ui': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch
@@ -13,11 +13,11 @@
 '@reown/appkit-core': patch
 '@reown/appkit-experimental': patch
 '@reown/appkit-polyfills': patch
-'@reown/appkit-scaffold-ui': patch
+'@reown/appkit-siwe': patch
 '@reown/appkit-siwx': patch
 '@reown/appkit-ui': patch
 '@reown/appkit-wallet': patch
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixes `signOutOnNetworkChange` and `signOutOnAccountChange` flags on SIWX mapper function to work as expected
+Fix an issue where users with an ENS couldn't copy their address.

@@ -3,6 +3,7 @@ import { StorageUtil } from '../../src/utils/StorageUtil'
 import type { WcWallet, SocialProvider } from '../../src/utils/TypeUtil'
 import { getSafeConnectorIdKey, SafeLocalStorage } from '@reown/appkit-common'
 import { SafeLocalStorageKeys } from '@reown/appkit-common'
+import { W3mFrameConstants, W3mFrameHelpers, W3mFrameStorage } from '@reown/appkit-wallet'
 
 const previousLocalStorage = globalThis.localStorage
 const previousWindow = globalThis.window
@@ -183,9 +184,10 @@ describe('StorageUtil', () => {
   })
 
   describe('getConnectedSocialUsername', () => {
-    it('should get connected social username', () => {
+    it('should set username on W3mFrameStorage and get connected social username', () => {
       const username = 'testuser'
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_SOCIAL_USERNAME, username)
+      vi.spyOn(W3mFrameHelpers, 'isClient', 'get').mockReturnValue(true)
+      W3mFrameStorage.set(W3mFrameConstants.SOCIAL_USERNAME, username)
       expect(StorageUtil.getConnectedSocialUsername()).toBe(username)
     })
   })

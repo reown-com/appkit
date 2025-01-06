@@ -55,6 +55,22 @@ export class W3mFrameProvider {
     return W3mFrameStorage.get(W3mFrameConstants.EMAIL)
   }
 
+  public getUsername() {
+    return W3mFrameStorage.get(W3mFrameConstants.SOCIAL_USERNAME)
+  }
+
+  public async reload() {
+    try {
+      this.w3mFrame.initFrame()
+      await this.appEvent<'Reload'>({
+        type: W3mFrameConstants.APP_RELOAD
+      } as W3mFrameTypes.AppEvent)
+    } catch (error) {
+      this.w3mLogger?.logger.error({ error }, 'Error reloading iframe')
+      throw error
+    }
+  }
+
   public async connectEmail(payload: W3mFrameTypes.Requests['AppConnectEmailRequest']) {
     try {
       W3mFrameHelpers.checkIfAllowedToTriggerEmail()
@@ -97,6 +113,9 @@ export class W3mFrameProvider {
 
   public async isConnected() {
     try {
+      if (!this.getLoginEmailUsed()) {
+        return { isConnected: false }
+      }
       const response = await this.appEvent<'IsConnected'>({
         type: W3mFrameConstants.APP_IS_CONNECTED
       } as W3mFrameTypes.AppEvent)
@@ -425,6 +444,16 @@ export class W3mFrameProvider {
     })
   }
 
+  public onSocialConnected(
+    callback: (user: W3mFrameTypes.Responses['FrameConnectSocialResponse']) => void
+  ) {
+    this.w3mFrame.events.onFrameEvent(event => {
+      if (event.type === W3mFrameConstants.FRAME_CONNECT_SOCIAL_SUCCESS) {
+        callback(event.payload)
+      }
+    })
+  }
+
   public async getCapabilities(): Promise<Record<`0x${string}`, W3mFrameTypes.WalletCapabilities>> {
     try {
       const capabilities = await this.request({
@@ -496,8 +525,7 @@ export class W3mFrameProvider {
       W3mFrameConstants.APP_CONNECT_DEVICE,
       W3mFrameConstants.APP_CONNECT_OTP,
       W3mFrameConstants.APP_CONNECT_SOCIAL,
-      W3mFrameConstants.APP_GET_SOCIAL_REDIRECT_URI,
-      W3mFrameConstants.APP_GET_FARCASTER_URI
+      W3mFrameConstants.APP_GET_SOCIAL_REDIRECT_URI
     ]
       .map(replaceEventType)
       .includes(type)
@@ -521,7 +549,7 @@ export class W3mFrameProvider {
       abortController.signal.addEventListener('abort', () => {
         if (type === 'RPC_REQUEST') {
           reject(new Error('Request was aborted'))
-        } else {
+        } else if (type !== 'GET_FARCASTER_URI') {
           reject(new Error('Something went wrong'))
         }
       })
