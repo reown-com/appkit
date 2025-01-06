@@ -16,5 +16,10 @@ export const HelpersUtil = {
     }
 
     return Array.from(element.classList)
+  },
+  async sleep(ms: number) {
+    return new Promise(resolve => {
+      setTimeout(resolve, ms)
+    })
   }
 }
