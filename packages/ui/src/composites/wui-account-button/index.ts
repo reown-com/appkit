@@ -26,6 +26,8 @@ export class WuiAccountButton extends LitElement {
 
   @property({ type: Boolean }) public disabled = false
 
+  @property({ type: Boolean }) public loading = false
+
   @property() public address = ''
 
   @property() public profileName = ''
@@ -86,10 +88,11 @@ export class WuiAccountButton extends LitElement {
             ></wui-icon-box>
           `
 
-      return html`
-        ${networkElement}
-        <wui-text variant="paragraph-600" color="inherit"> ${this.balance}</wui-text>
-      `
+      const balanceTemplate = this.loading
+        ? html`<wui-loading-spinner size="md" color="fg-200"></wui-loading-spinner>`
+        : html`<wui-text variant="paragraph-600" color="inherit"> ${this.balance}</wui-text>`
+
+      return html`${networkElement} ${balanceTemplate}`
     }
 
     return null

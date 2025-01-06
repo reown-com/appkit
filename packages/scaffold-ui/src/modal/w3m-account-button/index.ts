@@ -84,6 +84,7 @@ class W3mAccountButtonBase extends LitElement {
     }
 
     const shouldShowBalance = this.balance === 'show'
+    const shouldShowLoading = typeof this.balanceVal !== 'string'
 
     return html`
       <wui-account-button
@@ -102,6 +103,7 @@ class W3mAccountButtonBase extends LitElement {
         data-testid="account-button"
         .charsStart=${this.charsStart}
         .charsEnd=${this.charsEnd}
+        ?loading=${shouldShowLoading}
       >
       </wui-account-button>
     `
