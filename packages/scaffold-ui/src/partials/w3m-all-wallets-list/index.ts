@@ -77,7 +77,7 @@ export class W3mAllWalletsList extends LitElement {
         easing: 'ease'
       }).finished
       this.loading = false
-      gridEl.animate?.([{ opacity: 0 }, { opacity: 1 }], {
+      gridEl.animate([{ opacity: 0 }, { opacity: 1 }], {
         duration: 200,
         fill: 'forwards',
         easing: 'ease'
