@@ -216,8 +216,8 @@ export abstract class AdapterBlueprint<
   public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
     const { caipNetwork, provider, providerType } = params
 
-    if (provider instanceof UniversalProvider) {
-      provider.setDefaultChain(caipNetwork.caipNetworkId)
+    if (providerType === 'WALLET_CONNECT') {
+      ;(provider as UniversalProvider).setDefaultChain(caipNetwork.caipNetworkId)
 
       return
     }

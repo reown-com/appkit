@@ -12,6 +12,7 @@ import mockAppKit from './mocks/AppKit'
 import { mockCoinbaseWallet } from './mocks/CoinbaseWallet'
 import { type Provider } from '@reown/appkit-utils/solana'
 import { AuthProvider } from '../providers/AuthProvider'
+import { mockAuthConnector } from './mocks/AuthConnector'
 
 // Mock external dependencies
 vi.mock('@solana/web3.js', () => ({
@@ -206,12 +207,15 @@ describe('SolanaAdapter', () => {
     it('should switch network with auth provider', async () => {
       const switchNetworkSpy = vi.fn()
       const provider = Object.assign(Object.create(AuthProvider.prototype), {
-        switchNetwork: switchNetworkSpy
+        type: 'AUTH',
+        switchNetwork: switchNetworkSpy,
+        getUser: mockAuthConnector.connect
       })
+
       await adapter.switchNetwork({
         caipNetwork: mockCaipNetworks[0],
         provider: provider,
-        providerType: 'ID_AUTH'
+        providerType: 'AUTH'
       })
 
       expect(switchNetworkSpy).toHaveBeenCalled()
