@@ -133,6 +133,7 @@ describe('W3mAccountWalletFeaturesWidget', () => {
 
     vi.spyOn(AccountController, 'fetchTokenBalance').mockImplementation(async callback => {
       callback?.(error)
+      return []
     })
 
     vi.advanceTimersByTime(10_000)
