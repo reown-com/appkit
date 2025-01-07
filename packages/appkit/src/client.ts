@@ -660,7 +660,7 @@ export class AppKit {
     // TODO(enes): what about the event listeners?
   }
 
-  public async addAdapter(adapter: ChainAdapter) {
+  public async addAdapter(adapter: ChainAdapter, networks: [AppKitNetwork, ...AppKitNetwork[]]) {
     const namespace = adapter.namespace
     if (
       this.chainAdapters &&
@@ -668,18 +668,25 @@ export class AppKit {
       this.networkControllerClient &&
       namespace
     ) {
-      this.chainAdapters[namespace] = adapter as unknown as AdapterBlueprint
-      this.chainAdapters[namespace].namespace = namespace
-      this.chainAdapters[namespace].construct({
-        namespace,
-        projectId: this.options?.projectId,
-        networks: this.caipNetworks
-      })
-      ChainController.addAdapter(adapter, {
-        connectionControllerClient: this.connectionControllerClient,
-        networkControllerClient: this.networkControllerClient
-      })
-      this.chainAdapters?.[namespace].syncConnectors(this.options, this)
+      // Extend adapter networks and initialize ChainController for the adapter
+      const extendedAdapterNetworks = this.extendCaipNetworks({ ...this.options, networks })
+      // Add networks to the list, filtering out duplicates
+      // @ts-expect-error test
+      this.caipNetworks = this.caipNetworks
+        ? [...new Set([...this.caipNetworks, ...extendedAdapterNetworks])]
+        : extendedAdapterNetworks
+
+      this.createAdapter(adapter as unknown as AdapterBlueprint)
+      this.initChainAdapter(namespace)
+
+      ChainController.addAdapter(
+        adapter,
+        {
+          connectionControllerClient: this.connectionControllerClient,
+          networkControllerClient: this.networkControllerClient
+        },
+        extendedAdapterNetworks
+      )
     }
     // TODO(enes): what about the event listeners?
   }
@@ -1963,6 +1970,35 @@ export class AppKit {
     }
   }
 
+  private createAdapter(blueprint: AdapterBlueprint) {
+    if (!blueprint) {
+      return
+    }
+
+    const namespace = blueprint.namespace
+    if (!namespace) {
+      return
+    }
+
+    this.createClients()
+
+    const adapterBlueprint: AdapterBlueprint = blueprint
+    adapterBlueprint.namespace = namespace
+    adapterBlueprint.construct({
+      namespace,
+      projectId: this.options?.projectId,
+      networks: this.caipNetworks
+    })
+
+    if (!this.chainNamespaces.includes(namespace)) {
+      this.chainNamespaces.push(namespace)
+    }
+
+    if (this.chainAdapters) {
+      this.chainAdapters[namespace] = adapterBlueprint
+    }
+  }
+
   private createAdapters(blueprints?: AdapterBlueprint[]) {
     this.createClients()
 
@@ -1995,14 +2031,18 @@ export class AppKit {
     adapter?.on('connectors', this.setConnectors.bind(this))
   }
 
+  private async initChainAdapter(namespace: ChainNamespace) {
+    this.onConnectors(namespace)
+    this.listenAdapter(namespace)
+    this.chainAdapters?.[namespace].syncConnectors(this.options, this)
+    await this.createUniversalProviderForAdapter(namespace)
+    this.createAuthProviderForAdapter(namespace)
+  }
+
   private async initChainAdapters() {
     await Promise.all(
       this.chainNamespaces.map(async namespace => {
-        this.onConnectors(namespace)
-        this.listenAdapter(namespace)
-        this.chainAdapters?.[namespace].syncConnectors(this.options, this)
-        await this.createUniversalProviderForAdapter(namespace)
-        this.createAuthProviderForAdapter(namespace)
+        await this.initChainAdapter(namespace)
       })
     )
   }

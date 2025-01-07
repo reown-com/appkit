@@ -40,6 +40,10 @@ const networkState: AdapterNetworkState = {
 }
 
 // -- Types --------------------------------------------- //
+export type ChainControllerClients = {
+  networkControllerClient: NetworkControllerClient
+  connectionControllerClient: ConnectionControllerClient
+}
 export interface ChainControllerState {
   activeChain: ChainNamespace | undefined
   activeCaipAddress: CaipAddress | undefined
@@ -151,22 +155,21 @@ export const ChainController = {
 
   addAdapter(
     adapter: ChainAdapter,
-    {
-      networkControllerClient,
-      connectionControllerClient
-    }: {
-      networkControllerClient: NetworkControllerClient
-      connectionControllerClient: ConnectionControllerClient
-    }
+    { networkControllerClient, connectionControllerClient }: ChainControllerClients,
+    caipNetworks: [CaipNetwork, ...CaipNetwork[]]
   ) {
     state.chains.set(adapter.namespace as ChainNamespace, {
       namespace: adapter.namespace,
       networkState,
       accountState,
-      caipNetworks: [],
+      caipNetworks,
       connectionControllerClient,
       networkControllerClient
     })
+    this.setRequestedCaipNetworks(
+      caipNetworks?.filter(caipNetwork => caipNetwork.chainNamespace === adapter.namespace) ?? [],
+      adapter.namespace as ChainNamespace
+    )
   },
 
   setAdapterNetworkState(chain: ChainNamespace, props: Partial<AdapterNetworkState>) {

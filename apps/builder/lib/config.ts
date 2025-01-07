@@ -28,6 +28,7 @@ import { cookieStorage, createStorage } from '@wagmi/core'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { urlStateUtils } from '@/lib/url-state'
+import { ChainNamespace } from '@reown/appkit-common'
 
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
 
@@ -56,6 +57,14 @@ export const solanaNetworks = [solana, solanaDevnet, solanaTestnet] as [
 ]
 
 export const bitcoinNetworks = [bitcoin, bitcoinTestnet] as [AppKitNetwork, ...AppKitNetwork[]]
+
+export const namespaceNetworksMap: Record<ChainNamespace, [AppKitNetwork, ...AppKitNetwork[]]> = {
+  eip155: evmNetworks,
+  solana: solanaNetworks,
+  bip122: bitcoinNetworks,
+  // @ts-expect-error Polkadot is not supported yet
+  polkadot: []
+}
 
 export const networks = [...evmNetworks, ...solanaNetworks, ...bitcoinNetworks] as [
   AppKitNetwork,
@@ -96,17 +105,27 @@ export const initialConfig = urlStateUtils.getStateFromURL()
 const initialEnabledChains = initialConfig?.enabledChains || ['eip155', 'solana', 'bip122']
 
 const adapters: ChainAdapter[] = []
+const initialNetworks: AppKitNetwork[] = []
 
 initialEnabledChains.forEach(chain => {
-  if (chain === 'eip155') return adapters.push(evmAdapter)
-  if (chain === 'solana') return adapters.push(solanaAdapter)
-  if (chain === 'bip122') return adapters.push(bitcoinAdapter)
+  if (chain === 'eip155') {
+    initialNetworks.push(...evmNetworks)
+    return adapters.push(evmAdapter)
+  }
+  if (chain === 'solana') {
+    initialNetworks.push(...solanaNetworks)
+    return adapters.push(solanaAdapter)
+  }
+  if (chain === 'bip122') {
+    initialNetworks.push(...bitcoinNetworks)
+    return adapters.push(bitcoinAdapter)
+  }
 })
 
 export const appKitConfigs = {
   adapters,
   projectId,
-  networks,
+  networks: initialNetworks as [AppKitNetwork, ...AppKitNetwork[]],
   defaultNetwork: mainnet,
   metadata: metadata,
   features: initialConfig?.features || ConstantsUtil.DEFAULT_FEATURES,

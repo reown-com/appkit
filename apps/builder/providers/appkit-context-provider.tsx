@@ -9,7 +9,7 @@ import { URLState, urlStateUtils } from '@/lib/url-state'
 import { AppKitContext } from '@/contexts/appkit-context'
 import { useSnapshot } from 'valtio'
 import { UniqueIdentifier } from '@dnd-kit/core'
-import { allAdapters, initialConfig } from '@/lib/config'
+import { allAdapters, initialConfig, namespaceNetworksMap, solanaNetworks } from '@/lib/config'
 import { defaultCustomizationConfig } from '@/lib/defaultConfig'
 import { useTheme } from 'next-themes'
 import { inter } from '@/lib/fonts'
@@ -71,13 +71,14 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
   function addChain(chain: ChainNamespace) {
     setEnabledChains(prev => {
       const newEnabledChains = [...prev, chain]
-      const adapter = allAdapters.find(a => a.namespace === chain)
-      if (adapter) {
-        appKit?.addAdapter(adapter)
-      }
       urlStateUtils.updateURLWithState({ enabledChains: newEnabledChains })
       return newEnabledChains
     })
+    // Doing this inside the setEnabledChains calling it two times - not sure why
+    const adapter = allAdapters.find(a => a.namespace === chain)
+    if (adapter) {
+      appKit?.addAdapter(adapter, namespaceNetworksMap[chain])
+    }
   }
 
   function updateFeatures(newFeatures: Partial<Features>) {
