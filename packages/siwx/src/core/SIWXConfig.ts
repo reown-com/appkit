@@ -127,7 +127,7 @@ export abstract class SIWXConfig implements SIWXConfigInterface {
   /**
    * This method determines whether the wallet stays connected when the user denies the signature request.
    *
-   * @returns
+   * @returns {boolean}
    */
   getRequired() {
     return this.required

@@ -373,7 +373,7 @@ export interface SIWXConfig {
   /**
    * This method determines whether the wallet stays connected when the user denies the signature request.
    *
-   * @returns
+   * @returns {boolean}
    */
   getRequired?: () => boolean
 }
