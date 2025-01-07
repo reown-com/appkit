@@ -8,10 +8,11 @@ import {
   ChainController,
   RouterController,
   ApiController,
-  EventsController
+  EventsController,
+  SIWXUtil
 } from '@reown/appkit-core'
 import { HelpersUtil } from '../utils/HelpersUtil'
-import type { RouterControllerState } from '@reown/appkit-core'
+import type { RouterControllerState, SIWXConfig } from '@reown/appkit-core'
 import type { CaipNetwork } from '@reown/appkit-common'
 
 // Mock ResizeObserver
@@ -199,6 +200,75 @@ describe('W3mModal', () => {
       element.disconnectedCallback()
 
       expect(abortSpy).toHaveBeenCalled()
+    })
+  })
+
+  describe('SIWX/SIWE', () => {
+    beforeAll(() => {
+      // Create w3m-frame iframe
+      const w3mFrame = document.createElement('iframe')
+      w3mFrame.id = 'w3m-iframe'
+      document.body.appendChild(w3mFrame)
+    })
+
+    it('should prevent the user from closing the modal when required is set to true', async () => {
+      vi.useFakeTimers()
+
+      vi.spyOn(ModalController, 'state', 'get').mockReturnValue({
+        ...ModalController.state,
+        open: true
+      })
+      vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
+        view: 'ApproveTransaction'
+      } as unknown as RouterControllerState)
+      vi.spyOn(SIWXUtil, 'getSIWX').mockReturnValue({
+        getRequired: vi.fn().mockReturnValue(true),
+        getSessions: vi.fn().mockResolvedValue([])
+      } as unknown as SIWXConfig)
+
+      const element: W3mModal = await fixture(html`<w3m-modal></w3m-modal>`)
+
+      const shakeSpy = vi.spyOn(ModalController, 'shake')
+      const closeSpy = vi.spyOn(ModalController, 'close')
+
+      const overlay = HelpersUtil.getByTestId(element, 'w3m-modal-overlay')
+
+      overlay.click()
+
+      await vi.advanceTimersByTimeAsync(200)
+
+      expect(closeSpy).not.toHaveBeenCalled()
+      expect(shakeSpy).toHaveBeenCalled()
+    })
+
+    it('should allow the user to close the modal when required is set to false', async () => {
+      vi.useFakeTimers()
+
+      vi.spyOn(ModalController, 'state', 'get').mockReturnValue({
+        ...ModalController.state,
+        open: true
+      })
+      vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
+        view: 'ApproveTransaction'
+      } as unknown as RouterControllerState)
+      vi.spyOn(SIWXUtil, 'getSIWX').mockReturnValue({
+        getRequired: vi.fn().mockReturnValue(false),
+        getSessions: vi.fn().mockResolvedValue([])
+      } as unknown as SIWXConfig)
+
+      const element: W3mModal = await fixture(html`<w3m-modal></w3m-modal>`)
+
+      const shakeSpy = vi.spyOn(ModalController, 'shake')
+      const closeSpy = vi.spyOn(ModalController, 'close')
+
+      const overlay = HelpersUtil.getByTestId(element, 'w3m-modal-overlay')
+
+      overlay.click()
+
+      await vi.advanceTimersByTimeAsync(200)
+
+      expect(shakeSpy).not.toHaveBeenCalled()
+      expect(closeSpy).toHaveBeenCalled()
     })
   })
 })
