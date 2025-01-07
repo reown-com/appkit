@@ -318,4 +318,15 @@ Issued At: 2024-12-05T16:02:32.905Z`)
       expect(addSessionSpy).toHaveBeenCalledWith(session2)
     })
   })
+
+  describe('getRequired', () => {
+    it('should return true for getRequired() by default', () => {
+      expect(siwx.getRequired()).toBe(true)
+    })
+
+    it('should return false for getRequired()', () => {
+      siwx = new CloudAuthSIWX({ required: false })
+      expect(siwx.getRequired()).toBe(false)
+    })
+  })
 })

@@ -142,13 +142,14 @@ export const SIWXUtil = {
   async cancelSignMessage() {
     try {
       const siwx = this.getSIWX()
-      const required = siwx?.getRequired()
+      const required = siwx?.getRequired?.()
 
       if (required) {
         await ConnectionController.disconnect()
+      } else {
+        ModalController.close()
       }
 
-      ModalController.close()
       RouterController.reset('Connect')
 
       EventsController.sendEvent({
@@ -180,7 +181,7 @@ export const SIWXUtil = {
       const isSiwxSignMessage = RouterController.state.view === 'SIWXSignMessage'
 
       if (isApproveSignScreen || isSiwxSignMessage) {
-        return siwx.getRequired() && (await this.getSessions()).length === 0
+        return siwx.getRequired?.() && (await this.getSessions()).length === 0
       }
     }
 
@@ -374,7 +375,7 @@ export interface SIWXConfig {
    *
    * @returns
    */
-  getRequired: () => boolean
+  getRequired?: () => boolean
 }
 
 /**

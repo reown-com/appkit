@@ -200,7 +200,7 @@ describe('W3mModal', () => {
     })
   })
 
-  describe.only('SIWX/SIWE', () => {
+  describe('SIWX/SIWE', () => {
     beforeAll(() => {
       // Create w3m-frame iframe
       const w3mFrame = document.createElement('iframe')
@@ -209,6 +209,8 @@ describe('W3mModal', () => {
     })
 
     it('should prevent the user from closing the modal when required is set to true', async () => {
+      vi.useFakeTimers()
+
       vi.spyOn(ModalController, 'state', 'get').mockReturnValue({
         ...ModalController.state,
         open: true
@@ -230,13 +232,15 @@ describe('W3mModal', () => {
 
       overlay.click()
 
-      await HelpersUtil.sleep(200)
+      await vi.advanceTimersByTimeAsync(200)
 
       expect(closeSpy).not.toHaveBeenCalled()
       expect(shakeSpy).toHaveBeenCalled()
     })
 
     it('should allow the user to close the modal when required is set to false', async () => {
+      vi.useFakeTimers()
+
       vi.spyOn(ModalController, 'state', 'get').mockReturnValue({
         ...ModalController.state,
         open: true
@@ -258,7 +262,7 @@ describe('W3mModal', () => {
 
       overlay.click()
 
-      await HelpersUtil.sleep(200)
+      await vi.advanceTimersByTimeAsync(200)
 
       expect(shakeSpy).not.toHaveBeenCalled()
       expect(closeSpy).toHaveBeenCalled()
