@@ -1797,12 +1797,9 @@ export class AppKit {
   }
 
   private async syncExistingConnection() {
-    const connectedNamespaces = StorageUtil.getConnectedNamespaces()
-    if (connectedNamespaces?.length > 0) {
-      await Promise.allSettled(
-        connectedNamespaces.map(namespace => this.syncNamespaceConnection(namespace))
-      )
-    }
+    await Promise.allSettled(
+      this.chainNamespaces.map(namespace => this.syncNamespaceConnection(namespace))
+    )
   }
 
   private getAdapter(namespace: ChainNamespace) {
