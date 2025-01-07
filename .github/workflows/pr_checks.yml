@@ -60,7 +60,6 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    continue-on-error: true
     permissions:
       contents: write
       pull-requests: write
