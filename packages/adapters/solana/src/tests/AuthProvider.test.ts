@@ -104,18 +104,6 @@ describe('AuthProvider specific tests', () => {
     })
   })
 
-  it('should call switch network with correct params and emit event', async () => {
-    const newChain = TestConstants.chains[1]!
-    const listener = vi.fn()
-    await authProvider.connect()
-    authProvider.on('chainChanged', listener)
-
-    await authProvider.switchNetwork(newChain.caipNetworkId)
-
-    // expect(provider.switchNetwork).toHaveBeenCalledWith(newChain.id)
-    // expect(listener).toHaveBeenCalledWith(newChain.id)
-  })
-
   it('should call signAllTransactions with correct params', async () => {
     await authProvider.connect()
     const transactions = [mockLegacyTransaction(), mockVersionedTransaction()]

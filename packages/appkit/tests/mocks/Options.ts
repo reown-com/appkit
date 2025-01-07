@@ -31,7 +31,9 @@ export const mockOptions = {
     url: 'https://test-app.com',
     icons: ['https://test-app.com/icon.png']
   },
-  sdkVersion: `html-wagmi-5.1.6` as SdkVersion
-} as unknown as AppKitOptions & {
+  sdkVersion: `html-wagmi-5.1.6`,
+  sdkType: 'appkit'
+} satisfies AppKitOptions & {
   sdkVersion: SdkVersion
+  sdkType: string
 }

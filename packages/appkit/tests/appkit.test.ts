@@ -71,28 +71,17 @@ describe('Base', () => {
   let appKit: AppKit
 
   beforeEach(() => {
-    vi.resetAllMocks()
-
     vi.mocked(ConnectorController).getConnectors = vi.fn().mockReturnValue([])
     vi.mocked(CaipNetworksUtil).extendCaipNetworks = vi.fn().mockReturnValue([])
 
     appKit = new AppKit(mockOptions)
 
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      chains: new Map(),
-      activeCaipAddress: undefined,
-      activeChain: undefined,
-      activeCaipNetwork: undefined,
-      noAdapters: false,
-      universalAdapter: {
-        networkControllerClient: undefined,
-        connectionControllerClient: undefined
-      }
-    })
+    vi.spyOn(OptionsController, 'getSnapshot').mockReturnValue({ ...OptionsController.state })
+    vi.spyOn(ThemeController, 'getSnapshot').mockReturnValue({ ...ThemeController.state })
   })
 
   afterEach(() => {
-    vi.clearAllMocks()
+    vi.restoreAllMocks()
   })
 
   describe('Base Initialization', () => {
@@ -156,7 +145,7 @@ describe('Base', () => {
     })
 
     it('should get theme mode', () => {
-      vi.mocked(ThemeController).state = { themeMode: 'dark' } as any
+      vi.spyOn(ThemeController.state, 'themeMode', 'get').mockReturnValueOnce('dark')
       expect(appKit.getThemeMode()).toBe('dark')
     })
 
@@ -166,9 +155,9 @@ describe('Base', () => {
     })
 
     it('should get theme variables', () => {
-      vi.mocked(ThemeController).state = {
-        themeVariables: { '--w3m-accent': '#000' }
-      } as any
+      vi.spyOn(ThemeController.state, 'themeVariables', 'get').mockReturnValueOnce({
+        '--w3m-accent': '#000'
+      })
       expect(appKit.getThemeVariables()).toEqual({ '--w3m-accent': '#000' })
     })
 
@@ -342,7 +331,7 @@ describe('Base', () => {
 
     it('should set CAIP address', () => {
       // First mock AccountController.setCaipAddress to update ChainController state
-      vi.mocked(AccountController.setCaipAddress).mockImplementation(() => {
+      vi.spyOn(AccountController, 'setCaipAddress').mockImplementation(() => {
         vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
           ...ChainController.state,
           activeCaipAddress: 'eip155:1:0x123',
@@ -532,7 +521,7 @@ describe('Base', () => {
         chains: new Map([['eip155', { namespace: 'eip155' }]])
       } as any)
 
-      vi.mocked(CoreHelperUtil.createAccount).mockImplementation((namespace, address, type) => {
+      vi.spyOn(CoreHelperUtil, 'createAccount').mockImplementation((namespace, address, type) => {
         if (namespace === 'eip155') {
           return {
             address,
@@ -558,7 +547,9 @@ describe('Base', () => {
         isConnected: vi.fn().mockResolvedValue({ isConnected: false }),
         getEmail: vi.fn().mockReturnValue('email@email.com'),
         getUsername: vi.fn().mockReturnValue('test'),
-        onSocialConnected: vi.fn()
+        onSocialConnected: vi.fn(),
+        syncDappData: vi.fn(),
+        syncTheme: vi.fn()
       }
 
       const appKitWithAuth = new AppKit({
@@ -691,9 +682,8 @@ describe('Base', () => {
         caipNetworkId: 'eip155:1'
       })
 
-      vi.mocked(OptionsController).state = {
-        allowAllNetworks: false
-      } as any
+      OptionsController.state.allowUnsupportedChain = undefined
+      vi.spyOn(OptionsController.state, 'allowUnsupportedChain', 'get').mockReturnValueOnce(false)
 
       await appKit['syncAccount'](mockAccountData)
 
@@ -706,7 +696,6 @@ describe('Base', () => {
     })
 
     it('should set connected wallet info when syncing account', async () => {
-      console.log('-------->', ChainController.state)
       vi.spyOn(NetworkUtil, 'getNetworksByNamespace').mockReturnValue([
         {
           ...sepolia,
@@ -1014,9 +1003,8 @@ describe('Base', () => {
       } as any)
       ;(appKit as any).caipNetworks = [{ id: 'eip155:1', chainNamespace: 'eip155' }]
 
-      vi.mocked(OptionsController).state = {
-        allowUnsupportedChain: true
-      } as any
+      OptionsController.state.allowUnsupportedChain = undefined
+      vi.spyOn(OptionsController.state, 'allowUnsupportedChain', 'get').mockResolvedValueOnce(true)
 
       const overrideAdapter = {
         getAccounts: vi.fn().mockResolvedValue({ accounts: [] }),
