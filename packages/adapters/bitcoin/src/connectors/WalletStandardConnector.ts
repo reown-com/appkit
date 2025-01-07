@@ -172,17 +172,6 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
     return Promise.reject(new MethodNotSupportedError(this.id, 'request'))
   }
 
-  async getPublicKey(): Promise<string> {
-    const account = this.wallet.accounts[0]
-
-    if (!account) {
-      console.warn('No account found to get public key')
-      return Promise.resolve('')
-    }
-
-    return Buffer.from(account.publicKey).toString('hex')
-  }
-
   private getWalletFeature<Name extends keyof BitcoinFeatures>(feature: Name) {
     if (!(feature in this.wallet.features)) {
       throw new MethodNotSupportedError(this.id, feature)

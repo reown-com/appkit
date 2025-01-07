@@ -141,14 +141,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     })
   }
 
-  public async getPublicKey(): Promise<string> {
-    if (!this.connector) {
-      console.warn('No active connector to get public key')
-      return Promise.resolve('')
-    }
-    return await this.connector.getPublicKey()
-  }
-
   override async signMessage(
     params: AdapterBlueprint.SignMessageParams
   ): Promise<AdapterBlueprint.SignMessageResult> {

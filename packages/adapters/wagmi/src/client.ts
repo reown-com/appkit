@@ -118,10 +118,6 @@ export class WagmiAdapter extends AdapterBlueprint {
     this.setupWatchers()
   }
 
-  public async getPublicKey(): Promise<string> {
-    return Promise.resolve('')
-  }
-
   override async getAccounts(
     params: AdapterBlueprint.GetAccountsParams
   ): Promise<AdapterBlueprint.GetAccountsResult> {

@@ -14,9 +14,7 @@ function mockOKXWallet(): { [K in keyof OKXConnector.Wallet]: Mock<OKXConnector.
     pushPsbt: vi.fn(() => Promise.resolve('mock_txhash')),
     send: vi.fn(() => Promise.resolve({ txhash: 'mock_txhash' })),
     on: vi.fn(),
-    removeAllListeners: vi.fn(),
-    // TODO(enes): Write unit tests for getPublicKey
-    getPublicKey: vi.fn(() => Promise.resolve('publicKey'))
+    removeAllListeners: vi.fn()
   }
 }
 

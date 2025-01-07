@@ -370,8 +370,6 @@ export abstract class AdapterBlueprint<
   public abstract revokePermissions(
     params: AdapterBlueprint.RevokePermissionsParams
   ): Promise<`0x${string}`>
-
-  public abstract getPublicKey(): Promise<string>
 }
 
 export namespace AdapterBlueprint {

@@ -51,10 +51,6 @@ export class UniversalAdapter extends AdapterBlueprint {
     })
   }
 
-  public async getPublicKey(): Promise<string> {
-    return Promise.resolve('')
-  }
-
   public async disconnect() {
     const connector = this.connectors.find(c => c.id === 'WALLET_CONNECT')
     const provider = connector?.provider

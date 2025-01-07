@@ -21,26 +21,6 @@
       "types": "./dist/types/exports/index.d.ts",
       "import": "./dist/esm/exports/index.js",
       "default": "./dist/esm/exports/index.js"
-    },
-    "./react": {
-      "types": "./dist/types/exports/react.d.ts",
-      "import": "./dist/esm/exports/react.js",
-      "default": "./dist/esm/exports/react.js"
-    },
-    "./vue": {
-      "types": "./dist/types/exports/vue.d.ts",
-      "import": "./dist/esm/exports/vue.js",
-      "default": "./dist/esm/exports/vue.js"
-    }
-  },
-  "typesVersions": {
-    "*": {
-      "react": [
-        "./dist/types/exports/react.d.ts"
-      ],
-      "vue": [
-        "./dist/types/exports/vue.d.ts"
-      ]
     }
   },
   "dependencies": {
@@ -55,17 +35,11 @@
     "sats-connect": "3.0.1"
   },
   "devDependencies": {
-    "@types/react": "18.3.1",
-    "@types/react-dom": "18.3.1",
     "@leather.io/rpc": "2.1.21",
     "@vitest/coverage-v8": "2.1.3",
-    "@vue/runtime-core": "3.4.3",
     "@wallet-standard/features": "1.0.3",
     "@walletconnect/types": "2.17.2",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "vitest": "2.1.3",
-    "vue": "3.x"
+    "vitest": "2.1.3"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",

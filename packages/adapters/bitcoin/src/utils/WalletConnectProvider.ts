@@ -36,10 +36,6 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Bitco
       .filter(Boolean) as CaipNetwork[]
   }
 
-  public async getPublicKey(): Promise<string> {
-    return Promise.resolve('')
-  }
-
   public async connect() {
     return Promise.reject(
       new Error('Connection of WalletConnectProvider should be done via UniversalAdapter')
