@@ -271,11 +271,6 @@ export class AppKit {
       : null
   }
 
-  public async getBitcoinWalletPublicKey() {
-    const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
-    return await adapter?.getPublicKey()
-  }
-
   public subscribeProviders(callback: (providers: ProviderStoreUtilState['providers']) => void) {
     return ProviderUtil.subscribeProviders(callback)
   }

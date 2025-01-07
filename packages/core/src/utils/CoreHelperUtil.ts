@@ -348,6 +348,7 @@ export const CoreHelperUtil = {
     return `${platform}-${adapterNames}-${version}`
   },
 
+  // eslint-disable-next-line max-params
   createAccount<N extends ChainNamespace>(
     namespace: N,
     address: string,
