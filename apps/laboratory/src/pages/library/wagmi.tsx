@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { fallback, http, WagmiProvider } from 'wagmi'
+import { WagmiProvider } from 'wagmi'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
