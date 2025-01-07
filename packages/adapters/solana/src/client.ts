@@ -10,7 +10,6 @@ import {
 import { ErrorUtil } from '@reown/appkit-utils'
 import { SolConstantsUtil } from '@reown/appkit-utils/solana'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
-import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import type { Commitment, ConnectionConfig } from '@solana/web3.js'
 import { Connection, PublicKey } from '@solana/web3.js'
@@ -26,9 +25,8 @@ import { createSendTransaction } from './utils/createSendTransaction.js'
 import { handleMobileWalletRedirection } from './utils/handleMobileWalletRedirection.js'
 import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
 import { watchStandard } from './utils/watchStandard.js'
-import { withSolanaNamespace } from './utils/withSolanaNamespace.js'
 import type { Provider as SolanaProvider } from '@reown/appkit-utils/solana'
-import { ProviderUtil } from '@reown/appkit/store'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig
@@ -58,9 +56,14 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     })
   }
 
-  // We don't need to set auth provider since we already set it in syncConnectors
-  public override setAuthProvider() {
-    return undefined
+  public override setAuthProvider(w3mFrameProvider: W3mFrameProvider) {
+    this.addConnector(
+      new AuthProvider({
+        w3mFrameProvider,
+        getActiveChain: () => ChainController.state.activeCaipNetwork,
+        chains: this.caipNetworks as CaipNetwork[]
+      })
+    )
   }
 
   public syncConnectors(options: AppKitOptions, appKit: AppKit) {
@@ -70,30 +73,6 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
     // eslint-disable-next-line arrow-body-style
     const getActiveChain = () => appKit.getCaipNetwork(this.namespace)
-
-    // Initialize Auth Provider if email/socials enabled
-    const isEmailEnabled = options.features?.email !== false
-    const isSocialsEnabled =
-      options.features?.socials !== false &&
-      Array.isArray(options.features?.socials) &&
-      options.features.socials.length > 0
-
-    if (isEmailEnabled || isSocialsEnabled) {
-      this.addConnector(
-        new AuthProvider({
-          w3mFrameProvider: W3mFrameProviderSingleton.getInstance({
-            projectId: options.projectId,
-            enableLogger: appKit.options.enableAuthLogger,
-            chainId: withSolanaNamespace(appKit?.getCaipNetwork(this.namespace)?.id),
-            onTimeout: () => {
-              AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
-            }
-          }),
-          getActiveChain,
-          chains: this.caipNetworks as CaipNetwork[]
-        })
-      )
-    }
 
     // Add Coinbase Wallet if available
     if (CoreHelperUtil.isClient() && 'coinbaseSolana' in window) {
@@ -280,15 +259,10 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     }
   }
 
-  public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
-    const { caipNetwork, provider } = params
+  public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
+    await super.switchNetwork(params)
 
-    if (provider instanceof AuthProvider) {
-      const networkSwitched = await provider.switchNetwork(caipNetwork.caipNetworkId)
-      this.emit('switchNetwork', networkSwitched)
-      ProviderUtil.setProvider('solana', provider)
-      ProviderUtil.setProviderId('solana', provider.id)
-    }
+    const { caipNetwork } = params
 
     if (caipNetwork?.rpcUrls?.default?.http?.[0]) {
       SolStoreUtil.setConnection(

@@ -7,10 +7,9 @@ import type {
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 import { PublicKey, Transaction, VersionedTransaction, type SendOptions } from '@solana/web3.js'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
-import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 import base58 from 'bs58'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
-import type { CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
+import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil } from '@reown/appkit-common'
 import type { RequestArguments } from '@reown/appkit-core'
 
@@ -24,54 +23,55 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
   private readonly requestedChains: CaipNetwork[]
   private readonly getActiveChain: GetActiveChain
 
-  private session: AuthProvider.Session | undefined
-
   constructor(params: AuthProvider.ConstructorParams) {
     super()
 
     this.provider = params.w3mFrameProvider
     this.requestedChains = params.chains
     this.getActiveChain = params.getActiveChain
-
-    this.bindEvents()
   }
 
   get publicKey(): PublicKey | undefined {
-    return this.getPublicKey(false)
+    const address = this.provider.user?.address
+
+    return address ? new PublicKey(address) : undefined
   }
 
   get chains() {
     const availableChainIds = this.provider.getAvailableChainIds()
 
     return this.requestedChains.filter(requestedChain =>
-      availableChainIds.includes(withSolanaNamespace(requestedChain.id) as string)
+      availableChainIds.includes(requestedChain.caipNetworkId)
     )
   }
 
   public async connect() {
-    const session = await this.provider.connect({
-      chainId: withSolanaNamespace(this.getActiveChain()?.id)
+    await this.provider.connect({
+      chainId: this.getActiveChain()?.caipNetworkId
     })
 
-    this.session = session
+    if (!this.publicKey) {
+      throw new Error('Failed to connect to the wallet')
+    }
 
-    const publicKey = this.getPublicKey(true)
+    this.emit('connect', this.publicKey)
 
-    this.emit('connect', publicKey)
-
-    return publicKey.toBase58()
+    return this.publicKey.toBase58()
   }
 
   public async disconnect() {
     await this.provider.disconnect()
-    this.session = undefined
     this.emit('disconnect', undefined)
   }
 
   public async signMessage(message: Uint8Array) {
+    if (!this.publicKey) {
+      throw new Error('Wallet not connected')
+    }
+
     const result = await this.provider.request({
       method: 'solana_signMessage',
-      params: { message: base58.encode(message), pubkey: this.getPublicKey(true).toBase58() }
+      params: { message: base58.encode(message), pubkey: this.publicKey.toBase58() }
     })
 
     return base58.decode(result.signature)
@@ -150,64 +150,23 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
     return this.provider.request({ method: args.method, params: args.params })
   }
 
-  public async switchNetwork(chainId: CaipNetworkId) {
-    const switchNetworkResponse = await this.provider.switchNetwork(chainId)
-    const user = await this.provider.getUser({ chainId: switchNetworkResponse.chainId })
-    this.session = user
-    this.emit('chainChanged', chainId)
-
-    return user
-  }
-
   public async getAccounts() {
-    if (!this.session) {
+    if (!this.publicKey) {
       return Promise.resolve([])
     }
 
     return Promise.resolve([
       {
         namespace: this.chain,
-        address: this.session.address,
+        address: this.publicKey.toBase58(),
         type: 'eoa'
       } as const
     ])
   }
 
   // -- Private ------------------------------------------- //
-  private getPublicKey<Required extends boolean>(
-    required?: Required
-  ): Required extends true ? PublicKey : PublicKey | undefined {
-    if (!this.session) {
-      if (required) {
-        throw new Error('Account is required')
-      }
-
-      return undefined as Required extends true ? PublicKey : PublicKey | undefined
-    }
-
-    return new PublicKey(this.session.address)
-  }
-
   private serializeTransaction(transaction: AnyTransaction) {
     return base58.encode(transaction.serialize({ verifySignatures: false }))
-  }
-
-  private bindEvents() {
-    this.provider.onRpcRequest(request => {
-      this.emit('auth_rpcRequest', request)
-    })
-
-    this.provider.onRpcSuccess(response => {
-      this.emit('auth_rpcSuccess', response)
-    })
-
-    this.provider.onRpcError(error => {
-      this.emit('auth_rpcError', error)
-    })
-
-    this.provider.onNotConnected(() => {
-      this.emit('disconnect', undefined)
-    })
   }
 }
 

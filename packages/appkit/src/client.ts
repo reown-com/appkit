@@ -23,7 +23,8 @@ import {
   type OptionsControllerState,
   type WalletFeature,
   type ConnectMethod,
-  type SocialProvider
+  type SocialProvider,
+  type Metadata
 } from '@reown/appkit-core'
 import {
   AccountController,
@@ -53,7 +54,8 @@ import {
   type CaipNetworkId,
   NetworkUtil,
   ConstantsUtil,
-  ParseUtil
+  ParseUtil,
+  getW3mThemeVariables
 } from '@reown/appkit-common'
 import type { AppKitOptions } from './utils/TypesUtil.js'
 import {
@@ -888,7 +890,7 @@ export class AppKit {
       disconnect: async () => {
         const namespace = ChainController.state.activeChain as ChainNamespace
         const adapter = this.getAdapter(namespace)
-        const provider = ProviderUtil.getProvider<UniversalProvider | W3mFrameProvider>(namespace)
+        const provider = ProviderUtil.getProvider(namespace)
         const providerType = ProviderUtil.state.providerIds[namespace]
 
         await adapter?.disconnect({ provider, providerType })
@@ -1028,12 +1030,9 @@ export class AppKit {
           AccountController.state.address &&
           caipNetwork.chainNamespace === ChainController.state.activeChain
         ) {
-          const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
-          const provider = ProviderUtil.getProvider<UniversalProvider | W3mFrameProvider>(
-            ChainController.state.activeChain as ChainNamespace
-          )
-          const providerType =
-            ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
+          const adapter = this.getAdapter(ChainController.state.activeChain)
+          const provider = ProviderUtil.getProvider(ChainController.state.activeChain)
+          const providerType = ProviderUtil.state.providerIds[ChainController.state.activeChain]
 
           await adapter?.switchNetwork({ caipNetwork, provider, providerType })
           this.setCaipNetwork(caipNetwork)
@@ -1167,12 +1166,6 @@ export class AppKit {
     })
     provider.onConnect(async user => {
       const namespace = ChainController.state.activeChain as ChainNamespace
-      this.syncProvider({
-        type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
-        provider,
-        id: ConstantsUtil.CONNECTOR_ID.AUTH,
-        chainNamespace: namespace
-      })
 
       // To keep backwards compatibility, eip155 chainIds are numbers and not actual caipChainIds
       const caipAddress =
@@ -1249,6 +1242,21 @@ export class AppKit {
     this.setupAuthConnectorListeners(provider)
 
     const { isConnected } = await provider.isConnected()
+
+    const theme = ThemeController.getSnapshot()
+    const options = OptionsController.getSnapshot()
+
+    provider.syncDappData({
+      metadata: options.metadata as Metadata,
+      sdkVersion: options.sdkVersion,
+      projectId: options.projectId,
+      sdkType: options.sdkType
+    })
+    provider.syncTheme({
+      themeMode: theme.themeMode,
+      themeVariables: theme.themeVariables,
+      w3mThemeVariables: getW3mThemeVariables(theme.themeVariables, theme.themeMode)
+    })
 
     const namespace = StorageUtil.getActiveNamespace()
 
@@ -1895,6 +1903,7 @@ export class AppKit {
       this.authProvider = W3mFrameProviderSingleton.getInstance({
         projectId: this.options.projectId,
         enableLogger: this.options.enableAuthLogger,
+        chainId: this.getCaipNetwork()?.caipNetworkId,
         onTimeout: () => {
           AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
         }

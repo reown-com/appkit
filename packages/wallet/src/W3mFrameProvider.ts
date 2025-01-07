@@ -30,6 +30,8 @@ export class W3mFrameProvider {
 
   public onTimeout?: () => void
 
+  public user?: W3mFrameTypes.Responses['FrameGetUserResponse']
+
   public constructor({
     projectId,
     chainId,
@@ -44,6 +46,12 @@ export class W3mFrameProvider {
     if (this.getLoginEmailUsed()) {
       this.w3mFrame.initFrame()
     }
+
+    this.w3mFrame.events.onFrameEvent(event => {
+      if (event.type === W3mFrameConstants.FRAME_GET_USER_SUCCESS) {
+        this.user = event.payload
+      }
+    })
   }
 
   // -- Extended Methods ------------------------------------------------
