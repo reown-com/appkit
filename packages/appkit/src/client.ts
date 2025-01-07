@@ -645,50 +645,50 @@ export class AppKit {
     )
   }
 
-  public removeAdapter(adapter: ChainAdapter) {
-    ChainController.removeAdapter(adapter)
-    if (adapter.namespace) {
-      ConnectorController.removeAdapter(adapter.namespace)
+  public removeAdapter(namespace: ChainNamespace) {
+    const adapter = this.getAdapter(namespace)
+
+    if (!adapter || !this.chainAdapters) {
+      return
     }
-    this.chainNamespaces = this.chainNamespaces.filter(namespace => namespace !== adapter.namespace)
-    this.caipNetworks = this.caipNetworks?.filter(
-      network => network.chainNamespace !== adapter.namespace
-    ) as [CaipNetwork, ...CaipNetwork[]]
-    if (this.chainAdapters && adapter.namespace) {
-      delete this.chainAdapters[adapter.namespace]
-    }
-    // TODO(enes): what about the event listeners?
+
+    const newCaipNetworks = this.caipNetworks?.filter(
+      network => network.chainNamespace !== namespace
+    )
+
+    ChainController.removeAdapter(namespace)
+    ConnectorController.removeAdapter(namespace)
+    this.chainNamespaces = this.chainNamespaces.filter(n => n !== namespace)
+    this.caipNetworks = newCaipNetworks as [CaipNetwork, ...CaipNetwork[]]
+    adapter.removeAllEventListeners()
+    Reflect.deleteProperty(this.chainAdapters, namespace)
   }
 
-  public async addAdapter(adapter: ChainAdapter, networks: [AppKitNetwork, ...AppKitNetwork[]]) {
+  public addAdapter(adapter: ChainAdapter, networks: [AppKitNetwork, ...AppKitNetwork[]]) {
     const namespace = adapter.namespace
-    if (
-      this.chainAdapters &&
-      this.connectionControllerClient &&
-      this.networkControllerClient &&
-      namespace
-    ) {
-      // Extend adapter networks and initialize ChainController for the adapter
-      const extendedAdapterNetworks = this.extendCaipNetworks({ ...this.options, networks })
-      // Add networks to the list, filtering out duplicates
-      // @ts-expect-error test
-      this.caipNetworks = this.caipNetworks
-        ? [...new Set([...this.caipNetworks, ...extendedAdapterNetworks])]
-        : extendedAdapterNetworks
 
-      this.createAdapter(adapter as unknown as AdapterBlueprint)
-      this.initChainAdapter(namespace)
-
-      ChainController.addAdapter(
-        adapter,
-        {
-          connectionControllerClient: this.connectionControllerClient,
-          networkControllerClient: this.networkControllerClient
-        },
-        extendedAdapterNetworks
-      )
+    if (!this.connectionControllerClient || !this.networkControllerClient) {
+      return
     }
-    // TODO(enes): what about the event listeners?
+
+    if (!this.chainAdapters || !namespace) {
+      return
+    }
+
+    const extendedAdapterNetworks = this.extendCaipNetworks({ ...this.options, networks })
+    this.caipNetworks = [...(this.caipNetworks || []), ...extendedAdapterNetworks]
+
+    this.createAdapter(adapter as unknown as AdapterBlueprint)
+    this.initChainAdapter(namespace)
+
+    ChainController.addAdapter(
+      adapter,
+      {
+        connectionControllerClient: this.connectionControllerClient,
+        networkControllerClient: this.networkControllerClient
+      },
+      extendedAdapterNetworks
+    )
   }
 
   // -- Private ------------------------------------------------------------------

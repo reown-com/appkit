@@ -149,8 +149,8 @@ export const ChainController = {
     })
   },
 
-  removeAdapter(adapter: ChainAdapter) {
-    state.chains.delete(adapter.namespace as ChainNamespace)
+  removeAdapter(namespace: ChainNamespace) {
+    state.chains.delete(namespace)
   },
 
   addAdapter(
