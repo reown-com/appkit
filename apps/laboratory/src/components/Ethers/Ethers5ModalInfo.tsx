@@ -5,7 +5,7 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import { AppKitInfo } from '../AppKitInfo'
 
 export function Ethers5ModalInfo() {
-  const [isReady, setReady] = React.useState(false)
+  const [isReady, setIsReady] = React.useState(false)
   const [clientId, setClientId] = React.useState<string | undefined>(undefined)
 
   const { isConnected } = useAppKitAccount()
