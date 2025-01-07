@@ -26,7 +26,7 @@ export class W3mEmailLoginWidget extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public tabIdx?: number
 
-  @state() private email = ''
+  @state() public email = ''
 
   @state() private loading = false
 
