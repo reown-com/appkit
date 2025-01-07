@@ -501,39 +501,44 @@ export const SwapController = {
       .multipliedBy(10 ** sourceToken.decimals)
       .integerValue()
 
-    const quoteResponse = await BlockchainApiController.fetchSwapQuote({
-      userAddress: address,
-      projectId: OptionsController.state.projectId,
-      from: sourceToken.address,
-      to: toToken.address,
-      gasPrice: state.gasFee,
-      amount: amountDecimal.toString()
-    })
+    try {
+      const quoteResponse = await BlockchainApiController.fetchSwapQuote({
+        userAddress: address,
+        projectId: OptionsController.state.projectId,
+        from: sourceToken.address,
+        to: toToken.address,
+        gasPrice: state.gasFee,
+        amount: amountDecimal.toString()
+      })
 
-    state.loadingQuote = false
+      state.loadingQuote = false
 
-    const quoteToAmount = quoteResponse?.quotes?.[0]?.toAmount
+      const quoteToAmount = quoteResponse?.quotes?.[0]?.toAmount
 
-    if (!quoteToAmount) {
-      return
-    }
+      if (!quoteToAmount) {
+        return
+      }
 
-    const toTokenAmount = NumberUtil.bigNumber(quoteToAmount)
-      .dividedBy(10 ** toToken.decimals)
-      .toString()
+      const toTokenAmount = NumberUtil.bigNumber(quoteToAmount)
+        .dividedBy(10 ** toToken.decimals)
+        .toString()
 
-    this.setToTokenAmount(toTokenAmount)
+      this.setToTokenAmount(toTokenAmount)
 
-    const isInsufficientToken = this.hasInsufficientToken(
-      state.sourceTokenAmount,
-      sourceToken.address
-    )
+      const isInsufficientToken = this.hasInsufficientToken(
+        state.sourceTokenAmount,
+        sourceToken.address
+      )
 
-    if (isInsufficientToken) {
+      if (isInsufficientToken) {
+        state.inputError = 'Insufficient balance'
+      } else {
+        state.inputError = undefined
+        this.setTransactionDetails()
+      }
+    } catch (error) {
+      state.loadingQuote = false
       state.inputError = 'Insufficient balance'
-    } else {
-      state.inputError = undefined
-      this.setTransactionDetails()
     }
   },
 
