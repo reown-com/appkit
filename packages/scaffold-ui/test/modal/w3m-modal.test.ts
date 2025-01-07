@@ -137,6 +137,7 @@ describe('W3mModal', () => {
     let element: W3mModal
 
     beforeEach(async () => {
+      vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve())
       element = await fixture(html`<w3m-modal></w3m-modal>`)
     })
 
@@ -153,6 +154,7 @@ describe('W3mModal', () => {
       await elementUpdated(element)
 
       expect(goBackSpy).toHaveBeenCalled()
+      expect(ApiController.prefetch).toHaveBeenCalled()
     })
 
     it('should handle network change when connected', async () => {
@@ -170,6 +172,7 @@ describe('W3mModal', () => {
       await elementUpdated(element)
 
       expect(goBackSpy).toHaveBeenCalled()
+      expect(ApiController.prefetch).toHaveBeenCalled()
     })
   })
 
