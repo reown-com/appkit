@@ -1421,6 +1421,11 @@ describe('Base', () => {
           alert: ErrorUtil.ALERT_ERRORS.JWT_TOKEN_NOT_VALID,
           message:
             'WebSocket connection closed abnormally with code: 3000 (JWT validation error: JWT Token is not yet valid:)'
+        },
+        {
+          alert: ErrorUtil.ALERT_ERRORS.INVALID_PROJECT_ID,
+          message:
+            'Uncaught Error: WebSocket connection closed abnormally with code: 3000 (Unauthorized: invalid key)'
         }
       ]
 
