@@ -1037,7 +1037,7 @@ describe('Base', () => {
 
       await (appKit as any).syncExistingConnection()
 
-      expect(ChainController.showUnsupportedChainUI).toHaveBeenCalled()
+      expect(ChainController.showUnsupportedChainUI).not.toHaveBeenCalled()
     })
 
     it('should subscribe to providers', () => {
