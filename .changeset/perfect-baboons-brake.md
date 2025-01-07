@@ -20,4 +20,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixes issue where only wallets from the initially active chain ID would be fetched
+Fixes issue where only wallets from the initially active chain ID would be fetched. Re-fetches wallets from API when network changes.
