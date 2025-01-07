@@ -317,6 +317,7 @@ export class AppKit {
   public subscribeAccount(callback: (newState: UseAppKitAccountReturn) => void) {
     function updateVal() {
       callback({
+        allAccounts: [...AccountController.state.allAccounts],
         caipAddress: ChainController.state.activeCaipAddress,
         address: CoreHelperUtil.getPlainAddress(ChainController.state.activeCaipAddress),
         isConnected: Boolean(ChainController.state.activeCaipAddress),

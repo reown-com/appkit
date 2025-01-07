@@ -885,6 +885,8 @@ export type AccountTypeMap = {
     namespace: K
     address: string
     type: NamespaceTypeMap[K]
+    publicKey?: string
+    path?: string
   }
 }
 
@@ -1095,6 +1097,7 @@ export type FeaturesKeys = keyof Features
 export type WalletGuideType = 'get-started' | 'explore'
 
 export type UseAppKitAccountReturn = {
+  allAccounts: AccountType[]
   caipAddress: CaipAddress | undefined
   address: string | undefined
   isConnected: boolean

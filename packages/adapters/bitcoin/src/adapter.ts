@@ -77,6 +77,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       provider: connector.provider
     }
   }
+
   override async getAccounts(
     params: AdapterBlueprint.GetAccountsParams
   ): Promise<AdapterBlueprint.GetAccountsResult> {
@@ -86,13 +87,14 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       .catch(() => [])
 
     const accounts = addresses?.map(a =>
-      CoreHelperUtil.createAccount('bip122', a.address, a.purpose || 'payment')
+      CoreHelperUtil.createAccount('bip122', a.address, a.purpose || 'payment', a.publicKey, a.path)
     )
 
     return {
       accounts: accounts || []
     }
   }
+
   override syncConnectors(_options?: AppKitOptions, appKit?: AppKit): void {
     function getActiveNetwork() {
       return appKit?.getCaipNetwork()

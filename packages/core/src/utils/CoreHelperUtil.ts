@@ -347,15 +347,20 @@ export const CoreHelperUtil = {
 
     return `${platform}-${adapterNames}-${version}`
   },
+
   createAccount<N extends ChainNamespace>(
     namespace: N,
     address: string,
-    type: NamespaceTypeMap[N]
+    type: NamespaceTypeMap[N],
+    publicKey?: string,
+    path?: string
   ): AccountTypeMap[N] {
     return {
       namespace,
       address,
-      type
+      type,
+      publicKey,
+      path
     } as AccountTypeMap[N]
   },
 

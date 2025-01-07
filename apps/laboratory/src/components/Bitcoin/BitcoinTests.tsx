@@ -1,30 +1,19 @@
 import * as React from 'react'
-import { useAppKitAccount, useAppKitBitcoinPublicKey } from '@reown/appkit/react'
+import { useAppKitAccount } from '@reown/appkit/react'
 import { StackDivider, Card, CardHeader, Heading, CardBody, Box, Stack } from '@chakra-ui/react'
 import { BitcoinSignMessageTest } from './BitcoinSignMessageTest'
 import { BitcoinSendTransferTest } from './BitcoinSendTransferTest'
 import { BitcoinSignPSBTTest } from './BitcoinSignPSBTTest'
 
 export function BitcoinTests() {
-  const { caipAddress } = useAppKitAccount()
-  const { getPublicKey } = useAppKitBitcoinPublicKey()
+  const { allAccounts, address } = useAppKitAccount()
   const { isConnected } = useAppKitAccount()
-  const [publicKey, setPublicKey] = React.useState<string | undefined>(undefined)
-
-  async function getKey() {
-    const key = await getPublicKey?.()
-    if (caipAddress) {
-      setPublicKey(key)
-    }
-  }
-
-  React.useEffect(() => {
-    getKey()
-  }, [caipAddress])
 
   if (!isConnected) {
     return null
   }
+
+  const bip122Account = allAccounts?.find(a => a.address === address)
 
   return (
     <Card marginTop={10} marginBottom={10}>
@@ -38,7 +27,7 @@ export function BitcoinTests() {
             <Heading size="xs" textTransform="uppercase" pb="2">
               Public Key
             </Heading>
-            {publicKey}
+            {bip122Account?.publicKey}
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">

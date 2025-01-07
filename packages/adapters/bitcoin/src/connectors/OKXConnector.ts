@@ -52,10 +52,15 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
   public async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {
     const accounts = await this.wallet.getAccounts()
 
-    return accounts.map(account => ({
-      address: account,
-      purpose: 'payment'
-    }))
+    const accountList = await Promise.all(
+      accounts.map(async account => ({
+        address: account,
+        purpose: 'payment' as const,
+        publicKey: await this.wallet.getPublicKey()
+      }))
+    )
+
+    return accountList
   }
 
   public async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
