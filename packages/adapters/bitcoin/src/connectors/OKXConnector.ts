@@ -144,6 +144,10 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
 
     return undefined
   }
+
+  public async getPublicKey(): Promise<string> {
+    return await this.wallet.getPublicKey()
+  }
 }
 
 export namespace OKXConnector {
@@ -175,6 +179,7 @@ export namespace OKXConnector {
     }): Promise<{ txhash: string }>
     on(event: string, listener: (param?: unknown) => void): void
     removeAllListeners(): void
+    getPublicKey(): Promise<string>
   }
 
   export type GetWalletParams = Omit<ConstructorParams, 'wallet' | 'imageUrl'>
