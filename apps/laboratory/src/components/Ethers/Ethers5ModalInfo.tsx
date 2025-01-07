@@ -24,7 +24,7 @@ export function Ethers5ModalInfo() {
   }, [walletProvider])
 
   React.useEffect(() => {
-    setReady(true)
+    setIsReady(true)
   }, [])
 
   return isReady && isConnected ? <AppKitInfo clientId={clientId} /> : null
