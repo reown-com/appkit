@@ -12,6 +12,7 @@ import { isVersionedTransaction } from '@solana/wallet-adapter-base'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil } from '@reown/appkit-common'
 import type { RequestArguments } from '@reown/appkit-core'
+import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 
 export class AuthProvider extends ProviderEventEmitter implements SolanaProvider {
   public readonly id = ConstantsUtil.CONNECTOR_ID.AUTH
@@ -45,9 +46,10 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
     )
   }
 
-  public async connect() {
+  public async connect(params: { chainId?: string } = {}) {
+    const chainId = params.chainId || this.getActiveChain()?.id
     await this.provider.connect({
-      chainId: this.getActiveChain()?.caipNetworkId
+      chainId: withSolanaNamespace(chainId)
     })
 
     if (!this.publicKey) {

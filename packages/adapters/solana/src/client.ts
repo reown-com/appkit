@@ -222,7 +222,9 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       throw new Error('Provider not found')
     }
 
-    const address = await connector.connect()
+    const address = await connector.connect({
+      chainId: params.chainId as string
+    })
     this.listenProviderEvents(connector)
 
     if (params.rpcUrl) {

@@ -48,7 +48,10 @@ export interface Provider
   provider: CoreProvider | W3mFrameProvider | UniversalProvider
 
   // Methods
-  connect: () => Promise<string>
+  connect: (params?: {
+    chainId?: string
+    onUri?: ((uri: string) => void) | undefined
+  }) => Promise<string>
   disconnect: () => Promise<void>
   signMessage: (message: Uint8Array) => Promise<Uint8Array>
   signTransaction: <T extends AnyTransaction>(transaction: T) => Promise<T>
