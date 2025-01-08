@@ -20,4 +20,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where `useAppKitAccount` hook would throw a hydration error when using SSR framework
+Fixed an issue where `useAppKitAccount` hook would throw a hydration error when using SSR
