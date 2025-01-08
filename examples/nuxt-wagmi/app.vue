@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { createAppKit } from '@reown/appkit/vue'
 import { mainnet, polygon, base } from '@reown/appkit/networks'
-import { wagmiAdapter, projectId } from './config/wagmi'
+import { wagmiAdapter, projectId, networks } from './config/wagmi'
+import { useDisconnect } from '@reown/appkit/vue'
 
-createAppKit({
+const { disconnect } = useDisconnect()
+
+const modal = createAppKit({
   adapters: [wagmiAdapter],
-  networks: [mainnet, polygon, base],
+  networks,
   projectId,
+  themeMode: 'light',
   metadata: {
     name: 'AppKit Nuxt Example',
     description: 'AppKit Nuxt Example',
@@ -17,7 +21,9 @@ createAppKit({
 </script>
 
 <template>
-  <div>
+  <client-only>
     <appkit-button />
-  </div>
+    <appkit-network-button />
+    <button @click="disconnect">Disconnect</button>
+  </client-only>
 </template>
