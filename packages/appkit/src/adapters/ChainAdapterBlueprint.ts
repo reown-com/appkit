@@ -223,7 +223,13 @@ export abstract class AdapterBlueprint<
    * @param {AdapterBlueprint.SwitchNetworkParams} params - Network switching parameters
    */
   public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
-    const { caipNetwork, provider, providerType } = params
+    const { caipNetwork, providerType } = params
+
+    if (!params.provider) {
+      return
+    }
+
+    const provider = 'provider' in params.provider ? params.provider.provider : params.provider
 
     if (providerType === 'WALLET_CONNECT') {
       ;(provider as UniversalProvider).setDefaultChain(caipNetwork.caipNetworkId)
@@ -232,9 +238,7 @@ export abstract class AdapterBlueprint<
     }
 
     if (provider && providerType === 'AUTH') {
-      const authProvider = (
-        'provider' in provider ? provider.provider : provider
-      ) as W3mFrameProvider
+      const authProvider = provider as W3mFrameProvider
       await authProvider.switchNetwork(caipNetwork.caipNetworkId)
       const user = await authProvider.getUser({
         chainId: caipNetwork.caipNetworkId
