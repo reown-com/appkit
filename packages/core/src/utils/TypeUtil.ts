@@ -885,9 +885,12 @@ export type AccountTypeMap = {
     namespace: K
     address: string
     type: NamespaceTypeMap[K]
-    publicKey?: string
-    path?: string
-  }
+  } & (K extends 'bip122'
+    ? {
+        publicKey?: string
+        path?: string
+      }
+    : {})
 }
 
 export type AccountType = AccountTypeMap[ChainNamespace]
