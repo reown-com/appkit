@@ -1,4 +1,9 @@
-import { ChainController, ConnectorController, CoreHelperUtil } from '@reown/appkit-core'
+import {
+  ChainController,
+  ConnectionController,
+  ConnectorController,
+  CoreHelperUtil
+} from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
@@ -6,7 +11,7 @@ import { ref, createRef } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 import styles from './styles.js'
 import { SnackController, RouterController, EventsController } from '@reown/appkit-core'
-import { ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-email-login-widget')
@@ -21,7 +26,7 @@ export class W3mEmailLoginWidget extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public tabIdx?: number
 
-  @state() private email = ''
+  @state() public email = ''
 
   @state() private loading = false
 
@@ -126,7 +131,14 @@ export class W3mEmailLoginWidget extends LitElement {
         RouterController.push('EmailVerifyOtp', { email: this.email })
       } else if (action === 'VERIFY_DEVICE') {
         RouterController.push('EmailVerifyDevice', { email: this.email })
+      } else if (action === 'CONNECT') {
+        await ConnectionController.connectExternal(
+          authConnector,
+          ChainController.state.activeChain as ChainNamespace
+        )
+        RouterController.replace('Account')
       }
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       const parsedError = CoreHelperUtil.parseError(error)

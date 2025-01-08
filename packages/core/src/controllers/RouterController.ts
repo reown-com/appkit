@@ -1,9 +1,13 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { proxy } from 'valtio/vanilla'
-import type { Connector, WcWallet } from '../utils/TypeUtil.js'
+import { proxy, snapshot } from 'valtio/vanilla'
+import type { Connector, Metadata, WcWallet } from '../utils/TypeUtil.js'
 import type { SwapInputTarget } from './SwapController.js'
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import { ModalController } from './ModalController.js'
+import { AccountController } from './AccountController.js'
+import { ChainController } from './ChainController.js'
+import { ConnectorController } from './ConnectorController.js'
+import { OptionsController } from './OptionsController.js'
 
 // -- Types --------------------------------------------- //
 type TransactionAction = {
@@ -185,6 +189,9 @@ export const RouterController = {
   },
 
   goBack() {
+    const shouldReload =
+      !ChainController.state.activeCaipAddress && this.state.view === 'ConnectingFarcaster'
+
     if (state.history.length > 1 && !state.history.includes('UnsupportedChain')) {
       state.history.pop()
       const [last] = state.history.slice(-1)
@@ -194,6 +201,23 @@ export const RouterController = {
     } else {
       ModalController.close()
     }
+
+    // Reloading the iframe contentwindow and doing the view animation in the modal causes a small freeze in the transition. Doing these separately fixes that.
+    setTimeout(() => {
+      if (shouldReload) {
+        AccountController.setFarcasterUrl(undefined, ChainController.state.activeChain)
+        const authConnector = ConnectorController.getAuthConnector()
+        authConnector?.provider?.reload()
+
+        const optionsState = snapshot(OptionsController.state)
+        authConnector?.provider?.syncDappData?.({
+          metadata: optionsState.metadata as Metadata,
+          sdkVersion: optionsState.sdkVersion,
+          projectId: optionsState.projectId,
+          sdkType: optionsState.sdkType
+        })
+      }
+    }, 100)
   },
 
   goBackToIndex(historyIndex: number) {

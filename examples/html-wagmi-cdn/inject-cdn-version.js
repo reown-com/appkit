@@ -8,7 +8,7 @@ const appkitPackageJson = JSON.parse(fs.readFileSync(appkitPackageJsonPath, 'utf
 const appkitVersion = appkitPackageJson.version
 
 // Inject version into main.js file
-const mainJsPath = path.join(__dirname, 'main.js')
+const mainJsPath = path.join(__dirname, 'src/main.js')
 let mainJsContent = fs.readFileSync(mainJsPath, 'utf8')
 
 // Regular expression to match both __VERSION__ and any semver version

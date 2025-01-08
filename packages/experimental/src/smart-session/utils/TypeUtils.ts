@@ -1,6 +1,20 @@
 // The types of keys that are supported for the following `key` and `keys` signer types.
 export type KeyType = 'secp256r1' | 'secp256k1'
 
+export type SubscriptionInterval = '1s' | '1d' | '1w' | '1m'
+type SubscriptionAsset = 'native'
+
+export type CreateSubscriptionRequest = {
+  chainId: `0x${string}`
+  signerPublicKey: `0x${string}`
+  interval: SubscriptionInterval
+  asset: SubscriptionAsset
+  amount: `0x${string}`
+  expiry: number
+}
+
+export type CreateSubscriptionResponse = SmartSessionGrantPermissionsResponse
+
 /*
  * A signer representing a multisig signer.
  * Each element of `publicKeys` are all explicitly the same `KeyType`, and the public keys are hex-encoded.

@@ -210,6 +210,7 @@ export class W3mModal extends LitElement {
   }
 
   private onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {
+    ApiController.prefetch()
     if (!this.caipAddress) {
       this.caipNetwork = nextCaipNetwork
       RouterController.goBack()

@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { W3mFrame } from '../src/W3mFrame.js'
 import { W3mFrameHelpers } from '../src/W3mFrameHelpers.js'
 import { W3mFrameConstants } from '../src/W3mFrameConstants.js'
+import * as logger from '@walletconnect/logger'
 
 describe('W3mFrame', () => {
   const PROJECT_ID = 'test-project-id'
@@ -42,14 +43,14 @@ describe('W3mFrame', () => {
 
   describe('constructor', () => {
     it('should create an iframe when isAppClient is true', () => {
-      w3mFrame = new W3mFrame(PROJECT_ID, true)
+      w3mFrame = new W3mFrame({ projectId: PROJECT_ID, isAppClient: true })
 
       expect(mockDocument.createElement).toHaveBeenCalledWith('iframe')
       expect(w3mFrame.frameLoadPromise).toBeDefined()
     })
 
     it('should not create an iframe when isAppClient is false', () => {
-      w3mFrame = new W3mFrame(PROJECT_ID, false)
+      w3mFrame = new W3mFrame({ projectId: PROJECT_ID, isAppClient: false })
 
       expect(mockDocument.createElement).not.toHaveBeenCalled()
     })
@@ -57,7 +58,7 @@ describe('W3mFrame', () => {
 
   describe('events', () => {
     it('should register frame event handler', () => {
-      w3mFrame = new W3mFrame(PROJECT_ID, true)
+      w3mFrame = new W3mFrame({ projectId: PROJECT_ID, isAppClient: true })
       const mockCallback = vi.fn()
       const mockAbortController = new AbortController()
 
@@ -67,7 +68,7 @@ describe('W3mFrame', () => {
     })
 
     it('should post app events', () => {
-      w3mFrame = new W3mFrame(PROJECT_ID, true)
+      w3mFrame = new W3mFrame({ projectId: PROJECT_ID, isAppClient: true })
 
       // Mock iframe and its contentWindow
       w3mFrame['iframe'] = {
@@ -90,7 +91,7 @@ describe('W3mFrame', () => {
     })
 
     it('should throw error when posting app event without iframe', () => {
-      w3mFrame = new W3mFrame(PROJECT_ID, true)
+      w3mFrame = new W3mFrame({ projectId: PROJECT_ID, isAppClient: true })
 
       const testEvent = {
         id: 'test-id',
@@ -105,14 +106,14 @@ describe('W3mFrame', () => {
 
   describe('initFrame', () => {
     it('should append iframe to document body when not already present', () => {
-      w3mFrame = new W3mFrame(PROJECT_ID, true)
+      w3mFrame = new W3mFrame({ projectId: PROJECT_ID, isAppClient: true })
       w3mFrame.initFrame()
 
       expect(mockDocument.body.appendChild).toHaveBeenCalledWith(w3mFrame['iframe'])
     })
 
     it('should not append iframe if already present', () => {
-      w3mFrame = new W3mFrame(PROJECT_ID, true)
+      w3mFrame = new W3mFrame({ projectId: PROJECT_ID, isAppClient: true })
 
       // Mock iframe already existing
       mockDocument.getElementById.mockReturnValueOnce({})
@@ -124,7 +125,7 @@ describe('W3mFrame', () => {
 
   describe('frame load promise', () => {
     it('should resolve when frame is ready', async () => {
-      w3mFrame = new W3mFrame(PROJECT_ID, true)
+      w3mFrame = new W3mFrame({ projectId: PROJECT_ID, isAppClient: true })
 
       // Simulate frame ready event
       const readyEvent = {
@@ -150,6 +151,23 @@ describe('W3mFrame', () => {
 
       // Wait for the promise to resolve
       await expect(w3mFrame.frameLoadPromise).resolves.toBeUndefined()
+    })
+  })
+
+  describe('frame url', () => {
+    it('should include enableLogger=true query param when enableLogger is undefined', async () => {
+      w3mFrame = new W3mFrame({ projectId: PROJECT_ID, isAppClient: true })
+      expect(w3mFrame['iframe']?.src).toContain('enableLogger=true')
+    })
+
+    it('should include enableLogger=true query param when enableLogger is set to true', async () => {
+      w3mFrame = new W3mFrame({ projectId: PROJECT_ID, isAppClient: true, enableLogger: true })
+      expect(w3mFrame['iframe']?.src).toContain('enableLogger=true')
+    })
+
+    it('should include enableLogger=false query param when enableLogger is set to false', async () => {
+      w3mFrame = new W3mFrame({ projectId: PROJECT_ID, isAppClient: true, enableLogger: false })
+      expect(w3mFrame['iframe']?.src).toContain('enableLogger=false')
     })
   })
 })

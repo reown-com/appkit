@@ -19,6 +19,7 @@ export class AppKitSIWEClient {
 
   public constructor(siweConfig: SIWEConfig) {
     const {
+      required = true,
       enabled = true,
       nonceRefetchIntervalMs = ConstantsUtil.FIVE_MINUTES_IN_MS,
       sessionRefetchIntervalMs = ConstantsUtil.FIVE_MINUTES_IN_MS,
@@ -30,6 +31,7 @@ export class AppKitSIWEClient {
 
     this.options = {
       // Default options
+      required,
       enabled,
       nonceRefetchIntervalMs,
       sessionRefetchIntervalMs,

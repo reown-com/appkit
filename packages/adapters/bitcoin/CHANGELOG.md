@@ -1,5 +1,57 @@
 # @reown/appkit-adapter-bitcoin
 
+## 1.6.3
+
+### Patch Changes
+
+- [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c) Thanks [@enesozturk](https://github.com/enesozturk)! - Updated account modal to redirect to the settings view instead of the profile view when only one social/email account is connected
+
+- [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c) Thanks [@enesozturk](https://github.com/enesozturk)! - Added a new option to enable or disable logs from email/social login.
+
+  **Example usage**
+
+  ```ts
+  import { createAppKit } from '@reown/appkit/react'
+
+  const modal = createAppKit({
+    adapters: [
+      /* Adapters */
+    ],
+    networks: [
+      /* Networks */
+    ],
+    projectId: 'YOUR_PROJECT_ID',
+    enableAuthLogger: false // Optional - defaults to true
+  })
+  ```
+
+- [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes `signOutOnNetworkChange` and `signOutOnAccountChange` flags on SIWX mapper function to work as expected
+
+- [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes issue with WC connections on wallets that do not support a requested network. Sets default network to first one supported by wallet
+
+- [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c) Thanks [@enesozturk](https://github.com/enesozturk)! - Improves existing connection error handling'
+
+- [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixed an issue where disconnecting the injected wallet did not update the state as disconnected for ethers/ethers5 adapters
+
+- [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c) Thanks [@enesozturk](https://github.com/enesozturk)! - Adds loading while disconnecting
+
+- [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes issue where refreshing the page when connected to multiple namespaces would only reconnect the last active one
+
+- [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes Vue hooks to return reactive values
+
+- [#3527](https://github.com/reown-com/appkit/pull/3527) [`f045fb5`](https://github.com/reown-com/appkit/commit/f045fb5c4703f1661d1701ce898945acd73a97f9) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - fix reload iframe after aborting farcaster
+
+- [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixed an issue where an incorrect EOA label and icon were displayed in the profile view after reconnecting through social/email login
+
+- [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c) Thanks [@enesozturk](https://github.com/enesozturk)! - Set connected wallet info when going to authenticate flow.
+
+- [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c) Thanks [@enesozturk](https://github.com/enesozturk)! - Updates @solana/web3.js dependency to latest
+
+- Updated dependencies [[`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c), [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c), [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c), [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c), [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c), [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c), [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c), [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c), [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c), [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c), [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c), [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c), [`f045fb5`](https://github.com/reown-com/appkit/commit/f045fb5c4703f1661d1701ce898945acd73a97f9), [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c), [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c), [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c), [`3db8487`](https://github.com/reown-com/appkit/commit/3db8487122ab6b52e14db8ce639cd7ea92ac4f5c)]:
+  - @reown/appkit@1.6.3
+  - @reown/appkit-common@1.6.3
+  - @reown/appkit-core@1.6.3
+
 ## 1.6.2
 
 ### Patch Changes

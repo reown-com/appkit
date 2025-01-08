@@ -48,5 +48,8 @@ export const ConstantsUtil = {
     '0x55d398326f99059fF775485246999027B3197955',
     // Arbitrum
     '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9'
-  ]
+  ],
+  HTTP_STATUS_CODES: {
+    SERVICE_UNAVAILABLE: 503
+  }
 } as const

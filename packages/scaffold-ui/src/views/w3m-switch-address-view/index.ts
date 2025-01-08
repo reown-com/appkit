@@ -12,7 +12,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import styles from './styles.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import type { CaipAddress } from '@reown/appkit-common'
+import type { CaipAddress, ChainNamespace } from '@reown/appkit-common'
 import { ConstantsUtil } from '@reown/appkit-common'
 
 @customElement('w3m-switch-address-view')
@@ -28,11 +28,6 @@ export class W3mSwitchAddressView extends LitElement {
   public readonly labels = AccountController.state.addressLabels
 
   public readonly currentAddress: string = AccountController.state.address || ''
-
-  private connectorId = StorageUtil.getConnectedConnectorId()
-
-  // Only show icon for AUTH accounts
-  private shouldShowIcon = this.connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
 
   private caipNetwork = ChainController.state.activeCaipNetwork
 
@@ -87,6 +82,10 @@ export class W3mSwitchAddressView extends LitElement {
 
   private getAddressTemplate(account: AccountType, index: number) {
     const label = this.labels?.get(account.address)
+    const namespace = ChainController.state.activeChain as ChainNamespace
+    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+    // Only show icon for AUTH accounts
+    const shouldShowIcon = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
 
     return html`
       <wui-flex
@@ -96,7 +95,7 @@ export class W3mSwitchAddressView extends LitElement {
       >
         <wui-flex alignItems="center">
           <wui-avatar address=${account.address}></wui-avatar>
-          ${this.shouldShowIcon
+          ${shouldShowIcon
             ? html`<wui-icon-box
                 size="sm"
                 iconcolor="fg-200"

@@ -9,6 +9,7 @@ import {
   Stack,
   Text
 } from '@chakra-ui/react'
+import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
 
 type AppKitInfoProps = {
   caipAddress?: string
@@ -55,6 +56,8 @@ export function AppKitInfo({ caipAddress, address, chainId, clientId }: AppKitIn
               <Text data-testid="w3m-chain-id">{clientId}</Text>
             </Box>
           )}
+
+          <EmbeddedWalletInfo />
         </Stack>
       </CardBody>
     </Card>

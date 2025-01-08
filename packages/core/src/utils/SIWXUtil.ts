@@ -89,7 +89,7 @@ export const SIWXUtil = {
 
       const message = siwxMessage.toString()
 
-      const connectorId = StorageUtil.getConnectedConnectorId()
+      const connectorId = StorageUtil.getConnectedConnectorId(network.chainNamespace)
 
       if (connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
         RouterController.pushTransactionStack({
@@ -141,8 +141,17 @@ export const SIWXUtil = {
   },
   async cancelSignMessage() {
     try {
-      await ConnectionController.disconnect()
+      const siwx = this.getSIWX()
+      const required = siwx?.getRequired?.()
+
+      if (required) {
+        await ConnectionController.disconnect()
+      } else {
+        ModalController.close()
+      }
+
       RouterController.reset('Connect')
+
       EventsController.sendEvent({
         event: 'CLICK_CANCEL_SIWX',
         type: 'track',
@@ -172,7 +181,7 @@ export const SIWXUtil = {
       const isSiwxSignMessage = RouterController.state.view === 'SIWXSignMessage'
 
       if (isApproveSignScreen || isSiwxSignMessage) {
-        return (await this.getSessions()).length === 0
+        return siwx.getRequired?.() && (await this.getSessions()).length === 0
       }
     }
 
@@ -360,6 +369,13 @@ export interface SIWXConfig {
    * @returns
    */
   getSessions: (chainId: CaipNetworkId, address: string) => Promise<SIWXSession[]>
+
+  /**
+   * This method determines whether the wallet stays connected when the user denies the signature request.
+   *
+   * @returns {boolean}
+   */
+  getRequired?: () => boolean
 }
 
 /**

@@ -60,10 +60,6 @@ const nextConfig = {
           {
             key: 'Report-To',
             value: JSON.stringify(cspReportToHeader)
-          },
-          {
-            key: 'Cross-Origin-Opener-Policy',
-            value: 'same-origin-allow-popups'
           }
         ]
       },

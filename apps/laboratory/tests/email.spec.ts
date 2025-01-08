@@ -28,7 +28,7 @@ emailTest.beforeAll(async ({ browser, library }) => {
   page = new ModalWalletPage(browserPage, library, 'default')
   validator = new ModalWalletValidator(browserPage)
 
-  await page.page.context().setOffline(false)
+  await context.setOffline(false)
   await page.load()
 
   const mailsacApiKey = process.env['MAILSAC_API_KEY']
@@ -50,14 +50,20 @@ emailTest.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
+emailTest('it should show user info', async () => {
+  await validator.expectEmail()
+  await validator.expectAccountType()
+  await validator.expectSmartAccountStatus()
+})
+
 emailTest('it should sign', async () => {
   await page.sign()
   await page.approveSign()
   await validator.expectAcceptedSign()
 })
 
-emailTest('it should upgrade wallet', async () => {
-  const walletUpgradePage = await page.clickWalletUpgradeCard(context)
+emailTest('it should upgrade wallet', async ({ library }) => {
+  const walletUpgradePage = await page.clickWalletUpgradeCard(context, library)
   expect(walletUpgradePage.url()).toContain(SECURE_WEBSITE_URL)
   await walletUpgradePage.close()
   await page.closeModal()
@@ -94,8 +100,19 @@ emailTest('it should switch network and sign', async ({ library }) => {
   await validator.expectAcceptedSign()
 })
 
+emailTest('should throw an error if modal is closed while signing', async () => {
+  await page.sign()
+  await page.closeModal()
+  await validator.expectRejectedSign()
+})
+
 emailTest('it should show names feature only for EVM networks', async ({ library }) => {
-  await page.goToSettings()
+  if (library === 'solana') {
+    await page.openAccount()
+    await page.openProfileView()
+  } else {
+    await page.goToSettings()
+  }
   await validator.expectNamesFeatureVisible(library !== 'solana')
   await page.closeModal()
 })
@@ -107,21 +124,26 @@ emailTest('it should show loading on page refresh', async () => {
 })
 
 emailTest('it should show snackbar error if failed to fetch token balance', async () => {
-  await page.page.context().setOffline(true)
+  await context.setOffline(true)
   await page.openAccount()
   await validator.expectSnackbar('Token Balance Unavailable')
   await page.closeModal()
 })
 
-emailTest('it should disconnect correctly', async () => {
-  await page.page.context().setOffline(false)
-  await page.goToSettings()
+emailTest('it should disconnect correctly', async ({ library }) => {
+  await context.setOffline(false)
+  if (library === 'solana') {
+    await page.openAccount()
+    await page.openProfileView()
+  } else {
+    await page.goToSettings()
+  }
   await page.disconnect()
   await validator.expectDisconnected()
 })
 
 emailTest('it should abort request if it takes more than 30 seconds', async () => {
-  await page.page.context().setOffline(true)
+  await context.setOffline(true)
   await page.loginWithEmail(tempEmail, false)
   await page.page.waitForTimeout(30_000)
   await validator.expectSnackbar('Something went wrong')

@@ -109,6 +109,11 @@ export interface OptionsControllerStatePublic {
    */
   enableWalletGuide?: boolean
   /**
+   * Enable or disable logs from email/social login.
+   * @default true
+   */
+  enableAuthLogger?: boolean
+  /**
    * Enable or disable debug mode in your AppKit. This is useful if you want to see UI alerts when debugging.
    * @default true
    */
@@ -254,6 +259,10 @@ export const OptionsController = {
 
   setEnableWalletGuide(enableWalletGuide: OptionsControllerState['enableWalletGuide']) {
     state.enableWalletGuide = enableWalletGuide
+  },
+
+  setEnableAuthLogger(enableAuthLogger: OptionsControllerState['enableAuthLogger']) {
+    state.enableAuthLogger = enableAuthLogger
   },
 
   setEnableWallets(enableWallets: OptionsControllerState['enableWallets']) {

@@ -1,5 +1,5 @@
 {
-  "name": "sveltekit-ethers",
+  "name": "@examples/sveltekit-ethers",
   "private": true,
   "version": "0.0.1",
   "type": "module",

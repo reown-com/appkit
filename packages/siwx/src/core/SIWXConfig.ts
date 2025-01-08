@@ -17,10 +17,13 @@ export abstract class SIWXConfig implements SIWXConfigInterface {
   private verifiers: SIWXVerifier[]
   private storage: SIWXStorage
 
+  public required: boolean
+
   constructor(params: SIWXConfig.ConstructorParams) {
     this.messenger = params.messenger
     this.verifiers = params.verifiers
     this.storage = params.storage
+    this.required = params.required ?? true
   }
 
   /**
@@ -120,6 +123,15 @@ export abstract class SIWXConfig implements SIWXConfigInterface {
 
     return verifications.length > 0 && verifications.every(result => result)
   }
+
+  /**
+   * This method determines whether the wallet stays connected when the user denies the signature request.
+   *
+   * @returns {boolean}
+   */
+  getRequired() {
+    return this.required
+  }
 }
 
 export namespace SIWXConfig {
@@ -138,5 +150,11 @@ export namespace SIWXConfig {
      * The storage to store the sessions.
      */
     storage: SIWXStorage
+
+    /**
+     * If false the wallet stays connected when user denies the signature request.
+     * @default true
+     */
+    required?: boolean
   }
 }

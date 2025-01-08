@@ -72,6 +72,8 @@ export interface SIWEClientMethods {
 
 export interface SIWEConfig extends SIWEClientMethods {
   // Defaults to true
+  required?: boolean
+  // Defaults to true
   enabled?: boolean
   // In milliseconds, defaults to 5 minutes
   nonceRefetchIntervalMs?: number

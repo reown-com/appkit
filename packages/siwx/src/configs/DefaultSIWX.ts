@@ -29,7 +29,8 @@ export class DefaultSIWX extends SIWXConfig {
     super({
       messenger: params.messenger || DEFAULTS.getDefaultMessenger(),
       verifiers: params.verifiers || DEFAULTS.getDefaultVerifiers(),
-      storage: params.storage || DEFAULTS.getDefaultStorage()
+      storage: params.storage || DEFAULTS.getDefaultStorage(),
+      required: params.required
     })
   }
 }

@@ -131,6 +131,7 @@ export namespace W3mFrameTypes {
     FrameSignOutResponse: undefined
     FrameRpcResponse: RPCResponse
     FrameReadyResponse: z.infer<typeof FrameReadyResponse>
+    FrameReloadResponse: undefined
   }
 
   export interface Network {
@@ -215,6 +216,7 @@ export namespace W3mFrameTypes {
     | 'SetPreferredAccount'
     | 'SignOut'
     | 'Rpc'
+    | 'Reload'
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   export type WalletCapabilities = Record<string, any>

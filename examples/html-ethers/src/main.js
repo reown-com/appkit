@@ -3,10 +3,7 @@ import { createAppKit } from '@reown/appkit'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 
 // Get projectId
-const projectId = import.meta.env.VITE_PROJECT_ID
-if (!projectId) {
-  throw new Error('VITE_PROJECT_ID is not set')
-}
+export const projectId = import.meta.env.VITE_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694' // this is a public projectId only to use on localhost
 
 // Create adapter
 const ethersAdapter = new EthersAdapter()
@@ -15,7 +12,17 @@ const ethersAdapter = new EthersAdapter()
 const modal = createAppKit({
   adapters: [ethersAdapter],
   networks: [mainnet, polygon],
-  projectId
+  projectId,
+  themeMode: 'light',
+  features: {
+    analytics: true
+  },
+  metadata: {
+    name: 'AppKit HTML Example',
+    description: 'AppKit HTML Example',
+    url: 'https://reown.com/appkit',
+    icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
+  }
 })
 
 // State objects
@@ -27,77 +34,55 @@ let events = []
 let walletInfo = {}
 let eip155Provider = null
 
-// Helper function to update state displays
-const updateStateDisplay = (elementId, state) => {
-  const element = document.getElementById(elementId)
-  if (element) {
-    element.innerHTML = JSON.stringify(state, null, 2)
-  }
-}
-
-// Update theme
+// Helper function to update theme
 const updateTheme = mode => {
   document.documentElement.setAttribute('data-theme', mode)
   document.body.className = mode
+
+  // Update logo based on theme
+  const reownLogo = document.getElementById('reown-logo')
+  if (reownLogo) {
+    reownLogo.src = mode === 'dark' ? '/reown-logo-white.png' : '/reown-logo.png'
+  }
 }
 
 // Subscribe to state changes
 modal.subscribeAccount(state => {
-  // useAppKitAccount
   accountState = state
-  updateStateDisplay('accountState', state)
+  document.getElementById('accountState').textContent = JSON.stringify(state, null, 2)
 })
 
 modal.subscribeNetwork(state => {
-  // useAppKitNetwork
   networkState = state
-  updateStateDisplay('networkState', state)
-
-  // Update switch network button text
-  const switchNetworkBtn = document.getElementById('switch-network')
-  if (switchNetworkBtn) {
-    switchNetworkBtn.textContent = `Switch to ${
-      state?.chainId === polygon.id ? 'Mainnet' : 'Polygon'
-    }`
-  }
+  document.getElementById('networkState').textContent = JSON.stringify(state, null, 2)
 })
 
 modal.subscribeState(state => {
-  // useAppKitState
   appKitState = state
-  updateStateDisplay('appKitState', state)
+  document.getElementById('appKitState').textContent = JSON.stringify(state, null, 2)
 })
 
 modal.subscribeTheme(state => {
-  // useAppKitTheme
   themeState = state
-  updateStateDisplay('themeState', state)
+  document.getElementById('themeState').textContent = JSON.stringify(state, null, 2)
   updateTheme(state.themeMode)
 })
 
 modal.subscribeEvents(state => {
-  // useAppKitEvents
   events = state
-  updateStateDisplay('events', state)
+  document.getElementById('events').textContent = JSON.stringify(state, null, 2)
 })
 
 modal.subscribeWalletInfo(state => {
-  // useAppKitWalletInfo
   walletInfo = state
-  updateStateDisplay('walletInfo', state)
+  document.getElementById('walletInfo').textContent = JSON.stringify(state, null, 2)
 })
 
 modal.subscribeProviders(state => {
-  // useAppKitProviders
   eip155Provider = state['eip155']
 })
 
 // Button event listeners
-document.getElementById('open-connect-modal')?.addEventListener('click', () => modal.open())
-document
-  .getElementById('open-network-modal')
-  ?.addEventListener('click', () => modal.open({ view: 'Networks' }))
-
 document.getElementById('toggle-theme')?.addEventListener('click', () => {
   const newTheme = themeState.themeMode === 'dark' ? 'light' : 'dark'
   modal.setThemeMode(newTheme)
@@ -110,18 +95,26 @@ document.getElementById('switch-network')?.addEventListener('click', () => {
   modal.switchNetwork(currentChainId === polygon.id ? mainnet : polygon)
 })
 
-document.getElementById('sign-message')?.addEventListener('click', () => {
+document.getElementById('sign-message')?.addEventListener('click', async () => {
+  if (!accountState.address) {
+    await modal.open()
+    return
+  }
   signMessage()
 })
 
-export function signMessage() {
-  if (eip155Provider) {
-    eip155Provider.request({
-      method: 'personal_sign',
-      params: ['Hello from AppKit!', accountState.address]
-    })
+async function signMessage() {
+  if (eip155Provider && accountState.address) {
+    try {
+      await eip155Provider.request({
+        method: 'personal_sign',
+        params: ['Hello from AppKit!', accountState.address]
+      })
+    } catch (error) {
+      console.error('Error signing message:', error)
+    }
   }
 }
 
-// Set initial theme
+// Set initial theme and UI state
 updateTheme(themeState.themeMode)

@@ -18,7 +18,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
 
 @customElement('w3m-account-settings-view')
 export class W3mAccountSettingsView extends LitElement {
@@ -153,7 +153,8 @@ export class W3mAccountSettingsView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private chooseNameButtonTemplate() {
-    const connectorId = StorageUtil.getConnectedConnectorId()
+    const namespace = this.network?.chainNamespace as ChainNamespace
+    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
     const hasNetworkSupport = ChainController.checkIfNamesSupported()
     if (
@@ -181,7 +182,8 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private authCardTemplate() {
-    const connectorId = StorageUtil.getConnectedConnectorId()
+    const namespace = this.network?.chainNamespace as ChainNamespace
+    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
     if (
@@ -223,14 +225,16 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private togglePreferredAccountBtnTemplate() {
-    const networkEnabled = ChainController.checkIfSmartAccountEnabled()
-    const connectorId = StorageUtil.getConnectedConnectorId()
+    const namespace = this.network?.chainNamespace as ChainNamespace
+
+    const isNetworkEnabled = ChainController.checkIfSmartAccountEnabled()
+    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
 
     if (
       !authConnector ||
       connectorId !== CommonConstantsUtil.CONNECTOR_ID.AUTH ||
-      !networkEnabled
+      !isNetworkEnabled
     ) {
       return null
     }
@@ -263,11 +267,11 @@ export class W3mAccountSettingsView extends LitElement {
   }
 
   private async changePreferredAccountType() {
-    const smartAccountEnabled = ChainController.checkIfSmartAccountEnabled()
+    const isSmartAccountEnabled = ChainController.checkIfSmartAccountEnabled()
 
     const accountTypeTarget =
       this.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT ||
-      !smartAccountEnabled
+      !isSmartAccountEnabled
         ? W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
         : W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     const authConnector = ConnectorController.getAuthConnector()

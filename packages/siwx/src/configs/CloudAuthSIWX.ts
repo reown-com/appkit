@@ -28,6 +28,8 @@ export class CloudAuthSIWX implements SIWXConfig {
   private readonly localNonceStorageKey: keyof SafeLocalStorageItems
   private readonly messenger: SIWXMessenger
 
+  private required: boolean
+
   constructor(params: CloudAuthSIWX.ConstructorParams = {}) {
     this.localAuthStorageKey =
       (params.localAuthStorageKey as keyof SafeLocalStorageItems) ||
@@ -35,6 +37,7 @@ export class CloudAuthSIWX implements SIWXConfig {
     this.localNonceStorageKey =
       (params.localNonceStorageKey as keyof SafeLocalStorageItems) ||
       SafeLocalStorageKeys.SIWX_NONCE_TOKEN
+    this.required = params.required ?? true
 
     this.messenger = new InformalMessenger({
       domain: typeof document === 'undefined' ? 'Unknown Domain' : document.location.host,
@@ -101,6 +104,10 @@ export class CloudAuthSIWX implements SIWXConfig {
 
       await this.addSession(session)
     }
+  }
+
+  getRequired() {
+    return this.required
   }
 
   private async request<Key extends CloudAuthSIWX.RequestKey>(
@@ -206,6 +213,11 @@ export namespace CloudAuthSIWX {
      * @default '@appkit/siwx-nonce-token'
      */
     localNonceStorageKey?: string
+    /**
+     * If false the wallet stays connected when user denies the signature request.
+     * @default true
+     */
+    required?: boolean
   }
 
   export type Request<Method extends 'GET' | 'POST' | 'PATCH', Params, Response> = {

@@ -12,6 +12,7 @@ import type { SIWEStatus } from '@reown/appkit-common'
 export interface SIWEControllerClient extends SIWEClientMethods {
   signIn: () => Promise<SIWESession>
   options: {
+    required?: boolean
     enabled: boolean
     nonceRefetchIntervalMs: number
     sessionRefetchIntervalMs: number
