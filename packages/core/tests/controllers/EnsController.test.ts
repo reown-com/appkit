@@ -4,10 +4,13 @@ import {
   ChainController,
   ConnectionController,
   ConnectorController,
-  EnsController
+  EnsController,
+  type ConnectionControllerClient,
+  type NetworkControllerClient
 } from '../../exports/index.js'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { ConstantsUtil } from '@reown/appkit-common'
+import { polygon } from 'viem/chains'
 // -- Setup --------------------------------------------------------------------
 const TEST_NAME = {
   name: 'test',
@@ -77,7 +80,11 @@ beforeAll(() => {
         caipNetworks: []
       }
     ],
-    []
+    [],
+    {
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
+      networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+    }
   )
 })
 
@@ -164,21 +171,15 @@ describe('EnsController', () => {
   it('should register name', async () => {
     // Setup
     ChainController.setActiveCaipNetwork({
-      id: 137,
-      caipNetworkId: 'eip155:137',
-      chainNamespace: ConstantsUtil.CHAIN.EVM,
-      name: 'Polygon',
-      nativeCurrency: {
-        name: 'Polygon',
-        decimals: 18,
-        symbol: 'MATIC'
-      },
-      rpcUrls: {
-        default: {
-          http: ['']
-        }
-      }
-    })
+      ...polygon,
+      chainNamespace: ConstantsUtil.CHAIN.EVM
+    } as any)
+
+    const evmAdapter = {
+      namespace: ConstantsUtil.CHAIN.EVM,
+      connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
+    }
+    ChainController.state.chains.set(ConstantsUtil.CHAIN.EVM, evmAdapter)
     AccountController.setCaipAddress('eip155:1:0x123', chain)
     // Use fake timers so that the timestamp is always the same
     vi.useFakeTimers()

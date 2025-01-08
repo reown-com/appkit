@@ -6,6 +6,7 @@ import {
   ChainController,
   ConnectionController,
   SwapController,
+  type ConnectionControllerClient,
   type NetworkControllerClient
 } from '../../exports/index.js'
 import type { CaipNetworkId, CaipNetwork } from '@reown/appkit-common'
@@ -53,19 +54,18 @@ const toTokenAddress = 'eip155:137:0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b'
 
 // - Setup ---------------------------------------------------------------------
 beforeAll(async () => {
-  //  -- Set Account and
-  ChainController.initialize(
-    [
-      {
-        namespace: ConstantsUtil.CHAIN.EVM,
-        networkControllerClient: client,
-        caipNetworks: [caipNetwork]
-      }
-    ],
-    []
-  )
+  const mockAdapter = {
+    namespace: ConstantsUtil.CHAIN.EVM,
+    networkControllerClient: client,
+    caipNetworks: [caipNetwork]
+  }
+  ChainController.initialize([mockAdapter], [caipNetwork], {
+    connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
+    networkControllerClient: client
+  })
 
   ChainController.setActiveCaipNetwork(caipNetwork)
+
   AccountController.setCaipAddress(caipAddress, chain)
 
   vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValue(tokensResponse)

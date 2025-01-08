@@ -214,7 +214,7 @@ export const ApiController = {
     state.page = page
   },
 
-  async searchWalletByIds({ ids }: { ids: string[] }) {
+  async initializeExcludedWalletRdns({ ids }: { ids: string[] }) {
     const { data } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       params: {

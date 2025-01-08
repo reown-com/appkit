@@ -2,7 +2,8 @@ import { beforeAll, describe, expect, it, vi } from 'vitest'
 import type {
   ChainAdapter,
   ConnectionControllerClient,
-  ConnectorType
+  ConnectorType,
+  NetworkControllerClient
 } from '../../exports/index.js'
 import {
   ChainController,
@@ -12,7 +13,8 @@ import {
   SIWXUtil,
   StorageUtil
 } from '../../exports/index.js'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
+import { polygon } from 'viem/chains'
 
 // -- Setup --------------------------------------------------------------------
 const chain = CommonConstantsUtil.CHAIN.EVM
@@ -20,6 +22,9 @@ const walletConnectUri = 'wc://uri?=123'
 const externalId = 'coinbaseWallet'
 const type = 'WALLET_CONNECT' as ConnectorType
 const storageSpy = vi.spyOn(StorageUtil, 'setConnectedConnectorId')
+const caipNetworks = [
+  { ...polygon, chainNamespace: chain, caipNetworkId: 'eip155:137' } as CaipNetwork
+]
 
 const client: ConnectionControllerClient = {
   connectWalletConnect: async onUri => {
@@ -70,7 +75,10 @@ const adapters = [evmAdapter] as ChainAdapter[]
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
-  ChainController.initialize(adapters, [])
+  ChainController.initialize(adapters, [], {
+    connectionControllerClient: client,
+    networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+  })
   ConnectionController.setClient(evmAdapter.connectionControllerClient)
 })
 
@@ -81,10 +89,14 @@ describe('ConnectionController', () => {
         {
           namespace: CommonConstantsUtil.CHAIN.EVM,
           connectionControllerClient: client,
-          caipNetworks: []
+          caipNetworks
         }
       ],
-      []
+      caipNetworks,
+      {
+        connectionControllerClient: client,
+        networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+      }
     )
 
     expect(ConnectionController.state).toEqual({
@@ -143,7 +155,11 @@ describe('ConnectionController', () => {
           caipNetworks: []
         }
       ],
-      []
+      [],
+      {
+        connectionControllerClient: partialClient,
+        networkControllerClient: vi.fn() as unknown as NetworkControllerClient
+      }
     )
     await ConnectionController.connectExternal({ id: externalId, type }, chain)
     ConnectionController.checkInstalled([externalId])
