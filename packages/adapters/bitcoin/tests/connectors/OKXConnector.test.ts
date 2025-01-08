@@ -14,7 +14,8 @@ function mockOKXWallet(): { [K in keyof OKXConnector.Wallet]: Mock<OKXConnector.
     pushPsbt: vi.fn(() => Promise.resolve('mock_txhash')),
     send: vi.fn(() => Promise.resolve({ txhash: 'mock_txhash' })),
     on: vi.fn(),
-    removeAllListeners: vi.fn()
+    removeAllListeners: vi.fn(),
+    getPublicKey: vi.fn(() => Promise.resolve('publicKey'))
   }
 }
 
@@ -80,7 +81,9 @@ describe('OKXConnector', () => {
     it('should get account addresses', async () => {
       const accounts = await connector.getAccountAddresses()
 
-      expect(accounts).toEqual([{ address: 'mock_address', purpose: 'payment' }])
+      expect(accounts).toEqual([
+        { address: 'mock_address', purpose: 'payment', publicKey: 'publicKey' }
+      ])
       expect(wallet.getAccounts).toHaveBeenCalled()
     })
   })
@@ -192,6 +195,14 @@ describe('OKXConnector', () => {
       ;(window as any).okxwallet = { bitcoin: wallet, cardano: { icon: 'mock_image' } }
       const connector = OKXConnector.getWallet({ getActiveNetwork, requestedChains })
       expect(connector?.imageUrl).toBe('mock_image')
+    })
+  })
+
+  describe('getPublicKey', () => {
+    it('should return the public key', async () => {
+      const publicKey = await connector.getPublicKey()
+      expect(publicKey).toBe('publicKey')
+      expect(wallet.getPublicKey).toHaveBeenCalled()
     })
   })
 })
