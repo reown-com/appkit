@@ -39,12 +39,14 @@ export type CustomProjectProperties = {
 }
 
 const SINGLE_ADAPTER_EVM_TESTS = [
+  'extension.spec.ts',
   'basic-tests.spec.ts',
   'canary.spec.ts',
   'email.spec.ts',
   'no-email.spec.ts',
   'no-socials.spec.ts',
   'debug-mode.spec.ts',
+  'siwe-extension.spec.ts',
   'siwe-email.spec.ts',
   'siwe-sa.spec.ts',
   'siwe.spec.ts',
@@ -59,6 +61,7 @@ const SINGLE_ADAPTER_EVM_TESTS = [
 const SINGLE_ADAPTER_EVM_MOBILE_TESTS = ['mobile-wallet-features.spec.ts']
 
 const SINGLE_ADAPTER_SOLANA_TESTS = [
+  'extension.spec.ts',
   'basic-tests.spec.ts',
   'email.spec.ts',
   'no-email.spec.ts',

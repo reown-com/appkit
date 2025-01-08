@@ -73,6 +73,9 @@ export class ModalPage {
     }
 
     await this.page.goto(this.url)
+
+    // Wait for w3m-modal to be injected
+    await this.page.waitForTimeout(300)
   }
 
   assertDefined<T>(value: T | undefined | null): T {
@@ -311,6 +314,12 @@ export class ModalPage {
     await signButton.click()
   }
 
+  async signTypedData() {
+    const signButton = this.page.getByTestId('sign-typed-data-button')
+    await signButton.scrollIntoViewIfNeeded()
+    await signButton.click()
+  }
+
   async signatureRequestFrameShouldVisible(headerText: string) {
     await expect(
       this.page.frameLocator('#w3m-iframe').getByText(headerText),
@@ -377,9 +386,12 @@ export class ModalPage {
     await this.page.getByTestId('w3m-connecting-siwe-cancel').click()
   }
 
-  async switchNetwork(network: string) {
-    await this.page.getByTestId('account-button').click()
-    await this.page.getByTestId('w3m-account-select-network').click()
+  async switchNetwork(network: string, clickAccountButton = true) {
+    if (clickAccountButton) {
+      await this.page.getByTestId('account-button').click()
+      await this.page.getByTestId('w3m-account-select-network').click()
+    }
+
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
     // The state is chaing too fast and test runner doesn't wait the loading page. It's fastly checking the network selection button and detect that it's switched already.
     await this.page.waitForTimeout(300)
@@ -626,4 +638,20 @@ export class ModalPage {
     await this.page.waitForTimeout(500)
     await this.closeModal()
   }
+
+    async connectToExtension(library: string) {
+      // eslint-disable-next-line init-declarations
+      let walletSelector: Locator
+
+      await this.connectButton.click()
+
+      // Solana uses wallet name as id
+      if (library === 'solana') {
+        walletSelector = this.page.getByTestId('wallet-selector-Reown')
+      } else {
+        walletSelector = this.page.getByTestId('wallet-selector-reown.com')
+      }
+
+      await walletSelector.click()
+    }
 }

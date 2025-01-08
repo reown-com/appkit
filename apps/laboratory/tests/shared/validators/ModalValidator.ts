@@ -138,6 +138,15 @@ export class ModalValidator {
     await closeButton.click()
   }
 
+  async expectAcceptedSignTypedData() {
+    await expect(this.page.getByText('Success')).toBeVisible({
+      timeout: MAX_WAIT
+    })
+    const closeButton = this.page.locator('#toast-close-button')
+    await expect(closeButton).toBeVisible({ timeout: MAX_WAIT })
+    await closeButton.click()
+  }
+
   async expectRejectedSign() {
     // We use Chakra Toast and it's not quite straightforward to set the `data-testid` attribute on the toast element.
     await expect(this.page.getByText(ConstantsUtil.SigningFailedToastTitle)).toBeVisible()
@@ -150,6 +159,11 @@ export class ModalValidator {
   async expectSwitchedNetwork(network: string) {
     const switchNetworkButton = this.page.getByTestId(`w3m-network-switch-${network}`)
     await expect(switchNetworkButton).toBeVisible()
+  }
+
+  async expectNetworkButton(network: string) {
+    const alertBarText = this.page.getByTestId('w3m-network-button')
+    await expect(alertBarText).toHaveText(network)
   }
 
   async expectSwitchChainView(chainName: string) {
