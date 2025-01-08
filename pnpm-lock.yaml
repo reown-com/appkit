@@ -432,7 +432,7 @@ importers:
         version: 7.92.0(react@18.3.1)
       '@solana/wallet-adapter-wallets':
         specifier: 0.19.32
-        version: 0.19.32(@babel/core@7.26.0)(@babel/runtime@7.24.5)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.8)(react-dom@18.3.1(react@18.3.1))(react-native@0.76.5(@babel/core@7.26.0)(@babel/preset-env@7.24.7(@babel/core@7.26.0))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)
+        version: 0.19.32(@babel/core@7.26.0)(@babel/runtime@7.26.0)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.8)(react-dom@18.3.1(react@18.3.1))(react-native@0.76.5(@babel/core@7.26.0)(@babel/preset-env@7.24.7(@babel/core@7.26.0))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)
       '@solana/web3.js':
         specifier: 1.95.8
         version: 1.95.8(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -843,7 +843,7 @@ importers:
         version: 0.1.14(@solana/web3.js@1.95.8(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-wallets':
         specifier: 0.19.32
-        version: 0.19.32(@babel/core@7.26.0)(@babel/runtime@7.26.0)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(react-dom@18.3.1(react@18.3.1))(react-native@0.76.5(@babel/core@7.26.0)(@babel/preset-env@7.24.7(@babel/core@7.26.0))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)
+        version: 0.19.32(@babel/core@7.26.0)(@babel/runtime@7.24.5)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.8)(react-dom@18.3.1(react@18.3.1))(react-native@0.76.5(@babel/core@7.26.0)(@babel/preset-env@7.24.7(@babel/core@7.26.0))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)
       '@tanstack/react-query':
         specifier: 5.24.8
         version: 5.24.8(react@18.3.1)
@@ -1022,7 +1022,7 @@ importers:
         version: 0.1.14(@solana/web3.js@1.95.8(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-wallets':
         specifier: 0.19.32
-        version: 0.19.32(@babel/core@7.26.0)(@babel/runtime@7.26.0)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(react-dom@18.3.1(react@18.3.1))(react-native@0.76.5(@babel/core@7.26.0)(@babel/preset-env@7.24.7(@babel/core@7.26.0))(@types/react@18.3.1)(bufferutil@4.0.8)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)
+        version: 0.19.32(@babel/core@7.26.0)(@babel/runtime@7.26.0)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.8)(react-dom@18.3.1(react@18.3.1))(react-native@0.76.5(@babel/core@7.26.0)(@babel/preset-env@7.24.7(@babel/core@7.26.0))(@types/react@18.3.1)(bufferutil@4.0.8)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)
       vue:
         specifier: 3.4.3
         version: 3.4.3(typescript@5.3.3)
@@ -1096,7 +1096,7 @@ importers:
         version: 0.1.14(@solana/web3.js@1.95.8(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-wallets':
         specifier: 0.19.32
-        version: 0.19.32(@babel/core@7.26.0)(@babel/runtime@7.26.0)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(react-dom@18.3.1(react@18.3.1))(react-native@0.76.5(@babel/core@7.26.0)(@babel/preset-env@7.24.7(@babel/core@7.26.0))(@types/react@18.3.1)(bufferutil@4.0.8)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)
+        version: 0.19.32(@babel/core@7.26.0)(@babel/runtime@7.26.0)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.8)(react-dom@18.3.1(react@18.3.1))(react-native@0.76.5(@babel/core@7.26.0)(@babel/preset-env@7.24.7(@babel/core@7.26.0))(@types/react@18.3.1)(bufferutil@4.0.8)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)
       '@tanstack/vue-query':
         specifier: 5.59.16
         version: 5.59.16(vue@3.4.3(typescript@5.3.3))
@@ -24008,7 +24008,7 @@ snapshots:
       - tslib
       - utf-8-validate
 
-  '@solana/wallet-adapter-wallets@0.19.32(@babel/core@7.26.0)(@babel/runtime@7.26.0)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(react-dom@18.3.1(react@18.3.1))(react-native@0.76.5(@babel/core@7.26.0)(@babel/preset-env@7.24.7(@babel/core@7.26.0))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)':
+  '@solana/wallet-adapter-wallets@0.19.32(@babel/core@7.26.0)(@babel/runtime@7.26.0)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.8)(react-dom@18.3.1(react@18.3.1))(react-native@0.76.5(@babel/core@7.26.0)(@babel/preset-env@7.24.7(@babel/core@7.26.0))(@types/react@18.2.62)(bufferutil@4.0.8)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)':
     dependencies:
       '@solana/wallet-adapter-alpha': 0.1.10(@solana/web3.js@1.95.8(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-avana': 0.1.13(@solana/web3.js@1.95.8(bufferutil@4.0.8)(utf-8-validate@5.0.10))
@@ -24076,7 +24076,7 @@ snapshots:
       - tslib
       - utf-8-validate
 
-  '@solana/wallet-adapter-wallets@0.19.32(@babel/core@7.26.0)(@babel/runtime@7.26.0)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(react-dom@18.3.1(react@18.3.1))(react-native@0.76.5(@babel/core@7.26.0)(@babel/preset-env@7.24.7(@babel/core@7.26.0))(@types/react@18.3.1)(bufferutil@4.0.8)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)':
+  '@solana/wallet-adapter-wallets@0.19.32(@babel/core@7.26.0)(@babel/runtime@7.26.0)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.8)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.8)(react-dom@18.3.1(react@18.3.1))(react-native@0.76.5(@babel/core@7.26.0)(@babel/preset-env@7.24.7(@babel/core@7.26.0))(@types/react@18.3.1)(bufferutil@4.0.8)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)':
     dependencies:
       '@solana/wallet-adapter-alpha': 0.1.10(@solana/web3.js@1.95.8(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-avana': 0.1.13(@solana/web3.js@1.95.8(bufferutil@4.0.8)(utf-8-validate@5.0.10))
