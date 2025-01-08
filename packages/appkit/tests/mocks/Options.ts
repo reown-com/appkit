@@ -4,7 +4,10 @@ import { mainnet, solana } from '../../src/networks/index.js'
 import type { SdkVersion } from '@reown/appkit-core'
 import { vi } from 'vitest'
 
-export const mockOptions = {
+export const mockOptions: AppKitOptions & {
+  sdkVersion: SdkVersion
+  sdkType: string
+} = {
   projectId: 'test-project-id',
   adapters: [
     {
@@ -33,7 +36,4 @@ export const mockOptions = {
   },
   sdkVersion: `html-wagmi-5.1.6`,
   sdkType: 'appkit'
-} satisfies AppKitOptions & {
-  sdkVersion: SdkVersion
-  sdkType: string
 }
