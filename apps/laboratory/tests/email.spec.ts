@@ -50,6 +50,12 @@ emailTest.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
+emailTest('it should show user info', async () => {
+  await validator.expectEmail()
+  await validator.expectAccountType()
+  await validator.expectSmartAccountStatus()
+})
+
 emailTest('it should sign', async () => {
   await page.sign()
   await page.approveSign()
@@ -92,6 +98,12 @@ emailTest('it should switch network and sign', async ({ library }) => {
   await page.sign()
   await page.approveSign()
   await validator.expectAcceptedSign()
+})
+
+emailTest('should throw an error if modal is closed while signing', async () => {
+  await page.sign()
+  await page.closeModal()
+  await validator.expectRejectedSign()
 })
 
 emailTest('it should show names feature only for EVM networks', async ({ library }) => {
