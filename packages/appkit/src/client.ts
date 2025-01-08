@@ -645,10 +645,15 @@ export class AppKit {
     )
   }
 
+  /**
+   * Removes an adapter from the AppKit.
+   * @param namespace - The namespace of the adapter to remove.
+   */
   public removeAdapter(namespace: ChainNamespace) {
+    const isConnected = this.getIsConnectedState()
     const adapter = this.getAdapter(namespace)
 
-    if (!adapter || !this.chainAdapters) {
+    if (!adapter || !this.chainAdapters || isConnected) {
       return
     }
 
@@ -664,6 +669,11 @@ export class AppKit {
     Reflect.deleteProperty(this.chainAdapters, namespace)
   }
 
+  /**
+   * Adds an adapter to the AppKit.
+   * @param adapter - The adapter instance.
+   * @param networks - The list of networks that this adapter supports / uses.
+   */
   public addAdapter(adapter: ChainAdapter, networks: [AppKitNetwork, ...AppKitNetwork[]]) {
     const namespace = adapter.namespace
 
