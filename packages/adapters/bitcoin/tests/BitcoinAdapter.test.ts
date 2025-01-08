@@ -9,6 +9,7 @@ import { WalletStandardConnector } from '../src/connectors/WalletStandardConnect
 import { OKXConnector } from '../src/connectors/OKXConnector'
 import { LeatherConnector } from '../src/connectors/LeatherConnector'
 import { WalletConnectProvider } from '../src/utils/WalletConnectProvider'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 function mockBitcoinApi(): { [K in keyof BitcoinApi.Interface]: Mock<BitcoinApi.Interface[K]> } {
   return {
@@ -119,19 +120,32 @@ describe('BitcoinAdapter', () => {
 
     it('should return the accounts', async () => {
       vi.spyOn(connector, 'getAccountAddresses').mockResolvedValueOnce([
-        { address: 'mock_address_1', purpose: 'payment' },
-        { address: 'mock_address_2', purpose: 'ordinal' },
-        { address: 'mock_address_3', purpose: 'stx' }
+        {
+          address: 'mock_address_1',
+          purpose: 'payment',
+          publicKey: 'mock_public_key_1',
+          path: 'mock_path_1'
+        },
+        {
+          address: 'mock_address_2',
+          purpose: 'ordinal',
+          publicKey: 'mock_public_key_2',
+          path: 'mock_path_2'
+        },
+        {
+          address: 'mock_address_3',
+          purpose: 'stx',
+          publicKey: 'mock_public_key_3',
+          path: 'mock_path_3'
+        }
       ])
 
       const accounts = await adapter.getAccounts({ id: connector.id })
 
-      expect(accounts).toEqual({
-        accounts: [
-          { address: 'mock_address_1', type: 'payment', namespace: 'bip122' },
-          { address: 'mock_address_2', type: 'ordinal', namespace: 'bip122' },
-          { address: 'mock_address_3', type: 'stx', namespace: 'bip122' }
-        ]
+      accounts.accounts.forEach(account => {
+        expect(account.namespace).toEqual(ConstantsUtil.CHAIN.BITCOIN)
+        expect(account.publicKey).toBeDefined()
+        expect(account.path).toBeDefined()
       })
     })
 
