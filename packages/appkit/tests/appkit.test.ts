@@ -1218,8 +1218,6 @@ describe('Base', () => {
     let mockUniversalAdapter: any
 
     beforeEach(() => {
-      vi.restoreAllMocks()
-
       vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         chains: new Map(),
         activeChain: 'eip155'
@@ -1543,6 +1541,9 @@ describe('Adapter Management', () => {
   let mockNetwork: AppKitNetwork
 
   beforeEach(() => {
+    vi.spyOn(OptionsController, 'getSnapshot').mockReturnValue({ ...OptionsController.state })
+    vi.spyOn(ThemeController, 'getSnapshot').mockReturnValue({ ...ThemeController.state })
+
     mockAdapter = {
       namespace: 'eip155',
       construct: vi.fn(),
