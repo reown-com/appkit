@@ -51,11 +51,15 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
 
   public async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {
     const accounts = await this.wallet.getAccounts()
+    const publicKeyOfActiveAccount = await this.wallet.getPublicKey()
 
-    return accounts.map(account => ({
+    const accountList = accounts.map(account => ({
       address: account,
-      purpose: 'payment'
+      purpose: 'payment' as const,
+      publicKey: publicKeyOfActiveAccount
     }))
+
+    return accountList
   }
 
   public async signMessage(params: BitcoinConnector.SignMessageParams): Promise<string> {
@@ -139,6 +143,10 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
 
     return undefined
   }
+
+  public async getPublicKey(): Promise<string> {
+    return this.wallet.getPublicKey()
+  }
 }
 
 export namespace OKXConnector {
@@ -170,6 +178,7 @@ export namespace OKXConnector {
     }): Promise<{ txhash: string }>
     on(event: string, listener: (param?: unknown) => void): void
     removeAllListeners(): void
+    getPublicKey(): Promise<string>
   }
 
   export type GetWalletParams = Omit<ConstructorParams, 'wallet' | 'imageUrl'>
