@@ -70,6 +70,7 @@ describe('useAppKitAccount', () => {
     const result = useAppKitAccount()
 
     expect(result).toEqual({
+      allAccounts: undefined,
       address: mockPlainAddress,
       caipAddress: mockCaipAddress,
       isConnected: true,
@@ -90,6 +91,7 @@ describe('useAppKitAccount', () => {
     // Mock the useSnapshot hook for both calls
     useSnapshot
       .mockReturnValueOnce({
+        allAccounts: undefined,
         status: 'connected',
         preferredAccountType: 'eoa',
         smartAccountDeployed: false,

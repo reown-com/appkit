@@ -7,7 +7,7 @@ import { ConnectionController } from '../src/controllers/ConnectionController.js
 // -- Hooks ------------------------------------------------------------
 export function useAppKitAccount() {
   const state = ref({
-    allAccounts: [...AccountController.state.allAccounts],
+    allAccounts: AccountController.state.allAccounts,
     address: CoreHelperUtil.getPlainAddress(ChainController.state.activeCaipAddress) ?? null,
     caipAddress: ChainController.state.activeCaipAddress ?? null,
     status: AccountController.state.status ?? null,
