@@ -78,10 +78,6 @@ jobs:
           SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
 
-      - name: Install Playwright Browsers
-        working-directory: ./apps/laboratory/
-        run: pnpm playwright:install
-
       # Cache the entire workspace after setup
       - name: Cache Workspace
         uses: actions/cache/save@v4
@@ -123,6 +119,10 @@ jobs:
         with:
           node-version: 18.x
           cache: 'pnpm'
+
+      - name: Install Playwright Browsers
+        working-directory: ./apps/laboratory/
+        run: pnpm playwright:install
 
       - name: Run Playwright tests
         env:
