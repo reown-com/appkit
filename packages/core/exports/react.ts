@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { useSnapshot } from 'valtio'
 import { AccountController } from '../src/controllers/AccountController.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
@@ -21,6 +22,8 @@ export function useAppKitNetworkCore(): Pick<
 }
 
 export function useAppKitAccount(): UseAppKitAccountReturn {
+  const [isReady, setIsReady] = useState(false)
+
   const { status, user, preferredAccountType, smartAccountDeployed } = useSnapshot(
     AccountController.state
   )
@@ -29,18 +32,23 @@ export function useAppKitAccount(): UseAppKitAccountReturn {
 
   const authConnector = ConnectorController.getAuthConnector()
 
+  useEffect(() => {
+    setIsReady(true)
+  }, [])
+ 
   return {
     caipAddress: activeCaipAddress,
     address: CoreHelperUtil.getPlainAddress(activeCaipAddress),
     isConnected: Boolean(activeCaipAddress),
     status,
-    embeddedWalletInfo: authConnector
-      ? {
-          user,
-          accountType: preferredAccountType,
-          isSmartAccountDeployed: Boolean(smartAccountDeployed)
-        }
-      : undefined
+    embeddedWalletInfo:
+      authConnector && isReady
+        ? {
+            user,
+            accountType: preferredAccountType,
+            isSmartAccountDeployed: Boolean(smartAccountDeployed)
+          }
+        : undefined
   }
 }
 
