@@ -11,8 +11,8 @@ createAppKit({
     analytics: true
   },
   metadata: {
-    name: 'AppKit Nuxt Example',
-    description: 'AppKit Nuxt Example',
+    name: 'AppKit Nuxt Wagmi Example',
+    description: 'AppKit Nuxt Wagmi Example',
     url: 'https://reown.com/appkit',
     icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
   }
@@ -40,7 +40,7 @@ const themeState = useAppKitTheme()
         <appkit-network-button />
       </div>
 
-      <ActionButtonList />
+      <ActionButton />
       <InfoList />
       <Footer />
     </div>

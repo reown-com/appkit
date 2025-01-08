@@ -2,7 +2,7 @@
   <div class="action-button-list">
     <button @click="openAppKit">Open</button>
     <button @click="handleDisconnect">Disconnect</button>
-    <button @click="switchToNetwork">Switch to Solana</button>
+    <button @click="switchToNetwork">Switch to Ethereum</button>
     <button @click="toggleTheme">
       <svg
         v-if="themeState.themeMode === 'light'"
@@ -36,10 +36,10 @@
 
 <script>
 import { useDisconnect, useAppKit, useAppKitNetwork, useAppKitTheme } from '@reown/appkit/vue'
-import { solana } from '@reown/appkit/networks'
+import { mainnet } from '@reown/appkit/networks'
 
 export default {
-  name: 'ActionButtonList',
+  name: 'ActionButton',
   setup() {
     const { disconnect } = useDisconnect()
     const { open } = useAppKit()
@@ -51,7 +51,7 @@ export default {
     }
 
     function switchToNetwork() {
-      networkData.value.switchNetwork(solana)
+      networkData.value.switchNetwork(mainnet)
     }
 
     async function handleDisconnect() {
