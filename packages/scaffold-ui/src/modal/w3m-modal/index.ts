@@ -49,14 +49,14 @@ export class W3mModal extends LitElement {
         ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
         ModalController.subscribeKey('shake', val => (this.shake = val)),
         ChainController.subscribeKey('activeCaipNetwork', val => this.onNewNetwork(val)),
-        ChainController.subscribeKey('activeCaipAddress', val => this.onNewAddress(val))
+        ChainController.subscribeKey('activeCaipAddress', val => this.onNewAddress(val)),
+        OptionsController.subscribeKey('enableEmbedded', val => (this.enableEmbedded = val))
       ]
     )
     EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })
   }
 
   public override firstUpdated() {
-    OptionsController.setEnableEmbedded(this.enableEmbedded)
     if (this.caipAddress) {
       if (this.enableEmbedded) {
         ModalController.close()
@@ -210,6 +210,7 @@ export class W3mModal extends LitElement {
   }
 
   private onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {
+    ApiController.prefetch()
     if (!this.caipAddress) {
       this.caipNetwork = nextCaipNetwork
       RouterController.goBack()
