@@ -33,7 +33,8 @@ import {
   Emitter,
   type CaipNetworkId,
   type Balance,
-  NetworkUtil
+  NetworkUtil,
+  type ChainNamespace
 } from '@reown/appkit-common'
 import { mockOptions } from './mocks/Options'
 import { UniversalAdapter } from '../src/universal-adapter/client'
@@ -60,7 +61,7 @@ vi.mock('../src/client.ts', async () => {
 vi.mocked(global).window = { location: { origin: '' } } as any
 vi.mocked(global).document = {
   body: {
-    injectAdjacentElement: vi.fn()
+    insertAdjacentElement: vi.fn()
   } as any,
   createElement: vi.fn().mockReturnValue({ appendChild: vi.fn() }),
   getElementsByTagName: vi.fn().mockReturnValue([{ textContent: '' }]),
@@ -84,10 +85,12 @@ describe('Base', () => {
   })
 
   describe('Base Initialization', () => {
-    it('should initialize controllers', () => {
+    it('should initialize controllers', async () => {
       const copyMockOptions = { ...mockOptions }
 
       delete copyMockOptions.adapters
+
+      await new Promise(resolve => setTimeout(resolve, 100))
 
       expect(EventsController.sendEvent).toHaveBeenCalledOnce()
       expect(EventsController.sendEvent).toHaveBeenCalledWith({
@@ -1070,7 +1073,6 @@ describe('Base', () => {
         addressLabels: new Map(),
         allAccounts: []
       })
-      vi.spyOn(StorageUtil, 'getConnectedNamespaces').mockReturnValueOnce(['eip155'])
       vi.mocked(CoreHelperUtil.isClient).mockReturnValueOnce(true)
       vi.spyOn(StorageUtil, 'getActiveNamespace').mockReturnValue('eip155')
       vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('test-connector')
@@ -1095,6 +1097,7 @@ describe('Base', () => {
         getBalance: vi.fn().mockResolvedValue({ balance: '0', symbol: 'ETH' })
       }
       vi.spyOn(appKit as any, 'getAdapter').mockReturnValueOnce(mockAdapter)
+      vi.mocked(appKit).chainNamespaces = ['eip155']
 
       await appKit['syncExistingConnection']()
 
@@ -1106,7 +1109,7 @@ describe('Base', () => {
     it('should set status to "disconnected" when no connector is present', async () => {
       vi.mocked(CoreHelperUtil.isClient).mockReturnValueOnce(true)
       vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValueOnce(undefined)
-      vi.spyOn(StorageUtil, 'getConnectedNamespaces').mockReturnValueOnce(['eip155'])
+      vi.mocked(appKit).chainNamespaces = ['eip155']
 
       await appKit['syncExistingConnection']()
 
@@ -1115,7 +1118,6 @@ describe('Base', () => {
 
     it('should set status to "disconnected" if the connector is set to "AUTH" and the adapter fails to sync', async () => {
       vi.mocked(CoreHelperUtil.isClient).mockReturnValueOnce(true)
-      vi.spyOn(StorageUtil, 'getConnectedNamespaces').mockReturnValueOnce(['eip155'])
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation(key => {
         const connectorKey = getSafeConnectorIdKey('eip155')
         if (key === connectorKey) {
@@ -1126,6 +1128,7 @@ describe('Base', () => {
         }
         return undefined
       })
+      vi.mocked(appKit).chainNamespaces = ['eip155']
 
       const mockAdapter = {
         getAccounts: vi.fn().mockResolvedValue({ accounts: [] }),
@@ -1191,6 +1194,8 @@ describe('Base', () => {
         return mockSolanaAdapter
       })
 
+      vi.mocked(appKit).chainNamespaces = ['eip155', 'solana']
+
       await appKit['syncExistingConnection']()
 
       expect(mockEvmAdapter.syncConnection).toHaveBeenCalled()
@@ -1230,7 +1235,8 @@ describe('Base', () => {
         connectors: [],
         on: vi.fn(),
         off: vi.fn(),
-        emit: vi.fn()
+        emit: vi.fn(),
+        removeAllEventListeners: vi.fn()
       } as unknown as AdapterBlueprint
 
       vi.mocked(UniversalAdapter).mockImplementation(() => mockUniversalAdapter)
@@ -1526,5 +1532,184 @@ describe('Listeners', () => {
     expect(fetchIdentitySpy).toHaveBeenCalledWith({ address: mockAccount.address })
     expect(setProfileNameSpy).toHaveBeenCalledWith(identity.name, 'eip155')
     expect(setProfileImageSpy).toHaveBeenCalledWith(identity.avatar, 'eip155')
+  })
+})
+
+describe('Adapter Management', () => {
+  let appKit: AppKit
+  let mockAdapter: AdapterBlueprint
+  let mockNetwork: AppKitNetwork
+
+  beforeEach(() => {
+    mockAdapter = {
+      namespace: 'eip155',
+      construct: vi.fn(),
+      setUniversalProvider: vi.fn(),
+      setAuthProvider: vi.fn(),
+      syncConnectors: vi.fn(),
+      connectors: [],
+      on: vi.fn(),
+      off: vi.fn(),
+      emit: vi.fn(),
+      removeAllEventListeners: vi.fn()
+    } as unknown as AdapterBlueprint
+
+    mockNetwork = {
+      id: 'eip155:1',
+      name: 'Ethereum'
+    } as unknown as AppKitNetwork
+
+    vi.mocked(CaipNetworksUtil.extendCaipNetworks).mockReturnValue([
+      { id: 'eip155:1', chainNamespace: 'eip155' } as CaipNetwork
+    ])
+
+    appKit = new AppKit({
+      ...mockOptions,
+      networks: [mockNetwork],
+      adapters: [mockAdapter]
+    })
+
+    // Mock the clients needed for adapter operations
+    ;(appKit as any).connectionControllerClient = {}
+    ;(appKit as any).networkControllerClient = {}
+  })
+
+  describe('addAdapter', () => {
+    it('should add a new adapter successfully', () => {
+      const newAdapter = {
+        namespace: 'solana',
+        construct: vi.fn(),
+        setUniversalProvider: vi.fn(),
+        setAuthProvider: vi.fn(),
+        syncConnectors: vi.fn(),
+        connectors: [],
+        on: vi.fn(),
+        off: vi.fn(),
+        emit: vi.fn()
+      } as unknown as ChainAdapter
+
+      const newNetwork = {
+        id: 'solana:1',
+        name: 'Solana'
+      } as unknown as AppKitNetwork
+
+      vi.mocked(CaipNetworksUtil.extendCaipNetworks).mockReturnValueOnce([
+        { id: 'solana:1', chainNamespace: 'solana' } as CaipNetwork
+      ])
+
+      appKit.addAdapter(newAdapter, [newNetwork])
+
+      expect(appKit.chainAdapters?.solana).toBeDefined()
+      expect(appKit.chainNamespaces).toContain('solana')
+      expect(ChainController.addAdapter).toHaveBeenCalledWith(
+        newAdapter,
+        {
+          connectionControllerClient: expect.any(Object),
+          networkControllerClient: expect.any(Object)
+        },
+        expect.any(Array)
+      )
+    })
+
+    it('should not add adapter if clients are not initialized', () => {
+      const newAdapter = {
+        namespace: 'solana'
+      } as unknown as ChainAdapter
+
+      const newNetwork = {
+        id: 'solana:1',
+        name: 'Solana'
+      } as unknown as AppKitNetwork
+
+      // Remove clients
+      ;(appKit as any).connectionControllerClient = undefined
+      ;(appKit as any).networkControllerClient = undefined
+
+      appKit.addAdapter(newAdapter, [newNetwork])
+
+      expect(appKit.chainAdapters?.solana).toBeUndefined()
+    })
+
+    it('should not add adapter if chainAdapters is not initialized', () => {
+      vi.spyOn(appKit as any, 'createAdapter').mockImplementation(() => {})
+      vi.spyOn(appKit as any, 'initChainAdapter').mockImplementation(() => {})
+      vi.spyOn(ChainController, 'addAdapter').mockImplementation(() => {})
+
+      const newAdapter = {
+        namespace: 'solana'
+      } as unknown as ChainAdapter
+
+      const newNetwork = {
+        id: 'solana:1',
+        name: 'Solana'
+      } as unknown as AppKitNetwork
+
+      // Remove chainAdapters
+      ;(appKit as any).chainAdapters = undefined
+
+      appKit.addAdapter(newAdapter, [newNetwork])
+
+      expect((appKit as any).createAdapter).not.toHaveBeenCalled()
+      expect((appKit as any).initChainAdapter).not.toHaveBeenCalled()
+      expect(ChainController.addAdapter).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('removeAdapter', () => {
+    it('should remove an existing adapter successfully', () => {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        activeCaipAddress: undefined
+      } as any)
+
+      appKit.removeAdapter('eip155')
+
+      expect(appKit.chainAdapters?.eip155).toBeUndefined()
+      expect(appKit.chainNamespaces).not.toContain('eip155')
+      expect(mockAdapter.removeAllEventListeners).toHaveBeenCalled()
+      expect(ChainController.removeAdapter).toHaveBeenCalledWith('eip155')
+      expect(ConnectorController.removeAdapter).toHaveBeenCalledWith('eip155')
+    })
+
+    it('should not remove adapter if user is connected', () => {
+      vi.spyOn(ChainController, 'removeAdapter').mockImplementation(() => {})
+      vi.spyOn(ConnectorController, 'removeAdapter').mockImplementation(() => {})
+
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        activeCaipAddress: 'eip155:1:0x123'
+      } as any)
+
+      appKit.removeAdapter('eip155')
+
+      expect(appKit.chainAdapters?.eip155).toBeDefined()
+      expect(appKit.chainNamespaces).toContain('eip155')
+      expect(mockAdapter.removeAllEventListeners).not.toHaveBeenCalled()
+      expect(ChainController.removeAdapter).not.toHaveBeenCalled()
+      expect(ConnectorController.removeAdapter).not.toHaveBeenCalled()
+    })
+
+    it('should not remove adapter if adapter does not exist', () => {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        activeCaipAddress: undefined
+      } as any)
+
+      appKit.removeAdapter('polkadot' as ChainNamespace)
+
+      expect(ChainController.removeAdapter).not.toHaveBeenCalled()
+      expect(ConnectorController.removeAdapter).not.toHaveBeenCalled()
+    })
+
+    it('should not remove adapter if chainAdapters is not initialized', () => {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        activeCaipAddress: undefined
+      } as any)
+
+      // Remove chainAdapters
+      ;(appKit as any).chainAdapters = undefined
+
+      appKit.removeAdapter('eip155')
+
+      expect(ChainController.removeAdapter).not.toHaveBeenCalled()
+      expect(ConnectorController.removeAdapter).not.toHaveBeenCalled()
+    })
   })
 })
