@@ -59,13 +59,10 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
   function removeChain(chain: ChainNamespace) {
     setEnabledChains(prev => {
       const newEnabledChains = prev.filter(c => c !== chain)
-      const adapter = allAdapters.find(a => a.namespace === chain)
-      if (adapter) {
-        appKit?.removeAdapter(adapter)
-      }
       urlStateUtils.updateURLWithState({ enabledChains: newEnabledChains })
       return newEnabledChains
     })
+    appKit?.removeAdapter(chain)
   }
 
   function addChain(chain: ChainNamespace) {
