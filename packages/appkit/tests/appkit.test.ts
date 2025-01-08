@@ -85,10 +85,12 @@ describe('Base', () => {
   })
 
   describe('Base Initialization', () => {
-    it('should initialize controllers', () => {
+    it('should initialize controllers', async () => {
       const copyMockOptions = { ...mockOptions }
 
       delete copyMockOptions.adapters
+
+      await new Promise(resolve => setTimeout(resolve, 100))
 
       expect(EventsController.sendEvent).toHaveBeenCalledOnce()
       expect(EventsController.sendEvent).toHaveBeenCalledWith({
@@ -1071,7 +1073,6 @@ describe('Base', () => {
         addressLabels: new Map(),
         allAccounts: []
       })
-      vi.spyOn(StorageUtil, 'getConnectedNamespaces').mockReturnValueOnce(['eip155'])
       vi.mocked(CoreHelperUtil.isClient).mockReturnValueOnce(true)
       vi.spyOn(StorageUtil, 'getActiveNamespace').mockReturnValue('eip155')
       vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('test-connector')
@@ -1096,6 +1097,7 @@ describe('Base', () => {
         getBalance: vi.fn().mockResolvedValue({ balance: '0', symbol: 'ETH' })
       }
       vi.spyOn(appKit as any, 'getAdapter').mockReturnValueOnce(mockAdapter)
+      vi.mocked(appKit).chainNamespaces = ['eip155']
 
       await appKit['syncExistingConnection']()
 
@@ -1107,7 +1109,7 @@ describe('Base', () => {
     it('should set status to "disconnected" when no connector is present', async () => {
       vi.mocked(CoreHelperUtil.isClient).mockReturnValueOnce(true)
       vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValueOnce(undefined)
-      vi.spyOn(StorageUtil, 'getConnectedNamespaces').mockReturnValueOnce(['eip155'])
+      vi.mocked(appKit).chainNamespaces = ['eip155']
 
       await appKit['syncExistingConnection']()
 
@@ -1116,7 +1118,6 @@ describe('Base', () => {
 
     it('should set status to "disconnected" if the connector is set to "AUTH" and the adapter fails to sync', async () => {
       vi.mocked(CoreHelperUtil.isClient).mockReturnValueOnce(true)
-      vi.spyOn(StorageUtil, 'getConnectedNamespaces').mockReturnValueOnce(['eip155'])
       vi.spyOn(SafeLocalStorage, 'getItem').mockImplementation(key => {
         const connectorKey = getSafeConnectorIdKey('eip155')
         if (key === connectorKey) {
@@ -1127,6 +1128,7 @@ describe('Base', () => {
         }
         return undefined
       })
+      vi.mocked(appKit).chainNamespaces = ['eip155']
 
       const mockAdapter = {
         getAccounts: vi.fn().mockResolvedValue({ accounts: [] }),
@@ -1191,6 +1193,8 @@ describe('Base', () => {
         }
         return mockSolanaAdapter
       })
+
+      vi.mocked(appKit).chainNamespaces = ['eip155', 'solana']
 
       await appKit['syncExistingConnection']()
 
