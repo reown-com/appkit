@@ -20,7 +20,7 @@ export { CoreHelperUtil, AccountController } from '@reown/appkit-core'
 
 export let modal: AppKit | undefined = undefined
 
-type CreateAppKit = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
+export type CreateAppKit = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
 
 export function createAppKit(options: CreateAppKit) {
   if (!modal) {
