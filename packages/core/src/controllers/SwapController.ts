@@ -17,6 +17,7 @@ import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import { ChainController } from './ChainController.js'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { AlertController } from './AlertController.js'
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000
@@ -516,6 +517,14 @@ export const SwapController = {
       const quoteToAmount = quoteResponse?.quotes?.[0]?.toAmount
 
       if (!quoteToAmount) {
+        AlertController.open(
+          {
+            shortMessage: 'Incorrect amount',
+            longMessage: 'Please enter a valid amount'
+          },
+          'error'
+        )
+
         return
       }
 
