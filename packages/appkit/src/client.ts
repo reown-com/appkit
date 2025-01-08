@@ -918,7 +918,7 @@ export class AppKit {
             ...res,
             chainNamespace: chainToUse
           })
-          await this.syncAccount({
+          this.syncAccount({
             ...res,
             chainNamespace: chainToUse
           })
@@ -1094,7 +1094,7 @@ export class AppKit {
 
           await adapter?.switchNetwork({ caipNetwork, provider, providerType })
           this.setCaipNetwork(caipNetwork)
-          await this.syncAccount({
+          this.syncAccount({
             address: AccountController.state.address,
             chainId: caipNetwork.id,
             chainNamespace: caipNetwork.chainNamespace
@@ -1539,7 +1539,7 @@ export class AppKit {
 
         this.syncWalletConnectAccounts(chainNamespace)
 
-        await this.syncAccount({
+        this.syncAccount({
           address,
           chainId,
           chainNamespace
@@ -1589,7 +1589,7 @@ export class AppKit {
     StorageUtil.setConnectedConnectorId(chainNamespace, id)
   }
 
-  private async syncAccount(
+  private syncAccount(
     params: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
       chainNamespace: ChainNamespace
     }
@@ -1603,7 +1603,7 @@ export class AppKit {
     // Only update state when needed
     if (!HelpersUtil.isLowerCaseMatch(address, AccountController.state.address)) {
       this.setCaipAddress(`${chainNamespace}:${chainId}:${address}`, chainNamespace)
-      await this.syncIdentity({ address, chainId, chainNamespace })
+      this.syncIdentity({ address, chainId, chainNamespace })
     }
 
     this.setStatus('connected', chainNamespace)
@@ -1635,7 +1635,7 @@ export class AppKit {
       const network = (caipNetwork || fallbackCaipNetwork) as CaipNetwork
       this.setCaipNetwork(network)
       this.syncConnectedWalletInfo(chainNamespace)
-      await this.syncBalance({ address, chainId: network.id, chainNamespace })
+      this.syncBalance({ address, chainId: network.id, chainNamespace })
     }
   }
 
@@ -1812,7 +1812,7 @@ export class AppKit {
         }
 
         this.syncProvider({ ...connection, chainNamespace: namespace })
-        await this.syncAccount({ ...connection, chainNamespace: namespace })
+        this.syncAccount({ ...connection, chainNamespace: namespace })
 
         this.setStatus('connected', namespace)
       } else {
