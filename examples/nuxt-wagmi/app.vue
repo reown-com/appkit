@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import { createAppKit } from '@reown/appkit/vue'
-import { mainnet, polygon, base } from '@reown/appkit/networks'
+import { createAppKit, useAppKitTheme } from '@reown/appkit/vue'
 import { wagmiAdapter, projectId, networks } from './config/wagmi'
-import { useDisconnect } from '@reown/appkit/vue'
 
-const { disconnect } = useDisconnect()
-
-const modal = createAppKit({
+createAppKit({
   adapters: [wagmiAdapter],
   networks,
   projectId,
   themeMode: 'light',
+  features: {
+    analytics: true
+  },
   metadata: {
     name: 'AppKit Nuxt Example',
     description: 'AppKit Nuxt Example',
@@ -18,12 +17,32 @@ const modal = createAppKit({
     icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
   }
 })
+
+const themeState = useAppKitTheme()
 </script>
 
 <template>
   <client-only>
-    <appkit-button />
-    <appkit-network-button />
-    <button @click="disconnect">Disconnect</button>
+    <div class="page-container">
+      <div class="logo-container">
+        <img
+          :src="themeState.themeMode === 'dark' ? '/reown-logo-white.png' : '/reown-logo.png'"
+          alt="Reown"
+          width="150"
+        />
+        <img src="/appkit-logo.png" alt="Reown" width="150" />
+      </div>
+
+      <h1 class="page-title">Nuxt Wagmi Example</h1>
+
+      <div class="appkit-buttons-container">
+        <appkit-button />
+        <appkit-network-button />
+      </div>
+
+      <ActionButtonList />
+      <InfoList />
+      <Footer />
+    </div>
   </client-only>
 </template>

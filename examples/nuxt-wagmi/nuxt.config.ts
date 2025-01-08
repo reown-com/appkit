@@ -6,5 +6,30 @@ export default defineNuxtConfig({
     public: {
       projectId: process.env.NUXT_PROJECT_ID
     }
+  },
+  css: ['~/assets/main.css'],
+  app: {
+    head: {
+      title: 'AppKit Nuxt Wagmi Example',
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'description', content: 'AppKit Nuxt Wagmi Example' }
+      ],
+      link: [
+        {
+          id: 'favicon',
+          rel: 'icon',
+          href: '/favicon-dark.png',
+          media: '(prefers-color-scheme: light)'
+        },
+        {
+          id: 'favicon',
+          rel: 'icon',
+          href: '/favicon.png',
+          media: '(prefers-color-scheme: dark)'
+        }
+      ]
+    }
   }
 })
