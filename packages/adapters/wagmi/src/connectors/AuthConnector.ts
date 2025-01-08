@@ -3,7 +3,7 @@ import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { SwitchChainError, getAddress } from 'viem'
 import type { Address } from 'viem'
-import { ConstantsUtil, ErrorUtil } from '@reown/appkit-utils'
+import { ErrorUtil } from '@reown/appkit-utils'
 import { NetworkUtil } from '@reown/appkit-common'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
 import { AlertController } from '@reown/appkit-core'
@@ -11,12 +11,12 @@ import { AlertController } from '@reown/appkit-core'
 // -- Types ----------------------------------------------------------------------------------------
 interface W3mFrameProviderOptions {
   projectId: string
+  enableAuthLogger?: boolean
 }
 
 export type AuthParameters = {
   chains?: CreateConfigParameters['chains']
   options: W3mFrameProviderOptions
-  provider: W3mFrameProvider
 }
 
 // -- Connector ------------------------------------------------------------------------------------
@@ -32,9 +32,9 @@ export function authConnector(parameters: AuthParameters) {
   }
 
   return createConnector<W3mFrameProvider, Properties>(config => ({
-    id: ConstantsUtil.AUTH_CONNECTOR_ID,
+    id: CommonConstantsUtil.CONNECTOR_ID.AUTH,
     name: 'AppKit Auth',
-    type: 'ID_AUTH',
+    type: 'AUTH',
     chain: CommonConstantsUtil.CHAIN.EVM,
 
     async connect(options = {}) {
@@ -91,6 +91,7 @@ export function authConnector(parameters: AuthParameters) {
       if (!this.provider) {
         this.provider = W3mFrameProviderSingleton.getInstance({
           projectId: parameters.options.projectId,
+          enableLogger: parameters.options.enableAuthLogger,
           onTimeout: () => {
             AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
           }

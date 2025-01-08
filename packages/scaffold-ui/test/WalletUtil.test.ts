@@ -11,6 +11,7 @@ import type { WcWallet } from '@reown/appkit-core'
 // Connectors
 const mockMetamaskConnector = {
   info: { rdns: 'io.metamask' },
+  name: 'Metamask',
   id: '1',
   explorerId: '1',
   chain: 'eip155' as const,
@@ -19,6 +20,7 @@ const mockMetamaskConnector = {
 
 const mockRainbowConnector = {
   info: { rdns: 'io.rainbow' },
+  name: 'Rainbow',
   id: '2',
   explorerId: '2',
   chain: 'eip155' as const,
@@ -26,6 +28,7 @@ const mockRainbowConnector = {
 }
 const mockMetamaskMobileConnector = {
   info: { rdns: 'io.metamask.mobile' },
+  name: 'Metamask',
   id: '4',
   explorerId: '4',
   chain: 'eip155' as const,
@@ -33,6 +36,7 @@ const mockMetamaskMobileConnector = {
 }
 const mockCoinbaseconnector = {
   info: { rdns: 'io.coinbase' },
+  name: 'Coinbase',
   id: '5',
   explorerId: '5',
   chain: 'eip155' as const,
@@ -202,6 +206,7 @@ describe('WalletUtil', () => {
         {
           type: 'ANNOUNCED' as const,
           info: { rdns: 'io.someotherwallet' },
+          name: 'Test Wallet',
           id: '1233',
           chain: 'eip155' as const
         }

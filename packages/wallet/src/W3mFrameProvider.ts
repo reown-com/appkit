@@ -10,12 +10,13 @@ type AppEventType = Omit<W3mFrameTypes.AppEvent, 'id'>
 interface W3mFrameProviderConfig {
   projectId: string
   chainId?: W3mFrameTypes.Network['chainId']
+  enableLogger?: boolean
   onTimeout?: () => void
 }
 
 // -- Provider --------------------------------------------------------
 export class W3mFrameProvider {
-  public w3mLogger: W3mFrameLogger
+  public w3mLogger?: W3mFrameLogger
   private w3mFrame: W3mFrame
   private openRpcRequests: Array<W3mFrameTypes.RPCRequest & { abortController: AbortController }> =
     []
@@ -29,9 +30,16 @@ export class W3mFrameProvider {
 
   public onTimeout?: () => void
 
-  public constructor({ projectId, chainId, onTimeout }: W3mFrameProviderConfig) {
-    this.w3mLogger = new W3mFrameLogger(projectId)
-    this.w3mFrame = new W3mFrame(projectId, true, chainId)
+  public constructor({
+    projectId,
+    chainId,
+    enableLogger = true,
+    onTimeout
+  }: W3mFrameProviderConfig) {
+    if (enableLogger) {
+      this.w3mLogger = new W3mFrameLogger(projectId)
+    }
+    this.w3mFrame = new W3mFrame({ projectId, isAppClient: true, chainId, enableLogger })
     this.onTimeout = onTimeout
     if (this.getLoginEmailUsed()) {
       this.w3mFrame.initFrame()
@@ -47,6 +55,22 @@ export class W3mFrameProvider {
     return W3mFrameStorage.get(W3mFrameConstants.EMAIL)
   }
 
+  public getUsername() {
+    return W3mFrameStorage.get(W3mFrameConstants.SOCIAL_USERNAME)
+  }
+
+  public async reload() {
+    try {
+      this.w3mFrame.initFrame()
+      await this.appEvent<'Reload'>({
+        type: W3mFrameConstants.APP_RELOAD
+      } as W3mFrameTypes.AppEvent)
+    } catch (error) {
+      this.w3mLogger?.logger.error({ error }, 'Error reloading iframe')
+      throw error
+    }
+  }
+
   public async connectEmail(payload: W3mFrameTypes.Requests['AppConnectEmailRequest']) {
     try {
       W3mFrameHelpers.checkIfAllowedToTriggerEmail()
@@ -59,7 +83,7 @@ export class W3mFrameProvider {
 
       return response
     } catch (error) {
-      this.w3mLogger.logger.error({ error }, 'Error connecting email')
+      this.w3mLogger?.logger.error({ error }, 'Error connecting email')
       throw error
     }
   }
@@ -70,7 +94,7 @@ export class W3mFrameProvider {
         type: W3mFrameConstants.APP_CONNECT_DEVICE
       } as W3mFrameTypes.AppEvent)
     } catch (error) {
-      this.w3mLogger.logger.error({ error }, 'Error connecting device')
+      this.w3mLogger?.logger.error({ error }, 'Error connecting device')
       throw error
     }
   }
@@ -82,13 +106,16 @@ export class W3mFrameProvider {
         payload
       } as W3mFrameTypes.AppEvent)
     } catch (error) {
-      this.w3mLogger.logger.error({ error }, 'Error connecting otp')
+      this.w3mLogger?.logger.error({ error }, 'Error connecting otp')
       throw error
     }
   }
 
   public async isConnected() {
     try {
+      if (!this.getLoginEmailUsed()) {
+        return { isConnected: false }
+      }
       const response = await this.appEvent<'IsConnected'>({
         type: W3mFrameConstants.APP_IS_CONNECTED
       } as W3mFrameTypes.AppEvent)
@@ -99,7 +126,7 @@ export class W3mFrameProvider {
       return response
     } catch (error) {
       this.deleteAuthLoginCache()
-      this.w3mLogger.logger.error({ error }, 'Error checking connection')
+      this.w3mLogger?.logger.error({ error }, 'Error checking connection')
       throw error
     }
   }
@@ -114,7 +141,7 @@ export class W3mFrameProvider {
 
       return response
     } catch (error) {
-      this.w3mLogger.logger.error({ error }, 'Error getting chain id')
+      this.w3mLogger?.logger.error({ error }, 'Error getting chain id')
       throw error
     }
   }
@@ -130,7 +157,7 @@ export class W3mFrameProvider {
         payload
       } as W3mFrameTypes.AppEvent)
     } catch (error) {
-      this.w3mLogger.logger.error({ error }, 'Error getting social redirect uri')
+      this.w3mLogger?.logger.error({ error }, 'Error getting social redirect uri')
       throw error
     }
   }
@@ -145,7 +172,7 @@ export class W3mFrameProvider {
 
       return response
     } catch (error) {
-      this.w3mLogger.logger.error({ error }, 'Error updating email')
+      this.w3mLogger?.logger.error({ error }, 'Error updating email')
       throw error
     }
   }
@@ -159,7 +186,7 @@ export class W3mFrameProvider {
         payload
       } as W3mFrameTypes.AppEvent)
     } catch (error) {
-      this.w3mLogger.logger.error({ error }, 'Error updating email primary otp')
+      this.w3mLogger?.logger.error({ error }, 'Error updating email primary otp')
       throw error
     }
   }
@@ -177,7 +204,7 @@ export class W3mFrameProvider {
 
       return response
     } catch (error) {
-      this.w3mLogger.logger.error({ error }, 'Error updating email secondary otp')
+      this.w3mLogger?.logger.error({ error }, 'Error updating email secondary otp')
       throw error
     }
   }
@@ -189,7 +216,7 @@ export class W3mFrameProvider {
         payload
       } as W3mFrameTypes.AppEvent)
     } catch (error) {
-      this.w3mLogger.logger.error({ error }, 'Error syncing theme')
+      this.w3mLogger?.logger.error({ error }, 'Error syncing theme')
       throw error
     }
   }
@@ -203,7 +230,7 @@ export class W3mFrameProvider {
         payload
       } as W3mFrameTypes.AppEvent)
     } catch (error) {
-      this.w3mLogger.logger.error({ error }, 'Error syncing dapp data')
+      this.w3mLogger?.logger.error({ error }, 'Error syncing dapp data')
       throw error
     }
   }
@@ -219,7 +246,7 @@ export class W3mFrameProvider {
       return response
     } catch (error) {
       this.persistSmartAccountEnabledNetworks([])
-      this.w3mLogger.logger.error({ error }, 'Error getting smart account enabled networks')
+      this.w3mLogger?.logger.error({ error }, 'Error getting smart account enabled networks')
       throw error
     }
   }
@@ -231,7 +258,7 @@ export class W3mFrameProvider {
         payload: { type }
       } as W3mFrameTypes.AppEvent)
     } catch (error) {
-      this.w3mLogger.logger.error({ error }, 'Error setting preferred account')
+      this.w3mLogger?.logger.error({ error }, 'Error setting preferred account')
       throw error
     }
   }
@@ -249,7 +276,7 @@ export class W3mFrameProvider {
 
       return response
     } catch (error) {
-      this.w3mLogger.logger.error({ error }, 'Error connecting')
+      this.w3mLogger?.logger.error({ error }, 'Error connecting')
       throw error
     }
   }
@@ -264,7 +291,7 @@ export class W3mFrameProvider {
 
       return response
     } catch (error) {
-      this.w3mLogger.logger.error({ error }, 'Error connecting')
+      this.w3mLogger?.logger.error({ error }, 'Error connecting')
       throw error
     }
   }
@@ -282,7 +309,7 @@ export class W3mFrameProvider {
 
       return response
     } catch (error) {
-      this.w3mLogger.logger.error({ error }, 'Error connecting social')
+      this.w3mLogger?.logger.error({ error }, 'Error connecting social')
       throw error
     }
   }
@@ -296,7 +323,7 @@ export class W3mFrameProvider {
 
       return response
     } catch (error) {
-      this.w3mLogger.logger.error({ error }, 'Error getting farcaster uri')
+      this.w3mLogger?.logger.error({ error }, 'Error getting farcaster uri')
       throw error
     }
   }
@@ -313,7 +340,7 @@ export class W3mFrameProvider {
 
       return response
     } catch (error) {
-      this.w3mLogger.logger.error({ error }, 'Error connecting farcaster')
+      this.w3mLogger?.logger.error({ error }, 'Error connecting farcaster')
       throw error
     }
   }
@@ -329,7 +356,7 @@ export class W3mFrameProvider {
 
       return response
     } catch (error) {
-      this.w3mLogger.logger.error({ error }, 'Error switching network')
+      this.w3mLogger?.logger.error({ error }, 'Error switching network')
       throw error
     }
   }
@@ -343,7 +370,7 @@ export class W3mFrameProvider {
 
       return response
     } catch (error) {
-      this.w3mLogger.logger.error({ error }, 'Error disconnecting')
+      this.w3mLogger?.logger.error({ error }, 'Error disconnecting')
       throw error
     }
   }
@@ -365,7 +392,7 @@ export class W3mFrameProvider {
       return response
     } catch (error) {
       this.rpcErrorHandler?.(error as Error, req)
-      this.w3mLogger.logger.error({ error }, 'Error requesting')
+      this.w3mLogger?.logger.error({ error }, 'Error requesting')
       throw error
     }
   }
@@ -412,6 +439,16 @@ export class W3mFrameProvider {
   public onConnect(callback: (user: W3mFrameTypes.Responses['FrameGetUserResponse']) => void) {
     this.w3mFrame.events.onFrameEvent(event => {
       if (event.type === W3mFrameConstants.FRAME_GET_USER_SUCCESS) {
+        callback(event.payload)
+      }
+    })
+  }
+
+  public onSocialConnected(
+    callback: (user: W3mFrameTypes.Responses['FrameConnectSocialResponse']) => void
+  ) {
+    this.w3mFrame.events.onFrameEvent(event => {
+      if (event.type === W3mFrameConstants.FRAME_CONNECT_SOCIAL_SUCCESS) {
         callback(event.payload)
       }
     })
@@ -465,7 +502,7 @@ export class W3mFrameProvider {
       })
       this.openRpcRequests = []
     } catch (e) {
-      this.w3mLogger.logger.error({ error: e }, 'Error aborting RPC request')
+      this.w3mLogger?.logger.error({ error: e }, 'Error aborting RPC request')
     }
   }
 
@@ -488,8 +525,7 @@ export class W3mFrameProvider {
       W3mFrameConstants.APP_CONNECT_DEVICE,
       W3mFrameConstants.APP_CONNECT_OTP,
       W3mFrameConstants.APP_CONNECT_SOCIAL,
-      W3mFrameConstants.APP_GET_SOCIAL_REDIRECT_URI,
-      W3mFrameConstants.APP_GET_FARCASTER_URI
+      W3mFrameConstants.APP_GET_SOCIAL_REDIRECT_URI
     ]
       .map(replaceEventType)
       .includes(type)
@@ -503,7 +539,7 @@ export class W3mFrameProvider {
 
     return new Promise((resolve, reject) => {
       const id = Math.random().toString(36).substring(7)
-      this.w3mLogger.logger.info?.({ event, id }, 'Sending app event')
+      this.w3mLogger?.logger.info?.({ event, id }, 'Sending app event')
       this.w3mFrame.events.postAppEvent({ ...event, id } as W3mFrameTypes.AppEvent)
 
       if (type === 'RPC_REQUEST') {
@@ -513,17 +549,17 @@ export class W3mFrameProvider {
       abortController.signal.addEventListener('abort', () => {
         if (type === 'RPC_REQUEST') {
           reject(new Error('Request was aborted'))
-        } else {
+        } else if (type !== 'GET_FARCASTER_URI') {
           reject(new Error('Something went wrong'))
         }
       })
 
-      function handler(framEvent: W3mFrameTypes.FrameEvent, logger: W3mFrameLogger) {
+      function handler(framEvent: W3mFrameTypes.FrameEvent, logger?: W3mFrameLogger) {
         if (framEvent.id !== id) {
           return
         }
 
-        logger.logger.info?.({ framEvent, id }, 'Received frame response')
+        logger?.logger.info?.({ framEvent, id }, 'Received frame response')
 
         if (framEvent.type === `@w3m-frame/${type}_SUCCESS`) {
           if (timer) {

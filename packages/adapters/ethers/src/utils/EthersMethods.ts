@@ -112,7 +112,7 @@ export const EthersMethods = {
     }
     const method = contract[data.method]
     if (method) {
-      return await method(data.receiverAddress, data.tokenAmount)
+      return await method(...data.args)
     }
     throw new Error('Contract method is undefined')
   },

@@ -24,7 +24,10 @@ export type {
 } from '../src/controllers/ConnectionController.js'
 
 export { ConnectorController } from '../src/controllers/ConnectorController.js'
-export type { ConnectorControllerState } from '../src/controllers/ConnectorController.js'
+export type {
+  ConnectorControllerState,
+  ConnectorWithProviders
+} from '../src/controllers/ConnectorController.js'
 
 export { SnackController } from '../src/controllers/SnackController.js'
 export type { SnackControllerState } from '../src/controllers/SnackController.js'

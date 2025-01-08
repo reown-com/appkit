@@ -4,6 +4,7 @@ import { CopyIcon, CloseIcon } from '@chakra-ui/icons'
 
 type CustomToastProps = {
   allowCopy?: boolean
+  partialDescription?: boolean
   title: string
   description: string | Uint8Array | undefined
   type?: 'success' | 'error'
@@ -12,6 +13,7 @@ type CustomToastProps = {
 
 export default function CustomToast({
   allowCopy = true,
+  partialDescription = true,
   title,
   description,
   type,
@@ -55,7 +57,9 @@ export default function CustomToast({
       </Box>
       {description ? (
         <Box display="flex" flexDirection="row" alignItems="center" gap="4">
-          <Text noOfLines={2}>{description}</Text>
+          <Text noOfLines={partialDescription ? 2 : 10} wordBreak="break-word">
+            {description}
+          </Text>
           {allowCopy && typeof description === 'string' && type !== 'error' ? (
             <Button minWidth="auto" size="xs" onClick={() => copyToClipboard(description)}>
               <CopyIcon width="3" height="3" marginRight="2" />
@@ -81,6 +85,7 @@ export function useChakraToast() {
           type={params.type}
           onClose={onClose}
           allowCopy={params.allowCopy}
+          partialDescription={params.partialDescription}
         />
       )
     })

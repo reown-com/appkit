@@ -1,3 +1,4 @@
+import { inter } from '@/lib/fonts'
 import { urlStateUtils } from '@/lib/url-state'
 import { AppKit } from '@reown/appkit'
 import { ThemeVariables } from '@reown/appkit-core'
@@ -20,11 +21,20 @@ export const state = proxy<ThemeState>({
   borderRadius: '2px',
   themeVariables: {},
   modal: undefined,
-  fontFamily: ''
+  fontFamily: inter.style.fontFamily
 })
 
 export const ThemeStore = {
   state,
+
+  initializeThemeVariables(value: ThemeState['themeVariables']) {
+    state.mixColorStrength = value['--w3m-color-mix-strength'] || 0
+    state.mixColor = value['--w3m-color-mix'] || ''
+    state.accentColor = value['--w3m-accent'] || ''
+    state.borderRadius = value['--w3m-border-radius-master'] || '2px'
+    state.fontFamily = value['--w3m-font-family'] || inter.style.fontFamily
+    state.themeVariables = value
+  },
 
   setMixColorStrength(value: ThemeState['mixColorStrength']) {
     state.mixColorStrength = value
@@ -55,14 +65,6 @@ export const ThemeStore = {
     if (state.modal) {
       state.modal.setThemeVariables({ '--w3m-border-radius-master': value })
       urlStateUtils.updateURLWithState({ themeVariables: { '--w3m-border-radius-master': value } })
-    }
-  },
-
-  setThemeVariables(value: ThemeState['themeVariables']) {
-    state.themeVariables = value
-    if (state.modal) {
-      state.modal.setThemeVariables(value)
-      urlStateUtils.updateURLWithState({ themeVariables: value })
     }
   },
 

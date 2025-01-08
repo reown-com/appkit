@@ -6,7 +6,8 @@ import {
   CoreHelperUtil,
   RouterController,
   SendController,
-  ChainController
+  ChainController,
+  AccountController
 } from '@reown/appkit-core'
 import { state } from 'lit/decorators.js'
 
@@ -39,11 +40,13 @@ export class W3mWalletSendView extends LitElement {
     | 'Add Amount'
     | 'Insufficient Funds'
     | 'Incorrect Value'
+    | 'Insufficient Gas Funds'
     | 'Invalid Address' = 'Preview Send'
 
   public constructor() {
     super()
     this.fetchNetworkPrice()
+    this.fetchBalances()
     this.unsubscribe.push(
       ...[
         SendController.subscribe(val => {
@@ -102,10 +105,15 @@ export class W3mWalletSendView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private async fetchBalances() {
+    await AccountController.fetchTokenBalance()
+  }
 
   private async fetchNetworkPrice() {
     await SwapController.getNetworkTokenPrice()
     const gas = await SwapController.getInitialGasPrice()
+    await SendController.fetchNetworkBalance()
+
     if (gas?.gasPrice && gas?.gasPriceInUSD) {
       SendController.setGasPrice(gas.gasPrice)
       SendController.setGasPriceInUsd(gas.gasPriceInUSD)
@@ -128,6 +136,10 @@ export class W3mWalletSendView extends LitElement {
 
     if (!this.receiverAddress) {
       this.message = 'Add Address'
+    }
+
+    if (SendController.hasInsufficientGasFunds()) {
+      this.message = 'Insufficient Gas Funds'
     }
 
     if (

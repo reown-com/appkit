@@ -137,12 +137,19 @@ export function SortableWalletFeatureList({
   }, [activeId])
 
   const orderString = useMemo(() => items.join(','), [items])
+  const orderStringFromProps = useMemo(() => initialItems?.join(','), [initialItems])
 
   useEffect(() => {
     if (handleNewOrder) {
       handleNewOrder(orderString.split(','))
     }
   }, [orderString])
+
+  useEffect(() => {
+    if (orderStringFromProps) {
+      setItems(orderStringFromProps.split(','))
+    }
+  }, [orderStringFromProps])
 
   return (
     <DndContext

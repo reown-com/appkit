@@ -226,10 +226,15 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private authCardTemplate() {
-    const type = StorageUtil.getConnectedConnector()
+    const namespace = ChainController.state.activeChain as ChainNamespace
+    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
-    if (!authConnector || type !== 'ID_AUTH' || origin.includes(CommonConstantsUtil.SECURE_SITE)) {
+    if (
+      !authConnector ||
+      connectorId !== ConstantsUtil.CONNECTOR_ID.AUTH ||
+      origin.includes(CommonConstantsUtil.SECURE_SITE)
+    ) {
       return null
     }
 
@@ -361,7 +366,12 @@ export class W3mAccountDefaultWidget extends LitElement {
             truncate: this.profileName ? 'end' : 'middle'
           })}
         </wui-text>
-        <wui-icon size="sm" color="fg-200" name="copy" id="copy-address"></wui-icon>
+        <wui-icon-link
+          size="md"
+          icon="copy"
+          iconColor="fg-200"
+          @click=${this.onCopyAddress}
+        ></wui-icon-link>
       </wui-flex>
     </wui-flex>`
   }

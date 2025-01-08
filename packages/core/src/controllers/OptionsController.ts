@@ -109,8 +109,13 @@ export interface OptionsControllerStatePublic {
    */
   enableWalletGuide?: boolean
   /**
+   * Enable or disable logs from email/social login.
+   * @default true
+   */
+  enableAuthLogger?: boolean
+  /**
    * Enable or disable debug mode in your AppKit. This is useful if you want to see UI alerts when debugging.
-   * @default false
+   * @default true
    */
   debug?: boolean
   /**
@@ -130,6 +135,11 @@ export interface OptionsControllerStatePublic {
    * @default false
    */
   enableEmbedded?: boolean
+  /**
+   * Allow users to switch to an unsupported chain.
+   * @default false
+   */
+  allowUnsupportedChain?: boolean
 }
 
 export interface OptionsControllerStateInternal {
@@ -138,6 +148,7 @@ export interface OptionsControllerStateInternal {
   isSiweEnabled?: boolean
   isUniversalProvider?: boolean
   hasMultipleAddresses?: boolean
+  useInjectedUniversalProvider?: boolean
 }
 
 type StateKey = keyof OptionsControllerStatePublic | keyof OptionsControllerStateInternal
@@ -250,6 +261,10 @@ export const OptionsController = {
     state.enableWalletGuide = enableWalletGuide
   },
 
+  setEnableAuthLogger(enableAuthLogger: OptionsControllerState['enableAuthLogger']) {
+    state.enableAuthLogger = enableAuthLogger
+  },
+
   setEnableWallets(enableWallets: OptionsControllerState['enableWallets']) {
     state.enableWallets = enableWallets
   },
@@ -292,5 +307,15 @@ export const OptionsController = {
 
   setEnableEmbedded(enableEmbedded: OptionsControllerState['enableEmbedded']) {
     state.enableEmbedded = enableEmbedded
+  },
+
+  setAllowUnsupportedChain(allowUnsupportedChain: OptionsControllerState['allowUnsupportedChain']) {
+    state.allowUnsupportedChain = allowUnsupportedChain
+  },
+
+  setUsingInjectedUniversalProvider(
+    useInjectedUniversalProvider: OptionsControllerState['useInjectedUniversalProvider']
+  ) {
+    state.useInjectedUniversalProvider = useInjectedUniversalProvider
   }
 }

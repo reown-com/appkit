@@ -7,6 +7,10 @@ export const ErrorUtil = {
     JWT_VALIDATION_ERROR: {
       message: 'JWT validation error: JWT Token is not yet valid',
       alertErrorKey: 'JWT_TOKEN_NOT_VALID'
+    },
+    INVALID_KEY: {
+      message: 'Unauthorized: invalid key',
+      alertErrorKey: 'INVALID_PROJECT_ID'
     }
   },
   ALERT_ERRORS: {
@@ -31,6 +35,10 @@ export const ErrorUtil = {
       shortMessage: 'Session Expired',
       longMessage:
         'Invalid session found on UniversalProvider - please check your time settings and connect again'
+    },
+    INVALID_PROJECT_ID: {
+      shortMessage: 'Invalid App Configuration',
+      longMessage: 'Invalid Project ID - update configuration'
     },
     PROJECT_ID_NOT_CONFIGURED: {
       shortMessage: 'Project ID Not Configured',

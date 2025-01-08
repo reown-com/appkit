@@ -4,6 +4,7 @@ import type {
   AccountTypeMap,
   CombinedProvider,
   ConnectedWalletInfo,
+  User,
   Provider,
   SocialProvider
 } from '../utils/TypeUtil.js'
@@ -23,6 +24,7 @@ import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 export interface AccountControllerState {
   currentTab: number
   caipAddress?: CaipAddress
+  user?: User
   address?: string
   addressLabels: Map<string, string>
   allAccounts: AccountType[]
@@ -144,6 +146,10 @@ export const AccountController = {
     ChainController.setAccountProp('profileImage', profileImage, chain)
   },
 
+  setUser(user: AccountControllerState['user']) {
+    state.user = user
+  },
+
   setAddressExplorerUrl(
     explorerUrl: AccountControllerState['addressExplorerUrl'],
     chain: ChainNamespace | undefined
@@ -214,31 +220,30 @@ export const AccountController = {
     socialWindow: AccountControllerState['socialWindow'],
     chain: ChainNamespace | undefined
   ) {
-    if (socialWindow) {
-      ChainController.setAccountProp('socialWindow', ref(socialWindow), chain)
-    }
+    ChainController.setAccountProp(
+      'socialWindow',
+      socialWindow ? ref(socialWindow) : undefined,
+      chain
+    )
   },
 
   setFarcasterUrl(
     farcasterUrl: AccountControllerState['farcasterUrl'],
     chain: ChainNamespace | undefined
   ) {
-    if (farcasterUrl) {
-      ChainController.setAccountProp('farcasterUrl', farcasterUrl, chain)
-    }
+    ChainController.setAccountProp('farcasterUrl', farcasterUrl, chain)
   },
 
-  async fetchTokenBalance() {
+  async fetchTokenBalance(onError?: (error: unknown) => void): Promise<Balance[]> {
     const chainId = ChainController.state.activeCaipNetwork?.caipNetworkId
     const chain = ChainController.state.activeCaipNetwork?.chainNamespace
     const caipAddress = ChainController.state.activeCaipAddress
     const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
-
     if (
       state.lastRetry &&
       !CoreHelperUtil.isAllowedRetry(state.lastRetry, 30 * ConstantsUtil.ONE_SEC_MS)
     ) {
-      return
+      return []
     }
 
     try {
@@ -252,12 +257,17 @@ export const AccountController = {
         this.setTokenBalance(filteredBalances, chain)
         SwapController.setBalances(SwapApiUtil.mapBalancesToSwapTokens(response.balances))
         state.lastRetry = undefined
+
+        return filteredBalances
       }
     } catch (error) {
       state.lastRetry = Date.now()
 
+      onError?.(error)
       SnackController.showError('Token Balance Unavailable')
     }
+
+    return []
   },
 
   resetAccount(chain: ChainNamespace) {

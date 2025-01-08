@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   ConstantsUtil,
   SafeLocalStorageKeys,
@@ -11,6 +11,9 @@ import { type ConnectionControllerClient } from '../../src/controllers/Connectio
 import type { NetworkControllerClient } from '../../exports/index.js'
 import { RouterController } from '../../src/controllers/RouterController.js'
 import { SafeLocalStorage } from '@reown/appkit-common'
+import { StorageUtil } from '../../src/utils/StorageUtil.js'
+import { ConnectionController } from '../../src/controllers/ConnectionController.js'
+import { EventsController } from '../../src/controllers/EventsController.js'
 
 // -- Setup --------------------------------------------------------------------
 const chainNamespace = 'eip155' as ChainNamespace
@@ -127,8 +130,13 @@ const solanaAdapter = {
   caipNetworks: [solanaCaipNetwork] as unknown as CaipNetwork[]
 }
 
-beforeAll(() => {
-  ChainController.initialize([evmAdapter], requestedCaipNetworks)
+beforeEach(() => {
+  vi.resetAllMocks()
+  ChainController.state.noAdapters = false
+  ChainController.initialize([evmAdapter], requestedCaipNetworks, {
+    connectionControllerClient,
+    networkControllerClient
+  })
 })
 
 // -- Tests --------------------------------------------------------------------
@@ -153,27 +161,31 @@ describe('ChainController', () => {
     ).toEqual(approvedCaipNetworkIds)
   })
 
-  it('should update state correctly on getApprovedCaipNetworkIds()', async () => {
-    const namespace = 'eip155'
+  it('should update state correctly on setApprovedCaipNetworkIds()', async () => {
     const networkController = { ...networkControllerClient }
     const networkControllerSpy = vi
       .spyOn(networkController, 'getApprovedCaipNetworksData')
-      .mockResolvedValue({
+      .mockResolvedValueOnce({
         approvedCaipNetworkIds,
         supportsAllNetworks: false
       })
     const evmAdapter = {
-      chainNamespace,
+      namespace: chainNamespace,
       connectionControllerClient,
       networkControllerClient: networkController,
       caipNetworks: [] as CaipNetwork[]
     }
 
     // Need to re-initialize to set the spy properly
-    ChainController.initialize([evmAdapter], requestedCaipNetworks)
-    await ChainController.setApprovedCaipNetworksData(namespace)
+    ChainController.initialize([evmAdapter], requestedCaipNetworks, {
+      connectionControllerClient,
+      networkControllerClient: networkController
+    })
+    await ChainController.setApprovedCaipNetworksData(chainNamespace)
 
-    expect(ChainController.getApprovedCaipNetworkIds(namespace)).toEqual(approvedCaipNetworkIds)
+    expect(ChainController.getApprovedCaipNetworkIds(chainNamespace)).toEqual(
+      approvedCaipNetworkIds
+    )
     expect(networkControllerSpy).toHaveBeenCalled()
   })
 
@@ -318,7 +330,10 @@ describe('ChainController', () => {
   it('should initialize with active network from local storage', () => {
     const getItemSpy = vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValue('eip155')
 
-    ChainController.initialize([evmAdapter], requestedCaipNetworks)
+    ChainController.initialize([evmAdapter], requestedCaipNetworks, {
+      connectionControllerClient,
+      networkControllerClient
+    })
 
     expect(getItemSpy).toHaveBeenCalledWith(SafeLocalStorageKeys.ACTIVE_NAMESPACE)
     expect(ChainController.state.activeChain).toEqual(ConstantsUtil.CHAIN.EVM)
@@ -329,7 +344,10 @@ describe('ChainController', () => {
   it('should initialize with first adapter when stored network not found', () => {
     const getItemSpy = vi.spyOn(SafeLocalStorage, 'getItem').mockReturnValue('solana')
 
-    ChainController.initialize([solanaAdapter, evmAdapter], requestedCaipNetworks)
+    ChainController.initialize([solanaAdapter, evmAdapter], requestedCaipNetworks, {
+      connectionControllerClient,
+      networkControllerClient
+    })
 
     expect(getItemSpy).toHaveBeenCalledWith(SafeLocalStorageKeys.ACTIVE_NAMESPACE)
     expect(ChainController.state.activeChain).toEqual(ConstantsUtil.CHAIN.SOLANA)
@@ -338,12 +356,112 @@ describe('ChainController', () => {
   })
 
   it('should set noAdapters flag when no adapters provided', () => {
-    ChainController.initialize([], requestedCaipNetworks)
+    ChainController.initialize([], requestedCaipNetworks, {
+      connectionControllerClient,
+      networkControllerClient
+    })
     expect(ChainController.state.noAdapters).toBe(true)
   })
 
   it('should set noAdapters flag when no adapter provided', () => {
-    ChainController.initialize([], requestedCaipNetworks)
+    ChainController.initialize([], requestedCaipNetworks, {
+      connectionControllerClient,
+      networkControllerClient
+    })
     expect(ChainController.state.noAdapters).toBe(true)
+  })
+
+  it('should properly handle disconnect', async () => {
+    const resetAccountSpy = vi.spyOn(ChainController, 'resetAccount')
+    const resetNetworkSpy = vi.spyOn(ChainController, 'resetNetwork')
+    const deleteConnectorSpy = vi.spyOn(StorageUtil, 'deleteConnectedConnectorId')
+    const deleteConnectedSocialProviderSpy = vi.spyOn(StorageUtil, 'deleteConnectedSocialProvider')
+    const resetWcConnectionSpy = vi.spyOn(ConnectionController, 'resetWcConnection')
+    const sendEventSpy = vi.spyOn(EventsController, 'sendEvent')
+
+    const connectionController = {
+      ...connectionControllerClient,
+      disconnect: vi.fn()
+    }
+
+    const evmAdapterCustom = {
+      ...evmAdapter,
+      connectionControllerClient: connectionController
+    }
+
+    const solanaAdapterCustom = {
+      ...solanaAdapter,
+      connectionControllerClient: connectionController
+    }
+
+    ChainController.initialize(
+      [evmAdapterCustom, solanaAdapterCustom],
+      [...requestedCaipNetworks, solanaCaipNetwork],
+      {
+        connectionControllerClient: connectionController,
+        networkControllerClient
+      }
+    )
+
+    await ChainController.disconnect()
+
+    expect(connectionController.disconnect).toHaveBeenCalledTimes(2)
+
+    expect(resetAccountSpy).toHaveBeenCalledWith(ConstantsUtil.CHAIN.EVM)
+    expect(resetAccountSpy).toHaveBeenCalledWith(ConstantsUtil.CHAIN.SOLANA)
+    expect(resetNetworkSpy).toHaveBeenCalledWith(ConstantsUtil.CHAIN.EVM)
+    expect(resetNetworkSpy).toHaveBeenCalledWith(ConstantsUtil.CHAIN.SOLANA)
+
+    expect(deleteConnectorSpy).toHaveBeenCalled()
+    expect(deleteConnectedSocialProviderSpy).toHaveBeenCalled()
+    expect(resetWcConnectionSpy).toHaveBeenCalled()
+
+    expect(sendEventSpy).toHaveBeenCalledWith({
+      type: 'track',
+      event: 'DISCONNECT_SUCCESS'
+    })
+
+    resetAccountSpy.mockRestore()
+    resetNetworkSpy.mockRestore()
+    deleteConnectorSpy.mockRestore()
+    resetWcConnectionSpy.mockRestore()
+    sendEventSpy.mockRestore()
+  })
+
+  it('should handle disconnect errors gracefully', async () => {
+    const evmConnectionController = {
+      disconnect: vi.fn().mockRejectedValue(new Error('EVM disconnect failed'))
+    } as unknown as ConnectionControllerClient
+
+    const customEvmAdapter = {
+      ...evmAdapter,
+      connectionControllerClient: evmConnectionController
+    }
+
+    const sendEventSpy = vi.spyOn(EventsController, 'sendEvent')
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    ChainController.initialize([customEvmAdapter as any], requestedCaipNetworks, {
+      connectionControllerClient: evmConnectionController,
+      networkControllerClient
+    })
+
+    await ChainController.disconnect()
+
+    expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('EVM disconnect failed'))
+    expect(sendEventSpy).toHaveBeenCalledWith({
+      type: 'track',
+      event: 'DISCONNECT_ERROR',
+      properties: {
+        message: expect.stringContaining('EVM disconnect failed')
+      }
+    })
+    expect(sendEventSpy).not.toHaveBeenCalledWith({
+      type: 'track',
+      event: 'DISCONNECT_SUCCESS'
+    })
+
+    sendEventSpy.mockRestore()
+    consoleSpy.mockRestore()
   })
 })

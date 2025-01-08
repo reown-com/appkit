@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import {
-  Active,
   closestCenter,
   CollisionDetection,
   DragOverlay,
@@ -43,7 +42,6 @@ import { ConnectMethodItem } from './connect-method-item'
 import { SortableConnectMethodItem } from '@/components/sortable-item-connect-method'
 import { Wrapper } from '@/components/ui/wrapper'
 import { List } from '@/components/ui/list'
-import { useAppKitContext } from '@/hooks/use-appkit'
 
 export interface Props {
   activationConstraint?: PointerActivationConstraint
@@ -55,7 +53,6 @@ export interface Props {
   dropAnimation?: DropAnimation | null
   getNewIndex?: NewIndexGetter
   handle?: boolean
-  itemCount?: number
   items?: UniqueIdentifier[]
   measuring?: MeasuringConfiguration
   modifiers?: Modifiers
@@ -98,7 +95,6 @@ export function SortableConnectMethodList({
   getItemStyles = () => ({}),
   getNewIndex,
   handle = false,
-  itemCount = 3,
   items: initialItems,
   measuring,
   modifiers,
@@ -109,9 +105,7 @@ export function SortableConnectMethodList({
   onToggleOption,
   handleNewOrder
 }: Props) {
-  const [items, setItems] = useState<UniqueIdentifier[]>(
-    () => initialItems ?? createRange<UniqueIdentifier>(itemCount, index => index)
-  )
+  const [items, setItems] = useState<UniqueIdentifier[]>(() => initialItems ?? [])
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
   const sensors = useSensors(
     useSensor(MouseSensor, {
@@ -136,12 +130,17 @@ export function SortableConnectMethodList({
   }, [activeId])
 
   const orderString = useMemo(() => items.join(','), [items])
+  const orderFromPropsString = useMemo(() => initialItems?.join(','), [initialItems])
 
   useEffect(() => {
-    if (handleNewOrder) {
+    if (handleNewOrder && orderString) {
       handleNewOrder(orderString.split(','))
     }
   }, [orderString])
+
+  useEffect(() => {
+    setItems(orderFromPropsString ? orderFromPropsString.split(',') : [])
+  }, [orderFromPropsString])
 
   return (
     <DndContext

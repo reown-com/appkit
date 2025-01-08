@@ -6,6 +6,7 @@ import {
   ChainController,
   ConnectionController,
   SwapController,
+  type ConnectionControllerClient,
   type NetworkControllerClient
 } from '../../exports/index.js'
 import type { CaipNetworkId, CaipNetwork } from '@reown/appkit-common'
@@ -53,19 +54,18 @@ const toTokenAddress = 'eip155:137:0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b'
 
 // - Setup ---------------------------------------------------------------------
 beforeAll(async () => {
-  //  -- Set Account and
-  ChainController.initialize(
-    [
-      {
-        namespace: ConstantsUtil.CHAIN.EVM,
-        networkControllerClient: client,
-        caipNetworks: [caipNetwork]
-      }
-    ],
-    []
-  )
+  const mockAdapter = {
+    namespace: ConstantsUtil.CHAIN.EVM,
+    networkControllerClient: client,
+    caipNetworks: [caipNetwork]
+  }
+  ChainController.initialize([mockAdapter], [caipNetwork], {
+    connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient,
+    networkControllerClient: client
+  })
 
   ChainController.setActiveCaipNetwork(caipNetwork)
+
   AccountController.setCaipAddress(caipAddress, chain)
 
   vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValue(tokensResponse)
@@ -100,6 +100,25 @@ describe('SwapController', () => {
     expect(SwapController.state.gasPriceInUSD).toEqual(0.00648630001383744)
     expect(SwapController.state.priceImpact).toEqual(3.952736601951709)
     expect(SwapController.state.maxSlippage).toEqual(0.0001726)
+  })
+
+  it('should handle fetchSwapQuote error correctly', async () => {
+    SwapController.resetState()
+
+    const mockFetchQuote = vi.spyOn(BlockchainApiController, 'fetchSwapQuote')
+    mockFetchQuote.mockRejectedValueOnce(new Error('Quote error'))
+
+    const sourceToken = SwapController.state.tokens?.[0]
+    const toToken = SwapController.state.tokens?.[1]
+    SwapController.setSourceToken(sourceToken)
+    SwapController.setToToken(toToken)
+    SwapController.setSourceTokenAmount('1')
+
+    await SwapController.swapTokens()
+
+    expect(mockFetchQuote).toHaveBeenCalled()
+    expect(SwapController.state.loadingQuote).toBe(false)
+    expect(SwapController.state.inputError).toBe('Insufficient balance')
   })
 
   it('should reset values as expected', () => {

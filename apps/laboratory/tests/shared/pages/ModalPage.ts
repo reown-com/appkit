@@ -289,7 +289,9 @@ export class ModalPage {
       await input.fill(digit)
     }
 
-    await expect(this.page.getByText(headerTitle)).not.toBeVisible()
+    await expect(this.page.getByText(headerTitle)).not.toBeVisible({
+      timeout: 20_000
+    })
   }
 
   async disconnect() {
@@ -341,11 +343,13 @@ export class ModalPage {
     await this.clickSignatureRequestButton('Approve')
   }
 
-  async clickWalletUpgradeCard(context: BrowserContext) {
+  async clickWalletUpgradeCard(context: BrowserContext, library: string) {
     await this.page.getByTestId('account-button').click()
 
     await this.page.getByTestId('w3m-profile-button').click()
-    await this.page.getByTestId('account-settings-button').click()
+    if (library !== 'solana') {
+      await this.page.getByTestId('account-settings-button').click()
+    }
     await this.page.getByTestId('w3m-wallet-upgrade-card').click()
 
     const page = await doActionAndWaitForNewPage(
@@ -609,5 +613,17 @@ export class ModalPage {
 
   async switchNetworkWithHook() {
     await this.page.getByTestId('switch-network-hook-button').click()
+  }
+
+  async abortLoginWithFarcaster() {
+    await this.page
+      .getByTestId('connect-button')
+      .getByRole('button', { name: 'Connect Wallet' })
+      .click()
+    await this.page.getByTestId('social-selector-farcaster').click()
+    await this.page.waitForTimeout(500)
+    await this.page.getByTestId('header-back').click()
+    await this.page.waitForTimeout(500)
+    await this.closeModal()
   }
 }

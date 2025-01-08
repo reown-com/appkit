@@ -12,6 +12,13 @@ type ParsedCaipNetworkId = {
 }
 
 export const ParseUtil = {
+  validateCaipAddress(address: string): CaipAddress {
+    if (address.split(':')?.length !== 3) {
+      throw new Error('Invalid CAIP Address')
+    }
+
+    return address as CaipAddress
+  },
   parseCaipAddress(caipAddress: CaipAddress): ParsedCaipAddress {
     const parts = caipAddress.split(':')
     if (parts.length !== 3) {

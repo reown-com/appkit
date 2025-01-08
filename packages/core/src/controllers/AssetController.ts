@@ -52,7 +52,7 @@ export const AssetController = {
   },
 
   setConnectorImage(key: string, value: string) {
-    state.connectorImages[key] = value
+    state.connectorImages = { ...state.connectorImages, [key]: value }
   },
 
   setTokenImage(key: string, value: string) {

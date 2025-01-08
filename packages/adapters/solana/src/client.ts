@@ -13,7 +13,7 @@ import {
   type ConnectorType,
   type Provider
 } from '@reown/appkit-core'
-import { ConstantsUtil, ErrorUtil, PresetsUtil } from '@reown/appkit-utils'
+import { ErrorUtil, PresetsUtil } from '@reown/appkit-utils'
 import { SolConstantsUtil } from '@reown/appkit-utils/solana'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
@@ -68,6 +68,11 @@ export class SolanaAdapter extends AdapterBlueprint {
     })
   }
 
+  // We don't need to set auth provider since we already set it in syncConnectors
+  public override setAuthProvider() {
+    return undefined
+  }
+
   public syncConnectors(options: AppKitOptions, appKit: AppKit) {
     if (!options.projectId) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
@@ -83,9 +88,10 @@ export class SolanaAdapter extends AdapterBlueprint {
     if (emailEnabled || socialsEnabled) {
       this.w3mFrameProvider = W3mFrameProviderSingleton.getInstance({
         projectId: options.projectId,
+        enableLogger: appKit.options.enableAuthLogger,
         chainId: withSolanaNamespace(appKit?.getCaipNetwork(this.namespace)?.id),
         onTimeout: () => {
-          AlertController.open(ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION, 'error')
+          AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
         }
       })
 
@@ -101,7 +107,7 @@ export class SolanaAdapter extends AdapterBlueprint {
       })
 
       this.addConnector({
-        id: ConstantsUtil.AUTH_CONNECTOR_ID,
+        id: CommonConstantsUtil.CONNECTOR_ID.AUTH,
         type: 'AUTH',
         provider: this.authProvider as unknown as W3mFrameProvider,
         name: 'Auth',
@@ -111,7 +117,7 @@ export class SolanaAdapter extends AdapterBlueprint {
     }
 
     // Add Coinbase Wallet if available
-    if (typeof window !== 'undefined' && 'coinbaseSolana' in window) {
+    if (CoreHelperUtil.isClient() && 'coinbaseSolana' in window) {
       this.addConnector({
         id: 'coinbaseWallet',
         type: 'EXTERNAL',
@@ -123,7 +129,7 @@ export class SolanaAdapter extends AdapterBlueprint {
         }),
         name: 'Coinbase Wallet',
         chain: this.namespace as ChainNamespace,
-        explorerId: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.COINBASE_SDK_CONNECTOR_ID],
+        explorerId: PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK],
         chains: []
       })
     }
@@ -135,7 +141,7 @@ export class SolanaAdapter extends AdapterBlueprint {
       (...providers: WalletStandardProvider[]) => {
         providers.forEach(provider => {
           this.addConnector({
-            id: provider.name,
+            id: PresetsUtil.ConnectorExplorerIds[provider.name] || provider.name,
             type: 'ANNOUNCED',
             provider: provider as unknown as Provider,
             imageUrl: provider.icon,
@@ -333,7 +339,7 @@ export class SolanaAdapter extends AdapterBlueprint {
   public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
     const { caipNetwork, provider, providerType } = params
 
-    if (providerType === 'ID_AUTH') {
+    if (providerType === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       await (provider as unknown as W3mFrameProvider).switchNetwork(caipNetwork.id)
       const user = await (provider as unknown as W3mFrameProvider).getUser({
         chainId: caipNetwork.id

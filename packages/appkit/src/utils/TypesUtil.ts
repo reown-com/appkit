@@ -1,6 +1,7 @@
-import type { AppKitNetwork, CaipNetwork, ThemeVariables } from '@reown/appkit-common'
+import type { AppKitNetwork, ThemeVariables } from '@reown/appkit-common'
 import type { ChainAdapter, Metadata, OptionsControllerState, ThemeMode } from '@reown/appkit-core'
 import type { AppKitSIWEClient } from '@reown/appkit-siwe'
+import type UniversalProvider from '@walletconnect/universal-provider'
 
 export type AppKitOptions = {
   /**
@@ -72,9 +73,10 @@ export type AppKitOptions = {
    * @see https://cloud.walletconnect.com/
    */
   metadata?: Metadata
+  /**
+   * UniversalProvider instance to be used by AppKit.
+   * AppKit will generate its own instance by default in none provided
+   * @default undefined
+   */
+  universalProvider?: UniversalProvider
 } & OptionsControllerState
-
-export type AppKitOptionsWithCaipNetworks = Omit<AppKitOptions, 'defaultNetwork' | 'networks'> & {
-  defaultNetwork?: CaipNetwork
-  networks: [CaipNetwork, ...CaipNetwork[]]
-}

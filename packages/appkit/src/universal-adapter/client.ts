@@ -1,11 +1,19 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import { WcHelpersUtil } from '../utils/index.js'
-import { ChainController, CoreHelperUtil } from '@reown/appkit-core'
+import {
+  ChainController,
+  CoreHelperUtil,
+  ConnectionController,
+  OptionsController
+} from '@reown/appkit-core'
 import bs58 from 'bs58'
 import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
 
 export class UniversalAdapter extends AdapterBlueprint {
+  public constructor(options?: AdapterBlueprint.Params) {
+    super(options)
+  }
   public async connectWalletConnect(onUri: (uri: string) => void) {
     const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
 
@@ -15,6 +23,12 @@ export class UniversalAdapter extends AdapterBlueprint {
       throw new Error(
         'UniversalAdapter:connectWalletConnect - caipNetworks or provider is undefined'
       )
+    }
+
+    if (OptionsController.state.useInjectedUniversalProvider && ConnectionController.state.wcUri) {
+      onUri(ConnectionController.state.wcUri)
+
+      return
     }
 
     provider.on('display_uri', (uri: string) => {
