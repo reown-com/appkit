@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, vi, beforeAll } from 'vitest'
 import { WagmiAdapter } from '../client'
 import type { Config } from '@wagmi/core'
 import {
@@ -593,6 +593,146 @@ describe('WagmiAdapter', () => {
       await new Promise(resolve => setTimeout(resolve, 100))
 
       expect(unsubscribe).toHaveBeenCalled()
+    })
+  })
+
+  describe('WagmiAdapter - watchAccount', () => {
+    let adapter: WagmiAdapter
+
+    beforeAll(() => {
+      adapter = new WagmiAdapter({
+        networks: mockNetworks,
+        projectId: mockProjectId,
+        pendingTransactionsFilter: {
+          enable: true,
+          pollingInterval: 5000
+        }
+      })
+    })
+
+    beforeEach(() => {
+      vi.clearAllMocks()
+    })
+
+    it('should emit accountChanged if previous account status is not connected', async () => {
+      const currAccount = {
+        status: 'connected',
+        address: '0x123',
+        chainId: 1
+      } as unknown as wagmiCore.GetAccountReturnType
+
+      const prevAccount = {
+        status: 'connecting',
+        address: '0x123',
+        chainId: 1
+      } as unknown as wagmiCore.GetAccountReturnType
+
+      vi.mocked(watchAccount).mockImplementation((_, { onChange }) => {
+        onChange(currAccount, prevAccount)
+        return vi.fn()
+      })
+
+      const accountChangedSpy = vi.fn()
+
+      adapter.on('accountChanged', accountChangedSpy)
+
+      adapter['setupWatchers']()
+
+      expect(accountChangedSpy).toHaveBeenCalledWith({
+        address: currAccount.address
+      })
+    })
+
+    it('should emit accountChanged current address and previous address are not the same', async () => {
+      const currAccount = {
+        status: 'connected',
+        address: '0x123',
+        chainId: 1
+      } as unknown as wagmiCore.GetAccountReturnType
+
+      const prevAccount = {
+        status: 'connected',
+        address: '0x321',
+        chainId: 1
+      } as unknown as wagmiCore.GetAccountReturnType
+
+      vi.mocked(watchAccount).mockImplementation((_, { onChange }) => {
+        onChange(currAccount, prevAccount)
+        return vi.fn()
+      })
+
+      const adapter = new WagmiAdapter({
+        networks: mockNetworks,
+        projectId: mockProjectId,
+        pendingTransactionsFilter: {
+          enable: true,
+          pollingInterval: 5000
+        }
+      })
+
+      const accountChangedSpy = vi.fn()
+
+      adapter.on('accountChanged', accountChangedSpy)
+
+      adapter['setupWatchers']()
+
+      expect(accountChangedSpy).toHaveBeenCalledWith({
+        address: currAccount.address
+      })
+    })
+
+    it('should not emit accountChanged if current status is not connected', async () => {
+      const currAccount = {
+        status: 'connecting',
+        address: '0x123',
+        chainId: 1
+      } as unknown as wagmiCore.GetAccountReturnType
+
+      const prevAccount = {
+        status: 'connected',
+        address: '0x123',
+        chainId: 1
+      } as unknown as wagmiCore.GetAccountReturnType
+
+      vi.mocked(watchAccount).mockImplementation((_, { onChange }) => {
+        onChange(currAccount, prevAccount)
+        return vi.fn()
+      })
+
+      const accountChangedSpy = vi.fn()
+
+      adapter.on('accountChanged', accountChangedSpy)
+
+      adapter['setupWatchers']()
+
+      expect(accountChangedSpy).not.toHaveBeenCalled()
+    })
+
+    it('should not emit disconnect if status is disconnected', async () => {
+      const currAccount = {
+        status: 'disconnected',
+        address: '0x123',
+        chainId: 1
+      } as unknown as wagmiCore.GetAccountReturnType
+
+      const prevAccount = {
+        status: 'connected',
+        address: '0x123',
+        chainId: 1
+      } as unknown as wagmiCore.GetAccountReturnType
+
+      vi.mocked(watchAccount).mockImplementation((_, { onChange }) => {
+        onChange(currAccount, prevAccount)
+        return vi.fn()
+      })
+
+      const disconnectSpy = vi.fn()
+
+      adapter.on('disconnect', disconnectSpy)
+
+      adapter['setupWatchers']()
+
+      expect(disconnectSpy).toHaveBeenCalled()
     })
   })
 })
