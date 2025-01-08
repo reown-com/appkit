@@ -114,7 +114,7 @@ describe('W3mFrameProvider', () => {
 
       const mockTimeoutSpy = vi.spyOn(provider, 'onTimeout')
 
-      await expect(provider.getFarcasterUri()).rejects.toThrow()
+      await expect(provider.connectEmail({ email: 'test@example.com' })).rejects.toThrow()
 
       expect(postAppEventSpy).toHaveBeenCalled()
 

@@ -20,4 +20,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Updated account modal to redirect to the settings view instead of the profile view when only one social/email account is connected
+Fix an issue where users with an ENS couldn't copy their address.
