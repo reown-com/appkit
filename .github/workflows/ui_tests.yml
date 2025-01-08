@@ -112,6 +112,9 @@ jobs:
           key: workspace-${{ github.sha }}
           fail-on-cache-miss: true
 
+      - name: Show Workspace
+        run: ls -la
+
       - name: Install pnpm
         uses: pnpm/action-setup@v4
 
