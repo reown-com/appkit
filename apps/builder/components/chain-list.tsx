@@ -28,11 +28,16 @@ export function ChainList() {
           <RoundOptionItem
             key={chain.id}
             enabled={enabledChains.includes(chain.id)}
-            disabled={Boolean(caipAddress)}
+            disabled={
+              Boolean(caipAddress) ||
+              (enabledChains.includes(chain.id) && enabledChains.length === 1)
+            }
             imageSrc={chain.imageSrc}
             onChange={() => {
               if (enabledChains.includes(chain.id)) {
-                removeChain(chain.id)
+                if (enabledChains.length > 1) {
+                  removeChain(chain.id)
+                }
               } else {
                 addChain(chain.id)
               }
