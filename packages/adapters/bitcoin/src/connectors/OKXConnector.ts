@@ -146,7 +146,7 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
   }
 
   public async getPublicKey(): Promise<string> {
-    return await this.wallet.getPublicKey()
+    return this.wallet.getPublicKey()
   }
 }
 
