@@ -169,6 +169,15 @@ export abstract class AdapterBlueprint<
   }
 
   /**
+   * Removes all event listeners.
+   */
+  public removeAllEventListeners() {
+    this.eventListeners.forEach(listeners => {
+      listeners.clear()
+    })
+  }
+
+  /**
    * Emits an event with the given name and optional data.
    * @template T
    * @param {T} eventName - The name of the event to emit

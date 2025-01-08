@@ -102,6 +102,25 @@ describe('SwapController', () => {
     expect(SwapController.state.maxSlippage).toEqual(0.0001726)
   })
 
+  it('should handle fetchSwapQuote error correctly', async () => {
+    SwapController.resetState()
+
+    const mockFetchQuote = vi.spyOn(BlockchainApiController, 'fetchSwapQuote')
+    mockFetchQuote.mockRejectedValueOnce(new Error('Quote error'))
+
+    const sourceToken = SwapController.state.tokens?.[0]
+    const toToken = SwapController.state.tokens?.[1]
+    SwapController.setSourceToken(sourceToken)
+    SwapController.setToToken(toToken)
+    SwapController.setSourceTokenAmount('1')
+
+    await SwapController.swapTokens()
+
+    expect(mockFetchQuote).toHaveBeenCalled()
+    expect(SwapController.state.loadingQuote).toBe(false)
+    expect(SwapController.state.inputError).toBe('Insufficient balance')
+  })
+
   it('should reset values as expected', () => {
     SwapController.resetValues()
     expect(SwapController.state.toToken).toEqual(undefined)

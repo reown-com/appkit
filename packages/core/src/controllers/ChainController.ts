@@ -4,7 +4,6 @@ import type {
   AdapterAccountState,
   AdapterNetworkState,
   ChainAdapter,
-  Connector,
   NetworkControllerClient
 } from '../utils/TypeUtil.js'
 
@@ -41,12 +40,15 @@ const networkState: AdapterNetworkState = {
 }
 
 // -- Types --------------------------------------------- //
+export type ChainControllerClients = {
+  networkControllerClient: NetworkControllerClient
+  connectionControllerClient: ConnectionControllerClient
+}
 export interface ChainControllerState {
   activeChain: ChainNamespace | undefined
   activeCaipAddress: CaipAddress | undefined
   activeCaipNetwork?: CaipNetwork
   chains: Map<ChainNamespace, ChainAdapter>
-  activeConnector?: Connector
   universalAdapter: Pick<ChainAdapter, 'networkControllerClient' | 'connectionControllerClient'>
   noAdapters: boolean
 }
@@ -145,6 +147,29 @@ export const ChainController = {
         namespace
       )
     })
+  },
+
+  removeAdapter(namespace: ChainNamespace) {
+    state.chains.delete(namespace)
+  },
+
+  addAdapter(
+    adapter: ChainAdapter,
+    { networkControllerClient, connectionControllerClient }: ChainControllerClients,
+    caipNetworks: [CaipNetwork, ...CaipNetwork[]]
+  ) {
+    state.chains.set(adapter.namespace as ChainNamespace, {
+      namespace: adapter.namespace,
+      networkState,
+      accountState,
+      caipNetworks,
+      connectionControllerClient,
+      networkControllerClient
+    })
+    this.setRequestedCaipNetworks(
+      caipNetworks?.filter(caipNetwork => caipNetwork.chainNamespace === adapter.namespace) ?? [],
+      adapter.namespace as ChainNamespace
+    )
   },
 
   setAdapterNetworkState(chain: ChainNamespace, props: Partial<AdapterNetworkState>) {
@@ -286,12 +311,6 @@ export const ChainController = {
         event: 'SWITCH_NETWORK',
         properties: { network: network.caipNetworkId }
       })
-    }
-  },
-
-  setActiveConnector(connector: ChainControllerState['activeConnector']) {
-    if (connector) {
-      state.activeConnector = ref(connector)
     }
   },
 
