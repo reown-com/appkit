@@ -102,9 +102,6 @@ jobs:
         shardTotal: [5]
     timeout-minutes: 20
     steps:
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-
       # Restore the cached workspace
       - name: Restore Workspace
         uses: actions/cache/restore@v4
@@ -114,6 +111,15 @@ jobs:
             ~/.cache/ms-playwright
           key: workspace-${{ github.sha }}
           fail-on-cache-miss: true
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'pnpm'
 
       - name: Run Playwright tests
         env:
