@@ -7,6 +7,8 @@ export default defineNuxtConfig({
       projectId: process.env.NUXT_PROJECT_ID
     }
   },
+  ssr: false,
+  modules: ['@wagmi/vue/nuxt'],
   css: ['~/assets/main.css'],
   app: {
     head: {
