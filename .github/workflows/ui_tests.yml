@@ -102,6 +102,9 @@ jobs:
         shardTotal: [5]
     timeout-minutes: 20
     steps:
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+
       # Restore the cached workspace
       - name: Restore Workspace
         uses: actions/cache/restore@v4
