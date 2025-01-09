@@ -1,15 +1,14 @@
 import * as React from 'react'
-import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 import UniversalProvider from '@walletconnect/universal-provider'
 
 import { AppKitInfo } from '../AppKitInfo'
 
 export function Ethers5ModalInfo() {
-  const [ready, setReady] = React.useState(false)
+  const [isReady, setIsReady] = React.useState(false)
   const [clientId, setClientId] = React.useState<string | undefined>(undefined)
 
-  const { chainId } = useAppKitNetwork()
-  const { isConnected, address, caipAddress } = useAppKitAccount()
+  const { isConnected } = useAppKitAccount()
   const { walletProvider, walletProviderType } = useAppKitProvider<UniversalProvider>('eip155')
 
   async function getClientId() {
@@ -25,15 +24,8 @@ export function Ethers5ModalInfo() {
   }, [walletProvider])
 
   React.useEffect(() => {
-    setReady(true)
+    setIsReady(true)
   }, [])
 
-  return ready && isConnected ? (
-    <AppKitInfo
-      caipAddress={caipAddress}
-      address={address}
-      chainId={Number(chainId)}
-      clientId={clientId}
-    />
-  ) : null
+  return isReady && isConnected ? <AppKitInfo clientId={clientId} /> : null
 }
