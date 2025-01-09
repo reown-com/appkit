@@ -25,7 +25,6 @@ import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 
 import { cookieStorage, createStorage } from '@wagmi/core'
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { urlStateUtils } from '@/lib/url-state'
 import { ChainNamespace } from '@reown/appkit-common'
@@ -73,26 +72,13 @@ export const networks = [...evmNetworks, ...solanaNetworks, ...bitcoinNetworks] 
 
 export const evmAdapter = new EthersAdapter()
 
-export const wagmiAdapter = new WagmiAdapter({
-  // TODO(enes): It's problematic when use external storage
-  storage: createStorage({
-    storage: cookieStorage
-  }),
-  ssr: true,
-  projectId,
-  networks
-})
-
 export const solanaAdapter = new SolanaAdapter({
   wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 
 export const bitcoinAdapter = new BitcoinAdapter({})
 
-// TODO(enes): It's problematic when use wagmiAdapter, it's not reconnecting after page refresh on Demo, not happening on lab. It's calling disconnect while syncing accounts, unlike the Ethers
 export const allAdapters = [evmAdapter, solanaAdapter, bitcoinAdapter]
-
-export const wagmiConfig = wagmiAdapter.wagmiConfig
 
 const metadata = {
   name: 'AppKit Builder',
