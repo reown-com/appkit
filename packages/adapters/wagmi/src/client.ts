@@ -217,8 +217,12 @@ export class WagmiAdapter extends AdapterBlueprint {
         if (accountData.status === 'disconnected') {
           this.emit('disconnect')
         }
+
         if (accountData.status === 'connected') {
-          if (accountData.address !== prevAccountData?.address) {
+          if (
+            accountData.address !== prevAccountData?.address ||
+            prevAccountData.status !== 'connected'
+          ) {
             this.setupWatchPendingTransactions()
 
             this.emit('accountChanged', {

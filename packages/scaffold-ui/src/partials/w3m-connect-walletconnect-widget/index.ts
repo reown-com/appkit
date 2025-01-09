@@ -1,7 +1,6 @@
 import type { Connector } from '@reown/appkit-core'
 import {
   AssetController,
-  ChainController,
   ConnectorController,
   CoreHelperUtil,
   RouterController
@@ -68,7 +67,7 @@ export class W3mConnectWalletConnectWidget extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
-    ChainController.setActiveConnector(connector)
+    ConnectorController.setActiveConnector(connector)
     RouterController.push('ConnectingWalletConnect')
   }
 }

@@ -17,6 +17,7 @@ import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import { ChainController } from './ChainController.js'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { AlertController } from './AlertController.js'
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000
@@ -501,39 +502,52 @@ export const SwapController = {
       .multipliedBy(10 ** sourceToken.decimals)
       .integerValue()
 
-    const quoteResponse = await BlockchainApiController.fetchSwapQuote({
-      userAddress: address,
-      projectId: OptionsController.state.projectId,
-      from: sourceToken.address,
-      to: toToken.address,
-      gasPrice: state.gasFee,
-      amount: amountDecimal.toString()
-    })
+    try {
+      const quoteResponse = await BlockchainApiController.fetchSwapQuote({
+        userAddress: address,
+        projectId: OptionsController.state.projectId,
+        from: sourceToken.address,
+        to: toToken.address,
+        gasPrice: state.gasFee,
+        amount: amountDecimal.toString()
+      })
 
-    state.loadingQuote = false
+      state.loadingQuote = false
 
-    const quoteToAmount = quoteResponse?.quotes?.[0]?.toAmount
+      const quoteToAmount = quoteResponse?.quotes?.[0]?.toAmount
 
-    if (!quoteToAmount) {
-      return
-    }
+      if (!quoteToAmount) {
+        AlertController.open(
+          {
+            shortMessage: 'Incorrect amount',
+            longMessage: 'Please enter a valid amount'
+          },
+          'error'
+        )
 
-    const toTokenAmount = NumberUtil.bigNumber(quoteToAmount)
-      .dividedBy(10 ** toToken.decimals)
-      .toString()
+        return
+      }
 
-    this.setToTokenAmount(toTokenAmount)
+      const toTokenAmount = NumberUtil.bigNumber(quoteToAmount)
+        .dividedBy(10 ** toToken.decimals)
+        .toString()
 
-    const isInsufficientToken = this.hasInsufficientToken(
-      state.sourceTokenAmount,
-      sourceToken.address
-    )
+      this.setToTokenAmount(toTokenAmount)
 
-    if (isInsufficientToken) {
+      const isInsufficientToken = this.hasInsufficientToken(
+        state.sourceTokenAmount,
+        sourceToken.address
+      )
+
+      if (isInsufficientToken) {
+        state.inputError = 'Insufficient balance'
+      } else {
+        state.inputError = undefined
+        this.setTransactionDetails()
+      }
+    } catch (error) {
+      state.loadingQuote = false
       state.inputError = 'Insufficient balance'
-    } else {
-      state.inputError = undefined
-      this.setTransactionDetails()
     }
   },
 

@@ -10,15 +10,16 @@ import {
   Text
 } from '@chakra-ui/react'
 import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
+import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 
 type AppKitInfoProps = {
-  caipAddress?: string
-  address?: string
-  chainId?: number | string
   clientId?: string
 }
 
-export function AppKitInfo({ caipAddress, address, chainId, clientId }: AppKitInfoProps) {
+export function AppKitInfo({ clientId }: AppKitInfoProps) {
+  const { caipAddress, address } = useAppKitAccount()
+  const { chainId } = useAppKitNetwork()
+
   return (
     <Card marginTop={10} marginBottom={10}>
       <CardHeader>

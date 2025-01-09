@@ -34,7 +34,11 @@ export class W3mNetworksView extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
-      ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val))
+      ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val)),
+      ChainController.subscribeKey(
+        'chains',
+        () => (this.requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks())
+      )
     )
   }
 

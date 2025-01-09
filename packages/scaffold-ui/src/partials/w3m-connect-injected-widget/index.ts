@@ -2,7 +2,6 @@ import type { Connector } from '@reown/appkit-core'
 import {
   ApiController,
   AssetUtil,
-  ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
@@ -90,7 +89,7 @@ export class W3mConnectInjectedWidget extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
-    ChainController.setActiveConnector(connector)
+    ConnectorController.setActiveConnector(connector)
     RouterController.push('ConnectingExternal', { connector })
   }
 }

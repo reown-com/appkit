@@ -31,7 +31,7 @@ export const ConnectorUtil = {
   }: ConnectWalletConnect): Promise<ParsedCaipAddress> {
     return new Promise((resolve, reject) => {
       if (walletConnect) {
-        ChainController.setActiveConnector(connector)
+        ConnectorController.setActiveConnector(connector)
       }
 
       ModalController.open({ view: 'ConnectingWalletConnect' })
