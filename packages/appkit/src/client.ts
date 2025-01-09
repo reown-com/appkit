@@ -1667,13 +1667,13 @@ export class AppKit {
     ).find(n => n.id.toString() === params.chainId.toString())
 
     if (!caipNetwork) {
-      return
+      return undefined
     }
 
     if (caipNetwork.testnet) {
       this.setBalance('0.00', caipNetwork.nativeCurrency.symbol, caipNetwork.chainNamespace)
 
-      return
+      return undefined
     }
 
     const balances = await AccountController.fetchTokenBalance(() =>
@@ -1692,7 +1692,7 @@ export class AppKit {
       params.chainNamespace
     )
 
-    return balance
+    return balance || undefined
   }
 
   private syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
