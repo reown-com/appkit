@@ -1,5 +1,6 @@
 import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
 import type { CaipNetwork } from '@reown/appkit-common'
+import { CoreHelperUtil } from '@reown/appkit-core'
 import {
   AddressPurpose,
   getProviders,
@@ -102,7 +103,7 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
     requestedChains,
     getActiveNetwork
   }: SatsConnectConnector.GetWalletsParams) {
-    if (typeof window === 'undefined') {
+    if (!CoreHelperUtil.isClient()) {
       return []
     }
 
