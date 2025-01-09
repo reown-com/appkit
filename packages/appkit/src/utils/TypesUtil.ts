@@ -84,4 +84,4 @@ export type AppKitOptions = {
    * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa' }"
    */
   defaultAccountTypes?: Partial<OptionsControllerState['defaultAccountTypes']>
-} & Omit<OptionsControllerState, 'defaultAccountType'>
+} & Omit<OptionsControllerState, 'defaultAccountTypes'>
