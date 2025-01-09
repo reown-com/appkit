@@ -1716,3 +1716,96 @@ describe('Adapter Management', () => {
     })
   })
 })
+
+describe('Balance sync', () => {
+  beforeEach(() => {
+    vi.resetAllMocks()
+  })
+
+  it('should not sync balance if theres no matching caipNetwork', async () => {
+    vi.spyOn(NetworkUtil, 'getNetworksByNamespace').mockReturnValue([])
+
+    const appKit = new AppKit({
+      ...mockOptions,
+      networks: [mainnet]
+    })
+
+    await appKit['syncBalance']({
+      address: '0x123',
+      chainId: '1',
+      chainNamespace: 'eip155' as const
+    })
+
+    expect(NetworkUtil.getNetworksByNamespace).toHaveBeenCalled()
+    expect(AccountController.fetchTokenBalance).not.toHaveBeenCalled()
+    expect(AccountController.setBalance).not.toHaveBeenCalled()
+  })
+
+  it('should set empty balance on testnet', async () => {
+    vi.spyOn(NetworkUtil, 'getNetworksByNamespace').mockReturnValue([
+      { ...sepolia, caipNetworkId: 'eip155:11155111', chainNamespace: 'eip155' }
+    ])
+
+    const appKit = new AppKit({
+      ...mockOptions,
+      networks: [sepolia]
+    })
+
+    await appKit['syncBalance']({
+      address: '0x123',
+      chainId: sepolia.id,
+      chainNamespace: 'eip155' as const
+    })
+
+    expect(NetworkUtil.getNetworksByNamespace).toHaveBeenCalled()
+    expect(AccountController.fetchTokenBalance).not.toHaveBeenCalled()
+    expect(AccountController.setBalance).toHaveBeenCalledWith(
+      '0.00',
+      sepolia.nativeCurrency.symbol,
+      'eip155'
+    )
+  })
+
+  it('should set the correct native token balance', async () => {
+    vi.spyOn(NetworkUtil, 'getNetworksByNamespace').mockReturnValue([
+      { ...mainnet, caipNetworkId: 'eip155:1', chainNamespace: 'eip155' }
+    ])
+
+    vi.spyOn(AccountController, 'fetchTokenBalance').mockResolvedValue([
+      {
+        quantity: { numeric: '1.00', decimals: '18' },
+        chainId: 'eip155:1',
+        symbol: 'ETH'
+      },
+      {
+        quantity: { numeric: '0.00', decimals: '18' },
+        chainId: 'eip155:137',
+        symbol: 'POL'
+      },
+      {
+        quantity: { numeric: '0.00', decimals: '18' },
+        chainId: 'eip155:1',
+        symbol: 'USDC'
+      }
+    ] as Balance[])
+
+    const appKit = new AppKit({
+      ...mockOptions,
+      networks: [mainnet]
+    })
+
+    await appKit['syncBalance']({
+      address: '0x123',
+      chainId: mainnet.id,
+      chainNamespace: 'eip155' as const
+    })
+
+    expect(NetworkUtil.getNetworksByNamespace).toHaveBeenCalled()
+    expect(AccountController.fetchTokenBalance).toHaveBeenCalled()
+    expect(AccountController.setBalance).toHaveBeenCalledWith(
+      '1.00',
+      mainnet.nativeCurrency.symbol,
+      'eip155'
+    )
+  })
+})

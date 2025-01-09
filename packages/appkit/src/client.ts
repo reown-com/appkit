@@ -1645,6 +1645,7 @@ export class AppKit {
         this.setCaipNetwork(network)
       }
       this.syncConnectedWalletInfo(chainNamespace)
+
       await this.syncBalance({ address, chainId: network.id, chainNamespace })
     }
   }
@@ -1673,7 +1674,11 @@ export class AppKit {
       this.setBalance('0.00', caipNetwork.nativeCurrency.symbol, caipNetwork.chainNamespace)
     )
 
-    const balance = balances.find(b => b.chainId === params.chainId)
+    const balance = balances.find(
+      b =>
+        b.chainId === `${params.chainNamespace}:${params.chainId}` &&
+        b.symbol === caipNetwork.nativeCurrency.symbol
+    )
 
     this.setBalance(
       balance?.quantity?.numeric || '0.00',

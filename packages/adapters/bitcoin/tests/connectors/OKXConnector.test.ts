@@ -3,6 +3,7 @@ import { OKXConnector } from '../../src/connectors/OKXConnector'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 import { MethodNotSupportedError } from '../../src/errors/MethodNotSupportedError'
+import { CoreHelperUtil } from '@reown/appkit-core'
 
 function mockOKXWallet(): { [K in keyof OKXConnector.Wallet]: Mock<OKXConnector.Wallet[K]> } {
   return {
@@ -195,6 +196,12 @@ describe('OKXConnector', () => {
       ;(window as any).okxwallet = { bitcoin: wallet, cardano: { icon: 'mock_image' } }
       const connector = OKXConnector.getWallet({ getActiveNetwork, requestedChains })
       expect(connector?.imageUrl).toBe('mock_image')
+    })
+
+    it('should return undefined if window is undefined (server-side)', () => {
+      vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(false)
+
+      expect(OKXConnector.getWallet({ getActiveNetwork, requestedChains })).toBeUndefined()
     })
   })
 
