@@ -1253,8 +1253,8 @@ export class AppKit {
 
       this.setUser({ ...(AccountController.state.user || {}), email: user.email })
 
-      const preferredAccountType =
-        user.preferredAccountType || OptionsController.state.defaultAccountTypes[namespace]
+      const preferredAccountType = (user.preferredAccountType ||
+        OptionsController.state.defaultAccountTypes[namespace]) as W3mFrameTypes.AccountType
       this.setPreferredAccountType(preferredAccountType, namespace)
 
       const userAccounts = user.accounts?.map(account =>
