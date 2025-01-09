@@ -166,12 +166,7 @@ const state = proxy<OptionsControllerState & OptionsControllerStateInternal>({
   projectId: '',
   sdkType: 'appkit',
   sdkVersion: 'html-wagmi-undefined',
-  defaultAccountTypes: {
-    bip122: 'payment',
-    eip155: 'smartAccount',
-    polkadot: 'eoa',
-    solana: 'eoa'
-  }
+  defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES
 })
 
 // -- Controller ---------------------------------------- //
