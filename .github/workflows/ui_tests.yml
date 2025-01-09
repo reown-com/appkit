@@ -52,8 +52,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4, 5]
-        shardTotal: [5]
+        shard: [1, 2, 3, 4, 5, 6]
+        shardTotal: [6]
     timeout-minutes: 20
     steps:
       # Possibly this helps with GitHub-hosted runner network issues, but it's not confirmed
@@ -101,6 +101,12 @@ jobs:
           NEXT_PUBLIC_SECURE_SITE_SDK_URL: ${{ inputs.secure-site-url }}
           SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
+
+      - name: build extension
+        run: pnpm build:browser-extension
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          SOLANA_PRIVATE_KEY: ${{ secrets.SOLANA_PRIVATE_KEY }}
 
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
