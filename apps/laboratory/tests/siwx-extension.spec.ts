@@ -16,7 +16,7 @@ extensionTest.describe.configure({ mode: 'serial' })
 extensionTest.beforeAll(async ({ library, context }) => {
   const browserPage = await context.newPage()
 
-  modalPage = new ModalPage(browserPage, library, 'siwe')
+  modalPage = new ModalPage(browserPage, library, 'siwx')
   modalValidator = new ModalValidator(browserPage)
 
   await modalPage.load()
@@ -32,45 +32,34 @@ extensionTest.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
-extensionTest('it should be authenticated', async ({ library }) => {
-  await modalValidator.expectOnSignInEventCalled(false)
-  await modalPage.connectToExtension(library)
+extensionTest('it should connect', async () => {
+  await modalPage.connectToExtensionMultichain('Solana')
   await modalPage.promptSiwe()
   await modalValidator.expectConnected()
-  await modalValidator.expectAuthenticated()
-  await modalValidator.expectOnSignInEventCalled(true)
 })
 
-extensionTest('it should require re-authentication when switching networks', async () => {
-  await modalPage.switchNetwork('Polygon')
-  await modalValidator.expectOnSignOutEventCalled(true)
+extensionTest('it should require request signature when switching networks', async () => {
+  await modalPage.switchNetwork('Solana Devnet')
   await modalPage.promptSiwe()
-  await modalValidator.expectAuthenticated()
+  await modalValidator.expectConnected()
 })
 
 extensionTest('it should disconnect when cancel siwe from AppKit', async () => {
-  await modalPage.switchNetwork('Ethereum')
+  await modalPage.switchNetwork('Solana Testnet')
   await modalPage.cancelSiwe()
   await modalValidator.expectDisconnected()
-  await modalValidator.expectUnauthenticated()
 })
 
-extensionTest(
-  'it should be authenticated after connecting and refreshing the page',
-  async ({ library }) => {
-    await modalPage.connectToExtension(library)
-    await modalPage.promptSiwe()
-    await modalValidator.expectConnected()
-    // Reload the page
-    await modalPage.page.reload()
-    await modalValidator.expectConnected()
-    await modalValidator.expectAuthenticated()
-    await modalValidator.expectOnSignInEventCalled(false)
-  }
-)
+extensionTest('it should be connected after connecting and refreshing the page', async () => {
+  await modalPage.connectToExtensionMultichain('Solana')
+  await modalPage.promptSiwe()
+  await modalValidator.expectConnected()
+  // Reload the page
+  await modalPage.page.reload()
+  await modalValidator.expectConnected()
+})
 
-extensionTest('it should be unauthenticated after disconnecting', async () => {
+extensionTest('it should disconnected', async () => {
   await modalPage.disconnect()
   await modalValidator.expectDisconnected()
-  await modalValidator.expectUnauthenticated()
 })

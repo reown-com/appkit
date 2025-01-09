@@ -40,6 +40,8 @@ export type CustomProjectProperties = {
 
 const SINGLE_ADAPTER_EVM_TESTS = [
   'extension.spec.ts',
+  'multichain-extension.spec.ts',
+  'multichain-siwe-extension.spec.ts',
   'basic-tests.spec.ts',
   'canary.spec.ts',
   'email.spec.ts',
@@ -63,6 +65,7 @@ const SINGLE_ADAPTER_EVM_MOBILE_TESTS = ['mobile-wallet-features.spec.ts']
 const SINGLE_ADAPTER_SOLANA_TESTS = [
   'extension.spec.ts',
   'basic-tests.spec.ts',
+  'siwx-extension.ts',
   'email.spec.ts',
   'no-email.spec.ts',
   'no-socials.spec.ts',
@@ -110,11 +113,11 @@ const customProjectProperties: CustomProjectProperties = {
   },
   'Desktop Chrome/solana': {
     testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
-    testIgnore: /siwe-email\.spec\.ts|siwe-extension\.spec\.ts/u
+    testIgnore: /siwe-email\.spec\.ts|siwe-extension\.spec\.ts|multichain-.*\.spec\.ts/u
   },
   'Desktop Firefox/solana': {
     testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
-    testIgnore: /siwe-email\.spec\.ts|siwe-extension\.spec\.ts/u
+    testIgnore: /siwe-email\.spec\.ts|siwe-extension\.spec\.ts|multichain-.*\.spec\.ts/u
   },
   'Desktop Firefox/multichain-ethers-solana': {
     testMatch: /^.*\/multichain-ethers-.*\.spec\.ts$/u

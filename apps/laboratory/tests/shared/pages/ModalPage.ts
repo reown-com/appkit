@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import type { BrowserContext, Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
-import { BASE_URL, DEFAULT_SESSION_PARAMS } from '../constants'
+import { BASE_URL, DEFAULT_SESSION_PARAMS, EXTENSION_NAME, EXTENSION_RDNS } from '../constants'
 import { doActionAndWaitForNewPage } from '../utils/actions'
 import { Email } from '../utils/email'
 import { DeviceRegistrationPage } from './DeviceRegistrationPage'
@@ -10,6 +10,7 @@ import { WalletPage } from './WalletPage'
 import { WalletValidator } from '../validators/WalletValidator'
 import { routeInterceptUrl } from '../utils/verify'
 import type { WalletFeature } from '@reown/appkit'
+import type { ModalValidator } from '../validators/ModalValidator'
 
 const maliciousUrl = 'https://malicious-app-verify-simulation.vercel.app'
 
@@ -27,12 +28,14 @@ export type ModalFlavor =
   | 'no-socials'
   | 'wallet-button'
   | 'siwe'
+  | 'siwx'
   | 'all'
 
 function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
   const urlsByFlavor: Partial<Record<ModalFlavor, string>> = {
     default: `${baseUrl}library/${library}/`,
     external: `${baseUrl}library/external/`,
+    siwx: `${baseUrl}library/siwx-default/`,
     'wagmi-verify-valid': `${baseUrl}library/wagmi-verify-valid/`,
     'wagmi-verify-domain-mismatch': `${baseUrl}library/wagmi-verify-domain-mismatch/`,
     'wagmi-verify-evil': maliciousUrl,
@@ -320,6 +323,18 @@ export class ModalPage {
     await signButton.click()
   }
 
+  async signMessageAndTypedData(modalValidator: ModalValidator, network?: string) {
+    await this.sign()
+    await modalValidator.expectAcceptedSign()
+
+    if (network !== 'Solana') {
+      // Wait for the toast animation to complete
+      await modalValidator.page.waitForTimeout(500)
+      await this.signTypedData()
+      await modalValidator.expectAcceptedSignTypedData()
+    }
+  }
+
   async signatureRequestFrameShouldVisible(headerText: string) {
     await expect(
       this.page.frameLocator('#w3m-iframe').getByText(headerText),
@@ -498,6 +513,28 @@ export class ModalPage {
     await tabWebApp.click()
   }
 
+  async getExtensionWallet() {
+    // eslint-disable-next-line init-declarations
+    let walletSelector: Locator
+
+    const walletSelectorRDNS = this.page.getByTestId(`wallet-selector-${EXTENSION_RDNS}`)
+    const walletSelectorName = this.page.getByTestId(`wallet-selector-${EXTENSION_NAME}`)
+
+    try {
+      await walletSelectorRDNS.waitFor({ state: 'visible', timeout: 2_000 })
+      walletSelector = walletSelectorRDNS
+    } catch {
+      try {
+        await walletSelectorName.waitFor({ state: 'visible', timeout: 2_000 })
+        walletSelector = walletSelectorName
+      } catch {
+        throw new Error('No wallet selector found')
+      }
+    }
+
+    return walletSelector
+  }
+
   async clickWalletButton(id: string) {
     await this.page.getByTestId(`wallet-button-${id}`).click()
   }
@@ -639,19 +676,16 @@ export class ModalPage {
     await this.closeModal()
   }
 
-  async connectToExtension(library: string) {
-    // eslint-disable-next-line init-declarations
-    let walletSelector: Locator
-
-    await this.connectButton.click()
-
-    // Solana uses wallet name as id
-    if (library === 'solana') {
-      walletSelector = this.page.getByTestId('wallet-selector-Reown')
-    } else {
-      walletSelector = this.page.getByTestId('wallet-selector-reown.com')
-    }
-
+  async connectToExtension() {
+    const walletSelector = await this.getExtensionWallet()
     await walletSelector.click()
+  }
+
+  async connectToExtensionMultichain(chainNamespace: 'eip155' | 'solana' | 'bitcoin') {
+    await this.connectButton.click()
+    const walletSelector = await this.getExtensionWallet()
+    await walletSelector.click()
+    const chainSelector = this.page.getByTestId(`wui-list-chain-${chainNamespace}`)
+    await chainSelector.click()
   }
 }

@@ -414,4 +414,17 @@ export class ModalValidator {
     const smartAccountStatus = this.page.getByTestId('w3m-sa-account-status')
     await expect(smartAccountStatus).toBeVisible({ timeout: MAX_WAIT })
   }
+
+  async checkConnectionStatus(status: 'connected' | 'disconnected', network?: string) {
+    if (status === 'connected') {
+      await this.expectConnected()
+    } else {
+      await this.expectDisconnected()
+    }
+
+    if (network) {
+      await this.expectNetworkButton(network)
+    }
+  }
+  
 }
