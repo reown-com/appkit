@@ -10,8 +10,8 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@reown/appkit": "1.6.3",
-    "@reown/appkit-adapter-wagmi": "1.6.3",
+    "@reown/appkit": "workspace:*",
+    "@reown/appkit-adapter-wagmi": "workspace:*",
     "@tanstack/vue-query": "5.59.16",
     "@vue/devtools-api": "7.6.8",
     "@wagmi/core": "2.13.8",
