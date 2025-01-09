@@ -128,6 +128,10 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
   }
 
   public static getWallet(params: OKXConnector.GetWalletParams): OKXConnector | undefined {
+    if (typeof window === 'undefined') {
+      return undefined
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const okxwallet = (window as any)?.okxwallet
     const wallet = okxwallet?.bitcoin
