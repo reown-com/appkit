@@ -102,6 +102,10 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
     requestedChains,
     getActiveNetwork
   }: SatsConnectConnector.GetWalletsParams) {
+    if (typeof window === 'undefined') {
+      return []
+    }
+
     const providers = getProviders()
 
     return providers.map(
