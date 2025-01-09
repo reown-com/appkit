@@ -69,7 +69,12 @@ export class W3mProfileView extends LitElement {
     }
 
     return html`
-      <wui-flex flexDirection="column" gap="l" .padding=${['0', 'xl', 'm', 'xl'] as const}>
+      <wui-flex
+        flexDirection="column"
+        gap="l"
+        .padding=${['0', 'xl', 'm', 'xl'] as const}
+        data-testid="w3m-profile-view"
+      >
         <wui-flex flexDirection="column" alignItems="center" gap="l">
           <wui-avatar
             alt=${this.address}
