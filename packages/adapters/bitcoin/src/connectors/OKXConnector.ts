@@ -1,7 +1,7 @@
 import type { CaipNetwork } from '@reown/appkit-common'
 import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
-import type { RequestArguments } from '@reown/appkit-core'
+import { CoreHelperUtil, type RequestArguments } from '@reown/appkit-core'
 import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
 import { bitcoin } from '@reown/appkit/networks'
 import { UnitsUtil } from '../utils/UnitsUtil.js'
@@ -128,6 +128,10 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
   }
 
   public static getWallet(params: OKXConnector.GetWalletParams): OKXConnector | undefined {
+    if (!CoreHelperUtil.isClient()) {
+      return undefined
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const okxwallet = (window as any)?.okxwallet
     const wallet = okxwallet?.bitcoin
