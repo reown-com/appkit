@@ -53,7 +53,8 @@ import {
   type CaipNetworkId,
   NetworkUtil,
   ConstantsUtil,
-  ParseUtil
+  ParseUtil,
+  type Balance
 } from '@reown/appkit-common'
 import type { AppKitOptions } from './utils/TypesUtil.js'
 import {
@@ -646,14 +647,18 @@ export class AppKit {
     )
   }
 
-  public fetchBalance = async () => {
+  public fetchBalance = async (): Promise<Balance | undefined> => {
     const address = this.getAddress()
     const chainNamespace = this.getActiveChainNamespace()
     const chainId = this.getCaipNetwork()?.id
 
     if (address && chainNamespace && chainId) {
-      await this.syncBalance({ address, chainNamespace, chainId })
+      const balance = await this.syncBalance({ address, chainNamespace, chainId })
+
+      return balance
     }
+
+    return undefined
   }
 
   /**
@@ -1655,9 +1660,7 @@ export class AppKit {
     address: string
     chainId: string | number
     chainNamespace: ChainNamespace
-  }) {
-    console.log('syncBalance', params)
-
+  }): Promise<Balance | undefined> {
     const caipNetwork = NetworkUtil.getNetworksByNamespace(
       this.caipNetworks,
       params.chainNamespace
@@ -1688,6 +1691,8 @@ export class AppKit {
       caipNetwork.nativeCurrency.symbol,
       params.chainNamespace
     )
+
+    return balance
   }
 
   private syncConnectedWalletInfo(chainNamespace: ChainNamespace) {

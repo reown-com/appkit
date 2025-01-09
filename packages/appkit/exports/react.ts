@@ -5,6 +5,7 @@ import { CoreHelperUtil, type UseAppKitNetworkReturn } from '@reown/appkit-core'
 import { PACKAGE_VERSION } from './constants.js'
 import { useAppKitNetworkCore } from '@reown/appkit-core/react'
 import type { AppKitNetwork } from '@reown/appkit/networks'
+import type { Balance } from '@reown/appkit-common'
 
 // -- Views ------------------------------------------------------------
 export * from '@reown/appkit-scaffold-ui'
@@ -59,8 +60,29 @@ export function useAppKitNetwork(): UseAppKitNetworkReturn {
   }
 }
 
-export async function useAppKitBalance() {
-  await modal?.fetchBalance()
+export async function useAppKitBalance(): Promise<{
+  data: Balance | undefined
+  error: string | null
+  isSuccess: boolean
+  isError: boolean
+}> {
+  const balance = await modal?.fetchBalance()
+
+  if (balance) {
+    return {
+      data: balance,
+      error: null,
+      isSuccess: true,
+      isError: false
+    }
+  }
+
+  return {
+    data: undefined,
+    error: 'No balance found',
+    isSuccess: false,
+    isError: true
+  }
 }
 
 export { useAppKitAccount } from '@reown/appkit-core/react'
