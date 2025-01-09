@@ -49,6 +49,8 @@ jobs:
   setup:
     name: 'Setup Environment'
     runs-on: [self-hosted, aws-ecs-16cpu-64mem-30m]
+    outputs:
+      playwright-cache-hit: ${{ steps.playwright-cache.outputs.cache-hit }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -81,6 +83,7 @@ jobs:
       # Cache the entire workspace after setup
       - name: Cache Workspace
         uses: actions/cache/save@v4
+        id: playwright-cache
         with:
           path: |
             ./*
@@ -108,9 +111,6 @@ jobs:
           key: workspace-${{ github.sha }}
           fail-on-cache-miss: true
 
-      - name: Show Workspace
-        run: ls -la
-
       - name: Install pnpm
         uses: pnpm/action-setup@v4
 
@@ -123,6 +123,7 @@ jobs:
       - name: Install Playwright Browsers
         working-directory: ./apps/laboratory/
         run: pnpm playwright:install
+        if: needs.setup.outputs.playwright-cache-hit != 'true'
 
       - name: Run Playwright tests
         env:
@@ -151,6 +152,15 @@ jobs:
     needs: setup
     runs-on: [self-hosted, aws-ecs-16cpu-64mem-30m]
     steps:
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'pnpm'
+
       # Restore the cached workspace
       - name: Restore Workspace
         uses: actions/cache/restore@v4
