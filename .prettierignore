@@ -1,3 +1,4 @@
 .changeset
 coverage
 pnpm-lock.yaml
+.nuxt
