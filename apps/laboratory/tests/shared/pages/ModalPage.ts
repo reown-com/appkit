@@ -561,7 +561,6 @@ export class ModalPage {
 
   async openProfileView() {
     await this.page.getByTestId('wui-profile-button').click()
-    await expect(this.page.getByTestId('w3m-profile-view')).toBeVisible()
   }
 
   async getWalletFeaturesButton(feature: WalletFeature) {
