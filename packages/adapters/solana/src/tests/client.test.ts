@@ -16,9 +16,10 @@ import { mockAuthConnector } from './mocks/AuthConnector'
 
 // Mock external dependencies
 vi.mock('@solana/web3.js', () => ({
-  Connection: vi.fn(() => ({
+  Connection: vi.fn(endpoint => ({
     getBalance: vi.fn().mockResolvedValue(1500000000),
-    getSignatureStatus: vi.fn().mockResolvedValue({ value: true })
+    getSignatureStatus: vi.fn().mockResolvedValue({ value: true }),
+    rpcEndpoint: endpoint
   })),
   PublicKey: vi.fn(key => ({ toBase58: () => key }))
 }))
@@ -136,7 +137,7 @@ describe('SolanaAdapter', () => {
   })
 
   describe('SolanaAdapter - connect', () => {
-    it('should connect with external provider', async () => {
+    beforeEach(() => {
       const connectors = [
         {
           id: 'test',
@@ -149,18 +150,46 @@ describe('SolanaAdapter', () => {
       Object.defineProperty(adapter, 'connectors', {
         value: connectors
       })
+    })
 
+    it('should connect with external provider', async () => {
       const result = await adapter.connect({
         id: 'test',
         provider: mockProvider,
         type: 'EXTERNAL',
         chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        rpcUrl: 'https://api.mainnet-beta.solana.com'
+        rpcUrl: 'mock_rpc_url'
       })
 
       expect(result.address).toBe('mock-address')
       expect(result.chainId).toBe('5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp')
-      expect(SolStoreUtil.setConnection).toHaveBeenCalled()
+      expect(SolStoreUtil.setConnection).toHaveBeenCalledWith(
+        expect.objectContaining({ rpcEndpoint: 'mock_rpc_url' })
+      )
+    })
+
+    it('should fallback for network rpc url if param is not provider', async () => {
+      await adapter.connect({
+        id: 'test',
+        provider: mockProvider,
+        type: 'EXTERNAL',
+        chainId: solana.id
+      })
+
+      expect(SolStoreUtil.setConnection).toHaveBeenCalledWith(
+        expect.objectContaining({ rpcEndpoint: solana.rpcUrls.default.http[0] })
+      )
+    })
+
+    it('should throw if not possible to get a rpc url', async () => {
+      await expect(
+        adapter.connect({
+          id: 'test',
+          provider: mockProvider,
+          type: 'EXTERNAL',
+          chainId: 'mock_chain_id'
+        })
+      ).rejects.toThrowError('RPC URL not found for chainId: mock_chain_id')
     })
   })
 

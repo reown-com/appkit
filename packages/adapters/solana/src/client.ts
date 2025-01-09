@@ -222,14 +222,20 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       throw new Error('Provider not found')
     }
 
+    const rpcUrl =
+      params.rpcUrl ||
+      this.caipNetworks?.find(n => n.id === params.chainId)?.rpcUrls.default.http[0]
+
+    if (!rpcUrl) {
+      throw new Error(`RPC URL not found for chainId: ${params.chainId}`)
+    }
+
     const address = await connector.connect({
       chainId: params.chainId as string
     })
     this.listenProviderEvents(connector)
 
-    if (params.rpcUrl) {
-      SolStoreUtil.setConnection(new Connection(params.rpcUrl, 'confirmed'))
-    }
+    SolStoreUtil.setConnection(new Connection(rpcUrl, this.connectionSettings))
 
     return {
       id: connector.id,
