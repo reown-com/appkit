@@ -1638,6 +1638,7 @@ export class AppKit {
         fallbackCaipNetwork = this.caipNetworks?.find(
           n =>
             n.caipNetworkId === fallBackCaipNetworkId ||
+            // This is a workaround used in Solana network to support deprecated caipNetworkId
             ('deprecatedCaipNetworkId' in n && n.deprecatedCaipNetworkId === fallBackCaipNetworkId)
         )
       }
