@@ -3,6 +3,7 @@ import { proxy } from 'valtio/vanilla'
 import type {
   ConnectMethod,
   CustomWallet,
+  DefaultAccountTypes,
   Features,
   Metadata,
   ProjectId,
@@ -140,6 +141,11 @@ export interface OptionsControllerStatePublic {
    * @default false
    */
   allowUnsupportedChain?: boolean
+  /**
+   * Default account types for each namespace.
+   * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa' }"
+   */
+  defaultAccountTypes: DefaultAccountTypes
 }
 
 export interface OptionsControllerStateInternal {
@@ -159,7 +165,13 @@ const state = proxy<OptionsControllerState & OptionsControllerStateInternal>({
   features: ConstantsUtil.DEFAULT_FEATURES,
   projectId: '',
   sdkType: 'appkit',
-  sdkVersion: 'html-wagmi-undefined'
+  sdkVersion: 'html-wagmi-undefined',
+  defaultAccountTypes: {
+    bip122: 'payment',
+    eip155: 'smartAccount',
+    polkadot: 'eoa',
+    solana: 'eoa'
+  }
 })
 
 // -- Controller ---------------------------------------- //
@@ -317,5 +329,16 @@ export const OptionsController = {
     useInjectedUniversalProvider: OptionsControllerState['useInjectedUniversalProvider']
   ) {
     state.useInjectedUniversalProvider = useInjectedUniversalProvider
+  },
+
+  setDefaultAccountTypes(
+    defaultAccountType: Partial<OptionsControllerState['defaultAccountTypes']> = {}
+  ) {
+    Object.entries(defaultAccountType).forEach(([namespace, accountType]) => {
+      if (accountType) {
+        // @ts-expect-error - Keys are validated by the param type
+        state.defaultAccountTypes[namespace] = accountType
+      }
+    })
   }
 }
