@@ -1065,6 +1065,53 @@ describe('Base', () => {
       expect(mockSubscribeProviders).toHaveBeenCalled()
       expect(callback).toHaveBeenCalledWith(providers)
     })
+
+    it('should fetch balance when fetchBalance is called and address, chainId and chainNamespace are available', async () => {
+      vi.spyOn(appKit, 'getAddress').mockReturnValue('0x123')
+      vi.spyOn(appKit, 'getActiveChainNamespace').mockReturnValue('eip155')
+      vi.spyOn(appKit, 'getCaipNetwork').mockReturnValue({
+        id: '1',
+        chainNamespace: 'eip155',
+        name: 'Ethereum'
+      } as CaipNetwork)
+
+      vi.spyOn(NetworkUtil, 'getNetworksByNamespace').mockReturnValue([
+        {
+          id: '1',
+          chainNamespace: 'eip155',
+          name: 'Ethereum',
+          nativeCurrency: { symbol: 'ETH' }
+        } as CaipNetwork
+      ])
+
+      vi.spyOn(AccountController, 'fetchTokenBalance').mockResolvedValue([
+        {
+          quantity: { numeric: '1.5', decimals: '18' },
+          chainId: 'eip155:1',
+          symbol: 'ETH'
+        } as Balance
+      ])
+
+      await appKit.fetchBalance()
+
+      expect(AccountController.fetchTokenBalance).toHaveBeenCalled()
+      expect(AccountController.setBalance).toHaveBeenCalledWith('1.5', 'ETH', 'eip155')
+    })
+
+    it('should not fetch balance when required values are missing', async () => {
+      vi.spyOn(appKit, 'getAddress').mockReturnValue(undefined)
+      vi.spyOn(appKit, 'getActiveChainNamespace').mockReturnValue('eip155')
+      vi.spyOn(appKit, 'getCaipNetwork').mockReturnValue({
+        id: '1',
+        chainNamespace: 'eip155',
+        name: 'Ethereum'
+      } as CaipNetwork)
+
+      await appKit.fetchBalance()
+
+      expect(AccountController.fetchTokenBalance).not.toHaveBeenCalled()
+      expect(AccountController.setBalance).not.toHaveBeenCalled()
+    })
   })
   describe('syncExistingConnection', () => {
     it('should set status to "connecting" and sync the connection when a connector and namespace are present', async () => {

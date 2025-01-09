@@ -646,6 +646,16 @@ export class AppKit {
     )
   }
 
+  public fetchBalance = async () => {
+    const address = this.getAddress()
+    const chainNamespace = this.getActiveChainNamespace()
+    const chainId = this.getCaipNetwork()?.id
+
+    if (address && chainNamespace && chainId) {
+      await this.syncBalance({ address, chainNamespace, chainId })
+    }
+  }
+
   /**
    * Removes an adapter from the AppKit.
    * @param namespace - The namespace of the adapter to remove.
@@ -1646,6 +1656,8 @@ export class AppKit {
     chainId: string | number
     chainNamespace: ChainNamespace
   }) {
+    console.log('syncBalance', params)
+
     const caipNetwork = NetworkUtil.getNetworksByNamespace(
       this.caipNetworks,
       params.chainNamespace

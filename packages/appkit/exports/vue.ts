@@ -61,4 +61,8 @@ export function useAppKitNetwork(): Ref<UseAppKitNetworkReturn> {
   return state
 }
 
+export async function useAppKitBalance() {
+  await modal?.fetchBalance()
+}
+
 export * from '../src/library/vue/index.js'

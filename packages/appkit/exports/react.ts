@@ -59,4 +59,8 @@ export function useAppKitNetwork(): UseAppKitNetworkReturn {
   }
 }
 
+export async function useAppKitBalance() {
+  await modal?.fetchBalance()
+}
+
 export { useAppKitAccount } from '@reown/appkit-core/react'
