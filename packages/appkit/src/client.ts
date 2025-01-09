@@ -1636,7 +1636,9 @@ export class AppKit {
 
         caipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
         fallbackCaipNetwork = this.caipNetworks?.find(
-          n => n.caipNetworkId === fallBackCaipNetworkId
+          n =>
+            n.caipNetworkId === fallBackCaipNetworkId ||
+            ('deprecatedCaipNetworkId' in n && n.deprecatedCaipNetworkId === fallBackCaipNetworkId)
         )
       }
 
