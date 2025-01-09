@@ -171,7 +171,7 @@ export class AppKit {
 
   private initPromise?: Promise<void> = undefined
 
-  public version?: SdkVersion
+  public version: SdkVersion
 
   public adapter?: ChainAdapter
 
@@ -312,6 +312,7 @@ export class AppKit {
   public subscribeAccount(callback: (newState: UseAppKitAccountReturn) => void) {
     function updateVal() {
       callback({
+        allAccounts: AccountController.state.allAccounts,
         caipAddress: ChainController.state.activeCaipAddress,
         address: CoreHelperUtil.getPlainAddress(ChainController.state.activeCaipAddress),
         isConnected: Boolean(ChainController.state.activeCaipAddress),
@@ -645,6 +646,62 @@ export class AppKit {
     )
   }
 
+  /**
+   * Removes an adapter from the AppKit.
+   * @param namespace - The namespace of the adapter to remove.
+   */
+  public removeAdapter(namespace: ChainNamespace) {
+    const isConnected = this.getIsConnectedState()
+    const adapter = this.getAdapter(namespace)
+
+    if (!adapter || !this.chainAdapters || isConnected) {
+      return
+    }
+
+    const newCaipNetworks = this.caipNetworks?.filter(
+      network => network.chainNamespace !== namespace
+    )
+
+    ChainController.removeAdapter(namespace)
+    ConnectorController.removeAdapter(namespace)
+    this.chainNamespaces = this.chainNamespaces.filter(n => n !== namespace)
+    this.caipNetworks = newCaipNetworks as [CaipNetwork, ...CaipNetwork[]]
+    adapter.removeAllEventListeners()
+    Reflect.deleteProperty(this.chainAdapters, namespace)
+  }
+
+  /**
+   * Adds an adapter to the AppKit.
+   * @param adapter - The adapter instance.
+   * @param networks - The list of networks that this adapter supports / uses.
+   */
+  public addAdapter(adapter: ChainAdapter, networks: [AppKitNetwork, ...AppKitNetwork[]]) {
+    const namespace = adapter.namespace
+
+    if (!this.connectionControllerClient || !this.networkControllerClient) {
+      return
+    }
+
+    if (!this.chainAdapters || !namespace) {
+      return
+    }
+
+    const extendedAdapterNetworks = this.extendCaipNetworks({ ...this.options, networks })
+    this.caipNetworks = [...(this.caipNetworks || []), ...extendedAdapterNetworks]
+
+    this.createAdapter(adapter as unknown as AdapterBlueprint)
+    this.initChainAdapter(namespace)
+
+    ChainController.addAdapter(
+      adapter,
+      {
+        connectionControllerClient: this.connectionControllerClient,
+        networkControllerClient: this.networkControllerClient
+      },
+      extendedAdapterNetworks
+    )
+  }
+
   // -- Private ------------------------------------------------------------------
   private initializeOptionsController(options: AppKitOptionsWithSdk) {
     OptionsController.setDebug(options.debug !== false)
@@ -683,6 +740,7 @@ export class AppKit {
     }
     OptionsController.setMetadata(options.metadata)
     OptionsController.setDisableAppend(options.disableAppend)
+    OptionsController.setEnableEmbedded(options.enableEmbedded)
     OptionsController.setSIWX(options.siwx)
 
     const evmAdapter = options.adapters?.find(
@@ -1106,9 +1164,8 @@ export class AppKit {
         return { supportsAllNetworks: true, approvedCaipNetworkIds: [] }
       }
     }
-    if (this.networkControllerClient && this.connectionControllerClient) {
-      ConnectionController.setClient(this.connectionControllerClient)
-    }
+
+    ConnectionController.setClient(this.connectionControllerClient)
   }
 
   private setupAuthConnectorListeners(provider: W3mFrameProvider) {
@@ -1579,6 +1636,7 @@ export class AppKit {
       const network = (caipNetwork || fallbackCaipNetwork) as CaipNetwork
       this.setCaipNetwork(network)
       this.syncConnectedWalletInfo(chainNamespace)
+
       await this.syncBalance({ address, chainId: network.id, chainNamespace })
     }
   }
@@ -1607,7 +1665,11 @@ export class AppKit {
       this.setBalance('0.00', caipNetwork.nativeCurrency.symbol, caipNetwork.chainNamespace)
     )
 
-    const balance = balances.find(b => b.chainId === params.chainId)
+    const balance = balances.find(
+      b =>
+        b.chainId === `${params.chainNamespace}:${params.chainId}` &&
+        b.symbol === caipNetwork.nativeCurrency.symbol
+    )
 
     this.setBalance(
       balance?.quantity?.numeric || '0.00',
@@ -1763,7 +1825,6 @@ export class AppKit {
         this.setStatus('disconnected', namespace)
       }
     } catch (e) {
-      console.warn(`Error syncing connection for namespace ${namespace}`, e)
       StorageUtil.deleteConnectedConnectorId(namespace)
       this.setStatus('disconnected', namespace)
     }
@@ -1797,12 +1858,9 @@ export class AppKit {
   }
 
   private async syncExistingConnection() {
-    const connectedNamespaces = StorageUtil.getConnectedNamespaces()
-    if (connectedNamespaces?.length > 0) {
-      await Promise.allSettled(
-        connectedNamespaces.map(namespace => this.syncNamespaceConnection(namespace))
-      )
-    }
+    await Promise.allSettled(
+      this.chainNamespaces.map(namespace => this.syncNamespaceConnection(namespace))
+    )
   }
 
   private getAdapter(namespace: ChainNamespace) {
@@ -1924,6 +1982,35 @@ export class AppKit {
     }
   }
 
+  private createAdapter(blueprint: AdapterBlueprint) {
+    if (!blueprint) {
+      return
+    }
+
+    const namespace = blueprint.namespace
+    if (!namespace) {
+      return
+    }
+
+    this.createClients()
+
+    const adapterBlueprint: AdapterBlueprint = blueprint
+    adapterBlueprint.namespace = namespace
+    adapterBlueprint.construct({
+      namespace,
+      projectId: this.options?.projectId,
+      networks: this.caipNetworks
+    })
+
+    if (!this.chainNamespaces.includes(namespace)) {
+      this.chainNamespaces.push(namespace)
+    }
+
+    if (this.chainAdapters) {
+      this.chainAdapters[namespace] = adapterBlueprint
+    }
+  }
+
   private createAdapters(blueprints?: AdapterBlueprint[]) {
     this.createClients()
 
@@ -1956,14 +2043,18 @@ export class AppKit {
     adapter?.on('connectors', this.setConnectors.bind(this))
   }
 
+  private async initChainAdapter(namespace: ChainNamespace) {
+    this.onConnectors(namespace)
+    this.listenAdapter(namespace)
+    this.chainAdapters?.[namespace].syncConnectors(this.options, this)
+    await this.createUniversalProviderForAdapter(namespace)
+    this.createAuthProviderForAdapter(namespace)
+  }
+
   private async initChainAdapters() {
     await Promise.all(
       this.chainNamespaces.map(async namespace => {
-        this.onConnectors(namespace)
-        this.listenAdapter(namespace)
-        this.chainAdapters?.[namespace].syncConnectors(this.options, this)
-        await this.createUniversalProviderForAdapter(namespace)
-        this.createAuthProviderForAdapter(namespace)
+        await this.initChainAdapter(namespace)
       })
     )
   }
@@ -1989,7 +2080,7 @@ export class AppKit {
           import('@reown/appkit-scaffold-ui/w3m-modal')
         ])
         const modal = document.createElement('w3m-modal')
-        if (!OptionsController.state.disableAppend) {
+        if (!OptionsController.state.disableAppend && !OptionsController.state.enableEmbedded) {
           document.body.insertAdjacentElement('beforeend', modal)
         }
         resolve()
