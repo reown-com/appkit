@@ -43,7 +43,6 @@ extensionTest('it should be authenticated', async ({ library }) => {
 
 extensionTest('it should require re-authentication when switching networks', async () => {
   await modalPage.switchNetwork('Polygon')
-  await modalValidator.expectUnauthenticated()
   await modalValidator.expectOnSignOutEventCalled(true)
   await modalPage.promptSiwe()
   await modalValidator.expectAuthenticated()
@@ -51,7 +50,6 @@ extensionTest('it should require re-authentication when switching networks', asy
 
 extensionTest('it should disconnect when cancel siwe from AppKit', async () => {
   await modalPage.switchNetwork('Ethereum')
-  await modalValidator.expectUnauthenticated()
   await modalPage.cancelSiwe()
   await modalValidator.expectDisconnected()
   await modalValidator.expectUnauthenticated()

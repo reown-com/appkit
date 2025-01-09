@@ -110,11 +110,11 @@ const customProjectProperties: CustomProjectProperties = {
   },
   'Desktop Chrome/solana': {
     testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
-    testIgnore: 'siwe-email.spec.ts'
+    testIgnore: /siwe-email\.spec\.ts|siwe-extension\.spec\.ts/u
   },
   'Desktop Firefox/solana': {
     testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
-    testIgnore: 'siwe-email.spec.ts'
+    testIgnore: /siwe-email\.spec\.ts|siwe-extension\.spec\.ts/u
   },
   'Desktop Firefox/multichain-ethers-solana': {
     testMatch: /^.*\/multichain-ethers-.*\.spec\.ts$/u

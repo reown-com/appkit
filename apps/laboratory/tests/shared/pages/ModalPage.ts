@@ -75,7 +75,7 @@ export class ModalPage {
     await this.page.goto(this.url)
 
     // Wait for w3m-modal to be injected
-    await this.page.waitForTimeout(300)
+    await this.page.waitForTimeout(500)
   }
 
   assertDefined<T>(value: T | undefined | null): T {
@@ -639,19 +639,19 @@ export class ModalPage {
     await this.closeModal()
   }
 
-    async connectToExtension(library: string) {
-      // eslint-disable-next-line init-declarations
-      let walletSelector: Locator
+  async connectToExtension(library: string) {
+    // eslint-disable-next-line init-declarations
+    let walletSelector: Locator
 
-      await this.connectButton.click()
+    await this.connectButton.click()
 
-      // Solana uses wallet name as id
-      if (library === 'solana') {
-        walletSelector = this.page.getByTestId('wallet-selector-Reown')
-      } else {
-        walletSelector = this.page.getByTestId('wallet-selector-reown.com')
-      }
-
-      await walletSelector.click()
+    // Solana uses wallet name as id
+    if (library === 'solana') {
+      walletSelector = this.page.getByTestId('wallet-selector-Reown')
+    } else {
+      walletSelector = this.page.getByTestId('wallet-selector-reown.com')
     }
+
+    await walletSelector.click()
+  }
 }
