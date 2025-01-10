@@ -115,6 +115,7 @@ describe('UniversalAdapter', () => {
     it('should switch network successfully', async () => {
       const polygonNetwork: CaipNetwork = {
         ...mockCaipNetwork,
+        caipNetworkId: 'eip155:137',
         id: 137,
         name: 'Polygon',
         nativeCurrency: {

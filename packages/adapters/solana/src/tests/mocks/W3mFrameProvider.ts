@@ -39,6 +39,8 @@ export function mockW3mFrameProvider() {
     }
   })
   w3mFrame.switchNetwork = vi.fn((chainId: string | number) => Promise.resolve({ chainId }))
+  w3mFrame.getUser = vi.fn(() => Promise.resolve(mockSession()))
+  w3mFrame.user = mockSession()
 
   return w3mFrame
 }
