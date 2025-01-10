@@ -523,42 +523,38 @@ export class EthersAdapter extends AdapterBlueprint {
     }
   }
 
-  public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
+  public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
     const { caipNetwork, provider, providerType } = params
-    if (providerType === 'WALLET_CONNECT') {
-      ;(provider as UniversalProvider).setDefaultChain(String(`eip155:${String(caipNetwork.id)}`))
-    } else if (providerType === 'AUTH') {
-      const authProvider = provider as W3mFrameProvider
-      await authProvider.switchNetwork(caipNetwork.id)
-      await authProvider.connect({
-        chainId: caipNetwork.id
+
+    if (providerType === 'AUTH' || providerType === 'WALLET_CONNECT') {
+      await super.switchNetwork(params)
+
+      return
+    }
+
+    try {
+      await (provider as Provider).request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: EthersHelpersUtil.numberToHexString(caipNetwork.id) }]
       })
-    } else {
-      try {
-        await (provider as Provider).request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: EthersHelpersUtil.numberToHexString(caipNetwork.id) }]
-        })
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (switchError: any) {
-        if (
-          switchError.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-          switchError.code === WcConstantsUtil.ERROR_CODE_DEFAULT ||
-          switchError?.data?.originalError?.code ===
-            WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
-        ) {
-          try {
-            await EthersHelpersUtil.addEthereumChain(provider as Provider, caipNetwork)
-          } catch (e) {
-            console.warn('Could not add chain to wallet', e)
-          }
-        } else if (
-          providerType === 'ANNOUNCED' ||
-          providerType === 'EXTERNAL' ||
-          providerType === 'INJECTED'
-        ) {
-          throw new Error('Chain is not supported')
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (switchError: any) {
+      if (
+        switchError.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+        switchError.code === WcConstantsUtil.ERROR_CODE_DEFAULT ||
+        switchError?.data?.originalError?.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+      ) {
+        try {
+          await EthersHelpersUtil.addEthereumChain(provider as Provider, caipNetwork)
+        } catch (e) {
+          console.warn('Could not add chain to wallet', e)
         }
+      } else if (
+        providerType === 'ANNOUNCED' ||
+        providerType === 'EXTERNAL' ||
+        providerType === 'INJECTED'
+      ) {
+        throw new Error('Chain is not supported')
       }
     }
   }

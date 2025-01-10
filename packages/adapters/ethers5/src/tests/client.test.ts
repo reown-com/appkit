@@ -67,7 +67,8 @@ const mockWalletConnectProvider = {
 const mockAuthProvider = {
   connect: vi.fn(),
   disconnect: vi.fn(),
-  switchNetwork: vi.fn()
+  switchNetwork: vi.fn(),
+  getUser: vi.fn()
 } as unknown as W3mFrameProvider
 
 const mockNetworks = [mainnet]
@@ -304,8 +305,8 @@ describe('Ethers5Adapter', () => {
         providerType: 'AUTH'
       })
 
-      expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith(1)
-      expect(mockAuthProvider.connect).toHaveBeenCalledWith({ chainId: 1 })
+      expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith('eip155:1')
+      expect(mockAuthProvider.getUser).toHaveBeenCalledWith({ chainId: 'eip155:1' })
     })
   })
 

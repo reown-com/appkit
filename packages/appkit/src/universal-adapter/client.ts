@@ -194,7 +194,7 @@ export class UniversalAdapter extends AdapterBlueprint {
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await
-  public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
+  public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
     const { caipNetwork } = params
     const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
     const provider = connector?.provider as UniversalProvider
@@ -202,7 +202,7 @@ export class UniversalAdapter extends AdapterBlueprint {
     if (!provider) {
       throw new Error('UniversalAdapter:switchNetwork - provider is undefined')
     }
-    provider.setDefaultChain(`${caipNetwork.chainNamespace}:${String(caipNetwork.id)}`)
+    provider.setDefaultChain(caipNetwork.caipNetworkId)
   }
 
   public getWalletConnectProvider() {
