@@ -11,7 +11,7 @@
     "playwright:start": "pnpm start",
     "playwright:install": "playwright install --with-deps",
     "synpress": "synpress ./tests/wallet-setup",
-    "playwright:test": "playwright test",
+    "playwright:test": "HEADLESS=true playwright test",
     "playwright:test:metamask": "playwright test --grep 'metamask.spec.ts'",
     "playwright:test:mobile-wallet-features": "playwright test --grep 'mobile-wallet-features.spec.ts'",
     "playwright:test:basic": "playwright test --grep 'basic-tests.spec.ts'",
