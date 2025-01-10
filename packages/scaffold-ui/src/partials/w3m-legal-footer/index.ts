@@ -44,7 +44,12 @@ export class W3mLegalFooter extends LitElement {
       return null
     }
 
-    return html`<a href=${termsConditionsUrl}>Terms of Service</a>`
+    const { target, rel } = this.getLinkAttributes()
+    return html`<a 
+      href=${termsConditionsUrl}
+      ?target=${target} 
+      ?rel=${rel}
+    >Terms of Service</a>`
   }
 
   private privacyTemplate() {
@@ -53,7 +58,12 @@ export class W3mLegalFooter extends LitElement {
       return null
     }
 
-    return html`<a href=${privacyPolicyUrl}>Privacy Policy</a>`
+    const { target, rel } = this.getLinkAttributes()
+    return html`<a 
+      href=${privacyPolicyUrl}
+      ?target=${target}
+      ?rel=${rel}
+    >Privacy Policy</a>`
   }
 }
 
