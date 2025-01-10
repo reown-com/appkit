@@ -25,9 +25,8 @@ export function useAppKitNetworkCore(): Pick<
 }
 
 export function useAppKitAccount(): UseAppKitAccountReturn {
-  const { status, user, preferredAccountType, smartAccountDeployed, allAccounts } = useSnapshot(
-    AccountController.state
-  )
+  const { status, user, preferredAccountType, smartAccountDeployed, allAccounts, socialProvider } =
+    useSnapshot(AccountController.state)
 
   const { activeCaipAddress } = useSnapshot(ChainController.state)
 
@@ -42,6 +41,7 @@ export function useAppKitAccount(): UseAppKitAccountReturn {
     embeddedWalletInfo: authConnector
       ? {
           user,
+          authProvider: socialProvider || 'email',
           accountType: preferredAccountType,
           isSmartAccountDeployed: Boolean(smartAccountDeployed)
         }

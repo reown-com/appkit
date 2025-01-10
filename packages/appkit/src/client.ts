@@ -310,6 +310,7 @@ export class AppKit {
   }
 
   public subscribeAccount(callback: (newState: UseAppKitAccountReturn) => void) {
+    const authConnector = ConnectorController.getAuthConnector()
     function updateVal() {
       callback({
         allAccounts: AccountController.state.allAccounts,
@@ -317,11 +318,14 @@ export class AppKit {
         address: CoreHelperUtil.getPlainAddress(ChainController.state.activeCaipAddress),
         isConnected: Boolean(ChainController.state.activeCaipAddress),
         status: AccountController.state.status,
-        embeddedWalletInfo: {
-          user: AccountController.state.user,
-          accountType: AccountController.state.preferredAccountType,
-          isSmartAccountDeployed: Boolean(AccountController.state.smartAccountDeployed)
-        }
+        embeddedWalletInfo: authConnector
+          ? {
+              user: AccountController.state.user,
+              authProvider: AccountController.state.socialProvider || 'email',
+              accountType: AccountController.state.preferredAccountType,
+              isSmartAccountDeployed: Boolean(AccountController.state.smartAccountDeployed)
+            }
+          : undefined
       })
     }
 
@@ -449,7 +453,9 @@ export class AppKit {
     return ChainController.getAccountProp('address', chainNamespace)
   }
 
-  public getProvider = () => AccountController.state.provider
+  public getProvider = <T>(namespace: ChainNamespace) => ProviderUtil.getProvider<T>(namespace)
+
+  public getProviderType = (namespace: ChainNamespace) => ProviderUtil.state.providerIds[namespace]
 
   public getPreferredAccountType = () =>
     AccountController.state.preferredAccountType as W3mFrameTypes.AccountType
