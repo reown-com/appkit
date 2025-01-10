@@ -464,10 +464,6 @@ export class AppKit {
     AccountController.setCaipAddress(caipAddress, chain)
   }
 
-  public setProvider: (typeof AccountController)['setProvider'] = (provider, chain) => {
-    AccountController.setProvider(provider, chain)
-  }
-
   public setBalance: (typeof AccountController)['setBalance'] = (balance, balanceSymbol, chain) => {
     AccountController.setBalance(balance, balanceSymbol, chain)
   }

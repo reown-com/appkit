@@ -13,7 +13,6 @@ import {
   ConnectionController,
   EnsController,
   EventsController,
-  type CombinedProvider,
   AssetUtil,
   ConnectorController,
   ChainController,
@@ -321,9 +320,11 @@ describe('Base', () => {
     })
 
     it('should get provider', () => {
-      const mockProvider = { request: vi.fn() }
-      vi.mocked(AccountController).state = { provider: mockProvider } as any
-      expect(appKit.getProvider()).toBe(mockProvider)
+      const mockProvider = vi.fn()
+      vi.mocked(ProviderUtil.state).providers = { eip155: mockProvider } as any
+      vi.mocked(ProviderUtil.state).providerIds = { eip155: 'INJECTED' } as any
+
+      expect(appKit.getProvider<any>('eip155')).toBe(mockProvider)
     })
 
     it('should get preferred account type', () => {
@@ -344,14 +345,6 @@ describe('Base', () => {
       appKit.setCaipAddress('eip155:1:0x123', 'eip155')
       expect(AccountController.setCaipAddress).toHaveBeenCalledWith('eip155:1:0x123', 'eip155')
       expect(appKit.getIsConnectedState()).toBe(true)
-    })
-
-    it('should set provider', () => {
-      const mockProvider = {
-        request: vi.fn()
-      }
-      appKit.setProvider(mockProvider as unknown as CombinedProvider, 'eip155')
-      expect(AccountController.setProvider).toHaveBeenCalledWith(mockProvider, 'eip155')
     })
 
     it('should set balance', () => {
