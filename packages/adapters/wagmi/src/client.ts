@@ -58,6 +58,7 @@ import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { normalize } from 'viem/ens'
 import { parseWalletCapabilities } from './utils/helpers.js'
 import { LimitterUtil } from './utils/LimitterUtil.js'
+import { WalletConnectConnector } from '@reown/appkit/connectors'
 
 interface PendingTransactionsFilter {
   enable: boolean
@@ -471,7 +472,19 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
   }
 
-  public async connectWalletConnect(onUri: (uri: string) => void, chainId?: number | string) {
+  public override async connectWalletConnect(
+    onUri: (uri: string) => void,
+    chainId?: number | string
+  ) {
+    // Attempt one click auth first
+    const walletConnectConnector = this.getWalletConnectConnector()
+    const isAuthenticated = await walletConnectConnector.authenticate()
+
+    if (isAuthenticated) {
+      return { clientId: await walletConnectConnector.provider.client.core.crypto.getClientId() }
+    }
+
+    // Attempt to connect using wagmi connector
     const connector = this.getWagmiConnector('walletConnect')
 
     if (!connector) {
@@ -486,11 +499,11 @@ export class WagmiAdapter extends AdapterBlueprint {
       )
     }
 
-    provider.on('display_uri', (uri: string) => {
-      onUri(uri)
-    })
+    provider.on('display_uri', onUri)
 
     await connect(this.wagmiConfig, { connector, chainId: chainId ? Number(chainId) : undefined })
+
+    return { clientId: await provider.client.core.crypto.getClientId() }
   }
 
   public async connect(
@@ -676,5 +689,15 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     return provider.request({ method: 'wallet_revokePermissions', params })
+  }
+
+  public override setUniversalProvider(universalProvider: UniversalProvider): void {
+    this.addConnector(
+      new WalletConnectConnector({
+        provider: universalProvider,
+        caipNetworks: this.caipNetworks || [],
+        namespace: 'eip155'
+      })
+    )
   }
 }

@@ -1,6 +1,11 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 import { SolConstantsUtil } from '@reown/appkit-utils/solana'
-import type { AnyTransaction, Provider } from '@reown/appkit-utils/solana'
+import type {
+  AnyTransaction,
+  Provider,
+  ProviderEventEmitterMethods
+} from '@reown/appkit-utils/solana'
+import { WalletConnectConnector } from '@reown/appkit/connectors'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 import type { SessionTypes } from '@walletconnect/types'
 import base58 from 'bs58'
@@ -12,7 +17,7 @@ import {
   type SendOptions
 } from '@solana/web3.js'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
-import { ConstantsUtil, type CaipNetwork, ParseUtil, type CaipAddress } from '@reown/appkit-common'
+import { type CaipNetwork, ParseUtil, type CaipAddress } from '@reown/appkit-common'
 import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 import { WcHelpersUtil, type RequestArguments } from '@reown/appkit'
 import { WalletConnectMethodNotSupportedError } from './shared/Errors.js'
@@ -23,23 +28,21 @@ export type WalletConnectProviderConfig = {
   getActiveChain: () => CaipNetwork | undefined
 }
 
-export class WalletConnectProvider extends ProviderEventEmitter implements Provider {
-  public readonly id = ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
-  public readonly name = ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
-  public readonly type = 'WALLET_CONNECT'
-  public readonly icon =
-    'https://imagedelivery.net/_aTEfDRm7z3tKgu9JhfeKA/05338e12-4f75-4982-4e8a-83c67b826b00/md'
+export class SolanaWalletConnectProvider
+  extends WalletConnectConnector<'solana'>
+  implements Omit<Provider, 'connect'>, ProviderEventEmitterMethods
+{
   public session?: SessionTypes.Struct
-  public provider: UniversalProvider
-  public readonly chain = ConstantsUtil.CHAIN.SOLANA
 
-  private readonly requestedChains: CaipNetwork[]
   private readonly getActiveChain: WalletConnectProviderConfig['getActiveChain']
 
+  private eventEmitter = new ProviderEventEmitter()
+  public readonly emit = this.eventEmitter.emit.bind(this.eventEmitter)
+  public readonly on = this.eventEmitter.on.bind(this.eventEmitter)
+  public readonly removeListener = this.eventEmitter.removeListener.bind(this.eventEmitter)
+
   constructor({ provider, chains, getActiveChain }: WalletConnectProviderConfig) {
-    super()
-    this.requestedChains = chains
-    this.provider = provider
+    super({ caipNetworks: chains, namespace: 'solana', provider })
     this.getActiveChain = getActiveChain
     if (this.provider.session) {
       this.session = this.provider.session
@@ -51,7 +54,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
 
   // -- Public ------------------------------------------- //
 
-  public get chains() {
+  public override get chains() {
     return this.sessionChains
       .map(sessionChainId => {
         // This is a workaround for wallets that only accept Solana deprecated networks
@@ -62,9 +65,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
           chainId = SolConstantsUtil.CHAIN_IDS.Devnet
         }
 
-        return this.requestedChains.find(
-          chain => withSolanaNamespace(chain.id as string) === chainId
-        )
+        return this.caipNetworks.find(chain => chain.id === chainId)
       })
       .filter(Boolean) as CaipNetwork[]
   }
@@ -80,15 +81,13 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
   }
 
   public async connect() {
-    if (this.provider.session?.namespaces['solana']) {
-      this.session = this.provider.session
-    } else {
-      this.provider.on('display_uri', this.onUri)
-      this.session = await this.provider.connect({
-        optionalNamespaces: WcHelpersUtil.createNamespaces(this.requestedChains)
-      })
-      this.provider.removeListener('display_uri', this.onUri)
+    if (!this.onUri) {
+      throw new Error('onUri callback is required to connect WalletConnectProvider')
     }
+
+    await super.connectWalletConnect({
+      onUri: this.onUri
+    })
 
     const account = this.getAccount(true)
 
@@ -97,8 +96,8 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     return account.address
   }
 
-  public async disconnect() {
-    await this.provider?.disconnect()
+  public override async disconnect() {
+    await super.disconnect()
     this.emit('disconnect', undefined)
   }
 
@@ -234,9 +233,9 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
   }
 
   // -- Private ------------------------------------------ //
-  private internalRequest<Method extends WalletConnectProvider.RequestMethod>(
+  private internalRequest<Method extends SolanaWalletConnectProvider.RequestMethod>(
     method: Method,
-    params: WalletConnectProvider.RequestMethods[Method]['params']
+    params: SolanaWalletConnectProvider.RequestMethods[Method]['params']
   ) {
     const chain = this.chains.find(c => this.getActiveChain()?.id === c.id)
 
@@ -258,7 +257,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
         break
     }
 
-    return this.provider?.request<WalletConnectProvider.RequestMethods[Method]['returns']>(
+    return this.provider?.request<SolanaWalletConnectProvider.RequestMethods[Method]['returns']>(
       {
         method,
         params
@@ -283,8 +282,8 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
   private getAccount<Required extends boolean>(
     required?: Required
   ): Required extends true
-    ? WalletConnectProvider.Account
-    : WalletConnectProvider.Account | undefined {
+    ? SolanaWalletConnectProvider.Account
+    : SolanaWalletConnectProvider.Account | undefined {
     const account = this.session?.namespaces['solana']?.accounts[0]
     if (!account) {
       if (required) {
@@ -292,8 +291,8 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
       }
 
       return undefined as Required extends true
-        ? WalletConnectProvider.Account
-        : WalletConnectProvider.Account | undefined
+        ? SolanaWalletConnectProvider.Account
+        : SolanaWalletConnectProvider.Account | undefined
     }
 
     const address = account.split(':')[2]
@@ -303,8 +302,8 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
       }
 
       return undefined as Required extends true
-        ? WalletConnectProvider.Account
-        : WalletConnectProvider.Account | undefined
+        ? SolanaWalletConnectProvider.Account
+        : SolanaWalletConnectProvider.Account | undefined
     }
 
     return {
@@ -337,14 +336,14 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Provi
     }
   }
 
-  private checkIfMethodIsSupported(method: WalletConnectProvider.RequestMethod) {
+  private checkIfMethodIsSupported(method: SolanaWalletConnectProvider.RequestMethod) {
     if (!this.session?.namespaces['solana']?.methods.includes(method)) {
       throw new WalletConnectMethodNotSupportedError(method)
     }
   }
 }
 
-export namespace WalletConnectProvider {
+export namespace SolanaWalletConnectProvider {
   export type Request<Params, Result> = {
     params: Params
     returns: Result

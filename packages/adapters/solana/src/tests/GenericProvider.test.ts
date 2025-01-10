@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 import type { Provider } from '@reown/appkit-utils/solana'
-import { WalletConnectProvider } from '../providers/WalletConnectProvider.js'
+import { SolanaWalletConnectProvider } from '../providers/SolanaWalletConnectProvider.js'
 import { mockUniversalProvider } from './mocks/UniversalProvider.js'
 import { WalletStandardProvider } from '../providers/WalletStandardProvider.js'
 import { mockWalletStandard } from './mocks/WalletStandard.js'
@@ -18,7 +18,7 @@ const getActiveChain = vi.fn(() => TestConstants.chains[0])
 const providers: { name: string; provider: Provider }[] = [
   {
     name: 'WalletConnectProvider',
-    provider: new WalletConnectProvider({
+    provider: new SolanaWalletConnectProvider({
       provider: mockUniversalProvider(),
       chains: TestConstants.chains,
       getActiveChain

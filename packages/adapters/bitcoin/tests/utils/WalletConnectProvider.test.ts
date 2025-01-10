@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
-import { WalletConnectProvider } from '../../src/utils/WalletConnectProvider'
+import { BitcoinWalletConnectConnector } from '../../src/connectors/BitcoinWalletConnectProvider'
 import { mockUniversalProvider } from '../mocks/mockUniversalProvider'
 
 describe('LeatherConnector', () => {
   let requestedChains: CaipNetwork[]
-  let provider: WalletConnectProvider
+  let provider: BitcoinWalletConnectConnector
   let getActiveChain: Mock<() => CaipNetwork | undefined>
   let universalProvider: ReturnType<typeof mockUniversalProvider>
 
@@ -14,7 +14,7 @@ describe('LeatherConnector', () => {
     requestedChains = [bitcoin, bitcoinTestnet]
     universalProvider = mockUniversalProvider()
     getActiveChain = vi.fn(() => bitcoin)
-    provider = new WalletConnectProvider({
+    provider = new BitcoinWalletConnectConnector({
       provider: universalProvider,
       chains: requestedChains,
       getActiveChain: getActiveChain

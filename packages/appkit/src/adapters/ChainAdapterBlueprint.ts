@@ -18,6 +18,8 @@ import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { PresetsUtil } from '@reown/appkit-utils'
 import type { AppKitOptions } from '../utils/index.js'
 import type { AppKit } from '../client.js'
+import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'
+
 type EventName =
   | 'disconnect'
   | 'accountChanged'
@@ -90,17 +92,7 @@ export abstract class AdapterBlueprint<
    * Sets the universal provider for WalletConnect.
    * @param {UniversalProvider} universalProvider - The universal provider instance
    */
-  public setUniversalProvider(universalProvider: UniversalProvider) {
-    this.addConnector({
-      id: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
-      type: 'WALLET_CONNECT',
-      name: PresetsUtil.ConnectorNamesMap[CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT],
-      provider: universalProvider,
-      imageId: PresetsUtil.ConnectorImageIds[CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT],
-      chain: this.namespace,
-      chains: []
-    } as unknown as Connector)
-  }
+  public abstract setUniversalProvider(universalProvider: UniversalProvider): void
 
   /**
    * Sets the auth provider.
@@ -193,12 +185,18 @@ export abstract class AdapterBlueprint<
   /**
    * Connects to WalletConnect.
    * @param {(uri: string) => void} onUri - Callback function to handle the WalletConnect URI
-   * @param {number | string} [chainId] - Optional chain ID to connect to
+   * @param {number | string} [_chainId] - Optional chain ID to connect to
    */
-  public abstract connectWalletConnect(
+  public async connectWalletConnect(
     onUri: (uri: string) => void,
-    chainId?: number | string
-  ): Promise<void>
+    _chainId?: number | string
+  ): Promise<undefined | { clientId: string }> {
+    const connector = this.getWalletConnectConnector()
+
+    const result = await connector.connectWalletConnect({ onUri })
+
+    return { clientId: result.clientId }
+  }
 
   /**
    * Connects to a wallet.
@@ -374,6 +372,18 @@ export abstract class AdapterBlueprint<
   public abstract revokePermissions(
     params: AdapterBlueprint.RevokePermissionsParams
   ): Promise<`0x${string}`>
+
+  protected getWalletConnectConnector(): WalletConnectConnector {
+    const connector = this.connectors.find(c => c instanceof WalletConnectConnector) as
+      | WalletConnectConnector
+      | undefined
+
+    if (!connector) {
+      throw new Error('WalletConnect connector not found')
+    }
+
+    return connector
+  }
 }
 
 export namespace AdapterBlueprint {

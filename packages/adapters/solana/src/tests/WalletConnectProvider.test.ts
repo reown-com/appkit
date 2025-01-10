@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mockUniversalProvider, mockUniversalProviderSession } from './mocks/UniversalProvider.js'
-import { WalletConnectProvider } from '../providers/WalletConnectProvider.js'
+import { SolanaWalletConnectProvider } from '../providers/SolanaWalletConnectProvider.js'
 import { TestConstants } from './util/TestConstants.js'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
 import type { CaipNetwork } from '@reown/appkit-common'
@@ -9,7 +9,7 @@ import { WalletConnectMethodNotSupportedError } from '../providers/shared/Errors
 describe('WalletConnectProvider specific tests', () => {
   let provider = mockUniversalProvider()
   let getActiveChain = vi.fn(() => TestConstants.chains[0])
-  let walletConnectProvider = new WalletConnectProvider({
+  let walletConnectProvider = new SolanaWalletConnectProvider({
     provider,
     chains: TestConstants.chains,
     getActiveChain
@@ -18,7 +18,7 @@ describe('WalletConnectProvider specific tests', () => {
   beforeEach(() => {
     provider = mockUniversalProvider()
     getActiveChain = vi.fn(() => TestConstants.chains[0])
-    walletConnectProvider = new WalletConnectProvider({
+    walletConnectProvider = new SolanaWalletConnectProvider({
       provider,
       chains: TestConstants.chains,
       getActiveChain

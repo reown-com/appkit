@@ -8,7 +8,7 @@ import { mockSatsConnectProvider } from './mocks/mockSatsConnect'
 import { WalletStandardConnector } from '../src/connectors/WalletStandardConnector'
 import { OKXConnector } from '../src/connectors/OKXConnector'
 import { LeatherConnector } from '../src/connectors/LeatherConnector'
-import { WalletConnectProvider } from '../src/utils/WalletConnectProvider'
+import { BitcoinWalletConnectConnector } from '../src/connectors/BitcoinWalletConnectProvider'
 import { ConstantsUtil } from '@reown/appkit-common'
 
 function mockBitcoinApi(): { [K in keyof BitcoinApi.Interface]: Mock<BitcoinApi.Interface[K]> } {
@@ -371,7 +371,7 @@ describe('BitcoinAdapter', () => {
         provider: undefined
       })
 
-      expect(provider).toBeInstanceOf(WalletConnectProvider)
+      expect(provider).toBeInstanceOf(BitcoinWalletConnectConnector)
     })
   })
 
