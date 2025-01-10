@@ -4,12 +4,16 @@
   grid-template-columns: repeat(var(--col-count), 1fr);
   grid-gap: 10px;
   padding: 20px;
+}
 
-  @media (max-width: 850px) {
+@media (max-width: 850px) {
+  .GridContainer {
     grid-template-columns: repeat(calc(var(--col-count) - 1), 1fr);
   }
+}
 
-  @media (max-width: 650px) {
+@media (max-width: 650px) {
+  .GridContainer {
     grid-template-columns: repeat(calc(var(--col-count) - 2), 1fr);
   }
 }

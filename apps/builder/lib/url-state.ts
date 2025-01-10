@@ -1,4 +1,5 @@
-import { defaultCustomizationConfig } from '@/lib/config'
+import { defaultCustomizationConfig } from '@/lib/defaultConfig'
+import type { ChainNamespace } from '@reown/appkit-common'
 import {
   ConnectMethod,
   Features,
@@ -22,6 +23,7 @@ export type URLState = {
   mixColorStrength?: number
   borderRadius?: string
   fontFamily?: string
+  enabledChains?: ChainNamespace[]
 }
 
 export const urlStateUtils = {

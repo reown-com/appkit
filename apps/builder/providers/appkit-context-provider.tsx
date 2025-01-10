@@ -2,13 +2,15 @@
 
 import { ReactNode, useEffect, useState } from 'react'
 import { Features, ThemeMode, ThemeVariables, useAppKitState } from '@reown/appkit/react'
+import type { ChainNamespace } from '@reown/appkit-common'
 import { ConnectMethod, ConstantsUtil } from '@reown/appkit-core'
 import { ThemeStore } from '../lib/theme-store'
 import { URLState, urlStateUtils } from '@/lib/url-state'
 import { AppKitContext } from '@/contexts/appkit-context'
 import { useSnapshot } from 'valtio'
 import { UniqueIdentifier } from '@dnd-kit/core'
-import { defaultCustomizationConfig } from '@/lib/config'
+import { allAdapters, initialConfig, namespaceNetworksMap, solanaNetworks } from '@/lib/config'
+import { defaultCustomizationConfig } from '@/lib/defaultConfig'
 import { useTheme } from 'next-themes'
 import { inter } from '@/lib/fonts'
 import { Toaster } from 'sonner'
@@ -21,8 +23,6 @@ interface AppKitProviderProps {
   children: ReactNode
   initialConfig?: URLState | null
 }
-
-const initialConfig = urlStateUtils.getStateFromURL()
 
 export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => {
   const { initialized } = useAppKitState()
@@ -43,6 +43,9 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
     wallet: false,
     social: false
   })
+  const [enabledChains, setEnabledChains] = useState<ChainNamespace[]>(
+    initialConfig?.enabledChains || ['eip155', 'solana', 'bip122']
+  )
   const themeStore = useSnapshot(ThemeStore.state)
   const appKit = themeStore.modal
 
@@ -51,6 +54,28 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
       ...prev,
       [key]: value
     }))
+  }
+
+  function removeChain(chain: ChainNamespace) {
+    setEnabledChains(prev => {
+      const newEnabledChains = prev.filter(c => c !== chain)
+      urlStateUtils.updateURLWithState({ enabledChains: newEnabledChains })
+      return newEnabledChains
+    })
+    appKit?.removeAdapter(chain)
+  }
+
+  function addChain(chain: ChainNamespace) {
+    setEnabledChains(prev => {
+      const newEnabledChains = [...prev, chain]
+      urlStateUtils.updateURLWithState({ enabledChains: newEnabledChains })
+      return newEnabledChains
+    })
+    // Doing this inside the setEnabledChains calling it two times - not sure why
+    const adapter = allAdapters.find(a => a.namespace === chain)
+    if (adapter) {
+      appKit?.addAdapter(adapter, namespaceNetworksMap[chain])
+    }
   }
 
   function updateFeatures(newFeatures: Partial<Features>) {
@@ -160,6 +185,9 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
           termsConditionsUrl,
           privacyPolicyUrl
         },
+        enabledChains,
+        removeChain,
+        addChain,
         socialsEnabled,
         enableWallets,
         isDraggingByKey,
