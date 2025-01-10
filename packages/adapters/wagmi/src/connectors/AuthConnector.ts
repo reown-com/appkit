@@ -42,7 +42,11 @@ export function authConnector(parameters: AuthParameters) {
       let chainId = options.chainId
 
       if (options.isReconnecting) {
-        chainId = provider.getLastUsedChainId()
+        const lastUsedChainId = NetworkUtil.parseEvmChainId(provider.getLastUsedChainId() || '')
+        const defaultChainId = parameters.chains?.[0].id
+
+        chainId = lastUsedChainId || defaultChainId
+
         if (!chainId) {
           throw new Error('ChainId not found in provider')
         }

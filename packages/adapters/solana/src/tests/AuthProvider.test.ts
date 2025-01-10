@@ -8,13 +8,7 @@ describe('AuthProvider specific tests', () => {
   let provider = mockW3mFrameProvider()
   let getActiveChain = vi.fn(() => TestConstants.chains[0])
   let authProvider = new AuthProvider({
-    getProvider: () => mockW3mFrameProvider(),
-    getActiveNamespace: () => 'solana',
-    getSession: () => ({
-      chainId: 'solana',
-      address: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP'
-    }),
-    setSession: vi.fn(),
+    w3mFrameProvider: mockW3mFrameProvider(),
     getActiveChain,
     chains: TestConstants.chains
   })
@@ -23,13 +17,7 @@ describe('AuthProvider specific tests', () => {
     provider = mockW3mFrameProvider()
     getActiveChain = vi.fn(() => TestConstants.chains[0])
     authProvider = new AuthProvider({
-      getProvider: () => mockW3mFrameProvider(),
-      getActiveNamespace: () => 'solana',
-      getSession: () => ({
-        chainId: 'solana',
-        address: '2VqKhjZ766ZN3uBtBpb7Ls3cN4HrocP1rzxzekhVEgoP'
-      }),
-      setSession: vi.fn(),
+      w3mFrameProvider: mockW3mFrameProvider(),
       getActiveChain,
       chains: TestConstants.chains
     })
@@ -42,11 +30,8 @@ describe('AuthProvider specific tests', () => {
   })
 
   it('should call disconnect', async () => {
-    const setSessionSpy = vi.spyOn(authProvider, 'setSession' as any)
     await authProvider.disconnect()
 
-    expect(setSessionSpy).toHaveBeenCalledOnce()
-    expect(setSessionSpy).toHaveBeenCalledWith(undefined)
     expect(provider.disconnect).toHaveBeenCalled()
   })
 
@@ -117,18 +102,6 @@ describe('AuthProvider specific tests', () => {
         options: { preflightCommitment: 'singleGossip' }
       }
     })
-  })
-
-  it('should call switch network with correct params and emit event', async () => {
-    await authProvider.connect()
-    const newChain = TestConstants.chains[1]!
-    const listener = vi.fn()
-
-    authProvider.on('chainChanged', listener)
-    await authProvider.switchNetwork(newChain.id)
-
-    expect(provider.switchNetwork).toHaveBeenCalledWith(newChain.id)
-    expect(listener).toHaveBeenCalledWith(newChain.id)
   })
 
   it('should call signAllTransactions with correct params', async () => {

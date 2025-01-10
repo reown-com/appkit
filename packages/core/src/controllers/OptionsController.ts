@@ -1,5 +1,5 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { proxy } from 'valtio/vanilla'
+import { proxy, snapshot } from 'valtio/vanilla'
 import type {
   ConnectMethod,
   CustomWallet,
@@ -335,5 +335,9 @@ export const OptionsController = {
         state.defaultAccountTypes[namespace] = accountType
       }
     })
+  },
+
+  getSnapshot() {
+    return snapshot(state)
   }
 }
