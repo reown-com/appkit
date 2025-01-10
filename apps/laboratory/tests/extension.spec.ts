@@ -55,13 +55,17 @@ extensionTest('it should sign typed data', async ({ library }) => {
   await modalValidator.expectAcceptedSignTypedData()
 })
 
-extensionTest('it should switch to different networks', async ({ library }) => {
+extensionTest('it should switch to different networks and sign', async ({ library }) => {
   const networks = getNetworks(library)
 
   /* eslint-disable no-await-in-loop */
   for (const network of networks) {
-    await modalPage.switchNetwork(network, networks[0] === network)
+    await modalPage.switchNetwork(network)
     await modalValidator.expectSwitchedNetwork(network)
+    await modalPage.closeModal()
+    await modalPage.sign()
+    await modalValidator.expectAcceptedSign()
+    await modalValidator.expectNetworkButton(network)
   }
 })
 

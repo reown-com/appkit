@@ -78,7 +78,7 @@ export class ModalPage {
     await this.page.goto(this.url)
 
     // Wait for w3m-modal to be injected
-    await this.page.waitForTimeout(500)
+    await this.page.waitForSelector('w3m-modal', { state: 'visible', timeout: 5_000 })
   }
 
   assertDefined<T>(value: T | undefined | null): T {

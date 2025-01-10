@@ -94,7 +94,7 @@ extensionTest('it should stay connected to the same network after page refresh',
   await modalValidator.expectNetworkButton('Solana')
 })
 
-extensionTest('it should disconnect and close modal when connecting from wallet', async () => {
+extensionTest('it should disconnect and close modal', async () => {
   await modalPage.disconnect()
   await modalValidator.expectModalNotVisible()
   await modalValidator.expectDisconnected()
