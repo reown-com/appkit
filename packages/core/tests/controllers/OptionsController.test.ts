@@ -9,7 +9,13 @@ describe('OptionsController', () => {
       features: ConstantsUtil.DEFAULT_FEATURES,
       projectId: '',
       sdkType: 'appkit',
-      sdkVersion: 'html-wagmi-undefined'
+      sdkVersion: 'html-wagmi-undefined',
+      defaultAccountTypes: {
+        bip122: 'payment',
+        eip155: 'smartAccount',
+        polkadot: 'eoa',
+        solana: 'eoa'
+      }
     })
   })
 
@@ -26,5 +32,15 @@ describe('OptionsController', () => {
   it('should update state correctly on setAllowUnsupportedChain()', () => {
     OptionsController.setAllowUnsupportedChain(true)
     expect(OptionsController.state.allowUnsupportedChain).toEqual(true)
+  })
+
+  it('should set defaultAccountType partially and not change if undefined is provided', () => {
+    OptionsController.setDefaultAccountTypes({ eip155: 'eoa', bip122: undefined })
+    expect(OptionsController.state.defaultAccountTypes).toEqual({
+      bip122: 'payment',
+      eip155: 'eoa',
+      polkadot: 'eoa',
+      solana: 'eoa'
+    })
   })
 })

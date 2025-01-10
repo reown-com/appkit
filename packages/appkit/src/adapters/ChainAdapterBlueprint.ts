@@ -11,7 +11,8 @@ import {
   type AccountControllerState,
   type Connector as AppKitConnector,
   type Tokens,
-  type WriteContractArgs
+  type WriteContractArgs,
+  OptionsController
 } from '@reown/appkit-core'
 import UniversalProvider from '@walletconnect/universal-provider'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
@@ -241,7 +242,9 @@ export abstract class AdapterBlueprint<
       const authProvider = provider as W3mFrameProvider
       await authProvider.switchNetwork(caipNetwork.caipNetworkId)
       const user = await authProvider.getUser({
-        chainId: caipNetwork.caipNetworkId
+        chainId: caipNetwork.caipNetworkId,
+        preferredAccountType:
+          OptionsController.state.defaultAccountTypes[caipNetwork.chainNamespace]
       })
 
       this.emit('switchNetwork', user)
