@@ -677,6 +677,7 @@ export class ModalPage {
   }
 
   async connectToExtension() {
+    await this.connectButton.click()
     const walletSelector = await this.getExtensionWallet()
     await walletSelector.click()
   }

@@ -34,8 +34,8 @@ extensionTest.beforeAll(async ({ library, context }) => {
 })
 
 // -- Tests --------------------------------------------------------------------
-extensionTest('it should connect', async ({ library }) => {
-  await modalPage.connectToExtension(library)
+extensionTest('it should connect', async () => {
+  await modalPage.connectToExtension()
   await modalValidator.expectConnected()
 })
 
