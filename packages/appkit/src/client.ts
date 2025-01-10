@@ -702,6 +702,57 @@ export class AppKit {
     )
   }
 
+  /**
+   * Adds a network to an existing adapter in AppKit.
+   * @param namespace - The chain namespace to add the network to (e.g. 'eip155', 'solana')
+   * @param network - The network configuration to add
+   * @throws Error if adapter for namespace doesn't exist
+   */
+  public addNetwork(namespace: ChainNamespace, network: AppKitNetwork) {
+    if (this.chainAdapters && !this.chainAdapters[namespace]) {
+      throw new Error(`Adapter for namespace ${namespace} doesn't exist`)
+    }
+
+    const extendedNetwork = this.extendCaipNetwork(network, this.options)
+
+    if (this.caipNetworks && !this.caipNetworks?.find(n => n.id === extendedNetwork.id)) {
+      this.caipNetworks.push(extendedNetwork)
+    }
+
+    ChainController.addNetwork(extendedNetwork)
+  }
+
+  /**
+   * Removes a network from an existing adapter in AppKit.
+   * @param namespace - The chain namespace the network belongs to
+   * @param networkId - The network ID to remove
+   * @throws Error if adapter for namespace doesn't exist or if removing last network
+   */
+  public removeNetwork(namespace: ChainNamespace, networkId: string | number) {
+    if (this.chainAdapters && !this.chainAdapters[namespace]) {
+      throw new Error(`Adapter for namespace ${namespace} doesn't exist`)
+    }
+
+    const networkToRemove = this.caipNetworks?.find(n => n.id === networkId.toString())
+    if (!networkToRemove) {
+      throw new Error(`Network with ID ${networkId} not found`)
+    }
+
+    if (!this.caipNetworks) {
+      return
+    }
+
+    const remainingNetworks = this.caipNetworks.filter(
+      n => n.chainNamespace === namespace && n.id !== networkId.toString()
+    )
+    if (!remainingNetworks?.length) {
+      throw new Error('Cannot remove last network for a namespace')
+    }
+
+    this.caipNetworks = [...remainingNetworks] as [CaipNetwork, ...CaipNetwork[]]
+    ChainController.removeNetwork(namespace, networkId)
+  }
+
   // -- Private ------------------------------------------------------------------
   private initializeOptionsController(options: AppKitOptionsWithSdk) {
     OptionsController.setDebug(options.debug !== false)
@@ -828,6 +879,15 @@ export class AppKit {
         }
       })
     }
+  }
+
+  private extendCaipNetwork(network: AppKitNetwork, options: AppKitOptions) {
+    const extendedNetwork = CaipNetworksUtil.extendCaipNetwork(network, {
+      customNetworkImageUrls: options.chainImages,
+      projectId: options.projectId
+    })
+
+    return extendedNetwork
   }
 
   private extendCaipNetworks(options: AppKitOptions) {

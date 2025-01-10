@@ -172,6 +172,28 @@ export const ChainController = {
     )
   },
 
+  addNetwork(network: CaipNetwork) {
+    const chainAdapter = state.chains.get(network.chainNamespace)
+    if (chainAdapter) {
+      chainAdapter.caipNetworks = [...(chainAdapter.caipNetworks || []), network]
+      state.chains.set(network.chainNamespace, chainAdapter)
+      // @ts-expect-error should be caipnetwork[]
+      this.setRequestedCaipNetworks(chainAdapter.caipNetworks || [], network.chainNamespace)
+    }
+  },
+
+  removeNetwork(namespace: ChainNamespace, networkId: string | number) {
+    const chainAdapter = state.chains.get(namespace)
+    if (chainAdapter) {
+      chainAdapter.caipNetworks = chainAdapter.caipNetworks?.filter(
+        network => network.id !== networkId
+      )
+      state.chains.set(namespace, chainAdapter)
+      // @ts-expect-error should be caipnetwork[]
+      this.setRequestedCaipNetworks(chainAdapter.caipNetworks || [], namespace)
+    }
+  },
+
   setAdapterNetworkState(chain: ChainNamespace, props: Partial<AdapterNetworkState>) {
     const chainAdapter = state.chains.get(chain)
 
