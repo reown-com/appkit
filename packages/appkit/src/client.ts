@@ -48,6 +48,7 @@ import {
 } from '@reown/appkit-core'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
 import {
+  type Balance,
   type CaipNetwork,
   type ChainNamespace,
   type CaipAddress,
@@ -646,6 +647,20 @@ export class AppKit {
       OptionsController.state.features,
       ConnectorController.getConnectors()
     )
+  }
+
+  public fetchBalance = async (): Promise<Balance | undefined> => {
+    const address = this.getAddress()
+    const chainNamespace = this.getActiveChainNamespace()
+    const chainId = this.getCaipNetwork()?.id
+
+    if (address && chainNamespace && chainId) {
+      const balance = await this.syncBalance({ address, chainNamespace, chainId })
+
+      return balance
+    }
+
+    return undefined
   }
 
   /**
@@ -1657,20 +1672,20 @@ export class AppKit {
     address: string
     chainId: string | number
     chainNamespace: ChainNamespace
-  }) {
+  }): Promise<Balance | undefined> {
     const caipNetwork = NetworkUtil.getNetworksByNamespace(
       this.caipNetworks,
       params.chainNamespace
     ).find(n => n.id.toString() === params.chainId.toString())
 
     if (!caipNetwork) {
-      return
+      return undefined
     }
 
     if (caipNetwork.testnet) {
       this.setBalance('0.00', caipNetwork.nativeCurrency.symbol, caipNetwork.chainNamespace)
 
-      return
+      return undefined
     }
 
     const balances = await AccountController.fetchTokenBalance(() =>
@@ -1688,6 +1703,8 @@ export class AppKit {
       caipNetwork.nativeCurrency.symbol,
       params.chainNamespace
     )
+
+    return balance || undefined
   }
 
   private syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
