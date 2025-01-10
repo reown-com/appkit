@@ -426,5 +426,4 @@ export class ModalValidator {
       await this.expectNetworkButton(network)
     }
   }
-  
 }

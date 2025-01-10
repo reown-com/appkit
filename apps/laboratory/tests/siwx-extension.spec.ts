@@ -60,4 +60,3 @@ extensionTest('it should disconnected', async () => {
   await modalPage.disconnect()
   await modalValidator.expectDisconnected()
 })
-
