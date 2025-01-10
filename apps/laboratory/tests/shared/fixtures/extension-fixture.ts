@@ -13,7 +13,7 @@ export interface ExtensionFixture {
 export const extensionFixture = base.extend<ExtensionFixture>({
   // eslint-disable-next-line no-empty-pattern
   context: async ({}, use) => {
-    const pathToExtension = path.join(__dirname, '../../../../browser-extension/dist')
+    const pathToExtension = path.resolve(__dirname, '../../../../browser-extension/dist')
 
     const isHeadless = process.env['HEADLESS'] === 'true'
 
