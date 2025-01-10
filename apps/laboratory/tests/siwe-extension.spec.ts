@@ -52,19 +52,16 @@ extensionTest('it should disconnect when cancel siwe from AppKit', async () => {
   await modalValidator.expectUnauthenticated()
 })
 
-extensionTest(
-  'it should be authenticated after connecting and refreshing the page',
-  async ({ library }) => {
-    await modalPage.connectToExtension()
-    await modalPage.promptSiwe()
-    await modalValidator.expectConnected()
-    // Reload the page
-    await modalPage.page.reload()
-    await modalValidator.expectConnected()
-    await modalValidator.expectAuthenticated()
-    await modalValidator.expectOnSignInEventCalled(false)
-  }
-)
+extensionTest('it should be authenticated after connecting and refreshing the page', async () => {
+  await modalPage.connectToExtension()
+  await modalPage.promptSiwe()
+  await modalValidator.expectConnected()
+  // Reload the page
+  await modalPage.page.reload()
+  await modalValidator.expectConnected()
+  await modalValidator.expectAuthenticated()
+  await modalValidator.expectOnSignInEventCalled(false)
+})
 
 extensionTest('it should be unauthenticated after disconnecting', async () => {
   await modalPage.disconnect()
