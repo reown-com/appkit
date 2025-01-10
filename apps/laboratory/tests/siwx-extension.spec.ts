@@ -20,10 +20,7 @@ extensionTest.beforeAll(async ({ library, context }) => {
   modalValidator = new ModalValidator(browserPage)
 
   await modalPage.load()
-  /*
-   * Playwright may delay loading the extension, causing the inpage script (from the extension)
-   * to not load and preventing the EIP6963 connector from being announced. Reloading the page fixes this for now.
-   */
+  // Force extension to load the inpage script
   await modalPage.page.reload()
 })
 
@@ -33,7 +30,7 @@ extensionTest.afterAll(async () => {
 
 // -- Tests --------------------------------------------------------------------
 extensionTest('it should connect', async () => {
-  await modalPage.connectToExtensionMultichain('Solana')
+  await modalPage.connectToExtensionMultichain('solana')
   await modalPage.promptSiwe()
   await modalValidator.expectConnected()
 })
@@ -51,7 +48,7 @@ extensionTest('it should disconnect when cancel siwe from AppKit', async () => {
 })
 
 extensionTest('it should be connected after connecting and refreshing the page', async () => {
-  await modalPage.connectToExtensionMultichain('Solana')
+  await modalPage.connectToExtensionMultichain('solana')
   await modalPage.promptSiwe()
   await modalValidator.expectConnected()
   // Reload the page
@@ -63,3 +60,4 @@ extensionTest('it should disconnected', async () => {
   await modalPage.disconnect()
   await modalValidator.expectDisconnected()
 })
+

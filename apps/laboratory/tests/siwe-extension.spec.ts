@@ -20,10 +20,7 @@ extensionTest.beforeAll(async ({ library, context }) => {
   modalValidator = new ModalValidator(browserPage)
 
   await modalPage.load()
-  /*
-   * Playwright may delay loading the extension, causing the inpage script (from the extension)
-   * to not load and preventing the EIP6963 connector from being announced. Reloading the page fixes this for now.
-   */
+  // Force extension to load the inpage script
   await modalPage.page.reload()
 })
 

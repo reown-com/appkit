@@ -90,7 +90,7 @@ extensionTest('it should switch networks and sign', async ({ library }) => {
 extensionTest('it should stay connected to the same network after page refresh', async () => {
   await modalPage.page.reload()
   await modalValidator.expectConnected()
-  // Check if Solana is still the connected network
+  // Check if Solana is the connected network
   await modalValidator.expectNetworkButton('Solana')
 })
 

@@ -7,8 +7,8 @@ import { getPublicClient } from '@wagmi/core'
 
 // -- Constants -----------------------------------------------------------------
 const LOCAL_STORAGE_KEYS = {
-  HAS_CONNECTED: '@appkit/extension-connected',
-  CHAIN_ID: '@appkit/extension-chain-id'
+  HAS_CONNECTED: '@appkit/extension_connected',
+  CHAIN_ID: '@appkit/extension_chain_id'
 }
 
 export function createReownTransport() {

@@ -29,10 +29,7 @@ extensionTest.beforeAll(async ({ library, context }) => {
   modalValidator = new ModalValidator(browserPage)
 
   await modalPage.load()
-  /*
-   * Playwright may delay loading the extension, causing the inpage script (from the extension)
-   * to not load and preventing the EIP6963 connector from being announced. Reloading the page fixes this for now.
-   */
+  // Force extension to load the inpage script
   await modalPage.page.reload()
 })
 
@@ -78,4 +75,9 @@ extensionTest('it should show last connected network after page refresh', async 
   const lastNetwork = networks[networks.length - 1]
   // Make sure the wallet is connected to the last selected network
   await modalValidator.expectNetworkButton(lastNetwork as string)
+})
+
+extensionTest('it should disconnect', async () => {
+  await modalPage.disconnect()
+  await modalValidator.expectDisconnected()
 })
