@@ -17,6 +17,7 @@ export class ModalWalletValidator extends ModalValidator {
   }
 
   async expectTogglePreferredTypeVisible(visible: boolean) {
+    await expect(this.page.getByTestId('w3m-account-settings-view')).toBeVisible()
     const toggle = this.page.getByTestId('account-toggle-preferred-account-type')
     if (visible) {
       await expect(toggle, 'Smart account toggle should be present').toBeVisible()

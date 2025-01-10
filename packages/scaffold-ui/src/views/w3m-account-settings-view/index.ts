@@ -91,6 +91,7 @@ export class W3mAccountSettingsView extends LitElement {
         alignItems="center"
         gap="l"
         .padding=${['0', 'xl', 'm', 'xl'] as const}
+        data-testid="w3m-account-settings-view"
       >
         <wui-avatar
           alt=${this.address}
