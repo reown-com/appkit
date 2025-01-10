@@ -6,11 +6,13 @@ import type {
   VersionedTransaction,
   SendOptions
 } from '@solana/web3.js'
+import UniversalProvider from '@walletconnect/universal-provider'
 
 import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
-import type { CaipNetwork } from '@reown/appkit-common'
+import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import type { ConnectorType } from '@reown/appkit-core'
-import type { W3mFrameTypes } from '@reown/appkit-wallet'
+import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
+import type { Provider as CoreProvider } from '@reown/appkit-core'
 
 export type Connection = SolanaConnection
 
@@ -33,16 +35,23 @@ export interface RequestArguments {
   readonly params?: readonly unknown[] | object
 }
 
-export interface Provider extends ProviderEventEmitterMethods {
+export interface Provider
+  extends ProviderEventEmitterMethods,
+    Omit<CoreProvider, 'emit' | 'on' | 'removeListener'> {
   // Metadata
+  id: string
   name: string
-  publicKey?: PublicKey
-  icon?: string
   chains: CaipNetwork[]
   type: ConnectorType
+  chain: ChainNamespace
+  publicKey?: PublicKey
+  provider: CoreProvider | W3mFrameProvider | UniversalProvider
 
   // Methods
-  connect: () => Promise<string>
+  connect: (params?: {
+    chainId?: string
+    onUri?: ((uri: string) => void) | undefined
+  }) => Promise<string>
   disconnect: () => Promise<void>
   signMessage: (message: Uint8Array) => Promise<Uint8Array>
   signTransaction: <T extends AnyTransaction>(transaction: T) => Promise<T>
@@ -56,6 +65,13 @@ export interface Provider extends ProviderEventEmitterMethods {
     options?: SendTransactionOptions
   ) => Promise<TransactionSignature>
   signAllTransactions: <T extends AnyTransaction[]>(transactions: T) => Promise<T>
+  getAccounts: () => Promise<
+    {
+      namespace: 'solana'
+      address: string
+      type: 'eoa'
+    }[]
+  >
 }
 
 export interface ProviderEventEmitterMethods {
