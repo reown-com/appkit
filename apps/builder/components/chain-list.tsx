@@ -1,21 +1,16 @@
 'use client'
 
-import type { ChainNamespace } from '@reown/appkit-common'
+import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
 import { RoundOptionItem } from './ui/round-option-item'
 import { useAppKitContext } from '@/hooks/use-appkit'
 import { useAppKitAccount } from '@reown/appkit-core/react'
 import { AlertDescription } from '@/components/ui/alert'
 import { Alert } from '@/components/ui/alert'
 import { ExclamationMarkIcon } from '@/components/icon/exclamation-mark'
+import { getImageDeliveryURL, chainImages } from '@/lib/presets'
 
-const CHAIN_OPTIONS = [
-  { id: 'eip155', name: 'EVM', imageSrc: '/ethereum.png' },
-  { id: 'solana', name: 'Solana', imageSrc: '/solana.png' },
-  { id: 'bip122', name: 'Bitcoin', imageSrc: '/bitcoin.png' }
-] as {
+const CHAIN_OPTIONS = [{ id: 'eip155' }, { id: 'solana' }, { id: 'bip122' }] as {
   id: ChainNamespace
-  name: string
-  imageSrc: string
 }[]
 
 export function ChainList() {
@@ -33,7 +28,7 @@ export function ChainList() {
               Boolean(caipAddress) ||
               (enabledChains.includes(chain.id) && enabledChains.length === 1)
             }
-            imageSrc={chain.imageSrc}
+            imageSrc={getImageDeliveryURL(chainImages[chain.id as keyof typeof chainImages])}
             onChange={() => {
               if (enabledChains.includes(chain.id)) {
                 if (enabledChains.length > 1) {
@@ -43,7 +38,7 @@ export function ChainList() {
                 addChain(chain.id)
               }
             }}
-            name={chain.name}
+            name={ConstantsUtil.CHAIN_NAME_MAP[chain.id]}
           />
         ))}
       </div>

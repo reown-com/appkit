@@ -24,6 +24,7 @@ export type URLState = {
   borderRadius?: string
   fontFamily?: string
   enabledChains?: ChainNamespace[]
+  enabledNetworks?: string[]
 }
 
 export const urlStateUtils = {

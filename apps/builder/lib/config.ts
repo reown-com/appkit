@@ -5,29 +5,26 @@ import {
   optimism,
   polygon,
   zksync,
-  sepolia,
   base,
-  baseSepolia,
-  gnosis,
-  unichainSepolia,
-  hedera,
-  aurora,
   solana,
-  solanaDevnet,
   solanaTestnet,
   bitcoin,
   bitcoinTestnet,
-  type AppKitNetwork
+  type AppKitNetwork,
+  bsc,
+  avalanche
 } from '@reown/appkit/networks'
-import { CreateAppKit, ThemeMode } from '@reown/appkit/react'
+import { CreateAppKit } from '@reown/appkit/react'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 
-import { cookieStorage, createStorage } from '@wagmi/core'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { urlStateUtils } from '@/lib/url-state'
 import { ChainNamespace } from '@reown/appkit-common'
+import { NETWORK_OPTIONS } from '@/lib/constants'
+
+type AppKitNetworksType = [AppKitNetwork, ...AppKitNetwork[]]
 
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
 
@@ -35,51 +32,46 @@ if (!projectId) {
   throw new Error('Project ID is not defined')
 }
 
-const evmNetworks = [
+// Networks
+export const evmNetworks = [
   mainnet,
   optimism,
+  bsc,
   polygon,
-  zksync,
+  avalanche,
   arbitrum,
-  base,
-  baseSepolia,
-  unichainSepolia,
-  sepolia,
-  gnosis,
-  hedera,
-  aurora
-] as [AppKitNetwork, ...AppKitNetwork[]]
-
-export const solanaNetworks = [solana, solanaDevnet, solanaTestnet] as [
-  AppKitNetwork,
-  ...AppKitNetwork[]
-]
-
-export const bitcoinNetworks = [bitcoin, bitcoinTestnet] as [AppKitNetwork, ...AppKitNetwork[]]
-
-export const namespaceNetworksMap: Record<ChainNamespace, [AppKitNetwork, ...AppKitNetwork[]]> = {
+  zksync,
+  base
+] as AppKitNetworksType
+export const solanaNetworks = [solana, solanaTestnet] as AppKitNetworksType
+export const bitcoinNetworks = [bitcoin, bitcoinTestnet] as AppKitNetworksType
+export const namespaceNetworksMap: Record<ChainNamespace, AppKitNetworksType> = {
   eip155: evmNetworks,
   solana: solanaNetworks,
   bip122: bitcoinNetworks,
   // @ts-expect-error Polkadot is not supported yet
   polkadot: []
 }
+export const allNetworks = [
+  ...evmNetworks,
+  ...solanaNetworks,
+  ...bitcoinNetworks
+] as AppKitNetworksType
+export const networks = [
+  ...evmNetworks,
+  ...solanaNetworks,
+  ...bitcoinNetworks
+] as AppKitNetworksType
 
-export const networks = [...evmNetworks, ...solanaNetworks, ...bitcoinNetworks] as [
-  AppKitNetwork,
-  ...AppKitNetwork[]
-]
-
+// Adapters
 export const evmAdapter = new EthersAdapter()
-
 export const solanaAdapter = new SolanaAdapter({
   wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
-
 export const bitcoinAdapter = new BitcoinAdapter({})
-
 export const allAdapters = [evmAdapter, solanaAdapter, bitcoinAdapter]
 
+// Metadata
 const metadata = {
   name: 'AppKit Builder',
   description: 'The full stack toolkit to build onchain app UX',
@@ -89,21 +81,36 @@ const metadata = {
 
 export const initialConfig = urlStateUtils.getStateFromURL()
 const initialEnabledChains = initialConfig?.enabledChains || ['eip155', 'solana', 'bip122']
+// Enabled network IDs
+export const initialEnabledNetworks =
+  initialConfig?.enabledNetworks || allNetworks.map(network => network.id)
+console.log('initialEnabledNetworks', initialEnabledNetworks)
 
+// Enabled adapters
 const adapters: ChainAdapter[] = []
-const initialNetworks: AppKitNetwork[] = []
+// Enabled network object list
+let initialNetworks: AppKitNetwork[] = []
 
 initialEnabledChains.forEach(chain => {
   if (chain === 'eip155') {
-    initialNetworks.push(...evmNetworks)
+    const enabledNetworks = evmNetworks.filter(network =>
+      initialEnabledNetworks.includes(network.id)
+    )
+    initialNetworks.push(...enabledNetworks)
     return adapters.push(evmAdapter)
   }
   if (chain === 'solana') {
-    initialNetworks.push(...solanaNetworks)
+    const enabledNetworks = solanaNetworks.filter(network =>
+      initialEnabledNetworks.includes(network.id)
+    )
+    initialNetworks.push(...enabledNetworks)
     return adapters.push(solanaAdapter)
   }
   if (chain === 'bip122') {
-    initialNetworks.push(...bitcoinNetworks)
+    const enabledNetworks = bitcoinNetworks.filter(network =>
+      initialEnabledNetworks.includes(network.id)
+    )
+    initialNetworks.push(...enabledNetworks)
     return adapters.push(bitcoinAdapter)
   }
 })
@@ -111,7 +118,7 @@ initialEnabledChains.forEach(chain => {
 export const appKitConfigs = {
   adapters,
   projectId,
-  networks: initialNetworks as [AppKitNetwork, ...AppKitNetwork[]],
+  networks: initialNetworks as AppKitNetworksType,
   defaultNetwork: mainnet,
   metadata: metadata,
   features: initialConfig?.features || ConstantsUtil.DEFAULT_FEATURES,

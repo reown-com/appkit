@@ -8,6 +8,7 @@ import dynamic from 'next/dynamic'
 import { ConnectMethodItemLoading } from '@/components/connect-method-item/components/loading'
 import { ConnectMethod, ConstantsUtil } from '@reown/appkit-core'
 import { urlStateUtils } from '@/lib/url-state'
+import { RoundOptionItemLoading } from '@/components/ui/round-option-item-loading'
 
 const SortableConnectMethodList = dynamic(
   () =>
@@ -25,8 +26,29 @@ const SortableConnectMethodList = dynamic(
 )
 
 const ChainList = dynamic(() => import('@/components/chain-list').then(mod => mod.ChainList), {
-  ssr: false
+  ssr: false,
+  loading: () => (
+    <div className="flex gap-2 flex-wrap">
+      <RoundOptionItemLoading />
+      <RoundOptionItemLoading />
+      <RoundOptionItemLoading />
+    </div>
+  )
 })
+
+const NetworkList = dynamic(
+  () => import('@/components/network-list').then(mod => mod.NetworkList),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex gap-2 flex-wrap">
+        <RoundOptionItemLoading />
+        <RoundOptionItemLoading />
+        <RoundOptionItemLoading />
+      </div>
+    )
+  }
+)
 
 export function SectionConnectOptions() {
   const { config, updateFeatures, updateSocials, updateEnableWallets } = useAppKitContext()
@@ -79,6 +101,8 @@ export function SectionConnectOptions() {
       />
       <div className="text-sm text-text-secondary mt-4 mb-2">Chains</div>
       <ChainList />
+      <div className="text-sm text-text-secondary mt-4 mb-2">Networks</div>
+      <NetworkList />
     </div>
   )
 }
