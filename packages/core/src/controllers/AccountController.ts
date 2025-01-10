@@ -2,10 +2,8 @@ import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import type {
   AccountType,
   AccountTypeMap,
-  CombinedProvider,
   ConnectedWalletInfo,
   User,
-  Provider,
   SocialProvider
 } from '../utils/TypeUtil.js'
 import type { CaipAddress, ChainNamespace } from '@reown/appkit-common'
@@ -17,7 +15,6 @@ import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { ChainController } from './ChainController.js'
 import { proxy, ref } from 'valtio/vanilla'
-import type UniversalProvider from '@walletconnect/universal-provider'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
 // -- Types --------------------------------------------- //
@@ -41,7 +38,6 @@ export interface AccountControllerState {
   preferredAccountType?: W3mFrameTypes.AccountType
   socialWindow?: Window
   farcasterUrl?: string
-  provider?: UniversalProvider | Provider | CombinedProvider
   status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
   lastRetry?: number
 }
@@ -107,12 +103,6 @@ export const AccountController = {
 
   getCaipAddress(chain: ChainNamespace | undefined) {
     return ChainController.getAccountProp('caipAddress', chain)
-  },
-
-  setProvider(provider: AccountControllerState['provider'], chain: ChainNamespace | undefined) {
-    if (provider) {
-      ChainController.setAccountProp('provider', provider, chain)
-    }
   },
 
   setCaipAddress(
