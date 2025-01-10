@@ -10,3 +10,6 @@ export const DEFAULT_SESSION_PARAMS: SessionParams = {
 }
 export const SECURE_WEBSITE_URL = 'https://secure.reown.com'
 export const DEFAULT_CHAIN_NAME = process.env['DEFAULT_CHAIN_NAME'] || 'Ethereum'
+
+export const EXTENSION_RDNS = 'reown.com'
+export const EXTENSION_NAME = 'Reown'

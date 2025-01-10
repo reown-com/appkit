@@ -11,7 +11,7 @@ import nacl from 'tweetnacl'
 const keypair = Keypair.fromSecretKey(AccountUtil.privateKeySolana)
 const publicKey = keypair.publicKey
 
-export class ReownSolanaProvider {
+export class SolanaProvider {
   name = 'Reown'
   version = '1.0.0' as const
   icon = ConstantsUtil.IconRaw as `data:image/png;base64,${string}`
@@ -103,14 +103,13 @@ export class ReownSolanaProvider {
   signMessage({ message }: { message: Uint8Array }) {
     const messageBytes = Uint8Array.from(Object.values(message))
     const signature = nacl.sign.detached(messageBytes, keypair.secretKey)
-
     const isValid = nacl.sign.detached.verify(messageBytes, signature, keypair.publicKey.toBytes())
 
     if (!isValid) {
       throw new Error('Invalid signature')
     }
 
-    return signature
+    return [{ signature }]
   }
   sendTransaction(message: string, encoding = 'utf8') {
     return Promise.resolve()

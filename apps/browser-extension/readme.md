@@ -13,7 +13,7 @@ cp .env.local
 Make sure you have these variables:
 
 ```bash
-PRIVATE_KEY=
+EIP155_PRIVATE_KEY=
 SOLANA_PRIVATE_KEY=
 ```
 
