@@ -58,9 +58,7 @@ module.exports = {
         global.CSSStyleSheet = window.CSSStyleSheet
       })
     },
-    new Dotenv({
-      path: './.env.local'
-    }),
+    new Dotenv(),
     new HtmlWebpackPlugin({
       chunks: ['main'],
       template: './src/index.html',
