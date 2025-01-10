@@ -1,5 +1,21 @@
 # @reown/appkit-adapter-solana
 
+## 1.6.5
+
+### Patch Changes
+
+- [#3523](https://github.com/reown-com/appkit/pull/3523) [`427dde3`](https://github.com/reown-com/appkit/commit/427dde3cfb3bcb8a61d22b3732150c39958483e8) Thanks [@zoruka](https://github.com/zoruka)! - Abstracts Connectors management in Solana Adapter
+
+- Updated dependencies [[`427dde3`](https://github.com/reown-com/appkit/commit/427dde3cfb3bcb8a61d22b3732150c39958483e8)]:
+  - @reown/appkit-utils@1.6.5
+  - @reown/appkit@1.6.5
+  - @reown/appkit-common@1.6.5
+  - @reown/appkit-core@1.6.5
+  - @reown/appkit-polyfills@1.6.5
+  - @reown/appkit-scaffold-ui@1.6.5
+  - @reown/appkit-ui@1.6.5
+  - @reown/appkit-wallet@1.6.5
+
 ## 1.6.4
 
 ### Patch Changes

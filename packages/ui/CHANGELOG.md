@@ -1,5 +1,11 @@
 # @reown/appkit-ui
 
+## 1.6.5
+
+### Patch Changes
+
+- [#3523](https://github.com/reown-com/appkit/pull/3523) [`427dde3`](https://github.com/reown-com/appkit/commit/427dde3cfb3bcb8a61d22b3732150c39958483e8) Thanks [@zoruka](https://github.com/zoruka)! - Abstracts Connectors management in Solana Adapter
+
 ## 1.6.4
 
 ### Patch Changes
