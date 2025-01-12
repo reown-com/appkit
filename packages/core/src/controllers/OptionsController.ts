@@ -140,11 +140,6 @@ export interface OptionsControllerStatePublic {
    * @default false
    */
   allowUnsupportedChain?: boolean
-  /**
-   * Open legal links (Terms and Privacy) in new tab
-   * @default false
-   */
-  legalLinksNewTab?: boolean
 }
 
 export interface OptionsControllerStateInternal {
@@ -322,10 +317,6 @@ export const OptionsController = {
     useInjectedUniversalProvider: OptionsControllerState['useInjectedUniversalProvider']
   ) {
     state.useInjectedUniversalProvider = useInjectedUniversalProvider
-  },
-
-  setLegalLinksNewTab(legalLinksNewTab: OptionsControllerState['legalLinksNewTab']) {
-    state.legalLinksNewTab = legalLinksNewTab
   },
 
   getSnapshot() {

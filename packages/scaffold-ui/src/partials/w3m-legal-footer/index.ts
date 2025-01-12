@@ -44,11 +44,10 @@ export class W3mLegalFooter extends LitElement {
       return null
     }
 
-    const { target, rel } = this.getLinkAttributes()
     return html`<a 
       href=${termsConditionsUrl}
-      ?target=${target} 
-      ?rel=${rel}
+      target="_blank"
+      rel="noopener noreferrer"
     >Terms of Service</a>`
   }
 
@@ -58,11 +57,10 @@ export class W3mLegalFooter extends LitElement {
       return null
     }
 
-    const { target, rel } = this.getLinkAttributes()
     return html`<a 
       href=${privacyPolicyUrl}
-      ?target=${target}
-      ?rel=${rel}
+      target="_blank"
+      rel="noopener noreferrer"
     >Privacy Policy</a>`
   }
 }
