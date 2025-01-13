@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest'
-import type { CaipNetwork } from '@reown/appkit-common'
+import { ConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
 import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 import { BitcoinWalletConnectConnector } from '../../src/connectors/BitcoinWalletConnectProvider'
 import { mockUniversalProvider } from '../mocks/mockUniversalProvider'
@@ -24,7 +24,7 @@ describe('LeatherConnector', () => {
   it('should validate the metadata', async () => {
     expect(provider.chain).toBe('bip122')
     expect(provider.type).toBe('WALLET_CONNECT')
-    expect(provider.id).toBe('WalletConnect')
+    expect(provider.id).toBe(ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)
     expect(provider.name).toBe('WalletConnect')
   })
 
