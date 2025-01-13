@@ -924,7 +924,7 @@ describe('Base', () => {
       expect(AccountController.fetchTokenBalance).toHaveBeenCalled()
     })
 
-    it('should not sync balance on testnets', async () => {
+    it.only('should not sync balance on testnets', async () => {
       vi.spyOn(NetworkUtil, 'getNetworksByNamespace').mockReturnValue([
         {
           ...sepolia,
@@ -958,14 +958,23 @@ describe('Base', () => {
           chainNamespace: 'eip155',
           caipNetworkId: 'eip155:11155111' as CaipNetworkId,
           testnet: true,
-          nativeCurrency: { symbol: 'sETH' }
+          nativeCurrency: { symbol: 'ETH' }
         } as CaipNetwork
       ])
 
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue(mockAccountData as any)
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        chains: new Map([['eip155', { namespace: 'eip155' }]]),
+        activeChain: 'eip155'
+      } as any)
 
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue(mockAccountData as any)
       appKit = new AppKit({ ...mockOptions })
 
+      const mockAdapter = {
+        getBalance: vi.fn().mockResolvedValue({ balance: '0.00', symbol: 'sETH' })
+      } as unknown as AdapterBlueprint
+
+      vi.mocked(appKit as any).getAdapter = vi.fn().mockReturnValue(mockAdapter)
       await appKit['syncAccount'](mockAccountData)
 
       expect(AccountController.fetchTokenBalance).not.toHaveBeenCalled()

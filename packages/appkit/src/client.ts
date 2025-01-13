@@ -1204,12 +1204,12 @@ export class AppKit {
       if (this.isTransactionStackEmpty()) {
         this.close()
         if (AccountController.state.address && ChainController.state.activeCaipNetwork?.id) {
-          this.updateBalance()
+          this.updateNativeBalance()
         }
       } else {
         this.popTransactionStack()
         if (AccountController.state.address && ChainController.state.activeCaipNetwork?.id) {
-          this.updateBalance()
+          this.updateNativeBalance()
         }
       }
     })
@@ -1430,7 +1430,7 @@ export class AppKit {
         return
       }
 
-      this.updateBalance()
+      this.updateNativeBalance()
     })
 
     adapter.on('accountChanged', ({ address, chainId }) => {
@@ -1453,15 +1453,16 @@ export class AppKit {
     })
   }
 
-  private updateBalance() {
+  private async updateNativeBalance() {
     const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
-    if (adapter) {
-      adapter.getBalance({
-        address: AccountController.state.address as string,
+    if (adapter && ChainController.state.activeChain && AccountController.state.address) {
+      const balance = await adapter.getBalance({
+        address: AccountController.state.address,
         chainId: ChainController.state.activeCaipNetwork?.id as string | number,
         caipNetwork: this.getCaipNetwork(),
         tokens: this.options.tokens
       })
+      this.setBalance(balance.balance, balance.symbol, ChainController.state.activeChain)
     }
   }
 
@@ -1668,7 +1669,7 @@ export class AppKit {
     }
 
     if (caipNetwork.testnet) {
-      this.setBalance('0.00', caipNetwork.nativeCurrency.symbol, caipNetwork.chainNamespace)
+      await this.updateNativeBalance()
 
       return
     }
