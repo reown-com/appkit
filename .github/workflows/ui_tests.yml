@@ -36,10 +36,6 @@ on:
     secrets:
       NEXT_PUBLIC_PROJECT_ID:
         required: true
-      EIP155_PRIVATE_KEY:
-        required: true
-      SOLANA_PRIVATE_KEY:
-        required: true
       TESTS_NEXTAUTH_SECRET:
         required: false
       TESTS_MAILSAC_API_KEY:
@@ -47,6 +43,10 @@ on:
       TESTS_SOCIAL_EMAIL:
         required: false
       TESTS_SOCIAL_PASSWORD:
+        required: false
+      EIP155_PRIVATE_KEY:
+        required: false
+      SOLANA_PRIVATE_KEY:
         required: false
 
 jobs:
