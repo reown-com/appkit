@@ -478,7 +478,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   ) {
     // Attempt one click auth first
     const walletConnectConnector = this.getWalletConnectConnector()
-    const isAuthenticated = await walletConnectConnector.authenticate()
+    const isAuthenticated = await walletConnectConnector.authenticate({ onUri })
 
     if (isAuthenticated) {
       return { clientId: await walletConnectConnector.provider.client.core.crypto.getClientId() }
