@@ -7,10 +7,26 @@ import { SolanaWalletConnectProvider } from '../../providers/SolanaWalletConnect
 export function mockUniversalProvider() {
   const provider = new UniversalProvider({})
 
-  provider.on = vi.fn()
-  provider.removeListener = vi.fn()
-  provider.connect = vi.fn(() => Promise.resolve(mockUniversalProviderSession()))
-  provider.disconnect = vi.fn(() => Promise.resolve())
+  Object.assign(provider, {
+    on: vi.fn(),
+    removeEventListener: vi.fn(),
+    connect: vi.fn(() => {
+      const session = mockUniversalProviderSession()
+      Object.assign(provider, {
+        session
+      })
+
+      return Promise.resolve(session)
+    }),
+    disconnect: vi.fn(() => Promise.resolve()),
+    client: {
+      core: {
+        crypto: {
+          getClientId: vi.fn(() => Promise.resolve('client-id'))
+        }
+      }
+    }
+  })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   provider.request = vi.fn((...[{ method }]: Parameters<UniversalProvider['request']>): any => {

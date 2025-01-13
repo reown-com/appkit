@@ -7,7 +7,6 @@ import type {
 } from '@reown/appkit-utils/solana'
 import { WalletConnectConnector } from '@reown/appkit/connectors'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
-import type { SessionTypes } from '@walletconnect/types'
 import base58 from 'bs58'
 import {
   Connection,
@@ -18,7 +17,6 @@ import {
 } from '@solana/web3.js'
 import { isVersionedTransaction } from '@solana/wallet-adapter-base'
 import { type CaipNetwork, ParseUtil, type CaipAddress } from '@reown/appkit-common'
-import { withSolanaNamespace } from '../utils/withSolanaNamespace.js'
 import { WcHelpersUtil, type RequestArguments } from '@reown/appkit'
 import { WalletConnectMethodNotSupportedError } from './shared/Errors.js'
 
@@ -32,8 +30,6 @@ export class SolanaWalletConnectProvider
   extends WalletConnectConnector<'solana'>
   implements Omit<Provider, 'connect'>, ProviderEventEmitterMethods
 {
-  public session?: SessionTypes.Struct
-
   private readonly getActiveChain: WalletConnectProviderConfig['getActiveChain']
 
   private eventEmitter = new ProviderEventEmitter()
@@ -44,15 +40,15 @@ export class SolanaWalletConnectProvider
   constructor({ provider, chains, getActiveChain }: WalletConnectProviderConfig) {
     super({ caipNetworks: chains, namespace: 'solana', provider })
     this.getActiveChain = getActiveChain
-    if (this.provider.session) {
-      this.session = this.provider.session
-    }
   }
 
   // -- Universal Provider Events ------------------------ //
   public onUri?: (uri: string) => void
 
   // -- Public ------------------------------------------- //
+  public get session() {
+    return this.provider.session
+  }
 
   public override get chains() {
     return this.sessionChains
@@ -65,7 +61,7 @@ export class SolanaWalletConnectProvider
           chainId = SolConstantsUtil.CHAIN_IDS.Devnet
         }
 
-        return this.caipNetworks.find(chain => chain.id === chainId)
+        return this.caipNetworks.find(chain => chain.caipNetworkId === chainId)
       })
       .filter(Boolean) as CaipNetwork[]
   }
@@ -240,7 +236,7 @@ export class SolanaWalletConnectProvider
     const chain = this.chains.find(c => this.getActiveChain()?.id === c.id)
 
     // This is a workaround for wallets that only accept Solana deprecated networks
-    let chainId = withSolanaNamespace(chain?.id)
+    let chainId = chain?.caipNetworkId
 
     switch (chainId) {
       case SolConstantsUtil.CHAIN_IDS.Mainnet:
