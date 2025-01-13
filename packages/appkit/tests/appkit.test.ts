@@ -1750,10 +1750,15 @@ describe('Balance sync', () => {
     expect(AccountController.setBalance).not.toHaveBeenCalled()
   })
 
-  it('should set empty balance on testnet', async () => {
+  it('should fetch native balance on testnet', async () => {
     vi.spyOn(NetworkUtil, 'getNetworksByNamespace').mockReturnValue([
       { ...sepolia, caipNetworkId: 'eip155:11155111', chainNamespace: 'eip155' }
     ])
+
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
+      chains: new Map([['eip155', { namespace: 'eip155' }]]),
+      activeChain: 'eip155'
+    } as any)
 
     const appKit = new AppKit({
       ...mockOptions,
