@@ -110,7 +110,7 @@ jobs:
         env:
           EIP155_PRIVATE_KEY: ${{ secrets.EIP155_PRIVATE_KEY }}
           SOLANA_PRIVATE_KEY: ${{ secrets.SOLANA_PRIVATE_KEY }}
-        working-directory: ./apps/laboratory/
+        working-directory: ./apps/browser-extension/
         run: pnpm build
 
       - name: Install Playwright Browsers
