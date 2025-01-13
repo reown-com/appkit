@@ -834,6 +834,7 @@ export class AppKit {
         }
 
         const result = await adapter.connectWalletConnect(onUri, this.getCaipNetwork()?.id)
+        this.close()
 
         this.setClientId(result?.clientId || null)
         StorageUtil.setConnectedNamespaces([...ChainController.state.chains.keys()])
