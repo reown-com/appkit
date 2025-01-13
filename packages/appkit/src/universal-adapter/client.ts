@@ -29,9 +29,12 @@ export class UniversalAdapter extends AdapterBlueprint {
   }
 
   public async disconnect() {
-    const connector = this.connectors.find(c => c.id === 'WALLET_CONNECT')
-    const provider = connector?.provider
-    await provider?.disconnect()
+    try {
+      const connector = this.getWalletConnectConnector()
+      await connector.disconnect()
+    } catch (error) {
+      console.warn('UniversalAdapter:disconnect - error', error)
+    }
   }
 
   public async getAccounts({
@@ -173,13 +176,8 @@ export class UniversalAdapter extends AdapterBlueprint {
   // eslint-disable-next-line @typescript-eslint/require-await
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
     const { caipNetwork } = params
-    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
-    const provider = connector?.provider as UniversalProvider
-
-    if (!provider) {
-      throw new Error('UniversalAdapter:switchNetwork - provider is undefined')
-    }
-    provider.setDefaultChain(caipNetwork.caipNetworkId)
+    const connector = this.getWalletConnectConnector()
+    connector.provider.setDefaultChain(caipNetwork.caipNetworkId)
   }
 
   public getWalletConnectProvider() {

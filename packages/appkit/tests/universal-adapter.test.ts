@@ -2,13 +2,21 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { UniversalAdapter } from '../src/universal-adapter/client'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import type { CaipNetwork } from '@reown/appkit-common'
+import { WalletConnectConnector } from '../src/connectors'
 
 // Mock provider
 const mockProvider = {
   on: vi.fn(),
   connect: vi.fn(),
   disconnect: vi.fn(),
-  setDefaultChain: vi.fn()
+  setDefaultChain: vi.fn(),
+  client: {
+    core: {
+      crypto: {
+        getClientId: vi.fn(() => Promise.resolve('client-id'))
+      }
+    }
+  }
 } as unknown as UniversalProvider
 
 // Mock CaipNetwork
@@ -31,26 +39,24 @@ describe('UniversalAdapter', () => {
   let adapter: UniversalAdapter
 
   beforeEach(() => {
+    vi.clearAllMocks()
+
     adapter = new UniversalAdapter()
 
-    // Mock internal state using Object.defineProperty
-    Object.defineProperty(adapter, 'connectors', {
-      value: [
-        {
-          id: 'WALLET_CONNECT',
-          type: 'WALLET_CONNECT',
-          provider: mockProvider
-        }
-      ],
-      writable: true
-    })
+    adapter.connectors.push(
+      vi.mocked(
+        new WalletConnectConnector({
+          provider: mockProvider,
+          caipNetworks: [mockCaipNetwork],
+          namespace: 'eip155'
+        })
+      )
+    )
 
     Object.defineProperty(adapter, 'caipNetworks', {
       value: [mockCaipNetwork],
       writable: true
     })
-
-    vi.clearAllMocks()
   })
 
   describe('connectWalletConnect', () => {
@@ -72,7 +78,7 @@ describe('UniversalAdapter', () => {
       })
 
       await expect(adapter.connectWalletConnect(() => {})).rejects.toThrow(
-        'UniversalAdapter:connectWalletConnect - caipNetworks or provider is undefined'
+        'WalletConnectConnector not found'
       )
     })
 
@@ -140,7 +146,7 @@ describe('UniversalAdapter', () => {
         adapter.switchNetwork({
           caipNetwork: mockCaipNetwork
         })
-      ).rejects.toThrow('UniversalAdapter:switchNetwork - provider is undefined')
+      ).rejects.toThrow('WalletConnectConnector not found')
     })
   })
 })

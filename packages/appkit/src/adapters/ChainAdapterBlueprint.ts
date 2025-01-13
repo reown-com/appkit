@@ -379,7 +379,7 @@ export abstract class AdapterBlueprint<
       | undefined
 
     if (!connector) {
-      throw new Error('WalletConnect connector not found')
+      throw new Error('WalletConnectConnector not found')
     }
 
     return connector
