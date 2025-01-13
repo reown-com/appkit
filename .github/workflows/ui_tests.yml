@@ -36,6 +36,10 @@ on:
     secrets:
       NEXT_PUBLIC_PROJECT_ID:
         required: true
+      EIP155_PRIVATE_KEY:
+        required: true
+      SOLANA_PRIVATE_KEY:
+        required: true
       TESTS_NEXTAUTH_SECRET:
         required: false
       TESTS_MAILSAC_API_KEY:
@@ -101,6 +105,13 @@ jobs:
           NEXT_PUBLIC_SECURE_SITE_SDK_URL: ${{ inputs.secure-site-url }}
           SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
+
+      - name: build extension
+        env:
+          EIP155_PRIVATE_KEY: ${{ secrets.EIP155_PRIVATE_KEY }}
+          SOLANA_PRIVATE_KEY: ${{ secrets.SOLANA_PRIVATE_KEY }}
+        working-directory: ./apps/browser-extension/
+        run: pnpm build
 
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
