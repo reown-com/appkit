@@ -25,5 +25,12 @@ export const mockAuthConnector = {
   disconnect: vi.fn(),
   switchNetwork: vi.fn(),
   rejectRpcRequests: vi.fn(),
-  request: vi.fn()
+  request: vi.fn(),
+  getUser: vi.fn().mockResolvedValue({
+    address: '0x1234567890123456789012345678901234567890',
+    chainId: 1,
+    smartAccountDeployed: true,
+    preferredAccountType: 'eoa',
+    accounts: []
+  })
 }
