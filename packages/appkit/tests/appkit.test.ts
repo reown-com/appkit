@@ -924,7 +924,7 @@ describe('Base', () => {
       expect(AccountController.fetchTokenBalance).toHaveBeenCalled()
     })
 
-    it.only('should not sync balance on testnets', async () => {
+    it('should not sync balance on testnets', async () => {
       vi.spyOn(NetworkUtil, 'getNetworksByNamespace').mockReturnValue([
         {
           ...sepolia,
