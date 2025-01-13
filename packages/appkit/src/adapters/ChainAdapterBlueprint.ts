@@ -1,5 +1,4 @@
 import {
-  getW3mThemeVariables,
   ConstantsUtil as CommonConstantsUtil,
   type CaipAddress,
   type CaipNetwork,
@@ -8,23 +7,17 @@ import {
 import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
 import {
   AccountController,
-  OptionsController,
-  ThemeController,
   type AccountType,
   type AccountControllerState,
   type Connector as AppKitConnector,
-  type AuthConnector,
-  type Metadata,
   type Tokens,
   type WriteContractArgs
 } from '@reown/appkit-core'
-import type UniversalProvider from '@walletconnect/universal-provider'
-import type { W3mFrameProvider } from '@reown/appkit-wallet'
+import UniversalProvider from '@walletconnect/universal-provider'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { PresetsUtil } from '@reown/appkit-utils'
 import type { AppKitOptions } from '../utils/index.js'
 import type { AppKit } from '../client.js'
-import { snapshot } from 'valtio/vanilla'
-
 type EventName =
   | 'disconnect'
   | 'accountChanged'
@@ -130,28 +123,6 @@ export abstract class AdapterBlueprint<
    * @param {...Connector} connectors - The connectors to add
    */
   protected addConnector(...connectors: Connector[]) {
-    if (connectors.some(connector => connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH)) {
-      const authConnector = connectors.find(
-        connector => connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH
-      ) as AuthConnector
-
-      const optionsState = snapshot(OptionsController.state)
-      const themeMode = ThemeController.getSnapshot().themeMode
-      const themeVariables = ThemeController.getSnapshot().themeVariables
-
-      authConnector?.provider?.syncDappData?.({
-        metadata: optionsState.metadata as Metadata,
-        sdkVersion: optionsState.sdkVersion,
-        projectId: optionsState.projectId,
-        sdkType: optionsState.sdkType
-      })
-      authConnector.provider.syncTheme({
-        themeMode,
-        themeVariables,
-        w3mThemeVariables: getW3mThemeVariables(themeVariables, themeMode)
-      })
-    }
-
     const connectorsAdded = new Set<string>()
     this.availableConnectors = [...connectors, ...this.availableConnectors].filter(connector => {
       if (connectorsAdded.has(connector.id)) {
@@ -195,6 +166,15 @@ export abstract class AdapterBlueprint<
     if (listeners) {
       listeners.delete(callback as EventCallback<EventName>)
     }
+  }
+
+  /**
+   * Removes all event listeners.
+   */
+  public removeAllEventListeners() {
+    this.eventListeners.forEach(listeners => {
+      listeners.clear()
+    })
   }
 
   /**
@@ -242,7 +222,31 @@ export abstract class AdapterBlueprint<
    * Switches the network.
    * @param {AdapterBlueprint.SwitchNetworkParams} params - Network switching parameters
    */
-  public abstract switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void>
+  public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
+    const { caipNetwork, providerType } = params
+
+    if (!params.provider) {
+      return
+    }
+
+    const provider = 'provider' in params.provider ? params.provider.provider : params.provider
+
+    if (providerType === 'WALLET_CONNECT') {
+      ;(provider as UniversalProvider).setDefaultChain(caipNetwork.caipNetworkId)
+
+      return
+    }
+
+    if (provider && providerType === 'AUTH') {
+      const authProvider = provider as W3mFrameProvider
+      await authProvider.switchNetwork(caipNetwork.caipNetworkId)
+      const user = await authProvider.getUser({
+        chainId: caipNetwork.caipNetworkId
+      })
+
+      this.emit('switchNetwork', user)
+    }
+  }
 
   /**
    * Disconnects the current wallet.

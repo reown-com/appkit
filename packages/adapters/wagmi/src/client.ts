@@ -217,8 +217,12 @@ export class WagmiAdapter extends AdapterBlueprint {
         if (accountData.status === 'disconnected') {
           this.emit('disconnect')
         }
+
         if (accountData.status === 'connected') {
-          if (accountData.address !== prevAccountData?.address) {
+          if (
+            accountData.address !== prevAccountData?.address ||
+            prevAccountData.status !== 'connected'
+          ) {
             this.setupWatchPendingTransactions()
 
             this.emit('accountChanged', {
@@ -590,7 +594,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     )
   }
 
-  public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
+  public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
     await switchChain(this.wagmiConfig, { chainId: params.caipNetwork.id as number })
   }
 

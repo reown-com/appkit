@@ -3,7 +3,11 @@ import { AccountController } from '../src/controllers/AccountController.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import { ChainController } from '../src/controllers/ChainController.js'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
-import type { UseAppKitAccountReturn, UseAppKitNetworkReturn } from '../src/utils/TypeUtil.js'
+import type {
+  AccountType,
+  UseAppKitAccountReturn,
+  UseAppKitNetworkReturn
+} from '../src/utils/TypeUtil.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
 
 // -- Hooks ------------------------------------------------------------
@@ -21,7 +25,7 @@ export function useAppKitNetworkCore(): Pick<
 }
 
 export function useAppKitAccount(): UseAppKitAccountReturn {
-  const { status, user, preferredAccountType, smartAccountDeployed } = useSnapshot(
+  const { status, user, preferredAccountType, smartAccountDeployed, allAccounts } = useSnapshot(
     AccountController.state
   )
 
@@ -30,6 +34,7 @@ export function useAppKitAccount(): UseAppKitAccountReturn {
   const authConnector = ConnectorController.getAuthConnector()
 
   return {
+    allAccounts: allAccounts as AccountType[],
     caipAddress: activeCaipAddress,
     address: CoreHelperUtil.getPlainAddress(activeCaipAddress),
     isConnected: Boolean(activeCaipAddress),
