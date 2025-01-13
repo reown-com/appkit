@@ -16,6 +16,8 @@ export const extensionFixture = base.extend<ExtensionFixture>({
     const pathToExtension = path.resolve(__dirname, '../../../../browser-extension/dist')
 
     const isHeadless = process.env['HEADLESS'] === 'true'
+    // eslint-disable-next-line no-console
+    console.log('isHeadless', isHeadless)
 
     const context = await chromium.launchPersistentContext('', {
       headless: isHeadless,
