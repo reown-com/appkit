@@ -19,6 +19,7 @@ import { isVersionedTransaction } from '@solana/wallet-adapter-base'
 import { type CaipNetwork, ParseUtil, type CaipAddress } from '@reown/appkit-common'
 import { WcHelpersUtil, type RequestArguments } from '@reown/appkit'
 import { WalletConnectMethodNotSupportedError } from './shared/Errors.js'
+import type { SessionTypes } from '@walletconnect/types'
 
 export type WalletConnectProviderConfig = {
   provider: UniversalProvider
@@ -46,7 +47,7 @@ export class SolanaWalletConnectProvider
   public onUri?: (uri: string) => void
 
   // -- Public ------------------------------------------- //
-  public get session() {
+  public get session(): SessionTypes.Struct | undefined {
     return this.provider.session
   }
 
