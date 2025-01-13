@@ -33,7 +33,6 @@ const TRANSACTION: Transaction = {
   transfers: [TRANSFER]
 }
 
- 
 class MockIntersectionObserver {
   observe() {}
   unobserve() {}
