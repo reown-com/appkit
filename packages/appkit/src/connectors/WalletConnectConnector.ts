@@ -38,7 +38,7 @@ export class WalletConnectConnector<Namespace extends ChainNamespace = ChainName
 
     if (!isAuthenticated) {
       await this.provider.connect({
-        optionalNamespaces: WcHelpersUtil.createNamespaces(this.chains)
+        optionalNamespaces: WcHelpersUtil.createNamespaces(this.caipNetworks)
       })
     }
 
