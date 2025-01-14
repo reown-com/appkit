@@ -717,11 +717,11 @@ export class AppKit {
 
     const extendedNetwork = this.extendCaipNetwork(network, this.options)
 
+    ChainController.addNetwork(extendedNetwork)
+
     if (this.caipNetworks && !this.caipNetworks?.find(n => n.id === extendedNetwork.id)) {
       this.caipNetworks.push(extendedNetwork)
     }
-
-    ChainController.addNetwork(extendedNetwork)
   }
 
   /**
@@ -735,7 +735,7 @@ export class AppKit {
       throw new Error(`Adapter for namespace ${namespace} doesn't exist`)
     }
 
-    const networkToRemove = this.caipNetworks?.find(n => n.id === networkId.toString())
+    const networkToRemove = this.caipNetworks?.find(n => n.id === networkId)
     if (!networkToRemove) {
       throw new Error(`Network with ID ${networkId} not found`)
     }
@@ -745,14 +745,14 @@ export class AppKit {
     }
 
     const remainingNetworks = this.caipNetworks.filter(
-      n => n.chainNamespace === namespace && n.id !== networkId.toString()
+      n => n.chainNamespace === namespace && n.id !== networkId
     )
     if (!remainingNetworks?.length) {
       throw new Error('Cannot remove last network for a namespace')
     }
 
-    this.caipNetworks = [...remainingNetworks] as [CaipNetwork, ...CaipNetwork[]]
     ChainController.removeNetwork(namespace, networkId)
+    this.caipNetworks = [...remainingNetworks] as [CaipNetwork, ...CaipNetwork[]]
   }
 
   // -- Private ------------------------------------------------------------------

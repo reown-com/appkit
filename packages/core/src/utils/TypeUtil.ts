@@ -971,7 +971,7 @@ export type ChainAdapter = {
   accountState?: AdapterAccountState
   networkState?: AdapterNetworkState
   namespace?: ChainNamespace
-  caipNetworks?: CaipNetwork[] | AppKitNetwork[]
+  caipNetworks?: CaipNetwork[]
   projectId?: string
   adapterType?: string
 }
