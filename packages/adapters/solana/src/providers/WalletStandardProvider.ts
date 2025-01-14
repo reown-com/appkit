@@ -26,12 +26,19 @@ import {
   StandardEvents,
   type StandardEventsFeature
 } from '@wallet-standard/features'
-import type { AnyTransaction, GetActiveChain, Provider } from '@reown/appkit-utils/solana'
+import type {
+  AnyTransaction,
+  GetActiveChain,
+  Provider as SolanaProvider
+} from '@reown/appkit-utils/solana'
 import base58 from 'bs58'
 import { WalletStandardFeatureNotSupportedError } from './shared/Errors.js'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 import { solanaChains } from '../utils/chains.js'
-import type { CaipNetwork } from '@reown/appkit-common'
+import { ConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
+import { PresetsUtil } from '@reown/appkit-utils'
+import type { RequestArguments } from '@reown/appkit-core'
+import type { Provider as CoreProvider } from '@reown/appkit-core'
 
 export interface WalletStandardProviderConfig {
   wallet: Wallet
@@ -47,9 +54,11 @@ type AvailableFeatures = StandardConnectFeature &
   SolanaSignInFeature &
   StandardEventsFeature
 
-export class WalletStandardProvider extends ProviderEventEmitter implements Provider {
+export class WalletStandardProvider extends ProviderEventEmitter implements SolanaProvider {
   readonly wallet: Wallet
   readonly getActiveChain: WalletStandardProviderConfig['getActiveChain']
+  readonly chain = ConstantsUtil.CHAIN.SOLANA
+  public readonly provider = this as CoreProvider
 
   private readonly requestedChains: WalletStandardProviderConfig['requestedChains']
 
@@ -64,6 +73,12 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
   }
 
   // -- Public ------------------------------------------- //
+  public get id() {
+    const name = this.name
+
+    return PresetsUtil.ConnectorExplorerIds[name] || name
+  }
+
   public get name() {
     if (this.wallet.name === 'Trust') {
       // The wallets from our list of wallets have not matching with the extension name
@@ -77,6 +92,10 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
     return 'ANNOUNCED' as const
   }
 
+  public get explorerId() {
+    return PresetsUtil.ConnectorExplorerIds[this.name]
+  }
+
   public get publicKey() {
     const account = this.getAccount(false)
 
@@ -87,7 +106,7 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
     return undefined
   }
 
-  public get icon() {
+  public get imageUrl() {
     return this.wallet.icon
   }
 
@@ -222,6 +241,20 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Prov
 
       return Transaction.from(signedTransaction)
     }) as T
+  }
+
+  public async request<T>(_args: RequestArguments): Promise<T> {
+    return Promise.reject(new WalletStandardFeatureNotSupportedError('request'))
+  }
+
+  public async getAccounts() {
+    return Promise.resolve(
+      this.wallet.accounts.map(account => ({
+        namespace: this.chain,
+        address: account.address,
+        type: 'eoa' as const
+      }))
+    )
   }
 
   // -- Private ------------------------------------------- //
