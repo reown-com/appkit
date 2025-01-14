@@ -945,9 +945,12 @@ export class AppKit {
 
         await this.syncWalletConnectAccount()
       },
-      connectExternal: async ({ id, info, type, provider, chain, caipNetwork }) => {
+      connectExternal: async ({ id, info, type, provider, chain }) => {
         const activeChain = ChainController.state.activeChain as ChainNamespace
-        if (chain && chain !== activeChain && !caipNetwork) {
+        const chainToUse = chain || activeChain
+        const adapter = this.getAdapter(chainToUse)
+
+        if (chain && chain !== activeChain) {
           const toConnectNetwork = this.caipNetworks?.find(
             network => network.chainNamespace === chain
           )
@@ -955,9 +958,6 @@ export class AppKit {
             this.setCaipNetwork(toConnectNetwork)
           }
         }
-
-        const chainToUse = chain || activeChain
-        const adapter = this.getAdapter(chainToUse)
 
         if (!adapter) {
           throw new Error('Adapter not found')
@@ -968,32 +968,28 @@ export class AppKit {
           info,
           type,
           provider,
-          chainId: caipNetwork?.id || this.getCaipNetwork()?.id,
-          rpcUrl:
-            caipNetwork?.rpcUrls?.default?.http?.[0] ||
-            this.getCaipNetwork()?.rpcUrls?.default?.http?.[0]
+          chainId: this.getCaipNetwork()?.id,
+          rpcUrl: this.getCaipNetwork()?.rpcUrls?.default?.http?.[0]
         })
 
         StorageUtil.addConnectedNamespace(chainToUse)
 
         if (res) {
-          this.syncProvider({
-            ...res,
-            chainNamespace: chainToUse
-          })
-          await this.syncAccount({
-            ...res,
-            chainNamespace: chainToUse
-          })
+          this.syncProvider({ ...res, chainNamespace: chainToUse })
+          await this.syncAccount({ ...res, chainNamespace: chainToUse })
 
           const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
 
           this.setAllAccounts(accounts, chainToUse)
         }
 
-        if (!this.caipNetworks?.some(network => network.id === res?.chainId)) {
-          if (res?.chainId) {
-            this.setUnsupportedNetwork(res.chainId)
+        const hasNetwork = this.caipNetworks?.some(network => network.id === res?.chainId)
+
+        if (!hasNetwork) {
+          const activeNetwork = this.getCaipNetwork() || this.caipNetworks?.[0]
+
+          if (activeNetwork) {
+            this.switchNetwork(activeNetwork)
           }
         }
       },
