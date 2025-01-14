@@ -143,4 +143,48 @@ describe('UniversalAdapter', () => {
       ).rejects.toThrow('UniversalAdapter:switchNetwork - provider is undefined')
     })
   })
+
+  describe('getAccounts', () => {
+    it('should return empty array if there is no accounts', async () => {
+      mockProvider.session = undefined
+      const accounts = await adapter.getAccounts({ id: '', namespace: 'eip155' })
+
+      expect(accounts).toEqual({ accounts: [] })
+    })
+
+    it('should return accounts successfully', async () => {
+      mockProvider.session = {
+        namespaces: {
+          eip155: {
+            accounts: ['eip155:mock_network:mock_address_1', 'eip155:mock_network:mock_address_2']
+          }
+        }
+      } as any
+
+      Object.assign(adapter, {
+        provider: mockProvider
+      })
+
+      const accounts = await adapter.getAccounts({ id: '', namespace: 'eip155' })
+
+      expect(accounts).toEqual({
+        accounts: [
+          {
+            address: 'mock_address_1',
+            namespace: 'eip155',
+            path: undefined,
+            publicKey: undefined,
+            type: 'eoa'
+          },
+          {
+            address: 'mock_address_2',
+            namespace: 'eip155',
+            path: undefined,
+            publicKey: undefined,
+            type: 'eoa'
+          }
+        ]
+      })
+    })
+  })
 })
