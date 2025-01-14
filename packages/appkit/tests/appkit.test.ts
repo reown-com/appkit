@@ -129,6 +129,21 @@ describe('Base', () => {
 
       expect(OptionsController.setEIP6963Enabled).toHaveBeenCalledWith(false)
     })
+
+    it('should set partially defaultAccountType', () => {
+      new AppKit({
+        ...mockOptions,
+        defaultAccountTypes: {
+          eip155: 'eoa',
+          bip122: 'ordinal'
+        }
+      })
+
+      expect(OptionsController.setDefaultAccountTypes).toHaveBeenCalledWith({
+        eip155: 'eoa',
+        bip122: 'ordinal'
+      })
+    })
   })
 
   describe('Base Public methods', () => {
