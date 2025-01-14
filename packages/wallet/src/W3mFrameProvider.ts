@@ -30,6 +30,8 @@ export class W3mFrameProvider {
 
   public onTimeout?: () => void
 
+  public user?: W3mFrameTypes.Responses['FrameGetUserResponse']
+
   public constructor({
     projectId,
     chainId,
@@ -44,6 +46,12 @@ export class W3mFrameProvider {
     if (this.getLoginEmailUsed()) {
       this.w3mFrame.initFrame()
     }
+
+    this.w3mFrame.events.onFrameEvent(event => {
+      if (event.type === W3mFrameConstants.FRAME_GET_USER_SUCCESS) {
+        this.user = event.payload
+      }
+    })
   }
 
   // -- Extended Methods ------------------------------------------------
@@ -618,7 +626,10 @@ export class W3mFrameProvider {
   }
 
   public getLastUsedChainId() {
-    return Number(W3mFrameStorage.get(W3mFrameConstants.LAST_USED_CHAIN_KEY))
+    const chainId = W3mFrameStorage.get(W3mFrameConstants.LAST_USED_CHAIN_KEY) ?? undefined
+    const numberChainId = Number(chainId)
+
+    return isNaN(numberChainId) ? chainId : numberChainId
   }
 
   private persistSmartAccountEnabledNetworks(networks: number[]) {
