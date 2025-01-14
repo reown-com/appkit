@@ -48,7 +48,7 @@ describe('W3mAccountActivityWidget', () => {
     vi.resetAllMocks()
   })
 
-  it('it should display one transaction list items if not empty', async () => {
+  it('it should display transaction list items if not empty', async () => {
     vi.spyOn(TransactionsController, 'state', 'get').mockReturnValue({
       ...TransactionsController.state,
       transactionsByYear: {
