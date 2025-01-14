@@ -13,6 +13,7 @@ import type {
 } from '../utils/TypeUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import type { SIWXConfig } from '../utils/SIWXUtil.js'
+import { OptionsUtil } from '../utils/OptionsUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerStatePublic {
@@ -181,12 +182,14 @@ export const OptionsController = {
 
     if (!state.features) {
       state.features = ConstantsUtil.DEFAULT_FEATURES
-
-      return
     }
 
     const newFeatures = { ...state.features, ...features }
     state.features = newFeatures
+
+    if (state.features.socials) {
+      state.features.socials = OptionsUtil.filterSocialsByPlatform(state.features.socials)
+    }
   },
 
   setProjectId(projectId: OptionsControllerState['projectId']) {

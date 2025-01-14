@@ -23,7 +23,8 @@ import {
   type OptionsControllerState,
   type WalletFeature,
   type ConnectMethod,
-  type SocialProvider
+  type SocialProvider,
+  type AccountControllerState
 } from '@reown/appkit-core'
 import {
   AccountController,
@@ -53,7 +54,9 @@ import {
   type CaipNetworkId,
   NetworkUtil,
   ConstantsUtil,
-  ParseUtil
+  ParseUtil,
+  SafeLocalStorage,
+  SafeLocalStorageKeys
 } from '@reown/appkit-common'
 import type { AppKitOptions } from './utils/TypesUtil.js'
 import {
@@ -191,6 +194,10 @@ export class AppKit {
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
     this.chainAdapters = this.createAdapters(options.adapters as unknown as AdapterBlueprint[])
     this.initialize(options)
+    // Check on the next thick because wagmiAdapter authConnector is not immediately available
+    setTimeout(() => {
+      this.checkExistingConnection()
+    }, 0)
   }
 
   public static getInstance() {
@@ -1948,7 +1955,7 @@ export class AppKit {
       : CoreConstantsUtil.DEFAULT_FEATURES.socials
 
     const isAuthEnabled = isEmailEnabled || isSocialsEnabled
-
+    console.log('isAuthEnabled', isAuthEnabled)
     if (!this.authProvider && this.options?.projectId && isAuthEnabled) {
       this.authProvider = W3mFrameProviderSingleton.getInstance({
         projectId: this.options.projectId,
@@ -1957,6 +1964,7 @@ export class AppKit {
           AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
         }
       })
+      console.log('AuthProvider created', this.authProvider)
       this.subscribeState(val => {
         if (!val.open) {
           this.authProvider?.rejectRpcRequests()
@@ -2049,6 +2057,7 @@ export class AppKit {
     this.chainAdapters?.[namespace].syncConnectors(this.options, this)
     await this.createUniversalProviderForAdapter(namespace)
     this.createAuthProviderForAdapter(namespace)
+    console.log('initChainAdapter', namespace)
   }
 
   private async initChainAdapters() {
@@ -2088,5 +2097,66 @@ export class AppKit {
     }
 
     return this.initPromise
+  }
+
+  private async checkExistingConnection() {
+    try {
+      if (!CoreHelperUtil.isTelegram()) {
+        return
+      }
+      const socialProviderToConnect = SafeLocalStorage.getItem(
+        SafeLocalStorageKeys.SOCIAL_PROVIDER
+      ) as AccountControllerState['socialProvider']
+      console.log('socialProviderToConnect', socialProviderToConnect)
+      if (!socialProviderToConnect) {
+        return
+      }
+      if (typeof window === 'undefined' || typeof document === 'undefined') {
+        return
+      }
+      const url = new URL(window.location.href)
+      console.log('url', url)
+      const resultUri = url.searchParams.get('result_uri')
+      console.log('resultUri', resultUri)
+      if (!resultUri) {
+        return
+      }
+      AccountController.setSocialProvider(
+        socialProviderToConnect,
+        ChainController.state.activeChain
+      )
+      await this.authProvider?.reload()
+      const authConnector = ConnectorController.getAuthConnector()
+      console.log('authConnector', authConnector)
+      if (socialProviderToConnect && authConnector) {
+        this.setLoading(true)
+        await new Promise<void>(resolve => setTimeout(resolve, 5_00))
+        await authConnector.provider.connectSocial(resultUri)
+        await ConnectionController.connectExternal(authConnector, authConnector.chain)
+        console.log('connected')
+        StorageUtil.setConnectedSocialProvider(socialProviderToConnect)
+        SafeLocalStorage.removeItem(SafeLocalStorageKeys.SOCIAL_PROVIDER)
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'SOCIAL_LOGIN_SUCCESS',
+          properties: { provider: socialProviderToConnect }
+        })
+      }
+    } catch (error) {
+      this.setLoading(false)
+      // eslint-disable-next-line no-console
+      console.error('checkExistingConnection error', error)
+    }
+
+    try {
+      const url = new URL(window.location.href)
+      // Remove the 'result_uri' parameter
+      url.searchParams.delete('result_uri')
+      // Update the URL without reloading the page
+      window.history.replaceState({}, document.title, url.toString())
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error)
+    }
   }
 }

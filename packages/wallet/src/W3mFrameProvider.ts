@@ -298,17 +298,19 @@ export class W3mFrameProvider {
 
   public async connectSocial(uri: string) {
     try {
+      console.log('connectSocial', uri)
       const response = await this.appEvent<'ConnectSocial'>({
         type: W3mFrameConstants.APP_CONNECT_SOCIAL,
         payload: { uri }
       } as W3mFrameTypes.AppEvent)
-
+      console.log('connectSocial response', response)
       if (response.userName) {
         this.setSocialLoginSuccess(response.userName)
       }
 
       return response
     } catch (error) {
+      console.error('connectSocial error', error)
       this.w3mLogger?.logger.error({ error }, 'Error connecting social')
       throw error
     }
@@ -555,6 +557,7 @@ export class W3mFrameProvider {
       })
 
       function handler(framEvent: W3mFrameTypes.FrameEvent, logger?: W3mFrameLogger) {
+        console.log('framEvent', framEvent)
         if (framEvent.id !== id) {
           return
         }

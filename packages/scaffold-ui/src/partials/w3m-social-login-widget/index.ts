@@ -18,6 +18,7 @@ import { state, property } from 'lit/decorators.js'
 import styles from './styles.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { SocialProviderEnum } from '@reown/appkit-utils'
+import { SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
 
 const MAX_TOP_VIEW = 2
 const MAXIMUM_LENGTH = 6
@@ -210,21 +211,31 @@ export class W3mSocialLoginWidget extends LitElement {
       RouterController.push('ConnectingSocial')
 
       const authConnector = ConnectorController.getAuthConnector()
-      this.popupWindow = CoreHelperUtil.returnOpenHref(
-        '',
-        'popupWindow',
-        'width=600,height=800,scrollbars=yes'
-      )
 
+      if (!CoreHelperUtil.isTelegram()) {
+        this.popupWindow = CoreHelperUtil.returnOpenHref(
+          '',
+          'popupWindow',
+          'width=600,height=800,scrollbars=yes'
+        )
+      }
+      console.log('authConnector', authConnector)
+      console.log('socialProvider', socialProvider)
       try {
         if (authConnector && socialProvider) {
           const { uri } = await authConnector.provider.getSocialRedirectUri({
             provider: socialProvider
           })
-
+          console.log('uri', uri)
           if (this.popupWindow && uri) {
             AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
             this.popupWindow.location.href = uri
+          } else if (CoreHelperUtil.isTelegram() && uri) {
+            console.log('uri', uri)
+            SafeLocalStorage.setItem(SafeLocalStorageKeys.SOCIAL_PROVIDER, socialProvider)
+            const parsedUri = CoreHelperUtil.formatTelegramSocialLoginUrl(uri)
+            console.log('redirecting...', parsedUri)
+            CoreHelperUtil.openHref(parsedUri, '_top')
           } else {
             this.popupWindow?.close()
             throw new Error('Something went wrong')

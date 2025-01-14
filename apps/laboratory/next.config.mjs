@@ -5,9 +5,12 @@ const SHAKRA_UI = `'sha256-e7MRMmTzLsLQvIy1iizO1lXf7VWYoQ6ysj5fuUzvRwE='`
  * DO NOT use `unsafe-inline` or `unsafe-eval` for `script-src` or `default-src` in production as this
  * is against CSP best practices
  */
-const secureSiteDomain = process.env.NEXT_PUBLIC_SECURE_SITE_SDK_URL
-  ? new URL(process.env.NEXT_PUBLIC_SECURE_SITE_SDK_URL).origin
-  : ''
+const secureSiteDomain = 'https://4777e22c.secure-appkit-sdk.pages.dev'
+/*
+ * Process.env.NEXT_PUBLIC_SECURE_SITE_SDK_URL
+ *   ? new URL(process.env.NEXT_PUBLIC_SECURE_SITE_SDK_URL).origin
+ *  : ''
+ */
 const verifyApiNestedIframesTestOuterDomain =
   'https://verify-api-nested-iframes-test-outer-domain.com'
 const cspHeader = `
