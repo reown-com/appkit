@@ -66,10 +66,6 @@ export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
 }
 
 export function useAppKitTheme() {
-  if (!modal) {
-    throw new Error('Please call "createAppKit" before using "useAppKitTheme" hook')
-  }
-
   function setThemeMode(themeMode: ThemeModeOptions) {
     if (themeMode) {
       modal?.setThemeMode(themeMode)
@@ -82,8 +78,8 @@ export function useAppKitTheme() {
     }
   }
 
-  const [themeMode, setInternalThemeMode] = useState(modal.getThemeMode())
-  const [themeVariables, setInternalThemeVariables] = useState(modal.getThemeVariables())
+  const [themeMode, setInternalThemeMode] = useState(modal?.getThemeMode())
+  const [themeVariables, setInternalThemeVariables] = useState(modal?.getThemeVariables())
 
   useEffect(() => {
     const unsubscribe = modal?.subscribeTheme(state => {
@@ -105,10 +101,6 @@ export function useAppKitTheme() {
 }
 
 export function useAppKit() {
-  if (!modal) {
-    throw new Error('Please call "createAppKit" before using "useAppKit" hook')
-  }
-
   async function open(options?: OpenOptions) {
     await modal?.open(options)
   }
@@ -121,25 +113,20 @@ export function useAppKit() {
 }
 
 export function useWalletInfo() {
-  if (!modal) {
-    throw new Error('Please call "createAppKit" before using "useWalletInfo" hook')
-  }
-
   const walletInfo = useSyncExternalStore(
-    modal.subscribeWalletInfo,
-    modal.getWalletInfo,
-    modal.getWalletInfo
+    modal?.subscribeWalletInfo ||
+      (() => () => {
+        console.log('Wallet info not available')
+      }),
+    modal?.getWalletInfo || (() => undefined),
+    modal?.getWalletInfo || (() => undefined)
   )
 
   return { walletInfo }
 }
 
 export function useAppKitState() {
-  if (!modal) {
-    throw new Error('Please call "createAppKit" before using "useAppKitState" hook')
-  }
-
-  const [state, setState] = useState(modal.getState())
+  const [state, setState] = useState(modal?.getState())
 
   useEffect(() => {
     const unsubscribe = modal?.subscribeState(newState => {
@@ -155,11 +142,7 @@ export function useAppKitState() {
 }
 
 export function useAppKitEvents() {
-  if (!modal) {
-    throw new Error('Please call "createAppKit" before using "useAppKitEvents" hook')
-  }
-
-  const [event, setEvents] = useState(modal.getEvent())
+  const [event, setEvents] = useState(modal?.getEvent())
 
   useEffect(() => {
     const unsubscribe = modal?.subscribeEvents(newEvent => {
