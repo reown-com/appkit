@@ -1,7 +1,7 @@
 import type { Features, SocialProvider } from './TypeUtil.js'
 import type { ChainNamespace } from '@reown/appkit-common'
 
-const SECURE_SITE = 'https://secure.walletconnect.org'
+const SECURE_SITE = 'https://4777e22c.secure-appkit-sdk.pages.dev' //'https://secure.walletconnect.org'
 
 export const ONRAMP_PROVIDERS = [
   {
