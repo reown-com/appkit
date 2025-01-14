@@ -359,6 +359,24 @@ export class Ethers5Adapter extends AdapterBlueprint {
         method: 'eth_chainId'
       })
 
+      if (requestChainId !== chainId) {
+        const caipNetwork = this.caipNetworks?.find(n => n.id === chainId)
+
+        if (!caipNetwork) {
+          throw new Error('Ethers5Adapter:connect - could not find the caipNetwork to switch')
+        }
+
+        try {
+          await this.switchNetwork({
+            caipNetwork: caipNetwork,
+            provider: selectedProvider,
+            providerType: type as ConnectorType
+          })
+        } catch (error) {
+          throw new Error('Ethers5Adapter:connect - Switch network failed')
+        }
+      }
+
       this.listenProviderEvents(selectedProvider)
     }
 

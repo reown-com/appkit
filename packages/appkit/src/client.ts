@@ -912,26 +912,15 @@ export class AppKit {
           rpcUrl: this.getCaipNetwork()?.rpcUrls?.default?.http?.[0]
         })
 
+        if (!res) {
+          return
+        }
+
         StorageUtil.addConnectedNamespace(chainToUse)
-
-        if (res) {
-          this.syncProvider({ ...res, chainNamespace: chainToUse })
-          await this.syncAccount({ ...res, chainNamespace: chainToUse })
-
-          const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
-
-          this.setAllAccounts(accounts, chainToUse)
-        }
-
-        const hasNetwork = this.caipNetworks?.some(network => network.id === res?.chainId)
-
-        if (!hasNetwork) {
-          const activeNetwork = this.getCaipNetwork() || this.caipNetworks?.[0]
-
-          if (activeNetwork) {
-            this.switchNetwork(activeNetwork)
-          }
-        }
+        this.syncProvider({ ...res, chainNamespace: chainToUse })
+        await this.syncAccount({ ...res, chainNamespace: chainToUse })
+        const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
+        this.setAllAccounts(accounts, chainToUse)
       },
       reconnectExternal: async ({ id, info, type, provider }) => {
         const namespace = ChainController.state.activeChain as ChainNamespace
