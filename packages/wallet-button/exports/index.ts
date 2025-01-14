@@ -7,7 +7,7 @@ export * from '../src/scaffold-ui/appkit-wallet-button/index.js'
 export type { Wallet } from '../src/utils/TypeUtil.js'
 
 // -- Utils & Other -----------------------------------------------------
-export let walletButton: AppKitWalletButton | undefined = undefined
+let walletButton: AppKitWalletButton | undefined = undefined
 
 export function createAppKitWalletButton() {
   if (!walletButton) {
