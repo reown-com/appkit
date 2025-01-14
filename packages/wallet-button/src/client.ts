@@ -7,12 +7,14 @@ import { WalletUtil } from './utils/WalletUtil.js'
 import { ApiController } from './controllers/ApiController.js'
 
 export class AppKitWalletButton {
-  public isReady = WalletButtonController.state.ready
-
   constructor() {
-    if (!this.isReady) {
+    if (!this.isReady()) {
       ApiController.fetchWalletButtons()
     }
+  }
+
+  public isReady() {
+    return WalletButtonController.state.ready
   }
 
   public subscribeIsReady(callback: ({ isReady }: { isReady: boolean }) => void) {

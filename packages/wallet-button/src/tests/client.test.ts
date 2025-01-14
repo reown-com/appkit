@@ -5,7 +5,7 @@ import { WalletButtonController } from '../controllers/WalletButtonController'
 import { ConnectorUtil } from '../utils/ConnectorUtil'
 import { WalletUtil } from '../utils/WalletUtil'
 import { ConnectorController, type Connector, type WcWallet } from '@reown/appkit-core'
-import type { CaipAddress, ParsedCaipAddress } from '@reown/appkit-common'
+import type { ParsedCaipAddress } from '@reown/appkit-common'
 
 // -- Constants ------------------------------------------------------------
 const METAMASK_CONNECTOR = {

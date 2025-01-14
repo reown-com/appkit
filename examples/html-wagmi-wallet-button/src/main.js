@@ -74,10 +74,10 @@ modal.subscribeAccount(state => {
   }
 })
 
-// Get AppKit Wallet Button
+// Create AppKit Wallet Button
 const appKitWalletButton = createAppKitWalletButton()
 
-if (!appKitWalletButton.isReady) {
+if (!appKitWalletButton.isReady()) {
   disableAllWalletButtons()
 }
 
