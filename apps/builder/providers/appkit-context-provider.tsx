@@ -55,7 +55,6 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
   const [enabledNetworks, setEnabledNetworks] = useState<(string | number)[]>(
     initialEnabledNetworks || []
   )
-  console.log(enabledNetworks, initialEnabledNetworks)
   const themeStore = useSnapshot(ThemeStore.state)
   const appKit = themeStore.modal
 
@@ -106,21 +105,19 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
 
   function removeNetwork(network: NetworkOption) {
     setEnabledNetworks(prev => {
-      // Get all currently enabled networks for this namespace
       const networksInNamespace = NETWORK_OPTIONS.filter(
         n => n.namespace === network.namespace && prev.includes(n.network.id)
       ).map(n => n.network.id)
 
-      // Don't remove if it's the last network in its namespace
       if (networksInNamespace.length === 1 && networksInNamespace[0] === network.network.id) {
         return prev
       }
 
       const newNetworks = prev.filter(n => n !== network.network.id)
-      // appKit?.removeNet"work(network.namespace, network.network.id)
       urlStateUtils.updateURLWithState({ enabledNetworks: newNetworks as string[] })
       return newNetworks
     })
+    appKit?.removeNetwork(network.namespace, network.network.id)
   }
 
   function addNetwork(network: NetworkOption) {
@@ -129,7 +126,7 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
       urlStateUtils.updateURLWithState({ enabledNetworks: newNetworks as string[] })
       return newNetworks
     })
-    // appKit?.addNetwork(network.namespace, network.network)
+    appKit?.addNetwork(network.namespace, network.network)
   }
 
   function updateFeatures(newFeatures: Partial<Features>) {
