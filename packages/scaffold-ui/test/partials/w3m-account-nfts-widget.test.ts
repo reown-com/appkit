@@ -1,7 +1,7 @@
 import { html } from 'lit'
 import { fixture } from '@open-wc/testing'
 import { W3mAccountNftsWidget } from '../../src/partials/w3m-account-nfts-widget'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { HelpersUtil } from '../utils/HelpersUtil'
 import { RouterController } from '@reown/appkit-core'
 
@@ -11,6 +11,10 @@ const DESCRIPTION = 'nft-template-description'
 const LINK_RECEIVE_FUNDS = 'link-receive-funds'
 
 describe('W3mAccountNftsWidget', () => {
+  afterEach(() => {
+    vi.resetAllMocks()
+  })
+
   it('it should display basic content', async () => {
     const accountsNftsWidget: W3mAccountNftsWidget = await fixture(
       html`<w3m-account-nfts-widget></w3m-account-nfts-widget>`
