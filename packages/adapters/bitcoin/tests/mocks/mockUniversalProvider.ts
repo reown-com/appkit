@@ -9,6 +9,7 @@ export function mockUniversalProvider(
   return {
     disconnect: vi.fn(),
     request: vi.fn(),
+    setDefaultChain: vi.fn(),
     ...replaces
   } as UniversalProvider
 }

@@ -1,7 +1,7 @@
-import { beforeEach, describe, it, vi, type Mock, expect } from 'vitest'
+import { beforeEach, describe, it, vi, type Mock, expect, type MockedFunction } from 'vitest'
 import { BitcoinAdapter, type BitcoinConnector } from '../src'
 import type { BitcoinApi } from '../src/utils/BitcoinApi'
-import { bitcoin, mainnet } from '@reown/appkit/networks'
+import { bitcoin, bitcoinTestnet, mainnet, solana } from '@reown/appkit/networks'
 import { mockUTXO } from './mocks/mockUTXO'
 import { SatsConnectConnector } from '../src/connectors/SatsConnectConnector'
 import { mockSatsConnectProvider } from './mocks/mockSatsConnect'
@@ -10,6 +10,7 @@ import { OKXConnector } from '../src/connectors/OKXConnector'
 import { LeatherConnector } from '../src/connectors/LeatherConnector'
 import { WalletConnectProvider } from '../src/utils/WalletConnectProvider'
 import { ConstantsUtil } from '@reown/appkit-common'
+import { mockUniversalProvider } from './mocks/mockUniversalProvider'
 
 function mockBitcoinApi(): { [K in keyof BitcoinApi.Interface]: Mock<BitcoinApi.Interface[K]> } {
   return {
@@ -481,6 +482,35 @@ describe('BitcoinAdapter', () => {
     })
   })
 
+  describe('switchNetwork', () => {
+    it('should execute switch network', async () => {
+      const provider = new SatsConnectConnector({
+        provider: mockSatsConnectProvider().provider,
+        requestedChains: [bitcoin],
+        getActiveNetwork: () => bitcoin
+      })
+
+      await expect(
+        adapter.switchNetwork({
+          caipNetwork: bitcoinTestnet,
+          provider,
+          providerType: provider.type
+        })
+      ).resolves.toBeUndefined()
+    })
+
+    it('should execute switch network for WalletConnectConnector', async () => {
+      const provider = mockUniversalProvider()
+      const setDefaultChainSpy = provider.setDefaultChain as MockedFunction<
+        typeof provider.setDefaultChain
+      >
+
+      await adapter.switchNetwork({ caipNetwork: solana, provider, providerType: 'WALLET_CONNECT' })
+
+      expect(setDefaultChainSpy).toHaveBeenCalledWith(solana.caipNetworkId)
+    })
+  })
+
   it('should not throw for not used methods', async () => {
     expect(await adapter.getProfile({} as any)).toEqual({})
     expect(await adapter.estimateGas({} as any)).toEqual({})
@@ -492,6 +522,5 @@ describe('BitcoinAdapter', () => {
     expect(await adapter.grantPermissions({})).toEqual({})
     expect(await adapter.getCapabilities({} as any)).toEqual({})
     expect(await adapter.revokePermissions({} as any)).toEqual('0x')
-    await expect(adapter.switchNetwork({} as any)).resolves.toBeUndefined()
   })
 })
