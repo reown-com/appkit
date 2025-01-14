@@ -1,6 +1,6 @@
 import { expect as expectChai, html, fixture } from '@open-wc/testing'
 import { describe, it, afterEach, beforeEach, vi, expect } from 'vitest'
-import { W3mSwapPreviewView } from '../../src/Add test for views/w3m-swap-preview-view'
+import type { W3mSwapPreviewView } from '../../exports'
 import {
   SwapController,
   RouterController,
