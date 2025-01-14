@@ -88,7 +88,7 @@ appKitWalletButton.subscribeIsReady(({ isReady }) => {
   }
 })
 
-// Listen for wallet button connect events
+// Wallet Button event listeners
 walletButtons.forEach(wallet => {
   document.getElementById(`connect-${wallet}`)?.addEventListener('click', () => {
     appKitWalletButton
