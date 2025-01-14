@@ -5,19 +5,20 @@ import { html } from 'lit'
 import { AssetUtil } from '@reown/appkit-core'
 import type { WcWallet } from '@reown/appkit-core'
 
+// -- Constants ----------------------------------------- //
+const mockWallet: WcWallet & { installed: boolean } = {
+  id: '1',
+  name: 'Test Wallet',
+  rdns: 'test.wallet',
+  installed: false
+}
+
+const mockCertifiedWallet: WcWallet & { installed: boolean } = {
+  ...mockWallet,
+  badge_type: 'certified'
+}
+
 describe('W3mAllWalletsListItem', () => {
-  const mockWallet: WcWallet & { installed: boolean } = {
-    id: '1',
-    name: 'Test Wallet',
-    rdns: 'test.wallet',
-    installed: false
-  }
-
-  const mockCertifiedWallet: WcWallet & { installed: boolean } = {
-    ...mockWallet,
-    badge_type: 'certified'
-  }
-
   beforeEach(() => {
     global.IntersectionObserver = vi.fn().mockImplementation(callback => ({
       observe: vi.fn(() => {
