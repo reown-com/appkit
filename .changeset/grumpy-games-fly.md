@@ -20,7 +20,7 @@
 '@reown/appkit-wallet': patch
 ---
 
-Added the `createAppKitWalletButton` function to the `@reown/appkit-wallet-button` package for easier implementation of the Wallet Button feature without relying solely on hooks.
+Added `createAppKitWalletButton` function to `@reown/appkit-wallet-button` package for easier implementation of the Wallet Button feature without relying solely on hooks.
 
 **Example usage**
 
