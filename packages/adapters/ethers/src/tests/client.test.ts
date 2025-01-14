@@ -314,7 +314,10 @@ describe('EthersAdapter', () => {
       })
 
       expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith('eip155:1')
-      expect(mockAuthProvider.getUser).toHaveBeenCalledWith({ chainId: 'eip155:1' })
+      expect(mockAuthProvider.getUser).toHaveBeenCalledWith({
+        chainId: 'eip155:1',
+        preferredAccountType: 'smartAccount'
+      })
     })
 
     it('should add Ethereum chain with external provider and use chain default', async () => {

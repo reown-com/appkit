@@ -1119,3 +1119,9 @@ export type UseAppKitNetworkReturn = {
 export type BadgeType = 'none' | 'certified'
 
 export type ConnectionStatus = 'connected' | 'disconnected' | 'connecting' | 'reconnecting'
+
+/**
+ * @description The default account types for each namespace.
+ * @default
+ */
+export type DefaultAccountTypes = { [Key in keyof NamespaceTypeMap]: NamespaceTypeMap[Key] }
