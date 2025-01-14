@@ -63,13 +63,13 @@ export class UniversalAdapter extends AdapterBlueprint {
     namespace: ChainNamespace
   }): Promise<AdapterBlueprint.GetAccountsResult> {
     const provider = this.provider as UniversalProvider
-    const addresses = provider?.session?.namespaces?.[namespace]?.accounts
+    const addresses = (provider?.session?.namespaces?.[namespace]?.accounts
       ?.map(account => {
         const [, , address] = account.split(':')
 
         return address
       })
-      .filter((address, index, self) => self.indexOf(address) === index) as string[]
+      .filter((address, index, self) => self.indexOf(address) === index) || []) as string[]
 
     return Promise.resolve({
       accounts: addresses.map(address =>
