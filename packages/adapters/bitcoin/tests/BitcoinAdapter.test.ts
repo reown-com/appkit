@@ -1,7 +1,7 @@
 import { beforeEach, describe, it, vi, type Mock, expect, type MockedFunction } from 'vitest'
 import { BitcoinAdapter, type BitcoinConnector } from '../src'
 import type { BitcoinApi } from '../src/utils/BitcoinApi'
-import { bitcoin, bitcoinTestnet, mainnet, solana } from '@reown/appkit/networks'
+import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
 import { mockUTXO } from './mocks/mockUTXO'
 import { SatsConnectConnector } from '../src/connectors/SatsConnectConnector'
 import { mockSatsConnectProvider } from './mocks/mockSatsConnect'
@@ -505,9 +505,13 @@ describe('BitcoinAdapter', () => {
         typeof provider.setDefaultChain
       >
 
-      await adapter.switchNetwork({ caipNetwork: solana, provider, providerType: 'WALLET_CONNECT' })
+      await adapter.switchNetwork({
+        caipNetwork: bitcoinTestnet,
+        provider,
+        providerType: 'WALLET_CONNECT'
+      })
 
-      expect(setDefaultChainSpy).toHaveBeenCalledWith(solana.caipNetworkId)
+      expect(setDefaultChainSpy).toHaveBeenCalledWith(bitcoinTestnet.caipNetworkId)
     })
   })
 
