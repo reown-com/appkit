@@ -78,6 +78,7 @@ class W3mNetworkButtonBase extends LitElement {
         .isUnsupportedChain=${OptionsController.state.allowUnsupportedChain ? false : !isSupported}
         imageSrc=${ifDefined(this.networkImage)}
         @click=${this.onClick.bind(this)}
+        data-testid="w3m-network-button"
       >
         ${this.getLabel()}
         <slot></slot>
