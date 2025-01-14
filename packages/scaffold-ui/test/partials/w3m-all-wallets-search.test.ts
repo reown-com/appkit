@@ -19,6 +19,23 @@ describe('W3mAllWalletsSearch', () => {
   let element: W3mAllWalletsSearch
 
   beforeEach(async () => {
+    // Mock IntersectionObserver
+    global.IntersectionObserver = vi.fn().mockImplementation(() => ({
+      observe: vi.fn(),
+      disconnect: vi.fn()
+    }))
+
+    // Mock window.innerWidth
+    Object.defineProperty(window, 'innerWidth', {
+      writable: true,
+      value: 400
+    })
+
+    // Mock Element.prototype.animate
+    Element.prototype.animate = vi.fn().mockReturnValue({
+      finished: Promise.resolve()
+    })
+
     element = await fixture(html`<w3m-all-wallets-search></w3m-all-wallets-search>`)
   })
 
