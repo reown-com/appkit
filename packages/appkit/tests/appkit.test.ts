@@ -1826,10 +1826,6 @@ describe('Balance sync', () => {
 })
 
 describe('WalletConnect Events', () => {
-  vi.clearAllMocks()
-  vi.resetAllMocks()
-  vi.restoreAllMocks()
-
   let appkit: AppKit
   let universalProvider: Mocked<Pick<UniversalProvider, 'on'>>
 
