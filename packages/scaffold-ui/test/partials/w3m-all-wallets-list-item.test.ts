@@ -19,7 +19,6 @@ describe('W3mAllWalletsListItem', () => {
   }
 
   beforeEach(() => {
-    // Mock IntersectionObserver to initially set visible to false
     global.IntersectionObserver = vi.fn().mockImplementation(callback => ({
       observe: vi.fn(() => {
         callback([{ isIntersecting: false }], {} as IntersectionObserver)
@@ -27,7 +26,6 @@ describe('W3mAllWalletsListItem', () => {
       disconnect: vi.fn()
     }))
 
-    // Mock AssetUtil methods
     vi.spyOn(AssetUtil, 'getWalletImage').mockReturnValue(undefined)
     vi.spyOn(AssetUtil, 'fetchWalletImage').mockResolvedValue('mock-image-url')
   })
