@@ -1,5 +1,5 @@
 import { W3mAccountAuthButton } from '../../src/partials/w3m-account-auth-button'
-import { describe, test, vi, expect, beforeEach } from 'vitest'
+import { describe, test, vi, expect, beforeEach, afterEach } from 'vitest'
 import {
   ConnectorController,
   StorageUtil,
@@ -17,8 +17,11 @@ const MOCK_USERNAME = 'john_doe'
 
 describe('W3mAccountAuthButton', () => {
   beforeEach(() => {
-    vi.resetAllMocks()
     vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('ID_AUTH')
+  })
+
+  afterEach(() => {
+    vi.resetAllMocks()
   })
 
   test('it should show email when username does not exist', async () => {
