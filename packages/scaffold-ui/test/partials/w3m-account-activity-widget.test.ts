@@ -45,10 +45,10 @@ describe('W3mAccountActivityWidget', () => {
   })
 
   afterEach(() => {
-    vi.clearAllMocks()
+    vi.resetAllMocks()
   })
 
-  it('should display one transaction list items if not empty', async () => {
+  it('it should display one transaction list items if not empty', async () => {
     vi.spyOn(TransactionsController, 'state', 'get').mockReturnValue({
       ...TransactionsController.state,
       transactionsByYear: {
@@ -75,7 +75,7 @@ describe('W3mAccountActivityWidget', () => {
     expect(HelpersUtil.getTextContent(monthIndexes[1] as HTMLElement)).toBe('February 2020')
   })
 
-  it('should show empty state', async () => {
+  it('it should show empty state', async () => {
     vi.spyOn(TransactionsController, 'state', 'get').mockReturnValue({
       ...TransactionsController.state,
       transactionsByYear: {
