@@ -20,4 +20,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Refactors connectExternal to call switch network if wallet's active chain is not in requested chains list
+Refactors connectExternal to call switch network if wallet's active chain is not in requested networks list
