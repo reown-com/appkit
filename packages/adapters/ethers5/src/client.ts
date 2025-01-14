@@ -368,7 +368,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
         try {
           await this.switchNetwork({
-            caipNetwork: caipNetwork,
+            caipNetwork,
             provider: selectedProvider,
             providerType: type as ConnectorType
           })
