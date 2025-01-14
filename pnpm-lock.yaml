@@ -566,6 +566,25 @@ importers:
         specifier: 5.2.11
         version: 5.2.11(@types/node@20.11.5)(lightningcss@1.28.2)(terser@5.37.0)
 
+  examples/html-wagmi-wallet-button:
+    dependencies:
+      '@reown/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
+      '@reown/appkit-adapter-wagmi':
+        specifier: workspace:*
+        version: link:../../packages/adapters/wagmi
+      '@reown/appkit-wallet-button':
+        specifier: workspace:*
+        version: link:../../packages/wallet-button
+      ethers:
+        specifier: 6.13.2
+        version: 6.13.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+    devDependencies:
+      vite:
+        specifier: 5.2.11
+        version: 5.2.11(@types/node@20.11.5)(lightningcss@1.28.2)(terser@5.37.0)
+
   examples/next-solana-app-router:
     dependencies:
       '@reown/appkit':
@@ -39336,8 +39355,8 @@ snapshots:
 
   webauthn-p256@0.0.10:
     dependencies:
-      '@noble/curves': 1.6.0
-      '@noble/hashes': 1.5.0
+      '@noble/curves': 1.8.0
+      '@noble/hashes': 1.7.0
 
   webauthn-p256@0.0.2:
     dependencies:
