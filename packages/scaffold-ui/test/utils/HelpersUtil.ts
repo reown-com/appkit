@@ -5,6 +5,12 @@ export const HelpersUtil = {
   querySelect(element: HTMLElement | Element, selector: string) {
     return element.shadowRoot?.querySelector(selector) as HTMLElement
   },
+  querySelectAll(element: HTMLElement | Element, selector: string) {
+    return element.shadowRoot?.querySelectorAll(selector) as NodeListOf<HTMLElement>
+  },
+  getAllByTestId(element: HTMLElement | Element, testId: string) {
+    return this.querySelectAll(element, `[data-testid="${testId}"]`)
+  },
   getByTestId(element: HTMLElement | Element, testId: string) {
     return this.querySelect(element, `[data-testid="${testId}"]`)
   },
