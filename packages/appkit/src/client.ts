@@ -71,7 +71,7 @@ import {
 import {
   W3mFrameHelpers,
   W3mFrameRpcConstants,
-  type W3mFrameProvider,
+  W3mFrameProvider,
   type W3mFrameTypes
 } from '@reown/appkit-wallet'
 import { ProviderUtil, type ProviderStoreUtilState } from './store/ProviderUtil.js'
@@ -706,6 +706,7 @@ export class AppKit {
     OptionsController.setCustomWallets(options.customWallets)
     OptionsController.setFeatures(options.features)
     OptionsController.setAllowUnsupportedChain(options.allowUnsupportedChain)
+    OptionsController.setDefaultAccountTypes(options.defaultAccountTypes)
 
     const defaultMetaData = this.getDefaultMetaData()
     if (!options.metadata && defaultMetaData) {
@@ -1197,14 +1198,15 @@ export class AppKit {
 
       this.setUser({ ...(AccountController.state.user || {}), email: user.email })
 
-      const preferredAccountType = (user.preferredAccountType || 'eoa') as W3mFrameTypes.AccountType
+      const preferredAccountType = (user.preferredAccountType ||
+        OptionsController.state.defaultAccountTypes[namespace]) as W3mFrameTypes.AccountType
       this.setPreferredAccountType(preferredAccountType, namespace)
 
       const userAccounts = user.accounts?.map(account =>
         CoreHelperUtil.createAccount(
           namespace,
           account.address,
-          namespace === ConstantsUtil.CHAIN.EVM ? account.type : 'eoa'
+          account.type || OptionsController.state.defaultAccountTypes[namespace]
         )
       )
 

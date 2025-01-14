@@ -7,7 +7,8 @@ import {
   type Connector,
   type ConnectorType,
   type Provider,
-  CoreHelperUtil
+  CoreHelperUtil,
+  OptionsController
 } from '@reown/appkit-core'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
@@ -337,7 +338,8 @@ export class EthersAdapter extends AdapterBlueprint {
 
     if (type === 'AUTH') {
       const { address } = await (selectedProvider as unknown as W3mFrameProvider).connect({
-        chainId
+        chainId,
+        preferredAccountType: OptionsController.state.defaultAccountTypes.eip155
       })
 
       accounts = [address]
@@ -368,7 +370,10 @@ export class EthersAdapter extends AdapterBlueprint {
     const connector = this.connectors.find(c => c.id === id)
 
     if (connector && connector.type === 'AUTH' && chainId) {
-      await (connector.provider as W3mFrameProvider).connect({ chainId })
+      await (connector.provider as W3mFrameProvider).connect({
+        chainId,
+        preferredAccountType: OptionsController.state.defaultAccountTypes.eip155
+      })
     }
   }
 
