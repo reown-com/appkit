@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { withSolanaNamespace } from '../utils/withSolanaNamespace'
 
 describe('withSolanaNamespace util', () => {

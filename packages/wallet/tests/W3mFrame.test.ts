@@ -1,8 +1,9 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { W3mFrame } from '../src/W3mFrame.js'
-import { W3mFrameHelpers } from '../src/W3mFrameHelpers.js'
-import { W3mFrameConstants } from '../src/W3mFrameConstants.js'
 import * as logger from '@walletconnect/logger'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { W3mFrame } from '../src/W3mFrame.js'
+import { W3mFrameConstants } from '../src/W3mFrameConstants.js'
+import { W3mFrameHelpers } from '../src/W3mFrameHelpers.js'
 
 describe('W3mFrame', () => {
   const PROJECT_ID = 'test-project-id'

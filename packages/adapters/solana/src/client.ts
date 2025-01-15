@@ -1,32 +1,34 @@
-import { type AppKit, type AppKitOptions } from '@reown/appkit'
-import { ConstantsUtil as CommonConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
-import {
-  AlertController,
-  ChainController,
-  CoreHelperUtil,
-  EventsController,
-  type Provider as CoreProvider
-} from '@reown/appkit-core'
-import { ErrorUtil } from '@reown/appkit-utils'
-import { SolConstantsUtil } from '@reown/appkit-utils/solana'
-import { AdapterBlueprint } from '@reown/appkit/adapters'
 import type { BaseWalletAdapter } from '@solana/wallet-adapter-base'
 import type { Commitment, ConnectionConfig } from '@solana/web3.js'
 import { Connection, PublicKey } from '@solana/web3.js'
 import UniversalProvider from '@walletconnect/universal-provider'
 import bs58 from 'bs58'
+
+import { type AppKit, type AppKitOptions } from '@reown/appkit'
+import { type CaipNetwork, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import {
+  AlertController,
+  ChainController,
+  CoreHelperUtil,
+  type Provider as CoreProvider,
+  EventsController
+} from '@reown/appkit-core'
+import { ErrorUtil } from '@reown/appkit-utils'
+import { SolConstantsUtil } from '@reown/appkit-utils/solana'
+import type { Provider as SolanaProvider } from '@reown/appkit-utils/solana'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
+import { AdapterBlueprint } from '@reown/appkit/adapters'
+
 import { AuthProvider } from './providers/AuthProvider.js'
 import {
   CoinbaseWalletProvider,
   type SolanaCoinbaseWallet
 } from './providers/CoinbaseWalletProvider.js'
 import { SolanaWalletConnectProvider } from './providers/SolanaWalletConnectProvider.js'
+import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
 import { createSendTransaction } from './utils/createSendTransaction.js'
 import { handleMobileWalletRedirection } from './utils/handleMobileWalletRedirection.js'
-import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
 import { watchStandard } from './utils/watchStandard.js'
-import type { Provider as SolanaProvider } from '@reown/appkit-utils/solana'
-import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 export interface AdapterOptions {
   connectionSettings?: Commitment | ConnectionConfig

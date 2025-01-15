@@ -1,13 +1,15 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
-import { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
+import bs58 from 'bs58'
+
+import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectionController,
   CoreHelperUtil,
   OptionsController
 } from '@reown/appkit-core'
-import bs58 from 'bs58'
-import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
+
+import { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'
 
 export class UniversalAdapter extends AdapterBlueprint {
@@ -61,13 +63,13 @@ export class UniversalAdapter extends AdapterBlueprint {
     namespace: ChainNamespace
   }): Promise<AdapterBlueprint.GetAccountsResult> {
     const provider = this.provider as UniversalProvider
-    const addresses = provider?.session?.namespaces?.[namespace]?.accounts
+    const addresses = (provider?.session?.namespaces?.[namespace]?.accounts
       ?.map(account => {
         const [, , address] = account.split(':')
 
         return address
       })
-      .filter((address, index, self) => self.indexOf(address) === index) as string[]
+      .filter((address, index, self) => self.indexOf(address) === index) || []) as string[]
 
     return Promise.resolve({
       accounts: addresses.map(address =>

@@ -1,48 +1,50 @@
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
-import { AppKit } from '../src/client'
-import { base, mainnet, polygon, sepolia, solana } from '../src/networks/index.js'
+import UniversalProvider from '@walletconnect/universal-provider'
+import { type Mocked, afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import {
-  AccountController,
-  ModalController,
-  ThemeController,
-  PublicStateController,
-  SnackController,
-  RouterController,
-  OptionsController,
-  BlockchainApiController,
-  ConnectionController,
-  EnsController,
-  EventsController,
-  type CombinedProvider,
-  AssetUtil,
-  ConnectorController,
-  ChainController,
-  type Connector,
-  CoreHelperUtil,
-  AlertController,
-  StorageUtil,
-  type ChainAdapter,
-  type ChainControllerState
-} from '@reown/appkit-core'
-import {
-  getSafeConnectorIdKey,
+  type AppKitNetwork,
+  type Balance,
+  type CaipNetwork,
+  type CaipNetworkId,
+  type ChainNamespace,
+  Emitter,
+  NetworkUtil,
   SafeLocalStorage,
   SafeLocalStorageKeys,
-  type AppKitNetwork,
-  type CaipNetwork,
-  Emitter,
-  type CaipNetworkId,
-  type Balance,
-  NetworkUtil,
-  type ChainNamespace
+  getSafeConnectorIdKey
 } from '@reown/appkit-common'
-import { mockOptions } from './mocks/Options'
-import { UniversalAdapter } from '../src/universal-adapter/client'
-import type { AdapterBlueprint } from '../src/adapters/ChainAdapterBlueprint'
-import { ProviderUtil } from '../src/store'
+import {
+  AccountController,
+  AlertController,
+  AssetUtil,
+  BlockchainApiController,
+  type ChainAdapter,
+  ChainController,
+  type ChainControllerState,
+  type CombinedProvider,
+  ConnectionController,
+  type Connector,
+  ConnectorController,
+  CoreHelperUtil,
+  EnsController,
+  EventsController,
+  ModalController,
+  OptionsController,
+  PublicStateController,
+  RouterController,
+  SnackController,
+  StorageUtil,
+  ThemeController
+} from '@reown/appkit-core'
 import { CaipNetworksUtil, ErrorUtil } from '@reown/appkit-utils'
+
+import type { AdapterBlueprint } from '../src/adapters/ChainAdapterBlueprint'
+import { AppKit } from '../src/client'
+import { base, mainnet, polygon, sepolia, solana } from '../src/networks/index.js'
+import { ProviderUtil } from '../src/store'
+import { UniversalAdapter } from '../src/universal-adapter/client'
 import mockUniversalAdapter from './mocks/Adapter'
-import { UniversalProvider } from '@walletconnect/universal-provider'
+import { mockOptions } from './mocks/Options'
 import mockProvider from './mocks/UniversalProvider'
 
 // Mock all controllers and UniversalAdapterClient
@@ -1822,5 +1824,55 @@ describe('Balance sync', () => {
       mainnet.nativeCurrency.symbol,
       'eip155'
     )
+  })
+})
+
+describe('WalletConnect Events', () => {
+  let appkit: AppKit
+  let universalProvider: Mocked<Pick<UniversalProvider, 'on'>>
+
+  let chainChangedCallback: (chainId: string | number) => void
+
+  beforeEach(async () => {
+    appkit = new AppKit({
+      ...mockOptions,
+      adapters: [],
+      networks: [mainnet]
+    })
+
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({} as any)
+
+    universalProvider = { on: vi.fn() }
+    appkit['universalProvider'] = universalProvider as any
+    appkit['caipNetworks'] = mockOptions.networks as any
+    appkit['listenWalletConnect']()
+
+    chainChangedCallback = universalProvider.on.mock.calls.find(
+      ([event]) => event === 'chainChanged'
+    )?.[1]
+  })
+
+  describe('chainChanged', () => {
+    it('should call setUnsupportedNetwork', () => {
+      const setUnsupportedNetworkSpy = vi.spyOn(appkit as any, 'setUnsupportedNetwork')
+
+      chainChangedCallback('unknown_chain_id')
+      expect(setUnsupportedNetworkSpy).toHaveBeenCalledWith('unknown_chain_id')
+    })
+
+    it('should call setCaipNetwork', () => {
+      const setCaipNetworkSpy = vi.spyOn(appkit as any, 'setCaipNetwork')
+
+      const newChain = mockOptions.networks[0]!
+
+      // should accept as number
+      chainChangedCallback(newChain.id)
+      expect(setCaipNetworkSpy).toHaveBeenNthCalledWith(1, newChain)
+
+      // should accept as string
+      ChainController.state.activeCaipNetwork = undefined
+      chainChangedCallback(newChain.id.toString())
+      expect(setCaipNetworkSpy).toHaveBeenNthCalledWith(2, newChain)
+    })
   })
 })

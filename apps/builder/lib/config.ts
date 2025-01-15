@@ -1,23 +1,23 @@
+import { cookieStorage, createStorage } from '@wagmi/core'
+
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { ConstantsUtil } from '@reown/appkit-core'
 import {
+  type AppKitNetwork,
   arbitrum,
-  mainnet,
-  optimism,
-  polygon,
-  zksync,
-  sepolia,
+  aurora,
   base,
   baseSepolia,
   gnosis,
-  unichainSepolia,
   hedera,
-  aurora,
-  type AppKitNetwork
+  mainnet,
+  optimism,
+  polygon,
+  sepolia,
+  unichainSepolia,
+  zksync
 } from '@reown/appkit/networks'
 import { ThemeMode } from '@reown/appkit/react'
-
-import { cookieStorage, createStorage } from '@wagmi/core'
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
 

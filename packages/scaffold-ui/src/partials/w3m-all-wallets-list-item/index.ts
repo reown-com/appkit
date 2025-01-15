@@ -1,8 +1,10 @@
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+
 import { AssetUtil, type WcWallet } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
+
 import styles from './styles.js'
 
 @customElement('w3m-all-wallets-list-item')

@@ -1,6 +1,7 @@
-import type { SIWXSession } from '@reown/appkit-core'
-import type { SIWXStorage } from '../core/SIWXStorage.js'
 import type { CaipNetworkId } from '@reown/appkit-common'
+import type { SIWXSession } from '@reown/appkit-core'
+
+import type { SIWXStorage } from '../core/SIWXStorage.js'
 
 /**
  * This storage saves the sessions in the localStorage.

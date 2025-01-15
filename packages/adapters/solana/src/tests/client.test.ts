@@ -1,17 +1,19 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { ConstantsUtil } from '@reown/appkit-common'
+import type { Provider as CoreProvider } from '@reown/appkit-core'
 import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
 import { solana } from '@reown/appkit/networks'
-import type { Provider as CoreProvider } from '@reown/appkit-core'
-import { ConstantsUtil } from '@reown/appkit-common'
+
 import { SolanaAdapter } from '../client'
-import { SolStoreUtil } from '../utils/SolanaStoreUtil'
+import { AuthProvider } from '../providers/AuthProvider'
+import { SolanaWalletConnectProvider } from '../providers/SolanaWalletConnectProvider'
 import type { WalletStandardProvider } from '../providers/WalletStandardProvider'
+import { SolStoreUtil } from '../utils/SolanaStoreUtil'
 import { watchStandard } from '../utils/watchStandard'
 import mockAppKit from './mocks/AppKit'
-import { mockCoinbaseWallet } from './mocks/CoinbaseWallet'
-import { AuthProvider } from '../providers/AuthProvider'
 import { mockAuthConnector } from './mocks/AuthConnector'
-import { SolanaWalletConnectProvider } from '../providers/SolanaWalletConnectProvider'
+import { mockCoinbaseWallet } from './mocks/CoinbaseWallet'
 import { mockUniversalProvider } from './mocks/UniversalProvider'
 
 // Mock external dependencies

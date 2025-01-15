@@ -1,10 +1,12 @@
-import { ConstantsUtil, type CaipNetwork, type ChainNamespace } from '@reown/appkit-common'
-import { SIWXUtil } from '@reown/appkit-core'
-import { PresetsUtil } from '@reown/appkit-utils'
 import type { SessionTypes } from '@walletconnect/types'
 import UniversalProvider from '@walletconnect/universal-provider'
-import { WcHelpersUtil } from '../utils/index.js'
+
+import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { SIWXUtil } from '@reown/appkit-core'
+import { PresetsUtil } from '@reown/appkit-utils'
+
 import type { ChainAdapterConnector } from '../adapters/ChainAdapterConnector.js'
+import { WcHelpersUtil } from '../utils/index.js'
 
 export class WalletConnectConnector<Namespace extends ChainNamespace = ChainNamespace>
   implements ChainAdapterConnector

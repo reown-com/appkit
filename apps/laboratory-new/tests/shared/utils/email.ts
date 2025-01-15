@@ -1,4 +1,5 @@
 import { Mailsac } from '@mailsac/api'
+
 const EMAIL_CHECK_INTERVAL = 2500
 const MAX_EMAIL_CHECK = 96
 const EMAIL_APPROVE_BUTTON_TEXT = 'Approve this login'

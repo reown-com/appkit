@@ -1,3 +1,8 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
+import type { CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
   AssetUtil,
@@ -10,11 +15,8 @@ import {
   RouterController,
   SnackController
 } from '@reown/appkit-core'
-import type { CaipNetwork } from '@reown/appkit-common'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+
 import styles from './styles.js'
 
 @customElement('w3m-unsupported-chain-view')

@@ -1,10 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { WalletConnectConnector } from '../../src/connectors'
-import mockProvider from '../mocks/UniversalProvider'
-import { bitcoin, mainnet, solana } from '../../src/networks'
-import { ConstantsUtil, type CaipNetwork, type ChainNamespace } from '@reown/appkit-common'
-import { PresetsUtil } from '@reown/appkit-utils'
+
+import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import { SIWXUtil } from '@reown/appkit-core'
+import { PresetsUtil } from '@reown/appkit-utils'
+
+import { WalletConnectConnector } from '../../src/connectors'
+import { bitcoin, mainnet, solana } from '../../src/networks'
+import mockProvider from '../mocks/UniversalProvider'
 
 describe('WalletConnectConnector', () => {
   let connector: WalletConnectConnector

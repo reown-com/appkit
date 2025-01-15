@@ -1,11 +1,13 @@
 import { useState } from 'react'
-import { Button, Stack, Spacer } from '@chakra-ui/react'
-import { PublicKey, VersionedTransaction } from '@solana/web3.js'
 
-import { useAppKitProvider } from '@reown/appkit/react'
-import { useChakraToast } from '../Toast'
+import { Button, Spacer, Stack } from '@chakra-ui/react'
+import { PublicKey, VersionedTransaction } from '@solana/web3.js'
 import bs58 from 'bs58'
-import { useAppKitConnection, type Provider } from '@reown/appkit-adapter-solana/react'
+
+import { type Provider, useAppKitConnection } from '@reown/appkit-adapter-solana/react'
+import { useAppKitProvider } from '@reown/appkit/react'
+
+import { useChakraToast } from '../Toast'
 
 export function SolanaSignJupiterSwapTest() {
   const toast = useChakraToast()

@@ -1,9 +1,10 @@
-import { describe, expect, it, beforeEach } from 'vitest'
-import { validateRequest } from '../../../src/smart-session/helper/index.js'
-import { donutContractAbi } from '../../data/abi.js'
+import { beforeEach, describe, expect, it } from 'vitest'
+
 import type { SmartSessionGrantPermissionsRequest } from '../../../exports/smart-session/index.js'
+import { validateRequest } from '../../../src/smart-session/helper/index.js'
 import { ERROR_MESSAGES } from '../../../src/smart-session/schema/index.js'
 import type { MultiKeySigner } from '../../../src/smart-session/utils/TypeUtils.js'
+import { donutContractAbi } from '../../data/abi.js'
 import { mockRequest } from './mockRequest.js'
 
 describe('Common field validation', () => {

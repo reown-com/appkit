@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+
 import { SnackController } from '../../exports/index.js'
 
 vi.useFakeTimers()

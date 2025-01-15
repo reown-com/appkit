@@ -1,8 +1,10 @@
-import { describe, it, expect, vi } from 'vitest'
-import { SolHelpersUtil } from '../src/solana/SolanaHelpersUtils.js'
-import { SolConstantsUtil } from '../src/solana/SolanaConstantsUtil.js'
+import { describe, expect, it, vi } from 'vitest'
+
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { CaipNetwork } from '@reown/appkit-common'
+
+import { SolConstantsUtil } from '../src/solana/SolanaConstantsUtil.js'
+import { SolHelpersUtil } from '../src/solana/SolanaHelpersUtils.js'
 import type { Provider } from '../src/solana/SolanaTypesUtil.js'
 
 describe('SolHelpersUtil', () => {

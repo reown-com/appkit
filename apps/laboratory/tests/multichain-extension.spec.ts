@@ -1,6 +1,6 @@
+import { extensionFixture } from './shared/fixtures/extension-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
-import { extensionFixture } from './shared/fixtures/extension-fixture'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage
@@ -61,24 +61,15 @@ extensionTest('it should connect', async () => {
   await modalValidator.expectConnected()
 })
 
-extensionTest('it should switch networks and sign', async ({ library }) => {
+extensionTest('it should switch networks and sign', async () => {
   let network = 'Polygon'
 
   await modalPage.switchNetwork(network, true)
   await modalValidator.checkConnectionStatus('disconnected', network)
 
-  /*
-   * Wagmi is the only EVM adapter that remembers the last connected network after connection.
-   * Other adapters defaults to Ethereum as they don't sync the latest connected network.
-   */
-  if (library !== 'wagmi') {
-    network = 'Ethereum'
-  }
-
   await modalPage.connectToExtensionMultichain('eip155')
   await modalValidator.checkConnectionStatus('connected', network)
 
-  network = 'Polygon'
   await switchNetworkAndSign(network)
   await reloadAndSign(network)
 

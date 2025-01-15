@@ -1,4 +1,5 @@
 import { vi } from 'vitest'
+
 import type { AdapterBlueprint } from '../../src/adapters/ChainAdapterBlueprint.js'
 
 export const mockUniversalAdapter = {
