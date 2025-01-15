@@ -69,7 +69,7 @@ import {
   ConstantsUtil as UtilConstantsUtil
 } from '@reown/appkit-utils'
 import {
-  W3mFrameConstants,
+  AUTH_ENABLED_CHAINS,
   W3mFrameHelpers,
   W3mFrameProvider,
   W3mFrameRpcConstants,
@@ -1243,7 +1243,7 @@ export class AppKit {
         await this.connectionControllerClient?.connectExternal(connector)
 
         // Connecting to one namespace connects to all
-        W3mFrameConstants.AUTH_ENABLED_CHAINS.forEach(chain => {
+        AUTH_ENABLED_CHAINS.forEach(chain => {
           this.setStatus('connected', chain)
           this.syncProvider({
             provider,

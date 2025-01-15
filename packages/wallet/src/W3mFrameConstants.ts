@@ -5,6 +5,8 @@ export const DEFAULT_LOG_LEVEL = process.env['NEXT_PUBLIC_DEFAULT_LOG_LEVEL'] ||
 
 export const SECURE_SITE_SDK_VERSION = process.env['NEXT_PUBLIC_SECURE_SITE_SDK_VERSION'] || 3
 
+export const AUTH_ENABLED_CHAINS = ['eip155', 'solana'] as const
+
 export const W3mFrameConstants = {
   APP_EVENT_KEY: '@w3m-app/',
   FRAME_EVENT_KEY: '@w3m-frame/',
@@ -97,8 +99,7 @@ export const W3mFrameConstants = {
 
   RPC_RESPONSE_TYPE_ERROR: 'RPC_RESPONSE_ERROR',
   RPC_RESPONSE_TYPE_TX: 'RPC_RESPONSE_TRANSACTION_HASH',
-  RPC_RESPONSE_TYPE_OBJECT: 'RPC_RESPONSE_OBJECT',
-  AUTH_ENABLED_CHAINS: ['eip155', 'solana']
+  RPC_RESPONSE_TYPE_OBJECT: 'RPC_RESPONSE_OBJECT'
 } as const
 
 export type W3mFrameConstantValue = (typeof W3mFrameConstants)[keyof typeof W3mFrameConstants]

@@ -8,7 +8,8 @@ export { W3mFrameSchema } from './src/W3mFrameSchema.js'
 export {
   W3mFrameConstants,
   W3mFrameRpcConstants,
-  type W3mFrameConstantValue
+  type W3mFrameConstantValue,
+  AUTH_ENABLED_CHAINS
 } from './src/W3mFrameConstants.js'
 export { W3mFrameStorage } from './src/W3mFrameStorage.js'
 export type { W3mFrameTypes } from './src/W3mFrameTypes.js'
