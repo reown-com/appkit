@@ -385,7 +385,7 @@ export class EthersAdapter extends AdapterBlueprint {
 
     return {
       address: accounts[0] as `0x${string}`,
-      chainId: Number(requestChainId) || Number(chainId),
+      chainId: Number(chainId),
       provider: selectedProvider,
       type: type as ConnectorType,
       id
