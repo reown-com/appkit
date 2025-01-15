@@ -159,8 +159,6 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
       return Promise.resolve([])
     }
 
-    console.log('>> Solana AuthProvider.getAccounts()', this.publicKey)
-
     return Promise.resolve([
       {
         namespace: this.chain,

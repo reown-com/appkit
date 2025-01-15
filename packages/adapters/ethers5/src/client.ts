@@ -516,7 +516,6 @@ export class Ethers5Adapter extends AdapterBlueprint {
     }
 
     const chainChangedHandler = (chainId: string) => {
-      console.log('>> Wagmi chain changed handler', chainId)
       const chainIdNumber =
         typeof chainId === 'string' ? EthersHelpersUtil.hexStringToNumber(chainId) : Number(chainId)
 
