@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi, afterEach, type Mocked } from 'vitest'
 import { AppKit } from '../src/client'
 import { base, mainnet, polygon, sepolia, solana } from '../src/networks/index.js'
 import {
@@ -42,7 +42,7 @@ import type { AdapterBlueprint } from '../src/adapters/ChainAdapterBlueprint'
 import { ProviderUtil } from '../src/store'
 import { CaipNetworksUtil, ErrorUtil } from '@reown/appkit-utils'
 import mockUniversalAdapter from './mocks/Adapter'
-import { UniversalProvider } from '@walletconnect/universal-provider'
+import UniversalProvider from '@walletconnect/universal-provider'
 import mockProvider from './mocks/UniversalProvider'
 
 // Mock all controllers and UniversalAdapterClient
@@ -128,6 +128,21 @@ describe('Base', () => {
       })
 
       expect(OptionsController.setEIP6963Enabled).toHaveBeenCalledWith(false)
+    })
+
+    it('should set partially defaultAccountType', () => {
+      new AppKit({
+        ...mockOptions,
+        defaultAccountTypes: {
+          eip155: 'eoa',
+          bip122: 'ordinal'
+        }
+      })
+
+      expect(OptionsController.setDefaultAccountTypes).toHaveBeenCalledWith({
+        eip155: 'eoa',
+        bip122: 'ordinal'
+      })
     })
   })
 
@@ -1807,5 +1822,55 @@ describe('Balance sync', () => {
       mainnet.nativeCurrency.symbol,
       'eip155'
     )
+  })
+})
+
+describe('WalletConnect Events', () => {
+  let appkit: AppKit
+  let universalProvider: Mocked<Pick<UniversalProvider, 'on'>>
+
+  let chainChangedCallback: (chainId: string | number) => void
+
+  beforeEach(async () => {
+    appkit = new AppKit({
+      ...mockOptions,
+      adapters: [],
+      networks: [mainnet]
+    })
+
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({} as any)
+
+    universalProvider = { on: vi.fn() }
+    appkit['universalProvider'] = universalProvider as any
+    appkit['caipNetworks'] = mockOptions.networks as any
+    appkit['listenWalletConnect']()
+
+    chainChangedCallback = universalProvider.on.mock.calls.find(
+      ([event]) => event === 'chainChanged'
+    )?.[1]
+  })
+
+  describe('chainChanged', () => {
+    it('should call setUnsupportedNetwork', () => {
+      const setUnsupportedNetworkSpy = vi.spyOn(appkit as any, 'setUnsupportedNetwork')
+
+      chainChangedCallback('unknown_chain_id')
+      expect(setUnsupportedNetworkSpy).toHaveBeenCalledWith('unknown_chain_id')
+    })
+
+    it('should call setCaipNetwork', () => {
+      const setCaipNetworkSpy = vi.spyOn(appkit as any, 'setCaipNetwork')
+
+      const newChain = mockOptions.networks[0]!
+
+      // should accept as number
+      chainChangedCallback(newChain.id)
+      expect(setCaipNetworkSpy).toHaveBeenNthCalledWith(1, newChain)
+
+      // should accept as string
+      ChainController.state.activeCaipNetwork = undefined
+      chainChangedCallback(newChain.id.toString())
+      expect(setCaipNetworkSpy).toHaveBeenNthCalledWith(2, newChain)
+    })
   })
 })

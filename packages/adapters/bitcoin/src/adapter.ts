@@ -177,11 +177,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     return walletConnectProvider as unknown as Provider
   }
 
-  override switchNetwork(_params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
-    // Switch network
-    return Promise.resolve()
-  }
-
   override async disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
     if (params?.provider) {
       await params.provider.disconnect()
