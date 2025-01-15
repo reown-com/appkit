@@ -35,7 +35,7 @@ describe('W3mConnectingWcBrowser', () => {
     vi.clearAllMocks()
   })
 
-  it('it should send SELECT_WALLET event', async () => {
+  it('it should send SELECT_WALLET event when constructor is called', async () => {
     vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
       ...RouterController.state,
       data: {
