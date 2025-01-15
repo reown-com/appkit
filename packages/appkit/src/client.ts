@@ -1352,10 +1352,8 @@ export class AppKit {
       })
 
       this.universalProvider.on('chainChanged', (chainId: number | string) => {
-        const caipNetwork = this.caipNetworks?.find(
-          // eslint-disable-next-line eqeqeq
-          c => c.chainNamespace === ChainController.state.activeChain && c.id == chainId
-        )
+        // eslint-disable-next-line eqeqeq
+        const caipNetwork = this.caipNetworks?.find(c => c.id == chainId)
         const currentCaipNetwork = this.getCaipNetwork()
 
         if (!caipNetwork) {
@@ -1364,7 +1362,7 @@ export class AppKit {
           return
         }
 
-        if (!currentCaipNetwork || currentCaipNetwork?.id !== caipNetwork?.id) {
+        if (currentCaipNetwork?.id !== caipNetwork?.id) {
           this.setCaipNetwork(caipNetwork)
         }
       })
