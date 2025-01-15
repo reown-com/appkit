@@ -1,18 +1,18 @@
+import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
 import type {
-  Connection as SolanaConnection,
   PublicKey,
+  SendOptions,
+  Connection as SolanaConnection,
   Transaction as SolanaWeb3Transaction,
   TransactionSignature,
-  VersionedTransaction,
-  SendOptions
+  VersionedTransaction
 } from '@solana/web3.js'
 import UniversalProvider from '@walletconnect/universal-provider'
 
-import type { SendTransactionOptions } from '@solana/wallet-adapter-base'
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import type { ConnectorType } from '@reown/appkit-core'
-import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 import type { Provider as CoreProvider } from '@reown/appkit-core'
+import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 
 export type Connection = SolanaConnection
 

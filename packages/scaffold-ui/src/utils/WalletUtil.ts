@@ -5,6 +5,7 @@ import {
   StorageUtil
 } from '@reown/appkit-core'
 import type { ConnectMethod, Connector, Features, WcWallet } from '@reown/appkit-core'
+
 import { ConnectorUtil } from './ConnectorUtil.js'
 import { ConstantsUtil } from './ConstantsUtil.js'
 

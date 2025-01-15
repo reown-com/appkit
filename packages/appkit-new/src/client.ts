@@ -1,62 +1,62 @@
 /* eslint-disable max-depth */
+import type { SessionTypes } from '@walletconnect/types'
+import UniversalProvider from '@walletconnect/universal-provider'
+import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
+
 import {
-  type EventsControllerState,
-  type PublicStateControllerState,
-  type ThemeControllerState,
-  type ModalControllerState,
-  type ConnectedWalletInfo,
-  type RouterControllerState,
-  type ChainAdapter,
-  type SdkVersion,
-  type UseAppKitAccountReturn,
-  type UseAppKitNetworkReturn,
-  type NetworkControllerClient,
-  type ConnectionControllerClient,
-  ConstantsUtil as CoreConstantsUtil,
-  type ConnectorType,
-  type WriteContractArgs,
-  type Provider,
-  type SendTransactionArgs,
-  type EstimateGasTransactionArgs,
+  type CaipAddress,
+  type CaipNetwork,
+  type CaipNetworkId,
+  type ChainNamespace,
+  ConstantsUtil,
+  SafeLocalStorage,
+  SafeLocalStorageKeys
+} from '@reown/appkit-common'
+import {
   type AccountControllerState,
   type AdapterNetworkState,
-  SIWXUtil
+  type ChainAdapter,
+  type ConnectedWalletInfo,
+  type ConnectionControllerClient,
+  type ConnectorType,
+  ConstantsUtil as CoreConstantsUtil,
+  type EstimateGasTransactionArgs,
+  type EventsControllerState,
+  type ModalControllerState,
+  type NetworkControllerClient,
+  type Provider,
+  type PublicStateControllerState,
+  type RouterControllerState,
+  SIWXUtil,
+  type SdkVersion,
+  type SendTransactionArgs,
+  type ThemeControllerState,
+  type UseAppKitAccountReturn,
+  type UseAppKitNetworkReturn,
+  type WriteContractArgs
 } from '@reown/appkit-core'
 import {
   AccountController,
+  AlertController,
+  ApiController,
+  AssetUtil,
   BlockchainApiController,
+  ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
+  EnsController,
   EventsController,
   ModalController,
-  ChainController,
-  PublicStateController,
-  ThemeController,
-  SnackController,
-  RouterController,
-  EnsController,
   OptionsController,
-  AssetUtil,
-  ApiController,
-  AlertController,
-  StorageUtil
+  PublicStateController,
+  RouterController,
+  SnackController,
+  StorageUtil,
+  ThemeController
 } from '@reown/appkit-core'
+import type { AppKitNetwork } from '@reown/appkit-new/networks'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui-new'
-import {
-  ConstantsUtil,
-  type CaipNetwork,
-  type ChainNamespace,
-  SafeLocalStorage,
-  SafeLocalStorageKeys,
-  type CaipAddress,
-  type CaipNetworkId
-} from '@reown/appkit-common'
-import type { AppKitOptions } from './utils/TypesUtil.js'
-import {
-  UniversalAdapter,
-  UniversalAdapter as UniversalAdapterClient
-} from './universal-adapter/client.js'
 import {
   CaipNetworksUtil,
   ErrorUtil,
@@ -64,17 +64,19 @@ import {
 } from '@reown/appkit-utils'
 import {
   W3mFrameHelpers,
-  W3mFrameRpcConstants,
   type W3mFrameProvider,
+  W3mFrameRpcConstants,
   type W3mFrameTypes
 } from '@reown/appkit-wallet'
-import { ProviderUtil } from './store/ProviderUtil.js'
-import type { AppKitNetwork } from '@reown/appkit-new/networks'
+
 import type { AdapterBlueprint } from './adapters/ChainAdapterBlueprint.js'
-import UniversalProvider from '@walletconnect/universal-provider'
-import type { SessionTypes } from '@walletconnect/types'
-import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
 import { W3mFrameProviderSingleton } from './auth-provider/W3MFrameProviderSingleton.js'
+import { ProviderUtil } from './store/ProviderUtil.js'
+import {
+  UniversalAdapter,
+  UniversalAdapter as UniversalAdapterClient
+} from './universal-adapter/client.js'
+import type { AppKitOptions } from './utils/TypesUtil.js'
 
 declare global {
   interface Window {

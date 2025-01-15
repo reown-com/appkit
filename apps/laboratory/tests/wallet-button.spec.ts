@@ -1,8 +1,9 @@
-import { test, type BrowserContext } from '@playwright/test'
-import { ModalPage } from './shared/pages/ModalPage'
-import { ModalValidator } from './shared/validators/ModalValidator'
-import { WalletPage } from './shared/pages/WalletPage'
+import { type BrowserContext, test } from '@playwright/test'
+
 import { DEFAULT_SESSION_PARAMS } from './shared/constants'
+import { ModalPage } from './shared/pages/ModalPage'
+import { WalletPage } from './shared/pages/WalletPage'
+import { ModalValidator } from './shared/validators/ModalValidator'
 
 const WALLET_CONNECT_TEST_ID = 'walletConnect'
 

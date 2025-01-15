@@ -1,7 +1,11 @@
 /* eslint-disable no-nested-ternary */
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import '../../components/wui-icon/index.js'
+import { ICON_COLOR } from '../../components/wui-icon/index.js'
+import { vars } from '../../utils/ThemeHelperUtil.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type {
   BackgroundColorType,
@@ -11,9 +15,6 @@ import type {
 } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
-import { vars } from '../../utils/ThemeHelperUtil.js'
-import { ICON_COLOR } from '../../components/wui-icon/index.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 // -- Constants ------------------------------------------ //
 

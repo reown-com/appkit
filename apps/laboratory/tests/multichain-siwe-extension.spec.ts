@@ -1,6 +1,6 @@
+import { extensionFixture } from './shared/fixtures/extension-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
-import { extensionFixture } from './shared/fixtures/extension-fixture'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage

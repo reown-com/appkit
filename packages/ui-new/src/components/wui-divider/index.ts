@@ -1,8 +1,9 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
-import '../wui-text/index.js'
+
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
+import '../wui-text/index.js'
 import styles from './styles.js'
 
 @customElement('wui-divider')

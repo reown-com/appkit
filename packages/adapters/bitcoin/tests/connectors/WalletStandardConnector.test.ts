@@ -1,9 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import type { CaipNetwork } from '@reown/appkit-common'
 import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
+
 import { WalletStandardConnector } from '../../src/connectors/WalletStandardConnector'
-import { mockWalletStandardProvider } from '../mocks/mockWalletStandard'
 import { MethodNotSupportedError } from '../../src/errors/MethodNotSupportedError'
+import { mockWalletStandardProvider } from '../mocks/mockWalletStandard'
 
 vi.mock('@wallet-standard/app', async () =>
   Promise.resolve({

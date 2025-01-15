@@ -1,3 +1,5 @@
+import { Fragment, useState } from 'react'
+
 import {
   Button,
   Card,
@@ -8,12 +10,13 @@ import {
   Stack,
   StackDivider
 } from '@chakra-ui/react'
-import * as AppKitWalletButton from '@reown/appkit-wallet-button/react'
+
 import type { Wallet } from '@reown/appkit-wallet-button'
-import { Fragment, useState } from 'react'
-import { useAppKitAccount, type SocialProvider } from '@reown/appkit/react'
-import { useChakraToast } from './Toast'
+import * as AppKitWalletButton from '@reown/appkit-wallet-button/react'
+import { type SocialProvider, useAppKitAccount } from '@reown/appkit/react'
+
 import { ConstantsUtil } from '../utils/ConstantsUtil'
+import { useChakraToast } from './Toast'
 
 interface AppKitWalletButtonsProps {
   wallets: Wallet[]

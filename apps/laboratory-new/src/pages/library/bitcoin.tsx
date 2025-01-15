@@ -1,17 +1,18 @@
-import {
-  createAppKit,
-  useAppKitAccount,
-  useAppKitProvider,
-  type CaipNetwork
-} from '@reown/appkit-new/react'
-import { ThemeStore } from '../../utils/StoreUtil'
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { useState } from 'react'
 
-import { AppKitButtons } from '../../components/AppKitButtons'
+import { Button, Stack, useToast } from '@chakra-ui/react'
 
 import { BitcoinAdapter, type BitcoinConnector } from '@reown/appkit-adapter-bitcoin'
-import { Button, Stack, useToast } from '@chakra-ui/react'
-import { useState } from 'react'
+import {
+  type CaipNetwork,
+  createAppKit,
+  useAppKitAccount,
+  useAppKitProvider
+} from '@reown/appkit-new/react'
+
+import { AppKitButtons } from '../../components/AppKitButtons'
+import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { ThemeStore } from '../../utils/StoreUtil'
 
 const networks = ConstantsUtil.BitcoinNetworks
 

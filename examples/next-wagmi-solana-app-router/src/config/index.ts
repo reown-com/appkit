@@ -1,26 +1,26 @@
-import {
-  createAppKit,
-  useAppKit,
-  useAppKitState,
-  useAppKitAccount,
-  useAppKitTheme,
-  useAppKitEvents,
-  useWalletInfo,
-  useAppKitNetwork,
-  useDisconnect
-} from '@reown/appkit/react'
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import {
-  mainnet,
-  polygon,
-  arbitrum,
-  optimism,
   AppKitNetwork,
+  arbitrum,
+  mainnet,
+  optimism,
+  polygon,
   solana,
   solanaDevnet,
   solanaTestnet
 } from '@reown/appkit/networks'
+import {
+  createAppKit,
+  useAppKit,
+  useAppKitAccount,
+  useAppKitEvents,
+  useAppKitNetwork,
+  useAppKitState,
+  useAppKitTheme,
+  useDisconnect,
+  useWalletInfo
+} from '@reown/appkit/react'
 
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694' // this is a public projectId only to use on localhost
 

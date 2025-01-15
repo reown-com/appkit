@@ -1,5 +1,6 @@
-import { bigIntReplacer } from './CommonUtils'
 import type { Address, Hex } from 'viem'
+
+import { bigIntReplacer } from './CommonUtils'
 import { USEROP_BUILDER_SERVICE_BASE_URL } from './ConstantsUtil'
 
 export type Call = { to: Address; value: bigint; data: Hex }

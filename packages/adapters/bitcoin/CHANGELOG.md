@@ -29,7 +29,7 @@
 
   ```ts
   import { createSIWEConfig } from '@reown/appkit-siwe'
-  import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs } from '@reown/appkit-siwe'
+  import type { SIWECreateMessageArgs, SIWEVerifyMessageArgs } from '@reown/appkit-siwe'
 
   export const siweConfig = createSIWEConfig({
     required: false, // Optional - defaults to true

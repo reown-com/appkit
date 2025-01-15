@@ -1,9 +1,12 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import '@reown/appkit-ui-new/src/composites/wui-tag'
 import type { WuiTag } from '@reown/appkit-ui-new/src/composites/wui-tag'
-import { html } from 'lit'
+
 import { iconOptions, tagOptions } from '../../utils/PresetUtils'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 type Component = Meta<WuiTag>
 
