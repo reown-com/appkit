@@ -1869,12 +1869,26 @@ export class AppKit {
       console.error(...args)
     })
 
+    const getUrl = () => {
+      if (this.options.metadata?.url) {
+        return this.options.metadata.url
+      }
+
+      if (CoreHelperUtil.isIframe()) {
+        return window.location.origin
+      }
+
+      return ''
+    }
+
+    console.log('====> url', getUrl())
+
     const universalProviderOptions: UniversalProviderOpts = {
       projectId: this.options?.projectId,
       metadata: {
         name: this.options?.metadata ? this.options?.metadata.name : '',
         description: this.options?.metadata ? this.options?.metadata.description : '',
-        url: this.options?.metadata ? this.options?.metadata.url : '',
+        url: getUrl(),
         icons: this.options?.metadata ? this.options?.metadata.icons : ['']
       },
       logger
