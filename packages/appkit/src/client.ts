@@ -886,12 +886,10 @@ export class AppKit {
 
         await this.syncWalletConnectAccount()
       },
-      connectExternal: async ({ id, info, type, provider, chain }) => {
+      connectExternal: async ({ id, info, type, provider, chain, caipNetwork }) => {
         const activeChain = ChainController.state.activeChain as ChainNamespace
-        const chainToUse = chain || activeChain
-        const adapter = this.getAdapter(chainToUse)
 
-        if (chain && chain !== activeChain) {
+        if (chain && chain !== activeChain && !caipNetwork) {
           const toConnectNetwork = this.caipNetworks?.find(
             network => network.chainNamespace === chain
           )
@@ -899,6 +897,9 @@ export class AppKit {
             this.setCaipNetwork(toConnectNetwork)
           }
         }
+
+        const chainToUse = chain || activeChain
+        const adapter = this.getAdapter(chainToUse)
 
         if (!adapter) {
           throw new Error('Adapter not found')
@@ -909,8 +910,10 @@ export class AppKit {
           info,
           type,
           provider,
-          chainId: this.getCaipNetwork()?.id,
-          rpcUrl: this.getCaipNetwork()?.rpcUrls?.default?.http?.[0]
+          chainId: caipNetwork?.id || this.getCaipNetwork()?.id,
+          rpcUrl:
+            caipNetwork?.rpcUrls?.default?.http?.[0] ||
+            this.getCaipNetwork()?.rpcUrls?.default?.http?.[0]
         })
 
         if (!res) {
