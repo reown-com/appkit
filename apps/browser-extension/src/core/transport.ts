@@ -1,4 +1,12 @@
-import { createWalletClient, EIP1193Parameters, EIP1193Provider, fromHex, http, toHex } from 'viem'
+import {
+  Address,
+  createWalletClient,
+  EIP1193Parameters,
+  EIP1193Provider,
+  fromHex,
+  http,
+  toHex
+} from 'viem'
 import { ChainId, wagmiConfig } from './wagmi'
 import { AccountUtil } from '../utils/AccountUtil'
 import { privateKeyToAccount } from 'viem/accounts'
@@ -10,6 +18,8 @@ const LOCAL_STORAGE_KEYS = {
   HAS_CONNECTED: '@appkit/extension_connected',
   CHAIN_ID: '@appkit/extension_chain_id'
 }
+
+const SUPPORTED_CHAIN_IDS = [1, 137, 8453]
 
 export function createReownTransport() {
   return {
@@ -90,6 +100,18 @@ export function createReownTransport() {
           const [, typedData] = params
 
           return signTypedData(JSON.parse(typedData))
+        }
+
+        case 'wallet_addEthereumChain': {
+          const isSupported = SUPPORTED_CHAIN_IDS.some(
+            id => fromHex(params[0]?.chainId as Address, 'number') === id
+          )
+
+          if (!isSupported) {
+            throw new Error('Chain ID not supported')
+          }
+
+          return null
         }
 
         default:
