@@ -1,6 +1,7 @@
-import { cn } from '@/lib/utils'
-import { DragIcon } from '@/components/icon/drag'
 import dynamic from 'next/dynamic'
+
+import { DragIcon } from '@/components/icon/drag'
+import { cn } from '@/lib/utils'
 
 const Checkbox = dynamic(() => import('@/components/ui/checkbox').then(mod => mod.Checkbox), {
   ssr: false

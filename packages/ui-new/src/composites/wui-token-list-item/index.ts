@@ -1,13 +1,15 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
+
+import { NumberUtil } from '@reown/appkit-common'
+
 import '../../components/wui-image/index.js'
 import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
-import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
-import { NumberUtil } from '@reown/appkit-common'
 
 @customElement('wui-token-list-item')
 export class WuiTokenListItem extends LitElement {

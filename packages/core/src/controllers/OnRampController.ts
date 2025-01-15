@@ -1,16 +1,18 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
-import {
-  ONRAMP_PROVIDERS,
-  MELD_DEV_PUBLIC_KEY,
-  MELD_PROD_PUBLIC_KEY
-} from '../utils/ConstantsUtil.js'
-import type { PurchaseCurrency, PaymentCurrency } from '../utils/TypeUtil.js'
-import { BlockchainApiController } from './BlockchainApiController.js'
-import { ApiController } from './ApiController.js'
-import { ChainController } from './ChainController.js'
-import { AccountController } from './AccountController.js'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
+
 import { ConstantsUtil } from '@reown/appkit-common'
+
+import {
+  MELD_DEV_PUBLIC_KEY,
+  MELD_PROD_PUBLIC_KEY,
+  ONRAMP_PROVIDERS
+} from '../utils/ConstantsUtil.js'
+import type { PaymentCurrency, PurchaseCurrency } from '../utils/TypeUtil.js'
+import { AccountController } from './AccountController.js'
+import { ApiController } from './ApiController.js'
+import { BlockchainApiController } from './BlockchainApiController.js'
+import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 export type OnRampProviderOption = 'coinbase' | 'moonpay' | 'stripe' | 'paypal' | 'meld'

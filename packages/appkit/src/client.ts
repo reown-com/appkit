@@ -1,67 +1,67 @@
 /* eslint-disable max-depth */
+import type { SessionTypes } from '@walletconnect/types'
+import UniversalProvider from '@walletconnect/universal-provider'
+import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
+
 import {
-  type EventsControllerState,
-  type PublicStateControllerState,
-  type ThemeControllerState,
-  type ModalControllerState,
-  type ConnectedWalletInfo,
-  type RouterControllerState,
-  type ChainAdapter,
-  type SdkVersion,
-  type UseAppKitAccountReturn,
-  type UseAppKitNetworkReturn,
-  type NetworkControllerClient,
-  type ConnectionControllerClient,
-  type ConnectorType,
-  type WriteContractArgs,
-  type SendTransactionArgs,
-  type EstimateGasTransactionArgs,
-  ConstantsUtil as CoreConstantsUtil,
-  type Features,
-  SIWXUtil,
-  type ConnectionStatus,
-  type OptionsControllerState,
-  type WalletFeature,
-  type ConnectMethod,
-  type SocialProvider,
-  type Metadata
-} from '@reown/appkit-core'
-import {
-  AccountController,
-  BlockchainApiController,
-  ConnectionController,
-  ConnectorController,
-  CoreHelperUtil,
-  EventsController,
-  ModalController,
-  ChainController,
-  PublicStateController,
-  ThemeController,
-  SnackController,
-  RouterController,
-  EnsController,
-  OptionsController,
-  AssetUtil,
-  ApiController,
-  AlertController,
-  StorageUtil
-} from '@reown/appkit-core'
-import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
-import {
-  type CaipNetwork,
-  type ChainNamespace,
   type CaipAddress,
+  type CaipNetwork,
   type CaipNetworkId,
-  NetworkUtil,
+  type ChainNamespace,
   ConstantsUtil,
+  NetworkUtil,
   ParseUtil,
   getW3mThemeVariables
 } from '@reown/appkit-common'
-import type { AppKitOptions } from './utils/TypesUtil.js'
 import {
-  UniversalAdapter,
-  UniversalAdapter as UniversalAdapterClient
-} from './universal-adapter/client.js'
+  type ChainAdapter,
+  type ConnectMethod,
+  type ConnectedWalletInfo,
+  type ConnectionControllerClient,
+  type ConnectionStatus,
+  type ConnectorType,
+  ConstantsUtil as CoreConstantsUtil,
+  type EstimateGasTransactionArgs,
+  type EventsControllerState,
+  type Features,
+  type Metadata,
+  type ModalControllerState,
+  type NetworkControllerClient,
+  type OptionsControllerState,
+  type PublicStateControllerState,
+  type RouterControllerState,
+  SIWXUtil,
+  type SdkVersion,
+  type SendTransactionArgs,
+  type SocialProvider,
+  type ThemeControllerState,
+  type UseAppKitAccountReturn,
+  type UseAppKitNetworkReturn,
+  type WalletFeature,
+  type WriteContractArgs
+} from '@reown/appkit-core'
+import {
+  AccountController,
+  AlertController,
+  ApiController,
+  AssetUtil,
+  BlockchainApiController,
+  ChainController,
+  ConnectionController,
+  ConnectorController,
+  CoreHelperUtil,
+  EnsController,
+  EventsController,
+  ModalController,
+  OptionsController,
+  PublicStateController,
+  RouterController,
+  SnackController,
+  StorageUtil,
+  ThemeController
+} from '@reown/appkit-core'
+import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
+import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
 import {
   CaipNetworksUtil,
   ErrorUtil,
@@ -71,19 +71,21 @@ import {
 } from '@reown/appkit-utils'
 import {
   W3mFrameHelpers,
-  W3mFrameRpcConstants,
   W3mFrameProvider,
+  W3mFrameRpcConstants,
   type W3mFrameTypes
 } from '@reown/appkit-wallet'
-import { ProviderUtil, type ProviderStoreUtilState } from './store/ProviderUtil.js'
 import type { AppKitNetwork } from '@reown/appkit/networks'
+
 import type { AdapterBlueprint } from './adapters/ChainAdapterBlueprint.js'
-import UniversalProvider from '@walletconnect/universal-provider'
-import type { SessionTypes } from '@walletconnect/types'
-import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
 import { W3mFrameProviderSingleton } from './auth-provider/W3MFrameProviderSingleton.js'
+import { type ProviderStoreUtilState, ProviderUtil } from './store/ProviderUtil.js'
+import {
+  UniversalAdapter,
+  UniversalAdapter as UniversalAdapterClient
+} from './universal-adapter/client.js'
 import { WcHelpersUtil } from './utils/HelpersUtil.js'
-import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
+import type { AppKitOptions } from './utils/TypesUtil.js'
 
 declare global {
   interface Window {

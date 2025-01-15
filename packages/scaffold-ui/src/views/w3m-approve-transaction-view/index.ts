@@ -1,14 +1,16 @@
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
-import styles from './styles.js'
-import {
-  ModalController,
-  ConnectorController,
-  ThemeController,
-  RouterController
-} from '@reown/appkit-core'
+
 import { getW3mThemeVariables } from '@reown/appkit-common'
+import {
+  ConnectorController,
+  ModalController,
+  RouterController,
+  ThemeController
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
+
+import styles from './styles.js'
 
 // -- Variables ------------------------------------------- //
 const PAGE_HEIGHT = 600

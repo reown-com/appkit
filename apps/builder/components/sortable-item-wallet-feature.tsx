@@ -5,18 +5,21 @@ import {
   CollisionDetection,
   DropAnimation,
   KeyboardCoordinateGetter,
-  Modifiers,
   MeasuringConfiguration,
+  Modifiers,
   PointerActivationConstraint,
   UniqueIdentifier
 } from '@dnd-kit/core'
 import {
-  arrayMove,
-  useSortable,
-  SortingStrategy,
   AnimateLayoutChanges,
-  NewIndexGetter
+  NewIndexGetter,
+  SortingStrategy,
+  arrayMove,
+  useSortable
 } from '@dnd-kit/sortable'
+
+import { WalletFeatureItem } from '@/components/wallet-feature-item'
+import { useAppKitContext } from '@/hooks/use-appkit'
 
 const defaultInitializer = (index: number) => index
 
@@ -26,9 +29,6 @@ export function createRange<T = number>(
 ): T[] {
   return [...new Array(length)].map((_, index) => initializer(index))
 }
-
-import { WalletFeatureItem } from '@/components/wallet-feature-item'
-import { useAppKitContext } from '@/hooks/use-appkit'
 
 export interface Props {
   activationConstraint?: PointerActivationConstraint

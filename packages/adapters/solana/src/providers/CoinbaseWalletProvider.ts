@@ -1,11 +1,13 @@
-import { type AnyTransaction, type Provider as SolanaProvider } from '@reown/appkit-utils/solana'
-import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 import type { Connection, PublicKey, SendOptions } from '@solana/web3.js'
-import { ConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
-import { solana } from '@reown/appkit/networks'
-import { PresetsUtil } from '@reown/appkit-utils'
+
+import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 import type { RequestArguments } from '@reown/appkit-core'
 import type { Provider as CoreProvider } from '@reown/appkit-core'
+import { PresetsUtil } from '@reown/appkit-utils'
+import { type AnyTransaction, type Provider as SolanaProvider } from '@reown/appkit-utils/solana'
+import { solana } from '@reown/appkit/networks'
+
+import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 
 export type SolanaCoinbaseWallet = {
   publicKey?: PublicKey

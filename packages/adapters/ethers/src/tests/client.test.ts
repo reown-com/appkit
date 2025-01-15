@@ -1,15 +1,17 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { EthersAdapter } from '../client'
-import { CaipNetworksUtil } from '@reown/appkit-utils'
-import type { Provider } from '@reown/appkit-core'
-import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import UniversalProvider from '@walletconnect/universal-provider'
-import { JsonRpcProvider, InfuraProvider } from 'ethers'
-import { mainnet } from '@reown/appkit/networks'
-import { EthersMethods } from '../utils/EthersMethods'
-import { ProviderUtil } from '@reown/appkit/store'
+import { InfuraProvider, JsonRpcProvider } from 'ethers'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { WcConstantsUtil } from '@reown/appkit'
 import { Emitter } from '@reown/appkit-common'
+import type { Provider } from '@reown/appkit-core'
+import { CaipNetworksUtil } from '@reown/appkit-utils'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
+import { mainnet } from '@reown/appkit/networks'
+import { ProviderUtil } from '@reown/appkit/store'
+
+import { EthersAdapter } from '../client'
+import { EthersMethods } from '../utils/EthersMethods'
 
 class ErrorWithCode extends Error {
   code: number

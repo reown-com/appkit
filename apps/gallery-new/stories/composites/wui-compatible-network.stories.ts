@@ -1,7 +1,10 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui-new/src/composites/wui-compatible-network'
 import type { WuiCompatibleNetwork } from '@reown/appkit-ui-new/src/composites/wui-compatible-network'
-import { html } from 'lit'
+
 import { networkImages } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiCompatibleNetwork>

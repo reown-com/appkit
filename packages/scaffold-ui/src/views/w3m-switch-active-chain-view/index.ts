@@ -1,9 +1,11 @@
+import { LitElement, html } from 'lit'
+import { property } from 'lit/decorators.js'
+
+import { ConstantsUtil } from '@reown/appkit-common'
 import { ChainController, ModalController, RouterController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
+
 import styles from './styles.js'
-import { ConstantsUtil } from '@reown/appkit-common'
-import { property } from 'lit/decorators.js'
 
 @customElement('w3m-switch-active-chain-view')
 export class W3mSwitchActiveChainView extends LitElement {

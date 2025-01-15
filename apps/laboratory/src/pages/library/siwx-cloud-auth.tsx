@@ -1,12 +1,12 @@
-import { createAppKit } from '@reown/appkit/react'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
-import { ThemeStore } from '../../utils/StoreUtil'
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { CloudAuthSIWX } from '@reown/appkit-siwx'
+import { mainnet } from '@reown/appkit/networks'
+import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { MultiChainTestsEthersSolana } from '../../components/MultiChainTestsEthersSolana'
-import { mainnet } from '@reown/appkit/networks'
-import { CloudAuthSIWX } from '@reown/appkit-siwx'
+import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { ThemeStore } from '../../utils/StoreUtil'
 
 const networks = ConstantsUtil.EvmNetworks
 

@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 import React, { type ReactNode } from 'react'
 import { createContext } from 'react'
-import { SMART_SESSION_KEY, removeLocalStorageItem } from '../utils/LocalStorage'
-import { useLocalStorageState } from '../hooks/useLocalStorageState'
+
 import type { SmartSessionGrantPermissionsResponse } from '@reown/appkit-experimental/smart-session'
+
+import { useLocalStorageState } from '../hooks/useLocalStorageState'
+import { SMART_SESSION_KEY, removeLocalStorageItem } from '../utils/LocalStorage'
 
 export type ERC7715PermissionsContextType = {
   projectId: string

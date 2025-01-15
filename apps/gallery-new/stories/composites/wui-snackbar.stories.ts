@@ -1,7 +1,10 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui-new/src/composites/wui-snackbar'
 import type { WuiSnackbar } from '@reown/appkit-ui-new/src/composites/wui-snackbar'
-import { html } from 'lit'
+
 import { colorOptions, iconOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiSnackbar>
