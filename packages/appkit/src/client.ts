@@ -888,6 +888,7 @@ export class AppKit {
       },
       connectExternal: async ({ id, info, type, provider, chain, caipNetwork }) => {
         const activeChain = ChainController.state.activeChain as ChainNamespace
+
         if (chain && chain !== activeChain && !caipNetwork) {
           const toConnectNetwork = this.caipNetworks?.find(
             network => network.chainNamespace === chain
@@ -915,28 +916,15 @@ export class AppKit {
             this.getCaipNetwork()?.rpcUrls?.default?.http?.[0]
         })
 
+        if (!res) {
+          return
+        }
+
         StorageUtil.addConnectedNamespace(chainToUse)
-
-        if (res) {
-          this.syncProvider({
-            ...res,
-            chainNamespace: chainToUse
-          })
-          await this.syncAccount({
-            ...res,
-            chainNamespace: chainToUse
-          })
-
-          const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
-
-          this.setAllAccounts(accounts, chainToUse)
-        }
-
-        if (!this.caipNetworks?.some(network => network.id === res?.chainId)) {
-          if (res?.chainId) {
-            this.setUnsupportedNetwork(res.chainId)
-          }
-        }
+        this.syncProvider({ ...res, chainNamespace: chainToUse })
+        await this.syncAccount({ ...res, chainNamespace: chainToUse })
+        const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
+        this.setAllAccounts(accounts, chainToUse)
       },
       reconnectExternal: async ({ id, info, type, provider }) => {
         const namespace = ChainController.state.activeChain as ChainNamespace
@@ -1352,10 +1340,8 @@ export class AppKit {
       })
 
       this.universalProvider.on('chainChanged', (chainId: number | string) => {
-        const caipNetwork = this.caipNetworks?.find(
-          // eslint-disable-next-line eqeqeq
-          c => c.chainNamespace === ChainController.state.activeChain && c.id == chainId
-        )
+        // eslint-disable-next-line eqeqeq
+        const caipNetwork = this.caipNetworks?.find(c => c.id == chainId)
         const currentCaipNetwork = this.getCaipNetwork()
 
         if (!caipNetwork) {
@@ -1364,7 +1350,7 @@ export class AppKit {
           return
         }
 
-        if (!currentCaipNetwork || currentCaipNetwork?.id !== caipNetwork?.id) {
+        if (currentCaipNetwork?.id !== caipNetwork?.id) {
           this.setCaipNetwork(caipNetwork)
         }
       })
