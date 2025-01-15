@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { ThemeHelperUtil } from '../src/utils/ThemeHelperUtil.js'
 
 // -- Tests --------------------------------------------------------------------

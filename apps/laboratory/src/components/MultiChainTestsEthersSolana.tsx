@@ -1,10 +1,11 @@
 import * as React from 'react'
+
 import { useAppKitState } from '@reown/appkit/react'
 
-import { SolanaTests } from './Solana/SolanaTests'
-import { EthersTests } from './Ethers/EthersTests'
 import { EthersModalInfo } from './Ethers/EthersModalInfo'
+import { EthersTests } from './Ethers/EthersTests'
 import { SolanaModalInfo } from './Solana/SolanaModalInfo'
+import { SolanaTests } from './Solana/SolanaTests'
 
 export function MultiChainTestsEthersSolana() {
   const { activeChain } = useAppKitState()

@@ -1,5 +1,8 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, snapshot } from 'valtio/vanilla'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
+
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
+import type { SIWXConfig } from '../utils/SIWXUtil.js'
 import type {
   ConnectMethod,
   CustomWallet,
@@ -12,8 +15,6 @@ import type {
   Tokens,
   WalletFeature
 } from '../utils/TypeUtil.js'
-import { ConstantsUtil } from '../utils/ConstantsUtil.js'
-import type { SIWXConfig } from '../utils/SIWXUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerStatePublic {

@@ -1,4 +1,5 @@
-import { describe, test, expect, beforeEach, vi } from 'vitest'
+import { beforeEach, describe, expect, test, vi } from 'vitest'
+
 import { InputUtil } from '../src/utils/InputUtil'
 
 describe('InputUtil', () => {

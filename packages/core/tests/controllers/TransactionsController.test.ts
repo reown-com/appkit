@@ -1,4 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
+
+import type { Transaction } from '@reown/appkit-common'
+
 import {
   BlockchainApiController,
   ChainController,
@@ -9,7 +12,6 @@ import {
   ONRAMP_TRANSACTIONS_RESPONSES_FEB,
   ONRAMP_TRANSACTIONS_RESPONSES_JAN
 } from '../constants/OnrampTransactions.js'
-import type { Transaction } from '@reown/appkit-common'
 
 // -- Constants ----------------------------------------------------------------
 const projectId = '123'

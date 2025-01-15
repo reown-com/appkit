@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test'
 import type { Locator, Page } from '@playwright/test'
+
 import { getMaximumWaitConnections } from '../utils/timeouts'
 
 const MAX_WAIT = getMaximumWaitConnections()

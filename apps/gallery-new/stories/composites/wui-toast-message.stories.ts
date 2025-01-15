@@ -1,8 +1,11 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui-new/src/composites/wui-toast-message'
-import '../../components/gallery-container'
-import type { WuiToastMessage } from '@reown/appkit-ui-new/src/composites/wui-toast-message'
+
 import { html } from 'lit'
+
+import '@reown/appkit-ui-new/src/composites/wui-toast-message'
+import type { WuiToastMessage } from '@reown/appkit-ui-new/src/composites/wui-toast-message'
+
+import '../../components/gallery-container'
 import { toastMessageOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiToastMessage>

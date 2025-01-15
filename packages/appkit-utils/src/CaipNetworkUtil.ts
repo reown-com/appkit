@@ -1,11 +1,13 @@
+import { fallback, http } from 'viem'
+
 import {
-  ConstantsUtil,
   type AppKitNetwork,
   type CaipNetwork,
-  type CaipNetworkId
+  type CaipNetworkId,
+  ConstantsUtil
 } from '@reown/appkit-common'
+
 import { PresetsUtil } from './PresetsUtil.js'
-import { fallback, http } from 'viem'
 
 const RPC_URL_HOST = 'rpc.walletconnect.org'
 

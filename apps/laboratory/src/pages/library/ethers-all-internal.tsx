@@ -1,13 +1,14 @@
-import { createAppKit } from '@reown/appkit/react'
-import { ThemeStore } from '../../utils/StoreUtil'
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { EthersTests } from '../../components/Ethers/EthersTests'
-import { AppKitButtons } from '../../components/AppKitButtons'
-import { siweConfig } from '../../utils/SiweUtils'
-import { SiweData } from '../../components/Siwe/SiweData'
-import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { mainnet } from '@reown/appkit/networks'
+import { createAppKit } from '@reown/appkit/react'
+
+import { AppKitButtons } from '../../components/AppKitButtons'
+import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
+import { EthersTests } from '../../components/Ethers/EthersTests'
+import { SiweData } from '../../components/Siwe/SiweData'
+import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { siweConfig } from '../../utils/SiweUtils'
+import { ThemeStore } from '../../utils/StoreUtil'
 
 const networks = ConstantsUtil.EvmNetworks
 

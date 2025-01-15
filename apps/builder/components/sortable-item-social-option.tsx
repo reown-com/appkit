@@ -1,7 +1,11 @@
 import React from 'react'
 
 import { UniqueIdentifier } from '@dnd-kit/core'
-import { useSortable, AnimateLayoutChanges, NewIndexGetter } from '@dnd-kit/sortable'
+import { AnimateLayoutChanges, NewIndexGetter, useSortable } from '@dnd-kit/sortable'
+
+import { SocialProvider } from '@reown/appkit-core'
+
+import { SocialOptionItem } from './social-option-item'
 
 const defaultInitializer = (index: number) => index
 
@@ -11,9 +15,6 @@ export function createRange<T = number>(
 ): T[] {
   return [...new Array(length)].map((_, index) => initializer(index))
 }
-
-import { SocialOptionItem } from './social-option-item'
-import { SocialProvider } from '@reown/appkit-core'
 
 interface SortableSocialOptionItemProps {
   animateLayoutChanges?: AnimateLayoutChanges

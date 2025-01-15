@@ -1,11 +1,12 @@
 import {
   ApiController,
-  OptionsController,
-  StorageUtil,
+  ConnectionController,
   type ConnectorWithProviders,
   CoreHelperUtil,
-  ConnectionController
+  OptionsController,
+  StorageUtil
 } from '@reown/appkit-core'
+
 import { WalletUtil } from './WalletUtil.js'
 
 export const ConnectorUtil = {

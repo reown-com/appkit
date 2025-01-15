@@ -1,7 +1,10 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui-new/src/composites/wui-list-select-wallet'
 import type { WuiListSelectWallet } from '@reown/appkit-ui-new/src/composites/wui-list-select-wallet'
-import { html } from 'lit'
+
 import '../../../components/gallery-container'
 import { walletImagesOptions } from '../../../utils/PresetUtils'
 

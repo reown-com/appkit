@@ -1,6 +1,8 @@
 import * as React from 'react'
-import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit-new/react'
+
 import UniversalProvider from '@walletconnect/universal-provider'
+
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit-new/react'
 
 import { AppKitInfo } from '../AppKitInfo'
 

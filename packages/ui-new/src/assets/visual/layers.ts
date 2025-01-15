@@ -1,4 +1,5 @@
 import { svg } from 'lit'
+
 export const layersSvg = svg`<svg fill="none" viewBox="0 0 60 60">
   <rect width="60" height="60" fill="#1DC956" rx="3" />
   <path

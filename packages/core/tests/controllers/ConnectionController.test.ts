@@ -1,4 +1,8 @@
+import { polygon } from 'viem/chains'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
+
+import { type CaipNetwork, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+
 import type {
   ChainAdapter,
   ConnectionControllerClient,
@@ -13,8 +17,6 @@ import {
   SIWXUtil,
   StorageUtil
 } from '../../exports/index.js'
-import { ConstantsUtil as CommonConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
-import { polygon } from 'viem/chains'
 
 // -- Setup --------------------------------------------------------------------
 const chain = CommonConstantsUtil.CHAIN.EVM

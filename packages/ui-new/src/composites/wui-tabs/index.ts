@@ -1,8 +1,9 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
+
+import '../../composites/wui-tab-item/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { IconType, TabSize } from '../../utils/TypeUtil.js'
-import '../../composites/wui-tab-item/index.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 

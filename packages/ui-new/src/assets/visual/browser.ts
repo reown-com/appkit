@@ -1,4 +1,5 @@
 import { svg } from 'lit'
+
 export const browserSvg = svg`<svg fill="none" viewBox="0 0 60 60">
   <rect width="60" height="60" fill="#1DC956" rx="30" />
   <circle cx="30" cy="30" r="3" fill="#fff" />

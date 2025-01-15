@@ -1,7 +1,9 @@
-import { describe, test, expect } from 'vitest'
-import { WcHelpersUtil } from '../../utils/HelpersUtil'
-import { ConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
 import type { SessionTypes } from '@walletconnect/types'
+import { describe, expect, test } from 'vitest'
+
+import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+
+import { WcHelpersUtil } from '../../utils/HelpersUtil'
 
 const mockEthereumNetwork = {
   id: 1,

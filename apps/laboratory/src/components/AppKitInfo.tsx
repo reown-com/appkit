@@ -1,16 +1,19 @@
 import * as React from 'react'
+
 import {
-  StackDivider,
+  Box,
   Card,
+  CardBody,
   CardHeader,
   Heading,
-  CardBody,
-  Box,
   Stack,
+  StackDivider,
   Text
 } from '@chakra-ui/react'
-import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
+
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+
+import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
 
 type AppKitInfoProps = {
   clientId?: string

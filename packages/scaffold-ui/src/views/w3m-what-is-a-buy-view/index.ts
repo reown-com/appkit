@@ -1,6 +1,7 @@
-import { customElement } from '@reown/appkit-ui'
-import { RouterController } from '@reown/appkit-core'
 import { LitElement, html } from 'lit'
+
+import { RouterController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 
 @customElement('w3m-what-is-a-buy-view')
 export class W3mWhatIsABuyView extends LitElement {

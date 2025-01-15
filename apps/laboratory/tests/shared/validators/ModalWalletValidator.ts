@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test'
+
 import { ModalValidator } from './ModalValidator'
 
 export const EOA = 'EOA'
