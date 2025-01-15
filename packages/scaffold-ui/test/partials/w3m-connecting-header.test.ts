@@ -15,7 +15,7 @@ async function getTabs(platformTabs: Platform[]) {
     html`<w3m-connecting-header .platforms=${platformTabs}></w3m-connecting-header>`
   )
   const { tabs } = HelpersUtil.querySelect(connectingHeader, TABS) as WuiTabs
-  console.log(tabs)
+
   return tabs
 }
 
@@ -25,7 +25,7 @@ describe('W3mConnectingHeader', () => {
   })
 
   it('it should display different platforms', async () => {
-    expect(await getTabs(['browser'])).toStrictEqual([
+    expect(await getTabs(['mobile'])).toStrictEqual([
       {
         icon: 'mobile',
         label: 'Mobile',
@@ -34,16 +34,16 @@ describe('W3mConnectingHeader', () => {
     ])
     expect(await getTabs(['browser'])).toStrictEqual([
       {
-        icon: 'mobile',
-        label: 'Mobile',
-        platform: 'mobile'
+        icon: 'browser',
+        label: 'Browser',
+        platform: 'browser'
       }
     ])
-    expect(await getTabs(['browser'])).toStrictEqual([
+    expect(await getTabs(['desktop'])).toStrictEqual([
       {
-        icon: 'mobile',
-        label: 'Mobile',
-        platform: 'mobile'
+        icon: 'desktop',
+        label: 'Desktop',
+        platform: 'desktop'
       }
     ])
   })
