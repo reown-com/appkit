@@ -9,7 +9,7 @@ import {
   OptionsController,
   StorageUtil
 } from '@reown/appkit-core'
-import { CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { html } from 'lit'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
