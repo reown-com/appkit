@@ -61,7 +61,7 @@ extensionTest('it should connect', async () => {
   await modalValidator.expectConnected()
 })
 
-extensionTest('it should switch networks and sign', async ({ library }) => {
+extensionTest('it should switch networks and sign', async () => {
   let network = 'Polygon'
 
   await modalPage.switchNetwork(network, true)
