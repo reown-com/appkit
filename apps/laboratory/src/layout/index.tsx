@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
-import { LayoutHeader } from './LayoutHeader'
+
 import { Container } from '@chakra-ui/react'
+
+import { LayoutHeader } from './LayoutHeader'
 
 type Props = {
   children: ReactNode | ReactNode[]

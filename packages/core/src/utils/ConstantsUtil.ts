@@ -1,5 +1,6 @@
-import type { DefaultAccountTypes, Features, SocialProvider } from './TypeUtil.js'
 import type { ChainNamespace } from '@reown/appkit-common'
+
+import type { DefaultAccountTypes, Features, SocialProvider } from './TypeUtil.js'
 
 const SECURE_SITE = 'https://secure.walletconnect.org'
 

@@ -1,9 +1,12 @@
-import { html } from 'lit'
 import { fixture } from '@open-wc/testing'
-import { W3mAccountNftsWidget } from '../../src/partials/w3m-account-nfts-widget'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { HelpersUtil } from '../utils/HelpersUtil'
+
+import { html } from 'lit'
+
 import { RouterController } from '@reown/appkit-core'
+
+import { W3mAccountNftsWidget } from '../../src/partials/w3m-account-nfts-widget'
+import { HelpersUtil } from '../utils/HelpersUtil'
 
 // --- Constants ---------------------------------------------------- //
 const TITLE = 'nft-template-title'

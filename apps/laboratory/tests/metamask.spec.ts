@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test'
 import { metaMaskFixtures, testWithSynpress } from '@synthetixio/synpress'
+
 import { ModalValidator } from './shared/validators/ModalValidator'
 import basicSetup from './wallet-setup/basic.setup.js'
 

@@ -3,16 +3,16 @@ import {
   aurora,
   avalanche,
   base,
+  baseSepolia,
   bsc,
   celo,
   gnosis,
   mainnet,
   optimism,
   polygon,
-  zkSync,
-  zora,
   sepolia,
-  baseSepolia
+  zkSync,
+  zora
 } from '@reown/appkit-new/networks'
 
 export const EthersConstants = {

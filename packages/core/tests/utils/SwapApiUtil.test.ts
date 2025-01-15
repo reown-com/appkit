@@ -1,11 +1,13 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { SwapApiUtil } from '../../src/utils/SwapApiUtil'
-import { ChainController } from '../../src/controllers/ChainController'
-import { BlockchainApiController } from '../../src/controllers/BlockchainApiController'
-import { OptionsController } from '../../src/controllers/OptionsController'
-import { ConnectionController } from '../../src/controllers/ConnectionController'
-import { AccountController } from '../../src/controllers/AccountController'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import type { Balance } from '@reown/appkit-common'
+
+import { AccountController } from '../../src/controllers/AccountController'
+import { BlockchainApiController } from '../../src/controllers/BlockchainApiController'
+import { ChainController } from '../../src/controllers/ChainController'
+import { ConnectionController } from '../../src/controllers/ConnectionController'
+import { OptionsController } from '../../src/controllers/OptionsController'
+import { SwapApiUtil } from '../../src/utils/SwapApiUtil'
 
 // Mock the controllers
 vi.mock('../../src/controllers/ChainController')

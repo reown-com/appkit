@@ -2,32 +2,41 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 import {
-  closestCenter,
   CollisionDetection,
-  DragOverlay,
   DndContext,
+  DragOverlay,
   DropAnimation,
-  KeyboardSensor,
   KeyboardCoordinateGetter,
+  KeyboardSensor,
+  MeasuringConfiguration,
   Modifiers,
   MouseSensor,
-  MeasuringConfiguration,
   PointerActivationConstraint,
   TouchSensor,
   UniqueIdentifier,
+  closestCenter,
+  defaultDropAnimationSideEffects,
   useSensor,
-  useSensors,
-  defaultDropAnimationSideEffects
+  useSensors
 } from '@dnd-kit/core'
 import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  SortingStrategy,
-  rectSortingStrategy,
   AnimateLayoutChanges,
-  NewIndexGetter
+  NewIndexGetter,
+  SortableContext,
+  SortingStrategy,
+  arrayMove,
+  rectSortingStrategy,
+  sortableKeyboardCoordinates
 } from '@dnd-kit/sortable'
+
+import { SocialProvider } from '@reown/appkit-core'
+
+import { SortableSocialOptionItem } from '@/components/sortable-item-social-option'
+import { List } from '@/components/ui/list'
+import { Wrapper } from '@/components/ui/wrapper'
+import { useAppKitContext } from '@/hooks/use-appkit'
+
+import { SocialOptionItem } from './social-option-item'
 
 const defaultInitializer = (index: number) => index
 
@@ -37,13 +46,6 @@ export function createRange<T = number>(
 ): T[] {
   return [...new Array(length)].map((_, index) => initializer(index))
 }
-
-import { SocialOptionItem } from './social-option-item'
-import { SortableSocialOptionItem } from '@/components/sortable-item-social-option'
-import { SocialProvider } from '@reown/appkit-core'
-import { List } from '@/components/ui/list'
-import { Wrapper } from '@/components/ui/wrapper'
-import { useAppKitContext } from '@/hooks/use-appkit'
 
 export interface Props {
   activationConstraint?: PointerActivationConstraint

@@ -1,9 +1,12 @@
-import { W3mAccountTokensWidget } from '../../src/partials/w3m-account-tokens-widget'
-import { describe, it, vi, afterEach, expect } from 'vitest'
 import { fixture } from '@open-wc/testing'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+
 import { html } from 'lit'
-import { HelpersUtil } from '../utils/HelpersUtil'
+
 import { AccountController, RouterController } from '@reown/appkit-core'
+
+import { W3mAccountTokensWidget } from '../../src/partials/w3m-account-tokens-widget'
+import { HelpersUtil } from '../utils/HelpersUtil'
 
 // -- Constants ----------------------------------------- //
 const LIST_TOKEN = 'wui-list-token'

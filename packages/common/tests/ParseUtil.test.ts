@@ -1,4 +1,5 @@
-import { describe, test, expect } from 'vitest'
+import { describe, expect, test } from 'vitest'
+
 import { ParseUtil } from '../src/utils/ParseUtil'
 import type { CaipAddress, CaipNetworkId } from '../src/utils/TypeUtil'
 

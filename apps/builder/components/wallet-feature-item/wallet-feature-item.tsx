@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react'
+
 import classNames from 'classnames'
 
-import { Handle } from './components'
-
-import styles from './wallet-feature-item.module.css'
-import { useAppKitContext } from '@/hooks/use-appkit'
 import { Checkbox } from '@/components/ui/checkbox'
+import { useAppKitContext } from '@/hooks/use-appkit'
 import { BaseDraggableItemProps, WalletFeatureName } from '@/lib/types'
+
+import { Handle } from './components'
+import styles from './wallet-feature-item.module.css'
 
 interface Props extends BaseDraggableItemProps {
   onToggleOption?: (name: WalletFeatureName) => void

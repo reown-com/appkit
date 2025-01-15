@@ -1,3 +1,4 @@
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectionController,
@@ -5,21 +6,21 @@ import {
   RouterController
 } from '@reown/appkit-core'
 import { ProviderUtil } from '@reown/appkit/store'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import type {
-  SmartSessionGrantPermissionsRequest,
-  SmartSessionGrantPermissionsResponse
-} from './utils/TypeUtils.js'
+
 import {
   assertWalletGrantPermissionsResponse,
   extractChainAndAddress,
   updateRequestSigner,
   validateRequest
 } from './helper/index.js'
-import { CosignerService } from './utils/CosignerService.js'
 import { ERROR_MESSAGES } from './schema/index.js'
-import type { PermissionsCapability, WalletCapabilities } from './utils/ERC5792Types.js'
 import { ERC7715_METHOD } from './utils/ConstantUtils.js'
+import { CosignerService } from './utils/CosignerService.js'
+import type { PermissionsCapability, WalletCapabilities } from './utils/ERC5792Types.js'
+import type {
+  SmartSessionGrantPermissionsRequest,
+  SmartSessionGrantPermissionsResponse
+} from './utils/TypeUtils.js'
 
 /**
  * 1. Validate the request using the SmartSessionGrantPermissionsRequestSchema

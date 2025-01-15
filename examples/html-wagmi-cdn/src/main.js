@@ -1,6 +1,6 @@
 import {
-  createAppKit,
   WagmiAdapter,
+  createAppKit,
   networks
 } from 'https://cdn.jsdelivr.net/npm/@reown/appkit-cdn@1.6.2/dist/appkit.js'
 import { reconnect } from 'https://esm.sh/@wagmi/core@2.x'

@@ -1,7 +1,9 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui-new/src/composites/wui-tooltip'
 import type { WuiTooltip } from '@reown/appkit-ui-new/src/composites/wui-tooltip'
-import { html } from 'lit'
 
 import { placementOptions } from '../../utils/PresetUtils'
 

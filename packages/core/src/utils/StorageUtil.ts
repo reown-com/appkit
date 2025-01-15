@@ -1,12 +1,13 @@
 /* eslint-disable no-console */
 import {
-  SafeLocalStorage,
-  SafeLocalStorageKeys,
   type CaipNetworkId,
   type ChainNamespace,
+  SafeLocalStorage,
+  SafeLocalStorageKeys,
   getSafeConnectorIdKey
 } from '@reown/appkit-common'
-import type { WcWallet, SocialProvider, ConnectionStatus } from './TypeUtil.js'
+
+import type { ConnectionStatus, SocialProvider, WcWallet } from './TypeUtil.js'
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
