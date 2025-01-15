@@ -1057,8 +1057,7 @@ export class AppKit {
             }
           }
         } catch (error) {
-          // console.error('Error switching network', error)
-          // this.setUnsupportedNetwork(caipNetwork.id)
+          this.setUnsupportedNetwork(caipNetwork.id)
         }
       },
       // eslint-disable-next-line @typescript-eslint/require-await
@@ -1514,7 +1513,6 @@ export class AppKit {
   }: Pick<AdapterBlueprint.ConnectResult, 'type' | 'provider' | 'id'> & {
     chainNamespace: ChainNamespace
   }) {
-    console.trace('>> SyncProvider', type, provider, id, chainNamespace)
     ProviderUtil.setProviderId(chainNamespace, type)
     ProviderUtil.setProvider(chainNamespace, provider)
 
