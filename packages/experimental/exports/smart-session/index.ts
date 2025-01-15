@@ -6,6 +6,7 @@ import type {
   SmartSessionGrantPermissionsRequest,
   SmartSessionGrantPermissionsResponse
 } from '../../src/smart-session/utils/TypeUtils.js'
+
 export * from '../../src/smart-session/utils/TypeUtils.js'
 
 // Views

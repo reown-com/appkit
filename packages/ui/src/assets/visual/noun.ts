@@ -1,4 +1,5 @@
 import { svg } from 'lit'
+
 export const nounSvg = svg`<svg fill="none" viewBox="0 0 60 60">
   <rect width="60" height="60" fill="#794CFF" rx="3" />
   <path

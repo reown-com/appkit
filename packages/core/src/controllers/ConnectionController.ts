@@ -1,6 +1,11 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref } from 'valtio/vanilla'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
+
+import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { type W3mFrameTypes } from '@reown/appkit-wallet'
+
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { SIWXUtil } from '../utils/SIWXUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   Connector,
@@ -9,14 +14,11 @@ import type {
   WcWallet,
   WriteContractArgs
 } from '../utils/TypeUtil.js'
-import { TransactionsController } from './TransactionsController.js'
 import { ChainController } from './ChainController.js'
-import { type W3mFrameTypes } from '@reown/appkit-wallet'
-import { ModalController } from './ModalController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
-import { ConstantsUtil, type CaipNetwork, type ChainNamespace } from '@reown/appkit-common'
-import { SIWXUtil } from '../utils/SIWXUtil.js'
+import { ModalController } from './ModalController.js'
+import { TransactionsController } from './TransactionsController.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {

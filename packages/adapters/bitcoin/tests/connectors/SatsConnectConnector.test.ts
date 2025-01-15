@@ -1,10 +1,12 @@
-import { beforeEach, describe, expect, it, vi, type MockInstance, type Mock } from 'vitest'
+import { MessageSigningProtocols } from 'sats-connect'
+import { type Mock, type MockInstance, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import type { CaipNetwork } from '@reown/appkit-common'
+import { CoreHelperUtil } from '@reown/appkit-core'
+import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
+
 import { SatsConnectConnector } from '../../src/connectors/SatsConnectConnector'
 import { mockSatsConnectProvider } from '../mocks/mockSatsConnect'
-import type { CaipNetwork } from '@reown/appkit-common'
-import { MessageSigningProtocols } from 'sats-connect'
-import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
-import { CoreHelperUtil } from '@reown/appkit-core'
 
 describe('SatsConnectConnector', () => {
   let connector: SatsConnectConnector

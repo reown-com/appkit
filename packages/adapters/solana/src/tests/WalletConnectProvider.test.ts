@@ -1,10 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mockUniversalProvider, mockUniversalProviderSession } from './mocks/UniversalProvider.js'
-import { WalletConnectProvider } from '../providers/WalletConnectProvider.js'
-import { TestConstants } from './util/TestConstants.js'
-import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
+
 import type { CaipNetwork } from '@reown/appkit-common'
+
+import { WalletConnectProvider } from '../providers/WalletConnectProvider.js'
 import { WalletConnectMethodNotSupportedError } from '../providers/shared/Errors.js'
+import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
+import { mockUniversalProvider, mockUniversalProviderSession } from './mocks/UniversalProvider.js'
+import { TestConstants } from './util/TestConstants.js'
 
 describe('WalletConnectProvider specific tests', () => {
   let provider = mockUniversalProvider()

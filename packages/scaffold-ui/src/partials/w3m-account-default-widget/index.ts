@@ -1,24 +1,25 @@
-import {
-  AccountController,
-  CoreHelperUtil,
-  ModalController,
-  RouterController,
-  StorageUtil,
-  ConnectorController,
-  EventsController,
-  ConnectionController,
-  SnackController,
-  ConstantsUtil as CommonConstantsUtil,
-  OptionsController,
-  ChainController,
-  type AccountType,
-  ConstantsUtil as CoreConstantsUtil
-} from '@reown/appkit-core'
-import { customElement, UiHelperUtil } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
+
+import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import {
+  AccountController,
+  type AccountType,
+  ChainController,
+  ConstantsUtil as CommonConstantsUtil,
+  ConnectionController,
+  ConnectorController,
+  ConstantsUtil as CoreConstantsUtil,
+  CoreHelperUtil,
+  EventsController,
+  ModalController,
+  OptionsController,
+  RouterController,
+  SnackController,
+  StorageUtil
+} from '@reown/appkit-core'
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 import styles from './styles.js'

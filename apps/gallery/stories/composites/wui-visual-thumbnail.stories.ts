@@ -1,7 +1,10 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui/src/composites/wui-visual-thumbnail'
 import type { WuiVisualThumbnail } from '@reown/appkit-ui/src/composites/wui-visual-thumbnail'
-import { html } from 'lit'
+
 import { walletImageSrc } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiVisualThumbnail>

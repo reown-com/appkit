@@ -1,5 +1,6 @@
 import { addons } from '@storybook/manager-api'
 import { create } from '@storybook/theming'
+
 // @ts-expect-error
 import logo from '../assets/logo.png'
 

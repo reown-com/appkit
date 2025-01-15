@@ -1,16 +1,18 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
-import { NumberUtil, type Balance, type CaipAddress } from '@reown/appkit-common'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
+
+import { type Balance, type CaipAddress, NumberUtil } from '@reown/appkit-common'
 import { ContractUtil } from '@reown/appkit-common'
-import { RouterController } from './RouterController.js'
-import { AccountController } from './AccountController.js'
-import { ConnectionController } from './ConnectionController.js'
-import { SnackController } from './SnackController.js'
-import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { EventsController } from './EventsController.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
-import { ChainController } from './ChainController.js'
+
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
+import { AccountController } from './AccountController.js'
+import { ChainController } from './ChainController.js'
+import { ConnectionController } from './ConnectionController.js'
+import { EventsController } from './EventsController.js'
+import { RouterController } from './RouterController.js'
+import { SnackController } from './SnackController.js'
 
 // -- Types --------------------------------------------- //
 

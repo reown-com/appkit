@@ -1,3 +1,6 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+
 import type { BaseError, Platform } from '@reown/appkit-core'
 import {
   ConnectionController,
@@ -11,8 +14,6 @@ import {
   StorageUtil
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
 
 @customElement('w3m-connecting-wc-view')
 export class W3mConnectingWcView extends LitElement {

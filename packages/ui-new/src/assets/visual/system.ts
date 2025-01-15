@@ -1,4 +1,5 @@
 import { svg } from 'lit'
+
 export const systemSvg = svg`<svg viewBox="0 0 60 60" fill="none">
   <g clip-path="url(#1)">
     <path

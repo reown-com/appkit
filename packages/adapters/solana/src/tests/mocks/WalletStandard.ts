@@ -1,3 +1,8 @@
+import type {
+  SolanaSignAndSendTransactionFeature,
+  SolanaSignMessageFeature,
+  SolanaSignTransactionFeature
+} from '@solana/wallet-standard-features'
 import type { Wallet, WalletAccount } from '@wallet-standard/base'
 import type {
   StandardConnectFeature,
@@ -5,12 +10,8 @@ import type {
   StandardEventsFeature
 } from '@wallet-standard/features'
 import { vi } from 'vitest'
+
 import { TestConstants } from '../util/TestConstants.js'
-import type {
-  SolanaSignAndSendTransactionFeature,
-  SolanaSignMessageFeature,
-  SolanaSignTransactionFeature
-} from '@solana/wallet-standard-features'
 
 export function mockWalletStandard() {
   const accounts = TestConstants.accounts.map(mockAccount)

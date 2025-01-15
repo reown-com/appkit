@@ -1,8 +1,11 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui/src/composites/wui-button'
 import type { WuiButton } from '@reown/appkit-ui/src/composites/wui-button'
 import type { IconType } from '@reown/appkit-ui/src/utils/TypesUtil'
-import { html } from 'lit'
+
 import { buttonOptions, iconOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiButton & { iconLeft?: IconType; iconRight?: IconType }>

@@ -1,4 +1,5 @@
 import { svg } from 'lit'
+
 export const nftSvg = svg`<svg fill="none" viewBox="0 0 60 60">
   <g clip-path="url(#a)">
     <rect width="60" height="60" fill="#C653C6" rx="3" />
