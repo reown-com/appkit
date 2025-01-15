@@ -5,7 +5,7 @@ import styles from './styles.js'
 import { AlertController } from '@reown/appkit-core'
 
 // -- Helpers ------------------------------------------- //
-const presets = {
+export const presets = {
   info: {
     backgroundColor: 'fg-350',
     iconColor: 'fg-325',
