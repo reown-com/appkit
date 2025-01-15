@@ -1,4 +1,3 @@
-import { defaultCustomizationConfig } from '@/lib/config'
 import {
   ConnectMethod,
   Features,
@@ -6,6 +5,8 @@ import {
   ThemeVariables,
   WalletFeature
 } from '@reown/appkit-core'
+
+import { defaultCustomizationConfig } from '@/lib/config'
 
 export type URLState = {
   features: Features

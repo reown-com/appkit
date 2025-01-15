@@ -1,7 +1,8 @@
 'use client'
 
-import { useAppKitAccount } from '@reown/appkit/react'
 import { useAccount } from 'wagmi'
+
+import { useAppKitAccount } from '@reown/appkit/react'
 
 const compactHash = (hash: string) => {
   return hash.slice(0, 7) + '...' + hash.slice(-5)

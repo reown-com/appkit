@@ -1,12 +1,12 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import * as logger from '@walletconnect/logger'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { W3mFrameConstants } from '../src/W3mFrameConstants.js'
 import { W3mFrameProvider } from '../src/W3mFrameProvider.js'
 import { W3mFrameStorage } from '../src/W3mFrameStorage.js'
-import * as logger from '@walletconnect/logger'
-
+import { SecureSiteMock } from './mocks/SecureSite.mock.js'
 // Mocks
 import { W3mFrameHelpers } from './mocks/W3mFrameHelpers.mock.js'
-import { SecureSiteMock } from './mocks/SecureSite.mock.js'
-import { W3mFrameConstants } from '../src/W3mFrameConstants.js'
 
 describe('W3mFrameProvider', () => {
   const mockTimeout = vi.fn

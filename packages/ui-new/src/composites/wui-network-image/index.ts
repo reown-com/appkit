@@ -1,8 +1,9 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
-import { networkSvgSm } from '../../assets/svg/networkSm.js'
-import { networkSvgMd } from '../../assets/svg/networkMd.js'
+
 import { networkSvgLg } from '../../assets/svg/networkLg.js'
+import { networkSvgMd } from '../../assets/svg/networkMd.js'
+import { networkSvgSm } from '../../assets/svg/networkSm.js'
 import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'

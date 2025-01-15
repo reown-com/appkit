@@ -1,8 +1,10 @@
-import { customElement } from '@reown/appkit-ui'
-import { CoreHelperUtil, RouterController } from '@reown/appkit-core'
 import { LitElement, html } from 'lit'
-import styles from './styles.js'
+
 import { NavigationUtil } from '@reown/appkit-common'
+import { CoreHelperUtil, RouterController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
+
+import styles from './styles.js'
 
 @customElement('w3m-smart-session-created-view')
 export class W3mSmartSessionCreatedView extends LitElement {

@@ -1,14 +1,15 @@
 /* eslint-disable no-await-in-loop */
 import type { BrowserContext, Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
+
 import { BASE_URL, DEFAULT_SESSION_PARAMS } from '../constants'
+import type { TimingRecords } from '../fixtures/timing-fixture'
 import { doActionAndWaitForNewPage } from '../utils/actions'
 import { Email } from '../utils/email'
-import { DeviceRegistrationPage } from './DeviceRegistrationPage'
-import type { TimingRecords } from '../fixtures/timing-fixture'
-import { WalletPage } from './WalletPage'
-import { WalletValidator } from '../validators/WalletValidator'
 import { routeInterceptUrl } from '../utils/verify'
+import { WalletValidator } from '../validators/WalletValidator'
+import { DeviceRegistrationPage } from './DeviceRegistrationPage'
+import { WalletPage } from './WalletPage'
 
 const maliciousUrl = 'https://malicious-app-verify-simulation.vercel.app'
 

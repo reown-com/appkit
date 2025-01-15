@@ -1,3 +1,7 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import { DateUtil, type Transaction } from '@reown/appkit-common'
 import {
   AccountController,
@@ -7,10 +11,8 @@ import {
   TransactionsController
 } from '@reown/appkit-core'
 import { TransactionUtil, customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+
 import styles from './styles.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 // -- Helpers --------------------------------------------- //
 const LOADING_ITEM_COUNT = 7

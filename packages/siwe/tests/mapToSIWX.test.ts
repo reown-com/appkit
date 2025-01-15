@@ -1,12 +1,14 @@
-import { vi, describe, expect, it, beforeEach } from 'vitest'
-import { createSIWEConfig, mapToSIWX } from '../exports'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import type { CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
   OptionsController,
   type SIWXSession
 } from '@reown/appkit-core'
-import type { CaipNetwork } from '@reown/appkit-common'
+
+import { createSIWEConfig, mapToSIWX } from '../exports'
 
 const siweConfig = createSIWEConfig({
   createMessage: () => {

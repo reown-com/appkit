@@ -1,8 +1,10 @@
-import type { ChainAdapter } from '@reown/appkit-core'
-import type { AppKitOptions } from '../../src/utils/index.js'
-import { mainnet, solana } from '../../src/networks/index.js'
-import type { SdkVersion } from '@reown/appkit-core'
 import { vi } from 'vitest'
+
+import type { ChainAdapter } from '@reown/appkit-core'
+import type { SdkVersion } from '@reown/appkit-core'
+
+import { mainnet, solana } from '../../src/networks/index.js'
+import type { AppKitOptions } from '../../src/utils/index.js'
 
 export const mockOptions: AppKitOptions & {
   sdkVersion: SdkVersion

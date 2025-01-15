@@ -1,5 +1,6 @@
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
+
+import { customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'
 

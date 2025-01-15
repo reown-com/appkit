@@ -1,6 +1,8 @@
-import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest'
+import { type Mock, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import type { CaipNetwork } from '@reown/appkit-common'
 import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
+
 import { WalletConnectProvider } from '../../src/utils/WalletConnectProvider'
 import { mockUniversalProvider } from '../mocks/mockUniversalProvider'
 

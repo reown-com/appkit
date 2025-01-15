@@ -1,12 +1,13 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
-import '../../components/wui-text/index.js'
+
 import '../../components/wui-image/index.js'
+import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
-import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 
 @customElement('wui-list-token')
 export class WuiListToken extends LitElement {
