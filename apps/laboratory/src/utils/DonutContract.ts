@@ -69,5 +69,5 @@ export const abi = [
     type: 'function'
   }
 ]
-
-export const address = '0x2E65BAfA07238666c3b239E94F32DaD3cDD6498D'
+// Deployed on sepolia, base-seoplia, base-mainnet, optimism-mainnet.
+export const address = '0x59d6578C1D8FEb2f892f68D4f76f98511F831c6F'

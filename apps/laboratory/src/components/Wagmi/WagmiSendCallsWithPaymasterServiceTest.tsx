@@ -17,7 +17,7 @@ const purchaseDonutCallData = encodeFunctionData({
 
 const TEST_TX = {
   to: donutContractaddress as `0x${string}`,
-  value: parseEther('0.0001'),
+  value: parseEther('0.00001'),
   data: purchaseDonutCallData
 }
 
