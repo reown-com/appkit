@@ -1,13 +1,15 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui/src/composites/wui-transaction-visual'
 import type { WuiTransactionVisual } from '@reown/appkit-ui/src/composites/wui-transaction-visual'
-import { html } from 'lit'
 
 import {
   transactionDirectionOptions,
-  transactionTypeOptions,
+  transactionImageSrc,
   transactionStatusOptions,
-  transactionImageSrc
+  transactionTypeOptions
 } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiTransactionVisual>

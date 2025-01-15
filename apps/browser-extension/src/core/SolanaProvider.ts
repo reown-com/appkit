@@ -2,11 +2,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { SOLANA_CHAINS } from '@solana/wallet-standard'
-import { ConstantsUtil } from '../utils/ConstantsUtil'
 import { Keypair, PublicKey } from '@solana/web3.js'
-import { AccountUtil } from '../utils/AccountUtil'
 import { WalletAccount } from '@wallet-standard/core'
 import nacl from 'tweetnacl'
+
+import { AccountUtil } from '../utils/AccountUtil'
+import { ConstantsUtil } from '../utils/ConstantsUtil'
 
 const keypair = Keypair.fromSecretKey(AccountUtil.privateKeySolana)
 const publicKey = keypair.publicKey

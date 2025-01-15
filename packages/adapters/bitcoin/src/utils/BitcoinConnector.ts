@@ -1,5 +1,6 @@
-import type { ChainAdapterConnector } from '../../../../appkit/dist/types/src/adapters/ChainAdapterConnector.js'
 import type { Provider } from '@reown/appkit-core'
+
+import type { ChainAdapterConnector } from '../../../../appkit/dist/types/src/adapters/ChainAdapterConnector.js'
 
 /**
  * This is the interface for a Bitcoin connector.

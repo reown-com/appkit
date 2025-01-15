@@ -1,18 +1,20 @@
-import { html, fixture } from '@open-wc/testing'
+import { fixture, html } from '@open-wc/testing'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import type { CaipNetwork } from '@reown/appkit-common'
 import {
-  ChainController,
-  OptionsController,
-  ModalController,
   AssetController,
   AssetUtil,
+  ChainController,
+  ModalController,
+  OptionsController,
   type OptionsControllerState
 } from '@reown/appkit-core'
-import { W3mNetworkButton } from '../../src/modal/w3m-network-button'
-import { describe, it, beforeEach, afterEach, vi, expect } from 'vitest'
-import type { CaipNetwork } from '@reown/appkit-common'
-import { HelpersUtil } from '../utils/HelpersUtil'
-import type { OptionsControllerStateInternal } from '../../../core/dist/types/src/controllers/OptionsController'
 import type { WuiNetworkButton } from '@reown/appkit-ui'
+
+import type { OptionsControllerStateInternal } from '../../../core/dist/types/src/controllers/OptionsController'
+import { W3mNetworkButton } from '../../src/modal/w3m-network-button'
+import { HelpersUtil } from '../utils/HelpersUtil'
 
 const mockCaipNetwork: CaipNetwork = {
   chainNamespace: 'eip155',

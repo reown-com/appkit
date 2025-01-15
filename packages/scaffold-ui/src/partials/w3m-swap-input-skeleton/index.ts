@@ -1,7 +1,9 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+
 import { type SwapInputTarget } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+
 import styles from './styles.js'
 
 @customElement('w3m-swap-input-skeleton')

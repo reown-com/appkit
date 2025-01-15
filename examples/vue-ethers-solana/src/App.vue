@@ -26,11 +26,11 @@
 
 <script>
 import { createAppKit, useAppKitTheme } from '@reown/appkit/vue'
-import { ethersAdapter, solanaWeb3JsAdapter, networks, projectId } from './config'
 
 import ActionButtonList from './components/ActionButton.vue'
-import InfoList from './components/InfoList.vue'
 import Footer from './components/Footer.vue'
+import InfoList from './components/InfoList.vue'
+import { ethersAdapter, networks, projectId, solanaWeb3JsAdapter } from './config'
 
 // Initialize AppKit
 createAppKit({

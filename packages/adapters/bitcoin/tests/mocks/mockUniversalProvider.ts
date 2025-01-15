@@ -1,6 +1,7 @@
-import type UniversalProvider from '@walletconnect/universal-provider'
 import type { SessionTypes } from '@walletconnect/types'
+import type UniversalProvider from '@walletconnect/universal-provider'
 import { vi } from 'vitest'
+
 import { bitcoin } from '@reown/appkit/networks'
 
 export function mockUniversalProvider(

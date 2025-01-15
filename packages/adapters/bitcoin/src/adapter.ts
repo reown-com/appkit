@@ -1,22 +1,24 @@
+import type UniversalProvider from '@walletconnect/universal-provider'
+
 import {
-  CoreHelperUtil,
-  WcHelpersUtil,
   type AppKit,
   type AppKitOptions,
-  type Provider
+  CoreHelperUtil,
+  type Provider,
+  WcHelpersUtil
 } from '@reown/appkit'
+import { ConstantsUtil } from '@reown/appkit-common'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
-import type { BitcoinConnector } from './utils/BitcoinConnector.js'
-import type UniversalProvider from '@walletconnect/universal-provider'
-import { SatsConnectConnector } from './connectors/SatsConnectConnector.js'
-import { WalletStandardConnector } from './connectors/WalletStandardConnector.js'
-import { WalletConnectProvider } from './utils/WalletConnectProvider.js'
+import { bitcoin } from '@reown/appkit/networks'
+
 import { LeatherConnector } from './connectors/LeatherConnector.js'
 import { OKXConnector } from './connectors/OKXConnector.js'
-import { UnitsUtil } from './utils/UnitsUtil.js'
+import { SatsConnectConnector } from './connectors/SatsConnectConnector.js'
+import { WalletStandardConnector } from './connectors/WalletStandardConnector.js'
 import { BitcoinApi } from './utils/BitcoinApi.js'
-import { bitcoin } from '@reown/appkit/networks'
-import { ConstantsUtil } from '@reown/appkit-common'
+import type { BitcoinConnector } from './utils/BitcoinConnector.js'
+import { UnitsUtil } from './utils/UnitsUtil.js'
+import { WalletConnectProvider } from './utils/WalletConnectProvider.js'
 
 export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   private eventsToUnbind: (() => void)[] = []

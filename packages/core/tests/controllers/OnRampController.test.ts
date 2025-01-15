@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+
 import {
   ApiController,
   BlockchainApiController,
@@ -7,11 +8,11 @@ import {
   type PaymentCurrency,
   type PurchaseCurrency
 } from '../../exports/index.js'
-import { ONRAMP_PROVIDERS } from '../../src/utils/ConstantsUtil.js'
 import {
   USDC_CURRENCY_DEFAULT,
   USD_CURRENCY_DEFAULT
 } from '../../src/controllers/OnRampController.js'
+import { ONRAMP_PROVIDERS } from '../../src/utils/ConstantsUtil.js'
 
 const purchaseCurrencies: [PurchaseCurrency, ...PurchaseCurrency[]] = [
   { id: 'test-coin', symbol: 'TEST', name: 'Test Coin', networks: [] },

@@ -1,5 +1,5 @@
-import type { Provider as SatsConnectProvider, BitcoinProvider, RpcError } from 'sats-connect'
-import { vi, type Mock } from 'vitest'
+import type { BitcoinProvider, RpcError, Provider as SatsConnectProvider } from 'sats-connect'
+import { type Mock, vi } from 'vitest'
 
 type SatsConnectWindowProviderMock = {
   [K in keyof Omit<BitcoinProvider, 'getCapabilities'>]: Mock<BitcoinProvider[K]>

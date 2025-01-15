@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-import inquirer from 'inquirer'
 import chalk from 'chalk'
+import inquirer from 'inquirer'
 
-import { checkDirectoryExists, generateRepoUrl, cloneRepository, banner } from './utils.js'
+import { banner, checkDirectoryExists, cloneRepository, generateRepoUrl } from './utils.js'
 
 // Define styles
 const redTip = chalk.hex('#C70039') // Red for tips

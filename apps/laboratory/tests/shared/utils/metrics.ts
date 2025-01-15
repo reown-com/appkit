@@ -3,6 +3,7 @@ import {
   type MetricDatum,
   type PutMetricDataCommandInput
 } from '@aws-sdk/client-cloudwatch'
+
 import type { TimingRecords } from '../fixtures/timing-fixture'
 
 // eslint-disable-next-line func-style

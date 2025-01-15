@@ -1,8 +1,9 @@
-import { expect, test, type BrowserContext } from '@playwright/test'
+import { type BrowserContext, expect, test } from '@playwright/test'
+
+import { SECURE_WEBSITE_URL } from './shared/constants'
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { Email } from './shared/utils/email'
 import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
-import { SECURE_WEBSITE_URL } from './shared/constants'
 
 /* eslint-disable init-declarations */
 let page: ModalWalletPage

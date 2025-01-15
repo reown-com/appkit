@@ -1,9 +1,10 @@
 import type { CaipNetwork } from '@reown/appkit-common'
+import { CoreHelperUtil, type RequestArguments } from '@reown/appkit-core'
+import { bitcoin } from '@reown/appkit/networks'
+
+import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
 import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
-import { CoreHelperUtil, type RequestArguments } from '@reown/appkit-core'
-import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
-import { bitcoin } from '@reown/appkit/networks'
 import { UnitsUtil } from '../utils/UnitsUtil.js'
 
 export class OKXConnector extends ProviderEventEmitter implements BitcoinConnector {

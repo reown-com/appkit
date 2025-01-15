@@ -1,20 +1,20 @@
 import {
+  type Chain,
   arbitrum,
   aurora,
   avalanche,
   base,
+  baseSepolia,
   bsc,
   celo,
   gnosis,
   mainnet,
   optimism,
-  polygon,
-  zkSync,
-  zora,
-  sepolia,
   optimismSepolia,
-  baseSepolia,
-  type Chain
+  polygon,
+  sepolia,
+  zkSync,
+  zora
 } from 'wagmi/chains'
 
 export const WagmiConstantsUtil = {

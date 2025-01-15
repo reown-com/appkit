@@ -1,24 +1,25 @@
-import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 import {
-  StackDivider,
+  Box,
   Card,
+  CardBody,
   CardHeader,
   Heading,
-  CardBody,
-  Box,
   Stack,
+  StackDivider,
   Text,
   Tooltip
 } from '@chakra-ui/react'
 
-import { SolanaSignTransactionTest } from './SolanaSignTransactionTest'
-import { SolanaSendTransactionTest } from './SolanaSendTransactionTest'
-import { SolanaSignMessageTest } from './SolanaSignMessageTest'
-import { SolanaWriteContractTest } from './SolanaWriteContractTest'
 import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit/networks'
-import { SolanaSignAndSendTransaction } from './SolanaSignAndSendTransactionTest'
+import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+
+import { SolanaSendTransactionTest } from './SolanaSendTransactionTest'
 import { SolanaSignAllTransactionsTest } from './SolanaSignAllTransactionsTest'
+import { SolanaSignAndSendTransaction } from './SolanaSignAndSendTransactionTest'
 import { SolanaSignJupiterSwapTest } from './SolanaSignJupiterSwapTest'
+import { SolanaSignMessageTest } from './SolanaSignMessageTest'
+import { SolanaSignTransactionTest } from './SolanaSignTransactionTest'
+import { SolanaWriteContractTest } from './SolanaWriteContractTest'
 
 export function SolanaTests() {
   const { isConnected } = useAppKitAccount()

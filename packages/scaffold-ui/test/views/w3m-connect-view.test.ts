@@ -1,14 +1,17 @@
-import { W3mConnectView } from '../../src/views/w3m-connect-view/index'
-import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest'
 import { fixture } from '@open-wc/testing'
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { html } from 'lit'
-import { HelpersUtil } from '../utils/HelpersUtil'
+
 import {
-  OptionsController,
-  type ConnectorWithProviders,
   ConnectorController,
-  CoreHelperUtil
+  type ConnectorWithProviders,
+  CoreHelperUtil,
+  OptionsController
 } from '@reown/appkit-core'
+
+import { W3mConnectView } from '../../src/views/w3m-connect-view/index'
+import { HelpersUtil } from '../utils/HelpersUtil'
 
 // --- Constants ---------------------------------------------------- //
 const EMAIL_LOGIN_WIDGET = 'w3m-email-login-widget'

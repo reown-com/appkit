@@ -1,15 +1,17 @@
-import { beforeEach, describe, it, vi, type Mock, expect, type MockedFunction } from 'vitest'
-import { BitcoinAdapter, type BitcoinConnector } from '../src'
-import type { BitcoinApi } from '../src/utils/BitcoinApi'
-import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
-import { mockUTXO } from './mocks/mockUTXO'
-import { SatsConnectConnector } from '../src/connectors/SatsConnectConnector'
-import { mockSatsConnectProvider } from './mocks/mockSatsConnect'
-import { WalletStandardConnector } from '../src/connectors/WalletStandardConnector'
-import { OKXConnector } from '../src/connectors/OKXConnector'
-import { LeatherConnector } from '../src/connectors/LeatherConnector'
-import { WalletConnectProvider } from '../src/utils/WalletConnectProvider'
+import { type Mock, type MockedFunction, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { ConstantsUtil } from '@reown/appkit-common'
+import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
+
+import { BitcoinAdapter, type BitcoinConnector } from '../src'
+import { LeatherConnector } from '../src/connectors/LeatherConnector'
+import { OKXConnector } from '../src/connectors/OKXConnector'
+import { SatsConnectConnector } from '../src/connectors/SatsConnectConnector'
+import { WalletStandardConnector } from '../src/connectors/WalletStandardConnector'
+import type { BitcoinApi } from '../src/utils/BitcoinApi'
+import { WalletConnectProvider } from '../src/utils/WalletConnectProvider'
+import { mockSatsConnectProvider } from './mocks/mockSatsConnect'
+import { mockUTXO } from './mocks/mockUTXO'
 import { mockUniversalProvider } from './mocks/mockUniversalProvider'
 
 function mockBitcoinApi(): { [K in keyof BitcoinApi.Interface]: Mock<BitcoinApi.Interface[K]> } {
