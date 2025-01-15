@@ -193,7 +193,6 @@ export class W3mConnectView extends LitElement {
   private separatorTemplate(index: number, type: 'wallet' | 'email' | 'social') {
     const nextEnabledMethod = this.checkIsThereNextMethod(index)
     const isExplore = this.walletGuide === 'explore'
-
     switch (type) {
       case 'wallet': {
         const isWalletEnable = this.enableWallets
@@ -205,10 +204,6 @@ export class W3mConnectView extends LitElement {
       case 'email': {
         const isNextMethodSocial = nextEnabledMethod === 'social'
 
-        if (isExplore) {
-          return null
-        }
-
         return this.isEmailEnabled && !isNextMethodSocial && nextEnabledMethod
           ? html`<wui-separator
               data-testid="w3m-email-login-or-separator"
@@ -218,10 +213,6 @@ export class W3mConnectView extends LitElement {
       }
       case 'social': {
         const isNextMethodEmail = nextEnabledMethod === 'email'
-
-        if (isExplore) {
-          return null
-        }
 
         return this.isSocialEnabled && !isNextMethodEmail && nextEnabledMethod
           ? html`<wui-separator data-testid="wui-separator" text="or"></wui-separator>`
@@ -233,9 +224,7 @@ export class W3mConnectView extends LitElement {
   }
 
   private emailTemplate(tabIndex?: number) {
-    const isCreateWalletPage = this.walletGuide === 'explore'
-
-    if (!isCreateWalletPage && !this.isEmailEnabled) {
+    if (!this.isEmailEnabled) {
       return null
     }
 
@@ -246,9 +235,7 @@ export class W3mConnectView extends LitElement {
   }
 
   private socialListTemplate(tabIndex?: number) {
-    const isCreateWalletPage = this.walletGuide === 'explore'
-
-    if (!isCreateWalletPage && !this.isSocialEnabled) {
+    if (!this.isSocialEnabled) {
       return null
     }
 
@@ -309,7 +296,7 @@ export class W3mConnectView extends LitElement {
     }
 
     return html`
-      ${this.walletGuide === 'explore'
+      ${this.walletGuide === 'explore' && !ChainController.state.noAdapters
         ? html`<wui-separator data-testid="wui-separator" id="explore" text="or"></wui-separator>`
         : null}
       <wui-flex flexDirection="column" .padding=${['s', '0', 'xl', '0']} class=${classMap(classes)}>
