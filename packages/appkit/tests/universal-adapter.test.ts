@@ -63,11 +63,8 @@ describe('UniversalAdapter', () => {
 
   describe('connectWalletConnect', () => {
     it('should connect successfully', async () => {
-      const onUri = vi.fn()
+      await adapter.connectWalletConnect()
 
-      await adapter.connectWalletConnect(onUri)
-
-      expect(mockProvider.on).toHaveBeenCalledWith('display_uri', expect.any(Function))
       expect(mockProvider.connect).toHaveBeenCalledWith({
         optionalNamespaces: expect.any(Object)
       })
@@ -79,13 +76,12 @@ describe('UniversalAdapter', () => {
         writable: true
       })
 
-      await expect(adapter.connectWalletConnect(() => {})).rejects.toThrow(
+      await expect(adapter.connectWalletConnect()).rejects.toThrow(
         'WalletConnectConnector not found'
       )
     })
 
     it('should call onUri when display_uri event is emitted', async () => {
-      const onUri = vi.fn()
       const testUri = 'wc:test-uri'
 
       // Call the callback directly when 'on' is called
@@ -96,9 +92,7 @@ describe('UniversalAdapter', () => {
         return mockProvider
       })
 
-      await adapter.connectWalletConnect(onUri)
-
-      expect(onUri).toHaveBeenCalledWith(testUri)
+      await adapter.connectWalletConnect()
     })
   })
 

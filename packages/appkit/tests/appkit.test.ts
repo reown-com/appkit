@@ -1832,6 +1832,7 @@ describe('WalletConnect Events', () => {
   let universalProvider: Mocked<Pick<UniversalProvider, 'on'>>
 
   let chainChangedCallback: (chainId: string | number) => void
+  let displayUriCallback: (uri: string) => void
 
   beforeEach(async () => {
     appkit = new AppKit({
@@ -1849,6 +1850,9 @@ describe('WalletConnect Events', () => {
 
     chainChangedCallback = universalProvider.on.mock.calls.find(
       ([event]) => event === 'chainChanged'
+    )?.[1]
+    displayUriCallback = universalProvider.on.mock.calls.find(
+      ([event]) => event === 'display_uri'
     )?.[1]
   })
 
@@ -1873,6 +1877,13 @@ describe('WalletConnect Events', () => {
       ChainController.state.activeCaipNetwork = undefined
       chainChangedCallback(newChain.id.toString())
       expect(setCaipNetworkSpy).toHaveBeenNthCalledWith(2, newChain)
+    })
+  })
+
+  describe('display_uri', () => {
+    it('should call openUri', () => {
+      displayUriCallback('mock_uri')
+      expect(ConnectionController.setUri).toHaveBeenCalledWith('mock_uri')
     })
   })
 })
