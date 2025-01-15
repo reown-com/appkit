@@ -9,6 +9,31 @@ import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '../../utils/EIP5792Ut
 import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
 import { useAppKitAccount } from '@reown/appkit/react'
 
+ const approvalCallData = encodeFunctionData({
+            abi: [
+              {
+                inputs: [
+                  {
+                    internalType: 'address',
+                    name: 'operator',
+                    type: 'address',
+                  },
+                  {
+                    internalType: 'bool',
+                    name: 'approved',
+                    type: 'bool',
+                  },
+                ],
+                name: 'setApprovalForAll',
+                outputs: [],
+                stateMutability: 'nonpayable',
+                type: 'function',
+              },
+            ],
+            functionName: 'setApprovalForAll',
+            args: ['0x1e0049783f008a0085193e00003d00cd54003c71', true],
+          })
+
 const purchaseDonutCallData = encodeFunctionData({
   abi: donutContractAbi,
   functionName: 'purchase',
@@ -17,8 +42,7 @@ const purchaseDonutCallData = encodeFunctionData({
 
 const TEST_TX = {
   to: donutContractaddress as `0x${string}`,
-  value: parseEther('0.0001'),
-  data: purchaseDonutCallData
+  data: approvalCallData
 }
 
 const BICONOMY_PAYMASTER_CONTEXT = {
