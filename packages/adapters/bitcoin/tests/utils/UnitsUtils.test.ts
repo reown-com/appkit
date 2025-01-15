@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { UnitsUtil } from '../../src/utils/UnitsUtil'
+
 import { bitcoin } from '@reown/appkit/networks'
+
+import { UnitsUtil } from '../../src/utils/UnitsUtil'
 
 describe('UnitsUtils', () => {
   describe('parseSatoshis', () => {

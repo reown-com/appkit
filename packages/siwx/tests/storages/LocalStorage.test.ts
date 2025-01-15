@@ -1,4 +1,5 @@
 import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from 'vitest'
+
 import { LocalStorage } from '../../src'
 import { mockSession } from '../mocks/mockSession'
 

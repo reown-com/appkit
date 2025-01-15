@@ -1,18 +1,20 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
   AccountController,
   AssetUtil,
-  CoreHelperUtil,
   ChainController,
+  CoreHelperUtil,
   RouterController,
   SnackController,
   ThemeController
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import styles from './styles.js'
-import { state } from 'lit/decorators.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
-import { ifDefined } from 'lit/directives/if-defined.js'
+
+import styles from './styles.js'
 
 @customElement('w3m-wallet-receive-view')
 export class W3mWalletReceiveView extends LitElement {

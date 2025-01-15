@@ -1,14 +1,16 @@
-import { createAppKit } from '@reown/appkit/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
-import { AppKitButtons } from '../../components/AppKitButtons'
-import { ThemeStore } from '../../utils/StoreUtil'
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { WagmiPermissionsSyncTest } from '../../components/Wagmi/WagmiPermissionsSyncTest'
-import { baseSepolia, sepolia, type AppKitNetwork } from '@reown/appkit/networks'
+
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { PasskeyProvider } from '../../context/PasskeyContext'
+import { type AppKitNetwork, baseSepolia, sepolia } from '@reown/appkit/networks'
+import { createAppKit } from '@reown/appkit/react'
+
+import { AppKitButtons } from '../../components/AppKitButtons'
+import { WagmiPermissionsSyncTest } from '../../components/Wagmi/WagmiPermissionsSyncTest'
 import { ERC7715PermissionsProvider } from '../../context/ERC7715PermissionsContext'
+import { PasskeyProvider } from '../../context/PasskeyContext'
+import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { ThemeStore } from '../../utils/StoreUtil'
 
 const queryClient = new QueryClient()
 

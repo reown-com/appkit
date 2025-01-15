@@ -1,15 +1,15 @@
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
 
+import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectorController,
   RouterController,
-  StorageUtil,
-  type SocialProvider
+  type SocialProvider,
+  StorageUtil
 } from '@reown/appkit-core'
-import { ConstantsUtil as CommonConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
-import { state } from 'lit/decorators.js'
+import { customElement } from '@reown/appkit-ui'
 
 @customElement('w3m-account-auth-button')
 export class W3mAccountAuthButton extends LitElement {

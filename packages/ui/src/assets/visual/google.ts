@@ -1,4 +1,5 @@
 import { svg } from 'lit'
+
 export const googleSvg = svg`<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
   <rect width="64" height="64" rx="30" fill="#1DC956"/>
   <rect x="0.5" y="0.5" width="63" height="63" rx="29.5" stroke="#141414" stroke-opacity="0.1"/>

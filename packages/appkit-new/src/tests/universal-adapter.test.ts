@@ -1,7 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { UniversalAdapter } from '../universal-adapter/client'
 import type UniversalProvider from '@walletconnect/universal-provider'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import type { CaipNetwork } from '@reown/appkit-common'
+
+import { UniversalAdapter } from '../universal-adapter/client'
 
 // Mock provider
 const mockProvider = {

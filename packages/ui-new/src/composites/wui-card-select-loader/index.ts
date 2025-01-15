@@ -1,5 +1,6 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+
 import { networkSvgMd } from '../../assets/svg/networkMd.js'
 import '../../components/wui-shimmer/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'

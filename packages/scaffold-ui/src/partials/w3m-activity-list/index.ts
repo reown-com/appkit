@@ -1,3 +1,6 @@
+import { LitElement, html } from 'lit'
+import { property, state } from 'lit/decorators.js'
+
 import { DateUtil } from '@reown/appkit-common'
 import type { Transaction, TransactionImage } from '@reown/appkit-common'
 import {
@@ -10,8 +13,6 @@ import {
   TransactionsController
 } from '@reown/appkit-core'
 import { TransactionUtil, customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
 import type { TransactionType } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 

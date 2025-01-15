@@ -1,24 +1,27 @@
+import UniversalProvider from '@walletconnect/universal-provider'
+
 import {
-  ConstantsUtil as CommonConstantsUtil,
   type CaipAddress,
   type CaipNetwork,
-  type ChainNamespace
+  type ChainNamespace,
+  ConstantsUtil as CommonConstantsUtil
 } from '@reown/appkit-common'
-import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
 import {
   AccountController,
-  type AccountType,
   type AccountControllerState,
+  type AccountType,
   type Connector as AppKitConnector,
+  OptionsController,
   type Tokens,
-  type WriteContractArgs,
-  OptionsController
+  type WriteContractArgs
 } from '@reown/appkit-core'
-import UniversalProvider from '@walletconnect/universal-provider'
-import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { PresetsUtil } from '@reown/appkit-utils'
-import type { AppKitOptions } from '../utils/index.js'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
+
 import type { AppKit } from '../client.js'
+import type { AppKitOptions } from '../utils/index.js'
+import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
+
 type EventName =
   | 'disconnect'
   | 'accountChanged'

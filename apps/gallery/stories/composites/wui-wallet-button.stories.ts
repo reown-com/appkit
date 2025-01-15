@@ -1,8 +1,11 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui/src/composites/wui-wallet-button'
+
 import { html } from 'lit'
-import { iconOptions, walletImageSrc } from '../../utils/PresetUtils'
+
 import type { WuiWalletButton } from '@reown/appkit-ui/dist/types/src/composites/wui-wallet-button'
+import '@reown/appkit-ui/src/composites/wui-wallet-button'
+
+import { iconOptions, walletImageSrc } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiWalletButton>
 

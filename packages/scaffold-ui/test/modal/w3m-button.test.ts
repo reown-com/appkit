@@ -1,14 +1,16 @@
 import { fixture, html } from '@open-wc/testing'
-import { vi, describe, it, beforeEach, afterEach, expect } from 'vitest'
-import { W3mButton } from '../../src/modal/w3m-button'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import {
   ChainController,
-  ModalController,
   type ChainControllerState,
+  ModalController,
   type ModalControllerState
 } from '@reown/appkit-core'
-import { HelpersUtil } from '../utils/HelpersUtil'
+
 import type { W3mAccountButton } from '../../exports'
+import { W3mButton } from '../../src/modal/w3m-button'
+import { HelpersUtil } from '../utils/HelpersUtil'
 
 describe('W3mButton', () => {
   beforeEach(() => {

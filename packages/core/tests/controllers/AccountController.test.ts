@@ -1,12 +1,14 @@
+import { mainnet } from 'viem/chains'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
+
+import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+
 import {
   AccountController,
   ChainController,
   type ConnectionControllerClient,
   type NetworkControllerClient
 } from '../../exports/index.js'
-import { ConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
-import { mainnet } from 'viem/chains'
 
 // -- Setup --------------------------------------------------------------------
 const caipAddress = 'eip155:1:0x123'

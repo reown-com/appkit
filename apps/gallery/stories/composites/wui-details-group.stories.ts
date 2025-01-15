@@ -1,7 +1,10 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui/src/composites/wui-cta-button'
 import type { WuiDetailsGroup } from '@reown/appkit-ui/src/composites/wui-details-group'
-import { html } from 'lit'
+
 import '../../components/gallery-container'
 
 type Component = Meta<WuiDetailsGroup>

@@ -1,7 +1,9 @@
-import { customElement } from '@reown/appkit-ui-new'
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
+
+import { customElement } from '@reown/appkit-ui-new'
+
 import styles from './styles'
 
 @customElement('gallery-placeholder')

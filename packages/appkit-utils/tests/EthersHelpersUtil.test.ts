@@ -1,4 +1,5 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+
 import { EthersHelpersUtil } from '../src/ethers/EthersHelpersUtil.js'
 import type { Provider } from '../src/ethers/EthersTypesUtil.js'
 

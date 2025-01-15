@@ -1,4 +1,4 @@
-import type { ProviderEventListener, Provider } from '@reown/appkit-core'
+import type { Provider, ProviderEventListener } from '@reown/appkit-core'
 
 type ProviderEventEmitterMethods = Pick<Provider, 'on' | 'removeListener' | 'emit'>
 

@@ -1,13 +1,16 @@
-import { W3mAccountAuthButton } from '../../src/partials/w3m-account-auth-button'
-import { describe, test, vi, expect, beforeEach, afterEach } from 'vitest'
-import {
-  ConnectorController,
-  StorageUtil,
-  type AuthConnector,
-  RouterController
-} from '@reown/appkit-core'
 import { fixture } from '@open-wc/testing'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
+
 import { html } from 'lit'
+
+import {
+  type AuthConnector,
+  ConnectorController,
+  RouterController,
+  StorageUtil
+} from '@reown/appkit-core'
+
+import { W3mAccountAuthButton } from '../../src/partials/w3m-account-auth-button'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
 // --- Constants ---------------------------------------------------- //

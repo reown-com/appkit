@@ -1,48 +1,50 @@
-import { describe, it, expect, beforeEach, vi, afterEach, type Mocked } from 'vitest'
-import { AppKit } from '../src/client'
-import { base, mainnet, polygon, sepolia, solana } from '../src/networks/index.js'
+import UniversalProvider from '@walletconnect/universal-provider'
+import { type Mocked, afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import {
-  AccountController,
-  ModalController,
-  ThemeController,
-  PublicStateController,
-  SnackController,
-  RouterController,
-  OptionsController,
-  BlockchainApiController,
-  ConnectionController,
-  EnsController,
-  EventsController,
-  type CombinedProvider,
-  AssetUtil,
-  ConnectorController,
-  ChainController,
-  type Connector,
-  CoreHelperUtil,
-  AlertController,
-  StorageUtil,
-  type ChainAdapter,
-  type ChainControllerState
-} from '@reown/appkit-core'
-import {
-  getSafeConnectorIdKey,
+  type AppKitNetwork,
+  type Balance,
+  type CaipNetwork,
+  type CaipNetworkId,
+  type ChainNamespace,
+  Emitter,
+  NetworkUtil,
   SafeLocalStorage,
   SafeLocalStorageKeys,
-  type AppKitNetwork,
-  type CaipNetwork,
-  Emitter,
-  type CaipNetworkId,
-  type Balance,
-  NetworkUtil,
-  type ChainNamespace
+  getSafeConnectorIdKey
 } from '@reown/appkit-common'
-import { mockOptions } from './mocks/Options'
-import { UniversalAdapter } from '../src/universal-adapter/client'
-import type { AdapterBlueprint } from '../src/adapters/ChainAdapterBlueprint'
-import { ProviderUtil } from '../src/store'
+import {
+  AccountController,
+  AlertController,
+  AssetUtil,
+  BlockchainApiController,
+  type ChainAdapter,
+  ChainController,
+  type ChainControllerState,
+  type CombinedProvider,
+  ConnectionController,
+  type Connector,
+  ConnectorController,
+  CoreHelperUtil,
+  EnsController,
+  EventsController,
+  ModalController,
+  OptionsController,
+  PublicStateController,
+  RouterController,
+  SnackController,
+  StorageUtil,
+  ThemeController
+} from '@reown/appkit-core'
 import { CaipNetworksUtil, ErrorUtil } from '@reown/appkit-utils'
+
+import type { AdapterBlueprint } from '../src/adapters/ChainAdapterBlueprint'
+import { AppKit } from '../src/client'
+import { base, mainnet, polygon, sepolia, solana } from '../src/networks/index.js'
+import { ProviderUtil } from '../src/store'
+import { UniversalAdapter } from '../src/universal-adapter/client'
 import mockUniversalAdapter from './mocks/Adapter'
-import UniversalProvider from '@walletconnect/universal-provider'
+import { mockOptions } from './mocks/Options'
 import mockProvider from './mocks/UniversalProvider'
 
 // Mock all controllers and UniversalAdapterClient

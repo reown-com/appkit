@@ -1,6 +1,7 @@
-import { describe, test, expect } from 'vitest'
-import { isReownName } from '../src/utils/NamesUtil'
+import { describe, expect, test } from 'vitest'
+
 import { ConstantsUtil } from '../src/utils/ConstantsUtil'
+import { isReownName } from '../src/utils/NamesUtil'
 
 describe('NamesUtil', () => {
   describe('isReownName', () => {

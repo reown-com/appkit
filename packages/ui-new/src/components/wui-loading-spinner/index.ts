@@ -1,10 +1,11 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+
+import { vars } from '../../utils/ThemeHelperUtil.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import type { SizeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
-import { vars } from '../../utils/ThemeHelperUtil.js'
 
 // @TODO: Add color property
 @customElement('wui-loading-spinner')

@@ -1,5 +1,6 @@
-import { html, LitElement, svg } from 'lit'
+import { LitElement, html, svg } from 'lit'
 import { property } from 'lit/decorators.js'
+
 import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import { QrCodeUtil } from '../../utils/QrCode.js'

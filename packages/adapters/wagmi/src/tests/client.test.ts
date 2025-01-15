@@ -1,30 +1,32 @@
-import { describe, it, expect, beforeEach, vi, beforeAll } from 'vitest'
-import { WagmiAdapter } from '../client'
 import type { Config } from '@wagmi/core'
 import {
-  getConnections,
-  switchChain,
-  getBalance,
-  getEnsName,
-  getEnsAvatar,
-  signMessage,
   estimateGas,
-  sendTransaction as wagmiSendTransaction,
+  getAccount,
+  getBalance,
+  getConnections,
+  getEnsAvatar,
+  getEnsName,
+  http,
+  signMessage,
+  switchChain,
   getEnsAddress as wagmiGetEnsAddress,
+  sendTransaction as wagmiSendTransaction,
   writeContract as wagmiWriteContract,
   waitForTransactionReceipt,
   watchAccount,
-  getAccount,
-  watchPendingTransactions,
-  http
+  watchPendingTransactions
 } from '@wagmi/core'
 import * as wagmiCore from '@wagmi/core'
 import { mainnet } from '@wagmi/core/chains'
-import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type UniversalProvider from '@walletconnect/universal-provider'
-import { mockAppKit } from './mocks/AppKit'
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { ConstantsUtil } from '@reown/appkit-common'
+import { CaipNetworksUtil } from '@reown/appkit-utils'
+
+import { WagmiAdapter } from '../client'
 import { LimitterUtil } from '../utils/LimitterUtil'
+import { mockAppKit } from './mocks/AppKit'
 
 vi.mock('@wagmi/core', async () => {
   const actual = await vi.importActual('@wagmi/core')
