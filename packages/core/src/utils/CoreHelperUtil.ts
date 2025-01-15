@@ -1,7 +1,8 @@
 import type { AppKitSdkVersion, Balance, ChainNamespace } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstants } from '@reown/appkit-common'
-import { ConstantsUtil } from './ConstantsUtil.js'
 import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
+
+import { ConstantsUtil } from './ConstantsUtil.js'
 import type { AccountTypeMap, ChainAdapter, LinkingRecord, NamespaceTypeMap } from './TypeUtil.js'
 
 type SDKFramework = 'html' | 'react' | 'vue'

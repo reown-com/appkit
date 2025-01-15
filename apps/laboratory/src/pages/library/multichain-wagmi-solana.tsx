@@ -1,15 +1,18 @@
 import React from 'react'
-import { createAppKit } from '@reown/appkit/react'
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
-import { ThemeStore } from '../../utils/StoreUtil'
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
+
+import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
+
+import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { mainnet } from '@reown/appkit/networks'
+import { createAppKit } from '@reown/appkit/react'
+
 import { AppKitButtons } from '../../components/AppKitButtons'
-import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsWagmiSolana } from '../../components/MultiChainTestsWagmiSolana'
+import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { ThemeStore } from '../../utils/StoreUtil'
 
 const queryClient = new QueryClient()
 

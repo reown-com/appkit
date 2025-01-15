@@ -1,6 +1,6 @@
-import type { ModalFixture } from './w3m-fixture'
 import { ModalPage } from '../pages/ModalPage'
 import { timingFixture } from './timing-fixture'
+import type { ModalFixture } from './w3m-fixture'
 
 export const testMSocial = timingFixture.extend<
   ModalFixture & {

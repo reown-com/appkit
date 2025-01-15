@@ -1,19 +1,21 @@
 import { onUnmounted, reactive, ref } from 'vue'
+
+import type { ChainNamespace } from '@reown/appkit-common'
 import { type Event } from '@reown/appkit-core'
 import type {
   AppKitAccountButton,
-  AppKitNetworkButton,
   AppKitButton,
   AppKitConnectButton,
+  AppKitNetworkButton,
   W3mAccountButton,
   W3mButton,
   W3mConnectButton,
   W3mNetworkButton
 } from '@reown/appkit-scaffold-ui-new'
+
 import type { AppKit } from '../../../src/client.js'
-import type { AppKitOptions } from '../../utils/TypesUtil.js'
 import { ProviderUtil } from '../../store/ProviderUtil.js'
-import type { ChainNamespace } from '@reown/appkit-common'
+import type { AppKitOptions } from '../../utils/TypesUtil.js'
 
 export interface AppKitEvent {
   timestamp: number

@@ -1,6 +1,7 @@
+import { LitElement, html } from 'lit'
+
 import { EventsController, RouterController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
 
 const data = [
   {

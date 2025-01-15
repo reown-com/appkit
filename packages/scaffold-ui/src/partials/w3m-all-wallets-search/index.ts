@@ -1,10 +1,12 @@
+import { LitElement, html } from 'lit'
+import { property, state } from 'lit/decorators.js'
+
 import type { BadgeType, WcWallet } from '@reown/appkit-core'
 import { ApiController, ConnectorController, RouterController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
-import styles from './styles.js'
+
 import { WalletUtil } from '../../utils/WalletUtil.js'
+import styles from './styles.js'
 
 @customElement('w3m-all-wallets-search')
 export class W3mAllWalletsSearch extends LitElement {

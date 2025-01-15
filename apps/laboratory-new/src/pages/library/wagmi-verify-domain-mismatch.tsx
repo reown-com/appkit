@@ -1,13 +1,15 @@
-import { createAppKit } from '@reown/appkit-new/react'
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
-import { AppKitButtons } from '../../components/AppKitButtons'
-import { WagmiTests } from '../../components/Wagmi/WagmiTests'
-import { ThemeStore } from '../../utils/StoreUtil'
-import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
+
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { mainnet } from '@reown/appkit-new/networks'
+import { createAppKit } from '@reown/appkit-new/react'
+
+import { AppKitButtons } from '../../components/AppKitButtons'
+import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
+import { WagmiTests } from '../../components/Wagmi/WagmiTests'
+import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { ThemeStore } from '../../utils/StoreUtil'
 
 // Special project ID with verify enabled on localhost
 const projectId = 'e4eae1aad4503db9966a04fd045a7e4d'

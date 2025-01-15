@@ -1,7 +1,10 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui-new/src/composites/wui-domain-chip'
 import type { WuiDomainChip } from '@reown/appkit-ui-new/src/composites/wui-domain-chip'
-import { html } from 'lit'
+
 import { domainChipVariants } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiDomainChip>

@@ -1,7 +1,9 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui/src/components/wui-loading-thumbnail'
 import type { WuiLoadingThumbnail } from '@reown/appkit-ui/src/components/wui-loading-thumbnail'
-import { html } from 'lit'
 
 type Component = Meta<WuiLoadingThumbnail>
 

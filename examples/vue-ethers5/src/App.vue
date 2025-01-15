@@ -26,11 +26,11 @@
 
 <script>
 import { createAppKit, useAppKitTheme } from '@reown/appkit/vue'
-import { ethers5Adapter, networks, projectId } from './config'
 
 import ActionButtonList from './components/ActionButton.vue'
-import InfoList from './components/InfoList.vue'
 import Footer from './components/Footer.vue'
+import InfoList from './components/InfoList.vue'
+import { ethers5Adapter, networks, projectId } from './config'
 
 // Initialize AppKit
 createAppKit({

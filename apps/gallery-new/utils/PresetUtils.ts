@@ -1,12 +1,16 @@
+import type { TransactionStatus } from '@reown/appkit-common'
+import type { TransactionType } from '@reown/appkit-ui-new'
 import type {
   AccountEntryType,
   BackgroundType,
   BorderRadiusType,
+  ButtonLinkVariant,
+  ButtonShortcutVariant,
   ButtonVariant,
   CardSelectType,
   ChipButtonVariant,
   ChipType,
-  TextColorType,
+  DomainChipVariant,
   FlexAlignItemsType,
   FlexBasisType,
   FlexDirectionType,
@@ -17,23 +21,19 @@ import type {
   GridContentType,
   GridItemsType,
   IconBoxBorderType,
+  IconColorType,
   IconType,
   LogoType,
   PlacementType,
-  ButtonShortcutVariant,
   SpacingType,
   TagVariant,
   TextAlign,
+  TextColorType,
   TextType,
   ThemeType,
-  VisualType,
-  ButtonLinkVariant,
-  IconColorType,
-  DomainChipVariant,
-  ToastMessageVariant
+  ToastMessageVariant,
+  VisualType
 } from '@reown/appkit-ui-new/src/utils/TypeUtil'
-import type { TransactionStatus } from '@reown/appkit-common'
-import type { TransactionType } from '@reown/appkit-ui-new'
 
 export const textColorOptions: TextColorType[] = [
   'primary',

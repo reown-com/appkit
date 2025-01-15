@@ -1,19 +1,22 @@
-import { W3mModal } from '../../src/modal/w3m-modal'
-import { describe, it, expect, vi, beforeEach, beforeAll, afterEach } from 'vitest'
 import { elementUpdated, fixture } from '@open-wc/testing'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { html } from 'lit'
+
+import type { CaipNetwork } from '@reown/appkit-common'
 import {
+  ApiController,
+  ChainController,
+  EventsController,
   ModalController,
   OptionsController,
-  ChainController,
   RouterController,
-  ApiController,
-  EventsController,
   SIWXUtil
 } from '@reown/appkit-core'
-import { HelpersUtil } from '../utils/HelpersUtil'
 import type { RouterControllerState, SIWXConfig } from '@reown/appkit-core'
-import type { CaipNetwork } from '@reown/appkit-common'
+
+import { W3mModal } from '../../src/modal/w3m-modal'
+import { HelpersUtil } from '../utils/HelpersUtil'
 
 // Mock ResizeObserver
 beforeAll(() => {

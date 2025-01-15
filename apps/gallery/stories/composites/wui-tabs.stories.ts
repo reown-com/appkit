@@ -1,7 +1,9 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui/src/composites/wui-tabs'
 import type { WuiTabs } from '@reown/appkit-ui/src/composites/wui-tabs'
-import { html } from 'lit'
 
 type Component = Meta<WuiTabs>
 

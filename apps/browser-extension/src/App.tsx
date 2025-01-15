@@ -1,8 +1,9 @@
-import './globals.css'
-import { WagmiProvider } from 'wagmi'
-import { wagmiConfig } from './core/wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { WagmiProvider } from 'wagmi'
+
 import { Box } from './components/Box'
+import { wagmiConfig } from './core/wagmi'
+import './globals.css'
 import { Home } from './pages/Home'
 
 const queryClient = new QueryClient()

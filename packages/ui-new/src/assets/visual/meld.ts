@@ -1,4 +1,5 @@
 import { svg } from 'lit'
+
 export const meldSvg = svg`<svg width="40" height="42" viewBox="0 0 40 42" fill="none">
 <path opacity="0.7" d="M19.9526 41.9076L7.3877 34.655V26.1226L19.9526 33.3751V41.9076Z" fill="url(#paint0_linear_2113_32117)"/>
 <path opacity="0.7" d="M19.9521 41.9076L32.5171 34.655V26.1226L19.9521 33.3751V41.9076Z" fill="url(#paint1_linear_2113_32117)"/>

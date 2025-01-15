@@ -1,40 +1,42 @@
+import { proxy } from 'valtio/vanilla'
+
+import type { CaipAddress } from '@reown/appkit-common'
+
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import type {
-  BlockchainApiTransactionsRequest,
-  BlockchainApiTransactionsResponse,
-  BlockchainApiSwapTokensRequest,
-  BlockchainApiSwapTokensResponse,
-  BlockchainApiGenerateSwapCalldataRequest,
-  BlockchainApiGenerateSwapCalldataResponse,
-  BlockchainApiGenerateApproveCalldataRequest,
-  BlockchainApiGenerateApproveCalldataResponse,
-  BlockchainApiSwapQuoteRequest,
-  BlockchainApiSwapQuoteResponse,
-  BlockchainApiSwapAllowanceRequest,
-  BlockchainApiSwapAllowanceResponse,
+  BlockchainApiBalanceResponse,
   BlockchainApiGasPriceRequest,
   BlockchainApiGasPriceResponse,
-  BlockchainApiTokenPriceRequest,
-  BlockchainApiTokenPriceResponse,
+  BlockchainApiGenerateApproveCalldataRequest,
+  BlockchainApiGenerateApproveCalldataResponse,
+  BlockchainApiGenerateSwapCalldataRequest,
+  BlockchainApiGenerateSwapCalldataResponse,
   BlockchainApiIdentityRequest,
   BlockchainApiIdentityResponse,
+  BlockchainApiLookupEnsName,
+  BlockchainApiRegisterNameParams,
+  BlockchainApiSuggestionResponse,
+  BlockchainApiSwapAllowanceRequest,
+  BlockchainApiSwapAllowanceResponse,
+  BlockchainApiSwapQuoteRequest,
+  BlockchainApiSwapQuoteResponse,
+  BlockchainApiSwapTokensRequest,
+  BlockchainApiSwapTokensResponse,
+  BlockchainApiTokenPriceRequest,
+  BlockchainApiTokenPriceResponse,
+  BlockchainApiTransactionsRequest,
+  BlockchainApiTransactionsResponse,
   GenerateOnRampUrlArgs,
   GetQuoteArgs,
   OnrampQuote,
   PaymentCurrency,
-  PurchaseCurrency,
-  BlockchainApiBalanceResponse,
-  BlockchainApiLookupEnsName,
-  BlockchainApiSuggestionResponse,
-  BlockchainApiRegisterNameParams
+  PurchaseCurrency
 } from '../utils/TypeUtil.js'
-import { OptionsController } from './OptionsController.js'
-import { proxy } from 'valtio/vanilla'
 import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
-import type { CaipAddress } from '@reown/appkit-common'
+import { OptionsController } from './OptionsController.js'
 
 const DEFAULT_OPTIONS = {
   purchaseCurrencies: [

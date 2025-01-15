@@ -1,16 +1,17 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mockWalletStandard } from './mocks/WalletStandard'
-import { WalletStandardProvider } from '../providers/WalletStandardProvider.js'
-import { StandardConnect, StandardDisconnect } from '@wallet-standard/features'
 import {
   SolanaSignAndSendTransaction,
   SolanaSignMessage,
   SolanaSignTransaction
 } from '@solana/wallet-standard-features'
-import { TestConstants } from './util/TestConstants'
-import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
+import { StandardConnect, StandardDisconnect } from '@wallet-standard/features'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { WalletStandardProvider } from '../providers/WalletStandardProvider.js'
 import { WalletStandardFeatureNotSupportedError } from '../providers/shared/Errors.js'
 import { solanaChains } from '../utils/chains'
+import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
+import { mockWalletStandard } from './mocks/WalletStandard'
+import { TestConstants } from './util/TestConstants'
 
 describe('WalletStandardProvider specific tests', () => {
   let wallet = mockWalletStandard()

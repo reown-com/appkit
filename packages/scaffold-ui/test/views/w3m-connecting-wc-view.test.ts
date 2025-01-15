@@ -1,11 +1,14 @@
-import { describe, expect, vi, test } from 'vitest'
-import { CoreHelperUtil, RouterController } from '@reown/appkit-core'
-import type { W3mConnectingWcView } from '../../exports'
 import { fixture } from '@open-wc/testing'
+import { describe, expect, test, vi } from 'vitest'
+
 import { html } from 'lit'
+
+import { CoreHelperUtil, RouterController } from '@reown/appkit-core'
 import type { WcWallet } from '@reown/appkit-core'
-import { HelpersUtil } from '../utils/HelpersUtil'
 import type { WuiTabs } from '@reown/appkit-ui'
+
+import type { W3mConnectingWcView } from '../../exports'
+import { HelpersUtil } from '../utils/HelpersUtil'
 
 // --- Constants ---------------------------------------------------- //
 

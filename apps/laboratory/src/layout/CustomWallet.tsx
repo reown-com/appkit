@@ -1,3 +1,5 @@
+import { type ChangeEvent, useState } from 'react'
+
 import {
   Button,
   Drawer,
@@ -12,7 +14,7 @@ import {
   Text,
   useDisclosure
 } from '@chakra-ui/react'
-import { useState, type ChangeEvent } from 'react'
+
 import { CUSTOM_WALLET } from '../utils/ConstantsUtil'
 import { setLocalStorageItem } from '../utils/LocalStorage'
 
