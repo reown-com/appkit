@@ -1,12 +1,8 @@
-import { Button, Input, Stack, Text, Tooltip } from '@chakra-ui/react'
-import { useAccount } from 'wagmi'
+import { Button, Input, Stack, Tooltip } from '@chakra-ui/react'
 import { useSendCalls } from 'wagmi/experimental'
 import { useCallback, useMemo, useState } from 'react'
 import { useChakraToast } from '../Toast'
 import { encodeFunctionData } from 'viem'
-import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '../../utils/EIP5792Utils'
-import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
-import { useAppKitAccount } from '@reown/appkit/react'
 
  const approvalCallData = encodeFunctionData({
             abi: [
@@ -52,49 +48,6 @@ const BICONOMY_PAYMASTER_CONTEXT = {
 }
 
 export function WagmiSendCallsWithPaymasterServiceTest() {
-  const { provider, supportedChains, supportedChainsName, currentChainsInfo, supported } =
-    useWagmiAvailableCapabilities({
-      capability: WALLET_CAPABILITIES.PAYMASTER_SERVICE,
-      method: EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
-    })
-
-  const { address } = useAppKitAccount()
-  const { status } = useAccount()
-
-  const isConnected = status === 'connected'
-
-  if (!isConnected || !provider || !address) {
-    return (
-      <Text fontSize="md" color="yellow">
-        Wallet not connected
-      </Text>
-    )
-  }
-
-  if (!supported) {
-    return (
-      <Text fontSize="md" color="yellow">
-        Wallet does not support "wallet_sendCalls" RPC method
-      </Text>
-    )
-  }
-
-  if (supportedChains.length === 0) {
-    return (
-      <Text fontSize="md" color="yellow">
-        Account does not support paymaster service feature
-      </Text>
-    )
-  }
-
-  if (!currentChainsInfo) {
-    return (
-      <Text fontSize="md" color="yellow">
-        Switch to {supportedChainsName} to test this feature
-      </Text>
-    )
-  }
-
   return <AvailableTestContent />
 }
 
