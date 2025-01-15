@@ -3,8 +3,7 @@ import { useAccount } from 'wagmi'
 import { useSendCalls } from 'wagmi/experimental'
 import { useCallback, useMemo, useState } from 'react'
 import { useChakraToast } from '../Toast'
-import { encodeFunctionData, parseEther } from 'viem'
-import { abi as donutContractAbi, address as donutContractaddress } from '../../utils/DonutContract'
+import { encodeFunctionData } from 'viem'
 import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '../../utils/EIP5792Utils'
 import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
 import { useAppKitAccount } from '@reown/appkit/react'
@@ -34,14 +33,8 @@ import { useAppKitAccount } from '@reown/appkit/react'
             args: ['0x1e0049783f008a0085193e00003d00cd54003c71', true],
           })
 
-const purchaseDonutCallData = encodeFunctionData({
-  abi: donutContractAbi,
-  functionName: 'purchase',
-  args: [1]
-})
-
 const TEST_TX = {
-  to: donutContractaddress as `0x${string}`,
+  to: `0xfA046Ff909982Dbb9dC5daB2E27A09EE778a24cc` as `0x${string}`,
   data: approvalCallData
 }
 
