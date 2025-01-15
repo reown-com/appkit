@@ -130,6 +130,8 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       return { accounts: [] }
     }
 
+    console.log('>> Solana getAccounts', connector.getAccounts)
+
     return { accounts: await connector.getAccounts() }
   }
 

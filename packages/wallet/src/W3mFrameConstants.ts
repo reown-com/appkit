@@ -97,7 +97,8 @@ export const W3mFrameConstants = {
 
   RPC_RESPONSE_TYPE_ERROR: 'RPC_RESPONSE_ERROR',
   RPC_RESPONSE_TYPE_TX: 'RPC_RESPONSE_TRANSACTION_HASH',
-  RPC_RESPONSE_TYPE_OBJECT: 'RPC_RESPONSE_OBJECT'
+  RPC_RESPONSE_TYPE_OBJECT: 'RPC_RESPONSE_OBJECT',
+  AUTH_ENABLED_CHAINS: ['eip155', 'solana']
 } as const
 
 export type W3mFrameConstantValue = (typeof W3mFrameConstants)[keyof typeof W3mFrameConstants]

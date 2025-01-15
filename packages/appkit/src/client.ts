@@ -69,6 +69,7 @@ import {
   ConstantsUtil as UtilConstantsUtil
 } from '@reown/appkit-utils'
 import {
+  W3mFrameConstants,
   W3mFrameHelpers,
   W3mFrameProvider,
   W3mFrameRpcConstants,
@@ -1045,8 +1046,8 @@ export class AppKit {
               namespace: newNamespace,
               id: connectorId
             })
+
             const address = accounts?.accounts?.[0]?.address
-            console.log('>> address', address)
             if (address) {
               await this.syncAccount({
                 address,
@@ -1056,8 +1057,8 @@ export class AppKit {
             }
           }
         } catch (error) {
-          console.error('Error switching network', error)
-          this.setUnsupportedNetwork(caipNetwork.id)
+          // console.error('Error switching network', error)
+          // this.setUnsupportedNetwork(caipNetwork.id)
         }
       },
       // eslint-disable-next-line @typescript-eslint/require-await
@@ -1232,15 +1233,26 @@ export class AppKit {
 
     if (namespace) {
       if (isConnected && this.connectionControllerClient?.connectExternal) {
-        await this.connectionControllerClient?.connectExternal({
+        const connector = {
           id: ConstantsUtil.CONNECTOR_ID.AUTH,
           info: { name: ConstantsUtil.CONNECTOR_ID.AUTH },
           type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
           provider,
           chainId: ChainController.state.activeCaipNetwork?.id,
           chain: namespace
+        }
+        await this.connectionControllerClient?.connectExternal(connector)
+
+        // Connecting to one namespace connects to all
+        W3mFrameConstants.AUTH_ENABLED_CHAINS.forEach(chain => {
+          this.setStatus('connected', chain)
+          this.syncProvider({
+            provider,
+            chainNamespace: connector.chain,
+            type: connector.type,
+            id: connector.id
+          })
         })
-        this.setStatus('connected', namespace)
       } else if (
         StorageUtil.getConnectedConnectorId(namespace) === ConstantsUtil.CONNECTOR_ID.AUTH
       ) {
@@ -1502,6 +1514,7 @@ export class AppKit {
   }: Pick<AdapterBlueprint.ConnectResult, 'type' | 'provider' | 'id'> & {
     chainNamespace: ChainNamespace
   }) {
+    console.trace('>> SyncProvider', type, provider, id, chainNamespace)
     ProviderUtil.setProviderId(chainNamespace, type)
     ProviderUtil.setProvider(chainNamespace, provider)
 
@@ -1519,7 +1532,6 @@ export class AppKit {
     const chainIdToUse = chainId || activeChainId
 
     // Only update state when needed
-    console.log('>> Sync account', address, AccountController.state.address)
     if (!HelpersUtil.isLowerCaseMatch(address, AccountController.state.address)) {
       this.setCaipAddress(`${chainNamespace}:${chainId}:${address}`, chainNamespace)
       await this.syncIdentity({ address, chainId, chainNamespace })
@@ -1660,7 +1672,6 @@ export class AppKit {
       return
     }
 
-    console.log('>> Sync Identity', chainNamespace)
     if (chainNamespace !== ConstantsUtil.CHAIN.EVM) {
       this.setProfileName(null, chainNamespace)
       this.setProfileImage(null, chainNamespace)
