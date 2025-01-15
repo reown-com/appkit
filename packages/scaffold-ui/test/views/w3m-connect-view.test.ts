@@ -1,9 +1,10 @@
 import { fixture } from '@open-wc/testing'
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
 import {
+  ChainController,
   ConnectorController,
   type ConnectorWithProviders,
   CoreHelperUtil,
