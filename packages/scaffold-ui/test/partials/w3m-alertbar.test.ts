@@ -8,6 +8,28 @@ import type { WuiAlertBar } from '@reown/appkit-ui'
 
 // --- Constants ---------------------------------------------------- //
 const ALERBAR = 'wui-alertbar'
+const ALERT_VARIANTS = [
+  {
+    variant: 'info',
+    message: 'info message',
+    preset: presets.info
+  },
+  {
+    variant: 'success',
+    message: 'success message',
+    preset: presets.success
+  },
+  {
+    variant: 'warning',
+    message: 'warning message',
+    preset: presets.warning
+  },
+  {
+    variant: 'error',
+    message: 'error message',
+    preset: presets.error
+  }
+] as const
 
 describe('W3mAlertBar', () => {
   beforeAll(() => {
@@ -19,30 +41,7 @@ describe('W3mAlertBar', () => {
   })
 
   it('it should display the correct alert based on the variant', async () => {
-    const alertVariants = [
-      {
-        variant: 'info',
-        message: 'info message',
-        preset: presets.info
-      },
-      {
-        variant: 'success',
-        message: 'success message',
-        preset: presets.success
-      },
-      {
-        variant: 'warning',
-        message: 'warning message',
-        preset: presets.warning
-      },
-      {
-        variant: 'error',
-        message: 'error message',
-        preset: presets.error
-      }
-    ] as const
-
-    for (const { variant, message, preset } of alertVariants) {
+    for (const { variant, message, preset } of ALERT_VARIANTS) {
       AlertController.state.message = message
       AlertController.state.variant = variant
 
