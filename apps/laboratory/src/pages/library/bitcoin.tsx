@@ -1,12 +1,10 @@
-import { createAppKit, type CaipNetwork } from '@reown/appkit/react'
-import { ThemeStore } from '../../utils/StoreUtil'
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
+import { type CaipNetwork, createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '../../components/AppKitButtons'
-
-import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
-
 import { BitcoinTests } from '../../components/Bitcoin/BitcoinTests'
+import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { ThemeStore } from '../../utils/StoreUtil'
 
 const networks = ConstantsUtil.BitcoinNetworks
 

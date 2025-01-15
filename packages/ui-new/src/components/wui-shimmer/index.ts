@@ -1,5 +1,6 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+
 import type { BorderRadiusType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'

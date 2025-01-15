@@ -1,9 +1,9 @@
 import { W3mFrame } from './W3mFrame.js'
-import type { W3mFrameTypes } from './W3mFrameTypes.js'
 import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
-import { W3mFrameStorage } from './W3mFrameStorage.js'
 import { W3mFrameHelpers } from './W3mFrameHelpers.js'
 import { W3mFrameLogger } from './W3mFrameLogger.js'
+import { W3mFrameStorage } from './W3mFrameStorage.js'
+import type { W3mFrameTypes } from './W3mFrameTypes.js'
 
 type AppEventType = Omit<W3mFrameTypes.AppEvent, 'id'>
 

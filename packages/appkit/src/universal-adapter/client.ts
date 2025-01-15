@@ -1,14 +1,16 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
-import { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
-import { WcHelpersUtil } from '../utils/index.js'
+import bs58 from 'bs58'
+
+import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
-  CoreHelperUtil,
   ConnectionController,
+  CoreHelperUtil,
   OptionsController
 } from '@reown/appkit-core'
-import bs58 from 'bs58'
-import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
+
+import { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
+import { WcHelpersUtil } from '../utils/index.js'
 
 export class UniversalAdapter extends AdapterBlueprint {
   public constructor(options?: AdapterBlueprint.Params) {

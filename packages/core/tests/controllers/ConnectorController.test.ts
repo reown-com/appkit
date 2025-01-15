@@ -1,15 +1,17 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest'
+
+import { ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
+
 import {
+  type AuthConnector,
   ChainController,
   ConnectorController,
-  OptionsController,
-  type AuthConnector,
   type Metadata,
+  OptionsController,
   type SdkVersion,
   type ThemeMode,
   type ThemeVariables
 } from '../../exports/index.js'
-import { ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
 
 // -- Setup --------------------------------------------------------------------
 const authProvider = {

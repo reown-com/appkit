@@ -1,7 +1,10 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui/src/layout/wui-flex'
 import type { WuiFlex } from '@reown/appkit-ui/src/layout/wui-flex'
-import { html } from 'lit'
+
 import '../../components/gallery-placeholder'
 import {
   flexAlignItemsOptions,

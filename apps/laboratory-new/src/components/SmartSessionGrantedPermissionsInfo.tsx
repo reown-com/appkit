@@ -1,8 +1,11 @@
 import * as React from 'react'
-import { StackDivider, Heading, Box, Stack, Text } from '@chakra-ui/react'
-import { getChain } from '../utils/NetworksUtil'
+
+import { Box, Heading, Stack, StackDivider, Text } from '@chakra-ui/react'
 import { formatDistanceToNow } from 'date-fns'
+
 import type { SmartSessionGrantPermissionsResponse } from '@reown/appkit-experimental/smart-session'
+
+import { getChain } from '../utils/NetworksUtil'
 
 export function SmartSessionGrantedPermissionsInfo({
   grantedPermissions

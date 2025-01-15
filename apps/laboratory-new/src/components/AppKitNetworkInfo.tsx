@@ -1,15 +1,17 @@
 import * as React from 'react'
-import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit-new/react'
+
 import {
-  StackDivider,
+  Box,
   Card,
+  CardBody,
   CardHeader,
   Heading,
-  CardBody,
-  Box,
   Stack,
+  StackDivider,
   Text
 } from '@chakra-ui/react'
+
+import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit-new/react'
 
 export function AppKitNetworkInfo() {
   const { address } = useAppKitAccount()

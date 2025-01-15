@@ -29,7 +29,7 @@
 
   ```ts
   import { createSIWEConfig } from '@reown/appkit-siwe'
-  import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs } from '@reown/appkit-siwe'
+  import type { SIWECreateMessageArgs, SIWEVerifyMessageArgs } from '@reown/appkit-siwe'
 
   export const siweConfig = createSIWEConfig({
     required: false, // Optional - defaults to true
@@ -537,8 +537,8 @@
   **Example usage**
 
   ```ts
-  import { createAppKit } from '@reown/appkit/react'
   import { mainnet } from '@reown/appkit/networks'
+  import { createAppKit } from '@reown/appkit/react'
 
   const modal = createAppKit({
     adapters: [
@@ -814,9 +814,9 @@
   **Example usage**
 
   ```ts
-  import { createAppKit } from '@reown/appkit/react'
   import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
   import { mainnet } from '@reown/appkit/networks'
+  import { createAppKit } from '@reown/appkit/react'
 
   const wagmiAdapter = new WagmiAdapter({
     ssr: true,

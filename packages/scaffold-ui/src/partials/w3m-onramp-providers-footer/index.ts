@@ -1,3 +1,5 @@
+import { LitElement, html } from 'lit'
+
 import {
   AccountController,
   EventsController,
@@ -5,9 +7,9 @@ import {
   RouterController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import styles from './styles.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+
+import styles from './styles.js'
 
 @customElement('w3m-onramp-providers-footer')
 export class W3mOnRampProvidersFooter extends LitElement {

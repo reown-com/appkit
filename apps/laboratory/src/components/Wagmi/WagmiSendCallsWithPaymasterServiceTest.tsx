@@ -1,13 +1,16 @@
+import { useCallback, useMemo, useState } from 'react'
+
 import { Button, Input, Stack, Text, Tooltip } from '@chakra-ui/react'
+import { encodeFunctionData, parseEther } from 'viem'
 import { useAccount } from 'wagmi'
 import { useSendCalls } from 'wagmi/experimental'
-import { useCallback, useMemo, useState } from 'react'
-import { useChakraToast } from '../Toast'
-import { encodeFunctionData, parseEther } from 'viem'
+
+import { useAppKitAccount } from '@reown/appkit/react'
+
+import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
 import { abi as donutContractAbi, address as donutContractaddress } from '../../utils/DonutContract'
 import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '../../utils/EIP5792Utils'
-import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
-import { useAppKitAccount } from '@reown/appkit/react'
+import { useChakraToast } from '../Toast'
 
 const purchaseDonutCallData = encodeFunctionData({
   abi: donutContractAbi,
