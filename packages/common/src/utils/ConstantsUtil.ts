@@ -6,6 +6,21 @@ export const ConstantsUtil = {
   BLOCKCHAIN_API_RPC_URL: 'https://rpc.walletconnect.org',
   PULSE_API_URL: 'https://pulse.walletconnect.org',
   W3M_API_URL: 'https://api.web3modal.org',
+  /* Connector IDs */
+  CONNECTOR_ID: {
+    WALLET_CONNECT: 'walletConnect',
+    INJECTED: 'injected',
+    WALLET_STANDARD: 'announced',
+    COINBASE: 'coinbaseWallet',
+    COINBASE_SDK: 'coinbaseWalletSDK',
+    SAFE: 'safe',
+    LEDGER: 'ledger',
+    EIP6963: 'eip6963',
+    AUTH: 'ID_AUTH'
+  },
+  LIMITS: {
+    PENDING_TRANSACTIONS: 99
+  },
   CHAIN: {
     EVM: 'eip155',
     SOLANA: 'solana',
@@ -33,5 +48,8 @@ export const ConstantsUtil = {
     '0x55d398326f99059fF775485246999027B3197955',
     // Arbitrum
     '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9'
-  ]
+  ],
+  HTTP_STATUS_CODES: {
+    SERVICE_UNAVAILABLE: 503
+  }
 } as const

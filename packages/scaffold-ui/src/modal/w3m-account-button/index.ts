@@ -5,7 +5,8 @@ import {
   AssetUtil,
   ChainController,
   CoreHelperUtil,
-  ModalController
+  ModalController,
+  OptionsController
 } from '@reown/appkit-core'
 import type { WuiAccountButton } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
@@ -39,7 +40,12 @@ class W3mAccountButtonBase extends LitElement {
 
   @state() private networkImage = AssetUtil.getNetworkImage(this.network)
 
-  @state() private isSupported = true
+  // eslint-disable-next-line no-nested-ternary
+  @state() private isSupported = OptionsController.state.allowUnsupportedChain
+    ? true
+    : ChainController.state.activeChain
+      ? ChainController.checkIfSupportedNetwork(ChainController.state.activeChain)
+      : true
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -77,23 +83,27 @@ class W3mAccountButtonBase extends LitElement {
       return null
     }
 
-    const showBalance = this.balance === 'show'
+    const shouldShowBalance = this.balance === 'show'
+    const shouldShowLoading = typeof this.balanceVal !== 'string'
 
     return html`
       <wui-account-button
         .disabled=${Boolean(this.disabled)}
-        .isUnsupportedChain=${!this.isSupported}
+        .isUnsupportedChain=${OptionsController.state.allowUnsupportedChain
+          ? false
+          : !this.isSupported}
         address=${ifDefined(CoreHelperUtil.getPlainAddress(this.caipAddress))}
         profileName=${ifDefined(this.profileName)}
         networkSrc=${ifDefined(this.networkImage)}
         avatarSrc=${ifDefined(this.profileImage)}
-        balance=${showBalance
+        balance=${shouldShowBalance
           ? CoreHelperUtil.formatBalance(this.balanceVal, this.balanceSymbol)
           : ''}
         @click=${this.onClick.bind(this)}
         data-testid="account-button"
         .charsStart=${this.charsStart}
         .charsEnd=${this.charsEnd}
+        ?loading=${shouldShowLoading}
       >
       </wui-account-button>
     `
@@ -101,7 +111,7 @@ class W3mAccountButtonBase extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onClick() {
-    if (this.isSupported) {
+    if (this.isSupported || OptionsController.state.allowUnsupportedChain) {
       ModalController.open()
     } else {
       ModalController.open({ view: 'UnsupportedChain' })

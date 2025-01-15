@@ -6,8 +6,8 @@ import {
   type Connector,
   type ConnectorType,
   type Provider,
-  AlertController,
-  CoreHelperUtil
+  CoreHelperUtil,
+  OptionsController
 } from '@reown/appkit-core'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
@@ -18,7 +18,6 @@ import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { EthersMethods } from './utils/EthersMethods.js'
 import { ProviderUtil } from '@reown/appkit/store'
-import { BrowserProvider } from 'ethers'
 
 export interface EIP6963ProviderDetail {
   info: Connector['info']
@@ -148,14 +147,7 @@ export class EthersAdapter extends AdapterBlueprint {
     }
 
     const result = await EthersMethods.writeContract(
-      {
-        abi: params.abi,
-        method: params.method,
-        fromAddress: params.caipAddress as `0x${string}`,
-        receiverAddress: params.receiverAddress as `0x${string}`,
-        tokenAmount: params.tokenAmount,
-        tokenAddress: params.tokenAddress as `0x${string}`
-      },
+      params,
       params.provider as Provider,
       params.caipAddress,
       Number(params.caipNetwork?.id)
@@ -219,6 +211,7 @@ export class EthersAdapter extends AdapterBlueprint {
     const { id, chainId } = params
 
     const connector = this.connectors.find(c => c.id === id)
+
     const selectedProvider = connector?.provider as Provider
 
     if (!selectedProvider) {
@@ -265,17 +258,17 @@ export class EthersAdapter extends AdapterBlueprint {
     connectors.forEach(connector => {
       const key = connector === 'coinbase' ? 'coinbaseWalletSDK' : connector
 
-      const injectedConnector = connector === ConstantsUtil.INJECTED_CONNECTOR_ID
+      const isInjectedConnector = connector === CommonConstantsUtil.CONNECTOR_ID.INJECTED
 
       if (this.namespace) {
         this.addConnector({
           id: key,
           explorerId: PresetsUtil.ConnectorExplorerIds[key],
           imageUrl: options?.connectorImages?.[key],
-          name: PresetsUtil.ConnectorNamesMap[key],
+          name: PresetsUtil.ConnectorNamesMap[key] || 'Unknown',
           imageId: PresetsUtil.ConnectorImageIds[key],
           type: PresetsUtil.ConnectorTypesMap[key] ?? 'EXTERNAL',
-          info: injectedConnector ? undefined : { rdns: key },
+          info: isInjectedConnector ? undefined : { rdns: key },
           chain: this.namespace,
           chains: [],
           provider: this.ethersConfig?.[connector as keyof ProviderType] as Provider
@@ -310,14 +303,15 @@ export class EthersAdapter extends AdapterBlueprint {
       const existingConnector = this.connectors?.find(c => c.name === info?.name)
 
       if (!existingConnector) {
-        const type = PresetsUtil.ConnectorTypesMap[ConstantsUtil.EIP6963_CONNECTOR_ID]
+        const type = PresetsUtil.ConnectorTypesMap[CommonConstantsUtil.CONNECTOR_ID.EIP6963]
 
-        if (type && this.namespace) {
+        const id = info?.rdns || info?.name || info?.uuid
+        if (type && this.namespace && id) {
           this.addConnector({
-            id: info?.rdns || '',
+            id,
             type,
             imageUrl: info?.icon,
-            name: info?.name,
+            name: info?.name || 'Unknown',
             provider,
             info,
             chain: this.namespace,
@@ -353,7 +347,8 @@ export class EthersAdapter extends AdapterBlueprint {
 
     if (type === 'AUTH') {
       const { address } = await (selectedProvider as unknown as W3mFrameProvider).connect({
-        chainId
+        chainId,
+        preferredAccountType: OptionsController.state.defaultAccountTypes.eip155
       })
 
       accounts = [address]
@@ -384,7 +379,10 @@ export class EthersAdapter extends AdapterBlueprint {
     const connector = this.connectors.find(c => c.id === id)
 
     if (connector && connector.type === 'AUTH' && chainId) {
-      await (connector.provider as W3mFrameProvider).connect({ chainId })
+      await (connector.provider as W3mFrameProvider).connect({
+        chainId,
+        preferredAccountType: OptionsController.state.defaultAccountTypes.eip155
+      })
     }
   }
 
@@ -398,7 +396,7 @@ export class EthersAdapter extends AdapterBlueprint {
       throw new Error('Provider not found')
     }
 
-    if (params.id === ConstantsUtil.AUTH_CONNECTOR_ID) {
+    if (params.id === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       const provider = connector['provider'] as W3mFrameProvider
       const { address, accounts } = await provider.connect()
 
@@ -481,26 +479,6 @@ export class EthersAdapter extends AdapterBlueprint {
     return { profileName: undefined, profileImage: undefined }
   }
 
-  private listenPendingTransactions(provider: Provider) {
-    const browserProvider = new BrowserProvider(provider)
-
-    try {
-      browserProvider.on('pending', () => {
-        this.emit('pendingTransactions')
-      })
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      AlertController.open(
-        {
-          shortMessage: 'Error listening to pending transactions',
-          longMessage:
-            'The BrowserProvider in the EthersAdapter failed to listen to pending transactions.'
-        },
-        'error'
-      )
-    }
-  }
-
   private providerHandlers: {
     disconnect: () => void
     accountsChanged: (accounts: string[]) => void
@@ -508,7 +486,7 @@ export class EthersAdapter extends AdapterBlueprint {
   } | null = null
 
   private listenProviderEvents(provider: Provider | CombinedProvider) {
-    const disconnectHandler = () => {
+    const disconnect = () => {
       this.removeProviderListeners(provider)
       this.emit('disconnect')
     }
@@ -518,6 +496,8 @@ export class EthersAdapter extends AdapterBlueprint {
         this.emit('accountChanged', {
           address: accounts[0] as `0x${string}`
         })
+      } else {
+        disconnect()
       }
     }
 
@@ -528,14 +508,12 @@ export class EthersAdapter extends AdapterBlueprint {
       this.emit('switchNetwork', { chainId: chainIdNumber })
     }
 
-    this.listenPendingTransactions(provider)
-
-    provider.on('disconnect', disconnectHandler)
+    provider.on('disconnect', disconnect)
     provider.on('accountsChanged', accountsChangedHandler)
     provider.on('chainChanged', chainChangedHandler)
 
     this.providerHandlers = {
-      disconnect: disconnectHandler,
+      disconnect,
       accountsChanged: accountsChangedHandler,
       chainChanged: chainChangedHandler
     }
@@ -550,42 +528,38 @@ export class EthersAdapter extends AdapterBlueprint {
     }
   }
 
-  public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
+  public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
     const { caipNetwork, provider, providerType } = params
-    if (providerType === 'WALLET_CONNECT') {
-      ;(provider as UniversalProvider).setDefaultChain(String(`eip155:${String(caipNetwork.id)}`))
-    } else if (providerType === 'AUTH') {
-      const authProvider = provider as W3mFrameProvider
-      await authProvider.switchNetwork(caipNetwork.id)
-      await authProvider.connect({
-        chainId: caipNetwork.id
+
+    if (providerType === 'AUTH' || providerType === 'WALLET_CONNECT') {
+      await super.switchNetwork(params)
+
+      return
+    }
+
+    try {
+      await (provider as Provider).request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: EthersHelpersUtil.numberToHexString(caipNetwork.id) }]
       })
-    } else {
-      try {
-        await (provider as Provider).request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: EthersHelpersUtil.numberToHexString(caipNetwork.id) }]
-        })
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (switchError: any) {
-        if (
-          switchError.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
-          switchError.code === WcConstantsUtil.ERROR_CODE_DEFAULT ||
-          switchError?.data?.originalError?.code ===
-            WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
-        ) {
-          try {
-            await EthersHelpersUtil.addEthereumChain(provider as Provider, caipNetwork)
-          } catch (e) {
-            console.warn('Could not add chain to wallet', e)
-          }
-        } else if (
-          providerType === 'ANNOUNCED' ||
-          providerType === 'EXTERNAL' ||
-          providerType === 'INJECTED'
-        ) {
-          throw new Error('Chain is not supported')
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (switchError: any) {
+      if (
+        switchError.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+        switchError.code === WcConstantsUtil.ERROR_CODE_DEFAULT ||
+        switchError?.data?.originalError?.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+      ) {
+        try {
+          await EthersHelpersUtil.addEthereumChain(provider as Provider, caipNetwork)
+        } catch (e) {
+          console.warn('Could not add chain to wallet', e)
         }
+      } else if (
+        providerType === 'ANNOUNCED' ||
+        providerType === 'EXTERNAL' ||
+        providerType === 'INJECTED'
+      ) {
+        throw new Error('Chain is not supported')
       }
     }
   }

@@ -7,8 +7,8 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@reown/appkit-adapter-ethers": "workspace:*",
     "@reown/appkit": "workspace:*",
+    "@reown/appkit-adapter-ethers": "workspace:*",
     "ethers": "6.13.2",
     "react": "18.3.1",
     "react-dom": "18.3.1"

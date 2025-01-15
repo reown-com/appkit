@@ -1,8 +1,9 @@
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { proxy } from 'valtio/vanilla'
+import { proxy, snapshot } from 'valtio/vanilla'
 import type {
   ConnectMethod,
   CustomWallet,
+  DefaultAccountTypes,
   Features,
   Metadata,
   ProjectId,
@@ -109,8 +110,13 @@ export interface OptionsControllerStatePublic {
    */
   enableWalletGuide?: boolean
   /**
+   * Enable or disable logs from email/social login.
+   * @default true
+   */
+  enableAuthLogger?: boolean
+  /**
    * Enable or disable debug mode in your AppKit. This is useful if you want to see UI alerts when debugging.
-   * @default false
+   * @default true
    */
   debug?: boolean
   /**
@@ -130,6 +136,16 @@ export interface OptionsControllerStatePublic {
    * @default false
    */
   enableEmbedded?: boolean
+  /**
+   * Allow users to switch to an unsupported chain.
+   * @default false
+   */
+  allowUnsupportedChain?: boolean
+  /**
+   * Default account types for each namespace.
+   * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa' }"
+   */
+  defaultAccountTypes: DefaultAccountTypes
 }
 
 export interface OptionsControllerStateInternal {
@@ -138,6 +154,7 @@ export interface OptionsControllerStateInternal {
   isSiweEnabled?: boolean
   isUniversalProvider?: boolean
   hasMultipleAddresses?: boolean
+  useInjectedUniversalProvider?: boolean
 }
 
 type StateKey = keyof OptionsControllerStatePublic | keyof OptionsControllerStateInternal
@@ -148,7 +165,8 @@ const state = proxy<OptionsControllerState & OptionsControllerStateInternal>({
   features: ConstantsUtil.DEFAULT_FEATURES,
   projectId: '',
   sdkType: 'appkit',
-  sdkVersion: 'html-wagmi-undefined'
+  sdkVersion: 'html-wagmi-undefined',
+  defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES
 })
 
 // -- Controller ---------------------------------------- //
@@ -250,6 +268,10 @@ export const OptionsController = {
     state.enableWalletGuide = enableWalletGuide
   },
 
+  setEnableAuthLogger(enableAuthLogger: OptionsControllerState['enableAuthLogger']) {
+    state.enableAuthLogger = enableAuthLogger
+  },
+
   setEnableWallets(enableWallets: OptionsControllerState['enableWallets']) {
     state.enableWallets = enableWallets
   },
@@ -292,5 +314,30 @@ export const OptionsController = {
 
   setEnableEmbedded(enableEmbedded: OptionsControllerState['enableEmbedded']) {
     state.enableEmbedded = enableEmbedded
+  },
+
+  setAllowUnsupportedChain(allowUnsupportedChain: OptionsControllerState['allowUnsupportedChain']) {
+    state.allowUnsupportedChain = allowUnsupportedChain
+  },
+
+  setUsingInjectedUniversalProvider(
+    useInjectedUniversalProvider: OptionsControllerState['useInjectedUniversalProvider']
+  ) {
+    state.useInjectedUniversalProvider = useInjectedUniversalProvider
+  },
+
+  setDefaultAccountTypes(
+    defaultAccountType: Partial<OptionsControllerState['defaultAccountTypes']> = {}
+  ) {
+    Object.entries(defaultAccountType).forEach(([namespace, accountType]) => {
+      if (accountType) {
+        // @ts-expect-error - Keys are validated by the param type
+        state.defaultAccountTypes[namespace] = accountType
+      }
+    })
+  },
+
+  getSnapshot() {
+    return snapshot(state)
   }
 }

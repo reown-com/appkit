@@ -16,6 +16,7 @@ import { OKXConnector } from './connectors/OKXConnector.js'
 import { UnitsUtil } from './utils/UnitsUtil.js'
 import { BitcoinApi } from './utils/BitcoinApi.js'
 import { bitcoin } from '@reown/appkit/networks'
+import { ConstantsUtil } from '@reown/appkit-common'
 
 export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   private eventsToUnbind: (() => void)[] = []
@@ -63,23 +64,36 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     this.connector = connector
     this.bindEvents(this.connector)
 
+    const chain = connector.chains.find(c => c.id === params.chainId) || connector.chains[0]
+
+    if (!chain) {
+      throw new Error('The connector does not support any of the requested chains')
+    }
+
     return {
       id: connector.id,
       type: connector.type,
       address,
-      chainId: this.networks[0]?.id || '',
+      chainId: chain.id,
       provider: connector.provider
     }
   }
+
   override async getAccounts(
-    _params: AdapterBlueprint.GetAccountsParams
+    params: AdapterBlueprint.GetAccountsParams
   ): Promise<AdapterBlueprint.GetAccountsResult> {
-    const addresses = await this.connector?.getAccountAddresses()
+    const addresses = await this.connectors
+      .find(connector => connector.id === params.id)
+      ?.getAccountAddresses()
+      .catch(() => [])
+
     const accounts = addresses?.map(a =>
       CoreHelperUtil.createAccount(
-        'bip122',
+        ConstantsUtil.CHAIN.BITCOIN,
         a.address,
-        (a.purpose || 'payment') as BitcoinConnector.AccountAddress['purpose']
+        a.purpose || 'payment',
+        a.publicKey,
+        a.path
       )
     )
 
@@ -87,6 +101,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       accounts: accounts || []
     }
   }
+
   override syncConnectors(_options?: AppKitOptions, appKit?: AppKit): void {
     function getActiveNetwork() {
       return appKit?.getCaipNetwork()
@@ -128,7 +143,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   ): Promise<AdapterBlueprint.ConnectResult> {
     return this.connect({
       id: params.id,
-      chainId: params.chainId || this.networks[0]?.id || '',
+      chainId: params.chainId,
       type: ''
     })
   }
@@ -162,11 +177,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     return walletConnectProvider as unknown as Provider
   }
 
-  override switchNetwork(_params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
-    // Switch network
-    return Promise.resolve()
-  }
-
   override async disconnect(params: AdapterBlueprint.DisconnectParams): Promise<void> {
     if (params?.provider) {
       await params.provider.disconnect()
@@ -175,8 +185,6 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     }
     this.unbindEvents()
   }
-
-  // -- Unused => Refactor ------------------------------------------- //
 
   override async getBalance(
     params: AdapterBlueprint.GetBalanceParams
@@ -203,6 +211,8 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       symbol: bitcoin.nativeCurrency.symbol
     })
   }
+
+  // -- Unused => Refactor ------------------------------------------- //
 
   override getProfile(
     _params: AdapterBlueprint.GetProfileParams
@@ -274,8 +284,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       const [newAccount] = data
       if (newAccount) {
         this.emit('accountChanged', {
-          address: newAccount,
-          chainId: this.networks[0]?.id || ''
+          address: newAccount
         })
       }
     }

@@ -22,7 +22,7 @@ const solanaWeb3JsAdapter = new SolanaAdapter({
 const bitcoinAdapter = new BitcoinAdapter({})
 
 const modal = createAppKit({
-  adapters: [etherAdapter, solanaWeb3JsAdapter, bitcoinAdapter],
+  adapters: [solanaWeb3JsAdapter, bitcoinAdapter, etherAdapter],
   projectId: ConstantsUtil.ProjectId,
   networks,
   defaultNetwork: mainnet,

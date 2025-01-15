@@ -52,6 +52,13 @@ export const WalletFeatureItem = React.memo(
         Send: sendEnabled
       }
 
+      const featureCanBeToggledMap = {
+        Buy: true,
+        Swap: true,
+        Receive: false,
+        Send: false
+      }
+
       useEffect(() => {
         if (!dragOverlay) {
           return
@@ -124,7 +131,9 @@ export const WalletFeatureItem = React.memo(
             >
               {handle ? <Handle {...handleProps} {...listeners} /> : null}
               <span className="text-sm flex-1">{value}</span>
-              <Checkbox checked={featureEnabledMap[value as WalletFeatureName]} />
+              {featureCanBeToggledMap[value as WalletFeatureName] ? (
+                <Checkbox checked={featureEnabledMap[value as WalletFeatureName]} />
+              ) : null}
             </div>
           </li>
         </div>

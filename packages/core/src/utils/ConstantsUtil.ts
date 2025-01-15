@@ -1,4 +1,4 @@
-import type { Features, SocialProvider } from './TypeUtil.js'
+import type { DefaultAccountTypes, Features, SocialProvider } from './TypeUtil.js'
 import type { ChainNamespace } from '@reown/appkit-common'
 
 const SECURE_SITE = 'https://secure.walletconnect.org'
@@ -236,7 +236,14 @@ export const ConstantsUtil = {
     legalCheckbox: false,
     smartSessions: false,
     collapseWallets: false,
-    connectMethodsOrder: ['email', 'social', 'wallet'],
-    walletFeaturesOrder: ['onramp', 'swaps', 'receive', 'send']
-  } satisfies Features
+    walletFeaturesOrder: ['onramp', 'swaps', 'receive', 'send'],
+    connectMethodsOrder: undefined
+  } satisfies Features,
+
+  DEFAULT_ACCOUNT_TYPES: {
+    bip122: 'payment',
+    eip155: 'smartAccount',
+    polkadot: 'eoa',
+    solana: 'eoa'
+  } as const satisfies DefaultAccountTypes
 }

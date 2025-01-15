@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useAppKitNetworkCore, useAppKitAccount } from '../../exports/react'
 
 import type { CaipNetwork } from '@reown/appkit-common'
-import { AccountController, ChainController } from '../../exports'
+import { AccountController, ChainController, ConnectorController } from '../../exports'
 
 vi.mock('valtio', () => ({
   useSnapshot: vi.fn()
@@ -61,7 +61,45 @@ describe('useAppKitAccount', () => {
 
     // Mock the useSnapshot hook for both calls
     useSnapshot
-      .mockReturnValueOnce({ status: 'connected' }) // For AccountController
+      .mockReturnValueOnce({
+        status: 'connected',
+        preferredAccountType: 'eoa'
+      }) // For AccountController
+      .mockReturnValueOnce({ activeCaipAddress: mockCaipAddress }) // For ChainController
+
+    const result = useAppKitAccount()
+
+    expect(result).toEqual({
+      allAccounts: undefined,
+      address: mockPlainAddress,
+      caipAddress: mockCaipAddress,
+      isConnected: true,
+      status: 'connected',
+      embeddedWalletInfo: undefined
+    })
+
+    expect(useSnapshot).toHaveBeenCalledWith(AccountController.state)
+    expect(useSnapshot).toHaveBeenCalledWith(ChainController.state)
+  })
+
+  it('should return the correct account state when connected', () => {
+    const mockCaipAddress = 'eip155:1:0x123...'
+    const mockPlainAddress = '0x123...'
+
+    vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({} as any)
+
+    // Mock the useSnapshot hook for both calls
+    useSnapshot
+      .mockReturnValueOnce({
+        allAccounts: undefined,
+        status: 'connected',
+        preferredAccountType: 'eoa',
+        smartAccountDeployed: false,
+        user: {
+          email: 'email@email.test',
+          userName: 'test'
+        }
+      }) // For AccountController
       .mockReturnValueOnce({ activeCaipAddress: mockCaipAddress }) // For ChainController
 
     const result = useAppKitAccount()
@@ -70,7 +108,15 @@ describe('useAppKitAccount', () => {
       address: mockPlainAddress,
       caipAddress: mockCaipAddress,
       isConnected: true,
-      status: 'connected'
+      status: 'connected',
+      embeddedWalletInfo: {
+        user: {
+          email: 'email@email.test',
+          userName: 'test'
+        },
+        isSmartAccountDeployed: false,
+        accountType: 'eoa'
+      }
     })
 
     expect(useSnapshot).toHaveBeenCalledWith(AccountController.state)

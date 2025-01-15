@@ -616,7 +616,7 @@ export class AppKit {
     OptionsController.setIncludeWalletIds(options.includeWalletIds)
     OptionsController.setExcludeWalletIds(options.excludeWalletIds)
     if (options.excludeWalletIds) {
-      ApiController.searchWalletByIds({ ids: options.excludeWalletIds })
+      ApiController.initializeExcludedWalletRdns({ ids: options.excludeWalletIds })
     }
     OptionsController.setFeaturedWalletIds(options.featuredWalletIds)
     OptionsController.setTokens(options.tokens)
@@ -1580,7 +1580,9 @@ export class AppKit {
       }
     }
 
-    this.universalProvider = await UniversalProvider.init(universalProviderOptions)
+    OptionsController.setUsingInjectedUniversalProvider(Boolean(this.options?.universalProvider))
+    this.universalProvider =
+      this.options.universalProvider ?? (await UniversalProvider.init(universalProviderOptions))
   }
 
   public async getUniversalProvider() {

@@ -347,15 +347,35 @@ export const CoreHelperUtil = {
 
     return `${platform}-${adapterNames}-${version}`
   },
+
+  // eslint-disable-next-line max-params
   createAccount<N extends ChainNamespace>(
     namespace: N,
     address: string,
-    type: NamespaceTypeMap[N]
+    type: NamespaceTypeMap[N],
+    publicKey?: string,
+    path?: string
   ): AccountTypeMap[N] {
     return {
       namespace,
       address,
-      type
+      type,
+      publicKey,
+      path
     } as AccountTypeMap[N]
+  },
+
+  isCaipAddress(address?: unknown): address is CaipAddress {
+    if (typeof address !== 'string') {
+      return false
+    }
+
+    const sections = address.split(':')
+    const namespace = sections[0]
+
+    return (
+      sections.filter(Boolean).length === 3 &&
+      (namespace as string) in CommonConstants.CHAIN_NAME_MAP
+    )
   }
 }

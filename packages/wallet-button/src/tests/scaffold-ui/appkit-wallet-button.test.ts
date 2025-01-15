@@ -165,7 +165,8 @@ describe('AppKitWalletButton', () => {
       id: 'metamask',
       explorerId: MetaMask.id,
       type: 'ANNOUNCED',
-      chain: 'eip155'
+      chain: 'eip155',
+      name: 'MetaMask'
     })
 
     vi.spyOn(ConnectorController, 'getConnector').mockReturnValue({

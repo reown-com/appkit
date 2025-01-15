@@ -1,12 +1,15 @@
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { mainnet, polygon, base } from '@reown/appkit/networks'
 
-const projectId = import.meta.env.VITE_PROJECT_ID
+export const projectId = import.meta.env.VITE_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694' // this is a public projectId only to use on localhost
+
 if (!projectId) {
   throw new Error('VITE_PROJECT_ID is not set')
 }
 
+export const networks = [mainnet, polygon, base]
+
 export const wagmiAdapter = new WagmiAdapter({
-  networks: [mainnet, polygon, base],
+  networks,
   projectId
 })

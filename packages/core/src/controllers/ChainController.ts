@@ -4,7 +4,7 @@ import type {
   AdapterAccountState,
   AdapterNetworkState,
   ChainAdapter,
-  Connector
+  NetworkControllerClient
 } from '../utils/TypeUtil.js'
 
 import { AccountController, type AccountControllerState } from './AccountController.js'
@@ -22,6 +22,8 @@ import { ModalController } from './ModalController.js'
 import { EventsController } from './EventsController.js'
 import { RouterController } from './RouterController.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
+import { OptionsController } from './OptionsController.js'
+import { ConnectionController, type ConnectionControllerClient } from './ConnectionController.js'
 
 // -- Constants ----------------------------------------- //
 const accountState: AccountControllerState = {
@@ -38,12 +40,15 @@ const networkState: AdapterNetworkState = {
 }
 
 // -- Types --------------------------------------------- //
+export type ChainControllerClients = {
+  networkControllerClient: NetworkControllerClient
+  connectionControllerClient: ConnectionControllerClient
+}
 export interface ChainControllerState {
   activeChain: ChainNamespace | undefined
   activeCaipAddress: CaipAddress | undefined
   activeCaipNetwork?: CaipNetwork
   chains: Map<ChainNamespace, ChainAdapter>
-  activeConnector?: Connector
   universalAdapter: Pick<ChainAdapter, 'networkControllerClient' | 'connectionControllerClient'>
   noAdapters: boolean
 }
@@ -100,7 +105,14 @@ export const ChainController = {
     })
   },
 
-  initialize(adapters: ChainAdapter[], caipNetworks: CaipNetwork[] | undefined) {
+  initialize(
+    adapters: ChainAdapter[],
+    caipNetworks: CaipNetwork[] | undefined,
+    clients: {
+      connectionControllerClient: ConnectionControllerClient
+      networkControllerClient: NetworkControllerClient
+    }
+  ) {
     const { chainId: activeChainId, namespace: activeNamespace } =
       StorageUtil.getActiveNetworkProps()
     const activeCaipNetwork = caipNetworks?.find(
@@ -108,7 +120,7 @@ export const ChainController = {
     )
     const defaultAdapter = adapters.find(adapter => adapter?.namespace === activeNamespace)
     const adapterToActivate = defaultAdapter || adapters?.[0]
-
+    const namespaces = new Set([...(caipNetworks?.map(network => network.chainNamespace) ?? [])])
     if (adapters?.length === 0 || !adapterToActivate) {
       state.noAdapters = true
     }
@@ -120,18 +132,44 @@ export const ChainController = {
       if (state.activeChain) {
         PublicStateController.set({ activeChain: adapterToActivate?.namespace })
       }
-      adapters.forEach((adapter: ChainAdapter) => {
-        state.chains.set(adapter.namespace as ChainNamespace, {
-          namespace: adapter.namespace,
-          connectionControllerClient: adapter.connectionControllerClient,
-          networkControllerClient: adapter.networkControllerClient,
-          adapterType: adapter.adapterType,
-          accountState,
-          networkState,
-          caipNetworks: adapter.caipNetworks
-        })
-      })
     }
+
+    namespaces.forEach(namespace => {
+      ChainController.state.chains.set(namespace as ChainNamespace, {
+        namespace,
+        networkState,
+        accountState,
+        caipNetworks: caipNetworks ?? [],
+        ...clients
+      })
+      this.setRequestedCaipNetworks(
+        caipNetworks?.filter(caipNetwork => caipNetwork.chainNamespace === namespace) ?? [],
+        namespace
+      )
+    })
+  },
+
+  removeAdapter(namespace: ChainNamespace) {
+    state.chains.delete(namespace)
+  },
+
+  addAdapter(
+    adapter: ChainAdapter,
+    { networkControllerClient, connectionControllerClient }: ChainControllerClients,
+    caipNetworks: [CaipNetwork, ...CaipNetwork[]]
+  ) {
+    state.chains.set(adapter.namespace as ChainNamespace, {
+      namespace: adapter.namespace,
+      networkState,
+      accountState,
+      caipNetworks,
+      connectionControllerClient,
+      networkControllerClient
+    })
+    this.setRequestedCaipNetworks(
+      caipNetworks?.filter(caipNetwork => caipNetwork.chainNamespace === adapter.namespace) ?? [],
+      adapter.namespace as ChainNamespace
+    )
   },
 
   setAdapterNetworkState(chain: ChainNamespace, props: Partial<AdapterNetworkState>) {
@@ -139,7 +177,7 @@ export const ChainController = {
 
     if (chainAdapter) {
       chainAdapter.networkState = ref({
-        ...chainAdapter.networkState,
+        ...(chainAdapter.networkState || networkState),
         ...props
       } as AdapterNetworkState)
 
@@ -157,10 +195,9 @@ export const ChainController = {
     }
 
     const chainAdapter = state.chains.get(chain)
-
     if (chainAdapter) {
       chainAdapter.accountState = ref({
-        ...chainAdapter.accountState,
+        ...(chainAdapter.accountState || accountState),
         ...accountProps
       } as AccountControllerState)
       state.chains.set(chain, chainAdapter)
@@ -233,7 +270,7 @@ export const ChainController = {
 
     const isSupported = this.checkIfSupportedNetwork(caipNetwork.chainNamespace)
 
-    if (!isSupported) {
+    if (!isSupported && !OptionsController.state.allowUnsupportedChain) {
       this.showUnsupportedChainUI()
     }
   },
@@ -257,17 +294,16 @@ export const ChainController = {
     const unsupportedNetwork = !activeAdapter?.caipNetworks?.some(
       caipNetwork => caipNetwork.id === state.activeCaipNetwork?.id
     )
-    const networkControllerClient = this.getNetworkControllerClient(network.chainNamespace)
-
-    if (networkControllerClient) {
-      await networkControllerClient.switchCaipNetwork(network)
-    }
 
     if (unsupportedNetwork) {
       RouterController.goBack()
     }
 
-    this.setActiveCaipNetwork(network)
+    const networkControllerClient = this.getNetworkControllerClient(network.chainNamespace)
+
+    if (networkControllerClient) {
+      await networkControllerClient.switchCaipNetwork(network)
+    }
 
     if (network) {
       EventsController.sendEvent({
@@ -275,12 +311,6 @@ export const ChainController = {
         event: 'SWITCH_NETWORK',
         properties: { network: network.caipNetworkId }
       })
-    }
-  },
-
-  setActiveConnector(connector: ChainControllerState['activeConnector']) {
-    if (connector) {
-      state.activeConnector = ref(connector)
     }
   },
 
@@ -418,7 +448,6 @@ export const ChainController = {
   checkIfSupportedNetwork(namespace: ChainNamespace) {
     const activeCaipNetwork = this.state.activeCaipNetwork
     const requestedCaipNetworks = this.getRequestedCaipNetworks(namespace)
-
     if (!requestedCaipNetworks.length) {
       return true
     }
@@ -518,5 +547,51 @@ export const ChainController = {
         allAccounts: []
       })
     )
+  },
+
+  async disconnect() {
+    try {
+      const disconnectResults = await Promise.allSettled(
+        Array.from(state.chains.entries()).map(async ([namespace, adapter]) => {
+          try {
+            if (adapter.connectionControllerClient?.disconnect) {
+              await adapter.connectionControllerClient.disconnect()
+            }
+            this.resetAccount(namespace)
+            this.resetNetwork(namespace)
+            StorageUtil.deleteConnectedConnectorId(namespace)
+          } catch (error) {
+            throw new Error(`Failed to disconnect chain ${namespace}: ${(error as Error).message}`)
+          }
+        })
+      )
+
+      ConnectionController.resetWcConnection()
+
+      const failures = disconnectResults.filter(
+        (result): result is PromiseRejectedResult => result.status === 'rejected'
+      )
+
+      if (failures.length > 0) {
+        throw new Error(failures.map(f => f.reason.message).join(', '))
+      }
+
+      StorageUtil.deleteConnectedSocialProvider()
+      ConnectionController.resetWcConnection()
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'DISCONNECT_SUCCESS'
+      })
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error((error as Error).message || 'Failed to disconnect chains')
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'DISCONNECT_ERROR',
+        properties: {
+          message: (error as Error).message || 'Failed to disconnect chains'
+        }
+      })
+    }
   }
 }

@@ -1,11 +1,19 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import { WcHelpersUtil } from '../utils/index.js'
-import { ChainController, CoreHelperUtil } from '@reown/appkit-core'
+import {
+  ChainController,
+  CoreHelperUtil,
+  ConnectionController,
+  OptionsController
+} from '@reown/appkit-core'
 import bs58 from 'bs58'
 import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
 
 export class UniversalAdapter extends AdapterBlueprint {
+  public constructor(options?: AdapterBlueprint.Params) {
+    super(options)
+  }
   public async connectWalletConnect(onUri: (uri: string) => void) {
     const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
 
@@ -15,6 +23,12 @@ export class UniversalAdapter extends AdapterBlueprint {
       throw new Error(
         'UniversalAdapter:connectWalletConnect - caipNetworks or provider is undefined'
       )
+    }
+
+    if (OptionsController.state.useInjectedUniversalProvider && ConnectionController.state.wcUri) {
+      onUri(ConnectionController.state.wcUri)
+
+      return
     }
 
     provider.on('display_uri', (uri: string) => {
@@ -49,13 +63,13 @@ export class UniversalAdapter extends AdapterBlueprint {
     namespace: ChainNamespace
   }): Promise<AdapterBlueprint.GetAccountsResult> {
     const provider = this.provider as UniversalProvider
-    const addresses = provider?.session?.namespaces?.[namespace]?.accounts
+    const addresses = (provider?.session?.namespaces?.[namespace]?.accounts
       ?.map(account => {
         const [, , address] = account.split(':')
 
         return address
       })
-      .filter((address, index, self) => self.indexOf(address) === index) as string[]
+      .filter((address, index, self) => self.indexOf(address) === index) || []) as string[]
 
     return Promise.resolve({
       accounts: addresses.map(address =>
@@ -180,7 +194,7 @@ export class UniversalAdapter extends AdapterBlueprint {
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await
-  public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
+  public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
     const { caipNetwork } = params
     const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
     const provider = connector?.provider as UniversalProvider
@@ -188,7 +202,7 @@ export class UniversalAdapter extends AdapterBlueprint {
     if (!provider) {
       throw new Error('UniversalAdapter:switchNetwork - provider is undefined')
     }
-    provider.setDefaultChain(`${caipNetwork.chainNamespace}:${String(caipNetwork.id)}`)
+    provider.setDefaultChain(caipNetwork.caipNetworkId)
   }
 
   public getWalletConnectProvider() {

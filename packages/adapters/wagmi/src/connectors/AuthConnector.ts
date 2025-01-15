@@ -3,20 +3,20 @@ import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { SwitchChainError, getAddress } from 'viem'
 import type { Address } from 'viem'
-import { ConstantsUtil, ErrorUtil } from '@reown/appkit-utils'
+import { ErrorUtil } from '@reown/appkit-utils'
 import { NetworkUtil } from '@reown/appkit-common'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
-import { AlertController } from '@reown/appkit-core'
+import { AlertController, OptionsController } from '@reown/appkit-core'
 
 // -- Types ----------------------------------------------------------------------------------------
 interface W3mFrameProviderOptions {
   projectId: string
+  enableAuthLogger?: boolean
 }
 
 export type AuthParameters = {
   chains?: CreateConfigParameters['chains']
   options: W3mFrameProviderOptions
-  provider: W3mFrameProvider
 }
 
 // -- Connector ------------------------------------------------------------------------------------
@@ -32,9 +32,9 @@ export function authConnector(parameters: AuthParameters) {
   }
 
   return createConnector<W3mFrameProvider, Properties>(config => ({
-    id: ConstantsUtil.AUTH_CONNECTOR_ID,
+    id: CommonConstantsUtil.CONNECTOR_ID.AUTH,
     name: 'AppKit Auth',
-    type: 'ID_AUTH',
+    type: 'AUTH',
     chain: CommonConstantsUtil.CHAIN.EVM,
 
     async connect(options = {}) {
@@ -42,7 +42,11 @@ export function authConnector(parameters: AuthParameters) {
       let chainId = options.chainId
 
       if (options.isReconnecting) {
-        chainId = provider.getLastUsedChainId()
+        const lastUsedChainId = NetworkUtil.parseEvmChainId(provider.getLastUsedChainId() || '')
+        const defaultChainId = parameters.chains?.[0].id
+
+        chainId = lastUsedChainId || defaultChainId
+
         if (!chainId) {
           throw new Error('ChainId not found in provider')
         }
@@ -52,7 +56,8 @@ export function authConnector(parameters: AuthParameters) {
         chainId: frameChainId,
         accounts
       } = await provider.connect({
-        chainId
+        chainId,
+        preferredAccountType: OptionsController.state.defaultAccountTypes.eip155
       })
 
       currentAccounts = accounts?.map(a => a.address as Address) || [address as Address]
@@ -91,6 +96,7 @@ export function authConnector(parameters: AuthParameters) {
       if (!this.provider) {
         this.provider = W3mFrameProviderSingleton.getInstance({
           projectId: parameters.options.projectId,
+          enableLogger: parameters.options.enableAuthLogger,
           onTimeout: () => {
             AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
           }
@@ -121,7 +127,10 @@ export function authConnector(parameters: AuthParameters) {
         }
         const provider = await this.getProvider()
         // We connect instead, since changing the chain may cause the address to change as well
-        const response = await provider.connect({ chainId })
+        const response = await provider.connect({
+          chainId,
+          preferredAccountType: OptionsController.state.defaultAccountTypes.eip155
+        })
 
         currentAccounts = response?.accounts?.map(a => a.address as Address) || [
           response.address as Address

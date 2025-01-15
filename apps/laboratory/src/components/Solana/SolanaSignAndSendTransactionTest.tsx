@@ -12,6 +12,7 @@ import {
 import { useChakraToast } from '../Toast'
 import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 import { useAppKitConnection, type Provider } from '@reown/appkit-adapter-solana/react'
+import { ErrorUtil } from '../../utils/ErrorUtil'
 
 const PHANTOM_TESTNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
 const recipientAddress = new PublicKey(PHANTOM_TESTNET_ADDRESS)
@@ -77,8 +78,8 @@ export function SolanaSignAndSendTransaction() {
       })
     } catch (err) {
       toast({
-        title: 'Error',
-        description: (err as Error).message,
+        title: 'Transaction Error',
+        description: ErrorUtil.getErrorMessage(err),
         type: 'error'
       })
     } finally {

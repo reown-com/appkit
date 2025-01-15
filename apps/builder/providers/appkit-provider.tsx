@@ -43,6 +43,7 @@ export const modal = createAppKit({
 })
 
 ThemeStore.setModal(modal)
+ThemeStore.initializeThemeVariables(initialConfig?.themeVariables || {})
 
 export function AppKitProvider({
   children,
