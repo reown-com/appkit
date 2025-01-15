@@ -339,6 +339,7 @@ export class EthersAdapter extends AdapterBlueprint {
   }: AdapterBlueprint.ConnectParams): Promise<AdapterBlueprint.ConnectResult> {
     const connector = this.connectors.find(c => c.id === id)
     const selectedProvider = connector?.provider as Provider
+
     if (!selectedProvider) {
       throw new Error('Provider not found')
     }
@@ -363,12 +364,30 @@ export class EthersAdapter extends AdapterBlueprint {
         method: 'eth_chainId'
       })
 
+      if (requestChainId !== chainId) {
+        const caipNetwork = this.caipNetworks?.find(n => n.id === chainId)
+
+        if (!caipNetwork) {
+          throw new Error('EthersAdapter:connect - could not find the caipNetwork to switch')
+        }
+
+        try {
+          await this.switchNetwork({
+            caipNetwork,
+            provider: selectedProvider,
+            providerType: type as ConnectorType
+          })
+        } catch (error) {
+          throw new Error('EthersAdapter:connect - Switch network failed')
+        }
+      }
+
       this.listenProviderEvents(selectedProvider)
     }
 
     return {
       address: accounts[0] as `0x${string}`,
-      chainId: Number(requestChainId) || Number(chainId),
+      chainId: Number(chainId),
       provider: selectedProvider,
       type: type as ConnectorType,
       id
@@ -551,11 +570,7 @@ export class EthersAdapter extends AdapterBlueprint {
         switchError.code === WcConstantsUtil.ERROR_CODE_DEFAULT ||
         switchError?.data?.originalError?.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
       ) {
-        try {
-          await EthersHelpersUtil.addEthereumChain(provider as Provider, caipNetwork)
-        } catch (e) {
-          console.warn('Could not add chain to wallet', e)
-        }
+        await EthersHelpersUtil.addEthereumChain(provider as Provider, caipNetwork)
       } else if (
         providerType === 'ANNOUNCED' ||
         providerType === 'EXTERNAL' ||
