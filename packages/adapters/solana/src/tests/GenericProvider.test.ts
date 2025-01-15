@@ -6,7 +6,7 @@ import type { Provider } from '@reown/appkit-utils/solana'
 
 import { AuthProvider } from '../providers/AuthProvider.js'
 import { CoinbaseWalletProvider } from '../providers/CoinbaseWalletProvider.js'
-import { WalletConnectProvider } from '../providers/WalletConnectProvider.js'
+import { SolanaWalletConnectProvider } from '../providers/SolanaWalletConnectProvider.js'
 import { WalletStandardProvider } from '../providers/WalletStandardProvider.js'
 import { mockCoinbaseWallet } from './mocks/CoinbaseWallet.js'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
@@ -20,11 +20,14 @@ const getActiveChain = vi.fn(() => TestConstants.chains[0])
 const providers: { name: string; provider: Provider }[] = [
   {
     name: 'WalletConnectProvider',
-    provider: new WalletConnectProvider({
-      provider: mockUniversalProvider(),
-      chains: TestConstants.chains,
-      getActiveChain
-    })
+    provider: Object.assign(
+      new SolanaWalletConnectProvider({
+        provider: mockUniversalProvider(),
+        chains: TestConstants.chains,
+        getActiveChain
+      }),
+      { onUri: vi.fn() }
+    )
   },
   {
     name: 'WalletStandardProvider',
