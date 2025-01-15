@@ -278,9 +278,6 @@ describe('W3mConnectView - Explore Mode', () => {
       html`<w3m-connect-view .walletGuide=${'explore'}></w3m-connect-view>`
     )
 
-    console.log('>> OptionsController.state', OptionsController.state)
-    console.log('>> ChainController.state', ChainController.state)
-
     const separators = element.shadowRoot?.querySelectorAll(SEPARATOR)
     expect(separators?.length).toBe(1) // Only the explore separator should be present
     expect(HelpersUtil.querySelect(element, '#explore')).not.toBeNull()
