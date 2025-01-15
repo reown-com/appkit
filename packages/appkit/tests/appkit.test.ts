@@ -1,5 +1,5 @@
-import { UniversalProvider } from '@walletconnect/universal-provider'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import UniversalProvider from '@walletconnect/universal-provider'
+import { type Mocked, afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
   type AppKitNetwork,
