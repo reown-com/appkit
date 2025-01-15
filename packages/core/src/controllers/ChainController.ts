@@ -303,9 +303,6 @@ export const ChainController = {
 
     if (networkControllerClient) {
       await networkControllerClient.switchCaipNetwork(network)
-    }
-
-    if (network) {
       EventsController.sendEvent({
         type: 'track',
         event: 'SWITCH_NETWORK',
