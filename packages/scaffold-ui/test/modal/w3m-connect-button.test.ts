@@ -1,10 +1,13 @@
-import { W3mConnectButton } from '../../src/modal/w3m-connect-button'
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { elementUpdated, fixture } from '@open-wc/testing'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { html } from 'lit'
+
 import { ModalController } from '@reown/appkit-core'
-import { HelpersUtil } from '../utils/HelpersUtil'
 import type { WuiConnectButton } from '@reown/appkit-ui'
+
+import { W3mConnectButton } from '../../src/modal/w3m-connect-button'
+import { HelpersUtil } from '../utils/HelpersUtil'
 
 describe('W3mConnectButton', () => {
   let element: W3mConnectButton

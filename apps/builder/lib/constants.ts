@@ -1,4 +1,4 @@
-import { notoSans, inter, domine, ebGaramond, breeSerif, bellota } from '@/lib/fonts'
+import { bellota, breeSerif, domine, ebGaramond, inter, notoSans } from '@/lib/fonts'
 
 export const ACCENT_COLORS = ['#3B82F6', '#EF4444', '#F59E0B', '#10B981']
 export const BG_COLORS = ['#202020', '#363636', '#FFFFFF']

@@ -1,9 +1,12 @@
 'use client'
 
 import { createContext } from 'react'
-import type { Features, ThemeMode, SocialProvider } from '@reown/appkit-core'
-import { URLState } from '@/lib/url-state'
+
 import { UniqueIdentifier } from '@dnd-kit/core'
+
+import type { Features, SocialProvider, ThemeMode } from '@reown/appkit-core'
+
+import { URLState } from '@/lib/url-state'
 
 interface AppKitContextType {
   config: URLState

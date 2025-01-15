@@ -1,19 +1,20 @@
+import { EthersAdapter } from '@reown/appkit-adapter-ethers'
+import { arbitrum, mainnet, optimism, polygon } from '@reown/appkit/networks'
 import {
   createAppKit,
   useAppKit,
-  useAppKitState,
   useAppKitAccount,
-  useAppKitTheme,
   useAppKitEvents,
-  useWalletInfo,
   useAppKitNetwork,
-  useDisconnect
+  useAppKitState,
+  useAppKitTheme,
+  useDisconnect,
+  useWalletInfo
 } from '@reown/appkit/react'
-import { EthersAdapter } from '@reown/appkit-adapter-ethers'
-import { mainnet, polygon, arbitrum, optimism } from '@reown/appkit/networks'
+
 import ActionButtonList from './components/ActionButton'
-import InfoList from './components/InfoList'
 import Footer from './components/Footer'
+import InfoList from './components/InfoList'
 
 export const projectId = import.meta.env.VITE_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694' // this is a public projectId only to use on localhost
 

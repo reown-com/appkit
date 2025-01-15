@@ -1,11 +1,15 @@
 import React, { useEffect } from 'react'
+
 import classNames from 'classnames'
-import { BaseDraggableItemProps, ConnectMethodName } from '@/lib/types'
-import { Handle } from './components'
-import { useAppKitContext } from '@/hooks/use-appkit'
-import { Checkbox } from '@/components/ui/checkbox'
-import { SocialButtons } from '@/components/social-buttons'
+
 import { ConnectMethod } from '@reown/appkit-core'
+
+import { SocialButtons } from '@/components/social-buttons'
+import { Checkbox } from '@/components/ui/checkbox'
+import { useAppKitContext } from '@/hooks/use-appkit'
+import { BaseDraggableItemProps, ConnectMethodName } from '@/lib/types'
+
+import { Handle } from './components'
 import styles from './connect-method-item.module.css'
 
 interface Props extends BaseDraggableItemProps {

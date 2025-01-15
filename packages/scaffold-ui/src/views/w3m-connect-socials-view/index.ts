@@ -1,10 +1,11 @@
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-
-import styles from './styles.js'
-import { OptionsController } from '@reown/appkit-core'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+
+import { OptionsController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
+
+import styles from './styles.js'
 
 @customElement('w3m-connect-socials-view')
 export class W3mConnectSocialsView extends LitElement {

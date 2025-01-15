@@ -1,3 +1,6 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+
 import {
   AccountController,
   ChainController,
@@ -9,10 +12,9 @@ import {
   SnackController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
-import { SIWEController } from '../../../core/controller/SIWEController.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+
+import { SIWEController } from '../../../core/controller/SIWEController.js'
 
 @customElement('w3m-connecting-siwe-view')
 export class W3mConnectingSiweView extends LitElement {

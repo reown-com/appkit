@@ -1,11 +1,12 @@
-import { createAppKit } from '@reown/appkit/react'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
-import { ThemeStore } from '../../utils/StoreUtil'
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
-import { AppKitButtons } from '../../components/AppKitButtons'
 import { mainnet } from '@reown/appkit/networks'
+import { createAppKit } from '@reown/appkit/react'
+
+import { AppKitButtons } from '../../components/AppKitButtons'
 import { AppKitWalletButtons } from '../../components/AppKitWalletButtons'
+import { EthersModalInfo } from '../../components/Ethers/EthersModalInfo'
+import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { ThemeStore } from '../../utils/StoreUtil'
 
 const networks = ConstantsUtil.EvmNetworks
 

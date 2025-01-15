@@ -1,20 +1,22 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
-import '../../components/wui-text/index.js'
-import '../../components/wui-image/index.js'
-import '../../layout/wui-flex/index.js'
-import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import { customElement } from '../../utils/WebComponentsUtil.js'
-import styles from './styles.js'
-import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+
+import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   BlockchainApiController,
   ChainController,
   StorageUtil
 } from '@reown/appkit-core'
-import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+
+import '../../components/wui-image/index.js'
+import '../../components/wui-text/index.js'
+import '../../layout/wui-flex/index.js'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
+import { customElement } from '../../utils/WebComponentsUtil.js'
+import styles from './styles.js'
 
 @customElement('wui-list-account')
 export class WuiListAccount extends LitElement {

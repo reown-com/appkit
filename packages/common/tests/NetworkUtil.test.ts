@@ -1,4 +1,5 @@
-import { describe, test, expect } from 'vitest'
+import { describe, expect, test } from 'vitest'
+
 import { NetworkUtil } from '../src/utils/NetworkUtil.js'
 import { type CaipNetwork } from '../src/utils/TypeUtil.js'
 

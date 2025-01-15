@@ -1,21 +1,23 @@
-import { describe, expect, it, beforeEach, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import {
   ChainController,
   ConnectionController,
-  OptionsController,
-  type ConnectionControllerClient
+  type ConnectionControllerClient,
+  OptionsController
 } from '@reown/appkit-core'
 import { ProviderUtil } from '@reown/appkit/store'
+
+import { SmartSessionsController } from '../../src/smart-session/controllers/SmartSessionsController'
+import {
+  assertWalletGrantPermissionsResponse,
+  extractChainAndAddress,
+  isValidSupportedCaipAddress
+} from '../../src/smart-session/helper/index.js'
+import { ERROR_MESSAGES } from '../../src/smart-session/schema'
 import { CosignerService } from '../../src/smart-session/utils/CosignerService'
 import type { SmartSessionGrantPermissionsRequest } from '../../src/smart-session/utils/TypeUtils.js'
-import {
-  extractChainAndAddress,
-  isValidSupportedCaipAddress,
-  assertWalletGrantPermissionsResponse
-} from '../../src/smart-session/helper/index.js'
 import { donutContractAbi } from '../data/abi'
-import { ERROR_MESSAGES } from '../../src/smart-session/schema'
-import { SmartSessionsController } from '../../src/smart-session/controllers/SmartSessionsController'
 
 vi.mock('@reown/appkit-core')
 vi.mock('@reown/appkit/store')

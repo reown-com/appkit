@@ -1,20 +1,23 @@
-import { W3mAllWalletsList } from '../../src/partials/w3m-all-wallets-list'
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { elementUpdated, fixture } from '@open-wc/testing'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { html } from 'lit'
+
 import {
   ApiController,
   ChainController,
   ConnectorController,
   RouterController
 } from '@reown/appkit-core'
-import { HelpersUtil } from '../utils/HelpersUtil'
 import type {
   ApiControllerState,
   ChainControllerState,
   Connector,
   WcWallet
 } from '@reown/appkit-core'
+
+import { W3mAllWalletsList } from '../../src/partials/w3m-all-wallets-list'
+import { HelpersUtil } from '../utils/HelpersUtil'
 
 describe('W3mAllWalletsList', () => {
   const mockWallets: WcWallet[] = [

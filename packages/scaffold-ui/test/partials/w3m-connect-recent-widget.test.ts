@@ -1,8 +1,11 @@
-import { W3mConnectRecentWidget } from '../../src/partials/w3m-connect-recent-widget'
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { fixture } from '@open-wc/testing'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { html } from 'lit'
+
 import { ConnectorController, RouterController, StorageUtil } from '@reown/appkit-core'
+
+import { W3mConnectRecentWidget } from '../../src/partials/w3m-connect-recent-widget'
 
 describe('W3mConnectRecentWidget', () => {
   const mockRecentWallets = [

@@ -1,10 +1,12 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, snapshot } from 'valtio/vanilla'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
+
+import { type ChainNamespace, ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
+
 import type { AuthConnector, Connector } from '../utils/TypeUtil.js'
-import { ConstantsUtil, getW3mThemeVariables, type ChainNamespace } from '@reown/appkit-common'
+import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
 import { ThemeController } from './ThemeController.js'
-import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectorWithProviders extends Connector {

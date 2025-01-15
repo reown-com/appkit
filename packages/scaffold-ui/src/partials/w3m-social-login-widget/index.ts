@@ -1,3 +1,7 @@
+import { LitElement, html } from 'lit'
+import { property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
   AccountController,
   ChainController,
@@ -12,12 +16,9 @@ import {
   type WalletGuideType
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state, property } from 'lit/decorators.js'
+import { SocialProviderEnum } from '@reown/appkit-utils'
 
 import styles from './styles.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
-import { SocialProviderEnum } from '@reown/appkit-utils'
 
 const MAX_TOP_VIEW = 2
 const MAXIMUM_LENGTH = 6

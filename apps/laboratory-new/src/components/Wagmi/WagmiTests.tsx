@@ -1,14 +1,15 @@
-import { WagmiTransactionTest } from './WagmiTransactionTest'
+import { Box, Card, CardBody, CardHeader, Heading, Stack, StackDivider } from '@chakra-ui/react'
+import type { Config } from 'wagmi'
+
+import { WagmiDisconnectTest } from './WagmiDisconnectTest'
+import { WagmiGetCallsStatusTest } from './WagmiGetCallsStatusTest'
+import { WagmiSendCallsTest } from './WagmiSendCallsTest'
+import { WagmiSendCallsWithPaymasterServiceTest } from './WagmiSendCallsWithPaymasterServiceTest'
+import { WagmiSendUSDCTest } from './WagmiSendUSDCTest'
 import { WagmiSignMessageTest } from './WagmiSignMessageTest'
 import { WagmiSignTypedDataTest } from './WagmiSignTypedDataTest'
-import { StackDivider, Card, CardHeader, Heading, CardBody, Box, Stack } from '@chakra-ui/react'
+import { WagmiTransactionTest } from './WagmiTransactionTest'
 import { WagmiWriteContractTest } from './WagmiWriteContractTest'
-import { WagmiSendUSDCTest } from './WagmiSendUSDCTest'
-import { WagmiSendCallsTest } from './WagmiSendCallsTest'
-import { WagmiGetCallsStatusTest } from './WagmiGetCallsStatusTest'
-import { WagmiSendCallsWithPaymasterServiceTest } from './WagmiSendCallsWithPaymasterServiceTest'
-import { WagmiDisconnectTest } from './WagmiDisconnectTest'
-import type { Config } from 'wagmi'
 
 interface IProps {
   config?: Config
