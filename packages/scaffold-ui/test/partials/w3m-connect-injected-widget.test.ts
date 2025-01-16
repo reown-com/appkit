@@ -1,16 +1,19 @@
-import { W3mConnectInjectedWidget } from '../../src/partials/w3m-connect-injected-widget'
-import { describe, it, expect, vi, beforeAll, afterEach, beforeEach } from 'vitest'
-import { fixture, elementUpdated } from '@open-wc/testing'
-import type { ConnectorWithProviders, ConnectorType } from '@reown/appkit-core'
+import { elementUpdated, fixture } from '@open-wc/testing'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { html } from 'lit'
+
+import type { ConnectorType, ConnectorWithProviders } from '@reown/appkit-core'
 import {
   ApiController,
+  ConnectionController,
   ConnectorController,
   CoreHelperUtil,
-  RouterController,
-  ConnectionController
+  RouterController
 } from '@reown/appkit-core'
-import { ConstantsUtil } from '@reown/appkit-common'
-import { html } from 'lit'
+import { ConstantsUtil } from '@reown/appkit-utils'
+
+import { W3mConnectInjectedWidget } from '../../src/partials/w3m-connect-injected-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
 // --- Constants ---------------------------------------------------- //
