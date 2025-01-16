@@ -1,8 +1,10 @@
-import { describe, it, vi, afterEach, beforeAll, expect } from 'vitest'
 import { fixture } from '@open-wc/testing'
-import type { W3mActivityList } from '../../src/partials/w3m-activity-list'
-import { TransactionsController } from '@reown/appkit-core'
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
+
 import type { Transaction, TransactionTransfer } from '@reown/appkit-common'
+import { TransactionsController } from '@reown/appkit-core'
+
+import type { W3mActivityList } from '../../src/partials/w3m-activity-list'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
 // -- Constants -------------------------------------------- //
