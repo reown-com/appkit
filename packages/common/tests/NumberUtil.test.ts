@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { NumberUtil } from '../src/utils/NumberUtil.js'
 
 // -- Tests --------------------------------------------------------------------

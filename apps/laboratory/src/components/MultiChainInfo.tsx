@@ -1,18 +1,20 @@
 'use client'
 
 import * as React from 'react'
+import { useEffect, useState } from 'react'
+
 import {
-  StackDivider,
+  Box,
   Card,
+  CardBody,
   CardHeader,
   Heading,
-  CardBody,
-  Box,
   Stack,
+  StackDivider,
   Text
 } from '@chakra-ui/react'
+
 import { useAppKitState } from '@reown/appkit/react'
-import { useEffect, useState } from 'react'
 
 export function MultiChainInfo() {
   const { activeChain, selectedNetworkId } = useAppKitState()

@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+
 import { useAppKitContext } from '@/hooks/use-appkit'
 import { cn } from '@/lib/utils'
 

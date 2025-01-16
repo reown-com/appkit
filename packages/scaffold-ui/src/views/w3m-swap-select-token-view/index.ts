@@ -1,8 +1,10 @@
-import { customElement, MathUtil } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import styles from './styles.js'
-import { RouterController, SwapController, type SwapTokenWithBalance } from '@reown/appkit-core'
 import { state } from 'lit/decorators.js'
+
+import { RouterController, SwapController, type SwapTokenWithBalance } from '@reown/appkit-core'
+import { MathUtil, customElement } from '@reown/appkit-ui'
+
+import styles from './styles.js'
 
 @customElement('w3m-swap-select-token-view')
 export class W3mSwapSelectTokenView extends LitElement {

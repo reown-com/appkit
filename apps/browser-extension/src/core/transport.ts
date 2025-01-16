@@ -1,9 +1,10 @@
-import { createWalletClient, EIP1193Parameters, EIP1193Provider, fromHex, http, toHex } from 'viem'
-import { ChainId, wagmiConfig } from './wagmi'
-import { AccountUtil } from '../utils/AccountUtil'
+import { getPublicClient } from '@wagmi/core'
+import { EIP1193Parameters, EIP1193Provider, createWalletClient, fromHex, http, toHex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { sepolia } from 'viem/chains'
-import { getPublicClient } from '@wagmi/core'
+
+import { AccountUtil } from '../utils/AccountUtil'
+import { ChainId, wagmiConfig } from './wagmi'
 
 // -- Constants -----------------------------------------------------------------
 const LOCAL_STORAGE_KEYS = {

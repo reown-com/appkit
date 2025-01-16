@@ -1,4 +1,5 @@
-import type { Assign, Prettify, ChainFormatters } from 'viem'
+import type { Assign, ChainFormatters, Prettify } from 'viem'
+
 import type { CaipNetwork } from '@reown/appkit-common'
 
 export function defineChain<

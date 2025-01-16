@@ -1,10 +1,11 @@
-import { AppKit } from '../src/client.js'
-import type { AppKitOptions } from '../src/utils/TypesUtil.js'
-import { getAppKit } from '../src/library/react/index.js'
 import { CoreHelperUtil, type UseAppKitNetworkReturn } from '@reown/appkit-core'
-import { PACKAGE_VERSION } from './constants.js'
 import { useAppKitNetworkCore } from '@reown/appkit-core/react'
 import type { AppKitNetwork } from '@reown/appkit-new/networks'
+
+import { AppKit } from '../src/client.js'
+import { getAppKit } from '../src/library/react/index.js'
+import type { AppKitOptions } from '../src/utils/TypesUtil.js'
+import { PACKAGE_VERSION } from './constants.js'
 
 // -- Views ------------------------------------------------------------
 export * from '@reown/appkit-scaffold-ui-new'

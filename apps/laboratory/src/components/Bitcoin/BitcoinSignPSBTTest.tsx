@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import {
   Box,
   Button,
@@ -8,9 +10,10 @@ import {
   InputLeftAddon,
   useToast
 } from '@chakra-ui/react'
+
 import type { BitcoinConnector } from '@reown/appkit-adapter-bitcoin'
 import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
-import { useState } from 'react'
+
 import { BitcoinUtil } from '../../utils/BitcoinUtil'
 
 export function BitcoinSignPSBTTest() {

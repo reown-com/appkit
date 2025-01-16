@@ -1,8 +1,10 @@
-import { beforeEach, describe, expect, it } from 'vitest'
-import { mockConnection } from './mocks/Connection'
-import { createSendTransaction } from '../utils/createSendTransaction'
-import type { Provider } from '@reown/appkit-utils/solana'
 import { PublicKey } from '@solana/web3.js'
+import { beforeEach, describe, expect, it } from 'vitest'
+
+import type { Provider } from '@reown/appkit-utils/solana'
+
+import { createSendTransaction } from '../utils/createSendTransaction'
+import { mockConnection } from './mocks/Connection'
 
 const mockProvider = () => {
   return {

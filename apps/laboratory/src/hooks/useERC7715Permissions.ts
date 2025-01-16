@@ -1,4 +1,5 @@
 import { useContext } from 'react'
+
 import { ERC7715PermissionsContext } from '../context/ERC7715PermissionsContext'
 
 export function useERC7715Permissions() {

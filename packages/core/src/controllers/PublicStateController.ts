@@ -1,4 +1,5 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
+
 import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 
 // -- Types --------------------------------------------- //
