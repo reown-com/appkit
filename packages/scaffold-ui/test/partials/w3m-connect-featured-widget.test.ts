@@ -1,10 +1,13 @@
-import { W3mConnectFeaturedWidget } from '../../src/partials/w3m-connect-featured-widget'
-import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
-import { fixture, elementUpdated } from '@open-wc/testing'
-import type { WcWallet, ConnectorWithProviders, ConnectorType } from '@reown/appkit-core'
-import { ApiController, ConnectorController, RouterController, AssetUtil } from '@reown/appkit-core'
-import { ConstantsUtil } from '@reown/appkit-utils'
+import { elementUpdated, fixture } from '@open-wc/testing'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { html } from 'lit'
+
+import type { ConnectorType, ConnectorWithProviders, WcWallet } from '@reown/appkit-core'
+import { ApiController, AssetUtil, ConnectorController, RouterController } from '@reown/appkit-core'
+import { ConstantsUtil } from '@reown/appkit-utils'
+
+import { W3mConnectFeaturedWidget } from '../../src/partials/w3m-connect-featured-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
 // --- Constants ---------------------------------------------------- //
