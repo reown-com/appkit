@@ -1,15 +1,24 @@
-import { type Mock, type MockedFunction, beforeEach, describe, expect, it, vi } from 'vitest'
+import {
+  type Mock,
+  type MockedFunction,
+  type MockedObject,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi
+} from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
 
 import { BitcoinAdapter, type BitcoinConnector } from '../src'
+import { BitcoinWalletConnectConnector } from '../src/connectors/BitcoinWalletConnectProvider'
 import { LeatherConnector } from '../src/connectors/LeatherConnector'
 import { OKXConnector } from '../src/connectors/OKXConnector'
 import { SatsConnectConnector } from '../src/connectors/SatsConnectConnector'
 import { WalletStandardConnector } from '../src/connectors/WalletStandardConnector'
 import type { BitcoinApi } from '../src/utils/BitcoinApi'
-import { WalletConnectProvider } from '../src/utils/WalletConnectProvider'
 import { mockSatsConnectProvider } from './mocks/mockSatsConnect'
 import { mockUTXO } from './mocks/mockUTXO'
 import { mockUniversalProvider } from './mocks/mockUniversalProvider'
@@ -30,25 +39,25 @@ describe('BitcoinAdapter', () => {
   })
 
   describe('connectWalletConnect', () => {
-    const mockWalletConnect = {
-      type: 'WALLET_CONNECT',
-      provider: {
-        on: vi.fn(),
-        connect: vi.fn()
-      }
-    }
+    let mockWalletConnect: MockedObject<BitcoinWalletConnectConnector>
 
     beforeEach(() => {
-      adapter.connectors.push(mockWalletConnect as any)
+      mockWalletConnect = vi.mocked(
+        new BitcoinWalletConnectConnector({
+          provider: mockUniversalProvider(),
+          chains: [bitcoin],
+          getActiveChain: () => bitcoin
+        })
+      )
+      adapter.connectors.push(mockWalletConnect)
     })
 
     it('should call connect from WALLET_CONNECT connector', async () => {
       const onUri = vi.fn()
       await adapter.connectWalletConnect(onUri)
-
-      mockWalletConnect.provider.on.mock.calls.find(([name]) => name === 'display_uri')![1](
-        'mock_uri'
-      )
+      ;(
+        mockWalletConnect.provider.on as MockedFunction<typeof mockWalletConnect.provider.on>
+      ).mock.calls.find(([name]) => name === 'display_uri')![1]('mock_uri')
 
       expect(onUri).toHaveBeenCalled()
       expect(mockWalletConnect.provider.connect).toHaveBeenCalled()
@@ -57,6 +66,13 @@ describe('BitcoinAdapter', () => {
     it('should throw if caipNetworks is not defined', async () => {
       adapter = new BitcoinAdapter({ api })
       await expect(adapter.connectWalletConnect(vi.fn())).rejects.toThrow()
+    })
+
+    it('should set BitcoinWalletConnectConnector', async () => {
+      delete adapter.caipNetworks
+      adapter.setUniversalProvider(mockUniversalProvider())
+      expect(adapter.connectors[0]).toBeInstanceOf(BitcoinWalletConnectConnector)
+      expect(adapter.connectors[0]?.chains).toEqual([])
     })
   })
 
@@ -374,7 +390,7 @@ describe('BitcoinAdapter', () => {
         provider: undefined
       })
 
-      expect(provider).toBeInstanceOf(WalletConnectProvider)
+      expect(provider).toBeInstanceOf(BitcoinWalletConnectConnector)
     })
   })
 
