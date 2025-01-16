@@ -1,9 +1,12 @@
-import { W3mAllWalletsListItem } from '../../src/partials/w3m-all-wallets-list-item'
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { elementUpdated, fixture } from '@open-wc/testing'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { html } from 'lit'
+
 import { AssetUtil } from '@reown/appkit-core'
 import type { WcWallet } from '@reown/appkit-core'
+
+import { W3mAllWalletsListItem } from '../../src/partials/w3m-all-wallets-list-item'
 
 // -- Constants ----------------------------------------- //
 const mockWallet: WcWallet & { installed: boolean } = {

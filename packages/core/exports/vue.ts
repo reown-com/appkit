@@ -1,8 +1,9 @@
-import { ref, onUnmounted } from 'vue'
+import { onUnmounted, ref } from 'vue'
+
 import { AccountController } from '../src/controllers/AccountController.js'
-import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import { ChainController } from '../src/controllers/ChainController.js'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
+import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 
 // -- Hooks ------------------------------------------------------------
 export function useAppKitAccount() {

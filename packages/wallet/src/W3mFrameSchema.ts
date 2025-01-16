@@ -1,6 +1,8 @@
 import { z } from 'zod'
-import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
+
 import type { AdapterType, AppKitSdkVersion, SdkFramework } from '@reown/appkit-common'
+
+import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
 
 // -- Helpers ----------------------------------------------------------------
 const zError = z.object({ message: z.string() })

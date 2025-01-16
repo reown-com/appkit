@@ -1,35 +1,37 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { AppKit } from '../client'
-import { mainnet, polygon } from '../networks/index.js'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import {
+  type CaipNetwork,
+  SafeLocalStorage,
+  type SafeLocalStorageItems,
+  SafeLocalStorageKeys
+} from '@reown/appkit-common'
 import {
   AccountController,
-  ModalController,
-  ThemeController,
-  PublicStateController,
-  SnackController,
-  RouterController,
-  OptionsController,
+  AssetUtil,
   BlockchainApiController,
+  ChainController,
+  type CombinedProvider,
   ConnectionController,
+  type Connector,
+  ConnectorController,
+  CoreHelperUtil,
   EnsController,
   EventsController,
-  type CombinedProvider,
-  AssetUtil,
-  ConnectorController,
-  ChainController,
-  type Connector,
+  ModalController,
+  OptionsController,
+  PublicStateController,
+  RouterController,
+  SnackController,
   StorageUtil,
-  CoreHelperUtil
+  ThemeController
 } from '@reown/appkit-core'
-import {
-  SafeLocalStorage,
-  SafeLocalStorageKeys,
-  type CaipNetwork,
-  type SafeLocalStorageItems
-} from '@reown/appkit-common'
-import { mockOptions } from './mocks/Options'
-import { UniversalAdapter } from '../universal-adapter/client'
+
 import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint'
+import { AppKit } from '../client'
+import { mainnet, polygon } from '../networks/index.js'
+import { UniversalAdapter } from '../universal-adapter/client'
+import { mockOptions } from './mocks/Options'
 
 // Mock all controllers and UniversalAdapterClient
 vi.mock('@reown/appkit-core')

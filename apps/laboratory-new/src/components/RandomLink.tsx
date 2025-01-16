@@ -1,7 +1,8 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+
 import { Link } from '@chakra-ui/react'
-import { useState, useEffect } from 'react'
 
 export function RandomLink({
   hrefs = [],

@@ -1,8 +1,11 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui/src/composites/wui-alertbar'
-import '../../components/gallery-container'
-import type { WuiAlertBar } from '@reown/appkit-ui/src/composites/wui-alertbar'
+
 import { html } from 'lit'
+
+import '@reown/appkit-ui/src/composites/wui-alertbar'
+import type { WuiAlertBar } from '@reown/appkit-ui/src/composites/wui-alertbar'
+
+import '../../components/gallery-container'
 import { colorOptions, iconOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiAlertBar>

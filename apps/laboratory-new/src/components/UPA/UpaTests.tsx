@@ -1,6 +1,7 @@
+import { Box, Card, CardBody, CardHeader, Heading, Stack, StackDivider } from '@chakra-ui/react'
+
 import { useAppKitNetwork } from '@reown/appkit-new/react'
 
-import { StackDivider, Card, CardHeader, Heading, CardBody, Box, Stack } from '@chakra-ui/react'
 import { UpaEvmSignMessageTest } from './UpaEvmSignMessageTest'
 import { UpaSolanaSignMessageTest } from './UpaSolanaSignMessageTest'
 

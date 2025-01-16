@@ -1,7 +1,10 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui/src/composites/wui-list-wallet'
 import type { WuiListWallet } from '@reown/appkit-ui/src/composites/wui-list-wallet'
-import { html } from 'lit'
+
 import '../../components/gallery-container'
 import {
   iconOptions,

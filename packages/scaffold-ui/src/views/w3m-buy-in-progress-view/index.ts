@@ -1,18 +1,20 @@
-import {
-  AccountController,
-  ConnectionController,
-  CoreHelperUtil,
-  OnRampController,
-  RouterController,
-  SnackController,
-  ThemeController,
-  BlockchainApiController,
-  OptionsController
-} from '@reown/appkit-core'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+
+import {
+  AccountController,
+  BlockchainApiController,
+  ConnectionController,
+  CoreHelperUtil,
+  OnRampController,
+  OptionsController,
+  RouterController,
+  SnackController,
+  ThemeController
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
+
 import styles from './styles.js'
 
 @customElement('w3m-buy-in-progress-view')

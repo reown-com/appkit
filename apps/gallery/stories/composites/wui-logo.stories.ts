@@ -1,7 +1,10 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui/src/composites/wui-logo'
 import type { WuiLogo } from '@reown/appkit-ui/src/composites/wui-logo'
-import { html } from 'lit'
+
 import { logoOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiLogo>

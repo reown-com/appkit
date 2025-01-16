@@ -1,5 +1,7 @@
-import { describe, test, expect } from 'vitest'
+import { describe, expect, test } from 'vitest'
+
 import { type SIWXSession } from '@reown/appkit-core'
+
 import { EIP155Verifier } from '../../src/index.js'
 import { mockSession } from '../mocks/mockSession.js'
 
