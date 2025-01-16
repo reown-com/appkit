@@ -1,7 +1,9 @@
 import { elementUpdated, fixture } from '@open-wc/testing'
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { html } from 'lit'
 
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { ConnectorType, ConnectorWithProviders } from '@reown/appkit-core'
 import {
   AssetController,
@@ -10,7 +12,7 @@ import {
   RouterController
 } from '@reown/appkit-core'
 import { ConstantsUtil } from '@reown/appkit-utils'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+
 import { W3mConnectWalletConnectWidget } from '../../src/partials/w3m-connect-walletconnect-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
