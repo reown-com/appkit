@@ -1,11 +1,13 @@
 import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest'
+
+import type { ParsedCaipAddress } from '@reown/appkit-common'
+import { type Connector, ConnectorController, type WcWallet } from '@reown/appkit-core'
+
 import { AppKitWalletButton } from '../client'
 import { ApiController } from '../controllers/ApiController'
 import { WalletButtonController } from '../controllers/WalletButtonController'
 import { ConnectorUtil } from '../utils/ConnectorUtil'
 import { WalletUtil } from '../utils/WalletUtil'
-import { ConnectorController, type Connector, type WcWallet } from '@reown/appkit-core'
-import type { ParsedCaipAddress } from '@reown/appkit-common'
 
 // -- Constants ------------------------------------------------------------
 const METAMASK_CONNECTOR = {

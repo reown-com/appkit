@@ -1,10 +1,11 @@
-import { ConnectorController, type Connector } from '@reown/appkit-core'
+import { type Connector, ConnectorController } from '@reown/appkit-core'
+
+import { ApiController } from './controllers/ApiController.js'
 import { WalletButtonController } from './controllers/WalletButtonController.js'
-import { ConstantsUtil } from './utils/ConstantsUtil.js'
 import { ConnectorUtil } from './utils/ConnectorUtil.js'
+import { ConstantsUtil } from './utils/ConstantsUtil.js'
 import type { SocialProvider, Wallet } from './utils/TypeUtil.js'
 import { WalletUtil } from './utils/WalletUtil.js'
-import { ApiController } from './controllers/ApiController.js'
 
 export class AppKitWalletButton {
   constructor() {
