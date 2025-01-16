@@ -1,6 +1,9 @@
-import { W3mConnectRecommendedWidget } from '../../src/partials/w3m-connect-recommended-widget'
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { fixture, elementUpdated } from '@open-wc/testing'
+import { elementUpdated, fixture } from '@open-wc/testing'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { html } from 'lit'
+
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { ConnectorWithProviders, WcWallet } from '@reown/appkit-core'
 import {
   ApiController,
@@ -9,8 +12,8 @@ import {
   RouterController,
   StorageUtil
 } from '@reown/appkit-core'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { html } from 'lit'
+
+import { W3mConnectRecommendedWidget } from '../../src/partials/w3m-connect-recommended-widget'
 
 // --- Constants ---------------------------------------------------- //
 const MOCK_WALLET_CONNECT_CONNECTOR: ConnectorWithProviders = {
