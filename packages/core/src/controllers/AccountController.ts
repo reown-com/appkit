@@ -1,24 +1,26 @@
+import type UniversalProvider from '@walletconnect/universal-provider'
+import { proxy, ref } from 'valtio/vanilla'
+
+import type { CaipAddress, ChainNamespace } from '@reown/appkit-common'
+import type { Balance } from '@reown/appkit-common'
+import type { W3mFrameTypes } from '@reown/appkit-wallet'
+
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import type {
   AccountType,
   AccountTypeMap,
   CombinedProvider,
   ConnectedWalletInfo,
-  User,
   Provider,
-  SocialProvider
+  SocialProvider,
+  User
 } from '../utils/TypeUtil.js'
-import type { CaipAddress, ChainNamespace } from '@reown/appkit-common'
-import type { Balance } from '@reown/appkit-common'
 import { BlockchainApiController } from './BlockchainApiController.js'
+import { ChainController } from './ChainController.js'
 import { SnackController } from './SnackController.js'
 import { SwapController } from './SwapController.js'
-import { SwapApiUtil } from '../utils/SwapApiUtil.js'
-import type { W3mFrameTypes } from '@reown/appkit-wallet'
-import { ChainController } from './ChainController.js'
-import { proxy, ref } from 'valtio/vanilla'
-import type UniversalProvider from '@walletconnect/universal-provider'
-import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface AccountControllerState {

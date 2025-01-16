@@ -1,7 +1,10 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui/src/composites/wui-all-wallets-image'
 import type { WuiAllWalletsImage } from '@reown/appkit-ui/src/composites/wui-all-wallets-image'
-import { html } from 'lit'
+
 import { walletImagesOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiAllWalletsImage>

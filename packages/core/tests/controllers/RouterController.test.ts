@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { RouterController } from '../../exports/index.js'
+
 import { ConstantsUtil } from '@reown/appkit-common'
+
+import { RouterController } from '../../exports/index.js'
 
 // -- Tests --------------------------------------------------------------------
 describe('RouterController', () => {

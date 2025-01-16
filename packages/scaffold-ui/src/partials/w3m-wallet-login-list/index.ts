@@ -1,7 +1,8 @@
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+
+import { customElement } from '@reown/appkit-ui'
 
 @customElement('w3m-wallet-login-list')
 export class W3mWalletLoginList extends LitElement {

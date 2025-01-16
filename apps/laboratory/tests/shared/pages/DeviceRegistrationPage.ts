@@ -1,4 +1,4 @@
-import { expect, type Page } from '@playwright/test'
+import { type Page, expect } from '@playwright/test'
 
 const LOGIN_APPROVED_SUCCESS_TEXT = 'approved'
 

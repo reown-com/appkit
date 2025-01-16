@@ -1,13 +1,15 @@
-import type { Transaction } from '@reown/appkit-common'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
-import { OptionsController } from './OptionsController.js'
-import { EventsController } from './EventsController.js'
-import { SnackController } from './SnackController.js'
+
+import type { Transaction } from '@reown/appkit-common'
 import type { CaipNetworkId } from '@reown/appkit-common'
-import { BlockchainApiController } from './BlockchainApiController.js'
-import { AccountController } from './AccountController.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+
+import { AccountController } from './AccountController.js'
+import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
+import { EventsController } from './EventsController.js'
+import { OptionsController } from './OptionsController.js'
+import { SnackController } from './SnackController.js'
 
 // -- Types --------------------------------------------- //
 type TransactionByMonthMap = Record<number, Transaction[]>

@@ -1,12 +1,14 @@
-import type { BitcoinConnector } from '../index.js'
-import { SatsConnectConnector } from './SatsConnectConnector.js'
 import type {
   SendTransferRequestParams,
   SendTransferResponseBody,
   SignPsbtRequestParams,
   SignPsbtResponseBody
 } from '@leather.io/rpc'
+
 import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
+
+import type { BitcoinConnector } from '../index.js'
+import { SatsConnectConnector } from './SatsConnectConnector.js'
 
 export class LeatherConnector extends SatsConnectConnector {
   static readonly ProviderId = 'LeatherProvider'

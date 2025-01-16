@@ -1,25 +1,27 @@
 import {
-  createAppKit,
-  useAppKit,
-  useAppKitState,
-  useAppKitAccount,
-  useAppKitTheme,
-  useAppKitEvents,
-  useWalletInfo,
-  useAppKitNetwork,
-  useDisconnect
-} from '@reown/appkit/react'
-import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
-import {
-  PhantomWalletAdapter,
   HuobiWalletAdapter,
+  PhantomWalletAdapter,
   SolflareWalletAdapter,
   TrustWalletAdapter
 } from '@solana/wallet-adapter-wallets'
-import { solana, solanaTestnet, solanaDevnet } from '@reown/appkit/networks'
+
+import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
+import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit/networks'
+import {
+  createAppKit,
+  useAppKit,
+  useAppKitAccount,
+  useAppKitEvents,
+  useAppKitNetwork,
+  useAppKitState,
+  useAppKitTheme,
+  useDisconnect,
+  useWalletInfo
+} from '@reown/appkit/react'
+
 import ActionButtonList from './components/ActionButton'
-import InfoList from './components/InfoList'
 import Footer from './components/Footer'
+import InfoList from './components/InfoList'
 
 // @ts-expect-error Get projectId
 export const projectId = import.meta.env.VITE_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694' // this is a public projectId only to use on localhost

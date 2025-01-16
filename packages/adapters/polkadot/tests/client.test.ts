@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
+
 import { PolkadotClient } from '../src/client'
 
 describe('Polkadot Client', () => {

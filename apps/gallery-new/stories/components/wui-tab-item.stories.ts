@@ -1,7 +1,10 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui-new/src/composites/wui-tab-item'
 import type { WuiTab } from '@reown/appkit-ui-new/src/composites/wui-tab-item'
-import { html } from 'lit'
+
 import { iconOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiTab>

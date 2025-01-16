@@ -1,9 +1,11 @@
-import { describe, it, expect, vi, afterEach, beforeEach, beforeAll, afterAll } from 'vitest'
-import { StorageUtil } from '../../src/utils/StorageUtil'
-import type { WcWallet, SocialProvider } from '../../src/utils/TypeUtil'
-import { getSafeConnectorIdKey, SafeLocalStorage } from '@reown/appkit-common'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { SafeLocalStorage, getSafeConnectorIdKey } from '@reown/appkit-common'
 import { SafeLocalStorageKeys } from '@reown/appkit-common'
 import { W3mFrameConstants, W3mFrameHelpers, W3mFrameStorage } from '@reown/appkit-wallet'
+
+import { StorageUtil } from '../../src/utils/StorageUtil'
+import type { SocialProvider, WcWallet } from '../../src/utils/TypeUtil'
 
 const previousLocalStorage = globalThis.localStorage
 const previousWindow = globalThis.window

@@ -1,10 +1,12 @@
+import { LitElement, html } from 'lit'
+import { property } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import type { WcWallet } from '@reown/appkit-core'
 import { ApiController, AssetUtil, ConnectorController, RouterController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { ifDefined } from 'lit/directives/if-defined.js'
+
 import { WalletUtil } from '../../utils/WalletUtil.js'
-import { property } from 'lit/decorators.js'
 
 @customElement('w3m-connect-featured-widget')
 export class W3mConnectFeaturedWidget extends LitElement {

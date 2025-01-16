@@ -1,14 +1,15 @@
 import {
-  StackDivider,
+  Box,
   Card,
+  CardBody,
   CardHeader,
   Heading,
-  CardBody,
-  Box,
   Stack,
+  StackDivider,
   Text
 } from '@chakra-ui/react'
 import { useSession } from 'next-auth/react'
+
 import type { SIWESession } from '@reown/appkit-siwe'
 
 export function SiweData() {

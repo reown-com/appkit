@@ -1,7 +1,9 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { AccountController, BlockchainApiController, ChainController } from '@reown/appkit-core'
+
 import { CloudAuthSIWX } from '../../src/configs/CloudAuthSIWX'
 import { mockSession } from '../mocks/mockSession'
-import { AccountController, BlockchainApiController, ChainController } from '@reown/appkit-core'
 
 vi.useFakeTimers({
   now: new Date('2024-12-05T16:02:32.905Z')

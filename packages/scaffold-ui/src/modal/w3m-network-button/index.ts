@@ -1,4 +1,7 @@
-import { customElement } from '@reown/appkit-ui'
+import { LitElement, html } from 'lit'
+import { property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
   AssetController,
   AssetUtil,
@@ -7,10 +10,9 @@ import {
   ModalController,
   OptionsController
 } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import type { WuiNetworkButton } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+
 import styles from './styles.js'
 
 class W3mNetworkButtonBase extends LitElement {

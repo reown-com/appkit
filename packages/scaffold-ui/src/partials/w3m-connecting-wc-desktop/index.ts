@@ -1,5 +1,6 @@
 import { ConnectionController, CoreHelperUtil, EventsController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-wc-desktop')

@@ -46,13 +46,14 @@
 
 <script>
 import { onMounted } from 'vue'
+
 import {
+  useAppKitAccount,
+  useAppKitEvents,
+  useAppKitNetwork,
   useAppKitState,
   useAppKitTheme,
-  useAppKitEvents,
-  useAppKitAccount,
-  useWalletInfo,
-  useAppKitNetwork
+  useWalletInfo
 } from '@reown/appkit/vue'
 
 export default {

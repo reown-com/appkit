@@ -1,8 +1,11 @@
-import { W3mLegalCheckbox } from '../../src/partials/w3m-legal-checkbox/index'
-import { describe, it, expect, vi, beforeAll } from 'vitest'
-import { fixture, elementUpdated } from '@open-wc/testing'
-import { OptionsController } from '@reown/appkit-core'
+import { elementUpdated, fixture } from '@open-wc/testing'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
+
 import { html } from 'lit'
+
+import { OptionsController } from '@reown/appkit-core'
+
+import { W3mLegalCheckbox } from '../../src/partials/w3m-legal-checkbox/index'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
 // --- Constants ---------------------------------------------------- //

@@ -1,4 +1,5 @@
 import { ZodError } from 'zod'
+
 import { ERROR_MESSAGES, SmartSessionGrantPermissionsRequestSchema } from '../schema/index.js'
 import {
   type AddPermissionResponse,
