@@ -422,6 +422,8 @@ export class WagmiAdapter extends AdapterBlueprint {
       return
     }
 
+    const provider = (await connector.getProvider().catch(() => undefined)) as Provider | undefined
+
     this.addConnector({
       id: connector.id,
       explorerId: PresetsUtil.ConnectorExplorerIds[connector.id],
@@ -433,18 +435,20 @@ export class WagmiAdapter extends AdapterBlueprint {
         connector.id === CommonConstantsUtil.CONNECTOR_ID.INJECTED
           ? undefined
           : { rdns: connector.id },
-      provider: (await connector.getProvider().catch(() => undefined)) as Provider | undefined,
+      provider,
       chain: this.namespace as ChainNamespace,
       chains: []
     })
   }
 
-  public syncConnectors(options: AppKitOptions, appKit: AppKit) {
+  public async syncConnectors(options: AppKitOptions, appKit: AppKit) {
     // Add wagmi connectors
     this.addWagmiConnectors(options, appKit)
 
     // Add current wagmi connectors to chain adapter blueprint
-    this.wagmiConfig.connectors.forEach(connector => this.addWagmiConnector(connector, options))
+    await Promise.all(
+      this.wagmiConfig.connectors.map(connector => this.addWagmiConnector(connector, options))
+    )
 
     /*
      * Watch for new connectors. This is needed because some EIP6963
