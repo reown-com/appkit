@@ -1,13 +1,15 @@
-import { expect, html, fixture } from '@open-wc/testing'
+import { expect, fixture, html } from '@open-wc/testing'
+import { afterEach, beforeEach, describe, it, vi, expect as viExpect } from 'vitest'
+
+import type { Balance, CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
   RouterController,
   SendController
 } from '@reown/appkit-core'
+
 import { W3mSendSelectTokenView } from '../../src/views/w3m-wallet-send-select-token-view'
-import { describe, it, afterEach, beforeEach, vi, expect as viExpect } from 'vitest'
-import type { Balance, CaipNetwork } from '@reown/appkit-common'
 
 const mockTokens: Balance[] = [
   {

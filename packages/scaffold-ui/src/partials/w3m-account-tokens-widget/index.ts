@@ -1,9 +1,11 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+
 import { AccountController, EventsController, RouterController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import styles from './styles.js'
-import { state } from 'lit/decorators.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+
+import styles from './styles.js'
 
 @customElement('w3m-account-tokens-widget')
 export class W3mAccountTokensWidget extends LitElement {

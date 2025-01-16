@@ -1,6 +1,7 @@
+import { LitElement, html } from 'lit'
+
 import { CoreHelperUtil } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
 
 const data = [
   {

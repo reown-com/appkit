@@ -1,15 +1,17 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
-  OnRampController,
-  ModalController,
   AssetController,
+  ModalController,
+  OnRampController,
   OptionsController
 } from '@reown/appkit-core'
 import type { PurchaseCurrency } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+
 import styles from './styles.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-onramp-token-select-view')
 export class W3mOnrampTokensView extends LitElement {

@@ -1,17 +1,20 @@
 import * as React from 'react'
-import { useAppKitAccount } from '@reown/appkit/react'
+
 import {
-  StackDivider,
+  Box,
   Card,
+  CardBody,
   CardHeader,
   Heading,
-  CardBody,
-  Box,
   Stack,
+  StackDivider,
   Text
 } from '@chakra-ui/react'
-import { BitcoinSignMessageTest } from './BitcoinSignMessageTest'
+
+import { useAppKitAccount } from '@reown/appkit/react'
+
 import { BitcoinSendTransferTest } from './BitcoinSendTransferTest'
+import { BitcoinSignMessageTest } from './BitcoinSignMessageTest'
 import { BitcoinSignPSBTTest } from './BitcoinSignPSBTTest'
 
 export function BitcoinTests() {

@@ -1,7 +1,9 @@
-import { customElement, UiHelperUtil } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import styles from './styles.js'
 import { property } from 'lit/decorators.js'
+
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+
+import styles from './styles.js'
 
 @customElement('wui-permission-contract-call')
 export class WuiPermissionContractCall extends LitElement {

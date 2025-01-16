@@ -1,7 +1,8 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { RouterUtil } from '../../src/utils/RouterUtil'
-import { RouterController } from '../../src/controllers/RouterController'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { ModalController } from '../../src/controllers/ModalController'
+import { RouterController } from '../../src/controllers/RouterController'
+import { RouterUtil } from '../../src/utils/RouterUtil'
 
 // Mock the RouterController and ModalController
 vi.mock('../../src/controllers/RouterController', () => ({

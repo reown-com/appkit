@@ -1,9 +1,10 @@
 'use client'
 
 import * as React from 'react'
-import { Button } from '@/components/ui/button'
 
 import { useAppKit } from '@reown/appkit/react'
+
+import { Button } from '@/components/ui/button'
 
 export function AppKitButtonMobile() {
   const { open } = useAppKit()

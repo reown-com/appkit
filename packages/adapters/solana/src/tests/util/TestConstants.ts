@@ -1,6 +1,7 @@
 import { PublicKey } from '@solana/web3.js'
-import { solanaChains } from '../../utils/chains.js'
 import base58 from 'bs58'
+
+import { solanaChains } from '../../utils/chains.js'
 
 export const TestConstants = {
   accounts: [

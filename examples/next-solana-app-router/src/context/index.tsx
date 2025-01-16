@@ -1,10 +1,13 @@
 'use client'
 
 import React, { type ReactNode } from 'react'
-import { solanaAdapter, networks, projectId } from '@/config'
-import { createAppKit } from '@reown/appkit/react'
-import { solana } from '@reown/appkit/networks'
+
 import { ThemeProvider } from 'next-themes'
+
+import { solana } from '@reown/appkit/networks'
+import { createAppKit } from '@reown/appkit/react'
+
+import { networks, projectId, solanaAdapter } from '@/config'
 
 if (!projectId) {
   throw new Error('Project ID is not defined')

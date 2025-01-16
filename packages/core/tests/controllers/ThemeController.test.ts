@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { ThemeController } from '../../exports/index.js'
 
 // -- Tests --------------------------------------------------------------------

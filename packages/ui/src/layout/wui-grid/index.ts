@@ -1,5 +1,6 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import type { GridContentType, GridItemsType, SpacingType } from '../../utils/TypeUtil.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'

@@ -1,9 +1,11 @@
+import React from 'react'
+
 import { Controls, Description, Primary, Source, Subtitle, Title } from '@storybook/blocks'
 import { GLOBALS_UPDATED, SET_GLOBALS } from '@storybook/core-events'
 import { addons } from '@storybook/preview-api'
 import { themes } from '@storybook/theming'
+
 import { initializeTheming, setColorTheme } from '@reown/appkit-ui/src/utils/ThemeUtil'
-import React from 'react'
 
 // -- Utilities ------------------------------------------------------------
 initializeTheming({})

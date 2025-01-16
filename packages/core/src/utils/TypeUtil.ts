@@ -1,22 +1,24 @@
-import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
+import type UniversalProvider from '@walletconnect/universal-provider'
+
 import type {
-  Balance,
-  Transaction,
-  CaipNetworkId,
-  CaipNetwork,
-  ChainNamespace,
-  CaipAddress,
   AdapterType,
-  SdkFramework,
+  AppKitNetwork,
   AppKitSdkVersion,
-  AppKitNetwork
+  Balance,
+  CaipAddress,
+  CaipNetwork,
+  CaipNetworkId,
+  ChainNamespace,
+  SdkFramework,
+  Transaction
 } from '@reown/appkit-common'
-import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
+import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
+
 import type { AccountControllerState } from '../controllers/AccountController.js'
+import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
+import type { ReownName } from '../controllers/EnsController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
 import type { ConstantsUtil } from './ConstantsUtil.js'
-import type { ReownName } from '../controllers/EnsController.js'
-import type UniversalProvider from '@walletconnect/universal-provider'
 
 type InitializeAppKitConfigs = {
   showWallets?: boolean

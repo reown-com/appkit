@@ -1,7 +1,8 @@
 import type { ChainAdapter } from '@reown/appkit-core'
-import type { AppKitOptions } from '../../utils/index.js'
-import { mainnet, solana } from '../../networks/index.js'
 import type { SdkVersion } from '@reown/appkit-core'
+
+import { mainnet, solana } from '../../networks/index.js'
+import type { AppKitOptions } from '../../utils/index.js'
 
 export const mockOptions = {
   projectId: 'test-project-id',
