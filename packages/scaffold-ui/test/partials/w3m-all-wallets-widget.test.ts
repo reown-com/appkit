@@ -35,8 +35,9 @@ const mockOptionsState: OptionsControllerState & OptionsControllerStateInternal 
   allWallets: 'SHOW' as const,
   projectId: 'test-project-id',
   sdkVersion: '1.0.0' as SdkVersion,
-  sdkType: 'appkit' as const
-}
+  sdkType: 'appkit' as const,
+  defaultAccountTypes: []
+} as unknown as OptionsControllerState & OptionsControllerStateInternal
 
 const mockConnector: ConnectorWithProviders = {
   id: WALLET_CONNECT_ID,
