@@ -1,13 +1,15 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+
 import type {
   TransactionDirection,
   TransactionImage,
   TransactionStatus
 } from '@reown/appkit-common'
+
+import '../../components/wui-image/index.js'
 import type { TransactionIconType, TransactionType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
-import '../../components/wui-image/index.js'
 import '../wui-icon-box/index.js'
 import styles from './styles.js'
 

@@ -1,7 +1,10 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui-new/src/composites/wui-ens-input'
-import type { WuiEnsInput } from '@reown/appkit-ui-new'
+
 import { html } from 'lit'
+
+import type { WuiEnsInput } from '@reown/appkit-ui-new'
+import '@reown/appkit-ui-new/src/composites/wui-ens-input'
+
 import '../../components/gallery-container'
 
 type Component = Meta<WuiEnsInput>

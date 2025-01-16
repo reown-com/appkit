@@ -1,6 +1,7 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+
 import '../../components/wui-image/index.js'
 import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'

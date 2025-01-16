@@ -1,6 +1,7 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
+
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import type { ColorType, LineClamp, TextAlign, TextType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'

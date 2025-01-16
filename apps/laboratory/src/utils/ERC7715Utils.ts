@@ -1,9 +1,11 @@
-import { abi as donutContractAbi, address as donutContractAddress } from './DonutContract'
-import { encodeAbiParameters, hashMessage, toHex, type Chain } from 'viem'
-import { prepareCalls, sendPreparedCalls, type Call } from './UserOpBuilderServiceUtils'
+import { type Chain, encodeAbiParameters, hashMessage, toHex } from 'viem'
 import { signMessage } from 'viem/accounts'
 import { sign as signWithPasskey } from 'webauthn-p256'
+
 import type { SmartSessionGrantPermissionsRequest } from '@reown/appkit-experimental/smart-session'
+
+import { abi as donutContractAbi, address as donutContractAddress } from './DonutContract'
+import { type Call, prepareCalls, sendPreparedCalls } from './UserOpBuilderServiceUtils'
 
 export type MultikeySigner = {
   type: 'keys'

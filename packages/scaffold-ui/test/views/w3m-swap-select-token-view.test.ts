@@ -1,13 +1,15 @@
-import { expect, html, fixture } from '@open-wc/testing'
-import { describe, it, afterEach, beforeEach, vi } from 'vitest'
-import { W3mSwapSelectTokenView } from '../../src/views/w3m-swap-select-token-view'
+import { expect, fixture, html } from '@open-wc/testing'
+import { afterEach, beforeEach, describe, it, vi } from 'vitest'
+
 import {
-  SwapController,
   RouterController,
-  type SwapTokenWithBalance,
   type RouterControllerState,
-  type SwapControllerState
+  SwapController,
+  type SwapControllerState,
+  type SwapTokenWithBalance
 } from '@reown/appkit-core'
+
+import { W3mSwapSelectTokenView } from '../../src/views/w3m-swap-select-token-view'
 
 const mockToken: SwapTokenWithBalance = {
   address: 'eip155:1:0x123',

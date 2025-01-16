@@ -1,13 +1,15 @@
-import { expect, html, fixture } from '@open-wc/testing'
-import {
-  SendController,
-  RouterController,
-  SwapController,
-  AccountController
-} from '@reown/appkit-core'
-import { W3mWalletSendView } from '../../src/views/w3m-wallet-send-view'
-import { describe, it, afterEach, beforeEach, vi, expect as viExpect } from 'vitest'
+import { expect, fixture, html } from '@open-wc/testing'
+import { afterEach, beforeEach, describe, it, vi, expect as viExpect } from 'vitest'
+
 import type { Balance } from '@reown/appkit-common'
+import {
+  AccountController,
+  RouterController,
+  SendController,
+  SwapController
+} from '@reown/appkit-core'
+
+import { W3mWalletSendView } from '../../src/views/w3m-wallet-send-view'
 
 const mockToken: Balance = {
   address: '0x123',

@@ -1,9 +1,10 @@
-import { getWallets } from '@wallet-standard/app'
-import { WalletStandardProvider } from '../providers/WalletStandardProvider.js'
 import { isWalletAdapterCompatibleStandardWallet } from '@solana/wallet-adapter-base'
+import { getWallets } from '@wallet-standard/app'
 import type { Wallet } from '@wallet-standard/base'
 
 import type { CaipNetwork } from '@reown/appkit-common'
+
+import { WalletStandardProvider } from '../providers/WalletStandardProvider.js'
 
 const { get, on } = getWallets()
 let standardAdapters: WalletStandardProvider[] = []

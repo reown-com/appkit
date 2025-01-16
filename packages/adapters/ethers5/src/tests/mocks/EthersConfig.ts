@@ -1,5 +1,6 @@
-import type { ProviderType } from '@reown/appkit-utils/ethers'
 import { vi } from 'vitest'
+
+import type { ProviderType } from '@reown/appkit-utils/ethers'
 
 export const mockEthersConfig = {
   metadata: {

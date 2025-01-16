@@ -1,16 +1,19 @@
+import { useEffect, useMemo, useState } from 'react'
+
 import type UniversalProvider from '@walletconnect/universal-provider'
-import { useAccount, type Connector } from 'wagmi'
-import { useState, useEffect, useMemo } from 'react'
 import { type Address, type WalletCapabilities } from 'viem'
+import { type Connector, useAccount } from 'wagmi'
 import { type Chain } from 'wagmi/chains'
+
+import { useAppKitAccount } from '@reown/appkit-new/react'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
+
 import {
   EIP_5792_RPC_METHODS,
   EIP_7715_RPC_METHODS,
   getFilteredCapabilitySupportedChainInfo,
   getProviderCachedCapabilities
 } from '../utils/EIP5792Utils'
-import { W3mFrameProvider } from '@reown/appkit-wallet'
-import { useAppKitAccount } from '@reown/appkit-new/react'
 
 type UseWagmiAvailableCapabilitiesParams = {
   capability?: string

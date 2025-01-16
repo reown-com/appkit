@@ -1,19 +1,21 @@
 import { LitElement, html } from 'lit'
-import { customElement } from '@reown/appkit-ui'
 import { property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
   AssetUtil,
   ChainController,
-  ConnectorController,
   type Connector,
+  ConnectorController,
   ModalController
 } from '@reown/appkit-core'
-import type { SocialProvider, Wallet } from '../../utils/TypeUtil.js'
+import { customElement } from '@reown/appkit-ui'
+
 import { ApiController } from '../../controllers/ApiController.js'
-import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
-import { WalletUtil } from '../../utils/WalletUtil.js'
 import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import type { SocialProvider, Wallet } from '../../utils/TypeUtil.js'
+import { WalletUtil } from '../../utils/WalletUtil.js'
 
 @customElement('appkit-wallet-button')
 export class AppKitWalletButton extends LitElement {

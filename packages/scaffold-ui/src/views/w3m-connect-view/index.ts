@@ -1,6 +1,9 @@
-import { MathUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import styles from './styles.js'
+import { property } from 'lit/decorators.js'
+import { state } from 'lit/decorators/state.js'
+import { classMap } from 'lit/directives/class-map.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
   ConnectionController,
   ConnectorController,
@@ -9,11 +12,10 @@ import {
   RouterController,
   type WalletGuideType
 } from '@reown/appkit-core'
-import { state } from 'lit/decorators/state.js'
-import { property } from 'lit/decorators.js'
-import { classMap } from 'lit/directives/class-map.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+import { MathUtil, customElement } from '@reown/appkit-ui'
+
 import { WalletUtil } from '../../utils/WalletUtil.js'
+import styles from './styles.js'
 
 // -- Constants ----------------------------------------- //
 const SCROLL_THRESHOLD = 470

@@ -1,16 +1,18 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
-import { customElement } from '../../utils/WebComponentsUtil.js'
-import { type TransactionType, TransactionTypePastTense } from '../../utils/TypeUtil.js'
-import type {
-  TransactionStatus,
-  TransactionDirection,
-  TransactionImage
-} from '@reown/appkit-common'
-import { resetStyles } from '../../utils/ThemeUtil.js'
-import '../../components/wui-text/index.js'
-import '../wui-transaction-visual/index.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+
+import type {
+  TransactionDirection,
+  TransactionImage,
+  TransactionStatus
+} from '@reown/appkit-common'
+
+import '../../components/wui-text/index.js'
+import { resetStyles } from '../../utils/ThemeUtil.js'
+import { type TransactionType, TransactionTypePastTense } from '../../utils/TypeUtil.js'
+import { customElement } from '../../utils/WebComponentsUtil.js'
+import '../wui-transaction-visual/index.js'
 import styles from './styles.js'
 
 @customElement('wui-transaction-list-item')

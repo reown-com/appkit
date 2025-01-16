@@ -1,6 +1,7 @@
-import { customElement } from '@reown/appkit-ui'
-import { ConstantsUtil } from '@reown/appkit-core'
 import { LitElement, html } from 'lit'
+
+import { ConstantsUtil } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 
 @customElement('w3m-upgrade-wallet-view')
 export class W3mUpgradeWalletView extends LitElement {

@@ -1,22 +1,25 @@
-import { W3mAllWalletsWidget } from '../../src/partials/w3m-all-wallets-widget'
-import { describe, it, expect, vi, beforeAll, afterEach } from 'vitest'
 import { fixture } from '@open-wc/testing'
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
+
+import { html } from 'lit'
+
 import {
   ApiController,
+  type ApiControllerState,
   ConnectorController,
+  type ConnectorControllerState,
+  type ConnectorWithProviders,
   CoreHelperUtil,
   EventsController,
   OptionsController,
-  RouterController,
-  type ConnectorControllerState,
-  type ConnectorWithProviders,
-  type ApiControllerState,
   type OptionsControllerState,
+  RouterController,
   type SdkVersion
 } from '@reown/appkit-core'
-import { html } from 'lit'
-import { HelpersUtil } from '../utils/HelpersUtil'
+
 import type { OptionsControllerStateInternal } from '../../../core/dist/types/src/controllers/OptionsController'
+import { W3mAllWalletsWidget } from '../../src/partials/w3m-all-wallets-widget'
+import { HelpersUtil } from '../utils/HelpersUtil'
 
 // --- Constants ---------------------------------------------------- //
 const ALL_WALLETS_TEST_ID = 'all-wallets'

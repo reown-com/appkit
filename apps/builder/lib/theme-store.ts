@@ -1,8 +1,10 @@
-import { inter } from '@/lib/fonts'
-import { urlStateUtils } from '@/lib/url-state'
+import { proxy } from 'valtio/vanilla'
+
 import { AppKit } from '@reown/appkit'
 import { ThemeVariables } from '@reown/appkit-core'
-import { proxy } from 'valtio/vanilla'
+
+import { inter } from '@/lib/fonts'
+import { urlStateUtils } from '@/lib/url-state'
 
 interface ThemeState {
   mixColorStrength: number
