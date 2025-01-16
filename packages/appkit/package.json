@@ -66,6 +66,11 @@
       "types": "./dist/types/exports/adapters.d.ts",
       "import": "./dist/esm/exports/adapters.js",
       "default": "./dist/esm/exports/adapters.js"
+    },
+    "./connectors": {
+      "types": "./dist/types/exports/connectors.d.ts",
+      "import": "./dist/esm/exports/connectors.js",
+      "default": "./dist/esm/exports/connectors.js"
     }
   },
   "typesVersions": {
