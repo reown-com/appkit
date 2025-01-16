@@ -1,10 +1,13 @@
-import { W3mConnectMultiChainWidget } from '../../src/partials/w3m-connect-multi-chain-widget'
-import { describe, it, expect, vi, afterEach } from 'vitest'
-import { fixture, elementUpdated } from '@open-wc/testing'
+import { elementUpdated, fixture } from '@open-wc/testing'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+
+import { html } from 'lit'
+
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { Connector } from '@reown/appkit-core'
 import { ConnectorController, RouterController } from '@reown/appkit-core'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { html } from 'lit'
+
+import { W3mConnectMultiChainWidget } from '../../src/partials/w3m-connect-multi-chain-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
 // --- Constants ---------------------------------------------------- //
