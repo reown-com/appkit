@@ -1,18 +1,20 @@
+import { LitElement, html } from 'lit'
+import { property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+import { createRef, ref } from 'lit/directives/ref.js'
+import type { Ref } from 'lit/directives/ref.js'
+
+import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil
 } from '@reown/appkit-core'
+import { EventsController, RouterController, SnackController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
-import { ref, createRef } from 'lit/directives/ref.js'
-import type { Ref } from 'lit/directives/ref.js'
+
 import styles from './styles.js'
-import { SnackController, RouterController, EventsController } from '@reown/appkit-core'
-import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-email-login-widget')
 export class W3mEmailLoginWidget extends LitElement {

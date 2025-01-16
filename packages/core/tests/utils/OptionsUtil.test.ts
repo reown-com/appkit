@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest'
-import { OptionsUtil } from '../../src/utils/OptionsUtil'
+import { describe, expect, it } from 'vitest'
+
 import { ConstantsUtil } from '../../src/utils/ConstantsUtil'
+import { OptionsUtil } from '../../src/utils/OptionsUtil'
 import type { Features, FeaturesKeys } from '../../src/utils/TypeUtil'
 
 describe('OptionsUtil', () => {

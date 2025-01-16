@@ -1,8 +1,11 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui-new/src/components/wui-divider'
-import type { WuiDivider } from '@reown/appkit-ui-new/src/components/wui-divider'
+
 import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
+
+import '@reown/appkit-ui-new/src/components/wui-divider'
+import type { WuiDivider } from '@reown/appkit-ui-new/src/components/wui-divider'
+
 import '../../components/gallery-container'
 
 type Component = Meta<WuiDivider>

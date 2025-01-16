@@ -1,8 +1,7 @@
-import { useAppKitTheme } from './config'
-
 import ActionButtonList from './components/ActionButton'
-import InfoList from './components/InfoList'
 import Footer from './components/Footer'
+import InfoList from './components/InfoList'
+import { useAppKitTheme } from './config'
 
 export default function App() {
   const { themeMode } = useAppKitTheme()

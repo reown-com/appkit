@@ -18,12 +18,13 @@ import {
   getAddress,
   numberToHex
 } from 'viem'
+
 import { WcHelpersUtil } from '@reown/appkit'
-import { StorageUtil } from '@reown/appkit-core'
 import type { AppKitOptions } from '@reown/appkit'
 import type { AppKit } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import { StorageUtil } from '@reown/appkit-core'
 
 type UniversalConnector = Connector & {
   onDisplayUri(uri: string): void

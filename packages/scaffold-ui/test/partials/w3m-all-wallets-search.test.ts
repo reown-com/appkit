@@ -1,16 +1,19 @@
-import { W3mAllWalletsSearch } from '../../src/partials/w3m-all-wallets-search'
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { elementUpdated, fixture } from '@open-wc/testing'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { html } from 'lit'
+
 import {
   ApiController,
-  ConnectorController,
-  RouterController,
-  type BadgeType,
-  type WcWallet,
   type ApiControllerState,
-  type ConnectorWithProviders
+  type BadgeType,
+  ConnectorController,
+  type ConnectorWithProviders,
+  RouterController,
+  type WcWallet
 } from '@reown/appkit-core'
+
+import { W3mAllWalletsSearch } from '../../src/partials/w3m-all-wallets-search'
 
 // --- Constants ---------------------------------------------------- //
 const mockWallet: WcWallet = { id: 'test-wallet', name: 'Test Wallet', rdns: 'test.rdns' }

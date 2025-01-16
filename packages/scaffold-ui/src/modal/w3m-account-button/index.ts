@@ -1,4 +1,7 @@
-import { customElement } from '@reown/appkit-ui'
+import { LitElement, html } from 'lit'
+import { property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
   AccountController,
   AssetController,
@@ -8,10 +11,8 @@ import {
   ModalController,
   OptionsController
 } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import type { WuiAccountButton } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 class W3mAccountButtonBase extends LitElement {
   // -- Members ------------------------------------------- //

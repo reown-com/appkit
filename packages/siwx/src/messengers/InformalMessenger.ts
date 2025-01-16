@@ -1,4 +1,5 @@
 import type { SIWXMessage } from '@reown/appkit-core'
+
 import { SIWXMessenger } from '../core/SIWXMessenger.js'
 
 /**

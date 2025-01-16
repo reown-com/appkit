@@ -1,5 +1,7 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+
+import { vars } from '../../utils/ThemeHelperUtil.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import type {
   FlexAlignItemsType,
@@ -14,7 +16,6 @@ import type {
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
-import { vars } from '../../utils/ThemeHelperUtil.js'
 
 @customElement('wui-flex')
 export class WuiFlex extends LitElement {

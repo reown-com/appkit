@@ -1,10 +1,11 @@
-import { html, LitElement } from 'lit'
-import { customElement } from '../../utils/WebComponentsUtil.js'
-import { createRef, ref, type Ref } from 'lit/directives/ref.js'
-import styles from './styles.js'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+import { type Ref, createRef, ref } from 'lit/directives/ref.js'
+
 import { resetStyles } from '../../utils/ThemeUtil.js'
+import { customElement } from '../../utils/WebComponentsUtil.js'
+import styles from './styles.js'
 
 @customElement('wui-checkbox')
 export class WuiCheckBox extends LitElement {

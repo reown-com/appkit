@@ -1,29 +1,33 @@
+import { useEffect, useState } from 'react'
+
+import { AddIcon, DeleteIcon } from '@chakra-ui/icons'
 import {
   Box,
+  Card,
+  CardBody,
   Link,
   Stat,
-  StatLabel,
-  StatNumber,
   StatHelpText,
-  Card,
-  CardBody
+  StatLabel,
+  StatNumber
 } from '@chakra-ui/react'
-import { useState, useEffect } from 'react'
-import { Button, Stack, Text, Spacer, Heading } from '@chakra-ui/react'
-import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+import { Button, Heading, Spacer, Stack, Text } from '@chakra-ui/react'
 import { UniversalProvider } from '@walletconnect/universal-provider'
-import { useChakraToast } from '../Toast'
-import { parseGwei, type Address } from 'viem'
-import { vitalikEthAddress } from '../../utils/DataUtil'
 import { BrowserProvider, type Eip1193Provider } from 'ethers'
+import { type Address, parseGwei } from 'viem'
+
+import { W3mFrameProvider } from '@reown/appkit-wallet'
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+
+import { vitalikEthAddress } from '../../utils/DataUtil'
 import {
   EIP_5792_RPC_METHODS,
   WALLET_CAPABILITIES,
   getCapabilitySupportedChainInfo
 } from '../../utils/EIP5792Utils'
-import { AddIcon, DeleteIcon } from '@chakra-ui/icons'
 import { AddTransactionModal } from '../AddTransactionModal'
-import { W3mFrameProvider } from '@reown/appkit-wallet'
+import { useChakraToast } from '../Toast'
+
 type Provider = W3mFrameProvider | Awaited<ReturnType<(typeof UniversalProvider)['init']>>
 
 export function EthersSendCallsTest({ onCallsHash }: { onCallsHash: (hash: string) => void }) {

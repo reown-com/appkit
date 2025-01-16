@@ -2,10 +2,10 @@
  * Due to some limitations on exporting multiple modules with UMD, we needed to export all of our modules in this file.
  * For now exporting only Wagmi and Solana adapters. Until we found a better workaround and need other adapters, we can keep it this way.
  */
-import '@reown/appkit-polyfills'
 import { createAppKit } from '@reown/appkit'
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import '@reown/appkit-polyfills'
 import * as AppKitNetworks from '@reown/appkit/networks'
 
 // -- Export Wagmi ------------------------------------------- //

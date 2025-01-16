@@ -1,7 +1,7 @@
-import { W3mFrameStorage } from './W3mFrameStorage.js'
-import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
-import type { W3mFrameTypes } from './W3mFrameTypes.js'
 import { RegexUtil } from './RegexUtil.js'
+import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
+import { W3mFrameStorage } from './W3mFrameStorage.js'
+import type { W3mFrameTypes } from './W3mFrameTypes.js'
 
 const EMAIL_MINIMUM_TIMEOUT = 30 * 1000
 

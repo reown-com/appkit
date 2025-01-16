@@ -1,13 +1,15 @@
-import { Button, Stack, Link, Text, Spacer } from '@chakra-ui/react'
+import { useState } from 'react'
+
+import { Button, Link, Spacer, Stack, Text } from '@chakra-ui/react'
+import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers'
+
+import { optimism, sepolia } from '@reown/appkit-new/networks'
 import {
+  type Provider,
   useAppKitAccount,
   useAppKitNetwork,
-  useAppKitProvider,
-  type Provider
+  useAppKitProvider
 } from '@reown/appkit-new/react'
-import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers'
-import { optimism, sepolia } from '@reown/appkit-new/networks'
-import { useState } from 'react'
 
 import { abi, address as donutAddress } from '../../utils/DonutContract'
 import { useChakraToast } from '../Toast'
