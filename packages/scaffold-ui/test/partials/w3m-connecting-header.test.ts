@@ -1,10 +1,13 @@
-import { W3mConnectingHeader } from '../../src/partials/w3m-connecting-header'
-import { describe, it, expect, vi, afterEach } from 'vitest'
 import { elementUpdated, fixture } from '@open-wc/testing'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+
 import { html } from 'lit'
-import { HelpersUtil } from '../utils/HelpersUtil'
-import type { WuiTabs } from '@reown/appkit-ui'
+
 import type { Platform } from '@reown/appkit-core'
+import type { WuiTabs } from '@reown/appkit-ui'
+
+import { W3mConnectingHeader } from '../../src/partials/w3m-connecting-header'
+import { HelpersUtil } from '../utils/HelpersUtil'
 
 // -- Constants ------------------------------------------- //
 const TABS = 'wui-tabs'
