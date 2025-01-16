@@ -1,4 +1,5 @@
 import { svg } from 'lit'
+
 export const solanaSvg = svg`<svg fill="none" viewBox="0 0 80 80">
   <g clip-path="url(#a)">
     <path fill="url(#b)" d="M40 80a40 40 0 1 0 0-80 40 40 0 0 0 0 80Z" />

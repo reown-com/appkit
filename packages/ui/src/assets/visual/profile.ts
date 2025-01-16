@@ -1,4 +1,5 @@
 import { svg } from 'lit'
+
 export const profileSvg = svg`<svg
   viewBox="0 0 60 60"
   fill="none"

@@ -1,14 +1,15 @@
-import { createAppKit } from '@reown/appkit/react'
+import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
+
+import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
-import { ThemeStore } from '../../utils/StoreUtil'
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { DefaultSIWX } from '@reown/appkit-siwx'
+import { mainnet } from '@reown/appkit/networks'
+import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '../../components/AppKitButtons'
-import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
-import { mainnet } from '@reown/appkit/networks'
-import { DefaultSIWX } from '@reown/appkit-siwx'
-import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
+import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { ThemeStore } from '../../utils/StoreUtil'
 
 const networks = ConstantsUtil.AllNetworks
 networks.push(...ConstantsUtil.BitcoinNetworks)

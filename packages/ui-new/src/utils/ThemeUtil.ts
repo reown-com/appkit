@@ -1,6 +1,8 @@
 import { css, unsafeCSS } from 'lit'
+
 import { getW3mThemeVariables } from '@reown/appkit-common'
-import type { ThemeVariables, ThemeType } from '@reown/appkit-common'
+import type { ThemeType, ThemeVariables } from '@reown/appkit-common'
+
 import { ThemeHelperUtil } from './ThemeHelperUtil.js'
 
 // -- Utilities ---------------------------------------------------------------

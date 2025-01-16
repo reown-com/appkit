@@ -1,13 +1,15 @@
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import styles from './styles.js'
-import {
-  RouterController,
-  ConnectorController,
-  SnackController,
-  EventsController
-} from '@reown/appkit-core'
 import { state } from 'lit/decorators.js'
+
+import {
+  ConnectorController,
+  EventsController,
+  RouterController,
+  SnackController
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
+
+import styles from './styles.js'
 
 @customElement('w3m-email-verify-device-view')
 export class W3mEmailVerifyDeviceView extends LitElement {

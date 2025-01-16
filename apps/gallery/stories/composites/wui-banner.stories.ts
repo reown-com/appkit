@@ -1,9 +1,12 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui/src/composites/wui-banner'
 import type { WuiBanner } from '@reown/appkit-ui/src/composites/wui-banner'
-import { html } from 'lit'
-import { iconOptions } from '../../utils/PresetUtils'
+
 import '../../components/gallery-container'
+import { iconOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiBanner>
 

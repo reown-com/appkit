@@ -1,8 +1,9 @@
-import { test, type BrowserContext } from '@playwright/test'
+import { type BrowserContext, test } from '@playwright/test'
+
 import { DEFAULT_CHAIN_NAME } from '../shared/constants'
 import { ModalWalletPage } from '../shared/pages/ModalWalletPage'
-import { ModalWalletValidator } from '../shared/validators/ModalWalletValidator'
 import { Email } from '../shared/utils/email'
+import { ModalWalletValidator } from '../shared/validators/ModalWalletValidator'
 
 /* eslint-disable init-declarations */
 let page: ModalWalletPage

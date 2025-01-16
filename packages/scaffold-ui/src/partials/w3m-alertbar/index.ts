@@ -1,8 +1,10 @@
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
-import styles from './styles.js'
+
 import { AlertController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
+
+import styles from './styles.js'
 
 // -- Helpers ------------------------------------------- //
 const presets = {

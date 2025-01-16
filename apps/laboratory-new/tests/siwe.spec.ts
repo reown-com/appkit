@@ -1,4 +1,5 @@
-import { test, type BrowserContext, type Page } from '@playwright/test'
+import { type BrowserContext, type Page, test } from '@playwright/test'
+
 import { ModalPage } from './shared/pages/ModalPage'
 import { WalletPage } from './shared/pages/WalletPage'
 import { ModalValidator } from './shared/validators/ModalValidator'

@@ -1,13 +1,16 @@
 import * as React from 'react'
+
+import { Box, Card, CardBody, CardHeader, Heading, Stack, StackDivider } from '@chakra-ui/react'
+
 import { useAppKitAccount } from '@reown/appkit/react'
+
+import { EthersGetCallsStatusTest } from './EthersGetCallsStatusTest'
+import { EthersSendCallsTest } from './EthersSendCallsTest'
+import { EthersSendCallsWithPaymasterServiceTest } from './EthersSendCallsWithPaymasterServiceTest'
 import { EthersSignMessageTest } from './EthersSignMessageTest'
 import { EthersSignTypedDataTest } from './EthersSignTypedDataTest'
-import { StackDivider, Card, CardHeader, Heading, CardBody, Box, Stack } from '@chakra-ui/react'
 import { EthersTransactionTest } from './EthersTransactionTest'
 import { EthersWriteContractTest } from './EthersWriteContractTest'
-import { EthersSendCallsTest } from './EthersSendCallsTest'
-import { EthersGetCallsStatusTest } from './EthersGetCallsStatusTest'
-import { EthersSendCallsWithPaymasterServiceTest } from './EthersSendCallsWithPaymasterServiceTest'
 
 export function Ethers5Tests() {
   const [ready, setReady] = React.useState(false)

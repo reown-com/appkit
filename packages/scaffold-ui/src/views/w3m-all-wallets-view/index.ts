@@ -1,13 +1,14 @@
-import {
-  CoreHelperUtil,
-  RouterController,
-  type BadgeType,
-  SnackController
-} from '@reown/appkit-core'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+
+import {
+  type BadgeType,
+  CoreHelperUtil,
+  RouterController,
+  SnackController
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 
 @customElement('w3m-all-wallets-view')
 export class W3mAllWalletsView extends LitElement {

@@ -1,6 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import { expect } from '@playwright/test'
 import type { Page } from '@playwright/test'
+
 import { ModalPage } from './ModalPage'
 
 export class ModalWalletPage extends ModalPage {

@@ -1,6 +1,7 @@
+import QRCodeUtil from 'qrcode'
+
 import type { TemplateResult } from 'lit'
 import { svg } from 'lit'
-import QRCodeUtil from 'qrcode'
 
 type CoordinateMapping = [number, number[]]
 

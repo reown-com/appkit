@@ -1,20 +1,22 @@
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
-import styles from './styles.js'
-import {
-  SwapController,
-  RouterController,
-  CoreHelperUtil,
-  ModalController,
-  type SwapToken,
-  type SwapInputTarget,
-  EventsController,
-  AccountController,
-  ChainController
-} from '@reown/appkit-core'
+
 import { NumberUtil } from '@reown/appkit-common'
+import {
+  AccountController,
+  ChainController,
+  CoreHelperUtil,
+  EventsController,
+  ModalController,
+  RouterController,
+  SwapController,
+  type SwapInputTarget,
+  type SwapToken
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+
+import styles from './styles.js'
 
 @customElement('w3m-swap-view')
 export class W3mSwapView extends LitElement {
