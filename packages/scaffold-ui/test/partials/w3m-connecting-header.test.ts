@@ -51,7 +51,7 @@ describe('W3mConnectingHeader', () => {
     expect((await createComponent(['desktop'])).tabs).toStrictEqual([TAB_VALUES.desktop])
   })
 
-  it.only('it should activate the correct platform tab when clicked', async () => {
+  it('it should activate the correct platform tab when clicked', async () => {
     const TABS: Platform[] = ['mobile', 'browser', 'desktop']
 
     const { element } = await createComponent(TABS)
