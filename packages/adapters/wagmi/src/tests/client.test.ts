@@ -179,9 +179,23 @@ describe('WagmiAdapter', () => {
 
       await (adapter as any).addWagmiConnector(mockConnector)
 
-      const provider = adapter.connectors?.find(c => c.id === mockConnector.id)?.provider
-
-      expect(provider).toBeDefined()
+      expect(adapter.connectors).toStrictEqual([
+        {
+          chain: 'eip155',
+          chains: [],
+          explorerId: undefined,
+          id: 'injected',
+          imageId: '07ba87ed-43aa-4adf-4540-9e6a2b9cae00',
+          imageUrl: undefined,
+          info: undefined,
+          name: 'Browser Wallet',
+          provider: {
+            connect: expect.any(Function),
+            request: expect.any(Function)
+          },
+          type: 'INJECTED'
+        }
+      ])
     })
   })
 
