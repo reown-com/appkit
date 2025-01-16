@@ -1,14 +1,14 @@
-import { describe, it, expect, vi, beforeEach, beforeAll, afterEach } from 'vitest'
 import { fixture } from '@open-wc/testing'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
 import {
+  ChainController,
   ConnectorController,
   type ConnectorWithProviders,
   CoreHelperUtil,
-  OptionsController,
-  ChainController
+  OptionsController
 } from '@reown/appkit-core'
 
 import { W3mConnectView } from '../../src/views/w3m-connect-view/index'
