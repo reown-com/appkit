@@ -1,10 +1,13 @@
-import { W3mAlertBar, presets } from '../../src/partials/w3m-alertbar'
-import { describe, it, expect, vi, beforeAll, afterEach } from 'vitest'
-import { fixture, elementUpdated } from '@open-wc/testing'
-import { AlertController } from '@reown/appkit-core'
+import { elementUpdated, fixture } from '@open-wc/testing'
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
+
 import { html } from 'lit'
-import { HelpersUtil } from '../utils/HelpersUtil'
+
+import { AlertController } from '@reown/appkit-core'
 import type { WuiAlertBar } from '@reown/appkit-ui'
+
+import { W3mAlertBar, presets } from '../../src/partials/w3m-alertbar'
+import { HelpersUtil } from '../utils/HelpersUtil'
 
 // --- Constants ---------------------------------------------------- //
 const ALERBAR = 'wui-alertbar'
