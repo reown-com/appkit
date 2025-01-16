@@ -20,4 +20,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where the `walletProvider` from the `useAppKitProvider` hook was `undefined` when the wallet was connected. This issue occurred only when using the WagmiAdapter.
+Fixed an issue where the `walletProvider` from the `useAppKitProvider` hook was `undefined` when the wallet was connected. This issue occurred only when using wagmi adapter.
