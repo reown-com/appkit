@@ -66,7 +66,10 @@ const mockCaipNetworks = CaipNetworksUtil.extendCaipNetworks(mockNetworks, {
 const mockWagmiConfig = {
   connectors: [
     {
-      id: 'test-connector'
+      id: 'test-connector',
+      getProvider() {
+        return Promise.resolve({ connect: vi.fn(), request: vi.fn() })
+      }
     }
   ],
   _internal: {
@@ -101,10 +104,13 @@ describe('WagmiAdapter', () => {
       expect(adapter.namespace).toBe('eip155')
     })
 
-    it('should set wagmi connectors', () => {
+    it('should set wagmi connectors', async () => {
       vi.spyOn(wagmiCore, 'watchConnectors').mockImplementation(vi.fn())
 
       adapter.syncConnectors({ networks: [mainnet], projectId: 'YOUR_PROJECT_ID' }, mockAppKit)
+
+      // Wait for connectors to be set
+      await new Promise(resolve => setTimeout(resolve, 200))
 
       expect(adapter.connectors).toStrictEqual([
         {
@@ -115,6 +121,10 @@ describe('WagmiAdapter', () => {
           imageId: undefined,
           imageUrl: undefined,
           info: { rdns: 'test-connector' },
+          provider: {
+            connect: expect.any(Function),
+            request: expect.any(Function)
+          },
           name: undefined,
           type: 'EXTERNAL'
         }
@@ -155,6 +165,23 @@ describe('WagmiAdapter', () => {
       expect(adapterWithCustomRpc.wagmiChains?.[0].rpcUrls.default.http[0]).toBe(
         `https://cloudflare-eth.com`
       )
+    })
+
+    it('should add connector with provider', async () => {
+      const mockConnector = {
+        id: 'injected',
+        name: 'Injected Wallet',
+        type: 'injected',
+        getProvider() {
+          return Promise.resolve({ connect: vi.fn(), request: vi.fn() })
+        }
+      } as unknown as wagmiCore.Connector
+
+      await (adapter as any).addWagmiConnector(mockConnector)
+
+      const provider = adapter.connectors?.find(c => c.id === mockConnector.id)?.provider
+
+      expect(provider).toBeDefined()
     })
   })
 

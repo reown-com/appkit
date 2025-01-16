@@ -410,7 +410,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     return formatUnits(params.value, params.decimals)
   }
 
-  private addWagmiConnector(connector: Connector, options: AppKitOptions) {
+  private async addWagmiConnector(connector: Connector, options: AppKitOptions) {
     /*
      * We don't need to set auth connector or walletConnect connector
      * from wagmi since we already set it in chain adapter blueprint
@@ -433,6 +433,7 @@ export class WagmiAdapter extends AdapterBlueprint {
         connector.id === CommonConstantsUtil.CONNECTOR_ID.INJECTED
           ? undefined
           : { rdns: connector.id },
+      provider: (await connector.getProvider().catch(() => undefined)) as Provider | undefined,
       chain: this.namespace as ChainNamespace,
       chains: []
     })
