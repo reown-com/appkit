@@ -2,9 +2,10 @@ import UniversalProvider from '@walletconnect/universal-provider'
 
 import { type RequestArguments, WcHelpersUtil } from '@reown/appkit'
 import type { CaipNetwork } from '@reown/appkit-common'
+import { WalletConnectConnector } from '@reown/appkit/connectors'
 
-import type { BitcoinConnector } from './BitcoinConnector.js'
-import { ProviderEventEmitter } from './ProviderEventEmitter.js'
+import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
+import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 
 export type WalletConnectProviderConfig = {
   provider: UniversalProvider
@@ -12,29 +13,26 @@ export type WalletConnectProviderConfig = {
   getActiveChain: () => CaipNetwork | undefined
 }
 
-export class WalletConnectProvider extends ProviderEventEmitter implements BitcoinConnector {
-  public readonly id = 'WalletConnect'
-  public readonly name = 'WalletConnect'
-  public readonly type = 'WALLET_CONNECT'
-  public readonly chain = 'bip122'
-  public readonly icon =
-    'https://imagedelivery.net/_aTEfDRm7z3tKgu9JhfeKA/05338e12-4f75-4982-4e8a-83c67b826b00/md'
-  public provider: UniversalProvider
-
-  private readonly requestedChains: CaipNetwork[]
+export class BitcoinWalletConnectConnector
+  extends WalletConnectConnector<'bip122'>
+  implements BitcoinConnector
+{
   private readonly getActiveChain: WalletConnectProviderConfig['getActiveChain']
 
+  private eventEmitter = new ProviderEventEmitter()
+  public readonly emit = this.eventEmitter.emit.bind(this.eventEmitter)
+  public readonly on = this.eventEmitter.on.bind(this.eventEmitter)
+  public readonly removeListener = this.eventEmitter.removeListener.bind(this.eventEmitter)
+
   constructor({ provider, chains, getActiveChain }: WalletConnectProviderConfig) {
-    super()
-    this.requestedChains = chains
-    this.provider = provider
+    super({ provider, caipNetworks: chains, namespace: 'bip122' })
     this.getActiveChain = getActiveChain
   }
 
   // -- Public ------------------------------------------- //
-  public get chains() {
+  public override get chains() {
     return this.sessionChains
-      .map(chainId => this.requestedChains.find(chain => chain.caipNetworkId === chainId))
+      .map(chainId => this.caipNetworks.find(chain => chain.caipNetworkId === chainId))
       .filter(Boolean) as CaipNetwork[]
   }
 
@@ -42,10 +40,6 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Bitco
     return Promise.reject(
       new Error('Connection of WalletConnectProvider should be done via UniversalAdapter')
     )
-  }
-
-  public async disconnect() {
-    return this.provider.disconnect()
   }
 
   public async signMessage({ message, address }: BitcoinConnector.SignMessageParams) {
@@ -158,7 +152,7 @@ export class WalletConnectProvider extends ProviderEventEmitter implements Bitco
       throw new Error('Chain not found')
     }
 
-    return this.provider.request<WalletConnectProvider.RequestMethods[Method]['returns']>(
+    return await this.provider.request<WalletConnectProvider.RequestMethods[Method]['returns']>(
       {
         method,
         params

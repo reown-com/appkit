@@ -8,8 +8,17 @@ export function mockUniversalProvider(
   replaces: Partial<UniversalProvider> = {}
 ): UniversalProvider {
   return {
+    connect: vi.fn(),
     disconnect: vi.fn(),
     request: vi.fn(),
+    on: vi.fn(),
+    client: {
+      core: {
+        crypto: {
+          getClientId: vi.fn(() => Promise.resolve('client-id'))
+        }
+      }
+    },
     setDefaultChain: vi.fn(),
     ...replaces
   } as UniversalProvider

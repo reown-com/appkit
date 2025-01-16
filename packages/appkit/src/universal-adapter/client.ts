@@ -10,37 +10,32 @@ import {
 } from '@reown/appkit-core'
 
 import { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
-import { WcHelpersUtil } from '../utils/index.js'
+import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'
 
 export class UniversalAdapter extends AdapterBlueprint {
-  public constructor(options?: AdapterBlueprint.Params) {
-    super(options)
+  public override setUniversalProvider(universalProvider: UniversalProvider): void {
+    this.addConnector(
+      new WalletConnectConnector({
+        provider: universalProvider,
+        caipNetworks: this.caipNetworks || [],
+        namespace: this.namespace as ChainNamespace
+      })
+    )
   }
-  public async connectWalletConnect(onUri: (uri: string) => void) {
-    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
 
-    const provider = connector?.provider as UniversalProvider
-
-    if (!this.caipNetworks || !provider) {
-      throw new Error(
-        'UniversalAdapter:connectWalletConnect - caipNetworks or provider is undefined'
-      )
-    }
-
+  public override async connectWalletConnect(
+    onUri: (uri: string) => void,
+    _chainId?: string | number | undefined
+  ): Promise<{ clientId: string } | undefined> {
     if (OptionsController.state.useInjectedUniversalProvider && ConnectionController.state.wcUri) {
       onUri(ConnectionController.state.wcUri)
 
-      return
+      return undefined
     }
 
-    provider.on('display_uri', (uri: string) => {
-      onUri(uri)
-    })
-
-    const namespaces = WcHelpersUtil.createNamespaces(this.caipNetworks)
-
-    await provider.connect({ optionalNamespaces: namespaces })
+    return super.connectWalletConnect(onUri, _chainId)
   }
+
   public async connect(
     params: AdapterBlueprint.ConnectParams
   ): Promise<AdapterBlueprint.ConnectResult> {
@@ -54,9 +49,12 @@ export class UniversalAdapter extends AdapterBlueprint {
   }
 
   public async disconnect() {
-    const connector = this.connectors.find(c => c.id === 'WALLET_CONNECT')
-    const provider = connector?.provider
-    await provider?.disconnect()
+    try {
+      const connector = this.getWalletConnectConnector()
+      await connector.disconnect()
+    } catch (error) {
+      console.warn('UniversalAdapter:disconnect - error', error)
+    }
   }
 
   public async getAccounts({
@@ -198,13 +196,8 @@ export class UniversalAdapter extends AdapterBlueprint {
   // eslint-disable-next-line @typescript-eslint/require-await
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
     const { caipNetwork } = params
-    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
-    const provider = connector?.provider as UniversalProvider
-
-    if (!provider) {
-      throw new Error('UniversalAdapter:switchNetwork - provider is undefined')
-    }
-    provider.setDefaultChain(caipNetwork.caipNetworkId)
+    const connector = this.getWalletConnectConnector()
+    connector.provider.setDefaultChain(caipNetwork.caipNetworkId)
   }
 
   public getWalletConnectProvider() {
