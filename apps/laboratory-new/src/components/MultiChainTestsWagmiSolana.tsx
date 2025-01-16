@@ -1,9 +1,10 @@
 import * as React from 'react'
+
 import { useAppKitState } from '@reown/appkit-new/react'
 
+import { AppKitNetworkInfo } from './AppKitNetworkInfo'
 import { SolanaTests } from './Solana/SolanaTests'
 import { WagmiTests } from './Wagmi/WagmiTests'
-import { AppKitNetworkInfo } from './AppKitNetworkInfo'
 
 export function MultiChainTestsWagmiSolana() {
   const { activeChain } = useAppKitState()

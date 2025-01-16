@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { OptionsController } from '../../exports/index.js'
 import { ConstantsUtil } from '../../src/utils/ConstantsUtil.js'
 

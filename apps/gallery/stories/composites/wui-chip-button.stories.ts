@@ -1,7 +1,10 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui/src/composites/wui-chip-button'
 import type { WuiChipButton } from '@reown/appkit-ui/src/composites/wui-chip-button'
-import { html } from 'lit'
+
 import { chipButtonVariants, iconOptions, walletImagesOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiChipButton>

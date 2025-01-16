@@ -1,4 +1,4 @@
-import { Noto_Sans, Inter, Domine, EB_Garamond, Bree_Serif, Bellota } from 'next/font/google'
+import { Bellota, Bree_Serif, Domine, EB_Garamond, Inter, Noto_Sans } from 'next/font/google'
 import localFont from 'next/font/local'
 
 export const khTeka = localFont({

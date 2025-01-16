@@ -1,9 +1,11 @@
-import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest'
+import { type Mock, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import type { CaipNetwork } from '@reown/appkit-common'
+import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
+
+import { LeatherConnector } from '../../src/connectors/LeatherConnector'
 import { SatsConnectConnector } from '../../src/connectors/SatsConnectConnector'
 import { mockSatsConnectProvider } from '../mocks/mockSatsConnect'
-import type { CaipNetwork } from '@reown/appkit-common'
-import { LeatherConnector } from '../../src/connectors/LeatherConnector'
-import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 
 describe('LeatherConnector', () => {
   let satsConnectConnector: SatsConnectConnector

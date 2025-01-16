@@ -1,12 +1,14 @@
 import { Button } from '@chakra-ui/react'
-import {
-  useAppKitAccount,
-  useAppKitNetwork,
-  useAppKitProvider,
-  type Provider
-} from '@reown/appkit/react'
 import { ethers } from 'ethers5'
 import type { TypedDataField } from 'ethers5'
+
+import {
+  type Provider,
+  useAppKitAccount,
+  useAppKitNetwork,
+  useAppKitProvider
+} from '@reown/appkit/react'
+
 import { useChakraToast } from '../Toast'
 
 const types: Record<string, TypedDataField[]> = {

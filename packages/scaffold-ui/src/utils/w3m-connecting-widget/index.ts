@@ -1,3 +1,7 @@
+import { LitElement, html } from 'lit'
+import { property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
   AssetUtil,
   ConnectionController,
@@ -7,9 +11,7 @@ import {
   ThemeController
 } from '@reown/appkit-core'
 import type { IconType } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+
 import styles from './styles.js'
 
 export class W3mConnectingWidget extends LitElement {

@@ -1,9 +1,10 @@
-import { announceProvider } from 'mipd'
-import { ConstantsUtil } from './utils/ConstantsUtil'
-import { v4 as uuidv4 } from 'uuid'
 import { registerWallet } from '@wallet-standard/core'
+import { announceProvider } from 'mipd'
+import { v4 as uuidv4 } from 'uuid'
+
 import { EvmProvider } from './core/EvmProvider'
 import { SolanaProvider } from './core/SolanaProvider'
+import { ConstantsUtil } from './utils/ConstantsUtil'
 
 const evmProvider = new EvmProvider()
 const solanaProvider = new SolanaProvider()

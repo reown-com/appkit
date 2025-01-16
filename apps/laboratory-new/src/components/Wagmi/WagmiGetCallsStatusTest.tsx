@@ -1,12 +1,15 @@
-import { Button, Stack, Text, Input } from '@chakra-ui/react'
+import { useCallback, useState } from 'react'
+
+import { Button, Input, Stack, Text } from '@chakra-ui/react'
 import { useAccount } from 'wagmi'
-import { useState, useCallback } from 'react'
-import { useChakraToast } from '../Toast'
-import { EIP_5792_RPC_METHODS } from '../../utils/EIP5792Utils'
-import { bigIntReplacer } from '../../utils/CommonUtils'
 import { useCallsStatus } from 'wagmi/experimental'
-import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
+
 import { useAppKitAccount } from '@reown/appkit-new/react'
+
+import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
+import { bigIntReplacer } from '../../utils/CommonUtils'
+import { EIP_5792_RPC_METHODS } from '../../utils/EIP5792Utils'
+import { useChakraToast } from '../Toast'
 
 export function WagmiGetCallsStatusTest() {
   const { supported } = useWagmiAvailableCapabilities({

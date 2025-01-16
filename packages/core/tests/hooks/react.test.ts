@@ -1,8 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { useAppKitNetworkCore, useAppKitAccount } from '../../exports/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@reown/appkit-common'
+
 import { AccountController, ChainController, ConnectorController } from '../../exports'
+import { useAppKitAccount, useAppKitNetworkCore } from '../../exports/react'
 
 vi.mock('valtio', () => ({
   useSnapshot: vi.fn()

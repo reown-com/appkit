@@ -1,18 +1,19 @@
-import {
-  CoreHelperUtil,
-  AccountController,
-  ConstantsUtil,
-  OnRampController,
-  type OnRampProvider,
-  RouterController,
-  BlockchainApiController,
-  EventsController,
-  ChainController
-} from '@reown/appkit-core'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
+
+import {
+  AccountController,
+  BlockchainApiController,
+  ChainController,
+  ConstantsUtil,
+  CoreHelperUtil,
+  EventsController,
+  OnRampController,
+  type OnRampProvider,
+  RouterController
+} from '@reown/appkit-core'
 import type { CoinbasePaySDKChainNameValues } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 @customElement('w3m-onramp-providers-view')

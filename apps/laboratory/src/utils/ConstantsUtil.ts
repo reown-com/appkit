@@ -1,27 +1,28 @@
-import {
-  arbitrum,
-  mainnet,
-  optimism,
-  polygon,
-  zkSync,
-  sepolia,
-  solana,
-  solanaTestnet,
-  solanaDevnet,
-  base,
-  baseSepolia,
-  gnosis,
-  unichainSepolia,
-  hedera,
-  aurora,
-  mantle,
-  bitcoin,
-  bitcoinTestnet
-} from '@reown/appkit/networks'
-import type { AppKitNetwork } from '@reown/appkit/networks'
-import { getLocalStorageItem } from './LocalStorage'
 import type { CaipNetwork, SocialProvider } from '@reown/appkit'
 import type { Wallet } from '@reown/appkit-wallet-button'
+import {
+  arbitrum,
+  aurora,
+  base,
+  baseSepolia,
+  bitcoin,
+  bitcoinTestnet,
+  gnosis,
+  hedera,
+  mainnet,
+  mantle,
+  optimism,
+  polygon,
+  sepolia,
+  solana,
+  solanaDevnet,
+  solanaTestnet,
+  unichainSepolia,
+  zkSync
+} from '@reown/appkit/networks'
+import type { AppKitNetwork } from '@reown/appkit/networks'
+
+import { getLocalStorageItem } from './LocalStorage'
 
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 if (!projectId) {

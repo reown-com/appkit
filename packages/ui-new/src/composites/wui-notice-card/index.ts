@@ -1,13 +1,14 @@
-import { html, LitElement } from 'lit'
-import '../../layout/wui-flex/index.js'
+import { LitElement, html } from 'lit'
+import { property } from 'lit/decorators.js'
+
 import '../../components/wui-text/index.js'
 import '../../composites/wui-button/index.js'
 import '../../composites/wui-icon-box/index.js'
-import { resetStyles, elementStyles } from '../../utils/ThemeUtil.js'
+import '../../layout/wui-flex/index.js'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import type { IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
-import { property } from 'lit/decorators.js'
-import type { IconType } from '../../utils/TypeUtil.js'
 
 @customElement('wui-notice-card')
 export class WuiNoticeCard extends LitElement {

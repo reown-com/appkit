@@ -1,22 +1,24 @@
-import {
-  AccountController,
-  ModalController,
-  AssetUtil,
-  RouterController,
-  CoreHelperUtil,
-  ConstantsUtil as CoreConstantsUtil,
-  EventsController,
-  OptionsController,
-  ChainController
-} from '@reown/appkit-core'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import styles from './styles.js'
-import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import {
+  AccountController,
+  AssetUtil,
+  ChainController,
+  ConstantsUtil as CoreConstantsUtil,
+  CoreHelperUtil,
+  EventsController,
+  ModalController,
+  OptionsController,
+  RouterController
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+
+import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import styles from './styles.js'
 
 const TABS = 3
 const TABS_PADDING = 48

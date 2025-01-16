@@ -1,18 +1,21 @@
-import { Button, Stack, Text, Spacer, Heading } from '@chakra-ui/react'
-import { useState, useEffect } from 'react'
-import { useAppKitAccount, useAppKitProvider, useAppKitNetwork } from '@reown/appkit-new/react'
+import { useEffect, useState } from 'react'
+
+import { Button, Heading, Spacer, Stack, Text } from '@chakra-ui/react'
 import { UniversalProvider } from '@walletconnect/universal-provider'
-import { useChakraToast } from '../Toast'
-import type { Address } from 'viem'
-import type { Provider as RawProvider } from '@reown/appkit-new'
-import { vitalikEthAddress } from '../../utils/DataUtil'
 import { ethers } from 'ethers5'
+import type { Address } from 'viem'
+
+import type { Provider as RawProvider } from '@reown/appkit-new'
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit-new/react'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
+
+import { vitalikEthAddress } from '../../utils/DataUtil'
 import {
   EIP_5792_RPC_METHODS,
   WALLET_CAPABILITIES,
   getCapabilitySupportedChainInfo
 } from '../../utils/EIP5792Utils'
-import { W3mFrameProvider } from '@reown/appkit-wallet'
+import { useChakraToast } from '../Toast'
 
 type Provider = W3mFrameProvider | Awaited<ReturnType<(typeof UniversalProvider)['init']>>
 

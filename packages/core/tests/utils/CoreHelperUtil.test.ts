@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest'
+
 import { CoreHelperUtil } from '../../src/utils/CoreHelperUtil.js'
 
 // -- Tests --------------------------------------------------------------------
