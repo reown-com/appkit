@@ -1,7 +1,8 @@
-import { html, LitElement } from 'lit'
-import { customElement } from '../../utils/WebComponentsUtil.js'
-import { resetStyles } from '../../utils/ThemeUtil.js'
+import { LitElement, html } from 'lit'
+
 import '../../components/wui-text/index.js'
+import { resetStyles } from '../../utils/ThemeUtil.js'
+import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-transaction-visual/index.js'
 import styles from './styles.js'
 

@@ -1,23 +1,25 @@
+import { useEffect, useState } from 'react'
+import { IoSettingsOutline } from 'react-icons/io5'
+
+import { DownloadIcon } from '@chakra-ui/icons'
 import {
-  Image,
-  Stack,
-  HStack,
   Button,
-  Spacer,
   Link as CLink,
-  useDisclosure,
+  HStack,
+  Image,
+  Spacer,
+  Stack,
+  Text,
   useColorMode,
-  Text
+  useDisclosure
 } from '@chakra-ui/react'
 import Link from 'next/link'
-import { IoSettingsOutline } from 'react-icons/io5'
-import { OptionsDrawer } from './OptionsDrawer'
-import { CustomWallet } from './CustomWallet'
-import { DownloadIcon } from '@chakra-ui/icons'
-import { useChakraToast } from '../components/Toast'
-import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+
+import { useChakraToast } from '../components/Toast'
 import { DOCS_URL, GALLERY_URL, REPO_URL } from '../utils/ConstantsUtil'
+import { CustomWallet } from './CustomWallet'
+import { OptionsDrawer } from './OptionsDrawer'
 
 function downloadLogs(toast: ReturnType<typeof useChakraToast>) {
   type WindowWithLogs = typeof Window & {

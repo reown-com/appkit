@@ -1,10 +1,13 @@
 import * as React from 'react'
+
 import { Button } from '@chakra-ui/react'
+import { type Address } from 'viem'
 import { useSignMessage } from 'wagmi'
+
+import { useAppKitAccount } from '@reown/appkit-new/react'
+
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'
-import { useAppKitAccount } from '@reown/appkit-new/react'
-import { type Address } from 'viem'
 
 export function WagmiSignMessageTest() {
   const toast = useChakraToast()

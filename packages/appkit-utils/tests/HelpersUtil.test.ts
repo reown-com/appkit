@@ -1,7 +1,9 @@
-import { describe, it, expect } from 'vitest'
-import { HelpersUtil } from '../src/HelpersUtil.js'
-import { ConstantsUtil } from '../src/ConstantsUtil.js'
+import { describe, expect, it } from 'vitest'
+
 import type { Tokens } from '@reown/appkit-core'
+
+import { ConstantsUtil } from '../src/ConstantsUtil.js'
+import { HelpersUtil } from '../src/HelpersUtil.js'
 
 describe('HelpersUtil', () => {
   describe('getCaipTokens', () => {

@@ -1,11 +1,14 @@
-import { Button, Stack, Link, Text, Spacer, Input } from '@chakra-ui/react'
-import { useAccount, type Config } from 'wagmi'
 import { useState } from 'react'
-import { arbitrum, base, optimism, sepolia } from '@reown/appkit/networks'
-import { useChakraToast } from '../Toast'
-import { erc20Abi, type Chain, type Hex } from 'viem'
+
+import { Button, Input, Link, Spacer, Stack, Text } from '@chakra-ui/react'
+import { type Chain, type Hex, erc20Abi } from 'viem'
+import { type Config, useAccount } from 'wagmi'
 import { getWalletClient } from 'wagmi/actions'
+
+import { arbitrum, base, optimism, sepolia } from '@reown/appkit/networks'
+
 import { ErrorUtil } from '../../utils/ErrorUtil'
+import { useChakraToast } from '../Toast'
 
 const ALLOWED_CHAINS = [sepolia, optimism, base, arbitrum]
 const ALLOWED_CHAINIDS = ALLOWED_CHAINS.map(chain => chain.id) as number[]

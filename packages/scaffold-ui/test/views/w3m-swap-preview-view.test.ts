@@ -1,16 +1,18 @@
-import { expect as expectChai, html, fixture } from '@open-wc/testing'
-import { describe, it, afterEach, beforeEach, vi, expect } from 'vitest'
-import { W3mSwapPreviewView } from '../../exports'
+import { expect as expectChai, fixture, html } from '@open-wc/testing'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import {
-  SwapController,
-  RouterController,
   AccountController,
+  type AccountControllerState,
   ChainController,
-  type SwapTokenWithBalance,
-  type SwapControllerState,
   type ChainControllerState,
-  type AccountControllerState
+  RouterController,
+  SwapController,
+  type SwapControllerState,
+  type SwapTokenWithBalance
 } from '@reown/appkit-core'
+
+import { W3mSwapPreviewView } from '../../exports'
 
 const mockToken: SwapTokenWithBalance = {
   address: 'eip155:1:0x123',

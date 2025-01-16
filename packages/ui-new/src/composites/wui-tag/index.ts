@@ -1,9 +1,10 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
-import '../../components/wui-text/index.js'
+
 import '../../components/wui-icon/index.js'
+import '../../components/wui-text/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { TagVariant, TagSize, IconType } from '../../utils/TypeUtil.js'
+import type { IconType, TagSize, TagVariant } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 

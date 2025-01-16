@@ -1,17 +1,18 @@
-import { expect, html, fixture } from '@open-wc/testing'
+import { expect, fixture, html } from '@open-wc/testing'
+import { afterEach, describe, it, vi } from 'vitest'
 
+import type { CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
-  OptionsController,
   ModalController,
+  OptionsController,
   RouterController
 } from '@reown/appkit-core'
-import { W3mAccountButton } from '../../src/modal/w3m-account-button'
-import { describe, it, afterEach, vi } from 'vitest'
-import type { CaipNetwork } from '@reown/appkit-common'
-import { HelpersUtil } from '../utils/HelpersUtil'
 import type { WuiAccountButton } from '@reown/appkit-ui'
+
+import { W3mAccountButton } from '../../src/modal/w3m-account-button'
+import { HelpersUtil } from '../utils/HelpersUtil'
 
 // -- Constants -------------------------------------------------- //
 const ACCOUNT_BUTTON_TEST_ID = 'account-button'

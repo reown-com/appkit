@@ -1,18 +1,20 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
-import { solana } from '@reown/appkit/networks'
-import type { ConnectorType, Provider as CoreProvider } from '@reown/appkit-core'
 import UniversalProvider from '@walletconnect/universal-provider'
-import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import type { ConnectorType, Provider as CoreProvider } from '@reown/appkit-core'
+import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
+import { type Provider } from '@reown/appkit-utils/solana'
+import { solana } from '@reown/appkit/networks'
+
 import { SolanaAdapter } from '../client'
-import { SolStoreUtil } from '../utils/SolanaStoreUtil'
+import { AuthProvider } from '../providers/AuthProvider'
 import type { WalletStandardProvider } from '../providers/WalletStandardProvider'
+import { SolStoreUtil } from '../utils/SolanaStoreUtil'
 import { watchStandard } from '../utils/watchStandard'
 import mockAppKit from './mocks/AppKit'
-import { mockCoinbaseWallet } from './mocks/CoinbaseWallet'
-import { type Provider } from '@reown/appkit-utils/solana'
-import { AuthProvider } from '../providers/AuthProvider'
 import { mockAuthConnector } from './mocks/AuthConnector'
+import { mockCoinbaseWallet } from './mocks/CoinbaseWallet'
 
 // Mock external dependencies
 vi.mock('@solana/web3.js', () => ({

@@ -1,14 +1,16 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { Ethers5Adapter } from '../client'
-import { CaipNetworksUtil } from '@reown/appkit-utils'
-import type { Provider } from '@reown/appkit-core'
-import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import UniversalProvider from '@walletconnect/universal-provider'
 import { providers } from 'ethers'
-import { mainnet, polygon } from '@reown/appkit/networks'
-import { Ethers5Methods } from '../utils/Ethers5Methods'
-import { ProviderUtil } from '@reown/appkit/store'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { Emitter } from '@reown/appkit-common'
+import type { Provider } from '@reown/appkit-core'
+import { CaipNetworksUtil } from '@reown/appkit-utils'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
+import { mainnet, polygon } from '@reown/appkit/networks'
+import { ProviderUtil } from '@reown/appkit/store'
+
+import { Ethers5Adapter } from '../client'
+import { Ethers5Methods } from '../utils/Ethers5Methods'
 
 // Mock external dependencies
 vi.mock('ethers', async importOriginal => {

@@ -1,7 +1,6 @@
 /* eslint no-console: 0 */
-
 import { ModalPage } from '../pages/ModalPage'
-import { timeStart, timeEnd } from '../utils/logs'
+import { timeEnd, timeStart } from '../utils/logs'
 import { ModalValidator } from '../validators/ModalValidator'
 import { timingFixture } from './timing-fixture'
 

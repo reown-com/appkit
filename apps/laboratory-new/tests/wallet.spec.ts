@@ -1,11 +1,13 @@
-import { test, type BrowserContext } from '@playwright/test'
-import { DEFAULT_CHAIN_NAME } from './shared/constants'
-import { WalletPage } from './shared/pages/WalletPage'
-import { WalletValidator } from './shared/validators/WalletValidator'
-import { ModalPage } from './shared/pages/ModalPage'
-import { ModalValidator } from './shared/validators/ModalValidator'
-import { mainnet, polygon, solana, solanaTestnet } from '@reown/appkit-new/networks'
+import { type BrowserContext, test } from '@playwright/test'
+
 import type { CaipNetworkId } from '@reown/appkit-new'
+import { mainnet, polygon, solana, solanaTestnet } from '@reown/appkit-new/networks'
+
+import { DEFAULT_CHAIN_NAME } from './shared/constants'
+import { ModalPage } from './shared/pages/ModalPage'
+import { WalletPage } from './shared/pages/WalletPage'
+import { ModalValidator } from './shared/validators/ModalValidator'
+import { WalletValidator } from './shared/validators/WalletValidator'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage

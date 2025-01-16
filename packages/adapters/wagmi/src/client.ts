@@ -1,63 +1,64 @@
-import type UniversalProvider from '@walletconnect/universal-provider'
-import type { AppKitNetwork, BaseNetwork, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
-import { AdapterBlueprint } from '@reown/appkit/adapters'
-import { CoreHelperUtil } from '@reown/appkit-core'
-import {
-  connect,
-  disconnect as wagmiDisconnect,
-  createConfig,
-  type Config,
-  type CreateConfigParameters,
-  type CreateConnectorFn,
-  getConnections,
-  switchChain,
-  injected,
-  type Connector,
-  watchAccount,
-  watchConnections,
-  getBalance,
-  getEnsName,
-  getEnsAvatar,
-  signMessage,
-  estimateGas as wagmiEstimateGas,
-  sendTransaction as wagmiSendTransaction,
-  getEnsAddress as wagmiGetEnsAddress,
-  writeContract as wagmiWriteContract,
-  waitForTransactionReceipt,
-  getAccount,
-  prepareTransactionRequest,
-  reconnect,
-  watchPendingTransactions,
-  watchConnectors
-} from '@wagmi/core'
-import { type Chain } from '@wagmi/core/chains'
-
-import {
-  ConstantsUtil as CommonConstantsUtil,
-  isReownName,
-  NetworkUtil
-} from '@reown/appkit-common'
-import { authConnector } from './connectors/AuthConnector.js'
-import { AppKit, WcHelpersUtil, type AppKitOptions } from '@reown/appkit'
-import { walletConnect } from './connectors/UniversalConnector.js'
 import { coinbaseWallet } from '@wagmi/connectors'
 import {
-  ConstantsUtil as CoreConstantsUtil,
+  type Config,
+  type Connector,
+  type CreateConfigParameters,
+  type CreateConnectorFn,
+  connect,
+  createConfig,
+  getAccount,
+  getBalance,
+  getConnections,
+  getEnsAvatar,
+  getEnsName,
+  injected,
+  prepareTransactionRequest,
+  reconnect,
+  signMessage,
+  switchChain,
+  disconnect as wagmiDisconnect,
+  estimateGas as wagmiEstimateGas,
+  getEnsAddress as wagmiGetEnsAddress,
+  sendTransaction as wagmiSendTransaction,
+  writeContract as wagmiWriteContract,
+  waitForTransactionReceipt,
+  watchAccount,
+  watchConnections,
+  watchConnectors,
+  watchPendingTransactions
+} from '@wagmi/core'
+import { type Chain } from '@wagmi/core/chains'
+import type UniversalProvider from '@walletconnect/universal-provider'
+import {
+  type GetEnsAddressReturnType,
+  type Hex,
+  type HttpTransport,
+  formatUnits,
+  parseUnits
+} from 'viem'
+import { normalize } from 'viem/ens'
+
+import { AppKit, type AppKitOptions, WcHelpersUtil } from '@reown/appkit'
+import type { AppKitNetwork, BaseNetwork, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import {
+  ConstantsUtil as CommonConstantsUtil,
+  NetworkUtil,
+  isReownName
+} from '@reown/appkit-common'
+import { CoreHelperUtil } from '@reown/appkit-core'
+import {
   type ConnectorType,
+  ConstantsUtil as CoreConstantsUtil,
   type Provider
 } from '@reown/appkit-core'
 import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
-import {
-  formatUnits,
-  parseUnits,
-  type GetEnsAddressReturnType,
-  type Hex,
-  type HttpTransport
-} from 'viem'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
-import { normalize } from 'viem/ens'
-import { parseWalletCapabilities } from './utils/helpers.js'
+import { AdapterBlueprint } from '@reown/appkit/adapters'
+
+import { authConnector } from './connectors/AuthConnector.js'
+import { walletConnect } from './connectors/UniversalConnector.js'
 import { LimitterUtil } from './utils/LimitterUtil.js'
+import { parseWalletCapabilities } from './utils/helpers.js'
 
 interface PendingTransactionsFilter {
   enable: boolean

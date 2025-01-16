@@ -1,9 +1,9 @@
 import {
-  ConstantsUtil,
   type CaipNetworkId,
+  ConstantsUtil,
   SafeLocalStorage,
-  SafeLocalStorageKeys,
-  type SafeLocalStorageItems
+  type SafeLocalStorageItems,
+  SafeLocalStorageKeys
 } from '@reown/appkit-common'
 import {
   AccountController,
@@ -14,6 +14,7 @@ import {
   type SIWXMessage,
   type SIWXSession
 } from '@reown/appkit-core'
+
 import type { SIWXMessenger } from '../core/SIWXMessenger.js'
 import { InformalMessenger } from '../index.js'
 

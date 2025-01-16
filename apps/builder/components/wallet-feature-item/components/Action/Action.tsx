@@ -1,4 +1,5 @@
-import React, { forwardRef, CSSProperties } from 'react'
+import React, { CSSProperties, forwardRef } from 'react'
+
 import classNames from 'classnames'
 
 export interface Props extends React.HTMLAttributes<HTMLButtonElement> {
