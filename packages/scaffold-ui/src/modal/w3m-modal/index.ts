@@ -68,6 +68,10 @@ export class W3mModal extends LitElement {
 
       this.onNewAddress(this.caipAddress)
     }
+
+    if (this.open) {
+      this.onOpen()
+    }
   }
 
   public override disconnectedCallback() {
@@ -200,34 +204,43 @@ export class W3mModal extends LitElement {
   }
 
   private async onNewAddress(caipAddress?: CaipAddress) {
+    const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
     const nextConnected = CoreHelperUtil.getPlainAddress(caipAddress)
 
     this.caipAddress = caipAddress
 
     await SIWXUtil.initializeIfEnabled()
 
-    if (!nextConnected || this.enableEmbedded) {
+    const shouldClose = (!nextConnected && !isSwitchingNamespace) || this.enableEmbedded
+
+    if (shouldClose) {
       ModalController.close()
     }
+
+    ChainController.setIsSwitchingNamespace(false)
   }
 
   private onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {
     ApiController.prefetch()
+
     if (!this.caipAddress) {
       this.caipNetwork = nextCaipNetwork
-      RouterController.goBack()
 
       return
     }
 
     const prevCaipNetworkId = this.caipNetwork?.caipNetworkId?.toString()
     const nextNetworkId = nextCaipNetwork?.caipNetworkId?.toString()
+    const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
+    const isUnsupportedNetworkScreen = RouterController.state.view === 'UnsupportedChain'
 
     if (
-      prevCaipNetworkId &&
-      nextNetworkId &&
-      prevCaipNetworkId !== nextNetworkId &&
-      this.caipNetwork?.name !== 'Unknown Network'
+      isUnsupportedNetworkScreen ||
+      (prevCaipNetworkId &&
+        nextNetworkId &&
+        prevCaipNetworkId !== nextNetworkId &&
+        this.caipNetwork?.name !== 'Unknown Network' &&
+        !isSwitchingNamespace)
     ) {
       RouterController.goBack()
     }

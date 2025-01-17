@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import { ChainController, ModalController, RouterController } from '@reown/appkit-core'
+import { ChainController, RouterController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'
@@ -82,16 +82,15 @@ export class W3mSwitchActiveChainView extends LitElement {
       return
     }
 
+    ChainController.setIsSwitchingNamespace(true)
+
     if (this.caipNetwork) {
       await ChainController.switchActiveNetwork(this.caipNetwork)
     } else {
       ChainController.setActiveNamespace(this.switchToChain)
     }
 
-    ModalController.close()
-    ModalController.open({
-      view: 'Connect'
-    })
+    RouterController.reset('Connect')
   }
 }
 
