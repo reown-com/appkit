@@ -93,7 +93,6 @@ export class W3mAccountDefaultWidget extends LitElement {
       return null
     }
 
-    console.log('>> Should use multi account', this.allAccounts, ChainController.state.activeChain)
     const shouldShowMultiAccount =
       ChainController.state.activeChain !== ConstantsUtil.CHAIN.SOLANA &&
       this.allAccounts.length > 1
@@ -177,19 +176,30 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private activityTemplate() {
-    const isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
+    if (!this.namespace) {
+      return null
+    }
 
-    return html` <wui-list-item
-      iconVariant="blue"
-      icon="clock"
-      iconSize="sm"
-      ?chevron=${!isSolana}
-      ?disabled=${isSolana}
-      @click=${this.onTransactions.bind(this)}
-    >
-      <wui-text variant="paragraph-500" color="fg-100" ?disabled=${isSolana}> Activity </wui-text>
-      ${isSolana ? html`<wui-tag variant="main">Coming soon</wui-tag>` : ''}
-    </wui-list-item>`
+    const isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
+    const isEnabled =
+      this.features?.history &&
+      CoreConstantsUtil.ACTIVITY_ENABLED_CHAIN_NAMESPACES.includes(this.namespace)
+
+    return isEnabled
+      ? html` <wui-list-item
+          iconVariant="blue"
+          icon="clock"
+          iconSize="sm"
+          ?chevron=${!isSolana}
+          ?disabled=${isSolana}
+          @click=${this.onTransactions.bind(this)}
+        >
+          <wui-text variant="paragraph-500" color="fg-100" ?disabled=${isSolana}>
+            Activity
+          </wui-text>
+          ${isSolana ? html`<wui-tag variant="main">Coming soon</wui-tag>` : ''}
+        </wui-list-item>`
+      : null
   }
 
   private swapsTemplate() {
