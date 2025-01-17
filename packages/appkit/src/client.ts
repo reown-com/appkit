@@ -926,8 +926,10 @@ export class AppKit {
           info,
           type,
           provider,
-          chainId: this.getCaipNetwork()?.id,
-          rpcUrl: this.getCaipNetwork()?.rpcUrls?.default?.http?.[0]
+          chainId: caipNetwork?.id || this.getCaipNetwork()?.id,
+          rpcUrl:
+            caipNetwork?.rpcUrls?.default?.http?.[0] ||
+            this.getCaipNetwork()?.rpcUrls?.default?.http?.[0]
         })
 
         if (!res) {
