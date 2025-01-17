@@ -52,7 +52,7 @@ on:
 jobs:
   ui_tests:
     name: 'Playwright Tests'
-    runs-on: [self-hosted, aws-ecs-16cpu-64mem-30m, ubuntu-runners]
+    runs-on: [self-hosted, ubuntu-runners]
     strategy:
       fail-fast: false
       matrix:
