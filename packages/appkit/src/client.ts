@@ -787,22 +787,8 @@ export class AppKit {
     const namespace = this.getActiveChainNamespace()
 
     if (namespace) {
-      ChainController.setActiveCaipNetwork({
-        id: chainId,
-        caipNetworkId: `${namespace}:${chainId}`,
-        name: 'Unknown Network',
-        chainNamespace: namespace,
-        nativeCurrency: {
-          name: '',
-          decimals: 0,
-          symbol: ''
-        },
-        rpcUrls: {
-          default: {
-            http: []
-          }
-        }
-      })
+      const unsupportedNetwork = this.getUnsupportedNetwork(`${namespace}:${chainId}`)
+      ChainController.setActiveCaipNetwork(unsupportedNetwork)
     }
   }
 
@@ -1552,7 +1538,11 @@ export class AppKit {
 
     const { chainId: activeChainId } = StorageUtil.getActiveNetworkProps()
     const chainIdToUse = chainId || activeChainId
-
+    const isUnsupportedNetwork = ChainController.state.activeCaipNetwork?.name === 'Unknown Network'
+    const shouldSupportAllNetworks = ChainController.getNetworkProp(
+      'supportsAllNetworks',
+      chainNamespace
+    )
     // Only update state when needed
     if (!HelpersUtil.isLowerCaseMatch(address, AccountController.state.address)) {
       this.setCaipAddress(`${chainNamespace}:${chainId}:${address}`, chainNamespace)
@@ -1561,14 +1551,15 @@ export class AppKit {
 
     this.setStatus('connected', chainNamespace)
 
+    if (isUnsupportedNetwork && !shouldSupportAllNetworks) {
+      return
+    }
+
     if (chainIdToUse) {
       let caipNetwork = this.caipNetworks?.find(n => n.id.toString() === chainIdToUse.toString())
       let fallbackCaipNetwork = this.caipNetworks?.find(n => n.chainNamespace === chainNamespace)
-      const shouldSupportAllNetworks = ChainController.getNetworkProp(
-        'supportsAllNetworks',
-        chainNamespace
-      )
 
+      // If doesn't support all networks, we need to use approved networks
       if (!shouldSupportAllNetworks) {
         // Connection can be requested for a chain that is not supported by the wallet so we need to use approved networks here
         const caipNetworkIds = this.getApprovedCaipNetworkIds() || []
@@ -1748,6 +1739,7 @@ export class AppKit {
     const adapter = this.getAdapter(namespace)
     const connectorId = StorageUtil.getConnectedConnectorId(namespace)
     const caipNetwork = this.getCaipNetwork()
+
     try {
       if (!adapter || !connectorId) {
         throw new Error(`Adapter or connectorId not found for namespace ${namespace}`)
@@ -2022,16 +2014,39 @@ export class AppKit {
     )
   }
 
+  private getUnsupportedNetwork(caipNetworkId: CaipNetworkId) {
+    return {
+      id: caipNetworkId.split(':')[1],
+      caipNetworkId,
+      name: 'Unknown Network',
+      chainNamespace: caipNetworkId.split(':')[0],
+      nativeCurrency: {
+        name: '',
+        decimals: 0,
+        symbol: ''
+      },
+      rpcUrls: {
+        default: {
+          http: []
+        }
+      }
+    } as CaipNetwork
+  }
+
   private getDefaultNetwork() {
-    const previousNetwork = StorageUtil.getActiveCaipNetworkId()
-    const caipNetwork =
-      previousNetwork && this.caipNetworks?.length
-        ? this.caipNetworks.find(n => n.caipNetworkId === previousNetwork)
-        : undefined
+    const caipNetworkId = StorageUtil.getActiveCaipNetworkId()
 
-    const network = caipNetwork || this.defaultCaipNetwork || this.caipNetworks?.[0]
+    if (caipNetworkId) {
+      const caipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
 
-    return network
+      if (caipNetwork) {
+        return caipNetwork
+      }
+
+      return this.getUnsupportedNetwork(caipNetworkId)
+    }
+
+    return this.caipNetworks?.[0]
   }
 
   private async injectModalUi() {
