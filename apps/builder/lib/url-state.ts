@@ -7,7 +7,7 @@ import {
   WalletFeature
 } from '@reown/appkit-core'
 
-import { defaultCustomizationConfig } from '@/lib/config'
+import { defaultCustomizationConfig } from '@/lib/defaultConfig'
 
 export type URLState = {
   features: Features
