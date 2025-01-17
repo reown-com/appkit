@@ -52,8 +52,7 @@ on:
 jobs:
   ui_tests:
     name: 'Playwright Tests'
-    runs-on:
-      group: ubuntu-runners
+    runs-on: [self-hosted]
     strategy:
       fail-fast: false
       matrix:
