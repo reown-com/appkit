@@ -5,7 +5,6 @@ import {
   type AppKitNetwork,
   type Balance,
   type CaipNetwork,
-  type CaipNetworkId,
   type ChainNamespace,
   Emitter,
   NetworkUtil,
