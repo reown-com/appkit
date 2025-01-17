@@ -1034,7 +1034,7 @@ describe('Base', () => {
     })
   })
   describe('syncExistingConnection', () => {
-    it.only('should set status to "connecting" and sync the connection when a connector and namespace are present', async () => {
+    it('should set status to "connecting" and sync the connection when a connector and namespace are present', async () => {
       vi.spyOn(AccountController, 'state', 'get').mockReturnValueOnce({
         currentTab: 0,
         addressLabels: new Map(),
