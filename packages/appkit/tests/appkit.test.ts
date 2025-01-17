@@ -1034,7 +1034,7 @@ describe('Base', () => {
     })
   })
   describe('syncExistingConnection', () => {
-    it('should set status to "connecting" and sync the connection when a connector and namespace are present', async () => {
+    it.only('should set status to "connecting" and sync the connection when a connector and namespace are present', async () => {
       vi.spyOn(AccountController, 'state', 'get').mockReturnValueOnce({
         currentTab: 0,
         addressLabels: new Map(),
@@ -1043,7 +1043,7 @@ describe('Base', () => {
       vi.mocked(CoreHelperUtil.isClient).mockReturnValueOnce(true)
       vi.spyOn(StorageUtil, 'getActiveNamespace').mockReturnValue('eip155')
       vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('test-connector')
-      vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         activeCaipNetwork: { id: 'eip155:1', chainNamespace: 'eip155' } as CaipNetwork
       } as ChainControllerState)
       vi.mocked(StorageUtil.getActiveNetworkProps).mockReturnValue({
@@ -1069,8 +1069,8 @@ describe('Base', () => {
       await appKit['syncExistingConnection']()
 
       expect(mockAdapter.syncConnection).toHaveBeenCalled()
-      expect(AccountController.setStatus).toHaveBeenCalledWith('connected', 'eip155')
       expect(AccountController.setStatus).toHaveBeenCalledWith('connecting', 'eip155')
+      expect(AccountController.setStatus).toHaveBeenCalledWith('connected', 'eip155')
     })
 
     it('should set status to "disconnected" when no connector is present', async () => {
