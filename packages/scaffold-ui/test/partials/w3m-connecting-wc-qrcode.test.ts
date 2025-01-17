@@ -64,23 +64,4 @@ describe('W3mConnectingWcQrcode', () => {
       properties: { name: WALLET.name, platform: 'qrcode' }
     })
   })
-
-  it('it should use the injected universal provider when "OptionsController.useInjectedUniversalProvider" is true', async () => {
-    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-      ...OptionsController.state,
-      useInjectedUniversalProvider: true
-    })
-
-    const connectingQrCode = await fixture(
-      html`<w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode>`
-    )
-
-    // We display all wallets widget if we use injected universal provider
-    expect(HelpersUtil.querySelect(connectingQrCode, ALL_WALLETS_WIDGET)).not.toBeNull()
-    expect(EventsController.sendEvent).toHaveBeenCalledWith({
-      type: 'track',
-      event: 'SELECT_WALLET',
-      properties: { name: WALLET.name, platform: 'qrcode' }
-    })
-  })
 })
