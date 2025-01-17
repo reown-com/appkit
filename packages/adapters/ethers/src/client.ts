@@ -1,22 +1,26 @@
-import { AdapterBlueprint } from '@reown/appkit/adapters'
+import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
+import UniversalProvider from '@walletconnect/universal-provider'
+import { InfuraProvider, JsonRpcProvider, formatEther } from 'ethers'
+
+import { type AppKitOptions, WcConstantsUtil } from '@reown/appkit'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   type CombinedProvider,
   type Connector,
   type ConnectorType,
-  type Provider,
-  CoreHelperUtil
+  CoreHelperUtil,
+  OptionsController,
+  type Provider
 } from '@reown/appkit-core'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
-import { WcConstantsUtil, WcHelpersUtil, type AppKitOptions } from '@reown/appkit'
-import UniversalProvider from '@walletconnect/universal-provider'
-import { formatEther, InfuraProvider, JsonRpcProvider } from 'ethers'
-import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
-import { EthersMethods } from './utils/EthersMethods.js'
+import { AdapterBlueprint } from '@reown/appkit/adapters'
+import { WalletConnectConnector } from '@reown/appkit/connectors'
 import { ProviderUtil } from '@reown/appkit/store'
+
+import { EthersMethods } from './utils/EthersMethods.js'
 
 export interface EIP6963ProviderDetail {
   info: Connector['info']
@@ -276,24 +280,14 @@ export class EthersAdapter extends AdapterBlueprint {
     })
   }
 
-  public async connectWalletConnect(onUri: (uri: string) => void) {
-    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
-
-    const provider = connector?.provider as UniversalProvider
-
-    if (!this.caipNetworks || !provider) {
-      throw new Error(
-        'UniversalAdapter:connectWalletConnect - caipNetworks or provider is undefined'
-      )
-    }
-
-    provider.on('display_uri', (uri: string) => {
-      onUri(uri)
-    })
-
-    const namespaces = WcHelpersUtil.createNamespaces(this.caipNetworks)
-
-    await provider.connect({ optionalNamespaces: namespaces })
+  public override setUniversalProvider(universalProvider: UniversalProvider): void {
+    this.addConnector(
+      new WalletConnectConnector({
+        provider: universalProvider,
+        caipNetworks: this.caipNetworks || [],
+        namespace: 'eip155'
+      })
+    )
   }
 
   private eip6963EventHandler(event: CustomEventInit<EIP6963ProviderDetail>) {
@@ -336,6 +330,7 @@ export class EthersAdapter extends AdapterBlueprint {
   }: AdapterBlueprint.ConnectParams): Promise<AdapterBlueprint.ConnectResult> {
     const connector = this.connectors.find(c => c.id === id)
     const selectedProvider = connector?.provider as Provider
+
     if (!selectedProvider) {
       throw new Error('Provider not found')
     }
@@ -346,7 +341,8 @@ export class EthersAdapter extends AdapterBlueprint {
 
     if (type === 'AUTH') {
       const { address } = await (selectedProvider as unknown as W3mFrameProvider).connect({
-        chainId
+        chainId,
+        preferredAccountType: OptionsController.state.defaultAccountTypes.eip155
       })
 
       accounts = [address]
@@ -359,12 +355,30 @@ export class EthersAdapter extends AdapterBlueprint {
         method: 'eth_chainId'
       })
 
+      if (requestChainId !== chainId) {
+        const caipNetwork = this.caipNetworks?.find(n => n.id === chainId)
+
+        if (!caipNetwork) {
+          throw new Error('EthersAdapter:connect - could not find the caipNetwork to switch')
+        }
+
+        try {
+          await this.switchNetwork({
+            caipNetwork,
+            provider: selectedProvider,
+            providerType: type as ConnectorType
+          })
+        } catch (error) {
+          throw new Error('EthersAdapter:connect - Switch network failed')
+        }
+      }
+
       this.listenProviderEvents(selectedProvider)
     }
 
     return {
       address: accounts[0] as `0x${string}`,
-      chainId: Number(requestChainId) || Number(chainId),
+      chainId: Number(chainId),
       provider: selectedProvider,
       type: type as ConnectorType,
       id
@@ -377,7 +391,10 @@ export class EthersAdapter extends AdapterBlueprint {
     const connector = this.connectors.find(c => c.id === id)
 
     if (connector && connector.type === 'AUTH' && chainId) {
-      await (connector.provider as W3mFrameProvider).connect({ chainId })
+      await (connector.provider as W3mFrameProvider).connect({
+        chainId,
+        preferredAccountType: OptionsController.state.defaultAccountTypes.eip155
+      })
     }
   }
 
@@ -544,11 +561,7 @@ export class EthersAdapter extends AdapterBlueprint {
         switchError.code === WcConstantsUtil.ERROR_CODE_DEFAULT ||
         switchError?.data?.originalError?.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
       ) {
-        try {
-          await EthersHelpersUtil.addEthereumChain(provider as Provider, caipNetwork)
-        } catch (e) {
-          console.warn('Could not add chain to wallet', e)
-        }
+        await EthersHelpersUtil.addEthereumChain(provider as Provider, caipNetwork)
       } else if (
         providerType === 'ANNOUNCED' ||
         providerType === 'EXTERNAL' ||

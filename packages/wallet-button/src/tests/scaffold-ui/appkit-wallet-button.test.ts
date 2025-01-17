@@ -1,10 +1,9 @@
-import '../../scaffold-ui/appkit-wallet-button/index.js'
-import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 import { elementUpdated, fixture } from '@open-wc/testing'
+import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
+
 import { html } from 'lit'
-import type { AppKitWalletButton } from '../../scaffold-ui/appkit-wallet-button/index.js'
-import { ApiController } from '../../controllers/ApiController.js'
-import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+
+import { ParseUtil } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectorController,
@@ -12,9 +11,13 @@ import {
   RouterController,
   type WcWallet
 } from '@reown/appkit-core'
-import { HelpersUtil } from '../utils/HelperUtil.js'
-import { ParseUtil } from '@reown/appkit-common'
+
+import { ApiController } from '../../controllers/ApiController.js'
+import '../../scaffold-ui/appkit-wallet-button/index.js'
+import type { AppKitWalletButton } from '../../scaffold-ui/appkit-wallet-button/index.js'
 import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
+import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import { HelpersUtil } from '../utils/HelperUtil.js'
 
 // -- Constants --------------------------------------------------- //
 const MetaMask = {

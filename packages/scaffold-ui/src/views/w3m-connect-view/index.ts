@@ -1,7 +1,11 @@
-import { MathUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import styles from './styles.js'
+import { property } from 'lit/decorators.js'
+import { state } from 'lit/decorators/state.js'
+import { classMap } from 'lit/directives/class-map.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
+  ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
@@ -9,11 +13,10 @@ import {
   RouterController,
   type WalletGuideType
 } from '@reown/appkit-core'
-import { state } from 'lit/decorators/state.js'
-import { property } from 'lit/decorators.js'
-import { classMap } from 'lit/directives/class-map.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+import { MathUtil, customElement } from '@reown/appkit-ui'
+
 import { WalletUtil } from '../../utils/WalletUtil.js'
+import styles from './styles.js'
 
 // -- Constants ----------------------------------------- //
 const SCROLL_THRESHOLD = 470
@@ -38,6 +41,11 @@ export class W3mConnectView extends LitElement {
 
   @state() private checked = false
 
+  @state() private isEmailEnabled = this.features?.email && !ChainController.state.noAdapters
+
+  @state() private isSocialEnabled =
+    this.features?.socials && this.features.socials.length > 0 && !ChainController.state.noAdapters
+
   private resizeObserver?: ResizeObserver
 
   public constructor() {
@@ -48,7 +56,11 @@ export class W3mConnectView extends LitElement {
         this.authConnector = this.connectors.find(c => c.type === 'AUTH')
       }),
       OptionsController.subscribeKey('features', val => (this.features = val)),
-      OptionsController.subscribeKey('enableWallets', val => (this.enableWallets = val))
+      OptionsController.subscribeKey('enableWallets', val => (this.enableWallets = val)),
+      ChainController.subscribeKey('noAdapters', val => {
+        this.isEmailEnabled = this.features?.email && !val
+        this.isSocialEnabled = this.features?.socials && this.features.socials.length > 0 && !val
+      })
     )
   }
 
@@ -92,11 +104,9 @@ export class W3mConnectView extends LitElement {
 
     const enableWalletGuide = OptionsController.state.enableWalletGuide
 
-    const socials = this.features?.socials
     const enableWallets = this.enableWallets
 
-    const socialsExist = socials && socials.length
-    const socialOrEmailLoginEnabled = socialsExist || this.authConnector
+    const socialOrEmailLoginEnabled = this.isSocialEnabled || this.authConnector
 
     const tabIndex = disabled ? -1 : undefined
 
@@ -153,9 +163,9 @@ export class W3mConnectView extends LitElement {
       case 'wallet':
         return this.enableWallets
       case 'social':
-        return this.features?.socials && this.features?.socials.length > 0
+        return this.isSocialEnabled
       case 'email':
-        return this.features?.email
+        return this.isEmailEnabled
       default:
         return null
     }
@@ -175,7 +185,6 @@ export class W3mConnectView extends LitElement {
     }
 
     const isNextMethodEnabled = this.checkMethodEnabled(nextMethod)
-
     if (isNextMethodEnabled) {
       return nextMethod
     }
@@ -186,7 +195,6 @@ export class W3mConnectView extends LitElement {
   private separatorTemplate(index: number, type: 'wallet' | 'email' | 'social') {
     const nextEnabledMethod = this.checkIsThereNextMethod(index)
     const isExplore = this.walletGuide === 'explore'
-
     switch (type) {
       case 'wallet': {
         const isWalletEnable = this.enableWallets
@@ -196,14 +204,9 @@ export class W3mConnectView extends LitElement {
           : null
       }
       case 'email': {
-        const isEmailEnabled = this.features?.email
         const isNextMethodSocial = nextEnabledMethod === 'social'
 
-        if (isExplore) {
-          return null
-        }
-
-        return isEmailEnabled && !isNextMethodSocial && nextEnabledMethod
+        return this.isEmailEnabled && !isNextMethodSocial && nextEnabledMethod
           ? html`<wui-separator
               data-testid="w3m-email-login-or-separator"
               text="or"
@@ -211,14 +214,9 @@ export class W3mConnectView extends LitElement {
           : null
       }
       case 'social': {
-        const isSocialEnabled = this.features?.socials && this.features?.socials.length > 0
         const isNextMethodEmail = nextEnabledMethod === 'email'
 
-        if (isExplore) {
-          return null
-        }
-
-        return isSocialEnabled && !isNextMethodEmail && nextEnabledMethod
+        return this.isSocialEnabled && !isNextMethodEmail && nextEnabledMethod
           ? html`<wui-separator data-testid="wui-separator" text="or"></wui-separator>`
           : null
       }
@@ -228,10 +226,7 @@ export class W3mConnectView extends LitElement {
   }
 
   private emailTemplate(tabIndex?: number) {
-    const emailEnabled = this.features?.email
-    const isCreateWalletPage = this.walletGuide === 'explore'
-
-    if (!isCreateWalletPage && !emailEnabled) {
+    if (!this.isEmailEnabled) {
       return null
     }
 
@@ -242,10 +237,7 @@ export class W3mConnectView extends LitElement {
   }
 
   private socialListTemplate(tabIndex?: number) {
-    const isSocialsEnabled = this.features?.socials && this.features?.socials.length > 0
-    const isCreateWalletPage = this.walletGuide === 'explore'
-
-    if (!isCreateWalletPage && !isSocialsEnabled) {
+    if (!this.isSocialEnabled) {
       return null
     }
 
@@ -273,9 +265,7 @@ export class W3mConnectView extends LitElement {
       return null
     }
 
-    const hasEmail = this.features?.email
-    const hasSocials = this.features?.socials && this.features.socials.length > 0
-    const hasOtherMethods = hasEmail || hasSocials
+    const hasOtherMethods = this.isEmailEnabled || this.isSocialEnabled
 
     if (hasOtherMethods && shouldCollapseWallets) {
       return html`<wui-list-button
@@ -296,9 +286,6 @@ export class W3mConnectView extends LitElement {
       return null
     }
 
-    const socials = this.features?.socials
-    const socialsExist = socials && socials.length
-
     const classes = {
       guide: true,
       disabled
@@ -306,12 +293,12 @@ export class W3mConnectView extends LitElement {
 
     const tabIndex = disabled ? -1 : undefined
 
-    if (!this.authConnector && !socialsExist) {
+    if (!this.authConnector && !this.isSocialEnabled) {
       return null
     }
 
     return html`
-      ${this.walletGuide === 'explore'
+      ${this.walletGuide === 'explore' && !ChainController.state.noAdapters
         ? html`<wui-separator data-testid="wui-separator" id="explore" text="or"></wui-separator>`
         : null}
       <wui-flex flexDirection="column" .padding=${['s', '0', 'xl', '0']} class=${classMap(classes)}>

@@ -1,11 +1,13 @@
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-
-import styles from './styles.js'
-import { ConnectorController, OptionsController } from '@reown/appkit-core'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+
+import { ConnectorController, OptionsController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
+
 import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
+import styles from './styles.js'
+
 @customElement('w3m-connector-list')
 export class W3mConnectorList extends LitElement {
   public static override styles = styles

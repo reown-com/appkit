@@ -1,30 +1,34 @@
+import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
+
+import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
+import { EthersAdapter } from '@reown/appkit-adapter-ethers'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana'
+import { type ChainNamespace } from '@reown/appkit-common'
 import { ChainAdapter, ConstantsUtil } from '@reown/appkit-core'
 import {
+  type AppKitNetwork,
   arbitrum,
+  aurora,
+  avalanche,
+  base,
+  baseSepolia,
+  bitcoin,
+  bitcoinTestnet,
+  bsc,
+  gnosis,
+  hedera,
   mainnet,
   optimism,
   polygon,
-  zksync,
-  base,
+  sepolia,
   solana,
-  solanaTestnet,
-  bitcoin,
-  bitcoinTestnet,
-  type AppKitNetwork,
-  bsc,
-  avalanche
+  solanaDevnet,
+  unichainSepolia,
+  zksync
 } from '@reown/appkit/networks'
 import { CreateAppKit } from '@reown/appkit/react'
-import { SolanaAdapter } from '@reown/appkit-adapter-solana'
-import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
-import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 
-import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { urlStateUtils } from '@/lib/url-state'
-import { ChainNamespace } from '@reown/appkit-common'
-import { NETWORK_OPTIONS } from '@/lib/constants'
-
-type AppKitNetworksType = [AppKitNetwork, ...AppKitNetwork[]]
 
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
 
@@ -40,12 +44,22 @@ export const evmNetworks = [
   polygon,
   avalanche,
   arbitrum,
-  zksync,
-  base
-] as AppKitNetworksType
-export const solanaNetworks = [solana, solanaTestnet] as AppKitNetworksType
+  base,
+  baseSepolia,
+  unichainSepolia,
+  sepolia,
+  gnosis,
+  hedera,
+  aurora
+] as [AppKitNetwork, ...AppKitNetwork[]]
+
+type AppKitNetworksType = [AppKitNetwork, ...AppKitNetwork[]]
+
+export const solanaNetworks = [solana, solanaDevnet] as AppKitNetworksType
+
 export const bitcoinNetworks = [bitcoin, bitcoinTestnet] as AppKitNetworksType
-export const namespaceNetworksMap: Record<ChainNamespace, AppKitNetworksType> = {
+
+export const namespaceNetworksMap: Record<ChainNamespace, [AppKitNetwork, ...AppKitNetwork[]]> = {
   eip155: evmNetworks,
   solana: solanaNetworks,
   bip122: bitcoinNetworks,

@@ -1,4 +1,5 @@
 import { svg } from 'lit'
+
 export const lockSvg = svg`<svg fill="none" viewBox="0 0 60 60">
   <rect width="60" height="60" fill="#C653C6" rx="3" />
   <path

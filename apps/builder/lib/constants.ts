@@ -1,20 +1,21 @@
-import { notoSans, inter, domine, ebGaramond, breeSerif, bellota } from '@/lib/fonts'
 import { ChainNamespace } from '@reown/appkit-common'
 import {
+  type AppKitNetwork,
   arbitrum,
-  mainnet,
-  optimism,
-  polygon,
-  zksync,
+  avalanche,
   base,
-  solana,
-  solanaTestnet,
   bitcoin,
   bitcoinTestnet,
   bsc,
-  avalanche,
-  type AppKitNetwork
+  mainnet,
+  optimism,
+  polygon,
+  solana,
+  solanaTestnet,
+  zksync
 } from '@reown/appkit/networks'
+
+import { bellota, breeSerif, domine, ebGaramond, inter, notoSans } from '@/lib/fonts'
 
 export const ACCENT_COLORS = ['#3B82F6', '#EF4444', '#F59E0B', '#10B981']
 export const BG_COLORS = ['#202020', '#363636', '#FFFFFF']

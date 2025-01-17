@@ -1,11 +1,11 @@
-import './assets/main.css'
-
-import { createApp } from 'vue'
-import { WagmiPlugin } from '@wagmi/vue'
 import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
-import { wagmiAdapter } from './config'
+import { WagmiPlugin } from '@wagmi/vue'
+import { createApp } from 'vue'
+
 // @ts-ignore
 import App from './App.vue'
+import './assets/main.css'
+import { wagmiAdapter } from './config'
 
 const queryClient = new QueryClient()
 

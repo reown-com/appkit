@@ -1,5 +1,7 @@
 import { Metadata } from 'next'
+
 import ContextProvider from '@/context'
+
 import './globals.css'
 
 export const metadata: Metadata = {

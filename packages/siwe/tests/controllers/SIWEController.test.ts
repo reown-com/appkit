@@ -1,4 +1,5 @@
-import { vi, describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+
 import { SIWEController, type SIWEControllerClient } from '../../core/controller/SIWEController.js'
 
 // -- Mocks -------------------------------------------------------------

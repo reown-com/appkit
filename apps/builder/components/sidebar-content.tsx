@@ -1,16 +1,17 @@
 'use client'
 
 import * as React from 'react'
+
+import Link from 'next/link'
+
+import { BrandingHeader } from '@/components/branding-header'
+import { SectionConnectOptions } from '@/components/configuration-sections/section-connect-options'
+import { SectionDesign } from '@/components/configuration-sections/section-design'
+import { SectionWalletFeatures } from '@/components/configuration-sections/section-wallet-features'
+import { BookIcon } from '@/components/icon/book'
 import { buttonVariants } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
-
-import Link from 'next/link'
-import { BookIcon } from '@/components/icon/book'
-import { SectionWalletFeatures } from '@/components/configuration-sections/section-wallet-features'
-import { SectionConnectOptions } from '@/components/configuration-sections/section-connect-options'
-import { SectionDesign } from '@/components/configuration-sections/section-design'
-import { BrandingHeader } from '@/components/branding-header'
 
 export function SidebarContent() {
   const [activeTab, setActiveTab] = React.useState('auth')

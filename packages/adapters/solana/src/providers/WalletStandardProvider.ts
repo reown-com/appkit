@@ -1,9 +1,9 @@
 import {
-  isVersionedTransaction,
   WalletAccountError,
   WalletSendTransactionError,
   WalletSignMessageError,
-  WalletSignTransactionError
+  WalletSignTransactionError,
+  isVersionedTransaction
 } from '@solana/wallet-adapter-base'
 import {
   SolanaSignAndSendTransaction,
@@ -26,19 +26,21 @@ import {
   StandardEvents,
   type StandardEventsFeature
 } from '@wallet-standard/features'
+import base58 from 'bs58'
+
+import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+import type { RequestArguments } from '@reown/appkit-core'
+import type { Provider as CoreProvider } from '@reown/appkit-core'
+import { PresetsUtil } from '@reown/appkit-utils'
 import type {
   AnyTransaction,
   GetActiveChain,
   Provider as SolanaProvider
 } from '@reown/appkit-utils/solana'
-import base58 from 'bs58'
+
+import { solanaChains } from '../utils/chains.js'
 import { WalletStandardFeatureNotSupportedError } from './shared/Errors.js'
 import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
-import { solanaChains } from '../utils/chains.js'
-import { ConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
-import { PresetsUtil } from '@reown/appkit-utils'
-import type { RequestArguments } from '@reown/appkit-core'
-import type { Provider as CoreProvider } from '@reown/appkit-core'
 
 export interface WalletStandardProviderConfig {
   wallet: Wallet

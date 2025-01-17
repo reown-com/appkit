@@ -1,7 +1,8 @@
+import type UniversalProvider from '@walletconnect/universal-provider'
+
 import type { AppKitNetwork, ThemeVariables } from '@reown/appkit-common'
 import type { ChainAdapter, Metadata, OptionsControllerState, ThemeMode } from '@reown/appkit-core'
 import type { AppKitSIWEClient } from '@reown/appkit-siwe'
-import type UniversalProvider from '@walletconnect/universal-provider'
 
 export type AppKitOptions = {
   /**
@@ -79,4 +80,9 @@ export type AppKitOptions = {
    * @default undefined
    */
   universalProvider?: UniversalProvider
-} & OptionsControllerState
+  /**
+   * The default account type used for each chain namespace.
+   * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa' }"
+   */
+  defaultAccountTypes?: Partial<OptionsControllerState['defaultAccountTypes']>
+} & Omit<OptionsControllerState, 'defaultAccountTypes'>

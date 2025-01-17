@@ -1,16 +1,19 @@
+import { polygon } from 'viem/chains'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
+
+import { ConstantsUtil } from '@reown/appkit-common'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
+
 import {
   AccountController,
   ChainController,
   ConnectionController,
+  type ConnectionControllerClient,
   ConnectorController,
   EnsController,
-  type ConnectionControllerClient,
   type NetworkControllerClient
 } from '../../exports/index.js'
-import { W3mFrameProvider } from '@reown/appkit-wallet'
-import { ConstantsUtil } from '@reown/appkit-common'
-import { polygon } from 'viem/chains'
+
 // -- Setup --------------------------------------------------------------------
 const TEST_NAME = {
   name: 'test',

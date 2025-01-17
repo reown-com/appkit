@@ -1,25 +1,29 @@
 'use client'
 
 import { ReactNode, useEffect, useState } from 'react'
-import { Features, ThemeMode, ThemeVariables, useAppKitState } from '@reown/appkit/react'
-import type { ChainNamespace } from '@reown/appkit-common'
-import { ConnectMethod, ConstantsUtil } from '@reown/appkit-core'
-import { ThemeStore } from '../lib/theme-store'
-import { URLState, urlStateUtils } from '@/lib/url-state'
-import { AppKitContext } from '@/contexts/appkit-context'
-import { useSnapshot } from 'valtio'
+
 import { UniqueIdentifier } from '@dnd-kit/core'
+import { useTheme } from 'next-themes'
+import { Toaster } from 'sonner'
+import { useSnapshot } from 'valtio'
+
+import { type ChainNamespace } from '@reown/appkit-common'
+import { ConnectMethod, ConstantsUtil } from '@reown/appkit-core'
+import { Features, ThemeMode, ThemeVariables, useAppKitState } from '@reown/appkit/react'
+
+import { AppKitContext } from '@/contexts/appkit-context'
 import {
   allAdapters,
   initialConfig,
   initialEnabledNetworks,
   namespaceNetworksMap
 } from '@/lib/config'
-import { defaultCustomizationConfig } from '@/lib/defaultConfig'
-import { useTheme } from 'next-themes'
-import { inter } from '@/lib/fonts'
-import { Toaster } from 'sonner'
 import { NAMESPACE_NETWORK_IDS_MAP, NETWORK_OPTIONS, NetworkOption } from '@/lib/constants'
+import { defaultCustomizationConfig } from '@/lib/defaultConfig'
+import { inter } from '@/lib/fonts'
+import { URLState, urlStateUtils } from '@/lib/url-state'
+
+import { ThemeStore } from '../lib/theme-store'
 
 interface AppKitProviderProps {
   children: ReactNode

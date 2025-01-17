@@ -1,5 +1,6 @@
-import type { ConnectorType } from '@reown/appkit-core'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import type { ConnectorType } from '@reown/appkit-core'
+
 import { ConstantsUtil } from './ConstantsUtil.js'
 
 export const PresetsUtil = {

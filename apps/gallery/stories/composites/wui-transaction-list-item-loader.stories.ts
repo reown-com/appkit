@@ -1,7 +1,10 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui/src/composites/wui-transaction-list-item-loader'
 import type { WuiTransactionListItemLoader } from '@reown/appkit-ui/src/composites/wui-transaction-list-item-loader'
-import { html } from 'lit'
+
 import '../../components/gallery-container'
 
 type Component = Meta<WuiTransactionListItemLoader>
