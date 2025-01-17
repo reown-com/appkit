@@ -1,12 +1,14 @@
 'use client'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import { RoundOptionItem } from './ui/round-option-item'
-import { useAppKitContext } from '@/hooks/use-appkit'
 import { useAppKitAccount } from '@reown/appkit-core/react'
+
+import { ExclamationMarkIcon } from '@/components/icon/exclamation-mark'
 import { AlertDescription } from '@/components/ui/alert'
 import { Alert } from '@/components/ui/alert'
-import { ExclamationMarkIcon } from '@/components/icon/exclamation-mark'
+import { useAppKitContext } from '@/hooks/use-appkit'
+
+import { RoundOptionItem } from './ui/round-option-item'
 
 const CHAIN_OPTIONS = [
   { id: 'eip155', name: 'EVM', imageSrc: '/ethereum.png' },
