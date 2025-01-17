@@ -7,9 +7,9 @@ import { ConnectMethod, ConstantsUtil } from '@reown/appkit-core'
 
 import { ConnectMethodItemLoading } from '@/components/connect-method-item/components/loading'
 import { FeatureButton } from '@/components/feature-button'
+import { RoundOptionItemLoading } from '@/components/ui/round-option-item-loading'
 import { useAppKitContext } from '@/hooks/use-appkit'
 import { urlStateUtils } from '@/lib/url-state'
-import { RoundOptionItemLoading } from '@/components/ui/round-option-item-loading'
 
 const SortableConnectMethodList = dynamic(
   () =>

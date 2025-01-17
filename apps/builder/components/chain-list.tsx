@@ -1,13 +1,15 @@
 'use client'
 
-import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
-import { RoundOptionItem } from './ui/round-option-item'
-import { useAppKitContext } from '@/hooks/use-appkit'
+import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import { useAppKitAccount } from '@reown/appkit-core/react'
+
+import { ExclamationMarkIcon } from '@/components/icon/exclamation-mark'
 import { AlertDescription } from '@/components/ui/alert'
 import { Alert } from '@/components/ui/alert'
-import { ExclamationMarkIcon } from '@/components/icon/exclamation-mark'
-import { getImageDeliveryURL, chainImages } from '@/lib/presets'
+import { useAppKitContext } from '@/hooks/use-appkit'
+import { chainImages, getImageDeliveryURL } from '@/lib/presets'
+
+import { RoundOptionItem } from './ui/round-option-item'
 
 const CHAIN_OPTIONS = [{ id: 'eip155' }, { id: 'solana' }, { id: 'bip122' }] as {
   id: ChainNamespace

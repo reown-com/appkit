@@ -98,7 +98,6 @@ const initialEnabledChains = initialConfig?.enabledChains || ['eip155', 'solana'
 // Enabled network IDs
 export const initialEnabledNetworks =
   initialConfig?.enabledNetworks || allNetworks.map(network => network.id)
-console.log('initialEnabledNetworks', initialEnabledNetworks)
 
 // Enabled adapters
 const adapters: ChainAdapter[] = []

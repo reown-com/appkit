@@ -1,14 +1,16 @@
 'use client'
 
-import { RoundOptionItem } from './ui/round-option-item'
-import { useAppKitContext } from '@/hooks/use-appkit'
+import { ConstantsUtil } from '@reown/appkit-common'
 import { useAppKitAccount } from '@reown/appkit-core/react'
+
+import { ExclamationMarkIcon } from '@/components/icon/exclamation-mark'
 import { AlertDescription } from '@/components/ui/alert'
 import { Alert } from '@/components/ui/alert'
-import { ExclamationMarkIcon } from '@/components/icon/exclamation-mark'
-import { getImageDeliveryURL, networkImages } from '@/lib/presets'
+import { useAppKitContext } from '@/hooks/use-appkit'
 import { NETWORK_ID_NAMESPACE_MAP, NETWORK_OPTIONS } from '@/lib/constants'
-import { ConstantsUtil } from '@reown/appkit-common'
+import { getImageDeliveryURL, networkImages } from '@/lib/presets'
+
+import { RoundOptionItem } from './ui/round-option-item'
 
 export function NetworkList() {
   const { caipAddress } = useAppKitAccount()
