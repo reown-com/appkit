@@ -1627,9 +1627,10 @@ describe('Balance sync', () => {
     vi.resetAllMocks()
     vi.spyOn(OptionsController, 'getSnapshot').mockReturnValue({ ...OptionsController.state })
     vi.spyOn(ThemeController, 'getSnapshot').mockReturnValue({ ...ThemeController.state })
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({ ...ChainController.state })
   })
 
-  it.only('should not sync balance if theres no matching caipNetwork', async () => {
+  it('should not sync balance if theres no matching caipNetwork', async () => {
     const appKit = new AppKit({
       ...mockOptions,
       networks: [mainnet]
