@@ -7,7 +7,6 @@ import {
   ConnectionController,
   CoreHelperUtil,
   EventsController,
-  OptionsController,
   RouterController,
   type WcWallet
 } from '@reown/appkit-core'
@@ -16,7 +15,6 @@ import type { WuiQrCode } from '@reown/appkit-ui'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
 // -- Constants ------------------------------------------- //
-const ALL_WALLETS_WIDGET = 'w3m-all-wallets-widget'
 const QR_CODE = 'wui-qr-code'
 const WALLET = {
   name: 'WalletConnect'
