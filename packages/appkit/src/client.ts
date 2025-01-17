@@ -30,7 +30,6 @@ import {
   type OptionsControllerState,
   type PublicStateControllerState,
   type RouterControllerState,
-  SIWXUtil,
   type SdkVersion,
   type SendTransactionArgs,
   type SocialProvider,
@@ -113,34 +112,6 @@ type Adapters = Record<ChainNamespace, AdapterBlueprint>
 interface AppKitOptionsWithSdk extends AppKitOptions {
   sdkVersion: SdkVersion
 }
-
-// -- Constants ----------------------------------------- //
-const OPTIONAL_METHODS = [
-  'eth_accounts',
-  'eth_requestAccounts',
-  'eth_sendRawTransaction',
-  'eth_sign',
-  'eth_signTransaction',
-  'eth_signTypedData',
-  'eth_signTypedData_v3',
-  'eth_signTypedData_v4',
-  'eth_sendTransaction',
-  'personal_sign',
-  'wallet_switchEthereumChain',
-  'wallet_addEthereumChain',
-  'wallet_getPermissions',
-  'wallet_requestPermissions',
-  'wallet_registerOnboarding',
-  'wallet_watchAsset',
-  'wallet_scanQRCode',
-  // EIP-5792
-  'wallet_getCallsStatus',
-  'wallet_sendCalls',
-  'wallet_getCapabilities',
-  // EIP-7715
-  'wallet_grantPermissions',
-  'wallet_revokePermissions'
-]
 
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
@@ -859,33 +830,17 @@ export class AppKit {
   private createClients() {
     this.connectionControllerClient = {
       connectWalletConnect: async (onUri: (uri: string) => void) => {
-        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+        const adapter = this.getAdapter(ChainController.state.activeChain)
 
-        this.universalProvider?.on('display_uri', onUri)
-
-        this.setClientId(
-          (await this.universalProvider?.client?.core?.crypto?.getClientId()) || null
-        )
-
-        let isAuthenticated = false
-
-        if (this.universalProvider) {
-          const chains = this.caipNetworks?.map(network => network.caipNetworkId) || []
-
-          isAuthenticated = await SIWXUtil.universalProviderAuthenticate({
-            universalProvider: this.universalProvider,
-            chains,
-            methods: OPTIONAL_METHODS
-          })
+        if (!adapter) {
+          throw new Error('Adapter not found')
         }
 
-        if (isAuthenticated) {
-          this.close()
-        } else {
-          await adapter?.connectWalletConnect(onUri, this.getCaipNetwork()?.id)
-          StorageUtil.setConnectedNamespaces([...ChainController.state.chains.keys()])
-        }
+        const result = await adapter.connectWalletConnect(onUri, this.getCaipNetwork()?.id)
+        this.close()
 
+        this.setClientId(result?.clientId || null)
+        StorageUtil.setConnectedNamespaces([...ChainController.state.chains.keys()])
         await this.syncWalletConnectAccount()
       },
       connectExternal: async ({ id, info, type, provider, chain, caipNetwork }) => {
@@ -1865,7 +1820,11 @@ export class AppKit {
     )
   }
 
-  private getAdapter(namespace: ChainNamespace) {
+  private getAdapter(namespace?: ChainNamespace) {
+    if (!namespace) {
+      return undefined
+    }
+
     return this.chainAdapters?.[namespace]
   }
 
