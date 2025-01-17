@@ -1,13 +1,14 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
+
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { ApiController } from './ApiController.js'
+import { ChainController } from './ChainController.js'
 import { EventsController } from './EventsController.js'
+import { OptionsController } from './OptionsController.js'
 import { PublicStateController } from './PublicStateController.js'
 import type { RouterControllerState } from './RouterController.js'
 import { RouterController } from './RouterController.js'
-import { ChainController } from './ChainController.js'
-import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { OptionsController } from './OptionsController.js'
 
 // -- Types --------------------------------------------- //
 export interface ModalControllerState {
@@ -54,7 +55,7 @@ export const ModalController = {
     } else if (caipAddress) {
       RouterController.reset('Account')
     } else if (noAdapters && !CoreHelperUtil.isMobile()) {
-      RouterController.reset('ConnectingWalletConnect')
+      RouterController.reset('ConnectingWalletConnectBasic')
     } else {
       RouterController.reset('Connect')
     }

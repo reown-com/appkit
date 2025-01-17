@@ -1,11 +1,13 @@
-import { CoreHelperUtil } from '@reown/appkit-core'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
-import styles from './styles.js'
-import { SmartSessionsController } from '../../../controllers/SmartSessionsController.js'
+
 import { DateUtil } from '@reown/appkit-common'
+import { CoreHelperUtil } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
+
+import { SmartSessionsController } from '../../../controllers/SmartSessionsController.js'
 import type { SmartSession } from '../../../utils/TypeUtils.js'
+import styles from './styles.js'
 
 const TABS = 3
 const TABS_PADDING = 48

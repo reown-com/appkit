@@ -1,8 +1,10 @@
-import type { ChainAdapter } from '@reown/appkit-core'
-import type { AppKitOptions } from '../../src/utils/index.js'
-import { mainnet, solana } from '../../src/networks/index.js'
-import type { SdkVersion } from '@reown/appkit-core'
 import { vi } from 'vitest'
+
+import type { ChainAdapter } from '@reown/appkit-core'
+import type { SdkVersion } from '@reown/appkit-core'
+
+import { mainnet, sepolia, solana } from '../../src/networks/index.js'
+import type { AppKitOptions } from '../../src/utils/index.js'
 
 export const mockOptions: AppKitOptions & {
   sdkVersion: SdkVersion
@@ -27,7 +29,7 @@ export const mockOptions: AppKitOptions & {
       emit: vi.fn()
     } as unknown as ChainAdapter
   ],
-  networks: [mainnet, solana],
+  networks: [mainnet, sepolia, solana],
   metadata: {
     name: 'Test App',
     description: 'Test App Description',

@@ -1,4 +1,3 @@
-import { defaultCustomizationConfig } from '@/lib/defaultConfig'
 import type { ChainNamespace } from '@reown/appkit-common'
 import {
   ConnectMethod,
@@ -7,6 +6,8 @@ import {
   ThemeVariables,
   WalletFeature
 } from '@reown/appkit-core'
+
+import { defaultCustomizationConfig } from '@/lib/config'
 
 export type URLState = {
   features: Features

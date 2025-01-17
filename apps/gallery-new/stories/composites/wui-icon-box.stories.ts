@@ -1,7 +1,9 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui-new/src/composites/wui-icon-box'
 import type { WuiIconBox } from '@reown/appkit-ui-new/src/composites/wui-icon-box'
-import { html } from 'lit'
 
 import { backgroundColorOptions, iconColorOptions, iconOptions } from '../../utils/PresetUtils'
 

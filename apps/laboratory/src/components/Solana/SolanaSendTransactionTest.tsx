@@ -1,17 +1,19 @@
 import { useState } from 'react'
-import { Button, Stack, Spacer, Link } from '@chakra-ui/react'
-import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
+
+import { Button, Link, Spacer, Stack } from '@chakra-ui/react'
 import {
   PublicKey,
+  SystemProgram,
   Transaction,
   TransactionMessage,
-  VersionedTransaction,
-  SystemProgram
+  VersionedTransaction
 } from '@solana/web3.js'
 
-import { useChakraToast } from '../Toast'
 import { type Provider, useAppKitConnection } from '@reown/appkit-adapter-solana/react'
+import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
+
 import { ErrorUtil } from '../../utils/ErrorUtil'
+import { useChakraToast } from '../Toast'
 
 const PHANTOM_TESTNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
 const recipientAddress = new PublicKey(PHANTOM_TESTNET_ADDRESS)

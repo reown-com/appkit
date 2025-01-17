@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import {
   Box,
   Button,
@@ -10,8 +12,8 @@ import {
   ModalHeader,
   ModalOverlay
 } from '@chakra-ui/react'
-import { useState } from 'react'
 import { ethers } from 'ethers'
+
 import { useChakraToast } from './Toast'
 
 type IAddTransactionModalProps = {

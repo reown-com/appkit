@@ -1,18 +1,21 @@
-import { W3mEmailLoginWidget } from '../../src/partials/w3m-email-login-widget'
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { elementUpdated, fixture } from '@open-wc/testing'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { html } from 'lit'
+
+import { ConstantsUtil } from '@reown/appkit-common'
 import {
+  type AuthConnector,
   ChainController,
+  type ChainControllerState,
   ConnectionController,
   ConnectorController,
-  RouterController,
-  SnackController,
   EventsController,
-  type ChainControllerState,
-  type AuthConnector
+  RouterController,
+  SnackController
 } from '@reown/appkit-core'
-import { ConstantsUtil } from '@reown/appkit-common'
+
+import { W3mEmailLoginWidget } from '../../src/partials/w3m-email-login-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
 describe('W3mEmailLoginWidget', () => {

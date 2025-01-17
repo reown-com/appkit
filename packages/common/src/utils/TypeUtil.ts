@@ -1,5 +1,5 @@
-import type { Chain as BaseChain } from 'viem/chains'
 import type { ChainFormatters } from 'viem'
+import type { Chain as BaseChain } from 'viem/chains'
 
 export type { BaseChain }
 

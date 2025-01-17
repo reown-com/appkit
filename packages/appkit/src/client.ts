@@ -1,67 +1,66 @@
 /* eslint-disable max-depth */
+import type { SessionTypes } from '@walletconnect/types'
+import UniversalProvider from '@walletconnect/universal-provider'
+import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
+
 import {
-  type EventsControllerState,
-  type PublicStateControllerState,
-  type ThemeControllerState,
-  type ModalControllerState,
-  type ConnectedWalletInfo,
-  type RouterControllerState,
-  type ChainAdapter,
-  type SdkVersion,
-  type UseAppKitAccountReturn,
-  type UseAppKitNetworkReturn,
-  type NetworkControllerClient,
-  type ConnectionControllerClient,
-  type ConnectorType,
-  type WriteContractArgs,
-  type SendTransactionArgs,
-  type EstimateGasTransactionArgs,
-  ConstantsUtil as CoreConstantsUtil,
-  type Features,
-  SIWXUtil,
-  type ConnectionStatus,
-  type OptionsControllerState,
-  type WalletFeature,
-  type ConnectMethod,
-  type SocialProvider,
-  type Metadata
-} from '@reown/appkit-core'
-import {
-  AccountController,
-  BlockchainApiController,
-  ConnectionController,
-  ConnectorController,
-  CoreHelperUtil,
-  EventsController,
-  ModalController,
-  ChainController,
-  PublicStateController,
-  ThemeController,
-  SnackController,
-  RouterController,
-  EnsController,
-  OptionsController,
-  AssetUtil,
-  ApiController,
-  AlertController,
-  StorageUtil
-} from '@reown/appkit-core'
-import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
-import {
-  type CaipNetwork,
-  type ChainNamespace,
   type CaipAddress,
+  type CaipNetwork,
   type CaipNetworkId,
-  NetworkUtil,
+  type ChainNamespace,
   ConstantsUtil,
+  NetworkUtil,
   ParseUtil,
   getW3mThemeVariables
 } from '@reown/appkit-common'
-import type { AppKitOptions } from './utils/TypesUtil.js'
 import {
-  UniversalAdapter,
-  UniversalAdapter as UniversalAdapterClient
-} from './universal-adapter/client.js'
+  type ChainAdapter,
+  type ConnectMethod,
+  type ConnectedWalletInfo,
+  type ConnectionControllerClient,
+  type ConnectionStatus,
+  type ConnectorType,
+  ConstantsUtil as CoreConstantsUtil,
+  type EstimateGasTransactionArgs,
+  type EventsControllerState,
+  type Features,
+  type Metadata,
+  type ModalControllerState,
+  type NetworkControllerClient,
+  type OptionsControllerState,
+  type PublicStateControllerState,
+  type RouterControllerState,
+  type SdkVersion,
+  type SendTransactionArgs,
+  type SocialProvider,
+  type ThemeControllerState,
+  type UseAppKitAccountReturn,
+  type UseAppKitNetworkReturn,
+  type WalletFeature,
+  type WriteContractArgs
+} from '@reown/appkit-core'
+import {
+  AccountController,
+  AlertController,
+  ApiController,
+  AssetUtil,
+  BlockchainApiController,
+  ChainController,
+  ConnectionController,
+  ConnectorController,
+  CoreHelperUtil,
+  EnsController,
+  EventsController,
+  ModalController,
+  OptionsController,
+  PublicStateController,
+  RouterController,
+  SnackController,
+  StorageUtil,
+  ThemeController
+} from '@reown/appkit-core'
+import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
+import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
 import {
   CaipNetworksUtil,
   ErrorUtil,
@@ -71,19 +70,21 @@ import {
 } from '@reown/appkit-utils'
 import {
   W3mFrameHelpers,
-  W3mFrameRpcConstants,
   W3mFrameProvider,
+  W3mFrameRpcConstants,
   type W3mFrameTypes
 } from '@reown/appkit-wallet'
-import { ProviderUtil, type ProviderStoreUtilState } from './store/ProviderUtil.js'
 import type { AppKitNetwork } from '@reown/appkit/networks'
+
 import type { AdapterBlueprint } from './adapters/ChainAdapterBlueprint.js'
-import UniversalProvider from '@walletconnect/universal-provider'
-import type { SessionTypes } from '@walletconnect/types'
-import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
 import { W3mFrameProviderSingleton } from './auth-provider/W3MFrameProviderSingleton.js'
+import { type ProviderStoreUtilState, ProviderUtil } from './store/ProviderUtil.js'
+import {
+  UniversalAdapter,
+  UniversalAdapter as UniversalAdapterClient
+} from './universal-adapter/client.js'
 import { WcHelpersUtil } from './utils/HelpersUtil.js'
-import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
+import type { AppKitOptions } from './utils/TypesUtil.js'
 
 declare global {
   interface Window {
@@ -111,34 +112,6 @@ type Adapters = Record<ChainNamespace, AdapterBlueprint>
 interface AppKitOptionsWithSdk extends AppKitOptions {
   sdkVersion: SdkVersion
 }
-
-// -- Constants ----------------------------------------- //
-const OPTIONAL_METHODS = [
-  'eth_accounts',
-  'eth_requestAccounts',
-  'eth_sendRawTransaction',
-  'eth_sign',
-  'eth_signTransaction',
-  'eth_signTypedData',
-  'eth_signTypedData_v3',
-  'eth_signTypedData_v4',
-  'eth_sendTransaction',
-  'personal_sign',
-  'wallet_switchEthereumChain',
-  'wallet_addEthereumChain',
-  'wallet_getPermissions',
-  'wallet_requestPermissions',
-  'wallet_registerOnboarding',
-  'wallet_watchAsset',
-  'wallet_scanQRCode',
-  // EIP-5792
-  'wallet_getCallsStatus',
-  'wallet_sendCalls',
-  'wallet_getCapabilities',
-  // EIP-7715
-  'wallet_grantPermissions',
-  'wallet_revokePermissions'
-]
 
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
@@ -857,33 +830,17 @@ export class AppKit {
   private createClients() {
     this.connectionControllerClient = {
       connectWalletConnect: async (onUri: (uri: string) => void) => {
-        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+        const adapter = this.getAdapter(ChainController.state.activeChain)
 
-        this.universalProvider?.on('display_uri', onUri)
-
-        this.setClientId(
-          (await this.universalProvider?.client?.core?.crypto?.getClientId()) || null
-        )
-
-        let isAuthenticated = false
-
-        if (this.universalProvider) {
-          const chains = this.caipNetworks?.map(network => network.caipNetworkId) || []
-
-          isAuthenticated = await SIWXUtil.universalProviderAuthenticate({
-            universalProvider: this.universalProvider,
-            chains,
-            methods: OPTIONAL_METHODS
-          })
+        if (!adapter) {
+          throw new Error('Adapter not found')
         }
 
-        if (isAuthenticated) {
-          this.close()
-        } else {
-          await adapter?.connectWalletConnect(onUri, this.getCaipNetwork()?.id)
-          StorageUtil.setConnectedNamespaces([...ChainController.state.chains.keys()])
-        }
+        const result = await adapter.connectWalletConnect(onUri, this.getCaipNetwork()?.id)
+        this.close()
 
+        this.setClientId(result?.clientId || null)
+        StorageUtil.setConnectedNamespaces([...ChainController.state.chains.keys()])
         await this.syncWalletConnectAccount()
       },
       connectExternal: async ({ id, info, type, provider, chain, caipNetwork }) => {
@@ -1631,25 +1588,26 @@ export class AppKit {
         )
       }
 
-      const network = (caipNetwork || fallbackCaipNetwork) as CaipNetwork
-      if (network.chainNamespace === ChainController.state.activeChain) {
+      const network = caipNetwork || fallbackCaipNetwork
+
+      if (network?.chainNamespace === ChainController.state.activeChain) {
         this.setCaipNetwork(network)
       }
       this.syncConnectedWalletInfo(chainNamespace)
 
-      await this.syncBalance({ address, chainId: network.id, chainNamespace })
+      await this.syncBalance({ address, chainId: network?.id, chainNamespace })
     }
   }
 
   private async syncBalance(params: {
     address: string
-    chainId: string | number
+    chainId: string | number | undefined
     chainNamespace: ChainNamespace
   }) {
     const caipNetwork = NetworkUtil.getNetworksByNamespace(
       this.caipNetworks,
       params.chainNamespace
-    ).find(n => n.id.toString() === params.chainId.toString())
+    ).find(n => n.id.toString() === params.chainId?.toString())
 
     if (!caipNetwork) {
       return
@@ -1863,7 +1821,11 @@ export class AppKit {
     )
   }
 
-  private getAdapter(namespace: ChainNamespace) {
+  private getAdapter(namespace?: ChainNamespace) {
+    if (!namespace) {
+      return undefined
+    }
+
     return this.chainAdapters?.[namespace]
   }
 

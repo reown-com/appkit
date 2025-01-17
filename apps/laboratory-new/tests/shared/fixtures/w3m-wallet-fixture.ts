@@ -1,11 +1,9 @@
 /* eslint no-console: 0 */
-
-import { testM as base, testMSiwe as siwe, testMultiChainM as multiChain } from './w3m-fixture'
-import { WalletPage } from '../pages/WalletPage'
-import { WalletValidator } from '../validators/WalletValidator'
-
 import { DEFAULT_SESSION_PARAMS } from '../constants'
+import { WalletPage } from '../pages/WalletPage'
 import { timeEnd, timeStart } from '../utils/logs'
+import { WalletValidator } from '../validators/WalletValidator'
+import { testM as base, testMultiChainM as multiChain, testMSiwe as siwe } from './w3m-fixture'
 
 // Declare the types of fixtures to use
 interface ModalWalletFixture {

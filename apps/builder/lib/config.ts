@@ -1,33 +1,32 @@
+import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
+
+import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
+import { EthersAdapter } from '@reown/appkit-adapter-ethers'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana'
+import { type ChainNamespace } from '@reown/appkit-common'
 import { ChainAdapter, ConstantsUtil } from '@reown/appkit-core'
 import {
+  type AppKitNetwork,
   arbitrum,
+  aurora,
+  base,
+  baseSepolia,
+  bitcoin,
+  bitcoinTestnet,
+  gnosis,
+  hedera,
   mainnet,
   optimism,
   polygon,
-  zksync,
   sepolia,
-  base,
-  baseSepolia,
-  gnosis,
-  unichainSepolia,
-  hedera,
-  aurora,
   solana,
   solanaDevnet,
-  solanaTestnet,
-  bitcoin,
-  bitcoinTestnet,
-  type AppKitNetwork
+  unichainSepolia,
+  zksync
 } from '@reown/appkit/networks'
-import { CreateAppKit, ThemeMode } from '@reown/appkit/react'
-import { SolanaAdapter } from '@reown/appkit-adapter-solana'
-import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
-import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
+import { CreateAppKit } from '@reown/appkit/react'
 
-import { cookieStorage, createStorage } from '@wagmi/core'
-import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { urlStateUtils } from '@/lib/url-state'
-import { ChainNamespace } from '@reown/appkit-common'
 
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
 
@@ -50,10 +49,7 @@ const evmNetworks = [
   aurora
 ] as [AppKitNetwork, ...AppKitNetwork[]]
 
-export const solanaNetworks = [solana, solanaDevnet, solanaTestnet] as [
-  AppKitNetwork,
-  ...AppKitNetwork[]
-]
+export const solanaNetworks = [solana, solanaDevnet] as [AppKitNetwork, ...AppKitNetwork[]]
 
 export const bitcoinNetworks = [bitcoin, bitcoinTestnet] as [AppKitNetwork, ...AppKitNetwork[]]
 

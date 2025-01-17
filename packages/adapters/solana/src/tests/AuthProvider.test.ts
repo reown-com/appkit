@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mockW3mFrameProvider } from './mocks/W3mFrameProvider'
+
 import { AuthProvider } from '../providers/AuthProvider'
-import { TestConstants } from './util/TestConstants'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction'
+import { mockW3mFrameProvider } from './mocks/W3mFrameProvider'
+import { TestConstants } from './util/TestConstants'
 
 describe('AuthProvider specific tests', () => {
   let provider = mockW3mFrameProvider()

@@ -1,9 +1,10 @@
 'use client'
 
-import { ActionButtonList } from '@/components/ActionButtonList'
-import { InfoList } from '@/components/InfoList'
-import { Footer } from '@/components/Footer'
 import { useAppKitTheme } from '@reown/appkit/react'
+
+import { ActionButtonList } from '@/components/ActionButtonList'
+import { Footer } from '@/components/Footer'
+import { InfoList } from '@/components/InfoList'
 
 export default function Home() {
   const { themeMode } = useAppKitTheme()

@@ -1,6 +1,8 @@
-import { customElement } from '@reown/appkit-ui'
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+
+import { customElement } from '@reown/appkit-ui'
+
 import styles from './styles'
 
 @customElement('gallery-container')

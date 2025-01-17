@@ -1,12 +1,14 @@
 import { UniqueIdentifier } from '@dnd-kit/core'
-import { useAppKitContext } from '@/hooks/use-appkit'
-import { WalletFeatureName } from '@/lib/types'
+
 import { ConstantsUtil, WalletFeature } from '@reown/appkit-core'
-import { urlStateUtils } from '@/lib/url-state'
+import { useAppKitAccount } from '@reown/appkit-core/react'
+
+import { ExclamationMarkIcon } from '@/components/icon/exclamation-mark'
 import { SortableWalletFeatureList } from '@/components/sortable-list-wallet-features'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { useAppKitAccount } from '@reown/appkit-core/react'
-import { ExclamationMarkIcon } from '@/components/icon/exclamation-mark'
+import { useAppKitContext } from '@/hooks/use-appkit'
+import { WalletFeatureName } from '@/lib/types'
+import { urlStateUtils } from '@/lib/url-state'
 
 const defaultWalletFeaturesOrder = ['onramp', 'swaps', 'receive', 'send']
 

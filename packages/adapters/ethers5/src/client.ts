@@ -1,24 +1,27 @@
-import { AdapterBlueprint } from '@reown/appkit/adapters'
+import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
+import UniversalProvider from '@walletconnect/universal-provider'
+import * as ethers from 'ethers'
+import { formatEther } from 'ethers/lib/utils.js'
+
+import { type AppKitOptions, WcConstantsUtil } from '@reown/appkit'
 import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
-  CoreHelperUtil,
   type CombinedProvider,
   type Connector,
   type ConnectorType,
-  type Provider,
-  OptionsController
+  CoreHelperUtil,
+  OptionsController,
+  type Provider
 } from '@reown/appkit-core'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
-import { WcConstantsUtil, WcHelpersUtil, type AppKitOptions } from '@reown/appkit'
-import UniversalProvider from '@walletconnect/universal-provider'
-import * as ethers from 'ethers'
-import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
-import { Ethers5Methods } from './utils/Ethers5Methods.js'
-import { formatEther } from 'ethers/lib/utils.js'
+import { AdapterBlueprint } from '@reown/appkit/adapters'
+import { WalletConnectConnector } from '@reown/appkit/connectors'
 import { ProviderUtil } from '@reown/appkit/store'
+
+import { Ethers5Methods } from './utils/Ethers5Methods.js'
 
 export interface EIP6963ProviderDetail {
   info: Connector['info']
@@ -277,24 +280,14 @@ export class Ethers5Adapter extends AdapterBlueprint {
     })
   }
 
-  public async connectWalletConnect(onUri: (uri: string) => void) {
-    const connector = this.connectors.find(c => c.type === 'WALLET_CONNECT')
-
-    const provider = connector?.provider as UniversalProvider
-
-    if (!this.caipNetworks || !provider) {
-      throw new Error(
-        'UniversalAdapter:connectWalletConnect - caipNetworks or provider is undefined'
-      )
-    }
-
-    provider.on('display_uri', (uri: string) => {
-      onUri(uri)
-    })
-
-    const namespaces = WcHelpersUtil.createNamespaces(this.caipNetworks)
-
-    await provider.connect({ optionalNamespaces: namespaces })
+  public override setUniversalProvider(universalProvider: UniversalProvider): void {
+    this.addConnector(
+      new WalletConnectConnector({
+        provider: universalProvider,
+        caipNetworks: this.caipNetworks || [],
+        namespace: 'eip155'
+      })
+    )
   }
 
   private eip6963EventHandler(event: CustomEventInit<EIP6963ProviderDetail>) {

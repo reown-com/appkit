@@ -1,5 +1,6 @@
-import type { DefaultAccountTypes, Features, SocialProvider } from './TypeUtil.js'
 import type { ChainNamespace } from '@reown/appkit-common'
+
+import type { DefaultAccountTypes, Features, SocialProvider } from './TypeUtil.js'
 
 const SECURE_SITE = 'https://secure.walletconnect.org'
 
@@ -200,7 +201,8 @@ export const ConstantsUtil = {
   ],
 
   NAMES_SUPPORTED_CHAIN_NAMESPACES: ['eip155'] as ChainNamespace[],
-
+  ONRAMP_SUPPORTED_CHAIN_NAMESPACES: ['eip155', 'solana'] as ChainNamespace[],
+  ACTIVITY_ENABLED_CHAIN_NAMESPACES: ['eip155', 'solana'] as ChainNamespace[],
   NATIVE_TOKEN_ADDRESS: {
     eip155: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
     solana: 'So11111111111111111111111111111111111111111',
