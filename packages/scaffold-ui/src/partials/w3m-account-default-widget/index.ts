@@ -7,7 +7,6 @@ import {
   AccountController,
   type AccountType,
   ChainController,
-  ConstantsUtil as CommonConstantsUtil,
   ConnectionController,
   ConnectorController,
   ConstantsUtil as CoreConstantsUtil,
@@ -94,6 +93,7 @@ export class W3mAccountDefaultWidget extends LitElement {
       return null
     }
 
+    console.log('>> Should use multi account', this.allAccounts, ChainController.state.activeChain)
     const shouldShowMultiAccount =
       ChainController.state.activeChain !== ConstantsUtil.CHAIN.SOLANA &&
       this.allAccounts.length > 1
@@ -132,10 +132,16 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onrampTemplate() {
-    const onramp = this.features?.onramp
-    const isBitcoin = ChainController.state.activeChain === 'bip122'
+    if (!this.namespace) {
+      return null
+    }
 
-    if (!onramp || isBitcoin) {
+    const onramp = this.features?.onramp
+    const hasNetworkSupport = CoreConstantsUtil.ONRAMP_SUPPORTED_CHAIN_NAMESPACES.includes(
+      this.namespace
+    )
+
+    if (!onramp || !hasNetworkSupport) {
       return null
     }
 
@@ -234,7 +240,7 @@ export class W3mAccountDefaultWidget extends LitElement {
     if (
       !authConnector ||
       connectorId !== ConstantsUtil.CONNECTOR_ID.AUTH ||
-      origin.includes(CommonConstantsUtil.SECURE_SITE)
+      origin.includes(CoreConstantsUtil.SECURE_SITE)
     ) {
       return null
     }
