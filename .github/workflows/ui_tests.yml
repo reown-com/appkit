@@ -52,7 +52,7 @@ on:
 jobs:
   ui_tests:
     name: 'Playwright Tests'
-    runs-on: 
+    runs-on:
       labels: [self-hosted, aws-ecs-16cpu-64mem-30m]
       group: ubuntu-runners
     strategy:
