@@ -1538,7 +1538,8 @@ export class AppKit {
 
     const { chainId: activeChainId } = StorageUtil.getActiveNetworkProps()
     const chainIdToUse = chainId || activeChainId
-    const isUnsupportedNetwork = ChainController.state.activeCaipNetwork?.name === 'Unknown Network'
+    const isUnsupportedNetwork =
+      ChainController.state.activeCaipNetwork?.name === ConstantsUtil.UNSUPPORTED_NETWORK_NAME
     const shouldSupportAllNetworks = ChainController.getNetworkProp(
       'supportsAllNetworks',
       chainNamespace
@@ -2018,7 +2019,7 @@ export class AppKit {
     return {
       id: caipNetworkId.split(':')[1],
       caipNetworkId,
-      name: 'Unknown Network',
+      name: ConstantsUtil.UNSUPPORTED_NETWORK_NAME,
       chainNamespace: caipNetworkId.split(':')[0],
       nativeCurrency: {
         name: '',

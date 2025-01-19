@@ -51,5 +51,6 @@ export const ConstantsUtil = {
   ],
   HTTP_STATUS_CODES: {
     SERVICE_UNAVAILABLE: 503
-  }
+  },
+  UNSUPPORTED_NETWORK_NAME: 'Unknown Network'
 } as const
