@@ -8,6 +8,7 @@ import { EventsController, RouterController, type SwapToken } from '@reown/appki
 import { W3mSwapInput } from '../../src/partials/w3m-swap-input'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
+// -- Constants ----------------------------------------- //
 const MOCK_TOKEN: SwapToken = {
   symbol: 'ETH',
   decimals: 18,
