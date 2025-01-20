@@ -230,12 +230,10 @@ describe('SolanaAdapter', () => {
 
   describe('SolanaAdapter - connectWalletConnect', () => {
     it('should connect WalletConnect provider', async () => {
-      const onUri = vi.fn()
       vi.mocked(adapter['connectors']).push(mockWalletConnectConnector)
-      await adapter.connectWalletConnect(onUri)
+      await adapter.connectWalletConnect()
 
       expect(mockWalletConnectConnector.provider.connect).toHaveBeenCalled()
-      expect(mockWalletConnectConnector.provider.on).toHaveBeenCalledWith('display_uri', onUri)
       expect(SolStoreUtil.setConnection).toHaveBeenCalled()
     })
   })
