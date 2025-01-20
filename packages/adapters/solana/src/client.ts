@@ -331,11 +331,8 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     )
   }
 
-  public override async connectWalletConnect(
-    onUri: (uri: string) => void,
-    chainId?: string | number
-  ) {
-    const result = await super.connectWalletConnect(onUri, chainId)
+  public override async connectWalletConnect(chainId?: string | number) {
+    const result = await super.connectWalletConnect(chainId)
 
     const rpcUrl = this.caipNetworks?.find(n => n.id === chainId)?.rpcUrls.default.http[0] as string
     const connection = new Connection(rpcUrl, this.connectionSettings)

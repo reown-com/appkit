@@ -2,12 +2,7 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 import bs58 from 'bs58'
 
 import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
-import {
-  ChainController,
-  ConnectionController,
-  CoreHelperUtil,
-  OptionsController
-} from '@reown/appkit-core'
+import { ChainController, CoreHelperUtil } from '@reown/appkit-core'
 
 import { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'
@@ -21,19 +16,6 @@ export class UniversalAdapter extends AdapterBlueprint {
         namespace: this.namespace as ChainNamespace
       })
     )
-  }
-
-  public override async connectWalletConnect(
-    onUri: (uri: string) => void,
-    _chainId?: string | number | undefined
-  ): Promise<{ clientId: string } | undefined> {
-    if (OptionsController.state.useInjectedUniversalProvider && ConnectionController.state.wcUri) {
-      onUri(ConnectionController.state.wcUri)
-
-      return undefined
-    }
-
-    return super.connectWalletConnect(onUri, _chainId)
   }
 
   public async connect(
