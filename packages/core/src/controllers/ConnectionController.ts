@@ -106,13 +106,9 @@ export const ConnectionController = {
       StorageUtil.setConnectedConnectorId(namespace, ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)
     })
 
-    if (CoreHelperUtil.isTelegram()) {
+    if (CoreHelperUtil.isTelegram() || (CoreHelperUtil.isSafari() && CoreHelperUtil.isIos())) {
       if (wcConnectionPromise) {
-        try {
-          await wcConnectionPromise
-        } catch (error) {
-          /* Empty */
-        }
+        await wcConnectionPromise
         wcConnectionPromise = undefined
 
         return
@@ -124,10 +120,9 @@ export const ConnectionController = {
 
         return
       }
-      wcConnectionPromise = new Promise(async (resolve, reject) => {
-        await this._getClient()?.connectWalletConnect?.().catch(reject)
-        resolve()
-      })
+      wcConnectionPromise = this._getClient()
+        ?.connectWalletConnect?.()
+        .catch(() => undefined)
       this.state.status = 'connecting'
       await wcConnectionPromise
       wcConnectionPromise = undefined

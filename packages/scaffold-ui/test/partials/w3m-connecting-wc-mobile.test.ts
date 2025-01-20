@@ -31,7 +31,7 @@ describe('W3mConnectingWcMobile', () => {
     const el: W3mConnectingWcMobile = await fixture(
       html`<w3m-connecting-wc-mobile></w3m-connecting-wc-mobile>`
     )
-    el['onConnectProxy']()
+    el['onConnect']()
 
     expect(openHrefSpy).toHaveBeenCalledWith(`link://wc?uri=${WC_URI}`, '_self')
   })
@@ -46,7 +46,7 @@ describe('W3mConnectingWcMobile', () => {
       const el: W3mConnectingWcMobile = await fixture(
         html`<w3m-connecting-wc-mobile></w3m-connecting-wc-mobile>`
       )
-      el['onConnectProxy']()
+      el['onConnect']()
 
       expect(openHrefSpy).toHaveBeenCalledWith(`link://wc?uri=${WC_URI}`, '_top')
     } finally {
