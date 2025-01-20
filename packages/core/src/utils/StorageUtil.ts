@@ -154,7 +154,11 @@ export const StorageUtil = {
     return undefined
   },
 
-  getConnectedConnectorId(namespace: ChainNamespace) {
+  getConnectedConnectorId(namespace: ChainNamespace | undefined) {
+    if (!namespace) {
+      return undefined
+    }
+
     try {
       const key = getSafeConnectorIdKey(namespace)
 
