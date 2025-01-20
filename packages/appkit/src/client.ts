@@ -1564,25 +1564,26 @@ export class AppKit {
         )
       }
 
-      const network = (caipNetwork || fallbackCaipNetwork) as CaipNetwork
-      if (network.chainNamespace === ChainController.state.activeChain) {
+      const network = caipNetwork || fallbackCaipNetwork
+
+      if (network?.chainNamespace === ChainController.state.activeChain) {
         this.setCaipNetwork(network)
       }
       this.syncConnectedWalletInfo(chainNamespace)
 
-      await this.syncBalance({ address, chainId: network.id, chainNamespace })
+      await this.syncBalance({ address, chainId: network?.id, chainNamespace })
     }
   }
 
   private async syncBalance(params: {
     address: string
-    chainId: string | number
+    chainId: string | number | undefined
     chainNamespace: ChainNamespace
   }) {
     const caipNetwork = NetworkUtil.getNetworksByNamespace(
       this.caipNetworks,
       params.chainNamespace
-    ).find(n => n.id.toString() === params.chainId.toString())
+    ).find(n => n.id.toString() === params.chainId?.toString())
 
     if (!caipNetwork) {
       return

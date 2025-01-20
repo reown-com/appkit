@@ -1,12 +1,10 @@
 import { html } from 'lit'
-import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
   AssetUtil,
   ConnectionController,
   EventsController,
-  OptionsController,
   ThemeController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
@@ -18,18 +16,9 @@ import styles from './styles.js'
 export class W3mConnectingWcQrcode extends W3mConnectingWidget {
   public static override styles = styles
 
-  // -- State & Properties -------------------------------- //
-  @state() private useInjectedUniversalProvider =
-    OptionsController.state.useInjectedUniversalProvider
-
   public constructor() {
     super()
     window.addEventListener('resize', this.forceUpdate)
-    this.unsubscribe.push(
-      OptionsController.subscribeKey('useInjectedUniversalProvider', () => {
-        this.useInjectedUniversalProvider = OptionsController.state.useInjectedUniversalProvider
-      })
-    )
 
     EventsController.sendEvent({
       type: 'track',
@@ -63,11 +52,6 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
         ${this.copyTemplate()}
       </wui-flex>
       <w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links>
-      ${this.useInjectedUniversalProvider
-        ? html`<wui-flex flexDirection="column" .padding=${['0', 'xl', 'xl', 'xl']} gap="xl">
-            <w3m-all-wallets-widget></w3m-all-wallets-widget>
-          </wui-flex>`
-        : null}
     `
   }
 
