@@ -251,6 +251,10 @@ export const ChainController = {
       return
     }
 
+    if (state.activeChain !== caipNetwork.chainNamespace) {
+      this.setIsSwitchingNamespace(true)
+    }
+
     const newAdapter = state.chains.get(caipNetwork.chainNamespace)
     state.activeChain = caipNetwork.chainNamespace
     state.activeCaipNetwork = caipNetwork
