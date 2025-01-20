@@ -89,26 +89,26 @@ export class W3mConnectView extends LitElement {
   public override render() {
     const { termsConditionsUrl, privacyPolicyUrl } = OptionsController.state
 
-    const legalCheckbox = OptionsController.state.features?.legalCheckbox
+    const isLegalCheckbox = OptionsController.state.features?.legalCheckbox
 
     const legalUrl = termsConditionsUrl || privacyPolicyUrl
-    const showLegalCheckbox =
-      Boolean(legalUrl) && Boolean(legalCheckbox) && this.walletGuide === 'get-started'
+    const isShowLegalCheckbox =
+      Boolean(legalUrl) && Boolean(isLegalCheckbox) && this.walletGuide === 'get-started'
 
-    const disabled = showLegalCheckbox && !this.checked
+    const isDisabled = isShowLegalCheckbox && !this.checked
 
     const classes = {
       connect: true,
-      disabled
+      disabled: isDisabled
     }
 
-    const enableWalletGuide = OptionsController.state.enableWalletGuide
+    const isEnableWalletGuide = OptionsController.state.enableWalletGuide
 
-    const enableWallets = this.enableWallets
+    const isEnableWallets = this.enableWallets
 
     const socialOrEmailLoginEnabled = this.isSocialEnabled || this.authConnector
 
-    const tabIndex = disabled ? -1 : undefined
+    const tabIndex = isDisabled ? -1 : undefined
 
     return html`
       <wui-flex flexDirection="column">
@@ -123,8 +123,8 @@ export class W3mConnectView extends LitElement {
             flexDirection="column"
             gap="s"
             .padding=${socialOrEmailLoginEnabled &&
-            enableWallets &&
-            enableWalletGuide &&
+            isEnableWallets &&
+            isEnableWalletGuide &&
             this.walletGuide === 'get-started'
               ? ['3xs', 's', '0', 's']
               : ['3xs', 's', 's', 's']}
@@ -132,7 +132,7 @@ export class W3mConnectView extends LitElement {
             ${this.renderConnectMethod(tabIndex)}
           </wui-flex>
         </wui-flex>
-        ${this.guideTemplate(disabled)}
+        ${this.guideTemplate(isDisabled)}
         <w3m-legal-footer></w3m-legal-footer>
       </wui-flex>
     `
@@ -248,16 +248,16 @@ export class W3mConnectView extends LitElement {
   }
 
   private walletListTemplate(tabIndex?: number) {
-    const enableWallets = this.enableWallets
-    const collapseWalletsOldProp = this.features?.emailShowWallets === false
-    const collapseWallets = this.features?.collapseWallets
-    const shouldCollapseWallets = collapseWalletsOldProp || collapseWallets
+    const isEnableWallets = this.enableWallets
+    const isCollapseWalletsOldProp = this.features?.emailShowWallets === false
+    const isCollapseWallets = this.features?.collapseWallets
+    const shouldCollapseWallets = isCollapseWalletsOldProp || isCollapseWallets
 
-    if (!enableWallets) {
+    if (!isEnableWallets) {
       return null
     }
     // In tg ios context, we have to preload the connection uri so we can use it to deeplink on user click
-    if (CoreHelperUtil.isTelegram() && CoreHelperUtil.isIos()) {
+    if ((CoreHelperUtil.isTelegram() || CoreHelperUtil.isSafari()) && CoreHelperUtil.isIos()) {
       ConnectionController.connectWalletConnect().catch(_e => ({}))
     }
 
@@ -280,9 +280,9 @@ export class W3mConnectView extends LitElement {
   }
 
   private guideTemplate(disabled = false) {
-    const enableWalletGuide = OptionsController.state.enableWalletGuide
+    const isEnableWalletGuide = OptionsController.state.enableWalletGuide
 
-    if (!enableWalletGuide) {
+    if (!isEnableWalletGuide) {
       return null
     }
 

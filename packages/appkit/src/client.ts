@@ -285,6 +285,7 @@ export class AppKit {
   }
 
   public subscribeAccount(callback: (newState: UseAppKitAccountReturn) => void) {
+    const authConnector = ConnectorController.getAuthConnector()
     function updateVal() {
       callback({
         allAccounts: AccountController.state.allAccounts,
@@ -292,11 +293,14 @@ export class AppKit {
         address: CoreHelperUtil.getPlainAddress(ChainController.state.activeCaipAddress),
         isConnected: Boolean(ChainController.state.activeCaipAddress),
         status: AccountController.state.status,
-        embeddedWalletInfo: {
-          user: AccountController.state.user,
-          accountType: AccountController.state.preferredAccountType,
-          isSmartAccountDeployed: Boolean(AccountController.state.smartAccountDeployed)
-        }
+        embeddedWalletInfo: authConnector
+          ? {
+              user: AccountController.state.user,
+              authProvider: AccountController.state.socialProvider || 'email',
+              accountType: AccountController.state.preferredAccountType,
+              isSmartAccountDeployed: Boolean(AccountController.state.smartAccountDeployed)
+            }
+          : undefined
       })
     }
 
@@ -424,17 +428,15 @@ export class AppKit {
     return ChainController.getAccountProp('address', chainNamespace)
   }
 
-  public getProvider = () => AccountController.state.provider
+  public getProvider = <T>(namespace: ChainNamespace) => ProviderUtil.getProvider<T>(namespace)
+
+  public getProviderType = (namespace: ChainNamespace) => ProviderUtil.state.providerIds[namespace]
 
   public getPreferredAccountType = () =>
     AccountController.state.preferredAccountType as W3mFrameTypes.AccountType
 
   public setCaipAddress: (typeof AccountController)['setCaipAddress'] = (caipAddress, chain) => {
     AccountController.setCaipAddress(caipAddress, chain)
-  }
-
-  public setProvider: (typeof AccountController)['setProvider'] = (provider, chain) => {
-    AccountController.setProvider(provider, chain)
   }
 
   public setBalance: (typeof AccountController)['setBalance'] = (balance, balanceSymbol, chain) => {
@@ -829,14 +831,14 @@ export class AppKit {
 
   private createClients() {
     this.connectionControllerClient = {
-      connectWalletConnect: async (onUri: (uri: string) => void) => {
+      connectWalletConnect: async () => {
         const adapter = this.getAdapter(ChainController.state.activeChain)
 
         if (!adapter) {
           throw new Error('Adapter not found')
         }
 
-        const result = await adapter.connectWalletConnect(onUri, this.getCaipNetwork()?.id)
+        const result = await adapter.connectWalletConnect(this.getCaipNetwork()?.id)
         this.close()
 
         this.setClientId(result?.clientId || null)
@@ -1289,6 +1291,11 @@ export class AppKit {
 
   private listenWalletConnect() {
     if (this.universalProvider) {
+      this.universalProvider.on(
+        'display_uri',
+        ConnectionController.setUri.bind(ConnectionController)
+      )
+
       this.universalProvider.on('disconnect', () => {
         this.chainNamespaces.forEach(namespace => {
           this.resetAccount(namespace)
@@ -1638,7 +1645,8 @@ export class AppKit {
 
   private syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
     const connectorId = StorageUtil.getConnectedConnectorId(chainNamespace)
-    const providerType = ProviderUtil.state.providerIds[chainNamespace]
+    const providerType = ProviderUtil.getProviderId(chainNamespace)
+
     if (
       providerType === UtilConstantsUtil.CONNECTOR_TYPE_ANNOUNCED ||
       providerType === UtilConstantsUtil.CONNECTOR_TYPE_INJECTED
