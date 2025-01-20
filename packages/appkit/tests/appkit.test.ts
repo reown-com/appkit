@@ -1764,4 +1764,45 @@ describe('WalletConnect Events', () => {
       expect(setCaipNetworkSpy).toHaveBeenNthCalledWith(2, newChain)
     })
   })
+
+  describe.only('open', () => {
+    beforeEach(() => {
+      vi.clearAllMocks()
+      vi.spyOn(OptionsController, 'getSnapshot').mockReturnValue({ ...OptionsController.state })
+      vi.spyOn(ThemeController, 'getSnapshot').mockReturnValue({ ...ThemeController.state })
+    })
+
+    it('should open different views', async () => {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        ...ChainController.state,
+        activeCaipNetwork: mainnet
+      })
+      const openSpy = vi.spyOn(ModalController, 'open')
+
+      const views = [
+        'Account',
+        'Connect',
+        'Networks',
+        'ApproveTransaction',
+        'OnRampProviders',
+        'ConnectingWalletConnectBasic',
+        'Swap',
+        'WhatIsAWallet',
+        'WhatIsANetwork',
+        'AllWallets',
+        'WalletSend'
+      ] as const
+
+      const appkit = new AppKit({
+        ...mockOptions,
+        adapters: [],
+        networks: [mainnet]
+      })
+
+      for (const view of views) {
+        await appkit.open({ view })
+        expect(openSpy).toHaveBeenCalledWith({ view })
+      }
+    })
+  })
 })
