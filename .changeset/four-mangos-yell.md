@@ -20,7 +20,7 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Expanded more views in the modal open function to include Swap, Send, Wallet Is a Wallet, Wallet Is a Network and All Wallets.
+Expanded more views in the modal open function to include Swap, Send, Wallet Is a Wallet, Wallet Is a Network and All Wallets screens.
 
 **Example usage**
 

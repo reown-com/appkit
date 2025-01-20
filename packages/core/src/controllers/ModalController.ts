@@ -47,6 +47,7 @@ export const ModalController = {
   async open(options?: ModalControllerArguments['open']) {
     await ApiController.state.prefetchPromise
     const caipAddress = ChainController.state.activeCaipAddress
+
     const noAdapters = ChainController.state.noAdapters
 
     if (options?.view) {
