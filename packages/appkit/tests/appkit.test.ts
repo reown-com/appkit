@@ -723,7 +723,9 @@ describe('Base', () => {
       vi.mocked(appKit as any).caipNetworks = [mainnet]
       // Mock the connector data
       const mockConnector = {
-        id: 'test-wallet'
+        id: 'test-wallet',
+        name: 'Test Wallet',
+        imageUrl: 'test-wallet-icon'
       } as Connector
 
       vi.mocked(ConnectorController.getConnectors).mockReturnValue([mockConnector])
@@ -745,7 +747,8 @@ describe('Base', () => {
 
       expect(AccountController.setConnectedWalletInfo).toHaveBeenCalledWith(
         expect.objectContaining({
-          name: mockConnector.id
+          name: mockConnector.name,
+          icon: mockConnector.imageUrl
         }),
         'eip155'
       )

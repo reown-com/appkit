@@ -1645,7 +1645,8 @@ export class AppKit {
 
   private syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
     const connectorId = StorageUtil.getConnectedConnectorId(chainNamespace)
-    const providerType = ProviderUtil.state.providerIds[chainNamespace]
+    const providerType = ProviderUtil.getProviderId(chainNamespace)
+
     if (
       providerType === UtilConstantsUtil.CONNECTOR_TYPE_ANNOUNCED ||
       providerType === UtilConstantsUtil.CONNECTOR_TYPE_INJECTED
