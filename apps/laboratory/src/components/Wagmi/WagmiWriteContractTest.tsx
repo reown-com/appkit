@@ -49,7 +49,7 @@ function AvailableTestContent({ accountAddress }: { accountAddress: string | und
     abi,
     address,
     functionName: 'purchase',
-    value: parseEther('0.0001'),
+    value: parseEther('0.00001'),
     args: [1],
     query: {
       enabled: false
