@@ -241,6 +241,33 @@ Issued At: 2024-12-05T16:02:32.905Z`)
       )
     })
 
+    it('gets sessions when address is not lowercased', async () => {
+      const fetchSpy = vi.spyOn(global, 'fetch')
+
+      fetchSpy.mockResolvedValueOnce(
+        mocks.mockFetchResponse({
+          address: '0x1234567890abcdef1234567890abcdef12345678',
+          chainId: 1
+        })
+      )
+
+      const sessions = await siwx.getSessions(
+        'eip155:1',
+        '0x1234567890ABCDEF1234567890abcdef12345678'
+      )
+
+      expect(sessions).toEqual([
+        {
+          data: {
+            accountAddress: '0x1234567890abcdef1234567890abcdef12345678',
+            chainId: 'eip155:1'
+          },
+          message: '',
+          signature: ''
+        }
+      ])
+    })
+
     it('returns empty array if session is not found', async () => {
       const fetchSpy = vi.spyOn(global, 'fetch')
 
