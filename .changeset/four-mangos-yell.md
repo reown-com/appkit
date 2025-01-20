@@ -41,7 +41,7 @@ const modal = createAppKit({
   projectId: 'YOUR_PROJECT_ID'
 })
 
-export default function YourApp() {
+export function YourApp() {
   return (
     <>
       {VIEWS.map(({ label, view }) => (
