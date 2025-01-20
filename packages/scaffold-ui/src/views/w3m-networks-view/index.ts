@@ -163,12 +163,12 @@ export class W3mNetworksView extends LitElement {
     const isDifferentNamespace = network.chainNamespace !== ChainController.state.activeChain
     const isCurrentNamespaceConnected = AccountController.state.caipAddress
     const isNextNamespaceConnected = AccountController.getCaipAddress(network.chainNamespace)
+    const connectorId = StorageUtil.getConnectedConnectorId(ChainController.state.activeChain)
 
     /**
      * If the network is supported by the auth connector, we don't need to show switch active chain view.
-     * There are some cases like switching from Ethereum to Bitcoin where Bitcoin is not supported by the auth connector and users should connect with another connector.
+     * But there are some cases like switching from Ethereum to Bitcoin where Bitcoin is not supported by the auth connector and users should connect with another connector.
      */
-    const connectorId = StorageUtil.getConnectedConnectorId(ChainController.state.activeChain)
     const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
     const isSupportedForAuthConnector = ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.find(
       c => c === network.chainNamespace
@@ -176,39 +176,26 @@ export class W3mNetworksView extends LitElement {
 
     if (!isCurrentNamespaceConnected) {
       RouterController.push('SwitchNetwork', { ...routerData, network })
-
-      return
-    }
-
-    // If user connected with auth connector and the next network is supported by the auth connector, we don't need to show switch active chain view.
-    if (isConnectedWithAuth && isSupportedForAuthConnector) {
-      RouterController.push('SwitchNetwork', { ...routerData, network })
-
-      return
-    }
-
-    // If user connected with auth connector and the next network is not supported by the auth connector, we need to show switch active chain view.
-    if (isConnectedWithAuth && !isSupportedForAuthConnector) {
-      RouterController.push('SwitchActiveChain', {
-        switchToChain: network.chainNamespace,
-        navigateTo: 'Connect',
-        navigateWithReplace: true,
-        network
-      })
-
-      return
-    }
-
-    // If user connected with non-auth connector, we should check if user switching to a different namespace.
-    if (isDifferentNamespace && !isNextNamespaceConnected) {
-      RouterController.push('SwitchActiveChain', {
-        switchToChain: network.chainNamespace,
-        navigateTo: 'Connect',
-        navigateWithReplace: true,
-        network
-      })
     } else {
-      RouterController.push('SwitchNetwork', { ...routerData, network })
+      if (isConnectedWithAuth && isSupportedForAuthConnector) {
+        // If user connected with auth connector and the next network is supported by the auth connector, we don't need to show switch active chain view.
+        RouterController.push('SwitchNetwork', { ...routerData, network })
+      } else if (
+        // 1. If user connected with auth connector and the next network is not supported by the auth connector, we need to show switch active chain view.
+        (isConnectedWithAuth && !isSupportedForAuthConnector) ||
+        // 2. If user connected with non-auth connector, we should check if user switching to a different namespace and next namespace is not connected.
+        (isDifferentNamespace && !isNextNamespaceConnected)
+      ) {
+        RouterController.push('SwitchActiveChain', {
+          switchToChain: network.chainNamespace,
+          navigateTo: 'Connect',
+          navigateWithReplace: true,
+          network
+        })
+      } else {
+        // For any other case, we redirect to switch network page
+        RouterController.push('SwitchNetwork', { ...routerData, network })
+      }
     }
   }
 }

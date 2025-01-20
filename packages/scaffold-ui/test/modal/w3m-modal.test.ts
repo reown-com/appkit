@@ -163,32 +163,6 @@ describe('W3mModal', () => {
       expect(goBackSpy).toHaveBeenCalled()
     })
 
-    it.skip('should handle network change when connected but not connected in the other namespace', async () => {
-      const goBackSpy = vi.spyOn(RouterController, 'goBack')
-      vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
-        view: 'Connect'
-      } as RouterControllerState)
-      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-        ...ChainController.state,
-        isSwitchingNamespace: true
-      } as unknown as typeof ChainController.state)
-      ;(element as any).caipAddress = 'eip155:1:0x123'
-      ;(element as any).caipNetwork = { id: '1', name: 'Network 1', caipNetworkId: 'eip155:1' }
-
-      const nextNetwork = {
-        id: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        name: 'Solana',
-        chainNamespace: 'solana',
-        caipNetworkId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
-      } as unknown as CaipNetwork
-
-      ChainController.setActiveCaipNetwork(nextNetwork)
-      element.requestUpdate()
-      await elementUpdated(element)
-
-      expect(goBackSpy).not.toHaveBeenCalled()
-    })
-
     it('should call goBack when network changed and page is UnsupportedChain', async () => {
       vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
         view: 'UnsupportedChain'
