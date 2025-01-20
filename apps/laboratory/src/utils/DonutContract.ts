@@ -1,3 +1,5 @@
+import { base, baseSepolia, optimism, sepolia } from 'viem/chains'
+
 export const abi = [
   {
     inputs: [
@@ -70,4 +72,10 @@ export const abi = [
   }
 ]
 
-export const address = '0x2E65BAfA07238666c3b239E94F32DaD3cDD6498D'
+export const address = '0x59d6578C1D8FEb2f892f68D4f76f98511F831c6F'
+
+// Deployed on sepolia, base-seoplia, base-mainnet, optimism-mainnet.
+export const donutContractSupportedChains = [sepolia, baseSepolia, base, optimism]
+export const donutContractSupportedChainsName = donutContractSupportedChains
+  .map(chain => chain.name)
+  .join(', ')
