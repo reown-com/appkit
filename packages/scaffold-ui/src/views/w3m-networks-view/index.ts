@@ -174,9 +174,7 @@ export class W3mNetworksView extends LitElement {
       c => c === network.chainNamespace
     )
 
-    if (!isCurrentNamespaceConnected) {
-      RouterController.push('SwitchNetwork', { ...routerData, network })
-    } else {
+    if (isCurrentNamespaceConnected) {
       if (isConnectedWithAuth && isSupportedForAuthConnector) {
         // If user connected with auth connector and the next network is supported by the auth connector, we don't need to show switch active chain view.
         RouterController.push('SwitchNetwork', { ...routerData, network })
@@ -196,6 +194,8 @@ export class W3mNetworksView extends LitElement {
         // For any other case, we redirect to switch network page
         RouterController.push('SwitchNetwork', { ...routerData, network })
       }
+    } else {
+      RouterController.push('SwitchNetwork', { ...routerData, network })
     }
   }
 }
