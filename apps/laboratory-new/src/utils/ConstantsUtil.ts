@@ -1,24 +1,25 @@
+import type { CaipNetwork } from '@reown/appkit-new'
 import {
   arbitrum,
+  aurora,
+  base,
+  baseSepolia,
+  bitcoin,
+  gnosis,
+  hedera,
   mainnet,
   optimism,
   polygon,
-  zkSync,
   sepolia,
   solana,
-  solanaTestnet,
   solanaDevnet,
-  base,
-  baseSepolia,
-  gnosis,
+  solanaTestnet,
   unichainSepolia,
-  hedera,
-  aurora,
-  bitcoin
+  zkSync
 } from '@reown/appkit-new/networks'
 import type { AppKitNetwork } from '@reown/appkit-new/networks'
+
 import { getLocalStorageItem } from './LocalStorage'
-import type { CaipNetwork } from '@reown/appkit-new'
 
 const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
 if (!projectId) {

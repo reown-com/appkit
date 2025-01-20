@@ -26,11 +26,11 @@
 
 <script>
 import { createAppKit, useAppKitTheme } from '@reown/appkit/vue'
-import { wagmiAdapter, solanaWeb3JsAdapter, networks, projectId } from './config'
 
 import ActionButtonList from './components/ActionButton.vue'
-import InfoList from './components/InfoList.vue'
 import Footer from './components/Footer.vue'
+import InfoList from './components/InfoList.vue'
+import { networks, projectId, solanaWeb3JsAdapter, wagmiAdapter } from './config'
 
 // Initialize AppKit
 createAppKit({

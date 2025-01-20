@@ -1,5 +1,6 @@
 /* eslint-disable no-await-in-loop */
-import { expect, type Locator, type Page } from '@playwright/test'
+import { type Locator, type Page, expect } from '@playwright/test'
+
 import { WALLET_URL } from '../constants'
 import type { SessionParams } from '../types'
 

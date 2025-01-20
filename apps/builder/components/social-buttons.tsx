@@ -1,7 +1,9 @@
+import { UniqueIdentifier } from '@dnd-kit/core'
+
+import { ConstantsUtil, SocialProvider } from '@reown/appkit-core'
+
 import { SortableSocialGrid } from '@/components/sortable-social-grid'
 import { useAppKitContext } from '@/hooks/use-appkit'
-import { UniqueIdentifier } from '@dnd-kit/core'
-import { ConstantsUtil, SocialProvider } from '@reown/appkit-core'
 
 const allSocials = ConstantsUtil.DEFAULT_FEATURES.socials as SocialProvider[]
 

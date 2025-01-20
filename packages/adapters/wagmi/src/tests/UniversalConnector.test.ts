@@ -1,14 +1,16 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
-import { walletConnect } from '../connectors/UniversalConnector'
-import { mainnet } from '@reown/appkit/networks'
 import { getAddress } from 'viem'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { mainnet } from '@reown/appkit/networks'
+
+import { walletConnect } from '../connectors/UniversalConnector'
 import {
-  mockAppKit,
-  mockProvider,
-  mockSession,
   mockAddress,
+  mockAppKit,
+  mockCaipAddress,
   mockCaipNetworks,
-  mockCaipAddress
+  mockProvider,
+  mockSession
 } from './mocks/AppKit'
 
 vi.mock('@reown/appkit-core', async importOriginal => {

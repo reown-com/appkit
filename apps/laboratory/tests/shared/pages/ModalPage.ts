@@ -1,15 +1,18 @@
 /* eslint-disable no-await-in-loop */
 import type { BrowserContext, Locator, Page } from '@playwright/test'
 import { expect } from '@playwright/test'
-import { BASE_URL, DEFAULT_SESSION_PARAMS } from '../constants'
+
+import type { WalletFeature } from '@reown/appkit'
+
+import { BASE_URL, DEFAULT_SESSION_PARAMS, EXTENSION_NAME, EXTENSION_RDNS } from '../constants'
+import type { TimingRecords } from '../fixtures/timing-fixture'
 import { doActionAndWaitForNewPage } from '../utils/actions'
 import { Email } from '../utils/email'
-import { DeviceRegistrationPage } from './DeviceRegistrationPage'
-import type { TimingRecords } from '../fixtures/timing-fixture'
-import { WalletPage } from './WalletPage'
-import { WalletValidator } from '../validators/WalletValidator'
 import { routeInterceptUrl } from '../utils/verify'
-import type { WalletFeature } from '@reown/appkit'
+import type { ModalValidator } from '../validators/ModalValidator'
+import { WalletValidator } from '../validators/WalletValidator'
+import { DeviceRegistrationPage } from './DeviceRegistrationPage'
+import { WalletPage } from './WalletPage'
 
 const maliciousUrl = 'https://malicious-app-verify-simulation.vercel.app'
 
@@ -27,12 +30,14 @@ export type ModalFlavor =
   | 'no-socials'
   | 'wallet-button'
   | 'siwe'
+  | 'siwx'
   | 'all'
 
 function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
   const urlsByFlavor: Partial<Record<ModalFlavor, string>> = {
     default: `${baseUrl}library/${library}/`,
     external: `${baseUrl}library/external/`,
+    siwx: `${baseUrl}library/siwx-default/`,
     'wagmi-verify-valid': `${baseUrl}library/wagmi-verify-valid/`,
     'wagmi-verify-domain-mismatch': `${baseUrl}library/wagmi-verify-domain-mismatch/`,
     'wagmi-verify-evil': maliciousUrl,
@@ -73,6 +78,9 @@ export class ModalPage {
     }
 
     await this.page.goto(this.url)
+
+    // Wait for w3m-modal to be injected
+    await this.page.waitForSelector('w3m-modal', { state: 'visible', timeout: 5_000 })
   }
 
   assertDefined<T>(value: T | undefined | null): T {
@@ -311,6 +319,24 @@ export class ModalPage {
     await signButton.click()
   }
 
+  async signTypedData() {
+    const signButton = this.page.getByTestId('sign-typed-data-button')
+    await signButton.scrollIntoViewIfNeeded()
+    await signButton.click()
+  }
+
+  async signMessageAndTypedData(modalValidator: ModalValidator, network?: string) {
+    await this.sign()
+    await modalValidator.expectAcceptedSign()
+
+    if (network !== 'Solana') {
+      // Wait for the toast animation to complete
+      await modalValidator.page.waitForTimeout(500)
+      await this.signTypedData()
+      await modalValidator.expectAcceptedSignTypedData()
+    }
+  }
+
   async signatureRequestFrameShouldVisible(headerText: string) {
     await expect(
       this.page.frameLocator('#w3m-iframe').getByText(headerText),
@@ -377,9 +403,12 @@ export class ModalPage {
     await this.page.getByTestId('w3m-connecting-siwe-cancel').click()
   }
 
-  async switchNetwork(network: string) {
-    await this.page.getByTestId('account-button').click()
-    await this.page.getByTestId('w3m-account-select-network').click()
+  async switchNetwork(network: string, clickAccountButton = true) {
+    if (clickAccountButton) {
+      await this.page.getByTestId('account-button').click()
+      await this.page.getByTestId('w3m-account-select-network').click()
+    }
+
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
     // The state is chaing too fast and test runner doesn't wait the loading page. It's fastly checking the network selection button and detect that it's switched already.
     await this.page.waitForTimeout(300)
@@ -484,6 +513,28 @@ export class ModalPage {
     const tabWebApp = this.page.getByTestId('tab-webapp')
     await expect(tabWebApp).toBeVisible()
     await tabWebApp.click()
+  }
+
+  async getExtensionWallet() {
+    // eslint-disable-next-line init-declarations
+    let walletSelector: Locator
+
+    const walletSelectorRDNS = this.page.getByTestId(`wallet-selector-${EXTENSION_RDNS}`)
+    const walletSelectorName = this.page.getByTestId(`wallet-selector-${EXTENSION_NAME}`)
+
+    try {
+      await walletSelectorRDNS.waitFor({ state: 'visible', timeout: 2_000 })
+      walletSelector = walletSelectorRDNS
+    } catch {
+      try {
+        await walletSelectorName.waitFor({ state: 'visible', timeout: 2_000 })
+        walletSelector = walletSelectorName
+      } catch {
+        throw new Error('No wallet selector found')
+      }
+    }
+
+    return walletSelector
   }
 
   async clickWalletButton(id: string) {
@@ -625,5 +676,19 @@ export class ModalPage {
     await this.page.getByTestId('header-back').click()
     await this.page.waitForTimeout(500)
     await this.closeModal()
+  }
+
+  async connectToExtension() {
+    await this.connectButton.click()
+    const walletSelector = await this.getExtensionWallet()
+    await walletSelector.click()
+  }
+
+  async connectToExtensionMultichain(chainNamespace: 'eip155' | 'solana' | 'bitcoin') {
+    await this.connectButton.click()
+    const walletSelector = await this.getExtensionWallet()
+    await walletSelector.click()
+    const chainSelector = this.page.getByTestId(`wui-list-chain-${chainNamespace}`)
+    await chainSelector.click()
   }
 }

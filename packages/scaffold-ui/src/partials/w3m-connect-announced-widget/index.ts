@@ -1,3 +1,7 @@
+import { LitElement, html } from 'lit'
+import { property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import type { Connector } from '@reown/appkit-core'
 import {
   ApiController,
@@ -7,9 +11,6 @@ import {
   RouterController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connect-announced-widget')
 export class W3mConnectAnnouncedWidget extends LitElement {

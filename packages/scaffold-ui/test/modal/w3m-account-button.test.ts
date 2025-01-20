@@ -1,15 +1,21 @@
-import { expect, html, fixture } from '@open-wc/testing'
+import { expect, fixture, html } from '@open-wc/testing'
+import { afterEach, describe, it, vi } from 'vitest'
 
+import type { CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
-  OptionsController,
   ModalController,
+  OptionsController,
   RouterController
 } from '@reown/appkit-core'
+import type { WuiAccountButton } from '@reown/appkit-ui'
+
 import { W3mAccountButton } from '../../src/modal/w3m-account-button'
-import { describe, it, afterEach, vi } from 'vitest'
-import type { CaipNetwork } from '@reown/appkit-common'
+import { HelpersUtil } from '../utils/HelpersUtil'
+
+// -- Constants -------------------------------------------------- //
+const ACCOUNT_BUTTON_TEST_ID = 'account-button'
 
 const mockCaipNetwork: CaipNetwork = {
   chainNamespace: 'eip155',
@@ -119,6 +125,40 @@ describe('W3mAccountButton', () => {
       await accountButton?.click()
 
       expect(RouterController.state.view).to.equal('UnsupportedChain')
+    })
+
+    it('should show loading state if balance value is not a string', async () => {
+      vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        balance: undefined
+      })
+
+      const button = await fixture(html`<w3m-account-button></w3m-account-button>`)
+
+      const accountButton = HelpersUtil.getByTestId(
+        button,
+        ACCOUNT_BUTTON_TEST_ID
+      ) as WuiAccountButton
+
+      expect(accountButton.loading).to.equal(true)
+    })
+
+    it('should not show loading state if balance value is a string', async () => {
+      vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        ...AccountController.state,
+        balance: '0.00'
+      })
+
+      const button = await fixture(html`<w3m-account-button></w3m-account-button>`)
+
+      const accountButton = HelpersUtil.getByTestId(
+        button,
+        ACCOUNT_BUTTON_TEST_ID
+      ) as WuiAccountButton
+
+      expect(accountButton.loading).to.equal(false)
     })
   })
 })

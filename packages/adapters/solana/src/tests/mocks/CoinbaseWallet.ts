@@ -1,4 +1,5 @@
 import { vi } from 'vitest'
+
 import type { SolanaCoinbaseWallet } from '../../providers/CoinbaseWalletProvider.js'
 import { TestConstants } from '../util/TestConstants.js'
 

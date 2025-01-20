@@ -1,15 +1,18 @@
 /* eslint-disable consistent-return */
-import { useSnapshot } from 'valtio'
 import { useCallback, useEffect } from 'react'
-import { ConstantsUtil } from '../src/utils/ConstantsUtil.js'
-import type { AppKitWalletButton, Wallet } from './index.js'
-import { ConnectorUtil } from '../src/utils/ConnectorUtil.js'
-import { ConnectorController, type Connector, ChainController } from '@reown/appkit-core'
-import { WalletUtil } from '../src/utils/WalletUtil.js'
-import type { SocialProvider } from '../src/utils/TypeUtil.js'
+
+import { useSnapshot } from 'valtio'
+
 import type { ParsedCaipAddress } from '@reown/appkit-common'
+import { ChainController, type Connector, ConnectorController } from '@reown/appkit-core'
+
 import { ApiController } from '../src/controllers/ApiController.js'
 import { WalletButtonController } from '../src/controllers/WalletButtonController.js'
+import { ConnectorUtil } from '../src/utils/ConnectorUtil.js'
+import { ConstantsUtil } from '../src/utils/ConstantsUtil.js'
+import type { SocialProvider } from '../src/utils/TypeUtil.js'
+import { WalletUtil } from '../src/utils/WalletUtil.js'
+import type { AppKitWalletButton, Wallet } from './index.js'
 
 export * from './index.js'
 

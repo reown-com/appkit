@@ -1,9 +1,9 @@
 'use client'
 
-import { SidebarContent } from '@/components/sidebar-content'
-import { PreviewContent } from '@/components/preview-content'
-import { cn } from '@/lib/utils'
 import { BrandingHeader } from '@/components/branding-header'
+import { PreviewContent } from '@/components/preview-content'
+import { SidebarContent } from '@/components/sidebar-content'
+import { cn } from '@/lib/utils'
 
 export default function Page() {
   return (

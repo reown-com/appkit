@@ -1,18 +1,19 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
+import { ConstantsUtil } from '@reown/appkit-common'
 import {
   AssetUtil,
+  type Connector,
   ConnectorController,
   CoreHelperUtil,
   RouterController,
-  SnackController,
-  type Connector
+  SnackController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
-import { html, LitElement } from 'lit'
-import { state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 import styles from './styles.js'
-import { ConstantsUtil } from '@reown/appkit-common'
 
 @customElement('w3m-connecting-multi-chain-view')
 export class W3mConnectingMultiChainView extends LitElement {
@@ -85,6 +86,7 @@ export class W3mConnectingMultiChainView extends LitElement {
               imageSrc=${ifDefined(AssetUtil.getChainImage(connector.chain))}
               name=${ConstantsUtil.CHAIN_NAME_MAP[connector.chain]}
               @click=${() => this.onConnector(connector)}
+              data-testid="wui-list-chain-${connector.chain}"
             ></wui-list-wallet>
           `
         : null

@@ -1,13 +1,15 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+
+import { InputUtil, NumberUtil } from '@reown/appkit-common'
 import {
   EventsController,
   RouterController,
-  type SwapToken,
-  type SwapInputTarget
+  type SwapInputTarget,
+  type SwapToken
 } from '@reown/appkit-core'
-import { InputUtil, NumberUtil } from '@reown/appkit-common'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+
 import styles from './styles.js'
 
 const MINIMUM_USD_VALUE_TO_CONVERT = 0.00005

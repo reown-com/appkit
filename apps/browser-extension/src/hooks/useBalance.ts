@@ -1,4 +1,4 @@
-import { clusterApiUrl, Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
+import { Connection, LAMPORTS_PER_SOL, PublicKey, clusterApiUrl } from '@solana/web3.js'
 import { useQuery } from '@tanstack/react-query'
 import Big from 'big.js'
 import { Address, formatEther } from 'viem'

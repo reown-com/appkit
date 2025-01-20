@@ -1,9 +1,12 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import '@reown/appkit-ui/src/composites/wui-qr-code'
 import type { WuiQrCode } from '@reown/appkit-ui/src/composites/wui-qr-code'
-import { html } from 'lit'
+
 import { themeOptions, walletImageSrc } from '../../utils/PresetUtils'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 type Component = Meta<WuiQrCode>
 

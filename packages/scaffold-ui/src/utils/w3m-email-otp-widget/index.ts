@@ -1,14 +1,16 @@
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import {
-  RouterController,
-  SnackController,
-  ConnectorController,
-  CoreHelperUtil
-} from '@reown/appkit-core'
 import { state } from 'lit/decorators.js'
-import styles from './styles.js'
+
+import {
+  ConnectorController,
+  CoreHelperUtil,
+  RouterController,
+  SnackController
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { W3mFrameHelpers } from '@reown/appkit-wallet'
+
+import styles from './styles.js'
 
 // -- Types --------------------------------------------- //
 export type OnOtpSubmitFn = (otp: string) => Promise<void>

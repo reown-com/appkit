@@ -1,7 +1,10 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui/src/composites/wui-avatar'
 import type { WuiAvatar } from '@reown/appkit-ui/src/composites/wui-avatar'
-import { html } from 'lit'
+
 import { address, avatarImageSrc } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiAvatar>

@@ -1,9 +1,12 @@
 import * as React from 'react'
+
 import { Button } from '@chakra-ui/react'
+import Provider from '@walletconnect/universal-provider'
+
+import { useAppKitAccount, useAppKitProvider } from '@reown/appkit-new/react'
+
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'
-import { useAppKitAccount, useAppKitProvider } from '@reown/appkit-new/react'
-import Provider from '@walletconnect/universal-provider'
 
 export function UpaEvmSignMessageTest() {
   const toast = useChakraToast()

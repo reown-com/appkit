@@ -1,8 +1,12 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, snapshot } from 'valtio/vanilla'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
+
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
+import type { SIWXConfig } from '../utils/SIWXUtil.js'
 import type {
   ConnectMethod,
   CustomWallet,
+  DefaultAccountTypes,
   Features,
   Metadata,
   ProjectId,
@@ -11,8 +15,6 @@ import type {
   Tokens,
   WalletFeature
 } from '../utils/TypeUtil.js'
-import { ConstantsUtil } from '../utils/ConstantsUtil.js'
-import type { SIWXConfig } from '../utils/SIWXUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerStatePublic {
@@ -140,6 +142,11 @@ export interface OptionsControllerStatePublic {
    * @default false
    */
   allowUnsupportedChain?: boolean
+  /**
+   * Default account types for each namespace.
+   * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa' }"
+   */
+  defaultAccountTypes: DefaultAccountTypes
 }
 
 export interface OptionsControllerStateInternal {
@@ -159,7 +166,8 @@ const state = proxy<OptionsControllerState & OptionsControllerStateInternal>({
   features: ConstantsUtil.DEFAULT_FEATURES,
   projectId: '',
   sdkType: 'appkit',
-  sdkVersion: 'html-wagmi-undefined'
+  sdkVersion: 'html-wagmi-undefined',
+  defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES
 })
 
 // -- Controller ---------------------------------------- //
@@ -317,6 +325,17 @@ export const OptionsController = {
     useInjectedUniversalProvider: OptionsControllerState['useInjectedUniversalProvider']
   ) {
     state.useInjectedUniversalProvider = useInjectedUniversalProvider
+  },
+
+  setDefaultAccountTypes(
+    defaultAccountType: Partial<OptionsControllerState['defaultAccountTypes']> = {}
+  ) {
+    Object.entries(defaultAccountType).forEach(([namespace, accountType]) => {
+      if (accountType) {
+        // @ts-expect-error - Keys are validated by the param type
+        state.defaultAccountTypes[namespace] = accountType
+      }
+    })
   },
 
   getSnapshot() {
