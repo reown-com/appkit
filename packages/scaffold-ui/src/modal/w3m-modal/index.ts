@@ -207,10 +207,15 @@ export class W3mModal extends LitElement {
     const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
     const nextConnected = CoreHelperUtil.getPlainAddress(caipAddress)
 
+    // When users decline SIWE signature, we should close the modal
+    const isDisconnectedInSameNamespace = !nextConnected && !isSwitchingNamespace
+
     // If user is switching to another namespace and connected in that namespace, we should go back
     const isSwitchingNamespaceAndConnected = isSwitchingNamespace && nextConnected
 
-    if (isSwitchingNamespaceAndConnected) {
+    if (isDisconnectedInSameNamespace) {
+      ModalController.close()
+    } else if (isSwitchingNamespaceAndConnected) {
       RouterController.goBack()
     }
 
