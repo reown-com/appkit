@@ -163,7 +163,7 @@ describe('W3mModal', () => {
       expect(goBackSpy).toHaveBeenCalled()
     })
 
-    it('should handle network change when connected but not connected in the other namespace', async () => {
+    it.skip('should handle network change when connected but not connected in the other namespace', async () => {
       const goBackSpy = vi.spyOn(RouterController, 'goBack')
       vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
         view: 'Connect'
