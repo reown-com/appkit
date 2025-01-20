@@ -1,9 +1,11 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+
 import { AccountController, EventsController, RouterController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import styles from './styles.js'
-import { state } from 'lit/decorators.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+
+import styles from './styles.js'
 
 @customElement('w3m-account-tokens-widget')
 export class W3mAccountTokensWidget extends LitElement {
@@ -52,6 +54,7 @@ export class W3mAccountTokensWidget extends LitElement {
         iconColor="success-100"
         iconBackgroundColor="success-100"
         tag="popular"
+        data-testid="buy-crypto"
       ></wui-list-description
       ><wui-list-description
         @click=${this.onReceiveClick.bind(this)}
@@ -60,6 +63,7 @@ export class W3mAccountTokensWidget extends LitElement {
         icon="arrowBottomCircle"
         iconColor="fg-200"
         iconBackgroundColor="fg-200"
+        data-testid="receive-funds"
       ></wui-list-description
     ></wui-flex>`
   }

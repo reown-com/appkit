@@ -1,6 +1,6 @@
+import chalk from 'chalk'
 import { promises } from 'fs'
 import tiged from 'tiged'
-import chalk from 'chalk'
 
 export async function checkDirectoryExists(directory) {
   try {

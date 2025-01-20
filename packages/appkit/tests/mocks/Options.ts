@@ -1,10 +1,15 @@
-import type { ChainAdapter } from '@reown/appkit-core'
-import type { AppKitOptions } from '../../src/utils/index.js'
-import { mainnet, solana } from '../../src/networks/index.js'
-import type { SdkVersion } from '@reown/appkit-core'
 import { vi } from 'vitest'
 
-export const mockOptions = {
+import type { ChainAdapter } from '@reown/appkit-core'
+import type { SdkVersion } from '@reown/appkit-core'
+
+import { mainnet, sepolia, solana } from '../../src/networks/index.js'
+import type { AppKitOptions } from '../../src/utils/index.js'
+
+export const mockOptions: AppKitOptions & {
+  sdkVersion: SdkVersion
+  sdkType: string
+} = {
   projectId: 'test-project-id',
   adapters: [
     {
@@ -24,14 +29,13 @@ export const mockOptions = {
       emit: vi.fn()
     } as unknown as ChainAdapter
   ],
-  networks: [mainnet, solana],
+  networks: [mainnet, sepolia, solana],
   metadata: {
     name: 'Test App',
     description: 'Test App Description',
     url: 'https://test-app.com',
     icons: ['https://test-app.com/icon.png']
   },
-  sdkVersion: `html-wagmi-5.1.6` as SdkVersion
-} as unknown as AppKitOptions & {
-  sdkVersion: SdkVersion
+  sdkVersion: `html-wagmi-5.1.6`,
+  sdkType: 'appkit'
 }

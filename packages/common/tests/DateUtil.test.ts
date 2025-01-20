@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { DateUtil } from '../src/utils/DateUtil.js'
 
 const fakeDateTime = new Date(2023, 1, 1, 12)

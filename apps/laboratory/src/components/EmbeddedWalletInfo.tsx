@@ -1,4 +1,5 @@
-import { Box, Heading, Text, Stack, StackDivider } from '@chakra-ui/react'
+import { Box, Heading, Stack, StackDivider, Text } from '@chakra-ui/react'
+
 import { useAppKitAccount } from '@reown/appkit/react'
 
 export function EmbeddedWalletInfo() {

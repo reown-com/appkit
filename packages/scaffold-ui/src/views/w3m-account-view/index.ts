@@ -1,8 +1,9 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { ChainController, ConnectorController, StorageUtil } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { state } from 'lit/decorators.js'
 
 @customElement('w3m-account-view')
 export class W3mAccountView extends LitElement {

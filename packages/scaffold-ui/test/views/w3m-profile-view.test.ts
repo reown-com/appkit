@@ -1,21 +1,24 @@
-import { describe, expect, vi, test, beforeEach } from 'vitest'
 import { fixture } from '@open-wc/testing'
+import { beforeEach, describe, expect, test, vi } from 'vitest'
+
 import { html } from 'lit'
-import { HelpersUtil } from '../utils/HelpersUtil'
-import type { W3mProfileView } from '../../src/views/w3m-profile-view'
+
+import type { ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
+  type AccountType,
+  type AuthConnector,
   ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   ModalController,
-  SnackController,
-  type AccountType,
-  type AuthConnector
+  SnackController
 } from '@reown/appkit-core'
-import type { ChainNamespace } from '@reown/appkit-common'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
+
+import type { W3mProfileView } from '../../src/views/w3m-profile-view'
+import { HelpersUtil } from '../utils/HelpersUtil'
 
 // --- Constants ---------------------------------------------------- //
 const TEST_ADDRESS = '0x123...789'

@@ -1,5 +1,6 @@
 import type { SIWEConfig } from '../core/utils/TypeUtils.js'
 import { AppKitSIWEClient } from '../src/client.js'
+
 export {
   getAddressFromMessage,
   getChainIdFromMessage,

@@ -1,7 +1,9 @@
-import type { SIWXSession } from '@reown/appkit-core'
-import { SIWXVerifier } from '../core/SIWXVerifier.js'
 import { verifyMessage } from 'viem'
+
 import { ConstantsUtil } from '@reown/appkit-common'
+import type { SIWXSession } from '@reown/appkit-core'
+
+import { SIWXVerifier } from '../core/SIWXVerifier.js'
 
 /**
  * Default verifier for EIP155 sessions.

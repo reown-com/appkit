@@ -1,12 +1,15 @@
 'use client'
 
+import React, { type ReactNode } from 'react'
+
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { createAppKit } from '@reown/appkit/react'
+import { type Config, WagmiProvider, cookieToInitialState } from 'wagmi'
+
 import { ConstantsUtil } from '@reown/appkit-core'
 import { mainnet } from '@reown/appkit/networks'
-import React, { type ReactNode } from 'react'
-import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
-import { wagmiAdapter, networks } from '@/lib/config'
+import { createAppKit } from '@reown/appkit/react'
+
+import { networks, wagmiAdapter } from '@/lib/config'
 import { ThemeStore } from '@/lib/theme-store'
 import { urlStateUtils } from '@/lib/url-state'
 
@@ -21,7 +24,7 @@ if (!projectId) {
 const metadata = {
   name: 'AppKit Builder',
   description: 'The full stack toolkit to build onchain app UX',
-  url: 'https://github.com/0xonerb/next-reown-appkit-ssr', // origin must match your domain & subdomain
+  url: window?.origin || 'https://demo.reown.com', // origin must match your domain & subdomain
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 

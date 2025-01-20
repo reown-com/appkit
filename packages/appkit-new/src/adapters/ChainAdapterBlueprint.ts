@@ -1,24 +1,26 @@
+import type UniversalProvider from '@walletconnect/universal-provider'
+import { snapshot } from 'valtio'
+
 import {
-  getW3mThemeVariables,
   type CaipAddress,
   type CaipNetwork,
-  type ChainNamespace
+  type ChainNamespace,
+  getW3mThemeVariables
 } from '@reown/appkit-common'
-import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
 import {
-  OptionsController,
-  ThemeController,
   type Connector as AppKitConnector,
   type AuthConnector,
   type Metadata,
+  OptionsController,
+  ThemeController,
   type Tokens
 } from '@reown/appkit-core'
-import type UniversalProvider from '@walletconnect/universal-provider'
-import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
-import type { AppKitOptions } from '../utils/index.js'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
+
 import type { AppKit } from '../client.js'
-import { snapshot } from 'valtio'
+import type { AppKitOptions } from '../utils/index.js'
+import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
 
 type EventName = 'disconnect' | 'accountChanged' | 'switchNetwork'
 type EventData = {

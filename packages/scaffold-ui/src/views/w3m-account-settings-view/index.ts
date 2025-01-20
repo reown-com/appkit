@@ -1,24 +1,25 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
+import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
-  ConnectionController,
   AssetController,
+  ChainController,
+  ConnectionController,
+  ConnectorController,
+  ConstantsUtil,
   CoreHelperUtil,
   EventsController,
   ModalController,
   RouterController,
-  SnackController,
-  StorageUtil,
-  ConnectorController,
   SendController,
-  ConstantsUtil,
-  ChainController
+  SnackController,
+  StorageUtil
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
-import { ConstantsUtil as CommonConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
 
 @customElement('w3m-account-settings-view')
 export class W3mAccountSettingsView extends LitElement {

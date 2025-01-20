@@ -1,7 +1,10 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui-new/src/composites/wui-token-button'
 import type { WuiTokenButton } from '@reown/appkit-ui-new/src/composites/wui-token-button'
-import { html } from 'lit'
+
 import { networkImageSrc } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiTokenButton>

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { AssetController } from '../../exports/index.js'
 
 // -- Constants ----------------------------------------------------------------

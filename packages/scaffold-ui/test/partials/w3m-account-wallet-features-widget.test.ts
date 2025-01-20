@@ -1,10 +1,13 @@
-import { W3mAccountWalletFeaturesWidget } from '../../src/partials/w3m-account-wallet-features-widget'
-import { describe, it, expect, vi, beforeAll, afterEach } from 'vitest'
-import { fixture, elementUpdated } from '@open-wc/testing'
-import { AccountController, CoreHelperUtil, RouterController } from '@reown/appkit-core'
+import { elementUpdated, fixture } from '@open-wc/testing'
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
+
 import { html } from 'lit'
-import { HelpersUtil } from '../utils/HelpersUtil'
+
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { AccountController, CoreHelperUtil, RouterController } from '@reown/appkit-core'
+
+import { W3mAccountWalletFeaturesWidget } from '../../src/partials/w3m-account-wallet-features-widget'
+import { HelpersUtil } from '../utils/HelpersUtil'
 
 // --- Constants ---------------------------------------------------- //
 const WALLET_FEATURE_WIDGET_TEST_ID = 'w3m-account-wallet-features-widget'

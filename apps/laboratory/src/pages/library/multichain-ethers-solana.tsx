@@ -1,13 +1,15 @@
-import { createAppKit } from '@reown/appkit/react'
+import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
+
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
-import { ThemeStore } from '../../utils/StoreUtil'
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { mainnet } from '@reown/appkit/networks'
+import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '../../components/AppKitButtons'
-import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 import { MultiChainTestsEthersSolana } from '../../components/MultiChainTestsEthersSolana'
-import { mainnet } from '@reown/appkit/networks'
+import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { ThemeStore } from '../../utils/StoreUtil'
+
 const networks = ConstantsUtil.AllNetworks
 
 const etherAdapter = new EthersAdapter()

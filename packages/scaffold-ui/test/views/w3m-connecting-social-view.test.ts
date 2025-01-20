@@ -1,15 +1,18 @@
-import { describe, it, expect, vi } from 'vitest'
 import { fixture } from '@open-wc/testing'
+import { describe, expect, it, vi } from 'vitest'
+
 import { html } from 'lit'
-import { W3mConnectingSocialView } from '../../src/views/w3m-connecting-social-view'
+
 import {
+  AccountController,
+  type AuthConnector,
+  ChainController,
   ConnectionController,
   ConnectorController,
-  type AuthConnector,
-  RouterController,
-  AccountController,
-  ChainController
+  RouterController
 } from '@reown/appkit-core'
+
+import { W3mConnectingSocialView } from '../../src/views/w3m-connecting-social-view'
 
 describe('W3mConnectingSocialView - disconnectedCallback', () => {
   it('should call socialWindow.close when component unmounts', async () => {

@@ -1,4 +1,5 @@
 import { vi } from 'vitest'
+
 import type { AppKit } from '../../src/client.js'
 import { mainnet } from '../../src/networks/index.js'
 

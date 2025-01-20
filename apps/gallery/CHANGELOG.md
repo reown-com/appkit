@@ -108,8 +108,8 @@
   **Example usage**
 
   ```ts
-  import { createAppKit } from '@reown/appkit/react'
   import { mainnet } from '@reown/appkit/networks'
+  import { createAppKit } from '@reown/appkit/react'
 
   const modal = createAppKit({
     adapters: [
@@ -386,9 +386,9 @@
   **Example usage**
 
   ```ts
-  import { createAppKit } from '@reown/appkit/react'
   import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
   import { mainnet } from '@reown/appkit/networks'
+  import { createAppKit } from '@reown/appkit/react'
 
   const wagmiAdapter = new WagmiAdapter({
     ssr: true,

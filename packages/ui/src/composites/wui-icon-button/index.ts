@@ -1,11 +1,12 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
-import { customElement } from '../../utils/WebComponentsUtil.js'
-import styles from './styles.js'
-import '../wui-tooltip/index.js'
+
 import '../../components/wui-icon/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { IconType } from '../../utils/TypeUtil.js'
+import { customElement } from '../../utils/WebComponentsUtil.js'
+import '../wui-tooltip/index.js'
+import styles from './styles.js'
 
 @customElement('wui-icon-button')
 export class WuiIconButton extends LitElement {

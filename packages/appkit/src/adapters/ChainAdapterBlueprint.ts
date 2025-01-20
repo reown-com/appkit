@@ -1,29 +1,27 @@
+import UniversalProvider from '@walletconnect/universal-provider'
+
 import {
-  getW3mThemeVariables,
-  ConstantsUtil as CommonConstantsUtil,
   type CaipAddress,
   type CaipNetwork,
-  type ChainNamespace
+  type ChainNamespace,
+  ConstantsUtil as CommonConstantsUtil
 } from '@reown/appkit-common'
-import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
 import {
   AccountController,
-  OptionsController,
-  ThemeController,
-  type AccountType,
   type AccountControllerState,
+  type AccountType,
   type Connector as AppKitConnector,
-  type AuthConnector,
-  type Metadata,
+  OptionsController,
   type Tokens,
   type WriteContractArgs
 } from '@reown/appkit-core'
-import type UniversalProvider from '@walletconnect/universal-provider'
-import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { PresetsUtil } from '@reown/appkit-utils'
-import type { AppKitOptions } from '../utils/index.js'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
+
 import type { AppKit } from '../client.js'
-import { snapshot } from 'valtio/vanilla'
+import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'
+import type { AppKitOptions } from '../utils/index.js'
+import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
 
 type EventName =
   | 'disconnect'
@@ -97,17 +95,7 @@ export abstract class AdapterBlueprint<
    * Sets the universal provider for WalletConnect.
    * @param {UniversalProvider} universalProvider - The universal provider instance
    */
-  public setUniversalProvider(universalProvider: UniversalProvider) {
-    this.addConnector({
-      id: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
-      type: 'WALLET_CONNECT',
-      name: PresetsUtil.ConnectorNamesMap[CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT],
-      provider: universalProvider,
-      imageId: PresetsUtil.ConnectorImageIds[CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT],
-      chain: this.namespace,
-      chains: []
-    } as unknown as Connector)
-  }
+  public abstract setUniversalProvider(universalProvider: UniversalProvider): void
 
   /**
    * Sets the auth provider.
@@ -130,28 +118,6 @@ export abstract class AdapterBlueprint<
    * @param {...Connector} connectors - The connectors to add
    */
   protected addConnector(...connectors: Connector[]) {
-    if (connectors.some(connector => connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH)) {
-      const authConnector = connectors.find(
-        connector => connector.id === CommonConstantsUtil.CONNECTOR_ID.AUTH
-      ) as AuthConnector
-
-      const optionsState = snapshot(OptionsController.state)
-      const themeMode = ThemeController.getSnapshot().themeMode
-      const themeVariables = ThemeController.getSnapshot().themeVariables
-
-      authConnector?.provider?.syncDappData?.({
-        metadata: optionsState.metadata as Metadata,
-        sdkVersion: optionsState.sdkVersion,
-        projectId: optionsState.projectId,
-        sdkType: optionsState.sdkType
-      })
-      authConnector.provider.syncTheme({
-        themeMode,
-        themeVariables,
-        w3mThemeVariables: getW3mThemeVariables(themeVariables, themeMode)
-      })
-    }
-
     const connectorsAdded = new Set<string>()
     this.availableConnectors = [...connectors, ...this.availableConnectors].filter(connector => {
       if (connectorsAdded.has(connector.id)) {
@@ -221,13 +187,17 @@ export abstract class AdapterBlueprint<
 
   /**
    * Connects to WalletConnect.
-   * @param {(uri: string) => void} onUri - Callback function to handle the WalletConnect URI
-   * @param {number | string} [chainId] - Optional chain ID to connect to
+   * @param {number | string} [_chainId] - Optional chain ID to connect to
    */
-  public abstract connectWalletConnect(
-    onUri: (uri: string) => void,
-    chainId?: number | string
-  ): Promise<void>
+  public async connectWalletConnect(
+    _chainId?: number | string
+  ): Promise<undefined | { clientId: string }> {
+    const connector = this.getWalletConnectConnector()
+
+    const result = await connector.connectWalletConnect()
+
+    return { clientId: result.clientId }
+  }
 
   /**
    * Connects to a wallet.
@@ -251,7 +221,33 @@ export abstract class AdapterBlueprint<
    * Switches the network.
    * @param {AdapterBlueprint.SwitchNetworkParams} params - Network switching parameters
    */
-  public abstract switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void>
+  public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
+    const { caipNetwork, providerType } = params
+
+    if (!params.provider) {
+      return
+    }
+
+    const provider = 'provider' in params.provider ? params.provider.provider : params.provider
+
+    if (providerType === 'WALLET_CONNECT') {
+      ;(provider as UniversalProvider).setDefaultChain(caipNetwork.caipNetworkId)
+
+      return
+    }
+
+    if (provider && providerType === 'AUTH') {
+      const authProvider = provider as W3mFrameProvider
+      await authProvider.switchNetwork(caipNetwork.caipNetworkId)
+      const user = await authProvider.getUser({
+        chainId: caipNetwork.caipNetworkId,
+        preferredAccountType:
+          OptionsController.state.defaultAccountTypes[caipNetwork.chainNamespace]
+      })
+
+      this.emit('switchNetwork', user)
+    }
+  }
 
   /**
    * Disconnects the current wallet.
@@ -379,6 +375,18 @@ export abstract class AdapterBlueprint<
   public abstract revokePermissions(
     params: AdapterBlueprint.RevokePermissionsParams
   ): Promise<`0x${string}`>
+
+  protected getWalletConnectConnector(): WalletConnectConnector {
+    const connector = this.connectors.find(c => c instanceof WalletConnectConnector) as
+      | WalletConnectConnector
+      | undefined
+
+    if (!connector) {
+      throw new Error('WalletConnectConnector not found')
+    }
+
+    return connector
+  }
 }
 
 export namespace AdapterBlueprint {

@@ -1,10 +1,10 @@
 import {
+  useAppKitAccount,
+  useAppKitEvents,
+  useAppKitNetwork,
   useAppKitState,
   useAppKitTheme,
-  useAppKitEvents,
-  useAppKitAccount,
-  useWalletInfo,
-  useAppKitNetwork
+  useWalletInfo
 } from '../config'
 
 export function InfoList() {

@@ -1,6 +1,8 @@
-import { getCsrfToken, signIn, signOut, getSession } from 'next-auth/react'
-import type { SIWEVerifyMessageArgs, SIWECreateMessageArgs, SIWESession } from '@reown/appkit-siwe'
+import { getCsrfToken, getSession, signIn, signOut } from 'next-auth/react'
+
+import type { SIWECreateMessageArgs, SIWESession, SIWEVerifyMessageArgs } from '@reown/appkit-siwe'
 import { createSIWEConfig, formatMessage } from '@reown/appkit-siwe'
+
 import { ConstantsUtil } from './ConstantsUtil'
 
 const chains = ConstantsUtil.EvmNetworks

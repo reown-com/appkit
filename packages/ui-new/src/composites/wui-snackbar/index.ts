@@ -1,7 +1,8 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
-import '../../components/wui-text/index.js'
+
 import '../../components/wui-loading-spinner/index.js'
+import '../../components/wui-text/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import type { ColorType, IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'

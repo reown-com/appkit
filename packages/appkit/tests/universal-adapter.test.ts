@@ -1,14 +1,24 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { UniversalAdapter } from '../src/universal-adapter/client'
 import type UniversalProvider from '@walletconnect/universal-provider'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import type { CaipNetwork } from '@reown/appkit-common'
+
+import { WalletConnectConnector } from '../src/connectors'
+import { UniversalAdapter } from '../src/universal-adapter/client'
 
 // Mock provider
 const mockProvider = {
   on: vi.fn(),
   connect: vi.fn(),
   disconnect: vi.fn(),
-  setDefaultChain: vi.fn()
+  setDefaultChain: vi.fn(),
+  client: {
+    core: {
+      crypto: {
+        getClientId: vi.fn(() => Promise.resolve('client-id'))
+      }
+    }
+  }
 } as unknown as UniversalProvider
 
 // Mock CaipNetwork
@@ -31,35 +41,30 @@ describe('UniversalAdapter', () => {
   let adapter: UniversalAdapter
 
   beforeEach(() => {
+    vi.clearAllMocks()
+
     adapter = new UniversalAdapter()
 
-    // Mock internal state using Object.defineProperty
-    Object.defineProperty(adapter, 'connectors', {
-      value: [
-        {
-          id: 'WALLET_CONNECT',
-          type: 'WALLET_CONNECT',
-          provider: mockProvider
-        }
-      ],
-      writable: true
-    })
+    adapter.connectors.push(
+      vi.mocked(
+        new WalletConnectConnector({
+          provider: mockProvider,
+          caipNetworks: [mockCaipNetwork],
+          namespace: 'eip155'
+        })
+      )
+    )
 
     Object.defineProperty(adapter, 'caipNetworks', {
       value: [mockCaipNetwork],
       writable: true
     })
-
-    vi.clearAllMocks()
   })
 
   describe('connectWalletConnect', () => {
     it('should connect successfully', async () => {
-      const onUri = vi.fn()
+      await adapter.connectWalletConnect()
 
-      await adapter.connectWalletConnect(onUri)
-
-      expect(mockProvider.on).toHaveBeenCalledWith('display_uri', expect.any(Function))
       expect(mockProvider.connect).toHaveBeenCalledWith({
         optionalNamespaces: expect.any(Object)
       })
@@ -71,13 +76,12 @@ describe('UniversalAdapter', () => {
         writable: true
       })
 
-      await expect(adapter.connectWalletConnect(() => {})).rejects.toThrow(
-        'UniversalAdapter:connectWalletConnect - caipNetworks or provider is undefined'
+      await expect(adapter.connectWalletConnect()).rejects.toThrow(
+        'WalletConnectConnector not found'
       )
     })
 
     it('should call onUri when display_uri event is emitted', async () => {
-      const onUri = vi.fn()
       const testUri = 'wc:test-uri'
 
       // Call the callback directly when 'on' is called
@@ -88,9 +92,7 @@ describe('UniversalAdapter', () => {
         return mockProvider
       })
 
-      await adapter.connectWalletConnect(onUri)
-
-      expect(onUri).toHaveBeenCalledWith(testUri)
+      await adapter.connectWalletConnect()
     })
   })
 
@@ -115,6 +117,7 @@ describe('UniversalAdapter', () => {
     it('should switch network successfully', async () => {
       const polygonNetwork: CaipNetwork = {
         ...mockCaipNetwork,
+        caipNetworkId: 'eip155:137',
         id: 137,
         name: 'Polygon',
         nativeCurrency: {
@@ -139,7 +142,51 @@ describe('UniversalAdapter', () => {
         adapter.switchNetwork({
           caipNetwork: mockCaipNetwork
         })
-      ).rejects.toThrow('UniversalAdapter:switchNetwork - provider is undefined')
+      ).rejects.toThrow('WalletConnectConnector not found')
+    })
+  })
+
+  describe('getAccounts', () => {
+    it('should return empty array if there is no accounts', async () => {
+      mockProvider.session = undefined
+      const accounts = await adapter.getAccounts({ id: '', namespace: 'eip155' })
+
+      expect(accounts).toEqual({ accounts: [] })
+    })
+
+    it('should return accounts successfully', async () => {
+      mockProvider.session = {
+        namespaces: {
+          eip155: {
+            accounts: ['eip155:mock_network:mock_address_1', 'eip155:mock_network:mock_address_2']
+          }
+        }
+      } as any
+
+      Object.assign(adapter, {
+        provider: mockProvider
+      })
+
+      const accounts = await adapter.getAccounts({ id: '', namespace: 'eip155' })
+
+      expect(accounts).toEqual({
+        accounts: [
+          {
+            address: 'mock_address_1',
+            namespace: 'eip155',
+            path: undefined,
+            publicKey: undefined,
+            type: 'eoa'
+          },
+          {
+            address: 'mock_address_2',
+            namespace: 'eip155',
+            path: undefined,
+            publicKey: undefined,
+            type: 'eoa'
+          }
+        ]
+      })
     })
   })
 })

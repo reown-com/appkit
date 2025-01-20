@@ -1,6 +1,6 @@
-import { Hono } from 'hono'
 import type { DurableObjectNamespace } from '@cloudflare/workers-types'
 import { DurableObject } from 'cloudflare:workers'
+import { Hono } from 'hono'
 
 export type Bindings = {
   ID_ALLOCATION: DurableObjectNamespace<IdAllocation>

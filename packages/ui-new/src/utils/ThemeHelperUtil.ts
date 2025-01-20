@@ -1,6 +1,8 @@
+import { type CSSResultGroup, css as litCSS, unsafeCSS } from 'lit'
+
 import type { ThemeType } from '@reown/appkit-common'
+
 import { styles as allStyles, tokens } from './ThemeConstantsUtil.js'
-import { css as litCSS, type CSSResultGroup, unsafeCSS } from 'lit'
 
 const PREFIX_VAR = '--apkt'
 
