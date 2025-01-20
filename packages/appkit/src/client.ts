@@ -831,14 +831,14 @@ export class AppKit {
 
   private createClients() {
     this.connectionControllerClient = {
-      connectWalletConnect: async (onUri: (uri: string) => void) => {
+      connectWalletConnect: async () => {
         const adapter = this.getAdapter(ChainController.state.activeChain)
 
         if (!adapter) {
           throw new Error('Adapter not found')
         }
 
-        const result = await adapter.connectWalletConnect(onUri, this.getCaipNetwork()?.id)
+        const result = await adapter.connectWalletConnect(this.getCaipNetwork()?.id)
         this.close()
 
         this.setClientId(result?.clientId || null)
@@ -1291,6 +1291,11 @@ export class AppKit {
 
   private listenWalletConnect() {
     if (this.universalProvider) {
+      this.universalProvider.on(
+        'display_uri',
+        ConnectionController.setUri.bind(ConnectionController)
+      )
+
       this.universalProvider.on('disconnect', () => {
         this.chainNamespaces.forEach(namespace => {
           this.resetAccount(namespace)
