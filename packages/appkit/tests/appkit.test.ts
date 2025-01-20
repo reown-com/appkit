@@ -1665,7 +1665,7 @@ describe('Balance sync', () => {
     expect(AccountController.setBalance).not.toHaveBeenCalled()
   })
 
-  it.only('should fetch native balance on testnet', async () => {
+  it('should fetch native balance on testnet', async () => {
     vi.spyOn(NetworkUtil, 'getNetworksByNamespace').mockReturnValue([
       { ...sepolia, caipNetworkId: 'eip155:11155111', chainNamespace: 'eip155' }
     ])
