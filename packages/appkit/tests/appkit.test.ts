@@ -1765,7 +1765,7 @@ describe('WalletConnect Events', () => {
     })
   })
 
-  describe.only('open', () => {
+  describe('open', () => {
     beforeEach(() => {
       vi.clearAllMocks()
       vi.spyOn(OptionsController, 'getSnapshot').mockReturnValue({ ...OptionsController.state })
