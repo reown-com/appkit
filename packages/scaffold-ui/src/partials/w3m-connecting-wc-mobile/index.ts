@@ -5,6 +5,7 @@ import {
   EventsController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-wc-mobile')
@@ -19,8 +20,6 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
     }
     this.secondaryBtnLabel = undefined
     this.secondaryLabel = ConstantsUtil.CONNECT_LABELS.MOBILE
-    this.onConnect = this.onConnectProxy.bind(this)
-    this.onRender = this.onRenderProxy.bind(this)
     document.addEventListener('visibilitychange', this.onBuffering.bind(this))
     EventsController.sendEvent({
       type: 'track',
@@ -44,14 +43,14 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
   }
 
   // -- Private ------------------------------------------- //
-  private onRenderProxy() {
+  protected override onRender = () => {
     if (!this.ready && this.uri) {
       this.ready = true
       this.onConnect?.()
     }
   }
 
-  private onConnectProxy() {
+  protected override onConnect = () => {
     if (this.wallet?.mobile_link && this.uri) {
       try {
         this.error = false
@@ -86,6 +85,13 @@ export class W3mConnectingWcMobile extends W3mConnectingWidget {
       setTimeout(() => {
         ConnectionController.setBuffering(false)
       }, 5000)
+    }
+  }
+
+  protected override onTryAgain() {
+    if (!this.buffering) {
+      ConnectionController.setWcError(false)
+      this.onConnect()
     }
   }
 }

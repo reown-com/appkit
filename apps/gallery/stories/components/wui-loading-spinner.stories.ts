@@ -1,7 +1,10 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui/src/components/wui-loading-spinner'
 import type { WuiLoadingSpinner } from '@reown/appkit-ui/src/components/wui-loading-spinner'
-import { html } from 'lit'
+
 import { colorOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiLoadingSpinner>

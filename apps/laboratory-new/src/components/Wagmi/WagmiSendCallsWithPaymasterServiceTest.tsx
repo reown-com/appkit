@@ -1,13 +1,16 @@
+import { useCallback, useMemo, useState } from 'react'
+
 import { Button, Input, Stack, Text, Tooltip } from '@chakra-ui/react'
+import { type Address, parseGwei } from 'viem'
 import { useAccount } from 'wagmi'
 import { useSendCalls } from 'wagmi/experimental'
-import { useCallback, useMemo, useState } from 'react'
-import { useChakraToast } from '../Toast'
-import { parseGwei, type Address } from 'viem'
+
+import { useAppKitAccount } from '@reown/appkit-new/react'
+
+import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
 import { vitalikEthAddress } from '../../utils/DataUtil'
 import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '../../utils/EIP5792Utils'
-import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
-import { useAppKitAccount } from '@reown/appkit-new/react'
+import { useChakraToast } from '../Toast'
 
 const TEST_TX_1 = {
   to: vitalikEthAddress as Address,

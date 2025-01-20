@@ -1,19 +1,21 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
+import type { CaipAddress, ChainNamespace } from '@reown/appkit-common'
+import { ConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
+  type AccountType,
   BlockchainApiController,
   ChainController,
   ModalController,
   OptionsController,
-  StorageUtil,
-  type AccountType
+  StorageUtil
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+
 import styles from './styles.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
-import type { CaipAddress, ChainNamespace } from '@reown/appkit-common'
-import { ConstantsUtil } from '@reown/appkit-common'
 
 @customElement('w3m-switch-address-view')
 export class W3mSwitchAddressView extends LitElement {

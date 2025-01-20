@@ -1,10 +1,11 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
-import {
-  sendCoSignerRequest,
-  CoSignerApiError,
-  CosignerService
-} from '../../src/smart-session/utils/CosignerService'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { ConstantsUtil } from '../../src/smart-session/utils/ConstantUtils'
+import {
+  CoSignerApiError,
+  CosignerService,
+  sendCoSignerRequest
+} from '../../src/smart-session/utils/CosignerService'
 import type {
   ActivatePermissionsRequest,
   AddPermissionRequest,

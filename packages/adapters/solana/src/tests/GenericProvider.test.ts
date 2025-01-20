@@ -1,24 +1,26 @@
+import { isVersionedTransaction } from '@solana/wallet-adapter-base'
+import { Transaction, VersionedTransaction } from '@solana/web3.js'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
+
 import type { Provider } from '@reown/appkit-utils/solana'
-import { WalletConnectProvider } from '../providers/WalletConnectProvider.js'
-import { mockUniversalProvider } from './mocks/UniversalProvider.js'
+
+import { AuthProvider } from '../providers/AuthProvider.js'
+import { CoinbaseWalletProvider } from '../providers/CoinbaseWalletProvider.js'
+import { SolanaWalletConnectProvider } from '../providers/SolanaWalletConnectProvider.js'
 import { WalletStandardProvider } from '../providers/WalletStandardProvider.js'
+import { mockCoinbaseWallet } from './mocks/CoinbaseWallet.js'
+import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
+import { mockUniversalProvider } from './mocks/UniversalProvider.js'
+import { mockW3mFrameProvider } from './mocks/W3mFrameProvider.js'
 import { mockWalletStandard } from './mocks/WalletStandard.js'
 import { TestConstants } from './util/TestConstants.js'
-import { Transaction, VersionedTransaction } from '@solana/web3.js'
-import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
-import { mockCoinbaseWallet } from './mocks/CoinbaseWallet.js'
-import { AuthProvider } from '../providers/AuthProvider.js'
-import { mockW3mFrameProvider } from './mocks/W3mFrameProvider.js'
-import { isVersionedTransaction } from '@solana/wallet-adapter-base'
-import { CoinbaseWalletProvider } from '../providers/CoinbaseWalletProvider.js'
 
 const getActiveChain = vi.fn(() => TestConstants.chains[0])
 
 const providers: { name: string; provider: Provider }[] = [
   {
     name: 'WalletConnectProvider',
-    provider: new WalletConnectProvider({
+    provider: new SolanaWalletConnectProvider({
       provider: mockUniversalProvider(),
       chains: TestConstants.chains,
       getActiveChain

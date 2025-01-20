@@ -1,5 +1,8 @@
 import { useEffect, useState, useSyncExternalStore } from 'react'
+
 import { useSnapshot } from 'valtio'
+
+import type { ChainNamespace } from '@reown/appkit-common'
 import type {
   AppKitAccountButton,
   AppKitButton,
@@ -10,10 +13,10 @@ import type {
   W3mConnectButton,
   W3mNetworkButton
 } from '@reown/appkit-scaffold-ui-new'
+
 import type { AppKit } from '../../../src/client.js'
-import type { AppKitOptions } from '../../utils/TypesUtil.js'
 import { ProviderUtil } from '../../store/ProviderUtil.js'
-import type { ChainNamespace } from '@reown/appkit-common'
+import type { AppKitOptions } from '../../utils/TypesUtil.js'
 
 type OpenOptions = {
   view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'

@@ -1,30 +1,32 @@
-import { describe, it, expect, beforeEach, vi, beforeAll } from 'vitest'
-import { WagmiAdapter } from '../client'
 import type { Config } from '@wagmi/core'
 import {
-  getConnections,
-  switchChain,
-  getBalance,
-  getEnsName,
-  getEnsAvatar,
-  signMessage,
   estimateGas,
-  sendTransaction as wagmiSendTransaction,
+  getAccount,
+  getBalance,
+  getConnections,
+  getEnsAvatar,
+  getEnsName,
+  http,
+  signMessage,
+  switchChain,
   getEnsAddress as wagmiGetEnsAddress,
+  sendTransaction as wagmiSendTransaction,
   writeContract as wagmiWriteContract,
   waitForTransactionReceipt,
   watchAccount,
-  getAccount,
-  watchPendingTransactions,
-  http
+  watchPendingTransactions
 } from '@wagmi/core'
 import * as wagmiCore from '@wagmi/core'
 import { mainnet } from '@wagmi/core/chains'
-import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type UniversalProvider from '@walletconnect/universal-provider'
-import { mockAppKit } from './mocks/AppKit'
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { ConstantsUtil } from '@reown/appkit-common'
+import { CaipNetworksUtil } from '@reown/appkit-utils'
+
+import { WagmiAdapter } from '../client'
 import { LimitterUtil } from '../utils/LimitterUtil'
+import { mockAppKit } from './mocks/AppKit'
 
 vi.mock('@wagmi/core', async () => {
   const actual = await vi.importActual('@wagmi/core')
@@ -64,7 +66,10 @@ const mockCaipNetworks = CaipNetworksUtil.extendCaipNetworks(mockNetworks, {
 const mockWagmiConfig = {
   connectors: [
     {
-      id: 'test-connector'
+      id: 'test-connector',
+      getProvider() {
+        return Promise.resolve({ connect: vi.fn(), request: vi.fn() })
+      }
     }
   ],
   _internal: {
@@ -99,10 +104,13 @@ describe('WagmiAdapter', () => {
       expect(adapter.namespace).toBe('eip155')
     })
 
-    it('should set wagmi connectors', () => {
+    it('should set wagmi connectors', async () => {
       vi.spyOn(wagmiCore, 'watchConnectors').mockImplementation(vi.fn())
 
-      adapter.syncConnectors({ networks: [mainnet], projectId: 'YOUR_PROJECT_ID' }, mockAppKit)
+      await adapter.syncConnectors(
+        { networks: [mainnet], projectId: 'YOUR_PROJECT_ID' },
+        mockAppKit
+      )
 
       expect(adapter.connectors).toStrictEqual([
         {
@@ -113,6 +121,10 @@ describe('WagmiAdapter', () => {
           imageId: undefined,
           imageUrl: undefined,
           info: { rdns: 'test-connector' },
+          provider: {
+            connect: expect.any(Function),
+            request: expect.any(Function)
+          },
           name: undefined,
           type: 'EXTERNAL'
         }
@@ -153,6 +165,37 @@ describe('WagmiAdapter', () => {
       expect(adapterWithCustomRpc.wagmiChains?.[0].rpcUrls.default.http[0]).toBe(
         `https://cloudflare-eth.com`
       )
+    })
+
+    it('should add connector with provider', async () => {
+      const mockConnector = {
+        id: 'injected',
+        name: 'Injected Wallet',
+        type: 'injected',
+        getProvider() {
+          return Promise.resolve({ connect: vi.fn(), request: vi.fn() })
+        }
+      } as unknown as wagmiCore.Connector
+
+      await (adapter as any).addWagmiConnector(mockConnector)
+
+      expect(adapter.connectors).toStrictEqual([
+        {
+          chain: 'eip155',
+          chains: [],
+          explorerId: undefined,
+          id: 'injected',
+          imageId: '07ba87ed-43aa-4adf-4540-9e6a2b9cae00',
+          imageUrl: undefined,
+          info: undefined,
+          name: 'Browser Wallet',
+          provider: {
+            connect: expect.any(Function),
+            request: expect.any(Function)
+          },
+          type: 'INJECTED'
+        }
+      ])
     })
   })
 

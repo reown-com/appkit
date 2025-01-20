@@ -1,15 +1,27 @@
-import { beforeEach, describe, it, vi, type Mock, expect } from 'vitest'
-import { BitcoinAdapter, type BitcoinConnector } from '../src'
-import type { BitcoinApi } from '../src/utils/BitcoinApi'
-import { bitcoin, mainnet } from '@reown/appkit/networks'
-import { mockUTXO } from './mocks/mockUTXO'
-import { SatsConnectConnector } from '../src/connectors/SatsConnectConnector'
-import { mockSatsConnectProvider } from './mocks/mockSatsConnect'
-import { WalletStandardConnector } from '../src/connectors/WalletStandardConnector'
-import { OKXConnector } from '../src/connectors/OKXConnector'
-import { LeatherConnector } from '../src/connectors/LeatherConnector'
-import { WalletConnectProvider } from '../src/utils/WalletConnectProvider'
+import {
+  type Mock,
+  type MockedFunction,
+  type MockedObject,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi
+} from 'vitest'
+
 import { ConstantsUtil } from '@reown/appkit-common'
+import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
+
+import { BitcoinAdapter, type BitcoinConnector } from '../src'
+import { BitcoinWalletConnectConnector } from '../src/connectors/BitcoinWalletConnectProvider'
+import { LeatherConnector } from '../src/connectors/LeatherConnector'
+import { OKXConnector } from '../src/connectors/OKXConnector'
+import { SatsConnectConnector } from '../src/connectors/SatsConnectConnector'
+import { WalletStandardConnector } from '../src/connectors/WalletStandardConnector'
+import type { BitcoinApi } from '../src/utils/BitcoinApi'
+import { mockSatsConnectProvider } from './mocks/mockSatsConnect'
+import { mockUTXO } from './mocks/mockUTXO'
+import { mockUniversalProvider } from './mocks/mockUniversalProvider'
 
 function mockBitcoinApi(): { [K in keyof BitcoinApi.Interface]: Mock<BitcoinApi.Interface[K]> } {
   return {
@@ -27,33 +39,35 @@ describe('BitcoinAdapter', () => {
   })
 
   describe('connectWalletConnect', () => {
-    const mockWalletConnect = {
-      type: 'WALLET_CONNECT',
-      provider: {
-        on: vi.fn(),
-        connect: vi.fn()
-      }
-    }
+    let mockWalletConnect: MockedObject<BitcoinWalletConnectConnector>
 
     beforeEach(() => {
-      adapter.connectors.push(mockWalletConnect as any)
+      mockWalletConnect = vi.mocked(
+        new BitcoinWalletConnectConnector({
+          provider: mockUniversalProvider(),
+          chains: [bitcoin],
+          getActiveChain: () => bitcoin
+        })
+      )
+      adapter.connectors.push(mockWalletConnect)
     })
 
     it('should call connect from WALLET_CONNECT connector', async () => {
-      const onUri = vi.fn()
-      await adapter.connectWalletConnect(onUri)
+      await adapter.connectWalletConnect()
 
-      mockWalletConnect.provider.on.mock.calls.find(([name]) => name === 'display_uri')![1](
-        'mock_uri'
-      )
-
-      expect(onUri).toHaveBeenCalled()
       expect(mockWalletConnect.provider.connect).toHaveBeenCalled()
     })
 
     it('should throw if caipNetworks is not defined', async () => {
       adapter = new BitcoinAdapter({ api })
-      await expect(adapter.connectWalletConnect(vi.fn())).rejects.toThrow()
+      await expect(adapter.connectWalletConnect()).rejects.toThrow()
+    })
+
+    it('should set BitcoinWalletConnectConnector', async () => {
+      delete adapter.caipNetworks
+      adapter.setUniversalProvider(mockUniversalProvider())
+      expect(adapter.connectors[0]).toBeInstanceOf(BitcoinWalletConnectConnector)
+      expect(adapter.connectors[0]?.chains).toEqual([])
     })
   })
 
@@ -371,7 +385,7 @@ describe('BitcoinAdapter', () => {
         provider: undefined
       })
 
-      expect(provider).toBeInstanceOf(WalletConnectProvider)
+      expect(provider).toBeInstanceOf(BitcoinWalletConnectConnector)
     })
   })
 
@@ -481,6 +495,39 @@ describe('BitcoinAdapter', () => {
     })
   })
 
+  describe('switchNetwork', () => {
+    it('should execute switch network', async () => {
+      const provider = new SatsConnectConnector({
+        provider: mockSatsConnectProvider().provider,
+        requestedChains: [bitcoin],
+        getActiveNetwork: () => bitcoin
+      })
+
+      await expect(
+        adapter.switchNetwork({
+          caipNetwork: bitcoinTestnet,
+          provider,
+          providerType: provider.type
+        })
+      ).resolves.toBeUndefined()
+    })
+
+    it('should execute switch network for WalletConnectConnector', async () => {
+      const provider = mockUniversalProvider()
+      const setDefaultChainSpy = provider.setDefaultChain as MockedFunction<
+        typeof provider.setDefaultChain
+      >
+
+      await adapter.switchNetwork({
+        caipNetwork: bitcoinTestnet,
+        provider,
+        providerType: 'WALLET_CONNECT'
+      })
+
+      expect(setDefaultChainSpy).toHaveBeenCalledWith(bitcoinTestnet.caipNetworkId)
+    })
+  })
+
   it('should not throw for not used methods', async () => {
     expect(await adapter.getProfile({} as any)).toEqual({})
     expect(await adapter.estimateGas({} as any)).toEqual({})
@@ -492,6 +539,5 @@ describe('BitcoinAdapter', () => {
     expect(await adapter.grantPermissions({})).toEqual({})
     expect(await adapter.getCapabilities({} as any)).toEqual({})
     expect(await adapter.revokePermissions({} as any)).toEqual('0x')
-    await expect(adapter.switchNetwork({} as any)).resolves.toBeUndefined()
   })
 })

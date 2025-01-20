@@ -1,5 +1,7 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
+
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   BlockchainApiController,
@@ -9,11 +11,19 @@ import {
   RouterController,
   SnackController
 } from '@reown/appkit-core'
-import { ERROR_MESSAGES } from '../schema/index.js'
-import { CosignerService } from '../utils/CosignerService.js'
-
 import { ProviderUtil } from '@reown/appkit/store'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+
+import {
+  assertWalletGrantPermissionsResponse,
+  extractChainAndAddress,
+  getIntervalInSeconds,
+  updateRequestSigner,
+  validateRequest
+} from '../helper/index.js'
+import { ERROR_MESSAGES } from '../schema/index.js'
+import { ERC7715_METHOD } from '../utils/ConstantUtils.js'
+import { CosignerService } from '../utils/CosignerService.js'
+import type { PermissionsCapability, WalletCapabilities } from '../utils/ERC5792Types.js'
 import type {
   CreateSubscriptionRequest,
   CreateSubscriptionResponse,
@@ -22,15 +32,6 @@ import type {
   SmartSessionGrantPermissionsRequest,
   SmartSessionGrantPermissionsResponse
 } from '../utils/TypeUtils.js'
-import {
-  assertWalletGrantPermissionsResponse,
-  extractChainAndAddress,
-  getIntervalInSeconds,
-  updateRequestSigner,
-  validateRequest
-} from '../helper/index.js'
-import type { PermissionsCapability, WalletCapabilities } from '../utils/ERC5792Types.js'
-import { ERC7715_METHOD } from '../utils/ConstantUtils.js'
 
 // -- Types --------------------------------------------- //
 export type SmartSessionsControllerState = {

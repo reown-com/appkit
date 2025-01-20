@@ -1,4 +1,5 @@
 import type { CreateConfigParameters } from '@wagmi/core'
+
 import { authConnector as authConnectorWagmi } from './AuthConnector.js'
 
 interface W3mFrameProviderOptions {

@@ -1,14 +1,15 @@
 import { useSnapshot } from 'valtio'
+
 import { AccountController } from '../src/controllers/AccountController.js'
-import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import { ChainController } from '../src/controllers/ChainController.js'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
+import { ConnectorController } from '../src/controllers/ConnectorController.js'
+import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
 import type {
   AccountType,
   UseAppKitAccountReturn,
   UseAppKitNetworkReturn
 } from '../src/utils/TypeUtil.js'
-import { ConnectorController } from '../src/controllers/ConnectorController.js'
 
 // -- Hooks ------------------------------------------------------------
 export function useAppKitNetworkCore(): Pick<
@@ -25,9 +26,8 @@ export function useAppKitNetworkCore(): Pick<
 }
 
 export function useAppKitAccount(): UseAppKitAccountReturn {
-  const { status, user, preferredAccountType, smartAccountDeployed, allAccounts } = useSnapshot(
-    AccountController.state
-  )
+  const { status, user, preferredAccountType, smartAccountDeployed, allAccounts, socialProvider } =
+    useSnapshot(AccountController.state)
 
   const { activeCaipAddress } = useSnapshot(ChainController.state)
 
@@ -42,6 +42,7 @@ export function useAppKitAccount(): UseAppKitAccountReturn {
     embeddedWalletInfo: authConnector
       ? {
           user,
+          authProvider: socialProvider || 'email',
           accountType: preferredAccountType,
           isSmartAccountDeployed: Boolean(smartAccountDeployed)
         }

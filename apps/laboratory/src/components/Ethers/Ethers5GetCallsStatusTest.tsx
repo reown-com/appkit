@@ -1,17 +1,20 @@
-import { Button, Stack, Text, Input } from '@chakra-ui/react'
 import { useState } from 'react'
+
+import { Button, Input, Stack, Text } from '@chakra-ui/react'
+import { UniversalProvider } from '@walletconnect/universal-provider'
+import { ethers } from 'ethers5'
+
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 import {
+  type Provider,
   useAppKitAccount,
   useAppKitNetwork,
-  useAppKitProvider,
-  type Provider
+  useAppKitProvider
 } from '@reown/appkit/react'
-import { UniversalProvider } from '@walletconnect/universal-provider'
-import { useChakraToast } from '../Toast'
-import { ethers } from 'ethers5'
-import { W3mFrameProvider } from '@reown/appkit-wallet'
+
 import { type GetCallsStatusParams } from '../../types/EIP5792'
 import { EIP_5792_RPC_METHODS } from '../../utils/EIP5792Utils'
+import { useChakraToast } from '../Toast'
 
 export function Ethers5GetCallsStatusTest() {
   const [isLoading, setLoading] = useState(false)

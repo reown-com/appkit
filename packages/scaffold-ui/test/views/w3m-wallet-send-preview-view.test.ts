@@ -1,15 +1,17 @@
-import { expect, html, fixture } from '@open-wc/testing'
+import { expect, fixture, html } from '@open-wc/testing'
+import { afterEach, beforeEach, describe, it, vi, expect as viExpect } from 'vitest'
+
+import type { Balance, CaipAddress, CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import {
+  type ChainAdapter,
   ChainController,
-  RouterController,
-  SendController,
-  type NetworkControllerClient,
   type ConnectionControllerClient,
-  type ChainAdapter
+  type NetworkControllerClient,
+  RouterController,
+  SendController
 } from '@reown/appkit-core'
+
 import { W3mWalletSendPreviewView } from '../../src/views/w3m-wallet-send-preview-view'
-import { describe, it, afterEach, beforeEach, vi, expect as viExpect } from 'vitest'
-import type { Balance, CaipNetwork, ChainNamespace, CaipAddress } from '@reown/appkit-common'
 
 const mockToken: Balance = {
   address: '0x123',

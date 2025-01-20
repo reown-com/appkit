@@ -1,8 +1,7 @@
 /* eslint no-console: 0 */
-
-import { testM as base } from './w3m-fixture'
 import { ModalPage } from '../pages/ModalPage'
 import { ModalValidator } from '../validators/ModalValidator'
+import { testM as base } from './w3m-fixture'
 
 interface ModalWalletFixture {
   modalPage: ModalPage

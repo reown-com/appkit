@@ -1,9 +1,10 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+
 import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import type { ButtonSize, ButtonLinkVariant } from '../../utils/TypeUtil.js'
+import type { ButtonLinkVariant, ButtonSize } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 

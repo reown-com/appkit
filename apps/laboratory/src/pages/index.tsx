@@ -1,16 +1,17 @@
 import { Badge } from '@chakra-ui/react'
+
+import { ConfigurationList } from '../components/ConfigurationList'
 import {
-  wagmiSdkOptions,
-  ethersSdkOptions,
-  solanaSdkOptions,
+  bitcoinSdkOptions,
   ethers5SdkOptions,
+  ethersSdkOptions,
   featuredSdkOptions,
   multichainSdkOptions,
+  siwxSdkOptions,
+  solanaSdkOptions,
   testingSdkOptions,
-  bitcoinSdkOptions,
-  siwxSdkOptions
+  wagmiSdkOptions
 } from '../utils/DataUtil'
-import { ConfigurationList } from '../components/ConfigurationList'
 
 export default function HomePage() {
   return (

@@ -1,9 +1,11 @@
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import styles from './styles.js'
-import { RouterController, type WalletGuideType } from '@reown/appkit-core'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+
+import { RouterController, type WalletGuideType } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
+
+import styles from './styles.js'
 
 @customElement('w3m-wallet-guide')
 export class W3mWalletGuide extends LitElement {

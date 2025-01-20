@@ -1,6 +1,7 @@
+import { LitElement, html } from 'lit'
+
 import { CoreHelperUtil, RouterController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
 
 @customElement('w3m-downloads-view')
 export class W3mDownloadsView extends LitElement {

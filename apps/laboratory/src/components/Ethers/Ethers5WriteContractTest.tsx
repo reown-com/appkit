@@ -1,13 +1,15 @@
-import { Button, Stack, Link, Text, Spacer } from '@chakra-ui/react'
+import { useState } from 'react'
+
+import { Button, Link, Spacer, Stack, Text } from '@chakra-ui/react'
+import { ethers } from 'ethers5'
+
+import { optimism, sepolia } from '@reown/appkit/networks'
 import {
+  type Provider,
   useAppKitAccount,
   useAppKitNetwork,
-  useAppKitProvider,
-  type Provider
+  useAppKitProvider
 } from '@reown/appkit/react'
-import { ethers } from 'ethers5'
-import { optimism, sepolia } from '@reown/appkit/networks'
-import { useState } from 'react'
 
 import { abi, address as donutAddress } from '../../utils/DonutContract'
 import { useChakraToast } from '../Toast'
@@ -30,7 +32,7 @@ export function Ethers5WriteContractTest() {
       const signer = provider.getSigner(address)
       const contract = new ethers.Contract(donutAddress, abi, signer)
       // @ts-expect-error ethers types are correct
-      const tx = await contract.purchase(1, { value: ethers.parseEther('0.0001') })
+      const tx = await contract.purchase(1, { value: ethers.parseEther('0.00001') })
       toast({
         title: 'Success',
         description: tx.hash,
