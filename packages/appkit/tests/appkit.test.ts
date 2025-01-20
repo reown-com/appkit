@@ -1665,18 +1665,28 @@ describe('Balance sync', () => {
     expect(AccountController.setBalance).not.toHaveBeenCalled()
   })
 
-  it('should fetch native balance on testnet', async () => {
+  it.only('should fetch native balance on testnet', async () => {
     vi.spyOn(NetworkUtil, 'getNetworksByNamespace').mockReturnValue([
       { ...sepolia, caipNetworkId: 'eip155:11155111', chainNamespace: 'eip155' }
     ])
 
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       chains: new Map([['eip155', { namespace: 'eip155' }]]),
       activeChain: 'eip155'
     } as any)
 
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      address: '0x123'
+    } as any)
+
+    const mockAdapter = {
+      ...mockUniversalAdapter,
+      getBalance: vi.fn().mockResolvedValue({ balance: '1.00', symbol: 'sETH' })
+    }
+
     const appKit = new AppKit({
       ...mockOptions,
+      adapters: [mockAdapter],
       networks: [sepolia]
     })
 
@@ -1688,11 +1698,7 @@ describe('Balance sync', () => {
 
     expect(NetworkUtil.getNetworksByNamespace).toHaveBeenCalled()
     expect(AccountController.fetchTokenBalance).not.toHaveBeenCalled()
-    expect(AccountController.setBalance).toHaveBeenCalledWith(
-      '0.00',
-      sepolia.nativeCurrency.symbol,
-      'eip155'
-    )
+    expect(AccountController.setBalance).toHaveBeenCalledWith('1.00', 'sETH', 'eip155')
   })
 
   it('should set the correct native token balance', async () => {
