@@ -1843,7 +1843,6 @@ describe('WalletConnect Events', () => {
     it('should call openUri', () => {
       displayUriCallback('mock_uri')
       expect(ConnectionController.setUri).toHaveBeenCalledWith('mock_uri')
-     })
+    })
   })
-
 })
