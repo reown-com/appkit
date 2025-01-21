@@ -24,7 +24,7 @@ if (!projectId) {
 const metadata = {
   name: 'AppKit Builder',
   description: 'The full stack toolkit to build onchain app UX',
-  url: 'https://github.com/0xonerb/next-reown-appkit-ssr', // origin must match your domain & subdomain
+  url: window?.origin || 'https://demo.reown.com', // origin must match your domain & subdomain
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 

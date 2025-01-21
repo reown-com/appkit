@@ -78,7 +78,9 @@ export const StorageUtil = {
 
   getActiveCaipNetworkId() {
     try {
-      return SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
+      return SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) as
+        | CaipNetworkId
+        | undefined
     } catch {
       console.info('Unable to get active caip network id')
 
@@ -152,7 +154,11 @@ export const StorageUtil = {
     return undefined
   },
 
-  getConnectedConnectorId(namespace: ChainNamespace) {
+  getConnectedConnectorId(namespace: ChainNamespace | undefined) {
+    if (!namespace) {
+      return undefined
+    }
+
     try {
       const key = getSafeConnectorIdKey(namespace)
 
