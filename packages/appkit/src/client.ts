@@ -104,6 +104,11 @@ export interface OpenOptions {
     | 'ApproveTransaction'
     | 'OnRampProviders'
     | 'ConnectingWalletConnectBasic'
+    | 'Swap'
+    | 'WhatIsAWallet'
+    | 'WhatIsANetwork'
+    | 'AllWallets'
+    | 'WalletSend'
   uri?: string
 }
 
@@ -761,10 +766,17 @@ export class AppKit {
     }
   }
 
+  private async initializeBlockchainApiController(options: AppKitOptions) {
+    await BlockchainApiController.getSupportedNetworks({
+      projectId: options.projectId
+    })
+  }
+
   private initControllers(options: AppKitOptionsWithSdk) {
     this.initializeOptionsController(options)
     this.initializeChainController(options)
     this.initializeThemeController(options)
+    this.initializeBlockchainApiController(options)
 
     if (options.excludeWalletIds) {
       ApiController.initializeExcludedWalletRdns({ ids: options.excludeWalletIds })
@@ -1138,12 +1150,12 @@ export class AppKit {
       if (this.isTransactionStackEmpty()) {
         this.close()
         if (AccountController.state.address && ChainController.state.activeCaipNetwork?.id) {
-          this.updateBalance()
+          this.updateNativeBalance()
         }
       } else {
         this.popTransactionStack()
         if (AccountController.state.address && ChainController.state.activeCaipNetwork?.id) {
-          this.updateBalance()
+          this.updateNativeBalance()
         }
       }
     })
@@ -1368,7 +1380,7 @@ export class AppKit {
         return
       }
 
-      this.updateBalance()
+      this.updateNativeBalance()
     })
 
     adapter.on('accountChanged', ({ address, chainId }) => {
@@ -1391,15 +1403,16 @@ export class AppKit {
     })
   }
 
-  private updateBalance() {
+  private async updateNativeBalance() {
     const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
-    if (adapter) {
-      adapter.getBalance({
-        address: AccountController.state.address as string,
+    if (adapter && ChainController.state.activeChain && AccountController.state.address) {
+      const balance = await adapter.getBalance({
+        address: AccountController.state.address,
         chainId: ChainController.state.activeCaipNetwork?.id as string | number,
         caipNetwork: this.getCaipNetwork(),
         tokens: this.options.tokens
       })
+      this.setBalance(balance.balance, balance.symbol, ChainController.state.activeChain)
     }
   }
 
@@ -1612,8 +1625,12 @@ export class AppKit {
       return
     }
 
-    if (caipNetwork.testnet) {
-      this.setBalance('0.00', caipNetwork.nativeCurrency.symbol, caipNetwork.chainNamespace)
+    const isApiBalanceSupported = CoreConstantsUtil.BALANCE_SUPPORTED_CHAINS.includes(
+      caipNetwork?.chainNamespace
+    )
+
+    if (caipNetwork.testnet || !isApiBalanceSupported) {
+      await this.updateNativeBalance()
 
       return
     }

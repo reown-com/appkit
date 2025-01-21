@@ -106,12 +106,14 @@ describe('WagmiAdapter', () => {
 
     it('should set wagmi connectors', async () => {
       vi.spyOn(wagmiCore, 'watchConnectors').mockImplementation(vi.fn())
+      vi.spyOn(wagmiCore, 'watchConnectors')
 
       await adapter.syncConnectors(
         { networks: [mainnet], projectId: 'YOUR_PROJECT_ID' },
         mockAppKit
       )
 
+      expect(wagmiCore.watchConnectors).toHaveBeenCalledOnce()
       expect(adapter.connectors).toStrictEqual([
         {
           chain: 'eip155',
@@ -751,10 +753,10 @@ describe('WagmiAdapter', () => {
       expect(accountChangedSpy).not.toHaveBeenCalled()
     })
 
-    it('should not emit disconnect if status is disconnected', async () => {
+    it('should emit disconnect if status is disconnected and previous data is connected', async () => {
       const currAccount = {
         status: 'disconnected',
-        address: '0x123',
+        address: undefined,
         chainId: 1
       } as unknown as wagmiCore.GetAccountReturnType
 
@@ -776,6 +778,33 @@ describe('WagmiAdapter', () => {
       adapter['setupWatchers']()
 
       expect(disconnectSpy).toHaveBeenCalled()
+    })
+
+    it('should not emit disconnect if previous account data is undefined and current account data is disconnected', async () => {
+      const currAccount = {
+        status: 'disconnected',
+        address: '0x123',
+        chainId: 1
+      } as unknown as wagmiCore.GetAccountReturnType
+
+      const prevAccount = {
+        status: 'disconnected',
+        address: undefined,
+        chainId: 1
+      } as unknown as wagmiCore.GetAccountReturnType
+
+      vi.mocked(watchAccount).mockImplementation((_, { onChange }) => {
+        onChange(currAccount, prevAccount)
+        return vi.fn()
+      })
+
+      const disconnectSpy = vi.fn()
+
+      adapter.on('disconnect', disconnectSpy)
+
+      adapter['setupWatchers']()
+
+      expect(disconnectSpy).not.toHaveBeenCalled()
     })
   })
 })

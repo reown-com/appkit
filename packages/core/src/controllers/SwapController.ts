@@ -389,7 +389,7 @@ export const SwapController = {
       projectId: OptionsController.state.projectId,
       addresses: [address]
     })
-    const fungibles = response.fungibles || []
+    const fungibles = response?.fungibles || []
     const allTokens = [...(state.tokens || []), ...(state.myTokensWithBalance || [])]
     const symbol = allTokens?.find(token => token.address === address)?.symbol
     const price = fungibles.find(p => p.symbol.toLowerCase() === symbol?.toLowerCase())?.price || 0

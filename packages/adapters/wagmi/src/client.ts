@@ -216,7 +216,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   private setupWatchers() {
     watchAccount(this.wagmiConfig, {
       onChange: (accountData, prevAccountData) => {
-        if (accountData.status === 'disconnected') {
+        if (accountData.status === 'disconnected' && prevAccountData.address) {
           this.emit('disconnect')
         }
 
@@ -442,14 +442,6 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public async syncConnectors(options: AppKitOptions, appKit: AppKit) {
-    // Add wagmi connectors
-    this.addWagmiConnectors(options, appKit)
-
-    // Add current wagmi connectors to chain adapter blueprint
-    await Promise.all(
-      this.wagmiConfig.connectors.map(connector => this.addWagmiConnector(connector, options))
-    )
-
     /*
      * Watch for new connectors. This is needed because some EIP6963
      * connectors are added later in the process the initial setup
@@ -458,6 +450,14 @@ export class WagmiAdapter extends AdapterBlueprint {
       onChange: connectors =>
         connectors.forEach(connector => this.addWagmiConnector(connector, options))
     })
+
+    // Add wagmi connectors
+    this.addWagmiConnectors(options, appKit)
+
+    // Add current wagmi connectors to chain adapter blueprint
+    await Promise.all(
+      this.wagmiConfig.connectors.map(connector => this.addWagmiConnector(connector, options))
+    )
   }
 
   public async syncConnection(
