@@ -20,4 +20,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where wagmi adapter would emit disconnect event when user was not connected, causing SIWE to break.
+Fixed an issue where wagmi adapter would emit disconnect event when user was not connected causing SIWE to break.
