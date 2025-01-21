@@ -3,8 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import type { CaipNetwork } from '@reown/appkit'
-import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import {
   type AuthConnector,
   ChainController,
@@ -15,13 +14,13 @@ import {
   RouterController,
   SnackController
 } from '@reown/appkit-core'
-import { mainnet as mainnetNetwork } from '@reown/appkit/networks'
 
 import { W3mEmailLoginWidget } from '../../src/partials/w3m-email-login-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
 const mainnet = {
-  ...mainnetNetwork,
+  id: 1,
+  name: 'Ethereum',
   namespace: ConstantsUtil.CHAIN.EVM
 } as unknown as CaipNetwork
 
