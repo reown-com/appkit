@@ -53,19 +53,14 @@ describe('BitcoinAdapter', () => {
     })
 
     it('should call connect from WALLET_CONNECT connector', async () => {
-      const onUri = vi.fn()
-      await adapter.connectWalletConnect(onUri)
-      ;(
-        mockWalletConnect.provider.on as MockedFunction<typeof mockWalletConnect.provider.on>
-      ).mock.calls.find(([name]) => name === 'display_uri')![1]('mock_uri')
+      await adapter.connectWalletConnect()
 
-      expect(onUri).toHaveBeenCalled()
       expect(mockWalletConnect.provider.connect).toHaveBeenCalled()
     })
 
     it('should throw if caipNetworks is not defined', async () => {
       adapter = new BitcoinAdapter({ api })
-      await expect(adapter.connectWalletConnect(vi.fn())).rejects.toThrow()
+      await expect(adapter.connectWalletConnect()).rejects.toThrow()
     })
 
     it('should set BitcoinWalletConnectConnector', async () => {

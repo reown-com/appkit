@@ -216,7 +216,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   private setupWatchers() {
     watchAccount(this.wagmiConfig, {
       onChange: (accountData, prevAccountData) => {
-        if (accountData.status === 'disconnected') {
+        if (accountData.status === 'disconnected' && prevAccountData.address) {
           this.emit('disconnect')
         }
 
@@ -478,38 +478,28 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
   }
 
-  public override async connectWalletConnect(
-    onUri: (uri: string) => void,
-    chainId?: number | string
-  ) {
+  public override async connectWalletConnect(chainId?: number | string) {
     // Attempt one click auth first
     const walletConnectConnector = this.getWalletConnectConnector()
-    const isAuthenticated = await walletConnectConnector.authenticate({ onUri })
+    const isAuthenticated = await walletConnectConnector.authenticate()
 
     if (isAuthenticated) {
       return { clientId: await walletConnectConnector.provider.client.core.crypto.getClientId() }
     }
 
     // Attempt to connect using wagmi connector
-    const connector = this.getWagmiConnector('walletConnect')
+    const wagmiConnector = this.getWagmiConnector('walletConnect')
 
-    if (!connector) {
+    if (!wagmiConnector) {
       throw new Error('UniversalAdapter:connectWalletConnect - connector not found')
     }
 
-    const provider = (await connector.getProvider()) as UniversalProvider
+    await connect(this.wagmiConfig, {
+      connector: wagmiConnector,
+      chainId: chainId ? Number(chainId) : undefined
+    })
 
-    if (!this.caipNetworks || !provider) {
-      throw new Error(
-        'UniversalAdapter:connectWalletConnect - caipNetworks or provider is undefined'
-      )
-    }
-
-    provider.on('display_uri', onUri)
-
-    await connect(this.wagmiConfig, { connector, chainId: chainId ? Number(chainId) : undefined })
-
-    return { clientId: await provider.client.core.crypto.getClientId() }
+    return { clientId: await walletConnectConnector.provider.client.core.crypto.getClientId() }
   }
 
   public async connect(

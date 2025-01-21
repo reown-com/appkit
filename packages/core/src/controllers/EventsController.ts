@@ -65,6 +65,8 @@ export const EventsController = {
           props: payload.data
         }
       })
+
+      state.reportedErrors['FORBIDDEN'] = false
     } catch (err) {
       const isForbiddenError =
         err instanceof Error &&
