@@ -87,8 +87,6 @@ export class W3mSwitchActiveChainView extends LitElement {
       return
     }
 
-    ChainController.setIsSwitchingNamespace(true)
-
     if (this.caipNetwork) {
       ChainController.setActiveCaipNetwork(this.caipNetwork)
     } else {
