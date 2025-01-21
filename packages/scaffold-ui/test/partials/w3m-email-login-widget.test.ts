@@ -15,16 +15,15 @@ import {
   RouterController,
   SnackController
 } from '@reown/appkit-core'
-import { CaipNetworksUtil } from '@reown/appkit-utils'
 import { mainnet as mainnetNetwork } from '@reown/appkit/networks'
 
 import { W3mEmailLoginWidget } from '../../src/partials/w3m-email-login-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
-const [mainnet] = CaipNetworksUtil.extendCaipNetworks([mainnetNetwork], {
-  customNetworkImageUrls: {},
-  projectId: 'test-project-id'
-}) as [CaipNetwork]
+const mainnet = {
+  ...mainnetNetwork,
+  namespace: ConstantsUtil.CHAIN.EVM
+} as unknown as CaipNetwork
 
 describe('W3mEmailLoginWidget', () => {
   const mockEmail = 'test@example.com'

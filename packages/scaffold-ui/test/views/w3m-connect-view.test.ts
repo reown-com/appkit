@@ -13,7 +13,6 @@ import {
   CoreHelperUtil,
   OptionsController
 } from '@reown/appkit-core'
-import { CaipNetworksUtil } from '@reown/appkit-utils'
 import { mainnet as mainnetNetwork } from '@reown/appkit/networks'
 
 import { W3mConnectView } from '../../src/views/w3m-connect-view/index'
@@ -39,10 +38,10 @@ const AUTH_CONNECTOR = {
   chain: 'eip155'
 } as ConnectorWithProviders
 
-const [mainnet] = CaipNetworksUtil.extendCaipNetworks([mainnetNetwork], {
-  customNetworkImageUrls: {},
-  projectId: 'test-project-id'
-}) as [CaipNetwork]
+const mainnet = {
+  ...mainnetNetwork,
+  namespace: ConstantsUtil.CHAIN.EVM
+} as unknown as CaipNetwork
 
 // Mock ResizeObserver
 beforeAll(() => {
