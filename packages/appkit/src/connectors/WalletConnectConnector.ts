@@ -33,8 +33,8 @@ export class WalletConnectConnector<Namespace extends ChainNamespace = ChainName
     return this.caipNetworks
   }
 
-  async connectWalletConnect(params: WalletConnectConnector.ConnectParams) {
-    const isAuthenticated = await this.authenticate(params)
+  async connectWalletConnect() {
+    const isAuthenticated = await this.authenticate()
 
     if (!isAuthenticated) {
       await this.provider.connect({
@@ -52,9 +52,7 @@ export class WalletConnectConnector<Namespace extends ChainNamespace = ChainName
     await this.provider.disconnect()
   }
 
-  async authenticate(params: WalletConnectConnector.ConnectParams): Promise<boolean> {
-    this.provider.on('display_uri', params.onUri)
-
+  async authenticate(): Promise<boolean> {
     const chains = this.chains.map(network => network.caipNetworkId)
 
     return SIWXUtil.universalProviderAuthenticate({
@@ -70,10 +68,6 @@ export namespace WalletConnectConnector {
     provider: UniversalProvider
     caipNetworks: CaipNetwork[]
     namespace: Namespace
-  }
-
-  export type ConnectParams = {
-    onUri: (uri: string) => void
   }
 
   export type ConnectResult = {
