@@ -18,6 +18,7 @@ export const ConstantsUtil = {
     EIP6963: 'eip6963',
     AUTH: 'ID_AUTH'
   },
+  AUTH_CONNECTOR_SUPPORTED_CHAINS: ['eip155', 'solana'],
   LIMITS: {
     PENDING_TRANSACTIONS: 99
   },
@@ -51,5 +52,6 @@ export const ConstantsUtil = {
   ],
   HTTP_STATUS_CODES: {
     SERVICE_UNAVAILABLE: 503
-  }
+  },
+  UNSUPPORTED_NETWORK_NAME: 'Unknown Network'
 } as const
