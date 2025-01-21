@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import { ChainController, ModalController, RouterController } from '@reown/appkit-core'
+import { ChainController, RouterController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'
@@ -70,28 +70,30 @@ export class W3mSwitchActiveChainView extends LitElement {
             Connected wallet doesn't support connecting to ${switchedChainNameString} chain. You
             need to connect with a different wallet.
           </wui-text>
-          <wui-button size="md" @click=${this.switchActiveChain.bind(this)}>Switch</wui-button>
+          <wui-button
+            data-testid="w3m-switch-active-chain-button"
+            size="md"
+            @click=${this.switchActiveChain.bind(this)}
+            >Switch</wui-button
+          >
         </wui-flex>
       </wui-flex>
     `
   }
 
   // -- Private Methods ------------------------------------ //
-  private async switchActiveChain() {
+  private switchActiveChain() {
     if (!this.switchToChain) {
       return
     }
 
     if (this.caipNetwork) {
-      await ChainController.switchActiveNetwork(this.caipNetwork)
+      ChainController.setActiveCaipNetwork(this.caipNetwork)
     } else {
       ChainController.setActiveNamespace(this.switchToChain)
     }
 
-    ModalController.close()
-    ModalController.open({
-      view: 'Connect'
-    })
+    RouterController.reset('Connect')
   }
 }
 

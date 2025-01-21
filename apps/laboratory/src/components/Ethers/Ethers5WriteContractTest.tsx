@@ -32,7 +32,7 @@ export function Ethers5WriteContractTest() {
       const signer = provider.getSigner(address)
       const contract = new ethers.Contract(donutAddress, abi, signer)
       // @ts-expect-error ethers types are correct
-      const tx = await contract.purchase(1, { value: ethers.parseEther('0.0001') })
+      const tx = await contract.purchase(1, { value: ethers.parseEther('0.00001') })
       toast({
         title: 'Success',
         description: tx.hash,
