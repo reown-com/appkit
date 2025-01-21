@@ -24,6 +24,7 @@ import {
   ConnectionController,
   type Connector,
   ConnectorController,
+  ConstantsUtil,
   CoreHelperUtil,
   EnsController,
   EventsController,
@@ -86,7 +87,7 @@ describe('Base', () => {
 
   beforeEach(() => {
     vi.mocked(ConnectorController).getConnectors = vi.fn().mockReturnValue([])
-
+    vi.spyOn(ConstantsUtil, 'BALANCE_SUPPORTED_CHAINS', 'get').mockReturnValue(['eip155', 'solana'])
     appKit = new AppKit(mockOptions)
 
     vi.spyOn(OptionsController, 'getSnapshot').mockReturnValue({ ...OptionsController.state })
@@ -1641,6 +1642,7 @@ describe('Adapter Management', () => {
 describe('Balance sync', () => {
   beforeEach(() => {
     vi.resetAllMocks()
+    vi.spyOn(ConstantsUtil, 'BALANCE_SUPPORTED_CHAINS', 'get').mockReturnValue(['eip155', 'solana'])
     vi.spyOn(OptionsController, 'getSnapshot').mockReturnValue({ ...OptionsController.state })
     vi.spyOn(ThemeController, 'getSnapshot').mockReturnValue({ ...ThemeController.state })
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({ ...ChainController.state })
@@ -1795,6 +1797,47 @@ describe('WalletConnect Events', () => {
       ChainController.state.activeCaipNetwork = undefined
       chainChangedCallback(newChain.id.toString())
       expect(setCaipNetworkSpy).toHaveBeenNthCalledWith(2, newChain)
+    })
+  })
+
+  describe('open', () => {
+    beforeEach(() => {
+      vi.clearAllMocks()
+      vi.spyOn(OptionsController, 'getSnapshot').mockReturnValue({ ...OptionsController.state })
+      vi.spyOn(ThemeController, 'getSnapshot').mockReturnValue({ ...ThemeController.state })
+    })
+
+    it('should open different views', async () => {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        ...ChainController.state,
+        activeCaipNetwork: mainnet
+      })
+      const openSpy = vi.spyOn(ModalController, 'open')
+
+      const views = [
+        'Account',
+        'Connect',
+        'Networks',
+        'ApproveTransaction',
+        'OnRampProviders',
+        'ConnectingWalletConnectBasic',
+        'Swap',
+        'WhatIsAWallet',
+        'WhatIsANetwork',
+        'AllWallets',
+        'WalletSend'
+      ] as const
+
+      const appkit = new AppKit({
+        ...mockOptions,
+        adapters: [],
+        networks: [mainnet]
+      })
+
+      for (const view of views) {
+        await appkit.open({ view })
+        expect(openSpy).toHaveBeenCalledWith({ view })
+      }
     })
   })
 

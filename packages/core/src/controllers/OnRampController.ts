@@ -156,7 +156,7 @@ export const OnRampController = {
         network: state.purchaseCurrency?.symbol
       })
       state.quotesLoading = false
-      state.purchaseAmount = Number(quote.purchaseAmount.amount)
+      state.purchaseAmount = Number(quote?.purchaseAmount.amount)
 
       return quote
     } catch (error) {
