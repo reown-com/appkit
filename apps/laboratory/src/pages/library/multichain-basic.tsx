@@ -1,4 +1,4 @@
-import { defineChain, mainnet } from '@reown/appkit/networks'
+import { type AppKitNetwork, defineChain, mainnet } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '../../components/AppKitButtons'
@@ -23,7 +23,7 @@ const networks = [
 ]
 
 const modal = createAppKit({
-  networks: networks as any,
+  networks: networks as [AppKitNetwork, ...AppKitNetwork[]],
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata
