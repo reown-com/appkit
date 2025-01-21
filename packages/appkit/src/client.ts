@@ -766,10 +766,17 @@ export class AppKit {
     }
   }
 
+  private async initializeBlockchainApiController(options: AppKitOptions) {
+    await BlockchainApiController.getSupportedNetworks({
+      projectId: options.projectId
+    })
+  }
+
   private initControllers(options: AppKitOptionsWithSdk) {
     this.initializeOptionsController(options)
     this.initializeChainController(options)
     this.initializeThemeController(options)
+    this.initializeBlockchainApiController(options)
 
     if (options.excludeWalletIds) {
       ApiController.initializeExcludedWalletRdns({ ids: options.excludeWalletIds })
