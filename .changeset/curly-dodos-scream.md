@@ -20,4 +20,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Refactors connector rendering logics when add/remove adapters for email/social login
+Refactors network switching when trying to use auth connector but active network is not supported by auth connector

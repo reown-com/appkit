@@ -23,6 +23,15 @@ const CHAIN_OPTIONS = [
 export function ChainList() {
   const { caipAddress } = useAppKitAccount()
   const { enabledChains, removeChain, addChain } = useAppKitContext()
+  const handleChainChange = (chainId: ChainNamespace) => {
+    if (enabledChains.includes(chainId)) {
+      if (enabledChains.length > 1) {
+        removeChain(chainId)
+      }
+    } else {
+      addChain(chainId)
+    }
+  }
 
   return (
     <div className="flex flex-col gap-2">
@@ -36,15 +45,7 @@ export function ChainList() {
               (enabledChains.includes(chain.id) && enabledChains.length === 1)
             }
             imageSrc={chain.imageSrc}
-            onChange={() => {
-              if (enabledChains.includes(chain.id)) {
-                if (enabledChains.length > 1) {
-                  removeChain(chain.id)
-                }
-              } else {
-                addChain(chain.id)
-              }
-            }}
+            onChange={() => handleChainChange(chain.id)}
             name={chain.name}
           />
         ))}

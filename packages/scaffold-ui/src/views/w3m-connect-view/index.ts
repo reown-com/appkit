@@ -16,6 +16,7 @@ import {
   type WalletGuideType
 } from '@reown/appkit-core'
 import { MathUtil, customElement } from '@reown/appkit-ui'
+import { ConstantsUtil as AppKitConstantsUtil } from '@reown/appkit-utils'
 
 import { WalletUtil } from '../../utils/WalletUtil.js'
 import styles from './styles.js'
@@ -145,7 +146,9 @@ export class W3mConnectView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private checkIfAuthEnabled(connectors: Connector[]) {
-    const namespacesWithAuthConnector = connectors.filter(c => c.type === 'AUTH').map(i => i.chain)
+    const namespacesWithAuthConnector = connectors
+      .filter(c => c.type === AppKitConstantsUtil.CONNECTOR_TYPE_AUTH)
+      .map(i => i.chain)
     const authSupportedNamespaces = ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS
 
     return authSupportedNamespaces.some(ns => namespacesWithAuthConnector.includes(ns))
