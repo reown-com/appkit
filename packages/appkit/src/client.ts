@@ -104,6 +104,11 @@ export interface OpenOptions {
     | 'ApproveTransaction'
     | 'OnRampProviders'
     | 'ConnectingWalletConnectBasic'
+    | 'Swap'
+    | 'WhatIsAWallet'
+    | 'WhatIsANetwork'
+    | 'AllWallets'
+    | 'WalletSend'
   uri?: string
 }
 
