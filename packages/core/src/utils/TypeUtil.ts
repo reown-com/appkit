@@ -1105,6 +1105,7 @@ export type UseAppKitAccountReturn = {
   isConnected: boolean
   embeddedWalletInfo?: {
     user: AccountControllerState['user']
+    authProvider: AccountControllerState['socialProvider'] | 'email'
     accountType: W3mFrameTypes.AccountType | undefined
     isSmartAccountDeployed: boolean
   }

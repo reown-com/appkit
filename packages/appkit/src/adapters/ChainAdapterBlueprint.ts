@@ -187,16 +187,14 @@ export abstract class AdapterBlueprint<
 
   /**
    * Connects to WalletConnect.
-   * @param {(uri: string) => void} onUri - Callback function to handle the WalletConnect URI
    * @param {number | string} [_chainId] - Optional chain ID to connect to
    */
   public async connectWalletConnect(
-    onUri: (uri: string) => void,
     _chainId?: number | string
   ): Promise<undefined | { clientId: string }> {
     const connector = this.getWalletConnectConnector()
 
-    const result = await connector.connectWalletConnect({ onUri })
+    const result = await connector.connectWalletConnect()
 
     return { clientId: result.clientId }
   }

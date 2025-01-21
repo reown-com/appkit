@@ -69,7 +69,8 @@ const mockChainState: ChainControllerState = {
       getCapabilities: vi.fn()
     }
   },
-  noAdapters: false
+  noAdapters: false,
+  isSwitchingNamespace: false
 }
 
 describe('W3mSwapView', () => {

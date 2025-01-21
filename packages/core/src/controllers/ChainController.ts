@@ -52,6 +52,7 @@ export interface ChainControllerState {
   chains: Map<ChainNamespace, ChainAdapter>
   universalAdapter: Pick<ChainAdapter, 'networkControllerClient' | 'connectionControllerClient'>
   noAdapters: boolean
+  isSwitchingNamespace: boolean
 }
 
 type ChainControllerStateKey = keyof ChainControllerState
@@ -66,7 +67,8 @@ const state = proxy<ChainControllerState>({
   universalAdapter: {
     networkControllerClient: undefined,
     connectionControllerClient: undefined
-  }
+  },
+  isSwitchingNamespace: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -277,6 +279,10 @@ export const ChainController = {
   setActiveCaipNetwork(caipNetwork: AdapterNetworkState['caipNetwork']) {
     if (!caipNetwork) {
       return
+    }
+
+    if (state.activeChain !== caipNetwork.chainNamespace) {
+      this.setIsSwitchingNamespace(true)
     }
 
     const newAdapter = state.chains.get(caipNetwork.chainNamespace)
@@ -524,9 +530,7 @@ export const ChainController = {
   },
 
   showUnsupportedChainUI() {
-    setTimeout(() => {
-      ModalController.open({ view: 'UnsupportedChain' })
-    }, 300)
+    ModalController.open({ view: 'UnsupportedChain' })
   },
 
   checkIfNamesSupported(): boolean {
@@ -622,5 +626,9 @@ export const ChainController = {
         }
       })
     }
+  },
+
+  setIsSwitchingNamespace(isSwitchingNamespace: boolean) {
+    state.isSwitchingNamespace = isSwitchingNamespace
   }
 }
