@@ -113,7 +113,7 @@ describe('WagmiAdapter', () => {
         mockAppKit
       )
 
-      expect(wagmiCore.watchConnectors).toHaveBeenCalled()
+      expect(wagmiCore.watchConnectors).toHaveBeenCalledOnce()
       expect(adapter.connectors).toStrictEqual([
         {
           chain: 'eip155',
