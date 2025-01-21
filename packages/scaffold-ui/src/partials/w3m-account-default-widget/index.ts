@@ -205,8 +205,9 @@ export class W3mAccountDefaultWidget extends LitElement {
   private swapsTemplate() {
     const swaps = this.features?.swaps
     const isEvm = ChainController.state.activeChain === ConstantsUtil.CHAIN.EVM
+    const isTestNet = ChainController.state.activeCaipNetwork?.testnet
 
-    if (!swaps || !isEvm) {
+    if (!swaps || !isEvm || isTestNet) {
       return null
     }
 
