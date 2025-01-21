@@ -172,7 +172,7 @@ export const ConstantsUtil = {
     'DE',
     'WNT'
   ],
-
+  BALANCE_SUPPORTED_CHAINS: ['eip155', 'solana'] as ChainNamespace[],
   SWAP_SUPPORTED_NETWORKS: [
     // Ethereum'
     'eip155:1',

@@ -1618,7 +1618,11 @@ export class AppKit {
       return
     }
 
-    if (caipNetwork.testnet) {
+    const isApiBalanceSupported = CoreConstantsUtil.BALANCE_SUPPORTED_CHAINS.includes(
+      caipNetwork?.chainNamespace
+    )
+
+    if (caipNetwork.testnet || !isApiBalanceSupported) {
       await this.updateNativeBalance()
 
       return

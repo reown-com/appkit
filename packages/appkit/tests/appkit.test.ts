@@ -24,6 +24,7 @@ import {
   ConnectionController,
   type Connector,
   ConnectorController,
+  ConstantsUtil,
   CoreHelperUtil,
   EnsController,
   EventsController,
@@ -86,7 +87,7 @@ describe('Base', () => {
 
   beforeEach(() => {
     vi.mocked(ConnectorController).getConnectors = vi.fn().mockReturnValue([])
-
+    vi.spyOn(ConstantsUtil, 'BALANCE_SUPPORTED_CHAINS', 'get').mockReturnValue(['eip155', 'solana'])
     appKit = new AppKit(mockOptions)
 
     vi.spyOn(OptionsController, 'getSnapshot').mockReturnValue({ ...OptionsController.state })
@@ -1641,6 +1642,7 @@ describe('Adapter Management', () => {
 describe('Balance sync', () => {
   beforeEach(() => {
     vi.resetAllMocks()
+    vi.spyOn(ConstantsUtil, 'BALANCE_SUPPORTED_CHAINS', 'get').mockReturnValue(['eip155', 'solana'])
     vi.spyOn(OptionsController, 'getSnapshot').mockReturnValue({ ...OptionsController.state })
     vi.spyOn(ThemeController, 'getSnapshot').mockReturnValue({ ...ThemeController.state })
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({ ...ChainController.state })
