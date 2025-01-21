@@ -194,7 +194,7 @@ export const BlockchainApiController = {
       ChainController.state.activeCaipNetwork?.caipNetworkId
     )
     if (!isSupported) {
-      return []
+      return { data: [], next: undefined }
     }
 
     return state.api.get<BlockchainApiTransactionsResponse>({
@@ -222,7 +222,7 @@ export const BlockchainApiController = {
       ChainController.state.activeCaipNetwork?.caipNetworkId
     )
     if (!isSupported) {
-      return {}
+      return { quotes: [] }
     }
 
     return state.api.get<BlockchainApiSwapQuoteResponse>({
@@ -241,12 +241,15 @@ export const BlockchainApiController = {
     })
   },
 
-  async fetchSwapTokens({ projectId, chainId }: BlockchainApiSwapTokensRequest) {
+  async fetchSwapTokens({
+    projectId,
+    chainId
+  }: BlockchainApiSwapTokensRequest): Promise<BlockchainApiSwapTokensResponse> {
     const isSupported = await BlockchainApiController.isNetworkSupported(
       ChainController.state.activeCaipNetwork?.caipNetworkId
     )
     if (!isSupported) {
-      return []
+      return { tokens: [] }
     }
 
     return state.api.get<BlockchainApiSwapTokensResponse>({
@@ -263,7 +266,7 @@ export const BlockchainApiController = {
       ChainController.state.activeCaipNetwork?.caipNetworkId
     )
     if (!isSupported) {
-      return []
+      return { fungibles: [] }
     }
 
     return state.api.post<BlockchainApiTokenPriceResponse>({
@@ -290,7 +293,7 @@ export const BlockchainApiController = {
       ChainController.state.activeCaipNetwork?.caipNetworkId
     )
     if (!isSupported) {
-      return {}
+      return { allowance: '0' }
     }
 
     return state.api.get<BlockchainApiSwapAllowanceResponse>({
@@ -315,7 +318,7 @@ export const BlockchainApiController = {
       ChainController.state.activeCaipNetwork?.caipNetworkId
     )
     if (!isSupported) {
-      return {}
+      throw new Error('Network not supported for Gas Price')
     }
 
     return state.api.get<BlockchainApiGasPriceResponse>({
@@ -343,7 +346,7 @@ export const BlockchainApiController = {
       ChainController.state.activeCaipNetwork?.caipNetworkId
     )
     if (!isSupported) {
-      return { eip155: { gas: '', gasPrice: '' } }
+      throw new Error('Network not supported for Swaps')
     }
 
     return state.api.post<BlockchainApiGenerateSwapCalldataResponse>({
@@ -376,7 +379,7 @@ export const BlockchainApiController = {
       ChainController.state.activeCaipNetwork?.caipNetworkId
     )
     if (!isSupported) {
-      return { eip155: { gas: '', gasPrice: '' } }
+      throw new Error('Network not supported for Swaps')
     }
 
     return state.api.get<BlockchainApiGenerateApproveCalldataResponse>({
@@ -459,7 +462,7 @@ export const BlockchainApiController = {
       ChainController.state.activeCaipNetwork?.caipNetworkId
     )
     if (!isSupported) {
-      return []
+      return { suggestions: [] }
     }
 
     return state.api.get<BlockchainApiSuggestionResponse>({
@@ -550,19 +553,18 @@ export const BlockchainApiController = {
     }
   },
 
-  async getOnrampQuote({ purchaseCurrency, paymentCurrency, amount, network }: GetQuoteArgs) {
+  async getOnrampQuote({
+    purchaseCurrency,
+    paymentCurrency,
+    amount,
+    network
+  }: GetQuoteArgs): Promise<OnrampQuote | null> {
     try {
       const isSupported = await BlockchainApiController.isNetworkSupported(
         ChainController.state.activeCaipNetwork?.caipNetworkId
       )
       if (!isSupported) {
-        return {
-          paymentTotal: {},
-          paymentSubtotal: {},
-          purchaseAmount: {},
-          coinbaseFee: {},
-          networkFee: {}
-        }
+        return null
       }
 
       const response = await state.api.post<OnrampQuote>({
