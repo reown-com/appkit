@@ -20,7 +20,6 @@ import {
   type ChainAdapter,
   ChainController,
   type ChainControllerState,
-  type CombinedProvider,
   ConnectionController,
   type Connector,
   ConnectorController,
@@ -353,9 +352,11 @@ describe('Base', () => {
     })
 
     it('should get provider', () => {
-      const mockProvider = { request: vi.fn() }
-      vi.mocked(AccountController).state = { provider: mockProvider } as any
-      expect(appKit.getProvider()).toBe(mockProvider)
+      const mockProvider = vi.fn()
+      vi.mocked(ProviderUtil.state).providers = { eip155: mockProvider } as any
+      vi.mocked(ProviderUtil.state).providerIds = { eip155: 'INJECTED' } as any
+
+      expect(appKit.getProvider<any>('eip155')).toBe(mockProvider)
     })
 
     it('should get preferred account type', () => {
@@ -374,14 +375,6 @@ describe('Base', () => {
       appKit.setCaipAddress('eip155:1:0x123', 'eip155')
       expect(AccountController.setCaipAddress).toHaveBeenCalledWith('eip155:1:0x123', 'eip155')
       expect(appKit.getIsConnectedState()).toBe(true)
-    })
-
-    it('should set provider', () => {
-      const mockProvider = {
-        request: vi.fn()
-      }
-      appKit.setProvider(mockProvider as unknown as CombinedProvider, 'eip155')
-      expect(AccountController.setProvider).toHaveBeenCalledWith(mockProvider, 'eip155')
     })
 
     it('should set balance', () => {
@@ -730,7 +723,9 @@ describe('Base', () => {
       vi.mocked(appKit as any).caipNetworks = [mainnet]
       // Mock the connector data
       const mockConnector = {
-        id: 'test-wallet'
+        id: 'test-wallet',
+        name: 'Test Wallet',
+        imageUrl: 'test-wallet-icon'
       } as Connector
 
       vi.mocked(ConnectorController.getConnectors).mockReturnValue([mockConnector])
@@ -752,7 +747,8 @@ describe('Base', () => {
 
       expect(AccountController.setConnectedWalletInfo).toHaveBeenCalledWith(
         expect.objectContaining({
-          name: mockConnector.id
+          name: mockConnector.name,
+          icon: mockConnector.imageUrl
         }),
         'eip155'
       )
@@ -1721,6 +1717,7 @@ describe('WalletConnect Events', () => {
   let universalProvider: Mocked<Pick<UniversalProvider, 'on'>>
 
   let chainChangedCallback: (chainId: string | number) => void
+  let displayUriCallback: (uri: string) => void
 
   beforeEach(async () => {
     appkit = new AppKit({
@@ -1738,6 +1735,9 @@ describe('WalletConnect Events', () => {
 
     chainChangedCallback = universalProvider.on.mock.calls.find(
       ([event]) => event === 'chainChanged'
+    )?.[1]
+    displayUriCallback = universalProvider.on.mock.calls.find(
+      ([event]) => event === 'display_uri'
     )?.[1]
   })
 
@@ -1762,6 +1762,13 @@ describe('WalletConnect Events', () => {
       ChainController.state.activeCaipNetwork = undefined
       chainChangedCallback(newChain.id.toString())
       expect(setCaipNetworkSpy).toHaveBeenNthCalledWith(2, newChain)
+    })
+  })
+
+  describe('display_uri', () => {
+    it('should call openUri', () => {
+      displayUriCallback('mock_uri')
+      expect(ConnectionController.setUri).toHaveBeenCalledWith('mock_uri')
     })
   })
 })
