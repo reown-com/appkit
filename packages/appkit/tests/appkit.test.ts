@@ -5,6 +5,7 @@ import {
   type AppKitNetwork,
   type Balance,
   type CaipNetwork,
+  type CaipNetworkId,
   type ChainNamespace,
   Emitter,
   NetworkUtil,
@@ -928,10 +929,29 @@ describe('Base', () => {
         caipNetworkId: 'eip155:11155111'
       })
 
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue(mockAccountData as any)
+      vi.spyOn(CaipNetworksUtil, 'extendCaipNetworks').mockReturnValueOnce([
+        {
+          id: '11155111',
+          chainNamespace: 'eip155',
+          caipNetworkId: 'eip155:11155111' as CaipNetworkId,
+          testnet: true,
+          nativeCurrency: { symbol: 'ETH' }
+        } as CaipNetwork
+      ])
 
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        chains: new Map([['eip155', { namespace: 'eip155' }]]),
+        activeChain: 'eip155'
+      } as any)
+
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue(mockAccountData as any)
       appKit = new AppKit({ ...mockOptions })
 
+      const mockAdapter = {
+        getBalance: vi.fn().mockResolvedValue({ balance: '0.00', symbol: 'sETH' })
+      } as unknown as AdapterBlueprint
+
+      vi.mocked(appKit as any).getAdapter = vi.fn().mockReturnValue(mockAdapter)
       await appKit['syncAccount'](mockAccountData)
 
       expect(AccountController.fetchTokenBalance).not.toHaveBeenCalled()
@@ -1039,7 +1059,7 @@ describe('Base', () => {
       vi.mocked(CoreHelperUtil.isClient).mockReturnValueOnce(true)
       vi.spyOn(StorageUtil, 'getActiveNamespace').mockReturnValue('eip155')
       vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('test-connector')
-      vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         activeCaipNetwork: { id: 'eip155:1', chainNamespace: 'eip155' } as CaipNetwork
       } as ChainControllerState)
       vi.mocked(StorageUtil.getActiveNetworkProps).mockReturnValue({
@@ -1065,8 +1085,8 @@ describe('Base', () => {
       await appKit['syncExistingConnection']()
 
       expect(mockAdapter.syncConnection).toHaveBeenCalled()
-      expect(AccountController.setStatus).toHaveBeenCalledWith('connected', 'eip155')
       expect(AccountController.setStatus).toHaveBeenCalledWith('connecting', 'eip155')
+      expect(AccountController.setStatus).toHaveBeenCalledWith('connected', 'eip155')
     })
 
     it('should set status to "disconnected" when no connector is present', async () => {
@@ -1645,11 +1665,28 @@ describe('Balance sync', () => {
     expect(AccountController.setBalance).not.toHaveBeenCalled()
   })
 
-  it('should set empty balance on testnet', async () => {
-    vi.spyOn(NetworkUtil, 'getNetworksByNamespace').mockReturnValue([sepolia])
+  it('should fetch native balance on testnet', async () => {
+    vi.spyOn(NetworkUtil, 'getNetworksByNamespace').mockReturnValue([
+      { ...sepolia, caipNetworkId: 'eip155:11155111', chainNamespace: 'eip155' }
+    ])
+
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      chains: new Map([['eip155', { namespace: 'eip155' }]]),
+      activeChain: 'eip155'
+    } as any)
+
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      address: '0x123'
+    } as any)
+
+    const mockAdapter = {
+      ...mockUniversalAdapter,
+      getBalance: vi.fn().mockResolvedValue({ balance: '1.00', symbol: 'sETH' })
+    }
 
     const appKit = new AppKit({
       ...mockOptions,
+      adapters: [mockAdapter],
       networks: [sepolia]
     })
 
@@ -1661,11 +1698,7 @@ describe('Balance sync', () => {
 
     expect(NetworkUtil.getNetworksByNamespace).toHaveBeenCalled()
     expect(AccountController.fetchTokenBalance).not.toHaveBeenCalled()
-    expect(AccountController.setBalance).toHaveBeenCalledWith(
-      '0.00',
-      sepolia.nativeCurrency.symbol,
-      'eip155'
-    )
+    expect(AccountController.setBalance).toHaveBeenCalledWith('1.00', 'sETH', 'eip155')
   })
 
   it('should set the correct native token balance', async () => {
