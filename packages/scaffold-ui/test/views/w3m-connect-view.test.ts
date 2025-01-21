@@ -39,7 +39,6 @@ const AUTH_CONNECTOR = {
   chain: 'eip155'
 } as ConnectorWithProviders
 
-// @ts-expect-error version mismatch for viem chains
 const [mainnet] = CaipNetworksUtil.extendCaipNetworks([mainnetNetwork], {
   customNetworkImageUrls: {},
   projectId: 'test-project-id'

@@ -3,11 +3,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import type { CaipNetwork, ChainControllerState } from '@reown/appkit'
+import type { CaipNetwork } from '@reown/appkit'
 import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import {
   type AuthConnector,
   ChainController,
+  type ChainControllerState,
   ConnectionController,
   ConnectorController,
   EventsController,
@@ -20,7 +21,6 @@ import { mainnet as mainnetNetwork } from '@reown/appkit/networks'
 import { W3mEmailLoginWidget } from '../../src/partials/w3m-email-login-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
-// @ts-expect-error version mismatch for viem chains
 const [mainnet] = CaipNetworksUtil.extendCaipNetworks([mainnetNetwork], {
   customNetworkImageUrls: {},
   projectId: 'test-project-id'
@@ -38,7 +38,7 @@ describe('W3mEmailLoginWidget', () => {
     vi.mocked(ChainController.state).activeChain = ConstantsUtil.CHAIN.EVM
     vi.mocked(ChainController.state).chains = new Map([
       [ConstantsUtil.CHAIN.EVM, { namespace: ConstantsUtil.CHAIN.EVM, caipNetworks: [mainnet] }]
-    ])
+    ]) as unknown as ChainControllerState['chains']
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue(
       mockAuthConnector as unknown as AuthConnector
     )
