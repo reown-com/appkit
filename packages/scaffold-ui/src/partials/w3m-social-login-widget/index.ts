@@ -188,8 +188,10 @@ export class W3mSocialLoginWidget extends LitElement {
     )
 
     if (!isAvailableChain) {
-      // If we are trying to call this function when active network is nut supported by auth connector, we should switch to the first available network
-      // This will redirect us to SwitchNetwork screen and back to the current screen again
+      /**
+       * If we are trying to call this function when active network is nut supported by auth connector, we should switch to the first available network
+       * This will redirect us to SwitchNetwork screen and back to the current screen again
+       */
       const caipNetwork = ChainController.getFirstCaipNetworkSupportsAuthConnector()
 
       if (caipNetwork) {

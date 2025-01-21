@@ -69,7 +69,6 @@ export const ConnectorController = {
 
   removeAdapter(namespace: ChainNamespace) {
     state.allConnectors = state.allConnectors.filter(connector => connector.chain !== namespace)
-    console.log('state.allConnectors', state.allConnectors)
     state.connectors = this.mergeMultiChainConnectors(state.allConnectors)
   },
 

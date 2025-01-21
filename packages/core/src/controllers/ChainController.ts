@@ -154,7 +154,6 @@ export const ChainController = {
   },
 
   removeAdapter(namespace: ChainNamespace) {
-    console.log('removeAdapter', state.activeChain, namespace)
     if (state.activeChain === namespace) {
       const nextAdapter = Array.from(state.chains.entries()).find(
         ([chainNamespace]) => chainNamespace !== namespace
@@ -615,8 +614,8 @@ export const ChainController = {
   },
 
   getFirstCaipNetworkSupportsAuthConnector() {
-    let availableChains: ChainNamespace[] = []
-    let firstCaipNetwork: CaipNetwork | undefined
+    const availableChains: ChainNamespace[] = []
+    let firstCaipNetwork: CaipNetwork | undefined = undefined
 
     state.chains.forEach(chain => {
       if (CommonConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.find(ns => ns === chain.namespace)) {
@@ -631,6 +630,7 @@ export const ChainController = {
       firstCaipNetwork = firstAvailableChain
         ? state.chains.get(firstAvailableChain)?.caipNetworks?.[0]
         : undefined
+
       return firstCaipNetwork
     }
 

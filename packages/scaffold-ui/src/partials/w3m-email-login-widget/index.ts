@@ -110,8 +110,10 @@ export class W3mEmailLoginWidget extends LitElement {
       const caipNetwork = ChainController.getFirstCaipNetworkSupportsAuthConnector()
 
       if (caipNetwork) {
-        // If we are trying to call this function when active network is nut supported by auth connector, we should switch to the first available network
-        // This will redirect us to SwitchNetwork screen and back to the current screen again
+        /**
+         * If we are trying to call this function when active network is nut supported by auth connector, we should switch to the first available network
+         * This will redirect us to SwitchNetwork screen and back to the current screen again
+         */
         RouterController.push('SwitchNetwork', { network: caipNetwork })
 
         return
