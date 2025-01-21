@@ -5,6 +5,7 @@ import {
   type AppKitNetwork,
   type Balance,
   type CaipNetwork,
+  type CaipNetworkId,
   type ChainNamespace,
   Emitter,
   NetworkUtil,
@@ -20,7 +21,6 @@ import {
   type ChainAdapter,
   ChainController,
   type ChainControllerState,
-  type CombinedProvider,
   ConnectionController,
   type Connector,
   ConnectorController,
@@ -353,9 +353,11 @@ describe('Base', () => {
     })
 
     it('should get provider', () => {
-      const mockProvider = { request: vi.fn() }
-      vi.mocked(AccountController).state = { provider: mockProvider } as any
-      expect(appKit.getProvider()).toBe(mockProvider)
+      const mockProvider = vi.fn()
+      vi.mocked(ProviderUtil.state).providers = { eip155: mockProvider } as any
+      vi.mocked(ProviderUtil.state).providerIds = { eip155: 'INJECTED' } as any
+
+      expect(appKit.getProvider<any>('eip155')).toBe(mockProvider)
     })
 
     it('should get preferred account type', () => {
@@ -374,14 +376,6 @@ describe('Base', () => {
       appKit.setCaipAddress('eip155:1:0x123', 'eip155')
       expect(AccountController.setCaipAddress).toHaveBeenCalledWith('eip155:1:0x123', 'eip155')
       expect(appKit.getIsConnectedState()).toBe(true)
-    })
-
-    it('should set provider', () => {
-      const mockProvider = {
-        request: vi.fn()
-      }
-      appKit.setProvider(mockProvider as unknown as CombinedProvider, 'eip155')
-      expect(AccountController.setProvider).toHaveBeenCalledWith(mockProvider, 'eip155')
     })
 
     it('should set balance', () => {
@@ -730,7 +724,9 @@ describe('Base', () => {
       vi.mocked(appKit as any).caipNetworks = [mainnet]
       // Mock the connector data
       const mockConnector = {
-        id: 'test-wallet'
+        id: 'test-wallet',
+        name: 'Test Wallet',
+        imageUrl: 'test-wallet-icon'
       } as Connector
 
       vi.mocked(ConnectorController.getConnectors).mockReturnValue([mockConnector])
@@ -752,7 +748,8 @@ describe('Base', () => {
 
       expect(AccountController.setConnectedWalletInfo).toHaveBeenCalledWith(
         expect.objectContaining({
-          name: mockConnector.id
+          name: mockConnector.name,
+          icon: mockConnector.imageUrl
         }),
         'eip155'
       )
@@ -932,10 +929,29 @@ describe('Base', () => {
         caipNetworkId: 'eip155:11155111'
       })
 
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue(mockAccountData as any)
+      vi.spyOn(CaipNetworksUtil, 'extendCaipNetworks').mockReturnValueOnce([
+        {
+          id: '11155111',
+          chainNamespace: 'eip155',
+          caipNetworkId: 'eip155:11155111' as CaipNetworkId,
+          testnet: true,
+          nativeCurrency: { symbol: 'ETH' }
+        } as CaipNetwork
+      ])
 
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        chains: new Map([['eip155', { namespace: 'eip155' }]]),
+        activeChain: 'eip155'
+      } as any)
+
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue(mockAccountData as any)
       appKit = new AppKit({ ...mockOptions })
 
+      const mockAdapter = {
+        getBalance: vi.fn().mockResolvedValue({ balance: '0.00', symbol: 'sETH' })
+      } as unknown as AdapterBlueprint
+
+      vi.mocked(appKit as any).getAdapter = vi.fn().mockReturnValue(mockAdapter)
       await appKit['syncAccount'](mockAccountData)
 
       expect(AccountController.fetchTokenBalance).not.toHaveBeenCalled()
@@ -1043,7 +1059,7 @@ describe('Base', () => {
       vi.mocked(CoreHelperUtil.isClient).mockReturnValueOnce(true)
       vi.spyOn(StorageUtil, 'getActiveNamespace').mockReturnValue('eip155')
       vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('test-connector')
-      vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
         activeCaipNetwork: { id: 'eip155:1', chainNamespace: 'eip155' } as CaipNetwork
       } as ChainControllerState)
       vi.mocked(StorageUtil.getActiveNetworkProps).mockReturnValue({
@@ -1069,8 +1085,8 @@ describe('Base', () => {
       await appKit['syncExistingConnection']()
 
       expect(mockAdapter.syncConnection).toHaveBeenCalled()
-      expect(AccountController.setStatus).toHaveBeenCalledWith('connected', 'eip155')
       expect(AccountController.setStatus).toHaveBeenCalledWith('connecting', 'eip155')
+      expect(AccountController.setStatus).toHaveBeenCalledWith('connected', 'eip155')
     })
 
     it('should set status to "disconnected" when no connector is present', async () => {
@@ -1649,11 +1665,28 @@ describe('Balance sync', () => {
     expect(AccountController.setBalance).not.toHaveBeenCalled()
   })
 
-  it('should set empty balance on testnet', async () => {
-    vi.spyOn(NetworkUtil, 'getNetworksByNamespace').mockReturnValue([sepolia])
+  it('should fetch native balance on testnet', async () => {
+    vi.spyOn(NetworkUtil, 'getNetworksByNamespace').mockReturnValue([
+      { ...sepolia, caipNetworkId: 'eip155:11155111', chainNamespace: 'eip155' }
+    ])
+
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      chains: new Map([['eip155', { namespace: 'eip155' }]]),
+      activeChain: 'eip155'
+    } as any)
+
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      address: '0x123'
+    } as any)
+
+    const mockAdapter = {
+      ...mockUniversalAdapter,
+      getBalance: vi.fn().mockResolvedValue({ balance: '1.00', symbol: 'sETH' })
+    }
 
     const appKit = new AppKit({
       ...mockOptions,
+      adapters: [mockAdapter],
       networks: [sepolia]
     })
 
@@ -1665,11 +1698,7 @@ describe('Balance sync', () => {
 
     expect(NetworkUtil.getNetworksByNamespace).toHaveBeenCalled()
     expect(AccountController.fetchTokenBalance).not.toHaveBeenCalled()
-    expect(AccountController.setBalance).toHaveBeenCalledWith(
-      '0.00',
-      sepolia.nativeCurrency.symbol,
-      'eip155'
-    )
+    expect(AccountController.setBalance).toHaveBeenCalledWith('1.00', 'sETH', 'eip155')
   })
 
   it('should set the correct native token balance', async () => {

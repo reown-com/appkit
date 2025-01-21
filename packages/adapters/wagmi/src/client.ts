@@ -216,7 +216,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   private setupWatchers() {
     watchAccount(this.wagmiConfig, {
       onChange: (accountData, prevAccountData) => {
-        if (accountData.status === 'disconnected') {
+        if (accountData.status === 'disconnected' && prevAccountData.address) {
           this.emit('disconnect')
         }
 
