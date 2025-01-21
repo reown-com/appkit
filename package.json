@@ -79,23 +79,14 @@
       "@synthetixio/synpress-metamask@0.0.1-alpha.7": "patches/@synthetixio__synpress-metamask@0.0.1-alpha.7.patch"
     },
     "overrides": {
-      "@solana/web3.js": "1.95.8",
-      "@walletconnect/utils": "2.17.4-canary-dl-1",
-      "@walletconnect/core": "2.17.4",
-      "@walletconnect/universal-provider": "2.17.4"
+      "@solana/web3.js": "1.95.8"
     }
   },
   "resolutions": {
-    "@solana/web3.js": "1.95.8",
-    "@walletconnect/utils": "2.17.4-canary-dl-1",
-    "@walletconnect/core": "2.17.4",
-    "@walletconnect/universal-provider": "2.17.4"
+    "@solana/web3.js": "1.95.8"
   },
   "overrides": {
-    "@solana/web3.js": "1.95.8",
-    "@walletconnect/utils": "2.17.4-canary-dl-1",
-    "@walletconnect/core": "2.17.4",
-    "@walletconnect/universal-provider": "2.17.4"
+    "@solana/web3.js": "1.95.8"
   },
   "@parcel/resolver-default": {
     "packageExports": true
