@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -182,6 +183,24 @@ export class W3mSocialLoginWidget extends LitElement {
   }
 
   async onSocialClick(socialProvider?: SocialProvider) {
+    const isAvailableChain = CommonConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.find(
+      chain => chain === ChainController.state.activeChain
+    )
+
+    if (!isAvailableChain) {
+      /**
+       * If we are trying to call this function when active network is nut supported by auth connector, we should switch to the first available network
+       * This will redirect us to SwitchNetwork screen and back to the current screen again
+       */
+      const caipNetwork = ChainController.getFirstCaipNetworkSupportsAuthConnector()
+
+      if (caipNetwork) {
+        RouterController.push('SwitchNetwork', { network: caipNetwork })
+
+        return
+      }
+    }
+
     if (socialProvider) {
       AccountController.setSocialProvider(socialProvider, ChainController.state.activeChain)
 
