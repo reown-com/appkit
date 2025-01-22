@@ -105,7 +105,7 @@ export abstract class AdapterBlueprint<
     this.addConnector({
       id: CommonConstantsUtil.CONNECTOR_ID.AUTH,
       type: 'AUTH',
-      name: 'Auth',
+      name: CommonConstantsUtil.CONNECTOR_NAMES.AUTH,
       provider: authProvider,
       imageId: PresetsUtil.ConnectorImageIds[CommonConstantsUtil.CONNECTOR_ID.AUTH],
       chain: this.namespace,

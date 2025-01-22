@@ -6,6 +6,7 @@ import {
   type CaipNetwork,
   type CaipNetworkId,
   type ChainNamespace,
+  ConstantsUtil as CommonConstantsUtil,
   NetworkUtil
 } from '@reown/appkit-common'
 
@@ -153,6 +154,17 @@ export const ChainController = {
   },
 
   removeAdapter(namespace: ChainNamespace) {
+    if (state.activeChain === namespace) {
+      const nextAdapter = Array.from(state.chains.entries()).find(
+        ([chainNamespace]) => chainNamespace !== namespace
+      )
+      if (nextAdapter) {
+        const caipNetwork = nextAdapter[1]?.caipNetworks?.[0]
+        if (caipNetwork) {
+          this.setActiveCaipNetwork(caipNetwork)
+        }
+      }
+    }
     state.chains.delete(namespace)
   },
 
@@ -630,5 +642,29 @@ export const ChainController = {
 
   setIsSwitchingNamespace(isSwitchingNamespace: boolean) {
     state.isSwitchingNamespace = isSwitchingNamespace
+  },
+
+  getFirstCaipNetworkSupportsAuthConnector() {
+    const availableChains: ChainNamespace[] = []
+    let firstCaipNetwork: CaipNetwork | undefined = undefined
+
+    state.chains.forEach(chain => {
+      if (CommonConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.find(ns => ns === chain.namespace)) {
+        if (chain.namespace) {
+          availableChains.push(chain.namespace)
+        }
+      }
+    })
+
+    if (availableChains.length > 0) {
+      const firstAvailableChain = availableChains[0]
+      firstCaipNetwork = firstAvailableChain
+        ? state.chains.get(firstAvailableChain)?.caipNetworks?.[0]
+        : undefined
+
+      return firstCaipNetwork
+    }
+
+    return undefined
   }
 }
