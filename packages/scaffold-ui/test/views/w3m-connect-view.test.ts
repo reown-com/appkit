@@ -352,3 +352,87 @@ describe('W3mConnectView - Wallet Guide Mode', () => {
     expect(HelpersUtil.querySelect(element, 'w3m-wallet-guide')).toBeNull()
   })
 })
+
+describe('W3mConnectView - Email and Social Enable States', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      features: {
+        email: true,
+        socials: ['google'],
+        connectMethodsOrder: ['social', 'email', 'wallet']
+      }
+    })
+    vi.mocked(ChainController.state).noAdapters = false
+  })
+
+  it('should disable email and social when noAdapters is true', async () => {
+    const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
+    vi.mocked(ChainController.state).noAdapters = true
+
+    // Trigger state update
+    element['setEmailAndSocialEnableCheck'](element['features'], true)
+
+    expect(element['isEmailEnabled']).toBe(false)
+    expect(element['isSocialEnabled']).toBe(false)
+  })
+
+  it('should enable email and social when features are enabled and noAdapters is false', async () => {
+    const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
+
+    // Trigger state update with enabled features
+    element['setEmailAndSocialEnableCheck'](
+      {
+        email: true,
+        socials: ['google']
+      },
+      false
+    )
+
+    expect(element['isEmailEnabled']).toBe(true)
+    expect(element['isSocialEnabled']).toBe(true)
+  })
+
+  it('should disable email when email feature is disabled', async () => {
+    const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
+
+    // Trigger state update with email disabled
+    element['setEmailAndSocialEnableCheck'](
+      {
+        email: false,
+        socials: ['google']
+      },
+      false
+    )
+
+    expect(element['isEmailEnabled']).toBe(false)
+    expect(element['isSocialEnabled']).toBe(true)
+  })
+
+  it('should disable social when socials array is empty', async () => {
+    const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
+
+    // Trigger state update with empty socials array
+    element['setEmailAndSocialEnableCheck'](
+      {
+        email: true,
+        socials: []
+      },
+      false
+    )
+
+    expect(element['isEmailEnabled']).toBe(true)
+    expect(element['isSocialEnabled']).toBe(false)
+  })
+
+  it('should handle undefined features', async () => {
+    const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
+
+    // Trigger state update with undefined features
+    element['setEmailAndSocialEnableCheck'](undefined, false)
+
+    expect(element['isEmailEnabled']).toBe(undefined)
+    expect(element['isSocialEnabled']).toBe(undefined)
+  })
+})
