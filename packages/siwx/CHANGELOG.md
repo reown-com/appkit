@@ -1,5 +1,15 @@
 # @reown/appkit-siwx
 
+## 1.6.6
+
+### Patch Changes
+
+- [#3723](https://github.com/reown-com/appkit/pull/3723) [`a90474b`](https://github.com/reown-com/appkit/commit/a90474bec8d791d27dc0bec542f57193945b9e63) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where multichain social/email login was not working
+
+- Updated dependencies [[`a90474b`](https://github.com/reown-com/appkit/commit/a90474bec8d791d27dc0bec542f57193945b9e63)]:
+  - @reown/appkit-common@1.6.6
+  - @reown/appkit-core@1.6.6
+
 ## 1.6.5
 
 ### Patch Changes
