@@ -18,6 +18,9 @@ export const ConstantsUtil = {
     EIP6963: 'eip6963',
     AUTH: 'ID_AUTH'
   },
+  CONNECTOR_NAMES: {
+    AUTH: 'Auth'
+  },
   AUTH_CONNECTOR_SUPPORTED_CHAINS: ['eip155', 'solana'],
   LIMITS: {
     PENDING_TRANSACTIONS: 99
