@@ -20,4 +20,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where multichain auth connector was not working
+Fixed an issue where multichain social/email login was not working
