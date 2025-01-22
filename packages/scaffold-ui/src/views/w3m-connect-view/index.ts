@@ -11,6 +11,7 @@ import {
   type Connector,
   ConnectorController,
   CoreHelperUtil,
+  type Features,
   OptionsController,
   RouterController,
   type WalletGuideType
@@ -40,6 +41,8 @@ export class W3mConnectView extends LitElement {
 
   @state() private enableWallets = OptionsController.state.enableWallets
 
+  @state() private noAdapters = ChainController.state.noAdapters
+
   @property() private walletGuide: WalletGuideType = 'get-started'
 
   @state() private checked = false
@@ -61,12 +64,13 @@ export class W3mConnectView extends LitElement {
         this.authConnector = this.connectors.find(c => c.type === 'AUTH')
         this.isAuthEnabled = this.checkIfAuthEnabled(this.connectors)
       }),
-      OptionsController.subscribeKey('features', val => (this.features = val)),
+      OptionsController.subscribeKey('features', val =>
+        this.setEmailAndSocialEnableCheck(val, this.noAdapters)
+      ),
       OptionsController.subscribeKey('enableWallets', val => (this.enableWallets = val)),
-      ChainController.subscribeKey('noAdapters', val => {
-        this.isEmailEnabled = this.features?.email && !val
-        this.isSocialEnabled = this.features?.socials && this.features.socials.length > 0 && !val
-      })
+      ChainController.subscribeKey('noAdapters', val =>
+        this.setEmailAndSocialEnableCheck(this.features, val)
+      )
     )
   }
 
@@ -145,6 +149,13 @@ export class W3mConnectView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private setEmailAndSocialEnableCheck(features: Features | undefined, noAdapters: boolean) {
+    this.isEmailEnabled = features?.email && !noAdapters
+    this.isSocialEnabled = features?.socials && features.socials.length > 0 && !noAdapters
+    this.features = features
+    this.noAdapters = noAdapters
+  }
+
   private checkIfAuthEnabled(connectors: Connector[]) {
     const namespacesWithAuthConnector = connectors
       .filter(c => c.type === AppKitConstantsUtil.CONNECTOR_TYPE_AUTH)
