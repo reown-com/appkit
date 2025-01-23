@@ -1,5 +1,7 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
+
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   BlockchainApiController,
@@ -9,24 +11,27 @@ import {
   RouterController,
   SnackController
 } from '@reown/appkit-core'
-import { ERROR_MESSAGES } from '../schema/index.js'
-import { CosignerService } from '../utils/CosignerService.js'
-
 import { ProviderUtil } from '@reown/appkit/store'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+
+import {
+  assertWalletGrantPermissionsResponse,
+  extractChainAndAddress,
+  getIntervalInSeconds,
+  updateRequestSigner,
+  validateRequest
+} from '../helper/index.js'
+import { ERROR_MESSAGES } from '../schema/index.js'
+import { ERC7715_METHOD } from '../utils/ConstantUtils.js'
+import { CosignerService } from '../utils/CosignerService.js'
+import type { PermissionsCapability, WalletCapabilities } from '../utils/ERC5792Types.js'
 import type {
+  CreateSubscriptionRequest,
+  CreateSubscriptionResponse,
+  Permission,
   SmartSession,
   SmartSessionGrantPermissionsRequest,
   SmartSessionGrantPermissionsResponse
 } from '../utils/TypeUtils.js'
-import {
-  assertWalletGrantPermissionsResponse,
-  extractChainAndAddress,
-  updateRequestSigner,
-  validateRequest
-} from '../helper/index.js'
-import type { PermissionsCapability, WalletCapabilities } from '../utils/ERC5792Types.js'
-import { ERC7715_METHOD } from '../utils/ConstantUtils.js'
 
 // -- Types --------------------------------------------- //
 export type SmartSessionsControllerState = {
@@ -230,5 +235,47 @@ export const SmartSessionsController = {
     } catch (e) {
       SnackController.showError('Error revoking smart session')
     }
+  },
+  async createSubscription(
+    request: CreateSubscriptionRequest
+  ): Promise<CreateSubscriptionResponse> {
+    let permissions: Permission[] = []
+
+    const interval = getIntervalInSeconds(request.interval)
+    const start = Date.now()
+    switch (request.asset) {
+      case 'native':
+        permissions = [
+          {
+            type: 'native-token-recurring-allowance',
+            data: {
+              allowance: request.amount,
+              start,
+              period: interval
+            }
+          }
+        ]
+        break
+      default:
+        throw new Error('Invalid asset')
+    }
+
+    return await this.grantPermissions({
+      chainId: request.chainId,
+      expiry: request.expiry,
+      signer: {
+        type: 'keys',
+        data: {
+          keys: [
+            {
+              type: 'secp256k1',
+              publicKey: request.signerPublicKey
+            }
+          ]
+        }
+      },
+      permissions,
+      policies: []
+    })
   }
 }

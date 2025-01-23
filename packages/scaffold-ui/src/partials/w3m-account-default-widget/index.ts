@@ -1,24 +1,24 @@
-import {
-  AccountController,
-  CoreHelperUtil,
-  ModalController,
-  RouterController,
-  StorageUtil,
-  ConnectorController,
-  EventsController,
-  ConnectionController,
-  SnackController,
-  ConstantsUtil as CommonConstantsUtil,
-  OptionsController,
-  ChainController,
-  type AccountType,
-  ConstantsUtil as CoreConstantsUtil
-} from '@reown/appkit-core'
-import { customElement, UiHelperUtil } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
+
+import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import {
+  AccountController,
+  type AccountType,
+  ChainController,
+  ConnectionController,
+  ConnectorController,
+  ConstantsUtil as CoreConstantsUtil,
+  CoreHelperUtil,
+  EventsController,
+  ModalController,
+  OptionsController,
+  RouterController,
+  SnackController,
+  StorageUtil
+} from '@reown/appkit-core'
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 import styles from './styles.js'
@@ -131,10 +131,16 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   // -- Private ------------------------------------------- //
   private onrampTemplate() {
-    const onramp = this.features?.onramp
-    const isBitcoin = ChainController.state.activeChain === 'bip122'
+    if (!this.namespace) {
+      return null
+    }
 
-    if (!onramp || isBitcoin) {
+    const onramp = this.features?.onramp
+    const hasNetworkSupport = CoreConstantsUtil.ONRAMP_SUPPORTED_CHAIN_NAMESPACES.includes(
+      this.namespace
+    )
+
+    if (!onramp || !hasNetworkSupport) {
       return null
     }
 
@@ -170,19 +176,30 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private activityTemplate() {
-    const isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
+    if (!this.namespace) {
+      return null
+    }
 
-    return html` <wui-list-item
-      iconVariant="blue"
-      icon="clock"
-      iconSize="sm"
-      ?chevron=${!isSolana}
-      ?disabled=${isSolana}
-      @click=${this.onTransactions.bind(this)}
-    >
-      <wui-text variant="paragraph-500" color="fg-100" ?disabled=${isSolana}> Activity </wui-text>
-      ${isSolana ? html`<wui-tag variant="main">Coming soon</wui-tag>` : ''}
-    </wui-list-item>`
+    const isSolana = ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA
+    const isEnabled =
+      this.features?.history &&
+      CoreConstantsUtil.ACTIVITY_ENABLED_CHAIN_NAMESPACES.includes(this.namespace)
+
+    return isEnabled
+      ? html` <wui-list-item
+          iconVariant="blue"
+          icon="clock"
+          iconSize="sm"
+          ?chevron=${!isSolana}
+          ?disabled=${isSolana}
+          @click=${this.onTransactions.bind(this)}
+        >
+          <wui-text variant="paragraph-500" color="fg-100" ?disabled=${isSolana}>
+            Activity
+          </wui-text>
+          ${isSolana ? html`<wui-tag variant="main">Coming soon</wui-tag>` : ''}
+        </wui-list-item>`
+      : null
   }
 
   private swapsTemplate() {
@@ -226,10 +243,15 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private authCardTemplate() {
-    const type = StorageUtil.getConnectedConnector()
+    const namespace = ChainController.state.activeChain as ChainNamespace
+    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
-    if (!authConnector || type !== 'ID_AUTH' || origin.includes(CommonConstantsUtil.SECURE_SITE)) {
+    if (
+      !authConnector ||
+      connectorId !== ConstantsUtil.CONNECTOR_ID.AUTH ||
+      origin.includes(CoreConstantsUtil.SECURE_SITE)
+    ) {
       return null
     }
 
@@ -361,7 +383,12 @@ export class W3mAccountDefaultWidget extends LitElement {
             truncate: this.profileName ? 'end' : 'middle'
           })}
         </wui-text>
-        <wui-icon size="sm" color="fg-200" name="copy" id="copy-address"></wui-icon>
+        <wui-icon-link
+          size="md"
+          icon="copy"
+          iconColor="fg-200"
+          @click=${this.onCopyAddress}
+        ></wui-icon-link>
       </wui-flex>
     </wui-flex>`
   }

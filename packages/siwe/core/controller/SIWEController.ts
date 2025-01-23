@@ -1,17 +1,20 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
+
+import type { SIWEStatus } from '@reown/appkit-common'
+
 import type {
   SIWEClientMethods,
-  SIWESession,
   SIWECreateMessageArgs,
+  SIWESession,
   SIWEVerifyMessageArgs
 } from '../utils/TypeUtils.js'
-import type { SIWEStatus } from '@reown/appkit-common'
 
 // -- Types --------------------------------------------- //
 export interface SIWEControllerClient extends SIWEClientMethods {
   signIn: () => Promise<SIWESession>
   options: {
+    required?: boolean
     enabled: boolean
     nonceRefetchIntervalMs: number
     sessionRefetchIntervalMs: number

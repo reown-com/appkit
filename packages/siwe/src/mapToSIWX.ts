@@ -1,3 +1,4 @@
+import { ConstantsUtil, NetworkUtil } from '@reown/appkit-common'
 import {
   ChainController,
   CoreHelperUtil,
@@ -5,8 +6,9 @@ import {
   type SIWXMessage,
   type SIWXSession
 } from '@reown/appkit-core'
+import { HelpersUtil } from '@reown/appkit-utils'
+
 import type { AppKitSIWEClient } from '../exports/index.js'
-import { NetworkUtil } from '@reown/appkit-common'
 
 const subscriptions: (() => void)[] = []
 
@@ -183,15 +185,22 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
         }
 
         const siweSession = await getSession()
-        const siweCaipNetworkId = `eip155:${siweSession?.chainId}`
-        const lowercaseSessionAddress = siweSession?.address?.toLowerCase()
-        const lowercaseCaipAddress = address?.toLowerCase()
+        const siweCaipNetworkId = `${ConstantsUtil.CHAIN.EVM}:${siweSession?.chainId}`
 
-        if (
-          !siweSession ||
-          lowercaseSessionAddress !== lowercaseCaipAddress ||
-          siweCaipNetworkId !== chainId
-        ) {
+        const sessionAddress = siweSession?.address
+        const requestedCaipNetworkId = chainId
+
+        const shouldSignOutOnNetworkChange = siwe.options.signOutOnNetworkChange
+        const shouldSignOutOnAccountChange = siwe.options.signOutOnAccountChange
+
+        const isNetworkMismatch =
+          shouldSignOutOnNetworkChange && siweCaipNetworkId !== requestedCaipNetworkId
+        const isAddressMismatch =
+          shouldSignOutOnAccountChange && !HelpersUtil.isLowerCaseMatch(sessionAddress, address)
+
+        const shouldSignOut = isNetworkMismatch || isAddressMismatch
+
+        if (!siweSession || shouldSignOut) {
           return []
         }
 
@@ -211,6 +220,10 @@ export function mapToSIWX(siwe: AppKitSIWEClient): SIWXConfig {
 
         return []
       }
+    },
+
+    getRequired() {
+      return siwe.options.required ?? true
     }
   }
 }

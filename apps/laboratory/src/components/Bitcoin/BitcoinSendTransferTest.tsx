@@ -1,7 +1,9 @@
+import { useState } from 'react'
+
 import { Box, Button, Input, InputGroup, InputLeftAddon, useToast } from '@chakra-ui/react'
+
 import type { BitcoinConnector } from '@reown/appkit-adapter-bitcoin'
 import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
-import { useState } from 'react'
 
 export function BitcoinSendTransferTest() {
   const { walletProvider } = useAppKitProvider<BitcoinConnector>('bip122')

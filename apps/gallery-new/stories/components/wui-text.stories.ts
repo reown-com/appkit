@@ -1,14 +1,17 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui-new/src/components/wui-text'
-import type { WuiText } from '@reown/appkit-ui-new/src/components/wui-text'
+
 import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
+
+import '@reown/appkit-ui-new/src/components/wui-text'
+import type { WuiText } from '@reown/appkit-ui-new/src/components/wui-text'
+
 import { textAlignOptions, textColorOptions, textOptions } from '../../utils/PresetUtils'
 
 type Component = Meta<WuiText>
 
 export default {
-  title: 'Components/wui-text',
+  title: 'Components/Text',
   args: {
     variant: 'h2-regular-mono',
     align: 'left',
@@ -32,7 +35,7 @@ export default {
 
 export const Default: Component = {
   render: args => html`
-    <wui-text variant=${args.variant} color=${args.color} align=${ifDefined(args.align)}>
+    <wui-text variant=${args.variant} color=${ifDefined(args.color)} align=${ifDefined(args.align)}>
       Designed for Ownership
     </wui-text>
   `
@@ -43,7 +46,7 @@ export const LineClamp: Component = {
     <div style="max-width:300px">
       <wui-text
         variant=${args.variant}
-        color=${args.color}
+        color=${ifDefined(args.color)}
         align=${ifDefined(args.align)}
         lineClamp="1"
       >

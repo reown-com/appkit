@@ -1,4 +1,8 @@
 /* eslint-disable max-depth */
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
   AccountController,
   ChainController,
@@ -12,11 +16,9 @@ import {
   ThemeController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
-import styles from './styles.js'
+
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import styles from './styles.js'
 
 @customElement('w3m-connecting-social-view')
 export class W3mConnectingSocialView extends LitElement {
@@ -64,8 +66,9 @@ export class W3mConnectingSocialView extends LitElement {
 
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
-
     window.removeEventListener('message', this.handleSocialConnection, false)
+    this.socialWindow?.close()
+    AccountController.setSocialWindow(undefined, ChainController.state.activeChain)
   }
 
   // -- Render -------------------------------------------- //

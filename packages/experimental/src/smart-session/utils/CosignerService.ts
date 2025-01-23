@@ -1,11 +1,11 @@
 /* eslint-disable max-classes-per-file */
+import { assertAddPermissionResponse } from '../helper/index.js'
 import { ConstantsUtil } from './ConstantUtils.js'
 import type {
   ActivatePermissionsRequest,
   AddPermissionRequest,
   AddPermissionResponse
 } from './TypeUtils.js'
-import { assertAddPermissionResponse } from '../helper/index.js'
 
 // -- Custom Error Class --------------------------------------------------- //
 export class CoSignerApiError extends Error {

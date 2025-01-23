@@ -1,4 +1,7 @@
-import { customElement } from '@reown/appkit-ui'
+import { LitElement, html } from 'lit'
+import { property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
   AssetController,
   AssetUtil,
@@ -7,10 +10,9 @@ import {
   ModalController,
   OptionsController
 } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import type { WuiNetworkButton } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+
 import styles from './styles.js'
 
 class W3mNetworkButtonBase extends LitElement {
@@ -78,6 +80,7 @@ class W3mNetworkButtonBase extends LitElement {
         .isUnsupportedChain=${OptionsController.state.allowUnsupportedChain ? false : !isSupported}
         imageSrc=${ifDefined(this.networkImage)}
         @click=${this.onClick.bind(this)}
+        data-testid="w3m-network-button"
       >
         ${this.getLabel()}
         <slot></slot>

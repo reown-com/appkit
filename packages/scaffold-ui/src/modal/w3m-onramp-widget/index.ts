@@ -1,7 +1,9 @@
-import { ChainController, ModalController, OnRampController } from '@reown/appkit-core'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
+
+import { ChainController, ModalController, OnRampController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
+
 import styles from './styles.js'
 
 const PAYMENT_CURRENCY_SYMBOLS: Record<string, string> = {

@@ -1,9 +1,11 @@
 import { ZodError } from 'zod'
+
 import { ERROR_MESSAGES, SmartSessionGrantPermissionsRequestSchema } from '../schema/index.js'
 import {
   type AddPermissionResponse,
   type KeyType,
   type SmartSessionGrantPermissionsRequest,
+  type SubscriptionInterval,
   type WalletGrantPermissionsResponse
 } from '../utils/TypeUtils.js'
 
@@ -144,5 +146,21 @@ export function assertAddPermissionResponse(
 
   if (typeof publicKey !== 'string' || !publicKey.startsWith('0x')) {
     throw new Error('Invalid public key format')
+  }
+}
+
+export function getIntervalInSeconds(interval: SubscriptionInterval): number {
+  const oneDayInSeconds = 24 * 60 * 60
+  switch (interval) {
+    case '1s':
+      return 1
+    case '1d':
+      return oneDayInSeconds
+    case '1w':
+      return oneDayInSeconds * 7
+    case '1m':
+      return oneDayInSeconds * 30
+    default:
+      throw new Error('Invalid interval')
   }
 }

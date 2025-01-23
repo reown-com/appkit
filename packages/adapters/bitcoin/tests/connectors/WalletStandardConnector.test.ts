@@ -1,9 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import type { CaipNetwork } from '@reown/appkit-common'
 import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
+
 import { WalletStandardConnector } from '../../src/connectors/WalletStandardConnector'
-import { mockWalletStandardProvider } from '../mocks/mockWalletStandard'
 import { MethodNotSupportedError } from '../../src/errors/MethodNotSupportedError'
+import { mockWalletStandardProvider } from '../mocks/mockWalletStandard'
 
 vi.mock('@wallet-standard/app', async () =>
   Promise.resolve({
@@ -118,6 +120,28 @@ describe('WalletStandardConnector', () => {
         mockWalletStandardProvider.mockAccount({
           address: 'address1',
           publicKey: Buffer.from('publicKey1')
+        })
+      ])
+
+      const accounts = await connector.getAccountAddresses()
+      expect(accounts).toEqual([
+        {
+          address: 'address1',
+          publicKey: '7075626c69634b657931',
+          purpose: 'payment'
+        }
+      ])
+    })
+
+    it('should filter duplicate addresses', async () => {
+      vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([
+        mockWalletStandardProvider.mockAccount({
+          address: 'address1',
+          publicKey: Buffer.from('publicKey1')
+        }),
+        mockWalletStandardProvider.mockAccount({
+          address: 'address1',
+          publicKey: Buffer.from('publicKey2')
         })
       ])
 

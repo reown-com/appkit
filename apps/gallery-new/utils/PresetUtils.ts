@@ -1,12 +1,16 @@
+import type { TransactionStatus } from '@reown/appkit-common'
+import type { TransactionType } from '@reown/appkit-ui-new'
 import type {
   AccountEntryType,
   BackgroundType,
   BorderRadiusType,
+  ButtonLinkVariant,
+  ButtonShortcutVariant,
   ButtonVariant,
   CardSelectType,
   ChipButtonVariant,
   ChipType,
-  TextColorType,
+  DomainChipVariant,
   FlexAlignItemsType,
   FlexBasisType,
   FlexDirectionType,
@@ -17,22 +21,19 @@ import type {
   GridContentType,
   GridItemsType,
   IconBoxBorderType,
+  IconColorType,
   IconType,
   LogoType,
   PlacementType,
-  ButtonShortcutVariant,
   SpacingType,
   TagVariant,
   TextAlign,
+  TextColorType,
   TextType,
   ThemeType,
-  TransactionType,
-  VisualType,
-  ButtonLinkVariant,
-  DomainChipVariant,
-  ToastMessageVariant
+  ToastMessageVariant,
+  VisualType
 } from '@reown/appkit-ui-new/src/utils/TypeUtil'
-import type { TransactionStatus, TransactionDirection } from '@reown/appkit-common'
 
 export const textColorOptions: TextColorType[] = [
   'primary',
@@ -44,7 +45,16 @@ export const textColorOptions: TextColorType[] = [
   'accent-primary'
 ]
 
-export const iconColorOptions = ['accent', 'inverse']
+export const iconColorOptions: IconColorType[] = [
+  'inherit',
+  'accent-primary',
+  'accent-certified',
+  'success',
+  'error',
+  'warning',
+  'default',
+  'inverse'
+]
 
 // @TODO: Deprecate this
 export const colorOptions = iconColorOptions
@@ -310,7 +320,7 @@ export const buttonShortcutOptions: ButtonShortcutVariant[] = ['accent', 'second
 
 export const buttonLinkOptions: ButtonLinkVariant[] = ['accent', 'secondary']
 
-export const transactionTypeOptions: TransactionType[] = [
+export const transactionThumbnailOptions: TransactionType[] = [
   'approve',
   'bought',
   'borrow',
@@ -327,10 +337,11 @@ export const transactionTypeOptions: TransactionType[] = [
   'stake',
   'trade',
   'unstake',
-  'withdraw'
+  'withdraw',
+  'fiat',
+  'unknown',
+  'nft'
 ]
-
-export const transactionDirectionOptions: TransactionDirection[] = ['in', 'out']
 
 export const transactionStatusOptions: TransactionStatus[] = ['confirmed', 'pending', 'failed']
 

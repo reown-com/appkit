@@ -1,7 +1,9 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { AccountController, BlockchainApiController, ChainController } from '@reown/appkit-core'
+
 import { CloudAuthSIWX } from '../../src/configs/CloudAuthSIWX'
 import { mockSession } from '../mocks/mockSession'
-import { AccountController, BlockchainApiController, ChainController } from '@reown/appkit-core'
 
 vi.useFakeTimers({
   now: new Date('2024-12-05T16:02:32.905Z')
@@ -80,7 +82,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
         }
       )
 
-      expect(setItemSpy).toHaveBeenCalledWith('@appkit/siwx-token', 'mock_token')
+      expect(setItemSpy).toHaveBeenCalledWith('@appkit/siwx-nonce-token', 'mock_token')
     })
 
     it('should throw an text error if response is not json', async () => {
@@ -137,12 +139,12 @@ Issued At: 2024-12-05T16:02:32.905Z`)
         {
           body: '{"message":"Hello AppKit!","signature":"0x3c70e0a2d87f677dc0c3faf98fdf6313e99a3d9191bb79f7ecfce0c2cf46b7b33fd4c4bb83bca82fe872e35963382027d0d18018342d7dc36a675918cb73e9061c","clientId":null}',
           headers: {
-            Authorization: 'Bearer mock_nonce_token'
+            'x-nonce-jwt': 'Bearer mock_nonce_token'
           },
           method: 'POST'
         }
       )
-      expect(setItemSpy).toHaveBeenCalledWith('@appkit/siwx-token', 'mock_authenticate_token')
+      expect(setItemSpy).toHaveBeenCalledWith('@appkit/siwx-auth-token', 'mock_authenticate_token')
     })
 
     it('should use correct client id', async () => {
@@ -162,7 +164,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
         {
           body: '{"message":"Hello AppKit!","signature":"0x3c70e0a2d87f677dc0c3faf98fdf6313e99a3d9191bb79f7ecfce0c2cf46b7b33fd4c4bb83bca82fe872e35963382027d0d18018342d7dc36a675918cb73e9061c","clientId":"mock_client_id"}',
           headers: {
-            Authorization: 'Bearer mock_nonce_token'
+            'x-nonce-jwt': 'Bearer mock_nonce_token'
           },
           method: 'POST'
         }
@@ -173,7 +175,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
       const fetchSpy = vi.spyOn(global, 'fetch')
 
       vi.spyOn(localStorage, 'getItem').mockReturnValueOnce('mock_nonce_token')
-      AccountController.state.connectedWalletInfo = {}
+      AccountController.state.connectedWalletInfo = undefined
       vi.spyOn(AccountController.state, 'connectedWalletInfo', 'get').mockReturnValueOnce({
         name: 'mock_wallet_name',
         icon: 'mock_wallet_icon'
@@ -188,7 +190,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
         {
           body: '{"message":"Hello AppKit!","signature":"0x3c70e0a2d87f677dc0c3faf98fdf6313e99a3d9191bb79f7ecfce0c2cf46b7b33fd4c4bb83bca82fe872e35963382027d0d18018342d7dc36a675918cb73e9061c","walletInfo":{"name":"mock_wallet_name","icon":"mock_wallet_icon"}}',
           headers: {
-            Authorization: 'Bearer mock_nonce_token'
+            'x-nonce-jwt': 'Bearer mock_nonce_token'
           },
           method: 'POST'
         }
@@ -239,6 +241,33 @@ Issued At: 2024-12-05T16:02:32.905Z`)
       )
     })
 
+    it('gets sessions when address is not lowercased', async () => {
+      const fetchSpy = vi.spyOn(global, 'fetch')
+
+      fetchSpy.mockResolvedValueOnce(
+        mocks.mockFetchResponse({
+          address: '0x1234567890abcdef1234567890abcdef12345678',
+          chainId: 1
+        })
+      )
+
+      const sessions = await siwx.getSessions(
+        'eip155:1',
+        '0x1234567890ABCDEF1234567890abcdef12345678'
+      )
+
+      expect(sessions).toEqual([
+        {
+          data: {
+            accountAddress: '0x1234567890abcdef1234567890abcdef12345678',
+            chainId: 'eip155:1'
+          },
+          message: '',
+          signature: ''
+        }
+      ])
+    })
+
     it('returns empty array if session is not found', async () => {
       const fetchSpy = vi.spyOn(global, 'fetch')
 
@@ -280,7 +309,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
 
       await siwx.revokeSession('eip155:1', '0x1234567890abcdef1234567890abcdef12345678')
 
-      expect(removeItemSpy).toHaveBeenCalledWith('@appkit/siwx-token')
+      expect(removeItemSpy).toHaveBeenCalledWith('@appkit/siwx-auth-token')
     })
   })
 
@@ -290,7 +319,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
 
       await siwx.setSessions([])
 
-      expect(removeItemSpy).toHaveBeenCalledWith('@appkit/siwx-token')
+      expect(removeItemSpy).toHaveBeenCalledWith('@appkit/siwx-auth-token')
     })
 
     it('adds a session with default first item', async () => {
@@ -316,6 +345,17 @@ Issued At: 2024-12-05T16:02:32.905Z`)
       await siwx.setSessions([session, session2])
 
       expect(addSessionSpy).toHaveBeenCalledWith(session2)
+    })
+  })
+
+  describe('getRequired', () => {
+    it('should return true for getRequired() by default', () => {
+      expect(siwx.getRequired()).toBe(true)
+    })
+
+    it('should return false for getRequired()', () => {
+      siwx = new CloudAuthSIWX({ required: false })
+      expect(siwx.getRequired()).toBe(false)
     })
   })
 })

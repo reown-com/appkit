@@ -1,13 +1,20 @@
-import { ChainController, ConnectorController, CoreHelperUtil } from '@reown/appkit-core'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
-import { ref, createRef } from 'lit/directives/ref.js'
-import type { Ref } from 'lit/directives/ref.js'
-import styles from './styles.js'
-import { SnackController, RouterController, EventsController } from '@reown/appkit-core'
-import { ConstantsUtil } from '@reown/appkit-common'
 import { ifDefined } from 'lit/directives/if-defined.js'
+import { createRef, ref } from 'lit/directives/ref.js'
+import type { Ref } from 'lit/directives/ref.js'
+
+import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import {
+  ChainController,
+  ConnectionController,
+  ConnectorController,
+  CoreHelperUtil
+} from '@reown/appkit-core'
+import { EventsController, RouterController, SnackController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
+
+import styles from './styles.js'
 
 @customElement('w3m-email-login-widget')
 export class W3mEmailLoginWidget extends LitElement {
@@ -21,7 +28,7 @@ export class W3mEmailLoginWidget extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public tabIdx?: number
 
-  @state() private email = ''
+  @state() public email = ''
 
   @state() private loading = false
 
@@ -95,17 +102,22 @@ export class W3mEmailLoginWidget extends LitElement {
   }
 
   private async onSubmitEmail(event: Event) {
-    const availableChains = [ConstantsUtil.CHAIN.EVM, ConstantsUtil.CHAIN.SOLANA]
-    const isAvailableChain = availableChains.find(
+    const isAvailableChain = ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.find(
       chain => chain === ChainController.state.activeChain
     )
 
     if (!isAvailableChain) {
-      RouterController.push('SwitchActiveChain', {
-        switchToChain: ConstantsUtil.CHAIN.EVM
-      })
+      const caipNetwork = ChainController.getFirstCaipNetworkSupportsAuthConnector()
 
-      return
+      if (caipNetwork) {
+        /**
+         * If we are trying to call this function when active network is nut supported by auth connector, we should switch to the first available network
+         * This will redirect us to SwitchNetwork screen and back to the current screen again
+         */
+        RouterController.push('SwitchNetwork', { network: caipNetwork })
+
+        return
+      }
     }
 
     try {
@@ -126,7 +138,14 @@ export class W3mEmailLoginWidget extends LitElement {
         RouterController.push('EmailVerifyOtp', { email: this.email })
       } else if (action === 'VERIFY_DEVICE') {
         RouterController.push('EmailVerifyDevice', { email: this.email })
+      } else if (action === 'CONNECT') {
+        await ConnectionController.connectExternal(
+          authConnector,
+          ChainController.state.activeChain as ChainNamespace
+        )
+        RouterController.replace('Account')
       }
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       const parsedError = CoreHelperUtil.parseError(error)

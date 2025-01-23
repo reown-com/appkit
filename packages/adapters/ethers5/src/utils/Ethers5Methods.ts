@@ -1,13 +1,14 @@
 /* eslint-disable max-params */
-import { ethers, Contract } from 'ethers'
-import { type Provider } from '@reown/appkit-utils/ethers'
+import { Contract, ethers } from 'ethers'
+
+import { WcHelpersUtil } from '@reown/appkit'
+import { type CaipNetwork, isReownName } from '@reown/appkit-common'
 import type {
   EstimateGasTransactionArgs,
   SendTransactionArgs,
   WriteContractArgs
 } from '@reown/appkit-core'
-import { isReownName, type CaipNetwork } from '@reown/appkit-common'
-import { WcHelpersUtil } from '@reown/appkit'
+import { type Provider } from '@reown/appkit-utils/ethers'
 
 export const Ethers5Methods = {
   signMessage: async (message: string, provider: Provider, address: string) => {
@@ -106,7 +107,7 @@ export const Ethers5Methods = {
     }
     const method = contract[data.method]
     if (method) {
-      return await method(data.receiverAddress, data.tokenAmount)
+      return await method(...data.args)
     }
     throw new Error('Contract method is undefined')
   },

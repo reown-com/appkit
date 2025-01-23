@@ -1,4 +1,5 @@
-import { test, type BrowserContext } from '@playwright/test'
+import { type BrowserContext, test } from '@playwright/test'
+
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { Email } from './shared/utils/email'
 import { EOA, ModalWalletValidator, SMART_ACCOUNT } from './shared/validators/ModalWalletValidator'
@@ -80,7 +81,8 @@ smartAccountTest('it should switch to a not enabled network and sign with EOA', 
   await validator.expectSwitchedNetwork(targetChain)
   await page.closeModal()
 
-  await page.goToSettings()
+  await page.openAccount()
+  await page.openProfileView()
   await validator.expectTogglePreferredTypeVisible(false)
   await page.closeModal()
 

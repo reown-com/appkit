@@ -1,11 +1,12 @@
 import {
+  ComputeBudgetProgram,
+  type Connection,
+  LAMPORTS_PER_SOL,
   PublicKey,
   SystemProgram,
-  type Connection,
-  Transaction,
-  LAMPORTS_PER_SOL,
-  ComputeBudgetProgram
+  Transaction
 } from '@solana/web3.js'
+
 import type { Provider } from '@reown/appkit-utils/solana'
 
 type SendTransactionArgs = {

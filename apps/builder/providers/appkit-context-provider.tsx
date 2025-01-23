@@ -1,16 +1,23 @@
 'use client'
 
 import { ReactNode, useEffect, useState } from 'react'
-import { Features, ThemeMode, ThemeVariables, type AppKit } from '@reown/appkit/react'
-import { ConnectMethod, ConstantsUtil } from '@reown/appkit-core'
-import { ThemeStore } from '../lib/theme-store'
-import { URLState, urlStateUtils } from '@/lib/url-state'
-import { AppKitContext } from '@/contexts/appkit-context'
-import { useSnapshot } from 'valtio'
+
 import { UniqueIdentifier } from '@dnd-kit/core'
-import { defaultCustomizationConfig } from '@/lib/config'
 import { useTheme } from 'next-themes'
+import { Toaster } from 'sonner'
+import { useSnapshot } from 'valtio'
+
+import { type ChainNamespace } from '@reown/appkit-common'
+import { ConnectMethod, ConstantsUtil } from '@reown/appkit-core'
+import { Features, ThemeMode, ThemeVariables, useAppKitState } from '@reown/appkit/react'
+
+import { AppKitContext } from '@/contexts/appkit-context'
+import { allAdapters, initialConfig, namespaceNetworksMap } from '@/lib/config'
+import { defaultCustomizationConfig } from '@/lib/defaultConfig'
 import { inter } from '@/lib/fonts'
+import { URLState, urlStateUtils } from '@/lib/url-state'
+
+import { ThemeStore } from '../lib/theme-store'
 
 interface AppKitProviderProps {
   children: ReactNode
@@ -21,10 +28,9 @@ interface AppKitProviderProps {
   initialConfig?: URLState | null
 }
 
-const initialConfig = urlStateUtils.getStateFromURL()
-
 export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => {
-  const [isInitialized, setIsInitialized] = useState(false)
+  const { initialized } = useAppKitState()
+
   const [features, setFeatures] = useState<Features>(
     initialConfig?.features || ConstantsUtil.DEFAULT_FEATURES
   )
@@ -41,6 +47,9 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
     wallet: false,
     social: false
   })
+  const [enabledChains, setEnabledChains] = useState<ChainNamespace[]>(
+    initialConfig?.enabledChains || ['eip155', 'solana', 'bip122']
+  )
   const themeStore = useSnapshot(ThemeStore.state)
   const appKit = themeStore.modal
 
@@ -51,12 +60,45 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
     }))
   }
 
+  function removeChain(chain: ChainNamespace) {
+    setEnabledChains(prev => {
+      const newEnabledChains = prev.filter(c => c !== chain)
+      urlStateUtils.updateURLWithState({ enabledChains: newEnabledChains })
+      return newEnabledChains
+    })
+    appKit?.removeAdapter(chain)
+  }
+
+  function addChain(chain: ChainNamespace) {
+    setEnabledChains(prev => {
+      const newEnabledChains = [...prev, chain]
+      urlStateUtils.updateURLWithState({ enabledChains: newEnabledChains })
+      return newEnabledChains
+    })
+    // Doing this inside the setEnabledChains calling it two times - not sure why
+    const adapter = allAdapters.find(a => a.namespace === chain)
+    if (adapter) {
+      appKit?.addAdapter(adapter, namespaceNetworksMap[chain])
+    }
+  }
+
   function updateFeatures(newFeatures: Partial<Features>) {
     setFeatures(prev => {
-      const newValue = { ...prev, ...newFeatures }
-      appKit?.updateFeatures(newValue)
-      urlStateUtils.updateURLWithState({ features: newValue })
-      return newValue
+      // Update the AppKit state first
+      const newAppKitValue = { ...prev, ...newFeatures }
+      appKit?.updateFeatures(newAppKitValue)
+
+      // Get the connection methods order since it's calculated based on injected connectors dynamically
+      const order =
+        newFeatures?.connectMethodsOrder === undefined
+          ? appKit?.getConnectMethodsOrder()
+          : newFeatures.connectMethodsOrder
+
+      // Define and set new internal value with the order
+      const newInternalValue = { ...newAppKitValue, connectMethodsOrder: order }
+      urlStateUtils.updateURLWithState({ features: newInternalValue })
+
+      return newInternalValue
     })
   }
 
@@ -117,8 +159,15 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
   }
 
   useEffect(() => {
-    setTheme(theme as ThemeMode)
-    setIsInitialized(true)
+    if (initialized) {
+      const connectMethodsOrder = appKit?.getConnectMethodsOrder()
+      const order = connectMethodsOrder
+      updateFeatures({ connectMethodsOrder: order })
+    }
+  }, [initialized])
+
+  useEffect(() => {
+    appKit?.setThemeMode(theme as ThemeMode)
   }, [])
 
   const socialsEnabled = Array.isArray(features.socials)
@@ -140,10 +189,12 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
           termsConditionsUrl,
           privacyPolicyUrl
         },
+        enabledChains,
+        removeChain,
+        addChain,
         socialsEnabled,
         enableWallets,
         isDraggingByKey,
-        isInitialized,
         updateFeatures,
         updateThemeMode,
         updateSocials,
@@ -155,6 +206,7 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
         resetConfigs
       }}
     >
+      <Toaster theme={theme as ThemeMode} />
       {children}
     </AppKitContext.Provider>
   )

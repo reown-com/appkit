@@ -1,8 +1,11 @@
-import { describe, it, expect, vi, afterEach, beforeEach, beforeAll, afterAll } from 'vitest'
-import { StorageUtil } from '../../src/utils/StorageUtil'
-import type { WcWallet, ConnectorType, SocialProvider } from '../../src/utils/TypeUtil'
-import { SafeLocalStorage } from '@reown/appkit-common'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { SafeLocalStorage, getSafeConnectorIdKey } from '@reown/appkit-common'
 import { SafeLocalStorageKeys } from '@reown/appkit-common'
+import { W3mFrameConstants, W3mFrameHelpers, W3mFrameStorage } from '@reown/appkit-wallet'
+
+import { StorageUtil } from '../../src/utils/StorageUtil'
+import type { SocialProvider, WcWallet } from '../../src/utils/TypeUtil'
 
 const previousLocalStorage = globalThis.localStorage
 const previousWindow = globalThis.window
@@ -147,19 +150,22 @@ describe('StorageUtil', () => {
     })
   })
 
-  describe('setConnectedConnector', () => {
+  describe('setConnectedConnectorId', () => {
     it('should set connected connector', () => {
-      const connector: ConnectorType = 'INJECTED'
-      StorageUtil.setConnectedConnector(connector)
-      expect(SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)).toBe(connector)
+      const connectorId = 'io.metamask'
+
+      StorageUtil.setConnectedConnectorId('eip155', connectorId)
+      const key = getSafeConnectorIdKey('eip155')
+      expect(SafeLocalStorage.getItem(key)).toBe(connectorId)
     })
   })
 
   describe('getConnectedConnector', () => {
     it('should get connected connector', () => {
-      const connector: ConnectorType = 'INJECTED'
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR, connector)
-      expect(StorageUtil.getConnectedConnector()).toBe(connector)
+      const connectorId = 'io.metamask'
+      const key = getSafeConnectorIdKey('eip155')
+      SafeLocalStorage.setItem(key, connectorId)
+      expect(StorageUtil.getConnectedConnectorId('eip155')).toBe(connectorId)
     })
   })
 
@@ -180,9 +186,10 @@ describe('StorageUtil', () => {
   })
 
   describe('getConnectedSocialUsername', () => {
-    it('should get connected social username', () => {
+    it('should set username on W3mFrameStorage and get connected social username', () => {
       const username = 'testuser'
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_SOCIAL_USERNAME, username)
+      vi.spyOn(W3mFrameHelpers, 'isClient', 'get').mockReturnValue(true)
+      W3mFrameStorage.set(W3mFrameConstants.SOCIAL_USERNAME, username)
       expect(StorageUtil.getConnectedSocialUsername()).toBe(username)
     })
   })

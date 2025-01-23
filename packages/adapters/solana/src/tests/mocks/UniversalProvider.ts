@@ -1,16 +1,33 @@
-import UniversalProvider from '@walletconnect/universal-provider'
 import type { SessionTypes } from '@walletconnect/types'
+import UniversalProvider from '@walletconnect/universal-provider'
 import { vi } from 'vitest'
+
+import { SolanaWalletConnectProvider } from '../../providers/SolanaWalletConnectProvider.js'
 import { TestConstants } from '../util/TestConstants.js'
-import { WalletConnectProvider } from '../../providers/WalletConnectProvider.js'
 
 export function mockUniversalProvider() {
   const provider = new UniversalProvider({})
 
-  provider.on = vi.fn()
-  provider.removeListener = vi.fn()
-  provider.connect = vi.fn(() => Promise.resolve(mockUniversalProviderSession()))
-  provider.disconnect = vi.fn(() => Promise.resolve())
+  Object.assign(provider, {
+    on: vi.fn(),
+    removeEventListener: vi.fn(),
+    connect: vi.fn(() => {
+      const session = mockUniversalProviderSession()
+      Object.assign(provider, {
+        session
+      })
+
+      return Promise.resolve(session)
+    }),
+    disconnect: vi.fn(() => Promise.resolve()),
+    client: {
+      core: {
+        crypto: {
+          getClientId: vi.fn(() => Promise.resolve('client-id'))
+        }
+      }
+    }
+  })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   provider.request = vi.fn((...[{ method }]: Parameters<UniversalProvider['request']>): any => {
@@ -19,17 +36,17 @@ export function mockUniversalProvider() {
         return Promise.resolve({
           signature:
             '5bW5EoLn696QKxgJbsDb1aXrBf9hSUvvCa9FbyRt6CyppX4cQMJWyKx736ka5WDKqCZaoVivpWaxHhcAbSwhNx6Qp5Df3cHvSkg7jSX8PVw7FMKv45B5ZaeLjYHubDVsQEFFAs3Ea1CZU7X8xCv2JbhQvoxMoFWAKxUyFbM3DFH4KzuLL5nMZ9ybkiYfGdAAzwfMTDFLY7ymdzG12mWpvPwLJnwECDgHG7BogzZBdehndK8KP5sPLY5VcgVp5D87crr7XhUwmw5QLtDjPMnp4YKwApSS58jVNw3Zy'
-        } satisfies WalletConnectProvider.RequestMethods['solana_signMessage']['returns'])
+        } satisfies SolanaWalletConnectProvider.RequestMethods['solana_signMessage']['returns'])
       case 'solana_signTransaction':
         return Promise.resolve({
           transaction:
             'AbtgOVOy/IOH3BOPyZ8/hu1pi0NQqO1mV13HnoWEvRDCpGKO6/8yTfuJmDgQet+S1iFeIos+2EQLJNee0l561AEBAAEDEYu60W1iZPqZxekvWxHW9/B92on2Sa8LAUEGjV1el9d1oyGFaAZ/9w4srgx9KoqiHtPM6Vur7h4D6XVoSgrEhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAyVZNp39crMNo5bEpnmL7eM8r98bZA5VoGNHFLu7CvL4BAgIAAQwCAAAAQEIPAAAAAAA='
-        } satisfies WalletConnectProvider.RequestMethods['solana_signTransaction']['returns'])
+        } satisfies SolanaWalletConnectProvider.RequestMethods['solana_signTransaction']['returns'])
       case 'solana_signAndSendTransaction':
         return Promise.resolve({
           signature:
             '2Lb1KQHWfbV3pWMqXZveFWqneSyhH95YsgCENRWnArSkLydjN1M42oB82zSd6BBdGkM9pE6sQLQf1gyBh8KWM2c4'
-        } satisfies WalletConnectProvider.RequestMethods['solana_signAndSendTransaction']['returns'])
+        } satisfies SolanaWalletConnectProvider.RequestMethods['solana_signAndSendTransaction']['returns'])
       case 'solana_signAllTransactions':
         return Promise.resolve({
           transactions: [

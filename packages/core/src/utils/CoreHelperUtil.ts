@@ -1,7 +1,8 @@
 import type { AppKitSdkVersion, Balance, ChainNamespace } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstants } from '@reown/appkit-common'
-import { ConstantsUtil } from './ConstantsUtil.js'
 import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
+
+import { ConstantsUtil } from './ConstantsUtil.js'
 import type { AccountTypeMap, ChainAdapter, LinkingRecord, NamespaceTypeMap } from './TypeUtil.js'
 
 type SDKFramework = 'html' | 'react' | 'vue'
@@ -9,7 +10,7 @@ type OpenTarget = '_blank' | '_self' | 'popupWindow' | '_top'
 
 export const CoreHelperUtil = {
   isMobile() {
-    if (typeof window !== 'undefined') {
+    if (this.isClient()) {
       return Boolean(
         window.matchMedia('(pointer:coarse)').matches ||
           /Android|webOS|iPhone|iPad|iPod|BlackBerry|Opera Mini/u.test(navigator.userAgent)
@@ -24,15 +25,33 @@ export const CoreHelperUtil = {
   },
 
   isAndroid() {
+    if (!this.isMobile()) {
+      return false
+    }
+
     const ua = window.navigator.userAgent.toLowerCase()
 
     return CoreHelperUtil.isMobile() && ua.includes('android')
   },
 
   isIos() {
+    if (!this.isMobile()) {
+      return false
+    }
+
     const ua = window.navigator.userAgent.toLowerCase()
 
-    return CoreHelperUtil.isMobile() && (ua.includes('iphone') || ua.includes('ipad'))
+    return ua.includes('iphone') || ua.includes('ipad')
+  },
+
+  isSafari() {
+    if (!this.isClient()) {
+      return false
+    }
+
+    const ua = window.navigator.userAgent.toLowerCase()
+
+    return ua.includes('safari')
   },
 
   isClient() {
@@ -347,15 +366,35 @@ export const CoreHelperUtil = {
 
     return `${platform}-${adapterNames}-${version}`
   },
+
+  // eslint-disable-next-line max-params
   createAccount<N extends ChainNamespace>(
     namespace: N,
     address: string,
-    type: NamespaceTypeMap[N]
+    type: NamespaceTypeMap[N],
+    publicKey?: string,
+    path?: string
   ): AccountTypeMap[N] {
     return {
       namespace,
       address,
-      type
+      type,
+      publicKey,
+      path
     } as AccountTypeMap[N]
+  },
+
+  isCaipAddress(address?: unknown): address is CaipAddress {
+    if (typeof address !== 'string') {
+      return false
+    }
+
+    const sections = address.split(':')
+    const namespace = sections[0]
+
+    return (
+      sections.filter(Boolean).length === 3 &&
+      (namespace as string) in CommonConstants.CHAIN_NAME_MAP
+    )
   }
 }

@@ -1,17 +1,17 @@
+import { LitElement, html } from 'lit'
+import { property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import type { Connector } from '@reown/appkit-core'
 import {
   ApiController,
   AssetUtil,
-  ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   RouterController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connect-injected-widget')
 export class W3mConnectInjectedWidget extends LitElement {
@@ -90,7 +90,7 @@ export class W3mConnectInjectedWidget extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private onConnector(connector: Connector) {
-    ChainController.setActiveConnector(connector)
+    ConnectorController.setActiveConnector(connector)
     RouterController.push('ConnectingExternal', { connector })
   }
 }

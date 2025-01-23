@@ -1,6 +1,7 @@
-import type { Tokens } from '@reown/appkit-core'
-import { ConstantsUtil } from './ConstantsUtil.js'
 import type { CaipNetworkId } from '@reown/appkit-common'
+import type { Tokens } from '@reown/appkit-core'
+
+import { ConstantsUtil } from './ConstantsUtil.js'
 
 export const HelpersUtil = {
   getCaipTokens(tokens?: Tokens) {
@@ -14,5 +15,9 @@ export const HelpersUtil = {
     })
 
     return caipTokens
+  },
+
+  isLowerCaseMatch(str1?: string, str2?: string) {
+    return str1?.toLowerCase() === str2?.toLowerCase()
   }
 }

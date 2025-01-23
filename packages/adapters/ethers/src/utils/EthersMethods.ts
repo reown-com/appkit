@@ -2,22 +2,23 @@
 import {
   BrowserProvider,
   Contract,
-  JsonRpcSigner,
   InfuraProvider,
-  isHexString,
+  JsonRpcSigner,
+  formatUnits,
   hexlify,
-  toUtf8Bytes,
+  isHexString,
   parseUnits,
-  formatUnits
+  toUtf8Bytes
 } from 'ethers'
+
+import { WcHelpersUtil } from '@reown/appkit'
+import { type CaipNetwork, isReownName } from '@reown/appkit-common'
 import type {
   EstimateGasTransactionArgs,
   Provider,
   SendTransactionArgs,
   WriteContractArgs
 } from '@reown/appkit-core'
-import { isReownName, type CaipNetwork } from '@reown/appkit-common'
-import { WcHelpersUtil } from '@reown/appkit'
 
 export const EthersMethods = {
   signMessage: async (message: string, provider: Provider, address: string) => {
@@ -112,7 +113,7 @@ export const EthersMethods = {
     }
     const method = contract[data.method]
     if (method) {
-      return await method(data.receiverAddress, data.tokenAmount)
+      return await method(...data.args)
     }
     throw new Error('Contract method is undefined')
   },

@@ -1,16 +1,22 @@
 'use client'
 
 import { createContext } from 'react'
-import type { Features, ThemeMode, SocialProvider } from '@reown/appkit-core'
-import { URLState } from '@/lib/url-state'
+
 import { UniqueIdentifier } from '@dnd-kit/core'
+
+import type { ChainNamespace } from '@reown/appkit-common'
+import type { Features, SocialProvider, ThemeMode } from '@reown/appkit-core'
+
+import { URLState } from '@/lib/url-state'
 
 interface AppKitContextType {
   config: URLState
   enableWallets: boolean
   socialsEnabled: boolean
   isDraggingByKey: Record<string, boolean>
-  isInitialized: boolean
+  enabledChains: ChainNamespace[]
+  removeChain: (chain: ChainNamespace) => void
+  addChain: (chain: ChainNamespace) => void
   updateThemeMode: (mode: ThemeMode) => void
   updateFeatures: (features: Partial<Features>) => void
   updateSocials: (enabled: boolean) => void

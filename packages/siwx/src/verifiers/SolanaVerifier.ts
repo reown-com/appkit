@@ -1,9 +1,14 @@
-import { SIWXVerifier } from '../core/SIWXVerifier.js'
-import type { SIWXSession } from '@reown/appkit-core'
-import nacl from 'tweetnacl'
 import bs58 from 'bs58'
-import { ConstantsUtil } from '@reown/appkit-common'
+import nacl from 'tweetnacl'
 
+import { ConstantsUtil } from '@reown/appkit-common'
+import type { SIWXSession } from '@reown/appkit-core'
+
+import { SIWXVerifier } from '../core/SIWXVerifier.js'
+
+/**
+ * Default verifier for Solana sessions.
+ */
 export class SolanaVerifier extends SIWXVerifier {
   public readonly chainNamespace = ConstantsUtil.CHAIN.SOLANA
 

@@ -1,9 +1,15 @@
+import { proxy, snapshot } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
-import { proxy } from 'valtio/vanilla'
-import type { Connector, WcWallet } from '../utils/TypeUtil.js'
-import type { SwapInputTarget } from './SwapController.js'
+
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+
+import type { Connector, Metadata, WcWallet } from '../utils/TypeUtil.js'
+import { AccountController } from './AccountController.js'
+import { ChainController } from './ChainController.js'
+import { ConnectorController } from './ConnectorController.js'
 import { ModalController } from './ModalController.js'
+import { OptionsController } from './OptionsController.js'
+import type { SwapInputTarget } from './SwapController.js'
 
 // -- Types --------------------------------------------- //
 type TransactionAction = {
@@ -42,6 +48,7 @@ export interface RouterControllerState {
     | 'ConnectingExternal'
     | 'ConnectingFarcaster'
     | 'ConnectingWalletConnect'
+    | 'ConnectingWalletConnectBasic'
     | 'ConnectingSiwe'
     | 'ConnectingSocial'
     | 'ConnectSocials'
@@ -167,9 +174,10 @@ export const RouterController = {
     }
   },
 
-  reset(view: RouterControllerState['view']) {
+  reset(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
     state.view = view
     state.history = [view]
+    state.data = data
   },
 
   replace(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
@@ -184,6 +192,9 @@ export const RouterController = {
   },
 
   goBack() {
+    const shouldReload =
+      !ChainController.state.activeCaipAddress && this.state.view === 'ConnectingFarcaster'
+
     if (state.history.length > 1 && !state.history.includes('UnsupportedChain')) {
       state.history.pop()
       const [last] = state.history.slice(-1)
@@ -193,6 +204,23 @@ export const RouterController = {
     } else {
       ModalController.close()
     }
+
+    // Reloading the iframe contentwindow and doing the view animation in the modal causes a small freeze in the transition. Doing these separately fixes that.
+    setTimeout(() => {
+      if (shouldReload) {
+        AccountController.setFarcasterUrl(undefined, ChainController.state.activeChain)
+        const authConnector = ConnectorController.getAuthConnector()
+        authConnector?.provider?.reload()
+
+        const optionsState = snapshot(OptionsController.state)
+        authConnector?.provider?.syncDappData?.({
+          metadata: optionsState.metadata as Metadata,
+          sdkVersion: optionsState.sdkVersion,
+          projectId: optionsState.projectId,
+          sdkType: optionsState.sdkType
+        })
+      }
+    }, 100)
   },
 
   goBackToIndex(historyIndex: number) {

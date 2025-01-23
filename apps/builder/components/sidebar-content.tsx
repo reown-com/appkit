@@ -1,21 +1,19 @@
 'use client'
 
 import * as React from 'react'
-import { buttonVariants } from '@/components/ui/button'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useAppKitContext } from '@/hooks/use-appkit'
-import { cn } from '@/lib/utils'
 
 import Link from 'next/link'
-import { BookIcon } from '@/components/icon/book'
-import { SectionWalletFeatures } from '@/components/configuration-sections/section-wallet-features'
+
+import { BrandingHeader } from '@/components/branding-header'
 import { SectionConnectOptions } from '@/components/configuration-sections/section-connect-options'
 import { SectionDesign } from '@/components/configuration-sections/section-design'
-import { BrandingHeader } from '@/components/branding-header'
+import { SectionWalletFeatures } from '@/components/configuration-sections/section-wallet-features'
+import { BookIcon } from '@/components/icon/book'
+import { buttonVariants } from '@/components/ui/button'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { cn } from '@/lib/utils'
 
 export function SidebarContent() {
-  const { config } = useAppKitContext()
-  const { isInitialized } = useAppKitContext()
   const [activeTab, setActiveTab] = React.useState('auth')
 
   return (
@@ -44,7 +42,7 @@ export function SidebarContent() {
         </div>
       </div>
 
-      <div className="flex flex-col items-center w-full gap-2 mt-8">
+      <div className="flex flex-col items-center w-full gap-2 mt-8 pb-2">
         <Link
           href="https://docs.reown.com/appkit/overview"
           target="_blank"

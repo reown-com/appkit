@@ -1,8 +1,9 @@
-import { expect, test, type BrowserContext } from '@playwright/test'
+import { type BrowserContext, expect, test } from '@playwright/test'
+
+import { SECURE_WEBSITE_URL } from './shared/constants'
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { Email } from './shared/utils/email'
 import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
-import { SECURE_WEBSITE_URL } from './shared/constants'
 
 /* eslint-disable init-declarations */
 let page: ModalWalletPage
@@ -61,8 +62,8 @@ smartAccountSiweTest('it should sign with siwe + smart account', async () => {
   await validator.expectAcceptedSign()
 })
 
-smartAccountSiweTest('it should upgrade wallet', async () => {
-  const walletUpgradePage = await page.clickWalletUpgradeCard(context)
+smartAccountSiweTest('it should upgrade wallet', async ({ library }) => {
+  const walletUpgradePage = await page.clickWalletUpgradeCard(context, library)
   expect(walletUpgradePage.url()).toContain(SECURE_WEBSITE_URL)
   await walletUpgradePage.close()
   await page.closeModal()
@@ -98,7 +99,8 @@ smartAccountSiweTest('it should switch to a not enabled network and sign with EO
 })
 
 smartAccountSiweTest('it should disconnect correctly', async () => {
-  await page.goToSettings()
+  await page.openAccount()
+  await page.openProfileView()
   await page.disconnect()
   await validator.expectDisconnected()
 })

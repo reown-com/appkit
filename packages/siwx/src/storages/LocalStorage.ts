@@ -1,7 +1,11 @@
-import type { SIWXSession } from '@reown/appkit-core'
-import type { SIWXStorage } from '../core/SIWXStorage.js'
 import type { CaipNetworkId } from '@reown/appkit-common'
+import type { SIWXSession } from '@reown/appkit-core'
 
+import type { SIWXStorage } from '../core/SIWXStorage.js'
+
+/**
+ * This storage saves the sessions in the localStorage.
+ */
 export class LocalStorage implements SIWXStorage {
   private key: string
 
@@ -72,6 +76,9 @@ export class LocalStorage implements SIWXStorage {
 
 export namespace LocalStorage {
   export type ConstructorParams = {
+    /**
+     * The key to save the sessions in the localStorage.
+     */
     key: string
   }
 

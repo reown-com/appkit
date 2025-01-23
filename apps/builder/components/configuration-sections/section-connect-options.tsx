@@ -1,12 +1,13 @@
 'use client'
 
-import { useAppKitContext } from '@/hooks/use-appkit'
-import { FeatureButton } from '@/components/feature-button'
-
 import { UniqueIdentifier } from '@dnd-kit/core'
 import dynamic from 'next/dynamic'
-import { ConnectMethodItemLoading } from '@/components/connect-method-item/components/loading'
+
 import { ConnectMethod, ConstantsUtil } from '@reown/appkit-core'
+
+import { ConnectMethodItemLoading } from '@/components/connect-method-item/components/loading'
+import { FeatureButton } from '@/components/feature-button'
+import { useAppKitContext } from '@/hooks/use-appkit'
 import { urlStateUtils } from '@/lib/url-state'
 
 const SortableConnectMethodList = dynamic(
@@ -24,11 +25,14 @@ const SortableConnectMethodList = dynamic(
   }
 )
 
+const ChainList = dynamic(() => import('@/components/chain-list').then(mod => mod.ChainList), {
+  ssr: false
+})
+
 export function SectionConnectOptions() {
   const { config, updateFeatures, updateSocials, updateEnableWallets } = useAppKitContext()
   const collapseWallets = config.features.collapseWallets
-  const connectMethodsOrder =
-    config.features.connectMethodsOrder || ConstantsUtil.DEFAULT_FEATURES.connectMethodsOrder
+  const connectMethodsOrder = config.features.connectMethodsOrder
 
   function toggleCollapseWallets() {
     updateFeatures({ collapseWallets: !collapseWallets })
@@ -61,19 +65,21 @@ export function SectionConnectOptions() {
 
   return (
     <div className="flex-grow">
+      <div className="text-sm text-text-secondary mb-2">Connect Options</div>
       <SortableConnectMethodList
         items={connectMethodsOrder}
         onToggleOption={handleToggleOption}
         handleNewOrder={handleNewOrder}
         handle={true}
       />
-      <div className="flex flex-col gap-2 h-2"></div>
-      <div className="text-sm text-text-secondary mt-6 mb-2">Wallet options</div>
+      <div className="text-sm text-text-secondary mt-4 mb-2">Layout options</div>
       <FeatureButton
         label="Collapse wallets"
         isEnabled={collapseWallets}
         onClick={toggleCollapseWallets}
       />
+      <div className="text-sm text-text-secondary mt-4 mb-2">Chains</div>
+      <ChainList />
     </div>
   )
 }

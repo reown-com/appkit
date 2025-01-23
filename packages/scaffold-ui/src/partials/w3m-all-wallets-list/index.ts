@@ -1,11 +1,13 @@
-import type { WcWallet } from '@reown/appkit-core'
-import { ApiController, ConnectorController, RouterController } from '@reown/appkit-core'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import styles from './styles.js'
+
+import type { WcWallet } from '@reown/appkit-core'
+import { ApiController, ConnectorController, RouterController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
+
 import { WalletUtil } from '../../utils/WalletUtil.js'
+import styles from './styles.js'
 
 // -- Helpers --------------------------------------------- //
 const PAGINATOR_ID = 'local-paginator'
@@ -20,7 +22,7 @@ export class W3mAllWalletsList extends LitElement {
   private paginationObserver?: IntersectionObserver = undefined
 
   // -- State & Properties -------------------------------- //
-  @state() private initial = !ApiController.state.wallets.length
+  @state() private loading = !ApiController.state.wallets.length
 
   @state() private wallets = ApiController.state.wallets
 
@@ -53,13 +55,13 @@ export class W3mAllWalletsList extends LitElement {
   public override render() {
     return html`
       <wui-grid
-        data-scroll=${!this.initial}
+        data-scroll=${!this.loading}
         .padding=${['0', 's', 's', 's'] as const}
         columnGap="xxs"
         rowGap="l"
         justifyContent="space-between"
       >
-        ${this.initial ? this.shimmerTemplate(16) : this.walletsTemplate()}
+        ${this.loading ? this.shimmerTemplate(16) : this.walletsTemplate()}
         ${this.paginationLoaderTemplate()}
       </wui-grid>
     `
@@ -67,15 +69,16 @@ export class W3mAllWalletsList extends LitElement {
 
   // Private Methods ------------------------------------- //
   private async initialFetch() {
+    this.loading = true
     const gridEl = this.shadowRoot?.querySelector('wui-grid')
-    if (this.initial && gridEl) {
+    if (gridEl) {
       await ApiController.fetchWallets({ page: 1 })
       await gridEl.animate([{ opacity: 1 }, { opacity: 0 }], {
         duration: 200,
         fill: 'forwards',
         easing: 'ease'
       }).finished
-      this.initial = false
+      this.loading = false
       gridEl.animate([{ opacity: 0 }, { opacity: 1 }], {
         duration: 200,
         fill: 'forwards',
@@ -129,7 +132,7 @@ export class W3mAllWalletsList extends LitElement {
     const loaderEl = this.shadowRoot?.querySelector(`#${PAGINATOR_ID}`)
     if (loaderEl) {
       this.paginationObserver = new IntersectionObserver(([element]) => {
-        if (element?.isIntersecting && !this.initial) {
+        if (element?.isIntersecting && !this.loading) {
           const { page, count, wallets } = ApiController.state
           if (wallets.length < count) {
             ApiController.fetchWallets({ page: page + 1 })

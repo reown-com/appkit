@@ -1,20 +1,27 @@
-import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { ConstantsUtil } from '@reown/appkit-common'
+import type { Provider as CoreProvider } from '@reown/appkit-core'
 import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
 import { solana } from '@reown/appkit/networks'
-import type { ConnectorType, Provider } from '@reown/appkit-core'
-import type { W3mFrameProvider } from '@reown/appkit-wallet'
-import UniversalProvider from '@walletconnect/universal-provider'
-import type { ChainNamespace } from '@reown/appkit-common'
+
 import { SolanaAdapter } from '../client'
-import { SolStoreUtil } from '../utils/SolanaStoreUtil'
+import { AuthProvider } from '../providers/AuthProvider'
+import { SolanaWalletConnectProvider } from '../providers/SolanaWalletConnectProvider'
 import type { WalletStandardProvider } from '../providers/WalletStandardProvider'
+import { SolStoreUtil } from '../utils/SolanaStoreUtil'
 import { watchStandard } from '../utils/watchStandard'
+import mockAppKit from './mocks/AppKit'
+import { mockAuthConnector } from './mocks/AuthConnector'
+import { mockCoinbaseWallet } from './mocks/CoinbaseWallet'
+import { mockUniversalProvider } from './mocks/UniversalProvider'
 
 // Mock external dependencies
 vi.mock('@solana/web3.js', () => ({
-  Connection: vi.fn(() => ({
+  Connection: vi.fn(endpoint => ({
     getBalance: vi.fn().mockResolvedValue(1500000000),
-    getSignatureStatus: vi.fn().mockResolvedValue({ value: true })
+    getSignatureStatus: vi.fn().mockResolvedValue({ value: true }),
+    rpcEndpoint: endpoint
   })),
   PublicKey: vi.fn(key => ({ toBase58: () => key }))
 }))
@@ -41,39 +48,19 @@ const mockProvider = {
   sendTransaction: vi.fn().mockResolvedValue('mock-signature')
 } as unknown as WalletStandardProvider
 
-const mockWalletConnectProvider = {
-  connect: vi.fn(),
-  disconnect: vi.fn(),
-  on: vi.fn(),
-  removeListener: vi.fn(),
-  session: true,
-  setDefaultChain: vi.fn()
-} as unknown as UniversalProvider
-
-const mockAuthProvider = {
-  id: 'auth',
-  connect: vi.fn().mockResolvedValue('mock-auth-address'),
-  disconnect: vi.fn(),
-  switchNetwork: vi.fn(),
-  getUser: vi.fn().mockResolvedValue({
-    address: 'mock-auth-address',
-    chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
-  })
-} as unknown as W3mFrameProvider
-
 const mockNetworks = [solana]
 const mockCaipNetworks = CaipNetworksUtil.extendCaipNetworks(mockNetworks, {
   projectId: 'test-project-id',
   customNetworkImageUrls: {}
 })
 
-const mockWalletConnectConnector = {
-  id: 'walletconnect',
-  provider: mockWalletConnectProvider,
-  type: 'WALLET_CONNECT' as ConnectorType,
-  chains: mockNetworks,
-  chain: 'solana' as ChainNamespace
-}
+const mockWalletConnectConnector = vi.mocked(
+  new SolanaWalletConnectProvider({
+    provider: mockUniversalProvider(),
+    chains: mockCaipNetworks,
+    getActiveChain: () => mockCaipNetworks[0]
+  })
+)
 
 describe('SolanaAdapter', () => {
   let adapter: SolanaAdapter
@@ -88,6 +75,36 @@ describe('SolanaAdapter', () => {
     })
   })
 
+  describe('SolanaAdapter - syncConnectors', () => {
+    it('should not add coinbase connector if window.coinbaseSolana does not exist', async () => {
+      const addConnectorSpy = vi.spyOn(adapter, 'addConnector' as any)
+      adapter.syncConnectors(
+        { networks: [solana], projectId: '123', features: { email: false } },
+        mockAppKit
+      )
+      expect(addConnectorSpy).not.toHaveBeenCalled()
+    })
+
+    it('should add coinbase connector if window.coinbaseSolana exist', async () => {
+      ;(window as any).coinbaseSolana = mockCoinbaseWallet()
+      const addConnectorSpy = vi.spyOn(adapter, 'addConnector' as any)
+      adapter.syncConnectors(
+        { networks: [solana], projectId: '123', features: { email: false } },
+        mockAppKit
+      )
+      expect(addConnectorSpy).toHaveBeenCalledOnce()
+      expect(addConnectorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: PresetsUtil.ConnectorExplorerIds[ConstantsUtil.CONNECTOR_ID.COINBASE_SDK],
+          type: 'ANNOUNCED',
+          name: 'Coinbase Wallet',
+          chain: 'solana',
+          requestedChains: [solana]
+        })
+      )
+    })
+  })
+
   describe('SolanaAdapter - constructor', () => {
     it('should initialize with correct parameters', () => {
       expect(adapter.adapterType).toBe('solana')
@@ -96,36 +113,66 @@ describe('SolanaAdapter', () => {
   })
 
   describe('SolanaAdapter - connect', () => {
-    it('should connect with external provider', async () => {
+    beforeEach(() => {
       const connectors = [
         {
           id: 'test',
           provider: mockProvider,
-          type: 'EXTERNAL'
+          type: 'EXTERNAL',
+          connect: vi.fn().mockResolvedValue('mock-address'),
+          on: vi.fn()
         }
       ]
       Object.defineProperty(adapter, 'connectors', {
         value: connectors
       })
+    })
 
+    it('should connect with external provider', async () => {
       const result = await adapter.connect({
         id: 'test',
         provider: mockProvider,
         type: 'EXTERNAL',
         chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        rpcUrl: 'https://api.mainnet-beta.solana.com'
+        rpcUrl: 'mock_rpc_url'
       })
 
       expect(result.address).toBe('mock-address')
       expect(result.chainId).toBe('5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp')
-      expect(SolStoreUtil.setConnection).toHaveBeenCalled()
+      expect(SolStoreUtil.setConnection).toHaveBeenCalledWith(
+        expect.objectContaining({ rpcEndpoint: 'mock_rpc_url' })
+      )
+    })
+
+    it('should fallback for network rpc url if param is not provider', async () => {
+      await adapter.connect({
+        id: 'test',
+        provider: mockProvider,
+        type: 'EXTERNAL',
+        chainId: solana.id
+      })
+
+      expect(SolStoreUtil.setConnection).toHaveBeenCalledWith(
+        expect.objectContaining({ rpcEndpoint: solana.rpcUrls.default.http[0] })
+      )
+    })
+
+    it('should throw if not possible to get a rpc url', async () => {
+      await expect(
+        adapter.connect({
+          id: 'test',
+          provider: mockProvider,
+          type: 'EXTERNAL',
+          chainId: 'mock_chain_id'
+        })
+      ).rejects.toThrowError('RPC URL not found for chainId: mock_chain_id')
     })
   })
 
   describe('SolanaAdapter - disconnect', () => {
     it('should disconnect provider', async () => {
       await adapter.disconnect({
-        provider: mockProvider as unknown as Provider,
+        provider: mockProvider as unknown as CoreProvider,
         providerType: 'EXTERNAL'
       })
 
@@ -153,7 +200,7 @@ describe('SolanaAdapter', () => {
       const result = await adapter.signMessage({
         message: 'Hello',
         address: 'mock-address',
-        provider: mockProvider as unknown as Provider
+        provider: mockProvider as unknown as CoreProvider
       })
 
       expect(result.signature).toBeDefined()
@@ -163,25 +210,30 @@ describe('SolanaAdapter', () => {
 
   describe('SolanaAdapter - switchNetwork', () => {
     it('should switch network with auth provider', async () => {
-      await adapter.switchNetwork({
-        caipNetwork: mockCaipNetworks[0],
-        provider: mockAuthProvider,
-        providerType: 'ID_AUTH'
+      const switchNetworkSpy = vi.fn()
+      const provider = Object.assign(Object.create(AuthProvider.prototype), {
+        type: 'AUTH',
+        switchNetwork: switchNetworkSpy,
+        getUser: mockAuthConnector.connect
       })
 
-      expect(mockAuthProvider.switchNetwork).toHaveBeenCalled()
+      await adapter.switchNetwork({
+        caipNetwork: mockCaipNetworks[0],
+        provider: provider,
+        providerType: 'AUTH'
+      })
+
+      expect(switchNetworkSpy).toHaveBeenCalled()
       expect(SolStoreUtil.setConnection).toHaveBeenCalled()
     })
   })
 
   describe('SolanaAdapter - connectWalletConnect', () => {
     it('should connect WalletConnect provider', async () => {
-      const onUri = vi.fn()
       vi.mocked(adapter['connectors']).push(mockWalletConnectConnector)
-      await adapter.connectWalletConnect(onUri)
+      await adapter.connectWalletConnect()
 
-      expect(mockWalletConnectProvider.connect).toHaveBeenCalled()
-      expect(mockWalletConnectProvider.on).toHaveBeenCalledWith('display_uri', onUri)
+      expect(mockWalletConnectConnector.provider.connect).toHaveBeenCalled()
       expect(SolStoreUtil.setConnection).toHaveBeenCalled()
     })
   })
@@ -189,7 +241,7 @@ describe('SolanaAdapter', () => {
   describe('SolanaAdapter - getWalletConnectProvider', () => {
     it('should return WalletConnect provider', () => {
       const result = adapter.getWalletConnectProvider({
-        provider: mockWalletConnectProvider,
+        provider: mockUniversalProvider(),
         caipNetworks: mockCaipNetworks,
         activeCaipNetwork: mockCaipNetworks[0]
       })
@@ -202,16 +254,20 @@ describe('SolanaAdapter', () => {
     it.each(['Phantom', 'Trust Wallet', 'Solflare', 'unknown wallet'])(
       'should parse watchStandard ids from cloud',
       walletName => {
-        adapter.syncConnectors({ features: { email: false, socials: false } } as any, {} as any)
-        const watchStandardSpy = watchStandard as Mock<typeof watchStandard>
+        const watchStandardSpy = vi.mocked(watchStandard)
         const addProviderSpy = vi.spyOn(adapter as any, 'addConnector')
+        adapter.syncConnectors(
+          { features: { email: false, socials: false }, projectId: '1234' } as any,
+          {} as any
+        )
 
         const callback = watchStandardSpy.mock.calls[0]![2]
         callback({ name: walletName } as any)
 
+        expect(watchStandard).toHaveBeenCalled()
         expect(addProviderSpy).toHaveBeenCalledWith(
           expect.objectContaining({
-            id: PresetsUtil.ConnectorExplorerIds[walletName] || walletName
+            name: walletName
           })
         )
       }

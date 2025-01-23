@@ -1,13 +1,15 @@
+import { proxy } from 'valtio/vanilla'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
+
 import {
+  type ApiGetWalletsResponse,
+  ApiController as CoreApiController,
   CoreHelperUtil,
   FetchUtil,
-  ApiController as CoreApiController,
-  type ApiGetWalletsResponse,
   type WcWallet
 } from '@reown/appkit-core'
-import { proxy } from 'valtio/vanilla'
+
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()

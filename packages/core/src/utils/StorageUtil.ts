@@ -1,25 +1,32 @@
 /* eslint-disable no-console */
 import {
+  type CaipNetworkId,
+  type ChainNamespace,
   SafeLocalStorage,
   SafeLocalStorageKeys,
-  type CaipNetworkId,
-  type ChainNamespace
+  getSafeConnectorIdKey
 } from '@reown/appkit-common'
-import type { WcWallet, ConnectorType, SocialProvider, ConnectionStatus } from './TypeUtil.js'
+
+import type { ConnectionStatus, SocialProvider, WcWallet } from './TypeUtil.js'
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
   getActiveNetworkProps() {
-    const activeNamespace = StorageUtil.getActiveNamespace()
-    const activeCaipNetworkId = StorageUtil.getActiveCaipNetworkId()
-    const caipNetworkIdFromStorage = activeCaipNetworkId
-      ? activeCaipNetworkId.split(':')[1]
+    const namespace = StorageUtil.getActiveNamespace()
+    const caipNetworkId = StorageUtil.getActiveCaipNetworkId() as CaipNetworkId | undefined
+    const stringChainId = caipNetworkId ? caipNetworkId.split(':')[1] : undefined
+
+    // eslint-disable-next-line no-nested-ternary
+    const chainId = stringChainId
+      ? isNaN(Number(stringChainId))
+        ? stringChainId
+        : Number(stringChainId)
       : undefined
 
     return {
-      namespace: activeNamespace,
-      caipNetworkId: activeCaipNetworkId,
-      chainId: caipNetworkIdFromStorage
+      namespace,
+      caipNetworkId,
+      chainId
     }
   },
 
@@ -71,7 +78,9 @@ export const StorageUtil = {
 
   getActiveCaipNetworkId() {
     try {
-      return SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
+      return SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) as
+        | CaipNetworkId
+        | undefined
     } catch {
       console.info('Unable to get active caip network id')
 
@@ -87,11 +96,12 @@ export const StorageUtil = {
     }
   },
 
-  deleteConnectedConnector() {
+  deleteConnectedConnectorId(namespace: ChainNamespace) {
     try {
-      SafeLocalStorage.removeItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR)
+      const key = getSafeConnectorIdKey(namespace)
+      SafeLocalStorage.removeItem(key)
     } catch {
-      console.info('Unable to delete connected connector')
+      console.info('Unable to delete connected connector id')
     }
   },
 
@@ -123,11 +133,12 @@ export const StorageUtil = {
     return []
   },
 
-  setConnectedConnector(connectorType: ConnectorType) {
+  setConnectedConnectorId(namespace: ChainNamespace, connectorId: string) {
     try {
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR, connectorType)
+      const key = getSafeConnectorIdKey(namespace)
+      SafeLocalStorage.setItem(key, connectorId)
     } catch {
-      console.info('Unable to set Connected Connector')
+      console.info('Unable to set Connected Connector Id')
     }
   },
 
@@ -143,11 +154,17 @@ export const StorageUtil = {
     return undefined
   },
 
-  getConnectedConnector() {
+  getConnectedConnectorId(namespace: ChainNamespace | undefined) {
+    if (!namespace) {
+      return undefined
+    }
+
     try {
-      return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_CONNECTOR) as ConnectorType
-    } catch {
-      console.info('Unable to get connected connector')
+      const key = getSafeConnectorIdKey(namespace)
+
+      return SafeLocalStorage.getItem(key)
+    } catch (e) {
+      console.info('Unable to get connected connector id in namespace ', namespace)
     }
 
     return undefined
@@ -169,6 +186,14 @@ export const StorageUtil = {
     }
 
     return undefined
+  },
+
+  deleteConnectedSocialProvider() {
+    try {
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys.CONNECTED_SOCIAL)
+    } catch {
+      console.info('Unable to delete connected social provider')
+    }
   },
 
   getConnectedSocialUsername() {
@@ -203,6 +228,57 @@ export const StorageUtil = {
       return SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTION_STATUS) as ConnectionStatus
     } catch {
       return undefined
+    }
+  },
+
+  getConnectedNamespaces() {
+    try {
+      const namespaces = SafeLocalStorage.getItem(SafeLocalStorageKeys.CONNECTED_NAMESPACES)
+
+      if (!namespaces?.length) {
+        return []
+      }
+
+      return namespaces.split(',') as ChainNamespace[]
+    } catch {
+      return []
+    }
+  },
+
+  setConnectedNamespaces(namespaces: ChainNamespace[]) {
+    try {
+      const uniqueNamespaces = Array.from(new Set(namespaces))
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.CONNECTED_NAMESPACES,
+        uniqueNamespaces.join(',')
+      )
+    } catch {
+      console.info('Unable to set namespaces in storage')
+    }
+  },
+
+  addConnectedNamespace(namespace: ChainNamespace) {
+    try {
+      const namespaces = StorageUtil.getConnectedNamespaces()
+      if (!namespaces.includes(namespace)) {
+        namespaces.push(namespace)
+        StorageUtil.setConnectedNamespaces(namespaces)
+      }
+    } catch {
+      console.info('Unable to add connected namespace')
+    }
+  },
+
+  removeConnectedNamespace(namespace: ChainNamespace) {
+    try {
+      const namespaces = StorageUtil.getConnectedNamespaces()
+      const index = namespaces.indexOf(namespace)
+      if (index > -1) {
+        namespaces.splice(index, 1)
+        StorageUtil.setConnectedNamespaces(namespaces)
+      }
+    } catch {
+      console.info('Unable to remove connected namespace')
     }
   }
 }

@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { RouterController } from '../../exports/index.js'
+
 import { ConstantsUtil } from '@reown/appkit-common'
+
+import { RouterController } from '../../exports/index.js'
 
 // -- Tests --------------------------------------------------------------------
 describe('RouterController', () => {
@@ -69,13 +71,23 @@ describe('RouterController', () => {
 
   it('should update state correctly on push() with data', () => {
     RouterController.push('ConnectingExternal', {
-      connector: { id: 'test', type: 'WALLET_CONNECT', chain: ConstantsUtil.CHAIN.EVM }
+      connector: {
+        id: 'test',
+        name: 'wcConnector',
+        type: 'WALLET_CONNECT',
+        chain: ConstantsUtil.CHAIN.EVM
+      }
     })
     expect(RouterController.state).toEqual({
       view: 'ConnectingExternal',
       history: ['Account', 'Networks', 'ConnectingExternal'],
       data: {
-        connector: { id: 'test', type: 'WALLET_CONNECT', chain: ConstantsUtil.CHAIN.EVM }
+        connector: {
+          id: 'test',
+          type: 'WALLET_CONNECT',
+          chain: ConstantsUtil.CHAIN.EVM,
+          name: 'wcConnector'
+        }
       },
       transactionStack: []
     })

@@ -1,6 +1,11 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref } from 'valtio/vanilla'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
+
+import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { type W3mFrameTypes } from '@reown/appkit-wallet'
+
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { SIWXUtil } from '../utils/SIWXUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   Connector,
@@ -9,14 +14,11 @@ import type {
   WcWallet,
   WriteContractArgs
 } from '../utils/TypeUtil.js'
-import { TransactionsController } from './TransactionsController.js'
 import { ChainController } from './ChainController.js'
-import { type W3mFrameTypes } from '@reown/appkit-wallet'
-import { ModalController } from './ModalController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
-import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
-import { OptionsController } from './OptionsController.js'
+import { ModalController } from './ModalController.js'
+import { TransactionsController } from './TransactionsController.js'
 
 // -- Types --------------------------------------------- //
 export interface ConnectExternalOptions {
@@ -30,7 +32,7 @@ export interface ConnectExternalOptions {
 }
 
 export interface ConnectionControllerClient {
-  connectWalletConnect?: (onUri: (uri: string) => void) => Promise<void>
+  connectWalletConnect?: () => Promise<void>
   disconnect: () => Promise<void>
   signMessage: (message: string) => Promise<string>
   sendTransaction: (args: SendTransactionArgs) => Promise<string | null>
@@ -98,15 +100,15 @@ export const ConnectionController = {
   },
 
   async connectWalletConnect() {
-    StorageUtil.setConnectedConnector('WALLET_CONNECT')
+    // Connect all namespaces to WalletConnect
+    const namespaces = [...ChainController.state.chains.keys()]
+    namespaces.forEach(namespace => {
+      StorageUtil.setConnectedConnectorId(namespace, ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)
+    })
 
-    if (CoreHelperUtil.isTelegram()) {
+    if (CoreHelperUtil.isTelegram() || (CoreHelperUtil.isSafari() && CoreHelperUtil.isIos())) {
       if (wcConnectionPromise) {
-        try {
-          await wcConnectionPromise
-        } catch (error) {
-          /* Empty */
-        }
+        await wcConnectionPromise
         wcConnectionPromise = undefined
 
         return
@@ -118,25 +120,16 @@ export const ConnectionController = {
 
         return
       }
-      wcConnectionPromise = new Promise(async (resolve, reject) => {
-        await this._getClient()
-          ?.connectWalletConnect?.(uri => {
-            state.wcUri = uri
-            state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
-          })
-          .catch(reject)
-        resolve()
-      })
+      wcConnectionPromise = this._getClient()
+        ?.connectWalletConnect?.()
+        .catch(() => undefined)
       this.state.status = 'connecting'
       await wcConnectionPromise
       wcConnectionPromise = undefined
       state.wcPairingExpiry = undefined
       this.state.status = 'connected'
     } else {
-      await this._getClient()?.connectWalletConnect?.(uri => {
-        state.wcUri = uri
-        state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
-      })
+      await this._getClient()?.connectWalletConnect?.()
     }
   },
 
@@ -150,7 +143,10 @@ export const ConnectionController = {
 
   async reconnectExternal(options: ConnectExternalOptions) {
     await this._getClient()?.reconnectExternal?.(options)
-    StorageUtil.setConnectedConnector(options.type === 'AUTH' ? 'ID_AUTH' : options.type)
+    const namespace = options.chain || ChainController.state.activeChain
+    if (namespace) {
+      StorageUtil.setConnectedConnectorId(namespace, options.id)
+    }
   },
 
   async setPreferredAccountType(accountType: W3mFrameTypes.AccountType) {
@@ -226,6 +222,11 @@ export const ConnectionController = {
     StorageUtil.deleteWalletConnectDeepLink()
   },
 
+  setUri(uri: string) {
+    state.wcUri = uri
+    state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
+  },
+
   setWcLinking(wcLinking: ConnectionControllerState['wcLinking']) {
     state.wcLinking = wcLinking
   },
@@ -249,21 +250,10 @@ export const ConnectionController = {
 
   async disconnect() {
     try {
-      const connectionControllerClient = this._getClient()
-
-      const siwx = OptionsController.state.siwx
-      if (siwx) {
-        const activeCaipNetwork = ChainController.getActiveCaipNetwork()
-        const address = CoreHelperUtil.getPlainAddress(ChainController.getActiveCaipAddress())
-
-        if (activeCaipNetwork && address) {
-          await siwx.revokeSession(activeCaipNetwork.caipNetworkId, address)
-        }
-      }
-
-      await connectionControllerClient?.disconnect()
-
-      this.resetWcConnection()
+      ModalController.setLoading(true)
+      await SIWXUtil.clearSessions()
+      await ChainController.disconnect()
+      ModalController.setLoading(false)
     } catch (error) {
       throw new Error('Failed to disconnect')
     }

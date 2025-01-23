@@ -1,24 +1,55 @@
-import { cookieStorage, createStorage } from '@wagmi/core'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { mainnet, arbitrum, type AppKitNetwork } from '@reown/appkit/networks'
+import { AppKitNetwork, arbitrum, mainnet, optimism, polygon } from '@reown/appkit/networks'
+import {
+  createAppKit,
+  useAppKit,
+  useAppKitAccount,
+  useAppKitEvents,
+  useAppKitNetwork,
+  useAppKitState,
+  useAppKitTheme,
+  useDisconnect,
+  useWalletInfo
+} from '@reown/appkit/react'
 
-// Get projectId from https://cloud.reown.com
-export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
+export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694' // this is a public projectId only to use on localhost
 
-if (!projectId) {
-  throw new Error('Project ID is not defined')
-}
+export const networks = [mainnet, polygon, arbitrum, optimism] as [
+  AppKitNetwork,
+  ...AppKitNetwork[]
+]
 
-export const networks = [mainnet, arbitrum] as [AppKitNetwork, ...AppKitNetwork[]]
-
-// Set up the Wagmi Adapter (Config)
+// Setup wagmi adapter
 export const wagmiAdapter = new WagmiAdapter({
-  storage: createStorage({
-    storage: cookieStorage
-  }),
-  ssr: true,
-  projectId,
-  networks
+  networks,
+  projectId
 })
 
-export const config = wagmiAdapter.wagmiConfig
+// Create modal
+const modal = createAppKit({
+  adapters: [wagmiAdapter],
+  networks,
+  metadata: {
+    name: 'AppKit Next.js Wagmi',
+    description: 'AppKit Next.js App Router with Wagmi Adapter',
+    url: 'https://reown.com/appkit',
+    icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
+  },
+  projectId,
+  themeMode: 'light',
+  features: {
+    analytics: true
+  }
+})
+
+export {
+  modal,
+  useAppKit,
+  useAppKitState,
+  useAppKitTheme,
+  useAppKitEvents,
+  useAppKitAccount,
+  useWalletInfo,
+  useAppKitNetwork,
+  useDisconnect
+}

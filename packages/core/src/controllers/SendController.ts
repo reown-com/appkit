@@ -1,15 +1,18 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
-import { type Balance, type CaipAddress } from '@reown/appkit-common'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
+
+import { type Balance, type CaipAddress, NumberUtil } from '@reown/appkit-common'
 import { ContractUtil } from '@reown/appkit-common'
-import { RouterController } from './RouterController.js'
-import { AccountController } from './AccountController.js'
-import { ConnectionController } from './ConnectionController.js'
-import { SnackController } from './SnackController.js'
-import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { EventsController } from './EventsController.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { SwapApiUtil } from '../utils/SwapApiUtil.js'
+import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
+import { ConnectionController } from './ConnectionController.js'
+import { EventsController } from './EventsController.js'
+import { RouterController } from './RouterController.js'
+import { SnackController } from './SnackController.js'
 
 // -- Types --------------------------------------------- //
 
@@ -34,6 +37,7 @@ export interface SendControllerState {
   receiverProfileImageUrl?: string
   gasPrice?: bigint
   gasPriceInUSD?: number
+  networkBalanceInUSD?: string
   loading: boolean
 }
 
@@ -86,6 +90,10 @@ export const SendController = {
 
   setGasPriceInUsd(gasPriceInUSD: SendControllerState['gasPriceInUSD']) {
     state.gasPriceInUSD = gasPriceInUSD
+  },
+
+  setNetworkBalanceInUsd(networkBalanceInUSD: SendControllerState['networkBalanceInUSD']) {
+    state.networkBalanceInUSD = networkBalanceInUSD
   },
 
   setLoading(loading: SendControllerState['loading']) {
@@ -152,6 +160,54 @@ export const SendController = {
         decimals: this.state.token.quantity.decimals
       })
     }
+  },
+
+  async fetchNetworkBalance() {
+    const balances = await SwapApiUtil.getMyTokensWithBalance()
+
+    if (!balances) {
+      return
+    }
+
+    const networkToken = balances.find(
+      token => token.address === ChainController.getActiveNetworkTokenAddress()
+    )
+
+    if (!networkToken) {
+      return
+    }
+
+    state.networkBalanceInUSD = networkToken
+      ? NumberUtil.multiply(networkToken.quantity.numeric, networkToken.price).toString()
+      : '0'
+  },
+
+  isInsufficientNetworkTokenForGas(networkBalanceInUSD: string, gasPriceInUSD: number | undefined) {
+    const gasPrice = gasPriceInUSD || '0'
+
+    if (NumberUtil.bigNumber(networkBalanceInUSD).isZero()) {
+      return true
+    }
+
+    return NumberUtil.bigNumber(NumberUtil.bigNumber(gasPrice)).isGreaterThan(networkBalanceInUSD)
+  },
+
+  hasInsufficientGasFunds() {
+    let insufficientNetworkTokenForGas = true
+    if (
+      AccountController.state.preferredAccountType ===
+      W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+    ) {
+      // Smart Accounts may pay gas in any ERC20 token
+      insufficientNetworkTokenForGas = false
+    } else if (state.networkBalanceInUSD) {
+      insufficientNetworkTokenForGas = this.isInsufficientNetworkTokenForGas(
+        state.networkBalanceInUSD,
+        state.gasPriceInUSD
+      )
+    }
+
+    return insufficientNetworkTokenForGas
   },
 
   async sendNativeToken(params: TxParams) {
@@ -234,10 +290,10 @@ export const SendController = {
         await ConnectionController.writeContract({
           fromAddress: AccountController.state.address as `0x${string}`,
           tokenAddress,
-          receiverAddress: params.receiverAddress as `0x${string}`,
-          tokenAmount: amount ?? BigInt(0),
+          args: [params.receiverAddress as `0x${string}`, amount ?? BigInt(0)],
           method: 'transfer',
-          abi: ContractUtil.getERC20Abi(tokenAddress)
+          abi: ContractUtil.getERC20Abi(tokenAddress),
+          chainNamespace: 'eip155'
         })
 
         SnackController.showSuccess('Transaction started')

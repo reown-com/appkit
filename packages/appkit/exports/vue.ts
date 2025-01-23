@@ -1,10 +1,12 @@
-import { AppKit } from '../src/client.js'
-import type { AppKitOptions } from '../src/utils/TypesUtil.js'
-import { getAppKit } from '../src/library/vue/index.js'
+import { type Ref, onUnmounted, ref } from 'vue'
+
 import { ChainController, CoreHelperUtil, type UseAppKitNetworkReturn } from '@reown/appkit-core'
-import { PACKAGE_VERSION } from './constants.js'
 import type { AppKitNetwork } from '@reown/appkit/networks'
-import { onUnmounted, ref, type Ref } from 'vue'
+
+import { AppKit } from '../src/client.js'
+import { getAppKit } from '../src/library/vue/index.js'
+import type { AppKitOptions } from '../src/utils/TypesUtil.js'
+import { PACKAGE_VERSION } from './constants.js'
 
 // -- Views ------------------------------------------------------------
 export * from '@reown/appkit-scaffold-ui'
@@ -20,7 +22,7 @@ export { CoreHelperUtil, AccountController } from '@reown/appkit-core'
 
 let modal: AppKit | undefined = undefined
 
-type CreateAppKit = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
+export type CreateAppKit = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
 
 export function createAppKit(options: CreateAppKit) {
   if (!modal) {

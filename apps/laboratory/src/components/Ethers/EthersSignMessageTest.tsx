@@ -1,7 +1,10 @@
-import { Button } from '@chakra-ui/react'
 import { useState } from 'react'
-import { useAppKitAccount, useAppKitProvider, type Provider } from '@reown/appkit/react'
+
+import { Button } from '@chakra-ui/react'
 import { BrowserProvider, JsonRpcSigner } from 'ethers'
+
+import { type Provider, useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
+
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'
 

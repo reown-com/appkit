@@ -1,10 +1,12 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+
 import type { RouterControllerState } from '@reown/appkit-core'
 import { RouterController, TooltipController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
-import styles from './styles.js'
+
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import styles from './styles.js'
 
 @customElement('w3m-router')
 export class W3mRouter extends LitElement {
@@ -79,6 +81,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-connect-view walletGuide="explore"></w3m-connect-view>`
       case 'ConnectingWalletConnect':
         return html`<w3m-connecting-wc-view></w3m-connecting-wc-view>`
+      case 'ConnectingWalletConnectBasic':
+        return html`<w3m-connecting-wc-basic-view></w3m-connecting-wc-basic-view>`
       case 'ConnectingExternal':
         return html`<w3m-connecting-external-view></w3m-connecting-external-view>`
       case 'ConnectingSiwe':

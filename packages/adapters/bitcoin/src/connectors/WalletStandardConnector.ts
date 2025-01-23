@@ -1,12 +1,14 @@
 import { getWallets } from '@wallet-standard/app'
-import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
 import type { Wallet, WalletWithFeatures } from '@wallet-standard/base'
+
 import type { CaipNetwork } from '@reown/appkit-common'
-import type { BitcoinFeatures } from '../utils/wallet-standard/WalletFeatures.js'
 import type { Provider, RequestArguments } from '@reown/appkit-core'
-import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
-import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
 import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
+
+import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
+import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
+import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
+import type { BitcoinFeatures } from '../utils/wallet-standard/WalletFeatures.js'
 
 export class WalletStandardConnector extends ProviderEventEmitter implements BitcoinConnector {
   public readonly chain = 'bip122'
@@ -70,11 +72,21 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
   }
 
   async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {
-    const mappedAccounts = this.wallet.accounts.map<BitcoinConnector.AccountAddress>(acc => ({
-      address: acc.address,
-      purpose: 'payment',
-      publicKey: Buffer.from(acc.publicKey).toString('hex')
-    }))
+    const addresses = new Set<string>()
+    const mappedAccounts = this.wallet.accounts
+      .map<BitcoinConnector.AccountAddress>(acc => ({
+        address: acc.address,
+        purpose: 'payment',
+        publicKey: Buffer.from(acc.publicKey).toString('hex')
+      }))
+      .filter(acc => {
+        if (addresses.has(acc.address)) {
+          return false
+        }
+        addresses.add(acc.address)
+
+        return true
+      })
 
     return Promise.resolve(mappedAccounts)
   }

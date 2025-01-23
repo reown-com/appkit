@@ -1,3 +1,7 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
   AccountController,
   AssetUtil,
@@ -11,11 +15,9 @@ import {
   SIWXUtil
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
-import styles from './styles.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import styles from './styles.js'
 
 // -- Constants ----------------------------------------- //
 const BETA_SCREENS: string[] = ['SmartSessionList']
@@ -40,6 +42,7 @@ function headings() {
     BuyInProgress: 'Buy',
     ConnectingExternal: name ?? 'Connect Wallet',
     ConnectingWalletConnect: name ?? 'WalletConnect',
+    ConnectingWalletConnectBasic: 'WalletConnect',
     ConnectingSiwe: 'Sign In',
     Convert: 'Convert',
     ConvertSelectToken: 'Select token',
@@ -229,6 +232,7 @@ export class W3mHeader extends LitElement {
 
     if (this.showBack && !shouldHideBack) {
       return html`<wui-icon-link
+        data-testid="header-back"
         id="dynamic"
         icon="chevronLeft"
         ?disabled=${this.buffering}

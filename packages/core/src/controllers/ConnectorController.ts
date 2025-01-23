@@ -1,18 +1,21 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, snapshot } from 'valtio/vanilla'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
+
+import { type ChainNamespace, ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
+
 import type { AuthConnector, Connector } from '../utils/TypeUtil.js'
-import { getW3mThemeVariables } from '@reown/appkit-common'
+import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
 import { ThemeController } from './ThemeController.js'
-import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
-interface ConnectorWithProviders extends Connector {
+export interface ConnectorWithProviders extends Connector {
   connectors?: Connector[]
 }
 export interface ConnectorControllerState {
   allConnectors: Connector[]
   connectors: ConnectorWithProviders[]
+  activeConnector: Connector | undefined
 }
 
 type StateKey = keyof ConnectorControllerState
@@ -20,7 +23,8 @@ type StateKey = keyof ConnectorControllerState
 // -- State --------------------------------------------- //
 const state = proxy<ConnectorControllerState>({
   allConnectors: [],
-  connectors: []
+  connectors: [],
+  activeConnector: undefined
 })
 
 // -- Controller ---------------------------------------- //
@@ -29,6 +33,12 @@ export const ConnectorController = {
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: ConnectorControllerState[K]) => void) {
     return subKey(state, key, callback)
+  },
+
+  setActiveConnector(connector: ConnectorControllerState['activeConnector']) {
+    if (connector) {
+      state.activeConnector = ref(connector)
+    }
   },
 
   setConnectors(connectors: ConnectorControllerState['connectors']) {
@@ -49,9 +59,16 @@ export const ConnectorController = {
      * Check more about ref on https://valtio.dev/docs/api/basic/ref
      */
     newConnectors.forEach(connector => {
-      state.allConnectors.push(ref(connector))
+      if (connector.type !== 'MULTI_CHAIN') {
+        state.allConnectors.push(ref(connector))
+      }
     })
 
+    state.connectors = this.mergeMultiChainConnectors(state.allConnectors)
+  },
+
+  removeAdapter(namespace: ChainNamespace) {
+    state.allConnectors = state.allConnectors.filter(connector => connector.chain !== namespace)
     state.connectors = this.mergeMultiChainConnectors(state.allConnectors)
   },
 
@@ -63,13 +80,13 @@ export const ConnectorController = {
     connectorsByNameMap.forEach(keyConnectors => {
       const firstItem = keyConnectors[0]
 
-      const isAuthConnector = firstItem?.id === 'ID_AUTH'
+      const isAuthConnector = firstItem?.id === ConstantsUtil.CONNECTOR_ID.AUTH
 
-      if (keyConnectors.length > 1) {
+      if (keyConnectors.length > 1 && firstItem) {
         mergedConnectors.push({
-          name: firstItem?.name,
-          imageUrl: firstItem?.imageUrl,
-          imageId: firstItem?.imageId,
+          name: firstItem.name,
+          imageUrl: firstItem.imageUrl,
+          imageId: firstItem.imageId,
           connectors: [...keyConnectors],
           type: isAuthConnector ? 'AUTH' : 'MULTI_CHAIN',
           // These values are just placeholders, we don't use them in multi-chain connector select screen
@@ -131,7 +148,7 @@ export const ConnectorController = {
   },
 
   addConnector(connector: Connector | AuthConnector) {
-    if (connector.id === 'ID_AUTH') {
+    if (connector.id === ConstantsUtil.CONNECTOR_ID.AUTH) {
       const authConnector = connector as AuthConnector
 
       const optionsState = snapshot(OptionsController.state) as typeof OptionsController.state
@@ -144,7 +161,7 @@ export const ConnectorController = {
         projectId: optionsState.projectId,
         sdkType: optionsState.sdkType
       })
-      authConnector.provider.syncTheme({
+      authConnector?.provider?.syncTheme({
         themeMode,
         themeVariables,
         w3mThemeVariables: getW3mThemeVariables(themeVariables, themeMode)
@@ -157,7 +174,7 @@ export const ConnectorController = {
 
   getAuthConnector(): AuthConnector | undefined {
     const activeNamespace = ChainController.state.activeChain
-    const authConnector = state.connectors.find(c => c.id === 'ID_AUTH')
+    const authConnector = state.connectors.find(c => c.id === ConstantsUtil.CONNECTOR_ID.AUTH)
     if (!authConnector) {
       return undefined
     }

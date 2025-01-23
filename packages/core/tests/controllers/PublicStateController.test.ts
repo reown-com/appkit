@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { PublicStateController } from '../../exports/index.js'
 
 // -- Tests --------------------------------------------------------------------
@@ -7,7 +8,9 @@ describe('PublicStateController', () => {
     expect(PublicStateController.state).toEqual({
       loading: false,
       open: false,
-      selectedNetworkId: undefined
+      selectedNetworkId: undefined,
+      activeChain: undefined,
+      initialized: false
     })
   })
 
@@ -15,14 +18,18 @@ describe('PublicStateController', () => {
     PublicStateController.set({ open: true })
     expect(PublicStateController.state).toEqual({
       loading: false,
-      open: true,
-      selectedNetworkId: undefined
+      selectedNetworkId: undefined,
+      activeChain: undefined,
+      initialized: false,
+      open: true
     })
     PublicStateController.set({ selectedNetworkId: 'eip155:1' })
     expect(PublicStateController.state).toEqual({
       loading: false,
       open: true,
-      selectedNetworkId: 'eip155:1'
+      selectedNetworkId: 'eip155:1',
+      activeChain: undefined,
+      initialized: false
     })
   })
 })

@@ -1,13 +1,21 @@
-import { SECURE_SITE_SDK, SECURE_SITE_SDK_VERSION, W3mFrameConstants } from './W3mFrameConstants.js'
-import { W3mFrameSchema } from './W3mFrameSchema.js'
-import { W3mFrameHelpers } from './W3mFrameHelpers.js'
-import type { W3mFrameTypes } from './W3mFrameTypes.js'
 import { ConstantsUtil } from '@reown/appkit-common'
+
+import { SECURE_SITE_SDK, SECURE_SITE_SDK_VERSION, W3mFrameConstants } from './W3mFrameConstants.js'
+import { W3mFrameHelpers } from './W3mFrameHelpers.js'
+import { W3mFrameSchema } from './W3mFrameSchema.js'
+import type { W3mFrameTypes } from './W3mFrameTypes.js'
 
 type EventKey = typeof W3mFrameConstants.APP_EVENT_KEY | typeof W3mFrameConstants.FRAME_EVENT_KEY
 
 function shouldHandleEvent(eventKey: EventKey, data: MessageEvent['data'] = {}): boolean {
   return typeof data?.type === 'string' && data?.type?.includes(eventKey)
+}
+
+interface W3mFrameConfig {
+  projectId: string
+  isAppClient?: boolean
+  chainId?: W3mFrameTypes.Network['chainId']
+  enableLogger?: boolean
 }
 
 // -- Sdk --------------------------------------------------------------------
@@ -27,11 +35,12 @@ export class W3mFrame {
       }
     | undefined
 
-  public constructor(
-    projectId: string,
+  public constructor({
+    projectId,
     isAppClient = false,
-    chainId: W3mFrameTypes.Network['chainId'] = 'eip155:1'
-  ) {
+    chainId = 'eip155:1',
+    enableLogger = true
+  }: W3mFrameConfig) {
     this.projectId = projectId
     this.frameLoadPromise = new Promise((resolve, reject) => {
       this.frameLoadPromiseResolver = { resolve, reject }
@@ -45,7 +54,7 @@ export class W3mFrame {
       if (W3mFrameHelpers.isClient) {
         const iframe = document.createElement('iframe')
         iframe.id = 'w3m-iframe'
-        iframe.src = `${SECURE_SITE_SDK}?projectId=${projectId}&chainId=${chainId}&version=${SECURE_SITE_SDK_VERSION}`
+        iframe.src = `${SECURE_SITE_SDK}?projectId=${projectId}&chainId=${chainId}&version=${SECURE_SITE_SDK_VERSION}&enableLogger=${enableLogger}`
         iframe.name = 'w3m-secure-iframe'
         iframe.style.position = 'fixed'
         iframe.style.zIndex = '999999'

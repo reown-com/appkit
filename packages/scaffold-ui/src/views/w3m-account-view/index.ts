@@ -1,17 +1,39 @@
-import { ConnectorController, StorageUtil } from '@reown/appkit-core'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ChainController, ConnectorController, StorageUtil } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 
 @customElement('w3m-account-view')
 export class W3mAccountView extends LitElement {
+  // -- Members ------------------------------------------- //
+  private unsubscribe: (() => void)[] = []
+
+  @state() namespace = ChainController.state.activeChain
+
+  // -- Lifecycle ----------------------------------------- //
+  public constructor() {
+    super()
+    this.unsubscribe.push(
+      ChainController.subscribeKey('activeChain', namespace => {
+        this.namespace = namespace
+      })
+    )
+  }
+
   // -- Render -------------------------------------------- //
 
   public override render() {
-    const connectedConnectorType = StorageUtil.getConnectedConnector()
+    if (!this.namespace) {
+      return null
+    }
+
+    const connectorId = StorageUtil.getConnectedConnectorId(this.namespace)
     const authConnector = ConnectorController.getAuthConnector()
 
     return html`
-      ${authConnector && connectedConnectorType === 'ID_AUTH'
+      ${authConnector && connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
         ? this.walletFeaturesTemplate()
         : this.defaultTemplate()}
     `

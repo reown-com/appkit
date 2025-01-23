@@ -1,23 +1,27 @@
+import { useCallback, useState } from 'react'
+
 import { Button, Stack, Text } from '@chakra-ui/react'
-import { useCallback, useMemo, useState } from 'react'
-import { useChakraToast } from '../Toast'
-import { toHex, type Address } from 'viem'
-import { useLocalEcdsaKey } from '../../context/LocalEcdsaKeyContext'
-import { bigIntReplacer } from '../../utils/CommonUtils'
-import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
-import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
-import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+import { type Address, toHex } from 'viem'
+
 import {
+  type SmartSessionGrantPermissionsRequest,
+  createSubscription,
   grantPermissions,
-  isSmartSessionSupported,
-  type SmartSessionGrantPermissionsRequest
+  isSmartSessionSupported
 } from '@reown/appkit-experimental/smart-session'
+import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+
+import { useLocalEcdsaKey } from '../../context/LocalEcdsaKeyContext'
+import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
+import { bigIntReplacer } from '../../utils/CommonUtils'
+import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
+import { useChakraToast } from '../Toast'
 
 export function WagmiRequestPermissionsAsyncTest() {
-  const { address, isConnected, status } = useAppKitAccount()
+  const { address, isConnected } = useAppKitAccount()
 
   const { chainId } = useAppKitNetwork()
-  const isSupported = useMemo(() => isSmartSessionSupported(), [status])
+  const isSupported = isSmartSessionSupported()
 
   if (!isConnected || !address || !chainId) {
     return (
@@ -95,6 +99,39 @@ function ConnectedTestContent({
       setRequestPermissionLoading(false)
     }
   }, [signer, address, chainId, grantPermissions, toast])
+  const onCreateSubscription = useCallback(async () => {
+    setRequestPermissionLoading(true)
+    try {
+      if (!signer) {
+        throw new Error('No signer available')
+      }
+      const response = await createSubscription({
+        chainId: toHex(chainId),
+        signerPublicKey: signer.publicKey,
+        interval: '1s',
+        asset: 'native',
+        amount: '0x16345785D8A0000',
+        expiry: Math.floor(Date.now() / 1000) + 24 * 60 * 60
+      })
+      setSmartSession({
+        type: 'async',
+        grantedPermissions: response
+      })
+      toast({
+        type: 'success',
+        title: 'Permissions Granted',
+        description: JSON.stringify(response, bigIntReplacer)
+      })
+    } catch (error) {
+      toast({
+        type: 'error',
+        title: 'Request Permissions Errors',
+        description: error instanceof Error ? error.message : 'Unknown Error'
+      })
+    } finally {
+      setRequestPermissionLoading(false)
+    }
+  }, [signer, address, chainId, grantPermissions, toast])
 
   return (
     <Stack direction={['column', 'column', 'row']}>
@@ -105,6 +142,14 @@ function ConnectedTestContent({
         isLoading={isRequestPermissionLoading}
       >
         Request Permissions
+      </Button>
+      <Button
+        data-test-id="request-permissions-button"
+        onClick={onCreateSubscription}
+        isDisabled={Boolean(isRequestPermissionLoading || Boolean(smartSession?.type === 'async'))}
+        isLoading={isRequestPermissionLoading}
+      >
+        Create Subscription
       </Button>
       <Button
         data-test-id="clear-permissions-button"

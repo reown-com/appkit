@@ -1,9 +1,12 @@
 import type { Meta } from '@storybook/web-components'
-import '@reown/appkit-ui/src/composites/wui-list-network'
+
 import { html } from 'lit'
+
+import type { WuiListNetwork } from '@reown/appkit-ui'
+import '@reown/appkit-ui/src/composites/wui-list-network'
+
 import '../../components/gallery-container'
 import { networkImageSrc, walletImagesOptions } from '../../utils/PresetUtils'
-import type { WuiListNetwork } from '@reown/appkit-ui'
 
 type Component = Meta<WuiListNetwork>
 

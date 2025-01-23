@@ -1,5 +1,6 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy } from 'valtio/vanilla'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
+
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
@@ -10,10 +11,10 @@ import type {
   WcWallet
 } from '../utils/TypeUtil.js'
 import { AssetController } from './AssetController.js'
-import { ConnectorController } from './ConnectorController.js'
-import { OptionsController } from './OptionsController.js'
 import { ChainController } from './ChainController.js'
+import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
+import { OptionsController } from './OptionsController.js'
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()
@@ -214,7 +215,7 @@ export const ApiController = {
     state.page = page
   },
 
-  async searchWalletByIds({ ids }: { ids: string[] }) {
+  async initializeExcludedWalletRdns({ ids }: { ids: string[] }) {
     const { data } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       params: {

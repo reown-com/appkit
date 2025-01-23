@@ -1,9 +1,12 @@
-import { beforeEach, describe, expect, it, vi, type MockInstance, type Mock } from 'vitest'
+import { MessageSigningProtocols } from 'sats-connect'
+import { type Mock, type MockInstance, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import type { CaipNetwork } from '@reown/appkit-common'
+import { CoreHelperUtil } from '@reown/appkit-core'
+import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
+
 import { SatsConnectConnector } from '../../src/connectors/SatsConnectConnector'
 import { mockSatsConnectProvider } from '../mocks/mockSatsConnect'
-import type { CaipNetwork } from '@reown/appkit-common'
-import { MessageSigningProtocols } from 'sats-connect'
-import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
 
 describe('SatsConnectConnector', () => {
   let connector: SatsConnectConnector
@@ -38,6 +41,17 @@ describe('SatsConnectConnector', () => {
 
     expect(wallets instanceof Array).toBeTruthy()
     wallets.forEach(wallet => expect(wallet instanceof SatsConnectConnector).toBeTruthy())
+  })
+
+  it('should return an empty array when window is undefined (server-side)', () => {
+    vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(false)
+
+    const wallets = SatsConnectConnector.getWallets({
+      requestedChains: [],
+      getActiveNetwork: () => undefined
+    })
+
+    expect(wallets).toEqual([])
   })
 
   it('should get metadata correctly', async () => {

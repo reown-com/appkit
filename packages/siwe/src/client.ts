@@ -1,4 +1,7 @@
+import { SIWXUtil } from '@reown/appkit-core'
+
 import { type SIWEControllerClient } from '../core/controller/SIWEController.js'
+import { ConstantsUtil } from '../core/utils/ConstantsUtil.js'
 import type {
   SIWEClientMethods,
   SIWEConfig,
@@ -7,9 +10,7 @@ import type {
   SIWESession,
   SIWEVerifyMessageArgs
 } from '../core/utils/TypeUtils.js'
-
-import { SIWXUtil } from '@reown/appkit-core'
-import { ConstantsUtil } from '../core/utils/ConstantsUtil.js'
+import { mapToSIWX } from '../src/mapToSIWX.js'
 
 // -- Client -------------------------------------------------------------------- //
 export class AppKitSIWEClient {
@@ -19,6 +20,7 @@ export class AppKitSIWEClient {
 
   public constructor(siweConfig: SIWEConfig) {
     const {
+      required = true,
       enabled = true,
       nonceRefetchIntervalMs = ConstantsUtil.FIVE_MINUTES_IN_MS,
       sessionRefetchIntervalMs = ConstantsUtil.FIVE_MINUTES_IN_MS,
@@ -30,6 +32,7 @@ export class AppKitSIWEClient {
 
     this.options = {
       // Default options
+      required,
       enabled,
       nonceRefetchIntervalMs,
       sessionRefetchIntervalMs,
@@ -39,6 +42,10 @@ export class AppKitSIWEClient {
     }
 
     this.methods = siweConfigMethods
+  }
+
+  public mapToSIWX() {
+    return mapToSIWX(this)
   }
 
   async getNonce(address?: string) {

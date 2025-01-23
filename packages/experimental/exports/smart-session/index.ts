@@ -1,9 +1,12 @@
 import { SmartSessionsController } from '../../src/smart-session/controllers/SmartSessionsController.js'
 import type {
+  CreateSubscriptionRequest,
+  CreateSubscriptionResponse,
   SmartSession,
   SmartSessionGrantPermissionsRequest,
   SmartSessionGrantPermissionsResponse
 } from '../../src/smart-session/utils/TypeUtils.js'
+
 export * from '../../src/smart-session/utils/TypeUtils.js'
 
 // Views
@@ -28,4 +31,10 @@ export async function revokeSmartSession(session: SmartSession) {
 
 export function isSmartSessionSupported() {
   return SmartSessionsController.isSmartSessionSupported()
+}
+
+export async function createSubscription(
+  request: CreateSubscriptionRequest
+): Promise<CreateSubscriptionResponse> {
+  return SmartSessionsController.createSubscription(request)
 }

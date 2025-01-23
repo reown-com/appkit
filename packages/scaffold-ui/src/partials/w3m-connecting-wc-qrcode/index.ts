@@ -1,3 +1,6 @@
+import { html } from 'lit'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
   AssetUtil,
   ConnectionController,
@@ -5,8 +8,7 @@ import {
   ThemeController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { html } from 'lit'
-import { ifDefined } from 'lit/directives/if-defined.js'
+
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 import styles from './styles.js'
 
@@ -17,6 +19,7 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
   public constructor() {
     super()
     window.addEventListener('resize', this.forceUpdate)
+
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_WALLET',
@@ -26,6 +29,7 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
 
   public override disconnectedCallback() {
     super.disconnectedCallback()
+    this.unsubscribe?.forEach(unsub => unsub())
     window.removeEventListener('resize', this.forceUpdate)
   }
 
@@ -47,7 +51,6 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
         </wui-text>
         ${this.copyTemplate()}
       </wui-flex>
-
       <w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links>
     `
   }

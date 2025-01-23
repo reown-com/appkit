@@ -1,14 +1,17 @@
-import { Button, Flex, Stack, Text } from '@chakra-ui/react'
-import { useReadContract } from 'wagmi'
 import { useState } from 'react'
-import { useChakraToast } from '../Toast'
+
+import { Button, Flex, Stack, Text } from '@chakra-ui/react'
 import { encodeFunctionData, parseEther } from 'viem'
-import { abi as donutContractAbi, address as donutContractaddress } from '../../utils/DonutContract'
+import { useReadContract } from 'wagmi'
+
+import type { SmartSessionGrantPermissionsResponse } from '@reown/appkit-experimental/smart-session'
+
 import { useLocalEcdsaKey } from '../../context/LocalEcdsaKeyContext'
 import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
+import { abi as donutContractAbi, address as donutContractaddress } from '../../utils/DonutContract'
 import { executeActionsWithECDSAKey } from '../../utils/ERC7715Utils'
 import { getChain } from '../../utils/NetworksUtil'
-import type { SmartSessionGrantPermissionsResponse } from '@reown/appkit-experimental/smart-session'
+import { useChakraToast } from '../Toast'
 
 export function WagmiPurchaseDonutAsyncPermissionsTest() {
   const { smartSession } = useERC7715Permissions()

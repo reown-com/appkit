@@ -1,22 +1,24 @@
-import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
+import type UniversalProvider from '@walletconnect/universal-provider'
+
 import type {
-  Balance,
-  Transaction,
-  CaipNetworkId,
-  CaipNetwork,
-  ChainNamespace,
-  CaipAddress,
   AdapterType,
-  SdkFramework,
+  AppKitNetwork,
   AppKitSdkVersion,
-  AppKitNetwork
+  Balance,
+  CaipAddress,
+  CaipNetwork,
+  CaipNetworkId,
+  ChainNamespace,
+  SdkFramework,
+  Transaction
 } from '@reown/appkit-common'
-import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
+import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
+
 import type { AccountControllerState } from '../controllers/AccountController.js'
+import type { ConnectionControllerClient } from '../controllers/ConnectionController.js'
+import type { ReownName } from '../controllers/EnsController.js'
 import type { OnRampProviderOption } from '../controllers/OnRampController.js'
 import type { ConstantsUtil } from './ConstantsUtil.js'
-import type { ReownName } from '../controllers/EnsController.js'
-import type UniversalProvider from '@walletconnect/universal-provider'
 
 type InitializeAppKitConfigs = {
   showWallets?: boolean
@@ -49,13 +51,16 @@ export type CaipNetworkCoinbaseNetwork =
   | 'OP Mainnet'
   | 'Celo'
 
-export type ConnectedWalletInfo =
-  | {
-      name?: string
-      icon?: string
-      [key: string]: unknown
-    }
-  | undefined
+export type ConnectedWalletInfo = {
+  name: string
+  icon?: string
+  [key: string]: unknown
+}
+
+export type User = {
+  email?: string | null | undefined
+  username?: string | null | undefined
+}
 
 export interface LinkingRecord {
   redirect: string
@@ -87,7 +92,7 @@ export type SocialProvider =
 export type Connector = {
   id: string
   type: ConnectorType
-  name?: string
+  name: string
   imageId?: string
   explorerId?: string
   imageUrl?: string
@@ -460,6 +465,9 @@ export type Event =
   | {
       type: 'track'
       event: 'DISCONNECT_ERROR'
+      properties?: {
+        message: string
+      }
     }
   | {
       type: 'track'
@@ -879,6 +887,8 @@ export type AccountTypeMap = {
     namespace: K
     address: string
     type: NamespaceTypeMap[K]
+    publicKey?: K extends 'bip122' ? string : never
+    path?: K extends 'bip122' ? string : never
   }
 }
 
@@ -907,13 +917,13 @@ export type EstimateGasTransactionArgs =
     }
 
 export interface WriteContractArgs {
-  receiverAddress: `0x${string}`
-  tokenAmount: bigint
   tokenAddress: `0x${string}`
   fromAddress: `0x${string}`
-  method: 'send' | 'transfer' | 'call'
+  method: 'send' | 'transfer' | 'call' | 'approve'
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   abi: any
+  args: unknown[]
+  chainNamespace: ChainNamespace
 }
 
 export interface NetworkControllerClient {
@@ -963,7 +973,7 @@ export type ChainAdapter = {
   accountState?: AdapterAccountState
   networkState?: AdapterNetworkState
   namespace?: ChainNamespace
-  caipNetworks?: CaipNetwork[] | AppKitNetwork[]
+  caipNetworks?: CaipNetwork[]
   projectId?: string
   adapterType?: string
 }
@@ -1089,9 +1099,16 @@ export type FeaturesKeys = keyof Features
 export type WalletGuideType = 'get-started' | 'explore'
 
 export type UseAppKitAccountReturn = {
+  allAccounts: AccountType[]
   caipAddress: CaipAddress | undefined
   address: string | undefined
   isConnected: boolean
+  embeddedWalletInfo?: {
+    user: AccountControllerState['user']
+    authProvider: AccountControllerState['socialProvider'] | 'email'
+    accountType: W3mFrameTypes.AccountType | undefined
+    isSmartAccountDeployed: boolean
+  }
   status: AccountControllerState['status']
 }
 
@@ -1105,3 +1122,9 @@ export type UseAppKitNetworkReturn = {
 export type BadgeType = 'none' | 'certified'
 
 export type ConnectionStatus = 'connected' | 'disconnected' | 'connecting' | 'reconnecting'
+
+/**
+ * @description The default account types for each namespace.
+ * @default
+ */
+export type DefaultAccountTypes = { [Key in keyof NamespaceTypeMap]: NamespaceTypeMap[Key] }

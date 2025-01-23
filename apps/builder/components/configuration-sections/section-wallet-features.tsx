@@ -1,21 +1,21 @@
 import { UniqueIdentifier } from '@dnd-kit/core'
+
+import { ConstantsUtil, WalletFeature } from '@reown/appkit-core'
+import { useAppKitAccount } from '@reown/appkit-core/react'
+
+import { ExclamationMarkIcon } from '@/components/icon/exclamation-mark'
+import { SortableWalletFeatureList } from '@/components/sortable-list-wallet-features'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useAppKitContext } from '@/hooks/use-appkit'
 import { WalletFeatureName } from '@/lib/types'
-import { ConstantsUtil, WalletFeature } from '@reown/appkit-core'
-import dynamic from 'next/dynamic'
 import { urlStateUtils } from '@/lib/url-state'
-
-const SortableWalletFeatureList = dynamic(
-  () =>
-    import('@/components/sortable-list-wallet-features').then(mod => mod.SortableWalletFeatureList),
-  { ssr: false }
-)
 
 const defaultWalletFeaturesOrder = ['onramp', 'swaps', 'receive', 'send']
 
 export function SectionWalletFeatures() {
+  const { caipAddress } = useAppKitAccount()
   const { config, updateFeatures } = useAppKitContext()
-  const connectMethodsOrder = config.features.walletFeaturesOrder || defaultWalletFeaturesOrder
+  const walletFeaturesOrder = config.features.walletFeaturesOrder || defaultWalletFeaturesOrder
 
   function handleNewOrder(items: UniqueIdentifier[]) {
     const titleValueMap = {
@@ -39,18 +39,12 @@ export function SectionWalletFeatures() {
       case 'Swap':
         updateFeatures({ swaps: !config.features.swaps })
         return
-      case 'Receive':
-        updateFeatures({ receive: !config.features.receive })
-        return
-      case 'Send':
-        updateFeatures({ send: !config.features.send })
-        return
       default:
         return
     }
   }
 
-  const featureNameMap = connectMethodsOrder.map(name => {
+  const featureNameMap = walletFeaturesOrder.map(name => {
     switch (name) {
       case 'onramp':
         return 'Buy'
@@ -66,11 +60,21 @@ export function SectionWalletFeatures() {
   })
 
   return (
-    <SortableWalletFeatureList
-      items={featureNameMap}
-      onToggleOption={handleToggleOption}
-      handleNewOrder={handleNewOrder}
-      handle={true}
-    />
+    <div className="flex flex-col gap-2">
+      <SortableWalletFeatureList
+        items={featureNameMap}
+        onToggleOption={handleToggleOption}
+        handleNewOrder={handleNewOrder}
+        handle={true}
+      />
+      {!caipAddress ? (
+        <Alert>
+          <div className="flex items-center gap-3">
+            <ExclamationMarkIcon />
+            <AlertDescription>Connect to a wallet to view feature customization</AlertDescription>
+          </div>
+        </Alert>
+      ) : null}
+    </div>
   )
 }

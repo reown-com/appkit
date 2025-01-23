@@ -1,22 +1,24 @@
-import {
-  AccountController,
-  ModalController,
-  AssetUtil,
-  RouterController,
-  CoreHelperUtil,
-  ConstantsUtil as CoreConstantsUtil,
-  EventsController,
-  OptionsController,
-  ChainController
-} from '@reown/appkit-core'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import styles from './styles.js'
-import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import {
+  AccountController,
+  AssetUtil,
+  ChainController,
+  ConstantsUtil as CoreConstantsUtil,
+  CoreHelperUtil,
+  EventsController,
+  ModalController,
+  OptionsController,
+  RouterController
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+
+import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import styles from './styles.js'
 
 const TABS = 3
 const TABS_PADDING = 48
@@ -222,7 +224,20 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private watchSwapValues() {
-    this.watchTokenBalance = setInterval(() => AccountController.fetchTokenBalance(), 10000)
+    this.watchTokenBalance = setInterval(
+      () => AccountController.fetchTokenBalance(error => this.onTokenBalanceError(error)),
+      10_000
+    )
+  }
+
+  private onTokenBalanceError(error: unknown) {
+    if (error instanceof Error && error.cause instanceof Response) {
+      const statusCode = error.cause.status
+
+      if (statusCode === CommonConstantsUtil.HTTP_STATUS_CODES.SERVICE_UNAVAILABLE) {
+        clearInterval(this.watchTokenBalance)
+      }
+    }
   }
 
   private listContentTemplate() {
@@ -255,7 +270,13 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onProfileButtonClick() {
-    RouterController.push('Profile')
+    const { allAccounts } = AccountController.state
+
+    if (allAccounts.length > 1) {
+      RouterController.push('Profile')
+    } else {
+      RouterController.push('AccountSettings')
+    }
   }
 
   private onBuyClick() {

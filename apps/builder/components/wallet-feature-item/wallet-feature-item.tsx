@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react'
+
 import classNames from 'classnames'
 
-import { Handle } from './components'
-
-import styles from './wallet-feature-item.module.css'
-import { useAppKitContext } from '@/hooks/use-appkit'
 import { Checkbox } from '@/components/ui/checkbox'
+import { useAppKitContext } from '@/hooks/use-appkit'
 import { BaseDraggableItemProps, WalletFeatureName } from '@/lib/types'
+
+import { Handle } from './components'
+import styles from './wallet-feature-item.module.css'
 
 interface Props extends BaseDraggableItemProps {
   onToggleOption?: (name: WalletFeatureName) => void
@@ -50,6 +51,13 @@ export const WalletFeatureItem = React.memo(
         Swap: swapsEnabled,
         Receive: receiveEnabled,
         Send: sendEnabled
+      }
+
+      const featureCanBeToggledMap = {
+        Buy: true,
+        Swap: true,
+        Receive: false,
+        Send: false
       }
 
       useEffect(() => {
@@ -124,7 +132,9 @@ export const WalletFeatureItem = React.memo(
             >
               {handle ? <Handle {...handleProps} {...listeners} /> : null}
               <span className="text-sm flex-1">{value}</span>
-              <Checkbox checked={featureEnabledMap[value as WalletFeatureName]} />
+              {featureCanBeToggledMap[value as WalletFeatureName] ? (
+                <Checkbox checked={featureEnabledMap[value as WalletFeatureName]} />
+              ) : null}
             </div>
           </li>
         </div>

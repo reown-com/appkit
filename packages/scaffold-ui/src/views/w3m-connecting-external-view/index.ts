@@ -1,3 +1,4 @@
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import type { BaseError } from '@reown/appkit-core'
 import {
   ChainController,
@@ -5,8 +6,8 @@ import {
   EventsController,
   ModalController
 } from '@reown/appkit-core'
-import { ConstantsUtil } from '@reown/appkit-utils'
 import { customElement } from '@reown/appkit-ui'
+
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
 @customElement('w3m-connecting-external-view')
@@ -54,7 +55,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
          * Instead of opening a popup in first render for `W3mConnectingWidget`, we need to trigger connection for Coinbase connector specifically when users select it.
          * And if there is an error, this condition will be skipped and the connection will be triggered as usual because we have `Try again` button in this view which is a user interaction as well.
          */
-        if (this.connector.id !== ConstantsUtil.COINBASE_SDK_CONNECTOR_ID || !this.error) {
+        if (this.connector.id !== CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK || !this.error) {
           await ConnectionController.connectExternal(this.connector, this.connector.chain)
 
           EventsController.sendEvent({
