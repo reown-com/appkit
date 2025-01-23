@@ -62,6 +62,7 @@ export class W3mRouter extends LitElement {
 
   // -- Private ------------------------------------------- //
   private viewTemplate() {
+    // - These components are imported from the scaffold exports according to the case. This would render empty if the component is not imported.
     switch (this.view) {
       // Core Views
       case 'AccountSettings':
