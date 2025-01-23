@@ -71,6 +71,11 @@
       "types": "./dist/types/exports/connectors.d.ts",
       "import": "./dist/esm/exports/connectors.js",
       "default": "./dist/esm/exports/connectors.js"
+    },
+    "./basic": {
+      "types": "./dist/types/exports/basic.d.ts",
+      "import": "./dist/esm/exports/basic.js",
+      "default": "./dist/esm/exports/basic.js"
     }
   },
   "typesVersions": {

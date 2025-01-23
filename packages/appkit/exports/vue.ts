@@ -8,9 +8,6 @@ import { getAppKit } from '../src/library/vue/index.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { PACKAGE_VERSION } from './constants.js'
 
-// -- Views ------------------------------------------------------------
-export * from '@reown/appkit-scaffold-ui'
-
 // -- Hooks ------------------------------------------------------------
 export * from '../src/library/vue/index.js'
 

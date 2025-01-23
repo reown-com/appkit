@@ -15,7 +15,8 @@ export type CreateAppKit = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
 export function createAppKit(options: CreateAppKit) {
   return new AppKit({
     ...options,
-    sdkVersion: CoreHelperUtil.generateSdkVersion(options.adapters ?? [], 'html', PACKAGE_VERSION)
+    sdkVersion: CoreHelperUtil.generateSdkVersion(options.adapters ?? [], 'html', PACKAGE_VERSION),
+    basic: true
   })
 }
 

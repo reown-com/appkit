@@ -26,7 +26,8 @@ const modal = createAppKit({
   networks: networks as [AppKitNetwork, ...AppKitNetwork[]],
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
-  metadata: ConstantsUtil.Metadata
+  metadata: ConstantsUtil.Metadata,
+  basic: true
 })
 
 ThemeStore.setModal(modal)

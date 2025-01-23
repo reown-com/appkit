@@ -114,7 +114,7 @@ export interface OpenOptions {
 
 type Adapters = Record<ChainNamespace, AdapterBlueprint>
 
-interface AppKitOptionsWithSdk extends AppKitOptions {
+interface AppKitOptionsInternal extends AppKitOptions {
   sdkVersion: SdkVersion
 }
 
@@ -161,7 +161,7 @@ export class AppKit {
 
   private defaultCaipNetwork?: CaipNetwork
 
-  public constructor(options: AppKitOptionsWithSdk) {
+  public constructor(options: AppKitOptionsInternal) {
     this.options = options
     this.version = options.sdkVersion
     this.caipNetworks = this.extendCaipNetworks(options)
@@ -177,7 +177,7 @@ export class AppKit {
     return this.instance
   }
 
-  private async initialize(options: AppKitOptionsWithSdk) {
+  private async initialize(options: AppKitOptionsInternal) {
     this.initControllers(options)
     await this.initChainAdapters()
     await this.injectModalUi()
@@ -685,9 +685,9 @@ export class AppKit {
   }
 
   // -- Private ------------------------------------------------------------------
-  private initializeOptionsController(options: AppKitOptionsWithSdk) {
+  private initializeOptionsController(options: AppKitOptionsInternal) {
     OptionsController.setDebug(options.debug !== false)
-
+    OptionsController.setBasic(options.basic === true)
     if (!options.projectId) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
 
@@ -772,7 +772,7 @@ export class AppKit {
     })
   }
 
-  private initControllers(options: AppKitOptionsWithSdk) {
+  private initControllers(options: AppKitOptionsInternal) {
     this.initializeOptionsController(options)
     this.initializeChainController(options)
     this.initializeThemeController(options)
@@ -2079,10 +2079,13 @@ export class AppKit {
     if (!this.initPromise && !isInitialized && CoreHelperUtil.isClient()) {
       isInitialized = true
       this.initPromise = new Promise<void>(async resolve => {
-        await Promise.all([
-          import('@reown/appkit-ui'),
-          import('@reown/appkit-scaffold-ui/w3m-modal')
-        ])
+        if (OptionsController.state.basic) {
+          await import('@reown/appkit-scaffold-ui/basic')
+        } else {
+          // Import all views
+          await import('@reown/appkit-scaffold-ui')
+          await import('@reown/appkit-scaffold-ui/w3m-modal')
+        }
         const modal = document.createElement('w3m-modal')
         if (!OptionsController.state.disableAppend && !OptionsController.state.enableEmbedded) {
           document.body.insertAdjacentElement('beforeend', modal)
