@@ -2079,16 +2079,14 @@ export class AppKit {
     if (!this.initPromise && !isInitialized && CoreHelperUtil.isClient()) {
       isInitialized = true
       this.initPromise = new Promise<void>(async resolve => {
-        // Import core views
-        await import('@reown/appkit-scaffold-ui/core')
-
         if (OptionsController.state.basic) {
           await import('@reown/appkit-scaffold-ui/basic')
         } else {
           // Import all views
           await import('@reown/appkit-scaffold-ui')
-          await import('@reown/appkit-scaffold-ui/w3m-modal')
         }
+
+        await import('@reown/appkit-scaffold-ui/w3m-modal')
         const modal = document.createElement('w3m-modal')
         if (!OptionsController.state.disableAppend && !OptionsController.state.enableEmbedded) {
           document.body.insertAdjacentElement('beforeend', modal)
