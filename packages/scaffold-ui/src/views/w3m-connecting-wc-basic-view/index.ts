@@ -14,7 +14,6 @@ export class W3mConnectingWcBasicView extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    console.log('>> Rendering basic view')
     if (this.isMobile) {
       const { featured, recommended } = ApiController.state
       const { customWallets } = OptionsController.state
@@ -32,8 +31,6 @@ export class W3mConnectingWcBasicView extends LitElement {
         <w3m-all-wallets-widget></w3m-all-wallets-widget>
       </wui-flex>`
     }
-
-    console.log('>> Rendering web view')
 
     return html`<wui-flex flexDirection="column" .padding=${['0', '0', 'l', '0'] as const}>
       <w3m-connecting-wc-view></w3m-connecting-wc-view>
