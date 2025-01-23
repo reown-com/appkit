@@ -401,6 +401,32 @@ describe('EthersAdapter', () => {
         ]
       })
     })
+
+    it('should call setDefaultChain and request from provider for WALLET_CONNECT', async () => {
+      const adapter = new EthersAdapter()
+
+      const mockProvider = {
+        request: vi.fn(),
+        setDefaultChain: vi.fn()
+      } as unknown as UniversalProvider
+
+      const params = {
+        caipNetwork: {
+          id: 1,
+          caipNetworkId: 'eip155:1'
+        },
+        provider: mockProvider,
+        providerType: 'WALLET_CONNECT'
+      } as unknown as any
+
+      await adapter.switchNetwork(params)
+
+      expect(mockProvider.setDefaultChain).toHaveBeenCalledWith('eip155:1')
+      expect(mockProvider.request).toHaveBeenCalledWith({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x1' }]
+      })
+    })
   })
 
   describe('EthersAdapter -getWalletConnectProvider', () => {

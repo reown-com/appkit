@@ -543,10 +543,15 @@ export class EthersAdapter extends AdapterBlueprint {
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
     const { caipNetwork, provider, providerType } = params
 
-    if (providerType === 'AUTH' || providerType === 'WALLET_CONNECT') {
+    const isAuth = providerType === 'AUTH'
+    const isWalletConnect = providerType === 'WALLET_CONNECT'
+
+    if (isAuth || isWalletConnect) {
       await super.switchNetwork(params)
 
-      return
+      if (isAuth) {
+        return
+      }
     }
 
     try {
