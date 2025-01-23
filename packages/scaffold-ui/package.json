@@ -24,6 +24,11 @@
       "import": "./dist/esm/exports/utils.js",
       "default": "./dist/esm/exports/utils.js"
     },
+    "./core": {
+      "types": "./dist/types/exports/core.d.ts",
+      "import": "./dist/esm/exports/core.js",
+      "default": "./dist/esm/exports/core.js"
+    },
     "./basic": {
       "types": "./dist/types/exports/basic.d.ts",
       "import": "./dist/esm/exports/basic.js",

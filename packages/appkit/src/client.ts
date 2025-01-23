@@ -2079,6 +2079,9 @@ export class AppKit {
     if (!this.initPromise && !isInitialized && CoreHelperUtil.isClient()) {
       isInitialized = true
       this.initPromise = new Promise<void>(async resolve => {
+        // Import core views
+        await import('@reown/appkit-scaffold-ui/core')
+
         if (OptionsController.state.basic) {
           await import('@reown/appkit-scaffold-ui/basic')
         } else {
