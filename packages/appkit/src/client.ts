@@ -149,8 +149,6 @@ export class AppKit {
 
   private authProvider?: W3mFrameProvider
 
-  private initPromise?: Promise<void> = undefined
-
   public version: SdkVersion
 
   public adapter?: ChainAdapter
@@ -2076,18 +2074,15 @@ export class AppKit {
   }
 
   private async injectModalUi() {
-    if (!this.initPromise && !isInitialized && CoreHelperUtil.isClient()) {
-      isInitialized = true
-      this.initPromise = new Promise<void>(async resolve => {
-        const { features, basic } = OptionsController.state
-        if (basic) {
-          // Import only basic views
-          await import('@reown/appkit-scaffold-ui/basic')
-        } else {
-          // Import all views
-          await import('@reown/appkit-scaffold-ui')
-        }
-
+    if (!isInitialized && CoreHelperUtil.isClient()) {
+      const { basic } = this.options
+      const features = { ...CoreConstantsUtil.DEFAULT_FEATURES, ...this.options.features }
+      if (basic) {
+        // Import only basic views
+        await import('@reown/appkit-scaffold-ui/basic')
+      } else {
+        // Import all views
+        await import('@reown/appkit-scaffold-ui')
         // Selectively import views based on feature flags
         if (features) {
           const usingEmbeddedWallet =
@@ -2124,17 +2119,15 @@ export class AppKit {
             await import('@reown/appkit-scaffold-ui/transactions')
           }
         }
+      }
 
-        // Import core modal
-        await import('@reown/appkit-scaffold-ui/w3m-modal')
-        const modal = document.createElement('w3m-modal')
-        if (!OptionsController.state.disableAppend && !OptionsController.state.enableEmbedded) {
-          document.body.insertAdjacentElement('beforeend', modal)
-        }
-        resolve()
-      })
+      // Import core modal
+      await import('@reown/appkit-scaffold-ui/w3m-modal')
+      const modal = document.createElement('w3m-modal')
+      if (!OptionsController.state.disableAppend && !OptionsController.state.enableEmbedded) {
+        document.body.insertAdjacentElement('beforeend', modal)
+      }
+      isInitialized = true
     }
-
-    return this.initPromise
   }
 }
