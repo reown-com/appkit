@@ -67,11 +67,20 @@ export function NetworkList() {
           <div className="flex items-center gap-3">
             <ExclamationMarkIcon />
             <AlertDescription>
-              Customizing the networks available when disconnected
+              You can only customize networks when your wallet is disconnected.
             </AlertDescription>
           </div>
         </Alert>
-      ) : null}
+      ) : (
+        <Alert>
+          <div className="flex items-center gap-3">
+            <ExclamationMarkIcon />
+            <AlertDescription>
+              A subset of available networks is currently being used in this integration.
+            </AlertDescription>
+          </div>
+        </Alert>
+      )}
     </div>
   )
 }

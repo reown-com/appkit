@@ -55,7 +55,9 @@ export function ChainList() {
         <Alert>
           <div className="flex items-center gap-3">
             <ExclamationMarkIcon />
-            <AlertDescription>Customizing the chains available when disconnected</AlertDescription>
+            <AlertDescription>
+              You can only customize chains when your wallet is disconnected.
+            </AlertDescription>
           </div>
         </Alert>
       ) : null}
