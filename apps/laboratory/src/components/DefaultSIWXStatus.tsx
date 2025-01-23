@@ -1,7 +1,8 @@
 'use client'
 
-import { Card, CardHeader, Code, Heading, Text } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
+
+import { Card, CardHeader, Code, Heading, Text } from '@chakra-ui/react'
 
 export interface DefaultSIWXStatusProps {
   localStorageKey?: string
