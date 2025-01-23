@@ -21,6 +21,7 @@ import '../../partials/w3m-alertbar/index.js'
 import '../../partials/w3m-header/index.js'
 import '../../partials/w3m-snackbar/index.js'
 import '../../partials/w3m-tooltip/index.js'
+import '../w3m-router/index.js'
 import styles from './styles.js'
 
 // -- Helpers --------------------------------------------- //

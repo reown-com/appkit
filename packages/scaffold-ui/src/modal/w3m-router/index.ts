@@ -63,6 +63,7 @@ export class W3mRouter extends LitElement {
   // -- Private ------------------------------------------- //
   private viewTemplate() {
     switch (this.view) {
+      // Core Views
       case 'AccountSettings':
         return html`<w3m-account-settings-view></w3m-account-settings-view>`
       case 'Account':

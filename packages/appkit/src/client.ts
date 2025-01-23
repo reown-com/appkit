@@ -2080,6 +2080,7 @@ export class AppKit {
       isInitialized = true
       this.initPromise = new Promise<void>(async resolve => {
         if (OptionsController.state.basic) {
+          console.log('Basic UI')
           await import('@reown/appkit-scaffold-ui/basic')
         } else {
           // Import all views
