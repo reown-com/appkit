@@ -11,6 +11,8 @@ import {
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
+import '../../partials/w3m-input-address/index.js'
+import '../../partials/w3m-input-token/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-wallet-send-view')

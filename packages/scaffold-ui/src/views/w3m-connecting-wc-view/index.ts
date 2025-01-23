@@ -15,6 +15,14 @@ import {
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
+import '../../partials/w3m-connecting-header/index.js'
+import '../../partials/w3m-connecting-wc-browser/index.js'
+import '../../partials/w3m-connecting-wc-desktop/index.js'
+import '../../partials/w3m-connecting-wc-mobile/index.js'
+import '../../partials/w3m-connecting-wc-qrcode/index.js'
+import '../../partials/w3m-connecting-wc-unsupported/index.js'
+import '../../partials/w3m-connecting-wc-web/index.js'
+
 @customElement('w3m-connecting-wc-view')
 export class W3mConnectingWcView extends LitElement {
   // -- Members ------------------------------------------- //

@@ -16,6 +16,9 @@ import {
 import { customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
+import '../../partials/w3m-swap-details/index.js'
+import '../../partials/w3m-swap-input-skeleton/index.js'
+import '../../partials/w3m-swap-input/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-swap-view')

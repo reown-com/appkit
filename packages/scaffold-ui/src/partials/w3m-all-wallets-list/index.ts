@@ -7,6 +7,7 @@ import { ApiController, ConnectorController, RouterController } from '@reown/app
 import { customElement } from '@reown/appkit-ui'
 
 import { WalletUtil } from '../../utils/WalletUtil.js'
+import '../w3m-all-wallets-list-item/index.js'
 import styles from './styles.js'
 
 // -- Helpers --------------------------------------------- //

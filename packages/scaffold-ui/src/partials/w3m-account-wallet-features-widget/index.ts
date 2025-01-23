@@ -18,6 +18,11 @@ import { customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import '../w3m-account-activity-widget/index.js'
+import '../w3m-account-nfts-widget/index.js'
+import '../w3m-account-tokens-widget/index.js'
+import '../w3m-tooltip-trigger/index.js'
+import '../w3m-tooltip/index.js'
 import styles from './styles.js'
 
 const TABS = 3

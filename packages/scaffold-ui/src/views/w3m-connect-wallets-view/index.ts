@@ -5,6 +5,9 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import { OptionsController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
+import '../../partials/w3m-legal-checkbox/index.js'
+import '../../partials/w3m-legal-footer/index.js'
+import '../../partials/w3m-wallet-login-list/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-connect-wallets-view')

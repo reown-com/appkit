@@ -3,6 +3,8 @@ import { LitElement, html } from 'lit'
 import { CoreHelperUtil } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
+import '../../partials/w3m-help-widget/index.js'
+
 const data = [
   {
     images: ['network', 'layers', 'system'],

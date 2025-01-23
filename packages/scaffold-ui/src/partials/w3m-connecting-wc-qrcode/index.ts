@@ -10,6 +10,7 @@ import {
 import { customElement } from '@reown/appkit-ui'
 
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
+import '../w3m-mobile-download-links/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-connecting-wc-qrcode')

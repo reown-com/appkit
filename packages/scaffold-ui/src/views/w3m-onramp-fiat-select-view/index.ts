@@ -11,6 +11,8 @@ import {
 import type { PaymentCurrency } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
+import '../../partials/w3m-legal-checkbox/index.js'
+import '../../partials/w3m-legal-footer/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-onramp-fiat-select-view')

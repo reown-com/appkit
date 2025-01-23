@@ -3,6 +3,8 @@ import { LitElement, html } from 'lit'
 import { EventsController, RouterController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
+import '../../partials/w3m-help-widget/index.js'
+
 const data = [
   {
     images: ['login', 'profile', 'lock'],

@@ -12,6 +12,7 @@ import {
 } from '@reown/appkit-core'
 import { TransactionUtil, customElement } from '@reown/appkit-ui'
 
+import '../../partials/w3m-onramp-activity-item/index.js'
 import styles from './styles.js'
 
 // -- Helpers --------------------------------------------- //

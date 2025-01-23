@@ -4,6 +4,7 @@ import { state } from 'lit/decorators.js'
 import { ChainController, RouterController, SendController } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 
+import '../../partials/w3m-wallet-send-details/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-wallet-send-preview-view')

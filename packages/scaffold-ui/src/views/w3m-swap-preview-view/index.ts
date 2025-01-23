@@ -9,6 +9,7 @@ import {
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 
+import '../../partials/w3m-swap-details/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-swap-preview-view')

@@ -21,6 +21,7 @@ import {
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
+import '../w3m-account-auth-button/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-account-default-widget')

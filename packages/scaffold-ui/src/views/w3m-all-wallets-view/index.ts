@@ -10,6 +10,9 @@ import {
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
+import '../../partials/w3m-all-wallets-list/index.js'
+import '../../partials/w3m-all-wallets-search/index.js'
+
 @customElement('w3m-all-wallets-view')
 export class W3mAllWalletsView extends LitElement {
   // -- State & Properties -------------------------------- //

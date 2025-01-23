@@ -21,6 +21,8 @@ import {
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
+import '../../partials/w3m-account-auth-button/index.js'
+
 @customElement('w3m-account-settings-view')
 export class W3mAccountSettingsView extends LitElement {
   // -- Members -------------------------------------------- //

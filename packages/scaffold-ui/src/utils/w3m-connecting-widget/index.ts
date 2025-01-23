@@ -12,6 +12,7 @@ import {
 } from '@reown/appkit-core'
 import type { IconType } from '@reown/appkit-ui'
 
+import '../../partials/w3m-mobile-download-links/index.js'
 import styles from './styles.js'
 
 export class W3mConnectingWidget extends LitElement {

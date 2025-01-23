@@ -5,6 +5,8 @@ import { NumberUtil } from '@reown/appkit-common'
 import { ChainController, ConstantsUtil, SwapController } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 
+import '../w3m-tooltip-trigger/index.js'
+import '../w3m-tooltip/index.js'
 import styles from './styles.js'
 
 // -- Constants ----------------------------------------- //
