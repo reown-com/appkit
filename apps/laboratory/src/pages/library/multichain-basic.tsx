@@ -19,7 +19,7 @@ const polkadot = defineChain({
   caipNetworkId: 'polkadot:mainnet'
 })
 
-const networks = [...ConstantsUtil.AllNetworks, polkadot]
+const networks = [...ConstantsUtil.EvmNetworks, polkadot]
 
 const modal = createAppKit({
   networks: networks as [AppKitNetwork, ...AppKitNetwork[]],

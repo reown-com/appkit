@@ -11,7 +11,7 @@ import { UpaTests } from '../../components/UPA/UpaTests'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { ThemeStore } from '../../utils/StoreUtil'
 
-const networks = ConstantsUtil.EvmNetworks
+const networks = [...ConstantsUtil.AllNetworks, ...ConstantsUtil.BitcoinNetworks]
 
 export default function MultiChainWagmiAdapterOnly() {
   const [uprovider, setUprovider] = useState<Provider | null>(null)
