@@ -90,6 +90,7 @@ function AvailableTestContent() {
       },
       onError: (error) => {
         setLoading(false)
+        // eslint-disable-next-line no-console
         console.error(error)
         toast({
           title: 'SendCalls Error',
