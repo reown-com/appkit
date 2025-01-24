@@ -7,20 +7,19 @@ import { UpaTests } from '../../components/UPA/UpaTests'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { ThemeStore } from '../../utils/StoreUtil'
 
-const networks = [
-  ...ConstantsUtil.AllNetworks,
-  defineChain({
-    id: '91b171bb158e2d3848fa23a9f1c25182',
-    name: 'Polkadot',
-    network: 'polkadot',
-    nativeCurrency: { name: 'Polkadot', symbol: 'DOT', decimals: 18 },
-    rpcUrls: {
-      default: { http: ['https://rpc.polkadot.io'] }
-    },
-    chainNamespace: 'polkadot',
-    caipNetworkId: 'polkadot:mainnet'
-  })
-]
+const polkadot = defineChain({
+  id: '91b171bb158e2d3848fa23a9f1c25182',
+  name: 'Polkadot',
+  network: 'polkadot',
+  nativeCurrency: { name: 'Polkadot', symbol: 'DOT', decimals: 18 },
+  rpcUrls: {
+    default: { http: ['https://rpc.polkadot.io'] }
+  },
+  chainNamespace: 'polkadot',
+  caipNetworkId: 'polkadot:mainnet'
+})
+
+const networks = [...ConstantsUtil.AllNetworks, polkadot]
 
 const modal = createAppKit({
   networks: networks as [AppKitNetwork, ...AppKitNetwork[]],

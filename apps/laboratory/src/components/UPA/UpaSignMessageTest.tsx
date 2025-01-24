@@ -2,16 +2,34 @@ import * as React from 'react'
 
 import { Button } from '@chakra-ui/react'
 import Provider from '@walletconnect/universal-provider'
+import base58 from 'bs58'
 
-import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'
 
-export function UpaEvmSignMessageTest() {
+export function UpaSignMessageTest() {
   const toast = useChakraToast()
   const { isConnected, address } = useAppKitAccount()
-  const { walletProvider } = useAppKitProvider<Provider>('eip155')
+  const { walletProvider } = useAppKitProvider<Provider>('solana')
+  const { caipNetwork } = useAppKitNetwork()
+
+  function payloadByNamespace(namespace: string) {
+    return {
+      solana: {
+        method: 'solana_signMessage',
+        params: {
+          message: base58.encode(new TextEncoder().encode('Hello Appkit!')),
+          pubkey: address
+        }
+      },
+      eip155: {
+        method: 'personal_sign',
+        params: [address, 'Hello AppKit!']
+      }
+    }[namespace]
+  }
 
   async function onSignMessage() {
     try {
@@ -19,10 +37,13 @@ export function UpaEvmSignMessageTest() {
         throw Error('user is disconnected')
       }
 
-      await walletProvider.request({
-        method: 'eth_sign',
-        params: [address, 'Hello AppKit!']
-      })
+      const payload = payloadByNamespace(caipNetwork?.chainNamespace)
+
+      if (!payload) {
+        throw Error('Chain not supported by laboratory')
+      }
+
+      await walletProvider.request(payload, caipNetwork?.caipNetworkId)
 
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
