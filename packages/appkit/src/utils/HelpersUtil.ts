@@ -54,7 +54,7 @@ export const WcHelpersUtil = {
 
       if (!acc[chainNamespace]) {
         acc[chainNamespace] = {
-          optionalMethods: methods,
+          methods,
           events: ['accountsChanged', 'chainChanged'],
           chains: [],
           rpcMap: {}
