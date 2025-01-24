@@ -12,8 +12,8 @@ import { useChakraToast } from '../Toast'
 export function UpaSignMessageTest() {
   const toast = useChakraToast()
   const { isConnected, address } = useAppKitAccount()
-  const { walletProvider } = useAppKitProvider<Provider>('solana')
   const { caipNetwork } = useAppKitNetwork()
+  const { walletProvider } = useAppKitProvider<Provider>(caipNetwork.chainNamespace)
 
   function payloadByNamespace(namespace: string) {
     return {
@@ -51,6 +51,7 @@ export function UpaSignMessageTest() {
         type: 'success'
       })
     } catch (error) {
+      console.log('>>> Error signing message  ', error)
       toast({
         title: ConstantsUtil.SigningFailedToastTitle,
         description: 'Failed to sign message',
