@@ -22,7 +22,8 @@ export function UpaSignMessageTest() {
   const { walletProvider } = useAppKitProvider<Provider>(caipNetwork.chainNamespace)
 
   async function getPayload() {
-    const map: Record<string, { method: string; params: unknown }> = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const map: Record<string, { method: string; params: any }> = {
       solana: {
         method: 'solana_signMessage',
         params: {
