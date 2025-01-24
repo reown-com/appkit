@@ -7,8 +7,7 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@wagmi/connectors": "5.1.15",
-    "@wagmi/core": "2.13.8",
+    "wagmi": "2.14.9",
     "viem": "2.21.26",
     "react": "18.3.1",
     "react-dom": "18.3.1"

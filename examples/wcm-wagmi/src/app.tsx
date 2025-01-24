@@ -1,9 +1,9 @@
-import { ConnectWalletConnect } from './components/connect-wallet-connect'
+import { Connectors } from './components/Connectors'
 
 export default function App() {
   return (
     <main>
-      <ConnectWalletConnect />
+      <Connectors />
     </main>
   )
 }
