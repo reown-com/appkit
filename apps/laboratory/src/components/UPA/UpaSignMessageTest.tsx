@@ -113,7 +113,6 @@ export function UpaSignMessageTest() {
         type: 'success'
       })
     } catch (error) {
-      console.log('>>> Error signing message  ', error)
       toast({
         title: ConstantsUtil.SigningFailedToastTitle,
         description: 'Failed to sign message',

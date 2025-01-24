@@ -44,8 +44,6 @@ export const WcHelpersUtil = {
   },
 
   createNamespaces(caipNetworks: CaipNetwork[]): NamespaceConfig {
-    console.log('>> Creating namespaces', caipNetworks)
-
     return caipNetworks.reduce<NamespaceConfig>((acc, chain) => {
       const { id, chainNamespace, rpcUrls } = chain
       const rpcUrl = rpcUrls.default.http[0]
