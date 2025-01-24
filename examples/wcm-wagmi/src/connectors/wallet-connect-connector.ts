@@ -1,9 +1,10 @@
+import { mainnet, sepolia } from 'viem/chains'
 import { createConnector } from 'wagmi'
 import { type WalletConnectParameters, walletConnect } from 'wagmi/connectors'
 
 import { constants } from '../constants'
 
-export const WC_PARAMS: WalletConnectParameters = {
+export const WC_PARAMS: WalletConnectParameters & { chains: any[] } = {
   projectId: constants.PROJECT_ID,
   metadata: {
     name: 'Cool DApp',
@@ -17,7 +18,9 @@ export const WC_PARAMS: WalletConnectParameters = {
       '--wcm-z-index': '1000'
     }
   },
-  showQrModal: true
+  showQrModal: true,
+  logger: 'debug',
+  chains: [mainnet.id, sepolia.id]
 }
 
 export const customWalletConnectConnector = createConnector(config => {
