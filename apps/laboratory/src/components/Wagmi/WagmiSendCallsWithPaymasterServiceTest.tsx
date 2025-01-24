@@ -88,8 +88,9 @@ function AvailableTestContent() {
           type: 'success'
         })
       },
-      onError: () => {
+      onError: (error) => {
         setLoading(false)
+        console.error(error)
         toast({
           title: 'SendCalls Error',
           description: 'Failed to send calls',
