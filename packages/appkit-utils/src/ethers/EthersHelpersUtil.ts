@@ -1,4 +1,5 @@
 import type { CaipNetwork } from '@reown/appkit-common'
+
 import { PresetsUtil } from '../PresetsUtil.js'
 import type { Provider } from './EthersTypesUtil.js'
 

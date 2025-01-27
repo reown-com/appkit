@@ -1,9 +1,16 @@
-import { createWalletClient, EIP1193Parameters, EIP1193Provider, fromHex, http, toHex } from 'viem'
-import { ChainId, wagmiConfig } from './wagmi'
-import { AccountUtil } from '../utils/AccountUtil'
+import { getPublicClient } from '@wagmi/core'
+import { EIP1193Parameters, EIP1193Provider, createWalletClient, fromHex, http, toHex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { sepolia } from 'viem/chains'
-import { getPublicClient } from '@wagmi/core'
+
+import { AccountUtil } from '../utils/AccountUtil'
+import { ChainId, wagmiConfig } from './wagmi'
+
+// -- Constants -----------------------------------------------------------------
+const LOCAL_STORAGE_KEYS = {
+  HAS_CONNECTED: '@appkit/extension_connected',
+  CHAIN_ID: '@appkit/extension_chain_id'
+}
 
 export function createReownTransport() {
   return {
@@ -21,8 +28,8 @@ export function createReownTransport() {
         transport: http()
       })
 
-      const chainId = (localStorage.getItem('chainId') as ChainId | null) ?? '1'
-      const hasConnected = localStorage.getItem('hasConnected')
+      const chainId = (localStorage.getItem(LOCAL_STORAGE_KEYS.CHAIN_ID) as ChainId | null) ?? '1'
+      const hasConnected = localStorage.getItem(LOCAL_STORAGE_KEYS.HAS_CONNECTED)
 
       const publicClient = getPublicClient(wagmiConfig, { chainId: chainId as ChainId })
 
@@ -46,7 +53,7 @@ export function createReownTransport() {
           return publicClient.call(params[0])
 
         case 'eth_requestAccounts':
-          localStorage.setItem('hasConnected', 'true')
+          localStorage.setItem(LOCAL_STORAGE_KEYS.HAS_CONNECTED, 'true')
 
           return [address]
 
@@ -54,7 +61,10 @@ export function createReownTransport() {
           return hasConnected ? [address] : []
 
         case 'wallet_switchEthereumChain':
-          localStorage.setItem('chainId', fromHex(params[0].chainId, 'number').toString())
+          localStorage.setItem(
+            LOCAL_STORAGE_KEYS.CHAIN_ID,
+            fromHex(params[0].chainId, 'number').toString()
+          )
 
           return null
 

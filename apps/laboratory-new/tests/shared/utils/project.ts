@@ -1,4 +1,5 @@
 import { devices } from '@playwright/test'
+
 import { DESKTOP_DEVICES, MOBILE_DEVICES } from '../constants/devices'
 
 const LIBRARIES = ['ethers', 'ethers5', 'wagmi', 'solana'] as const

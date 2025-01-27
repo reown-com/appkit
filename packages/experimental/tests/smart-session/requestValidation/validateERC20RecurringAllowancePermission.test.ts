@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { validateRequest } from '../../../src/smart-session/helper/index.js'
+
 import type { SmartSessionGrantPermissionsRequest } from '../../../exports/smart-session/index.js'
+import { validateRequest } from '../../../src/smart-session/helper/index.js'
 import { ERROR_MESSAGES } from '../../../src/smart-session/schema/index.js'
 import type { ERC20RecurringAllowancePermission } from '../../../src/smart-session/utils/TypeUtils.js'
 import { mockRequest } from './mockRequest.js'

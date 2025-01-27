@@ -1,10 +1,12 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import { AccountController, AssetUtil, ChainController, CoreHelperUtil } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { ifDefined } from 'lit/directives/if-defined.js'
-import styles from './styles.js'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
-import { state } from 'lit/decorators.js'
+
+import styles from './styles.js'
 
 @customElement('w3m-wallet-compatible-networks-view')
 export class W3mWalletCompatibleNetworksView extends LitElement {

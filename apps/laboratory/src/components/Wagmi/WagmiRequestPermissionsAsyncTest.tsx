@@ -1,24 +1,27 @@
+import { useCallback, useState } from 'react'
+
 import { Button, Stack, Text } from '@chakra-ui/react'
-import { useCallback, useMemo, useState } from 'react'
-import { useChakraToast } from '../Toast'
-import { toHex, type Address } from 'viem'
-import { useLocalEcdsaKey } from '../../context/LocalEcdsaKeyContext'
-import { bigIntReplacer } from '../../utils/CommonUtils'
-import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
-import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
-import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+import { type Address, toHex } from 'viem'
+
 import {
-  grantPermissions,
+  type SmartSessionGrantPermissionsRequest,
   createSubscription,
-  isSmartSessionSupported,
-  type SmartSessionGrantPermissionsRequest
+  grantPermissions,
+  isSmartSessionSupported
 } from '@reown/appkit-experimental/smart-session'
+import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+
+import { useLocalEcdsaKey } from '../../context/LocalEcdsaKeyContext'
+import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
+import { bigIntReplacer } from '../../utils/CommonUtils'
+import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
+import { useChakraToast } from '../Toast'
 
 export function WagmiRequestPermissionsAsyncTest() {
-  const { address, isConnected, status } = useAppKitAccount()
+  const { address, isConnected } = useAppKitAccount()
 
   const { chainId } = useAppKitNetwork()
-  const isSupported = useMemo(() => isSmartSessionSupported(), [status])
+  const isSupported = isSmartSessionSupported()
 
   if (!isConnected || !address || !chainId) {
     return (

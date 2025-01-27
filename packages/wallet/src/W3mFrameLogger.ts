@@ -1,10 +1,11 @@
 import {
+  type ChunkLoggerController,
+  type Logger,
   generateChildLogger,
   generatePlatformLogger,
-  getDefaultLoggerOptions,
-  type ChunkLoggerController,
-  type Logger
+  getDefaultLoggerOptions
 } from '@walletconnect/logger'
+
 import { DEFAULT_LOG_LEVEL } from './W3mFrameConstants.js'
 
 export class W3mFrameLogger {

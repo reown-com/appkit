@@ -1,6 +1,7 @@
 import * as React from 'react'
+
+import { CloseIcon, CopyIcon } from '@chakra-ui/icons'
 import { Box, Button, Text, useToast } from '@chakra-ui/react'
-import { CopyIcon, CloseIcon } from '@chakra-ui/icons'
 
 type CustomToastProps = {
   allowCopy?: boolean

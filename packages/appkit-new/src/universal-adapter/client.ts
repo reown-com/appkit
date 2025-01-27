@@ -1,9 +1,11 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
+import bs58 from 'bs58'
+
+import { ConstantsUtil } from '@reown/appkit-common'
+import { ChainController } from '@reown/appkit-core'
+
 import { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import { WcHelpersUtil } from '../utils/index.js'
-import { ChainController } from '@reown/appkit-core'
-import bs58 from 'bs58'
-import { ConstantsUtil } from '@reown/appkit-common'
 
 export class UniversalAdapter extends AdapterBlueprint {
   public async connectWalletConnect(onUri: (uri: string) => void) {

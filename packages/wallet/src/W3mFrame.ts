@@ -1,8 +1,9 @@
-import { SECURE_SITE_SDK, SECURE_SITE_SDK_VERSION, W3mFrameConstants } from './W3mFrameConstants.js'
-import { W3mFrameSchema } from './W3mFrameSchema.js'
-import { W3mFrameHelpers } from './W3mFrameHelpers.js'
-import type { W3mFrameTypes } from './W3mFrameTypes.js'
 import { ConstantsUtil } from '@reown/appkit-common'
+
+import { SECURE_SITE_SDK, SECURE_SITE_SDK_VERSION, W3mFrameConstants } from './W3mFrameConstants.js'
+import { W3mFrameHelpers } from './W3mFrameHelpers.js'
+import { W3mFrameSchema } from './W3mFrameSchema.js'
+import type { W3mFrameTypes } from './W3mFrameTypes.js'
 
 type EventKey = typeof W3mFrameConstants.APP_EVENT_KEY | typeof W3mFrameConstants.FRAME_EVENT_KEY
 

@@ -1,4 +1,7 @@
+import { SIWXUtil } from '@reown/appkit-core'
+
 import { type SIWEControllerClient } from '../core/controller/SIWEController.js'
+import { ConstantsUtil } from '../core/utils/ConstantsUtil.js'
 import type {
   SIWEClientMethods,
   SIWEConfig,
@@ -8,8 +11,6 @@ import type {
   SIWEVerifyMessageArgs
 } from '../core/utils/TypeUtils.js'
 import { mapToSIWX } from '../src/mapToSIWX.js'
-import { SIWXUtil } from '@reown/appkit-core'
-import { ConstantsUtil } from '../core/utils/ConstantsUtil.js'
 
 // -- Client -------------------------------------------------------------------- //
 export class AppKitSIWEClient {

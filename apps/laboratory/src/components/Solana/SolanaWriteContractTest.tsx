@@ -1,20 +1,22 @@
 import React, { useState } from 'react'
+
 import { Button } from '@chakra-ui/react'
 import {
-  SystemProgram,
-  PublicKey,
   Keypair,
-  TransactionInstruction,
   LAMPORTS_PER_SOL,
-  VersionedTransaction,
-  TransactionMessage
+  PublicKey,
+  SystemProgram,
+  TransactionInstruction,
+  TransactionMessage,
+  VersionedTransaction
 } from '@solana/web3.js'
+
+import { type Provider, useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 import { useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 
 import { COUNTER_ACCOUNT_SIZE } from '../../utils/SolanaConstants'
 import { deserializeCounterAccount, detectProgramId } from '../../utils/SolanaUtil'
 import { useChakraToast } from '../Toast'
-import { useAppKitConnection, type Provider } from '@reown/appkit-adapter-solana/react'
 
 export function SolanaWriteContractTest() {
   const toast = useChakraToast()

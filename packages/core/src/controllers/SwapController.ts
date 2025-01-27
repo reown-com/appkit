@@ -1,23 +1,25 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
-import { AccountController } from './AccountController.js'
-import { ConstantsUtil } from '../utils/ConstantsUtil.js'
-import { ConnectionController } from './ConnectionController.js'
-import { SwapApiUtil } from '../utils/SwapApiUtil.js'
-import { SnackController } from './SnackController.js'
-import { RouterController } from './RouterController.js'
-import { NumberUtil, type ChainNamespace } from '@reown/appkit-common'
-import type { SwapTokenWithBalance } from '../utils/TypeUtil.js'
-import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { BlockchainApiController } from './BlockchainApiController.js'
-import { OptionsController } from './OptionsController.js'
-import { SwapCalculationUtil } from '../utils/SwapCalculationUtil.js'
-import { EventsController } from './EventsController.js'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
-import { StorageUtil } from '../utils/StorageUtil.js'
-import { ChainController } from './ChainController.js'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
+
+import { type ChainNamespace, NumberUtil } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { StorageUtil } from '../utils/StorageUtil.js'
+import { SwapApiUtil } from '../utils/SwapApiUtil.js'
+import { SwapCalculationUtil } from '../utils/SwapCalculationUtil.js'
+import type { SwapTokenWithBalance } from '../utils/TypeUtil.js'
+import { AccountController } from './AccountController.js'
 import { AlertController } from './AlertController.js'
+import { BlockchainApiController } from './BlockchainApiController.js'
+import { ChainController } from './ChainController.js'
+import { ConnectionController } from './ConnectionController.js'
+import { EventsController } from './EventsController.js'
+import { OptionsController } from './OptionsController.js'
+import { RouterController } from './RouterController.js'
+import { SnackController } from './SnackController.js'
 
 // -- Constants ---------------------------------------- //
 export const INITIAL_GAS_LIMIT = 150000
@@ -387,7 +389,7 @@ export const SwapController = {
       projectId: OptionsController.state.projectId,
       addresses: [address]
     })
-    const fungibles = response.fungibles || []
+    const fungibles = response?.fungibles || []
     const allTokens = [...(state.tokens || []), ...(state.myTokensWithBalance || [])]
     const symbol = allTokens?.find(token => token.address === address)?.symbol
     const price = fungibles.find(p => p.symbol.toLowerCase() === symbol?.toLowerCase())?.price || 0

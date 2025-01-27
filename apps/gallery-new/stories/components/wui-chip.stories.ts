@@ -1,7 +1,10 @@
 import type { Meta } from '@storybook/web-components'
+
+import { html } from 'lit'
+
 import '@reown/appkit-ui-new/src/composites/wui-chip'
 import type { WuiChip } from '@reown/appkit-ui-new/src/composites/wui-chip'
-import { html } from 'lit'
+
 import {
   chipVariants,
   externalLink,

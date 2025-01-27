@@ -1,4 +1,5 @@
 import { vi } from 'vitest'
+
 import type { AdapterBlueprint } from '../../src/adapters/ChainAdapterBlueprint.js'
 
 export const mockUniversalAdapter = {
@@ -10,7 +11,7 @@ export const mockUniversalAdapter = {
   disconnect: vi.fn(),
   syncConnectors: vi.fn(),
   getWalletConnectProvider: vi.fn(),
-  getBalance: vi.fn(),
+  getBalance: vi.fn().mockResolvedValue({ balance: '0', symbol: 'ETH' }),
   getProfile: vi.fn(),
   signMessage: vi.fn(),
   sendTransaction: vi.fn(),

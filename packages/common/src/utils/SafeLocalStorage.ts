@@ -76,6 +76,6 @@ export const SafeLocalStorage = {
   }
 }
 
-function isSafe(): boolean {
+export function isSafe(): boolean {
   return typeof window !== 'undefined' && typeof localStorage !== 'undefined'
 }

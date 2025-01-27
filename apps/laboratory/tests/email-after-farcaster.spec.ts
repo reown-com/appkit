@@ -1,10 +1,12 @@
-import { expect, test, type BrowserContext, type Page } from '@playwright/test'
-import { ModalWalletPage } from './shared/pages/ModalWalletPage'
-import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
-import { Email } from './shared/utils/email'
-import { SECURE_WEBSITE_URL } from './shared/constants'
-import { mainnet, polygon, solana, solanaTestnet } from '@reown/appkit/networks'
+import { type BrowserContext, type Page, expect, test } from '@playwright/test'
+
 import type { CaipNetworkId } from '@reown/appkit'
+import { mainnet, polygon, solana, solanaTestnet } from '@reown/appkit/networks'
+
+import { SECURE_WEBSITE_URL } from './shared/constants'
+import { ModalWalletPage } from './shared/pages/ModalWalletPage'
+import { Email } from './shared/utils/email'
+import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 
 /* eslint-disable init-declarations */
 let page: ModalWalletPage

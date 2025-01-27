@@ -1,10 +1,11 @@
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
+import { OptionsController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'
-import { state } from 'lit/decorators.js'
-import { OptionsController } from '@reown/appkit-core'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connect-wallets-view')
 export class W3mConnectWalletsView extends LitElement {

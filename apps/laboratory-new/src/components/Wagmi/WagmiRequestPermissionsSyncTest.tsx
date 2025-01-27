@@ -1,18 +1,21 @@
-import { Button, Stack, Text } from '@chakra-ui/react'
 import { useCallback, useMemo, useState } from 'react'
-import { useChakraToast } from '../Toast'
-import { toHex, type Address } from 'viem'
+
+import { Button, Stack, Text } from '@chakra-ui/react'
+import { type Address, toHex } from 'viem'
+import { type P256Credential, serializePublicKey } from 'webauthn-p256'
+
+import {
+  type SmartSessionGrantPermissionsRequest,
+  grantPermissions,
+  isSmartSessionSupported
+} from '@reown/appkit-experimental/smart-session'
+import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit-new/react'
+
 import { usePasskey } from '../../context/PasskeyContext'
 import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
 import { bigIntReplacer } from '../../utils/CommonUtils'
 import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
-import { serializePublicKey, type P256Credential } from 'webauthn-p256'
-import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit-new/react'
-import {
-  grantPermissions,
-  isSmartSessionSupported,
-  type SmartSessionGrantPermissionsRequest
-} from '@reown/appkit-experimental/smart-session'
+import { useChakraToast } from '../Toast'
 
 export function WagmiRequestPermissionsSyncTest() {
   const { address, isConnected, status } = useAppKitAccount()

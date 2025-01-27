@@ -59,7 +59,8 @@ module.exports = {
       })
     },
     new Dotenv({
-      path: './.env.local'
+      path: './.env',
+      systemvars: true
     }),
     new HtmlWebpackPlugin({
       chunks: ['main'],

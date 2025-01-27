@@ -1,6 +1,8 @@
-import { createElement, forwardRef, type AllHTMLAttributes, type ElementType } from 'react'
+import { type AllHTMLAttributes, type ElementType, createElement, forwardRef } from 'react'
+
 import clsx, { type ClassValue } from 'clsx'
-import { atoms, type Atoms } from '../../css/atoms'
+
+import { type Atoms, atoms } from '../../css/atoms'
 import { sprinkles } from '../../css/sprinkless.css'
 
 type HTMLProperties = Omit<AllHTMLAttributes<HTMLElement>, 'as' | 'className'>

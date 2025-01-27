@@ -1,29 +1,31 @@
-import { proxyMap, subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
+import { proxyMap, subscribeKey as subKey } from 'valtio/vanilla/utils'
+
+import {
+  type CaipAddress,
+  type CaipNetwork,
+  type CaipNetworkId,
+  type ChainNamespace,
+  ConstantsUtil as CommonConstantsUtil,
+  NetworkUtil
+} from '@reown/appkit-common'
+
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
+import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   AdapterAccountState,
   AdapterNetworkState,
   ChainAdapter,
   NetworkControllerClient
 } from '../utils/TypeUtil.js'
-
 import { AccountController, type AccountControllerState } from './AccountController.js'
-import { PublicStateController } from './PublicStateController.js'
-import {
-  NetworkUtil,
-  type CaipAddress,
-  type CaipNetwork,
-  type CaipNetworkId,
-  type ChainNamespace
-} from '@reown/appkit-common'
-import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { ConstantsUtil } from '../utils/ConstantsUtil.js'
-import { ModalController } from './ModalController.js'
-import { EventsController } from './EventsController.js'
-import { RouterController } from './RouterController.js'
-import { StorageUtil } from '../utils/StorageUtil.js'
-import { OptionsController } from './OptionsController.js'
 import { ConnectionController, type ConnectionControllerClient } from './ConnectionController.js'
+import { EventsController } from './EventsController.js'
+import { ModalController } from './ModalController.js'
+import { OptionsController } from './OptionsController.js'
+import { PublicStateController } from './PublicStateController.js'
+import { RouterController } from './RouterController.js'
 
 // -- Constants ----------------------------------------- //
 const accountState: AccountControllerState = {
@@ -51,6 +53,7 @@ export interface ChainControllerState {
   chains: Map<ChainNamespace, ChainAdapter>
   universalAdapter: Pick<ChainAdapter, 'networkControllerClient' | 'connectionControllerClient'>
   noAdapters: boolean
+  isSwitchingNamespace: boolean
 }
 
 type ChainControllerStateKey = keyof ChainControllerState
@@ -65,7 +68,8 @@ const state = proxy<ChainControllerState>({
   universalAdapter: {
     networkControllerClient: undefined,
     connectionControllerClient: undefined
-  }
+  },
+  isSwitchingNamespace: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -150,6 +154,17 @@ export const ChainController = {
   },
 
   removeAdapter(namespace: ChainNamespace) {
+    if (state.activeChain === namespace) {
+      const nextAdapter = Array.from(state.chains.entries()).find(
+        ([chainNamespace]) => chainNamespace !== namespace
+      )
+      if (nextAdapter) {
+        const caipNetwork = nextAdapter[1]?.caipNetworks?.[0]
+        if (caipNetwork) {
+          this.setActiveCaipNetwork(caipNetwork)
+        }
+      }
+    }
     state.chains.delete(namespace)
   },
 
@@ -248,6 +263,10 @@ export const ChainController = {
       return
     }
 
+    if (state.activeChain !== caipNetwork.chainNamespace) {
+      this.setIsSwitchingNamespace(true)
+    }
+
     const newAdapter = state.chains.get(caipNetwork.chainNamespace)
     state.activeChain = caipNetwork.chainNamespace
     state.activeCaipNetwork = caipNetwork
@@ -294,19 +313,15 @@ export const ChainController = {
     const unsupportedNetwork = !activeAdapter?.caipNetworks?.some(
       caipNetwork => caipNetwork.id === state.activeCaipNetwork?.id
     )
-    const networkControllerClient = this.getNetworkControllerClient(network.chainNamespace)
-
-    if (networkControllerClient) {
-      await networkControllerClient.switchCaipNetwork(network)
-    }
 
     if (unsupportedNetwork) {
       RouterController.goBack()
     }
 
-    this.setActiveCaipNetwork(network)
+    const networkControllerClient = this.getNetworkControllerClient(network.chainNamespace)
 
-    if (network) {
+    if (networkControllerClient) {
+      await networkControllerClient.switchCaipNetwork(network)
       EventsController.sendEvent({
         type: 'track',
         event: 'SWITCH_NETWORK',
@@ -496,9 +511,7 @@ export const ChainController = {
   },
 
   showUnsupportedChainUI() {
-    setTimeout(() => {
-      ModalController.open({ view: 'UnsupportedChain' })
-    }, 300)
+    ModalController.open({ view: 'UnsupportedChain' })
   },
 
   checkIfNamesSupported(): boolean {
@@ -594,5 +607,33 @@ export const ChainController = {
         }
       })
     }
+  },
+
+  setIsSwitchingNamespace(isSwitchingNamespace: boolean) {
+    state.isSwitchingNamespace = isSwitchingNamespace
+  },
+
+  getFirstCaipNetworkSupportsAuthConnector() {
+    const availableChains: ChainNamespace[] = []
+    let firstCaipNetwork: CaipNetwork | undefined = undefined
+
+    state.chains.forEach(chain => {
+      if (CommonConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.find(ns => ns === chain.namespace)) {
+        if (chain.namespace) {
+          availableChains.push(chain.namespace)
+        }
+      }
+    })
+
+    if (availableChains.length > 0) {
+      const firstAvailableChain = availableChains[0]
+      firstCaipNetwork = firstAvailableChain
+        ? state.chains.get(firstAvailableChain)?.caipNetworks?.[0]
+        : undefined
+
+      return firstCaipNetwork
+    }
+
+    return undefined
   }
 }

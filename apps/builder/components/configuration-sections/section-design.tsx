@@ -1,15 +1,18 @@
 'use client'
 
 import * as React from 'react'
+
+import Image from 'next/image'
+import { useSnapshot } from 'valtio'
+
+import { ThemeMode } from '@reown/appkit/react'
+
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { useAppKitContext } from '@/hooks/use-appkit'
-import { ThemeMode } from '@reown/appkit/react'
-import { cn } from '@/lib/utils'
-import { useSnapshot } from 'valtio'
+import { ACCENT_COLORS, BG_COLORS, FONT_OPTIONS, RADIUS_NAME_VALUE_MAP } from '@/lib/constants'
 import { ThemeStore } from '@/lib/theme-store'
-import Image from 'next/image'
-import { ACCENT_COLORS, BG_COLORS, RADIUS_NAME_VALUE_MAP, FONT_OPTIONS } from '@/lib/constants'
+import { cn } from '@/lib/utils'
 
 export function SectionDesign() {
   const { config, updateThemeMode } = useAppKitContext()
