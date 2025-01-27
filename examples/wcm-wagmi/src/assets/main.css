@@ -64,3 +64,33 @@ main {
   padding: 1rem;
   background-color: var(--apkt-foreground-accent-primary-010);
 }
+
+.list__connectors {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.wrapper__wc_qr_code {
+  position: fixed;
+  inset: 0;
+  background-color: var(--apkt-foreground-accent-primary-010);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  z-index: 1000;
+}
+
+.container__wc_qr_code {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  max-width: 20vw;
+}

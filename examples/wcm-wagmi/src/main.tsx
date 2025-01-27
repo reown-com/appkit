@@ -7,7 +7,10 @@ import { mainnet, sepolia } from 'wagmi/chains'
 
 import App from './app.jsx'
 import './assets/main.css'
-import { customWalletConnectConnector } from './connectors/wallet-connect-connector.js'
+import {
+  customWalletConnectConnector,
+  defaultWalletConnectConnector
+} from './connectors/wallet-connect-connector.js'
 
 const config = createConfig({
   chains: [mainnet, sepolia],
@@ -15,7 +18,7 @@ const config = createConfig({
     [mainnet.id]: http(),
     [sepolia.id]: http()
   },
-  connectors: [customWalletConnectConnector]
+  connectors: [defaultWalletConnectConnector, customWalletConnectConnector]
 })
 
 const queryClient = new QueryClient()

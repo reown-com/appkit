@@ -10,7 +10,7 @@ export const WC_PARAMS: WalletConnectParameters & { chains: any[] } = {
     name: 'Cool DApp',
     description: 'An super cool dapp',
     url: 'https://reown.com',
-    icons: ['https://app.uniswap.org/favicon.png']
+    icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
   },
   qrModalOptions: {
     themeVariables: {
@@ -27,14 +27,15 @@ export const WC_PARAMS: WalletConnectParameters & { chains: any[] } = {
 }
 
 export const customWalletConnectConnector = createConnector(config => {
-  const connector = walletConnect(WC_PARAMS)(config)
+  // In case `showQRModal` is set to false, you don't need to install `@reown/appkit` package, but it will require to handle the `display_uri` event
+  const connector = walletConnect({ ...WC_PARAMS, showQrModal: false })(config)
 
-  config.emitter.on('message', ({ type, data }) => {
-    if (type === 'display_uri') {
-      // This is how you can customize handling the display_uri event
-      console.log('display_uri', data)
-    }
-  })
-
-  return connector
+  return {
+    ...connector,
+    id: 'custom-wallet-connect',
+    name: 'Custom Wallet Connect'
+  }
 })
+
+// This connector is going to require `@reown/appkit` package to work correctly
+export const defaultWalletConnectConnector = walletConnect(WC_PARAMS)
