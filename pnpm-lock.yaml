@@ -558,6 +558,19 @@ importers:
         specifier: 16.3.1
         version: 16.3.1
 
+  examples/html-bitcoin:
+    dependencies:
+      '@reown/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
+      '@reown/appkit-adapter-bitcoin':
+        specifier: workspace:*
+        version: link:../../packages/adapters/bitcoin
+    devDependencies:
+      vite:
+        specifier: 5.2.11
+        version: 5.2.11(@types/node@20.11.5)(lightningcss@1.29.1)(terser@5.37.0)
+
   examples/html-ethers:
     dependencies:
       '@reown/appkit':
@@ -569,6 +582,19 @@ importers:
       ethers:
         specifier: 6.13.2
         version: 6.13.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+    devDependencies:
+      vite:
+        specifier: 5.2.11
+        version: 5.2.11(@types/node@20.11.5)(lightningcss@1.29.1)(terser@5.37.0)
+
+  examples/html-solana:
+    dependencies:
+      '@reown/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
+      '@reown/appkit-adapter-solana':
+        specifier: workspace:*
+        version: link:../../packages/adapters/solana
     devDependencies:
       vite:
         specifier: 5.2.11
