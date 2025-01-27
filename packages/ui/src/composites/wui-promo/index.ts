@@ -16,7 +16,7 @@ export class WuiPromo extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return html`<button ontouchstart>
+    return html`<button>
       <wui-text variant="small-600" color="bg-100">${this.text}</wui-text>
       <wui-icon color="bg-100" size="xs" name="arrowRight"></wui-icon>
     </button>`
