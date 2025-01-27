@@ -104,6 +104,11 @@ export interface OpenOptions {
     | 'ApproveTransaction'
     | 'OnRampProviders'
     | 'ConnectingWalletConnectBasic'
+    | 'Swap'
+    | 'WhatIsAWallet'
+    | 'WhatIsANetwork'
+    | 'AllWallets'
+    | 'WalletSend'
   uri?: string
 }
 
@@ -761,10 +766,17 @@ export class AppKit {
     }
   }
 
+  private async initializeBlockchainApiController(options: AppKitOptions) {
+    await BlockchainApiController.getSupportedNetworks({
+      projectId: options.projectId
+    })
+  }
+
   private initControllers(options: AppKitOptionsWithSdk) {
     this.initializeOptionsController(options)
     this.initializeChainController(options)
     this.initializeThemeController(options)
+    this.initializeBlockchainApiController(options)
 
     if (options.excludeWalletIds) {
       ApiController.initializeExcludedWalletRdns({ ids: options.excludeWalletIds })
@@ -1613,7 +1625,11 @@ export class AppKit {
       return
     }
 
-    if (caipNetwork.testnet) {
+    const isApiBalanceSupported = CoreConstantsUtil.BALANCE_SUPPORTED_CHAINS.includes(
+      caipNetwork?.chainNamespace
+    )
+
+    if (caipNetwork.testnet || !isApiBalanceSupported) {
       await this.updateNativeBalance()
 
       return

@@ -106,12 +106,14 @@ describe('WagmiAdapter', () => {
 
     it('should set wagmi connectors', async () => {
       vi.spyOn(wagmiCore, 'watchConnectors').mockImplementation(vi.fn())
+      vi.spyOn(wagmiCore, 'watchConnectors')
 
       await adapter.syncConnectors(
         { networks: [mainnet], projectId: 'YOUR_PROJECT_ID' },
         mockAppKit
       )
 
+      expect(wagmiCore.watchConnectors).toHaveBeenCalledOnce()
       expect(adapter.connectors).toStrictEqual([
         {
           chain: 'eip155',
