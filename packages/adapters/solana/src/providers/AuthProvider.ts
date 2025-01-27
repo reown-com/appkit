@@ -18,7 +18,7 @@ import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 
 export class AuthProvider extends ProviderEventEmitter implements SolanaProvider {
   public readonly id = ConstantsUtil.CONNECTOR_ID.AUTH
-  public readonly name = ConstantsUtil.CONNECTOR_ID.AUTH
+  public readonly name = ConstantsUtil.CONNECTOR_NAMES.AUTH
   public readonly type = 'AUTH'
   public readonly chain = ConstantsUtil.CHAIN.SOLANA
   public readonly provider: W3mFrameProvider
