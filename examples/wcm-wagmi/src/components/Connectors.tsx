@@ -1,9 +1,18 @@
 import { useState } from 'react'
 
-import { type Connector, useConnectors } from 'wagmi'
+import { type Connector, useAccount, useConnectors } from 'wagmi'
 
 export function Connectors() {
   const connectors = useConnectors()
+  const account = useAccount()
+
+  if (account.isConnected) {
+    return null
+  }
+
+  if (account.isConnecting) {
+    return <div>Connecting...</div>
+  }
 
   return connectors.map(connector => <Connector key={connector.name} connector={connector} />)
 }
@@ -22,5 +31,9 @@ function Connector({ connector }: { connector: Connector }) {
     }
   }
 
-  return <button onClick={handleClick}>{isLoading ? 'Loading...' : connector.name}</button>
+  return (
+    <button onClick={handleClick} disabled={isLoading}>
+      {isLoading ? 'Loading...' : connector.name}
+    </button>
+  )
 }

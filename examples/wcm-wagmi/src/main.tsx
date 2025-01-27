@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider, createConfig, http } from 'wagmi'
 import { mainnet, sepolia } from 'wagmi/chains'
 
@@ -17,10 +18,14 @@ const config = createConfig({
   connectors: [customWalletConnectConnector]
 })
 
+const queryClient = new QueryClient()
+
 ReactDOM.createRoot(document.getElementById('app')!).render(
   <React.StrictMode>
     <WagmiProvider config={config}>
-      <App />
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
     </WagmiProvider>
   </React.StrictMode>
 )
