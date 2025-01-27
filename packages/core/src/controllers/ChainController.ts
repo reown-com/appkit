@@ -6,6 +6,7 @@ import {
   type CaipNetwork,
   type CaipNetworkId,
   type ChainNamespace,
+  ConstantsUtil as CommonConstantsUtil,
   NetworkUtil
 } from '@reown/appkit-common'
 
@@ -52,6 +53,7 @@ export interface ChainControllerState {
   chains: Map<ChainNamespace, ChainAdapter>
   universalAdapter: Pick<ChainAdapter, 'networkControllerClient' | 'connectionControllerClient'>
   noAdapters: boolean
+  isSwitchingNamespace: boolean
 }
 
 type ChainControllerStateKey = keyof ChainControllerState
@@ -66,7 +68,8 @@ const state = proxy<ChainControllerState>({
   universalAdapter: {
     networkControllerClient: undefined,
     connectionControllerClient: undefined
-  }
+  },
+  isSwitchingNamespace: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -151,6 +154,17 @@ export const ChainController = {
   },
 
   removeAdapter(namespace: ChainNamespace) {
+    if (state.activeChain === namespace) {
+      const nextAdapter = Array.from(state.chains.entries()).find(
+        ([chainNamespace]) => chainNamespace !== namespace
+      )
+      if (nextAdapter) {
+        const caipNetwork = nextAdapter[1]?.caipNetworks?.[0]
+        if (caipNetwork) {
+          this.setActiveCaipNetwork(caipNetwork)
+        }
+      }
+    }
     state.chains.delete(namespace)
   },
 
@@ -247,6 +261,10 @@ export const ChainController = {
   setActiveCaipNetwork(caipNetwork: AdapterNetworkState['caipNetwork']) {
     if (!caipNetwork) {
       return
+    }
+
+    if (state.activeChain !== caipNetwork.chainNamespace) {
+      this.setIsSwitchingNamespace(true)
     }
 
     const newAdapter = state.chains.get(caipNetwork.chainNamespace)
@@ -493,9 +511,7 @@ export const ChainController = {
   },
 
   showUnsupportedChainUI() {
-    setTimeout(() => {
-      ModalController.open({ view: 'UnsupportedChain' })
-    }, 300)
+    ModalController.open({ view: 'UnsupportedChain' })
   },
 
   checkIfNamesSupported(): boolean {
@@ -591,5 +607,33 @@ export const ChainController = {
         }
       })
     }
+  },
+
+  setIsSwitchingNamespace(isSwitchingNamespace: boolean) {
+    state.isSwitchingNamespace = isSwitchingNamespace
+  },
+
+  getFirstCaipNetworkSupportsAuthConnector() {
+    const availableChains: ChainNamespace[] = []
+    let firstCaipNetwork: CaipNetwork | undefined = undefined
+
+    state.chains.forEach(chain => {
+      if (CommonConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.find(ns => ns === chain.namespace)) {
+        if (chain.namespace) {
+          availableChains.push(chain.namespace)
+        }
+      }
+    })
+
+    if (availableChains.length > 0) {
+      const firstAvailableChain = availableChains[0]
+      firstCaipNetwork = firstAvailableChain
+        ? state.chains.get(firstAvailableChain)?.caipNetworks?.[0]
+        : undefined
+
+      return firstCaipNetwork
+    }
+
+    return undefined
   }
 }

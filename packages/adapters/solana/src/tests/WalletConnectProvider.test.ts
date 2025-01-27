@@ -25,7 +25,6 @@ describe('WalletConnectProvider specific tests', () => {
       chains: TestConstants.chains,
       getActiveChain
     })
-    walletConnectProvider.onUri = vi.fn()
   })
 
   it('should call connect', async () => {

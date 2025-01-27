@@ -13,6 +13,7 @@ body:
 
         IF A REPRODUCIBLE DEMO IS NOT PROVIDED, YOUR ISSUE WILL BE CLOSED.
         [Learn more about creating a minimal reproducible example](https://stackoverflow.com/help/mcve).
+        [Create a MRE from our examples using Stackblitz](https://github.com/reown-com/appkit-web-examples/).
     validations:
       required: true
   - type: textarea

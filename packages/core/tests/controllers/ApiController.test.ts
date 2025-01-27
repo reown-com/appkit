@@ -76,6 +76,7 @@ const networks = [
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
+  global.URL.createObjectURL = vi.fn((file: Blob) => `blob:${file}`)
   ChainController.initialize(
     [
       {
