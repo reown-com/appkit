@@ -18,8 +18,12 @@ export const WC_PARAMS: WalletConnectParameters & { chains: any[] } = {
       '--wcm-z-index': '1000'
     }
   },
-  showQrModal: true,
   logger: 'debug',
+
+  // To enable a custom QR Modal, set showQrModal to false
+  showQrModal: true,
+
+  // Appending chains was needed to force new Ethereum Provider to work correctly
   chains: [mainnet.id, sepolia.id]
 }
 

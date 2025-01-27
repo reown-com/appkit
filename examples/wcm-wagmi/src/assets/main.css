@@ -56,3 +56,11 @@ main {
   justify-content: center;
   align-items: center;
 }
+
+.container__account_data {
+  white-space: pre;
+  max-height: 30vh;
+  overflow: auto;
+  padding: 1rem;
+  background-color: var(--apkt-foreground-accent-primary-010);
+}

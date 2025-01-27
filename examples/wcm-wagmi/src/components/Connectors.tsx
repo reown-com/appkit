@@ -1,19 +1,26 @@
+import { useState } from 'react'
+
 import { type Connector, useConnectors } from 'wagmi'
 
 export function Connectors() {
   const connectors = useConnectors()
 
-  return connectors.map(connector => (
-    <button key={connector.id} onClick={createConnectorClickHandler(connector)}>
-      {connector.name}
-    </button>
-  ))
+  return connectors.map(connector => <Connector key={connector.name} connector={connector} />)
 }
 
-function createConnectorClickHandler(connector: Connector) {
-  if (connector['connected']) {
-    return () => connector.disconnect().then(() => (connector['connected'] = false))
-  } else {
-    return () => connector.connect().then(() => (connector['connected'] = true))
+function Connector({ connector }: { connector: Connector }) {
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleClick = async () => {
+    setIsLoading(true)
+    try {
+      await connector.connect()
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsLoading(false)
+    }
   }
+
+  return <button onClick={handleClick}>{isLoading ? 'Loading...' : connector.name}</button>
 }
