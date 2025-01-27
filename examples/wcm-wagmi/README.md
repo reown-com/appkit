@@ -57,7 +57,7 @@ To run the example locally:
 
 3. **Access the example in your browser**:
 
-   Navigate to [http://localhost:3000](http://localhost:3000).
+   Navigate to [http://localhost:3002](http://localhost:3002).
 
 ## Additional Resources
 
