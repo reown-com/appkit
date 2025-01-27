@@ -1,7 +1,8 @@
 import * as React from 'react'
 
-import { AppKitInfo } from '../AppKitInfo'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit-new/react'
+
+import { AppKitInfo } from '../AppKitInfo'
 
 export function SolanaModalInfo() {
   const { caipAddress, address, isConnected } = useAppKitAccount()

@@ -1,3 +1,4 @@
+import { ConstantsUtil, NetworkUtil } from '@reown/appkit-common'
 import {
   ChainController,
   CoreHelperUtil,
@@ -5,9 +6,9 @@ import {
   type SIWXMessage,
   type SIWXSession
 } from '@reown/appkit-core'
-import type { AppKitSIWEClient } from '../exports/index.js'
-import { ConstantsUtil, NetworkUtil } from '@reown/appkit-common'
 import { HelpersUtil } from '@reown/appkit-utils'
+
+import type { AppKitSIWEClient } from '../exports/index.js'
 
 const subscriptions: (() => void)[] = []
 

@@ -1,7 +1,8 @@
 import type { AppKitSdkVersion, Balance, ChainNamespace } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstants } from '@reown/appkit-common'
-import { ConstantsUtil } from './ConstantsUtil.js'
 import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
+
+import { ConstantsUtil } from './ConstantsUtil.js'
 import type { AccountTypeMap, ChainAdapter, LinkingRecord, NamespaceTypeMap } from './TypeUtil.js'
 
 type SDKFramework = 'html' | 'react' | 'vue'
@@ -9,7 +10,7 @@ type OpenTarget = '_blank' | '_self' | 'popupWindow' | '_top'
 
 export const CoreHelperUtil = {
   isMobile() {
-    if (typeof window !== 'undefined') {
+    if (this.isClient()) {
       return Boolean(
         window.matchMedia('(pointer:coarse)').matches ||
           /Android|webOS|iPhone|iPad|iPod|BlackBerry|Opera Mini/u.test(navigator.userAgent)
@@ -24,15 +25,33 @@ export const CoreHelperUtil = {
   },
 
   isAndroid() {
+    if (!this.isMobile()) {
+      return false
+    }
+
     const ua = window.navigator.userAgent.toLowerCase()
 
     return CoreHelperUtil.isMobile() && ua.includes('android')
   },
 
   isIos() {
+    if (!this.isMobile()) {
+      return false
+    }
+
     const ua = window.navigator.userAgent.toLowerCase()
 
-    return CoreHelperUtil.isMobile() && (ua.includes('iphone') || ua.includes('ipad'))
+    return ua.includes('iphone') || ua.includes('ipad')
+  },
+
+  isSafari() {
+    if (!this.isClient()) {
+      return false
+    }
+
+    const ua = window.navigator.userAgent.toLowerCase()
+
+    return ua.includes('safari')
   },
 
   isClient() {

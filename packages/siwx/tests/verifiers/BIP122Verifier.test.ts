@@ -1,7 +1,9 @@
-import { describe, test, expect } from 'vitest'
+import { describe, expect, test } from 'vitest'
+
 import { type SIWXSession } from '@reown/appkit-core'
-import { mockSession } from '../mocks/mockSession.js'
+
 import { BIP122Verifier } from '../../src/verifiers/BIP122Verifier.js'
+import { mockSession } from '../mocks/mockSession.js'
 
 type Case = {
   reason: string

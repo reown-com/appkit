@@ -1,10 +1,12 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+
 import type { RouterControllerState } from '@reown/appkit-core'
 import { RouterController, TooltipController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
-import styles from './styles.js'
+
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import styles from './styles.js'
 
 @customElement('w3m-router')
 export class W3mRouter extends LitElement {

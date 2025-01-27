@@ -1,12 +1,13 @@
-import { createAppKit } from '@reown/appkit-new/react'
-import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
-
-import { ThemeStore } from '../../utils/StoreUtil'
-import { AppKitButtons } from '../../components/AppKitButtons'
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { SolanaTests } from '../../components/Solana/SolanaTests'
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
+
+import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { solana } from '@reown/appkit-new/networks'
+import { createAppKit } from '@reown/appkit-new/react'
+
+import { AppKitButtons } from '../../components/AppKitButtons'
+import { SolanaTests } from '../../components/Solana/SolanaTests'
+import { ConstantsUtil } from '../../utils/ConstantsUtil'
+import { ThemeStore } from '../../utils/StoreUtil'
 
 const networks = ConstantsUtil.SolanaNetworks
 

@@ -1,13 +1,15 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, snapshot } from 'valtio/vanilla'
-import type { Connector, Metadata, WcWallet } from '../utils/TypeUtil.js'
-import type { SwapInputTarget } from './SwapController.js'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
+
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
-import { ModalController } from './ModalController.js'
+
+import type { Connector, Metadata, WcWallet } from '../utils/TypeUtil.js'
 import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
+import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
+import type { SwapInputTarget } from './SwapController.js'
 
 // -- Types --------------------------------------------- //
 type TransactionAction = {
@@ -172,9 +174,10 @@ export const RouterController = {
     }
   },
 
-  reset(view: RouterControllerState['view']) {
+  reset(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
     state.view = view
     state.history = [view]
+    state.data = data
   },
 
   replace(view: RouterControllerState['view'], data?: RouterControllerState['data']) {

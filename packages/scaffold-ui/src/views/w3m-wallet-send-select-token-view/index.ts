@@ -1,6 +1,7 @@
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import styles from './styles.js'
+import { state } from 'lit/decorators.js'
+
+import type { Balance } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -8,9 +9,9 @@ import {
   RouterController,
   SendController
 } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 
-import { state } from 'lit/decorators.js'
-import type { Balance } from '@reown/appkit-common'
+import styles from './styles.js'
 
 @customElement('w3m-wallet-send-select-token-view')
 export class W3mSendSelectTokenView extends LitElement {

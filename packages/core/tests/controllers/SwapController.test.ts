@@ -1,15 +1,19 @@
-import { beforeAll, describe, expect, it, vi } from 'vitest'
 import { parseUnits } from 'viem'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
+
+import type { CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
+import { ConstantsUtil } from '@reown/appkit-common'
+
 import {
   AccountController,
   BlockchainApiController,
   ChainController,
   ConnectionController,
-  SwapController,
   type ConnectionControllerClient,
-  type NetworkControllerClient
+  type NetworkControllerClient,
+  SwapController
 } from '../../exports/index.js'
-import type { CaipNetworkId, CaipNetwork } from '@reown/appkit-common'
+import { SwapApiUtil } from '../../src/utils/SwapApiUtil.js'
 import {
   allowanceResponse,
   balanceResponse,
@@ -19,8 +23,6 @@ import {
   swapQuoteResponse,
   tokensResponse
 } from '../mocks/SwapController.js'
-import { SwapApiUtil } from '../../src/utils/SwapApiUtil.js'
-import { ConstantsUtil } from '@reown/appkit-common'
 
 // - Mocks ---------------------------------------------------------------------
 const caipNetwork = {

@@ -1,26 +1,32 @@
 /* eslint-disable no-console */
 import {
-  SafeLocalStorage,
-  SafeLocalStorageKeys,
   type CaipNetworkId,
   type ChainNamespace,
+  SafeLocalStorage,
+  SafeLocalStorageKeys,
   getSafeConnectorIdKey
 } from '@reown/appkit-common'
-import type { WcWallet, SocialProvider, ConnectionStatus } from './TypeUtil.js'
+
+import type { ConnectionStatus, SocialProvider, WcWallet } from './TypeUtil.js'
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
   getActiveNetworkProps() {
-    const activeNamespace = StorageUtil.getActiveNamespace()
-    const activeCaipNetworkId = StorageUtil.getActiveCaipNetworkId()
-    const caipNetworkIdFromStorage = activeCaipNetworkId
-      ? activeCaipNetworkId.split(':')[1]
+    const namespace = StorageUtil.getActiveNamespace()
+    const caipNetworkId = StorageUtil.getActiveCaipNetworkId() as CaipNetworkId | undefined
+    const stringChainId = caipNetworkId ? caipNetworkId.split(':')[1] : undefined
+
+    // eslint-disable-next-line no-nested-ternary
+    const chainId = stringChainId
+      ? isNaN(Number(stringChainId))
+        ? stringChainId
+        : Number(stringChainId)
       : undefined
 
     return {
-      namespace: activeNamespace,
-      caipNetworkId: activeCaipNetworkId,
-      chainId: caipNetworkIdFromStorage
+      namespace,
+      caipNetworkId,
+      chainId
     }
   },
 
@@ -72,7 +78,9 @@ export const StorageUtil = {
 
   getActiveCaipNetworkId() {
     try {
-      return SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID)
+      return SafeLocalStorage.getItem(SafeLocalStorageKeys.ACTIVE_CAIP_NETWORK_ID) as
+        | CaipNetworkId
+        | undefined
     } catch {
       console.info('Unable to get active caip network id')
 
@@ -146,7 +154,11 @@ export const StorageUtil = {
     return undefined
   },
 
-  getConnectedConnectorId(namespace: ChainNamespace) {
+  getConnectedConnectorId(namespace: ChainNamespace | undefined) {
+    if (!namespace) {
+      return undefined
+    }
+
     try {
       const key = getSafeConnectorIdKey(namespace)
 

@@ -1,3 +1,7 @@
+import { LitElement, html } from 'lit'
+import { property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
   AssetUtil,
   ConnectionController,
@@ -7,9 +11,7 @@ import {
   ThemeController
 } from '@reown/appkit-core'
 import type { IconType } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+
 import styles from './styles.js'
 
 export class W3mConnectingWidget extends LitElement {
@@ -76,7 +78,11 @@ export class W3mConnectingWidget extends LitElement {
       ]
     )
     // The uri should be preloaded in the tg ios context so we can safely init as the subscribeKey won't trigger
-    if (CoreHelperUtil.isTelegram() && CoreHelperUtil.isIos() && ConnectionController.state.wcUri) {
+    if (
+      (CoreHelperUtil.isTelegram() || CoreHelperUtil.isSafari()) &&
+      CoreHelperUtil.isIos() &&
+      ConnectionController.state.wcUri
+    ) {
       this.onConnect?.()
     }
   }
@@ -185,7 +191,7 @@ export class W3mConnectingWidget extends LitElement {
     }
   }
 
-  private onTryAgain() {
+  protected onTryAgain() {
     if (!this.buffering) {
       ConnectionController.setWcError(false)
       if (this.onRetry) {

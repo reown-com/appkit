@@ -1,10 +1,10 @@
-import { Box } from '../Box'
-import { ArrowRightUp } from '../ArrowRightUp'
-import { Copy } from '../Copy'
-import { Text } from '../Text'
-import { Checkmark } from '../Checkmark'
-import { Switch } from '../Switch'
 import { touchableStyles } from '../../css/touchableStyles'
+import { ArrowRightUp } from '../ArrowRightUp'
+import { Box } from '../Box'
+import { Checkmark } from '../Checkmark'
+import { Copy } from '../Copy'
+import { Switch } from '../Switch'
+import { Text } from '../Text'
 
 const icons = {
   copy: <Copy />,

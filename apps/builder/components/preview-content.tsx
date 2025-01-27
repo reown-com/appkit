@@ -1,12 +1,15 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
-import { toast } from 'sonner'
-import { Link1Icon, ResetIcon } from '@radix-ui/react-icons'
-import { useAppKitContext } from '@/hooks/use-appkit'
-import { useAppKitState } from '@reown/appkit/react'
 import { useEffect } from 'react'
 import { useState } from 'react'
+
+import { Link1Icon, ResetIcon } from '@radix-ui/react-icons'
+import { toast } from 'sonner'
+
+import { useAppKitState } from '@reown/appkit/react'
+
+import { Button } from '@/components/ui/button'
+import { useAppKitContext } from '@/hooks/use-appkit'
 
 export function PreviewContent() {
   const [shouldRender, setShouldRender] = useState(false)

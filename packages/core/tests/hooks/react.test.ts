@@ -1,8 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { useAppKitNetworkCore, useAppKitAccount } from '../../exports/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@reown/appkit-common'
+
 import { AccountController, ChainController, ConnectorController } from '../../exports'
+import { useAppKitAccount, useAppKitNetworkCore } from '../../exports/react'
 
 vi.mock('valtio', () => ({
   useSnapshot: vi.fn()
@@ -114,6 +115,50 @@ describe('useAppKitAccount', () => {
           email: 'email@email.test',
           userName: 'test'
         },
+        authProvider: 'email',
+        isSmartAccountDeployed: false,
+        accountType: 'eoa'
+      }
+    })
+
+    expect(useSnapshot).toHaveBeenCalledWith(AccountController.state)
+    expect(useSnapshot).toHaveBeenCalledWith(ChainController.state)
+  })
+
+  it('should return appropiate auth provider when social provider is set', () => {
+    const mockCaipAddress = 'eip155:1:0x123...'
+    const mockPlainAddress = '0x123...'
+
+    vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({} as any)
+
+    // Mock the useSnapshot hook for both calls
+    useSnapshot
+      .mockReturnValueOnce({
+        allAccounts: undefined,
+        status: 'connected',
+        socialProvider: 'google',
+        preferredAccountType: 'eoa',
+        smartAccountDeployed: false,
+        user: {
+          email: 'email@email.test',
+          userName: 'test'
+        }
+      }) // For AccountController
+      .mockReturnValueOnce({ activeCaipAddress: mockCaipAddress }) // For ChainController
+
+    const result = useAppKitAccount()
+
+    expect(result).toEqual({
+      address: mockPlainAddress,
+      caipAddress: mockCaipAddress,
+      isConnected: true,
+      status: 'connected',
+      embeddedWalletInfo: {
+        user: {
+          email: 'email@email.test',
+          userName: 'test'
+        },
+        authProvider: 'google',
         isSmartAccountDeployed: false,
         accountType: 'eoa'
       }

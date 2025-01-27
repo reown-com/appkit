@@ -1,19 +1,22 @@
-import { W3mModal } from '../../src/modal/w3m-modal'
-import { describe, it, expect, vi, beforeEach, beforeAll, afterEach } from 'vitest'
 import { elementUpdated, fixture } from '@open-wc/testing'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { html } from 'lit'
+
+import { type CaipNetwork } from '@reown/appkit-common'
 import {
+  ApiController,
+  ChainController,
+  EventsController,
   ModalController,
   OptionsController,
-  ChainController,
   RouterController,
-  ApiController,
-  EventsController,
   SIWXUtil
 } from '@reown/appkit-core'
-import { HelpersUtil } from '../utils/HelpersUtil'
 import type { RouterControllerState, SIWXConfig } from '@reown/appkit-core'
-import type { CaipNetwork } from '@reown/appkit-common'
+
+import { W3mModal } from '../../src/modal/w3m-modal'
+import { HelpersUtil } from '../utils/HelpersUtil'
 
 // Mock ResizeObserver
 beforeAll(() => {
@@ -144,6 +147,30 @@ describe('W3mModal', () => {
 
     it('should handle network change when not connected', async () => {
       const goBackSpy = vi.spyOn(RouterController, 'goBack')
+      ;(element as any).caipAddress = undefined
+      ;(element as any).caipNetwork = { id: '1', name: 'Network 1', caipNetworkId: 'eip155:1' }
+      const nextNetwork = {
+        id: '2',
+        name: 'Network 2',
+        caipNetworkId: 'eip155:2'
+      } as unknown as CaipNetwork
+
+      ChainController.setActiveCaipNetwork(nextNetwork)
+      element.requestUpdate()
+      await elementUpdated(element)
+
+      expect(ApiController.prefetch).toHaveBeenCalled()
+      expect(goBackSpy).toHaveBeenCalled()
+    })
+
+    it('should call goBack when network changed and page is UnsupportedChain', async () => {
+      vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
+        view: 'UnsupportedChain'
+      } as RouterControllerState)
+      const goBackSpy = vi.spyOn(RouterController, 'goBack')
+      ;(element as any).caipAddress = 'eip155:1:0x123'
+      ;(element as any).caipNetwork = { id: '1', name: 'Network 1', caipNetworkId: 'eip155:1' }
+
       const nextNetwork = {
         id: '2',
         name: 'Network 2',
@@ -155,7 +182,6 @@ describe('W3mModal', () => {
       await elementUpdated(element)
 
       expect(goBackSpy).toHaveBeenCalled()
-      expect(ApiController.prefetch).toHaveBeenCalled()
     })
 
     it('should handle network change when connected', async () => {

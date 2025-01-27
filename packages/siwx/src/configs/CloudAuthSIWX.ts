@@ -1,9 +1,9 @@
 import {
-  ConstantsUtil,
   type CaipNetworkId,
+  ConstantsUtil,
   SafeLocalStorage,
-  SafeLocalStorageKeys,
-  type SafeLocalStorageItems
+  type SafeLocalStorageItems,
+  SafeLocalStorageKeys
 } from '@reown/appkit-common'
 import {
   AccountController,
@@ -14,6 +14,7 @@ import {
   type SIWXMessage,
   type SIWXSession
 } from '@reown/appkit-core'
+
 import type { SIWXMessenger } from '../core/SIWXMessenger.js'
 import { InformalMessenger } from '../index.js'
 
@@ -71,7 +72,10 @@ export class CloudAuthSIWX implements SIWXConfig {
 
       const siweCaipNetworkId = `eip155:${siweSession?.chainId}`
 
-      if (!siweSession || siweCaipNetworkId !== chainId || siweSession.address !== address) {
+      const isSameAddress = siweSession?.address.toLowerCase() === address.toLowerCase()
+      const isSameNetwork = siweCaipNetworkId === chainId
+
+      if (!isSameAddress || !isSameNetwork) {
         return []
       }
 
