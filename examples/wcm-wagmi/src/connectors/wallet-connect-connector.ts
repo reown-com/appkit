@@ -18,7 +18,6 @@ export const WC_PARAMS: WalletConnectParameters & { chains: any[] } = {
       '--wcm-z-index': '1000'
     }
   },
-  logger: 'debug',
 
   // To enable a custom QR Modal, set showQrModal to false
   showQrModal: true,
