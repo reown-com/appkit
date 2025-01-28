@@ -12,7 +12,7 @@ import {
   OptionsController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import type { WuiAccountButton } from '@reown/appkit-ui'
+import type { WuiAccountButton } from '@reown/appkit-ui/wui-account-button'
 import '@reown/appkit-ui/wui-account-button'
 
 class W3mAccountButtonBase extends LitElement {
