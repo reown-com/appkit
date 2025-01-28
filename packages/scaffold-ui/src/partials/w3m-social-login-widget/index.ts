@@ -244,7 +244,6 @@ export class W3mSocialLoginWidget extends LitElement {
 
           if (this.popupWindow && uri) {
             console.log('via popup uri', uri, this.popupWindow)
-            await new Promise(resolve => setTimeout(resolve, 10_000)) 
             AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
             this.popupWindow.location.href = uri
           } else if (CoreHelperUtil.isTelegram() && uri) {
@@ -252,7 +251,6 @@ export class W3mSocialLoginWidget extends LitElement {
             SafeLocalStorage.setItem(SafeLocalStorageKeys.SOCIAL_PROVIDER, socialProvider)
             const parsedUri = CoreHelperUtil.formatTelegramSocialLoginUrl(uri)
             console.log('redirecting...', parsedUri)
-            await new Promise(resolve => setTimeout(resolve, 10_000))
             CoreHelperUtil.openHref(parsedUri, '_top')
           } else {
               this.popupWindow?.close()
