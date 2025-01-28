@@ -20,7 +20,7 @@ export class WuiTokenButton extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ontouchstart>
+      <button>
         ${this.tokenTemplate()}
         <wui-text variant="paragraph-600" color="fg-100">${this.text}</wui-text>
       </button>

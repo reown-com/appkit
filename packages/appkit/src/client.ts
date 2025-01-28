@@ -174,10 +174,6 @@ export class AppKit {
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
     this.chainAdapters = this.createAdapters(options.adapters as unknown as AdapterBlueprint[])
     this.initialize(options)
-    // Check on the next thick because wagmiAdapter authConnector is not immediately available
-    setTimeout(() => {
-      this.checkExistingConnection()
-    }, 0)
   }
 
   public static getInstance() {
@@ -205,6 +201,9 @@ export class AppKit {
       }
     })
     PublicStateController.set({ initialized: true })
+    setTimeout(() => {
+      this.checkExistingConnection()
+    }, 0)
   }
 
   // -- Public -------------------------------------------------------------------
@@ -1935,7 +1934,7 @@ export class AppKit {
       : CoreConstantsUtil.DEFAULT_FEATURES.socials
 
     const isAuthEnabled = isEmailEnabled || isSocialsEnabled
-    console.log('isAuthEnabled', isAuthEnabled)
+
     if (!this.authProvider && this.options?.projectId && isAuthEnabled) {
       this.authProvider = W3mFrameProviderSingleton.getInstance({
         projectId: this.options.projectId,
@@ -1945,7 +1944,6 @@ export class AppKit {
           AlertController.open(ErrorUtil.ALERT_ERRORS.SOCIALS_TIMEOUT, 'error')
         }
       })
-      console.log('AuthProvider created', this.authProvider)
       this.subscribeState(val => {
         if (!val.open) {
           this.authProvider?.rejectRpcRequests()
@@ -2038,7 +2036,6 @@ export class AppKit {
     this.chainAdapters?.[namespace].syncConnectors(this.options, this)
     await this.createUniversalProviderForAdapter(namespace)
     this.createAuthProviderForAdapter(namespace)
-    console.log('initChainAdapter', namespace)
   }
 
   private async initChainAdapters() {
@@ -2129,17 +2126,20 @@ export class AppKit {
         socialProviderToConnect,
         ChainController.state.activeChain
       )
-      await this.authProvider?.reload()
+      await this.authProvider?.init()
       const authConnector = ConnectorController.getAuthConnector()
       console.log('authConnector', authConnector)
       if (socialProviderToConnect && authConnector) {
         this.setLoading(true)
-        await new Promise<void>(resolve => setTimeout(resolve, 5_00))
+        
+        // Await new Promise<void>(resolve => setTimeout(resolve, 1_000))
+        console.log('connectSocial with uri')
         await authConnector.provider.connectSocial(resultUri)
         await ConnectionController.connectExternal(authConnector, authConnector.chain)
         console.log('connected')
         StorageUtil.setConnectedSocialProvider(socialProviderToConnect)
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.SOCIAL_PROVIDER)
+
         EventsController.sendEvent({
           type: 'track',
           event: 'SOCIAL_LOGIN_SUCCESS',

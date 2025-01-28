@@ -45,7 +45,7 @@ export class WuiListWallet extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.disabled} tabindex=${ifDefined(this.tabIdx)} ontouchstart>
+      <button ?disabled=${this.disabled} tabindex=${ifDefined(this.tabIdx)}>
         ${this.templateAllWallets()} ${this.templateWalletImage()}
         <wui-text variant="paragraph-500" color="inherit">${this.name}</wui-text>
         ${this.templateStatus()}
