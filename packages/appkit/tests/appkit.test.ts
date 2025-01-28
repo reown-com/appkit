@@ -39,7 +39,7 @@ import {
 import { CaipNetworksUtil, ErrorUtil } from '@reown/appkit-utils'
 
 import type { AdapterBlueprint } from '../src/adapters/ChainAdapterBlueprint'
-import { AppKit } from '../src/client'
+import { AppKit } from '../src/client/appkit'
 import {
   base as baseNetwork,
   mainnet as mainnetNetwork,
