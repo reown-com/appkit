@@ -7,7 +7,6 @@ import {
   ApiController,
   ChainController,
   CoreHelperUtil,
-  EventsController,
   ModalController,
   OptionsController,
   RouterController,
@@ -55,7 +54,6 @@ export class W3mModal extends LitElement {
         OptionsController.subscribeKey('enableEmbedded', val => (this.enableEmbedded = val))
       ]
     )
-    EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })
   }
 
   public override firstUpdated() {
@@ -234,6 +232,12 @@ export class W3mModal extends LitElement {
     const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
     const isUnsupportedNetwork = this.caipNetwork?.name === ConstantsUtil.UNSUPPORTED_NETWORK_NAME
 
+    /**
+     * If user is on connecting external, there is a case that they might select a connector which is in another adapter.
+     * In this case, we are switching both network and namespace. And this logic will be triggered.
+     * But we don't want to go back because we are already on the connecting external view.
+     */
+    const isConnectingExternal = RouterController.state.view === 'ConnectingExternal'
     // If user is not connected, we should go back
     const isNotConnected = !this.caipAddress
     // If network has been changed in the same namespace and it's not an unsupported network, we should go back
@@ -242,7 +246,10 @@ export class W3mModal extends LitElement {
     // If user is on the unsupported network screen, we should go back when network has been changed
     const isUnsupportedNetworkScreen = RouterController.state.view === 'UnsupportedChain'
 
-    if (isNotConnected || isUnsupportedNetworkScreen || isNetworkChangedInSameNamespace) {
+    if (
+      !isConnectingExternal &&
+      (isNotConnected || isUnsupportedNetworkScreen || isNetworkChangedInSameNamespace)
+    ) {
       RouterController.goBack()
     }
 

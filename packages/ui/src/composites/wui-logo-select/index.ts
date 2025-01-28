@@ -22,7 +22,7 @@ export class WuiLogoSelect extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.disabled} tabindex=${ifDefined(this.tabIdx)} ontouchstart>
+      <button ?disabled=${this.disabled} tabindex=${ifDefined(this.tabIdx)}>
         <wui-logo logo=${this.logo}></wui-logo>
       </button>
     `

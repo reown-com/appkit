@@ -51,12 +51,7 @@ export class WuiButton extends LitElement {
     const textVariant = this.textVariant ?? TEXT_VARIANT_BY_SIZE[this.size]
 
     return html`
-      <button
-        data-variant=${this.variant}
-        data-size=${this.size}
-        ?disabled=${this.disabled}
-        ontouchstart
-      >
+      <button data-variant=${this.variant} data-size=${this.size} ?disabled=${this.disabled}>
         ${this.loadingTemplate()}
         <slot name="iconLeft"></slot>
         <wui-text variant=${textVariant} color="inherit">
