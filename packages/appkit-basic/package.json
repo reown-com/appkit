@@ -43,12 +43,10 @@
   "dependencies": {
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-core": "workspace:*",
-    "@reown/appkit-polyfills": "workspace:*",
     "@reown/appkit-scaffold-ui": "workspace:*",
     "@reown/appkit-siwe": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
-    "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/types": "2.17.5",
     "@walletconnect/universal-provider": "2.17.5",
     "@walletconnect/utils": "2.17.5",

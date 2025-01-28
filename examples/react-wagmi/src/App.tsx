@@ -1,12 +1,11 @@
 import { createAppKit } from '@reown/appkit-basic'
 import type { AppKitNetwork } from '@reown/appkit-basic/networks'
-import * as networks from '@reown/appkit-basic/networks'
+import { mainnet } from '@reown/appkit-basic/networks'
 
-export const projectId = 'b56e18d47c72ab683b10814fe9495694' // this is a public projectId only to use on localhost
+export const projectId = 'b56e18d47c72ab683b10814fe9495694'
 
-// Create modal
 const appkit = createAppKit({
-  networks: networks as unknown as [AppKitNetwork, ...AppKitNetwork[]],
+  networks: [mainnet] as [AppKitNetwork, ...AppKitNetwork[]],
   metadata: {
     name: 'AppKit React Example',
     description: 'AppKit React Wagmi Example',
@@ -20,6 +19,7 @@ const appkit = createAppKit({
     analytics: true
   }
 })
+
 export default function App() {
   return (
     <>

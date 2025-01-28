@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@reown/appkit-basic": "workspace:*",
-     "@tanstack/react-query": "5.24.8",
+    "@tanstack/react-query": "5.24.8",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "viem": "2.21.26",
