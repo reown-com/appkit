@@ -13,6 +13,7 @@ import {
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import type { WuiAccountButton } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-account-button'
 
 class W3mAccountButtonBase extends LitElement {
   // -- Members ------------------------------------------- //

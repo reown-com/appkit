@@ -16,6 +16,8 @@ import {
   ThemeController
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-card'
+import '@reown/appkit-ui/wui-flex'
 
 import '../../partials/w3m-alertbar/index.js'
 import '../../partials/w3m-header/index.js'
