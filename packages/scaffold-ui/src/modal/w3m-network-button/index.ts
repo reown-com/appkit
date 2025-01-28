@@ -11,7 +11,8 @@ import {
   OptionsController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import type { WuiNetworkButton } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
 
 import styles from './styles.js'
 
@@ -22,7 +23,7 @@ class W3mNetworkButtonBase extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @property({ type: Boolean }) public disabled?: WuiNetworkButton['disabled'] = false
+  @property({ type: Boolean }) public disabled? = false
 
   @property({ type: String }) public label?: string
 
