@@ -29,7 +29,7 @@ export class WuiListToken extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button data-clickable=${String(this.clickable)} ontouchstart>
+      <button data-clickable=${String(this.clickable)}>
         <wui-flex gap="s" alignItems="center">
           ${this.visualTemplate()}
           <wui-flex flexDirection="column" justifyContent="spaceBetween">
