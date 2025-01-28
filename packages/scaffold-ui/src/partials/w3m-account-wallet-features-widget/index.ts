@@ -18,7 +18,6 @@ import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-balance'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon-button'
-import '@reown/appkit-ui/wui-network-icon'
 import '@reown/appkit-ui/wui-profile-button'
 import '@reown/appkit-ui/wui-tabs'
 import '@reown/appkit-ui/wui-tooltip'
@@ -106,7 +105,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       gap="m"
       data-testid="w3m-account-wallet-features-widget"
     >
-      ${this.network && html`<wui-network-icon .network=${this.network}></wui-network-icon>`}
       <wui-profile-button
         @click=${this.onProfileButtonClick.bind(this)}
         address=${ifDefined(this.address)}
