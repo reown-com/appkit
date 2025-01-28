@@ -230,11 +230,7 @@ export class W3mSocialLoginWidget extends LitElement {
       RouterController.push('ConnectingSocial')
 
       const authConnector = ConnectorController.getAuthConnector()
-      this.popupWindow = CoreHelperUtil.returnOpenHref(
-        '',
-        'popupWindow',
-        'width=600,height=800,scrollbars=yes'
-      )
+     
 
       try {
         if (authConnector && socialProvider) {
@@ -242,16 +238,22 @@ export class W3mSocialLoginWidget extends LitElement {
             provider: socialProvider
           })
 
-          if (this.popupWindow && uri) {
-            console.log('via popup uri', uri, this.popupWindow)
-            AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
-            this.popupWindow.location.href = uri
-          } else if (CoreHelperUtil.isTelegram() && uri) {
+         
+          if (CoreHelperUtil.isTelegram() && uri) {
             console.log('uri', uri)
             SafeLocalStorage.setItem(SafeLocalStorageKeys.SOCIAL_PROVIDER, socialProvider)
             const parsedUri = CoreHelperUtil.formatTelegramSocialLoginUrl(uri)
             console.log('redirecting...', parsedUri)
             CoreHelperUtil.openHref(parsedUri, '_top')
+          } else if (uri) {
+            this.popupWindow = CoreHelperUtil.returnOpenHref(
+              '',
+              'popupWindow',
+              'width=600,height=800,scrollbars=yes'
+            )
+            console.log('via popup uri', uri, this.popupWindow)
+            AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
+            this.popupWindow.location.href = uri
           } else {
               this.popupWindow?.close()
               throw new Error('Something went wrong')
