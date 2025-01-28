@@ -59,7 +59,7 @@ export class W3mAllWalletsListItem extends LitElement {
     const certified = this.wallet?.badge_type === 'certified'
 
     return html`
-      <button ontouchstart>
+      <button>
         ${this.imageTemplate()}
         <wui-flex flexDirection="row" alignItems="center" justifyContent="center" gap="3xs">
           <wui-text

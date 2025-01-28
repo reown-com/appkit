@@ -7,7 +7,6 @@ import {
   ApiController,
   ChainController,
   CoreHelperUtil,
-  EventsController,
   ModalController,
   OptionsController,
   RouterController,
@@ -62,7 +61,6 @@ export class W3mModal extends LitElement {
         OptionsController.subscribeKey('enableEmbedded', val => (this.enableEmbedded = val))
       ]
     )
-    EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })
   }
 
   public override firstUpdated() {
