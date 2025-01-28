@@ -4,6 +4,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { OptionsController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
 
 import '../../partials/w3m-legal-checkbox/index.js'
 import '../../partials/w3m-legal-footer/index.js'

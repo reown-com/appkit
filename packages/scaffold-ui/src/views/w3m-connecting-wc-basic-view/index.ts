@@ -3,6 +3,7 @@ import { state } from 'lit/decorators.js'
 
 import { ApiController, CoreHelperUtil, OptionsController, StorageUtil } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
 
 import '../../partials/w3m-all-wallets-widget/index.js'
 import '../../partials/w3m-connector-list/index.js'

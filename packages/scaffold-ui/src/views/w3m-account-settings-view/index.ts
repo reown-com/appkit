@@ -19,6 +19,12 @@ import {
   StorageUtil
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-avatar'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon-link'
+import '@reown/appkit-ui/wui-list-item'
+import '@reown/appkit-ui/wui-notice-card'
+import '@reown/appkit-ui/wui-text'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 import '../../partials/w3m-account-auth-button/index.js'

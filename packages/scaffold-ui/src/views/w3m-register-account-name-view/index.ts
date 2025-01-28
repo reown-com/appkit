@@ -11,6 +11,13 @@ import {
   SnackController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-ens-input'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-icon-link'
+import '@reown/appkit-ui/wui-loading-spinner'
+import '@reown/appkit-ui/wui-tag'
+import '@reown/appkit-ui/wui-text'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 import styles from './styles.js'
