@@ -30,7 +30,6 @@
     "valtio": "1.11.2"
   },
   "peerDependencies": {
-    "@coinbase/wallet-sdk": "4.2.4",
     "@wagmi/connectors": ">=5.1",
     "@wagmi/core": ">=2.13",
     "viem": "2.x",
