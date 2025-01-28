@@ -11,9 +11,12 @@ import {
   ConstantsUtil,
   NetworkUtil,
   ParseUtil,
+  SafeLocalStorage,
+  SafeLocalStorageKeys,
   getW3mThemeVariables
 } from '@reown/appkit-common'
 import {
+  type AccountControllerState,
   type ChainAdapter,
   type ConnectMethod,
   type ConnectedWalletInfo,
@@ -198,6 +201,9 @@ export class AppKit {
       }
     })
     PublicStateController.set({ initialized: true })
+    setTimeout(() => {
+      this.checkExistingConnection()
+    }, 0)
   }
 
   // -- Public -------------------------------------------------------------------
@@ -2092,5 +2098,69 @@ export class AppKit {
     }
 
     return this.initPromise
+  }
+
+  private async checkExistingConnection() {
+    try {
+      if (!CoreHelperUtil.isTelegram()) {
+        return
+      }
+      const socialProviderToConnect = SafeLocalStorage.getItem(
+        SafeLocalStorageKeys.SOCIAL_PROVIDER
+      ) as AccountControllerState['socialProvider']
+      console.log('socialProviderToConnect', socialProviderToConnect)
+      if (!socialProviderToConnect) {
+        return
+      }
+      if (typeof window === 'undefined' || typeof document === 'undefined') {
+        return
+      }
+      const url = new URL(window.location.href)
+      console.log('url', url)
+      const resultUri = url.searchParams.get('result_uri')
+      console.log('resultUri', resultUri)
+      if (!resultUri) {
+        return
+      }
+      AccountController.setSocialProvider(
+        socialProviderToConnect,
+        ChainController.state.activeChain
+      )
+      await this.authProvider?.init()
+      const authConnector = ConnectorController.getAuthConnector()
+      console.log('authConnector', authConnector)
+      if (socialProviderToConnect && authConnector) {
+        this.setLoading(true)
+        
+        // Await new Promise<void>(resolve => setTimeout(resolve, 1_000))
+        console.log('connectSocial with uri')
+        await authConnector.provider.connectSocial(resultUri)
+        await ConnectionController.connectExternal(authConnector, authConnector.chain)
+        console.log('connected')
+        StorageUtil.setConnectedSocialProvider(socialProviderToConnect)
+        SafeLocalStorage.removeItem(SafeLocalStorageKeys.SOCIAL_PROVIDER)
+
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'SOCIAL_LOGIN_SUCCESS',
+          properties: { provider: socialProviderToConnect }
+        })
+      }
+    } catch (error) {
+      this.setLoading(false)
+      // eslint-disable-next-line no-console
+      console.error('checkExistingConnection error', error)
+    }
+
+    try {
+      const url = new URL(window.location.href)
+      // Remove the 'result_uri' parameter
+      url.searchParams.delete('result_uri')
+      // Update the URL without reloading the page
+      window.history.replaceState({}, document.title, url.toString())
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error)
+    }
   }
 }

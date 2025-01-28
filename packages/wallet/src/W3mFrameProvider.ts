@@ -31,6 +31,8 @@ export class W3mFrameProvider {
   public onTimeout?: () => void
 
   public user?: W3mFrameTypes.Responses['FrameGetUserResponse']
+  
+  private initPromise: Promise<void> | undefined
 
   public constructor({
     projectId,
@@ -45,13 +47,30 @@ export class W3mFrameProvider {
     this.onTimeout = onTimeout
     if (this.getLoginEmailUsed()) {
       this.w3mFrame.initFrame()
+     
     }
 
     this.w3mFrame.events.onFrameEvent(event => {
       if (event.type === W3mFrameConstants.FRAME_GET_USER_SUCCESS) {
         this.user = event.payload
-      }
+      } 
     })
+
+    this.initPromise = new Promise<void>((resolve) => {
+      this.w3mFrame.events.onFrameEvent(event => {
+       if (event.type === W3mFrameConstants.FRAME_READY) {
+        this.initPromise = undefined  
+        resolve()
+       }
+      })
+    })
+  }
+
+  public async init() {
+    this.w3mFrame.initFrame()
+    if (this.initPromise) {
+      await this.initPromise
+    }
   }
 
   // -- Extended Methods ------------------------------------------------
@@ -306,6 +325,7 @@ export class W3mFrameProvider {
 
   public async connectSocial(uri: string) {
     try {
+      this.w3mFrame.initFrame()
       const response = await this.appEvent<'ConnectSocial'>({
         type: W3mFrameConstants.APP_CONNECT_SOCIAL,
         payload: { uri }
