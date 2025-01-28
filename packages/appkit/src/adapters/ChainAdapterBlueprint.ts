@@ -18,7 +18,7 @@ import {
 import { PresetsUtil } from '@reown/appkit-utils'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 
-import type { AppKit } from '../client.js'
+import type { AppKit } from '../client/appkit.js'
 import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'
 import type { AppKitOptions } from '../utils/index.js'
 import type { ChainAdapterConnector } from './ChainAdapterConnector.js'

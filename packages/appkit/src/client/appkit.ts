@@ -74,17 +74,17 @@ import {
   W3mFrameRpcConstants,
   type W3mFrameTypes
 } from '@reown/appkit-wallet'
+import type { AppKitNetwork } from '@reown/appkit/networks'
 
-import type { AppKitNetwork } from '@reown/appkit-basic/networks'
-import type { AdapterBlueprint } from './adapters/ChainAdapterBlueprint.js'
-import { W3mFrameProviderSingleton } from './auth-provider/W3MFrameProviderSingleton.js'
-import { type ProviderStoreUtilState, ProviderUtil } from './store/ProviderUtil.js'
+import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
+import { W3mFrameProviderSingleton } from '../auth-provider/W3MFrameProviderSingleton.js'
+import { type ProviderStoreUtilState, ProviderUtil } from '../store/ProviderUtil.js'
 import {
   UniversalAdapter,
   UniversalAdapter as UniversalAdapterClient
-} from './universal-adapter/client.js'
-import { WcHelpersUtil } from './utils/HelpersUtil.js'
-import type { AppKitOptions } from './utils/TypesUtil.js'
+} from '../universal-adapter/client.js'
+import { WcHelpersUtil } from '../utils/HelpersUtil.js'
+import type { AppKitOptions } from '../utils/TypesUtil.js'
 
 declare global {
   interface Window {
@@ -2075,7 +2075,53 @@ export class AppKit {
 
   private async injectModalUi() {
     if (!isInitialized && CoreHelperUtil.isClient()) {
-      await import('@reown/appkit-scaffold-ui/basic')
+      const { basic } = this.options
+      const features = { ...CoreConstantsUtil.DEFAULT_FEATURES, ...this.options.features }
+      if (basic) {
+        // Import only basic views
+        await import('@reown/appkit-scaffold-ui/basic')
+      } else {
+        // Import all views
+        await import('@reown/appkit-scaffold-ui')
+        // Selectively import views based on feature flags
+        if (features) {
+          const usingEmbeddedWallet =
+            features.email || (features.socials && features.socials.length)
+
+          if (usingEmbeddedWallet) {
+            await import('@reown/appkit-scaffold-ui/embedded-wallet')
+          }
+
+          if (features.email) {
+            await import('@reown/appkit-scaffold-ui/email')
+          }
+          if (features.socials) {
+            await import('@reown/appkit-scaffold-ui/socials')
+          }
+
+          if (features.swaps) {
+            await import('@reown/appkit-scaffold-ui/swaps')
+          }
+
+          if (features.send) {
+            await import('@reown/appkit-scaffold-ui/send')
+          }
+
+          if (features.receive) {
+            await import('@reown/appkit-scaffold-ui/receive')
+          }
+
+          if (features.onramp) {
+            await import('@reown/appkit-scaffold-ui/onramp')
+          }
+
+          if (features.history) {
+            await import('@reown/appkit-scaffold-ui/transactions')
+          }
+        }
+      }
+
+      // Import core modal
       await import('@reown/appkit-scaffold-ui/w3m-modal')
       const modal = document.createElement('w3m-modal')
       if (!OptionsController.state.disableAppend && !OptionsController.state.enableEmbedded) {
