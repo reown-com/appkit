@@ -277,7 +277,7 @@ export abstract class AdapterBlueprint<
    * @param {AppKitOptions} [options] - Optional AppKit options
    * @param {AppKit} [appKit] - Optional AppKit instance
    */
-  public abstract syncConnectors(options?: AppKitOptions, appKit?: AppKit): void
+  public abstract syncConnectors(options?: AppKitOptions, appKit?: AppKit): Promise<void>
 
   /**
    * Synchronizes the connection with the given parameters.

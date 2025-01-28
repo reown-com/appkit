@@ -87,6 +87,7 @@
     "@bitcoinerlab/secp256k1": "1.1.1",
     "@chakra-ui/icons": "2.1.1",
     "@chakra-ui/react": "2.8.2",
+    "@coinbase/wallet-sdk": "4.2.4",
     "@emotion/react": "11.11.3",
     "@emotion/styled": "11.11.0",
     "@reown/appkit": "workspace:*",
