@@ -199,14 +199,14 @@ export const CaipNetworksUtil = {
   },
 
   getViemTransport(caipNetwork: CaipNetwork) {
-    const chainDefaultUrl = caipNetwork.rpcUrls.default.http?.[0]
+    const defaultRpcUrl = caipNetwork.rpcUrls.default.http?.[0]
 
     if (!WC_HTTP_RPC_SUPPORTED_CHAINS.includes(caipNetwork.caipNetworkId)) {
-      return http(chainDefaultUrl)
+      return http(defaultRpcUrl)
     }
 
     return fallback([
-      http(chainDefaultUrl, {
+      http(defaultRpcUrl, {
         /*
          * The Blockchain API uses "Content-Type: text/plain" to avoid OPTIONS preflight requests
          * It will only work for viem >= 2.17.7
@@ -217,7 +217,7 @@ export const CaipNetworksUtil = {
           }
         }
       }),
-      http(chainDefaultUrl)
+      http(defaultRpcUrl)
     ])
   }
 }

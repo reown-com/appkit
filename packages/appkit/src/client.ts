@@ -171,6 +171,7 @@ export class AppKit {
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
     this.chainAdapters = this.createAdapters(options.adapters as unknown as AdapterBlueprint[])
     this.initialize(options)
+    this.sendInitializeEvent(options)
   }
 
   public static getInstance() {
@@ -183,6 +184,10 @@ export class AppKit {
     await this.injectModalUi()
     await this.syncExistingConnection()
 
+    PublicStateController.set({ initialized: true })
+  }
+
+  private async sendInitializeEvent(options: AppKitOptionsWithSdk) {
     const { ...optionsCopy } = options
     delete optionsCopy.adapters
 
@@ -197,7 +202,6 @@ export class AppKit {
         }
       }
     })
-    PublicStateController.set({ initialized: true })
   }
 
   // -- Public -------------------------------------------------------------------
@@ -1711,6 +1715,7 @@ export class AppKit {
     if (chainNamespace !== ConstantsUtil.CHAIN.EVM || activeCaipNetwork?.testnet) {
       return
     }
+
     try {
       const { name, avatar } = await this.fetchIdentity({
         address
