@@ -30,7 +30,7 @@ export class WuiListSelectAccount extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.disabled} ontouchstart>
+      <button ?disabled=${this.disabled}>
         <wui-avatar size="sm" address=${this.address}></wui-avatar>
         <wui-icon class="avatarIcon" size="xs" name=${this.icon}></wui-icon>
 
