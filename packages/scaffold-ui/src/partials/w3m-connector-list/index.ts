@@ -4,6 +4,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { ConnectorController, OptionsController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
 
 import '../../partials/w3m-connect-announced-widget/index.js'
 import '../../partials/w3m-connect-custom-widget/index.js'
