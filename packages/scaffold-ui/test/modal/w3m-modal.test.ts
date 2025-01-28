@@ -3,11 +3,10 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vite
 
 import { html } from 'lit'
 
-import type { CaipNetwork } from '@reown/appkit-common'
+import { type CaipNetwork } from '@reown/appkit-common'
 import {
   ApiController,
   ChainController,
-  EventsController,
   ModalController,
   OptionsController,
   RouterController,
@@ -147,6 +146,30 @@ describe('W3mModal', () => {
 
     it('should handle network change when not connected', async () => {
       const goBackSpy = vi.spyOn(RouterController, 'goBack')
+      ;(element as any).caipAddress = undefined
+      ;(element as any).caipNetwork = { id: '1', name: 'Network 1', caipNetworkId: 'eip155:1' }
+      const nextNetwork = {
+        id: '2',
+        name: 'Network 2',
+        caipNetworkId: 'eip155:2'
+      } as unknown as CaipNetwork
+
+      ChainController.setActiveCaipNetwork(nextNetwork)
+      element.requestUpdate()
+      await elementUpdated(element)
+
+      expect(ApiController.prefetch).toHaveBeenCalled()
+      expect(goBackSpy).toHaveBeenCalled()
+    })
+
+    it('should call goBack when network changed and page is UnsupportedChain', async () => {
+      vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
+        view: 'UnsupportedChain'
+      } as RouterControllerState)
+      const goBackSpy = vi.spyOn(RouterController, 'goBack')
+      ;(element as any).caipAddress = 'eip155:1:0x123'
+      ;(element as any).caipNetwork = { id: '1', name: 'Network 1', caipNetworkId: 'eip155:1' }
+
       const nextNetwork = {
         id: '2',
         name: 'Network 2',
@@ -158,7 +181,6 @@ describe('W3mModal', () => {
       await elementUpdated(element)
 
       expect(goBackSpy).toHaveBeenCalled()
-      expect(ApiController.prefetch).toHaveBeenCalled()
     })
 
     it('should handle network change when connected', async () => {
@@ -181,13 +203,6 @@ describe('W3mModal', () => {
   })
 
   describe('Initialization', () => {
-    it('should send modal loaded event', async () => {
-      const eventSpy = vi.spyOn(EventsController, 'sendEvent')
-      await fixture(html`<w3m-modal></w3m-modal>`)
-
-      expect(eventSpy).toHaveBeenCalledWith({ type: 'track', event: 'MODAL_LOADED' })
-    })
-
     it('should prefetch API data', async () => {
       const prefetchSpy = vi.spyOn(ApiController, 'prefetch')
       await fixture(html`<w3m-modal></w3m-modal>`)

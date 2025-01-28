@@ -31,7 +31,7 @@ export class WuiListDescription extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ontouchstart ?disabled=${this.disabled}>
+      <button ?disabled=${this.disabled}>
         <wui-icon-box
           iconColor=${this.iconColor}
           backgroundColor=${this.iconBackgroundColor}

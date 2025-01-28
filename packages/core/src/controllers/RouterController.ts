@@ -174,9 +174,10 @@ export const RouterController = {
     }
   },
 
-  reset(view: RouterControllerState['view']) {
+  reset(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
     state.view = view
     state.history = [view]
+    state.data = data
   },
 
   replace(view: RouterControllerState['view'], data?: RouterControllerState['data']) {

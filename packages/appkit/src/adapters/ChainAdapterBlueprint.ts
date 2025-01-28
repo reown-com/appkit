@@ -105,7 +105,7 @@ export abstract class AdapterBlueprint<
     this.addConnector({
       id: CommonConstantsUtil.CONNECTOR_ID.AUTH,
       type: 'AUTH',
-      name: 'Auth',
+      name: CommonConstantsUtil.CONNECTOR_NAMES.AUTH,
       provider: authProvider,
       imageId: PresetsUtil.ConnectorImageIds[CommonConstantsUtil.CONNECTOR_ID.AUTH],
       chain: this.namespace,
@@ -187,16 +187,14 @@ export abstract class AdapterBlueprint<
 
   /**
    * Connects to WalletConnect.
-   * @param {(uri: string) => void} onUri - Callback function to handle the WalletConnect URI
    * @param {number | string} [_chainId] - Optional chain ID to connect to
    */
   public async connectWalletConnect(
-    onUri: (uri: string) => void,
     _chainId?: number | string
   ): Promise<undefined | { clientId: string }> {
     const connector = this.getWalletConnectConnector()
 
-    const result = await connector.connectWalletConnect({ onUri })
+    const result = await connector.connectWalletConnect()
 
     return { clientId: result.clientId }
   }

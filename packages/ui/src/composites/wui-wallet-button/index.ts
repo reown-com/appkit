@@ -36,7 +36,7 @@ export class WuiWalletButton extends LitElement {
     this.dataset['error'] = `${this.error}`
 
     return html`
-      <button ?disabled=${this.disabled} ontouchstart>
+      <button ?disabled=${this.disabled}>
         ${this.leftViewTemplate()} ${this.rightViewTemplate()}
       </button>
     `
