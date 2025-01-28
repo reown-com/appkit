@@ -12,28 +12,27 @@ import {
   NetworkUtil,
   ParseUtil
 } from '@reown/appkit-common'
-import {
-  type ChainAdapter,
-  type ConnectMethod,
-  type ConnectedWalletInfo,
-  type ConnectionStatus,
-  type ConnectorType,
-  ConstantsUtil as CoreConstantsUtil,
-  type EstimateGasTransactionArgs,
-  type EventsControllerState,
-  type Features,
-  type ModalControllerState,
-  type OptionsControllerState,
-  type PublicStateControllerState,
-  type RouterControllerState,
-  type SdkVersion,
-  type SendTransactionArgs,
-  type SocialProvider,
-  type ThemeControllerState,
-  type UseAppKitAccountReturn,
-  type UseAppKitNetworkReturn,
-  type WalletFeature,
-  type WriteContractArgs
+import type {
+  ChainAdapter,
+  ConnectMethod,
+  ConnectedWalletInfo,
+  ConnectionStatus,
+  ConnectorType,
+  EstimateGasTransactionArgs,
+  EventsControllerState,
+  Features,
+  ModalControllerState,
+  OptionsControllerState,
+  PublicStateControllerState,
+  RouterControllerState,
+  SdkVersion,
+  SendTransactionArgs,
+  SocialProvider,
+  ThemeControllerState,
+  UseAppKitAccountReturn,
+  UseAppKitNetworkReturn,
+  WalletFeature,
+  WriteContractArgs
 } from '@reown/appkit-core'
 import {
   AccountController,
@@ -44,6 +43,7 @@ import {
   ChainController,
   ConnectionController,
   ConnectorController,
+  ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil,
   EnsController,
   EventsController,
@@ -263,22 +263,13 @@ export class AppKit extends AppKitCore {
   }
 
   public subscribeAccount(callback: (newState: UseAppKitAccountReturn) => void) {
-    const authConnector = ConnectorController.getAuthConnector()
     function updateVal() {
       callback({
         allAccounts: AccountController.state.allAccounts,
         caipAddress: ChainController.state.activeCaipAddress,
         address: CoreHelperUtil.getPlainAddress(ChainController.state.activeCaipAddress),
         isConnected: Boolean(ChainController.state.activeCaipAddress),
-        status: AccountController.state.status,
-        embeddedWalletInfo: authConnector
-          ? {
-              user: AccountController.state.user,
-              authProvider: AccountController.state.socialProvider || 'email',
-              accountType: AccountController.state.preferredAccountType,
-              isSmartAccountDeployed: Boolean(AccountController.state.smartAccountDeployed)
-            }
-          : undefined
+        status: AccountController.state.status
       })
     }
 
