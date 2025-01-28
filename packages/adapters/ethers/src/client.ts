@@ -259,7 +259,6 @@ export class EthersAdapter extends AdapterBlueprint {
       key => key !== 'metadata' && key !== 'EIP6963'
     )
 
-    console.log('>>> Ethers.connectors', connectors)
     connectors.forEach(connector => {
       const key = connector === 'coinbase' ? 'coinbaseWalletSDK' : connector
 
