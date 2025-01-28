@@ -4,7 +4,7 @@ import { createAppKit } from '@reown/appkit'
 import { mainnet, solana } from '@reown/appkit/networks'
 
 // Constants
-export const projectId = import.meta.env.VITE_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694'
+const projectId = import.meta.env.VITE_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694'
 
 const OPTIONAL_NAMESPACES = {
   eip155: {
@@ -20,18 +20,11 @@ const OPTIONAL_NAMESPACES = {
   }
 }
 
-// Initialize providers
-const provider = await UniversalProvider.init({ projectId })
-
-const modal = createAppKit({
-  projectId,
-  networks: [mainnet, solana],
-  universalProvider: provider
-})
-
 // State
-let account = provider?.session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2]
-let network = provider?.session?.namespaces?.eip155?.chains?.[0]
+let provider
+let modal
+let account
+let network
 let balance
 
 function updateDom() {
@@ -65,47 +58,62 @@ function clearState() {
   network = undefined
 }
 
-// Event listeners
-provider.on('chainChanged', chainId => {
-  network = chainId
-  updateDom()
-})
+async function initializeApp() {
+  // Initialize providers
+  provider = await UniversalProvider.init({ projectId })
 
-provider.on('accountsChanged', accounts => {
-  account = accounts[0]
-  updateDom()
-})
-
-provider.on('connect', async session => {
-  await modal.close()
-  account = session?.session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2]
-  network = session?.session?.namespaces?.eip155?.chains?.[0]
-  updateDom()
-})
-
-provider.on('display_uri', uri => {
-  modal.open({ uri, view: 'ConnectingWalletConnectBasic' })
-})
-
-// Button handlers
-document.getElementById('connect')?.addEventListener('click', async () => {
-  await provider.connect({ optionalNamespaces: OPTIONAL_NAMESPACES })
-  updateDom()
-})
-
-document.getElementById('disconnect')?.addEventListener('click', async () => {
-  await provider.disconnect()
-  clearState()
-  updateDom()
-})
-
-document.getElementById('get-balance')?.addEventListener('click', async () => {
-  balance = await provider.request({
-    method: 'eth_getBalance',
-    params: [account, 'latest']
+  modal = createAppKit({
+    projectId,
+    networks: [mainnet, solana],
+    universalProvider: provider
   })
-  updateDom()
-})
 
-// Initialize DOM
-updateDom()
+  // Event listeners
+  provider.on('chainChanged', chainId => {
+    network = chainId
+    updateDom()
+  })
+
+  provider.on('accountsChanged', accounts => {
+    account = accounts[0]
+    updateDom()
+  })
+
+  provider.on('connect', async session => {
+    await modal.close()
+    account = session?.session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2]
+    network = session?.session?.namespaces?.eip155?.chains?.[0]
+    updateDom()
+  })
+
+  provider.on('display_uri', uri => {
+    modal.open({ uri, view: 'ConnectingWalletConnectBasic' })
+  })
+
+  // Button handlers
+  document.getElementById('connect')?.addEventListener('click', async () => {
+    await provider.connect({ optionalNamespaces: OPTIONAL_NAMESPACES })
+    updateDom()
+  })
+
+  document.getElementById('disconnect')?.addEventListener('click', async () => {
+    await provider.disconnect()
+    clearState()
+    updateDom()
+  })
+
+  document.getElementById('get-balance')?.addEventListener('click', async () => {
+    balance = await provider.request({
+      method: 'eth_getBalance',
+      params: [account, 'latest']
+    })
+    updateDom()
+  })
+
+  // Initialize DOM
+  account = provider?.session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2]
+  network = provider?.session?.namespaces?.eip155?.chains?.[0]
+  updateDom()
+}
+
+initializeApp()

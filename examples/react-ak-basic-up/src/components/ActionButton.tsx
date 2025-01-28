@@ -1,7 +1,7 @@
 import UniversalProvider from '@walletconnect/universal-provider'
 
 interface ActionButtonListProps {
-  provider: UniversalProvider
+  provider?: UniversalProvider
   session: unknown
   account?: string
   onSessionChange: (session: unknown) => void
@@ -19,6 +19,8 @@ export default function ActionButtonList({
   onBalanceChange,
   onNetworkChange
 }: ActionButtonListProps) {
+  if (!provider) return null
+
   return (
     <div className="appkit-buttons-container">
       {session ? (
@@ -36,17 +38,11 @@ export default function ActionButtonList({
           </button>
           <button
             onClick={async () => {
-              console.log(account)
-              console.log(provider)
-
               const requestArguments = {
                 method: 'eth_getBalance',
                 params: [account, 'latest']
               }
               const balance = await provider.request(requestArguments, 'eip155:1')
-
-              console.log(balance)
-
               onBalanceChange(balance as string)
             }}
           >
@@ -56,7 +52,7 @@ export default function ActionButtonList({
       ) : (
         <button
           onClick={async () =>
-            await await provider.connect({
+            await provider.connect({
               optionalNamespaces: {
                 eip155: {
                   methods: [

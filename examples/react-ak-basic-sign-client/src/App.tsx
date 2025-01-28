@@ -1,34 +1,56 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
+import type SignClient from '@walletconnect/sign-client'
 import type { SessionTypes } from '@walletconnect/types'
 
 import ActionButtonList from './components/ActionButton'
 import Footer from './components/Footer'
 import Header from './components/Header'
 import InfoList from './components/InfoList'
-import { signClient } from './config'
+import { initializeModal, initializeSignClient } from './config'
 
 export default function App() {
   document.documentElement.className = 'light'
 
-  const lastKeyIndex = signClient.session.getAll().length - 1
-  const lastSession = signClient.session.getAll()[lastKeyIndex]
+  const [signClient, setSignClient] = useState<SignClient>()
+  const [session, setSession] = useState<SessionTypes.Struct | undefined>()
+  const [account, setAccount] = useState<string | undefined>()
+  const [network, setNetwork] = useState<string | undefined>()
 
-  const [session, setSession] = useState<SessionTypes.Struct | undefined>(lastSession)
-  const [account, setAccount] = useState<string | undefined>(
-    lastSession?.namespaces['eip155']?.accounts?.[0]?.split(':')[2]
-  )
-  const [network, setNetwork] = useState<string | undefined>(
-    lastSession?.namespaces['eip155']?.chains?.[0]
-  )
+  useEffect(() => {
+    const init = async () => {
+      const client = await initializeSignClient()
+      setSignClient(client)
+      initializeModal()
 
-  signClient.on('session_update', ({ topic, params }) => {
-    const { namespaces } = params
-    const _session = signClient.session.get(topic)
-    const updatedSession = { ..._session, namespaces }
+      const lastKeyIndex = client.session.getAll().length - 1
+      const lastSession = client.session.getAll()[lastKeyIndex]
 
-    setSession(updatedSession)
-  })
+      if (lastSession) {
+        setSession(lastSession)
+        setAccount(lastSession.namespaces['eip155']?.accounts?.[0]?.split(':')[2])
+        setNetwork(lastSession.namespaces['eip155']?.chains?.[0])
+      }
+    }
+    init()
+  }, [])
+
+  useEffect(() => {
+    if (!signClient) return
+
+    const handleSessionUpdate = ({ topic, params }: { topic: string; params: any }) => {
+      const { namespaces } = params
+      const _session = signClient.session.get(topic)
+      const updatedSession = { ..._session, namespaces }
+      setSession(updatedSession)
+    }
+
+    signClient.on('session_update', handleSessionUpdate)
+
+    return () => {
+      signClient.off('session_update', handleSessionUpdate)
+    }
+  }, [signClient])
 
   return (
     <div className="page-container">

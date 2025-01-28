@@ -1,10 +1,10 @@
 import SignClient from '@walletconnect/sign-client'
 import type { SessionTypes } from '@walletconnect/types'
 
-import { modal } from '../config'
+import { initializeModal } from '../config'
 
 interface ActionButtonListProps {
-  signClient: SignClient
+  signClient?: InstanceType<typeof SignClient>
   session: SessionTypes.Struct | undefined
   account?: string
   onSessionChange: (session: SessionTypes.Struct | undefined) => void
@@ -20,6 +20,8 @@ export default function ActionButtonList({
   onAccountChange,
   onNetworkChange
 }: ActionButtonListProps) {
+  if (!signClient) return null
+
   return (
     <div className="appkit-buttons-container">
       {session ? (
@@ -78,12 +80,13 @@ export default function ActionButtonList({
             })
 
             if (uri) {
-              modal.open({ uri, view: 'ConnectingWalletConnectBasic' })
+              const appKitModal = initializeModal()
+              appKitModal?.open({ uri, view: 'ConnectingWalletConnectBasic' })
               const session = await approval()
               onAccountChange(session?.namespaces['eip155']?.accounts?.[0]?.split(':')[2])
               onNetworkChange(session?.namespaces['eip155']?.chains?.[0])
               onSessionChange(session)
-              modal.close()
+              appKitModal?.close()
             }
           }}
         >

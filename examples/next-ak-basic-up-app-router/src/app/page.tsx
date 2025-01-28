@@ -1,43 +1,76 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+
+import type UniversalProvider from '@walletconnect/universal-provider'
 
 import ActionButtonList from './components/ActionButton'
 import Footer from './components/Footer'
 import Header from './components/Header'
 import InfoList from './components/InfoList'
-import { modal, provider } from './config'
+import { initializeModal, initializeProvider } from './config'
 
 export default function App() {
-  document.documentElement.className = 'light'
+  const [provider, setProvider] = useState<InstanceType<typeof UniversalProvider>>()
+  const [session, setSession] = useState<any>()
+  const [account, setAccount] = useState<string>()
+  const [network, setNetwork] = useState<string>()
+  const [balance, setBalance] = useState<string>()
 
-  const [session, setSession] = useState<any>(provider.session)
-  const [account, setAccount] = useState<string | undefined>(
-    provider.session?.namespaces['eip155']?.accounts?.[0]?.split(':')[2]
-  )
-  const [network, setNetwork] = useState<string | undefined>(
-    provider.session?.namespaces['eip155']?.chains?.[0]
-  )
-  const [balance, setBalance] = useState<string | undefined>(undefined)
+  useEffect(() => {
+    document.documentElement.className = 'light'
+    const init = async () => {
+      const universalProvider = await initializeProvider()
+      if (!universalProvider) return
 
-  provider.on('chainChanged', (chainId: string) => {
-    setNetwork(chainId)
-  })
+      setProvider(universalProvider)
+      initializeModal(universalProvider)
 
-  provider.on('accountsChanged', (accounts: string[]) => {
-    setAccount(accounts[0])
-  })
+      if (universalProvider.session) {
+        setSession(universalProvider.session)
+        setAccount(universalProvider.session?.namespaces['eip155']?.accounts?.[0]?.split(':')[2])
+        setNetwork(universalProvider.session?.namespaces['eip155']?.chains?.[0])
+      }
+    }
+    init()
+  }, [])
 
-  provider.on('connect', async (session: any) => {
-    await modal.close()
-    setSession(session)
-    setAccount(session?.session?.namespaces?.eip155?.accounts?.[0].split(':')[2])
-    setNetwork(session?.session?.namespaces?.eip155?.chains?.[0])
-  })
+  useEffect(() => {
+    if (!provider) return
 
-  provider.on('display_uri', (uri: string) => {
-    modal.open({ uri, view: 'ConnectingWalletConnectBasic' })
-  })
+    const handleChainChanged = (chainId: string) => {
+      setNetwork(chainId)
+    }
+
+    const handleAccountsChanged = (accounts: string[]) => {
+      setAccount(accounts[0])
+    }
+
+    const handleConnect = async (session: any) => {
+      const modal = initializeModal(provider)
+      await modal?.close()
+      setSession(session)
+      setAccount(session?.session?.namespaces?.eip155?.accounts?.[0].split(':')[2])
+      setNetwork(session?.session?.namespaces?.eip155?.chains?.[0])
+    }
+
+    const handleDisplayUri = (uri: string) => {
+      const modal = initializeModal(provider)
+      modal?.open({ uri, view: 'ConnectingWalletConnectBasic' })
+    }
+
+    provider.on('chainChanged', handleChainChanged)
+    provider.on('accountsChanged', handleAccountsChanged)
+    provider.on('connect', handleConnect)
+    provider.on('display_uri', handleDisplayUri)
+
+    return () => {
+      provider.removeListener('chainChanged', handleChainChanged)
+      provider.removeListener('accountsChanged', handleAccountsChanged)
+      provider.removeListener('connect', handleConnect)
+      provider.removeListener('display_uri', handleDisplayUri)
+    }
+  }, [provider])
 
   return (
     <div className="page-container">

@@ -20,20 +20,39 @@ const REQUIRED_NAMESPACES = {
 }
 
 // Initialize clients
-const signClient = await SignClient.init({ projectId: PROJECT_ID })
-const modal = createAppKit({
-  projectId: PROJECT_ID,
-  networks: [mainnet]
-})
+let signClient
+let modal
+let session
+let account
+let network
 
-// Get last session if exists
-const sessions = signClient.session.getAll()
-const lastSession = sessions[sessions.length - 1]
+async function initialize() {
+  signClient = await SignClient.init({ projectId: PROJECT_ID })
+  modal = createAppKit({
+    projectId: PROJECT_ID,
+    networks: [mainnet]
+  })
 
-// State
-let session = lastSession
-let account = lastSession?.namespaces?.eip155?.accounts?.[0]?.split(':')[2]
-let network = lastSession?.namespaces?.eip155?.chains?.[0]
+  // Get last session if exists
+  const sessions = signClient.session.getAll()
+  const lastSession = sessions[sessions.length - 1]
+
+  // Set initial state
+  session = lastSession
+  account = lastSession?.namespaces?.eip155?.accounts?.[0]?.split(':')[2]
+  network = lastSession?.namespaces?.eip155?.chains?.[0]
+
+  // Event listeners
+  signClient.on('session_update', ({ topic, params }) => {
+    const { namespaces } = params
+    const _session = signClient.session.get(topic)
+    session = { ..._session, namespaces }
+    updateDom()
+  })
+
+  setupEventListeners()
+  updateDom()
+}
 
 function updateDom() {
   const connect = document.getElementById('connect')
@@ -69,46 +88,43 @@ function clearState() {
   network = undefined
 }
 
-// Event listeners
-signClient.on('session_update', ({ topic, params }) => {
-  const { namespaces } = params
-  const _session = signClient.session.get(topic)
-  session = { ..._session, namespaces }
-  updateDom()
-})
+function setupEventListeners() {
+  document.getElementById('connect')?.addEventListener('click', async () => {
+    const { uri, approval } = await signClient.connect({
+      requiredNamespaces: REQUIRED_NAMESPACES
+    })
 
-document.getElementById('connect')?.addEventListener('click', async () => {
-  const { uri, approval } = await signClient.connect({
-    requiredNamespaces: REQUIRED_NAMESPACES
-  })
-
-  if (uri) {
-    modal.open({ uri, view: 'ConnectingWalletConnectBasic' })
-    session = await approval()
-    account = session?.namespaces['eip155']?.accounts?.[0]?.split(':')[2]
-    network = session?.namespaces['eip155']?.chains?.[0]
-    modal.close()
-  }
-
-  updateDom()
-})
-
-document.getElementById('disconnect')?.addEventListener('click', async () => {
-  await signClient.disconnect({ topic: session.topic })
-  clearState()
-  updateDom()
-})
-
-document.getElementById('sign-message')?.addEventListener('click', async () => {
-  await signClient.request({
-    topic: session.topic,
-    chainId: 'eip155:1',
-    request: {
-      method: 'personal_sign',
-      params: ['0x7468697320697320612074657374206d65737361676520746f206265207369676e6564', account]
+    if (uri) {
+      modal.open({ uri, view: 'ConnectingWalletConnectBasic' })
+      session = await approval()
+      account = session?.namespaces['eip155']?.accounts?.[0]?.split(':')[2]
+      network = session?.namespaces['eip155']?.chains?.[0]
+      modal.close()
     }
-  })
-})
 
-// Initialize DOM
-updateDom()
+    updateDom()
+  })
+
+  document.getElementById('disconnect')?.addEventListener('click', async () => {
+    await signClient.disconnect({ topic: session.topic })
+    clearState()
+    updateDom()
+  })
+
+  document.getElementById('sign-message')?.addEventListener('click', async () => {
+    await signClient.request({
+      topic: session.topic,
+      chainId: 'eip155:1',
+      request: {
+        method: 'personal_sign',
+        params: [
+          '0x7468697320697320612074657374206d65737361676520746f206265207369676e6564',
+          account
+        ]
+      }
+    })
+  })
+}
+
+// Initialize the application
+initialize().catch(console.error)

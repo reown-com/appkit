@@ -1,30 +1,60 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+
+import type { EthereumProvider } from '@walletconnect/ethereum-provider'
 
 import ActionButtonList from './components/ActionButton'
 import Footer from './components/Footer'
 import Header from './components/Header'
 import InfoList from './components/InfoList'
-import { provider } from './config'
+import { initializeProvider } from './config'
 
 export default function App() {
   document.documentElement.className = 'light'
 
-  const [session, setSession] = useState<any>(provider.session)
-  const [account, setAccount] = useState<string | undefined>(provider.accounts[0])
-  const [network, setNetwork] = useState<string | undefined>(provider.chainId.toString())
-  const [balance, setBalance] = useState<string | undefined>(undefined)
+  const [provider, setProvider] = useState<InstanceType<typeof EthereumProvider>>()
+  const [session, setSession] = useState<any>()
+  const [account, setAccount] = useState<string>()
+  const [network, setNetwork] = useState<string>()
+  const [balance, setBalance] = useState<string>()
 
-  provider.on('chainChanged', chainId => {
-    setNetwork(chainId)
-  })
+  useEffect(() => {
+    const init = async () => {
+      const wcProvider = await initializeProvider()
+      setProvider(wcProvider)
+      if (wcProvider?.session) setSession(wcProvider.session)
+      if (wcProvider?.accounts?.[0]) setAccount(wcProvider.accounts[0])
+      if (wcProvider?.chainId) setNetwork(wcProvider.chainId.toString())
+    }
+    init()
+  }, [])
 
-  provider.on('accountsChanged', accounts => {
-    setAccount(accounts[0])
-  })
+  useEffect(() => {
+    if (!provider) return
 
-  provider.on('connect', session => {
-    setSession(session)
-  })
+    provider.on('chainChanged', chainId => {
+      setNetwork(chainId)
+    })
+
+    provider.on('accountsChanged', accounts => {
+      setAccount(accounts[0])
+    })
+
+    provider.on('connect', session => {
+      setSession(session)
+    })
+
+    return () => {
+      provider.removeListener('chainChanged', chainId => {
+        setNetwork(chainId)
+      })
+      provider.removeListener('accountsChanged', accounts => {
+        setAccount(accounts[0])
+      })
+      provider.removeListener('connect', session => {
+        setSession(session)
+      })
+    }
+  }, [provider])
 
   return (
     <div className="page-container">

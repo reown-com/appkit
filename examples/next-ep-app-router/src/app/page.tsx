@@ -1,32 +1,61 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+
+import { EthereumProvider } from '@walletconnect/ethereum-provider'
 
 import ActionButtonList from './components/ActionButton'
 import Footer from './components/Footer'
 import Header from './components/Header'
 import InfoList from './components/InfoList'
-import { provider } from './config'
+import { initializeProvider } from './config'
 
 export default function App() {
-  document.documentElement.className = 'light'
+  const [provider, setProvider] = useState<InstanceType<typeof EthereumProvider>>()
+  const [session, setSession] = useState<any>()
+  const [account, setAccount] = useState<string>()
+  const [network, setNetwork] = useState<string>()
+  const [balance, setBalance] = useState<string>()
 
-  const [session, setSession] = useState<any>(provider.session)
-  const [account, setAccount] = useState<string | undefined>(provider.accounts[0])
-  const [network, setNetwork] = useState<string | undefined>(provider.chainId.toString())
-  const [balance, setBalance] = useState<string | undefined>(undefined)
+  useEffect(() => {
+    document.documentElement.className = 'light'
+    const init = async () => {
+      const ethProvider = await initializeProvider()
+      if (!ethProvider) return
 
-  provider.on('chainChanged', (chainId: string) => {
-    setNetwork(chainId)
-  })
+      setProvider(ethProvider)
+      if (ethProvider.session) setSession(ethProvider.session)
+      if (ethProvider.accounts?.[0]) setAccount(ethProvider.accounts[0])
+      if (ethProvider.chainId) setNetwork(ethProvider.chainId.toString())
+    }
+    init()
+  }, [])
 
-  provider.on('accountsChanged', (accounts: string[]) => {
-    setAccount(accounts[0])
-  })
+  useEffect(() => {
+    if (!provider) return
 
-  provider.on('connect', (session: any) => {
-    setSession(session)
-  })
+    const handleChainChanged = (chainId: string) => {
+      setNetwork(chainId)
+    }
+
+    const handleAccountsChanged = (accounts: string[]) => {
+      setAccount(accounts[0])
+    }
+
+    const handleConnect = (session: any) => {
+      setSession(session)
+    }
+
+    provider.on('chainChanged', handleChainChanged)
+    provider.on('accountsChanged', handleAccountsChanged)
+    provider.on('connect', handleConnect)
+
+    return () => {
+      provider.removeListener('chainChanged', handleChainChanged)
+      provider.removeListener('accountsChanged', handleAccountsChanged)
+      provider.removeListener('connect', handleConnect)
+    }
+  }, [provider])
 
   return (
     <div className="page-container">

@@ -3,38 +3,11 @@ import { EthereumProvider } from '@walletconnect/ethereum-provider'
 // Constants
 const projectId = import.meta.env.VITE_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694'
 
-// Initialize provider
-const provider = await EthereumProvider.init({
-  projectId,
-  chains: [1, 137],
-  optionalChains: [1, 137],
-  showQrModal: true,
-  qrModalOptions: {
-    themeMode: 'light'
-  },
-  metadata: {
-    name: 'AppKit HTML Ethereum Provider Example',
-    description: 'AppKit HTML Ethereum Provider Example',
-    url: 'https://reown.com/appkit',
-    icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
-  }
-})
-
 // State
-let account = provider?.accounts?.[0]
+let provider
+let account
 let balance
-let network = provider?.chainId?.toString()
-
-// Event listeners
-provider.on('chainChanged', chainId => {
-  network = chainId
-  updateDom()
-})
-
-provider.on('accountsChanged', accounts => {
-  account = accounts[0]
-  updateDom()
-})
+let network
 
 function updateDom() {
   const elements = {
@@ -67,25 +40,62 @@ function clearState() {
   network = undefined
 }
 
-// Button handlers
-document.getElementById('connect')?.addEventListener('click', async () => {
-  await provider.connect()
-  updateDom()
-})
-
-document.getElementById('disconnect')?.addEventListener('click', async () => {
-  await provider.disconnect()
-  clearState()
-  updateDom()
-})
-
-document.getElementById('get-balance')?.addEventListener('click', async () => {
-  balance = await provider.request({
-    method: 'eth_getBalance',
-    params: [account, 'latest']
+async function initializeApp() {
+  // Initialize provider
+  provider = await EthereumProvider.init({
+    projectId,
+    chains: [1, 137],
+    optionalChains: [1, 137],
+    showQrModal: true,
+    qrModalOptions: {
+      themeMode: 'light'
+    },
+    metadata: {
+      name: 'AppKit HTML Ethereum Provider Example',
+      description: 'AppKit HTML Ethereum Provider Example',
+      url: 'https://reown.com/appkit',
+      icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
+    }
   })
-  updateDom()
-})
 
-// Initialize DOM
-updateDom()
+  // Set initial state
+  account = provider?.accounts?.[0]
+  network = provider?.chainId?.toString()
+
+  // Event listeners
+  provider.on('chainChanged', chainId => {
+    network = chainId
+    updateDom()
+  })
+
+  provider.on('accountsChanged', accounts => {
+    account = accounts[0]
+    updateDom()
+  })
+
+  // Button handlers
+  document.getElementById('connect')?.addEventListener('click', async () => {
+    await provider.connect()
+    updateDom()
+  })
+
+  document.getElementById('disconnect')?.addEventListener('click', async () => {
+    await provider.disconnect()
+    clearState()
+    updateDom()
+  })
+
+  document.getElementById('get-balance')?.addEventListener('click', async () => {
+    balance = await provider.request({
+      method: 'eth_getBalance',
+      params: [account, 'latest']
+    })
+    updateDom()
+  })
+
+  // Initialize DOM
+  updateDom()
+}
+
+// Initialize when DOM is ready
+initializeApp()

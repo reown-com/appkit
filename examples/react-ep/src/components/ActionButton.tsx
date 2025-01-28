@@ -1,7 +1,7 @@
-import EthereumProvider from '@walletconnect/ethereum-provider'
+import type { EthereumProvider } from '@walletconnect/ethereum-provider'
 
 interface ActionButtonListProps {
-  provider: EthereumProvider
+  provider?: InstanceType<typeof EthereumProvider>
   session: unknown
   account?: string
   onSessionChange: (session: unknown) => void
@@ -19,6 +19,8 @@ export default function ActionButtonList({
   onAccountChange,
   onNetworkChange
 }: ActionButtonListProps) {
+  if (!provider) return null
+
   return (
     <div className="appkit-buttons-container">
       {session ? (
