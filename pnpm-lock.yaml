@@ -954,12 +954,9 @@ importers:
 
   examples/react-wagmi:
     dependencies:
-      '@reown/appkit':
+      '@reown/appkit-basic':
         specifier: workspace:*
-        version: link:../../packages/appkit
-      '@reown/appkit-adapter-wagmi':
-        specifier: workspace:*
-        version: link:../../packages/adapters/wagmi
+        version: link:../../packages/appkit-basic
       '@tanstack/react-query':
         specifier: 5.24.8
         version: 5.24.8(react@18.3.1)
@@ -1531,6 +1528,76 @@ importers:
         version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.29.1)(terser@5.37.0)
 
   packages/appkit:
+    dependencies:
+      '@reown/appkit-common':
+        specifier: workspace:*
+        version: link:../common
+      '@reown/appkit-core':
+        specifier: workspace:*
+        version: link:../core
+      '@reown/appkit-polyfills':
+        specifier: workspace:*
+        version: link:../polyfills
+      '@reown/appkit-scaffold-ui':
+        specifier: workspace:*
+        version: link:../scaffold-ui
+      '@reown/appkit-siwe':
+        specifier: workspace:*
+        version: link:../siwe
+      '@reown/appkit-ui':
+        specifier: workspace:*
+        version: link:../ui
+      '@reown/appkit-utils':
+        specifier: workspace:*
+        version: link:../appkit-utils
+      '@reown/appkit-wallet':
+        specifier: workspace:*
+        version: link:../wallet
+      '@walletconnect/types':
+        specifier: 2.17.5
+        version: 2.17.5(db0@0.2.1)(ioredis@5.4.2)
+      '@walletconnect/universal-provider':
+        specifier: 2.17.5
+        version: 2.17.5(bufferutil@4.0.9)(db0@0.2.1)(ioredis@5.4.2)(utf-8-validate@5.0.10)
+      '@walletconnect/utils':
+        specifier: 2.17.5
+        version: 2.17.5(db0@0.2.1)(ioredis@5.4.2)
+      bs58:
+        specifier: 6.0.0
+        version: 6.0.0
+      valtio:
+        specifier: 1.11.2
+        version: 1.11.2(@types/react@18.3.1)(react@18.3.1)
+      viem:
+        specifier: 2.x
+        version: 2.21.34(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+    devDependencies:
+      '@types/react':
+        specifier: 18.3.1
+        version: 18.3.1
+      '@types/react-dom':
+        specifier: 18.3.1
+        version: 18.3.1
+      '@vitest/coverage-v8':
+        specifier: 2.1.3
+        version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.29.1)(terser@5.37.0))
+      '@vue/runtime-core':
+        specifier: 3.4.3
+        version: 3.4.3
+      react:
+        specifier: 18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: 18.3.1
+        version: 18.3.1(react@18.3.1)
+      vitest:
+        specifier: 2.1.3
+        version: 2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.29.1)(terser@5.37.0)
+      vue:
+        specifier: 3.x
+        version: 3.5.13(typescript@5.3.3)
+
+  packages/appkit-basic:
     dependencies:
       '@reown/appkit-common':
         specifier: workspace:*
