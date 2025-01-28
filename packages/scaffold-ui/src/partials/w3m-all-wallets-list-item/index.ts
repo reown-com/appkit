@@ -4,6 +4,11 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { AssetUtil, type WcWallet } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-shimmer'
+import '@reown/appkit-ui/wui-text'
+import '@reown/appkit-ui/wui-wallet-image'
 
 import styles from './styles.js'
 

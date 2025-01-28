@@ -15,6 +15,13 @@ import {
   RouterController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-balance'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon-button'
+import '@reown/appkit-ui/wui-network-icon'
+import '@reown/appkit-ui/wui-profile-button'
+import '@reown/appkit-ui/wui-tabs'
+import '@reown/appkit-ui/wui-tooltip'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'

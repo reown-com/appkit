@@ -3,6 +3,9 @@ import { state } from 'lit/decorators.js'
 
 import { AccountController, EventsController, RouterController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-list-description'
+import '@reown/appkit-ui/wui-list-token'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 import styles from './styles.js'
