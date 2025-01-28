@@ -1,6 +1,6 @@
 import { CoreHelperUtil } from '@reown/appkit-core'
 
-import { AppKit } from '../src/client.js'
+import { AppKit } from '../src/client/appkit.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { PACKAGE_VERSION } from './constants.js'
 

@@ -3,7 +3,7 @@ import { type Ref, onUnmounted, ref } from 'vue'
 import { ChainController, CoreHelperUtil, type UseAppKitNetworkReturn } from '@reown/appkit-core'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 
-import { AppKit } from '../src/client.js'
+import { AppKit } from '../src/client/appkit.js'
 import { getAppKit } from '../src/library/vue/index.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { PACKAGE_VERSION } from './constants.js'

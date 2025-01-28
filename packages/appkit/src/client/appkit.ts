@@ -17,7 +17,6 @@ import {
   type ChainAdapter,
   type ConnectMethod,
   type ConnectedWalletInfo,
-  type ConnectionControllerClient,
   type ConnectionStatus,
   type ConnectorType,
   ConstantsUtil as CoreConstantsUtil,
@@ -26,7 +25,6 @@ import {
   type Features,
   type Metadata,
   type ModalControllerState,
-  type NetworkControllerClient,
   type OptionsControllerState,
   type PublicStateControllerState,
   type RouterControllerState,
@@ -85,6 +83,7 @@ import {
 } from '../universal-adapter/client.js'
 import { WcHelpersUtil } from '../utils/HelpersUtil.js'
 import type { AppKitOptions } from '../utils/TypesUtil.js'
+import { AppKitCore } from './core.js'
 
 declare global {
   interface Window {
@@ -122,8 +121,8 @@ interface AppKitOptionsInternal extends AppKitOptions {
 let isInitialized = false
 
 // -- Client --------------------------------------------------------------------
-export class AppKit {
-  private static instance?: AppKit
+export class AppKit extends AppKitCore {
+  static override instance?: AppKit
 
   public activeAdapter?: AdapterBlueprint
 
@@ -139,14 +138,6 @@ export class AppKit {
 
   public universalAdapter?: UniversalAdapterClient
 
-  private universalProvider?: UniversalProvider
-
-  private connectionControllerClient?: ConnectionControllerClient
-
-  private networkControllerClient?: NetworkControllerClient
-
-  private universalProviderInitPromise?: Promise<void>
-
   private authProvider?: W3mFrameProvider
 
   public version: SdkVersion
@@ -155,11 +146,8 @@ export class AppKit {
 
   public reportedAlertErrors: Record<string, boolean> = {}
 
-  private caipNetworks?: [CaipNetwork, ...CaipNetwork[]]
-
-  private defaultCaipNetwork?: CaipNetwork
-
   public constructor(options: AppKitOptionsInternal) {
+    super()
     this.options = options
     this.version = options.sdkVersion
     this.caipNetworks = this.extendCaipNetworks(options)

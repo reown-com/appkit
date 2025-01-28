@@ -2,7 +2,7 @@ import { CoreHelperUtil, type UseAppKitNetworkReturn } from '@reown/appkit-core'
 import { useAppKitNetworkCore } from '@reown/appkit-core/react'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 
-import { AppKit } from '../src/client.js'
+import { AppKit } from '../src/client/appkit.js'
 import { getAppKit } from '../src/library/react/index.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { PACKAGE_VERSION } from './constants.js'
