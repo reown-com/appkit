@@ -90,7 +90,10 @@ export class EthersAdapter extends AdapterBlueprint {
     }
 
     if (options.enableCoinbase !== false) {
-      providers.coinbase = await getCoinbaseProvider()
+      const coinbaseProvider = await getCoinbaseProvider()
+      if (coinbaseProvider) {
+        providers.coinbase = coinbaseProvider
+      }
     }
 
     providers.EIP6963 = options.enableEIP6963 !== false
@@ -256,6 +259,7 @@ export class EthersAdapter extends AdapterBlueprint {
       key => key !== 'metadata' && key !== 'EIP6963'
     )
 
+    console.log('>>> Ethers.connectors', connectors)
     connectors.forEach(connector => {
       const key = connector === 'coinbase' ? 'coinbaseWalletSDK' : connector
 

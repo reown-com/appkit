@@ -91,7 +91,10 @@ export class Ethers5Adapter extends AdapterBlueprint {
     }
 
     if (options.enableCoinbase !== false) {
-      providers.coinbase = await getCoinbaseProvider()
+      const coinbaseProvider = await getCoinbaseProvider()
+      if (coinbaseProvider) {
+        providers.coinbase = coinbaseProvider
+      }
     }
 
     providers.EIP6963 = options.enableEIP6963 !== false
