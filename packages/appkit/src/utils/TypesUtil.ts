@@ -2,7 +2,8 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 
 import type { AppKitNetwork, ThemeVariables } from '@reown/appkit-common'
 import type { ChainAdapter, Metadata, OptionsControllerState, ThemeMode } from '@reown/appkit-core'
-import type { AppKitSIWEClient } from '@reown/appkit-siwe'
+
+import type { AppKitSIWEClient } from './SIWETypesUtil.js'
 
 export type AppKitOptions = {
   /**
