@@ -140,8 +140,6 @@ export class AppKit extends AppKitCore {
 
   private authProvider?: W3mFrameProvider
 
-  private initPromise?: Promise<void> = undefined
-
   public version: SdkVersion
 
   public adapter?: ChainAdapter
