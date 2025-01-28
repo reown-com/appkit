@@ -21,6 +21,11 @@ import '../../partials/w3m-swap-input-skeleton/index.js'
 import '../../partials/w3m-swap-input/index.js'
 import styles from './styles.js'
 
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-text'
+
 @customElement('w3m-swap-view')
 export class W3mSwapView extends LitElement {
   public static override styles = styles

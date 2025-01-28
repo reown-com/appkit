@@ -2,6 +2,9 @@ import { LitElement, html } from 'lit'
 
 import { ConstantsUtil } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-chip'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-text'
 
 @customElement('w3m-upgrade-wallet-view')
 export class W3mUpgradeWalletView extends LitElement {
