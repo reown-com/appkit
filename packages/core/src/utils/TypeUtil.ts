@@ -415,10 +415,6 @@ export type Event =
     }
   | {
       type: 'track'
-      event: 'MODAL_LOADED'
-    }
-  | {
-      type: 'track'
       event: 'MODAL_OPEN'
       properties: {
         connected: boolean

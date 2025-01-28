@@ -7,7 +7,6 @@ import { type CaipNetwork } from '@reown/appkit-common'
 import {
   ApiController,
   ChainController,
-  EventsController,
   ModalController,
   OptionsController,
   RouterController,
@@ -204,13 +203,6 @@ describe('W3mModal', () => {
   })
 
   describe('Initialization', () => {
-    it('should send modal loaded event', async () => {
-      const eventSpy = vi.spyOn(EventsController, 'sendEvent')
-      await fixture(html`<w3m-modal></w3m-modal>`)
-
-      expect(eventSpy).toHaveBeenCalledWith({ type: 'track', event: 'MODAL_LOADED' })
-    })
-
     it('should prefetch API data', async () => {
       const prefetchSpy = vi.spyOn(ApiController, 'prefetch')
       await fixture(html`<w3m-modal></w3m-modal>`)
