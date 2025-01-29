@@ -343,46 +343,48 @@ export class AppKit extends AppKitCore {
   protected override async injectModalUi() {
     if (!isInitialized && CoreHelperUtil.isClient()) {
       const features = { ...CoreConstantsUtil.DEFAULT_FEATURES, ...this.options.features }
-      // Import all views
-      await import('@reown/appkit-scaffold-ui')
+
       // Selectively import views based on feature flags
+      const featureImports = []
       if (features) {
         const usingEmbeddedWallet = features.email || (features.socials && features.socials.length)
-
         if (usingEmbeddedWallet) {
-          await import('@reown/appkit-scaffold-ui/embedded-wallet')
+          featureImports.push('@reown/appkit-scaffold-ui/embedded-wallet')
         }
 
         if (features.email) {
-          await import('@reown/appkit-scaffold-ui/email')
+          featureImports.push('@reown/appkit-scaffold-ui/email')
         }
         if (features.socials) {
-          await import('@reown/appkit-scaffold-ui/socials')
+          featureImports.push('@reown/appkit-scaffold-ui/socials')
         }
 
         if (features.swaps) {
-          await import('@reown/appkit-scaffold-ui/swaps')
+          featureImports.push('@reown/appkit-scaffold-ui/swaps')
         }
 
         if (features.send) {
-          await import('@reown/appkit-scaffold-ui/send')
+          featureImports.push('@reown/appkit-scaffold-ui/send')
         }
 
         if (features.receive) {
-          await import('@reown/appkit-scaffold-ui/receive')
+          featureImports.push('@reown/appkit-scaffold-ui/receive')
         }
 
         if (features.onramp) {
-          await import('@reown/appkit-scaffold-ui/onramp')
+          featureImports.push('@reown/appkit-scaffold-ui/onramp')
         }
 
         if (features.history) {
-          await import('@reown/appkit-scaffold-ui/transactions')
+          featureImports.push('@reown/appkit-scaffold-ui/history')
         }
       }
 
-      // Import core modal
-      await import('@reown/appkit-scaffold-ui/w3m-modal')
+      await Promise.all([
+        ...featureImports.map(feature => import(feature)),
+        import('@reown/appkit-scaffold-ui'),
+        import('@reown/appkit-scaffold-ui/w3m-modal')
+      ])
       const modal = document.createElement('w3m-modal')
       if (!OptionsController.state.disableAppend && !OptionsController.state.enableEmbedded) {
         document.body.insertAdjacentElement('beforeend', modal)
