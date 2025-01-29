@@ -20,4 +20,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Improved wallet images loading by fetching them only when the modal is opened instead of on page load.
+Improved wallet image loading by fetching them only when the modal is opened instead of on page load.
