@@ -1415,6 +1415,103 @@ importers:
         specifier: 6.0.0
         version: 6.0.0(@types/node@20.11.5)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.37.0)(yaml@2.7.0)
 
+  examples/vue-ak-basic:
+    dependencies:
+      '@reown/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
+      vue:
+        specifier: 3.4.3
+        version: 3.4.3(typescript@5.3.3)
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: 5.0.2
+        version: 5.0.2(vite@5.2.11(@types/node@20.11.5)(lightningcss@1.29.1)(terser@5.37.0))(vue@3.4.3(typescript@5.3.3))
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
+      vite:
+        specifier: 5.2.11
+        version: 5.2.11(@types/node@20.11.5)(lightningcss@1.29.1)(terser@5.37.0)
+      vue-tsc:
+        specifier: 2.1.8
+        version: 2.1.8(typescript@5.3.3)
+
+  examples/vue-ak-basic-sign-client:
+    dependencies:
+      '@reown/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
+      '@walletconnect/sign-client':
+        specifier: 2.17.5
+        version: 2.17.5(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(utf-8-validate@5.0.10)
+      '@walletconnect/types':
+        specifier: 2.17.5
+        version: 2.17.5(db0@0.2.3)(ioredis@5.4.2)
+      vue:
+        specifier: 3.4.3
+        version: 3.4.3(typescript@5.3.3)
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: 5.0.2
+        version: 5.0.2(vite@5.2.11(@types/node@20.11.5)(lightningcss@1.29.1)(terser@5.37.0))(vue@3.4.3(typescript@5.3.3))
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
+      vite:
+        specifier: 5.2.11
+        version: 5.2.11(@types/node@20.11.5)(lightningcss@1.29.1)(terser@5.37.0)
+      vue-tsc:
+        specifier: 2.1.8
+        version: 2.1.8(typescript@5.3.3)
+
+  examples/vue-ak-basic-up:
+    dependencies:
+      '@reown/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
+      '@walletconnect/universal-provider':
+        specifier: 2.17.5
+        version: 2.17.5(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(utf-8-validate@5.0.10)
+      vue:
+        specifier: 3.4.3
+        version: 3.4.3(typescript@5.3.3)
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: 5.0.2
+        version: 5.0.2(vite@5.2.11(@types/node@20.11.5)(lightningcss@1.29.1)(terser@5.37.0))(vue@3.4.3(typescript@5.3.3))
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
+      vite:
+        specifier: 5.2.11
+        version: 5.2.11(@types/node@20.11.5)(lightningcss@1.29.1)(terser@5.37.0)
+      vue-tsc:
+        specifier: 2.1.8
+        version: 2.1.8(typescript@5.3.3)
+
+  examples/vue-ep:
+    dependencies:
+      '@walletconnect/ethereum-provider':
+        specifier: 2.17.4-canary-ak-1
+        version: 2.17.4-canary-ak-1(@types/react@18.3.1)(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react@18.3.1)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+      vue:
+        specifier: 3.4.3
+        version: 3.4.3(typescript@5.3.3)
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: 5.0.2
+        version: 5.0.2(vite@5.2.11(@types/node@20.11.5)(lightningcss@1.29.1)(terser@5.37.0))(vue@3.4.3(typescript@5.3.3))
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
+      vite:
+        specifier: 5.2.11
+        version: 5.2.11(@types/node@20.11.5)(lightningcss@1.29.1)(terser@5.37.0)
+      vue-tsc:
+        specifier: 2.1.8
+        version: 2.1.8(typescript@5.3.3)
+
   examples/vue-ethers-solana:
     dependencies:
       '@reown/appkit':
@@ -31382,7 +31479,7 @@ snapshots:
 
   '@walletconnect/window-metadata@1.0.0':
     dependencies:
-      '@walletconnect/window-getters': 1.0.0
+      '@walletconnect/window-getters': 1.0.1
 
   '@walletconnect/window-metadata@1.0.1':
     dependencies:

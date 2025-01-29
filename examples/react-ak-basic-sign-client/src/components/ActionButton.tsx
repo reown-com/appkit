@@ -1,7 +1,7 @@
 import SignClient from '@walletconnect/sign-client'
 import type { SessionTypes } from '@walletconnect/types'
 
-import { initializeModal, modal } from '../config'
+import { initializeModal } from '../config'
 
 interface ActionButtonListProps {
   signClient?: SignClient
