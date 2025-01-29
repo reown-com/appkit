@@ -31,11 +31,11 @@ describe('W3mModal', () => {
     let element: W3mModal
 
     beforeEach(async () => {
+      vi.spyOn(ApiController, 'prefetchWalletImages').mockImplementation(() => Promise.resolve())
+      vi.spyOn(ApiController, 'prefetchAnalyticsConfig').mockImplementation(() => Promise.resolve())
       OptionsController.setEnableEmbedded(true)
       ModalController.close()
       element = await fixture(html`<w3m-modal .enableEmbedded=${true}></w3m-modal>`)
-      vi.spyOn(ApiController, 'prefetchWalletImages').mockImplementation(() => Promise.resolve())
-      vi.spyOn(ApiController, 'prefetchAnalyticsConfig').mockImplementation(() => Promise.resolve())
     })
 
     afterEach(() => {
@@ -75,10 +75,10 @@ describe('W3mModal', () => {
     let element: W3mModal
 
     beforeEach(async () => {
-      OptionsController.setEnableEmbedded(false)
-      ModalController.close()
       vi.spyOn(ApiController, 'prefetchWalletImages').mockImplementation(() => Promise.resolve())
       vi.spyOn(ApiController, 'prefetchAnalyticsConfig').mockImplementation(() => Promise.resolve())
+      OptionsController.setEnableEmbedded(false)
+      ModalController.close()
       element = await fixture(html`<w3m-modal></w3m-modal>`)
     })
 
