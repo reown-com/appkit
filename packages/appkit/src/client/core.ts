@@ -954,9 +954,7 @@ export abstract class AppKitCore {
       this.setCaipAddress(`${chainNamespace}:${chainId}:${address}`, chainNamespace)
       await this.syncIdentity({ address, chainId, chainNamespace })
     }
-
     this.setStatus('connected', chainNamespace)
-
     if (isUnsupportedNetwork && !shouldSupportAllNetworks) {
       return
     }

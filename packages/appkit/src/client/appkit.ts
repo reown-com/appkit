@@ -325,6 +325,7 @@ export class AppKit extends AppKitCore {
           this.syncWalletConnectAccount()
         } else {
           const address = this.getAddressByChainNamespace(caipNetwork.chainNamespace)
+          this.setCaipNetwork(caipNetwork)
           if (address) {
             this.syncAccount({
               address,
