@@ -33,7 +33,7 @@ walletButtonTest.beforeAll(async ({ browser, library }) => {
 })
 
 // -- Tests --------------------------------------------------------------------
-walletButtonTest.only('it should be able to connect with QR code', async () => {
+walletButtonTest('it should be able to connect with QR code', async () => {
   await modalValidator.expectWalletButtonHook(WALLET_CONNECT_TEST_ID, false)
   await modalPage.clickWalletButton(WALLET_CONNECT_TEST_ID)
   const uri = await modalPage.getConnectUriFromQRModal()
