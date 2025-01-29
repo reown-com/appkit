@@ -253,10 +253,10 @@ export class W3mModal extends LitElement {
     // If user is on the unsupported network screen, we should go back when network has been changed
     const isUnsupportedNetworkScreen = RouterController.state.view === 'UnsupportedChain'
 
-    if (
+    const shouldGoBack =
       !isConnectingExternal &&
       (isNotConnected || isUnsupportedNetworkScreen || isNetworkChangedInSameNamespace)
-    ) {
+    if (shouldGoBack) {
       RouterController.goBack()
     }
 
