@@ -1,3 +1,4 @@
+import type { CaipNetworkId } from '@reown/appkit-common'
 import type { SIWXSession } from '@reown/appkit-core'
 
 type MockSessionReplaces = {
@@ -12,7 +13,7 @@ export function mockSession(
       domain: 'example.com',
       accountAddress: '0xb3F068DCc2f92ED42E0417d4f2C2191f743fBfdA',
       statement: 'This is a statement',
-      chainId: 'eip155:1',
+      chainId: 'eip155:1' as CaipNetworkId,
       uri: 'siwx://example.com',
       version: '1',
       nonce: '123',
