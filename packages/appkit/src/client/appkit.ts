@@ -380,14 +380,14 @@ export class AppKit extends AppKitCore {
           await import('@reown/appkit-scaffold-ui/transactions')
         }
       }
-    }
 
-    // Import core modal
-    await import('@reown/appkit-scaffold-ui/w3m-modal')
-    const modal = document.createElement('w3m-modal')
-    if (!OptionsController.state.disableAppend && !OptionsController.state.enableEmbedded) {
-      document.body.insertAdjacentElement('beforeend', modal)
+      // Import core modal
+      await import('@reown/appkit-scaffold-ui/w3m-modal')
+      const modal = document.createElement('w3m-modal')
+      if (!OptionsController.state.disableAppend && !OptionsController.state.enableEmbedded) {
+        document.body.insertAdjacentElement('beforeend', modal)
+      }
+      isInitialized = true
     }
-    isInitialized = true
   }
 }
