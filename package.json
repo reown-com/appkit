@@ -78,14 +78,17 @@
       "@synthetixio/synpress-metamask@0.0.1-alpha.7": "patches/@synthetixio__synpress-metamask@0.0.1-alpha.7.patch"
     },
     "overrides": {
-      "@solana/web3.js": "1.95.8"
+      "@solana/web3.js": "1.95.8",
+      "@walletconnect/ethereum-provider": "2.17.4-canary-ak-4"
     }
   },
   "resolutions": {
-    "@solana/web3.js": "1.95.8"
+    "@solana/web3.js": "1.95.8",
+    "@walletconnect/ethereum-provider": "2.17.4-canary-ak-4"
   },
   "overrides": {
-    "@solana/web3.js": "1.95.8"
+    "@solana/web3.js": "1.95.8",
+    "@walletconnect/ethereum-provider": "2.17.4-canary-ak-4"
   },
   "@parcel/resolver-default": {
     "packageExports": true
