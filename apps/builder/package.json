@@ -35,7 +35,7 @@
     "@reown/appkit-scaffold-ui": "workspace:*",
     "ethers": "6.13.2",
     "@sentry/core": "8.45.1",
-    "@sentry/nextjs": "8.45.1",
+    "@sentry/nextjs": "8.49.0",
     "@solana/wallet-adapter-wallets": "0.19.32",
     "@solana/web3.js": "1.95.8",
     "@tanstack/react-query": "5.56.2",
