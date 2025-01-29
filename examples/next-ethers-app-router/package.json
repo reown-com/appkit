@@ -13,7 +13,7 @@
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-ethers": "workspace:*",
     "@wagmi/core": "2.13.8",
-    "next": "14.2.15",
+    "next": "14.2.21",
     "next-themes": "0.4.3",
     "react": "18.3.1",
     "react-dom": "18.3.1",
