@@ -1,58 +1,59 @@
 import type { SessionTypes } from '@walletconnect/types'
-import UniversalProvider, { type UniversalProviderOpts } from '@walletconnect/universal-provider'
+import UniversalProvider from '@walletconnect/universal-provider'
+import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
 
-import {
-  type AppKitNetwork,
-  type CaipAddress,
-  type CaipNetwork,
-  type CaipNetworkId,
-  type ChainNamespace,
-  ConstantsUtil,
-  NetworkUtil,
-  ParseUtil,
-  type SdkVersion
+import type {
+  AppKitNetwork,
+  CaipAddress,
+  CaipNetwork,
+  CaipNetworkId,
+  ChainNamespace,
+  SdkVersion
 } from '@reown/appkit-common'
+import { ConstantsUtil, NetworkUtil, ParseUtil } from '@reown/appkit-common'
+import type {
+  ChainAdapter,
+  ConnectMethod,
+  ConnectedWalletInfo,
+  ConnectionControllerClient,
+  ConnectionStatus,
+  ConnectorType,
+  EstimateGasTransactionArgs,
+  EventsControllerState,
+  Features,
+  ModalControllerState,
+  NetworkControllerClient,
+  OptionsControllerState,
+  PublicStateControllerState,
+  RouterControllerState,
+  SendTransactionArgs,
+  SocialProvider,
+  ThemeControllerState,
+  UseAppKitAccountReturn,
+  UseAppKitNetworkReturn,
+  WalletFeature,
+  WriteContractArgs
+} from '@reown/appkit-core'
 import {
   AccountController,
   AlertController,
   ApiController,
   AssetUtil,
   BlockchainApiController,
-  type ChainAdapter,
   ChainController,
-  type ConnectMethod,
-  type ConnectedWalletInfo,
   ConnectionController,
-  type ConnectionControllerClient,
-  type ConnectionStatus,
   ConnectorController,
-  type ConnectorType,
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil,
   EnsController,
-  type EstimateGasTransactionArgs,
   EventsController,
-  type EventsControllerState,
-  type Features,
   ModalController,
-  type ModalControllerState,
-  type NetworkControllerClient,
   OptionsController,
-  type OptionsControllerState,
   PublicStateController,
-  type PublicStateControllerState,
   RouterController,
-  type RouterControllerState,
-  type SendTransactionArgs,
   SnackController,
-  type SocialProvider,
   StorageUtil,
-  ThemeController,
-  type ThemeControllerState,
-  type UseAppKitAccountReturn,
-  type UseAppKitNetworkReturn,
-  type WalletFeature,
-  type WriteContractArgs
+  ThemeController
 } from '@reown/appkit-core'
 import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
@@ -66,9 +67,11 @@ import {
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
 import type { AdapterBlueprint } from '../adapters/index.js'
-import { type ProviderStoreUtilState, ProviderUtil } from '../store/ProviderUtil.js'
+import { ProviderUtil } from '../store/ProviderUtil.js'
+import type { ProviderStoreUtilState } from '../store/ProviderUtil.js'
 import { UniversalAdapter } from '../universal-adapter/client.js'
-import { type AppKitOptions, WcHelpersUtil } from '../utils/index.js'
+import { WcHelpersUtil } from '../utils/index.js'
+import type { AppKitOptions } from '../utils/index.js'
 
 export type Adapters = Record<ChainNamespace, AdapterBlueprint>
 export interface AppKitOptionsWithSdk extends AppKitOptions {
@@ -1618,6 +1621,10 @@ export abstract class AppKitCore {
     return RouterController.state.transactionStack[
       RouterController.state.transactionStack.length - 1
     ]?.replace
+  }
+
+  public static getInstance() {
+    return this.instance
   }
 
   public getIsConnectedState = () => Boolean(ChainController.state.activeCaipAddress)

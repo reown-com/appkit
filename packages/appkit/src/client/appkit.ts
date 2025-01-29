@@ -50,12 +50,6 @@ export class AppKit extends AppKitCore {
 
   private authProvider?: W3mFrameProvider
 
-  public static getInstance() {
-    return this.instance
-  }
-
-  // -- Adapter Methods ----------------------------------------------------------
-
   // -- Private ------------------------------------------------------------------
   private setupAuthConnectorListeners(provider: W3mFrameProvider) {
     provider.onRpcRequest((request: W3mFrameTypes.RPCRequest) => {
@@ -269,6 +263,7 @@ export class AppKit extends AppKitCore {
     }
   }
 
+  // -- Overrides ------
   protected override async syncNamespaceConnection(namespace: ChainNamespace) {
     const isEmailUsed = this.authProvider?.getLoginEmailUsed()
 
