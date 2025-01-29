@@ -74,7 +74,7 @@ describe('W3mAccountActivityWidget', () => {
     expect(monthIndexes.length).toBe(2)
     expect(transactionListItems.length).toBe(2)
     expect(HelpersUtil.getTextContent(monthIndexes[0] as HTMLElement)).toBe('April 2020')
-    expect(HelpersUtil.getTextContent(monthIndexes[1] as HTMLElement)).toBe('February 2020')
+    expect(HelpersUtil.getTextContent(monthIndexes[1] as HTMLElement)).toBe('March 2020')
   })
 
   it('it should show empty state', async () => {
