@@ -1,5 +1,5 @@
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { arbitrum, mainnet, optimism, polygon } from '@reown/appkit/networks'
+import { type AppKitNetwork, arbitrum, mainnet, optimism, polygon } from '@reown/appkit/networks'
 import {
   createAppKit,
   useAppKit,
@@ -12,13 +12,9 @@ import {
   useWalletInfo
 } from '@reown/appkit/react'
 
-import ActionButtonList from './components/ActionButton'
-import Footer from './components/Footer'
-import InfoList from './components/InfoList'
-
 export const projectId = import.meta.env.VITE_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694' // this is a public projectId only to use on localhost
 
-const networks = [mainnet, polygon, arbitrum, optimism]
+const networks: [AppKitNetwork, ...AppKitNetwork[]] = [mainnet, polygon, arbitrum, optimism]
 
 // Setup wagmi adapter
 export const wagmiAdapter = new WagmiAdapter({

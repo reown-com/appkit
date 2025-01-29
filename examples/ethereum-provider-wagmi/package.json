@@ -1,5 +1,5 @@
 {
-  "name": "@examples/wcm-wagmi",
+  "name": "@examples/ethereum-provider-wagmi",
   "private": true,
   "version": "1.2.0",
   "scripts": {

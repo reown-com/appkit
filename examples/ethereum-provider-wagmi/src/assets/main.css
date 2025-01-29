@@ -70,14 +70,13 @@ main {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
   gap: 0.5rem;
 }
 
 .wrapper__wc_qr_code {
   position: fixed;
   inset: 0;
-  background-color: var(--apkt-foreground-accent-primary-010);
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -86,11 +85,53 @@ main {
 }
 
 .container__wc_qr_code {
+  background: var(--apkt-background-primary);
+  border-radius: 1rem;
+  padding: 1rem;
   position: absolute;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 1rem;
-  max-width: 20vw;
+  max-width: 250px;
+}
+
+.container__account_actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.container__wc_qr_code_buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+button {
+  display: inline-flex;
+  font-size: 14px;
+  padding: 1rem 1.5rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 16px;
+  background: var(--apkt-foreground-accent-primary-010);
+  color: var(--apkt-text-accent-primary);
+  border: none;
+  transition: border-radius 0.3s ease;
+  will-change: border-radius;
+}
+
+button:hover {
+  border-radius: var(--radius-extra-radius-4, 24px);
+}
+
+button:active {
+  box-shadow: 0px 0px 0px 4px rgba(9, 136, 240, 0.4);
+}
+
+button:disabled {
+  opacity: 0.5;
 }

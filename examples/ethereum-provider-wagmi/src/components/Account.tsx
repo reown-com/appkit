@@ -26,9 +26,12 @@ export function Account() {
   return (
     <>
       <div className="container__account_data">{JSON.stringify(account, null, 2)}</div>
-      <SignMessageButton />
-      <button onClick={handleDisconnect}>Disconnect</button>
+      <div className="container__account_actions">
+        <SignMessageButton />
+        <button onClick={handleDisconnect}>Disconnect</button>
+      </div>
     </>
+
   )
 }
 
