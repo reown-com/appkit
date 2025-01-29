@@ -1,4 +1,3 @@
-import { coinbaseWallet } from '@wagmi/connectors'
 import {
   type Config,
   type Connector,
@@ -250,18 +249,26 @@ export class WagmiAdapter extends AdapterBlueprint {
     })
   }
 
-  private addWagmiConnectors(options: AppKitOptions, appKit: AppKit) {
+  private async addWagmiConnectors(options: AppKitOptions, appKit: AppKit) {
     const customConnectors: CreateConnectorFn[] = []
 
     if (options.enableCoinbase !== false) {
-      customConnectors.push(
-        coinbaseWallet({
-          version: '4',
-          appName: options.metadata?.name ?? 'Unknown',
-          appLogoUrl: options.metadata?.icons[0] ?? 'Unknown',
-          preference: options.coinbasePreference ?? 'all'
-        })
-      )
+      try {
+        const { coinbaseWallet } = await import('@wagmi/connectors')
+
+        if (coinbaseWallet) {
+          customConnectors.push(
+            coinbaseWallet({
+              version: '4',
+              appName: options.metadata?.name ?? 'Unknown',
+              appLogoUrl: options.metadata?.icons[0] ?? 'Unknown',
+              preference: options.coinbasePreference ?? 'all'
+            })
+          )
+        }
+      } catch (error) {
+        console.error('Failed to import Coinbase Wallet SDK:', error)
+      }
     }
 
     if (options.enableWalletConnect !== false) {
@@ -452,7 +459,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     })
 
     // Add wagmi connectors
-    this.addWagmiConnectors(options, appKit)
+    await this.addWagmiConnectors(options, appKit)
 
     // Add current wagmi connectors to chain adapter blueprint
     await Promise.all(

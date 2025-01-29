@@ -61,7 +61,7 @@ export class EthersAdapter extends AdapterBlueprint {
     }
 
     async function getCoinbaseProvider() {
-      if (options.enableCoinbase) {
+      try {
         const { createCoinbaseWalletSDK } = await import('@coinbase/wallet-sdk')
 
         if (typeof window === 'undefined') {
@@ -78,9 +78,10 @@ export class EthersAdapter extends AdapterBlueprint {
         })
 
         return coinbaseSdk.getProvider()
+      } catch (error) {
+        console.error('Failed to import Coinbase Wallet SDK:', error)
+        return undefined
       }
-
-      return undefined
     }
 
     const providers: ProviderType = { metadata: options.metadata }
@@ -91,6 +92,7 @@ export class EthersAdapter extends AdapterBlueprint {
 
     if (options.enableCoinbase !== false) {
       const coinbaseProvider = await getCoinbaseProvider()
+
       if (coinbaseProvider) {
         providers.coinbase = coinbaseProvider
       }

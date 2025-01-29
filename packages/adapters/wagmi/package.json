@@ -29,8 +29,10 @@
     "@walletconnect/universal-provider": "2.17.5",
     "valtio": "1.11.2"
   },
+  "optionalDependencies": {
+    "@wagmi/connectors": ">=5.1"
+  },
   "peerDependencies": {
-    "@wagmi/connectors": ">=5.1",
     "@wagmi/core": ">=2.13",
     "viem": "2.x",
     "wagmi": ">=2.12"
