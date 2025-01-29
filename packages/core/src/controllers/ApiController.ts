@@ -272,17 +272,21 @@ export const ApiController = {
     await ApiController.fetchRecommendedWallets()
   },
 
-  prefetch() {
+  prefetchWalletImages() {
     const promises = [
       ApiController.fetchFeaturedWallets(),
       ApiController.fetchRecommendedWallets(),
       ApiController.fetchNetworkImages(),
       ApiController.fetchConnectorImages()
     ]
-    if (OptionsController.state.features?.analytics) {
-      promises.push(ApiController.fetchAnalyticsConfig())
-    }
+
     state.prefetchPromise = Promise.race([Promise.allSettled(promises)])
+  },
+
+  async prefetchAnalyticsConfig() {
+    if (OptionsController.state.features?.analytics) {
+      await ApiController.fetchAnalyticsConfig()
+    }
   },
 
   async fetchAnalyticsConfig() {
