@@ -4,6 +4,7 @@ import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
 
 import type {
   AppKitNetwork,
+  AppKitSdkVersion,
   CaipAddress,
   CaipNetwork,
   CaipNetworkId,
@@ -75,7 +76,7 @@ import type { AppKitOptions } from '../utils/index.js'
 
 export type Adapters = Record<ChainNamespace, AdapterBlueprint>
 export interface AppKitOptionsWithSdk extends AppKitOptions {
-  sdkVersion: SdkVersion
+  sdkVersion: SdkVersion | AppKitSdkVersion
 }
 
 // -- Types --------------------------------------------------------------------
@@ -108,7 +109,7 @@ export abstract class AppKitCore {
   public chainAdapters?: Adapters
   public chainNamespaces: ChainNamespace[] = []
   public options: AppKitOptions
-  public version: SdkVersion
+  public version: SdkVersion | AppKitSdkVersion
   public reportedAlertErrors: Record<string, boolean> = {}
 
   constructor(options: AppKitOptionsWithSdk) {
