@@ -2,7 +2,11 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ConstantsUtil as CommonConstantsUtil, SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
+import {
+  ConstantsUtil as CommonConstantsUtil,
+  SafeLocalStorage,
+  SafeLocalStorageKeys
+} from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -230,7 +234,6 @@ export class W3mSocialLoginWidget extends LitElement {
       RouterController.push('ConnectingSocial')
 
       const authConnector = ConnectorController.getAuthConnector()
-     
 
       try {
         if (authConnector && socialProvider) {
@@ -238,26 +241,33 @@ export class W3mSocialLoginWidget extends LitElement {
             provider: socialProvider
           })
 
-         
-          if (CoreHelperUtil.isTelegram() && uri) {
+          if (!uri) {
+            throw new Error('Something went wrong')
+          }
+
+          if (CoreHelperUtil.isTelegram()) {
             console.log('uri', uri)
             SafeLocalStorage.setItem(SafeLocalStorageKeys.SOCIAL_PROVIDER, socialProvider)
             const parsedUri = CoreHelperUtil.formatTelegramSocialLoginUrl(uri)
             console.log('redirecting...', parsedUri)
-            CoreHelperUtil.openHref(parsedUri, '_top')
-          } else if (uri) {
-            this.popupWindow = CoreHelperUtil.returnOpenHref(
-              '',
-              'popupWindow',
-              'width=600,height=800,scrollbars=yes'
-            )
+
+            // eslint-disable-next-line consistent-return
+            return CoreHelperUtil.openHref(parsedUri, '_top')
+          }
+
+          this.popupWindow = CoreHelperUtil.returnOpenHref(
+            '',
+            'popupWindow',
+            'width=600,height=800,scrollbars=yes'
+          )
+
+          if (this.popupWindow) {
             console.log('via popup uri', uri, this.popupWindow)
             AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
             this.popupWindow.location.href = uri
           } else {
-              this.popupWindow?.close()
-              throw new Error('Something went wrong')
-            }
+            throw new Error('Something went wrong')
+          }
         }
       } catch (error) {
         this.popupWindow?.close()
