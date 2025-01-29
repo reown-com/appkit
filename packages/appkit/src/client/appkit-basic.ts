@@ -37,7 +37,6 @@ import type {
 import {
   AccountController,
   AlertController,
-  ApiController,
   AssetUtil,
   BlockchainApiController,
   ChainController,
@@ -68,12 +67,8 @@ import type { AppKitNetwork } from '@reown/appkit/networks'
 
 import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import { type ProviderStoreUtilState, ProviderUtil } from '../store/ProviderUtil.js'
-import {
-  UniversalAdapter,
-  UniversalAdapter as UniversalAdapterClient
-} from '../universal-adapter/client.js'
+import { UniversalAdapter as UniversalAdapterClient } from '../universal-adapter/client.js'
 import { WcHelpersUtil } from '../utils/HelpersUtil.js'
-import type { AppKitOptions } from '../utils/TypesUtil.js'
 import { AppKitCore } from './core.js'
 
 declare global {
@@ -102,12 +97,6 @@ export interface OpenOptions {
   uri?: string
 }
 
-type Adapters = Record<ChainNamespace, AdapterBlueprint>
-
-interface AppKitOptionsInternal extends AppKitOptions {
-  sdkVersion: SdkVersion
-}
-
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
 
@@ -115,62 +104,18 @@ let isInitialized = false
 export class AppKit extends AppKitCore {
   public activeAdapter?: AdapterBlueprint
 
-  public options: AppKitOptions
-
   public adapters?: ChainAdapter[]
 
   public activeChainNamespace?: ChainNamespace
 
-  public chainNamespaces: ChainNamespace[] = []
-
-  public chainAdapters?: Adapters
-
   public universalAdapter?: UniversalAdapterClient
-
-  public version: SdkVersion
 
   public adapter?: ChainAdapter
 
   public reportedAlertErrors: Record<string, boolean> = {}
 
-  public constructor(options: AppKitOptionsInternal) {
-    super()
-    this.options = options
-    this.version = options.sdkVersion
-    this.caipNetworks = this.extendCaipNetworks(options)
-    this.chainNamespaces = [
-      ...new Set(this.caipNetworks?.map(caipNetwork => caipNetwork.chainNamespace))
-    ]
-    this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
-    this.chainAdapters = this.createAdapters(options.adapters as unknown as AdapterBlueprint[])
-    this.initialize(options)
-  }
-
   public static getInstance() {
     return this.instance
-  }
-
-  private async initialize(options: AppKitOptionsInternal) {
-    this.initControllers(options)
-    await this.initChainAdapters()
-    await this.injectModalUi()
-    await this.syncExistingConnection()
-
-    const { ...optionsCopy } = options
-    delete optionsCopy.adapters
-
-    EventsController.sendEvent({
-      type: 'track',
-      event: 'INITIALIZE',
-      properties: {
-        ...optionsCopy,
-        networks: options.networks.map(n => n.id),
-        siweConfig: {
-          options: options.siweConfig?.options || {}
-        }
-      }
-    })
-    PublicStateController.set({ initialized: true })
   }
 
   // -- Public -------------------------------------------------------------------
@@ -646,117 +591,6 @@ export class AppKit extends AppKitCore {
   }
 
   // -- Private ------------------------------------------------------------------
-  private initializeOptionsController(options: AppKitOptionsInternal) {
-    OptionsController.setDebug(options.debug !== false)
-    OptionsController.setBasic(options.basic === true)
-    if (!options.projectId) {
-      AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
-
-      return
-    }
-
-    // On by default
-    OptionsController.setEnableWalletConnect(options.enableWalletConnect !== false)
-    OptionsController.setEnableWalletGuide(options.enableWalletGuide !== false)
-    OptionsController.setEnableWallets(options.enableWallets !== false)
-    OptionsController.setEIP6963Enabled(options.enableEIP6963 !== false)
-
-    OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
-
-    OptionsController.setSdkVersion(options.sdkVersion)
-    OptionsController.setProjectId(options.projectId)
-    OptionsController.setEnableEmbedded(options.enableEmbedded)
-    OptionsController.setAllWallets(options.allWallets)
-    OptionsController.setIncludeWalletIds(options.includeWalletIds)
-    OptionsController.setExcludeWalletIds(options.excludeWalletIds)
-    OptionsController.setFeaturedWalletIds(options.featuredWalletIds)
-    OptionsController.setTokens(options.tokens)
-    OptionsController.setTermsConditionsUrl(options.termsConditionsUrl)
-    OptionsController.setPrivacyPolicyUrl(options.privacyPolicyUrl)
-    OptionsController.setCustomWallets(options.customWallets)
-    OptionsController.setFeatures(options.features)
-    OptionsController.setAllowUnsupportedChain(options.allowUnsupportedChain)
-    OptionsController.setDefaultAccountTypes(options.defaultAccountTypes)
-
-    const defaultMetaData = this.getDefaultMetaData()
-    if (!options.metadata && defaultMetaData) {
-      options.metadata = defaultMetaData
-    }
-    OptionsController.setMetadata(options.metadata)
-    OptionsController.setDisableAppend(options.disableAppend)
-    OptionsController.setEnableEmbedded(options.enableEmbedded)
-    OptionsController.setSIWX(options.siwx)
-
-    const evmAdapter = options.adapters?.find(
-      adapter => adapter.namespace === ConstantsUtil.CHAIN.EVM
-    )
-
-    // Set the SIWE client for EVM chains
-    if (evmAdapter) {
-      if (options.siweConfig) {
-        if (options.siwx) {
-          throw new Error('Cannot set both `siweConfig` and `siwx` options')
-        }
-
-        OptionsController.setSIWX(options.siweConfig.mapToSIWX())
-      }
-    }
-  }
-
-  private initializeThemeController(options: AppKitOptions) {
-    if (options.themeMode) {
-      ThemeController.setThemeMode(options.themeMode)
-    }
-
-    if (options.themeVariables) {
-      ThemeController.setThemeVariables(options.themeVariables)
-    }
-  }
-
-  private initializeChainController(options: AppKitOptions) {
-    if (!this.connectionControllerClient || !this.networkControllerClient) {
-      throw new Error('ConnectionControllerClient and NetworkControllerClient must be set')
-    }
-    ChainController.initialize(options.adapters ?? [], this.caipNetworks, {
-      connectionControllerClient: this.connectionControllerClient,
-      networkControllerClient: this.networkControllerClient
-    })
-    const network = this.getDefaultNetwork()
-    if (network) {
-      ChainController.setActiveCaipNetwork(network)
-    }
-  }
-
-  private async initializeBlockchainApiController(options: AppKitOptions) {
-    await BlockchainApiController.getSupportedNetworks({
-      projectId: options.projectId
-    })
-  }
-
-  private initControllers(options: AppKitOptionsInternal) {
-    this.initializeOptionsController(options)
-    this.initializeChainController(options)
-    this.initializeThemeController(options)
-    this.initializeBlockchainApiController(options)
-
-    if (options.excludeWalletIds) {
-      ApiController.initializeExcludedWalletRdns({ ids: options.excludeWalletIds })
-    }
-  }
-
-  private getDefaultMetaData() {
-    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
-      return {
-        name: document.getElementsByTagName('title')?.[0]?.textContent || '',
-        description:
-          document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.content || '',
-        url: window.location.origin,
-        icons: [document.querySelector<HTMLLinkElement>('link[rel~="icon"]')?.href || '']
-      }
-    }
-
-    return null
-  }
 
   private setUnsupportedNetwork(chainId: string | number) {
     const namespace = this.getActiveChainNamespace()
@@ -765,27 +599,6 @@ export class AppKit extends AppKitCore {
       const unsupportedNetwork = this.getUnsupportedNetwork(`${namespace}:${chainId}`)
       ChainController.setActiveCaipNetwork(unsupportedNetwork)
     }
-  }
-
-  private extendCaipNetworks(options: AppKitOptions) {
-    const extendedNetworks = CaipNetworksUtil.extendCaipNetworks(options.networks, {
-      customNetworkImageUrls: options.chainImages,
-      projectId: options.projectId
-    })
-
-    return extendedNetworks
-  }
-
-  private extendDefaultCaipNetwork(options: AppKitOptions) {
-    const defaultNetwork = options.networks.find(n => n.id === options.defaultNetwork?.id)
-    const extendedNetwork = defaultNetwork
-      ? CaipNetworksUtil.extendCaipNetwork(defaultNetwork, {
-          customNetworkImageUrls: options.chainImages,
-          projectId: options.projectId
-        })
-      : undefined
-
-    return extendedNetwork
   }
 
   private createClients() {
@@ -1711,100 +1524,6 @@ export class AppKit extends AppKitCore {
 
     if (this.chainAdapters) {
       this.chainAdapters[namespace] = adapterBlueprint
-    }
-  }
-
-  private createAdapters(blueprints?: AdapterBlueprint[]) {
-    this.createClients()
-
-    return this.chainNamespaces.reduce<Adapters>((adapters, namespace) => {
-      const blueprint = blueprints?.find(b => b.namespace === namespace)
-
-      if (blueprint) {
-        adapters[namespace] = blueprint
-        adapters[namespace].namespace = namespace
-        adapters[namespace].construct({
-          namespace,
-          projectId: this.options?.projectId,
-          networks: this.caipNetworks
-        })
-      } else {
-        adapters[namespace] = new UniversalAdapter({
-          namespace,
-          networks: this.caipNetworks
-        })
-      }
-
-      return adapters
-      // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
-    }, {} as Adapters)
-  }
-
-  private onConnectors(chainNamespace: ChainNamespace) {
-    const adapter = this.getAdapter(chainNamespace)
-
-    adapter?.on('connectors', this.setConnectors.bind(this))
-  }
-
-  private async initChainAdapter(namespace: ChainNamespace) {
-    this.onConnectors(namespace)
-    this.listenAdapter(namespace)
-    this.chainAdapters?.[namespace].syncConnectors(this.options, this)
-    await this.createUniversalProviderForAdapter(namespace)
-  }
-
-  private async initChainAdapters() {
-    await Promise.all(
-      this.chainNamespaces.map(async namespace => {
-        await this.initChainAdapter(namespace)
-      })
-    )
-  }
-
-  private getUnsupportedNetwork(caipNetworkId: CaipNetworkId) {
-    return {
-      id: caipNetworkId.split(':')[1],
-      caipNetworkId,
-      name: ConstantsUtil.UNSUPPORTED_NETWORK_NAME,
-      chainNamespace: caipNetworkId.split(':')[0],
-      nativeCurrency: {
-        name: '',
-        decimals: 0,
-        symbol: ''
-      },
-      rpcUrls: {
-        default: {
-          http: []
-        }
-      }
-    } as CaipNetwork
-  }
-
-  private getDefaultNetwork() {
-    const caipNetworkId = StorageUtil.getActiveCaipNetworkId()
-
-    if (caipNetworkId) {
-      const caipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
-
-      if (caipNetwork) {
-        return caipNetwork
-      }
-
-      return this.getUnsupportedNetwork(caipNetworkId)
-    }
-
-    return this.caipNetworks?.[0]
-  }
-
-  private async injectModalUi() {
-    if (!isInitialized && CoreHelperUtil.isClient()) {
-      await import('@reown/appkit-scaffold-ui/basic')
-      await import('@reown/appkit-scaffold-ui/w3m-modal')
-      const modal = document.createElement('w3m-modal')
-      if (!OptionsController.state.disableAppend && !OptionsController.state.enableEmbedded) {
-        document.body.insertAdjacentElement('beforeend', modal)
-      }
-      isInitialized = true
     }
   }
 }
