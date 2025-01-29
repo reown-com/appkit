@@ -16,7 +16,7 @@ import {
   type WriteContractArgs
 } from '@reown/appkit-core'
 import { PresetsUtil } from '@reown/appkit-utils'
-import { W3mFrameProvider } from '@reown/appkit-wallet'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import type { AppKitCore } from '../client/core.js'
 import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'

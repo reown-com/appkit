@@ -8,7 +8,7 @@ import {
   ChainController,
   StorageUtil
 } from '@reown/appkit-core'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import '../../components/wui-image/index.js'
 import '../../components/wui-loading-spinner/index.js'

@@ -2,7 +2,7 @@ import { createAppKit } from '@reown/appkit/basic'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 import { mainnet } from '@reown/appkit/networks'
 
-export const projectId = 'b56e18d47c72ab683b10814fe9495694'
+export const projectId = import.meta.env.VITE_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694'
 
 const appkit = createAppKit({
   networks: [mainnet] as [AppKitNetwork, ...AppKitNetwork[]],
@@ -23,8 +23,8 @@ const appkit = createAppKit({
 export default function App() {
   return (
     <>
-      <h2>hey</h2>
-      <button onClick={() => appkit.open()}>appkit</button>
+      <h2>AppKit Basic Example</h2>
+      <button onClick={() => appkit.open()}>Connect</button>
     </>
   )
 }

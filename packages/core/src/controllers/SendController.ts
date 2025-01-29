@@ -3,7 +3,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { type Balance, type CaipAddress, NumberUtil } from '@reown/appkit-common'
 import { ContractUtil } from '@reown/appkit-common'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'

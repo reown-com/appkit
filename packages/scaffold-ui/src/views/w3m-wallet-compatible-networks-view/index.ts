@@ -7,7 +7,7 @@ import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-banner'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-network'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import styles from './styles.js'
 

@@ -21,7 +21,7 @@ import '@reown/appkit-ui/wui-icon-button'
 import '@reown/appkit-ui/wui-profile-button'
 import '@reown/appkit-ui/wui-tabs'
 import '@reown/appkit-ui/wui-tooltip'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 import '../w3m-account-activity-widget/index.js'

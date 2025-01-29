@@ -15,7 +15,7 @@ import {
 import type { CoinbasePaySDKChainNameValues } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import '../../partials/w3m-onramp-provider-item/index.js'
 import '../../partials/w3m-onramp-providers-footer/index.js'

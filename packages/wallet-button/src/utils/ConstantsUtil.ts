@@ -1,6 +1,5 @@
 export const ConstantsUtil = {
-  SECURE_SITE_ORIGIN:
-    process.env['NEXT_PUBLIC_SECURE_SITE_ORIGIN'] || 'https://secure.walletconnect.org',
+  SECURE_SITE_ORIGIN: 'https://secure.walletconnect.org',
 
   Socials: ['google', 'github', 'apple', 'facebook', 'x', 'discord', 'farcaster'] as const,
 
