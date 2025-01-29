@@ -1940,6 +1940,9 @@ importers:
       valtio:
         specifier: 1.11.2
         version: 1.11.2(@types/react@18.3.1)(react@18.3.1)
+      viem:
+        specifier: 2.21.34
+        version: 2.21.34(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8)
 
   packages/siwx:
     dependencies:
