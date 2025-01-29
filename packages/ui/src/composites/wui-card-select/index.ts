@@ -31,7 +31,7 @@ export class WuiCardSelect extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button data-selected=${ifDefined(this.selected)} ?disabled=${this.disabled} ontouchstart>
+      <button data-selected=${ifDefined(this.selected)} ?disabled=${this.disabled}>
         ${this.imageTemplate()}
         <wui-text variant="tiny-500" color=${this.selected ? 'accent-100' : 'inherit'}>
           ${this.name}

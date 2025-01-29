@@ -73,7 +73,6 @@ export class WuiButton extends LitElement {
         data-icon-right=${this.hasIconRight}
         data-size=${this.size}
         ?disabled=${this.disabled}
-        ontouchstart
       >
         ${this.loadingTemplate()}
         <slot name="iconLeft" @slotchange=${() => this.handleSlotLeftChange()}></slot>

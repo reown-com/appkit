@@ -27,7 +27,7 @@ export class WuiListSocial extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.disabled} tabindex=${ifDefined(this.tabIdx)} ontouchstart>
+      <button ?disabled=${this.disabled} tabindex=${ifDefined(this.tabIdx)}>
         <wui-logo logo=${this.logo}></wui-logo>
         <wui-text
           data-align=${this.align}
