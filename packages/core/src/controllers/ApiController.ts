@@ -280,7 +280,7 @@ export const ApiController = {
       ApiController.fetchConnectorImages()
     ]
 
-    state.prefetchPromise = Promise.race([Promise.allSettled(promises)])
+    state.prefetchPromise = Promise.allSettled(promises)
   },
 
   async prefetchAnalyticsConfig() {
