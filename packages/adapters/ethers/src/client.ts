@@ -79,7 +79,9 @@ export class EthersAdapter extends AdapterBlueprint {
 
         return coinbaseSdk.getProvider()
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Failed to import Coinbase Wallet SDK:', error)
+
         return undefined
       }
     }

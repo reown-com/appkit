@@ -267,6 +267,7 @@ export class WagmiAdapter extends AdapterBlueprint {
           )
         }
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Failed to import Coinbase Wallet SDK:', error)
       }
     }
