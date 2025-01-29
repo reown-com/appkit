@@ -222,17 +222,11 @@ describe('W3mModal', () => {
   })
 
   describe('Initialization', () => {
-    it('should prefetch analytics config', async () => {
+    it('should prefetch analytics config on page load', async () => {
       const prefetchSpy = vi.spyOn(ApiController, 'prefetchAnalyticsConfig')
       await fixture(html`<w3m-modal></w3m-modal>`)
 
       expect(prefetchSpy).toHaveBeenCalled()
-    })
-
-    it('should prefetch analytics config', async () => {
-      await fixture(html`<w3m-modal></w3m-modal>`)
-
-      expect(ApiController.prefetchAnalyticsConfig).toHaveBeenCalled()
     })
 
     it('should clean up subscriptions on disconnect', async () => {
