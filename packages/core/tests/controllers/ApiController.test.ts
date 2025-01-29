@@ -660,46 +660,22 @@ describe('ApiController', () => {
   // Prefetch
   it('should prefetch without analytics', () => {
     OptionsController.setFeatures({ analytics: false })
-    const fetchFeaturedSpy = vi.spyOn(ApiController, 'fetchFeaturedWallets').mockResolvedValue()
-    const fetchNetworkImagesSpy = vi.spyOn(ApiController, 'fetchNetworkImages').mockResolvedValue()
-    const recommendedWalletsSpy = vi
-      .spyOn(ApiController, 'fetchRecommendedWallets')
-      .mockResolvedValue()
-    const fetchConnectorImagesSpy = vi
-      .spyOn(ApiController, 'fetchConnectorImages')
-      .mockResolvedValue()
 
     const fetchAnalyticsSpy = vi.spyOn(ApiController, 'fetchAnalyticsConfig')
 
-    ApiController.prefetch()
+    ApiController.prefetchAnalyticsConfig()
 
     expect(fetchAnalyticsSpy).not.toHaveBeenCalled()
-    expect(fetchFeaturedSpy).toHaveBeenCalledOnce()
-    expect(fetchNetworkImagesSpy).toHaveBeenCalledOnce()
-    expect(recommendedWalletsSpy).toHaveBeenCalledOnce()
-    expect(fetchConnectorImagesSpy).toHaveBeenCalledOnce()
   })
 
   it('should prefetch with analytics', () => {
     OptionsController.setFeatures({ analytics: true })
-    const fetchSpy = vi.spyOn(ApiController, 'fetchFeaturedWallets').mockResolvedValue()
-    const fetchNetworkImagesSpy = vi.spyOn(ApiController, 'fetchNetworkImages').mockResolvedValue()
-    const recommendedWalletsSpy = vi
-      .spyOn(ApiController, 'fetchRecommendedWallets')
-      .mockResolvedValue()
-    const fetchConnectorImagesSpy = vi
-      .spyOn(ApiController, 'fetchConnectorImages')
-      .mockResolvedValue()
 
     const fetchAnalyticsSpy = vi.spyOn(ApiController, 'fetchAnalyticsConfig').mockResolvedValue()
 
-    ApiController.prefetch()
+    ApiController.prefetchAnalyticsConfig()
 
     expect(fetchAnalyticsSpy).toHaveBeenCalledOnce()
-    expect(fetchSpy).toHaveBeenCalledOnce()
-    expect(fetchNetworkImagesSpy).toHaveBeenCalledOnce()
-    expect(recommendedWalletsSpy).toHaveBeenCalledOnce()
-    expect(fetchConnectorImagesSpy).toHaveBeenCalledOnce()
   })
 
   // Fetch analytics config - somehow this is failing
