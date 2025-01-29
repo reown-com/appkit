@@ -189,7 +189,7 @@ export const SwapController = {
     const invalidSourceToken =
       !state.sourceToken?.address ||
       !state.sourceToken?.decimals ||
-      !NumberUtil.bigNumber(state.sourceTokenAmount).isGreaterThan(0)
+      !(NumberUtil.bigNumber(state.sourceTokenAmount) > 0n)
     const invalidSourceTokenAmount = !state.sourceTokenAmount
 
     return {
@@ -460,9 +460,9 @@ export const SwapController = {
     switch (ChainController.state?.activeCaipNetwork?.chainNamespace) {
       case 'solana':
         state.gasFee = res.standard ?? '0'
-        state.gasPriceInUSD = NumberUtil.multiply(res.standard, state.networkPrice)
-          .dividedBy(1e9)
-          .toNumber()
+        state.gasPriceInUSD = Number(
+          NumberUtil.divide(NumberUtil.multiply(res.standard, state.networkPrice), 1e9)
+        )
 
         return {
           gasPrice: BigInt(state.gasFee),
@@ -492,7 +492,7 @@ export const SwapController = {
     const address = AccountController.state.address as `${string}:${string}:${string}`
     const sourceToken = state.sourceToken
     const toToken = state.toToken
-    const haveSourceTokenAmount = NumberUtil.bigNumber(state.sourceTokenAmount).isGreaterThan(0)
+    const haveSourceTokenAmount = NumberUtil.bigNumber(state.sourceTokenAmount) > 0n
 
     if (!toToken || !sourceToken || state.loadingPrices || !haveSourceTokenAmount) {
       return
@@ -500,9 +500,9 @@ export const SwapController = {
 
     state.loadingQuote = true
 
-    const amountDecimal = NumberUtil.bigNumber(state.sourceTokenAmount)
-      .multipliedBy(10 ** sourceToken.decimals)
-      .integerValue()
+    const amountDecimal =
+      NumberUtil.bigNumber(state.sourceTokenAmount) *
+      10n ** NumberUtil.bigNumber(sourceToken.decimals)
 
     try {
       const quoteResponse = await BlockchainApiController.fetchSwapQuote({
@@ -530,9 +530,7 @@ export const SwapController = {
         return
       }
 
-      const toTokenAmount = NumberUtil.bigNumber(quoteToAmount)
-        .dividedBy(10 ** toToken.decimals)
-        .toString()
+      const toTokenAmount = NumberUtil.divide(quoteToAmount, 10 ** toToken.decimals).toString()
 
       this.setToTokenAmount(toTokenAmount)
 

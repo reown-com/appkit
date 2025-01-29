@@ -185,29 +185,29 @@ export const SendController = {
   isInsufficientNetworkTokenForGas(networkBalanceInUSD: string, gasPriceInUSD: number | undefined) {
     const gasPrice = gasPriceInUSD || '0'
 
-    if (NumberUtil.bigNumber(networkBalanceInUSD).isZero()) {
+    if (NumberUtil.bigNumber(networkBalanceInUSD) === 0n) {
       return true
     }
 
-    return NumberUtil.bigNumber(NumberUtil.bigNumber(gasPrice)).isGreaterThan(networkBalanceInUSD)
+    return NumberUtil.bigNumber(gasPrice) > NumberUtil.bigNumber(networkBalanceInUSD)
   },
 
   hasInsufficientGasFunds() {
-    let insufficientNetworkTokenForGas = true
+    let hasInsufficientNetworkTokenForGas = true
     if (
       AccountController.state.preferredAccountType ===
       W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     ) {
       // Smart Accounts may pay gas in any ERC20 token
-      insufficientNetworkTokenForGas = false
+      hasInsufficientNetworkTokenForGas = false
     } else if (state.networkBalanceInUSD) {
-      insufficientNetworkTokenForGas = this.isInsufficientNetworkTokenForGas(
+      hasInsufficientNetworkTokenForGas = this.isInsufficientNetworkTokenForGas(
         state.networkBalanceInUSD,
         state.gasPriceInUSD
       )
     }
 
-    return insufficientNetworkTokenForGas
+    return hasInsufficientNetworkTokenForGas
   },
 
   async sendNativeToken(params: TxParams) {

@@ -64,7 +64,9 @@ export class WuiTokenListItem extends LitElement {
     }
 
     const value =
-      this.amount && this.price ? NumberUtil.multiply(this.price, this.amount)?.toFixed(3) : null
+      this.amount && this.price
+        ? Number(NumberUtil.multiply(this.price, this.amount))?.toFixed(3)
+        : null
 
     return html`
       <wui-flex alignItems="center">

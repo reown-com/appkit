@@ -1,61 +1,68 @@
-import * as BigNumber from 'bignumber.js'
+type BigIntValue = string | number | bigint
 
 export const NumberUtil = {
-  bigNumber(value: BigNumber.BigNumber.Value) {
-    return new BigNumber.BigNumber(value)
-  },
-
-  /**
-   * Multiply two numbers represented as strings with BigNumber to handle decimals correctly
-   * @param a string
-   * @param b string
-   * @returns
-   */
-  multiply(a: BigNumber.BigNumber.Value | undefined, b: BigNumber.BigNumber.Value | undefined) {
-    if (a === undefined || b === undefined) {
-      // eslint-disable-next-line new-cap
-      return BigNumber.BigNumber(0)
+  bigNumber(value: BigIntValue) {
+    if (typeof value === 'bigint') {
+      return value
     }
 
-    const aBigNumber = new BigNumber.BigNumber(a)
-    const bBigNumber = new BigNumber.BigNumber(b)
-
-    return aBigNumber.multipliedBy(bBigNumber)
+    return toBigInt(value)
   },
-  /**
-   * Format the given number or string to human readable numbers with the given number of decimals
-   * @param value - The value to format. It could be a number or string. If it's a string, it will be parsed to a float then formatted.
-   * @param decimals - number of decimals after dot
-   * @returns
-   */
+
+  multiply(a: BigIntValue | undefined, b: BigIntValue | undefined) {
+    if (a === undefined || b === undefined) {
+      return 0n
+    }
+    const aBig = typeof a === 'bigint' ? a : toBigInt(a)
+    const bBig = typeof b === 'bigint' ? b : toBigInt(b)
+
+    return aBig * bBig
+  },
+
+  divide(a: BigIntValue | undefined, b: BigIntValue | undefined) {
+    if (a === undefined || b === undefined) {
+      return 0n
+    }
+    const aBig = typeof a === 'bigint' ? a : toBigInt(a)
+    const bBig = typeof b === 'bigint' ? b : toBigInt(b)
+
+    /*
+     * When dividing with decimals, we need to scale up the numerator
+     * to maintain precision
+     */
+    if (bBig === 0n) {
+      throw new Error('Division by zero')
+    }
+
+    // Scale up by additional 18 decimals for division precision
+    const scale = 18
+    const scaledA = aBig * 10n ** BigInt(scale)
+
+    return scaledA / bBig
+  },
+
   formatNumberToLocalString(value: string | number | undefined, decimals = 2) {
     if (value === undefined) {
       return '0.00'
     }
+    const num = typeof value === 'number' ? value : parseFloat(value)
 
-    if (typeof value === 'number') {
-      return value.toLocaleString('en-US', {
-        maximumFractionDigits: decimals,
-        minimumFractionDigits: decimals
-      })
-    }
-
-    return parseFloat(value).toLocaleString('en-US', {
-      maximumFractionDigits: decimals,
-      minimumFractionDigits: decimals
-    })
+    return num.toFixed(decimals)
   },
-  /**
-   * Parse a formatted local string back to a number
-   * @param value - The formatted string to parse
-   * @returns
-   */
+
   parseLocalStringToNumber(value: string | undefined) {
     if (value === undefined) {
       return 0
     }
 
-    // Remove any commas used as thousand separators and parse the float
-    return parseFloat(value.replace(/,/gu, ''))
+    return parseFloat(value)
   }
+}
+
+function toBigInt(value: string | number, decimals = 18): bigint {
+  const str = value.toString().replace(/,/gu, '')
+  const [whole, fraction = ''] = str.split('.')
+  const paddedFraction = fraction.padEnd(decimals, '0')
+
+  return BigInt(whole + paddedFraction)
 }

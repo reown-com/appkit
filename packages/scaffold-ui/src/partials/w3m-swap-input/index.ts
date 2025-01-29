@@ -44,7 +44,7 @@ export class W3mSwapInput extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     const marketValue = this.marketValue || '0'
-    const isMarketValueGreaterThanZero = NumberUtil.bigNumber(marketValue).isGreaterThan('0')
+    const isMarketValueGreaterThanZero = NumberUtil.bigNumber(marketValue) > 0n
 
     return html`
       <wui-flex class="${this.focused ? 'focus' : ''}" justifyContent="space-between">
@@ -142,9 +142,7 @@ export class W3mSwapInput extends LitElement {
 
   private tokenBalanceTemplate() {
     const balanceValueInUSD = NumberUtil.multiply(this.balance, this.price)
-    const haveBalance = balanceValueInUSD
-      ? balanceValueInUSD?.isGreaterThan(MINIMUM_USD_VALUE_TO_CONVERT)
-      : false
+    const haveBalance = balanceValueInUSD ? balanceValueInUSD > MINIMUM_USD_VALUE_TO_CONVERT : false
 
     return html`
       ${haveBalance

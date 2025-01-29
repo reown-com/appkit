@@ -66,7 +66,7 @@ export class WuiSwapDetails extends LitElement {
   public override render() {
     const minReceivedAmount =
       this.toTokenAmount && this.maxSlippage
-        ? NumberUtil.bigNumber(this.toTokenAmount).minus(this.maxSlippage).toString()
+        ? NumberUtil.bigNumber(this.toTokenAmount) - NumberUtil.bigNumber(this.maxSlippage)
         : null
 
     if (!this.sourceToken || !this.toToken || this.inputError) {
@@ -160,7 +160,7 @@ export class WuiSwapDetails extends LitElement {
                               text=${`Max slippage sets the minimum amount you must receive for the transaction to proceed. ${
                                 minReceivedAmount
                                   ? `Transaction will be reversed if you receive less than ${UiHelperUtil.formatNumberToLocalString(
-                                      minReceivedAmount,
+                                      minReceivedAmount.toString(),
                                       6
                                     )} ${this.toToken.symbol} due to price changes.`
                                   : ''

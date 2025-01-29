@@ -123,15 +123,15 @@ export class W3mInputToken extends LitElement {
           nativeAddress => this.token?.address === nativeAddress
         )
 
-      const numericGas = NumberUtil.bigNumber(this.gasPrice).shiftedBy(
-        -this.token.quantity.decimals
+      const numericGas = NumberUtil.divide(
+        this.gasPrice,
+        10n ** BigInt(this.token.quantity.decimals)
       )
-
       const maxValue = isNetworkToken
-        ? NumberUtil.bigNumber(this.token.quantity.numeric).minus(numericGas)
+        ? NumberUtil.bigNumber(this.token.quantity.numeric) - numericGas
         : NumberUtil.bigNumber(this.token.quantity.numeric)
 
-      SendController.setTokenAmount(Number(maxValue.toFixed(20)))
+      SendController.setTokenAmount(Number(maxValue))
     }
   }
 
