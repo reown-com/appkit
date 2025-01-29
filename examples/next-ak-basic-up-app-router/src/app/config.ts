@@ -24,8 +24,7 @@ export function initializeModal(universalProvider?: InstanceType<typeof Universa
   if (!modal && universalProvider) {
     modal = createAppKit({
       projectId,
-      networks: [mainnet, solana],
-      universalProvider
+      networks: [mainnet, solana]
     })
   }
   return modal
