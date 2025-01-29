@@ -345,43 +345,43 @@ export class AppKit extends AppKitCore {
       const features = { ...CoreConstantsUtil.DEFAULT_FEATURES, ...this.options.features }
 
       // Selectively import views based on feature flags
-      const featureImports = []
+      const featureImportPromises = []
       if (features) {
         const usingEmbeddedWallet = features.email || (features.socials && features.socials.length)
         if (usingEmbeddedWallet) {
-          featureImports.push('@reown/appkit-scaffold-ui/embedded-wallet')
+          featureImportPromises.push(import('@reown/appkit-scaffold-ui/embedded-wallet'))
         }
 
         if (features.email) {
-          featureImports.push('@reown/appkit-scaffold-ui/email')
+          featureImportPromises.push(import('@reown/appkit-scaffold-ui/email'))
         }
         if (features.socials) {
-          featureImports.push('@reown/appkit-scaffold-ui/socials')
+          featureImportPromises.push(import('@reown/appkit-scaffold-ui/socials'))
         }
 
         if (features.swaps) {
-          featureImports.push('@reown/appkit-scaffold-ui/swaps')
+          featureImportPromises.push(import('@reown/appkit-scaffold-ui/swaps'))
         }
 
         if (features.send) {
-          featureImports.push('@reown/appkit-scaffold-ui/send')
+          featureImportPromises.push(import('@reown/appkit-scaffold-ui/send'))
         }
 
         if (features.receive) {
-          featureImports.push('@reown/appkit-scaffold-ui/receive')
+          featureImportPromises.push(import('@reown/appkit-scaffold-ui/receive'))
         }
 
         if (features.onramp) {
-          featureImports.push('@reown/appkit-scaffold-ui/onramp')
+          featureImportPromises.push(import('@reown/appkit-scaffold-ui/onramp'))
         }
 
         if (features.history) {
-          featureImports.push('@reown/appkit-scaffold-ui/history')
+          featureImportPromises.push(import('@reown/appkit-scaffold-ui/transactions'))
         }
       }
 
       await Promise.all([
-        ...featureImports.map(feature => import(feature)),
+        ...featureImportPromises,
         import('@reown/appkit-scaffold-ui'),
         import('@reown/appkit-scaffold-ui/w3m-modal')
       ])
