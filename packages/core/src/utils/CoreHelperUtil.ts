@@ -1,4 +1,4 @@
-import type { AppKitSdkVersion, Balance, ChainNamespace } from '@reown/appkit-common'
+import type { AdapterType, Balance, ChainNamespace, SdkVersion } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstants } from '@reown/appkit-common'
 import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
 
@@ -358,11 +358,11 @@ export const CoreHelperUtil = {
     adapters: ChainAdapter[],
     platform: SDKFramework,
     version: string
-  ): AppKitSdkVersion {
+  ): SdkVersion {
     const noAdapters = adapters.length === 0
-    const adapterNames = noAdapters
-      ? 'universal'
-      : adapters.map(adapter => adapter.adapterType).join(',')
+    const adapterNames = (
+      noAdapters ? 'universal' : adapters.map(adapter => adapter.adapterType).join(',')
+    ) as AdapterType
 
     return `${platform}-${adapterNames}-${version}`
   },
