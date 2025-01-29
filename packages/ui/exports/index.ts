@@ -1,3 +1,5 @@
+export * from '../src/utils/JSXTypeUtil.js'
+
 export { MathUtil } from '../src/utils/MathUtil.js'
 export { initializeTheming, setColorTheme, setThemeVariables } from '../src/utils/ThemeUtil.js'
 export { UiHelperUtil } from '../src/utils/UiHelperUtil.js'
