@@ -526,7 +526,7 @@ export abstract class AppKitCore {
     }
 
     this.networkControllerClient = {
-      switchCaipNetwork: async caipNetwork => this.switchCaipNetwork(caipNetwork),
+      switchCaipNetwork: async caipNetwork => await this.switchCaipNetwork(caipNetwork),
       // eslint-disable-next-line @typescript-eslint/require-await
       getApprovedCaipNetworksData: async () => this.getApprovedCaipNetworksData()
     }
@@ -948,6 +948,7 @@ export abstract class AppKitCore {
       'supportsAllNetworks',
       chainNamespace
     )
+
     // Only update state when needed
     if (!HelpersUtil.isLowerCaseMatch(address, AccountController.state.address)) {
       this.setCaipAddress(`${chainNamespace}:${chainId}:${address}`, chainNamespace)

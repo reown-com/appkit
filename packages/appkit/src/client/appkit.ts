@@ -114,6 +114,12 @@ export class AppKit extends AppKitCore {
           ? (`eip155:${user.chainId}:${user.address}` as CaipAddress)
           : (`${user.chainId}:${user.address}` as CaipAddress)
       this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
+      /*
+       * This covers the case where user switches back from a smart account supported
+       *  network to a non-smart account supported network resulting in a different address
+       */
+
+      this.setCaipAddress(caipAddress, namespace)
       if (!HelpersUtil.isLowerCaseMatch(user.address, AccountController.state.address)) {
         this.syncIdentity({
           address: user.address,
@@ -121,7 +127,6 @@ export class AppKit extends AppKitCore {
           chainNamespace: namespace
         })
       }
-      this.setCaipAddress(caipAddress, namespace)
 
       this.setUser({ ...(AccountController.state.user || {}), email: user.email })
 
@@ -296,7 +301,6 @@ export class AppKit extends AppKitCore {
         const providerType =
           ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
 
-        this.setCaipNetwork(caipNetwork)
         if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH) {
           try {
             ChainController.state.activeChain = caipNetwork.chainNamespace
