@@ -28,7 +28,8 @@ describe('SIWE mapped to SIWX', () => {
         setAttribute: vi.fn()
       }),
       body: {
-        appendChild: vi.fn()
+        appendChild: vi.fn(),
+        insertAdjacentElement: vi.fn()
       },
       getElementById: vi.fn().mockReturnValue(null)
     } as any
