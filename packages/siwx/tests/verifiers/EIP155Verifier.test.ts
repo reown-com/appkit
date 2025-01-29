@@ -2,7 +2,6 @@ import { type PublicClient, createPublicClient, http } from 'viem'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 
 import type { CaipNetwork } from '@reown/appkit-common'
-import { type SIWXSession } from '@reown/appkit-core'
 import { ChainController } from '@reown/appkit-core'
 
 import { EIP155Verifier } from '../../src/index.js'
