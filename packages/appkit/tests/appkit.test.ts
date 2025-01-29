@@ -40,6 +40,7 @@ import { CaipNetworksUtil, ErrorUtil } from '@reown/appkit-utils'
 
 import type { AdapterBlueprint } from '../src/adapters/ChainAdapterBlueprint'
 import { AppKit } from '../src/client/appkit'
+import { AppKitCore } from '../src/client/core'
 import {
   base as baseNetwork,
   mainnet as mainnetNetwork,
@@ -100,14 +101,18 @@ describe('Base', () => {
 
   describe('Base Initialization', () => {
     it('should initialize controllers', async () => {
+      const sendEvent = vi.spyOn(EventsController, 'sendEvent')
+      // Mock the abstract method injectModalUi to bypass it
+      vi.spyOn(AppKit.prototype as any, 'injectModalUi').mockImplementation(async () => {})
+
       const copyMockOptions = { ...mockOptions }
 
       delete copyMockOptions.adapters
 
       await new Promise(resolve => setTimeout(resolve, 100))
 
-      expect(EventsController.sendEvent).toHaveBeenCalledOnce()
-      expect(EventsController.sendEvent).toHaveBeenCalledWith({
+      expect(sendEvent).toHaveBeenCalledOnce()
+      expect(sendEvent).toHaveBeenCalledWith({
         type: 'track',
         event: 'INITIALIZE',
         properties: {
