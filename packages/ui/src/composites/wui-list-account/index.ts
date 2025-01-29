@@ -11,11 +11,14 @@ import {
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 import '../../components/wui-image/index.js'
+import '../../components/wui-loading-spinner/index.js'
 import '../../components/wui-text/index.js'
+import '../../composites/wui-icon-box/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
+import '../wui-avatar/index.js'
 import styles from './styles.js'
 
 @customElement('wui-list-account')
