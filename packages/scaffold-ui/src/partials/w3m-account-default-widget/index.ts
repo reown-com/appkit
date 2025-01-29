@@ -19,8 +19,16 @@ import {
   StorageUtil
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-avatar'
+import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-icon-link'
 import '@reown/appkit-ui/wui-list-item'
+import '@reown/appkit-ui/wui-notice-card'
+import '@reown/appkit-ui/wui-profile-button-v2'
+import '@reown/appkit-ui/wui-tabs'
+import '@reown/appkit-ui/wui-tag'
 import '@reown/appkit-ui/wui-text'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
