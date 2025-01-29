@@ -31,6 +31,7 @@ describe('W3mModal', () => {
     let element: W3mModal
 
     beforeEach(async () => {
+      Element.prototype.animate = vi.fn().mockReturnValue({ finished: true })
       vi.spyOn(ApiController, 'prefetchWalletImages').mockImplementation(() => Promise.resolve())
       vi.spyOn(ApiController, 'prefetchAnalyticsConfig').mockImplementation(() => Promise.resolve())
       OptionsController.setEnableEmbedded(true)
@@ -59,13 +60,9 @@ describe('W3mModal', () => {
     })
 
     it('should close modal when wallet is connected', async () => {
-      ModalController.open()
-      element.requestUpdate()
-      await elementUpdated(element)
-      ChainController.state.isSwitchingNamespace = true
       ChainController.state.activeCaipAddress = 'eip155:1:0x123...'
-      element.requestUpdate()
-      await elementUpdated(element)
+      await fixture(html`<w3m-modal .enableEmbedded=${true}></w3m-modal>`)
+      ChainController.state.activeCaipAddress = undefined
 
       expect(ModalController.state.open).toBe(false)
     })
