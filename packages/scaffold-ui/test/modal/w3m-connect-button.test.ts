@@ -12,7 +12,7 @@ import { HelpersUtil } from '../utils/HelpersUtil'
 describe('W3mConnectButton', () => {
   let element: W3mConnectButton
   beforeEach(async () => {
-    ModalController.close() 
+    ModalController.close()
     ModalController.setLoading(false)
     element = await fixture(html`<w3m-connect-button></w3m-connect-button>`)
   })
