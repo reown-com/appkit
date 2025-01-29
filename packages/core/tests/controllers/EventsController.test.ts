@@ -47,7 +47,7 @@ describe('EventsController', () => {
     expect(EventsController.state.reportedErrors['FORBIDDEN']).toBe(true)
   })
 
-  it('should use the correct sdk properties when sending an analytics event', async () => {
+  it('should include sdk properties when sending an analytics event', async () => {
     vi.spyOn(FetchUtil.prototype, 'post').mockResolvedValue({})
 
     await EventsController._sendAnalyticsEvent({

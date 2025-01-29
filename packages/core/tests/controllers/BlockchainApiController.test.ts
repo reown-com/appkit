@@ -3,7 +3,6 @@ import { describe, expect, it, vi } from 'vitest'
 import { BlockchainApiController, FetchUtil } from '../../exports/index.js'
 
 // -- Tests --------------------------------------------------------------------
-
 describe('BlockchainApiController', () => {
   it('should include sdk properties when fetching blockchain data', async () => {
     vi.spyOn(FetchUtil.prototype, 'get').mockResolvedValue({})
