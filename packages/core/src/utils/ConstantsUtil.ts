@@ -247,5 +247,13 @@ export const ConstantsUtil = {
     eip155: 'smartAccount',
     polkadot: 'eoa',
     solana: 'eoa'
-  } as const satisfies DefaultAccountTypes
+  } as const satisfies DefaultAccountTypes,
+  ADAPTER_TYPES: {
+    UNIVERSAL: 'universal',
+    SOLANA: 'solana',
+    WAGMI: 'wagmi',
+    ETHERS: 'ethers',
+    ETHERS5: 'ethers5',
+    BITCOIN: 'bitcoin'
+  }
 }

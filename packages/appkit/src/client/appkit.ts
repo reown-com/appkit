@@ -318,6 +318,7 @@ export class AppKit extends AppKitCore {
             })
           }
         } else if (providerType === 'WALLET_CONNECT') {
+          this.setCaipNetwork(caipNetwork)
           this.syncWalletConnectAccount()
         } else {
           const address = this.getAddressByChainNamespace(caipNetwork.chainNamespace)
