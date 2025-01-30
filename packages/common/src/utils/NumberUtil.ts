@@ -1,8 +1,13 @@
-import * as BigNumber from 'bignumber.js'
+import Big from 'big.js'
 
 export const NumberUtil = {
-  bigNumber(value: BigNumber.BigNumber.Value) {
-    return new BigNumber.BigNumber(value)
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+  bigNumber(value: Big | string | number | undefined) {
+    if (!value) {
+      return new Big(0)
+    }
+
+    return new Big(value)
   },
 
   /**
@@ -11,16 +16,16 @@ export const NumberUtil = {
    * @param b string
    * @returns
    */
-  multiply(a: BigNumber.BigNumber.Value | undefined, b: BigNumber.BigNumber.Value | undefined) {
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+  multiply(a: Big | number | string | undefined, b: Big | number | string | undefined) {
     if (a === undefined || b === undefined) {
-      // eslint-disable-next-line new-cap
-      return BigNumber.BigNumber(0)
+      return new Big(0)
     }
 
-    const aBigNumber = new BigNumber.BigNumber(a)
-    const bBigNumber = new BigNumber.BigNumber(b)
+    const aBigNumber = new Big(a)
+    const bBigNumber = new Big(b)
 
-    return aBigNumber.multipliedBy(bBigNumber)
+    return aBigNumber.times(bBigNumber)
   },
   /**
    * Format the given number or string to human readable numbers with the given number of decimals

@@ -5,7 +5,7 @@ import { NumberUtil } from '../src/utils/NumberUtil.js'
 // -- Tests --------------------------------------------------------------------
 describe('NumberUtil', () => {
   it('should return isGreaterThan as expected', () => {
-    const isGreaterThan = NumberUtil.bigNumber('6.348').isGreaterThan('0')
+    const isGreaterThan = NumberUtil.bigNumber('6.348').gt('0')
     expect(isGreaterThan).toBe(true)
   })
 })
