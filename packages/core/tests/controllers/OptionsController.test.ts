@@ -7,7 +7,6 @@ import { ConstantsUtil } from '../../src/utils/ConstantsUtil.js'
 describe('OptionsController', () => {
   it('should have valid default state', () => {
     expect(OptionsController.state).toEqual({
-      basic: false,
       features: ConstantsUtil.DEFAULT_FEATURES,
       projectId: '',
       sdkType: 'appkit',

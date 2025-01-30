@@ -13,7 +13,6 @@ const appkit = createAppKit({
     icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
   },
   projectId,
-  basic: true,
   themeMode: 'light',
   features: {
     analytics: true

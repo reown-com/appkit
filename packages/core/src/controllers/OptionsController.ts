@@ -147,10 +147,6 @@ export interface OptionsControllerStatePublic {
    * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa' }"
    */
   defaultAccountTypes: DefaultAccountTypes
-  /**
-   * Define if using basic version or full version. Full version will include modal and other scaffolded components
-   */
-  basic?: boolean
 }
 
 export interface OptionsControllerStateInternal {
@@ -171,8 +167,7 @@ const state = proxy<OptionsControllerState & OptionsControllerStateInternal>({
   projectId: '',
   sdkType: 'appkit',
   sdkVersion: 'html-wagmi-undefined',
-  defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES,
-  basic: false
+  defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES
 })
 
 // -- Controller ---------------------------------------- //
@@ -185,10 +180,6 @@ export const OptionsController = {
 
   setOptions(options: OptionsControllerState) {
     Object.assign(state, options)
-  },
-
-  setBasic(basic: boolean) {
-    state.basic = basic
   },
 
   setFeatures(features: OptionsControllerState['features'] | undefined) {
