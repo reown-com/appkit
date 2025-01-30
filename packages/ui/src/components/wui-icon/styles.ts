@@ -15,7 +15,7 @@ export default css`
     object-position: center;
   }
 
-  .wui-icon-fallback {
+  .fallback {
     width: var(--local-width);
     height: var(--local-height);
   }

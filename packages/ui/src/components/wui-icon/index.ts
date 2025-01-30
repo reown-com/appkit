@@ -133,7 +133,7 @@ export class WuiIcon extends LitElement {
       --local-width: ${`var(--wui-icon-size-${this.size});`}
     `
 
-    return html`${until(getSvg(this.name), html`<div class="wui-icon-fallback"></div>`)}`
+    return html`${until(getSvg(this.name), html`<div class="fallback"></div>`)}`
   }
 }
 
