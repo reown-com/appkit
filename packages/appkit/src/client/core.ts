@@ -560,39 +560,32 @@ export abstract class AppKitCore {
       return
     }
 
-    if (AccountController.state.address) {
-      if (caipNetwork.chainNamespace === ChainController.state.activeChain) {
-        const adapter = this.getAdapter(ChainController.state.activeChain)
-        const provider = ProviderUtil.getProvider(ChainController.state.activeChain)
-        const providerType = ProviderUtil.state.providerIds[ChainController.state.activeChain]
+    const newNamespace = caipNetwork.chainNamespace
+    const adapter = this.getAdapter(newNamespace)
+    const provider = ProviderUtil.getProvider(newNamespace)
+    const providerType = ProviderUtil.state.providerIds[newNamespace]
+    const connectorId = StorageUtil.getConnectedConnectorId(newNamespace)
+    try {
+      await adapter?.switchNetwork({ caipNetwork, provider, providerType })
+      this.setCaipNetwork(caipNetwork)
 
-        await adapter?.switchNetwork({ caipNetwork, provider, providerType })
-        this.setCaipNetwork(caipNetwork)
-        await this.syncAccount({
-          address: AccountController.state.address,
-          chainId: caipNetwork.id,
-          chainNamespace: caipNetwork.chainNamespace
+      if (connectorId) {
+        const accounts = await adapter?.getAccounts({
+          namespace: newNamespace,
+          id: connectorId
         })
-      } else {
-        const providerType =
-          ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
 
-        this.setCaipNetwork(caipNetwork)
-        if (providerType === 'WALLET_CONNECT') {
-          this.syncWalletConnectAccount()
-        } else {
-          const address = this.getAddressByChainNamespace(caipNetwork.chainNamespace)
-          if (address) {
-            this.syncAccount({
-              address,
-              chainId: caipNetwork.id,
-              chainNamespace: caipNetwork.chainNamespace
-            })
-          }
+        const address = accounts?.accounts?.[0]?.address
+        if (address) {
+          await this.syncAccount({
+            address,
+            chainId: caipNetwork.id,
+            chainNamespace: caipNetwork.chainNamespace
+          })
         }
       }
-    } else {
-      this.setCaipNetwork(caipNetwork)
+    } catch (error) {
+      this.setUnsupportedNetwork(caipNetwork.id)
     }
   }
 
@@ -1004,9 +997,17 @@ export abstract class AppKitCore {
       n => n.caipNetworkId === `${chainNamespace}:${chainId}`
     )
 
-    if (chainNamespace !== ConstantsUtil.CHAIN.EVM || activeCaipNetwork?.testnet) {
+    if (activeCaipNetwork?.testnet) {
       return
     }
+
+    if (chainNamespace !== ConstantsUtil.CHAIN.EVM) {
+      this.setProfileName(null, chainNamespace)
+      this.setProfileImage(null, chainNamespace)
+
+      return
+    }
+
     try {
       const { name, avatar } = await this.fetchIdentity({
         address
