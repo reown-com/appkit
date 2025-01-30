@@ -1,29 +1,42 @@
-import { createAppKit } from '@reown/appkit/basic'
-import type { AppKitNetwork } from '@reown/appkit/networks'
-import { mainnet } from '@reown/appkit/networks'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { WagmiProvider } from 'wagmi'
 
-export const projectId = 'b56e18d47c72ab683b10814fe9495694'
+import ActionButtonList from './components/ActionButton'
+import Footer from './components/Footer'
+import InfoList from './components/InfoList'
+import { useAppKitTheme, wagmiAdapter } from './config'
 
-const appkit = createAppKit({
-  networks: [mainnet] as [AppKitNetwork, ...AppKitNetwork[]],
-  metadata: {
-    name: 'AppKit React Example',
-    description: 'AppKit React Wagmi Example',
-    url: 'https://reown.com/appkit',
-    icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
-  },
-  projectId,
-  themeMode: 'light',
-  features: {
-    analytics: true
-  }
-})
+const queryClient = new QueryClient()
 
 export default function App() {
+  const { themeMode } = useAppKitTheme()
+  document.documentElement.className = themeMode
+
   return (
-    <>
-      <h2>hey</h2>
-      <button onClick={() => appkit.open()}>appkit</button>
-    </>
+    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        <div className="page-container">
+          <div className="logo-container">
+            <img
+              src={themeMode === 'dark' ? '/reown-logo-white.png' : '/reown-logo.png'}
+              alt="Reown"
+              width="150"
+            />
+            <img src="/appkit-logo.png" alt="Reown" width="150" />
+          </div>
+
+          <h1 className="page-title">React Wagmi Example</h1>
+
+          <div className="appkit-buttons-container">
+            <appkit-button />
+            <appkit-network-button />
+          </div>
+
+          <ActionButtonList />
+          <InfoList />
+          <Footer />
+        </div>
+      </QueryClientProvider>
+    </WagmiProvider>
   )
 }
