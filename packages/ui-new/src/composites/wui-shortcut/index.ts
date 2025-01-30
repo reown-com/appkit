@@ -36,12 +36,7 @@ export class WuiShortcut extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button
-        data-variant=${this.variant}
-        data-size=${this.size}
-        ?disabled=${this.disabled}
-        ontouchstart
-      >
+      <button data-variant=${this.variant} data-size=${this.size} ?disabled=${this.disabled}>
         <wui-icon
           color=${ifDefined(this.iconColor)}
           size=${this.iconSize}

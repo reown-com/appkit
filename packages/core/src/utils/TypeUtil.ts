@@ -415,10 +415,6 @@ export type Event =
     }
   | {
       type: 'track'
-      event: 'MODAL_LOADED'
-    }
-  | {
-      type: 'track'
       event: 'MODAL_OPEN'
       properties: {
         connected: boolean
@@ -973,7 +969,7 @@ export type ChainAdapter = {
   accountState?: AdapterAccountState
   networkState?: AdapterNetworkState
   namespace?: ChainNamespace
-  caipNetworks?: CaipNetwork[] | AppKitNetwork[]
+  caipNetworks?: CaipNetwork[]
   projectId?: string
   adapterType?: string
 }

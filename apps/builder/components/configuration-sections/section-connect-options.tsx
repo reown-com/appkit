@@ -25,6 +25,10 @@ const SortableConnectMethodList = dynamic(
   }
 )
 
+const ChainList = dynamic(() => import('@/components/chain-list').then(mod => mod.ChainList), {
+  ssr: false
+})
+
 export function SectionConnectOptions() {
   const { config, updateFeatures, updateSocials, updateEnableWallets } = useAppKitContext()
   const collapseWallets = config.features.collapseWallets
@@ -61,19 +65,21 @@ export function SectionConnectOptions() {
 
   return (
     <div className="flex-grow">
+      <div className="text-sm text-text-secondary mb-2">Connect Options</div>
       <SortableConnectMethodList
         items={connectMethodsOrder}
         onToggleOption={handleToggleOption}
         handleNewOrder={handleNewOrder}
         handle={true}
       />
-      <div className="flex flex-col gap-2 h-2"></div>
-      <div className="text-sm text-text-secondary mt-6 mb-2">Wallet options</div>
+      <div className="text-sm text-text-secondary mt-4 mb-2">Layout options</div>
       <FeatureButton
         label="Collapse wallets"
         isEnabled={collapseWallets}
         onClick={toggleCollapseWallets}
       />
+      <div className="text-sm text-text-secondary mt-4 mb-2">Chains</div>
+      <ChainList />
     </div>
   )
 }
