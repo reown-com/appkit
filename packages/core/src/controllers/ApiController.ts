@@ -1,6 +1,9 @@
 import { proxy } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
+import type { CaipNetwork } from '@reown/appkit-common'
+
+import { AssetUtil } from '../utils/AssetUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
@@ -106,10 +109,14 @@ export const ApiController = {
     AssetController.setTokenImage(symbol, URL.createObjectURL(blob))
   },
 
-  async fetchNetworkImages() {
+  async prefetchNetworkImages() {
     const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
 
-    const ids = requestedCaipNetworks?.map(({ assets }) => assets?.imageId).filter(Boolean)
+    const ids = requestedCaipNetworks
+      ?.map(({ assets }) => assets?.imageId)
+      .filter(Boolean)
+      .filter(imageId => !AssetUtil.getNetworkImageById(imageId))
+
     if (ids) {
       await Promise.allSettled((ids as string[]).map(id => ApiController._fetchNetworkImage(id)))
     }
@@ -265,18 +272,10 @@ export const ApiController = {
     state.search = ApiController._filterOutExtensions(data)
   },
 
-  async reFetchWallets() {
-    state.page = 1
-    state.wallets = []
-    await ApiController.fetchFeaturedWallets()
-    await ApiController.fetchRecommendedWallets()
-  },
-
   prefetchWalletImages() {
     const promises = [
       ApiController.fetchFeaturedWallets(),
       ApiController.fetchRecommendedWallets(),
-      ApiController.fetchNetworkImages(),
       ApiController.fetchConnectorImages()
     ]
 
