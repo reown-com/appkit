@@ -82,7 +82,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     }
   }
 
-  override syncConnectors(_options?: AppKitOptions, appKit?: AppKit): void {
+  override syncConnectors(_options?: AppKitOptions, appKit?: AppKit) {
     function getActiveNetwork() {
       return appKit?.getCaipNetwork()
     }
