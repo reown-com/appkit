@@ -203,9 +203,10 @@ export class AppKit {
   // -- Public -------------------------------------------------------------------
   public async open(options?: OpenOptions) {
     await this.injectModalUi()
-    if (options?.uri && this.universalAdapter) {
+    if (options?.uri && this.universalProvider) {
       ConnectionController.setUri(options.uri)
     }
+
     ModalController.open(options)
   }
 
