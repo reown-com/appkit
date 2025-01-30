@@ -2234,7 +2234,7 @@ importers:
         version: 2.21.34(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8)
     devDependencies:
       '@types/big.js':
-        specifier: ^6.2.2
+        specifier: 6.2.2
         version: 6.2.2
       '@vitest/coverage-v8':
         specifier: 2.1.3
