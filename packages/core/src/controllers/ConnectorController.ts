@@ -1,4 +1,4 @@
-import { proxy, ref, snapshot } from 'valtio/vanilla'
+import { proxy, ref, snapshot, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { type ChainNamespace, ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
@@ -30,6 +30,12 @@ const state = proxy<ConnectorControllerState>({
 // -- Controller ---------------------------------------- //
 export const ConnectorController = {
   state,
+
+  subscribe(callback: (value: ConnectorControllerState) => void) {
+    return sub(state, () => {
+      callback(state)
+    })
+  },
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: ConnectorControllerState[K]) => void) {
     return subKey(state, key, callback)
@@ -175,6 +181,7 @@ export const ConnectorController = {
   getAuthConnector(): AuthConnector | undefined {
     const activeNamespace = ChainController.state.activeChain
     const authConnector = state.connectors.find(c => c.id === ConstantsUtil.CONNECTOR_ID.AUTH)
+
     if (!authConnector) {
       return undefined
     }
