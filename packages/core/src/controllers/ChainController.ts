@@ -190,7 +190,9 @@ export const ChainController = {
   addNetwork(network: CaipNetwork) {
     const chainAdapter = state.chains.get(network.chainNamespace)
     if (chainAdapter) {
-      chainAdapter.caipNetworks = [...(chainAdapter.caipNetworks || []), network]
+      if (!chainAdapter.caipNetworks?.find(caipNetwork => caipNetwork.id === network.id)) {
+        chainAdapter.caipNetworks = [...(chainAdapter.caipNetworks || []), network]
+      }
       state.chains.set(network.chainNamespace, chainAdapter)
       this.setRequestedCaipNetworks(chainAdapter.caipNetworks || [], network.chainNamespace)
     }
