@@ -4,6 +4,21 @@ import type { AppKitNetwork, ThemeVariables } from '@reown/appkit-common'
 import type { ChainAdapter, Metadata, OptionsControllerState, ThemeMode } from '@reown/appkit-core'
 import type { AppKitSIWEClient } from '@reown/appkit-siwe'
 
+type NetworkConfig =
+  | {
+      /**
+       * You can set the desired caipnetworks for the app:
+       * @see https://docs.reown.com/appkit/react/core/options#defaultchain
+       */
+      networks: [AppKitNetwork, ...AppKitNetwork[]]
+    }
+  | {
+      /**
+       * You can set the desired network ids for the app.
+       */
+      networkIds: [number, ...number[]]
+    }
+
 export type AppKitOptions = {
   /**
    * Adapter array to be used by the AppKit.
@@ -39,11 +54,6 @@ export type AppKitOptions = {
    * @see https://docs.reown.com/appkit/react/core/options#allowunsupportedchain
    */
   allowUnsupportedChain?: boolean
-  /**
-   * You can set the desired caipnetworks for the app:
-   * @see https://docs.reown.com/appkit/react/core/options#defaultchain
-   */
-  networks: [AppKitNetwork, ...AppKitNetwork[]]
   /**
    * You can set a desired caipnetwork for the initial connection:
    * @see https://docs.reown.com/appkit/react/core/options#defaultchain
@@ -85,4 +95,5 @@ export type AppKitOptions = {
    * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa' }"
    */
   defaultAccountTypes?: Partial<OptionsControllerState['defaultAccountTypes']>
-} & Omit<OptionsControllerState, 'defaultAccountTypes'>
+} & NetworkConfig &
+  Omit<OptionsControllerState, 'defaultAccountTypes'>

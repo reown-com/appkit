@@ -61,6 +61,7 @@ import {
 } from '@reown/appkit-core'
 import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
+import { getBlockchainApiRpcUrl } from '@reown/appkit-utils'
 import {
   CaipNetworksUtil,
   ErrorUtil,
@@ -114,7 +115,7 @@ export interface OpenOptions {
 
 type Adapters = Record<ChainNamespace, AdapterBlueprint>
 
-interface AppKitOptionsWithSdk extends AppKitOptions {
+type AppKitOptionsWithSdk = AppKitOptions & {
   sdkVersion: SdkVersion
 }
 
@@ -164,20 +165,33 @@ export class AppKit {
   public constructor(options: AppKitOptionsWithSdk) {
     this.options = options
     this.version = options.sdkVersion
-    this.caipNetworks = this.extendCaipNetworks(options)
+
+    if ('networkIds' in options) {
+      this.caipNetworks = this.createCaipNetworkFromIds(options.networkIds, options)
+    } else {
+      this.caipNetworks = this.extendCaipNetworks({
+        networks: options.networks,
+        chainImages: options.chainImages,
+        projectId: options.projectId
+      })
+    }
     this.chainNamespaces = [
       ...new Set(this.caipNetworks?.map(caipNetwork => caipNetwork.chainNamespace))
     ]
-    this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
+    this.defaultCaipNetwork = this.extendDefaultCaipNetwork({
+      defaultNetworkId: options.defaultNetwork?.id,
+      chainImages: options.chainImages,
+      projectId: options.projectId
+    })
     this.chainAdapters = this.createAdapters(options.adapters as unknown as AdapterBlueprint[])
-    this.initialize(options)
+    this.initialize(options, this.caipNetworks)
   }
 
   public static getInstance() {
     return this.instance
   }
 
-  private async initialize(options: AppKitOptionsWithSdk) {
+  private async initialize(options: AppKitOptionsWithSdk, caipNetworks: CaipNetwork[]) {
     this.initControllers(options)
     await this.initChainAdapters()
     await this.injectModalUi()
@@ -191,7 +205,7 @@ export class AppKit {
       event: 'INITIALIZE',
       properties: {
         ...optionsCopy,
-        networks: options.networks.map(n => n.id),
+        networks: caipNetworks.map(n => n.id) ?? [],
         siweConfig: {
           options: options.siweConfig?.options || {}
         }
@@ -203,7 +217,7 @@ export class AppKit {
   // -- Public -------------------------------------------------------------------
   public async open(options?: OpenOptions) {
     await this.injectModalUi()
-    if (options?.uri && this.universalAdapter) {
+    if (options?.uri && this.universalProvider) {
       ConnectionController.setUri(options.uri)
     }
     ModalController.open(options)
@@ -668,7 +682,10 @@ export class AppKit {
       return
     }
 
-    const extendedAdapterNetworks = this.extendCaipNetworks({ ...this.options, networks })
+    const extendedAdapterNetworks = this.extendCaipNetworks({
+      ...this.options,
+      networks
+    })
     this.caipNetworks = [...(this.caipNetworks || []), ...extendedAdapterNetworks]
 
     this.createAdapter(adapter as unknown as AdapterBlueprint)
@@ -806,21 +823,67 @@ export class AppKit {
     }
   }
 
-  private extendCaipNetworks(options: AppKitOptions) {
-    const extendedNetworks = CaipNetworksUtil.extendCaipNetworks(options.networks, {
-      customNetworkImageUrls: options.chainImages,
-      projectId: options.projectId
+  private extendCaipNetworks({
+    networks,
+    chainImages,
+    projectId
+  }: {
+    networks: [AppKitNetwork, ...AppKitNetwork[]]
+    chainImages?: Record<string | number, string>
+    projectId: string
+  }) {
+    const extendedNetworks = CaipNetworksUtil.extendCaipNetworks(networks, {
+      customNetworkImageUrls: chainImages,
+      projectId
     })
 
     return extendedNetworks
   }
 
-  private extendDefaultCaipNetwork(options: AppKitOptions) {
-    const defaultNetwork = options.networks.find(n => n.id === options.defaultNetwork?.id)
+  private createCaipNetworkFromIds(networkIds: number[], options: AppKitOptions) {
+    return networkIds.map(networkId => {
+      const caipNetworkId: CaipNetworkId = `eip155:${networkId}`
+
+      const caipNetwork: CaipNetwork = {
+        id: networkId,
+        caipNetworkId,
+        chainNamespace: 'eip155',
+        name: 'Ethereum',
+        nativeCurrency: {
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18
+        },
+        rpcUrls: {
+          default: {
+            http: [getBlockchainApiRpcUrl(caipNetworkId, options.projectId)]
+          }
+        }
+      }
+
+      return caipNetwork
+    }) as [CaipNetwork, ...CaipNetwork[]]
+  }
+
+  private extendDefaultCaipNetwork({
+    defaultNetworkId,
+    chainImages,
+    projectId
+  }: {
+    defaultNetworkId: string | number | undefined
+    chainImages: Record<string | number, string> | undefined
+    projectId: string
+  }) {
+    if (!this.caipNetworks) {
+      throw new Error('CaipNetworks is undefined')
+    }
+
+    const defaultNetwork = this.caipNetworks.find(n => n.id === defaultNetworkId)
+
     const extendedNetwork = defaultNetwork
       ? CaipNetworksUtil.extendCaipNetwork(defaultNetwork, {
-          customNetworkImageUrls: options.chainImages,
-          projectId: options.projectId
+          customNetworkImageUrls: chainImages,
+          projectId
         })
       : undefined
 
@@ -952,10 +1015,10 @@ export class AppKit {
             caipNetwork
           })
 
-          return result?.gas || 0n
+          return result?.gas as bigint
         }
 
-        return 0n
+        return BigInt(0)
       },
       getEnsAvatar: async () => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
@@ -997,7 +1060,7 @@ export class AppKit {
       parseUnits: (value: string, decimals: number) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
-        return adapter?.parseUnits({ value, decimals }) ?? 0n
+        return adapter?.parseUnits({ value, decimals }) as bigint
       },
       formatUnits: (value: bigint, decimals: number) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
