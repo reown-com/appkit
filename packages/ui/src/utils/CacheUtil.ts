@@ -3,7 +3,7 @@ import type { TemplateResult } from 'lit'
 export class CacheUtil<K, V> {
   private cache = new Map<K, V>()
 
-  set(key: K, value: V): void {
+  set(key: K, value: V) {
     this.cache.set(key, value)
   }
 
@@ -11,15 +11,15 @@ export class CacheUtil<K, V> {
     return this.cache.get(key)
   }
 
-  has(key: K): boolean {
+  has(key: K) {
     return this.cache.has(key)
   }
 
-  delete(key: K): void {
+  delete(key: K) {
     this.cache.delete(key)
   }
 
-  clear(): void {
+  clear() {
     this.cache.clear()
   }
 }
