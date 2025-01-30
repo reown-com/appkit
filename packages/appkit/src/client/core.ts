@@ -806,9 +806,8 @@ export abstract class AppKitCore {
   }
 
   protected async syncWalletConnectAccount() {
-    const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
-
     this.chainNamespaces.forEach(async chainNamespace => {
+      const adapter = this.getAdapter(chainNamespace as ChainNamespace)
       const namespaceAccounts =
         this.universalProvider?.session?.namespaces?.[chainNamespace]?.accounts || []
 
