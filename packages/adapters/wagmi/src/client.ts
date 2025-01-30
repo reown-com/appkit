@@ -232,8 +232,7 @@ export class WagmiAdapter extends AdapterBlueprint {
             })
           }
 
-          // When it receives a non-evm chainId we shouldn't trigger this
-          if (accountData.chainId !== prevAccountData?.chainId && !isNaN(accountData.chainId)) {
+          if (accountData.chainId !== prevAccountData?.chainId) {
             this.emit('switchNetwork', {
               address: accountData.address,
               chainId: accountData.chainId
