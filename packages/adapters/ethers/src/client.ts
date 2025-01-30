@@ -252,7 +252,7 @@ export class EthersAdapter extends AdapterBlueprint {
     }
   }
 
-  public async syncConnectors(options: AppKitOptions) {
+  override async syncConnectors(options: AppKitOptions): Promise<void> {
     this.ethersConfig = await this.createEthersConfig(options)
 
     if (this.ethersConfig?.EIP6963) {

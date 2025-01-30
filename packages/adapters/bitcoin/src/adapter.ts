@@ -82,8 +82,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/require-await
-  override async syncConnectors(_options?: AppKitOptions, appKit?: AppKit): Promise<void> {
+  override syncConnectors(_options?: AppKitOptions, appKit?: AppKit) {
     function getActiveNetwork() {
       return appKit?.getCaipNetwork()
     }

@@ -68,8 +68,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     )
   }
 
-  // eslint-disable-next-line @typescript-eslint/require-await
-  public async syncConnectors(options: AppKitOptions, appKit: AppKit): Promise<void> {
+  override syncConnectors(options: AppKitOptions, appKit: AppKit) {
     if (!options.projectId) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
     }
