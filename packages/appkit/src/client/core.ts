@@ -1525,8 +1525,9 @@ export abstract class AppKitCore {
   }
 
   public subscribeAccount(callback: (newState: UseAppKitAccountReturn) => void) {
-    const authConnector = ConnectorController.getAuthConnector()
     function updateVal() {
+      const authConnector = ConnectorController.getAuthConnector()
+
       callback({
         allAccounts: AccountController.state.allAccounts,
         caipAddress: ChainController.state.activeCaipAddress,
@@ -1546,6 +1547,7 @@ export abstract class AppKitCore {
 
     ChainController.subscribe(updateVal)
     AccountController.subscribe(updateVal)
+    ConnectorController.subscribe(updateVal)
   }
 
   public subscribeNetwork(
