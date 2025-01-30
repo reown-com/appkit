@@ -21,7 +21,8 @@ import {
   ThemeController
 } from '@reown/appkit-core'
 import { ErrorUtil, HelpersUtil, ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
-import { W3mFrameHelpers, W3mFrameProvider, type W3mFrameTypes } from '@reown/appkit-wallet'
+import { W3mFrameHelpers, W3mFrameProvider } from '@reown/appkit-wallet'
+import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { W3mFrameProviderSingleton } from '../auth-provider/W3MFrameProviderSingleton.js'
