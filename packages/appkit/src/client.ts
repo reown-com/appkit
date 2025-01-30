@@ -206,6 +206,7 @@ export class AppKit {
     if (options?.uri && this.universalProvider) {
       ConnectionController.setUri(options.uri)
     }
+
     ModalController.open(options)
   }
 
