@@ -40,7 +40,7 @@ export const SwapCalculationUtil = {
 
   getMaxSlippage(slippage: number, toTokenAmount: string) {
     const slippageToleranceDecimal = NumberUtil.bigNumber(slippage).div(100)
-    const maxSlippageAmount = NumberUtil.bigNumber(toTokenAmount).times(slippageToleranceDecimal)
+    const maxSlippageAmount = NumberUtil.multiply(toTokenAmount, slippageToleranceDecimal)
 
     return maxSlippageAmount.toNumber()
   },
