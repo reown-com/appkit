@@ -5,6 +5,7 @@ import { ConstantsUtil, isSafe } from '@reown/appkit-common'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import type { Event } from '../utils/TypeUtil.js'
+import { AccountController } from './AccountController.js'
 import { AlertController } from './AlertController.js'
 import { OptionsController } from './OptionsController.js'
 
@@ -50,6 +51,7 @@ export const EventsController = {
 
   async _sendAnalyticsEvent(payload: EventsControllerState) {
     try {
+      const address = AccountController.state.address
       if (excluded.includes(payload.data.event) || typeof window === 'undefined') {
         return
       }
@@ -62,7 +64,7 @@ export const EventsController = {
           url: window.location.href,
           domain: window.location.hostname,
           timestamp: payload.timestamp,
-          props: payload.data
+          props: { ...payload.data, address }
         }
       })
 
