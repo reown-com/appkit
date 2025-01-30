@@ -20,7 +20,7 @@ import '@reown/appkit-ui/wui-link'
 import '@reown/appkit-ui/wui-text'
 import '@reown/appkit-ui/wui-transaction-list-item'
 import '@reown/appkit-ui/wui-transaction-list-item-loader'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import styles from './styles.js'
 

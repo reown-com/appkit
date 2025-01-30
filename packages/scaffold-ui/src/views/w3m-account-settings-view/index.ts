@@ -25,7 +25,7 @@ import '@reown/appkit-ui/wui-icon-link'
 import '@reown/appkit-ui/wui-list-item'
 import '@reown/appkit-ui/wui-notice-card'
 import '@reown/appkit-ui/wui-text'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import '../../partials/w3m-account-auth-button/index.js'
 

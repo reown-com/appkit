@@ -18,7 +18,7 @@ import '@reown/appkit-ui/wui-icon-link'
 import '@reown/appkit-ui/wui-loading-spinner'
 import '@reown/appkit-ui/wui-tag'
 import '@reown/appkit-ui/wui-text'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import styles from './styles.js'
 

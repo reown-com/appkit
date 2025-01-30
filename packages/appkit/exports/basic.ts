@@ -5,10 +5,8 @@ import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { PACKAGE_VERSION } from './constants.js'
 
 // -- Utils & Other -----------------------------------------------------
-export * from '../src/utils/index.js'
 export type * from '@reown/appkit-core'
 export type { CaipNetwork, CaipAddress, CaipNetworkId } from '@reown/appkit-common'
-export { CoreHelperUtil, AccountController } from '@reown/appkit-core'
 
 export type CreateAppKit = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
 

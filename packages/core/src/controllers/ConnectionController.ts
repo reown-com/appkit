@@ -2,7 +2,7 @@ import { proxy, ref } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
-import { type W3mFrameTypes } from '@reown/appkit-wallet'
+import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { SIWXUtil } from '../utils/SIWXUtil.js'
