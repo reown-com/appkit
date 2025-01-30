@@ -2030,7 +2030,7 @@ export class AppKit {
   private async initChainAdapter(namespace: ChainNamespace) {
     this.onConnectors(namespace)
     this.listenAdapter(namespace)
-    await this.chainAdapters?.[namespace].syncConnectors(this.options, this)
+    this.chainAdapters?.[namespace].syncConnectors(this.options, this)
     await this.createUniversalProviderForAdapter(namespace)
     this.createAuthProviderForAdapter(namespace)
   }
