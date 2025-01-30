@@ -203,9 +203,10 @@ export class AppKit {
   // -- Public -------------------------------------------------------------------
   public async open(options?: OpenOptions) {
     await this.injectModalUi()
-    if (options?.uri && this.universalAdapter) {
+    if (options?.uri && this.universalProvider) {
       ConnectionController.setUri(options.uri)
     }
+
     ModalController.open(options)
   }
 
@@ -290,8 +291,9 @@ export class AppKit {
   }
 
   public subscribeAccount(callback: (newState: UseAppKitAccountReturn) => void) {
-    const authConnector = ConnectorController.getAuthConnector()
     function updateVal() {
+      const authConnector = ConnectorController.getAuthConnector()
+
       callback({
         allAccounts: AccountController.state.allAccounts,
         caipAddress: ChainController.state.activeCaipAddress,
@@ -311,6 +313,7 @@ export class AppKit {
 
     ChainController.subscribe(updateVal)
     AccountController.subscribe(updateVal)
+    ConnectorController.subscribe(updateVal)
   }
 
   public subscribeNetwork(

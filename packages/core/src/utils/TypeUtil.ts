@@ -416,12 +416,6 @@ export type Event =
     }
   | {
       type: 'track'
-      address?: string
-      event: 'MODAL_LOADED'
-    }
-  | {
-      type: 'track'
-      address?: string
       event: 'MODAL_OPEN'
       properties: {
         connected: boolean
@@ -463,7 +457,7 @@ export type Event =
       address?: string
       event: 'CONNECT_ERROR'
       properties: {
-        message: stringƒ
+        message: string
       }
     }
   | {

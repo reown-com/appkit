@@ -22,9 +22,10 @@
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@walletconnect/utils": "2.17.5",
+    "@walletconnect/utils": "2.18.0",
     "lit": "3.1.0",
-    "valtio": "1.11.2"
+    "valtio": "1.11.2",
+    "viem": "2.21.34"
   },
   "keywords": [
     "web3",

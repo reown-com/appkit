@@ -332,16 +332,6 @@ describe('Ethers5Adapter', () => {
   })
 
   describe('Ethers5Adapter - switchNetwork', () => {
-    it('should switch network with WalletConnect provider', async () => {
-      await adapter.switchNetwork({
-        caipNetwork: mockCaipNetworks[0],
-        provider: mockWalletConnectProvider,
-        providerType: 'WALLET_CONNECT'
-      })
-
-      expect(mockWalletConnectProvider.setDefaultChain).toHaveBeenCalledWith('eip155:1')
-    })
-
     it('should switch network with Auth provider', async () => {
       await adapter.switchNetwork({
         caipNetwork: mockCaipNetworks[0],
@@ -353,6 +343,31 @@ describe('Ethers5Adapter', () => {
       expect(mockAuthProvider.getUser).toHaveBeenCalledWith({
         chainId: 'eip155:1',
         preferredAccountType: 'smartAccount'
+      })
+    })
+
+    it('should call setDefaultChain and request from provider for WALLET_CONNECT', async () => {
+      const adapter = new Ethers5Adapter()
+
+      const mockProvider = {
+        request: vi.fn(),
+        setDefaultChain: vi.fn()
+      } as unknown as UniversalProvider
+
+      const params = {
+        caipNetwork: {
+          id: 1,
+          caipNetworkId: 'eip155:1'
+        },
+        provider: mockProvider,
+        providerType: 'WALLET_CONNECT'
+      } as unknown as any
+
+      await adapter.switchNetwork(params)
+
+      expect(mockProvider.request).toHaveBeenCalledWith({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x1' }]
       })
     })
   })
