@@ -46,12 +46,6 @@ export class W3mFrameProvider {
     if (this.getLoginEmailUsed()) {
       this.w3mFrame.initFrame()
     }
-
-    this.w3mFrame.events.onFrameEvent(event => {
-      if (event.type === W3mFrameConstants.FRAME_GET_USER_SUCCESS) {
-        this.user = event.payload
-      }
-    })
   }
 
   // -- Extended Methods ------------------------------------------------
@@ -282,6 +276,8 @@ export class W3mFrameProvider {
       this.setLoginSuccess(response.email)
       this.setLastUsedChainId(response.chainId)
 
+      this.user = response
+
       return response
     } catch (error) {
       this.w3mLogger?.logger.error({ error }, 'Error connecting')
@@ -296,6 +292,7 @@ export class W3mFrameProvider {
         type: W3mFrameConstants.APP_GET_USER,
         payload: { ...payload, chainId }
       } as W3mFrameTypes.AppEvent)
+      this.user = response
 
       return response
     } catch (error) {
