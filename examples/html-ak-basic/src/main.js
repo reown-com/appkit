@@ -1,25 +1,13 @@
-import {
-  WagmiAdapter,
-  createAppKit,
-  networks
-} from 'https://cdn.jsdelivr.net/npm/@reown/appkit-cdn@1.6.5/dist/appkit.js'
-import { reconnect } from 'https://esm.sh/@wagmi/core@2.x'
+import { createAppKit } from '@reown/appkit'
+import { mainnet, polygon } from '@reown/appkit/networks'
 
 // Get projectId
 export const projectId = import.meta.env.VITE_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694' // this is a public projectId only to use on localhost
 
-const appKitNetworks = [networks.mainnet, networks.polygon]
-
-// Create adapter
-const wagmiAdapter = new WagmiAdapter({
-  networks: appKitNetworks,
-  projectId
-})
-
 // Instantiate AppKit
 const modal = createAppKit({
-  adapters: [wagmiAdapter],
-  networks: appKitNetworks,
+  adapters: [],
+  networks: [mainnet, polygon],
   projectId,
   themeMode: 'light',
   features: {
@@ -32,8 +20,6 @@ const modal = createAppKit({
     icons: ['https://avatars.githubusercontent.com/u/179229932?s=200&v=4']
   }
 })
-
-reconnect(wagmiAdapter.wagmiConfig)
 
 // State objects
 let accountState = {}
@@ -93,6 +79,18 @@ modal.subscribeProviders(state => {
 })
 
 // Button event listeners
+document.getElementById('open-modal')?.addEventListener('click', () => {
+  modal.open()
+})
+
+document.getElementById('disconnect')?.addEventListener('click', () => {
+  modal.disconnect()
+})
+
+document.getElementById('switch-to-ethereum')?.addEventListener('click', () => {
+  modal.switchNetwork(mainnet)
+})
+
 document.getElementById('toggle-theme')?.addEventListener('click', () => {
   const newTheme = themeState.themeMode === 'dark' ? 'light' : 'dark'
   modal.setThemeMode(newTheme)
@@ -111,19 +109,6 @@ document.getElementById('sign-message')?.addEventListener('click', async () => {
     return
   }
   signMessage()
-})
-
-// Action Buttons
-document.getElementById('open-modal')?.addEventListener('click', () => {
-  modal.open()
-})
-
-document.getElementById('disconnect')?.addEventListener('click', () => {
-  modal.disconnect()
-})
-
-document.getElementById('switch-to-ethereum')?.addEventListener('click', () => {
-  modal.switchNetwork(networks.mainnet)
 })
 
 async function signMessage() {
