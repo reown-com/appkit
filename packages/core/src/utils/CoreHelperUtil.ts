@@ -359,9 +359,11 @@ export const CoreHelperUtil = {
     platform: SDKFramework,
     version: string
   ): SdkVersion {
-    const noAdapters = adapters.length === 0
+    const hasNoAdapters = adapters.length === 0
     const adapterNames = (
-      noAdapters ? 'universal' : adapters.map(adapter => adapter.adapterType).join(',')
+      hasNoAdapters
+        ? ConstantsUtil.ADAPTER_TYPES.UNIVERSAL
+        : adapters.map(adapter => adapter.adapterType).join(',')
     ) as AdapterType
 
     return `${platform}-${adapterNames}-${version}`
