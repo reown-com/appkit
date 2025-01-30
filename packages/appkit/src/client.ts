@@ -217,7 +217,7 @@ export class AppKit {
   // -- Public -------------------------------------------------------------------
   public async open(options?: OpenOptions) {
     await this.injectModalUi()
-    if (options?.uri && this.universalProvider) {
+    if (options?.uri && this.universalAdapter) {
       ConnectionController.setUri(options.uri)
     }
     ModalController.open(options)
@@ -1015,10 +1015,10 @@ export class AppKit {
             caipNetwork
           })
 
-          return result?.gas as bigint
+          return result?.gas || 0n
         }
 
-        return BigInt(0)
+        return 0n
       },
       getEnsAvatar: async () => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
@@ -1060,7 +1060,7 @@ export class AppKit {
       parseUnits: (value: string, decimals: number) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
-        return adapter?.parseUnits({ value, decimals }) as bigint
+        return adapter?.parseUnits({ value, decimals })
       },
       formatUnits: (value: bigint, decimals: number) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
