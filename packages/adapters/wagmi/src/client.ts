@@ -477,7 +477,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     this.addWagmiConnectors(options, appKit)
 
     // Add third party connectors
-    await this.addThirdPartyConnectors(options, appKit)
+    await this.addThirdPartyConnectors(options)
   }
 
   public async syncConnection(
