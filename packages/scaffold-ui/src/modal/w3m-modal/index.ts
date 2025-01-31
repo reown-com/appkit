@@ -222,7 +222,6 @@ export class W3mModal extends LitElement {
 
     this.caipAddress = caipAddress
     ChainController.setIsSwitchingNamespace(false)
-    ConnectorController.clearNamespaceFilter()
   }
 
   private onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {
