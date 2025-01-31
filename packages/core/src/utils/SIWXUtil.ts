@@ -353,7 +353,7 @@ export interface SIWXConfig {
    *
    * Constraints:
    * - This method MUST verify all the sessions before storing them in the storage;
-   * - This method MUST replace all the sessions in the storage with the new ones succesfully otherwise it MUST throw an error.
+   * - This method MUST replace all the sessions in the storage with the new ones successfully otherwise it MUST throw an error.
    *
    * @param sessions SIWXSession[]
    */
