@@ -56,24 +56,28 @@ async function initialize() {
     modal.switchNetwork(mainnet)
     network = 'eip155:1'
     account = session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2]
+    updateDom()
   })
 
   document.getElementById('switch-network-polygon')?.addEventListener('click', () => {
     modal.switchNetwork(polygon)
     network = 'eip155:137'
     account = session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2]
+    updateDom()
   })
 
   document.getElementById('switch-network-solana')?.addEventListener('click', () => {
     modal.switchNetwork(solana)
     network = solana.caipNetworkId
     account = session?.namespaces?.solana?.accounts?.[0].split(':')[2]
+    updateDom()
   })
 
   document.getElementById('switch-network-bitcoin')?.addEventListener('click', () => {
     modal.switchNetwork(bitcoin)
     network = bitcoin.caipNetworkId
     account = session?.namespaces?.bip122?.accounts?.[0].split(':')[2]
+    updateDom()
   })
 
   // Get last session if exists
