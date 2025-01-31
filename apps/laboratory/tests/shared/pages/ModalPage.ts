@@ -691,14 +691,17 @@ export class ModalPage {
 
   async connectToExtensionMultichain(
     chainNamespace: 'eip155' | 'solana' | 'bitcoin',
-    modalOpen?: boolean
+    modalOpen?: boolean,
+    isAnotherNamespaceConnected?: boolean
   ) {
     if (!modalOpen) {
       await this.connectButton.click()
     }
     const walletSelector = await this.getExtensionWallet()
     await walletSelector.click()
-    const chainSelector = this.page.getByTestId(`wui-list-chain-${chainNamespace}`)
-    await chainSelector.click()
+    if (!isAnotherNamespaceConnected) {
+      const chainSelector = this.page.getByTestId(`wui-list-chain-${chainNamespace}`)
+      await chainSelector.click()
+    }
   }
 }

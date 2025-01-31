@@ -68,7 +68,7 @@ extensionTest('it should switch networks and sign', async () => {
   await modalPage.switchActiveChain()
   await modalValidator.checkConnectionStatus('loading', network)
 
-  await modalPage.connectToExtensionMultichain('eip155', true)
+  await modalPage.connectToExtensionMultichain('eip155', true, true)
   await modalValidator.checkConnectionStatus('connected', network)
 
   await switchNetworkAndSign(network)
