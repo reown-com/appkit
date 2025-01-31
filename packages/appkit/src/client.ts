@@ -110,6 +110,7 @@ export interface OpenOptions {
     | 'AllWallets'
     | 'WalletSend'
   uri?: string
+  namespace?: ChainNamespace
 }
 
 type Adapters = Record<ChainNamespace, AdapterBlueprint>
@@ -205,6 +206,10 @@ export class AppKit {
     await this.injectModalUi()
     if (options?.uri && this.universalProvider) {
       ConnectionController.setUri(options.uri)
+    }
+
+    if (options?.namespace) {
+      ConnectorController.setFilterByNamespace(options.namespace)
     }
 
     ModalController.open(options)
