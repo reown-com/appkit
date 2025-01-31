@@ -7,7 +7,6 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@reown/appkit": "workspace:*",
     "@tanstack/react-query": "5.64.2",
     "react": "18.3.1",
     "react-dom": "18.3.1",
@@ -23,9 +22,9 @@
     "vite": "6.0.11"
   },
   "overrides": {
-    "@walletconnect/ethereum-provider": "2.17.4-canary-ak-4"
+    "@walletconnect/ethereum-provider": "2.18.0-canary-ak-2"
   },
   "resolutions": {
-    "@walletconnect/ethereum-provider": "2.17.4-canary-ak-4"
+    "@walletconnect/ethereum-provider": "2.18.0-canary-ak-2"
   }
 }
