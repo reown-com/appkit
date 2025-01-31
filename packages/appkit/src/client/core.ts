@@ -649,12 +649,11 @@ export abstract class AppKitCore {
   }
 
   protected async initChainAdapters() {
-    if (this.chainAdapters)
-      await Promise.all(
-        this.chainNamespaces.map(async namespace => {
-          await this.initChainAdapter(namespace)
-        })
-      )
+    await Promise.all(
+      this.chainNamespaces.map(async namespace => {
+        await this.initChainAdapter(namespace)
+      })
+    )
   }
 
   protected onConnectors(chainNamespace: ChainNamespace) {
