@@ -42,7 +42,6 @@ let balance
 
 let networkState = {}
 let accountState = {}
-let providers = { eip155: null, solana: null, bip122: null, polkadot: null }
 
 function updateDom() {
   const elements = {

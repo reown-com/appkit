@@ -39,7 +39,6 @@ let network
 
 let networkState = {}
 let accountState = {}
-let providers = { eip155: null, solana: null, bip122: null, polkadot: null }
 
 const networks = [mainnet, polygon, solana, bitcoin]
 async function initialize() {
@@ -239,9 +238,8 @@ async function getPayload() {
 }
 
 async function signMessage() {
-  const walletProvider = providers[networkState?.caipNetwork.chainNamespace]
   try {
-    if (!walletProvider || !accountState.address) {
+    if (!signClient || !accountState.address) {
       throw Error('User is disconnected')
     }
 
@@ -251,10 +249,7 @@ async function signMessage() {
       throw Error('Chain not supported by laboratory')
     }
 
-    const signature = await walletProvider.request(
-      payload,
-      networkState?.caipNetwork?.caipNetworkId
-    )
+    const signature = await signClient.request(payload, networkState?.caipNetwork?.caipNetworkId)
 
     console.log({
       title: 'Signed successfully',
