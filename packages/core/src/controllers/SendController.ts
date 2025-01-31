@@ -185,11 +185,11 @@ export const SendController = {
   isInsufficientNetworkTokenForGas(networkBalanceInUSD: string, gasPriceInUSD: number | undefined) {
     const gasPrice = gasPriceInUSD || '0'
 
-    if (NumberUtil.bigNumber(networkBalanceInUSD).isZero()) {
+    if (NumberUtil.bigNumber(networkBalanceInUSD).eq(0)) {
       return true
     }
 
-    return NumberUtil.bigNumber(NumberUtil.bigNumber(gasPrice)).isGreaterThan(networkBalanceInUSD)
+    return NumberUtil.bigNumber(NumberUtil.bigNumber(gasPrice)).gt(networkBalanceInUSD)
   },
 
   hasInsufficientGasFunds() {

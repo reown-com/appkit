@@ -421,6 +421,9 @@ importers:
       '@chakra-ui/react':
         specifier: 2.8.2
         version: 2.8.2(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.3.1))(@emotion/styled@11.11.0(@emotion/react@11.11.3(@types/react@18.2.62)(react@18.3.1))(@types/react@18.2.62)(react@18.3.1))(@types/react@18.2.62)(framer-motion@10.17.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@coinbase/wallet-sdk':
+        specifier: 4.2.4
+        version: 4.2.4
       '@emotion/react':
         specifier: 11.11.3
         version: 11.11.3(@types/react@18.2.62)(react@18.3.1)
@@ -617,7 +620,7 @@ importers:
     dependencies:
       '@walletconnect/ethereum-provider':
         specifier: 2.18.0
-        version: 2.18.0(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(utf-8-validate@5.0.10)
+        version: 2.18.0(@types/react@18.3.1)(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react@18.3.1)(utf-8-validate@5.0.10)
     devDependencies:
       vite:
         specifier: 5.2.11
@@ -1500,7 +1503,7 @@ importers:
     dependencies:
       '@walletconnect/ethereum-provider':
         specifier: 2.18.0
-        version: 2.18.0(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(utf-8-validate@5.0.10)
+        version: 2.18.0(@types/react@18.3.1)(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react@18.3.1)(utf-8-validate@5.0.10)
       vue:
         specifier: 3.4.3
         version: 3.4.3(typescript@5.3.3)
@@ -1745,9 +1748,6 @@ importers:
 
   packages/adapters/ethers:
     dependencies:
-      '@coinbase/wallet-sdk':
-        specifier: 4.2.4
-        version: 4.2.4
       '@ethersproject/sha2':
         specifier: 5.7.0
         version: 5.7.0
@@ -1784,6 +1784,10 @@ importers:
       valtio:
         specifier: 1.11.2
         version: 1.11.2(@types/react@18.3.1)(react@18.3.1)
+    optionalDependencies:
+      '@coinbase/wallet-sdk':
+        specifier: 4.2.4
+        version: 4.2.4
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.1.3
@@ -1797,9 +1801,6 @@ importers:
 
   packages/adapters/ethers5:
     dependencies:
-      '@coinbase/wallet-sdk':
-        specifier: 4.2.4
-        version: 4.2.4
       '@ethersproject/sha2':
         specifier: 5.7.0
         version: 5.7.0
@@ -1836,6 +1837,10 @@ importers:
       valtio:
         specifier: 1.11.2
         version: 1.11.2(@types/react@18.3.1)(react@18.3.1)
+    optionalDependencies:
+      '@coinbase/wallet-sdk':
+        specifier: 4.2.4
+        version: 4.2.4
     devDependencies:
       '@vitest/coverage-v8':
         specifier: 2.1.3
@@ -1951,9 +1956,6 @@ importers:
 
   packages/adapters/wagmi:
     dependencies:
-      '@coinbase/wallet-sdk':
-        specifier: 4.2.4
-        version: 4.2.4
       '@reown/appkit':
         specifier: workspace:*
         version: link:../../appkit
@@ -1975,9 +1977,6 @@ importers:
       '@reown/appkit-wallet':
         specifier: workspace:*
         version: link:../../wallet
-      '@wagmi/connectors':
-        specifier: '>=5.1'
-        version: 5.1.15(@types/react@18.3.1)(@wagmi/core@2.13.8(@tanstack/query-core@5.59.16)(@types/react@18.3.1)(react@18.3.1)(typescript@5.3.3)(viem@2.21.34(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8)))(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react-dom@18.3.1(react@18.3.1))(react-native@0.77.0(@babel/core@7.26.7)(@babel/preset-env@7.24.7(@babel/core@7.26.7))(@types/react@18.3.1)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.32.1)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.21.34(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8))(zod@3.23.8)
       '@wagmi/core':
         specifier: '>=2.13'
         version: 2.13.8(@tanstack/query-core@5.59.16)(@types/react@18.3.1)(react@18.3.1)(typescript@5.3.3)(viem@2.21.34(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8))
@@ -1996,6 +1995,10 @@ importers:
       wagmi:
         specifier: '>=2.12'
         version: 2.12.17(@tanstack/query-core@5.59.16)(@tanstack/react-query@5.56.2(react@18.3.1))(@types/react@18.3.1)(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react-dom@18.3.1(react@18.3.1))(react-native@0.77.0(@babel/core@7.26.7)(@babel/preset-env@7.24.7(@babel/core@7.26.7))(@types/react@18.3.1)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.32.1)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.21.34(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8))(zod@3.23.8)
+    optionalDependencies:
+      '@wagmi/connectors':
+        specifier: '>=5.1'
+        version: 5.1.15(@types/react@18.3.1)(@wagmi/core@2.13.8(@tanstack/query-core@5.59.16)(@types/react@18.3.1)(react@18.3.1)(typescript@5.3.3)(viem@2.21.34(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8)))(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react-dom@18.3.1(react@18.3.1))(react-native@0.77.0(@babel/core@7.26.7)(@babel/preset-env@7.24.7(@babel/core@7.26.7))(@types/react@18.3.1)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(rollup@4.32.1)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.21.34(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8))(zod@3.23.8)
     devDependencies:
       '@types/react':
         specifier: 18.3.1
@@ -2205,9 +2208,9 @@ importers:
 
   packages/common:
     dependencies:
-      bignumber.js:
-        specifier: 9.1.2
-        version: 9.1.2
+      big.js:
+        specifier: 6.2.2
+        version: 6.2.2
       dayjs:
         specifier: 1.11.10
         version: 1.11.10
@@ -2215,6 +2218,9 @@ importers:
         specifier: 2.x
         version: 2.21.34(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8)
     devDependencies:
+      '@types/big.js':
+        specifier: 6.2.2
+        version: 6.2.2
       '@vitest/coverage-v8':
         specifier: 2.1.3
         version: 2.1.3(vitest@2.1.3(@types/node@20.11.5)(@vitest/ui@2.1.8(vitest@2.1.3))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.29.1)(terser@5.37.0))
@@ -29766,7 +29772,7 @@ snapshots:
       - uploadthing
       - utf-8-validate
 
-  '@walletconnect/ethereum-provider@2.18.0(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(utf-8-validate@5.0.10)':
+  '@walletconnect/ethereum-provider@2.18.0(@types/react@18.3.1)(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react@18.3.1)(utf-8-validate@5.0.10)':
     dependencies:
       '@walletconnect/jsonrpc-http-connection': 1.0.8
       '@walletconnect/jsonrpc-provider': 1.0.14
@@ -30401,7 +30407,7 @@ snapshots:
 
   '@walletconnect/window-metadata@1.0.0':
     dependencies:
-      '@walletconnect/window-getters': 1.0.0
+      '@walletconnect/window-getters': 1.0.1
 
   '@walletconnect/window-metadata@1.0.1':
     dependencies:

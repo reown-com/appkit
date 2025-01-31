@@ -129,8 +129,8 @@ export class W3mInputToken extends LitElement {
           nativeAddress => this.token?.address === nativeAddress
         )
 
-      const numericGas = NumberUtil.bigNumber(this.gasPrice).shiftedBy(
-        -this.token.quantity.decimals
+      const numericGas = NumberUtil.bigNumber(this.gasPrice).div(
+        NumberUtil.bigNumber(10).pow(Number(this.token.quantity.decimals))
       )
 
       const maxValue = isNetworkToken

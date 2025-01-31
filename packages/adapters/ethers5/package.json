@@ -28,9 +28,11 @@
     "@walletconnect/universal-provider": "2.18.0",
     "valtio": "1.11.2"
   },
+  "optionalDependencies": {
+    "@coinbase/wallet-sdk": "4.2.4"
+  },
   "peerDependencies": {
     "@ethersproject/sha2": "5.7.0",
-    "@coinbase/wallet-sdk": "4.2.4",
     "ethers": ">=4.1 <6.0.0"
   },
   "devDependencies": {

@@ -228,14 +228,14 @@ export class W3mSwapView extends LitElement {
       return
     }
 
-    const amountOfTokenGasRequires = NumberUtil.bigNumber(this.gasPriceInUSD.toFixed(5)).dividedBy(
+    const amountOfTokenGasRequires = NumberUtil.bigNumber(this.gasPriceInUSD.toFixed(5)).div(
       this.sourceTokenPriceInUSD
     )
     const maxValue = isNetworkToken
       ? NumberUtil.bigNumber(balance).minus(amountOfTokenGasRequires)
       : NumberUtil.bigNumber(balance)
 
-    this.handleChangeAmount(target, maxValue.isGreaterThan(0) ? maxValue.toFixed(20) : '0')
+    this.handleChangeAmount(target, maxValue.gt(0) ? maxValue.toFixed(20) : '0')
   }
 
   private templateDetails() {
