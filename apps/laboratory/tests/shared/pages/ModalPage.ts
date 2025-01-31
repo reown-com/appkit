@@ -694,12 +694,14 @@ export class ModalPage {
     modalOpen?: boolean,
     isAnotherNamespaceConnected?: boolean
   ) {
+    const isFiltered = modalOpen && isAnotherNamespaceConnected
+
     if (!modalOpen) {
       await this.connectButton.click()
     }
     const walletSelector = await this.getExtensionWallet()
     await walletSelector.click()
-    if (!isAnotherNamespaceConnected) {
+    if (!isFiltered) {
       const chainSelector = this.page.getByTestId(`wui-list-chain-${chainNamespace}`)
       await chainSelector.click()
     }
