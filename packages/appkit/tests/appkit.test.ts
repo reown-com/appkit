@@ -1280,7 +1280,7 @@ describe('Base', () => {
       })
     })
 
-    it('should initialize UniversalProvider when not provided in options', () => {
+    it('should initialize UniversalProvider when not provided in options', async () => {
       vi.spyOn(CoreHelperUtil, 'isClient').mockReturnValue(true)
 
       const upSpy = vi.spyOn(UniversalProvider, 'init')
@@ -1291,6 +1291,9 @@ describe('Base', () => {
         networks: [mainnet],
         adapters: [mockAdapter]
       })
+
+      // Wait for the promise to fetchIdentity to resolve
+      await new Promise(resolve => setTimeout(resolve, 10))
 
       expect(OptionsController.setUsingInjectedUniversalProvider).toHaveBeenCalled()
       expect(upSpy).toHaveBeenCalled()
@@ -1308,6 +1311,9 @@ describe('Base', () => {
         universalProvider: mockProvider,
         adapters: [mockAdapter]
       })
+
+      // Wait for the promise to fetchIdentity to resolve
+      await new Promise(resolve => setTimeout(resolve, 10))
 
       expect(upSpy).not.toHaveBeenCalled()
       expect(OptionsController.setUsingInjectedUniversalProvider).toHaveBeenCalled()
