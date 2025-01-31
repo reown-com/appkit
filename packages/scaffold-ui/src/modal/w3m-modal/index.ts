@@ -6,7 +6,6 @@ import { type CaipAddress, type CaipNetwork, ConstantsUtil } from '@reown/appkit
 import {
   ApiController,
   ChainController,
-  ConnectorController,
   CoreHelperUtil,
   ModalController,
   OptionsController,
