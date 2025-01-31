@@ -9,6 +9,7 @@
     "build:sample-apps": "turbo run build --filter={./examples/*}",
     "build:example:wagmi-cdn": "pnpm build; pnpm --filter @examples/html-wagmi-cdn build",
     "build:example:vue-wagmi": "pnpm --filter @examples/vue-wagmi build",
+    "build:example:ethereum-provider-wagmi": "pnpm --filter @examples/ethereum-provider-wagmi build",
     "build:example:parcel-react-wagmi": "pnpm --filter @examples/parcel-react-wagmi build",
     "build:example:wagmi-app-router": "pnpm --filter @examples/next-wagmi-app-router build",
     "build": "turbo run build --filter={./packages/**/*} --concurrency=31",
