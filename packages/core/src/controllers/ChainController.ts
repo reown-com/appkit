@@ -289,7 +289,11 @@ export const ChainController = {
 
     const isSupported = this.checkIfSupportedNetwork(caipNetwork.chainNamespace)
 
-    if (!isSupported && !OptionsController.state.allowUnsupportedChain) {
+    if (
+      !isSupported &&
+      !OptionsController.state.allowUnsupportedChain &&
+      !ConnectionController.state.wcBasic
+    ) {
       this.showUnsupportedChainUI()
     }
   },

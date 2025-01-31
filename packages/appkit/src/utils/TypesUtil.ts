@@ -11,6 +11,11 @@ export type AppKitOptions = {
    */
   adapters?: ChainAdapter[]
   /**
+   * Used for ethereum provider
+   * @default false
+   */
+  basic?: boolean
+  /**
    * Show or hide the wallets in the modal. This is available with the email and socials features
    * @default true
    */

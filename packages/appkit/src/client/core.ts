@@ -152,6 +152,7 @@ export abstract class AppKitCore {
     this.initializeChainController(options)
     this.initializeThemeController(options)
     this.initializeBlockchainApiController(options)
+    this.initializeConnectionController(options)
 
     if (options.excludeWalletIds) {
       ApiController.initializeExcludedWalletRdns({ ids: options.excludeWalletIds })
@@ -186,6 +187,10 @@ export abstract class AppKitCore {
     await BlockchainApiController.getSupportedNetworks({
       projectId: options.projectId
     })
+  }
+
+  protected initializeConnectionController(options: AppKitOptions) {
+    ConnectionController.setWcBasic(options.basic ?? false)
   }
 
   protected initializeOptionsController(options: AppKitOptionsWithSdk) {
@@ -644,11 +649,12 @@ export abstract class AppKitCore {
   }
 
   protected async initChainAdapters() {
-    await Promise.all(
-      this.chainNamespaces.map(async namespace => {
-        await this.initChainAdapter(namespace)
-      })
-    )
+    if (this.chainAdapters)
+      await Promise.all(
+        this.chainNamespaces.map(async namespace => {
+          await this.initChainAdapter(namespace)
+        })
+      )
   }
 
   protected onConnectors(chainNamespace: ChainNamespace) {
