@@ -6,6 +6,7 @@ import { type CaipAddress, type CaipNetwork, ConstantsUtil } from '@reown/appkit
 import {
   ApiController,
   ChainController,
+  ConnectorController,
   CoreHelperUtil,
   ModalController,
   OptionsController,
@@ -221,6 +222,7 @@ export class W3mModal extends LitElement {
 
     this.caipAddress = caipAddress
     ChainController.setIsSwitchingNamespace(false)
+    ConnectorController.clearNamespaceFilter()
   }
 
   private onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {
