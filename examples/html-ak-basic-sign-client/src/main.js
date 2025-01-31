@@ -247,7 +247,7 @@ async function signMessage() {
 
     console.log({
       title: 'Signed successfully',
-      description: signature
+      description: sig
     })
   } catch (error) {
     console.error({
