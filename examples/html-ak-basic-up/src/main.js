@@ -40,9 +40,6 @@ let account
 let network
 let balance
 
-let networkState = {}
-let accountState = {}
-
 function updateDom() {
   const elements = {
     connect: document.getElementById('connect'),
@@ -82,9 +79,6 @@ function clearState() {
   account = undefined
   balance = undefined
   network = undefined
-  networkState = {}
-  accountState = {}
-  providers = { eip155: null, solana: null, bip122: null, polkadot: null }
 }
 
 async function initializeApp() {
@@ -95,14 +89,6 @@ async function initializeApp() {
     projectId,
     networks,
     universalProvider: provider
-  })
-
-  modal.subscribeAccount(state => {
-    accountState = state
-  })
-
-  modal.subscribeNetwork(state => {
-    networkState = state
   })
 
   // Event listeners
@@ -148,22 +134,32 @@ async function initializeApp() {
   })
 
   document.getElementById('switch-network-eth')?.addEventListener('click', async () => {
-    await modal.switchNetwork(mainnet)
+    modal.switchNetwork(mainnet)
+    network = 'eip155:1'
+    account = provider?.session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2]
     updateDom()
   })
 
   document.getElementById('switch-network-polygon')?.addEventListener('click', async () => {
-    await modal.switchNetwork(polygon)
+    modal.switchNetwork(polygon)
+    network = 'eip155:137'
+    account = provider?.session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2]
     updateDom()
   })
 
   document.getElementById('switch-network-solana')?.addEventListener('click', async () => {
-    await modal.switchNetwork(mainnet)
+    modal.switchNetwork(solana)
+    network = solana.caipNetworkId
+    account = provider?.session?.namespaces?.solana?.accounts?.[0].split(':')[2]
     updateDom()
   })
 
   document.getElementById('switch-network-bitcoin')?.addEventListener('click', async () => {
-    await modal.switchNetwork(mainnet)
+    console.log(session)
+
+    modal.switchNetwork(bitcoin)
+    network = bitcoin.caipNetworkId
+    account = provider?.session?.namespaces?.bip122?.accounts?.[0].split(':')[2]
     updateDom()
   })
 
@@ -182,18 +178,18 @@ async function getPayload() {
       method: 'solana_signMessage',
       params: {
         message: base58.encode(new TextEncoder().encode('Hello Appkit!')),
-        pubkey: accountState.address
+        pubkey: account
       }
     },
     eip155: {
       method: 'personal_sign',
-      params: [accountState.address, 'Hello AppKit!']
+      params: [account, 'Hello AppKit!']
     },
     bip122: {
       method: 'signMessage',
       params: {
         message: 'Hello AppKit!',
-        account: accountState.address
+        account: account
       }
     },
     polkadot: {
@@ -202,7 +198,7 @@ async function getPayload() {
         transactionPayload: {
           specVersion: '0x00002468',
           transactionVersion: '0x0000000e',
-          address: `${accountState.address}`,
+          address: `${account}`,
           blockHash: '0x554d682a74099d05e8b7852d19c93b527b5fae1e9e1969f6e1b82a2f09a14cc9',
           blockNumber: '0x00cb539c',
           era: '0xc501',
@@ -222,19 +218,20 @@ async function getPayload() {
           tip: '0x00000000000000000000000000000000',
           version: 4
         },
-        address: accountState.address
+        address: account
       }
     }
   }
 
-  const payload = map[networkState?.caipNetwork?.chainNamespace || '']
+  const [namespace] = network.split(':')
+  const payload = map[namespace || '']
 
   return payload
 }
 
 async function signMessage() {
   try {
-    if (!provider || !accountState.address) {
+    if (!provider || !account) {
       throw Error('User is disconnected')
     }
 
@@ -244,7 +241,7 @@ async function signMessage() {
       throw Error('Chain not supported by laboratory')
     }
 
-    const signature = await provider.request(payload, networkState?.caipNetwork?.caipNetworkId)
+    const signature = await provider.request(payload, network)
 
     console.log({
       title: 'Signed successfully',
