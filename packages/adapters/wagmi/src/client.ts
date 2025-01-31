@@ -1,4 +1,3 @@
-import { coinbaseWallet } from '@wagmi/connectors'
 import {
   type Config,
   type Connector,
@@ -250,19 +249,37 @@ export class WagmiAdapter extends AdapterBlueprint {
     })
   }
 
-  private addWagmiConnectors(options: AppKitOptions, appKit: AppKit) {
-    const customConnectors: CreateConnectorFn[] = []
+  private async addThirdPartyConnectors(options: AppKitOptions) {
+    const thirdPartyConnectors: CreateConnectorFn[] = []
 
     if (options.enableCoinbase !== false) {
-      customConnectors.push(
-        coinbaseWallet({
-          version: '4',
-          appName: options.metadata?.name ?? 'Unknown',
-          appLogoUrl: options.metadata?.icons[0] ?? 'Unknown',
-          preference: options.coinbasePreference ?? 'all'
-        })
-      )
+      try {
+        const { coinbaseWallet } = await import('@wagmi/connectors')
+
+        if (coinbaseWallet) {
+          thirdPartyConnectors.push(
+            coinbaseWallet({
+              version: '4',
+              appName: options.metadata?.name ?? 'Unknown',
+              appLogoUrl: options.metadata?.icons[0] ?? 'Unknown',
+              preference: options.coinbasePreference ?? 'all'
+            })
+          )
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to import Coinbase Wallet SDK:', error)
+      }
     }
+
+    thirdPartyConnectors.forEach(connector => {
+      const cnctr = this.wagmiConfig._internal.connectors.setup(connector)
+      this.wagmiConfig._internal.connectors.setState(prev => [...prev, cnctr])
+    })
+  }
+
+  private addWagmiConnectors(options: AppKitOptions, appKit: AppKit) {
+    const customConnectors: CreateConnectorFn[] = []
 
     if (options.enableWalletConnect !== false) {
       customConnectors.push(
@@ -451,13 +468,16 @@ export class WagmiAdapter extends AdapterBlueprint {
         connectors.forEach(connector => this.addWagmiConnector(connector, options))
     })
 
-    // Add wagmi connectors
-    this.addWagmiConnectors(options, appKit)
-
     // Add current wagmi connectors to chain adapter blueprint
     await Promise.all(
       this.wagmiConfig.connectors.map(connector => this.addWagmiConnector(connector, options))
     )
+
+    // Add wagmi connectors
+    this.addWagmiConnectors(options, appKit)
+
+    // Add third party connectors
+    await this.addThirdPartyConnectors(options)
   }
 
   public async syncConnection(
