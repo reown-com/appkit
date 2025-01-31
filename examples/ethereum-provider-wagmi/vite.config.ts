@@ -10,6 +10,9 @@ export default defineConfig(({ mode }) => {
       __APP_ENV__: JSON.stringify(env.APP_ENV),
       'process.env': env
     },
+    build: {
+      outDir: 'dist'
+    },
     plugins: [react()]
   }
 })
