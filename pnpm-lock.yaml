@@ -588,6 +588,9 @@ importers:
       '@walletconnect/sign-client':
         specifier: 2.18.0
         version: 2.18.0(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(utf-8-validate@5.0.10)
+      bs58:
+        specifier: 6.0.0
+        version: 6.0.0
     devDependencies:
       vite:
         specifier: 5.2.11
