@@ -1,13 +1,31 @@
 import { useEffect, useState } from 'react'
 import QRCode from 'react-qr-code'
 
-import { type Connector, useAccount, useConnect, useConnectors } from 'wagmi'
+import {
+  type Connector,
+  useAccount,
+  useConnect,
+  useConnections,
+  useConnectors,
+  useDisconnect
+} from 'wagmi'
 
 export function Connectors() {
   const [uri, setUri] = useState('')
 
   const connectors = useConnectors()
   const account = useAccount()
+  const connections = useConnections()
+
+  const [isCopied, setIsCopied] = useState(false)
+
+  const { disconnect } = useDisconnect()
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsCopied(false)
+    }, 1000)
+  }, [isCopied])
 
   if (account.isConnected) {
     return null
@@ -15,10 +33,15 @@ export function Connectors() {
 
   const handleCopyUri = () => {
     window.navigator.clipboard.writeText(uri)
+    setIsCopied(true)
   }
 
   const handleCancel = () => {
     setUri('')
+    connections.forEach(({ connector }) => {
+      console.log('connector', connector)
+      disconnect({ connector })
+    })
   }
 
   return (
@@ -27,7 +50,7 @@ export function Connectors() {
         <div className="container__wc_qr_code">
           <QRCode value={uri} />
           <div className="container__wc_qr_code_buttons">
-            <button onClick={handleCopyUri}>Copy URI</button>
+            <button onClick={handleCopyUri}>{isCopied ? 'Copied!' : 'Copy URI'}</button>
             <button onClick={handleCancel}>Cancel</button>
           </div>
         </div>
@@ -51,8 +74,13 @@ export function Connectors() {
  */
 function Connector({ connector }: { connector: Connector }) {
   const { connectAsync } = useConnect()
+  const { isConnecting } = useAccount()
 
-  return <button onClick={() => connectAsync({ connector })}>{connector.name}</button>
+  return (
+    <button onClick={() => connectAsync({ connector })} disabled={isConnecting}>
+      Connect
+    </button>
+  )
 }
 
 /**
@@ -67,6 +95,7 @@ function CustomWalletConnectConnector({
   onUri: (uri: string) => void
 }) {
   const { connectAsync } = useConnect()
+  const { isConnecting } = useAccount()
 
   useEffect(() => {
     function handleDisplayUri(message: { type: string; data?: unknown }) {
@@ -82,5 +111,9 @@ function CustomWalletConnectConnector({
     }
   }, [])
 
-  return <button onClick={() => connectAsync({ connector })}>{connector.name}</button>
+  return (
+    <button onClick={() => connectAsync({ connector })} disabled={isConnecting}>
+      {connector.name}
+    </button>
+  )
 }

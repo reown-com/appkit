@@ -57,9 +57,13 @@ main {
   align-items: center;
 }
 
+h1 {
+  text-align: center;
+}
+
 .container__account_data {
   white-space: pre;
-  max-height: 30vh;
+  max-height: 300px;
   overflow: auto;
   padding: 1rem;
   background-color: var(--apkt-foreground-accent-primary-010);
@@ -99,7 +103,39 @@ main {
 
 .container__account_actions {
   display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.container__switch_networks {
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+}
+
+.container__actions {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container__actions_buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.container__switch_networks_buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: 1rem;
 }
 
@@ -110,6 +146,7 @@ main {
 }
 
 button {
+  width: fit-content;
   display: inline-flex;
   font-size: 14px;
   padding: 1rem 1.5rem;
@@ -134,4 +171,11 @@ button:active {
 
 button:disabled {
   opacity: 0.5;
+}
+
+@media screen and (max-width: 768px) {
+  .container__account_data {
+    max-height: 200px;
+    max-width: 300px;
+  }
 }
