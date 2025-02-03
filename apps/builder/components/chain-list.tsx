@@ -1,6 +1,6 @@
 'use client'
 
-import type { ChainNamespace } from '@reown/appkit-common'
+import { type ChainNamespace } from '@reown/appkit-common'
 import { useAppKitAccount } from '@reown/appkit-core/react'
 
 import { ExclamationMarkIcon } from '@/components/icon/exclamation-mark'
@@ -23,6 +23,7 @@ const CHAIN_OPTIONS = [
 export function ChainList() {
   const { caipAddress } = useAppKitAccount()
   const { enabledChains, removeChain, addChain } = useAppKitContext()
+
   const handleChainChange = (chainId: ChainNamespace) => {
     if (enabledChains.includes(chainId)) {
       if (enabledChains.length > 1) {
@@ -54,7 +55,9 @@ export function ChainList() {
         <Alert>
           <div className="flex items-center gap-3">
             <ExclamationMarkIcon />
-            <AlertDescription>Customizing the chains available when disconnected</AlertDescription>
+            <AlertDescription>
+              You can only customize chains when your wallet is disconnected.
+            </AlertDescription>
           </div>
         </Alert>
       ) : null}
