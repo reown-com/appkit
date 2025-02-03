@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import { ChainController, RouterController } from '@reown/appkit-core'
+import { ChainController, ConnectorController, RouterController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'
@@ -82,13 +82,16 @@ export class W3mSwitchActiveChainView extends LitElement {
   }
 
   // -- Private Methods ------------------------------------ //
-  private switchActiveChain() {
+  private async switchActiveChain() {
     if (!this.switchToChain) {
       return
     }
 
+    ChainController.setIsSwitchingNamespace(true)
+    ConnectorController.setFilterByNamespace(this.switchToChain)
+
     if (this.caipNetwork) {
-      ChainController.setActiveCaipNetwork(this.caipNetwork)
+      await ChainController.switchActiveNetwork(this.caipNetwork)
     } else {
       ChainController.setActiveNamespace(this.switchToChain)
     }

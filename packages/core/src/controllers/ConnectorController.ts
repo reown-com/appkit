@@ -1,4 +1,4 @@
-import { proxy, ref, snapshot } from 'valtio/vanilla'
+import { proxy, ref, snapshot, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { type ChainNamespace, ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
@@ -16,6 +16,7 @@ export interface ConnectorControllerState {
   allConnectors: Connector[]
   connectors: ConnectorWithProviders[]
   activeConnector: Connector | undefined
+  filterByNamespace: ChainNamespace | undefined
 }
 
 type StateKey = keyof ConnectorControllerState
@@ -24,12 +25,19 @@ type StateKey = keyof ConnectorControllerState
 const state = proxy<ConnectorControllerState>({
   allConnectors: [],
   connectors: [],
-  activeConnector: undefined
+  activeConnector: undefined,
+  filterByNamespace: undefined
 })
 
 // -- Controller ---------------------------------------- //
 export const ConnectorController = {
   state,
+
+  subscribe(callback: (value: ConnectorControllerState) => void) {
+    return sub(state, () => {
+      callback(state)
+    })
+  },
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: ConnectorControllerState[K]) => void) {
     return subKey(state, key, callback)
@@ -175,6 +183,7 @@ export const ConnectorController = {
   getAuthConnector(): AuthConnector | undefined {
     const activeNamespace = ChainController.state.activeChain
     const authConnector = state.connectors.find(c => c.id === ConstantsUtil.CONNECTOR_ID.AUTH)
+
     if (!authConnector) {
       return undefined
     }
@@ -190,10 +199,6 @@ export const ConnectorController = {
 
   getAnnouncedConnectorRdns() {
     return state.connectors.filter(c => c.type === 'ANNOUNCED').map(c => c.info?.rdns)
-  },
-
-  getConnectors() {
-    return state.connectors
   },
 
   getConnector(id: string, rdns?: string | null) {
@@ -222,5 +227,45 @@ export const ConnectorController = {
       themeVariables,
       w3mThemeVariables: getW3mThemeVariables(themeVariables, themeMode)
     })
+  },
+
+  /**
+   * Returns the connectors filtered by namespace.
+   * @param namespace - The namespace to filter the connectors by.
+   * @returns ConnectorWithProviders[].
+   */
+  getConnectorsByNamespace(namespace: ChainNamespace) {
+    const namespaceConnectors = state.allConnectors.filter(
+      connector => connector.chain === namespace
+    )
+
+    return this.mergeMultiChainConnectors(namespaceConnectors)
+  },
+
+  /**
+   * Returns the connectors. If a namespace is provided, the connectors are filtered by namespace.
+   * @param namespace - The namespace to filter the connectors by. If not provided, all connectors are returned.
+   * @returns ConnectorWithProviders[].
+   */
+  getConnectors(namespace?: ChainNamespace) {
+    if (namespace) {
+      return this.getConnectorsByNamespace(namespace)
+    }
+
+    return this.mergeMultiChainConnectors(state.allConnectors)
+  },
+
+  /**
+   * Sets the filter by namespace and updates the connectors.
+   * @param namespace - The namespace to filter the connectors by.
+   */
+  setFilterByNamespace(namespace: ChainNamespace) {
+    state.filterByNamespace = namespace
+    state.connectors = this.getConnectors(namespace)
+  },
+
+  clearNamespaceFilter() {
+    state.filterByNamespace = undefined
+    state.connectors = this.getConnectors()
   }
 }

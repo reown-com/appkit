@@ -21,6 +21,14 @@ export function ActionButtonList() {
     switchNetwork(mainnet)
   }
 
+  function connectToSolana() {
+    modal.open({ view: 'Connect', namespace: 'solana' })
+  }
+
+  function connectToEthereum() {
+    modal.open({ view: 'Connect', namespace: 'eip155' })
+  }
+
   async function handleDisconnect() {
     try {
       await disconnect()
@@ -40,6 +48,8 @@ export function ActionButtonList() {
       <button onClick={openAppKit}>Open</button>
       <button onClick={handleDisconnect}>Disconnect</button>
       <button onClick={switchToNetwork}>Switch to Ethereum</button>
+      <button onClick={connectToSolana}>Connect to Solana</button>
+      <button onClick={connectToEthereum}>Connect to Ethereum</button>
       <button onClick={toggleTheme}>
         {themeMode === 'light' ? (
           <svg
