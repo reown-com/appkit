@@ -10,17 +10,9 @@ const plusTypes: TransactionType[] = ['receive', 'deposit', 'borrow', 'claim']
 const minusTypes: TransactionType[] = ['withdraw', 'repay', 'burn']
 
 export const TransactionUtil = {
-  getMonthName(monthNumber: number) {
-    const date = new Date()
-    date.setMonth(monthNumber)
-
-    return date.toLocaleString('en-US', {
-      month: 'long'
-    })
-  },
   getTransactionGroupTitle(year: number, month: number) {
     const currentYear = DateUtil.getYear()
-    const monthName = this.getMonthName(month)
+    const monthName = DateUtil.getMonthNameByIndex(month)
     const isCurrentYear = year === currentYear
     const groupTitle = isCurrentYear ? monthName : `${monthName} ${year}`
 
