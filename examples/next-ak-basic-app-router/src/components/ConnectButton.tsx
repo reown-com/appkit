@@ -14,7 +14,7 @@ export const ConnectButton = () => {
   return (
     <div className="column">
       <span className="text-black">useAppKitAccount: {compactAddress}</span>
-      <appkit-button />
+      <appkit-account-button />
     </div>
   )
 }
