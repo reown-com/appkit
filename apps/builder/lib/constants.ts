@@ -11,7 +11,7 @@ import {
   optimism,
   polygon,
   solana,
-  solanaTestnet,
+  solanaDevnet,
   zksync
 } from '@reown/appkit/networks'
 
@@ -52,7 +52,7 @@ export const NETWORK_OPTIONS = [
   { namespace: 'eip155', network: zksync },
   { namespace: 'eip155', network: base },
   { namespace: 'solana', network: solana },
-  { namespace: 'solana', network: solanaTestnet },
+  { namespace: 'solana', network: solanaDevnet },
   { namespace: 'bip122', network: bitcoin },
   { namespace: 'bip122', network: bitcoinTestnet }
 ] as NetworkOption[]
@@ -67,14 +67,14 @@ export const NETWORK_ID_NAMESPACE_MAP = {
   324: 'eip155',
   8453: 'eip155',
   '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'solana',
-  '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z': 'solana',
+  EtWTRABZaYq6iMfeYKouRu166VU2xqa1: 'solana',
   '000000000019d6689c085ae165831e93': 'bip122',
   '000000000933ea01ad0ee984209779ba': 'bip122'
 }
 
 export const NAMESPACE_NETWORK_IDS_MAP: Record<ChainNamespace, (string | number)[]> = {
   eip155: [1, 42161, 43114, 56, 10, 137, 324, 8453],
-  solana: ['5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z'],
+  solana: ['5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1'],
   bip122: ['000000000019d6689c085ae165831e93', '000000000933ea01ad0ee984209779ba'],
   polkadot: []
 }
