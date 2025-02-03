@@ -1,3 +1,4 @@
+import type { Namespace } from '@walletconnect/universal-provider'
 import { proxy, snapshot } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
@@ -147,6 +148,11 @@ export interface OptionsControllerStatePublic {
    * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa' }"
    */
   defaultAccountTypes: DefaultAccountTypes
+  /**
+   * @experimental - This feature is not production ready.
+   * Allow users to provide theiw own namespace configuration for WC connections
+   */
+  wcNamespaceConfig?: Record<string, Namespace>
 }
 
 export interface OptionsControllerStateInternal {

@@ -2,7 +2,7 @@ import type { SessionTypes } from '@walletconnect/types'
 import type { Namespace, NamespaceConfig } from '@walletconnect/universal-provider'
 
 import type { CaipNetwork, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
-import { EnsController } from '@reown/appkit-core'
+import { EnsController, OptionsController } from '@reown/appkit-core'
 
 import { solana, solanaDevnet } from '../networks/index.js'
 
@@ -45,6 +45,11 @@ export const WcHelpersUtil = {
 
   createNamespaces(caipNetworks: CaipNetwork[]): NamespaceConfig {
     return caipNetworks.reduce<NamespaceConfig>((acc, chain) => {
+      const config = OptionsController.state.wcNamespaceConfig
+      if (config) {
+        return config
+      }
+
       const { id, chainNamespace, rpcUrls } = chain
       const rpcUrl = rpcUrls.default.http[0]
 

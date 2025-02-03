@@ -58,7 +58,8 @@ export class WalletConnectConnector<Namespace extends ChainNamespace = ChainName
     return SIWXUtil.universalProviderAuthenticate({
       universalProvider: this.provider,
       chains,
-      methods: OPTIONAL_METHODS
+      // Authenticate is only available for EIP-155 chains
+      methods: WcHelpersUtil.getMethodsByChainNamespace('eip155')
     })
   }
 }
@@ -75,30 +76,3 @@ export namespace WalletConnectConnector {
     session: SessionTypes.Struct
   }
 }
-
-const OPTIONAL_METHODS = [
-  'eth_accounts',
-  'eth_requestAccounts',
-  'eth_sendRawTransaction',
-  'eth_sign',
-  'eth_signTransaction',
-  'eth_signTypedData',
-  'eth_signTypedData_v3',
-  'eth_signTypedData_v4',
-  'eth_sendTransaction',
-  'personal_sign',
-  'wallet_switchEthereumChain',
-  'wallet_addEthereumChain',
-  'wallet_getPermissions',
-  'wallet_requestPermissions',
-  'wallet_registerOnboarding',
-  'wallet_watchAsset',
-  'wallet_scanQRCode',
-  // EIP-5792
-  'wallet_getCallsStatus',
-  'wallet_sendCalls',
-  'wallet_getCapabilities',
-  // EIP-7715
-  'wallet_grantPermissions',
-  'wallet_revokePermissions'
-]
