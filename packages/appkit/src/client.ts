@@ -393,12 +393,6 @@ export class AppKit {
     return RouterController.state.transactionStack.length === 0
   }
 
-  public isTransactionShouldReplaceView() {
-    return RouterController.state.transactionStack[
-      RouterController.state.transactionStack.length - 1
-    ]?.replace
-  }
-
   public setStatus: (typeof AccountController)['setStatus'] = (status, chain) => {
     StorageUtil.setConnectionStatus(status as ConnectionStatus)
     AccountController.setStatus(status, chain)
@@ -1636,6 +1630,7 @@ export class AppKit {
       chainNamespace
     )
     // Only update state when needed
+    console.log('syncAccount', address, chainId, chainNamespace)
     if (!HelpersUtil.isLowerCaseMatch(address, AccountController.state.address)) {
       this.setCaipAddress(`${chainNamespace}:${chainId}:${address}`, chainNamespace)
       await this.syncIdentity({ address, chainId, chainNamespace })

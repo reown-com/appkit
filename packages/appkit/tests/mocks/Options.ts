@@ -62,6 +62,7 @@ export const mockOptions: AppKitOptions & {
   projectId: 'test-project-id',
   adapters: [mockEvmAdapter, mockSolanaAdapter],
   networks: [mainnet, sepolia, solana],
+  defaultNetwork: mainnet,
   metadata: {
     name: 'Test App',
     description: 'Test App Description',
@@ -70,4 +71,37 @@ export const mockOptions: AppKitOptions & {
   },
   sdkVersion: `html-wagmi-5.1.6`,
   sdkType: 'appkit'
+}
+
+export const mockUser = {
+  address: '0x123',
+  accounts: [
+    { address: '0x1', type: 'eoa' },
+    { address: '0x2', type: 'smartAccount' }
+  ],
+  preferredAccountType: 'eoa',
+  user: {
+    email: 'email@test.com',
+    username: 'test'
+  }
+}
+
+export const mockAuthProvider = {
+  onConnect: vi.fn(callback => callback(mockUser)),
+  connect: vi.fn(),
+  getSmartAccountEnabledNetworks: vi.fn(),
+  onGetSmartAccountEnabledNetworks: vi.fn(),
+  onSetPreferredAccount: vi.fn(),
+  onRpcRequest: vi.fn(),
+  onRpcError: vi.fn(),
+  onRpcSuccess: vi.fn(),
+  onNotConnected: vi.fn(),
+  onIsConnected: vi.fn(),
+  getLoginEmailUsed: vi.fn().mockReturnValue(false),
+  isConnected: vi.fn().mockResolvedValue({ isConnected: false }),
+  getEmail: vi.fn().mockReturnValue('email@email.com'),
+  getUsername: vi.fn().mockReturnValue('test'),
+  onSocialConnected: vi.fn(),
+  syncDappData: vi.fn(),
+  syncTheme: vi.fn()
 }

@@ -136,11 +136,19 @@ export const CaipNetworksUtil = {
    * @returns The extended array of CaipNetwork objects
    */
   extendCaipNetwork(
-    caipNetwork: AppKitNetwork,
+    caipNetwork: AppKitNetwork | CaipNetwork,
     { customNetworkImageUrls, projectId, customRpc }: ExtendCaipNetworkParams
   ): CaipNetwork {
     const caipNetworkId = this.getCaipNetworkId(caipNetwork)
     const chainNamespace = this.getChainNamespace(caipNetwork)
+
+    /**
+     * If the network object is already extended, don't extend it again.
+     * Doing that twice will cause the rpcUrls.chainDefault RPC URL to be overridden.
+     */
+    if ('chainNamespace' in caipNetwork) {
+      return caipNetwork
+    }
 
     let rpcUrl = ''
     if (customRpc) {
