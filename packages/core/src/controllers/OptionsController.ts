@@ -343,6 +343,9 @@ export const OptionsController = {
       }
     })
   },
+  setWCNamespaceConfig(wcNamespaceConfig: OptionsControllerState['wcNamespaceConfig']) {
+    state.wcNamespaceConfig = wcNamespaceConfig
+  },
 
   getSnapshot() {
     return snapshot(state)
