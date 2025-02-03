@@ -21,6 +21,7 @@ import type {
 } from '../utils/TypeUtil.js'
 import { AccountController, type AccountControllerState } from './AccountController.js'
 import { ConnectionController, type ConnectionControllerClient } from './ConnectionController.js'
+import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
@@ -297,6 +298,7 @@ export const ChainController = {
 
     if (state.activeChain !== caipNetwork.chainNamespace) {
       this.setIsSwitchingNamespace(true)
+      ConnectorController.setFilterByNamespace(caipNetwork.chainNamespace)
     }
 
     const newAdapter = state.chains.get(caipNetwork.chainNamespace)

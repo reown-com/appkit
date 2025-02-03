@@ -60,7 +60,7 @@ export class UniversalAdapter extends AdapterBlueprint {
     })
   }
 
-  public async syncConnectors() {
+  override async syncConnectors() {
     return Promise.resolve()
   }
 

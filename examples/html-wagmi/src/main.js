@@ -121,5 +121,18 @@ document.getElementById('switch-to-ethereum')?.addEventListener('click', () => {
   modal.switchNetwork(networks.mainnet)
 })
 
+async function signMessage() {
+  if (eip155Provider && accountState.address) {
+    try {
+      await eip155Provider.request({
+        method: 'personal_sign',
+        params: ['Hello from AppKit!', accountState.address]
+      })
+    } catch (error) {
+      console.error('Error signing message:', error)
+    }
+  }
+}
+
 // Set initial theme and UI state
 updateTheme(themeState.themeMode)

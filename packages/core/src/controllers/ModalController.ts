@@ -4,6 +4,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
+import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
 import { PublicStateController } from './PublicStateController.js'
@@ -89,6 +90,8 @@ export const ModalController = {
       event: 'MODAL_CLOSE',
       properties: { connected }
     })
+
+    ConnectorController.clearNamespaceFilter()
   },
 
   setLoading(loading: ModalControllerState['loading']) {
