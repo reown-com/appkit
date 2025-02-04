@@ -5,6 +5,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import { type CaipAddress, type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 import {
   ApiController,
+  AssetUtil,
   ChainController,
   CoreHelperUtil,
   ModalController,
@@ -37,6 +38,8 @@ export class W3mModal extends LitElement {
 
   private abortController?: AbortController = undefined
 
+  private hasPrefetched = false
+
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) private enableEmbedded = OptionsController.state.enableEmbedded
 
@@ -51,7 +54,7 @@ export class W3mModal extends LitElement {
   public constructor() {
     super()
     this.initializeTheming()
-    ApiController.prefetch()
+    ApiController.prefetchAnalyticsConfig()
     this.unsubscribe.push(
       ...[
         ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
@@ -64,9 +67,12 @@ export class W3mModal extends LitElement {
   }
 
   public override firstUpdated() {
+    AssetUtil.fetchNetworkImage(this.caipNetwork?.assets?.imageId)
+
     if (this.caipAddress) {
       if (this.enableEmbedded) {
         ModalController.close()
+        this.prefetch()
 
         return
       }
@@ -76,6 +82,10 @@ export class W3mModal extends LitElement {
 
     if (this.open) {
       this.onOpen()
+    }
+
+    if (this.enableEmbedded) {
+      this.prefetch()
     }
   }
 
@@ -154,6 +164,7 @@ export class W3mModal extends LitElement {
   }
 
   private onOpen() {
+    this.prefetch()
     this.open = true
     this.classList.add('open')
     this.onScrollLock()
@@ -231,7 +242,7 @@ export class W3mModal extends LitElement {
   }
 
   private onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {
-    ApiController.prefetch()
+    AssetUtil.fetchNetworkImage(nextCaipNetwork?.assets?.imageId)
 
     const prevCaipNetworkId = this.caipNetwork?.caipNetworkId?.toString()
     const nextNetworkId = nextCaipNetwork?.caipNetworkId?.toString()
@@ -261,6 +272,14 @@ export class W3mModal extends LitElement {
     }
 
     this.caipNetwork = nextCaipNetwork
+  }
+
+  private prefetch() {
+    if (!this.hasPrefetched) {
+      this.hasPrefetched = true
+      ApiController.prefetchWalletImages()
+      ApiController.prefetchNetworkImages()
+    }
   }
 }
 
