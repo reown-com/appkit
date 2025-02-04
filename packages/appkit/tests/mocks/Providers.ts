@@ -1,8 +1,7 @@
-import type { UniversalProviderOpts } from '@walletconnect/universal-provider'
 import type UniversalProvider from '@walletconnect/universal-provider'
 import { type Mocked, vi } from 'vitest'
 
-import { mockUser } from './Account'
+import { mockUser } from './Account.js'
 
 export const mockProvider = {
   connect: vi.fn(),

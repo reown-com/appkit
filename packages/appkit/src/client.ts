@@ -188,7 +188,7 @@ export class AppKit {
     PublicStateController.set({ initialized: true })
   }
 
-  private async sendInitializeEvent(options: AppKitOptionsWithSdk) {
+  private sendInitializeEvent(options: AppKitOptionsWithSdk) {
     const { ...optionsCopy } = options
     delete optionsCopy.adapters
 
@@ -1354,7 +1354,7 @@ export class AppKit {
 
   private listenWalletConnect() {
     if (this.universalProvider) {
-      this.universalProvider.on('display_uri', function (uri: string) {
+      this.universalProvider.on('display_uri', (uri: string) => {
         ConnectionController.setUri(uri)
       })
 

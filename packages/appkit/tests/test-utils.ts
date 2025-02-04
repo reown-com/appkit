@@ -2,19 +2,19 @@ import { vi } from 'vitest'
 
 import { BlockchainApiController, StorageUtil } from '@reown/appkit-core'
 
-import { mainnet } from './mocks/Networks'
+import { mainnet } from './mocks/Networks.js'
 
 // Common mock for window and document objects used across tests
 export function mockWindowAndDocument() {
-  vi.mocked(global).window = { location: { origin: '' } } as any
+  vi.mocked(global).window = { location: { origin: '' } } as unknown as Window & typeof globalThis
   vi.mocked(global).document = {
     body: {
       insertAdjacentElement: vi.fn()
-    } as any,
+    } as unknown as HTMLElement,
     createElement: vi.fn().mockReturnValue({ appendChild: vi.fn() }),
     getElementsByTagName: vi.fn().mockReturnValue([{ textContent: '' }]),
     querySelector: vi.fn()
-  } as any
+  } as unknown as Document
 }
 
 export function mockBlockchainApiController() {
