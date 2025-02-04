@@ -31,7 +31,7 @@ export class W3mModal extends LitElement {
 
   private abortController?: AbortController = undefined
 
-  private hasOpened = false
+  private hasPrefetched = false
 
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) private enableEmbedded = OptionsController.state.enableEmbedded
@@ -74,6 +74,10 @@ export class W3mModal extends LitElement {
 
     if (this.open) {
       this.onOpen()
+    }
+
+    if (this.enableEmbedded) {
+      this.prefetch()
     }
   }
 
@@ -152,11 +156,7 @@ export class W3mModal extends LitElement {
   }
 
   private onOpen() {
-    if (!this.hasOpened) {
-      this.hasOpened = true
-      ApiController.prefetchWalletImages()
-      ApiController.prefetchNetworkImages()
-    }
+    this.prefetch()
     this.open = true
     this.classList.add('open')
     this.onScrollLock()
@@ -264,6 +264,14 @@ export class W3mModal extends LitElement {
     }
 
     this.caipNetwork = nextCaipNetwork
+  }
+
+  private prefetch() {
+    if (!this.hasPrefetched) {
+      this.hasPrefetched = true
+      ApiController.prefetchWalletImages()
+      ApiController.prefetchNetworkImages()
+    }
   }
 }
 
