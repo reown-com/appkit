@@ -3,11 +3,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 
-import {
-  MELD_DEV_PUBLIC_KEY,
-  MELD_PROD_PUBLIC_KEY,
-  ONRAMP_PROVIDERS
-} from '../utils/ConstantsUtil.js'
+import { MELD_PUBLIC_KEY, ONRAMP_PROVIDERS } from '../utils/ConstantsUtil.js'
 import type { PaymentCurrency, PurchaseCurrency } from '../utils/TypeUtil.js'
 import { AccountController } from './AccountController.js'
 import { ApiController } from './ApiController.js'
@@ -104,13 +100,11 @@ export const OnRampController = {
 
   setSelectedProvider(provider: OnRampProvider | null) {
     if (provider && provider.name === 'meld') {
-      const pubKey =
-        process.env['NODE_ENV'] === 'production' ? MELD_PROD_PUBLIC_KEY : MELD_DEV_PUBLIC_KEY
       const currency =
         ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA ? 'SOL' : 'USDC'
       const address = AccountController.state.address ?? ''
       const url = new URL(provider.url)
-      url.searchParams.append('publicKey', pubKey)
+      url.searchParams.append('publicKey', MELD_PUBLIC_KEY)
       url.searchParams.append('destinationCurrencyCode', currency)
       url.searchParams.append('walletAddress', address)
       provider.url = url.toString()
