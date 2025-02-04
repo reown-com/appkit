@@ -1,4 +1,4 @@
-import { GoogleAnalytics } from '@next/third-parties/google'
+import { GoogleTagManager } from '@next/third-parties/google'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
 import { headers } from 'next/headers'
@@ -76,7 +76,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             <ContextProvider>{children}</ContextProvider>
           </AppKitProvider>
         </ThemeProvider>
-        <GoogleAnalytics gaId="G-X4S1RDVEGE" />
+        <GoogleTagManager gtmId="G-X4S1RDVEGE" />
       </body>
     </html>
   )
