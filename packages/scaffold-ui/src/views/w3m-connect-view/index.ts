@@ -6,6 +6,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
+  ApiController,
   ChainController,
   ConnectionController,
   type Connector,
@@ -70,7 +71,8 @@ export class W3mConnectView extends LitElement {
       OptionsController.subscribeKey('enableWallets', val => (this.enableWallets = val)),
       ChainController.subscribeKey('noAdapters', val =>
         this.setEmailAndSocialEnableCheck(this.features, val)
-      )
+      ),
+      ApiController.subscribeKey('excludedRDNS', () => this.requestUpdate())
     )
   }
 
