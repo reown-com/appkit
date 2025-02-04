@@ -100,12 +100,11 @@ export const OnRampController = {
 
   setSelectedProvider(provider: OnRampProvider | null) {
     if (provider && provider.name === 'meld') {
-      const pubKey = MELD_DEV_PUBLIC_KEY
       const currency =
         ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA ? 'SOL' : 'USDC'
       const address = AccountController.state.address ?? ''
       const url = new URL(provider.url)
-      url.searchParams.append('publicKey', pubKey)
+      url.searchParams.append('publicKey', MELD_DEV_PUBLIC_KEY)
       url.searchParams.append('destinationCurrencyCode', currency)
       url.searchParams.append('walletAddress', address)
       provider.url = url.toString()
