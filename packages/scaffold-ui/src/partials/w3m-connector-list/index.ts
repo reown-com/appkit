@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ConnectorController, OptionsController } from '@reown/appkit-core'
+import { ApiController, ConnectorController, OptionsController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
 import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
@@ -23,7 +23,12 @@ export class W3mConnectorList extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
+      ...[
+        ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
+        ApiController.subscribeKey('featured', () => this.requestUpdate()),
+        ApiController.subscribeKey('recommended', () => this.requestUpdate()),
+        ApiController.subscribeKey('excludedRDNS', () => this.requestUpdate())
+      ]
     )
   }
 
