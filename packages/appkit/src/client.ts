@@ -170,8 +170,9 @@ export class AppKit {
       ...new Set(this.caipNetworks?.map(caipNetwork => caipNetwork.chainNamespace))
     ]
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
-    this.chainAdapters = this.createAdapters(options.adapters as unknown as AdapterBlueprint[])
+    this.chainAdapters = this.createAdapters(options.adapters as AdapterBlueprint[])
     this.initialize(options)
+    this.sendInitializeEvent(options)
   }
 
   public static getInstance() {
@@ -184,6 +185,10 @@ export class AppKit {
     await this.injectModalUi()
     await this.syncExistingConnection()
 
+    PublicStateController.set({ initialized: true })
+  }
+
+  private sendInitializeEvent(options: AppKitOptionsWithSdk) {
     const { ...optionsCopy } = options
     delete optionsCopy.adapters
 
@@ -198,7 +203,6 @@ export class AppKit {
         }
       }
     })
-    PublicStateController.set({ initialized: true })
   }
 
   // -- Public -------------------------------------------------------------------
@@ -387,12 +391,6 @@ export class AppKit {
 
   public isTransactionStackEmpty() {
     return RouterController.state.transactionStack.length === 0
-  }
-
-  public isTransactionShouldReplaceView() {
-    return RouterController.state.transactionStack[
-      RouterController.state.transactionStack.length - 1
-    ]?.replace
   }
 
   public setStatus: (typeof AccountController)['setStatus'] = (status, chain) => {
@@ -1358,10 +1356,9 @@ export class AppKit {
 
   private listenWalletConnect() {
     if (this.universalProvider) {
-      this.universalProvider.on(
-        'display_uri',
-        ConnectionController.setUri.bind(ConnectionController)
-      )
+      this.universalProvider.on('display_uri', (uri: string) => {
+        ConnectionController.setUri(uri)
+      })
 
       this.universalProvider.on('disconnect', () => {
         this.chainNamespaces.forEach(namespace => {
@@ -1614,7 +1611,6 @@ export class AppKit {
   }) {
     ProviderUtil.setProviderId(chainNamespace, type)
     ProviderUtil.setProvider(chainNamespace, provider)
-
     StorageUtil.setConnectedConnectorId(chainNamespace, id)
   }
 
@@ -1780,6 +1776,7 @@ export class AppKit {
     if (chainNamespace !== ConstantsUtil.CHAIN.EVM || activeCaipNetwork?.testnet) {
       return
     }
+
     try {
       const { name, avatar } = await this.fetchIdentity({
         address
