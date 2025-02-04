@@ -13,7 +13,8 @@ const OPTIONAL_NAMESPACES = {
       'eth_signTransaction',
       'eth_sign',
       'personal_sign',
-      'eth_signTypedData'
+      'eth_signTypedData',
+      'wallet_switchEthereumChain'
     ],
     chains: ['eip155:1', 'eip155:137'],
     events: ['chainChanged', 'accountsChanged']
@@ -52,15 +53,41 @@ async function initialize() {
     updateTheme(newTheme)
   })
 
-  document.getElementById('switch-network-eth')?.addEventListener('click', () => {
+  document.getElementById('switch-network-eth')?.addEventListener('click', async () => {
     modal.switchNetwork(mainnet)
+    await signClient.request({
+      topic: session.topic,
+      chainId: network,
+      request: {
+        method: 'wallet_switchEthereumChain',
+        params: [
+          {
+            chainId: '0x89'
+          }
+        ]
+      }
+    })
     network = 'eip155:1'
     account = session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2]
     updateDom()
   })
 
-  document.getElementById('switch-network-polygon')?.addEventListener('click', () => {
+  document.getElementById('switch-network-polygon')?.addEventListener('click', async () => {
+    console.log(signClient)
+
     modal.switchNetwork(polygon)
+    await signClient.request({
+      topic: session.topic,
+      chainId: network,
+      request: {
+        method: 'wallet_switchEthereumChain',
+        params: [
+          {
+            chainId: '0x89'
+          }
+        ]
+      }
+    })
     network = 'eip155:137'
     account = session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2]
     updateDom()
