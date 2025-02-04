@@ -5,6 +5,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import type { Connector } from '@reown/appkit-core'
 import {
   ApiController,
+  AssetController,
   AssetUtil,
   ConnectionController,
   ConnectorController,
@@ -23,10 +24,16 @@ export class W3mConnectInjectedWidget extends LitElement {
 
   @state() private connectors = ConnectorController.state.connectors
 
+  @state() private excludedRDNS = ApiController.state.excludedRDNS
+
   public constructor() {
     super()
     this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
+      ...[
+        ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
+        ApiController.subscribeKey('excludedRDNS', val => (this.excludedRDNS = val)),
+        AssetController.subscribeKey('connectorImages', () => this.requestUpdate())
+      ]
     )
   }
 
@@ -64,8 +71,8 @@ export class W3mConnectInjectedWidget extends LitElement {
             return null
           }
 
-          if (walletRDNS && ApiController.state.excludedRDNS) {
-            if (ApiController.state.excludedRDNS.includes(walletRDNS)) {
+          if (walletRDNS && this.excludedRDNS) {
+            if (this.excludedRDNS.includes(walletRDNS)) {
               return null
             }
           }
