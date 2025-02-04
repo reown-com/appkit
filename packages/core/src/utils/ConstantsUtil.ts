@@ -21,7 +21,7 @@ export const ONRAMP_PROVIDERS = [
   }
 ]
 
-export const MELD_DEV_PUBLIC_KEY = 'WXETMsajb7XcQBm7mcxAab:q3MtzJpiEMtXVNXsqYkAnAaBkgStybGVtZ'
+export const MELD_PUBLIC_KEY = 'WXETMsajb7XcQBm7mcxAab:q3MtzJpiEMtXVNXsqYkAnAaBkgStybGVtZ'
 
 export const ConstantsUtil = {
   FOUR_MINUTES_MS: 240_000,
