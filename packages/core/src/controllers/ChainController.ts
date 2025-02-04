@@ -144,13 +144,16 @@ export const ChainController = {
       const namespaceNetworks = caipNetworks?.filter(
         network => network.chainNamespace === namespace
       )
-      ChainController.state.chains.set(namespace as ChainNamespace, {
-        namespace,
-        networkState,
-        accountState,
-        caipNetworks: namespaceNetworks ?? [],
-        ...clients
-      })
+      ChainController.state.chains.set(
+        namespace as ChainNamespace,
+        ref({
+          namespace,
+          networkState,
+          accountState,
+          caipNetworks: namespaceNetworks ?? [],
+          ...clients
+        })
+      )
       this.setRequestedCaipNetworks(namespaceNetworks ?? [], namespace)
     })
   },
@@ -175,14 +178,17 @@ export const ChainController = {
     { networkControllerClient, connectionControllerClient }: ChainControllerClients,
     caipNetworks: [CaipNetwork, ...CaipNetwork[]]
   ) {
-    state.chains.set(adapter.namespace as ChainNamespace, {
-      namespace: adapter.namespace,
-      networkState,
-      accountState,
-      caipNetworks,
-      connectionControllerClient,
-      networkControllerClient
-    })
+    state.chains.set(
+      adapter.namespace as ChainNamespace,
+      ref({
+        namespace: adapter.namespace,
+        networkState,
+        accountState,
+        caipNetworks,
+        connectionControllerClient,
+        networkControllerClient
+      })
+    )
     this.setRequestedCaipNetworks(
       caipNetworks?.filter(caipNetwork => caipNetwork.chainNamespace === adapter.namespace) ?? [],
       adapter.namespace as ChainNamespace
@@ -252,7 +258,7 @@ export const ChainController = {
         ...(chainAdapter.accountState || accountState),
         ...accountProps
       } as AccountControllerState)
-      state.chains.set(chain, chainAdapter)
+      state.chains.set(chain, ref(chainAdapter))
       if (state.chains.size === 1 || state.activeChain === chain) {
         if (accountProps.caipAddress) {
           state.activeCaipAddress = accountProps.caipAddress
