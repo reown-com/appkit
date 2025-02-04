@@ -11,7 +11,7 @@ export type AppKitOptions = {
    */
   adapters?: ChainAdapter[]
   /**
-   * Used for ethereum provider
+   * This is only used for the @walletconnect/ethereum-provider package. We need this to determine which screens should be shown.
    * @default false
    */
   basic?: boolean
