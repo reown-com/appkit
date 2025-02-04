@@ -1214,16 +1214,13 @@ export class AppKit {
       if (isSafeRequest) {
         return
       }
+      if (AccountController.state.address && ChainController.state.activeCaipNetwork?.id) {
+        this.updateNativeBalance()
+      }
       if (this.isTransactionStackEmpty()) {
         this.close()
-        if (AccountController.state.address && ChainController.state.activeCaipNetwork?.id) {
-          this.updateNativeBalance()
-        }
       } else {
         this.popTransactionStack()
-        if (AccountController.state.address && ChainController.state.activeCaipNetwork?.id) {
-          this.updateNativeBalance()
-        }
       }
     })
     provider.onNotConnected(() => {
@@ -1631,11 +1628,6 @@ export class AppKit {
       'supportsAllNetworks',
       chainNamespace
     )
-    // Only update state when needed
-    if (!HelpersUtil.isLowerCaseMatch(address, AccountController.state.address)) {
-      this.setCaipAddress(`${chainNamespace}:${chainId}:${address}`, chainNamespace)
-      await this.syncIdentity({ address, chainId, chainNamespace })
-    }
 
     this.setStatus('connected', chainNamespace)
 
@@ -1674,6 +1666,15 @@ export class AppKit {
       }
       this.syncConnectedWalletInfo(chainNamespace)
 
+      // Only update state when needed
+      if (!HelpersUtil.isLowerCaseMatch(address, AccountController.state.address)) {
+        this.setCaipAddress(`${chainNamespace}:${network?.id}:${address}`, chainNamespace)
+        await this.syncIdentity({
+          address,
+          chainId: network?.id as string | number,
+          chainNamespace
+        })
+      }
       await this.syncBalance({ address, chainId: network?.id, chainNamespace })
     }
   }
