@@ -55,8 +55,12 @@ export const ModalController = {
       RouterController.reset(options.view)
     } else if (caipAddress) {
       RouterController.reset('Account')
-    } else if (noAdapters && !CoreHelperUtil.isMobile()) {
-      RouterController.reset('ConnectingWalletConnectBasic')
+    } else if (noAdapters) {
+      if (CoreHelperUtil.isMobile()) {
+        RouterController.reset('AllWallets')
+      } else {
+        RouterController.reset('ConnectingWalletConnectBasic')
+      }
     } else {
       RouterController.reset('Connect')
     }

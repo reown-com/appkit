@@ -63,6 +63,7 @@ export interface ConnectionControllerState {
     href: string
     name: string
   }
+  wcBasic?: boolean
   wcError?: boolean
   recentWallet?: WcWallet
   buffering: boolean
@@ -220,6 +221,10 @@ export const ConnectionController = {
     state.status = 'disconnected'
     TransactionsController.resetTransactions()
     StorageUtil.deleteWalletConnectDeepLink()
+  },
+
+  setWcBasic(wcBasic: ConnectionControllerState['wcBasic']) {
+    state.wcBasic = wcBasic
   },
 
   setUri(uri: string) {
