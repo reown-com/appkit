@@ -1692,31 +1692,7 @@ export class AppKit {
       return
     }
 
-    const isApiBalanceSupported = CoreConstantsUtil.BALANCE_SUPPORTED_CHAINS.includes(
-      caipNetwork?.chainNamespace
-    )
-
-    if (caipNetwork.testnet || !isApiBalanceSupported) {
-      await this.updateNativeBalance()
-
-      return
-    }
-
-    const balances = await AccountController.fetchTokenBalance(() =>
-      this.setBalance('0.00', caipNetwork.nativeCurrency.symbol, caipNetwork.chainNamespace)
-    )
-
-    const balance = balances.find(
-      b =>
-        b.chainId === `${params.chainNamespace}:${params.chainId}` &&
-        b.symbol === caipNetwork.nativeCurrency.symbol
-    )
-
-    this.setBalance(
-      balance?.quantity?.numeric || '0.00',
-      caipNetwork.nativeCurrency.symbol,
-      params.chainNamespace
-    )
+    await this.updateNativeBalance()
   }
 
   private syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
