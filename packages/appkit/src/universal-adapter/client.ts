@@ -204,11 +204,7 @@ export class UniversalAdapter extends AdapterBlueprint {
                   chainId: toHex(caipNetwork.id),
                   rpcUrls: [caipNetwork?.rpcUrls['chainDefault']?.http],
                   chainName: caipNetwork.name,
-                  nativeCurrency: {
-                    name: caipNetwork.nativeCurrency.name,
-                    decimals: caipNetwork.nativeCurrency.decimals,
-                    symbol: caipNetwork.nativeCurrency.symbol
-                  },
+                  nativeCurrency: caipNetwork.nativeCurrency,
                   blockExplorerUrls: [caipNetwork.blockExplorers?.default.url]
                 }
               ]
