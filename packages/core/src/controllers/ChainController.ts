@@ -188,6 +188,38 @@ export const ChainController = {
     )
   },
 
+  addNetwork(network: CaipNetwork) {
+    const chainAdapter = state.chains.get(network.chainNamespace)
+    if (chainAdapter) {
+      if (!chainAdapter.caipNetworks?.find(caipNetwork => caipNetwork.id === network.id)) {
+        chainAdapter.caipNetworks = [...(chainAdapter.caipNetworks || []), network]
+      }
+      state.chains.set(network.chainNamespace, chainAdapter)
+      this.setRequestedCaipNetworks(chainAdapter.caipNetworks || [], network.chainNamespace)
+    }
+  },
+
+  removeNetwork(namespace: ChainNamespace, networkId: string | number) {
+    const chainAdapter = state.chains.get(namespace)
+    if (chainAdapter) {
+      // Check if network being removed is active network
+      const isActiveNetwork = state.activeCaipNetwork?.id === networkId
+
+      // Filter out the network being removed
+      chainAdapter.caipNetworks = chainAdapter.caipNetworks?.filter(
+        network => network.id !== networkId
+      )
+
+      // If active network was removed and there are other networks available, switch to first one
+      if (isActiveNetwork && chainAdapter?.caipNetworks?.[0]) {
+        this.setActiveCaipNetwork(chainAdapter.caipNetworks[0])
+      }
+
+      state.chains.set(namespace, chainAdapter)
+      this.setRequestedCaipNetworks(chainAdapter.caipNetworks || [], namespace)
+    }
+  },
+
   setAdapterNetworkState(chain: ChainNamespace, props: Partial<AdapterNetworkState>) {
     const chainAdapter = state.chains.get(chain)
 
@@ -423,8 +455,8 @@ export const ChainController = {
     return requestedCaipNetworks
   },
 
-  setRequestedCaipNetworks(requestedNetworks: CaipNetwork[], chain: ChainNamespace) {
-    this.setAdapterNetworkState(chain, { requestedCaipNetworks: requestedNetworks })
+  setRequestedCaipNetworks(requestedCaipNetworks: CaipNetwork[], chain: ChainNamespace) {
+    this.setAdapterNetworkState(chain, { requestedCaipNetworks })
   },
 
   getAllApprovedCaipNetworkIds(): CaipNetworkId[] {
@@ -466,6 +498,7 @@ export const ChainController = {
   checkIfSupportedNetwork(namespace: ChainNamespace) {
     const activeCaipNetwork = this.state.activeCaipNetwork
     const requestedCaipNetworks = this.getRequestedCaipNetworks(namespace)
+
     if (!requestedCaipNetworks.length) {
       return true
     }
