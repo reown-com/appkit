@@ -141,13 +141,13 @@ export const CaipNetworksUtil = {
   ): CaipNetwork {
     const caipNetworkId = this.getCaipNetworkId(caipNetwork)
     const chainNamespace = this.getChainNamespace(caipNetwork)
-
+    const isRpcOverriden = caipNetwork?.rpcUrls?.default?.http?.[0]?.includes(RPC_URL_HOST)
     /**
      * If the network object is already extended, don't extend it again.
      * Doing that twice will cause the rpcUrls.chainDefault RPC URL to be overridden.
      */
-    if ('chainNamespace' in caipNetwork) {
-      return caipNetwork
+    if (isRpcOverriden && 'chainNamespace' in caipNetwork) {
+      return caipNetwork as CaipNetwork
     }
 
     let rpcUrl = ''
