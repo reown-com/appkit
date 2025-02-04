@@ -58,6 +58,7 @@ import { plusSvg } from '../../assets/svg/plus.js'
 import { qrCodeIcon } from '../../assets/svg/qr-code.js'
 import { recycleHorizontalSvg } from '../../assets/svg/recycle-horizontal.js'
 import { refreshSvg } from '../../assets/svg/refresh.js'
+import { reownLogoSvg } from '../../assets/svg/reown-logo.js'
 import { searchSvg } from '../../assets/svg/search.js'
 import { sendSvg } from '../../assets/svg/send.js'
 import { swapHorizontalSvg } from '../../assets/svg/swapHorizontal.js'
@@ -140,6 +141,7 @@ const svgOptions: Record<IconType, TemplateResult<2>> = {
   recycleHorizontal: recycleHorizontalSvg,
   refresh: refreshSvg,
   search: searchSvg,
+  reown: reownLogoSvg,
   send: sendSvg,
   swapHorizontal: swapHorizontalSvg,
   swapHorizontalMedium: swapHorizontalMediumSvg,
