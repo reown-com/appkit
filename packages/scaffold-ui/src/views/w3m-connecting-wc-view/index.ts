@@ -74,6 +74,7 @@ export class W3mConnectingWcView extends LitElement {
 
     try {
       const { wcPairingExpiry, status, wcBasic } = ConnectionController.state
+      
       if (wcBasic) {
         ChainController.subscribeKey('activeCaipAddress', val => val && this.finalizeConnection())
       } else if (
