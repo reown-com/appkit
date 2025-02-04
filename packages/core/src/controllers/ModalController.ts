@@ -60,7 +60,6 @@ export const ModalController = {
     } else {
       RouterController.reset('Connect')
     }
-    console.log('open', state.open)
     state.open = true
     PublicStateController.set({ open: true })
     EventsController.sendEvent({

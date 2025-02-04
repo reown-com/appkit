@@ -170,7 +170,7 @@ export class AppKit {
       ...new Set(this.caipNetworks?.map(caipNetwork => caipNetwork.chainNamespace))
     ]
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
-    this.chainAdapters = this.createAdapters(options.adapters as unknown as AdapterBlueprint[])
+    this.chainAdapters = this.createAdapters(options.adapters as AdapterBlueprint[])
     this.initialize(options)
     this.sendInitializeEvent(options)
   }
@@ -1354,10 +1354,9 @@ export class AppKit {
 
   private listenWalletConnect() {
     if (this.universalProvider) {
-      this.universalProvider.on(
-        'display_uri',
-        ConnectionController.setUri.bind(ConnectionController)
-      )
+      this.universalProvider.on('display_uri', function (uri: string) {
+        ConnectionController.setUri(uri)
+      })
 
       this.universalProvider.on('disconnect', () => {
         this.chainNamespaces.forEach(namespace => {
@@ -1610,7 +1609,6 @@ export class AppKit {
   }) {
     ProviderUtil.setProviderId(chainNamespace, type)
     ProviderUtil.setProvider(chainNamespace, provider)
-
     StorageUtil.setConnectedConnectorId(chainNamespace, id)
   }
 
@@ -1630,7 +1628,6 @@ export class AppKit {
       chainNamespace
     )
     // Only update state when needed
-    console.log('syncAccount', address, chainId, chainNamespace)
     if (!HelpersUtil.isLowerCaseMatch(address, AccountController.state.address)) {
       this.setCaipAddress(`${chainNamespace}:${chainId}:${address}`, chainNamespace)
       await this.syncIdentity({ address, chainId, chainNamespace })
