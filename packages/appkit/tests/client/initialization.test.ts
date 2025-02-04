@@ -2,46 +2,21 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { type AppKitNetwork } from '@reown/appkit-common'
 import {
-  BlockchainApiController,
+  AlertController,
   ChainController,
   EventsController,
-  OptionsController,
-  StorageUtil
+  OptionsController
 } from '@reown/appkit-core'
+import { ErrorUtil } from '@reown/appkit-utils'
 
-import { AppKit } from '../src/client'
-import { mainnet, mockOptions, sepolia, solana } from './mocks/Options'
+import { AppKit } from '../../src/client'
+import { mainnet, sepolia, solana } from '../mocks/Networks'
+import { mockOptions } from '../mocks/Options'
+import { mockBlockchainApiController, mockStorageUtil, mockWindowAndDocument } from '../test-utils'
 
-// Mock all controllers and UniversalAdapterClient
-vi.mock('../src/universal-adapter/client')
-
-vi.mocked(global).window = { location: { origin: '' } } as any
-vi.mocked(global).document = {
-  body: {
-    insertAdjacentElement: vi.fn()
-  } as any,
-  createElement: vi.fn().mockReturnValue({ appendChild: vi.fn() }),
-  getElementsByTagName: vi.fn().mockReturnValue([{ textContent: '' }]),
-  querySelector: vi.fn()
-} as any
-
-/**
- * In the initializeBlockchainApiController method, we call the getSupportedNetworks method.
- * This method is mocked to return the mainnet and polygon networks.
- */
-vi.spyOn(BlockchainApiController, 'getSupportedNetworks').mockResolvedValue({
-  http: ['eip155:1', 'eip155:137'],
-  ws: ['eip155:1', 'eip155:137']
-})
-/**
- * Make the StorageUtil return the mainnet network by default.
- * Depending on the specific cases, this might be overriden.
- */
-vi.spyOn(StorageUtil, 'getActiveNetworkProps').mockReturnValue({
-  namespace: mainnet.chainNamespace,
-  caipNetworkId: mainnet.caipNetworkId,
-  chainId: mainnet.id
-})
+mockWindowAndDocument()
+mockStorageUtil()
+mockBlockchainApiController()
 
 describe('Base', () => {
   afterEach(() => {
@@ -112,6 +87,38 @@ describe('Base', () => {
         eip155: 'eoa',
         bip122: 'ordinal'
       })
+    })
+  })
+
+  describe.only('Alert Errors', () => {
+    it('should handle alert errors based on error messages', () => {
+      const open = vi.spyOn(AlertController, 'open')
+
+      const errors = [
+        {
+          alert: ErrorUtil.ALERT_ERRORS.INVALID_APP_CONFIGURATION,
+          message:
+            'Error: WebSocket connection closed abnormally with code: 3000 (Unauthorized: origin not allowed)'
+        },
+        {
+          alert: ErrorUtil.ALERT_ERRORS.JWT_TOKEN_NOT_VALID,
+          message:
+            'WebSocket connection closed abnormally with code: 3000 (JWT validation error: JWT Token is not yet valid:)'
+        },
+        {
+          alert: ErrorUtil.ALERT_ERRORS.INVALID_PROJECT_ID,
+          message:
+            'Uncaught Error: WebSocket connection closed abnormally with code: 3000 (Unauthorized: invalid key)'
+        }
+      ]
+
+      const appKit = new AppKit(mockOptions)
+
+      for (const { alert, message } of errors) {
+        // @ts-expect-error
+        appKit.handleAlertError(new Error(message))
+        expect(open).toHaveBeenCalledWith(alert, 'error')
+      }
     })
   })
 })
