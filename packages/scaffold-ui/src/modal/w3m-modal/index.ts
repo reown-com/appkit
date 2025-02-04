@@ -65,6 +65,7 @@ export class W3mModal extends LitElement {
     if (this.caipAddress) {
       if (this.enableEmbedded) {
         ModalController.close()
+        this.prefetch()
 
         return
       }
