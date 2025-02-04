@@ -26,6 +26,22 @@ export const AssetUtil = {
     return this.getWalletImageById(imageId)
   },
 
+  async fetchNetworkImage(imageId?: string) {
+    if (!imageId) {
+      return undefined
+    }
+
+    const existingImage = this.getNetworkImageById(imageId)
+
+    if (existingImage) {
+      return existingImage
+    }
+
+    await ApiController._fetchNetworkImage(imageId)
+
+    return this.getNetworkImageById(imageId)
+  },
+
   getWalletImageById(imageId?: string) {
     if (!imageId) {
       return undefined
