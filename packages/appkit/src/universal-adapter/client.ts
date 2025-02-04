@@ -1,11 +1,13 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 import bs58 from 'bs58'
+import { toHex } from 'viem'
 
 import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import { ChainController, CoreHelperUtil } from '@reown/appkit-core'
 
 import { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'
+import { WcConstantsUtil } from '../utils/ConstantsUtil.js'
 
 export class UniversalAdapter extends AdapterBlueprint {
   public override setUniversalProvider(universalProvider: UniversalProvider): void {
@@ -179,6 +181,44 @@ export class UniversalAdapter extends AdapterBlueprint {
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
     const { caipNetwork } = params
     const connector = this.getWalletConnectConnector()
+
+    if (caipNetwork.chainNamespace === ConstantsUtil.CHAIN.EVM) {
+      try {
+        await connector.provider?.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: toHex(caipNetwork.id) }]
+        })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (switchError: any) {
+        if (
+          switchError.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+          switchError.code === WcConstantsUtil.ERROR_CODE_DEFAULT ||
+          switchError?.data?.originalError?.code ===
+            WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
+        ) {
+          try {
+            await connector.provider?.request({
+              method: 'wallet_addEthereumChain',
+              params: [
+                {
+                  chainId: toHex(caipNetwork.id),
+                  rpcUrls: [caipNetwork?.rpcUrls['chainDefault']?.http],
+                  chainName: caipNetwork.name,
+                  nativeCurrency: {
+                    name: caipNetwork.nativeCurrency.name,
+                    decimals: caipNetwork.nativeCurrency.decimals,
+                    symbol: caipNetwork.nativeCurrency.symbol
+                  },
+                  blockExplorerUrls: [caipNetwork.blockExplorers?.default.url]
+                }
+              ]
+            })
+          } catch (error) {
+            throw new Error('Chain is not supported')
+          }
+        }
+      }
+    }
     connector.provider.setDefaultChain(caipNetwork.caipNetworkId)
   }
 
