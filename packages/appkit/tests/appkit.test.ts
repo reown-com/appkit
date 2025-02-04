@@ -1849,6 +1849,26 @@ describe('WalletConnect Events', () => {
         expect(openSpy).toHaveBeenCalledWith({ view })
       }
     })
+
+    it('should filter connectors by namespace when opening modal', async () => {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        ...ChainController.state,
+        activeCaipNetwork: mainnet
+      })
+      const openSpy = vi.spyOn(ModalController, 'open')
+      const setFilterByNamespaceSpy = vi.spyOn(ConnectorController, 'setFilterByNamespace')
+
+      const appkit = new AppKit({
+        ...mockOptions,
+        adapters: [],
+        networks: [mainnet]
+      })
+
+      await appkit.open({ view: 'Connect', namespace: 'eip155' })
+
+      expect(openSpy).toHaveBeenCalled()
+      expect(setFilterByNamespaceSpy).toHaveBeenCalledWith('eip155')
+    })
   })
 
   describe('display_uri', () => {
