@@ -90,7 +90,7 @@ describe('Base', () => {
     })
   })
 
-  describe.only('Alert Errors', () => {
+  describe('Alert Errors', () => {
     it('should handle alert errors based on error messages', () => {
       const open = vi.spyOn(AlertController, 'open')
 
