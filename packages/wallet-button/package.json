@@ -41,7 +41,7 @@
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "lit": "3.1.0",
-    "valtio": "1.11.2"
+    "valtio": "1.13.2"
   },
   "keywords": [
     "web3",
