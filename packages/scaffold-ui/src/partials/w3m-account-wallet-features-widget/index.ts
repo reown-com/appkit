@@ -5,6 +5,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
+  AssetController,
   AssetUtil,
   ChainController,
   ConstantsUtil as CoreConstantsUtil,
@@ -59,10 +60,15 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private features = OptionsController.state.features
 
+  @state() private networkImage = AssetUtil.getNetworkImage(this.network)
+
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
+        AssetController.subscribeNetworkImages(() => {
+          this.networkImage = AssetUtil.getNetworkImage(this.network)
+        }),
         AccountController.subscribe(val => {
           if (val.address) {
             this.address = val.address
@@ -96,8 +102,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       throw new Error('w3m-account-view: No account provided')
     }
 
-    const networkImage = AssetUtil.getNetworkImage(this.network)
-
     return html`<wui-flex
       flexDirection="column"
       .padding=${['0', 'xl', 'm', 'xl'] as const}
@@ -108,7 +112,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       <wui-profile-button
         @click=${this.onProfileButtonClick.bind(this)}
         address=${ifDefined(this.address)}
-        networkSrc=${ifDefined(networkImage)}
+        networkSrc=${ifDefined(this.networkImage)}
         icon="chevronBottom"
         avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
         profileName=${ifDefined(this.profileName ?? undefined)}

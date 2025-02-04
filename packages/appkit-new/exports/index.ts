@@ -13,7 +13,7 @@ export type * from '@reown/appkit-core'
 export type { CaipNetwork, CaipAddress, CaipNetworkId } from '@reown/appkit-common'
 export { CoreHelperUtil, AccountController } from '@reown/appkit-core'
 
-type CreateAppKit = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
+type CreateAppKit = Omit<AppKitOptions, 'sdkType' | 'sdkVersion' | 'basic'>
 
 export function createAppKit(options: CreateAppKit) {
   return new AppKit({

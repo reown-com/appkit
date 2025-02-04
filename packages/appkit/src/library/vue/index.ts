@@ -34,6 +34,8 @@ type OpenOptions = {
     | 'WhatIsANetwork'
     | 'AllWallets'
     | 'WalletSend'
+  uri?: string
+  namespace?: ChainNamespace
 }
 
 type ThemeModeOptions = AppKitOptions['themeMode']
