@@ -280,9 +280,9 @@ export const ApiController = {
     state.prefetchPromise = Promise.allSettled(promises)
   },
 
-  async prefetchAnalyticsConfig() {
+  prefetchAnalyticsConfig() {
     if (OptionsController.state.features?.analytics) {
-      await ApiController.fetchAnalyticsConfig()
+      ApiController.fetchAnalyticsConfig()
     }
   },
 
