@@ -869,6 +869,15 @@ describe('Base', () => {
     })
 
     it('should  sync balance correctly', async () => {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        chains: new Map([['eip155', { namespace: 'eip155' }]]),
+        activeChain: 'eip155',
+        activeCaipNetwork: mainnet
+      } as any)
+      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+        address: '0x123'
+      } as any)
+
       vi.spyOn(NetworkUtil, 'getNetworksByNamespace').mockReturnValue([
         mainnet as unknown as CaipNetwork
       ])
@@ -896,10 +905,12 @@ describe('Base', () => {
       vi.spyOn(AccountController, 'state', 'get').mockReturnValue(mockAccountData as any)
 
       appKit = new AppKit({ ...mockOptions })
+      const adapter = { getBalance: vi.fn().mockResolvedValue({ balance: '0.00', symbol: 'ETH' }) }
+
+      vi.mocked(appKit as any).getAdapter = vi.fn().mockReturnValue(adapter)
 
       await appKit['syncAccount']({ ...mockAccountData, address: '0x1234' })
-
-      expect(AccountController.fetchTokenBalance).toHaveBeenCalled()
+      expect(adapter.getBalance).toHaveBeenCalled()
     })
 
     it('should not sync balance on testnets', async () => {
@@ -1710,6 +1721,16 @@ describe('Balance sync', () => {
   })
 
   it('should set the correct native token balance', async () => {
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      address: '0x123'
+    } as any)
+
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      chains: new Map([['eip155', { namespace: 'eip155' }]]),
+      activeChain: 'eip155',
+      activeCaipNetwork: mainnet
+    } as any)
+
     vi.spyOn(NetworkUtil, 'getNetworksByNamespace').mockReturnValue([
       { ...mainnet, caipNetworkId: 'eip155:1', chainNamespace: 'eip155' }
     ])
@@ -1737,6 +1758,13 @@ describe('Balance sync', () => {
       networks: [mainnet]
     })
 
+    const mockAdapter = {
+      ...mockUniversalAdapter,
+      getBalance: vi.fn().mockResolvedValue({ balance: '1.00', symbol: 'ETH' })
+    }
+
+    vi.mocked(appKit as any).getAdapter = vi.fn().mockReturnValue(mockAdapter)
+
     await appKit['syncBalance']({
       address: '0x123',
       chainId: mainnet.id,
@@ -1744,7 +1772,7 @@ describe('Balance sync', () => {
     })
 
     expect(NetworkUtil.getNetworksByNamespace).toHaveBeenCalled()
-    expect(AccountController.fetchTokenBalance).toHaveBeenCalled()
+    expect(mockAdapter.getBalance).toHaveBeenCalled()
     expect(AccountController.setBalance).toHaveBeenCalledWith(
       '1.00',
       mainnet.nativeCurrency.symbol,

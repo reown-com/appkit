@@ -1640,7 +1640,7 @@ export class AppKit {
       let fallbackCaipNetwork = this.caipNetworks?.find(n => n.chainNamespace === chainNamespace)
 
       // If doesn't support all networks, we need to use approved networks
-      if (!shouldSupportAllNetworks) {
+      if (!shouldSupportAllNetworks && !caipNetwork && !fallbackCaipNetwork) {
         // Connection can be requested for a chain that is not supported by the wallet so we need to use approved networks here
         const caipNetworkIds = this.getApprovedCaipNetworkIds() || []
         const caipNetworkId = caipNetworkIds.find(
