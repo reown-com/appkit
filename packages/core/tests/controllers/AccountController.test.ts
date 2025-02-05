@@ -1,13 +1,18 @@
 import { mainnet } from 'viem/chains'
-import { beforeAll, describe, expect, it, vi } from 'vitest'
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+import { type Balance, type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 
 import {
   AccountController,
+  BlockchainApiController,
   ChainController,
+  type ChainControllerState,
   type ConnectionControllerClient,
-  type NetworkControllerClient
+  CoreHelperUtil,
+  type NetworkControllerClient,
+  SnackController,
+  SwapController
 } from '../../exports/index.js'
 
 // -- Setup --------------------------------------------------------------------
@@ -18,9 +23,12 @@ const profileName = 'john.eth'
 const profileImage = 'https://ipfs.com/0x123.png'
 const explorerUrl = 'https://some.explorer.com/explore'
 const chain = ConstantsUtil.CHAIN.EVM
-const networks = [
-  { ...mainnet, chainNamespace: ConstantsUtil.CHAIN.EVM, caipNetworkId: 'eip155:1' }
-] as CaipNetwork[]
+const extendedMainnet = {
+  ...mainnet,
+  chainNamespace: ConstantsUtil.CHAIN.EVM,
+  caipNetworkId: 'eip155:1' as const
+}
+const networks = [extendedMainnet] as CaipNetwork[]
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
@@ -105,6 +113,120 @@ describe('AccountController', () => {
       tokenBalance: [],
       allAccounts: [],
       addressLabels: new Map<string, string>()
+    })
+  })
+
+  describe('fetchTokenBalance()', () => {
+    beforeEach(() => {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        activeCaipNetwork: extendedMainnet,
+        activeCaipAddress: 'eip155:1:0x123'
+      } as unknown as ChainControllerState)
+      vi.spyOn(BlockchainApiController, 'getBalance').mockResolvedValue({
+        balances: []
+      })
+      vi.spyOn(CoreHelperUtil, 'isAllowedRetry').mockReturnValue(true)
+      vi.spyOn(SnackController, 'showError').mockImplementation(() => {})
+    })
+
+    it('should not fetch balance if its not allowed to retry', async () => {
+      vi.spyOn(CoreHelperUtil, 'isAllowedRetry').mockReturnValue(false)
+      AccountController.state.lastRetry = Date.now()
+
+      const result = await AccountController.fetchTokenBalance()
+
+      expect(result).toEqual([])
+      expect(BlockchainApiController.getBalance).not.toHaveBeenCalled()
+      expect(AccountController.state.balanceLoading).toBe(false)
+    })
+
+    it('should not fetch balance if chainId is not defined', async () => {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        activeCaipNetwork: {
+          chainNamespace: 'eip155'
+        } as unknown as CaipNetwork,
+        activeCaipAddress: 'eip155:1:0x123'
+      } as unknown as ChainControllerState)
+
+      const result = await AccountController.fetchTokenBalance()
+
+      expect(result).toEqual([])
+      expect(BlockchainApiController.getBalance).not.toHaveBeenCalled()
+    })
+
+    it('should not fetch balance if namespace is not defined', async () => {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        activeCaipNetwork: { ...extendedMainnet, chainNamespace: undefined },
+        activeCaipAddress: 'eip155:1:0x123'
+      } as unknown as ChainControllerState)
+
+      const result = await AccountController.fetchTokenBalance()
+
+      expect(result).toEqual([])
+      expect(BlockchainApiController.getBalance).not.toHaveBeenCalled()
+    })
+
+    it('should not fetch balance if address is not defined', async () => {
+      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+        activeCaipNetwork: extendedMainnet,
+        activeCaipAddress: undefined
+      } as unknown as ChainControllerState)
+
+      const result = await AccountController.fetchTokenBalance()
+
+      expect(result).toEqual([])
+      expect(BlockchainApiController.getBalance).not.toHaveBeenCalled()
+    })
+
+    it('should set the retry if something fails', async () => {
+      const mockError = new Error('API Error')
+      vi.spyOn(BlockchainApiController, 'getBalance').mockRejectedValue(mockError)
+      const onError = vi.fn()
+
+      const now = Date.now()
+      vi.setSystemTime(now)
+
+      const result = await AccountController.fetchTokenBalance(onError)
+
+      expect(result).toEqual([])
+      expect(AccountController.state.lastRetry).toBe(now)
+      expect(onError).toHaveBeenCalledWith(mockError)
+      expect(SnackController.showError).toHaveBeenCalledWith('Token Balance Unavailable')
+    })
+
+    it('should fetch balance if everything is correct', async () => {
+      const mockBalances = [
+        {
+          quantity: { decimals: '18' },
+          symbol: 'ETH'
+        },
+        { quantity: { decimals: '0' }, symbol: 'ZERO' },
+        { quantity: { decimals: '6' }, symbol: 'USDC' }
+      ]
+
+      vi.spyOn(BlockchainApiController, 'getBalance').mockResolvedValue({
+        balances: mockBalances as Balance[]
+      })
+
+      const setTokenBalanceSpy = vi.spyOn(AccountController, 'setTokenBalance')
+      const setBalancesSpy = vi.spyOn(SwapController, 'setBalances')
+
+      const result = await AccountController.fetchTokenBalance()
+
+      expect(result).toEqual([
+        { quantity: { decimals: '18' }, symbol: 'ETH' },
+        { quantity: { decimals: '6' }, symbol: 'USDC' }
+      ])
+      expect(setTokenBalanceSpy).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          { quantity: { decimals: '18' }, symbol: 'ETH' },
+          { quantity: { decimals: '6' }, symbol: 'USDC' }
+        ]),
+        'eip155'
+      )
+      expect(setBalancesSpy).toHaveBeenCalled()
+      expect(AccountController.state.lastRetry).toBeUndefined()
+      expect(AccountController.state.balanceLoading).toBe(false)
     })
   })
 })
