@@ -1682,8 +1682,6 @@ export class AppKit {
     chainId: string | number | undefined
     chainNamespace: ChainNamespace
   }) {
-    console.trace('>> Sync Balance', params)
-
     const caipNetwork = NetworkUtil.getNetworksByNamespace(
       this.caipNetworks,
       params.chainNamespace
