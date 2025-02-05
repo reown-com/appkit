@@ -38,7 +38,6 @@ export const mockAppKit = {
   open: vi.fn(),
   isOpen: vi.fn().mockReturnValue(false),
   isTransactionStackEmpty: vi.fn().mockReturnValue(true),
-  isTransactionShouldReplaceView: vi.fn().mockReturnValue(false),
   replace: vi.fn(),
   redirect: vi.fn(),
   showErrorMessage: vi.fn(),
