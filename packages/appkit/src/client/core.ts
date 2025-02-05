@@ -1203,6 +1203,8 @@ export abstract class AppKitCore {
         ConnectionController.setUri.bind(ConnectionController)
       )
 
+      this.universalProvider.on('connect', ConnectionController.finalizeWcConnection)
+
       this.universalProvider.on('disconnect', () => {
         this.chainNamespaces.forEach(namespace => {
           this.resetAccount(namespace)
