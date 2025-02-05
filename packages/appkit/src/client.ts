@@ -216,7 +216,7 @@ export class AppKit {
       ConnectorController.setFilterByNamespace(options.namespace)
     }
 
-    ModalController.open(options)
+    await ModalController.open(options)
   }
 
   public async close() {
