@@ -49,8 +49,6 @@ export const ConnectorUtil = {
 
       if (walletRDNS && ApiController.state.excludedRDNS) {
         if (ApiController.state.excludedRDNS.includes(walletRDNS)) {
-          console.log('excludedRDNS', walletRDNS)
-
           return false
         }
       }
