@@ -39,6 +39,7 @@ let account
 let network
 
 const networks = [mainnet, polygon, solana, bitcoin]
+
 async function initialize() {
   signClient = await SignClient.init({ projectId: PROJECT_ID })
   modal = createAppKit({
@@ -54,7 +55,9 @@ async function initialize() {
   })
 
   document.getElementById('switch-network-eth')?.addEventListener('click', async () => {
-    modal.switchNetwork(mainnet)
+    await modal.switchNetwork(mainnet)
+    network = `eip155:${mainnet.id}`
+
     await signClient.request({
       topic: session.topic,
       chainId: network,
@@ -67,15 +70,14 @@ async function initialize() {
         ]
       }
     })
-    network = 'eip155:1'
     account = session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2]
     updateDom()
   })
 
   document.getElementById('switch-network-polygon')?.addEventListener('click', async () => {
-    console.log(signClient)
+    await modal.switchNetwork(polygon)
+    network = `eip155:${polygon.id}`
 
-    modal.switchNetwork(polygon)
     await signClient.request({
       topic: session.topic,
       chainId: network,
@@ -88,20 +90,19 @@ async function initialize() {
         ]
       }
     })
-    network = 'eip155:137'
     account = session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2]
     updateDom()
   })
 
-  document.getElementById('switch-network-solana')?.addEventListener('click', () => {
-    modal.switchNetwork(solana)
+  document.getElementById('switch-network-solana')?.addEventListener('click', async () => {
+    await modal.switchNetwork(solana)
     network = solana.caipNetworkId
     account = session?.namespaces?.solana?.accounts?.[0].split(':')[2]
     updateDom()
   })
 
-  document.getElementById('switch-network-bitcoin')?.addEventListener('click', () => {
-    modal.switchNetwork(bitcoin)
+  document.getElementById('switch-network-bitcoin')?.addEventListener('click', async () => {
+    await modal.switchNetwork(bitcoin)
     network = bitcoin.caipNetworkId
     account = session?.namespaces?.bip122?.accounts?.[0].split(':')[2]
     updateDom()
