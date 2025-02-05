@@ -1,9 +1,13 @@
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ModalController } from '../../exports/index.js'
+import { ApiController, ModalController } from '../../exports/index.js'
 
 // -- Tests --------------------------------------------------------------------
 describe('ModalController', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
   it('should have valid default state', () => {
     expect(ModalController.state.open).toEqual(false)
   })
@@ -17,5 +21,19 @@ describe('ModalController', () => {
   it('should update state correctly on close()', () => {
     ModalController.close()
     expect(ModalController.state.open).toEqual(false)
+  })
+
+  it('should prefetch when open() is called', async () => {
+    vi.spyOn(ApiController, 'fetchFeaturedWallets')
+    vi.spyOn(ApiController, 'fetchRecommendedWallets')
+    vi.spyOn(ApiController, 'fetchConnectorImages')
+    vi.spyOn(ApiController, 'prefetchNetworkImages')
+
+    await ModalController.open()
+
+    expect(ApiController.fetchFeaturedWallets).toHaveBeenCalledOnce()
+    expect(ApiController.fetchRecommendedWallets).toHaveBeenCalledOnce()
+    expect(ApiController.fetchConnectorImages).toHaveBeenCalledOnce()
+    expect(ApiController.prefetchNetworkImages).toHaveBeenCalledOnce()
   })
 })

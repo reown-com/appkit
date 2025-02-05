@@ -3,9 +3,11 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { type ChainNamespace, ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
 
-import type { AuthConnector, Connector } from '../utils/TypeUtil.js'
+import { MobileWalletUtil } from '../utils/MobileWallet.js'
+import type { AuthConnector, Connector, WcWallet } from '../utils/TypeUtil.js'
 import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
+import { RouterController } from './RouterController.js'
 import { ThemeController } from './ThemeController.js'
 
 // -- Types --------------------------------------------- //
@@ -240,6 +242,20 @@ export const ConnectorController = {
     )
 
     return this.mergeMultiChainConnectors(namespaceConnectors)
+  },
+
+  selectWalletConnector(wallet: WcWallet) {
+    const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
+
+    if (ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA) {
+      MobileWalletUtil.handleSolanaDeeplinkRedirect(connector?.name || wallet.name || '')
+    }
+
+    if (connector) {
+      RouterController.push('ConnectingExternal', { connector })
+    } else {
+      RouterController.push('ConnectingWalletConnect', { wallet })
+    }
   },
 
   /**

@@ -216,7 +216,7 @@ export class AppKit {
       ConnectorController.setFilterByNamespace(options.namespace)
     }
 
-    ModalController.open(options)
+    await ModalController.open(options)
   }
 
   public async close() {
@@ -1214,16 +1214,13 @@ export class AppKit {
       if (isSafeRequest) {
         return
       }
+      if (AccountController.state.address && ChainController.state.activeCaipNetwork?.id) {
+        this.updateNativeBalance()
+      }
       if (this.isTransactionStackEmpty()) {
         this.close()
-        if (AccountController.state.address && ChainController.state.activeCaipNetwork?.id) {
-          this.updateNativeBalance()
-        }
       } else {
         this.popTransactionStack()
-        if (AccountController.state.address && ChainController.state.activeCaipNetwork?.id) {
-          this.updateNativeBalance()
-        }
       }
     })
     provider.onNotConnected(() => {
@@ -1629,11 +1626,6 @@ export class AppKit {
       'supportsAllNetworks',
       chainNamespace
     )
-    // Only update state when needed
-    if (!HelpersUtil.isLowerCaseMatch(address, AccountController.state.address)) {
-      this.setCaipAddress(`${chainNamespace}:${chainId}:${address}`, chainNamespace)
-      await this.syncIdentity({ address, chainId, chainNamespace })
-    }
 
     this.setStatus('connected', chainNamespace)
 
@@ -1646,7 +1638,7 @@ export class AppKit {
       let fallbackCaipNetwork = this.caipNetworks?.find(n => n.chainNamespace === chainNamespace)
 
       // If doesn't support all networks, we need to use approved networks
-      if (!shouldSupportAllNetworks) {
+      if (!shouldSupportAllNetworks && !caipNetwork && !fallbackCaipNetwork) {
         // Connection can be requested for a chain that is not supported by the wallet so we need to use approved networks here
         const caipNetworkIds = this.getApprovedCaipNetworkIds() || []
         const caipNetworkId = caipNetworkIds.find(
@@ -1672,6 +1664,15 @@ export class AppKit {
       }
       this.syncConnectedWalletInfo(chainNamespace)
 
+      // Only update state when needed
+      if (!HelpersUtil.isLowerCaseMatch(address, AccountController.state.address)) {
+        this.setCaipAddress(`${chainNamespace}:${network?.id}:${address}`, chainNamespace)
+        await this.syncIdentity({
+          address,
+          chainId: network?.id as string | number,
+          chainNamespace
+        })
+      }
       await this.syncBalance({ address, chainId: network?.id, chainNamespace })
     }
   }
@@ -1690,31 +1691,7 @@ export class AppKit {
       return
     }
 
-    const isApiBalanceSupported = CoreConstantsUtil.BALANCE_SUPPORTED_CHAINS.includes(
-      caipNetwork?.chainNamespace
-    )
-
-    if (caipNetwork.testnet || !isApiBalanceSupported) {
-      await this.updateNativeBalance()
-
-      return
-    }
-
-    const balances = await AccountController.fetchTokenBalance(() =>
-      this.setBalance('0.00', caipNetwork.nativeCurrency.symbol, caipNetwork.chainNamespace)
-    )
-
-    const balance = balances.find(
-      b =>
-        b.chainId === `${params.chainNamespace}:${params.chainId}` &&
-        b.symbol === caipNetwork.nativeCurrency.symbol
-    )
-
-    this.setBalance(
-      balance?.quantity?.numeric || '0.00',
-      caipNetwork.nativeCurrency.symbol,
-      params.chainNamespace
-    )
+    await this.updateNativeBalance()
   }
 
   private syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
