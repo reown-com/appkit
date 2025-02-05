@@ -1763,6 +1763,7 @@ describe('WalletConnect Events', () => {
 
   let chainChangedCallback: (chainId: string | number) => void
   let displayUriCallback: (uri: string) => void
+  let connectCallback: () => void
 
   beforeEach(async () => {
     appkit = new AppKit({
@@ -1781,6 +1782,7 @@ describe('WalletConnect Events', () => {
     chainChangedCallback = universalProvider.on.mock.calls.find(
       ([event]) => event === 'chainChanged'
     )?.[1]
+    connectCallback = universalProvider.on.mock.calls.find(([event]) => event === 'connect')?.[1]
     displayUriCallback = universalProvider.on.mock.calls.find(
       ([event]) => event === 'display_uri'
     )?.[1]
@@ -1807,6 +1809,20 @@ describe('WalletConnect Events', () => {
       ChainController.state.activeCaipNetwork = undefined
       chainChangedCallback(newChain.id.toString())
       expect(setCaipNetworkSpy).toHaveBeenNthCalledWith(2, newChain)
+    })
+  })
+
+  describe('connect', () => {
+    beforeEach(() => {
+      vi.clearAllMocks()
+      vi.spyOn(OptionsController, 'getSnapshot').mockReturnValue({ ...OptionsController.state })
+      vi.spyOn(ThemeController, 'getSnapshot').mockReturnValue({ ...ThemeController.state })
+    })
+
+    it('should call finalizeWcConnection once connected', async () => {
+      connectCallback()
+
+      expect(ConnectionController.finalizeWcConnection).toHaveBeenCalledOnce()
     })
   })
 
