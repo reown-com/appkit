@@ -73,15 +73,8 @@ export class W3mConnectingWcView extends LitElement {
     }
 
     try {
-      const { wcPairingExpiry, status, wcBasic } = ConnectionController.state
-      
-      if (wcBasic) {
-        ChainController.subscribeKey('activeCaipAddress', val => val && this.finalizeConnection())
-      } else if (
-        retry ||
-        CoreHelperUtil.isPairingExpired(wcPairingExpiry) ||
-        status === 'connecting'
-      ) {
+      const { wcPairingExpiry, status } = ConnectionController.state
+      if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry) || status === 'connecting') {
         await ConnectionController.connectWalletConnect()
         this.finalizeConnection()
         if (!this.isSiwxEnabled) {
