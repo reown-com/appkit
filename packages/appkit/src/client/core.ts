@@ -120,8 +120,9 @@ export abstract class AppKitCore {
       ...new Set(this.caipNetworks?.map(caipNetwork => caipNetwork.chainNamespace))
     ]
     this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
-    this.chainAdapters = this.createAdapters(options.adapters as unknown as AdapterBlueprint[])
+    this.chainAdapters = this.createAdapters(options.adapters as AdapterBlueprint[])
     this.initialize(options)
+    this.sendInitializeEvent(options)
   }
 
   protected async initialize(options: AppKitOptionsWithSdk) {
@@ -130,6 +131,10 @@ export abstract class AppKitCore {
     await this.injectModalUi()
     await this.syncExistingConnection()
 
+    PublicStateController.set({ initialized: true })
+  }
+
+  private sendInitializeEvent(options: AppKitOptionsWithSdk) {
     const { ...optionsCopy } = options
     delete optionsCopy.adapters
 
@@ -144,7 +149,6 @@ export abstract class AppKitCore {
         }
       }
     })
-    PublicStateController.set({ initialized: true })
   }
 
   // -- Controllers initialization ---------------------------------------------------
@@ -941,7 +945,6 @@ export abstract class AppKitCore {
   }) {
     ProviderUtil.setProviderId(chainNamespace, type)
     ProviderUtil.setProvider(chainNamespace, provider)
-
     StorageUtil.setConnectedConnectorId(chainNamespace, id)
   }
 
@@ -976,7 +979,7 @@ export abstract class AppKitCore {
       let fallbackCaipNetwork = this.caipNetworks?.find(n => n.chainNamespace === chainNamespace)
 
       // If doesn't support all networks, we need to use approved networks
-      if (!shouldSupportAllNetworks) {
+      if (!shouldSupportAllNetworks && !caipNetwork && !fallbackCaipNetwork) {
         // Connection can be requested for a chain that is not supported by the wallet so we need to use approved networks here
         const caipNetworkIds = this.getApprovedCaipNetworkIds() || []
         const caipNetworkId = caipNetworkIds.find(
@@ -1002,6 +1005,15 @@ export abstract class AppKitCore {
       }
       this.syncConnectedWalletInfo(chainNamespace)
 
+      // Only update state when needed
+      if (!HelpersUtil.isLowerCaseMatch(address, AccountController.state.address)) {
+        this.setCaipAddress(`${chainNamespace}:${network?.id}:${address}`, chainNamespace)
+        await this.syncIdentity({
+          address,
+          chainId: network?.id as string | number,
+          chainNamespace
+        })
+      }
       await this.syncBalance({ address, chainId: network?.id, chainNamespace })
     }
   }
@@ -1020,6 +1032,7 @@ export abstract class AppKitCore {
     if (chainNamespace !== ConstantsUtil.CHAIN.EVM || activeCaipNetwork?.testnet) {
       return
     }
+
     try {
       const { name, avatar } = await this.fetchIdentity({
         address
@@ -1198,10 +1211,9 @@ export abstract class AppKitCore {
 
   protected listenWalletConnect() {
     if (this.universalProvider) {
-      this.universalProvider.on(
-        'display_uri',
-        ConnectionController.setUri.bind(ConnectionController)
-      )
+      this.universalProvider.on('display_uri', (uri: string) => {
+        ConnectionController.setUri(uri)
+      })
 
       this.universalProvider.on('connect', ConnectionController.finalizeWcConnection)
 
