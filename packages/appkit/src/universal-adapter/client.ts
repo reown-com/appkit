@@ -88,19 +88,12 @@ export class UniversalAdapter extends AdapterBlueprint {
       AccountController.state.balanceLoading &&
       params.chainId === ChainController.state.activeCaipNetwork?.id
     ) {
-      console.log(
-        '>> UniversalAdapter:getBalance - balance is loading',
-        AccountController.state.balanceLoading,
-        ChainController.state.activeCaipNetwork?.id
-      )
-
       return {
         balance: AccountController.state.balance || '0.00',
         symbol: AccountController.state.balanceSymbol || ''
       }
     }
 
-    console.log('>> UniversalAdapter:getBalance - fetching balance')
     const balances = await AccountController.fetchTokenBalance()
     const balance = balances.find(
       b =>
