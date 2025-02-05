@@ -3,9 +3,8 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import type { WcWallet } from '@reown/appkit-core'
-import { ApiController } from '@reown/appkit-core'
+import { ApiController, ConnectorController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { MobileWalletUtil } from '@reown/appkit-utils'
 
 import { WalletUtil } from '../../utils/WalletUtil.js'
 import styles from './styles.js'
@@ -145,7 +144,7 @@ export class W3mAllWalletsList extends LitElement {
   }
 
   private onConnectWallet(wallet: WcWallet) {
-    MobileWalletUtil.handleMobileWalletRedirection(wallet)
+    ConnectorController.selectWalletConnector(wallet)
   }
 }
 

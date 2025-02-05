@@ -1,13 +1,8 @@
 import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import {
-  ChainController,
-  type ChainControllerState,
-  ConnectorController,
-  RouterController
-} from '@reown/appkit-core'
+import { ChainController, type ChainControllerState } from '@reown/appkit-core'
 
-import { MobileWalletUtil } from '../src/MobileWallet'
+import { MobileWalletUtil } from '../../src/utils/MobileWallet'
 
 const ORIGINAL_HREF = 'https://example.com/path'
 const mockWindow = {
@@ -45,9 +40,9 @@ describe('MobileWalletUtil', () => {
     vi.unstubAllGlobals()
   })
 
-  describe('handleMobileWalletRedirection', () => {
+  describe('handleSolanaDeeplinkRedirect', () => {
     it('should redirect to Phantom app when Phantom is not installed', () => {
-      MobileWalletUtil.handleMobileWalletRedirection(WALLETS.phantom)
+      MobileWalletUtil.handleSolanaDeeplinkRedirect(WALLETS.phantom.name)
 
       const encodedHref = encodeURIComponent(ORIGINAL_HREF)
       const encodedRef = encodeURIComponent('https://example.com')
@@ -63,13 +58,13 @@ describe('MobileWalletUtil', () => {
       })
 
       const originalHref = window.location.href
-      MobileWalletUtil.handleMobileWalletRedirection(WALLETS.phantom)
+      MobileWalletUtil.handleSolanaDeeplinkRedirect(WALLETS.phantom.name)
 
       expect(window.location.href).toBe(originalHref)
     })
 
     it('should redirect to Coinbase Wallet when it is not installed', () => {
-      MobileWalletUtil.handleMobileWalletRedirection(WALLETS.coinbase)
+      MobileWalletUtil.handleSolanaDeeplinkRedirect(WALLETS.coinbase.name)
 
       const encodedHref = encodeURIComponent(ORIGINAL_HREF)
       const expectedUrl = `https://go.cb-w.com/dapp?cb_url=${encodedHref}`
@@ -84,44 +79,16 @@ describe('MobileWalletUtil', () => {
       })
 
       const originalHref = window.location.href
-      MobileWalletUtil.handleMobileWalletRedirection(WALLETS.coinbase)
+      MobileWalletUtil.handleSolanaDeeplinkRedirect(WALLETS.coinbase.name)
 
       expect(window.location.href).toBe(originalHref)
     })
 
     it('should not redirect for unknown wallet names', () => {
       const originalHref = window.location.href
-      MobileWalletUtil.handleMobileWalletRedirection({ name: 'Unknown', id: 'unknown' })
+      MobileWalletUtil.handleSolanaDeeplinkRedirect('other')
 
       expect(window.location.href).toBe(originalHref)
-    })
-
-    it('should route to ConnectingExternal if there is a connector', () => {
-      const mockConnector = {
-        id: 'connector',
-        name: 'Connector',
-        type: 'INJECTED' as const,
-        chain: 'solana' as const
-      }
-      vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(mockConnector)
-
-      vi.spyOn(RouterController, 'push')
-
-      MobileWalletUtil.handleMobileWalletRedirection({ name: 'Connector', id: 'connector' })
-
-      expect(RouterController.push).toHaveBeenCalledWith('ConnectingExternal', {
-        connector: mockConnector
-      })
-    })
-    it('should route to ConnectingWalletConnect if there is not a connector', () => {
-      vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(undefined)
-      vi.spyOn(RouterController, 'push')
-
-      MobileWalletUtil.handleMobileWalletRedirection({ name: 'WalletConnect', id: 'wc' })
-
-      expect(RouterController.push).toHaveBeenCalledWith('ConnectingWalletConnect', {
-        wallet: { name: 'WalletConnect', id: 'wc' }
-      })
     })
   })
 })

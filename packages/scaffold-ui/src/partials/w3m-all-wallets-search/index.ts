@@ -2,9 +2,8 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
 import type { BadgeType, WcWallet } from '@reown/appkit-core'
-import { ApiController } from '@reown/appkit-core'
+import { ApiController, ConnectorController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { MobileWalletUtil } from '@reown/appkit-utils'
 
 import { WalletUtil } from '../../utils/WalletUtil.js'
 import styles from './styles.js'
@@ -94,7 +93,7 @@ export class W3mAllWalletsSearch extends LitElement {
   }
 
   private onConnectWallet(wallet: WcWallet) {
-    MobileWalletUtil.handleMobileWalletRedirection(wallet)
+    ConnectorController.selectWalletConnector(wallet)
   }
 }
 

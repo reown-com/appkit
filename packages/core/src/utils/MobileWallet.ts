@@ -1,10 +1,5 @@
 import { ConstantsUtil } from '@reown/appkit-common'
-import {
-  ChainController,
-  ConnectorController,
-  RouterController,
-  type WcWallet
-} from '@reown/appkit-core'
+import { ChainController } from '@reown/appkit-core'
 
 export const MobileWalletUtil = {
   /**
@@ -13,9 +8,7 @@ export const MobileWalletUtil = {
    * @param {Object} properties - The properties object.
    * @param {string} properties.name - The name of the wallet.
    */
-  handleMobileWalletRedirection(wallet: WcWallet): void {
-    const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
-
+  handleSolanaDeeplinkRedirect(name: string): void {
     if (ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA) {
       /**
        * Universal Links requires explicit user interaction to open the wallet app.
@@ -24,7 +17,6 @@ export const MobileWalletUtil = {
        */
       const href = window.location.href
       const encodedHref = encodeURIComponent(href)
-      const name = connector?.name || wallet?.name || ''
       if (name === 'Phantom' && !('phantom' in window)) {
         const protocol = href.startsWith('https') ? 'https' : 'http'
         const host = href.split('/')[2]
@@ -36,12 +28,6 @@ export const MobileWalletUtil = {
       if (name === 'Coinbase Wallet' && !('coinbaseSolana' in window)) {
         window.location.href = `https://go.cb-w.com/dapp?cb_url=${encodedHref}`
       }
-    }
-
-    if (connector) {
-      RouterController.push('ConnectingExternal', { connector })
-    } else {
-      RouterController.push('ConnectingWalletConnect', { wallet })
     }
   }
 }

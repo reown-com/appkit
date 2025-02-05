@@ -5,7 +5,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import type { WcWallet } from '@reown/appkit-core'
 import { AssetUtil, ConnectorController, StorageUtil } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { MobileWalletUtil } from '@reown/appkit-utils'
 
 @customElement('w3m-connect-recent-widget')
 export class W3mConnectRecentWidget extends LitElement {
@@ -62,7 +61,7 @@ export class W3mConnectRecentWidget extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private onConnectWallet(wallet: WcWallet) {
-    MobileWalletUtil.handleMobileWalletRedirection(wallet)
+    ConnectorController.selectWalletConnector(wallet)
   }
 }
 
