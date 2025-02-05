@@ -167,6 +167,10 @@ export class UniversalAdapter extends AdapterBlueprint {
     return Promise.resolve('0x')
   }
 
+  public override async walletGetAssets(): Promise<unknown> {
+    return Promise.resolve({})
+  }
+
   public async syncConnection() {
     return Promise.resolve({
       id: 'WALLET_CONNECT',

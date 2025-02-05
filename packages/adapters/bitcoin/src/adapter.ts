@@ -256,6 +256,11 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     return Promise.resolve('0x')
   }
 
+  override walletGetAssets(_params: AdapterBlueprint.WalletGetAssetsParams): Promise<unknown> {
+    // Get assets
+    return Promise.resolve({})
+  }
+
   // -- Private ------------------------------------------ //
   private bindEvents(connector: BitcoinConnector) {
     this.unbindEvents()

@@ -1089,6 +1089,11 @@ export class AppKit {
         }
 
         return '0x'
+      },
+      walletGetAssets: async (params: AdapterBlueprint.WalletGetAssetsParams) => {
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+
+        return adapter?.walletGetAssets(params)
       }
     }
 
