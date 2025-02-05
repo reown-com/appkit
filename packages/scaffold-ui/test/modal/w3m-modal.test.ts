@@ -32,8 +32,7 @@ describe('W3mModal', () => {
 
     beforeEach(async () => {
       Element.prototype.animate = vi.fn().mockReturnValue({ finished: true })
-      vi.spyOn(ApiController, 'prefetchWalletImages').mockImplementation(() => Promise.resolve())
-      vi.spyOn(ApiController, 'prefetchNetworkImages').mockImplementation(() => Promise.resolve())
+      vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve())
       vi.spyOn(ApiController, 'prefetchAnalyticsConfig').mockImplementation(() => Promise.resolve())
       OptionsController.setEnableEmbedded(true)
       ModalController.close()
@@ -68,11 +67,10 @@ describe('W3mModal', () => {
       expect(ModalController.state.open).toBe(false)
     })
 
-    it('should prefetch wallet and network images when modal is open', async () => {
+    it('should prefetch when modal is open', async () => {
       element = await fixture(html`<w3m-modal .enableEmbedded=${true}></w3m-modal>`)
 
-      expect(ApiController.prefetchWalletImages).toHaveBeenCalled()
-      expect(ApiController.prefetchNetworkImages).toHaveBeenCalled()
+      expect(ApiController.prefetch).toHaveBeenCalled()
     })
   })
 
@@ -80,7 +78,7 @@ describe('W3mModal', () => {
     let element: W3mModal
 
     beforeEach(async () => {
-      vi.spyOn(ApiController, 'prefetchWalletImages').mockImplementation(() => Promise.resolve())
+      vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve())
       vi.spyOn(ApiController, 'prefetchAnalyticsConfig').mockImplementation(() => Promise.resolve())
       OptionsController.setEnableEmbedded(false)
       ModalController.close()
@@ -95,14 +93,13 @@ describe('W3mModal', () => {
       expect(HelpersUtil.getByTestId(element, 'w3m-modal-overlay')).toBeNull()
     })
 
-    it('should prefetch wallet and network images when modal is open', async () => {
+    it('should prefetch when modal is open', async () => {
       await ModalController.open()
 
       element.requestUpdate()
       await elementUpdated(element)
 
-      expect(ApiController.prefetchWalletImages).toHaveBeenCalled()
-      expect(ApiController.prefetchNetworkImages).toHaveBeenCalled()
+      expect(ApiController.prefetch).toHaveBeenCalled()
     })
 
     it('should be visible when opened', async () => {
@@ -163,8 +160,7 @@ describe('W3mModal', () => {
     let element: W3mModal
 
     beforeEach(async () => {
-      vi.spyOn(ApiController, 'prefetchWalletImages').mockImplementation(() => Promise.resolve())
-      vi.spyOn(ApiController, 'prefetchAnalyticsConfig').mockImplementation(() => Promise.resolve())
+      vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve())
       element = await fixture(html`<w3m-modal></w3m-modal>`)
     })
 

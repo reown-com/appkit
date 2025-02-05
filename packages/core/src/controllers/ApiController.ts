@@ -270,14 +270,21 @@ export const ApiController = {
     state.search = ApiController._filterOutExtensions(data)
   },
 
-  prefetchWalletImages() {
+  prefetch() {
+    if (state.prefetchPromise) {
+      return state.prefetchPromise
+    }
+
     const promises = [
       ApiController.fetchFeaturedWallets(),
       ApiController.fetchRecommendedWallets(),
-      ApiController.fetchConnectorImages()
+      ApiController.fetchConnectorImages(),
+      ApiController.prefetchNetworkImages()
     ]
 
     state.prefetchPromise = Promise.allSettled(promises)
+
+    return state.prefetchPromise
   },
 
   prefetchAnalyticsConfig() {
