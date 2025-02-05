@@ -52,7 +52,6 @@ export interface ConnectionControllerClient {
     expiry: number
     address: `0x${string}`
   }) => Promise<`0x${string}`>
-  walletGetAssets: (params: readonly unknown[] | object) => Promise<unknown>
   getCapabilities: (params: string) => Promise<unknown>
 }
 
@@ -191,10 +190,6 @@ export const ConnectionController = {
 
   async grantPermissions(params: object | readonly unknown[]) {
     return this._getClient()?.grantPermissions(params)
-  },
-
-  async walletGetAssets(params: object | readonly unknown[]) {
-    return this._getClient()?.walletGetAssets(params)
   },
 
   async estimateGas(args: EstimateGasTransactionArgs) {

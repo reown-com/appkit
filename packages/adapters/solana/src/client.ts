@@ -108,10 +108,6 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     return Promise.resolve('0x')
   }
 
-  public override async walletGetAssets(): Promise<unknown> {
-    return Promise.resolve({})
-  }
-
   public async getAccounts(
     params: AdapterBlueprint.GetAccountsParams
   ): Promise<AdapterBlueprint.GetAccountsResult> {

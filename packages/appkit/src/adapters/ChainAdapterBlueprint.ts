@@ -376,8 +376,6 @@ export abstract class AdapterBlueprint<
     params: AdapterBlueprint.RevokePermissionsParams
   ): Promise<`0x${string}`>
 
-  public abstract walletGetAssets(params: AdapterBlueprint.WalletGetAssetsParams): Promise<unknown>
-
   protected getWalletConnectConnector(): WalletConnectConnector {
     const connector = this.connectors.find(c => c instanceof WalletConnectConnector) as
       | WalletConnectConnector
@@ -498,7 +496,6 @@ export namespace AdapterBlueprint {
   export type GetCapabilitiesParams = string
 
   export type GrantPermissionsParams = object | readonly unknown[]
-  export type WalletGetAssetsParams = object | readonly unknown[]
 
   export type RevokePermissionsParams = {
     pci: string

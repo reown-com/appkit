@@ -94,7 +94,6 @@ export const mockAppKit = {
   getCapabilities: vi.fn(),
   grantPermissions: vi.fn(),
   revokePermissions: vi.fn(),
-  walletGetAssets: vi.fn(),
   getUniversalProvider: vi.fn().mockResolvedValue(mockProvider),
   getProvider: vi.fn(),
   universalAdapter: {

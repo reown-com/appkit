@@ -26,7 +26,6 @@ export const mockUniversalAdapter = {
   getCapabilities: vi.fn(),
   grantPermissions: vi.fn(),
   revokePermissions: vi.fn(),
-  walletGetAssets: vi.fn(),
   on: vi.fn(),
   off: vi.fn(),
   emit: vi.fn(),
