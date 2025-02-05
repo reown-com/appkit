@@ -216,7 +216,7 @@ export class AppKit {
       ConnectorController.setFilterByNamespace(options.namespace)
     }
 
-    ModalController.open(options)
+    await ModalController.open(options)
   }
 
   public async close() {
@@ -1952,9 +1952,7 @@ export class AppKit {
     if (!this.universalProvider) {
       try {
         await this.createUniversalProvider()
-      } catch (error) {
-        throw new Error('AppKit:getUniversalProvider - Cannot create provider')
-      }
+      } catch (error) {}
     }
 
     return this.universalProvider
