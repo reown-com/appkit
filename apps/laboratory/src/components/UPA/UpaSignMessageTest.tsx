@@ -6,7 +6,6 @@ import base58 from 'bs58'
 
 import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 
-import { BitcoinUtil } from '../../utils/BitcoinUtil'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { useChakraToast } from '../Toast'
 
@@ -21,7 +20,7 @@ export function UpaSignMessageTest() {
 
   const { walletProvider } = useAppKitProvider<Provider>(caipNetwork.chainNamespace)
 
-  async function getPayload() {
+  function getPayload() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const map: Record<string, { method: string; params: any }> = {
       solana: {
@@ -36,9 +35,9 @@ export function UpaSignMessageTest() {
         params: [address, 'Hello AppKit!']
       },
       bip122: {
-        method: 'signPsbt',
+        method: 'signMessage',
         params: {
-          psbt: '',
+          message: 'Hello AppKit!',
           account: address
         }
       },
@@ -75,22 +74,6 @@ export function UpaSignMessageTest() {
 
     const payload = map[caipNetwork?.chainNamespace || '']
 
-    if (payload && address && caipNetwork?.chainNamespace === 'bip122') {
-      const utxos = await BitcoinUtil.getUTXOs(address, caipNetwork.caipNetworkId)
-      const feeRate = await BitcoinUtil.getFeeRate()
-
-      const { psbt } = BitcoinUtil.createSignPSBTParams({
-        amount: 1000,
-        feeRate,
-        network: caipNetwork,
-        recipientAddress: address,
-        senderAddress: address,
-        utxos
-      })
-
-      payload.params.psbt = psbt
-    }
-
     return payload
   }
 
@@ -100,7 +83,7 @@ export function UpaSignMessageTest() {
         throw Error('user is disconnected')
       }
 
-      const payload = await getPayload()
+      const payload = getPayload()
 
       if (!payload) {
         throw Error('Chain not supported by laboratory')
@@ -114,6 +97,7 @@ export function UpaSignMessageTest() {
         type: 'success'
       })
     } catch (error) {
+      console.warn(error)
       toast({
         title: ConstantsUtil.SigningFailedToastTitle,
         description: 'Failed to sign message',
