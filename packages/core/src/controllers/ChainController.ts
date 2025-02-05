@@ -601,7 +601,8 @@ export const ChainController = {
         socialWindow: undefined,
         farcasterUrl: undefined,
         provider: undefined,
-        allAccounts: []
+        allAccounts: [],
+        status: 'disconnected'
       })
     )
   },
