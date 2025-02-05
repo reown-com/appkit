@@ -23,12 +23,7 @@ export class W3mConnectorList extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
-      ...[
-        ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
-        ApiController.subscribeKey('featured', () => this.requestUpdate()),
-        ApiController.subscribeKey('recommended', () => this.requestUpdate()),
-        ApiController.subscribeKey('excludedRDNS', () => this.requestUpdate())
-      ]
+      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
     )
   }
 

@@ -270,8 +270,7 @@ export class W3mModal extends LitElement {
   private prefetch() {
     if (!this.hasPrefetched) {
       this.hasPrefetched = true
-      ApiController.prefetchWalletImages()
-      ApiController.prefetchNetworkImages()
+      ApiController.prefetch()
     }
   }
 }
