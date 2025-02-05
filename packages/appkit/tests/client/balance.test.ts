@@ -48,7 +48,6 @@ describe('Balance sync', () => {
   })
 
   it('should set the correct native token balance', async () => {
-    console.log('>> CHeck here')
     const getNetworksByNamespaceSpy = vi.spyOn(NetworkUtil, 'getNetworksByNamespace')
     const setBalanceSpy = vi.spyOn(AccountController, 'setBalance')
 
