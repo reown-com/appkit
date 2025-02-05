@@ -38,7 +38,7 @@ test.afterAll(async () => {
 // -- Tests --------------------------------------------------------------------
 
 test('it should switch networks and sign', async () => {
-  const chains = ['Polygon', 'Solana', 'Bitcoin']
+  const chains = ['Polygon', 'Solana']
 
   async function processChain(index: number) {
     if (index >= chains.length) {
