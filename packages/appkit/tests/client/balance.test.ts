@@ -47,7 +47,7 @@ describe('Balance sync', () => {
     expect(setBalanceSpy).toHaveBeenCalledWith('1.00', 'ETH', sepolia.chainNamespace)
   })
 
-  it.only('should set the correct native token balance', async () => {
+  it('should set the correct native token balance', async () => {
     console.log('>> CHeck here')
     const getNetworksByNamespaceSpy = vi.spyOn(NetworkUtil, 'getNetworksByNamespace')
     const setBalanceSpy = vi.spyOn(AccountController, 'setBalance')

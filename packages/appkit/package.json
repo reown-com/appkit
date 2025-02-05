@@ -14,7 +14,7 @@
     "watch": "tsc --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "test": "vitest run balance.test.ts --coverage.enabled=true -- coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true"
+    "test": "vitest run --coverage.enabled=true -- coverage.reporter=json --coverage.reporter=json-summary --coverage.reportOnFailure=true"
   },
   "exports": {
     ".": {
