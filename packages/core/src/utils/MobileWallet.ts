@@ -1,5 +1,6 @@
 import { ConstantsUtil } from '@reown/appkit-common'
-import { ChainController } from '@reown/appkit-core'
+
+import { ChainController } from '../controllers/ChainController.js'
 
 export const MobileWalletUtil = {
   /**
