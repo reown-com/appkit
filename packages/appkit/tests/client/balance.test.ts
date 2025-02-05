@@ -34,24 +34,18 @@ describe('Balance sync', () => {
     const getNetworksByNamespaceSpy = vi.spyOn(NetworkUtil, 'getNetworksByNamespace')
     const fetchTokenBalanceSpy = vi.spyOn(AccountController, 'fetchTokenBalance')
     const setBalanceSpy = vi.spyOn(AccountController, 'setBalance')
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+    const mockAccount = {
       address: '0x123',
       chainId: sepolia.id,
       chainNamespace: sepolia.chainNamespace
-    } as any)
+    }
 
     const appKit = new AppKit({ ...mockOptions, networks: [sepolia] })
-    await appKit['syncBalance']({
-      address: '0x123',
-      chainId: sepolia.id,
-      chainNamespace: sepolia.chainNamespace
-    })
+    await appKit['syncAccount'](mockAccount)
 
     expect(getNetworksByNamespaceSpy).toHaveBeenCalled()
     expect(fetchTokenBalanceSpy).not.toHaveBeenCalled()
     expect(setBalanceSpy).toHaveBeenCalledWith('1.00', 'ETH', sepolia.chainNamespace)
-
-    vi.spyOn(AccountController, 'state', 'get').mockClear()
   })
 
   it('should set the correct native token balance', async () => {
@@ -102,7 +96,5 @@ describe('Balance sync', () => {
 
     expect(fetchTokenBalanceSpy).not.toHaveBeenCalled()
     expect(setBalanceSpy).toHaveBeenCalledWith('1.00', 'ETH', sepolia.chainNamespace)
-
-    vi.spyOn(AccountController, 'state', 'get').mockClear()
   })
 })
