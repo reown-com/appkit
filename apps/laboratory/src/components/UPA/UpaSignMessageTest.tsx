@@ -97,7 +97,7 @@ export function UpaSignMessageTest() {
         type: 'success'
       })
     } catch (error) {
-      console.warn(error)
+      console.warn('Error signing message: ', error)
       toast({
         title: ConstantsUtil.SigningFailedToastTitle,
         description: 'Failed to sign message',
