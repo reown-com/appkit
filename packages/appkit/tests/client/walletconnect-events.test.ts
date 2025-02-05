@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ChainController, ConnectionController } from '@reown/appkit-core'
 
-import { AppKit } from '../../src/client'
+import { AppKit } from '../../src/client/appkit'
 import { mainnet, sepolia } from '../mocks/Networks'
 import { mockOptions } from '../mocks/Options'
 import { mockUniversalProvider } from '../mocks/Providers'
@@ -86,6 +86,14 @@ describe('WalletConnect Events', () => {
     })
 
     it('should call finalizeWcConnection once connected', async () => {
+      vi.spyOn(ConnectionController, 'finalizeWcConnection')
+
+      new AppKit({
+        ...mockOptions,
+        adapters: [],
+        universalProvider: mockUniversalProvider as any
+      })
+
       const connectCallback = mockUniversalProvider.on.mock.calls.find(
         ([event]) => event === 'connect'
       )?.[1]
