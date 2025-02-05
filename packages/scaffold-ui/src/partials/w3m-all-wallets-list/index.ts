@@ -2,9 +2,16 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import { ConstantsUtil } from '@reown/appkit-common'
 import type { WcWallet } from '@reown/appkit-core'
-import { ApiController, ConnectorController, RouterController } from '@reown/appkit-core'
+import {
+  ApiController,
+  ChainController,
+  ConnectorController,
+  RouterController
+} from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import { MobileWalletUtil } from '@reown/appkit-utils'
 
 import { WalletUtil } from '../../utils/WalletUtil.js'
 import styles from './styles.js'
@@ -145,6 +152,18 @@ export class W3mAllWalletsList extends LitElement {
 
   private onConnectWallet(wallet: WcWallet) {
     const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
+
+    if (ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA) {
+      /**
+       * Universal Links requires explicit user interaction to open the wallet app.
+       * Previously we've been calling this with the life-cycle methods in the Solana clients by listening the SELECT_WALLET event of EventController.
+       * But this breaks the UL functionality for some wallets like Phantom.
+       */
+      MobileWalletUtil.handleMobileWalletRedirection({
+        name: connector?.name || wallet?.name || ''
+      })
+    }
+
     if (connector) {
       RouterController.push('ConnectingExternal', { connector })
     } else {
