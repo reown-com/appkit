@@ -885,7 +885,7 @@ describe('Base Public methods', () => {
     const appKit = new AppKit(mockOptions)
     await appKit['syncAccount']({ ...mockAccountData, address: '0x1234' })
 
-    expect(AccountController.fetchTokenBalance).toHaveBeenCalled()
+    expect(mockEvmAdapter.getBalance).toHaveBeenCalled()
   })
 
   it('should disconnect correctly', async () => {
