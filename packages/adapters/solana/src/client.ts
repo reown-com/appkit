@@ -194,7 +194,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   }
 
   public parseUnits(): bigint {
-    return 0n
+    return BigInt(0)
   }
 
   public formatUnits(): string {

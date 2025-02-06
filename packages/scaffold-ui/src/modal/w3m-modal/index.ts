@@ -164,7 +164,6 @@ export class W3mModal extends LitElement {
   }
 
   private onOpen() {
-    this.prefetch()
     this.open = true
     this.classList.add('open')
     this.onScrollLock()
@@ -274,6 +273,10 @@ export class W3mModal extends LitElement {
     this.caipNetwork = nextCaipNetwork
   }
 
+  /*
+   * This is only called when enableEmbedded is true, as embedded
+   * mode doesn't set the modal open state to true to do prefetching
+   */
   private prefetch() {
     if (!this.hasPrefetched) {
       this.hasPrefetched = true

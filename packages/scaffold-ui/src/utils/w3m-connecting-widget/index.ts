@@ -76,6 +76,9 @@ export class W3mConnectingWidget extends LitElement {
     this.unsubscribe.push(
       ...[
         ConnectionController.subscribeKey('wcUri', val => {
+          console.log(this.uri === val)
+          console.log('old uri >>', this.uri)
+          console.log('new uri', val)
           this.uri = val
           if (this.isRetrying && this.onRetry) {
             this.isRetrying = false

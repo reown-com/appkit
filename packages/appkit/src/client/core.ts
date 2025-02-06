@@ -469,10 +469,10 @@ export abstract class AppKitCore {
             caipNetwork
           })
 
-          return result?.gas || 0n
+          return result?.gas || BigInt(0)
         }
 
-        return 0n
+        return BigInt(0)
       },
       getEnsAvatar: async () => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
@@ -514,7 +514,7 @@ export abstract class AppKitCore {
       parseUnits: (value: string, decimals: number) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
-        return adapter?.parseUnits({ value, decimals }) ?? 0n
+        return adapter?.parseUnits({ value, decimals }) ?? BigInt(0)
       },
       formatUnits: (value: bigint, decimals: number) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)

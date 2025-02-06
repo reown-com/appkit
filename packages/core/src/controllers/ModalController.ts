@@ -4,6 +4,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
+import { ConnectionController } from './ConnectionController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
@@ -46,12 +47,19 @@ export const ModalController = {
   },
 
   async open(options?: ModalControllerArguments['open']) {
-    await ApiController.prefetch()
+    /*
+     * We don't want to prefetch anything if the user is using basic since
+     * we're only going to fetch wallets if user lands on "AllWallets" view
+     */
+    if (!ConnectionController.state.wcBasic) {
+      await ApiController.prefetch()
+    }
+
     const caipAddress = ChainController.state.activeCaipAddress
 
     const noAdapters = ChainController.state.noAdapters
 
-    if (options?.view) {
+    if (options?.view && !ConnectionController.state.wcBasic) {
       RouterController.reset(options.view)
     } else if (caipAddress) {
       RouterController.reset('Account')

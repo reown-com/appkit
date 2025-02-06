@@ -63,11 +63,14 @@ export class W3mConnectingWcView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private async initializeConnection(retry = false) {
-    if (this.platform === 'browser') {
-      /*
-       * If the platform is browser it means the user is using a browser wallet,
-       * in this case the connection is handled in w3m-connecting-wc-browser component.
-       */
+    /*
+     * If the platform is browser it means the user is using a browser wallet,
+     * in this case the connection is handled in w3m-connecting-wc-browser component.
+     *
+     * If we use AppKit basic we shouldn't need to connect to walletConnect
+     * since that's already done by the signer in ethereum provider.
+     */
+    if (this.platform === 'browser' || ConnectionController.state.wcBasic) {
       return
     }
 

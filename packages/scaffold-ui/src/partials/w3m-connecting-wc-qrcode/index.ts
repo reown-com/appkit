@@ -26,7 +26,6 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
   public constructor() {
     super()
     window.addEventListener('resize', this.forceUpdate)
-
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_WALLET',
@@ -38,6 +37,10 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
     super.disconnectedCallback()
     this.unsubscribe?.forEach(unsub => unsub())
     window.removeEventListener('resize', this.forceUpdate)
+  }
+
+  public override firstUpdated() {
+    ConnectionController.resetUri()
   }
 
   // -- Render -------------------------------------------- //
