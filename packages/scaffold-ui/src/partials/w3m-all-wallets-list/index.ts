@@ -3,12 +3,7 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import type { WcWallet } from '@reown/appkit-core'
-import {
-  ApiController,
-  ConnectorController,
-  CoreHelperUtil,
-  RouterController
-} from '@reown/appkit-core'
+import { ApiController, ConnectorController, CoreHelperUtil } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-card-select-loader'
 import '@reown/appkit-ui/wui-grid'
