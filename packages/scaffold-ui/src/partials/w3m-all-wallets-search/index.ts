@@ -9,7 +9,6 @@ import '@reown/appkit-ui/wui-grid'
 import '@reown/appkit-ui/wui-icon-box'
 import '@reown/appkit-ui/wui-loading-spinner'
 import '@reown/appkit-ui/wui-text'
-import { MobileWalletUtil } from '@reown/appkit-utils'
 
 import { WalletUtil } from '../../utils/WalletUtil.js'
 import '../w3m-all-wallets-list-item/index.js'
