@@ -3,7 +3,12 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import type { WcWallet } from '@reown/appkit-core'
-import { ApiController, ConnectorController, RouterController } from '@reown/appkit-core'
+import {
+  ApiController,
+  ConnectorController,
+  CoreHelperUtil,
+  RouterController
+} from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-card-select-loader'
 import '@reown/appkit-ui/wui-grid'
@@ -99,7 +104,10 @@ export class W3mAllWalletsList extends LitElement {
   }
 
   private walletsTemplate() {
-    const wallets = [...this.featured, ...this.recommended, ...this.wallets]
+    const wallets = CoreHelperUtil.uniqueBy(
+      [...this.featured, ...this.recommended, ...this.wallets],
+      'id'
+    )
     const walletsWithInstalled = WalletUtil.markWalletsAsInstalled(wallets)
 
     return walletsWithInstalled.map(

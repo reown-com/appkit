@@ -9,10 +9,14 @@ import {
 } from '@reown/appkit-core'
 import { ErrorUtil } from '@reown/appkit-utils'
 
-import { AppKit } from '../../src/client'
-import { mainnet, sepolia, solana } from '../mocks/Networks'
-import { mockOptions } from '../mocks/Options'
-import { mockBlockchainApiController, mockStorageUtil, mockWindowAndDocument } from '../test-utils'
+import { AppKit } from '../../src/client/appkit.js'
+import { mainnet, sepolia, solana } from '../mocks/Networks.js'
+import { mockOptions } from '../mocks/Options.js'
+import {
+  mockBlockchainApiController,
+  mockStorageUtil,
+  mockWindowAndDocument
+} from '../test-utils.js'
 
 mockWindowAndDocument()
 mockStorageUtil()
