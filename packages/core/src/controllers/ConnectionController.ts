@@ -77,7 +77,8 @@ type StateKey = keyof ConnectionControllerState
 const state = proxy<ConnectionControllerState>({
   wcError: false,
   buffering: false,
-  status: 'disconnected'
+  status: 'disconnected',
+  wcBasic: false
 })
 
 // eslint-disable-next-line init-declarations

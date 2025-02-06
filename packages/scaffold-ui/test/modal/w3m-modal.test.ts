@@ -7,6 +7,7 @@ import { type CaipNetwork } from '@reown/appkit-common'
 import {
   ApiController,
   ChainController,
+  ConnectionController,
   ModalController,
   OptionsController,
   RouterController,
@@ -126,6 +127,24 @@ describe('W3mModal', () => {
       await elementUpdated(element)
 
       expect(ModalController.state.open).toBe(false)
+    })
+
+    it('should not be visible when wcBasic is true and user is connected', async () => {
+      vi.spyOn(ConnectionController.state, 'wcBasic', 'get').mockReturnValue(true)
+      vi.spyOn(ChainController.state, 'activeCaipAddress', 'get').mockReturnValue(
+        'eip155:1:0x123...'
+      )
+
+      await ModalController.open()
+      element.requestUpdate()
+      await elementUpdated(element)
+
+      expect(HelpersUtil.getByTestId(element, 'w3m-modal-overlay')).toBeNull()
+      expect(HelpersUtil.getByTestId(element, 'w3m-modal-card')).toBeNull()
+      expect(ModalController.state.open).toBe(false)
+
+      vi.spyOn(ConnectionController.state, 'wcBasic', 'get').mockReturnValue(false)
+      vi.spyOn(ChainController.state, 'activeCaipAddress', 'get').mockReturnValue(undefined)
     })
 
     it('should add shake class when shaking', async () => {

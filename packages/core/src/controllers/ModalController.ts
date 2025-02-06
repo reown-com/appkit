@@ -4,6 +4,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
+import { ConnectionController } from './ConnectionController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
@@ -48,8 +49,12 @@ export const ModalController = {
   async open(options?: ModalControllerArguments['open']) {
     await ApiController.state.prefetchPromise
     const caipAddress = ChainController.state.activeCaipAddress
-
     const noAdapters = ChainController.state.noAdapters
+    const isAppKitBasic = ConnectionController.state.wcBasic
+
+    if (caipAddress && isAppKitBasic) {
+      return
+    }
 
     if (options?.view) {
       RouterController.reset(options.view)
@@ -64,6 +69,7 @@ export const ModalController = {
     } else {
       RouterController.reset('Connect')
     }
+    console.log('>>> caipAddress4', caipAddress, isAppKitBasic)
     state.open = true
     PublicStateController.set({ open: true })
     EventsController.sendEvent({

@@ -99,6 +99,7 @@ describe('ConnectionController', () => {
     )
 
     expect(ConnectionController.state).toEqual({
+      wcBasic: false,
       wcError: false,
       buffering: false,
       status: 'disconnected',
