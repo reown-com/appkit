@@ -93,7 +93,6 @@ export interface OpenOptions {
     | 'WhatIsANetwork'
     | 'AllWallets'
     | 'WalletSend'
-  uri?: string
   namespace?: ChainNamespace
 }
 
@@ -156,10 +155,13 @@ export abstract class AppKitCore {
     this.initializeOptionsController(options)
     this.initializeChainController(options)
     this.initializeThemeController(options)
-    this.initializeBlockchainApiController(options)
     this.initializeConnectionController(options)
 
-    if (options.excludeWalletIds) {
+    if (!options.basic) {
+      this.initializeBlockchainApiController(options)
+    }
+
+    if (options.excludeWalletIds && !options.basic) {
       ApiController.initializeExcludedWalletRdns({ ids: options.excludeWalletIds })
     }
   }
@@ -1273,7 +1275,7 @@ export abstract class AppKitCore {
       try {
         await this.createUniversalProvider()
       } catch (error) {
-        throw new Error('AppKit:getUniversalProvider - Cannot create provider')
+        return
       }
     }
 
@@ -1461,9 +1463,6 @@ export abstract class AppKitCore {
   // -- Public -------------------------------------------------------------------
   public async open(options?: OpenOptions) {
     await this.injectModalUi()
-    if (options?.uri && this.universalProvider) {
-      ConnectionController.setUri(options.uri)
-    }
 
     if (options?.namespace) {
       ConnectorController.setFilterByNamespace(options.namespace)

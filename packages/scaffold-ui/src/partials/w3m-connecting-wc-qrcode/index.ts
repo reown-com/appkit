@@ -39,10 +39,6 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
     window.removeEventListener('resize', this.forceUpdate)
   }
 
-  public override firstUpdated() {
-    ConnectionController.resetUri()
-  }
-
   // -- Render -------------------------------------------- //
   public override render() {
     this.onRenderProxy()

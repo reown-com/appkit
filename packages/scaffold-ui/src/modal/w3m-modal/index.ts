@@ -5,7 +5,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import { type CaipAddress, type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 import {
   ApiController,
-  AssetUtil,
   ChainController,
   CoreHelperUtil,
   ModalController,
@@ -67,8 +66,6 @@ export class W3mModal extends LitElement {
   }
 
   public override firstUpdated() {
-    AssetUtil.fetchNetworkImage(this.caipNetwork?.assets?.imageId)
-
     if (this.caipAddress) {
       if (this.enableEmbedded) {
         ModalController.close()
@@ -241,8 +238,6 @@ export class W3mModal extends LitElement {
   }
 
   private onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {
-    AssetUtil.fetchNetworkImage(nextCaipNetwork?.assets?.imageId)
-
     const prevCaipNetworkId = this.caipNetwork?.caipNetworkId?.toString()
     const nextNetworkId = nextCaipNetwork?.caipNetworkId?.toString()
     const networkChanged = prevCaipNetworkId && nextNetworkId && prevCaipNetworkId !== nextNetworkId

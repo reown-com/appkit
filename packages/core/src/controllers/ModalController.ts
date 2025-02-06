@@ -45,13 +45,11 @@ export const ModalController = {
   subscribeKey<K extends StateKey>(key: K, callback: (value: ModalControllerState[K]) => void) {
     return subKey(state, key, callback)
   },
-
   async open(options?: ModalControllerArguments['open']) {
-    /*
-     * We don't want to prefetch anything if the user is using basic since
-     * we're only going to fetch wallets if user lands on "AllWallets" view
-     */
-    if (!ConnectionController.state.wcBasic) {
+    if (ConnectionController.state.wcBasic) {
+      // No need to add an await here if we are use basic
+      ApiController.prefetch(true)
+    } else {
       await ApiController.prefetch()
     }
 
@@ -59,7 +57,7 @@ export const ModalController = {
 
     const noAdapters = ChainController.state.noAdapters
 
-    if (options?.view && !ConnectionController.state.wcBasic) {
+    if (options?.view) {
       RouterController.reset(options.view)
     } else if (caipAddress) {
       RouterController.reset('Account')
@@ -85,6 +83,15 @@ export const ModalController = {
     const isEmbeddedEnabled = OptionsController.state.enableEmbedded
     const connected = Boolean(ChainController.state.activeCaipAddress)
 
+    // Only send the event if the modal is open and is about to be closed
+    if (state.open) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'MODAL_CLOSE',
+        properties: { connected }
+      })
+    }
+
     state.open = false
 
     if (isEmbeddedEnabled) {
@@ -97,13 +104,8 @@ export const ModalController = {
       PublicStateController.set({ open: false })
     }
 
-    EventsController.sendEvent({
-      type: 'track',
-      event: 'MODAL_CLOSE',
-      properties: { connected }
-    })
-
     ConnectorController.clearNamespaceFilter()
+    ConnectionController.resetUri()
   },
 
   setLoading(loading: ModalControllerState['loading']) {

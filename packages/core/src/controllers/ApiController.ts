@@ -108,7 +108,7 @@ export const ApiController = {
     AssetController.setTokenImage(symbol, URL.createObjectURL(blob))
   },
 
-  async prefetchNetworkImages() {
+  async fetchNetworkImages() {
     const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
 
     const ids = requestedCaipNetworks
@@ -282,17 +282,20 @@ export const ApiController = {
     state.search = ApiController._filterOutExtensions(data)
   },
 
-  prefetch() {
+  prefetch(prefetchWalletImagesOnly = false) {
     if (state.prefetchPromise) {
       return state.prefetchPromise
     }
 
     const promises = [
-      ApiController.fetchFeaturedWallets(),
-      ApiController.fetchRecommendedWallets(),
       ApiController.fetchConnectorImages(),
-      ApiController.prefetchNetworkImages()
+      ApiController.fetchFeaturedWallets(),
+      ApiController.fetchRecommendedWallets()
     ]
+
+    if (!prefetchWalletImagesOnly) {
+      promises.push(ApiController.fetchNetworkImages())
+    }
 
     state.prefetchPromise = Promise.allSettled(promises)
 
