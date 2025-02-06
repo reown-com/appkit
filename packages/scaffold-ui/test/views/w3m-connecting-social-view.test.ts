@@ -79,7 +79,7 @@ describe('W3mConnectingSocialView - Embedded Modal Behavior', () => {
       ...ModalController.state,
       open: true
     })
-    vi.spyOn(AccountController, 'subscribe').mockImplementation(callback => {
+    vi.spyOn(AccountController, 'subscribe').mockImplementationOnce(callback => {
       subscriptionCallback = callback
       return () => {}
     })
@@ -101,20 +101,20 @@ describe('W3mConnectingSocialView - Embedded Modal Behavior', () => {
 
     let subscriptionCallback: ((val: any) => void) | undefined
 
-    vi.spyOn(ModalController, 'close').mockImplementation(() => {})
-    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+    vi.spyOn(ModalController, 'close').mockImplementationOnce(() => {})
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValueOnce({
       ...OptionsController.state,
       enableEmbedded: false
     })
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValueOnce({
       ...AccountController.state,
       socialWindow: mockSocialWindow
     })
-    vi.spyOn(ModalController, 'state', 'get').mockReturnValue({
+    vi.spyOn(ModalController, 'state', 'get').mockReturnValueOnce({
       ...ModalController.state,
       open: false
     })
-    vi.spyOn(AccountController, 'subscribe').mockImplementation(callback => {
+    vi.spyOn(AccountController, 'subscribe').mockImplementationOnce(callback => {
       subscriptionCallback = callback
       return () => {}
     })
