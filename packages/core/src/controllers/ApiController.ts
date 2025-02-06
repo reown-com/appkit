@@ -13,7 +13,6 @@ import type {
 } from '../utils/TypeUtil.js'
 import { AssetController } from './AssetController.js'
 import { ChainController } from './ChainController.js'
-import { ConnectionController } from './ConnectionController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
@@ -190,23 +189,12 @@ export const ApiController = {
 
   async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
-    const { wcBasic } = ConnectionController.state
 
-    let exclude: string[] = []
-    let include: string[] = []
-
-    if (wcBasic) {
-      include = [...(featuredWalletIds ?? [])]
-      exclude = [...(excludeWalletIds ?? []), ...state.recommended.map(({ id }) => id)]
-    } else {
-      include = [...(includeWalletIds ?? [])]
-      exclude = [
-        ...state.recommended.map(({ id }) => id),
-        ...(excludeWalletIds ?? []),
-        ...(featuredWalletIds ?? [])
-      ]
-    }
-
+    const exclude = [
+      ...state.recommended.map(({ id }) => id),
+      ...(excludeWalletIds ?? []),
+      ...(featuredWalletIds ?? [])
+    ].filter(Boolean)
     const { data, count } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       params: {
@@ -214,8 +202,8 @@ export const ApiController = {
         page: String(page),
         entries,
         chains: ChainController.state.activeCaipNetwork?.caipNetworkId,
-        include: include.filter(Boolean).join(','),
-        exclude: exclude.filter(Boolean).join(',')
+        include: includeWalletIds?.join(','),
+        exclude: exclude.join(',')
       }
     })
     const images = data

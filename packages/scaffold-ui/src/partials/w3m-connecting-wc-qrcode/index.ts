@@ -26,6 +26,7 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
   public constructor() {
     super()
     window.addEventListener('resize', this.forceUpdate)
+
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_WALLET',

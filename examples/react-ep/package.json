@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@reown/appkit": "workspace:*",
-    "@walletconnect/ethereum-provider": "link:/Users/magomedkhamidov/Desktop/walletconnect-monorepo/providers/ethereum-provider",
+    "@walletconnect/ethereum-provider": "2.18.0",
     "ethers": "6.13.2",
     "react": "18.3.1",
     "react-dom": "18.3.1"

@@ -131,7 +131,7 @@ export class UniversalAdapter extends AdapterBlueprint {
   }
 
   public parseUnits(): AdapterBlueprint.ParseUnitsResult {
-    return BigInt(0)
+    return 0n
   }
 
   public formatUnits(): AdapterBlueprint.FormatUnitsResult {

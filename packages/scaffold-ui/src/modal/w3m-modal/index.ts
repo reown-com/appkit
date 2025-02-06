@@ -269,7 +269,7 @@ export class W3mModal extends LitElement {
   }
 
   /*
-   * This is only called when enableEmbedded is true, as embedded
+   * This will only be called if enableEmbedded is true. Since embedded
    * mode doesn't set the modal open state to true to do prefetching
    */
   private prefetch() {

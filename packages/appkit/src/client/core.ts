@@ -471,10 +471,10 @@ export abstract class AppKitCore {
             caipNetwork
           })
 
-          return result?.gas || BigInt(0)
+          return result?.gas || 0n
         }
 
-        return BigInt(0)
+        return 0n
       },
       getEnsAvatar: async () => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
@@ -516,7 +516,7 @@ export abstract class AppKitCore {
       parseUnits: (value: string, decimals: number) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
-        return adapter?.parseUnits({ value, decimals }) ?? BigInt(0)
+        return adapter?.parseUnits({ value, decimals }) ?? 0n
       },
       formatUnits: (value: bigint, decimals: number) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
@@ -1275,7 +1275,7 @@ export abstract class AppKitCore {
       try {
         await this.createUniversalProvider()
       } catch (error) {
-        return
+        throw new Error('AppKit:getUniversalProvider - Cannot create provider')
       }
     }
 
