@@ -67,7 +67,7 @@ describe('W3mConnectingSocialView - Embedded Modal Behavior', () => {
     let subscriptionCallback: ((val: any) => void) | undefined
 
     vi.spyOn(ModalController, 'close').mockImplementation(() => {})
-    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValueOnce({
       ...OptionsController.state,
       enableEmbedded: true
     })
