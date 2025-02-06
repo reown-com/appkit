@@ -58,7 +58,6 @@ class W3mNetworkButtonBase extends LitElement {
           this.isSupported = val?.chainNamespace
             ? ChainController.checkIfSupportedNetwork(val.chainNamespace)
             : true
-
           AssetUtil.fetchNetworkImage(val?.assets?.imageId)
         }),
         ModalController.subscribeKey('loading', val => (this.loading = val))
