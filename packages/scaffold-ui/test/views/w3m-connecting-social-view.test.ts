@@ -29,17 +29,19 @@ describe('W3mConnectingSocialView - disconnectedCallback', () => {
       }
     } as unknown as AuthConnector
 
-    vi.spyOn(ConnectionController, 'connectExternal').mockImplementation(() => Promise.resolve())
-    vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue(mockAuthConnector)
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+    vi.spyOn(ConnectionController, 'connectExternal').mockImplementationOnce(() =>
+      Promise.resolve()
+    )
+    vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValueOnce(mockAuthConnector)
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValueOnce({
       ...AccountController.state,
       socialWindow: mockSocialWindow
     })
-    vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
+    vi.spyOn(RouterController, 'state', 'get').mockReturnValueOnce({
       ...RouterController.state,
       view: 'ConnectingSocial'
     })
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
       ...ChainController.state,
       activeChain: 'eip155'
     })
@@ -71,11 +73,11 @@ describe('W3mConnectingSocialView - Embedded Modal Behavior', () => {
       ...OptionsController.state,
       enableEmbedded: true
     })
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValueOnce({
       ...AccountController.state,
       socialWindow: mockSocialWindow
     })
-    vi.spyOn(ModalController, 'state', 'get').mockReturnValue({
+    vi.spyOn(ModalController, 'state', 'get').mockReturnValueOnce({
       ...ModalController.state,
       open: true
     })
