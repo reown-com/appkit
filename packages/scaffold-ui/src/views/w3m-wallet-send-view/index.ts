@@ -56,6 +56,7 @@ export class W3mWalletSendView extends LitElement {
           this.sendTokenAmount = val.sendTokenAmount
           this.receiverAddress = val.receiverAddress
           this.gasPriceInUSD = val.gasPriceInUSD
+          this.gasPrice = val.gasPrice
           this.receiverProfileName = val.receiverProfileName
           this.loading = val.loading
         })

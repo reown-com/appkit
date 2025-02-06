@@ -249,6 +249,7 @@ export const SendController = {
       })
       this.resetSend()
     } catch (error) {
+      console.warn('SendController:sendNativeToken - failed to send native transaction', error)
       EventsController.sendEvent({
         type: 'track',
         event: 'SEND_ERROR',
@@ -301,6 +302,18 @@ export const SendController = {
       }
     } catch (error) {
       console.warn('SendController:sendERC20Token - failed to send erc20 transaction', error)
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SEND_ERROR',
+        properties: {
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+          token: this.state.token?.symbol || '',
+          amount: params.sendTokenAmount,
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
+        }
+      })
       SnackController.showError('Something went wrong')
     }
   },
