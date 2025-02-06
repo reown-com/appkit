@@ -134,7 +134,10 @@ export class W3mHeader extends LitElement {
         this.onHistoryChange()
       }),
       ConnectionController.subscribeKey('buffering', val => (this.buffering = val)),
-      ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val))
+      ChainController.subscribeKey('activeCaipNetwork', val => {
+        this.network = val
+        this.networkImage = AssetUtil.getNetworkImage(this.network)
+      })
     )
   }
 

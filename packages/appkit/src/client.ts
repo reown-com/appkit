@@ -464,6 +464,9 @@ export class AppKit {
 
   public setUser: (typeof AccountController)['setUser'] = user => {
     AccountController.setUser(user)
+    if (OptionsController.state.enableEmbedded) {
+      ModalController.close()
+    }
   }
 
   public resetAccount: (typeof AccountController)['resetAccount'] = (chain: ChainNamespace) => {
