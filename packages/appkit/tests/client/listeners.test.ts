@@ -3,10 +3,14 @@ import { describe, expect, it, vi } from 'vitest'
 import { Emitter } from '@reown/appkit-common'
 import { AccountController, BlockchainApiController } from '@reown/appkit-core'
 
-import { AppKit } from '../../src/client'
-import { mainnet } from '../mocks/Networks'
-import { mockOptions } from '../mocks/Options'
-import { mockBlockchainApiController, mockStorageUtil, mockWindowAndDocument } from '../test-utils'
+import { AppKit } from '../../src/client/appkit.js'
+import { mainnet } from '../mocks/Networks.js'
+import { mockOptions } from '../mocks/Options.js'
+import {
+  mockBlockchainApiController,
+  mockStorageUtil,
+  mockWindowAndDocument
+} from '../test-utils.js'
 
 mockWindowAndDocument()
 mockStorageUtil()

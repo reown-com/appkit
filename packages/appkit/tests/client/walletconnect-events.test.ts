@@ -2,11 +2,15 @@ import { describe, expect, it, vi } from 'vitest'
 
 import { ChainController, ConnectionController } from '@reown/appkit-core'
 
-import { AppKit } from '../../src/client'
-import { mainnet, sepolia } from '../mocks/Networks'
-import { mockOptions } from '../mocks/Options'
-import { mockUniversalProvider } from '../mocks/Providers'
-import { mockBlockchainApiController, mockStorageUtil, mockWindowAndDocument } from '../test-utils'
+import { AppKit } from '../../src/client/appkit.js'
+import { mainnet, sepolia } from '../mocks/Networks.js'
+import { mockOptions } from '../mocks/Options.js'
+import { mockUniversalProvider } from '../mocks/Providers.js'
+import {
+  mockBlockchainApiController,
+  mockStorageUtil,
+  mockWindowAndDocument
+} from '../test-utils.js'
 
 mockWindowAndDocument()
 mockStorageUtil()

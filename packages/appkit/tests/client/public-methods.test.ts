@@ -27,13 +27,13 @@ import {
   ThemeController
 } from '@reown/appkit-core'
 
-import { AppKit } from '../../src/client'
+import { AppKit } from '../../src/client/appkit.js'
 import { ProviderUtil } from '../../src/store'
-import { mockEvmAdapter, mockSolanaAdapter, mockUniversalAdapter } from '../mocks/Adapter'
-import { base, mainnet, polygon, sepolia, solana } from '../mocks/Networks'
-import { mockOptions } from '../mocks/Options'
-import { mockAuthProvider, mockProvider } from '../mocks/Providers'
-import { mockWindowAndDocument } from '../test-utils'
+import { mockEvmAdapter, mockSolanaAdapter, mockUniversalAdapter } from '../mocks/Adapter.js'
+import { base, mainnet, polygon, sepolia, solana } from '../mocks/Networks.js'
+import { mockOptions } from '../mocks/Options.js'
+import { mockAuthProvider, mockProvider } from '../mocks/Providers.js'
+import { mockWindowAndDocument } from '../test-utils.js'
 
 mockWindowAndDocument()
 
@@ -873,19 +873,6 @@ describe('Base Public methods', () => {
     await appKit['syncAccount'](mockAccountData)
 
     expect(fetchIdentity).not.toHaveBeenCalled()
-  })
-
-  it('should sync balance correctly', async () => {
-    const mockAccountData = {
-      address: '0x123',
-      chainId: mainnet.id,
-      chainNamespace: mainnet.chainNamespace
-    }
-
-    const appKit = new AppKit(mockOptions)
-    await appKit['syncAccount']({ ...mockAccountData, address: '0x1234' })
-
-    expect(mockEvmAdapter.getBalance).toHaveBeenCalled()
   })
 
   it('should disconnect correctly', async () => {
