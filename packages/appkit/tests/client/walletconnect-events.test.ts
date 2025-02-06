@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ChainController, ConnectionController } from '@reown/appkit-core'
 
@@ -81,6 +81,34 @@ describe('WalletConnect Events', () => {
 
       displayUriCallback('mock_uri')
       expect(setUriSpy).toHaveBeenCalledWith('mock_uri')
+    })
+  })
+
+  describe('connect', () => {
+    beforeEach(() => {
+      vi.clearAllMocks()
+    })
+
+    it('should call finalizeWcConnection once connected', async () => {
+      vi.spyOn(ConnectionController, 'finalizeWcConnection')
+
+      new AppKit({
+        ...mockOptions,
+        adapters: [],
+        universalProvider: mockUniversalProvider as any
+      })
+
+      const connectCallback = mockUniversalProvider.on.mock.calls.find(
+        ([event]) => event === 'connect'
+      )?.[1]
+
+      if (!connectCallback) {
+        throw new Error('connect callback not found')
+      }
+
+      connectCallback()
+
+      expect(ConnectionController.finalizeWcConnection).toHaveBeenCalledOnce()
     })
   })
 })
