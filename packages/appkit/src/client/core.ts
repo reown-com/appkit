@@ -1467,7 +1467,7 @@ export abstract class AppKitCore {
       ConnectorController.setFilterByNamespace(options.namespace)
     }
 
-    ModalController.open(options)
+    await ModalController.open(options)
   }
 
   public async close() {

@@ -74,6 +74,7 @@ import {
   RpcSolanaSignTransactionRequest,
   RpcUnistallFilter,
   W3mFrameSchema,
+  WalletGetAssetsRequest,
   WalletGetCallsReceiptRequest,
   WalletGetCapabilitiesRequest,
   WalletGrantPermissionsRequest,
@@ -188,6 +189,7 @@ export namespace W3mFrameTypes {
     | z.infer<typeof WalletGetCapabilitiesRequest>
     | z.infer<typeof WalletGrantPermissionsRequest>
     | z.infer<typeof WalletRevokePermissionsRequest>
+    | z.infer<typeof WalletGetAssetsRequest>
 
   export type RPCResponse = z.infer<typeof RpcResponse>
 
