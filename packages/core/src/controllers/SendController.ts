@@ -300,6 +300,7 @@ export const SendController = {
         this.resetSend()
       }
     } catch (error) {
+      console.warn('SendController:sendERC20Token - failed to send erc20 transaction', error)
       SnackController.showError('Something went wrong')
     }
   },
