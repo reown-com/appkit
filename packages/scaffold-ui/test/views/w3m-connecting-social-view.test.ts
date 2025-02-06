@@ -29,19 +29,17 @@ describe('W3mConnectingSocialView - disconnectedCallback', () => {
       }
     } as unknown as AuthConnector
 
-    vi.spyOn(ConnectionController, 'connectExternal').mockImplementationOnce(() =>
-      Promise.resolve()
-    )
-    vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValueOnce(mockAuthConnector)
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValueOnce({
+    vi.spyOn(ConnectionController, 'connectExternal').mockImplementation(() => Promise.resolve())
+    vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue(mockAuthConnector)
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
       ...AccountController.state,
       socialWindow: mockSocialWindow
     })
-    vi.spyOn(RouterController, 'state', 'get').mockReturnValueOnce({
+    vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
       ...RouterController.state,
       view: 'ConnectingSocial'
     })
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValueOnce({
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
       activeChain: 'eip155'
     })
