@@ -110,13 +110,6 @@ export const ChainController = {
     })
   },
 
-  subscribeAccountStates(chain: ChainNamespace, callback: (value: AccountControllerState) => void) {
-    return sub(state.chains, () => {
-      const chainToFollow = chain || state.activeChain
-      callback(state.chains.get(chainToFollow)?.accountState)
-    })
-  },
-
   initialize(
     adapters: ChainAdapter[],
     caipNetworks: CaipNetwork[] | undefined,
@@ -256,12 +249,10 @@ export const ChainController = {
     const chainAdapter = state.chains.get(chain)
 
     if (chainAdapter) {
-      const newAccountState = { ...chainAdapter.accountState, ...accountProps }
-
+      const newAccountState = { ...(chainAdapter.accountState || accountState), ...accountProps }
       state.chains.set(chain, { ...chainAdapter, accountState: newAccountState })
       if (state.chains.size === 1 || state.activeChain === chain) {
         if (accountProps.caipAddress) {
-          console.log('>>> setting active caip address', accountProps.caipAddress)
           state.activeCaipAddress = accountProps.caipAddress
         }
         AccountController.replaceState(newAccountState)
