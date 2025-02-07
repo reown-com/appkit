@@ -174,12 +174,6 @@ export abstract class AppKitCore {
     }
   }
 
-  protected async initializeBlockchainApiController(options: AppKitOptions) {
-    await BlockchainApiController.getSupportedNetworks({
-      projectId: options.projectId
-    })
-  }
-
   protected initializeConnectionController(options: AppKitOptions) {
     ConnectionController.setWcBasic(options.basic ?? false)
   }

@@ -272,7 +272,6 @@ export class AppKit extends AppKitCore {
     this.initializeChainController(options)
     this.initializeThemeController(options)
     this.initializeConnectionController(options)
-    this.initializeBlockchainApiController(options)
 
     if (this.options.excludeWalletIds) {
       ApiController.initializeExcludedWalletRdns({ ids: this.options.excludeWalletIds })
