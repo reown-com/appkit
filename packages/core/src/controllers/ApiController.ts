@@ -37,6 +37,13 @@ export interface ApiControllerState {
   excludedRDNS: string[]
 }
 
+interface PrefetchParameters {
+  fetchConnectorImages?: boolean
+  fetchFeaturedWallets?: boolean
+  fetchRecommendedWallets?: boolean
+  fetchNetworkImages?: boolean
+}
+
 type StateKey = keyof ApiControllerState
 
 // -- State --------------------------------------------- //
@@ -270,20 +277,22 @@ export const ApiController = {
     state.search = ApiController._filterOutExtensions(data)
   },
 
-  prefetch(prefetchWalletImagesOnly = false) {
+  prefetch({
+    fetchConnectorImages = true,
+    fetchFeaturedWallets = true,
+    fetchRecommendedWallets = true,
+    fetchNetworkImages = true
+  }: PrefetchParameters = {}) {
     if (state.prefetchPromise) {
       return state.prefetchPromise
     }
 
     const promises = [
-      ApiController.fetchConnectorImages(),
-      ApiController.fetchFeaturedWallets(),
-      ApiController.fetchRecommendedWallets()
-    ]
-
-    if (!prefetchWalletImagesOnly) {
-      promises.push(ApiController.fetchNetworkImages())
-    }
+      fetchConnectorImages && ApiController.fetchConnectorImages(),
+      fetchFeaturedWallets && ApiController.fetchFeaturedWallets(),
+      fetchRecommendedWallets && ApiController.fetchRecommendedWallets(),
+      fetchNetworkImages && ApiController.fetchNetworkImages()
+    ].filter(Boolean)
 
     state.prefetchPromise = Promise.allSettled(promises)
 
