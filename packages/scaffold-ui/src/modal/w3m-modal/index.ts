@@ -5,7 +5,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import { type CaipAddress, type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 import {
   ApiController,
-  AssetUtil,
   ChainController,
   CoreHelperUtil,
   ModalController,
@@ -67,8 +66,6 @@ export class W3mModal extends LitElement {
   }
 
   public override firstUpdated() {
-    AssetUtil.fetchNetworkImage(this.caipNetwork?.assets?.imageId)
-
     if (this.caipAddress) {
       if (this.enableEmbedded) {
         ModalController.close()
@@ -164,7 +161,6 @@ export class W3mModal extends LitElement {
   }
 
   private onOpen() {
-    this.prefetch()
     this.open = true
     this.classList.add('open')
     this.onScrollLock()
@@ -242,8 +238,6 @@ export class W3mModal extends LitElement {
   }
 
   private onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {
-    AssetUtil.fetchNetworkImage(nextCaipNetwork?.assets?.imageId)
-
     const prevCaipNetworkId = this.caipNetwork?.caipNetworkId?.toString()
     const nextNetworkId = nextCaipNetwork?.caipNetworkId?.toString()
     const networkChanged = prevCaipNetworkId && nextNetworkId && prevCaipNetworkId !== nextNetworkId
@@ -274,6 +268,10 @@ export class W3mModal extends LitElement {
     this.caipNetwork = nextCaipNetwork
   }
 
+  /*
+   * This will only be called if enableEmbedded is true. Since embedded
+   * mode doesn't set the modal open state to true to do prefetching
+   */
   private prefetch() {
     if (!this.hasPrefetched) {
       this.hasPrefetched = true

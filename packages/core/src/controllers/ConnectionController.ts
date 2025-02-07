@@ -224,6 +224,11 @@ export const ConnectionController = {
     StorageUtil.deleteWalletConnectDeepLink()
   },
 
+  resetUri() {
+    state.wcUri = undefined
+    state.wcPairingExpiry = undefined
+  },
+
   finalizeWcConnection() {
     const { wcLinking, recentWallet } = ConnectionController.state
 

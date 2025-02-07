@@ -38,7 +38,6 @@ import type {
 import {
   AccountController,
   AlertController,
-  ApiController,
   AssetUtil,
   BlockchainApiController,
   ChainController,
@@ -157,10 +156,6 @@ export abstract class AppKitCore {
     this.initializeChainController(options)
     this.initializeThemeController(options)
     this.initializeConnectionController(options)
-
-    if (options.excludeWalletIds) {
-      ApiController.initializeExcludedWalletRdns({ ids: options.excludeWalletIds })
-    }
   }
 
   protected initializeThemeController(options: AppKitOptions) {
@@ -1454,7 +1449,8 @@ export abstract class AppKitCore {
   // -- Public -------------------------------------------------------------------
   public async open(options?: OpenOptions) {
     await this.injectModalUi()
-    if (options?.uri && this.universalProvider) {
+
+    if (options?.uri) {
       ConnectionController.setUri(options.uri)
     }
 

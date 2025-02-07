@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { type AppKitNetwork } from '@reown/appkit-common'
 import {
   AlertController,
+  ApiController,
   ChainController,
   EventsController,
   OptionsController
@@ -91,6 +92,31 @@ describe('Base', () => {
         eip155: 'eoa',
         bip122: 'ordinal'
       })
+    })
+
+    it('should initialize excluded wallet rdns', () => {
+      vi.spyOn(ApiController, 'initializeExcludedWalletRdns')
+
+      new AppKit({
+        ...mockOptions,
+        excludeWalletIds: ['eoa', 'ordinal']
+      })
+
+      expect(ApiController.initializeExcludedWalletRdns).toHaveBeenCalledWith({
+        ids: ['eoa', 'ordinal']
+      })
+    })
+
+    it('should not initialize excluded wallet rdns if basic is true', () => {
+      vi.spyOn(ApiController, 'initializeExcludedWalletRdns')
+
+      new AppKit({
+        ...mockOptions,
+        excludeWalletIds: ['eoa', 'ordinal'],
+        basic: true
+      })
+
+      expect(ApiController.initializeExcludedWalletRdns).not.toHaveBeenCalled()
     })
   })
 
