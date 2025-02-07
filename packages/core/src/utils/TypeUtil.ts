@@ -997,35 +997,10 @@ export type AdapterNetworkState = {
   smartAccountEnabledNetworks?: number[]
 }
 
-export type AdapterAccountState = {
-  currentTab: number
-  caipAddress?: CaipAddress
-  user?: User
-  address?: string
-  addressLabels: Map<string, string>
-  allAccounts: AccountType[]
-  balance?: string
-  balanceSymbol?: string
-  balanceLoading?: boolean
-  profileName?: string | null
-  profileImage?: string | null
-  addressExplorerUrl?: string
-  smartAccountDeployed?: boolean
-  socialProvider?: SocialProvider
-  tokenBalance?: Balance[]
-  shouldUpdateToAddress?: string
-  connectedWalletInfo?: ConnectedWalletInfo
-  preferredAccountType?: W3mFrameTypes.AccountType
-  socialWindow?: Window
-  farcasterUrl?: string
-  status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
-  lastRetry?: number
-}
-
 export type ChainAdapter = {
   connectionControllerClient?: ConnectionControllerClient
   networkControllerClient?: NetworkControllerClient
-  accountState?: AdapterAccountState
+  accountState?: AccountControllerState
   networkState?: AdapterNetworkState
   namespace?: ChainNamespace
   caipNetworks?: CaipNetwork[]

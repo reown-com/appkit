@@ -12,11 +12,11 @@ export default defineNuxtConfig({
   css: ['~/assets/main.css'],
   app: {
     head: {
-      title: 'AppKit Nuxt Wagmi Example',
+      title: 'AppKit Nuxt Wagmi-Solana-Bitcoin Example',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'AppKit Nuxt Wagmi Example' }
+        { name: 'description', content: 'AppKit Nuxt Wagmi-Solana-Bitcoin Example' }
       ],
       link: [
         {

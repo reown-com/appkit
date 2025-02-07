@@ -7,11 +7,7 @@ import { ChainController } from '../src/controllers/ChainController.js'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
-import type {
-  AccountType,
-  UseAppKitAccountReturn,
-  UseAppKitNetworkReturn
-} from '../src/utils/TypeUtil.js'
+import type { UseAppKitAccountReturn, UseAppKitNetworkReturn } from '../src/utils/TypeUtil.js'
 
 // -- Hooks ------------------------------------------------------------
 export function useAppKitNetworkCore(): Pick<
@@ -38,6 +34,7 @@ export function useAppKitAccount(options?: {
     : activeChainsState
 
   const {
+    user,
     allAccounts,
     caipAddress,
     status,
@@ -49,14 +46,14 @@ export function useAppKitAccount(options?: {
   const authConnector = ConnectorController.getAuthConnector()
 
   return {
-    allAccounts: allAccounts as AccountType[],
+    allAccounts,
     caipAddress,
     address: CoreHelperUtil.getPlainAddress(caipAddress),
     isConnected: Boolean(caipAddress),
     status,
     embeddedWalletInfo: authConnector
       ? {
-          user: {}, // fix
+          user,
           authProvider: socialProvider || 'email',
           accountType: preferredAccountType,
           isSmartAccountDeployed: Boolean(smartAccountDeployed)

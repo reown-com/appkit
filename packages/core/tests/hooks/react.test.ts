@@ -71,11 +71,11 @@ describe('useAppKitAccount', () => {
     const result = useAppKitAccount()
 
     expect(result).toEqual({
-      allAccounts: undefined,
+      allAccounts: [],
       address: mockPlainAddress,
       caipAddress: mockCaipAddress,
       isConnected: true,
-      status: 'connected',
+      status: undefined,
       embeddedWalletInfo: undefined
     })
 

@@ -61,8 +61,8 @@ export function useAppKitAccount(options?: {
   })
 
   const unsubscribeChains = ChainController.subscribe(val => {
-    const chains = val['chains']
-    updateState(chains, chainNamespace.value)
+    chains.value = val['chains']
+    updateState(chains.value, chainNamespace.value)
   })
 
   onMounted(() => {

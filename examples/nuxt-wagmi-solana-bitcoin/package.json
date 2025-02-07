@@ -1,5 +1,5 @@
 {
-  "name": "@examples/nuxt-wagmi",
+  "name": "@examples/nuxt-wagmi-solana-bitcoin",
   "private": true,
   "type": "module",
   "scripts": {

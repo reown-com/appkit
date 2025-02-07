@@ -14,7 +14,6 @@ import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
-  AdapterAccountState,
   AdapterNetworkState,
   ChainAdapter,
   NetworkControllerClient
@@ -401,7 +400,7 @@ export const ChainController = {
     return chainAdapter.connectionControllerClient
   },
 
-  getAccountProp<K extends keyof AdapterAccountState>(
+  getAccountProp<K extends keyof AccountControllerState>(
     key: K,
     _chain?: ChainNamespace
   ): AccountControllerState[K] | undefined {

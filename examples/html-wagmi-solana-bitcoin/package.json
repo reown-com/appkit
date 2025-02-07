@@ -1,5 +1,5 @@
 {
-  "name": "@examples/html-wagmi",
+  "name": "@examples/html-wagmi-solana-bitcoin",
   "private": true,
   "version": "1.2.0",
   "scripts": {

@@ -1,19 +1,49 @@
 import { proxy, ref } from 'valtio/vanilla'
 
-import type { ChainNamespace } from '@reown/appkit-common'
+import type { CaipAddress, ChainNamespace } from '@reown/appkit-common'
 import type { Balance } from '@reown/appkit-common'
+import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
-import type { AccountTypeMap, AdapterAccountState } from '../utils/TypeUtil.js'
+import type {
+  AccountType,
+  AccountTypeMap,
+  ConnectedWalletInfo,
+  SocialProvider,
+  User
+} from '../utils/TypeUtil.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
 import { SnackController } from './SnackController.js'
 import { SwapController } from './SwapController.js'
 
 // -- Types --------------------------------------------- //
-export interface AccountControllerState extends AdapterAccountState {}
+export interface AccountControllerState {
+  currentTab: number
+  caipAddress?: CaipAddress
+  user?: User
+  address?: string
+  addressLabels: Map<string, string>
+  allAccounts: AccountType[]
+  balance?: string
+  balanceSymbol?: string
+  balanceLoading?: boolean
+  profileName?: string | null
+  profileImage?: string | null
+  addressExplorerUrl?: string
+  smartAccountDeployed?: boolean
+  socialProvider?: SocialProvider
+  tokenBalance?: Balance[]
+  shouldUpdateToAddress?: string
+  connectedWalletInfo?: ConnectedWalletInfo
+  preferredAccountType?: W3mFrameTypes.AccountType
+  socialWindow?: Window
+  farcasterUrl?: string
+  status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
+  lastRetry?: number
+}
 
 // -- State --------------------------------------------- //
 const state = proxy<AccountControllerState>({
