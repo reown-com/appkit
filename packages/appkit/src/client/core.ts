@@ -1450,7 +1450,7 @@ export abstract class AppKitCore {
   public async open(options?: OpenOptions) {
     await this.injectModalUi()
 
-    if (options?.uri && this.universalProvider) {
+    if (options?.uri) {
       ConnectionController.setUri(options.uri)
     }
 
