@@ -45,6 +45,13 @@ export class AppKit extends AppKitCore {
   public adapter?: ChainAdapter
 
   // -- Overrides --------------------------------------------------------------
+  public override async open(options: OpenOptions) {
+    // Only open modal when not connected
+    if (!AccountController.state.caipAddress) {
+      await super.open(options)
+    }
+  }
+
   protected override async injectModalUi() {
     if (!isInitialized && CoreHelperUtil.isClient()) {
       await import('@reown/appkit-scaffold-ui/basic')
