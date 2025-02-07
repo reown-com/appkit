@@ -1,9 +1,16 @@
+import type { SignClient } from '@walletconnect/sign-client'
+
 import { type ChainNamespace } from '@reown/appkit-common'
 import type { ChainAdapter } from '@reown/appkit-core'
-import { AccountController, CoreHelperUtil, OptionsController } from '@reown/appkit-core'
+import {
+  AccountController,
+  ConnectionController,
+  CoreHelperUtil,
+  OptionsController
+} from '@reown/appkit-core'
 
 import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
-import { AppKitCore } from './core.js'
+import { AppKitCore, type AppKitOptionsWithSdk } from './core.js'
 
 declare global {
   interface Window {
@@ -31,6 +38,10 @@ export interface OpenOptions {
   uri?: string
 }
 
+export interface AppKitBasicOptions extends AppKitOptionsWithSdk {
+  signClient?: InstanceType<typeof SignClient>
+}
+
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
 
@@ -43,6 +54,22 @@ export class AppKit extends AppKitCore {
   public activeChainNamespace?: ChainNamespace
 
   public adapter?: ChainAdapter
+
+  public signClient?: InstanceType<typeof SignClient>
+
+  constructor(options: AppKitBasicOptions) {
+    super(options)
+    this.signClient = options.signClient
+    this.listenSignClient()
+  }
+
+  private listenSignClient() {
+    if (this.signClient) {
+      this.signClient.on('session_update', () => {
+        ConnectionController.finalizeWcConnection()
+      })
+    }
+  }
 
   // -- Overrides --------------------------------------------------------------
   public override async open(options: OpenOptions) {
