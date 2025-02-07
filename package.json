@@ -80,16 +80,16 @@
     },
     "overrides": {
       "@solana/web3.js": "1.95.8",
-      "@walletconnect/ethereum-provider": "2.18.0-canary-ak-3"
+      "@walletconnect/ethereum-provider": "2.18.0-canary-ak-6"
     }
   },
   "resolutions": {
     "@solana/web3.js": "1.95.8",
-    "@walletconnect/ethereum-provider": "2.18.0-canary-ak-3"
+    "@walletconnect/ethereum-provider": "2.18.0-canary-ak-6"
   },
   "overrides": {
     "@solana/web3.js": "1.95.8",
-    "@walletconnect/ethereum-provider": "2.18.0-canary-ak-3"
+    "@walletconnect/ethereum-provider": "2.18.0-canary-ak-6"
   },
   "@parcel/resolver-default": {
     "packageExports": true

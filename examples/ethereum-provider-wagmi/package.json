@@ -22,9 +22,9 @@
     "vite": "6.0.11"
   },
   "overrides": {
-    "@walletconnect/ethereum-provider": "2.18.0-canary-ak-3"
+    "@walletconnect/ethereum-provider": "2.18.0-canary-ak-6"
   },
   "resolutions": {
-    "@walletconnect/ethereum-provider": "2.18.0-canary-ak-3"
+    "@walletconnect/ethereum-provider": "2.18.0-canary-ak-6"
   }
 }
