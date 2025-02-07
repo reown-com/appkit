@@ -1,5 +1,5 @@
 import { Ethers5Adapter } from '@reown/appkit-adapter-ethers5'
-import { arbitrum, mainnet, optimism, polygon } from '@reown/appkit/networks'
+import { type AppKitNetwork, berachainTestnet } from '@reown/appkit/networks'
 import {
   createAppKit,
   useAppKit,
@@ -12,13 +12,9 @@ import {
   useWalletInfo
 } from '@reown/appkit/react'
 
-import ActionButtonList from './components/ActionButton'
-import Footer from './components/Footer'
-import InfoList from './components/InfoList'
+export const projectId = import.meta.env.VITE_PROJECT_ID
 
-export const projectId = import.meta.env.VITE_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694' // this is a public projectId only to use on localhost
-
-const networks = [mainnet, polygon, arbitrum, optimism]
+const networks = [berachainTestnet] as [AppKitNetwork, ...AppKitNetwork[]]
 
 // Setup solana adapter
 const ethers5Adapter = new Ethers5Adapter()
