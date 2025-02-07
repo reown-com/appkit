@@ -27,7 +27,6 @@ export function useAppKitAccount(options?: {
 }): UseAppKitAccountReturn {
   const state = useSnapshot(ChainController.state)
   const chainNamespace = options?.chainNamespace || state.activeChain
-  console.log('state', state, chainNamespace)
 
   if (!chainNamespace) {
     return {
