@@ -1097,6 +1097,48 @@ importers:
         specifier: latest
         version: 4.5.0(vue@3.5.13(typescript@5.3.3))
 
+  examples/nuxt-wagmi-solana-bitcoin:
+    dependencies:
+      '@reown/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
+      '@reown/appkit-adapter-bitcoin':
+        specifier: workspace:*
+        version: link:../../packages/adapters/bitcoin
+      '@reown/appkit-adapter-solana':
+        specifier: workspace:*
+        version: link:../../packages/adapters/solana
+      '@reown/appkit-adapter-wagmi':
+        specifier: workspace:*
+        version: link:../../packages/adapters/wagmi
+      '@tanstack/vue-query':
+        specifier: 5.59.16
+        version: 5.59.16(vue@3.5.13(typescript@5.3.3))
+      '@vue/devtools-api':
+        specifier: 7.6.8
+        version: 7.6.8
+      '@wagmi/core':
+        specifier: 2.16.3
+        version: 2.16.3(@tanstack/query-core@5.59.16)(@types/react@18.3.1)(react@18.3.1)(typescript@5.3.3)(use-sync-external-store@1.4.0(react@18.3.1))(viem@2.22.19(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8))
+      '@wagmi/vue':
+        specifier: 0.0.56
+        version: 0.0.56(@tanstack/query-core@5.59.16)(@tanstack/vue-query@5.59.16(vue@3.5.13(typescript@5.3.3)))(@types/react@18.3.1)(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(nuxt@3.14.1592(@parcel/watcher@2.5.1)(@types/node@20.11.5)(bufferutil@4.0.9)(db0@0.2.3)(eslint@8.56.0)(idb-keyval@6.2.1)(ioredis@5.4.2)(lightningcss@1.29.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.32.1)(terser@5.37.0)(typescript@5.3.3)(utf-8-validate@5.0.10)(vite@5.4.12(@types/node@20.11.5)(lightningcss@1.29.1)(terser@5.37.0))(vue-tsc@2.1.8(typescript@5.3.3)))(react-dom@18.3.1(react@18.3.1))(react-native@0.77.0(@babel/core@7.26.7)(@babel/preset-env@7.24.7(@babel/core@7.26.7))(@types/react@18.3.1)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(typescript@5.3.3)(use-sync-external-store@1.4.0(react@18.3.1))(utf-8-validate@5.0.10)(viem@2.22.19(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8))(vue@3.5.13(typescript@5.3.3))(zod@3.23.8)
+      '@walletconnect/logger':
+        specifier: 2.1.2
+        version: 2.1.2
+      nuxt:
+        specifier: 3.14.1592
+        version: 3.14.1592(@parcel/watcher@2.5.1)(@types/node@20.11.5)(bufferutil@4.0.9)(db0@0.2.3)(eslint@8.56.0)(idb-keyval@6.2.1)(ioredis@5.4.2)(lightningcss@1.29.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.32.1)(terser@5.37.0)(typescript@5.3.3)(utf-8-validate@5.0.10)(vite@5.4.12(@types/node@20.11.5)(lightningcss@1.29.1)(terser@5.37.0))(vue-tsc@2.1.8(typescript@5.3.3))
+      viem:
+        specifier: 2.22.19
+        version: 2.22.19(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+      vue:
+        specifier: 3.5.13
+        version: 3.5.13(typescript@5.3.3)
+      vue-router:
+        specifier: latest
+        version: 4.5.0(vue@3.5.13(typescript@5.3.3))
+
   examples/parcel:
     dependencies:
       '@reown/appkit':
@@ -29321,7 +29363,7 @@ snapshots:
 
   '@vue/devtools-core@7.6.8(vite@5.4.10(@types/node@20.11.5)(lightningcss@1.29.1)(terser@5.37.0))(vue@3.5.13(typescript@5.3.3))':
     dependencies:
-      '@vue/devtools-kit': 7.6.8
+      '@vue/devtools-kit': 7.7.1
       '@vue/devtools-shared': 7.7.1
       mitt: 3.0.1
       nanoid: 5.0.9
@@ -29334,7 +29376,7 @@ snapshots:
 
   '@vue/devtools-core@7.6.8(vite@5.4.12(@types/node@20.11.5)(lightningcss@1.29.1)(terser@5.37.0))(vue@3.5.13(typescript@5.3.3))':
     dependencies:
-      '@vue/devtools-kit': 7.6.8
+      '@vue/devtools-kit': 7.7.1
       '@vue/devtools-shared': 7.7.1
       mitt: 3.0.1
       nanoid: 5.0.9
