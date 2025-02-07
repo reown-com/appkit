@@ -256,7 +256,6 @@ export class W3mModal extends LitElement {
       networkChanged && !isUnsupportedNetwork && !isSwitchingNamespace
     // If user is on the unsupported network screen, we should go back when network has been changed
     const isUnsupportedNetworkScreen = RouterController.state.view === 'UnsupportedChain'
-    console.log('>>> isConnectingExternal', isConnectingExternal, isUnsupportedNetworkScreen)
 
     if (
       !isConnectingExternal &&
