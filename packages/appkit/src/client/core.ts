@@ -92,6 +92,7 @@ export interface OpenOptions {
     | 'WhatIsANetwork'
     | 'AllWallets'
     | 'WalletSend'
+  uri?: string
   namespace?: ChainNamespace
 }
 
@@ -1448,6 +1449,10 @@ export abstract class AppKitCore {
   // -- Public -------------------------------------------------------------------
   public async open(options?: OpenOptions) {
     await this.injectModalUi()
+
+    if (options?.uri && this.universalProvider) {
+      ConnectionController.setUri(options.uri)
+    }
 
     if (options?.namespace) {
       ConnectorController.setFilterByNamespace(options.namespace)
