@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { useSnapshot } from 'valtio'
 
 import type { ChainNamespace } from '@reown/appkit-common'
@@ -25,35 +27,41 @@ export function useAppKitNetworkCore(): Pick<
 export function useAppKitAccount(options?: {
   chainNamespace?: ChainNamespace
 }): UseAppKitAccountReturn {
-  const state = useSnapshot(ChainController.state)
-  const chainNamespace = options?.chainNamespace || state.activeChain
+  const [chain, setChain] = useState(options?.chainNamespace || ChainController.state.activeChain)
+  const [chainAdapterMap, setChainAdapterMap] = useState(ChainController.state.chains)
 
-  if (!chainNamespace) {
-    return {
-      allAccounts: [],
-      address: undefined,
-      caipAddress: undefined,
-      status: undefined,
-      isConnected: false,
-      embeddedWalletInfo: undefined
+  useEffect(() => {
+    const unsubscribeActiveChain = ChainController.subscribeKey('activeChain', val => {
+      setChain(options?.chainNamespace || val)
+    })
+
+    const unsubscribeChains = ChainController.subscribe(val => {
+      setChainAdapterMap(val['chains'])
+    })
+
+    return () => {
+      unsubscribeChains()
+      unsubscribeActiveChain()
     }
-  }
+  }, [])
 
-  const chainAccountState = state.chains.get(chainNamespace)?.accountState
-  const authConnector = ConnectorController.getAuthConnector(chainNamespace)
+  const authConnector = ConnectorController.getAuthConnector()
+  const accountState = chain ? chainAdapterMap.get(chain)?.accountState : undefined
+
+  console.log('>>> accountState')
 
   return {
-    allAccounts: chainAccountState?.allAccounts || [],
-    caipAddress: chainAccountState?.caipAddress,
-    address: CoreHelperUtil.getPlainAddress(chainAccountState?.caipAddress),
-    isConnected: Boolean(chainAccountState?.caipAddress),
-    status: chainAccountState?.status,
+    allAccounts: accountState?.allAccounts || [],
+    caipAddress: accountState?.caipAddress,
+    address: CoreHelperUtil.getPlainAddress(accountState?.caipAddress),
+    isConnected: Boolean(accountState?.caipAddress),
+    status: accountState?.status,
     embeddedWalletInfo: authConnector
       ? {
-          user: chainAccountState?.user,
-          authProvider: chainAccountState?.socialProvider || 'email',
-          accountType: chainAccountState?.preferredAccountType,
-          isSmartAccountDeployed: Boolean(chainAccountState?.smartAccountDeployed)
+          user: accountState?.user,
+          authProvider: accountState?.socialProvider || 'email',
+          accountType: accountState?.preferredAccountType,
+          isSmartAccountDeployed: Boolean(accountState?.smartAccountDeployed)
         }
       : undefined
   }
