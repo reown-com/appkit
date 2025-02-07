@@ -419,3 +419,17 @@ function checkWorkflows() {
   }
 }
 checkWorkflows()
+
+// - Check for keys in the codebase
+async function checkForKeys() {
+  const allFiles = [...updated_files, ...created_files]
+
+  for (const f of allFiles) {
+    const fileContent = await danger.github.utils.fileContents(f)
+
+    if (fileContent.toLowerCase().includes('key') || fileContent.toLowerCase().includes('secret')) {
+      warn(`File ${f} contains a KEY or SECRET`)
+    }
+  }
+}
+checkForKeys()
