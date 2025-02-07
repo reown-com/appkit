@@ -44,7 +44,8 @@ async function initialize() {
   signClient = await SignClient.init({ projectId: PROJECT_ID })
   modal = createAppKit({
     projectId: PROJECT_ID,
-    networks
+    networks,
+    manualWCControl: true
   })
 
   document.getElementById('toggle-theme')?.addEventListener('click', () => {
@@ -177,6 +178,7 @@ function clearState() {
 
 function setupEventListeners() {
   document.getElementById('connect')?.addEventListener('click', async () => {
+    setLoading(true)
     const { uri, approval } = await signClient.connect({
       optionalNamespaces: OPTIONAL_NAMESPACES
     })
@@ -188,7 +190,7 @@ function setupEventListeners() {
       network = session?.namespaces['eip155']?.chains?.[0]
       modal.close()
     }
-
+    setLoading(false)
     updateDom()
   })
 
@@ -287,6 +289,12 @@ async function signMessage() {
       description: error.message
     })
   }
+}
+
+function setLoading(loading) {
+  const connect = document.getElementById('connect')
+  connect.textContent = loading ? 'Connecting...' : 'Connect'
+  connect.disabled = loading
 }
 
 // Initialize the application
