@@ -76,7 +76,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             <ContextProvider>{children}</ContextProvider>
           </AppKitProvider>
         </ThemeProvider>
-        <GoogleTagManager gtmId="G-X4S1RDVEGE" />
+        <GoogleTagManager gtmId="G-38H3M597C1" />
       </body>
     </html>
   )
