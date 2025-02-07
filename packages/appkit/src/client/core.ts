@@ -150,6 +150,13 @@ export abstract class AppKitCore {
   }
 
   // -- Controllers initialization ---------------------------------------------------
+  protected initControllers(options: AppKitOptionsWithSdk) {
+    this.initializeOptionsController(options)
+    this.initializeChainController(options)
+    this.initializeThemeController(options)
+    this.initializeConnectionController(options)
+  }
+
   protected initializeThemeController(options: AppKitOptions) {
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode)
@@ -731,13 +738,6 @@ export abstract class AppKitCore {
     if (this.universalProvider) {
       this.chainAdapters?.[chainNamespace]?.setUniversalProvider?.(this.universalProvider)
     }
-  }
-
-  protected initControllers(options: AppKitOptionsWithSdk) {
-    this.initializeOptionsController(options)
-    this.initializeChainController(options)
-    this.initializeThemeController(options)
-    this.initializeConnectionController(options)
   }
 
   // -- UI Initialization ---------------------------------------------------
