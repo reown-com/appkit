@@ -1,8 +1,13 @@
 import { vi } from 'vitest'
 
-import { BlockchainApiController, StorageUtil } from '@reown/appkit-core'
+import {
+  BlockchainApiController,
+  ChainController,
+  type ChainControllerState,
+  StorageUtil
+} from '@reown/appkit-core'
 
-import { mainnet } from './mocks/Networks.js'
+import { mainnet, unsupportedNetwork } from './mocks/Networks.js'
 
 // Common mock for window and document objects used across tests
 export function mockWindowAndDocument() {
@@ -30,4 +35,12 @@ export function mockStorageUtil() {
     caipNetworkId: mainnet.caipNetworkId,
     chainId: mainnet.id
   })
+}
+
+export function mockChainControllerStateWithUnsupportedChain() {
+  vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+    ...ChainController.state,
+    activeChain: mainnet.chainNamespace,
+    activeCaipNetwork: unsupportedNetwork
+  } as unknown as ChainControllerState)
 }

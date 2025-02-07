@@ -1,5 +1,19 @@
 # @reown/appkit-cdn
 
+## 1.6.7
+
+### Patch Changes
+
+- [#3820](https://github.com/reown-com/appkit/pull/3820) [`cc8efe9`](https://github.com/reown-com/appkit/commit/cc8efe967fa449b83e899afc23483effcc8adaf6) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fixes an issue where the modal doesn't recognize a difference between modal and wallet active network which causes issues when doing wallet actions"
+
+- Updated dependencies [[`cc8efe9`](https://github.com/reown-com/appkit/commit/cc8efe967fa449b83e899afc23483effcc8adaf6)]:
+  - @reown/appkit-adapter-ethers@1.6.7
+  - @reown/appkit-adapter-ethers5@1.6.7
+  - @reown/appkit-adapter-solana@1.6.7
+  - @reown/appkit-adapter-wagmi@1.6.7
+  - @reown/appkit@1.6.7
+  - @reown/appkit-polyfills@1.6.7
+
 ## 1.6.6
 
 ### Patch Changes
