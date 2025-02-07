@@ -6,7 +6,7 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'AppKit Next.js Wagmi and Solana',
-  description: 'AppKit Next.js App Router with Wagmi and Solana Adapters',
+  description: 'AppKit Next.js with Wagmi, Solana, and Bitcoin Adapters',
   creator: 'reown, inc.',
   keywords: [
     'appkit',
