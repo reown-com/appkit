@@ -301,11 +301,11 @@ export class AppKit {
 
   public subscribeAccount(
     callback: (newState: UseAppKitAccountReturn) => void,
-    chainNamespace?: ChainNamespace
+    namespace?: ChainNamespace
   ) {
     function updateVal() {
-      const authConnector = ConnectorController.getAuthConnector(chainNamespace)
-      const accountState = ChainController.getAccountDataByChainNamespace(chainNamespace)
+      const authConnector = ConnectorController.getAuthConnector(namespace)
+      const accountState = ChainController.getAccountDataByChainNamespace(namespace)
 
       if (!accountState) {
         return
@@ -328,8 +328,8 @@ export class AppKit {
       })
     }
 
-    if (chainNamespace) {
-      ChainController.subscribeChainProp('accountState', updateVal, chainNamespace)
+    if (namespace) {
+      ChainController.subscribeChainProp('accountState', updateVal, namespace)
     } else {
       ChainController.subscribe(updateVal)
     }

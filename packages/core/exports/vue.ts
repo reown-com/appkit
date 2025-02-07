@@ -16,9 +16,9 @@ import type {
 
 // -- Hooks ------------------------------------------------------------
 export function useAppKitAccount(options?: {
-  chainNamespace?: ChainNamespace
+  namespace?: ChainNamespace
 }): Ref<UseAppKitAccountReturn> {
-  const chainNamespace = ref(options?.chainNamespace || ChainController.state.activeChain)
+  const chainNamespace = ref(options?.namespace || ChainController.state.activeChain)
   const chains = ref(ChainController.state.chains)
   const state = ref({
     allAccounts: [] as AccountType[],
@@ -56,7 +56,7 @@ export function useAppKitAccount(options?: {
   }
 
   const unsubscribeActiveChain = ChainController.subscribeKey('activeChain', val => {
-    chainNamespace.value = options?.chainNamespace || val
+    chainNamespace.value = options?.namespace || val
     updateState(chains.value, chainNamespace.value)
   })
 

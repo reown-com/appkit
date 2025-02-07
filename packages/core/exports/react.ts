@@ -22,11 +22,9 @@ export function useAppKitNetworkCore(): Pick<
   }
 }
 
-export function useAppKitAccount(options?: {
-  chainNamespace?: ChainNamespace
-}): UseAppKitAccountReturn {
+export function useAppKitAccount(options?: { namespace?: ChainNamespace }): UseAppKitAccountReturn {
   const state = useSnapshot(ChainController.state)
-  const chainNamespace = options?.chainNamespace || state.activeChain
+  const chainNamespace = options?.namespace || state.activeChain
 
   if (!chainNamespace) {
     return {

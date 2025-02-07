@@ -4,7 +4,13 @@ import { useTheme } from 'next-themes'
 
 import { mainnet } from '@reown/appkit/networks'
 
-import { useAppKit, useAppKitNetwork, useAppKitTheme, useDisconnect } from '@/config'
+import {
+  useAppKit,
+  useAppKitAccount,
+  useAppKitNetwork,
+  useAppKitTheme,
+  useDisconnect
+} from '@/config'
 
 export function ActionButtonList() {
   const modal = useAppKit()
@@ -12,6 +18,10 @@ export function ActionButtonList() {
   const { switchNetwork } = useAppKitNetwork()
   const { themeMode, setThemeMode } = useAppKitTheme()
   const { setTheme } = useTheme()
+
+  const eip155AccountState = useAppKitAccount({ namespace: 'eip155' })
+  const solanaAccountState = useAppKitAccount({ namespace: 'solana' })
+  const bip122AccountState = useAppKitAccount({ namespace: 'bip122' })
 
   function openAppKit() {
     modal.open()
@@ -23,6 +33,10 @@ export function ActionButtonList() {
 
   function connectToSolana() {
     modal.open({ view: 'Connect', namespace: 'solana' })
+  }
+
+  function connectToBitcoin() {
+    modal.open({ view: 'Connect', namespace: 'bip122' })
   }
 
   function connectToEthereum() {
@@ -48,8 +62,15 @@ export function ActionButtonList() {
       <button onClick={openAppKit}>Open</button>
       <button onClick={handleDisconnect}>Disconnect</button>
       <button onClick={switchToNetwork}>Switch to Ethereum</button>
-      <button onClick={connectToSolana}>Connect to Solana</button>
-      <button onClick={connectToEthereum}>Connect to Ethereum</button>
+      {eip155AccountState.address ? null : (
+        <button onClick={connectToEthereum}>Connect to Ethereum</button>
+      )}
+      {solanaAccountState.address ? null : (
+        <button onClick={connectToSolana}>Connect to Solana</button>
+      )}
+      {bip122AccountState.address ? null : (
+        <button onClick={connectToBitcoin}>Connect to Bitcoin</button>
+      )}
       <button onClick={toggleTheme}>
         {themeMode === 'light' ? (
           <svg

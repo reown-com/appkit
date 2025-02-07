@@ -11,9 +11,9 @@ import {
 
 export function InfoList() {
   const accountState = useAppKitAccount()
-  const eip155AccountState = useAppKitAccount({ chainNamespace: 'eip155' })
-  const solanaAccountState = useAppKitAccount({ chainNamespace: 'solana' })
-  const bip122AccountState = useAppKitAccount({ chainNamespace: 'bip122' })
+  const eip155AccountState = useAppKitAccount({ namespace: 'eip155' })
+  const solanaAccountState = useAppKitAccount({ namespace: 'solana' })
+  const bip122AccountState = useAppKitAccount({ namespace: 'bip122' })
   const networkState = useAppKitNetwork()
   const themeState = useAppKitTheme()
   const appKitState = useAppKitState()
