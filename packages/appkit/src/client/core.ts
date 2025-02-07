@@ -1191,7 +1191,7 @@ export abstract class AppKitCore {
       logger
     }
 
-    OptionsController.setUsingInjectedUniversalProvider(Boolean(this.options?.universalProvider))
+    OptionsController.setManualWCControl(Boolean(this.options?.manualWCControl))
     this.universalProvider =
       this.options.universalProvider ?? (await UniversalProvider.init(universalProviderOptions))
     this.listenWalletConnect()

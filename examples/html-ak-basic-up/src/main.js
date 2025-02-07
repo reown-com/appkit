@@ -88,7 +88,8 @@ async function initializeApp() {
   modal = createAppKit({
     projectId,
     networks,
-    universalProvider: provider
+    universalProvider: provider,
+    manualWCControl: true
   })
 
   // Event listeners
@@ -115,8 +116,10 @@ async function initializeApp() {
 
   // Button handlers
   document.getElementById('connect')?.addEventListener('click', async () => {
+    setLoading(true)
     await provider.connect({ optionalNamespaces: OPTIONAL_NAMESPACES })
     updateDom()
+    setLoading(false)
   })
 
   document.getElementById('disconnect')?.addEventListener('click', async () => {
@@ -253,6 +256,12 @@ async function signMessage() {
       description: error.message
     })
   }
+}
+
+function setLoading(isLoading) {
+  const connect = document.getElementById('connect')
+  connect.textContent = isLoading ? 'Connecting...' : 'Connect'
+  connect.disabled = isLoading
 }
 
 initializeApp()

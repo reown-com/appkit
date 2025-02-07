@@ -44,7 +44,8 @@ async function initialize() {
   signClient = await SignClient.init({ projectId: PROJECT_ID })
   modal = createAppKit({
     projectId: PROJECT_ID,
-    networks
+    networks,
+    manualWCControl: true
   })
 
   document.getElementById('toggle-theme')?.addEventListener('click', () => {
