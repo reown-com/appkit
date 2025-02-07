@@ -508,9 +508,6 @@ export const ChainController = {
       return true
     }
 
-    console.log('requestedCaipNetworks', requestedCaipNetworks)
-    console.log('activeCaipNetwork', activeCaipNetwork)
-
     return requestedCaipNetworks?.some(network => network.id === activeCaipNetwork?.id)
   },
 
