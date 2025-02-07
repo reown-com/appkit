@@ -323,12 +323,13 @@ export const ChainController = {
       activeChain: state.activeChain,
       selectedNetworkId: state.activeCaipNetwork?.caipNetworkId
     })
-    StorageUtil.setActiveCaipNetworkId(caipNetwork.caipNetworkId)
 
     const isSupported = this.checkIfSupportedNetwork(caipNetwork.chainNamespace)
 
     if (!isSupported && !OptionsController.state.allowUnsupportedChain) {
-      this.showUnsupportedChainUI()
+      this.showUnsupportedChainUI(caipNetwork.caipNetworkId)
+    } else {
+      StorageUtil.setActiveCaipNetworkId(caipNetwork.caipNetworkId)
     }
   },
 
@@ -507,6 +508,9 @@ export const ChainController = {
       return true
     }
 
+    console.log('requestedCaipNetworks', requestedCaipNetworks)
+    console.log('activeCaipNetwork', activeCaipNetwork)
+
     return requestedCaipNetworks?.some(network => network.id === activeCaipNetwork?.id)
   },
 
@@ -549,7 +553,10 @@ export const ChainController = {
     return `${namespace}:${chainId}:${address}`
   },
 
-  showUnsupportedChainUI() {
+  showUnsupportedChainUI(caipNetworkId?: CaipNetworkId) {
+    if (caipNetworkId) {
+      StorageUtil.setActiveCaipNetworkId(caipNetworkId)
+    }
     ModalController.open({ view: 'UnsupportedChain' })
   },
 

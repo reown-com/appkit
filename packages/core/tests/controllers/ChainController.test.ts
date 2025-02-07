@@ -14,6 +14,7 @@ import { ChainController } from '../../src/controllers/ChainController.js'
 import { type ConnectionControllerClient } from '../../src/controllers/ConnectionController.js'
 import { ConnectionController } from '../../src/controllers/ConnectionController.js'
 import { EventsController } from '../../src/controllers/EventsController.js'
+import { ModalController } from '../../src/controllers/ModalController.js'
 import { RouterController } from '../../src/controllers/RouterController.js'
 import { StorageUtil } from '../../src/utils/StorageUtil.js'
 
@@ -465,5 +466,19 @@ describe('ChainController', () => {
 
     sendEventSpy.mockRestore()
     consoleSpy.mockRestore()
+  })
+
+  it('should show unsupported chain UI and save caipNetworkId', () => {
+    const setActiveCaipNetworkIdSpy = vi.spyOn(StorageUtil, 'setActiveCaipNetworkId')
+    const modalOpenSpy = vi.spyOn(ModalController, 'open')
+
+    const unsupportedCaipNetworkId = 'eip155:99999'
+    ChainController.showUnsupportedChainUI(unsupportedCaipNetworkId)
+
+    expect(setActiveCaipNetworkIdSpy).toHaveBeenCalledWith(unsupportedCaipNetworkId)
+    expect(modalOpenSpy).toHaveBeenCalledWith({ view: 'UnsupportedChain' })
+
+    setActiveCaipNetworkIdSpy.mockRestore()
+    modalOpenSpy.mockRestore()
   })
 })
