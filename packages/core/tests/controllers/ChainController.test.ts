@@ -467,18 +467,4 @@ describe('ChainController', () => {
     sendEventSpy.mockRestore()
     consoleSpy.mockRestore()
   })
-
-  it('should show unsupported chain UI and save caipNetworkId', () => {
-    const setActiveCaipNetworkIdSpy = vi.spyOn(StorageUtil, 'setActiveCaipNetworkId')
-    const modalOpenSpy = vi.spyOn(ModalController, 'open')
-
-    const unsupportedCaipNetworkId = 'eip155:99999'
-    ChainController.showUnsupportedChainUI(unsupportedCaipNetworkId)
-
-    expect(setActiveCaipNetworkIdSpy).toHaveBeenCalledWith(unsupportedCaipNetworkId)
-    expect(modalOpenSpy).toHaveBeenCalledWith({ view: 'UnsupportedChain' })
-
-    setActiveCaipNetworkIdSpy.mockRestore()
-    modalOpenSpy.mockRestore()
-  })
 })
