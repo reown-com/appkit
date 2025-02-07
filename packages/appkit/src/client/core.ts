@@ -156,7 +156,6 @@ export abstract class AppKitCore {
     this.initializeOptionsController(options)
     this.initializeChainController(options)
     this.initializeThemeController(options)
-    this.initializeBlockchainApiController(options)
     this.initializeConnectionController(options)
 
     if (options.excludeWalletIds) {
@@ -186,12 +185,6 @@ export abstract class AppKitCore {
     if (network) {
       ChainController.setActiveCaipNetwork(network)
     }
-  }
-
-  protected async initializeBlockchainApiController(options: AppKitOptions) {
-    await BlockchainApiController.getSupportedNetworks({
-      projectId: options.projectId
-    })
   }
 
   protected initializeConnectionController(options: AppKitOptions) {
