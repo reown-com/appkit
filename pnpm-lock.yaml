@@ -674,6 +674,28 @@ importers:
         specifier: 5.4.12
         version: 5.4.12(@types/node@20.11.5)(lightningcss@1.29.1)(terser@5.37.0)
 
+  examples/html-wagmi-solana-bitcoin:
+    dependencies:
+      '@reown/appkit':
+        specifier: workspace:*
+        version: link:../../packages/appkit
+      '@reown/appkit-adapter-bitcoin':
+        specifier: workspace:*
+        version: link:../../packages/adapters/bitcoin
+      '@reown/appkit-adapter-solana':
+        specifier: workspace:*
+        version: link:../../packages/adapters/solana
+      '@reown/appkit-adapter-wagmi':
+        specifier: workspace:*
+        version: link:../../packages/adapters/wagmi
+      ethers:
+        specifier: 6.13.2
+        version: 6.13.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)
+    devDependencies:
+      vite:
+        specifier: 5.4.12
+        version: 5.4.12(@types/node@20.11.5)(lightningcss@1.29.1)(terser@5.37.0)
+
   examples/html-wagmi-wallet-button:
     dependencies:
       '@reown/appkit':
@@ -986,6 +1008,9 @@ importers:
       '@reown/appkit':
         specifier: workspace:*
         version: link:../../packages/appkit
+      '@reown/appkit-adapter-bitcoin':
+        specifier: workspace:*
+        version: link:../../packages/adapters/bitcoin
       '@reown/appkit-adapter-solana':
         specifier: workspace:*
         version: link:../../packages/adapters/solana

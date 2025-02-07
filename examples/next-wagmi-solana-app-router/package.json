@@ -13,6 +13,7 @@
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@reown/appkit-adapter-solana": "workspace:*",
+    "@reown/appkit-adapter-bitcoin": "workspace:*",
     "@wagmi/core": "2.16.3",
     "next": "14.2.21",
     "next-themes": "0.4.3",
