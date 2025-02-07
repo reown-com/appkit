@@ -34,7 +34,8 @@ const accountState: AccountControllerState = {
   tokenBalance: [],
   smartAccountDeployed: false,
   addressLabels: new Map(),
-  allAccounts: []
+  allAccounts: [],
+  user: undefined
 }
 
 const networkState: AdapterNetworkState = {
@@ -674,5 +675,17 @@ export const ChainController = {
     }
 
     return undefined
+  },
+
+  getAccountDataByChainNamespace(chainNamespace?: ChainNamespace) {
+    if (!chainNamespace) {
+      if (!ChainController.state.activeChain) {
+        return undefined
+      }
+
+      return ChainController.state.chains.get(ChainController.state.activeChain)?.accountState
+    }
+
+    return ChainController.state.chains.get(chainNamespace)?.accountState
   }
 }

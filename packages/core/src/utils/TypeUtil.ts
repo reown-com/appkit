@@ -1000,11 +1000,13 @@ export type AdapterNetworkState = {
 export type AdapterAccountState = {
   currentTab: number
   caipAddress?: CaipAddress
+  user?: User
   address?: string
   addressLabels: Map<string, string>
   allAccounts: AccountType[]
   balance?: string
   balanceSymbol?: string
+  balanceLoading?: boolean
   profileName?: string | null
   profileImage?: string | null
   addressExplorerUrl?: string
@@ -1017,6 +1019,7 @@ export type AdapterAccountState = {
   socialWindow?: Window
   farcasterUrl?: string
   status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
+  lastRetry?: number
 }
 
 export type ChainAdapter = {

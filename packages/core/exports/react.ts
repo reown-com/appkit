@@ -1,5 +1,7 @@
 import { useSnapshot } from 'valtio'
 
+import type { ChainNamespace } from '@reown/appkit-common'
+
 import { AccountController } from '../src/controllers/AccountController.js'
 import { ChainController } from '../src/controllers/ChainController.js'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
@@ -25,23 +27,36 @@ export function useAppKitNetworkCore(): Pick<
   }
 }
 
-export function useAppKitAccount(): UseAppKitAccountReturn {
-  const { status, user, preferredAccountType, smartAccountDeployed, allAccounts, socialProvider } =
-    useSnapshot(AccountController.state)
+export function useAppKitAccount(options?: {
+  chainNamespace?: ChainNamespace
+}): UseAppKitAccountReturn {
+  const state = useSnapshot(ChainController.state)
+  const chainNamespace = options?.chainNamespace || state.activeChain
+  const activeChainsState = AccountController.state
+  const chainAccountState = chainNamespace
+    ? state.chains.get(chainNamespace)?.accountState || activeChainsState
+    : activeChainsState
 
-  const { activeCaipAddress } = useSnapshot(ChainController.state)
+  const {
+    allAccounts,
+    caipAddress,
+    status,
+    preferredAccountType,
+    smartAccountDeployed,
+    socialProvider
+  } = chainAccountState
 
   const authConnector = ConnectorController.getAuthConnector()
 
   return {
     allAccounts: allAccounts as AccountType[],
-    caipAddress: activeCaipAddress,
-    address: CoreHelperUtil.getPlainAddress(activeCaipAddress),
-    isConnected: Boolean(activeCaipAddress),
+    caipAddress,
+    address: CoreHelperUtil.getPlainAddress(caipAddress),
+    isConnected: Boolean(caipAddress),
     status,
     embeddedWalletInfo: authConnector
       ? {
-          user,
+          user: {}, // fix
           authProvider: socialProvider || 'email',
           accountType: preferredAccountType,
           isSmartAccountDeployed: Boolean(smartAccountDeployed)
