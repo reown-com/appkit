@@ -3,7 +3,7 @@ import type { ChainAdapter } from '@reown/appkit-core'
 import { AccountController, CoreHelperUtil, OptionsController } from '@reown/appkit-core'
 
 import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
-import { AppKitCore, type AppKitOptionsWithSdk } from './core.js'
+import { AppKitCore } from './core.js'
 
 declare global {
   interface Window {
@@ -43,14 +43,6 @@ export class AppKit extends AppKitCore {
   public activeChainNamespace?: ChainNamespace
 
   public adapter?: ChainAdapter
-
-  // -- Overrides --------------------------------------------------------------
-  protected override initControllers(options: AppKitOptionsWithSdk) {
-    this.initializeOptionsController(options)
-    this.initializeChainController(options)
-    this.initializeThemeController(options)
-    this.initializeConnectionController(options)
-  }
 
   protected override async injectModalUi() {
     if (!isInitialized && CoreHelperUtil.isClient()) {

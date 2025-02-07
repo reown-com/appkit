@@ -733,8 +733,12 @@ export abstract class AppKitCore {
     }
   }
 
-  // -- Controllers Initialization ---------------------------------------------------
-  protected abstract initControllers(options: AppKitOptionsWithSdk): void
+  protected initControllers(options: AppKitOptionsWithSdk) {
+    this.initializeOptionsController(options)
+    this.initializeChainController(options)
+    this.initializeThemeController(options)
+    this.initializeConnectionController(options)
+  }
 
   // -- UI Initialization ---------------------------------------------------
   protected abstract injectModalUi(): Promise<void>

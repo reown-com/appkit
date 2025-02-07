@@ -268,10 +268,7 @@ export class AppKit extends AppKitCore {
 
   // -- Overrides ----------------------------------------------------------------
   protected override initControllers(options: AppKitOptionsWithSdk) {
-    this.initializeOptionsController(options)
-    this.initializeChainController(options)
-    this.initializeThemeController(options)
-    this.initializeConnectionController(options)
+    super.initControllers(options)
 
     if (this.options.excludeWalletIds) {
       ApiController.initializeExcludedWalletRdns({ ids: this.options.excludeWalletIds })
