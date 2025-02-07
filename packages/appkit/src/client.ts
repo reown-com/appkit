@@ -1663,7 +1663,15 @@ export class AppKit {
       const network = caipNetwork || fallbackCaipNetwork
 
       if (network?.chainNamespace === ChainController.state.activeChain) {
-        this.setCaipNetwork(network)
+        // If the network is unsupported and the user doesn't allow unsupported chains, we show the unsupported chain UI
+        if (
+          !OptionsController.state.allowUnsupportedChain &&
+          ChainController.state.activeCaipNetwork?.name === ConstantsUtil.UNSUPPORTED_NETWORK_NAME
+        ) {
+          ChainController.showUnsupportedChainUI()
+        } else {
+          this.setCaipNetwork(network)
+        }
       }
       this.syncConnectedWalletInfo(chainNamespace)
 
