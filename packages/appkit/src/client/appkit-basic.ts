@@ -44,6 +44,7 @@ export class AppKit extends AppKitCore {
 
   public adapter?: ChainAdapter
 
+  // -- Overrides --------------------------------------------------------------
   protected override async injectModalUi() {
     if (!isInitialized && CoreHelperUtil.isClient()) {
       await import('@reown/appkit-scaffold-ui/basic')
