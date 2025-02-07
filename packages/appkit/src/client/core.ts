@@ -38,7 +38,6 @@ import type {
 import {
   AccountController,
   AlertController,
-  ApiController,
   AssetUtil,
   BlockchainApiController,
   ChainController,
@@ -151,21 +150,6 @@ export abstract class AppKitCore {
   }
 
   // -- Controllers initialization ---------------------------------------------------
-  protected initControllers(options: AppKitOptionsWithSdk) {
-    this.initializeOptionsController(options)
-    this.initializeChainController(options)
-    this.initializeThemeController(options)
-    this.initializeConnectionController(options)
-
-    if (!options.basic) {
-      this.initializeBlockchainApiController(options)
-    }
-
-    if (options.excludeWalletIds && !options.basic) {
-      ApiController.initializeExcludedWalletRdns({ ids: options.excludeWalletIds })
-    }
-  }
-
   protected initializeThemeController(options: AppKitOptions) {
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode)
@@ -754,6 +738,9 @@ export abstract class AppKitCore {
       this.chainAdapters?.[chainNamespace]?.setUniversalProvider?.(this.universalProvider)
     }
   }
+
+  // -- Controllers Initialization ---------------------------------------------------
+  protected abstract initControllers(options: AppKitOptionsWithSdk): void
 
   // -- UI Initialization ---------------------------------------------------
   protected abstract injectModalUi(): Promise<void>
