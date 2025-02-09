@@ -1,5 +1,3 @@
-import type { SignClient } from '@walletconnect/sign-client'
-
 import { type ChainNamespace } from '@reown/appkit-common'
 import type { ChainAdapter } from '@reown/appkit-core'
 import {
@@ -39,7 +37,7 @@ export interface OpenOptions {
 }
 
 export interface AppKitBasicOptions extends AppKitOptionsWithSdk {
-  signClient?: InstanceType<typeof SignClient>
+  isSignClient?: boolean
 }
 
 // -- Helpers -------------------------------------------------------------------
@@ -55,20 +53,11 @@ export class AppKit extends AppKitCore {
 
   public adapter?: ChainAdapter
 
-  public signClient?: InstanceType<typeof SignClient>
+  public isSignClient = false
 
   constructor(options: AppKitBasicOptions) {
     super(options)
-    this.signClient = options.signClient
-    this.listenSignClient()
-  }
-
-  private listenSignClient() {
-    if (this.signClient) {
-      this.signClient.on('session_update', () => {
-        ConnectionController.finalizeWcConnection()
-      })
-    }
+    this.isSignClient = options.isSignClient ?? false
   }
 
   // -- Overrides --------------------------------------------------------------
@@ -76,6 +65,14 @@ export class AppKit extends AppKitCore {
     // Only open modal when not connected
     if (!AccountController.state.caipAddress) {
       await super.open(options)
+    }
+  }
+
+  public override async close() {
+    await super.close()
+
+    if (this.options.manualWCControl) {
+      ConnectionController.finalizeWcConnection()
     }
   }
 

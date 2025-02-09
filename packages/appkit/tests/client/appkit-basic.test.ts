@@ -1,6 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { AccountController, type AccountControllerState, ModalController } from '@reown/appkit-core'
+import {
+  AccountController,
+  type AccountControllerState,
+  ConnectionController,
+  ModalController
+} from '@reown/appkit-core'
 
 import { AppKit } from '../../src/client/appkit-basic'
 import { mockOptions } from '../mocks/Options'
@@ -50,6 +55,22 @@ describe('AppKitBasic', () => {
       await appKit.open({ view: 'Connect' })
 
       expect(modalSpy).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('close', () => {
+    it('should call finalizeWcConnection when manualWCControl is true', async () => {
+      vi.spyOn(ConnectionController, 'finalizeWcConnection')
+      const appKit = new AppKit({ ...mockOptions, manualWCControl: true })
+      await appKit.close()
+      expect(ConnectionController.finalizeWcConnection).toHaveBeenCalled()
+    })
+
+    it('should not call finalizeWcConnection when manualWCControl is false', async () => {
+      vi.spyOn(ConnectionController, 'finalizeWcConnection')
+      const appKit = new AppKit({ ...mockOptions, manualWCControl: false })
+      await appKit.close()
+      expect(ConnectionController.finalizeWcConnection).not.toHaveBeenCalled()
     })
   })
 })

@@ -22,7 +22,7 @@ export function initializeModal() {
   if (!modal) {
     modal = createAppKit({
       projectId,
-      signClient,
+      manualWCControl: true,
       networks: [mainnet, solana]
     })
   }

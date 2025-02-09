@@ -25,7 +25,7 @@ export function initializeModal(client?: InstanceType<typeof SignClient>) {
   if (!modal) {
     modal = createAppKit({
       projectId,
-      signClient,
+      manualWCControl: true,
       networks: [mainnet, solana]
     })
   }
