@@ -4,7 +4,7 @@ import { createAppKit } from '@reown/appkit/basic'
 import { solana } from '@reown/appkit/networks'
 import { mainnet } from '@reown/appkit/networks'
 
-export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694' // this is a public projectId only to use on localhost
+export const projectId = '616fc3bbdb6324bde06c987e32113d0b'
 
 let signClient: InstanceType<typeof SignClient> | undefined
 let modal: ReturnType<typeof createAppKit> | undefined

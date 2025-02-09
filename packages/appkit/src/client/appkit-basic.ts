@@ -1,14 +1,9 @@
 import { type ChainNamespace } from '@reown/appkit-common'
 import type { ChainAdapter } from '@reown/appkit-core'
-import {
-  AccountController,
-  ConnectionController,
-  CoreHelperUtil,
-  OptionsController
-} from '@reown/appkit-core'
+import { AccountController, ConnectionController, CoreHelperUtil, OptionsController } from '@reown/appkit-core'
 
 import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
-import { AppKitCore, type AppKitOptionsWithSdk } from './core.js'
+import { AppKitCore } from './core.js'
 
 declare global {
   interface Window {
@@ -36,10 +31,6 @@ export interface OpenOptions {
   uri?: string
 }
 
-export interface AppKitBasicOptions extends AppKitOptionsWithSdk {
-  isSignClient?: boolean
-}
-
 // -- Helpers -------------------------------------------------------------------
 let isInitialized = false
 
@@ -52,13 +43,6 @@ export class AppKit extends AppKitCore {
   public activeChainNamespace?: ChainNamespace
 
   public adapter?: ChainAdapter
-
-  public isSignClient = false
-
-  constructor(options: AppKitBasicOptions) {
-    super(options)
-    this.isSignClient = options.isSignClient ?? false
-  }
 
   // -- Overrides --------------------------------------------------------------
   public override async open(options: OpenOptions) {
