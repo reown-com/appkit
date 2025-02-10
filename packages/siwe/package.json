@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-siwe",
-  "version": "1.6.7",
+  "version": "1.6.8",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -25,7 +25,7 @@
     "@walletconnect/utils": "2.18.0",
     "lit": "3.1.0",
     "valtio": "1.13.2",
-    "viem": "2.21.34"
+    "viem": "2.23.0"
   },
   "keywords": [
     "web3",

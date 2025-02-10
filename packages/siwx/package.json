@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-siwx",
-  "version": "1.6.7",
+  "version": "1.6.8",
   "type": "module",
   "main": "./dist/esm/src/index.js",
   "types": "./dist/types/src/index.d.ts",
@@ -22,7 +22,7 @@
     "bip322-js": "2.0.0",
     "bs58": "6.0.0",
     "tweetnacl": "1.0.3",
-    "viem": "2.21.34"
+    "viem": "2.23.0"
   },
   "keywords": [
     "web3",

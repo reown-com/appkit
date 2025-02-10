@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-adapter-ethers5",
-  "version": "1.6.7",
+  "version": "1.6.8",
   "type": "module",
   "main": "./dist/esm/src/index.js",
   "types": "./dist/types/src/index.d.ts",
@@ -30,7 +30,7 @@
     "valtio": "1.13.2"
   },
   "optionalDependencies": {
-    "@coinbase/wallet-sdk": "4.2.4"
+    "@coinbase/wallet-sdk": "4.3.0"
   },
   "peerDependencies": {
     "@ethersproject/sha2": "5.7.0",
