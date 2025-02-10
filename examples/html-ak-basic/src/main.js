@@ -194,7 +194,6 @@ async function signMessage() {
     if (!payload) {
       throw Error('Chain not supported by laboratory')
     }
-    console.log(payload, networkState?.caipNetwork?.caipNetworkId)
     const signature = await walletProvider.request(
       payload,
       networkState?.caipNetwork?.caipNetworkId
