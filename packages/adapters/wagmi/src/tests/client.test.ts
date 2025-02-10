@@ -160,12 +160,12 @@ describe('WagmiAdapter', () => {
         networks: mockNetworks,
         projectId: mockProjectId,
         transports: {
-          [mainnet.id]: http('https://cloudflare-eth.com')
+          [mainnet.id]: http('https://eth.merkle.io')
         }
       })
 
       expect(adapterWithCustomRpc.wagmiChains?.[0].rpcUrls.default.http[0]).toBe(
-        `https://cloudflare-eth.com`
+        `https://eth.merkle.io`
       )
     })
 
