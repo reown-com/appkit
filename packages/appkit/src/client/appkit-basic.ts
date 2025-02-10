@@ -16,7 +16,7 @@ export { AccountController }
 
 // -- Types --------------------------------------------------------------------
 export interface OpenOptions {
-  view:
+  view?:
     | 'Account'
     | 'Connect'
     | 'Networks'
