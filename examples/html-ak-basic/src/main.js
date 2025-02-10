@@ -34,14 +34,19 @@ let events = {}
 let walletInfo = {}
 
 // Helper function to update theme
-const updateTheme = mode => {
-  document.documentElement.setAttribute('data-theme', mode)
-  document.body.className = mode
+const updateTheme = theme => {
+  const themeMode = theme.themeMode
+
+  document.documentElement.setAttribute('data-theme', themeMode)
+  document.getElementById('themeState').textContent = JSON.stringify(theme, null, 2)
+  document.body.className = themeMode
+
+  themeState = theme
 
   // Update logo based on theme
   const reownLogo = document.getElementById('reown-logo')
   if (reownLogo) {
-    reownLogo.src = mode === 'dark' ? '/reown-logo-white.png' : '/reown-logo.png'
+    reownLogo.src = themeMode === 'dark' ? '/reown-logo-white.png' : '/reown-logo.png'
   }
 }
 
@@ -63,8 +68,7 @@ modal.subscribeState(state => {
 
 modal.subscribeTheme(state => {
   themeState = state
-  document.getElementById('themeState').textContent = JSON.stringify(state, null, 2)
-  updateTheme(state.themeMode)
+  updateTheme(state)
 })
 
 modal.subscribeEvents(state => {
@@ -98,7 +102,7 @@ document.getElementById('toggle-theme')?.addEventListener('click', () => {
   const newTheme = themeState.themeMode === 'dark' ? 'light' : 'dark'
   modal.setThemeMode(newTheme)
   themeState = { ...themeState, themeMode: newTheme }
-  updateTheme(newTheme)
+  updateTheme(themeState)
 })
 
 document.getElementById('switch-network-eth')?.addEventListener('click', network => {
@@ -212,4 +216,4 @@ async function signMessage() {
 }
 
 // Set initial theme and UI state
-updateTheme(themeState.themeMode)
+updateTheme(themeState)
