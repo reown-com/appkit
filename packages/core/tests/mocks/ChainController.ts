@@ -1,4 +1,4 @@
-import { ChainController } from '../../exports'
+import { ChainController } from '../../exports/index.js'
 
 export function mockChainControllerState() {
   ChainController.state.chains = new Map([
