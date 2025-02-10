@@ -25,7 +25,7 @@
     "@walletconnect/utils": "2.18.0",
     "lit": "3.1.0",
     "valtio": "1.13.2",
-    "viem": "2.21.34"
+    "viem": "2.23.0"
   },
   "keywords": [
     "web3",

@@ -30,7 +30,7 @@
     "valtio": "1.13.2"
   },
   "optionalDependencies": {
-    "@coinbase/wallet-sdk": "4.2.4"
+    "@coinbase/wallet-sdk": "4.3.0"
   },
   "peerDependencies": {
     "@ethersproject/sha2": "5.7.0",
