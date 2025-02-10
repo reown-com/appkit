@@ -51,8 +51,8 @@
     "sonner": "1.4.3",
     "tailwind-merge": "2.2.1",
     "tailwindcss-animate": "1.0.7",
-    "viem": "2.22.19",
-    "wagmi": "2.14.9"
+    "viem": "2.23.0",
+    "wagmi": "2.14.11"
   },
   "devDependencies": {
     "@types/node": "20.11.5",

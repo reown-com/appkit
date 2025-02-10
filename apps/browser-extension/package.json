@@ -37,8 +37,8 @@
     "react-dom": "18.3.1",
     "tweetnacl": "1.0.3",
     "uuid": "10.0.0",
-    "viem": "2.22.19",
-    "wagmi": "2.14.9",
+    "viem": "2.23.0",
+    "wagmi": "2.14.11",
     "webpack": "5.94.0"
   },
   "devDependencies": {
