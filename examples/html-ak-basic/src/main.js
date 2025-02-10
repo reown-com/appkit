@@ -137,7 +137,7 @@ async function getPayload() {
     },
     eip155: {
       method: 'personal_sign',
-      params: [accountState.address, 'Hello AppKit!']
+      params: ['Hello AppKit!', accountState.address]
     },
     bip122: {
       method: 'signMessage',
@@ -194,7 +194,7 @@ async function signMessage() {
     if (!payload) {
       throw Error('Chain not supported by laboratory')
     }
-
+    console.log(payload, networkState?.caipNetwork?.caipNetworkId)
     const signature = await walletProvider.request(
       payload,
       networkState?.caipNetwork?.caipNetworkId
