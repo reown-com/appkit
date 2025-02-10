@@ -24,7 +24,7 @@ const receiverProfileImageUrl = 'https://ipfs.com/0x123.png'
 // -- Tests --------------------------------------------------------------------
 describe('SendController', () => {
   it('should have valid default state', () => {
-    expect(SendController.state).toEqual({ loading: false })
+    expect(SendController.state).toEqual({ tokenBalances: [], loading: false })
   })
 
   it('should update state correctly on setToken()', () => {
@@ -54,6 +54,6 @@ describe('SendController', () => {
 
   it('should update state correctly on resetSend()', () => {
     SendController.resetSend()
-    expect(SendController.state).toEqual({ loading: false })
+    expect(SendController.state).toEqual({ tokenBalances: [], loading: false })
   })
 })
