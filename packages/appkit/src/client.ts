@@ -1077,7 +1077,7 @@ export class AppKit {
       getCapabilities: async (params: AdapterBlueprint.GetCapabilitiesParams) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
-        await adapter?.getCapabilities(params)
+        return await adapter?.getCapabilities(params)
       },
       grantPermissions: async (params: AdapterBlueprint.GrantPermissionsParams) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
