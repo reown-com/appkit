@@ -267,13 +267,7 @@ export const ChainController = {
     chain: ChainNamespace | undefined,
     replaceState = true
   ) {
-    this.setChainAccountData(
-      chain,
-      {
-        [prop]: value
-      },
-      replaceState
-    )
+    this.setChainAccountData(chain, { [prop]: value }, replaceState)
   },
 
   setActiveNamespace(chain: ChainNamespace | undefined) {
