@@ -94,6 +94,7 @@ async function initializeApp() {
   // Event listeners
   provider.on('chainChanged', chainId => {
     network = chainId
+
     updateDom()
   })
 
@@ -137,6 +138,7 @@ async function initializeApp() {
     modal.switchNetwork(mainnet)
     network = 'eip155:1'
     account = provider?.session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2]
+    localStorage.setItem('active_network', network)
     updateDom()
   })
 
@@ -144,6 +146,7 @@ async function initializeApp() {
     modal.switchNetwork(polygon)
     network = 'eip155:137'
     account = provider?.session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2]
+    localStorage.setItem('active_network', network)
     updateDom()
   })
 
@@ -151,6 +154,7 @@ async function initializeApp() {
     modal.switchNetwork(solana)
     network = solana.caipNetworkId
     account = provider?.session?.namespaces?.solana?.accounts?.[0].split(':')[2]
+    localStorage.setItem('active_network', network)
     updateDom()
   })
 
@@ -160,6 +164,7 @@ async function initializeApp() {
     modal.switchNetwork(bitcoin)
     network = bitcoin.caipNetworkId
     account = provider?.session?.namespaces?.bip122?.accounts?.[0].split(':')[2]
+    localStorage.setItem('active_network', network)
     updateDom()
   })
 
@@ -167,7 +172,8 @@ async function initializeApp() {
 
   // Initialize DOM
   account = provider?.session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2]
-  network = provider?.session?.namespaces?.eip155?.chains?.[0]
+  network =
+    localStorage.getItem('active_network') || provider?.session?.namespaces?.eip155?.chains?.[0]
   updateDom()
 }
 
