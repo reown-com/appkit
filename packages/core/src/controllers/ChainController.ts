@@ -594,7 +594,8 @@ export const ChainController = {
       socialProvider: undefined,
       socialWindow: undefined,
       farcasterUrl: undefined,
-      allAccounts: []
+      allAccounts: [],
+      user: undefined
     })
   },
 
