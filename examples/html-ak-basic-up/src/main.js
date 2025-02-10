@@ -182,7 +182,6 @@ async function initializeApp() {
 }
 
 async function getPayload() {
-  console.log(network)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const map = {
     solana: {
