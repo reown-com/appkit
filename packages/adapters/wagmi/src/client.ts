@@ -364,7 +364,8 @@ export class WagmiAdapter extends AdapterBlueprint {
       account: data.fromAddress,
       abi: data.abi,
       functionName: data.method,
-      args: data.args
+      args: data.args,
+      __mode: 'prepared'
     })
 
     return { hash: tx }
