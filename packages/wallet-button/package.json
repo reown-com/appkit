@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-wallet-button",
-  "version": "1.6.5",
+  "version": "1.6.7",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -41,7 +41,7 @@
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "lit": "3.1.0",
-    "valtio": "1.11.2"
+    "valtio": "1.13.2"
   },
   "keywords": [
     "web3",

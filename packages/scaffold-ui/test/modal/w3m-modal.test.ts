@@ -31,6 +31,9 @@ describe('W3mModal', () => {
     let element: W3mModal
 
     beforeEach(async () => {
+      Element.prototype.animate = vi.fn().mockReturnValue({ finished: true })
+      vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve())
+      vi.spyOn(ApiController, 'prefetchAnalyticsConfig').mockImplementation(() => Promise.resolve())
       OptionsController.setEnableEmbedded(true)
       ModalController.close()
       element = await fixture(html`<w3m-modal .enableEmbedded=${true}></w3m-modal>`)
@@ -57,14 +60,17 @@ describe('W3mModal', () => {
     })
 
     it('should close modal when wallet is connected', async () => {
-      ModalController.open()
-      element.requestUpdate()
-      await elementUpdated(element)
-      ;(element as any).caipAddress = 'eip155:1:0x123...'
-      element.requestUpdate()
-      await elementUpdated(element)
+      ChainController.state.activeCaipAddress = 'eip155:1:0x123...'
+      await fixture(html`<w3m-modal .enableEmbedded=${true}></w3m-modal>`)
+      ChainController.state.activeCaipAddress = undefined
 
       expect(ModalController.state.open).toBe(false)
+    })
+
+    it('should prefetch when modal is open', async () => {
+      element = await fixture(html`<w3m-modal .enableEmbedded=${true}></w3m-modal>`)
+
+      expect(ApiController.prefetch).toHaveBeenCalled()
     })
   })
 
@@ -72,14 +78,28 @@ describe('W3mModal', () => {
     let element: W3mModal
 
     beforeEach(async () => {
+      vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve())
+      vi.spyOn(ApiController, 'prefetchAnalyticsConfig').mockImplementation(() => Promise.resolve())
       OptionsController.setEnableEmbedded(false)
       ModalController.close()
-      vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve())
       element = await fixture(html`<w3m-modal></w3m-modal>`)
+    })
+
+    afterEach(() => {
+      vi.clearAllMocks()
     })
 
     it('should not be visible when closed', () => {
       expect(HelpersUtil.getByTestId(element, 'w3m-modal-overlay')).toBeNull()
+    })
+
+    it('should prefetch when modal is open', async () => {
+      await ModalController.open()
+
+      element.requestUpdate()
+      await elementUpdated(element)
+
+      expect(ApiController.prefetch).toHaveBeenCalled()
     })
 
     it('should be visible when opened', async () => {
@@ -144,6 +164,10 @@ describe('W3mModal', () => {
       element = await fixture(html`<w3m-modal></w3m-modal>`)
     })
 
+    afterEach(() => {
+      vi.clearAllMocks()
+    })
+
     it('should handle network change when not connected', async () => {
       const goBackSpy = vi.spyOn(RouterController, 'goBack')
       ;(element as any).caipAddress = undefined
@@ -158,7 +182,7 @@ describe('W3mModal', () => {
       element.requestUpdate()
       await elementUpdated(element)
 
-      expect(ApiController.prefetch).toHaveBeenCalled()
+      expect(ApiController.prefetchAnalyticsConfig).toHaveBeenCalled()
       expect(goBackSpy).toHaveBeenCalled()
     })
 
@@ -198,13 +222,13 @@ describe('W3mModal', () => {
       await elementUpdated(element)
 
       expect(goBackSpy).toHaveBeenCalled()
-      expect(ApiController.prefetch).toHaveBeenCalled()
+      expect(ApiController.prefetchAnalyticsConfig).toHaveBeenCalled()
     })
   })
 
   describe('Initialization', () => {
-    it('should prefetch API data', async () => {
-      const prefetchSpy = vi.spyOn(ApiController, 'prefetch')
+    it('should prefetch analytics config on page load', async () => {
+      const prefetchSpy = vi.spyOn(ApiController, 'prefetchAnalyticsConfig')
       await fixture(html`<w3m-modal></w3m-modal>`)
 
       expect(prefetchSpy).toHaveBeenCalled()

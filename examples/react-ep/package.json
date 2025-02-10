@@ -1,0 +1,22 @@
+{
+  "name": "@examples/react-ep",
+  "private": true,
+  "version": "1.2.0",
+  "scripts": {
+    "dev": "vite --port 3012",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@reown/appkit": "workspace:*",
+    "@walletconnect/ethereum-provider": "2.17.4-canary-ak-1",
+    "ethers": "6.13.2",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "18.2.62",
+    "@types/react-dom": "18.2.7",
+    "@vitejs/plugin-react": "4.2.1",
+    "vite": "5.4.12"
+  }
+}

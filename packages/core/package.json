@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-core",
-  "version": "1.6.5",
+  "version": "1.6.7",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -47,8 +47,8 @@
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/universal-provider": "2.18.0",
-    "valtio": "1.11.2",
-    "viem": "2.x"
+    "valtio": "1.13.2",
+    "viem": ">=2.23"
   },
   "peerDependencies": {},
   "devDependencies": {
