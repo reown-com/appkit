@@ -7,6 +7,7 @@ import {
   getW3mThemeVariables
 } from '@reown/appkit-common'
 import {
+  ApiController,
   type ConnectorType,
   ConstantsUtil as CoreConstantsUtil,
   type Metadata
@@ -27,7 +28,7 @@ import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { W3mFrameProviderSingleton } from '../auth-provider/W3MFrameProviderSingleton.js'
 import { ProviderUtil } from '../store/ProviderUtil.js'
-import { AppKitCore } from './core.js'
+import { AppKitCore, type AppKitOptionsWithSdk } from './core.js'
 
 declare global {
   interface Window {
@@ -265,7 +266,15 @@ export class AppKit extends AppKitCore {
     }
   }
 
-  // -- Overrides ------
+  // -- Overrides ----------------------------------------------------------------
+  protected override initControllers(options: AppKitOptionsWithSdk) {
+    super.initControllers(options)
+
+    if (this.options.excludeWalletIds) {
+      ApiController.initializeExcludedWalletRdns({ ids: this.options.excludeWalletIds })
+    }
+  }
+
   protected override async syncNamespaceConnection(namespace: ChainNamespace) {
     const isEmailUsed = this.authProvider?.getLoginEmailUsed()
 

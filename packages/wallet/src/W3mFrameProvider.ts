@@ -546,7 +546,6 @@ export class W3mFrameProvider {
       const id = Math.random().toString(36).substring(7)
       this.w3mLogger?.logger.info?.({ event, id }, 'Sending app event')
       this.w3mFrame.events.postAppEvent({ ...event, id } as W3mFrameTypes.AppEvent)
-
       if (type === 'RPC_REQUEST') {
         const rpcEvent = event as Extract<W3mFrameTypes.AppEvent, { type: '@w3m-app/RPC_REQUEST' }>
         this.openRpcRequests = [...this.openRpcRequests, { ...rpcEvent.payload, abortController }]

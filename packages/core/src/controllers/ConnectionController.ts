@@ -18,6 +18,7 @@ import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
+import { RouterController } from './RouterController.js'
 import { TransactionsController } from './TransactionsController.js'
 
 // -- Types --------------------------------------------- //
@@ -221,6 +222,32 @@ export const ConnectionController = {
     state.status = 'disconnected'
     TransactionsController.resetTransactions()
     StorageUtil.deleteWalletConnectDeepLink()
+  },
+
+  resetUri() {
+    state.wcUri = undefined
+    state.wcPairingExpiry = undefined
+  },
+
+  finalizeWcConnection() {
+    const { wcLinking, recentWallet } = ConnectionController.state
+
+    if (wcLinking) {
+      StorageUtil.setWalletConnectDeepLink(wcLinking)
+    }
+
+    if (recentWallet) {
+      StorageUtil.setAppKitRecent(recentWallet)
+    }
+
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'CONNECT_SUCCESS',
+      properties: {
+        method: wcLinking ? 'mobile' : 'qrcode',
+        name: RouterController.state.data?.wallet?.name || 'Unknown'
+      }
+    })
   },
 
   setWcBasic(wcBasic: ConnectionControllerState['wcBasic']) {

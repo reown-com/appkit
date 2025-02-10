@@ -123,6 +123,7 @@ export const ChainController = {
     const activeCaipNetwork = caipNetworks?.find(
       network => network.id.toString() === activeChainId?.toString()
     )
+
     const defaultAdapter = adapters.find(adapter => adapter?.namespace === activeNamespace)
     const adapterToActivate = defaultAdapter || adapters?.[0]
     const namespaces = new Set([...(caipNetworks?.map(network => network.chainNamespace) ?? [])])
@@ -140,17 +141,17 @@ export const ChainController = {
     }
 
     namespaces.forEach(namespace => {
+      const namespaceNetworks = caipNetworks?.filter(
+        network => network.chainNamespace === namespace
+      )
       ChainController.state.chains.set(namespace as ChainNamespace, {
         namespace,
         networkState,
         accountState,
-        caipNetworks: caipNetworks ?? [],
+        caipNetworks: namespaceNetworks ?? [],
         ...clients
       })
-      this.setRequestedCaipNetworks(
-        caipNetworks?.filter(caipNetwork => caipNetwork.chainNamespace === namespace) ?? [],
-        namespace
-      )
+      this.setRequestedCaipNetworks(namespaceNetworks ?? [], namespace)
     })
   },
 
@@ -190,33 +191,36 @@ export const ChainController = {
 
   addNetwork(network: CaipNetwork) {
     const chainAdapter = state.chains.get(network.chainNamespace)
+
     if (chainAdapter) {
+      const newNetworks = [...(chainAdapter.caipNetworks || [])]
       if (!chainAdapter.caipNetworks?.find(caipNetwork => caipNetwork.id === network.id)) {
-        chainAdapter.caipNetworks = [...(chainAdapter.caipNetworks || []), network]
+        newNetworks.push(network)
       }
-      state.chains.set(network.chainNamespace, chainAdapter)
-      this.setRequestedCaipNetworks(chainAdapter.caipNetworks || [], network.chainNamespace)
+      state.chains.set(network.chainNamespace, { ...chainAdapter, caipNetworks: newNetworks })
+      this.setRequestedCaipNetworks(newNetworks, network.chainNamespace)
     }
   },
 
   removeNetwork(namespace: ChainNamespace, networkId: string | number) {
     const chainAdapter = state.chains.get(namespace)
+
     if (chainAdapter) {
       // Check if network being removed is active network
       const isActiveNetwork = state.activeCaipNetwork?.id === networkId
 
       // Filter out the network being removed
-      chainAdapter.caipNetworks = chainAdapter.caipNetworks?.filter(
-        network => network.id !== networkId
-      )
+      const newCaipNetworksOfAdapter = [
+        ...(chainAdapter.caipNetworks?.filter(network => network.id !== networkId) || [])
+      ]
 
       // If active network was removed and there are other networks available, switch to first one
       if (isActiveNetwork && chainAdapter?.caipNetworks?.[0]) {
         this.setActiveCaipNetwork(chainAdapter.caipNetworks[0])
       }
 
-      state.chains.set(namespace, chainAdapter)
-      this.setRequestedCaipNetworks(chainAdapter.caipNetworks || [], namespace)
+      state.chains.set(namespace, { ...chainAdapter, caipNetworks: newCaipNetworksOfAdapter })
+      this.setRequestedCaipNetworks(newCaipNetworksOfAdapter || [], namespace)
     }
   },
 
@@ -597,7 +601,8 @@ export const ChainController = {
         socialWindow: undefined,
         farcasterUrl: undefined,
         provider: undefined,
-        allAccounts: []
+        allAccounts: [],
+        status: 'disconnected'
       })
     )
   },

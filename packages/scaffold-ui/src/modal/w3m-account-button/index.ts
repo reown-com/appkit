@@ -70,9 +70,14 @@ class W3mAccountButtonBase extends LitElement {
           this.isSupported = val?.chainNamespace
             ? ChainController.checkIfSupportedNetwork(val?.chainNamespace)
             : true
+          AssetUtil.fetchNetworkImage(val?.assets?.imageId)
         })
       ]
     )
+  }
+
+  public override firstUpdated() {
+    AssetUtil.fetchNetworkImage(this.network?.assets?.imageId)
   }
 
   public override disconnectedCallback() {

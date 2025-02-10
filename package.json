@@ -70,7 +70,7 @@
     "process": "0.11.10",
     "turbo": "2.0.6-canary.0",
     "typescript": "5.3.3",
-    "vite": "5.2.11",
+    "vite": "5.4.12",
     "vite-plugin-node-polyfills": "0.22.0",
     "vitest": "2.1.3"
   },

@@ -4,6 +4,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
+import { ConnectionController } from './ConnectionController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
@@ -44,9 +45,14 @@ export const ModalController = {
   subscribeKey<K extends StateKey>(key: K, callback: (value: ModalControllerState[K]) => void) {
     return subKey(state, key, callback)
   },
-
   async open(options?: ModalControllerArguments['open']) {
-    await ApiController.state.prefetchPromise
+    if (ConnectionController.state.wcBasic) {
+      // No need to add an await here if we are use basic
+      ApiController.prefetch({ fetchNetworkImages: false, fetchConnectorImages: false })
+    } else {
+      await ApiController.prefetch()
+    }
+
     const caipAddress = ChainController.state.activeCaipAddress
 
     const noAdapters = ChainController.state.noAdapters
@@ -77,6 +83,15 @@ export const ModalController = {
     const isEmbeddedEnabled = OptionsController.state.enableEmbedded
     const connected = Boolean(ChainController.state.activeCaipAddress)
 
+    // Only send the event if the modal is open and is about to be closed
+    if (state.open) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'MODAL_CLOSE',
+        properties: { connected }
+      })
+    }
+
     state.open = false
 
     if (isEmbeddedEnabled) {
@@ -89,13 +104,8 @@ export const ModalController = {
       PublicStateController.set({ open: false })
     }
 
-    EventsController.sendEvent({
-      type: 'track',
-      event: 'MODAL_CLOSE',
-      properties: { connected }
-    })
-
     ConnectorController.clearNamespaceFilter()
+    ConnectionController.resetUri()
   },
 
   setLoading(loading: ModalControllerState['loading']) {

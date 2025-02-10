@@ -88,7 +88,8 @@ async function initializeApp() {
   modal = createAppKit({
     projectId,
     networks,
-    universalProvider: provider
+    universalProvider: provider,
+    manualWCControl: true
   })
 
   // Event listeners
@@ -98,6 +99,8 @@ async function initializeApp() {
     updateDom()
   })
 
+  provider.on('disconnect', updateDom)
+
   provider.on('accountsChanged', accounts => {
     account = accounts[0]
     updateDom()
@@ -106,18 +109,29 @@ async function initializeApp() {
   provider.on('connect', async session => {
     await modal.close()
     account = session?.session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2]
-    network = session?.session?.namespaces?.eip155?.chains?.[0]
-    updateDom()
-  })
+    const chain = session?.session?.namespaces?.eip155?.chains?.[0]
 
-  provider.on('display_uri', uri => {
-    modal.open({ uri, view: 'ConnectingWalletConnectBasic' })
+    if (!isNaN(Number(chain))) {
+      network = `eip155:${chain}`
+    } else {
+      network = chain
+    }
+
+    updateDom()
   })
 
   // Button handlers
   document.getElementById('connect')?.addEventListener('click', async () => {
+    setLoading(true)
+    await modal.open()
+    modal.subscribeEvents(({ data }) => {
+      if (data.event === 'MODAL_CLOSE') {
+        setLoading(false)
+      }
+    })
     await provider.connect({ optionalNamespaces: OPTIONAL_NAMESPACES })
     updateDom()
+    setLoading(false)
   })
 
   document.getElementById('disconnect')?.addEventListener('click', async () => {
@@ -189,7 +203,7 @@ async function getPayload() {
     },
     eip155: {
       method: 'personal_sign',
-      params: [account, 'Hello AppKit!']
+      params: ['Hello AppKit!', account]
     },
     bip122: {
       method: 'signMessage',
@@ -259,6 +273,12 @@ async function signMessage() {
       description: error.message
     })
   }
+}
+
+function setLoading(isLoading) {
+  const connect = document.getElementById('connect')
+  connect.textContent = isLoading ? 'Connecting...' : 'Connect'
+  connect.disabled = isLoading
 }
 
 initializeApp()
