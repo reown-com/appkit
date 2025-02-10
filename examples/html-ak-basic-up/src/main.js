@@ -121,7 +121,11 @@ async function initializeApp() {
   document.getElementById('connect')?.addEventListener('click', async () => {
     setLoading(true)
     await modal.open()
-    modal.subscribeEvents(({ data }) => data.event === 'MODAL_CLOSE' && setLoading(false))
+    modal.subscribeEvents(({ data }) => {
+      if (data.event === 'MODAL_CLOSE') {
+        setLoading(false)
+      }
+    })
     await provider.connect({ optionalNamespaces: OPTIONAL_NAMESPACES })
     updateDom()
     setLoading(false)
