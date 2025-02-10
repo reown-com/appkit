@@ -6,7 +6,7 @@ import { ContractUtil } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { SwapApiUtil } from '../utils/SwapApiUtil.js'
+import { SendApiUtil } from '../utils/SendApiUtil.js'
 import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
@@ -30,6 +30,7 @@ export interface ContractWriteParams {
   decimals: string
 }
 export interface SendControllerState {
+  tokenBalances: Balance[]
   token?: Balance
   sendTokenAmount?: number
   receiverAddress?: string
@@ -45,6 +46,7 @@ type StateKey = keyof SendControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<SendControllerState>({
+  tokenBalances: [],
   loading: false
 })
 
@@ -163,13 +165,15 @@ export const SendController = {
   },
 
   async fetchNetworkBalance() {
-    const balances = await SwapApiUtil.getMyTokensWithBalance()
+    const balances = await SendApiUtil.getMyTokensWithBalance()
+    state.tokenBalances = balances
 
-    if (!balances) {
+    const networkTokenBalances = SendApiUtil.mapBalancesToSwapTokens(balances)
+    if (!networkTokenBalances) {
       return
     }
 
-    const networkToken = balances.find(
+    const networkToken = networkTokenBalances.find(
       token => token.address === ChainController.getActiveNetworkTokenAddress()
     )
 
