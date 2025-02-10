@@ -1,6 +1,6 @@
 import { type ChainNamespace } from '@reown/appkit-common'
 import type { ChainAdapter } from '@reown/appkit-core'
-import { AccountController, CoreHelperUtil, OptionsController } from '@reown/appkit-core'
+import { AccountController, ConnectionController, CoreHelperUtil, OptionsController } from '@reown/appkit-core'
 
 import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import { AppKitCore } from './core.js'
@@ -49,6 +49,14 @@ export class AppKit extends AppKitCore {
     // Only open modal when not connected
     if (!AccountController.state.caipAddress) {
       await super.open(options)
+    }
+  }
+
+  public override async close() {
+    await super.close()
+
+    if (this.options.manualWCControl) {
+      ConnectionController.finalizeWcConnection()
     }
   }
 

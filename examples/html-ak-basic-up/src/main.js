@@ -98,6 +98,8 @@ async function initializeApp() {
     updateDom()
   })
 
+  provider.on('disconnect', updateDom)
+
   provider.on('accountsChanged', accounts => {
     account = accounts[0]
     updateDom()
