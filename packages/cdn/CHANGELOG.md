@@ -1,5 +1,19 @@
 # @reown/appkit-cdn
 
+## 1.6.8
+
+### Patch Changes
+
+- [#3828](https://github.com/reown-com/appkit/pull/3828) [`381b7f1`](https://github.com/reown-com/appkit/commit/381b7f16bd649556b3efe4f97368528b9296c794) Thanks [@enesozturk](https://github.com/enesozturk)! - Upgrades Wagmi, Viem and Coinbase Wallet SDK deps
+
+- Updated dependencies [[`381b7f1`](https://github.com/reown-com/appkit/commit/381b7f16bd649556b3efe4f97368528b9296c794)]:
+  - @reown/appkit-adapter-ethers5@1.6.8
+  - @reown/appkit-adapter-ethers@1.6.8
+  - @reown/appkit-adapter-wagmi@1.6.8
+  - @reown/appkit@1.6.8
+  - @reown/appkit-adapter-solana@1.6.8
+  - @reown/appkit-polyfills@1.6.8
+
 ## 1.6.7
 
 ### Patch Changes
