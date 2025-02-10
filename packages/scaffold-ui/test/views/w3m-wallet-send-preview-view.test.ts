@@ -49,7 +49,8 @@ const mockSendControllerState = {
   sendTokenAmount: 5,
   receiverAddress: '0x456',
   gasPriceInUSD: 2.5,
-  loading: false
+  loading: false,
+  tokenBalances: [mockToken]
 }
 
 const mockNetworkControllerClient: NetworkControllerClient = {
