@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-common",
-  "version": "1.6.7",
+  "version": "1.6.8",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -19,7 +19,7 @@
   "dependencies": {
     "big.js": "6.2.2",
     "dayjs": "1.11.10",
-    "viem": "2.x"
+    "viem": ">=2.23.0"
   },
   "devDependencies": {
     "@types/big.js": "6.2.2",

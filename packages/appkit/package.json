@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit",
-  "version": "1.6.7",
+  "version": "1.6.8",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -114,7 +114,7 @@
     "@walletconnect/utils": "2.18.0",
     "bs58": "6.0.0",
     "valtio": "1.13.2",
-    "viem": "2.x"
+    "viem": ">=2.23.0"
   },
   "devDependencies": {
     "@reown/appkit-siwe": "workspace:*",
