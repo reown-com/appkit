@@ -38,7 +38,7 @@
     "tweetnacl": "1.0.3",
     "uuid": "10.0.0",
     "viem": "2.23.0",
-    "wagmi": "2.14.9",
+    "wagmi": "2.14.11",
     "webpack": "5.94.0"
   },
   "devDependencies": {
