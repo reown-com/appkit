@@ -106,7 +106,14 @@ async function initializeApp() {
   provider.on('connect', async session => {
     await modal.close()
     account = session?.session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2]
-    network = session?.session?.namespaces?.eip155?.chains?.[0]
+    const chain = session?.session?.namespaces?.eip155?.chains?.[0]
+
+    if (!isNaN(Number(chain))) {
+      network = `eip155:${chain}`
+    } else {
+      network = chain
+    }
+
     updateDom()
   })
 
@@ -186,7 +193,7 @@ async function getPayload() {
     },
     eip155: {
       method: 'personal_sign',
-      params: [account, 'Hello AppKit!']
+      params: ['Hello AppKit!', account]
     },
     bip122: {
       method: 'signMessage',
