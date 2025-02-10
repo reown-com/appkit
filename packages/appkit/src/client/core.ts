@@ -80,7 +80,7 @@ export interface AppKitOptionsWithSdk extends AppKitOptions {
 
 // -- Types --------------------------------------------------------------------
 export interface OpenOptions {
-  view:
+  view?:
     | 'Account'
     | 'Connect'
     | 'Networks'

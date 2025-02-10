@@ -117,13 +117,11 @@ async function initializeApp() {
     updateDom()
   })
 
-  provider.on('display_uri', uri => {
-    modal.open({ uri, view: 'ConnectingWalletConnectBasic' })
-  })
-
   // Button handlers
   document.getElementById('connect')?.addEventListener('click', async () => {
     setLoading(true)
+    await modal.open()
+    modal.subscribeEvents(({ data }) => data.event === 'MODAL_CLOSE' && setLoading(false))
     await provider.connect({ optionalNamespaces: OPTIONAL_NAMESPACES })
     updateDom()
     setLoading(false)
