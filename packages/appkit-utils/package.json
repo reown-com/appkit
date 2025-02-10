@@ -54,7 +54,7 @@
     "viem": "2.x"
   },
   "devDependencies": {
-    "@coinbase/wallet-sdk": "4.2.4",
+    "@coinbase/wallet-sdk": "4.3.0",
     "@solana/wallet-adapter-base": "0.9.23",
     "@solana/web3.js": "1.95.8",
     "@vitest/coverage-v8": "2.1.3",
