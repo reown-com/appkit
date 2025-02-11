@@ -2226,7 +2226,7 @@ export class AppKit {
       window.history.replaceState({}, document.title, url.toString())
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error(error)
+      console.error('tma social login failed', error)
     }
   }
 }
