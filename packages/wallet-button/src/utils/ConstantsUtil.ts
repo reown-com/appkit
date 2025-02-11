@@ -1,5 +1,9 @@
+import { SystemUtil } from '@reown/appkit-common'
+
 export const ConstantsUtil = {
-  SECURE_SITE_ORIGIN: 'https://secure.walletconnect.org',
+  SECURE_SITE_ORIGIN: SystemUtil.canUseProcessEnv
+    ? process.env['NEXT_PUBLIC_SECURE_SITE_ORIGIN']
+    : 'https://secure.walletconnect.org',
 
   Socials: ['google', 'github', 'apple', 'facebook', 'x', 'discord', 'farcaster'] as const,
 

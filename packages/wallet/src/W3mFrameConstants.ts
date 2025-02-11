@@ -1,9 +1,16 @@
-export const SECURE_SITE_SDK =
-  process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL'] || 'https://secure.walletconnect.org/sdk'
+import { SystemUtil } from '@reown/appkit-common'
 
-export const DEFAULT_LOG_LEVEL = process.env['NEXT_PUBLIC_DEFAULT_LOG_LEVEL'] || 'error'
+export const SECURE_SITE_SDK = SystemUtil.canUseProcessEnv
+  ? process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL']
+  : 'https://secure.walletconnect.org/sdk'
 
-export const SECURE_SITE_SDK_VERSION = process.env['NEXT_PUBLIC_SECURE_SITE_SDK_VERSION'] || 3
+export const DEFAULT_LOG_LEVEL = SystemUtil.canUseProcessEnv
+  ? process.env['NEXT_PUBLIC_DEFAULT_LOG_LEVEL']
+  : 'error'
+
+export const SECURE_SITE_SDK_VERSION = SystemUtil.canUseProcessEnv
+  ? process.env['NEXT_PUBLIC_SECURE_SITE_SDK_VERSION']
+  : 3
 
 export const W3mFrameConstants = {
   APP_EVENT_KEY: '@w3m-app/',
