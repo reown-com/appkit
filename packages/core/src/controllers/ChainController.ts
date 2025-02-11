@@ -1,4 +1,4 @@
-import { proxy, ref, subscribe as sub } from 'valtio/vanilla'
+import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { proxyMap, subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import {
@@ -14,7 +14,6 @@ import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
-  AdapterAccountState,
   AdapterNetworkState,
   ChainAdapter,
   NetworkControllerClient
@@ -34,7 +33,8 @@ const accountState: AccountControllerState = {
   tokenBalance: [],
   smartAccountDeployed: false,
   addressLabels: new Map(),
-  allAccounts: []
+  allAccounts: [],
+  user: undefined
 }
 
 const networkState: AdapterNetworkState = {
@@ -146,8 +146,8 @@ export const ChainController = {
       )
       ChainController.state.chains.set(namespace as ChainNamespace, {
         namespace,
-        networkState,
-        accountState,
+        networkState: proxy(networkState),
+        accountState: proxy(accountState),
         caipNetworks: namespaceNetworks ?? [],
         ...clients
       })
@@ -228,12 +228,12 @@ export const ChainController = {
     const chainAdapter = state.chains.get(chain)
 
     if (chainAdapter) {
-      chainAdapter.networkState = ref({
+      chainAdapter.networkState = {
         ...(chainAdapter.networkState || networkState),
         ...props
-      } as AdapterNetworkState)
+      } as AdapterNetworkState
 
-      state.chains.set(chain, ref(chainAdapter))
+      state.chains.set(chain, chainAdapter)
     }
   },
 
@@ -247,17 +247,15 @@ export const ChainController = {
     }
 
     const chainAdapter = state.chains.get(chain)
+
     if (chainAdapter) {
-      chainAdapter.accountState = ref({
-        ...(chainAdapter.accountState || accountState),
-        ...accountProps
-      } as AccountControllerState)
-      state.chains.set(chain, chainAdapter)
+      const newAccountState = { ...(chainAdapter.accountState || accountState), ...accountProps }
+      state.chains.set(chain, { ...chainAdapter, accountState: newAccountState })
       if (state.chains.size === 1 || state.activeChain === chain) {
         if (accountProps.caipAddress) {
           state.activeCaipAddress = accountProps.caipAddress
         }
-        AccountController.replaceState(chainAdapter.accountState)
+        AccountController.replaceState(newAccountState)
       }
     }
   },
@@ -269,13 +267,7 @@ export const ChainController = {
     chain: ChainNamespace | undefined,
     replaceState = true
   ) {
-    this.setChainAccountData(
-      chain,
-      {
-        [prop]: value
-      },
-      replaceState
-    )
+    this.setChainAccountData(chain, { [prop]: value }, replaceState)
   },
 
   setActiveNamespace(chain: ChainNamespace | undefined) {
@@ -308,12 +300,14 @@ export const ChainController = {
     const newAdapter = state.chains.get(caipNetwork.chainNamespace)
     state.activeChain = caipNetwork.chainNamespace
     state.activeCaipNetwork = caipNetwork
-
     if (newAdapter?.accountState?.address) {
       state.activeCaipAddress = `${caipNetwork.chainNamespace}:${caipNetwork.id}:${newAdapter?.accountState?.address}`
     } else {
       state.activeCaipAddress = undefined
     }
+
+    // Update the chain's account state with the new caip address value
+    this.setAccountProp('caipAddress', state.activeCaipAddress, caipNetwork.chainNamespace)
 
     if (newAdapter) {
       AccountController.replaceState(newAdapter.accountState)
@@ -404,7 +398,7 @@ export const ChainController = {
     return chainAdapter.connectionControllerClient
   },
 
-  getAccountProp<K extends keyof AdapterAccountState>(
+  getAccountProp<K extends keyof AccountControllerState>(
     key: K,
     _chain?: ChainNamespace
   ): AccountControllerState[K] | undefined {
@@ -504,7 +498,7 @@ export const ChainController = {
   },
 
   checkIfSupportedNetwork(namespace: ChainNamespace) {
-    const activeCaipNetwork = this.state.activeCaipNetwork
+    const activeCaipNetwork = state.activeCaipNetwork
     const requestedCaipNetworks = this.getRequestedCaipNetworks(namespace)
 
     if (!requestedCaipNetworks.length) {
@@ -515,11 +509,11 @@ export const ChainController = {
   },
 
   checkIfSupportedChainId(chainId: number | string) {
-    if (!this.state.activeChain) {
+    if (!state.activeChain) {
       return true
     }
 
-    const requestedCaipNetworks = this.getRequestedCaipNetworks(this.state.activeChain)
+    const requestedCaipNetworks = this.getRequestedCaipNetworks(state.activeChain)
 
     return requestedCaipNetworks?.some(network => network.id === chainId)
   },
@@ -531,7 +525,7 @@ export const ChainController = {
 
   checkIfSmartAccountEnabled() {
     const networkId = NetworkUtil.caipNetworkIdToNumber(state.activeCaipNetwork?.caipNetworkId)
-    const activeChain = this.state.activeChain
+    const activeChain = state.activeChain
 
     if (!activeChain || !networkId) {
       return false
@@ -546,8 +540,8 @@ export const ChainController = {
   },
 
   getActiveNetworkTokenAddress() {
-    const namespace = this.state.activeCaipNetwork?.chainNamespace || 'eip155'
-    const chainId = this.state.activeCaipNetwork?.id || 1
+    const namespace = state.activeCaipNetwork?.chainNamespace || 'eip155'
+    const chainId = state.activeCaipNetwork?.id || 1
     const address = ConstantsUtil.NATIVE_TOKEN_ADDRESS[namespace]
 
     return `${namespace}:${chainId}:${address}`
@@ -581,30 +575,27 @@ export const ChainController = {
       throw new Error('Chain is required to set account prop')
     }
 
-    this.state.activeCaipAddress = undefined
-    this.setChainAccountData(
-      chainToWrite,
-      ref({
-        smartAccountDeployed: false,
-        currentTab: 0,
-        caipAddress: undefined,
-        address: undefined,
-        balance: undefined,
-        balanceSymbol: undefined,
-        profileName: undefined,
-        profileImage: undefined,
-        addressExplorerUrl: undefined,
-        tokenBalance: [],
-        connectedWalletInfo: undefined,
-        preferredAccountType: undefined,
-        socialProvider: undefined,
-        socialWindow: undefined,
-        farcasterUrl: undefined,
-        provider: undefined,
-        allAccounts: [],
-        status: 'disconnected'
-      })
-    )
+    state.activeCaipAddress = undefined
+    this.setChainAccountData(chainToWrite, {
+      smartAccountDeployed: false,
+      currentTab: 0,
+      caipAddress: undefined,
+      address: undefined,
+      balance: undefined,
+      balanceSymbol: undefined,
+      profileName: undefined,
+      profileImage: undefined,
+      addressExplorerUrl: undefined,
+      tokenBalance: [],
+      connectedWalletInfo: undefined,
+      preferredAccountType: undefined,
+      socialProvider: undefined,
+      socialWindow: undefined,
+      farcasterUrl: undefined,
+      allAccounts: [],
+      user: undefined,
+      status: 'disconnected'
+    })
   },
 
   async disconnect() {
@@ -679,5 +670,17 @@ export const ChainController = {
     }
 
     return undefined
+  },
+
+  getAccountDataByChainNamespace(chainNamespace?: ChainNamespace) {
+    if (!chainNamespace) {
+      if (!ChainController.state.activeChain) {
+        return undefined
+      }
+
+      return ChainController.state.chains.get(ChainController.state.activeChain)?.accountState
+    }
+
+    return ChainController.state.chains.get(chainNamespace)?.accountState
   }
 }

@@ -1,16 +1,17 @@
 import { describe, expect, it, vi } from 'vitest'
 
 import { Emitter } from '@reown/appkit-common'
-import { AccountController, BlockchainApiController } from '@reown/appkit-core'
+import { AccountController, BlockchainApiController, ChainController } from '@reown/appkit-core'
 
 import { AppKit } from '../../src/client/appkit.js'
-import { mainnet } from '../mocks/Networks.js'
-import { mockOptions } from '../mocks/Options.js'
+import { mainnet, unsupportedNetwork } from '../mocks/Networks'
+import { mockOptions } from '../mocks/Options'
 import {
   mockBlockchainApiController,
+  mockChainControllerStateWithUnsupportedChain,
   mockStorageUtil,
   mockWindowAndDocument
-} from '../test-utils.js'
+} from '../test-utils'
 
 mockWindowAndDocument()
 mockStorageUtil()
@@ -45,5 +46,24 @@ describe('Listeners', () => {
     expect(fetchIdentitySpy).toHaveBeenCalledWith({ address: mockAccount.address })
     expect(setProfileNameSpy).toHaveBeenCalledWith(identity.name, 'eip155')
     expect(setProfileImageSpy).toHaveBeenCalledWith(identity.avatar, 'eip155')
+  })
+
+  it('should show unsupported chain UI when network is unsupported and allowUnsupportedChain is false', async () => {
+    const showUnsupportedChainUISpy = vi.spyOn(ChainController, 'showUnsupportedChainUI')
+
+    const appKit = new AppKit({
+      ...mockOptions,
+      allowUnsupportedChain: false,
+      features: { email: false, socials: [] }
+    })
+
+    mockChainControllerStateWithUnsupportedChain()
+    await appKit['syncAccount']({
+      address: '0x123',
+      chainId: unsupportedNetwork.id,
+      chainNamespace: unsupportedNetwork.chainNamespace
+    })
+
+    expect(showUnsupportedChainUISpy).toHaveBeenCalled()
   })
 })

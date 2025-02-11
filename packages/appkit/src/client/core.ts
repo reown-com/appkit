@@ -406,7 +406,7 @@ export abstract class AppKitCore {
 
         StorageUtil.removeConnectedNamespace(namespace)
         ProviderUtil.resetChain(namespace)
-        this.setUser(undefined)
+        this.setUser(undefined, namespace)
         this.setStatus('disconnected', namespace)
       },
       checkInstalled: (ids?: string[]) => {
@@ -989,7 +989,15 @@ export abstract class AppKitCore {
       const network = caipNetwork || fallbackCaipNetwork
 
       if (network?.chainNamespace === ChainController.state.activeChain) {
-        this.setCaipNetwork(network)
+        // If the network is unsupported and the user doesn't allow unsupported chains, we show the unsupported chain UI
+        if (
+          !OptionsController.state.allowUnsupportedChain &&
+          ChainController.state.activeCaipNetwork?.name === ConstantsUtil.UNSUPPORTED_NETWORK_NAME
+        ) {
+          ChainController.showUnsupportedChainUI()
+        } else {
+          this.setCaipNetwork(network)
+        }
       }
       this.syncConnectedWalletInfo(chainNamespace)
 
