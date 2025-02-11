@@ -73,7 +73,7 @@ export function authConnector(parameters: AuthParameters) {
         chainId: parsedChainId,
         chain: {
           id: parsedChainId,
-          unsuported: false
+          unsupported: false
         }
       }
     },
