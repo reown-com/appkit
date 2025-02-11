@@ -139,8 +139,8 @@ export const AccountController = {
     ChainController.setAccountProp('profileImage', profileImage, chain)
   },
 
-  setUser(user: AccountControllerState['user']) {
-    state.user = user
+  setUser(user: AccountControllerState['user'], chain: ChainNamespace | undefined) {
+    ChainController.setAccountProp('user', user, chain)
   },
 
   setAddressExplorerUrl(
