@@ -10,6 +10,7 @@ import {
   ConnectorController,
   EventsController,
   ModalController,
+  OptionsController,
   RouterController,
   SnackController,
   StorageUtil,
@@ -57,7 +58,7 @@ export class W3mConnectingSocialView extends LitElement {
             this.socialWindow = val.socialWindow
           }
           if (val.address) {
-            if (ModalController.state.open) {
+            if (ModalController.state.open || OptionsController.state.enableEmbedded) {
               ModalController.close()
             }
           }
