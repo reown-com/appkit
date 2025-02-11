@@ -5,6 +5,7 @@ import { type Balance, type CaipAddress, NumberUtil } from '@reown/appkit-common
 import { ContractUtil } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { SendApiUtil } from '../utils/SendApiUtil.js'
 import { AccountController } from './AccountController.js'
@@ -40,6 +41,7 @@ export interface SendControllerState {
   gasPriceInUSD?: number
   networkBalanceInUSD?: string
   loading: boolean
+  lastRetry?: number
 }
 
 type StateKey = keyof SendControllerState
@@ -164,11 +166,46 @@ export const SendController = {
     }
   },
 
-  async fetchNetworkBalance() {
-    const balances = await SendApiUtil.getMyTokensWithBalance()
-    state.tokenBalances = balances
+  async fetchTokenBalance(onError?: (error: unknown) => void): Promise<Balance[]> {
+    state.loading = true
+    const chainId = ChainController.state.activeCaipNetwork?.caipNetworkId
+    const chain = ChainController.state.activeCaipNetwork?.chainNamespace
+    const caipAddress = ChainController.state.activeCaipAddress
+    const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
+    if (
+      state.lastRetry &&
+      !CoreHelperUtil.isAllowedRetry(state.lastRetry, 30 * ConstantsUtil.ONE_SEC_MS)
+    ) {
+      state.loading = false
 
-    const networkTokenBalances = SendApiUtil.mapBalancesToSwapTokens(balances)
+      return []
+    }
+
+    try {
+      if (address && chainId && chain) {
+        const balances = await SendApiUtil.getMyTokensWithBalance()
+        state.tokenBalances = balances
+
+        return balances
+      }
+    } catch (error) {
+      state.lastRetry = Date.now()
+
+      onError?.(error)
+      SnackController.showError('Token Balance Unavailable')
+    } finally {
+      state.loading = false
+    }
+
+    return []
+  },
+
+  fetchNetworkBalance() {
+    if (state.tokenBalances.length === 0) {
+      return
+    }
+
+    const networkTokenBalances = SendApiUtil.mapBalancesToSwapTokens(state.tokenBalances)
     if (!networkTokenBalances) {
       return
     }
@@ -197,21 +234,21 @@ export const SendController = {
   },
 
   hasInsufficientGasFunds() {
-    let insufficientNetworkTokenForGas = true
+    let isInsufficientNetworkTokenForGas = true
     if (
       AccountController.state.preferredAccountType ===
       W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     ) {
       // Smart Accounts may pay gas in any ERC20 token
-      insufficientNetworkTokenForGas = false
+      isInsufficientNetworkTokenForGas = false
     } else if (state.networkBalanceInUSD) {
-      insufficientNetworkTokenForGas = this.isInsufficientNetworkTokenForGas(
+      isInsufficientNetworkTokenForGas = this.isInsufficientNetworkTokenForGas(
         state.networkBalanceInUSD,
         state.gasPriceInUSD
       )
     }
 
-    return insufficientNetworkTokenForGas
+    return isInsufficientNetworkTokenForGas
   },
 
   async sendNativeToken(params: TxParams) {
