@@ -106,18 +106,6 @@ describe('Base', () => {
         ids: ['eoa', 'ordinal']
       })
     })
-
-    it('should not initialize excluded wallet rdns if basic is true', () => {
-      vi.spyOn(ApiController, 'initializeExcludedWalletRdns')
-
-      new AppKit({
-        ...mockOptions,
-        excludeWalletIds: ['eoa', 'ordinal'],
-        basic: true
-      })
-
-      expect(ApiController.initializeExcludedWalletRdns).not.toHaveBeenCalled()
-    })
   })
 
   describe('Alert Errors', () => {

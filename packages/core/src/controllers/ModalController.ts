@@ -55,13 +55,13 @@ export const ModalController = {
 
     const caipAddress = ChainController.state.activeCaipAddress
 
-    const noAdapters = ChainController.state.noAdapters
+    const hasNoAdapters = ChainController.state.noAdapters
 
     if (options?.view) {
       RouterController.reset(options.view)
     } else if (caipAddress) {
       RouterController.reset('Account')
-    } else if (noAdapters) {
+    } else if (hasNoAdapters) {
       if (CoreHelperUtil.isMobile()) {
         RouterController.reset('AllWallets')
       } else {
@@ -81,21 +81,21 @@ export const ModalController = {
 
   close() {
     const isEmbeddedEnabled = OptionsController.state.enableEmbedded
-    const connected = Boolean(ChainController.state.activeCaipAddress)
+    const isConnected = Boolean(ChainController.state.activeCaipAddress)
 
     // Only send the event if the modal is open and is about to be closed
     if (state.open) {
       EventsController.sendEvent({
         type: 'track',
         event: 'MODAL_CLOSE',
-        properties: { connected }
+        properties: { connected: isConnected }
       })
     }
 
     state.open = false
 
     if (isEmbeddedEnabled) {
-      if (connected) {
+      if (isConnected) {
         RouterController.replace('Account')
       } else {
         RouterController.push('Connect')

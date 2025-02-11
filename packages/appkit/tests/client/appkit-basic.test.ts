@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   AccountController,
   type AccountControllerState,
+  ApiController,
   ConnectionController,
   ModalController
 } from '@reown/appkit-core'
@@ -71,6 +72,19 @@ describe('AppKitBasic', () => {
       const appKit = new AppKit({ ...mockOptions, manualWCControl: false })
       await appKit.close()
       expect(ConnectionController.finalizeWcConnection).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('initialize', () => {
+    it('should not initialize excluded wallet rdns if basic is true', () => {
+      vi.spyOn(ApiController, 'initializeExcludedWalletRdns')
+
+      new AppKit({
+        ...mockOptions,
+        excludeWalletIds: ['eoa', 'ordinal']
+      })
+
+      expect(ApiController.initializeExcludedWalletRdns).not.toHaveBeenCalled()
     })
   })
 })
