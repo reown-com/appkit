@@ -403,7 +403,10 @@ export const WalletRevokePermissionsRequest = z.object({
   method: z.literal('wallet_revokePermissions'),
   params: z.any()
 })
-
+export const WalletGetAssetsRequest = z.object({
+  method: z.literal('wallet_getAssets'),
+  params: z.array(z.any())
+})
 export const FrameSession = z.object({
   token: z.string()
 })
@@ -482,7 +485,7 @@ export const W3mFrameSchema = {
     .or(
       EventSchema.extend({
         type: zType('APP_RPC_REQUEST'),
-        payload: RpcPersonalSignRequest.or(RpcEthSendTransactionRequest)
+        payload: RpcPersonalSignRequest.or(WalletGetAssetsRequest)
           .or(RpcEthAccountsRequest)
           .or(RpcEthBlockNumber)
           .or(RpcEthCall)

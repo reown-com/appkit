@@ -7,7 +7,7 @@ export { PresetsUtil } from '../src/PresetsUtil.js'
 export { HelpersUtil } from '../src/HelpersUtil.js'
 export { ErrorUtil } from '../src/ErrorUtil.js'
 export { LoggerUtil } from '../src/LoggerUtil.js'
-export { CaipNetworksUtil } from '../src/CaipNetworkUtil.js'
+export { CaipNetworksUtil, getBlockchainApiRpcUrl } from '../src/CaipNetworkUtil.js'
 export type { SocialProvider } from '../src/TypeUtil.js'
 
 export { SocialProviderEnum } from '../src/TypeUtil.js'

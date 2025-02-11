@@ -3,7 +3,13 @@ import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import type { WcWallet } from '@reown/appkit-core'
-import { AssetUtil, ConnectionController, ConnectorController, CoreHelperUtil, RouterController, StorageUtil } from '@reown/appkit-core'
+import {
+  AssetUtil,
+  ConnectionController,
+  ConnectorController,
+  CoreHelperUtil,
+  StorageUtil
+} from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
 @customElement('w3m-connect-recent-widget')
@@ -73,7 +79,8 @@ export class W3mConnectRecentWidget extends LitElement {
     if (this.loading) {
       return
     }
-    RouterController.push('ConnectingWalletConnect', { wallet })
+
+    ConnectorController.selectWalletConnector(wallet)
   }
 }
 
