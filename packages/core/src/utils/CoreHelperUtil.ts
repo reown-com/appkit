@@ -1,5 +1,9 @@
 import type { AppKitSdkVersion, Balance, ChainNamespace } from '@reown/appkit-common'
-import { ConstantsUtil as CommonConstants, SafeLocalStorage, SafeLocalStorageKeys } from '@reown/appkit-common'
+import {
+  ConstantsUtil as CommonConstants,
+  SafeLocalStorage,
+  SafeLocalStorageKeys
+} from '@reown/appkit-common'
 import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
 
 import { ConstantsUtil } from './ConstantsUtil.js'
@@ -157,16 +161,16 @@ export const CoreHelperUtil = {
     }
   },
   getOpenTargetForPlatform(target: OpenTarget) {
-    if(target === 'popupWindow') {
+    if (target === 'popupWindow') {
       return target
     }
     // Only '_blank' deeplinks work in Telegram context
-      if (this.isTelegram()) {
-        // But for social login, we need to load the page in the same context
-        if (SafeLocalStorage.getItem(SafeLocalStorageKeys.SOCIAL_PROVIDER)) {
-          return '_top'
-        }
-      
+    if (this.isTelegram()) {
+      // But for social login, we need to load the page in the same context
+      if (SafeLocalStorage.getItem(SafeLocalStorageKeys.SOCIAL_PROVIDER)) {
+        return '_top'
+      }
+
       return '_blank'
     }
 
@@ -455,5 +459,5 @@ export const CoreHelperUtil = {
     const newUrl = beforeKeyValue + newKeyValue + afterKeyValue
 
     return newUrl
-  },
+  }
 }
