@@ -189,10 +189,6 @@ export class AppKit {
     await this.syncExistingConnection()
 
     PublicStateController.set({ initialized: true })
-
-    setTimeout(() => {
-      this.checkExistingConnection()
-    }, 0)
   }
 
   private sendInitializeEvent(options: AppKitOptionsWithSdk) {
@@ -2023,6 +2019,7 @@ export class AppKit {
         }
       })
       this.syncAuthConnector(this.authProvider)
+      this.checkExistingSocialConnection()
     }
   }
 
@@ -2173,7 +2170,7 @@ export class AppKit {
     return this.initPromise
   }
 
-  private async checkExistingConnection() {
+  private async checkExistingSocialConnection() {
     try {
       if (!CoreHelperUtil.isTelegram()) {
         return
@@ -2215,7 +2212,7 @@ export class AppKit {
     } catch (error) {
       this.setLoading(false)
       // eslint-disable-next-line no-console
-      console.error('checkExistingConnection error', error)
+      console.error('checkExistingSocialConnection error', error)
     }
 
     try {
