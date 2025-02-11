@@ -14,6 +14,7 @@ import {
   RouterController,
   SnackController,
   type SocialProvider,
+  StorageUtil,
   type WalletGuideType
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
@@ -233,11 +234,6 @@ export class W3mSocialLoginWidget extends LitElement {
       RouterController.push('ConnectingSocial')
 
       const authConnector = ConnectorController.getAuthConnector()
-      this.popupWindow = CoreHelperUtil.returnOpenHref(
-        '',
-        'popupWindow',
-        'width=600,height=800,scrollbars=yes'
-      )
 
       try {
         if (authConnector && socialProvider) {
@@ -245,11 +241,28 @@ export class W3mSocialLoginWidget extends LitElement {
             provider: socialProvider
           })
 
-          if (this.popupWindow && uri) {
+          if (!uri) {
+            throw new Error('Something went wrong')
+          }
+
+          if (CoreHelperUtil.isTelegram()) {
+            StorageUtil.setTelegramSocialProvider(socialProvider)
+            const parsedUri = CoreHelperUtil.formatTelegramSocialLoginUrl(uri)
+
+            // eslint-disable-next-line consistent-return
+            return CoreHelperUtil.openHref(parsedUri, '_top')
+          }
+
+          this.popupWindow = CoreHelperUtil.returnOpenHref(
+            '',
+            'popupWindow',
+            'width=600,height=800,scrollbars=yes'
+          )
+
+          if (this.popupWindow) {
             AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
             this.popupWindow.location.href = uri
           } else {
-            this.popupWindow?.close()
             throw new Error('Something went wrong')
           }
         }

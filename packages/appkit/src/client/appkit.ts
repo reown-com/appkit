@@ -8,8 +8,11 @@ import {
 } from '@reown/appkit-common'
 import {
   ApiController,
+  ConnectionController,
+  ConnectorController,
   type ConnectorType,
   ConstantsUtil as CoreConstantsUtil,
+  EventsController,
   type Metadata
 } from '@reown/appkit-core'
 import {
@@ -233,6 +236,61 @@ export class AppKit extends AppKitCore {
     this.setLoading(false)
   }
 
+  private async checkExistingTelegramSocialConnection() {
+    try {
+      if (!CoreHelperUtil.isTelegram()) {
+        return
+      }
+      const socialProviderToConnect = StorageUtil.getTelegramSocialProvider()
+      if (!socialProviderToConnect) {
+        return
+      }
+      if (typeof window === 'undefined' || typeof document === 'undefined') {
+        return
+      }
+      const url = new URL(window.location.href)
+      const resultUri = url.searchParams.get('result_uri')
+      if (!resultUri) {
+        return
+      }
+      AccountController.setSocialProvider(
+        socialProviderToConnect,
+        ChainController.state.activeChain
+      )
+      await this.authProvider?.init()
+      const authConnector = ConnectorController.getAuthConnector()
+      if (socialProviderToConnect && authConnector) {
+        this.setLoading(true)
+
+        await authConnector.provider.connectSocial(resultUri)
+        await ConnectionController.connectExternal(authConnector, authConnector.chain)
+        StorageUtil.setConnectedSocialProvider(socialProviderToConnect)
+        StorageUtil.removeTelegramSocialProvider()
+
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'SOCIAL_LOGIN_SUCCESS',
+          properties: { provider: socialProviderToConnect }
+        })
+      }
+    } catch (error) {
+      this.setLoading(false)
+      // eslint-disable-next-line no-console
+      console.error('checkExistingSTelegramocialConnection error', error)
+    }
+
+    try {
+      const url = new URL(window.location.href)
+      // Remove the 'result_uri' parameter
+      url.searchParams.delete('result_uri')
+      // Update the URL without reloading the page
+      window.history.replaceState({}, document.title, url.toString())
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('tma social login failed', error)
+    }
+  }
+
   private createAuthProvider() {
     const isEmailEnabled =
       this.options?.features?.email === undefined
@@ -260,6 +318,7 @@ export class AppKit extends AppKitCore {
         }
       })
       this.syncAuthConnector(this.authProvider)
+      this.checkExistingTelegramSocialConnection()
     }
   }
 
