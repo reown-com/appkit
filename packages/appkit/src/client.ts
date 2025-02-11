@@ -2181,7 +2181,6 @@ export class AppKit {
       const socialProviderToConnect = SafeLocalStorage.getItem(
         SafeLocalStorageKeys.SOCIAL_PROVIDER
       ) as AccountControllerState['socialProvider']
-      console.log('socialProviderToConnect', socialProviderToConnect)
       if (!socialProviderToConnect) {
         return
       }
@@ -2189,9 +2188,7 @@ export class AppKit {
         return
       }
       const url = new URL(window.location.href)
-      console.log('url', url)
       const resultUri = url.searchParams.get('result_uri')
-      console.log('resultUri', resultUri)
       if (!resultUri) {
         return
       }
@@ -2201,15 +2198,11 @@ export class AppKit {
       )
       await this.authProvider?.init()
       const authConnector = ConnectorController.getAuthConnector()
-      console.log('authConnector', authConnector)
       if (socialProviderToConnect && authConnector) {
         this.setLoading(true)
 
-        // Await new Promise<void>(resolve => setTimeout(resolve, 1_000))
-        console.log('connectSocial with uri')
         await authConnector.provider.connectSocial(resultUri)
         await ConnectionController.connectExternal(authConnector, authConnector.chain)
-        console.log('connected')
         StorageUtil.setConnectedSocialProvider(socialProviderToConnect)
         SafeLocalStorage.removeItem(SafeLocalStorageKeys.SOCIAL_PROVIDER)
 

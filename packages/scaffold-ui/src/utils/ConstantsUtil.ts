@@ -2,8 +2,8 @@ import type { ConnectMethod } from '@reown/appkit-core'
 
 export const ConstantsUtil = {
   ACCOUNT_TABS: [{ label: 'Tokens' }, { label: 'NFTs' }, { label: 'Activity' }],
-  SECURE_SITE_ORIGIN: 'https://1347e153.secure-appkit-sdk.pages.dev',
-  // Process.env['NEXT_PUBLIC_SECURE_SITE_ORIGIN'] || 'https://secure.walletconnect.org',
+  SECURE_SITE_ORIGIN:
+    process.env['NEXT_PUBLIC_SECURE_SITE_ORIGIN'] || 'https://secure.walletconnect.org',
   VIEW_DIRECTION: {
     Next: 'next',
     Prev: 'prev'

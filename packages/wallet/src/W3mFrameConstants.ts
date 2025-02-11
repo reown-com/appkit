@@ -1,6 +1,6 @@
-export const SECURE_SITE_SDK = 'https://1347e153.secure-appkit-sdk.pages.dev/sdk'
-// Process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL'] || 'https://secure.walletconnect.org/sdk'
-console.log(SECURE_SITE_SDK)
+export const SECURE_SITE_SDK =
+  process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL'] || 'https://secure.walletconnect.org/sdk'
+
 export const DEFAULT_LOG_LEVEL = process.env['NEXT_PUBLIC_DEFAULT_LOG_LEVEL'] || 'error'
 
 export const SECURE_SITE_SDK_VERSION = process.env['NEXT_PUBLIC_SECURE_SITE_SDK_VERSION'] || 3

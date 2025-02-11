@@ -246,10 +246,8 @@ export class W3mSocialLoginWidget extends LitElement {
           }
 
           if (CoreHelperUtil.isTelegram()) {
-            console.log('uri', uri)
             SafeLocalStorage.setItem(SafeLocalStorageKeys.SOCIAL_PROVIDER, socialProvider)
             const parsedUri = CoreHelperUtil.formatTelegramSocialLoginUrl(uri)
-            console.log('redirecting...', parsedUri)
 
             // eslint-disable-next-line consistent-return
             return CoreHelperUtil.openHref(parsedUri, '_top')
@@ -262,7 +260,6 @@ export class W3mSocialLoginWidget extends LitElement {
           )
 
           if (this.popupWindow) {
-            console.log('via popup uri', uri, this.popupWindow)
             AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
             this.popupWindow.location.href = uri
           } else {
