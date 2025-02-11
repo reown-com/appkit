@@ -49,13 +49,13 @@ describe('Listeners', () => {
   })
 
   it('should show unsupported chain UI when network is unsupported and allowUnsupportedChain is false', async () => {
+    const showUnsupportedChainUISpy = vi.spyOn(ChainController, 'showUnsupportedChainUI')
+
     const appKit = new AppKit({
       ...mockOptions,
       allowUnsupportedChain: false,
       features: { email: false, socials: [] }
     })
-
-    const showUnsupportedChainUISpy = vi.spyOn(ChainController, 'showUnsupportedChainUI')
 
     mockChainControllerStateWithUnsupportedChain()
     await appKit['syncAccount']({
