@@ -182,8 +182,8 @@ export const ConnectorController = {
     }
   },
 
-  getAuthConnector(): AuthConnector | undefined {
-    const activeNamespace = ChainController.state.activeChain
+  getAuthConnector(chainNamespace?: ChainNamespace): AuthConnector | undefined {
+    const activeNamespace = chainNamespace || ChainController.state.activeChain
     const authConnector = state.connectors.find(c => c.id === ConstantsUtil.CONNECTOR_ID.AUTH)
 
     if (!authConnector) {
