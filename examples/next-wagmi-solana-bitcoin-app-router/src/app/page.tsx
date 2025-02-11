@@ -20,7 +20,7 @@ export default function Home() {
         <img src="/appkit-logo.png" alt="Reown" width="150" />
       </div>
 
-      <h1 className="page-title">Next.js App Router with Wagmi and Solana Adapters</h1>
+      <h1 className="page-title">AppKit Next.js with Wagmi, Solana, and Bitcoin Adapters</h1>
 
       <div className="appkit-buttons-container">
         <appkit-button />
