@@ -1,15 +1,17 @@
 import { SystemUtil } from '@reown/appkit-common'
 
+const DEFAULT_SDK_URL = 'https://secure.walletconnect.org/sdk'
+
 export const SECURE_SITE_SDK = SystemUtil.canUseProcessEnv
-  ? process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL']
-  : 'https://secure.walletconnect.org/sdk'
+  ? process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL'] || DEFAULT_SDK_URL
+  : DEFAULT_SDK_URL
 
 export const DEFAULT_LOG_LEVEL = SystemUtil.canUseProcessEnv
-  ? process.env['NEXT_PUBLIC_DEFAULT_LOG_LEVEL']
+  ? process.env['NEXT_PUBLIC_DEFAULT_LOG_LEVEL'] || 'error'
   : 'error'
 
 export const SECURE_SITE_SDK_VERSION = SystemUtil.canUseProcessEnv
-  ? process.env['NEXT_PUBLIC_SECURE_SITE_SDK_VERSION']
+  ? process.env['NEXT_PUBLIC_SECURE_SITE_SDK_VERSION'] || 3
   : 3
 
 export const W3mFrameConstants = {
