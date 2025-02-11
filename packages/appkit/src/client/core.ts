@@ -1405,8 +1405,11 @@ export abstract class AppKitCore {
     AccountController.setProfileImage(profileImage, chain)
   }
 
-  public setUser: (typeof AccountController)['setUser'] = user => {
-    AccountController.setUser(user)
+  public setUser: (typeof AccountController)['setUser'] = (user, chain) => {
+    AccountController.setUser(user, chain)
+    if (OptionsController.state.enableEmbedded) {
+      ModalController.close()
+    }
   }
 
   public resetAccount: (typeof AccountController)['resetAccount'] = (chain: ChainNamespace) => {
@@ -1553,29 +1556,40 @@ export abstract class AppKitCore {
     return AccountController.state.connectedWalletInfo
   }
 
-  public subscribeAccount(callback: (newState: UseAppKitAccountReturn) => void) {
+  public subscribeAccount(
+    callback: (newState: UseAppKitAccountReturn) => void,
+    namespace?: ChainNamespace
+  ) {
     function updateVal() {
-      const authConnector = ConnectorController.getAuthConnector()
+      const authConnector = ConnectorController.getAuthConnector(namespace)
+      const accountState = ChainController.getAccountDataByChainNamespace(namespace)
+
+      if (!accountState) {
+        return
+      }
 
       callback({
-        allAccounts: AccountController.state.allAccounts,
-        caipAddress: ChainController.state.activeCaipAddress,
-        address: CoreHelperUtil.getPlainAddress(ChainController.state.activeCaipAddress),
-        isConnected: Boolean(ChainController.state.activeCaipAddress),
-        status: AccountController.state.status,
+        allAccounts: accountState.allAccounts,
+        caipAddress: accountState.caipAddress,
+        address: CoreHelperUtil.getPlainAddress(accountState.caipAddress),
+        isConnected: Boolean(accountState.caipAddress),
+        status: accountState.status,
         embeddedWalletInfo: authConnector
           ? {
-              user: AccountController.state.user,
-              authProvider: AccountController.state.socialProvider || 'email',
-              accountType: AccountController.state.preferredAccountType,
-              isSmartAccountDeployed: Boolean(AccountController.state.smartAccountDeployed)
+              user: accountState.user,
+              authProvider: accountState.socialProvider || 'email',
+              accountType: accountState.preferredAccountType,
+              isSmartAccountDeployed: Boolean(accountState.smartAccountDeployed)
             }
           : undefined
       })
     }
 
-    ChainController.subscribe(updateVal)
-    AccountController.subscribe(updateVal)
+    if (namespace) {
+      ChainController.subscribeChainProp('accountState', updateVal, namespace)
+    } else {
+      ChainController.subscribe(updateVal)
+    }
     ConnectorController.subscribe(updateVal)
   }
 
