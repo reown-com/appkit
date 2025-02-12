@@ -3,7 +3,13 @@ import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import type { WcWallet } from '@reown/appkit-core'
-import { AssetUtil, ConnectorController, StorageUtil } from '@reown/appkit-core'
+import {
+  AssetUtil,
+  ConnectionController,
+  ConnectorController,
+  CoreHelperUtil,
+  StorageUtil
+} from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
 @customElement('w3m-connect-recent-widget')
@@ -16,12 +22,20 @@ export class W3mConnectRecentWidget extends LitElement {
 
   @state() private connectors = ConnectorController.state.connectors
 
+  @state() private loading = false
+
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
     this.unsubscribe.push(
       ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
     )
+    if (CoreHelperUtil.isTelegram() && CoreHelperUtil.isIos()) {
+      this.loading = !ConnectionController.state.wcUri
+      this.unsubscribe.push(
+        ConnectionController.subscribeKey('wcUri', val => (this.loading = !val))
+      )
+    }
   }
 
   // -- Render -------------------------------------------- //
@@ -51,6 +65,7 @@ export class W3mConnectRecentWidget extends LitElement {
               tagLabel="recent"
               tagVariant="shade"
               tabIdx=${ifDefined(this.tabIdx)}
+              ?loading=${this.loading}
             >
             </wui-list-wallet>
           `
@@ -61,6 +76,10 @@ export class W3mConnectRecentWidget extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private onConnectWallet(wallet: WcWallet) {
+    if (this.loading) {
+      return
+    }
+
     ConnectorController.selectWalletConnector(wallet)
   }
 }
