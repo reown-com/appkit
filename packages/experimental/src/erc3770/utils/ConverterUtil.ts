@@ -1,3 +1,5 @@
+import { getAddress } from 'viem'
+
 /* eslint-disable func-style */
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
@@ -23,7 +25,13 @@ const convertCaip10ToErc3770 = (caipAddress: string): string => {
     throw new Error(`Chain ID ${chainId} not found in shortname list`)
   }
 
-  return `${shortName}:${address}`
+  try {
+    const checksumAddress = getAddress(address)
+
+    return `${shortName}:${checksumAddress}`
+  } catch (error) {
+    throw new Error('Invalid ERC-55 address format')
+  }
 }
 
 const createErc3770Address = (address: string, chainId: string): string => {
@@ -32,7 +40,13 @@ const createErc3770Address = (address: string, chainId: string): string => {
     throw new Error(`Chain ID ${chainId} not found in shortname list`)
   }
 
-  return `${shortName}:${address}`
+  try {
+    const checksumAddress = getAddress(address)
+
+    return `${shortName}:${checksumAddress}`
+  } catch (error) {
+    throw new Error('Invalid ERC-55 address format')
+  }
 }
 
 export const ConverterUtil = {
