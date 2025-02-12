@@ -11,9 +11,9 @@ import {
   Text
 } from '@chakra-ui/react'
 
+import { convertCaipToErc3770 } from '@reown/appkit-experimental/erc3770'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 
-import { convertCaipToErc3770 } from '../utils/ERC3770Utils'
 import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
 
 type AppKitInfoProps = {
