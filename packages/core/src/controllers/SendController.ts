@@ -185,6 +185,7 @@ export const SendController = {
       if (address && chainId && chain) {
         const balances = await SendApiUtil.getMyTokensWithBalance()
         state.tokenBalances = balances
+        state.lastRetry = undefined
 
         return balances
       }

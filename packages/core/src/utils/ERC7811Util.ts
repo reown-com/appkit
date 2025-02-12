@@ -93,8 +93,13 @@ export const ERC7811Utils = {
    * @returns Chain ID in hex format
    */
   getChainIdHexFromCAIP2ChainId(caip2ChainId: CaipNetworkId): `0x${string}` {
-    const chainPart = caip2ChainId.split(':')[1] ?? '0'
+    const parts = caip2ChainId.split(':')
+    if (parts.length < 2 || !parts[1]) {
+      return '0x0'
+    }
+    const chainPart = parts[1]
+    const parsed = parseInt(chainPart, 10)
 
-    return `0x${parseInt(chainPart, 10).toString(16)}`
+    return isNaN(parsed) ? '0x0' : `0x${parsed.toString(16)}`
   }
 }
