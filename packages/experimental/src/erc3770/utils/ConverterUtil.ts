@@ -1,6 +1,6 @@
+/* eslint-disable func-style */
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
-// eslint-disable-next-line func-style
 const convertCaip10ToErc3770 = (caipAddress: string): string => {
   const parts = caipAddress.split(':')
 
@@ -26,4 +26,16 @@ const convertCaip10ToErc3770 = (caipAddress: string): string => {
   return `${shortName}:${address}`
 }
 
-export const ConverterUtil = { convertCaip10ToErc3770 }
+const createErc3770Address = (address: string, chainId: string): string => {
+  const shortName = ConstantsUtil.CHAIN_NAMES[chainId]
+  if (!shortName) {
+    throw new Error(`Chain ID ${chainId} not found in shortname list`)
+  }
+
+  return `${shortName}:${address}`
+}
+
+export const ConverterUtil = {
+  convertCaip10ToErc3770,
+  createErc3770Address
+}

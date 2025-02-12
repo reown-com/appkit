@@ -43,4 +43,44 @@ describe('ConverterUtil', () => {
       expect(result).toBe('eth:0x123456789abcdef123456789abcdef123456789a')
     })
   })
+
+  describe('createErc3770Address', () => {
+    it('should create ERC-3770 address for Ethereum mainnet', () => {
+      const address = '0x123456789abcdef123456789abcdef123456789a'
+      const result = ConverterUtil.createErc3770Address(address, '1')
+      expect(result).toBe('eth:0x123456789abcdef123456789abcdef123456789a')
+    })
+
+    it('should create ERC-3770 address for Polygon mainnet', () => {
+      const address = '0x123456789abcdef123456789abcdef123456789a'
+      const result = ConverterUtil.createErc3770Address(address, '137')
+      expect(result).toBe('pol:0x123456789abcdef123456789abcdef123456789a')
+    })
+
+    it('should throw error for unknown chain ID', () => {
+      const address = '0x123456789abcdef123456789abcdef123456789a'
+      expect(() => ConverterUtil.createErc3770Address(address, '0')).toThrow(
+        'Chain ID 0 not found in shortname list'
+      )
+    })
+
+    it('should throw error for invalid ethereum address', () => {
+      const invalidAddress = '0xinvalid'
+      expect(() => ConverterUtil.createErc3770Address(invalidAddress, '1')).toThrow(
+        'Invalid ERC-55 address format'
+      )
+    })
+
+    it('should normalize the ethereum address to checksum format', () => {
+      const lowercase = '0x123456789abcdef123456789abcdef123456789a'
+      const result = ConverterUtil.createErc3770Address(lowercase, '1')
+      expect(result).toBe('eth:0x123456789aBcDEf123456789aBcDEf123456789A')
+    })
+
+    it('should handle hex chain IDs', () => {
+      const address = '0x123456789abcdef123456789abcdef123456789a'
+      const result = ConverterUtil.createErc3770Address(address, '0x89')
+      expect(result).toBe('pol:0x123456789abcdef123456789abcdef123456789a')
+    })
+  })
 })
