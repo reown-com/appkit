@@ -137,8 +137,8 @@ export const BlockchainApiController = {
     const { sdkType, sdkVersion } = OptionsController.state
 
     return {
-      st: sdkType || 'appkit',
-      sv: sdkVersion || 'html-wagmi-4.2.2'
+      st: sdkType || 'unknown',
+      sv: sdkVersion || 'unknown'
     }
   },
 
