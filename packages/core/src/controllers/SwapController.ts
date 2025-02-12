@@ -682,8 +682,8 @@ export const SwapController = {
 
       const isSourceTokenIsNetworkToken = sourceToken.address === networkAddress
 
-      const gas = BigInt(response.tx.eip155.gas)
-      const gasPrice = BigInt(response.tx.eip155.gasPrice)
+      const gas = BigInt(NumberUtil.bigNumber(response.tx.eip155.gas).round().toString())
+      const gasPrice = BigInt(NumberUtil.bigNumber(response.tx.eip155.gasPrice).round().toString())
 
       const transaction = {
         data: response.tx.data,
