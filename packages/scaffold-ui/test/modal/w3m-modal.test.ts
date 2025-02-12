@@ -17,7 +17,20 @@ import type { RouterControllerState, SIWXConfig } from '@reown/appkit-core'
 import { W3mModal } from '../../src/modal/w3m-modal'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
-// Mock ResizeObserver
+// --- Mocks ------------------------------------------------------------
+const mainnet = {
+  id: 1,
+  name: 'Ethereum',
+  caipNetworkId: 'eip155:1',
+  chainNamespace: 'eip155'
+} as unknown as CaipNetwork
+const polygon = {
+  id: 137,
+  name: 'Polygon',
+  caipNetworkId: 'eip155:137',
+  chainNamespace: 'eip155'
+} as unknown as CaipNetwork
+
 beforeAll(() => {
   global.ResizeObserver = vi.fn().mockImplementation(() => ({
     observe: vi.fn(),
@@ -171,14 +184,9 @@ describe('W3mModal', () => {
     it('should handle network change when not connected', async () => {
       const goBackSpy = vi.spyOn(RouterController, 'goBack')
       ;(element as any).caipAddress = undefined
-      ;(element as any).caipNetwork = { id: '1', name: 'Network 1', caipNetworkId: 'eip155:1' }
-      const nextNetwork = {
-        id: '2',
-        name: 'Network 2',
-        caipNetworkId: 'eip155:2'
-      } as unknown as CaipNetwork
+      ;(element as any).caipNetwork = mainnet
 
-      ChainController.setActiveCaipNetwork(nextNetwork)
+      ChainController.setActiveCaipNetwork(polygon)
       element.requestUpdate()
       await elementUpdated(element)
 
@@ -192,15 +200,10 @@ describe('W3mModal', () => {
       } as RouterControllerState)
       const goBackSpy = vi.spyOn(RouterController, 'goBack')
       ;(element as any).caipAddress = 'eip155:1:0x123'
-      ;(element as any).caipNetwork = { id: '1', name: 'Network 1', caipNetworkId: 'eip155:1' }
+      ;(element as any).caipNetwork = polygon
+      element.requestUpdate()
 
-      const nextNetwork = {
-        id: '2',
-        name: 'Network 2',
-        caipNetworkId: 'eip155:2'
-      } as unknown as CaipNetwork
-
-      ChainController.setActiveCaipNetwork(nextNetwork)
+      ChainController.setActiveCaipNetwork(mainnet)
       element.requestUpdate()
       await elementUpdated(element)
 
@@ -210,14 +213,10 @@ describe('W3mModal', () => {
     it('should handle network change when connected', async () => {
       const goBackSpy = vi.spyOn(RouterController, 'goBack')
       ;(element as any).caipAddress = 'eip155:1:0x123'
-      ;(element as any).caipNetwork = { id: '1', name: 'Network 1', caipNetworkId: 'eip155:1' }
+      ;(element as any).caipNetwork = mainnet
+      element.requestUpdate()
 
-      const nextNetwork = {
-        id: '2',
-        name: 'Network 2',
-        caipNetworkId: 'eip155:2'
-      } as unknown as CaipNetwork
-      ChainController.setActiveCaipNetwork(nextNetwork)
+      ChainController.setActiveCaipNetwork(polygon)
       element.requestUpdate()
       await elementUpdated(element)
 

@@ -1,8 +1,11 @@
+import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import {
   AppKitNetwork,
   arbitrum,
+  bitcoin,
+  bitcoinTestnet,
   mainnet,
   optimism,
   polygon,
@@ -31,7 +34,9 @@ export const networks = [
   optimism,
   solana,
   solanaDevnet,
-  solanaTestnet
+  solanaTestnet,
+  bitcoin,
+  bitcoinTestnet
 ] as [AppKitNetwork, ...AppKitNetwork[]]
 
 // Setup wagmi adapter
@@ -42,9 +47,11 @@ export const wagmiAdapter = new WagmiAdapter({
 
 export const solanaAdapter = new SolanaAdapter({})
 
+export const bitcoinAdapter = new BitcoinAdapter()
+
 // Create modal
 const modal = createAppKit({
-  adapters: [wagmiAdapter, solanaAdapter],
+  adapters: [wagmiAdapter, solanaAdapter, bitcoinAdapter],
   networks,
   metadata: {
     name: 'AppKit Next.js Wagmi Solana',

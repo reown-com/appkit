@@ -1,5 +1,5 @@
 {
-  "name": "@examples/next-wagmi-solana-app-router",
+  "name": "@examples/next-wagmi-solana-bitcoin-app-router",
   "version": "1.0.5",
   "private": true,
   "scripts": {
@@ -13,6 +13,7 @@
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@reown/appkit-adapter-solana": "workspace:*",
+    "@reown/appkit-adapter-bitcoin": "workspace:*",
     "@wagmi/core": "2.16.4",
     "next": "14.2.21",
     "next-themes": "0.4.3",

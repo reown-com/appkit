@@ -1,4 +1,5 @@
 import type { CaipNetwork } from '@reown/appkit'
+import { ConstantsUtil } from '@reown/appkit-common'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
 
 import {
@@ -20,7 +21,7 @@ const unsupportedNetwork = {
   id: '123456789',
   caipNetworkId:
     `${mainnet.chainNamespace}:123456789` as `${typeof mainnet.chainNamespace}:${string}`,
-  name: 'Unsupported Network',
+  name: ConstantsUtil.UNSUPPORTED_NETWORK_NAME,
   nativeCurrency: {
     name: 'Unknown',
     symbol: 'UNK',

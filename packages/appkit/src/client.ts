@@ -11,9 +11,12 @@ import {
   ConstantsUtil,
   NetworkUtil,
   ParseUtil,
+  SafeLocalStorage,
+  SafeLocalStorageKeys,
   getW3mThemeVariables
 } from '@reown/appkit-common'
 import {
+  type AccountControllerState,
   type ChainAdapter,
   type ConnectMethod,
   type ConnectedWalletInfo,
@@ -299,29 +302,40 @@ export class AppKit {
     return AccountController.state.connectedWalletInfo
   }
 
-  public subscribeAccount(callback: (newState: UseAppKitAccountReturn) => void) {
+  public subscribeAccount(
+    callback: (newState: UseAppKitAccountReturn) => void,
+    namespace?: ChainNamespace
+  ) {
     function updateVal() {
-      const authConnector = ConnectorController.getAuthConnector()
+      const authConnector = ConnectorController.getAuthConnector(namespace)
+      const accountState = ChainController.getAccountDataByChainNamespace(namespace)
+
+      if (!accountState) {
+        return
+      }
 
       callback({
-        allAccounts: AccountController.state.allAccounts,
-        caipAddress: ChainController.state.activeCaipAddress,
-        address: CoreHelperUtil.getPlainAddress(ChainController.state.activeCaipAddress),
-        isConnected: Boolean(ChainController.state.activeCaipAddress),
-        status: AccountController.state.status,
+        allAccounts: accountState.allAccounts,
+        caipAddress: accountState.caipAddress,
+        address: CoreHelperUtil.getPlainAddress(accountState.caipAddress),
+        isConnected: Boolean(accountState.caipAddress),
+        status: accountState.status,
         embeddedWalletInfo: authConnector
           ? {
-              user: AccountController.state.user,
-              authProvider: AccountController.state.socialProvider || 'email',
-              accountType: AccountController.state.preferredAccountType,
-              isSmartAccountDeployed: Boolean(AccountController.state.smartAccountDeployed)
+              user: accountState.user,
+              authProvider: accountState.socialProvider || 'email',
+              accountType: accountState.preferredAccountType,
+              isSmartAccountDeployed: Boolean(accountState.smartAccountDeployed)
             }
           : undefined
       })
     }
 
-    ChainController.subscribe(updateVal)
-    AccountController.subscribe(updateVal)
+    if (namespace) {
+      ChainController.subscribeChainProp('accountState', updateVal, namespace)
+    } else {
+      ChainController.subscribe(updateVal)
+    }
     ConnectorController.subscribe(updateVal)
   }
 
@@ -462,8 +476,8 @@ export class AppKit {
     AccountController.setProfileImage(profileImage, chain)
   }
 
-  public setUser: (typeof AccountController)['setUser'] = user => {
-    AccountController.setUser(user)
+  public setUser: (typeof AccountController)['setUser'] = (user, chain) => {
+    AccountController.setUser(user, chain)
     if (OptionsController.state.enableEmbedded) {
       ModalController.close()
     }
@@ -971,7 +985,7 @@ export class AppKit {
 
         StorageUtil.removeConnectedNamespace(namespace)
         ProviderUtil.resetChain(namespace)
-        this.setUser(undefined)
+        this.setUser(undefined, namespace)
         this.setStatus('disconnected', namespace)
       },
       checkInstalled: (ids?: string[]) => {
@@ -1244,6 +1258,7 @@ export class AppKit {
           ? (`eip155:${user.chainId}:${user.address}` as CaipAddress)
           : (`${user.chainId}:${user.address}` as CaipAddress)
       this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
+
       if (!HelpersUtil.isLowerCaseMatch(user.address, AccountController.state.address)) {
         this.syncIdentity({
           address: user.address,
@@ -1251,9 +1266,9 @@ export class AppKit {
           chainNamespace: namespace
         })
       }
-      this.setCaipAddress(caipAddress, namespace)
 
-      this.setUser({ ...(AccountController.state.user || {}), email: user.email })
+      this.setCaipAddress(caipAddress, namespace)
+      this.setUser({ ...(AccountController.state.user || {}), email: user.email }, namespace)
 
       const preferredAccountType = (user.preferredAccountType ||
         OptionsController.state.defaultAccountTypes[namespace]) as W3mFrameTypes.AccountType
@@ -1278,7 +1293,10 @@ export class AppKit {
       this.setLoading(false)
     })
     provider.onSocialConnected(({ userName }) => {
-      this.setUser({ ...(AccountController.state.user || {}), username: userName })
+      this.setUser(
+        { ...(AccountController.state.user || {}), username: userName },
+        ChainController.state.activeChain
+      )
     })
     provider.onGetSmartAccountEnabledNetworks(networks => {
       this.setSmartAccountEnabledNetworks(
@@ -1309,7 +1327,10 @@ export class AppKit {
     const email = provider.getEmail()
     const username = provider.getUsername()
 
-    this.setUser({ ...(AccountController.state?.user || {}), username, email })
+    this.setUser(
+      { ...(AccountController.state?.user || {}), username, email },
+      ChainController.state.activeChain
+    )
 
     this.setupAuthConnectorListeners(provider)
 
@@ -1998,6 +2019,7 @@ export class AppKit {
         }
       })
       this.syncAuthConnector(this.authProvider)
+      this.checkExistingSocialConnection()
     }
   }
 
@@ -2146,5 +2168,62 @@ export class AppKit {
     }
 
     return this.initPromise
+  }
+
+  private async checkExistingSocialConnection() {
+    try {
+      if (!CoreHelperUtil.isTelegram()) {
+        return
+      }
+      const socialProviderToConnect = SafeLocalStorage.getItem(
+        SafeLocalStorageKeys.SOCIAL_PROVIDER
+      ) as AccountControllerState['socialProvider']
+      if (!socialProviderToConnect) {
+        return
+      }
+      if (typeof window === 'undefined' || typeof document === 'undefined') {
+        return
+      }
+      const url = new URL(window.location.href)
+      const resultUri = url.searchParams.get('result_uri')
+      if (!resultUri) {
+        return
+      }
+      AccountController.setSocialProvider(
+        socialProviderToConnect,
+        ChainController.state.activeChain
+      )
+      await this.authProvider?.init()
+      const authConnector = ConnectorController.getAuthConnector()
+      if (socialProviderToConnect && authConnector) {
+        this.setLoading(true)
+
+        await authConnector.provider.connectSocial(resultUri)
+        await ConnectionController.connectExternal(authConnector, authConnector.chain)
+        StorageUtil.setConnectedSocialProvider(socialProviderToConnect)
+        SafeLocalStorage.removeItem(SafeLocalStorageKeys.SOCIAL_PROVIDER)
+
+        EventsController.sendEvent({
+          type: 'track',
+          event: 'SOCIAL_LOGIN_SUCCESS',
+          properties: { provider: socialProviderToConnect }
+        })
+      }
+    } catch (error) {
+      this.setLoading(false)
+      // eslint-disable-next-line no-console
+      console.error('checkExistingSocialConnection error', error)
+    }
+
+    try {
+      const url = new URL(window.location.href)
+      // Remove the 'result_uri' parameter
+      url.searchParams.delete('result_uri')
+      // Update the URL without reloading the page
+      window.history.replaceState({}, document.title, url.toString())
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('tma social login failed', error)
+    }
   }
 }

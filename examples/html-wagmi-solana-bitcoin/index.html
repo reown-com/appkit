@@ -1,57 +1,39 @@
-'use client'
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTML Wagmi-Solana-Bitcoin Example</title>
+    <link rel="stylesheet" href="/src/main.css" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="/favicon-dark.png"
+      media="(prefers-color-scheme: light)"
+    />
+    <link rel="icon" type="image/png" href="/favicon.png" media="(prefers-color-scheme: dark)" />
+  </head>
 
-import { useTheme } from 'next-themes'
+  <body>
+    <div class="page-container" id="app">
+      <div class="logo-container">
+        <img id="reown-logo" src="/reown-logo.png" alt="Reown" width="150" />
+        <img src="/appkit-logo.png" alt="AppKit" width="150" />
+      </div>
 
-import { mainnet } from '@reown/appkit/networks'
+      <h1 class="page-title">HTML Wagmi-Solana-Bitcoin Example</h1>
 
-import { useAppKit, useAppKitNetwork, useAppKitTheme, useDisconnect } from '@/config'
+      <div class="appkit-buttons-container">
+        <appkit-button></appkit-button>
+        <appkit-network-button></appkit-network-button>
+      </div>
 
-export function ActionButtonList() {
-  const modal = useAppKit()
-  const { disconnect } = useDisconnect()
-  const { switchNetwork } = useAppKitNetwork()
-  const { themeMode, setThemeMode } = useAppKitTheme()
-  const { setTheme } = useTheme()
-
-  function openAppKit() {
-    modal.open()
-  }
-
-  function switchToNetwork() {
-    switchNetwork(mainnet)
-  }
-
-  function connectToSolana() {
-    modal.open({ view: 'Connect', namespace: 'solana' })
-  }
-
-  function connectToEthereum() {
-    modal.open({ view: 'Connect', namespace: 'eip155' })
-  }
-
-  async function handleDisconnect() {
-    try {
-      await disconnect()
-    } catch (error) {
-      console.error('Error during disconnect:', error)
-    }
-  }
-
-  function toggleTheme() {
-    const newTheme = themeMode === 'dark' ? 'light' : 'dark'
-    setThemeMode(newTheme)
-    setTheme(newTheme)
-  }
-
-  return (
-    <div className="action-button-list">
-      <button onClick={openAppKit}>Open</button>
-      <button onClick={handleDisconnect}>Disconnect</button>
-      <button onClick={switchToNetwork}>Switch to Ethereum</button>
-      <button onClick={connectToSolana}>Connect to Solana</button>
-      <button onClick={connectToEthereum}>Connect to Ethereum</button>
-      <button onClick={toggleTheme}>
-        {themeMode === 'light' ? (
+      <div class="action-button-list">
+        <button id="open-modal">Open</button>
+        <button id="disconnect">Disconnect</button>
+        <button id="switch-to-ethereum">Switch to Ethereum</button>
+        <button id="sign-message">Sign Message</button>
+        <button id="toggle-theme">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -64,21 +46,89 @@ export function ActionButtonList() {
               fill="currentColor"
             />
           </svg>
-        ) : (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 32 32"
-            fill="none"
-          >
-            <path
-              d="M29.1925 17.7788C29.0642 17.6503 28.9034 17.5591 28.7272 17.515C28.551 17.471 28.3662 17.4757 28.1925 17.5288C26.2857 18.1053 24.2583 18.1536 22.3262 17.6686C20.3941 17.1837 18.6298 16.1837 17.2212 14.7751C15.8126 13.3665 14.8126 11.6022 14.3277 9.67013C13.8427 7.73804 13.8911 5.71059 14.4675 3.8038C14.521 3.63006 14.5261 3.44501 14.4823 3.26857C14.4385 3.09213 14.3475 2.93097 14.2189 2.80241C14.0904 2.67386 13.9292 2.58279 13.7528 2.53898C13.5763 2.49518 13.3913 2.5003 13.2175 2.5538C10.5813 3.36136 8.26695 4.97979 6.60378 7.1788C5.14929 9.10987 4.26209 11.4083 4.04186 13.8158C3.82162 16.2233 4.27707 18.6445 5.35704 20.8074C6.437 22.9703 8.0987 24.7893 10.1554 26.0598C12.2122 27.3304 14.5825 28.0023 17 28.0001C19.8205 28.0087 22.5658 27.0919 24.815 25.3901C27.014 23.7269 28.6325 21.4125 29.44 18.7763C29.4929 18.6032 29.4978 18.419 29.4542 18.2433C29.4106 18.0677 29.3202 17.9071 29.1925 17.7788ZM23.6125 23.7926C21.4945 25.3879 18.8714 26.1644 16.2262 25.9792C13.581 25.794 11.0918 24.6595 9.2167 22.7845C7.34162 20.9096 6.20692 18.4205 6.02149 15.7753C5.83606 13.1301 6.61237 10.507 8.20753 8.3888C9.24678 7.01638 10.5904 5.90386 12.1325 5.1388C12.0447 5.75533 12.0004 6.37729 12 7.00005C12.0037 10.4467 13.3745 13.7512 15.8117 16.1884C18.2488 18.6256 21.5533 19.9964 25 20.0001C25.624 19.9999 26.2473 19.9556 26.865 19.8676C26.0993 21.41 24.9859 22.7536 23.6125 23.7926Z"
-              fill="currentColor"
-            />
-          </svg>
-        )}
-      </button>
+        </button>
+      </div>
+
+      <div class="code-container-wrapper">
+        <section class="code-container">
+          <h2 class="code-container-title">useAppKitAccount - EVM</h2>
+          <div class="code-container-content">
+            <pre id="accountStateEvm"></pre>
+          </div>
+        </section>
+
+        <section class="code-container">
+          <h2 class="code-container-title">useAppKitAccount - Solana</h2>
+          <div class="code-container-content">
+            <pre id="accountStateSolana"></pre>
+          </div>
+        </section>
+
+        <section class="code-container">
+          <h2 class="code-container-title">useAppKitAccount - Bitcoin</h2>
+          <div class="code-container-content">
+            <pre id="accountStateBitcoin"></pre>
+          </div>
+        </section>
+
+        <section class="code-container">
+          <h2 class="code-container-title">useAppKitAccount()</h2>
+          <div class="code-container-content">
+            <pre id="accountState"></pre>
+          </div>
+        </section>
+
+        <section class="code-container">
+          <h2 class="code-container-title">useAppKitNetwork()</h2>
+          <div class="code-container-content">
+            <pre id="networkState"></pre>
+          </div>
+        </section>
+
+        <section class="code-container">
+          <h2 class="code-container-title">useAppKitTheme()</h2>
+          <div class="code-container-content">
+            <pre id="themeState"></pre>
+          </div>
+        </section>
+
+        <section class="code-container">
+          <h2 class="code-container-title">useAppKitState()</h2>
+          <div class="code-container-content">
+            <pre id="appKitState"></pre>
+          </div>
+        </section>
+
+        <section class="code-container">
+          <h2 class="code-container-title">useAppKitEvents()</h2>
+          <div class="code-container-content">
+            <pre id="events"></pre>
+          </div>
+        </section>
+
+        <section class="code-container">
+          <h2 class="code-container-title">useWalletInfo()</h2>
+          <div class="code-container-content">
+            <pre id="walletInfo"></pre>
+          </div>
+        </section>
+      </div>
+
+      <div class="footer">
+        <div class="footer-links">
+          <a href="https://reown.com" target="_blank" rel="noreferrer"> Reown </a>
+          •
+          <a href="https://docs.reown.com" target="_blank" rel="noreferrer"> Docs </a>
+          •
+          <a href="https://github.com/reown-com/appkit" target="_blank" rel="noreferrer">
+            GitHub
+          </a>
+          •
+          <a href="https://cloud.reown.com" target="_blank" rel="noreferrer"> Cloud </a>
+        </div>
+        <p class="warning">This project ID only works on localhost. Go to Cloud to get your own.</p>
+      </div>
     </div>
-  )
-}
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
