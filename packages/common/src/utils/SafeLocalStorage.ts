@@ -15,6 +15,7 @@ export type SafeLocalStorageItems = {
   '@appkit/connection_status': string
   '@appkit/siwx-auth-token': string
   '@appkit/siwx-nonce-token': string
+  '@appkit/social_provider': string
   /*
    * DO NOT CHANGE: @walletconnect/universal-provider requires us to set this specific key
    *  This value is a stringified version of { href: stiring; name: string }
@@ -36,7 +37,8 @@ export const SafeLocalStorageKeys = {
   CONNECTED_NAMESPACES: '@appkit/connected_namespaces',
   CONNECTION_STATUS: '@appkit/connection_status',
   SIWX_AUTH_TOKEN: '@appkit/siwx-auth-token',
-  SIWX_NONCE_TOKEN: '@appkit/siwx-nonce-token'
+  SIWX_NONCE_TOKEN: '@appkit/siwx-nonce-token',
+  SOCIAL_PROVIDER: '@appkit/social_provider'
 } as const satisfies Record<string, keyof SafeLocalStorageItems>
 
 export type SafeLocalStorageKey = keyof SafeLocalStorageItems | NamespacedConnectorKey
