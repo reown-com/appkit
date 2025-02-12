@@ -13,6 +13,7 @@ import {
 
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 
+import { convertCaipToErc3770 } from '../utils/ERC3770Utils'
 import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
 
 type AppKitInfoProps = {
@@ -22,6 +23,18 @@ type AppKitInfoProps = {
 export function AppKitInfo({ clientId }: AppKitInfoProps) {
   const { caipAddress, address } = useAppKitAccount()
   const { chainId } = useAppKitNetwork()
+
+  const isEIP155 = caipAddress?.startsWith('eip155:')
+  const erc3770Address = React.useMemo(() => {
+    if (!isEIP155 || !caipAddress) {
+      return null
+    }
+    try {
+      return convertCaipToErc3770(caipAddress)
+    } catch (e) {
+      return null
+    }
+  }, [caipAddress, isEIP155])
 
   return (
     <Card marginTop={10} marginBottom={10}>
@@ -37,6 +50,15 @@ export function AppKitInfo({ clientId }: AppKitInfoProps) {
             </Heading>
             <Text data-testid="w3m-caip-address">{caipAddress}</Text>
           </Box>
+
+          {erc3770Address && (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Chain Specific Address (ERC-3770)
+              </Heading>
+              <Text data-testid="w3m-erc3770-address">{erc3770Address}</Text>
+            </Box>
+          )}
 
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
