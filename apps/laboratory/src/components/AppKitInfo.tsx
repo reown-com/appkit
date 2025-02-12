@@ -11,7 +11,7 @@ import {
   Text
 } from '@chakra-ui/react'
 
-import { convertCaipToErc3770 } from '@reown/appkit-experimental/erc3770'
+import { convertCaip10ToErc3770 } from '@reown/appkit-experimental/erc3770'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 
 import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
@@ -30,7 +30,7 @@ export function AppKitInfo({ clientId }: AppKitInfoProps) {
       return null
     }
     try {
-      return convertCaipToErc3770(caipAddress)
+      return convertCaip10ToErc3770(caipAddress)
     } catch (e) {
       return null
     }

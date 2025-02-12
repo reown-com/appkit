@@ -1,7 +1,7 @@
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 
 // eslint-disable-next-line func-style
-const convertCaipToErc3770 = (caipAddress: string): string => {
+const convertCaip10ToErc3770 = (caipAddress: string): string => {
   const parts = caipAddress.split(':')
 
   const [namespace, chainId, address] = parts
@@ -26,4 +26,4 @@ const convertCaipToErc3770 = (caipAddress: string): string => {
   return `${shortName}:${address}`
 }
 
-export const ConverterUtil = { convertCaipToErc3770 }
+export const ConverterUtil = { convertCaip10ToErc3770 }
