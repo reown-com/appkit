@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 
-import { Button, HStack, Input, Link, Stack, Text, VStack } from '@chakra-ui/react'
+import { Button, Input, Link, Stack, Text, VStack } from '@chakra-ui/react'
 import { type Chain, type Hex, erc20Abi } from 'viem'
 import { type Config, useAccount } from 'wagmi'
 import { getWalletClient } from 'wagmi/actions'
@@ -45,6 +45,7 @@ interface IProps {
 }
 
 function AvailableTestContent({ chain, config }: IProps) {
+  // Group all hooks at the top
   const [address, setAddress] = useState('')
   const [amount, setAmount] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -55,7 +56,6 @@ function AvailableTestContent({ chain, config }: IProps) {
     refetch: refetchBalances
   } = useWalletGetAssets()
 
-  // Get USDC balance for current chain
   function getUSDCBalance() {
     const chainId = chain.id as keyof typeof TOKEN_ADDRESSES
     const usdcAddress = TOKEN_ADDRESSES[chainId]
@@ -63,6 +63,8 @@ function AvailableTestContent({ chain, config }: IProps) {
 
     return usdcBalance?.balance || '0'
   }
+
+  const usdcBalance = useMemo(() => getUSDCBalance(), [balances, chain.id])
 
   async function onSendTransaction(wagmiConfig: Config) {
     const usdcAmount = BigInt(Math.round(parseFloat(amount) * 1_000_000))
@@ -83,7 +85,7 @@ function AvailableTestContent({ chain, config }: IProps) {
         description: hash,
         type: 'success'
       })
-      // Refresh balances after successful transaction
+
       await refetchBalances()
     } catch (error) {
       toast({
@@ -97,6 +99,7 @@ function AvailableTestContent({ chain, config }: IProps) {
     }
   }
 
+  // Conditional renders after all hooks
   if (!config) {
     return <Text>Config is not available</Text>
   }
@@ -104,16 +107,11 @@ function AvailableTestContent({ chain, config }: IProps) {
     return <Text>Loading...</Text>
   }
 
-  const usdcBalance = useMemo(() => getUSDCBalance(), [balances, chain.id])
-
   return (
     <VStack spacing={4} align="stretch" width="100%">
-      <HStack justify="space-between" px={2}>
-        <Text fontSize="md">Network: {chain.name}</Text>
-        <Text fontSize="md" fontWeight="bold">
-          USDC Balance: {usdcBalance} USDC
-        </Text>
-      </HStack>
+      <Text fontSize="md" fontWeight="bold">
+        USDC Balance: {usdcBalance} USDC
+      </Text>
 
       <Stack direction={['column', 'column', 'row']} spacing={4}>
         <Input
