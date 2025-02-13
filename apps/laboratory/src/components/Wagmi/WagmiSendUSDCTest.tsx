@@ -1,12 +1,13 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
-import { Button, Input, Link, Spacer, Stack, Text } from '@chakra-ui/react'
+import { Button, HStack, Input, Link, Stack, Text, VStack } from '@chakra-ui/react'
 import { type Chain, type Hex, erc20Abi } from 'viem'
 import { type Config, useAccount } from 'wagmi'
 import { getWalletClient } from 'wagmi/actions'
 
 import { arbitrum, base, optimism, sepolia } from '@reown/appkit/networks'
 
+import { useWalletGetAssets } from '../../context/WalletGetAssetsContext'
 import { ErrorUtil } from '../../utils/ErrorUtil'
 import { useChakraToast } from '../Toast'
 
@@ -48,6 +49,20 @@ function AvailableTestContent({ chain, config }: IProps) {
   const [amount, setAmount] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const toast = useChakraToast()
+  const {
+    balances,
+    isLoading: isBalancesQueryLoading,
+    refetch: refetchBalances
+  } = useWalletGetAssets()
+
+  // Get USDC balance for current chain
+  function getUSDCBalance() {
+    const chainId = chain.id as keyof typeof TOKEN_ADDRESSES
+    const usdcAddress = TOKEN_ADDRESSES[chainId]
+    const usdcBalance = balances?.find(b => b.address.toLowerCase() === usdcAddress.toLowerCase())
+
+    return usdcBalance?.balance || '0'
+  }
 
   async function onSendTransaction(wagmiConfig: Config) {
     const usdcAmount = BigInt(Math.round(parseFloat(amount) * 1_000_000))
@@ -57,7 +72,6 @@ function AvailableTestContent({ chain, config }: IProps) {
 
     try {
       setIsLoading(true)
-
       const hash = await client.writeContract({
         abi: erc20Abi,
         functionName: 'transfer',
@@ -69,6 +83,8 @@ function AvailableTestContent({ chain, config }: IProps) {
         description: hash,
         type: 'success'
       })
+      // Refresh balances after successful transaction
+      await refetchBalances()
     } catch (error) {
       toast({
         title: 'Transaction Error',
@@ -84,33 +100,51 @@ function AvailableTestContent({ chain, config }: IProps) {
   if (!config) {
     return <Text>Config is not available</Text>
   }
+  if (isBalancesQueryLoading) {
+    return <Text>Loading...</Text>
+  }
+
+  const usdcBalance = useMemo(() => getUSDCBalance(), [balances, chain.id])
 
   return (
-    <Stack direction={['column', 'column', 'row']}>
-      <Spacer />
-      <Input placeholder="Destination" onChange={e => setAddress(e.target.value)} value={address} />
-      <Input
-        placeholder="USDC Amount"
-        onChange={e => setAmount(e.target.value)}
-        value={amount}
-        type="number"
-      />
-      <Button
-        data-testid="sign-transaction-button"
-        onClick={() => {
-          onSendTransaction(config)
-        }}
-        isDisabled={isLoading}
-        isLoading={isLoading}
-        width="80%"
-      >
-        Send USDC
-      </Button>
-      <Link isExternal href="https://faucet.circle.com">
-        <Button variant="outline" colorScheme="blue" isDisabled={isLoading}>
-          USDC Faucet
+    <VStack spacing={4} align="stretch" width="100%">
+      <HStack justify="space-between" px={2}>
+        <Text fontSize="md">Network: {chain.name}</Text>
+        <Text fontSize="md" fontWeight="bold">
+          USDC Balance: {usdcBalance} USDC
+        </Text>
+      </HStack>
+
+      <Stack direction={['column', 'column', 'row']} spacing={4}>
+        <Input
+          placeholder="Destination"
+          onChange={e => setAddress(e.target.value)}
+          value={address}
+        />
+        <Input
+          placeholder="USDC Amount"
+          onChange={e => setAmount(e.target.value)}
+          value={amount}
+          type="number"
+          max={parseFloat(usdcBalance)}
+        />
+        <Button
+          data-testid="sign-transaction-button"
+          onClick={() => onSendTransaction(config)}
+          isDisabled={
+            isLoading || !address || !amount || parseFloat(amount) > parseFloat(usdcBalance)
+          }
+          isLoading={isLoading}
+          width={'80%'}
+        >
+          Send USDC
         </Button>
-      </Link>
-    </Stack>
+        <Link isExternal href="https://faucet.circle.com">
+          <Button variant="outline" colorScheme="blue" isDisabled={isLoading}>
+            USDC Faucet
+          </Button>
+        </Link>
+      </Stack>
+    </VStack>
   )
 }
