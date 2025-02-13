@@ -834,6 +834,7 @@ export type Event =
       address?: string
       event: 'SEND_ERROR'
       properties: {
+        message: string
         isSmartAccount: boolean
         network: string
         token: string
@@ -997,32 +998,10 @@ export type AdapterNetworkState = {
   smartAccountEnabledNetworks?: number[]
 }
 
-export type AdapterAccountState = {
-  currentTab: number
-  caipAddress?: CaipAddress
-  address?: string
-  addressLabels: Map<string, string>
-  allAccounts: AccountType[]
-  balance?: string
-  balanceSymbol?: string
-  profileName?: string | null
-  profileImage?: string | null
-  addressExplorerUrl?: string
-  smartAccountDeployed?: boolean
-  socialProvider?: SocialProvider
-  tokenBalance?: Balance[]
-  shouldUpdateToAddress?: string
-  connectedWalletInfo?: ConnectedWalletInfo
-  preferredAccountType?: W3mFrameTypes.AccountType
-  socialWindow?: Window
-  farcasterUrl?: string
-  status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
-}
-
 export type ChainAdapter = {
   connectionControllerClient?: ConnectionControllerClient
   networkControllerClient?: NetworkControllerClient
-  accountState?: AdapterAccountState
+  accountState?: AccountControllerState
   networkState?: AdapterNetworkState
   namespace?: ChainNamespace
   caipNetworks?: CaipNetwork[]

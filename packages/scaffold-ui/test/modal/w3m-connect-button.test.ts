@@ -65,7 +65,7 @@ describe('W3mConnectButton', () => {
     })
 
     it('updates button text when modal is open', async () => {
-      ModalController.open()
+      await ModalController.open()
       element.requestUpdate()
       await elementUpdated(element)
 

@@ -46,4 +46,20 @@ describe('EventsController', () => {
 
     expect(EventsController.state.reportedErrors['FORBIDDEN']).toBe(true)
   })
+
+  it('should include sdk properties when sending an analytics event', async () => {
+    vi.spyOn(FetchUtil.prototype, 'post').mockResolvedValue({})
+
+    await EventsController._sendAnalyticsEvent({
+      ...EventsController.state,
+      data: { type: 'track', event: 'MODAL_CLOSE', properties: { connected: true } }
+    })
+
+    expect(FetchUtil.prototype.post).toHaveBeenCalledWith(
+      expect.objectContaining({
+        path: '/e',
+        params: EventsController.getSdkProperties()
+      })
+    )
+  })
 })

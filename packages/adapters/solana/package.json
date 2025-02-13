@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-adapter-solana",
-  "version": "1.6.5",
+  "version": "1.6.8",
   "type": "module",
   "main": "./dist/esm/src/index.js",
   "types": "./dist/types/src/index.d.ts",
@@ -63,7 +63,7 @@
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "valtio": "1.11.2"
+    "valtio": "1.13.2"
   },
   "optionalDependencies": {
     "borsh": "0.7.0",

@@ -18,7 +18,7 @@ export const networkImages = {
   // Solana
   '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'a1b58899-f671-4276-6a5e-56ca5bd59700',
   // Solana Testnet
-  '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z': 'ae542fcd-69e0-402c-7369-dcbad393ba00',
+  EtWTRABZaYq6iMfeYKouRu166VU2xqa1: 'ae542fcd-69e0-402c-7369-dcbad393ba00',
   // Bitcoin
   '000000000019d6689c085ae165831e93': '21c895fa-e105-4829-9434-378bb54fa600',
   // Bitcoin Testnet

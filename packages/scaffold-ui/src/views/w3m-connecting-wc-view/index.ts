@@ -3,6 +3,7 @@ import { state } from 'lit/decorators.js'
 
 import type { BaseError, Platform } from '@reown/appkit-core'
 import {
+  ChainController,
   ConnectionController,
   ConstantsUtil,
   CoreHelperUtil,
@@ -133,7 +134,7 @@ export class W3mConnectingWcView extends LitElement {
     const isDesktopWc = desktop_link && !CoreHelperUtil.isMobile()
 
     // Populate all preferences
-    if (isBrowserWc) {
+    if (isBrowserWc && !ChainController.state.noAdapters) {
       this.platforms.push('browser')
     }
     if (isMobileWc) {
@@ -145,7 +146,7 @@ export class W3mConnectingWcView extends LitElement {
     if (isDesktopWc) {
       this.platforms.push('desktop')
     }
-    if (!isBrowserWc && isBrowser) {
+    if (!isBrowserWc && isBrowser && !ChainController.state.noAdapters) {
       this.platforms.push('unsupported')
     }
 
