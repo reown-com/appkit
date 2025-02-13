@@ -3,27 +3,22 @@ import * as React from 'react'
 
 import UniversalProvider from '@walletconnect/universal-provider'
 import { RpcRequest } from 'ox'
-import { type Hex, type PublicClient, createPublicClient, erc20Abi, http } from 'viem'
+import { type Hex } from 'viem'
 
 import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 
 import type { GetCapabilitiesResult } from '../types/EIP5792'
 import type { Asset, WalletGetAssetsRPCRequest, WalletGetAssetsRPCResponse } from '../types/ERC7811'
-import { usdcTokenAddresses, usdtTokenAddresses } from '../utils/CATokensUtil'
-import { convertChainIdToHex, formatBalance } from '../utils/ERC7811Util'
-import { getChain } from '../utils/NetworksUtil'
+import { fetchFallbackBalances } from '../utils/BalanceFetcherUtil'
+import { convertChainIdToHex, formatBalance } from '../utils/FormatterUtil'
 
 export interface TokenBalance {
   symbol: string
   balance: string
   address: Hex
+  chainId: number
 }
 
-interface TokenConfig {
-  symbol: string
-  decimals: number
-  address: Hex
-}
 interface WalletAssetsContextType {
   balances: TokenBalance[]
   isLoading: boolean
@@ -41,11 +36,12 @@ export function WalletGetAssetsProvider({ children }: { children: React.ReactNod
   const [isLoading, setIsLoading] = React.useState(false)
 
   const processAssetsToBalances = React.useCallback(
-    (chainAssets: Asset[]): TokenBalance[] =>
+    (chainAssets: Asset[], chainIdNum: number): TokenBalance[] =>
       chainAssets.map(asset => ({
         symbol: asset.metadata.symbol,
         balance: formatBalance(BigInt(asset.balance), asset.metadata.decimals),
-        address: asset.address as Hex
+        address: asset.address as Hex,
+        chainId: chainIdNum
       })),
     []
   )
@@ -146,115 +142,6 @@ export function WalletGetAssetsProvider({ children }: { children: React.ReactNod
     []
   )
 
-  // Helper function to fetch ERC20 token balance
-  async function fetchTokenBalance({
-    publicClient,
-    userAddress,
-    tokenConfig
-  }: {
-    publicClient: PublicClient
-    userAddress: Hex
-    tokenConfig: TokenConfig
-  }): Promise<TokenBalance | null> {
-    try {
-      const balance = await publicClient.readContract({
-        address: tokenConfig.address,
-        abi: erc20Abi,
-        functionName: 'balanceOf',
-        args: [userAddress]
-      })
-
-      return {
-        symbol: tokenConfig.symbol,
-        balance: formatBalance(balance, tokenConfig.decimals),
-        address: tokenConfig.address
-      }
-    } catch (error) {
-      console.error(`Error fetching ${tokenConfig.symbol} balance:`, error)
-
-      return null
-    }
-  }
-
-  const fetchFallbackBalances = React.useCallback(
-    async (userAddress: Hex, chainIdAsHex: Hex): Promise<TokenBalance[]> => {
-      const chainIdNum = parseInt(chainIdAsHex.slice(2), 16)
-      const tokenBalances: TokenBalance[] = []
-
-      try {
-        const chain = getChain(chainIdNum)
-        if (!chain) {
-          throw new Error(`Chain not found for ID: ${chainIdNum}`)
-        }
-        const publicClient = createPublicClient({
-          chain,
-          transport: http()
-        })
-
-        // Fetch native token balance
-        try {
-          const nativeBalance = await publicClient.getBalance({
-            address: userAddress
-          })
-
-          tokenBalances.push({
-            symbol: chain.nativeCurrency.symbol,
-            balance: formatBalance(nativeBalance, chain.nativeCurrency.decimals),
-            address: '0x' as Hex
-          })
-        } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error('Error fetching native balance:', error)
-        }
-
-        // Configure supported tokens for the chain
-        const supportedTokens: TokenConfig[] = []
-
-        // Add USDC if supported on this chain
-        const usdcAddress = usdcTokenAddresses[chainIdNum]
-        if (usdcAddress) {
-          supportedTokens.push({
-            symbol: 'USDC',
-            decimals: 6,
-            address: usdcAddress
-          })
-        }
-
-        // Add USDT if supported on this chain
-        const usdtAddress = usdtTokenAddresses[chainIdNum]
-        if (usdtAddress) {
-          supportedTokens.push({
-            symbol: 'USDT',
-            decimals: 6,
-            address: usdtAddress
-          })
-        }
-
-        // Fetch all token balances in parallel
-        const tokenResults = await Promise.allSettled(
-          supportedTokens.map(token =>
-            fetchTokenBalance({ publicClient, userAddress, tokenConfig: token })
-          )
-        )
-
-        // Filter out failed requests and null results
-        tokenResults.forEach(result => {
-          if (result.status === 'fulfilled' && result.value) {
-            tokenBalances.push(result.value)
-          }
-        })
-
-        return tokenBalances
-      } catch (error) {
-        console.error('Error in fetchFallbackBalances:', error)
-
-        // Return any balances we managed to fetch instead of empty array
-        return tokenBalances
-      }
-    },
-    []
-  )
-
   const fetchBalances = React.useCallback(async () => {
     if (!address || status !== 'connected' || !chainId || !walletProvider) {
       return
@@ -294,7 +181,10 @@ export function WalletGetAssetsProvider({ children }: { children: React.ReactNod
         if (assetsObject) {
           const chainAssets = assetsObject[chainIdAsHex]
           if (chainAssets && chainAssets.length > 0) {
-            const tokenBalances = processAssetsToBalances(chainAssets)
+            const tokenBalances = processAssetsToBalances(
+              chainAssets,
+              parseInt(chainIdAsHex.slice(2), 16)
+            )
             setBalances(tokenBalances)
 
             return
@@ -318,7 +208,6 @@ export function WalletGetAssetsProvider({ children }: { children: React.ReactNod
     chainId,
     walletProvider,
     getAssetDiscoveryCapabilities,
-    fetchFallbackBalances,
     walletProviderType,
     getAssetsViaWalletService,
     getAssetsViaProvider,

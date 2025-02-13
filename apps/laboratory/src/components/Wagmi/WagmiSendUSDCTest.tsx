@@ -57,11 +57,9 @@ function AvailableTestContent({ chain, config }: IProps) {
   } = useWalletGetAssets()
 
   function getUSDCBalance() {
-    const chainId = chain.id as keyof typeof TOKEN_ADDRESSES
-    const usdcAddress = TOKEN_ADDRESSES[chainId]
-    const usdcBalance = balances?.find(b => b.address.toLowerCase() === usdcAddress.toLowerCase())
+    const currentChainBalance = balances.find(b => b.symbol === 'USDC')?.balance || '0'
 
-    return usdcBalance?.balance || '0'
+    return currentChainBalance
   }
 
   const usdcBalance = useMemo(() => getUSDCBalance(), [balances, chain.id])
