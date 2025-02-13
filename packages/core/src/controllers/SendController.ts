@@ -249,10 +249,12 @@ export const SendController = {
       })
       this.resetSend()
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       EventsController.sendEvent({
         type: 'track',
         event: 'SEND_ERROR',
         properties: {
+          message: errorMessage,
           isSmartAccount:
             AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
