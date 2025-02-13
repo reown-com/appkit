@@ -39,13 +39,13 @@ export const EventsController = {
     return sub(state, () => callback(state))
   },
 
-  _getApiHeaders() {
+  getSdkProperties() {
     const { projectId, sdkType, sdkVersion } = OptionsController.state
 
     return {
-      'x-project-id': projectId,
-      'x-sdk-type': sdkType,
-      'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
+      projectId,
+      st: sdkType,
+      sv: sdkVersion || 'html-wagmi-4.2.2'
     }
   },
 
@@ -58,7 +58,7 @@ export const EventsController = {
 
       await api.post({
         path: '/e',
-        headers: EventsController._getApiHeaders(),
+        params: EventsController.getSdkProperties(),
         body: {
           eventId: CoreHelperUtil.getUUID(),
           url: window.location.href,
