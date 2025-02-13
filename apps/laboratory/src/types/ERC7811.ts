@@ -1,27 +1,27 @@
-type Hex = `0x${string}`;
+type Hex = `0x${string}`
 
 interface TokenMetadata {
-  name: string;
-  symbol: string;
-  decimals: number;
+  name: string
+  symbol: string
+  decimals: number
 }
 
 export interface Asset {
-  address: Hex | "native";
-  balance: Hex;
-  type: string;
-  metadata: TokenMetadata;
+  address: Hex | 'native'
+  balance: Hex
+  type: string
+  metadata: TokenMetadata
 }
 
 export interface WalletGetAssetsRPCResponse {
-  jsonrpc: string;
-  id: number;
-  result: Record<Hex, Asset[]>[];
+  jsonrpc: string
+  id: number
+  result: Record<Hex, Asset[]>[]
 }
 
 export type WalletGetAssetsRPCRequest = {
-  account: string;
-  chainFilter?: Hex[];
-  assetFilter?: Record<Hex, (Hex|'native')[]>;
-  assetTypeFilter?: ('NATIVE'|'ERC20')[];
-};
+  account: string
+  chainFilter?: Hex[]
+  assetFilter?: Record<Hex, (Hex | 'native')[]>
+  assetTypeFilter?: ('NATIVE' | 'ERC20')[]
+}
