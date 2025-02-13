@@ -61,6 +61,8 @@ export const PresetsUtil = {
     1301: '4eeea7ef-0014-4649-5d1d-07271a80f600',
     // Unichain Mainnet
     130: '2257980a-3463-48c6-cbac-a42d2a956e00',
+    // Monad Testnet
+    10_143: '0a728e83-bacb-46db-7844-948f05434900',
     // Gnosis
     100: '02b53f6a-e3d4-479e-1cb4-21178987d100',
     // EVMos
