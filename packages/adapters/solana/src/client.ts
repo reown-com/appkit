@@ -45,6 +45,12 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     this.wallets = options.wallets
   }
 
+  public override construct(params: AdapterBlueprint.Params): void {
+    super.construct(params)
+    const rpcUrl = params.networks?.[0]?.rpcUrls.default.http[0] as string
+    SolStoreUtil.setConnection(new Connection(rpcUrl, this.connectionSettings))
+  }
+
   public override setAuthProvider(w3mFrameProvider: W3mFrameProvider) {
     this.addConnector(
       new AuthProvider({
