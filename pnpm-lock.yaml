@@ -289,7 +289,7 @@ importers:
         version: 8.49.0(@opentelemetry/core@1.30.1(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.56.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.0))(next@14.2.3(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(@playwright/test@1.44.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(webpack@5.94.0(@swc/core@1.10.11(@swc/helpers@0.5.15)))
       '@solana/wallet-adapter-wallets':
         specifier: 0.19.32
-        version: 0.19.32(@babel/core@7.26.7)(@babel/runtime@7.26.7)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react-dom@18.3.1(react@18.3.1))(react-native@0.77.0(@babel/core@7.26.7)(@babel/preset-env@7.24.7(@babel/core@7.26.7))(@types/react@18.2.62)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)
+        version: 0.19.32(@babel/core@7.26.7)(@babel/runtime@7.24.5)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react-dom@18.3.1(react@18.3.1))(react-native@0.77.0(@babel/core@7.26.7)(@babel/preset-env@7.24.7(@babel/core@7.26.7))(@types/react@18.2.62)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)
       '@solana/web3.js':
         specifier: 1.95.8
         version: 1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10)
@@ -468,7 +468,7 @@ importers:
         version: 7.92.0(react@18.3.1)
       '@solana/wallet-adapter-wallets':
         specifier: 0.19.32
-        version: 0.19.32(@babel/core@7.26.7)(@babel/runtime@7.24.5)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react-dom@18.3.1(react@18.3.1))(react-native@0.77.0(@babel/core@7.26.7)(@babel/preset-env@7.24.7(@babel/core@7.26.7))(@types/react@18.2.62)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)
+        version: 0.19.32(@babel/core@7.26.7)(@babel/runtime@7.26.7)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react-dom@18.3.1(react@18.3.1))(react-native@0.77.0(@babel/core@7.26.7)(@babel/preset-env@7.24.7(@babel/core@7.26.7))(@types/react@18.2.62)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)
       '@solana/web3.js':
         specifier: 1.95.8
         version: 1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10)
@@ -515,7 +515,7 @@ importers:
         specifier: 4.24.5
         version: 4.24.5(next@14.2.21(@babel/core@7.26.7)(@opentelemetry/api@1.9.0)(@playwright/test@1.44.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       ox:
-        specifier: ^0.6.9
+        specifier: 0.6.9
         version: 0.6.9(typescript@5.3.3)(zod@3.23.8)
       react:
         specifier: 18.3.1
@@ -1384,7 +1384,7 @@ importers:
         version: 0.1.14(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-wallets':
         specifier: 0.19.32
-        version: 0.19.32(@babel/core@7.26.7)(@babel/runtime@7.26.7)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react-dom@18.3.1(react@18.3.1))(react-native@0.77.0(@babel/core@7.26.7)(@babel/preset-env@7.24.7(@babel/core@7.26.7))(@types/react@18.2.62)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)
+        version: 0.19.32(@babel/core@7.26.7)(@babel/runtime@7.26.7)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react-dom@18.3.1(react@18.3.1))(react-native@0.77.0(@babel/core@7.26.7)(@babel/preset-env@7.24.7(@babel/core@7.26.7))(@types/react@18.2.62)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)
       '@tanstack/react-query':
         specifier: 5.24.8
         version: 5.24.8(react@18.3.1)
@@ -1660,7 +1660,7 @@ importers:
         version: 0.1.14(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-wallets':
         specifier: 0.19.32
-        version: 0.19.32(@babel/core@7.26.7)(@babel/runtime@7.26.7)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react-dom@18.3.1(react@18.3.1))(react-native@0.77.0(@babel/core@7.26.7)(@babel/preset-env@7.24.7(@babel/core@7.26.7))(@types/react@18.3.1)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)
+        version: 0.19.32(@babel/core@7.26.7)(@babel/runtime@7.26.7)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react-dom@18.3.1(react@18.3.1))(react-native@0.77.0(@babel/core@7.26.7)(@babel/preset-env@7.24.7(@babel/core@7.26.7))(@types/react@18.3.1)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)
       vue:
         specifier: 3.4.3
         version: 3.4.3(typescript@5.3.3)
@@ -1734,7 +1734,7 @@ importers:
         version: 0.1.14(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-wallets':
         specifier: 0.19.32
-        version: 0.19.32(@babel/core@7.26.7)(@babel/runtime@7.26.7)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react-dom@18.3.1(react@18.3.1))(react-native@0.77.0(@babel/core@7.26.7)(@babel/preset-env@7.24.7(@babel/core@7.26.7))(@types/react@18.3.1)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)
+        version: 0.19.32(@babel/core@7.26.7)(@babel/runtime@7.26.7)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react-dom@18.3.1(react@18.3.1))(react-native@0.77.0(@babel/core@7.26.7)(@babel/preset-env@7.24.7(@babel/core@7.26.7))(@types/react@18.3.1)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)
       '@tanstack/vue-query':
         specifier: 5.59.16
         version: 5.59.16(vue@3.4.3(typescript@5.3.3))
@@ -2086,7 +2086,7 @@ importers:
     optionalDependencies:
       '@wagmi/connectors':
         specifier: '>=5.7'
-        version: 5.7.5(@types/react@18.3.1)(@wagmi/core@2.16.4(@tanstack/query-core@5.59.16)(@types/react@18.3.1)(react@18.3.1)(typescript@5.3.3)(use-sync-external-store@1.4.0(react@18.3.1))(viem@2.23.0(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8)))(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react@18.3.1)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.23.0(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8))(zod@3.23.8)
+        version: 5.7.7(@types/react@18.3.1)(@wagmi/core@2.16.4(@tanstack/query-core@5.59.16)(@types/react@18.3.1)(react@18.3.1)(typescript@5.3.3)(use-sync-external-store@1.4.0(react@18.3.1))(viem@2.23.0(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8)))(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react@18.3.1)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.23.0(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8))(zod@3.23.8)
     devDependencies:
       '@types/react':
         specifier: 18.3.1
@@ -26709,7 +26709,7 @@ snapshots:
       - uploadthing
       - utf-8-validate
 
-  '@solana/wallet-adapter-wallets@0.19.32(@babel/core@7.26.7)(@babel/runtime@7.26.7)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react-dom@18.3.1(react@18.3.1))(react-native@0.77.0(@babel/core@7.26.7)(@babel/preset-env@7.24.7(@babel/core@7.26.7))(@types/react@18.2.62)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)':
+  '@solana/wallet-adapter-wallets@0.19.32(@babel/core@7.26.7)(@babel/runtime@7.26.7)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react-dom@18.3.1(react@18.3.1))(react-native@0.77.0(@babel/core@7.26.7)(@babel/preset-env@7.24.7(@babel/core@7.26.7))(@types/react@18.2.62)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)':
     dependencies:
       '@solana/wallet-adapter-alpha': 0.1.10(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-avana': 0.1.13(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))
@@ -26782,7 +26782,7 @@ snapshots:
       - uploadthing
       - utf-8-validate
 
-  '@solana/wallet-adapter-wallets@0.19.32(@babel/core@7.26.7)(@babel/runtime@7.26.7)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react-dom@18.3.1(react@18.3.1))(react-native@0.77.0(@babel/core@7.26.7)(@babel/preset-env@7.24.7(@babel/core@7.26.7))(@types/react@18.3.1)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)':
+  '@solana/wallet-adapter-wallets@0.19.32(@babel/core@7.26.7)(@babel/runtime@7.26.7)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react-dom@18.3.1(react@18.3.1))(react-native@0.77.0(@babel/core@7.26.7)(@babel/preset-env@7.24.7(@babel/core@7.26.7))(@types/react@18.3.1)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(tslib@2.8.1)(utf-8-validate@5.0.10)':
     dependencies:
       '@solana/wallet-adapter-alpha': 0.1.10(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-avana': 0.1.13(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))
@@ -29435,46 +29435,6 @@ snapshots:
       - uploadthing
       - utf-8-validate
       - zod
-
-  '@wagmi/connectors@5.7.5(@types/react@18.3.1)(@wagmi/core@2.16.4(@tanstack/query-core@5.59.16)(@types/react@18.3.1)(react@18.3.1)(typescript@5.3.3)(use-sync-external-store@1.4.0(react@18.3.1))(viem@2.23.0(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8)))(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react@18.3.1)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.23.0(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8))(zod@3.23.8)':
-    dependencies:
-      '@coinbase/wallet-sdk': 4.2.3
-      '@metamask/sdk': 0.31.5(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      '@safe-global/safe-apps-provider': 0.18.5(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8)
-      '@safe-global/safe-apps-sdk': 9.1.0(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8)
-      '@wagmi/core': 2.16.4(@tanstack/query-core@5.59.16)(@types/react@18.3.1)(react@18.3.1)(typescript@5.3.3)(use-sync-external-store@1.4.0(react@18.3.1))(viem@2.23.0(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8))
-      '@walletconnect/ethereum-provider': 2.17.0(@types/react@18.3.1)(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react@18.3.1)(utf-8-validate@5.0.10)
-      cbw-sdk: '@coinbase/wallet-sdk@3.9.3'
-      viem: 2.23.0(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8)
-    optionalDependencies:
-      typescript: 5.3.3
-    transitivePeerDependencies:
-      - '@azure/app-configuration'
-      - '@azure/cosmos'
-      - '@azure/data-tables'
-      - '@azure/identity'
-      - '@azure/keyvault-secrets'
-      - '@azure/storage-blob'
-      - '@capacitor/preferences'
-      - '@deno/kv'
-      - '@netlify/blobs'
-      - '@planetscale/database'
-      - '@react-native-async-storage/async-storage'
-      - '@types/react'
-      - '@upstash/redis'
-      - '@vercel/blob'
-      - '@vercel/kv'
-      - aws4fetch
-      - bufferutil
-      - db0
-      - encoding
-      - ioredis
-      - react
-      - supports-color
-      - uploadthing
-      - utf-8-validate
-      - zod
-    optional: true
 
   '@wagmi/connectors@5.7.7(@types/react@18.2.62)(@wagmi/core@2.16.4(@tanstack/query-core@5.59.16)(@types/react@18.2.62)(react@18.3.1)(typescript@5.3.3)(use-sync-external-store@1.4.0(react@18.3.1))(viem@2.23.0(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8)))(bufferutil@4.0.9)(db0@0.2.3)(ioredis@5.4.2)(react@18.3.1)(typescript@5.3.3)(utf-8-validate@5.0.10)(viem@2.23.0(bufferutil@4.0.9)(typescript@5.3.3)(utf-8-validate@5.0.10)(zod@3.23.8))(zod@3.23.8)':
     dependencies:
@@ -33637,8 +33597,8 @@ snapshots:
       '@typescript-eslint/parser': 6.18.1(eslint@8.56.0)(typescript@5.3.3)
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.7.0(eslint-plugin-import@2.31.0)(eslint@8.56.0)
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.7.0)(eslint@8.56.0)
+      eslint-import-resolver-typescript: 3.7.0(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint@8.56.0))(eslint@8.56.0)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.56.0)
       eslint-plugin-react: 7.37.4(eslint@8.56.0)
       eslint-plugin-react-hooks: 5.0.0-canary-7118f5dd7-20230705(eslint@8.56.0)
@@ -33661,7 +33621,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.31.0)(eslint@8.56.0):
+  eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint@8.56.0))(eslint@8.56.0):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.0(supports-color@9.4.0)
@@ -33673,22 +33633,22 @@ snapshots:
       is-glob: 4.0.3
       stable-hash: 0.0.4
     optionalDependencies:
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.7.0)(eslint@8.56.0)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0)
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.31.0)(eslint@8.56.0))(eslint@8.56.0):
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 6.18.1(eslint@8.56.0)(typescript@5.3.3)
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.7.0(eslint-plugin-import@2.31.0)(eslint@8.56.0)
+      eslint-import-resolver-typescript: 3.7.0(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint@8.56.0))(eslint@8.56.0)
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.7.0)(eslint@8.56.0):
+  eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.8
@@ -33699,7 +33659,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.31.0)(eslint@8.56.0))(eslint@8.56.0)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.3.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0)
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
