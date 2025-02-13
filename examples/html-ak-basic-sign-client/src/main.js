@@ -66,7 +66,7 @@ async function initialize() {
         method: 'wallet_switchEthereumChain',
         params: [
           {
-            chainId: '0x89'
+            chainId: '0x1'
           }
         ]
       }
