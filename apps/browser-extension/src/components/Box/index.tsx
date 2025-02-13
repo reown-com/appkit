@@ -1,10 +1,4 @@
-import {
-  type AllHTMLAttributes,
-  type ElementType,
-  type JSX,
-  createElement,
-  forwardRef
-} from 'react'
+import { type AllHTMLAttributes, type ElementType, createElement, forwardRef } from 'react'
 
 import clsx, { type ClassValue } from 'clsx'
 
@@ -34,8 +28,7 @@ export const Box = forwardRef<HTMLElement, Props>(
     }
 
     const atomicClasses = atoms({
-      reset:
-        typeof as === 'string' ? (as as Atoms['reset']) : ('div' as keyof JSX.IntrinsicElements),
+      reset: typeof as === 'string' ? (as as Atoms['reset']) : 'div',
       ...atomProps
     })
 
