@@ -1,0 +1,25 @@
+{
+  "name": "@examples/javascript-wagmi-solidjs",
+  "version": "0.0.1",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^6.0.0",
+    "vite-plugin-solid": "^2.11.1"
+  },
+  "dependencies": {
+    "@reown/appkit": "1.6.8",
+    "@reown/appkit-adapter-wagmi": "1.6.8",
+    "@wagmi/core": "^2.16.4",
+    "solid-js": "^1.9.3",
+    "viem": "^2.23.1",
+    "wagmi": "^2.14.11"
+  }
+}
