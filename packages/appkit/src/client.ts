@@ -355,10 +355,6 @@ export class AppKit {
     return AccountController.subscribeKey('connectedWalletInfo', callback)
   }
 
-  public subscribeShouldUpdateToAddress(callback: (newState?: string) => void) {
-    AccountController.subscribeKey('shouldUpdateToAddress', callback)
-  }
-
   public subscribeCaipNetworkChange(callback: (newState?: CaipNetwork) => void) {
     ChainController.subscribeKey('activeCaipNetwork', callback)
   }
@@ -857,6 +853,14 @@ export class AppKit {
     if (options.excludeWalletIds) {
       ApiController.initializeExcludedWalletRdns({ ids: options.excludeWalletIds })
     }
+
+    AccountController.subscribeKey('shouldUpdateToAddress', address => {
+      const chainNamespace = ChainController.state.activeChain as ChainNamespace
+      const chainId = this.getChainId()
+      if (address && chainNamespace && chainId) {
+        this.syncAccount({ address, chainNamespace, chainId })
+      }
+    })
   }
 
   private getDefaultMetaData() {

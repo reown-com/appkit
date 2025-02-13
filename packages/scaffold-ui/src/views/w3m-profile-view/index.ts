@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import { ConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   type AccountType,
@@ -132,8 +133,10 @@ export class W3mProfileView extends LitElement {
 
   private async onSwitchAccount(account: AccountType) {
     this.loading = true
-    const emailConnector = ConnectorController.getAuthConnector()
-    if (emailConnector) {
+    const isConnectedWithAuth =
+      ConnectorController.state.activeConnector?.id === ConstantsUtil.CONNECTOR_ID.AUTH
+
+    if (isConnectedWithAuth) {
       const type = account.type as W3mFrameTypes.AccountType
       await ConnectionController.setPreferredAccountType(type)
     }
