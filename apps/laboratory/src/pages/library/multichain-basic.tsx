@@ -21,7 +21,6 @@ ThemeStore.setModal(modal)
 export default function MultiChainWagmiAdapterOnly() {
   return (
     <>
-      <button onClick={() => modal.open({ view: 'ConnectingWalletConnectBasic' })}>Open</button>
       <AppKitButtons />
       <MultiChainInfo />
       <UpaTests />
