@@ -57,7 +57,6 @@ function updateDom() {
   }
 
   const hasSession = provider?.session && Object.keys(provider.session).length > 0
-  console.log('>> hasSession', hasSession)
   // Update button visibility
   elements.connect.style.display = hasSession ? 'none' : 'block'
   elements.disconnect.style.display = hasSession ? 'block' : 'none'
