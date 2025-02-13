@@ -7,6 +7,7 @@ import { createAppKit } from '@reown/appkit/react'
 import { AppKitButtons } from '../../components/AppKitButtons'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
+import { WalletGetAssetsProvider } from '../../context/WalletGetAssetsContext'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { ThemeStore } from '../../utils/StoreUtil'
 
@@ -35,9 +36,11 @@ export default function Wagmi() {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <AppKitButtons />
-        <WagmiModalInfo />
-        <WagmiTests config={config} />
+        <WalletGetAssetsProvider>
+          <AppKitButtons />
+          <WagmiModalInfo />
+          <WagmiTests config={config} />
+        </WalletGetAssetsProvider>
       </QueryClientProvider>
     </WagmiProvider>
   )
