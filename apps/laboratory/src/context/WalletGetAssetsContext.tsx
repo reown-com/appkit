@@ -295,7 +295,6 @@ export function WalletGetAssetsProvider({ children }: { children: React.ReactNod
           const chainAssets = assetsObject[chainIdAsHex]
           if (chainAssets && chainAssets.length > 0) {
             const tokenBalances = processAssetsToBalances(chainAssets)
-            console.log('tokenBalances', tokenBalances)
             setBalances(tokenBalances)
 
             return
