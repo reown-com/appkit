@@ -2,7 +2,8 @@ import type { ChainNamespace } from '@reown/appkit-common'
 
 import type { DefaultAccountTypes, Features, SocialProvider } from './TypeUtil.js'
 
-const SECURE_SITE = 'https://secure.walletconnect.org'
+const SECURE_SITE =
+  process.env['NEXT_PUBLIC_SECURE_SITE_ORIGIN'] || 'https://secure.walletconnect.org'
 
 export const ONRAMP_PROVIDERS = [
   {
