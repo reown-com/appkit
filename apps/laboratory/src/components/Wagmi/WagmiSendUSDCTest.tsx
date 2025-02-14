@@ -22,7 +22,7 @@ import { getWalletClient } from 'wagmi/actions'
 
 import { arbitrum, base, optimism, sepolia } from '@reown/appkit/networks'
 
-import { useWalletGetAssets } from '../../context/WalletGetAssetsContext'
+import { useWalletGetAssets } from '../../hooks/useWalletGetAssets'
 import { ErrorUtil } from '../../utils/ErrorUtil'
 import { useChakraToast } from '../Toast'
 import { useTransactionToast } from '../TransactionToast'
@@ -77,7 +77,6 @@ function SendUSDCForm({ isOpen, onClose, chain, config, balance }: SendUSDCFormP
 
       showSuccessToast(hash)
 
-      // Fetch updated balances
       await fetchBalances()
     } catch (error) {
       showErrorToast(ErrorUtil.getErrorMessage(error, 'Failed to send transaction'))

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import * as React from 'react'
 
 import UniversalProvider from '@walletconnect/universal-provider'
@@ -62,12 +61,11 @@ async function getAssetDiscoveryCapabilities({
       walletServiceUrl
     }
   } catch (error) {
-    console.error('Error checking wallet capabilities:', error)
-
-    return {
-      hasAssetDiscovery: false,
-      hasWalletService: false
-    }
+    throw new Error(
+      `Error checking wallet capabilities: ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    )
   }
 }
 
@@ -172,11 +170,9 @@ export function useWalletGetAssets() {
       // If we get here, either asset discovery isn't supported or returned no results
       return await fetchFallbackBalances(address as `0x${string}`, chainIdAsHex)
     } catch (error) {
-      console.error(
+      throw new Error(
         `Error fetching assets: ${error instanceof Error ? error.message : String(error)}`
       )
-
-      return []
     }
   }, [
     address,
