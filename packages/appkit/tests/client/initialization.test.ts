@@ -5,12 +5,13 @@ import {
   AlertController,
   ChainController,
   EventsController,
-  OptionsController
+  OptionsController,
+  StorageUtil
 } from '@reown/appkit-core'
 import { ErrorUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client'
-import { mainnet, sepolia, solana } from '../mocks/Networks'
+import { mainnet, polygon, sepolia, solana } from '../mocks/Networks'
 import { mockOptions } from '../mocks/Options'
 import { mockBlockchainApiController, mockStorageUtil, mockWindowAndDocument } from '../test-utils'
 
@@ -87,6 +88,42 @@ describe('Base', () => {
         eip155: 'eoa',
         bip122: 'ordinal'
       })
+    })
+
+    it('should use default network prop when defaultNetwork prop is not included in the networks array', () => {
+      vi.spyOn(StorageUtil, 'getActiveCaipNetworkId').mockReturnValueOnce(undefined)
+      const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
+
+      new AppKit({
+        ...mockOptions,
+        defaultNetwork: polygon
+      })
+
+      expect(setActiveCaipNetwork).toHaveBeenCalledWith(mainnet)
+    })
+
+    it('should use default network prop when there is no network in storage', () => {
+      vi.spyOn(StorageUtil, 'getActiveCaipNetworkId').mockReturnValueOnce(undefined)
+      const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
+
+      new AppKit({
+        ...mockOptions,
+        defaultNetwork: sepolia
+      })
+
+      expect(setActiveCaipNetwork).toHaveBeenCalledWith(sepolia)
+    })
+
+    it('should not use default network prop when there is a network in storage', () => {
+      vi.spyOn(StorageUtil, 'getActiveCaipNetworkId').mockReturnValueOnce(sepolia.caipNetworkId)
+      const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
+
+      new AppKit({
+        ...mockOptions,
+        defaultNetwork: polygon
+      })
+
+      expect(setActiveCaipNetwork).toHaveBeenCalledWith(sepolia)
     })
   })
 
