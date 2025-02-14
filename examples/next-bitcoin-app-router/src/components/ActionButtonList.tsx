@@ -1,8 +1,10 @@
 'use client'
 
-import { useAppKit, useDisconnect, useAppKitNetwork, useAppKitTheme } from '@/config'
-import { bitcoinTestnet } from '@reown/appkit/networks'
 import { useTheme } from 'next-themes'
+
+import { bitcoinTestnet } from '@reown/appkit/networks'
+
+import { useAppKit, useAppKitNetwork, useAppKitTheme, useDisconnect } from '@/config'
 
 export function ActionButtonList() {
   const modal = useAppKit()
