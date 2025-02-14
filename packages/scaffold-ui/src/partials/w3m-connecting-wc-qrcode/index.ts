@@ -32,9 +32,6 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
     super.disconnectedCallback()
     this.unsubscribe?.forEach(unsub => unsub())
     window.removeEventListener('resize', this.forceUpdate)
-    if (RouterController.state.data) {
-      RouterController.state.data.wallet = undefined
-    }
   }
 
   // -- Render -------------------------------------------- //
