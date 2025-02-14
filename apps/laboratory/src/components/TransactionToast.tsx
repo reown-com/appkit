@@ -88,7 +88,7 @@ function TransactionToast({
           <Box flex="1" minWidth="0">
             <AlertTitle>Transaction Pending</AlertTitle>
             <AlertDescription display="block" wordBreak="break-word">
-              Your transaction is being processed...
+              Please check your wallet. Your transaction is currently being processed..
             </AlertDescription>
           </Box>
         </Box>
