@@ -901,8 +901,7 @@ export class AppKit {
   }
 
   private extendDefaultCaipNetwork(options: AppKitOptions) {
-    const defaultNetwork =
-      options.defaultNetwork || options.networks.find(n => n.id === options.defaultNetwork?.id)
+    const defaultNetwork = options.networks.find(n => n.id === options.defaultNetwork?.id)
     const extendedNetwork = defaultNetwork
       ? CaipNetworksUtil.extendCaipNetwork(defaultNetwork, {
           customNetworkImageUrls: options.chainImages,
