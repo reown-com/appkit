@@ -3,7 +3,6 @@ import {
   type Connector,
   type CreateConfigParameters,
   type CreateConnectorFn,
-  type GetAccountReturnType,
   connect,
   createConfig,
   getAccount,
