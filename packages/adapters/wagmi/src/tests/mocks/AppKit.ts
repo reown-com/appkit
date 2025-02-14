@@ -27,7 +27,8 @@ export const mockProvider = {
   events: {
     setMaxListeners: vi.fn()
   },
-  session: mockSession
+  session: mockSession,
+  setDefaultChain: vi.fn()
 }
 
 export const mockAppKit = {
