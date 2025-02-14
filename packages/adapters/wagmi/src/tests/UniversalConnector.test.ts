@@ -62,7 +62,7 @@ describe('UniversalConnector', () => {
   })
 
   describe('connect', () => {
-    it.only('should connect successfully', async () => {
+    it('should connect successfully', async () => {
       const expectedChainId = mainnet.id
 
       mockProvider.enable.mockResolvedValue([mockAddress])
