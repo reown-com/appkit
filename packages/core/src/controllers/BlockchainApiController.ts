@@ -1,6 +1,6 @@
 import { proxy } from 'valtio/vanilla'
 
-import type { CaipAddress } from '@reown/appkit-common'
+import type { CaipAddress, CaipNetworkId } from '@reown/appkit-common'
 
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
@@ -116,6 +116,7 @@ const DEFAULT_OPTIONS = {
 export interface BlockchainApiControllerState {
   clientId: string | null
   api: FetchUtil
+  supportedChains: { http: CaipNetworkId[]; ws: CaipNetworkId[] }
 }
 
 // -- Helpers ------------------------------------------- //
@@ -124,13 +125,60 @@ const baseUrl = CoreHelperUtil.getBlockchainApiUrl()
 // -- State --------------------------------------------- //
 const state = proxy<BlockchainApiControllerState>({
   clientId: null,
-  api: new FetchUtil({ baseUrl, clientId: null })
+  api: new FetchUtil({ baseUrl, clientId: null }),
+  supportedChains: { http: [], ws: [] }
 })
 
 // -- Controller ---------------------------------------- //
 export const BlockchainApiController = {
   state,
-  fetchIdentity({ address }: BlockchainApiIdentityRequest) {
+
+  getSdkProperties() {
+    const { sdkType, sdkVersion } = OptionsController.state
+
+    return {
+      st: sdkType || 'unknown',
+      sv: sdkVersion || 'unknown'
+    }
+  },
+
+  async isNetworkSupported(network?: CaipNetworkId) {
+    if (!network) {
+      return false
+    }
+
+    try {
+      if (!state.supportedChains.http.length) {
+        await BlockchainApiController.getSupportedNetworks({
+          projectId: OptionsController.state.projectId
+        })
+      }
+    } catch (e) {
+      return false
+    }
+
+    return state.supportedChains.http.includes(network)
+  },
+  async getSupportedNetworks({ projectId }: { projectId: string }) {
+    const supportedChains = await state.api.get<BlockchainApiControllerState['supportedChains']>({
+      path: 'v1/supported-chains',
+      params: {
+        projectId
+      }
+    })
+
+    state.supportedChains = supportedChains
+
+    return supportedChains
+  },
+  async fetchIdentity({ address }: BlockchainApiIdentityRequest) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ChainController.state.activeCaipNetwork?.caipNetworkId
+    )
+    if (!isSupported) {
+      return { avatar: '', name: '' }
+    }
+
     return state.api.get<BlockchainApiIdentityResponse>({
       path: `/v1/identity/${address}`,
       params: {
@@ -142,7 +190,7 @@ export const BlockchainApiController = {
     })
   },
 
-  fetchTransactions({
+  async fetchTransactions({
     account,
     projectId,
     cursor,
@@ -151,6 +199,13 @@ export const BlockchainApiController = {
     cache,
     chainId
   }: BlockchainApiTransactionsRequest) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ChainController.state.activeCaipNetwork?.caipNetworkId
+    )
+    if (!isSupported) {
+      return { data: [], next: undefined }
+    }
+
     return state.api.get<BlockchainApiTransactionsResponse>({
       path: `/v1/account/${account}/history`,
       params: {
@@ -164,7 +219,7 @@ export const BlockchainApiController = {
     })
   },
 
-  fetchSwapQuote({
+  async fetchSwapQuote({
     projectId,
     amount,
     userAddress,
@@ -172,6 +227,13 @@ export const BlockchainApiController = {
     to,
     gasPrice
   }: BlockchainApiSwapQuoteRequest) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ChainController.state.activeCaipNetwork?.caipNetworkId
+    )
+    if (!isSupported) {
+      return { quotes: [] }
+    }
+
     return state.api.get<BlockchainApiSwapQuoteResponse>({
       path: `/v1/convert/quotes`,
       headers: {
@@ -188,7 +250,17 @@ export const BlockchainApiController = {
     })
   },
 
-  fetchSwapTokens({ projectId, chainId }: BlockchainApiSwapTokensRequest) {
+  async fetchSwapTokens({
+    projectId,
+    chainId
+  }: BlockchainApiSwapTokensRequest): Promise<BlockchainApiSwapTokensResponse> {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ChainController.state.activeCaipNetwork?.caipNetworkId
+    )
+    if (!isSupported) {
+      return { tokens: [] }
+    }
+
     return state.api.get<BlockchainApiSwapTokensResponse>({
       path: `/v1/convert/tokens`,
       params: {
@@ -198,7 +270,14 @@ export const BlockchainApiController = {
     })
   },
 
-  fetchTokenPrice({ projectId, addresses }: BlockchainApiTokenPriceRequest) {
+  async fetchTokenPrice({ projectId, addresses }: BlockchainApiTokenPriceRequest) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ChainController.state.activeCaipNetwork?.caipNetworkId
+    )
+    if (!isSupported) {
+      return { fungibles: [] }
+    }
+
     return state.api.post<BlockchainApiTokenPriceResponse>({
       path: '/v1/fungible/price',
       body: {
@@ -212,48 +291,73 @@ export const BlockchainApiController = {
     })
   },
 
-  fetchSwapAllowance({ projectId, tokenAddress, userAddress }: BlockchainApiSwapAllowanceRequest) {
-    const { sdkType, sdkVersion } = OptionsController.state
+  async fetchSwapAllowance({
+    projectId,
+    tokenAddress,
+    userAddress
+  }: BlockchainApiSwapAllowanceRequest) {
+    const { st, sv } = BlockchainApiController.getSdkProperties()
+
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ChainController.state.activeCaipNetwork?.caipNetworkId
+    )
+    if (!isSupported) {
+      return { allowance: '0' }
+    }
 
     return state.api.get<BlockchainApiSwapAllowanceResponse>({
       path: `/v1/convert/allowance`,
       params: {
         projectId,
         tokenAddress,
-        userAddress
+        userAddress,
+        st,
+        sv
       },
       headers: {
-        'Content-Type': 'application/json',
-        'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
+        'Content-Type': 'application/json'
       }
     })
   },
 
-  fetchGasPrice({ projectId, chainId }: BlockchainApiGasPriceRequest) {
-    const { sdkType, sdkVersion } = OptionsController.state
+  async fetchGasPrice({ projectId, chainId }: BlockchainApiGasPriceRequest) {
+    const { st, sv } = BlockchainApiController.getSdkProperties()
+
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ChainController.state.activeCaipNetwork?.caipNetworkId
+    )
+    if (!isSupported) {
+      throw new Error('Network not supported for Gas Price')
+    }
 
     return state.api.get<BlockchainApiGasPriceResponse>({
       path: `/v1/convert/gas-price`,
       headers: {
-        'Content-Type': 'application/json',
-        'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
+        'Content-Type': 'application/json'
       },
       params: {
         projectId,
-        chainId
+        chainId,
+        st,
+        sv
       }
     })
   },
 
-  generateSwapCalldata({
+  async generateSwapCalldata({
     amount,
     from,
     projectId,
     to,
     userAddress
   }: BlockchainApiGenerateSwapCalldataRequest) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ChainController.state.activeCaipNetwork?.caipNetworkId
+    )
+    if (!isSupported) {
+      throw new Error('Network not supported for Swaps')
+    }
+
     return state.api.post<BlockchainApiGenerateSwapCalldataResponse>({
       path: '/v1/convert/build-transaction',
       headers: {
@@ -272,49 +376,69 @@ export const BlockchainApiController = {
     })
   },
 
-  generateApproveCalldata({
+  async generateApproveCalldata({
     from,
     projectId,
     to,
     userAddress
   }: BlockchainApiGenerateApproveCalldataRequest) {
-    const { sdkType, sdkVersion } = OptionsController.state
+    const { st, sv } = BlockchainApiController.getSdkProperties()
+
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ChainController.state.activeCaipNetwork?.caipNetworkId
+    )
+    if (!isSupported) {
+      throw new Error('Network not supported for Swaps')
+    }
 
     return state.api.get<BlockchainApiGenerateApproveCalldataResponse>({
       path: `/v1/convert/build-approve`,
       headers: {
-        'Content-Type': 'application/json',
-        'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
+        'Content-Type': 'application/json'
       },
       params: {
         projectId,
         userAddress,
         from,
-        to
+        to,
+        st,
+        sv
       }
     })
   },
 
   async getBalance(address: string, chainId?: string, forceUpdate?: string) {
-    const { sdkType, sdkVersion } = OptionsController.state
+    const { st, sv } = BlockchainApiController.getSdkProperties()
+
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ChainController.state.activeCaipNetwork?.caipNetworkId
+    )
+    if (!isSupported) {
+      return { balances: [] }
+    }
 
     return state.api.get<BlockchainApiBalanceResponse>({
       path: `/v1/account/${address}/balance`,
-      headers: {
-        'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
-      },
+
       params: {
         currency: 'usd',
         projectId: OptionsController.state.projectId,
         chainId,
-        forceUpdate
+        forceUpdate,
+        st,
+        sv
       }
     })
   },
 
   async lookupEnsName(name: string) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ChainController.state.activeCaipNetwork?.caipNetworkId
+    )
+    if (!isSupported) {
+      return { addresses: {}, attributes: [] }
+    }
+
     return state.api.get<BlockchainApiLookupEnsName>({
       path: `/v1/profile/account/${name}`,
       params: {
@@ -325,6 +449,13 @@ export const BlockchainApiController = {
   },
 
   async reverseLookupEnsName({ address }: { address: string }) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ChainController.state.activeCaipNetwork?.caipNetworkId
+    )
+    if (!isSupported) {
+      return []
+    }
+
     return state.api.get<BlockchainApiLookupEnsName[]>({
       path: `/v1/profile/reverse/${address}`,
       params: {
@@ -336,6 +467,13 @@ export const BlockchainApiController = {
   },
 
   async getEnsNameSuggestions(name: string) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ChainController.state.activeCaipNetwork?.caipNetworkId
+    )
+    if (!isSupported) {
+      return { suggestions: [] }
+    }
+
     return state.api.get<BlockchainApiSuggestionResponse>({
       path: `/v1/profile/suggestions/${name}`,
       params: {
@@ -351,6 +489,13 @@ export const BlockchainApiController = {
     message,
     signature
   }: BlockchainApiRegisterNameParams) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ChainController.state.activeCaipNetwork?.caipNetworkId
+    )
+    if (!isSupported) {
+      return { success: false }
+    }
+
     return state.api.post({
       path: `/v1/profile/account`,
       body: { coin_type: coinType, address, message, signature },
@@ -367,6 +512,13 @@ export const BlockchainApiController = {
     purchaseAmount,
     paymentAmount
   }: GenerateOnRampUrlArgs) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ChainController.state.activeCaipNetwork?.caipNetworkId
+    )
+    if (!isSupported) {
+      return ''
+    }
+
     const response = await state.api.post<{ url: string }>({
       path: `/v1/generators/onrampurl`,
       params: {
@@ -386,6 +538,13 @@ export const BlockchainApiController = {
   },
 
   async getOnrampOptions() {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ChainController.state.activeCaipNetwork?.caipNetworkId
+    )
+    if (!isSupported) {
+      return { paymentCurrencies: [], purchaseCurrencies: [] }
+    }
+
     try {
       const response = await state.api.get<{
         paymentCurrencies: PaymentCurrency[]
@@ -403,8 +562,20 @@ export const BlockchainApiController = {
     }
   },
 
-  async getOnrampQuote({ purchaseCurrency, paymentCurrency, amount, network }: GetQuoteArgs) {
+  async getOnrampQuote({
+    purchaseCurrency,
+    paymentCurrency,
+    amount,
+    network
+  }: GetQuoteArgs): Promise<OnrampQuote | null> {
     try {
+      const isSupported = await BlockchainApiController.isNetworkSupported(
+        ChainController.state.activeCaipNetwork?.caipNetworkId
+      )
+      if (!isSupported) {
+        return null
+      }
+
       const response = await state.api.post<OnrampQuote>({
         path: `/v1/onramp/quote`,
         params: {
@@ -432,7 +603,14 @@ export const BlockchainApiController = {
     }
   },
 
-  getSmartSessions(caipAddress: CaipAddress) {
+  async getSmartSessions(caipAddress: CaipAddress) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ChainController.state.activeCaipNetwork?.caipNetworkId
+    )
+    if (!isSupported) {
+      return []
+    }
+
     return state.api.get({
       path: `/v1/sessions/${caipAddress}`,
       params: {
@@ -440,7 +618,14 @@ export const BlockchainApiController = {
       }
     })
   },
-  revokeSmartSession(address: `0x${string}`, pci: string, signature: string) {
+  async revokeSmartSession(address: `0x${string}`, pci: string, signature: string) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(
+      ChainController.state.activeCaipNetwork?.caipNetworkId
+    )
+    if (!isSupported) {
+      return { success: false }
+    }
+
     return state.api.post({
       path: `/v1/sessions/${address}/revoke`,
       params: {

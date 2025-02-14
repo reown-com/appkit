@@ -8,6 +8,7 @@ import {
   ConnectorController,
   type Metadata,
   OptionsController,
+  RouterController,
   type SdkVersion,
   type ThemeMode,
   type ThemeVariables
@@ -292,5 +293,33 @@ describe('ConnectorController', () => {
       mergedAuthConnector,
       mergedAnnouncedConnector
     ])
+  })
+
+  it('should route to ConnectingExternal when selecting wallet if there is a connector', () => {
+    const mockConnector = {
+      id: 'connector',
+      name: 'Connector',
+      type: 'INJECTED' as const,
+      chain: 'solana' as const
+    }
+    vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(mockConnector)
+
+    vi.spyOn(RouterController, 'push')
+
+    ConnectorController.selectWalletConnector({ name: 'Connector', id: 'connector' })
+
+    expect(RouterController.push).toHaveBeenCalledWith('ConnectingExternal', {
+      connector: mockConnector
+    })
+  })
+  it('should route to ConnectingWalletConnect when selecting wallet if there is not a connector', () => {
+    vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(undefined)
+    vi.spyOn(RouterController, 'push')
+
+    ConnectorController.selectWalletConnector({ name: 'WalletConnect', id: 'wc' })
+
+    expect(RouterController.push).toHaveBeenCalledWith('ConnectingWalletConnect', {
+      wallet: { name: 'WalletConnect', id: 'wc' }
+    })
   })
 })

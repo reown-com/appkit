@@ -2,9 +2,12 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import nextAuth from 'next-auth'
 import credentialsProvider from 'next-auth/providers/credentials'
 
-import { type SIWESession, getAddressFromMessage, getChainIdFromMessage } from '@reown/appkit-siwe'
-
-import { verifySignature } from '../../../utils/SignatureUtil'
+import {
+  type SIWESession,
+  getAddressFromMessage,
+  getChainIdFromMessage,
+  verifySignature
+} from '@reown/appkit-siwe'
 
 declare module 'next-auth' {
   interface Session extends SIWESession {
@@ -53,7 +56,8 @@ export default async function auth(req: NextApiRequest, res: NextApiResponse) {
             address,
             message,
             signature,
-            chainId: Number(chainId.split(':')[1])
+            chainId,
+            projectId
           })
 
           if (isValid) {

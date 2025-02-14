@@ -45,9 +45,6 @@ export class SolanaWalletConnectProvider
     this.getActiveChain = getActiveChain
   }
 
-  // -- Universal Provider Events ------------------------ //
-  public onUri?: (uri: string) => void
-
   // -- Public ------------------------------------------- //
   public get session(): SessionTypes.Struct | undefined {
     return this.provider.session
@@ -80,13 +77,7 @@ export class SolanaWalletConnectProvider
   }
 
   public async connect() {
-    if (!this.onUri) {
-      throw new Error('onUri callback is required to connect WalletConnectProvider')
-    }
-
-    await super.connectWalletConnect({
-      onUri: this.onUri
-    })
+    await super.connectWalletConnect()
 
     const account = this.getAccount(true)
 
