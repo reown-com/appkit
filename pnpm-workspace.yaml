@@ -18,4 +18,6 @@ packages:
   - 'examples/*'
   - 'services/*'
   - 'packages/ui-new'
+  - '!packages/appkit-new'
   - '!apps/gallery-new'
+  - '!apps/laboratory-new'
