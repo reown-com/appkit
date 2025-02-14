@@ -119,8 +119,8 @@
     "framer-motion": "10.17.9",
     "next": "14.2.21",
     "next-auth": "4.24.5",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
     "react-icons": "4.12.0",
     "rpc-websockets": "7.11.0",
     "valtio": "1.13.2",
@@ -134,8 +134,8 @@
     "@playwright/test": "1.44.0",
     "@synthetixio/synpress": "4.0.0-alpha.7",
     "@types/node": "20.11.5",
-    "@types/react": "18.2.62",
-    "@types/react-dom": "18.2.7",
+    "@types/react": "19.0.0",
+    "@types/react-dom": "19.0.0",
     "dotenv": "16.3.1"
   }
 }
