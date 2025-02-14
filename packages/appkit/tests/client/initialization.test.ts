@@ -90,7 +90,7 @@ describe('Base', () => {
       })
     })
 
-    it('should use default network prop when there is no network in storage', () => {
+    it('should use default network prop when defaultNetwork prop is not included in the networks array', () => {
       vi.spyOn(StorageUtil, 'getActiveCaipNetworkId').mockReturnValueOnce(undefined)
       const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
 
@@ -99,7 +99,19 @@ describe('Base', () => {
         defaultNetwork: polygon
       })
 
-      expect(setActiveCaipNetwork).toHaveBeenCalledWith(polygon)
+      expect(setActiveCaipNetwork).toHaveBeenCalledWith(mainnet)
+    })
+
+    it('should use default network prop when there is no network in storage', () => {
+      vi.spyOn(StorageUtil, 'getActiveCaipNetworkId').mockReturnValueOnce(undefined)
+      const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
+
+      new AppKit({
+        ...mockOptions,
+        defaultNetwork: sepolia
+      })
+
+      expect(setActiveCaipNetwork).toHaveBeenCalledWith(sepolia)
     })
 
     it('should not use default network prop when there is a network in storage', () => {
