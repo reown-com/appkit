@@ -50,7 +50,11 @@ async function fetchTokenBalance({
     return null
   }
 }
-
+function getTransport({ chainId }: { chainId: number }) {
+  return http(
+    `https://rpc.walletconnect.org/v1/?chainId=eip155:${chainId}&projectId=${process.env['NEXT_PUBLIC_PROJECT_ID']}`
+  )
+}
 export async function fetchFallbackBalances(
   userAddress: Hex,
   currentChainIdAsHex: Hex
@@ -68,7 +72,7 @@ export async function fetchFallbackBalances(
     // Create public client for current chain
     const publicClient = createPublicClient({
       chain,
-      transport: http()
+      transport: getTransport({ chainId: chain.id })
     })
 
     const balances: TokenBalance[] = []
