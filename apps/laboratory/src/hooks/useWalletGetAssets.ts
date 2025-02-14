@@ -1,7 +1,6 @@
 import * as React from 'react'
 
 import UniversalProvider from '@walletconnect/universal-provider'
-import { RpcRequest } from 'ox'
 import { type Hex } from 'viem'
 
 import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
@@ -89,11 +88,12 @@ async function getAssetsViaWalletService(
     throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
   }
 
-  const store = RpcRequest.createStore()
-  const rpcRequest = store.prepare({
+  const rpcRequest = {
+    jsonrpc: '2.0',
+    id: Math.floor(Math.random() * 1000000),
     method: 'wallet_getAssets',
     params: [request]
-  })
+  }
 
   const url = new URL(walletServiceUrl)
   url.searchParams.set('projectId', projectId)
