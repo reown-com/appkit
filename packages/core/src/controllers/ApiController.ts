@@ -11,6 +11,7 @@ import type {
   ApiGetWalletsResponse,
   WcWallet
 } from '../utils/TypeUtil.js'
+import { AccountController } from './AccountController.js'
 import { AssetController } from './AssetController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
@@ -271,6 +272,11 @@ export const ApiController = {
   },
 
   prefetch() {
+    // Avoid pre-fetch if user is already connected as there is no need to fetch wallets in that case
+    if (AccountController.state.status === 'connected') {
+      return Promise.resolve()
+    }
+
     if (state.prefetchPromise) {
       return state.prefetchPromise
     }

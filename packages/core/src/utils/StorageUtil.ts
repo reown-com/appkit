@@ -7,10 +7,24 @@ import {
   getSafeConnectorIdKey
 } from '@reown/appkit-common'
 
-import type { ConnectionStatus, SocialProvider, WcWallet } from './TypeUtil.js'
+import type {
+  BlockchainApiBalanceResponse,
+  BlockchainApiIdentityResponse,
+  BlockchainApiLookupEnsName,
+  ConnectionStatus,
+  SocialProvider,
+  WcWallet
+} from './TypeUtil.js'
 
 // -- Utility -----------------------------------------------------------------
 export const StorageUtil = {
+  // Cache expiry in milliseconds
+  cacheExpiry: {
+    balance: 300000,
+    nativeBalance: 300000,
+    ens: 300000,
+    identity: 300000
+  },
   getActiveNetworkProps() {
     const namespace = StorageUtil.getActiveNamespace()
     const caipNetworkId = StorageUtil.getActiveCaipNetworkId() as CaipNetworkId | undefined
@@ -279,6 +293,239 @@ export const StorageUtil = {
       }
     } catch {
       console.info('Unable to remove connected namespace')
+    }
+  },
+  getBalanceCache() {
+    let cache: Record<string, { timestamp: number; balance: BlockchainApiBalanceResponse }> = {}
+    try {
+      const result = SafeLocalStorage.getItem(SafeLocalStorageKeys.BALANCE_CACHE)
+      cache = result ? JSON.parse(result) : {}
+    } catch {
+      console.info('Unable to get balance cache')
+    }
+
+    return cache
+  },
+  removeAddressFromBalanceCache(caipAddress: string) {
+    try {
+      const cache = StorageUtil.getBalanceCache()
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.BALANCE_CACHE,
+        JSON.stringify({ ...cache, [caipAddress]: undefined })
+      )
+    } catch {
+      console.info('Unable to remove address from balance cache', caipAddress)
+    }
+  },
+  getBalanceCacheForCaipAddress(caipAddress: string) {
+    try {
+      const cache = StorageUtil.getBalanceCache()
+      const balanceCache = cache[caipAddress]
+      // We want to discard cache if it's older than the cache expiry
+      if (balanceCache && Date.now() - balanceCache?.timestamp < this.cacheExpiry.balance) {
+        return balanceCache.balance
+      }
+
+      console.info('Discarding balanceCache cache for address', caipAddress)
+      StorageUtil.removeAddressFromBalanceCache(caipAddress)
+    } catch {
+      console.info('Unable to get balance cache for address', caipAddress)
+    }
+
+    return undefined
+  },
+  updateBalanceCache(params: {
+    caipAddress: string
+    balance: BlockchainApiBalanceResponse
+    timestamp: number
+  }) {
+    try {
+      const cache = StorageUtil.getBalanceCache()
+      cache[params.caipAddress] = params
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.BALANCE_CACHE, JSON.stringify(cache))
+    } catch {
+      console.info('Unable to update balance cache', params)
+    }
+  },
+
+  getNativeBalanceCache() {
+    let cache: Record<
+      string,
+      { caipAddress: string; balance: string; symbol: string; timestamp: number }
+    > = {}
+    try {
+      const result = SafeLocalStorage.getItem(SafeLocalStorageKeys.NATIVE_BALANCE_CACHE)
+      cache = result ? JSON.parse(result) : {}
+    } catch {
+      console.info('Unable to get balance cache')
+    }
+
+    return cache
+  },
+  removeAddressFromNativeBalanceCache(caipAddress: string) {
+    try {
+      const cache = StorageUtil.getBalanceCache()
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.NATIVE_BALANCE_CACHE,
+        JSON.stringify({ ...cache, [caipAddress]: undefined })
+      )
+    } catch {
+      console.info('Unable to remove address from balance cache', caipAddress)
+    }
+  },
+  getNativeBalanceCacheForCaipAddress(caipAddress: string) {
+    try {
+      const cache = StorageUtil.getNativeBalanceCache()
+      const nativeBalanceCache = cache[caipAddress]
+      // We want to discard cache if it's older than the cache expiry
+      if (
+        nativeBalanceCache &&
+        Date.now() - nativeBalanceCache?.timestamp < this.cacheExpiry.nativeBalance
+      ) {
+        return nativeBalanceCache
+      }
+
+      console.info('Discarding cache for address', caipAddress)
+      StorageUtil.removeAddressFromBalanceCache(caipAddress)
+    } catch {
+      console.info('Unable to get balance cache for address', caipAddress)
+    }
+
+    return undefined
+  },
+  updateNativeBalanceCache(params: {
+    caipAddress: string
+    balance: string
+    symbol: string
+    timestamp: number
+  }) {
+    try {
+      const cache = StorageUtil.getNativeBalanceCache()
+      cache[params.caipAddress] = params
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.NATIVE_BALANCE_CACHE, JSON.stringify(cache))
+    } catch {
+      console.info('Unable to update balance cache', params)
+    }
+  },
+
+  getEnsCache() {
+    let cache: Record<string, { ens: BlockchainApiLookupEnsName[]; timestamp: number }> = {}
+    try {
+      const result = SafeLocalStorage.getItem(SafeLocalStorageKeys.ENS_CACHE)
+      cache = result ? JSON.parse(result) : {}
+    } catch {
+      console.info('Unable to get ens name cache')
+    }
+
+    return cache
+  },
+  getEnsFromCacheForAddress(address: string) {
+    try {
+      const cache = StorageUtil.getEnsCache()
+      const ensCache = cache[address]
+      // We want to discard cache if it's older than the cache expiry
+      if (ensCache && Date.now() - ensCache.timestamp < this.cacheExpiry.ens) {
+        return ensCache.ens
+      }
+      StorageUtil.removeEnsFromCache(address)
+    } catch {
+      console.info('Unable to get ens name from cache', address)
+    }
+
+    return undefined
+  },
+  updateEnsCache(params: {
+    address: string
+    timestamp: number
+    ens: BlockchainApiLookupEnsName[]
+  }) {
+    try {
+      const cache = StorageUtil.getEnsCache()
+      cache[params.address] = params
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.ENS_CACHE, JSON.stringify(cache))
+    } catch {
+      console.info('Unable to update ens name cache', params)
+    }
+  },
+  removeEnsFromCache(address: string) {
+    try {
+      const cache = StorageUtil.getEnsCache()
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.ENS_CACHE,
+        JSON.stringify({ ...cache, [address]: undefined })
+      )
+    } catch {
+      console.info('Unable to remove ens name from cache', address)
+    }
+  },
+  getIdentityCache() {
+    let cache: Record<
+      string,
+      {
+        identity: BlockchainApiIdentityResponse
+        timestamp: number
+      }
+    > = {}
+    try {
+      const result = SafeLocalStorage.getItem(SafeLocalStorageKeys.IDENTITY_CACHE)
+      cache = result ? JSON.parse(result) : {}
+    } catch {
+      console.info('Unable to get identity cache')
+    }
+
+    return cache
+  },
+  getIdentityFromCacheForAddress(address: string) {
+    try {
+      const cache = StorageUtil.getIdentityCache()
+      const identityCache = cache[address]
+      // We want to discard cache if it's older than the cache expiry
+      if (identityCache && Date.now() - identityCache.timestamp < this.cacheExpiry.identity) {
+        return identityCache.identity
+      }
+      StorageUtil.removeIdentityFromCache(address)
+    } catch {
+      console.info('Unable to get identity from cache', address)
+    }
+
+    return undefined
+  },
+  updateIdentityCache(params: {
+    address: string
+    timestamp: number
+    identity: BlockchainApiIdentityResponse
+  }) {
+    try {
+      const cache = StorageUtil.getIdentityCache()
+      cache[params.address] = {
+        identity: params.identity,
+        timestamp: params.timestamp
+      }
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.IDENTITY_CACHE, JSON.stringify(cache))
+    } catch {
+      console.info('Unable to update identity cache', params)
+    }
+  },
+  removeIdentityFromCache(address: string) {
+    try {
+      const cache = StorageUtil.getIdentityCache()
+      SafeLocalStorage.setItem(
+        SafeLocalStorageKeys.IDENTITY_CACHE,
+        JSON.stringify({ ...cache, [address]: undefined })
+      )
+    } catch {
+      console.info('Unable to remove identity from cache', address)
+    }
+  },
+
+  clearAddressCache() {
+    try {
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys.BALANCE_CACHE)
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys.NATIVE_BALANCE_CACHE)
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys.ENS_CACHE)
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys.IDENTITY_CACHE)
+    } catch {
+      console.info('Unable to clear address cache')
     }
   }
 }
