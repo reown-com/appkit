@@ -94,7 +94,7 @@ describe('Base', () => {
       vi.spyOn(StorageUtil, 'getActiveCaipNetworkId').mockReturnValueOnce(undefined)
       const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
 
-      const appKit = new AppKit({
+      new AppKit({
         ...mockOptions,
         defaultNetwork: polygon
       })
