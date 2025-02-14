@@ -156,7 +156,9 @@ export function WagmiSendUSDCTest({ config }: IBaseProps) {
     } catch (error) {
       toast({
         title: 'Error',
-        description: 'Failed to fetch balances',
+        description: `Failed to fetch balances  ${
+          error instanceof Error ? error.message : String(error)
+        }`,
         type: 'error'
       })
     } finally {

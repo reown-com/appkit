@@ -34,38 +34,40 @@ async function getAssetDiscoveryCapabilities({
   walletServiceUrl?: string
 }> {
   try {
+    // For WalletConnect, also check CAIP-25
+    if (walletProviderType === 'WALLET_CONNECT') {
+      const sessionCapabilities = JSON.parse(
+        provider.session?.sessionProperties?.['capabilities'] || '{}'
+      )
+      const hasAssetDiscovery =
+        sessionCapabilities[chainIdAsHex]?.assetDiscovery?.supported ?? false
+      const walletServiceUrl: string =
+        sessionCapabilities[chainIdAsHex]?.['walletService']?.['wallet_getAssets']
+
+      return {
+        hasAssetDiscovery,
+        hasWalletService: Boolean(walletServiceUrl),
+        walletServiceUrl
+      }
+    }
+
     const capabilities: GetCapabilitiesResult = await provider.request({
       method: 'wallet_getCapabilities',
       params: [userAddress]
     })
 
     const hasAssetDiscovery = capabilities[chainIdAsHex]?.assetDiscovery?.supported ?? false
-    if (!hasAssetDiscovery) {
-      return {
-        hasAssetDiscovery: false,
-        hasWalletService: false
-      }
-    }
-    // For WalletConnect, also check CAIP-25
-    let walletServiceUrl: string | undefined = undefined
-    if (walletProviderType === 'WALLET_CONNECT') {
-      const sessionCapabilities = JSON.parse(
-        provider.session?.sessionProperties?.['capabilities'] || '{}'
-      )
-      walletServiceUrl = sessionCapabilities[chainIdAsHex]?.['walletService']?.['wallet_getAssets']
-    }
 
     return {
       hasAssetDiscovery,
-      hasWalletService: Boolean(walletServiceUrl),
-      walletServiceUrl
+      hasWalletService: false
     }
   } catch (error) {
-    throw new Error(
-      `Error checking wallet capabilities: ${
-        error instanceof Error ? error.message : String(error)
-      }`
-    )
+    // Some wallet don't support wallet_getCapabilities and throws error when called
+    return {
+      hasAssetDiscovery: false,
+      hasWalletService: false
+    }
   }
 }
 
