@@ -19,132 +19,116 @@ export interface TokenBalance {
   chainId: number
 }
 
-interface WalletAssetsContextType {
-  balances: TokenBalance[]
-  isLoading: boolean
-  refetch: () => Promise<void>
-  getBalanceBySymbol: (symbol: string) => string
-  getBalanceByAddress: (address: Hex) => string
-}
-const WalletAssetsContext = React.createContext<WalletAssetsContextType | undefined>(undefined)
+async function getAssetDiscoveryCapabilities({
+  provider,
+  chainIdAsHex,
+  userAddress,
+  walletProviderType
+}: {
+  provider: UniversalProvider
+  chainIdAsHex: Hex
+  userAddress: string
+  walletProviderType: string
+}): Promise<{
+  hasAssetDiscovery: boolean
+  hasWalletService: boolean
+  walletServiceUrl?: string
+}> {
+  try {
+    const capabilities: GetCapabilitiesResult = await provider.request({
+      method: 'wallet_getCapabilities',
+      params: [userAddress]
+    })
 
-export function WalletGetAssetsProvider({ children }: { children: React.ReactNode }) {
+    const hasAssetDiscovery = capabilities[chainIdAsHex]?.assetDiscovery?.supported ?? false
+    if (!hasAssetDiscovery) {
+      return {
+        hasAssetDiscovery: false,
+        hasWalletService: false
+      }
+    }
+    // For WalletConnect, also check CAIP-25
+    let walletServiceUrl: string | undefined = undefined
+    if (walletProviderType === 'WALLET_CONNECT') {
+      const sessionCapabilities = JSON.parse(
+        provider.session?.sessionProperties?.['capabilities'] || '{}'
+      )
+      walletServiceUrl = sessionCapabilities[chainIdAsHex]?.['walletService']?.['wallet_getAssets']
+    }
+
+    return {
+      hasAssetDiscovery,
+      hasWalletService: Boolean(walletServiceUrl),
+      walletServiceUrl
+    }
+  } catch (error) {
+    console.error('Error checking wallet capabilities:', error)
+
+    return {
+      hasAssetDiscovery: false,
+      hasWalletService: false
+    }
+  }
+}
+
+function processAssetsToBalances(chainAssets: Asset[], chainIdNum: number): TokenBalance[] {
+  return chainAssets.map(asset => ({
+    symbol: asset.metadata.symbol,
+    balance: formatBalance(BigInt(asset.balance), asset.metadata.decimals),
+    address: asset.address as Hex,
+    chainId: chainIdNum
+  }))
+}
+
+async function getAssetsViaWalletService(
+  request: WalletGetAssetsRPCRequest,
+  walletServiceUrl: string
+): Promise<Record<Hex, Asset[]>[]> {
+  const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
+  if (!projectId) {
+    throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
+  }
+
+  const store = RpcRequest.createStore()
+  const rpcRequest = store.prepare({
+    method: 'wallet_getAssets',
+    params: [request]
+  })
+
+  const url = new URL(walletServiceUrl)
+  url.searchParams.set('projectId', projectId)
+
+  const response = await fetch(url.toString(), {
+    body: JSON.stringify(rpcRequest),
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' }
+  })
+
+  const { result } = (await response.json()) as WalletGetAssetsRPCResponse
+
+  return result
+}
+
+async function getAssetsViaProvider(
+  provider: UniversalProvider,
+  request: WalletGetAssetsRPCRequest
+): Promise<Record<Hex, Asset[]>[]> {
+  const response: Record<Hex, Asset[]> = await provider.request({
+    method: 'wallet_getAssets',
+    params: [request]
+  })
+
+  return [response]
+}
+
+export function useWalletGetAssets() {
   const { address, status } = useAppKitAccount()
   const { chainId } = useAppKitNetwork()
   const { walletProvider, walletProviderType } = useAppKitProvider<UniversalProvider>('eip155')
-  const [balances, setBalances] = React.useState<TokenBalance[]>([])
-  const [isLoading, setIsLoading] = React.useState(false)
 
-  const processAssetsToBalances = React.useCallback(
-    (chainAssets: Asset[], chainIdNum: number): TokenBalance[] =>
-      chainAssets.map(asset => ({
-        symbol: asset.metadata.symbol,
-        balance: formatBalance(BigInt(asset.balance), asset.metadata.decimals),
-        address: asset.address as Hex,
-        chainId: chainIdNum
-      })),
-    []
-  )
-
-  const getAssetDiscoveryCapabilities = React.useCallback(
-    async (
-      provider: UniversalProvider,
-      chainIdAsHex: Hex,
-      userAddress: string
-    ): Promise<{
-      hasAssetDiscovery: boolean
-      hasWalletService: boolean
-      walletServiceUrl?: string
-    }> => {
-      try {
-        const capabilities: GetCapabilitiesResult = await provider.request({
-          method: 'wallet_getCapabilities',
-          params: [userAddress]
-        })
-
-        const hasAssetDiscovery = capabilities[chainIdAsHex]?.assetDiscovery?.supported ?? false
-        if (!hasAssetDiscovery) {
-          return {
-            hasAssetDiscovery: false,
-            hasWalletService: false
-          }
-        }
-        // For WalletConnect, also check CAIP-25
-        let walletServiceUrl: string | undefined = undefined
-        if (walletProviderType === 'WALLET_CONNECT') {
-          const sessionCapabilities = JSON.parse(
-            provider.session?.sessionProperties?.['capabilities'] || '{}'
-          )
-          walletServiceUrl =
-            sessionCapabilities[chainIdAsHex]?.['walletService']?.['wallet_getAssets']
-        }
-
-        return {
-          hasAssetDiscovery,
-          hasWalletService: Boolean(walletServiceUrl),
-          walletServiceUrl
-        }
-      } catch (error) {
-        console.error('Error checking wallet capabilities:', error)
-
-        return {
-          hasAssetDiscovery: false,
-          hasWalletService: false
-        }
-      }
-    },
-    [walletProviderType]
-  )
-
-  const getAssetsViaWalletService = React.useCallback(
-    async (
-      request: WalletGetAssetsRPCRequest,
-      walletServiceUrl: string
-    ): Promise<Record<Hex, Asset[]>[]> => {
-      const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
-      if (!projectId) {
-        throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
-      }
-      const store = RpcRequest.createStore()
-      const rpcRequest = store.prepare({
-        method: 'wallet_getAssets',
-        params: [request]
-      })
-
-      const url = new URL(walletServiceUrl)
-      url.searchParams.set('projectId', projectId)
-
-      const response = await fetch(url.toString(), {
-        body: JSON.stringify(rpcRequest),
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      })
-
-      const { result } = (await response.json()) as WalletGetAssetsRPCResponse
-
-      return result
-    },
-    []
-  )
-
-  const getAssetsViaProvider = React.useCallback(
-    async (
-      provider: UniversalProvider,
-      request: WalletGetAssetsRPCRequest
-    ): Promise<Record<Hex, Asset[]>[]> => {
-      const response: Record<Hex, Asset[]> = await provider.request({
-        method: 'wallet_getAssets',
-        params: [request]
-      })
-
-      return [response]
-    },
-    []
-  )
-
-  const fetchBalances = React.useCallback(async () => {
-    if (!address || status !== 'connected' || !chainId || !walletProvider) {
-      return
+  const fetchBalances = React.useCallback(async (): Promise<TokenBalance[]> => {
+    if (!address || status !== 'connected' || !chainId || !walletProvider || !walletProviderType) {
+      return []
     }
     const chainIdAsHex = convertChainIdToHex(parseInt(chainId.toString(), 10))
     const request: WalletGetAssetsRPCRequest = {
@@ -153,14 +137,13 @@ export function WalletGetAssetsProvider({ children }: { children: React.ReactNod
     }
 
     try {
-      setIsLoading(true)
-
       // Check wallet capabilities first
-      const capabilities = await getAssetDiscoveryCapabilities(
-        walletProvider,
+      const capabilities = await getAssetDiscoveryCapabilities({
+        provider: walletProvider,
         chainIdAsHex,
-        address
-      )
+        userAddress: address,
+        walletProviderType
+      })
 
       let assetsResponse: Record<Hex, Asset[]>[] = []
 
@@ -181,26 +164,19 @@ export function WalletGetAssetsProvider({ children }: { children: React.ReactNod
         if (assetsObject) {
           const chainAssets = assetsObject[chainIdAsHex]
           if (chainAssets && chainAssets.length > 0) {
-            const tokenBalances = processAssetsToBalances(
-              chainAssets,
-              parseInt(chainIdAsHex.slice(2), 16)
-            )
-            setBalances(tokenBalances)
-
-            return
+            return processAssetsToBalances(chainAssets, parseInt(chainIdAsHex.slice(2), 16))
           }
         }
       }
+
       // If we get here, either asset discovery isn't supported or returned no results
-      const fallbackBalances = await fetchFallbackBalances(address as `0x${string}`, chainIdAsHex)
-      setBalances(fallbackBalances)
+      return await fetchFallbackBalances(address as `0x${string}`, chainIdAsHex)
     } catch (error) {
       console.error(
         `Error fetching assets: ${error instanceof Error ? error.message : String(error)}`
       )
-      setBalances([])
-    } finally {
-      setIsLoading(false)
+
+      return []
     }
   }, [
     address,
@@ -214,39 +190,7 @@ export function WalletGetAssetsProvider({ children }: { children: React.ReactNod
     processAssetsToBalances
   ])
 
-  const getBalanceBySymbol = React.useCallback(
-    (symbol: string) => balances.find(b => b.symbol === symbol)?.balance || '0.00',
-    [balances]
-  )
-
-  const getBalanceByAddress = React.useCallback(
-    (tokenAddress: Hex) => balances.find(b => b.address === tokenAddress)?.balance || '0.00',
-    [balances]
-  )
-
-  React.useEffect(() => {
-    fetchBalances()
-  }, [address, fetchBalances])
-
-  const value = React.useMemo(
-    () => ({
-      balances,
-      isLoading,
-      refetch: fetchBalances,
-      getBalanceBySymbol,
-      getBalanceByAddress
-    }),
-    [balances, isLoading, fetchBalances, getBalanceBySymbol, getBalanceByAddress]
-  )
-
-  return <WalletAssetsContext.Provider value={value}>{children}</WalletAssetsContext.Provider>
-}
-
-export function useWalletGetAssets() {
-  const context = React.useContext(WalletAssetsContext)
-  if (context === undefined) {
-    throw new Error('useWalletGetAssets must be used within a WalletGetAssetsProvider')
+  return {
+    fetchBalances
   }
-
-  return context
 }

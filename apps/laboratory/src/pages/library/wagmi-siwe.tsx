@@ -9,7 +9,6 @@ import { AppKitButtons } from '../../components/AppKitButtons'
 import { SiweData } from '../../components/Siwe/SiweData'
 import { WagmiModalInfo } from '../../components/Wagmi/WagmiModalInfo'
 import { WagmiTests } from '../../components/Wagmi/WagmiTests'
-import { WalletGetAssetsProvider } from '../../context/WalletGetAssetsContext'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { siweConfig } from '../../utils/SiweUtils'
 import { ThemeStore } from '../../utils/StoreUtil'
@@ -40,12 +39,10 @@ export default function Wagmi() {
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <WalletGetAssetsProvider>
-          <AppKitButtons />
-          <WagmiModalInfo />
-          <SiweData />
-          <WagmiTests />
-        </WalletGetAssetsProvider>
+        <AppKitButtons />
+        <WagmiModalInfo />
+        <SiweData />
+        <WagmiTests />
       </QueryClientProvider>
     </WagmiProvider>
   )
