@@ -5,7 +5,6 @@ import {
   AssetUtil,
   ConnectionController,
   EventsController,
-  RouterController,
   ThemeController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
