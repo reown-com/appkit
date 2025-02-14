@@ -12,7 +12,7 @@ Sentry.init({
 
   ignoreErrors: [
     "Failed to execute 'transaction' on 'IDBDatabase': The database connection is closing.",
-    "Proposal expired"
+    'Proposal expired'
   ],
 
   // Setting this option to true will print useful information to the console while you're setting up Sentry.
