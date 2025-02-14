@@ -112,12 +112,12 @@ export function walletConnect(
         // If there isn't an active session or chains are stale, connect.
         if (!provider.session || isChainsStale) {
           const namespaces = WcHelpersUtil.createNamespaces(caipNetworks)
-
           await provider.connect({
             optionalNamespaces: namespaces,
             ...('pairingTopic' in rest ? { pairingTopic: rest.pairingTopic } : {})
           })
-
+          const chainId = await this.getChainId()
+          provider.setDefaultChain(`eip155:${chainId}`)
           this.setRequestedChainsIds(caipNetworks.map(x => Number(x.id)))
         }
 
@@ -232,7 +232,6 @@ export function walletConnect(
     },
     async getChainId() {
       const chainId = appKit.getCaipNetwork()?.id
-
       if (chainId) {
         return chainId as number
       }
