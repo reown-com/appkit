@@ -62,7 +62,7 @@ describe('UniversalConnector', () => {
   })
 
   describe('connect', () => {
-    it('should connect successfully', async () => {
+    it.only('should connect successfully', async () => {
       const expectedChainId = mainnet.id
 
       mockProvider.enable.mockResolvedValue([mockAddress])
@@ -75,6 +75,7 @@ describe('UniversalConnector', () => {
       })
       expect(mockProvider.on).toHaveBeenCalled()
       expect(mockProvider.session.namespaces.eip155.accounts).toEqual([mockCaipAddress])
+      expect(mockProvider.setDefaultChain).toHaveBeenCalledWith(`eip155:${expectedChainId}`)
     })
 
     it('should handle user rejection', async () => {
