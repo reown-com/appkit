@@ -51,7 +51,7 @@ describe('WalletConnectConnector', () => {
         .spyOn(SIWXUtil, 'universalProviderAuthenticate')
         .mockResolvedValueOnce(false)
 
-      await connector.connectWalletConnect({ onUri: vi.fn() })
+      await connector.connectWalletConnect()
 
       expect(authenticateSpy).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -68,7 +68,7 @@ describe('WalletConnectConnector', () => {
         Promise.resolve(true)
       )
 
-      await connector.connectWalletConnect({ onUri: vi.fn() })
+      await connector.connectWalletConnect()
 
       expect(provider.connect).not.toHaveBeenCalled()
     })

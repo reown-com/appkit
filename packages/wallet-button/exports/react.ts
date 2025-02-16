@@ -16,7 +16,7 @@ import type { AppKitWalletButton, Wallet } from './index.js'
 
 export * from './index.js'
 
-declare global {
+declare module 'react' {
   namespace JSX {
     interface IntrinsicElements {
       'appkit-wallet-button': Pick<AppKitWalletButton, 'wallet'>

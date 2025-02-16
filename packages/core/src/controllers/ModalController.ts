@@ -4,6 +4,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
+import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
 import { PublicStateController } from './PublicStateController.js'
@@ -45,7 +46,7 @@ export const ModalController = {
   },
 
   async open(options?: ModalControllerArguments['open']) {
-    await ApiController.state.prefetchPromise
+    await ApiController.prefetch()
     const caipAddress = ChainController.state.activeCaipAddress
 
     const noAdapters = ChainController.state.noAdapters
@@ -55,7 +56,7 @@ export const ModalController = {
     } else if (caipAddress) {
       RouterController.reset('Account')
     } else if (noAdapters && !CoreHelperUtil.isMobile()) {
-      RouterController.reset('ConnectingWalletConnect')
+      RouterController.reset('ConnectingWalletConnectBasic')
     } else {
       RouterController.reset('Connect')
     }
@@ -89,6 +90,8 @@ export const ModalController = {
       event: 'MODAL_CLOSE',
       properties: { connected }
     })
+
+    ConnectorController.clearNamespaceFilter()
   },
 
   setLoading(loading: ModalControllerState['loading']) {

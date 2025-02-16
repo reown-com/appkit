@@ -46,7 +46,6 @@ export class WuiListItem extends LitElement {
         data-loading=${this.loading}
         data-iconvariant=${ifDefined(this.iconVariant)}
         tabindex=${ifDefined(this.tabIdx)}
-        ontouchstart
       >
         ${this.loadingTemplate()} ${this.visualTemplate()}
         <wui-flex gap="3xs">

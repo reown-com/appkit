@@ -1,9 +1,11 @@
+import { GoogleTagManager } from '@next/third-parties/google'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
 import { headers } from 'next/headers'
-import { Toaster } from 'sonner'
+import Script from 'next/script'
 
 import { khTeka } from '@/lib/fonts'
+import { googleTagDataLayer, googleTagManagerSource } from '@/lib/gtag'
 import { cn } from '@/lib/utils'
 import { ContextProvider } from '@/providers/appkit-context-provider'
 import { AppKitProvider } from '@/providers/appkit-provider'
@@ -76,6 +78,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             <ContextProvider>{children}</ContextProvider>
           </AppKitProvider>
         </ThemeProvider>
+        <GoogleTagManager gtmId="G-38H3M597C1" />
+        <Script src={googleTagManagerSource} strategy="afterInteractive" />
+        <Script id="google-tag-manager" strategy="afterInteractive">
+          {googleTagDataLayer()}
+        </Script>
       </body>
     </html>
   )

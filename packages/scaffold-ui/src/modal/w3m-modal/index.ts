@@ -2,12 +2,12 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { type CaipAddress, type CaipNetwork } from '@reown/appkit-common'
+import { type CaipAddress, type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 import {
   ApiController,
+  AssetUtil,
   ChainController,
   CoreHelperUtil,
-  EventsController,
   ModalController,
   OptionsController,
   RouterController,
@@ -31,6 +31,8 @@ export class W3mModal extends LitElement {
 
   private abortController?: AbortController = undefined
 
+  private hasPrefetched = false
+
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) private enableEmbedded = OptionsController.state.enableEmbedded
 
@@ -45,7 +47,7 @@ export class W3mModal extends LitElement {
   public constructor() {
     super()
     this.initializeTheming()
-    ApiController.prefetch()
+    ApiController.prefetchAnalyticsConfig()
     this.unsubscribe.push(
       ...[
         ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
@@ -55,18 +57,28 @@ export class W3mModal extends LitElement {
         OptionsController.subscribeKey('enableEmbedded', val => (this.enableEmbedded = val))
       ]
     )
-    EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })
   }
 
   public override firstUpdated() {
+    AssetUtil.fetchNetworkImage(this.caipNetwork?.assets?.imageId)
+
     if (this.caipAddress) {
       if (this.enableEmbedded) {
         ModalController.close()
+        this.prefetch()
 
         return
       }
 
       this.onNewAddress(this.caipAddress)
+    }
+
+    if (this.open) {
+      this.onOpen()
+    }
+
+    if (this.enableEmbedded) {
+      this.prefetch()
     }
   }
 
@@ -145,6 +157,7 @@ export class W3mModal extends LitElement {
   }
 
   private onOpen() {
+    this.prefetch()
     this.open = true
     this.classList.add('open')
     this.onScrollLock()
@@ -200,38 +213,65 @@ export class W3mModal extends LitElement {
   }
 
   private async onNewAddress(caipAddress?: CaipAddress) {
+    const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
     const nextConnected = CoreHelperUtil.getPlainAddress(caipAddress)
 
-    this.caipAddress = caipAddress
+    // When users decline SIWE signature, we should close the modal
+    const isDisconnectedInSameNamespace = !nextConnected && !isSwitchingNamespace
+
+    // If user is switching to another namespace and connected in that namespace, we should go back
+    const isSwitchingNamespaceAndConnected = isSwitchingNamespace && nextConnected
+
+    if (isDisconnectedInSameNamespace) {
+      ModalController.close()
+    } else if (isSwitchingNamespaceAndConnected) {
+      RouterController.goBack()
+    }
 
     await SIWXUtil.initializeIfEnabled()
 
-    if (!nextConnected || this.enableEmbedded) {
-      ModalController.close()
-    }
+    this.caipAddress = caipAddress
+    ChainController.setIsSwitchingNamespace(false)
   }
 
   private onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {
-    ApiController.prefetch()
-    if (!this.caipAddress) {
-      this.caipNetwork = nextCaipNetwork
-      RouterController.goBack()
-
-      return
-    }
+    AssetUtil.fetchNetworkImage(nextCaipNetwork?.assets?.imageId)
 
     const prevCaipNetworkId = this.caipNetwork?.caipNetworkId?.toString()
     const nextNetworkId = nextCaipNetwork?.caipNetworkId?.toString()
+    const networkChanged = prevCaipNetworkId && nextNetworkId && prevCaipNetworkId !== nextNetworkId
+    const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
+    const isUnsupportedNetwork = this.caipNetwork?.name === ConstantsUtil.UNSUPPORTED_NETWORK_NAME
+
+    /**
+     * If user is on connecting external, there is a case that they might select a connector which is in another adapter.
+     * In this case, we are switching both network and namespace. And this logic will be triggered.
+     * But we don't want to go back because we are already on the connecting external view.
+     */
+    const isConnectingExternal = RouterController.state.view === 'ConnectingExternal'
+    // If user is not connected, we should go back
+    const isNotConnected = !this.caipAddress
+    // If network has been changed in the same namespace and it's not an unsupported network, we should go back
+    const isNetworkChangedInSameNamespace =
+      networkChanged && !isUnsupportedNetwork && !isSwitchingNamespace
+    // If user is on the unsupported network screen, we should go back when network has been changed
+    const isUnsupportedNetworkScreen = RouterController.state.view === 'UnsupportedChain'
 
     if (
-      prevCaipNetworkId &&
-      nextNetworkId &&
-      prevCaipNetworkId !== nextNetworkId &&
-      this.caipNetwork?.name !== 'Unknown Network'
+      !isConnectingExternal &&
+      (isNotConnected || isUnsupportedNetworkScreen || isNetworkChangedInSameNamespace)
     ) {
       RouterController.goBack()
     }
+
     this.caipNetwork = nextCaipNetwork
+  }
+
+  private prefetch() {
+    if (!this.hasPrefetched) {
+      this.hasPrefetched = true
+      ApiController.prefetch()
+    }
   }
 }
 

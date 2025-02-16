@@ -5,6 +5,14 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'imagedelivery.net'
+      }
+    ]
+  },
   webpack: config => {
     config.externals.push('pino-pretty', 'lokijs', 'encoding')
 

@@ -18,27 +18,6 @@ if (!projectId) {
   throw new Error('Project ID is not defined')
 }
 
-// Set up metadata
-export const appKitMetadata = {
-  name: 'AppKit Next.js Wagmi',
-  description: 'AppKit Next.js App Router Wagmi Example',
-  url: 'https://github.com/0xonerb/next-reown-appkit-ssr', // origin must match your domain & subdomain
-  icons: ['https://avatars.githubusercontent.com/u/179229932']
-}
-
-// Create the modal
-export const modal = createAppKit({
-  adapters: [wagmiAdapter],
-  projectId,
-  networks,
-  defaultNetwork: mainnet,
-  metadata: appKitMetadata,
-  themeMode: 'light',
-  features: {
-    analytics: true // Optional - defaults to your Cloud configuration
-  }
-})
-
 function ContextProvider({ children, cookies }: { children: ReactNode; cookies: string | null }) {
   const initialState = cookieToInitialState(wagmiAdapter.wagmiConfig as Config, cookies)
 
