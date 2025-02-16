@@ -10,8 +10,7 @@ import {
   AlertController,
   ChainController,
   CoreHelperUtil,
-  type Provider as CoreProvider,
-  EventsController
+  type Provider as CoreProvider
 } from '@reown/appkit-core'
 import { ErrorUtil } from '@reown/appkit-utils'
 import { SolConstantsUtil } from '@reown/appkit-utils/solana'
@@ -27,7 +26,6 @@ import {
 import { SolanaWalletConnectProvider } from './providers/SolanaWalletConnectProvider.js'
 import { SolStoreUtil } from './utils/SolanaStoreUtil.js'
 import { createSendTransaction } from './utils/createSendTransaction.js'
-import { handleMobileWalletRedirection } from './utils/handleMobileWalletRedirection.js'
 import { watchStandard } from './utils/watchStandard.js'
 
 export interface AdapterOptions {
@@ -45,17 +43,6 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     this.namespace = CommonConstantsUtil.CHAIN.SOLANA
     this.connectionSettings = options.connectionSettings || 'confirmed'
     this.wallets = options.wallets
-
-    EventsController.subscribe(state => {
-      if (state.data.event === 'SELECT_WALLET') {
-        const isMobile = CoreHelperUtil.isMobile()
-        const isClient = CoreHelperUtil.isClient()
-
-        if (isMobile && isClient) {
-          handleMobileWalletRedirection(state.data.properties)
-        }
-      }
-    })
   }
 
   public override setAuthProvider(w3mFrameProvider: W3mFrameProvider) {
@@ -68,12 +55,11 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     )
   }
 
-  public syncConnectors(options: AppKitOptions, appKit: AppKit) {
+  override syncConnectors(options: AppKitOptions, appKit: AppKit) {
     if (!options.projectId) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
     }
 
-    // eslint-disable-next-line arrow-body-style
     const getActiveChain = () => appKit.getCaipNetwork(this.namespace)
 
     // Add Coinbase Wallet if available
@@ -331,11 +317,8 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     )
   }
 
-  public override async connectWalletConnect(
-    onUri: (uri: string) => void,
-    chainId?: string | number
-  ) {
-    const result = await super.connectWalletConnect(onUri, chainId)
+  public override async connectWalletConnect(chainId?: string | number) {
+    const result = await super.connectWalletConnect(chainId)
 
     const rpcUrl = this.caipNetworks?.find(n => n.id === chainId)?.rpcUrls.default.http[0] as string
     const connection = new Connection(rpcUrl, this.connectionSettings)

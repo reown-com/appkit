@@ -79,7 +79,7 @@ import type { WuiGrid } from '../layout/wui-grid/index.js'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type CustomElement<E> = Partial<E & { children?: any; onClick: any }>
 
-declare global {
+declare module 'react' {
   namespace JSX {
     interface IntrinsicElements {
       // -- Components ------------------------------------------- //

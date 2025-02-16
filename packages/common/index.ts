@@ -12,6 +12,7 @@ export { ParseUtil } from './src/utils/ParseUtil.js'
 export {
   SafeLocalStorage,
   SafeLocalStorageKeys,
+  isSafe,
   type SafeLocalStorageKey,
   getSafeConnectorIdKey
 } from './src/utils/SafeLocalStorage.js'

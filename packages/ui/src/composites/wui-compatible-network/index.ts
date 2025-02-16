@@ -21,7 +21,7 @@ export class WuiCompatibleNetwork extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ontouchstart>
+      <button>
         <wui-text variant="small-400" color="fg-200">${this.text}</wui-text>
         <wui-flex gap="3xs" alignItems="center">
           ${this.networksTemplate()}

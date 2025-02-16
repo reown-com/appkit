@@ -26,9 +26,27 @@ const localeObject = {
   }
 }
 
+const MONTH_NAMES = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+]
+
 dayjs.locale('en-web3-modal', localeObject)
 
 export const DateUtil = {
+  getMonthNameByIndex(monthIndex: number) {
+    return MONTH_NAMES[monthIndex]
+  },
   getYear(date: string = new Date().toISOString()) {
     return dayjs(date).year()
   },

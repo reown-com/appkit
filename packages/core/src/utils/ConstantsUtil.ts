@@ -2,7 +2,8 @@ import type { ChainNamespace } from '@reown/appkit-common'
 
 import type { DefaultAccountTypes, Features, SocialProvider } from './TypeUtil.js'
 
-const SECURE_SITE = 'https://secure.walletconnect.org'
+const SECURE_SITE =
+  process.env['NEXT_PUBLIC_SECURE_SITE_ORIGIN'] || 'https://secure.walletconnect.org'
 
 export const ONRAMP_PROVIDERS = [
   {
@@ -21,8 +22,7 @@ export const ONRAMP_PROVIDERS = [
   }
 ]
 
-export const MELD_DEV_PUBLIC_KEY = 'WXETMsajb7XcQBm7mcxAab:q3MtzJpiEMtXVNXsqYkAnAaBkgStybGVtZ'
-export const MELD_PROD_PUBLIC_KEY = 'WXETMuFUQmqqybHuRkSgxv:25B8LJHSfpG6LVjR2ytU5Cwh7Z4Sch2ocoU'
+export const MELD_PUBLIC_KEY = 'WXETMuFUQmqqybHuRkSgxv:25B8LJHSfpG6LVjR2ytU5Cwh7Z4Sch2ocoU'
 
 export const ConstantsUtil = {
   FOUR_MINUTES_MS: 240_000,
@@ -172,7 +172,7 @@ export const ConstantsUtil = {
     'DE',
     'WNT'
   ],
-
+  BALANCE_SUPPORTED_CHAINS: ['eip155', 'solana'] as ChainNamespace[],
   SWAP_SUPPORTED_NETWORKS: [
     // Ethereum'
     'eip155:1',
@@ -201,7 +201,8 @@ export const ConstantsUtil = {
   ],
 
   NAMES_SUPPORTED_CHAIN_NAMESPACES: ['eip155'] as ChainNamespace[],
-
+  ONRAMP_SUPPORTED_CHAIN_NAMESPACES: ['eip155', 'solana'] as ChainNamespace[],
+  ACTIVITY_ENABLED_CHAIN_NAMESPACES: ['eip155', 'solana'] as ChainNamespace[],
   NATIVE_TOKEN_ADDRESS: {
     eip155: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
     solana: 'So11111111111111111111111111111111111111111',

@@ -80,17 +80,9 @@ export class W3mSmartSessionListView extends LitElement {
   }
 
   private groupedSessionsTemplate(sessions: SmartSession[]) {
-    function getMonthName(monthNumber: number) {
-      const date = new Date()
-      date.setMonth(monthNumber)
-
-      return date.toLocaleString('en-US', {
-        month: 'long'
-      })
-    }
     function getTitle(year: number, month: number) {
       const currentYear = DateUtil.getYear()
-      const monthName = getMonthName(month)
+      const monthName = DateUtil.getMonthNameByIndex(month)
       const isCurrentYear = year === currentYear
       const groupTitle = isCurrentYear ? monthName : `${monthName} ${year}`
 
