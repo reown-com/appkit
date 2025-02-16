@@ -28,7 +28,8 @@ const WALLET_CONNECT_ID = 'walletConnect'
 const mockConnectorState: ConnectorControllerState = {
   connectors: [],
   activeConnector: undefined,
-  allConnectors: []
+  allConnectors: [],
+  filterByNamespace: undefined
 }
 
 const mockOptionsState: OptionsControllerState & OptionsControllerStateInternal = {

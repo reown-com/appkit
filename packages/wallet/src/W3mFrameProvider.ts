@@ -32,6 +32,8 @@ export class W3mFrameProvider {
 
   public user?: W3mFrameTypes.Responses['FrameGetUserResponse']
 
+  private initPromise: Promise<void> | undefined
+
   public constructor({
     projectId,
     chainId,
@@ -52,6 +54,22 @@ export class W3mFrameProvider {
         this.user = event.payload
       }
     })
+
+    this.initPromise = new Promise<void>(resolve => {
+      this.w3mFrame.events.onFrameEvent(event => {
+        if (event.type === W3mFrameConstants.FRAME_READY) {
+          this.initPromise = undefined
+          resolve()
+        }
+      })
+    })
+  }
+
+  public async init() {
+    this.w3mFrame.initFrame()
+    if (this.initPromise) {
+      await this.initPromise
+    }
   }
 
   // -- Extended Methods ------------------------------------------------
@@ -306,6 +324,7 @@ export class W3mFrameProvider {
 
   public async connectSocial(uri: string) {
     try {
+      this.w3mFrame.initFrame()
       const response = await this.appEvent<'ConnectSocial'>({
         type: W3mFrameConstants.APP_CONNECT_SOCIAL,
         payload: { uri }
@@ -549,7 +568,6 @@ export class W3mFrameProvider {
       const id = Math.random().toString(36).substring(7)
       this.w3mLogger?.logger.info?.({ event, id }, 'Sending app event')
       this.w3mFrame.events.postAppEvent({ ...event, id } as W3mFrameTypes.AppEvent)
-
       if (type === 'RPC_REQUEST') {
         const rpcEvent = event as Extract<W3mFrameTypes.AppEvent, { type: '@w3m-app/RPC_REQUEST' }>
         this.openRpcRequests = [...this.openRpcRequests, { ...rpcEvent.payload, abortController }]

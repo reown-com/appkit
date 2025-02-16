@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
 import type { BadgeType, WcWallet } from '@reown/appkit-core'
-import { ApiController, ConnectorController, RouterController } from '@reown/appkit-core'
+import { ApiController, ConnectorController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
 import { WalletUtil } from '../../utils/WalletUtil.js'
@@ -93,12 +93,7 @@ export class W3mAllWalletsSearch extends LitElement {
   }
 
   private onConnectWallet(wallet: WcWallet) {
-    const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
-    if (connector) {
-      RouterController.push('ConnectingExternal', { connector })
-    } else {
-      RouterController.push('ConnectingWalletConnect', { wallet })
-    }
+    ConnectorController.selectWalletConnector(wallet)
   }
 }
 

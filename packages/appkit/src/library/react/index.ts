@@ -31,13 +31,14 @@ type OpenOptions = {
     | 'AllWallets'
     | 'WalletSend'
   uri?: string
+  namespace?: ChainNamespace
 }
 
 type ThemeModeOptions = AppKitOptions['themeMode']
 
 type ThemeVariablesOptions = AppKitOptions['themeVariables']
 
-declare global {
+declare module 'react' {
   namespace JSX {
     interface IntrinsicElements {
       'appkit-button': Pick<

@@ -49,6 +49,20 @@ export const PresetsUtil = {
     10: 'ab9c186a-c52f-464b-2906-ca59d760a400',
     // Polygon
     137: '41d04d42-da3b-4453-8506-668cc0727900',
+    // Mantle
+    5000: 'e86fae9b-b770-4eea-e520-150e12c81100',
+    // Hedera Mainnet
+    295: '6a97d510-cac8-4e58-c7ce-e8681b044c00',
+    // Sepolia
+    11_155_111: 'e909ea0a-f92a-4512-c8fc-748044ea6800',
+    // Base Sepolia
+    84532: 'a18a7ecd-e307-4360-4746-283182228e00',
+    // Unichain Sepolia
+    1301: '4eeea7ef-0014-4649-5d1d-07271a80f600',
+    // Unichain Mainnet
+    130: '2257980a-3463-48c6-cbac-a42d2a956e00',
+    // Monad Testnet
+    10_143: '0a728e83-bacb-46db-7844-948f05434900',
     // Gnosis
     100: '02b53f6a-e3d4-479e-1cb4-21178987d100',
     // EVMos
@@ -82,7 +96,9 @@ export const PresetsUtil = {
     '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z': 'a1b58899-f671-4276-6a5e-56ca5bd59700',
     EtWTRABZaYq6iMfeYKouRu166VU2xqa1: 'a1b58899-f671-4276-6a5e-56ca5bd59700',
     // Bitcoin
-    '000000000019d6689c085ae165831e93': '21c895fa-e105-4829-9434-378bb54fa600'
+    '000000000019d6689c085ae165831e93': '21c895fa-e105-4829-9434-378bb54fa600',
+    // Bitcoin Testnet
+    '000000000933ea01ad0ee984209779ba': '220bcb01-ba47-41d3-fe5b-e29bbc4a4b00'
   } as Record<string, string>,
 
   ConnectorImageIds: {
