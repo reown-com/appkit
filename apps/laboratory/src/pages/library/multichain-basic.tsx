@@ -1,4 +1,4 @@
-import { mainnet } from '@reown/appkit/networks'
+import { type AppKitNetwork, mainnet } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '../../components/AppKitButtons'
@@ -7,10 +7,10 @@ import { UpaTests } from '../../components/UPA/UpaTests'
 import { ConstantsUtil } from '../../utils/ConstantsUtil'
 import { ThemeStore } from '../../utils/StoreUtil'
 
-const networks = ConstantsUtil.AllNetworks
+const networks = [...ConstantsUtil.AllNetworks, ...ConstantsUtil.BitcoinNetworks]
 
 const modal = createAppKit({
-  networks,
+  networks: networks as [AppKitNetwork, ...AppKitNetwork[]],
   defaultNetwork: mainnet,
   projectId: ConstantsUtil.ProjectId,
   metadata: ConstantsUtil.Metadata

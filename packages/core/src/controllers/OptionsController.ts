@@ -2,6 +2,7 @@ import { proxy, snapshot } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
+import { OptionsUtil } from '../utils/OptionsUtil.js'
 import type { SIWXConfig } from '../utils/SIWXUtil.js'
 import type {
   ConnectMethod,
@@ -189,12 +190,14 @@ export const OptionsController = {
 
     if (!state.features) {
       state.features = ConstantsUtil.DEFAULT_FEATURES
-
-      return
     }
 
     const newFeatures = { ...state.features, ...features }
     state.features = newFeatures
+
+    if (state.features.socials) {
+      state.features.socials = OptionsUtil.filterSocialsByPlatform(state.features.socials)
+    }
   },
 
   setProjectId(projectId: OptionsControllerState['projectId']) {

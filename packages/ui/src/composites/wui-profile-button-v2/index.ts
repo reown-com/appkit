@@ -39,7 +39,7 @@ export class WuiProfileButtonV2 extends LitElement {
     const connectorId = StorageUtil.getConnectedConnectorId(namespace)
     const shouldShowIcon = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
 
-    return html`<button ontouchstart data-testid="wui-profile-button" @click=${this.handleClick}>
+    return html`<button data-testid="wui-profile-button" @click=${this.handleClick}>
       <wui-flex gap="xs" alignItems="center">
         <wui-avatar
           .imageSrc=${this.avatarSrc}

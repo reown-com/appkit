@@ -72,7 +72,10 @@ export class CloudAuthSIWX implements SIWXConfig {
 
       const siweCaipNetworkId = `eip155:${siweSession?.chainId}`
 
-      if (!siweSession || siweCaipNetworkId !== chainId || siweSession.address !== address) {
+      const isSameAddress = siweSession?.address.toLowerCase() === address.toLowerCase()
+      const isSameNetwork = siweCaipNetworkId === chainId
+
+      if (!isSameAddress || !isSameNetwork) {
         return []
       }
 
