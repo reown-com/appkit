@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { Button, Stack, Text } from '@chakra-ui/react'
 import { type Address, toHex } from 'viem'
@@ -18,10 +18,10 @@ import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
 import { useChakraToast } from '../Toast'
 
 export function WagmiRequestPermissionsAsyncTest() {
-  const { address, isConnected, status } = useAppKitAccount()
+  const { address, isConnected } = useAppKitAccount()
 
   const { chainId } = useAppKitNetwork()
-  const isSupported = useMemo(() => isSmartSessionSupported(), [status])
+  const isSupported = isSmartSessionSupported()
 
   if (!isConnected || !address || !chainId) {
     return (

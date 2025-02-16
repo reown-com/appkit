@@ -25,7 +25,7 @@ export class WuiListNetwork extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button data-transparent=${this.transparent} ?disabled=${this.disabled} ontouchstart>
+      <button data-transparent=${this.transparent} ?disabled=${this.disabled}>
         <wui-flex gap="s" alignItems="center">
           ${this.templateNetworkImage()}
           <wui-text variant="paragraph-500" color="inherit">${this.name}</wui-text></wui-flex

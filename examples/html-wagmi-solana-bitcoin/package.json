@@ -1,0 +1,19 @@
+{
+  "name": "@examples/html-wagmi-solana-bitcoin",
+  "private": true,
+  "version": "1.2.0",
+  "scripts": {
+    "dev": "vite --port 3011",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@reown/appkit-adapter-wagmi": "workspace:*",
+    "@reown/appkit-adapter-solana": "workspace:*",
+    "@reown/appkit-adapter-bitcoin": "workspace:*",
+    "@reown/appkit": "workspace:*",
+    "ethers": "6.13.2"
+  },
+  "devDependencies": {
+    "vite": "5.4.12"
+  }
+}

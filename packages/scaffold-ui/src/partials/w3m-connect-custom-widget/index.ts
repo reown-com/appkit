@@ -5,6 +5,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import type { WcWallet } from '@reown/appkit-core'
 import {
   AssetUtil,
+  ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   OptionsController,
@@ -22,12 +23,19 @@ export class W3mConnectCustomWidget extends LitElement {
   @property() public tabIdx?: number = undefined
 
   @state() private connectors = ConnectorController.state.connectors
+  @state() private loading = false
 
   public constructor() {
     super()
     this.unsubscribe.push(
       ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
     )
+    if (CoreHelperUtil.isTelegram() && CoreHelperUtil.isIos()) {
+      this.loading = !ConnectionController.state.wcUri
+      this.unsubscribe.push(
+        ConnectionController.subscribeKey('wcUri', val => (this.loading = !val))
+      )
+    }
   }
 
   public override disconnectedCallback() {
@@ -55,6 +63,7 @@ export class W3mConnectCustomWidget extends LitElement {
             @click=${() => this.onConnectWallet(wallet)}
             data-testid=${`wallet-selector-${wallet.id}`}
             tabIdx=${ifDefined(this.tabIdx)}
+            ?loading=${this.loading}
           >
           </wui-list-wallet>
         `
@@ -82,6 +91,9 @@ export class W3mConnectCustomWidget extends LitElement {
   }
 
   private onConnectWallet(wallet: WcWallet) {
+    if (this.loading) {
+      return
+    }
     RouterController.push('ConnectingWalletConnect', { wallet })
   }
 }

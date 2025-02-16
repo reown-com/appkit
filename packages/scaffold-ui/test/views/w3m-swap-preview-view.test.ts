@@ -72,7 +72,8 @@ const mockChainState: ChainControllerState = {
       getCapabilities: vi.fn()
     }
   },
-  noAdapters: false
+  noAdapters: false,
+  isSwitchingNamespace: false
 }
 
 const mockSwapState: SwapControllerState = {

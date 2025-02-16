@@ -143,7 +143,9 @@ export const W3mFrameRpcConstants = {
     'eth_getUserOperationReceipt',
     'eth_estimateUserOperationGas',
     'eth_getUserOperationByHash',
-    'eth_supportedEntryPoints'
+    'eth_supportedEntryPoints',
+    //EIP-7811
+    'wallet_getAssets'
   ],
   NOT_SAFE_RPC_METHODS: [
     'personal_sign',

@@ -7,7 +7,6 @@ import {
   ConnectionController,
   CoreHelperUtil,
   EventsController,
-  OptionsController,
   RouterController,
   type WcWallet
 } from '@reown/appkit-core'
@@ -16,7 +15,6 @@ import type { WuiQrCode } from '@reown/appkit-ui'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
 // -- Constants ------------------------------------------- //
-const ALL_WALLETS_WIDGET = 'w3m-all-wallets-widget'
 const QR_CODE = 'wui-qr-code'
 const WALLET = {
   name: 'WalletConnect'
@@ -65,22 +63,24 @@ describe('W3mConnectingWcQrcode', () => {
     })
   })
 
-  it('it should use the injected universal provider when "OptionsController.useInjectedUniversalProvider" is true', async () => {
-    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-      ...OptionsController.state,
-      useInjectedUniversalProvider: true
+  it('should clear RouterController wallet data on unmount', async () => {
+    vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
+      ...RouterController.state,
+      data: {
+        wallet: WALLET
+      }
     })
 
     const connectingQrCode = await fixture(
       html`<w3m-connecting-wc-qrcode></w3m-connecting-wc-qrcode>`
     )
 
-    // We display all wallets widget if we use injected universal provider
-    expect(HelpersUtil.querySelect(connectingQrCode, ALL_WALLETS_WIDGET)).not.toBeNull()
-    expect(EventsController.sendEvent).toHaveBeenCalledWith({
-      type: 'track',
-      event: 'SELECT_WALLET',
-      properties: { name: WALLET.name, platform: 'qrcode' }
-    })
+    expect(RouterController.state.data?.wallet).toBeDefined()
+
+    connectingQrCode.remove()
+
+    await new Promise(resolve => setTimeout(resolve, 0))
+
+    expect(RouterController.state.data?.wallet).toBeUndefined()
   })
 })

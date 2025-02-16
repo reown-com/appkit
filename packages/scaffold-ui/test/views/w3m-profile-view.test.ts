@@ -1,5 +1,5 @@
 import { fixture } from '@open-wc/testing'
-import { beforeEach, describe, expect, test, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { html } from 'lit'
 
@@ -63,8 +63,11 @@ describe('W3mProfileView - Render', () => {
       allAccounts: TEST_ACCOUNTS,
       addressLabels: new Map()
     })
-
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue(MOCK_CHAIN_STATE)
+  })
+
+  afterEach(() => {
+    vi.clearAllMocks()
   })
 
   test('should render profile information correctly', async () => {

@@ -32,7 +32,7 @@ export interface ConnectExternalOptions {
 }
 
 export interface ConnectionControllerClient {
-  connectWalletConnect?: (onUri: (uri: string) => void) => Promise<void>
+  connectWalletConnect?: () => Promise<void>
   disconnect: () => Promise<void>
   signMessage: (message: string) => Promise<string>
   sendTransaction: (args: SendTransactionArgs) => Promise<string | null>
@@ -106,13 +106,9 @@ export const ConnectionController = {
       StorageUtil.setConnectedConnectorId(namespace, ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)
     })
 
-    if (CoreHelperUtil.isTelegram()) {
+    if (CoreHelperUtil.isTelegram() || (CoreHelperUtil.isSafari() && CoreHelperUtil.isIos())) {
       if (wcConnectionPromise) {
-        try {
-          await wcConnectionPromise
-        } catch (error) {
-          /* Empty */
-        }
+        await wcConnectionPromise
         wcConnectionPromise = undefined
 
         return
@@ -124,22 +120,16 @@ export const ConnectionController = {
 
         return
       }
-      wcConnectionPromise = new Promise(async (resolve, reject) => {
-        await this._getClient()
-          ?.connectWalletConnect?.(uri => {
-            state.wcUri = uri
-            state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
-          })
-          .catch(reject)
-        resolve()
-      })
+      wcConnectionPromise = this._getClient()
+        ?.connectWalletConnect?.()
+        .catch(() => undefined)
       this.state.status = 'connecting'
       await wcConnectionPromise
       wcConnectionPromise = undefined
       state.wcPairingExpiry = undefined
       this.state.status = 'connected'
     } else {
-      await this._getClient()?.connectWalletConnect?.(uri => this.setUri(uri))
+      await this._getClient()?.connectWalletConnect?.()
     }
   },
 
