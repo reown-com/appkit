@@ -57,11 +57,13 @@ const sessionMock = {
 const networks = {
   mainnet: {
     id: '1',
+    name: 'Ethereum',
     caipNetworkId: 'eip155:1',
     chainNamespace: 'eip155'
   } as unknown as CaipNetwork,
   polygon: {
     id: '137',
+    name: 'Polygon',
     caipNetworkId: 'eip155:137',
     chainNamespace: 'eip155'
   } as unknown as CaipNetwork
@@ -373,10 +375,7 @@ describe('SIWE: mapToSIWX', () => {
       const onSignOutSpy = vi.spyOn(siweConfig.methods, 'onSignOut')
 
       OptionsController.setSIWX(siwx)
-
-      ChainController.setActiveCaipNetwork({
-        id: '1'
-      } as CaipNetwork)
+      ChainController.setActiveCaipNetwork(networks.polygon)
 
       // Wait for the event loop to finish
       await new Promise(resolve => setTimeout(resolve, 10))

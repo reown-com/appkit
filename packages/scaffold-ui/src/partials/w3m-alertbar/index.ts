@@ -7,7 +7,7 @@ import { customElement } from '@reown/appkit-ui'
 import styles from './styles.js'
 
 // -- Helpers ------------------------------------------- //
-const presets = {
+export const presets = {
   info: {
     backgroundColor: 'fg-350',
     iconColor: 'fg-325',

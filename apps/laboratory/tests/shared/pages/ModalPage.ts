@@ -414,6 +414,11 @@ export class ModalPage {
     await this.page.waitForTimeout(300)
   }
 
+  async switchActiveChain() {
+    await this.page.getByText('Switch to', { exact: false }).waitFor()
+    await this.page.getByTestId('w3m-switch-active-chain-button').click()
+  }
+
   async clickWalletDeeplink() {
     await this.connectButton.click()
     await this.page.getByTestId('wallet-selector-react-wallet-v2').click()
@@ -684,11 +689,21 @@ export class ModalPage {
     await walletSelector.click()
   }
 
-  async connectToExtensionMultichain(chainNamespace: 'eip155' | 'solana' | 'bitcoin') {
-    await this.connectButton.click()
+  async connectToExtensionMultichain(
+    chainNamespace: 'eip155' | 'solana' | 'bitcoin',
+    modalOpen?: boolean,
+    isAnotherNamespaceConnected?: boolean
+  ) {
+    const isFiltered = modalOpen && isAnotherNamespaceConnected
+
+    if (!modalOpen) {
+      await this.connectButton.click()
+    }
     const walletSelector = await this.getExtensionWallet()
     await walletSelector.click()
-    const chainSelector = this.page.getByTestId(`wui-list-chain-${chainNamespace}`)
-    await chainSelector.click()
+    if (!isFiltered) {
+      const chainSelector = this.page.getByTestId(`wui-list-chain-${chainNamespace}`)
+      await chainSelector.click()
+    }
   }
 }
