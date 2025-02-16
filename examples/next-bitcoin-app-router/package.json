@@ -1,0 +1,32 @@
+{
+  "name": "@examples/next-bitcoin-app-router",
+  "version": "1.0.5",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "5.56.2",
+    "@reown/appkit": "workspace:*",
+    "@reown/appkit-adapter-wagmi": "workspace:*",
+    "@reown/appkit-adapter-bitcoin": "workspace:*",
+    "@wagmi/core": "2.13.8",
+    "next": "14.2.21",
+    "next-themes": "0.4.3",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "viem": "2.21.26",
+    "wagmi": "2.12.17"
+  },
+  "devDependencies": {
+    "@types/react": "19.0.0",
+    "@types/react-dom": "19.0.0",
+    "@types/node": "20.11.5",
+    "eslint-config-next": "14.1.0",
+    "typescript": "5.3.3",
+    "esbuild": "0.21.1"
+  }
+}

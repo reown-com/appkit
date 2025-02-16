@@ -7,11 +7,19 @@ import { useTheme } from 'next-themes'
 import { Toaster } from 'sonner'
 import { useSnapshot } from 'valtio'
 
+import { type ChainNamespace } from '@reown/appkit-common'
 import { ConnectMethod, ConstantsUtil } from '@reown/appkit-core'
 import { Features, ThemeMode, ThemeVariables, useAppKitState } from '@reown/appkit/react'
 
 import { AppKitContext } from '@/contexts/appkit-context'
-import { defaultCustomizationConfig } from '@/lib/config'
+import {
+  allAdapters,
+  initialConfig,
+  initialEnabledNetworks,
+  namespaceNetworksMap
+} from '@/lib/config'
+import { NAMESPACE_NETWORK_IDS_MAP, NETWORK_OPTIONS, NetworkOption } from '@/lib/constants'
+import { defaultCustomizationConfig } from '@/lib/defaultConfig'
 import { inter } from '@/lib/fonts'
 import { URLState, urlStateUtils } from '@/lib/url-state'
 
@@ -25,8 +33,6 @@ interface AppKitProviderProps {
   children: ReactNode
   initialConfig?: URLState | null
 }
-
-const initialConfig = urlStateUtils.getStateFromURL()
 
 export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => {
   const { initialized } = useAppKitState()
@@ -47,6 +53,12 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
     wallet: false,
     social: false
   })
+  const [enabledChains, setEnabledChains] = useState<ChainNamespace[]>(
+    initialConfig?.enabledChains || ['eip155', 'solana', 'bip122']
+  )
+  const [enabledNetworks, setEnabledNetworks] = useState<(string | number)[]>(
+    initialEnabledNetworks || []
+  )
   const themeStore = useSnapshot(ThemeStore.state)
   const appKit = themeStore.modal
 
@@ -55,6 +67,70 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
       ...prev,
       [key]: value
     }))
+  }
+
+  function removeChain(chain: ChainNamespace) {
+    setEnabledChains(prev => {
+      const newEnabledChains = prev.filter(c => c !== chain)
+      urlStateUtils.updateURLWithState({ enabledChains: newEnabledChains })
+      return newEnabledChains
+    })
+    appKit?.removeAdapter(chain)
+
+    // Update enabled networks state
+    setEnabledNetworks(prev => {
+      const newNetworks = prev.filter(n => {
+        // Keep networks that are not in the removed chain's namespace
+        return !NAMESPACE_NETWORK_IDS_MAP[chain].includes(n)
+      })
+      urlStateUtils.updateURLWithState({ enabledNetworks: newNetworks as string[] })
+      return newNetworks
+    })
+  }
+
+  function addChain(chain: ChainNamespace) {
+    setEnabledChains(prev => {
+      const newEnabledChains = [...prev, chain]
+      urlStateUtils.updateURLWithState({ enabledChains: newEnabledChains })
+      return newEnabledChains
+    })
+    const adapter = allAdapters.find(a => a.namespace === chain)
+    if (adapter) {
+      appKit?.addAdapter(adapter, namespaceNetworksMap[chain])
+    }
+
+    // Update enabled networks state
+    setEnabledNetworks(prev => {
+      const newNetworks = [...prev, ...NAMESPACE_NETWORK_IDS_MAP[chain]]
+      urlStateUtils.updateURLWithState({ enabledNetworks: newNetworks as string[] })
+      return newNetworks
+    })
+  }
+
+  function removeNetwork(network: NetworkOption) {
+    setEnabledNetworks(prev => {
+      const networksInNamespace = NETWORK_OPTIONS.filter(
+        n => n.namespace === network.namespace && prev.includes(n.network.id)
+      ).map(n => n.network.id)
+
+      if (networksInNamespace.length === 1 && networksInNamespace[0] === network.network.id) {
+        return prev
+      }
+
+      const newNetworks = prev.filter(n => n !== network.network.id)
+      urlStateUtils.updateURLWithState({ enabledNetworks: newNetworks as string[] })
+      return newNetworks
+    })
+    appKit?.removeNetwork(network.namespace, network.network.id)
+  }
+
+  function addNetwork(network: NetworkOption) {
+    setEnabledNetworks(prev => {
+      const newNetworks = [...prev, network.network.id]
+      urlStateUtils.updateURLWithState({ enabledNetworks: newNetworks as string[] })
+      return newNetworks
+    })
+    appKit?.addNetwork(network.namespace, network.network)
   }
 
   function updateFeatures(newFeatures: Partial<Features>) {
@@ -164,6 +240,12 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
           termsConditionsUrl,
           privacyPolicyUrl
         },
+        enabledChains,
+        removeChain,
+        addChain,
+        enabledNetworks,
+        removeNetwork,
+        addNetwork,
         socialsEnabled,
         enableWallets,
         isDraggingByKey,

@@ -23,7 +23,19 @@ export interface AppKitEvent {
 }
 
 type OpenOptions = {
-  view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'
+  view:
+    | 'Account'
+    | 'Connect'
+    | 'Networks'
+    | 'ApproveTransaction'
+    | 'OnRampProviders'
+    | 'Swap'
+    | 'WhatIsAWallet'
+    | 'WhatIsANetwork'
+    | 'AllWallets'
+    | 'WalletSend'
+  uri?: string
+  namespace?: ChainNamespace
 }
 
 type ThemeModeOptions = AppKitOptions['themeMode']

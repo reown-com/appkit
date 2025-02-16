@@ -94,7 +94,8 @@ const mockChainControllerState = {
     networkControllerClient: mockNetworkControllerClient,
     connectionControllerClient: mockConnectionControllerClient
   },
-  noAdapters: false
+  noAdapters: false,
+  isSwitchingNamespace: false
 }
 
 describe('W3mWalletSendPreviewView', () => {

@@ -16,11 +16,16 @@ const PATH_FOR_LIBRARIES = {
 // -- Helpers ------------------------------------------------------------------
 async function switchNetworkAndMaybeSignSiwe(network: string, siwe = true) {
   await modalPage.switchNetwork(network)
+  if (network === 'Solana') {
+    await modalPage.switchActiveChain()
+    modalPage.closeModal()
+  }
   await modalValidator.expectOnSignOutEventCalled(true)
   if (siwe) {
     await modalPage.promptSiwe()
     await modalValidator.expectOnSignOutEventCalled(true)
   }
+
   await modalValidator.expectNetworkButton(network)
 }
 
@@ -79,7 +84,7 @@ extensionTest('it should switch networks and sign siwe', async () => {
 })
 
 extensionTest('it should reload the page and sign siwe if not authenticated', async () => {
-  await modalPage.connectToExtensionMultichain('eip155')
+  await modalPage.connectToExtensionMultichain('eip155', false, true)
   await modalValidator.expectConnected()
   await modalPage.page.reload()
   await modalValidator.expectConnected()
