@@ -47,4 +47,4 @@ export const mockAuthProvider = {
 export const mockUniversalProvider = {
   off: vi.fn(),
   on: vi.fn()
-} as unknown as InstanceType<typeof UniversalProvider>
+} as unknown as Mocked<UniversalProvider>
