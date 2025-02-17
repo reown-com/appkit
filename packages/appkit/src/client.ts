@@ -1963,7 +1963,7 @@ export class AppKit {
       try {
         await this.createUniversalProvider()
       } catch (error) {
-        //      throw new Error('AppKit:getUniversalProvider - Cannot create provider')
+        throw new Error('AppKit:getUniversalProvider - Cannot create provider')
       }
     }
 
