@@ -138,9 +138,10 @@ describe('syncConnectedWalletInfo', () => {
       UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType
     )
 
-    vi.spyOn(ProviderUtil, 'getProvider').mockReturnValueOnce({
+    appKit['authProvider'] = {
+      getUsername: () => 'mock-username',
       getEmail: () => 'mock-email'
-    })
+    } as any
 
     appKit['syncConnectedWalletInfo']('eip155')
 
@@ -159,10 +160,10 @@ describe('syncConnectedWalletInfo', () => {
       UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType
     )
 
-    vi.spyOn(ProviderUtil, 'getProvider').mockReturnValueOnce({
+    appKit['authProvider'] = {
       getUsername: () => 'mock-username',
-      getEmail: () => undefined
-    })
+      getEmail: () => null
+    } as any
 
     vi.spyOn(StorageUtil, 'getConnectedSocialProvider').mockReturnValueOnce('mock-social')
 

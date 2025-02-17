@@ -1761,7 +1761,7 @@ export class AppKit {
         )
       }
     } else if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH) {
-      const provider = ProviderUtil.getProvider<W3mFrameProvider>(chainNamespace)
+      const provider = this.authProvider
 
       if (provider) {
         const social = StorageUtil.getConnectedSocialProvider() ?? 'email'
