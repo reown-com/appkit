@@ -1,4 +1,7 @@
-import { isValidEip191Signature, isValidEip1271Signature } from '@walletconnect/utils'
+import { createPublicClient, http } from 'viem'
+
+import type { CaipNetworkId } from '@reown/appkit-common'
+import { getBlockchainApiRpcUrl } from '@reown/appkit-utils'
 
 const ETH_ADDRESS_PATTERN = /0x[a-fA-F0-9]{40}/u
 const ETH_CHAIN_ID_IN_SIWE_PATTERN = /Chain ID: (?<temp1>\d+)/u
@@ -24,10 +27,17 @@ export async function verifySignature({
   chainId: string
   projectId: string
 }) {
-  let isValid = isValidEip191Signature(address, message, signature)
-  if (!isValid) {
-    isValid = await isValidEip1271Signature(address, message, signature, chainId, projectId)
-  }
+  try {
+    const client = createPublicClient({
+      transport: http(getBlockchainApiRpcUrl(chainId as CaipNetworkId, projectId))
+    })
 
-  return isValid
+    return await client.verifyMessage({
+      message: message.toString(),
+      signature: signature as `0x${string}`,
+      address: address as `0x${string}`
+    })
+  } catch (error) {
+    return false
+  }
 }

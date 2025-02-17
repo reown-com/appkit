@@ -1,4 +1,3 @@
-import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
 import UniversalProvider from '@walletconnect/universal-provider'
 import * as ethers from 'ethers'
 import { formatEther } from 'ethers/lib/utils.js'
@@ -37,14 +36,11 @@ export class Ethers5Adapter extends AdapterBlueprint {
     this.namespace = CommonConstantsUtil.CHAIN.EVM
   }
 
-  private createEthersConfig(options: AppKitOptions) {
+  private async createEthersConfig(options: AppKitOptions) {
     if (!options.metadata) {
       return undefined
     }
     let injectedProvider: Provider | undefined = undefined
-
-    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-    let coinbaseProvider: ProviderInterface | undefined = undefined
 
     function getInjectedProvider() {
       if (injectedProvider) {
@@ -65,26 +61,30 @@ export class Ethers5Adapter extends AdapterBlueprint {
       return injectedProvider
     }
 
-    function getCoinbaseProvider() {
-      if (coinbaseProvider) {
-        return coinbaseProvider
-      }
+    async function getCoinbaseProvider() {
+      try {
+        const { createCoinbaseWalletSDK } = await import('@coinbase/wallet-sdk')
 
-      if (typeof window === 'undefined') {
+        if (typeof window === 'undefined') {
+          return undefined
+        }
+
+        const coinbaseSdk = createCoinbaseWalletSDK({
+          appName: options?.metadata?.name,
+          appLogoUrl: options?.metadata?.icons[0],
+          appChainIds: options.networks?.map(caipNetwork => caipNetwork.id as number) || [1, 84532],
+          preference: {
+            options: options.coinbasePreference ?? 'all'
+          }
+        })
+
+        return coinbaseSdk.getProvider()
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to import Coinbase Wallet SDK:', error)
+
         return undefined
       }
-
-      const coinbaseWallet = new CoinbaseWalletSDK({
-        appName: options?.metadata?.name,
-        appLogoUrl: options?.metadata?.icons[0],
-        appChainIds: options.networks?.map(caipNetwork => caipNetwork.id as number) || [1, 84532]
-      })
-
-      coinbaseProvider = coinbaseWallet.makeWeb3Provider({
-        options: options.coinbasePreference ?? 'all'
-      })
-
-      return coinbaseProvider
     }
 
     const providers: ProviderType = { metadata: options.metadata }
@@ -94,7 +94,11 @@ export class Ethers5Adapter extends AdapterBlueprint {
     }
 
     if (options.enableCoinbase !== false) {
-      providers.coinbase = getCoinbaseProvider()
+      const coinbaseProvider = await getCoinbaseProvider()
+
+      if (coinbaseProvider) {
+        providers.coinbase = coinbaseProvider
+      }
     }
 
     providers.EIP6963 = options.enableEIP6963 !== false
@@ -248,8 +252,9 @@ export class Ethers5Adapter extends AdapterBlueprint {
     }
   }
 
-  public syncConnectors(options: AppKitOptions) {
-    this.ethersConfig = this.createEthersConfig(options)
+  override async syncConnectors(options: AppKitOptions): Promise<void> {
+    this.ethersConfig = await this.createEthersConfig(options)
+
     if (this.ethersConfig?.EIP6963) {
       this.listenInjectedConnector(true)
     }
@@ -545,7 +550,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
     const { caipNetwork, provider, providerType } = params
 
-    if (providerType === 'AUTH' || providerType === 'WALLET_CONNECT') {
+    if (providerType === 'AUTH') {
       await super.switchNetwork(params)
 
       return

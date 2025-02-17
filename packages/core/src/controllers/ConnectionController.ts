@@ -32,7 +32,7 @@ export interface ConnectExternalOptions {
 }
 
 export interface ConnectionControllerClient {
-  connectWalletConnect?: (onUri: (uri: string) => void) => Promise<void>
+  connectWalletConnect?: () => Promise<void>
   disconnect: () => Promise<void>
   signMessage: (message: string) => Promise<string>
   sendTransaction: (args: SendTransactionArgs) => Promise<string | null>
@@ -121,10 +121,7 @@ export const ConnectionController = {
         return
       }
       wcConnectionPromise = this._getClient()
-        ?.connectWalletConnect?.(uri => {
-          state.wcUri = uri
-          state.wcPairingExpiry = CoreHelperUtil.getPairingExpiry()
-        })
+        ?.connectWalletConnect?.()
         .catch(() => undefined)
       this.state.status = 'connecting'
       await wcConnectionPromise
@@ -132,7 +129,7 @@ export const ConnectionController = {
       state.wcPairingExpiry = undefined
       this.state.status = 'connected'
     } else {
-      await this._getClient()?.connectWalletConnect?.(uri => this.setUri(uri))
+      await this._getClient()?.connectWalletConnect?.()
     }
   },
 
