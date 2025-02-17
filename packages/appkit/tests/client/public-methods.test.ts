@@ -717,7 +717,6 @@ describe('Base Public methods', () => {
     const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
     const fetchTokenBalance = vi.spyOn(AccountController, 'fetchTokenBalance')
     const getActiveNetworkProps = vi.spyOn(StorageUtil, 'getActiveNetworkProps')
-    const getNetworkProp = vi.spyOn(ChainController, 'getNetworkProp')
 
     const appKit = new AppKit(mockOptions)
 
