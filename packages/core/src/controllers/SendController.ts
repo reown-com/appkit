@@ -185,11 +185,11 @@ export const SendController = {
   isInsufficientNetworkTokenForGas(networkBalanceInUSD: string, gasPriceInUSD: number | undefined) {
     const gasPrice = gasPriceInUSD || '0'
 
-    if (NumberUtil.bigNumber(networkBalanceInUSD).isZero()) {
+    if (NumberUtil.bigNumber(networkBalanceInUSD).eq(0)) {
       return true
     }
 
-    return NumberUtil.bigNumber(NumberUtil.bigNumber(gasPrice)).isGreaterThan(networkBalanceInUSD)
+    return NumberUtil.bigNumber(NumberUtil.bigNumber(gasPrice)).gt(networkBalanceInUSD)
   },
 
   hasInsufficientGasFunds() {
@@ -249,10 +249,12 @@ export const SendController = {
       })
       this.resetSend()
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       EventsController.sendEvent({
         type: 'track',
         event: 'SEND_ERROR',
         properties: {
+          message: errorMessage,
           isSmartAccount:
             AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
