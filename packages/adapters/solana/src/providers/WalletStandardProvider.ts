@@ -160,7 +160,7 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Sola
 
     const [result] = await feature.signTransaction({
       account,
-      transaction: serializedTransaction,
+      transaction: serializedTransaction as Uint8Array,
       chain: this.getActiveChainName()
     })
 
@@ -186,7 +186,7 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Sola
 
     const [result] = await feature.signAndSendTransaction({
       account,
-      transaction: this.serializeTransaction(transaction),
+      transaction: this.serializeTransaction(transaction) as Uint8Array,
       options: {
         ...sendOptions,
         preflightCommitment: getCommitment(sendOptions?.preflightCommitment)
@@ -222,7 +222,7 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Sola
 
     const result = await feature.signTransaction(
       ...transactions.map(transaction => ({
-        transaction: this.serializeTransaction(transaction),
+        transaction: this.serializeTransaction(transaction) as Uint8Array,
         account,
         chain
       }))

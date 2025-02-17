@@ -170,7 +170,7 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
 
   // -- Private ------------------------------------------- //
   private serializeTransaction(transaction: AnyTransaction) {
-    return base58.encode(transaction.serialize({ verifySignatures: false }))
+    return base58.encode(transaction.serialize({ verifySignatures: false }) as Uint8Array)
   }
 }
 

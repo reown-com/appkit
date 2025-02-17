@@ -67,6 +67,7 @@
     "prettier": "3.5.1",
     "process": "0.11.10",
     "turbo": "2.0.6-canary.0",
+    "buffer": "5.5.0||6.0.0",
     "typescript": "5.7.3",
     "vite": "5.4.12",
     "vite-plugin-node-polyfills": "0.23.0",
