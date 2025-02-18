@@ -4,6 +4,7 @@ packages:
   - 'packages/common'
   - 'packages/ui'
   - 'packages/controllers'
+  - 'packages/core-legacy'
   - 'packages/appkit-utils'
   - 'packages/scaffold-ui'
   - 'packages/polyfills'
