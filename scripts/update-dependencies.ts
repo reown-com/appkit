@@ -3,6 +3,8 @@ import { execSync } from 'child_process'
 import path from 'path'
 import readline from 'readline'
 
+ç /* eslint-disable no-console */
+
 interface PackageInfo {
   package: string
   current: string
@@ -98,8 +100,8 @@ class PackageUpdater {
 
   private filterMinorAndPatchUpdates(packages: PackageInfo[] = []): PackageInfo[] {
     return packages.filter(pkg => {
-      const current = pkg.current.split('.')
-      const latest = pkg.latest.split('.')
+      const current = pkg.current?.split('.')
+      const latest = pkg.latest?.split('.')
 
       // Ensure we have valid semver
       if (current.length !== 3 || latest.length !== 3) {
