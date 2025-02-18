@@ -1,7 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
 
 import { Emitter } from '@reown/appkit-common'
-import { AccountController, BlockchainApiController, ChainController } from '@reown/appkit-controllers'
+import {
+  AccountController,
+  BlockchainApiController,
+  ChainController
+} from '@reown/appkit-controllers'
 
 import { AppKit } from '../../src/client'
 import { mainnet, unsupportedNetwork } from '../mocks/Networks'

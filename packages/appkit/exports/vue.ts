@@ -1,6 +1,10 @@
 import { type Ref, onUnmounted, ref } from 'vue'
 
-import { ChainController, CoreHelperUtil, type UseAppKitNetworkReturn } from '@reown/appkit-controllers'
+import {
+  ChainController,
+  CoreHelperUtil,
+  type UseAppKitNetworkReturn
+} from '@reown/appkit-controllers'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 
 import { AppKit } from '../src/client.js'

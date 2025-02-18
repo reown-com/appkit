@@ -1,7 +1,12 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { ApiController, CoreHelperUtil, OptionsController, StorageUtil } from '@reown/appkit-controllers'
+import {
+  ApiController,
+  CoreHelperUtil,
+  OptionsController,
+  StorageUtil
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
 @customElement('w3m-connecting-wc-basic-view')

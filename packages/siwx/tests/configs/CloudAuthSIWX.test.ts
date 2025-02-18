@@ -1,6 +1,10 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { AccountController, BlockchainApiController, ChainController } from '@reown/appkit-controllers'
+import {
+  AccountController,
+  BlockchainApiController,
+  ChainController
+} from '@reown/appkit-controllers'
 
 import { CloudAuthSIWX } from '../../src/configs/CloudAuthSIWX'
 import { mockSession } from '../mocks/mockSession'
