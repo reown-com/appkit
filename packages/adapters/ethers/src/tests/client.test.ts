@@ -356,7 +356,7 @@ describe('EthersAdapter', () => {
 
     it('should receive chain id after switching network with Auth provider', async () => {
       vi.spyOn(mockAuthProvider, 'getUser').mockResolvedValue({
-        chainId: mainnet.id
+        chainId: 'eip155:1'
       } as any)
 
       const handleSwitchNetwork = vi.fn()
@@ -374,7 +374,7 @@ describe('EthersAdapter', () => {
 
       expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith('eip155:1')
       expect(handleSwitchNetwork).toHaveBeenCalledWith({
-        chainId: mainnet.id
+        chainId: String(mainnet.id)
       })
     })
 
