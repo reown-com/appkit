@@ -287,16 +287,25 @@ export abstract class AppKitCore {
   }
 
   protected getDefaultNetwork() {
-    const caipNetworkId = StorageUtil.getActiveCaipNetworkId()
+    const caipNetworkIdFromStorage = StorageUtil.getActiveCaipNetworkId()
 
-    if (caipNetworkId) {
-      const caipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
+    if (caipNetworkIdFromStorage) {
+      const caipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkIdFromStorage)
 
       if (caipNetwork) {
         return caipNetwork
       }
 
-      return this.getUnsupportedNetwork(caipNetworkId)
+      if (this.defaultCaipNetwork) {
+        // It's still a case that the network in storage might not be found in the networks array
+        return this.defaultCaipNetwork
+      }
+
+      return this.getUnsupportedNetwork(caipNetworkIdFromStorage)
+    }
+
+    if (this.defaultCaipNetwork) {
+      return this.defaultCaipNetwork
     }
 
     return this.caipNetworks?.[0]
