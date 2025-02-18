@@ -2,7 +2,7 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 
 import { type AppKit, type AppKitOptions, CoreHelperUtil, type Provider } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
-import { ChainController } from '@reown/appkit-core'
+import { ChainController, StorageUtil } from '@reown/appkit-core'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { bitcoin } from '@reown/appkit/networks'
 
@@ -177,10 +177,24 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
         address: params.address
       })
 
+      const caipAddress = `${params?.caipNetwork?.caipNetworkId}:${params.address}`
+      const cachedBalance = StorageUtil.getNativeBalanceCacheForCaipAddress(caipAddress)
+      if (cachedBalance) {
+        return { balance: cachedBalance.balance, symbol: cachedBalance.symbol }
+      }
+
       const balance = utxos.reduce((acc, utxo) => acc + utxo.value, 0)
+      const formattedBalance = UnitsUtil.parseSatoshis(balance.toString(), network)
+
+      StorageUtil.updateNativeBalanceCache({
+        caipAddress,
+        balance: formattedBalance,
+        symbol: network.nativeCurrency.symbol,
+        timestamp: Date.now()
+      })
 
       return {
-        balance: UnitsUtil.parseSatoshis(balance.toString(), network),
+        balance: formattedBalance,
         symbol: network.nativeCurrency.symbol
       }
     }

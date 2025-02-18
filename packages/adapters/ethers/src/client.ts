@@ -10,7 +10,8 @@ import {
   type ConnectorType,
   CoreHelperUtil,
   OptionsController,
-  type Provider
+  type Provider,
+  StorageUtil
 } from '@reown/appkit-core'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
@@ -467,10 +468,23 @@ export class EthersAdapter extends AdapterBlueprint {
         name: caipNetwork.name
       })
 
+      const caipAddress = `${caipNetwork.caipNetworkId}:${params.address}`
+      const cachedBalance = StorageUtil.getNativeBalanceCacheForCaipAddress(caipAddress)
+      if (cachedBalance) {
+        return { balance: cachedBalance.balance, symbol: cachedBalance.symbol }
+      }
+
       if (jsonRpcProvider) {
         try {
           const balance = await jsonRpcProvider.getBalance(params.address)
           const formattedBalance = formatEther(balance)
+
+          StorageUtil.updateNativeBalanceCache({
+            caipAddress,
+            balance: formattedBalance,
+            symbol: caipNetwork.nativeCurrency.symbol,
+            timestamp: Date.now()
+          })
 
           return { balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol }
         } catch (error) {
