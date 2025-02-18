@@ -21,7 +21,7 @@
     "wagmi": "2.14.11"
   },
   "devDependencies": {
-    "@types/node": "20.11.5",
+    "@types/node": "22.13.4",
     "@types/react": "19.0.0",
     "@types/react-dom": "19.0.0",
     "esbuild": "0.21.1",
