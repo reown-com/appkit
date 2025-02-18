@@ -115,7 +115,7 @@ export class SolanaWalletConnectProvider
 
     // If the result contains signature is the old RPC response
     if ('signature' in result) {
-      const decoded = base58.decode(result.signature) as Uint8Array
+      const decoded = base58.decode(result.signature)
       transaction.addSignature(
         new PublicKey(this.getAccount(true).publicKey),
         Buffer.from(decoded) as Buffer & Uint8Array
