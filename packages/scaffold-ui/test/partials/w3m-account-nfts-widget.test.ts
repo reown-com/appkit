@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { RouterController } from '@reown/appkit-core'
+import { RouterController } from '@reown/appkit-controllers'
 
 import { W3mAccountNftsWidget } from '../../src/partials/w3m-account-nfts-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'

@@ -2,7 +2,7 @@ import type { WalletAccount } from '@wallet-standard/base'
 
 /**
  * This should be in the package `@exodus/bitcoin-wallet-standard`, but as it is outdated we have it here.
- * References to https://github.com/ExodusMovement/bitcoin-wallet-standard/blob/master/packages/core/features/src/signMessage.ts
+ * References to https://github.com/ExodusMovement/bitcoin-wallet-standard/blob/master/packages/controllers/features/src/signMessage.ts
  */
 
 /** Name of the feature. */

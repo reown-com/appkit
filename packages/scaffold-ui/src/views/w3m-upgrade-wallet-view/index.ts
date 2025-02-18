@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit'
 
-import { ConstantsUtil } from '@reown/appkit-core'
+import { ConstantsUtil } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
 @customElement('w3m-upgrade-wallet-view')

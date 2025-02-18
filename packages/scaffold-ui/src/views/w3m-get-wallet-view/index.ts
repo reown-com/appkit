@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ApiController, AssetUtil, CoreHelperUtil, OptionsController } from '@reown/appkit-core'
+import { ApiController, AssetUtil, CoreHelperUtil, OptionsController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
 const EXPLORER = 'https://walletconnect.com/explorer'

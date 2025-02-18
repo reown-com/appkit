@@ -1,5 +1,5 @@
 ---
-'@reown/appkit-core': patch
+'@reown/appkit-controllers': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
 '@reown/appkit-adapter-ethers5': patch

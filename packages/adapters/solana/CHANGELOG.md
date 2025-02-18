@@ -10,7 +10,7 @@
   - @reown/appkit-utils@1.6.8
   - @reown/appkit@1.6.8
   - @reown/appkit-common@1.6.8
-  - @reown/appkit-core@1.6.8
+  - @reown/appkit-controllers@1.6.8
   - @reown/appkit-polyfills@1.6.8
   - @reown/appkit-scaffold-ui@1.6.8
   - @reown/appkit-ui@1.6.8
@@ -23,7 +23,7 @@
 - [#3820](https://github.com/reown-com/appkit/pull/3820) [`cc8efe9`](https://github.com/reown-com/appkit/commit/cc8efe967fa449b83e899afc23483effcc8adaf6) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fixes an issue where the modal doesn't recognize a difference between modal and wallet active network which causes issues when doing wallet actions"
 
 - Updated dependencies [[`cc8efe9`](https://github.com/reown-com/appkit/commit/cc8efe967fa449b83e899afc23483effcc8adaf6)]:
-  - @reown/appkit-core@1.6.7
+  - @reown/appkit-controllers@1.6.7
   - @reown/appkit@1.6.7
   - @reown/appkit-utils@1.6.7
   - @reown/appkit-common@1.6.7
@@ -82,7 +82,7 @@
   - @reown/appkit-utils@1.6.6
   - @reown/appkit@1.6.6
   - @reown/appkit-common@1.6.6
-  - @reown/appkit-core@1.6.6
+  - @reown/appkit-controllers@1.6.6
   - @reown/appkit-polyfills@1.6.6
   - @reown/appkit-scaffold-ui@1.6.6
   - @reown/appkit-ui@1.6.6
@@ -231,7 +231,7 @@
   - @reown/appkit-utils@1.6.5
   - @reown/appkit@1.6.5
   - @reown/appkit-common@1.6.5
-  - @reown/appkit-core@1.6.5
+  - @reown/appkit-controllers@1.6.5
   - @reown/appkit-polyfills@1.6.5
   - @reown/appkit-scaffold-ui@1.6.5
   - @reown/appkit-ui@1.6.5
@@ -325,7 +325,7 @@
   - @reown/appkit-utils@1.6.4
   - @reown/appkit@1.6.4
   - @reown/appkit-common@1.6.4
-  - @reown/appkit-core@1.6.4
+  - @reown/appkit-controllers@1.6.4
   - @reown/appkit-polyfills@1.6.4
   - @reown/appkit-scaffold-ui@1.6.4
   - @reown/appkit-ui@1.6.4
@@ -391,7 +391,7 @@
   - @reown/appkit@1.6.3
   - @reown/appkit-utils@1.6.3
   - @reown/appkit-common@1.6.3
-  - @reown/appkit-core@1.6.3
+  - @reown/appkit-controllers@1.6.3
   - @reown/appkit-polyfills@1.6.3
   - @reown/appkit-ui@1.6.3
   - @reown/appkit-wallet@1.6.3
@@ -438,7 +438,7 @@
   - @reown/appkit@1.6.2
   - @reown/appkit-utils@1.6.2
   - @reown/appkit-common@1.6.2
-  - @reown/appkit-core@1.6.2
+  - @reown/appkit-controllers@1.6.2
   - @reown/appkit-polyfills@1.6.2
   - @reown/appkit-ui@1.6.2
   - @reown/appkit-wallet@1.6.2
@@ -503,7 +503,7 @@
 
 - Updated dependencies [[`ee9b40e`](https://github.com/reown-com/appkit/commit/ee9b40e0bc7018a6c76199a3285a418356d90759), [`f83d09c`](https://github.com/reown-com/appkit/commit/f83d09c94e810d4abe830c6065f905b9237ef120), [`edc7a17`](https://github.com/reown-com/appkit/commit/edc7a17879fa54c1257aa985c833ce48af9c2144), [`e5a09bc`](https://github.com/reown-com/appkit/commit/e5a09bc20844b0e010a273eff12c3a31ca74c220), [`6cc4cdd`](https://github.com/reown-com/appkit/commit/6cc4cdd91749693d83c5da90e19fe34979834925), [`85c858f`](https://github.com/reown-com/appkit/commit/85c858f7191d6210b0ef900fb4fb1112b09f466c), [`3cf3bc5`](https://github.com/reown-com/appkit/commit/3cf3bc5501f64eb7f569716398d45fc8fa89a771), [`92ef6c4`](https://github.com/reown-com/appkit/commit/92ef6c4bfe56c67eedfcf6060ccbf87891ce3468), [`e18eefe`](https://github.com/reown-com/appkit/commit/e18eefe339aab5d02743faee26b0aac0f624b678), [`7b91225`](https://github.com/reown-com/appkit/commit/7b9122520b2ed0cf5d7a4fb0b160bfa4c23c2b58), [`444d1dd`](https://github.com/reown-com/appkit/commit/444d1dd2c6216f47bcf32c98551e5c4338d872c5), [`0f55885`](https://github.com/reown-com/appkit/commit/0f55885520775652ae7bc42b83e20b03d3b4ad31), [`ce5207f`](https://github.com/reown-com/appkit/commit/ce5207f902d3257d0780e6ae78dfe25e5a870a01), [`31b87fc`](https://github.com/reown-com/appkit/commit/31b87fcc5c252f69dc35de9b1fb2ddab5b7b208d), [`6cc4cdd`](https://github.com/reown-com/appkit/commit/6cc4cdd91749693d83c5da90e19fe34979834925), [`11b3e2e`](https://github.com/reown-com/appkit/commit/11b3e2ed386eb0fa4ccc203fb6b83459a188b5d2), [`8fa4632`](https://github.com/reown-com/appkit/commit/8fa46321ef6cb265423cc9b2dc9369de461cbbfc), [`56b66f4`](https://github.com/reown-com/appkit/commit/56b66f4cb60dc7fd9b72c2cb85b434f7f2917871), [`14af422`](https://github.com/reown-com/appkit/commit/14af422e7eee14a13601e903dee61655485babd9), [`a737ca3`](https://github.com/reown-com/appkit/commit/a737ca3b20714a0c89fc6620ce1fed3602a02796), [`69fcf27`](https://github.com/reown-com/appkit/commit/69fcf27c56db900554eacced0b1725c3060ed781), [`fccbd31`](https://github.com/reown-com/appkit/commit/fccbd31be0a6ed550468f2049413ee7cdf0d64b8), [`a9d7686`](https://github.com/reown-com/appkit/commit/a9d7686eac8a95d8a1235504a302e8ae153ebf5d), [`8249314`](https://github.com/reown-com/appkit/commit/824931426721b02e4cc7474066f54916aaf29dcf), [`6cc4cdd`](https://github.com/reown-com/appkit/commit/6cc4cdd91749693d83c5da90e19fe34979834925), [`ea1067a`](https://github.com/reown-com/appkit/commit/ea1067aff3086c68dfe5f4f33eac5fb6b882bbde), [`c1a641f`](https://github.com/reown-com/appkit/commit/c1a641fb5cc34f84d97535006d698efd3e563036)]:
   - @reown/appkit@1.6.1
-  - @reown/appkit-core@1.6.1
+  - @reown/appkit-controllers@1.6.1
   - @reown/appkit-utils@1.6.1
   - @reown/appkit-common@1.6.1
   - @reown/appkit-polyfills@1.6.1
@@ -673,7 +673,7 @@
   - @reown/appkit@1.6.0
   - @reown/appkit-utils@1.6.0
   - @reown/appkit-common@1.6.0
-  - @reown/appkit-core@1.6.0
+  - @reown/appkit-controllers@1.6.0
   - @reown/appkit-polyfills@1.6.0
   - @reown/appkit-ui@1.6.0
   - @reown/appkit-wallet@1.6.0
@@ -696,7 +696,7 @@
   - @reown/appkit@1.5.3
   - @reown/appkit-utils@1.5.3
   - @reown/appkit-common@1.5.3
-  - @reown/appkit-core@1.5.3
+  - @reown/appkit-controllers@1.5.3
   - @reown/appkit-polyfills@1.5.3
   - @reown/appkit-scaffold-ui@1.5.3
   - @reown/appkit-ui@1.5.3
@@ -721,7 +721,7 @@
   - @reown/appkit@1.5.2
   - @reown/appkit-utils@1.5.2
   - @reown/appkit-common@1.5.2
-  - @reown/appkit-core@1.5.2
+  - @reown/appkit-controllers@1.5.2
   - @reown/appkit-polyfills@1.5.2
   - @reown/appkit-ui@1.5.2
   - @reown/appkit-wallet@1.5.2
@@ -750,7 +750,7 @@
 - Updated dependencies [[`6c62b7f`](https://github.com/reown-com/appkit/commit/6c62b7fe34af15b3ef6fff9c5946bbe6c7935742), [`f33aa3b`](https://github.com/reown-com/appkit/commit/f33aa3bd38aa426bcf8ff08ce3314b02bad61e78), [`0b04fdf`](https://github.com/reown-com/appkit/commit/0b04fdf8b44afc1723708235fdb8009b98ffdcd2), [`2c82245`](https://github.com/reown-com/appkit/commit/2c82245e40d08d690ea8f5fd9e737e25dc7f1d1b), [`ac1845e`](https://github.com/reown-com/appkit/commit/ac1845e022072e8e2d03449c28229d3576b2dd28), [`329cb92`](https://github.com/reown-com/appkit/commit/329cb92fb87866dff4cf925894ab2e3ac03e0f2c), [`8236837`](https://github.com/reown-com/appkit/commit/82368374693d4620bf035df2d79b724441c93b0e), [`c4d4d2c`](https://github.com/reown-com/appkit/commit/c4d4d2c1ffa5efcd31ee0d182d5fa70b2efdedc0)]:
   - @reown/appkit-scaffold-ui@1.5.1
   - @reown/appkit@1.5.1
-  - @reown/appkit-core@1.5.1
+  - @reown/appkit-controllers@1.5.1
   - @reown/appkit-utils@1.5.1
   - @reown/appkit-common@1.5.1
   - @reown/appkit-polyfills@1.5.1
@@ -775,7 +775,7 @@
   - @reown/appkit@1.5.0
   - @reown/appkit-utils@1.5.0
   - @reown/appkit-common@1.5.0
-  - @reown/appkit-core@1.5.0
+  - @reown/appkit-controllers@1.5.0
   - @reown/appkit-polyfills@1.5.0
   - @reown/appkit-scaffold-ui@1.5.0
   - @reown/appkit-siwe@1.5.0
@@ -792,7 +792,7 @@
   - @reown/appkit@1.4.1
   - @reown/appkit-utils@1.4.1
   - @reown/appkit-common@1.4.1
-  - @reown/appkit-core@1.4.1
+  - @reown/appkit-controllers@1.4.1
   - @reown/appkit-polyfills@1.4.1
   - @reown/appkit-scaffold-ui@1.4.1
   - @reown/appkit-siwe@1.4.1
@@ -814,7 +814,7 @@
   - @reown/appkit@1.4.0
   - @reown/appkit-common@1.4.0
   - @reown/appkit-wallet@1.4.0
-  - @reown/appkit-core@1.4.0
+  - @reown/appkit-controllers@1.4.0
   - @reown/appkit-siwe@1.4.0
   - @reown/appkit-ui@1.4.0
 
@@ -835,7 +835,7 @@
   - @reown/appkit@1.3.2
   - @reown/appkit-utils@1.3.2
   - @reown/appkit-common@1.3.2
-  - @reown/appkit-core@1.3.2
+  - @reown/appkit-controllers@1.3.2
   - @reown/appkit-polyfills@1.3.2
   - @reown/appkit-siwe@1.3.2
   - @reown/appkit-ui@1.3.2
@@ -875,7 +875,7 @@
 - Updated dependencies [[`3bfbbb9`](https://github.com/reown-com/appkit/commit/3bfbbb947f53dc49de3ab467e03c35e81aa72787), [`ffb30d3`](https://github.com/reown-com/appkit/commit/ffb30d37a3a193c1dc18d152177f12d869110a3d), [`879ad0a`](https://github.com/reown-com/appkit/commit/879ad0ad98b8a41fcb66c0bf5a75ceacd05d367d)]:
   - @reown/appkit-scaffold-ui@1.3.1
   - @reown/appkit@1.3.1
-  - @reown/appkit-core@1.3.1
+  - @reown/appkit-controllers@1.3.1
   - @reown/appkit-ui@1.3.1
   - @reown/appkit-utils@1.3.1
   - @reown/appkit-common@1.3.1
@@ -909,7 +909,7 @@
   - @reown/appkit-utils@1.3.0
   - @reown/appkit@1.3.0
   - @reown/appkit-common@1.3.0
-  - @reown/appkit-core@1.3.0
+  - @reown/appkit-controllers@1.3.0
   - @reown/appkit-polyfills@1.3.0
   - @reown/appkit-scaffold-ui@1.3.0
   - @reown/appkit-siwe@1.3.0
@@ -942,7 +942,7 @@
   - @reown/appkit@1.2.1
   - @reown/appkit-utils@1.2.1
   - @reown/appkit-common@1.2.1
-  - @reown/appkit-core@1.2.1
+  - @reown/appkit-controllers@1.2.1
   - @reown/appkit-polyfills@1.2.1
   - @reown/appkit-scaffold-ui@1.2.1
   - @reown/appkit-siwe@1.2.1
@@ -961,7 +961,7 @@
   - @reown/appkit@1.2.0
   - @reown/appkit-utils@1.2.0
   - @reown/appkit-common@1.2.0
-  - @reown/appkit-core@1.2.0
+  - @reown/appkit-controllers@1.2.0
   - @reown/appkit-polyfills@1.2.0
   - @reown/appkit-scaffold-ui@1.2.0
   - @reown/appkit-siwe@1.2.0
@@ -983,7 +983,7 @@
   - @reown/appkit-scaffold-ui@1.1.8
   - @reown/appkit@1.1.8
   - @reown/appkit-common@1.1.8
-  - @reown/appkit-core@1.1.8
+  - @reown/appkit-controllers@1.1.8
   - @reown/appkit-polyfills@1.1.8
   - @reown/appkit-siwe@1.1.8
   - @reown/appkit-ui@1.1.8
@@ -1007,7 +1007,7 @@
   - @reown/appkit@1.1.7
   - @reown/appkit-utils@1.1.7
   - @reown/appkit-common@1.1.7
-  - @reown/appkit-core@1.1.7
+  - @reown/appkit-controllers@1.1.7
   - @reown/appkit-polyfills@1.1.7
   - @reown/appkit-siwe@1.1.7
   - @reown/appkit-ui@1.1.7
@@ -1035,7 +1035,7 @@
   - @reown/appkit@1.1.6
   - @reown/appkit-utils@1.1.6
   - @reown/appkit-common@1.1.6
-  - @reown/appkit-core@1.1.6
+  - @reown/appkit-controllers@1.1.6
   - @reown/appkit-polyfills@1.1.6
   - @reown/appkit-siwe@1.1.6
   - @reown/appkit-ui@1.1.6
@@ -1052,7 +1052,7 @@
 - [#3095](https://github.com/reown-com/appkit/pull/3095) [`9863e0c`](https://github.com/reown-com/appkit/commit/9863e0c8b9d35b740bc2c56cbc92dba892c21a24) Thanks [@enesozturk](https://github.com/enesozturk)! - Refactor toast/snackbar component to be able to call sequentially
 
 - Updated dependencies [[`3bb4660`](https://github.com/reown-com/appkit/commit/3bb4660d956b473b04e20e43e6082c66a46aa576), [`ed34813`](https://github.com/reown-com/appkit/commit/ed348135bf3efdc23841c484b1a03d292ef0d401), [`9863e0c`](https://github.com/reown-com/appkit/commit/9863e0c8b9d35b740bc2c56cbc92dba892c21a24)]:
-  - @reown/appkit-core@1.1.5
+  - @reown/appkit-controllers@1.1.5
   - @reown/appkit@1.1.5
   - @reown/appkit-utils@1.1.5
   - @reown/appkit-common@1.1.5
@@ -1072,7 +1072,7 @@
 
 - Updated dependencies [[`bbc48bc`](https://github.com/reown-com/appkit/commit/bbc48bcf8cfe2eca801c9a6619c7c9b437df4614), [`d27bd6d`](https://github.com/reown-com/appkit/commit/d27bd6da9a6e4942fc4d2a211f3a0dde6fe73655)]:
   - @reown/appkit-scaffold-ui@1.1.4
-  - @reown/appkit-core@1.1.4
+  - @reown/appkit-controllers@1.1.4
   - @reown/appkit-ui@1.1.4
   - @reown/appkit@1.1.4
   - @reown/appkit-utils@1.1.4
@@ -1105,7 +1105,7 @@
   - @reown/appkit@1.1.3
   - @reown/appkit-utils@1.1.3
   - @reown/appkit-common@1.1.3
-  - @reown/appkit-core@1.1.3
+  - @reown/appkit-controllers@1.1.3
   - @reown/appkit-polyfills@1.1.3
   - @reown/appkit-scaffold-ui@1.1.3
   - @reown/appkit-siwe@1.1.3
@@ -1134,7 +1134,7 @@
   - @reown/appkit@1.1.2
   - @reown/appkit-utils@1.1.2
   - @reown/appkit-common@1.1.2
-  - @reown/appkit-core@1.1.2
+  - @reown/appkit-controllers@1.1.2
   - @reown/appkit-polyfills@1.1.2
   - @reown/appkit-scaffold-ui@1.1.2
   - @reown/appkit-siwe@1.1.2
@@ -1151,7 +1151,7 @@
   - @reown/appkit@1.1.1
   - @reown/appkit-utils@1.1.1
   - @reown/appkit-common@1.1.1
-  - @reown/appkit-core@1.1.1
+  - @reown/appkit-controllers@1.1.1
   - @reown/appkit-polyfills@1.1.1
   - @reown/appkit-scaffold-ui@1.1.1
   - @reown/appkit-siwe@1.1.1
@@ -1183,7 +1183,7 @@
   - @reown/appkit-scaffold-ui@1.1.0
   - @reown/appkit@1.1.0
   - @reown/appkit-common@1.1.0
-  - @reown/appkit-core@1.1.0
+  - @reown/appkit-controllers@1.1.0
   - @reown/appkit-siwe@1.1.0
   - @reown/appkit-ui@1.1.0
   - @reown/appkit-polyfills@1.1.0
@@ -1210,7 +1210,7 @@
   - @reown/appkit@1.0.7
   - @reown/appkit-utils@1.0.7
   - @reown/appkit-common@1.0.7
-  - @reown/appkit-core@1.0.7
+  - @reown/appkit-controllers@1.0.7
   - @reown/appkit-polyfills@1.0.7
   - @reown/appkit-siwe@1.0.7
   - @reown/appkit-ui@1.0.7
@@ -1251,7 +1251,7 @@
   - @reown/appkit@1.0.6
   - @reown/appkit-utils@1.0.6
   - @reown/appkit-common@1.0.6
-  - @reown/appkit-core@1.0.6
+  - @reown/appkit-controllers@1.0.6
   - @reown/appkit-polyfills@1.0.6
   - @reown/appkit-scaffold-ui@1.0.6
   - @reown/appkit-siwe@1.0.6
@@ -1284,7 +1284,7 @@
 
 - Updated dependencies [[`f5dc9fa`](https://github.com/reown-com/appkit/commit/f5dc9fa1ec5c853f0ee7edbeb0aa6f053bdc5513), [`97dd79d`](https://github.com/reown-com/appkit/commit/97dd79df711201d5b7450fb10544f063975e6cb6), [`e2bacfd`](https://github.com/reown-com/appkit/commit/e2bacfd0aaa9a83060d3181678c42dd9cc90293b), [`f5dc9fa`](https://github.com/reown-com/appkit/commit/f5dc9fa1ec5c853f0ee7edbeb0aa6f053bdc5513), [`865320c`](https://github.com/reown-com/appkit/commit/865320c709bb76a61ec88c786c6b2a354c8b4b8b), [`eeb9207`](https://github.com/reown-com/appkit/commit/eeb92079b4bb37d2cb9db68f51bcdeb87bd83af3), [`cc35726`](https://github.com/reown-com/appkit/commit/cc357269ec04c6372c50d3bf00c674bfe182128b), [`6faa782`](https://github.com/reown-com/appkit/commit/6faa7829c73b98430f1d8873bd9caf6c90046f2e), [`bad570a`](https://github.com/reown-com/appkit/commit/bad570a9806785854cea4573cfb1e5bfb4e4a8fb), [`8baf998`](https://github.com/reown-com/appkit/commit/8baf998133d0bbab4f87f15a0337d4b1452912d7)]:
   - @reown/appkit@1.0.5
-  - @reown/appkit-core@1.0.5
+  - @reown/appkit-controllers@1.0.5
   - @reown/appkit-utils@1.0.5
   - @reown/appkit-common@1.0.5
   - @reown/appkit-polyfills@1.0.5
@@ -1306,7 +1306,7 @@
   - @reown/appkit@1.0.4
   - @reown/appkit-utils@1.0.4
   - @reown/appkit-common@1.0.4
-  - @reown/appkit-core@1.0.4
+  - @reown/appkit-controllers@1.0.4
   - @reown/appkit-polyfills@1.0.4
   - @reown/appkit-siwe@1.0.4
   - @reown/appkit-ui@1.0.4
@@ -1327,7 +1327,7 @@
   - @reown/appkit@1.0.3
   - @reown/appkit-utils@1.0.3
   - @reown/appkit-common@1.0.3
-  - @reown/appkit-core@1.0.3
+  - @reown/appkit-controllers@1.0.3
   - @reown/appkit-polyfills@1.0.3
   - @reown/appkit-scaffold-ui@1.0.3
   - @reown/appkit-siwe@1.0.3
@@ -1349,7 +1349,7 @@
 
 - Updated dependencies [[`a632159`](https://github.com/reown-com/appkit/commit/a6321595e4c910215e552119be69dc1486efb240), [`48ad644`](https://github.com/reown-com/appkit/commit/48ad6444ca8f5a53cc2669e961492e62f32c0687), [`babb413`](https://github.com/reown-com/appkit/commit/babb4133ddff939061b788c3115b9d988b6e3ce2), [`a632159`](https://github.com/reown-com/appkit/commit/a6321595e4c910215e552119be69dc1486efb240), [`a181a19`](https://github.com/reown-com/appkit/commit/a181a19a017053df646e9ae6e1ffa77b1deac1d1)]:
   - @reown/appkit-wallet@1.0.2
-  - @reown/appkit-core@1.0.2
+  - @reown/appkit-controllers@1.0.2
   - @reown/appkit@1.0.2
   - @reown/appkit-utils@1.0.2
   - @reown/appkit-common@1.0.2
@@ -1368,7 +1368,7 @@
   - @reown/appkit@1.0.1
   - @reown/appkit-utils@1.0.1
   - @reown/appkit-common@1.0.1
-  - @reown/appkit-core@1.0.1
+  - @reown/appkit-controllers@1.0.1
   - @reown/appkit-polyfills@1.0.1
   - @reown/appkit-scaffold-ui@1.0.1
   - @reown/appkit-siwe@1.0.1
@@ -1390,7 +1390,7 @@
 - Updated dependencies [[`e678965`](https://github.com/WalletConnect/web3modal/commit/e67896504762ea2220aaedb3202077eec83fdc7f), [`3d62df8`](https://github.com/WalletConnect/web3modal/commit/3d62df8e0f29977ee82f96f17fbbac66f39ae6a6), [`f4a378d`](https://github.com/WalletConnect/web3modal/commit/f4a378de8bf67f296ab5cc2d730533e7362ba36a)]:
   - @reown/appkit-scaffold-ui@1.0.0
   - @reown/appkit@1.0.0
-  - @reown/appkit-core@1.0.0
+  - @reown/appkit-controllers@1.0.0
   - @reown/appkit-utils@1.0.0
   - @reown/appkit-common@1.0.0
   - @reown/appkit-polyfills@1.0.0
@@ -1412,7 +1412,7 @@
   - @reown/appkit@0.0.5
   - @reown/appkit-common@0.0.5
   - @reown/appkit-utils@0.0.5
-  - @reown/appkit-core@0.0.5
+  - @reown/appkit-controllers@0.0.5
   - @reown/appkit-polyfills@0.0.5
   - @reown/appkit-scaffold-ui@0.0.5
   - @reown/appkit-siwe@0.0.5
@@ -1432,7 +1432,7 @@
   - @reown/appkit@0.0.4
   - @reown/appkit-common@0.0.4
   - @reown/appkit-wallet@0.0.4
-  - @reown/appkit-core@0.0.4
+  - @reown/appkit-controllers@0.0.4
   - @reown/appkit-siwe@0.0.4
   - @reown/appkit-ui@0.0.4
 
@@ -1447,7 +1447,7 @@
 - Updated dependencies [[`91d0296`](https://github.com/WalletConnect/web3modal/commit/91d02963cbe3c2d06b74801b519ce23dd30ff797), [`51eff9f`](https://github.com/WalletConnect/web3modal/commit/51eff9f82c296b0ba2b5ab33af92a1fa54a77f7a)]:
   - @reown/appkit@0.0.3
   - @reown/appkit-common@0.0.3
-  - @reown/appkit-core@0.0.3
+  - @reown/appkit-controllers@0.0.3
   - @reown/appkit-polyfills@0.0.3
   - @reown/appkit-scaffold-ui@0.0.3
   - @reown/appkit-utils@0.0.3

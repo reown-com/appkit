@@ -14,7 +14,7 @@ import {
   SIWXUtil,
   SnackController,
   ThemeController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
 
 import styles from './styles.js'

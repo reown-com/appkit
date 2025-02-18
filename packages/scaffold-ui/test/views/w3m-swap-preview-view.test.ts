@@ -10,7 +10,7 @@ import {
   SwapController,
   type SwapControllerState,
   type SwapTokenWithBalance
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import { W3mSwapPreviewView } from '../../exports'
 

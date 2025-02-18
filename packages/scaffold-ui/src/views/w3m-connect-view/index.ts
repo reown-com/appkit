@@ -15,7 +15,7 @@ import {
   OptionsController,
   RouterController,
   type WalletGuideType
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { MathUtil, customElement } from '@reown/appkit-ui'
 import { ConstantsUtil as AppKitConstantsUtil } from '@reown/appkit-utils'
 

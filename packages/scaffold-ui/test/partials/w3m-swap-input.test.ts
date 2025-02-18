@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { EventsController, RouterController, type SwapToken } from '@reown/appkit-core'
+import { EventsController, RouterController, type SwapToken } from '@reown/appkit-controllers'
 
 import { W3mSwapInput } from '../../src/partials/w3m-swap-input'
 import { HelpersUtil } from '../utils/HelpersUtil'

@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { OptionsController, SIWXUtil } from '@reown/appkit-core'
+import { OptionsController, SIWXUtil } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
 @customElement('w3m-siwx-sign-message-view')

@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
-import { type SwapInputTarget } from '@reown/appkit-core'
+import { type SwapInputTarget } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'

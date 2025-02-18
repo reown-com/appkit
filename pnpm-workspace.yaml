@@ -3,7 +3,7 @@ packages:
   - 'packages/appkit'
   - 'packages/common'
   - 'packages/ui'
-  - 'packages/core'
+  - 'packages/controllers'
   - 'packages/appkit-utils'
   - 'packages/scaffold-ui'
   - 'packages/polyfills'

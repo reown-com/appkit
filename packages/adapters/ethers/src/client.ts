@@ -11,7 +11,7 @@ import {
   CoreHelperUtil,
   OptionsController,
   type Provider
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'

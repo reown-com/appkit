@@ -44,12 +44,12 @@ import {
   NetworkUtil,
   isReownName
 } from '@reown/appkit-common'
-import { CoreHelperUtil } from '@reown/appkit-core'
+import { CoreHelperUtil } from '@reown/appkit-controllers'
 import {
   type ConnectorType,
   ConstantsUtil as CoreConstantsUtil,
   type Provider
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'

@@ -8,7 +8,7 @@ import {
   RouterController,
   type SocialProvider,
   StorageUtil
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
 @customElement('w3m-account-auth-button')

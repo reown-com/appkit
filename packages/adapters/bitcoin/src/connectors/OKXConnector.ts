@@ -1,5 +1,5 @@
 import type { CaipNetwork } from '@reown/appkit-common'
-import { CoreHelperUtil, type RequestArguments } from '@reown/appkit-core'
+import { CoreHelperUtil, type RequestArguments } from '@reown/appkit-controllers'
 import { bitcoin } from '@reown/appkit/networks'
 
 import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'

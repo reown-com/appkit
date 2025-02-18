@@ -1,8 +1,8 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import type { RouterControllerState } from '@reown/appkit-core'
-import { RouterController, TooltipController } from '@reown/appkit-core'
+import type { RouterControllerState } from '@reown/appkit-controllers'
+import { RouterController, TooltipController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'

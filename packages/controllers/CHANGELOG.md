@@ -1,4 +1,4 @@
-# @reown/appkit-core
+# @reown/appkit-controllers
 
 ## 1.6.8
 

@@ -13,11 +13,11 @@ import {
   EventsController,
   OptionsController,
   type OptionsControllerState,
+  type OptionsControllerStateInternal,
   RouterController,
   type SdkVersion
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
-import type { OptionsControllerStateInternal } from '../../../core/dist/types/src/controllers/OptionsController'
 import { W3mAllWalletsWidget } from '../../src/partials/w3m-all-wallets-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'
 

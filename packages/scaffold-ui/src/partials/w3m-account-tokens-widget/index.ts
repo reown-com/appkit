@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { AccountController, EventsController, RouterController } from '@reown/appkit-core'
+import { AccountController, EventsController, RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 

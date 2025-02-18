@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { RouterController, SwapController, type SwapTokenWithBalance } from '@reown/appkit-core'
+import { RouterController, SwapController, type SwapTokenWithBalance } from '@reown/appkit-controllers'
 import { MathUtil, customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'

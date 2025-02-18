@@ -3,8 +3,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { AssetUtil } from '@reown/appkit-core'
-import type { WcWallet } from '@reown/appkit-core'
+import { AssetUtil } from '@reown/appkit-controllers'
+import type { WcWallet } from '@reown/appkit-controllers'
 
 import { W3mAllWalletsListItem } from '../../src/partials/w3m-all-wallets-list-item'
 
