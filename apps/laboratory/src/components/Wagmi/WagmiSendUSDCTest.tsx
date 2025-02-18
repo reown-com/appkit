@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import React from 'react'
 
+import { WarningIcon } from '@chakra-ui/icons'
 import {
   Button,
   Input,
@@ -65,7 +66,6 @@ function SendUSDCForm({ isOpen, onClose, chain, config, balance }: SendUSDCFormP
       }
 
       onClose()
-
       showPendingToast()
 
       const hash = await client.writeContract({
@@ -76,7 +76,6 @@ function SendUSDCForm({ isOpen, onClose, chain, config, balance }: SendUSDCFormP
       })
 
       showSuccessToast(hash)
-
       await fetchBalances()
     } catch (error) {
       showErrorToast(ErrorUtil.getErrorMessage(error, 'Failed to send transaction'))
@@ -86,6 +85,10 @@ function SendUSDCForm({ isOpen, onClose, chain, config, balance }: SendUSDCFormP
       setIsLoading(false)
     }
   }
+
+  const parsedAmount = parseFloat(amount)
+  const parsedBalance = parseFloat(balance)
+  const hasInsufficientBalance = amount !== '' && parsedAmount > parsedBalance
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -108,15 +111,20 @@ function SendUSDCForm({ isOpen, onClose, chain, config, balance }: SendUSDCFormP
               onChange={e => setAmount(e.target.value)}
               value={amount}
               type="number"
-              max={parseFloat(balance)}
             />
+            {hasInsufficientBalance && (
+              <Stack direction="row" spacing={1} align="center">
+                <WarningIcon color="yellow.500" />
+                <Text color="yellow.500" fontSize="sm">
+                  The amount entered exceeds your available balance.
+                </Text>
+              </Stack>
+            )}
             <Stack direction="row" spacing={4}>
               <Button
                 data-testid="sign-transaction-button"
                 onClick={onSendTransaction}
-                isDisabled={
-                  isLoading || !address || !amount || parseFloat(amount) > parseFloat(balance)
-                }
+                isDisabled={isLoading || !address || !amount}
                 isLoading={isLoading}
                 width="full"
               >
@@ -146,6 +154,7 @@ export function WagmiSendUSDCTest({ config }: IBaseProps) {
   const [usdcBalance, setUsdcBalance] = useState('0')
   const [isLoading, setIsLoading] = useState(false)
   const toast = useChakraToast()
+
   async function handleOpenModal() {
     setIsLoading(true)
     try {
