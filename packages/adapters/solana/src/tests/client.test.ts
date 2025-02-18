@@ -232,7 +232,7 @@ describe('SolanaAdapter', () => {
         type: 'AUTH',
         switchNetwork: mockAuthConnector.connect,
         getUser: vi.fn().mockResolvedValue({
-          chainId: mockCaipNetworks[0].id
+          chainId: mockCaipNetworks[0].caipNetworkId
         })
       })
 

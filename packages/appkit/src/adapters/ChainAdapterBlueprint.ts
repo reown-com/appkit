@@ -223,7 +223,6 @@ export abstract class AdapterBlueprint<
    * @param {AdapterBlueprint.SwitchNetworkParams} params - Network switching parameters
    */
   public async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
-    console.log(params)
     const { caipNetwork, providerType } = params
 
     if (!params.provider) {
