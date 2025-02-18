@@ -133,12 +133,12 @@ describe('AppKitWalletButton', () => {
     expect(walletButton.getAttribute('loading')).not.toBeNull()
 
     expect(walletButtonClick).toHaveBeenCalledOnce()
-    expect(ModalControllerOpenSpy).toHaveBeenCalledWith({
-      view: 'ConnectingWalletConnect'
-    })
+    expect(ModalControllerOpenSpy).toHaveBeenCalled()
     expect(RouterControllerPushSpy).toHaveBeenCalledWith('ConnectingWalletConnect', {
       wallet: MetaMask
     })
+
+    expect(RouterController.state?.data?.wallet).toEqual(MetaMask)
 
     const ModalControllerCloseSpy = vi.spyOn(ModalController, 'close').mockImplementation(() => {
       ModalController.state.open = false
