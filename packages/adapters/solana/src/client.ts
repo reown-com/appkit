@@ -10,7 +10,8 @@ import {
   AlertController,
   ChainController,
   CoreHelperUtil,
-  type Provider as CoreProvider
+  type Provider as CoreProvider,
+  StorageUtil
 } from '@reown/appkit-core'
 import { ErrorUtil } from '@reown/appkit-utils'
 import { SolConstantsUtil } from '@reown/appkit-utils/solana'
@@ -242,8 +243,21 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       this.connectionSettings
     )
 
+    const caipAddress = `${params?.caipNetwork?.caipNetworkId}:${params.address}`
+    const cachedBalance = StorageUtil.getNativeBalanceCacheForCaipAddress(caipAddress)
+    if (cachedBalance) {
+      return { balance: cachedBalance.balance, symbol: cachedBalance.symbol }
+    }
+
     const balance = await connection.getBalance(new PublicKey(params.address))
     const formattedBalance = (balance / SolConstantsUtil.LAMPORTS_PER_SOL).toString()
+
+    StorageUtil.updateNativeBalanceCache({
+      caipAddress,
+      balance: formattedBalance,
+      symbol: params.caipNetwork?.nativeCurrency.symbol || 'SOL',
+      timestamp: Date.now()
+    })
 
     if (!params.caipNetwork) {
       throw new Error('caipNetwork is required')
