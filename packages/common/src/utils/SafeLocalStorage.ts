@@ -17,7 +17,7 @@ export type SafeLocalStorageItems = {
   '@appkit/siwx-nonce-token': string
   '@appkit/social_provider': string
   '@appkit/native_balance_cache': string
-  '@appkit/balance_cache': string
+  '@appkit/portfolio_cache': string
   '@appkit/ens_cache': string
   '@appkit/identity_cache': string
   /*
@@ -44,7 +44,7 @@ export const SafeLocalStorageKeys = {
   SIWX_NONCE_TOKEN: '@appkit/siwx-nonce-token',
   SOCIAL_PROVIDER: '@appkit/social_provider',
   NATIVE_BALANCE_CACHE: '@appkit/native_balance_cache',
-  BALANCE_CACHE: '@appkit/balance_cache',
+  PORTFOLIO_CACHE: '@appkit/portfolio_cache',
   ENS_CACHE: '@appkit/ens_cache',
   IDENTITY_CACHE: '@appkit/identity_cache'
 } as const satisfies Record<string, keyof SafeLocalStorageItems>

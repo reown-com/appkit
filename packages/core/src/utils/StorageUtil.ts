@@ -20,7 +20,7 @@ import type {
 export const StorageUtil = {
   // Cache expiry in milliseconds
   cacheExpiry: {
-    balance: 30000,
+    portfolio: 30000,
     nativeBalance: 30000,
     ens: 300000,
     identity: 300000
@@ -301,7 +301,7 @@ export const StorageUtil = {
   getBalanceCache() {
     let cache: Record<string, { timestamp: number; balance: BlockchainApiBalanceResponse }> = {}
     try {
-      const result = SafeLocalStorage.getItem(SafeLocalStorageKeys.BALANCE_CACHE)
+      const result = SafeLocalStorage.getItem(SafeLocalStorageKeys.PORTFOLIO_CACHE)
       cache = result ? JSON.parse(result) : {}
     } catch {
       console.info('Unable to get balance cache')
@@ -313,7 +313,7 @@ export const StorageUtil = {
     try {
       const cache = StorageUtil.getBalanceCache()
       SafeLocalStorage.setItem(
-        SafeLocalStorageKeys.BALANCE_CACHE,
+        SafeLocalStorageKeys.PORTFOLIO_CACHE,
         JSON.stringify({ ...cache, [caipAddress]: undefined })
       )
     } catch {
@@ -325,7 +325,10 @@ export const StorageUtil = {
       const cache = StorageUtil.getBalanceCache()
       const balanceCache = cache[caipAddress]
       // We want to discard cache if it's older than the cache expiry
-      if (balanceCache && !this.isCacheExpired(balanceCache.timestamp, this.cacheExpiry.balance)) {
+      if (
+        balanceCache &&
+        !this.isCacheExpired(balanceCache.timestamp, this.cacheExpiry.portfolio)
+      ) {
         return balanceCache.balance
       }
 
@@ -344,7 +347,7 @@ export const StorageUtil = {
     try {
       const cache = StorageUtil.getBalanceCache()
       cache[params.caipAddress] = params
-      SafeLocalStorage.setItem(SafeLocalStorageKeys.BALANCE_CACHE, JSON.stringify(cache))
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.PORTFOLIO_CACHE, JSON.stringify(cache))
     } catch {
       console.info('Unable to update balance cache', params)
     }
@@ -525,7 +528,7 @@ export const StorageUtil = {
 
   clearAddressCache() {
     try {
-      SafeLocalStorage.removeItem(SafeLocalStorageKeys.BALANCE_CACHE)
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys.PORTFOLIO_CACHE)
       SafeLocalStorage.removeItem(SafeLocalStorageKeys.NATIVE_BALANCE_CACHE)
       SafeLocalStorage.removeItem(SafeLocalStorageKeys.ENS_CACHE)
       SafeLocalStorage.removeItem(SafeLocalStorageKeys.IDENTITY_CACHE)
