@@ -20,8 +20,8 @@ import type {
 export const StorageUtil = {
   // Cache expiry in milliseconds
   cacheExpiry: {
-    balance: 300000,
-    nativeBalance: 300000,
+    balance: 30000,
+    nativeBalance: 30000,
     ens: 300000,
     identity: 300000
   },
