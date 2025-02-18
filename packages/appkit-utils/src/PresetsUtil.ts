@@ -13,6 +13,8 @@ export const PresetsUtil = {
       '225affb176778569276e484e1b92637ad061b01e13a048b35a9d280c3b58970f',
     [CommonConstantsUtil.CONNECTOR_ID.LEDGER]:
       '19177a98252e07ddfc9af2083ba8e07ef627cb6103467ffebb3f8f4205fd7927',
+    [CommonConstantsUtil.CONNECTOR_ID.OKX]:
+      '971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709',
 
     /* Connector names */
     [ConstantsUtil.METMASK_CONNECTOR_NAME]:
