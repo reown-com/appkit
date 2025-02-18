@@ -10,6 +10,7 @@ import {
 } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
+import { StorageUtil } from '@reown/appkit-core'
 import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
 
 import { BitcoinAdapter, type BitcoinConnector } from '../src'
@@ -300,6 +301,7 @@ describe('BitcoinAdapter', () => {
         balance: '100.0006',
         symbol: 'BTC'
       })
+      StorageUtil.clearAddressCache()
     })
 
     it('should return empty balance if no UTXOs', async () => {

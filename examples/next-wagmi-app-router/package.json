@@ -23,7 +23,7 @@
   "devDependencies": {
     "@types/react": "19.0.0",
     "@types/react-dom": "19.0.0",
-    "@types/node": "20.11.5",
+    "@types/node": "22.13.4",
     "eslint-config-next": "14.1.0",
     "typescript": "5.3.3",
     "esbuild": "0.21.1"
