@@ -25,6 +25,9 @@ export const StorageUtil = {
     ens: 300000,
     identity: 300000
   },
+  isCacheExpired(timestamp: number, cacheExpiry: number) {
+    return Date.now() - timestamp > cacheExpiry
+  },
   getActiveNetworkProps() {
     const namespace = StorageUtil.getActiveNamespace()
     const caipNetworkId = StorageUtil.getActiveCaipNetworkId() as CaipNetworkId | undefined
@@ -322,11 +325,10 @@ export const StorageUtil = {
       const cache = StorageUtil.getBalanceCache()
       const balanceCache = cache[caipAddress]
       // We want to discard cache if it's older than the cache expiry
-      if (balanceCache && Date.now() - balanceCache?.timestamp < this.cacheExpiry.balance) {
+      if (balanceCache && !this.isCacheExpired(balanceCache.timestamp, this.cacheExpiry.balance)) {
         return balanceCache.balance
       }
 
-      console.info('Discarding balanceCache cache for address', caipAddress)
       StorageUtil.removeAddressFromBalanceCache(caipAddress)
     } catch {
       console.info('Unable to get balance cache for address', caipAddress)
@@ -380,7 +382,7 @@ export const StorageUtil = {
       // We want to discard cache if it's older than the cache expiry
       if (
         nativeBalanceCache &&
-        Date.now() - nativeBalanceCache?.timestamp < this.cacheExpiry.nativeBalance
+        !this.isCacheExpired(nativeBalanceCache.timestamp, this.cacheExpiry.nativeBalance)
       ) {
         return nativeBalanceCache
       }
@@ -424,7 +426,7 @@ export const StorageUtil = {
       const cache = StorageUtil.getEnsCache()
       const ensCache = cache[address]
       // We want to discard cache if it's older than the cache expiry
-      if (ensCache && Date.now() - ensCache.timestamp < this.cacheExpiry.ens) {
+      if (ensCache && !this.isCacheExpired(ensCache.timestamp, this.cacheExpiry.ens)) {
         return ensCache.ens
       }
       StorageUtil.removeEnsFromCache(address)
@@ -480,7 +482,10 @@ export const StorageUtil = {
       const cache = StorageUtil.getIdentityCache()
       const identityCache = cache[address]
       // We want to discard cache if it's older than the cache expiry
-      if (identityCache && Date.now() - identityCache.timestamp < this.cacheExpiry.identity) {
+      if (
+        identityCache &&
+        !this.isCacheExpired(identityCache.timestamp, this.cacheExpiry.identity)
+      ) {
         return identityCache.identity
       }
       StorageUtil.removeIdentityFromCache(address)
