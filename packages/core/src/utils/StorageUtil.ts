@@ -305,6 +305,8 @@ export const StorageUtil = {
         | undefined
     } catch {
       console.info('Unable to get telegram social provider')
+
+      return null
     }
   },
   setTelegramSocialProvider(socialProvider: SocialProvider) {

@@ -830,6 +830,7 @@ export abstract class AppKitCore {
       StorageUtil.deleteConnectedConnectorId(namespace)
       this.setStatus('disconnected', namespace)
     }
+  }
 
   protected async syncWalletConnectAccount() {
     this.chainNamespaces.forEach(async chainNamespace => {
