@@ -254,7 +254,7 @@ export class W3mSocialLoginWidget extends LitElement {
           })
 
           if (!uri) {
-            this.popupWindow?.close()
+            this.popupWindow.close()
             throw new Error('Something went wrong')
           }
 
