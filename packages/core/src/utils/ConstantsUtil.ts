@@ -2,9 +2,10 @@ import { type ChainNamespace, SystemUtil } from '@reown/appkit-common'
 
 import type { DefaultAccountTypes, Features, SocialProvider } from './TypeUtil.js'
 
-const SECURE_SITE = SystemUtil.canUseProcessEnv
-  ? process.env['NEXT_PUBLIC_SECURE_SITE_ORIGIN'] || 'https://secure.walletconnect.org'
-  : 'https://secure.walletconnect.org'
+const SECURE_SITE = SystemUtil.getEnv(
+  'NEXT_PUBLIC_SECURE_SITE_ORIGIN',
+  'https://secure.walletconnect.org'
+)
 
 export const ONRAMP_PROVIDERS = [
   {
