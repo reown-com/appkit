@@ -10,8 +10,8 @@ import {
   ConnectorController,
   CoreHelperUtil,
   EventsController,
-  OptionsController,
- } from '@reown/appkit-core'
+  OptionsController
+} from '@reown/appkit-core'
 
 import { W3mSocialLoginWidget } from '../../src/partials/w3m-social-login-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'
@@ -35,7 +35,7 @@ describe('W3mSocialLoginWidget', () => {
     })
     vi.spyOn(AccountController, 'setSocialProvider')
     vi.spyOn(EventsController, 'sendEvent')
-     vi.spyOn(CoreHelperUtil, 'returnOpenHref').mockReturnValue(mockWindow as Window)
+    vi.spyOn(CoreHelperUtil, 'returnOpenHref').mockReturnValue(mockWindow as Window)
     vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
       provider: {
