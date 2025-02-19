@@ -237,22 +237,6 @@ export class W3mSocialLoginWidget extends LitElement {
 
       try {
         if (authConnector && socialProvider) {
-          const { uri } = await authConnector.provider.getSocialRedirectUri({
-            provider: socialProvider
-          })
-
-          if (!uri) {
-            throw new Error('Something went wrong')
-          }
-
-          if (CoreHelperUtil.isTelegram()) {
-            SafeLocalStorage.setItem(SafeLocalStorageKeys.SOCIAL_PROVIDER, socialProvider)
-            const parsedUri = CoreHelperUtil.formatTelegramSocialLoginUrl(uri)
-
-            // eslint-disable-next-line consistent-return
-            return CoreHelperUtil.openHref(parsedUri, '_top')
-          }
-
           this.popupWindow = CoreHelperUtil.returnOpenHref(
             '',
             'popupWindow',
@@ -261,9 +245,27 @@ export class W3mSocialLoginWidget extends LitElement {
 
           if (this.popupWindow) {
             AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
-            this.popupWindow.location.href = uri
           } else {
             throw new Error('Something went wrong')
+          }
+
+          const { uri } = await authConnector.provider.getSocialRedirectUri({
+            provider: socialProvider
+          })
+
+          if (!uri) {
+            this.popupWindow?.close()
+            throw new Error('Something went wrong')
+          }
+
+          this.popupWindow.location.href = uri
+
+          if (CoreHelperUtil.isTelegram()) {
+            SafeLocalStorage.setItem(SafeLocalStorageKeys.SOCIAL_PROVIDER, socialProvider)
+            const parsedUri = CoreHelperUtil.formatTelegramSocialLoginUrl(uri)
+
+            // eslint-disable-next-line consistent-return
+            return CoreHelperUtil.openHref(parsedUri, '_top')
           }
         }
       } catch (error) {
