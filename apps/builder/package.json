@@ -33,7 +33,6 @@
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-controllers": "workspace:*",
     "@reown/appkit-scaffold-ui": "workspace:*",
-    "ethers": "6.13.2",
     "@sentry/core": "8.49.0",
     "@sentry/nextjs": "8.49.0",
     "@solana/wallet-adapter-wallets": "0.19.32",
@@ -44,6 +43,7 @@
     "class-variance-authority": "0.7.0",
     "classnames": "2.5.1",
     "clsx": "2.1.0",
+    "ethers": "6.13.2",
     "next": "14.2.3",
     "next-themes": "0.4.3",
     "react": "19.0.0",
@@ -62,6 +62,6 @@
     "eslint-config-next": "14.1.0",
     "postcss": "8",
     "tailwindcss": "3.4.1",
-    "typescript": "5.3.3"
+    "typescript": "5.7.3"
   }
 }

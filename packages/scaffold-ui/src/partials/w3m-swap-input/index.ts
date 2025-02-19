@@ -80,10 +80,8 @@ export class W3mSwapInput extends LitElement {
 
   // -- Private ------------------------------------------- //
   private handleKeydown(event: KeyboardEvent) {
-    return InputUtil.numericInputKeyDown(
-      event,
-      this.value,
-      (value: string) => this.onSetAmount?.(this.target, value)
+    return InputUtil.numericInputKeyDown(event, this.value, (value: string) =>
+      this.onSetAmount?.(this.target, value)
     )
   }
 
