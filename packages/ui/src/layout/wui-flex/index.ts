@@ -45,9 +45,14 @@ export class WuiFlex extends LitElement {
 
   @property() public margin?: SpacingType | SpacingType[]
 
+  @property() public justifySelf?: FlexJustifyContentType
+
+  @property() public flex?: string
+
   // -- Render -------------------------------------------- //
   public override render() {
     this.style.cssText = `
+      flex: ${this.flex};
       flex-direction: ${this.flexDirection};
       flex-wrap: ${this.flexWrap};
       flex-basis: ${this.flexBasis};
@@ -55,6 +60,7 @@ export class WuiFlex extends LitElement {
       flex-shrink: ${this.flexShrink};
       align-items: ${this.alignItems};
       justify-content: ${this.justifyContent};
+      justify-self: ${this.justifySelf};
       column-gap: ${this.columnGap && `var(--wui-spacing-${this.columnGap})`};
       row-gap: ${this.rowGap && `var(--wui-spacing-${this.rowGap})`};
       gap: ${this.gap && `var(--wui-spacing-${this.gap})`};

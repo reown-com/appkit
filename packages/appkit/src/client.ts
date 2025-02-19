@@ -183,9 +183,9 @@ export class AppKit {
   }
 
   private async initialize(options: AppKitOptionsWithSdk) {
+    await this.injectModalUi()
     this.initControllers(options)
     await this.initChainAdapters()
-    await this.injectModalUi()
     await this.syncExistingConnection()
 
     PublicStateController.set({ initialized: true })

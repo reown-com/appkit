@@ -148,13 +148,26 @@ export class W3mHeader extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex .padding=${this.getPadding()} justifyContent="space-between" alignItems="center">
+      <wui-flex .padding=${this.getPadding()} alignItems="center" justifyContent="space-between">
         ${this.leftHeaderTemplate()} ${this.titleTemplate()} ${this.rightHeaderTemplate()}
       </wui-flex>
     `
   }
 
   // -- Private ------------------------------------------- //
+  private networkSwitchTemplate() {
+    if (this.view === 'Networks') {
+      return null
+    }
+
+    return html`<wui-select
+      id="dynamic"
+      data-testid="w3m-account-select-network"
+      active-network=${ifDefined(this.network?.name)}
+      @click=${this.onNetworks.bind(this)}
+      imageSrc=${ifDefined(this.networkImage)}
+    ></wui-select>`
+  }
 
   // Temporarily added to test connecting with SIWE, replace with 'WhatIsAWallet' again when approved
   private onWalletHelp() {
@@ -209,6 +222,7 @@ export class W3mHeader extends LitElement {
         class="w3m-header-title"
         alignItems="center"
         gap="xs"
+        flex="1.5"
       >
         <wui-text variant="paragraph-700" color="fg-100" data-testid="w3m-header-text"
           >${this.headerText}</wui-text
@@ -224,23 +238,22 @@ export class W3mHeader extends LitElement {
     const isEmbeddedEnable = OptionsController.state.enableEmbedded
     const isApproveTransaction = view === 'ApproveTransaction'
     const isConnectingSIWEView = view === 'ConnectingSiwe'
-    const isAccountView = view === 'Account'
 
     const shouldHideBack =
       isApproveTransaction || isConnectingSIWEView || (isConnectHelp && isEmbeddedEnable)
 
-    if (isAccountView) {
-      return html`<wui-select
+    let letfElement = null
+
+    if (isConnectHelp) {
+      letfElement = html`<wui-icon-link
         id="dynamic"
-        data-testid="w3m-account-select-network"
-        active-network=${ifDefined(this.network?.name)}
-        @click=${this.onNetworks.bind(this)}
-        imageSrc=${ifDefined(this.networkImage)}
-      ></wui-select>`
+        icon="helpCircle"
+        @click=${this.onWalletHelp.bind(this)}
+      ></wui-icon-link>`
     }
 
     if (this.showBack && !shouldHideBack) {
-      return html`<wui-icon-link
+      letfElement = html`<wui-icon-link
         data-testid="header-back"
         id="dynamic"
         icon="chevronLeft"
@@ -249,12 +262,9 @@ export class W3mHeader extends LitElement {
       ></wui-icon-link>`
     }
 
-    return html`<wui-icon-link
-      data-hidden=${!isConnectHelp}
-      id="dynamic"
-      icon="helpCircle"
-      @click=${this.onWalletHelp.bind(this)}
-    ></wui-icon-link>`
+    return letfElement
+      ? html`<wui-flex gap="xs" flex="1">${letfElement} ${this.networkSwitchTemplate()}</wui-flex>`
+      : this.networkSwitchTemplate()
   }
 
   private onNetworks() {
