@@ -36,8 +36,7 @@ describe('W3mSocialLoginWidget', () => {
     })
     vi.spyOn(AccountController, 'setSocialProvider')
     vi.spyOn(EventsController, 'sendEvent')
-    vi.spyOn(RouterController, 'push')
-    vi.spyOn(CoreHelperUtil, 'returnOpenHref').mockReturnValue(mockWindow as Window)
+     vi.spyOn(CoreHelperUtil, 'returnOpenHref').mockReturnValue(mockWindow as Window)
     vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
       provider: {
