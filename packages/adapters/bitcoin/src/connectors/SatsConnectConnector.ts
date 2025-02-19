@@ -18,6 +18,7 @@ import type { RequestArguments } from '@reown/appkit-core'
 
 import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
+import { PresetsUtil } from '@reown/appkit-utils'
 
 export class SatsConnectConnector extends ProviderEventEmitter implements BitcoinConnector {
   public readonly chain = 'bip122'
@@ -48,6 +49,11 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
 
   public get name(): string {
     return this.wallet.name
+  }
+
+
+  public get explorerId(): string | undefined {
+    return PresetsUtil.ConnectorExplorerIds[this.wallet.name]
   }
 
   public get imageUrl(): string {

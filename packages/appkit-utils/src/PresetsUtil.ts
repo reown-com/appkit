@@ -34,7 +34,11 @@ export const PresetsUtil = {
     [ConstantsUtil.BITGET_CONNECTOR_NAME]:
       '38f5d18bd8522c244bdd70cb4a68e0e718865155811c043f052fb9f1c51de662',
     [ConstantsUtil.FRONTIER_CONNECTOR_NAME]:
-      '85db431492aa2e8672e93f4ea7acf10c88b97b867b0d373107af63dc4880f041'
+      '85db431492aa2e8672e93f4ea7acf10c88b97b867b0d373107af63dc4880f041',
+    [ConstantsUtil.XVERSE_CONNECTOR_NAME]:
+      '2a87d74ae02e10bdd1f51f7ce6c4e1cc53cd5f2c0b6b5ad0d7b3007d2b13de7b',
+    [ConstantsUtil.LEATHER_CONNECTOR_NAME]:
+      '483afe1df1df63daf313109971ff3ef8356ddf1cc4e45877d205eee0b7893a13'
   } as Record<string, string>,
   NetworkImageIds: {
     // Ethereum
