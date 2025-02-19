@@ -5,6 +5,7 @@ import type { CaipAddress, CaipNetworkId } from '@reown/appkit-common'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
+import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   BlockchainApiBalanceResponse,
   BlockchainApiGasPriceRequest,
@@ -146,7 +147,6 @@ export const BlockchainApiController = {
     if (!network) {
       return false
     }
-
     try {
       if (!state.supportedChains.http.length) {
         await BlockchainApiController.getSupportedNetworks({
@@ -179,7 +179,12 @@ export const BlockchainApiController = {
       return { avatar: '', name: '' }
     }
 
-    return state.api.get<BlockchainApiIdentityResponse>({
+    const identityCache = StorageUtil.getIdentityFromCacheForAddress(address)
+    if (identityCache) {
+      return identityCache
+    }
+
+    const result = await state.api.get<BlockchainApiIdentityResponse>({
       path: `/v1/identity/${address}`,
       params: {
         projectId: OptionsController.state.projectId,
@@ -188,6 +193,14 @@ export const BlockchainApiController = {
           : undefined
       }
     })
+
+    StorageUtil.updateIdentityCache({
+      address,
+      identity: result,
+      timestamp: Date.now()
+    })
+
+    return result
   },
 
   async fetchTransactions({
@@ -416,8 +429,13 @@ export const BlockchainApiController = {
     if (!isSupported) {
       return { balances: [] }
     }
+    const caipAddress = `${chainId}:${address}`
+    const cachedBalance = StorageUtil.getBalanceCacheForCaipAddress(caipAddress)
+    if (cachedBalance) {
+      return cachedBalance
+    }
 
-    return state.api.get<BlockchainApiBalanceResponse>({
+    const balance = await state.api.get<BlockchainApiBalanceResponse>({
       path: `/v1/account/${address}/balance`,
 
       params: {
@@ -429,6 +447,14 @@ export const BlockchainApiController = {
         sv
       }
     })
+
+    StorageUtil.updateBalanceCache({
+      caipAddress,
+      balance,
+      timestamp: Date.now()
+    })
+
+    return balance
   },
 
   async lookupEnsName(name: string) {

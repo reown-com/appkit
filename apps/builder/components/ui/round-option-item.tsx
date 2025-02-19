@@ -37,7 +37,7 @@ export function RoundOptionItem({
               enabled
                 ? 'border border-border-accent bg-background-accent-primary/10 dark:bg-background-accent-primary/10'
                 : 'border border-neutral-300 dark:border-neutral-700',
-              disabled && 'opacity-50 cursor-not-allowed'
+              disabled && 'cursor-not-allowed'
             )}
           >
             <Image
@@ -50,7 +50,7 @@ export function RoundOptionItem({
           </button>
         </TooltipTrigger>
         <TooltipContent>
-          <p>{message || name}</p>
+          <p className="text-sm leading-none text-center">{message || name}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
