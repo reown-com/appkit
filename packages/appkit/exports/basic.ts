@@ -1,5 +1,3 @@
-import { CoreHelperUtil } from '@reown/appkit-core'
-
 import { AppKit } from '../src/client/appkit-basic.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { PACKAGE_VERSION } from './constants.js'
@@ -14,7 +12,7 @@ export function createAppKit(options: CreateAppKit) {
   return new AppKit({
     ...options,
     basic: true,
-    sdkVersion: CoreHelperUtil.generateSdkVersion(options.adapters ?? [], 'html', PACKAGE_VERSION)
+    sdkVersion: `html-basic-${PACKAGE_VERSION}`
   })
 }
 
