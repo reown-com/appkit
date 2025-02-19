@@ -237,11 +237,13 @@ export class W3mSocialLoginWidget extends LitElement {
 
       try {
         if (authConnector && socialProvider) {
-          this.popupWindow = CoreHelperUtil.returnOpenHref(
-            '',
-            'popupWindow',
-            'width=600,height=800,scrollbars=yes'
-          )
+          if (!CoreHelperUtil.isTelegram()) {
+            this.popupWindow = CoreHelperUtil.returnOpenHref(
+              '',
+              'popupWindow',
+              'width=600,height=800,scrollbars=yes'
+            )
+          }
 
           if (this.popupWindow) {
             AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
