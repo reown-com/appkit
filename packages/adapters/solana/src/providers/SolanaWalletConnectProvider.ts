@@ -116,10 +116,7 @@ export class SolanaWalletConnectProvider
     // If the result contains signature is the old RPC response
     if ('signature' in result) {
       const decoded = base58.decode(result.signature)
-      transaction.addSignature(
-        new PublicKey(this.getAccount(true).publicKey),
-        Buffer.from(decoded) as Buffer & Uint8Array
-      )
+      transaction.addSignature(new PublicKey(this.getAccount(true).publicKey), Buffer.from(decoded))
 
       return transaction
     }
@@ -267,9 +264,7 @@ export class SolanaWalletConnectProvider
      * But our specs requires base64 right now:
      * https://docs.reown.com/advanced/multichain/rpc-reference/solana-rpc#solana_signtransaction
      */
-    return Buffer.from(transaction.serialize({ verifySignatures: false }) as Uint8Array).toString(
-      'base64'
-    )
+    return Buffer.from(transaction.serialize({ verifySignatures: false })).toString('base64')
   }
 
   private getAccount<Required extends boolean>(
