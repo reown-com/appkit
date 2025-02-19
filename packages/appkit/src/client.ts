@@ -775,6 +775,8 @@ export class AppKit {
     OptionsController.setEnableWalletGuide(options.enableWalletGuide !== false)
     OptionsController.setEnableWallets(options.enableWallets !== false)
     OptionsController.setEIP6963Enabled(options.enableEIP6963 !== false)
+    console.log('>> Setting network switcher', options.showNetworkSwitcher)
+    OptionsController.setEnableNetworkSwitcher(options.showNetworkSwitcher !== false)
 
     OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
 
