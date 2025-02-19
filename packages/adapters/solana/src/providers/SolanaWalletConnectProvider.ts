@@ -115,10 +115,8 @@ export class SolanaWalletConnectProvider
 
     // If the result contains signature is the old RPC response
     if ('signature' in result) {
-      transaction.addSignature(
-        new PublicKey(this.getAccount(true).publicKey),
-        Buffer.from(base58.decode(result.signature))
-      )
+      const decoded = base58.decode(result.signature)
+      transaction.addSignature(new PublicKey(this.getAccount(true).publicKey), Buffer.from(decoded))
 
       return transaction
     }
@@ -126,7 +124,7 @@ export class SolanaWalletConnectProvider
     const decodedTransaction = Buffer.from(result.transaction, 'base64')
 
     if (isVersionedTransaction(transaction)) {
-      return VersionedTransaction.deserialize(decodedTransaction) as T
+      return VersionedTransaction.deserialize(new Uint8Array(decodedTransaction)) as T
     }
 
     return Transaction.from(decodedTransaction) as T
@@ -314,7 +312,7 @@ export class SolanaWalletConnectProvider
     return {
       feePayer: transaction.feePayer?.toBase58() ?? '',
       instructions: transaction.instructions.map(instruction => ({
-        data: base58.encode(instruction.data),
+        data: base58.encode(new Uint8Array(instruction.data)),
         keys: instruction.keys.map(key => ({
           isWritable: key.isWritable,
           isSigner: key.isSigner,
