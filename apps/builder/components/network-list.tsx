@@ -43,7 +43,7 @@ export function NetworkList() {
           return (
             <RoundOptionItem
               message={
-                isLastChainEnabled ? `Have at least one chain enabled to disable network` : ''
+                isLastChainEnabled ? 'Have at least one chain enabled to disable network' : ''
               }
               size="sm"
               key={n.network.id}

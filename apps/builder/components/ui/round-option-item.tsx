@@ -50,7 +50,7 @@ export function RoundOptionItem({
           </button>
         </TooltipTrigger>
         <TooltipContent>
-          <p>{message || `${enabled ? 'Disable' : 'Enable'} ${name}`}</p>
+          <p className="text-sm leading-none text-center">{message || name}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
