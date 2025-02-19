@@ -115,8 +115,8 @@ export class W3mNetworksView extends LitElement {
     )
 
     if (this.search) {
-      this.filteredNetworks = sortedNetworks?.filter(
-        network => network?.name?.toLowerCase().includes(this.search.toLowerCase())
+      this.filteredNetworks = sortedNetworks?.filter(network =>
+        network?.name?.toLowerCase().includes(this.search.toLowerCase())
       )
     } else {
       this.filteredNetworks = sortedNetworks

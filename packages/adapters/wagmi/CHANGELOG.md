@@ -181,7 +181,8 @@
         </button>
         <button onClick={() => appKitWalletButton.connect('metamask')} disabled={!isReady}>
           Connect to MetaMask
-        </button> <button onClick={() => appKitWalletButton.connect('google')} disabled={!isReady}>
+        </button>{' '}
+        <button onClick={() => appKitWalletButton.connect('google')} disabled={!isReady}>
           Connect to Google
         </button>
       </>
