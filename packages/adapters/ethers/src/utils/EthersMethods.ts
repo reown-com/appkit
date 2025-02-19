@@ -18,7 +18,7 @@ import type {
   Provider,
   SendTransactionArgs,
   WriteContractArgs
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 export const EthersMethods = {
   signMessage: async (message: string, provider: Provider, address: string) => {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import type { Tokens } from '@reown/appkit-core'
+import type { Tokens } from '@reown/appkit-controllers'
 
 import { ConstantsUtil } from '../src/ConstantsUtil.js'
 import { HelpersUtil } from '../src/HelpersUtil.js'

@@ -25,7 +25,7 @@
     "@types/qrcode": "1.5.5",
     "@reown/appkit-common": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@reown/appkit-core": "workspace:*",
+    "@reown/appkit-controllers": "workspace:*",
     "eslint-plugin-lit": "1.11.0",
     "eslint-plugin-wc": "2.0.4",
     "vitest": "2.1.9",

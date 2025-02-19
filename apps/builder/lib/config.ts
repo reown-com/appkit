@@ -4,7 +4,7 @@ import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { type ChainNamespace } from '@reown/appkit-common'
-import { ChainAdapter, ConstantsUtil } from '@reown/appkit-core'
+import { ChainAdapter, ConstantsUtil } from '@reown/appkit-controllers'
 import {
   type AppKitNetwork,
   arbitrum,

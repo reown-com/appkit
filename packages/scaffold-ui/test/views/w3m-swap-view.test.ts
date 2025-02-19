@@ -7,7 +7,7 @@ import {
   RouterController,
   SwapController,
   type SwapTokenWithBalance
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import { W3mSwapView } from '../../src/views/w3m-swap-view'
 

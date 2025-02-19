@@ -9,7 +9,7 @@ import {
   EventsController,
   ModalController,
   OptionsController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import type { WuiNetworkButton } from '@reown/appkit-ui'
 

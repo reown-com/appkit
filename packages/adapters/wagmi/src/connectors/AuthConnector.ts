@@ -4,7 +4,7 @@ import type { Address } from 'viem'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { NetworkUtil } from '@reown/appkit-common'
-import { AlertController, OptionsController } from '@reown/appkit-core'
+import { AlertController, OptionsController } from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'

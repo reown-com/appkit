@@ -7,7 +7,7 @@ import {
   ChainController,
   RouterController,
   SendController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import { W3mSendSelectTokenView } from '../../src/views/w3m-wallet-send-select-token-view'
 

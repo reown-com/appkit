@@ -9,7 +9,7 @@ import {
   OptionsController,
   RouterController,
   SIWXUtil
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { type AppKitSIWEClient, createSIWEConfig } from '@reown/appkit-siwe'
 import * as networks from '@reown/appkit/networks'
 

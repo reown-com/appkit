@@ -3,7 +3,7 @@ import { property } from 'lit/decorators.js'
 
 import type { Balance } from '@reown/appkit-common'
 import { NumberUtil } from '@reown/appkit-common'
-import { ConstantsUtil, RouterController, SendController } from '@reown/appkit-core'
+import { ConstantsUtil, RouterController, SendController } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'

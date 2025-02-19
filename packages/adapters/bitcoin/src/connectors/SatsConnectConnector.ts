@@ -13,8 +13,8 @@ import {
 } from 'sats-connect'
 
 import type { CaipNetwork } from '@reown/appkit-common'
-import { CoreHelperUtil } from '@reown/appkit-core'
-import type { RequestArguments } from '@reown/appkit-core'
+import { CoreHelperUtil } from '@reown/appkit-controllers'
+import type { RequestArguments } from '@reown/appkit-controllers'
 
 import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'

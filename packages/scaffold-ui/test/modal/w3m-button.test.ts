@@ -6,7 +6,7 @@ import {
   type ChainControllerState,
   ModalController,
   type ModalControllerState
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import type { W3mAccountButton } from '../../exports'
 import { W3mButton } from '../../src/modal/w3m-button'

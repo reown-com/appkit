@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { AssetUtil, EventsController, RouterController } from '@reown/appkit-core'
+import { AssetUtil, EventsController, RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
 @customElement('w3m-connecting-wc-unsupported')

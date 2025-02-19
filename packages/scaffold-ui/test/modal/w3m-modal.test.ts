@@ -11,8 +11,8 @@ import {
   OptionsController,
   RouterController,
   SIWXUtil
-} from '@reown/appkit-core'
-import type { RouterControllerState, SIWXConfig } from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
+import type { RouterControllerState, SIWXConfig } from '@reown/appkit-controllers'
 
 import { W3mModal } from '../../src/modal/w3m-modal'
 import { HelpersUtil } from '../utils/HelpersUtil'

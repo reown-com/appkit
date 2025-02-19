@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import { AccountController, StorageUtil } from '@reown/appkit-core'
+import { AccountController, StorageUtil } from '@reown/appkit-controllers'
 
 import { AppKit } from '../../src/client'
 import { mockEvmAdapter, mockSolanaAdapter } from '../mocks/Adapter'

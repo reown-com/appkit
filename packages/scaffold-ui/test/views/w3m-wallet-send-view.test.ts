@@ -7,7 +7,7 @@ import {
   RouterController,
   SendController,
   SwapController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import { W3mWalletSendView } from '../../src/views/w3m-wallet-send-view'
 

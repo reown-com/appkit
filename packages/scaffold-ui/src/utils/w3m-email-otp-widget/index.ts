@@ -6,7 +6,7 @@ import {
   CoreHelperUtil,
   RouterController,
   SnackController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import { W3mFrameHelpers } from '@reown/appkit-wallet'
 

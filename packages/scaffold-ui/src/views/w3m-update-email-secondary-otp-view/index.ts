@@ -1,4 +1,4 @@
-import { CoreHelperUtil, EventsController, RouterController } from '@reown/appkit-core'
+import { CoreHelperUtil, EventsController, RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
 import { W3mEmailOtpWidget } from '../../utils/w3m-email-otp-widget/index.js'

@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit'
 
-import { CoreHelperUtil, RouterController } from '@reown/appkit-core'
+import { CoreHelperUtil, RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
 @customElement('w3m-downloads-view')

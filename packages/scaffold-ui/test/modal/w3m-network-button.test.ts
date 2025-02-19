@@ -8,11 +8,11 @@ import {
   ChainController,
   ModalController,
   OptionsController,
-  type OptionsControllerState
-} from '@reown/appkit-core'
+  type OptionsControllerState,
+  type OptionsControllerStateInternal
+} from '@reown/appkit-controllers'
 import type { WuiNetworkButton } from '@reown/appkit-ui'
 
-import type { OptionsControllerStateInternal } from '../../../core/dist/types/src/controllers/OptionsController'
 import { W3mNetworkButton } from '../../src/modal/w3m-network-button'
 import { HelpersUtil } from '../utils/HelpersUtil'
 

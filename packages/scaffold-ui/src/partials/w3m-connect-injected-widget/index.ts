@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { Connector } from '@reown/appkit-core'
+import type { Connector } from '@reown/appkit-controllers'
 import {
   ApiController,
   AssetUtil,
@@ -10,7 +10,7 @@ import {
   ConnectorController,
   CoreHelperUtil,
   RouterController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
 @customElement('w3m-connect-injected-widget')

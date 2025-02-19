@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { AssetUtil, ChainController, type OnRampProvider } from '@reown/appkit-core'
+import { AssetUtil, ChainController, type OnRampProvider } from '@reown/appkit-controllers'
 import { type ColorType, customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
-import { SIWXUtil } from '@reown/appkit-core'
+import { SIWXUtil } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
 
 import { WalletConnectConnector } from '../../src/connectors'

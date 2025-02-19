@@ -9,7 +9,7 @@ import {
   EventsController,
   RouterController,
   type WcWallet
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import type { WuiQrCode } from '@reown/appkit-ui'
 
 import { HelpersUtil } from '../utils/HelpersUtil'

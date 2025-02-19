@@ -8,7 +8,7 @@ import {
   type Connector,
   ConnectorController,
   ModalController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
 import { ApiController } from '../../controllers/ApiController.js'
