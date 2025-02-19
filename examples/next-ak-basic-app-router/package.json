@@ -9,8 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@tanstack/react-query": "5.56.2",
     "@reown/appkit": "workspace:*",
+    "@tanstack/react-query": "5.56.2",
     "next": "14.2.21",
     "next-themes": "0.4.3",
     "react": "19.0.0",
@@ -18,11 +18,11 @@
     "viem": "2.23.0"
   },
   "devDependencies": {
+    "@types/node": "22.13.4",
     "@types/react": "19.0.0",
     "@types/react-dom": "19.0.0",
-    "@types/node": "20.11.5",
+    "esbuild": "0.21.1",
     "eslint-config-next": "14.1.0",
-    "typescript": "5.3.3",
-    "esbuild": "0.21.1"
+    "typescript": "5.7.3"
   }
 }

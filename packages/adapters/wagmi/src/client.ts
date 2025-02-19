@@ -44,7 +44,7 @@ import {
   NetworkUtil,
   isReownName
 } from '@reown/appkit-common'
-import { CoreHelperUtil } from '@reown/appkit-core'
+import { CoreHelperUtil, StorageUtil } from '@reown/appkit-core'
 import {
   type ConnectorType,
   ConstantsUtil as CoreConstantsUtil,
@@ -225,7 +225,6 @@ export class WagmiAdapter extends AdapterBlueprint {
             prevAccountData.status !== 'connected'
           ) {
             this.setupWatchPendingTransactions()
-
             this.emit('accountChanged', {
               address: accountData.address
             })
@@ -526,7 +525,6 @@ export class WagmiAdapter extends AdapterBlueprint {
     params: AdapterBlueprint.ConnectParams
   ): Promise<AdapterBlueprint.ConnectResult> {
     const { id, provider, type, info, chainId } = params
-
     const connector = this.getWagmiConnector(id)
 
     if (!connector) {
@@ -572,11 +570,25 @@ export class WagmiAdapter extends AdapterBlueprint {
     const caipNetwork = this.caipNetworks?.find(network => network.id === params.chainId)
 
     if (caipNetwork && this.wagmiConfig) {
+      const caipAddress = `${caipNetwork.caipNetworkId}:${params.address}`
+
+      const cachedBalance = StorageUtil.getNativeBalanceCacheForCaipAddress(caipAddress)
+      if (cachedBalance) {
+        return { balance: cachedBalance.balance, symbol: cachedBalance.symbol }
+      }
+
       const chainId = Number(params.chainId)
       const balance = await getBalance(this.wagmiConfig, {
         address: params.address as Hex,
         chainId,
         token: params.tokens?.[caipNetwork.caipNetworkId]?.address as Hex
+      })
+
+      StorageUtil.updateNativeBalanceCache({
+        caipAddress,
+        balance: balance.formatted,
+        symbol: balance.symbol,
+        timestamp: Date.now()
       })
 
       return { balance: balance.formatted, symbol: balance.symbol }
