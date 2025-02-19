@@ -78,6 +78,7 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   private pendingTransactionsFilter: PendingTransactionsFilter
   private unwatchPendingTransactions: (() => void) | undefined
+  private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
 
   constructor(
     configParams: Partial<CreateConfigParameters> & {
@@ -571,27 +572,39 @@ export class WagmiAdapter extends AdapterBlueprint {
 
     if (caipNetwork && this.wagmiConfig) {
       const caipAddress = `${caipNetwork.caipNetworkId}:${params.address}`
+      const cachedPromise = this.balancePromises[caipAddress]
+      if (cachedPromise) {
+        return cachedPromise
+      }
 
       const cachedBalance = StorageUtil.getNativeBalanceCacheForCaipAddress(caipAddress)
       if (cachedBalance) {
         return { balance: cachedBalance.balance, symbol: cachedBalance.symbol }
       }
 
-      const chainId = Number(params.chainId)
-      const balance = await getBalance(this.wagmiConfig, {
-        address: params.address as Hex,
-        chainId,
-        token: params.tokens?.[caipNetwork.caipNetworkId]?.address as Hex
+      this.balancePromises[caipAddress] = new Promise<AdapterBlueprint.GetBalanceResult>(
+        async resolve => {
+          const chainId = Number(params.chainId)
+          const balance = await getBalance(this.wagmiConfig, {
+            address: params.address as Hex,
+            chainId,
+            token: params.tokens?.[caipNetwork.caipNetworkId]?.address as Hex
+          })
+
+          StorageUtil.updateNativeBalanceCache({
+            caipAddress,
+            balance: balance.formatted,
+            symbol: balance.symbol,
+            timestamp: Date.now()
+          })
+          resolve({ balance: balance.formatted, symbol: balance.symbol })
+        }
+      ).finally(() => {
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+        delete this.balancePromises[caipAddress]
       })
 
-      StorageUtil.updateNativeBalanceCache({
-        caipAddress,
-        balance: balance.formatted,
-        symbol: balance.symbol,
-        timestamp: Date.now()
-      })
-
-      return { balance: balance.formatted, symbol: balance.symbol }
+      return this.balancePromises[caipAddress] || { balance: '', symbol: '' }
     }
 
     return { balance: '', symbol: '' }
