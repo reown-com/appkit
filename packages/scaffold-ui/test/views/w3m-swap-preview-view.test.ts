@@ -2,14 +2,14 @@ import { expect as expectChai, fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
-  AccountController,
   type AccountControllerState,
   ChainController,
   type ChainControllerState,
   RouterController,
   SwapController,
   type SwapControllerState,
-  type SwapTokenWithBalance
+  type SwapTokenWithBalance,
+  accountState
 } from '@reown/appkit-core'
 
 import { W3mSwapPreviewView } from '../../exports'
@@ -165,7 +165,7 @@ describe('W3mSwapPreviewView', () => {
     // Mock controller states and methods
     vi.spyOn(SwapController, 'state', 'get').mockReturnValue(mockSwapState)
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue(mockChainState)
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue(mockAccountState)
+    vi.spyOn({ accountState }, 'accountState', 'get').mockReturnValue(mockAccountState)
     vi.spyOn(SwapController, 'getTransaction').mockImplementation(
       async () => mockSwapState.swapTransaction
     )

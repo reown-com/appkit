@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { Balance } from '@reown/appkit-common'
 
-import { AccountController } from '../../src/controllers/AccountController'
+import { accountState, setTokenBalance } from '../../src/controllers/AccountController'
 import { BlockchainApiController } from '../../src/controllers/BlockchainApiController'
 import { ChainController } from '../../src/controllers/ChainController'
 import { ConnectionController } from '../../src/controllers/ConnectionController'
@@ -185,7 +185,7 @@ describe('SwapApiUtil', () => {
 
   describe('getMyTokensWithBalance', () => {
     it('should fetch and return tokens with balance', async () => {
-      AccountController.state.address = '0x123'
+      accountState.address = '0x123'
       ChainController.state.activeCaipNetwork = mockEthereumNetwork
       BlockchainApiController.getBalance = vi.fn().mockResolvedValue({
         balances: [{ address: '0x456', quantity: { decimals: '18', numeric: '1.5' } }]
@@ -199,7 +199,7 @@ describe('SwapApiUtil', () => {
         'eip155:1',
         undefined
       )
-      expect(AccountController.setTokenBalance).toHaveBeenCalled()
+      expect(setTokenBalance).toHaveBeenCalled()
       expect(result).toEqual([
         {
           address: '0x456',
@@ -211,7 +211,7 @@ describe('SwapApiUtil', () => {
       ])
     })
     it('should return an empty array if no address or active network', async () => {
-      AccountController.state.address = undefined
+      accountState.address = undefined
       ChainController.state.activeCaipNetwork = undefined
 
       const result = await SwapApiUtil.getMyTokensWithBalance()

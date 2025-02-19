@@ -3,7 +3,6 @@ import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
-  AccountController,
   BlockchainApiController,
   ConnectionController,
   CoreHelperUtil,
@@ -11,7 +10,8 @@ import {
   OptionsController,
   RouterController,
   SnackController,
-  ThemeController
+  ThemeController,
+  accountState
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
@@ -149,7 +149,7 @@ export class W3mBuyInProgressView extends LitElement {
 
   private async watchCoinbaseTransactions() {
     try {
-      const address = AccountController.state.address
+      const address = accountState.address
       const projectId = OptionsController.state.projectId
       if (!address) {
         throw new Error('No address found')

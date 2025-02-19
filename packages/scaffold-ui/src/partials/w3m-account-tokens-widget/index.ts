@@ -1,7 +1,12 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { AccountController, EventsController, RouterController } from '@reown/appkit-core'
+import {
+  EventsController,
+  RouterController,
+  accountState,
+  subscribeAccount
+} from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
@@ -15,13 +20,13 @@ export class W3mAccountTokensWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private tokenBalance = AccountController.state.tokenBalance
+  @state() private tokenBalance = accountState.tokenBalance
 
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribe(val => {
+        subscribeAccount(val => {
           this.tokenBalance = val.tokenBalance
         })
       ]
@@ -91,8 +96,7 @@ export class W3mAccountTokensWidget extends LitElement {
       event: 'SELECT_BUY_CRYPTO',
       properties: {
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
-          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+          accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
     RouterController.push('OnRampProviders')

@@ -4,7 +4,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { EnsUtil } from '../utils/EnsUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type { BlockchainApiEnsError } from '../utils/TypeUtil.js'
-import { AccountController } from './AccountController.js'
+import { accountState, setProfileName } from './AccountController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
@@ -115,7 +115,7 @@ export const EnsController = {
       throw new Error('Network not found')
     }
 
-    const address = AccountController.state.address
+    const address = accountState.address
     const emailConnector = ConnectorController.getAuthConnector()
     if (!address || !emailConnector) {
       throw new Error('Address or auth connector not found')
@@ -155,7 +155,7 @@ export const EnsController = {
         message
       })
 
-      AccountController.setProfileName(name, network.chainNamespace)
+      setProfileName(name, network.chainNamespace)
       RouterController.replace('RegisterAccountNameSuccess')
     } catch (e) {
       const errorMessage = this.parseEnsApiError(e, `Error registering name ${name}`)

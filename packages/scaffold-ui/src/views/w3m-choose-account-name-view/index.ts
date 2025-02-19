@@ -3,10 +3,10 @@ import { state } from 'lit/decorators.js'
 
 import { NavigationUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   CoreHelperUtil,
   EventsController,
-  RouterController
+  RouterController,
+  accountState
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
@@ -95,8 +95,7 @@ export class W3mChooseAccountNameView extends LitElement {
       event: 'OPEN_ENS_FLOW',
       properties: {
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
-          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+          accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
   }

@@ -6,13 +6,13 @@ import {
   SafeLocalStorageKeys
 } from '@reown/appkit-common'
 import {
-  AccountController,
   ApiController,
   BlockchainApiController,
   ChainController,
   type SIWXConfig,
   type SIWXMessage,
-  type SIWXSession
+  type SIWXSession,
+  accountState
 } from '@reown/appkit-core'
 
 import type { SIWXMessenger } from '../core/SIWXMessenger.js'
@@ -182,7 +182,7 @@ export class CloudAuthSIWX implements SIWXConfig {
         icon: string | undefined
       }
     | undefined {
-    const { connectedWalletInfo } = AccountController.state
+    const { connectedWalletInfo } = accountState
     if (!connectedWalletInfo) {
       return undefined
     }

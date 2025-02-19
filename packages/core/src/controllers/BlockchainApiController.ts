@@ -35,7 +35,7 @@ import type {
   PaymentCurrency,
   PurchaseCurrency
 } from '../utils/TypeUtil.js'
-import { AccountController } from './AccountController.js'
+import { accountState } from './AccountController.js'
 import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
 
@@ -485,7 +485,7 @@ export const BlockchainApiController = {
     return state.api.get<BlockchainApiLookupEnsName[]>({
       path: `/v1/profile/reverse/${address}`,
       params: {
-        sender: AccountController.state.address,
+        sender: accountState.address,
         projectId: OptionsController.state.projectId,
         apiVersion: '2'
       }

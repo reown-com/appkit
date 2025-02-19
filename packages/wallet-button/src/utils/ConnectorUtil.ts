@@ -1,7 +1,6 @@
 /* eslint-disable max-depth */
 import { ParseUtil, type ParsedCaipAddress } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   ConnectionController,
   type Connector,
@@ -11,7 +10,11 @@ import {
   ModalController,
   RouterController,
   StorageUtil,
-  type WcWallet
+  type WcWallet,
+  accountState,
+  setFarcasterUrl,
+  setSocialProvider,
+  setSocialWindow
 } from '@reown/appkit-core'
 import { SocialProviderEnum } from '@reown/appkit-utils'
 
@@ -74,8 +77,8 @@ export const ConnectorUtil = {
     })
   },
   connectSocial(social: SocialProvider): Promise<ParsedCaipAddress> {
-    let socialWindow: Window | null | undefined = AccountController.state.socialWindow
-    let socialProvider = AccountController.state.socialProvider
+    let socialWindow: Window | null | undefined = accountState.socialWindow
+    let socialProvider = accountState.socialProvider
     let connectingSocial = false
     let popupWindow: Window | null = null
 
@@ -97,8 +100,8 @@ export const ConnectorUtil = {
               if (authConnector && !connectingSocial) {
                 if (socialWindow) {
                   socialWindow.close()
-                  AccountController.setSocialWindow(undefined, ChainController.state.activeChain)
-                  socialWindow = AccountController.state.socialWindow
+                  setSocialWindow(undefined, ChainController.state.activeChain)
+                  socialWindow = accountState.socialWindow
                 }
                 connectingSocial = true
                 const uri = event.data.resultUri as string
@@ -155,8 +158,8 @@ export const ConnectorUtil = {
 
       async function connectSocial() {
         if (social) {
-          AccountController.setSocialProvider(social, ChainController.state.activeChain)
-          socialProvider = AccountController.state.socialProvider
+          setSocialProvider(social, ChainController.state.activeChain)
+          socialProvider = accountState.socialProvider
           EventsController.sendEvent({
             type: 'track',
             event: 'SOCIAL_LOGIN_STARTED',
@@ -178,11 +181,11 @@ export const ConnectorUtil = {
           const authConnector = ConnectorController.getAuthConnector()
 
           if (authConnector) {
-            if (!AccountController.state.farcasterUrl) {
+            if (!accountState.farcasterUrl) {
               try {
                 const { url } = await authConnector.provider.getFarcasterUri()
 
-                AccountController.setFarcasterUrl(url, ChainController.state.activeChain)
+                setFarcasterUrl(url, ChainController.state.activeChain)
               } catch {
                 reject(new Error('Failed to connect to farcaster'))
               }
@@ -203,8 +206,8 @@ export const ConnectorUtil = {
               })
 
               if (popupWindow && uri) {
-                AccountController.setSocialWindow(popupWindow, ChainController.state.activeChain)
-                socialWindow = AccountController.state.socialWindow
+                setSocialWindow(popupWindow, ChainController.state.activeChain)
+                socialWindow = accountState.socialWindow
                 popupWindow.location.href = uri
 
                 const interval = setInterval(() => {

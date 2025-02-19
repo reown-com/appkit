@@ -4,13 +4,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { html } from 'lit'
 
 import {
-  AccountController,
   type AuthConnector,
   ChainController,
   ConnectorController,
   CoreHelperUtil,
   EventsController,
-  OptionsController
+  OptionsController,
+  setSocialProvider,
+  setSocialWindow
 } from '@reown/appkit-core'
 
 import { W3mSocialLoginWidget } from '../../src/partials/w3m-social-login-widget'
@@ -33,7 +34,9 @@ describe('W3mSocialLoginWidget', () => {
       ...OptionsController.state.features,
       socials: ['google']
     })
-    vi.spyOn(AccountController, 'setSocialProvider')
+    vi.mocked(setSocialProvider)
+    vi.mocked(setSocialWindow)
+
     vi.spyOn(EventsController, 'sendEvent')
     vi.spyOn(CoreHelperUtil, 'returnOpenHref').mockReturnValue(mockWindow as Window)
     vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
@@ -42,7 +45,6 @@ describe('W3mSocialLoginWidget', () => {
         getSocialRedirectUri: vi.fn().mockResolvedValue({ uri: mockUri })
       }
     } as unknown as AuthConnector)
-    vi.spyOn(AccountController, 'setSocialWindow')
 
     const element: W3mSocialLoginWidget = await fixture(
       html`<w3m-social-login-widget></w3m-social-login-widget>`
@@ -56,7 +58,7 @@ describe('W3mSocialLoginWidget', () => {
       'popupWindow',
       'width=600,height=800,scrollbars=yes'
     )
-    expect(AccountController.setSocialWindow).toHaveBeenCalledWith(mockWindow, 'eip155')
+    expect(setSocialWindow).toHaveBeenCalledWith(mockWindow, 'eip155')
     expect(mockWindow.location.href).toBe(mockUri)
   })
 })

@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit'
 
-import { AccountController, OptionsController } from '@reown/appkit-core'
+import { OptionsController, accountState } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'
@@ -12,7 +12,7 @@ export class W3mSIWXSignMessageThumbnails extends LitElement {
   // -- Members ------------------------------------------- //
   private readonly dappImageUrl = OptionsController.state.metadata?.icons
 
-  private readonly walletImageUrl = AccountController.state.connectedWalletInfo?.icon
+  private readonly walletImageUrl = accountState.connectedWalletInfo?.icon
 
   public override firstUpdated() {
     const visuals = this.shadowRoot?.querySelectorAll('wui-visual-thumbnail')

@@ -3,11 +3,11 @@ import { afterEach, describe, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   ModalController,
   OptionsController,
-  RouterController
+  RouterController,
+  accountState
 } from '@reown/appkit-core'
 import type { WuiAccountButton } from '@reown/appkit-ui'
 
@@ -40,10 +40,7 @@ describe('W3mAccountButton', () => {
       allowUnsupportedChain: true
     })
 
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
-      profileName: 'test'
-    })
+    vi.mocked(accountState).profileName = 'test'
 
     const button = (await fixture(
       html`<w3m-account-button></w3m-account-button>`
@@ -129,10 +126,7 @@ describe('W3mAccountButton', () => {
 
     it('should show loading state if balance value is not a string', async () => {
       vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-        ...AccountController.state,
-        balance: undefined
-      })
+      vi.mocked(accountState).balance = undefined
 
       const button = await fixture(html`<w3m-account-button></w3m-account-button>`)
 
@@ -146,10 +140,7 @@ describe('W3mAccountButton', () => {
 
     it('should not show loading state if balance value is a string', async () => {
       vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-        ...AccountController.state,
-        balance: '0.00'
-      })
+      vi.mocked(accountState).balance = '0.00'
 
       const button = await fixture(html`<w3m-account-button></w3m-account-button>`)
 

@@ -2,7 +2,6 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import {
-  AccountController,
   BlockchainApiController,
   ChainController,
   ConstantsUtil,
@@ -10,7 +9,8 @@ import {
   EventsController,
   OnRampController,
   type OnRampProvider,
-  RouterController
+  RouterController,
+  accountState
 } from '@reown/appkit-core'
 import type { CoinbasePaySDKChainNameValues } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
@@ -91,14 +91,13 @@ export class W3mOnRampProvidersView extends LitElement {
       properties: {
         provider: provider.name,
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
-          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+          accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
   }
 
   private async getCoinbaseOnRampURL() {
-    const address = AccountController.state.address
+    const address = accountState.address
     const network = ChainController.state.activeCaipNetwork
 
     if (!address) {

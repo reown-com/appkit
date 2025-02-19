@@ -8,7 +8,7 @@ export type {
 export { RouterController } from '../src/controllers/RouterController.js'
 export type { RouterControllerState } from '../src/controllers/RouterController.js'
 
-export { AccountController } from '../src/controllers/AccountController.js'
+export * from '../src/controllers/AccountController.js'
 export type { AccountControllerState } from '../src/controllers/AccountController.js'
 
 export { ChainController } from '../src/controllers/ChainController.js'

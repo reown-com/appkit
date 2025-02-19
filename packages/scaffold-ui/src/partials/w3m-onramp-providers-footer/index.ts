@@ -1,10 +1,10 @@
 import { LitElement, html } from 'lit'
 
 import {
-  AccountController,
   EventsController,
   OptionsController,
-  RouterController
+  RouterController,
+  accountState
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
@@ -55,8 +55,7 @@ export class W3mOnRampProvidersFooter extends LitElement {
       event: 'SELECT_WHAT_IS_A_BUY',
       properties: {
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
-          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+          accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
     RouterController.push('WhatIsABuy')

@@ -2,10 +2,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   OptionsController,
-  type SIWXSession
+  type SIWXSession,
+  setCaipAddress
 } from '@reown/appkit-core'
 
 import { createSIWEConfig, mapToSIWX } from '../exports'
@@ -414,7 +414,7 @@ describe('SIWE: mapToSIWX', () => {
         caipNetworkId: 'eip155:1',
         chainNamespace: 'eip155'
       })
-      AccountController.setCaipAddress('eip155:1:mock-address', 'eip155')
+      setCaipAddress('eip155:1:mock-address', 'eip155')
     })
 
     it('should sign out on disconnect', async () => {
@@ -428,7 +428,7 @@ describe('SIWE: mapToSIWX', () => {
       const onSignOutSpy = vi.spyOn(siweConfig.methods, 'onSignOut')
 
       OptionsController.setSIWX(siwx)
-      AccountController.setCaipAddress(undefined, 'eip155')
+      setCaipAddress(undefined, 'eip155')
 
       // Wait for the event loop to finish
       await new Promise(resolve => setTimeout(resolve, 10))
@@ -449,7 +449,7 @@ describe('SIWE: mapToSIWX', () => {
       const onSignOutSpy = vi.spyOn(siweConfig.methods, 'onSignOut')
 
       OptionsController.setSIWX(siwx)
-      AccountController.setCaipAddress(undefined, 'eip155')
+      setCaipAddress(undefined, 'eip155')
 
       // Wait for the event loop to finish
       await new Promise(resolve => setTimeout(resolve, 10))
@@ -468,7 +468,7 @@ describe('SIWE: mapToSIWX', () => {
         caipNetworkId: 'eip155:1',
         chainNamespace: 'eip155'
       })
-      AccountController.setCaipAddress('eip155:1:mock-address', 'eip155')
+      setCaipAddress('eip155:1:mock-address', 'eip155')
     })
 
     it('should sign out on account change', async () => {
@@ -482,7 +482,7 @@ describe('SIWE: mapToSIWX', () => {
       const onSignOutSpy = vi.spyOn(siweConfig.methods, 'onSignOut')
 
       OptionsController.setSIWX(siwx)
-      AccountController.setCaipAddress('eip155:1:mock-address2', 'eip155')
+      setCaipAddress('eip155:1:mock-address2', 'eip155')
 
       // Wait for the event loop to finish
       await new Promise(resolve => setTimeout(resolve, 10))
@@ -502,7 +502,7 @@ describe('SIWE: mapToSIWX', () => {
       const onSignOutSpy = vi.spyOn(siweConfig.methods, 'onSignOut')
 
       OptionsController.setSIWX(siwx)
-      AccountController.setCaipAddress('eip155:1:mock-address2', 'eip155')
+      setCaipAddress('eip155:1:mock-address2', 'eip155')
 
       // Wait for the event loop to finish
       await new Promise(resolve => setTimeout(resolve, 10))
@@ -524,7 +524,7 @@ describe('SIWE: mapToSIWX', () => {
       const onSignOutSpy = vi.spyOn(siweConfig.methods, 'onSignOut')
 
       OptionsController.setSIWX(siwx)
-      AccountController.setCaipAddress('eip155:1:mock-address', 'eip155')
+      setCaipAddress('eip155:1:mock-address', 'eip155')
 
       // Wait for the event loop to finish
       await new Promise(resolve => setTimeout(resolve, 10))
@@ -544,7 +544,7 @@ describe('SIWE: mapToSIWX', () => {
       const onSignOutSpy = vi.spyOn(siweConfig.methods, 'onSignOut')
 
       OptionsController.setSIWX(siwx)
-      AccountController.setCaipAddress('eip155:1:mock-address', 'eip155')
+      setCaipAddress('eip155:1:mock-address', 'eip155')
 
       // Wait for the event loop to finish
       await new Promise(resolve => setTimeout(resolve, 10))

@@ -7,7 +7,7 @@ import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
-import { AccountController } from './AccountController.js'
+import { accountState, fetchTokenBalance } from './AccountController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
 import { EventsController } from './EventsController.js'
@@ -122,8 +122,7 @@ export const SendController = {
         event: 'SEND_INITIATED',
         properties: {
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
-            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+            accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token.address,
           amount: this.state.sendTokenAmount,
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
@@ -146,8 +145,7 @@ export const SendController = {
         event: 'SEND_INITIATED',
         properties: {
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
-            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+            accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol,
           amount: this.state.sendTokenAmount,
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
@@ -194,10 +192,7 @@ export const SendController = {
 
   hasInsufficientGasFunds() {
     let insufficientNetworkTokenForGas = true
-    if (
-      AccountController.state.preferredAccountType ===
-      W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-    ) {
+    if (accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT) {
       // Smart Accounts may pay gas in any ERC20 token
       insufficientNetworkTokenForGas = false
     } else if (state.networkBalanceInUSD) {
@@ -217,7 +212,7 @@ export const SendController = {
     })
 
     const to = params.receiverAddress as `0x${string}`
-    const address = AccountController.state.address as `0x${string}`
+    const address = accountState.address as `0x${string}`
     const value = ConnectionController.parseUnits(
       params.sendTokenAmount.toString(),
       Number(params.decimals)
@@ -240,8 +235,7 @@ export const SendController = {
         event: 'SEND_SUCCESS',
         properties: {
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
-            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+            accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
@@ -256,8 +250,7 @@ export const SendController = {
         properties: {
           message: errorMessage,
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
-            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+            accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           token: this.state.token?.symbol || '',
           amount: params.sendTokenAmount,
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
@@ -280,7 +273,7 @@ export const SendController = {
 
     try {
       if (
-        AccountController.state.address &&
+        accountState.address &&
         params.sendTokenAmount &&
         params.receiverAddress &&
         params.tokenAddress
@@ -290,7 +283,7 @@ export const SendController = {
         ) as `0x${string}`
 
         await ConnectionController.writeContract({
-          fromAddress: AccountController.state.address as `0x${string}`,
+          fromAddress: accountState.address as `0x${string}`,
           tokenAddress,
           args: [params.receiverAddress as `0x${string}`, amount ?? BigInt(0)],
           method: 'transfer',
@@ -325,7 +318,7 @@ export const SendController = {
     })
       .then(() => {
         this.resetSend()
-        AccountController.fetchTokenBalance()
+        fetchTokenBalance()
       })
       .catch(error => {
         SnackController.showError('Failed to send transaction. Please try again.')

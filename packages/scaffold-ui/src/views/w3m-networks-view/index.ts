@@ -4,7 +4,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   AssetController,
   AssetUtil,
   ChainController,
@@ -12,7 +11,9 @@ import {
   CoreHelperUtil,
   EventsController,
   RouterController,
-  StorageUtil
+  StorageUtil,
+  accountState,
+  getCaipAddress
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
@@ -139,15 +140,15 @@ export class W3mNetworksView extends LitElement {
 
   private getNetworkDisabled(network: CaipNetwork) {
     const networkNamespace = network.chainNamespace
-    const isNextNamespaceConnected = AccountController.getCaipAddress(networkNamespace)
+    const isNextNamespaceConnected = getCaipAddress(networkNamespace)
     const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
-    const supportsAllNetworks =
+    const doesSupportAllNetworks =
       ChainController.getNetworkProp('supportsAllNetworks', networkNamespace) !== false
     const connectorId = StorageUtil.getConnectedConnectorId(networkNamespace)
     const authConnector = ConnectorController.getAuthConnector()
     const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH && authConnector
 
-    if (!isNextNamespaceConnected || supportsAllNetworks || isConnectedWithAuth) {
+    if (!isNextNamespaceConnected || doesSupportAllNetworks || isConnectedWithAuth) {
       return false
     }
 
@@ -163,8 +164,8 @@ export class W3mNetworksView extends LitElement {
     }
 
     const isDifferentNamespace = network.chainNamespace !== ChainController.state.activeChain
-    const isCurrentNamespaceConnected = AccountController.state.caipAddress
-    const isNextNamespaceConnected = AccountController.getCaipAddress(network.chainNamespace)
+    const isCurrentNamespaceConnected = accountState.caipAddress
+    const isNextNamespaceConnected = getCaipAddress(network.chainNamespace)
     const connectorId = StorageUtil.getConnectedConnectorId(ChainController.state.activeChain)
 
     /**

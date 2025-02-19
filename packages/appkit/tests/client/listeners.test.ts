@@ -1,7 +1,13 @@
 import { describe, expect, it, vi } from 'vitest'
 
 import { Emitter } from '@reown/appkit-common'
-import { AccountController, BlockchainApiController, ChainController } from '@reown/appkit-core'
+import {
+  BlockchainApiController,
+  ChainController,
+  setCaipAddress,
+  setProfileImage,
+  setProfileName
+} from '@reown/appkit-core'
 
 import { AppKit } from '../../src/client'
 import { mainnet, unsupportedNetwork } from '../mocks/Networks'
@@ -20,7 +26,7 @@ mockBlockchainApiController()
 describe('Listeners', () => {
   it('should set caip address, profile name and profile image on accountChanged event', async () => {
     const identity = { name: 'vitalik.eth', avatar: null } as const
-    const setCaipAddressSpy = vi.spyOn(AccountController, 'setCaipAddress')
+    const setCaipAddressSpy = vi.mocked(setCaipAddress)
     const fetchIdentitySpy = vi
       .spyOn(BlockchainApiController, 'fetchIdentity')
       .mockResolvedValueOnce(identity)
@@ -33,8 +39,8 @@ describe('Listeners', () => {
 
     const emitter = new Emitter()
     const appKit = new AppKit({ ...mockOptions, features: { email: false, socials: [] } })
-    const setProfileNameSpy = vi.spyOn(appKit, 'setProfileName').mockImplementation(() => {})
-    const setProfileImageSpy = vi.spyOn(appKit, 'setProfileImage').mockImplementation(() => {})
+    const setProfileNameSpy = vi.mocked(setProfileName).mockImplementation(() => {})
+    const setProfileImageSpy = vi.mocked(setProfileImage).mockImplementation(() => {})
 
     await appKit['syncAccount'](mockAccount)
     emitter.emit('accountChanged', mockAccount)

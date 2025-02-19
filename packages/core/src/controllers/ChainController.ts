@@ -18,7 +18,7 @@ import type {
   ChainAdapter,
   NetworkControllerClient
 } from '../utils/TypeUtil.js'
-import { AccountController, type AccountControllerState } from './AccountController.js'
+import { type AccountControllerState, replaceAccountState } from './AccountController.js'
 import { ConnectionController, type ConnectionControllerClient } from './ConnectionController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
@@ -255,7 +255,7 @@ export const ChainController = {
         if (accountProps.caipAddress) {
           state.activeCaipAddress = accountProps.caipAddress
         }
-        AccountController.replaceState(newAccountState)
+        replaceAccountState(newAccountState)
       }
     }
   },
@@ -310,7 +310,7 @@ export const ChainController = {
     this.setAccountProp('caipAddress', state.activeCaipAddress, caipNetwork.chainNamespace)
 
     if (newAdapter) {
-      AccountController.replaceState(newAdapter.accountState)
+      replaceAccountState(newAdapter.accountState)
     }
 
     PublicStateController.set({
@@ -342,11 +342,11 @@ export const ChainController = {
       ChainController.state.activeChain as ChainNamespace
     )
 
-    const unsupportedNetwork = !activeAdapter?.caipNetworks?.some(
+    const isNetworkSupported = activeAdapter?.caipNetworks?.some(
       caipNetwork => caipNetwork.id === state.activeCaipNetwork?.id
     )
 
-    if (unsupportedNetwork) {
+    if (!isNetworkSupported) {
       RouterController.goBack()
     }
 

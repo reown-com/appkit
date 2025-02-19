@@ -4,7 +4,6 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { type Balance, type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 
 import {
-  AccountController,
   BlockchainApiController,
   ChainController,
   type ChainControllerState,
@@ -12,7 +11,18 @@ import {
   CoreHelperUtil,
   type NetworkControllerClient,
   SnackController,
-  SwapController
+  SwapController,
+  accountState,
+  fetchTokenBalance,
+  resetAccount,
+  setAddressExplorerUrl,
+  setBalance,
+  setCaipAddress,
+  setPreferredAccountType,
+  setProfileImage,
+  setProfileName,
+  setSmartAccountDeployed,
+  setTokenBalance
 } from '../../exports/index.js'
 
 // -- Setup --------------------------------------------------------------------
@@ -49,7 +59,7 @@ beforeAll(() => {
 
 describe('AccountController', () => {
   it('should have valid default state', () => {
-    expect(AccountController.state).toEqual({
+    expect(accountState).toEqual({
       smartAccountDeployed: false,
       currentTab: 0,
       tokenBalance: [],
@@ -59,48 +69,48 @@ describe('AccountController', () => {
   })
 
   it('should update state correctly on setCaipAddress()', () => {
-    AccountController.setCaipAddress(caipAddress, chain)
-    expect(AccountController.state.caipAddress).toEqual(caipAddress)
-    expect(AccountController.state.address).toEqual('0x123')
+    setCaipAddress(caipAddress, chain)
+    expect(accountState.caipAddress).toEqual(caipAddress)
+    expect(accountState.address).toEqual('0x123')
   })
 
   it('should update state correctly on setBalance()', () => {
-    AccountController.setBalance(balance, balanceSymbol, chain)
-    expect(AccountController.state.balance).toEqual(balance)
-    expect(AccountController.state.balanceSymbol).toEqual(balanceSymbol)
+    setBalance(balance, balanceSymbol, chain)
+    expect(accountState.balance).toEqual(balance)
+    expect(accountState.balanceSymbol).toEqual(balanceSymbol)
   })
 
   it('should update state correctly on setProfileName()', () => {
-    AccountController.setProfileName(profileName, chain)
-    expect(AccountController.state.profileName).toEqual(profileName)
+    setProfileName(profileName, chain)
+    expect(accountState.profileName).toEqual(profileName)
   })
 
   it('should update state correctly on setProfileImage()', () => {
-    AccountController.setProfileImage(profileImage, chain)
-    expect(AccountController.state.profileImage).toEqual(profileImage)
+    setProfileImage(profileImage, chain)
+    expect(accountState.profileImage).toEqual(profileImage)
   })
 
   it('should update state correctly on setAddressExplorerUrl()', () => {
-    AccountController.setAddressExplorerUrl(explorerUrl, chain)
-    expect(AccountController.state.addressExplorerUrl).toEqual(explorerUrl)
+    setAddressExplorerUrl(explorerUrl, chain)
+    expect(accountState.addressExplorerUrl).toEqual(explorerUrl)
   })
 
   it('shuold update state correctly on setSmartAccountDeployed()', () => {
-    AccountController.setSmartAccountDeployed(true, chain)
-    expect(AccountController.state.smartAccountDeployed).toEqual(true)
+    setSmartAccountDeployed(true, chain)
+    expect(accountState.smartAccountDeployed).toEqual(true)
   })
 
   it('should update state correctly on setPreferredAccountType()', () => {
-    AccountController.setPreferredAccountType('eoa', chain)
-    expect(AccountController.state.preferredAccountType).toEqual('eoa')
+    setPreferredAccountType('eoa', chain)
+    expect(accountState.preferredAccountType).toEqual('eoa')
 
-    AccountController.setPreferredAccountType('smartAccount', chain)
-    expect(AccountController.state.preferredAccountType).toEqual('smartAccount')
+    setPreferredAccountType('smartAccount', chain)
+    expect(accountState.preferredAccountType).toEqual('smartAccount')
   })
 
   it('should update state correctly on resetAccount()', () => {
-    AccountController.resetAccount(chain)
-    expect(AccountController.state).toEqual({
+    resetAccount(chain)
+    expect(accountState).toEqual({
       smartAccountDeployed: false,
       currentTab: 0,
       caipAddress: undefined,
@@ -131,13 +141,13 @@ describe('AccountController', () => {
 
     it('should not fetch balance if its not allowed to retry', async () => {
       vi.spyOn(CoreHelperUtil, 'isAllowedRetry').mockReturnValue(false)
-      AccountController.state.lastRetry = Date.now()
+      accountState.lastRetry = Date.now()
 
-      const result = await AccountController.fetchTokenBalance()
+      const result = await fetchTokenBalance()
 
       expect(result).toEqual([])
       expect(BlockchainApiController.getBalance).not.toHaveBeenCalled()
-      expect(AccountController.state.balanceLoading).toBe(false)
+      expect(accountState.balanceLoading).toBe(false)
     })
 
     it('should not fetch balance if chainId is not defined', async () => {
@@ -148,7 +158,7 @@ describe('AccountController', () => {
         activeCaipAddress: 'eip155:1:0x123'
       } as unknown as ChainControllerState)
 
-      const result = await AccountController.fetchTokenBalance()
+      const result = await fetchTokenBalance()
 
       expect(result).toEqual([])
       expect(BlockchainApiController.getBalance).not.toHaveBeenCalled()
@@ -160,7 +170,7 @@ describe('AccountController', () => {
         activeCaipAddress: 'eip155:1:0x123'
       } as unknown as ChainControllerState)
 
-      const result = await AccountController.fetchTokenBalance()
+      const result = await fetchTokenBalance()
 
       expect(result).toEqual([])
       expect(BlockchainApiController.getBalance).not.toHaveBeenCalled()
@@ -172,7 +182,7 @@ describe('AccountController', () => {
         activeCaipAddress: undefined
       } as unknown as ChainControllerState)
 
-      const result = await AccountController.fetchTokenBalance()
+      const result = await fetchTokenBalance()
 
       expect(result).toEqual([])
       expect(BlockchainApiController.getBalance).not.toHaveBeenCalled()
@@ -186,10 +196,10 @@ describe('AccountController', () => {
       const now = Date.now()
       vi.setSystemTime(now)
 
-      const result = await AccountController.fetchTokenBalance(onError)
+      const result = await fetchTokenBalance(onError)
 
       expect(result).toEqual([])
-      expect(AccountController.state.lastRetry).toBe(now)
+      expect(accountState.lastRetry).toBe(now)
       expect(onError).toHaveBeenCalledWith(mockError)
       expect(SnackController.showError).toHaveBeenCalledWith('Token Balance Unavailable')
     })
@@ -208,10 +218,10 @@ describe('AccountController', () => {
         balances: mockBalances as Balance[]
       })
 
-      const setTokenBalanceSpy = vi.spyOn(AccountController, 'setTokenBalance')
+      const setTokenBalanceSpy = vi.mocked(setTokenBalance)
       const setBalancesSpy = vi.spyOn(SwapController, 'setBalances')
 
-      const result = await AccountController.fetchTokenBalance()
+      const result = await fetchTokenBalance()
 
       expect(result).toEqual([
         { quantity: { decimals: '18' }, symbol: 'ETH' },
@@ -225,8 +235,8 @@ describe('AccountController', () => {
         'eip155'
       )
       expect(setBalancesSpy).toHaveBeenCalled()
-      expect(AccountController.state.lastRetry).toBeUndefined()
-      expect(AccountController.state.balanceLoading).toBe(false)
+      expect(accountState.lastRetry).toBeUndefined()
+      expect(accountState.balanceLoading).toBe(false)
     })
   })
 })

@@ -2,7 +2,13 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { AccountController, AssetUtil, ChainController, CoreHelperUtil } from '@reown/appkit-core'
+import {
+  AssetUtil,
+  ChainController,
+  CoreHelperUtil,
+  accountState,
+  subscribeAccountKey
+} from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
@@ -16,12 +22,12 @@ export class W3mWalletCompatibleNetworksView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private preferredAccountType = AccountController.state.preferredAccountType
+  @state() private preferredAccountType = accountState.preferredAccountType
 
   public constructor() {
     super()
     this.unsubscribe.push(
-      AccountController.subscribeKey('preferredAccountType', val => {
+      subscribeAccountKey('preferredAccountType', val => {
         this.preferredAccountType = val
       })
     )

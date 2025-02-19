@@ -3,7 +3,6 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
-  AccountController,
   AssetController,
   AssetUtil,
   ChainController,
@@ -13,7 +12,8 @@ import {
   ModalController,
   OptionsController,
   RouterController,
-  SIWXUtil
+  SIWXUtil,
+  accountState
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
@@ -81,9 +81,7 @@ function headings() {
     WhatIsAWallet: 'What is a wallet?',
     ConnectWallets: 'Connect wallet',
     ConnectSocials: 'All socials',
-    ConnectingSocial: AccountController.state.socialProvider
-      ? AccountController.state.socialProvider
-      : 'Connect Social',
+    ConnectingSocial: accountState.socialProvider ? accountState.socialProvider : 'Connect Social',
     ConnectingMultiChain: 'Select chain',
     ConnectingFarcaster: 'Farcaster',
     SwitchActiveChain: 'Switch chain',

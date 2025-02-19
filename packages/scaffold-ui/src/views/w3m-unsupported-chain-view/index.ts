@@ -4,7 +4,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import {
-  AccountController,
   AssetController,
   AssetUtil,
   ChainController,
@@ -14,7 +13,8 @@ import {
   EventsController,
   ModalController,
   RouterController,
-  SnackController
+  SnackController,
+  accountState
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
@@ -140,9 +140,9 @@ export class W3mUnsupportedChainView extends LitElement {
   }
 
   private async onSwitchNetwork(network: CaipNetwork) {
-    const caipAddress = AccountController.state.caipAddress
+    const caipAddress = accountState.caipAddress
     const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
-    const supportsAllNetworks = ChainController.getNetworkProp(
+    const shouldSupportAllNetworks = ChainController.getNetworkProp(
       'supportsAllNetworks',
       network.chainNamespace
     )
@@ -152,7 +152,7 @@ export class W3mUnsupportedChainView extends LitElement {
     if (caipAddress) {
       if (approvedCaipNetworkIds?.includes(network.caipNetworkId)) {
         await ChainController.switchActiveNetwork(network)
-      } else if (supportsAllNetworks) {
+      } else if (shouldSupportAllNetworks) {
         RouterController.push('SwitchNetwork', { ...routerData, network })
       } else {
         RouterController.push('SwitchNetwork', { ...routerData, network })

@@ -4,7 +4,7 @@ import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
-import { AccountController } from '../controllers/AccountController.js'
+import { accountState, setConnectedWalletInfo } from '../controllers/AccountController.js'
 import { ChainController } from '../controllers/ChainController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
 import { EventsController } from '../controllers/EventsController.js'
@@ -231,7 +231,7 @@ export const SIWXUtil = {
 
     SnackController.showLoading('Authenticating...', { autoClose: false })
 
-    AccountController.setConnectedWalletInfo(
+    setConnectedWalletInfo(
       {
         ...result.session.peer.metadata,
         name: result.session.peer.metadata.name,
@@ -296,8 +296,7 @@ export const SIWXUtil = {
     return {
       network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
       isSmartAccount:
-        AccountController.state.preferredAccountType ===
-        W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+        accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     }
   },
   async clearSessions() {

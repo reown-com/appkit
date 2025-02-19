@@ -3,13 +3,14 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
-  AccountController,
   AssetUtil,
   ChainController,
   CoreHelperUtil,
   RouterController,
   SnackController,
-  ThemeController
+  ThemeController,
+  accountState,
+  subscribeAccount
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
@@ -24,19 +25,19 @@ export class W3mWalletReceiveView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private address = AccountController.state.address
+  @state() private address = accountState.address
 
-  @state() private profileName = AccountController.state.profileName
+  @state() private profileName = accountState.profileName
 
   @state() private network = ChainController.state.activeCaipNetwork
 
-  @state() private preferredAccountType = AccountController.state.preferredAccountType
+  @state() private preferredAccountType = accountState.preferredAccountType
 
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribe(val => {
+        subscribeAccount(val => {
           if (val.address) {
             this.address = val.address
             this.profileName = val.profileName

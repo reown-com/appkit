@@ -5,13 +5,15 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import type { CaipAddress, ChainNamespace } from '@reown/appkit-common'
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   type AccountType,
   BlockchainApiController,
   ChainController,
   ModalController,
   OptionsController,
-  StorageUtil
+  StorageUtil,
+  accountState,
+  setCaipAddress,
+  subscribeAccountKey
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 
@@ -23,19 +25,19 @@ export class W3mSwitchAddressView extends LitElement {
   // -- Members ------------------------------------------- //
   private readonly metadata = OptionsController.state.metadata
 
-  @state() public allAccounts: AccountType[] = AccountController.state.allAccounts || []
+  @state() public allAccounts: AccountType[] = accountState.allAccounts || []
 
   @state() private balances: Record<string, number> = {}
 
-  public readonly labels = AccountController.state.addressLabels
+  public readonly labels = accountState.addressLabels
 
-  public readonly currentAddress: string = AccountController.state.address || ''
+  public readonly currentAddress: string = accountState.address || ''
 
   private caipNetwork = ChainController.state.activeCaipNetwork
 
   constructor() {
     super()
-    AccountController.subscribeKey('allAccounts', allAccounts => {
+    subscribeAccountKey('allAccounts', allAccounts => {
       this.allAccounts = allAccounts
     })
   }
@@ -147,7 +149,7 @@ export class W3mSwitchAddressView extends LitElement {
     const caipNetwork = ChainController.state.activeCaipNetwork
     const activeChainNamespace = caipNetwork?.chainNamespace
     const caipAddress = `${activeChainNamespace}:${caipNetwork?.id}:${address}` as CaipAddress
-    AccountController.setCaipAddress(caipAddress, activeChainNamespace)
+    setCaipAddress(caipAddress, activeChainNamespace)
     ModalController.close()
   }
 }

@@ -2,14 +2,14 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import {
-  AccountController,
   ChainController,
   ConnectionController,
   EventsController,
   ModalController,
   OptionsController,
   RouterController,
-  SnackController
+  SnackController,
+  accountState
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
@@ -86,8 +86,7 @@ export class W3mConnectingSiweView extends LitElement {
       properties: {
         network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
-          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+          accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
     try {
@@ -100,14 +99,13 @@ export class W3mConnectingSiweView extends LitElement {
         properties: {
           network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
-            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+            accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
 
       return session
     } catch (error) {
-      const preferredAccountType = AccountController.state.preferredAccountType
+      const preferredAccountType = accountState.preferredAccountType
       const isSmartAccount =
         preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       if (isSmartAccount) {
@@ -146,8 +144,7 @@ export class W3mConnectingSiweView extends LitElement {
       properties: {
         network: ChainController.state.activeCaipNetwork?.caipNetworkId || '',
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
-          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+          accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
   }
