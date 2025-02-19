@@ -18,6 +18,7 @@ import { UnitsUtil } from './utils/UnitsUtil.js'
 export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   private eventsToUnbind: (() => void)[] = []
   private api: BitcoinApi.Interface
+  private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
 
   constructor({ api = {}, ...params }: BitcoinAdapter.ConstructorParams = {}) {
     super({
@@ -172,31 +173,45 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     const network = params.caipNetwork
 
     if (network?.chainNamespace === 'bip122') {
-      const utxos = await this.api.getUTXOs({
-        network,
-        address: params.address
-      })
-
       const caipAddress = `${params?.caipNetwork?.caipNetworkId}:${params.address}`
+
+      const cachedPromise = this.balancePromises[caipAddress]
+      if (cachedPromise) {
+        return cachedPromise
+      }
+
       const cachedBalance = StorageUtil.getNativeBalanceCacheForCaipAddress(caipAddress)
       if (cachedBalance) {
         return { balance: cachedBalance.balance, symbol: cachedBalance.symbol }
       }
+      this.balancePromises[caipAddress] = new Promise<AdapterBlueprint.GetBalanceResult>(
+        async resolve => {
+          const utxos = await this.api.getUTXOs({
+            network,
+            address: params.address
+          })
 
-      const balance = utxos.reduce((acc, utxo) => acc + utxo.value, 0)
-      const formattedBalance = UnitsUtil.parseSatoshis(balance.toString(), network)
+          const balance = utxos.reduce((acc, utxo) => acc + utxo.value, 0)
+          const formattedBalance = UnitsUtil.parseSatoshis(balance.toString(), network)
 
-      StorageUtil.updateNativeBalanceCache({
-        caipAddress,
-        balance: formattedBalance,
-        symbol: network.nativeCurrency.symbol,
-        timestamp: Date.now()
+          StorageUtil.updateNativeBalanceCache({
+            caipAddress,
+            balance: formattedBalance,
+            symbol: network.nativeCurrency.symbol,
+            timestamp: Date.now()
+          })
+
+          resolve({
+            balance: formattedBalance,
+            symbol: network.nativeCurrency.symbol
+          })
+        }
+      ).finally(() => {
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+        delete this.balancePromises[caipAddress]
       })
 
-      return {
-        balance: formattedBalance,
-        symbol: network.nativeCurrency.symbol
-      }
+      return this.balancePromises[caipAddress] || Promise.resolve({ balance: '0', symbol: '' })
     }
 
     // Get balance
