@@ -148,6 +148,11 @@ export interface OptionsControllerStatePublic {
    * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa' }"
    */
   defaultAccountTypes: DefaultAccountTypes
+  /**
+   * Enable or disable the network switcher in the modal.
+   * @default true
+   */
+  showNetworkSwitcher?: boolean
 }
 
 export interface OptionsControllerStateInternal {
@@ -168,7 +173,8 @@ const state = proxy<OptionsControllerState & OptionsControllerStateInternal>({
   projectId: '',
   sdkType: 'appkit',
   sdkVersion: 'html-wagmi-undefined',
-  defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES
+  defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES,
+  showNetworkSwitcher: true
 })
 
 // -- Controller ---------------------------------------- //
@@ -328,6 +334,10 @@ export const OptionsController = {
     useInjectedUniversalProvider: OptionsControllerState['useInjectedUniversalProvider']
   ) {
     state.useInjectedUniversalProvider = useInjectedUniversalProvider
+  },
+
+  setEnableNetworkSwitcher(showNetworkSwitcher: OptionsControllerState['showNetworkSwitcher']) {
+    state.showNetworkSwitcher = showNetworkSwitcher
   },
 
   setDefaultAccountTypes(
