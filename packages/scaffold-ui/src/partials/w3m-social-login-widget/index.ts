@@ -245,7 +245,7 @@ export class W3mSocialLoginWidget extends LitElement {
 
           if (this.popupWindow) {
             AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
-          } else {
+          } else if (!CoreHelperUtil.isTelegram()) {
             throw new Error('Something went wrong')
           }
 
@@ -254,11 +254,13 @@ export class W3mSocialLoginWidget extends LitElement {
           })
 
           if (!uri) {
-            this.popupWindow.close()
+            this.popupWindow?.close()
             throw new Error('Something went wrong')
           }
 
-          this.popupWindow.location.href = uri
+          if (this.popupWindow) {
+            this.popupWindow.location.href = uri
+          }
 
           if (CoreHelperUtil.isTelegram()) {
             SafeLocalStorage.setItem(SafeLocalStorageKeys.SOCIAL_PROVIDER, socialProvider)
