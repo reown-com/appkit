@@ -1,4 +1,5 @@
-import { describe, expect, it, vi } from 'vitest'
+import { UniversalProvider } from '@walletconnect/universal-provider'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { Emitter } from '@reown/appkit-common'
 import { AccountController, BlockchainApiController, ChainController } from '@reown/appkit-core'
@@ -6,6 +7,7 @@ import { AccountController, BlockchainApiController, ChainController } from '@re
 import { AppKit } from '../../src/client'
 import { mainnet, unsupportedNetwork } from '../mocks/Networks'
 import { mockOptions } from '../mocks/Options'
+import { mockUniversalProvider } from '../mocks/Providers'
 import {
   mockBlockchainApiController,
   mockChainControllerStateWithUnsupportedChain,
@@ -18,6 +20,14 @@ mockStorageUtil()
 mockBlockchainApiController()
 
 describe('Listeners', () => {
+  beforeEach(() => {
+    vi.spyOn(UniversalProvider, 'init').mockResolvedValue(mockUniversalProvider)
+  })
+
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
+
   it('should set caip address, profile name and profile image on accountChanged event', async () => {
     const identity = { name: 'vitalik.eth', avatar: null } as const
     const setCaipAddressSpy = vi.spyOn(AccountController, 'setCaipAddress')
