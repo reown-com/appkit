@@ -103,8 +103,8 @@ describe('W3mSwapInput', () => {
       html`<w3m-swap-input .token=${MOCK_TOKEN} .balance=${'1.0'} .price=${1.0}></w3m-swap-input>`
     )
 
-    const balance = Array.from(element.shadowRoot?.querySelectorAll('wui-text') || []).find(
-      text => text.textContent?.includes('1.00')
+    const balance = Array.from(element.shadowRoot?.querySelectorAll('wui-text') || []).find(text =>
+      text.textContent?.includes('1.00')
     )
     expect(balance).not.toBeNull()
   })
