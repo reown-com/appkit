@@ -1253,10 +1253,8 @@ export class AppKit {
       const namespace = ChainController.state.activeChain as ChainNamespace
 
       // To keep backwards compatibility, eip155 chainIds are numbers and not actual caipChainIds
-      const caipAddress =
-        namespace === ConstantsUtil.CHAIN.EVM
-          ? (`eip155:${user.chainId}:${user.address}` as CaipAddress)
-          : (`${user.chainId}:${user.address}` as CaipAddress)
+      const caipNetworkId = `${namespace}:${user.chainId}` as CaipNetworkId
+      const caipAddress = `${caipNetworkId}:${user.address}` as CaipAddress
       this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
 
       if (!HelpersUtil.isLowerCaseMatch(user.address, AccountController.state.address)) {
@@ -1783,9 +1781,8 @@ export class AppKit {
   }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
     chainNamespace: ChainNamespace
   }) {
-    const activeCaipNetwork = this.caipNetworks?.find(
-      n => n.caipNetworkId === `${chainNamespace}:${chainId}`
-    )
+    const caipNetworkId = `${chainNamespace}:${chainId}` as CaipNetworkId
+    const activeCaipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
 
     if (chainNamespace !== ConstantsUtil.CHAIN.EVM || activeCaipNetwork?.testnet) {
       return
@@ -1793,7 +1790,8 @@ export class AppKit {
 
     try {
       const { name, avatar } = await this.fetchIdentity({
-        address
+        address,
+        caipNetworkId
       })
 
       this.setProfileName(name, chainNamespace)
