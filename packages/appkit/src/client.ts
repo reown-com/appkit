@@ -1253,8 +1253,10 @@ export class AppKit {
       const namespace = ChainController.state.activeChain as ChainNamespace
 
       // To keep backwards compatibility, eip155 chainIds are numbers and not actual caipChainIds
-      const caipNetworkId = `${namespace}:${user.chainId}` as CaipNetworkId
-      const caipAddress = `${caipNetworkId}:${user.address}` as CaipAddress
+      const caipAddress =
+        namespace === ConstantsUtil.CHAIN.EVM
+          ? (`eip155:${user.chainId}:${user.address}` as CaipAddress)
+          : (`${user.chainId}:${user.address}` as CaipAddress)
       this.setSmartAccountDeployed(Boolean(user.smartAccountDeployed), namespace)
 
       if (!HelpersUtil.isLowerCaseMatch(user.address, AccountController.state.address)) {
