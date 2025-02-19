@@ -24,7 +24,7 @@ import type { AppKitNetwork } from '@reown/appkit/networks'
 
 import { getLocalStorageItem } from './LocalStorage'
 
-const projectId = SystemUtil.getEnv('NEXT_PUBLIC_PROJECT_ID')
+const projectId = SystemUtil.getEnv('NEXT_PUBLIC_PROJECT_ID', '')
 if (!projectId) {
   throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
 }
