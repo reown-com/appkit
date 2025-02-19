@@ -15,24 +15,14 @@ import * as networks from '@reown/appkit/networks'
 
 import { mockUniversalAdapter } from './mocks/Adapter'
 import mockProvider from './mocks/UniversalProvider'
+import { mockWindowAndDocument } from './test-utils'
 
 describe('SIWE mapped to SIWX', () => {
   let siweConfig: AppKitSIWEClient
   let appkit: AppKit
 
   beforeEach(async () => {
-    global.document = {
-      createElement: vi.fn().mockReturnValue({
-        style: {},
-        addEventListener: vi.fn(),
-        setAttribute: vi.fn()
-      }),
-      body: {
-        appendChild: vi.fn(),
-        insertAdjacentElement: vi.fn()
-      },
-      getElementById: vi.fn().mockReturnValue(null)
-    } as any
+    mockWindowAndDocument()
 
     siweConfig = createSIWEConfig({
       createMessage: () => {
