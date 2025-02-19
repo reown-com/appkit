@@ -38,6 +38,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   private connectionSettings: Commitment | ConnectionConfig
   public adapterType = 'solana'
   public wallets?: BaseWalletAdapter[]
+  private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
 
   constructor(options: AdapterOptions = {}) {
     super({})
@@ -244,29 +245,41 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     )
 
     const caipAddress = `${params?.caipNetwork?.caipNetworkId}:${params.address}`
+    const cachedPromise = this.balancePromises[caipAddress]
+    if (cachedPromise) {
+      return cachedPromise
+    }
     const cachedBalance = StorageUtil.getNativeBalanceCacheForCaipAddress(caipAddress)
     if (cachedBalance) {
       return { balance: cachedBalance.balance, symbol: cachedBalance.symbol }
     }
+    this.balancePromises[caipAddress] = new Promise<AdapterBlueprint.GetBalanceResult>(
+      async resolve => {
+        const balance = await connection.getBalance(new PublicKey(params.address))
+        const formattedBalance = (balance / SolConstantsUtil.LAMPORTS_PER_SOL).toString()
 
-    const balance = await connection.getBalance(new PublicKey(params.address))
-    const formattedBalance = (balance / SolConstantsUtil.LAMPORTS_PER_SOL).toString()
+        StorageUtil.updateNativeBalanceCache({
+          caipAddress,
+          balance: formattedBalance,
+          symbol: params.caipNetwork?.nativeCurrency.symbol || 'SOL',
+          timestamp: Date.now()
+        })
 
-    StorageUtil.updateNativeBalanceCache({
-      caipAddress,
-      balance: formattedBalance,
-      symbol: params.caipNetwork?.nativeCurrency.symbol || 'SOL',
-      timestamp: Date.now()
+        if (!params.caipNetwork) {
+          throw new Error('caipNetwork is required')
+        }
+
+        resolve({
+          balance: formattedBalance,
+          symbol: params.caipNetwork?.nativeCurrency.symbol
+        })
+      }
+    ).finally(() => {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete this.balancePromises[caipAddress]
     })
 
-    if (!params.caipNetwork) {
-      throw new Error('caipNetwork is required')
-    }
-
-    return {
-      balance: formattedBalance,
-      symbol: params.caipNetwork?.nativeCurrency.symbol
-    }
+    return this.balancePromises[caipAddress] || { balance: '0', symbol: 'SOL' }
   }
 
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
