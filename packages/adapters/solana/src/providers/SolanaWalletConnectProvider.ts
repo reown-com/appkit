@@ -177,7 +177,7 @@ export class SolanaWalletConnectProvider
           throw new Error('Invalid transactions response')
         }
 
-        const decodedTransaction = new Uint8Array(Buffer.from(serializedTransaction, 'base64'))
+        const decodedTransaction = Buffer.from(serializedTransaction, 'base64')
 
         if (isVersionedTransaction(transaction)) {
           return VersionedTransaction.deserialize(decodedTransaction)

@@ -139,7 +139,7 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
 
     const response = (
       await feature.signTransaction({
-        psbt: new Uint8Array(Buffer.from(params.psbt, 'base64')),
+        psbt: Buffer.from(params.psbt, 'base64'),
         inputsToSign
       })
     )[0]
