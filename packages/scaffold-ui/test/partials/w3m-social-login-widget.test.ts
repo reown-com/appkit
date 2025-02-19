@@ -11,8 +11,7 @@ import {
   CoreHelperUtil,
   EventsController,
   OptionsController,
-  RouterController
-} from '@reown/appkit-core'
+ } from '@reown/appkit-core'
 
 import { W3mSocialLoginWidget } from '../../src/partials/w3m-social-login-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'
