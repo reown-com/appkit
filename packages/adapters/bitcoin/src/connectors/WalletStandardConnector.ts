@@ -3,6 +3,7 @@ import type { Wallet, WalletWithFeatures } from '@wallet-standard/base'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import type { Provider, RequestArguments } from '@reown/appkit-core'
+import { PresetsUtil } from '@reown/appkit-utils'
 import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 
 import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
@@ -38,6 +39,10 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
 
   public get imageUrl(): string {
     return this.wallet.icon
+  }
+
+  public get explorerId(): string | undefined {
+    return PresetsUtil.ConnectorExplorerIds[this.name]
   }
 
   public get chains() {

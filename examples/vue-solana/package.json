@@ -8,15 +8,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@solana/wallet-adapter-backpack": "0.1.14",
-    "@solana/wallet-adapter-wallets": "0.19.32",
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-solana": "workspace:*",
+    "@solana/wallet-adapter-backpack": "0.1.14",
+    "@solana/wallet-adapter-wallets": "0.19.32",
     "vue": "3.4.3"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "5.0.2",
-    "typescript": "5.3.3",
+    "typescript": "5.7.3",
     "vite": "5.4.12",
     "vue-tsc": "2.1.8"
   }

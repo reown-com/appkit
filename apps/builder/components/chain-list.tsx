@@ -30,26 +30,29 @@ export function ChainList() {
         removeChain(chainId)
       }
     } else {
-      addChain(chainId)
+      addChain(chainId, undefined)
     }
   }
 
   return (
     <div className="flex flex-col gap-2">
       <div className="flex gap-2">
-        {CHAIN_OPTIONS.map(chain => (
-          <RoundOptionItem
-            key={chain.id}
-            enabled={enabledChains.includes(chain.id)}
-            disabled={
-              Boolean(caipAddress) ||
-              (enabledChains.includes(chain.id) && enabledChains.length === 1)
-            }
-            imageSrc={chain.imageSrc}
-            onChange={() => handleChainChange(chain.id)}
-            name={chain.name}
-          />
-        ))}
+        {CHAIN_OPTIONS.map(chain => {
+          const isLastChainInNamespace =
+            enabledChains.includes(chain.id) && enabledChains.length === 1
+
+          return (
+            <RoundOptionItem
+              key={chain.id}
+              enabled={enabledChains.includes(chain.id)}
+              imageSrc={chain.imageSrc}
+              onChange={() => handleChainChange(chain.id)}
+              name={chain.name}
+              disabled={isLastChainInNamespace}
+              message={isLastChainInNamespace ? 'Have at least one chain enabled' : ''}
+            />
+          )
+        })}
       </div>
       {caipAddress ? (
         <Alert>
