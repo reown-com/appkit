@@ -53,7 +53,7 @@ export function SolanaSignAllTransactionsTest() {
             throw Error('Empty signature')
           }
 
-          return bs58.encode(signature)
+          return bs58.encode(signature as Uint8Array)
         })
         .join('\n\n')
 
