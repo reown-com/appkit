@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect, useState } from 'react'
 import { IoSettingsOutline } from 'react-icons/io5'
 
@@ -16,8 +18,9 @@ import {
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-import { useChakraToast } from '../components/Toast'
-import { DOCS_URL, GALLERY_URL, REPO_URL } from '../utils/ConstantsUtil'
+import { useChakraToast } from '@/src/components/Toast'
+import { DOCS_URL, GALLERY_URL, REPO_URL } from '@/src/utils/ConstantsUtil'
+
 import { CustomWallet } from './CustomWallet'
 import { OptionsDrawer } from './OptionsDrawer'
 

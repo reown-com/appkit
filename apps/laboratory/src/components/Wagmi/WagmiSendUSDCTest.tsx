@@ -23,10 +23,10 @@ import { getWalletClient } from 'wagmi/actions'
 
 import { arbitrum, base, optimism, sepolia } from '@reown/appkit/networks'
 
-import { useWalletGetAssets } from '../../hooks/useWalletGetAssets'
-import { ErrorUtil } from '../../utils/ErrorUtil'
-import { useChakraToast } from '../Toast'
-import { useTransactionToast } from '../TransactionToast'
+import { useChakraToast } from '@/src/components/Toast'
+import { useTransactionToast } from '@/src/components/TransactionToast'
+import { useWalletGetAssets } from '@/src/hooks/useWalletGetAssets'
+import { ErrorUtil } from '@/src/utils/ErrorUtil'
 
 const ALLOWED_CHAINS = [sepolia, optimism, base, arbitrum]
 const ALLOWED_CHAINIDS = ALLOWED_CHAINS.map(chain => chain.id) as number[]

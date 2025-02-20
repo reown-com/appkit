@@ -1,3 +1,5 @@
+'use client'
+
 import { GoogleTagManager } from '@next/third-parties/google'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'

@@ -7,7 +7,7 @@ import bs58 from 'bs58'
 import { type Provider, useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 import { useAppKitProvider } from '@reown/appkit/react'
 
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
 
 export function SolanaSignJupiterSwapTest() {
   const toast = useChakraToast()

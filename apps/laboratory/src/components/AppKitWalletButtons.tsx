@@ -15,7 +15,8 @@ import type { Wallet } from '@reown/appkit-wallet-button'
 import * as AppKitWalletButton from '@reown/appkit-wallet-button/react'
 import { type SocialProvider, useAppKitAccount } from '@reown/appkit/react'
 
-import { ConstantsUtil } from '../utils/ConstantsUtil'
+import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
+
 import { useChakraToast } from './Toast'
 
 interface AppKitWalletButtonsProps {

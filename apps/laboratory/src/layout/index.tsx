@@ -1,18 +1,26 @@
+'use client'
+
 import type { ReactNode } from 'react'
 
-import { Container } from '@chakra-ui/react'
-
-import { LayoutHeader } from './LayoutHeader'
+import { ChakraProvider, ColorModeScript, Container } from '@chakra-ui/react'
+import type { Session } from 'next-auth'
+import { SessionProvider } from 'next-auth/react'
 
 type Props = {
   children: ReactNode | ReactNode[]
+  session: Session | null
 }
 
-export default function Layout({ children }: Props) {
+export default function Layout({ children, session }: Props) {
   return (
-    <Container maxW="100ch">
-      <LayoutHeader />
-      <main>{children}</main>
-    </Container>
+    <ChakraProvider>
+      <ColorModeScript initialColorMode="system" />
+      <SessionProvider session={session} refetchInterval={0}>
+        <Container maxW="100ch">
+          {/* <LayoutHeader /> */}
+          <main>{children}</main>
+        </Container>
+      </SessionProvider>
+    </ChakraProvider>
   )
 }
