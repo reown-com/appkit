@@ -11,8 +11,8 @@ import {
   useAppKitProvider
 } from '@reown/appkit/react'
 
-import { vitalikEthAddress } from '../../utils/DataUtil'
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
+import { vitalikEthAddress } from '@/src/utils/DataUtil'
 
 export function EthersTransactionTest() {
   const toast = useChakraToast()

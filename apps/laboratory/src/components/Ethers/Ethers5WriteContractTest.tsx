@@ -11,8 +11,8 @@ import {
   useAppKitProvider
 } from '@reown/appkit/react'
 
-import { abi, address as donutAddress } from '../../utils/DonutContract'
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
+import { abi, address as donutAddress } from '@/src/utils/DonutContract'
 
 export function Ethers5WriteContractTest() {
   const [loading, setLoading] = useState(false)

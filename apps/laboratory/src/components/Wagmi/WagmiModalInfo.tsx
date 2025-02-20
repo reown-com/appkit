@@ -5,7 +5,7 @@ import { useAccount } from 'wagmi'
 
 import { useAppKitAccount } from '@reown/appkit/react'
 
-import { AppKitInfo } from '../AppKitInfo'
+import { AppKitInfo } from '@/src/components/AppKitInfo'
 
 export function WagmiModalInfo() {
   const { isConnected } = useAppKitAccount()

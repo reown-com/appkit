@@ -9,7 +9,7 @@ import {
   useAppKitProvider
 } from '@reown/appkit/react'
 
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
 
 const types: Record<string, TypedDataField[]> = {
   Person: [

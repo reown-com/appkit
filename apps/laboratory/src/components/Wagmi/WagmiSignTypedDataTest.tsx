@@ -3,7 +3,7 @@ import { useAccount, useSignTypedData } from 'wagmi'
 
 import { useAppKitAccount } from '@reown/appkit/react'
 
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
 
 // Example data
 const types = {

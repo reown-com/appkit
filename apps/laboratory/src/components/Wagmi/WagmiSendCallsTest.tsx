@@ -7,10 +7,10 @@ import { useSendCalls } from 'wagmi/experimental'
 
 import { useAppKitAccount } from '@reown/appkit/react'
 
-import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
-import { vitalikEthAddress } from '../../utils/DataUtil'
-import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '../../utils/EIP5792Utils'
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
+import { useWagmiAvailableCapabilities } from '@/src/hooks/useWagmiActiveCapabilities'
+import { vitalikEthAddress } from '@/src/utils/DataUtil'
+import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '@/src/utils/EIP5792Utils'
 
 const TEST_TX_1 = {
   to: vitalikEthAddress as Address,
