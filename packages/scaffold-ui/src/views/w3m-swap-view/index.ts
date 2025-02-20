@@ -3,7 +3,6 @@ import { state } from 'lit/decorators.js'
 
 import { NumberUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   CoreHelperUtil,
   EventsController,
@@ -11,7 +10,8 @@ import {
   RouterController,
   SwapController,
   type SwapInputTarget,
-  type SwapToken
+  type SwapToken,
+  accountState
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
@@ -250,10 +250,9 @@ export class W3mSwapView extends LitElement {
   }
 
   private templateActionButton() {
-    const haveNoTokenSelected = !this.toToken || !this.sourceToken
-    const haveNoAmount = !this.sourceTokenAmount
-    const loading = this.loadingQuote || this.loadingPrices || this.loadingTransaction
-    const disabled = loading || haveNoTokenSelected || haveNoAmount || this.inputError
+    const hasSelectedToken = this.toToken && this.sourceToken
+    const isLoading = this.loadingQuote || this.loadingPrices || this.loadingTransaction
+    const disabled = isLoading || !hasSelectedToken || !this.sourceTokenAmount || this.inputError
 
     return html` <wui-flex gap="xs">
       <wui-button
@@ -262,8 +261,8 @@ export class W3mSwapView extends LitElement {
         fullWidth
         size="lg"
         borderRadius="xs"
-        variant=${haveNoTokenSelected ? 'neutral' : 'main'}
-        .loading=${loading}
+        variant=${hasSelectedToken ? 'main' : 'neutral'}
+        .loading=${isLoading}
         .disabled=${disabled}
         @click=${this.onSwapPreview.bind(this)}
       >
@@ -296,8 +295,7 @@ export class W3mSwapView extends LitElement {
         swapFromAmount: this.sourceTokenAmount || '',
         swapToAmount: this.toTokenAmount || '',
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
-          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+          accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
     RouterController.push('SwapPreview')

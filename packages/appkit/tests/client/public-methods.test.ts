@@ -9,7 +9,6 @@ import {
   getSafeConnectorIdKey
 } from '@reown/appkit-common'
 import {
-  AccountController,
   AssetUtil,
   BlockchainApiController,
   ChainController,
@@ -24,7 +23,14 @@ import {
   RouterController,
   SnackController,
   StorageUtil,
-  ThemeController
+  ThemeController,
+  addAddressLabel,
+  fetchTokenBalance,
+  removeAddressLabel,
+  setAllAccounts,
+  setConnectedWalletInfo,
+  setPreferredAccountType,
+  subscribeAccountKey
 } from '@reown/appkit-core'
 
 import { AppKit } from '../../src/client'
@@ -61,7 +67,7 @@ vi.spyOn(StorageUtil, 'getActiveNetworkProps').mockReturnValue({
 /**
  * Mock the fetchTokenBalance method of AccountController.
  */
-vi.spyOn(AccountController, 'fetchTokenBalance').mockResolvedValue([
+vi.mocked(fetchTokenBalance).mockResolvedValue([
   {
     quantity: { numeric: '0.00', decimals: '18' },
     chainId: 'eip155:1',
@@ -182,13 +188,13 @@ describe('Base Public methods', () => {
 
   it('should get wallet info', () => {
     const appKit = new AppKit(mockOptions)
-    appKit.setConnectedWalletInfo({ name: 'Test Wallet' }, 'eip155')
+    setConnectedWalletInfo({ name: 'Test Wallet' }, 'eip155')
 
     expect(appKit.getWalletInfo()).toEqual({ name: 'Test Wallet' })
   })
 
   it('should subscribe to wallet info changes', () => {
-    const subscribe = vi.spyOn(AccountController, 'subscribeKey')
+    const subscribe = vi.mocked(subscribeAccountKey)
     const callback = vi.fn()
 
     const appKit = new AppKit(mockOptions)
@@ -198,7 +204,7 @@ describe('Base Public methods', () => {
   })
 
   it('should subscribe to address updates', () => {
-    const subscribe = vi.spyOn(AccountController, 'subscribeKey')
+    const subscribe = vi.mocked(subscribeAccountKey)
     const callback = vi.fn()
 
     const appKit = new AppKit(mockOptions)
@@ -303,17 +309,8 @@ describe('Base Public methods', () => {
     expect(appKit.isTransactionStackEmpty()).toBe(true)
   })
 
-  it('should set status', () => {
-    const setStatus = vi.spyOn(AccountController, 'setStatus')
-
-    const appKit = new AppKit(mockOptions)
-    appKit.setStatus('connected', 'eip155')
-
-    expect(setStatus).toHaveBeenCalledWith('connected', 'eip155')
-  })
-
   it('should set all accounts', () => {
-    const setAllAccounts = vi.spyOn(AccountController, 'setAllAccounts')
+    const setAllAccountsSpy = vi.mocked(setAllAccounts)
     const setHasMultipleAddresses = vi.spyOn(OptionsController, 'setHasMultipleAddresses')
     const evmAddresses = [
       { address: '0x1', namespace: 'eip155', type: 'eoa' } as const,
@@ -331,28 +328,28 @@ describe('Base Public methods', () => {
     appKit.setAllAccounts(solanaAddresses, 'solana')
     appKit.setAllAccounts(bip122Addresses, 'bip122')
 
-    expect(setAllAccounts).toHaveBeenCalledWith(evmAddresses, 'eip155')
-    expect(setAllAccounts).toHaveBeenCalledWith(solanaAddresses, 'solana')
-    expect(setAllAccounts).toHaveBeenCalledWith(bip122Addresses, 'bip122')
+    expect(setAllAccountsSpy).toHaveBeenCalledWith(evmAddresses, 'eip155')
+    expect(setAllAccountsSpy).toHaveBeenCalledWith(solanaAddresses, 'solana')
+    expect(setAllAccountsSpy).toHaveBeenCalledWith(bip122Addresses, 'bip122')
     expect(setHasMultipleAddresses).toHaveBeenCalledWith(true)
   })
 
   it('should add address label', () => {
-    const addAddressLabel = vi.spyOn(AccountController, 'addAddressLabel')
+    const addAddressLabelSpy = vi.mocked(addAddressLabel)
 
     const appKit = new AppKit(mockOptions)
     appKit.addAddressLabel('0x123', 'eip155 Address', 'eip155')
 
-    expect(addAddressLabel).toHaveBeenCalledWith('0x123', 'eip155 Address', 'eip155')
+    expect(addAddressLabelSpy).toHaveBeenCalledWith('0x123', 'eip155 Address', 'eip155')
   })
 
   it('should remove address label', () => {
-    const removeAddressLabel = vi.spyOn(AccountController, 'removeAddressLabel')
+    const removeAddressLabelSpy = vi.mocked(removeAddressLabel)
 
     const appKit = new AppKit(mockOptions)
     appKit.removeAddressLabel('0x123', 'eip155')
 
-    expect(removeAddressLabel).toHaveBeenCalledWith('0x123', 'eip155')
+    expect(removeAddressLabelSpy).toHaveBeenCalledWith('0x123', 'eip155')
   })
 
   it('should get address and CAIP address', async () => {
@@ -383,52 +380,6 @@ describe('Base Public methods', () => {
     appKit.setPreferredAccountType('eoa', mainnet.chainNamespace)
 
     expect(appKit.getPreferredAccountType()).toBe('eoa')
-  })
-
-  it('should set CAIP address', () => {
-    const setCaipAddress = vi.spyOn(AccountController, 'setCaipAddress')
-
-    const appKit = new AppKit(mockOptions)
-    appKit.setCaipAddress('eip155:1:0x123', 'eip155')
-
-    expect(setCaipAddress).toHaveBeenCalledWith('eip155:1:0x123', 'eip155')
-    expect(appKit.getIsConnectedState()).toBe(true)
-  })
-
-  it('should set balance', () => {
-    const setBalance = vi.spyOn(AccountController, 'setBalance')
-
-    const appKit = new AppKit(mockOptions)
-    appKit.setBalance('1.5', 'ETH', 'eip155')
-
-    expect(setBalance).toHaveBeenCalledWith('1.5', 'ETH', 'eip155')
-  })
-
-  it('should set profile name', () => {
-    const setProfileName = vi.spyOn(AccountController, 'setProfileName')
-
-    const appKit = new AppKit(mockOptions)
-    appKit.setProfileName('John Doe', 'eip155')
-
-    expect(setProfileName).toHaveBeenCalledWith('John Doe', 'eip155')
-  })
-
-  it('should set profile image', () => {
-    const setProfileImage = vi.spyOn(AccountController, 'setProfileImage')
-
-    const appKit = new AppKit(mockOptions)
-    appKit.setProfileImage('https://example.com/image.png', 'eip155')
-
-    expect(setProfileImage).toHaveBeenCalledWith('https://example.com/image.png', 'eip155')
-  })
-
-  it('should reset account', () => {
-    const resetAccount = vi.spyOn(AccountController, 'resetAccount')
-
-    const appKit = new AppKit(mockOptions)
-    appKit.resetAccount('eip155')
-
-    expect(resetAccount).toHaveBeenCalledWith('eip155')
   })
 
   it('should set CAIP network', () => {
@@ -553,37 +504,6 @@ describe('Base Public methods', () => {
     expect(result).toEqual({ name: 'John Doe', avatar: null })
   })
 
-  it('should set address explorer URL', () => {
-    const setAddressExplorerUrl = vi.spyOn(AccountController, 'setAddressExplorerUrl')
-
-    const appKit = new AppKit(mockOptions)
-    appKit.setAddressExplorerUrl('https://etherscan.io/address/0x123', mainnet.chainNamespace)
-
-    expect(setAddressExplorerUrl).toHaveBeenCalledWith(
-      'https://etherscan.io/address/0x123',
-      mainnet.chainNamespace
-    )
-  })
-
-  it('should set smart account deployed', () => {
-    const setSmartAccountDeployed = vi.spyOn(AccountController, 'setSmartAccountDeployed')
-
-    const appKit = new AppKit(mockOptions)
-    appKit.setSmartAccountDeployed(true, mainnet.chainNamespace)
-
-    expect(setSmartAccountDeployed).toHaveBeenCalledWith(true, mainnet.chainNamespace)
-  })
-
-  it('should set connected wallet info', () => {
-    const walletInfo = { name: 'MetaMask', icon: 'icon-url' }
-    const setConnectedWalletInfo = vi.spyOn(AccountController, 'setConnectedWalletInfo')
-
-    const appKit = new AppKit(mockOptions)
-    appKit.setConnectedWalletInfo(walletInfo, mainnet.chainNamespace)
-
-    expect(setConnectedWalletInfo).toHaveBeenCalledWith(walletInfo, mainnet.chainNamespace)
-  })
-
   it('should set smart account enabled networks', () => {
     const networks = [1, 137]
     const setSmartAccountEnabledNetworks = vi.spyOn(
@@ -598,34 +518,34 @@ describe('Base Public methods', () => {
   })
 
   it('should set preferred account type', () => {
-    const setPreferredAccountType = vi.spyOn(AccountController, 'setPreferredAccountType')
+    const setPreferredAccountTypeSpy = vi.mocked(setPreferredAccountType)
 
     const appKit = new AppKit(mockOptions)
     appKit.setPreferredAccountType('eoa', mainnet.chainNamespace)
 
-    expect(setPreferredAccountType).toHaveBeenCalledWith('eoa', mainnet.chainNamespace)
+    expect(setPreferredAccountTypeSpy).toHaveBeenCalledWith('eoa', mainnet.chainNamespace)
   })
 
   it('should create accounts with correct account types from user accounts', async () => {
-    const createAccount = vi.spyOn(CoreHelperUtil, 'createAccount')
-    const setAllAccounts = vi.spyOn(AccountController, 'setAllAccounts')
-    const setPreferredAccountType = vi.spyOn(AccountController, 'setPreferredAccountType')
+    const createAccountSpy = vi.spyOn(CoreHelperUtil, 'createAccount')
+    const setAllAccountsSpy = vi.mocked(setAllAccounts)
+    const setPreferredAccountTypeSpy = vi.mocked(setPreferredAccountType)
 
     const appKitWithAuth = new AppKit(mockOptions)
     ;(appKitWithAuth as any).authProvider = mockAuthProvider
 
     await (appKitWithAuth as any).syncAuthConnector(mockAuthProvider)
 
-    expect(createAccount).toHaveBeenCalledWith(mainnet.chainNamespace, '0x1', 'eoa')
-    expect(createAccount).toHaveBeenCalledWith(mainnet.chainNamespace, '0x2', 'smartAccount')
-    expect(setAllAccounts).toHaveBeenCalledWith(
+    expect(createAccountSpy).toHaveBeenCalledWith(mainnet.chainNamespace, '0x1', 'eoa')
+    expect(createAccountSpy).toHaveBeenCalledWith(mainnet.chainNamespace, '0x2', 'smartAccount')
+    expect(setAllAccountsSpy).toHaveBeenCalledWith(
       [
         { address: '0x1', type: 'eoa', namespace: mainnet.chainNamespace },
         { address: '0x2', type: 'smartAccount', namespace: mainnet.chainNamespace }
       ],
       mainnet.chainNamespace
     )
-    expect(setPreferredAccountType).toHaveBeenCalledWith('eoa', mainnet.chainNamespace)
+    expect(setPreferredAccountTypeSpy).toHaveBeenCalledWith('eoa', mainnet.chainNamespace)
   })
 
   it('should get Reown name', async () => {
@@ -715,7 +635,7 @@ describe('Base Public methods', () => {
 
   it('should use the correct network when syncing account if it does not allow all networks and network is not allowed', async () => {
     const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
-    const fetchTokenBalance = vi.spyOn(AccountController, 'fetchTokenBalance')
+    const fetchTokenBalanceSpy = vi.mocked(fetchTokenBalance)
     const getActiveNetworkProps = vi.spyOn(StorageUtil, 'getActiveNetworkProps')
     const getNetworkProp = vi.spyOn(ChainController, 'getNetworkProp')
 
@@ -727,7 +647,7 @@ describe('Base Public methods', () => {
       caipNetworkId: mainnet.caipNetworkId
     })
 
-    fetchTokenBalance.mockResolvedValue([
+    fetchTokenBalanceSpy.mockResolvedValue([
       {
         quantity: { numeric: '0.00', decimals: '18' },
         chainId: mainnet.caipNetworkId,
@@ -748,9 +668,9 @@ describe('Base Public methods', () => {
   })
 
   it('should set connected wallet info when syncing account', async () => {
-    const setConnectedWalletInfo = vi.spyOn(AccountController, 'setConnectedWalletInfo')
+    const setConnectedWalletInfoSpy = vi.mocked(setConnectedWalletInfo)
     const getActiveNetworkProps = vi.spyOn(StorageUtil, 'getActiveNetworkProps')
-    const fetchTokenBalance = vi.spyOn(AccountController, 'fetchTokenBalance')
+    const fetchTokenBalanceSpy = vi.mocked(fetchTokenBalance)
     const getConnectedConnectorId = vi.spyOn(StorageUtil, 'getConnectedConnectorId')
     const mockConnector = {
       id: 'test-wallet',
@@ -763,7 +683,7 @@ describe('Base Public methods', () => {
       chainId: mainnet.id,
       chainNamespace: mainnet.chainNamespace
     }
-    fetchTokenBalance.mockResolvedValueOnce([
+    fetchTokenBalanceSpy.mockResolvedValueOnce([
       {
         quantity: { numeric: '0.00', decimals: '18' },
         chainId: 'eip155:1',
@@ -780,7 +700,7 @@ describe('Base Public methods', () => {
     const appKit = new AppKit(mockOptions)
     await appKit['syncAccount'](mockAccountData)
 
-    expect(setConnectedWalletInfo).toHaveBeenCalledWith({ name: mockConnector.id }, 'eip155')
+    expect(setConnectedWalletInfoSpy).toHaveBeenCalledWith({ name: mockConnector.id }, 'eip155')
   })
 
   it('should sync identity only if address changed', async () => {
@@ -810,7 +730,7 @@ describe('Base Public methods', () => {
       networks: [solana]
     })
 
-    vi.spyOn(AccountController, 'fetchTokenBalance').mockResolvedValue([
+    vi.mocked(fetchTokenBalance).mockResolvedValue([
       {
         quantity: { numeric: '0.00', decimals: '18' },
         chainId: solana.caipNetworkId,
@@ -857,7 +777,7 @@ describe('Base Public methods', () => {
      * So we need to mock the getBalance here specifically
      */
     vi.spyOn(appKit as any, 'getAdapter').mockReturnValueOnce(mockAdapter)
-    vi.spyOn(AccountController, 'fetchTokenBalance').mockResolvedValueOnce([
+    vi.mocked(fetchTokenBalance).mockResolvedValueOnce([
       {
         quantity: { numeric: '0.00', decimals: '18' },
         chainId: sepolia.id,

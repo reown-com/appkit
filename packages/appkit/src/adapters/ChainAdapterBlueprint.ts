@@ -7,13 +7,13 @@ import {
   ConstantsUtil as CommonConstantsUtil
 } from '@reown/appkit-common'
 import {
-  AccountController,
   type AccountControllerState,
   type AccountType,
   type Connector as AppKitConnector,
   OptionsController,
   type Tokens,
-  type WriteContractArgs
+  type WriteContractArgs,
+  setStatus
 } from '@reown/appkit-core'
 import { PresetsUtil } from '@reown/appkit-utils'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
@@ -133,7 +133,7 @@ export abstract class AdapterBlueprint<
   }
 
   protected setStatus(status: AccountControllerState['status'], chainNamespace?: ChainNamespace) {
-    AccountController.setStatus(status, chainNamespace)
+    setStatus(status, chainNamespace)
   }
 
   /**

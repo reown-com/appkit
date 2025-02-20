@@ -1,6 +1,6 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { AccountController, BlockchainApiController, ChainController } from '@reown/appkit-core'
+import { BlockchainApiController, ChainController, accountState } from '@reown/appkit-core'
 
 import { CloudAuthSIWX } from '../../src/configs/CloudAuthSIWX'
 import { mockSession } from '../mocks/mockSession'
@@ -175,8 +175,8 @@ Issued At: 2024-12-05T16:02:32.905Z`)
       const fetchSpy = vi.spyOn(global, 'fetch')
 
       vi.spyOn(localStorage, 'getItem').mockReturnValueOnce('mock_nonce_token')
-      AccountController.state.connectedWalletInfo = undefined
-      vi.spyOn(AccountController.state, 'connectedWalletInfo', 'get').mockReturnValueOnce({
+      accountState.connectedWalletInfo = undefined
+      vi.spyOn(accountState, 'connectedWalletInfo', 'get').mockReturnValueOnce({
         name: 'mock_wallet_name',
         icon: 'mock_wallet_icon'
       })

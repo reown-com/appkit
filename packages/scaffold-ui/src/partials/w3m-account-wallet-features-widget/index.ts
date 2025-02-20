@@ -4,7 +4,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   AssetController,
   AssetUtil,
   ChainController,
@@ -13,7 +12,11 @@ import {
   EventsController,
   ModalController,
   OptionsController,
-  RouterController
+  RouterController,
+  accountState,
+  fetchTokenBalance,
+  setCurrentAccountTab,
+  subscribeAccount
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
@@ -35,17 +38,17 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private address = AccountController.state.address
+  @state() private address = accountState.address
 
-  @state() private profileImage = AccountController.state.profileImage
+  @state() private profileImage = accountState.profileImage
 
-  @state() private profileName = AccountController.state.profileName
+  @state() private profileName = accountState.profileName
 
   @state() private network = ChainController.state.activeCaipNetwork
 
-  @state() private currentTab = AccountController.state.currentTab
+  @state() private currentTab = accountState.currentTab
 
-  @state() private tokenBalance = AccountController.state.tokenBalance
+  @state() private tokenBalance = accountState.tokenBalance
 
   @state() private features = OptionsController.state.features
 
@@ -58,7 +61,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         AssetController.subscribeNetworkImages(() => {
           this.networkImage = AssetUtil.getNetworkImage(this.network)
         }),
-        AccountController.subscribe(val => {
+        subscribeAccount(val => {
           if (val.address) {
             this.address = val.address
             this.profileImage = val.profileImage
@@ -82,7 +85,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   public override firstUpdated() {
-    AccountController.fetchTokenBalance()
+    fetchTokenBalance()
   }
 
   // -- Render -------------------------------------------- //
@@ -229,7 +232,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   private watchSwapValues() {
     this.watchTokenBalance = setInterval(
-      () => AccountController.fetchTokenBalance(error => this.onTokenBalanceError(error)),
+      () => fetchTokenBalance(error => this.onTokenBalanceError(error)),
       10_000
     )
   }
@@ -270,11 +273,11 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
   }
 
   private onTabChange(index: number) {
-    AccountController.setCurrentTab(index)
+    setCurrentAccountTab(index)
   }
 
   private onProfileButtonClick() {
-    const { allAccounts } = AccountController.state
+    const { allAccounts } = accountState
 
     if (allAccounts.length > 1) {
       RouterController.push('Profile')
@@ -302,8 +305,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
         properties: {
           network: this.network?.caipNetworkId || '',
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
-            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+            accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
       RouterController.push('Swap')
@@ -321,8 +323,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       properties: {
         network: this.network?.caipNetworkId || '',
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
-          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+          accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
     RouterController.push('WalletSend')

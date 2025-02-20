@@ -5,7 +5,6 @@ import { html } from 'lit'
 
 import type { ChainNamespace } from '@reown/appkit-common'
 import {
-  AccountController,
   type AccountType,
   type AuthConnector,
   ChainController,
@@ -13,7 +12,10 @@ import {
   ConnectorController,
   CoreHelperUtil,
   ModalController,
-  SnackController
+  SnackController,
+  accountState,
+  setShouldUpdateToAddress,
+  subscribeAccountKey
 } from '@reown/appkit-core'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
@@ -55,8 +57,8 @@ const MOCK_CHAIN_STATE = {
 
 describe('W3mProfileView - Render', () => {
   beforeEach(() => {
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
+    vi.spyOn({ accountState }, 'accountState', 'get').mockReturnValue({
+      ...accountState,
       address: TEST_ADDRESS,
       profileName: TEST_PROFILE_NAME,
       profileImage: TEST_PROFILE_IMAGE,
@@ -83,8 +85,8 @@ describe('W3mProfileView - Render', () => {
   })
 
   test('should render truncated address when no profile name', async () => {
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
+    vi.spyOn({ accountState }, 'accountState', 'get').mockReturnValue({
+      ...accountState,
       address: TEST_ADDRESS,
       profileName: undefined,
       allAccounts: TEST_ACCOUNTS,
@@ -123,8 +125,8 @@ describe('W3mProfileView - Render', () => {
 
 describe('W3mProfileView - Functions', () => {
   beforeEach(() => {
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
+    vi.spyOn({ accountState }, 'accountState', 'get').mockReturnValue({
+      ...accountState,
       address: TEST_ADDRESS,
       profileName: TEST_PROFILE_NAME,
       allAccounts: TEST_ACCOUNTS,
@@ -133,7 +135,7 @@ describe('W3mProfileView - Functions', () => {
 
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue(MOCK_CHAIN_STATE)
 
-    vi.spyOn(AccountController, 'subscribeKey').mockImplementation((_key, callback) => {
+    vi.mocked(subscribeAccountKey).mockImplementation((_key, callback) => {
       return callback as any
     })
   })
@@ -156,7 +158,7 @@ describe('W3mProfileView - Functions', () => {
 
   test('should handle account switching', async () => {
     const setPreferredAccountTypeMock = vi.spyOn(ConnectionController, 'setPreferredAccountType')
-    const setShouldUpdateToAddressMock = vi.spyOn(AccountController, 'setShouldUpdateToAddress')
+    const setShouldUpdateToAddressMock = vi.mocked(setShouldUpdateToAddress)
     const getAuthConnectorMock = vi.spyOn(ConnectorController, 'getAuthConnector')
     getAuthConnectorMock.mockReturnValue(MOCK_AUTH_CONNECTOR as AuthConnector)
 
@@ -190,7 +192,7 @@ describe('W3mProfileView - Functions', () => {
     const closeModalMock = vi.spyOn(ModalController, 'close')
     await fixture(html`<w3m-profile-view></w3m-profile-view>`)
 
-    const subscribeKeySpy = vi.mocked(AccountController.subscribeKey)
+    const subscribeKeySpy = vi.mocked(subscribeAccountKey)
     const addressCallback = subscribeKeySpy.mock.calls.find(call => call[0] === 'address')?.[1]
     expect(addressCallback).toBeDefined()
 
@@ -199,8 +201,8 @@ describe('W3mProfileView - Functions', () => {
   })
 
   test('should throw error when no address is provided', async () => {
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
+    vi.spyOn({ accountState }, 'accountState', 'get').mockReturnValue({
+      ...accountState,
       address: undefined
     })
 

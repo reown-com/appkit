@@ -4,7 +4,6 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
-  AccountController,
   ChainController,
   ConnectionController,
   ConnectorController,
@@ -14,7 +13,10 @@ import {
   RouterController,
   SnackController,
   StorageUtil,
-  ThemeController
+  ThemeController,
+  accountState,
+  setSocialWindow,
+  subscribeAccount
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
@@ -29,9 +31,9 @@ export class W3mConnectingSocialView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private socialProvider = AccountController.state.socialProvider
+  @state() private socialProvider = accountState.socialProvider
 
-  @state() private socialWindow = AccountController.state.socialWindow
+  @state() private socialWindow = accountState.socialWindow
 
   @state() protected error = false
 
@@ -45,7 +47,7 @@ export class W3mConnectingSocialView extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribe(val => {
+        subscribeAccount(val => {
           if (val.socialProvider) {
             this.socialProvider = val.socialProvider
           }
@@ -69,7 +71,7 @@ export class W3mConnectingSocialView extends LitElement {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
     window.removeEventListener('message', this.handleSocialConnection, false)
     this.socialWindow?.close()
-    AccountController.setSocialWindow(undefined, ChainController.state.activeChain)
+    setSocialWindow(undefined, ChainController.state.activeChain)
   }
 
   // -- Render -------------------------------------------- //
@@ -124,7 +126,7 @@ export class W3mConnectingSocialView extends LitElement {
           if (this.authConnector && !this.connecting) {
             if (this.socialWindow) {
               this.socialWindow.close()
-              AccountController.setSocialWindow(undefined, ChainController.state.activeChain)
+              setSocialWindow(undefined, ChainController.state.activeChain)
             }
             this.connecting = true
             this.updateMessage()

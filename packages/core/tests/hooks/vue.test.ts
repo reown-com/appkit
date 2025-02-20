@@ -2,7 +2,15 @@ import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import type { App } from 'vue'
 import { createApp, nextTick } from 'vue'
 
-import { AccountController, ChainController, ConnectorController } from '../../exports/index.js'
+import {
+  ChainController,
+  ConnectorController,
+  setCaipAddress,
+  setPreferredAccountType,
+  setSmartAccountDeployed,
+  setStatus,
+  setUser
+} from '../../exports/index.js'
 import { useAppKitAccount } from '../../exports/vue.js'
 import {
   mockChainControllerState,
@@ -47,8 +55,8 @@ describe('useAppKitAccount', () => {
   it('should return the correct account state when connected', async () => {
     const [state] = withSetup(() => useAppKitAccount())
 
-    AccountController.setCaipAddress('eip155:1:0x123...', 'eip155')
-    AccountController.setStatus('connected', 'eip155')
+    setCaipAddress('eip155:1:0x123...', 'eip155')
+    setStatus('connected', 'eip155')
 
     await nextTick()
 
@@ -59,7 +67,7 @@ describe('useAppKitAccount', () => {
     const [state] = withSetup(() => useAppKitAccount())
 
     ChainController.resetAccount('eip155')
-    AccountController.setStatus('disconnected', 'eip155')
+    setStatus('disconnected', 'eip155')
 
     await nextTick()
 
@@ -69,11 +77,11 @@ describe('useAppKitAccount', () => {
   it('should return correct embedded wallet info when connected with social provider', async () => {
     const [state] = withSetup(() => useAppKitAccount())
 
-    AccountController.setCaipAddress('eip155:1:0x123...', 'eip155')
-    AccountController.setStatus('connected', 'eip155')
-    AccountController.setUser({ username: 'test', email: 'testuser@example.com' }, 'eip155')
-    AccountController.setSmartAccountDeployed(true, 'eip155')
-    AccountController.setPreferredAccountType('smartAccount', 'eip155')
+    setCaipAddress('eip155:1:0x123...', 'eip155')
+    setStatus('connected', 'eip155')
+    setUser({ username: 'test', email: 'testuser@example.com' }, 'eip155')
+    setSmartAccountDeployed(true, 'eip155')
+    setPreferredAccountType('smartAccount', 'eip155')
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({} as any)
 
     await nextTick()

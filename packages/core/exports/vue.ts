@@ -2,7 +2,7 @@ import { type Ref, onMounted, onUnmounted, ref } from 'vue'
 
 import type { ChainNamespace } from '@reown/appkit-common'
 
-import { AccountController } from '../src/controllers/AccountController.js'
+import { accountState } from '../src/controllers/AccountController.js'
 import { ChainController } from '../src/controllers/ChainController.js'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
@@ -36,21 +36,19 @@ export function useAppKitAccount(options?: {
     const authConnector = _chainNamespace
       ? ConnectorController.getAuthConnector(_chainNamespace)
       : undefined
-    const accountState = _chainNamespace
-      ? _chains.get(_chainNamespace)?.accountState
-      : AccountController.state
+    const currentState = _chainNamespace ? _chains.get(_chainNamespace)?.accountState : accountState
 
-    state.value.allAccounts = accountState?.allAccounts || []
-    state.value.address = CoreHelperUtil.getPlainAddress(accountState?.caipAddress)
-    state.value.caipAddress = accountState?.caipAddress
-    state.value.status = accountState?.status
-    state.value.isConnected = Boolean(accountState?.caipAddress)
+    state.value.allAccounts = currentState?.allAccounts || []
+    state.value.address = CoreHelperUtil.getPlainAddress(currentState?.caipAddress)
+    state.value.caipAddress = currentState?.caipAddress
+    state.value.status = currentState?.status
+    state.value.isConnected = Boolean(currentState?.caipAddress)
     state.value.embeddedWalletInfo = authConnector
       ? {
-          user: accountState?.user,
-          authProvider: accountState?.socialProvider ?? ('email' as SocialProvider | 'email'),
-          accountType: accountState?.preferredAccountType,
-          isSmartAccountDeployed: Boolean(accountState?.smartAccountDeployed)
+          user: currentState?.user,
+          authProvider: currentState?.socialProvider ?? ('email' as SocialProvider | 'email'),
+          accountType: currentState?.preferredAccountType,
+          isSmartAccountDeployed: Boolean(currentState?.smartAccountDeployed)
         }
       : undefined
   }

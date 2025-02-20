@@ -4,7 +4,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   AssetController,
   ChainController,
   ConnectionController,
@@ -16,7 +15,10 @@ import {
   RouterController,
   SendController,
   SnackController,
-  StorageUtil
+  StorageUtil,
+  accountState,
+  subscribeAccount,
+  subscribeAccountKey
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
@@ -29,15 +31,15 @@ export class W3mAccountSettingsView extends LitElement {
   private readonly networkImages = AssetController.state.networkImages
 
   // -- State & Properties --------------------------------- //
-  @state() private address = AccountController.state.address
+  @state() private address = accountState.address
 
-  @state() private profileImage = AccountController.state.profileImage
+  @state() private profileImage = accountState.profileImage
 
-  @state() private profileName = AccountController.state.profileName
+  @state() private profileName = accountState.profileName
 
   @state() private network = ChainController.state.activeCaipNetwork
 
-  @state() private preferredAccountType = AccountController.state.preferredAccountType
+  @state() private preferredAccountType = accountState.preferredAccountType
 
   @state() private disconnecting = false
 
@@ -51,7 +53,7 @@ export class W3mAccountSettingsView extends LitElement {
     super()
     this.usubscribe.push(
       ...[
-        AccountController.subscribe(val => {
+        subscribeAccount(val => {
           if (val.address) {
             this.address = val.address
             this.profileImage = val.profileImage
@@ -61,10 +63,7 @@ export class W3mAccountSettingsView extends LitElement {
             ModalController.close()
           }
         }),
-        AccountController.subscribeKey(
-          'preferredAccountType',
-          val => (this.preferredAccountType = val)
-        ),
+        subscribeAccountKey('preferredAccountType', val => (this.preferredAccountType = val)),
         ChainController.subscribeKey('activeCaipNetwork', val => {
           if (val?.id) {
             this.network = val

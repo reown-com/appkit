@@ -11,7 +11,7 @@ import { StorageUtil } from '../utils/StorageUtil.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import { SwapCalculationUtil } from '../utils/SwapCalculationUtil.js'
 import type { SwapTokenWithBalance } from '../utils/TypeUtil.js'
-import { AccountController } from './AccountController.js'
+import { accountState } from './AccountController.js'
 import { AlertController } from './AlertController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
@@ -185,12 +185,11 @@ export const SwapController = {
       throw new Error('No address found to swap the tokens from.')
     }
 
-    const invalidToToken = !state.toToken?.address || !state.toToken?.decimals
-    const invalidSourceToken =
-      !state.sourceToken?.address ||
-      !state.sourceToken?.decimals ||
-      !NumberUtil.bigNumber(state.sourceTokenAmount).gt(0)
-    const invalidSourceTokenAmount = !state.sourceTokenAmount
+    const isValidToken = state.toToken?.address && state.toToken?.decimals
+    const isValidSourceToken =
+      state.sourceToken?.address &&
+      state.sourceToken?.decimals &&
+      NumberUtil.bigNumber(state.sourceTokenAmount).gt(0)
 
     return {
       networkAddress,
@@ -202,11 +201,10 @@ export const SwapController = {
       toTokenDecimals: state.toToken?.decimals,
       sourceTokenAmount: state.sourceTokenAmount,
       sourceTokenDecimals: state.sourceToken?.decimals,
-      invalidToToken,
-      invalidSourceToken,
-      invalidSourceTokenAmount,
-      availableToSwap:
-        caipAddress && !invalidToToken && !invalidSourceToken && !invalidSourceTokenAmount,
+      invalidToToken: !isValidToken,
+      invalidSourceToken: !isValidSourceToken,
+      invalidSourceTokenAmount: !state.sourceTokenAmount,
+      availableToSwap: caipAddress && isValidToken && isValidSourceToken && state.sourceTokenAmount,
       isAuthConnector: connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
     }
   },
@@ -489,12 +487,12 @@ export const SwapController = {
 
   // -- Swap -------------------------------------- //
   async swapTokens() {
-    const address = AccountController.state.address as `${string}:${string}:${string}`
+    const address = accountState.address as `${string}:${string}:${string}`
     const sourceToken = state.sourceToken
     const toToken = state.toToken
-    const haveSourceTokenAmount = NumberUtil.bigNumber(state.sourceTokenAmount).gt(0)
+    const hasSourceTokenAmount = NumberUtil.bigNumber(state.sourceTokenAmount).gt(0)
 
-    if (!toToken || !sourceToken || state.loadingPrices || !haveSourceTokenAmount) {
+    if (!toToken || !sourceToken || state.loadingPrices || !hasSourceTokenAmount) {
       return
     }
 
@@ -761,8 +759,7 @@ export const SwapController = {
           swapFromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
-            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+            accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
     }
@@ -821,8 +818,7 @@ export const SwapController = {
           swapFromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
-            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+            accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
       SwapController.resetState()
@@ -848,8 +844,7 @@ export const SwapController = {
           swapFromAmount: this.state.sourceTokenAmount || '',
           swapToAmount: this.state.toTokenAmount || '',
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
-            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+            accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
 
@@ -865,21 +860,18 @@ export const SwapController = {
       state.myTokensWithBalance
     )
 
-    let insufficientNetworkTokenForGas = true
-    if (
-      AccountController.state.preferredAccountType ===
-      W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
-    ) {
+    let isInsufficientNetworkTokenForGas = true
+    if (accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT) {
       // Smart Accounts may pay gas in any ERC20 token
-      insufficientNetworkTokenForGas = false
+      isInsufficientNetworkTokenForGas = false
     } else {
-      insufficientNetworkTokenForGas = SwapCalculationUtil.isInsufficientNetworkTokenForGas(
+      isInsufficientNetworkTokenForGas = SwapCalculationUtil.isInsufficientNetworkTokenForGas(
         state.networkBalanceInUSD,
         state.gasPriceInUSD
       )
     }
 
-    return insufficientNetworkTokenForGas || isInsufficientSourceTokenForSwap
+    return isInsufficientNetworkTokenForGas || isInsufficientSourceTokenForSwap
   },
 
   // -- Calculations -------------------------------------- //
