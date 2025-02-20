@@ -5,6 +5,9 @@ import { type SIWESession } from '@reown/appkit-siwe'
 
 import { getAuthOptions } from '@/src/utils/auth'
 
+type NextRequest = Request & NextApiRequest
+type NextResponse = Response & NextApiResponse
+
 declare module 'next-auth' {
   interface Session extends SIWESession {
     address: string
@@ -15,7 +18,7 @@ declare module 'next-auth' {
  * For more information on each option (and a full list of options) go to
  * https://next-auth.js.org/configuration/options
  */
-async function auth(req: NextApiRequest, res: NextApiResponse) {
+async function auth(req: NextRequest, res: NextResponse) {
   const nextAuthSecret = process.env['NEXTAUTH_SECRET']
   if (!nextAuthSecret) {
     throw new Error('NEXTAUTH_SECRET is not set')

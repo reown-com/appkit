@@ -24,7 +24,7 @@ export function middleware(request: NextRequest) {
     report-uri https://o1095249.ingest.sentry.io/api/4505685639364608/security/?sentry_key=36ff1e79c60877fce6c0273e94a8ed69;
     report-to csp-endpoint
 `
-  const contentSecurityPolicyHeaderValue = cspHeader.replace(/\s{2,}/g, ' ').trim()
+  const contentSecurityPolicyHeaderValue = cspHeader.replace(/\s{2,}/gu, ' ').trim()
 
   const requestHeaders = new Headers(request.headers)
   requestHeaders.set('x-nonce', nonce)
