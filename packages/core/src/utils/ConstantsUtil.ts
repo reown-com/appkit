@@ -5,7 +5,7 @@ import type { DefaultAccountTypes, Features, SocialProvider } from './TypeUtil.j
 const SECURE_SITE = SystemUtil.getEnv(
   'NEXT_PUBLIC_SECURE_SITE_ORIGIN',
   'https://secure.walletconnect.org'
-) as string
+)
 
 export const ONRAMP_PROVIDERS = [
   {

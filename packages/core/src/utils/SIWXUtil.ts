@@ -144,9 +144,9 @@ export const SIWXUtil = {
   async cancelSignMessage() {
     try {
       const siwx = this.getSIWX()
-      const required = siwx?.getRequired?.()
+      const isRequired = siwx?.getRequired?.()
 
-      if (required) {
+      if (isRequired) {
         await ConnectionController.disconnect()
       } else {
         ModalController.close()
