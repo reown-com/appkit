@@ -173,7 +173,8 @@ async function initializeApp() {
     projectId,
     networks,
     universalProvider: provider,
-    manualWCControl: true
+    manualWCControl: true,
+    themeMode: 'light'
   })
 
   provider.on('disconnect', updateDom)
