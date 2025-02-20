@@ -15,7 +15,7 @@ packages:
   - 'packages/experimental'
   - 'packages/cli'
   - 'apps/*'
-  - 'examples/*'
+  - 'examples/**'
   - 'services/*'
   - 'packages/ui-new'
   - '!packages/appkit-new'
