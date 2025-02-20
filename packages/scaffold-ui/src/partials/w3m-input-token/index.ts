@@ -5,6 +5,12 @@ import type { Balance } from '@reown/appkit-common'
 import { NumberUtil } from '@reown/appkit-common'
 import { ConstantsUtil, RouterController, SendController } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-input-amount'
+import '@reown/appkit-ui/wui-link'
+import '@reown/appkit-ui/wui-text'
+import '@reown/appkit-ui/wui-token-button'
 
 import styles from './styles.js'
 

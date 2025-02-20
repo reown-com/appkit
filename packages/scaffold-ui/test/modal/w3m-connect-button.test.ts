@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { html } from 'lit'
 
 import { ModalController } from '@reown/appkit-core'
-import type { WuiConnectButton } from '@reown/appkit-ui'
+import type { WuiConnectButton } from '@reown/appkit-ui/wui-connect-button'
 
 import { W3mConnectButton } from '../../src/modal/w3m-connect-button'
 import { HelpersUtil } from '../utils/HelpersUtil'

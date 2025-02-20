@@ -91,6 +91,7 @@
     "@emotion/react": "11.11.3",
     "@emotion/styled": "11.11.0",
     "@reown/appkit": "workspace:*",
+    "@reown/appkit-common": "workspace:*",
     "@reown/appkit-adapter-bitcoin": "workspace:*",
     "@reown/appkit-adapter-ethers": "workspace:*",
     "@reown/appkit-adapter-ethers5": "workspace:*",

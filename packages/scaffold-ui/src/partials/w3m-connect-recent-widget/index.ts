@@ -11,6 +11,8 @@ import {
   StorageUtil
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-list-wallet'
 
 @customElement('w3m-connect-recent-widget')
 export class W3mConnectRecentWidget extends LitElement {

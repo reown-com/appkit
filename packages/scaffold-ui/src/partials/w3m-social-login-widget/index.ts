@@ -2,11 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import {
-  ConstantsUtil as CommonConstantsUtil,
-  SafeLocalStorage,
-  SafeLocalStorageKeys
-} from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -18,9 +14,13 @@ import {
   RouterController,
   SnackController,
   type SocialProvider,
+  StorageUtil,
   type WalletGuideType
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-list-social'
+import '@reown/appkit-ui/wui-logo-select'
 import { SocialProviderEnum } from '@reown/appkit-utils'
 
 import styles from './styles.js'
@@ -265,7 +265,7 @@ export class W3mSocialLoginWidget extends LitElement {
           }
 
           if (CoreHelperUtil.isTelegram()) {
-            SafeLocalStorage.setItem(SafeLocalStorageKeys.SOCIAL_PROVIDER, socialProvider)
+            StorageUtil.setTelegramSocialProvider(socialProvider)
             const parsedUri = CoreHelperUtil.formatTelegramSocialLoginUrl(uri)
 
             // eslint-disable-next-line consistent-return

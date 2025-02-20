@@ -1,12 +1,9 @@
-import type { AppKitSdkVersion, Balance, ChainNamespace } from '@reown/appkit-common'
-import {
-  ConstantsUtil as CommonConstants,
-  SafeLocalStorage,
-  SafeLocalStorageKeys
-} from '@reown/appkit-common'
+import type { AdapterType, Balance, ChainNamespace, SdkVersion } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstants } from '@reown/appkit-common'
 import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
 
 import { ConstantsUtil } from './ConstantsUtil.js'
+import { StorageUtil } from './StorageUtil.js'
 import type { AccountTypeMap, ChainAdapter, LinkingRecord, NamespaceTypeMap } from './TypeUtil.js'
 
 type SDKFramework = 'html' | 'react' | 'vue'
@@ -167,7 +164,7 @@ export const CoreHelperUtil = {
     // Only '_blank' deeplinks work in Telegram context
     if (this.isTelegram()) {
       // But for social login, we need to load the page in the same context
-      if (SafeLocalStorage.getItem(SafeLocalStorageKeys.SOCIAL_PROVIDER)) {
+      if (StorageUtil.getTelegramSocialProvider()) {
         return '_top'
       }
 
@@ -370,11 +367,13 @@ export const CoreHelperUtil = {
     adapters: ChainAdapter[],
     platform: SDKFramework,
     version: string
-  ): AppKitSdkVersion {
-    const noAdapters = adapters.length === 0
-    const adapterNames = noAdapters
-      ? 'universal'
-      : adapters.map(adapter => adapter.adapterType).join(',')
+  ): SdkVersion {
+    const hasNoAdapters = adapters.length === 0
+    const adapterNames = (
+      hasNoAdapters
+        ? ConstantsUtil.ADAPTER_TYPES.UNIVERSAL
+        : adapters.map(adapter => adapter.adapterType).join(',')
+    ) as AdapterType
 
     return `${platform}-${adapterNames}-${version}`
   },

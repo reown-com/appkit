@@ -19,7 +19,15 @@ import {
   StorageUtil
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import '@reown/appkit-ui/wui-avatar'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon-link'
+import '@reown/appkit-ui/wui-list-item'
+import '@reown/appkit-ui/wui-notice-card'
+import '@reown/appkit-ui/wui-text'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+
+import '../../partials/w3m-account-auth-button/index.js'
 
 @customElement('w3m-account-settings-view')
 export class W3mAccountSettingsView extends LitElement {

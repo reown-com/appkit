@@ -3,9 +3,13 @@ import { state } from 'lit/decorators.js'
 
 import { TooltipController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'
 
+@customElement('w3m-tooltip')
 @customElement('w3m-tooltip')
 export class W3mTooltip extends LitElement {
   public static override styles = [styles]

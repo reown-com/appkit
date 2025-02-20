@@ -64,11 +64,35 @@ beforeEach(() => {
 
 // -- Tests --------------------------------------------------------------------
 describe('AssetUtil', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
   it('should get the connector image from connector object', () => {
     // @ts-expect-error it's a partial connector object
     expect(AssetUtil.getConnectorImage(connectorWithImageUrl)).toBe(
       'walletconnect-connector-logo-src'
     )
+  })
+
+  it('should call ApiController._fetchNetworkImage if image does not exist', async () => {
+    const imageId = 'test-image-1'
+    vi.spyOn(AssetUtil, 'getNetworkImageById').mockReturnValue(undefined)
+    const fetchSpy = vi.spyOn(ApiController, '_fetchNetworkImage').mockResolvedValue({} as any)
+
+    await AssetUtil.fetchNetworkImage(imageId)
+
+    expect(fetchSpy).toHaveBeenCalledWith(imageId)
+  })
+
+  it('should not call ApiController._fetchNetworkImage if image exists', async () => {
+    const imageId = 'test-image-2'
+    vi.spyOn(AssetUtil, 'getNetworkImageById').mockReturnValue({} as any) // Mock that image exists
+    const fetchSpy = vi.spyOn(ApiController, '_fetchNetworkImage')
+
+    await AssetUtil.fetchNetworkImage(imageId)
+
+    expect(fetchSpy).not.toHaveBeenCalled()
   })
 
   it('should get the connector image from AssetController state', () => {

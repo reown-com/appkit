@@ -3,6 +3,11 @@ import { state } from 'lit/decorators.js'
 
 import { OptionsController, SIWXUtil } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-text'
+
+import '../../partials/w3m-siwx-sign-message-thumbnails/index.js'
 
 @customElement('w3m-siwx-sign-message-view')
 export class W3mSIWXSignMessageView extends LitElement {

@@ -61,7 +61,7 @@ onMounted(async () => {
 
     wcProvider.on('display_uri', (uri: string) => {
       const modal = initializeModal(provider.value)
-      modal?.open({ uri, view: 'ConnectingWalletConnectBasic' })
+      modal?.open({ uri })
     })
   }
 })
@@ -79,7 +79,7 @@ onUnmounted(() => {
     })
     provider.value.removeListener('display_uri', (uri: string) => {
       const modal = initializeModal(provider.value)
-      modal?.open({ uri, view: 'ConnectingWalletConnectBasic' })
+      modal?.open({ uri })
     })
   }
 })

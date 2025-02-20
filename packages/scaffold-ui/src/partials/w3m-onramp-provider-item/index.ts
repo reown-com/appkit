@@ -4,6 +4,12 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { AssetUtil, ChainController, type OnRampProvider } from '@reown/appkit-core'
 import { type ColorType, customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-image'
+import '@reown/appkit-ui/wui-loading-spinner'
+import '@reown/appkit-ui/wui-text'
+import '@reown/appkit-ui/wui-visual'
 
 import styles from './styles.js'
 

@@ -27,13 +27,13 @@ describe('ModalController', () => {
     vi.spyOn(ApiController, 'fetchFeaturedWallets')
     vi.spyOn(ApiController, 'fetchRecommendedWallets')
     vi.spyOn(ApiController, 'fetchConnectorImages')
-    vi.spyOn(ApiController, 'prefetchNetworkImages')
+    vi.spyOn(ApiController, 'fetchNetworkImages')
 
     await ModalController.open()
 
     expect(ApiController.fetchFeaturedWallets).toHaveBeenCalledOnce()
     expect(ApiController.fetchRecommendedWallets).toHaveBeenCalledOnce()
     expect(ApiController.fetchConnectorImages).toHaveBeenCalledOnce()
-    expect(ApiController.prefetchNetworkImages).toHaveBeenCalledOnce()
+    expect(ApiController.fetchNetworkImages).toHaveBeenCalledOnce()
   })
 })

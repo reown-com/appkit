@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 
 import { customElement } from '@reown/appkit-ui'
 
+import '../w3m-activity-list/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-account-activity-widget')

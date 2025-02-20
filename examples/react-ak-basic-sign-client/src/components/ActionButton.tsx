@@ -81,7 +81,7 @@ export default function ActionButtonList({
 
             if (uri) {
               const appKitModal = initializeModal()
-              appKitModal.open({ uri, view: 'ConnectingWalletConnectBasic' })
+              appKitModal.open({ uri })
               const session = await approval()
               onAccountChange(session?.namespaces['eip155']?.accounts?.[0]?.split(':')[2])
               onNetworkChange(session?.namespaces['eip155']?.chains?.[0])

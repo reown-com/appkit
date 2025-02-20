@@ -56,7 +56,7 @@ export default function App() {
 
     const handleDisplayUri = (uri: string) => {
       const modal = initializeModal(provider)
-      modal?.open({ uri, view: 'ConnectingWalletConnectBasic' })
+      modal?.open({ uri })
     }
 
     provider.on('chainChanged', handleChainChanged)

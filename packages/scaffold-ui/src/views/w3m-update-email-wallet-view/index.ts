@@ -6,6 +6,9 @@ import type { Ref } from 'lit/directives/ref.js'
 import { ConnectorController } from '@reown/appkit-core'
 import { EventsController, RouterController, SnackController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-email-input'
+import '@reown/appkit-ui/wui-flex'
 
 import styles from './styles.js'
 

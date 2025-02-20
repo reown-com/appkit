@@ -11,6 +11,13 @@ import {
   StorageUtil
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-icon-box'
+import '@reown/appkit-ui/wui-loading-hexagon'
+import '@reown/appkit-ui/wui-network-image'
+import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'
 

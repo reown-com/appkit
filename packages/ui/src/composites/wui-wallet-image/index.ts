@@ -3,6 +3,7 @@ import { property } from 'lit/decorators.js'
 
 import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
+import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { BorderRadiusType, IconType, SizeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'

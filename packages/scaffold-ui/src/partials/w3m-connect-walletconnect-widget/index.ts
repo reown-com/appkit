@@ -10,6 +10,7 @@ import {
   RouterController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-list-wallet'
 
 @customElement('w3m-connect-walletconnect-widget')
 export class W3mConnectWalletConnectWidget extends LitElement {

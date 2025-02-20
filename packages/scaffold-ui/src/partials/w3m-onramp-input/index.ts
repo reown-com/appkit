@@ -10,6 +10,11 @@ import {
   type PurchaseCurrency
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-image'
+import '@reown/appkit-ui/wui-input-text'
+import '@reown/appkit-ui/wui-loading-spinner'
+import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'
 

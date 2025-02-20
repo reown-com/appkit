@@ -9,6 +9,13 @@ import {
   SnackController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-certified-switch'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon-box'
+import '@reown/appkit-ui/wui-search-bar'
+
+import '../../partials/w3m-all-wallets-list/index.js'
+import '../../partials/w3m-all-wallets-search/index.js'
 
 @customElement('w3m-all-wallets-view')
 export class W3mAllWalletsView extends LitElement {

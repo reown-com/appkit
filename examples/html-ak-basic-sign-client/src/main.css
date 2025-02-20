@@ -174,10 +174,17 @@ a:disabled {
   flex-direction: row;
 }
 
-.appkit-buttons-container {
+.row {
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.appkit-buttons-container {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   gap: var(--apkt-spacing-2, 8px);
   flex-wrap: wrap;

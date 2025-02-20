@@ -3,6 +3,8 @@ import { property } from 'lit/decorators.js'
 
 import { type SwapInputTarget } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-shimmer'
 
 import styles from './styles.js'
 

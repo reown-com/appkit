@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 import type { ChainNamespace } from '@reown/appkit-common'
 import { ChainController, ConnectorController } from '@reown/appkit-core'
 
-import { AppKit } from '../../src/client.js'
+import { AppKit } from '../../src/client/appkit.js'
 import { mockBitcoinAdapter } from '../mocks/Adapter.js'
 import { bitcoin } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'

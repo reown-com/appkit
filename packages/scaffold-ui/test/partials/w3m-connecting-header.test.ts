@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { html } from 'lit'
 
 import type { Platform } from '@reown/appkit-core'
-import type { WuiTabs } from '@reown/appkit-ui'
+import type { WuiTabs } from '@reown/appkit-ui/wui-tabs'
 
 import { W3mConnectingHeader } from '../../src/partials/w3m-connecting-header'
 import { HelpersUtil } from '../utils/HelpersUtil'

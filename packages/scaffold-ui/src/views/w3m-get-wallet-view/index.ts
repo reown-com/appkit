@@ -3,6 +3,8 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { ApiController, AssetUtil, CoreHelperUtil, OptionsController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-list-item'
 
 const EXPLORER = 'https://walletconnect.com/explorer'
 

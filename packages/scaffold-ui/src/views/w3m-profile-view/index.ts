@@ -14,6 +14,12 @@ import {
   SnackController
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-avatar'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon-link'
+import '@reown/appkit-ui/wui-list-account'
+import '@reown/appkit-ui/wui-text'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
 import styles from './styles.js'

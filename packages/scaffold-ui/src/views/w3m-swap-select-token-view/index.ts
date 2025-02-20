@@ -3,6 +3,13 @@ import { state } from 'lit/decorators.js'
 
 import { RouterController, SwapController, type SwapTokenWithBalance } from '@reown/appkit-core'
 import { MathUtil, customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-input-text'
+import '@reown/appkit-ui/wui-text'
+import '@reown/appkit-ui/wui-token-button'
+import '@reown/appkit-ui/wui-token-list-item'
 
 import styles from './styles.js'
 

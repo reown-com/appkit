@@ -5,6 +5,8 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import type { WcWallet } from '@reown/appkit-core'
 import { ApiController, AssetUtil, ConnectorController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-list-wallet'
 
 import { WalletUtil } from '../../utils/WalletUtil.js'
 

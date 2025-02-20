@@ -9,7 +9,7 @@ import {
   OptionsController,
   RouterController
 } from '@reown/appkit-core'
-import type { WuiAccountButton } from '@reown/appkit-ui'
+import type { WuiAccountButton } from '@reown/appkit-ui/wui-account-button'
 
 import { W3mAccountButton } from '../../src/modal/w3m-account-button'
 import { HelpersUtil } from '../utils/HelpersUtil'

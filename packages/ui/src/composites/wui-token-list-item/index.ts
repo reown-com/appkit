@@ -3,6 +3,7 @@ import { property, state } from 'lit/decorators.js'
 
 import { NumberUtil } from '@reown/appkit-common'
 
+import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'

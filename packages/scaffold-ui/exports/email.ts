@@ -1,0 +1,5 @@
+export * from '../src/views/w3m-email-verify-otp-view/index.js'
+export * from '../src/views/w3m-email-verify-device-view/index.js'
+export * from '../src/views/w3m-update-email-wallet-view/index.js'
+export * from '../src/views/w3m-update-email-primary-otp-view/index.js'
+export * from '../src/views/w3m-update-email-secondary-otp-view/index.js'

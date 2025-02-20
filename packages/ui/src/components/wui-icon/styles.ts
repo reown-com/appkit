@@ -14,4 +14,9 @@ export default css`
     object-fit: contain;
     object-position: center;
   }
+
+  .fallback {
+    width: var(--local-width);
+    height: var(--local-height);
+  }
 `

@@ -8,7 +8,13 @@ import {
   SwapController
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-text'
+import '@reown/appkit-ui/wui-token-button'
 
+import '../../partials/w3m-swap-details/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-swap-preview-view')

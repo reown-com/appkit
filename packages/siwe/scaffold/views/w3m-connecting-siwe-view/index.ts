@@ -12,7 +12,7 @@ import {
   SnackController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { SIWEController } from '../../../core/controller/SIWEController.js'
 

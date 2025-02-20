@@ -3,3 +3,4 @@ coverage
 pnpm-lock.yaml
 .nuxt
 .svelte-kit
+bundle-analysis.html

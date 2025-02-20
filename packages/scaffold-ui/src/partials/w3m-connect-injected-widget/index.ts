@@ -12,6 +12,8 @@ import {
   RouterController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-list-wallet'
 
 @customElement('w3m-connect-injected-widget')
 export class W3mConnectInjectedWidget extends LitElement {
