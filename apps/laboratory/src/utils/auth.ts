@@ -1,5 +1,3 @@
-'use server'
-
 import { type AuthOptions, getServerSession } from 'next-auth'
 import credentialsProvider from 'next-auth/providers/credentials'
 
