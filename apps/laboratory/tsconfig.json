@@ -5,9 +5,7 @@
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     },
     "plugins": [
       {
@@ -15,15 +13,6 @@
       }
     ]
   },
-  "include": [
-    "app",
-    "next-env.d.ts",
-    "playwright.config.ts",
-    "src",
-    "tests",
-    "out/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["app", "next-env.d.ts", "playwright.config.ts", "src", "tests", "out/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }

@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'

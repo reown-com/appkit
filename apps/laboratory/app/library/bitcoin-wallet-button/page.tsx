@@ -1,3 +1,5 @@
+'use client'
+
 import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
 import { type CaipNetwork, createAppKit } from '@reown/appkit/react'
 

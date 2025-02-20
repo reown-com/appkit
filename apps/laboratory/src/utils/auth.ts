@@ -5,7 +5,7 @@ import credentialsProvider from 'next-auth/providers/credentials'
 
 import { getAddressFromMessage, getChainIdFromMessage, verifySignature } from '@reown/appkit-siwe'
 
-export async function getAuthOptions(isDefaultSigninPage: boolean): Promise<AuthOptions> {
+export function getAuthOptions(isDefaultSigninPage: boolean | undefined): AuthOptions {
   const nextAuthSecret = process.env['NEXTAUTH_SECRET']
   if (!nextAuthSecret) {
     throw new Error('NEXTAUTH_SECRET is not set')
@@ -95,5 +95,5 @@ export async function getAuthOptions(isDefaultSigninPage: boolean): Promise<Auth
  * @returns The session object or null
  */
 export async function getSession() {
-  return await getServerSession(await getAuthOptions(false))
+  return await getServerSession(getAuthOptions(true))
 }

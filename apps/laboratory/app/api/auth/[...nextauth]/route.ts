@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import NextAuth from 'next-auth'
+import nextAuth from 'next-auth'
 
 import { type SIWESession } from '@reown/appkit-siwe'
 
@@ -25,12 +25,11 @@ async function auth(req: NextApiRequest, res: NextApiResponse) {
     throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
   }
 
-  const isDefaultSigninPage =
-    req.method === 'GET' && req.query?.['nextauth']?.includes('signin') ? true : false
+  const isDefaultSigninPage = req.method === 'GET' && req.query?.['nextauth']?.includes('signin')
 
-  return await NextAuth(req, res, {
+  return await nextAuth(req, res, {
     // https://next-auth.js.org/configuration/providers/oauth
-    ...(await getAuthOptions(isDefaultSigninPage))
+    ...getAuthOptions(isDefaultSigninPage)
   })
 }
 

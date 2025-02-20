@@ -1,3 +1,5 @@
+'use client'
+
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { CloudAuthSIWX } from '@reown/appkit-siwx'
 import { mainnet } from '@reown/appkit/networks'

@@ -1,3 +1,5 @@
+'use client'
+
 import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'

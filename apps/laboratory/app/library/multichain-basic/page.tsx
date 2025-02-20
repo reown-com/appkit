@@ -1,3 +1,5 @@
+'use client'
+
 import { type AppKitNetwork, mainnet } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 
