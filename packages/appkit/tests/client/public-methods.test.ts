@@ -539,7 +539,10 @@ describe('Base Public methods', () => {
   })
 
   it('should fetch identity', async () => {
-    const mockRequest = { caipChainId: mainnet.caipNetworkId, address: '0x123' }
+    const mockRequest = {
+      caipNetworkId: mainnet.caipNetworkId,
+      address: '0x123'
+    }
     const fetchIdentity = vi.spyOn(BlockchainApiController, 'fetchIdentity')
     fetchIdentity.mockResolvedValue({
       name: 'John Doe',
