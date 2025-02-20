@@ -199,6 +199,11 @@ export const bitcoinSdkOptions: SdkOption[] = [
     title: 'Default',
     link: '/library/bitcoin',
     description: 'Basic configuration using bitcoin as a driving library'
+  },
+  {
+    title: 'Wallet Button',
+    link: '/library/bitcoin-wallet-button',
+    description: 'Configuration using bitcoin with wallet buttons'
   }
 ]
 

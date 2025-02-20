@@ -98,6 +98,7 @@ function WalletButtonHooks({ wallets }: WalletButtonHooksProps) {
     const isWalletConnect = wallet === 'walletConnect'
 
     const isWalletButtonDisabled = !isWalletConnect && !isSocial && !isReady
+    const shouldCapitlize = wallet === 'okx'
 
     return (
       <Button
@@ -110,7 +111,7 @@ function WalletButtonHooks({ wallets }: WalletButtonHooksProps) {
         size="md"
         isLoading={isPending && pendingWallet === wallet}
         isDisabled={Boolean(caipAddress) || isWalletButtonDisabled}
-        textTransform="capitalize"
+        textTransform={shouldCapitlize ? 'uppercase' : 'capitalize'}
         data-testid={`wallet-button-hook-${wallet}`}
       >
         {wallet}

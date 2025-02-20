@@ -13,6 +13,8 @@ export const PresetsUtil = {
       '225affb176778569276e484e1b92637ad061b01e13a048b35a9d280c3b58970f',
     [CommonConstantsUtil.CONNECTOR_ID.LEDGER]:
       '19177a98252e07ddfc9af2083ba8e07ef627cb6103467ffebb3f8f4205fd7927',
+    [CommonConstantsUtil.CONNECTOR_ID.OKX]:
+      '971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709',
 
     /* Connector names */
     [ConstantsUtil.METMASK_CONNECTOR_NAME]:
@@ -32,7 +34,11 @@ export const PresetsUtil = {
     [ConstantsUtil.BITGET_CONNECTOR_NAME]:
       '38f5d18bd8522c244bdd70cb4a68e0e718865155811c043f052fb9f1c51de662',
     [ConstantsUtil.FRONTIER_CONNECTOR_NAME]:
-      '85db431492aa2e8672e93f4ea7acf10c88b97b867b0d373107af63dc4880f041'
+      '85db431492aa2e8672e93f4ea7acf10c88b97b867b0d373107af63dc4880f041',
+    [ConstantsUtil.XVERSE_CONNECTOR_NAME]:
+      '2a87d74ae02e10bdd1f51f7ce6c4e1cc53cd5f2c0b6b5ad0d7b3007d2b13de7b',
+    [ConstantsUtil.LEATHER_CONNECTOR_NAME]:
+      '483afe1df1df63daf313109971ff3ef8356ddf1cc4e45877d205eee0b7893a13'
   } as Record<string, string>,
   NetworkImageIds: {
     // Ethereum

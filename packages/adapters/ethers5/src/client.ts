@@ -31,6 +31,7 @@ export interface EIP6963ProviderDetail {
 export class Ethers5Adapter extends AdapterBlueprint {
   private ethersConfig?: ProviderType
   public adapterType = 'ethers'
+  private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
 
   constructor() {
     super({})
@@ -462,6 +463,18 @@ export class Ethers5Adapter extends AdapterBlueprint {
     const caipNetwork = this.caipNetworks?.find((c: CaipNetwork) => c.id === params.chainId)
 
     if (caipNetwork) {
+      const caipAddress = `${caipNetwork.caipNetworkId}:${params.address}`
+
+      const cachedPromise = this.balancePromises[caipAddress]
+      if (cachedPromise) {
+        return cachedPromise
+      }
+
+      const cachedBalance = StorageUtil.getNativeBalanceCacheForCaipAddress(caipAddress)
+      if (cachedBalance) {
+        return { balance: cachedBalance.balance, symbol: cachedBalance.symbol }
+      }
+
       const jsonRpcProvider = new ethers.providers.JsonRpcProvider(
         caipNetwork.rpcUrls.default.http[0],
         {
@@ -470,25 +483,28 @@ export class Ethers5Adapter extends AdapterBlueprint {
         }
       )
 
-      const caipAddress = `${caipNetwork.caipNetworkId}:${params.address}`
-      const cachedBalance = StorageUtil.getNativeBalanceCacheForCaipAddress(caipAddress)
-      if (cachedBalance) {
-        return { balance: cachedBalance.balance, symbol: cachedBalance.symbol }
-      }
-
       if (jsonRpcProvider) {
         try {
-          const balance = await jsonRpcProvider.getBalance(params.address)
-          const formattedBalance = formatEther(balance)
+          this.balancePromises[caipAddress] = new Promise<AdapterBlueprint.GetBalanceResult>(
+            async resolve => {
+              const balance = await jsonRpcProvider.getBalance(params.address)
+              const formattedBalance = formatEther(balance)
 
-          StorageUtil.updateNativeBalanceCache({
-            caipAddress,
-            balance: formattedBalance,
-            symbol: caipNetwork.nativeCurrency.symbol,
-            timestamp: Date.now()
+              StorageUtil.updateNativeBalanceCache({
+                caipAddress,
+                balance: formattedBalance,
+                symbol: caipNetwork.nativeCurrency.symbol,
+                timestamp: Date.now()
+              })
+
+              resolve({ balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol })
+            }
+          ).finally(() => {
+            // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+            delete this.balancePromises[caipAddress]
           })
 
-          return { balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol }
+          return this.balancePromises[caipAddress] || { balance: '', symbol: '' }
         } catch (error) {
           return { balance: '', symbol: '' }
         }
