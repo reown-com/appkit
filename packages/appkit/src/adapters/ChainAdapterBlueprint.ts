@@ -376,6 +376,10 @@ export abstract class AdapterBlueprint<
     params: AdapterBlueprint.RevokePermissionsParams
   ): Promise<`0x${string}`>
 
+  public abstract walletGetAssets(
+    params: AdapterBlueprint.WalletGetAssetsParams
+  ): Promise<AdapterBlueprint.WalletGetAssetsResponse>
+
   protected getWalletConnectConnector(): WalletConnectConnector {
     const connector = this.connectors.find(c => c instanceof WalletConnectConnector) as
       | WalletConnectConnector
@@ -503,6 +507,23 @@ export namespace AdapterBlueprint {
     expiry: number
     address: `0x${string}`
   }
+
+  export type WalletGetAssetsParams = {
+    account: `0x${string}`
+    assetFilter?: Record<`0x${string}`, (`0x${string}` | 'native')[]>
+    assetTypeFilter?: ('NATIVE' | 'ERC20')[]
+    chainFilter?: `0x${string}`[]
+  }
+
+  export type WalletGetAssetsResponse = Record<
+    `0x${string}`,
+    {
+      address: `0x${string}` | 'native'
+      balance: `0x${string}`
+      type: 'NATIVE' | 'ERC20'
+      metadata: Record<string, unknown>
+    }[]
+  >
 
   export type SendTransactionParams = {
     address: `0x${string}`

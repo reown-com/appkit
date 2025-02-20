@@ -49,7 +49,8 @@ const mockSendControllerState = {
   sendTokenAmount: 5,
   receiverAddress: '0x456',
   gasPriceInUSD: 2.5,
-  loading: false
+  loading: false,
+  tokenBalances: [mockToken]
 }
 
 const mockNetworkControllerClient: NetworkControllerClient = {
@@ -76,7 +77,8 @@ const mockConnectionControllerClient: ConnectionControllerClient = {
   getEnsAvatar: vi.fn(),
   grantPermissions: vi.fn(),
   revokePermissions: vi.fn(),
-  getCapabilities: vi.fn()
+  getCapabilities: vi.fn(),
+  walletGetAssets: vi.fn()
 }
 
 const mockChainAdapter: ChainAdapter = {
