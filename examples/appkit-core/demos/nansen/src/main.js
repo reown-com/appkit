@@ -20,18 +20,18 @@ const polkadot = defineChain({
   caipNetworkId: 'polkadot:91b171bb158e2d3848fa23a9f1c25182'
 })
 
-const sui = defineChain({
-  id: 'mainnet',
-  name: 'Sui',
-  nativeCurrency: { name: 'Sui', symbol: 'SUI', decimals: 9 },
-  rpcUrls: {
-    default: { http: ['https://sui-rpc.publicnode.com'] }
-  },
-  blockExplorers: { default: { name: 'Sui Explorer', url: 'https://suiexplorer.com/' } },
-  testnet: false,
-  chainNamespace: 'sui',
-  caipNetworkId: 'sui:mainnet'
-})
+// const sui = defineChain({
+//   id: 'mainnet',
+//   name: 'Sui',
+//   nativeCurrency: { name: 'Sui', symbol: 'SUI', decimals: 9 },
+//   rpcUrls: {
+//     default: { http: ['https://sui-rpc.publicnode.com'] }
+//   },
+//   blockExplorers: { default: { name: 'Sui Explorer', url: 'https://suiexplorer.com/' } },
+//   testnet: false,
+//   chainNamespace: 'sui',
+//   caipNetworkId: 'sui:mainnet'
+// })
 const cosmos = defineChain({
   id: 'cosmoshub-3',
   name: 'Cosmos',
@@ -45,7 +45,7 @@ const cosmos = defineChain({
   caipNetworkId: 'cosmos:cosmoshub-4'
 })
 
-const networks = [polkadot]
+const networks = [mainnet, polygon, solana, bitcoin, cosmos, polkadot]
 
 const OPTIONAL_NAMESPACES = {
   eip155: {
@@ -102,29 +102,63 @@ function updateDom() {
     switchToPolygon: document.getElementById('switch-network-polygon'),
     switchToSolana: document.getElementById('switch-network-solana'),
     switchToBitcoin: document.getElementById('switch-network-bitcoin'),
-    switchToPolkadot: document.getElementById('switch-network-polkadot'),
     switchToCosmos: document.getElementById('switch-network-cosmos'),
+    switchToPolkadot: document.getElementById('switch-network-polkadot'),
     signMessage: document.getElementById('sign-message')
   }
 
   const hasSession = provider?.session && Object.keys(provider.session).length > 0
-  // Update button visibility
+  // Only toggle main action buttons
   elements.connect.style.display = hasSession ? 'none' : 'block'
   elements.disconnect.style.display = hasSession ? 'block' : 'none'
   elements.getBalance.style.display = hasSession ? 'block' : 'none'
-  elements.switchToEth.style.display = hasSession ? 'block' : 'none'
-  elements.switchToPolygon.style.display = hasSession ? 'block' : 'none'
-  elements.switchToCosmos.style.display = hasSession ? 'block' : 'none'
-  elements.switchToPolkadot.style.display = hasSession ? 'block' : 'none'
-  elements.switchToSolana.style.display = hasSession ? 'block' : 'none'
-  elements.switchToBitcoin.style.display = hasSession ? 'block' : 'none'
   elements.signMessage.style.display = hasSession ? 'block' : 'none'
+
+  // Leave network buttons visible regardless of connection state
 
   // Update state displays
   if (elements.session) elements.session.textContent = JSON.stringify(provider.session)
   if (elements.account) elements.account.textContent = JSON.stringify(account)
   if (elements.balance) elements.balance.textContent = JSON.stringify(balance)
   if (elements.network) elements.network.textContent = JSON.stringify(network)
+
+  updateNetworkButtons() // Update disabled state on network buttons
+}
+
+function updateNetworkButtons() {
+  // Map chain IDs to the corresponding button elements.
+  const networksMap = {
+    'eip155:1': document.getElementById('switch-network-eth'),
+    'eip155:137': document.getElementById('switch-network-polygon'),
+    [solana.caipNetworkId]: document.getElementById('switch-network-solana'),
+    [bitcoin.caipNetworkId]: document.getElementById('switch-network-bitcoin'),
+    [cosmos.caipNetworkId]: document.getElementById('switch-network-cosmos'),
+    [polkadot.caipNetworkId]: document.getElementById('switch-network-polkadot')
+  }
+  // Map each chain ID to its namespace key.
+  const chainNamespaceMapping = {
+    'eip155:1': 'eip155',
+    'eip155:137': 'eip155',
+    [solana.caipNetworkId]: 'solana',
+    [bitcoin.caipNetworkId]: 'bip122',
+    [cosmos.caipNetworkId]: 'cosmos',
+    [polkadot.caipNetworkId]: 'polkadot'
+  }
+
+  if (provider && provider.session && provider.session.namespaces) {
+    const approvedNamespaces = provider.session.namespaces
+    for (const chainId in networksMap) {
+      const button = networksMap[chainId]
+      const ns = chainNamespaceMapping[chainId]
+      // Enable button only if the corresponding namespace is approved.
+      button.disabled = !approvedNamespaces[ns]
+    }
+  } else {
+    // If not connected, keep all network buttons enabled (for pre-selection).
+    Object.values(networksMap).forEach(button => {
+      button.disabled = false
+    })
+  }
 }
 
 function clearState() {

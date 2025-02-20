@@ -267,3 +267,9 @@ a:disabled {
     grid-template-columns: 1fr;
   }
 }
+
+.network-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+}
