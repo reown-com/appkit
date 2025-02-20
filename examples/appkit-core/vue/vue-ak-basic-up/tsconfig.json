@@ -20,6 +20,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "extends": "../../tsconfig.json",
+  "extends": "../../../../tsconfig.json",
   "include": ["src"]
 }
