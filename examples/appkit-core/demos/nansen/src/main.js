@@ -93,7 +93,6 @@ function updateDom() {
   const elements = {
     connect: document.getElementById('connect'),
     disconnect: document.getElementById('disconnect'),
-    getBalance: document.getElementById('get-balance'),
     session: document.getElementById('session'),
     account: document.getElementById('account'),
     balance: document.getElementById('balance'),
@@ -111,7 +110,6 @@ function updateDom() {
   // Only toggle main action buttons
   elements.connect.style.display = hasSession ? 'none' : 'block'
   elements.disconnect.style.display = hasSession ? 'block' : 'none'
-  elements.getBalance.style.display = hasSession ? 'block' : 'none'
   elements.signMessage.style.display = hasSession ? 'block' : 'none'
 
   // Leave network buttons visible regardless of connection state
@@ -217,14 +215,6 @@ async function initializeApp() {
     await provider.disconnect()
     await modal.disconnect()
     clearState()
-    updateDom()
-  })
-
-  document.getElementById('get-balance')?.addEventListener('click', async () => {
-    balance = await provider.request({
-      method: 'eth_getBalance',
-      params: [account, 'latest']
-    })
     updateDom()
   })
 
