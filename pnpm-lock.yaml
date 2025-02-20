@@ -448,6 +448,9 @@ importers:
       '@reown/appkit-adapter-wagmi':
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
+      '@reown/appkit-common':
+        specifier: workspace:*
+        version: link:../../packages/common
       '@reown/appkit-experimental':
         specifier: workspace:*
         version: link:../../packages/experimental
