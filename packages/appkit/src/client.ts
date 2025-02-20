@@ -1783,7 +1783,7 @@ export class AppKit {
   }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
     chainNamespace: ChainNamespace
   }) {
-    const caipNetworkId = `${chainNamespace}:${chainId}`
+    const caipNetworkId = `${chainNamespace}:${chainId}` as CaipNetworkId
     const activeCaipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
 
     if (chainNamespace !== ConstantsUtil.CHAIN.EVM || activeCaipNetwork?.testnet) {
