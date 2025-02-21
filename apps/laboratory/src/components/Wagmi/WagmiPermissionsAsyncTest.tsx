@@ -1,9 +1,9 @@
 import { Box, Card, CardBody, CardHeader, Heading, Stack, StackDivider } from '@chakra-ui/react'
 
-import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
-import { SmartSessionGrantedPermissionsInfo } from '../SmartSessionGrantedPermissionsInfo'
-import { WagmiPurchaseDonutAsyncPermissionsTest } from './WagmiPurchaseDonutAsyncPermissionsTest'
-import { WagmiRequestPermissionsAsyncTest } from './WagmiRequestPermissionsAsyncTest'
+import { SmartSessionGrantedPermissionsInfo } from '@/src/components/SmartSessionGrantedPermissionsInfo'
+import { WagmiPurchaseDonutAsyncPermissionsTest } from '@/src/components/Wagmi/WagmiPurchaseDonutAsyncPermissionsTest'
+import { WagmiRequestPermissionsAsyncTest } from '@/src/components/Wagmi/WagmiRequestPermissionsAsyncTest'
+import { useERC7715Permissions } from '@/src/hooks/useERC7715Permissions'
 
 export function WagmiPermissionsAsyncTest() {
   const { smartSession } = useERC7715Permissions()

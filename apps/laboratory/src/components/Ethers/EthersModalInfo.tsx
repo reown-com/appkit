@@ -4,7 +4,7 @@ import UniversalProvider from '@walletconnect/universal-provider'
 
 import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 
-import { AppKitInfo } from '../AppKitInfo'
+import { AppKitInfo } from '@/src/components/AppKitInfo'
 
 export function EthersModalInfo() {
   const [isReady, setReady] = React.useState(false)
