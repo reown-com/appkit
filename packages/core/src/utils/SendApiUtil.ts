@@ -1,8 +1,10 @@
+import type { CaipNetwork } from '@reown/appkit-common'
+
 import { AccountController } from '../controllers/AccountController.js'
 import { BlockchainApiController } from '../controllers/BlockchainApiController.js'
 import { ChainController } from '../controllers/ChainController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
-import { ERC7811Utils, type WalletGetAssetsRequest } from './ERC7811Util.js'
+import { ERC7811Utils } from './ERC7811Util.js'
 import type { SwapTokenWithBalance } from './TypeUtil.js'
 import type { BlockchainApiBalanceResponse } from './TypeUtil.js'
 
@@ -17,50 +19,61 @@ export const SendApiUtil = {
     if (!address || !caipNetwork) {
       return []
     }
-    let balances = []
+
+    // Extract EIP-155 specific logic
     if (caipNetwork.chainNamespace === 'eip155') {
-      const chainIdHex = ERC7811Utils.getChainIdHexFromCAIP2ChainId(caipNetwork.caipNetworkId)
-
-      const walletCapabilities = (await ConnectionController.getCapabilities(address)) as Record<
-        string,
-        { assetDiscovery?: { supported: boolean } }
-      >
-
-      if (walletCapabilities?.[chainIdHex]?.['assetDiscovery']?.supported) {
-        const walletGetAssetRequest: WalletGetAssetsRequest = {
-          account: address as `0x${string}`,
-          chainFilter: [chainIdHex]
-        }
-
-        const walletGetAssetsResponse =
-          await ConnectionController.walletGetAssets(walletGetAssetRequest)
-
-        const assets = Array.isArray(walletGetAssetsResponse?.[chainIdHex])
-          ? walletGetAssetsResponse[chainIdHex]
-          : []
-        balances = assets.map(asset => ERC7811Utils.createBalance(asset, caipNetwork.caipNetworkId))
-        /*
-         * The 1Inch API includes many low-quality tokens in the balance response,
-         * which appear inconsistently. This filter prevents them from being displayed.
-         */
-        const filteredBalances = balances.filter(balance => balance.quantity.decimals !== '0')
-
-        return filteredBalances
+      const eip155Balances = await this.getEIP155Balances(address, caipNetwork)
+      if (eip155Balances) {
+        return this.filterLowQualityTokens(eip155Balances)
       }
     }
+
+    // Fallback to 1Inch API
     const response = await BlockchainApiController.getBalance(
       address,
       caipNetwork.caipNetworkId,
       forceUpdate
     )
-    balances = response.balances
-    /*
-     * The 1Inch API includes many low-quality tokens in the balance response,
-     * which appear inconsistently. This filter prevents them from being displayed.
-     */
-    const filteredBalances = balances.filter(balance => balance.quantity.decimals !== '0')
 
-    return filteredBalances
+    return this.filterLowQualityTokens(response.balances)
+  },
+
+  async getEIP155Balances(address: string, caipNetwork: CaipNetwork) {
+    try {
+      const chainIdHex = ERC7811Utils.getChainIdHexFromCAIP2ChainId(caipNetwork.caipNetworkId)
+      const walletCapabilities = (await ConnectionController.getCapabilities(address)) as Record<
+        string,
+        { assetDiscovery?: { supported: boolean } }
+      >
+
+      if (!walletCapabilities?.[chainIdHex]?.['assetDiscovery']?.supported) {
+        return null
+      }
+
+      const walletGetAssetsResponse = await ConnectionController.walletGetAssets({
+        account: address as `0x${string}`,
+        chainFilter: [chainIdHex]
+      })
+
+      const assets = Array.isArray(walletGetAssetsResponse?.[chainIdHex])
+        ? walletGetAssetsResponse[chainIdHex]
+        : []
+
+      return assets.map(asset => ERC7811Utils.createBalance(asset, caipNetwork.caipNetworkId))
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn('Asset discovery failed:', error)
+
+      return null
+    }
+  },
+
+  /**
+   * The 1Inch API includes many low-quality tokens in the balance response,
+   * which appear inconsistently. This filter prevents them from being displayed.
+   */
+  filterLowQualityTokens(balances: BlockchainApiBalanceResponse['balances']) {
+    return balances.filter(balance => balance.quantity.decimals !== '0')
   },
 
   mapBalancesToSwapTokens(balances: BlockchainApiBalanceResponse['balances']) {
