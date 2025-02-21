@@ -61,7 +61,9 @@ const SINGLE_ADAPTER_EVM_TESTS = [
   'email-after-farcaster.spec.ts'
 ]
 
-const BITCOIN_TESTS = ['wallet.spec.ts']
+const BITCOIN_IGNORE_TESTS = SINGLE_ADAPTER_EVM_TESTS.filter(
+  test => !test.includes('wallet.spec.ts')
+)
 
 const SINGLE_ADAPTER_EVM_MOBILE_TESTS = ['mobile-wallet-features.spec.ts']
 
@@ -87,7 +89,7 @@ function createRegex(tests: string[], isDesktop = true) {
 // Desktop
 const SINGLE_ADAPTER_EVM_TESTS_REGEX = createRegex(SINGLE_ADAPTER_EVM_TESTS)
 const SINGLE_ADAPTER_SOLANA_TESTS_REGEX = createRegex(SINGLE_ADAPTER_SOLANA_TESTS)
-const BITCOIN_TESTS_REGEX = createRegex(BITCOIN_TESTS)
+const BITCOIN_IGNORE_TESTS_REGEX = createRegex(BITCOIN_IGNORE_TESTS)
 // Mobile
 const SINGLE_ADAPTER_EVM_MOBILE_REGEX = createRegex(SINGLE_ADAPTER_EVM_MOBILE_TESTS, false)
 const SINGLE_ADAPTER_SOLANA_MOBILE_TESTS_REGEX = createRegex(
@@ -115,10 +117,10 @@ const customProjectProperties: CustomProjectProperties = {
     testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
   'Desktop Chrome/bitcoin': {
-    testMatch: BITCOIN_TESTS_REGEX
+    testIgnore: BITCOIN_IGNORE_TESTS_REGEX
   },
   'Desktop Firefox/bitcoin': {
-    testMatch: BITCOIN_TESTS_REGEX
+    testIgnore: BITCOIN_IGNORE_TESTS_REGEX
   },
   'Desktop Chrome/solana': {
     testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
@@ -211,6 +213,7 @@ export function getProjects() {
   const multichainProjects = MULTICHAIN_PERMUTATIONS.map(createProject)
 
   const projects = [...libraryDesktopProjects, ...libraryMobileProjects, ...multichainProjects]
+  console.log('projects', projects)
 
   return projects
 }
