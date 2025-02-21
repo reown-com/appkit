@@ -78,6 +78,16 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Build packages
+        run: pnpm build
+
+      - name: Build extension
+        env:
+          EIP155_PRIVATE_KEY: ${{ secrets.EIP155_PRIVATE_KEY }}
+          SOLANA_PRIVATE_KEY: ${{ secrets.SOLANA_PRIVATE_KEY }}
+        working-directory: ./apps/browser-extension/
+        run: pnpm build
+
       - name: Wait for Vercel Preview URL
         uses: UnlyEd/github-action-await-vercel@v1 # TODO best practices recommend to use a fixed version instead of @v1 for production usage (i.e: @v1.2.32)
         id: await-vercel
@@ -90,13 +100,6 @@ jobs:
 
       - name: Display deployment status
         run: 'echo The deployment at ${{ fromJson(steps.await-vercel.outputs.deploymentDetails).url }} is ${{ fromJson(steps.await-vercel.outputs.deploymentDetails).readyState }}'
-
-      - name: Build extension
-        env:
-          EIP155_PRIVATE_KEY: ${{ secrets.EIP155_PRIVATE_KEY }}
-          SOLANA_PRIVATE_KEY: ${{ secrets.SOLANA_PRIVATE_KEY }}
-        working-directory: ./apps/browser-extension/
-        run: pnpm build
 
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
