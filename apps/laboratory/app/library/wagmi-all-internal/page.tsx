@@ -8,8 +8,8 @@ import { mainnet } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
+import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { SiweData } from '@/src/components/Siwe/SiweData'
-import { WagmiModalInfo } from '@/src/components/Wagmi/WagmiModalInfo'
 import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { siweConfig } from '@/src/utils/SiweUtils'
@@ -47,7 +47,7 @@ export default function Wagmi() {
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtons />
-        <WagmiModalInfo />
+        <AppKitInfo />
         <SiweData />
         <WagmiTests />
       </QueryClientProvider>

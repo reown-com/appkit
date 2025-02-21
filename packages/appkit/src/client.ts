@@ -240,7 +240,7 @@ export class AppKit {
     return ChainController.state.activeCaipNetwork?.id
   }
 
-  public switchNetwork(appKitNetwork: AppKitNetwork) {
+  public async switchNetwork(appKitNetwork: AppKitNetwork) {
     const network = this.caipNetworks?.find(n => n.id === appKitNetwork.id)
 
     if (!network) {
@@ -249,7 +249,7 @@ export class AppKit {
       return
     }
 
-    ChainController.switchActiveNetwork(network)
+    await ChainController.switchActiveNetwork(network)
   }
 
   public getWalletProvider() {

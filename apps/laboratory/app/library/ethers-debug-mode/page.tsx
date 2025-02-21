@@ -5,7 +5,7 @@ import { mainnet } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
-import { EthersModalInfo } from '@/src/components/Ethers/EthersModalInfo'
+import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { EthersTests } from '@/src/components/Ethers/EthersTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { siweConfig } from '@/src/utils/SiweUtils'
@@ -34,7 +34,7 @@ export default function Ethers() {
   return (
     <>
       <AppKitButtons />
-      <EthersModalInfo />
+      <AppKitInfo />
       <EthersTests />
     </>
   )

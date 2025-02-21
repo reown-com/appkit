@@ -16,7 +16,7 @@ export function WagmiGetCallsStatusTest() {
     method: EIP_5792_RPC_METHODS.WALLET_GET_CALLS_STATUS
   })
 
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { status } = useAccount()
 
   const isConnected = status === 'connected'

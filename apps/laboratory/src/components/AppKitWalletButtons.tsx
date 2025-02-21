@@ -75,9 +75,7 @@ function WalletButtonComponents({ wallets }: WalletButtonComponentsProps) {
 
 function WalletButtonHooks({ wallets }: WalletButtonHooksProps) {
   const [pendingWallet, setPendingWallet] = useState<Wallet>()
-
   const toast = useChakraToast()
-
   const { caipAddress } = useAppKitAccount()
 
   const { isReady, isPending, connect } = AppKitWalletButton.useAppKitWallet({
