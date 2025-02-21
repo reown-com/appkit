@@ -21,7 +21,7 @@ export function Ethers5GetCallsStatusTest() {
   const [batchCallId, setBatchCallId] = useState('')
 
   const { chainId } = useAppKitNetwork()
-  const { isConnected, address } = useAppKitAccount()
+  const { isConnected, address } = useAppKitAccount({ namespace: 'eip155' })
   const { walletProvider } = useAppKitProvider<Provider>('eip155')
 
   const toast = useChakraToast()

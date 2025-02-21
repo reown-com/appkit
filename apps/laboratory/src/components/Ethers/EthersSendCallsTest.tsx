@@ -34,7 +34,7 @@ export function EthersSendCallsTest({ onCallsHash }: { onCallsHash: (hash: strin
   const [loading, setLoading] = useState(false)
 
   const { chainId } = useAppKitNetwork()
-  const { address, isConnected } = useAppKitAccount()
+  const { address, isConnected } = useAppKitAccount({ namespace: 'eip155' })
   const { walletProvider } = useAppKitProvider<Eip1193Provider>('eip155')
   const [transactionsToBatch, setTransactionsToBatch] = useState<{ value: string; to: string }[]>(
     []

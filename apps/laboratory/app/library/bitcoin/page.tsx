@@ -4,6 +4,7 @@ import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
 import { type CaipNetwork, createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
+import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { BitcoinTests } from '@/src/components/Bitcoin/BitcoinTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { ThemeStore } from '@/src/utils/StoreUtil'
@@ -34,6 +35,7 @@ export default function MultiChainBitcoinAdapterOnly() {
   return (
     <>
       <AppKitButtons />
+      <AppKitInfo />
       <BitcoinTests />
     </>
   )

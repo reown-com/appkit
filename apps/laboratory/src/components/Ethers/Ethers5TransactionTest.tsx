@@ -18,7 +18,7 @@ export function Ethers5TransactionTest() {
   const [loading, setLoading] = useState(false)
   const toast = useChakraToast()
 
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { chainId } = useAppKitNetwork()
   const { walletProvider } = useAppKitProvider<Provider>('eip155')
 

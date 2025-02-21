@@ -13,7 +13,7 @@ export function WagmiDisconnectTest() {
 
   const { disconnect, isPending } = useDisconnect()
   const connections = useConnections()
-  const { isConnected } = useAppKitAccount()
+  const { isConnected } = useAppKitAccount({ namespace: 'eip155' })
 
   function onDisconnect() {
     try {

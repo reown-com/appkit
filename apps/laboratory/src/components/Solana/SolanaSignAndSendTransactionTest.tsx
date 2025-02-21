@@ -21,7 +21,7 @@ const amountInLamports = 10_000_000
 
 export function SolanaSignAndSendTransaction() {
   const toast = useChakraToast()
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'solana' })
   const { walletProvider } = useAppKitProvider<Provider>('solana')
   const { connection } = useAppKitConnection()
 
