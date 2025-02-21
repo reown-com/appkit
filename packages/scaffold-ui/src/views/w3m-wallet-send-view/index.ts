@@ -2,12 +2,12 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import {
-  AccountController,
   ChainController,
   CoreHelperUtil,
   RouterController,
   SendController,
-  SwapController
+  SwapController,
+  fetchTokenBalance
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
@@ -48,7 +48,7 @@ export class W3mWalletSendView extends LitElement {
   public constructor() {
     super()
     this.fetchNetworkPrice()
-    this.fetchBalances()
+    fetchTokenBalance()
     this.unsubscribe.push(
       ...[
         SendController.subscribe(val => {
@@ -107,10 +107,6 @@ export class W3mWalletSendView extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private async fetchBalances() {
-    await AccountController.fetchTokenBalance()
-  }
-
   private async fetchNetworkPrice() {
     await SwapController.getNetworkTokenPrice()
     const gas = await SwapController.getInitialGasPrice()

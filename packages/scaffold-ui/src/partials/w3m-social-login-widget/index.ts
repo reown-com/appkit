@@ -8,7 +8,6 @@ import {
   SafeLocalStorageKeys
 } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   ConnectorController,
   ConstantsUtil,
@@ -18,7 +17,11 @@ import {
   RouterController,
   SnackController,
   type SocialProvider,
-  type WalletGuideType
+  type WalletGuideType,
+  accountState,
+  setFarcasterUrl,
+  setSocialProvider,
+  setSocialWindow
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { SocialProviderEnum } from '@reown/appkit-utils'
@@ -206,7 +209,7 @@ export class W3mSocialLoginWidget extends LitElement {
     }
 
     if (socialProvider) {
-      AccountController.setSocialProvider(socialProvider, ChainController.state.activeChain)
+      setSocialProvider(socialProvider, ChainController.state.activeChain)
 
       EventsController.sendEvent({
         type: 'track',
@@ -219,11 +222,11 @@ export class W3mSocialLoginWidget extends LitElement {
       const authConnector = ConnectorController.getAuthConnector()
 
       if (authConnector) {
-        if (!AccountController.state.farcasterUrl) {
+        if (!accountState.farcasterUrl) {
           try {
             const { url } = await authConnector.provider.getFarcasterUri()
 
-            AccountController.setFarcasterUrl(url, ChainController.state.activeChain)
+            setFarcasterUrl(url, ChainController.state.activeChain)
           } catch (error) {
             RouterController.goBack()
             SnackController.showError(error)
@@ -246,7 +249,7 @@ export class W3mSocialLoginWidget extends LitElement {
           }
 
           if (this.popupWindow) {
-            AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
+            setSocialWindow(this.popupWindow, ChainController.state.activeChain)
           } else if (!CoreHelperUtil.isTelegram()) {
             throw new Error('Something went wrong')
           }

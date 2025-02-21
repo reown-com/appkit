@@ -3,11 +3,12 @@ import { state } from 'lit/decorators.js'
 
 import type { Balance } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   CoreHelperUtil,
   RouterController,
-  SendController
+  SendController,
+  accountState,
+  subscribeAccount
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
@@ -21,7 +22,7 @@ export class W3mSendSelectTokenView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private tokenBalance = AccountController.state.tokenBalance
+  @state() private tokenBalance = accountState.tokenBalance
 
   @state() private tokens?: Balance[]
 
@@ -34,7 +35,7 @@ export class W3mSendSelectTokenView extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribe(val => {
+        subscribeAccount(val => {
           this.tokenBalance = val.tokenBalance
         })
       ]

@@ -5,7 +5,6 @@ import { html } from 'lit'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   ConnectionController,
   ConnectorController,
@@ -15,7 +14,8 @@ import {
   OptionsController,
   RouterController,
   SnackController,
-  StorageUtil
+  StorageUtil,
+  accountState
 } from '@reown/appkit-core'
 import type {
   AccountControllerState,
@@ -34,7 +34,7 @@ describe('W3mAccountDefaultWidget', () => {
 
   beforeEach(() => {
     // Mock AccountController state
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+    vi.spyOn({ accountState }, 'accountState', 'get').mockReturnValue({
       caipAddress: mockCaipAddress,
       address: mockAddress,
       profileName: mockProfileName,
@@ -84,7 +84,7 @@ describe('W3mAccountDefaultWidget', () => {
 
   describe('Rendering', () => {
     it('renders nothing when no caipAddress', async () => {
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      vi.spyOn({ accountState }, 'accountState', 'get').mockReturnValue({
         caipAddress: null
       } as unknown as AccountControllerState)
 
@@ -107,8 +107,8 @@ describe('W3mAccountDefaultWidget', () => {
     })
 
     it('renders multi account view for EVM with multiple accounts', async () => {
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-        ...AccountController.state,
+      vi.spyOn({ accountState }, 'accountState', 'get').mockReturnValue({
+        ...accountState,
         allAccounts: [
           { address: '0x123', type: 'eoa' },
           { address: '0x456', type: 'eoa' }
@@ -122,8 +122,8 @@ describe('W3mAccountDefaultWidget', () => {
     })
 
     it('renders BTC accounts template for bip122 namespace with multiple accounts', async () => {
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-        ...AccountController.state,
+      vi.spyOn({ accountState }, 'accountState', 'get').mockReturnValue({
+        ...accountState,
         allAccounts: [
           { address: '0x123', type: 'eoa' },
           { address: '0x456', type: 'eoa' }

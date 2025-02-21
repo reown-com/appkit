@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 
 import { NetworkUtil } from '@reown/appkit-common'
-import { AccountController } from '@reown/appkit-core'
+import { setBalance } from '@reown/appkit-core'
 
 import { AppKit } from '../../src/client'
 import { mockEvmAdapter } from '../mocks/Adapter'
@@ -16,7 +16,7 @@ mockBlockchainApiController()
 describe('Balance sync', () => {
   it('should not sync balance if theres no matching caipNetwork', async () => {
     const getNetworksByNamespaceSpy = vi.spyOn(NetworkUtil, 'getNetworksByNamespace')
-    const setBalanceSpy = vi.spyOn(AccountController, 'setBalance')
+    const setBalanceSpy = vi.mocked(setBalance)
 
     const appKit = new AppKit(mockOptions)
     await appKit['syncBalance']({
@@ -32,7 +32,7 @@ describe('Balance sync', () => {
 
   it('should fetch native balance on testnet', async () => {
     const getNetworksByNamespaceSpy = vi.spyOn(NetworkUtil, 'getNetworksByNamespace')
-    const setBalanceSpy = vi.spyOn(AccountController, 'setBalance')
+    const setBalanceSpy = vi.mocked(setBalance)
     const mockAccount = {
       address: '0x123',
       chainId: sepolia.id,
@@ -49,7 +49,7 @@ describe('Balance sync', () => {
 
   it('should set the correct native token balance', async () => {
     const getNetworksByNamespaceSpy = vi.spyOn(NetworkUtil, 'getNetworksByNamespace')
-    const setBalanceSpy = vi.spyOn(AccountController, 'setBalance')
+    const setBalanceSpy = vi.mocked(setBalance)
 
     const appKit = new AppKit(mockOptions)
     await appKit['syncBalance']({

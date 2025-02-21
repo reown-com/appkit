@@ -4,11 +4,11 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { DateUtil, type Transaction } from '@reown/appkit-common'
 import {
-  AccountController,
   AssetController,
   OnRampController,
   OptionsController,
-  TransactionsController
+  TransactionsController,
+  accountState
 } from '@reown/appkit-core'
 import { TransactionUtil, customElement } from '@reown/appkit-ui'
 
@@ -139,7 +139,7 @@ export class W3mOnRampActivityView extends LitElement {
   }
 
   private async fetchCoinbaseTransactions() {
-    const address = AccountController.state.address
+    const address = accountState.address
     const projectId = OptionsController.state.projectId
 
     if (!address) {
@@ -174,7 +174,7 @@ export class W3mOnRampActivityView extends LitElement {
 
     // Wait 2 seconds before refetching
     this.refetchTimeout = setTimeout(async () => {
-      const address = AccountController.state.address
+      const address = accountState.address
       await TransactionsController.fetchTransactions(address, 'coinbase')
       this.refetchLoadingTransactions()
     }, 3000)

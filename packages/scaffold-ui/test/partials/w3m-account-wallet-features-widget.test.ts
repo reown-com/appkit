@@ -4,7 +4,12 @@ import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { html } from 'lit'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { AccountController, CoreHelperUtil, RouterController } from '@reown/appkit-core'
+import {
+  CoreHelperUtil,
+  RouterController,
+  accountState,
+  fetchTokenBalance
+} from '@reown/appkit-core'
 
 import { W3mAccountWalletFeaturesWidget } from '../../src/partials/w3m-account-wallet-features-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'
@@ -32,20 +37,14 @@ describe('W3mAccountWalletFeaturesWidget', () => {
   })
 
   it('it should not return any components if address is not provided in AccountController', () => {
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
-      address: undefined
-    })
+    vi.mocked(accountState).address = undefined
     expect(() =>
       fixture(html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`)
     ).rejects.toThrow('w3m-account-view: No account provided')
   })
 
   it('it should return all components if address is provided in AccountsController', async () => {
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
-      address: MOCK_ADDRESS
-    })
+    vi.mocked(accountState).address = MOCK_ADDRESS
 
     const element: W3mAccountWalletFeaturesWidget = await fixture(
       html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
@@ -58,16 +57,8 @@ describe('W3mAccountWalletFeaturesWidget', () => {
   })
 
   it('should redirect to AccountSettings view if has one account', async () => {
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
-      address: ACCOUNT.address
-    })
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
-      address: ACCOUNT.address,
-      allAccounts: [ACCOUNT]
-    })
-
+    vi.mocked(accountState).address = ACCOUNT.address
+    vi.mocked(accountState).allAccounts = [ACCOUNT]
     const pushSpy = vi.spyOn(RouterController, 'push')
 
     const element: W3mAccountWalletFeaturesWidget = await fixture(
@@ -86,15 +77,8 @@ describe('W3mAccountWalletFeaturesWidget', () => {
   })
 
   it('should redirect to Profile view if has more than one account', async () => {
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
-      address: ACCOUNT.address
-    })
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
-      address: ACCOUNT.address,
-      allAccounts: [ACCOUNT, ACCOUNT]
-    })
+    vi.mocked(accountState).address = ACCOUNT.address
+    vi.mocked(accountState).allAccounts = [ACCOUNT, ACCOUNT]
 
     const pushSpy = vi.spyOn(RouterController, 'push')
 
@@ -117,10 +101,7 @@ describe('W3mAccountWalletFeaturesWidget', () => {
     vi.useFakeTimers()
     vi.spyOn(global, 'setInterval')
     vi.spyOn(global, 'clearInterval')
-    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-      ...AccountController.state,
-      address: ACCOUNT.address
-    })
+    vi.mocked(accountState).address = ACCOUNT.address
 
     const element: W3mAccountWalletFeaturesWidget = await fixture(
       html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
@@ -134,7 +115,7 @@ describe('W3mAccountWalletFeaturesWidget', () => {
 
     const error = new Error(SERVICE_UNAVAILABLE_MESSAGE, { cause: response })
 
-    vi.spyOn(AccountController, 'fetchTokenBalance').mockImplementation(async callback => {
+    vi.mocked(fetchTokenBalance).mockImplementation(async callback => {
       callback?.(error)
       return []
     })

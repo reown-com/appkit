@@ -4,7 +4,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   type AccountType,
   ChainController,
   ConnectionController,
@@ -16,7 +15,10 @@ import {
   OptionsController,
   RouterController,
   SnackController,
-  StorageUtil
+  StorageUtil,
+  accountState,
+  setCaipAddress,
+  subscribeAccountKey
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
@@ -31,21 +33,21 @@ export class W3mAccountDefaultWidget extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() public caipAddress = AccountController.state.caipAddress
+  @state() public caipAddress = accountState.caipAddress
 
-  @state() public address = CoreHelperUtil.getPlainAddress(AccountController.state.caipAddress)
+  @state() public address = CoreHelperUtil.getPlainAddress(accountState.caipAddress)
 
-  @state() public allAccounts: AccountType[] = AccountController.state.allAccounts
+  @state() public allAccounts: AccountType[] = accountState.allAccounts
 
-  @state() private profileImage = AccountController.state.profileImage
+  @state() private profileImage = accountState.profileImage
 
-  @state() private profileName = AccountController.state.profileName
+  @state() private profileName = accountState.profileName
 
   @state() private disconnecting = false
 
-  @state() private balance = AccountController.state.balance
+  @state() private balance = accountState.balance
 
-  @state() private balanceSymbol = AccountController.state.balanceSymbol
+  @state() private balanceSymbol = accountState.balanceSymbol
 
   @state() private features = OptionsController.state.features
 
@@ -57,18 +59,18 @@ export class W3mAccountDefaultWidget extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribeKey('caipAddress', val => {
+        subscribeAccountKey('caipAddress', val => {
           this.address = CoreHelperUtil.getPlainAddress(val)
           this.caipAddress = val
         }),
-        AccountController.subscribeKey('balance', val => (this.balance = val)),
-        AccountController.subscribeKey('balanceSymbol', val => (this.balanceSymbol = val)),
-        AccountController.subscribeKey('profileName', val => (this.profileName = val)),
-        AccountController.subscribeKey('profileImage', val => (this.profileImage = val)),
-        OptionsController.subscribeKey('features', val => (this.features = val)),
-        AccountController.subscribeKey('allAccounts', allAccounts => {
+        subscribeAccountKey('balance', val => (this.balance = val)),
+        subscribeAccountKey('balanceSymbol', val => (this.balanceSymbol = val)),
+        subscribeAccountKey('profileName', val => (this.profileName = val)),
+        subscribeAccountKey('profileImage', val => (this.profileImage = val)),
+        subscribeAccountKey('allAccounts', allAccounts => {
           this.allAccounts = allAccounts
         }),
+        OptionsController.subscribeKey('features', val => (this.features = val)),
         ChainController.subscribeKey('activeChain', val => (this.namespace = val)),
         ChainController.subscribeKey('activeCaipNetwork', val => {
           if (val) {
@@ -283,7 +285,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private explorerBtnTemplate() {
-    const addressExplorerUrl = AccountController.state.addressExplorerUrl
+    const addressExplorerUrl = accountState.addressExplorerUrl
 
     if (!addressExplorerUrl) {
       return null
@@ -339,7 +341,7 @@ export class W3mAccountDefaultWidget extends LitElement {
     }
 
     const account = this.allAccounts.find(acc => acc.address === this.address)
-    const label = AccountController.state.addressLabels.get(this.address)
+    const label = accountState.addressLabels.get(this.address)
     if (this.namespace === 'bip122') {
       return this.btcAccountsTemplate()
     }
@@ -369,7 +371,7 @@ export class W3mAccountDefaultWidget extends LitElement {
       <wui-tabs
         .tabs=${[{ label: 'Payment' }, { label: 'Ordinals' }]}
         .onTabChange=${(index: number) =>
-          AccountController.setCaipAddress(
+          setCaipAddress(
             `bip122:${this.chainId}:${this.allAccounts[index]?.address || ''}`,
             this.namespace
           )}
@@ -410,8 +412,7 @@ export class W3mAccountDefaultWidget extends LitElement {
       event: 'CLICK_TRANSACTIONS',
       properties: {
         isSmartAccount:
-          AccountController.state.preferredAccountType ===
-          W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+          accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
       }
     })
     RouterController.push('Transactions')
@@ -432,7 +433,7 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   private onExplorer() {
-    const addressExplorerUrl = AccountController.state.addressExplorerUrl
+    const addressExplorerUrl = accountState.addressExplorerUrl
 
     if (addressExplorerUrl) {
       CoreHelperUtil.openHref(addressExplorerUrl, '_blank')

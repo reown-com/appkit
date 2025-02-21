@@ -3,7 +3,6 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
-  AccountController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
@@ -12,7 +11,9 @@ import {
   RouterController,
   SnackController,
   StorageUtil,
-  ThemeController
+  ThemeController,
+  accountState,
+  subscribeAccountKey
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
@@ -28,9 +29,9 @@ export class W3mConnectingFarcasterView extends LitElement {
   // -- State & Properties -------------------------------- //
   protected timeout?: ReturnType<typeof setTimeout> = undefined
 
-  @state() private socialProvider = AccountController.state.socialProvider
+  @state() private socialProvider = accountState.socialProvider
 
-  @state() protected uri = AccountController.state.farcasterUrl
+  @state() protected uri = accountState.farcasterUrl
 
   @state() protected ready = false
 
@@ -42,13 +43,13 @@ export class W3mConnectingFarcasterView extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribeKey('farcasterUrl', val => {
+        subscribeAccountKey('farcasterUrl', val => {
           if (val) {
             this.uri = val
             this.connectFarcaster()
           }
         }),
-        AccountController.subscribeKey('socialProvider', val => {
+        subscribeAccountKey('socialProvider', val => {
           if (val) {
             this.socialProvider = val
           }
@@ -258,10 +259,10 @@ export class W3mConnectingFarcasterView extends LitElement {
   }
 
   private copyTemplate() {
-    const inactive = !this.uri || !this.ready
+    const isActive = this.uri && this.ready
 
     return html`<wui-link
-      .disabled=${inactive}
+      .disabled=${!isActive}
       @click=${this.onCopyUri}
       color="fg-200"
       data-testid="copy-wc2-uri"

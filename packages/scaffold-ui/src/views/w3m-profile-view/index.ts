@@ -3,7 +3,6 @@ import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
-  AccountController,
   type AccountType,
   ChainController,
   ConnectionController,
@@ -11,7 +10,10 @@ import {
   CoreHelperUtil,
   ModalController,
   RouterController,
-  SnackController
+  SnackController,
+  accountState,
+  setShouldUpdateToAddress,
+  subscribeAccountKey
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
@@ -26,20 +28,20 @@ export class W3mProfileView extends LitElement {
   private usubscribe: (() => void)[] = []
 
   // -- State & Properties --------------------------------- //
-  @state() private address = AccountController.state.address
+  @state() private address = accountState.address
 
-  @state() private profileImage = AccountController.state.profileImage
+  @state() private profileImage = accountState.profileImage
 
-  @state() private profileName = AccountController.state.profileName
+  @state() private profileName = accountState.profileName
 
-  @state() private accounts = AccountController.state.allAccounts
+  @state() private accounts = accountState.allAccounts
 
   @state() private loading = false
 
   public constructor() {
     super()
     this.usubscribe.push(
-      AccountController.subscribeKey('address', address => {
+      subscribeAccountKey('address', address => {
         if (address) {
           this.address = address
         } else {
@@ -48,12 +50,12 @@ export class W3mProfileView extends LitElement {
       })
     )
     this.usubscribe.push(
-      AccountController.subscribeKey('profileImage', profileImage => {
+      subscribeAccountKey('profileImage', profileImage => {
         this.profileImage = profileImage
       })
     )
     this.usubscribe.push(
-      AccountController.subscribeKey('profileName', profileName => {
+      subscribeAccountKey('profileName', profileName => {
         this.profileName = profileName
       })
     )
@@ -138,7 +140,7 @@ export class W3mProfileView extends LitElement {
       await ConnectionController.setPreferredAccountType(type)
     }
 
-    AccountController.setShouldUpdateToAddress(account.address, ChainController.state.activeChain)
+    setShouldUpdateToAddress(account.address, ChainController.state.activeChain)
     this.loading = false
   }
 

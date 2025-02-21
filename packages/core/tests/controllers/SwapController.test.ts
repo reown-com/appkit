@@ -5,13 +5,13 @@ import type { CaipNetwork, CaipNetworkId } from '@reown/appkit-common'
 import { ConstantsUtil } from '@reown/appkit-common'
 
 import {
-  AccountController,
   BlockchainApiController,
   ChainController,
   ConnectionController,
   type ConnectionControllerClient,
   type NetworkControllerClient,
-  SwapController
+  SwapController,
+  setCaipAddress
 } from '../../exports/index.js'
 import { SwapApiUtil } from '../../src/utils/SwapApiUtil.js'
 import {
@@ -68,7 +68,7 @@ beforeAll(async () => {
 
   ChainController.setActiveCaipNetwork(caipNetwork)
 
-  AccountController.setCaipAddress(caipAddress, chain)
+  setCaipAddress(caipAddress, chain)
 
   vi.spyOn(BlockchainApiController, 'fetchSwapTokens').mockResolvedValue(tokensResponse)
   vi.spyOn(BlockchainApiController, 'getBalance').mockResolvedValue(balanceResponse)

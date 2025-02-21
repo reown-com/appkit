@@ -4,11 +4,12 @@ import { type Ref, createRef, ref } from 'lit/directives/ref.js'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   CoreHelperUtil,
   EnsController,
   EventsController,
-  SnackController
+  SnackController,
+  accountState,
+  subscribeAccountKey
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
@@ -36,7 +37,7 @@ export class W3mRegisterAccountNameView extends LitElement {
 
   @state() private registered = false
 
-  @state() private profileName = AccountController.state.profileName
+  @state() private profileName = accountState.profileName
 
   public constructor() {
     super()
@@ -46,7 +47,7 @@ export class W3mRegisterAccountNameView extends LitElement {
           this.suggestions = val.suggestions
           this.loading = val.loading
         }),
-        AccountController.subscribeKey('profileName', val => {
+        subscribeAccountKey('profileName', val => {
           this.profileName = val
           if (val) {
             this.error = 'You already own a name'
@@ -93,9 +94,7 @@ export class W3mRegisterAccountNameView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private submitButtonTemplate() {
-    const showSubmit = this.isAllowedToSubmit()
-
-    return showSubmit
+    return this.isAllowedToSubmit()
       ? html`
           <wui-icon-link
             size="sm"
@@ -204,8 +203,7 @@ export class W3mRegisterAccountNameView extends LitElement {
         event: 'REGISTER_NAME_INITIATED',
         properties: {
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
-            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+            accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           ensName
         }
       })
@@ -215,8 +213,7 @@ export class W3mRegisterAccountNameView extends LitElement {
         event: 'REGISTER_NAME_SUCCESS',
         properties: {
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
-            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+            accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           ensName
         }
       })
@@ -227,8 +224,7 @@ export class W3mRegisterAccountNameView extends LitElement {
         event: 'REGISTER_NAME_ERROR',
         properties: {
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
-            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+            accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
           ensName: `${this.name}${ConstantsUtil.WC_NAME_SUFFIX}`,
           error: (error as Error)?.message || 'Unknown error'
         }

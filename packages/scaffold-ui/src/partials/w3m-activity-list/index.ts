@@ -4,13 +4,13 @@ import { property, state } from 'lit/decorators.js'
 import { DateUtil } from '@reown/appkit-common'
 import type { Transaction, TransactionImage } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   CoreHelperUtil,
   EventsController,
   OptionsController,
   RouterController,
-  TransactionsController
+  TransactionsController,
+  accountState
 } from '@reown/appkit-core'
 import { TransactionUtil, customElement } from '@reown/appkit-ui'
 import type { TransactionType } from '@reown/appkit-ui'
@@ -161,10 +161,10 @@ export class W3mActivityList extends LitElement {
   private templateRenderTransaction(transaction: Transaction, isLastTransaction: boolean) {
     const { date, descriptions, direction, isAllNFT, images, status, transfers, type } =
       this.getTransactionListItemProps(transaction)
-    const haveMultipleTransfers = transfers?.length > 1
-    const haveTwoTransfers = transfers?.length === 2
+    const hasMultipleTransfers = transfers?.length > 1
+    const hasTwoTransfers = transfers?.length === 2
 
-    if (haveTwoTransfers && !isAllNFT) {
+    if (hasTwoTransfers && !isAllNFT) {
       return html`
         <wui-transaction-list-item
           date=${date}
@@ -178,7 +178,7 @@ export class W3mActivityList extends LitElement {
       `
     }
 
-    if (haveMultipleTransfers) {
+    if (hasMultipleTransfers) {
       return transfers.map((transfer, index) => {
         const description = TransactionUtil.getTransferDescription(transfer)
         const isLastTransfer = isLastTransaction && index === transfers.length - 1
@@ -317,8 +317,7 @@ export class W3mActivityList extends LitElement {
             projectId,
             cursor: this.next,
             isSmartAccount:
-              AccountController.state.preferredAccountType ===
-              W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+              accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
           }
         })
       }

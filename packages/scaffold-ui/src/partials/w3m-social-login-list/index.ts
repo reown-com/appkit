@@ -3,7 +3,6 @@ import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
-  AccountController,
   ChainController,
   ConnectorController,
   ConstantsUtil,
@@ -12,7 +11,11 @@ import {
   OptionsController,
   RouterController,
   SnackController,
-  type SocialProvider
+  type SocialProvider,
+  accountState,
+  setFarcasterUrl,
+  setSocialProvider,
+  setSocialWindow
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { SocialProviderEnum } from '@reown/appkit-utils'
@@ -85,7 +88,7 @@ export class W3mSocialLoginList extends LitElement {
   // -- Private ------------------------------------------- //
   async onSocialClick(socialProvider?: SocialProvider) {
     if (socialProvider) {
-      AccountController.setSocialProvider(socialProvider, ChainController.state.activeChain)
+      setSocialProvider(socialProvider, ChainController.state.activeChain)
 
       EventsController.sendEvent({
         type: 'track',
@@ -98,10 +101,10 @@ export class W3mSocialLoginList extends LitElement {
       const authConnector = ConnectorController.getAuthConnector()
 
       if (authConnector) {
-        if (!AccountController.state.farcasterUrl) {
+        if (!accountState.farcasterUrl) {
           try {
             const { url } = await authConnector.provider.getFarcasterUri()
-            AccountController.setFarcasterUrl(url, ChainController.state.activeChain)
+            setFarcasterUrl(url, ChainController.state.activeChain)
           } catch (error) {
             RouterController.goBack()
             SnackController.showError(error)
@@ -125,7 +128,7 @@ export class W3mSocialLoginList extends LitElement {
           })
 
           if (this.popupWindow && uri) {
-            AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
+            setSocialWindow(this.popupWindow, ChainController.state.activeChain)
             this.popupWindow.location.href = uri
           } else {
             this.popupWindow?.close()

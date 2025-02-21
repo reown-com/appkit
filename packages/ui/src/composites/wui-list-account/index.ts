@@ -3,10 +3,10 @@ import { property } from 'lit/decorators.js'
 
 import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   BlockchainApiController,
   ChainController,
-  StorageUtil
+  StorageUtil,
+  accountState
 } from '@reown/appkit-core'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
@@ -27,7 +27,7 @@ export class WuiListAccount extends LitElement {
 
   @property() public accountType = ''
 
-  private labels = AccountController.state.addressLabels
+  private labels = accountState.addressLabels
 
   private caipNetwork = ChainController.state.activeCaipNetwork
 

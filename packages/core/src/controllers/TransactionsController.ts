@@ -4,7 +4,7 @@ import type { Transaction } from '@reown/appkit-common'
 import type { CaipNetworkId } from '@reown/appkit-common'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
-import { AccountController } from './AccountController.js'
+import { accountState } from './AccountController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
 import { EventsController } from './EventsController.js'
@@ -98,8 +98,7 @@ export const TransactionsController = {
           projectId,
           cursor: state.next,
           isSmartAccount:
-            AccountController.state.preferredAccountType ===
-            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
+            accountState.preferredAccountType === W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
         }
       })
       SnackController.showError('Failed to fetch transactions')

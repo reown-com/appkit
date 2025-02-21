@@ -3,13 +3,14 @@ import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
-  AccountController,
   AssetController,
   AssetUtil,
   ChainController,
   CoreHelperUtil,
   ModalController,
-  OptionsController
+  OptionsController,
+  accountState,
+  subscribeAccountKey
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import type { WuiAccountButton } from '@reown/appkit-ui'
@@ -29,13 +30,13 @@ class W3mAccountButtonBase extends LitElement {
 
   @state() private caipAddress = ChainController.state.activeCaipAddress
 
-  @state() private balanceVal = AccountController.state.balance
+  @state() private balanceVal = accountState.balance
 
-  @state() private balanceSymbol = AccountController.state.balanceSymbol
+  @state() private balanceSymbol = accountState.balanceSymbol
 
-  @state() private profileName = AccountController.state.profileName
+  @state() private profileName = accountState.profileName
 
-  @state() private profileImage = AccountController.state.profileImage
+  @state() private profileImage = accountState.profileImage
 
   @state() private network = ChainController.state.activeCaipNetwork
 
@@ -59,10 +60,10 @@ class W3mAccountButtonBase extends LitElement {
         ChainController.subscribeKey('activeCaipAddress', val => {
           this.caipAddress = val
         }),
-        AccountController.subscribeKey('balance', val => (this.balanceVal = val)),
-        AccountController.subscribeKey('balanceSymbol', val => (this.balanceSymbol = val)),
-        AccountController.subscribeKey('profileName', val => (this.profileName = val)),
-        AccountController.subscribeKey('profileImage', val => (this.profileImage = val)),
+        subscribeAccountKey('balance', val => (this.balanceVal = val)),
+        subscribeAccountKey('balanceSymbol', val => (this.balanceSymbol = val)),
+        subscribeAccountKey('profileName', val => (this.profileName = val)),
+        subscribeAccountKey('profileImage', val => (this.profileImage = val)),
         ChainController.subscribeKey('activeCaipNetwork', val => {
           this.network = val
           this.networkImage = AssetUtil.getNetworkImage(val)

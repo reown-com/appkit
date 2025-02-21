@@ -5,13 +5,14 @@ import { ConstantsUtil } from '@reown/appkit-common'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import {
-  AccountController,
   ChainController,
   ConnectionController,
   type ConnectionControllerClient,
   ConnectorController,
   EnsController,
-  type NetworkControllerClient
+  type NetworkControllerClient,
+  accountState,
+  setCaipAddress
 } from '../../exports/index.js'
 
 // -- Setup --------------------------------------------------------------------
@@ -183,7 +184,7 @@ describe('EnsController', () => {
       connectionControllerClient: vi.fn() as unknown as ConnectionControllerClient
     }
     ChainController.state.chains.set(ConstantsUtil.CHAIN.EVM, evmAdapter)
-    AccountController.setCaipAddress('eip155:1:0x123', chain)
+    setCaipAddress('eip155:1:0x123', chain)
     // Use fake timers so that the timestamp is always the same
     vi.useFakeTimers()
 
@@ -209,7 +210,7 @@ describe('EnsController', () => {
     expect(getAuthConnectorSpy).toHaveBeenCalled()
 
     expect(signMessageSpy).toHaveBeenCalledWith(message)
-    expect(AccountController.state.profileName).toBe(`newname${ConstantsUtil.WC_NAME_SUFFIX}`)
+    expect(accountState.profileName).toBe(`newname${ConstantsUtil.WC_NAME_SUFFIX}`)
     expect(EnsController.state.loading).toBe(false)
     vi.useRealTimers()
   })

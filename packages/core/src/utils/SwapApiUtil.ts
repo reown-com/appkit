@@ -1,4 +1,4 @@
-import { AccountController } from '../controllers/AccountController.js'
+import { accountState, setTokenBalance } from '../controllers/AccountController.js'
 import { BlockchainApiController } from '../controllers/BlockchainApiController.js'
 import { ChainController } from '../controllers/ChainController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
@@ -108,7 +108,7 @@ export const SwapApiUtil = {
   },
 
   async getMyTokensWithBalance(forceUpdate?: string) {
-    const address = AccountController.state.address
+    const address = accountState.address
     const caipNetwork = ChainController.state.activeCaipNetwork
 
     if (!address || !caipNetwork) {
@@ -122,7 +122,7 @@ export const SwapApiUtil = {
     )
     const balances = response.balances.filter(balance => balance.quantity.decimals !== '0')
 
-    AccountController.setTokenBalance(balances, ChainController.state.activeChain)
+    setTokenBalance(balances, ChainController.state.activeChain)
 
     return this.mapBalancesToSwapTokens(balances)
   },

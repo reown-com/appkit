@@ -2,10 +2,11 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import {
-  AccountController,
   ChainController,
   RouterController,
-  SwapController
+  SwapController,
+  accountState,
+  subscribeAccountKey
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 
@@ -40,7 +41,7 @@ export class W3mSwapPreviewView extends LitElement {
 
   @state() private caipNetwork = ChainController.state.activeCaipNetwork
 
-  @state() private balanceSymbol = AccountController.state.balanceSymbol
+  @state() private balanceSymbol = accountState.balanceSymbol
 
   @state() private gasPriceInUSD = SwapController.state.gasPriceInUSD
 
@@ -60,7 +61,7 @@ export class W3mSwapPreviewView extends LitElement {
 
     this.unsubscribe.push(
       ...[
-        AccountController.subscribeKey('balanceSymbol', newBalanceSymbol => {
+        subscribeAccountKey('balanceSymbol', newBalanceSymbol => {
           if (this.balanceSymbol !== newBalanceSymbol) {
             RouterController.goBack()
             // Maybe reset state as well?
@@ -136,7 +137,7 @@ export class W3mSwapPreviewView extends LitElement {
     const sentPrice = UiHelperUtil.formatNumberToLocalString(sourceTokenValue)
     const receivePrice = UiHelperUtil.formatNumberToLocalString(toTokenValue)
 
-    const loading =
+    const isLoading =
       this.loadingQuote ||
       this.loadingBuildTransaction ||
       this.loadingTransaction ||
@@ -212,8 +213,8 @@ export class W3mSwapPreviewView extends LitElement {
             size="lg"
             borderRadius="xs"
             variant="main"
-            ?loading=${loading}
-            ?disabled=${loading}
+            ?loading=${isLoading}
+            ?disabled=${isLoading}
             @click=${this.onSendTransaction.bind(this)}
           >
             <wui-text variant="paragraph-600" color="inverse-100">

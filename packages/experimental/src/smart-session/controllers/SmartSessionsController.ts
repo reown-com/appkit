@@ -3,13 +3,13 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   BlockchainApiController,
   ChainController,
   ConnectionController,
   OptionsController,
   RouterController,
-  SnackController
+  SnackController,
+  accountState
 } from '@reown/appkit-core'
 import { ProviderUtil } from '@reown/appkit/store'
 
@@ -56,7 +56,7 @@ export const SmartSessionsController = {
   },
   async getSmartSessions() {
     try {
-      const caipAddress = AccountController.state.caipAddress
+      const caipAddress = accountState.caipAddress
       if (!caipAddress) {
         return []
       }

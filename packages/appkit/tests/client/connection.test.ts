@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import { AccountController, StorageUtil } from '@reown/appkit-core'
+import { StorageUtil, setStatus } from '@reown/appkit-core'
 
 import { AppKit } from '../../src/client'
 import { mockEvmAdapter, mockSolanaAdapter } from '../mocks/Adapter'
@@ -14,7 +14,7 @@ mockBlockchainApiController()
 
 describe('syncExistingConnection', () => {
   it('should set status to "connecting" and sync the connection when a connector and namespace are present', async () => {
-    const setStatus = vi.spyOn(AccountController, 'setStatus')
+    const setStatusSpy = vi.mocked(setStatus)
     vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('evm-connector')
     vi.spyOn(StorageUtil, 'getConnectionStatus').mockReturnValue('connected')
 
@@ -25,8 +25,8 @@ describe('syncExistingConnection', () => {
     })
     await appKit['syncExistingConnection']()
 
-    expect(setStatus).toHaveBeenCalledWith('connecting', 'eip155')
-    expect(setStatus).toHaveBeenCalledWith('connected', 'eip155')
+    expect(setStatusSpy).toHaveBeenCalledWith('connecting', 'eip155')
+    expect(setStatusSpy).toHaveBeenCalledWith('connected', 'eip155')
 
     vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue(undefined)
     vi.spyOn(StorageUtil, 'getConnectionStatus').mockReturnValue('connected')

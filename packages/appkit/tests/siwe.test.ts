@@ -2,13 +2,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { AppKit, type CaipNetwork } from '@reown/appkit'
 import {
-  AccountController,
   ChainController,
   ConnectionController,
   ModalController,
   OptionsController,
   RouterController,
-  SIWXUtil
+  SIWXUtil,
+  setCaipAddress,
+  setConnectedWalletInfo
 } from '@reown/appkit-core'
 import { type AppKitSIWEClient, createSIWEConfig } from '@reown/appkit-siwe'
 import * as networks from '@reown/appkit/networks'
@@ -70,7 +71,7 @@ describe('SIWE mapped to SIWX', () => {
     await new Promise(resolve => setTimeout(resolve, 100))
 
     // Set CAIP address to represent connected state
-    appkit.setCaipAddress('eip155:1:mock-address', 'eip155')
+    setCaipAddress('eip155:1:mock-address', 'eip155')
     appkit.setCaipNetwork({
       ...networks.mainnet,
       caipNetworkId: 'eip155:1',
@@ -156,7 +157,7 @@ describe('SIWE mapped to SIWX', () => {
     it('should universalProviderAuthenticate', async () => {
       const getNonceSpy = vi.spyOn(siweConfig.methods, 'getNonce')
       const verifyMessageSpy = vi.spyOn(siweConfig.methods, 'verifyMessage')
-      const setConnectedWalletInfoSpy = vi.spyOn(AccountController, 'setConnectedWalletInfo')
+      const setConnectedWalletInfoSpy = vi.mocked(setConnectedWalletInfo)
 
       const cacao = {
         h: {
