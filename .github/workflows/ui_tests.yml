@@ -78,13 +78,20 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Waiting for Vercel deployment
-        uses: mskelton/wait-for-vercel-action@v1
-        id: wait-for-vercel
-        with:
-          prod-url: appkit-lab.reown.com
-          token: ${{ secrets.VERCEL_TOKEN }}
-          await-build: true
+      - name: wait-for-vercel-deployment
+        runs-on: ubuntu-latest
+        steps:
+          - uses: UnlyEd/github-action-await-vercel@v1 # TODO best practices recommend to use a fixed version instead of @v1 for production usage (i.e: @v1.2.32)
+            id: await-vercel
+            env:
+              VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+            with:
+              deployment-url: appkit-lab.reown.com # TODO Replace by the domain you want to test
+              timeout: 10 # Wait for 10 seconds before failing
+              poll-interval: 1 # Wait for 1 second before each retry
+
+          - name: Display deployment status
+            run: 'echo The deployment at ${{ fromJson(steps.await-vercel.outputs.deploymentDetails).url }} is ${{ fromJson(steps.await-vercel.outputs.deploymentDetails).readyState }}'
 
       - name: Build extension
         env:
@@ -100,7 +107,7 @@ jobs:
 
       - name: Run Playwright tests
         env:
-          BASE_URL: ${{ steps.wait-for-vercel.outputs.url }}
+          BASE_URL: ${{ fromJson(steps.await-vercel.outputs.deploymentDetails).url }}
           WALLET_URL: ${{ inputs.wallet-url }}
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
