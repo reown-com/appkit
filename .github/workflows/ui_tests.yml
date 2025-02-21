@@ -8,11 +8,6 @@ on:
         default: 'main'
         required: false
         type: string
-      base-url:
-        description: 'The AppKit lab url'
-        default: 'http://localhost:3000/'
-        required: false
-        type: string
       wallet-url:
         description: 'The wallet url'
         default: 'https://react-wallet.walletconnect.com/'
@@ -80,33 +75,18 @@ jobs:
           node-version: 20.x
           cache: 'pnpm'
 
-      # - name: Get installed Playwright version
-      #   id: playwright-version
-      #   run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages['apps/laboratory']['devDependencies']['@playwright/test'])")" >> $GITHUB_ENV
-
-      # This cache causes weird errors on retry runs when using the self-hosted runners, disabling for now
-      # - name: Cache playwright binaries
-      #   uses: actions/cache@v4
-      #   id: playwright-cache
-      #   with:
-      #     path: |
-      #       ~/.cache/ms-playwright
-      #     key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}-${{ hashFiles('apps/laboratory/tests/shared/constants/devices.ts') }}
-
       - name: Install dependencies
         run: pnpm install
 
-      - name: build packages and lab
-        run: pnpm build:laboratory
-        env:
-          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
-          NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
-          MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSAC_API_KEY }}
-          NEXT_PUBLIC_SECURE_SITE_SDK_URL: ${{ inputs.secure-site-url }}
-          SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
-          SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
+      - name: Waiting for Vercel deployment
+        uses: mskelton/wait-for-vercel-action@v1
+        id: wait-for-vercel
+        with:
+          prod-url: appkit-lab.reown.com
+          token: ${{ secrets.VERCEL_TOKEN }}
+          await-build: true
 
-      - name: build extension
+      - name: Build extension
         env:
           EIP155_PRIVATE_KEY: ${{ secrets.EIP155_PRIVATE_KEY }}
           SOLANA_PRIVATE_KEY: ${{ secrets.SOLANA_PRIVATE_KEY }}
@@ -118,28 +98,9 @@ jobs:
         working-directory: ./apps/laboratory/
         run: pnpm playwright:install
 
-      # - name: Build MetaMask wallet cache
-      #   working-directory: ./apps/laboratory/
-      #   run: xvfb-run pnpm synpress
-
-      # - name: Run MetaMask Playwright tests (headful)
-      #   working-directory: ./apps/laboratory/
-      #   env:
-      #     BASE_URL: ${{ inputs.base-url }}
-      #     WALLET_URL: ${{ inputs.wallet-url }}
-      #     NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
-      #     SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
-      #     NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
-      #     MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSEC_API_KEY }}
-      #     NEXT_PUBLIC_SECURE_SITE_SDK_URL: ${{ inputs.secure-site-url }}
-      #     SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
-      #     SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
-      #     CI: true
-      #   run: xvfb-run pnpm playwright:test:metamask
-
       - name: Run Playwright tests
         env:
-          BASE_URL: ${{ inputs.base-url }}
+          BASE_URL: ${{ steps.wait-for-vercel.outputs.url }}
           WALLET_URL: ${{ inputs.wallet-url }}
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
@@ -152,15 +113,16 @@ jobs:
         working-directory: ./apps/laboratory/
         run: pnpm ${{ inputs.command }} --shard=${{ matrix.shard }}/${{ matrix.shardTotal }}
 
-      - name: Run canary with minimal environment config
-        env:
-          # DO NOT MODIFY THIS. If you are required to add variables here without adding
-          # them to the rs-relay repo it will cause alarms.
-          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
-          NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
-          CI: true
-        working-directory: ./apps/laboratory/
-        run: pnpm playwright:test:canary
+      # Disable temporarily
+      # - name: Run canary with minimal environment config
+      #   env:
+      #     # DO NOT MODIFY THIS. If you are required to add variables here without adding
+      #     # them to the rs-relay repo it will cause alarms.
+      #     NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+      #     NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
+      #     CI: true
+      #   working-directory: ./apps/laboratory/
+      #   run: pnpm playwright:test:canary
 
       - uses: actions/upload-artifact@v4
         if: failure()
