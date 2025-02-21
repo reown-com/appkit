@@ -108,7 +108,7 @@ jobs:
 
       - name: Run Playwright tests
         env:
-          BASE_URL: ${{ fromJson(steps.await-vercel.outputs.deploymentDetails).url }}
+          BASE_URL: https://${{ fromJson(steps.await-vercel.outputs.deploymentDetails).url }}
           WALLET_URL: ${{ inputs.wallet-url }}
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
