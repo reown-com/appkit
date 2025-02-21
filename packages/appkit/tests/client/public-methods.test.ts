@@ -761,6 +761,7 @@ describe('Base Public methods', () => {
       ...ChainController.state,
       activeChain: 'eip155'
     })
+    vi.spyOn(ChainController, 'initialize').mockImplementation(() => Promise.resolve())
     const setActiveCaipNetworkSpy = vi.spyOn(ChainController, 'setActiveCaipNetwork')
     const setBalanceSpy = vi
       .spyOn(AccountController, 'setBalance')
@@ -808,6 +809,7 @@ describe('Base Public methods', () => {
       ...ChainController.state,
       activeChain: 'eip155'
     })
+    vi.spyOn(ChainController, 'initialize').mockImplementation(() => Promise.resolve())
     const setActiveCaipNetworkSpy = vi.spyOn(ChainController, 'setActiveCaipNetwork')
     const setBalanceSpy = vi
       .spyOn(AccountController, 'setBalance')
