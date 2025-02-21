@@ -8,8 +8,8 @@
   },
   "dependencies": {
     "@reown/appkit": "workspace:*",
-    "@walletconnect/sign-client": "2.18.1-canary-ws-2",
-    "@walletconnect/types": "2.18.1-canary-ws-2",
+    "@walletconnect/sign-client": "2.18.1-canary-ws-3",
+    "@walletconnect/types": "2.18.1-canary-ws-3",
     "ethers": "6.13.2",
     "react": "19.0.0",
     "react-dom": "19.0.0"
