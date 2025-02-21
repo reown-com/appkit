@@ -754,7 +754,7 @@ describe('Base Public methods', () => {
     expect(setActiveCaipNetwork).toHaveBeenCalledWith(mainnet)
   })
 
-  it.skip('should handle unsupported network during syncAccount when allowUnsupportedChain is false', async () => {
+  it('should handle unsupported network during syncAccount when allowUnsupportedChain is false', async () => {
     const FAKE_CHAIN_ID = 999999
 
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
@@ -801,7 +801,7 @@ describe('Base Public methods', () => {
     expect(showUnsupportedChainUISpy).toHaveBeenCalled()
   })
 
-  it.skip('should handle unsupported network during syncAccount when allowUnsupportedChain is true', async () => {
+  it('should handle unsupported network during syncAccount when allowUnsupportedChain is true', async () => {
     const FAKE_CHAIN_ID = 999999
 
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
