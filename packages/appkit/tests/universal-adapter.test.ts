@@ -243,7 +243,7 @@ describe('UniversalAdapter', () => {
       })
 
       await expect(
-        adapter.switchNetwork({
+        await adapter.switchNetwork({
           caipNetwork: mockCaipNetwork
         })
       ).rejects.toThrow('WalletConnectConnector not found')
