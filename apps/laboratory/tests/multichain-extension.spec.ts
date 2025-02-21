@@ -1,3 +1,5 @@
+import { getNamespaceByNetworkName } from '@/tests/shared/utils/namespace'
+
 import { extensionFixture } from './shared/fixtures/extension-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
 import { ModalValidator } from './shared/validators/ModalValidator'
@@ -21,7 +23,7 @@ async function reloadAndSign(network: string) {
 }
 
 async function switchNetworkAndSign(network: string) {
-  const namespace = network === 'Solana' ? 'solana' : network === 'Bitcoin' ? 'bip122' : 'eip155'
+  const namespace = getNamespaceByNetworkName(network)
 
   await modalPage.switchNetwork(network, true)
   await modalValidator.checkConnectionStatus('connected', network)

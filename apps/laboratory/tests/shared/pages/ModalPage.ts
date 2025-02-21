@@ -4,6 +4,8 @@ import { expect } from '@playwright/test'
 
 import type { WalletFeature } from '@reown/appkit'
 
+import { getNamespaceByLibrary } from '@/tests/shared/utils/namespace'
+
 import { BASE_URL, DEFAULT_SESSION_PARAMS, EXTENSION_NAME, EXTENSION_RDNS } from '../constants'
 import type { TimingRecords } from '../fixtures/timing-fixture'
 import { doActionAndWaitForNewPage } from '../utils/actions'
@@ -314,26 +316,21 @@ export class ModalPage {
   }
 
   async sign(_namespace?: string) {
-    const namespace =
-      _namespace ||
-      (this.library === 'solana' ? 'solana' : this.library === 'bitcoin' ? 'bip122' : 'eip155')
-    console.log('sign', this.library, _namespace, namespace)
-
+    const namespace = _namespace || getNamespaceByLibrary(this.library)
     const signButton = this.page
       .getByTestId(`${namespace}-test-interactions`)
       .getByTestId('sign-message-button')
+
     await signButton.scrollIntoViewIfNeeded()
     await signButton.click()
   }
 
   async signTypedData(_namespace?: string) {
-    const namespace =
-      _namespace ||
-      (this.library === 'solana' ? 'solana' : this.library === 'bitcoin' ? 'bip122' : 'eip155')
-
+    const namespace = _namespace || getNamespaceByLibrary(this.library)
     const signButton = this.page
       .getByTestId(`${namespace}-test-interactions`)
       .getByTestId('sign-typed-data-button')
+
     await signButton.scrollIntoViewIfNeeded()
     await signButton.click()
   }

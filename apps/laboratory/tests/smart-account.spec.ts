@@ -64,7 +64,7 @@ smartAccountTest('it should use a smart account', async () => {
 })
 
 smartAccountTest('it should sign with smart account 6492 signature', async ({ library }) => {
-  let namespace = library === 'solana' ? 'solana' : 'eip155'
+  const namespace = library === 'solana' ? 'solana' : 'eip155'
 
   await page.sign(namespace)
   await page.approveSign()
@@ -80,7 +80,7 @@ smartAccountTest('it should sign with smart account 6492 signature', async ({ li
 smartAccountTest(
   'it should switch to a not enabled network and sign with EOA',
   async ({ library }) => {
-    let namespace = library === 'solana' ? 'solana' : 'eip155'
+    const namespace = library === 'solana' ? 'solana' : 'eip155'
 
     const targetChain = 'Aurora'
     await page.switchNetwork(targetChain)
@@ -99,7 +99,7 @@ smartAccountTest(
 )
 
 smartAccountTest('it should switch to smart account and sign', async ({ library }) => {
-  let namespace = library === 'solana' ? 'solana' : 'eip155'
+  const namespace = library === 'solana' ? 'solana' : 'eip155'
 
   const targetChain = 'Polygon'
   await page.switchNetwork(targetChain)
@@ -124,7 +124,7 @@ smartAccountTest('it should switch to smart account and sign', async ({ library 
 })
 
 smartAccountTest('it should switch to eoa and sign', async ({ library }) => {
-  let namespace = library === 'solana' ? 'solana' : 'eip155'
+  const namespace = library === 'solana' ? 'solana' : 'eip155'
 
   await page.goToSettings()
   await page.togglePreferredAccountType()

@@ -57,7 +57,7 @@ smartAccountSiweTest.afterAll(async () => {
 
 // -- Tests --------------------------------------------------------------------
 smartAccountSiweTest('it should sign with siwe + smart account', async ({ library }) => {
-  let namespace = library === 'solana' ? 'solana' : 'eip155'
+  const namespace = library === 'solana' ? 'solana' : 'eip155'
 
   await page.sign(namespace)
   await page.approveSign()
@@ -75,7 +75,7 @@ smartAccountSiweTest(
   'it should switch to a smart account enabled network and sign',
   async ({ library }) => {
     const targetChain = 'Base'
-    let namespace = library === 'solana' ? 'solana' : 'eip155'
+    const namespace = library === 'solana' ? 'solana' : 'eip155'
 
     await page.switchNetwork(targetChain)
     await validator.expectSwitchedNetworkWithNetworkView()
@@ -92,7 +92,7 @@ smartAccountSiweTest(
   'it should switch to a not enabled network and sign with EOA',
   async ({ library }) => {
     const targetChain = 'Aurora'
-    let namespace = library === 'solana' ? 'solana' : 'eip155'
+    const namespace = library === 'solana' ? 'solana' : 'eip155'
 
     await page.switchNetwork(targetChain)
     await page.page.waitForTimeout(1000)

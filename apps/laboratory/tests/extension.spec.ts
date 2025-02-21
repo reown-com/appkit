@@ -40,7 +40,7 @@ extensionTest('it should connect', async () => {
 })
 
 extensionTest('it should sign message', async ({ library }) => {
-  let namespace = library === 'solana' ? 'solana' : 'eip155'
+  const namespace = library === 'solana' ? 'solana' : 'eip155'
   await modalPage.sign(namespace)
   await modalValidator.expectAcceptedSign()
   // Wait for the toast animation to complete
@@ -48,7 +48,7 @@ extensionTest('it should sign message', async ({ library }) => {
 })
 
 extensionTest('it should sign typed data', async ({ library }) => {
-  let namespace = library === 'solana' ? 'solana' : 'eip155'
+  const namespace = library === 'solana' ? 'solana' : 'eip155'
 
   if (library === 'solana') {
     return
