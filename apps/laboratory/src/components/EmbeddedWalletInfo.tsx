@@ -3,10 +3,7 @@ import { Box, Heading, Stack, StackDivider, Text } from '@chakra-ui/react'
 import { useAppKitAccount } from '@reown/appkit/react'
 
 export function EmbeddedWalletInfo() {
-  const { embeddedWalletInfo: evmEmbeddedWalletInfo } = useAppKitAccount({ namespace: 'eip155' })
-  const { embeddedWalletInfo: solanaEmbeddedWalletInfo } = useAppKitAccount({ namespace: 'solana' })
-
-  const embeddedWalletInfo = evmEmbeddedWalletInfo || solanaEmbeddedWalletInfo
+  const { embeddedWalletInfo } = useAppKitAccount()
 
   const { accountType, user, isSmartAccountDeployed } = embeddedWalletInfo ?? {}
 
