@@ -18,7 +18,7 @@ import {
 
 function getNetworkToSwitch(activeNetwork: CaipNetwork | undefined) {
   if (!activeNetwork) {
-    return
+    return mainnet
   }
 
   switch (activeNetwork.chainNamespace) {
