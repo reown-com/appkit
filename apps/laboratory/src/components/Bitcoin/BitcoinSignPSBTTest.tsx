@@ -57,9 +57,9 @@ export function BitcoinSignPSBTTest() {
       params.broadcast = broadcast
 
       const signature = await walletProvider.signPSBT(params)
-      toast({ title: 'PSBT Signature', description: signature.psbt, status: 'success' })
+      toast({ title: 'PSBT Signature', description: signature.psbt, type: 'success' })
     } catch (error) {
-      toast({ title: 'Error', description: (error as Error).message, status: 'error' })
+      toast({ title: 'Error', description: (error as Error).message, type: 'error' })
     } finally {
       setLoading(false)
     }
