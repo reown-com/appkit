@@ -17,14 +17,16 @@ const PATH_FOR_LIBRARIES = {
 async function reloadAndSign(network: string) {
   await modalPage.page.reload()
   await modalValidator.checkConnectionStatus('connected', network)
-  await modalPage.signMessageAndTypedData(modalValidator, network)
+  await modalPage.signMessageAndTypedData(modalValidator, network, 'eip155')
 }
 
 async function switchNetworkAndSign(network: string) {
+  const namespace = network === 'Solana' ? 'solana' : network === 'Bitcoin' ? 'bip122' : 'eip155'
+
   await modalPage.switchNetwork(network, true)
   await modalValidator.checkConnectionStatus('connected', network)
   await modalPage.closeModal()
-  await modalPage.signMessageAndTypedData(modalValidator, network)
+  await modalPage.signMessageAndTypedData(modalValidator, network, namespace)
 }
 
 // -- Setup --------------------------------------------------------------------

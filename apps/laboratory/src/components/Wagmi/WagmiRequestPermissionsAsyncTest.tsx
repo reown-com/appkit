@@ -18,7 +18,7 @@ import { bigIntReplacer } from '@/src/utils/CommonUtils'
 import { getPurchaseDonutPermissions } from '@/src/utils/ERC7715Utils'
 
 export function WagmiRequestPermissionsAsyncTest() {
-  const { address, isConnected } = useAppKitAccount()
+  const { address, isConnected } = useAppKitAccount({ namespace: 'eip155' })
 
   const { chainId } = useAppKitNetwork()
   const isSupported = isSmartSessionSupported()

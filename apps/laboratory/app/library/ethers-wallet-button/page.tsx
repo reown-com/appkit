@@ -5,8 +5,8 @@ import { mainnet } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
+import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { AppKitWalletButtons } from '@/src/components/AppKitWalletButtons'
-import { EthersModalInfo } from '@/src/components/Ethers/EthersModalInfo'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { ThemeStore } from '@/src/utils/StoreUtil'
 
@@ -27,10 +27,10 @@ export default function Ethers() {
   return (
     <>
       <AppKitButtons />
+      <AppKitInfo />
       <AppKitWalletButtons
         wallets={[...ConstantsUtil.EvmWalletButtons, ...ConstantsUtil.Socials]}
       />
-      <EthersModalInfo />
     </>
   )
 }

@@ -68,6 +68,7 @@ sampleWalletTest('it should show disabled networks', async ({ library }) => {
 })
 
 sampleWalletTest('it should switch networks and sign', async ({ library }) => {
+  // todo: add bitcoin
   const chains =
     library === 'solana' ? [solanaTestnet.name, solana.name] : [polygon.name, mainnet.name]
   const caipNetworkId =
@@ -147,6 +148,7 @@ sampleWalletTest('it should show last connected network after refreshing', async
 
 sampleWalletTest('it should reject sign', async ({ library }) => {
   const chainName = library === 'solana' ? 'Solana Testnet' : 'Polygon'
+
   await modalPage.sign()
   await walletValidator.expectReceivedSign({ chainName })
   await walletPage.handleRequest({ accept: false })

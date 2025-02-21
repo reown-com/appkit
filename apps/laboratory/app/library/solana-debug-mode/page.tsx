@@ -6,6 +6,7 @@ import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
+import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { ThemeStore } from '@/src/utils/StoreUtil'
@@ -33,6 +34,7 @@ export default function Solana() {
   return (
     <>
       <AppKitButtons />
+      <AppKitInfo />
       <SolanaTests />
     </>
   )

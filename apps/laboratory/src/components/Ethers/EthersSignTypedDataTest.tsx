@@ -32,7 +32,7 @@ const message = {
 
 export function EthersSignTypedDataTest() {
   const toast = useChakraToast()
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { walletProvider } = useAppKitProvider<Provider>('eip155')
 
   async function onSignTypedData() {

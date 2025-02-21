@@ -10,6 +10,7 @@ import { mainnet } from '@reown/appkit/networks'
 import { createAppKit, useAppKitNetwork } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
+import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { BitcoinTests } from '@/src/components/Bitcoin/BitcoinTests'
 import { DefaultSIWXStatus } from '@/src/components/DefaultSIWXStatus'
 import { EthersTests } from '@/src/components/Ethers/EthersTests'
@@ -49,6 +50,7 @@ export default function SIWXDefault() {
   return (
     <>
       <AppKitButtons />
+      <AppKitInfo />
       <DefaultSIWXStatus />
 
       {caipNetwork?.chainNamespace === 'eip155' && <EthersTests />}

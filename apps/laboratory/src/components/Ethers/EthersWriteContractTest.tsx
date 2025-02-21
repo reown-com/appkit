@@ -17,7 +17,7 @@ import { abi, address as donutAddress } from '@/src/utils/DonutContract'
 export function EthersWriteContractTest() {
   const toast = useChakraToast()
   const { chainId } = useAppKitNetwork()
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { walletProvider } = useAppKitProvider<Provider>('eip155')
   const [loading, setLoading] = useState(false)
 

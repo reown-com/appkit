@@ -38,7 +38,7 @@ const message = {
 export function Ethers5SignTypedDataTest() {
   const toast = useChakraToast()
 
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { chainId } = useAppKitNetwork()
   const { walletProvider } = useAppKitProvider<Provider>('eip155')
 

@@ -11,10 +11,9 @@ import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 export function WagmiSignMessageTest() {
   const toast = useChakraToast()
-  const { address } = useAppKitAccount()
+  const { address, isConnected } = useAppKitAccount({ namespace: 'eip155' })
 
   const { signMessageAsync, isPending } = useSignMessage()
-  const { isConnected } = useAppKitAccount()
 
   const [signature, setSignature] = React.useState<string | undefined>()
 
