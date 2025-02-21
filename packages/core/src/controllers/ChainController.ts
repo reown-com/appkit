@@ -26,6 +26,7 @@ import { ModalController } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
 import { PublicStateController } from './PublicStateController.js'
 import { RouterController } from './RouterController.js'
+import { SendController } from './SendController.js'
 
 // -- Constants ----------------------------------------- //
 const accountState: AccountControllerState = {
@@ -312,6 +313,8 @@ export const ChainController = {
     if (newAdapter) {
       AccountController.replaceState(newAdapter.accountState)
     }
+    // Reset send state when switching networks
+    SendController.resetSend()
 
     PublicStateController.set({
       activeChain: state.activeChain,
@@ -595,6 +598,8 @@ export const ChainController = {
 
   async disconnect() {
     try {
+      // Reset send state when disconnecting
+      SendController.resetSend()
       const disconnectResults = await Promise.allSettled(
         Array.from(state.chains.entries()).map(async ([namespace, adapter]) => {
           try {
