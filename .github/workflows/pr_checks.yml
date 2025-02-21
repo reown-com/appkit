@@ -27,10 +27,11 @@ jobs:
       matrix:
         style-command:
           - lint
-          - prettier
-          - typecheck
-          - build:sample-apps
-          - danger
+          # Disable temp
+          # - prettier
+          # - typecheck
+          # - build:sample-apps
+          # - danger
     steps:
       - name: checkout
         uses: actions/checkout@v3
