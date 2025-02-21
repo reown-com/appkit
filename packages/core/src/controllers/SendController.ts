@@ -383,5 +383,6 @@ export const SendController = {
     state.receiverProfileImageUrl = undefined
     state.receiverProfileName = undefined
     state.loading = false
+    state.tokenBalances = []
   }
 }
