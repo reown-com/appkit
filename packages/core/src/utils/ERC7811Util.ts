@@ -16,7 +16,7 @@ interface Asset {
   address: `0x${string}` | 'native'
   balance: `0x${string}`
   type: 'NATIVE' | 'ERC20'
-  metadata: TokenMetadata
+  metadata: Record<string, unknown>
 }
 
 export interface WalletGetAssetsRequest {
@@ -36,24 +36,33 @@ export const ERC7811Utils = {
    * @returns Balance object
    */
   createBalance(asset: Asset, chainId: string): Balance {
+    const metadata: TokenMetadata = {
+      name: (asset.metadata['name'] || '') as string,
+      symbol: (asset.metadata['symbol'] || '') as string,
+      decimals: (asset.metadata['decimals'] || 0) as number,
+      value: (asset.metadata['value'] || 0) as number,
+      price: (asset.metadata['price'] || 0) as number,
+      iconUrl: (asset.metadata['iconUrl'] || '') as string
+    }
+
     return {
-      name: asset.metadata.name,
-      symbol: asset.metadata.symbol,
+      name: metadata.name,
+      symbol: metadata.symbol,
       chainId,
       address:
         asset.address === 'native'
           ? undefined
           : this.convertAddressToCAIP10Address(asset.address, chainId),
-      value: asset.metadata.value,
-      price: asset.metadata.price,
+      value: metadata.value,
+      price: metadata.price,
       quantity: {
-        decimals: asset.metadata.decimals.toString(),
+        decimals: metadata.decimals.toString(),
         numeric: this.convertHexToBalance({
           hex: asset.balance,
-          decimals: asset.metadata.decimals
+          decimals: metadata.decimals
         })
       },
-      iconUrl: asset.metadata.iconUrl
+      iconUrl: metadata.iconUrl
     }
   },
 

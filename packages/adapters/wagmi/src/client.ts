@@ -755,7 +755,7 @@ export class WagmiAdapter extends AdapterBlueprint {
       throw new Error('connectionControllerClient:walletGetAssets - provider is undefined')
     }
 
-    return provider.request({ method: 'wallet_getAssets', params })
+    return provider.request({ method: 'wallet_getAssets', params: [params] })
   }
 
   public override setUniversalProvider(universalProvider: UniversalProvider): void {

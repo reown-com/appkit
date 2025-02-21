@@ -118,12 +118,10 @@ describe('SendApiUtil', () => {
 
       const result = await SendApiUtil.getMyTokensWithBalance()
 
-      expect(ConnectionController.walletGetAssets).toHaveBeenCalledWith([
-        {
-          account: mockAddress,
-          chainFilter: [mockChainIdHex]
-        }
-      ])
+      expect(ConnectionController.walletGetAssets).toHaveBeenCalledWith({
+        account: mockAddress,
+        chainFilter: [mockChainIdHex]
+      })
       expect(result).toEqual([mockBalance])
     })
 

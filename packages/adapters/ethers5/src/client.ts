@@ -686,7 +686,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
 
     return await provider.request({
       method: 'wallet_getAssets',
-      params
+      params: [params]
     })
   }
 }
