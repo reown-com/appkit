@@ -12,8 +12,8 @@ import {
 import { type Provider, useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 
-import { ErrorUtil } from '../../utils/ErrorUtil'
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
+import { ErrorUtil } from '@/src/utils/ErrorUtil'
 
 const PHANTOM_TESTNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
 const recipientAddress = new PublicKey(PHANTOM_TESTNET_ADDRESS)

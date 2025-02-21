@@ -12,9 +12,9 @@ import {
   useAppKitProvider
 } from '@reown/appkit/react'
 
-import { type GetCallsStatusParams } from '../../types/EIP5792'
-import { EIP_5792_RPC_METHODS } from '../../utils/EIP5792Utils'
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
+import { type GetCallsStatusParams } from '@/src/types/EIP5792'
+import { EIP_5792_RPC_METHODS } from '@/src/utils/EIP5792Utils'
 
 export function EthersGetCallsStatusTest({ callsHash }: { callsHash: string }) {
   const [isLoading, setLoading] = useState(false)

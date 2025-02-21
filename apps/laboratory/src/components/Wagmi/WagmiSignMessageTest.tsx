@@ -6,8 +6,8 @@ import { useSignMessage } from 'wagmi'
 
 import { useAppKitAccount } from '@reown/appkit/react'
 
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
+import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 export function WagmiSignMessageTest() {
   const toast = useChakraToast()
