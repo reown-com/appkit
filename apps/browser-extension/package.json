@@ -44,13 +44,13 @@
   "devDependencies": {
     "@types/big.js": "6.2.2",
     "@types/chrome": "0.0.268",
-    "@types/node": "20.11.5",
+    "@types/node": "22.13.4",
     "@types/react": "19.0.0",
     "@types/react-dom": "19.0.0",
     "@types/uuid": "10.0.0",
     "dotenv-webpack": "8.1.0",
-    "webpack-cli": "5.1.4",
     "ts-loader": "9.5.1",
-    "typescript": "5.3.3"
+    "typescript": "5.7.3",
+    "webpack-cli": "5.1.4"
   }
 }

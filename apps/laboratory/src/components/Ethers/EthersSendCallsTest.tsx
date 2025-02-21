@@ -19,14 +19,14 @@ import { type Address, parseGwei } from 'viem'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 
-import { vitalikEthAddress } from '../../utils/DataUtil'
+import { AddTransactionModal } from '@/src/components/AddTransactionModal'
+import { useChakraToast } from '@/src/components/Toast'
+import { vitalikEthAddress } from '@/src/utils/DataUtil'
 import {
   EIP_5792_RPC_METHODS,
   WALLET_CAPABILITIES,
   getCapabilitySupportedChainInfo
-} from '../../utils/EIP5792Utils'
-import { AddTransactionModal } from '../AddTransactionModal'
-import { useChakraToast } from '../Toast'
+} from '@/src/utils/EIP5792Utils'
 
 type Provider = W3mFrameProvider | Awaited<ReturnType<(typeof UniversalProvider)['init']>>
 

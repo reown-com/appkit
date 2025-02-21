@@ -7,8 +7,8 @@ import { optimism, sepolia } from 'wagmi/chains'
 
 import { useAppKitAccount } from '@reown/appkit/react'
 
-import { abi, address } from '../../utils/DonutContract'
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
+import { abi, address } from '@/src/utils/DonutContract'
 
 const ALLOWED_CHAINS = [sepolia.id, optimism.id] as number[]
 

@@ -193,6 +193,43 @@ describe('SolanaAdapter', () => {
         symbol: 'SOL'
       })
     })
+    it('should get balance successfully mult', async () => {
+      const numSimultaneousRequests = 10
+      const expectedSentRequests = 1
+      vi.mock('@solana/web3.js', () => ({
+        Connection: vi.fn(endpoint => ({
+          getBalance: vi.fn().mockResolvedValue(
+            new Promise(resolve => {
+              setTimeout(() => resolve(1500000000), 1000)
+            })
+          ),
+          getSignatureStatus: vi.fn().mockResolvedValue({ value: true }),
+          rpcEndpoint: endpoint
+        })),
+        PublicKey: vi.fn(key => ({ toBase58: () => key }))
+      }))
+
+      const result = await Promise.all([
+        ...Array.from({ length: numSimultaneousRequests }).map(() =>
+          adapter.getBalance({
+            address: 'mock-address',
+            chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+            caipNetwork: mockCaipNetworks[0]
+          })
+        )
+      ])
+
+      expect(result.length).toBe(numSimultaneousRequests)
+      expect(expectedSentRequests).to.be.lt(numSimultaneousRequests)
+
+      // verify all calls got the same balance
+      for (const balance of result) {
+        expect(balance).toEqual({
+          balance: '1.5',
+          symbol: 'SOL'
+        })
+      }
+    })
   })
 
   describe('SolanaAdapter - signMessage', () => {

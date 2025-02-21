@@ -13,14 +13,14 @@ import {
   useAppKitProvider
 } from '@reown/appkit/react'
 
-import { vitalikEthAddress } from '../../utils/DataUtil'
-import { abi, address as donutAddress } from '../../utils/DonutContract'
+import { useChakraToast } from '@/src/components/Toast'
+import { vitalikEthAddress } from '@/src/utils/DataUtil'
+import { abi, address as donutAddress } from '@/src/utils/DonutContract'
 import {
   EIP_5792_RPC_METHODS,
   WALLET_CAPABILITIES,
   getCapabilitySupportedChainInfo
-} from '../../utils/EIP5792Utils'
-import { useChakraToast } from '../Toast'
+} from '@/src/utils/EIP5792Utils'
 
 export function Ethers5SendCallsWithPaymasterServiceTest() {
   const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')

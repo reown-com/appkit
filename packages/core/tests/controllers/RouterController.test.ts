@@ -92,4 +92,22 @@ describe('RouterController', () => {
       transactionStack: []
     })
   })
+
+  it('should clear data wallet state when goBack() is called', () => {
+    RouterController.push('Connect', {
+      wallet: {
+        id: 'test',
+        name: 'test_wallet'
+      }
+    })
+    RouterController.goBack()
+    expect(RouterController.state).toEqual({
+      view: 'ConnectingExternal',
+      history: ['Account', 'Networks', 'ConnectingExternal'],
+      transactionStack: [],
+      data: {
+        wallet: undefined
+      }
+    })
+  })
 })
