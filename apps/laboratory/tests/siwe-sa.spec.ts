@@ -56,10 +56,8 @@ smartAccountSiweTest.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
-smartAccountSiweTest('it should sign with siwe + smart account', async ({ library }) => {
-  const namespace = library === 'solana' ? 'solana' : 'eip155'
-
-  await page.sign(namespace)
+smartAccountSiweTest('it should sign with siwe + smart account', async () => {
+  await page.sign()
   await page.approveSign()
   await validator.expectAcceptedSign()
 })
@@ -71,44 +69,36 @@ smartAccountSiweTest('it should upgrade wallet', async ({ library }) => {
   await page.closeModal()
 })
 
-smartAccountSiweTest(
-  'it should switch to a smart account enabled network and sign',
-  async ({ library }) => {
-    const targetChain = 'Base'
-    const namespace = library === 'solana' ? 'solana' : 'eip155'
+smartAccountSiweTest('it should switch to a smart account enabled network and sign', async () => {
+  const targetChain = 'Base'
 
-    await page.switchNetwork(targetChain)
-    await validator.expectSwitchedNetworkWithNetworkView()
-    await page.promptSiwe()
-    await page.approveSign()
+  await page.switchNetwork(targetChain)
+  await validator.expectSwitchedNetworkWithNetworkView()
+  await page.promptSiwe()
+  await page.approveSign()
 
-    await page.sign(namespace)
-    await page.approveSign()
-    await validator.expectAcceptedSign()
-  }
-)
+  await page.sign()
+  await page.approveSign()
+  await validator.expectAcceptedSign()
+})
 
-smartAccountSiweTest(
-  'it should switch to a not enabled network and sign with EOA',
-  async ({ library }) => {
-    const targetChain = 'Aurora'
-    const namespace = library === 'solana' ? 'solana' : 'eip155'
+smartAccountSiweTest('it should switch to a not enabled network and sign with EOA', async () => {
+  const targetChain = 'Aurora'
 
-    await page.switchNetwork(targetChain)
-    await page.page.waitForTimeout(1000)
-    await page.promptSiwe()
-    await page.approveSign()
+  await page.switchNetwork(targetChain)
+  await page.page.waitForTimeout(1000)
+  await page.promptSiwe()
+  await page.approveSign()
 
-    await page.openAccount()
-    // Shouldn't show the toggle on a non enabled network
-    await validator.expectTogglePreferredTypeVisible(false)
-    await page.closeModal()
+  await page.openAccount()
+  // Shouldn't show the toggle on a non enabled network
+  await validator.expectTogglePreferredTypeVisible(false)
+  await page.closeModal()
 
-    await page.sign(namespace)
-    await page.approveSign()
-    await validator.expectAcceptedSign()
-  }
-)
+  await page.sign()
+  await page.approveSign()
+  await validator.expectAcceptedSign()
+})
 
 smartAccountSiweTest('it should disconnect correctly', async () => {
   await page.openAccount()
