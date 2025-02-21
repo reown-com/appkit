@@ -39,6 +39,10 @@ export const SendApiUtil = {
           ? walletGetAssetsResponse[chainIdHex]
           : []
         balances = assets.map(asset => ERC7811Utils.createBalance(asset, caipNetwork.caipNetworkId))
+        /*
+         * The 1Inch API includes many low-quality tokens in the balance response,
+         * which appear inconsistently. This filter prevents them from being displayed.
+         */
         const filteredBalances = balances.filter(balance => balance.quantity.decimals !== '0')
 
         return filteredBalances
@@ -50,7 +54,10 @@ export const SendApiUtil = {
       forceUpdate
     )
     balances = response.balances
-
+    /*
+     * The 1Inch API includes many low-quality tokens in the balance response,
+     * which appear inconsistently. This filter prevents them from being displayed.
+     */
     const filteredBalances = balances.filter(balance => balance.quantity.decimals !== '0')
 
     return filteredBalances
