@@ -220,7 +220,7 @@ async function initializeApp() {
   })
 
   document.getElementById('switch-network-eth')?.addEventListener('click', async () => {
-    modal.switchNetwork(mainnet)
+    await modal.switchNetwork(mainnet)
     network = 'eip155:1'
     console.log('>> network:', network)
     account = provider?.session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2]
@@ -229,7 +229,7 @@ async function initializeApp() {
   })
 
   document.getElementById('switch-network-polygon')?.addEventListener('click', async () => {
-    modal.switchNetwork(polygon)
+    await modal.switchNetwork(polygon)
     network = 'eip155:137'
     account = provider?.session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2]
     localStorage.setItem('active_network', network)
@@ -237,7 +237,7 @@ async function initializeApp() {
   })
 
   document.getElementById('switch-network-solana')?.addEventListener('click', async () => {
-    modal.switchNetwork(solana)
+    await modal.switchNetwork(solana)
     network = solana.caipNetworkId
     account = provider?.session?.namespaces?.solana?.accounts?.[0].split(':')[2]
     localStorage.setItem('active_network', network)
@@ -247,7 +247,7 @@ async function initializeApp() {
   document.getElementById('switch-network-bitcoin')?.addEventListener('click', async () => {
     console.log(session)
 
-    modal.switchNetwork(bitcoin)
+    await modal.switchNetwork(bitcoin)
     network = bitcoin.caipNetworkId
     account = provider?.session?.namespaces?.bip122?.accounts?.[0].split(':')[2]
     localStorage.setItem('active_network', network)
@@ -257,7 +257,7 @@ async function initializeApp() {
   document.getElementById('switch-network-cosmos')?.addEventListener('click', async () => {
     console.log(session)
 
-    modal.switchNetwork(cosmos)
+    await modal.switchNetwork(cosmos)
     network = cosmos.caipNetworkId
     account = provider?.session?.namespaces?.cosmos?.accounts?.[0].split(':')[2]
     localStorage.setItem('active_network', network)
@@ -267,7 +267,7 @@ async function initializeApp() {
   document.getElementById('switch-network-polkadot')?.addEventListener('click', async () => {
     console.log(session)
 
-    modal.switchNetwork(polkadot)
+    await modal.switchNetwork(polkadot)
     network = polkadot.caipNetworkId
     account = provider?.session?.namespaces?.polkadot?.accounts?.[0].split(':')[2]
     localStorage.setItem('active_network', network)
