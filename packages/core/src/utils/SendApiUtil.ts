@@ -27,10 +27,10 @@ export const SendApiUtil = {
 
       const walletCapabilities = (await ConnectionController.getCapabilities(address)) as Record<
         string,
-        { assetDiscovey?: { supported: boolean } }
+        { assetDiscovery?: { supported: boolean } }
       >
 
-      if (!walletCapabilities?.[chainIdHex]?.['assetDiscovey']?.supported) {
+      if (walletCapabilities?.[chainIdHex]?.['assetDiscovery']?.supported) {
         const walletGetAssetRequest: WalletGetAssetsRequest = {
           account: address as `0x${string}`,
           chainFilter: [chainIdHex]
