@@ -550,7 +550,7 @@ describe('BitcoinAdapter', () => {
       })
 
       await expect(
-        await adapter.switchNetwork({
+        adapter.switchNetwork({
           caipNetwork: bitcoinTestnet,
           provider,
           providerType: provider.type
