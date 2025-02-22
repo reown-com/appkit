@@ -834,7 +834,6 @@ export type Event =
       address?: string
       event: 'SEND_ERROR'
       properties: {
-        message: string
         isSmartAccount: boolean
         network: string
         token: string
