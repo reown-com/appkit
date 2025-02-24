@@ -1,15 +1,15 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import { BlockchainApiController, FetchUtil } from '../../exports/index.js'
+import { BlockchainApiController, FetchUtil, OptionsController } from '../../exports/index.js'
 
 // -- Tests --------------------------------------------------------------------
 describe('BlockchainApiController', () => {
   it('should include sdk properties when fetching swap allowance data', async () => {
     vi.spyOn(FetchUtil.prototype, 'get').mockResolvedValue({})
     vi.spyOn(BlockchainApiController, 'isNetworkSupported').mockResolvedValue(true)
+    OptionsController.state.projectId = 'test-project-id'
 
     const swapAllowance = {
-      projectId: '123',
       tokenAddress: '0x123',
       userAddress: '0x456'
     }
@@ -20,6 +20,7 @@ describe('BlockchainApiController', () => {
       expect.objectContaining({
         path: '/v1/convert/allowance',
         params: {
+          projectId: 'test-project-id',
           ...swapAllowance,
           ...BlockchainApiController.getSdkProperties()
         }
@@ -30,6 +31,7 @@ describe('BlockchainApiController', () => {
     const address = '0x123'
     vi.spyOn(FetchUtil.prototype, 'get').mockResolvedValue({})
     vi.spyOn(BlockchainApiController, 'isNetworkSupported').mockResolvedValue(true)
+    OptionsController.state.projectId = 'test-project-id'
 
     await BlockchainApiController.fetchIdentity({ address, caipNetworkId: 'eip155:1' })
 
@@ -37,6 +39,7 @@ describe('BlockchainApiController', () => {
       expect.objectContaining({
         path: `/v1/identity/${address}`,
         params: {
+          projectId: 'test-project-id',
           ...BlockchainApiController.getSdkProperties()
         }
       })
