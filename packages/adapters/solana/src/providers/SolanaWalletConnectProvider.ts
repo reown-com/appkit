@@ -115,9 +115,10 @@ export class SolanaWalletConnectProvider
 
     // If the result contains signature is the old RPC response
     if ('signature' in result) {
+      const decoded = base58.decode(result.signature)
       transaction.addSignature(
         new PublicKey(this.getAccount(true).publicKey),
-        Buffer.from(base58.decode(result.signature))
+        Buffer.from(decoded) as Buffer & Uint8Array
       )
 
       return transaction
@@ -126,7 +127,7 @@ export class SolanaWalletConnectProvider
     const decodedTransaction = Buffer.from(result.transaction, 'base64')
 
     if (isVersionedTransaction(transaction)) {
-      return VersionedTransaction.deserialize(decodedTransaction) as T
+      return VersionedTransaction.deserialize(new Uint8Array(decodedTransaction)) as T
     }
 
     return Transaction.from(decodedTransaction) as T
@@ -182,7 +183,7 @@ export class SolanaWalletConnectProvider
         const decodedTransaction = Buffer.from(serializedTransaction, 'base64')
 
         if (isVersionedTransaction(transaction)) {
-          return VersionedTransaction.deserialize(decodedTransaction)
+          return VersionedTransaction.deserialize(new Uint8Array(decodedTransaction))
         }
 
         this.emit('pendingTransaction', undefined)
@@ -266,7 +267,9 @@ export class SolanaWalletConnectProvider
      * But our specs requires base64 right now:
      * https://docs.reown.com/advanced/multichain/rpc-reference/solana-rpc#solana_signtransaction
      */
-    return Buffer.from(transaction.serialize({ verifySignatures: false })).toString('base64')
+    return Buffer.from(new Uint8Array(transaction.serialize({ verifySignatures: false }))).toString(
+      'base64'
+    )
   }
 
   private getAccount<Required extends boolean>(
@@ -314,7 +317,7 @@ export class SolanaWalletConnectProvider
     return {
       feePayer: transaction.feePayer?.toBase58() ?? '',
       instructions: transaction.instructions.map(instruction => ({
-        data: base58.encode(instruction.data),
+        data: base58.encode(new Uint8Array(instruction.data)),
         keys: instruction.keys.map(key => ({
           isWritable: key.isWritable,
           isSigner: key.isSigner,

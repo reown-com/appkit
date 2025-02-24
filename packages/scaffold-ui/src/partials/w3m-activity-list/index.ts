@@ -226,6 +226,7 @@ export class W3mActivityList extends LitElement {
       alignItems="center"
       .padding=${['3xl', 'xl', '3xl', 'xl'] as const}
       gap="xl"
+      data-testid="empty-activity-state"
     >
       <wui-icon-box
         backgroundColor="gray-glass-005"

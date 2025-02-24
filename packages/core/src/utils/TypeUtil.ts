@@ -834,6 +834,7 @@ export type Event =
       address?: string
       event: 'SEND_ERROR'
       properties: {
+        message: string
         isSmartAccount: boolean
         network: string
         token: string
@@ -943,7 +944,22 @@ export type AccountTypeMap = {
     path?: K extends 'bip122' ? string : never
   }
 }
+export type WalletGetAssetsParams = {
+  account: `0x${string}`
+  assetFilter?: Record<`0x${string}`, (`0x${string}` | 'native')[]>
+  assetTypeFilter?: ('NATIVE' | 'ERC20')[]
+  chainFilter?: `0x${string}`[]
+}
 
+export type WalletGetAssetsResponse = Record<
+  `0x${string}`,
+  {
+    address: `0x${string}` | 'native'
+    balance: `0x${string}`
+    type: 'NATIVE' | 'ERC20'
+    metadata: Record<string, unknown>
+  }[]
+>
 export type AccountType = AccountTypeMap[ChainNamespace]
 export type SendTransactionArgs =
   | {

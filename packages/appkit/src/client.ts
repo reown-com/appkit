@@ -240,7 +240,7 @@ export class AppKit {
     return ChainController.state.activeCaipNetwork?.id
   }
 
-  public switchNetwork(appKitNetwork: AppKitNetwork) {
+  public async switchNetwork(appKitNetwork: AppKitNetwork) {
     const network = this.caipNetworks?.find(n => n.id === appKitNetwork.id)
 
     if (!network) {
@@ -249,7 +249,7 @@ export class AppKit {
       return
     }
 
-    ChainController.switchActiveNetwork(network)
+    await ChainController.switchActiveNetwork(network)
   }
 
   public getWalletProvider() {
@@ -1091,7 +1091,7 @@ export class AppKit {
       getCapabilities: async (params: AdapterBlueprint.GetCapabilitiesParams) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
-        await adapter?.getCapabilities(params)
+        return await adapter?.getCapabilities(params)
       },
       grantPermissions: async (params: AdapterBlueprint.GrantPermissionsParams) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
@@ -1106,6 +1106,11 @@ export class AppKit {
         }
 
         return '0x'
+      },
+      walletGetAssets: async (params: AdapterBlueprint.WalletGetAssetsParams) => {
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+
+        return (await adapter?.walletGetAssets(params)) ?? {}
       }
     }
 
@@ -1428,9 +1433,15 @@ export class AppKit {
     }
 
     const connectionStatus = StorageUtil.getConnectionStatus()
-
     if (connectionStatus === 'connected') {
       this.setStatus('connecting', chainNamespace)
+    } else if (connectionStatus === 'disconnected') {
+      /*
+       * Address cache is kept after disconnecting from the wallet
+       * but should be cleared if appkit is launched in disconnected state
+       */
+      StorageUtil.clearAddressCache()
+      this.setStatus(connectionStatus, chainNamespace)
     } else {
       this.setStatus(connectionStatus, chainNamespace)
     }
@@ -1585,7 +1596,6 @@ export class AppKit {
         }
 
         this.syncWalletConnectAccounts(chainNamespace)
-
         await this.syncAccount({
           address,
           chainId,
@@ -1870,7 +1880,6 @@ export class AppKit {
 
         this.syncProvider({ ...connection, chainNamespace: namespace })
         await this.syncAccount({ ...connection, chainNamespace: namespace })
-
         this.setStatus('connected', namespace)
       } else {
         this.setStatus('disconnected', namespace)
@@ -2136,16 +2145,25 @@ export class AppKit {
   }
 
   private getDefaultNetwork() {
-    const caipNetworkId = StorageUtil.getActiveCaipNetworkId()
+    const caipNetworkIdFromStorage = StorageUtil.getActiveCaipNetworkId()
 
-    if (caipNetworkId) {
-      const caipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
+    if (caipNetworkIdFromStorage) {
+      const caipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkIdFromStorage)
 
       if (caipNetwork) {
         return caipNetwork
       }
 
-      return this.getUnsupportedNetwork(caipNetworkId)
+      if (this.defaultCaipNetwork) {
+        // It's still a case that the network in storage might not be found in the networks array
+        return this.defaultCaipNetwork
+      }
+
+      return this.getUnsupportedNetwork(caipNetworkIdFromStorage)
+    }
+
+    if (this.defaultCaipNetwork) {
+      return this.defaultCaipNetwork
     }
 
     return this.caipNetworks?.[0]

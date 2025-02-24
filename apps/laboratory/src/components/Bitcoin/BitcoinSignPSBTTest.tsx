@@ -14,11 +14,11 @@ import {
 import type { BitcoinConnector } from '@reown/appkit-adapter-bitcoin'
 import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 
-import { BitcoinUtil } from '../../utils/BitcoinUtil'
+import { BitcoinUtil } from '@/src/utils/BitcoinUtil'
 
 export function BitcoinSignPSBTTest() {
   const { walletProvider } = useAppKitProvider<BitcoinConnector>('bip122')
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'bip122' })
   const { caipNetwork } = useAppKitNetwork()
 
   const toast = useToast()
