@@ -3,7 +3,7 @@ import { useAccount, useSignTypedData } from 'wagmi'
 
 import { useAppKitAccount } from '@reown/appkit/react'
 
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
 
 // Example data
 const types = {
@@ -32,7 +32,7 @@ const message = {
 
 export function WagmiSignTypedDataTest() {
   const toast = useChakraToast()
-  const { isConnected } = useAppKitAccount()
+  const { isConnected } = useAppKitAccount({ namespace: 'eip155' })
   const { chain } = useAccount()
   const domain = {
     name: 'Ether Mail',

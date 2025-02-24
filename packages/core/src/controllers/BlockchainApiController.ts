@@ -5,6 +5,7 @@ import type { CaipAddress, CaipNetworkId } from '@reown/appkit-common'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
+import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   BlockchainApiBalanceResponse,
   BlockchainApiGasPriceRequest,
@@ -142,11 +143,10 @@ export const BlockchainApiController = {
     }
   },
 
-  async isNetworkSupported(network?: CaipNetworkId) {
-    if (!network) {
+  async isNetworkSupported(networkId?: CaipNetworkId) {
+    if (!networkId) {
       return false
     }
-
     try {
       if (!state.supportedChains.http.length) {
         await BlockchainApiController.getSupportedNetworks({
@@ -157,8 +157,9 @@ export const BlockchainApiController = {
       return false
     }
 
-    return state.supportedChains.http.includes(network)
+    return state.supportedChains.http.includes(networkId)
   },
+
   async getSupportedNetworks({ projectId }: { projectId: string }) {
     const supportedChains = await state.api.get<BlockchainApiControllerState['supportedChains']>({
       path: 'v1/supported-chains',
@@ -171,15 +172,25 @@ export const BlockchainApiController = {
 
     return supportedChains
   },
-  async fetchIdentity({ address }: BlockchainApiIdentityRequest) {
-    const isSupported = await BlockchainApiController.isNetworkSupported(
-      ChainController.state.activeCaipNetwork?.caipNetworkId
-    )
+
+  async fetchIdentity({
+    address,
+    caipNetworkId
+  }: BlockchainApiIdentityRequest & {
+    caipNetworkId: CaipNetworkId
+  }) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(caipNetworkId)
+
     if (!isSupported) {
       return { avatar: '', name: '' }
     }
 
-    return state.api.get<BlockchainApiIdentityResponse>({
+    const identityCache = StorageUtil.getIdentityFromCacheForAddress(address)
+    if (identityCache) {
+      return identityCache
+    }
+
+    const result = await state.api.get<BlockchainApiIdentityResponse>({
       path: `/v1/identity/${address}`,
       params: {
         projectId: OptionsController.state.projectId,
@@ -188,6 +199,14 @@ export const BlockchainApiController = {
           : undefined
       }
     })
+
+    StorageUtil.updateIdentityCache({
+      address,
+      identity: result,
+      timestamp: Date.now()
+    })
+
+    return result
   },
 
   async fetchTransactions({
@@ -416,8 +435,13 @@ export const BlockchainApiController = {
     if (!isSupported) {
       return { balances: [] }
     }
+    const caipAddress = `${chainId}:${address}`
+    const cachedBalance = StorageUtil.getBalanceCacheForCaipAddress(caipAddress)
+    if (cachedBalance) {
+      return cachedBalance
+    }
 
-    return state.api.get<BlockchainApiBalanceResponse>({
+    const balance = await state.api.get<BlockchainApiBalanceResponse>({
       path: `/v1/account/${address}/balance`,
 
       params: {
@@ -429,6 +453,14 @@ export const BlockchainApiController = {
         sv
       }
     })
+
+    StorageUtil.updateBalanceCache({
+      caipAddress,
+      balance,
+      timestamp: Date.now()
+    })
+
+    return balance
   },
 
   async lookupEnsName(name: string) {

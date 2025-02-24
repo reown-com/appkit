@@ -1,3 +1,5 @@
+import type { JSX } from 'react'
+
 import clsx from 'clsx'
 
 import * as resetStyles from './reset.css'

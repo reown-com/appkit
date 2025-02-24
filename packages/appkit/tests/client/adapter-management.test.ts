@@ -1,4 +1,5 @@
-import { describe, expect, it, vi } from 'vitest'
+import { UniversalProvider } from '@walletconnect/universal-provider'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { ChainNamespace } from '@reown/appkit-common'
 import { ChainController, ConnectorController } from '@reown/appkit-core'
@@ -7,6 +8,7 @@ import { AppKit } from '../../src/client.js'
 import { mockBitcoinAdapter } from '../mocks/Adapter.js'
 import { bitcoin } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
+import { mockUniversalProvider } from '../mocks/Providers.js'
 import { mockBlockchainApiController, mockStorageUtil, mockWindowAndDocument } from '../test-utils'
 
 mockWindowAndDocument()
@@ -14,6 +16,14 @@ mockStorageUtil()
 mockBlockchainApiController()
 
 describe('Adapter Management', () => {
+  beforeEach(() => {
+    vi.spyOn(UniversalProvider, 'init').mockResolvedValue(mockUniversalProvider)
+  })
+
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
+
   describe('addAdapter', () => {
     it('should add a new adapter successfully', () => {
       const addAdapter = vi.spyOn(ChainController, 'addAdapter')

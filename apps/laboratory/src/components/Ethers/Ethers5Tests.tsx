@@ -15,7 +15,7 @@ import { EthersWriteContractTest } from './EthersWriteContractTest'
 export function Ethers5Tests() {
   const [ready, setReady] = React.useState(false)
   const [callsHash, setCallsHash] = React.useState<string>('')
-  const { isConnected } = useAppKitAccount()
+  const { isConnected } = useAppKitAccount({ namespace: 'eip155' })
 
   React.useEffect(() => {
     setReady(true)
@@ -26,9 +26,9 @@ export function Ethers5Tests() {
   }
 
   return isConnected ? (
-    <Card marginTop={10} marginBottom={10}>
+    <Card data-testid="eip155-test-interactions" marginTop={10} marginBottom={10}>
       <CardHeader>
-        <Heading size="md">Test Interactions</Heading>
+        <Heading size="md">Ethers 5 Test Interactions</Heading>
       </CardHeader>
 
       <CardBody>

@@ -11,14 +11,14 @@ import {
 } from '@reown/appkit-experimental/smart-session'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 
-import { useLocalEcdsaKey } from '../../context/LocalEcdsaKeyContext'
-import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
-import { bigIntReplacer } from '../../utils/CommonUtils'
-import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
+import { useLocalEcdsaKey } from '@/src/context/LocalEcdsaKeyContext'
+import { useERC7715Permissions } from '@/src/hooks/useERC7715Permissions'
+import { bigIntReplacer } from '@/src/utils/CommonUtils'
+import { getPurchaseDonutPermissions } from '@/src/utils/ERC7715Utils'
 
 export function WagmiRequestPermissionsAsyncTest() {
-  const { address, isConnected } = useAppKitAccount()
+  const { address, isConnected } = useAppKitAccount({ namespace: 'eip155' })
 
   const { chainId } = useAppKitNetwork()
   const isSupported = isSmartSessionSupported()

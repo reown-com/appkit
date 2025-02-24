@@ -19,7 +19,7 @@
     "buffer": "6.0.3"
   },
   "devDependencies": {
-    "@types/node": "20.11.5"
+    "@types/node": "22.13.4"
   },
   "keywords": [
     "web3",

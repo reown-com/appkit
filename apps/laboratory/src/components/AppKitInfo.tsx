@@ -11,17 +11,28 @@ import {
   Text
 } from '@chakra-ui/react'
 
+import { convertCaip10ToErc3770 } from '@reown/appkit-experimental/erc3770'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+
+import { RelayClientInfo } from '@/src/components/RelayClientInfo'
 
 import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
 
-type AppKitInfoProps = {
-  clientId?: string
-}
-
-export function AppKitInfo({ clientId }: AppKitInfoProps) {
+export function AppKitInfo() {
   const { caipAddress, address } = useAppKitAccount()
   const { chainId } = useAppKitNetwork()
+
+  const isEIP155 = caipAddress?.startsWith('eip155:')
+  const erc3770Address = React.useMemo(() => {
+    if (!isEIP155 || !caipAddress) {
+      return null
+    }
+    try {
+      return convertCaip10ToErc3770(caipAddress)
+    } catch (e) {
+      return null
+    }
+  }, [caipAddress, isEIP155])
 
   return (
     <Card marginTop={10} marginBottom={10}>
@@ -38,6 +49,15 @@ export function AppKitInfo({ clientId }: AppKitInfoProps) {
             <Text data-testid="w3m-caip-address">{caipAddress}</Text>
           </Box>
 
+          {erc3770Address && (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Chain Specific Address (ERC-3770)
+              </Heading>
+              <Text data-testid="w3m-erc3770-address">{erc3770Address}</Text>
+            </Box>
+          )}
+
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
               Address
@@ -52,14 +72,7 @@ export function AppKitInfo({ clientId }: AppKitInfoProps) {
             <Text data-testid="w3m-chain-id">{chainId}</Text>
           </Box>
 
-          {clientId && (
-            <Box>
-              <Heading size="xs" textTransform="uppercase" pb="2">
-                Relay Client ID
-              </Heading>
-              <Text data-testid="w3m-chain-id">{clientId}</Text>
-            </Box>
-          )}
+          <RelayClientInfo />
 
           <EmbeddedWalletInfo />
         </Stack>

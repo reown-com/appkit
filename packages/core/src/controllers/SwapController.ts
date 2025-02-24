@@ -494,6 +494,10 @@ export const SwapController = {
     const toToken = state.toToken
     const haveSourceTokenAmount = NumberUtil.bigNumber(state.sourceTokenAmount).gt(0)
 
+    if (!haveSourceTokenAmount) {
+      this.setToTokenAmount('')
+    }
+
     if (!toToken || !sourceToken || state.loadingPrices || !haveSourceTokenAmount) {
       return
     }
@@ -777,12 +781,12 @@ export const SwapController = {
 
     state.loadingTransaction = true
 
-    const snackbarPendingMessage = `Swapping ${state.sourceToken
-      ?.symbol} to ${NumberUtil.formatNumberToLocalString(toTokenAmount, 3)} ${state.toToken
-      ?.symbol}`
-    const snackbarSuccessMessage = `Swapped ${state.sourceToken
-      ?.symbol} to ${NumberUtil.formatNumberToLocalString(toTokenAmount, 3)} ${state.toToken
-      ?.symbol}`
+    const snackbarPendingMessage = `Swapping ${
+      state.sourceToken?.symbol
+    } to ${NumberUtil.formatNumberToLocalString(toTokenAmount, 3)} ${state.toToken?.symbol}`
+    const snackbarSuccessMessage = `Swapped ${
+      state.sourceToken?.symbol
+    } to ${NumberUtil.formatNumberToLocalString(toTokenAmount, 3)} ${state.toToken?.symbol}`
 
     if (isAuthConnector) {
       RouterController.pushTransactionStack({

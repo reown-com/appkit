@@ -157,6 +157,7 @@ jobs:
           # DO NOT MODIFY THIS. If you are required to add variables here without adding
           # them to the rs-relay repo it will cause alarms.
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+          NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
           CI: true
         working-directory: ./apps/laboratory/
         run: pnpm playwright:test:canary

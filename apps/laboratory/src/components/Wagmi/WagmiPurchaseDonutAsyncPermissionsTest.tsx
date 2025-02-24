@@ -6,12 +6,12 @@ import { useReadContract } from 'wagmi'
 
 import type { SmartSessionGrantPermissionsResponse } from '@reown/appkit-experimental/smart-session'
 
-import { useLocalEcdsaKey } from '../../context/LocalEcdsaKeyContext'
-import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
-import { abi as donutContractAbi, address as donutContractaddress } from '../../utils/DonutContract'
-import { executeActionsWithECDSAKey } from '../../utils/ERC7715Utils'
-import { getChain } from '../../utils/NetworksUtil'
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
+import { useLocalEcdsaKey } from '@/src/context/LocalEcdsaKeyContext'
+import { useERC7715Permissions } from '@/src/hooks/useERC7715Permissions'
+import { abi as donutContractAbi, address as donutContractaddress } from '@/src/utils/DonutContract'
+import { executeActionsWithECDSAKey } from '@/src/utils/ERC7715Utils'
+import { getChain } from '@/src/utils/NetworksUtil'
 
 export function WagmiPurchaseDonutAsyncPermissionsTest() {
   const { smartSession } = useERC7715Permissions()
