@@ -212,6 +212,29 @@ sampleWalletTest(
   }
 )
 
+sampleWalletTest(
+  "it should switch to first available network when wallet doesn't support the active network of the appkit",
+  async ({ library }) => {
+    if (library === 'solana') {
+      return
+    }
+
+    await walletPage.disconnectConnection()
+    await modalValidator.expectDisconnected()
+
+    await modalPage.switchNetworkWithNetworkButton('Aurora')
+    await modalValidator.expectSwitchChainWithNetworkButton('Aurora')
+    await modalPage.closeModal()
+
+    await modalPage.qrCodeFlow(modalPage, walletPage)
+    await modalValidator.expectConnected()
+    await modalPage.openModal()
+    await modalPage.openNetworks()
+    await modalValidator.expectSwitchedNetwork('Ethereum')
+    await modalPage.closeModal()
+  }
+)
+
 sampleWalletTest('it should connect and disconnect using hook', async () => {
   await walletPage.disconnectConnection()
   await modalValidator.expectDisconnected()
