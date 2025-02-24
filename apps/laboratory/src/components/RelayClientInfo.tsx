@@ -1,16 +1,13 @@
 import * as React from 'react'
 
+import { Box, Text } from '@chakra-ui/react'
+import { Heading } from '@chakra-ui/react'
 import UniversalProvider from '@walletconnect/universal-provider'
 
-import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
+import { useAppKitProvider } from '@reown/appkit/react'
 
-import { AppKitInfo } from '@/src/components/AppKitInfo'
-
-export function Ethers5ModalInfo() {
-  const [isReady, setIsReady] = React.useState(false)
+export function RelayClientInfo() {
   const [clientId, setClientId] = React.useState<string | undefined>(undefined)
-
-  const { isConnected } = useAppKitAccount()
   const { walletProvider, walletProviderType } = useAppKitProvider<UniversalProvider>('eip155')
 
   async function getClientId() {
@@ -25,9 +22,12 @@ export function Ethers5ModalInfo() {
     getClientId().then(setClientId)
   }, [walletProvider])
 
-  React.useEffect(() => {
-    setIsReady(true)
-  }, [])
-
-  return isReady && isConnected ? <AppKitInfo clientId={clientId} /> : null
+  return (
+    <Box>
+      <Heading size="xs" textTransform="uppercase" pb="2">
+        Relay Client ID
+      </Heading>
+      <Text data-testid="w3m-client-id">{clientId}</Text>
+    </Box>
+  )
 }

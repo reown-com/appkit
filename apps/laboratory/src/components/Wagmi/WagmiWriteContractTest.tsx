@@ -13,7 +13,7 @@ import { abi, address } from '@/src/utils/DonutContract'
 const ALLOWED_CHAINS = [sepolia.id, optimism.id] as number[]
 
 export function WagmiWriteContractTest() {
-  const { address: accountAddress } = useAppKitAccount()
+  const { address: accountAddress } = useAppKitAccount({ namespace: 'eip155' })
   const { status, chain } = useAccount()
 
   return ALLOWED_CHAINS.includes(Number(chain?.id)) && status === 'connected' ? (

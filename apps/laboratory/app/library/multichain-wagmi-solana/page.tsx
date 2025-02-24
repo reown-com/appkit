@@ -12,7 +12,9 @@ import { mainnet } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
-import { MultiChainTestsWagmiSolana } from '@/src/components/MultiChainTestsWagmiSolana'
+import { AppKitInfo } from '@/src/components/AppKitInfo'
+import { SolanaTests } from '@/src/components/Solana/SolanaTests'
+import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { ThemeStore } from '@/src/utils/StoreUtil'
 
@@ -48,7 +50,9 @@ export default function MultiChainWagmiSolana() {
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtons />
-        <MultiChainTestsWagmiSolana />
+        <AppKitInfo />
+        <WagmiTests />
+        <SolanaTests />
       </QueryClientProvider>
     </WagmiProvider>
   )

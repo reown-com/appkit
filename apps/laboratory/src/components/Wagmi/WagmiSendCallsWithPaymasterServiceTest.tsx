@@ -53,7 +53,7 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
     method: EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
   })
 
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { status } = useAccount()
 
   const isConnected = status === 'connected'

@@ -7,6 +7,7 @@ import { solana } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
+import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { AppKitWalletButtons } from '@/src/components/AppKitWalletButtons'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
@@ -31,6 +32,7 @@ export default function Solana() {
   return (
     <>
       <AppKitButtons />
+      <AppKitInfo />
       <AppKitWalletButtons
         wallets={[...ConstantsUtil.SolanaWalletButtons, ...ConstantsUtil.Socials]}
       />

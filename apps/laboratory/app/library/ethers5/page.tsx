@@ -5,7 +5,7 @@ import { mainnet } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
-import { Ethers5ModalInfo } from '@/src/components/Ethers/Ethers5ModalInfo'
+import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { Ethers5Tests } from '@/src/components/Ethers/Ethers5Tests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { ThemeStore } from '@/src/utils/StoreUtil'
@@ -33,7 +33,7 @@ export default function Ethers() {
   return (
     <>
       <AppKitButtons />
-      <Ethers5ModalInfo />
+      <AppKitInfo />
       <Ethers5Tests />
     </>
   )

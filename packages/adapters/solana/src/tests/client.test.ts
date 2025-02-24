@@ -263,6 +263,30 @@ describe('SolanaAdapter', () => {
       expect(switchNetworkSpy).toHaveBeenCalled()
       expect(SolStoreUtil.setConnection).toHaveBeenCalled()
     })
+
+    it('should receive chain id after switching network with auth provider', async () => {
+      const provider = Object.assign(Object.create(AuthProvider.prototype), {
+        type: 'AUTH',
+        switchNetwork: mockAuthConnector.connect,
+        getUser: vi.fn().mockResolvedValue({
+          chainId: mockCaipNetworks[0].caipNetworkId
+        })
+      })
+
+      const handleSwitchNetwork = vi.fn()
+
+      adapter.on('switchNetwork', handleSwitchNetwork)
+
+      await adapter.switchNetwork({
+        caipNetwork: mockCaipNetworks[0],
+        provider: provider,
+        providerType: 'AUTH'
+      })
+
+      expect(handleSwitchNetwork).toHaveBeenCalledWith({
+        chainId: mockCaipNetworks[0].id
+      })
+    })
   })
 
   describe('SolanaAdapter - connectWalletConnect', () => {

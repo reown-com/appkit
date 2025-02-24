@@ -16,7 +16,7 @@ export function EthersTests() {
   const [ready, setReady] = React.useState(false)
 
   const [callsHash, setCallsHash] = React.useState<string>('')
-  const { isConnected } = useAppKitAccount()
+  const { isConnected } = useAppKitAccount({ namespace: 'eip155' })
 
   const onCallsHash = React.useCallback((hash: string) => {
     setCallsHash(hash)
@@ -37,9 +37,9 @@ export function EthersTests() {
   }
 
   return isConnected ? (
-    <Card marginTop={10} marginBottom={10}>
+    <Card data-testid="eip155-test-interactions" marginTop={10} marginBottom={10}>
       <CardHeader>
-        <Heading size="md">Test Interactions</Heading>
+        <Heading size="md">Ethers Test Interactions</Heading>
       </CardHeader>
 
       <CardBody>

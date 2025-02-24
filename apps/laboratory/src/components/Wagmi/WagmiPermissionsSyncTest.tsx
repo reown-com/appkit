@@ -12,7 +12,7 @@ export function WagmiPermissionsSyncTest() {
     smartSession?.type === 'sync' ? smartSession.grantedPermissions : undefined
 
   return (
-    <Card marginTop={10} marginBottom={10}>
+    <Card data-testid="eip155-test-interactions" marginTop={10} marginBottom={10}>
       <CardHeader>
         <Heading size="md">Test Interactions</Heading>
       </CardHeader>
