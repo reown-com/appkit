@@ -78,6 +78,11 @@ jobs:
       - name: install
         run: pnpm install
 
+      - name: build
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+
       - name: build sample apps
         run: pnpm build:sample-apps
         env:
