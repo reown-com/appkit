@@ -109,7 +109,8 @@ const connectionControllerClient: ConnectionControllerClient = {
   getEnsAvatar: async (value: string) => Promise.resolve(value),
   getCapabilities: async () => Promise.resolve(''),
   grantPermissions: async () => Promise.resolve(''),
-  revokePermissions: async () => Promise.resolve('0x')
+  revokePermissions: async () => Promise.resolve('0x'),
+  walletGetAssets: async () => Promise.resolve({})
 }
 
 const networkControllerClient: NetworkControllerClient = {

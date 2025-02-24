@@ -358,6 +358,45 @@ describe('WagmiAdapter', () => {
       })
     })
 
+    it('should call getBalance once even when multiple adapter requests are sent at the same time', async () => {
+      // delay the response to simulate http request latency
+      const latency = 1000
+      const numSimultaneousRequests = 10
+      const expectedSentRequests = 1
+
+      vi.mocked(getBalance).mockResolvedValue(
+        new Promise(resolve => {
+          setTimeout(() => {
+            resolve({
+              formatted: '1.5',
+              symbol: 'ETH'
+            })
+          }, latency)
+        }) as any
+      )
+
+      const result = await Promise.all([
+        ...Array.from({ length: numSimultaneousRequests }).map(() =>
+          adapter.getBalance({
+            address: '0x123',
+            chainId: 1
+          })
+        )
+      ])
+
+      expect(getBalance).toHaveBeenCalledTimes(expectedSentRequests)
+      expect(result.length).toBe(numSimultaneousRequests)
+      expect(expectedSentRequests).to.be.lt(numSimultaneousRequests)
+
+      // verify all calls got the same balance
+      for (const balance of result) {
+        expect(balance).toEqual({
+          balance: '1.5',
+          symbol: 'ETH'
+        })
+      }
+    })
+
     it('should return empty balance when network not found', async () => {
       const result = await adapter.getBalance({
         address: '0x123',

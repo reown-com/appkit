@@ -40,8 +40,8 @@
 .Wrapper.dragOverlay {
   --scale: 1.05;
   --box-shadow: $box-shadow;
-  --box-shadow-picked-up: $box-shadow-border, -1px 0 15px 0 rgba(34, 33, 81, 0.01),
-    0px 15px 15px 0 rgba(34, 33, 81, 0.25);
+  --box-shadow-picked-up:
+    $box-shadow-border, -1px 0 15px 0 rgba(34, 33, 81, 0.01), 0px 15px 15px 0 rgba(34, 33, 81, 0.25);
   z-index: 999;
   opacity: 1;
 }

@@ -64,7 +64,7 @@ export const WcHelpersUtil = {
       const caipNetworkId = `${chainNamespace}:${id}`
 
       // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
-      const namespace = acc[chainNamespace] as Namespace
+      const namespace = acc[chainNamespace]
 
       namespace.chains.push(caipNetworkId)
 

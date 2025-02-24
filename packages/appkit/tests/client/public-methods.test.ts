@@ -713,7 +713,7 @@ describe('Base Public methods', () => {
     vi.mocked(ChainController.switchActiveNetwork).mockResolvedValueOnce(undefined)
 
     const appKit = new AppKit(mockOptions)
-    appKit.switchNetwork(mainnet)
+    await appKit.switchNetwork(mainnet)
 
     expect(switchActiveNetwork).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -722,7 +722,7 @@ describe('Base Public methods', () => {
       })
     )
 
-    appKit.switchNetwork(polygon)
+    await appKit.switchNetwork(polygon)
 
     expect(switchActiveNetwork).toHaveBeenCalledTimes(1)
   })

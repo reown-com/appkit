@@ -87,7 +87,7 @@ export class WuiListAccount extends LitElement {
                 iconcolor="fg-200"
                 backgroundcolor="fg-300"
                 icon=${this.accountType === W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
-                  ? this.socialProvider ?? 'mail'
+                  ? (this.socialProvider ?? 'mail')
                   : 'lightbulb'}
                 background="fg-300"
               ></wui-icon-box>`
@@ -122,7 +122,7 @@ export class WuiListAccount extends LitElement {
     const connectorId = StorageUtil.getConnectedConnectorId(namespace)
 
     if (!label && connectorId === ConstantsUtil.CONNECTOR_ID.AUTH) {
-      label = `${this.accountType === 'eoa' ? this.socialProvider ?? 'Email' : 'Smart'} Account`
+      label = `${this.accountType === 'eoa' ? (this.socialProvider ?? 'Email') : 'Smart'} Account`
     } else if (!label) {
       label = 'EOA'
     }
