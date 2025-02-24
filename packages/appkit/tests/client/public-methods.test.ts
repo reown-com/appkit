@@ -1,4 +1,5 @@
-import { describe, expect, it, vi } from 'vitest'
+import { UniversalProvider } from '@walletconnect/universal-provider'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { Connector } from '@reown/appkit'
 import {
@@ -32,7 +33,7 @@ import { ProviderUtil } from '../../src/store'
 import { mockEvmAdapter, mockSolanaAdapter, mockUniversalAdapter } from '../mocks/Adapter'
 import { base, mainnet, polygon, sepolia, solana } from '../mocks/Networks'
 import { mockOptions } from '../mocks/Options'
-import { mockAuthProvider, mockProvider } from '../mocks/Providers'
+import { mockAuthProvider, mockProvider, mockUniversalProvider } from '../mocks/Providers'
 import { mockWindowAndDocument } from '../test-utils'
 
 mockWindowAndDocument()
@@ -70,6 +71,14 @@ vi.spyOn(AccountController, 'fetchTokenBalance').mockResolvedValue([
 ])
 
 describe('Base Public methods', () => {
+  beforeEach(() => {
+    vi.spyOn(UniversalProvider, 'init').mockResolvedValue(mockUniversalProvider)
+  })
+
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
+
   it('should open modal', async () => {
     const open = vi.spyOn(ModalController, 'open')
 
@@ -720,7 +729,6 @@ describe('Base Public methods', () => {
     const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
     const fetchTokenBalance = vi.spyOn(AccountController, 'fetchTokenBalance')
     const getActiveNetworkProps = vi.spyOn(StorageUtil, 'getActiveNetworkProps')
-    const getNetworkProp = vi.spyOn(ChainController, 'getNetworkProp')
 
     const appKit = new AppKit(mockOptions)
 
@@ -747,7 +755,110 @@ describe('Base Public methods', () => {
     await appKit['syncAccount'](mockAccountData)
 
     expect(setActiveCaipNetwork).toHaveBeenCalledWith(mainnet)
-    expect(getNetworkProp).toHaveBeenCalledWith('supportsAllNetworks', mainnet.chainNamespace)
+  })
+
+  it('should handle unsupported network during syncAccount when allowUnsupportedChain is false', async () => {
+    const FAKE_CHAIN_ID = 999999
+
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'eip155'
+    })
+    vi.spyOn(ChainController, 'initialize').mockImplementation(() => Promise.resolve())
+    const setActiveCaipNetworkSpy = vi.spyOn(ChainController, 'setActiveCaipNetwork')
+    const setBalanceSpy = vi
+      .spyOn(AccountController, 'setBalance')
+      .mockImplementation(() => Promise.resolve())
+    const showUnsupportedChainUISpy = vi
+      .spyOn(ChainController, 'showUnsupportedChainUI')
+      .mockImplementation(() => Promise.resolve())
+
+    const appKit = new AppKit({
+      ...mockOptions,
+      allowUnsupportedChain: false,
+      networks: [mainnet]
+    })
+
+    await appKit['syncAccount']({
+      address: '0x123',
+      chainId: FAKE_CHAIN_ID,
+      chainNamespace: 'eip155'
+    })
+
+    expect(setActiveCaipNetworkSpy).toHaveBeenCalledWith({
+      id: String(FAKE_CHAIN_ID),
+      caipNetworkId: `eip155:${FAKE_CHAIN_ID}`,
+      name: 'Unknown Network',
+      chainNamespace: 'eip155',
+      nativeCurrency: {
+        name: '',
+        decimals: 0,
+        symbol: ''
+      },
+      rpcUrls: {
+        default: {
+          http: []
+        }
+      }
+    })
+    expect(setBalanceSpy).toHaveBeenCalledWith('0.00', '', 'eip155')
+    expect(showUnsupportedChainUISpy).toHaveBeenCalled()
+  })
+
+  it('should handle unsupported network during syncAccount when allowUnsupportedChain is true', async () => {
+    const FAKE_CHAIN_ID = 999999
+
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeChain: 'eip155'
+    })
+    vi.spyOn(ChainController, 'initialize').mockImplementation(() => Promise.resolve())
+    const setActiveCaipNetworkSpy = vi.spyOn(ChainController, 'setActiveCaipNetwork')
+    const setBalanceSpy = vi
+      .spyOn(AccountController, 'setBalance')
+      .mockImplementation(() => Promise.resolve())
+    const showUnsupportedChainUISpy = vi
+      .spyOn(ChainController, 'showUnsupportedChainUI')
+      .mockImplementation(() => Promise.resolve())
+
+    const appKit = new AppKit({
+      ...mockOptions,
+      allowUnsupportedChain: true,
+      networks: [mainnet]
+    })
+
+    await appKit['syncAccount']({
+      address: '0x123',
+      chainId: FAKE_CHAIN_ID,
+      chainNamespace: 'eip155'
+    })
+
+    expect(setActiveCaipNetworkSpy).toHaveBeenCalledWith({
+      id: String(FAKE_CHAIN_ID),
+      caipNetworkId: `eip155:${FAKE_CHAIN_ID}`,
+      name: 'Unknown Network',
+      chainNamespace: 'eip155',
+      nativeCurrency: {
+        name: '',
+        decimals: 0,
+        symbol: ''
+      },
+      rpcUrls: {
+        default: {
+          http: []
+        }
+      }
+    })
+    expect(setBalanceSpy).toHaveBeenCalledWith('0.00', '', 'eip155')
+    expect(showUnsupportedChainUISpy).not.toHaveBeenCalled()
+  })
+
+  it('should handle unsupported chain UI when allowUnsupportedChain is true', async () => {
+    const showUnsupportedChainUI = vi.spyOn(ChainController, 'showUnsupportedChainUI')
+    showUnsupportedChainUI.mockImplementationOnce(vi.fn())
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      allowUnsupportedChain: true
+    } as any)
   })
 
   it('should set connected wallet info when syncing account', async () => {
