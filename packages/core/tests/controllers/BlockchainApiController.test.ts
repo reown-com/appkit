@@ -27,14 +27,15 @@ describe('BlockchainApiController', () => {
     )
   })
   it('should include sdk properties when fetching identity data', async () => {
+    const address = '0x123'
     vi.spyOn(FetchUtil.prototype, 'get').mockResolvedValue({})
     vi.spyOn(BlockchainApiController, 'isNetworkSupported').mockResolvedValue(true)
 
-    await BlockchainApiController.fetchIdentity({ address: '0x123', caipNetworkId: 'eip155:1' })
+    await BlockchainApiController.fetchIdentity({ address, caipNetworkId: 'eip155:1' })
 
     expect(FetchUtil.prototype.get).toHaveBeenCalledWith(
       expect.objectContaining({
-        path: '/v1/identity',
+        path: `/v1/identity/${address}`,
         params: {
           ...BlockchainApiController.getSdkProperties()
         }
