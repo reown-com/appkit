@@ -595,6 +595,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
     } catch (switchError: any) {
       if (
         switchError.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+        switchError.code === WcConstantsUtil.ERROR_INVALID_CHAIN_ID ||
         switchError.code === WcConstantsUtil.ERROR_CODE_DEFAULT ||
         switchError?.data?.originalError?.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
       ) {
