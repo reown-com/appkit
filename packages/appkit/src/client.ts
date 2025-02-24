@@ -1766,9 +1766,8 @@ export class AppKit {
   }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
     chainNamespace: ChainNamespace
   }) {
-    const activeCaipNetwork = this.caipNetworks?.find(
-      n => n.caipNetworkId === `${chainNamespace}:${chainId}`
-    )
+    const caipNetworkId: CaipNetworkId = `${chainNamespace}:${chainId}`
+    const activeCaipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
 
     if (chainNamespace !== ConstantsUtil.CHAIN.EVM || activeCaipNetwork?.testnet) {
       return
@@ -1776,7 +1775,8 @@ export class AppKit {
 
     try {
       const { name, avatar } = await this.fetchIdentity({
-        address
+        address,
+        caipNetworkId
       })
 
       this.setProfileName(name, chainNamespace)
