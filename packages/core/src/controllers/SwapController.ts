@@ -494,6 +494,10 @@ export const SwapController = {
     const toToken = state.toToken
     const haveSourceTokenAmount = NumberUtil.bigNumber(state.sourceTokenAmount).gt(0)
 
+    if (!haveSourceTokenAmount) {
+      this.setToTokenAmount('')
+    }
+
     if (!toToken || !sourceToken || state.loadingPrices || !haveSourceTokenAmount) {
       return
     }
