@@ -210,8 +210,7 @@ describe('Base Public methods', () => {
     const subscribe = vi.spyOn(AccountController, 'subscribeKey')
     const callback = vi.fn()
 
-    const appKit = new AppKit(mockOptions)
-    appKit.subscribeShouldUpdateToAddress(callback)
+    new AppKit(mockOptions)
 
     expect(subscribe).toHaveBeenCalledWith('shouldUpdateToAddress', callback)
   })
