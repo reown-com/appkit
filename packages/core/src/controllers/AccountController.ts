@@ -246,6 +246,10 @@ export const AccountController = {
       if (address && chainId && chain) {
         const response = await BlockchainApiController.getBalance(address, chainId)
 
+        /*
+         * The 1Inch API includes many low-quality tokens in the balance response,
+         * which appear inconsistently. This filter prevents them from being displayed.
+         */
         const filteredBalances = response.balances.filter(
           balance => balance.quantity.decimals !== '0'
         )
