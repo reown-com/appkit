@@ -1,4 +1,5 @@
-import { describe, expect, it, vi } from 'vitest'
+import { UniversalProvider } from '@walletconnect/universal-provider'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { AccountController, StorageUtil } from '@reown/appkit-core'
 
@@ -6,6 +7,7 @@ import { AppKit } from '../../src/client'
 import { mockEvmAdapter, mockSolanaAdapter } from '../mocks/Adapter'
 import { mainnet, sepolia } from '../mocks/Networks'
 import { mockOptions } from '../mocks/Options'
+import { mockUniversalProvider } from '../mocks/Providers'
 import { mockBlockchainApiController, mockStorageUtil, mockWindowAndDocument } from '../test-utils'
 
 mockWindowAndDocument()
@@ -13,6 +15,14 @@ mockStorageUtil()
 mockBlockchainApiController()
 
 describe('syncExistingConnection', () => {
+  beforeEach(() => {
+    vi.spyOn(UniversalProvider, 'init').mockResolvedValue(mockUniversalProvider)
+  })
+
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
+
   it('should set status to "connecting" and sync the connection when a connector and namespace are present', async () => {
     const setStatus = vi.spyOn(AccountController, 'setStatus')
     vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('evm-connector')
