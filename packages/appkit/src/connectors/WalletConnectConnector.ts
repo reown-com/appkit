@@ -100,5 +100,7 @@ const OPTIONAL_METHODS = [
   'wallet_getCapabilities',
   // EIP-7715
   'wallet_grantPermissions',
-  'wallet_revokePermissions'
+  'wallet_revokePermissions',
+  //EIP-7811
+  'wallet_getAssets'
 ]

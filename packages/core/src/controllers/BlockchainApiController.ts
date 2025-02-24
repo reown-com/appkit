@@ -5,6 +5,7 @@ import type { CaipAddress, CaipNetworkId } from '@reown/appkit-common'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
+import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   BlockchainApiBalanceResponse,
   BlockchainApiGasPriceRequest,
@@ -133,11 +134,19 @@ const state = proxy<BlockchainApiControllerState>({
 export const BlockchainApiController = {
   state,
 
+  getSdkProperties() {
+    const { sdkType, sdkVersion } = OptionsController.state
+
+    return {
+      st: sdkType || 'unknown',
+      sv: sdkVersion || 'unknown'
+    }
+  },
+
   async isNetworkSupported(network?: CaipNetworkId) {
     if (!network) {
       return false
     }
-
     try {
       if (!state.supportedChains.http.length) {
         await BlockchainApiController.getSupportedNetworks({
@@ -170,7 +179,12 @@ export const BlockchainApiController = {
       return { avatar: '', name: '' }
     }
 
-    return state.api.get<BlockchainApiIdentityResponse>({
+    const identityCache = StorageUtil.getIdentityFromCacheForAddress(address)
+    if (identityCache) {
+      return identityCache
+    }
+
+    const result = await state.api.get<BlockchainApiIdentityResponse>({
       path: `/v1/identity/${address}`,
       params: {
         projectId: OptionsController.state.projectId,
@@ -179,6 +193,14 @@ export const BlockchainApiController = {
           : undefined
       }
     })
+
+    StorageUtil.updateIdentityCache({
+      address,
+      identity: result,
+      timestamp: Date.now()
+    })
+
+    return result
   },
 
   async fetchTransactions({
@@ -287,7 +309,7 @@ export const BlockchainApiController = {
     tokenAddress,
     userAddress
   }: BlockchainApiSwapAllowanceRequest) {
-    const { sdkType, sdkVersion } = OptionsController.state
+    const { st, sv } = BlockchainApiController.getSdkProperties()
 
     const isSupported = await BlockchainApiController.isNetworkSupported(
       ChainController.state.activeCaipNetwork?.caipNetworkId
@@ -301,18 +323,18 @@ export const BlockchainApiController = {
       params: {
         projectId,
         tokenAddress,
-        userAddress
+        userAddress,
+        st,
+        sv
       },
       headers: {
-        'Content-Type': 'application/json',
-        'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
+        'Content-Type': 'application/json'
       }
     })
   },
 
   async fetchGasPrice({ projectId, chainId }: BlockchainApiGasPriceRequest) {
-    const { sdkType, sdkVersion } = OptionsController.state
+    const { st, sv } = BlockchainApiController.getSdkProperties()
 
     const isSupported = await BlockchainApiController.isNetworkSupported(
       ChainController.state.activeCaipNetwork?.caipNetworkId
@@ -324,13 +346,13 @@ export const BlockchainApiController = {
     return state.api.get<BlockchainApiGasPriceResponse>({
       path: `/v1/convert/gas-price`,
       headers: {
-        'Content-Type': 'application/json',
-        'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
+        'Content-Type': 'application/json'
       },
       params: {
         projectId,
-        chainId
+        chainId,
+        st,
+        sv
       }
     })
   },
@@ -373,7 +395,7 @@ export const BlockchainApiController = {
     to,
     userAddress
   }: BlockchainApiGenerateApproveCalldataRequest) {
-    const { sdkType, sdkVersion } = OptionsController.state
+    const { st, sv } = BlockchainApiController.getSdkProperties()
 
     const isSupported = await BlockchainApiController.isNetworkSupported(
       ChainController.state.activeCaipNetwork?.caipNetworkId
@@ -385,41 +407,54 @@ export const BlockchainApiController = {
     return state.api.get<BlockchainApiGenerateApproveCalldataResponse>({
       path: `/v1/convert/build-approve`,
       headers: {
-        'Content-Type': 'application/json',
-        'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
+        'Content-Type': 'application/json'
       },
       params: {
         projectId,
         userAddress,
         from,
-        to
+        to,
+        st,
+        sv
       }
     })
   },
 
   async getBalance(address: string, chainId?: string, forceUpdate?: string) {
-    const { sdkType, sdkVersion } = OptionsController.state
+    const { st, sv } = BlockchainApiController.getSdkProperties()
+
     const isSupported = await BlockchainApiController.isNetworkSupported(
       ChainController.state.activeCaipNetwork?.caipNetworkId
     )
     if (!isSupported) {
       return { balances: [] }
     }
+    const caipAddress = `${chainId}:${address}`
+    const cachedBalance = StorageUtil.getBalanceCacheForCaipAddress(caipAddress)
+    if (cachedBalance) {
+      return cachedBalance
+    }
 
-    return state.api.get<BlockchainApiBalanceResponse>({
+    const balance = await state.api.get<BlockchainApiBalanceResponse>({
       path: `/v1/account/${address}/balance`,
-      headers: {
-        'x-sdk-type': sdkType,
-        'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
-      },
+
       params: {
         currency: 'usd',
         projectId: OptionsController.state.projectId,
         chainId,
-        forceUpdate
+        forceUpdate,
+        st,
+        sv
       }
     })
+
+    StorageUtil.updateBalanceCache({
+      caipAddress,
+      balance,
+      timestamp: Date.now()
+    })
+
+    return balance
   },
 
   async lookupEnsName(name: string) {

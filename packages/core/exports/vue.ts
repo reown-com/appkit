@@ -1,71 +1,77 @@
-import { type Ref, onUnmounted, ref } from 'vue'
+import { type Ref, onMounted, onUnmounted, ref } from 'vue'
+
+import type { ChainNamespace } from '@reown/appkit-common'
 
 import { AccountController } from '../src/controllers/AccountController.js'
 import { ChainController } from '../src/controllers/ChainController.js'
 import { ConnectionController } from '../src/controllers/ConnectionController.js'
 import { ConnectorController } from '../src/controllers/ConnectorController.js'
 import { CoreHelperUtil } from '../src/utils/CoreHelperUtil.js'
-import type { SocialProvider, UseAppKitAccountReturn } from '../src/utils/TypeUtil.js'
+import type {
+  AccountType,
+  ChainAdapter,
+  SocialProvider,
+  UseAppKitAccountReturn
+} from '../src/utils/TypeUtil.js'
 
 // -- Hooks ------------------------------------------------------------
-export function useAppKitAccount(): Ref<UseAppKitAccountReturn> {
-  const authConnector = ConnectorController.getAuthConnector()
+export function useAppKitAccount(options?: {
+  namespace?: ChainNamespace
+}): Ref<UseAppKitAccountReturn> {
+  const chainNamespace = ref(options?.namespace || ChainController.state.activeChain)
+  const chains = ref(ChainController.state.chains)
   const state = ref({
-    allAccounts: AccountController.state.allAccounts,
-    address: CoreHelperUtil.getPlainAddress(ChainController.state.activeCaipAddress),
-    caipAddress: ChainController.state.activeCaipAddress,
-    status: AccountController.state.status,
-    isConnected: Boolean(ChainController.state.activeCaipAddress),
-    embeddedWalletInfo: authConnector
+    allAccounts: [] as AccountType[],
+    address: undefined,
+    caipAddress: undefined,
+    status: undefined,
+    isConnected: false,
+    embeddedWalletInfo: undefined
+  } as UseAppKitAccountReturn)
+
+  function updateState(
+    _chains: Map<ChainNamespace, ChainAdapter>,
+    _chainNamespace: ChainNamespace | undefined
+  ) {
+    const authConnector = _chainNamespace
+      ? ConnectorController.getAuthConnector(_chainNamespace)
+      : undefined
+    const accountState = _chainNamespace
+      ? _chains.get(_chainNamespace)?.accountState
+      : AccountController.state
+
+    state.value.allAccounts = accountState?.allAccounts || []
+    state.value.address = CoreHelperUtil.getPlainAddress(accountState?.caipAddress)
+    state.value.caipAddress = accountState?.caipAddress
+    state.value.status = accountState?.status
+    state.value.isConnected = Boolean(accountState?.caipAddress)
+    state.value.embeddedWalletInfo = authConnector
       ? {
-          user: AccountController.state.user,
-          authProvider:
-            AccountController.state.socialProvider ?? ('email' as SocialProvider | 'email'),
-          accountType: AccountController.state.preferredAccountType,
-          isSmartAccountDeployed: Boolean(AccountController.state.smartAccountDeployed)
+          user: accountState?.user,
+          authProvider: accountState?.socialProvider ?? ('email' as SocialProvider | 'email'),
+          accountType: accountState?.preferredAccountType,
+          isSmartAccountDeployed: Boolean(accountState?.smartAccountDeployed)
         }
       : undefined
+  }
+
+  const unsubscribeActiveChain = ChainController.subscribeKey('activeChain', val => {
+    chainNamespace.value = options?.namespace || val
+    updateState(chains.value, chainNamespace.value)
   })
 
-  const unsubscribeCaipAddress = ChainController.subscribeKey('activeCaipAddress', val => {
-    state.value.caipAddress = val
-    state.value.address = CoreHelperUtil.getPlainAddress(val)
-    state.value.isConnected = Boolean(val)
+  const unsubscribeChains = ChainController.subscribe(val => {
+    chains.value = val['chains']
+    updateState(chains.value, chainNamespace.value)
   })
 
-  const unsubscribeStatus = AccountController.subscribeKey('status', val => {
-    state.value.status = val
-  })
-
-  const unsubscribeAllAccounts = AccountController.subscribeKey('allAccounts', val => {
-    state.value.allAccounts = [...val]
-  })
-
-  const unsubscribeAccountDeployed = AccountController.subscribeKey('smartAccountDeployed', val => {
-    if (state.value.embeddedWalletInfo) {
-      state.value.embeddedWalletInfo.isSmartAccountDeployed = Boolean(val)
-    }
-  })
-
-  const unsubscribeAccountType = AccountController.subscribeKey('preferredAccountType', val => {
-    if (state.value.embeddedWalletInfo) {
-      state.value.embeddedWalletInfo.accountType = val
-    }
-  })
-
-  const unsubscribeUser = AccountController.subscribeKey('user', val => {
-    if (state.value.embeddedWalletInfo) {
-      state.value.embeddedWalletInfo.user = val
-    }
+  onMounted(() => {
+    updateState(chains.value, chainNamespace.value)
   })
 
   onUnmounted(() => {
-    unsubscribeCaipAddress?.()
-    unsubscribeStatus?.()
-    unsubscribeAccountDeployed?.()
-    unsubscribeAccountType?.()
-    unsubscribeUser?.()
-    unsubscribeAllAccounts?.()
+    unsubscribeChains()
+    unsubscribeActiveChain()
   })
 
   return state

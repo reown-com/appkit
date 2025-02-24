@@ -147,6 +147,7 @@ sampleWalletTest('it should show last connected network after refreshing', async
 
 sampleWalletTest('it should reject sign', async ({ library }) => {
   const chainName = library === 'solana' ? 'Solana Testnet' : 'Polygon'
+
   await modalPage.sign()
   await walletValidator.expectReceivedSign({ chainName })
   await walletPage.handleRequest({ accept: false })

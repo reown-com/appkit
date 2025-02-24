@@ -15,6 +15,7 @@ export const ConstantsUtil = {
     COINBASE_SDK: 'coinbaseWalletSDK',
     SAFE: 'safe',
     LEDGER: 'ledger',
+    OKX: 'okx',
     EIP6963: 'eip6963',
     AUTH: 'ID_AUTH'
   },

@@ -15,7 +15,8 @@ import type { Wallet } from '@reown/appkit-wallet-button'
 import * as AppKitWalletButton from '@reown/appkit-wallet-button/react'
 import { type SocialProvider, useAppKitAccount } from '@reown/appkit/react'
 
-import { ConstantsUtil } from '../utils/ConstantsUtil'
+import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
+
 import { useChakraToast } from './Toast'
 
 interface AppKitWalletButtonsProps {
@@ -74,9 +75,7 @@ function WalletButtonComponents({ wallets }: WalletButtonComponentsProps) {
 
 function WalletButtonHooks({ wallets }: WalletButtonHooksProps) {
   const [pendingWallet, setPendingWallet] = useState<Wallet>()
-
   const toast = useChakraToast()
-
   const { caipAddress } = useAppKitAccount()
 
   const { isReady, isPending, connect } = AppKitWalletButton.useAppKitWallet({
@@ -98,6 +97,7 @@ function WalletButtonHooks({ wallets }: WalletButtonHooksProps) {
     const isWalletConnect = wallet === 'walletConnect'
 
     const isWalletButtonDisabled = !isWalletConnect && !isSocial && !isReady
+    const shouldCapitlize = wallet === 'okx'
 
     return (
       <Button
@@ -110,7 +110,7 @@ function WalletButtonHooks({ wallets }: WalletButtonHooksProps) {
         size="md"
         isLoading={isPending && pendingWallet === wallet}
         isDisabled={Boolean(caipAddress) || isWalletButtonDisabled}
-        textTransform="capitalize"
+        textTransform={shouldCapitlize ? 'uppercase' : 'capitalize'}
         data-testid={`wallet-button-hook-${wallet}`}
       >
         {wallet}

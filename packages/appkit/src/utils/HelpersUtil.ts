@@ -34,7 +34,9 @@ export const WcHelpersUtil = {
           'wallet_getCallsStatus',
           'wallet_grantPermissions',
           'wallet_revokePermissions',
-          'wallet_switchEthereumChain'
+          'wallet_switchEthereumChain',
+          //EIP-7811
+          'wallet_getAssets'
         ]
       case 'bip122':
         return ['sendTransfer', 'signMessage', 'signPsbt', 'getAccountAddresses']
@@ -62,7 +64,7 @@ export const WcHelpersUtil = {
       const caipNetworkId = `${chainNamespace}:${id}`
 
       // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
-      const namespace = acc[chainNamespace] as Namespace
+      const namespace = acc[chainNamespace]
 
       namespace.chains.push(caipNetworkId)
 

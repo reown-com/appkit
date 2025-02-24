@@ -277,7 +277,7 @@ export class ModalValidator {
     const coinbaseConnector = this.page.getByTestId(
       /^wallet-selector-featured-fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa/u
     )
-    await expect(coinbaseConnector).toBeVisible()
+    await expect(coinbaseConnector).toBeVisible({ timeout: 10_000 })
   }
 
   async expectMultipleAccounts() {

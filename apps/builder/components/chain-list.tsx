@@ -1,6 +1,6 @@
 'use client'
 
-import type { ChainNamespace } from '@reown/appkit-common'
+import { type ChainNamespace } from '@reown/appkit-common'
 import { useAppKitAccount } from '@reown/appkit-core/react'
 
 import { ExclamationMarkIcon } from '@/components/icon/exclamation-mark'
@@ -23,38 +23,44 @@ const CHAIN_OPTIONS = [
 export function ChainList() {
   const { caipAddress } = useAppKitAccount()
   const { enabledChains, removeChain, addChain } = useAppKitContext()
+
   const handleChainChange = (chainId: ChainNamespace) => {
     if (enabledChains.includes(chainId)) {
       if (enabledChains.length > 1) {
         removeChain(chainId)
       }
     } else {
-      addChain(chainId)
+      addChain(chainId, undefined)
     }
   }
 
   return (
     <div className="flex flex-col gap-2">
       <div className="flex gap-2">
-        {CHAIN_OPTIONS.map(chain => (
-          <RoundOptionItem
-            key={chain.id}
-            enabled={enabledChains.includes(chain.id)}
-            disabled={
-              Boolean(caipAddress) ||
-              (enabledChains.includes(chain.id) && enabledChains.length === 1)
-            }
-            imageSrc={chain.imageSrc}
-            onChange={() => handleChainChange(chain.id)}
-            name={chain.name}
-          />
-        ))}
+        {CHAIN_OPTIONS.map(chain => {
+          const isLastChainInNamespace =
+            enabledChains.includes(chain.id) && enabledChains.length === 1
+
+          return (
+            <RoundOptionItem
+              key={chain.id}
+              enabled={enabledChains.includes(chain.id)}
+              imageSrc={chain.imageSrc}
+              onChange={() => handleChainChange(chain.id)}
+              name={chain.name}
+              disabled={isLastChainInNamespace}
+              message={isLastChainInNamespace ? 'Have at least one chain enabled' : ''}
+            />
+          )
+        })}
       </div>
       {caipAddress ? (
         <Alert>
           <div className="flex items-center gap-3">
             <ExclamationMarkIcon />
-            <AlertDescription>Customizing the chains available when disconnected</AlertDescription>
+            <AlertDescription>
+              You can only customize chains when your wallet is disconnected.
+            </AlertDescription>
           </div>
         </Alert>
       ) : null}

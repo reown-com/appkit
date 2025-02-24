@@ -10,6 +10,8 @@ interface RoundOptionItemProps {
   onChange: () => void
   disabled?: boolean
   name: string
+  size?: 'sm' | 'md'
+  message?: string
 }
 
 export function RoundOptionItem({
@@ -17,28 +19,38 @@ export function RoundOptionItem({
   imageSrc,
   onChange,
   disabled,
-  name
+  name,
+  size = 'md',
+  message
 }: RoundOptionItemProps) {
   return (
     <TooltipProvider>
-      <Tooltip delayDuration={500}>
+      <Tooltip delayDuration={0}>
         <TooltipTrigger asChild>
           <button
             onClick={onChange}
             disabled={disabled}
             className={cn(
-              'w-12 h-12 rounded-full transition-all flex items-center justify-center',
+              'rounded-full transition-all flex items-center justify-center',
+              size === 'sm' && 'w-10 h-10',
+              size === 'md' && 'w-12 h-12',
               enabled
                 ? 'border border-border-accent bg-background-accent-primary/10 dark:bg-background-accent-primary/10'
                 : 'border border-neutral-300 dark:border-neutral-700',
-              disabled && 'opacity-50 cursor-not-allowed'
+              disabled && 'cursor-not-allowed'
             )}
           >
-            <Image src={imageSrc} alt={name} width={32} height={32} />
+            <Image
+              src={imageSrc}
+              alt={name}
+              width={size === 'sm' ? 28 : 32}
+              height={size === 'sm' ? 28 : 32}
+              className="rounded-2xl"
+            />
           </button>
         </TooltipTrigger>
         <TooltipContent>
-          <p>{name}</p>
+          <p className="text-sm leading-none text-center">{message || name}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

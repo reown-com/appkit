@@ -1,0 +1,27 @@
+{
+  "name": "@examples/nuxt-wagmi-solana-bitcoin",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@reown/appkit": "workspace:*",
+    "@reown/appkit-adapter-wagmi": "workspace:*",
+    "@reown/appkit-adapter-solana": "workspace:*",
+    "@reown/appkit-adapter-bitcoin": "workspace:*",
+    "@tanstack/vue-query": "5.59.16",
+    "@vue/devtools-api": "7.6.8",
+    "@wagmi/core": "2.16.3",
+    "@wagmi/vue": "0.0.56",
+    "@walletconnect/logger": "2.1.2",
+    "nuxt": "3.14.1592",
+    "viem": "2.22.19",
+    "vue": "3.5.13",
+    "vue-router": "latest"
+  }
+}
