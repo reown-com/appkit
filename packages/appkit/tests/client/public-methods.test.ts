@@ -596,6 +596,20 @@ describe('Base Public methods', () => {
     expect(setConnectedWalletInfo).toHaveBeenCalledWith(walletInfo, mainnet.chainNamespace)
   })
 
+  it('should set connected wallet info with type', () => {
+    const walletInfo = { name: 'MetaMask', icon: 'icon-url' }
+    const setConnectedWalletInfo = vi.spyOn(AccountController, 'setConnectedWalletInfo')
+    vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValueOnce('WALLET_CONNECT')
+
+    const appKit = new AppKit(mockOptions)
+    appKit.setConnectedWalletInfo(walletInfo, mainnet.chainNamespace)
+
+    expect(setConnectedWalletInfo).toHaveBeenCalledWith(
+      { ...walletInfo, type: 'WALLET_CONNECT' },
+      mainnet.chainNamespace
+    )
+  })
+
   it('should set smart account enabled networks', () => {
     const networks = [1, 137]
     const setSmartAccountEnabledNetworks = vi.spyOn(

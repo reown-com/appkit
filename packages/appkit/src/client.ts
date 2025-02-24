@@ -570,7 +570,12 @@ export class AppKit {
     connectedWalletInfo,
     chain
   ) => {
-    AccountController.setConnectedWalletInfo(connectedWalletInfo, chain)
+    AccountController.setConnectedWalletInfo(
+      connectedWalletInfo
+        ? { type: ProviderUtil.getProviderId(chain), ...connectedWalletInfo }
+        : undefined,
+      chain
+    )
   }
 
   public setSmartAccountEnabledNetworks: (typeof ChainController)['setSmartAccountEnabledNetworks'] =
@@ -1742,6 +1747,15 @@ export class AppKit {
           },
           chainNamespace
         )
+      }
+    } else if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH) {
+      const provider = this.authProvider
+
+      if (provider) {
+        const social = StorageUtil.getConnectedSocialProvider() ?? 'email'
+        const identifier = provider.getEmail() ?? provider.getUsername()
+
+        this.setConnectedWalletInfo({ name: providerType, identifier, social }, chainNamespace)
       }
     } else if (connectorId) {
       if (connectorId === ConstantsUtil.CONNECTOR_ID.COINBASE) {

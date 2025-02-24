@@ -235,7 +235,8 @@ export const SIWXUtil = {
       {
         ...result.session.peer.metadata,
         name: result.session.peer.metadata.name,
-        icon: result.session.peer.metadata.icons?.[0]
+        icon: result.session.peer.metadata.icons?.[0],
+        type: 'WALLET_CONNECT'
       },
       Array.from(namespaces)[0] as ChainNamespace
     )
