@@ -143,8 +143,8 @@ export const BlockchainApiController = {
     }
   },
 
-  async isNetworkSupported(network?: CaipNetworkId) {
-    if (!network) {
+  async isNetworkSupported(networkId?: CaipNetworkId) {
+    if (!networkId) {
       return false
     }
     try {
@@ -157,8 +157,9 @@ export const BlockchainApiController = {
       return false
     }
 
-    return state.supportedChains.http.includes(network)
+    return state.supportedChains.http.includes(networkId)
   },
+
   async getSupportedNetworks({ projectId }: { projectId: string }) {
     const supportedChains = await state.api.get<BlockchainApiControllerState['supportedChains']>({
       path: 'v1/supported-chains',
@@ -171,10 +172,15 @@ export const BlockchainApiController = {
 
     return supportedChains
   },
-  async fetchIdentity({ address }: BlockchainApiIdentityRequest) {
-    const isSupported = await BlockchainApiController.isNetworkSupported(
-      ChainController.state.activeCaipNetwork?.caipNetworkId
-    )
+
+  async fetchIdentity({
+    address,
+    caipNetworkId
+  }: BlockchainApiIdentityRequest & {
+    caipNetworkId: CaipNetworkId
+  }) {
+    const isSupported = await BlockchainApiController.isNetworkSupported(caipNetworkId)
+
     if (!isSupported) {
       return { avatar: '', name: '' }
     }
