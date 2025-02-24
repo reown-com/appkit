@@ -266,7 +266,7 @@ export class W3mHeader extends LitElement {
 
   private isAllowedNetworkSwitch() {
     const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
-    const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length > 1 : false
+    const isMultiNetwork = requestedCaipNetworks ? requestedCaipNetworks.length >= 1 : false
     const isValidNetwork = requestedCaipNetworks?.find(({ id }) => id === this.network?.id)
 
     return isMultiNetwork || !isValidNetwork
