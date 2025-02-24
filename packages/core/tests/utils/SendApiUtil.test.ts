@@ -48,6 +48,8 @@ const mockSolanaNetwork = {
     }
   }
 } as const
+const mockEthereumAddress = '0x1234567890123456789012345678901234567890'
+const mockEthChainIdAsHex = '0x1'
 
 describe('SendApiUtil', () => {
   beforeEach(() => {
@@ -55,17 +57,18 @@ describe('SendApiUtil', () => {
   })
 
   afterEach(() => {
-    vi.restoreAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('getMyTokensWithBalance', () => {
-    const mockAddress = '0x123'
-    const mockChainIdHex = '0x1'
-
     beforeEach(() => {
-      AccountController.state.address = mockAddress
+      AccountController.state.address = mockEthereumAddress
       ChainController.state.activeCaipNetwork = mockEthereumNetwork
-      vi.mocked(ERC7811Utils.getChainIdHexFromCAIP2ChainId).mockReturnValue(mockChainIdHex)
+      vi.mocked(ERC7811Utils.getChainIdHexFromCAIP2ChainId).mockReturnValue(mockEthChainIdAsHex)
+    })
+
+    afterEach(() => {
+      vi.clearAllMocks()
     })
 
     it('should return empty array when address is missing', async () => {
@@ -82,45 +85,49 @@ describe('SendApiUtil', () => {
 
     it('should use ERC7811 for EIP155 chain when wallet_getAssets is available', async () => {
       const mockAssetsResponse: WalletGetAssetsResponse = {
-        [mockChainIdHex]: [
+        [mockEthChainIdAsHex]: [
           {
-            address: '0x123',
+            address: mockEthereumAddress as `0x${string}`,
             balance: '0xDE0B6B3A7640000',
-            type: 'ERC20',
+            type: 'NATIVE',
             metadata: {
               name: 'Ethereum',
               symbol: 'ETH',
               decimals: 18,
-              price: 0,
-              iconUrl: ''
+              value: 0.0001,
+              price: 3200,
+              iconUrl: 'https://example.com/icon.png'
             }
           }
         ]
       }
+
+      AccountController.state.address = mockEthereumAddress
+      ChainController.state.activeCaipNetwork = mockEthereumNetwork
       const mockBalance = {
         symbol: 'ETH',
-        quantity: { decimals: '18', numeric: '1.0' },
+        quantity: { decimals: '18', numeric: '0.0001' },
         name: 'Ethereum',
-        chainId: mockChainIdHex,
-        price: 0,
-        iconUrl: ''
+        chainId: mockEthChainIdAsHex,
+        price: 3200,
+        iconUrl: 'https://example.com/icon.png'
       }
 
       vi.mocked(ConnectionController.getCapabilities).mockResolvedValue({
-        [mockChainIdHex]: {
+        [mockEthChainIdAsHex]: {
           assetDiscovery: {
             supported: true
           }
         }
       })
       vi.mocked(ConnectionController.walletGetAssets).mockResolvedValue(mockAssetsResponse)
+      vi.mocked(ERC7811Utils.isWalletGetAssetsResponse).mockReturnValue(true)
       vi.mocked(ERC7811Utils.createBalance).mockReturnValue(mockBalance)
 
       const result = await SendApiUtil.getMyTokensWithBalance()
-
       expect(ConnectionController.walletGetAssets).toHaveBeenCalledWith({
-        account: mockAddress,
-        chainFilter: [mockChainIdHex]
+        account: mockEthereumAddress,
+        chainFilter: [mockEthChainIdAsHex]
       })
       expect(result).toEqual([mockBalance])
     })
@@ -158,7 +165,7 @@ describe('SendApiUtil', () => {
           symbol: 'ETH',
           quantity: { decimals: '18', numeric: '1.0' },
           name: 'Ethereum',
-          chainId: mockChainIdHex,
+          chainId: mockEthChainIdAsHex,
           price: 0,
           iconUrl: ''
         }
@@ -170,7 +177,7 @@ describe('SendApiUtil', () => {
       const result = await SendApiUtil.getMyTokensWithBalance()
 
       expect(BlockchainApiController.getBalance).toHaveBeenCalledWith(
-        mockAddress,
+        mockEthereumAddress,
         mockEthereumNetwork.caipNetworkId,
         undefined
       )
@@ -183,7 +190,7 @@ describe('SendApiUtil', () => {
           symbol: 'ETH',
           quantity: { decimals: '18', numeric: '1.0' },
           name: 'Ethereum',
-          chainId: mockChainIdHex,
+          chainId: mockEthChainIdAsHex,
           price: 0,
           iconUrl: ''
         },
@@ -191,7 +198,7 @@ describe('SendApiUtil', () => {
           symbol: 'TEST',
           quantity: { decimals: '0', numeric: '0' },
           name: 'Test Token',
-          chainId: mockChainIdHex,
+          chainId: mockEthChainIdAsHex,
           price: 0,
           iconUrl: ''
         }
@@ -206,6 +213,10 @@ describe('SendApiUtil', () => {
   })
 
   describe('mapBalancesToSwapTokens', () => {
+    afterEach(() => {
+      vi.clearAllMocks()
+    })
+
     it('should map balances to swap tokens correctly', () => {
       const mockBalances = [
         {
@@ -260,8 +271,134 @@ describe('SendApiUtil', () => {
       expect(result[0]?.address).toBe(mockNetworkTokenAddress)
     })
 
+    it('should handle empty balances', () => {
+      const result = SendApiUtil.mapBalancesToSwapTokens([])
+      expect(result).toEqual([])
+    })
+
     it('should handle undefined balances', () => {
-      const result = SendApiUtil.mapBalancesToSwapTokens([] as Balance[])
+      const result = SendApiUtil.mapBalancesToSwapTokens(undefined as unknown as Balance[])
+      expect(result).toEqual([])
+    })
+  })
+
+  describe('getEIP155Balances', () => {
+    beforeEach(() => {
+      AccountController.state.address = mockEthereumAddress
+      ChainController.state.activeCaipNetwork = mockEthereumNetwork
+      vi.mocked(ERC7811Utils.getChainIdHexFromCAIP2ChainId).mockReturnValue(mockEthChainIdAsHex)
+    })
+
+    afterEach(() => {
+      vi.clearAllMocks()
+    })
+
+    it('should return null when walletGetAssetsResponse is invalid', async () => {
+      const invalidResponse = { invalid: 'response' }
+
+      vi.mocked(ConnectionController.getCapabilities).mockResolvedValue({
+        [mockEthChainIdAsHex]: {
+          assetDiscovery: {
+            supported: true
+          }
+        }
+      })
+      vi.mocked(ConnectionController.walletGetAssets).mockResolvedValue(invalidResponse)
+      vi.mocked(ERC7811Utils.isWalletGetAssetsResponse).mockReturnValue(false) // Mock the type guard to return false
+
+      const result = await SendApiUtil.getEIP155Balances(mockEthereumAddress, mockEthereumNetwork)
+
+      expect(result).toBeNull()
+    })
+
+    it('should return null when asset discovery fails', async () => {
+      const errorMessage = 'Network error'
+
+      vi.mocked(ConnectionController.getCapabilities).mockResolvedValue({
+        [mockEthChainIdAsHex]: {
+          assetDiscovery: {
+            supported: true
+          }
+        }
+      })
+      vi.mocked(ConnectionController.walletGetAssets).mockRejectedValue(new Error(errorMessage))
+
+      const result = await SendApiUtil.getEIP155Balances(mockEthereumAddress, mockEthereumNetwork)
+
+      expect(result).toBeNull()
+    })
+
+    it('should return assets when walletGetAssetsResponse contains chainIdHex', async () => {
+      const mockAssetsResponse = {
+        [mockEthChainIdAsHex]: [
+          {
+            address: mockEthereumAddress as `0x${string}`,
+            balance: '0xDE0B6B3A7640000' as `0x${string}`,
+            type: 'NATIVE' as const,
+            metadata: {
+              name: 'Ethereum',
+              symbol: 'ETH',
+              decimals: 18,
+              value: 0.0001,
+              price: 3200,
+              iconUrl: 'https://example.com/icon.png'
+            }
+          }
+        ]
+      }
+
+      vi.mocked(ConnectionController.getCapabilities).mockResolvedValue({
+        [mockEthChainIdAsHex]: {
+          assetDiscovery: {
+            supported: true
+          }
+        }
+      })
+      vi.mocked(ConnectionController.walletGetAssets).mockResolvedValue(mockAssetsResponse)
+      vi.mocked(ERC7811Utils.isWalletGetAssetsResponse).mockReturnValue(true) // Mock the type guard to return true
+      vi.mocked(ERC7811Utils.createBalance).mockReturnValue({
+        symbol: 'ETH',
+        quantity: { decimals: '18', numeric: '0.0001' },
+        name: 'Ethereum',
+        chainId: mockEthChainIdAsHex,
+        price: 3200,
+        iconUrl: 'https://example.com/icon.png'
+      })
+
+      const result = await SendApiUtil.getEIP155Balances(mockEthereumAddress, mockEthereumNetwork)
+
+      expect(result).toBeDefined()
+      expect(result).toHaveLength(1)
+      expect(result).not.toBeNull()
+      if (result) {
+        expect(result[0]).toMatchObject({
+          symbol: 'ETH',
+          quantity: { decimals: '18', numeric: '0.0001' },
+          name: 'Ethereum',
+          chainId: mockEthChainIdAsHex,
+          price: 3200,
+          iconUrl: 'https://example.com/icon.png'
+        })
+      }
+    })
+
+    it('should return an empty array when walletGetAssetsResponse does not contain chainIdHex', async () => {
+      const mockAssetsResponse = {
+        '0x2': []
+      }
+
+      vi.mocked(ConnectionController.getCapabilities).mockResolvedValue({
+        [mockEthChainIdAsHex]: {
+          assetDiscovery: {
+            supported: true
+          }
+        }
+      })
+      vi.mocked(ConnectionController.walletGetAssets).mockResolvedValue(mockAssetsResponse)
+      vi.mocked(ERC7811Utils.isWalletGetAssetsResponse).mockReturnValue(true)
+
+      const result = await SendApiUtil.getEIP155Balances(mockEthereumAddress, mockEthereumNetwork)
+
       expect(result).toEqual([])
     })
   })
