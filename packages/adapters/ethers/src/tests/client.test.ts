@@ -78,7 +78,7 @@ const mockAuthProvider = {
   connect: vi.fn(),
   disconnect: vi.fn(),
   switchNetwork: vi.fn(),
-  getUser: vi.fn()
+  getUser: vi.fn().mockResolvedValue({})
 } as unknown as W3mFrameProvider
 
 const mockNetworks = [mainnet, polygon]
@@ -389,20 +389,6 @@ describe('EthersAdapter', () => {
       { data: { originalError: { code: WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID } } }
     ]
 
-    it('should switch network with Auth provider', async () => {
-      await adapter.switchNetwork({
-        caipNetwork: mockCaipNetworks[0],
-        provider: mockAuthProvider,
-        providerType: 'AUTH'
-      })
-
-      expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith('eip155:1')
-      expect(mockAuthProvider.getUser).toHaveBeenCalledWith({
-        chainId: 'eip155:1',
-        preferredAccountType: 'smartAccount'
-      })
-    })
-
     errorCodes.forEach(errorCode => {
       it(`should add Ethereum chain when switch fails with error code: ${JSON.stringify(
         errorCode
@@ -447,8 +433,46 @@ describe('EthersAdapter', () => {
       })
     })
 
-    it('should throw error when adding chain fails', async () => {
-      // Mock switch request to fail
+    it('should switch network with Auth provider', async () => {
+      await adapter.switchNetwork({
+        caipNetwork: mockCaipNetworks[0],
+        provider: mockAuthProvider,
+        providerType: 'AUTH'
+      })
+
+      expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith('eip155:1')
+      expect(mockAuthProvider.getUser).toHaveBeenCalledWith({
+        chainId: 'eip155:1',
+        preferredAccountType: 'smartAccount'
+      })
+    })
+
+    it('should receive chain id after switching network with Auth provider', async () => {
+      vi.spyOn(mockAuthProvider, 'getUser').mockResolvedValue({
+        chainId: 'eip155:1'
+      } as any)
+
+      const handleSwitchNetwork = vi.fn()
+
+      adapter.on('switchNetwork', handleSwitchNetwork)
+
+      await adapter.switchNetwork({
+        caipNetwork: CaipNetworksUtil.extendCaipNetwork(mainnet, {
+          projectId: 'test-project-id',
+          customNetworkImageUrls: {}
+        }),
+        provider: mockAuthProvider,
+        providerType: 'AUTH'
+      })
+
+      expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith('eip155:1')
+      expect(handleSwitchNetwork).toHaveBeenCalledWith({
+        chainId: String(mainnet.id)
+      })
+    })
+
+    it('should add Ethereum chain with external provider and use chain default', async () => {
+      // Mock request so that switchEthereumChain throws with code: WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
       vi.mocked(mockProvider.request).mockImplementation(request => {
         if (request.method === 'wallet_switchEthereumChain') {
           throw new ErrorWithCode(
