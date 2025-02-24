@@ -227,7 +227,8 @@ describe('SIWE mapped to SIWX', () => {
           name: 'mock-name',
           url: 'mock-url',
           description: 'mock-description',
-          icon: 'mock-icon'
+          icon: 'mock-icon',
+          type: 'WALLET_CONNECT'
         },
         'eip155'
       )

@@ -54,6 +54,7 @@ export type CaipNetworkCoinbaseNetwork =
 export type ConnectedWalletInfo = {
   name: string
   icon?: string
+  type?: string
   [key: string]: unknown
 }
 
