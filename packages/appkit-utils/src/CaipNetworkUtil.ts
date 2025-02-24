@@ -1,11 +1,13 @@
+import { fallback, http } from 'viem'
+
 import {
-  ConstantsUtil,
   type AppKitNetwork,
   type CaipNetwork,
-  type CaipNetworkId
+  type CaipNetworkId,
+  ConstantsUtil
 } from '@reown/appkit-common'
+
 import { PresetsUtil } from './PresetsUtil.js'
-import { fallback, http } from 'viem'
 
 const RPC_URL_HOST = 'rpc.walletconnect.org'
 
@@ -92,6 +94,15 @@ export const CaipNetworksUtil = {
     return rpcUrl
   },
 
+  isCaipNetworkId(networkId: string): networkId is CaipNetworkId {
+    const sections = networkId.split(':')
+    const namespace = sections[0]
+
+    return (
+      sections.filter(Boolean).length === 2 && (namespace as string) in ConstantsUtil.CHAIN_NAME_MAP
+    )
+  },
+
   isCaipNetwork(network: AppKitNetwork): network is CaipNetwork {
     return 'chainNamespace' in network && 'caipNetworkId' in network
   },
@@ -134,11 +145,12 @@ export const CaipNetworksUtil = {
    * @returns The extended array of CaipNetwork objects
    */
   extendCaipNetwork(
-    caipNetwork: AppKitNetwork,
+    caipNetwork: AppKitNetwork | CaipNetwork,
     { customNetworkImageUrls, projectId, customRpc }: ExtendCaipNetworkParams
   ): CaipNetwork {
     const caipNetworkId = this.getCaipNetworkId(caipNetwork)
     const chainNamespace = this.getChainNamespace(caipNetwork)
+    const chainDefaultUrl = caipNetwork?.rpcUrls?.['chainDefault']?.http?.[0]
 
     let rpcUrl = ''
     if (customRpc) {
@@ -164,7 +176,7 @@ export const CaipNetworksUtil = {
         },
         // Save the networks original RPC URL default
         chainDefault: {
-          http: [caipNetwork.rpcUrls.default.http[0] || '']
+          http: [chainDefaultUrl || caipNetwork.rpcUrls.default.http[0] || '']
         }
       }
     }
@@ -197,14 +209,14 @@ export const CaipNetworksUtil = {
   },
 
   getViemTransport(caipNetwork: CaipNetwork) {
-    const chainDefaultUrl = caipNetwork.rpcUrls.default.http?.[0]
+    const defaultRpcUrl = caipNetwork.rpcUrls.default.http?.[0]
 
     if (!WC_HTTP_RPC_SUPPORTED_CHAINS.includes(caipNetwork.caipNetworkId)) {
-      return http(chainDefaultUrl)
+      return http(defaultRpcUrl)
     }
 
     return fallback([
-      http(chainDefaultUrl, {
+      http(defaultRpcUrl, {
         /*
          * The Blockchain API uses "Content-Type: text/plain" to avoid OPTIONS preflight requests
          * It will only work for viem >= 2.17.7
@@ -215,7 +227,7 @@ export const CaipNetworksUtil = {
           }
         }
       }),
-      http(chainDefaultUrl)
+      http(defaultRpcUrl)
     ])
   }
 }

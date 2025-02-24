@@ -1,6 +1,11 @@
+import { LitElement, html } from 'lit'
+import { property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import type { WcWallet } from '@reown/appkit-core'
 import {
   AssetUtil,
+  ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   OptionsController,
@@ -8,9 +13,6 @@ import {
   StorageUtil
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-connect-custom-widget')
 export class W3mConnectCustomWidget extends LitElement {
@@ -21,12 +23,19 @@ export class W3mConnectCustomWidget extends LitElement {
   @property() public tabIdx?: number = undefined
 
   @state() private connectors = ConnectorController.state.connectors
+  @state() private loading = false
 
   public constructor() {
     super()
     this.unsubscribe.push(
       ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
     )
+    if (CoreHelperUtil.isTelegram() && CoreHelperUtil.isIos()) {
+      this.loading = !ConnectionController.state.wcUri
+      this.unsubscribe.push(
+        ConnectionController.subscribeKey('wcUri', val => (this.loading = !val))
+      )
+    }
   }
 
   public override disconnectedCallback() {
@@ -54,6 +63,7 @@ export class W3mConnectCustomWidget extends LitElement {
             @click=${() => this.onConnectWallet(wallet)}
             data-testid=${`wallet-selector-${wallet.id}`}
             tabIdx=${ifDefined(this.tabIdx)}
+            ?loading=${this.loading}
           >
           </wui-list-wallet>
         `
@@ -81,6 +91,9 @@ export class W3mConnectCustomWidget extends LitElement {
   }
 
   private onConnectWallet(wallet: WcWallet) {
+    if (this.loading) {
+      return
+    }
     RouterController.push('ConnectingWalletConnect', { wallet })
   }
 }

@@ -1,11 +1,12 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { LogoType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-logo/index.js'
 import styles from './styles.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('wui-logo-select')
 export class WuiLogoSelect extends LitElement {
@@ -21,7 +22,7 @@ export class WuiLogoSelect extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.disabled} tabindex=${ifDefined(this.tabIdx)} ontouchstart>
+      <button ?disabled=${this.disabled} tabindex=${ifDefined(this.tabIdx)}>
         <wui-logo logo=${this.logo}></wui-logo>
       </button>
     `

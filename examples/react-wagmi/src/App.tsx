@@ -1,11 +1,10 @@
-import { useAppKitTheme, wagmiAdapter } from './config'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { WagmiProvider } from 'wagmi'
 
 import ActionButtonList from './components/ActionButton'
-import InfoList from './components/InfoList'
 import Footer from './components/Footer'
-
-import { WagmiProvider } from 'wagmi'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import InfoList from './components/InfoList'
+import { useAppKitTheme, wagmiAdapter } from './config'
 
 const queryClient = new QueryClient()
 

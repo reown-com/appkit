@@ -1,12 +1,13 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
-import '../../components/wui-text/index.js'
+
 import '../../components/wui-image/index.js'
+import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import type { ColorType, IconType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
-import type { ColorType, IconType } from '../../utils/TypeUtil.js'
 
 @customElement('wui-list-description')
 export class WuiListDescription extends LitElement {
@@ -30,7 +31,7 @@ export class WuiListDescription extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ontouchstart ?disabled=${this.disabled}>
+      <button ?disabled=${this.disabled}>
         <wui-icon-box
           iconColor=${this.iconColor}
           backgroundColor=${this.iconBackgroundColor}

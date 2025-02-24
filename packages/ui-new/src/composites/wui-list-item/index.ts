@@ -1,6 +1,7 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+
 import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import '../../components/wui-loading-spinner/index.js'
@@ -45,7 +46,6 @@ export class WuiListItem extends LitElement {
         data-loading=${this.loading}
         data-iconvariant=${ifDefined(this.iconVariant)}
         tabindex=${ifDefined(this.tabIdx)}
-        ontouchstart
       >
         ${this.loadingTemplate()} ${this.visualTemplate()}
         <wui-flex gap="3xs">

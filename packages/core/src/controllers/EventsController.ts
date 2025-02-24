@@ -1,7 +1,12 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
+
+import { ConstantsUtil, isSafe } from '@reown/appkit-common'
+
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { FetchUtil } from '../utils/FetchUtil.js'
 import type { Event } from '../utils/TypeUtil.js'
+import { AccountController } from './AccountController.js'
+import { AlertController } from './AlertController.js'
 import { OptionsController } from './OptionsController.js'
 
 // -- Helpers ------------------------------------------- //
@@ -12,12 +17,14 @@ const excluded = ['MODAL_CREATED']
 // -- Types --------------------------------------------- //
 export interface EventsControllerState {
   timestamp: number
+  reportedErrors: Record<string, boolean>
   data: Event
 }
 
 // -- State --------------------------------------------- //
 const state = proxy<EventsControllerState>({
   timestamp: Date.now(),
+  reportedErrors: {},
   data: {
     type: 'track',
     event: 'MODAL_CREATED'
@@ -32,35 +39,56 @@ export const EventsController = {
     return sub(state, () => callback(state))
   },
 
-  _getApiHeaders() {
+  getSdkProperties() {
     const { projectId, sdkType, sdkVersion } = OptionsController.state
 
     return {
-      'x-project-id': projectId,
-      'x-sdk-type': sdkType,
-      'x-sdk-version': sdkVersion || 'html-wagmi-4.2.2'
+      projectId,
+      st: sdkType,
+      sv: sdkVersion || 'html-wagmi-4.2.2'
     }
   },
 
   async _sendAnalyticsEvent(payload: EventsControllerState) {
     try {
+      const address = AccountController.state.address
       if (excluded.includes(payload.data.event) || typeof window === 'undefined') {
         return
       }
 
       await api.post({
         path: '/e',
-        headers: EventsController._getApiHeaders(),
+        params: EventsController.getSdkProperties(),
         body: {
           eventId: CoreHelperUtil.getUUID(),
           url: window.location.href,
           domain: window.location.hostname,
           timestamp: payload.timestamp,
-          props: payload.data
+          props: { ...payload.data, address }
         }
       })
-    } catch {
-      // Catch silently
+
+      state.reportedErrors['FORBIDDEN'] = false
+    } catch (err) {
+      const isForbiddenError =
+        err instanceof Error &&
+        err.cause instanceof Response &&
+        err.cause.status === ConstantsUtil.HTTP_STATUS_CODES.FORBIDDEN &&
+        !state.reportedErrors['FORBIDDEN']
+
+      if (isForbiddenError) {
+        AlertController.open(
+          {
+            shortMessage: 'Invalid App Configuration',
+            longMessage: `Origin ${
+              isSafe() ? window.origin : 'uknown'
+            } not found on Allowlist - update configuration on cloud.reown.com`
+          },
+          'error'
+        )
+
+        state.reportedErrors['FORBIDDEN'] = true
+      }
     }
   },
 

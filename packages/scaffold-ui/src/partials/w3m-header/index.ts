@@ -1,5 +1,10 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
   AccountController,
+  AssetController,
   AssetUtil,
   ChainController,
   ConnectionController,
@@ -11,11 +16,9 @@ import {
   SIWXUtil
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
-import styles from './styles.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import styles from './styles.js'
 
 // -- Constants ----------------------------------------- //
 const BETA_SCREENS: string[] = ['SmartSessionList']
@@ -102,6 +105,8 @@ export class W3mHeader extends LitElement {
 
   @state() private network = ChainController.state.activeCaipNetwork
 
+  @state() private networkImage = AssetUtil.getNetworkImage(this.network)
+
   @state() private buffering = false
 
   @state() private showBack = false
@@ -117,6 +122,9 @@ export class W3mHeader extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
+      AssetController.subscribeNetworkImages(() => {
+        this.networkImage = AssetUtil.getNetworkImage(this.network)
+      }),
       RouterController.subscribeKey('view', val => {
         setTimeout(() => {
           this.view = val
@@ -126,7 +134,10 @@ export class W3mHeader extends LitElement {
         this.onHistoryChange()
       }),
       ConnectionController.subscribeKey('buffering', val => (this.buffering = val)),
-      ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val))
+      ChainController.subscribeKey('activeCaipNetwork', val => {
+        this.network = val
+        this.networkImage = AssetUtil.getNetworkImage(this.network)
+      })
     )
   }
 
@@ -224,7 +235,7 @@ export class W3mHeader extends LitElement {
         data-testid="w3m-account-select-network"
         active-network=${ifDefined(this.network?.name)}
         @click=${this.onNetworks.bind(this)}
-        imageSrc=${ifDefined(AssetUtil.getNetworkImage(this.network))}
+        imageSrc=${ifDefined(this.networkImage)}
       ></wui-select>`
     }
 

@@ -1,8 +1,10 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { customElement, type ColorType } from '@reown/appkit-ui'
+
 import { AssetUtil, ChainController, type OnRampProvider } from '@reown/appkit-core'
+import { type ColorType, customElement } from '@reown/appkit-ui'
+
 import styles from './styles.js'
 
 @customElement('w3m-onramp-provider-item')
@@ -27,7 +29,7 @@ export class W3mOnRampProviderItem extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.disabled} ontouchstart>
+      <button ?disabled=${this.disabled}>
         <wui-visual name=${ifDefined(this.name)} class="provider-image"></wui-visual>
         <wui-flex flexDirection="column" gap="4xs">
           <wui-text variant="paragraph-500" color="fg-100">${this.label}</wui-text>

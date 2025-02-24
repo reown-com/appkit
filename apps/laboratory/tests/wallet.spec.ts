@@ -1,11 +1,13 @@
-import { test, type BrowserContext } from '@playwright/test'
-import { DEFAULT_CHAIN_NAME } from './shared/constants'
-import { WalletPage } from './shared/pages/WalletPage'
-import { WalletValidator } from './shared/validators/WalletValidator'
-import { ModalPage } from './shared/pages/ModalPage'
-import { ModalValidator } from './shared/validators/ModalValidator'
-import { mainnet, polygon, solana, solanaTestnet } from '@reown/appkit/networks'
+import { type BrowserContext, test } from '@playwright/test'
+
 import type { CaipNetworkId } from '@reown/appkit'
+import { mainnet, polygon, solana, solanaTestnet } from '@reown/appkit/networks'
+
+import { DEFAULT_CHAIN_NAME } from './shared/constants'
+import { ModalPage } from './shared/pages/ModalPage'
+import { WalletPage } from './shared/pages/WalletPage'
+import { ModalValidator } from './shared/validators/ModalValidator'
+import { WalletValidator } from './shared/validators/WalletValidator'
 
 /* eslint-disable init-declarations */
 let modalPage: ModalPage
@@ -145,6 +147,7 @@ sampleWalletTest('it should show last connected network after refreshing', async
 
 sampleWalletTest('it should reject sign', async ({ library }) => {
   const chainName = library === 'solana' ? 'Solana Testnet' : 'Polygon'
+
   await modalPage.sign()
   await walletValidator.expectReceivedSign({ chainName })
   await walletPage.handleRequest({ accept: false })
@@ -205,6 +208,29 @@ sampleWalletTest(
     await modalValidator.expectNetworkNotSupportedVisible()
     await walletPage.switchNetwork('eip155:1')
     await modalValidator.expectConnected()
+    await modalPage.closeModal()
+  }
+)
+
+sampleWalletTest(
+  "it should switch to first available network when wallet doesn't support the active network of the appkit",
+  async ({ library }) => {
+    if (library === 'solana') {
+      return
+    }
+
+    await walletPage.disconnectConnection()
+    await modalValidator.expectDisconnected()
+
+    await modalPage.switchNetworkWithNetworkButton('Aurora')
+    await modalValidator.expectSwitchChainWithNetworkButton('Aurora')
+    await modalPage.closeModal()
+
+    await modalPage.qrCodeFlow(modalPage, walletPage)
+    await modalValidator.expectConnected()
+    await modalPage.openModal()
+    await modalPage.openNetworks()
+    await modalValidator.expectSwitchedNetwork('Ethereum')
     await modalPage.closeModal()
   }
 )

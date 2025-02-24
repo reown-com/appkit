@@ -1,9 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import type { CaipNetwork } from '@reown/appkit-common'
 import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
+
 import { WalletStandardConnector } from '../../src/connectors/WalletStandardConnector'
-import { mockWalletStandardProvider } from '../mocks/mockWalletStandard'
 import { MethodNotSupportedError } from '../../src/errors/MethodNotSupportedError'
+import { mockWalletStandardProvider } from '../mocks/mockWalletStandard'
 
 vi.mock('@wallet-standard/app', async () =>
   Promise.resolve({
@@ -117,7 +119,7 @@ describe('WalletStandardConnector', () => {
       vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([
         mockWalletStandardProvider.mockAccount({
           address: 'address1',
-          publicKey: Buffer.from('publicKey1')
+          publicKey: new Uint8Array(Buffer.from('publicKey1'))
         })
       ])
 
@@ -135,11 +137,11 @@ describe('WalletStandardConnector', () => {
       vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([
         mockWalletStandardProvider.mockAccount({
           address: 'address1',
-          publicKey: Buffer.from('publicKey1')
+          publicKey: new Uint8Array(Buffer.from('publicKey1'))
         }),
         mockWalletStandardProvider.mockAccount({
           address: 'address1',
-          publicKey: Buffer.from('publicKey2')
+          publicKey: new Uint8Array(Buffer.from('publicKey2'))
         })
       ])
 
@@ -158,7 +160,7 @@ describe('WalletStandardConnector', () => {
     it('should sign message correctly', async () => {
       const accountMock = mockWalletStandardProvider.mockAccount({
         address: 'address',
-        publicKey: Buffer.from('publicKey1')
+        publicKey: new Uint8Array(Buffer.from('publicKey1'))
       })
       vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([accountMock])
 
@@ -213,7 +215,7 @@ describe('WalletStandardConnector', () => {
     it('should sign PSBT correctly', async () => {
       const accountMock = mockWalletStandardProvider.mockAccount({
         address: 'address',
-        publicKey: Buffer.from('publicKey1')
+        publicKey: new Uint8Array(Buffer.from('publicKey1'))
       })
       vi.spyOn(wallet, 'accounts', 'get').mockReturnValueOnce([accountMock])
 

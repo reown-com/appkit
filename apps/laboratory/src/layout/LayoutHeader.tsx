@@ -1,23 +1,28 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { IoSettingsOutline } from 'react-icons/io5'
+
+import { DownloadIcon } from '@chakra-ui/icons'
 import {
-  Image,
-  Stack,
-  HStack,
   Button,
-  Spacer,
   Link as CLink,
-  useDisclosure,
+  HStack,
+  Image,
+  Spacer,
+  Stack,
+  Text,
   useColorMode,
-  Text
+  useDisclosure
 } from '@chakra-ui/react'
 import Link from 'next/link'
-import { IoSettingsOutline } from 'react-icons/io5'
-import { OptionsDrawer } from './OptionsDrawer'
+import { usePathname } from 'next/navigation'
+
+import { useChakraToast } from '@/src/components/Toast'
+import { DOCS_URL, GALLERY_URL, REPO_URL } from '@/src/utils/ConstantsUtil'
+
 import { CustomWallet } from './CustomWallet'
-import { DownloadIcon } from '@chakra-ui/icons'
-import { useChakraToast } from '../components/Toast'
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
-import { DOCS_URL, GALLERY_URL, REPO_URL } from '../utils/ConstantsUtil'
+import { OptionsDrawer } from './OptionsDrawer'
 
 function downloadLogs(toast: ReturnType<typeof useChakraToast>) {
   type WindowWithLogs = typeof Window & {
@@ -37,12 +42,11 @@ function downloadLogs(toast: ReturnType<typeof useChakraToast>) {
 }
 
 export function LayoutHeader() {
+  const pathname = usePathname()
   const controls = useDisclosure()
   const controlsCW = useDisclosure({ id: 'customWallet' })
   const toast = useChakraToast()
   const { colorMode } = useColorMode()
-
-  const router = useRouter()
   const [origin, setOrigin] = useState('')
   useEffect(() => {
     setOrigin(window.location.origin)
@@ -79,7 +83,7 @@ export function LayoutHeader() {
           Logs
         </Button>
       </Stack>
-      <Text fontSize="2xs">{origin + router.asPath}</Text>
+      <Text fontSize="2xs">{origin + pathname}</Text>
 
       <OptionsDrawer controls={controls} />
       <CustomWallet controls={controlsCW} />

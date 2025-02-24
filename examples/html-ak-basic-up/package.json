@@ -1,0 +1,16 @@
+{
+  "name": "@examples/html-ak-basic-up",
+  "private": true,
+  "version": "1.2.0",
+  "scripts": {
+    "dev": "vite --port 3011",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@reown/appkit": "workspace:*",
+    "@walletconnect/universal-provider": "2.18.0"
+  },
+  "devDependencies": {
+    "vite": "5.4.12"
+  }
+}

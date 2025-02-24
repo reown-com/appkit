@@ -1,33 +1,38 @@
-import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 import {
-  StackDivider,
+  Box,
   Card,
+  CardBody,
   CardHeader,
   Heading,
-  CardBody,
-  Box,
   Stack,
+  StackDivider,
   Text,
   Tooltip
 } from '@chakra-ui/react'
 
-import { SolanaSignTransactionTest } from './SolanaSignTransactionTest'
-import { SolanaSendTransactionTest } from './SolanaSendTransactionTest'
-import { SolanaSignMessageTest } from './SolanaSignMessageTest'
-import { SolanaWriteContractTest } from './SolanaWriteContractTest'
 import { solana, solanaDevnet, solanaTestnet } from '@reown/appkit/networks'
-import { SolanaSignAndSendTransaction } from './SolanaSignAndSendTransactionTest'
+import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+
+import { SolanaSendTransactionTest } from './SolanaSendTransactionTest'
 import { SolanaSignAllTransactionsTest } from './SolanaSignAllTransactionsTest'
+import { SolanaSignAndSendTransaction } from './SolanaSignAndSendTransactionTest'
 import { SolanaSignJupiterSwapTest } from './SolanaSignJupiterSwapTest'
+import { SolanaSignMessageTest } from './SolanaSignMessageTest'
+import { SolanaSignTransactionTest } from './SolanaSignTransactionTest'
+import { SolanaWriteContractTest } from './SolanaWriteContractTest'
 
 export function SolanaTests() {
-  const { isConnected } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'solana' })
   const { caipNetwork } = useAppKitNetwork()
 
-  return isConnected ? (
-    <Card marginTop={10} marginBottom={10}>
+  if (!address) {
+    return null
+  }
+
+  return (
+    <Card data-testid="solana-test-interactions" marginTop={10} marginBottom={10}>
       <CardHeader>
-        <Heading size="md">Test Interactions</Heading>
+        <Heading size="md">Solana Test Interactions</Heading>
       </CardHeader>
 
       <CardBody>
@@ -112,5 +117,5 @@ export function SolanaTests() {
         </Stack>
       </CardBody>
     </Card>
-  ) : null
+  )
 }

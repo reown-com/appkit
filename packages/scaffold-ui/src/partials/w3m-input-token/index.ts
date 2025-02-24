@@ -1,10 +1,12 @@
-import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import styles from './styles.js'
 import { property } from 'lit/decorators.js'
-import { ConstantsUtil, RouterController, SendController } from '@reown/appkit-core'
+
 import type { Balance } from '@reown/appkit-common'
 import { NumberUtil } from '@reown/appkit-common'
+import { ConstantsUtil, RouterController, SendController } from '@reown/appkit-core'
+import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+
+import styles from './styles.js'
 
 @customElement('w3m-input-token')
 export class W3mInputToken extends LitElement {
@@ -121,8 +123,8 @@ export class W3mInputToken extends LitElement {
           nativeAddress => this.token?.address === nativeAddress
         )
 
-      const numericGas = NumberUtil.bigNumber(this.gasPrice).shiftedBy(
-        -this.token.quantity.decimals
+      const numericGas = NumberUtil.bigNumber(this.gasPrice).div(
+        NumberUtil.bigNumber(10).pow(Number(this.token.quantity.decimals))
       )
 
       const maxValue = isNetworkToken

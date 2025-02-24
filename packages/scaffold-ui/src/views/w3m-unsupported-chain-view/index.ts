@@ -1,5 +1,11 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
+import type { CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
+  AssetController,
   AssetUtil,
   ChainController,
   ConnectionController,
@@ -10,11 +16,8 @@ import {
   RouterController,
   SnackController
 } from '@reown/appkit-core'
-import type { CaipNetwork } from '@reown/appkit-common'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+
 import styles from './styles.js'
 
 @customElement('w3m-unsupported-chain-view')
@@ -24,8 +27,19 @@ export class W3mUnsupportedChainView extends LitElement {
   // -- Members ------------------------------------------- //
   protected readonly swapUnsupportedChain = RouterController.state.data?.swapUnsupportedChain
 
+  private unsubscribe: (() => void)[] = []
+
   // -- State & Properties --------------------------------- //
   @state() private disconecting = false
+
+  public constructor() {
+    super()
+    this.unsubscribe.push(AssetController.subscribeNetworkImages(() => this.requestUpdate()))
+  }
+
+  public override disconnectedCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
+  }
 
   // -- Render -------------------------------------------- //
   public override render() {

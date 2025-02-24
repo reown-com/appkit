@@ -1,8 +1,9 @@
 import { Box, Card, CardBody, CardHeader, Heading, Stack, StackDivider } from '@chakra-ui/react'
-import { WagmiRequestPermissionsAsyncTest } from './WagmiRequestPermissionsAsyncTest'
-import { WagmiPurchaseDonutAsyncPermissionsTest } from './WagmiPurchaseDonutAsyncPermissionsTest'
-import { SmartSessionGrantedPermissionsInfo } from '../SmartSessionGrantedPermissionsInfo'
-import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
+
+import { SmartSessionGrantedPermissionsInfo } from '@/src/components/SmartSessionGrantedPermissionsInfo'
+import { WagmiPurchaseDonutAsyncPermissionsTest } from '@/src/components/Wagmi/WagmiPurchaseDonutAsyncPermissionsTest'
+import { WagmiRequestPermissionsAsyncTest } from '@/src/components/Wagmi/WagmiRequestPermissionsAsyncTest'
+import { useERC7715Permissions } from '@/src/hooks/useERC7715Permissions'
 
 export function WagmiPermissionsAsyncTest() {
   const { smartSession } = useERC7715Permissions()
@@ -10,7 +11,7 @@ export function WagmiPermissionsAsyncTest() {
     smartSession?.type === 'async' ? smartSession.grantedPermissions : undefined
 
   return (
-    <Card marginTop={10} marginBottom={10}>
+    <Card data-testid="eip155-test-interactions" marginTop={10} marginBottom={10}>
       <CardHeader>
         <Heading size="md">Test Interactions</Heading>
       </CardHeader>

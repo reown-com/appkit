@@ -1,15 +1,16 @@
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-import styles from './styles.js'
+import { state } from 'lit/decorators.js'
+
 import {
-  SwapController,
+  ChainController,
   CoreHelperUtil,
   RouterController,
   SendController,
-  ChainController,
-  AccountController
+  SwapController
 } from '@reown/appkit-core'
-import { state } from 'lit/decorators.js'
+import { customElement } from '@reown/appkit-ui'
+
+import styles from './styles.js'
 
 @customElement('w3m-wallet-send-view')
 export class W3mWalletSendView extends LitElement {
@@ -106,13 +107,13 @@ export class W3mWalletSendView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private async fetchBalances() {
-    await AccountController.fetchTokenBalance()
+    await SendController.fetchTokenBalance()
+    SendController.fetchNetworkBalance()
   }
 
   private async fetchNetworkPrice() {
     await SwapController.getNetworkTokenPrice()
     const gas = await SwapController.getInitialGasPrice()
-    await SendController.fetchNetworkBalance()
 
     if (gas?.gasPrice && gas?.gasPriceInUSD) {
       SendController.setGasPrice(gas.gasPrice)

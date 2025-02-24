@@ -1,11 +1,12 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
+
+import { vars } from '../../utils/ThemeHelperUtil.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
-import type { TextColorType, LineClamp, TextAlign, TextType } from '../../utils/TypeUtil.js'
+import type { LineClamp, TextAlign, TextColorType, TextType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
-import { vars } from '../../utils/ThemeHelperUtil.js'
 
 // -- Constants ------------------------------------------ //
 

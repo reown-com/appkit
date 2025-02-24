@@ -18,12 +18,13 @@ import {
   getAddress,
   numberToHex
 } from 'viem'
+
 import { WcHelpersUtil } from '@reown/appkit'
-import { StorageUtil } from '@reown/appkit-core'
 import type { AppKitOptions } from '@reown/appkit'
 import type { AppKit } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+import { StorageUtil } from '@reown/appkit-core'
 
 type UniversalConnector = Connector & {
   onDisplayUri(uri: string): void
@@ -107,11 +108,9 @@ export function walletConnect(
         if (provider.session && isChainsStale) {
           await provider.disconnect()
         }
-
         // If there isn't an active session or chains are stale, connect.
         if (!provider.session || isChainsStale) {
           const namespaces = WcHelpersUtil.createNamespaces(caipNetworks)
-
           await provider.connect({
             optionalNamespaces: namespaces,
             ...('pairingTopic' in rest ? { pairingTopic: rest.pairingTopic } : {})
@@ -148,6 +147,8 @@ export function walletConnect(
           sessionDelete = this.onSessionDelete.bind(this)
           provider.on('session_delete', sessionDelete)
         }
+
+        provider.setDefaultChain(`eip155:${currentChainId}`)
 
         return { accounts, chainId: currentChainId }
       } catch (error) {
@@ -231,7 +232,6 @@ export function walletConnect(
     },
     async getChainId() {
       const chainId = appKit.getCaipNetwork()?.id
-
       if (chainId) {
         return chainId as number
       }

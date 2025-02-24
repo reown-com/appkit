@@ -1,10 +1,10 @@
-import { ConnectionController } from '../controllers/ConnectionController.js'
-import { BlockchainApiController } from '../controllers/BlockchainApiController.js'
-import type { SwapTokenWithBalance } from './TypeUtil.js'
-import { OptionsController } from '../controllers/OptionsController.js'
-import type { BlockchainApiSwapAllowanceRequest, BlockchainApiBalanceResponse } from './TypeUtil.js'
 import { AccountController } from '../controllers/AccountController.js'
+import { BlockchainApiController } from '../controllers/BlockchainApiController.js'
 import { ChainController } from '../controllers/ChainController.js'
+import { ConnectionController } from '../controllers/ConnectionController.js'
+import { OptionsController } from '../controllers/OptionsController.js'
+import type { SwapTokenWithBalance } from './TypeUtil.js'
+import type { BlockchainApiBalanceResponse, BlockchainApiSwapAllowanceRequest } from './TypeUtil.js'
 
 // -- Types --------------------------------------------- //
 export type TokenInfo = {
@@ -120,6 +120,10 @@ export const SwapApiUtil = {
       caipNetwork.caipNetworkId,
       forceUpdate
     )
+    /*
+     * The 1Inch API includes many low-quality tokens in the balance response,
+     * which appear inconsistently. This filter prevents them from being displayed.
+     */
     const balances = response.balances.filter(balance => balance.quantity.decimals !== '0')
 
     AccountController.setTokenBalance(balances, ChainController.state.activeChain)

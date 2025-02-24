@@ -1,10 +1,12 @@
-import { expect, test, type BrowserContext, type Page } from '@playwright/test'
-import { ModalWalletPage } from './shared/pages/ModalWalletPage'
-import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
-import { Email } from './shared/utils/email'
-import { SECURE_WEBSITE_URL } from './shared/constants'
-import { mainnet, polygon, solana, solanaTestnet } from '@reown/appkit/networks'
+import { type BrowserContext, type Page, expect, test } from '@playwright/test'
+
 import type { CaipNetworkId } from '@reown/appkit'
+import { mainnet, polygon, solana, solanaTestnet } from '@reown/appkit/networks'
+
+import { SECURE_WEBSITE_URL } from './shared/constants'
+import { ModalWalletPage } from './shared/pages/ModalWalletPage'
+import { Email } from './shared/utils/email'
+import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 
 /* eslint-disable init-declarations */
 let page: ModalWalletPage
@@ -53,7 +55,7 @@ emailTestAfterFarcaster.afterAll(async () => {
 
 // -- Tests --------------------------------------------------------------------
 emailTestAfterFarcaster('it should sign after abort login with farcaster', async () => {
-  await page.sign()
+  await page.sign('eip155')
   await page.approveSign()
   await validator.expectAcceptedSign()
 })
@@ -66,7 +68,7 @@ emailTestAfterFarcaster('it should upgrade wallet after abort login with farcast
 })
 
 emailTestAfterFarcaster('it should reject sign after abort login with farcaster', async () => {
-  await page.sign()
+  await page.sign('eip155')
   await page.rejectSign()
   await validator.expectRejectedSign()
 })
@@ -82,7 +84,7 @@ emailTestAfterFarcaster(
     await page.closeModal()
     await validator.expectCaipAddressHaveCorrectNetworkId(caipNetworkId as CaipNetworkId)
 
-    await page.sign()
+    await page.sign('eip155')
     await page.approveSign()
     await validator.expectAcceptedSign()
 
@@ -93,7 +95,7 @@ emailTestAfterFarcaster(
     await page.closeModal()
     await validator.expectCaipAddressHaveCorrectNetworkId(caipNetworkId as CaipNetworkId)
 
-    await page.sign()
+    await page.sign('eip155')
     await page.approveSign()
     await validator.expectAcceptedSign()
   }

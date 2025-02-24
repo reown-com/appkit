@@ -1,15 +1,17 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest'
+
+import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+
 import {
   ApiController,
   AssetController,
   ChainController,
-  ConnectorController,
-  OptionsController,
   type ConnectionControllerClient,
-  type NetworkControllerClient
+  ConnectorController,
+  type NetworkControllerClient,
+  OptionsController
 } from '../../exports/index.js'
 import { api } from '../../src/controllers/ApiController.js'
-import { ConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
 
 // -- Constants ----------------------------------------------------------------
 const chain = ConstantsUtil.CHAIN.EVM
@@ -74,6 +76,7 @@ const networks = [
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
+  global.URL.createObjectURL = vi.fn((file: Blob) => `blob:${file}`)
   ChainController.initialize(
     [
       {
@@ -257,7 +260,7 @@ describe('ApiController', () => {
     )
 
     const fetchSpy = vi.spyOn(ApiController, '_fetchNetworkImage').mockResolvedValue()
-    await ApiController.fetchNetworkImages()
+    await ApiController.prefetchNetworkImages()
 
     // Does not call if imageId is not present
     expect(fetchSpy).toHaveBeenCalledTimes(2)
@@ -266,7 +269,7 @@ describe('ApiController', () => {
   it('should only fetch network images for networks with imageIds', async () => {
     ChainController.setRequestedCaipNetworks(networks, chain)
     const fetchSpy = vi.spyOn(ApiController, '_fetchNetworkImage').mockResolvedValue()
-    await ApiController.fetchNetworkImages()
+    await ApiController.prefetchNetworkImages()
 
     // Does not call if imageId is not present
     expect(fetchSpy).toHaveBeenCalledTimes(2)
@@ -657,46 +660,22 @@ describe('ApiController', () => {
   // Prefetch
   it('should prefetch without analytics', () => {
     OptionsController.setFeatures({ analytics: false })
-    const fetchFeaturedSpy = vi.spyOn(ApiController, 'fetchFeaturedWallets').mockResolvedValue()
-    const fetchNetworkImagesSpy = vi.spyOn(ApiController, 'fetchNetworkImages').mockResolvedValue()
-    const recommendedWalletsSpy = vi
-      .spyOn(ApiController, 'fetchRecommendedWallets')
-      .mockResolvedValue()
-    const fetchConnectorImagesSpy = vi
-      .spyOn(ApiController, 'fetchConnectorImages')
-      .mockResolvedValue()
 
     const fetchAnalyticsSpy = vi.spyOn(ApiController, 'fetchAnalyticsConfig')
 
-    ApiController.prefetch()
+    ApiController.prefetchAnalyticsConfig()
 
     expect(fetchAnalyticsSpy).not.toHaveBeenCalled()
-    expect(fetchFeaturedSpy).toHaveBeenCalledOnce()
-    expect(fetchNetworkImagesSpy).toHaveBeenCalledOnce()
-    expect(recommendedWalletsSpy).toHaveBeenCalledOnce()
-    expect(fetchConnectorImagesSpy).toHaveBeenCalledOnce()
   })
 
   it('should prefetch with analytics', () => {
     OptionsController.setFeatures({ analytics: true })
-    const fetchSpy = vi.spyOn(ApiController, 'fetchFeaturedWallets').mockResolvedValue()
-    const fetchNetworkImagesSpy = vi.spyOn(ApiController, 'fetchNetworkImages').mockResolvedValue()
-    const recommendedWalletsSpy = vi
-      .spyOn(ApiController, 'fetchRecommendedWallets')
-      .mockResolvedValue()
-    const fetchConnectorImagesSpy = vi
-      .spyOn(ApiController, 'fetchConnectorImages')
-      .mockResolvedValue()
 
     const fetchAnalyticsSpy = vi.spyOn(ApiController, 'fetchAnalyticsConfig').mockResolvedValue()
 
-    ApiController.prefetch()
+    ApiController.prefetchAnalyticsConfig()
 
     expect(fetchAnalyticsSpy).toHaveBeenCalledOnce()
-    expect(fetchSpy).toHaveBeenCalledOnce()
-    expect(fetchNetworkImagesSpy).toHaveBeenCalledOnce()
-    expect(recommendedWalletsSpy).toHaveBeenCalledOnce()
-    expect(fetchConnectorImagesSpy).toHaveBeenCalledOnce()
   })
 
   // Fetch analytics config - somehow this is failing

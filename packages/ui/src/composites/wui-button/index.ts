@@ -1,5 +1,6 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+
 import '../../components/wui-icon/index.js'
 import '../../components/wui-loading-spinner/index.js'
 import '../../components/wui-text/index.js'
@@ -72,7 +73,6 @@ export class WuiButton extends LitElement {
         data-icon-right=${this.hasIconRight}
         data-size=${this.size}
         ?disabled=${this.disabled}
-        ontouchstart
       >
         ${this.loadingTemplate()}
         <slot name="iconLeft" @slotchange=${() => this.handleSlotLeftChange()}></slot>

@@ -1,16 +1,17 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mockWalletStandard } from './mocks/WalletStandard'
-import { WalletStandardProvider } from '../providers/WalletStandardProvider.js'
-import { StandardConnect, StandardDisconnect } from '@wallet-standard/features'
 import {
   SolanaSignAndSendTransaction,
   SolanaSignMessage,
   SolanaSignTransaction
 } from '@solana/wallet-standard-features'
-import { TestConstants } from './util/TestConstants'
-import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
+import { StandardConnect, StandardDisconnect } from '@wallet-standard/features'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { WalletStandardProvider } from '../providers/WalletStandardProvider.js'
 import { WalletStandardFeatureNotSupportedError } from '../providers/shared/Errors.js'
 import { solanaChains } from '../utils/chains'
+import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
+import { mockWalletStandard } from './mocks/WalletStandard'
+import { TestConstants } from './util/TestConstants'
 
 describe('WalletStandardProvider specific tests', () => {
   let wallet = mockWalletStandard()
@@ -56,7 +57,7 @@ describe('WalletStandardProvider specific tests', () => {
     await walletStandardProvider.signTransaction(transaction)
 
     expect(wallet.features[SolanaSignTransaction].signTransaction).toHaveBeenCalledWith({
-      transaction: transaction.serialize({ verifySignatures: false }),
+      transaction: new Uint8Array(transaction.serialize({ verifySignatures: false })),
       account: wallet.accounts[0],
       chain: 'solana:mainnet'
     })
@@ -68,7 +69,7 @@ describe('WalletStandardProvider specific tests', () => {
     await walletStandardProvider.signTransaction(transaction)
 
     expect(wallet.features[SolanaSignTransaction].signTransaction).toHaveBeenCalledWith({
-      transaction: transaction.serialize(),
+      transaction: new Uint8Array(transaction.serialize()),
       account: wallet.accounts[0],
       chain: 'solana:mainnet'
     })
@@ -81,10 +82,10 @@ describe('WalletStandardProvider specific tests', () => {
     expect(
       wallet.features[SolanaSignAndSendTransaction].signAndSendTransaction
     ).toHaveBeenCalledWith({
-      transaction: transaction.serialize({ verifySignatures: false }),
+      transaction: new Uint8Array(transaction.serialize({ verifySignatures: false })),
       account: wallet.accounts[0],
       chain: 'solana:mainnet',
-      options: { preflighCommitment: undefined }
+      options: { preflightCommitment: undefined }
     })
     expect(emitSpy).toHaveBeenCalledWith('pendingTransaction', undefined)
 
@@ -97,7 +98,7 @@ describe('WalletStandardProvider specific tests', () => {
     expect(
       wallet.features[SolanaSignAndSendTransaction].signAndSendTransaction
     ).toHaveBeenCalledWith({
-      transaction: transaction.serialize({ verifySignatures: false }),
+      transaction: new Uint8Array(transaction.serialize({ verifySignatures: false })),
       account: wallet.accounts[0],
       chain: 'solana:mainnet',
       options: {
@@ -137,7 +138,7 @@ describe('WalletStandardProvider specific tests', () => {
 
     expect(wallet.features[SolanaSignTransaction].signTransaction).toHaveBeenCalledWith(
       ...transactions.map(transaction => ({
-        transaction: transaction.serialize({ verifySignatures: false }),
+        transaction: new Uint8Array(transaction.serialize({ verifySignatures: false })),
         account: wallet.accounts[0],
         chain: 'solana:mainnet'
       }))

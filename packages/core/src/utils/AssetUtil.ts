@@ -1,4 +1,5 @@
-import type { ChainNamespace, CaipNetwork } from '@reown/appkit-common'
+import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
+
 import { ApiController } from '../controllers/ApiController.js'
 import { AssetController } from '../controllers/AssetController.js'
 import type { Connector, WcWallet } from './TypeUtil.js'
@@ -23,6 +24,22 @@ export const AssetUtil = {
     await ApiController._fetchWalletImage(imageId)
 
     return this.getWalletImageById(imageId)
+  },
+
+  async fetchNetworkImage(imageId?: string) {
+    if (!imageId) {
+      return undefined
+    }
+
+    const existingImage = this.getNetworkImageById(imageId)
+
+    if (existingImage) {
+      return existingImage
+    }
+
+    await ApiController._fetchNetworkImage(imageId)
+
+    return this.getNetworkImageById(imageId)
   },
 
   getWalletImageById(imageId?: string) {

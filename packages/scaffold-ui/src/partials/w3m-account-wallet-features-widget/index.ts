@@ -1,22 +1,25 @@
-import {
-  AccountController,
-  ModalController,
-  AssetUtil,
-  RouterController,
-  CoreHelperUtil,
-  ConstantsUtil as CoreConstantsUtil,
-  EventsController,
-  OptionsController,
-  ChainController
-} from '@reown/appkit-core'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import styles from './styles.js'
-import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import {
+  AccountController,
+  AssetController,
+  AssetUtil,
+  ChainController,
+  ConstantsUtil as CoreConstantsUtil,
+  CoreHelperUtil,
+  EventsController,
+  ModalController,
+  OptionsController,
+  RouterController
+} from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+
+import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import styles from './styles.js'
 
 const TABS = 3
 const TABS_PADDING = 48
@@ -46,10 +49,15 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private features = OptionsController.state.features
 
+  @state() private networkImage = AssetUtil.getNetworkImage(this.network)
+
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
+        AssetController.subscribeNetworkImages(() => {
+          this.networkImage = AssetUtil.getNetworkImage(this.network)
+        }),
         AccountController.subscribe(val => {
           if (val.address) {
             this.address = val.address
@@ -83,8 +91,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       throw new Error('w3m-account-view: No account provided')
     }
 
-    const networkImage = AssetUtil.getNetworkImage(this.network)
-
     return html`<wui-flex
       flexDirection="column"
       .padding=${['0', 'xl', 'm', 'xl'] as const}
@@ -96,7 +102,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       <wui-profile-button
         @click=${this.onProfileButtonClick.bind(this)}
         address=${ifDefined(this.address)}
-        networkSrc=${ifDefined(networkImage)}
+        networkSrc=${ifDefined(this.networkImage)}
         icon="chevronBottom"
         avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
         profileName=${ifDefined(this.profileName ?? undefined)}

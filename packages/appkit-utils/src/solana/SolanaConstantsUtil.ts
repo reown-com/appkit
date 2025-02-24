@@ -1,4 +1,5 @@
 import { PublicKey } from '@solana/web3.js'
+
 import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 
 export const SolConstantsUtil = {
@@ -19,8 +20,6 @@ export const SolConstantsUtil = {
   /**
    * Mainnet program ID
    */
-  ERROR_CODE_UNRECOGNIZED_CHAIN_ID: 4902,
-  ERROR_CODE_DEFAULT: 5000,
   DEFAULT_CHAIN: {
     id: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
     caipNetworkId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',

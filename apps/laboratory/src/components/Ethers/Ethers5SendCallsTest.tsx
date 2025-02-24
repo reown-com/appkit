@@ -1,18 +1,21 @@
-import { Button, Stack, Text, Spacer, Heading } from '@chakra-ui/react'
-import { useState, useEffect } from 'react'
-import { useAppKitAccount, useAppKitProvider, useAppKitNetwork } from '@reown/appkit/react'
+import { useEffect, useState } from 'react'
+
+import { Button, Heading, Spacer, Stack, Text } from '@chakra-ui/react'
 import { UniversalProvider } from '@walletconnect/universal-provider'
-import { useChakraToast } from '../Toast'
-import type { Address } from 'viem'
-import type { Provider as RawProvider } from '@reown/appkit'
-import { vitalikEthAddress } from '../../utils/DataUtil'
 import { ethers } from 'ethers5'
+import type { Address } from 'viem'
+
+import type { Provider as RawProvider } from '@reown/appkit'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+
+import { useChakraToast } from '@/src/components/Toast'
+import { vitalikEthAddress } from '@/src/utils/DataUtil'
 import {
   EIP_5792_RPC_METHODS,
   WALLET_CAPABILITIES,
   getCapabilitySupportedChainInfo
-} from '../../utils/EIP5792Utils'
-import { W3mFrameProvider } from '@reown/appkit-wallet'
+} from '@/src/utils/EIP5792Utils'
 
 type Provider = W3mFrameProvider | Awaited<ReturnType<(typeof UniversalProvider)['init']>>
 
@@ -20,7 +23,7 @@ export function Ethers5SendCallsTest() {
   const [loading, setLoading] = useState(false)
 
   const { chainId } = useAppKitNetwork()
-  const { address, isConnected } = useAppKitAccount()
+  const { address, isConnected } = useAppKitAccount({ namespace: 'eip155' })
   const { walletProvider } = useAppKitProvider<RawProvider>('eip155')
 
   const toast = useChakraToast()

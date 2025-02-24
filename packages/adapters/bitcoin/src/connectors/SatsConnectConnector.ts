@@ -1,20 +1,23 @@
-import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
-import type { CaipNetwork } from '@reown/appkit-common'
-import { CoreHelperUtil } from '@reown/appkit-core'
 import {
   AddressPurpose,
-  getProviders,
-  getProviderById,
+  type BitcoinProvider,
   type BtcRequestMethod,
   type BtcRequests,
   type Params,
-  type Provider as SatsConnectProvider,
-  type BitcoinProvider,
-  type Requests as SatsConnectRequests,
   type RpcErrorResponse,
-  type RpcSuccessResponse
+  type RpcSuccessResponse,
+  type Provider as SatsConnectProvider,
+  type Requests as SatsConnectRequests,
+  getProviderById,
+  getProviders
 } from 'sats-connect'
+
+import type { CaipNetwork } from '@reown/appkit-common'
+import { CoreHelperUtil } from '@reown/appkit-core'
 import type { RequestArguments } from '@reown/appkit-core'
+import { PresetsUtil } from '@reown/appkit-utils'
+
+import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
 
 export class SatsConnectConnector extends ProviderEventEmitter implements BitcoinConnector {
@@ -46,6 +49,10 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
 
   public get name(): string {
     return this.wallet.name
+  }
+
+  public get explorerId(): string | undefined {
+    return PresetsUtil.ConnectorExplorerIds[this.wallet.name]
   }
 
   public get imageUrl(): string {

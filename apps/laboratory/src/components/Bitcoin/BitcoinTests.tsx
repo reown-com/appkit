@@ -1,22 +1,25 @@
 import * as React from 'react'
-import { useAppKitAccount } from '@reown/appkit/react'
+
 import {
-  StackDivider,
+  Box,
   Card,
+  CardBody,
   CardHeader,
   Heading,
-  CardBody,
-  Box,
   Stack,
+  StackDivider,
   Text
 } from '@chakra-ui/react'
-import { BitcoinSignMessageTest } from './BitcoinSignMessageTest'
+
+import { useAppKitAccount } from '@reown/appkit/react'
+
 import { BitcoinSendTransferTest } from './BitcoinSendTransferTest'
+import { BitcoinSignMessageTest } from './BitcoinSignMessageTest'
 import { BitcoinSignPSBTTest } from './BitcoinSignPSBTTest'
 
 export function BitcoinTests() {
-  const { allAccounts, address } = useAppKitAccount()
-  const { isConnected } = useAppKitAccount()
+  const { allAccounts, address } = useAppKitAccount({ namespace: 'bip122' })
+  const { isConnected } = useAppKitAccount({ namespace: 'bip122' })
 
   if (!isConnected) {
     return null
@@ -25,7 +28,7 @@ export function BitcoinTests() {
   const bip122Account = allAccounts?.find(a => a.address === address)
 
   return (
-    <Card marginTop={10} marginBottom={10}>
+    <Card data-testid="bip122-test-interactions" marginTop={10} marginBottom={10}>
       <CardHeader>
         <Heading size="md">Test Interactions</Heading>
       </CardHeader>

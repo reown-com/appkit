@@ -3,32 +3,39 @@ import { createPortal } from 'react-dom'
 
 import {
   Active,
-  closestCenter,
   CollisionDetection,
-  DragOverlay,
   DndContext,
+  DragOverlay,
   DropAnimation,
-  KeyboardSensor,
   KeyboardCoordinateGetter,
+  KeyboardSensor,
+  MeasuringConfiguration,
   Modifiers,
   MouseSensor,
-  MeasuringConfiguration,
   PointerActivationConstraint,
   TouchSensor,
   UniqueIdentifier,
+  closestCenter,
+  defaultDropAnimationSideEffects,
   useSensor,
-  useSensors,
-  defaultDropAnimationSideEffects
+  useSensors
 } from '@dnd-kit/core'
 import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  SortingStrategy,
   AnimateLayoutChanges,
   NewIndexGetter,
+  SortableContext,
+  SortingStrategy,
+  arrayMove,
+  sortableKeyboardCoordinates,
   verticalListSortingStrategy
 } from '@dnd-kit/sortable'
+
+import { SortableWalletFeatureItem } from '@/components/sortable-item-wallet-feature'
+import { List } from '@/components/ui/list'
+import { Wrapper } from '@/components/ui/wrapper'
+import { WalletFeatureItem } from '@/components/wallet-feature-item'
+import { useAppKitContext } from '@/hooks/use-appkit'
+import { WalletFeatureName } from '@/lib/types'
 
 const defaultInitializer = (index: number) => index
 
@@ -38,13 +45,6 @@ export function createRange<T = number>(
 ): T[] {
   return [...new Array(length)].map((_, index) => initializer(index))
 }
-
-import { WalletFeatureItem } from '@/components/wallet-feature-item'
-import { SortableWalletFeatureItem } from '@/components/sortable-item-wallet-feature'
-import { WalletFeatureName } from '@/lib/types'
-import { Wrapper } from '@/components/ui/wrapper'
-import { List } from '@/components/ui/list'
-import { useAppKitContext } from '@/hooks/use-appkit'
 
 export interface Props {
   activationConstraint?: PointerActivationConstraint

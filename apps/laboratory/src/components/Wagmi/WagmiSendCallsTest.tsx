@@ -1,13 +1,16 @@
+import { useCallback, useState } from 'react'
+
 import { Button, Heading, Stack, Text } from '@chakra-ui/react'
+import { type Address, parseGwei } from 'viem'
 import { useAccount } from 'wagmi'
 import { useSendCalls } from 'wagmi/experimental'
-import { useCallback, useState } from 'react'
-import { useChakraToast } from '../Toast'
-import { parseGwei, type Address } from 'viem'
-import { vitalikEthAddress } from '../../utils/DataUtil'
-import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '../../utils/EIP5792Utils'
-import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
+
 import { useAppKitAccount } from '@reown/appkit/react'
+
+import { useChakraToast } from '@/src/components/Toast'
+import { useWagmiAvailableCapabilities } from '@/src/hooks/useWagmiActiveCapabilities'
+import { vitalikEthAddress } from '@/src/utils/DataUtil'
+import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '@/src/utils/EIP5792Utils'
 
 const TEST_TX_1 = {
   to: vitalikEthAddress as Address,
@@ -24,7 +27,7 @@ export function WagmiSendCallsTest() {
       capability: WALLET_CAPABILITIES.ATOMIC_BATCH,
       method: EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
     })
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { status } = useAccount()
 
   const isConnected = status === 'connected'

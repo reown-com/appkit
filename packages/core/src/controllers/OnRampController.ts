@@ -1,16 +1,14 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
-import {
-  ONRAMP_PROVIDERS,
-  MELD_DEV_PUBLIC_KEY,
-  MELD_PROD_PUBLIC_KEY
-} from '../utils/ConstantsUtil.js'
-import type { PurchaseCurrency, PaymentCurrency } from '../utils/TypeUtil.js'
-import { BlockchainApiController } from './BlockchainApiController.js'
-import { ApiController } from './ApiController.js'
-import { ChainController } from './ChainController.js'
-import { AccountController } from './AccountController.js'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
+
 import { ConstantsUtil } from '@reown/appkit-common'
+
+import { MELD_PUBLIC_KEY, ONRAMP_PROVIDERS } from '../utils/ConstantsUtil.js'
+import type { PaymentCurrency, PurchaseCurrency } from '../utils/TypeUtil.js'
+import { AccountController } from './AccountController.js'
+import { ApiController } from './ApiController.js'
+import { BlockchainApiController } from './BlockchainApiController.js'
+import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 export type OnRampProviderOption = 'coinbase' | 'moonpay' | 'stripe' | 'paypal' | 'meld'
@@ -102,13 +100,11 @@ export const OnRampController = {
 
   setSelectedProvider(provider: OnRampProvider | null) {
     if (provider && provider.name === 'meld') {
-      const pubKey =
-        process.env['NODE_ENV'] === 'production' ? MELD_PROD_PUBLIC_KEY : MELD_DEV_PUBLIC_KEY
       const currency =
         ChainController.state.activeChain === ConstantsUtil.CHAIN.SOLANA ? 'SOL' : 'USDC'
       const address = AccountController.state.address ?? ''
       const url = new URL(provider.url)
-      url.searchParams.append('publicKey', pubKey)
+      url.searchParams.append('publicKey', MELD_PUBLIC_KEY)
       url.searchParams.append('destinationCurrencyCode', currency)
       url.searchParams.append('walletAddress', address)
       provider.url = url.toString()
@@ -154,7 +150,7 @@ export const OnRampController = {
         network: state.purchaseCurrency?.symbol
       })
       state.quotesLoading = false
-      state.purchaseAmount = Number(quote.purchaseAmount.amount)
+      state.purchaseAmount = Number(quote?.purchaseAmount.amount)
 
       return quote
     } catch (error) {

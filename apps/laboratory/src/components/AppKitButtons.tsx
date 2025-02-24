@@ -1,4 +1,5 @@
-import { Stack, Card, CardHeader, Heading, CardBody, Box, StackDivider } from '@chakra-ui/react'
+import { Box, Card, CardBody, CardHeader, Heading, Stack, StackDivider } from '@chakra-ui/react'
+
 import { AppKitHooks } from './AppKitHooks'
 
 export function AppKitButtons() {

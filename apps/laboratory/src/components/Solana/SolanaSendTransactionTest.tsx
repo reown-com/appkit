@@ -1,17 +1,19 @@
 import { useState } from 'react'
-import { Button, Stack, Spacer, Link } from '@chakra-ui/react'
-import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
+
+import { Button, Link, Spacer, Stack } from '@chakra-ui/react'
 import {
   PublicKey,
+  SystemProgram,
   Transaction,
   TransactionMessage,
-  VersionedTransaction,
-  SystemProgram
+  VersionedTransaction
 } from '@solana/web3.js'
 
-import { useChakraToast } from '../Toast'
 import { type Provider, useAppKitConnection } from '@reown/appkit-adapter-solana/react'
-import { ErrorUtil } from '../../utils/ErrorUtil'
+import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
+
+import { useChakraToast } from '@/src/components/Toast'
+import { ErrorUtil } from '@/src/utils/ErrorUtil'
 
 const PHANTOM_TESTNET_ADDRESS = '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
 const recipientAddress = new PublicKey(PHANTOM_TESTNET_ADDRESS)
@@ -19,7 +21,7 @@ const amountInLamports = 10_000_000
 
 export function SolanaSendTransactionTest() {
   const toast = useChakraToast()
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'solana' })
   const { walletProvider } = useAppKitProvider<Provider>('solana')
   const { connection } = useAppKitConnection()
   const [loading, setLoading] = useState(false)

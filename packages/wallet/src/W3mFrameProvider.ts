@@ -1,9 +1,9 @@
 import { W3mFrame } from './W3mFrame.js'
-import type { W3mFrameTypes } from './W3mFrameTypes.js'
 import { W3mFrameConstants, W3mFrameRpcConstants } from './W3mFrameConstants.js'
-import { W3mFrameStorage } from './W3mFrameStorage.js'
 import { W3mFrameHelpers } from './W3mFrameHelpers.js'
 import { W3mFrameLogger } from './W3mFrameLogger.js'
+import { W3mFrameStorage } from './W3mFrameStorage.js'
+import type { W3mFrameTypes } from './W3mFrameTypes.js'
 
 type AppEventType = Omit<W3mFrameTypes.AppEvent, 'id'>
 
@@ -30,6 +30,10 @@ export class W3mFrameProvider {
 
   public onTimeout?: () => void
 
+  public user?: W3mFrameTypes.Responses['FrameGetUserResponse']
+
+  private initPromise: Promise<void> | undefined
+
   public constructor({
     projectId,
     chainId,
@@ -43,6 +47,28 @@ export class W3mFrameProvider {
     this.onTimeout = onTimeout
     if (this.getLoginEmailUsed()) {
       this.w3mFrame.initFrame()
+    }
+
+    this.w3mFrame.events.onFrameEvent(event => {
+      if (event.type === W3mFrameConstants.FRAME_GET_USER_SUCCESS) {
+        this.user = event.payload
+      }
+    })
+
+    this.initPromise = new Promise<void>(resolve => {
+      this.w3mFrame.events.onFrameEvent(event => {
+        if (event.type === W3mFrameConstants.FRAME_READY) {
+          this.initPromise = undefined
+          resolve()
+        }
+      })
+    })
+  }
+
+  public async init() {
+    this.w3mFrame.initFrame()
+    if (this.initPromise) {
+      await this.initPromise
     }
   }
 
@@ -298,6 +324,7 @@ export class W3mFrameProvider {
 
   public async connectSocial(uri: string) {
     try {
+      this.w3mFrame.initFrame()
       const response = await this.appEvent<'ConnectSocial'>({
         type: W3mFrameConstants.APP_CONNECT_SOCIAL,
         payload: { uri }
@@ -541,7 +568,6 @@ export class W3mFrameProvider {
       const id = Math.random().toString(36).substring(7)
       this.w3mLogger?.logger.info?.({ event, id }, 'Sending app event')
       this.w3mFrame.events.postAppEvent({ ...event, id } as W3mFrameTypes.AppEvent)
-
       if (type === 'RPC_REQUEST') {
         const rpcEvent = event as Extract<W3mFrameTypes.AppEvent, { type: '@w3m-app/RPC_REQUEST' }>
         this.openRpcRequests = [...this.openRpcRequests, { ...rpcEvent.payload, abortController }]
@@ -618,7 +644,10 @@ export class W3mFrameProvider {
   }
 
   public getLastUsedChainId() {
-    return Number(W3mFrameStorage.get(W3mFrameConstants.LAST_USED_CHAIN_KEY))
+    const chainId = W3mFrameStorage.get(W3mFrameConstants.LAST_USED_CHAIN_KEY) ?? undefined
+    const numberChainId = Number(chainId)
+
+    return isNaN(numberChainId) ? chainId : numberChainId
   }
 
   private persistSmartAccountEnabledNetworks(networks: number[]) {

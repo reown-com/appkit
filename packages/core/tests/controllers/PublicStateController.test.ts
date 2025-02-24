@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+
 import { PublicStateController } from '../../exports/index.js'
 
 // -- Tests --------------------------------------------------------------------

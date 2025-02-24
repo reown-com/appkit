@@ -1,15 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mockUniversalProvider, mockUniversalProviderSession } from './mocks/UniversalProvider.js'
-import { WalletConnectProvider } from '../providers/WalletConnectProvider.js'
-import { TestConstants } from './util/TestConstants.js'
-import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
+
 import type { CaipNetwork } from '@reown/appkit-common'
+
+import { SolanaWalletConnectProvider } from '../providers/SolanaWalletConnectProvider.js'
 import { WalletConnectMethodNotSupportedError } from '../providers/shared/Errors.js'
+import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction.js'
+import { mockUniversalProvider, mockUniversalProviderSession } from './mocks/UniversalProvider.js'
+import { TestConstants } from './util/TestConstants.js'
 
 describe('WalletConnectProvider specific tests', () => {
   let provider = mockUniversalProvider()
   let getActiveChain = vi.fn(() => TestConstants.chains[0])
-  let walletConnectProvider = new WalletConnectProvider({
+  let walletConnectProvider = new SolanaWalletConnectProvider({
     provider,
     chains: TestConstants.chains,
     getActiveChain
@@ -18,7 +20,7 @@ describe('WalletConnectProvider specific tests', () => {
   beforeEach(() => {
     provider = mockUniversalProvider()
     getActiveChain = vi.fn(() => TestConstants.chains[0])
-    walletConnectProvider = new WalletConnectProvider({
+    walletConnectProvider = new SolanaWalletConnectProvider({
       provider,
       chains: TestConstants.chains,
       getActiveChain
@@ -186,14 +188,15 @@ describe('WalletConnectProvider specific tests', () => {
   })
 
   it('should replace old deprecated replacement for requests', async () => {
-    vi.spyOn(provider, 'connect').mockImplementation(() =>
-      Promise.resolve(
-        mockUniversalProviderSession({}, [
-          { id: '4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ' } as CaipNetwork,
-          { id: '8E9rvCKLFQia2Y35HXjjpWzj8weVo44K' } as CaipNetwork
-        ])
-      )
-    )
+    vi.spyOn(provider, 'connect').mockImplementation(() => {
+      const session = mockUniversalProviderSession({}, [
+        { id: '4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ' } as CaipNetwork,
+        { id: '8E9rvCKLFQia2Y35HXjjpWzj8weVo44K' } as CaipNetwork
+      ])
+      Object.assign(provider, { session })
+
+      return Promise.resolve(session)
+    })
 
     await walletConnectProvider.connect()
     await walletConnectProvider.signMessage(new Uint8Array([1, 2, 3, 4, 5]))
@@ -211,14 +214,15 @@ describe('WalletConnectProvider specific tests', () => {
   })
 
   it('should replace old deprecated devnet for requests', async () => {
-    vi.spyOn(provider, 'connect').mockImplementation(() =>
-      Promise.resolve(
-        mockUniversalProviderSession({}, [
-          { id: '4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ' } as CaipNetwork,
-          { id: '8E9rvCKLFQia2Y35HXjjpWzj8weVo44K' } as CaipNetwork
-        ])
-      )
-    )
+    vi.spyOn(provider, 'connect').mockImplementation(() => {
+      const session = mockUniversalProviderSession({}, [
+        { id: '4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ' } as CaipNetwork,
+        { id: '8E9rvCKLFQia2Y35HXjjpWzj8weVo44K' } as CaipNetwork
+      ])
+      Object.assign(provider, { session })
+
+      return Promise.resolve(session)
+    })
 
     getActiveChain.mockImplementation(
       () => ({ id: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1' }) as CaipNetwork
@@ -292,26 +296,25 @@ describe('WalletConnectProvider specific tests', () => {
   })
 
   it('should get chains from namespace accounts', async () => {
-    vi.spyOn(provider, 'connect').mockImplementationOnce(() =>
-      Promise.resolve(
-        mockUniversalProviderSession({
-          namespaces: {
-            solana: {
-              chains: undefined,
-              methods: [
-                'solana_signTransaction',
-                'solana_signMessage',
-                'solana_signAndSendTransaction'
-              ],
-              events: [],
-              accounts: [
-                `solana:${TestConstants.chains[0]?.id}:${TestConstants.accounts[0].address}`
-              ]
-            }
+    vi.spyOn(provider, 'connect').mockImplementationOnce(() => {
+      const session = mockUniversalProviderSession({
+        namespaces: {
+          solana: {
+            chains: undefined,
+            methods: [
+              'solana_signTransaction',
+              'solana_signMessage',
+              'solana_signAndSendTransaction'
+            ],
+            events: [],
+            accounts: [`solana:${TestConstants.chains[0]?.id}:${TestConstants.accounts[0].address}`]
           }
-        })
-      )
-    )
+        }
+      })
+      Object.assign(provider, { session })
+
+      return Promise.resolve(session)
+    })
 
     await walletConnectProvider.connect()
 
@@ -319,22 +322,21 @@ describe('WalletConnectProvider specific tests', () => {
   })
 
   it('should throw an error if the wallet does not support the signMessage method', async () => {
-    vi.spyOn(provider, 'connect').mockImplementationOnce(() =>
-      Promise.resolve(
-        mockUniversalProviderSession({
-          namespaces: {
-            solana: {
-              chains: undefined,
-              methods: [],
-              events: [],
-              accounts: [
-                `solana:${TestConstants.chains[0]?.id}:${TestConstants.accounts[0].address}`
-              ]
-            }
+    vi.spyOn(provider, 'connect').mockImplementationOnce(() => {
+      const session = mockUniversalProviderSession({
+        namespaces: {
+          solana: {
+            chains: undefined,
+            methods: [],
+            events: [],
+            accounts: [`solana:${TestConstants.chains[0]?.id}:${TestConstants.accounts[0].address}`]
           }
-        })
-      )
-    )
+        }
+      })
+      Object.assign(provider, { session })
+
+      return Promise.resolve(session)
+    })
 
     await walletConnectProvider.connect()
 
@@ -344,22 +346,21 @@ describe('WalletConnectProvider specific tests', () => {
   })
 
   it('should throw an error if the wallet does not support the signTransaction method', async () => {
-    vi.spyOn(provider, 'connect').mockImplementationOnce(() =>
-      Promise.resolve(
-        mockUniversalProviderSession({
-          namespaces: {
-            solana: {
-              chains: undefined,
-              methods: ['solana_signMessage'],
-              events: [],
-              accounts: [
-                `solana:${TestConstants.chains[0]?.id}:${TestConstants.accounts[0].address}`
-              ]
-            }
+    vi.spyOn(provider, 'connect').mockImplementationOnce(() => {
+      const session = mockUniversalProviderSession({
+        namespaces: {
+          solana: {
+            chains: undefined,
+            methods: ['solana_signMessage'],
+            events: [],
+            accounts: [`solana:${TestConstants.chains[0]?.id}:${TestConstants.accounts[0].address}`]
           }
-        })
-      )
-    )
+        }
+      })
+      Object.assign(provider, { session })
+
+      return Promise.resolve(session)
+    })
 
     await walletConnectProvider.connect()
 
@@ -369,22 +370,21 @@ describe('WalletConnectProvider specific tests', () => {
   })
 
   it('should throw an error if the wallet does not support the signAndSendTransaction method', async () => {
-    vi.spyOn(provider, 'connect').mockImplementationOnce(() =>
-      Promise.resolve(
-        mockUniversalProviderSession({
-          namespaces: {
-            solana: {
-              chains: undefined,
-              methods: ['solana_signMessage'],
-              events: [],
-              accounts: [
-                `solana:${TestConstants.chains[0]?.id}:${TestConstants.accounts[0].address}`
-              ]
-            }
+    vi.spyOn(provider, 'connect').mockImplementationOnce(() => {
+      const session = mockUniversalProviderSession({
+        namespaces: {
+          solana: {
+            chains: undefined,
+            methods: ['solana_signMessage'],
+            events: [],
+            accounts: [`solana:${TestConstants.chains[0]?.id}:${TestConstants.accounts[0].address}`]
           }
-        })
-      )
-    )
+        }
+      })
+      Object.assign(provider, { session })
+
+      return Promise.resolve(session)
+    })
 
     await walletConnectProvider.connect()
 
@@ -394,22 +394,21 @@ describe('WalletConnectProvider specific tests', () => {
   })
 
   it('should throw an error if the wallet does not support the signAllTransactions method', async () => {
-    vi.spyOn(provider, 'connect').mockImplementationOnce(() =>
-      Promise.resolve(
-        mockUniversalProviderSession({
-          namespaces: {
-            solana: {
-              chains: undefined,
-              methods: ['solana_signMessage'],
-              events: [],
-              accounts: [
-                `solana:${TestConstants.chains[0]?.id}:${TestConstants.accounts[0].address}`
-              ]
-            }
+    vi.spyOn(provider, 'connect').mockImplementationOnce(() => {
+      const session = mockUniversalProviderSession({
+        namespaces: {
+          solana: {
+            chains: undefined,
+            methods: ['solana_signMessage'],
+            events: [],
+            accounts: [`solana:${TestConstants.chains[0]?.id}:${TestConstants.accounts[0].address}`]
           }
-        })
-      )
-    )
+        }
+      })
+      Object.assign(provider, { session })
+
+      return Promise.resolve(session)
+    })
 
     await walletConnectProvider.connect()
 
@@ -419,26 +418,26 @@ describe('WalletConnectProvider specific tests', () => {
   })
 
   it('should request signAllTransactions with batched transactions', async () => {
-    vi.spyOn(provider, 'connect').mockImplementationOnce(() =>
-      Promise.resolve(
-        mockUniversalProviderSession({
-          namespaces: {
-            solana: {
-              chains: undefined,
-              methods: ['solana_signAllTransactions'],
-              events: [],
-              accounts: [
-                `solana:${TestConstants.chains[0]?.id}:${TestConstants.accounts[0].address}`
-              ]
-            }
+    vi.spyOn(provider, 'connect').mockImplementationOnce(() => {
+      const session = mockUniversalProviderSession({
+        namespaces: {
+          solana: {
+            chains: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+            methods: ['solana_signAllTransactions'],
+            events: [],
+            accounts: [`solana:${TestConstants.chains[0]?.id}:${TestConstants.accounts[0].address}`]
           }
-        })
-      )
-    )
+        }
+      })
+      Object.assign(provider, { session })
+
+      return Promise.resolve(session)
+    })
 
     await walletConnectProvider.connect()
 
     const transactions = [mockLegacyTransaction(), mockVersionedTransaction()]
+
     await walletConnectProvider.signAllTransactions(transactions)
 
     expect(provider.request).toHaveBeenCalledWith(

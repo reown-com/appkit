@@ -1,19 +1,22 @@
-import { Button, Stack, Text, Input } from '@chakra-ui/react'
+import { useCallback, useState } from 'react'
+
+import { Button, Input, Stack, Text } from '@chakra-ui/react'
 import { useAccount } from 'wagmi'
-import { useState, useCallback } from 'react'
-import { useChakraToast } from '../Toast'
-import { EIP_5792_RPC_METHODS } from '../../utils/EIP5792Utils'
-import { bigIntReplacer } from '../../utils/CommonUtils'
 import { useCallsStatus } from 'wagmi/experimental'
-import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
+
 import { useAppKitAccount } from '@reown/appkit/react'
+
+import { useChakraToast } from '@/src/components/Toast'
+import { useWagmiAvailableCapabilities } from '@/src/hooks/useWagmiActiveCapabilities'
+import { bigIntReplacer } from '@/src/utils/CommonUtils'
+import { EIP_5792_RPC_METHODS } from '@/src/utils/EIP5792Utils'
 
 export function WagmiGetCallsStatusTest() {
   const { supported } = useWagmiAvailableCapabilities({
     method: EIP_5792_RPC_METHODS.WALLET_GET_CALLS_STATUS
   })
 
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { status } = useAccount()
 
   const isConnected = status === 'connected'

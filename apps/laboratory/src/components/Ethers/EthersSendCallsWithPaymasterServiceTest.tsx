@@ -1,25 +1,28 @@
-import { Button, Stack, Text, Input, Tooltip, Flex } from '@chakra-ui/react'
-import { useState, useEffect } from 'react'
-import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+import { useEffect, useState } from 'react'
+
+import { Button, Flex, Input, Stack, Text, Tooltip } from '@chakra-ui/react'
 import { UniversalProvider } from '@walletconnect/universal-provider'
-import { useChakraToast } from '../Toast'
-import { parseGwei } from 'viem'
-import { vitalikEthAddress } from '../../utils/DataUtil'
 import { BrowserProvider, type Eip1193Provider, Interface } from 'ethers'
+import { parseGwei } from 'viem'
+
+import { W3mFrameProvider } from '@reown/appkit-wallet'
+import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
+
+import { useChakraToast } from '@/src/components/Toast'
+import { vitalikEthAddress } from '@/src/utils/DataUtil'
+import { abi, address as donutAddress } from '@/src/utils/DonutContract'
 import {
   EIP_5792_RPC_METHODS,
   WALLET_CAPABILITIES,
   getCapabilitySupportedChainInfo
-} from '../../utils/EIP5792Utils'
-import { W3mFrameProvider } from '@reown/appkit-wallet'
-import { abi, address as donutAddress } from '../../utils/DonutContract'
+} from '@/src/utils/EIP5792Utils'
 
 export function EthersSendCallsWithPaymasterServiceTest() {
   const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')
   const [isLoading, setLoading] = useState(false)
 
   const { chainId } = useAppKitNetwork()
-  const { address, isConnected } = useAppKitAccount()
+  const { address, isConnected } = useAppKitAccount({ namespace: 'eip155' })
   const { walletProvider } = useAppKitProvider<Eip1193Provider>('eip155')
   const toast = useChakraToast()
 

@@ -1,8 +1,10 @@
-import { type W3mFrameTypes } from '@reown/appkit-wallet'
-import type { AuthProvider } from '../../providers/AuthProvider.js'
 import { vi } from 'vitest'
-import { TestConstants } from '../util/TestConstants.js'
+
+import { type W3mFrameTypes } from '@reown/appkit-wallet'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
+
+import type { AuthProvider } from '../../providers/AuthProvider.js'
+import { TestConstants } from '../util/TestConstants.js'
 
 export function mockW3mFrameProvider() {
   const w3mFrame = W3mFrameProviderSingleton.getInstance({ projectId: 'projectId' })
@@ -39,6 +41,8 @@ export function mockW3mFrameProvider() {
     }
   })
   w3mFrame.switchNetwork = vi.fn((chainId: string | number) => Promise.resolve({ chainId }))
+  w3mFrame.getUser = vi.fn(() => Promise.resolve(mockSession()))
+  w3mFrame.user = mockSession()
 
   return w3mFrame
 }

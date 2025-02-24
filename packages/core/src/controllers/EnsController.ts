@@ -1,13 +1,15 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
-import { BlockchainApiController } from './BlockchainApiController.js'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
+
+import { EnsUtil } from '../utils/EnsUtil.js'
+import { StorageUtil } from '../utils/StorageUtil.js'
 import type { BlockchainApiEnsError } from '../utils/TypeUtil.js'
 import { AccountController } from './AccountController.js'
+import { BlockchainApiController } from './BlockchainApiController.js'
+import { ChainController } from './ChainController.js'
+import { ConnectionController } from './ConnectionController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { RouterController } from './RouterController.js'
-import { ConnectionController } from './ConnectionController.js'
-import { EnsUtil } from '../utils/EnsUtil.js'
-import { ChainController } from './ChainController.js'
 
 // -- Types --------------------------------------------- //
 type Suggestion = {
@@ -87,8 +89,18 @@ export const EnsController = {
       if (!network) {
         return []
       }
+      const cachedEns = StorageUtil.getEnsFromCacheForAddress(address)
+      if (cachedEns) {
+        return cachedEns
+      }
 
       const response = await BlockchainApiController.reverseLookupEnsName({ address })
+
+      StorageUtil.updateEnsCache({
+        address,
+        ens: response,
+        timestamp: Date.now()
+      })
 
       return response
     } catch (e) {

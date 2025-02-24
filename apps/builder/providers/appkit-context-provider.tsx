@@ -1,17 +1,34 @@
 'use client'
 
 import { ReactNode, useEffect, useState } from 'react'
-import { Features, ThemeMode, ThemeVariables, useAppKitState } from '@reown/appkit/react'
-import { ConnectMethod, ConstantsUtil } from '@reown/appkit-core'
-import { ThemeStore } from '../lib/theme-store'
-import { URLState, urlStateUtils } from '@/lib/url-state'
-import { AppKitContext } from '@/contexts/appkit-context'
-import { useSnapshot } from 'valtio'
+
 import { UniqueIdentifier } from '@dnd-kit/core'
-import { defaultCustomizationConfig } from '@/lib/config'
 import { useTheme } from 'next-themes'
-import { inter } from '@/lib/fonts'
 import { Toaster } from 'sonner'
+import { useSnapshot } from 'valtio'
+
+import { AppKitNetwork, type ChainNamespace } from '@reown/appkit-common'
+import { ConnectMethod, ConstantsUtil } from '@reown/appkit-core'
+import { Features, ThemeMode, ThemeVariables, useAppKitState } from '@reown/appkit/react'
+
+import { AppKitContext } from '@/contexts/appkit-context'
+import {
+  allAdapters,
+  initialConfig,
+  initialEnabledNetworks,
+  namespaceNetworksMap
+} from '@/lib/config'
+import {
+  NAMESPACE_NETWORK_IDS_MAP,
+  NETWORK_ID_NAMESPACE_MAP,
+  NETWORK_OPTIONS,
+  NetworkOption
+} from '@/lib/constants'
+import { defaultCustomizationConfig } from '@/lib/defaultConfig'
+import { inter } from '@/lib/fonts'
+import { URLState, urlStateUtils } from '@/lib/url-state'
+
+import { ThemeStore } from '../lib/theme-store'
 
 interface AppKitProviderProps {
   children: ReactNode
@@ -21,8 +38,6 @@ interface AppKitProviderProps {
   children: ReactNode
   initialConfig?: URLState | null
 }
-
-const initialConfig = urlStateUtils.getStateFromURL()
 
 export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => {
   const { initialized } = useAppKitState()
@@ -43,6 +58,12 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
     wallet: false,
     social: false
   })
+  const [enabledChains, setEnabledChains] = useState<ChainNamespace[]>(
+    initialConfig?.enabledChains || ['eip155', 'solana', 'bip122']
+  )
+  const [enabledNetworks, setEnabledNetworks] = useState<(string | number)[]>(
+    initialEnabledNetworks || []
+  )
   const themeStore = useSnapshot(ThemeStore.state)
   const appKit = themeStore.modal
 
@@ -51,6 +72,89 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
       ...prev,
       [key]: value
     }))
+  }
+
+  function getEnabledNetworksInNamespace(namespace: ChainNamespace) {
+    return Array.from(
+      new Set(
+        enabledNetworks.filter(
+          id => NETWORK_ID_NAMESPACE_MAP[id as keyof typeof NETWORK_ID_NAMESPACE_MAP] === namespace
+        )
+      )
+    )
+  }
+
+  function removeChain(chain: ChainNamespace) {
+    setEnabledChains(prev => {
+      const newEnabledChains = prev.filter(c => c !== chain)
+      urlStateUtils.updateURLWithState({ enabledChains: newEnabledChains })
+      return newEnabledChains
+    })
+    appKit?.removeAdapter(chain)
+
+    // Update enabled networks state
+    setEnabledNetworks(prev => {
+      const newNetworks = prev.filter(n => {
+        // Keep networks that are not in the removed chain's namespace
+        return !NAMESPACE_NETWORK_IDS_MAP[chain].includes(n)
+      })
+      urlStateUtils.updateURLWithState({ enabledNetworks: newNetworks as string[] })
+      return newNetworks
+    })
+  }
+
+  function addChain(chain: ChainNamespace, network: AppKitNetwork | undefined) {
+    setEnabledChains(prev => {
+      const newEnabledChains = [...prev, chain]
+      urlStateUtils.updateURLWithState({ enabledChains: newEnabledChains })
+      return newEnabledChains
+    })
+    const adapter = allAdapters.find(a => a.namespace === chain)
+    if (adapter) {
+      appKit?.addAdapter(adapter, network ? [network] : namespaceNetworksMap[chain])
+    }
+
+    // Update enabled networks state
+    setEnabledNetworks(prev => {
+      const newNetworks = [...prev, ...(network ? [network.id] : NAMESPACE_NETWORK_IDS_MAP[chain])]
+      urlStateUtils.updateURLWithState({ enabledNetworks: newNetworks as string[] })
+      return newNetworks
+    })
+  }
+
+  function removeNetwork(network: NetworkOption) {
+    const enabledNetworksInNamespace = getEnabledNetworksInNamespace(network.namespace)
+
+    if (enabledNetworksInNamespace.length === 1) {
+      removeChain(network.namespace)
+    } else {
+      setEnabledNetworks(prev => {
+        if (
+          enabledNetworksInNamespace.length === 1 &&
+          enabledNetworksInNamespace[0] === network.network.id
+        ) {
+          return prev
+        }
+
+        const newNetworks = prev.filter(n => n !== network.network.id)
+        urlStateUtils.updateURLWithState({ enabledNetworks: newNetworks as string[] })
+        return newNetworks
+      })
+      appKit?.removeNetwork(network.namespace, network.network.id)
+    }
+  }
+
+  function addNetwork(network: NetworkOption) {
+    if (!enabledChains.includes(network.namespace)) {
+      addChain(network.namespace, network.network)
+    } else {
+      setEnabledNetworks(prev => {
+        const newNetworks = [...prev, network.network.id]
+        urlStateUtils.updateURLWithState({ enabledNetworks: newNetworks as string[] })
+        return newNetworks
+      })
+      appKit?.addNetwork(network.namespace, network.network)
+    }
   }
 
   function updateFeatures(newFeatures: Partial<Features>) {
@@ -160,6 +264,12 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
           termsConditionsUrl,
           privacyPolicyUrl
         },
+        enabledChains,
+        removeChain,
+        addChain,
+        enabledNetworks,
+        removeNetwork,
+        addNetwork,
         socialsEnabled,
         enableWallets,
         isDraggingByKey,
@@ -171,7 +281,8 @@ export const ContextProvider: React.FC<AppKitProviderProps> = ({ children }) => 
         setEnableWallets: updateEnableWallets,
         setSocialsOrder: appKit?.setSocialsOrder,
         updateDraggingState,
-        resetConfigs
+        resetConfigs,
+        getEnabledNetworksInNamespace
       }}
     >
       <Toaster theme={theme as ThemeMode} />
