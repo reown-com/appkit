@@ -1,9 +1,17 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { ERC7811Utils, type WalletGetAssetsResponse } from '../../src/utils/ERC7811Util'
 
 describe('ERC7811Util', () => {
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
+
   describe('createBalance', () => {
+    afterEach(() => {
+      vi.clearAllMocks()
+    })
+
     it('should create a Balance object from an Asset object', () => {
       const asset = {
         address: '0x1234567890123456789012345678901234567890' as `0x${string}`,
@@ -134,6 +142,10 @@ describe('ERC7811Util', () => {
   })
 
   describe('convertHexToBalance', () => {
+    afterEach(() => {
+      vi.clearAllMocks()
+    })
+
     it('should convert a hex string to a Balance object', () => {
       const hex = '0x1000' as `0x${string}`
       const decimals = 18
@@ -145,6 +157,10 @@ describe('ERC7811Util', () => {
   })
 
   describe('convertAddressToCAIP10Address', () => {
+    afterEach(() => {
+      vi.clearAllMocks()
+    })
+
     it('should convert an address to a CAIP-10 address', () => {
       const address = '0x123' as `0x${string}`
       const chainId = 'eip155:1'
@@ -156,6 +172,10 @@ describe('ERC7811Util', () => {
   })
 
   describe('createCAIP2ChainId', () => {
+    afterEach(() => {
+      vi.clearAllMocks()
+    })
+
     it('should create a CAIP-2 Chain ID from a chain ID and namespace', () => {
       const chainId = '0x1' as `0x${string}`
       const namespace = 'eip155'
@@ -167,6 +187,10 @@ describe('ERC7811Util', () => {
   })
 
   describe('getChainIdHexFromCAIP2ChainId', () => {
+    afterEach(() => {
+      vi.clearAllMocks()
+    })
+
     it('should get the chain ID in hex format from a CAIP-2 Chain ID', () => {
       const caip2ChainId = 'eip155:1'
 
@@ -192,6 +216,10 @@ describe('ERC7811Util', () => {
   })
 
   describe('isWalletGetAssetsResponse', () => {
+    afterEach(() => {
+      vi.clearAllMocks()
+    })
+
     it('should return true for a valid WalletGetAssetsResponse', () => {
       const validResponse: WalletGetAssetsResponse = {
         '0x123': [
@@ -252,6 +280,10 @@ describe('ERC7811Util', () => {
   })
 
   describe('isValidAsset', () => {
+    afterEach(() => {
+      vi.clearAllMocks()
+    })
+
     it('should return true for a valid asset', () => {
       const validAsset = {
         address: '0x1234567890123456789012345678901234567890' as `0x${string}`,

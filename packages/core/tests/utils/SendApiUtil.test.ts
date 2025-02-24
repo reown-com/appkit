@@ -57,7 +57,7 @@ describe('SendApiUtil', () => {
   })
 
   afterEach(() => {
-    vi.restoreAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('getMyTokensWithBalance', () => {
@@ -65,6 +65,10 @@ describe('SendApiUtil', () => {
       AccountController.state.address = mockEthereumAddress
       ChainController.state.activeCaipNetwork = mockEthereumNetwork
       vi.mocked(ERC7811Utils.getChainIdHexFromCAIP2ChainId).mockReturnValue(mockEthChainIdAsHex)
+    })
+
+    afterEach(() => {
+      vi.clearAllMocks()
     })
 
     it('should return empty array when address is missing', async () => {
@@ -209,6 +213,10 @@ describe('SendApiUtil', () => {
   })
 
   describe('mapBalancesToSwapTokens', () => {
+    afterEach(() => {
+      vi.clearAllMocks()
+    })
+
     it('should map balances to swap tokens correctly', () => {
       const mockBalances = [
         {
@@ -279,6 +287,10 @@ describe('SendApiUtil', () => {
       AccountController.state.address = mockEthereumAddress
       ChainController.state.activeCaipNetwork = mockEthereumNetwork
       vi.mocked(ERC7811Utils.getChainIdHexFromCAIP2ChainId).mockReturnValue(mockEthChainIdAsHex)
+    })
+
+    afterEach(() => {
+      vi.clearAllMocks()
     })
 
     it('should return null when walletGetAssetsResponse is invalid', async () => {
