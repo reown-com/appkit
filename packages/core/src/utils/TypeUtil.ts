@@ -204,7 +204,6 @@ export interface BlockchainApiIdentityResponse {
 
 export interface BlockchainApiTransactionsRequest {
   account: string
-  projectId: string
   cursor?: string
   onramp?: 'coinbase'
   signal?: AbortSignal
@@ -236,7 +235,6 @@ export type SwapTokenWithBalance = SwapToken & {
 }
 
 export interface BlockchainApiSwapTokensRequest {
-  projectId: string
   chainId?: string
 }
 
@@ -245,7 +243,6 @@ export interface BlockchainApiSwapTokensResponse {
 }
 
 export interface BlockchainApiSwapQuoteRequest {
-  projectId: string
   chainId?: string
   amount: string
   userAddress: string
@@ -265,7 +262,6 @@ export interface BlockchainApiSwapQuoteResponse {
 }
 
 export interface BlockchainApiTokenPriceRequest {
-  projectId: string
   currency?: 'usd' | 'eur' | 'gbp' | 'aud' | 'cad' | 'inr' | 'jpy' | 'btc' | 'eth'
   addresses: string[]
 }
@@ -280,7 +276,6 @@ export interface BlockchainApiTokenPriceResponse {
 }
 
 export interface BlockchainApiSwapAllowanceRequest {
-  projectId: string
   tokenAddress: string
   userAddress: string
 }
@@ -290,7 +285,6 @@ export interface BlockchainApiSwapAllowanceResponse {
 }
 
 export interface BlockchainApiGasPriceRequest {
-  projectId: string
   chainId: string
 }
 
@@ -301,7 +295,6 @@ export interface BlockchainApiGasPriceResponse {
 }
 
 export interface BlockchainApiGenerateSwapCalldataRequest {
-  projectId: string
   userAddress: string
   from: string
   to: string
@@ -326,7 +319,6 @@ export interface BlockchainApiGenerateSwapCalldataResponse {
 }
 
 export interface BlockchainApiGenerateApproveCalldataRequest {
-  projectId: string
   userAddress: string
   from: string
   to: string
