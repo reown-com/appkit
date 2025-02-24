@@ -168,6 +168,11 @@ export class UniversalAdapter extends AdapterBlueprint {
     })
   }
 
+  public override walletGetAssets(
+    _params: AdapterBlueprint.WalletGetAssetsParams
+  ): Promise<AdapterBlueprint.WalletGetAssetsResponse> {
+    return Promise.resolve({})
+  }
   public async writeContract(): Promise<AdapterBlueprint.WriteContractResult> {
     return Promise.resolve({
       hash: ''

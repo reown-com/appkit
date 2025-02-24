@@ -10,7 +10,7 @@ import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 export function EthersSignMessageTest() {
   const toast = useChakraToast()
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { walletProvider } = useAppKitProvider<Provider>('eip155')
   const [signature, setSignature] = useState<string | undefined>()
 

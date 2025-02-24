@@ -8,7 +8,9 @@ import { mainnet } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
-import { MultiChainTestsEthersSolana } from '@/src/components/MultiChainTestsEthersSolana'
+import { AppKitInfo } from '@/src/components/AppKitInfo'
+import { EthersTests } from '@/src/components/Ethers/EthersTests'
+import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { ThemeStore } from '@/src/utils/StoreUtil'
 
@@ -38,7 +40,9 @@ export default function MultiChainEthersSolana() {
   return (
     <>
       <AppKitButtons />
-      <MultiChainTestsEthersSolana />
+      <AppKitInfo />
+      <EthersTests />
+      <SolanaTests />
     </>
   )
 }

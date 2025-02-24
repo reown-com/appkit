@@ -23,7 +23,7 @@ export function Ethers5SendCallsTest() {
   const [loading, setLoading] = useState(false)
 
   const { chainId } = useAppKitNetwork()
-  const { address, isConnected } = useAppKitAccount()
+  const { address, isConnected } = useAppKitAccount({ namespace: 'eip155' })
   const { walletProvider } = useAppKitProvider<RawProvider>('eip155')
 
   const toast = useChakraToast()

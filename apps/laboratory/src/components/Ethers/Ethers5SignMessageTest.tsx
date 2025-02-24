@@ -18,7 +18,7 @@ export function Ethers5SignMessageTest() {
   const toast = useChakraToast()
 
   const { chainId } = useAppKitNetwork()
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { walletProvider } = useAppKitProvider<Provider>('eip155')
 
   async function onSignMessage() {
