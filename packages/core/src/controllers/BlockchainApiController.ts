@@ -134,7 +134,7 @@ const state = proxy<BlockchainApiControllerState>({
 export const BlockchainApiController = {
   state,
 
-  async get<T>(request: RequestArguments) {
+  async get<T>(request: RequestArguments): Promise<T> {
     const { st, sv } = BlockchainApiController.getSdkProperties()
     const projectId = OptionsController.state.projectId
 
@@ -427,7 +427,6 @@ export const BlockchainApiController = {
 
     const balance = await BlockchainApiController.get<BlockchainApiBalanceResponse>({
       path: `/v1/account/${address}/balance`,
-
       params: {
         currency: 'usd',
         chainId,
