@@ -190,9 +190,13 @@ export const BlockchainApiController = {
       return identityCache
     }
 
+    const { sv, st } = BlockchainApiController.getSdkProperties()
+
     const result = await state.api.get<BlockchainApiIdentityResponse>({
       path: `/v1/identity/${address}`,
       params: {
+        st,
+        sv,
         projectId: OptionsController.state.projectId,
         sender: ChainController.state.activeCaipAddress
           ? CoreHelperUtil.getPlainAddress(ChainController.state.activeCaipAddress)

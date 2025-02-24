@@ -4,7 +4,7 @@ import { BlockchainApiController, FetchUtil } from '../../exports/index.js'
 
 // -- Tests --------------------------------------------------------------------
 describe('BlockchainApiController', () => {
-  it('should include sdk properties when fetching blockchain data', async () => {
+  it('should include sdk properties when fetching swap allowance data', async () => {
     vi.spyOn(FetchUtil.prototype, 'get').mockResolvedValue({})
     vi.spyOn(BlockchainApiController, 'isNetworkSupported').mockResolvedValue(true)
 
@@ -21,6 +21,21 @@ describe('BlockchainApiController', () => {
         path: '/v1/convert/allowance',
         params: {
           ...swapAllowance,
+          ...BlockchainApiController.getSdkProperties()
+        }
+      })
+    )
+  })
+  it('should include sdk properties when fetching identity data', async () => {
+    vi.spyOn(FetchUtil.prototype, 'get').mockResolvedValue({})
+    vi.spyOn(BlockchainApiController, 'isNetworkSupported').mockResolvedValue(true)
+
+    await BlockchainApiController.fetchIdentity({ address: '0x123', caipNetworkId: 'eip155:1' })
+
+    expect(FetchUtil.prototype.get).toHaveBeenCalledWith(
+      expect.objectContaining({
+        path: '/v1/identity',
+        params: {
           ...BlockchainApiController.getSdkProperties()
         }
       })
