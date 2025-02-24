@@ -89,7 +89,7 @@ jobs:
         run: pnpm build
 
       - name: Wait for Vercel Preview URL
-        uses: UnlyEd/github-action-await-vercel@v1 # TODO best practices recommend to use a fixed version instead of @v1 for production usage (i.e: @v1.2.32)
+        uses: UnlyEd/github-action-await-vercel@v2.0
         id: await-vercel
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
