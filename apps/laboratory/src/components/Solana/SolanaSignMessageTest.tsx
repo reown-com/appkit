@@ -3,8 +3,8 @@ import { Button } from '@chakra-ui/react'
 import type { Provider } from '@reown/appkit-adapter-solana'
 import { useAppKitProvider } from '@reown/appkit/react'
 
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
+import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 export function SolanaSignMessageTest() {
   const toast = useChakraToast()

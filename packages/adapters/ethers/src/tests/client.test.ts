@@ -312,6 +312,48 @@ describe('EthersAdapter', () => {
         symbol: 'ETH'
       })
     })
+
+    it('should call getBalance once even when multiple adapter requests are sent at the same time', async () => {
+      adapter.caipNetworks = mockCaipNetworks
+      const mockBalance = BigInt(1500000000000000000)
+      // delay the response to simulate http request latency
+      const latency = 1000
+      const numSimultaneousRequests = 10
+      const expectedSentRequests = 1
+      let mockedImplementationCalls = 0
+      vi.mocked(JsonRpcProvider).mockImplementation(
+        () =>
+          ({
+            getBalance: vi.fn().mockResolvedValue(
+              new Promise(resolve => {
+                mockedImplementationCalls++
+                setTimeout(() => resolve(mockBalance), latency)
+              })
+            )
+          }) as any
+      )
+
+      const result = await Promise.all([
+        ...Array.from({ length: numSimultaneousRequests }).map(() =>
+          adapter.getBalance({
+            address: '0x123',
+            chainId: 1
+          })
+        )
+      ])
+
+      expect(mockedImplementationCalls).to.eql(expectedSentRequests)
+      expect(result.length).toBe(numSimultaneousRequests)
+      expect(expectedSentRequests).to.be.lt(numSimultaneousRequests)
+
+      // verify all calls got the same balance
+      for (const balance of result) {
+        expect(balance).toEqual({
+          balance: '1.5',
+          symbol: 'ETH'
+        })
+      }
+    })
   })
 
   describe('EthersAdapter -getProfile', () => {
@@ -340,16 +382,6 @@ describe('EthersAdapter', () => {
   })
 
   describe('EthersAdapter - switchNetwork', () => {
-    it('should switch network with WalletConnect provider', async () => {
-      await adapter.switchNetwork({
-        caipNetwork: mockCaipNetworks[0],
-        provider: mockWalletConnectProvider,
-        providerType: 'WALLET_CONNECT'
-      })
-
-      expect(mockWalletConnectProvider.setDefaultChain).toHaveBeenCalledWith('eip155:1')
-    })
-
     it('should switch network with Auth provider', async () => {
       await adapter.switchNetwork({
         caipNetwork: mockCaipNetworks[0],
@@ -399,6 +431,31 @@ describe('EthersAdapter', () => {
             blockExplorerUrls: ['https://etherscan.io']
           }
         ]
+      })
+    })
+
+    it('should call setDefaultChain and request from provider for WALLET_CONNECT', async () => {
+      const adapter = new EthersAdapter()
+
+      const mockProvider = {
+        request: vi.fn(),
+        setDefaultChain: vi.fn()
+      } as unknown as UniversalProvider
+
+      const params = {
+        caipNetwork: {
+          id: 1,
+          caipNetworkId: 'eip155:1'
+        },
+        provider: mockProvider,
+        providerType: 'WALLET_CONNECT'
+      } as unknown as any
+
+      await adapter.switchNetwork(params)
+
+      expect(mockProvider.request).toHaveBeenCalledWith({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x1' }]
       })
     })
   })

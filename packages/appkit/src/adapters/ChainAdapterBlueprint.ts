@@ -105,7 +105,7 @@ export abstract class AdapterBlueprint<
     this.addConnector({
       id: CommonConstantsUtil.CONNECTOR_ID.AUTH,
       type: 'AUTH',
-      name: 'Auth',
+      name: CommonConstantsUtil.CONNECTOR_NAMES.AUTH,
       provider: authProvider,
       imageId: PresetsUtil.ConnectorImageIds[CommonConstantsUtil.CONNECTOR_ID.AUTH],
       chain: this.namespace,
@@ -277,7 +277,7 @@ export abstract class AdapterBlueprint<
    * @param {AppKitOptions} [options] - Optional AppKit options
    * @param {AppKit} [appKit] - Optional AppKit instance
    */
-  public abstract syncConnectors(options?: AppKitOptions, appKit?: AppKit): void
+  public abstract syncConnectors(options?: AppKitOptions, appKit?: AppKit): void | Promise<void>
 
   /**
    * Synchronizes the connection with the given parameters.
@@ -375,6 +375,10 @@ export abstract class AdapterBlueprint<
   public abstract revokePermissions(
     params: AdapterBlueprint.RevokePermissionsParams
   ): Promise<`0x${string}`>
+
+  public abstract walletGetAssets(
+    params: AdapterBlueprint.WalletGetAssetsParams
+  ): Promise<AdapterBlueprint.WalletGetAssetsResponse>
 
   protected getWalletConnectConnector(): WalletConnectConnector {
     const connector = this.connectors.find(c => c instanceof WalletConnectConnector) as
@@ -503,6 +507,23 @@ export namespace AdapterBlueprint {
     expiry: number
     address: `0x${string}`
   }
+
+  export type WalletGetAssetsParams = {
+    account: `0x${string}`
+    assetFilter?: Record<`0x${string}`, (`0x${string}` | 'native')[]>
+    assetTypeFilter?: ('NATIVE' | 'ERC20')[]
+    chainFilter?: `0x${string}`[]
+  }
+
+  export type WalletGetAssetsResponse = Record<
+    `0x${string}`,
+    {
+      address: `0x${string}` | 'native'
+      balance: `0x${string}`
+      type: 'NATIVE' | 'ERC20'
+      metadata: Record<string, unknown>
+    }[]
+  >
 
   export type SendTransactionParams = {
     address: `0x${string}`

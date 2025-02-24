@@ -3,7 +3,7 @@ import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import type { WcWallet } from '@reown/appkit-core'
-import { ApiController, AssetUtil, ConnectorController, RouterController } from '@reown/appkit-core'
+import { ApiController, AssetUtil, ConnectorController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
 import { WalletUtil } from '../../utils/WalletUtil.js'
@@ -51,12 +51,7 @@ export class W3mConnectFeaturedWidget extends LitElement {
 
   // -- Private Methods ----------------------------------- //
   private onConnectWallet(wallet: WcWallet) {
-    const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
-    if (connector) {
-      RouterController.push('ConnectingExternal', { connector })
-    } else {
-      RouterController.push('ConnectingWalletConnect', { wallet })
-    }
+    ConnectorController.selectWalletConnector(wallet)
   }
 }
 

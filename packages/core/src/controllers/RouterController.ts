@@ -174,9 +174,10 @@ export const RouterController = {
     }
   },
 
-  reset(view: RouterControllerState['view']) {
+  reset(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
     state.view = view
     state.history = [view]
+    state.data = data
   },
 
   replace(view: RouterControllerState['view'], data?: RouterControllerState['data']) {
@@ -202,6 +203,10 @@ export const RouterController = {
       }
     } else {
       ModalController.close()
+    }
+
+    if (state.data?.wallet) {
+      state.data.wallet = undefined
     }
 
     // Reloading the iframe contentwindow and doing the view animation in the modal causes a small freeze in the transition. Doing these separately fixes that.
