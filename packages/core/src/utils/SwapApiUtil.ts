@@ -120,6 +120,10 @@ export const SwapApiUtil = {
       caipNetwork.caipNetworkId,
       forceUpdate
     )
+    /*
+     * The 1Inch API includes many low-quality tokens in the balance response,
+     * which appear inconsistently. This filter prevents them from being displayed.
+     */
     const balances = response.balances.filter(balance => balance.quantity.decimals !== '0')
 
     AccountController.setTokenBalance(balances, ChainController.state.activeChain)

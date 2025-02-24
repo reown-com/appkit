@@ -10,7 +10,8 @@ import {
   AlertController,
   ChainController,
   CoreHelperUtil,
-  type Provider as CoreProvider
+  type Provider as CoreProvider,
+  StorageUtil
 } from '@reown/appkit-core'
 import { ErrorUtil } from '@reown/appkit-utils'
 import { SolConstantsUtil } from '@reown/appkit-utils/solana'
@@ -37,6 +38,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   private connectionSettings: Commitment | ConnectionConfig
   public adapterType = 'solana'
   public wallets?: BaseWalletAdapter[]
+  private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
 
   constructor(options: AdapterOptions = {}) {
     super({})
@@ -106,6 +108,12 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
   public async revokePermissions(): Promise<`0x${string}`> {
     return Promise.resolve('0x')
+  }
+
+  public override async walletGetAssets(
+    _params: AdapterBlueprint.WalletGetAssetsParams
+  ): Promise<AdapterBlueprint.WalletGetAssetsResponse> {
+    return Promise.resolve({})
   }
 
   public async getAccounts(
@@ -242,17 +250,42 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       this.connectionSettings
     )
 
-    const balance = await connection.getBalance(new PublicKey(params.address))
-    const formattedBalance = (balance / SolConstantsUtil.LAMPORTS_PER_SOL).toString()
-
-    if (!params.caipNetwork) {
-      throw new Error('caipNetwork is required')
+    const caipAddress = `${params?.caipNetwork?.caipNetworkId}:${params.address}`
+    const cachedPromise = this.balancePromises[caipAddress]
+    if (cachedPromise) {
+      return cachedPromise
     }
-
-    return {
-      balance: formattedBalance,
-      symbol: params.caipNetwork?.nativeCurrency.symbol
+    const cachedBalance = StorageUtil.getNativeBalanceCacheForCaipAddress(caipAddress)
+    if (cachedBalance) {
+      return { balance: cachedBalance.balance, symbol: cachedBalance.symbol }
     }
+    this.balancePromises[caipAddress] = new Promise<AdapterBlueprint.GetBalanceResult>(
+      async resolve => {
+        const balance = await connection.getBalance(new PublicKey(params.address))
+        const formattedBalance = (balance / SolConstantsUtil.LAMPORTS_PER_SOL).toString()
+
+        StorageUtil.updateNativeBalanceCache({
+          caipAddress,
+          balance: formattedBalance,
+          symbol: params.caipNetwork?.nativeCurrency.symbol || 'SOL',
+          timestamp: Date.now()
+        })
+
+        if (!params.caipNetwork) {
+          throw new Error('caipNetwork is required')
+        }
+
+        resolve({
+          balance: formattedBalance,
+          symbol: params.caipNetwork?.nativeCurrency.symbol
+        })
+      }
+    ).finally(() => {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete this.balancePromises[caipAddress]
+    })
+
+    return this.balancePromises[caipAddress] || { balance: '0', symbol: 'SOL' }
   }
 
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {

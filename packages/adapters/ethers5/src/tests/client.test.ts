@@ -70,7 +70,7 @@ const mockAuthProvider = {
   connect: vi.fn(),
   disconnect: vi.fn(),
   switchNetwork: vi.fn(),
-  getUser: vi.fn()
+  getUser: vi.fn().mockResolvedValue({})
 } as unknown as W3mFrameProvider
 
 const mockNetworks = [mainnet, polygon]
@@ -306,6 +306,48 @@ describe('Ethers5Adapter', () => {
     })
   })
 
+  it('should call getBalance once even when multiple adapter requests are sent at the same time', async () => {
+    adapter.caipNetworks = mockCaipNetworks
+    const mockBalance = BigInt(1500000000000000000)
+    // delay the response to simulate http request latency
+    const latency = 1000
+    const numSimultaneousRequests = 10
+    const expectedSentRequests = 1
+    let mockedImplementationCalls = 0
+    vi.mocked(providers.JsonRpcProvider).mockImplementation(
+      () =>
+        ({
+          getBalance: vi.fn().mockResolvedValue(
+            new Promise(resolve => {
+              mockedImplementationCalls++
+              setTimeout(() => resolve(mockBalance), latency)
+            })
+          )
+        }) as any
+    )
+
+    const result = await Promise.all([
+      ...Array.from({ length: numSimultaneousRequests }).map(() =>
+        adapter.getBalance({
+          address: '0x123',
+          chainId: 1
+        })
+      )
+    ])
+
+    expect(mockedImplementationCalls).to.eql(expectedSentRequests)
+    expect(result.length).toBe(numSimultaneousRequests)
+    expect(expectedSentRequests).to.be.lt(numSimultaneousRequests)
+
+    // verify all calls got the same balance
+    for (const balance of result) {
+      expect(balance).toEqual({
+        balance: '1.5',
+        symbol: 'ETH'
+      })
+    }
+  })
+
   describe('Ethers5Adapter -getProfile', () => {
     it('should get profile successfully', async () => {
       const mockEnsName = 'test.eth'
@@ -343,6 +385,30 @@ describe('Ethers5Adapter', () => {
       expect(mockAuthProvider.getUser).toHaveBeenCalledWith({
         chainId: 'eip155:1',
         preferredAccountType: 'smartAccount'
+      })
+    })
+
+    it('should receive chain id after switching network with Auth provider', async () => {
+      vi.spyOn(mockAuthProvider, 'getUser').mockResolvedValue({
+        chainId: 'eip155:1'
+      } as any)
+
+      const handleSwitchNetwork = vi.fn()
+
+      adapter.on('switchNetwork', handleSwitchNetwork)
+
+      await adapter.switchNetwork({
+        caipNetwork: CaipNetworksUtil.extendCaipNetwork(mainnet, {
+          projectId: 'test-project-id',
+          customNetworkImageUrls: {}
+        }),
+        provider: mockAuthProvider,
+        providerType: 'AUTH'
+      })
+
+      expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith('eip155:1')
+      expect(handleSwitchNetwork).toHaveBeenCalledWith({
+        chainId: String(mainnet.id)
       })
     })
 

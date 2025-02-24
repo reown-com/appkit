@@ -240,7 +240,7 @@ export class AppKit {
     return ChainController.state.activeCaipNetwork?.id
   }
 
-  public switchNetwork(appKitNetwork: AppKitNetwork) {
+  public async switchNetwork(appKitNetwork: AppKitNetwork) {
     const network = this.caipNetworks?.find(n => n.id === appKitNetwork.id)
 
     if (!network) {
@@ -249,7 +249,7 @@ export class AppKit {
       return
     }
 
-    ChainController.switchActiveNetwork(network)
+    await ChainController.switchActiveNetwork(network)
   }
 
   public getWalletProvider() {
@@ -570,7 +570,12 @@ export class AppKit {
     connectedWalletInfo,
     chain
   ) => {
-    AccountController.setConnectedWalletInfo(connectedWalletInfo, chain)
+    AccountController.setConnectedWalletInfo(
+      connectedWalletInfo
+        ? { type: ProviderUtil.getProviderId(chain), ...connectedWalletInfo }
+        : undefined,
+      chain
+    )
   }
 
   public setSmartAccountEnabledNetworks: (typeof ChainController)['setSmartAccountEnabledNetworks'] =
@@ -1091,7 +1096,7 @@ export class AppKit {
       getCapabilities: async (params: AdapterBlueprint.GetCapabilitiesParams) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
-        await adapter?.getCapabilities(params)
+        return await adapter?.getCapabilities(params)
       },
       grantPermissions: async (params: AdapterBlueprint.GrantPermissionsParams) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
@@ -1106,6 +1111,11 @@ export class AppKit {
         }
 
         return '0x'
+      },
+      walletGetAssets: async (params: AdapterBlueprint.WalletGetAssetsParams) => {
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+
+        return (await adapter?.walletGetAssets(params)) ?? {}
       }
     }
 
@@ -1428,9 +1438,15 @@ export class AppKit {
     }
 
     const connectionStatus = StorageUtil.getConnectionStatus()
-
     if (connectionStatus === 'connected') {
       this.setStatus('connecting', chainNamespace)
+    } else if (connectionStatus === 'disconnected') {
+      /*
+       * Address cache is kept after disconnecting from the wallet
+       * but should be cleared if appkit is launched in disconnected state
+       */
+      StorageUtil.clearAddressCache()
+      this.setStatus(connectionStatus, chainNamespace)
     } else {
       this.setStatus(connectionStatus, chainNamespace)
     }
@@ -1585,7 +1601,6 @@ export class AppKit {
         }
 
         this.syncWalletConnectAccounts(chainNamespace)
-
         await this.syncAccount({
           address,
           chainId,
@@ -1641,71 +1656,49 @@ export class AppKit {
     }
   ) {
     const { address, chainId, chainNamespace } = params
-
     const { chainId: activeChainId } = StorageUtil.getActiveNetworkProps()
     const chainIdToUse = chainId || activeChainId
-    const isUnsupportedNetwork =
-      ChainController.state.activeCaipNetwork?.name === ConstantsUtil.UNSUPPORTED_NETWORK_NAME
-    const shouldSupportAllNetworks = ChainController.getNetworkProp(
-      'supportsAllNetworks',
-      chainNamespace
-    )
+    const isSameNamespace = ChainController.state.activeChain === chainNamespace
 
     this.setStatus('connected', chainNamespace)
 
-    if (isUnsupportedNetwork && !shouldSupportAllNetworks) {
-      return
-    }
-
     if (chainIdToUse) {
       let caipNetwork = this.caipNetworks?.find(n => n.id.toString() === chainIdToUse.toString())
-      let fallbackCaipNetwork = this.caipNetworks?.find(n => n.chainNamespace === chainNamespace)
 
-      // If doesn't support all networks, we need to use approved networks
-      if (!shouldSupportAllNetworks && !caipNetwork && !fallbackCaipNetwork) {
-        // Connection can be requested for a chain that is not supported by the wallet so we need to use approved networks here
-        const caipNetworkIds = this.getApprovedCaipNetworkIds() || []
-        const caipNetworkId = caipNetworkIds.find(
-          id => ParseUtil.parseCaipNetworkId(id)?.chainId === chainIdToUse.toString()
-        )
-        const fallBackCaipNetworkId = caipNetworkIds.find(
-          id => ParseUtil.parseCaipNetworkId(id)?.chainNamespace === chainNamespace
-        )
-
-        caipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
-        fallbackCaipNetwork = this.caipNetworks?.find(
-          n =>
-            n.caipNetworkId === fallBackCaipNetworkId ||
-            // This is a workaround used in Solana network to support deprecated caipNetworkId
-            ('deprecatedCaipNetworkId' in n && n.deprecatedCaipNetworkId === fallBackCaipNetworkId)
+      // If the network is not in the list, get unsupported network object
+      if (!caipNetwork) {
+        caipNetwork = this.getUnsupportedNetwork(
+          `${ChainController.state.activeChain as ChainNamespace}:${chainIdToUse}`
         )
       }
 
-      const network = caipNetwork || fallbackCaipNetwork
+      const isUnsupportedNetwork = caipNetwork?.name === ConstantsUtil.UNSUPPORTED_NETWORK_NAME
 
-      if (network?.chainNamespace === ChainController.state.activeChain) {
-        // If the network is unsupported and the user doesn't allow unsupported chains, we show the unsupported chain UI
-        if (
-          !OptionsController.state.allowUnsupportedChain &&
-          ChainController.state.activeCaipNetwork?.name === ConstantsUtil.UNSUPPORTED_NETWORK_NAME
-        ) {
+      if (isSameNamespace) {
+        this.setCaipNetwork(caipNetwork)
+
+        if (isUnsupportedNetwork && !OptionsController.state.allowUnsupportedChain) {
           ChainController.showUnsupportedChainUI()
-        } else {
-          this.setCaipNetwork(network)
         }
+
+        this.syncConnectedWalletInfo(chainNamespace)
       }
-      this.syncConnectedWalletInfo(chainNamespace)
 
       // Only update state when needed
       if (!HelpersUtil.isLowerCaseMatch(address, AccountController.state.address)) {
-        this.setCaipAddress(`${chainNamespace}:${network?.id}:${address}`, chainNamespace)
+        this.setCaipAddress(`${chainNamespace}:${caipNetwork?.id}:${address}`, chainNamespace)
         await this.syncIdentity({
           address,
-          chainId: network?.id as string | number,
+          chainId: caipNetwork?.id,
           chainNamespace
         })
       }
-      await this.syncBalance({ address, chainId: network?.id, chainNamespace })
+
+      if (isUnsupportedNetwork) {
+        this.setBalance('0.00', caipNetwork.nativeCurrency.symbol, chainNamespace)
+      } else {
+        await this.syncBalance({ address, chainId: caipNetwork?.id, chainNamespace })
+      }
     }
   }
 
@@ -1755,6 +1748,15 @@ export class AppKit {
           chainNamespace
         )
       }
+    } else if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH) {
+      const provider = this.authProvider
+
+      if (provider) {
+        const social = StorageUtil.getConnectedSocialProvider() ?? 'email'
+        const identifier = provider.getEmail() ?? provider.getUsername()
+
+        this.setConnectedWalletInfo({ name: providerType, identifier, social }, chainNamespace)
+      }
     } else if (connectorId) {
       if (connectorId === ConstantsUtil.CONNECTOR_ID.COINBASE) {
         const connector = this.getConnectors().find(
@@ -1778,9 +1780,8 @@ export class AppKit {
   }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
     chainNamespace: ChainNamespace
   }) {
-    const activeCaipNetwork = this.caipNetworks?.find(
-      n => n.caipNetworkId === `${chainNamespace}:${chainId}`
-    )
+    const caipNetworkId: CaipNetworkId = `${chainNamespace}:${chainId}`
+    const activeCaipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
 
     if (chainNamespace !== ConstantsUtil.CHAIN.EVM || activeCaipNetwork?.testnet) {
       return
@@ -1788,7 +1789,8 @@ export class AppKit {
 
     try {
       const { name, avatar } = await this.fetchIdentity({
-        address
+        address,
+        caipNetworkId
       })
 
       this.setProfileName(name, chainNamespace)
@@ -1870,7 +1872,6 @@ export class AppKit {
 
         this.syncProvider({ ...connection, chainNamespace: namespace })
         await this.syncAccount({ ...connection, chainNamespace: namespace })
-
         this.setStatus('connected', namespace)
       } else {
         this.setStatus('disconnected', namespace)

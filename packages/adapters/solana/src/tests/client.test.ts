@@ -193,6 +193,43 @@ describe('SolanaAdapter', () => {
         symbol: 'SOL'
       })
     })
+    it('should get balance successfully mult', async () => {
+      const numSimultaneousRequests = 10
+      const expectedSentRequests = 1
+      vi.mock('@solana/web3.js', () => ({
+        Connection: vi.fn(endpoint => ({
+          getBalance: vi.fn().mockResolvedValue(
+            new Promise(resolve => {
+              setTimeout(() => resolve(1500000000), 1000)
+            })
+          ),
+          getSignatureStatus: vi.fn().mockResolvedValue({ value: true }),
+          rpcEndpoint: endpoint
+        })),
+        PublicKey: vi.fn(key => ({ toBase58: () => key }))
+      }))
+
+      const result = await Promise.all([
+        ...Array.from({ length: numSimultaneousRequests }).map(() =>
+          adapter.getBalance({
+            address: 'mock-address',
+            chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+            caipNetwork: mockCaipNetworks[0]
+          })
+        )
+      ])
+
+      expect(result.length).toBe(numSimultaneousRequests)
+      expect(expectedSentRequests).to.be.lt(numSimultaneousRequests)
+
+      // verify all calls got the same balance
+      for (const balance of result) {
+        expect(balance).toEqual({
+          balance: '1.5',
+          symbol: 'SOL'
+        })
+      }
+    })
   })
 
   describe('SolanaAdapter - signMessage', () => {
@@ -225,6 +262,30 @@ describe('SolanaAdapter', () => {
 
       expect(switchNetworkSpy).toHaveBeenCalled()
       expect(SolStoreUtil.setConnection).toHaveBeenCalled()
+    })
+
+    it('should receive chain id after switching network with auth provider', async () => {
+      const provider = Object.assign(Object.create(AuthProvider.prototype), {
+        type: 'AUTH',
+        switchNetwork: mockAuthConnector.connect,
+        getUser: vi.fn().mockResolvedValue({
+          chainId: mockCaipNetworks[0].caipNetworkId
+        })
+      })
+
+      const handleSwitchNetwork = vi.fn()
+
+      adapter.on('switchNetwork', handleSwitchNetwork)
+
+      await adapter.switchNetwork({
+        caipNetwork: mockCaipNetworks[0],
+        provider: provider,
+        providerType: 'AUTH'
+      })
+
+      expect(handleSwitchNetwork).toHaveBeenCalledWith({
+        chainId: mockCaipNetworks[0].id
+      })
     })
   })
 
