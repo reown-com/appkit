@@ -300,7 +300,8 @@ export const BlockchainApiController = {
       path: '/v1/fungible/price',
       body: {
         currency: 'usd',
-        addresses
+        addresses,
+        projectId: OptionsController.state.projectId
       },
       headers: {
         'Content-Type': 'application/json'
@@ -374,6 +375,7 @@ export const BlockchainApiController = {
         eip155: {
           slippage: ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE
         },
+        projectId: OptionsController.state.projectId,
         from,
         to,
         userAddress
@@ -528,6 +530,9 @@ export const BlockchainApiController = {
 
     const response = await state.api.post<{ url: string }>({
       path: `/v1/generators/onrampurl`,
+      params: {
+        projectId: OptionsController.state.projectId
+      },
       body: {
         destinationWallets,
         defaultNetwork,
@@ -579,6 +584,9 @@ export const BlockchainApiController = {
 
       const response = await state.api.post<OnrampQuote>({
         path: `/v1/onramp/quote`,
+        params: {
+          projectId: OptionsController.state.projectId
+        },
         body: {
           purchaseCurrency,
           paymentCurrency,
@@ -623,6 +631,9 @@ export const BlockchainApiController = {
 
     return state.api.post({
       path: `/v1/sessions/${address}/revoke`,
+      params: {
+        projectId: OptionsController.state.projectId
+      },
       body: {
         pci,
         signature
