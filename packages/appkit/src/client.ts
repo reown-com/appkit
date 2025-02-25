@@ -1185,6 +1185,11 @@ export class AppKit {
   }
 
   private async switchAuthNetwork(caipNetwork: CaipNetwork) {
+    const supportedNetworks = ['eip155', 'solana']
+    if (!supportedNetworks.includes(caipNetwork.chainNamespace)) {
+      this.setCaipNetwork(caipNetwork)
+      return
+    }
     try {
       ChainController.state.activeChain = caipNetwork.chainNamespace
       await this.connectionControllerClient?.connectExternal?.({

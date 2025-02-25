@@ -7,9 +7,9 @@ import {
   AssetUtil,
   ChainController,
   ConnectorController,
-  OptionsController,
   RouterController,
   RouterUtil,
+  SIWXUtil,
   StorageUtil
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
@@ -139,7 +139,8 @@ export class W3mNetworkSwitchView extends LitElement {
       this.error = false
       if (this.network) {
         await ChainController.switchActiveNetwork(this.network)
-        if (!OptionsController.state.siwx) {
+        const isAuthenticated = await SIWXUtil.isAuthenticated()
+        if (isAuthenticated) {
           RouterUtil.goBackOrCloseModal()
         }
       }

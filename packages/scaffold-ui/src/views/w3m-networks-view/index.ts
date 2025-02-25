@@ -157,6 +157,7 @@ export class W3mNetworksView extends LitElement {
   private onSwitchNetwork(network: CaipNetwork) {
     const routerData = RouterController.state.data
     const isSameNetwork = network.id === this.network?.id
+    const connectorId = StorageUtil.getConnectedConnectorId(ChainController.state.activeChain)
 
     if (isSameNetwork) {
       return
@@ -165,7 +166,6 @@ export class W3mNetworksView extends LitElement {
     const isDifferentNamespace = network.chainNamespace !== ChainController.state.activeChain
     const isCurrentNamespaceConnected = AccountController.state.caipAddress
     const isNextNamespaceConnected = AccountController.getCaipAddress(network.chainNamespace)
-    const connectorId = StorageUtil.getConnectedConnectorId(ChainController.state.activeChain)
 
     /**
      * If the network is supported by the auth connector, we don't need to show switch active chain view.

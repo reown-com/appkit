@@ -13,7 +13,6 @@ import { OptionsController } from '../controllers/OptionsController.js'
 import { RouterController } from '../controllers/RouterController.js'
 import { SnackController } from '../controllers/SnackController.js'
 import { CoreHelperUtil } from './CoreHelperUtil.js'
-import { RouterUtil } from './RouterUtil.js'
 import { StorageUtil } from './StorageUtil.js'
 
 /**
@@ -22,6 +21,17 @@ import { StorageUtil } from './StorageUtil.js'
 export const SIWXUtil = {
   getSIWX() {
     return OptionsController.state.siwx
+  },
+  async isAuthenticated() {
+    const caipAddress = ChainController.getActiveCaipAddress()
+    const siwx = this.getSIWX()
+    if (!siwx || !caipAddress) {
+      return true
+    }
+
+    const [namespace, chainId, address] = caipAddress.split(':') as [ChainNamespace, string, string]
+    const sessions = await siwx.getSessions(`${namespace}:${chainId}`, address)
+    return sessions.length
   },
   async initializeIfEnabled() {
     const siwx = OptionsController.state.siwx
@@ -35,8 +45,6 @@ export const SIWXUtil = {
       const sessions = await siwx.getSessions(`${namespace}:${chainId}`, address)
 
       if (sessions.length) {
-        RouterUtil.goBackOrCloseModal()
-
         return
       }
 
