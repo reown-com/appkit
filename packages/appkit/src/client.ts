@@ -1135,31 +1135,29 @@ export class AppKit {
 
         const adapter = this.getAdapter(newNamespace)
 
-        let provider: W3mFrameProvider | UniversalProvider | undefined = undefined
-        switch (providerType) {
-          case 'AUTH':
-            provider = this.authProvider
-            break
-          case 'WALLET_CONNECT':
-            provider = this.universalProvider
-            break
-          default:
-            provider = ProviderUtil.getProvider(newNamespace) || undefined
+        console.log('>> Provider type', providerType)
+        if (providerType === 'AUTH') {
+          console.log('>> Switching with Auth')
+          await this.switchAuthNetwork(caipNetwork)
+        }
+        if (providerType === 'WALLET_CONNECT') {
+          await this.switchWCNetwork(caipNetwork)
         }
 
+        const provider = ProviderUtil.getProvider(newNamespace) || undefined
         if (provider) {
           await adapter?.switchNetwork({ caipNetwork, provider, providerType })
           this.setCaipNetwork(caipNetwork)
-          const address = this.getAddressByChainNamespace(caipNetwork.chainNamespace)
-          if (providerType === 'WALLET_CONNECT') {
-            this.syncWalletConnectAccount()
-          } else if (address) {
-            await this.syncAccount({
-              address,
-              chainId: caipNetwork.id,
-              chainNamespace: caipNetwork.chainNamespace
-            })
-          }
+        }
+
+        const address = this.getAddressByChainNamespace(caipNetwork.chainNamespace)
+        console.log('>> The address is', address, AccountController.state.address)
+        if (address) {
+          await this.syncAccount({
+            address,
+            chainId: caipNetwork.id,
+            chainNamespace: caipNetwork.chainNamespace
+          })
         }
         this.setLoading(false)
       },
@@ -1188,6 +1186,39 @@ export class AppKit {
     }
 
     ConnectionController.setClient(this.connectionControllerClient)
+  }
+
+  private async switchAuthNetwork(caipNetwork: CaipNetwork) {
+    try {
+      ChainController.state.activeChain = caipNetwork.chainNamespace
+      await this.connectionControllerClient?.connectExternal?.({
+        id: ConstantsUtil.CONNECTOR_ID.AUTH,
+        provider: this.authProvider,
+        chain: caipNetwork.chainNamespace,
+        chainId: caipNetwork.id,
+        type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
+        caipNetwork
+      })
+      this.setCaipNetwork(caipNetwork)
+    } catch (error) {
+      const adapter = this.getAdapter(caipNetwork.chainNamespace as ChainNamespace)
+      await adapter?.switchNetwork({
+        caipNetwork,
+        provider: this.authProvider,
+        providerType: 'AUTH'
+      })
+    }
+  }
+
+  private async switchWCNetwork(caipNetwork: CaipNetwork) {
+    const adapter = this.getAdapter(caipNetwork.chainNamespace)
+    await adapter?.switchNetwork({
+      caipNetwork,
+      providerType: 'WALLET_CONNECT',
+      provider: this.universalProvider
+    })
+    this.setCaipNetwork(caipNetwork)
+    this.syncWalletConnectAccount()
   }
 
   private setupAuthConnectorListeners(provider: W3mFrameProvider) {
