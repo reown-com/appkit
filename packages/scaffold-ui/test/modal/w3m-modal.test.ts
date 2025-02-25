@@ -10,7 +10,6 @@ import {
   ModalController,
   OptionsController,
   RouterController,
-  RouterUtil,
   SIWXUtil
 } from '@reown/appkit-core'
 import type { RouterControllerState, SIWXConfig } from '@reown/appkit-core'
