@@ -1122,61 +1122,34 @@ export class AppKit {
         if (!caipNetwork) {
           return
         }
-        if (
-          AccountController.state.address &&
-          caipNetwork.chainNamespace === ChainController.state.activeChain
-        ) {
-          const adapter = this.getAdapter(ChainController.state.activeChain)
-          const provider = ProviderUtil.getProvider(ChainController.state.activeChain)
-          const providerType = ProviderUtil.state.providerIds[ChainController.state.activeChain]
 
+        // If not connected, just switch the network
+        if (!AccountController.state.address || !ChainController.state.activeChain) {
+          this.setCaipNetwork(caipNetwork)
+
+          return
+        }
+
+        const newNamespace = caipNetwork.chainNamespace
+
+        const adapter = this.getAdapter(newNamespace)
+        const provider = ProviderUtil.getProvider(newNamespace)
+        const providerType = ProviderUtil.state.providerIds[newNamespace]
+
+        this.setCaipNetwork(caipNetwork)
+
+        if (provider) {
           await adapter?.switchNetwork({ caipNetwork, provider, providerType })
-          this.setCaipNetwork(caipNetwork)
-          await this.syncAccount({
-            address: AccountController.state.address,
-            chainId: caipNetwork.id,
-            chainNamespace: caipNetwork.chainNamespace
-          })
-        } else if (AccountController.state.address) {
-          const providerType =
-            ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
-
-          if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH) {
-            try {
-              ChainController.state.activeChain = caipNetwork.chainNamespace
-              await this.connectionControllerClient?.connectExternal?.({
-                id: ConstantsUtil.CONNECTOR_ID.AUTH,
-                provider: this.authProvider,
-                chain: caipNetwork.chainNamespace,
-                chainId: caipNetwork.id,
-                type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
-                caipNetwork
-              })
-              this.setCaipNetwork(caipNetwork)
-            } catch (error) {
-              const adapter = this.getAdapter(caipNetwork.chainNamespace as ChainNamespace)
-              await adapter?.switchNetwork({
-                caipNetwork,
-                provider: this.authProvider,
-                providerType
-              })
-            }
-          } else if (providerType === 'WALLET_CONNECT') {
-            this.setCaipNetwork(caipNetwork)
+          const address = this.getAddressByChainNamespace(caipNetwork.chainNamespace)
+          if (providerType === 'WALLET_CONNECT') {
             this.syncWalletConnectAccount()
-          } else {
-            this.setCaipNetwork(caipNetwork)
-            const address = this.getAddressByChainNamespace(caipNetwork.chainNamespace)
-            if (address) {
-              this.syncAccount({
-                address,
-                chainId: caipNetwork.id,
-                chainNamespace: caipNetwork.chainNamespace
-              })
-            }
+          } else if (address) {
+            await this.syncAccount({
+              address,
+              chainId: caipNetwork.id,
+              chainNamespace: caipNetwork.chainNamespace
+            })
           }
-        } else {
-          this.setCaipNetwork(caipNetwork)
         }
       },
       // eslint-disable-next-line @typescript-eslint/require-await
@@ -1576,27 +1549,6 @@ export class AppKit {
         )
 
         StorageUtil.addConnectedNamespace(chainNamespace)
-
-        if ((adapter as ChainAdapter)?.adapterType === 'wagmi') {
-          try {
-            await adapter?.connect({
-              id: 'walletConnect',
-              type: 'WALLET_CONNECT',
-              chainId: ChainController.state.activeCaipNetwork?.id as string | number
-            })
-          } catch (error) {
-            /**
-             * Handle edge case where wagmi detects existing connection but lacks to complete UniversalProvider instance.
-             * Connection attempt fails due to already connected state - reconnect to restore provider state.
-             */
-            if (adapter?.reconnect) {
-              adapter?.reconnect({
-                id: 'walletConnect',
-                type: 'WALLET_CONNECT'
-              })
-            }
-          }
-        }
 
         this.syncWalletConnectAccounts(chainNamespace)
         await this.syncAccount({

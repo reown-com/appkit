@@ -504,15 +504,19 @@ export class WagmiAdapter extends AdapterBlueprint {
     const walletConnectConnector = this.getWalletConnectConnector()
     const isAuthenticated = await walletConnectConnector.authenticate()
 
-    if (isAuthenticated) {
-      return { clientId: await walletConnectConnector.provider.client.core.crypto.getClientId() }
-    }
-
     // Attempt to connect using wagmi connector
     const wagmiConnector = this.getWagmiConnector('walletConnect')
 
     if (!wagmiConnector) {
       throw new Error('UniversalAdapter:connectWalletConnect - connector not found')
+    }
+
+    if (isAuthenticated) {
+      await reconnect(this.wagmiConfig, {
+        connectors: [wagmiConnector]
+      })
+
+      return { clientId: await walletConnectConnector.provider.client.core.crypto.getClientId() }
     }
 
     await connect(this.wagmiConfig, {
