@@ -4,7 +4,7 @@ import type { CaipAddress, CaipNetworkId } from '@reown/appkit-common'
 
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { FetchUtil } from '../utils/FetchUtil.js'
+import { FetchUtil, type RequestArguments } from '../utils/FetchUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
   BlockchainApiBalanceResponse,
@@ -134,6 +134,23 @@ const state = proxy<BlockchainApiControllerState>({
 export const BlockchainApiController = {
   state,
 
+  async get<T>(request: RequestArguments): Promise<T> {
+    const { st, sv } = BlockchainApiController.getSdkProperties()
+    const projectId = OptionsController.state.projectId
+
+    const params = {
+      ...(request.params || {}),
+      st,
+      sv,
+      projectId
+    }
+
+    return state.api.get<T>({
+      ...request,
+      params
+    })
+  },
+
   getSdkProperties() {
     const { sdkType, sdkVersion } = OptionsController.state
 
@@ -149,9 +166,7 @@ export const BlockchainApiController = {
     }
     try {
       if (!state.supportedChains.http.length) {
-        await BlockchainApiController.getSupportedNetworks({
-          projectId: OptionsController.state.projectId
-        })
+        await BlockchainApiController.getSupportedNetworks()
       }
     } catch (e) {
       return false
@@ -160,12 +175,11 @@ export const BlockchainApiController = {
     return state.supportedChains.http.includes(networkId)
   },
 
-  async getSupportedNetworks({ projectId }: { projectId: string }) {
-    const supportedChains = await state.api.get<BlockchainApiControllerState['supportedChains']>({
-      path: 'v1/supported-chains',
-      params: {
-        projectId
-      }
+  async getSupportedNetworks() {
+    const supportedChains = await BlockchainApiController.get<
+      BlockchainApiControllerState['supportedChains']
+    >({
+      path: 'v1/supported-chains'
     })
 
     state.supportedChains = supportedChains
@@ -190,10 +204,9 @@ export const BlockchainApiController = {
       return identityCache
     }
 
-    const result = await state.api.get<BlockchainApiIdentityResponse>({
+    const result = await BlockchainApiController.get<BlockchainApiIdentityResponse>({
       path: `/v1/identity/${address}`,
       params: {
-        projectId: OptionsController.state.projectId,
         sender: ChainController.state.activeCaipAddress
           ? CoreHelperUtil.getPlainAddress(ChainController.state.activeCaipAddress)
           : undefined
@@ -211,7 +224,6 @@ export const BlockchainApiController = {
 
   async fetchTransactions({
     account,
-    projectId,
     cursor,
     onramp,
     signal,
@@ -225,10 +237,9 @@ export const BlockchainApiController = {
       return { data: [], next: undefined }
     }
 
-    return state.api.get<BlockchainApiTransactionsResponse>({
+    return BlockchainApiController.get<BlockchainApiTransactionsResponse>({
       path: `/v1/account/${account}/history`,
       params: {
-        projectId,
         cursor,
         onramp,
         chainId
@@ -238,14 +249,7 @@ export const BlockchainApiController = {
     })
   },
 
-  async fetchSwapQuote({
-    projectId,
-    amount,
-    userAddress,
-    from,
-    to,
-    gasPrice
-  }: BlockchainApiSwapQuoteRequest) {
+  async fetchSwapQuote({ amount, userAddress, from, to, gasPrice }: BlockchainApiSwapQuoteRequest) {
     const isSupported = await BlockchainApiController.isNetworkSupported(
       ChainController.state.activeCaipNetwork?.caipNetworkId
     )
@@ -253,13 +257,12 @@ export const BlockchainApiController = {
       return { quotes: [] }
     }
 
-    return state.api.get<BlockchainApiSwapQuoteResponse>({
+    return BlockchainApiController.get<BlockchainApiSwapQuoteResponse>({
       path: `/v1/convert/quotes`,
       headers: {
         'Content-Type': 'application/json'
       },
       params: {
-        projectId,
         amount,
         userAddress,
         from,
@@ -270,7 +273,6 @@ export const BlockchainApiController = {
   },
 
   async fetchSwapTokens({
-    projectId,
     chainId
   }: BlockchainApiSwapTokensRequest): Promise<BlockchainApiSwapTokensResponse> {
     const isSupported = await BlockchainApiController.isNetworkSupported(
@@ -280,16 +282,13 @@ export const BlockchainApiController = {
       return { tokens: [] }
     }
 
-    return state.api.get<BlockchainApiSwapTokensResponse>({
+    return BlockchainApiController.get<BlockchainApiSwapTokensResponse>({
       path: `/v1/convert/tokens`,
-      params: {
-        projectId,
-        chainId
-      }
+      params: { chainId }
     })
   },
 
-  async fetchTokenPrice({ projectId, addresses }: BlockchainApiTokenPriceRequest) {
+  async fetchTokenPrice({ addresses }: BlockchainApiTokenPriceRequest) {
     const isSupported = await BlockchainApiController.isNetworkSupported(
       ChainController.state.activeCaipNetwork?.caipNetworkId
     )
@@ -300,9 +299,9 @@ export const BlockchainApiController = {
     return state.api.post<BlockchainApiTokenPriceResponse>({
       path: '/v1/fungible/price',
       body: {
-        projectId,
         currency: 'usd',
-        addresses
+        addresses,
+        projectId: OptionsController.state.projectId
       },
       headers: {
         'Content-Type': 'application/json'
@@ -310,13 +309,7 @@ export const BlockchainApiController = {
     })
   },
 
-  async fetchSwapAllowance({
-    projectId,
-    tokenAddress,
-    userAddress
-  }: BlockchainApiSwapAllowanceRequest) {
-    const { st, sv } = BlockchainApiController.getSdkProperties()
-
+  async fetchSwapAllowance({ tokenAddress, userAddress }: BlockchainApiSwapAllowanceRequest) {
     const isSupported = await BlockchainApiController.isNetworkSupported(
       ChainController.state.activeCaipNetwork?.caipNetworkId
     )
@@ -324,14 +317,11 @@ export const BlockchainApiController = {
       return { allowance: '0' }
     }
 
-    return state.api.get<BlockchainApiSwapAllowanceResponse>({
+    return BlockchainApiController.get<BlockchainApiSwapAllowanceResponse>({
       path: `/v1/convert/allowance`,
       params: {
-        projectId,
         tokenAddress,
-        userAddress,
-        st,
-        sv
+        userAddress
       },
       headers: {
         'Content-Type': 'application/json'
@@ -339,7 +329,7 @@ export const BlockchainApiController = {
     })
   },
 
-  async fetchGasPrice({ projectId, chainId }: BlockchainApiGasPriceRequest) {
+  async fetchGasPrice({ chainId }: BlockchainApiGasPriceRequest) {
     const { st, sv } = BlockchainApiController.getSdkProperties()
 
     const isSupported = await BlockchainApiController.isNetworkSupported(
@@ -349,13 +339,12 @@ export const BlockchainApiController = {
       throw new Error('Network not supported for Gas Price')
     }
 
-    return state.api.get<BlockchainApiGasPriceResponse>({
+    return BlockchainApiController.get<BlockchainApiGasPriceResponse>({
       path: `/v1/convert/gas-price`,
       headers: {
         'Content-Type': 'application/json'
       },
       params: {
-        projectId,
         chainId,
         st,
         sv
@@ -366,7 +355,6 @@ export const BlockchainApiController = {
   async generateSwapCalldata({
     amount,
     from,
-    projectId,
     to,
     userAddress
   }: BlockchainApiGenerateSwapCalldataRequest) {
@@ -387,8 +375,8 @@ export const BlockchainApiController = {
         eip155: {
           slippage: ConstantsUtil.CONVERT_SLIPPAGE_TOLERANCE
         },
+        projectId: OptionsController.state.projectId,
         from,
-        projectId,
         to,
         userAddress
       }
@@ -397,7 +385,6 @@ export const BlockchainApiController = {
 
   async generateApproveCalldata({
     from,
-    projectId,
     to,
     userAddress
   }: BlockchainApiGenerateApproveCalldataRequest) {
@@ -410,13 +397,12 @@ export const BlockchainApiController = {
       throw new Error('Network not supported for Swaps')
     }
 
-    return state.api.get<BlockchainApiGenerateApproveCalldataResponse>({
+    return BlockchainApiController.get<BlockchainApiGenerateApproveCalldataResponse>({
       path: `/v1/convert/build-approve`,
       headers: {
         'Content-Type': 'application/json'
       },
       params: {
-        projectId,
         userAddress,
         from,
         to,
@@ -441,12 +427,10 @@ export const BlockchainApiController = {
       return cachedBalance
     }
 
-    const balance = await state.api.get<BlockchainApiBalanceResponse>({
+    const balance = await BlockchainApiController.get<BlockchainApiBalanceResponse>({
       path: `/v1/account/${address}/balance`,
-
       params: {
         currency: 'usd',
-        projectId: OptionsController.state.projectId,
         chainId,
         forceUpdate,
         st,
@@ -471,12 +455,9 @@ export const BlockchainApiController = {
       return { addresses: {}, attributes: [] }
     }
 
-    return state.api.get<BlockchainApiLookupEnsName>({
+    return BlockchainApiController.get<BlockchainApiLookupEnsName>({
       path: `/v1/profile/account/${name}`,
-      params: {
-        projectId: OptionsController.state.projectId,
-        apiVersion: '2'
-      }
+      params: { apiVersion: '2' }
     })
   },
 
@@ -488,11 +469,10 @@ export const BlockchainApiController = {
       return []
     }
 
-    return state.api.get<BlockchainApiLookupEnsName[]>({
+    return BlockchainApiController.get<BlockchainApiLookupEnsName[]>({
       path: `/v1/profile/reverse/${address}`,
       params: {
         sender: AccountController.state.address,
-        projectId: OptionsController.state.projectId,
         apiVersion: '2'
       }
     })
@@ -506,12 +486,9 @@ export const BlockchainApiController = {
       return { suggestions: [] }
     }
 
-    return state.api.get<BlockchainApiSuggestionResponse>({
+    return BlockchainApiController.get<BlockchainApiSuggestionResponse>({
       path: `/v1/profile/suggestions/${name}`,
-      params: {
-        projectId: OptionsController.state.projectId,
-        zone: 'reown.id'
-      }
+      params: { zone: 'reown.id' }
     })
   },
 
@@ -578,14 +555,11 @@ export const BlockchainApiController = {
     }
 
     try {
-      const response = await state.api.get<{
+      const response = await BlockchainApiController.get<{
         paymentCurrencies: PaymentCurrency[]
         purchaseCurrencies: PurchaseCurrency[]
       }>({
-        path: `/v1/onramp/options`,
-        params: {
-          projectId: OptionsController.state.projectId
-        }
+        path: `/v1/onramp/options`
       })
 
       return response
@@ -643,11 +617,8 @@ export const BlockchainApiController = {
       return []
     }
 
-    return state.api.get({
-      path: `/v1/sessions/${caipAddress}`,
-      params: {
-        projectId: OptionsController.state.projectId
-      }
+    return BlockchainApiController.get({
+      path: `/v1/sessions/${caipAddress}`
     })
   },
   async revokeSmartSession(address: `0x${string}`, pci: string, signature: string) {
