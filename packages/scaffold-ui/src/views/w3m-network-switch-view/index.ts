@@ -7,8 +7,9 @@ import {
   AssetUtil,
   ChainController,
   ConnectorController,
-  ModalController,
+  OptionsController,
   RouterController,
+  RouterUtil,
   StorageUtil
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
@@ -138,7 +139,9 @@ export class W3mNetworkSwitchView extends LitElement {
       this.error = false
       if (this.network) {
         await ChainController.switchActiveNetwork(this.network)
-        ModalController.close()
+        if (!OptionsController.state.siwx) {
+          RouterUtil.goBackOrCloseModal()
+        }
       }
     } catch (error) {
       this.error = true

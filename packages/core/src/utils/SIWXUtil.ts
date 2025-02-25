@@ -13,6 +13,7 @@ import { OptionsController } from '../controllers/OptionsController.js'
 import { RouterController } from '../controllers/RouterController.js'
 import { SnackController } from '../controllers/SnackController.js'
 import { CoreHelperUtil } from './CoreHelperUtil.js'
+import { RouterUtil } from './RouterUtil.js'
 import { StorageUtil } from './StorageUtil.js'
 
 /**
@@ -39,6 +40,8 @@ export const SIWXUtil = {
       const sessions = await siwx.getSessions(`${namespace}:${chainId}`, address)
 
       if (sessions.length) {
+        RouterUtil.goBackOrCloseModal()
+
         return
       }
 
