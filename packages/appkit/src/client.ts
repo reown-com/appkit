@@ -963,8 +963,8 @@ export class AppKit {
         if (!res) {
           return
         }
-
         StorageUtil.addConnectedNamespace(chainToUse)
+
         this.syncProvider({ ...res, chainNamespace: chainToUse })
         await this.syncAccount({ ...res, chainNamespace: chainToUse })
         const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
@@ -1133,14 +1133,20 @@ export class AppKit {
         const newNamespace = caipNetwork.chainNamespace
 
         const adapter = this.getAdapter(newNamespace)
-        const provider = ProviderUtil.getProvider(newNamespace)
         const providerType = ProviderUtil.state.providerIds[newNamespace]
+        const currentProviderType =
+          ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
+        // AuthProvider should be used for Auth connectors
+        const provider =
+          currentProviderType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH
+            ? this.authProvider
+            : ProviderUtil.getProvider(newNamespace)
 
         this.setCaipNetwork(caipNetwork)
 
         if (provider) {
           await adapter?.switchNetwork({ caipNetwork, provider, providerType })
-          const address = this.getAddressByChainNamespace(caipNetwork.chainNamespace)
+          const address = AccountController.state.address
           if (providerType === 'WALLET_CONNECT') {
             this.syncWalletConnectAccount()
           } else if (address) {
@@ -1151,6 +1157,7 @@ export class AppKit {
             })
           }
         }
+        this.setLoading(false)
       },
       // eslint-disable-next-line @typescript-eslint/require-await
       getApprovedCaipNetworksData: async () => {
