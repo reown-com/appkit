@@ -31,6 +31,7 @@ export const SIWXUtil = {
 
     const [namespace, chainId, address] = caipAddress.split(':') as [ChainNamespace, string, string]
     const sessions = await siwx.getSessions(`${namespace}:${chainId}`, address)
+
     return sessions.length
   },
   async initializeIfEnabled() {

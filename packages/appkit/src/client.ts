@@ -1188,6 +1188,7 @@ export class AppKit {
     const supportedNetworks = ['eip155', 'solana']
     if (!supportedNetworks.includes(caipNetwork.chainNamespace)) {
       this.setCaipNetwork(caipNetwork)
+
       return
     }
     try {
