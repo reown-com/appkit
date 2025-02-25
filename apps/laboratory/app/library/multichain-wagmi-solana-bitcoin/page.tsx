@@ -12,7 +12,7 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { mainnet } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 
-import { AppKitButtons } from '@/src/components/AppKitButtons'
+import { AppKitButtonsMultiChain } from '@/src/components/AppKitButtonsMultiChain'
 import { AppKitInfoMultiChain } from '@/src/components/AppKitInfoMultiChain'
 import { BitcoinTests } from '@/src/components/Bitcoin/BitcoinTests'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
@@ -53,7 +53,7 @@ export default function MultiChainWagmiSolana() {
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <AppKitButtons />
+        <AppKitButtonsMultiChain />
         <AppKitInfoMultiChain />
         <WagmiTests />
         <SolanaTests />
