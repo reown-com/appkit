@@ -1,5 +1,4 @@
-import { UniversalProvider } from '@walletconnect/universal-provider'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import { NetworkUtil } from '@reown/appkit-common'
 import { AccountController } from '@reown/appkit-core'
@@ -8,7 +7,6 @@ import { AppKit } from '../../src/client'
 import { mockEvmAdapter } from '../mocks/Adapter'
 import { base, mainnet, sepolia } from '../mocks/Networks'
 import { mockOptions } from '../mocks/Options'
-import { mockUniversalProvider } from '../mocks/Providers'
 import { mockBlockchainApiController, mockStorageUtil, mockWindowAndDocument } from '../test-utils'
 
 mockWindowAndDocument()
@@ -16,14 +14,6 @@ mockStorageUtil()
 mockBlockchainApiController()
 
 describe('Balance sync', () => {
-  beforeEach(() => {
-    vi.spyOn(UniversalProvider, 'init').mockResolvedValue(mockUniversalProvider)
-  })
-
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('should not sync balance if theres no matching caipNetwork', async () => {
     const getNetworksByNamespaceSpy = vi.spyOn(NetworkUtil, 'getNetworksByNamespace')
     const setBalanceSpy = vi.spyOn(AccountController, 'setBalance')

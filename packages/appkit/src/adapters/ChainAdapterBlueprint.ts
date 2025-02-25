@@ -4,8 +4,7 @@ import {
   type CaipAddress,
   type CaipNetwork,
   type ChainNamespace,
-  ConstantsUtil as CommonConstantsUtil,
-  ParseUtil
+  ConstantsUtil as CommonConstantsUtil
 } from '@reown/appkit-common'
 import {
   AccountController,
@@ -16,7 +15,7 @@ import {
   type Tokens,
   type WriteContractArgs
 } from '@reown/appkit-core'
-import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
+import { PresetsUtil } from '@reown/appkit-utils'
 import { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import type { AppKit } from '../client.js'
@@ -245,10 +244,6 @@ export abstract class AdapterBlueprint<
         preferredAccountType:
           OptionsController.state.defaultAccountTypes[caipNetwork.chainNamespace]
       })
-
-      if (typeof user.chainId === 'string' && CaipNetworksUtil.isCaipNetworkId(user.chainId)) {
-        user.chainId = ParseUtil.parseCaipNetworkId(user.chainId).chainId
-      }
 
       this.emit('switchNetwork', user)
     }

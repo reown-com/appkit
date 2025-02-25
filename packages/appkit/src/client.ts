@@ -1654,49 +1654,71 @@ export class AppKit {
     }
   ) {
     const { address, chainId, chainNamespace } = params
+
     const { chainId: activeChainId } = StorageUtil.getActiveNetworkProps()
     const chainIdToUse = chainId || activeChainId
-    const isSameNamespace = ChainController.state.activeChain === chainNamespace
+    const isUnsupportedNetwork =
+      ChainController.state.activeCaipNetwork?.name === ConstantsUtil.UNSUPPORTED_NETWORK_NAME
+    const shouldSupportAllNetworks = ChainController.getNetworkProp(
+      'supportsAllNetworks',
+      chainNamespace
+    )
 
     this.setStatus('connected', chainNamespace)
 
+    if (isUnsupportedNetwork && !shouldSupportAllNetworks) {
+      return
+    }
+
     if (chainIdToUse) {
       let caipNetwork = this.caipNetworks?.find(n => n.id.toString() === chainIdToUse.toString())
+      let fallbackCaipNetwork = this.caipNetworks?.find(n => n.chainNamespace === chainNamespace)
 
-      // If the network is not in the list, get unsupported network object
-      if (!caipNetwork) {
-        caipNetwork = this.getUnsupportedNetwork(
-          `${ChainController.state.activeChain as ChainNamespace}:${chainIdToUse}`
+      // If doesn't support all networks, we need to use approved networks
+      if (!shouldSupportAllNetworks && !caipNetwork && !fallbackCaipNetwork) {
+        // Connection can be requested for a chain that is not supported by the wallet so we need to use approved networks here
+        const caipNetworkIds = this.getApprovedCaipNetworkIds() || []
+        const caipNetworkId = caipNetworkIds.find(
+          id => ParseUtil.parseCaipNetworkId(id)?.chainId === chainIdToUse.toString()
+        )
+        const fallBackCaipNetworkId = caipNetworkIds.find(
+          id => ParseUtil.parseCaipNetworkId(id)?.chainNamespace === chainNamespace
+        )
+
+        caipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
+        fallbackCaipNetwork = this.caipNetworks?.find(
+          n =>
+            n.caipNetworkId === fallBackCaipNetworkId ||
+            // This is a workaround used in Solana network to support deprecated caipNetworkId
+            ('deprecatedCaipNetworkId' in n && n.deprecatedCaipNetworkId === fallBackCaipNetworkId)
         )
       }
 
-      const isUnsupportedNetwork = caipNetwork?.name === ConstantsUtil.UNSUPPORTED_NETWORK_NAME
+      const network = caipNetwork || fallbackCaipNetwork
 
-      if (isSameNamespace) {
-        this.setCaipNetwork(caipNetwork)
-
-        if (isUnsupportedNetwork && !OptionsController.state.allowUnsupportedChain) {
+      if (network?.chainNamespace === ChainController.state.activeChain) {
+        // If the network is unsupported and the user doesn't allow unsupported chains, we show the unsupported chain UI
+        if (
+          !OptionsController.state.allowUnsupportedChain &&
+          ChainController.state.activeCaipNetwork?.name === ConstantsUtil.UNSUPPORTED_NETWORK_NAME
+        ) {
           ChainController.showUnsupportedChainUI()
+        } else {
+          this.setCaipNetwork(network)
         }
-
-        this.syncConnectedWalletInfo(chainNamespace)
       }
+      this.syncConnectedWalletInfo(chainNamespace)
 
       // Only update state when needed
       if (!HelpersUtil.isLowerCaseMatch(address, AccountController.state.address)) {
-        this.setCaipAddress(`${chainNamespace}:${caipNetwork?.id}:${address}`, chainNamespace)
+        this.setCaipAddress(`${chainNamespace}:${network?.id}:${address}`, chainNamespace)
         await this.syncIdentity({
           address,
-          chainId: caipNetwork?.id,
+          chainId: network?.id as string | number,
           chainNamespace
         })
       }
-
-      if (isUnsupportedNetwork) {
-        this.setBalance('0.00', caipNetwork.nativeCurrency.symbol, chainNamespace)
-      } else {
-        await this.syncBalance({ address, chainId: caipNetwork?.id, chainNamespace })
-      }
+      await this.syncBalance({ address, chainId: network?.id, chainNamespace })
     }
   }
 

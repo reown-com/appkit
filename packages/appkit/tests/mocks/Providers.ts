@@ -44,7 +44,7 @@ export const mockAuthProvider = {
   syncTheme: vi.fn()
 }
 
-export const mockUniversalProvider = {
+export const mockUniversalProvider: Mocked<Pick<UniversalProvider, 'on' | 'off'>> = {
   off: vi.fn(),
   on: vi.fn()
-} as unknown as Mocked<UniversalProvider>
+}
