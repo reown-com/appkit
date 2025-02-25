@@ -1604,6 +1604,8 @@ export class AppKit {
           chainId,
           chainNamespace
         })
+      } else {
+        this.setStatus('disconnected', chainNamespace)
       }
     })
 
