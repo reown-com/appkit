@@ -1133,11 +1133,7 @@ export class AppKit {
         const newNamespace = caipNetwork.chainNamespace
         const providerType = ProviderUtil.state.providerIds[ChainController.state.activeChain]
 
-        const adapter = this.getAdapter(newNamespace)
-
-        console.log('>> Provider type', providerType)
         if (providerType === 'AUTH') {
-          console.log('>> Switching with Auth')
           await this.switchAuthNetwork(caipNetwork)
         }
         if (providerType === 'WALLET_CONNECT') {
@@ -1146,12 +1142,12 @@ export class AppKit {
 
         const provider = ProviderUtil.getProvider(newNamespace) || undefined
         if (provider) {
+          const adapter = this.getAdapter(newNamespace)
           await adapter?.switchNetwork({ caipNetwork, provider, providerType })
           this.setCaipNetwork(caipNetwork)
         }
 
         const address = this.getAddressByChainNamespace(caipNetwork.chainNamespace)
-        console.log('>> The address is', address, AccountController.state.address)
         if (address) {
           await this.syncAccount({
             address,
