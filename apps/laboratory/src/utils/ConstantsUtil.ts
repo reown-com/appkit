@@ -151,7 +151,10 @@ export const ConstantsUtil = {
   EvmNetworks,
   SolanaNetworks,
   BitcoinNetworks,
-  AllNetworks: [...EvmNetworks, ...SolanaNetworks] as [AppKitNetwork, ...AppKitNetwork[]],
+  AllNetworks: [...EvmNetworks, ...SolanaNetworks, ...BitcoinNetworks] as [
+    AppKitNetwork,
+    ...AppKitNetwork[]
+  ],
   EvmWalletButtons: [
     'walletConnect',
     'metamask',
