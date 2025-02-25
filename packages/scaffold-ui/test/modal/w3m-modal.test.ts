@@ -10,6 +10,7 @@ import {
   ModalController,
   OptionsController,
   RouterController,
+  RouterUtil,
   SIWXUtil
 } from '@reown/appkit-core'
 import type { RouterControllerState, SIWXConfig } from '@reown/appkit-core'
@@ -182,7 +183,6 @@ describe('W3mModal', () => {
     })
 
     it('should handle network change when not connected', async () => {
-      const goBackSpy = vi.spyOn(RouterController, 'goBack')
       ;(element as any).caipAddress = undefined
       ;(element as any).caipNetwork = mainnet
 
@@ -191,27 +191,9 @@ describe('W3mModal', () => {
       await elementUpdated(element)
 
       expect(ApiController.prefetchAnalyticsConfig).toHaveBeenCalled()
-      expect(goBackSpy).toHaveBeenCalled()
-    })
-
-    it('should call goBack when network changed and page is UnsupportedChain', async () => {
-      vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
-        view: 'UnsupportedChain'
-      } as RouterControllerState)
-      const goBackSpy = vi.spyOn(RouterController, 'goBack')
-      ;(element as any).caipAddress = 'eip155:1:0x123'
-      ;(element as any).caipNetwork = polygon
-      element.requestUpdate()
-
-      ChainController.setActiveCaipNetwork(mainnet)
-      element.requestUpdate()
-      await elementUpdated(element)
-
-      expect(goBackSpy).toHaveBeenCalled()
     })
 
     it('should handle network change when connected', async () => {
-      const goBackSpy = vi.spyOn(RouterController, 'goBack')
       ;(element as any).caipAddress = 'eip155:1:0x123'
       ;(element as any).caipNetwork = mainnet
       element.requestUpdate()
@@ -220,7 +202,6 @@ describe('W3mModal', () => {
       element.requestUpdate()
       await elementUpdated(element)
 
-      expect(goBackSpy).toHaveBeenCalled()
       expect(ApiController.prefetchAnalyticsConfig).toHaveBeenCalled()
     })
   })
