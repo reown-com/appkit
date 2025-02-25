@@ -66,11 +66,10 @@ extensionTest('it should connect', async () => {
 })
 
 extensionTest('it should switch networks and sign', async () => {
-  let network = 'Polygon'
+  let network = 'Ethereum'
 
   await modalPage.switchNetwork(network, true)
   await modalPage.switchActiveChain()
-  await modalValidator.checkConnectionStatus('loading', network)
 
   await modalPage.connectToExtensionMultichain('eip155', true, true)
   await modalValidator.checkConnectionStatus('connected', network)

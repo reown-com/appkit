@@ -141,7 +141,7 @@ export class W3mNetworkSwitchView extends LitElement {
         await ChainController.switchActiveNetwork(this.network)
         const isAuthenticated = await SIWXUtil.isAuthenticated()
         if (isAuthenticated) {
-          RouterUtil.goBackOrCloseModal()
+          RouterUtil.navigateAfterNetworkSwitch()
         }
       }
     } catch (error) {
