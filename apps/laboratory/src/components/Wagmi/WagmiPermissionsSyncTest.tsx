@@ -14,7 +14,7 @@ export function WagmiPermissionsSyncTest() {
   return (
     <Card data-testid="eip155-test-interactions" marginTop={10} marginBottom={10}>
       <CardHeader>
-        <Heading size="md">Test Interactions</Heading>
+        <Heading size="md">Wagmi Test Interactions</Heading>
       </CardHeader>
       <CardBody>
         <Stack divider={<StackDivider />} spacing="4">
