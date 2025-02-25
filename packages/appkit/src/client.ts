@@ -1577,17 +1577,6 @@ export class AppKit {
 
         StorageUtil.addConnectedNamespace(chainNamespace)
 
-        if (
-          ((adapter as ChainAdapter)?.adapterType === 'wagmi' && this.options.siweConfig) ||
-          ((adapter as ChainAdapter)?.adapterType === 'wagmi' &&
-            this.options.siwx &&
-            AccountController.state.status !== 'connected')
-        ) {
-          await adapter?.switchNetwork({
-            caipNetwork: this.getCaipNetwork() as CaipNetwork
-          })
-        }
-
         this.syncWalletConnectAccounts(chainNamespace)
         await this.syncAccount({
           address,
