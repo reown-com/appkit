@@ -1577,25 +1577,15 @@ export class AppKit {
 
         StorageUtil.addConnectedNamespace(chainNamespace)
 
-        if ((adapter as ChainAdapter)?.adapterType === 'wagmi') {
-          try {
-            await adapter?.connect({
-              id: 'walletConnect',
-              type: 'WALLET_CONNECT',
-              chainId: ChainController.state.activeCaipNetwork?.id as string | number
-            })
-          } catch (error) {
-            /**
-             * Handle edge case where wagmi detects existing connection but lacks to complete UniversalProvider instance.
-             * Connection attempt fails due to already connected state - reconnect to restore provider state.
-             */
-            if (adapter?.reconnect) {
-              adapter?.reconnect({
-                id: 'walletConnect',
-                type: 'WALLET_CONNECT'
-              })
-            }
-          }
+        if (
+          ((adapter as ChainAdapter)?.adapterType === 'wagmi' && this.options.siweConfig) ||
+          ((adapter as ChainAdapter)?.adapterType === 'wagmi' &&
+            this.options.siwx &&
+            AccountController.state.status !== 'connected')
+        ) {
+          await adapter?.switchNetwork({
+            caipNetwork: this.getCaipNetwork() as CaipNetwork
+          })
         }
 
         this.syncWalletConnectAccounts(chainNamespace)
