@@ -26,15 +26,10 @@ export const SIWXUtil = {
   async initializeIfEnabled() {
     const siwx = OptionsController.state.siwx
     const caipAddress = ChainController.getActiveCaipAddress()
-
     if (!(siwx && caipAddress)) {
       return
     }
     const [namespace, chainId, address] = caipAddress.split(':') as [ChainNamespace, string, string]
-
-    if (!ChainController.checkIfSupportedNetwork(namespace)) {
-      return
-    }
 
     try {
       const sessions = await siwx.getSessions(`${namespace}:${chainId}`, address)
