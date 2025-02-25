@@ -192,6 +192,8 @@ export const RouterController = {
   },
 
   goBack() {
+    console.trace('goBack')
+
     const shouldReload =
       !ChainController.state.activeCaipAddress && this.state.view === 'ConnectingFarcaster'
 

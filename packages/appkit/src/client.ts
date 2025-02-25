@@ -1131,10 +1131,21 @@ export class AppKit {
         }
 
         const newNamespace = caipNetwork.chainNamespace
+        const providerType = ProviderUtil.state.providerIds[ChainController.state.activeChain]
 
         const adapter = this.getAdapter(newNamespace)
-        const provider = ProviderUtil.getProvider(newNamespace)
-        const providerType = ProviderUtil.state.providerIds[newNamespace]
+
+        let provider: W3mFrameProvider | UniversalProvider | undefined = undefined
+        switch (providerType) {
+          case 'AUTH':
+            provider = this.authProvider
+            break
+          case 'WALLET_CONNECT':
+            provider = this.universalProvider
+            break
+          default:
+            provider = ProviderUtil.getProvider(newNamespace) || undefined
+        }
 
         this.setCaipNetwork(caipNetwork)
 
