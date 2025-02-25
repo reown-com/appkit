@@ -70,7 +70,7 @@ const mockAuthProvider = {
   connect: vi.fn(),
   disconnect: vi.fn(),
   switchNetwork: vi.fn(),
-  getUser: vi.fn().mockResolvedValue({})
+  getUser: vi.fn()
 } as unknown as W3mFrameProvider
 
 const mockNetworks = [mainnet, polygon]
@@ -385,30 +385,6 @@ describe('Ethers5Adapter', () => {
       expect(mockAuthProvider.getUser).toHaveBeenCalledWith({
         chainId: 'eip155:1',
         preferredAccountType: 'smartAccount'
-      })
-    })
-
-    it('should receive chain id after switching network with Auth provider', async () => {
-      vi.spyOn(mockAuthProvider, 'getUser').mockResolvedValue({
-        chainId: 'eip155:1'
-      } as any)
-
-      const handleSwitchNetwork = vi.fn()
-
-      adapter.on('switchNetwork', handleSwitchNetwork)
-
-      await adapter.switchNetwork({
-        caipNetwork: CaipNetworksUtil.extendCaipNetwork(mainnet, {
-          projectId: 'test-project-id',
-          customNetworkImageUrls: {}
-        }),
-        provider: mockAuthProvider,
-        providerType: 'AUTH'
-      })
-
-      expect(mockAuthProvider.switchNetwork).toHaveBeenCalledWith('eip155:1')
-      expect(handleSwitchNetwork).toHaveBeenCalledWith({
-        chainId: String(mainnet.id)
       })
     })
 

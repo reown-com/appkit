@@ -1,5 +1,4 @@
-import { UniversalProvider } from '@walletconnect/universal-provider'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { type AppKitNetwork } from '@reown/appkit-common'
 import {
@@ -14,7 +13,6 @@ import { ErrorUtil } from '@reown/appkit-utils'
 import { AppKit } from '../../src/client'
 import { mainnet, polygon, sepolia, solana } from '../mocks/Networks'
 import { mockOptions } from '../mocks/Options'
-import { mockUniversalProvider } from '../mocks/Providers'
 import { mockBlockchainApiController, mockStorageUtil, mockWindowAndDocument } from '../test-utils'
 
 mockWindowAndDocument()
@@ -22,14 +20,6 @@ mockStorageUtil()
 mockBlockchainApiController()
 
 describe('Base', () => {
-  beforeEach(() => {
-    vi.spyOn(UniversalProvider, 'init').mockResolvedValue(mockUniversalProvider)
-  })
-
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   afterEach(() => {
     vi.clearAllMocks()
   })
