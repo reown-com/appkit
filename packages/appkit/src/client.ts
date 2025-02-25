@@ -1147,10 +1147,9 @@ export class AppKit {
             provider = ProviderUtil.getProvider(newNamespace) || undefined
         }
 
-        this.setCaipNetwork(caipNetwork)
-
         if (provider) {
           await adapter?.switchNetwork({ caipNetwork, provider, providerType })
+          this.setCaipNetwork(caipNetwork)
           const address = this.getAddressByChainNamespace(caipNetwork.chainNamespace)
           if (providerType === 'WALLET_CONNECT') {
             this.syncWalletConnectAccount()
