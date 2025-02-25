@@ -963,8 +963,8 @@ export class AppKit {
         if (!res) {
           return
         }
-
         StorageUtil.addConnectedNamespace(chainToUse)
+
         this.syncProvider({ ...res, chainNamespace: chainToUse })
         await this.syncAccount({ ...res, chainNamespace: chainToUse })
         const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
@@ -1161,6 +1161,7 @@ export class AppKit {
             })
           }
         }
+        this.setLoading(false)
       },
       // eslint-disable-next-line @typescript-eslint/require-await
       getApprovedCaipNetworksData: async () => {
