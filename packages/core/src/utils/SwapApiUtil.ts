@@ -2,7 +2,6 @@ import { AccountController } from '../controllers/AccountController.js'
 import { BlockchainApiController } from '../controllers/BlockchainApiController.js'
 import { ChainController } from '../controllers/ChainController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
-import { OptionsController } from '../controllers/OptionsController.js'
 import type { SwapTokenWithBalance } from './TypeUtil.js'
 import type { BlockchainApiBalanceResponse, BlockchainApiSwapAllowanceRequest } from './TypeUtil.js'
 
@@ -24,8 +23,7 @@ export const SwapApiUtil = {
   async getTokenList() {
     const caipNetwork = ChainController.state.activeCaipNetwork
     const response = await BlockchainApiController.fetchSwapTokens({
-      chainId: caipNetwork?.caipNetworkId,
-      projectId: OptionsController.state.projectId
+      chainId: caipNetwork?.caipNetworkId
     })
     const tokens =
       response?.tokens?.map(
@@ -46,7 +44,6 @@ export const SwapApiUtil = {
   },
 
   async fetchGasPrice() {
-    const projectId = OptionsController.state.projectId
     const caipNetwork = ChainController.state.activeCaipNetwork
 
     if (!caipNetwork) {
@@ -70,7 +67,6 @@ export const SwapApiUtil = {
         case 'eip155':
         default:
           return await BlockchainApiController.fetchGasPrice({
-            projectId,
             chainId: caipNetwork.caipNetworkId
           })
       }
@@ -88,10 +84,7 @@ export const SwapApiUtil = {
     sourceTokenAmount: string
     sourceTokenDecimals: number
   }) {
-    const projectId = OptionsController.state.projectId
-
     const response = await BlockchainApiController.fetchSwapAllowance({
-      projectId,
       tokenAddress,
       userAddress
     })

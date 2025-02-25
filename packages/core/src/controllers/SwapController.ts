@@ -17,7 +17,6 @@ import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
 import { EventsController } from './EventsController.js'
-import { OptionsController } from './OptionsController.js'
 import { RouterController } from './RouterController.js'
 import { SnackController } from './SnackController.js'
 
@@ -386,7 +385,6 @@ export const SwapController = {
     }
 
     const response = await BlockchainApiController.fetchTokenPrice({
-      projectId: OptionsController.state.projectId,
       addresses: [address]
     })
     const fungibles = response?.fungibles || []
@@ -404,7 +402,6 @@ export const SwapController = {
     const { networkAddress } = this.getParams()
 
     const response = await BlockchainApiController.fetchTokenPrice({
-      projectId: OptionsController.state.projectId,
       addresses: [networkAddress]
     }).catch(() => {
       SnackController.showError('Failed to fetch network token price')
@@ -511,7 +508,6 @@ export const SwapController = {
     try {
       const quoteResponse = await BlockchainApiController.fetchSwapQuote({
         userAddress: address,
-        projectId: OptionsController.state.projectId,
         from: sourceToken.address,
         to: toToken.address,
         gasPrice: state.gasFee,
@@ -613,7 +609,6 @@ export const SwapController = {
 
     try {
       const response = await BlockchainApiController.generateApproveCalldata({
-        projectId: OptionsController.state.projectId,
         from: sourceTokenAddress,
         to: toTokenAddress,
         userAddress: fromCaipAddress
@@ -677,7 +672,6 @@ export const SwapController = {
 
     try {
       const response = await BlockchainApiController.generateSwapCalldata({
-        projectId: OptionsController.state.projectId,
         userAddress: fromCaipAddress,
         from: sourceToken.address,
         to: toToken.address,
