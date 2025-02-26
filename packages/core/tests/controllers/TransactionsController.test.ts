@@ -50,7 +50,6 @@ describe('TransactionsController', () => {
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      projectId,
       onramp: 'coinbase',
       cursor: undefined,
       cache: 'no-cache'
@@ -86,7 +85,6 @@ describe('TransactionsController', () => {
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      projectId,
       onramp: 'coinbase',
       cursor: undefined,
       cache: 'no-cache'
@@ -112,7 +110,6 @@ describe('TransactionsController', () => {
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      projectId,
       onramp: 'coinbase',
       cursor: undefined,
       cache: 'no-cache'
@@ -148,7 +145,6 @@ describe('TransactionsController', () => {
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      projectId,
       onramp: 'coinbase',
       cursor: undefined,
       cache: 'no-cache'
@@ -174,7 +170,6 @@ describe('TransactionsController', () => {
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      projectId,
       onramp: 'coinbase',
       cursor: undefined,
       cache: 'no-cache'
@@ -210,7 +205,6 @@ describe('TransactionsController', () => {
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      projectId,
       onramp: 'coinbase',
       cursor: undefined,
       cache: 'no-cache'
@@ -236,7 +230,6 @@ describe('TransactionsController', () => {
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      projectId,
       onramp: 'coinbase',
       cursor: undefined,
       cache: 'no-cache'
@@ -273,7 +266,6 @@ describe('TransactionsController', () => {
     await TransactionsController.fetchTransactions('0x123')
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: '0x123',
-      projectId,
       cursor: undefined,
       onramp: undefined,
       cache: undefined
@@ -299,7 +291,6 @@ describe('TransactionsController', () => {
     await TransactionsController.fetchTransactions('0x123', 'coinbase')
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: '0x123',
-      projectId,
       cursor: 'cursor',
       onramp: 'coinbase',
       cache: 'no-cache',

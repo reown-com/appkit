@@ -3,7 +3,6 @@ import { state } from 'lit/decorators.js'
 
 import type { Balance } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   CoreHelperUtil,
   RouterController,
@@ -29,7 +28,7 @@ export class W3mSendSelectTokenView extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
-  @state() private tokenBalance = AccountController.state.tokenBalance
+  @state() private tokenBalances = SendController.state.tokenBalances
 
   @state() private tokens?: Balance[]
 
@@ -42,8 +41,8 @@ export class W3mSendSelectTokenView extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        AccountController.subscribe(val => {
-          this.tokenBalance = val.tokenBalance
+        SendController.subscribe(val => {
+          this.tokenBalances = val.tokenBalances
         })
       ]
     )
@@ -79,11 +78,11 @@ export class W3mSendSelectTokenView extends LitElement {
   }
 
   private templateTokens() {
-    this.tokens = this.tokenBalance?.filter(
+    this.tokens = this.tokenBalances?.filter(
       token => token.chainId === ChainController.state.activeCaipNetwork?.caipNetworkId
     )
     if (this.search) {
-      this.filteredTokens = this.tokenBalance?.filter(token =>
+      this.filteredTokens = this.tokenBalances?.filter(token =>
         token.name.toLowerCase().includes(this.search.toLowerCase())
       )
     } else {

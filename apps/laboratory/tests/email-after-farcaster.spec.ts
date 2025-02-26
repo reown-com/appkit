@@ -55,7 +55,7 @@ emailTestAfterFarcaster.afterAll(async () => {
 
 // -- Tests --------------------------------------------------------------------
 emailTestAfterFarcaster('it should sign after abort login with farcaster', async () => {
-  await page.sign()
+  await page.sign('eip155')
   await page.approveSign()
   await validator.expectAcceptedSign()
 })
@@ -68,7 +68,7 @@ emailTestAfterFarcaster('it should upgrade wallet after abort login with farcast
 })
 
 emailTestAfterFarcaster('it should reject sign after abort login with farcaster', async () => {
-  await page.sign()
+  await page.sign('eip155')
   await page.rejectSign()
   await validator.expectRejectedSign()
 })
@@ -84,7 +84,7 @@ emailTestAfterFarcaster(
     await page.closeModal()
     await validator.expectCaipAddressHaveCorrectNetworkId(caipNetworkId as CaipNetworkId)
 
-    await page.sign()
+    await page.sign('eip155')
     await page.approveSign()
     await validator.expectAcceptedSign()
 
@@ -95,7 +95,7 @@ emailTestAfterFarcaster(
     await page.closeModal()
     await validator.expectCaipAddressHaveCorrectNetworkId(caipNetworkId as CaipNetworkId)
 
-    await page.sign()
+    await page.sign('eip155')
     await page.approveSign()
     await validator.expectAcceptedSign()
   }

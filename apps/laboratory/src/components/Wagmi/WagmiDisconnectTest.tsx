@@ -5,15 +5,15 @@ import { useConnections, useDisconnect } from 'wagmi'
 
 import { useAppKitAccount } from '@reown/appkit/react'
 
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
+import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 export function WagmiDisconnectTest() {
   const toast = useChakraToast()
 
   const { disconnect, isPending } = useDisconnect()
   const connections = useConnections()
-  const { isConnected } = useAppKitAccount()
+  const { isConnected } = useAppKitAccount({ namespace: 'eip155' })
 
   function onDisconnect() {
     try {

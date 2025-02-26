@@ -43,7 +43,10 @@ describe('Listeners', () => {
       `${mockAccount.chainNamespace}:${mockAccount.chainId}:${mockAccount.address}`,
       'eip155'
     )
-    expect(fetchIdentitySpy).toHaveBeenCalledWith({ address: mockAccount.address })
+    expect(fetchIdentitySpy).toHaveBeenCalledWith({
+      address: mockAccount.address,
+      caipNetworkId: `${mockAccount.chainNamespace}:${mockAccount.chainId}`
+    })
     expect(setProfileNameSpy).toHaveBeenCalledWith(identity.name, 'eip155')
     expect(setProfileImageSpy).toHaveBeenCalledWith(identity.avatar, 'eip155')
   })
