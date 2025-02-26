@@ -4,7 +4,7 @@ import { createAppKitWalletButton } from '@reown/appkit-wallet-button'
 import { mainnet, polygon } from '@reown/appkit/networks'
 
 // Get projectId
-export const projectId = import.meta.env.VITE_PROJECT_ID || '616fc3bbdb6324bde06c987e32113d0b' // this is a public projectId only to use on localhost
+export const projectId = import.meta.env.VITE_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694' // this is a public projectId only to use on localhost
 
 const networks = [mainnet, polygon]
 const walletButtons = ['email', 'google', 'metamask', 'walletConnect']

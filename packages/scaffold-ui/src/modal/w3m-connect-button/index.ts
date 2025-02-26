@@ -57,7 +57,7 @@ class W3mConnectButtonBase extends LitElement {
     if (this.open) {
       ModalController.close()
     } else if (!this.loading) {
-      ModalController.open({ view: 'EmailLogin' })
+      ModalController.open()
     }
   }
 }
