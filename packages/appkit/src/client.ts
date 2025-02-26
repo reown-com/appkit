@@ -1485,21 +1485,22 @@ export class AppKit {
     })
 
     adapter.on('accountChanged', ({ address, chainId }) => {
-      if (ChainController.state.activeChain === chainNamespace && chainId) {
+      const isActiveChain = ChainController.state.activeChain === chainNamespace
+
+      if (isActiveChain && chainId) {
         this.syncAccount({
           address,
           chainId,
           chainNamespace
         })
-      } else if (
-        ChainController.state.activeChain === chainNamespace &&
-        ChainController.state.activeCaipNetwork?.id
-      ) {
+      } else if (isActiveChain && ChainController.state.activeCaipNetwork?.id) {
         this.syncAccount({
           address,
           chainId: ChainController.state.activeCaipNetwork?.id,
           chainNamespace
         })
+      } else {
+        this.syncAccountInfo(address, chainId, chainNamespace)
       }
     })
   }
@@ -1711,15 +1712,32 @@ export class AppKit {
 
       // Only update state when needed
       if (!HelpersUtil.isLowerCaseMatch(address, AccountController.state.address)) {
-        this.setCaipAddress(`${chainNamespace}:${network?.id}:${address}`, chainNamespace)
-        await this.syncIdentity({
-          address,
-          chainId: network?.id as string | number,
-          chainNamespace
-        })
+        this.syncAccountInfo(address, network?.id, chainNamespace)
       }
       await this.syncBalance({ address, chainId: network?.id, chainNamespace })
     }
+  }
+
+  private async syncAccountInfo(
+    address: string,
+    chainId: string | number | undefined,
+    chainNamespace: ChainNamespace
+  ) {
+    const caipAddress = this.getCaipAddress(chainNamespace)
+    const newChainId = chainId || caipAddress?.split(':')[1]
+
+    if (!newChainId) {
+      return
+    }
+
+    const newCaipAddress = `${chainNamespace}:${newChainId}:${address}` as CaipAddress
+
+    this.setCaipAddress(newCaipAddress, chainNamespace)
+    await this.syncIdentity({
+      address,
+      chainId: newChainId,
+      chainNamespace
+    })
   }
 
   private async syncBalance(params: {
