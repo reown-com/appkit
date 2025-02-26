@@ -14,13 +14,11 @@ import {
 import { convertCaip10ToErc3770 } from '@reown/appkit-experimental/erc3770'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 
+import { RelayClientInfo } from '@/src/components/RelayClientInfo'
+
 import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
 
-type AppKitInfoProps = {
-  clientId?: string
-}
-
-export function AppKitInfo({ clientId }: AppKitInfoProps) {
+export function AppKitInfo() {
   const { caipAddress, address } = useAppKitAccount()
   const { chainId } = useAppKitNetwork()
 
@@ -74,14 +72,7 @@ export function AppKitInfo({ clientId }: AppKitInfoProps) {
             <Text data-testid="w3m-chain-id">{chainId}</Text>
           </Box>
 
-          {clientId && (
-            <Box>
-              <Heading size="xs" textTransform="uppercase" pb="2">
-                Relay Client ID
-              </Heading>
-              <Text data-testid="w3m-chain-id">{clientId}</Text>
-            </Box>
-          )}
+          <RelayClientInfo />
 
           <EmbeddedWalletInfo />
         </Stack>

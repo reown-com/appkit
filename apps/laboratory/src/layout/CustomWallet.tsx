@@ -15,8 +15,8 @@ import {
   useDisclosure
 } from '@chakra-ui/react'
 
-import { CUSTOM_WALLET } from '../utils/ConstantsUtil'
-import { setLocalStorageItem } from '../utils/LocalStorage'
+import { CUSTOM_WALLET } from '@/src/utils/ConstantsUtil'
+import { setLocalStorageItem } from '@/src/utils/LocalStorage'
 
 interface Props {
   controls: ReturnType<typeof useDisclosure>

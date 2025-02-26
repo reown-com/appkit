@@ -5,8 +5,8 @@ import { type Address, parseGwei } from 'viem'
 import { useAccount, useEstimateGas, useSendTransaction } from 'wagmi'
 import { mainnet } from 'wagmi/chains'
 
-import { vitalikEthAddress } from '../../utils/DataUtil'
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
+import { vitalikEthAddress } from '@/src/utils/DataUtil'
 
 const TEST_TX = {
   to: vitalikEthAddress as Address,

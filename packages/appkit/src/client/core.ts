@@ -43,7 +43,6 @@ import {
   ChainController,
   ConnectionController,
   ConnectorController,
-  ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil,
   EnsController,
   EventsController,
@@ -162,7 +161,6 @@ export abstract class AppKitCore {
     if (options.themeMode) {
       ThemeController.setThemeMode(options.themeMode)
     }
-
     if (options.themeVariables) {
       ThemeController.setThemeVariables(options.themeVariables)
     }
@@ -521,7 +519,7 @@ export abstract class AppKitCore {
       getCapabilities: async (params: AdapterBlueprint.GetCapabilitiesParams) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
 
-        await adapter?.getCapabilities(params)
+        return await adapter?.getCapabilities(params)
       },
       grantPermissions: async (params: AdapterBlueprint.GrantPermissionsParams) => {
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
@@ -536,6 +534,11 @@ export abstract class AppKitCore {
         }
 
         return '0x'
+      },
+      walletGetAssets: async (params: AdapterBlueprint.WalletGetAssetsParams) => {
+        const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
+
+        return (await adapter?.walletGetAssets(params)) ?? {}
       }
     }
 
@@ -1034,9 +1037,8 @@ export abstract class AppKitCore {
   }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
     chainNamespace: ChainNamespace
   }) {
-    const activeCaipNetwork = this.caipNetworks?.find(
-      n => n.caipNetworkId === `${chainNamespace}:${chainId}`
-    )
+    const caipNetworkId: CaipNetworkId = `${chainNamespace}:${chainId}`
+    const activeCaipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
 
     if (chainNamespace !== ConstantsUtil.CHAIN.EVM || activeCaipNetwork?.testnet) {
       return
@@ -1044,7 +1046,8 @@ export abstract class AppKitCore {
 
     try {
       const { name, avatar } = await this.fetchIdentity({
-        address
+        address,
+        caipNetworkId
       })
 
       this.setProfileName(name, chainNamespace)
@@ -1151,31 +1154,7 @@ export abstract class AppKitCore {
       return
     }
 
-    const isApiBalanceSupported = CoreConstantsUtil.BALANCE_SUPPORTED_CHAINS.includes(
-      caipNetwork?.chainNamespace
-    )
-
-    if (caipNetwork.testnet || !isApiBalanceSupported) {
-      await this.updateNativeBalance()
-
-      return
-    }
-
-    const balances = await AccountController.fetchTokenBalance(() =>
-      this.setBalance('0.00', caipNetwork.nativeCurrency.symbol, caipNetwork.chainNamespace)
-    )
-
-    const balance = balances.find(
-      b =>
-        b.chainId === `${params.chainNamespace}:${params.chainId}` &&
-        b.symbol === caipNetwork.nativeCurrency.symbol
-    )
-
-    this.setBalance(
-      balance?.quantity?.numeric || '0.00',
-      caipNetwork.nativeCurrency.symbol,
-      params.chainNamespace
-    )
+    await this.updateNativeBalance()
   }
 
   protected async updateNativeBalance() {
@@ -1507,7 +1486,7 @@ export abstract class AppKitCore {
     return ChainController.state.activeCaipNetwork?.id
   }
 
-  public switchNetwork(appKitNetwork: AppKitNetwork) {
+  public async switchNetwork(appKitNetwork: AppKitNetwork) {
     const network = this.caipNetworks?.find(n => n.id === appKitNetwork.id)
 
     if (!network) {
@@ -1516,7 +1495,7 @@ export abstract class AppKitCore {
       return
     }
 
-    ChainController.switchActiveNetwork(network)
+    await ChainController.switchActiveNetwork(network)
   }
 
   public getWalletProvider() {

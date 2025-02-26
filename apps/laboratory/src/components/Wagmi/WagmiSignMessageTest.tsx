@@ -6,15 +6,14 @@ import { useSignMessage } from 'wagmi'
 
 import { useAppKitAccount } from '@reown/appkit/react'
 
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
+import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 export function WagmiSignMessageTest() {
   const toast = useChakraToast()
-  const { address } = useAppKitAccount()
+  const { address, isConnected } = useAppKitAccount({ namespace: 'eip155' })
 
   const { signMessageAsync, isPending } = useSignMessage()
-  const { isConnected } = useAppKitAccount()
 
   const [signature, setSignature] = React.useState<string | undefined>()
 
