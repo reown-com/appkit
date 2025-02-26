@@ -31,6 +31,7 @@ describe('Universal Adapter', () => {
 
     new AppKit({
       ...mockOptions,
+      // @ts-expect-error - ts will be handled
       universalProvider: mockUniversalProvider
     })
 
@@ -42,20 +43,14 @@ describe('Universal Adapter', () => {
   })
 
   it('should initialize multiple adapters for different namespaces', async () => {
-    new AppKit({
-      ...mockOptions,
-      universalProvider: mockUniversalProvider
-    })
+    new AppKit(mockOptions)
 
     expect(mockEvmAdapter.syncConnectors).toHaveBeenCalled()
     expect(mockSolanaAdapter.syncConnectors).toHaveBeenCalled()
   })
 
   it('should set universal provider and auth provider for each adapter', async () => {
-    new AppKit({
-      ...mockOptions,
-      universalProvider: mockUniversalProvider
-    })
+    new AppKit(mockOptions)
 
     expect(mockEvmAdapter.setUniversalProvider).toHaveBeenCalled()
     expect(mockEvmAdapter.setAuthProvider).toHaveBeenCalled()
