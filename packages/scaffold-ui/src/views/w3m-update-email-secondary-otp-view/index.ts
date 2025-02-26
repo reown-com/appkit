@@ -13,12 +13,18 @@ export class W3mUpdateEmailSecondaryOtpView extends W3mEmailOtpWidget {
   // --  Private ------------------------------------------ //
   override email = RouterController.state.data?.newEmail
 
+  private isUpdatingEmailWithWalletButton =
+    RouterController.state.data?.isUpdatingEmailWithWalletButton ?? false
+
   override onOtpSubmit: OnOtpSubmitFn = async otp => {
     try {
       if (this.authConnector) {
         await this.authConnector.provider.updateEmailSecondaryOtp({ otp })
         EventsController.sendEvent({ type: 'track', event: 'EMAIL_VERIFICATION_CODE_PASS' })
-        RouterController.reset('Account')
+
+        if (!this.isUpdatingEmailWithWalletButton) {
+          RouterController.reset('Account')
+        }
       }
     } catch (error) {
       EventsController.sendEvent({
