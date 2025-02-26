@@ -291,6 +291,7 @@ export const SendController = {
       })
       this.resetSend()
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('SendController:sendERC20Token - failed to send native token', error)
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       EventsController.sendEvent({
@@ -345,6 +346,7 @@ export const SendController = {
         this.resetSend()
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('SendController:sendERC20Token - failed to send erc20 token', error)
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       EventsController.sendEvent({
