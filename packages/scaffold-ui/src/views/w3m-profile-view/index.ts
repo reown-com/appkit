@@ -9,9 +9,9 @@ import {
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
-  ModalController,
   RouterController,
-  SnackController
+  SnackController,
+  closeModal
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
@@ -43,7 +43,7 @@ export class W3mProfileView extends LitElement {
         if (address) {
           this.address = address
         } else {
-          ModalController.close()
+          closeModal()
         }
       })
     )

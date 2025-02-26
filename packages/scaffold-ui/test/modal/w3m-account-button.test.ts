@@ -5,9 +5,9 @@ import type { CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
-  ModalController,
   OptionsController,
-  RouterController
+  RouterController,
+  openModal
 } from '@reown/appkit-core'
 import type { WuiAccountButton } from '@reown/appkit-ui'
 
@@ -79,7 +79,7 @@ describe('W3mAccountButton', () => {
       vi.spyOn(ChainController, 'checkIfSupportedNetwork').mockReturnValue(true)
       vi.spyOn(ChainController.state, 'activeCaipAddress', 'get').mockReturnValue(mockCaipAddress)
 
-      vi.spyOn(ModalController, 'open')
+      vi.mocked(openModal)
 
       const button = await fixture(html`<w3m-account-button></w3m-account-button>`)
       const accountButton = button.shadowRoot?.querySelector('wui-account-button')
@@ -98,7 +98,7 @@ describe('W3mAccountButton', () => {
       })
       vi.spyOn(ChainController.state, 'activeCaipAddress', 'get').mockReturnValue(mockCaipAddress)
 
-      vi.spyOn(ModalController, 'open')
+      vi.mocked(openModal)
 
       const button = await fixture(html`<w3m-account-button></w3m-account-button>`)
       const accountButton = button.shadowRoot?.querySelector('wui-account-button')
@@ -117,7 +117,7 @@ describe('W3mAccountButton', () => {
       })
       vi.spyOn(ChainController.state, 'activeCaipAddress', 'get').mockReturnValue(mockCaipAddress)
 
-      vi.spyOn(ModalController, 'open')
+      vi.mocked(openModal)
 
       const button = await fixture(html`<w3m-account-button></w3m-account-button>`)
       const accountButton = button.shadowRoot?.querySelector('wui-account-button')

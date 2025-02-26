@@ -9,10 +9,11 @@ import {
   AssetUtil,
   ChainController,
   EventsController,
-  ModalController,
   OptionsController,
   RouterController,
-  SIWXUtil
+  SIWXUtil,
+  closeModal,
+  shakeModal
 } from '@reown/appkit-core'
 
 import { W3mHeader } from '../../src/partials/w3m-header'
@@ -133,8 +134,8 @@ describe('W3mHeader', () => {
       expect(closeButton).toBeTruthy()
     })
 
-    it('should call ModalController.close when close button is clicked', async () => {
-      const closeSpy = vi.spyOn(ModalController, 'close')
+    it('should call closeModal when close button is clicked', async () => {
+      const closeSpy = vi.mocked(closeModal)
       vi.spyOn(SIWXUtil, 'isSIWXCloseDisabled').mockResolvedValue(false)
 
       const closeButton = HelpersUtil.getByTestId(element, 'w3m-header-close')
@@ -144,7 +145,7 @@ describe('W3mHeader', () => {
     })
 
     it('should shake modal when trying to close in UnsupportedChain view', async () => {
-      const shakeSpy = vi.spyOn(ModalController, 'shake')
+      const shakeSpy = vi.mocked(shakeModal)
       RouterController.state.view = 'UnsupportedChain'
       element.requestUpdate()
       await element.updateComplete

@@ -3,7 +3,7 @@ import {
   ConnectionController,
   ConnectorController,
   EventsController,
-  ModalController
+  closeModal
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
@@ -44,7 +44,7 @@ export class W3mConnectingWcBrowser extends W3mConnectingWidget {
         throw new Error('w3m-connecting-wc-browser: No connector found')
       }
 
-      ModalController.close()
+      closeModal()
 
       EventsController.sendEvent({
         type: 'track',

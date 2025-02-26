@@ -3,8 +3,8 @@ import {
   ConnectionController,
   CoreHelperUtil,
   EventsController,
-  ModalController,
-  OptionsController
+  OptionsController,
+  closeModal
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
@@ -35,7 +35,7 @@ export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {
           properties: { method: 'email', name: this.authConnector.name || 'Unknown' }
         })
         if (!OptionsController.state.siwx) {
-          ModalController.close()
+          closeModal()
         }
       }
     } catch (error) {

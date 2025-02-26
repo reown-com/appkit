@@ -9,9 +9,9 @@ import {
   type AccountType,
   BlockchainApiController,
   ChainController,
-  ModalController,
   OptionsController,
-  StorageUtil
+  StorageUtil,
+  closeModal
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 
@@ -148,7 +148,7 @@ export class W3mSwitchAddressView extends LitElement {
     const activeChainNamespace = caipNetwork?.chainNamespace
     const caipAddress = `${activeChainNamespace}:${caipNetwork?.id}:${address}` as CaipAddress
     AccountController.setCaipAddress(caipAddress, activeChainNamespace)
-    ModalController.close()
+    closeModal()
   }
 }
 

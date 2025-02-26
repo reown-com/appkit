@@ -4,9 +4,9 @@ import { state } from 'lit/decorators.js'
 import { getW3mThemeVariables } from '@reown/appkit-common'
 import {
   ConnectorController,
-  ModalController,
   RouterController,
-  ThemeController
+  ThemeController,
+  subscribeModalKey
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
@@ -35,13 +35,13 @@ export class W3mApproveTransactionView extends LitElement {
     super()
     this.unsubscribe.push(
       ...[
-        ModalController.subscribeKey('open', isOpen => {
+        subscribeModalKey('open', isOpen => {
           if (!isOpen) {
             this.onHideIframe()
             RouterController.popTransactionStack()
           }
         }),
-        ModalController.subscribeKey('shake', val => {
+        subscribeModalKey('shake', val => {
           if (val) {
             this.iframe.style.animation = `w3m-shake 500ms var(--wui-ease-out-power-2)`
           } else {

@@ -6,9 +6,10 @@ import {
   AssetController,
   AssetUtil,
   ChainController,
-  ModalController,
   OptionsController,
-  type OptionsControllerState
+  type OptionsControllerState,
+  modalState,
+  openModal
 } from '@reown/appkit-core'
 import type { WuiNetworkButton } from '@reown/appkit-ui'
 
@@ -31,7 +32,7 @@ describe('W3mNetworkButton', () => {
     vi.spyOn(AssetUtil, 'getNetworkImage').mockReturnValue('network.png')
     vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
     vi.spyOn(ChainController.state, 'activeCaipNetwork', 'get').mockReturnValue(mockCaipNetwork)
-    vi.spyOn(ModalController.state, 'loading', 'get').mockReturnValue(false)
+    vi.spyOn(modalState, 'loading', 'get').mockReturnValue(false)
   })
 
   afterEach(() => {
@@ -138,7 +139,7 @@ describe('W3mNetworkButton', () => {
 
   describe('Interactions', () => {
     it('opens network modal on click', async () => {
-      const modalSpy = vi.spyOn(ModalController, 'open').mockResolvedValue(undefined)
+      const modalSpy = vi.mocked(openModal).mockResolvedValue(undefined)
 
       const element: W3mNetworkButton = await fixture(
         html`<w3m-network-button></w3m-network-button>`
@@ -149,7 +150,7 @@ describe('W3mNetworkButton', () => {
     })
 
     it('disables button when loading', async () => {
-      vi.spyOn(ModalController.state, 'loading', 'get').mockReturnValue(true)
+      vi.spyOn(modalState, 'loading', 'get').mockReturnValue(true)
 
       const element: W3mNetworkButton = await fixture(
         html`<w3m-network-button></w3m-network-button>`

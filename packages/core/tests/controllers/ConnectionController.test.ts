@@ -13,9 +13,9 @@ import {
   ChainController,
   ConnectionController,
   ConstantsUtil,
-  ModalController,
   SIWXUtil,
-  StorageUtil
+  StorageUtil,
+  setModalLoading
 } from '../../exports/index.js'
 
 // -- Setup --------------------------------------------------------------------
@@ -169,15 +169,15 @@ describe('ConnectionController', () => {
   })
 
   it('should disconnect correctly', async () => {
-    vi.spyOn(ModalController, 'setLoading')
+    vi.mocked(setModalLoading)
     vi.spyOn(ChainController, 'disconnect')
     vi.spyOn(SIWXUtil, 'clearSessions')
 
     await ConnectionController.disconnect()
-    expect(ModalController.setLoading).toHaveBeenCalledWith(true)
+    expect(setModalLoading).toHaveBeenCalledWith(true)
     expect(SIWXUtil.clearSessions).toHaveBeenCalled()
     expect(ChainController.disconnect).toHaveBeenCalled()
-    expect(ModalController.setLoading).toHaveBeenCalledWith(false)
+    expect(setModalLoading).toHaveBeenCalledWith(false)
   })
 
   it('should set wcUri correctly', () => {

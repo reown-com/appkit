@@ -1,5 +1,13 @@
 // -- Controllers -------------------------------------------------------------
-export { ModalController } from '../src/controllers/ModalController.js'
+export {
+  modalState,
+  subscribeModal,
+  subscribeModalKey,
+  setModalLoading,
+  shakeModal,
+  openModal,
+  closeModal
+} from '../src/controllers/ModalController.js'
 export type {
   ModalControllerArguments,
   ModalControllerState

@@ -40,7 +40,11 @@ import {
   type UseAppKitAccountReturn,
   type UseAppKitNetworkReturn,
   type WalletFeature,
-  type WriteContractArgs
+  type WriteContractArgs,
+  closeModal,
+  modalState,
+  openModal,
+  setModalLoading
 } from '@reown/appkit-core'
 import {
   AccountController,
@@ -54,7 +58,6 @@ import {
   CoreHelperUtil,
   EnsController,
   EventsController,
-  ModalController,
   OptionsController,
   PublicStateController,
   RouterController,
@@ -219,16 +222,16 @@ export class AppKit {
       ConnectorController.setFilterByNamespace(options.namespace)
     }
 
-    await ModalController.open(options)
+    await openModal(options)
   }
 
   public async close() {
     await this.injectModalUi()
-    ModalController.close()
+    closeModal()
   }
 
   public setLoading(loading: ModalControllerState['loading']) {
-    ModalController.setLoading(loading)
+    setModalLoading(loading)
   }
 
   // -- Adapter Methods ----------------------------------------------------------
@@ -400,7 +403,7 @@ export class AppKit {
   }
 
   public isOpen() {
-    return ModalController.state.open
+    return modalState.open
   }
 
   public isTransactionStackEmpty() {
@@ -479,7 +482,7 @@ export class AppKit {
   public setUser: (typeof AccountController)['setUser'] = (user, chain) => {
     AccountController.setUser(user, chain)
     if (OptionsController.state.enableEmbedded) {
-      ModalController.close()
+      closeModal()
     }
   }
 

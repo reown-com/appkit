@@ -8,10 +8,12 @@ import {
   ConnectorController,
   CoreHelperUtil,
   EventsController,
-  ModalController,
   RouterController,
   StorageUtil,
-  type WcWallet
+  type WcWallet,
+  closeModal,
+  openModal,
+  subscribeModalKey
 } from '@reown/appkit-core'
 import { SocialProviderEnum } from '@reown/appkit-utils'
 
@@ -35,10 +37,10 @@ export const ConnectorUtil = {
         ConnectorController.setActiveConnector(connector)
       }
 
-      await ModalController.open()
+      await openModal()
       RouterController.push('ConnectingWalletConnect', { wallet })
 
-      const unsubscribeModalController = ModalController.subscribeKey('open', val => {
+      const unsubscribeModalController = subscribeModalKey('open', val => {
         if (!val) {
           if (RouterController.state.view !== 'Connect') {
             RouterController.push('Connect')
@@ -50,7 +52,7 @@ export const ConnectorUtil = {
 
       const unsubscribeChainController = ChainController.subscribeKey('activeCaipAddress', val => {
         if (val) {
-          ModalController.close()
+          closeModal()
           unsubscribeChainController()
           resolve(ParseUtil.parseCaipAddress(val))
         }
@@ -61,7 +63,7 @@ export const ConnectorUtil = {
     return new Promise((resolve, reject) => {
       const unsubscribeChainController = ChainController.subscribeKey('activeCaipAddress', val => {
         if (val) {
-          ModalController.close()
+          closeModal()
           unsubscribeChainController()
           resolve(ParseUtil.parseCaipAddress(val))
         }
@@ -81,7 +83,7 @@ export const ConnectorUtil = {
 
     const unsubscribeChainController = ChainController.subscribeKey('activeCaipAddress', val => {
       if (val) {
-        ModalController.close()
+        closeModal()
         unsubscribeChainController()
       }
     })
@@ -165,9 +167,9 @@ export const ConnectorUtil = {
         }
 
         if (socialProvider === SocialProviderEnum.Farcaster) {
-          ModalController.open({ view: 'ConnectingFarcaster' })
+          openModal({ view: 'ConnectingFarcaster' })
 
-          const unsubscribeModalController = ModalController.subscribeKey('open', val => {
+          const unsubscribeModalController = subscribeModalKey('open', val => {
             if (!val && social === 'farcaster') {
               reject(new Error('Popup closed'))
               RouterController.push('Connect')

@@ -9,9 +9,10 @@ import {
   ChainController,
   ConnectionController,
   ConnectorController,
-  ModalController,
   OptionsController,
-  RouterController
+  RouterController,
+  closeModal,
+  modalState
 } from '@reown/appkit-core'
 
 import { W3mConnectingSocialView } from '../../src/views/w3m-connecting-social-view'
@@ -66,7 +67,7 @@ describe('W3mConnectingSocialView - Embedded Modal Behavior', () => {
 
     let subscriptionCallback: ((val: any) => void) | undefined
 
-    vi.spyOn(ModalController, 'close').mockImplementation(() => {})
+    vi.mocked(closeModal).mockImplementation(() => {})
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValueOnce({
       ...OptionsController.state,
       enableEmbedded: true
@@ -75,10 +76,7 @@ describe('W3mConnectingSocialView - Embedded Modal Behavior', () => {
       ...AccountController.state,
       socialWindow: mockSocialWindow
     })
-    vi.spyOn(ModalController, 'state', 'get').mockReturnValueOnce({
-      ...ModalController.state,
-      open: true
-    })
+    vi.spyOn(modalState, 'open', 'get').mockReturnValueOnce(true)
     vi.spyOn(AccountController, 'subscribe').mockImplementationOnce(callback => {
       subscriptionCallback = callback
       return () => {}
@@ -90,7 +88,7 @@ describe('W3mConnectingSocialView - Embedded Modal Behavior', () => {
       subscriptionCallback({ address: '0x123' })
     }
 
-    expect(ModalController.close).toHaveBeenCalled()
+    expect(closeModal).toHaveBeenCalled()
   })
 
   it('should not close modal when address is set but enableEmbedded is false', async () => {
@@ -101,7 +99,7 @@ describe('W3mConnectingSocialView - Embedded Modal Behavior', () => {
 
     let subscriptionCallback: ((val: any) => void) | undefined
 
-    vi.spyOn(ModalController, 'close').mockImplementationOnce(() => {})
+    vi.mocked(closeModal).mockImplementationOnce(() => {})
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValueOnce({
       ...OptionsController.state,
       enableEmbedded: false
@@ -110,10 +108,7 @@ describe('W3mConnectingSocialView - Embedded Modal Behavior', () => {
       ...AccountController.state,
       socialWindow: mockSocialWindow
     })
-    vi.spyOn(ModalController, 'state', 'get').mockReturnValueOnce({
-      ...ModalController.state,
-      open: false
-    })
+    vi.spyOn(modalState, 'open', 'get').mockReturnValueOnce(false)
     vi.spyOn(AccountController, 'subscribe').mockImplementationOnce(callback => {
       subscriptionCallback = callback
       return () => {}
@@ -125,6 +120,6 @@ describe('W3mConnectingSocialView - Embedded Modal Behavior', () => {
       subscriptionCallback({ address: '0x123' })
     }
 
-    expect(ModalController.close).not.toHaveBeenCalled()
+    expect(closeModal).not.toHaveBeenCalled()
   })
 })

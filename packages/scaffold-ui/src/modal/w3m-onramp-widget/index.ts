@@ -1,7 +1,13 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
-import { ChainController, ModalController, OnRampController } from '@reown/appkit-core'
+import {
+  ChainController,
+  OnRampController,
+  modalState,
+  openModal,
+  subscribeModalKey
+} from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'
@@ -26,7 +32,7 @@ export class W3mOnrampWidget extends LitElement {
 
   @state() private caipAddress = ChainController.state.activeCaipAddress
 
-  @state() private loading = ModalController.state.loading
+  @state() private loading = modalState.loading
 
   @state() private paymentCurrency = OnRampController.state.paymentCurrency
 
@@ -42,7 +48,7 @@ export class W3mOnrampWidget extends LitElement {
     this.unsubscribe.push(
       ...[
         ChainController.subscribeKey('activeCaipAddress', val => (this.caipAddress = val)),
-        ModalController.subscribeKey('loading', val => {
+        subscribeModalKey('loading', val => {
           this.loading = val
         }),
         OnRampController.subscribe(val => {
@@ -120,12 +126,12 @@ export class W3mOnrampWidget extends LitElement {
   // -- Private ------------------------------------------- //
   private getQuotes() {
     if (!this.loading) {
-      ModalController.open({ view: 'OnRampProviders' })
+      openModal({ view: 'OnRampProviders' })
     }
   }
 
   private openModal() {
-    ModalController.open({ view: 'Connect' })
+    openModal({ view: 'Connect' })
   }
 
   private async onPaymentAmountChange(event: CustomEvent<string>) {

@@ -7,7 +7,8 @@ import {
   ChainController,
   type Connector,
   ConnectorController,
-  ModalController
+  modalState,
+  subscribeModalKey
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
@@ -35,13 +36,13 @@ export class AppKitWalletButton extends LitElement {
 
   @state() private ready = WalletUtil.isWalletButtonReady(this.wallet)
 
-  @state() private modalLoading = ModalController.state.loading
+  @state() private modalLoading = modalState.loading
 
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
-        ModalController.subscribeKey('loading', val => (this.modalLoading = val)),
+        subscribeModalKey('loading', val => (this.modalLoading = val)),
         ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
         ChainController.subscribeKey('activeCaipAddress', val => {
           if (val) {

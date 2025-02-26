@@ -7,8 +7,10 @@ import {
   AssetUtil,
   ChainController,
   EventsController,
-  ModalController,
-  OptionsController
+  OptionsController,
+  modalState,
+  openModal,
+  subscribeModalKey
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import type { WuiNetworkButton } from '@reown/appkit-ui'
@@ -32,7 +34,7 @@ class W3mNetworkButtonBase extends LitElement {
 
   @state() private caipAddress = ChainController.state.activeCaipAddress
 
-  @state() private loading = ModalController.state.loading
+  @state() private loading = modalState.loading
 
   // eslint-disable-next-line no-nested-ternary
   @state() private isSupported = OptionsController.state.allowUnsupportedChain
@@ -59,7 +61,7 @@ class W3mNetworkButtonBase extends LitElement {
             ? ChainController.checkIfSupportedNetwork(val.chainNamespace)
             : true
         }),
-        ModalController.subscribeKey('loading', val => (this.loading = val))
+        subscribeModalKey('loading', val => (this.loading = val))
       ]
     )
   }
@@ -112,7 +114,7 @@ class W3mNetworkButtonBase extends LitElement {
   private onClick() {
     if (!this.loading) {
       EventsController.sendEvent({ type: 'track', event: 'CLICK_NETWORKS' })
-      ModalController.open({ view: 'Networks' })
+      openModal({ view: 'Networks' })
     }
   }
 }

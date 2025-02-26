@@ -1,4 +1,4 @@
-import { ModalController } from '../controllers/ModalController.js'
+import { closeModal } from '../controllers/ModalController.js'
 import { RouterController } from '../controllers/RouterController.js'
 
 export const RouterUtil = {
@@ -6,7 +6,7 @@ export const RouterUtil = {
     if (RouterController.state.history.length > 1) {
       RouterController.goBack()
     } else {
-      ModalController.close()
+      closeModal()
     }
   },
   navigateAfterNetworkSwitch() {
@@ -16,7 +16,7 @@ export const RouterUtil = {
     if (networkSelectIndex >= 1) {
       RouterController.goBackToIndex(networkSelectIndex - 1)
     } else {
-      ModalController.close()
+      closeModal()
     }
   }
 }

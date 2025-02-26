@@ -11,9 +11,9 @@ import {
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil,
   EventsController,
-  ModalController,
   OptionsController,
-  RouterController
+  RouterController,
+  closeModal
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
@@ -66,7 +66,7 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
             this.currentTab = val.currentTab
             this.tokenBalance = val.tokenBalance
           } else {
-            ModalController.close()
+            closeModal()
           }
         })
       ],

@@ -4,8 +4,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   ChainController,
   type ChainControllerState,
-  ModalController,
-  type ModalControllerState
+  modalState,
+  subscribeModalKey
 } from '@reown/appkit-core'
 
 import type { W3mAccountButton } from '../../exports'
@@ -18,12 +18,10 @@ describe('W3mButton', () => {
       activeCaipAddress: null
     } as unknown as ChainControllerState)
 
-    vi.spyOn(ModalController, 'state', 'get').mockReturnValue({
-      loading: false
-    } as ModalControllerState)
+    vi.spyOn(modalState, 'loading', 'get').mockReturnValue(false)
 
     vi.spyOn(ChainController, 'subscribeKey').mockImplementation(() => () => {})
-    vi.spyOn(ModalController, 'subscribeKey').mockImplementation(() => () => {})
+    vi.mocked(subscribeModalKey).mockImplementation(() => () => {})
   })
 
   afterEach(() => {
@@ -53,9 +51,7 @@ describe('W3mButton', () => {
   })
 
   it('renders connect button when loading', async () => {
-    vi.spyOn(ModalController, 'state', 'get').mockReturnValue({
-      loading: true
-    } as ModalControllerState)
+    vi.spyOn(modalState, 'loading', 'get').mockReturnValue(true)
 
     const element: W3mButton = await fixture(html`<appkit-button></appkit-button>`)
     const connectButton = HelpersUtil.querySelect(element, 'appkit-connect-button')
@@ -102,7 +98,7 @@ describe('W3mButton', () => {
     const mockUnsubscribeChain = vi.fn()
     const mockUnsubscribeModal = vi.fn()
     vi.spyOn(ChainController, 'subscribeKey').mockReturnValue(mockUnsubscribeChain)
-    vi.spyOn(ModalController, 'subscribeKey').mockReturnValue(mockUnsubscribeModal)
+    vi.mocked(subscribeModalKey).mockReturnValue(mockUnsubscribeModal)
     const element: W3mButton = await fixture(html`<appkit-button></appkit-button>`)
     element.disconnectedCallback()
     expect(mockUnsubscribeChain).toHaveBeenCalled()

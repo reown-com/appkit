@@ -9,12 +9,13 @@ import {
   ConnectionController,
   ConnectorController,
   EventsController,
-  ModalController,
   OptionsController,
   RouterController,
   SnackController,
   StorageUtil,
-  ThemeController
+  ThemeController,
+  closeModal,
+  modalState
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
@@ -53,8 +54,8 @@ export class W3mConnectingSocialView extends LitElement {
             this.socialWindow = val.socialWindow
           }
           if (val.address) {
-            if (ModalController.state.open || OptionsController.state.enableEmbedded) {
-              ModalController.close()
+            if (modalState.open || OptionsController.state.enableEmbedded) {
+              closeModal()
             }
           }
         })

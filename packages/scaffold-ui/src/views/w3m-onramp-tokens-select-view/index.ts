@@ -4,9 +4,9 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
   AssetController,
-  ModalController,
   OnRampController,
-  OptionsController
+  OptionsController,
+  closeModal
 } from '@reown/appkit-core'
 import type { PurchaseCurrency } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
@@ -93,7 +93,7 @@ export class W3mOnrampTokensView extends LitElement {
     }
 
     OnRampController.setPurchaseCurrency(currency)
-    ModalController.close()
+    closeModal()
   }
 
   // -- Private Methods ----------------------------------- //

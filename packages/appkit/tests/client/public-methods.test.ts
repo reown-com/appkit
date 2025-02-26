@@ -18,13 +18,15 @@ import {
   CoreHelperUtil,
   EnsController,
   EventsController,
-  ModalController,
   OptionsController,
   PublicStateController,
   RouterController,
   SnackController,
   StorageUtil,
-  ThemeController
+  ThemeController,
+  closeModal,
+  openModal,
+  setModalLoading
 } from '@reown/appkit-core'
 
 import { AppKit } from '../../src/client'
@@ -71,7 +73,7 @@ vi.spyOn(AccountController, 'fetchTokenBalance').mockResolvedValue([
 
 describe('Base Public methods', () => {
   it('should open modal', async () => {
-    const open = vi.spyOn(ModalController, 'open')
+    const open = vi.mocked(openModal)
 
     const appKit = new AppKit(mockOptions)
     await appKit.open()
@@ -80,7 +82,7 @@ describe('Base Public methods', () => {
   })
 
   it('should open different views', async () => {
-    const modelOpen = vi.spyOn(ModalController, 'open')
+    const modelOpen = vi.mocked(openModal)
 
     const views = [
       'Account',
@@ -105,7 +107,7 @@ describe('Base Public methods', () => {
   })
 
   it('should filter connectors by namespace when opening modal', async () => {
-    const openSpy = vi.spyOn(ModalController, 'open')
+    const openSpy = vi.mocked(openModal)
     const setFilterByNamespaceSpy = vi.spyOn(ConnectorController, 'setFilterByNamespace')
 
     const appKit = new AppKit(mockOptions)
@@ -116,7 +118,7 @@ describe('Base Public methods', () => {
   })
 
   it('should close modal', async () => {
-    const close = vi.spyOn(ModalController, 'close')
+    const close = vi.mocked(closeModal)
 
     const appKit = new AppKit(mockOptions)
     await appKit.close()
@@ -125,7 +127,7 @@ describe('Base Public methods', () => {
   })
 
   it('should set loading state', () => {
-    const setLoading = vi.spyOn(ModalController, 'setLoading')
+    const setLoading = vi.mocked(setModalLoading)
 
     const appKit = new AppKit(mockOptions)
     appKit.setLoading(true)

@@ -8,11 +8,11 @@ import {
   ConstantsUtil,
   CoreHelperUtil,
   EventsController,
-  ModalController,
   OptionsController,
   RouterController,
   SnackController,
-  StorageUtil
+  StorageUtil,
+  closeModal
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
@@ -70,7 +70,7 @@ export class W3mConnectingWcView extends LitElement {
         await ConnectionController.connectWalletConnect()
         this.finalizeConnection()
         if (!this.isSiwxEnabled) {
-          ModalController.close()
+          closeModal()
         }
       }
     } catch (error) {

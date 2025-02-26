@@ -8,12 +8,15 @@ import {
   AssetUtil,
   ChainController,
   CoreHelperUtil,
-  ModalController,
   OptionsController,
   RouterController,
   SIWXUtil,
   SnackController,
-  ThemeController
+  ThemeController,
+  closeModal,
+  modalState,
+  shakeModal,
+  subscribeModalKey
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
 
@@ -36,13 +39,13 @@ export class W3mModal extends LitElement {
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) private enableEmbedded = OptionsController.state.enableEmbedded
 
-  @state() private open = ModalController.state.open
+  @state() private open = modalState.open
 
   @state() private caipAddress = ChainController.state.activeCaipAddress
 
   @state() private caipNetwork = ChainController.state.activeCaipNetwork
 
-  @state() private shake = ModalController.state.shake
+  @state() private shake = modalState.shake
 
   public constructor() {
     super()
@@ -50,8 +53,8 @@ export class W3mModal extends LitElement {
     ApiController.prefetchAnalyticsConfig()
     this.unsubscribe.push(
       ...[
-        ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
-        ModalController.subscribeKey('shake', val => (this.shake = val)),
+        subscribeModalKey('open', val => (val ? this.onOpen() : this.onClose())),
+        subscribeModalKey('shake', val => (this.shake = val)),
         ChainController.subscribeKey('activeCaipNetwork', val => this.onNewNetwork(val)),
         ChainController.subscribeKey('activeCaipAddress', val => this.onNewAddress(val)),
         OptionsController.subscribeKey('enableEmbedded', val => (this.enableEmbedded = val))
@@ -64,7 +67,7 @@ export class W3mModal extends LitElement {
 
     if (this.caipAddress) {
       if (this.enableEmbedded) {
-        ModalController.close()
+        closeModal()
         this.prefetch()
 
         return
@@ -136,9 +139,9 @@ export class W3mModal extends LitElement {
   private async handleClose() {
     const isUnsupportedChain = RouterController.state.view === 'UnsupportedChain'
     if (isUnsupportedChain || (await SIWXUtil.isSIWXCloseDisabled())) {
-      ModalController.shake()
+      shakeModal()
     } else {
-      ModalController.close()
+      closeModal()
     }
   }
 
@@ -223,7 +226,7 @@ export class W3mModal extends LitElement {
     const isSwitchingNamespaceAndConnected = isSwitchingNamespace && nextConnected
 
     if (isDisconnectedInSameNamespace) {
-      ModalController.close()
+      closeModal()
     } else if (isSwitchingNamespaceAndConnected) {
       RouterController.goBack()
     }

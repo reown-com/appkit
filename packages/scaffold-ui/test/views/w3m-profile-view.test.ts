@@ -12,8 +12,8 @@ import {
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
-  ModalController,
-  SnackController
+  SnackController,
+  closeModal
 } from '@reown/appkit-core'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
@@ -187,7 +187,7 @@ describe('W3mProfileView - Functions', () => {
   })
 
   test('should close modal when address becomes null', async () => {
-    const closeModalMock = vi.spyOn(ModalController, 'close')
+    const closeModalMock = vi.mocked(closeModal)
     await fixture(html`<w3m-profile-view></w3m-profile-view>`)
 
     const subscribeKeySpy = vi.mocked(AccountController.subscribeKey)

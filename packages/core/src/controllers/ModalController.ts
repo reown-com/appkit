@@ -27,85 +27,83 @@ export interface ModalControllerArguments {
 type StateKey = keyof ModalControllerState
 
 // -- State --------------------------------------------- //
-const state = proxy<ModalControllerState>({
+export const modalState = proxy<ModalControllerState>({
   loading: false,
   open: false,
   shake: false
 })
 
-// -- Controller ---------------------------------------- //
-export const ModalController = {
-  state,
+export function subscribeModal(callback: (newState: ModalControllerState) => void) {
+  return sub(modalState, () => callback(modalState))
+}
 
-  subscribe(callback: (newState: ModalControllerState) => void) {
-    return sub(state, () => callback(state))
-  },
+export function subscribeModalKey<K extends StateKey>(
+  key: K,
+  callback: (value: ModalControllerState[K]) => void
+) {
+  return subKey(modalState, key, callback)
+}
 
-  subscribeKey<K extends StateKey>(key: K, callback: (value: ModalControllerState[K]) => void) {
-    return subKey(state, key, callback)
-  },
+export async function openModal(options?: ModalControllerArguments['open']) {
+  await ApiController.prefetch()
+  const caipAddress = ChainController.state.activeCaipAddress
 
-  async open(options?: ModalControllerArguments['open']) {
-    await ApiController.prefetch()
-    const caipAddress = ChainController.state.activeCaipAddress
+  const noAdapters = ChainController.state.noAdapters
 
-    const noAdapters = ChainController.state.noAdapters
-
-    if (options?.view) {
-      RouterController.reset(options.view)
-    } else if (caipAddress) {
-      RouterController.reset('Account')
-    } else if (noAdapters && !CoreHelperUtil.isMobile()) {
-      RouterController.reset('ConnectingWalletConnectBasic')
-    } else {
-      RouterController.reset('Connect')
-    }
-    state.open = true
-    PublicStateController.set({ open: true })
-    EventsController.sendEvent({
-      type: 'track',
-      event: 'MODAL_OPEN',
-      properties: { connected: Boolean(caipAddress) }
-    })
-  },
-
-  close() {
-    const isEmbeddedEnabled = OptionsController.state.enableEmbedded
-    const connected = Boolean(ChainController.state.activeCaipAddress)
-
-    state.open = false
-
-    if (isEmbeddedEnabled) {
-      if (connected) {
-        RouterController.replace('Account')
-      } else {
-        RouterController.push('Connect')
-      }
-    } else {
-      PublicStateController.set({ open: false })
-    }
-
-    EventsController.sendEvent({
-      type: 'track',
-      event: 'MODAL_CLOSE',
-      properties: { connected }
-    })
-
-    ConnectorController.clearNamespaceFilter()
-  },
-
-  setLoading(loading: ModalControllerState['loading']) {
-    state.loading = loading
-    PublicStateController.set({ loading })
-  },
-
-  shake() {
-    if (state.shake) {
-      return
-    }
-    state.shake = true
-    setTimeout(() => {
-      state.shake = false
-    }, 500)
+  if (options?.view) {
+    RouterController.reset(options.view)
+  } else if (caipAddress) {
+    RouterController.reset('Account')
+  } else if (noAdapters && !CoreHelperUtil.isMobile()) {
+    RouterController.reset('ConnectingWalletConnectBasic')
+  } else {
+    RouterController.reset('Connect')
   }
+  modalState.open = true
+  PublicStateController.set({ open: true })
+  EventsController.sendEvent({
+    type: 'track',
+    event: 'MODAL_OPEN',
+    properties: { connected: Boolean(caipAddress) }
+  })
+}
+
+export function closeModal() {
+  const isEmbeddedEnabled = OptionsController.state.enableEmbedded
+  const connected = Boolean(ChainController.state.activeCaipAddress)
+
+  modalState.open = false
+
+  if (isEmbeddedEnabled) {
+    if (connected) {
+      RouterController.replace('Account')
+    } else {
+      RouterController.push('Connect')
+    }
+  } else {
+    PublicStateController.set({ open: false })
+  }
+
+  EventsController.sendEvent({
+    type: 'track',
+    event: 'MODAL_CLOSE',
+    properties: { connected }
+  })
+
+  ConnectorController.clearNamespaceFilter()
+}
+
+export function setModalLoading(loading: ModalControllerState['loading']) {
+  modalState.loading = loading
+  PublicStateController.set({ loading })
+}
+
+export function shakeModal() {
+  if (modalState.shake) {
+    return
+  }
+  modalState.shake = true
+  setTimeout(() => {
+    modalState.shake = false
+  }, 500)
 }

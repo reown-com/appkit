@@ -8,7 +8,7 @@ import { AccountController } from '../controllers/AccountController.js'
 import { ChainController } from '../controllers/ChainController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
 import { EventsController } from '../controllers/EventsController.js'
-import { ModalController } from '../controllers/ModalController.js'
+import { closeModal, modalState, openModal } from '../controllers/ModalController.js'
 import { OptionsController } from '../controllers/OptionsController.js'
 import { RouterController } from '../controllers/RouterController.js'
 import { SnackController } from '../controllers/SnackController.js'
@@ -42,7 +42,7 @@ export const SIWXUtil = {
         return
       }
 
-      await ModalController.open({
+      await openModal({
         view: 'SIWXSignMessage'
       })
     } catch (error: unknown) {
@@ -109,7 +109,7 @@ export const SIWXUtil = {
         signature: signature as `0x${string}`
       })
 
-      ModalController.close()
+      closeModal()
 
       EventsController.sendEvent({
         type: 'track',
@@ -119,8 +119,8 @@ export const SIWXUtil = {
     } catch (error) {
       const properties = this.getSIWXEventProperties()
 
-      if (!ModalController.state.open || RouterController.state.view === 'ApproveTransaction') {
-        await ModalController.open({
+      if (!modalState.open || RouterController.state.view === 'ApproveTransaction') {
+        await openModal({
           view: 'SIWXSignMessage'
         })
       }
@@ -149,7 +149,7 @@ export const SIWXUtil = {
       if (required) {
         await ConnectionController.disconnect()
       } else {
-        ModalController.close()
+        closeModal()
       }
 
       RouterController.reset('Connect')

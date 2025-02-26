@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
-import { ModalController, RouterController, TooltipController } from '@reown/appkit-core'
+import { RouterController, TooltipController, subscribeModalKey } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'
@@ -24,7 +24,7 @@ export class WuiTooltipTrigger extends LitElement {
       RouterController.subscribeKey('view', () => {
         TooltipController.hide()
       }),
-      ModalController.subscribeKey('open', modalOpen => {
+      subscribeModalKey('open', modalOpen => {
         if (!modalOpen) {
           TooltipController.hide()
         }

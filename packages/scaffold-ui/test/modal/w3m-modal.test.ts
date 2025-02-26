@@ -7,10 +7,13 @@ import { type CaipNetwork } from '@reown/appkit-common'
 import {
   ApiController,
   ChainController,
-  ModalController,
   OptionsController,
   RouterController,
-  SIWXUtil
+  SIWXUtil,
+  closeModal,
+  modalState,
+  openModal,
+  shakeModal
 } from '@reown/appkit-core'
 import type { RouterControllerState, SIWXConfig } from '@reown/appkit-core'
 
@@ -48,7 +51,7 @@ describe('W3mModal', () => {
       vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve())
       vi.spyOn(ApiController, 'prefetchAnalyticsConfig').mockImplementation(() => Promise.resolve())
       OptionsController.setEnableEmbedded(true)
-      ModalController.close()
+      closeModal()
       element = await fixture(html`<w3m-modal .enableEmbedded=${true}></w3m-modal>`)
     })
 
@@ -77,7 +80,7 @@ describe('W3mModal', () => {
       await fixture(html`<w3m-modal .enableEmbedded=${true}></w3m-modal>`)
       ChainController.state.activeCaipAddress = undefined
 
-      expect(ModalController.state.open).toBe(false)
+      expect(modalState.open).toBe(false)
     })
 
     it('should prefetch when modal is open', async () => {
@@ -94,7 +97,7 @@ describe('W3mModal', () => {
       vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve())
       vi.spyOn(ApiController, 'prefetchAnalyticsConfig').mockImplementation(() => Promise.resolve())
       OptionsController.setEnableEmbedded(false)
-      ModalController.close()
+      closeModal()
       element = await fixture(html`<w3m-modal></w3m-modal>`)
     })
 
@@ -107,7 +110,7 @@ describe('W3mModal', () => {
     })
 
     it('should prefetch when modal is open', async () => {
-      await ModalController.open()
+      await openModal()
 
       element.requestUpdate()
       await elementUpdated(element)
@@ -116,7 +119,7 @@ describe('W3mModal', () => {
     })
 
     it('should be visible when opened', async () => {
-      await ModalController.open()
+      await openModal()
 
       element.requestUpdate()
       await elementUpdated(element)
@@ -126,7 +129,7 @@ describe('W3mModal', () => {
     })
 
     it('should handle overlay click', async () => {
-      ModalController.open()
+      openModal()
       element.requestUpdate()
       await elementUpdated(element)
 
@@ -135,15 +138,15 @@ describe('W3mModal', () => {
       element.requestUpdate()
       await elementUpdated(element)
 
-      expect(ModalController.state.open).toBe(false)
+      expect(modalState.open).toBe(false)
     })
 
     it('should add shake class when shaking', async () => {
-      ModalController.open()
+      openModal()
       element.requestUpdate()
       await elementUpdated(element)
 
-      ModalController.shake()
+      shakeModal()
       element.requestUpdate()
       await elementUpdated(element)
 
@@ -155,9 +158,9 @@ describe('W3mModal', () => {
       vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
         view: 'UnsupportedChain'
       } as RouterControllerState)
-      const shakeSpy = vi.spyOn(ModalController, 'shake')
+      const shakeSpy = vi.mocked(shakeModal)
 
-      ModalController.open()
+      openModal()
       element.requestUpdate()
       await elementUpdated(element)
 
@@ -165,7 +168,7 @@ describe('W3mModal', () => {
       overlay?.click()
 
       expect(shakeSpy).toHaveBeenCalled()
-      expect(ModalController.state.open).toBe(true)
+      expect(modalState.open).toBe(true)
     })
   })
 
@@ -255,10 +258,7 @@ describe('W3mModal', () => {
     it('should prevent the user from closing the modal when required is set to true', async () => {
       vi.useFakeTimers()
 
-      vi.spyOn(ModalController, 'state', 'get').mockReturnValue({
-        ...ModalController.state,
-        open: true
-      })
+      vi.spyOn(modalState, 'open', 'get').mockReturnValue(true)
       vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
         view: 'ApproveTransaction'
       } as unknown as RouterControllerState)
@@ -269,8 +269,8 @@ describe('W3mModal', () => {
 
       const element: W3mModal = await fixture(html`<w3m-modal></w3m-modal>`)
 
-      const shakeSpy = vi.spyOn(ModalController, 'shake')
-      const closeSpy = vi.spyOn(ModalController, 'close')
+      const shakeSpy = vi.mocked(shakeModal)
+      const closeSpy = vi.mocked(closeModal)
 
       const overlay = HelpersUtil.getByTestId(element, 'w3m-modal-overlay')
 
@@ -285,10 +285,7 @@ describe('W3mModal', () => {
     it('should allow the user to close the modal when required is set to false', async () => {
       vi.useFakeTimers()
 
-      vi.spyOn(ModalController, 'state', 'get').mockReturnValue({
-        ...ModalController.state,
-        open: true
-      })
+      vi.spyOn(modalState, 'open', 'get').mockReturnValue(true)
       vi.spyOn(RouterController, 'state', 'get').mockReturnValue({
         view: 'ApproveTransaction'
       } as unknown as RouterControllerState)
@@ -299,8 +296,8 @@ describe('W3mModal', () => {
 
       const element: W3mModal = await fixture(html`<w3m-modal></w3m-modal>`)
 
-      const shakeSpy = vi.spyOn(ModalController, 'shake')
-      const closeSpy = vi.spyOn(ModalController, 'close')
+      const shakeSpy = vi.mocked(shakeModal)
+      const closeSpy = vi.mocked(closeModal)
 
       const overlay = HelpersUtil.getByTestId(element, 'w3m-modal-overlay')
 

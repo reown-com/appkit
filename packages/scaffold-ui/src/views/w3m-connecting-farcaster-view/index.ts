@@ -8,11 +8,11 @@ import {
   ConnectorController,
   CoreHelperUtil,
   EventsController,
-  ModalController,
   RouterController,
   SnackController,
   StorageUtil,
-  ThemeController
+  ThemeController,
+  closeModal
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
@@ -201,7 +201,7 @@ export class W3mConnectingFarcasterView extends LitElement {
           })
         }
         this.loading = false
-        ModalController.close()
+        closeModal()
       } catch (error) {
         if (this.socialProvider) {
           EventsController.sendEvent({

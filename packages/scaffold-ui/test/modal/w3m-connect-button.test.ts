@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { ModalController } from '@reown/appkit-core'
+import { closeModal, modalState, openModal, setModalLoading } from '@reown/appkit-core'
 import type { WuiConnectButton } from '@reown/appkit-ui'
 
 import { W3mConnectButton } from '../../src/modal/w3m-connect-button'
@@ -12,8 +12,8 @@ import { HelpersUtil } from '../utils/HelpersUtil'
 describe('W3mConnectButton', () => {
   let element: W3mConnectButton
   beforeEach(async () => {
-    ModalController.close()
-    ModalController.setLoading(false)
+    closeModal()
+    setModalLoading(false)
     element = await fixture(html`<w3m-connect-button></w3m-connect-button>`)
   })
 
@@ -42,7 +42,7 @@ describe('W3mConnectButton', () => {
       expect(button?.textContent?.trim()).toBe('Custom Connect')
       expect(button?.getAttribute('size')).toBe('sm')
 
-      ModalController.setLoading(true)
+      setModalLoading(true)
 
       element.requestUpdate()
       await elementUpdated(element)
@@ -54,7 +54,7 @@ describe('W3mConnectButton', () => {
 
   describe('State Changes', () => {
     it('updates button text when loading', async () => {
-      ModalController.setLoading(true)
+      setModalLoading(true)
 
       element.requestUpdate()
       await elementUpdated(element)
@@ -65,7 +65,7 @@ describe('W3mConnectButton', () => {
     })
 
     it('updates button text when modal is open', async () => {
-      await ModalController.open()
+      await openModal()
       element.requestUpdate()
       await elementUpdated(element)
 
@@ -83,30 +83,30 @@ describe('W3mConnectButton', () => {
       element.requestUpdate()
       await elementUpdated(element)
 
-      expect(ModalController.state.open).toBe(true)
+      expect(modalState.open).toBe(true)
     })
 
     it('does not toggle modal when loading', async () => {
-      ModalController.setLoading(true)
+      setModalLoading(true)
       element.requestUpdate()
       await elementUpdated(element)
 
       const button = HelpersUtil.getByTestId(element, 'connect-button')
       button?.click()
 
-      expect(ModalController.state.open).toBe(false)
-      expect(ModalController.state.loading).toBe(true)
+      expect(modalState.open).toBe(false)
+      expect(modalState.loading).toBe(true)
     })
 
     it('closes modal when open', async () => {
-      ModalController.open()
+      openModal()
       element.requestUpdate()
       await elementUpdated(element)
 
       const button = HelpersUtil.getByTestId(element, 'connect-button')
       button?.click()
 
-      expect(ModalController.state.open).toBe(false)
+      expect(modalState.open).toBe(false)
     })
   })
 

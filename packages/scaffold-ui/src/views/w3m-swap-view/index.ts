@@ -7,11 +7,11 @@ import {
   ChainController,
   CoreHelperUtil,
   EventsController,
-  ModalController,
   RouterController,
   SwapController,
   type SwapInputTarget,
-  type SwapToken
+  type SwapToken,
+  subscribeModalKey
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
@@ -69,7 +69,7 @@ export class W3mSwapView extends LitElement {
     })
     this.unsubscribe.push(
       ...[
-        ModalController.subscribeKey('open', isOpen => {
+        subscribeModalKey('open', isOpen => {
           if (!isOpen) {
             SwapController.resetState()
           }

@@ -22,7 +22,7 @@ import { AccountController, type AccountControllerState } from './AccountControl
 import { ConnectionController, type ConnectionControllerClient } from './ConnectionController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
-import { ModalController } from './ModalController.js'
+import { openModal } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
 import { PublicStateController } from './PublicStateController.js'
 import { RouterController } from './RouterController.js'
@@ -547,7 +547,7 @@ export const ChainController = {
   },
 
   showUnsupportedChainUI() {
-    ModalController.open({ view: 'UnsupportedChain' })
+    openModal({ view: 'UnsupportedChain' })
   },
 
   checkIfNamesSupported(): boolean {

@@ -12,11 +12,11 @@ import {
   ConstantsUtil,
   CoreHelperUtil,
   EventsController,
-  ModalController,
   RouterController,
   SendController,
   SnackController,
-  StorageUtil
+  StorageUtil,
+  closeModal
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
@@ -58,7 +58,7 @@ export class W3mAccountSettingsView extends LitElement {
             this.profileName = val.profileName
             this.preferredAccountType = val.preferredAccountType
           } else {
-            ModalController.close()
+            closeModal()
           }
         }),
         AccountController.subscribeKey(
@@ -306,7 +306,7 @@ export class W3mAccountSettingsView extends LitElement {
       this.disconnecting = true
       await ConnectionController.disconnect()
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_SUCCESS' })
-      ModalController.close()
+      closeModal()
     } catch {
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
       SnackController.showError('Failed to disconnect')

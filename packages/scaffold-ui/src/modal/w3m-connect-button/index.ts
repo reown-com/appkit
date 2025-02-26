@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ModalController } from '@reown/appkit-core'
+import { closeModal, modalState, openModal, subscribeModal } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import type { WuiConnectButton } from '@reown/appkit-ui'
 
@@ -17,15 +17,15 @@ class W3mConnectButtonBase extends LitElement {
 
   @property() public loadingLabel? = 'Connecting...'
 
-  @state() private open = ModalController.state.open
+  @state() private open = modalState.open
 
-  @state() private loading = ModalController.state.loading
+  @state() private loading = modalState.loading
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
     this.unsubscribe.push(
-      ModalController.subscribe(val => {
+      subscribeModal(val => {
         this.open = val.open
         this.loading = val.loading
       })
@@ -55,9 +55,9 @@ class W3mConnectButtonBase extends LitElement {
   // -- Private ------------------------------------------- //
   private onClick() {
     if (this.open) {
-      ModalController.close()
+      closeModal()
     } else if (!this.loading) {
-      ModalController.open()
+      openModal()
     }
   }
 }

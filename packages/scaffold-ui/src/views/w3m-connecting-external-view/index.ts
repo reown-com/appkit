@@ -4,7 +4,7 @@ import {
   ChainController,
   ConnectionController,
   EventsController,
-  ModalController
+  closeModal
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
@@ -35,7 +35,7 @@ export class W3mConnectingExternalView extends W3mConnectingWidget {
     this.externalViewUnsubscribe.push(
       ChainController.subscribeKey('activeCaipAddress', val => {
         if (val) {
-          ModalController.close()
+          closeModal()
         }
       })
     )

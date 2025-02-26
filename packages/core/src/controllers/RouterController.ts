@@ -7,7 +7,7 @@ import type { Connector, Metadata, WcWallet } from '../utils/TypeUtil.js'
 import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
-import { ModalController } from './ModalController.js'
+import { closeModal } from './ModalController.js'
 import { OptionsController } from './OptionsController.js'
 import type { SwapInputTarget } from './SwapController.js'
 
@@ -156,7 +156,7 @@ export const RouterController = {
           this.goBackToIndex(connectingSiweIndex - 1)
         } else {
           // ConnectingSiwe is the first view
-          ModalController.close()
+          closeModal()
           state.history = []
         }
       } else if (action.view) {
@@ -202,7 +202,7 @@ export const RouterController = {
         state.view = last
       }
     } else {
-      ModalController.close()
+      closeModal()
     }
 
     if (state.data?.wallet) {

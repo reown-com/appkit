@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ModalController } from '../../src/controllers/ModalController'
+import { closeModal } from '../../src/controllers/ModalController'
 import { RouterController } from '../../src/controllers/RouterController'
 import { RouterUtil } from '../../src/utils/RouterUtil'
 
@@ -16,9 +16,7 @@ vi.mock('../../src/controllers/RouterController', () => ({
 }))
 
 vi.mock('../../src/controllers/ModalController', () => ({
-  ModalController: {
-    close: vi.fn()
-  }
+  closeModal: vi.fn()
 }))
 
 describe('RouterUtil', () => {
@@ -35,14 +33,14 @@ describe('RouterUtil', () => {
       RouterController.state.history = ['Account', 'Connect']
       RouterUtil.goBackOrCloseModal()
       expect(RouterController.goBack).toHaveBeenCalled()
-      expect(ModalController.close).not.toHaveBeenCalled()
+      expect(closeModal).not.toHaveBeenCalled()
     })
 
-    it('should call ModalController.close when history length is 1 or less', () => {
+    it('should call closeModal when history length is 1 or less', () => {
       RouterController.state.history = ['Account']
       RouterUtil.goBackOrCloseModal()
       expect(RouterController.goBack).not.toHaveBeenCalled()
-      expect(ModalController.close).toHaveBeenCalled()
+      expect(closeModal).toHaveBeenCalled()
     })
   })
 
@@ -51,21 +49,21 @@ describe('RouterUtil', () => {
       RouterController.state.history = ['Account', 'Networks', 'Connect']
       RouterUtil.navigateAfterNetworkSwitch()
       expect(RouterController.goBackToIndex).toHaveBeenCalledWith(0)
-      expect(ModalController.close).not.toHaveBeenCalled()
+      expect(closeModal).not.toHaveBeenCalled()
     })
 
-    it('should call ModalController.close when Networks page is not in history', () => {
+    it('should call closeModal when Networks page is not in history', () => {
       RouterController.state.history = ['Account', 'Connect']
       RouterUtil.navigateAfterNetworkSwitch()
       expect(RouterController.goBackToIndex).not.toHaveBeenCalled()
-      expect(ModalController.close).toHaveBeenCalled()
+      expect(closeModal).toHaveBeenCalled()
     })
 
-    it('should call ModalController.close when Networks is the first page in history', () => {
+    it('should call closeModal when Networks is the first page in history', () => {
       RouterController.state.history = ['Networks', 'Account', 'Connect']
       RouterUtil.navigateAfterNetworkSwitch()
       expect(RouterController.goBackToIndex).not.toHaveBeenCalled()
-      expect(ModalController.close).toHaveBeenCalled()
+      expect(closeModal).toHaveBeenCalled()
     })
   })
 })

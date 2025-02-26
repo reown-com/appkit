@@ -11,11 +11,11 @@ import {
   ConnectorController,
   CoreHelperUtil,
   EventsController,
-  ModalController,
   OptionsController,
   RouterController,
   SnackController,
-  StorageUtil
+  StorageUtil,
+  closeModal
 } from '@reown/appkit-core'
 import type {
   AccountControllerState,
@@ -72,7 +72,7 @@ describe('W3mAccountDefaultWidget', () => {
     vi.spyOn(CoreHelperUtil, 'copyToClopboard').mockImplementation(vi.fn())
     vi.spyOn(CoreHelperUtil, 'openHref').mockImplementation(vi.fn())
     vi.spyOn(RouterController, 'push').mockImplementation(vi.fn())
-    vi.spyOn(ModalController, 'close').mockImplementation(vi.fn())
+    vi.mocked(closeModal).mockImplementation(vi.fn())
     vi.spyOn(EventsController, 'sendEvent').mockImplementation(vi.fn())
     vi.spyOn(SnackController, 'showSuccess').mockImplementation(vi.fn())
     vi.spyOn(SnackController, 'showError').mockImplementation(vi.fn())
@@ -256,7 +256,7 @@ describe('W3mAccountDefaultWidget', () => {
         type: 'track',
         event: 'DISCONNECT_SUCCESS'
       })
-      expect(ModalController.close).toHaveBeenCalled()
+      expect(closeModal).toHaveBeenCalled()
     })
 
     it('handles disconnect failure', async () => {

@@ -5,10 +5,10 @@ import {
   AccountController,
   ChainController,
   ConnectionController,
-  ModalController,
   OptionsController,
   RouterController,
-  SIWXUtil
+  SIWXUtil,
+  modalState
 } from '@reown/appkit-core'
 import { type AppKitSIWEClient, createSIWEConfig } from '@reown/appkit-siwe'
 import * as networks from '@reown/appkit/networks'
@@ -97,7 +97,7 @@ describe('SIWE mapped to SIWX', () => {
       await SIWXUtil.initializeIfEnabled()
 
       expect(RouterController.state.view).toBe('SIWXSignMessage')
-      expect(ModalController.state.open).toBe(true)
+      expect(modalState.open).toBe(true)
     })
 
     it('should requestSignMessage', async () => {

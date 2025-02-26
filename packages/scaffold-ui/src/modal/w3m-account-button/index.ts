@@ -8,8 +8,8 @@ import {
   AssetUtil,
   ChainController,
   CoreHelperUtil,
-  ModalController,
-  OptionsController
+  OptionsController,
+  openModal
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import type { WuiAccountButton } from '@reown/appkit-ui'
@@ -113,9 +113,9 @@ class W3mAccountButtonBase extends LitElement {
   // -- Private ------------------------------------------- //
   private onClick() {
     if (this.isSupported || OptionsController.state.allowUnsupportedChain) {
-      ModalController.open()
+      openModal()
     } else {
-      ModalController.open({ view: 'UnsupportedChain' })
+      openModal({ view: 'UnsupportedChain' })
     }
   }
 }

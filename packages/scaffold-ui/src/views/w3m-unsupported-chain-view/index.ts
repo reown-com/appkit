@@ -12,9 +12,9 @@ import {
   ConstantsUtil,
   CoreHelperUtil,
   EventsController,
-  ModalController,
   RouterController,
-  SnackController
+  SnackController,
+  closeModal
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
@@ -130,7 +130,7 @@ export class W3mUnsupportedChainView extends LitElement {
         type: 'track',
         event: 'DISCONNECT_SUCCESS'
       })
-      ModalController.close()
+      closeModal()
     } catch {
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })
       SnackController.showError('Failed to disconnect')

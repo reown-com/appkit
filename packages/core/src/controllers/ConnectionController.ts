@@ -19,7 +19,7 @@ import type {
 import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
-import { ModalController } from './ModalController.js'
+import { setModalLoading } from './ModalController.js'
 import { TransactionsController } from './TransactionsController.js'
 
 // -- Types --------------------------------------------- //
@@ -153,14 +153,14 @@ export const ConnectionController = {
   },
 
   async setPreferredAccountType(accountType: W3mFrameTypes.AccountType) {
-    ModalController.setLoading(true)
+    setModalLoading(true)
     const authConnector = ConnectorController.getAuthConnector()
     if (!authConnector) {
       return
     }
     await authConnector?.provider.setPreferredAccount(accountType)
     await this.reconnectExternal(authConnector)
-    ModalController.setLoading(false)
+    setModalLoading(false)
     EventsController.sendEvent({
       type: 'track',
       event: 'SET_PREFERRED_ACCOUNT_TYPE',
@@ -257,10 +257,10 @@ export const ConnectionController = {
 
   async disconnect() {
     try {
-      ModalController.setLoading(true)
+      setModalLoading(true)
       await SIWXUtil.clearSessions()
       await ChainController.disconnect()
-      ModalController.setLoading(false)
+      setModalLoading(false)
     } catch (error) {
       throw new Error('Failed to disconnect')
     }

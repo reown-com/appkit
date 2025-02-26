@@ -7,9 +7,11 @@ import { ParseUtil } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectorController,
-  ModalController,
   RouterController,
-  type WcWallet
+  type WcWallet,
+  closeModal,
+  modalState,
+  openModal
 } from '@reown/appkit-core'
 
 import { ApiController } from '../../controllers/ApiController.js'
@@ -112,11 +114,9 @@ describe('AppKitWalletButton', () => {
 
     ApiController.state.walletButtons = [MetaMask]
 
-    const ModalControllerOpenSpy = vi
-      .spyOn(ModalController, 'open')
-      .mockImplementation(async () => {
-        ModalController.state.open = true
-      })
+    const ModalControllerOpenSpy = vi.mocked(openModal).mockImplementation(async () => {
+      modalState.open = true
+    })
 
     const RouterControllerPushSpy = vi.spyOn(RouterController, 'push')
 
@@ -140,8 +140,8 @@ describe('AppKitWalletButton', () => {
 
     expect(RouterController.state?.data?.wallet).toEqual(MetaMask)
 
-    const ModalControllerCloseSpy = vi.spyOn(ModalController, 'close').mockImplementation(() => {
-      ModalController.state.open = false
+    const ModalControllerCloseSpy = vi.mocked(closeModal).mockImplementation(() => {
+      modalState.open = false
     })
 
     const parseCaipAddressSpy = vi.spyOn(ParseUtil, 'parseCaipAddress')

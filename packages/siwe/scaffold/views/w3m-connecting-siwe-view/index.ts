@@ -6,10 +6,10 @@ import {
   ChainController,
   ConnectionController,
   EventsController,
-  ModalController,
   OptionsController,
   RouterController,
-  SnackController
+  SnackController,
+  closeModal
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
@@ -135,7 +135,7 @@ export class W3mConnectingSiweView extends LitElement {
     const caipAddress = ChainController.state.activeCaipAddress
     if (caipAddress) {
       await ConnectionController.disconnect()
-      ModalController.close()
+      closeModal()
     } else {
       RouterController.push('Connect')
     }

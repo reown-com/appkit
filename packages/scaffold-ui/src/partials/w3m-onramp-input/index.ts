@@ -4,10 +4,10 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
   AssetController,
-  ModalController,
   OnRampController,
   type PaymentCurrency,
-  type PurchaseCurrency
+  type PurchaseCurrency,
+  openModal
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
@@ -85,7 +85,7 @@ export class W3mInputCurrency extends LitElement {
             justifyContent="space-between"
             alignItems="center"
             gap="xxs"
-            @click=${() => ModalController.open({ view: `OnRamp${this.type}Select` })}
+            @click=${() => openModal({ view: `OnRamp${this.type}Select` })}
           >
             <wui-image src=${ifDefined(image)}></wui-image>
             <wui-text color="fg-100">${this.selectedCurrency.symbol}</wui-text>
