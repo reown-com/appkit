@@ -12,12 +12,9 @@ import {
   RouterController,
   SIWXUtil,
   SnackController,
-  ThemeController,
-  closeModal,
-  modalState,
-  shakeModal,
-  subscribeModalKey
+  ThemeController
 } from '@reown/appkit-core'
+import { closeModal, modalState, shakeModal, subscribeModalKey } from '@reown/appkit-core/modal'
 import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
 
 import styles from './styles.js'

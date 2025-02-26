@@ -8,11 +8,9 @@ import {
   ChainController,
   ConnectorController,
   RouterController,
-  type WcWallet,
-  closeModal,
-  modalState,
-  openModal
+  type WcWallet
 } from '@reown/appkit-core'
+import { closeModal, modalState, openModal } from '@reown/appkit-core/modal'
 
 import { ApiController } from '../../controllers/ApiController.js'
 import '../../scaffold-ui/appkit-wallet-button/index.js'

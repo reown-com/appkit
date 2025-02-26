@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { closeModal, modalState, openModal, setModalLoading } from '@reown/appkit-core'
+import { closeModal, modalState, openModal, setModalLoading } from '@reown/appkit-core/modal'
 import type { WuiConnectButton } from '@reown/appkit-ui'
 
 import { W3mConnectButton } from '../../src/modal/w3m-connect-button'

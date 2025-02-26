@@ -12,9 +12,9 @@ import {
   CoreHelperUtil,
   EventsController,
   OptionsController,
-  RouterController,
-  closeModal
+  RouterController
 } from '@reown/appkit-core'
+import { closeModal } from '@reown/appkit-core/modal'
 import { customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 

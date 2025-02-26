@@ -14,9 +14,9 @@ import {
   ConnectionController,
   ConstantsUtil,
   SIWXUtil,
-  StorageUtil,
-  setModalLoading
+  StorageUtil
 } from '../../exports/index.js'
+import { setModalLoading } from '../../exports/modal.js'
 
 // -- Setup --------------------------------------------------------------------
 const chain = CommonConstantsUtil.CHAIN.EVM

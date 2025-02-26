@@ -6,9 +6,9 @@ import {
   AssetController,
   OnRampController,
   type PaymentCurrency,
-  type PurchaseCurrency,
-  openModal
+  type PurchaseCurrency
 } from '@reown/appkit-core'
+import { openModal } from '@reown/appkit-core/modal'
 import { customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'

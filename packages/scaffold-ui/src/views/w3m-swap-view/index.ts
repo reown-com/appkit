@@ -10,9 +10,9 @@ import {
   RouterController,
   SwapController,
   type SwapInputTarget,
-  type SwapToken,
-  subscribeModalKey
+  type SwapToken
 } from '@reown/appkit-core'
+import { subscribeModalKey } from '@reown/appkit-core/modal'
 import { customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 

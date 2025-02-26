@@ -6,9 +6,9 @@ import {
   AccountController,
   ChainController,
   OptionsController,
-  RouterController,
-  openModal
+  RouterController
 } from '@reown/appkit-core'
+import { openModal } from '@reown/appkit-core/modal'
 import type { WuiAccountButton } from '@reown/appkit-ui'
 
 import { W3mAccountButton } from '../../src/modal/w3m-account-button'

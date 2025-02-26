@@ -9,13 +9,10 @@ import {
   ChainController,
   OptionsController,
   RouterController,
-  SIWXUtil,
-  closeModal,
-  modalState,
-  openModal,
-  shakeModal
+  SIWXUtil
 } from '@reown/appkit-core'
 import type { RouterControllerState, SIWXConfig } from '@reown/appkit-core'
+import { closeModal, modalState, openModal, shakeModal } from '@reown/appkit-core/modal'
 
 import { W3mModal } from '../../src/modal/w3m-modal'
 import { HelpersUtil } from '../utils/HelpersUtil'

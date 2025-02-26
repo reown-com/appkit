@@ -1,13 +1,8 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
-import {
-  ChainController,
-  OnRampController,
-  modalState,
-  openModal,
-  subscribeModalKey
-} from '@reown/appkit-core'
+import { ChainController, OnRampController } from '@reown/appkit-core'
+import { modalState, openModal, subscribeModalKey } from '@reown/appkit-core/modal'
 import { customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'

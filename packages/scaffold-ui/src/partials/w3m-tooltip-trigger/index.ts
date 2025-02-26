@@ -1,7 +1,8 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
-import { RouterController, TooltipController, subscribeModalKey } from '@reown/appkit-core'
+import { RouterController, TooltipController } from '@reown/appkit-core'
+import { subscribeModalKey } from '@reown/appkit-core/modal'
 import { customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'

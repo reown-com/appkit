@@ -40,11 +40,7 @@ import {
   type UseAppKitAccountReturn,
   type UseAppKitNetworkReturn,
   type WalletFeature,
-  type WriteContractArgs,
-  closeModal,
-  modalState,
-  openModal,
-  setModalLoading
+  type WriteContractArgs
 } from '@reown/appkit-core'
 import {
   AccountController,
@@ -65,6 +61,7 @@ import {
   StorageUtil,
   ThemeController
 } from '@reown/appkit-core'
+import { closeModal, modalState, openModal, setModalLoading } from '@reown/appkit-core/modal'
 import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
 import {

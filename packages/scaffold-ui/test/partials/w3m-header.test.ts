@@ -11,10 +11,9 @@ import {
   EventsController,
   OptionsController,
   RouterController,
-  SIWXUtil,
-  closeModal,
-  shakeModal
+  SIWXUtil
 } from '@reown/appkit-core'
+import { closeModal, shakeModal } from '@reown/appkit-core/modal'
 
 import { W3mHeader } from '../../src/partials/w3m-header'
 import { HelpersUtil } from '../utils/HelpersUtil'

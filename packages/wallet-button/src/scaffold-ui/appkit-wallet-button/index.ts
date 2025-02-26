@@ -2,14 +2,8 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import {
-  AssetUtil,
-  ChainController,
-  type Connector,
-  ConnectorController,
-  modalState,
-  subscribeModalKey
-} from '@reown/appkit-core'
+import { AssetUtil, ChainController, type Connector, ConnectorController } from '@reown/appkit-core'
+import { modalState, subscribeModalKey } from '@reown/appkit-core/modal'
 import { customElement } from '@reown/appkit-ui'
 
 import { ApiController } from '../../controllers/ApiController.js'

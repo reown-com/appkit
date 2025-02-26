@@ -2,13 +2,9 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import {
-  AssetController,
-  OnRampController,
-  OptionsController,
-  closeModal
-} from '@reown/appkit-core'
+import { AssetController, OnRampController, OptionsController } from '@reown/appkit-core'
 import type { PurchaseCurrency } from '@reown/appkit-core'
+import { closeModal } from '@reown/appkit-core/modal'
 import { customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'

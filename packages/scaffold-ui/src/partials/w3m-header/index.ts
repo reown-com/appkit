@@ -12,10 +12,9 @@ import {
   EventsController,
   OptionsController,
   RouterController,
-  SIWXUtil,
-  closeModal,
-  shakeModal
+  SIWXUtil
 } from '@reown/appkit-core'
+import { closeModal, shakeModal } from '@reown/appkit-core/modal'
 import { customElement } from '@reown/appkit-ui'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'

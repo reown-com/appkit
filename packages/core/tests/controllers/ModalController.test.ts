@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ApiController, closeModal, modalState, openModal } from '../../exports/index.js'
+import { ApiController } from '../../exports/index.js'
+import { closeModal, modalState, openModal } from '../../exports/modal.js'
 
 // -- Tests --------------------------------------------------------------------
 describe('ModalController', () => {

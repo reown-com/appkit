@@ -2,7 +2,8 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ChainController, modalState, subscribeModalKey } from '@reown/appkit-core'
+import { ChainController } from '@reown/appkit-core'
+import { modalState, subscribeModalKey } from '@reown/appkit-core/modal'
 import { customElement } from '@reown/appkit-ui'
 
 import type { W3mAccountButton } from '../w3m-account-button/index.js'

@@ -14,14 +14,14 @@ import {
   OptionsController,
   RouterController,
   SnackController,
-  StorageUtil,
-  closeModal
+  StorageUtil
 } from '@reown/appkit-core'
 import type {
   AccountControllerState,
   AuthConnector,
   ChainControllerState
 } from '@reown/appkit-core'
+import { closeModal } from '@reown/appkit-core/modal'
 
 import type { W3mAccountDefaultWidget } from '../../exports'
 import { HelpersUtil } from '../utils/HelpersUtil'

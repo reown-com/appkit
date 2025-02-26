@@ -10,9 +10,9 @@ import {
   BlockchainApiController,
   ChainController,
   OptionsController,
-  StorageUtil,
-  closeModal
+  StorageUtil
 } from '@reown/appkit-core'
+import { closeModal } from '@reown/appkit-core/modal'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'

@@ -13,10 +13,9 @@ import {
   RouterController,
   SnackController,
   StorageUtil,
-  ThemeController,
-  closeModal,
-  modalState
+  ThemeController
 } from '@reown/appkit-core'
+import { closeModal, modalState } from '@reown/appkit-core/modal'
 import { customElement } from '@reown/appkit-ui'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'

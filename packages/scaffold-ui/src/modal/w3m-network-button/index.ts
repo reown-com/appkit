@@ -7,11 +7,9 @@ import {
   AssetUtil,
   ChainController,
   EventsController,
-  OptionsController,
-  modalState,
-  openModal,
-  subscribeModalKey
+  OptionsController
 } from '@reown/appkit-core'
+import { modalState, openModal, subscribeModalKey } from '@reown/appkit-core/modal'
 import { customElement } from '@reown/appkit-ui'
 import type { WuiNetworkButton } from '@reown/appkit-ui'
 

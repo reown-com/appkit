@@ -1,12 +1,8 @@
 import { fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import {
-  ChainController,
-  type ChainControllerState,
-  modalState,
-  subscribeModalKey
-} from '@reown/appkit-core'
+import { ChainController, type ChainControllerState } from '@reown/appkit-core'
+import { modalState, subscribeModalKey } from '@reown/appkit-core/modal'
 
 import type { W3mAccountButton } from '../../exports'
 import { W3mButton } from '../../src/modal/w3m-button'

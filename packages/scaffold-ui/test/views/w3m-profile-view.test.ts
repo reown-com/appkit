@@ -12,9 +12,9 @@ import {
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
-  SnackController,
-  closeModal
+  SnackController
 } from '@reown/appkit-core'
+import { closeModal } from '@reown/appkit-core/modal'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import type { W3mProfileView } from '../../src/views/w3m-profile-view'

@@ -7,10 +7,9 @@ import {
   AssetUtil,
   ChainController,
   OptionsController,
-  type OptionsControllerState,
-  modalState,
-  openModal
+  type OptionsControllerState
 } from '@reown/appkit-core'
+import { modalState, openModal } from '@reown/appkit-core/modal'
 import type { WuiNetworkButton } from '@reown/appkit-ui'
 
 import type { OptionsControllerStateInternal } from '../../../core/dist/types/src/controllers/OptionsController'

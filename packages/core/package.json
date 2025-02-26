@@ -31,6 +31,11 @@
       "types": "./dist/types/exports/vue.d.ts",
       "import": "./dist/esm/exports/vue.js",
       "default": "./dist/esm/exports/vue.js"
+    },
+    "./modal": {
+      "types": "./dist/types/exports/modal.d.ts",
+      "import": "./dist/esm/exports/modal.js",
+      "default": "./dist/esm/exports/modal.js"
     }
   },
   "typesVersions": {

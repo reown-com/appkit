@@ -10,9 +10,9 @@ import {
   ConnectorController,
   CoreHelperUtil,
   RouterController,
-  SnackController,
-  closeModal
+  SnackController
 } from '@reown/appkit-core'
+import { closeModal } from '@reown/appkit-core/modal'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 

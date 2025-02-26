@@ -7,9 +7,9 @@ import {
   ConnectionController,
   OptionsController,
   RouterController,
-  SIWXUtil,
-  modalState
+  SIWXUtil
 } from '@reown/appkit-core'
+import { modalState } from '@reown/appkit-core/modal'
 import { type AppKitSIWEClient, createSIWEConfig } from '@reown/appkit-siwe'
 import * as networks from '@reown/appkit/networks'
 

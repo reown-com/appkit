@@ -15,9 +15,9 @@ import {
   RouterController,
   SendController,
   SnackController,
-  StorageUtil,
-  closeModal
+  StorageUtil
 } from '@reown/appkit-core'
+import { closeModal } from '@reown/appkit-core/modal'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 

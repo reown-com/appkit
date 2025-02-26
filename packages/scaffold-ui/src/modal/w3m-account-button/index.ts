@@ -8,9 +8,9 @@ import {
   AssetUtil,
   ChainController,
   CoreHelperUtil,
-  OptionsController,
-  openModal
+  OptionsController
 } from '@reown/appkit-core'
+import { openModal } from '@reown/appkit-core/modal'
 import { customElement } from '@reown/appkit-ui'
 import type { WuiAccountButton } from '@reown/appkit-ui'
 

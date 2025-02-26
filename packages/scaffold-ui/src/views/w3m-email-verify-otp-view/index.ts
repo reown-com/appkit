@@ -3,9 +3,9 @@ import {
   ConnectionController,
   CoreHelperUtil,
   EventsController,
-  OptionsController,
-  closeModal
+  OptionsController
 } from '@reown/appkit-core'
+import { closeModal } from '@reown/appkit-core/modal'
 import { customElement } from '@reown/appkit-ui'
 
 import { W3mEmailOtpWidget } from '../../utils/w3m-email-otp-widget/index.js'

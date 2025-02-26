@@ -11,9 +11,9 @@ import {
   OptionsController,
   RouterController,
   SnackController,
-  StorageUtil,
-  closeModal
+  StorageUtil
 } from '@reown/appkit-core'
+import { closeModal } from '@reown/appkit-core/modal'
 import { customElement } from '@reown/appkit-ui'
 
 @customElement('w3m-connecting-wc-view')

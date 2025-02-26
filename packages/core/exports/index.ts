@@ -1,18 +1,4 @@
 // -- Controllers -------------------------------------------------------------
-export {
-  modalState,
-  subscribeModal,
-  subscribeModalKey,
-  setModalLoading,
-  shakeModal,
-  openModal,
-  closeModal
-} from '../src/controllers/ModalController.js'
-export type {
-  ModalControllerArguments,
-  ModalControllerState
-} from '../src/controllers/ModalController.js'
-
 export { RouterController } from '../src/controllers/RouterController.js'
 export type { RouterControllerState } from '../src/controllers/RouterController.js'
 

@@ -10,10 +10,9 @@ import {
   ConnectionController,
   ConnectorController,
   OptionsController,
-  RouterController,
-  closeModal,
-  modalState
+  RouterController
 } from '@reown/appkit-core'
+import { closeModal, modalState } from '@reown/appkit-core/modal'
 
 import { W3mConnectingSocialView } from '../../src/views/w3m-connecting-social-view'
 
