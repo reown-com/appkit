@@ -8,7 +8,6 @@ import {
   ConnectionController,
   CoreHelperUtil,
   OnRampController,
-  OptionsController,
   RouterController,
   SnackController,
   ThemeController
@@ -150,15 +149,14 @@ export class W3mBuyInProgressView extends LitElement {
   private async watchCoinbaseTransactions() {
     try {
       const address = AccountController.state.address
-      const projectId = OptionsController.state.projectId
+
       if (!address) {
         throw new Error('No address found')
       }
 
       const coinbaseResponse = await BlockchainApiController.fetchTransactions({
         account: address,
-        onramp: 'coinbase',
-        projectId
+        onramp: 'coinbase'
       })
 
       const newTransactions = coinbaseResponse.data.filter(

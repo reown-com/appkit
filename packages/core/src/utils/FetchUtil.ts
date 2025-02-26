@@ -4,7 +4,7 @@ interface Options {
   clientId: string | null
 }
 
-interface RequestArguments {
+export interface RequestArguments {
   path: string
   headers?: HeadersInit
   params?: Record<string, string | undefined>

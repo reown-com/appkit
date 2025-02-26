@@ -570,7 +570,12 @@ export class AppKit {
     connectedWalletInfo,
     chain
   ) => {
-    AccountController.setConnectedWalletInfo(connectedWalletInfo, chain)
+    AccountController.setConnectedWalletInfo(
+      connectedWalletInfo
+        ? { type: ProviderUtil.getProviderId(chain), ...connectedWalletInfo }
+        : undefined,
+      chain
+    )
   }
 
   public setSmartAccountEnabledNetworks: (typeof ChainController)['setSmartAccountEnabledNetworks'] =
@@ -842,17 +847,15 @@ export class AppKit {
     }
   }
 
-  private async initializeBlockchainApiController(options: AppKitOptions) {
-    await BlockchainApiController.getSupportedNetworks({
-      projectId: options.projectId
-    })
+  private async initializeBlockchainApiController() {
+    await BlockchainApiController.getSupportedNetworks()
   }
 
   private initControllers(options: AppKitOptionsWithSdk) {
     this.initializeOptionsController(options)
     this.initializeChainController(options)
     this.initializeThemeController(options)
-    this.initializeBlockchainApiController(options)
+    this.initializeBlockchainApiController()
 
     if (options.excludeWalletIds) {
       ApiController.initializeExcludedWalletRdns({ ids: options.excludeWalletIds })
@@ -1765,6 +1768,15 @@ export class AppKit {
           chainNamespace
         )
       }
+    } else if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH) {
+      const provider = this.authProvider
+
+      if (provider) {
+        const social = StorageUtil.getConnectedSocialProvider() ?? 'email'
+        const identifier = provider.getEmail() ?? provider.getUsername()
+
+        this.setConnectedWalletInfo({ name: providerType, identifier, social }, chainNamespace)
+      }
     } else if (connectorId) {
       if (connectorId === ConstantsUtil.CONNECTOR_ID.COINBASE) {
         const connector = this.getConnectors().find(
@@ -1788,9 +1800,8 @@ export class AppKit {
   }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
     chainNamespace: ChainNamespace
   }) {
-    const activeCaipNetwork = this.caipNetworks?.find(
-      n => n.caipNetworkId === `${chainNamespace}:${chainId}`
-    )
+    const caipNetworkId: CaipNetworkId = `${chainNamespace}:${chainId}`
+    const activeCaipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
 
     if (chainNamespace !== ConstantsUtil.CHAIN.EVM || activeCaipNetwork?.testnet) {
       return
@@ -1798,7 +1809,8 @@ export class AppKit {
 
     try {
       const { name, avatar } = await this.fetchIdentity({
-        address
+        address,
+        caipNetworkId
       })
 
       this.setProfileName(name, chainNamespace)

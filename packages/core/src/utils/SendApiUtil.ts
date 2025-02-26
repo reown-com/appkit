@@ -55,15 +55,14 @@ export const SendApiUtil = {
         chainFilter: [chainIdHex]
       })
 
-      const assets = Array.isArray(walletGetAssetsResponse?.[chainIdHex])
-        ? walletGetAssetsResponse[chainIdHex]
-        : []
+      if (!ERC7811Utils.isWalletGetAssetsResponse(walletGetAssetsResponse)) {
+        return null
+      }
+
+      const assets = walletGetAssetsResponse[chainIdHex] || []
 
       return assets.map(asset => ERC7811Utils.createBalance(asset, caipNetwork.caipNetworkId))
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.warn('Asset discovery failed:', error)
-
       return null
     }
   },

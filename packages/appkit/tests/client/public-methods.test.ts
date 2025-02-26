@@ -539,7 +539,10 @@ describe('Base Public methods', () => {
   })
 
   it('should fetch identity', async () => {
-    const mockRequest = { caipChainId: mainnet.caipNetworkId, address: '0x123' }
+    const mockRequest = {
+      caipNetworkId: mainnet.caipNetworkId,
+      address: '0x123'
+    }
     const fetchIdentity = vi.spyOn(BlockchainApiController, 'fetchIdentity')
     fetchIdentity.mockResolvedValue({
       name: 'John Doe',
@@ -582,6 +585,20 @@ describe('Base Public methods', () => {
     appKit.setConnectedWalletInfo(walletInfo, mainnet.chainNamespace)
 
     expect(setConnectedWalletInfo).toHaveBeenCalledWith(walletInfo, mainnet.chainNamespace)
+  })
+
+  it('should set connected wallet info with type', () => {
+    const walletInfo = { name: 'MetaMask', icon: 'icon-url' }
+    const setConnectedWalletInfo = vi.spyOn(AccountController, 'setConnectedWalletInfo')
+    vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValueOnce('WALLET_CONNECT')
+
+    const appKit = new AppKit(mockOptions)
+    appKit.setConnectedWalletInfo(walletInfo, mainnet.chainNamespace)
+
+    expect(setConnectedWalletInfo).toHaveBeenCalledWith(
+      { ...walletInfo, type: 'WALLET_CONNECT' },
+      mainnet.chainNamespace
+    )
   })
 
   it('should set smart account enabled networks', () => {

@@ -1,6 +1,7 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { AccountController, BlockchainApiController, ChainController } from '@reown/appkit-core'
+import { ConstantsUtil } from '@reown/appkit-utils'
 
 import { CloudAuthSIWX } from '../../src/configs/CloudAuthSIWX'
 import { mockSession } from '../mocks/mockSession'
@@ -171,15 +172,51 @@ Issued At: 2024-12-05T16:02:32.905Z`)
       )
     })
 
-    it('should use correct wallet info', async () => {
+    it.each([
+      {
+        walletInfo: {
+          name: 'mock_wallet_name',
+          icon: 'mock_wallet_icon'
+        },
+        expectedBody:
+          '{"message":"Hello AppKit!","signature":"0x3c70e0a2d87f677dc0c3faf98fdf6313e99a3d9191bb79f7ecfce0c2cf46b7b33fd4c4bb83bca82fe872e35963382027d0d18018342d7dc36a675918cb73e9061c","walletInfo":{"type":"unknown","name":"mock_wallet_name","icon":"mock_wallet_icon"}}'
+      },
+      {
+        walletInfo: {
+          type: ConstantsUtil.CONNECTOR_TYPE_ANNOUNCED,
+          name: 'mock_wallet_name',
+          icon: 'mock_wallet_icon'
+        },
+        expectedBody:
+          '{"message":"Hello AppKit!","signature":"0x3c70e0a2d87f677dc0c3faf98fdf6313e99a3d9191bb79f7ecfce0c2cf46b7b33fd4c4bb83bca82fe872e35963382027d0d18018342d7dc36a675918cb73e9061c","walletInfo":{"type":"extension","name":"mock_wallet_name","icon":"mock_wallet_icon"}}'
+      },
+      {
+        walletInfo: {
+          type: ConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT,
+          name: 'mock_wallet_name',
+          icon: 'mock_wallet_icon'
+        },
+        expectedBody:
+          '{"message":"Hello AppKit!","signature":"0x3c70e0a2d87f677dc0c3faf98fdf6313e99a3d9191bb79f7ecfce0c2cf46b7b33fd4c4bb83bca82fe872e35963382027d0d18018342d7dc36a675918cb73e9061c","walletInfo":{"type":"walletconnect","name":"mock_wallet_name","icon":"mock_wallet_icon"}}'
+      },
+      {
+        walletInfo: {
+          type: ConstantsUtil.CONNECTOR_TYPE_AUTH,
+          name: ConstantsUtil.CONNECTOR_TYPE_AUTH,
+          social: 'google',
+          identifier: 'mock_identifier'
+        },
+        expectedBody:
+          '{"message":"Hello AppKit!","signature":"0x3c70e0a2d87f677dc0c3faf98fdf6313e99a3d9191bb79f7ecfce0c2cf46b7b33fd4c4bb83bca82fe872e35963382027d0d18018342d7dc36a675918cb73e9061c","walletInfo":{"type":"social","social":"google","identifier":"mock_identifier"}}'
+      }
+    ])('should use correct wallet info', async ({ walletInfo, expectedBody }) => {
       const fetchSpy = vi.spyOn(global, 'fetch')
 
       vi.spyOn(localStorage, 'getItem').mockReturnValueOnce('mock_nonce_token')
       AccountController.state.connectedWalletInfo = undefined
-      vi.spyOn(AccountController.state, 'connectedWalletInfo', 'get').mockReturnValueOnce({
-        name: 'mock_wallet_name',
-        icon: 'mock_wallet_icon'
-      })
+      vi.spyOn(AccountController.state, 'connectedWalletInfo', 'get').mockReturnValueOnce(
+        walletInfo
+      )
 
       fetchSpy.mockResolvedValueOnce(mocks.mockFetchResponse({ token: 'mock_authenticate_token' }))
 
@@ -188,7 +225,7 @@ Issued At: 2024-12-05T16:02:32.905Z`)
       expect(fetchSpy).toHaveBeenCalledWith(
         'https://api.web3modal.org/auth/v1/authenticate?projectId=&st=appkit&sv=html-wagmi-undefined',
         {
-          body: '{"message":"Hello AppKit!","signature":"0x3c70e0a2d87f677dc0c3faf98fdf6313e99a3d9191bb79f7ecfce0c2cf46b7b33fd4c4bb83bca82fe872e35963382027d0d18018342d7dc36a675918cb73e9061c","walletInfo":{"name":"mock_wallet_name","icon":"mock_wallet_icon"}}',
+          body: expectedBody,
           headers: {
             'x-nonce-jwt': 'Bearer mock_nonce_token'
           },

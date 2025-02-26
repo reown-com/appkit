@@ -110,5 +110,46 @@ export const ERC7811Utils = {
     const parsed = parseInt(chainPart, 10)
 
     return isNaN(parsed) ? '0x0' : `0x${parsed.toString(16)}`
+  },
+
+  /**
+   * Checks if a response is a valid WalletGetAssetsResponse
+   * @param response - The response to check
+   * @returns True if the response is a valid WalletGetAssetsResponse, false otherwise
+   */
+  isWalletGetAssetsResponse(
+    response: WalletGetAssetsResponse
+  ): response is WalletGetAssetsResponse {
+    // Check if response is an object and has the expected structure
+    if (typeof response !== 'object' || response === null) {
+      return false
+    }
+
+    // Check if all values are arrays and conform to the expected asset structure
+    return Object.values(response).every(
+      value => Array.isArray(value) && value.every(asset => this.isValidAsset(asset))
+    )
+  },
+
+  /**
+   * Checks if an asset object is valid.
+   * @param asset - The asset object to check.
+   * @returns True if the asset is valid, false otherwise.
+   */
+  isValidAsset(asset: Asset): asset is Asset {
+    return (
+      typeof asset === 'object' &&
+      asset !== null &&
+      typeof asset.address === 'string' &&
+      typeof asset.balance === 'string' &&
+      (asset.type === 'ERC20' || asset.type === 'NATIVE') &&
+      typeof asset.metadata === 'object' &&
+      asset.metadata !== null &&
+      typeof asset.metadata['name'] === 'string' &&
+      typeof asset.metadata['symbol'] === 'string' &&
+      typeof asset.metadata['decimals'] === 'number' &&
+      typeof asset.metadata['price'] === 'number' &&
+      typeof asset.metadata['iconUrl'] === 'string'
+    )
   }
 }
