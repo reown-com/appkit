@@ -595,6 +595,7 @@ export class Ethers5Adapter extends AdapterBlueprint {
     } catch (switchError: any) {
       if (
         switchError.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+        switchError.code === WcConstantsUtil.ERROR_INVALID_CHAIN_ID ||
         switchError.code === WcConstantsUtil.ERROR_CODE_DEFAULT ||
         switchError?.data?.originalError?.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
       ) {
@@ -673,5 +674,20 @@ export class Ethers5Adapter extends AdapterBlueprint {
     }
 
     return await provider.request({ method: 'wallet_revokePermissions', params: [params] })
+  }
+
+  public async walletGetAssets(
+    params: AdapterBlueprint.WalletGetAssetsParams
+  ): Promise<AdapterBlueprint.WalletGetAssetsResponse> {
+    const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
+
+    if (!provider) {
+      throw new Error('Provider is undefined')
+    }
+
+    return await provider.request({
+      method: 'wallet_getAssets',
+      params: [params]
+    })
   }
 }

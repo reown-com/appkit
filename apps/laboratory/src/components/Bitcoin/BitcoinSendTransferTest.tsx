@@ -7,7 +7,7 @@ import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 
 export function BitcoinSendTransferTest() {
   const { walletProvider } = useAppKitProvider<BitcoinConnector>('bip122')
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'bip122' })
 
   const toast = useToast()
   const [loading, setLoading] = useState(false)

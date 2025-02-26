@@ -5,7 +5,7 @@ import { formatDistanceToNow } from 'date-fns'
 
 import type { SmartSessionGrantPermissionsResponse } from '@reown/appkit-experimental/smart-session'
 
-import { getChain } from '../utils/NetworksUtil'
+import { getChain } from '@/src/utils/NetworksUtil'
 
 export function SmartSessionGrantedPermissionsInfo({
   grantedPermissions

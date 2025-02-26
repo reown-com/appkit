@@ -417,6 +417,22 @@ export class AppKit extends AppKitCore {
     this.createAuthProviderForAdapter(namespace)
   }
 
+  protected override syncConnectedWalletInfo(chainNamespace: ChainNamespace): void {
+    super.syncConnectedWalletInfo(chainNamespace)
+
+    const providerType = ProviderUtil.getProviderId(chainNamespace)
+    if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH) {
+      const provider = this.authProvider
+
+      if (provider) {
+        const social = StorageUtil.getConnectedSocialProvider() ?? 'email'
+        const identifier = provider.getEmail() ?? provider.getUsername()
+
+        this.setConnectedWalletInfo({ name: providerType, identifier, social }, chainNamespace)
+      }
+    }
+  }
+
   protected override async injectModalUi() {
     if (!isInitialized && CoreHelperUtil.isClient()) {
       const features = { ...CoreConstantsUtil.DEFAULT_FEATURES, ...this.options.features }
