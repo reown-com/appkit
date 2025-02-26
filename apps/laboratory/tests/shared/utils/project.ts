@@ -71,7 +71,8 @@ const SINGLE_ADAPTER_SOLANA_TESTS = [
   'no-email.spec.ts',
   'no-socials.spec.ts',
   'debug-mode.spec.ts',
-  'wallet.spec.ts'
+  'wallet.spec.ts',
+  'wallet-button.spec'
 ]
 
 const SINGLE_ADAPTER_SOLANA_MOBILE_TESTS = ['mobile-wallet-features.spec.ts']

@@ -161,6 +161,7 @@ export const ConstantsUtil = {
     'phantom'
   ] as Wallet[],
   SolanaWalletButtons: [
+    'walletConnect',
     'metamask',
     'trust',
     'coinbase',

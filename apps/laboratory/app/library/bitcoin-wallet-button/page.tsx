@@ -33,7 +33,7 @@ export default function Wagmi() {
   return (
     <>
       <AppKitButtons />
-      <AppKitWalletButtons wallets={ConstantsUtil.BitcoinWalletButtons} />
+      <AppKitWalletButtons wallets={ConstantsUtil.BitcoinWalletButtons} showActions={false} />
     </>
   )
 }

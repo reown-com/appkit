@@ -43,7 +43,7 @@ smartAccountTest.beforeAll(async ({ browser, library }) => {
   await page.closeModal()
 
   const tempEmail = await email.getEmailAddressToUse()
-  await page.emailFlow(tempEmail, context, mailsacApiKey)
+  await page.emailFlow({ emailAddress: tempEmail, context, mailsacApiKey })
 
   await validator.expectConnected()
 })
