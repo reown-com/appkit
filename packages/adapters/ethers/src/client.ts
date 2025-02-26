@@ -13,7 +13,7 @@ import {
   type Provider,
   StorageUtil
 } from '@reown/appkit-core'
-import { CaipNetworksUtil, ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
+import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
