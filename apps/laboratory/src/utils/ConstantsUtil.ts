@@ -1,4 +1,5 @@
 import type { CaipNetwork, SocialProvider } from '@reown/appkit'
+import { SystemUtil } from '@reown/appkit-common'
 import type { Wallet } from '@reown/appkit-wallet-button'
 import {
   arbitrum,
