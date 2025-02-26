@@ -1500,6 +1500,12 @@ export class AppKit {
           chainNamespace
         })
       } else {
+        console.log(
+          '>>> ELSE.accountChanged',
+          { address, chainId },
+          chainNamespace,
+          ChainController.state.activeChain
+        )
         this.syncAccountInfo(address, chainId, chainNamespace)
       }
     })
