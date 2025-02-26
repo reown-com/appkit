@@ -1124,6 +1124,15 @@ export abstract class AppKitCore {
           chainNamespace
         )
       }
+    } else if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH) {
+      const provider = this.authProvider
+
+      if (provider) {
+        const social = StorageUtil.getConnectedSocialProvider() ?? 'email'
+        const identifier = provider.getEmail() ?? provider.getUsername()
+
+        this.setConnectedWalletInfo({ name: providerType, identifier, social }, chainNamespace)
+      }
     } else if (connectorId) {
       if (connectorId === ConstantsUtil.CONNECTOR_ID.COINBASE) {
         const connector = this.getConnectors().find(
