@@ -27,12 +27,6 @@
     "@vitest/coverage-v8": "2.1.3",
     "vitest": "2.1.9"
   },
-  "keywords": [
-    "utils",
-    "types",
-    "web3",
-    "appkit"
-  ],
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
   "homepage": "https://github.com/reown-com/appkit",
@@ -42,5 +36,17 @@
   },
   "bugs": {
     "url": "https://github.com/reown-com/appkit/issues"
-  }
+  },
+  "keywords": [
+    "appkit",
+    "wallet",
+    "onboarding",
+    "reown",
+    "dapps",
+    "web3",
+    "wagmi",
+    "ethereum",
+    "solana",
+    "bitcoin"
+  ]
 }

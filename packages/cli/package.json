@@ -8,7 +8,6 @@
   "bin": {
     "appkit-cli": "./index.js"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -24,5 +23,17 @@
     "cross-env": "7.0.3",
     "esm": "3.2.25",
     "ts-node": "10.9.2"
-  }
+  },
+  "keywords": [
+    "appkit",
+    "wallet",
+    "onboarding",
+    "reown",
+    "dapps",
+    "web3",
+    "wagmi",
+    "ethereum",
+    "solana",
+    "bitcoin"
+  ]
 }

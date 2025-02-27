@@ -52,5 +52,17 @@
   },
   "bugs": {
     "url": "https://github.com/reown-com/appkit/issues"
-  }
+  },
+  "keywords": [
+    "appkit",
+    "wallet",
+    "onboarding",
+    "reown",
+    "dapps",
+    "web3",
+    "wagmi",
+    "ethereum",
+    "solana",
+    "bitcoin"
+  ]
 }

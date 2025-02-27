@@ -64,16 +64,6 @@
   "peerDependencies": {
     "valtio": "1.13.2"
   },
-  "keywords": [
-    "web3",
-    "crypto",
-    "ethereum",
-    "appkit",
-    "reown",
-    "utils",
-    "wagmi",
-    "ethers"
-  ],
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
   "homepage": "https://github.com/reown-com/appkit",
@@ -83,5 +73,17 @@
   },
   "bugs": {
     "url": "https://github.com/reown-com/appkit/issues"
-  }
+  },
+  "keywords": [
+    "appkit",
+    "wallet",
+    "onboarding",
+    "reown",
+    "dapps",
+    "web3",
+    "wagmi",
+    "ethereum",
+    "solana",
+    "bitcoin"
+  ]
 }
