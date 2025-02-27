@@ -2,7 +2,25 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "jsx": "preserve",
-    "noEmit": true
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "include": ["next-env.d.ts", "src", "tests", "playwright.config.ts"]
+  "include": [
+    "next-env.d.ts",
+    "app",
+    "src",
+    "tests",
+    "playwright.config.ts",
+    "middleware.ts",
+    "out/types/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
 }

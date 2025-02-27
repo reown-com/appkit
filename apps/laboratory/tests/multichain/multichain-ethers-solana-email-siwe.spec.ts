@@ -50,7 +50,7 @@ test('it should switch networks and sign', async () => {
   await page.approveSign()
 
   // -- Sign ------------------------------------------------------------------
-  await page.sign()
+  await page.sign('eip155')
   await validator.expectReceivedSign({ chainName })
   await page.approveSign()
   await validator.expectAcceptedSign()
@@ -65,7 +65,7 @@ test('it should switch to different namespace', async () => {
   await page.closeModal()
 
   // -- Sign ------------------------------------------------------------------
-  await page.sign()
+  await page.sign('solana')
   await validator.expectReceivedSign({ chainName })
   await page.approveSign()
   await validator.expectAcceptedSign()

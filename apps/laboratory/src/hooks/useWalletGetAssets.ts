@@ -35,18 +35,31 @@ async function getAssetDiscoveryCapabilities({
   try {
     // For WalletConnect, also check CAIP-25
     if (walletProviderType === 'WALLET_CONNECT') {
-      const sessionCapabilities = JSON.parse(
-        provider.session?.sessionProperties?.['capabilities'] || '{}'
+      const scopedProperties = JSON.parse(
+        //@ts-expect-error - currently scopedProperties is not types
+        provider.session?.scopedProperties || '{}'
       )
-      const hasAssetDiscovery =
-        sessionCapabilities[chainIdAsHex]?.assetDiscovery?.supported ?? false
-      const walletServiceUrl: string =
-        sessionCapabilities[chainIdAsHex]?.['walletService']?.['wallet_getAssets']
+      const eip155Capabilities = scopedProperties?.eip155
+      const walletService = eip155Capabilities?.walletService
+
+      // Handle case where walletService is undefined or not an array
+      if (!Array.isArray(walletService)) {
+        return {
+          hasAssetDiscovery: false,
+          hasWalletService: false,
+          walletServiceUrl: undefined
+        }
+      }
+
+      const assetDiscoveryService = walletService.find(
+        (service: { url: string; methods: string[] }) =>
+          service?.methods?.includes('wallet_getAssets')
+      )
 
       return {
-        hasAssetDiscovery,
-        hasWalletService: Boolean(walletServiceUrl),
-        walletServiceUrl
+        hasAssetDiscovery: Boolean(assetDiscoveryService),
+        hasWalletService: Boolean(assetDiscoveryService?.url),
+        walletServiceUrl: assetDiscoveryService?.url
       }
     }
 

@@ -6,9 +6,9 @@ import base58 from 'bs58'
 
 import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 
-import { BitcoinUtil } from '../../utils/BitcoinUtil'
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
+import { BitcoinUtil } from '@/src/utils/BitcoinUtil'
+import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 export function UpaSignMessageTest() {
   const toast = useChakraToast()
