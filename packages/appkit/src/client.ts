@@ -215,10 +215,6 @@ export class AppKit {
       ConnectionController.setUri(options.uri)
     }
 
-    if (options?.namespace) {
-      ConnectorController.setFilterByNamespace(options.namespace)
-    }
-
     await ModalController.open(options)
   }
 
@@ -489,6 +485,10 @@ export class AppKit {
 
   public setCaipNetwork: (typeof ChainController)['setActiveCaipNetwork'] = caipNetwork => {
     ChainController.setActiveCaipNetwork(caipNetwork)
+  }
+
+  public setCaipNetworkOfNamespace = (caipNetwork: CaipNetwork, chainNamespace: ChainNamespace) => {
+    ChainController.setChainNetworkData(chainNamespace, { caipNetwork })
   }
 
   public getCaipNetwork = (chainNamespace?: ChainNamespace) => {
@@ -1122,6 +1122,7 @@ export class AppKit {
         if (!caipNetwork) {
           return
         }
+
         if (
           AccountController.state.address &&
           caipNetwork.chainNamespace === ChainController.state.activeChain
@@ -1138,12 +1139,10 @@ export class AppKit {
             chainNamespace: caipNetwork.chainNamespace
           })
         } else if (AccountController.state.address) {
-          const providerType =
-            ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
+          const providerType = ProviderUtil.state.providerIds[caipNetwork.chainNamespace]
 
           if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH) {
             try {
-              ChainController.state.activeChain = caipNetwork.chainNamespace
               await this.connectionControllerClient?.connectExternal?.({
                 id: ConstantsUtil.CONNECTOR_ID.AUTH,
                 provider: this.authProvider,
@@ -1505,16 +1504,21 @@ export class AppKit {
     })
   }
 
-  private async updateNativeBalance() {
-    const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
-    if (adapter && ChainController.state.activeChain && AccountController.state.address) {
+  private async updateNativeBalance(
+    address: string,
+    chainId: string | number,
+    namespace: ChainNamespace
+  ) {
+    const adapter = this.getAdapter(namespace)
+
+    if (adapter) {
       const balance = await adapter.getBalance({
-        address: AccountController.state.address,
-        chainId: ChainController.state.activeCaipNetwork?.id as string | number,
+        address,
+        chainId,
         caipNetwork: this.getCaipNetwork(),
         tokens: this.options.tokens
       })
-      this.setBalance(balance.balance, balance.symbol, ChainController.state.activeChain)
+      this.setBalance(balance.balance, balance.symbol, namespace)
     }
   }
 
@@ -1654,6 +1658,12 @@ export class AppKit {
       chainNamespace: ChainNamespace
     }
   ) {
+    const isActiveNamespace = params.chainNamespace === ChainController.state.activeChain
+    const networkOfChain = ChainController.getNetworkByIdOfNamespace(
+      params.chainNamespace,
+      params.chainId
+    )
+
     const { address, chainId, chainNamespace } = params
 
     const { chainId: activeChainId } = StorageUtil.getActiveNetworkProps()
@@ -1707,14 +1717,23 @@ export class AppKit {
         } else {
           this.setCaipNetwork(network)
         }
+      } else if (!isActiveNamespace) {
+        if (networkOfChain) {
+          this.setCaipNetworkOfNamespace(networkOfChain, chainNamespace)
+        }
       }
+
       this.syncConnectedWalletInfo(chainNamespace)
 
-      // Only update state when needed
       if (!HelpersUtil.isLowerCaseMatch(address, AccountController.state.address)) {
         this.syncAccountInfo(address, network?.id, chainNamespace)
       }
-      await this.syncBalance({ address, chainId: network?.id, chainNamespace })
+
+      if (isActiveNamespace) {
+        await this.syncBalance({ address, chainId: network?.id, chainNamespace })
+      } else {
+        await this.syncBalance({ address, chainId: networkOfChain?.id, chainNamespace })
+      }
     }
   }
 
@@ -1750,11 +1769,11 @@ export class AppKit {
       params.chainNamespace
     ).find(n => n.id.toString() === params.chainId?.toString())
 
-    if (!caipNetwork) {
+    if (!caipNetwork || !params.chainId) {
       return
     }
 
-    await this.updateNativeBalance()
+    await this.updateNativeBalance(params.address, params.chainId, params.chainNamespace)
   }
 
   private syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
@@ -1822,6 +1841,8 @@ export class AppKit {
     const activeCaipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
 
     if (chainNamespace !== ConstantsUtil.CHAIN.EVM || activeCaipNetwork?.testnet) {
+      this.setProfileName(null, chainNamespace)
+      this.setProfileImage(null, chainNamespace)
       return
     }
 

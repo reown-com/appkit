@@ -1,6 +1,8 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
+import type { ChainNamespace } from '@reown/appkit-common'
+
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
@@ -16,11 +18,13 @@ export interface ModalControllerState {
   loading: boolean
   open: boolean
   shake: boolean
+  namespace: ChainNamespace | undefined
 }
 
 export interface ModalControllerArguments {
   open: {
     view?: RouterControllerState['view']
+    namespace?: ChainNamespace
   }
 }
 
@@ -30,7 +34,8 @@ type StateKey = keyof ModalControllerState
 const state = proxy<ModalControllerState>({
   loading: false,
   open: false,
-  shake: false
+  shake: false,
+  namespace: undefined
 })
 
 // -- Controller ---------------------------------------- //
@@ -47,8 +52,12 @@ export const ModalController = {
 
   async open(options?: ModalControllerArguments['open']) {
     await ApiController.prefetch()
-    const caipAddress = ChainController.state.activeCaipAddress
 
+    if (options?.namespace) {
+      ConnectorController.setFilterByNamespace(options.namespace)
+    }
+
+    const caipAddress = ChainController.state.activeCaipAddress
     const noAdapters = ChainController.state.noAdapters
 
     if (options?.view) {
