@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 
 import Provider, { UniversalProvider } from '@walletconnect/universal-provider'
 
-import { type AppKitNetwork, mainnet } from '@reown/appkit/networks'
+import { mainnet } from '@reown/appkit/networks'
 import { AppKit, createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
@@ -13,10 +13,7 @@ import { UpaTests } from '@/src/components/UPA/UpaTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { ThemeStore } from '@/src/utils/StoreUtil'
 
-const networks = [...ConstantsUtil.AllNetworks, ...ConstantsUtil.BitcoinNetworks] as [
-  AppKitNetwork,
-  ...AppKitNetwork[]
-]
+const networks = ConstantsUtil.AllNetworks
 
 export default function MultiChainWagmiAdapterOnly() {
   const [uprovider, setUprovider] = useState<Provider | null>(null)

@@ -172,8 +172,6 @@ async function initializeApp() {
   })
 
   document.getElementById('switch-network-bitcoin')?.addEventListener('click', async () => {
-    console.log(session)
-
     modal.switchNetwork(bitcoin)
     network = bitcoin.caipNetworkId
     account = provider?.session?.namespaces?.bip122?.accounts?.[0].split(':')[2]

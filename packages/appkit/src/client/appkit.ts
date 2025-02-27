@@ -418,8 +418,6 @@ export class AppKit extends AppKitCore {
   }
 
   protected override syncConnectedWalletInfo(chainNamespace: ChainNamespace): void {
-    super.syncConnectedWalletInfo(chainNamespace)
-
     const providerType = ProviderUtil.getProviderId(chainNamespace)
     if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH) {
       const provider = this.authProvider
@@ -430,6 +428,8 @@ export class AppKit extends AppKitCore {
 
         this.setConnectedWalletInfo({ name: providerType, identifier, social }, chainNamespace)
       }
+    } else {
+      super.syncConnectedWalletInfo(chainNamespace)
     }
   }
 

@@ -9,7 +9,6 @@ import { base, mainnet, sepolia } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
 import {
   mockBlockchainApiController,
-  mockFetchTokenBalanceOnce,
   mockStorageUtil,
   mockWindowAndDocument
 } from '../test-utils.js'

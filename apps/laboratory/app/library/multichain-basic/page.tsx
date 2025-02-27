@@ -10,7 +10,7 @@ import { UpaTests } from '@/src/components/UPA/UpaTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { ThemeStore } from '@/src/utils/StoreUtil'
 
-const networks = [...ConstantsUtil.AllNetworks, ...ConstantsUtil.BitcoinNetworks]
+const networks = ConstantsUtil.AllNetworks
 
 const modal = createAppKit({
   networks: networks as [AppKitNetwork, ...AppKitNetwork[]],

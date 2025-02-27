@@ -81,15 +81,16 @@ describe('syncConnectedWalletInfo', () => {
     vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('mock-connector-id')
     appKit = new AppKit(mockOptions)
     setConnectedWalletInfoSpy = vi.spyOn(appKit, 'setConnectedWalletInfo')
+    vi.clearAllMocks()
   })
 
   it.each([
     UtilConstantsUtil.CONNECTOR_TYPE_ANNOUNCED,
     UtilConstantsUtil.CONNECTOR_TYPE_INJECTED
   ] as ConnectorType[])('should sync the connected wallet info for type $s', async type => {
-    vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValueOnce(type)
+    vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValue(type)
 
-    vi.spyOn(appKit, 'getConnectors').mockReturnValueOnce([
+    vi.spyOn(appKit, 'getConnectors').mockReturnValue([
       {
         id: 'mock-connector-id',
         name: 'mock-connector-name',
@@ -111,11 +112,11 @@ describe('syncConnectedWalletInfo', () => {
   })
 
   it(`should sync connected wallet info for ${UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT}`, async () => {
-    vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValueOnce(
+    vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValue(
       UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT as ConnectorType
     )
 
-    vi.spyOn(ProviderUtil, 'getProvider').mockReturnValueOnce({
+    vi.spyOn(ProviderUtil, 'getProvider').mockReturnValue({
       session: {
         peer: {
           metadata: {
@@ -185,6 +186,7 @@ describe('syncConnectedWalletInfo', () => {
   })
 
   it('should sync connected wallet info for any other provider type', async () => {
+    vi.spyOn(ProviderUtil, 'getProviderId').mockReturnValue('mock-provider-id' as ConnectorType)
     appKit['syncConnectedWalletInfo']('eip155')
 
     expect(setConnectedWalletInfoSpy).toHaveBeenCalledWith(
