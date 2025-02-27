@@ -10,6 +10,8 @@ import {
   StorageUtil
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-list-item'
+import '@reown/appkit-ui/wui-text'
 
 @customElement('w3m-account-auth-button')
 export class W3mAccountAuthButton extends LitElement {

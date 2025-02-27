@@ -35,8 +35,8 @@ export default function MultiChainWagmiAdapterOnly() {
     ThemeStore.setModal(modal)
     setAppKit(modal)
 
-    provider.on('display_uri', (connection: string) => {
-      modal.open({ view: 'ConnectingWalletConnectBasic', uri: connection })
+    provider.on('display_uri', () => {
+      modal.open({ view: 'ConnectingWalletConnectBasic' })
     })
 
     setUprovider(provider)

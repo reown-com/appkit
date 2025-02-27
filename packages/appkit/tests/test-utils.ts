@@ -1,6 +1,8 @@
 import { vi } from 'vitest'
 
+import type { Balance } from '@reown/appkit-common'
 import {
+  AccountController,
   BlockchainApiController,
   ChainController,
   type ChainControllerState,
@@ -35,6 +37,10 @@ export function mockStorageUtil() {
     caipNetworkId: mainnet.caipNetworkId,
     chainId: mainnet.id
   })
+}
+
+export function mockFetchTokenBalanceOnce(response: Balance[]) {
+  vi.spyOn(AccountController, 'fetchTokenBalance').mockResolvedValueOnce(response)
 }
 
 export function mockChainControllerStateWithUnsupportedChain() {

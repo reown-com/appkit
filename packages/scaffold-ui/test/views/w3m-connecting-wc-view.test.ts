@@ -5,7 +5,7 @@ import { html } from 'lit'
 
 import { ChainController, CoreHelperUtil, RouterController } from '@reown/appkit-core'
 import type { WcWallet } from '@reown/appkit-core'
-import type { WuiTabs } from '@reown/appkit-ui'
+import type { WuiTabs } from '@reown/appkit-ui/wui-tabs'
 
 import type { W3mConnectingWcView } from '../../exports'
 import { HelpersUtil } from '../utils/HelpersUtil'
