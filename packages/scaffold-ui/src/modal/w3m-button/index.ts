@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import type { ChainNamespace } from '@reown/appkit-common'
 import { ChainController, ModalController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
@@ -30,16 +31,31 @@ class W3mButtonBase extends LitElement {
 
   @property() public charsEnd?: W3mAccountButton['charsEnd'] = 6
 
+  @property() public namespace?: ChainNamespace = undefined
+
   @state() private caipAddress = ChainController.state.activeCaipAddress
 
   @state() private isLoading = ModalController.state.loading
 
   // -- Lifecycle ----------------------------------------- //
   public override firstUpdated() {
-    this.unsubscribe.push(
-      ChainController.subscribeKey('activeCaipAddress', val => (this.caipAddress = val)),
-      ModalController.subscribeKey('loading', val => (this.isLoading = val))
-    )
+    this.unsubscribe.push(ModalController.subscribeKey('loading', val => (this.isLoading = val)))
+
+    if (this.namespace) {
+      this.unsubscribe.push(
+        ChainController.subscribeChainProp(
+          'accountState',
+          val => {
+            this.caipAddress = val?.caipAddress
+          },
+          this.namespace
+        )
+      )
+    } else {
+      this.unsubscribe.push(
+        ChainController.subscribeKey('activeCaipAddress', val => (this.caipAddress = val))
+      )
+    }
   }
 
   public override disconnectedCallback() {
@@ -55,6 +71,7 @@ class W3mButtonBase extends LitElement {
             balance=${ifDefined(this.balance)}
             .charsStart=${ifDefined(this.charsStart)}
             .charsEnd=${ifDefined(this.charsEnd)}
+            namespace=${ifDefined(this.namespace)}
           >
           </appkit-account-button>
         `
@@ -63,6 +80,7 @@ class W3mButtonBase extends LitElement {
             size=${ifDefined(this.size)}
             label=${ifDefined(this.label)}
             loadingLabel=${ifDefined(this.loadingLabel)}
+            namespace=${ifDefined(this.namespace)}
           ></appkit-connect-button>
         `
   }

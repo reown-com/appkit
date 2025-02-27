@@ -2,7 +2,8 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ModalController } from '@reown/appkit-core'
+import type { ChainNamespace } from '@reown/appkit-common'
+import { ConnectorController, ModalController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import type { WuiConnectButton } from '@reown/appkit-ui'
 
@@ -16,6 +17,8 @@ class W3mConnectButtonBase extends LitElement {
   @property() public label? = 'Connect Wallet'
 
   @property() public loadingLabel? = 'Connecting...'
+
+  @property() public namespace?: ChainNamespace
 
   @state() private open = ModalController.state.open
 
@@ -38,7 +41,9 @@ class W3mConnectButtonBase extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const isLoading = this.loading || this.open
+    const isFilteringByThisNamespace =
+      this.namespace && this.namespace === ConnectorController.state.filterByNamespace
+    const isLoading = this.loading || (this.namespace ? isFilteringByThisNamespace : this.open)
 
     return html`
       <wui-connect-button
@@ -57,7 +62,7 @@ class W3mConnectButtonBase extends LitElement {
     if (this.open) {
       ModalController.close()
     } else if (!this.loading) {
-      ModalController.open()
+      ModalController.open({ view: 'Connect', namespace: this.namespace })
     }
   }
 }

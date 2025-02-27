@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
   AssetController,
@@ -13,6 +14,10 @@ import {
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import type { WuiAccountButton } from '@reown/appkit-ui'
+
+function getDefaultAccountState(namespace: ChainNamespace | undefined) {
+  return ChainController.getAccountDataByChainNamespace(namespace)
+}
 
 class W3mAccountButtonBase extends LitElement {
   // -- Members ------------------------------------------- //
@@ -27,17 +32,20 @@ class W3mAccountButtonBase extends LitElement {
 
   @property() public charsEnd?: WuiAccountButton['charsEnd'] = 6
 
-  @state() private caipAddress = ChainController.state.activeCaipAddress
+  @property() public namespace?: ChainNamespace = undefined
 
-  @state() private balanceVal = AccountController.state.balance
+  @state() private caipAddress = getDefaultAccountState(this.namespace)?.caipAddress
 
-  @state() private balanceSymbol = AccountController.state.balanceSymbol
+  @state() private balanceVal = getDefaultAccountState(this.namespace)?.balance
 
-  @state() private profileName = AccountController.state.profileName
+  @state() private balanceSymbol = getDefaultAccountState(this.namespace)?.balanceSymbol
 
-  @state() private profileImage = AccountController.state.profileImage
+  @state() private profileName = getDefaultAccountState(this.namespace)?.profileName
 
-  @state() private network = ChainController.state.activeCaipNetwork
+  @state() private profileImage = getDefaultAccountState(this.namespace)?.profileImage
+
+  @state() private network = ChainController.getNetworkDataByChainNamespace(this.namespace)
+    ?.caipNetwork
 
   @state() private networkImage = AssetUtil.getNetworkImage(this.network)
 
@@ -49,13 +57,36 @@ class W3mAccountButtonBase extends LitElement {
       : true
 
   // -- Lifecycle ----------------------------------------- //
-  public constructor() {
-    super()
-    this.unsubscribe.push(
-      ...[
-        AssetController.subscribeNetworkImages(() => {
-          this.networkImage = AssetUtil.getNetworkImage(this.network)
-        }),
+  public override firstUpdated() {
+    const namespace = this.namespace
+
+    if (namespace) {
+      this.unsubscribe.push(
+        ChainController.subscribeChainProp(
+          'accountState',
+          val => {
+            this.caipAddress = val?.caipAddress
+            this.balanceVal = val?.balance
+            this.balanceSymbol = val?.balanceSymbol
+            this.profileName = val?.profileName
+            this.profileImage = val?.profileImage
+          },
+          namespace
+        ),
+        ChainController.subscribeChainProp(
+          'networkState',
+          val => {
+            this.network = val?.caipNetwork
+            this.isSupported = ChainController.checkIfSupportedNetwork(namespace, val?.caipNetwork)
+            this.networkImage = AssetUtil.getNetworkImage(val?.caipNetwork)
+          },
+          namespace
+        )
+      )
+    } else {
+      AssetController.subscribeNetworkImages(() => {
+        this.networkImage = AssetUtil.getNetworkImage(this.network)
+      }),
         ChainController.subscribeKey('activeCaipAddress', val => {
           this.caipAddress = val
         }),
@@ -70,8 +101,11 @@ class W3mAccountButtonBase extends LitElement {
             ? ChainController.checkIfSupportedNetwork(val?.chainNamespace)
             : true
         })
-      ]
-    )
+    }
+  }
+
+  public override updated() {
+    this.fetchNetworkImage(this.network)
   }
 
   public override disconnectedCallback() {
@@ -111,11 +145,30 @@ class W3mAccountButtonBase extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-  private onClick() {
+  private async onClick() {
+    const isDifferentChain = this.namespace !== ChainController.state.activeChain
+    const caipNetworkOfNamespace = ChainController.getNetworkDataByChainNamespace(
+      this.namespace
+    )?.caipNetwork
+    const firstNetworkWithChain = ChainController.getNetworkByIdOfNamespace(
+      this.namespace,
+      caipNetworkOfNamespace?.id
+    )
+
+    if (isDifferentChain && firstNetworkWithChain) {
+      await ChainController.switchActiveNetwork(firstNetworkWithChain)
+    }
+
     if (this.isSupported || OptionsController.state.allowUnsupportedChain) {
       ModalController.open()
     } else {
       ModalController.open({ view: 'UnsupportedChain' })
+    }
+  }
+
+  private async fetchNetworkImage(network?: CaipNetwork) {
+    if (!this.networkImage && network?.assets?.imageId) {
+      this.networkImage = await AssetUtil.fetchNetworkImage(network?.assets?.imageId)
     }
   }
 }
