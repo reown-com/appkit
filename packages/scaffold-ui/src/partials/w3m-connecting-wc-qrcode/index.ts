@@ -8,8 +8,15 @@ import {
   ThemeController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-link'
+import '@reown/appkit-ui/wui-qr-code'
+import '@reown/appkit-ui/wui-shimmer'
+import '@reown/appkit-ui/wui-text'
 
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
+import '../w3m-mobile-download-links/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-connecting-wc-qrcode')

@@ -288,6 +288,7 @@ describe('ChainController', () => {
     expect(ChainController.getAccountProp('preferredAccountType', chainNamespace)).toEqual(
       undefined
     )
+    expect(ChainController.getAccountProp('status', chainNamespace)).toEqual('disconnected')
     expect(ChainController.getAccountProp('socialProvider', chainNamespace)).toEqual(undefined)
     expect(ChainController.getAccountProp('socialWindow', chainNamespace)).toEqual(undefined)
   })
