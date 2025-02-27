@@ -1,6 +1,6 @@
 import SignClient from '@walletconnect/sign-client'
 
-import { createAppKit } from '@reown/appkit'
+import { createAppKit } from '@reown/appkit/basic'
 import { solana } from '@reown/appkit/networks'
 import { mainnet } from '@reown/appkit/networks'
 
@@ -22,6 +22,7 @@ export function initializeModal() {
   if (!modal) {
     modal = createAppKit({
       projectId,
+      manualWCControl: true,
       networks: [mainnet, solana]
     })
   }

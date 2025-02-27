@@ -69,19 +69,19 @@ export function AppKitButtonsMultiChain() {
 
               {!evmAccount.address && (
                 <Button data-testid="evm-connect-button" onClick={handleConnectToEVM}>
-                  EVM Account
+                  Connect to EVM
                 </Button>
               )}
 
               {!solanaAccount.address && (
                 <Button data-testid="solana-connect-button" onClick={handleConnectToSolana}>
-                  Solana Account
+                  Connect to Solana
                 </Button>
               )}
 
               {!bitcoinAccount.address && (
                 <Button data-testid="bitcoin-connect-button" onClick={handleConnectToBitcoin}>
-                  Bitcoin Account
+                  Connect to Bitcoin
                 </Button>
               )}
             </Box>

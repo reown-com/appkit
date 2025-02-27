@@ -9,7 +9,12 @@ import {
   SwapController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon-box'
 
+import '../../partials/w3m-input-address/index.js'
+import '../../partials/w3m-input-token/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-wallet-send-view')
