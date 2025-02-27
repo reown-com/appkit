@@ -421,6 +421,7 @@ export const BlockchainApiController = {
     )
     if (!isSupported) {
       SnackController.showError('Token Balance Unavailable')
+
       return { balances: [] }
     }
     const caipAddress = `${chainId}:${address}`
