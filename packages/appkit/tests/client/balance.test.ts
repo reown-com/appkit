@@ -9,7 +9,6 @@ import { base, mainnet, sepolia } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
 import {
   mockBlockchainApiController,
-  mockFetchTokenBalanceOnce,
   mockStorageUtil,
   mockWindowAndDocument
 } from '../test-utils.js'
@@ -56,20 +55,6 @@ describe('Balance sync', () => {
     const getNetworksByNamespaceSpy = vi.spyOn(NetworkUtil, 'getNetworksByNamespace')
     const setBalanceSpy = vi.spyOn(AccountController, 'setBalance')
 
-    mockFetchTokenBalanceOnce([
-      {
-        chainId: `${mainnet.chainNamespace}:${mainnet.id}`,
-        symbol: mainnet.nativeCurrency.symbol,
-        name: mainnet.nativeCurrency.name,
-        price: 1,
-        iconUrl: '',
-        quantity: {
-          decimals: '18',
-          numeric: '5.00'
-        }
-      }
-    ])
-
     const appKit = new AppKit(mockOptions)
     await appKit['syncBalance']({
       address: '0x123',
@@ -79,6 +64,6 @@ describe('Balance sync', () => {
 
     expect(getNetworksByNamespaceSpy).toHaveBeenCalled()
     expect(mockEvmAdapter.getBalance).toHaveBeenCalled()
-    expect(setBalanceSpy).toHaveBeenCalledWith('5.00', 'ETH', 'eip155')
+    expect(setBalanceSpy).toHaveBeenCalledWith('1.00', 'ETH', 'eip155')
   })
 })

@@ -1077,7 +1077,6 @@ export abstract class AppKitCore {
   protected syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
     const connectorId = StorageUtil.getConnectedConnectorId(chainNamespace)
     const providerType = ProviderUtil.getProviderId(chainNamespace)
-
     if (
       providerType === UtilConstantsUtil.CONNECTOR_TYPE_ANNOUNCED ||
       providerType === UtilConstantsUtil.CONNECTOR_TYPE_INJECTED
@@ -1113,9 +1112,9 @@ export abstract class AppKitCore {
           { name: 'Coinbase Wallet', icon: this.getConnectorImage(connector) },
           chainNamespace
         )
+      } else {
+        this.setConnectedWalletInfo({ name: connectorId }, chainNamespace)
       }
-
-      this.setConnectedWalletInfo({ name: connectorId }, chainNamespace)
     }
   }
 
@@ -1425,7 +1424,9 @@ export abstract class AppKitCore {
     connectedWalletInfo,
     chain
   ) => {
-    AccountController.setConnectedWalletInfo(connectedWalletInfo, chain)
+    const type = ProviderUtil.getProviderId(chain)
+    const walletInfo = connectedWalletInfo ? { ...connectedWalletInfo, type } : undefined
+    AccountController.setConnectedWalletInfo(walletInfo, chain)
   }
 
   // -- Public -------------------------------------------------------------------
