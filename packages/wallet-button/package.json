@@ -43,15 +43,6 @@
     "lit": "3.1.0",
     "valtio": "1.13.2"
   },
-  "keywords": [
-    "web3",
-    "crypto",
-    "ethereum",
-    "appkit",
-    "reown",
-    "lit",
-    "webcomponents"
-  ],
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
   "homepage": "https://github.com/reown-com/appkit",
@@ -69,5 +60,17 @@
     "eslint-plugin-react-hooks": "5.1.0",
     "react": "19.0.0",
     "vitest": "2.1.9"
-  }
+  },
+  "keywords": [
+    "appkit",
+    "wallet",
+    "onboarding",
+    "reown",
+    "dapps",
+    "web3",
+    "wagmi",
+    "ethereum",
+    "solana",
+    "bitcoin"
+  ]
 }
