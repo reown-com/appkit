@@ -84,9 +84,10 @@ class W3mAccountButtonBase extends LitElement {
         )
       )
     } else {
-      AssetController.subscribeNetworkImages(() => {
-        this.networkImage = AssetUtil.getNetworkImage(this.network)
-      }),
+      this.unsubscribe.push(
+        AssetController.subscribeNetworkImages(() => {
+          this.networkImage = AssetUtil.getNetworkImage(this.network)
+        }),
         ChainController.subscribeKey('activeCaipAddress', val => {
           this.caipAddress = val
         }),
@@ -101,6 +102,7 @@ class W3mAccountButtonBase extends LitElement {
             ? ChainController.checkIfSupportedNetwork(val?.chainNamespace)
             : true
         })
+      )
     }
   }
 

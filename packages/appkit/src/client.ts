@@ -1749,9 +1749,9 @@ export class AppKit {
       return
     }
 
-    const newCaipAddress = `${chainNamespace}:${newChainId}:${address}` as CaipAddress
+    const newCaipAddress = `${chainNamespace}:${newChainId}:${address}`
 
-    this.setCaipAddress(newCaipAddress, chainNamespace)
+    this.setCaipAddress(newCaipAddress as CaipAddress, chainNamespace)
     await this.syncIdentity({
       address,
       chainId: newChainId,
@@ -1843,6 +1843,7 @@ export class AppKit {
     if (chainNamespace !== ConstantsUtil.CHAIN.EVM || activeCaipNetwork?.testnet) {
       this.setProfileName(null, chainNamespace)
       this.setProfileImage(null, chainNamespace)
+
       return
     }
 

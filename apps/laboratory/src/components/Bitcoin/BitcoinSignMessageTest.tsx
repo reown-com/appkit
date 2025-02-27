@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Box, Button, Input, InputGroup, InputLeftAddon, useToast } from '@chakra-ui/react'
+import { Box, Button, Input, InputGroup, InputLeftAddon } from '@chakra-ui/react'
 
 import type { BitcoinConnector } from '@reown/appkit-adapter-bitcoin'
 import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
