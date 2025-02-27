@@ -6,7 +6,8 @@ import {
   CardHeader,
   Heading,
   Stack,
-  StackDivider
+  StackDivider,
+  Text
 } from '@chakra-ui/react'
 
 import { useAppKit, useAppKitAccount, useDisconnect } from '@reown/appkit/react'
@@ -40,10 +41,32 @@ export function AppKitButtonsMultiChain() {
       <CardBody>
         <Stack divider={<StackDivider />} spacing="4" flexWrap="wrap">
           <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Connect / Account Button
-            </Heading>
-            <appkit-button />
+            <Stack spacing="2" alignItems="left" flexWrap="wrap">
+              <Stack pb="2">
+                <Text fontWeight="bold" fontSize="sm" textTransform="uppercase">
+                  Default Button
+                </Text>
+                <appkit-button />
+              </Stack>
+              <Stack pb="2">
+                <Text fontWeight="bold" fontSize="sm" textTransform="uppercase">
+                  EVM Button
+                </Text>
+                <appkit-button namespace="eip155" />
+              </Stack>
+              <Stack pb="2">
+                <Text fontWeight="bold" fontSize="sm" textTransform="uppercase">
+                  Bitcoin Button
+                </Text>
+                <appkit-button namespace="bip122" />
+              </Stack>
+              <Stack pb="2">
+                <Text fontWeight="bold" fontSize="sm" textTransform="uppercase">
+                  Solana Button
+                </Text>
+                <appkit-button namespace="solana" />
+              </Stack>
+            </Stack>
           </Box>
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
