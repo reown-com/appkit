@@ -8,7 +8,7 @@ import { mainnet } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
-import { WagmiModalInfo } from '@/src/components/Wagmi/WagmiModalInfo'
+import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
 import { externalTestConnector } from '@/src/utils/ConnectorUtil'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
@@ -46,7 +46,7 @@ export default function Wagmi() {
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtons />
-        <WagmiModalInfo />
+        <AppKitInfo />
         <WagmiTests />
       </QueryClientProvider>
     </WagmiProvider>

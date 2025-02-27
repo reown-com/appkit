@@ -22,7 +22,7 @@ export function EthersSendCallsWithPaymasterServiceTest() {
   const [isLoading, setLoading] = useState(false)
 
   const { chainId } = useAppKitNetwork()
-  const { address, isConnected } = useAppKitAccount()
+  const { address, isConnected } = useAppKitAccount({ namespace: 'eip155' })
   const { walletProvider } = useAppKitProvider<Eip1193Provider>('eip155')
   const toast = useChakraToast()
 

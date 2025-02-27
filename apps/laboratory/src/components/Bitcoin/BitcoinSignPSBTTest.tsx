@@ -18,7 +18,7 @@ import { BitcoinUtil } from '@/src/utils/BitcoinUtil'
 
 export function BitcoinSignPSBTTest() {
   const { walletProvider } = useAppKitProvider<BitcoinConnector>('bip122')
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'bip122' })
   const { caipNetwork } = useAppKitNetwork()
 
   const toast = useToast()

@@ -27,7 +27,7 @@ export function WagmiSendCallsTest() {
       capability: WALLET_CAPABILITIES.ATOMIC_BATCH,
       method: EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
     })
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { status } = useAccount()
 
   const isConnected = status === 'connected'

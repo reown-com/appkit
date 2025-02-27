@@ -2,7 +2,6 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import {
-  AccountController,
   ChainController,
   CoreHelperUtil,
   RouterController,
@@ -108,13 +107,13 @@ export class W3mWalletSendView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private async fetchBalances() {
-    await AccountController.fetchTokenBalance()
+    await SendController.fetchTokenBalance()
+    SendController.fetchNetworkBalance()
   }
 
   private async fetchNetworkPrice() {
     await SwapController.getNetworkTokenPrice()
     const gas = await SwapController.getInitialGasPrice()
-    await SendController.fetchNetworkBalance()
 
     if (gas?.gasPrice && gas?.gasPriceInUSD) {
       SendController.setGasPrice(gas.gasPrice)

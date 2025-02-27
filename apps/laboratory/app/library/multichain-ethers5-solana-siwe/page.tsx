@@ -4,17 +4,22 @@ import { HuobiWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapte
 
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
-import { mainnet } from '@reown/appkit/networks'
+import { type AppKitNetwork, mainnet } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
-import { MultiChainTestsEthersSolana } from '@/src/components/MultiChainTestsEthersSolana'
+import { AppKitInfo } from '@/src/components/AppKitInfo'
+import { EthersTests } from '@/src/components/Ethers/EthersTests'
 import { SiweData } from '@/src/components/Siwe/SiweData'
+import { SolanaTests } from '@/src/components/Solana/SolanaTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { siweConfig } from '@/src/utils/SiweUtils'
 import { ThemeStore } from '@/src/utils/StoreUtil'
 
-const networks = ConstantsUtil.AllNetworks
+const networks = [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.SolanaNetworks] as [
+  AppKitNetwork,
+  ...AppKitNetwork[]
+]
 
 const etherAdapter = new EthersAdapter()
 
@@ -41,8 +46,10 @@ export default function MultiChainEthers5Solana() {
   return (
     <>
       <AppKitButtons />
+      <AppKitInfo />
       <SiweData />
-      <MultiChainTestsEthersSolana />
+      <EthersTests />
+      <SolanaTests />
     </>
   )
 }

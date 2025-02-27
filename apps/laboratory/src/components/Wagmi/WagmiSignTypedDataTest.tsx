@@ -32,7 +32,7 @@ const message = {
 
 export function WagmiSignTypedDataTest() {
   const toast = useChakraToast()
-  const { isConnected } = useAppKitAccount()
+  const { isConnected } = useAppKitAccount({ namespace: 'eip155' })
   const { chain } = useAccount()
   const domain = {
     name: 'Ether Mail',
