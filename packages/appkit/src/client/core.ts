@@ -948,11 +948,6 @@ export abstract class AppKitCore {
       chainNamespace
     )
 
-    // Only update state when needed
-    if (!HelpersUtil.isLowerCaseMatch(address, AccountController.state.address)) {
-      this.setCaipAddress(`${chainNamespace}:${chainId}:${address}`, chainNamespace)
-      await this.syncIdentity({ address, chainId, chainNamespace })
-    }
     this.setStatus('connected', chainNamespace)
     if (isUnsupportedNetwork && !shouldSupportAllNetworks) {
       return
@@ -1025,77 +1020,6 @@ export abstract class AppKitCore {
       chainId: newChainId,
       chainNamespace
     })
-  }
-
-  private async syncBalance(params: {
-    address: string
-    chainId: string | number | undefined
-    chainNamespace: ChainNamespace
-  }) {
-    const caipNetwork = NetworkUtil.getNetworksByNamespace(
-      this.caipNetworks,
-      params.chainNamespace
-    ).find(n => n.id.toString() === params.chainId?.toString())
-
-    if (!caipNetwork) {
-      return
-    }
-
-    await this.updateNativeBalance()
-  }
-
-  private syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
-    const connectorId = StorageUtil.getConnectedConnectorId(chainNamespace)
-    const providerType = ProviderUtil.getProviderId(chainNamespace)
-
-    if (
-      providerType === UtilConstantsUtil.CONNECTOR_TYPE_ANNOUNCED ||
-      providerType === UtilConstantsUtil.CONNECTOR_TYPE_INJECTED
-    ) {
-      if (connectorId) {
-        const connector = this.getConnectors().find(c => c.id === connectorId)
-        if (connector) {
-          const { info, name, imageUrl } = connector
-          const icon = imageUrl || this.getConnectorImage(connector)
-          this.setConnectedWalletInfo({ name, icon, ...info }, chainNamespace)
-        }
-      }
-    } else if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
-      const provider = ProviderUtil.getProvider(chainNamespace)
-
-      if (provider?.session) {
-        this.setConnectedWalletInfo(
-          {
-            ...provider.session.peer.metadata,
-            name: provider.session.peer.metadata.name,
-            icon: provider.session.peer.metadata.icons?.[0]
-          },
-          chainNamespace
-        )
-      }
-    } else if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH) {
-      const provider = this.authProvider
-
-      if (provider) {
-        const social = StorageUtil.getConnectedSocialProvider() ?? 'email'
-        const identifier = provider.getEmail() ?? provider.getUsername()
-
-        this.setConnectedWalletInfo({ name: providerType, identifier, social }, chainNamespace)
-      }
-    } else if (connectorId) {
-      if (connectorId === ConstantsUtil.CONNECTOR_ID.COINBASE) {
-        const connector = this.getConnectors().find(
-          c => c.id === ConstantsUtil.CONNECTOR_ID.COINBASE
-        )
-
-        this.setConnectedWalletInfo(
-          { name: 'Coinbase Wallet', icon: this.getConnectorImage(connector) },
-          chainNamespace
-        )
-      }
-
-      this.setConnectedWalletInfo({ name: connectorId }, chainNamespace)
-    }
   }
 
   private async syncIdentity({
