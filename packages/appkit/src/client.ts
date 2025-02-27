@@ -88,6 +88,7 @@ import {
 } from './universal-adapter/client.js'
 import { WcHelpersUtil } from './utils/HelpersUtil.js'
 import type { AppKitOptions } from './utils/TypesUtil.js'
+import { ConfigUtil } from './utils/ConfigUtil.js'
 
 declare global {
   interface Window {
@@ -168,14 +169,22 @@ export class AppKit {
   public constructor(options: AppKitOptionsWithSdk) {
     this.options = options
     this.version = options.sdkVersion
-    this.caipNetworks = this.extendCaipNetworks(options)
+    this.init(options)
+  }
+
+  public async init(options: AppKitOptionsWithSdk) {
+    const config = await ConfigUtil.checkConfig(options)
+
+    this.options = config
+    this.version = config.sdkVersion
+    this.caipNetworks = this.extendCaipNetworks(config)
     this.chainNamespaces = [
       ...new Set(this.caipNetworks?.map(caipNetwork => caipNetwork.chainNamespace))
     ]
-    this.defaultCaipNetwork = this.extendDefaultCaipNetwork(options)
-    this.chainAdapters = this.createAdapters(options.adapters as AdapterBlueprint[])
-    this.initialize(options)
-    this.sendInitializeEvent(options)
+    this.defaultCaipNetwork = this.extendDefaultCaipNetwork(config)
+    this.chainAdapters = this.createAdapters(config.adapters as AdapterBlueprint[])
+    this.initialize(config)
+    this.sendInitializeEvent(config)
   }
 
   public static getInstance() {

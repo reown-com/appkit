@@ -23,6 +23,7 @@ const modal = createAppKit({
   networks: ConstantsUtil.EvmNetworks,
   projectId: ConstantsUtil.ProjectId,
   features: {
+    socials: ['google', 'apple'],
     analytics: true
   },
   customWallets: ConstantsUtil.CustomWallets
