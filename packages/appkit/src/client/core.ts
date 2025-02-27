@@ -1012,9 +1012,9 @@ export abstract class AppKitCore {
       return
     }
 
-    const newCaipAddress = `${chainNamespace}:${newChainId}:${address}` as CaipAddress
+    const newCaipAddress = `${chainNamespace}:${newChainId}:${address}`
 
-    this.setCaipAddress(newCaipAddress, chainNamespace)
+    this.setCaipAddress(newCaipAddress as CaipAddress, chainNamespace)
     await this.syncIdentity({
       address,
       chainId: newChainId,
