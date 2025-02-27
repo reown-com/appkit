@@ -8,19 +8,24 @@ import { WagmiProvider } from 'wagmi'
 
 import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { mainnet } from '@reown/appkit/networks'
+import { type AppKitNetwork, mainnet } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
-import { MultiChainTestsWagmiSolana } from '@/src/components/MultiChainTestsWagmiSolana'
+import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { SiweData } from '@/src/components/Siwe/SiweData'
+import { SolanaTests } from '@/src/components/Solana/SolanaTests'
+import { WagmiTests } from '@/src/components/Wagmi/WagmiTests'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { siweConfig } from '@/src/utils/SiweUtils'
 import { ThemeStore } from '@/src/utils/StoreUtil'
 
 const queryClient = new QueryClient()
 
-const networks = ConstantsUtil.AllNetworks
+const networks = [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.SolanaNetworks] as [
+  AppKitNetwork,
+  ...AppKitNetwork[]
+]
 
 const wagmiAdapter = new WagmiAdapter({
   ssr: true,
@@ -51,8 +56,10 @@ export default function MultiChainWagmiSolana() {
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtons />
+        <AppKitInfo />
         <SiweData />
-        <MultiChainTestsWagmiSolana />
+        <WagmiTests />
+        <SolanaTests />
       </QueryClientProvider>
     </WagmiProvider>
   )

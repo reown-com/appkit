@@ -168,6 +168,11 @@ export class UniversalAdapter extends AdapterBlueprint {
     })
   }
 
+  public override walletGetAssets(
+    _params: AdapterBlueprint.WalletGetAssetsParams
+  ): Promise<AdapterBlueprint.WalletGetAssetsResponse> {
+    return Promise.resolve({})
+  }
   public async writeContract(): Promise<AdapterBlueprint.WriteContractResult> {
     return Promise.resolve({
       hash: ''
@@ -225,6 +230,7 @@ export class UniversalAdapter extends AdapterBlueprint {
       } catch (switchError: any) {
         if (
           switchError.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+          switchError.code === WcConstantsUtil.ERROR_INVALID_CHAIN_ID ||
           switchError.code === WcConstantsUtil.ERROR_CODE_DEFAULT ||
           switchError?.data?.originalError?.code ===
             WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID

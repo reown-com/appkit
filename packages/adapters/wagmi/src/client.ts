@@ -364,7 +364,8 @@ export class WagmiAdapter extends AdapterBlueprint {
       account: data.fromAddress,
       abi: data.abi,
       functionName: data.method,
-      args: data.args
+      args: data.args,
+      __mode: 'prepared'
     })
 
     return { hash: tx }
@@ -499,15 +500,10 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public override async connectWalletConnect(chainId?: number | string) {
-    // Attempt one click auth first
+    // Attempt one click auth first, if authenticated, still connect with wagmi to store the session
     const walletConnectConnector = this.getWalletConnectConnector()
-    const isAuthenticated = await walletConnectConnector.authenticate()
+    await walletConnectConnector.authenticate()
 
-    if (isAuthenticated) {
-      return { clientId: await walletConnectConnector.provider.client.core.crypto.getClientId() }
-    }
-
-    // Attempt to connect using wagmi connector
     const wagmiConnector = this.getWagmiConnector('walletConnect')
 
     if (!wagmiConnector) {
@@ -730,6 +726,31 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     return provider.request({ method: 'wallet_revokePermissions', params })
+  }
+
+  public async walletGetAssets(
+    params: AdapterBlueprint.WalletGetAssetsParams
+  ): Promise<AdapterBlueprint.WalletGetAssetsResponse> {
+    if (!this.wagmiConfig) {
+      throw new Error('connectionControllerClient:walletGetAssets - wagmiConfig is undefined')
+    }
+
+    const connections = getConnections(this.wagmiConfig)
+    const connection = connections[0]
+
+    const connector = connection ? this.getWagmiConnector(connection.connector.id) : null
+
+    if (!connector) {
+      throw new Error('connectionControllerClient:walletGetAssets - connector is undefined')
+    }
+
+    const provider = (await connector.getProvider()) as UniversalProvider
+
+    if (!provider) {
+      throw new Error('connectionControllerClient:walletGetAssets - provider is undefined')
+    }
+
+    return provider.request({ method: 'wallet_getAssets', params: [params] })
   }
 
   public override setUniversalProvider(universalProvider: UniversalProvider): void {

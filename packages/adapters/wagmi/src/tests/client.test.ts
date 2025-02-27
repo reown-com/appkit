@@ -467,6 +467,43 @@ describe('WagmiAdapter', () => {
 
       expect(disconnectSpy).toHaveBeenCalledTimes(2)
     })
+
+    it('should authenticate and connect with wagmi when using connectWalletConnect', async () => {
+      const mockWalletConnectConnector = {
+        authenticate: vi.fn().mockResolvedValue(true),
+        provider: {
+          client: {
+            core: {
+              crypto: {
+                getClientId: vi.fn().mockResolvedValue('mock-client-id')
+              }
+            }
+          }
+        }
+      }
+
+      const mockWagmiConnector = {
+        id: 'walletConnect'
+      }
+
+      vi.spyOn(adapter as any, 'getWalletConnectConnector').mockReturnValue(
+        mockWalletConnectConnector
+      )
+      vi.spyOn(adapter as any, 'getWagmiConnector').mockReturnValue(mockWagmiConnector)
+      const connectSpy = vi.spyOn(wagmiCore, 'connect').mockResolvedValue({} as any)
+
+      const result = await adapter.connectWalletConnect(1)
+
+      expect(mockWalletConnectConnector.authenticate).toHaveBeenCalled()
+      expect(connectSpy).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          connector: mockWagmiConnector,
+          chainId: 1
+        })
+      )
+      expect(result.clientId).toBe('mock-client-id')
+    })
   })
 
   describe('WagmiAdapter - switchNetwork', () => {

@@ -21,7 +21,7 @@ export function EthersGetCallsStatusTest({ callsHash }: { callsHash: string }) {
   const [batchCallId, setBatchCallId] = useState(callsHash)
 
   const { chainId } = useAppKitNetwork()
-  const { address, isConnected } = useAppKitAccount()
+  const { address, isConnected } = useAppKitAccount({ namespace: 'eip155' })
   const { walletProvider } = useAppKitProvider<Provider>('eip155')
   const toast = useChakraToast()
 

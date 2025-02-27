@@ -4,9 +4,9 @@ import { UpaSignMessageTest } from './UpaSignMessageTest'
 
 export function UpaTests() {
   return (
-    <Card marginTop={10} marginBottom={10}>
+    <Card data-testid="upa-test-interactions" marginTop={10} marginBottom={10}>
       <CardHeader>
-        <Heading size="md">Test Interactions</Heading>
+        <Heading size="md">UPA Test Interactions</Heading>
       </CardHeader>
       <CardBody>
         <Stack divider={<StackDivider />} spacing="4">

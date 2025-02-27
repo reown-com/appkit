@@ -14,6 +14,7 @@ import {
   type SIWXMessage,
   type SIWXSession
 } from '@reown/appkit-core'
+import { ConstantsUtil as AppKitConstantUtil } from '@reown/appkit-utils'
 
 import type { SIWXMessenger } from '../core/SIWXMessenger.js'
 import { InformalMessenger } from '../index.js'
@@ -176,20 +177,42 @@ export class CloudAuthSIWX implements SIWXConfig {
     return BlockchainApiController.state.clientId
   }
 
-  private getWalletInfo():
-    | {
-        name: string | undefined
-        icon: string | undefined
-      }
-    | undefined {
+  private getWalletInfo(): CloudAuthSIWX.WalletInfo | undefined {
     const { connectedWalletInfo } = AccountController.state
+
     if (!connectedWalletInfo) {
       return undefined
     }
 
+    if ('social' in connectedWalletInfo) {
+      const social = connectedWalletInfo['social'] as string
+      const identifier = connectedWalletInfo['identifier'] as string
+
+      return { type: 'social', social, identifier }
+    }
+
     const { name, icon } = connectedWalletInfo
 
-    return { name, icon }
+    let type: CloudAuthSIWX.WalletInfo['type'] = 'unknown'
+
+    switch (connectedWalletInfo['type']) {
+      case AppKitConstantUtil.CONNECTOR_TYPE_EXTERNAL:
+      case AppKitConstantUtil.CONNECTOR_TYPE_INJECTED:
+      case AppKitConstantUtil.CONNECTOR_TYPE_ANNOUNCED:
+        type = 'extension'
+        break
+      case AppKitConstantUtil.CONNECTOR_TYPE_WALLET_CONNECT:
+        type = 'walletconnect'
+        break
+      default:
+        type = 'unknown'
+    }
+
+    return {
+      type,
+      name,
+      icon
+    }
   }
 
   private getSDKProperties(): { projectId: string; st: string; sv: string } {
@@ -239,10 +262,7 @@ export namespace CloudAuthSIWX {
         message: string
         signature: string
         clientId?: string | null
-        walletInfo?: {
-          name: string | undefined
-          icon: string | undefined
-        }
+        walletInfo?: WalletInfo
       },
       {
         token: string
@@ -253,4 +273,12 @@ export namespace CloudAuthSIWX {
   }
 
   export type RequestKey = keyof Requests
+
+  export type WalletInfo =
+    | {
+        type: 'walletconnect' | 'extension' | 'unknown'
+        name: string | undefined
+        icon: string | undefined
+      }
+    | { type: 'social'; social: string; identifier: string }
 }

@@ -48,14 +48,14 @@ npx appkit-cli
 Provide examples of some paramaeters:
 
 ```bash
-appkit-app [project-name]
+appkit-cli [project-name]
 ```
 
 For example:
 
 ```bash
-appkit-app my-app
-appkit-app
+appkit-cli my-app
+appkit-cli
 ```
 
 ## Linking/Unlinking for Local Development
