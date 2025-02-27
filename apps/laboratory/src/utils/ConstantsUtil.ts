@@ -1,4 +1,5 @@
 import type { CaipNetwork, SocialProvider } from '@reown/appkit'
+import { SystemUtil } from '@reown/appkit-common'
 import type { Wallet } from '@reown/appkit-wallet-button'
 import {
   arbitrum,
@@ -24,7 +25,7 @@ import type { AppKitNetwork } from '@reown/appkit/networks'
 
 import { getLocalStorageItem } from './LocalStorage'
 
-const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
+const projectId = SystemUtil.getEnv('NEXT_PUBLIC_PROJECT_ID', '')
 if (!projectId) {
   throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
 }

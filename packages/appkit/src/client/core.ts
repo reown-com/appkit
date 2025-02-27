@@ -1115,6 +1115,32 @@ export abstract class AppKitCore {
       } else {
         this.setConnectedWalletInfo({ name: connectorId }, chainNamespace)
       }
+    } else if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
+      const provider = ProviderUtil.getProvider(chainNamespace)
+
+      if (provider?.session) {
+        this.setConnectedWalletInfo(
+          {
+            ...provider.session.peer.metadata,
+            name: provider.session.peer.metadata.name,
+            icon: provider.session.peer.metadata.icons?.[0]
+          },
+          chainNamespace
+        )
+      }
+    } else if (connectorId) {
+      if (connectorId === ConstantsUtil.CONNECTOR_ID.COINBASE) {
+        const connector = this.getConnectors().find(
+          c => c.id === ConstantsUtil.CONNECTOR_ID.COINBASE
+        )
+
+        this.setConnectedWalletInfo(
+          { name: 'Coinbase Wallet', icon: this.getConnectorImage(connector) },
+          chainNamespace
+        )
+      }
+
+      this.setConnectedWalletInfo({ name: connectorId }, chainNamespace)
     }
   }
 
