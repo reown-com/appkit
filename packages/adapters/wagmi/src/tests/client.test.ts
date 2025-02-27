@@ -358,6 +358,45 @@ describe('WagmiAdapter', () => {
       })
     })
 
+    it('should call getBalance once even when multiple adapter requests are sent at the same time', async () => {
+      // delay the response to simulate http request latency
+      const latency = 1000
+      const numSimultaneousRequests = 10
+      const expectedSentRequests = 1
+
+      vi.mocked(getBalance).mockResolvedValue(
+        new Promise(resolve => {
+          setTimeout(() => {
+            resolve({
+              formatted: '1.5',
+              symbol: 'ETH'
+            })
+          }, latency)
+        }) as any
+      )
+
+      const result = await Promise.all([
+        ...Array.from({ length: numSimultaneousRequests }).map(() =>
+          adapter.getBalance({
+            address: '0x123',
+            chainId: 1
+          })
+        )
+      ])
+
+      expect(getBalance).toHaveBeenCalledTimes(expectedSentRequests)
+      expect(result.length).toBe(numSimultaneousRequests)
+      expect(expectedSentRequests).to.be.lt(numSimultaneousRequests)
+
+      // verify all calls got the same balance
+      for (const balance of result) {
+        expect(balance).toEqual({
+          balance: '1.5',
+          symbol: 'ETH'
+        })
+      }
+    })
+
     it('should return empty balance when network not found', async () => {
       const result = await adapter.getBalance({
         address: '0x123',
@@ -427,6 +466,43 @@ describe('WagmiAdapter', () => {
       await adapter.disconnect()
 
       expect(disconnectSpy).toHaveBeenCalledTimes(2)
+    })
+
+    it('should authenticate and connect with wagmi when using connectWalletConnect', async () => {
+      const mockWalletConnectConnector = {
+        authenticate: vi.fn().mockResolvedValue(true),
+        provider: {
+          client: {
+            core: {
+              crypto: {
+                getClientId: vi.fn().mockResolvedValue('mock-client-id')
+              }
+            }
+          }
+        }
+      }
+
+      const mockWagmiConnector = {
+        id: 'walletConnect'
+      }
+
+      vi.spyOn(adapter as any, 'getWalletConnectConnector').mockReturnValue(
+        mockWalletConnectConnector
+      )
+      vi.spyOn(adapter as any, 'getWagmiConnector').mockReturnValue(mockWagmiConnector)
+      const connectSpy = vi.spyOn(wagmiCore, 'connect').mockResolvedValue({} as any)
+
+      const result = await adapter.connectWalletConnect(1)
+
+      expect(mockWalletConnectConnector.authenticate).toHaveBeenCalled()
+      expect(connectSpy).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          connector: mockWagmiConnector,
+          chainId: 1
+        })
+      )
+      expect(result.clientId).toBe('mock-client-id')
     })
   })
 

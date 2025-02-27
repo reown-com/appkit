@@ -2,12 +2,7 @@ import { expect, fixture, html } from '@open-wc/testing'
 import { afterEach, beforeEach, describe, it, vi, expect as viExpect } from 'vitest'
 
 import type { Balance, CaipNetwork } from '@reown/appkit-common'
-import {
-  AccountController,
-  ChainController,
-  RouterController,
-  SendController
-} from '@reown/appkit-core'
+import { ChainController, RouterController, SendController } from '@reown/appkit-core'
 
 import { W3mSendSelectTokenView } from '../../src/views/w3m-wallet-send-select-token-view'
 
@@ -72,7 +67,7 @@ const mockNetwork: CaipNetwork = {
 
 describe('W3mSendSelectTokenView', () => {
   beforeEach(() => {
-    vi.spyOn(AccountController.state, 'tokenBalance', 'get').mockReturnValue(mockTokens)
+    vi.spyOn(SendController.state, 'tokenBalances', 'get').mockReturnValue(mockTokens)
     vi.spyOn(ChainController.state, 'activeCaipNetwork', 'get').mockReturnValue(mockNetwork)
   })
 
@@ -138,7 +133,7 @@ describe('W3mSendSelectTokenView', () => {
 
   it('should navigate to OnRampProviders on buy click', async () => {
     const routerSpy = vi.spyOn(RouterController, 'push')
-    vi.spyOn(AccountController.state, 'tokenBalance', 'get').mockReturnValue([])
+    vi.spyOn(SendController.state, 'tokenBalances', 'get').mockReturnValue([])
 
     const element = await fixture<W3mSendSelectTokenView>(
       html`<w3m-wallet-send-select-token-view></w3m-wallet-send-select-token-view>`

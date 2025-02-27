@@ -129,4 +129,14 @@ describe('SwapController', () => {
     expect(SwapController.state.toTokenAmount).toEqual('')
     expect(SwapController.state.toTokenPriceInUSD).toEqual(0)
   })
+
+  it('should clear to token amount when source token amount is cleared', async () => {
+    SwapController.setSourceTokenAmount('1.0')
+    await SwapController.swapTokens()
+    const toTokenAmount = Number(SwapController.state.toTokenAmount)
+    expect(toTokenAmount).toBeGreaterThan(0)
+    SwapController.setSourceTokenAmount('')
+    await SwapController.swapTokens()
+    expect(SwapController.state.toTokenAmount).toEqual('')
+  })
 })

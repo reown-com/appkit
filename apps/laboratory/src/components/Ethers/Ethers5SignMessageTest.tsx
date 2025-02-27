@@ -10,15 +10,15 @@ import {
   useAppKitProvider
 } from '@reown/appkit/react'
 
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
+import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 export function Ethers5SignMessageTest() {
   const [signature, setSignature] = useState<string | undefined>()
   const toast = useChakraToast()
 
   const { chainId } = useAppKitNetwork()
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { walletProvider } = useAppKitProvider<Provider>('eip155')
 
   async function onSignMessage() {

@@ -237,12 +237,31 @@ export class W3mSocialLoginWidget extends LitElement {
 
       try {
         if (authConnector && socialProvider) {
+          if (!CoreHelperUtil.isTelegram()) {
+            this.popupWindow = CoreHelperUtil.returnOpenHref(
+              '',
+              'popupWindow',
+              'width=600,height=800,scrollbars=yes'
+            )
+          }
+
+          if (this.popupWindow) {
+            AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
+          } else if (!CoreHelperUtil.isTelegram()) {
+            throw new Error('Something went wrong')
+          }
+
           const { uri } = await authConnector.provider.getSocialRedirectUri({
             provider: socialProvider
           })
 
           if (!uri) {
+            this.popupWindow?.close()
             throw new Error('Something went wrong')
+          }
+
+          if (this.popupWindow) {
+            this.popupWindow.location.href = uri
           }
 
           if (CoreHelperUtil.isTelegram()) {
@@ -251,19 +270,6 @@ export class W3mSocialLoginWidget extends LitElement {
 
             // eslint-disable-next-line consistent-return
             return CoreHelperUtil.openHref(parsedUri, '_top')
-          }
-
-          this.popupWindow = CoreHelperUtil.returnOpenHref(
-            '',
-            'popupWindow',
-            'width=600,height=800,scrollbars=yes'
-          )
-
-          if (this.popupWindow) {
-            AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
-            this.popupWindow.location.href = uri
-          } else {
-            throw new Error('Something went wrong')
           }
         }
       } catch (error) {

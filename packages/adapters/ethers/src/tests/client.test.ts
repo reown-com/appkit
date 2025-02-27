@@ -312,6 +312,48 @@ describe('EthersAdapter', () => {
         symbol: 'ETH'
       })
     })
+
+    it('should call getBalance once even when multiple adapter requests are sent at the same time', async () => {
+      adapter.caipNetworks = mockCaipNetworks
+      const mockBalance = BigInt(1500000000000000000)
+      // delay the response to simulate http request latency
+      const latency = 1000
+      const numSimultaneousRequests = 10
+      const expectedSentRequests = 1
+      let mockedImplementationCalls = 0
+      vi.mocked(JsonRpcProvider).mockImplementation(
+        () =>
+          ({
+            getBalance: vi.fn().mockResolvedValue(
+              new Promise(resolve => {
+                mockedImplementationCalls++
+                setTimeout(() => resolve(mockBalance), latency)
+              })
+            )
+          }) as any
+      )
+
+      const result = await Promise.all([
+        ...Array.from({ length: numSimultaneousRequests }).map(() =>
+          adapter.getBalance({
+            address: '0x123',
+            chainId: 1
+          })
+        )
+      ])
+
+      expect(mockedImplementationCalls).to.eql(expectedSentRequests)
+      expect(result.length).toBe(numSimultaneousRequests)
+      expect(expectedSentRequests).to.be.lt(numSimultaneousRequests)
+
+      // verify all calls got the same balance
+      for (const balance of result) {
+        expect(balance).toEqual({
+          balance: '1.5',
+          symbol: 'ETH'
+        })
+      }
+    })
   })
 
   describe('EthersAdapter -getProfile', () => {
@@ -340,6 +382,57 @@ describe('EthersAdapter', () => {
   })
 
   describe('EthersAdapter - switchNetwork', () => {
+    const errorCodes = [
+      WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID,
+      WcConstantsUtil.ERROR_INVALID_CHAIN_ID,
+      WcConstantsUtil.ERROR_CODE_DEFAULT,
+      { data: { originalError: { code: WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID } } }
+    ]
+
+    errorCodes.forEach(errorCode => {
+      it(`should add Ethereum chain when switch fails with error code: ${JSON.stringify(
+        errorCode
+      )}`, async () => {
+        // Mock request so that switchEthereumChain throws with the current error code
+        vi.mocked(mockProvider.request).mockImplementation(request => {
+          if (request.method === 'wallet_switchEthereumChain') {
+            if (typeof errorCode === 'object') {
+              const error = new Error('Chain switch failed')
+              Object.assign(error, errorCode)
+              throw error
+            }
+            throw new ErrorWithCode('Chain switch failed', errorCode)
+          }
+          return Promise.resolve(null)
+        })
+
+        const mockCaipNetwork = mockCaipNetworks[0]
+        await adapter.switchNetwork({
+          caipNetwork: mockCaipNetwork,
+          provider: mockProvider,
+          providerType: 'EXTERNAL'
+        })
+
+        expect(mockProvider.request).toHaveBeenCalledWith({
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainId: '0x1',
+              rpcUrls: [mockCaipNetwork.rpcUrls['chainDefault']?.http[0]],
+              chainName: 'Ethereum',
+              iconUrls: ['ba0ba0cd-17c6-4806-ad93-f9d174f17900'],
+              nativeCurrency: {
+                name: 'Ether',
+                decimals: 18,
+                symbol: 'ETH'
+              },
+              blockExplorerUrls: ['https://etherscan.io']
+            }
+          ]
+        })
+      })
+    })
+
     it('should switch network with Auth provider', async () => {
       await adapter.switchNetwork({
         caipNetwork: mockCaipNetworks[0],
@@ -359,37 +452,25 @@ describe('EthersAdapter', () => {
       vi.mocked(mockProvider.request).mockImplementation(request => {
         if (request.method === 'wallet_switchEthereumChain') {
           throw new ErrorWithCode(
-            'Unrecognized chain ID',
+            'Chain switch failed',
             WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
           )
+        }
+        // Mock add chain to also fail
+        if (request.method === 'wallet_addEthereumChain') {
+          throw new Error('Chain is not supported')
         }
         return Promise.resolve(null)
       })
 
       const mockCaipNetwork = mockCaipNetworks[0]
-      await adapter.switchNetwork({
-        caipNetwork: mockCaipNetwork,
-        provider: mockProvider,
-        providerType: 'EXTERNAL'
-      })
-
-      expect(mockProvider.request).toHaveBeenCalledWith({
-        method: 'wallet_addEthereumChain',
-        params: [
-          {
-            chainId: '0x1',
-            rpcUrls: [mockCaipNetwork.rpcUrls['chainDefault']?.http[0]],
-            chainName: 'Ethereum',
-            iconUrls: ['ba0ba0cd-17c6-4806-ad93-f9d174f17900'],
-            nativeCurrency: {
-              name: 'Ether',
-              decimals: 18,
-              symbol: 'ETH'
-            },
-            blockExplorerUrls: ['https://etherscan.io']
-          }
-        ]
-      })
+      await expect(
+        adapter.switchNetwork({
+          caipNetwork: mockCaipNetwork,
+          provider: mockProvider,
+          providerType: 'EXTERNAL'
+        })
+      ).rejects.toThrow('Chain is not supported')
     })
 
     it('should call setDefaultChain and request from provider for WALLET_CONNECT', async () => {

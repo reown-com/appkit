@@ -405,7 +405,7 @@ export const WalletRevokePermissionsRequest = z.object({
 })
 export const WalletGetAssetsRequest = z.object({
   method: z.literal('wallet_getAssets'),
-  params: z.array(z.any())
+  params: z.any()
 })
 export const FrameSession = z.object({
   token: z.string()

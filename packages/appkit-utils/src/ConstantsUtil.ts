@@ -11,6 +11,8 @@ export const ConstantsUtil = {
   BACKPACK_CONNECTOR_NAME: 'Backpack',
   BITGET_CONNECTOR_NAME: 'Bitget Wallet',
   FRONTIER_CONNECTOR_NAME: 'Frontier',
+  XVERSE_CONNECTOR_NAME: 'Xverse Wallet',
+  LEATHER_CONNECTOR_NAME: 'Leather',
 
   EIP155: 'eip155' as ChainNamespace,
   ADD_CHAIN_METHOD: 'wallet_addEthereumChain',

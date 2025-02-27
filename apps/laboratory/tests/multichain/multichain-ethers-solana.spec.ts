@@ -58,12 +58,13 @@ test('it should switch networks and sign', async () => {
     }
 
     const chainName = chains[index] ?? DEFAULT_CHAIN_NAME
+    const namespace = chainName === 'Solana' ? 'solana' : 'eip155'
     await modalPage.switchNetwork(chainName)
     await modalValidator.expectSwitchedNetwork(chainName)
     await modalPage.closeModal()
 
     // -- Sign ------------------------------------------------------------------
-    await modalPage.sign()
+    await modalPage.sign(namespace)
     await walletValidator.expectReceivedSign({ chainName })
     await walletPage.handleRequest({ accept: true })
     await modalValidator.expectAcceptedSign()

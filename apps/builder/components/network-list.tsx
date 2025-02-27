@@ -7,52 +7,54 @@ import { ExclamationMarkIcon } from '@/components/icon/exclamation-mark'
 import { AlertDescription } from '@/components/ui/alert'
 import { Alert } from '@/components/ui/alert'
 import { useAppKitContext } from '@/hooks/use-appkit'
-import { NETWORK_ID_NAMESPACE_MAP, NETWORK_OPTIONS } from '@/lib/constants'
+import { NETWORK_OPTIONS, NetworkOption } from '@/lib/constants'
 import { getImageDeliveryURL, networkImages } from '@/lib/presets'
 
 import { RoundOptionItem } from './ui/round-option-item'
 
 export function NetworkList() {
   const { caipAddress } = useAppKitAccount()
-  const { enabledChains, enabledNetworks, removeNetwork, addNetwork } = useAppKitContext()
+  const {
+    enabledChains,
+    enabledNetworks,
+    removeNetwork,
+    addNetwork,
+    getEnabledNetworksInNamespace
+  } = useAppKitContext()
+
+  function getIsLastNetworkInNamespace(network: NetworkOption) {
+    const enabledNetworksInNamespace = getEnabledNetworksInNamespace(network.namespace)
+
+    return (
+      enabledNetworksInNamespace.length === 1 &&
+      enabledNetworksInNamespace.includes(network.network.id)
+    )
+  }
+
+  const isLastChain = enabledChains.length === 1
 
   return (
     <div className="flex flex-col gap-2">
       <div className="flex gap-2 flex-wrap">
         {NETWORK_OPTIONS.map(n => {
-          const isLastNetworkInNamespace =
-            enabledNetworks.filter(
-              id =>
-                NETWORK_ID_NAMESPACE_MAP[id as keyof typeof NETWORK_ID_NAMESPACE_MAP] ===
-                n.namespace
-            ).length === 1 && enabledNetworks.includes(n.network.id)
+          const isLastNetworkInNamespace = getIsLastNetworkInNamespace(n)
+          const isLastChainEnabled = isLastNetworkInNamespace && isLastChain
 
           return (
             <RoundOptionItem
               message={
-                isLastNetworkInNamespace
-                  ? `Have at least one network enabled on ${
-                      ConstantsUtil.CHAIN_NAME_MAP[n.namespace]
-                    }`
-                  : ''
+                isLastChainEnabled ? 'Have at least one chain enabled to disable network' : ''
               }
               size="sm"
               key={n.network.id}
               enabled={enabledNetworks.includes(n.network.id)}
-              disabled={
-                Boolean(caipAddress) ||
-                (enabledNetworks.includes(n.network.id) && enabledNetworks.length === 1) ||
-                !enabledChains.includes(n.namespace) ||
-                isLastNetworkInNamespace
-              }
+              disabled={isLastChainEnabled}
               imageSrc={getImageDeliveryURL(
                 networkImages[n.network.id as keyof typeof networkImages]
               )}
               onChange={() => {
                 if (enabledNetworks.includes(n.network.id)) {
-                  if (enabledNetworks.length > 1) {
-                    removeNetwork(n)
-                  }
+                  removeNetwork(n)
                 } else {
                   addNetwork(n)
                 }
