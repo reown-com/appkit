@@ -171,9 +171,15 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
     const network = params.caipNetwork
+    const address = params.address
+    const caipNetwork = this.caipNetworks?.find(network => network.id === params.chainId)
+
+    if (!address) {
+      return Promise.resolve({ balance: '0.00', symbol: 'ETH' })
+    }
 
     if (network?.chainNamespace === 'bip122') {
-      const caipAddress = `${params?.caipNetwork?.caipNetworkId}:${params.address}`
+      const caipAddress = `${caipNetwork?.caipNetworkId}:${address}`
 
       const cachedPromise = this.balancePromises[caipAddress]
       if (cachedPromise) {
@@ -188,7 +194,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
         async resolve => {
           const utxos = await this.api.getUTXOs({
             network,
-            address: params.address
+            address
           })
 
           const balance = utxos.reduce((acc, utxo) => acc + utxo.value, 0)
@@ -211,7 +217,9 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
         delete this.balancePromises[caipAddress]
       })
 
-      return this.balancePromises[caipAddress] || Promise.resolve({ balance: '0', symbol: '' })
+      return (
+        this.balancePromises[caipAddress] || Promise.resolve({ balance: '0.00', symbol: 'BTC' })
+      )
     }
 
     // Get balance

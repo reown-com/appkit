@@ -245,12 +245,19 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   public async getBalance(
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
+    const address = params.address
+    const caipNetwork = this.caipNetworks?.find(network => network.id === params.chainId)
+
+    if (!address) {
+      return Promise.resolve({ balance: '0.00', symbol: 'SOL' })
+    }
+
     const connection = new Connection(
-      params.caipNetwork?.rpcUrls?.default?.http?.[0] as string,
+      caipNetwork?.rpcUrls?.default?.http?.[0] as string,
       this.connectionSettings
     )
 
-    const caipAddress = `${params?.caipNetwork?.caipNetworkId}:${params.address}`
+    const caipAddress = `${caipNetwork?.caipNetworkId}:${params.address}`
     const cachedPromise = this.balancePromises[caipAddress]
     if (cachedPromise) {
       return cachedPromise
@@ -261,7 +268,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     }
     this.balancePromises[caipAddress] = new Promise<AdapterBlueprint.GetBalanceResult>(
       async resolve => {
-        const balance = await connection.getBalance(new PublicKey(params.address))
+        const balance = await connection.getBalance(new PublicKey(address))
         const formattedBalance = (balance / SolConstantsUtil.LAMPORTS_PER_SOL).toString()
 
         StorageUtil.updateNativeBalanceCache({
@@ -285,7 +292,7 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
       delete this.balancePromises[caipAddress]
     })
 
-    return this.balancePromises[caipAddress] || { balance: '0', symbol: 'SOL' }
+    return this.balancePromises[caipAddress] || { balance: '0.00', symbol: 'SOL' }
   }
 
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
