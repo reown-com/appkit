@@ -8,7 +8,7 @@ import { WagmiProvider } from 'wagmi'
 
 import { SolanaAdapter } from '@reown/appkit-adapter-solana/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { mainnet } from '@reown/appkit/networks'
+import { type AppKitNetwork, mainnet } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
@@ -22,7 +22,10 @@ import { ThemeStore } from '@/src/utils/StoreUtil'
 
 const queryClient = new QueryClient()
 
-const networks = ConstantsUtil.AllNetworks
+const networks = [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.SolanaNetworks] as [
+  AppKitNetwork,
+  ...AppKitNetwork[]
+]
 
 const wagmiAdapter = new WagmiAdapter({
   ssr: true,
