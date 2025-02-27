@@ -292,7 +292,7 @@ importers:
         version: 8.49.0(@opentelemetry/core@1.30.1(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.56.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.30.1(@opentelemetry/api@1.9.0))(next@14.2.3(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.44.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)(webpack@5.94.0(@swc/core@1.10.18(@swc/helpers@0.5.15)))
       '@solana/wallet-adapter-wallets':
         specifier: 0.19.32
-        version: 0.19.32(@babel/core@7.26.9)(@babel/runtime@7.24.5)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(react-dom@19.0.0(react@19.0.0))(react-native@0.78.0(@babel/core@7.26.9)(@babel/preset-env@7.24.7(@babel/core@7.26.9))(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0)(utf-8-validate@5.0.10))(react@19.0.0)(tslib@2.8.1)(utf-8-validate@5.0.10)
+        version: 0.19.32(@babel/core@7.26.9)(@babel/runtime@7.24.5)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(react-dom@19.0.0(react@19.0.0))(react-native@0.78.0(@babel/core@7.26.9)(@babel/preset-env@7.24.7(@babel/core@7.26.9))(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0)(utf-8-validate@5.0.10))(react@19.0.0)(tslib@2.8.1)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       '@solana/web3.js':
         specifier: 1.95.8
         version: 1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10)
@@ -471,7 +471,7 @@ importers:
         version: 7.92.0(react@19.0.0)
       '@solana/wallet-adapter-wallets':
         specifier: 0.19.32
-        version: 0.19.32(@babel/core@7.26.9)(@babel/runtime@7.26.9)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(react-dom@19.0.0(react@19.0.0))(react-native@0.78.0(@babel/core@7.26.9)(@babel/preset-env@7.24.7(@babel/core@7.26.9))(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0)(utf-8-validate@5.0.10))(react@19.0.0)(tslib@2.8.1)(utf-8-validate@5.0.10)
+        version: 0.19.32(@babel/core@7.26.9)(@babel/runtime@7.26.9)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(react-dom@19.0.0(react@19.0.0))(react-native@0.78.0(@babel/core@7.26.9)(@babel/preset-env@7.24.7(@babel/core@7.26.9))(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0)(utf-8-validate@5.0.10))(react@19.0.0)(tslib@2.8.1)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       '@solana/web3.js':
         specifier: 1.95.8
         version: 1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10)
@@ -485,11 +485,11 @@ importers:
         specifier: 2.16.4
         version: 2.16.4(@tanstack/query-core@5.59.16)(@types/react@19.0.0)(react@19.0.0)(typescript@5.7.3)(use-sync-external-store@1.4.0(react@19.0.0))(viem@2.23.0(bufferutil@4.0.9)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8))
       '@walletconnect/universal-provider':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       '@walletconnect/utils':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       axios:
         specifier: 1.7.2
         version: 1.7.2
@@ -583,8 +583,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/appkit
       '@walletconnect/sign-client':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)
     devDependencies:
       vite:
         specifier: 5.4.12
@@ -596,8 +596,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/appkit
       '@walletconnect/universal-provider':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)
     devDependencies:
       vite:
         specifier: 5.4.12
@@ -770,11 +770,11 @@ importers:
         specifier: 5.56.2
         version: 5.56.2(react@19.0.0)
       '@walletconnect/sign-client':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       '@walletconnect/types':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(db0@0.2.4)(ioredis@5.5.0)
+        specifier: 2.19.0
+        version: 2.19.0(db0@0.2.4)(ioredis@5.5.0)
       next:
         specifier: 14.2.21
         version: 14.2.21(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.44.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -819,8 +819,8 @@ importers:
         specifier: 5.56.2
         version: 5.56.2(react@19.0.0)
       '@walletconnect/universal-provider':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       next:
         specifier: 14.2.21
         version: 14.2.21(@babel/core@7.26.9)(@opentelemetry/api@1.9.0)(@playwright/test@1.44.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -1206,11 +1206,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/adapters/wagmi
       '@walletconnect/universal-provider':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       '@walletconnect/utils':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       react:
         specifier: 19.0.0
         version: 19.0.0
@@ -1274,11 +1274,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/appkit
       '@walletconnect/sign-client':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)
       '@walletconnect/types':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(db0@0.2.4)(ioredis@5.5.0)
+        specifier: 2.19.0
+        version: 2.19.0(db0@0.2.4)(ioredis@5.5.0)
       ethers:
         specifier: 6.13.2
         version: 6.13.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)
@@ -1308,8 +1308,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/appkit
       '@walletconnect/universal-provider':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)
       ethers:
         specifier: 6.13.2
         version: 6.13.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)
@@ -1439,7 +1439,7 @@ importers:
         version: 0.1.14(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-wallets':
         specifier: 0.19.32
-        version: 0.19.32(@babel/core@7.26.9)(@babel/runtime@7.26.9)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(react-dom@19.0.0(react@19.0.0))(react-native@0.78.0(@babel/core@7.26.9)(@babel/preset-env@7.24.7(@babel/core@7.26.9))(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0)(utf-8-validate@5.0.10))(react@19.0.0)(tslib@2.8.1)(utf-8-validate@5.0.10)
+        version: 0.19.32(@babel/core@7.26.9)(@babel/runtime@7.26.9)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(react-dom@19.0.0(react@19.0.0))(react-native@0.78.0(@babel/core@7.26.9)(@babel/preset-env@7.24.7(@babel/core@7.26.9))(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0)(utf-8-validate@5.0.10))(react@19.0.0)(tslib@2.8.1)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       '@tanstack/react-query':
         specifier: 5.24.8
         version: 5.24.8(react@19.0.0)
@@ -1574,11 +1574,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/appkit
       '@walletconnect/sign-client':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)
       '@walletconnect/types':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(db0@0.2.4)(ioredis@5.5.0)
+        specifier: 2.19.0
+        version: 2.19.0(db0@0.2.4)(ioredis@5.5.0)
       vue:
         specifier: 3.4.3
         version: 3.4.3(typescript@5.7.3)
@@ -1715,7 +1715,7 @@ importers:
         version: 0.1.14(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-wallets':
         specifier: 0.19.32
-        version: 0.19.32(@babel/core@7.26.9)(@babel/runtime@7.26.9)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(react-dom@19.0.0(react@19.0.0))(react-native@0.78.0(@babel/core@7.26.9)(@babel/preset-env@7.24.7(@babel/core@7.26.9))(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0)(utf-8-validate@5.0.10))(react@19.0.0)(tslib@2.8.1)(utf-8-validate@5.0.10)
+        version: 0.19.32(@babel/core@7.26.9)(@babel/runtime@7.26.9)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(react-dom@19.0.0(react@19.0.0))(react-native@0.78.0(@babel/core@7.26.9)(@babel/preset-env@7.24.7(@babel/core@7.26.9))(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0)(utf-8-validate@5.0.10))(react@19.0.0)(tslib@2.8.1)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       vue:
         specifier: 3.4.3
         version: 3.4.3(typescript@5.7.3)
@@ -1789,7 +1789,7 @@ importers:
         version: 0.1.14(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-wallets':
         specifier: 0.19.32
-        version: 0.19.32(@babel/core@7.26.9)(@babel/runtime@7.26.9)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(react-dom@19.0.0(react@19.0.0))(react-native@0.78.0(@babel/core@7.26.9)(@babel/preset-env@7.24.7(@babel/core@7.26.9))(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0)(utf-8-validate@5.0.10))(react@19.0.0)(tslib@2.8.1)(utf-8-validate@5.0.10)
+        version: 0.19.32(@babel/core@7.26.9)(@babel/runtime@7.26.9)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(react-dom@19.0.0(react@19.0.0))(react-native@0.78.0(@babel/core@7.26.9)(@babel/preset-env@7.24.7(@babel/core@7.26.9))(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0)(utf-8-validate@5.0.10))(react@19.0.0)(tslib@2.8.1)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       '@tanstack/vue-query':
         specifier: 5.59.16
         version: 5.59.16(vue@3.4.3(typescript@5.7.3))
@@ -1846,8 +1846,8 @@ importers:
         specifier: 1.1.0
         version: 1.1.0
       '@walletconnect/universal-provider':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)
       bitcoinjs-lib:
         specifier: 6.1.7
         version: 6.1.7
@@ -1865,8 +1865,8 @@ importers:
         specifier: 1.0.3
         version: 1.0.3
       '@walletconnect/types':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(db0@0.2.4)(ioredis@5.5.0)
+        specifier: 2.19.0
+        version: 2.19.0(db0@0.2.4)(ioredis@5.5.0)
       vitest:
         specifier: 2.1.9
         version: 2.1.9(@types/node@22.13.4)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.29.1)(terser@5.39.0)
@@ -1901,11 +1901,11 @@ importers:
         specifier: workspace:*
         version: link:../../wallet
       '@walletconnect/universal-provider':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       '@walletconnect/utils':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       ethers:
         specifier: '>=6'
         version: 6.13.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)
@@ -1921,8 +1921,8 @@ importers:
         specifier: 2.1.3
         version: 2.1.3(vitest@2.1.9(@types/node@22.13.4)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.29.1)(terser@5.39.0))
       '@walletconnect/types':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(db0@0.2.4)(ioredis@5.5.0)
+        specifier: 2.19.0
+        version: 2.19.0(db0@0.2.4)(ioredis@5.5.0)
       vitest:
         specifier: 2.1.9
         version: 2.1.9(@types/node@22.13.4)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.29.1)(terser@5.39.0)
@@ -1957,11 +1957,11 @@ importers:
         specifier: workspace:*
         version: link:../../wallet
       '@walletconnect/universal-provider':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       '@walletconnect/utils':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       ethers:
         specifier: '>=4.1 <6.0.0'
         version: 5.7.2(bufferutil@4.0.9)(utf-8-validate@5.0.10)
@@ -1977,8 +1977,8 @@ importers:
         specifier: 2.1.3
         version: 2.1.3(vitest@2.1.9(@types/node@22.13.4)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.29.1)(terser@5.39.0))
       '@walletconnect/types':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(db0@0.2.4)(ioredis@5.5.0)
+        specifier: 2.19.0
+        version: 2.19.0(db0@0.2.4)(ioredis@5.5.0)
       vitest:
         specifier: 2.1.9
         version: 2.1.9(@types/node@22.13.4)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.29.1)(terser@5.39.0)
@@ -2053,14 +2053,14 @@ importers:
         specifier: 1.1.0
         version: 1.1.0
       '@walletconnect/types':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(db0@0.2.4)(ioredis@5.5.0)
+        specifier: 2.19.0
+        version: 2.19.0(db0@0.2.4)(ioredis@5.5.0)
       '@walletconnect/universal-provider':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       '@walletconnect/utils':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       valtio:
         specifier: 1.13.2
         version: 1.13.2(@types/react@19.0.0)(react@19.0.0)
@@ -2127,11 +2127,11 @@ importers:
         specifier: '>=2.16.4'
         version: 2.16.4(@tanstack/query-core@5.59.16)(@types/react@19.0.0)(react@19.0.0)(typescript@5.7.3)(use-sync-external-store@1.4.0(react@19.0.0))(viem@2.23.0(bufferutil@4.0.9)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8))
       '@walletconnect/universal-provider':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       '@walletconnect/utils':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       valtio:
         specifier: 1.13.2
         version: 1.13.2(@types/react@19.0.0)(react@19.0.0)
@@ -2156,8 +2156,8 @@ importers:
         specifier: 2.1.3
         version: 2.1.3(vitest@2.1.9(@types/node@22.13.4)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.29.1)(terser@5.39.0))
       '@walletconnect/types':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(db0@0.2.4)(ioredis@5.5.0)
+        specifier: 2.19.0
+        version: 2.19.0(db0@0.2.4)(ioredis@5.5.0)
       vitest:
         specifier: 2.1.9
         version: 2.1.9(@types/node@22.13.4)(@vitest/ui@2.1.8(vitest@2.1.9))(happy-dom@15.11.7)(jsdom@24.1.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))(lightningcss@1.29.1)(terser@5.39.0)
@@ -2186,14 +2186,14 @@ importers:
         specifier: workspace:*
         version: link:../wallet
       '@walletconnect/types':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(db0@0.2.4)(ioredis@5.5.0)
+        specifier: 2.19.0
+        version: 2.19.0(db0@0.2.4)(ioredis@5.5.0)
       '@walletconnect/universal-provider':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       '@walletconnect/utils':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       bs58:
         specifier: 6.0.0
         version: 6.0.0
@@ -2250,8 +2250,8 @@ importers:
         specifier: 2.1.2
         version: 2.1.2
       '@walletconnect/universal-provider':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       valtio:
         specifier: 1.13.2
         version: 1.13.2(@types/react@19.0.0)(react@19.0.0)
@@ -2386,8 +2386,8 @@ importers:
         specifier: workspace:*
         version: link:../wallet
       '@walletconnect/universal-provider':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       valtio:
         specifier: 1.13.2
         version: 1.13.2(@types/react@19.0.0)(react@19.0.0)
@@ -2498,8 +2498,8 @@ importers:
         specifier: workspace:*
         version: link:../wallet
       '@walletconnect/utils':
-        specifier: 2.18.1-canary-ws-3
-        version: 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+        specifier: 2.19.0
+        version: 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       lit:
         specifier: 3.1.0
         version: 3.1.0
@@ -2518,6 +2518,9 @@ importers:
       '@reown/appkit-core':
         specifier: workspace:*
         version: link:../core
+      '@reown/appkit-utils':
+        specifier: workspace:*
+        version: link:../appkit-utils
       bip322-js:
         specifier: 2.0.0
         version: 2.0.0
@@ -10255,12 +10258,8 @@ packages:
     resolution: {integrity: sha512-m4rcW7QbO7pTV1C+UwOlTpUT9sjGxMs3DcFQ/QmayGPh1MYCC2S42ZTRswMWWqoHIhRjfxlNpO14UD3j0ya6sg==}
     engines: {node: '>=18'}
 
-  '@walletconnect/core@2.18.0':
-    resolution: {integrity: sha512-i/olu/IwYtBiWYqyfNUMxq4b6QS5dv+ZVVGmLT2buRwdH6MGETN0Bx3/z6rXJzd1sNd+QL07fxhSFxCekL57tA==}
-    engines: {node: '>=18'}
-
-  '@walletconnect/core@2.18.1-canary-ws-3':
-    resolution: {integrity: sha512-Ld8NX6UOq0M6QynSbvn2aVDiTevGcBP7VvqHxtYyaozGpwF/c6ZCWZ6jYqMlYPI0wT0/rupX14zWJ09hlTrFag==}
+  '@walletconnect/core@2.19.0':
+    resolution: {integrity: sha512-AEoyICLHQEnjijZr9XsL4xtFhC5Cmu0RsEGxAxmwxbfGvAcYcSCNp1fYq0Q6nHc8jyoPOALpwySTle300Y1vxw==}
     engines: {node: '>=18'}
 
   '@walletconnect/environment@1.0.1':
@@ -10351,11 +10350,8 @@ packages:
   '@walletconnect/sign-client@2.17.5':
     resolution: {integrity: sha512-5NJ8/BAOlP3runG0++YqWdiNygd0LtHls0LfBa/I+sYpYDMjQaMc18ISqKK9wlIws7rI+UZIGxZphg2N050V7A==}
 
-  '@walletconnect/sign-client@2.18.0':
-    resolution: {integrity: sha512-oUjlRIsbHxMSRif2WvMRdvm6tMsQjMj07rl7YVcKVvZ1gF1/9GcbJPjzL/U87fv8qAQkVhIlbEg2vHaVYf6J/g==}
-
-  '@walletconnect/sign-client@2.18.1-canary-ws-3':
-    resolution: {integrity: sha512-6d2iuPw+AlRGHF6561DJ2MupOEZ0yCrO0lBZPz9ZGgt39spqyAWKPHItjRe8pOf+nCTTcgVFEgLHUIgJNavZHg==}
+  '@walletconnect/sign-client@2.19.0':
+    resolution: {integrity: sha512-+GkuJzPK9SPq+RZgdKHNOvgRagxh/hhYWFHOeSiGh3DyAQofWuFTq4UrN/MPjKOYswSSBKfIa+iqKYsi4t8zLQ==}
 
   '@walletconnect/time@1.0.2':
     resolution: {integrity: sha512-uzdd9woDcJ1AaBZRhqy5rNC9laqWGErfc4dxA9a87mPdKOgWMD85mcFo9dIYIts/Jwocfwn07EC6EzclKubk/g==}
@@ -10376,11 +10372,8 @@ packages:
   '@walletconnect/types@2.17.5':
     resolution: {integrity: sha512-fFddisuI7B58bY8GKA2e1jZ/o+kh7aQDFohERA1Rot6s9lRepG2w4eR0UDVSldS9hdJS9l7MzCAvEZeHksMaRg==}
 
-  '@walletconnect/types@2.18.0':
-    resolution: {integrity: sha512-g0jU+6LUuw3E/EPAQfHNK2xK/95IpRfz68tdNAFckLmefZU6kzoE1mIM1SrPJq8rT9kUPp6/APMQE+ReH2OdBA==}
-
-  '@walletconnect/types@2.18.1-canary-ws-3':
-    resolution: {integrity: sha512-M3SeqELQphkTndf2QXzpC4i5uDAtaXsX+OyA9orChPqWtwkqCgy7eQWOzh3+6+nZHfumkHTQNgbW+7J+Hs9DXw==}
+  '@walletconnect/types@2.19.0':
+    resolution: {integrity: sha512-Ttse3p3DCdFQ/TRQrsPMQJzFr7cb/2AF5ltLPzXRNMmapmGydc6WO8QU7g/tGEB3RT9nHcLY2aqlwsND9sXMxA==}
 
   '@walletconnect/universal-provider@2.17.0':
     resolution: {integrity: sha512-d3V5Be7AqLrvzcdMZSBS8DmGDRdqnyLk1DWmRKAGgR6ieUWykhhUKlvfeoZtvJrIXrY7rUGYpH1X41UtFkW5Pw==}
@@ -10394,8 +10387,8 @@ packages:
   '@walletconnect/universal-provider@2.17.5':
     resolution: {integrity: sha512-opxFdJWzOZz6LwKAXk5gxqzPT7kdgNH5fyjQ45Q2cseLr5f9uR1JREAQA2stSNCPY4Yk7bxCxSLN6djzpfykgA==}
 
-  '@walletconnect/universal-provider@2.18.1-canary-ws-3':
-    resolution: {integrity: sha512-SYlVJOtnY3gZUyyjwAbYMPhtr6TCZ3WnXFIigbOVOgF4Lh+qiaTHSJw/pwizgN6HBUxQIrprjr47Blsvka9F/g==}
+  '@walletconnect/universal-provider@2.19.0':
+    resolution: {integrity: sha512-e9JvadT5F8QwdLmd7qBrmACq04MT7LQEe1m3X2Fzvs3DWo8dzY8QbacnJy4XSv5PCdxMWnua+2EavBk8nrI9QA==}
 
   '@walletconnect/utils@2.17.0':
     resolution: {integrity: sha512-1aeQvjwsXy4Yh9G6g2eGmXrEl+BzkNjHRdCrGdMYqFTFa8ROEJfTGsSH3pLsNDlOY94CoBUvJvM55q/PMoN/FQ==}
@@ -10409,11 +10402,8 @@ packages:
   '@walletconnect/utils@2.17.5':
     resolution: {integrity: sha512-3qBeAuEeYw/xbonhK1wC+j1y5I9Fn5qX3D5jW5SuTd1d4SsRSzgUi7SFCFwU1u4LitkEae16FNmTOk4lrrXY3g==}
 
-  '@walletconnect/utils@2.18.0':
-    resolution: {integrity: sha512-6AUXIcjSxTHGRsTtmUP/oqudtwRILrQqrJsH3jS5T28FFDzZt7+On6fR4mXzi64k4nNYeWg1wMCGLEdtxmGbZQ==}
-
-  '@walletconnect/utils@2.18.1-canary-ws-3':
-    resolution: {integrity: sha512-RE+VFRNBUdOdcZRVlV1LiWexnoXKpJSlsVRO9S+nyFIxiBaL5lWnpm9sc5hcnkVlOPfYs55hvOKbC3VpHvmu8A==}
+  '@walletconnect/utils@2.19.0':
+    resolution: {integrity: sha512-LZ0D8kevknKfrfA0Sq3Hf3PpmM8oWyNfsyWwFR51t//2LBgtN2Amz5xyoDDJcjLibIbKAxpuo/i0JYAQxz+aPA==}
 
   '@walletconnect/window-getters@1.0.0':
     resolution: {integrity: sha512-xB0SQsLaleIYIkSsl43vm8EwETpBzJ2gnzk7e0wMF3ktqiTGS6TFHxcprMl5R44KKh4tCcHCJwolMCaDSwtAaA==}
@@ -22417,12 +22407,12 @@ snapshots:
       '@types/yargs': 17.0.33
       chalk: 4.1.2
 
-  '@jnwng/walletconnect-solana@0.2.0(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(utf-8-validate@5.0.10)':
+  '@jnwng/walletconnect-solana@0.2.0(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)':
     dependencies:
       '@solana/web3.js': 1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       '@walletconnect/qrcode-modal': 1.8.0
-      '@walletconnect/sign-client': 2.18.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(utf-8-validate@5.0.10)
-      '@walletconnect/utils': 2.18.0(db0@0.2.4)(ioredis@5.5.0)
+      '@walletconnect/sign-client': 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+      '@walletconnect/utils': 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       bs58: 5.0.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -22443,8 +22433,10 @@ snapshots:
       - bufferutil
       - db0
       - ioredis
+      - typescript
       - uploadthing
       - utf-8-validate
+      - zod
 
   '@jridgewell/gen-mapping@0.3.8':
     dependencies:
@@ -26771,9 +26763,9 @@ snapshots:
       '@solana/wallet-standard-util': 1.1.1
       '@solana/web3.js': 1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10)
 
-  '@solana/wallet-adapter-walletconnect@0.1.16(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(utf-8-validate@5.0.10)':
+  '@solana/wallet-adapter-walletconnect@0.1.16(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)':
     dependencies:
-      '@jnwng/walletconnect-solana': 0.2.0(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(utf-8-validate@5.0.10)
+      '@jnwng/walletconnect-solana': 0.2.0(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/web3.js': 1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
@@ -26795,10 +26787,12 @@ snapshots:
       - bufferutil
       - db0
       - ioredis
+      - typescript
       - uploadthing
       - utf-8-validate
+      - zod
 
-  '@solana/wallet-adapter-wallets@0.19.32(@babel/core@7.26.9)(@babel/runtime@7.24.5)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(react-dom@19.0.0(react@19.0.0))(react-native@0.78.0(@babel/core@7.26.9)(@babel/preset-env@7.24.7(@babel/core@7.26.9))(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0)(utf-8-validate@5.0.10))(react@19.0.0)(tslib@2.8.1)(utf-8-validate@5.0.10)':
+  '@solana/wallet-adapter-wallets@0.19.32(@babel/core@7.26.9)(@babel/runtime@7.24.5)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(react-dom@19.0.0(react@19.0.0))(react-native@0.78.0(@babel/core@7.26.9)(@babel/preset-env@7.24.7(@babel/core@7.26.9))(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0)(utf-8-validate@5.0.10))(react@19.0.0)(tslib@2.8.1)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)':
     dependencies:
       '@solana/wallet-adapter-alpha': 0.1.10(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-avana': 0.1.13(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))
@@ -26834,7 +26828,7 @@ snapshots:
       '@solana/wallet-adapter-trezor': 0.1.2(@babel/core@7.26.9)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(react-native@0.78.0(@babel/core@7.26.9)(@babel/preset-env@7.24.7(@babel/core@7.26.9))(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0)(utf-8-validate@5.0.10))(tslib@2.8.1)(utf-8-validate@5.0.10)
       '@solana/wallet-adapter-trust': 0.1.13(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-unsafe-burner': 0.1.7(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-walletconnect': 0.1.16(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-walletconnect': 0.1.16(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       '@solana/wallet-adapter-xdefi': 0.1.7(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/web3.js': 1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
@@ -26868,10 +26862,12 @@ snapshots:
       - react-native
       - supports-color
       - tslib
+      - typescript
       - uploadthing
       - utf-8-validate
+      - zod
 
-  '@solana/wallet-adapter-wallets@0.19.32(@babel/core@7.26.9)(@babel/runtime@7.26.9)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(react-dom@19.0.0(react@19.0.0))(react-native@0.78.0(@babel/core@7.26.9)(@babel/preset-env@7.24.7(@babel/core@7.26.9))(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0)(utf-8-validate@5.0.10))(react@19.0.0)(tslib@2.8.1)(utf-8-validate@5.0.10)':
+  '@solana/wallet-adapter-wallets@0.19.32(@babel/core@7.26.9)(@babel/runtime@7.26.9)(@sentry/types@7.119.1)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bs58@6.0.0)(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(react-dom@19.0.0(react@19.0.0))(react-native@0.78.0(@babel/core@7.26.9)(@babel/preset-env@7.24.7(@babel/core@7.26.9))(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0)(utf-8-validate@5.0.10))(react@19.0.0)(tslib@2.8.1)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)':
     dependencies:
       '@solana/wallet-adapter-alpha': 0.1.10(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-avana': 0.1.13(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))
@@ -26907,7 +26903,7 @@ snapshots:
       '@solana/wallet-adapter-trezor': 0.1.2(@babel/core@7.26.9)(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(react-native@0.78.0(@babel/core@7.26.9)(@babel/preset-env@7.24.7(@babel/core@7.26.9))(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0)(utf-8-validate@5.0.10))(tslib@2.8.1)(utf-8-validate@5.0.10)
       '@solana/wallet-adapter-trust': 0.1.13(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/wallet-adapter-unsafe-burner': 0.1.7(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))
-      '@solana/wallet-adapter-walletconnect': 0.1.16(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(utf-8-validate@5.0.10)
+      '@solana/wallet-adapter-walletconnect': 0.1.16(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       '@solana/wallet-adapter-xdefi': 0.1.7(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@solana/web3.js': 1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
@@ -26941,8 +26937,10 @@ snapshots:
       - react-native
       - supports-color
       - tslib
+      - typescript
       - uploadthing
       - utf-8-validate
+      - zod
 
   '@solana/wallet-adapter-xdefi@0.1.7(@solana/web3.js@1.95.8(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
     dependencies:
@@ -29894,7 +29892,7 @@ snapshots:
       - uploadthing
       - utf-8-validate
 
-  '@walletconnect/core@2.18.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(utf-8-validate@5.0.10)':
+  '@walletconnect/core@2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)':
     dependencies:
       '@walletconnect/heartbeat': 1.2.2
       '@walletconnect/jsonrpc-provider': 1.0.14
@@ -29907,49 +29905,8 @@ snapshots:
       '@walletconnect/relay-auth': 1.1.0
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.18.0(db0@0.2.4)(ioredis@5.5.0)
-      '@walletconnect/utils': 2.18.0(db0@0.2.4)(ioredis@5.5.0)
-      '@walletconnect/window-getters': 1.0.1
-      events: 3.3.0
-      lodash.isequal: 4.5.0
-      uint8arrays: 3.1.0
-    transitivePeerDependencies:
-      - '@azure/app-configuration'
-      - '@azure/cosmos'
-      - '@azure/data-tables'
-      - '@azure/identity'
-      - '@azure/keyvault-secrets'
-      - '@azure/storage-blob'
-      - '@capacitor/preferences'
-      - '@deno/kv'
-      - '@netlify/blobs'
-      - '@planetscale/database'
-      - '@react-native-async-storage/async-storage'
-      - '@upstash/redis'
-      - '@vercel/blob'
-      - '@vercel/kv'
-      - aws4fetch
-      - bufferutil
-      - db0
-      - ioredis
-      - uploadthing
-      - utf-8-validate
-
-  '@walletconnect/core@2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@walletconnect/heartbeat': 1.2.2
-      '@walletconnect/jsonrpc-provider': 1.0.14
-      '@walletconnect/jsonrpc-types': 1.0.4
-      '@walletconnect/jsonrpc-utils': 1.0.8
-      '@walletconnect/jsonrpc-ws-connection': 1.0.16(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      '@walletconnect/keyvaluestorage': 1.1.1(db0@0.2.4)(ioredis@5.5.0)
-      '@walletconnect/logger': 2.1.2
-      '@walletconnect/relay-api': 1.0.11
-      '@walletconnect/relay-auth': 1.1.0
-      '@walletconnect/safe-json': 1.0.2
-      '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.18.1-canary-ws-3(db0@0.2.4)(ioredis@5.5.0)
-      '@walletconnect/utils': 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)
+      '@walletconnect/types': 2.19.0(db0@0.2.4)(ioredis@5.5.0)
+      '@walletconnect/utils': 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)
       '@walletconnect/window-getters': 1.0.1
       events: 3.3.0
       lodash.isequal: 4.5.0
@@ -29978,7 +29935,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@walletconnect/core@2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)':
+  '@walletconnect/core@2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)':
     dependencies:
       '@walletconnect/heartbeat': 1.2.2
       '@walletconnect/jsonrpc-provider': 1.0.14
@@ -29991,8 +29948,8 @@ snapshots:
       '@walletconnect/relay-auth': 1.1.0
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.18.1-canary-ws-3(db0@0.2.4)(ioredis@5.5.0)
-      '@walletconnect/utils': 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+      '@walletconnect/types': 2.19.0(db0@0.2.4)(ioredis@5.5.0)
+      '@walletconnect/utils': 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       '@walletconnect/window-getters': 1.0.1
       events: 3.3.0
       lodash.isequal: 4.5.0
@@ -30383,49 +30340,16 @@ snapshots:
       - uploadthing
       - utf-8-validate
 
-  '@walletconnect/sign-client@2.18.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(utf-8-validate@5.0.10)':
+  '@walletconnect/sign-client@2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)':
     dependencies:
-      '@walletconnect/core': 2.18.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(utf-8-validate@5.0.10)
+      '@walletconnect/core': 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)
       '@walletconnect/events': 1.0.1
       '@walletconnect/heartbeat': 1.2.2
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/logger': 2.1.2
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.18.0(db0@0.2.4)(ioredis@5.5.0)
-      '@walletconnect/utils': 2.18.0(db0@0.2.4)(ioredis@5.5.0)
-      events: 3.3.0
-    transitivePeerDependencies:
-      - '@azure/app-configuration'
-      - '@azure/cosmos'
-      - '@azure/data-tables'
-      - '@azure/identity'
-      - '@azure/keyvault-secrets'
-      - '@azure/storage-blob'
-      - '@capacitor/preferences'
-      - '@deno/kv'
-      - '@netlify/blobs'
-      - '@planetscale/database'
-      - '@react-native-async-storage/async-storage'
-      - '@upstash/redis'
-      - '@vercel/blob'
-      - '@vercel/kv'
-      - aws4fetch
-      - bufferutil
-      - db0
-      - ioredis
-      - uploadthing
-      - utf-8-validate
-
-  '@walletconnect/sign-client@2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)':
-    dependencies:
-      '@walletconnect/core': 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)
-      '@walletconnect/events': 1.0.1
-      '@walletconnect/heartbeat': 1.2.2
-      '@walletconnect/jsonrpc-utils': 1.0.8
-      '@walletconnect/logger': 2.1.2
-      '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.18.1-canary-ws-3(db0@0.2.4)(ioredis@5.5.0)
-      '@walletconnect/utils': 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)
+      '@walletconnect/types': 2.19.0(db0@0.2.4)(ioredis@5.5.0)
+      '@walletconnect/utils': 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -30451,16 +30375,16 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@walletconnect/sign-client@2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)':
+  '@walletconnect/sign-client@2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)':
     dependencies:
-      '@walletconnect/core': 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+      '@walletconnect/core': 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       '@walletconnect/events': 1.0.1
       '@walletconnect/heartbeat': 1.2.2
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/logger': 2.1.2
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.18.1-canary-ws-3(db0@0.2.4)(ioredis@5.5.0)
-      '@walletconnect/utils': 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+      '@walletconnect/types': 2.19.0(db0@0.2.4)(ioredis@5.5.0)
+      '@walletconnect/utils': 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       events: 3.3.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -30604,35 +30528,7 @@ snapshots:
       - ioredis
       - uploadthing
 
-  '@walletconnect/types@2.18.0(db0@0.2.4)(ioredis@5.5.0)':
-    dependencies:
-      '@walletconnect/events': 1.0.1
-      '@walletconnect/heartbeat': 1.2.2
-      '@walletconnect/jsonrpc-types': 1.0.4
-      '@walletconnect/keyvaluestorage': 1.1.1(db0@0.2.4)(ioredis@5.5.0)
-      '@walletconnect/logger': 2.1.2
-      events: 3.3.0
-    transitivePeerDependencies:
-      - '@azure/app-configuration'
-      - '@azure/cosmos'
-      - '@azure/data-tables'
-      - '@azure/identity'
-      - '@azure/keyvault-secrets'
-      - '@azure/storage-blob'
-      - '@capacitor/preferences'
-      - '@deno/kv'
-      - '@netlify/blobs'
-      - '@planetscale/database'
-      - '@react-native-async-storage/async-storage'
-      - '@upstash/redis'
-      - '@vercel/blob'
-      - '@vercel/kv'
-      - aws4fetch
-      - db0
-      - ioredis
-      - uploadthing
-
-  '@walletconnect/types@2.18.1-canary-ws-3(db0@0.2.4)(ioredis@5.5.0)':
+  '@walletconnect/types@2.19.0(db0@0.2.4)(ioredis@5.5.0)':
     dependencies:
       '@walletconnect/events': 1.0.1
       '@walletconnect/heartbeat': 1.2.2
@@ -30805,7 +30701,7 @@ snapshots:
       - uploadthing
       - utf-8-validate
 
-  '@walletconnect/universal-provider@2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)':
+  '@walletconnect/universal-provider@2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)':
     dependencies:
       '@walletconnect/events': 1.0.1
       '@walletconnect/jsonrpc-http-connection': 1.0.8
@@ -30814,9 +30710,9 @@ snapshots:
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/keyvaluestorage': 1.1.1(db0@0.2.4)(ioredis@5.5.0)
       '@walletconnect/logger': 2.1.2
-      '@walletconnect/sign-client': 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)
-      '@walletconnect/types': 2.18.1-canary-ws-3(db0@0.2.4)(ioredis@5.5.0)
-      '@walletconnect/utils': 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)
+      '@walletconnect/sign-client': 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)
+      '@walletconnect/types': 2.19.0(db0@0.2.4)(ioredis@5.5.0)
+      '@walletconnect/utils': 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)
       events: 3.3.0
       lodash: 4.17.21
     transitivePeerDependencies:
@@ -30844,7 +30740,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@walletconnect/universal-provider@2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)':
+  '@walletconnect/universal-provider@2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)':
     dependencies:
       '@walletconnect/events': 1.0.1
       '@walletconnect/jsonrpc-http-connection': 1.0.8
@@ -30853,9 +30749,9 @@ snapshots:
       '@walletconnect/jsonrpc-utils': 1.0.8
       '@walletconnect/keyvaluestorage': 1.1.1(db0@0.2.4)(ioredis@5.5.0)
       '@walletconnect/logger': 2.1.2
-      '@walletconnect/sign-client': 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
-      '@walletconnect/types': 2.18.1-canary-ws-3(db0@0.2.4)(ioredis@5.5.0)
-      '@walletconnect/utils': 2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+      '@walletconnect/sign-client': 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
+      '@walletconnect/types': 2.19.0(db0@0.2.4)(ioredis@5.5.0)
+      '@walletconnect/utils': 2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)
       events: 3.3.0
       lodash: 4.17.21
     transitivePeerDependencies:
@@ -31046,46 +30942,7 @@ snapshots:
       - ioredis
       - uploadthing
 
-  '@walletconnect/utils@2.18.0(db0@0.2.4)(ioredis@5.5.0)':
-    dependencies:
-      '@ethersproject/transactions': 5.7.0
-      '@noble/ciphers': 1.2.1
-      '@noble/curves': 1.8.1
-      '@noble/hashes': 1.7.1
-      '@walletconnect/jsonrpc-utils': 1.0.8
-      '@walletconnect/keyvaluestorage': 1.1.1(db0@0.2.4)(ioredis@5.5.0)
-      '@walletconnect/relay-api': 1.0.11
-      '@walletconnect/relay-auth': 1.1.0
-      '@walletconnect/safe-json': 1.0.2
-      '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.18.0(db0@0.2.4)(ioredis@5.5.0)
-      '@walletconnect/window-getters': 1.0.1
-      '@walletconnect/window-metadata': 1.0.1
-      detect-browser: 5.3.0
-      elliptic: 6.6.1
-      query-string: 7.1.3
-      uint8arrays: 3.1.0
-    transitivePeerDependencies:
-      - '@azure/app-configuration'
-      - '@azure/cosmos'
-      - '@azure/data-tables'
-      - '@azure/identity'
-      - '@azure/keyvault-secrets'
-      - '@azure/storage-blob'
-      - '@capacitor/preferences'
-      - '@deno/kv'
-      - '@netlify/blobs'
-      - '@planetscale/database'
-      - '@react-native-async-storage/async-storage'
-      - '@upstash/redis'
-      - '@vercel/blob'
-      - '@vercel/kv'
-      - aws4fetch
-      - db0
-      - ioredis
-      - uploadthing
-
-  '@walletconnect/utils@2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)':
+  '@walletconnect/utils@2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)':
     dependencies:
       '@noble/ciphers': 1.2.1
       '@noble/curves': 1.8.1
@@ -31096,7 +30953,7 @@ snapshots:
       '@walletconnect/relay-auth': 1.1.0
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.18.1-canary-ws-3(db0@0.2.4)(ioredis@5.5.0)
+      '@walletconnect/types': 2.19.0(db0@0.2.4)(ioredis@5.5.0)
       '@walletconnect/window-getters': 1.0.1
       '@walletconnect/window-metadata': 1.0.1
       detect-browser: 5.3.0
@@ -31128,7 +30985,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@walletconnect/utils@2.18.1-canary-ws-3(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)':
+  '@walletconnect/utils@2.19.0(bufferutil@4.0.9)(db0@0.2.4)(ioredis@5.5.0)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.23.8)':
     dependencies:
       '@noble/ciphers': 1.2.1
       '@noble/curves': 1.8.1
@@ -31139,7 +30996,7 @@ snapshots:
       '@walletconnect/relay-auth': 1.1.0
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.18.1-canary-ws-3(db0@0.2.4)(ioredis@5.5.0)
+      '@walletconnect/types': 2.19.0(db0@0.2.4)(ioredis@5.5.0)
       '@walletconnect/window-getters': 1.0.1
       '@walletconnect/window-metadata': 1.0.1
       detect-browser: 5.3.0
@@ -33718,7 +33575,7 @@ snapshots:
       eslint: 8.56.0
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.8.3(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.7.3))(eslint@8.56.0))(eslint@8.56.0)
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.7.3))(eslint-import-resolver-typescript@3.8.3)(eslint@8.56.0)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.7.3))(eslint-import-resolver-typescript@3.8.3(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.7.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0)
       eslint-plugin-jsx-a11y: 6.10.2(eslint@8.56.0)
       eslint-plugin-react: 7.37.4(eslint@8.56.0)
       eslint-plugin-react-hooks: 5.0.0-canary-7118f5dd7-20230705(eslint@8.56.0)
@@ -33752,7 +33609,7 @@ snapshots:
       stable-hash: 0.0.4
       tinyglobby: 0.2.12
     optionalDependencies:
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.7.3))(eslint-import-resolver-typescript@3.8.3)(eslint@8.56.0)
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.7.3))(eslint-import-resolver-typescript@3.8.3(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.7.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -33767,7 +33624,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.7.3))(eslint-import-resolver-typescript@3.8.3)(eslint@8.56.0):
+  eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.7.3))(eslint-import-resolver-typescript@3.8.3(eslint-plugin-import@2.31.0(@typescript-eslint/parser@6.18.1(eslint@8.56.0)(typescript@5.7.3))(eslint@8.56.0))(eslint@8.56.0))(eslint@8.56.0):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.8
