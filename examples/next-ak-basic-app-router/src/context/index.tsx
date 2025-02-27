@@ -19,7 +19,7 @@ if (!projectId) {
 export const appKitMetadata = {
   name: 'AppKit Next.js AppKit Basic',
   description: 'AppKit Next.js AppKit Basic Example',
-  url: 'https://github.com/0xonerb/next-reown-appkit-ssr', // origin must match your domain & subdomain
+  url: 'https://appkit-lab.reown.com', // origin must match your domain & subdomain
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
