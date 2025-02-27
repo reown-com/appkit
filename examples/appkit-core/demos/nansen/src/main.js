@@ -20,18 +20,6 @@ const polkadot = defineChain({
   caipNetworkId: 'polkadot:91b171bb158e2d3848fa23a9f1c25182'
 })
 
-// const sui = defineChain({
-//   id: 'mainnet',
-//   name: 'Sui',
-//   nativeCurrency: { name: 'Sui', symbol: 'SUI', decimals: 9 },
-//   rpcUrls: {
-//     default: { http: ['https://sui-rpc.publicnode.com'] }
-//   },
-//   blockExplorers: { default: { name: 'Sui Explorer', url: 'https://suiexplorer.com/' } },
-//   testnet: false,
-//   chainNamespace: 'sui',
-//   caipNetworkId: 'sui:mainnet'
-// })
 const cosmos = defineChain({
   id: 'cosmoshub-3',
   name: 'Cosmos',
@@ -222,7 +210,6 @@ async function initializeApp() {
   document.getElementById('switch-network-eth')?.addEventListener('click', async () => {
     await modal.switchNetwork(mainnet)
     network = 'eip155:1'
-    console.log('>> network:', network)
     account = provider?.session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2]
     localStorage.setItem('active_network', network)
     updateDom()
@@ -330,9 +317,7 @@ async function getPayload() {
       }
     }
   }
-  console.log('>> network:', network)
   const [namespace] = network.split(':')
-  console.log('>> Namespace', namespace)
   const payload = map[namespace || '']
 
   return payload
