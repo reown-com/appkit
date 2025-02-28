@@ -1,12 +1,20 @@
-import { SystemUtil } from '@reown/appkit-common'
-
+/* eslint-disable @typescript-eslint/prefer-optional-chain */
 const DEFAULT_SDK_URL = 'https://secure.walletconnect.org/sdk'
 
-export const SECURE_SITE_SDK = SystemUtil.getEnv('NEXT_PUBLIC_SECURE_SITE_SDK_URL', DEFAULT_SDK_URL)
+export const SECURE_SITE_SDK =
+  (typeof process !== 'undefined' && typeof process.env !== 'undefined'
+    ? process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL']
+    : undefined) || DEFAULT_SDK_URL
 
-export const DEFAULT_LOG_LEVEL = SystemUtil.getEnv('NEXT_PUBLIC_DEFAULT_LOG_LEVEL', 'error')
+export const DEFAULT_LOG_LEVEL =
+  (typeof process !== 'undefined' && typeof process.env !== 'undefined'
+    ? process.env['NEXT_PUBLIC_DEFAULT_LOG_LEVEL']
+    : undefined) || 'error'
 
-export const SECURE_SITE_SDK_VERSION = SystemUtil.getEnv('NEXT_PUBLIC_SECURE_SITE_SDK_VERSION', '3')
+export const SECURE_SITE_SDK_VERSION =
+  (typeof process !== 'undefined' && typeof process.env !== 'undefined'
+    ? process.env['NEXT_PUBLIC_SECURE_SITE_SDK_VERSION']
+    : undefined) || '3'
 
 export const W3mFrameConstants = {
   APP_EVENT_KEY: '@w3m-app/',

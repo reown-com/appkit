@@ -1,12 +1,12 @@
-import { SystemUtil } from '@reown/appkit-common'
 import type { ConnectMethod } from '@reown/appkit-core'
 
 export const ConstantsUtil = {
   ACCOUNT_TABS: [{ label: 'Tokens' }, { label: 'NFTs' }, { label: 'Activity' }],
-  SECURE_SITE_ORIGIN: SystemUtil.getEnv(
-    'NEXT_PUBLIC_SECURE_SITE_ORIGIN',
-    'https://secure.walletconnect.org'
-  ),
+  SECURE_SITE_ORIGIN:
+    // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+    (typeof process !== 'undefined' && typeof process.env !== 'undefined'
+      ? process.env['NEXT_PUBLIC_SECURE_SITE_ORIGIN']
+      : undefined) || 'https://secure.walletconnect.org',
   VIEW_DIRECTION: {
     Next: 'next',
     Prev: 'prev'

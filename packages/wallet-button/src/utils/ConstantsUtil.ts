@@ -1,10 +1,9 @@
-import { SystemUtil } from '@reown/appkit-common'
-
 export const ConstantsUtil = {
-  SECURE_SITE_ORIGIN: SystemUtil.getEnv(
-    'NEXT_PUBLIC_SECURE_SITE_ORIGIN',
-    'https://secure.walletconnect.org'
-  ),
+  SECURE_SITE_ORIGIN:
+    // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+    (typeof process !== 'undefined' && typeof process.env !== 'undefined'
+      ? process.env['NEXT_PUBLIC_SECURE_SITE_ORIGIN']
+      : undefined) || 'https://secure.walletconnect.org',
 
   Socials: ['google', 'github', 'apple', 'facebook', 'x', 'discord', 'farcaster'] as const,
 
