@@ -82,18 +82,21 @@ export class AppKit extends AppKitCore {
     })
     provider.onRpcSuccess((_, request) => {
       const isSafeRequest = W3mFrameHelpers.checkIfRequestIsSafe(request)
+      const address = AccountController.state.address
+      const caipNetwork = ChainController.state.activeCaipNetwork
+
       if (isSafeRequest) {
         return
       }
       if (this.isTransactionStackEmpty()) {
         this.close()
-        if (AccountController.state.address && ChainController.state.activeCaipNetwork?.id) {
-          this.updateNativeBalance()
+        if (address && caipNetwork?.id) {
+          this.updateNativeBalance(address, caipNetwork.id, caipNetwork.chainNamespace)
         }
       } else {
         this.popTransactionStack()
-        if (AccountController.state.address && ChainController.state.activeCaipNetwork?.id) {
-          this.updateNativeBalance()
+        if (address && caipNetwork?.id) {
+          this.updateNativeBalance(address, caipNetwork.id, caipNetwork.chainNamespace)
         }
       }
     })
@@ -369,8 +372,7 @@ export class AppKit extends AppKitCore {
           chainNamespace: caipNetwork.chainNamespace
         })
       } else {
-        const providerType =
-          ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
+        const providerType = ProviderUtil.state.providerIds[caipNetwork.chainNamespace]
 
         if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH) {
           try {

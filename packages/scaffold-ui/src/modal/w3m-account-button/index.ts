@@ -112,10 +112,6 @@ class W3mAccountButtonBase extends LitElement {
     this.fetchNetworkImage(this.network)
   }
 
-  public override firstUpdated() {
-    AssetUtil.fetchNetworkImage(this.network?.assets?.imageId)
-  }
-
   public override disconnectedCallback() {
     this.unsubscribe.forEach(unsubscribe => unsubscribe())
   }

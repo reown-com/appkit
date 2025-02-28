@@ -728,7 +728,7 @@ export abstract class AppKitCore {
         return
       }
 
-      this.updateNativeBalance()
+      this.updateNativeBalance(address, activeCaipNetwork.id, activeCaipNetwork.chainNamespace)
     })
 
     adapter.on('accountChanged', ({ address, chainId }) => {
@@ -1159,23 +1159,28 @@ export abstract class AppKitCore {
       params.chainNamespace
     ).find(n => n.id.toString() === params.chainId?.toString())
 
-    if (!caipNetwork) {
+    if (!caipNetwork || !params.chainId) {
       return
     }
 
-    await this.updateNativeBalance()
+    await this.updateNativeBalance(params.address, params.chainId, params.chainNamespace)
   }
 
-  protected async updateNativeBalance() {
-    const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
-    if (adapter && ChainController.state.activeChain && AccountController.state.address) {
+  public async updateNativeBalance(
+    address: string,
+    chainId: string | number,
+    namespace: ChainNamespace
+  ) {
+    const adapter = this.getAdapter(namespace)
+
+    if (adapter) {
       const balance = await adapter.getBalance({
-        address: AccountController.state.address,
-        chainId: ChainController.state.activeCaipNetwork?.id as string | number,
+        address,
+        chainId,
         caipNetwork: this.getCaipNetwork(),
         tokens: this.options.tokens
       })
-      this.setBalance(balance.balance, balance.symbol, ChainController.state.activeChain)
+      this.setBalance(balance.balance, balance.symbol, namespace)
     }
   }
 
@@ -1421,6 +1426,10 @@ export abstract class AppKitCore {
     ChainController.setActiveCaipNetwork(caipNetwork)
   }
 
+  public setCaipNetworkOfNamespace = (caipNetwork: CaipNetwork, chainNamespace: ChainNamespace) => {
+    ChainController.setChainNetworkData(chainNamespace, { caipNetwork })
+  }
+
   public setAllAccounts: (typeof AccountController)['setAllAccounts'] = (addresses, chain) => {
     AccountController.setAllAccounts<typeof chain>(addresses, chain)
     OptionsController.setHasMultipleAddresses(addresses?.length > 1)
@@ -1466,10 +1475,6 @@ export abstract class AppKitCore {
 
     if (options?.uri) {
       ConnectionController.setUri(options.uri)
-    }
-
-    if (options?.namespace) {
-      ConnectorController.setFilterByNamespace(options.namespace)
     }
 
     await ModalController.open(options)

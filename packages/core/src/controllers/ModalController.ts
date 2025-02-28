@@ -50,6 +50,7 @@ export const ModalController = {
   subscribeKey<K extends StateKey>(key: K, callback: (value: ModalControllerState[K]) => void) {
     return subKey(state, key, callback)
   },
+
   async open(options?: ModalControllerArguments['open']) {
     if (ConnectionController.state.wcBasic) {
       // No need to add an await here if we are use basic
@@ -58,8 +59,11 @@ export const ModalController = {
       await ApiController.prefetch()
     }
 
-    const caipAddress = ChainController.state.activeCaipAddress
+    if (options?.namespace) {
+      ConnectorController.setFilterByNamespace(options.namespace)
+    }
 
+    const caipAddress = ChainController.state.activeCaipAddress
     const hasNoAdapters = ChainController.state.noAdapters
 
     if (options?.view) {
@@ -75,6 +79,7 @@ export const ModalController = {
     } else {
       RouterController.reset('Connect')
     }
+
     state.open = true
     PublicStateController.set({ open: true })
     EventsController.sendEvent({

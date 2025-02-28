@@ -3,7 +3,6 @@ import * as ethers from 'ethers'
 import { formatEther } from 'ethers/lib/utils.js'
 
 import { type AppKitOptions, WcConstantsUtil } from '@reown/appkit'
-import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import {
   type CombinedProvider,
@@ -510,14 +509,14 @@ export class Ethers5Adapter extends AdapterBlueprint {
             delete this.balancePromises[caipAddress]
           })
 
-          return this.balancePromises[caipAddress] || { balance: '', symbol: '' }
+          return this.balancePromises[caipAddress] || { balance: '0.00', symbol: 'ETH' }
         } catch (error) {
-          return { balance: '', symbol: '' }
+          return { balance: '0.00', symbol: 'ETH' }
         }
       }
     }
 
-    return { balance: '', symbol: '' }
+    return { balance: '0.00', symbol: 'ETH' }
   }
 
   public async getProfile(
