@@ -1,5 +1,7 @@
 import { vi } from 'vitest'
 
+import { Emitter } from '@reown/appkit-common'
+
 import type { AdapterBlueprint } from '../../src/adapters/ChainAdapterBlueprint.js'
 import { bitcoin, mainnet, solana } from './Networks.js'
 import { mockProvider } from './Providers.js'
@@ -55,6 +57,8 @@ export const mockBitcoinAdapter = {
   removeAllEventListeners: vi.fn()
 } as unknown as AdapterBlueprint
 
+export const emitter = new Emitter()
+
 export const mockEvmAdapter = {
   namespace: 'eip155',
   construct: vi.fn(),
@@ -72,9 +76,9 @@ export const mockEvmAdapter = {
   getBalance: vi.fn().mockResolvedValue({ balance: '1.00', symbol: 'ETH' }),
   getProfile: vi.fn().mockResolvedValue({}),
   getWalletConnectProvider: vi.fn().mockResolvedValue(mockProvider),
-  on: vi.fn(),
-  off: vi.fn(),
-  emit: vi.fn(),
+  on: emitter.on.bind(emitter),
+  off: emitter.off.bind(emitter),
+  emit: emitter.emit.bind(emitter),
   removeAllEventListeners: vi.fn()
 } as unknown as AdapterBlueprint
 
