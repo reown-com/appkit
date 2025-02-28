@@ -490,7 +490,7 @@ describe('BitcoinAdapter', () => {
         })
       )
 
-      listeners.accountChanged = vi.fn(() => console.log('meu pau'))
+      listeners.accountChanged = vi.fn(() => {})
       adapter.on('accountChanged', listeners.accountChanged)
       listeners.disconnect = vi.fn()
       adapter.on('disconnect', listeners.disconnect)

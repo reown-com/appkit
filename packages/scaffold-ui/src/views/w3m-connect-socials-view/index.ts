@@ -4,7 +4,11 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { OptionsController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
 
+import '../../partials/w3m-legal-checkbox/index.js'
+import '../../partials/w3m-legal-footer/index.js'
+import '../../partials/w3m-social-login-list/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-connect-socials-view')
