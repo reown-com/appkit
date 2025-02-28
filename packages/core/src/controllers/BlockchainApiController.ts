@@ -38,6 +38,7 @@ import type {
 import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
+import { SnackController } from './SnackController.js'
 
 const DEFAULT_OPTIONS = {
   purchaseCurrencies: [
@@ -419,6 +420,8 @@ export const BlockchainApiController = {
       ChainController.state.activeCaipNetwork?.caipNetworkId
     )
     if (!isSupported) {
+      SnackController.showError('Token Balance Unavailable')
+
       return { balances: [] }
     }
     const caipAddress = `${chainId}:${address}`

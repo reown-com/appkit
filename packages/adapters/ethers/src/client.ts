@@ -2,7 +2,8 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import { InfuraProvider, JsonRpcProvider, formatEther } from 'ethers'
 
 import { type AppKitOptions, WcConstantsUtil } from '@reown/appkit'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import type { CaipNetwork } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import {
   type CombinedProvider,
   type Connector,
@@ -154,10 +155,11 @@ export class EthersAdapter extends AdapterBlueprint {
       throw new Error('Provider is undefined')
     }
 
+    const { address } = ParseUtil.parseCaipAddress(params.caipAddress)
     const result = await EthersMethods.writeContract(
       params,
       params.provider as Provider,
-      params.caipAddress,
+      address,
       Number(params.caipNetwork?.id)
     )
 

@@ -298,6 +298,31 @@ export const StorageUtil = {
       console.info('Unable to remove connected namespace')
     }
   },
+  getTelegramSocialProvider() {
+    try {
+      return SafeLocalStorage.getItem(SafeLocalStorageKeys.TELEGRAM_SOCIAL_PROVIDER) as
+        | SocialProvider
+        | undefined
+    } catch {
+      console.info('Unable to get telegram social provider')
+
+      return null
+    }
+  },
+  setTelegramSocialProvider(socialProvider: SocialProvider) {
+    try {
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.TELEGRAM_SOCIAL_PROVIDER, socialProvider)
+    } catch {
+      console.info('Unable to set telegram social provider')
+    }
+  },
+  removeTelegramSocialProvider() {
+    try {
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys.TELEGRAM_SOCIAL_PROVIDER)
+    } catch {
+      console.info('Unable to remove telegram social provider')
+    }
+  },
   getBalanceCache() {
     let cache: Record<string, { timestamp: number; balance: BlockchainApiBalanceResponse }> = {}
     try {

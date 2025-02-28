@@ -13,7 +13,8 @@ import {
   OptionsController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import type { WuiAccountButton } from '@reown/appkit-ui'
+import type { WuiAccountButton } from '@reown/appkit-ui/wui-account-button'
+import '@reown/appkit-ui/wui-account-button'
 
 function getDefaultAccountState(namespace: ChainNamespace | undefined) {
   return ChainController.getAccountDataByChainNamespace(namespace)
@@ -101,6 +102,7 @@ class W3mAccountButtonBase extends LitElement {
           this.isSupported = val?.chainNamespace
             ? ChainController.checkIfSupportedNetwork(val?.chainNamespace)
             : true
+          AssetUtil.fetchNetworkImage(val?.assets?.imageId)
         })
       )
     }
@@ -108,6 +110,10 @@ class W3mAccountButtonBase extends LitElement {
 
   public override updated() {
     this.fetchNetworkImage(this.network)
+  }
+
+  public override firstUpdated() {
+    AssetUtil.fetchNetworkImage(this.network?.assets?.imageId)
   }
 
   public override disconnectedCallback() {

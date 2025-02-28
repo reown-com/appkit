@@ -500,15 +500,10 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public override async connectWalletConnect(chainId?: number | string) {
-    // Attempt one click auth first
+    // Attempt one click auth first, if authenticated, still connect with wagmi to store the session
     const walletConnectConnector = this.getWalletConnectConnector()
-    const isAuthenticated = await walletConnectConnector.authenticate()
+    await walletConnectConnector.authenticate()
 
-    if (isAuthenticated) {
-      return { clientId: await walletConnectConnector.provider.client.core.crypto.getClientId() }
-    }
-
-    // Attempt to connect using wagmi connector
     const wagmiConnector = this.getWagmiConnector('walletConnect')
 
     if (!wagmiConnector) {

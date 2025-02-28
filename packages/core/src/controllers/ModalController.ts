@@ -6,6 +6,7 @@ import type { ChainNamespace } from '@reown/appkit-common'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
+import { ConnectionController } from './ConnectionController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
@@ -49,23 +50,28 @@ export const ModalController = {
   subscribeKey<K extends StateKey>(key: K, callback: (value: ModalControllerState[K]) => void) {
     return subKey(state, key, callback)
   },
-
   async open(options?: ModalControllerArguments['open']) {
-    await ApiController.prefetch()
-
-    if (options?.namespace) {
-      ConnectorController.setFilterByNamespace(options.namespace)
+    if (ConnectionController.state.wcBasic) {
+      // No need to add an await here if we are use basic
+      ApiController.prefetch({ fetchNetworkImages: false, fetchConnectorImages: false })
+    } else {
+      await ApiController.prefetch()
     }
 
     const caipAddress = ChainController.state.activeCaipAddress
-    const noAdapters = ChainController.state.noAdapters
+
+    const hasNoAdapters = ChainController.state.noAdapters
 
     if (options?.view) {
       RouterController.reset(options.view)
     } else if (caipAddress) {
       RouterController.reset('Account')
-    } else if (noAdapters && !CoreHelperUtil.isMobile()) {
-      RouterController.reset('ConnectingWalletConnectBasic')
+    } else if (hasNoAdapters) {
+      if (CoreHelperUtil.isMobile()) {
+        RouterController.reset('AllWallets')
+      } else {
+        RouterController.reset('ConnectingWalletConnectBasic')
+      }
     } else {
       RouterController.reset('Connect')
     }
@@ -80,12 +86,21 @@ export const ModalController = {
 
   close() {
     const isEmbeddedEnabled = OptionsController.state.enableEmbedded
-    const connected = Boolean(ChainController.state.activeCaipAddress)
+    const isConnected = Boolean(ChainController.state.activeCaipAddress)
+
+    // Only send the event if the modal is open and is about to be closed
+    if (state.open) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'MODAL_CLOSE',
+        properties: { connected: isConnected }
+      })
+    }
 
     state.open = false
 
     if (isEmbeddedEnabled) {
-      if (connected) {
+      if (isConnected) {
         RouterController.replace('Account')
       } else {
         RouterController.push('Connect')
@@ -94,13 +109,8 @@ export const ModalController = {
       PublicStateController.set({ open: false })
     }
 
-    EventsController.sendEvent({
-      type: 'track',
-      event: 'MODAL_CLOSE',
-      properties: { connected }
-    })
-
     ConnectorController.clearNamespaceFilter()
+    ConnectionController.resetUri()
   },
 
   setLoading(loading: ModalControllerState['loading']) {

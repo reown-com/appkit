@@ -10,7 +10,7 @@ import {
   OptionsController,
   type OptionsControllerState
 } from '@reown/appkit-core'
-import type { WuiNetworkButton } from '@reown/appkit-ui'
+import type { WuiNetworkButton } from '@reown/appkit-ui/wui-network-button'
 
 import type { OptionsControllerStateInternal } from '../../../core/dist/types/src/controllers/OptionsController'
 import { W3mNetworkButton } from '../../src/modal/w3m-network-button'
