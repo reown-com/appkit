@@ -41,6 +41,7 @@ describe('Listeners', () => {
     const setProfileImageSpy = vi.spyOn(appKit, 'setProfileImage').mockImplementation(() => {})
 
     await appKit['syncAccount'](mockAccount)
+    // @ts-expect-error private event
     mockEvmAdapter.emit('accountChanged', mockAccount)
 
     expect(setCaipAddressSpy).toHaveBeenCalledWith(
