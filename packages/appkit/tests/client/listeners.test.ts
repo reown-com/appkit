@@ -83,7 +83,8 @@ describe('Listeners', () => {
       features: { email: false, socials: [] }
     })
 
-    mockChainControllerStateWithUnsupportedChain()
+    ChainController.state.activeChain = mainnet.chainNamespace
+    ChainController.state.activeCaipNetwork = unsupportedNetwork
 
     await appKit['syncAccount']({
       address: '0x123',

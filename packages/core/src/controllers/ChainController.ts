@@ -703,15 +703,13 @@ export const ChainController = {
   },
 
   getAccountDataByChainNamespace(chainNamespace?: ChainNamespace) {
-    if (!chainNamespace) {
-      if (!ChainController.state.activeChain) {
-        return undefined
-      }
+    const namespace = chainNamespace || state.activeChain
 
-      return ChainController.state.chains.get(ChainController.state.activeChain)?.accountState
+    if (!namespace) {
+      return undefined
     }
 
-    return ChainController.state.chains.get(chainNamespace)?.accountState
+    return ChainController.state.chains.get(namespace)?.accountState
   },
 
   getNetworkDataByChainNamespace(chainNamespace?: ChainNamespace) {
