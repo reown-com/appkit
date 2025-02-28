@@ -11,10 +11,10 @@ import { testMWagmiVerifyEvil } from './shared/fixtures/w3m-wagmi-verify-evil-fi
 import { testMWagmiVerifyValid } from './shared/fixtures/w3m-wagmi-verify-valid-fixture'
 import { ModalPage } from './shared/pages/ModalPage'
 import { WalletPage } from './shared/pages/WalletPage'
+import { getCanaryTagAndAnnotation } from './shared/utils/metrics'
 import { routeInterceptUrl } from './shared/utils/verify'
 import { ModalValidator } from './shared/validators/ModalValidator'
 import { WalletValidator } from './shared/validators/WalletValidator'
-import { getCanaryTagAndAnnotation } from './shared/utils/metrics'
 
 testM(
   'connection and signature requests from non-verified project should show as cannot verify',
