@@ -14,6 +14,7 @@ import { WalletPage } from './shared/pages/WalletPage'
 import { routeInterceptUrl } from './shared/utils/verify'
 import { ModalValidator } from './shared/validators/ModalValidator'
 import { WalletValidator } from './shared/validators/WalletValidator'
+import { getCanaryTagAndAnnotation } from './shared/utils/metrics'
 
 testM(
   'connection and signature requests from non-verified project should show as cannot verify',
@@ -47,6 +48,7 @@ testM(
 
 testMWagmiVerifyValid(
   'wagmi: connection and signature requests from non-scam verified domain should show as domain match',
+  getCanaryTagAndAnnotation('HappyPath.verify'),
   async ({ modalPage, context }) => {
     test.skip(modalPage.library !== 'wagmi', 'fixture always uses wagmi')
 
@@ -107,6 +109,7 @@ testMWagmiVerifyDomainMismatch(
 
 testMWagmiVerifyEvil(
   'wagmi: connection and signature requests from scam verified domain should show as scam domain',
+  getCanaryTagAndAnnotation('UnhappyPath.verify-scam'),
   async ({ modalPage, context }) => {
     test.skip(modalPage.library !== 'wagmi', 'fixture always uses wagmi')
 
