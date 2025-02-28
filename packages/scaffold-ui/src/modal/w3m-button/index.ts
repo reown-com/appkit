@@ -3,7 +3,7 @@ import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import { ChainController, ModalController } from '@reown/appkit-core'
+import { ChainController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
 import type { W3mAccountButton } from '../w3m-account-button/index.js'
@@ -35,12 +35,8 @@ class W3mButtonBase extends LitElement {
 
   @state() private caipAddress = ChainController.state.activeCaipAddress
 
-  @state() private isLoading = ModalController.state.loading
-
   // -- Lifecycle ----------------------------------------- //
   public override firstUpdated() {
-    this.unsubscribe.push(ModalController.subscribeKey('loading', val => (this.isLoading = val)))
-
     if (this.namespace) {
       this.unsubscribe.push(
         ChainController.subscribeChainProp(
@@ -64,7 +60,7 @@ class W3mButtonBase extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return this.caipAddress && !this.isLoading
+    return this.caipAddress
       ? html`
           <appkit-account-button
             .disabled=${Boolean(this.disabled)}

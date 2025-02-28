@@ -3,7 +3,7 @@ import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import { ConnectorController, ModalController } from '@reown/appkit-core'
+import { ModalController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import type { WuiConnectButton } from '@reown/appkit-ui/wui-connect-button'
 import '@reown/appkit-ui/wui-connect-button'
@@ -23,7 +23,9 @@ class W3mConnectButtonBase extends LitElement {
 
   @state() private open = ModalController.state.open
 
-  @state() private loading = ModalController.state.loading
+  @state() private loading = this.namespace
+    ? ModalController.state.loadingNamespaceMap.get(this.namespace)
+    : ModalController.state.loading
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -31,7 +33,7 @@ class W3mConnectButtonBase extends LitElement {
     this.unsubscribe.push(
       ModalController.subscribe(val => {
         this.open = val.open
-        this.loading = val.loading
+        this.loading = this.namespace ? val.loadingNamespaceMap.get(this.namespace) : val.loading
       })
     )
   }
@@ -42,18 +44,14 @@ class W3mConnectButtonBase extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const isFilteringByThisNamespace =
-      this.namespace && this.namespace === ConnectorController.state.filterByNamespace
-    const isLoading = this.loading || (this.namespace ? isFilteringByThisNamespace : this.open)
-
     return html`
       <wui-connect-button
         size=${ifDefined(this.size)}
-        .loading=${isLoading}
+        .loading=${this.loading}
         @click=${this.onClick.bind(this)}
         data-testid="connect-button"
       >
-        ${isLoading ? this.loadingLabel : this.label}
+        ${this.loading ? this.loadingLabel : this.label}
       </wui-connect-button>
     `
   }

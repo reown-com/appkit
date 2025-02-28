@@ -1,6 +1,7 @@
 import { SystemUtil } from '@reown/appkit-common'
 
-const DEFAULT_SDK_URL = 'https://secure.walletconnect.org/sdk'
+const DEFAULT_SDK_URL =
+  process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL'] || 'https://secure.walletconnect.org/sdk'
 
 export const SECURE_SITE_SDK = SystemUtil.getEnv('NEXT_PUBLIC_SECURE_SITE_SDK_URL', DEFAULT_SDK_URL)
 

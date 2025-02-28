@@ -45,8 +45,9 @@ class W3mAccountButtonBase extends LitElement {
 
   @state() private profileImage = getDefaultAccountState(this.namespace)?.profileImage
 
-  @state() private network = ChainController.getNetworkDataByChainNamespace(this.namespace)
-    ?.caipNetwork
+  @state() private network = ChainController.getNetworkDataByChainNamespace(
+    this.namespace ?? ChainController.state.activeChain
+  )?.caipNetwork
 
   @state() private networkImage = AssetUtil.getNetworkImage(this.network)
 
@@ -102,7 +103,7 @@ class W3mAccountButtonBase extends LitElement {
           this.isSupported = val?.chainNamespace
             ? ChainController.checkIfSupportedNetwork(val?.chainNamespace)
             : true
-          AssetUtil.fetchNetworkImage(val?.assets?.imageId)
+          this.fetchNetworkImage(val)
         })
       )
     }
@@ -171,7 +172,7 @@ class W3mAccountButtonBase extends LitElement {
   }
 
   private async fetchNetworkImage(network?: CaipNetwork) {
-    if (!this.networkImage && network?.assets?.imageId) {
+    if (network?.assets?.imageId) {
       this.networkImage = await AssetUtil.fetchNetworkImage(network?.assets?.imageId)
     }
   }

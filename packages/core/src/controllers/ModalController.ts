@@ -17,6 +17,7 @@ import { RouterController } from './RouterController.js'
 // -- Types --------------------------------------------- //
 export interface ModalControllerState {
   loading: boolean
+  loadingNamespaceMap: Map<ChainNamespace, boolean>
   open: boolean
   shake: boolean
   namespace: ChainNamespace | undefined
@@ -34,6 +35,7 @@ type StateKey = keyof ModalControllerState
 // -- State --------------------------------------------- //
 const state = proxy<ModalControllerState>({
   loading: false,
+  loadingNamespaceMap: new Map<ChainNamespace, boolean>(),
   open: false,
   shake: false,
   namespace: undefined
@@ -61,6 +63,9 @@ export const ModalController = {
 
     if (options?.namespace) {
       ConnectorController.setFilterByNamespace(options.namespace)
+      ModalController.setLoading(true, options.namespace)
+    } else {
+      ModalController.setLoading(true)
     }
 
     const caipAddress = ChainController.state.activeCaipAddress
@@ -103,6 +108,7 @@ export const ModalController = {
     }
 
     state.open = false
+    ModalController.clearLoading()
 
     if (isEmbeddedEnabled) {
       if (isConnected) {
@@ -118,9 +124,17 @@ export const ModalController = {
     ConnectionController.resetUri()
   },
 
-  setLoading(loading: ModalControllerState['loading']) {
+  setLoading(loading: ModalControllerState['loading'], namespace?: ChainNamespace) {
+    if (namespace) {
+      state.loadingNamespaceMap.set(namespace, loading)
+    }
     state.loading = loading
     PublicStateController.set({ loading })
+  },
+
+  clearLoading() {
+    state.loadingNamespaceMap.clear()
+    state.loading = false
   },
 
   shake() {
