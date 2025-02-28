@@ -1022,7 +1022,7 @@ export abstract class AppKitCore {
     })
   }
 
-  private async syncIdentity({
+  public async syncIdentity({
     address,
     chainId,
     chainNamespace
