@@ -7,12 +7,7 @@ import { AppKit } from '../../src/client/appkit.js'
 import { mockEvmAdapter } from '../mocks/Adapter'
 import { mainnet, solana, unsupportedNetwork } from '../mocks/Networks'
 import { mockOptions } from '../mocks/Options'
-import {
-  mockBlockchainApiController,
-  mockChainControllerStateWithUnsupportedChain,
-  mockStorageUtil,
-  mockWindowAndDocument
-} from '../test-utils'
+import { mockBlockchainApiController, mockStorageUtil, mockWindowAndDocument } from '../test-utils'
 
 mockWindowAndDocument()
 mockStorageUtil()
