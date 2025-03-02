@@ -114,6 +114,14 @@ export abstract class AdapterBlueprint<
   }
 
   /**
+   * Gets the auth provider.
+   * @returns {W3mFrameProvider | undefined} The auth provider instance
+   */
+  public getAuthProvider(): W3mFrameProvider | undefined {
+    return this.connectors.find(c => c.type === 'AUTH')?.provider as W3mFrameProvider | undefined
+  }
+
+  /**
    * Adds one or more connectors to the available connectors list.
    * @param {...Connector} connectors - The connectors to add
    */

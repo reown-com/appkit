@@ -123,6 +123,7 @@ export class AppKit extends AppKitCore {
        *  network to a non-smart account supported network resulting in a different address
        */
 
+      console.log('>>> APPKT.onConnect.setCaipAddress', caipAddress, namespace)
       this.setCaipAddress(caipAddress, namespace)
       if (!HelpersUtil.isLowerCaseMatch(user.address, AccountController.state.address)) {
         this.syncIdentity({
@@ -358,24 +359,39 @@ export class AppKit extends AppKitCore {
     const networkNamespace = caipNetwork.chainNamespace
     const namespaceAddress = this.getAddressByChainNamespace(caipNetwork.chainNamespace)
 
-    if (namespaceAddress) {
-      if (caipNetwork.chainNamespace === ChainController.state.activeChain) {
-        const adapter = this.getAdapter(networkNamespace)
-        const provider = ProviderUtil.getProvider(networkNamespace)
-        const providerType = ProviderUtil.state.providerIds[networkNamespace]
+    console.log(
+      '>>> APPKT.switchCaipNetwork',
+      caipNetwork,
+      networkNamespace,
+      namespaceAddress,
+      ChainController.state.activeChain
+    )
+    if (caipNetwork.chainNamespace === ChainController.state.activeChain) {
+      const adapter = this.getAdapter(networkNamespace)
+      const provider = ProviderUtil.getProvider(networkNamespace)
+      const providerType = ProviderUtil.state.providerIds[networkNamespace]
 
-        await adapter?.switchNetwork({ caipNetwork, provider, providerType })
-        this.setCaipNetwork(caipNetwork)
-        await this.syncAccount({
-          address: namespaceAddress,
-          chainId: caipNetwork.id,
-          chainNamespace: networkNamespace
-        })
-      } else {
-        const providerType = ProviderUtil.state.providerIds[networkNamespace]
+      await adapter?.switchNetwork({ caipNetwork, provider, providerType })
+      this.setCaipNetwork(caipNetwork)
+      await this.syncAccount({
+        address: namespaceAddress,
+        chainId: caipNetwork.id,
+        chainNamespace: networkNamespace
+      })
+    } else {
+      const providerType =
+        ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
+      const isNamespaceSupportsAuthConnector =
+        ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.includes(networkNamespace)
 
-        if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH) {
-          try {
+      if (
+        providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH &&
+        isNamespaceSupportsAuthConnector
+      ) {
+        try {
+          const data = await this.authProvider?.isConnected()
+          console.log('>>> APPKT.switchCaipNetwork.authProvider.connectExternal', caipNetwork, data)
+          if (!data?.isConnected || !namespaceAddress) {
             await this.connectionControllerClient?.connectExternal?.({
               id: ConstantsUtil.CONNECTOR_ID.AUTH,
               provider: this.authProvider,
@@ -384,31 +400,38 @@ export class AppKit extends AppKitCore {
               type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
               caipNetwork
             })
-            this.setCaipNetwork(caipNetwork)
-          } catch (error) {
-            const adapter = this.getAdapter(networkNamespace as ChainNamespace)
-            await adapter?.switchNetwork({
-              caipNetwork,
-              provider: this.authProvider,
-              providerType
-            })
           }
-        } else if (providerType === 'WALLET_CONNECT') {
+          console.log('>>> APPKT.switchCaipNetwork.authProvider', this.authProvider)
           this.setCaipNetwork(caipNetwork)
-          this.syncWalletConnectAccount()
-        } else {
-          this.setCaipNetwork(caipNetwork)
-          if (namespaceAddress) {
-            this.syncAccount({
-              address: namespaceAddress,
-              chainId: caipNetwork.id,
-              chainNamespace: networkNamespace
-            })
-          }
+        } catch (error) {
+          console.log(
+            '>>> APPKT.switchCaipNetwork.authProvider.error',
+            error,
+            this.authProvider,
+            caipNetwork
+          )
+          const adapter = this.getAdapter(networkNamespace as ChainNamespace)
+          await adapter?.switchNetwork({
+            caipNetwork,
+            provider: this.authProvider,
+            providerType
+          })
+        }
+      } else if (providerType === 'WALLET_CONNECT') {
+        console.log('>>> APPKT.switchCaipNetwork.wc', this.authProvider)
+        this.setCaipNetwork(caipNetwork)
+        this.syncWalletConnectAccount()
+      } else {
+        console.log('>>> APPKT.switchCaipNetwork.else', caipNetwork, networkNamespace)
+        this.setCaipNetwork(caipNetwork)
+        if (namespaceAddress) {
+          this.syncAccount({
+            address: namespaceAddress,
+            chainId: caipNetwork.id,
+            chainNamespace: networkNamespace
+          })
         }
       }
-    } else {
-      this.setCaipNetwork(caipNetwork)
     }
   }
 
