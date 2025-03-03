@@ -1,11 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { Emitter } from '@reown/appkit-common'
 import { AccountController, BlockchainApiController, ChainController } from '@reown/appkit-core'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { emitter, mockEvmAdapter, solanaEmitter } from '../mocks/Adapter'
-import { mainnet, solana, unsupportedNetwork } from '../mocks/Networks'
+import { mainnet, sepolia, solana, unsupportedNetwork } from '../mocks/Networks'
 import { mockOptions } from '../mocks/Options'
 import {
   mockBlockchainApiController,
