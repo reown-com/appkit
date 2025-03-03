@@ -362,6 +362,11 @@ export abstract class AppKitCore {
         const activeChain = ChainController.state.activeChain as ChainNamespace
         const chainToUse = chain || activeChain
         const adapter = this.getAdapter(chainToUse)
+        const connector = ConnectorController.getConnectors(chainToUse).find(c => c.id === id)
+
+        if (!connector) {
+          throw new Error('Connector not found')
+        }
 
         if (chain && chain !== activeChain && !caipNetwork) {
           const toConnectNetwork = this.caipNetworks?.find(
@@ -409,13 +414,7 @@ export abstract class AppKitCore {
             accounts,
             chainId: chainId,
             chain: chainToUse,
-            // @ts-expect-error will handle types
-            connector: {
-              ...info,
-              id,
-              type,
-              provider
-            }
+            connector
           }
         ])
       },

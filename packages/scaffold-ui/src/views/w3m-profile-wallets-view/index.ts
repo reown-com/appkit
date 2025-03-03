@@ -7,12 +7,16 @@ import '@reown/appkit-ui/wui-certified-switch'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon-box'
 import '@reown/appkit-ui/wui-search-bar'
+import '@reown/appkit-ui/wui-text'
 
 import '../../partials/w3m-all-wallets-list/index.js'
 import '../../partials/w3m-all-wallets-search/index.js'
+import styles from './style.js'
 
 @customElement('w3m-profile-wallets-view')
 export class W3mProfileWalletsView extends LitElement {
+  public static override styles = styles
+
   // -- State & Properties -------------------------------- //
   private unsubscribe: (() => void)[] = []
 
@@ -43,14 +47,22 @@ export class W3mProfileWalletsView extends LitElement {
   public override render() {
     return html`
       <wui-flex flexDirection="column" .padding=${['0', 's', 's', 's']} gap="xs">
-        <wui-text variant="paragraph-500" color="fg-100">Wallets</wui-text>
         ${this.connections.map(connection =>
-          connection.accounts?.map(
-            account => html`
-              <wui-list-item>
+          connection.accounts?.map(account => {
+            const connectorImageUrl = connection.connector.imageUrl
+
+            return html`
+              <wui-flex class="wui-profile-wallet-item">
+                ${connectorImageUrl
+                  ? html`<wui-avatar
+                      imageSrc=${connectorImageUrl}
+                      size="md"
+                      alt=${connection.connector.name}
+                    ></wui-avatar>`
+                  : null}
                 <wui-flex flexDirection="column" gap="xxs" alignItems="flex-start" flexGrow="1">
-                  <wui-flex flexDirection="row" gap="sm" alignItems="center">
-                    <wui-text variant="paragraph-500" color="fg-100">
+                  <wui-flex flexDirection="row" gap="m" alignItems="center">
+                    <wui-text variant="paragraph-400" color="fg-100">
                       ${UiHelperUtil.getTruncateString({
                         string: account.address,
                         charsStart: 6,
@@ -62,7 +74,7 @@ export class W3mProfileWalletsView extends LitElement {
                       ? html`<wui-tag size="md" variant="success">Active</wui-tag>`
                       : null}
                   </wui-flex>
-                  <wui-text variant="paragraph-small-500" color="fg-250">
+                  <wui-text variant="small-500" color="fg-250">
                     ${connection.connector.name ||
                     UiHelperUtil.getTruncateString({
                       string: connection.connector.id,
@@ -75,18 +87,21 @@ export class W3mProfileWalletsView extends LitElement {
                 ${account.address !== this.address
                   ? html`
                       <wui-button
-                        variant="neutral"
+                        variant="accent"
+                        size="md"
                         @click=${() => this.setActiveConnection(connection, account.address)}
                       >
                         Switch
                       </wui-button>
                     `
                   : ''}
-              </wui-list-item>
+              </wui-flex>
             `
-          )
+          })
         )}
-        <wui-button variant="secondary" @click=${this.handleAddWallet}>Add Wallet</wui-button>
+        <wui-button .fullWidth=${true} variant="main" @click=${this.handleAddWallet}
+          >Add Wallet</wui-button
+        >
       </wui-flex>
     `
   }
