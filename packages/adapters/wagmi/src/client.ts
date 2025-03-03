@@ -53,7 +53,7 @@ import {
 import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
-import { WalletConnectConnector } from '@reown/appkit/connectors'
+import { WalletConnectConnector } from '@reown/appkit'
 
 import { authConnector } from './connectors/AuthConnector.js'
 import { walletConnect } from './connectors/UniversalConnector.js'
