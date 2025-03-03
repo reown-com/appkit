@@ -1,11 +1,12 @@
-import { type ChainNamespace, SystemUtil } from '@reown/appkit-common'
+import { type ChainNamespace } from '@reown/appkit-common'
 
 import type { DefaultAccountTypes, Features, SocialProvider } from './TypeUtil.js'
 
-const SECURE_SITE = SystemUtil.getEnv(
-  'NEXT_PUBLIC_SECURE_SITE_ORIGIN',
-  'https://secure.walletconnect.org'
-)
+const SECURE_SITE =
+  // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+  (typeof process !== 'undefined' && typeof process.env !== 'undefined'
+    ? process.env['NEXT_PUBLIC_SECURE_SITE_ORIGIN']
+    : undefined) || 'https://secure.walletconnect.org'
 
 export const ONRAMP_PROVIDERS = [
   {
