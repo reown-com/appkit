@@ -58,6 +58,7 @@ export const mockBitcoinAdapter = {
 } as unknown as AdapterBlueprint
 
 export const emitter = new Emitter()
+export const solanaEmitter = new Emitter()
 
 export const mockEvmAdapter = {
   namespace: 'eip155',
@@ -97,8 +98,8 @@ export const mockSolanaAdapter = {
   }),
   getBalance: vi.fn().mockResolvedValue({ balance: '1.00', symbol: 'SOL' }),
   getProfile: vi.fn().mockResolvedValue({}),
-  on: vi.fn(),
-  off: vi.fn(),
-  emit: vi.fn(),
+  on: solanaEmitter.on.bind(solanaEmitter),
+  off: solanaEmitter.off.bind(solanaEmitter),
+  emit: solanaEmitter.emit.bind(solanaEmitter),
   removeAllEventListeners: vi.fn()
 } as unknown as AdapterBlueprint
