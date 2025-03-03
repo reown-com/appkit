@@ -14,9 +14,13 @@ import {
   RouterController,
   SnackController,
   type SocialProvider,
+  StorageUtil,
   type WalletGuideType
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-list-social'
+import '@reown/appkit-ui/wui-logo-select'
 import { SocialProviderEnum } from '@reown/appkit-utils'
 
 import styles from './styles.js'
@@ -230,24 +234,42 @@ export class W3mSocialLoginWidget extends LitElement {
       RouterController.push('ConnectingSocial')
 
       const authConnector = ConnectorController.getAuthConnector()
-      this.popupWindow = CoreHelperUtil.returnOpenHref(
-        '',
-        'popupWindow',
-        'width=600,height=800,scrollbars=yes'
-      )
 
       try {
         if (authConnector && socialProvider) {
+          if (!CoreHelperUtil.isTelegram()) {
+            this.popupWindow = CoreHelperUtil.returnOpenHref(
+              '',
+              'popupWindow',
+              'width=600,height=800,scrollbars=yes'
+            )
+          }
+
+          if (this.popupWindow) {
+            AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
+          } else if (!CoreHelperUtil.isTelegram()) {
+            throw new Error('Something went wrong')
+          }
+
           const { uri } = await authConnector.provider.getSocialRedirectUri({
             provider: socialProvider
           })
 
-          if (this.popupWindow && uri) {
-            AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
-            this.popupWindow.location.href = uri
-          } else {
+          if (!uri) {
             this.popupWindow?.close()
             throw new Error('Something went wrong')
+          }
+
+          if (this.popupWindow) {
+            this.popupWindow.location.href = uri
+          }
+
+          if (CoreHelperUtil.isTelegram()) {
+            StorageUtil.setTelegramSocialProvider(socialProvider)
+            const parsedUri = CoreHelperUtil.formatTelegramSocialLoginUrl(uri)
+
+            // eslint-disable-next-line consistent-return
+            return CoreHelperUtil.openHref(parsedUri, '_top')
           }
         }
       } catch (error) {

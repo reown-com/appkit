@@ -1,4 +1,4 @@
-import { expect, fixture, html } from '@open-wc/testing'
+import { expect, fixture, html, waitUntil } from '@open-wc/testing'
 import { afterEach, describe, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@reown/appkit-common'
@@ -9,7 +9,7 @@ import {
   OptionsController,
   RouterController
 } from '@reown/appkit-core'
-import type { WuiAccountButton } from '@reown/appkit-ui'
+import type { WuiAccountButton } from '@reown/appkit-ui/wui-account-button'
 
 import { W3mAccountButton } from '../../src/modal/w3m-account-button'
 import { HelpersUtil } from '../utils/HelpersUtil'
@@ -86,7 +86,7 @@ describe('W3mAccountButton', () => {
 
       await accountButton?.click()
 
-      expect(RouterController.state.view).to.equal('Account')
+      await waitUntil(() => RouterController.state.view === 'Account')
     })
 
     it('should open modal normally when chain is not supported and allowUnsupportedChain is true', async () => {

@@ -6,7 +6,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { ConstantsUtil } from '@reown/appkit-common'
 import {
-  ApiController,
   ChainController,
   ConnectionController,
   type Connector,
@@ -18,8 +17,17 @@ import {
   type WalletGuideType
 } from '@reown/appkit-core'
 import { MathUtil, customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-list-button'
+import '@reown/appkit-ui/wui-separator'
 import { ConstantsUtil as AppKitConstantsUtil } from '@reown/appkit-utils'
 
+import '../../partials/w3m-email-login-widget/index.js'
+import '../../partials/w3m-legal-checkbox/index.js'
+import '../../partials/w3m-legal-footer/index.js'
+import '../../partials/w3m-social-login-widget/index.js'
+import '../../partials/w3m-wallet-guide/index.js'
+import '../../partials/w3m-wallet-login-list/index.js'
 import { WalletUtil } from '../../utils/WalletUtil.js'
 import styles from './styles.js'
 
@@ -71,8 +79,7 @@ export class W3mConnectView extends LitElement {
       OptionsController.subscribeKey('enableWallets', val => (this.enableWallets = val)),
       ChainController.subscribeKey('noAdapters', val =>
         this.setEmailAndSocialEnableCheck(this.features, val)
-      ),
-      ApiController.subscribeKey('excludedRDNS', () => this.requestUpdate())
+      )
     )
   }
 

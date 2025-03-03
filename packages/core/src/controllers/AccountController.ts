@@ -29,6 +29,7 @@ export interface AccountControllerState {
   allAccounts: AccountType[]
   balance?: string
   balanceSymbol?: string
+  balanceLoading?: boolean
   profileName?: string | null
   profileImage?: string | null
   addressExplorerUrl?: string
@@ -138,8 +139,8 @@ export const AccountController = {
     ChainController.setAccountProp('profileImage', profileImage, chain)
   },
 
-  setUser(user: AccountControllerState['user']) {
-    state.user = user
+  setUser(user: AccountControllerState['user'], chain: ChainNamespace | undefined) {
+    ChainController.setAccountProp('user', user, chain)
   },
 
   setAddressExplorerUrl(
@@ -227,6 +228,7 @@ export const AccountController = {
   },
 
   async fetchTokenBalance(onError?: (error: unknown) => void): Promise<Balance[]> {
+    state.balanceLoading = true
     const chainId = ChainController.state.activeCaipNetwork?.caipNetworkId
     const chain = ChainController.state.activeCaipNetwork?.chainNamespace
     const caipAddress = ChainController.state.activeCaipAddress
@@ -235,6 +237,8 @@ export const AccountController = {
       state.lastRetry &&
       !CoreHelperUtil.isAllowedRetry(state.lastRetry, 30 * ConstantsUtil.ONE_SEC_MS)
     ) {
+      state.balanceLoading = false
+
       return []
     }
 
@@ -242,6 +246,10 @@ export const AccountController = {
       if (address && chainId && chain) {
         const response = await BlockchainApiController.getBalance(address, chainId)
 
+        /*
+         * The 1Inch API includes many low-quality tokens in the balance response,
+         * which appear inconsistently. This filter prevents them from being displayed.
+         */
         const filteredBalances = response.balances.filter(
           balance => balance.quantity.decimals !== '0'
         )
@@ -249,6 +257,7 @@ export const AccountController = {
         this.setTokenBalance(filteredBalances, chain)
         SwapController.setBalances(SwapApiUtil.mapBalancesToSwapTokens(response.balances))
         state.lastRetry = undefined
+        state.balanceLoading = false
 
         return filteredBalances
       }
@@ -257,6 +266,8 @@ export const AccountController = {
 
       onError?.(error)
       SnackController.showError('Token Balance Unavailable')
+    } finally {
+      state.balanceLoading = false
     }
 
     return []

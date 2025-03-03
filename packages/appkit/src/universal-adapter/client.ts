@@ -3,7 +3,12 @@ import bs58 from 'bs58'
 import { toHex } from 'viem'
 
 import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
-import { ChainController, CoreHelperUtil } from '@reown/appkit-core'
+import {
+  AccountController,
+  ChainController,
+  ConstantsUtil as CoreConstantsUtil,
+  CoreHelperUtil
+} from '@reown/appkit-core'
 
 import { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'
@@ -66,12 +71,40 @@ export class UniversalAdapter extends AdapterBlueprint {
     return Promise.resolve()
   }
 
-  public async getBalance(): Promise<AdapterBlueprint.GetBalanceResult> {
-    return Promise.resolve({
-      balance: '0',
-      decimals: 0,
-      symbol: ''
-    })
+  public async getBalance(
+    params: AdapterBlueprint.GetBalanceParams
+  ): Promise<AdapterBlueprint.GetBalanceResult> {
+    const isBalanceSupported =
+      params.caipNetwork &&
+      CoreConstantsUtil.BALANCE_SUPPORTED_CHAINS.includes(params.caipNetwork?.chainNamespace)
+    if (!isBalanceSupported || params.caipNetwork?.testnet) {
+      return {
+        balance: '0.00',
+        symbol: params.caipNetwork?.nativeCurrency.symbol || ''
+      }
+    }
+
+    if (
+      AccountController.state.balanceLoading &&
+      params.chainId === ChainController.state.activeCaipNetwork?.id
+    ) {
+      return {
+        balance: AccountController.state.balance || '0.00',
+        symbol: AccountController.state.balanceSymbol || ''
+      }
+    }
+
+    const balances = await AccountController.fetchTokenBalance()
+    const balance = balances.find(
+      b =>
+        b.chainId === `${params.caipNetwork?.chainNamespace}:${params.chainId}` &&
+        b.symbol === params.caipNetwork?.nativeCurrency.symbol
+    )
+
+    return {
+      balance: balance?.quantity.numeric || '0.00',
+      symbol: balance?.symbol || params.caipNetwork?.nativeCurrency.symbol || ''
+    }
   }
 
   public override async signMessage(
@@ -135,6 +168,11 @@ export class UniversalAdapter extends AdapterBlueprint {
     })
   }
 
+  public override walletGetAssets(
+    _params: AdapterBlueprint.WalletGetAssetsParams
+  ): Promise<AdapterBlueprint.WalletGetAssetsResponse> {
+    return Promise.resolve({})
+  }
   public async writeContract(): Promise<AdapterBlueprint.WriteContractResult> {
     return Promise.resolve({
       hash: ''
@@ -192,6 +230,7 @@ export class UniversalAdapter extends AdapterBlueprint {
       } catch (switchError: any) {
         if (
           switchError.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+          switchError.code === WcConstantsUtil.ERROR_INVALID_CHAIN_ID ||
           switchError.code === WcConstantsUtil.ERROR_CODE_DEFAULT ||
           switchError?.data?.originalError?.code ===
             WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID

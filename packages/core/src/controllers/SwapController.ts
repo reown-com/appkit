@@ -3,7 +3,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { type ChainNamespace, NumberUtil } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
@@ -17,7 +17,6 @@ import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
 import { EventsController } from './EventsController.js'
-import { OptionsController } from './OptionsController.js'
 import { RouterController } from './RouterController.js'
 import { SnackController } from './SnackController.js'
 
@@ -386,7 +385,6 @@ export const SwapController = {
     }
 
     const response = await BlockchainApiController.fetchTokenPrice({
-      projectId: OptionsController.state.projectId,
       addresses: [address]
     })
     const fungibles = response?.fungibles || []
@@ -404,7 +402,6 @@ export const SwapController = {
     const { networkAddress } = this.getParams()
 
     const response = await BlockchainApiController.fetchTokenPrice({
-      projectId: OptionsController.state.projectId,
       addresses: [networkAddress]
     }).catch(() => {
       SnackController.showError('Failed to fetch network token price')
@@ -494,6 +491,10 @@ export const SwapController = {
     const toToken = state.toToken
     const haveSourceTokenAmount = NumberUtil.bigNumber(state.sourceTokenAmount).gt(0)
 
+    if (!haveSourceTokenAmount) {
+      this.setToTokenAmount('')
+    }
+
     if (!toToken || !sourceToken || state.loadingPrices || !haveSourceTokenAmount) {
       return
     }
@@ -507,7 +508,6 @@ export const SwapController = {
     try {
       const quoteResponse = await BlockchainApiController.fetchSwapQuote({
         userAddress: address,
-        projectId: OptionsController.state.projectId,
         from: sourceToken.address,
         to: toToken.address,
         gasPrice: state.gasFee,
@@ -609,7 +609,6 @@ export const SwapController = {
 
     try {
       const response = await BlockchainApiController.generateApproveCalldata({
-        projectId: OptionsController.state.projectId,
         from: sourceTokenAddress,
         to: toTokenAddress,
         userAddress: fromCaipAddress
@@ -673,7 +672,6 @@ export const SwapController = {
 
     try {
       const response = await BlockchainApiController.generateSwapCalldata({
-        projectId: OptionsController.state.projectId,
         userAddress: fromCaipAddress,
         from: sourceToken.address,
         to: toToken.address,
@@ -777,12 +775,12 @@ export const SwapController = {
 
     state.loadingTransaction = true
 
-    const snackbarPendingMessage = `Swapping ${state.sourceToken
-      ?.symbol} to ${NumberUtil.formatNumberToLocalString(toTokenAmount, 3)} ${state.toToken
-      ?.symbol}`
-    const snackbarSuccessMessage = `Swapped ${state.sourceToken
-      ?.symbol} to ${NumberUtil.formatNumberToLocalString(toTokenAmount, 3)} ${state.toToken
-      ?.symbol}`
+    const snackbarPendingMessage = `Swapping ${
+      state.sourceToken?.symbol
+    } to ${NumberUtil.formatNumberToLocalString(toTokenAmount, 3)} ${state.toToken?.symbol}`
+    const snackbarSuccessMessage = `Swapped ${
+      state.sourceToken?.symbol
+    } to ${NumberUtil.formatNumberToLocalString(toTokenAmount, 3)} ${state.toToken?.symbol}`
 
     if (isAuthConnector) {
       RouterController.pushTransactionStack({

@@ -2,9 +2,19 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ApiController, ConnectorController, OptionsController } from '@reown/appkit-core'
+import { ConnectorController, OptionsController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
 
+import '../../partials/w3m-connect-announced-widget/index.js'
+import '../../partials/w3m-connect-custom-widget/index.js'
+import '../../partials/w3m-connect-external-widget/index.js'
+import '../../partials/w3m-connect-featured-widget/index.js'
+import '../../partials/w3m-connect-injected-widget/index.js'
+import '../../partials/w3m-connect-multi-chain-widget/index.js'
+import '../../partials/w3m-connect-recent-widget/index.js'
+import '../../partials/w3m-connect-recommended-widget/index.js'
+import '../../partials/w3m-connect-walletconnect-widget/index.js'
 import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 import styles from './styles.js'
 
@@ -23,12 +33,7 @@ export class W3mConnectorList extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
-      ...[
-        ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
-        ApiController.subscribeKey('featured', () => this.requestUpdate()),
-        ApiController.subscribeKey('recommended', () => this.requestUpdate()),
-        ApiController.subscribeKey('excludedRDNS', () => this.requestUpdate())
-      ]
+      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
     )
   }
 

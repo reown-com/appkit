@@ -16,6 +16,11 @@ import {
   SIWXUtil
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon-link'
+import '@reown/appkit-ui/wui-select'
+import '@reown/appkit-ui/wui-tag'
+import '@reown/appkit-ui/wui-text'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 import styles from './styles.js'
@@ -134,7 +139,10 @@ export class W3mHeader extends LitElement {
         this.onHistoryChange()
       }),
       ConnectionController.subscribeKey('buffering', val => (this.buffering = val)),
-      ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val))
+      ChainController.subscribeKey('activeCaipNetwork', val => {
+        this.network = val
+        this.networkImage = AssetUtil.getNetworkImage(this.network)
+      })
     )
   }
 

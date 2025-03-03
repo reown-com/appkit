@@ -15,6 +15,8 @@ import {
   type SocialProvider
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-list-social'
 import { SocialProviderEnum } from '@reown/appkit-utils'
 
 import styles from './styles.js'

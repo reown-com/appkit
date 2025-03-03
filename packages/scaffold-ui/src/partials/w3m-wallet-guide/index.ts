@@ -4,6 +4,10 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { RouterController, type WalletGuideType } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-chip'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-link'
+import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'
 

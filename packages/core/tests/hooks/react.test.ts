@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 
-import { AccountController, ChainController, ConnectorController } from '../../exports'
+import { ChainController, ConnectorController } from '../../exports'
 import { useAppKitAccount, useAppKitNetworkCore } from '../../exports/react'
 
 vi.mock('valtio', () => ({
@@ -56,99 +56,102 @@ describe('useAppKitAccount', () => {
     vi.resetAllMocks()
   })
 
-  it('should return the correct account state when connected', () => {
-    const mockCaipAddress = 'eip155:1:0x123...'
-    const mockPlainAddress = '0x123...'
-
-    // Mock the useSnapshot hook for both calls
-    useSnapshot
-      .mockReturnValueOnce({
-        status: 'connected',
-        preferredAccountType: 'eoa'
-      }) // For AccountController
-      .mockReturnValueOnce({ activeCaipAddress: mockCaipAddress }) // For ChainController
+  it('should return the correct account state when disconnected', () => {
+    useSnapshot.mockReturnValueOnce({
+      activeChain: 'eip155',
+      chains: new Map([
+        [
+          'eip155',
+          {
+            accountState: {
+              address: undefined,
+              caipAddress: undefined,
+              allAccounts: [],
+              status: 'disconnected'
+            }
+          }
+        ]
+      ])
+    })
 
     const result = useAppKitAccount()
 
     expect(result).toEqual({
-      allAccounts: undefined,
+      allAccounts: [],
+      address: undefined,
+      caipAddress: undefined,
+      isConnected: false,
+      status: 'disconnected',
+      embeddedWalletInfo: undefined
+    })
+  })
+
+  it('should return the correct account state when connected', () => {
+    const mockCaipAddress = 'eip155:1:0x123...'
+    const mockPlainAddress = '0x123...'
+
+    useSnapshot.mockReturnValueOnce({
+      activeChain: 'eip155',
+      chains: new Map([
+        [
+          'eip155',
+          {
+            accountState: {
+              address: mockPlainAddress,
+              caipAddress: mockCaipAddress,
+              allAccounts: [],
+              status: 'connected'
+            }
+          }
+        ]
+      ])
+    })
+
+    const result = useAppKitAccount()
+
+    expect(result).toEqual({
+      allAccounts: [],
       address: mockPlainAddress,
       caipAddress: mockCaipAddress,
       isConnected: true,
       status: 'connected',
       embeddedWalletInfo: undefined
     })
-
-    expect(useSnapshot).toHaveBeenCalledWith(AccountController.state)
-    expect(useSnapshot).toHaveBeenCalledWith(ChainController.state)
   })
 
-  it('should return the correct account state when connected', () => {
+  it('should return correct embedded wallet info when connected with social provider', () => {
     const mockCaipAddress = 'eip155:1:0x123...'
     const mockPlainAddress = '0x123...'
+    vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValueOnce({} as any)
 
-    vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({} as any)
-
-    // Mock the useSnapshot hook for both calls
-    useSnapshot
-      .mockReturnValueOnce({
-        allAccounts: undefined,
-        status: 'connected',
-        preferredAccountType: 'eoa',
-        smartAccountDeployed: false,
-        user: {
-          email: 'email@email.test',
-          userName: 'test'
-        }
-      }) // For AccountController
-      .mockReturnValueOnce({ activeCaipAddress: mockCaipAddress }) // For ChainController
-
-    const result = useAppKitAccount()
-
-    expect(result).toEqual({
-      address: mockPlainAddress,
-      caipAddress: mockCaipAddress,
-      isConnected: true,
-      status: 'connected',
-      embeddedWalletInfo: {
-        user: {
-          email: 'email@email.test',
-          userName: 'test'
-        },
-        authProvider: 'email',
-        isSmartAccountDeployed: false,
-        accountType: 'eoa'
-      }
+    useSnapshot.mockReturnValueOnce({
+      activeChain: 'eip155',
+      chains: new Map([
+        [
+          'eip155',
+          {
+            accountState: {
+              address: mockPlainAddress,
+              caipAddress: mockCaipAddress,
+              allAccounts: [],
+              status: 'connected',
+              preferredAccountType: 'eoa',
+              socialProvider: 'google',
+              smartAccountDeployed: false,
+              user: {
+                email: 'email@email.test',
+                userName: 'test'
+              }
+            }
+          }
+        ]
+      ])
     })
 
-    expect(useSnapshot).toHaveBeenCalledWith(AccountController.state)
-    expect(useSnapshot).toHaveBeenCalledWith(ChainController.state)
-  })
-
-  it('should return appropiate auth provider when social provider is set', () => {
-    const mockCaipAddress = 'eip155:1:0x123...'
-    const mockPlainAddress = '0x123...'
-
-    vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({} as any)
-
-    // Mock the useSnapshot hook for both calls
-    useSnapshot
-      .mockReturnValueOnce({
-        allAccounts: undefined,
-        status: 'connected',
-        socialProvider: 'google',
-        preferredAccountType: 'eoa',
-        smartAccountDeployed: false,
-        user: {
-          email: 'email@email.test',
-          userName: 'test'
-        }
-      }) // For AccountController
-      .mockReturnValueOnce({ activeCaipAddress: mockCaipAddress }) // For ChainController
-
     const result = useAppKitAccount()
 
     expect(result).toEqual({
+      allAccounts: [],
       address: mockPlainAddress,
       caipAddress: mockCaipAddress,
       isConnected: true,
@@ -159,31 +162,9 @@ describe('useAppKitAccount', () => {
           userName: 'test'
         },
         authProvider: 'google',
-        isSmartAccountDeployed: false,
-        accountType: 'eoa'
+        accountType: 'eoa',
+        isSmartAccountDeployed: false
       }
     })
-
-    expect(useSnapshot).toHaveBeenCalledWith(AccountController.state)
-    expect(useSnapshot).toHaveBeenCalledWith(ChainController.state)
-  })
-
-  it('should handle disconnected state', () => {
-    // Mock the useSnapshot hook for both calls
-    useSnapshot
-      .mockReturnValueOnce({ status: 'disconnected' })
-      .mockReturnValueOnce({ activeCaipAddress: undefined })
-
-    const result = useAppKitAccount()
-
-    expect(result).toEqual({
-      address: undefined,
-      caipAddress: undefined,
-      isConnected: false,
-      status: 'disconnected'
-    })
-
-    expect(useSnapshot).toHaveBeenCalledWith(AccountController.state)
-    expect(useSnapshot).toHaveBeenCalledWith(ChainController.state)
   })
 })

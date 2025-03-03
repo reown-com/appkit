@@ -1,4 +1,5 @@
 import type { CaipNetwork } from '@reown/appkit'
+import { ConstantsUtil } from '@reown/appkit-common'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
 
 import {
@@ -15,4 +16,17 @@ const [base, mainnet, polygon, sepolia, solana, bitcoin] = CaipNetworksUtil.exte
   { customNetworkImageUrls: {}, projectId: 'test-project-id' }
 ) as [CaipNetwork, CaipNetwork, CaipNetwork, CaipNetwork, CaipNetwork, CaipNetwork]
 
-export { base, mainnet, polygon, sepolia, solana, bitcoin }
+const unsupportedNetwork = {
+  chainNamespace: mainnet.chainNamespace,
+  id: '123456789',
+  caipNetworkId:
+    `${mainnet.chainNamespace}:123456789` as `${typeof mainnet.chainNamespace}:${string}`,
+  name: ConstantsUtil.UNSUPPORTED_NETWORK_NAME,
+  nativeCurrency: {
+    name: 'Unknown',
+    symbol: 'UNK',
+    decimals: 18
+  }
+} as CaipNetwork
+
+export { base, mainnet, polygon, sepolia, solana, bitcoin, unsupportedNetwork }

@@ -15,6 +15,7 @@ import {
 import type { CaipNetwork } from '@reown/appkit-common'
 import { CoreHelperUtil } from '@reown/appkit-core'
 import type { RequestArguments } from '@reown/appkit-core'
+import { PresetsUtil } from '@reown/appkit-utils'
 
 import type { BitcoinConnector } from '../utils/BitcoinConnector.js'
 import { ProviderEventEmitter } from '../utils/ProviderEventEmitter.js'
@@ -48,6 +49,10 @@ export class SatsConnectConnector extends ProviderEventEmitter implements Bitcoi
 
   public get name(): string {
     return this.wallet.name
+  }
+
+  public get explorerId(): string | undefined {
+    return PresetsUtil.ConnectorExplorerIds[this.wallet.name]
   }
 
   public get imageUrl(): string {

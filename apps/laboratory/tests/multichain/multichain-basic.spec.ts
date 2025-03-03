@@ -36,7 +36,6 @@ test.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
-
 test('it should switch networks and sign', async () => {
   const chains = ['Polygon', 'Solana']
 
@@ -51,7 +50,7 @@ test('it should switch networks and sign', async () => {
     await modalPage.closeModal()
 
     // -- Sign ------------------------------------------------------------------
-    await modalPage.sign()
+    await modalPage.sign('upa')
     await walletValidator.expectReceivedSign({ chainName })
     await walletPage.handleRequest({ accept: true })
     await modalValidator.expectAcceptedSign()
