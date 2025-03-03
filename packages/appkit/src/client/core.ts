@@ -424,6 +424,12 @@ export abstract class AppKitCore {
         return ids.some(id => Boolean(window.ethereum?.[String(id)]))
       },
       signMessage: async (message: string) => {
+        console.log(
+          '>>> APPKT.signMessage',
+          message,
+          ChainController.state.activeChain,
+          AccountController.state.address
+        )
         const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
         const result = await adapter?.signMessage({
           message,

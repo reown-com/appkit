@@ -52,12 +52,11 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   }
 
   public override setAuthProvider(w3mFrameProvider: W3mFrameProvider) {
-    const network = ChainController.getNetworkByIdOfNamespace(ConstantsUtil.CHAIN.SOLANA, undefined)
-
     this.addConnector(
       new AuthProvider({
         w3mFrameProvider,
-        getActiveChain: () => network,
+        getActiveChain: () =>
+          ChainController.getNetworkByIdOfNamespace(ConstantsUtil.CHAIN.SOLANA, undefined),
         chains: this.caipNetworks as CaipNetwork[]
       })
     )
@@ -358,13 +357,12 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   }
 
   public override setUniversalProvider(universalProvider: UniversalProvider): void {
-    const network = ChainController.getNetworkByIdOfNamespace(ConstantsUtil.CHAIN.SOLANA, undefined)
-
     this.addConnector(
       new SolanaWalletConnectProvider({
         provider: universalProvider,
         chains: this.caipNetworks as CaipNetwork[],
-        getActiveChain: () => network
+        getActiveChain: () =>
+          ChainController.getNetworkByIdOfNamespace(ConstantsUtil.CHAIN.SOLANA, undefined)
       })
     )
   }
@@ -407,12 +405,11 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   public getWalletConnectProvider(
     params: AdapterBlueprint.GetWalletConnectProviderParams
   ): AdapterBlueprint.GetWalletConnectProviderResult {
-    const network = ChainController.getNetworkByIdOfNamespace(ConstantsUtil.CHAIN.SOLANA, undefined)
-
     const walletConnectProvider = new SolanaWalletConnectProvider({
       provider: params.provider as UniversalProvider,
       chains: params.caipNetworks,
-      getActiveChain: () => network
+      getActiveChain: () =>
+        ChainController.getNetworkByIdOfNamespace(ConstantsUtil.CHAIN.SOLANA, undefined)
     })
 
     return walletConnectProvider as unknown as UniversalProvider

@@ -735,6 +735,6 @@ export const ChainController = {
       return byChainId
     }
 
-    return chain?.caipNetworks?.[0]
+    return chain?.networkState?.caipNetwork || chain?.caipNetworks?.[0]
   }
 }
