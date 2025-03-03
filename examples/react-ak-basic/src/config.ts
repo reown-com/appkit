@@ -1,6 +1,5 @@
 import { mainnet, solana } from '@reown/appkit/networks'
 import {
-  createAppKit,
   useAppKit,
   useAppKitAccount,
   useAppKitEvents,

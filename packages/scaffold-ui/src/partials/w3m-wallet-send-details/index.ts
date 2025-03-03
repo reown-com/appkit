@@ -5,6 +5,9 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import { type CaipNetwork } from '@reown/appkit-common'
 import { AssetUtil, RouterController } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-list-content'
+import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'
 
