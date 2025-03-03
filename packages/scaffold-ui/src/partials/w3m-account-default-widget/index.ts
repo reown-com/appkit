@@ -126,6 +126,16 @@ export class W3mAccountDefaultWidget extends LitElement {
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
         ${this.authCardTemplate()} <w3m-account-auth-button></w3m-account-auth-button>
+
+        <wui-list-item
+          iconVariant="blue"
+          icon="card"
+          ?chevron=${true}
+          @click=${this.handleClickWallets.bind(this)}
+        >
+          <wui-text variant="paragraph-500" color="fg-100">Wallets</wui-text>
+        </wui-list-item>
+
         ${this.orderedFeaturesTemplate()} ${this.activityTemplate()}
         <wui-list-item
           variant="icon"
@@ -284,6 +294,10 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   private handleClickPay() {
     RouterController.push('OnRampProviders')
+  }
+
+  private handleClickWallets() {
+    RouterController.push('ProfileWallets')
   }
 
   private handleClickSwap() {

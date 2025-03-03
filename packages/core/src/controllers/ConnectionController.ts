@@ -1,13 +1,19 @@
 import { proxy, ref } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import {
+  type CaipAddress,
+  type CaipNetwork,
+  type ChainNamespace,
+  ConstantsUtil
+} from '@reown/appkit-common'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { SIWXUtil } from '../utils/SIWXUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type {
+  AccountType,
   Connector,
   EstimateGasTransactionArgs,
   SendTransactionArgs,
@@ -16,6 +22,7 @@ import type {
   WcWallet,
   WriteContractArgs
 } from '../utils/TypeUtil.js'
+import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
@@ -24,6 +31,13 @@ import { RouterController } from './RouterController.js'
 import { TransactionsController } from './TransactionsController.js'
 
 // -- Types --------------------------------------------- //
+export type Connection = {
+  accounts: AccountType[]
+  chainId: number | string
+  chain: ChainNamespace
+  connector: Connector
+}
+
 export interface ConnectExternalOptions {
   id: Connector['id']
   type: Connector['type']
@@ -60,6 +74,7 @@ export interface ConnectionControllerClient {
 }
 
 export interface ConnectionControllerState {
+  connections: Connection[]
   _client?: ConnectionControllerClient
   wcUri?: string
   wcPairingExpiry?: number
@@ -79,6 +94,7 @@ type StateKey = keyof ConnectionControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<ConnectionControllerState>({
+  connections: [],
   wcError: false,
   buffering: false,
   status: 'disconnected'
@@ -295,6 +311,50 @@ export const ConnectionController = {
       ModalController.setLoading(false)
     } catch (error) {
       throw new Error('Failed to disconnect')
+    }
+  },
+
+  syncConnections(connections: Connection[]) {
+    console.log('>>> CC.syncConnections', connections)
+    connections.forEach(newConnection => {
+      const existingConnectionIndex = state.connections.findIndex(
+        conn => conn.connector.id === newConnection.connector.id
+      )
+
+      if (existingConnectionIndex === -1) {
+        // If the connector does not exist in the state.connections, add it to the state array
+        state.connections.push({ ...newConnection })
+      } else {
+        // If the connector exists, replace the accounts array
+        if (state.connections[existingConnectionIndex]) {
+          state.connections[existingConnectionIndex].accounts = [...newConnection.accounts]
+        } else {
+          state.connections.push({ ...newConnection })
+        }
+      }
+    })
+
+    console.log('state.connections', state.connections)
+  },
+
+  switchAccount(connection: Connection, address: string) {
+    const connectedConnectorId = StorageUtil.getConnectedConnectorId(connection.chain)
+    const isConnectorConnected = connectedConnectorId === connection.connector.id
+    const isDifferentNamespace = connection.chain !== ChainController.state.activeChain
+    const connectionNetwork = ChainController.getRequestedCaipNetworks(
+      connection.chain
+    )?.[0] as CaipNetwork
+
+    if (isDifferentNamespace) {
+      ChainController.onSwitchNetwork(connectionNetwork)
+    } else if (isConnectorConnected) {
+      const currentNetwork = ChainController.state.activeCaipNetwork
+      if (currentNetwork) {
+        const caipAddress = `${connection.chain}:${currentNetwork.id}:${address}` as CaipAddress
+        AccountController.setCaipAddress(caipAddress, connection.chain)
+      }
+    } else {
+      this.connectExternal(connection.connector, connection.chain)
     }
   }
 }

@@ -44,7 +44,7 @@ import {
   NetworkUtil,
   isReownName
 } from '@reown/appkit-common'
-import { CoreHelperUtil, StorageUtil } from '@reown/appkit-core'
+import { ConnectionController, CoreHelperUtil, StorageUtil } from '@reown/appkit-core'
 import {
   type ConnectorType,
   ConstantsUtil as CoreConstantsUtil,
