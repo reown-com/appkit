@@ -49,7 +49,7 @@
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/universal-provider": "2.18.0",
     "valtio": "1.13.2",
-    "viem": ">=2.23"
+    "viem": ">=2.23.5"
   },
   "peerDependencies": {},
   "devDependencies": {
