@@ -17,7 +17,7 @@ import type {
   WriteContractArgs
 } from '../utils/TypeUtil.js'
 import { ChainController } from './ChainController.js'
-import { ConnectorController } from './ConnectorController.js'
+import { ConnectorController, type ConnectorWithProviders } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
 import { RouterController } from './RouterController.js'
@@ -32,6 +32,10 @@ export interface ConnectExternalOptions {
   chain?: ChainNamespace
   chainId?: number | string
   caipNetwork?: CaipNetwork
+}
+
+export interface Connection {
+  connector: ConnectorWithProviders
 }
 
 export interface ConnectionControllerClient {
@@ -73,6 +77,7 @@ export interface ConnectionControllerState {
   buffering: boolean
   status?: 'connecting' | 'connected' | 'disconnected'
   connectionControllerClient?: ConnectionControllerClient
+  connections: Connection[]
 }
 
 type StateKey = keyof ConnectionControllerState
@@ -81,7 +86,8 @@ type StateKey = keyof ConnectionControllerState
 const state = proxy<ConnectionControllerState>({
   wcError: false,
   buffering: false,
-  status: 'disconnected'
+  status: 'disconnected',
+  connections: []
 })
 
 // eslint-disable-next-line init-declarations
@@ -285,6 +291,21 @@ export const ConnectionController = {
 
   setStatus(status: ConnectionControllerState['status']) {
     state.status = status
+  },
+
+  setConnections(connections: ConnectionControllerState['connections']) {
+    const newConnections = connections.filter(
+      newConnection =>
+        !state.connections.some(
+          existingConnection =>
+            existingConnection.connector.id === newConnection.connector.id &&
+            ConnectorController.getConnectorName(existingConnection.connector.name) ===
+              ConnectorController.getConnectorName(newConnection.connector.name) &&
+            existingConnection.connector.chain === newConnection.connector.chain
+        )
+    )
+
+    state.connections = newConnections
   },
 
   async disconnect() {

@@ -11,6 +11,7 @@ import {
   type AccountControllerState,
   type AccountType,
   type Connector as AppKitConnector,
+  type Connection,
   OptionsController,
   type Tokens,
   type WriteContractArgs
@@ -29,12 +30,14 @@ type EventName =
   | 'switchNetwork'
   | 'connectors'
   | 'pendingTransactions'
+  | 'connections'
 type EventData = {
   disconnect: () => void
   accountChanged: { address: string; chainId?: number | string }
   switchNetwork: { address?: string; chainId: number | string }
   connectors: ChainAdapterConnector[]
   pendingTransactions: () => void
+  connections: Connection[]
 }
 type EventCallback<T extends EventName> = (data: EventData[T]) => void
 
@@ -50,6 +53,7 @@ export abstract class AdapterBlueprint<
   public projectId?: string
 
   protected availableConnectors: Connector[] = []
+  protected availableConnections: Connection[] = []
   protected connector?: Connector
   protected provider?: Connector['provider']
 
@@ -81,6 +85,14 @@ export abstract class AdapterBlueprint<
    */
   public get connectors(): Connector[] {
     return this.availableConnectors
+  }
+
+  /**
+   * Gets the available connections.
+   * @returns {Connection[]} An array of available connections
+   */
+  public get connections(): Connection[] {
+    return this.availableConnections
   }
 
   /**
@@ -130,6 +142,21 @@ export abstract class AdapterBlueprint<
     })
 
     this.emit('connectors', this.availableConnectors)
+  }
+
+  protected addConnection(connection: Connection) {
+    const connectionsAdded = new Set<string>()
+    this.availableConnections = [...this.availableConnections, connection].filter(newConnection => {
+      if (connectionsAdded.has(newConnection.connector.id)) {
+        return false
+      }
+
+      connectionsAdded.add(newConnection.connector.id)
+
+      return true
+    })
+
+    this.emit('connections', this.availableConnections)
   }
 
   protected setStatus(status: AccountControllerState['status'], chainNamespace?: ChainNamespace) {

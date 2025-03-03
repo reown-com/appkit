@@ -675,6 +675,13 @@ export abstract class AppKitCore {
     adapter?.on('connectors', this.setConnectors.bind(this))
   }
 
+
+  protected onConnectors(chainNamespace: ChainNamespace) {
+    const adapter = this.getAdapter(chainNamespace)
+
+    adapter?.on('connectors', this.setConnectors.bind(this))
+  }
+  
   protected listenAdapter(chainNamespace: ChainNamespace) {
     const adapter = this.getAdapter(chainNamespace)
 

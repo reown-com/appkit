@@ -74,7 +74,7 @@ export const ConnectorController = {
       }
     })
 
-    state.connectors = this.mergeMultiChainConnectors(state.allConnectors)
+    state.connectors = ConnectorController.mergeMultiChainConnectors(state.allConnectors)
   },
 
   removeAdapter(namespace: ChainNamespace) {

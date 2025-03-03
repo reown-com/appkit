@@ -242,6 +242,11 @@ export class WagmiAdapter extends AdapterBlueprint {
     })
     watchConnections(this.wagmiConfig, {
       onChange: connections => {
+
+        connections.map((c)=> {
+          
+        })
+
         if (connections.length === 0) {
           this.emit('disconnect')
         }

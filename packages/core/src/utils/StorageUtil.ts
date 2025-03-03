@@ -7,6 +7,7 @@ import {
   getSafeConnectorIdKey
 } from '@reown/appkit-common'
 
+import type { Wallet } from '../controllers/WalletsController.js'
 import type {
   BlockchainApiBalanceResponse,
   BlockchainApiIdentityResponse,
@@ -559,6 +560,49 @@ export const StorageUtil = {
       SafeLocalStorage.removeItem(SafeLocalStorageKeys.IDENTITY_CACHE)
     } catch {
       console.info('Unable to clear address cache')
+    }
+  },
+  getWallets(): Wallet[] {
+    try {
+      const wallets = SafeLocalStorage.getItem(SafeLocalStorageKeys.WALLETS)
+
+      return wallets ? JSON.parse(wallets) : []
+    } catch {
+      console.info('Unable to get wallets')
+
+      return []
+    }
+  },
+  setWallets(wallets: Wallet[]) {
+    try {
+      SafeLocalStorage.setItem(SafeLocalStorageKeys.WALLETS, JSON.stringify(wallets))
+    } catch {
+      console.info('Unable to set wallets', wallets)
+    }
+  },
+  addWallet(wallet: Wallet) {
+    try {
+      const wallets = StorageUtil.getWallets()
+      wallets.push(wallet)
+      StorageUtil.setWallets(wallets)
+    } catch {
+      console.info('Unable to add wallet', wallet)
+    }
+  },
+  removeWallet(id: string) {
+    try {
+      const wallets = StorageUtil.getWallets()
+      const filteredWallets = wallets.filter(wallet => wallet.id !== id)
+      StorageUtil.setWallets(filteredWallets)
+    } catch {
+      console.info('Unable to remove wallet', id)
+    }
+  },
+  clearWallets() {
+    try {
+      SafeLocalStorage.removeItem(SafeLocalStorageKeys.WALLETS)
+    } catch {
+      console.info('Unable to clear wallets')
     }
   }
 }
