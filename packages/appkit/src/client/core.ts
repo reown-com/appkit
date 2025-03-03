@@ -360,7 +360,6 @@ export abstract class AppKitCore {
         const activeChain = ChainController.state.activeChain as ChainNamespace
         const chainToUse = chain || activeChain
         const adapter = this.getAdapter(chainToUse)
-        console.log('>>> CORE.connectExternal', chainToUse, chain, activeChain, caipNetwork)
 
         if (chain && chain !== activeChain && !caipNetwork) {
           const toConnectNetwork = this.caipNetworks?.find(
@@ -575,7 +574,6 @@ export abstract class AppKitCore {
   }
 
   protected async switchCaipNetwork(caipNetwork: CaipNetwork) {
-    console.log('>>> CORE.switchCaipNetwork', caipNetwork)
     if (!caipNetwork) {
       return
     }
@@ -751,7 +749,6 @@ export abstract class AppKitCore {
           chainNamespace
         })
       } else {
-        console.log('>>> CORE.accountChanged', address, chainId, chainNamespace)
         this.syncAccountInfo(address, chainId, chainNamespace)
       }
     })
@@ -965,12 +962,6 @@ export abstract class AppKitCore {
     }
 
     if (chainIdToUse) {
-      console.log(
-        '>>> CORE.syncAccount',
-        chainIdToUse,
-        chainNamespace,
-        ChainController.state.activeCaipNetwork
-      )
       let caipNetwork = this.caipNetworks?.find(n => n.id.toString() === chainIdToUse.toString())
       let fallbackCaipNetwork = this.caipNetworks?.find(n => n.chainNamespace === chainNamespace)
 
@@ -1040,7 +1031,6 @@ export abstract class AppKitCore {
 
     const newCaipAddress = `${chainNamespace}:${newChainId}:${address}`
 
-    console.log('>>> CORE.syncAccount.setCaipAddress', newCaipAddress, chainNamespace)
     this.setCaipAddress(newCaipAddress as CaipAddress, chainNamespace)
     await this.syncIdentity({
       address,
