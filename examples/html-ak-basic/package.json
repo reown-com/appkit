@@ -4,7 +4,10 @@
   "version": "1.2.0",
   "scripts": {
     "dev": "vite --port 3011",
-    "build": "vite build"
+    "build": "vite build",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "debug": "playwright test --debug"
   },
   "dependencies": {
     "@reown/appkit": "workspace:*",
@@ -12,6 +15,7 @@
   },
   "devDependencies": {
     "vite": "5.4.12",
-    "rollup-plugin-visualizer": "^5.14.0"
+    "rollup-plugin-visualizer": "^5.14.0",
+    "@playwright/test": "^1.42.1"
   }
 }
