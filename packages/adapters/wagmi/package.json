@@ -32,9 +32,9 @@
     "@wagmi/connectors": ">=5.7"
   },
   "peerDependencies": {
-    "@wagmi/core": ">=2.16.4",
-    "viem": ">=2.23.0",
-    "wagmi": ">=2.14.11"
+    "@wagmi/core": ">=2.16.5",
+    "viem": ">=2.23.5",
+    "wagmi": ">=2.14.12"
   },
   "devDependencies": {
     "@types/react": "19.0.0",
