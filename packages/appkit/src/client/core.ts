@@ -1033,6 +1033,9 @@ export abstract class AppKitCore {
     const activeCaipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
 
     if (chainNamespace !== ConstantsUtil.CHAIN.EVM || activeCaipNetwork?.testnet) {
+      this.setProfileName(null, chainNamespace)
+      this.setProfileImage(null, chainNamespace)
+
       return
     }
 
