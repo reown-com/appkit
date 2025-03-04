@@ -36,10 +36,10 @@
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@reown/appkit-polyfills": "workspace:*",
     "@wagmi/connectors": "5.7.7",
-    "@wagmi/core": "2.16.4",
-    "viem": "2.23.0",
+    "@wagmi/core": "2.16.5",
+    "viem": "2.23.5",
     "vite": "5.4.12",
-    "wagmi": "2.14.9"
+    "wagmi": "2.14.12"
   },
   "keywords": [
     "appkit",

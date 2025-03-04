@@ -26,7 +26,7 @@
     "@walletconnect/utils": "2.18.0",
     "lit": "3.1.0",
     "valtio": "1.13.2",
-    "viem": "2.23.0"
+    "viem": "2.23.5"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",

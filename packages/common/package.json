@@ -20,7 +20,7 @@
   "dependencies": {
     "big.js": "6.2.2",
     "dayjs": "1.11.10",
-    "viem": ">=2.23.0"
+    "viem": ">=2.23.5"
   },
   "devDependencies": {
     "@types/big.js": "6.2.2",
