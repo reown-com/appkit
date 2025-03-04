@@ -108,7 +108,7 @@
     "@solana/web3.js": "1.95.8",
     "@tanstack/react-query": "5.24.8",
     "@wagmi/connectors": "5.7.7",
-    "@wagmi/core": "2.16.4",
+    "@wagmi/core": "2.16.5",
     "@walletconnect/universal-provider": "2.18.0",
     "@walletconnect/utils": "2.18.0",
     "axios": "1.7.2",
@@ -125,8 +125,8 @@
     "react-icons": "4.12.0",
     "rpc-websockets": "7.11.0",
     "valtio": "1.13.2",
-    "viem": "2.23.0",
-    "wagmi": "2.14.11",
+    "viem": "2.23.5",
+    "wagmi": "2.14.12",
     "webauthn-p256": "0.0.2"
   },
   "devDependencies": {

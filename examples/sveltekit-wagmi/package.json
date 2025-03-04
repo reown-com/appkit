@@ -13,8 +13,8 @@
   "dependencies": {
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
-    "viem": "2.22.21",
-    "wagmi": "2.14.9",
+    "viem": "2.23.5",
+    "wagmi": "2.14.12",
     "@walletconnect/logger": "2.1.2"
   },
   "devDependencies": {
