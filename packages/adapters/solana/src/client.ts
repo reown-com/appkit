@@ -49,7 +49,10 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
 
   public override construct(params: AdapterBlueprint.Params): void {
     super.construct(params)
-    const rpcUrl = params.networks?.[0]?.rpcUrls.default.http[0] as string
+    const connectedCaipNetwork = StorageUtil.getActiveCaipNetworkId()
+    const caipNetwork =
+      params.networks?.find(n => n.caipNetworkId === connectedCaipNetwork) || params.networks?.[0]
+    const rpcUrl = caipNetwork?.rpcUrls.default.http[0] as string
     SolStoreUtil.setConnection(new Connection(rpcUrl, this.connectionSettings))
   }
 
