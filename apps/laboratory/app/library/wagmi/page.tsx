@@ -33,6 +33,7 @@ const modal = createAppKit({
 const config = wagmiAdapter.wagmiConfig
 ThemeStore.setModal(modal)
 
+// Multi-wallet (wagmi)
 export default function Wagmi() {
   return (
     <WagmiProvider config={config}>
