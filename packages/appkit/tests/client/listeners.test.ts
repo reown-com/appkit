@@ -1,10 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { Emitter } from '@reown/appkit-common'
 import { AccountController, BlockchainApiController, ChainController } from '@reown/appkit-core'
 
 import { AppKit } from '../../src/client/appkit.js'
-import { mockEvmAdapter } from '../mocks/Adapter'
+import { emitter, mockEvmAdapter, solanaEmitter } from '../mocks/Adapter'
 import { mainnet, solana, unsupportedNetwork } from '../mocks/Networks'
 import { mockOptions } from '../mocks/Options'
 import {
@@ -57,7 +56,6 @@ describe('Listeners', () => {
   })
 
   it('should call syncAccountInfo when namespace is different than active namespace', async () => {
-    const emitter = new Emitter()
     const appKit = new AppKit({ ...mockOptions, defaultNetwork: solana })
     const setCaipAddressSpy = vi.spyOn(appKit, 'setCaipAddress')
 
@@ -72,6 +70,22 @@ describe('Listeners', () => {
       `${mockAccount.chainNamespace}:${mockAccount.chainId}:${mockAccount.address}`,
       'eip155'
     )
+  })
+
+  it('should reset profile info if switched namespace is not EVM', async () => {
+    const appKit = new AppKit({ ...mockOptions, defaultNetwork: mainnet })
+    const setProfileNameSpy = vi.spyOn(appKit, 'setProfileName')
+    const setProfileImageSpy = vi.spyOn(appKit, 'setProfileImage')
+
+    const mockAccount = {
+      address: 'C3k5AvYqoXjsfrkXdFBkUhqHHApeC8amP7y85LkLHL5X',
+      chainId: solana.id,
+      chainNamespace: solana.chainNamespace
+    }
+    solanaEmitter.emit('accountChanged', mockAccount)
+
+    expect(setProfileNameSpy).toHaveBeenCalledWith(null, solana.chainNamespace)
+    expect(setProfileImageSpy).toHaveBeenCalledWith(null, solana.chainNamespace)
   })
 
   it('should show unsupported chain UI when network is unsupported and allowUnsupportedChain is false', async () => {
