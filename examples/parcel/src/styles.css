@@ -102,8 +102,8 @@ pre {
   margin: 0;
   white-space: pre-wrap;
   word-break: break-all;
-  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Mono', 'Droid Sans Mono', 'Source Code Pro',
-    monospace;
+  font-family:
+    'SF Mono', 'Monaco', 'Inconsolata', 'Fira Mono', 'Droid Sans Mono', 'Source Code Pro', monospace;
   font-size: 0.875rem;
   line-height: 1.5;
 }

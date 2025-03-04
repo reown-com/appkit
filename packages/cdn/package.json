@@ -1,6 +1,7 @@
 {
   "name": "@reown/appkit-cdn",
-  "version": "1.6.8",
+  "version": "1.6.9",
+  "sideEffects": false,
   "main": "dist/wagmi.js",
   "type": "module",
   "files": [
@@ -17,10 +18,10 @@
   "devDependencies": {
     "@wagmi/connectors": "5.7.7",
     "http-server": "14.1.1",
-    "vite-plugin-node-polyfills": "0.22.0"
+    "vite-plugin-node-polyfills": "0.23.0"
   },
   "peerDependencies": {
-    "typescript": "5.3.3"
+    "typescript": "5.7.3"
   },
   "peerDependenciesMeta": {
     "typescript": {
@@ -39,5 +40,17 @@
     "viem": "2.23.0",
     "vite": "5.4.12",
     "wagmi": "2.14.9"
-  }
+  },
+  "keywords": [
+    "appkit",
+    "wallet",
+    "onboarding",
+    "reown",
+    "dapps",
+    "web3",
+    "wagmi",
+    "ethereum",
+    "solana",
+    "bitcoin"
+  ]
 }

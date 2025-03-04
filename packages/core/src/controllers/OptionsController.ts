@@ -148,6 +148,12 @@ export interface OptionsControllerStatePublic {
    * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa' }"
    */
   defaultAccountTypes: DefaultAccountTypes
+  /**
+   * Allows users to indicate if they want to handle the WC connection themselves.
+   * @default false
+   * @see https://docs.reown.com/appkit/react/core/options#manualwccontrol
+   */
+  manualWCControl?: boolean
 }
 
 export interface OptionsControllerStateInternal {
@@ -156,7 +162,6 @@ export interface OptionsControllerStateInternal {
   isSiweEnabled?: boolean
   isUniversalProvider?: boolean
   hasMultipleAddresses?: boolean
-  useInjectedUniversalProvider?: boolean
 }
 
 type StateKey = keyof OptionsControllerStatePublic | keyof OptionsControllerStateInternal
@@ -324,10 +329,8 @@ export const OptionsController = {
     state.allowUnsupportedChain = allowUnsupportedChain
   },
 
-  setUsingInjectedUniversalProvider(
-    useInjectedUniversalProvider: OptionsControllerState['useInjectedUniversalProvider']
-  ) {
-    state.useInjectedUniversalProvider = useInjectedUniversalProvider
+  setManualWCControl(manualWCControl: OptionsControllerState['manualWCControl']) {
+    state.manualWCControl = manualWCControl
   },
 
   setDefaultAccountTypes(

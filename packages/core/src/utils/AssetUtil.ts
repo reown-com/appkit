@@ -1,8 +1,15 @@
+import { proxy } from 'valtio/vanilla'
+
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
 
 import { ApiController } from '../controllers/ApiController.js'
 import { AssetController } from '../controllers/AssetController.js'
 import type { Connector, WcWallet } from './TypeUtil.js'
+
+// -- Types --------------------------------------------- //
+export interface AssetUtilState {
+  networkImagePromises: Record<string, Promise<void>>
+}
 
 const namespaceImageIds: Record<ChainNamespace, string> = {
   // Ethereum
@@ -15,6 +22,12 @@ const namespaceImageIds: Record<ChainNamespace, string> = {
   bip122: ''
 }
 
+// -- State --------------------------------------------- //
+const state = proxy<AssetUtilState>({
+  networkImagePromises: {}
+})
+
+// -- Util ---------------------------------------- //
 export const AssetUtil = {
   async fetchWalletImage(imageId?: string) {
     if (!imageId) {
@@ -28,18 +41,21 @@ export const AssetUtil = {
 
   async fetchNetworkImage(imageId?: string) {
     if (!imageId) {
-      return undefined
+      return
     }
 
-    const existingImage = this.getNetworkImageById(imageId)
-
-    if (existingImage) {
-      return existingImage
+    // Check if the image already exists
+    if (this.getNetworkImageById(imageId)) {
+      return
     }
 
-    await ApiController._fetchNetworkImage(imageId)
+    // Check if the promise is already created
+    if (!state.networkImagePromises[imageId]) {
+      state.networkImagePromises[imageId] = ApiController._fetchNetworkImage(imageId)
+    }
 
-    return this.getNetworkImageById(imageId)
+    // Wait for the promise to resolve
+    await state.networkImagePromises[imageId]
   },
 
   getWalletImageById(imageId?: string) {

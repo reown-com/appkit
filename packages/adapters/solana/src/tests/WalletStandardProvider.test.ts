@@ -57,7 +57,7 @@ describe('WalletStandardProvider specific tests', () => {
     await walletStandardProvider.signTransaction(transaction)
 
     expect(wallet.features[SolanaSignTransaction].signTransaction).toHaveBeenCalledWith({
-      transaction: transaction.serialize({ verifySignatures: false }),
+      transaction: new Uint8Array(transaction.serialize({ verifySignatures: false })),
       account: wallet.accounts[0],
       chain: 'solana:mainnet'
     })
@@ -69,7 +69,7 @@ describe('WalletStandardProvider specific tests', () => {
     await walletStandardProvider.signTransaction(transaction)
 
     expect(wallet.features[SolanaSignTransaction].signTransaction).toHaveBeenCalledWith({
-      transaction: transaction.serialize(),
+      transaction: new Uint8Array(transaction.serialize()),
       account: wallet.accounts[0],
       chain: 'solana:mainnet'
     })
@@ -82,10 +82,10 @@ describe('WalletStandardProvider specific tests', () => {
     expect(
       wallet.features[SolanaSignAndSendTransaction].signAndSendTransaction
     ).toHaveBeenCalledWith({
-      transaction: transaction.serialize({ verifySignatures: false }),
+      transaction: new Uint8Array(transaction.serialize({ verifySignatures: false })),
       account: wallet.accounts[0],
       chain: 'solana:mainnet',
-      options: { preflighCommitment: undefined }
+      options: { preflightCommitment: undefined }
     })
     expect(emitSpy).toHaveBeenCalledWith('pendingTransaction', undefined)
 
@@ -98,7 +98,7 @@ describe('WalletStandardProvider specific tests', () => {
     expect(
       wallet.features[SolanaSignAndSendTransaction].signAndSendTransaction
     ).toHaveBeenCalledWith({
-      transaction: transaction.serialize({ verifySignatures: false }),
+      transaction: new Uint8Array(transaction.serialize({ verifySignatures: false })),
       account: wallet.accounts[0],
       chain: 'solana:mainnet',
       options: {
@@ -138,7 +138,7 @@ describe('WalletStandardProvider specific tests', () => {
 
     expect(wallet.features[SolanaSignTransaction].signTransaction).toHaveBeenCalledWith(
       ...transactions.map(transaction => ({
-        transaction: transaction.serialize({ verifySignatures: false }),
+        transaction: new Uint8Array(transaction.serialize({ verifySignatures: false })),
         account: wallet.accounts[0],
         chain: 'solana:mainnet'
       }))

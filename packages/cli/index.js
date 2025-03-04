@@ -24,7 +24,8 @@ async function questionFramework() {
       choices: [
         { name: 'Next.js', value: 'nextjs' },
         { name: 'React', value: 'react' },
-        { name: 'Vue', value: 'vue' }
+        { name: 'Vue', value: 'vue' },
+        { name: 'Javascript', value: 'javascript' }
       ]
     }
   ]
@@ -36,11 +37,12 @@ async function questionLibrary() {
     {
       type: 'list',
       name: 'library',
-      message: 'wagmi, ethers, solana or EVM+Solana ?',
+      message: 'wagmi, ethers, solana, bitcoin or EVM+Solana ?',
       choices: [
         { name: 'wagmi', value: 'wagmi' },
         { name: 'ethers', value: 'ethers' },
         { name: 'Solana', value: 'solana' },
+        { name: 'Bitcoin', value: 'bitcoin' },
         { name: 'Multichain', value: 'multichain' }
       ]
     }

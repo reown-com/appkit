@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-scaffold-ui",
-  "version": "1.6.8",
+  "version": "1.6.9",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -23,6 +23,56 @@
       "types": "./dist/types/exports/utils.d.ts",
       "import": "./dist/esm/exports/utils.js",
       "default": "./dist/esm/exports/utils.js"
+    },
+    "./core": {
+      "types": "./dist/types/exports/core.d.ts",
+      "import": "./dist/esm/exports/core.js",
+      "default": "./dist/esm/exports/core.js"
+    },
+    "./basic": {
+      "types": "./dist/types/exports/basic.d.ts",
+      "import": "./dist/esm/exports/basic.js",
+      "default": "./dist/esm/exports/basic.js"
+    },
+    "./swaps": {
+      "types": "./dist/types/exports/swaps.d.ts",
+      "import": "./dist/esm/exports/swaps.js",
+      "default": "./dist/esm/exports/swaps.js"
+    },
+    "./send": {
+      "types": "./dist/types/exports/send.d.ts",
+      "import": "./dist/esm/exports/send.js",
+      "default": "./dist/esm/exports/send.js"
+    },
+    "./receive": {
+      "types": "./dist/types/exports/receive.d.ts",
+      "import": "./dist/esm/exports/receive.js",
+      "default": "./dist/esm/exports/receive.js"
+    },
+    "./onramp": {
+      "types": "./dist/types/exports/onramp.d.ts",
+      "import": "./dist/esm/exports/onramp.js",
+      "default": "./dist/esm/exports/onramp.js"
+    },
+    "./transactions": {
+      "types": "./dist/types/exports/transactions.d.ts",
+      "import": "./dist/esm/exports/transactions.js",
+      "default": "./dist/esm/exports/transactions.js"
+    },
+    "./embedded-wallet": {
+      "types": "./dist/types/exports/embedded-wallet.d.ts",
+      "import": "./dist/esm/exports/embedded-wallet.js",
+      "default": "./dist/esm/exports/embedded-wallet.js"
+    },
+    "./socials": {
+      "types": "./dist/types/exports/socials.d.ts",
+      "import": "./dist/esm/exports/socials.js",
+      "default": "./dist/esm/exports/socials.js"
+    },
+    "./email": {
+      "types": "./dist/types/exports/email.d.ts",
+      "import": "./dist/esm/exports/email.js",
+      "default": "./dist/esm/exports/email.js"
     }
   },
   "scripts": {
@@ -53,7 +103,19 @@
   },
   "devDependencies": {
     "@open-wc/testing": "4.0.0",
-    "vitest": "2.1.3",
+    "vitest": "2.1.9",
     "@vitest/coverage-v8": "2.1.3"
-  }
+  },
+  "keywords": [
+    "appkit",
+    "wallet",
+    "onboarding",
+    "reown",
+    "dapps",
+    "web3",
+    "wagmi",
+    "ethereum",
+    "solana",
+    "bitcoin"
+  ]
 }

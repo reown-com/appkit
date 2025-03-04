@@ -39,19 +39,22 @@ extensionTest('it should connect', async () => {
   await modalValidator.expectConnected()
 })
 
-extensionTest('it should sign message', async () => {
-  await modalPage.sign()
+extensionTest('it should sign message', async ({ library }) => {
+  const namespace = library === 'solana' ? 'solana' : 'eip155'
+  await modalPage.sign(namespace)
   await modalValidator.expectAcceptedSign()
   // Wait for the toast animation to complete
   await modalValidator.page.waitForTimeout(500)
 })
 
 extensionTest('it should sign typed data', async ({ library }) => {
+  const namespace = library === 'solana' ? 'solana' : 'eip155'
+
   if (library === 'solana') {
     return
   }
 
-  await modalPage.signTypedData()
+  await modalPage.signTypedData(namespace)
   await modalValidator.expectAcceptedSignTypedData()
 })
 

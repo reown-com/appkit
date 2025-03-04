@@ -1,6 +1,7 @@
 {
   "name": "@reown/appkit-polyfills",
-  "version": "1.6.8",
+  "version": "1.6.9",
+  "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -19,16 +20,8 @@
     "buffer": "6.0.3"
   },
   "devDependencies": {
-    "@types/node": "20.11.5"
+    "@types/node": "22.13.4"
   },
-  "keywords": [
-    "web3",
-    "crypto",
-    "ethereum",
-    "appkit",
-    "reown",
-    "polyfills"
-  ],
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
   "homepage": "https://github.com/reown-com/appkit",
@@ -38,5 +31,17 @@
   },
   "bugs": {
     "url": "https://github.com/reown-com/appkit/issues"
-  }
+  },
+  "keywords": [
+    "appkit",
+    "wallet",
+    "onboarding",
+    "reown",
+    "dapps",
+    "web3",
+    "wagmi",
+    "ethereum",
+    "solana",
+    "bitcoin"
+  ]
 }

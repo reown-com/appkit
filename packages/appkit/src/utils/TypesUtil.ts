@@ -11,6 +11,11 @@ export type AppKitOptions = {
    */
   adapters?: ChainAdapter[]
   /**
+   * This is only used for the @walletconnect/ethereum-provider package. We need this to determine which screens should be shown.
+   * @default false
+   */
+  basic?: boolean
+  /**
    * Show or hide the wallets in the modal. This is available with the email and socials features
    * @default true
    */
