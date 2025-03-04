@@ -2,7 +2,6 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import { InfuraProvider, JsonRpcProvider, formatEther } from 'ethers'
 
 import { type AppKitOptions, WcConstantsUtil } from '@reown/appkit'
-import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import {
   type CombinedProvider,
@@ -462,10 +461,15 @@ export class EthersAdapter extends AdapterBlueprint {
   public async getBalance(
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
-    const caipNetwork = this.caipNetworks?.find((c: CaipNetwork) => c.id === params.chainId)
+    const address = params.address
+    const caipNetwork = this.caipNetworks?.find(network => network.id === params.chainId)
+
+    if (!address) {
+      return Promise.resolve({ balance: '0.00', symbol: 'ETH' })
+    }
 
     if (caipNetwork && caipNetwork.chainNamespace === 'eip155') {
-      const caipAddress = `${caipNetwork.caipNetworkId}:${params.address}`
+      const caipAddress = `${caipNetwork.caipNetworkId}:${address}`
 
       const cachedPromise = this.balancePromises[caipAddress]
       if (cachedPromise) {
@@ -485,7 +489,7 @@ export class EthersAdapter extends AdapterBlueprint {
         try {
           this.balancePromises[caipAddress] = new Promise<AdapterBlueprint.GetBalanceResult>(
             async resolve => {
-              const balance = await jsonRpcProvider.getBalance(params.address)
+              const balance = await jsonRpcProvider.getBalance(address)
 
               const formattedBalance = formatEther(balance)
 
@@ -503,14 +507,14 @@ export class EthersAdapter extends AdapterBlueprint {
             delete this.balancePromises[caipAddress]
           })
 
-          return this.balancePromises[caipAddress] || { balance: '', symbol: '' }
+          return this.balancePromises[caipAddress] || { balance: '0.00', symbol: 'ETH' }
         } catch (error) {
-          return { balance: '', symbol: '' }
+          return { balance: '0.00', symbol: 'ETH' }
         }
       }
     }
 
-    return { balance: '', symbol: '' }
+    return { balance: '0.00', symbol: 'ETH' }
   }
 
   public async getProfile(

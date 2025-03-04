@@ -379,10 +379,10 @@ export abstract class AppKitCore {
           info,
           type,
           provider,
-          chainId: caipNetwork?.id || this.getCaipNetwork()?.id,
+          chainId: caipNetwork?.id || this.getCaipNetwork(chainToUse)?.id,
           rpcUrl:
             caipNetwork?.rpcUrls?.default?.http?.[0] ||
-            this.getCaipNetwork()?.rpcUrls?.default?.http?.[0]
+            this.getCaipNetwork(chainToUse)?.rpcUrls?.default?.http?.[0]
         })
 
         if (!res) {
@@ -578,33 +578,35 @@ export abstract class AppKitCore {
       return
     }
 
-    if (AccountController.state.address) {
+    const networkNamespace = caipNetwork.chainNamespace
+    const namespaceAddress = this.getAddressByChainNamespace(caipNetwork.chainNamespace)
+
+    if (namespaceAddress) {
       if (caipNetwork.chainNamespace === ChainController.state.activeChain) {
-        const adapter = this.getAdapter(ChainController.state.activeChain)
-        const provider = ProviderUtil.getProvider(ChainController.state.activeChain)
-        const providerType = ProviderUtil.state.providerIds[ChainController.state.activeChain]
+        const adapter = this.getAdapter(networkNamespace)
+        const provider = ProviderUtil.getProvider(networkNamespace)
+        const providerType = ProviderUtil.state.providerIds[networkNamespace]
 
         await adapter?.switchNetwork({ caipNetwork, provider, providerType })
         this.setCaipNetwork(caipNetwork)
         await this.syncAccount({
-          address: AccountController.state.address,
+          address: namespaceAddress,
           chainId: caipNetwork.id,
-          chainNamespace: caipNetwork.chainNamespace
+          chainNamespace: networkNamespace
         })
       } else {
-        const providerType =
-          ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
+        const providerType = ProviderUtil.state.providerIds[networkNamespace as ChainNamespace]
 
         this.setCaipNetwork(caipNetwork)
         if (providerType === 'WALLET_CONNECT') {
           this.syncWalletConnectAccount()
         } else {
-          const address = this.getAddressByChainNamespace(caipNetwork.chainNamespace)
+          const address = this.getAddressByChainNamespace(networkNamespace)
           if (address) {
             this.syncAccount({
               address,
               chainId: caipNetwork.id,
-              chainNamespace: caipNetwork.chainNamespace
+              chainNamespace: networkNamespace
             })
           }
         }
@@ -728,7 +730,7 @@ export abstract class AppKitCore {
         return
       }
 
-      this.updateNativeBalance()
+      this.updateNativeBalance(address, activeCaipNetwork.id, activeCaipNetwork.chainNamespace)
     })
 
     adapter.on('accountChanged', ({ address, chainId }) => {
@@ -937,6 +939,12 @@ export abstract class AppKitCore {
       chainNamespace: ChainNamespace
     }
   ) {
+    const isActiveNamespace = params.chainNamespace === ChainController.state.activeChain
+    const networkOfChain = ChainController.getNetworkByIdOfNamespace(
+      params.chainNamespace,
+      params.chainId
+    )
+
     const { address, chainId, chainNamespace } = params
 
     const { chainId: activeChainId } = StorageUtil.getActiveNetworkProps()
@@ -989,14 +997,23 @@ export abstract class AppKitCore {
         } else {
           this.setCaipNetwork(network)
         }
+      } else if (!isActiveNamespace) {
+        if (networkOfChain) {
+          this.setCaipNetworkOfNamespace(networkOfChain, chainNamespace)
+        }
       }
+
       this.syncConnectedWalletInfo(chainNamespace)
 
-      // Only update state when needed
       if (!HelpersUtil.isLowerCaseMatch(address, AccountController.state.address)) {
         this.syncAccountInfo(address, network?.id, chainNamespace)
       }
-      await this.syncBalance({ address, chainId: network?.id, chainNamespace })
+
+      if (isActiveNamespace) {
+        await this.syncBalance({ address, chainId: network?.id, chainNamespace })
+      } else {
+        await this.syncBalance({ address, chainId: networkOfChain?.id, chainNamespace })
+      }
     }
   }
 
@@ -1144,23 +1161,28 @@ export abstract class AppKitCore {
       params.chainNamespace
     ).find(n => n.id.toString() === params.chainId?.toString())
 
-    if (!caipNetwork) {
+    if (!caipNetwork || !params.chainId) {
       return
     }
 
-    await this.updateNativeBalance()
+    await this.updateNativeBalance(params.address, params.chainId, params.chainNamespace)
   }
 
-  protected async updateNativeBalance() {
-    const adapter = this.getAdapter(ChainController.state.activeChain as ChainNamespace)
-    if (adapter && ChainController.state.activeChain && AccountController.state.address) {
+  public async updateNativeBalance(
+    address: string,
+    chainId: string | number,
+    namespace: ChainNamespace
+  ) {
+    const adapter = this.getAdapter(namespace)
+
+    if (adapter) {
       const balance = await adapter.getBalance({
-        address: AccountController.state.address,
-        chainId: ChainController.state.activeCaipNetwork?.id as string | number,
-        caipNetwork: this.getCaipNetwork(),
+        address,
+        chainId,
+        caipNetwork: this.getCaipNetwork(namespace),
         tokens: this.options.tokens
       })
-      this.setBalance(balance.balance, balance.symbol, ChainController.state.activeChain)
+      this.setBalance(balance.balance, balance.symbol, namespace)
     }
   }
 
@@ -1323,6 +1345,13 @@ export abstract class AppKitCore {
   // -- Public Internal ---------------------------------------------------
   public getCaipNetwork = (chainNamespace?: ChainNamespace) => {
     if (chainNamespace) {
+      const namespaceCaipNetwork =
+        ChainController.getNetworkDataByChainNamespace(chainNamespace)?.caipNetwork
+
+      if (namespaceCaipNetwork) {
+        return namespaceCaipNetwork
+      }
+
       return ChainController.getRequestedCaipNetworks(chainNamespace).filter(
         c => c.chainNamespace === chainNamespace
       )?.[0]
@@ -1406,6 +1435,10 @@ export abstract class AppKitCore {
     ChainController.setActiveCaipNetwork(caipNetwork)
   }
 
+  public setCaipNetworkOfNamespace = (caipNetwork: CaipNetwork, chainNamespace: ChainNamespace) => {
+    ChainController.setChainNetworkData(chainNamespace, { caipNetwork })
+  }
+
   public setAllAccounts: (typeof AccountController)['setAllAccounts'] = (addresses, chain) => {
     AccountController.setAllAccounts<typeof chain>(addresses, chain)
     OptionsController.setHasMultipleAddresses(addresses?.length > 1)
@@ -1453,10 +1486,6 @@ export abstract class AppKitCore {
       ConnectionController.setUri(options.uri)
     }
 
-    if (options?.namespace) {
-      ConnectorController.setFilterByNamespace(options.namespace)
-    }
-
     await ModalController.open(options)
   }
 
@@ -1465,8 +1494,8 @@ export abstract class AppKitCore {
     ModalController.close()
   }
 
-  public setLoading(loading: ModalControllerState['loading']) {
-    ModalController.setLoading(loading)
+  public setLoading(loading: ModalControllerState['loading'], namespace?: ChainNamespace) {
+    ModalController.setLoading(loading, namespace)
   }
 
   public async disconnect() {
