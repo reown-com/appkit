@@ -360,6 +360,11 @@ export abstract class AppKitCore {
         const activeChain = ChainController.state.activeChain as ChainNamespace
         const chainToUse = chain || activeChain
         const adapter = this.getAdapter(chainToUse)
+        const connector = ConnectorController.getConnectors(chainToUse).find(c => c.id === id)
+
+        if (!connector) {
+          throw new Error('Connector not found')
+        }
 
         if (chain && chain !== activeChain && !caipNetwork) {
           const toConnectNetwork = this.caipNetworks?.find(
@@ -374,12 +379,18 @@ export abstract class AppKitCore {
           throw new Error('Adapter not found')
         }
 
+        const chainId = caipNetwork?.id || this.getCaipNetwork()?.id
+
+        if (!chainId) {
+          throw new Error('ChainId not found')
+        }
+
         const res = await adapter.connect({
           id,
           info,
           type,
           provider,
-          chainId: caipNetwork?.id || this.getCaipNetwork()?.id,
+          chainId,
           rpcUrl:
             caipNetwork?.rpcUrls?.default?.http?.[0] ||
             this.getCaipNetwork()?.rpcUrls?.default?.http?.[0]
@@ -388,12 +399,12 @@ export abstract class AppKitCore {
         if (!res) {
           return
         }
-
         StorageUtil.addConnectedNamespace(chainToUse)
         this.syncProvider({ ...res, chainNamespace: chainToUse })
         await this.syncAccount({ ...res, chainNamespace: chainToUse })
         const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
         this.setAllAccounts(accounts, chainToUse)
+        ConnectionController.syncConnections({ accounts, chain: chainToUse, connector })
       },
       reconnectExternal: async ({ id, info, type, provider }) => {
         const namespace = ChainController.state.activeChain as ChainNamespace
@@ -796,36 +807,39 @@ export abstract class AppKitCore {
     const adapter = this.getAdapter(namespace)
     const connectorId = StorageUtil.getConnectedConnectorId(namespace)
     const caipNetwork = this.getCaipNetwork()
+    const connector = ConnectorController.getConnectors(namespace).find(c => c.id === connectorId)
 
     try {
-      if (!adapter || !connectorId) {
-        throw new Error(`Adapter or connectorId not found for namespace ${namespace}`)
+      if (!adapter || !connector) {
+        throw new Error(`Adapter or connector not found for namespace ${namespace}`)
+      }
+
+      if (!caipNetwork?.id) {
+        throw new Error('CaipNetwork not found')
       }
 
       const connection = await adapter?.syncConnection({
         namespace,
-        id: connectorId,
-        chainId: caipNetwork?.id,
+        id: connector.id,
+        chainId: caipNetwork.id,
         rpcUrl: caipNetwork?.rpcUrls?.default?.http?.[0] as string
       })
 
       if (connection) {
         const accounts = await adapter?.getAccounts({
           namespace,
-          id: connectorId
+          id: connector.id
         })
 
-        if (accounts && accounts.accounts.length > 0) {
-          this.setAllAccounts(accounts.accounts, namespace)
-        } else {
-          this.setAllAccounts(
-            [CoreHelperUtil.createAccount(namespace, connection.address, 'eoa')],
-            namespace
-          )
-        }
+        const accountList =
+          accounts && accounts.accounts.length > 0
+            ? accounts.accounts
+            : [CoreHelperUtil.createAccount(namespace, connection.address, 'eoa')]
 
+        this.setAllAccounts(accountList, namespace)
         this.syncProvider({ ...connection, chainNamespace: namespace })
         await this.syncAccount({ ...connection, chainNamespace: namespace })
+        ConnectionController.syncConnections({ accounts: accountList, chain: namespace, connector })
         this.setStatus('connected', namespace)
       } else {
         this.setStatus('disconnected', namespace)

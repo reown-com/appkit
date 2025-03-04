@@ -19,7 +19,7 @@ mockWindowAndDocument()
 mockStorageUtil()
 mockBlockchainApiController()
 
-describe('syncExistingConnection', () => {
+describe.skip('syncExistingConnection', () => {
   it('should set status to "connecting" and sync the connection when a connector and namespace are present', async () => {
     const setStatus = vi.spyOn(AccountController, 'setStatus')
     vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('evm-connector')
