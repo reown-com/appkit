@@ -314,27 +314,22 @@ export const ConnectionController = {
     }
   },
 
-  syncConnections(connections: Connection[]) {
-    console.log('>>> CC.syncConnections', connections)
-    connections.forEach(newConnection => {
-      const existingConnectionIndex = state.connections.findIndex(
-        conn => conn.connector.id === newConnection.connector.id
-      )
+  syncConnections(connection: Connection) {
+    const existingConnectionIndex = state.connections.findIndex(
+      conn => conn.connector.id === connection.connector.id
+    )
 
-      if (existingConnectionIndex === -1) {
-        // If the connector does not exist in the state.connections, add it to the state array
-        state.connections.push({ ...newConnection })
+    if (existingConnectionIndex === -1) {
+      // If the connector does not exist in the state.connections, add it to the state array
+      state.connections.push({ ...connection })
+    } else {
+      // If the connector exists, replace the accounts array
+      if (state.connections[existingConnectionIndex]) {
+        state.connections[existingConnectionIndex].accounts = [...connection.accounts]
       } else {
-        // If the connector exists, replace the accounts array
-        if (state.connections[existingConnectionIndex]) {
-          state.connections[existingConnectionIndex].accounts = [...newConnection.accounts]
-        } else {
-          state.connections.push({ ...newConnection })
-        }
+        state.connections.push({ ...connection })
       }
-    })
-
-    console.log('state.connections', state.connections)
+    }
   },
 
   switchAccount(connection: Connection, address: string) {

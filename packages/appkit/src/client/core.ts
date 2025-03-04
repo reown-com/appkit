@@ -358,7 +358,6 @@ export abstract class AppKitCore {
         await this.syncWalletConnectAccount()
       },
       connectExternal: async ({ id, info, type, provider, chain, caipNetwork }) => {
-        console.log('>>> connectExternal', id, info, type, provider, chain, caipNetwork)
         const activeChain = ChainController.state.activeChain as ChainNamespace
         const chainToUse = chain || activeChain
         const adapter = this.getAdapter(chainToUse)
@@ -401,22 +400,17 @@ export abstract class AppKitCore {
         if (!res) {
           return
         }
-        console.log('>>> connectExternal res2', res)
         StorageUtil.addConnectedNamespace(chainToUse)
         this.syncProvider({ ...res, chainNamespace: chainToUse })
         await this.syncAccount({ ...res, chainNamespace: chainToUse })
         const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
         this.setAllAccounts(accounts, chainToUse)
-
-        console.log('>>> connectExternal res', res, info)
-        ConnectionController.syncConnections([
-          {
-            accounts,
-            chainId: chainId,
-            chain: chainToUse,
-            connector
-          }
-        ])
+        ConnectionController.syncConnections({
+          accounts,
+          chainId: chainId,
+          chain: chainToUse,
+          connector
+        })
       },
       reconnectExternal: async ({ id, info, type, provider }) => {
         const namespace = ChainController.state.activeChain as ChainNamespace
@@ -796,7 +790,6 @@ export abstract class AppKitCore {
   protected async syncNamespaceConnection(namespace: ChainNamespace) {
     try {
       const connectorId = StorageUtil.getConnectedConnectorId(namespace)
-      console.log('>>> syncNamespaceConnection', namespace, connectorId)
 
       this.setStatus('connecting', namespace)
       switch (connectorId) {
@@ -838,7 +831,6 @@ export abstract class AppKitCore {
         rpcUrl: caipNetwork?.rpcUrls?.default?.http?.[0] as string
       })
 
-      console.log('>>> syncAdapterConnection', connection)
       if (connection) {
         const accounts = await adapter?.getAccounts({
           namespace,
@@ -850,25 +842,15 @@ export abstract class AppKitCore {
             ? accounts.accounts
             : [CoreHelperUtil.createAccount(namespace, connection.address, 'eoa')]
 
-        if (accounts && accounts.accounts.length > 0) {
-          this.setAllAccounts(accountList, namespace)
-        } else {
-          this.setAllAccounts(accountList, namespace)
-        }
-
-        console.log('>>> syncAdapterConnection2', accountList, connector)
-        ConnectionController.syncConnections([
-          {
-            accounts: accountList,
-            chainId: caipNetwork.id,
-            chain: namespace,
-            connector: connector
-          }
-        ])
-        console.log('>>> syncAdapterConnection3')
-
+        this.setAllAccounts(accountList, namespace)
         this.syncProvider({ ...connection, chainNamespace: namespace })
         await this.syncAccount({ ...connection, chainNamespace: namespace })
+        ConnectionController.syncConnections({
+          accounts: accountList,
+          chainId: caipNetwork.id,
+          chain: namespace,
+          connector: connector
+        })
         this.setStatus('connected', namespace)
       } else {
         this.setStatus('disconnected', namespace)
