@@ -69,7 +69,7 @@ test.describe('AppKit HTML Basic Example', () => {
     })
 
     // Get QR code and copy link
-    const copyLinkButton = dappPage.locator('wui-link', { hasText: 'Copy link' }).first()
+    const copyLinkButton = dappPage.getByText('Copy link').nth(1)
     copyLinkButton.waitFor({
       state: 'visible',
       timeout: 5000
