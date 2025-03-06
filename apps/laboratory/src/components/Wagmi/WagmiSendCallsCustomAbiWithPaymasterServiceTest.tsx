@@ -133,6 +133,7 @@ function AvailableTestContent() {
       }
     }
     catch (e) {
+      setLoading(false)
       throw new Error("Provided ABI not a valid JSON array.")
     }
 
@@ -145,6 +146,7 @@ function AvailableTestContent() {
       } 
     }
     catch (e) {
+      setLoading(false)
       throw new Error("Provided method args not a valid JSON array.")
     }
     
