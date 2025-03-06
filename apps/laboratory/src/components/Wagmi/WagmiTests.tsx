@@ -12,6 +12,7 @@ import { WagmiSignMessageTest } from './WagmiSignMessageTest'
 import { WagmiSignTypedDataTest } from './WagmiSignTypedDataTest'
 import { WagmiTransactionTest } from './WagmiTransactionTest'
 import { WagmiWriteContractTest } from './WagmiWriteContractTest'
+import { WagmiSendCallsCustomAbiWithPaymasterServiceTest } from './WagmiSendCallsCustomAbiWithPaymasterServiceTest'
 
 interface IProps {
   config?: Config
@@ -84,6 +85,13 @@ export function WagmiTests({ config }: IProps) {
               Send Calls (Paymaster Service)
             </Heading>
             <WagmiSendCallsWithPaymasterServiceTest />
+          </Box>
+
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Send Calls with custom abi (Paymaster Service)
+            </Heading>
+            <WagmiSendCallsCustomAbiWithPaymasterServiceTest />
           </Box>
 
           <Box>
