@@ -12,21 +12,19 @@ import { useWagmiAvailableCapabilities } from '@/src/hooks/useWagmiActiveCapabil
 import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '@/src/utils/EIP5792Utils'
 
 
-const getWriteMethodsFromAbi = (abi: string) => {
+function getWriteMethodsFromAbi (abi: string)  {
   try {
     const abiJson: Abi = JSON.parse(abi)
 
-    console.log({ abiJson })
-
     const writeFunctions = abiJson.filter(
-      (item: any) =>
+      (item) =>
         item.type === 'function' &&
         (item.stateMutability === 'nonpayable' || item.stateMutability === 'payable')
     )
 
-    return writeFunctions.map((func: any) => func.name)
+    return writeFunctions.filter(func => "name" in func).map((func) => func.name)
   } catch (error) {
-    console.log({ error })
+
     return []
   }
 }
@@ -34,8 +32,6 @@ const getWriteMethodsFromAbi = (abi: string) => {
 export function WagmiSendCallsCustomAbiWithPaymasterServiceTest() {
   const {
     provider,
-    supportedChains: capabilitySupportedChains,
-    currentChainsInfo,
     supported
   } = useWagmiAvailableCapabilities({
     capability: WALLET_CAPABILITIES.PAYMASTER_SERVICE,
@@ -46,12 +42,6 @@ export function WagmiSendCallsCustomAbiWithPaymasterServiceTest() {
   const { status } = useAccount()
 
   const isConnected = status === 'connected'
-  const doWalletSupportCapability = useMemo(
-    () =>
-      currentChainsInfo &&
-      capabilitySupportedChains.some(chain => chain.chainId === currentChainsInfo.chainId),
-    [capabilitySupportedChains]
-  )
 
   if (!isConnected || !provider || !address) {
     return (
@@ -68,14 +58,6 @@ export function WagmiSendCallsCustomAbiWithPaymasterServiceTest() {
       </Text>
     )
   }
-
-  // if (!doWalletSupportCapability) {
-  //   return (
-  //     <Text fontSize="md" color="yellow">
-  //       Account does not support paymaster service feature on {currentChainsInfo?.chainName}
-  //     </Text>
-  //   )
-  // }
 
   return <AvailableTestContent />
 }
@@ -143,20 +125,24 @@ function AvailableTestContent() {
       throw Error('paymasterServiceUrl not set')
     }
 
-    let abi: Abi;
+    let abi: Abi = [];
     try {
       abi = JSON.parse(contractAbi)
-      if (!Array.isArray(abi)) throw new Error();
+      if (!Array.isArray(abi)) {
+        throw new Error();
+      }
     }
     catch (e) {
       throw new Error("Provided ABI not a valid JSON array.")
     }
 
 
-    let args: Array<any>
+    let args: Array<unknown> = []
     try {
       args = JSON.parse(methodArgs)
-      if (!Array.isArray(args)) throw new Error();
+      if (!Array.isArray(args)) { 
+        throw new Error();
+      } 
     }
     catch (e) {
       throw new Error("Provided method args not a valid JSON array.")
@@ -167,9 +153,6 @@ function AvailableTestContent() {
       functionName: method,
       args
     })
-
-    console.log({ callData })
-
 
     const testTransaction = {
       to: contractAddress as `0x${string}`,
