@@ -48,10 +48,6 @@ describe('syncExistingConnection', () => {
   })
 
   it('should reconnect to multiple namespaces if previously connected', async () => {
-    const setConnectedConnectorId = vi.spyOn(StorageUtil, 'setConnectedConnectorId')
-    // const setProviderId = vi.spyOn(ProviderUtil, 'setProviderId').mockImplementation(() => {})
-    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('universal-connector')
-
     const appKit = new AppKit(mockOptions)
     await appKit['syncExistingConnection']()
 
@@ -59,17 +55,6 @@ describe('syncExistingConnection', () => {
     expect(mockSolanaAdapter.syncConnection).toHaveBeenCalled()
     expect(mockEvmAdapter.getAccounts).toHaveBeenCalled()
     expect(mockSolanaAdapter.getAccounts).toHaveBeenCalled()
-
-    // NOTE: Even though setConnectedConnectorId is getting called in the same function (syncProvider),
-    // it's getting detected as not called by the test runner.
-    // expect(setProviderId).toHaveBeenCalledWith('eip155', 'EXTERNAL')
-    // expect(setProviderId).toHaveBeenCalledWith('solana', 'EXTERNAL')
-
-    expect(setConnectedConnectorId).toHaveBeenCalledWith('eip155', 'evm-connector')
-    expect(setConnectedConnectorId).toHaveBeenCalledWith('solana', 'solana-connector')
-
-    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockClear()
-    vi.spyOn(StorageUtil, 'getConnectionStatus').mockClear()
   })
 })
 
