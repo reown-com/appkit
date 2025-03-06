@@ -365,11 +365,6 @@ export class AppKit extends AppKitCore {
 
       await adapter?.switchNetwork({ caipNetwork, provider, providerType })
       this.setCaipNetwork(caipNetwork)
-      await this.syncAccount({
-        address: namespaceAddress,
-        chainId: caipNetwork.id,
-        chainNamespace: networkNamespace
-      })
     } else {
       const providerType =
         ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
@@ -384,19 +379,18 @@ export class AppKit extends AppKitCore {
           ChainController.state.activeChain = caipNetwork.chainNamespace
           const data = await this.authProvider?.isConnected()
 
-          if (!data?.isConnected || !namespaceAddress) {
-            await this.connectionControllerClient?.connectExternal?.({
-              id: ConstantsUtil.CONNECTOR_ID.AUTH,
-              provider: this.authProvider,
-              chain: networkNamespace,
-              chainId: caipNetwork.id,
-              type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
-              caipNetwork
-            })
-          }
+          await this.connectionControllerClient?.connectExternal?.({
+            id: ConstantsUtil.CONNECTOR_ID.AUTH,
+            provider: this.authProvider,
+            chain: networkNamespace,
+            chainId: caipNetwork.id,
+            type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
+            caipNetwork
+          })
 
           this.setCaipNetwork(caipNetwork)
         } catch (error) {
+          console.error('>>> switchCaipNetwork.error', error)
           const adapter = this.getAdapter(networkNamespace as ChainNamespace)
           await adapter?.switchNetwork({
             caipNetwork,

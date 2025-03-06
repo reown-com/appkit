@@ -650,6 +650,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   }
 
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
+    await super.switchNetwork(params)
     await switchChain(this.wagmiConfig, { chainId: params.caipNetwork.id as number })
   }
 

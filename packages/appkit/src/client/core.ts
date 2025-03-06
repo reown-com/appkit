@@ -589,11 +589,6 @@ export abstract class AppKitCore {
 
         await adapter?.switchNetwork({ caipNetwork, provider, providerType })
         this.setCaipNetwork(caipNetwork)
-        await this.syncAccount({
-          address: namespaceAddress,
-          chainId: caipNetwork.id,
-          chainNamespace: networkNamespace
-        })
       } else {
         const providerType = ProviderUtil.state.providerIds[networkNamespace as ChainNamespace]
 
