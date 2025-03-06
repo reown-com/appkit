@@ -170,7 +170,7 @@ export class W3mNetworksView extends LitElement {
     const isDifferentNamespace = network.chainNamespace !== ChainController.state.activeChain
     const isCurrentNamespaceConnected = AccountController.state.caipAddress
     const isNextNamespaceConnected = AccountController.getCaipAddress(network.chainNamespace)
-    const connectorId = StorageUtil.getConnectedConnectorId(ChainController.state.activeChain)
+    const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
 
     /**
      * If the network is supported by the auth connector, we don't need to show switch active chain view.
