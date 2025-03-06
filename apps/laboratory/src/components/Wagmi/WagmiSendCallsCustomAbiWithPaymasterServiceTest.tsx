@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { Button, Input, Stack, Text, Select, Tooltip } from '@chakra-ui/react'
-import { encodeFunctionData, type Abi } from 'viem'
+import { Button, Input, Select, Stack, Text, Tooltip } from '@chakra-ui/react'
+import { type Abi, encodeFunctionData } from 'viem'
 import { useAccount } from 'wagmi'
 import { useSendCalls } from 'wagmi/experimental'
 
@@ -11,29 +11,24 @@ import { useChakraToast } from '@/src/components/Toast'
 import { useWagmiAvailableCapabilities } from '@/src/hooks/useWagmiActiveCapabilities'
 import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '@/src/utils/EIP5792Utils'
 
-
-function getWriteMethodsFromAbi (abi: string)  {
+function getWriteMethodsFromAbi(abi: string) {
   try {
     const abiJson: Abi = JSON.parse(abi)
 
     const writeFunctions = abiJson.filter(
-      (item) =>
+      item =>
         item.type === 'function' &&
         (item.stateMutability === 'nonpayable' || item.stateMutability === 'payable')
     )
 
-    return writeFunctions.filter(func => "name" in func).map((func) => func.name)
+    return writeFunctions.filter(func => 'name' in func).map(func => func.name)
   } catch (error) {
-
     return []
   }
 }
 
 export function WagmiSendCallsCustomAbiWithPaymasterServiceTest() {
-  const {
-    provider,
-    supported
-  } = useWagmiAvailableCapabilities({
+  const { provider, supported } = useWagmiAvailableCapabilities({
     capability: WALLET_CAPABILITIES.PAYMASTER_SERVICE,
     method: EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
   })
@@ -125,31 +120,28 @@ function AvailableTestContent() {
       throw Error('paymasterServiceUrl not set')
     }
 
-    let abi: Abi = [];
+    let abi: Abi = []
     try {
       abi = JSON.parse(contractAbi)
       if (!Array.isArray(abi)) {
-        throw new Error();
+        throw new Error()
       }
-    }
-    catch (e) {
+    } catch (e) {
       setLoading(false)
-      throw new Error("Provided ABI not a valid JSON array.")
+      throw new Error('Provided ABI not a valid JSON array.')
     }
-
 
     let args: Array<unknown> = []
     try {
       args = JSON.parse(methodArgs)
-      if (!Array.isArray(args)) { 
-        throw new Error();
-      } 
-    }
-    catch (e) {
+      if (!Array.isArray(args)) {
+        throw new Error()
+      }
+    } catch (e) {
       setLoading(false)
-      throw new Error("Provided method args not a valid JSON array.")
+      throw new Error('Provided method args not a valid JSON array.')
     }
-    
+
     const callData = encodeFunctionData({
       abi,
       functionName: method,
@@ -174,41 +166,46 @@ function AvailableTestContent() {
 
   return (
     <Stack direction={['column', 'column', 'column']}>
+      <Input
+        placeholder="Contract Address (0x...)"
+        onChange={e => setContractAddress(e.target.value)}
+        value={contractAddress}
+        isDisabled={isLoading}
+        whiteSpace="nowrap"
+        textOverflow="ellipsis"
+      />
 
-        <Input
-          placeholder="Contract Address (0x...)"
-          onChange={e => setContractAddress(e.target.value)}
-          value={contractAddress}
-          isDisabled={isLoading}
-          whiteSpace="nowrap"
-          textOverflow="ellipsis"
-        />
+      <Input
+        placeholder="Contract ABI [...]"
+        onChange={e => setContractAbi(e.target.value)}
+        value={contractAbi}
+        isDisabled={isLoading}
+        whiteSpace="nowrap"
+        textOverflow="ellipsis"
+      />
 
-        <Input
-          placeholder="Contract ABI [...]"
-          onChange={e => setContractAbi(e.target.value)}
-          value={contractAbi}
-          isDisabled={isLoading}
-          whiteSpace="nowrap"
-          textOverflow="ellipsis"
-        />
+      <Select
+        value={method}
+        onChange={e => {
+          setMethod(e.target.value)
+        }}
+        placeholder="Method name"
+      >
+        {availableMethods.map(name => (
+          <option value={name} key={name}>
+            {name}
+          </option>
+        ))}
+      </Select>
 
-        <Select value={method} onChange={(e) => {setMethod(e.target.value)}} placeholder="Method name">
-          {
-            availableMethods.map((name) => (
-              <option value={name} key={name}>{name}</option>
-            ))
-          }
-        </Select>
-
-        <Input
-          placeholder="Method args [...]"
-          onChange={e => setMethodArgs(e.target.value)}
-          value={methodArgs}
-          isDisabled={isLoading}
-          whiteSpace="nowrap"
-          textOverflow="ellipsis"
-        />
+      <Input
+        placeholder="Method args [...]"
+        onChange={e => setMethodArgs(e.target.value)}
+        value={methodArgs}
+        isDisabled={isLoading}
+        whiteSpace="nowrap"
+        textOverflow="ellipsis"
+      />
 
       <Tooltip label="Paymaster Service URL should be of ERC-7677 paymaster service proxy">
         <Input

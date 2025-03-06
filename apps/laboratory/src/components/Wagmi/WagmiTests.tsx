@@ -5,6 +5,7 @@ import { useAppKitAccount } from '@reown/appkit/react'
 
 import { WagmiDisconnectTest } from './WagmiDisconnectTest'
 import { WagmiGetCallsStatusTest } from './WagmiGetCallsStatusTest'
+import { WagmiSendCallsCustomAbiWithPaymasterServiceTest } from './WagmiSendCallsCustomAbiWithPaymasterServiceTest'
 import { WagmiSendCallsTest } from './WagmiSendCallsTest'
 import { WagmiSendCallsWithPaymasterServiceTest } from './WagmiSendCallsWithPaymasterServiceTest'
 import { WagmiSendUSDCTest } from './WagmiSendUSDCTest'
@@ -12,7 +13,6 @@ import { WagmiSignMessageTest } from './WagmiSignMessageTest'
 import { WagmiSignTypedDataTest } from './WagmiSignTypedDataTest'
 import { WagmiTransactionTest } from './WagmiTransactionTest'
 import { WagmiWriteContractTest } from './WagmiWriteContractTest'
-import { WagmiSendCallsCustomAbiWithPaymasterServiceTest } from './WagmiSendCallsCustomAbiWithPaymasterServiceTest'
 
 interface IProps {
   config?: Config
