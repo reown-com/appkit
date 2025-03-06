@@ -377,8 +377,6 @@ export class AppKit extends AppKitCore {
       ) {
         try {
           ChainController.state.activeChain = caipNetwork.chainNamespace
-          const data = await this.authProvider?.isConnected()
-
           await this.connectionControllerClient?.connectExternal?.({
             id: ConstantsUtil.CONNECTOR_ID.AUTH,
             provider: this.authProvider,
@@ -390,7 +388,6 @@ export class AppKit extends AppKitCore {
 
           this.setCaipNetwork(caipNetwork)
         } catch (error) {
-          console.error('>>> switchCaipNetwork.error', error)
           const adapter = this.getAdapter(networkNamespace as ChainNamespace)
           await adapter?.switchNetwork({
             caipNetwork,
