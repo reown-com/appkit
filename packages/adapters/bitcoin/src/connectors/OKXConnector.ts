@@ -1,5 +1,6 @@
-import type { CaipNetwork } from '@reown/appkit-common'
+import { type CaipNetwork, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { CoreHelperUtil, type RequestArguments } from '@reown/appkit-core'
+import { PresetsUtil } from '@reown/appkit-utils'
 import { bitcoin } from '@reown/appkit/networks'
 
 import { MethodNotSupportedError } from '../errors/MethodNotSupportedError.js'
@@ -12,6 +13,8 @@ export class OKXConnector extends ProviderEventEmitter implements BitcoinConnect
   public readonly name = 'OKX Wallet'
   public readonly chain = 'bip122'
   public readonly type = 'ANNOUNCED'
+  public readonly explorerId =
+    PresetsUtil.ConnectorExplorerIds[CommonConstantsUtil.CONNECTOR_ID.OKX]
   public readonly imageUrl: string
 
   public readonly provider = this

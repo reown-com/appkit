@@ -4,6 +4,8 @@ import { property, state } from 'lit/decorators.js'
 import type { Platform } from '@reown/appkit-core'
 import { ConnectionController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-tabs'
 
 @customElement('w3m-connecting-header')
 export class W3mConnectingHeader extends LitElement {

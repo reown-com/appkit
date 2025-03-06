@@ -8,22 +8,16 @@ import { ChainAdapter, ConstantsUtil } from '@reown/appkit-core'
 import {
   type AppKitNetwork,
   arbitrum,
-  aurora,
   avalanche,
   base,
-  baseSepolia,
   bitcoin,
   bitcoinTestnet,
   bsc,
-  gnosis,
-  hedera,
   mainnet,
   optimism,
   polygon,
-  sepolia,
   solana,
   solanaDevnet,
-  unichainSepolia,
   zksync
 } from '@reown/appkit/networks'
 import { CreateAppKit } from '@reown/appkit/react'
@@ -37,23 +31,12 @@ if (!projectId) {
 }
 
 // Networks
-export const evmNetworks = [
-  mainnet,
-  optimism,
-  bsc,
-  polygon,
-  avalanche,
-  arbitrum,
-  base,
-  baseSepolia,
-  unichainSepolia,
-  sepolia,
-  gnosis,
-  hedera,
-  aurora
-] as [AppKitNetwork, ...AppKitNetwork[]]
-
 type AppKitNetworksType = [AppKitNetwork, ...AppKitNetwork[]]
+
+export const evmNetworks = [mainnet, optimism, bsc, polygon, avalanche, arbitrum, zksync, base] as [
+  AppKitNetwork,
+  ...AppKitNetwork[]
+]
 
 export const solanaNetworks = [solana, solanaDevnet] as AppKitNetworksType
 
@@ -89,7 +72,7 @@ export const allAdapters = [evmAdapter, solanaAdapter, bitcoinAdapter]
 const metadata = {
   name: 'AppKit Builder',
   description: 'The full stack toolkit to build onchain app UX',
-  url: 'https://github.com/0xonerb/next-reown-appkit-ssr', // origin must match your domain & subdomain
+  url: 'https://demo.reown.com', // origin must match your domain & subdomain
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 

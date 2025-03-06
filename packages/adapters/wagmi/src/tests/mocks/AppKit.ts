@@ -27,7 +27,8 @@ export const mockProvider = {
   events: {
     setMaxListeners: vi.fn()
   },
-  session: mockSession
+  session: mockSession,
+  setDefaultChain: vi.fn()
 }
 
 export const mockAppKit = {
@@ -61,7 +62,6 @@ export const mockAppKit = {
   open: vi.fn(),
   isOpen: vi.fn().mockReturnValue(false),
   isTransactionStackEmpty: vi.fn().mockReturnValue(true),
-  isTransactionShouldReplaceView: vi.fn().mockReturnValue(false),
   replace: vi.fn(),
   redirect: vi.fn(),
   showErrorMessage: vi.fn(),
@@ -95,6 +95,7 @@ export const mockAppKit = {
   getCapabilities: vi.fn(),
   grantPermissions: vi.fn(),
   revokePermissions: vi.fn(),
+  walletGetAssets: vi.fn(),
   getUniversalProvider: vi.fn().mockResolvedValue(mockProvider),
   getProvider: vi.fn(),
   universalAdapter: {

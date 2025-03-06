@@ -15,7 +15,14 @@ import {
   ThemeController
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-card'
+import '@reown/appkit-ui/wui-flex'
 
+import '../../partials/w3m-alertbar/index.js'
+import '../../partials/w3m-header/index.js'
+import '../../partials/w3m-snackbar/index.js'
+import '../../partials/w3m-tooltip/index.js'
+import '../w3m-router/index.js'
 import styles from './styles.js'
 
 // -- Helpers --------------------------------------------- //
@@ -29,6 +36,8 @@ export class W3mModal extends LitElement {
   private unsubscribe: (() => void)[] = []
 
   private abortController?: AbortController = undefined
+
+  private hasPrefetched = false
 
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) private enableEmbedded = OptionsController.state.enableEmbedded
@@ -44,7 +53,7 @@ export class W3mModal extends LitElement {
   public constructor() {
     super()
     this.initializeTheming()
-    ApiController.prefetch()
+    ApiController.prefetchAnalyticsConfig()
     this.unsubscribe.push(
       ...[
         ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
@@ -60,6 +69,7 @@ export class W3mModal extends LitElement {
     if (this.caipAddress) {
       if (this.enableEmbedded) {
         ModalController.close()
+        this.prefetch()
 
         return
       }
@@ -69,6 +79,10 @@ export class W3mModal extends LitElement {
 
     if (this.open) {
       this.onOpen()
+    }
+
+    if (this.enableEmbedded) {
+      this.prefetch()
     }
   }
 
@@ -224,8 +238,6 @@ export class W3mModal extends LitElement {
   }
 
   private onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {
-    ApiController.prefetch()
-
     const prevCaipNetworkId = this.caipNetwork?.caipNetworkId?.toString()
     const nextNetworkId = nextCaipNetwork?.caipNetworkId?.toString()
     const networkChanged = prevCaipNetworkId && nextNetworkId && prevCaipNetworkId !== nextNetworkId
@@ -246,14 +258,25 @@ export class W3mModal extends LitElement {
     // If user is on the unsupported network screen, we should go back when network has been changed
     const isUnsupportedNetworkScreen = RouterController.state.view === 'UnsupportedChain'
 
-    if (
+    const shouldGoBack =
       !isConnectingExternal &&
       (isNotConnected || isUnsupportedNetworkScreen || isNetworkChangedInSameNamespace)
-    ) {
+    if (shouldGoBack) {
       RouterController.goBack()
     }
 
     this.caipNetwork = nextCaipNetwork
+  }
+
+  /*
+   * This will only be called if enableEmbedded is true. Since embedded
+   * mode doesn't set the modal open state to true to do prefetching
+   */
+  private prefetch() {
+    if (!this.hasPrefetched) {
+      this.hasPrefetched = true
+      ApiController.prefetch()
+    }
   }
 }
 

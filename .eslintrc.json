@@ -25,7 +25,8 @@
     ".changeset",
     "playwright-report",
     "*.mock.ts",
-    "*.test.ts"
+    "*.test.ts",
+    "scripts/*.js"
   ],
   "rules": {
     // Core

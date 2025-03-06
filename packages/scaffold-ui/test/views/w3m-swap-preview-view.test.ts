@@ -12,7 +12,7 @@ import {
   type SwapTokenWithBalance
 } from '@reown/appkit-core'
 
-import { W3mSwapPreviewView } from '../../exports'
+import { W3mSwapPreviewView } from '../../src/views/w3m-swap-preview-view/index.js'
 
 const mockToken: SwapTokenWithBalance = {
   address: 'eip155:1:0x123',
@@ -69,7 +69,8 @@ const mockChainState: ChainControllerState = {
       getEnsAvatar: vi.fn(),
       grantPermissions: vi.fn(),
       revokePermissions: vi.fn(),
-      getCapabilities: vi.fn()
+      getCapabilities: vi.fn(),
+      walletGetAssets: vi.fn()
     }
   },
   noAdapters: false,

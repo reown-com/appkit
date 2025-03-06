@@ -147,6 +147,7 @@ sampleWalletTest('it should show last connected network after refreshing', async
 
 sampleWalletTest('it should reject sign', async ({ library }) => {
   const chainName = library === 'solana' ? 'Solana Testnet' : 'Polygon'
+
   await modalPage.sign()
   await walletValidator.expectReceivedSign({ chainName })
   await walletPage.handleRequest({ accept: false })
@@ -207,6 +208,29 @@ sampleWalletTest(
     await modalValidator.expectNetworkNotSupportedVisible()
     await walletPage.switchNetwork('eip155:1')
     await modalValidator.expectConnected()
+    await modalPage.closeModal()
+  }
+)
+
+sampleWalletTest(
+  "it should switch to first available network when wallet doesn't support the active network of the appkit",
+  async ({ library }) => {
+    if (library === 'solana') {
+      return
+    }
+
+    await walletPage.disconnectConnection()
+    await modalValidator.expectDisconnected()
+
+    await modalPage.switchNetworkWithNetworkButton('Aurora')
+    await modalValidator.expectSwitchChainWithNetworkButton('Aurora')
+    await modalPage.closeModal()
+
+    await modalPage.qrCodeFlow(modalPage, walletPage)
+    await modalValidator.expectConnected()
+    await modalPage.openModal()
+    await modalPage.openNetworks()
+    await modalValidator.expectSwitchedNetwork('Ethereum')
     await modalPage.closeModal()
   }
 )

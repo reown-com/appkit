@@ -109,7 +109,8 @@ const connectionControllerClient: ConnectionControllerClient = {
   getEnsAvatar: async (value: string) => Promise.resolve(value),
   getCapabilities: async () => Promise.resolve(''),
   grantPermissions: async () => Promise.resolve(''),
-  revokePermissions: async () => Promise.resolve('0x')
+  revokePermissions: async () => Promise.resolve('0x'),
+  walletGetAssets: async () => Promise.resolve({})
 }
 
 const networkControllerClient: NetworkControllerClient = {
@@ -287,6 +288,7 @@ describe('ChainController', () => {
     expect(ChainController.getAccountProp('preferredAccountType', chainNamespace)).toEqual(
       undefined
     )
+    expect(ChainController.getAccountProp('status', chainNamespace)).toEqual('disconnected')
     expect(ChainController.getAccountProp('socialProvider', chainNamespace)).toEqual(undefined)
     expect(ChainController.getAccountProp('socialWindow', chainNamespace)).toEqual(undefined)
   })

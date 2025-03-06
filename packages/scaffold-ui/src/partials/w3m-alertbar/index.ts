@@ -3,6 +3,7 @@ import { state } from 'lit/decorators.js'
 
 import { AlertController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-alertbar'
 
 import styles from './styles.js'
 
