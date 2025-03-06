@@ -18,7 +18,7 @@ import { WalletValidator } from './shared/validators/WalletValidator'
 testM(
   'connection and signature requests from non-verified project should show as cannot verify',
   async ({ modalPage, context }) => {
-    test.skip(modalPage.library === 'solana')
+    test.skip(modalPage.library !== 'wagmi', 'fixture always uses wagmi')
 
     const modalValidator = new ModalValidator(modalPage.page)
     const walletPage = new WalletPage(await context.newPage())

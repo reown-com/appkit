@@ -10,15 +10,15 @@
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@tanstack/react-query": "5.24.8",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "viem": "2.23.0",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "viem": "2.23.5",
     "vite": "5.4.12",
-    "wagmi": "2.14.11"
+    "wagmi": "2.14.12"
   },
   "devDependencies": {
-    "@types/react": "18.2.62",
-    "@types/react-dom": "18.2.7",
+    "@types/react": "19.0.0",
+    "@types/react-dom": "19.0.0",
     "@vitejs/plugin-react": "4.2.1",
     "vite": "5.4.12"
   }

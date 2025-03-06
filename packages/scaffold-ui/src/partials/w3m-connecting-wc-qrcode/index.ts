@@ -5,12 +5,18 @@ import {
   AssetUtil,
   ConnectionController,
   EventsController,
-  RouterController,
   ThemeController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-link'
+import '@reown/appkit-ui/wui-qr-code'
+import '@reown/appkit-ui/wui-shimmer'
+import '@reown/appkit-ui/wui-text'
 
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
+import '../w3m-mobile-download-links/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-connecting-wc-qrcode')
@@ -32,9 +38,6 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
     super.disconnectedCallback()
     this.unsubscribe?.forEach(unsub => unsub())
     window.removeEventListener('resize', this.forceUpdate)
-    if (RouterController.state.data) {
-      RouterController.state.data.wallet = undefined
-    }
   }
 
   // -- Render -------------------------------------------- //

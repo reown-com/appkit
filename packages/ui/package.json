@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-ui",
-  "version": "1.6.8",
+  "version": "1.6.9",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -16,19 +16,430 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
+  "exports": {
+    ".": {
+      "types": "./dist/types/exports/index.d.ts",
+      "import": "./dist/esm/exports/index.js",
+      "default": "./dist/esm/exports/index.js"
+    },
+    "./wui-card": {
+      "types": "./dist/types/exports/wui-card.d.ts",
+      "import": "./dist/esm/exports/wui-card.js",
+      "default": "./dist/esm/exports/wui-card.js"
+    },
+    "./wui-icon": {
+      "types": "./dist/types/exports/wui-icon.d.ts",
+      "import": "./dist/esm/exports/wui-icon.js",
+      "default": "./dist/esm/exports/wui-icon.js"
+    },
+    "./wui-image": {
+      "types": "./dist/types/exports/wui-image.d.ts",
+      "import": "./dist/esm/exports/wui-image.js",
+      "default": "./dist/esm/exports/wui-image.js"
+    },
+    "./wui-loading-hexagon": {
+      "types": "./dist/types/exports/wui-loading-hexagon.d.ts",
+      "import": "./dist/esm/exports/wui-loading-hexagon.js",
+      "default": "./dist/esm/exports/wui-loading-hexagon.js"
+    },
+    "./wui-loading-spinner": {
+      "types": "./dist/types/exports/wui-loading-spinner.d.ts",
+      "import": "./dist/esm/exports/wui-loading-spinner.js",
+      "default": "./dist/esm/exports/wui-loading-spinner.js"
+    },
+    "./wui-loading-thumbnail": {
+      "types": "./dist/types/exports/wui-loading-thumbnail.d.ts",
+      "import": "./dist/esm/exports/wui-loading-thumbnail.js",
+      "default": "./dist/esm/exports/wui-loading-thumbnail.js"
+    },
+    "./wui-shimmer": {
+      "types": "./dist/types/exports/wui-shimmer.d.ts",
+      "import": "./dist/esm/exports/wui-shimmer.js",
+      "default": "./dist/esm/exports/wui-shimmer.js"
+    },
+    "./wui-text": {
+      "types": "./dist/types/exports/wui-text.d.ts",
+      "import": "./dist/esm/exports/wui-text.js",
+      "default": "./dist/esm/exports/wui-text.js"
+    },
+    "./wui-visual": {
+      "types": "./dist/types/exports/wui-visual.d.ts",
+      "import": "./dist/esm/exports/wui-visual.js",
+      "default": "./dist/esm/exports/wui-visual.js"
+    },
+    "./wui-account-button": {
+      "types": "./dist/types/exports/wui-account-button.d.ts",
+      "import": "./dist/esm/exports/wui-account-button.js",
+      "default": "./dist/esm/exports/wui-account-button.js"
+    },
+    "./wui-all-wallets-image": {
+      "types": "./dist/types/exports/wui-all-wallets-image.d.ts",
+      "import": "./dist/esm/exports/wui-all-wallets-image.js",
+      "default": "./dist/esm/exports/wui-all-wallets-image.js"
+    },
+    "./wui-avatar": {
+      "types": "./dist/types/exports/wui-avatar.d.ts",
+      "import": "./dist/esm/exports/wui-avatar.js",
+      "default": "./dist/esm/exports/wui-avatar.js"
+    },
+    "./wui-button": {
+      "types": "./dist/types/exports/wui-button.d.ts",
+      "import": "./dist/esm/exports/wui-button.js",
+      "default": "./dist/esm/exports/wui-button.js"
+    },
+    "./wui-card-select-loader": {
+      "types": "./dist/types/exports/wui-card-select-loader.d.ts",
+      "import": "./dist/esm/exports/wui-card-select-loader.js",
+      "default": "./dist/esm/exports/wui-card-select-loader.js"
+    },
+    "./wui-card-select": {
+      "types": "./dist/types/exports/wui-card-select.d.ts",
+      "import": "./dist/esm/exports/wui-card-select.js",
+      "default": "./dist/esm/exports/wui-card-select.js"
+    },
+    "./wui-chip": {
+      "types": "./dist/types/exports/wui-chip.d.ts",
+      "import": "./dist/esm/exports/wui-chip.js",
+      "default": "./dist/esm/exports/wui-chip.js"
+    },
+    "./wui-connect-button": {
+      "types": "./dist/types/exports/wui-connect-button.d.ts",
+      "import": "./dist/esm/exports/wui-connect-button.js",
+      "default": "./dist/esm/exports/wui-connect-button.js"
+    },
+    "./wui-cta-button": {
+      "types": "./dist/types/exports/wui-cta-button.d.ts",
+      "import": "./dist/esm/exports/wui-cta-button.js",
+      "default": "./dist/esm/exports/wui-cta-button.js"
+    },
+    "./wui-details-group": {
+      "types": "./dist/types/exports/wui-details-group.d.ts",
+      "import": "./dist/esm/exports/wui-details-group.js",
+      "default": "./dist/esm/exports/wui-details-group.js"
+    },
+    "./wui-details-group-item": {
+      "types": "./dist/types/exports/wui-details-group-item.d.ts",
+      "import": "./dist/esm/exports/wui-details-group-item.js",
+      "default": "./dist/esm/exports/wui-details-group-item.js"
+    },
+    "./wui-dropdown-menu": {
+      "types": "./dist/types/exports/wui-dropdown-menu.d.ts",
+      "import": "./dist/esm/exports/wui-dropdown-menu.js",
+      "default": "./dist/esm/exports/wui-dropdown-menu.js"
+    },
+    "./wui-email-input": {
+      "types": "./dist/types/exports/wui-email-input.d.ts",
+      "import": "./dist/esm/exports/wui-email-input.js",
+      "default": "./dist/esm/exports/wui-email-input.js"
+    },
+    "./wui-ens-input": {
+      "types": "./dist/types/exports/wui-ens-input.d.ts",
+      "import": "./dist/esm/exports/wui-ens-input.js",
+      "default": "./dist/esm/exports/wui-ens-input.js"
+    },
+    "./wui-icon-box": {
+      "types": "./dist/types/exports/wui-icon-box.d.ts",
+      "import": "./dist/esm/exports/wui-icon-box.js",
+      "default": "./dist/esm/exports/wui-icon-box.js"
+    },
+    "./wui-icon-link": {
+      "types": "./dist/types/exports/wui-icon-link.d.ts",
+      "import": "./dist/esm/exports/wui-icon-link.js",
+      "default": "./dist/esm/exports/wui-icon-link.js"
+    },
+    "./wui-input-element": {
+      "types": "./dist/types/exports/wui-input-element.d.ts",
+      "import": "./dist/esm/exports/wui-input-element.js",
+      "default": "./dist/esm/exports/wui-input-element.js"
+    },
+    "./wui-input-numeric": {
+      "types": "./dist/types/exports/wui-input-numeric.d.ts",
+      "import": "./dist/esm/exports/wui-input-numeric.js",
+      "default": "./dist/esm/exports/wui-input-numeric.js"
+    },
+    "./wui-input-text": {
+      "types": "./dist/types/exports/wui-input-text.d.ts",
+      "import": "./dist/esm/exports/wui-input-text.js",
+      "default": "./dist/esm/exports/wui-input-text.js"
+    },
+    "./wui-link": {
+      "types": "./dist/types/exports/wui-link.d.ts",
+      "import": "./dist/esm/exports/wui-link.js",
+      "default": "./dist/esm/exports/wui-link.js"
+    },
+    "./wui-list-item": {
+      "types": "./dist/types/exports/wui-list-item.d.ts",
+      "import": "./dist/esm/exports/wui-list-item.js",
+      "default": "./dist/esm/exports/wui-list-item.js"
+    },
+    "./wui-transaction-list-item": {
+      "types": "./dist/types/exports/wui-transaction-list-item.d.ts",
+      "import": "./dist/esm/exports/wui-transaction-list-item.js",
+      "default": "./dist/esm/exports/wui-transaction-list-item.js"
+    },
+    "./wui-transaction-list-item-loader": {
+      "types": "./dist/types/exports/wui-transaction-list-item-loader.d.ts",
+      "import": "./dist/esm/exports/wui-transaction-list-item-loader.js",
+      "default": "./dist/esm/exports/wui-transaction-list-item-loader.js"
+    },
+    "./wui-list-wallet": {
+      "types": "./dist/types/exports/wui-list-wallet.d.ts",
+      "import": "./dist/esm/exports/wui-list-wallet.js",
+      "default": "./dist/esm/exports/wui-list-wallet.js"
+    },
+    "./wui-logo-select": {
+      "types": "./dist/types/exports/wui-logo-select.d.ts",
+      "import": "./dist/esm/exports/wui-logo-select.js",
+      "default": "./dist/esm/exports/wui-logo-select.js"
+    },
+    "./wui-logo": {
+      "types": "./dist/types/exports/wui-logo.d.ts",
+      "import": "./dist/esm/exports/wui-logo.js",
+      "default": "./dist/esm/exports/wui-logo.js"
+    },
+    "./wui-network-button": {
+      "types": "./dist/types/exports/wui-network-button.d.ts",
+      "import": "./dist/esm/exports/wui-network-button.js",
+      "default": "./dist/esm/exports/wui-network-button.js"
+    },
+    "./wui-network-image": {
+      "types": "./dist/types/exports/wui-network-image.d.ts",
+      "import": "./dist/esm/exports/wui-network-image.js",
+      "default": "./dist/esm/exports/wui-network-image.js"
+    },
+    "./wui-otp": {
+      "types": "./dist/types/exports/wui-otp.d.ts",
+      "import": "./dist/esm/exports/wui-otp.js",
+      "default": "./dist/esm/exports/wui-otp.js"
+    },
+    "./wui-qr-code": {
+      "types": "./dist/types/exports/wui-qr-code.d.ts",
+      "import": "./dist/esm/exports/wui-qr-code.js",
+      "default": "./dist/esm/exports/wui-qr-code.js"
+    },
+    "./wui-search-bar": {
+      "types": "./dist/types/exports/wui-search-bar.d.ts",
+      "import": "./dist/esm/exports/wui-search-bar.js",
+      "default": "./dist/esm/exports/wui-search-bar.js"
+    },
+    "./wui-snackbar": {
+      "types": "./dist/types/exports/wui-snackbar.d.ts",
+      "import": "./dist/esm/exports/wui-snackbar.js",
+      "default": "./dist/esm/exports/wui-snackbar.js"
+    },
+    "./wui-alertbar": {
+      "types": "./dist/types/exports/wui-alertbar.d.ts",
+      "import": "./dist/esm/exports/wui-alertbar.js",
+      "default": "./dist/esm/exports/wui-alertbar.js"
+    },
+    "./wui-tabs": {
+      "types": "./dist/types/exports/wui-tabs.d.ts",
+      "import": "./dist/esm/exports/wui-tabs.js",
+      "default": "./dist/esm/exports/wui-tabs.js"
+    },
+    "./wui-token-button": {
+      "types": "./dist/types/exports/wui-token-button.d.ts",
+      "import": "./dist/esm/exports/wui-token-button.js",
+      "default": "./dist/esm/exports/wui-token-button.js"
+    },
+    "./wui-tag": {
+      "types": "./dist/types/exports/wui-tag.d.ts",
+      "import": "./dist/esm/exports/wui-tag.js",
+      "default": "./dist/esm/exports/wui-tag.js"
+    },
+    "./wui-tooltip": {
+      "types": "./dist/types/exports/wui-tooltip.d.ts",
+      "import": "./dist/esm/exports/wui-tooltip.js",
+      "default": "./dist/esm/exports/wui-tooltip.js"
+    },
+    "./wui-token-list-item": {
+      "types": "./dist/types/exports/wui-token-list-item.d.ts",
+      "import": "./dist/esm/exports/wui-token-list-item.js",
+      "default": "./dist/esm/exports/wui-token-list-item.js"
+    },
+    "./wui-transaction-visual": {
+      "types": "./dist/types/exports/wui-transaction-visual.d.ts",
+      "import": "./dist/esm/exports/wui-transaction-visual.js",
+      "default": "./dist/esm/exports/wui-transaction-visual.js"
+    },
+    "./wui-visual-thumbnail": {
+      "types": "./dist/types/exports/wui-visual-thumbnail.d.ts",
+      "import": "./dist/esm/exports/wui-visual-thumbnail.js",
+      "default": "./dist/esm/exports/wui-visual-thumbnail.js"
+    },
+    "./wui-wallet-image": {
+      "types": "./dist/types/exports/wui-wallet-image.d.ts",
+      "import": "./dist/esm/exports/wui-wallet-image.js",
+      "default": "./dist/esm/exports/wui-wallet-image.js"
+    },
+    "./wui-wallet-button": {
+      "types": "./dist/types/exports/wui-wallet-button.d.ts",
+      "import": "./dist/esm/exports/wui-wallet-button.js",
+      "default": "./dist/esm/exports/wui-wallet-button.js"
+    },
+    "./wui-notice-card": {
+      "types": "./dist/types/exports/wui-notice-card.d.ts",
+      "import": "./dist/esm/exports/wui-notice-card.js",
+      "default": "./dist/esm/exports/wui-notice-card.js"
+    },
+    "./wui-list-accordion": {
+      "types": "./dist/types/exports/wui-list-accordion.d.ts",
+      "import": "./dist/esm/exports/wui-list-accordion.js",
+      "default": "./dist/esm/exports/wui-list-accordion.js"
+    },
+    "./wui-list-content": {
+      "types": "./dist/types/exports/wui-list-content.d.ts",
+      "import": "./dist/esm/exports/wui-list-content.js",
+      "default": "./dist/esm/exports/wui-list-content.js"
+    },
+    "./wui-list-network": {
+      "types": "./dist/types/exports/wui-list-network.d.ts",
+      "import": "./dist/esm/exports/wui-list-network.js",
+      "default": "./dist/esm/exports/wui-list-network.js"
+    },
+    "./wui-list-wallet-transaction": {
+      "types": "./dist/types/exports/wui-list-wallet-transaction.d.ts",
+      "import": "./dist/esm/exports/wui-list-wallet-transaction.js",
+      "default": "./dist/esm/exports/wui-list-wallet-transaction.js"
+    },
+    "./wui-promo": {
+      "types": "./dist/types/exports/wui-promo.d.ts",
+      "import": "./dist/esm/exports/wui-promo.js",
+      "default": "./dist/esm/exports/wui-promo.js"
+    },
+    "./wui-balance": {
+      "types": "./dist/types/exports/wui-balance.d.ts",
+      "import": "./dist/esm/exports/wui-balance.js",
+      "default": "./dist/esm/exports/wui-balance.js"
+    },
+    "./wui-profile-button": {
+      "types": "./dist/types/exports/wui-profile-button.d.ts",
+      "import": "./dist/esm/exports/wui-profile-button.js",
+      "default": "./dist/esm/exports/wui-profile-button.js"
+    },
+    "./wui-profile-button-v2": {
+      "types": "./dist/types/exports/wui-profile-button-v2.d.ts",
+      "import": "./dist/esm/exports/wui-profile-button-v2.js",
+      "default": "./dist/esm/exports/wui-profile-button-v2.js"
+    },
+    "./wui-chip-button": {
+      "types": "./dist/types/exports/wui-chip-button.d.ts",
+      "import": "./dist/esm/exports/wui-chip-button.js",
+      "default": "./dist/esm/exports/wui-chip-button.js"
+    },
+    "./wui-compatible-network": {
+      "types": "./dist/types/exports/wui-compatible-network.d.ts",
+      "import": "./dist/esm/exports/wui-compatible-network.js",
+      "default": "./dist/esm/exports/wui-compatible-network.js"
+    },
+    "./wui-banner": {
+      "types": "./dist/types/exports/wui-banner.d.ts",
+      "import": "./dist/esm/exports/wui-banner.js",
+      "default": "./dist/esm/exports/wui-banner.js"
+    },
+    "./wui-banner-img": {
+      "types": "./dist/types/exports/wui-banner-img.d.ts",
+      "import": "./dist/esm/exports/wui-banner-img.js",
+      "default": "./dist/esm/exports/wui-banner-img.js"
+    },
+    "./wui-list-token": {
+      "types": "./dist/types/exports/wui-list-token.d.ts",
+      "import": "./dist/esm/exports/wui-list-token.js",
+      "default": "./dist/esm/exports/wui-list-token.js"
+    },
+    "./wui-list-description": {
+      "types": "./dist/types/exports/wui-list-description.d.ts",
+      "import": "./dist/esm/exports/wui-list-description.js",
+      "default": "./dist/esm/exports/wui-list-description.js"
+    },
+    "./wui-input-amount": {
+      "types": "./dist/types/exports/wui-input-amount.d.ts",
+      "import": "./dist/esm/exports/wui-input-amount.js",
+      "default": "./dist/esm/exports/wui-input-amount.js"
+    },
+    "./wui-preview-item": {
+      "types": "./dist/types/exports/wui-preview-item.d.ts",
+      "import": "./dist/esm/exports/wui-preview-item.js",
+      "default": "./dist/esm/exports/wui-preview-item.js"
+    },
+    "./wui-list-account": {
+      "types": "./dist/types/exports/wui-list-account.d.ts",
+      "import": "./dist/esm/exports/wui-list-account.js",
+      "default": "./dist/esm/exports/wui-list-account.js"
+    },
+    "./wui-icon-button": {
+      "types": "./dist/types/exports/wui-icon-button.d.ts",
+      "import": "./dist/esm/exports/wui-icon-button.js",
+      "default": "./dist/esm/exports/wui-icon-button.js"
+    },
+    "./wui-list-button": {
+      "types": "./dist/types/exports/wui-list-button.d.ts",
+      "import": "./dist/esm/exports/wui-list-button.js",
+      "default": "./dist/esm/exports/wui-list-button.js"
+    },
+    "./wui-list-social": {
+      "types": "./dist/types/exports/wui-list-social.d.ts",
+      "import": "./dist/esm/exports/wui-list-social.js",
+      "default": "./dist/esm/exports/wui-list-social.js"
+    },
+    "./wui-select": {
+      "types": "./dist/types/exports/wui-select.d.ts",
+      "import": "./dist/esm/exports/wui-select.js",
+      "default": "./dist/esm/exports/wui-select.js"
+    },
+    "./wui-checkbox": {
+      "types": "./dist/types/exports/wui-checkbox.d.ts",
+      "import": "./dist/esm/exports/wui-checkbox.js",
+      "default": "./dist/esm/exports/wui-checkbox.js"
+    },
+    "./wui-switch": {
+      "types": "./dist/types/exports/wui-switch.d.ts",
+      "import": "./dist/esm/exports/wui-switch.js",
+      "default": "./dist/esm/exports/wui-switch.js"
+    },
+    "./wui-certified-switch": {
+      "types": "./dist/types/exports/wui-certified-switch.d.ts",
+      "import": "./dist/esm/exports/wui-certified-switch.js",
+      "default": "./dist/esm/exports/wui-certified-switch.js"
+    },
+    "./wui-flex": {
+      "types": "./dist/types/exports/wui-flex.d.ts",
+      "import": "./dist/esm/exports/wui-flex.js",
+      "default": "./dist/esm/exports/wui-flex.js"
+    },
+    "./wui-grid": {
+      "types": "./dist/types/exports/wui-grid.d.ts",
+      "import": "./dist/esm/exports/wui-grid.js",
+      "default": "./dist/esm/exports/wui-grid.js"
+    },
+    "./wui-separator": {
+      "types": "./dist/types/exports/wui-separator.d.ts",
+      "import": "./dist/esm/exports/wui-separator.js",
+      "default": "./dist/esm/exports/wui-separator.js"
+    },
+    "./jsx": {
+      "types": "./dist/types/exports/jsx.d.ts",
+      "import": "./dist/esm/exports/jsx.js",
+      "default": "./dist/esm/exports/jsx.js"
+    }
+  },
   "dependencies": {
     "lit": "3.1.0",
     "qrcode": "1.5.3"
   },
   "devDependencies": {
-    "@types/qrcode": "1.5.5",
     "@reown/appkit-common": "workspace:*",
-    "@reown/appkit-wallet": "workspace:*",
     "@reown/appkit-core": "workspace:*",
+    "@reown/appkit-wallet": "workspace:*",
+    "@types/qrcode": "1.5.5",
+    "@vitest/coverage-v8": "2.1.3",
     "eslint-plugin-lit": "1.11.0",
     "eslint-plugin-wc": "2.0.4",
-    "vitest": "2.1.3",
-    "@vitest/coverage-v8": "2.1.3"
+    "vitest": "2.1.9",
+    "@types/react": "19.0.0",
+    "@types/react-dom": "19.0.0",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
@@ -39,5 +450,17 @@
   },
   "bugs": {
     "url": "https://github.com/reown-com/appkit/issues"
-  }
+  },
+  "keywords": [
+    "appkit",
+    "wallet",
+    "onboarding",
+    "reown",
+    "dapps",
+    "web3",
+    "wagmi",
+    "ethereum",
+    "solana",
+    "bitcoin"
+  ]
 }

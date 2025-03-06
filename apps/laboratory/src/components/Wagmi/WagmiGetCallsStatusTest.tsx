@@ -6,17 +6,17 @@ import { useCallsStatus } from 'wagmi/experimental'
 
 import { useAppKitAccount } from '@reown/appkit/react'
 
-import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
-import { bigIntReplacer } from '../../utils/CommonUtils'
-import { EIP_5792_RPC_METHODS } from '../../utils/EIP5792Utils'
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
+import { useWagmiAvailableCapabilities } from '@/src/hooks/useWagmiActiveCapabilities'
+import { bigIntReplacer } from '@/src/utils/CommonUtils'
+import { EIP_5792_RPC_METHODS } from '@/src/utils/EIP5792Utils'
 
 export function WagmiGetCallsStatusTest() {
   const { supported } = useWagmiAvailableCapabilities({
     method: EIP_5792_RPC_METHODS.WALLET_GET_CALLS_STATUS
   })
 
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { status } = useAccount()
 
   const isConnected = status === 'connected'

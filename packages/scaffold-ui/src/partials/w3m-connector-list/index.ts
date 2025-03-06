@@ -4,7 +4,17 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { ConnectorController, OptionsController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
 
+import '../../partials/w3m-connect-announced-widget/index.js'
+import '../../partials/w3m-connect-custom-widget/index.js'
+import '../../partials/w3m-connect-external-widget/index.js'
+import '../../partials/w3m-connect-featured-widget/index.js'
+import '../../partials/w3m-connect-injected-widget/index.js'
+import '../../partials/w3m-connect-multi-chain-widget/index.js'
+import '../../partials/w3m-connect-recent-widget/index.js'
+import '../../partials/w3m-connect-recommended-widget/index.js'
+import '../../partials/w3m-connect-walletconnect-widget/index.js'
 import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 import styles from './styles.js'
 

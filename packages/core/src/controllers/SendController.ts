@@ -3,10 +3,11 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { type Balance, type CaipAddress, NumberUtil } from '@reown/appkit-common'
 import { ContractUtil } from '@reown/appkit-common'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { SwapApiUtil } from '../utils/SwapApiUtil.js'
+import { SendApiUtil } from '../utils/SendApiUtil.js'
 import { AccountController } from './AccountController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
@@ -30,6 +31,7 @@ export interface ContractWriteParams {
   decimals: string
 }
 export interface SendControllerState {
+  tokenBalances: Balance[]
   token?: Balance
   sendTokenAmount?: number
   receiverAddress?: string
@@ -39,12 +41,14 @@ export interface SendControllerState {
   gasPriceInUSD?: number
   networkBalanceInUSD?: string
   loading: boolean
+  lastRetry?: number
 }
 
 type StateKey = keyof SendControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<SendControllerState>({
+  tokenBalances: [],
   loading: false
 })
 
@@ -162,14 +166,52 @@ export const SendController = {
     }
   },
 
-  async fetchNetworkBalance() {
-    const balances = await SwapApiUtil.getMyTokensWithBalance()
+  async fetchTokenBalance(onError?: (error: unknown) => void): Promise<Balance[]> {
+    state.loading = true
+    const chainId = ChainController.state.activeCaipNetwork?.caipNetworkId
+    const chain = ChainController.state.activeCaipNetwork?.chainNamespace
+    const caipAddress = ChainController.state.activeCaipAddress
+    const address = caipAddress ? CoreHelperUtil.getPlainAddress(caipAddress) : undefined
+    if (
+      state.lastRetry &&
+      !CoreHelperUtil.isAllowedRetry(state.lastRetry, 30 * ConstantsUtil.ONE_SEC_MS)
+    ) {
+      state.loading = false
 
-    if (!balances) {
+      return []
+    }
+
+    try {
+      if (address && chainId && chain) {
+        const balances = await SendApiUtil.getMyTokensWithBalance()
+        state.tokenBalances = balances
+        state.lastRetry = undefined
+
+        return balances
+      }
+    } catch (error) {
+      state.lastRetry = Date.now()
+
+      onError?.(error)
+      SnackController.showError('Token Balance Unavailable')
+    } finally {
+      state.loading = false
+    }
+
+    return []
+  },
+
+  fetchNetworkBalance() {
+    if (state.tokenBalances.length === 0) {
       return
     }
 
-    const networkToken = balances.find(
+    const networkTokenBalances = SendApiUtil.mapBalancesToSwapTokens(state.tokenBalances)
+    if (!networkTokenBalances) {
+      return
+    }
+
+    const networkToken = networkTokenBalances.find(
       token => token.address === ChainController.getActiveNetworkTokenAddress()
     )
 
@@ -193,21 +235,21 @@ export const SendController = {
   },
 
   hasInsufficientGasFunds() {
-    let insufficientNetworkTokenForGas = true
+    let isInsufficientNetworkTokenForGas = true
     if (
       AccountController.state.preferredAccountType ===
       W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT
     ) {
       // Smart Accounts may pay gas in any ERC20 token
-      insufficientNetworkTokenForGas = false
+      isInsufficientNetworkTokenForGas = false
     } else if (state.networkBalanceInUSD) {
-      insufficientNetworkTokenForGas = this.isInsufficientNetworkTokenForGas(
+      isInsufficientNetworkTokenForGas = this.isInsufficientNetworkTokenForGas(
         state.networkBalanceInUSD,
         state.gasPriceInUSD
       )
     }
 
-    return insufficientNetworkTokenForGas
+    return isInsufficientNetworkTokenForGas
   },
 
   async sendNativeToken(params: TxParams) {
@@ -249,10 +291,14 @@ export const SendController = {
       })
       this.resetSend()
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('SendController:sendERC20Token - failed to send native token', error)
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       EventsController.sendEvent({
         type: 'track',
         event: 'SEND_ERROR',
         properties: {
+          message: errorMessage,
           isSmartAccount:
             AccountController.state.preferredAccountType ===
             W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
@@ -300,6 +346,22 @@ export const SendController = {
         this.resetSend()
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('SendController:sendERC20Token - failed to send erc20 token', error)
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'SEND_ERROR',
+        properties: {
+          message: errorMessage,
+          isSmartAccount:
+            AccountController.state.preferredAccountType ===
+            W3mFrameRpcConstants.ACCOUNT_TYPES.SMART_ACCOUNT,
+          token: this.state.token?.symbol || '',
+          amount: params.sendTokenAmount,
+          network: ChainController.state.activeCaipNetwork?.caipNetworkId || ''
+        }
+      })
       SnackController.showError('Something went wrong')
     }
   },
@@ -339,5 +401,6 @@ export const SendController = {
     state.receiverProfileImageUrl = undefined
     state.receiverProfileName = undefined
     state.loading = false
+    state.tokenBalances = []
   }
 }

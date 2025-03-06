@@ -54,6 +54,7 @@ export type CaipNetworkCoinbaseNetwork =
 export type ConnectedWalletInfo = {
   name: string
   icon?: string
+  type?: string
   [key: string]: unknown
 }
 
@@ -203,7 +204,6 @@ export interface BlockchainApiIdentityResponse {
 
 export interface BlockchainApiTransactionsRequest {
   account: string
-  projectId: string
   cursor?: string
   onramp?: 'coinbase'
   signal?: AbortSignal
@@ -235,7 +235,6 @@ export type SwapTokenWithBalance = SwapToken & {
 }
 
 export interface BlockchainApiSwapTokensRequest {
-  projectId: string
   chainId?: string
 }
 
@@ -244,7 +243,6 @@ export interface BlockchainApiSwapTokensResponse {
 }
 
 export interface BlockchainApiSwapQuoteRequest {
-  projectId: string
   chainId?: string
   amount: string
   userAddress: string
@@ -264,7 +262,6 @@ export interface BlockchainApiSwapQuoteResponse {
 }
 
 export interface BlockchainApiTokenPriceRequest {
-  projectId: string
   currency?: 'usd' | 'eur' | 'gbp' | 'aud' | 'cad' | 'inr' | 'jpy' | 'btc' | 'eth'
   addresses: string[]
 }
@@ -279,7 +276,6 @@ export interface BlockchainApiTokenPriceResponse {
 }
 
 export interface BlockchainApiSwapAllowanceRequest {
-  projectId: string
   tokenAddress: string
   userAddress: string
 }
@@ -289,7 +285,6 @@ export interface BlockchainApiSwapAllowanceResponse {
 }
 
 export interface BlockchainApiGasPriceRequest {
-  projectId: string
   chainId: string
 }
 
@@ -300,7 +295,6 @@ export interface BlockchainApiGasPriceResponse {
 }
 
 export interface BlockchainApiGenerateSwapCalldataRequest {
-  projectId: string
   userAddress: string
   from: string
   to: string
@@ -325,7 +319,6 @@ export interface BlockchainApiGenerateSwapCalldataResponse {
 }
 
 export interface BlockchainApiGenerateApproveCalldataRequest {
-  projectId: string
   userAddress: string
   from: string
   to: string
@@ -834,6 +827,7 @@ export type Event =
       address?: string
       event: 'SEND_ERROR'
       properties: {
+        message: string
         isSmartAccount: boolean
         network: string
         token: string
@@ -943,7 +937,22 @@ export type AccountTypeMap = {
     path?: K extends 'bip122' ? string : never
   }
 }
+export type WalletGetAssetsParams = {
+  account: `0x${string}`
+  assetFilter?: Record<`0x${string}`, (`0x${string}` | 'native')[]>
+  assetTypeFilter?: ('NATIVE' | 'ERC20')[]
+  chainFilter?: `0x${string}`[]
+}
 
+export type WalletGetAssetsResponse = Record<
+  `0x${string}`,
+  {
+    address: `0x${string}` | 'native'
+    balance: `0x${string}`
+    type: 'NATIVE' | 'ERC20'
+    metadata: Record<string, unknown>
+  }[]
+>
 export type AccountType = AccountTypeMap[ChainNamespace]
 export type SendTransactionArgs =
   | {

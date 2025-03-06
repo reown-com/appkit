@@ -13,6 +13,8 @@ export const PresetsUtil = {
       '225affb176778569276e484e1b92637ad061b01e13a048b35a9d280c3b58970f',
     [CommonConstantsUtil.CONNECTOR_ID.LEDGER]:
       '19177a98252e07ddfc9af2083ba8e07ef627cb6103467ffebb3f8f4205fd7927',
+    [CommonConstantsUtil.CONNECTOR_ID.OKX]:
+      '971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709',
 
     /* Connector names */
     [ConstantsUtil.METMASK_CONNECTOR_NAME]:
@@ -32,7 +34,11 @@ export const PresetsUtil = {
     [ConstantsUtil.BITGET_CONNECTOR_NAME]:
       '38f5d18bd8522c244bdd70cb4a68e0e718865155811c043f052fb9f1c51de662',
     [ConstantsUtil.FRONTIER_CONNECTOR_NAME]:
-      '85db431492aa2e8672e93f4ea7acf10c88b97b867b0d373107af63dc4880f041'
+      '85db431492aa2e8672e93f4ea7acf10c88b97b867b0d373107af63dc4880f041',
+    [ConstantsUtil.XVERSE_CONNECTOR_NAME]:
+      '2a87d74ae02e10bdd1f51f7ce6c4e1cc53cd5f2c0b6b5ad0d7b3007d2b13de7b',
+    [ConstantsUtil.LEATHER_CONNECTOR_NAME]:
+      '483afe1df1df63daf313109971ff3ef8356ddf1cc4e45877d205eee0b7893a13'
   } as Record<string, string>,
   NetworkImageIds: {
     // Ethereum
@@ -49,6 +55,20 @@ export const PresetsUtil = {
     10: 'ab9c186a-c52f-464b-2906-ca59d760a400',
     // Polygon
     137: '41d04d42-da3b-4453-8506-668cc0727900',
+    // Mantle
+    5000: 'e86fae9b-b770-4eea-e520-150e12c81100',
+    // Hedera Mainnet
+    295: '6a97d510-cac8-4e58-c7ce-e8681b044c00',
+    // Sepolia
+    11_155_111: 'e909ea0a-f92a-4512-c8fc-748044ea6800',
+    // Base Sepolia
+    84532: 'a18a7ecd-e307-4360-4746-283182228e00',
+    // Unichain Sepolia
+    1301: '4eeea7ef-0014-4649-5d1d-07271a80f600',
+    // Unichain Mainnet
+    130: '2257980a-3463-48c6-cbac-a42d2a956e00',
+    // Monad Testnet
+    10_143: '0a728e83-bacb-46db-7844-948f05434900',
     // Gnosis
     100: '02b53f6a-e3d4-479e-1cb4-21178987d100',
     // EVMos

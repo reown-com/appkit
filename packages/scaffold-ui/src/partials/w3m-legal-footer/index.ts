@@ -2,6 +2,8 @@ import { LitElement, html } from 'lit'
 
 import { OptionsController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'
 

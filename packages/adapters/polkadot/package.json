@@ -16,7 +16,19 @@
     "@reown/appkit-core": "workspace:*"
   },
   "devDependencies": {
-    "vitest": "2.1.3",
+    "vitest": "2.1.9",
     "@vitest/coverage-v8": "2.1.3"
-  }
+  },
+  "keywords": [
+    "appkit",
+    "wallet",
+    "onboarding",
+    "reown",
+    "dapps",
+    "web3",
+    "wagmi",
+    "ethereum",
+    "solana",
+    "bitcoin"
+  ]
 }
