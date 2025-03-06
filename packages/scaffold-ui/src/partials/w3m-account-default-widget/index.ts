@@ -15,8 +15,7 @@ import {
   ModalController,
   OptionsController,
   RouterController,
-  SnackController,
-  StorageUtil
+  SnackController
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-avatar'
@@ -126,7 +125,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
       <wui-flex flexDirection="column" gap="xs" .padding=${['0', 's', 's', 's'] as const}>
         ${this.authCardTemplate()} <w3m-account-auth-button></w3m-account-auth-button>
-        ${this.orderedFeaturesTemplate()} ${this.activityTemplate()}
+        ${this.walletsTemplate()} ${this.orderedFeaturesTemplate()} ${this.activityTemplate()}
         <wui-list-item
           variant="icon"
           iconVariant="overlay"
@@ -142,6 +141,19 @@ export class W3mAccountDefaultWidget extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
+  private walletsTemplate() {
+    return html`
+      <wui-list-item
+        iconVariant="blue"
+        icon="card"
+        ?chevron=${true}
+        @click=${this.handleClickWallets.bind(this)}
+      >
+        <wui-text variant="paragraph-500" color="fg-100">Wallets</wui-text>
+      </wui-list-item>
+    `
+  }
+
   private onrampTemplate() {
     if (!this.namespace) {
       return null
@@ -256,7 +268,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   private authCardTemplate() {
     const namespace = ChainController.state.activeChain as ChainNamespace
-    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
     if (
@@ -284,6 +296,10 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   private handleClickPay() {
     RouterController.push('OnRampProviders')
+  }
+
+  private handleClickWallets() {
+    RouterController.push('ProfileWallets')
   }
 
   private handleClickSwap() {

@@ -15,8 +15,7 @@ import {
   ModalController,
   RouterController,
   SendController,
-  SnackController,
-  StorageUtil
+  SnackController
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-avatar'
@@ -163,7 +162,7 @@ export class W3mAccountSettingsView extends LitElement {
   // -- Private ------------------------------------------- //
   private chooseNameButtonTemplate() {
     const namespace = this.network?.chainNamespace as ChainNamespace
-    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
     const hasNetworkSupport = ChainController.checkIfNamesSupported()
     if (
@@ -192,7 +191,7 @@ export class W3mAccountSettingsView extends LitElement {
 
   private authCardTemplate() {
     const namespace = this.network?.chainNamespace as ChainNamespace
-    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
     if (
@@ -237,7 +236,7 @@ export class W3mAccountSettingsView extends LitElement {
     const namespace = this.network?.chainNamespace as ChainNamespace
 
     const isNetworkEnabled = ChainController.checkIfSmartAccountEnabled()
-    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
 
     if (

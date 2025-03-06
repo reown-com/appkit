@@ -155,6 +155,7 @@ export abstract class AppKitCore {
     this.initializeChainController(options)
     this.initializeThemeController(options)
     this.initializeConnectionController(options)
+    this.initializeConnectorController(options)
   }
 
   protected initializeThemeController(options: AppKitOptions) {
@@ -181,7 +182,14 @@ export abstract class AppKitCore {
   }
 
   protected initializeConnectionController(options: AppKitOptions) {
+    ConnectionController.initialize()
     ConnectionController.setWcBasic(options.basic ?? false)
+  }
+
+  protected initializeConnectorController(options: AppKitOptions) {
+    const namespaces = options.adapters?.map(adapter => adapter.namespace) || []
+    // @ts-expect-error - will update adapter types
+    ConnectorController.initialize(namespaces)
   }
 
   protected initializeOptionsController(options: AppKitOptionsWithSdk) {
@@ -198,9 +206,7 @@ export abstract class AppKitCore {
     OptionsController.setEnableWalletGuide(options.enableWalletGuide !== false)
     OptionsController.setEnableWallets(options.enableWallets !== false)
     OptionsController.setEIP6963Enabled(options.enableEIP6963 !== false)
-
     OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
-
     OptionsController.setSdkVersion(options.sdkVersion)
     OptionsController.setProjectId(options.projectId)
     OptionsController.setEnableEmbedded(options.enableEmbedded)
@@ -360,6 +366,11 @@ export abstract class AppKitCore {
         const activeChain = ChainController.state.activeChain as ChainNamespace
         const chainToUse = chain || activeChain
         const adapter = this.getAdapter(chainToUse)
+        const connector = ConnectorController.getConnectors(chainToUse).find(c => c.id === id)
+
+        if (!connector) {
+          throw new Error('connectExternal: Connector not found')
+        }
 
         if (chain && chain !== activeChain && !caipNetwork) {
           const toConnectNetwork = this.caipNetworks?.find(
@@ -374,12 +385,14 @@ export abstract class AppKitCore {
           throw new Error('Adapter not found')
         }
 
+        const chainId = caipNetwork?.id || this.getCaipNetwork()?.id
+
         const res = await adapter.connect({
           id,
           info,
           type,
           provider,
-          chainId: caipNetwork?.id || this.getCaipNetwork()?.id,
+          chainId,
           rpcUrl:
             caipNetwork?.rpcUrls?.default?.http?.[0] ||
             this.getCaipNetwork()?.rpcUrls?.default?.http?.[0]
@@ -390,10 +403,8 @@ export abstract class AppKitCore {
         }
 
         StorageUtil.addConnectedNamespace(chainToUse)
-        this.syncProvider({ ...res, chainNamespace: chainToUse })
         await this.syncAccount({ ...res, chainNamespace: chainToUse })
-        const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
-        this.setAllAccounts(accounts, chainToUse)
+        await this.syncConnection({ ...res, chainNamespace: chainToUse })
       },
       reconnectExternal: async ({ id, info, type, provider }) => {
         const namespace = ChainController.state.activeChain as ChainNamespace
@@ -772,7 +783,7 @@ export abstract class AppKitCore {
 
   protected async syncNamespaceConnection(namespace: ChainNamespace) {
     try {
-      const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+      const connectorId = ConnectorController.getConnectorId(namespace)
 
       this.setStatus('connecting', namespace)
       switch (connectorId) {
@@ -787,51 +798,40 @@ export abstract class AppKitCore {
       }
     } catch (err) {
       console.warn("AppKit couldn't sync existing connection", err)
-      StorageUtil.deleteConnectedConnectorId(namespace)
       this.setStatus('disconnected', namespace)
     }
   }
 
   protected async syncAdapterConnection(namespace: ChainNamespace) {
     const adapter = this.getAdapter(namespace)
-    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(namespace)
     const caipNetwork = this.getCaipNetwork()
+    const connector = ConnectorController.getConnectors(namespace).find(c => c.id === connectorId)
 
     try {
-      if (!adapter || !connectorId) {
-        throw new Error(`Adapter or connectorId not found for namespace ${namespace}`)
+      if (!adapter || !connector) {
+        throw new Error(`Adapter or connector not found for namespace ${namespace}`)
+      }
+
+      if (!caipNetwork?.id) {
+        throw new Error('CaipNetwork not found')
       }
 
       const connection = await adapter?.syncConnection({
         namespace,
-        id: connectorId,
-        chainId: caipNetwork?.id,
+        id: connector.id,
+        chainId: caipNetwork.id,
         rpcUrl: caipNetwork?.rpcUrls?.default?.http?.[0] as string
       })
 
-      if (connection) {
-        const accounts = await adapter?.getAccounts({
-          namespace,
-          id: connectorId
-        })
-
-        if (accounts && accounts.accounts.length > 0) {
-          this.setAllAccounts(accounts.accounts, namespace)
-        } else {
-          this.setAllAccounts(
-            [CoreHelperUtil.createAccount(namespace, connection.address, 'eoa')],
-            namespace
-          )
-        }
-
-        this.syncProvider({ ...connection, chainNamespace: namespace })
+      if (connection.address) {
         await this.syncAccount({ ...connection, chainNamespace: namespace })
+        this.syncConnection({ ...connection, chainNamespace: namespace })
         this.setStatus('connected', namespace)
       } else {
         this.setStatus('disconnected', namespace)
       }
     } catch (e) {
-      StorageUtil.deleteConnectedConnectorId(namespace)
       this.setStatus('disconnected', namespace)
     }
   }
@@ -875,19 +875,13 @@ export abstract class AppKitCore {
           ProviderUtil.setProvider(chainNamespace, this.universalProvider)
         }
 
-        StorageUtil.setConnectedConnectorId(
-          chainNamespace,
-          ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
-        )
-
-        StorageUtil.addConnectedNamespace(chainNamespace)
-
-        this.syncWalletConnectAccounts(chainNamespace)
-        await this.syncAccount({
-          address,
-          chainId,
+        ConnectorController.setConnectorId(
+          ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
           chainNamespace
-        })
+        )
+        StorageUtil.addConnectedNamespace(chainNamespace)
+        this.syncWalletConnectAccounts(chainNamespace)
+        await this.syncAccount({ address, chainId, chainNamespace })
       }
     })
 
@@ -917,19 +911,6 @@ export abstract class AppKitCore {
         chainNamespace
       )
     }
-  }
-
-  protected syncProvider({
-    type,
-    provider,
-    id,
-    chainNamespace
-  }: Pick<AdapterBlueprint.ConnectResult, 'type' | 'provider' | 'id'> & {
-    chainNamespace: ChainNamespace
-  }) {
-    ProviderUtil.setProviderId(chainNamespace, type)
-    ProviderUtil.setProvider(chainNamespace, provider)
-    StorageUtil.setConnectedConnectorId(chainNamespace, id)
   }
 
   protected async syncAccount(
@@ -998,6 +979,27 @@ export abstract class AppKitCore {
       }
       await this.syncBalance({ address, chainId: network?.id, chainNamespace })
     }
+  }
+
+  private async syncConnection(
+    params: Pick<AdapterBlueprint.ConnectResult, 'id' | 'type' | 'provider'> & {
+      chainNamespace: ChainNamespace
+    }
+  ) {
+    const { id, type, provider, chainNamespace } = params
+    const adapter = this.getAdapter(chainNamespace)
+
+    if (!adapter) {
+      return
+    }
+
+    const { accounts } = await adapter.getAccounts({ namespace: chainNamespace, id })
+    this.setAllAccounts(accounts, chainNamespace)
+    ConnectionController.addConnection({ accounts, chain: chainNamespace, connectorId: id })
+    ConnectorController.setConnectorId(id, chainNamespace)
+    ConnectorController.setConnectorId(id, chainNamespace)
+    ProviderUtil.setProviderId(chainNamespace, type)
+    ProviderUtil.setProvider(chainNamespace, provider)
   }
 
   private async syncAccountInfo(
@@ -1091,7 +1093,7 @@ export abstract class AppKitCore {
   }
 
   protected syncConnectedWalletInfo(chainNamespace: ChainNamespace) {
-    const connectorId = StorageUtil.getConnectedConnectorId(chainNamespace)
+    const connectorId = ConnectorController.getConnectorId(chainNamespace)
     const providerType = ProviderUtil.getProviderId(chainNamespace)
     if (
       providerType === UtilConstantsUtil.CONNECTOR_TYPE_ANNOUNCED ||

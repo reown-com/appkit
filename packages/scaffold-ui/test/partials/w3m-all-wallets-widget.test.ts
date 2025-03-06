@@ -29,7 +29,13 @@ const mockConnectorState: ConnectorControllerState = {
   connectors: [],
   activeConnector: undefined,
   allConnectors: [],
-  filterByNamespace: undefined
+  filterByNamespace: undefined,
+  activeConnectorIds: {
+    eip155: undefined,
+    solana: undefined,
+    polkadot: undefined,
+    bip122: undefined
+  }
 }
 
 const mockOptionsState: OptionsControllerState & OptionsControllerStateInternal = {
