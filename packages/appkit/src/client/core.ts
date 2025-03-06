@@ -822,7 +822,7 @@ export abstract class AppKitCore {
       if (connection) {
         const accounts = await adapter?.getAccounts({
           namespace,
-          id: connectorId
+          id: connector.id
         })
 
         if (accounts && accounts.accounts.length > 0) {
