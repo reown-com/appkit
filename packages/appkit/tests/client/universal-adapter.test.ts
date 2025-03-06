@@ -3,11 +3,15 @@ import { describe, expect, it, vi } from 'vitest'
 
 import { OptionsController } from '@reown/appkit-core'
 
-import { AppKit } from '../../src/client'
-import { mockEvmAdapter, mockSolanaAdapter } from '../mocks/Adapter'
-import { mockOptions } from '../mocks/Options'
-import { mockUniversalProvider } from '../mocks/Providers'
-import { mockBlockchainApiController, mockStorageUtil, mockWindowAndDocument } from '../test-utils'
+import { AppKit } from '../../src/client/appkit.js'
+import { mockEvmAdapter, mockSolanaAdapter } from '../mocks/Adapter.js'
+import { mockOptions } from '../mocks/Options.js'
+import { mockUniversalProvider } from '../mocks/Providers.js'
+import {
+  mockBlockchainApiController,
+  mockStorageUtil,
+  mockWindowAndDocument
+} from '../test-utils.js'
 
 mockWindowAndDocument()
 mockStorageUtil()
@@ -24,13 +28,11 @@ describe('Universal Adapter', () => {
 
   it('should not initialize UniversalProvider when provided in options', async () => {
     const init = vi.spyOn(UniversalProvider, 'init')
-    const setUsingInjectedUniversalProvider = vi.spyOn(
-      OptionsController,
-      'setUsingInjectedUniversalProvider'
-    )
+    const setManualWcControl = vi.spyOn(OptionsController, 'setManualWCControl')
 
     new AppKit({
       ...mockOptions,
+      // @ts-expect-error - ts will be handled
       universalProvider: mockUniversalProvider
     })
 
@@ -38,24 +40,18 @@ describe('Universal Adapter', () => {
     await new Promise(resolve => setTimeout(resolve, 10))
 
     expect(init).not.toHaveBeenCalled()
-    expect(setUsingInjectedUniversalProvider).toHaveBeenCalled()
+    expect(setManualWcControl).toHaveBeenCalled()
   })
 
   it('should initialize multiple adapters for different namespaces', async () => {
-    new AppKit({
-      ...mockOptions,
-      universalProvider: mockUniversalProvider
-    })
+    new AppKit(mockOptions)
 
     expect(mockEvmAdapter.syncConnectors).toHaveBeenCalled()
     expect(mockSolanaAdapter.syncConnectors).toHaveBeenCalled()
   })
 
   it('should set universal provider and auth provider for each adapter', async () => {
-    new AppKit({
-      ...mockOptions,
-      universalProvider: mockUniversalProvider
-    })
+    new AppKit(mockOptions)
 
     expect(mockEvmAdapter.setUniversalProvider).toHaveBeenCalled()
     expect(mockEvmAdapter.setAuthProvider).toHaveBeenCalled()

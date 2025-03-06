@@ -1,6 +1,7 @@
 {
   "name": "@reown/appkit-adapter-bitcoin",
-  "version": "1.6.8",
+  "version": "1.6.9",
+  "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -31,7 +32,7 @@
     "@reown/appkit-utils": "workspace:*",
     "@wallet-standard/app": "1.1.0",
     "@wallet-standard/base": "1.1.0",
-    "@walletconnect/universal-provider": "2.18.0",
+    "@walletconnect/universal-provider": "2.19.0",
     "bitcoinjs-lib": "6.1.7",
     "sats-connect": "3.0.1"
   },
@@ -51,5 +52,17 @@
   },
   "bugs": {
     "url": "https://github.com/reown-com/appkit/issues"
-  }
+  },
+  "keywords": [
+    "appkit",
+    "wallet",
+    "onboarding",
+    "reown",
+    "dapps",
+    "web3",
+    "wagmi",
+    "ethereum",
+    "solana",
+    "bitcoin"
+  ]
 }

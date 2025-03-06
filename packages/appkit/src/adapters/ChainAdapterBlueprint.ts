@@ -4,8 +4,7 @@ import {
   type CaipAddress,
   type CaipNetwork,
   type ChainNamespace,
-  ConstantsUtil as CommonConstantsUtil,
-  ParseUtil
+  ConstantsUtil as CommonConstantsUtil
 } from '@reown/appkit-common'
 import {
   AccountController,
@@ -16,10 +15,10 @@ import {
   type Tokens,
   type WriteContractArgs
 } from '@reown/appkit-core'
-import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
-import { W3mFrameProvider } from '@reown/appkit-wallet'
+import { PresetsUtil } from '@reown/appkit-utils'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
-import type { AppKit } from '../client.js'
+import type { AppKitCore } from '../client/core.js'
 import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'
 import type { AppKitOptions } from '../utils/index.js'
 import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
@@ -246,10 +245,6 @@ export abstract class AdapterBlueprint<
           OptionsController.state.defaultAccountTypes[caipNetwork.chainNamespace]
       })
 
-      if (typeof user.chainId === 'string' && CaipNetworksUtil.isCaipNetworkId(user.chainId)) {
-        user.chainId = ParseUtil.parseCaipNetworkId(user.chainId).chainId
-      }
-
       this.emit('switchNetwork', user)
     }
   }
@@ -282,7 +277,7 @@ export abstract class AdapterBlueprint<
    * @param {AppKitOptions} [options] - Optional AppKit options
    * @param {AppKit} [appKit] - Optional AppKit instance
    */
-  public abstract syncConnectors(options?: AppKitOptions, appKit?: AppKit): void | Promise<void>
+  public abstract syncConnectors(options?: AppKitOptions, appKit?: AppKitCore): void | Promise<void>
 
   /**
    * Synchronizes the connection with the given parameters.

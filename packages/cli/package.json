@@ -1,13 +1,13 @@
 {
   "name": "@reown/appkit-cli",
-  "version": "1.6.8",
+  "version": "1.6.9",
+  "sideEffects": false,
   "description": "Reown AppKit CLI",
   "main": "index.js",
   "type": "module",
   "bin": {
     "appkit-cli": "./index.js"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -23,5 +23,17 @@
     "cross-env": "7.0.3",
     "esm": "3.2.25",
     "ts-node": "10.9.2"
-  }
+  },
+  "keywords": [
+    "appkit",
+    "wallet",
+    "onboarding",
+    "reown",
+    "dapps",
+    "web3",
+    "wagmi",
+    "ethereum",
+    "solana",
+    "bitcoin"
+  ]
 }

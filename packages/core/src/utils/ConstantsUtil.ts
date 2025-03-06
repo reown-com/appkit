@@ -1,9 +1,12 @@
-import type { ChainNamespace } from '@reown/appkit-common'
+import { type ChainNamespace } from '@reown/appkit-common'
 
 import type { DefaultAccountTypes, Features, SocialProvider } from './TypeUtil.js'
 
 const SECURE_SITE =
-  process.env['NEXT_PUBLIC_SECURE_SITE_ORIGIN'] || 'https://secure.walletconnect.org'
+  // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+  (typeof process !== 'undefined' && typeof process.env !== 'undefined'
+    ? process.env['NEXT_PUBLIC_SECURE_SITE_ORIGIN']
+    : undefined) || 'https://secure.walletconnect.org'
 
 export const ONRAMP_PROVIDERS = [
   {
@@ -247,5 +250,13 @@ export const ConstantsUtil = {
     eip155: 'smartAccount',
     polkadot: 'eoa',
     solana: 'eoa'
-  } as const satisfies DefaultAccountTypes
+  } as const satisfies DefaultAccountTypes,
+  ADAPTER_TYPES: {
+    UNIVERSAL: 'universal',
+    SOLANA: 'solana',
+    WAGMI: 'wagmi',
+    ETHERS: 'ethers',
+    ETHERS5: 'ethers5',
+    BITCOIN: 'bitcoin'
+  }
 }

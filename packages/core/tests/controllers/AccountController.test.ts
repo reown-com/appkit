@@ -112,7 +112,13 @@ describe('AccountController', () => {
       addressExplorerUrl: undefined,
       tokenBalance: [],
       allAccounts: [],
-      addressLabels: new Map<string, string>()
+      addressLabels: new Map<string, string>(),
+      connectedWalletInfo: undefined,
+      farcasterUrl: undefined,
+      preferredAccountType: undefined,
+      socialProvider: undefined,
+      status: 'disconnected',
+      user: undefined
     })
   })
 
