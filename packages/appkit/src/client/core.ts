@@ -182,6 +182,7 @@ export abstract class AppKitCore {
   }
 
   protected initializeConnectionController(options: AppKitOptions) {
+    ConnectionController.initialize()
     ConnectionController.setWcBasic(options.basic ?? false)
   }
 
@@ -365,6 +366,11 @@ export abstract class AppKitCore {
         const activeChain = ChainController.state.activeChain as ChainNamespace
         const chainToUse = chain || activeChain
         const adapter = this.getAdapter(chainToUse)
+        const connector = ConnectorController.getConnectors(chainToUse).find(c => c.id === id)
+
+        if (!connector) {
+          throw new Error('connectExternal: Connector not found')
+        }
 
         if (chain && chain !== activeChain && !caipNetwork) {
           const toConnectNetwork = this.caipNetworks?.find(
@@ -379,12 +385,14 @@ export abstract class AppKitCore {
           throw new Error('Adapter not found')
         }
 
+        const chainId = caipNetwork?.id || this.getCaipNetwork()?.id
+
         const res = await adapter.connect({
           id,
           info,
           type,
           provider,
-          chainId: caipNetwork?.id || this.getCaipNetwork()?.id,
+          chainId,
           rpcUrl:
             caipNetwork?.rpcUrls?.default?.http?.[0] ||
             this.getCaipNetwork()?.rpcUrls?.default?.http?.[0]
@@ -395,10 +403,8 @@ export abstract class AppKitCore {
         }
 
         StorageUtil.addConnectedNamespace(chainToUse)
-        this.syncProvider({ ...res, chainNamespace: chainToUse })
         await this.syncAccount({ ...res, chainNamespace: chainToUse })
-        const { accounts } = await adapter.getAccounts({ namespace: chainToUse, id })
-        this.setAllAccounts(accounts, chainToUse)
+        await this.syncConnection({ ...res, chainNamespace: chainToUse })
       },
       reconnectExternal: async ({ id, info, type, provider }) => {
         const namespace = ChainController.state.activeChain as ChainNamespace
@@ -792,7 +798,6 @@ export abstract class AppKitCore {
       }
     } catch (err) {
       console.warn("AppKit couldn't sync existing connection", err)
-      StorageUtil.deleteConnectedConnectorId(namespace)
       this.setStatus('disconnected', namespace)
     }
   }
@@ -819,23 +824,9 @@ export abstract class AppKitCore {
         rpcUrl: caipNetwork?.rpcUrls?.default?.http?.[0] as string
       })
 
-      if (connection) {
-        const accounts = await adapter?.getAccounts({
-          namespace,
-          id: connectorId
-        })
-
-        if (accounts && accounts.accounts.length > 0) {
-          this.setAllAccounts(accounts.accounts, namespace)
-        } else {
-          this.setAllAccounts(
-            [CoreHelperUtil.createAccount(namespace, connection.address, 'eoa')],
-            namespace
-          )
-        }
-
-        this.syncProvider({ ...connection, chainNamespace: namespace })
+      if (connection.address) {
         await this.syncAccount({ ...connection, chainNamespace: namespace })
+        this.syncConnection({ ...connection, chainNamespace: namespace })
         this.setStatus('connected', namespace)
       } else {
         this.setStatus('disconnected', namespace)
@@ -889,13 +880,8 @@ export abstract class AppKitCore {
           chainNamespace
         )
         StorageUtil.addConnectedNamespace(chainNamespace)
-
         this.syncWalletConnectAccounts(chainNamespace)
-        await this.syncAccount({
-          address,
-          chainId,
-          chainNamespace
-        })
+        await this.syncAccount({ address, chainId, chainNamespace })
       }
     })
 
@@ -925,19 +911,6 @@ export abstract class AppKitCore {
         chainNamespace
       )
     }
-  }
-
-  protected syncProvider({
-    type,
-    provider,
-    id,
-    chainNamespace
-  }: Pick<AdapterBlueprint.ConnectResult, 'type' | 'provider' | 'id'> & {
-    chainNamespace: ChainNamespace
-  }) {
-    ProviderUtil.setProviderId(chainNamespace, type)
-    ProviderUtil.setProvider(chainNamespace, provider)
-    StorageUtil.setConnectedConnectorId(chainNamespace, id)
   }
 
   protected async syncAccount(
@@ -1006,6 +979,27 @@ export abstract class AppKitCore {
       }
       await this.syncBalance({ address, chainId: network?.id, chainNamespace })
     }
+  }
+
+  private async syncConnection(
+    params: Pick<AdapterBlueprint.ConnectResult, 'id' | 'type' | 'provider'> & {
+      chainNamespace: ChainNamespace
+    }
+  ) {
+    const { id, type, provider, chainNamespace } = params
+    const adapter = this.getAdapter(chainNamespace)
+
+    if (!adapter) {
+      return
+    }
+
+    const { accounts } = await adapter.getAccounts({ namespace: chainNamespace, id })
+    this.setAllAccounts(accounts, chainNamespace)
+    ConnectionController.addConnection({ accounts, chain: chainNamespace, connectorId: id })
+    ConnectorController.setConnectorId(id, chainNamespace)
+    ConnectorController.setConnectorId(id, chainNamespace)
+    ProviderUtil.setProviderId(chainNamespace, type)
+    ProviderUtil.setProvider(chainNamespace, provider)
   }
 
   private async syncAccountInfo(

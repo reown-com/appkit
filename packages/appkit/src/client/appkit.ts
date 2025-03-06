@@ -471,6 +471,8 @@ export class AppKit extends AppKitCore {
         if (features.history) {
           featureImportPromises.push(import('@reown/appkit-scaffold-ui/transactions'))
         }
+
+        featureImportPromises.push(import('@reown/appkit-scaffold-ui/profile'))
       }
 
       await Promise.all([
