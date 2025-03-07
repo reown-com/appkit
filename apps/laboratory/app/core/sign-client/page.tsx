@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 'use client'
 
 import React, { useEffect, useState } from 'react'
@@ -15,15 +14,15 @@ import {
   Text
 } from '@chakra-ui/react'
 import SignClient from '@walletconnect/sign-client'
-import type { SessionNamespace } from '@walletconnect/universal-provider'
 import base58 from 'bs58'
 
 import { AppKit, createAppKit } from '@reown/appkit/basic'
-import { bitcoin, mainnet, polygon, solana } from '@reown/appkit/networks'
+import { type AppKitNetwork, bitcoin, mainnet, polygon, solana } from '@reown/appkit/networks'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
+/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 
 // Constants
@@ -53,15 +52,17 @@ const OPTIONAL_NAMESPACES = {
   }
 }
 
-const networks = [mainnet, polygon, solana, bitcoin]
+const networks = [mainnet, polygon, solana, bitcoin] as [AppKitNetwork, ...AppKitNetwork[]]
 
 export default function SignClientPage() {
   const toast = useChakraToast()
   const [signClient, setSignClient] = useState<SignClient | null>(null)
   const [modal, setModal] = useState<AppKit | null>(null)
-  const [session, setSession] = useState<SessionNamespace | null>(null)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [session, setSession] = useState<any>(null)
   const [account, setAccount] = useState<string | undefined>(undefined)
   const [network, setNetwork] = useState<string | undefined>(undefined)
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     async function initialize() {
@@ -83,8 +84,8 @@ export default function SignClientPage() {
 
         if (lastSession) {
           setSession(lastSession)
-          setAccount(lastSession?.namespaces?.eip155?.accounts?.[0]?.split(':')[2])
-          setNetwork(lastSession?.namespaces?.eip155?.chains?.[0])
+          setAccount(lastSession?.namespaces?.['eip155']?.accounts?.[0]?.split(':')[2])
+          setNetwork(lastSession?.namespaces?.['eip155']?.chains?.[0])
         }
 
         // Event listeners
@@ -107,18 +108,18 @@ export default function SignClientPage() {
     }
 
     try {
-      setLoading(true)
+      setIsLoading(true)
       const { uri, approval } = await signClient.connect({
         optionalNamespaces: OPTIONAL_NAMESPACES
       })
 
       if (uri) {
-        modal.open({ uri })
+        modal?.open({ uri })
         const newSession = await approval()
         setSession(newSession)
         setAccount(newSession?.namespaces['eip155']?.accounts?.[0]?.split(':')[2])
         setNetwork(newSession?.namespaces['eip155']?.chains?.[0])
-        modal.close()
+        modal?.close()
       }
     } catch (error) {
       console.error('Connection error:', error)
@@ -128,7 +129,7 @@ export default function SignClientPage() {
         type: 'error'
       })
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
@@ -138,7 +139,13 @@ export default function SignClientPage() {
     }
 
     try {
-      await signClient.disconnect({ topic: session.topic })
+      await signClient.disconnect({
+        topic: session.topic,
+        reason: {
+          code: 0,
+          message: 'user_disconnected'
+        }
+      })
       setSession(null)
       setAccount(undefined)
       setNetwork(undefined)
@@ -180,7 +187,7 @@ export default function SignClientPage() {
 
     const [namespace] = network.split(':')
 
-    return map[namespace || '']
+    return map[namespace as keyof typeof map]
   }
 
   async function handleSignMessage() {
@@ -201,6 +208,16 @@ export default function SignClientPage() {
         toast({
           title: 'Error',
           description: 'Chain not supported by laboratory',
+          type: 'error'
+        })
+
+        return
+      }
+
+      if (!network) {
+        toast({
+          title: 'Error',
+          description: 'Network not supported by laboratory',
           type: 'error'
         })
 
@@ -239,6 +256,9 @@ export default function SignClientPage() {
       setNetwork(newNetwork)
 
       if (newNetwork.startsWith('eip155')) {
+        if (!session?.namespaces?.['eip155']?.methods?.includes('wallet_switchEthereumChain')) {
+          return
+        }
         await signClient.request({
           topic: session.topic,
           chainId: newNetwork,
@@ -282,7 +302,7 @@ export default function SignClientPage() {
             ) : (
               <Button
                 onClick={handleConnect}
-                isLoading={loading}
+                isLoading={isLoading}
                 loadingText="Connecting..."
                 data-testid="connect-button"
               >
@@ -293,7 +313,7 @@ export default function SignClientPage() {
 
           {session && (
             <>
-              <Box>
+              <Box mb={4}>
                 <Heading size="xs" textTransform="uppercase" pb="2">
                   Network
                 </Heading>
@@ -313,7 +333,7 @@ export default function SignClientPage() {
                 </Stack>
               </Box>
 
-              <Box>
+              <Box mb={4}>
                 <Heading size="xs" textTransform="uppercase" pb="2">
                   Sign Message
                 </Heading>
