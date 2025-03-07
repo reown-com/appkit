@@ -76,6 +76,16 @@
       "types": "./dist/types/exports/basic.d.ts",
       "import": "./dist/esm/exports/basic.js",
       "default": "./dist/esm/exports/basic.js"
+    },
+    "./basic-vue": {
+      "types": "./dist/types/exports/basic-vue.d.ts",
+      "import": "./dist/esm/exports/basic-vue.js",
+      "default": "./dist/esm/exports/basic-vue.js"
+    },
+    "./basic-react": {
+      "types": "./dist/types/exports/basic-react.d.ts",
+      "import": "./dist/esm/exports/basic-react.js",
+      "default": "./dist/esm/exports/basic-react.js"
     }
   },
   "typesVersions": {
