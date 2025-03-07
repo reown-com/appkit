@@ -4,9 +4,17 @@ import { state } from 'lit/decorators.js'
 import { DateUtil } from '@reown/appkit-common'
 import { CoreHelperUtil } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon-box'
+import '@reown/appkit-ui/wui-link'
+import '@reown/appkit-ui/wui-tabs'
+import '@reown/appkit-ui/wui-tag'
+import '@reown/appkit-ui/wui-text'
 
 import { SmartSessionsController } from '../../../controllers/SmartSessionsController.js'
 import type { SmartSession } from '../../../utils/TypeUtils.js'
+import '../permissions/wui-permission-contract-call/index.js'
 import styles from './styles.js'
 
 const TABS = 3
