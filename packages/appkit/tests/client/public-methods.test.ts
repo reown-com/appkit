@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 
-import type { Connector } from '@reown/appkit'
+import type { AuthConnector, Connector, SocialProvider } from '@reown/appkit'
 import {
   type Balance,
   type CaipNetwork,
@@ -935,5 +935,40 @@ describe('Base Public methods', () => {
 
     expect(mockSubscribeProviders).toHaveBeenCalled()
     expect(callback).toHaveBeenCalledWith(providers)
+  })
+
+  it('should get account information', () => {
+    vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
+      id: 'auth-connector'
+    } as unknown as AuthConnector)
+    vi.spyOn(ChainController, 'getAccountDataByChainNamespace').mockReturnValue({
+      allAccounts: [{ address: '0x123', type: 'eoa', namespace: 'eip155' }],
+      caipAddress: 'eip155:1:0x123',
+      status: 'connected',
+      user: { email: 'test@example.com' },
+      socialProvider: 'email' as SocialProvider,
+      preferredAccountType: 'eoa',
+      smartAccountDeployed: true,
+      currentTab: 0,
+      addressLabels: new Map([['eip155:1:0x123', 'test-label']])
+    })
+    vi.spyOn(CoreHelperUtil, 'getPlainAddress')
+
+    const appKit = new AppKit(mockOptions)
+    const account = appKit.getAccount('eip155')
+
+    expect(account).toEqual({
+      allAccounts: [{ address: '0x123', type: 'eoa', namespace: 'eip155' }],
+      caipAddress: 'eip155:1:0x123',
+      address: '0x123',
+      isConnected: true,
+      status: 'connected',
+      embeddedWalletInfo: {
+        user: { email: 'test@example.com' },
+        authProvider: 'email',
+        accountType: 'eoa',
+        isSmartAccountDeployed: true
+      }
+    })
   })
 })
