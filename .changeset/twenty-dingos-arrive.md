@@ -20,4 +20,4 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Fixed an issue where wagmi would trigger a disconnect on page refresh
+Fixed an issue where wagmi triggered a disconnect on page refresh
