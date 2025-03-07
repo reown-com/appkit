@@ -14,11 +14,8 @@ const localStorageMock = (() => {
     initialize(defaultState: Record<string, string>) {
       store = { ...defaultState }
     },
-
     // Mock implementation of getItem
-    getItem: vi.fn((key: string) => {
-      return store[key] || null
-    }),
+    getItem: vi.fn((key: string) => store[key] || null),
 
     // Mock implementation of setItem
     setItem: vi.fn((key: string, value: string) => {
@@ -27,6 +24,7 @@ const localStorageMock = (() => {
 
     // Mock implementation of removeItem
     removeItem: vi.fn((key: string) => {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete store[key]
     }),
 
@@ -42,5 +40,6 @@ const localStorageMock = (() => {
 
 export function mockLocalStorage(defaultState?: Record<string, string>) {
   localStorageMock.initialize(defaultState || defaultLocalStorageState)
+
   return localStorageMock
 }
