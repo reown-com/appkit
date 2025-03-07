@@ -127,12 +127,12 @@
     "valtio": "1.13.2",
     "viem": "2.23.5",
     "wagmi": "2.14.12",
-    "webauthn-p256": "0.0.10"
+    "webauthn-p256": "0.0.2"
   },
   "devDependencies": {
     "@aws-sdk/client-cloudwatch": "3.758.0",
     "@mailsac/api": "1.0.8",
-    "@playwright/test": "1.51.0",
+    "@playwright/test": "1.44.0",
     "@synthetixio/synpress": "4.0.0-alpha.7",
     "@types/node": "22.13.4",
     "@types/react": "19.0.0",
