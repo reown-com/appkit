@@ -28,7 +28,12 @@ function getWriteMethodsFromAbi(abi: string) {
 }
 
 export function WagmiSendCallsCustomAbiWithPaymasterServiceTest() {
-  const { provider, supported } = useWagmiAvailableCapabilities({
+  const { 
+    provider,
+    supported,
+    supportedChains: capabilitySupportedChains,
+    currentChainsInfo,
+  } = useWagmiAvailableCapabilities({
     capability: WALLET_CAPABILITIES.PAYMASTER_SERVICE,
     method: EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
   })
@@ -37,6 +42,14 @@ export function WagmiSendCallsCustomAbiWithPaymasterServiceTest() {
   const { status } = useAccount()
 
   const isConnected = status === 'connected'
+
+  const doWalletSupportCapability = useMemo(
+    () =>
+      currentChainsInfo &&
+      capabilitySupportedChains.some(chain => chain.chainId === currentChainsInfo.chainId),
+    [capabilitySupportedChains]
+  )
+
 
   if (!isConnected || !provider || !address) {
     return (
@@ -53,6 +66,15 @@ export function WagmiSendCallsCustomAbiWithPaymasterServiceTest() {
       </Text>
     )
   }
+
+  if (!doWalletSupportCapability) {
+    return (
+      <Text fontSize="md" color="yellow">
+        Account does not support paymaster service feature on {currentChainsInfo?.chainName}
+      </Text>
+    )
+  }
+
 
   return <AvailableTestContent />
 }
