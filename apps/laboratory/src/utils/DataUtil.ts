@@ -165,7 +165,7 @@ export const multichainSdkOptions: SdkOption[] = [
   },
   {
     title: 'Basic',
-    link: '/library/multichain-basic',
+    link: '/library/multichain-no-adapters',
     description: 'Configuration with no adapters enabled for AppKit'
   }
 ]
@@ -199,7 +199,7 @@ export const featuredSdkOptions: SdkOption[] = [
   },
   {
     title: 'Basic',
-    link: '/library/multichain-basic',
+    link: '/library/multichain-no-adapters',
     description: 'Configuration with no adapters enabled for AppKit'
   }
 ]
