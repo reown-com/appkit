@@ -5,6 +5,9 @@ import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { ChainController, ConnectorController, StorageUtil } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
+import '../../partials/w3m-account-default-widget/index.js'
+import '../../partials/w3m-account-wallet-features-widget/index.js'
+
 @customElement('w3m-account-view')
 export class W3mAccountView extends LitElement {
   // -- Members ------------------------------------------- //

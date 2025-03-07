@@ -10,8 +10,9 @@ import {
 } from '@chakra-ui/react'
 import { useProxy } from 'valtio/utils'
 
-import { colors } from '../../utils/DataUtil'
-import { ThemeStore } from '../../utils/StoreUtil'
+import { colors } from '@/src/utils/DataUtil'
+import { ThemeStore } from '@/src/utils/StoreUtil'
+
 import RadioColor from './RadioColor'
 
 export default function MixColorInput() {

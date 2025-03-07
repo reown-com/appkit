@@ -4,6 +4,8 @@ import { expect } from '@playwright/test'
 
 import type { WalletFeature } from '@reown/appkit'
 
+import { getNamespaceByLibrary } from '@/tests/shared/utils/namespace'
+
 import { BASE_URL, DEFAULT_SESSION_PARAMS, EXTENSION_NAME, EXTENSION_RDNS } from '../constants'
 import type { TimingRecords } from '../fixtures/timing-fixture'
 import { doActionAndWaitForNewPage } from '../utils/actions'
@@ -313,26 +315,38 @@ export class ModalPage {
     await disconnectBtn.click()
   }
 
-  async sign() {
-    const signButton = this.page.getByTestId('sign-message-button')
+  async sign(_namespace?: string) {
+    const namespace = _namespace || getNamespaceByLibrary(this.library)
+    const signButton = this.page
+      .getByTestId(`${namespace}-test-interactions`)
+      .getByTestId('sign-message-button')
+
     await signButton.scrollIntoViewIfNeeded()
     await signButton.click()
   }
 
-  async signTypedData() {
-    const signButton = this.page.getByTestId('sign-typed-data-button')
+  async signTypedData(_namespace?: string) {
+    const namespace = _namespace || getNamespaceByLibrary(this.library)
+    const signButton = this.page
+      .getByTestId(`${namespace}-test-interactions`)
+      .getByTestId('sign-typed-data-button')
+
     await signButton.scrollIntoViewIfNeeded()
     await signButton.click()
   }
 
-  async signMessageAndTypedData(modalValidator: ModalValidator, network?: string) {
-    await this.sign()
+  async signMessageAndTypedData(
+    modalValidator: ModalValidator,
+    network?: string,
+    namespace?: string
+  ) {
+    await this.sign(namespace)
     await modalValidator.expectAcceptedSign()
 
     if (network !== 'Solana') {
       // Wait for the toast animation to complete
       await modalValidator.page.waitForTimeout(500)
-      await this.signTypedData()
+      await this.signTypedData(namespace)
       await modalValidator.expectAcceptedSignTypedData()
     }
   }
@@ -369,7 +383,7 @@ export class ModalPage {
     await this.clickSignatureRequestButton('Approve')
   }
 
-  async clickWalletUpgradeCard(context: BrowserContext, library: string) {
+  async clickWalletUpgradeCard(context: BrowserContext, library?: string) {
     await this.page.getByTestId('account-button').click()
 
     await this.page.getByTestId('w3m-profile-button').click()
@@ -412,6 +426,11 @@ export class ModalPage {
     await this.page.getByTestId(`w3m-network-switch-${network}`).click()
     // The state is chaing too fast and test runner doesn't wait the loading page. It's fastly checking the network selection button and detect that it's switched already.
     await this.page.waitForTimeout(300)
+  }
+
+  async switchActiveChain() {
+    await this.page.getByText('Switch to', { exact: false }).waitFor()
+    await this.page.getByTestId('w3m-switch-active-chain-button').click()
   }
 
   async clickWalletDeeplink() {
@@ -684,11 +703,21 @@ export class ModalPage {
     await walletSelector.click()
   }
 
-  async connectToExtensionMultichain(chainNamespace: 'eip155' | 'solana' | 'bitcoin') {
-    await this.connectButton.click()
+  async connectToExtensionMultichain(
+    chainNamespace: 'eip155' | 'solana' | 'bitcoin',
+    modalOpen?: boolean,
+    isAnotherNamespaceConnected?: boolean
+  ) {
+    const isFiltered = modalOpen && isAnotherNamespaceConnected
+
+    if (!modalOpen) {
+      await this.connectButton.click()
+    }
     const walletSelector = await this.getExtensionWallet()
     await walletSelector.click()
-    const chainSelector = this.page.getByTestId(`wui-list-chain-${chainNamespace}`)
-    await chainSelector.click()
+    if (!isFiltered) {
+      const chainSelector = this.page.getByTestId(`wui-list-chain-${chainNamespace}`)
+      await chainSelector.click()
+    }
   }
 }

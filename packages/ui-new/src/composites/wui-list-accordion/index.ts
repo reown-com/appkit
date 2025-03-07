@@ -53,7 +53,7 @@ export class WuiListAccordion extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ontouchstart @click=${() => this.onClick()}>
+      <button @click=${() => this.onClick()}>
         <wui-flex justifyContent="space-between" alignItems="center">
           <wui-text variant="paragraph-500" color="fg-100">${this.textTitle}</wui-text>
           ${this.chevronTemplate()}

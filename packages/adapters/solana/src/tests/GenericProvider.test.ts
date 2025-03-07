@@ -20,14 +20,11 @@ const getActiveChain = vi.fn(() => TestConstants.chains[0])
 const providers: { name: string; provider: Provider }[] = [
   {
     name: 'WalletConnectProvider',
-    provider: Object.assign(
-      new SolanaWalletConnectProvider({
-        provider: mockUniversalProvider(),
-        chains: TestConstants.chains,
-        getActiveChain
-      }),
-      { onUri: vi.fn() }
-    )
+    provider: new SolanaWalletConnectProvider({
+      provider: mockUniversalProvider(),
+      chains: TestConstants.chains,
+      getActiveChain
+    })
   },
   {
     name: 'WalletStandardProvider',

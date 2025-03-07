@@ -7,13 +7,13 @@ import { optimism, sepolia } from 'wagmi/chains'
 
 import { useAppKitAccount } from '@reown/appkit/react'
 
-import { abi, address } from '../../utils/DonutContract'
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
+import { abi, address } from '@/src/utils/DonutContract'
 
 const ALLOWED_CHAINS = [sepolia.id, optimism.id] as number[]
 
 export function WagmiWriteContractTest() {
-  const { address: accountAddress } = useAppKitAccount()
+  const { address: accountAddress } = useAppKitAccount({ namespace: 'eip155' })
   const { status, chain } = useAccount()
 
   return ALLOWED_CHAINS.includes(Number(chain?.id)) && status === 'connected' ? (
@@ -49,7 +49,7 @@ function AvailableTestContent({ accountAddress }: { accountAddress: string | und
     abi,
     address,
     functionName: 'purchase',
-    value: parseEther('0.0001'),
+    value: parseEther('0.00001'),
     args: [1],
     query: {
       enabled: false

@@ -3,7 +3,10 @@ import { property, state } from 'lit/decorators.js'
 
 import { ChainController, ModalController, OnRampController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
 
+import '../../partials/w3m-onramp-input/index.js'
 import styles from './styles.js'
 
 const PAYMENT_CURRENCY_SYMBOLS: Record<string, string> = {

@@ -1,4 +1,3 @@
-import { coinbaseWallet } from '@wagmi/connectors'
 import {
   type Config,
   type Connector,
@@ -45,7 +44,7 @@ import {
   NetworkUtil,
   isReownName
 } from '@reown/appkit-common'
-import { CoreHelperUtil } from '@reown/appkit-core'
+import { CoreHelperUtil, StorageUtil } from '@reown/appkit-core'
 import {
   type ConnectorType,
   ConstantsUtil as CoreConstantsUtil,
@@ -79,6 +78,7 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   private pendingTransactionsFilter: PendingTransactionsFilter
   private unwatchPendingTransactions: (() => void) | undefined
+  private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
 
   constructor(
     configParams: Partial<CreateConfigParameters> & {
@@ -216,7 +216,7 @@ export class WagmiAdapter extends AdapterBlueprint {
   private setupWatchers() {
     watchAccount(this.wagmiConfig, {
       onChange: (accountData, prevAccountData) => {
-        if (accountData.status === 'disconnected') {
+        if (accountData.status === 'disconnected' && prevAccountData.address) {
           this.emit('disconnect')
         }
 
@@ -226,7 +226,6 @@ export class WagmiAdapter extends AdapterBlueprint {
             prevAccountData.status !== 'connected'
           ) {
             this.setupWatchPendingTransactions()
-
             this.emit('accountChanged', {
               address: accountData.address
             })
@@ -250,19 +249,37 @@ export class WagmiAdapter extends AdapterBlueprint {
     })
   }
 
-  private addWagmiConnectors(options: AppKitOptions, appKit: AppKit) {
-    const customConnectors: CreateConnectorFn[] = []
+  private async addThirdPartyConnectors(options: AppKitOptions) {
+    const thirdPartyConnectors: CreateConnectorFn[] = []
 
     if (options.enableCoinbase !== false) {
-      customConnectors.push(
-        coinbaseWallet({
-          version: '4',
-          appName: options.metadata?.name ?? 'Unknown',
-          appLogoUrl: options.metadata?.icons[0] ?? 'Unknown',
-          preference: options.coinbasePreference ?? 'all'
-        })
-      )
+      try {
+        const { coinbaseWallet } = await import('@wagmi/connectors')
+
+        if (coinbaseWallet) {
+          thirdPartyConnectors.push(
+            coinbaseWallet({
+              version: '4',
+              appName: options.metadata?.name ?? 'Unknown',
+              appLogoUrl: options.metadata?.icons[0] ?? 'Unknown',
+              preference: options.coinbasePreference ?? 'all'
+            })
+          )
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to import Coinbase Wallet SDK:', error)
+      }
     }
+
+    thirdPartyConnectors.forEach(connector => {
+      const cnctr = this.wagmiConfig._internal.connectors.setup(connector)
+      this.wagmiConfig._internal.connectors.setState(prev => [...prev, cnctr])
+    })
+  }
+
+  private addWagmiConnectors(options: AppKitOptions, appKit: AppKit) {
+    const customConnectors: CreateConnectorFn[] = []
 
     if (options.enableWalletConnect !== false) {
       customConnectors.push(
@@ -347,7 +364,8 @@ export class WagmiAdapter extends AdapterBlueprint {
       account: data.fromAddress,
       abi: data.abi,
       functionName: data.method,
-      args: data.args
+      args: data.args,
+      __mode: 'prepared'
     })
 
     return { hash: tx }
@@ -410,7 +428,7 @@ export class WagmiAdapter extends AdapterBlueprint {
     return formatUnits(params.value, params.decimals)
   }
 
-  private addWagmiConnector(connector: Connector, options: AppKitOptions) {
+  private async addWagmiConnector(connector: Connector, options: AppKitOptions) {
     /*
      * We don't need to set auth connector or walletConnect connector
      * from wagmi since we already set it in chain adapter blueprint
@@ -421,6 +439,8 @@ export class WagmiAdapter extends AdapterBlueprint {
     ) {
       return
     }
+
+    const provider = (await connector.getProvider().catch(() => undefined)) as Provider | undefined
 
     this.addConnector({
       id: connector.id,
@@ -433,18 +453,13 @@ export class WagmiAdapter extends AdapterBlueprint {
         connector.id === CommonConstantsUtil.CONNECTOR_ID.INJECTED
           ? undefined
           : { rdns: connector.id },
+      provider,
       chain: this.namespace as ChainNamespace,
       chains: []
     })
   }
 
-  public syncConnectors(options: AppKitOptions, appKit: AppKit) {
-    // Add wagmi connectors
-    this.addWagmiConnectors(options, appKit)
-
-    // Add current wagmi connectors to chain adapter blueprint
-    this.wagmiConfig.connectors.forEach(connector => this.addWagmiConnector(connector, options))
-
+  public async syncConnectors(options: AppKitOptions, appKit: AppKit) {
     /*
      * Watch for new connectors. This is needed because some EIP6963
      * connectors are added later in the process the initial setup
@@ -453,6 +468,17 @@ export class WagmiAdapter extends AdapterBlueprint {
       onChange: connectors =>
         connectors.forEach(connector => this.addWagmiConnector(connector, options))
     })
+
+    // Add current wagmi connectors to chain adapter blueprint
+    await Promise.all(
+      this.wagmiConfig.connectors.map(connector => this.addWagmiConnector(connector, options))
+    )
+
+    // Add wagmi connectors
+    this.addWagmiConnectors(options, appKit)
+
+    // Add third party connectors
+    await this.addThirdPartyConnectors(options)
   }
 
   public async syncConnection(
@@ -473,45 +499,29 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
   }
 
-  public override async connectWalletConnect(
-    onUri: (uri: string) => void,
-    chainId?: number | string
-  ) {
-    // Attempt one click auth first
+  public override async connectWalletConnect(chainId?: number | string) {
+    // Attempt one click auth first, if authenticated, still connect with wagmi to store the session
     const walletConnectConnector = this.getWalletConnectConnector()
-    const isAuthenticated = await walletConnectConnector.authenticate({ onUri })
+    await walletConnectConnector.authenticate()
 
-    if (isAuthenticated) {
-      return { clientId: await walletConnectConnector.provider.client.core.crypto.getClientId() }
-    }
+    const wagmiConnector = this.getWagmiConnector('walletConnect')
 
-    // Attempt to connect using wagmi connector
-    const connector = this.getWagmiConnector('walletConnect')
-
-    if (!connector) {
+    if (!wagmiConnector) {
       throw new Error('UniversalAdapter:connectWalletConnect - connector not found')
     }
 
-    const provider = (await connector.getProvider()) as UniversalProvider
+    await connect(this.wagmiConfig, {
+      connector: wagmiConnector,
+      chainId: chainId ? Number(chainId) : undefined
+    })
 
-    if (!this.caipNetworks || !provider) {
-      throw new Error(
-        'UniversalAdapter:connectWalletConnect - caipNetworks or provider is undefined'
-      )
-    }
-
-    provider.on('display_uri', onUri)
-
-    await connect(this.wagmiConfig, { connector, chainId: chainId ? Number(chainId) : undefined })
-
-    return { clientId: await provider.client.core.crypto.getClientId() }
+    return { clientId: await walletConnectConnector.provider.client.core.crypto.getClientId() }
   }
 
   public async connect(
     params: AdapterBlueprint.ConnectParams
   ): Promise<AdapterBlueprint.ConnectResult> {
     const { id, provider, type, info, chainId } = params
-
     const connector = this.getWagmiConnector(id)
 
     if (!connector) {
@@ -557,14 +567,40 @@ export class WagmiAdapter extends AdapterBlueprint {
     const caipNetwork = this.caipNetworks?.find(network => network.id === params.chainId)
 
     if (caipNetwork && this.wagmiConfig) {
-      const chainId = Number(params.chainId)
-      const balance = await getBalance(this.wagmiConfig, {
-        address: params.address as Hex,
-        chainId,
-        token: params.tokens?.[caipNetwork.caipNetworkId]?.address as Hex
+      const caipAddress = `${caipNetwork.caipNetworkId}:${params.address}`
+      const cachedPromise = this.balancePromises[caipAddress]
+      if (cachedPromise) {
+        return cachedPromise
+      }
+
+      const cachedBalance = StorageUtil.getNativeBalanceCacheForCaipAddress(caipAddress)
+      if (cachedBalance) {
+        return { balance: cachedBalance.balance, symbol: cachedBalance.symbol }
+      }
+
+      this.balancePromises[caipAddress] = new Promise<AdapterBlueprint.GetBalanceResult>(
+        async resolve => {
+          const chainId = Number(params.chainId)
+          const balance = await getBalance(this.wagmiConfig, {
+            address: params.address as Hex,
+            chainId,
+            token: params.tokens?.[caipNetwork.caipNetworkId]?.address as Hex
+          })
+
+          StorageUtil.updateNativeBalanceCache({
+            caipAddress,
+            balance: balance.formatted,
+            symbol: balance.symbol,
+            timestamp: Date.now()
+          })
+          resolve({ balance: balance.formatted, symbol: balance.symbol })
+        }
+      ).finally(() => {
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+        delete this.balancePromises[caipAddress]
       })
 
-      return { balance: balance.formatted, symbol: balance.symbol }
+      return this.balancePromises[caipAddress] || { balance: '', symbol: '' }
     }
 
     return { balance: '', symbol: '' }
@@ -690,6 +726,31 @@ export class WagmiAdapter extends AdapterBlueprint {
     }
 
     return provider.request({ method: 'wallet_revokePermissions', params })
+  }
+
+  public async walletGetAssets(
+    params: AdapterBlueprint.WalletGetAssetsParams
+  ): Promise<AdapterBlueprint.WalletGetAssetsResponse> {
+    if (!this.wagmiConfig) {
+      throw new Error('connectionControllerClient:walletGetAssets - wagmiConfig is undefined')
+    }
+
+    const connections = getConnections(this.wagmiConfig)
+    const connection = connections[0]
+
+    const connector = connection ? this.getWagmiConnector(connection.connector.id) : null
+
+    if (!connector) {
+      throw new Error('connectionControllerClient:walletGetAssets - connector is undefined')
+    }
+
+    const provider = (await connector.getProvider()) as UniversalProvider
+
+    if (!provider) {
+      throw new Error('connectionControllerClient:walletGetAssets - provider is undefined')
+    }
+
+    return provider.request({ method: 'wallet_getAssets', params: [params] })
   }
 
   public override setUniversalProvider(universalProvider: UniversalProvider): void {
