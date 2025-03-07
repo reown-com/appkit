@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 import { Box, Button, Heading, Select, Text } from '@chakra-ui/react'
 
 import {
