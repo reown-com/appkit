@@ -7,7 +7,19 @@ import { mainnet } from './mocks/Networks.js'
 
 // Common mock for window and document objects used across tests
 export function mockWindowAndDocument() {
-  vi.mocked(global).window = { location: { origin: '' } } as unknown as Window & typeof globalThis
+  vi.mocked(global).window = {
+    location: { origin: '' },
+    matchMedia: vi.fn().mockImplementation(query => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn()
+    }))
+  } as unknown as Window & typeof globalThis
   vi.mocked(global).document = {
     body: {
       insertAdjacentElement: vi.fn()
