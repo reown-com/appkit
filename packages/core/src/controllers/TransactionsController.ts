@@ -1,13 +1,15 @@
-import type { Transaction } from '@reown/appkit-common'
 import { proxy, subscribe as sub } from 'valtio/vanilla'
-import { OptionsController } from './OptionsController.js'
-import { EventsController } from './EventsController.js'
-import { SnackController } from './SnackController.js'
+
+import type { Transaction } from '@reown/appkit-common'
 import type { CaipNetworkId } from '@reown/appkit-common'
-import { BlockchainApiController } from './BlockchainApiController.js'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+
 import { AccountController } from './AccountController.js'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
+import { EventsController } from './EventsController.js'
+import { OptionsController } from './OptionsController.js'
+import { SnackController } from './SnackController.js'
 
 // -- Types --------------------------------------------- //
 type TransactionByMonthMap = Record<number, Transaction[]>
@@ -47,10 +49,8 @@ export const TransactionsController = {
   },
 
   async fetchTransactions(accountAddress?: string, onramp?: 'coinbase') {
-    const { projectId } = OptionsController.state
-
-    if (!projectId || !accountAddress) {
-      throw new Error("Transactions can't be fetched without a projectId and an accountAddress")
+    if (!accountAddress) {
+      throw new Error("Transactions can't be fetched without an accountAddress")
     }
 
     state.loading = true
@@ -58,7 +58,6 @@ export const TransactionsController = {
     try {
       const response = await BlockchainApiController.fetchTransactions({
         account: accountAddress,
-        projectId,
         cursor: state.next,
         onramp,
         // Coinbase transaction history state updates require the latest data
@@ -93,7 +92,7 @@ export const TransactionsController = {
         event: 'ERROR_FETCH_TRANSACTIONS',
         properties: {
           address: accountAddress,
-          projectId,
+          projectId: OptionsController.state.projectId,
           cursor: state.next,
           isSmartAccount:
             AccountController.state.preferredAccountType ===

@@ -1,7 +1,9 @@
-import { ConnectionController, CoreHelperUtil, RouterController } from '@reown/appkit-core'
-import { beforeAll, describe, expect, it, vi } from 'vitest'
-import { W3mConnectingWcMobile } from '../../src/partials/w3m-connecting-wc-mobile'
 import { fixture, html } from '@open-wc/testing'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
+
+import { ConnectionController, CoreHelperUtil, RouterController } from '@reown/appkit-core'
+
+import { W3mConnectingWcMobile } from '../../src/partials/w3m-connecting-wc-mobile'
 
 const WC_URI = 'uri'
 
@@ -29,7 +31,7 @@ describe('W3mConnectingWcMobile', () => {
     const el: W3mConnectingWcMobile = await fixture(
       html`<w3m-connecting-wc-mobile></w3m-connecting-wc-mobile>`
     )
-    el['onConnectProxy']()
+    el['onConnect']()
 
     expect(openHrefSpy).toHaveBeenCalledWith(`link://wc?uri=${WC_URI}`, '_self')
   })
@@ -44,7 +46,7 @@ describe('W3mConnectingWcMobile', () => {
       const el: W3mConnectingWcMobile = await fixture(
         html`<w3m-connecting-wc-mobile></w3m-connecting-wc-mobile>`
       )
-      el['onConnectProxy']()
+      el['onConnect']()
 
       expect(openHrefSpy).toHaveBeenCalledWith(`link://wc?uri=${WC_URI}`, '_top')
     } finally {

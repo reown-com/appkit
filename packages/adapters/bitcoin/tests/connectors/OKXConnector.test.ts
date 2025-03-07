@@ -1,9 +1,11 @@
-import { beforeEach, describe, vi, type Mock, expect, it } from 'vitest'
-import { OKXConnector } from '../../src/connectors/OKXConnector'
+import { type Mock, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import type { CaipNetwork } from '@reown/appkit-common'
-import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
-import { MethodNotSupportedError } from '../../src/errors/MethodNotSupportedError'
 import { CoreHelperUtil } from '@reown/appkit-core'
+import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
+
+import { OKXConnector } from '../../src/connectors/OKXConnector'
+import { MethodNotSupportedError } from '../../src/errors/MethodNotSupportedError'
 
 function mockOKXWallet(): { [K in keyof OKXConnector.Wallet]: Mock<OKXConnector.Wallet[K]> } {
   return {

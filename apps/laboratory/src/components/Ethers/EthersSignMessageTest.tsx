@@ -1,13 +1,16 @@
-import { Button } from '@chakra-ui/react'
 import { useState } from 'react'
-import { useAppKitAccount, useAppKitProvider, type Provider } from '@reown/appkit/react'
+
+import { Button } from '@chakra-ui/react'
 import { BrowserProvider, JsonRpcSigner } from 'ethers'
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { useChakraToast } from '../Toast'
+
+import { type Provider, useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
+
+import { useChakraToast } from '@/src/components/Toast'
+import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 export function EthersSignMessageTest() {
   const toast = useChakraToast()
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { walletProvider } = useAppKitProvider<Provider>('eip155')
   const [signature, setSignature] = useState<string | undefined>()
 

@@ -1,11 +1,13 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { SwapApiUtil } from '../../src/utils/SwapApiUtil'
-import { ChainController } from '../../src/controllers/ChainController'
-import { BlockchainApiController } from '../../src/controllers/BlockchainApiController'
-import { OptionsController } from '../../src/controllers/OptionsController'
-import { ConnectionController } from '../../src/controllers/ConnectionController'
-import { AccountController } from '../../src/controllers/AccountController'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import type { Balance } from '@reown/appkit-common'
+
+import { AccountController } from '../../src/controllers/AccountController'
+import { BlockchainApiController } from '../../src/controllers/BlockchainApiController'
+import { ChainController } from '../../src/controllers/ChainController'
+import { ConnectionController } from '../../src/controllers/ConnectionController'
+import { OptionsController } from '../../src/controllers/OptionsController'
+import { SwapApiUtil } from '../../src/utils/SwapApiUtil'
 
 // Mock the controllers
 vi.mock('../../src/controllers/ChainController')
@@ -68,8 +70,7 @@ describe('SwapApiUtil', () => {
       const result = await SwapApiUtil.getTokenList()
 
       expect(BlockchainApiController.fetchSwapTokens).toHaveBeenCalledWith({
-        chainId: 'eip155:1',
-        projectId: 'test-project-id'
+        chainId: 'eip155:1'
       })
       expect(result).toEqual([
         {
@@ -102,7 +103,6 @@ describe('SwapApiUtil', () => {
       const result = await SwapApiUtil.fetchGasPrice()
 
       expect(BlockchainApiController.fetchGasPrice).toHaveBeenCalledWith({
-        projectId: 'test-project-id',
         chainId: 'eip155:1'
       })
       expect(result).toEqual({ standard: '20', fast: '25', instant: '30' })
@@ -157,7 +157,6 @@ describe('SwapApiUtil', () => {
       })
 
       expect(BlockchainApiController.fetchSwapAllowance).toHaveBeenCalledWith({
-        projectId: 'test-project-id',
         tokenAddress: '0x123',
         userAddress: '0x456'
       })

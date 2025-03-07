@@ -1,9 +1,11 @@
 import { expect } from '@playwright/test'
 import type { Page } from '@playwright/test'
-import { ConstantsUtil } from '../../../src/utils/ConstantsUtil'
-import { getMaximumWaitConnections } from '../utils/timeouts'
-import { verifySignature } from '../../../src/utils/SignatureUtil'
+
 import type { CaipNetworkId } from '@reown/appkit'
+
+import { ConstantsUtil } from '../../../src/utils/ConstantsUtil'
+import { verifySignature } from '../../../src/utils/SignatureUtil'
+import { getMaximumWaitConnections } from '../utils/timeouts'
 
 const MAX_WAIT = getMaximumWaitConnections()
 
@@ -22,6 +24,19 @@ export class ModalValidator {
       timeout: MAX_WAIT
     })
     await this.page.waitForTimeout(500)
+  }
+
+  async expectLoading() {
+    const accountButton = this.page.locator('appkit-connect-button')
+    await expect(accountButton, 'Account button should be present').toBeAttached({
+      timeout: MAX_WAIT
+    })
+    await expect(
+      this.page.getByTestId('connect-button'),
+      'Connect button should show connecting state'
+    ).toHaveText('Connecting...', {
+      timeout: MAX_WAIT
+    })
   }
 
   async expectBalanceFetched(currency: 'SOL' | 'ETH') {
@@ -138,6 +153,15 @@ export class ModalValidator {
     await closeButton.click()
   }
 
+  async expectAcceptedSignTypedData() {
+    await expect(this.page.getByText('Success')).toBeVisible({
+      timeout: MAX_WAIT
+    })
+    const closeButton = this.page.locator('#toast-close-button')
+    await expect(closeButton).toBeVisible({ timeout: MAX_WAIT })
+    await closeButton.click()
+  }
+
   async expectRejectedSign() {
     // We use Chakra Toast and it's not quite straightforward to set the `data-testid` attribute on the toast element.
     await expect(this.page.getByText(ConstantsUtil.SigningFailedToastTitle)).toBeVisible()
@@ -152,9 +176,19 @@ export class ModalValidator {
     await expect(switchNetworkButton).toBeVisible()
   }
 
+  async expectNetworkButton(network: string) {
+    const alertBarText = this.page.getByTestId('w3m-network-button')
+    await expect(alertBarText).toHaveText(network)
+  }
+
   async expectSwitchChainView(chainName: string) {
     const title = this.page.getByTestId(`w3m-switch-active-chain-to-${chainName}`)
     await expect(title).toBeVisible()
+  }
+
+  async expectSwitchChainWithNetworkButton(chainName: string) {
+    const switchNetworkViewLocator = this.page.locator('wui-network-button')
+    await expect(switchNetworkViewLocator).toHaveText(chainName)
   }
 
   async expectSwitchedNetworkWithNetworkView() {
@@ -248,7 +282,7 @@ export class ModalValidator {
     const coinbaseConnector = this.page.getByTestId(
       /^wallet-selector-featured-fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa/u
     )
-    await expect(coinbaseConnector).toBeVisible()
+    await expect(coinbaseConnector).toBeVisible({ timeout: 10_000 })
   }
 
   async expectMultipleAccounts() {
@@ -399,5 +433,19 @@ export class ModalValidator {
   async expectSmartAccountStatus() {
     const smartAccountStatus = this.page.getByTestId('w3m-sa-account-status')
     await expect(smartAccountStatus).toBeVisible({ timeout: MAX_WAIT })
+  }
+
+  async checkConnectionStatus(status: 'connected' | 'disconnected' | 'loading', network?: string) {
+    if (status === 'connected') {
+      await this.expectConnected()
+    } else if (status === 'disconnected') {
+      await this.expectDisconnected()
+    } else if (status === 'loading') {
+      await this.expectLoading()
+    }
+
+    if (network) {
+      await this.expectNetworkButton(network)
+    }
   }
 }

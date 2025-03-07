@@ -1,20 +1,25 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
-import '../../components/wui-text/index.js'
-import '../../components/wui-image/index.js'
-import '../../layout/wui-flex/index.js'
-import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
-import { customElement } from '../../utils/WebComponentsUtil.js'
-import styles from './styles.js'
-import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+
+import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   BlockchainApiController,
   ChainController,
   StorageUtil
 } from '@reown/appkit-core'
-import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+
+import '../../components/wui-image/index.js'
+import '../../components/wui-loading-spinner/index.js'
+import '../../components/wui-text/index.js'
+import '../../composites/wui-icon-box/index.js'
+import '../../layout/wui-flex/index.js'
+import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
+import { UiHelperUtil } from '../../utils/UiHelperUtil.js'
+import { customElement } from '../../utils/WebComponentsUtil.js'
+import '../wui-avatar/index.js'
+import styles from './styles.js'
 
 @customElement('wui-list-account')
 export class WuiListAccount extends LitElement {
@@ -85,7 +90,7 @@ export class WuiListAccount extends LitElement {
                 iconcolor="fg-200"
                 backgroundcolor="fg-300"
                 icon=${this.accountType === W3mFrameRpcConstants.ACCOUNT_TYPES.EOA
-                  ? this.socialProvider ?? 'mail'
+                  ? (this.socialProvider ?? 'mail')
                   : 'lightbulb'}
                 background="fg-300"
               ></wui-icon-box>`
@@ -120,7 +125,7 @@ export class WuiListAccount extends LitElement {
     const connectorId = StorageUtil.getConnectedConnectorId(namespace)
 
     if (!label && connectorId === ConstantsUtil.CONNECTOR_ID.AUTH) {
-      label = `${this.accountType === 'eoa' ? this.socialProvider ?? 'Email' : 'Smart'} Account`
+      label = `${this.accountType === 'eoa' ? (this.socialProvider ?? 'Email') : 'Smart'} Account`
     } else if (!label) {
       label = 'EOA'
     }

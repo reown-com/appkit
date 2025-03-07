@@ -1,3 +1,6 @@
+import { useEffect } from 'react'
+import { BsFillMoonFill, BsFillSunFill } from 'react-icons/bs'
+
 import {
   Drawer,
   DrawerBody,
@@ -10,13 +13,12 @@ import {
   useColorMode,
   useDisclosure
 } from '@chakra-ui/react'
-import { BsFillMoonFill, BsFillSunFill } from 'react-icons/bs'
-import AccentColorInput from '../components/Theming/AccentColorInput'
-import BorderRadiusInput from '../components/Theming/BorderRadiusInput'
-import MixColorInput from '../components/Theming/MixColorInput'
-import { useEffect } from 'react'
-import { ThemeStore } from '../utils/StoreUtil'
-import QrColorInput from '../components/Theming/QrColorInput'
+
+import AccentColorInput from '@/src/components/Theming/AccentColorInput'
+import BorderRadiusInput from '@/src/components/Theming/BorderRadiusInput'
+import MixColorInput from '@/src/components/Theming/MixColorInput'
+import QrColorInput from '@/src/components/Theming/QrColorInput'
+import { ThemeStore } from '@/src/utils/StoreUtil'
 
 interface Props {
   controls: ReturnType<typeof useDisclosure>

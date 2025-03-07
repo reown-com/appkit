@@ -1,11 +1,13 @@
-import { CoreHelperUtil } from '@reown/appkit-core'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
-import styles from './styles.js'
-import { SmartSessionsController } from '../../../controllers/SmartSessionsController.js'
+
 import { DateUtil } from '@reown/appkit-common'
+import { CoreHelperUtil } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
+
+import { SmartSessionsController } from '../../../controllers/SmartSessionsController.js'
 import type { SmartSession } from '../../../utils/TypeUtils.js'
+import styles from './styles.js'
 
 const TABS = 3
 const TABS_PADDING = 48
@@ -78,17 +80,9 @@ export class W3mSmartSessionListView extends LitElement {
   }
 
   private groupedSessionsTemplate(sessions: SmartSession[]) {
-    function getMonthName(monthNumber: number) {
-      const date = new Date()
-      date.setMonth(monthNumber)
-
-      return date.toLocaleString('en-US', {
-        month: 'long'
-      })
-    }
     function getTitle(year: number, month: number) {
       const currentYear = DateUtil.getYear()
-      const monthName = getMonthName(month)
+      const monthName = DateUtil.getMonthNameByIndex(month)
       const isCurrentYear = year === currentYear
       const groupTitle = isCurrentYear ? monthName : `${monthName} ${year}`
 

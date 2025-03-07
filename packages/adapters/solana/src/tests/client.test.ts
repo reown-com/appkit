@@ -1,18 +1,20 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { ConstantsUtil } from '@reown/appkit-common'
+import type { Provider as CoreProvider } from '@reown/appkit-core'
 import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
 import { solana } from '@reown/appkit/networks'
-import type { ConnectorType, Provider as CoreProvider } from '@reown/appkit-core'
-import UniversalProvider from '@walletconnect/universal-provider'
-import { ConstantsUtil, type ChainNamespace } from '@reown/appkit-common'
+
 import { SolanaAdapter } from '../client'
-import { SolStoreUtil } from '../utils/SolanaStoreUtil'
+import { AuthProvider } from '../providers/AuthProvider'
+import { SolanaWalletConnectProvider } from '../providers/SolanaWalletConnectProvider'
 import type { WalletStandardProvider } from '../providers/WalletStandardProvider'
+import { SolStoreUtil } from '../utils/SolanaStoreUtil'
 import { watchStandard } from '../utils/watchStandard'
 import mockAppKit from './mocks/AppKit'
-import { mockCoinbaseWallet } from './mocks/CoinbaseWallet'
-import { type Provider } from '@reown/appkit-utils/solana'
-import { AuthProvider } from '../providers/AuthProvider'
 import { mockAuthConnector } from './mocks/AuthConnector'
+import { mockCoinbaseWallet } from './mocks/CoinbaseWallet'
+import { mockUniversalProvider } from './mocks/UniversalProvider'
 
 // Mock external dependencies
 vi.mock('@solana/web3.js', () => ({
@@ -46,45 +48,19 @@ const mockProvider = {
   sendTransaction: vi.fn().mockResolvedValue('mock-signature')
 } as unknown as WalletStandardProvider
 
-const mockWalletConnectProvider = {
-  id: 'walletconnect',
-  name: 'WalletConnect',
-  connect: vi.fn(),
-  disconnect: vi.fn(),
-  on: vi.fn(),
-  removeListener: vi.fn(),
-  session: true,
-  setDefaultChain: vi.fn()
-} as unknown as UniversalProvider
-
 const mockNetworks = [solana]
 const mockCaipNetworks = CaipNetworksUtil.extendCaipNetworks(mockNetworks, {
   projectId: 'test-project-id',
   customNetworkImageUrls: {}
 })
 
-const mockWalletConnectConnector = {
-  id: 'walletconnect',
-  name: 'WalletConnect',
-  provider: mockWalletConnectProvider,
-  type: 'WALLET_CONNECT' as ConnectorType,
-  chains: mockNetworks,
-  chain: 'solana' as ChainNamespace,
-  signMessage: vi.fn(),
-  signAllTransactions: vi.fn(),
-  signTransaction: vi.fn(),
-  sendTransaction: vi.fn(),
-  signAndSendTransaction: vi.fn(),
-  getAccounts: vi.fn(),
-  connect: vi.fn(),
-  disconnect: vi.fn(),
-  on: vi.fn(),
-  removeListener: vi.fn(),
-  session: true,
-  setDefaultChain: vi.fn(),
-  request: vi.fn(),
-  emit: vi.fn()
-} as Provider
+const mockWalletConnectConnector = vi.mocked(
+  new SolanaWalletConnectProvider({
+    provider: mockUniversalProvider(),
+    chains: mockCaipNetworks,
+    getActiveChain: () => mockCaipNetworks[0]
+  })
+)
 
 describe('SolanaAdapter', () => {
   let adapter: SolanaAdapter
@@ -217,6 +193,43 @@ describe('SolanaAdapter', () => {
         symbol: 'SOL'
       })
     })
+    it('should get balance successfully mult', async () => {
+      const numSimultaneousRequests = 10
+      const expectedSentRequests = 1
+      vi.mock('@solana/web3.js', () => ({
+        Connection: vi.fn(endpoint => ({
+          getBalance: vi.fn().mockResolvedValue(
+            new Promise(resolve => {
+              setTimeout(() => resolve(1500000000), 1000)
+            })
+          ),
+          getSignatureStatus: vi.fn().mockResolvedValue({ value: true }),
+          rpcEndpoint: endpoint
+        })),
+        PublicKey: vi.fn(key => ({ toBase58: () => key }))
+      }))
+
+      const result = await Promise.all([
+        ...Array.from({ length: numSimultaneousRequests }).map(() =>
+          adapter.getBalance({
+            address: 'mock-address',
+            chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+            caipNetwork: mockCaipNetworks[0]
+          })
+        )
+      ])
+
+      expect(result.length).toBe(numSimultaneousRequests)
+      expect(expectedSentRequests).to.be.lt(numSimultaneousRequests)
+
+      // verify all calls got the same balance
+      for (const balance of result) {
+        expect(balance).toEqual({
+          balance: '1.5',
+          symbol: 'SOL'
+        })
+      }
+    })
   })
 
   describe('SolanaAdapter - signMessage', () => {
@@ -254,12 +267,10 @@ describe('SolanaAdapter', () => {
 
   describe('SolanaAdapter - connectWalletConnect', () => {
     it('should connect WalletConnect provider', async () => {
-      const onUri = vi.fn()
       vi.mocked(adapter['connectors']).push(mockWalletConnectConnector)
-      await adapter.connectWalletConnect(onUri)
+      await adapter.connectWalletConnect()
 
-      expect(mockWalletConnectProvider.connect).toHaveBeenCalled()
-      expect(mockWalletConnectProvider.on).toHaveBeenCalledWith('display_uri', onUri)
+      expect(mockWalletConnectConnector.provider.connect).toHaveBeenCalled()
       expect(SolStoreUtil.setConnection).toHaveBeenCalled()
     })
   })
@@ -267,7 +278,7 @@ describe('SolanaAdapter', () => {
   describe('SolanaAdapter - getWalletConnectProvider', () => {
     it('should return WalletConnect provider', () => {
       const result = adapter.getWalletConnectProvider({
-        provider: mockWalletConnectProvider,
+        provider: mockUniversalProvider(),
         caipNetworks: mockCaipNetworks,
         activeCaipNetwork: mockCaipNetworks[0]
       })

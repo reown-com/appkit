@@ -1,13 +1,15 @@
 import { Button } from '@chakra-ui/react'
-import {
-  useAppKitAccount,
-  useAppKitNetwork,
-  useAppKitProvider,
-  type Provider
-} from '@reown/appkit/react'
 import { ethers } from 'ethers5'
 import type { TypedDataField } from 'ethers5'
-import { useChakraToast } from '../Toast'
+
+import {
+  type Provider,
+  useAppKitAccount,
+  useAppKitNetwork,
+  useAppKitProvider
+} from '@reown/appkit/react'
+
+import { useChakraToast } from '@/src/components/Toast'
 
 const types: Record<string, TypedDataField[]> = {
   Person: [
@@ -36,7 +38,7 @@ const message = {
 export function Ethers5SignTypedDataTest() {
   const toast = useChakraToast()
 
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { chainId } = useAppKitNetwork()
   const { walletProvider } = useAppKitProvider<Provider>('eip155')
 

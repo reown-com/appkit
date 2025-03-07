@@ -1,11 +1,16 @@
-import type { WcWallet } from '@reown/appkit-core'
-import { ApiController, ConnectorController, RouterController } from '@reown/appkit-core'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import styles from './styles.js'
+
+import type { WcWallet } from '@reown/appkit-core'
+import { ApiController, ConnectorController, CoreHelperUtil } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-card-select-loader'
+import '@reown/appkit-ui/wui-grid'
+
 import { WalletUtil } from '../../utils/WalletUtil.js'
+import '../w3m-all-wallets-list-item/index.js'
+import styles from './styles.js'
 
 // -- Helpers --------------------------------------------- //
 const PAGINATOR_ID = 'local-paginator'
@@ -94,7 +99,10 @@ export class W3mAllWalletsList extends LitElement {
   }
 
   private walletsTemplate() {
-    const wallets = [...this.featured, ...this.recommended, ...this.wallets]
+    const wallets = CoreHelperUtil.uniqueBy(
+      [...this.featured, ...this.recommended, ...this.wallets],
+      'id'
+    )
     const walletsWithInstalled = WalletUtil.markWalletsAsInstalled(wallets)
 
     return walletsWithInstalled.map(
@@ -142,12 +150,7 @@ export class W3mAllWalletsList extends LitElement {
   }
 
   private onConnectWallet(wallet: WcWallet) {
-    const connector = ConnectorController.getConnector(wallet.id, wallet.rdns)
-    if (connector) {
-      RouterController.push('ConnectingExternal', { connector })
-    } else {
-      RouterController.push('ConnectingWalletConnect', { wallet })
-    }
+    ConnectorController.selectWalletConnector(wallet)
   }
 }
 

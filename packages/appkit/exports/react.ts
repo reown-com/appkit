@@ -1,13 +1,11 @@
-import { AppKit } from '../src/client.js'
-import type { AppKitOptions } from '../src/utils/TypesUtil.js'
-import { getAppKit } from '../src/library/react/index.js'
 import { CoreHelperUtil, type UseAppKitNetworkReturn } from '@reown/appkit-core'
-import { PACKAGE_VERSION } from './constants.js'
 import { useAppKitNetworkCore } from '@reown/appkit-core/react'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 
-// -- Views ------------------------------------------------------------
-export * from '@reown/appkit-scaffold-ui'
+import { AppKit } from '../src/client/appkit.js'
+import { getAppKit } from '../src/library/react/index.js'
+import type { AppKitOptions } from '../src/utils/TypesUtil.js'
+import { PACKAGE_VERSION } from './constants.js'
 
 // -- Hooks ------------------------------------------------------------
 export * from '../src/library/react/index.js'
@@ -20,7 +18,7 @@ export { CoreHelperUtil, AccountController } from '@reown/appkit-core'
 
 export let modal: AppKit | undefined = undefined
 
-export type CreateAppKit = Omit<AppKitOptions, 'sdkType' | 'sdkVersion'>
+export type CreateAppKit = Omit<AppKitOptions, 'sdkType' | 'sdkVersion' | 'basic'>
 
 export function createAppKit(options: CreateAppKit) {
   if (!modal) {

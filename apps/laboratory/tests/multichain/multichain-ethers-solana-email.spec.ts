@@ -1,8 +1,9 @@
-import { test, type BrowserContext } from '@playwright/test'
+import { type BrowserContext, test } from '@playwright/test'
+
 import { DEFAULT_CHAIN_NAME } from '../shared/constants'
 import { ModalWalletPage } from '../shared/pages/ModalWalletPage'
-import { ModalWalletValidator } from '../shared/validators/ModalWalletValidator'
 import { Email } from '../shared/utils/email'
+import { ModalWalletValidator } from '../shared/validators/ModalWalletValidator'
 
 /* eslint-disable init-declarations */
 let page: ModalWalletPage
@@ -53,7 +54,7 @@ test('it should switch networks (including different namespaces) and sign', asyn
     await page.closeModal()
 
     // -- Sign ------------------------------------------------------------------
-    await page.sign()
+    await page.sign(chainName === 'Polygon' ? 'eip155' : 'solana')
     // For Solana, the chain name on the wallet page is Solana Mainnet
     const chainNameOnWalletPage = chainName === 'Solana' ? 'Solana Mainnet' : chainName
     await validator.expectReceivedSign({ chainName: chainNameOnWalletPage })

@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { SwapCalculationUtil } from '../../src/utils/SwapCalculationUtil.js'
-import { INITIAL_GAS_LIMIT } from '../../src/controllers/SwapController.js'
-import { balanceResponse, networkTokenPriceResponse } from '../mocks/SwapController.js'
-import type { SwapTokenWithBalance } from '../../src/utils/TypeUtil.js'
+
 import { NumberUtil } from '@reown/appkit-common'
+
+import { INITIAL_GAS_LIMIT } from '../../src/controllers/SwapController.js'
 import { SwapApiUtil } from '../../src/utils/SwapApiUtil.js'
+import { SwapCalculationUtil } from '../../src/utils/SwapCalculationUtil.js'
+import type { SwapTokenWithBalance } from '../../src/utils/TypeUtil.js'
+import { balanceResponse, networkTokenPriceResponse } from '../mocks/SwapController.js'
 
 // - Mocks ---------------------------------------------------------------------
 const gasLimit = BigInt(INITIAL_GAS_LIMIT)

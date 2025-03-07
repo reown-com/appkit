@@ -1,11 +1,14 @@
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
-import styles from './styles.js'
+
 import { AlertController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-alertbar'
+
+import styles from './styles.js'
 
 // -- Helpers ------------------------------------------- //
-const presets = {
+export const presets = {
   info: {
     backgroundColor: 'fg-350',
     iconColor: 'fg-325',

@@ -6,9 +6,9 @@ import {
   SliderThumb,
   SliderTrack
 } from '@chakra-ui/react'
-
-import { ThemeStore } from '../../utils/StoreUtil'
 import { useProxy } from 'valtio/utils'
+
+import { ThemeStore } from '@/src/utils/StoreUtil'
 
 export default function BorderRadiusInput() {
   const state = useProxy(ThemeStore.state)

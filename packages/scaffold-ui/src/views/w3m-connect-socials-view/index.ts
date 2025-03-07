@@ -1,10 +1,15 @@
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
-
-import styles from './styles.js'
-import { OptionsController } from '@reown/appkit-core'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+
+import { OptionsController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+
+import '../../partials/w3m-legal-checkbox/index.js'
+import '../../partials/w3m-legal-footer/index.js'
+import '../../partials/w3m-social-login-list/index.js'
+import styles from './styles.js'
 
 @customElement('w3m-connect-socials-view')
 export class W3mConnectSocialsView extends LitElement {

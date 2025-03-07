@@ -1,4 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
+
+import type { Transaction } from '@reown/appkit-common'
+
 import {
   BlockchainApiController,
   ChainController,
@@ -9,7 +12,6 @@ import {
   ONRAMP_TRANSACTIONS_RESPONSES_FEB,
   ONRAMP_TRANSACTIONS_RESPONSES_JAN
 } from '../constants/OnrampTransactions.js'
-import type { Transaction } from '@reown/appkit-common'
 
 // -- Constants ----------------------------------------------------------------
 const projectId = '123'
@@ -48,7 +50,6 @@ describe('TransactionsController', () => {
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      projectId,
       onramp: 'coinbase',
       cursor: undefined,
       cache: 'no-cache'
@@ -84,7 +85,6 @@ describe('TransactionsController', () => {
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      projectId,
       onramp: 'coinbase',
       cursor: undefined,
       cache: 'no-cache'
@@ -110,7 +110,6 @@ describe('TransactionsController', () => {
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      projectId,
       onramp: 'coinbase',
       cursor: undefined,
       cache: 'no-cache'
@@ -146,7 +145,6 @@ describe('TransactionsController', () => {
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      projectId,
       onramp: 'coinbase',
       cursor: undefined,
       cache: 'no-cache'
@@ -172,7 +170,6 @@ describe('TransactionsController', () => {
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      projectId,
       onramp: 'coinbase',
       cursor: undefined,
       cache: 'no-cache'
@@ -208,7 +205,6 @@ describe('TransactionsController', () => {
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      projectId,
       onramp: 'coinbase',
       cursor: undefined,
       cache: 'no-cache'
@@ -234,7 +230,6 @@ describe('TransactionsController', () => {
 
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: accountAddress,
-      projectId,
       onramp: 'coinbase',
       cursor: undefined,
       cache: 'no-cache'
@@ -271,7 +266,6 @@ describe('TransactionsController', () => {
     await TransactionsController.fetchTransactions('0x123')
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: '0x123',
-      projectId,
       cursor: undefined,
       onramp: undefined,
       cache: undefined
@@ -297,7 +291,6 @@ describe('TransactionsController', () => {
     await TransactionsController.fetchTransactions('0x123', 'coinbase')
     expect(fetchTransactions).toHaveBeenCalledWith({
       account: '0x123',
-      projectId,
       cursor: 'cursor',
       onramp: 'coinbase',
       cache: 'no-cache',

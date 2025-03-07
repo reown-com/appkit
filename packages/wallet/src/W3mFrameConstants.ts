@@ -1,9 +1,20 @@
+/* eslint-disable @typescript-eslint/prefer-optional-chain */
+const DEFAULT_SDK_URL = 'https://secure.walletconnect.org/sdk'
+
 export const SECURE_SITE_SDK =
-  process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL'] || 'https://secure.walletconnect.org/sdk'
+  (typeof process !== 'undefined' && typeof process.env !== 'undefined'
+    ? process.env['NEXT_PUBLIC_SECURE_SITE_SDK_URL']
+    : undefined) || DEFAULT_SDK_URL
 
-export const DEFAULT_LOG_LEVEL = process.env['NEXT_PUBLIC_DEFAULT_LOG_LEVEL'] || 'error'
+export const DEFAULT_LOG_LEVEL =
+  (typeof process !== 'undefined' && typeof process.env !== 'undefined'
+    ? process.env['NEXT_PUBLIC_DEFAULT_LOG_LEVEL']
+    : undefined) || 'error'
 
-export const SECURE_SITE_SDK_VERSION = process.env['NEXT_PUBLIC_SECURE_SITE_SDK_VERSION'] || 3
+export const SECURE_SITE_SDK_VERSION =
+  (typeof process !== 'undefined' && typeof process.env !== 'undefined'
+    ? process.env['NEXT_PUBLIC_SECURE_SITE_SDK_VERSION']
+    : undefined) || '3'
 
 export const W3mFrameConstants = {
   APP_EVENT_KEY: '@w3m-app/',
@@ -143,7 +154,9 @@ export const W3mFrameRpcConstants = {
     'eth_getUserOperationReceipt',
     'eth_estimateUserOperationGas',
     'eth_getUserOperationByHash',
-    'eth_supportedEntryPoints'
+    'eth_supportedEntryPoints',
+    //EIP-7811
+    'wallet_getAssets'
   ],
   NOT_SAFE_RPC_METHODS: [
     'personal_sign',

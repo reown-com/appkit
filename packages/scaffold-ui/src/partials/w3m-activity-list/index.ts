@@ -1,3 +1,6 @@
+import { LitElement, html } from 'lit'
+import { property, state } from 'lit/decorators.js'
+
 import { DateUtil } from '@reown/appkit-common'
 import type { Transaction, TransactionImage } from '@reown/appkit-common'
 import {
@@ -10,10 +13,14 @@ import {
   TransactionsController
 } from '@reown/appkit-core'
 import { TransactionUtil, customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
 import type { TransactionType } from '@reown/appkit-ui'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon-box'
+import '@reown/appkit-ui/wui-link'
+import '@reown/appkit-ui/wui-text'
+import '@reown/appkit-ui/wui-transaction-list-item'
+import '@reown/appkit-ui/wui-transaction-list-item-loader'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import styles from './styles.js'
 
@@ -137,13 +144,16 @@ export class W3mActivityList extends LitElement {
             flexDirection="column"
             class="group-container"
             last-group="${isLastGroup ? 'true' : 'false'}"
+            data-testid="month-indexes"
           >
             <wui-flex
               alignItems="center"
               flexDirection="row"
               .padding=${['xs', 's', 's', 's'] as const}
             >
-              <wui-text variant="paragraph-500" color="fg-200">${groupTitle}</wui-text>
+              <wui-text variant="paragraph-500" color="fg-200" data-testid="group-title"
+                >${groupTitle}</wui-text
+              >
             </wui-flex>
             <wui-flex flexDirection="column" gap="xs">
               ${this.templateTransactions(transactions, isLastGroup)}
@@ -222,6 +232,7 @@ export class W3mActivityList extends LitElement {
       alignItems="center"
       .padding=${['3xl', 'xl', '3xl', 'xl'] as const}
       gap="xl"
+      data-testid="empty-activity-state"
     >
       <wui-icon-box
         backgroundColor="gray-glass-005"
@@ -251,6 +262,7 @@ export class W3mActivityList extends LitElement {
       justifyContent="center"
       flexDirection="column"
       gap="l"
+      data-testid="empty-account-state"
     >
       <wui-icon-box
         icon="swapHorizontal"

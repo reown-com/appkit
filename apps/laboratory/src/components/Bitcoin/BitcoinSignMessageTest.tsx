@@ -1,11 +1,13 @@
+import { useState } from 'react'
+
 import { Box, Button, Input, InputGroup, InputLeftAddon, useToast } from '@chakra-ui/react'
+
 import type { BitcoinConnector } from '@reown/appkit-adapter-bitcoin'
 import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
-import { useState } from 'react'
 
 export function BitcoinSignMessageTest() {
   const { walletProvider } = useAppKitProvider<BitcoinConnector>('bip122')
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'bip122' })
 
   const toast = useToast()
   const [loading, setLoading] = useState(false)

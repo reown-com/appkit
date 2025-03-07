@@ -1,9 +1,12 @@
-import type { Connector } from '@reown/appkit-core'
-import { AssetUtil, ConnectorController, RouterController } from '@reown/appkit-core'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
+
+import type { Connector } from '@reown/appkit-core'
+import { AssetUtil, ConnectorController, RouterController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-list-wallet'
 
 @customElement('w3m-connect-multi-chain-widget')
 export class W3mConnectMultiChainWidget extends LitElement {

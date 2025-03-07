@@ -1,8 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mockW3mFrameProvider } from './mocks/W3mFrameProvider'
+
+import { ConstantsUtil } from '@reown/appkit-common'
+
 import { AuthProvider } from '../providers/AuthProvider'
-import { TestConstants } from './util/TestConstants'
 import { mockLegacyTransaction, mockVersionedTransaction } from './mocks/Transaction'
+import { mockW3mFrameProvider } from './mocks/W3mFrameProvider'
+import { TestConstants } from './util/TestConstants'
 
 describe('AuthProvider specific tests', () => {
   let provider = mockW3mFrameProvider()
@@ -21,6 +24,18 @@ describe('AuthProvider specific tests', () => {
       getActiveChain,
       chains: TestConstants.chains
     })
+  })
+
+  it('should have correct metadata', () => {
+    expect(authProvider).toEqual(
+      expect.objectContaining({
+        id: ConstantsUtil.CONNECTOR_ID.AUTH,
+        name: ConstantsUtil.CONNECTOR_NAMES.AUTH,
+        type: 'AUTH',
+        chain: ConstantsUtil.CHAIN.SOLANA,
+        provider
+      })
+    )
   })
 
   it('should call connect', async () => {

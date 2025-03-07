@@ -1,15 +1,22 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
-  OnRampController,
-  ModalController,
   AssetController,
+  ModalController,
+  OnRampController,
   OptionsController
 } from '@reown/appkit-core'
 import type { PaymentCurrency } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-list-item'
+import '@reown/appkit-ui/wui-text'
+
+import '../../partials/w3m-legal-checkbox/index.js'
+import '../../partials/w3m-legal-footer/index.js'
 import styles from './styles.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-onramp-fiat-select-view')
 export class W3mOnrampFiatSelectView extends LitElement {

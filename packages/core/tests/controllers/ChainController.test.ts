@@ -1,19 +1,21 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 import {
-  ConstantsUtil,
-  SafeLocalStorageKeys,
   type CaipNetwork,
   type CaipNetworkId,
-  type ChainNamespace
+  type ChainNamespace,
+  ConstantsUtil,
+  SafeLocalStorageKeys
 } from '@reown/appkit-common'
+import { SafeLocalStorage } from '@reown/appkit-common'
+
+import type { NetworkControllerClient } from '../../exports/index.js'
 import { ChainController } from '../../src/controllers/ChainController.js'
 import { type ConnectionControllerClient } from '../../src/controllers/ConnectionController.js'
-import type { NetworkControllerClient } from '../../exports/index.js'
-import { RouterController } from '../../src/controllers/RouterController.js'
-import { SafeLocalStorage } from '@reown/appkit-common'
-import { StorageUtil } from '../../src/utils/StorageUtil.js'
 import { ConnectionController } from '../../src/controllers/ConnectionController.js'
 import { EventsController } from '../../src/controllers/EventsController.js'
+import { RouterController } from '../../src/controllers/RouterController.js'
+import { StorageUtil } from '../../src/utils/StorageUtil.js'
 
 // -- Setup --------------------------------------------------------------------
 const chainNamespace = 'eip155' as ChainNamespace
@@ -107,7 +109,8 @@ const connectionControllerClient: ConnectionControllerClient = {
   getEnsAvatar: async (value: string) => Promise.resolve(value),
   getCapabilities: async () => Promise.resolve(''),
   grantPermissions: async () => Promise.resolve(''),
-  revokePermissions: async () => Promise.resolve('0x')
+  revokePermissions: async () => Promise.resolve('0x'),
+  walletGetAssets: async () => Promise.resolve({})
 }
 
 const networkControllerClient: NetworkControllerClient = {
@@ -285,6 +288,7 @@ describe('ChainController', () => {
     expect(ChainController.getAccountProp('preferredAccountType', chainNamespace)).toEqual(
       undefined
     )
+    expect(ChainController.getAccountProp('status', chainNamespace)).toEqual('disconnected')
     expect(ChainController.getAccountProp('socialProvider', chainNamespace)).toEqual(undefined)
     expect(ChainController.getAccountProp('socialWindow', chainNamespace)).toEqual(undefined)
   })

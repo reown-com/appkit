@@ -1,15 +1,23 @@
-import { customElement } from '@reown/appkit-ui'
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+
+import { NavigationUtil } from '@reown/appkit-common'
 import {
   AccountController,
   CoreHelperUtil,
   EventsController,
   RouterController
 } from '@reown/appkit-core'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-icon-box'
+import '@reown/appkit-ui/wui-link'
+import '@reown/appkit-ui/wui-text'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+
 import styles from './styles.js'
-import { NavigationUtil } from '@reown/appkit-common'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
 
 @customElement('w3m-choose-account-name-view')
 export class W3mChooseAccountNameView extends LitElement {

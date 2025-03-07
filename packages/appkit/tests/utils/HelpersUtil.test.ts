@@ -1,7 +1,9 @@
-import { describe, test, expect } from 'vitest'
-import { WcHelpersUtil } from '../../src/utils/HelpersUtil'
-import { ConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
 import type { SessionTypes } from '@walletconnect/types'
+import { describe, expect, test } from 'vitest'
+
+import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+
+import { WcHelpersUtil } from '../../src/utils/HelpersUtil'
 
 const mockEthereumNetwork = {
   id: 1,
@@ -88,21 +90,33 @@ describe('WcHelpersUtil', () => {
     test('returns correct methods for eip155', () => {
       const methods = WcHelpersUtil.getMethodsByChainNamespace('eip155')
       expect(methods).toEqual([
-        'personal_sign',
+        'eth_accounts',
+        'eth_requestAccounts',
+        'eth_sendRawTransaction',
         'eth_sign',
         'eth_signTransaction',
         'eth_signTypedData',
         'eth_signTypedData_v3',
         'eth_signTypedData_v4',
-        'eth_sendRawTransaction',
         'eth_sendTransaction',
-        'wallet_getCapabilities',
-        'wallet_sendCalls',
-        'wallet_showCallsStatus',
+        'personal_sign',
+        'wallet_switchEthereumChain',
+        'wallet_addEthereumChain',
+        'wallet_getPermissions',
+        'wallet_requestPermissions',
+        'wallet_registerOnboarding',
+        'wallet_watchAsset',
+        'wallet_scanQRCode',
+        // EIP-5792
         'wallet_getCallsStatus',
+        'wallet_showCallsStatus',
+        'wallet_sendCalls',
+        'wallet_getCapabilities',
+        // EIP-7715
         'wallet_grantPermissions',
         'wallet_revokePermissions',
-        'wallet_switchEthereumChain'
+        //EIP-7811
+        'wallet_getAssets'
       ])
     })
 

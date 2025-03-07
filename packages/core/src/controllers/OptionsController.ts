@@ -1,8 +1,13 @@
-import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { proxy, snapshot } from 'valtio/vanilla'
+import { subscribeKey as subKey } from 'valtio/vanilla/utils'
+
+import { ConstantsUtil } from '../utils/ConstantsUtil.js'
+import { OptionsUtil } from '../utils/OptionsUtil.js'
+import type { SIWXConfig } from '../utils/SIWXUtil.js'
 import type {
   ConnectMethod,
   CustomWallet,
+  DefaultAccountTypes,
   Features,
   Metadata,
   ProjectId,
@@ -11,8 +16,6 @@ import type {
   Tokens,
   WalletFeature
 } from '../utils/TypeUtil.js'
-import { ConstantsUtil } from '../utils/ConstantsUtil.js'
-import type { SIWXConfig } from '../utils/SIWXUtil.js'
 
 // -- Types --------------------------------------------- //
 export interface OptionsControllerStatePublic {
@@ -140,6 +143,17 @@ export interface OptionsControllerStatePublic {
    * @default false
    */
   allowUnsupportedChain?: boolean
+  /**
+   * Default account types for each namespace.
+   * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa' }"
+   */
+  defaultAccountTypes: DefaultAccountTypes
+  /**
+   * Allows users to indicate if they want to handle the WC connection themselves.
+   * @default false
+   * @see https://docs.reown.com/appkit/react/core/options#manualwccontrol
+   */
+  manualWCControl?: boolean
 }
 
 export interface OptionsControllerStateInternal {
@@ -148,7 +162,6 @@ export interface OptionsControllerStateInternal {
   isSiweEnabled?: boolean
   isUniversalProvider?: boolean
   hasMultipleAddresses?: boolean
-  useInjectedUniversalProvider?: boolean
 }
 
 type StateKey = keyof OptionsControllerStatePublic | keyof OptionsControllerStateInternal
@@ -159,7 +172,8 @@ const state = proxy<OptionsControllerState & OptionsControllerStateInternal>({
   features: ConstantsUtil.DEFAULT_FEATURES,
   projectId: '',
   sdkType: 'appkit',
-  sdkVersion: 'html-wagmi-undefined'
+  sdkVersion: 'html-wagmi-undefined',
+  defaultAccountTypes: ConstantsUtil.DEFAULT_ACCOUNT_TYPES
 })
 
 // -- Controller ---------------------------------------- //
@@ -181,12 +195,14 @@ export const OptionsController = {
 
     if (!state.features) {
       state.features = ConstantsUtil.DEFAULT_FEATURES
-
-      return
     }
 
     const newFeatures = { ...state.features, ...features }
     state.features = newFeatures
+
+    if (state.features.socials) {
+      state.features.socials = OptionsUtil.filterSocialsByPlatform(state.features.socials)
+    }
   },
 
   setProjectId(projectId: OptionsControllerState['projectId']) {
@@ -313,10 +329,19 @@ export const OptionsController = {
     state.allowUnsupportedChain = allowUnsupportedChain
   },
 
-  setUsingInjectedUniversalProvider(
-    useInjectedUniversalProvider: OptionsControllerState['useInjectedUniversalProvider']
+  setManualWCControl(manualWCControl: OptionsControllerState['manualWCControl']) {
+    state.manualWCControl = manualWCControl
+  },
+
+  setDefaultAccountTypes(
+    defaultAccountType: Partial<OptionsControllerState['defaultAccountTypes']> = {}
   ) {
-    state.useInjectedUniversalProvider = useInjectedUniversalProvider
+    Object.entries(defaultAccountType).forEach(([namespace, accountType]) => {
+      if (accountType) {
+        // @ts-expect-error - Keys are validated by the param type
+        state.defaultAccountTypes[namespace] = accountType
+      }
+    })
   },
 
   getSnapshot() {

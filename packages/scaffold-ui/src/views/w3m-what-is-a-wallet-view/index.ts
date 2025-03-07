@@ -1,6 +1,12 @@
+import { LitElement, html } from 'lit'
+
 import { EventsController, RouterController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+
+import '../../partials/w3m-help-widget/index.js'
 
 const data = [
   {

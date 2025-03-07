@@ -1,4 +1,7 @@
-import { customElement } from '@reown/appkit-ui'
+import { LitElement, html } from 'lit'
+import { property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
   AccountController,
   AssetController,
@@ -8,10 +11,9 @@ import {
   ModalController,
   OptionsController
 } from '@reown/appkit-core'
-import type { WuiAccountButton } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+import { customElement } from '@reown/appkit-ui'
+import type { WuiAccountButton } from '@reown/appkit-ui/wui-account-button'
+import '@reown/appkit-ui/wui-account-button'
 
 class W3mAccountButtonBase extends LitElement {
   // -- Members ------------------------------------------- //
@@ -68,9 +70,14 @@ class W3mAccountButtonBase extends LitElement {
           this.isSupported = val?.chainNamespace
             ? ChainController.checkIfSupportedNetwork(val?.chainNamespace)
             : true
+          AssetUtil.fetchNetworkImage(val?.assets?.imageId)
         })
       ]
     )
+  }
+
+  public override firstUpdated() {
+    AssetUtil.fetchNetworkImage(this.network?.assets?.imageId)
   }
 
   public override disconnectedCallback() {
@@ -84,6 +91,7 @@ class W3mAccountButtonBase extends LitElement {
     }
 
     const shouldShowBalance = this.balance === 'show'
+    const shouldShowLoading = typeof this.balanceVal !== 'string'
 
     return html`
       <wui-account-button
@@ -102,6 +110,7 @@ class W3mAccountButtonBase extends LitElement {
         data-testid="account-button"
         .charsStart=${this.charsStart}
         .charsEnd=${this.charsEnd}
+        ?loading=${shouldShowLoading}
       >
       </wui-account-button>
     `

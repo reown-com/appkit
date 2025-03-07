@@ -1,20 +1,23 @@
-import { Button, Stack, Link, Text, Spacer } from '@chakra-ui/react'
+import { useState } from 'react'
+
+import { Button, Link, Spacer, Stack, Text } from '@chakra-ui/react'
+import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers'
+
+import { mainnet } from '@reown/appkit/networks'
 import {
+  type Provider,
   useAppKitAccount,
   useAppKitNetwork,
-  useAppKitProvider,
-  type Provider
+  useAppKitProvider
 } from '@reown/appkit/react'
-import { BrowserProvider, JsonRpcSigner, ethers } from 'ethers'
-import { useState } from 'react'
-import { mainnet } from '@reown/appkit/networks'
-import { vitalikEthAddress } from '../../utils/DataUtil'
-import { useChakraToast } from '../Toast'
+
+import { useChakraToast } from '@/src/components/Toast'
+import { vitalikEthAddress } from '@/src/utils/DataUtil'
 
 export function EthersTransactionTest() {
   const toast = useChakraToast()
   const { chainId } = useAppKitNetwork()
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { walletProvider } = useAppKitProvider<Provider>('eip155')
   const [loading, setLoading] = useState(false)
 

@@ -1,24 +1,33 @@
-import { WagmiTransactionTest } from './WagmiTransactionTest'
+import { Box, Card, CardBody, CardHeader, Heading, Stack, StackDivider } from '@chakra-ui/react'
+import type { Config } from 'wagmi'
+
+import { useAppKitAccount } from '@reown/appkit/react'
+
+import { WagmiDisconnectTest } from './WagmiDisconnectTest'
+import { WagmiGetCallsStatusTest } from './WagmiGetCallsStatusTest'
+import { WagmiSendCallsTest } from './WagmiSendCallsTest'
+import { WagmiSendCallsWithPaymasterServiceTest } from './WagmiSendCallsWithPaymasterServiceTest'
+import { WagmiSendUSDCTest } from './WagmiSendUSDCTest'
 import { WagmiSignMessageTest } from './WagmiSignMessageTest'
 import { WagmiSignTypedDataTest } from './WagmiSignTypedDataTest'
-import { StackDivider, Card, CardHeader, Heading, CardBody, Box, Stack } from '@chakra-ui/react'
+import { WagmiTransactionTest } from './WagmiTransactionTest'
 import { WagmiWriteContractTest } from './WagmiWriteContractTest'
-import { WagmiSendUSDCTest } from './WagmiSendUSDCTest'
-import { WagmiSendCallsTest } from './WagmiSendCallsTest'
-import { WagmiGetCallsStatusTest } from './WagmiGetCallsStatusTest'
-import { WagmiSendCallsWithPaymasterServiceTest } from './WagmiSendCallsWithPaymasterServiceTest'
-import { WagmiDisconnectTest } from './WagmiDisconnectTest'
-import type { Config } from 'wagmi'
 
 interface IProps {
   config?: Config
 }
 
 export function WagmiTests({ config }: IProps) {
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
+
+  if (!address) {
+    return null
+  }
+
   return (
-    <Card marginTop={10} marginBottom={10}>
+    <Card data-testid="eip155-test-interactions" marginTop={10} marginBottom={10}>
       <CardHeader>
-        <Heading size="md">Test Interactions</Heading>
+        <Heading size="md">Wagmi Test Interactions</Heading>
       </CardHeader>
       <CardBody>
         <Stack divider={<StackDivider />} spacing="4">

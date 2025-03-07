@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-import inquirer from 'inquirer'
 import chalk from 'chalk'
+import inquirer from 'inquirer'
 
-import { checkDirectoryExists, generateRepoUrl, cloneRepository, banner } from './utils.js'
+import { banner, checkDirectoryExists, cloneRepository, generateRepoUrl } from './utils.js'
 
 // Define styles
 const redTip = chalk.hex('#C70039') // Red for tips
@@ -24,7 +24,8 @@ async function questionFramework() {
       choices: [
         { name: 'Next.js', value: 'nextjs' },
         { name: 'React', value: 'react' },
-        { name: 'Vue', value: 'vue' }
+        { name: 'Vue', value: 'vue' },
+        { name: 'Javascript', value: 'javascript' }
       ]
     }
   ]
@@ -36,11 +37,12 @@ async function questionLibrary() {
     {
       type: 'list',
       name: 'library',
-      message: 'wagmi, ethers, solana or EVM+Solana ?',
+      message: 'wagmi, ethers, solana, bitcoin or EVM+Solana ?',
       choices: [
         { name: 'wagmi', value: 'wagmi' },
         { name: 'ethers', value: 'ethers' },
         { name: 'Solana', value: 'solana' },
+        { name: 'Bitcoin', value: 'bitcoin' },
         { name: 'Multichain', value: 'multichain' }
       ]
     }

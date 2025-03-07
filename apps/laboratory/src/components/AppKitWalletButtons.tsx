@@ -1,3 +1,5 @@
+import { Fragment, useState } from 'react'
+
 import {
   Button,
   Card,
@@ -8,12 +10,14 @@ import {
   Stack,
   StackDivider
 } from '@chakra-ui/react'
-import * as AppKitWalletButton from '@reown/appkit-wallet-button/react'
+
 import type { Wallet } from '@reown/appkit-wallet-button'
-import { Fragment, useState } from 'react'
-import { useAppKitAccount, type SocialProvider } from '@reown/appkit/react'
+import * as AppKitWalletButton from '@reown/appkit-wallet-button/react'
+import { type SocialProvider, useAppKitAccount } from '@reown/appkit/react'
+
+import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
+
 import { useChakraToast } from './Toast'
-import { ConstantsUtil } from '../utils/ConstantsUtil'
 
 interface AppKitWalletButtonsProps {
   wallets: Wallet[]
@@ -71,9 +75,7 @@ function WalletButtonComponents({ wallets }: WalletButtonComponentsProps) {
 
 function WalletButtonHooks({ wallets }: WalletButtonHooksProps) {
   const [pendingWallet, setPendingWallet] = useState<Wallet>()
-
   const toast = useChakraToast()
-
   const { caipAddress } = useAppKitAccount()
 
   const { isReady, isPending, connect } = AppKitWalletButton.useAppKitWallet({
@@ -95,6 +97,7 @@ function WalletButtonHooks({ wallets }: WalletButtonHooksProps) {
     const isWalletConnect = wallet === 'walletConnect'
 
     const isWalletButtonDisabled = !isWalletConnect && !isSocial && !isReady
+    const shouldCapitlize = wallet === 'okx'
 
     return (
       <Button
@@ -107,7 +110,7 @@ function WalletButtonHooks({ wallets }: WalletButtonHooksProps) {
         size="md"
         isLoading={isPending && pendingWallet === wallet}
         isDisabled={Boolean(caipAddress) || isWalletButtonDisabled}
-        textTransform="capitalize"
+        textTransform={shouldCapitlize ? 'uppercase' : 'capitalize'}
         data-testid={`wallet-button-hook-${wallet}`}
       >
         {wallet}

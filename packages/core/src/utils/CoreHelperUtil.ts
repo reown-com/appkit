@@ -1,7 +1,9 @@
-import type { AppKitSdkVersion, Balance, ChainNamespace } from '@reown/appkit-common'
+import type { AdapterType, Balance, ChainNamespace, SdkVersion } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstants } from '@reown/appkit-common'
-import { ConstantsUtil } from './ConstantsUtil.js'
 import type { CaipAddress, CaipNetwork } from '@reown/appkit-common'
+
+import { ConstantsUtil } from './ConstantsUtil.js'
+import { StorageUtil } from './StorageUtil.js'
 import type { AccountTypeMap, ChainAdapter, LinkingRecord, NamespaceTypeMap } from './TypeUtil.js'
 
 type SDKFramework = 'html' | 'react' | 'vue'
@@ -9,7 +11,7 @@ type OpenTarget = '_blank' | '_self' | 'popupWindow' | '_top'
 
 export const CoreHelperUtil = {
   isMobile() {
-    if (typeof window !== 'undefined') {
+    if (this.isClient()) {
       return Boolean(
         window.matchMedia('(pointer:coarse)').matches ||
           /Android|webOS|iPhone|iPad|iPod|BlackBerry|Opera Mini/u.test(navigator.userAgent)
@@ -24,15 +26,33 @@ export const CoreHelperUtil = {
   },
 
   isAndroid() {
+    if (!this.isMobile()) {
+      return false
+    }
+
     const ua = window.navigator.userAgent.toLowerCase()
 
     return CoreHelperUtil.isMobile() && ua.includes('android')
   },
 
   isIos() {
+    if (!this.isMobile()) {
+      return false
+    }
+
     const ua = window.navigator.userAgent.toLowerCase()
 
-    return CoreHelperUtil.isMobile() && (ua.includes('iphone') || ua.includes('ipad'))
+    return ua.includes('iphone') || ua.includes('ipad')
+  },
+
+  isSafari() {
+    if (!this.isClient()) {
+      return false
+    }
+
+    const ua = window.navigator.userAgent.toLowerCase()
+
+    return ua.includes('safari')
   },
 
   isClient() {
@@ -137,9 +157,17 @@ export const CoreHelperUtil = {
       href: safeAppUrl
     }
   },
-  getOpenTargetForPlatform(target: string) {
+  getOpenTargetForPlatform(target: OpenTarget) {
+    if (target === 'popupWindow') {
+      return target
+    }
     // Only '_blank' deeplinks work in Telegram context
     if (this.isTelegram()) {
+      // But for social login, we need to load the page in the same context
+      if (StorageUtil.getTelegramSocialProvider()) {
+        return '_top'
+      }
+
       return '_blank'
     }
 
@@ -339,11 +367,13 @@ export const CoreHelperUtil = {
     adapters: ChainAdapter[],
     platform: SDKFramework,
     version: string
-  ): AppKitSdkVersion {
-    const noAdapters = adapters.length === 0
-    const adapterNames = noAdapters
-      ? 'universal'
-      : adapters.map(adapter => adapter.adapterType).join(',')
+  ): SdkVersion {
+    const hasNoAdapters = adapters.length === 0
+    const adapterNames = (
+      hasNoAdapters
+        ? ConstantsUtil.ADAPTER_TYPES.UNIVERSAL
+        : adapters.map(adapter => adapter.adapterType).join(',')
+    ) as AdapterType
 
     return `${platform}-${adapterNames}-${version}`
   },
@@ -377,5 +407,56 @@ export const CoreHelperUtil = {
       sections.filter(Boolean).length === 3 &&
       (namespace as string) in CommonConstants.CHAIN_NAME_MAP
     )
+  },
+  isMac() {
+    const ua = window.navigator.userAgent.toLowerCase()
+
+    return ua.includes('macintosh') && !ua.includes('safari')
+  },
+
+  formatTelegramSocialLoginUrl(url: string) {
+    const valueToInject = `--${encodeURIComponent(window.location.href)}`
+    const paramToInject = 'state='
+    const parsedUrl = new URL(url)
+    if (parsedUrl.host === 'auth.magic.link') {
+      const providerParam = 'provider_authorization_url='
+      const providerUrl = url.substring(url.indexOf(providerParam) + providerParam.length)
+      const resultUrl = this.injectIntoUrl(
+        decodeURIComponent(providerUrl),
+        paramToInject,
+        valueToInject
+      )
+
+      return url.replace(providerUrl, encodeURIComponent(resultUrl))
+    }
+
+    return this.injectIntoUrl(url, paramToInject, valueToInject)
+  },
+  injectIntoUrl(url: string, key: string, appendString: string) {
+    // Find the position of "key" e.g. "state=" in the URL
+    const keyIndex = url.indexOf(key)
+
+    if (keyIndex === -1) {
+      throw new Error(`${key} parameter not found in the URL: ${url}`)
+    }
+
+    // Find the position of the next "&" after "key"
+    const keyEndIndex = url.indexOf('&', keyIndex)
+    const keyLength = key.length
+    // If there is no "&" after key, it means "key" is the last parameter
+    // eslint-disable-next-line no-negated-condition
+    const keyParamEnd = keyEndIndex !== -1 ? keyEndIndex : url.length
+    // Extract the part of the URL before the key value
+    const beforeKeyValue = url.substring(0, keyIndex + keyLength)
+    // Extract the current key value
+    const currentKeyValue = url.substring(keyIndex + keyLength, keyParamEnd)
+    // Extract the part of the URL after the key value
+    const afterKeyValue = url.substring(keyEndIndex)
+    // Append the new string to the key value
+    const newKeyValue = currentKeyValue + appendString
+    // Reconstruct the URL with the appended key value
+    const newUrl = beforeKeyValue + newKeyValue + afterKeyValue
+
+    return newUrl
   }
 }

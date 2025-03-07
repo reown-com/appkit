@@ -1,15 +1,18 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest'
+
+import { ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
+
 import {
+  type AuthConnector,
   ChainController,
   ConnectorController,
-  OptionsController,
-  type AuthConnector,
   type Metadata,
+  OptionsController,
+  RouterController,
   type SdkVersion,
   type ThemeMode,
   type ThemeVariables
 } from '../../exports/index.js'
-import { ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
 
 // -- Setup --------------------------------------------------------------------
 const authProvider = {
@@ -290,5 +293,33 @@ describe('ConnectorController', () => {
       mergedAuthConnector,
       mergedAnnouncedConnector
     ])
+  })
+
+  it('should route to ConnectingExternal when selecting wallet if there is a connector', () => {
+    const mockConnector = {
+      id: 'connector',
+      name: 'Connector',
+      type: 'INJECTED' as const,
+      chain: 'solana' as const
+    }
+    vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(mockConnector)
+
+    vi.spyOn(RouterController, 'push')
+
+    ConnectorController.selectWalletConnector({ name: 'Connector', id: 'connector' })
+
+    expect(RouterController.push).toHaveBeenCalledWith('ConnectingExternal', {
+      connector: mockConnector
+    })
+  })
+  it('should route to ConnectingWalletConnect when selecting wallet if there is not a connector', () => {
+    vi.spyOn(ConnectorController, 'getConnector').mockReturnValue(undefined)
+    vi.spyOn(RouterController, 'push')
+
+    ConnectorController.selectWalletConnector({ name: 'WalletConnect', id: 'wc' })
+
+    expect(RouterController.push).toHaveBeenCalledWith('ConnectingWalletConnect', {
+      wallet: { name: 'WalletConnect', id: 'wc' }
+    })
   })
 })

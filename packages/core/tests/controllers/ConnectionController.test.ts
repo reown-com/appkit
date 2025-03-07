@@ -1,4 +1,8 @@
+import { polygon } from 'viem/chains'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
+
+import { type CaipNetwork, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+
 import type {
   ChainAdapter,
   ConnectionControllerClient,
@@ -13,8 +17,6 @@ import {
   SIWXUtil,
   StorageUtil
 } from '../../exports/index.js'
-import { ConstantsUtil as CommonConstantsUtil, type CaipNetwork } from '@reown/appkit-common'
-import { polygon } from 'viem/chains'
 
 // -- Setup --------------------------------------------------------------------
 const chain = CommonConstantsUtil.CHAIN.EVM
@@ -27,10 +29,7 @@ const caipNetworks = [
 ]
 
 const client: ConnectionControllerClient = {
-  connectWalletConnect: async onUri => {
-    onUri(walletConnectUri)
-    await Promise.resolve(walletConnectUri)
-  },
+  connectWalletConnect: async () => {},
   disconnect: async () => Promise.resolve(),
   signMessage: async (message: string) => Promise.resolve(message),
   estimateGas: async () => Promise.resolve(BigInt(0)),
@@ -44,7 +43,8 @@ const client: ConnectionControllerClient = {
   getEnsAvatar: async (value: string) => Promise.resolve(value),
   getCapabilities: async () => Promise.resolve(''),
   grantPermissions: async () => Promise.resolve('0x'),
-  revokePermissions: async () => Promise.resolve('0x')
+  revokePermissions: async () => Promise.resolve('0x'),
+  walletGetAssets: async () => Promise.resolve({})
 }
 
 const clientConnectWalletConnectSpy = vi.spyOn(client, 'connectWalletConnect')
@@ -64,7 +64,8 @@ const partialClient: ConnectionControllerClient = {
   getEnsAvatar: async (value: string) => Promise.resolve(value),
   getCapabilities: async () => Promise.resolve(''),
   grantPermissions: async () => Promise.resolve('0x'),
-  revokePermissions: async () => Promise.resolve('0x')
+  revokePermissions: async () => Promise.resolve('0x'),
+  walletGetAssets: async () => Promise.resolve({})
 }
 
 const evmAdapter = {
@@ -114,15 +115,8 @@ describe('ConnectionController', () => {
   })
 
   it('should update state correctly and set wcPromisae on connectWalletConnect()', async () => {
-    // Setup timers for pairing expiry
-    const fakeDate = new Date(0)
-    vi.useFakeTimers()
-    vi.setSystemTime(fakeDate)
-
     // Await on set promise and check results
     await ConnectionController.connectWalletConnect()
-    expect(ConnectionController.state.wcUri).toEqual(walletConnectUri)
-    expect(ConnectionController.state.wcPairingExpiry).toEqual(ConstantsUtil.FOUR_MINUTES_MS)
     expect(storageSpy).toHaveBeenCalledWith('eip155', 'walletConnect')
     expect(clientConnectWalletConnectSpy).toHaveBeenCalled()
 
@@ -184,5 +178,17 @@ describe('ConnectionController', () => {
     expect(SIWXUtil.clearSessions).toHaveBeenCalled()
     expect(ChainController.disconnect).toHaveBeenCalled()
     expect(ModalController.setLoading).toHaveBeenCalledWith(false)
+  })
+
+  it('should set wcUri correctly', () => {
+    // Setup timers for pairing expiry
+    const fakeDate = new Date(0)
+    vi.useFakeTimers()
+    vi.setSystemTime(fakeDate)
+
+    ConnectionController.setUri(walletConnectUri)
+
+    expect(ConnectionController.state.wcUri).toEqual(walletConnectUri)
+    expect(ConnectionController.state.wcPairingExpiry).toEqual(ConstantsUtil.FOUR_MINUTES_MS)
   })
 })

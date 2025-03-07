@@ -1,17 +1,18 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import '../../components/wui-icon/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type {
+  ButtonShortcutVariant,
   ButtonSize,
   ColorType,
   IconType,
-  ButtonShortcutVariant,
   SizeType
 } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 // -- Component ------------------------------------------ //
 @customElement('wui-shortcut')
@@ -35,12 +36,7 @@ export class WuiShortcut extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button
-        data-variant=${this.variant}
-        data-size=${this.size}
-        ?disabled=${this.disabled}
-        ontouchstart
-      >
+      <button data-variant=${this.variant} data-size=${this.size} ?disabled=${this.disabled}>
         <wui-icon
           color=${ifDefined(this.iconColor)}
           size=${this.iconSize}

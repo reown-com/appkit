@@ -1,18 +1,27 @@
+import { LitElement, html } from 'lit'
+import { property, state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
   AccountController,
+  BlockchainApiController,
   ConnectionController,
   CoreHelperUtil,
   OnRampController,
   RouterController,
   SnackController,
-  ThemeController,
-  BlockchainApiController,
-  OptionsController
+  ThemeController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { property, state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-icon-box'
+import '@reown/appkit-ui/wui-link'
+import '@reown/appkit-ui/wui-loading-thumbnail'
+import '@reown/appkit-ui/wui-text'
+import '@reown/appkit-ui/wui-visual'
+
 import styles from './styles.js'
 
 @customElement('w3m-buy-in-progress-view')
@@ -148,15 +157,14 @@ export class W3mBuyInProgressView extends LitElement {
   private async watchCoinbaseTransactions() {
     try {
       const address = AccountController.state.address
-      const projectId = OptionsController.state.projectId
+
       if (!address) {
         throw new Error('No address found')
       }
 
       const coinbaseResponse = await BlockchainApiController.fetchTransactions({
         account: address,
-        onramp: 'coinbase',
-        projectId
+        onramp: 'coinbase'
       })
 
       const newTransactions = coinbaseResponse.data.filter(

@@ -1,21 +1,22 @@
 /* eslint-disable max-depth */
+import { ParseUtil, type ParsedCaipAddress } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
   ConnectionController,
+  type Connector,
   ConnectorController,
   CoreHelperUtil,
   EventsController,
   ModalController,
-  StorageUtil,
-  type Connector,
   RouterController,
+  StorageUtil,
   type WcWallet
 } from '@reown/appkit-core'
 import { SocialProviderEnum } from '@reown/appkit-utils'
-import type { SocialProvider } from './TypeUtil.js'
+
 import { ConstantsUtil } from './ConstantsUtil.js'
-import { ParseUtil, type ParsedCaipAddress } from '@reown/appkit-common'
+import type { SocialProvider } from './TypeUtil.js'
 
 interface ConnectWalletConnect {
   walletConnect: boolean
@@ -29,12 +30,12 @@ export const ConnectorUtil = {
     wallet,
     connector
   }: ConnectWalletConnect): Promise<ParsedCaipAddress> {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       if (walletConnect) {
         ConnectorController.setActiveConnector(connector)
       }
 
-      ModalController.open({ view: 'ConnectingWalletConnect' })
+      await ModalController.open()
       RouterController.push('ConnectingWalletConnect', { wallet })
 
       const unsubscribeModalController = ModalController.subscribeKey('open', val => {

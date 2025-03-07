@@ -1,21 +1,28 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
   AccountController,
+  type AccountType,
   ChainController,
   ConnectionController,
   ConnectorController,
   CoreHelperUtil,
   ModalController,
   RouterController,
-  SnackController,
-  type AccountType
+  SnackController
 } from '@reown/appkit-core'
-
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
-import styles from './styles.js'
+import '@reown/appkit-ui/wui-avatar'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon-link'
+import '@reown/appkit-ui/wui-list-account'
+import '@reown/appkit-ui/wui-text'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
+
+import styles from './styles.js'
 
 @customElement('w3m-profile-view')
 export class W3mProfileView extends LitElement {

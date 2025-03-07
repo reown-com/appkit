@@ -1,12 +1,13 @@
-import { createConnector, type CreateConfigParameters } from '@wagmi/core'
-import { W3mFrameProvider } from '@reown/appkit-wallet'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { type CreateConfigParameters, createConnector } from '@wagmi/core'
 import { SwitchChainError, getAddress } from 'viem'
 import type { Address } from 'viem'
-import { ErrorUtil } from '@reown/appkit-utils'
+
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import { NetworkUtil } from '@reown/appkit-common'
+import { AlertController, OptionsController } from '@reown/appkit-core'
+import { ErrorUtil } from '@reown/appkit-utils'
+import { W3mFrameProvider } from '@reown/appkit-wallet'
 import { W3mFrameProviderSingleton } from '@reown/appkit/auth-provider'
-import { AlertController } from '@reown/appkit-core'
 
 // -- Types ----------------------------------------------------------------------------------------
 interface W3mFrameProviderOptions {
@@ -33,7 +34,7 @@ export function authConnector(parameters: AuthParameters) {
 
   return createConnector<W3mFrameProvider, Properties>(config => ({
     id: CommonConstantsUtil.CONNECTOR_ID.AUTH,
-    name: 'AppKit Auth',
+    name: CommonConstantsUtil.CONNECTOR_NAMES.AUTH,
     type: 'AUTH',
     chain: CommonConstantsUtil.CHAIN.EVM,
 
@@ -56,7 +57,8 @@ export function authConnector(parameters: AuthParameters) {
         chainId: frameChainId,
         accounts
       } = await provider.connect({
-        chainId
+        chainId,
+        preferredAccountType: OptionsController.state.defaultAccountTypes.eip155
       })
 
       currentAccounts = accounts?.map(a => a.address as Address) || [address as Address]
@@ -126,7 +128,10 @@ export function authConnector(parameters: AuthParameters) {
         }
         const provider = await this.getProvider()
         // We connect instead, since changing the chain may cause the address to change as well
-        const response = await provider.connect({ chainId })
+        const response = await provider.connect({
+          chainId,
+          preferredAccountType: OptionsController.state.defaultAccountTypes.eip155
+        })
 
         currentAccounts = response?.accounts?.map(a => a.address as Address) || [
           response.address as Address

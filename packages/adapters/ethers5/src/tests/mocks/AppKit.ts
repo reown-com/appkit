@@ -1,6 +1,7 @@
+import { vi } from 'vitest'
+
 import type { AppKit } from '@reown/appkit'
 import { mainnet } from '@reown/appkit/networks'
-import { vi } from 'vitest'
 
 export const mockAppKit = {
   setIsConnected: vi.fn(),
@@ -33,7 +34,6 @@ export const mockAppKit = {
   open: vi.fn(),
   isOpen: vi.fn().mockReturnValue(false),
   isTransactionStackEmpty: vi.fn().mockReturnValue(true),
-  isTransactionShouldReplaceView: vi.fn().mockReturnValue(false),
   replace: vi.fn(),
   redirect: vi.fn(),
   showErrorMessage: vi.fn(),

@@ -1,18 +1,25 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import {
   AccountController,
   AssetUtil,
-  CoreHelperUtil,
   ChainController,
+  CoreHelperUtil,
   RouterController,
   SnackController,
   ThemeController
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
+import '@reown/appkit-ui/wui-chip-button'
+import '@reown/appkit-ui/wui-compatible-network'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-qr-code'
+import '@reown/appkit-ui/wui-text'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+
 import styles from './styles.js'
-import { state } from 'lit/decorators.js'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('w3m-wallet-receive-view')
 export class W3mWalletReceiveView extends LitElement {

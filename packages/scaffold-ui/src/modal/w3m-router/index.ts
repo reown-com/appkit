@@ -1,10 +1,12 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+
 import type { RouterControllerState } from '@reown/appkit-core'
 import { RouterController, TooltipController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
-import styles from './styles.js'
+
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import styles from './styles.js'
 
 @customElement('w3m-router')
 export class W3mRouter extends LitElement {
@@ -60,7 +62,9 @@ export class W3mRouter extends LitElement {
 
   // -- Private ------------------------------------------- //
   private viewTemplate() {
+    // - These components are imported from the scaffold exports according to the case. This would render empty if the component is not imported.
     switch (this.view) {
+      // Core Views
       case 'AccountSettings':
         return html`<w3m-account-settings-view></w3m-account-settings-view>`
       case 'Account':

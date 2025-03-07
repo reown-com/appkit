@@ -1,8 +1,9 @@
-import { expect, test, type BrowserContext } from '@playwright/test'
+import { type BrowserContext, expect, test } from '@playwright/test'
+
+import { SECURE_WEBSITE_URL } from './shared/constants'
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { Email } from './shared/utils/email'
 import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
-import { SECURE_WEBSITE_URL } from './shared/constants'
 
 /* eslint-disable init-declarations */
 let page: ModalWalletPage
@@ -49,8 +50,9 @@ emailSiweTest.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
-emailSiweTest('it should sign', async () => {
-  await page.sign()
+emailSiweTest('it should sign', async ({ library }) => {
+  const namespace = library === 'solana' ? 'solana' : 'eip155'
+  await page.sign(namespace)
   await page.approveSign()
   await validator.expectAcceptedSign()
 })
@@ -62,20 +64,23 @@ emailSiweTest('it should upgrade wallet', async ({ library }) => {
   await page.closeModal()
 })
 
-emailSiweTest('it should reject sign', async () => {
-  await page.sign()
+emailSiweTest('it should reject sign', async ({ library }) => {
+  const namespace = library === 'solana' ? 'solana' : 'eip155'
+  await page.sign(namespace)
   await page.rejectSign()
   await validator.expectRejectedSign()
 })
 
-emailSiweTest('it should switch network and sign', async () => {
+emailSiweTest('it should switch network and sign', async ({ library }) => {
   let targetChain = 'Polygon'
+  const namespace = library === 'solana' ? 'solana' : 'eip155'
+
   await page.switchNetwork(targetChain)
   await validator.expectUnauthenticated()
   await page.promptSiwe()
   await page.approveSign()
 
-  await page.sign()
+  await page.sign(namespace)
   await page.approveSign()
   await validator.expectAcceptedSign()
 
@@ -85,7 +90,7 @@ emailSiweTest('it should switch network and sign', async () => {
   await page.promptSiwe()
   await page.approveSign()
 
-  await page.sign()
+  await page.sign(namespace)
   await page.approveSign()
   await validator.expectAcceptedSign()
 })

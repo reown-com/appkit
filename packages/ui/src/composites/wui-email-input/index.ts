@@ -1,12 +1,12 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
-import '../../components/wui-icon/index.js'
+import { ifDefined } from 'lit/directives/if-defined.js'
+
 import '../../components/wui-text/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-input-text/index.js'
 import styles from './styles.js'
-import { ifDefined } from 'lit/directives/if-defined.js'
 
 @customElement('wui-email-input')
 export class WuiEmailInput extends LitElement {

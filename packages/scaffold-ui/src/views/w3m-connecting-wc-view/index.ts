@@ -1,5 +1,9 @@
+import { LitElement, html } from 'lit'
+import { state } from 'lit/decorators.js'
+
 import type { BaseError, Platform } from '@reown/appkit-core'
 import {
+  ChainController,
   ConnectionController,
   ConstantsUtil,
   CoreHelperUtil,
@@ -7,12 +11,17 @@ import {
   ModalController,
   OptionsController,
   RouterController,
-  SnackController,
-  StorageUtil
+  SnackController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+
+import '../../partials/w3m-connecting-header/index.js'
+import '../../partials/w3m-connecting-wc-browser/index.js'
+import '../../partials/w3m-connecting-wc-desktop/index.js'
+import '../../partials/w3m-connecting-wc-mobile/index.js'
+import '../../partials/w3m-connecting-wc-qrcode/index.js'
+import '../../partials/w3m-connecting-wc-unsupported/index.js'
+import '../../partials/w3m-connecting-wc-web/index.js'
 
 @customElement('w3m-connecting-wc-view')
 export class W3mConnectingWcView extends LitElement {
@@ -54,19 +63,22 @@ export class W3mConnectingWcView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private async initializeConnection(retry = false) {
-    if (this.platform === 'browser') {
-      /*
-       * If the platform is browser it means the user is using a browser wallet,
-       * in this case the connection is handled in w3m-connecting-wc-browser component.
-       */
+    /*
+     * If the platform is browser it means the user is using a browser wallet,
+     * in this case the connection is handled in w3m-connecting-wc-browser component.
+     *
+     * If manual control is on, we should avoid calling connectWalletConnect since that's
+     * already done by the signer from other packages like @walletconnect/ethereum-provider
+     */
+    if (this.platform === 'browser' || (OptionsController.state.manualWCControl && !retry)) {
       return
     }
 
     try {
       const { wcPairingExpiry, status } = ConnectionController.state
+
       if (retry || CoreHelperUtil.isPairingExpired(wcPairingExpiry) || status === 'connecting') {
         await ConnectionController.connectWalletConnect()
-        this.finalizeConnection()
         if (!this.isSiwxEnabled) {
           ModalController.close()
         }
@@ -88,27 +100,6 @@ export class W3mConnectingWcView extends LitElement {
     }
   }
 
-  private finalizeConnection() {
-    const { wcLinking, recentWallet } = ConnectionController.state
-
-    if (wcLinking) {
-      StorageUtil.setWalletConnectDeepLink(wcLinking)
-    }
-
-    if (recentWallet) {
-      StorageUtil.setAppKitRecent(recentWallet)
-    }
-
-    EventsController.sendEvent({
-      type: 'track',
-      event: 'CONNECT_SUCCESS',
-      properties: {
-        method: wcLinking ? 'mobile' : 'qrcode',
-        name: this.wallet?.name || 'Unknown'
-      }
-    })
-  }
-
   private determinePlatforms() {
     if (!this.wallet) {
       this.platforms.push('qrcode')
@@ -123,7 +114,7 @@ export class W3mConnectingWcView extends LitElement {
 
     const { mobile_link, desktop_link, webapp_link, injected, rdns } = this.wallet
     const injectedIds = injected?.map(({ injected_id }) => injected_id).filter(Boolean) as string[]
-    const browserIds = [...(rdns ? [rdns] : injectedIds ?? [])]
+    const browserIds = [...(rdns ? [rdns] : (injectedIds ?? []))]
     const isBrowser = OptionsController.state.isUniversalProvider ? false : browserIds.length
     const isMobileWc = mobile_link
     const isWebWc = webapp_link
@@ -132,7 +123,7 @@ export class W3mConnectingWcView extends LitElement {
     const isDesktopWc = desktop_link && !CoreHelperUtil.isMobile()
 
     // Populate all preferences
-    if (isBrowserWc) {
+    if (isBrowserWc && !ChainController.state.noAdapters) {
       this.platforms.push('browser')
     }
     if (isMobileWc) {
@@ -144,7 +135,7 @@ export class W3mConnectingWcView extends LitElement {
     if (isDesktopWc) {
       this.platforms.push('desktop')
     }
-    if (!isBrowserWc && isBrowser) {
+    if (!isBrowserWc && isBrowser && !ChainController.state.noAdapters) {
       this.platforms.push('unsupported')
     }
 

@@ -1,7 +1,8 @@
-import { test, type BrowserContext } from '@playwright/test'
+import { type BrowserContext, test } from '@playwright/test'
+
 import { ModalWalletPage } from '../shared/pages/ModalWalletPage'
-import { ModalWalletValidator } from '../shared/validators/ModalWalletValidator'
 import { Email } from '../shared/utils/email'
+import { ModalWalletValidator } from '../shared/validators/ModalWalletValidator'
 
 /* eslint-disable init-declarations */
 let page: ModalWalletPage
@@ -49,7 +50,7 @@ test('it should switch networks and sign', async () => {
   await page.approveSign()
 
   // -- Sign ------------------------------------------------------------------
-  await page.sign()
+  await page.sign('eip155')
   await validator.expectReceivedSign({ chainName })
   await page.approveSign()
   await validator.expectAcceptedSign()
@@ -64,7 +65,7 @@ test('it should switch to different namespace', async () => {
   await page.closeModal()
 
   // -- Sign ------------------------------------------------------------------
-  await page.sign()
+  await page.sign('solana')
   await validator.expectReceivedSign({ chainName })
   await page.approveSign()
   await validator.expectAcceptedSign()

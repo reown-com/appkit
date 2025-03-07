@@ -1,8 +1,9 @@
-import type { WalletWithFeatures } from '@wallet-standard/base'
 import type { BitcoinConnectFeature } from '@exodus/bitcoin-wallet-standard'
-import type { BitcoinSignTransactionFeature } from './SignTransaction.js'
-import type { BitcoinSignMessageFeature } from './SignMessage.js'
+import type { WalletWithFeatures } from '@wallet-standard/base'
 import type { StandardEventsFeature } from '@wallet-standard/features'
+
+import type { BitcoinSignMessageFeature } from './SignMessage.js'
+import type { BitcoinSignTransactionFeature } from './SignTransaction.js'
 
 /** Type of all Bitcoin features. */
 export type BitcoinFeatures = BitcoinConnectFeature &

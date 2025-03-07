@@ -1,5 +1,6 @@
-import { html, LitElement } from 'lit'
+import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+
 import '../../components/wui-icon/index.js'
 import { colorStyles, elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { ColorType, IconType, SizeType } from '../../utils/TypeUtil.js'
@@ -30,7 +31,7 @@ export class WuiIconLink extends LitElement {
 `
 
     return html`
-      <button ?disabled=${this.disabled} ontouchstart>
+      <button ?disabled=${this.disabled}>
         <wui-icon color=${this.iconColor} size=${this.size} name=${this.icon}></wui-icon>
       </button>
     `

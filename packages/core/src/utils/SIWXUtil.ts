@@ -1,16 +1,18 @@
+import UniversalProvider from '@walletconnect/universal-provider'
+
 import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
-import { OptionsController } from '../controllers/OptionsController.js'
-import { CoreHelperUtil } from './CoreHelperUtil.js'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+
+import { AccountController } from '../controllers/AccountController.js'
 import { ChainController } from '../controllers/ChainController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
-import { ModalController } from '../controllers/ModalController.js'
-import { SnackController } from '../controllers/SnackController.js'
-import { RouterController } from '../controllers/RouterController.js'
-import UniversalProvider from '@walletconnect/universal-provider'
 import { EventsController } from '../controllers/EventsController.js'
-import { AccountController } from '../controllers/AccountController.js'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ModalController } from '../controllers/ModalController.js'
+import { OptionsController } from '../controllers/OptionsController.js'
+import { RouterController } from '../controllers/RouterController.js'
+import { SnackController } from '../controllers/SnackController.js'
+import { CoreHelperUtil } from './CoreHelperUtil.js'
 import { StorageUtil } from './StorageUtil.js'
 
 /**
@@ -142,9 +144,9 @@ export const SIWXUtil = {
   async cancelSignMessage() {
     try {
       const siwx = this.getSIWX()
-      const required = siwx?.getRequired?.()
+      const isRequired = siwx?.getRequired?.()
 
-      if (required) {
+      if (isRequired) {
         await ConnectionController.disconnect()
       } else {
         ModalController.close()
@@ -233,7 +235,8 @@ export const SIWXUtil = {
       {
         ...result.session.peer.metadata,
         name: result.session.peer.metadata.name,
-        icon: result.session.peer.metadata.icons?.[0]
+        icon: result.session.peer.metadata.icons?.[0],
+        type: 'WALLET_CONNECT'
       },
       Array.from(namespaces)[0] as ChainNamespace
     )

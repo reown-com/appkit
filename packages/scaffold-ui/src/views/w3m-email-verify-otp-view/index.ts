@@ -1,14 +1,15 @@
-import { customElement } from '@reown/appkit-ui'
-import { W3mEmailOtpWidget } from '../../utils/w3m-email-otp-widget/index.js'
-import type { OnOtpSubmitFn, OnOtpResendFn } from '../../utils/w3m-email-otp-widget/index.js'
 import {
-  EventsController,
-  ConnectionController,
-  ModalController,
   ChainController,
-  OptionsController,
-  CoreHelperUtil
+  ConnectionController,
+  CoreHelperUtil,
+  EventsController,
+  ModalController,
+  OptionsController
 } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
+
+import { W3mEmailOtpWidget } from '../../utils/w3m-email-otp-widget/index.js'
+import type { OnOtpResendFn, OnOtpSubmitFn } from '../../utils/w3m-email-otp-widget/index.js'
 
 @customElement('w3m-email-verify-otp-view')
 export class W3mEmailVerifyOtpView extends W3mEmailOtpWidget {

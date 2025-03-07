@@ -1,11 +1,16 @@
-import { ConnectorController } from '@reown/appkit-core'
-import { customElement } from '@reown/appkit-ui'
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
-import { ref, createRef } from 'lit/directives/ref.js'
+import { createRef, ref } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
+
+import { ConnectorController } from '@reown/appkit-core'
+import { EventsController, RouterController, SnackController } from '@reown/appkit-core'
+import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-email-input'
+import '@reown/appkit-ui/wui-flex'
+
 import styles from './styles.js'
-import { SnackController, RouterController, EventsController } from '@reown/appkit-core'
 
 @customElement('w3m-update-email-wallet-view')
 export class W3mUpdateEmailWalletView extends LitElement {
