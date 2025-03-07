@@ -40,7 +40,6 @@ export function AppKitBasicHooks({ networks }: AppKitBasicHooksProps) {
     const networkId = event.target.value
 
     const networkToSwitch = availableNetworks.find(network => String(network.id) === networkId)
-    console.log('networkToSwitch', networkToSwitch, networkId, availableNetworks)
     if (networkToSwitch) {
       switchNetwork(networkToSwitch)
     }
