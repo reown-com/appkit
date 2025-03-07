@@ -13,6 +13,7 @@ import type {
 } from '@reown/appkit-common'
 import { ConstantsUtil, NetworkUtil, ParseUtil } from '@reown/appkit-common'
 import type {
+  AccountControllerState,
   ChainAdapter,
   ConnectMethod,
   ConnectedWalletInfo,
@@ -1561,7 +1562,9 @@ export abstract class AppKitCore {
       embeddedWalletInfo: authConnector
         ? {
             user: accountState.user,
-            authProvider: accountState.socialProvider || 'email',
+            authProvider:
+              accountState.socialProvider ||
+              ('email' as AccountControllerState['socialProvider'] | 'email'),
             accountType: accountState.preferredAccountType,
             isSmartAccountDeployed: Boolean(accountState.smartAccountDeployed)
           }
@@ -1573,29 +1576,14 @@ export abstract class AppKitCore {
     callback: (newState: UseAppKitAccountReturn) => void,
     namespace?: ChainNamespace
   ) {
-    function updateVal() {
-      const authConnector = ConnectorController.getAuthConnector(namespace)
-      const accountState = ChainController.getAccountDataByChainNamespace(namespace)
+    const updateVal = () => {
+      const account = this.getAccount(namespace)
 
-      if (!accountState) {
+      if (!account) {
         return
       }
 
-      callback({
-        allAccounts: accountState.allAccounts,
-        caipAddress: accountState.caipAddress,
-        address: CoreHelperUtil.getPlainAddress(accountState.caipAddress),
-        isConnected: Boolean(accountState.caipAddress),
-        status: accountState.status,
-        embeddedWalletInfo: authConnector
-          ? {
-              user: accountState.user,
-              authProvider: accountState.socialProvider || 'email',
-              accountType: accountState.preferredAccountType,
-              isSmartAccountDeployed: Boolean(accountState.smartAccountDeployed)
-            }
-          : undefined
-      })
+      callback(account)
     }
 
     if (namespace) {
