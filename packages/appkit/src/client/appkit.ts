@@ -366,8 +366,7 @@ export class AppKit extends AppKitCore {
       await adapter?.switchNetwork({ caipNetwork, provider, providerType })
       this.setCaipNetwork(caipNetwork)
     } else {
-      const providerType =
-        ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
+      const providerType = ProviderUtil.state.providerIds[networkNamespace]
       const isNamespaceSupportsAuthConnector =
         ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.includes(networkNamespace)
 
@@ -394,7 +393,7 @@ export class AppKit extends AppKitCore {
             providerType
           })
         }
-      } else if (providerType === 'WALLET_CONNECT') {
+      } else if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
         this.setCaipNetwork(caipNetwork)
         this.syncWalletConnectAccount()
       } else {

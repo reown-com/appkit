@@ -344,7 +344,8 @@ export abstract class AppKitCore {
   protected createClients() {
     this.connectionControllerClient = {
       connectWalletConnect: async () => {
-        const adapter = this.getAdapter(ChainController.state.activeChain)
+        const activeChain = ChainController.state.activeChain
+        const adapter = this.getAdapter(activeChain)
 
         if (!adapter) {
           throw new Error('Adapter not found')
@@ -831,7 +832,7 @@ export abstract class AppKitCore {
   }
 
   protected async syncWalletConnectAccount() {
-    this.chainNamespaces.forEach(async chainNamespace => {
+    const syncTasks = this.chainNamespaces.map(async chainNamespace => {
       const adapter = this.getAdapter(chainNamespace as ChainNamespace)
       const namespaceAccounts =
         this.universalProvider?.session?.namespaces?.[chainNamespace]?.accounts || []
@@ -883,11 +884,11 @@ export abstract class AppKitCore {
           chainNamespace
         })
       }
+
+      await ChainController.setApprovedCaipNetworksData(chainNamespace)
     })
 
-    await ChainController.setApprovedCaipNetworksData(
-      ChainController.state.activeChain as ChainNamespace
-    )
+    await Promise.all(syncTasks)
   }
 
   protected syncWalletConnectAccounts(chainNamespace: ChainNamespace) {
