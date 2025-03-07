@@ -7,7 +7,7 @@ import { mainnet } from './mocks/Networks.js'
 
 // Common mock for window and document objects used across tests
 export function mockWindowAndDocument() {
-  vi.mocked(global).window = {
+  vi.stubGlobal('window', {
     location: { origin: '' },
     matchMedia: vi.fn().mockImplementation(query => ({
       matches: false,
@@ -19,15 +19,16 @@ export function mockWindowAndDocument() {
       removeEventListener: vi.fn(),
       dispatchEvent: vi.fn()
     }))
-  } as unknown as Window & typeof globalThis
-  vi.mocked(global).document = {
+  } as unknown as Window & typeof globalThis)
+
+  vi.stubGlobal('document', {
     body: {
       insertAdjacentElement: vi.fn()
     } as unknown as HTMLElement,
     createElement: vi.fn().mockReturnValue({ appendChild: vi.fn() }),
     getElementsByTagName: vi.fn().mockReturnValue([{ textContent: '' }]),
     querySelector: vi.fn()
-  } as unknown as Document
+  } as unknown as Document)
 }
 
 export function mockBlockchainApiController() {
