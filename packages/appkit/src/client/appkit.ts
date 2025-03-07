@@ -385,7 +385,6 @@ export class AppKit extends AppKitCore {
             type: UtilConstantsUtil.CONNECTOR_TYPE_AUTH as ConnectorType,
             caipNetwork
           })
-
           this.setCaipNetwork(caipNetwork)
         } catch (error) {
           const adapter = this.getAdapter(networkNamespace as ChainNamespace)

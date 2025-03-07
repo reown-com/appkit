@@ -588,7 +588,6 @@ export abstract class AppKitCore {
         const providerType = ProviderUtil.state.providerIds[networkNamespace]
 
         await adapter?.switchNetwork({ caipNetwork, provider, providerType })
-        this.setCaipNetwork(caipNetwork)
       } else {
         const providerType = ProviderUtil.state.providerIds[networkNamespace as ChainNamespace]
 
@@ -694,21 +693,18 @@ export abstract class AppKitCore {
     }
 
     adapter.on('switchNetwork', ({ address, chainId }) => {
-      if (
-        chainId &&
-        this.caipNetworks?.find(n => n.id === chainId || n.caipNetworkId === chainId)
-      ) {
+      const caipNetwork = this.caipNetworks?.find(
+        n => n.id === chainId || n.caipNetworkId === chainId
+      )
+
+      if (caipNetwork) {
         if (ChainController.state.activeChain === chainNamespace && address) {
           this.syncAccount({ address, chainId, chainNamespace })
         } else if (
           ChainController.state.activeChain === chainNamespace &&
           AccountController.state.address
         ) {
-          this.syncAccount({
-            address: AccountController.state.address,
-            chainId,
-            chainNamespace
-          })
+          this.syncAccount({ address: AccountController.state.address, chainId, chainNamespace })
         }
       } else {
         this.setUnsupportedNetwork(chainId)
