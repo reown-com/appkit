@@ -13,7 +13,7 @@ import {
   type OnRampProvider,
   RouterController
 } from '@reown/appkit-core'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { W3mOnRampProvidersView } from '../../src/views/w3m-onramp-providers-view'
 

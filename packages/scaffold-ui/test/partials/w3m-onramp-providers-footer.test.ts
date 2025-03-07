@@ -9,7 +9,7 @@ import {
   OptionsController,
   RouterController
 } from '@reown/appkit-core'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { W3mOnRampProvidersFooter } from '../../src/partials/w3m-onramp-providers-footer'
 
