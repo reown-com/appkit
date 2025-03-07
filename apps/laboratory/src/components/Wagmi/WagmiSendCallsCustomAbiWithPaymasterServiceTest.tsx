@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Button, Input, Select, Stack, Text, Tooltip } from '@chakra-ui/react'
-import { type Abi, encodeFunctionData } from 'viem'
+import { type Abi, encodeFunctionData, parseEther } from 'viem'
 import { useAccount } from 'wagmi'
 import { useSendCalls } from 'wagmi/experimental'
 
@@ -175,7 +175,9 @@ function AvailableTestContent() {
       return
     }
 
-    const value: number | undefined = parseFloat(valueToSend)
+    const value: bigint | undefined = Number.isNaN(parseFloat(valueToSend))
+      ? undefined
+      : parseEther(valueToSend)
 
     const callData = encodeFunctionData({
       abi,
