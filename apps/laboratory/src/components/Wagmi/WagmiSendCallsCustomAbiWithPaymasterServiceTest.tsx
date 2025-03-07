@@ -188,7 +188,7 @@ function AvailableTestContent() {
     const testTransaction = {
       to: contractAddress as `0x${string}`,
       data: callData,
-      value: Number.isNaN(value) ? undefined : value
+      value
     }
 
     sendCalls({
