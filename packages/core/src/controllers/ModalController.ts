@@ -71,16 +71,16 @@ export const ModalController = {
     const caipAddress = ChainController.state.activeCaipAddress
     const hasNoAdapters = ChainController.state.noAdapters
 
-    if (options?.view) {
-      RouterController.reset(options.view)
-    } else if (caipAddress) {
-      RouterController.reset('Account')
-    } else if (hasNoAdapters) {
+    if (hasNoAdapters) {
       if (CoreHelperUtil.isMobile()) {
         RouterController.reset('AllWallets')
       } else {
         RouterController.reset('ConnectingWalletConnectBasic')
       }
+    } else if (options?.view) {
+      RouterController.reset(options.view)
+    } else if (caipAddress) {
+      RouterController.reset('Account')
     } else {
       RouterController.reset('Connect')
     }
