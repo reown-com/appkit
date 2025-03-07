@@ -1336,8 +1336,7 @@ export abstract class AppKitCore {
   // -- Public Internal ---------------------------------------------------
   public getCaipNetwork = (chainNamespace?: ChainNamespace) => {
     if (chainNamespace) {
-      const namespaceCaipNetwork =
-        ChainController.getNetworkDataByChainNamespace(chainNamespace)?.caipNetwork
+      const namespaceCaipNetwork = ChainController.getNetworkData(chainNamespace)?.caipNetwork
 
       if (namespaceCaipNetwork) {
         return namespaceCaipNetwork
@@ -1570,7 +1569,7 @@ export abstract class AppKitCore {
   ) {
     function updateVal() {
       const authConnector = ConnectorController.getAuthConnector(namespace)
-      const accountState = ChainController.getAccountDataByChainNamespace(namespace)
+      const accountState = ChainController.getAccountData(namespace)
 
       if (!accountState) {
         return

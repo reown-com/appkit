@@ -702,22 +702,22 @@ export const ChainController = {
     return undefined
   },
 
-  getAccountDataByChainNamespace(chainNamespace?: ChainNamespace) {
+  getAccountData(chainNamespace?: ChainNamespace) {
+    if (!chainNamespace) {
+      return AccountController.state
+    }
+
+    return ChainController.state.chains.get(chainNamespace)?.accountState
+  },
+
+  getNetworkData(chainNamespace?: ChainNamespace) {
     const namespace = chainNamespace || state.activeChain
 
     if (!namespace) {
       return undefined
     }
 
-    return ChainController.state.chains.get(namespace)?.accountState
-  },
-
-  getNetworkDataByChainNamespace(chainNamespace?: ChainNamespace) {
-    if (!chainNamespace) {
-      return undefined
-    }
-
-    return ChainController.state.chains.get(chainNamespace)?.networkState
+    return ChainController.state.chains.get(namespace)?.networkState
   },
 
   getNetworkByIdOfNamespace(

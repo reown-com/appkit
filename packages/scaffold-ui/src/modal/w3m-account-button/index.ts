@@ -16,10 +16,6 @@ import { customElement } from '@reown/appkit-ui'
 import type { WuiAccountButton } from '@reown/appkit-ui/wui-account-button'
 import '@reown/appkit-ui/wui-account-button'
 
-function getDefaultAccountState(namespace: ChainNamespace | undefined) {
-  return ChainController.getAccountDataByChainNamespace(namespace)
-}
-
 class W3mAccountButtonBase extends LitElement {
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
@@ -35,19 +31,17 @@ class W3mAccountButtonBase extends LitElement {
 
   @property() public namespace?: ChainNamespace = undefined
 
-  @state() private caipAddress = getDefaultAccountState(this.namespace)?.caipAddress
+  @state() private caipAddress = ChainController.getAccountData(this.namespace)?.caipAddress
 
-  @state() private balanceVal = getDefaultAccountState(this.namespace)?.balance
+  @state() private balanceVal = ChainController.getAccountData(this.namespace)?.balance
 
-  @state() private balanceSymbol = getDefaultAccountState(this.namespace)?.balanceSymbol
+  @state() private balanceSymbol = ChainController.getAccountData(this.namespace)?.balanceSymbol
 
-  @state() private profileName = getDefaultAccountState(this.namespace)?.profileName
+  @state() private profileName = ChainController.getAccountData(this.namespace)?.profileName
 
-  @state() private profileImage = getDefaultAccountState(this.namespace)?.profileImage
+  @state() private profileImage = ChainController.getAccountData(this.namespace)?.profileImage
 
-  @state() private network = ChainController.getNetworkDataByChainNamespace(
-    this.namespace ?? ChainController.state.activeChain
-  )?.caipNetwork
+  @state() private network = ChainController.getNetworkData(this.namespace)?.caipNetwork
 
   @state() private networkImage = AssetUtil.getNetworkImage(this.network)
 
@@ -152,9 +146,7 @@ class W3mAccountButtonBase extends LitElement {
   // -- Private ------------------------------------------- //
   private async onClick() {
     const isDifferentChain = this.namespace !== ChainController.state.activeChain
-    const caipNetworkOfNamespace = ChainController.getNetworkDataByChainNamespace(
-      this.namespace
-    )?.caipNetwork
+    const caipNetworkOfNamespace = ChainController.getNetworkData(this.namespace)?.caipNetwork
     const firstNetworkWithChain = ChainController.getNetworkByIdOfNamespace(
       this.namespace,
       caipNetworkOfNamespace?.id
