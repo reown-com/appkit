@@ -3,7 +3,7 @@
 import { createAppKit } from '@reown/appkit/basic-react'
 import { type AppKitNetwork, mainnet } from '@reown/appkit/networks'
 
-import { AppKitHooks } from '@/src/components/AppKitHooks'
+import { AppKitBasicHooks } from '@/src/components/AppKitBasicHooks'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { MultiChainInfo } from '@/src/components/MultiChainInfo'
 import { UpaTests } from '@/src/components/UPA/UpaTests'
@@ -24,7 +24,7 @@ ThemeStore.setModal(modal)
 export default function MultiChainWagmiAdapterOnly() {
   return (
     <>
-      <AppKitHooks />
+      <AppKitBasicHooks />
       <AppKitInfo />
       <MultiChainInfo />
       <UpaTests />

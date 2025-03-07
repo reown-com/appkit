@@ -3,6 +3,12 @@ import { useState } from 'react'
 import { Box, Button, Heading, Select, Text } from '@chakra-ui/react'
 
 import {
+  useAppKit,
+  useAppKitAccount,
+  useAppKitNetwork,
+  useDisconnect
+} from '@reown/appkit/basic-react'
+import {
   type AppKitNetwork,
   bitcoin,
   bitcoinTestnet,
@@ -11,13 +17,12 @@ import {
   solana,
   solanaTestnet
 } from '@reown/appkit/networks'
-import { useAppKit, useAppKitAccount, useAppKitNetwork, useDisconnect } from '@reown/appkit/react'
 
-export interface AppKitHooksProps {
+export interface AppKitBasicHooksProps {
   networks?: AppKitNetwork[]
 }
 
-export function AppKitHooks({ networks }: AppKitHooksProps) {
+export function AppKitBasicHooks({ networks }: AppKitBasicHooksProps) {
   const { open } = useAppKit()
   const { isConnected } = useAppKitAccount()
   const { caipNetwork, switchNetwork } = useAppKitNetwork()
@@ -33,13 +38,11 @@ export function AppKitHooks({ networks }: AppKitHooksProps) {
     bitcoinTestnet
   ]
 
-  const [selectedNetwork, setSelectedNetwork] = useState<string>(String(caipNetwork?.id) || '')
-
   function handleNetworkChange(event: React.ChangeEvent<HTMLSelectElement>) {
     const networkId = event.target.value
-    setSelectedNetwork(networkId)
 
     const networkToSwitch = availableNetworks.find(network => String(network.id) === networkId)
+    console.log('networkToSwitch', networkToSwitch, networkId, availableNetworks)
     if (networkToSwitch) {
       switchNetwork(networkToSwitch)
     }
@@ -69,7 +72,7 @@ export function AppKitHooks({ networks }: AppKitHooksProps) {
           </Text>
           <Box position="relative">
             <Select
-              value={selectedNetwork}
+              value={caipNetwork?.id}
               onChange={handleNetworkChange}
               placeholder="Select Network"
               data-testid="network-selector"
