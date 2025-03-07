@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/src/components/wui-visual'
-import type { WuiVisual } from '@reown/appkit-ui/src/components/wui-visual'
+import '@reown/appkit-ui/wui-visual'
+import type { WuiVisual } from '@reown/appkit-ui/wui-visual'
 
 import { visualOptions } from '../../utils/PresetUtils'
 

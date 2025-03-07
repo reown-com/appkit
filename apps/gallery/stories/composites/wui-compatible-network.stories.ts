@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/src/composites/wui-compatible-network'
-import type { WuiCompatibleNetwork } from '@reown/appkit-ui/src/composites/wui-compatible-network'
+import '@reown/appkit-ui/wui-compatible-network'
+import type { WuiCompatibleNetwork } from '@reown/appkit-ui/wui-compatible-network'
 
 import { networkImages } from '../../utils/PresetUtils'
 

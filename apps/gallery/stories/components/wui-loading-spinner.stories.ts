@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/src/components/wui-loading-spinner'
-import type { WuiLoadingSpinner } from '@reown/appkit-ui/src/components/wui-loading-spinner'
+import '@reown/appkit-ui/wui-loading-spinner'
+import type { WuiLoadingSpinner } from '@reown/appkit-ui/wui-loading-spinner'
 
 import { colorOptions } from '../../utils/PresetUtils'
 

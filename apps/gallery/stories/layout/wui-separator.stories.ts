@@ -3,8 +3,8 @@ import type { Meta } from '@storybook/web-components'
 import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import '@reown/appkit-ui/src/layout/wui-separator'
-import type { WuiSeparator } from '@reown/appkit-ui/src/layout/wui-separator'
+import '@reown/appkit-ui/wui-separator'
+import type { WuiSeparator } from '@reown/appkit-ui/wui-separator'
 
 import '../../components/gallery-container'
 

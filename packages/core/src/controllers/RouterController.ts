@@ -63,6 +63,7 @@ export interface RouterControllerState {
     | 'OnRampProviders'
     | 'OnRampTokenSelect'
     | 'Profile'
+    | 'ProfileWallets'
     | 'RegisterAccountName'
     | 'RegisterAccountNameSuccess'
     | 'SwitchNetwork'

@@ -21,12 +21,16 @@ const SPINNER_COLOR_BY_VARIANT = {
 
 const TEXT_VARIANT_BY_SIZE = {
   lg: 'paragraph-600',
-  md: 'small-600'
+  md: 'small-600',
+  sm: 'small-600',
+  xs: 'tiny-600'
 }
 
 const SPINNER_SIZE_BY_SIZE = {
   lg: 'md',
-  md: 'md'
+  md: 'md',
+  sm: 'sm',
+  xs: 'sm'
 }
 
 // -- Component ------------------------------------------ //

@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/src/composites/wui-notice-card'
-import type { WuiNoticeCard } from '@reown/appkit-ui/src/composites/wui-notice-card'
+import '@reown/appkit-ui/wui-notice-card'
+import type { WuiNoticeCard } from '@reown/appkit-ui/wui-notice-card'
 
 import '../../components/gallery-container'
 import { iconOptions } from '../../utils/PresetUtils'

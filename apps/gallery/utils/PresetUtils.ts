@@ -320,6 +320,16 @@ export const iconBoxBorderOptions: IconBoxBorderType[] = [
 
 export const tagLabelOptions = ['get wallet', 'installed', 'qr code', 'recent']
 
+export const currencyOptions: Intl.NumberFormatOptions['currency'][] = [
+  'USD',
+  'EUR',
+  'GBP',
+  'CAD',
+  'AUD',
+  'JPY',
+  'CHF'
+]
+
 export const signTypedData = {
   domain: {
     name: 'Ether Mail',

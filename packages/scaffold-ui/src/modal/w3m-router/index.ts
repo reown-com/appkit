@@ -109,6 +109,8 @@ export class W3mRouter extends LitElement {
         return html`<w3m-network-switch-view></w3m-network-switch-view>`
       case 'Profile':
         return html`<w3m-profile-view></w3m-profile-view>`
+      case 'ProfileWallets':
+        return html`<w3m-profile-wallets-view></w3m-profile-wallets-view>`
       case 'SwitchAddress':
         return html`<w3m-switch-address-view></w3m-switch-address-view>`
       case 'Transactions':

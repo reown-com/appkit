@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/src/composites/wui-icon-box'
-import type { WuiIconBox } from '@reown/appkit-ui/src/composites/wui-icon-box'
+import '@reown/appkit-ui/wui-icon-box'
+import type { WuiIconBox } from '@reown/appkit-ui/wui-icon-box'
 
 import {
   backgroundOptions,

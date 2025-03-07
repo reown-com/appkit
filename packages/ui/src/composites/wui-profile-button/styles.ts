@@ -9,21 +9,17 @@ export default css`
     position: relative;
   }
 
+  wui-image {
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+  }
+
   wui-avatar {
     width: 32px;
     height: 32px;
     box-shadow: 0 0 0 0;
     outline: 3px solid var(--wui-color-gray-glass-005);
-  }
-
-  wui-icon-box,
-  wui-image {
-    width: 16px;
-    height: 16px;
-    border-radius: var(--wui-border-radius-3xl);
-    position: absolute;
-    left: 26px;
-    top: 24px;
   }
 
   wui-image {

@@ -100,7 +100,8 @@ export default css`
   }
 
   .wui-font-micro-700,
-  .wui-font-micro-600 {
+  .wui-font-micro-600,
+  .wui-font-micro-500 {
     font-size: var(--wui-font-size-micro);
     letter-spacing: var(--wui-letter-spacing-micro);
     text-transform: uppercase;

@@ -32,14 +32,12 @@ export class WuiProfileButton extends LitElement {
   public override render() {
     return html`<button data-testid="wui-profile-button">
       <wui-flex gap="xs" alignItems="center">
-        <wui-avatar
-          .imageSrc=${this.avatarSrc}
-          alt=${this.address}
-          address=${this.address}
-        ></wui-avatar>
-        ${this.networkImageTemplate()}
+        <wui-image
+          src=${'https://explorer-api.walletconnect.com/w3m/v1/getWalletImage/7a33d7f1-3d12-4b5c-f3ee-5cd83cb1b500?projectId=c1781fc385454899a2b1385a2b83df3b'}
+        ></wui-image>
+
         <wui-flex gap="xs" alignItems="center">
-          <wui-text variant="large-600" color="fg-100">
+          <wui-text variant="small-600" color="fg-100">
             ${UiHelperUtil.getTruncateString({
               string: this.profileName || this.address,
               charsStart: this.profileName ? 18 : 4,
@@ -51,22 +49,6 @@ export class WuiProfileButton extends LitElement {
         </wui-flex>
       </wui-flex>
     </button>`
-  }
-
-  // -- Private ------------------------------------------- //
-  private networkImageTemplate() {
-    if (this.networkSrc) {
-      return html`<wui-image src=${this.networkSrc}></wui-image>`
-    }
-
-    return html`
-      <wui-icon-box
-        size="xxs"
-        iconColor="fg-200"
-        backgroundColor="bg-100"
-        icon="networkPlaceholder"
-      ></wui-icon-box>
-    `
   }
 }
 

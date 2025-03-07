@@ -38,17 +38,13 @@ export class W3mAccountView extends LitElement {
     return html`
       ${authConnector && connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH
         ? this.walletFeaturesTemplate()
-        : this.defaultTemplate()}
+        : this.walletFeaturesTemplate()}
     `
   }
 
   // -- Private ------------------------------------------- //
   private walletFeaturesTemplate() {
     return html`<w3m-account-wallet-features-widget></w3m-account-wallet-features-widget>`
-  }
-
-  private defaultTemplate() {
-    return html`<w3m-account-default-widget></w3m-account-default-widget>`
   }
 }
 

@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/src/composites/wui-card-select'
-import type { WuiCardSelect } from '@reown/appkit-ui/src/composites/wui-card-select'
+import '@reown/appkit-ui/wui-card-select'
+import type { WuiCardSelect } from '@reown/appkit-ui/wui-card-select'
 
 import '../../components/gallery-container'
 import { cardSelectOptions, walletImageSrc } from '../../utils/PresetUtils'

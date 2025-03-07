@@ -253,6 +253,7 @@ function createRootStyles(themeVariables?: ThemeVariables) {
         --wui-icon-size-xxl: 28px;
 
         --wui-wallet-image-size-inherit: inherit;
+        --wui-wallet-image-size-xs: 32px;
         --wui-wallet-image-size-sm: 40px;
         --wui-wallet-image-size-md: 56px;
         --wui-wallet-image-size-lg: 80px;

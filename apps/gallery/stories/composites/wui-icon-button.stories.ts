@@ -2,8 +2,8 @@ import type { Meta } from '@storybook/web-components'
 
 import { html } from 'lit'
 
-import '@reown/appkit-ui/src/composites/wui-icon-button'
-import type { WuiIconButton } from '@reown/appkit-ui/src/composites/wui-icon-button'
+import '@reown/appkit-ui/wui-icon-button'
+import type { WuiIconButton } from '@reown/appkit-ui/wui-icon-button'
 
 import '../../components/gallery-container'
 import { iconOptions } from '../../utils/PresetUtils'

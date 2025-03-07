@@ -27,6 +27,8 @@ const modal = createAppKit({
   features: {
     analytics: true
   },
+  termsConditionsUrl: 'https://reown.com/terms',
+  privacyPolicyUrl: 'https://reown.com/privacy',
   customWallets: ConstantsUtil.CustomWallets
 })
 

@@ -25,6 +25,9 @@ class W3mConnectButtonBase extends LitElement {
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
     super()
+    ModalController.open({
+      view: 'ProfileWallets'
+    })
     this.unsubscribe.push(
       ModalController.subscribe(val => {
         this.open = val.open
