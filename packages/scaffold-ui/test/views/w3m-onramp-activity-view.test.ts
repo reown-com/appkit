@@ -79,6 +79,12 @@ describe('W3mOnRampActivityView', () => {
   })
 
   it('should render loading state initially', async () => {
+    const fetchTransactionsSpy = vi
+      .spyOn(TransactionsController, 'fetchTransactions')
+      .mockImplementation(async () => {
+        await new Promise(resolve => setTimeout(resolve, 0))
+      })
+
     const element: W3mOnRampActivityView = await fixture(
       html`<w3m-onramp-activity-view></w3m-onramp-activity-view>`
     )
@@ -87,6 +93,8 @@ describe('W3mOnRampActivityView', () => {
 
     const loaders = element.shadowRoot?.querySelectorAll('wui-transaction-list-item-loader')
     expect(loaders?.length).toBe(7)
+
+    fetchTransactionsSpy.mockRestore()
   })
 
   it('should render transactions when loaded', async () => {
