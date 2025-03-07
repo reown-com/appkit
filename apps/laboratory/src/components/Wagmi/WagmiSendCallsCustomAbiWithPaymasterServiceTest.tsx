@@ -150,11 +150,12 @@ function AvailableTestContent() {
     } catch (e) {
       setLoading(false)
       toast({
-        title: "SendCalls Error",
+        title: 'SendCalls Error',
         description: 'Provided ABI not a valid JSON array.',
-        type: "error"
+        type: 'error'
       })
-      return;
+
+      return
     }
 
     let args: Array<unknown> = []
@@ -166,14 +167,15 @@ function AvailableTestContent() {
     } catch (e) {
       setLoading(false)
       toast({
-        title: "SendCalls Error",
+        title: 'SendCalls Error',
         description: 'Provided method args not a valid JSON array.',
-        type: "error"
+        type: 'error'
       })
-      return;
+
+      return
     }
 
-    let value: number | undefined = parseFloat(valueToSend)
+    const value: number | undefined = parseFloat(valueToSend)
 
     const callData = encodeFunctionData({
       abi,
@@ -184,7 +186,7 @@ function AvailableTestContent() {
     const testTransaction = {
       to: contractAddress as `0x${string}`,
       data: callData,
-      value: Number.isNaN(value)? undefined : value
+      value: Number.isNaN(value) ? undefined : value
     }
 
     sendCalls({
