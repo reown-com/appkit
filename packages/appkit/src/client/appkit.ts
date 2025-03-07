@@ -99,7 +99,7 @@ export class AppKit extends AppKitCore {
     })
     provider.onNotConnected(() => {
       const namespace = ChainController.state.activeChain as ChainNamespace
-      const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+      const connectorId = ConnectorController.getConnectorId(namespace)
       const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
       if (isConnectedWithAuth) {
         this.setCaipAddress(undefined, namespace)
@@ -226,7 +226,7 @@ export class AppKit extends AppKitCore {
         })
         this.setStatus('connected', namespace)
       } else if (
-        StorageUtil.getConnectedConnectorId(namespace) === ConstantsUtil.CONNECTOR_ID.AUTH
+        ConnectorController.getConnectorId(namespace) === ConstantsUtil.CONNECTOR_ID.AUTH
       ) {
         this.setStatus('disconnected', namespace)
         StorageUtil.removeConnectedNamespace(namespace)

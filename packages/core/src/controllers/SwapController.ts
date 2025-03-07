@@ -7,7 +7,6 @@ import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
-import { StorageUtil } from '../utils/StorageUtil.js'
 import { SwapApiUtil } from '../utils/SwapApiUtil.js'
 import { SwapCalculationUtil } from '../utils/SwapCalculationUtil.js'
 import type { SwapTokenWithBalance } from '../utils/TypeUtil.js'
@@ -16,6 +15,7 @@ import { AlertController } from './AlertController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
+import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { RouterController } from './RouterController.js'
 import { SnackController } from './SnackController.js'
@@ -178,7 +178,7 @@ export const SwapController = {
     const namespace = ChainController.state.activeChain as ChainNamespace
     const address = CoreHelperUtil.getPlainAddress(caipAddress)
     const networkAddress = ChainController.getActiveNetworkTokenAddress()
-    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(namespace)
 
     if (!address) {
       throw new Error('No address found to swap the tokens from.')

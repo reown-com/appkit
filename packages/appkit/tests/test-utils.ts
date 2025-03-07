@@ -9,19 +9,28 @@ import {
   StorageUtil
 } from '@reown/appkit-core'
 
+import { mockLocalStorage } from './mocks/LocalStorage.js'
 import { mainnet, unsupportedNetwork } from './mocks/Networks.js'
 
 // Common mock for window and document objects used across tests
 export function mockWindowAndDocument() {
-  vi.mocked(global).window = { location: { origin: '' } } as unknown as Window & typeof globalThis
-  vi.mocked(global).document = {
+  vi.stubGlobal('window', {
+    location: {
+      origin: ''
+    }
+  } as unknown as Window & typeof globalThis)
+
+  vi.stubGlobal('localStorage', mockLocalStorage() as unknown as Storage)
+
+  // Mock the global document object
+  vi.stubGlobal('document', {
     body: {
       insertAdjacentElement: vi.fn()
     } as unknown as HTMLElement,
     createElement: vi.fn().mockReturnValue({ appendChild: vi.fn() }),
     getElementsByTagName: vi.fn().mockReturnValue([{ textContent: '' }]),
     querySelector: vi.fn()
-  } as unknown as Document
+  } as unknown as Document)
 }
 
 export function mockBlockchainApiController() {

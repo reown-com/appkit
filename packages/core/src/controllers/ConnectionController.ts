@@ -108,7 +108,7 @@ export const ConnectionController = {
     // Connect all namespaces to WalletConnect
     const namespaces = [...ChainController.state.chains.keys()]
     namespaces.forEach(namespace => {
-      StorageUtil.setConnectedConnectorId(namespace, ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT)
+      ConnectorController.setConnectorId(ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT, namespace)
     })
 
     if (CoreHelperUtil.isTelegram() || (CoreHelperUtil.isSafari() && CoreHelperUtil.isIos())) {
@@ -150,7 +150,7 @@ export const ConnectionController = {
     await this._getClient()?.reconnectExternal?.(options)
     const namespace = options.chain || ChainController.state.activeChain
     if (namespace) {
-      StorageUtil.setConnectedConnectorId(namespace, options.id)
+      ConnectorController.setConnectorId(options.id, namespace)
     }
   },
 
