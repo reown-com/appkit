@@ -1566,7 +1566,7 @@ export abstract class AppKitCore {
 
   public getAccount(namespace?: ChainNamespace) {
     const authConnector = ConnectorController.getAuthConnector(namespace)
-    const accountState = ChainController.getAccountDataByChainNamespace(namespace)
+    const accountState = ChainController.getAccountData(namespace)
 
     if (!accountState) {
       return undefined

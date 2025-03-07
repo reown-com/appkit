@@ -941,7 +941,7 @@ describe('Base Public methods', () => {
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
       id: 'auth-connector'
     } as unknown as AuthConnector)
-    vi.spyOn(ChainController, 'getAccountDataByChainNamespace').mockReturnValue({
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       allAccounts: [{ address: '0x123', type: 'eoa', namespace: 'eip155' }],
       caipAddress: 'eip155:1:0x123',
       status: 'connected',
