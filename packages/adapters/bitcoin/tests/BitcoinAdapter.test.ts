@@ -10,6 +10,7 @@ import {
 } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
+import { StorageUtil } from '@reown/appkit-core'
 import { bitcoin, bitcoinTestnet, mainnet } from '@reown/appkit/networks'
 
 import { BitcoinAdapter, type BitcoinConnector } from '../src'
@@ -53,19 +54,14 @@ describe('BitcoinAdapter', () => {
     })
 
     it('should call connect from WALLET_CONNECT connector', async () => {
-      const onUri = vi.fn()
-      await adapter.connectWalletConnect(onUri)
-      ;(
-        mockWalletConnect.provider.on as MockedFunction<typeof mockWalletConnect.provider.on>
-      ).mock.calls.find(([name]) => name === 'display_uri')![1]('mock_uri')
+      await adapter.connectWalletConnect()
 
-      expect(onUri).toHaveBeenCalled()
       expect(mockWalletConnect.provider.connect).toHaveBeenCalled()
     })
 
     it('should throw if caipNetworks is not defined', async () => {
       adapter = new BitcoinAdapter({ api })
-      await expect(adapter.connectWalletConnect(vi.fn())).rejects.toThrow()
+      await expect(adapter.connectWalletConnect()).rejects.toThrow()
     })
 
     it('should set BitcoinWalletConnectConnector', async () => {
@@ -305,6 +301,51 @@ describe('BitcoinAdapter', () => {
         balance: '100.0006',
         symbol: 'BTC'
       })
+      StorageUtil.clearAddressCache()
+    })
+
+    it('should call getBalance once even when multiple adapter requests are sent at the same time', async () => {
+      // delay the response to simulate http request latency
+      const latency = 1000
+      const numSimultaneousRequests = 10
+      const expectedSentRequests = 1
+
+      api.getUTXOs.mockResolvedValue(
+        new Promise(resolve => {
+          setTimeout(() => {
+            resolve([
+              mockUTXO({ value: 10000 }),
+              mockUTXO({ value: 20000 }),
+              mockUTXO({ value: 30000 }),
+              mockUTXO({ value: 10000000000 })
+            ])
+          }, latency)
+        }) as any
+      )
+
+      const result = await Promise.all([
+        ...Array.from({ length: numSimultaneousRequests }).map(() =>
+          adapter.getBalance({
+            address: 'mock_address',
+            chainId: bitcoin.id,
+            caipNetwork: bitcoin
+          })
+        )
+      ])
+
+      expect(api.getUTXOs).toHaveBeenCalledTimes(expectedSentRequests)
+      expect(result.length).toBe(numSimultaneousRequests)
+      expect(expectedSentRequests).to.be.lt(numSimultaneousRequests)
+
+      // verify all calls got the same balance
+      for (const balance of result) {
+        expect(balance).toEqual({
+          balance: '100.0006',
+          symbol: 'BTC'
+        })
+      }
+
+      StorageUtil.clearAddressCache()
     })
 
     it('should return empty balance if no UTXOs', async () => {
@@ -449,7 +490,7 @@ describe('BitcoinAdapter', () => {
         })
       )
 
-      listeners.accountChanged = vi.fn(() => console.log('meu pau'))
+      listeners.accountChanged = vi.fn(() => {})
       adapter.on('accountChanged', listeners.accountChanged)
       listeners.disconnect = vi.fn()
       adapter.on('disconnect', listeners.disconnect)

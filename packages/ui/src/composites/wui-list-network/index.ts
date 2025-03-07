@@ -1,7 +1,9 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
+import '../../components/wui-image/index.js'
 import '../../components/wui-text/index.js'
+import '../../layout/wui-flex/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import '../wui-network-image/index.js'
@@ -25,7 +27,7 @@ export class WuiListNetwork extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button data-transparent=${this.transparent} ?disabled=${this.disabled} ontouchstart>
+      <button data-transparent=${this.transparent} ?disabled=${this.disabled}>
         <wui-flex gap="s" alignItems="center">
           ${this.templateNetworkImage()}
           <wui-text variant="paragraph-500" color="inherit">${this.name}</wui-text></wui-flex

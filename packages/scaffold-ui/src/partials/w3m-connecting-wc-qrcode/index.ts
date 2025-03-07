@@ -1,35 +1,31 @@
 import { html } from 'lit'
-import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import {
   AssetUtil,
   ConnectionController,
   EventsController,
-  OptionsController,
   ThemeController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-link'
+import '@reown/appkit-ui/wui-qr-code'
+import '@reown/appkit-ui/wui-shimmer'
+import '@reown/appkit-ui/wui-text'
 
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
+import '../w3m-mobile-download-links/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-connecting-wc-qrcode')
 export class W3mConnectingWcQrcode extends W3mConnectingWidget {
   public static override styles = styles
 
-  // -- State & Properties -------------------------------- //
-  @state() private useInjectedUniversalProvider =
-    OptionsController.state.useInjectedUniversalProvider
-
   public constructor() {
     super()
     window.addEventListener('resize', this.forceUpdate)
-    this.unsubscribe.push(
-      OptionsController.subscribeKey('useInjectedUniversalProvider', () => {
-        this.useInjectedUniversalProvider = OptionsController.state.useInjectedUniversalProvider
-      })
-    )
 
     EventsController.sendEvent({
       type: 'track',
@@ -63,11 +59,6 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
         ${this.copyTemplate()}
       </wui-flex>
       <w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links>
-      ${this.useInjectedUniversalProvider
-        ? html`<wui-flex flexDirection="column" .padding=${['0', 'xl', 'xl', 'xl']} gap="xl">
-            <w3m-all-wallets-widget></w3m-all-wallets-widget>
-          </wui-flex>`
-        : null}
     `
   }
 

@@ -11,14 +11,14 @@ import {
   useAppKitProvider
 } from '@reown/appkit/react'
 
-import { abi, address as donutAddress } from '../../utils/DonutContract'
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
+import { abi, address as donutAddress } from '@/src/utils/DonutContract'
 
 export function Ethers5WriteContractTest() {
   const [loading, setLoading] = useState(false)
 
   const toast = useChakraToast()
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { chainId } = useAppKitNetwork()
   const { walletProvider } = useAppKitProvider<Provider>('eip155')
 
@@ -32,7 +32,7 @@ export function Ethers5WriteContractTest() {
       const signer = provider.getSigner(address)
       const contract = new ethers.Contract(donutAddress, abi, signer)
       // @ts-expect-error ethers types are correct
-      const tx = await contract.purchase(1, { value: ethers.parseEther('0.0001') })
+      const tx = await contract.purchase(1, { value: ethers.parseEther('0.00001') })
       toast({
         title: 'Success',
         description: tx.hash,

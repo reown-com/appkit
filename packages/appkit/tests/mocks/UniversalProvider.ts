@@ -26,7 +26,9 @@ export const mockProvider = {
         'wallet_getCallsStatus',
         'wallet_grantPermissions',
         'wallet_revokePermissions',
-        'wallet_switchEthereumChain'
+        'wallet_switchEthereumChain',
+        //EIP-7811
+        'wallet_getAssets'
       ],
       rpcMap: {
         '1': 'https://rpc.walletconnect.org/v1/?chainId=eip155%3A1&projectId=test-project-id'

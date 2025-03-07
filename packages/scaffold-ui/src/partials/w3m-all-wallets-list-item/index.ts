@@ -4,6 +4,11 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { AssetUtil, type WcWallet } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-shimmer'
+import '@reown/appkit-ui/wui-text'
+import '@reown/appkit-ui/wui-wallet-image'
 
 import styles from './styles.js'
 
@@ -54,7 +59,7 @@ export class W3mAllWalletsListItem extends LitElement {
     const certified = this.wallet?.badge_type === 'certified'
 
     return html`
-      <button ontouchstart>
+      <button>
         ${this.imageTemplate()}
         <wui-flex flexDirection="row" alignItems="center" justifyContent="center" gap="3xs">
           <wui-text

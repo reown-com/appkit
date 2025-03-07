@@ -55,7 +55,7 @@ emailTestAfterFarcaster.afterAll(async () => {
 
 // -- Tests --------------------------------------------------------------------
 emailTestAfterFarcaster('it should sign after abort login with farcaster', async () => {
-  await page.sign()
+  await page.sign('eip155')
   await page.approveSign()
   await validator.expectAcceptedSign()
 })
@@ -68,7 +68,7 @@ emailTestAfterFarcaster('it should upgrade wallet after abort login with farcast
 })
 
 emailTestAfterFarcaster('it should reject sign after abort login with farcaster', async () => {
-  await page.sign()
+  await page.sign('eip155')
   await page.rejectSign()
   await validator.expectRejectedSign()
 })
@@ -84,7 +84,7 @@ emailTestAfterFarcaster(
     await page.closeModal()
     await validator.expectCaipAddressHaveCorrectNetworkId(caipNetworkId as CaipNetworkId)
 
-    await page.sign()
+    await page.sign('eip155')
     await page.approveSign()
     await validator.expectAcceptedSign()
 
@@ -95,7 +95,7 @@ emailTestAfterFarcaster(
     await page.closeModal()
     await validator.expectCaipAddressHaveCorrectNetworkId(caipNetworkId as CaipNetworkId)
 
-    await page.sign()
+    await page.sign('eip155')
     await page.approveSign()
     await validator.expectAcceptedSign()
   }
@@ -122,6 +122,8 @@ emailTestAfterFarcaster(
 emailTestAfterFarcaster(
   'it should show snackbar error if failed to fetch token balance after abort login with farcaster',
   async () => {
+    // Clear cache and set offline to simulate token balance fetch failure
+    await page.page.evaluate(() => window.localStorage.removeItem('@appkit/portfolio_cache'))
     await page.page.context().setOffline(true)
     await page.openAccount()
     await validator.expectSnackbar('Token Balance Unavailable')

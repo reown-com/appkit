@@ -20,6 +20,8 @@ export function generateRepoUrl(answerFramework, answerLibrary) {
       return `reown-com/appkit-web-examples/react/react-${answerLibrary.library}`
     case 'vue':
       return `reown-com/appkit-web-examples/vue/vue-${answerLibrary.library}`
+    case 'javascript':
+      return `reown-com/appkit-web-examples/javascript/javascript-${answerLibrary.library}`
     default:
       return 'reown-com/appkit-web-examples/react/react-wagmi'
   }

@@ -13,7 +13,7 @@ import type {
   W3mNetworkButton
 } from '@reown/appkit-scaffold-ui'
 
-import type { AppKit } from '../../../src/client.js'
+import type { AppKit } from '../../../src/client/appkit.js'
 import { ProviderUtil } from '../../store/ProviderUtil.js'
 import type { AppKitOptions } from '../../utils/TypesUtil.js'
 
@@ -23,7 +23,19 @@ export interface AppKitEvent {
 }
 
 type OpenOptions = {
-  view: 'Account' | 'Connect' | 'Networks' | 'ApproveTransaction' | 'OnRampProviders'
+  view:
+    | 'Account'
+    | 'Connect'
+    | 'Networks'
+    | 'ApproveTransaction'
+    | 'OnRampProviders'
+    | 'Swap'
+    | 'WhatIsAWallet'
+    | 'WhatIsANetwork'
+    | 'AllWallets'
+    | 'WalletSend'
+  uri?: string
+  namespace?: ChainNamespace
 }
 
 type ThemeModeOptions = AppKitOptions['themeMode']

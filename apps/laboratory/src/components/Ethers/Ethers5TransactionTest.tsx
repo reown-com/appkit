@@ -11,14 +11,14 @@ import {
   useAppKitProvider
 } from '@reown/appkit/react'
 
-import { vitalikEthAddress } from '../../utils/DataUtil'
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
+import { vitalikEthAddress } from '@/src/utils/DataUtil'
 
 export function Ethers5TransactionTest() {
   const [loading, setLoading] = useState(false)
   const toast = useChakraToast()
 
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { chainId } = useAppKitNetwork()
   const { walletProvider } = useAppKitProvider<Provider>('eip155')
 

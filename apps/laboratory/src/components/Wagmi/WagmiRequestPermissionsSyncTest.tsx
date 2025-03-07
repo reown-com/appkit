@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { Button, Stack, Text } from '@chakra-ui/react'
 import { type Address, toHex } from 'viem'
@@ -11,16 +11,16 @@ import {
 } from '@reown/appkit-experimental/smart-session'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 
-import { usePasskey } from '../../context/PasskeyContext'
-import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
-import { bigIntReplacer } from '../../utils/CommonUtils'
-import { getPurchaseDonutPermissions } from '../../utils/ERC7715Utils'
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
+import { usePasskey } from '@/src/context/PasskeyContext'
+import { useERC7715Permissions } from '@/src/hooks/useERC7715Permissions'
+import { bigIntReplacer } from '@/src/utils/CommonUtils'
+import { getPurchaseDonutPermissions } from '@/src/utils/ERC7715Utils'
 
 export function WagmiRequestPermissionsSyncTest() {
-  const { address, isConnected, status } = useAppKitAccount()
+  const { address, isConnected } = useAppKitAccount({ namespace: 'eip155' })
   const { chainId } = useAppKitNetwork()
-  const isSupported = useMemo(() => isSmartSessionSupported(), [status])
+  const isSupported = isSmartSessionSupported()
 
   if (!isConnected || !address || !chainId) {
     return (

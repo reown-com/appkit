@@ -14,8 +14,15 @@ import {
   type SwapToken
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-text'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
+import '../../partials/w3m-swap-details/index.js'
+import '../../partials/w3m-swap-input-skeleton/index.js'
+import '../../partials/w3m-swap-input/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-swap-view')
@@ -221,14 +228,14 @@ export class W3mSwapView extends LitElement {
       return
     }
 
-    const amountOfTokenGasRequires = NumberUtil.bigNumber(this.gasPriceInUSD.toFixed(5)).dividedBy(
+    const amountOfTokenGasRequires = NumberUtil.bigNumber(this.gasPriceInUSD.toFixed(5)).div(
       this.sourceTokenPriceInUSD
     )
     const maxValue = isNetworkToken
       ? NumberUtil.bigNumber(balance).minus(amountOfTokenGasRequires)
       : NumberUtil.bigNumber(balance)
 
-    this.handleChangeAmount(target, maxValue.isGreaterThan(0) ? maxValue.toFixed(20) : '0')
+    this.handleChangeAmount(target, maxValue.gt(0) ? maxValue.toFixed(20) : '0')
   }
 
   private templateDetails() {

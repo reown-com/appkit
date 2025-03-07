@@ -54,6 +54,7 @@ export type CaipNetworkCoinbaseNetwork =
 export type ConnectedWalletInfo = {
   name: string
   icon?: string
+  type?: string
   [key: string]: unknown
 }
 
@@ -203,7 +204,6 @@ export interface BlockchainApiIdentityResponse {
 
 export interface BlockchainApiTransactionsRequest {
   account: string
-  projectId: string
   cursor?: string
   onramp?: 'coinbase'
   signal?: AbortSignal
@@ -235,7 +235,6 @@ export type SwapTokenWithBalance = SwapToken & {
 }
 
 export interface BlockchainApiSwapTokensRequest {
-  projectId: string
   chainId?: string
 }
 
@@ -244,7 +243,6 @@ export interface BlockchainApiSwapTokensResponse {
 }
 
 export interface BlockchainApiSwapQuoteRequest {
-  projectId: string
   chainId?: string
   amount: string
   userAddress: string
@@ -264,7 +262,6 @@ export interface BlockchainApiSwapQuoteResponse {
 }
 
 export interface BlockchainApiTokenPriceRequest {
-  projectId: string
   currency?: 'usd' | 'eur' | 'gbp' | 'aud' | 'cad' | 'inr' | 'jpy' | 'btc' | 'eth'
   addresses: string[]
 }
@@ -279,7 +276,6 @@ export interface BlockchainApiTokenPriceResponse {
 }
 
 export interface BlockchainApiSwapAllowanceRequest {
-  projectId: string
   tokenAddress: string
   userAddress: string
 }
@@ -289,7 +285,6 @@ export interface BlockchainApiSwapAllowanceResponse {
 }
 
 export interface BlockchainApiGasPriceRequest {
-  projectId: string
   chainId: string
 }
 
@@ -300,7 +295,6 @@ export interface BlockchainApiGasPriceResponse {
 }
 
 export interface BlockchainApiGenerateSwapCalldataRequest {
-  projectId: string
   userAddress: string
   from: string
   to: string
@@ -325,7 +319,6 @@ export interface BlockchainApiGenerateSwapCalldataResponse {
 }
 
 export interface BlockchainApiGenerateApproveCalldataRequest {
-  projectId: string
   userAddress: string
   from: string
   to: string
@@ -411,11 +404,8 @@ export type CustomWallet = Pick<
 export type Event =
   | {
       type: 'track'
+      address?: string
       event: 'MODAL_CREATED'
-    }
-  | {
-      type: 'track'
-      event: 'MODAL_LOADED'
     }
   | {
       type: 'track'
@@ -426,6 +416,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'MODAL_CLOSE'
       properties: {
         connected: boolean
@@ -433,10 +424,12 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'CLICK_ALL_WALLETS'
     }
   | {
       type: 'track'
+      address?: string
       event: 'SELECT_WALLET'
       properties: {
         name: string
@@ -445,6 +438,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'CONNECT_SUCCESS'
       properties: {
         method: 'qrcode' | 'mobile' | 'browser' | 'email'
@@ -453,6 +447,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'CONNECT_ERROR'
       properties: {
         message: string
@@ -460,10 +455,12 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'DISCONNECT_SUCCESS'
     }
   | {
       type: 'track'
+      address?: string
       event: 'DISCONNECT_ERROR'
       properties?: {
         message: string
@@ -471,18 +468,22 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'CLICK_WALLET_HELP'
     }
   | {
       type: 'track'
+      address?: string
       event: 'CLICK_NETWORK_HELP'
     }
   | {
       type: 'track'
+      address?: string
       event: 'CLICK_GET_WALLET'
     }
   | {
       type: 'track'
+      address?: string
       event: 'CLICK_TRANSACTIONS'
       properties: {
         isSmartAccount: boolean
@@ -490,6 +491,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'ERROR_FETCH_TRANSACTIONS'
       properties: {
         address: string
@@ -500,6 +502,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'LOAD_MORE_TRANSACTIONS'
       properties: {
         address: string | undefined
@@ -510,6 +513,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'CLICK_SIGN_SIWX_MESSAGE'
       properties: {
         network: string
@@ -518,6 +522,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'CLICK_CANCEL_SIWX'
       properties: {
         network: string
@@ -526,10 +531,12 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'CLICK_NETWORKS'
     }
   | {
       type: 'track'
+      address?: string
       event: 'SIWX_AUTH_SUCCESS'
       properties: {
         network: string
@@ -538,6 +545,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'SIWX_AUTH_ERROR'
       properties: {
         network: string
@@ -546,26 +554,32 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'EMAIL_LOGIN_SELECTED'
     }
   | {
       type: 'track'
+      address?: string
       event: 'EMAIL_SUBMITTED'
     }
   | {
       type: 'track'
+      address?: string
       event: 'DEVICE_REGISTERED_FOR_EMAIL'
     }
   | {
       type: 'track'
+      address?: string
       event: 'EMAIL_VERIFICATION_CODE_SENT'
     }
   | {
       type: 'track'
+      address?: string
       event: 'EMAIL_VERIFICATION_CODE_PASS'
     }
   | {
       type: 'track'
+      address?: string
       event: 'EMAIL_VERIFICATION_CODE_FAIL'
       properties: {
         message: string
@@ -573,14 +587,17 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'EMAIL_EDIT'
     }
   | {
       type: 'track'
+      address?: string
       event: 'EMAIL_UPGRADE_FROM_MODAL'
     }
   | {
       type: 'track'
+      address?: string
       event: 'SWITCH_NETWORK'
       properties: {
         network: string
@@ -588,18 +605,22 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'CLICK_CONVERT'
     }
   | {
       type: 'track'
+      address?: string
       event: 'CLICK_SELECT_TOKEN_TO_SWAP'
     }
   | {
       type: 'track'
+      address?: string
       event: 'CLICK_SELECT_NETWORK_TO_SWAP'
     }
   | {
       type: 'track'
+      address?: string
       event: 'SELECT_BUY_CRYPTO'
       properties: {
         isSmartAccount: boolean
@@ -607,6 +628,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'SELECT_BUY_PROVIDER'
       properties: {
         provider: OnRampProviderOption
@@ -615,6 +637,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'SELECT_WHAT_IS_A_BUY'
       properties: {
         isSmartAccount: boolean
@@ -622,6 +645,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'SET_PREFERRED_ACCOUNT_TYPE'
       properties: {
         accountType: W3mFrameTypes.AccountType
@@ -630,6 +654,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'OPEN_SWAP'
       properties: {
         isSmartAccount: boolean
@@ -638,6 +663,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'INITIATE_SWAP'
       properties: {
         isSmartAccount: boolean
@@ -650,6 +676,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'SWAP_SUCCESS'
       properties: {
         isSmartAccount: boolean
@@ -662,6 +689,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'SWAP_ERROR'
       properties: {
         isSmartAccount: boolean
@@ -675,6 +703,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'SWAP_APPROVAL_ERROR'
       properties: {
         isSmartAccount: boolean
@@ -688,6 +717,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'SOCIAL_LOGIN_STARTED'
       properties: {
         provider: SocialProvider
@@ -695,6 +725,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'SOCIAL_LOGIN_SUCCESS'
       properties: {
         provider: SocialProvider
@@ -702,6 +733,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'SOCIAL_LOGIN_ERROR'
       properties: {
         provider: SocialProvider
@@ -709,6 +741,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'SOCIAL_LOGIN_REQUEST_USER_DATA'
       properties: {
         provider: SocialProvider
@@ -716,6 +749,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'SOCIAL_LOGIN_CANCELED'
       properties: {
         provider: SocialProvider
@@ -723,6 +757,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'OPEN_ENS_FLOW'
       properties: {
         isSmartAccount: boolean
@@ -730,6 +765,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'REGISTER_NAME_INITIATED'
       properties: {
         isSmartAccount: boolean
@@ -738,6 +774,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'REGISTER_NAME_SUCCESS'
       properties: {
         isSmartAccount: boolean
@@ -746,6 +783,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'REGISTER_NAME_ERROR'
       properties: {
         isSmartAccount: boolean
@@ -755,6 +793,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'OPEN_SEND'
       properties: {
         isSmartAccount: boolean
@@ -763,6 +802,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'SEND_INITIATED'
       properties: {
         isSmartAccount: boolean
@@ -773,6 +813,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'SEND_SUCCESS'
       properties: {
         isSmartAccount: boolean
@@ -783,8 +824,10 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'SEND_ERROR'
       properties: {
+        message: string
         isSmartAccount: boolean
         network: string
         token: string
@@ -793,6 +836,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'CONNECT_PROXY_ERROR'
       properties: {
         message: string
@@ -803,6 +847,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'SEARCH_WALLET'
       properties: {
         badge: string
@@ -811,6 +856,7 @@ export type Event =
     }
   | {
       type: 'track'
+      address?: string
       event: 'INITIALIZE'
       properties: InitializeAppKitConfigs
     }
@@ -891,7 +937,22 @@ export type AccountTypeMap = {
     path?: K extends 'bip122' ? string : never
   }
 }
+export type WalletGetAssetsParams = {
+  account: `0x${string}`
+  assetFilter?: Record<`0x${string}`, (`0x${string}` | 'native')[]>
+  assetTypeFilter?: ('NATIVE' | 'ERC20')[]
+  chainFilter?: `0x${string}`[]
+}
 
+export type WalletGetAssetsResponse = Record<
+  `0x${string}`,
+  {
+    address: `0x${string}` | 'native'
+    balance: `0x${string}`
+    type: 'NATIVE' | 'ERC20'
+    metadata: Record<string, unknown>
+  }[]
+>
 export type AccountType = AccountTypeMap[ChainNamespace]
 export type SendTransactionArgs =
   | {
@@ -945,35 +1006,13 @@ export type AdapterNetworkState = {
   smartAccountEnabledNetworks?: number[]
 }
 
-export type AdapterAccountState = {
-  currentTab: number
-  caipAddress?: CaipAddress
-  address?: string
-  addressLabels: Map<string, string>
-  allAccounts: AccountType[]
-  balance?: string
-  balanceSymbol?: string
-  profileName?: string | null
-  profileImage?: string | null
-  addressExplorerUrl?: string
-  smartAccountDeployed?: boolean
-  socialProvider?: SocialProvider
-  tokenBalance?: Balance[]
-  shouldUpdateToAddress?: string
-  connectedWalletInfo?: ConnectedWalletInfo
-  preferredAccountType?: W3mFrameTypes.AccountType
-  socialWindow?: Window
-  farcasterUrl?: string
-  status?: 'reconnecting' | 'connected' | 'disconnected' | 'connecting'
-}
-
 export type ChainAdapter = {
   connectionControllerClient?: ConnectionControllerClient
   networkControllerClient?: NetworkControllerClient
-  accountState?: AdapterAccountState
+  accountState?: AccountControllerState
   networkState?: AdapterNetworkState
   namespace?: ChainNamespace
-  caipNetworks?: CaipNetwork[] | AppKitNetwork[]
+  caipNetworks?: CaipNetwork[]
   projectId?: string
   adapterType?: string
 }
@@ -1105,6 +1144,7 @@ export type UseAppKitAccountReturn = {
   isConnected: boolean
   embeddedWalletInfo?: {
     user: AccountControllerState['user']
+    authProvider: AccountControllerState['socialProvider'] | 'email'
     accountType: W3mFrameTypes.AccountType | undefined
     isSmartAccountDeployed: boolean
   }
