@@ -175,7 +175,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     const caipNetwork = this.caipNetworks?.find(n => n.id === params.chainId)
 
     if (!address) {
-      return Promise.resolve({ balance: '0.00', symbol: 'ETH' })
+      return Promise.resolve({ balance: '0.00', symbol: 'BTC' })
     }
 
     if (network?.chainNamespace === 'bip122') {
