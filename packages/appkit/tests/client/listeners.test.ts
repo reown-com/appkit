@@ -20,6 +20,8 @@ mockBlockchainApiController()
 describe('Listeners', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    emitter.clearAll()
+    solanaEmitter.clearAll()
   })
 
   it('should set caip address, profile name and profile image on accountChanged event', async () => {
@@ -56,6 +58,10 @@ describe('Listeners', () => {
   })
 
   it('should call syncAccountInfo when namespace is different than active namespace', async () => {
+    vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      ...AccountController.state,
+      address: '0x1234'
+    })
     const appKit = new AppKit({ ...mockOptions, defaultNetwork: solana })
     const setCaipAddressSpy = vi.spyOn(appKit, 'setCaipAddress')
 
