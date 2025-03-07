@@ -14,7 +14,6 @@ import '@reown/appkit-ui/wui-text'
 
 import { SmartSessionsController } from '../../../controllers/SmartSessionsController.js'
 import type { SmartSession } from '../../../utils/TypeUtils.js'
-import '../permissions/wui-permission-contract-call/index.js'
 import styles from './styles.js'
 
 const TABS = 3
