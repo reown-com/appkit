@@ -1544,6 +1544,31 @@ export abstract class AppKitCore {
     return AccountController.state.connectedWalletInfo
   }
 
+  public getAccount(namespace?: ChainNamespace) {
+    const authConnector = ConnectorController.getAuthConnector(namespace)
+    const accountState = ChainController.getAccountDataByChainNamespace(namespace)
+
+    if (!accountState) {
+      return undefined
+    }
+
+    return {
+      allAccounts: accountState.allAccounts,
+      caipAddress: accountState.caipAddress,
+      address: CoreHelperUtil.getPlainAddress(accountState.caipAddress),
+      isConnected: Boolean(accountState.caipAddress),
+      status: accountState.status,
+      embeddedWalletInfo: authConnector
+        ? {
+            user: accountState.user,
+            authProvider: accountState.socialProvider || 'email',
+            accountType: accountState.preferredAccountType,
+            isSmartAccountDeployed: Boolean(accountState.smartAccountDeployed)
+          }
+        : undefined
+    }
+  }
+
   public subscribeAccount(
     callback: (newState: UseAppKitAccountReturn) => void,
     namespace?: ChainNamespace
