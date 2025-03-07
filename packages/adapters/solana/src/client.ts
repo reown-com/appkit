@@ -53,7 +53,9 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     const caipNetwork =
       params.networks?.find(n => n.caipNetworkId === connectedCaipNetwork) || params.networks?.[0]
     const rpcUrl = caipNetwork?.rpcUrls.default.http[0] as string
-    SolStoreUtil.setConnection(new Connection(rpcUrl, this.connectionSettings))
+    if (rpcUrl) {
+      SolStoreUtil.setConnection(new Connection(rpcUrl, this.connectionSettings))
+    }
   }
 
   public override setAuthProvider(w3mFrameProvider: W3mFrameProvider) {
