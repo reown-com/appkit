@@ -1,3 +1,4 @@
+import type UniversalProvider from '@walletconnect/universal-provider'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 
 import type { Connector } from '@reown/appkit'
@@ -34,7 +35,7 @@ import { ProviderUtil } from '../../src/store'
 import { mockEvmAdapter, mockSolanaAdapter, mockUniversalAdapter } from '../mocks/Adapter.js'
 import { base, mainnet, polygon, sepolia, solana } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
-import { mockAuthProvider, mockProvider } from '../mocks/Providers.js'
+import { mockAuthProvider, mockProvider, mockUniversalProvider } from '../mocks/Providers.js'
 
 describe('Base Public methods', () => {
   beforeAll(() => {
