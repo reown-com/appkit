@@ -146,7 +146,7 @@ describe('W3mAccountButton', () => {
 
     it('should not show loading state if balance value is a string', async () => {
       vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
         ...AccountController.state,
         balance: '0.00'
       })

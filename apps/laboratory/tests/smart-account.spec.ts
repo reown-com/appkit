@@ -108,7 +108,7 @@ smartAccountTest('it should switch to smart account and sign', async ({ library 
 
   await page.goToSettings()
   await page.togglePreferredAccountType()
-  await validator.expectChangePreferredAccountToShow(EOA)
+  await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
   await page.closeModal()
   await validator.expectAccountButtonReady()
 
@@ -128,7 +128,7 @@ smartAccountTest('it should switch to eoa and sign', async ({ library }) => {
 
   await page.goToSettings()
   await page.togglePreferredAccountType()
-  await validator.expectChangePreferredAccountToShow(SMART_ACCOUNT)
+  await validator.expectChangePreferredAccountToShow(EOA)
   await page.closeModal()
   await validator.expectAccountButtonReady()
 

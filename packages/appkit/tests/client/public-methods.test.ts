@@ -103,7 +103,7 @@ describe('Base Public methods', () => {
     const appKit = new AppKit(mockOptions)
     appKit.setLoading(true)
 
-    expect(setLoading).toHaveBeenCalledWith(true)
+    expect(setLoading).toHaveBeenCalledWith(true, undefined)
   })
 
   it('should get theme mode', () => {
@@ -604,7 +604,7 @@ describe('Base Public methods', () => {
     const appKitWithAuth = new AppKit(mockOptions)
     ;(appKitWithAuth as any).authProvider = mockAuthProvider
 
-    await (appKitWithAuth as any).syncAuthConnector(mockAuthProvider)
+    await (appKitWithAuth as any).syncAuthConnector(mockAuthProvider, mainnet.chainNamespace)
 
     expect(createAccount).toHaveBeenCalledWith(mainnet.chainNamespace, '0x1', 'eoa')
     expect(createAccount).toHaveBeenCalledWith(mainnet.chainNamespace, '0x2', 'smartAccount')
@@ -941,7 +941,7 @@ describe('Base Public methods', () => {
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
       id: 'auth-connector'
     } as unknown as AuthConnector)
-    vi.spyOn(ChainController, 'getAccountDataByChainNamespace').mockReturnValue({
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
       allAccounts: [{ address: '0x123', type: 'eoa', namespace: 'eip155' }],
       caipAddress: 'eip155:1:0x123',
       status: 'connected',

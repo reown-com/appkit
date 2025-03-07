@@ -6,12 +6,7 @@ import { AppKit } from '../../src/client/appkit.js'
 import { emitter, mockEvmAdapter, solanaEmitter } from '../mocks/Adapter'
 import { mainnet, solana, unsupportedNetwork } from '../mocks/Networks'
 import { mockOptions } from '../mocks/Options'
-import {
-  mockBlockchainApiController,
-  mockChainControllerStateWithUnsupportedChain,
-  mockStorageUtil,
-  mockWindowAndDocument
-} from '../test-utils'
+import { mockBlockchainApiController, mockStorageUtil, mockWindowAndDocument } from '../test-utils'
 
 mockWindowAndDocument()
 mockStorageUtil()
@@ -97,7 +92,8 @@ describe('Listeners', () => {
       features: { email: false, socials: [] }
     })
 
-    mockChainControllerStateWithUnsupportedChain()
+    ChainController.state.activeChain = mainnet.chainNamespace
+    ChainController.state.activeCaipNetwork = unsupportedNetwork
 
     await appKit['syncAccount']({
       address: '0x123',

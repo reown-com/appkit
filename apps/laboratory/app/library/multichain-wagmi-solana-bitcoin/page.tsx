@@ -49,7 +49,7 @@ const modal = createAppKit({
 
 ThemeStore.setModal(modal)
 
-export default function MultiChainWagmiSolana() {
+export default function Page() {
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
