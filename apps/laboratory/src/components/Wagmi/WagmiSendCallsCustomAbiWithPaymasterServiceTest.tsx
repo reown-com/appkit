@@ -83,6 +83,7 @@ function AvailableTestContent() {
   const [contractAbi, setContractAbi] = useState<string>('')
   const [method, setMethod] = useState<string>('')
   const [methodArgs, setMethodArgs] = useState<string>('')
+  const [valueToSend, setValueToSend] = useState<string>('')
   const [contractAddress, setContractAddress] = useState<string>('')
   const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')
   const [isLoading, setLoading] = useState(false)
@@ -148,7 +149,12 @@ function AvailableTestContent() {
       }
     } catch (e) {
       setLoading(false)
-      throw new Error('Provided ABI not a valid JSON array.')
+      toast({
+        title: "SendCalls Error",
+        description: 'Provided ABI not a valid JSON array.',
+        type: "error"
+      })
+      return;
     }
 
     let args: Array<unknown> = []
@@ -159,8 +165,15 @@ function AvailableTestContent() {
       }
     } catch (e) {
       setLoading(false)
-      throw new Error('Provided method args not a valid JSON array.')
+      toast({
+        title: "SendCalls Error",
+        description: 'Provided method args not a valid JSON array.',
+        type: "error"
+      })
+      return;
     }
+
+    let value: number | undefined = parseFloat(valueToSend)
 
     const callData = encodeFunctionData({
       abi,
@@ -170,7 +183,8 @@ function AvailableTestContent() {
 
     const testTransaction = {
       to: contractAddress as `0x${string}`,
-      data: callData
+      data: callData,
+      value: Number.isNaN(value)? undefined : value
     }
 
     sendCalls({
@@ -222,6 +236,15 @@ function AvailableTestContent() {
         placeholder="Method args [...]"
         onChange={e => setMethodArgs(e.target.value)}
         value={methodArgs}
+        isDisabled={isLoading}
+        whiteSpace="nowrap"
+        textOverflow="ellipsis"
+      />
+
+      <Input
+        placeholder="Value (Eg 0.000001) (Optional)"
+        onChange={e => setValueToSend(e.target.value)}
+        value={valueToSend}
         isDisabled={isLoading}
         whiteSpace="nowrap"
         textOverflow="ellipsis"
