@@ -955,9 +955,9 @@ describe('Base Public methods', () => {
     vi.spyOn(CoreHelperUtil, 'getPlainAddress')
 
     const appKit = new AppKit(mockOptions)
-    const result = appKit.getAccount('eip155')
+    const account = appKit.getAccount('eip155')
 
-    expect(result).toEqual({
+    expect(account).toEqual({
       allAccounts: [{ address: '0x123', type: 'eoa', namespace: 'eip155' }],
       caipAddress: 'eip155:1:0x123',
       address: '0x123',
