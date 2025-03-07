@@ -22,7 +22,6 @@ import {
   writeContract as wagmiWriteContract,
   waitForTransactionReceipt,
   watchAccount,
-  watchConnections,
   watchConnectors,
   watchPendingTransactions
 } from '@wagmi/core'
