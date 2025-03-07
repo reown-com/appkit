@@ -5,6 +5,10 @@ import type { Ref } from 'lit/directives/ref.js'
 
 import { ConnectionController, CoreHelperUtil, SendController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'
 

@@ -12,13 +12,13 @@
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@tanstack/react-query": "5.56.2",
-    "@wagmi/core": "2.16.4",
-    "next": "14.2.3",
+    "@wagmi/core": "2.16.5",
+    "next": "14.2.24",
     "next-themes": "0.4.3",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "viem": "2.23.0",
-    "wagmi": "2.14.11"
+    "viem": "2.23.5",
+    "wagmi": "2.14.12"
   },
   "devDependencies": {
     "@types/node": "22.13.4",

@@ -2,7 +2,7 @@ import { proxy, subscribe as sub } from 'valtio/vanilla'
 
 import type { Transaction } from '@reown/appkit-common'
 import type { CaipNetworkId } from '@reown/appkit-common'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { AccountController } from './AccountController.js'
 import { BlockchainApiController } from './BlockchainApiController.js'

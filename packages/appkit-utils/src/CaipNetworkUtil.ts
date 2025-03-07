@@ -94,15 +94,6 @@ export const CaipNetworksUtil = {
     return rpcUrl
   },
 
-  isCaipNetworkId(networkId: string): networkId is CaipNetworkId {
-    const sections = networkId.split(':')
-    const namespace = sections[0]
-
-    return (
-      sections.filter(Boolean).length === 2 && (namespace as string) in ConstantsUtil.CHAIN_NAME_MAP
-    )
-  },
-
   isCaipNetwork(network: AppKitNetwork): network is CaipNetwork {
     return 'chainNamespace' in network && 'caipNetworkId' in network
   },
