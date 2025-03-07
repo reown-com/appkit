@@ -46,7 +46,8 @@ export const WcHelpersUtil = {
           'wallet_grantPermissions',
           'wallet_revokePermissions',
           //EIP-7811
-          'wallet_getAssets'
+          'wallet_getAssets',
+          'wallet_checkout'
         ]
       case 'bip122':
         return ['sendTransfer', 'signMessage', 'signPsbt', 'getAccountAddresses']
