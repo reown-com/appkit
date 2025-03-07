@@ -127,11 +127,14 @@ export class WuiIcon extends LitElement {
 
   @property() public color: ColorType = 'fg-300'
 
+  @property() public aspectRatio = '1 / 1'
+
   // -- Render -------------------------------------------- //
   public override render() {
     this.style.cssText = `
       --local-color: ${`var(--wui-color-${this.color});`}
       --local-width: ${`var(--wui-icon-size-${this.size});`}
+      --local-aspect-ratio: ${this.aspectRatio}
     `
 
     return html`${until(getSvg(this.name), html`<div class="fallback"></div>`)}`

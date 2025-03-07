@@ -50,6 +50,7 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
         alignItems="center"
         .padding=${['0', 'xl', 'xl', 'xl']}
         gap="xl"
+        class="w3m-connecting-wc-qrcode"
       >
         <wui-shimmer borderRadius="l" width="100%"> ${this.qrCodeTemplate()} </wui-shimmer>
 
@@ -59,6 +60,10 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
         ${this.copyTemplate()}
       </wui-flex>
       <w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links>
+      <wui-flex justifyContent="center" alignItems="center" gap="xs">
+        <wui-text variant="small-500" color="fg-100" class="ux-by-reown"> UX by </wui-text>
+        <wui-icon name="reown" aspectRatio="3 / 4"></wui-icon>
+      </wui-flex>
     `
   }
 
