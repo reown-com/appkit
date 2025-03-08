@@ -42,10 +42,18 @@ export class WuiQrCode extends LitElement {
      --local-icon-color: ${this.color ?? DEFAULT_ICON_COLOR}
     `
 
-    return html`${this.templateVisual()} ${this.templateSvg()}`
+    return html`${this.templateVisual()} ${this.templateSvg()}${this.uxByReownTemplate()}`
   }
 
   // -- Private ------------------------------------------- //
+  private uxByReownTemplate() {
+    return html`
+      <wui-text variant="caption-400" color="fg-100" class="ux-by-reown">
+        <span>UX by</span>
+        <wui-icon size="inherit" color="inherit" name="reown"></wui-icon>
+      </wui-text>
+    `
+  }
   private templateSvg() {
     const size = this.theme === 'light' ? this.size : this.size - 16 * 2
 

@@ -151,6 +151,7 @@ export type IconType =
   | 'plus'
   | 'qrCode'
   | 'recycleHorizontal'
+  | 'reown'
   | 'refresh'
   | 'search'
   | 'send'
