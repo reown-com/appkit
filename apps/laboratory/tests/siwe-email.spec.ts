@@ -50,9 +50,8 @@ emailSiweTest.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
-emailSiweTest('it should sign', async ({ library }) => {
-  const namespace = library === 'solana' ? 'solana' : 'eip155'
-  await page.sign(namespace)
+emailSiweTest('it should sign', async () => {
+  await page.sign()
   await page.approveSign()
   await validator.expectAcceptedSign()
 })
@@ -64,23 +63,21 @@ emailSiweTest('it should upgrade wallet', async ({ library }) => {
   await page.closeModal()
 })
 
-emailSiweTest('it should reject sign', async ({ library }) => {
-  const namespace = library === 'solana' ? 'solana' : 'eip155'
-  await page.sign(namespace)
+emailSiweTest('it should reject sign', async () => {
+  await page.sign()
   await page.rejectSign()
   await validator.expectRejectedSign()
 })
 
-emailSiweTest('it should switch network and sign', async ({ library }) => {
+emailSiweTest('it should switch network and sign', async () => {
   let targetChain = 'Polygon'
-  const namespace = library === 'solana' ? 'solana' : 'eip155'
 
   await page.switchNetwork(targetChain)
   await validator.expectUnauthenticated()
   await page.promptSiwe()
   await page.approveSign()
 
-  await page.sign(namespace)
+  await page.sign()
   await page.approveSign()
   await validator.expectAcceptedSign()
 
@@ -90,7 +87,7 @@ emailSiweTest('it should switch network and sign', async ({ library }) => {
   await page.promptSiwe()
   await page.approveSign()
 
-  await page.sign(namespace)
+  await page.sign()
   await page.approveSign()
   await validator.expectAcceptedSign()
 })
