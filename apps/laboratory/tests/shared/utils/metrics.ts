@@ -3,11 +3,52 @@ import {
   type MetricDatum,
   type PutMetricDataCommandInput
 } from '@aws-sdk/client-cloudwatch'
+import type { TestInfo } from '@playwright/test'
 
+import { timeEnd, timeStart } from '../../shared/utils/logs'
 import type { TimingRecords } from '../fixtures/timing-fixture'
 
+export const CANARY_TAG = '@canary'
+export const CANARY_METRIC_NAME_ANNOTATION = 'canary-metric-name'
+
+export function getCanaryAnnotation(metricName: string) {
+  return { type: CANARY_METRIC_NAME_ANNOTATION, description: metricName }
+}
+
+export function getCanaryTagAndAnnotation(metricName: string) {
+  return { tag: CANARY_TAG, annotation: getCanaryAnnotation(metricName) }
+}
+
+export async function afterEachCanary(testInfo: TestInfo, timingRecords: TimingRecords) {
+  if (testInfo.tags.includes(CANARY_TAG)) {
+    const annotation = testInfo.annotations.find(a => a.type === CANARY_METRIC_NAME_ANNOTATION)
+    if (!annotation) {
+      throw new Error('No canary annotation found')
+    }
+    const metricName = annotation.description
+    if (!metricName) {
+      throw new Error('Metric name must be defined')
+    }
+    const env = process.env['ENVIRONMENT'] || 'dev'
+    const region = process.env['REGION'] || 'eu-central-1'
+    if (env !== 'dev') {
+      timeStart('uploadCanaryResultsToCloudWatch')
+      await uploadCanaryResultsToCloudWatch(
+        env,
+        region,
+        'https://appkit-lab.reown.org/',
+        metricName,
+        testInfo.status === 'passed',
+        testInfo.duration,
+        timingRecords
+      )
+      timeEnd('uploadCanaryResultsToCloudWatch')
+    }
+  }
+}
+
 // eslint-disable-next-line func-style
-export const uploadCanaryResultsToCloudWatch = async (
+const uploadCanaryResultsToCloudWatch = async (
   env: string,
   region: string,
   target: string,
