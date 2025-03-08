@@ -5,6 +5,7 @@ import { useAppKitAccount } from '@reown/appkit/react'
 
 import { WagmiDisconnectTest } from './WagmiDisconnectTest'
 import { WagmiGetCallsStatusTest } from './WagmiGetCallsStatusTest'
+import { WagmiSendCallsCustomAbiWithPaymasterServiceTest } from './WagmiSendCallsCustomAbiWithPaymasterServiceTest'
 import { WagmiSendCallsTest } from './WagmiSendCallsTest'
 import { WagmiSendCallsWithPaymasterServiceTest } from './WagmiSendCallsWithPaymasterServiceTest'
 import { WagmiSendUSDCTest } from './WagmiSendUSDCTest'
@@ -84,6 +85,13 @@ export function WagmiTests({ config }: IProps) {
               Send Calls (Paymaster Service)
             </Heading>
             <WagmiSendCallsWithPaymasterServiceTest />
+          </Box>
+
+          <Box>
+            <Heading size="xs" textTransform="uppercase" pb="2">
+              Send Calls with custom abi (Paymaster Service)
+            </Heading>
+            <WagmiSendCallsCustomAbiWithPaymasterServiceTest />
           </Box>
 
           <Box>
