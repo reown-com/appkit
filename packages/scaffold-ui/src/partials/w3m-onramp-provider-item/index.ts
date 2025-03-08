@@ -35,7 +35,7 @@ export class W3mOnRampProviderItem extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.disabled}>
+      <button ?disabled=${this.disabled} @click=${this.onClick} ontouchstart>
         <wui-visual name=${ifDefined(this.name)} class="provider-image"></wui-visual>
         <wui-flex flexDirection="column" gap="4xs">
           <wui-text variant="paragraph-500" color="fg-100">${this.label}</wui-text>
