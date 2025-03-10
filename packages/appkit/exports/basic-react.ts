@@ -1,4 +1,4 @@
-import { CoreHelperUtil, type UseAppKitNetworkReturn } from '@reown/appkit-core'
+import { type UseAppKitNetworkReturn } from '@reown/appkit-core'
 import { useAppKitNetworkCore } from '@reown/appkit-core/react'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 
@@ -24,11 +24,7 @@ export function createAppKit(options: CreateAppKit) {
   if (!modal) {
     modal = new AppKit({
       ...options,
-      sdkVersion: CoreHelperUtil.generateSdkVersion(
-        options.adapters ?? [],
-        'react',
-        PACKAGE_VERSION
-      ),
+      sdkVersion: `react-basic-${PACKAGE_VERSION}`,
       basic: true
     })
     getAppKit(modal)

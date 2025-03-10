@@ -1,6 +1,6 @@
 import { type Ref, onUnmounted, ref } from 'vue'
 
-import { ChainController, CoreHelperUtil, type UseAppKitNetworkReturn } from '@reown/appkit-core'
+import { ChainController, type UseAppKitNetworkReturn } from '@reown/appkit-core'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 
 import { AppKit } from '../src/client/appkit-basic.js'
@@ -26,7 +26,7 @@ export function createAppKit(options: CreateAppKit) {
     modal = new AppKit({
       ...options,
       basic: true,
-      sdkVersion: CoreHelperUtil.generateSdkVersion(options.adapters ?? [], 'html', PACKAGE_VERSION)
+      sdkVersion: `vue-basic-${PACKAGE_VERSION}`
     })
     getAppKit(modal)
   }
