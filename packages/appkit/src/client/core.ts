@@ -883,6 +883,8 @@ export abstract class AppKitCore {
           chainId,
           chainNamespace
         })
+      } else {
+        this.setStatus('disconnected', chainNamespace)
       }
 
       await ChainController.setApprovedCaipNetworksData(chainNamespace)
