@@ -136,9 +136,8 @@ export class W3mModal extends LitElement {
 
   private footerTemplate() {
     const footerViews: RouterControllerState['view'][] = [
-      'ConnectingExternal',
-      'ConnectingWalletConnect',
       'Connect',
+      'ConnectingWalletConnect',
       'ConnectingWalletConnectBasic'
     ]
     if (footerViews.includes(RouterController.state.view)) {
