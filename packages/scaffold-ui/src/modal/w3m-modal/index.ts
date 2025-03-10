@@ -72,7 +72,7 @@ export class W3mModal extends LitElement {
         OptionsController.subscribeKey('enableEmbedded', val => (this.enableEmbedded = val)),
         ConnectorController.subscribeKey('filterByNamespace', val => {
           if (this.filterByNamespace !== val) {
-            ApiController.fetchRecommendedWallets(val)
+            ApiController.fetchRecommendedWallets()
             this.filterByNamespace = val
           }
         })

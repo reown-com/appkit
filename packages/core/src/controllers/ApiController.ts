@@ -167,12 +167,12 @@ export const ApiController = {
     }
   },
 
-  async fetchRecommendedWallets(chains?: string) {
+  async fetchRecommendedWallets() {
     try {
       state.isFetchingRecommendedWallets = true
       const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
       const exclude = [...(excludeWalletIds ?? []), ...(featuredWalletIds ?? [])].filter(Boolean)
-      const caipNetworkIds = chains ?? ChainController.getRequestedCaipNetworkIds().join(',')
+      const caipNetworkIds = ChainController.getRequestedCaipNetworkIds().join(',')
 
       const { data, count } = await api.get<ApiGetWalletsResponse>({
         path: '/getWallets',
@@ -204,6 +204,7 @@ export const ApiController = {
 
   async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
+    const caipNetworkIds = ChainController.getRequestedCaipNetworkIds().join(',')
 
     const exclude = [
       ...state.recommended.map(({ id }) => id),
@@ -216,7 +217,7 @@ export const ApiController = {
         ...ApiController._getSdkProperties(),
         page: String(page),
         entries,
-        chains: ChainController.state.activeCaipNetwork?.caipNetworkId,
+        chains: caipNetworkIds,
         include: includeWalletIds?.join(','),
         exclude: exclude.join(',')
       }
@@ -236,13 +237,15 @@ export const ApiController = {
   },
 
   async initializeExcludedWalletRdns({ ids }: { ids: string[] }) {
+    const caipNetworkIds = ChainController.getRequestedCaipNetworkIds().join(',')
+
     const { data } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       params: {
         ...ApiController._getSdkProperties(),
         page: '1',
         entries: String(ids.length),
-        chains: ChainController.state.activeCaipNetwork?.caipNetworkId,
+        chains: caipNetworkIds,
         include: ids?.join(',')
       }
     })
@@ -259,6 +262,8 @@ export const ApiController = {
   async searchWallet({ search, badge }: Pick<ApiGetWalletsRequest, 'search' | 'badge'>) {
     const { includeWalletIds, excludeWalletIds } = OptionsController.state
     state.search = []
+    const caipNetworkIds = ChainController.getRequestedCaipNetworkIds().join(',')
+
     const { data } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       params: {
@@ -267,7 +272,7 @@ export const ApiController = {
         entries: '100',
         search: search?.trim(),
         badge_type: badge,
-        chains: ChainController.state.activeCaipNetwork?.caipNetworkId,
+        chains: caipNetworkIds,
         include: includeWalletIds?.join(','),
         exclude: excludeWalletIds?.join(',')
       }

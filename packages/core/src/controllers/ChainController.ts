@@ -739,7 +739,13 @@ export const ChainController = {
     return chain?.networkState?.caipNetwork || chain?.caipNetworks?.[0]
   },
 
-  getRequestedCaipNetworkIds(namespace?: ChainNamespace) {
+  /**
+   * Get the requested CaipNetwork IDs for a given namespace. If namespace is not provided, all requested CaipNetwork IDs will be returned
+   * @param namespace - The namespace to get the requested CaipNetwork IDs for
+   * @returns The requested CaipNetwork IDs
+   */
+  getRequestedCaipNetworkIds() {
+    const namespace = ConnectorController.state.filterByNamespace
     const chains = namespace ? [state.chains.get(namespace)] : Array.from(state.chains.values())
 
     return chains
