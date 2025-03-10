@@ -368,17 +368,19 @@ export class AppKit extends AppKitCore {
       this.setCaipNetwork(caipNetwork)
     } else {
       const currentNamespaceProviderType = ProviderUtil.getProviderId(currentNamespace)
-      const isCurrentNamespaceAuthConnector =
+      const isCurrentNamespaceAuthProvider =
         currentNamespaceProviderType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH
-      const providerType = ProviderUtil.getProviderId(networkNamespace)
-      const isNamespaceAuthConnector = providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH
-      const isNamespaceSupportsAuthConnector =
+
+      const newNamespaceProviderType = ProviderUtil.getProviderId(networkNamespace)
+      const isNewNamespaceAuthProvider =
+        newNamespaceProviderType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH
+      const isNewNamespaceSupportsAuthConnector =
         ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.includes(networkNamespace)
 
       if (
         // If the current namespace is one of the auth connector supported chains, when switching to other supported namespace, we should use the auth connector
-        (isNamespaceAuthConnector || isCurrentNamespaceAuthConnector) &&
-        isNamespaceSupportsAuthConnector
+        (isCurrentNamespaceAuthProvider || isNewNamespaceAuthProvider) &&
+        isNewNamespaceSupportsAuthConnector
       ) {
         try {
           ChainController.state.activeChain = caipNetwork.chainNamespace
@@ -396,10 +398,10 @@ export class AppKit extends AppKitCore {
           await adapter?.switchNetwork({
             caipNetwork,
             provider: this.authProvider,
-            providerType
+            providerType: newNamespaceProviderType
           })
         }
-      } else if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
+      } else if (newNamespaceProviderType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
         this.setCaipNetwork(caipNetwork)
         this.syncWalletConnectAccount()
       } else {
