@@ -362,17 +362,15 @@ export class AppKit extends AppKitCore {
     if (caipNetwork.chainNamespace === ChainController.state.activeChain && namespaceAddress) {
       const adapter = this.getAdapter(networkNamespace)
       const provider = ProviderUtil.getProvider(networkNamespace)
-      const providerType = ProviderUtil.state.providerIds[networkNamespace]
+      const providerType = ProviderUtil.getProviderId(networkNamespace)
 
       await adapter?.switchNetwork({ caipNetwork, provider, providerType })
       this.setCaipNetwork(caipNetwork)
     } else {
-      const currentNamespaceProviderType = currentNamespace
-        ? ProviderUtil.state.providerIds[currentNamespace]
-        : undefined
+      const currentNamespaceProviderType = ProviderUtil.getProviderId(currentNamespace)
       const isCurrentNamespaceAuthConnector =
         currentNamespaceProviderType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH
-      const providerType = ProviderUtil.state.providerIds[networkNamespace]
+      const providerType = ProviderUtil.getProviderId(networkNamespace)
       const isNamespaceAuthConnector = providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH
       const isNamespaceSupportsAuthConnector =
         ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.includes(networkNamespace)

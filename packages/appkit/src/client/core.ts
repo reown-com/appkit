@@ -410,7 +410,7 @@ export abstract class AppKitCore {
         const namespace = ChainController.state.activeChain as ChainNamespace
         const adapter = this.getAdapter(namespace)
         const provider = ProviderUtil.getProvider(namespace)
-        const providerType = ProviderUtil.state.providerIds[namespace]
+        const providerType = ProviderUtil.getProviderId(namespace)
 
         await adapter?.disconnect({ provider, providerType })
 
@@ -555,8 +555,7 @@ export abstract class AppKitCore {
   }
 
   protected getApprovedCaipNetworksData() {
-    const providerType =
-      ProviderUtil.state.providerIds[ChainController.state.activeChain as ChainNamespace]
+    const providerType = ProviderUtil.getProviderId(ChainController.state.activeChain)
 
     if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
       const namespaces = this.universalProvider?.session?.namespaces
@@ -585,17 +584,16 @@ export abstract class AppKitCore {
     const namespaceAddress = this.getAddressByChainNamespace(caipNetwork.chainNamespace)
 
     if (namespaceAddress) {
+      const provider = ProviderUtil.getProvider(networkNamespace)
+      const providerType = ProviderUtil.getProviderId(networkNamespace)
+
       if (caipNetwork.chainNamespace === ChainController.state.activeChain) {
         const adapter = this.getAdapter(networkNamespace)
-        const provider = ProviderUtil.getProvider(networkNamespace)
-        const providerType = ProviderUtil.state.providerIds[networkNamespace]
 
         await adapter?.switchNetwork({ caipNetwork, provider, providerType })
       } else {
-        const providerType = ProviderUtil.state.providerIds[networkNamespace as ChainNamespace]
-
         this.setCaipNetwork(caipNetwork)
-        if (providerType === 'WALLET_CONNECT') {
+        if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT) {
           this.syncWalletConnectAccount()
         } else {
           const address = this.getAddressByChainNamespace(networkNamespace)
@@ -1393,7 +1391,7 @@ export abstract class AppKitCore {
 
   public getProvider = <T>(namespace: ChainNamespace) => ProviderUtil.getProvider<T>(namespace)
 
-  public getProviderType = (namespace: ChainNamespace) => ProviderUtil.state.providerIds[namespace]
+  public getProviderType = (namespace: ChainNamespace) => ProviderUtil.getProviderId(namespace)
 
   public getPreferredAccountType = () =>
     AccountController.state.preferredAccountType as W3mFrameTypes.AccountType
@@ -1524,9 +1522,7 @@ export abstract class AppKitCore {
   }
 
   public getWalletProviderType() {
-    return ChainController.state.activeChain
-      ? ProviderUtil.state.providerIds[ChainController.state.activeChain]
-      : null
+    return ProviderUtil.getProviderId(ChainController.state.activeChain)
   }
 
   public subscribeProviders(callback: (providers: ProviderStoreUtilState['providers']) => void) {
