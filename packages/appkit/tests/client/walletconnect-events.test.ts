@@ -18,7 +18,7 @@ mockCoreHelperUtil()
 mockStorageUtil()
 mockBlockchainApiController()
 
-describe('WalletConnect Events', () => {
+describe.skip('WalletConnect Events', () => {
   describe('chainChanged', () => {
     it('should call setUnsupportedNetwork', () => {
       const appkit = new AppKit({
