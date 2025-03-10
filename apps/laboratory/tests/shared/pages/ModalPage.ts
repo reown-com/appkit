@@ -33,6 +33,7 @@ export type ModalFlavor =
   | 'wallet-button'
   | 'siwe'
   | 'siwx'
+  | 'core-sign-client'
   | 'all'
 
 function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
@@ -45,7 +46,8 @@ function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
     'wagmi-verify-evil': maliciousUrl,
     'ethers-verify-valid': `${baseUrl}library/ethers-verify-valid/`,
     'ethers-verify-domain-mismatch': `${baseUrl}library/ethers-verify-domain-mismatch/`,
-    'ethers-verify-evil': maliciousUrl
+    'ethers-verify-evil': maliciousUrl,
+    'core-sign-client': `${baseUrl}core/sign-client/`
   }
 
   return urlsByFlavor[flavor] || `${baseUrl}library/${library}-${flavor}/`

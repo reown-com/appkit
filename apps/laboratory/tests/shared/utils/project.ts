@@ -10,6 +10,8 @@ const MULTICHAIN_LIBRARIES = [
   'multichain-wagmi-solana'
 ] as const
 
+const CORE_LIRARIES = ['core-sign-client'] as const
+
 const LIBRARY_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
   LIBRARIES.map(library => ({ device, library }))
 )
@@ -20,6 +22,10 @@ const LIBRARY_MOBILE_PERMUTATIONS = MOBILE_DEVICES.flatMap(device =>
 
 const MULTICHAIN_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
   MULTICHAIN_LIBRARIES.map(library => ({ device, library }))
+)
+
+const CORE_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
+  CORE_LIRARIES.map(library => ({ device, library }))
 )
 
 interface UseOptions {
@@ -201,8 +207,14 @@ export function getProjects() {
   const libraryDesktopProjects = LIBRARY_PERMUTATIONS.map(createProject)
   const libraryMobileProjects = LIBRARY_MOBILE_PERMUTATIONS.map(createProject)
   const multichainProjects = MULTICHAIN_PERMUTATIONS.map(createProject)
+  const coreProjects = CORE_PERMUTATIONS.map(createProject)
 
-  const projects = [...libraryDesktopProjects, ...libraryMobileProjects, ...multichainProjects]
+  const projects = [
+    ...libraryDesktopProjects,
+    ...libraryMobileProjects,
+    ...multichainProjects,
+    ...coreProjects
+  ]
 
   return projects
 }

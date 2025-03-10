@@ -47,6 +47,8 @@
     "playwright:test:multichain-ethers5-auth": "playwright test --grep multichain-ethers5-solana-email.spec.ts",
     "playwright:test:multichain-ethers5-auth-siwe": "playwright test --grep multichain-ethers5-solana-email-siwe.spec.ts",
     "playwright:test:multichain-ethers5-siwe": "playwright test --grep multichain-ethers5-solana-siwe.spec.ts",
+    "playwright:test:core-sign-client": "playwright test --grep sign-client.spec.ts",
+    "playwright:debug:core-sign-client": "pnpm playwright:test:core-sign-client --debug",
     "playwright:debug": "pnpm playwright:test --debug",
     "playwright:debug:metamask": "pnpm playwright:test:metamask --debug",
     "playwright:debug:mobile-wallet-features": "pnpm playwright:test:mobile-wallet-features --debug",
