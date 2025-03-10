@@ -35,12 +35,12 @@ async function getAssetDiscoveryCapabilities({
   try {
     // For WalletConnect, also check CAIP-25
     if (walletProviderType === 'WALLET_CONNECT') {
-      const scopedProperties = JSON.parse(
-        //@ts-expect-error - currently scopedProperties is not types
-        provider.session?.scopedProperties || '{}'
-      )
-      const eip155Capabilities = scopedProperties?.eip155
-      const walletService = eip155Capabilities?.walletService
+      const eip155Capabilities =
+        typeof provider.session?.scopedProperties?.['eip155'] === 'string'
+          ? JSON.parse(provider.session.scopedProperties['eip155'])
+          : {}
+
+      const walletService = eip155Capabilities?.walletService || []
 
       // Handle case where walletService is undefined or not an array
       if (!Array.isArray(walletService)) {
@@ -95,7 +95,7 @@ function processAssetsToBalances(chainAssets: Asset[], chainIdNum: number): Toke
 async function getAssetsViaWalletService(
   request: WalletGetAssetsRPCRequest,
   walletServiceUrl: string
-): Promise<Record<Hex, Asset[]>[]> {
+): Promise<Record<Hex, Asset[]>> {
   const projectId = process.env['NEXT_PUBLIC_PROJECT_ID']
   if (!projectId) {
     throw new Error('NEXT_PUBLIC_PROJECT_ID is not set')
@@ -105,7 +105,7 @@ async function getAssetsViaWalletService(
     jsonrpc: '2.0',
     id: Math.floor(Math.random() * 1000000),
     method: 'wallet_getAssets',
-    params: [request]
+    params: request
   }
 
   const url = new URL(walletServiceUrl)
@@ -125,13 +125,13 @@ async function getAssetsViaWalletService(
 async function getAssetsViaProvider(
   provider: UniversalProvider,
   request: WalletGetAssetsRPCRequest
-): Promise<Record<Hex, Asset[]>[]> {
+): Promise<Record<Hex, Asset[]>> {
   const response: Record<Hex, Asset[]> = await provider.request({
     method: 'wallet_getAssets',
     params: [request]
   })
 
-  return [response]
+  return response
 }
 
 export function useWalletGetAssets() {
@@ -158,7 +158,7 @@ export function useWalletGetAssets() {
         walletProviderType
       })
 
-      let assetsResponse: Record<Hex, Asset[]>[] = []
+      let assetsResponse: Record<Hex, Asset[]> = {}
 
       if (capabilities.hasAssetDiscovery) {
         if (
@@ -173,12 +173,9 @@ export function useWalletGetAssets() {
           assetsResponse = await getAssetsViaProvider(walletProvider, request)
         }
 
-        const assetsObject = assetsResponse.find(item => chainIdAsHex in item)
-        if (assetsObject) {
-          const chainAssets = assetsObject[chainIdAsHex]
-          if (chainAssets && chainAssets.length > 0) {
-            return processAssetsToBalances(chainAssets, parseInt(chainIdAsHex.slice(2), 16))
-          }
+        const chainAssets = assetsResponse[chainIdAsHex]
+        if (chainAssets && chainAssets.length > 0) {
+          return processAssetsToBalances(chainAssets, parseInt(chainIdAsHex.slice(2), 16))
         }
       }
 
