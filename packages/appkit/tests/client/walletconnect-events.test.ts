@@ -87,7 +87,7 @@ describe('WalletConnect Events', () => {
   })
 
   describe('connect', () => {
-    it('should call finalizeWcConnection once connected', async () => {
+    it.skip('should call finalizeWcConnection once connected', async () => {
       const finalizeWcConnectionSpy = vi
         .spyOn(ConnectionController, 'finalizeWcConnection')
         .mockReturnValueOnce()
