@@ -12,7 +12,7 @@ import {
   ModalController,
   OptionsController,
   StorageUtil
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-avatar'
 import '@reown/appkit-ui/wui-banner-img'

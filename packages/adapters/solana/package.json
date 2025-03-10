@@ -56,7 +56,7 @@
     "@wallet-standard/features": "1.0.3",
     "@reown/appkit": "workspace:*",
     "@reown/appkit-common": "workspace:*",
-    "@reown/appkit-core": "workspace:*",
+    "@reown/appkit-controllers": "workspace:*",
     "@reown/appkit-polyfills": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",

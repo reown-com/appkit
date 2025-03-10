@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit'
 
-import { RouterController } from '@reown/appkit-core'
+import { RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon-box'

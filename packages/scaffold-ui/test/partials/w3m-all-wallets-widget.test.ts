@@ -12,12 +12,10 @@ import {
   CoreHelperUtil,
   EventsController,
   OptionsController,
-  type OptionsControllerState,
   RouterController,
   type SdkVersion
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
-import type { OptionsControllerStateInternal } from '../../../core/dist/types/src/controllers/OptionsController'
 import { W3mAllWalletsWidget } from '../../src/partials/w3m-all-wallets-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
@@ -32,13 +30,13 @@ const mockConnectorState: ConnectorControllerState = {
   filterByNamespace: undefined
 }
 
-const mockOptionsState: OptionsControllerState & OptionsControllerStateInternal = {
+const mockOptionsState: any = {
   allWallets: 'SHOW' as const,
   projectId: 'test-project-id',
   sdkVersion: '1.0.0' as SdkVersion,
   sdkType: 'appkit' as const,
   defaultAccountTypes: []
-} as unknown as OptionsControllerState & OptionsControllerStateInternal
+} as unknown as any
 
 const mockConnector: ConnectorWithProviders = {
   id: WALLET_CONNECT_ID,
@@ -92,7 +90,7 @@ describe('W3mAllWalletsWidget', () => {
     })
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       allWallets: 'HIDE' as const
-    } as unknown as OptionsControllerState & OptionsControllerStateInternal)
+    } as unknown as any)
 
     const element: W3mAllWalletsWidget = await fixture(
       html`<w3m-all-wallets-widget></w3m-all-wallets-widget>`
@@ -108,7 +106,7 @@ describe('W3mAllWalletsWidget', () => {
     })
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       allWallets: 'ONLY_MOBILE' as const
-    } as unknown as OptionsControllerState & OptionsControllerStateInternal)
+    } as unknown as any)
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
 
     const element: W3mAllWalletsWidget = await fixture(

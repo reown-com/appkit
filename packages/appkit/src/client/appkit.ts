@@ -14,7 +14,7 @@ import {
   ConstantsUtil as CoreConstantsUtil,
   EventsController,
   type Metadata
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import {
   AccountController,
   AlertController,
@@ -23,7 +23,7 @@ import {
   OptionsController,
   StorageUtil,
   ThemeController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { ErrorUtil, HelpersUtil, ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
 import { W3mFrameHelpers, W3mFrameProvider } from '@reown/appkit-wallet'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'

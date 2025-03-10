@@ -8,7 +8,7 @@ import {
   ModalController,
   OptionsController,
   RouterController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import type { WuiAccountButton } from '@reown/appkit-ui/wui-account-button'
 
 import { W3mAccountButton } from '../../src/modal/w3m-account-button'

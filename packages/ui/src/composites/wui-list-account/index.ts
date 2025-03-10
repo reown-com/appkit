@@ -7,7 +7,7 @@ import {
   BlockchainApiController,
   ChainController,
   StorageUtil
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import '../../components/wui-image/index.js'

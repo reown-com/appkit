@@ -26,7 +26,7 @@ import {
   SnackController,
   StorageUtil,
   ThemeController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { ProviderUtil } from '../../src/store'

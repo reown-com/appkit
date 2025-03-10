@@ -10,7 +10,7 @@ import {
   OptionsController,
   RouterController,
   SnackController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { ProviderUtil } from '@reown/appkit/store'
 
 import {
