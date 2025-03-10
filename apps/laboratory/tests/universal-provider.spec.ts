@@ -27,7 +27,7 @@ universalProviderTest.beforeAll(async ({ browser }) => {
   // Navigate to universal-provider page
   await browserPage.goto(`${BASE_URL}core/universal-provider/`)
 
-  modalPage = new ModalPage(browserPage, 'library', 'universal-provider')
+  modalPage = new ModalPage(browserPage, 'library', 'core-universal-provider')
   walletPage = new WalletPage(await context.newPage())
   walletValidator = new WalletValidator(walletPage.page)
 
@@ -38,7 +38,7 @@ universalProviderTest.beforeAll(async ({ browser }) => {
   await connectButton.click()
 
   // Get QR code URI and connect from wallet
-  const qrCode = browserPage.locator('wui-qr-code')
+  const qrCode = browserPage.locator('wui-qr-code').nth(1)
   await expect(qrCode).toBeVisible()
   const uri = await qrCode.getAttribute('uri')
   expect(uri).toBeTruthy()
