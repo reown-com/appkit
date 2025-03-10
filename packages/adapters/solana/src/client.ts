@@ -47,6 +47,17 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
     this.wallets = options.wallets
   }
 
+  public override construct(params: AdapterBlueprint.Params): void {
+    super.construct(params)
+    const connectedCaipNetwork = StorageUtil.getActiveCaipNetworkId()
+    const caipNetwork =
+      params.networks?.find(n => n.caipNetworkId === connectedCaipNetwork) || params.networks?.[0]
+    const rpcUrl = caipNetwork?.rpcUrls.default.http[0] as string
+    if (rpcUrl) {
+      SolStoreUtil.setConnection(new Connection(rpcUrl, this.connectionSettings))
+    }
+  }
+
   public override setAuthProvider(w3mFrameProvider: W3mFrameProvider) {
     this.addConnector(
       new AuthProvider({
