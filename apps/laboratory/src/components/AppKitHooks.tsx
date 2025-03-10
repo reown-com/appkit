@@ -33,7 +33,7 @@ export function AppKitHooks() {
           Open
         </Button>
 
-        <Button data-testid="w3m-open-hook-button" onClick={() => open({ view: 'Connect' })}>
+        <Button data-testid="w3m-connect-hook-button" onClick={() => open({ view: 'Connect' })}>
           Connect
         </Button>
 
