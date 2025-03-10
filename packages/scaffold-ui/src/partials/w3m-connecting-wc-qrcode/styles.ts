@@ -30,4 +30,7 @@ export default css`
     border-bottom: 1px solid var(--wui-color-bg-125);
     box-shadow: 0 2px 0 0 var(--wui-color-gray-glass-005);
   }
+  .reown-logo {
+    height: 24px;
+  }
 `

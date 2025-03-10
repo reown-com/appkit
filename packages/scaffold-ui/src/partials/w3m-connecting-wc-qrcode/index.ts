@@ -60,9 +60,14 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
         ${this.copyTemplate()}
       </wui-flex>
       <w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links>
-      <wui-flex justifyContent="center" alignItems="center" gap="xs">
+      <wui-flex
+        justifyContent="center"
+        alignItems="center"
+        gap="xs"
+        .padding=${['s', '0', 's', '0']}
+      >
         <wui-text variant="small-500" color="fg-100" class="ux-by-reown"> UX by </wui-text>
-        <wui-icon name="reown" aspectRatio="3 / 4"></wui-icon>
+        <wui-icon name="reown" aspectRatio="3 / 4" size="xxxl" class="reown-logo"></wui-icon>
       </wui-flex>
     `
   }
