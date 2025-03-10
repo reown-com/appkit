@@ -4,11 +4,13 @@ import { DESKTOP_DEVICES, MOBILE_DEVICES } from '../constants/devices'
 
 const LIBRARIES = ['ethers', 'ethers5', 'wagmi', 'solana'] as const
 const MULTICHAIN_LIBRARIES = [
-  'multichain-basic',
+  'multichain-no-adapters',
   'multichain-ethers-solana',
   'multichain-ethers5-solana',
   'multichain-wagmi-solana'
 ] as const
+
+const CORE_LIRARIES = ['core-sign-client', 'core-universal-provider', 'core'] as const
 
 const LIBRARY_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
   LIBRARIES.map(library => ({ device, library }))
@@ -20,6 +22,10 @@ const LIBRARY_MOBILE_PERMUTATIONS = MOBILE_DEVICES.flatMap(device =>
 
 const MULTICHAIN_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
   MULTICHAIN_LIBRARIES.map(library => ({ device, library }))
+)
+
+const CORE_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
+  CORE_LIRARIES.map(library => ({ device, library }))
 )
 
 interface UseOptions {
@@ -61,6 +67,8 @@ const SINGLE_ADAPTER_EVM_TESTS = [
   'email-after-farcaster.spec.ts'
 ]
 
+const CORE_TESTS = ['core-sign-client.spec.ts', 'core-universal-provider.spec.ts', 'core.spec.ts']
+
 const SINGLE_ADAPTER_EVM_MOBILE_TESTS = ['mobile-wallet-features.spec.ts']
 
 const SINGLE_ADAPTER_SOLANA_TESTS = [
@@ -85,6 +93,7 @@ function createRegex(tests: string[], isDesktop = true) {
 // Desktop
 const SINGLE_ADAPTER_EVM_TESTS_REGEX = createRegex(SINGLE_ADAPTER_EVM_TESTS)
 const SINGLE_ADAPTER_SOLANA_TESTS_REGEX = createRegex(SINGLE_ADAPTER_SOLANA_TESTS)
+const CORE_TESTS_REGEX = createRegex(CORE_TESTS)
 
 // Mobile
 const SINGLE_ADAPTER_EVM_MOBILE_REGEX = createRegex(SINGLE_ADAPTER_EVM_MOBILE_TESTS, false)
@@ -92,8 +101,18 @@ const SINGLE_ADAPTER_SOLANA_MOBILE_TESTS_REGEX = createRegex(
   SINGLE_ADAPTER_SOLANA_MOBILE_TESTS,
   false
 )
+const CORE_TESTS_MOBILE_REGEX = createRegex(CORE_TESTS, false)
 
 const customProjectProperties: CustomProjectProperties = {
+  'Desktop Chrome/core-sign-client': {
+    testMatch: CORE_TESTS_REGEX
+  },
+  'Desktop Chrome/core-universal-provider': {
+    testMatch: CORE_TESTS_REGEX
+  },
+  'Desktop Chrome/core': {
+    testMatch: CORE_TESTS_REGEX
+  },
   'Desktop Chrome/ethers': {
     testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
@@ -129,8 +148,8 @@ const customProjectProperties: CustomProjectProperties = {
   'Desktop Firefox/multichain-ethers5-solana': {
     testMatch: /^.*\/multichain-ethers5-.*\.spec\.ts$/u
   },
-  'Desktop Firefox/multichain-basic': {
-    testMatch: /^.*\/multichain-basic\.spec\.ts$/u
+  'Desktop Firefox/multichain-no-adapters': {
+    testMatch: /^.*\/multichain-no-adapters\.spec\.ts$/u
   },
   'Desktop Chrome/multichain-ethers-solana': {
     testMatch: /^.*\/multichain-ethers-.*\.spec\.ts$/u
@@ -141,8 +160,17 @@ const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/multichain-ethers5-solana': {
     testMatch: /^.*\/multichain-ethers5-.*\.spec\.ts$/u
   },
-  'Desktop Chrome/multichain-basic': {
-    testMatch: /^.*\/multichain-basic\.spec\.ts$/u
+  'Desktop Chrome/multichain-no-adapters': {
+    testMatch: /^.*\/multichain-no-adapters\.spec\.ts$/u
+  },
+  'iPhone 12/core-sign-client': {
+    testMatch: CORE_TESTS_MOBILE_REGEX
+  },
+  'iPhone 12/core-universal-provider': {
+    testMatch: CORE_TESTS_MOBILE_REGEX
+  },
+  'iPhone 12/core': {
+    testMatch: CORE_TESTS_MOBILE_REGEX
   },
   'iPhone 12/ethers': {
     testMatch: SINGLE_ADAPTER_EVM_MOBILE_REGEX
@@ -201,8 +229,14 @@ export function getProjects() {
   const libraryDesktopProjects = LIBRARY_PERMUTATIONS.map(createProject)
   const libraryMobileProjects = LIBRARY_MOBILE_PERMUTATIONS.map(createProject)
   const multichainProjects = MULTICHAIN_PERMUTATIONS.map(createProject)
+  const coreProjects = CORE_PERMUTATIONS.map(createProject)
 
-  const projects = [...libraryDesktopProjects, ...libraryMobileProjects, ...multichainProjects]
+  const projects = [
+    ...libraryDesktopProjects,
+    ...libraryMobileProjects,
+    ...multichainProjects,
+    ...coreProjects
+  ]
 
   return projects
 }

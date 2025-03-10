@@ -50,9 +50,14 @@ export class AppKit extends AppKitCore {
   public adapter?: ChainAdapter
 
   // -- Overrides --------------------------------------------------------------
-  public override async open(options: OpenOptions) {
+  public override async open(options?: OpenOptions) {
     // Only open modal when not connected
-    if (!AccountController.state.caipAddress) {
+    const accounts = Object.values(this.universalProvider?.session?.namespaces ?? {}).flatMap(
+      namespace => namespace.accounts
+    )
+    const isConnected = accounts.length > 0
+
+    if (!isConnected) {
       await super.open(options)
     }
   }
