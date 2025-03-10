@@ -2,7 +2,11 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { type CaipAddress, type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+import {
+  type CaipAddress,
+  type CaipNetwork,
+  ConstantsUtil as CommonConstantsUtil
+} from '@reown/appkit-common'
 import {
   ApiController,
   ChainController,
@@ -10,7 +14,6 @@ import {
   ModalController,
   OptionsController,
   RouterController,
-  type RouterControllerState,
   SIWXUtil,
   SnackController,
   ThemeController
@@ -24,6 +27,7 @@ import '../../partials/w3m-alertbar/index.js'
 import '../../partials/w3m-header/index.js'
 import '../../partials/w3m-snackbar/index.js'
 import '../../partials/w3m-tooltip/index.js'
+import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 import '../w3m-router/index.js'
 import styles from './styles.js'
 
@@ -135,12 +139,7 @@ export class W3mModal extends LitElement {
   }
 
   private footerTemplate() {
-    const footerViews: RouterControllerState['view'][] = [
-      'Connect',
-      'ConnectingWalletConnect',
-      'ConnectingWalletConnectBasic'
-    ]
-    if (footerViews.includes(RouterController.state.view)) {
+    if (ConstantsUtil.FOOTER_VIEWS.includes(RouterController.state.view)) {
       return html`<wui-flex>
         <wui-ux-by-reown></wui-ux-by-reown>
       </wui-flex>`
@@ -260,7 +259,8 @@ export class W3mModal extends LitElement {
     const nextNetworkId = nextCaipNetwork?.caipNetworkId?.toString()
     const networkChanged = prevCaipNetworkId && nextNetworkId && prevCaipNetworkId !== nextNetworkId
     const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
-    const isUnsupportedNetwork = this.caipNetwork?.name === ConstantsUtil.UNSUPPORTED_NETWORK_NAME
+    const isUnsupportedNetwork =
+      this.caipNetwork?.name === CommonConstantsUtil.UNSUPPORTED_NETWORK_NAME
 
     /**
      * If user is on connecting external, there is a case that they might select a connector which is in another adapter.
