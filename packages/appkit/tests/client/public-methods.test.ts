@@ -1,5 +1,5 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
-import { beforeAll, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import type { AuthConnector, Connector, SocialProvider } from '@reown/appkit'
 import {
