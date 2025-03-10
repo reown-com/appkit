@@ -13,6 +13,7 @@ import { mainnet } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtonsMultiChain } from '@/src/components/AppKitButtonsMultiChain'
+import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { AppKitInfoMultiChain } from '@/src/components/AppKitInfoMultiChain'
 import { BitcoinTests } from '@/src/components/Bitcoin/BitcoinTests'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
@@ -55,6 +56,7 @@ export default function MultiChainWagmiSolana() {
       <QueryClientProvider client={queryClient}>
         <AppKitButtonsMultiChain />
         <AppKitInfoMultiChain />
+        <AppKitInfo />
         <WagmiTests />
         <SolanaTests />
         <BitcoinTests />
