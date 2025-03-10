@@ -701,10 +701,10 @@ export abstract class AppKitCore {
       const accountAddress = ChainController.getAccountProp('address', chainNamespace)
 
       if (caipNetwork) {
-        if (isSameNamespace && address) {
-          this.syncAccount({ address, chainId, chainNamespace })
-        } else if (accountAddress) {
-          this.syncAccount({ address: accountAddress, chainId, chainNamespace })
+        const account = isSameNamespace && address ? address : accountAddress
+
+        if (account) {
+          this.syncAccount({ address: account, chainId, chainNamespace })
         }
       } else {
         this.setUnsupportedNetwork(chainId)

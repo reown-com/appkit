@@ -288,16 +288,5 @@ export const ConnectorController = {
   clearNamespaceFilter() {
     state.filterByNamespace = undefined
     state.connectors = this.getConnectors()
-  },
-
-  getIsConnectedWithWC() {
-    const chains = Array.from(ChainController.state.chains.values())
-    const isConnectedWithWC = chains.some(chain => {
-      const connectorId = StorageUtil.getConnectedConnectorId(chain.namespace)
-
-      return connectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
-    })
-
-    return isConnectedWithWC
   }
 }
