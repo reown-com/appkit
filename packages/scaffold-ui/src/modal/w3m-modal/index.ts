@@ -2,7 +2,11 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { type CaipAddress, type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+import {
+  type CaipAddress,
+  type CaipNetwork,
+  ConstantsUtil as CommonConstantsUtil
+} from '@reown/appkit-common'
 import {
   ApiController,
   ChainController,
@@ -17,11 +21,13 @@ import {
 import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-card'
 import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-ux-by-reown'
 
 import '../../partials/w3m-alertbar/index.js'
 import '../../partials/w3m-header/index.js'
 import '../../partials/w3m-snackbar/index.js'
 import '../../partials/w3m-tooltip/index.js'
+import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
 import '../w3m-router/index.js'
 import styles from './styles.js'
 
@@ -126,9 +132,20 @@ export class W3mModal extends LitElement {
     >
       <w3m-header></w3m-header>
       <w3m-router></w3m-router>
+      ${this.footerTemplate()}
       <w3m-snackbar></w3m-snackbar>
       <w3m-alertbar></w3m-alertbar>
     </wui-card>`
+  }
+
+  private footerTemplate() {
+    if (ConstantsUtil.FOOTER_VIEWS.includes(RouterController.state.view)) {
+      return html`<wui-flex>
+        <wui-ux-by-reown></wui-ux-by-reown>
+      </wui-flex>`
+    }
+
+    return null
   }
 
   private async onOverlayClick(event: PointerEvent) {
@@ -242,7 +259,8 @@ export class W3mModal extends LitElement {
     const nextNetworkId = nextCaipNetwork?.caipNetworkId?.toString()
     const networkChanged = prevCaipNetworkId && nextNetworkId && prevCaipNetworkId !== nextNetworkId
     const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
-    const isUnsupportedNetwork = this.caipNetwork?.name === ConstantsUtil.UNSUPPORTED_NETWORK_NAME
+    const isUnsupportedNetwork =
+      this.caipNetwork?.name === CommonConstantsUtil.UNSUPPORTED_NETWORK_NAME
 
     /**
      * If user is on connecting external, there is a case that they might select a connector which is in another adapter.
