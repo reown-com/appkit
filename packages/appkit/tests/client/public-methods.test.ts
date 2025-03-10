@@ -945,7 +945,7 @@ describe('Base Public methods', () => {
     )
     ChainController.state.activeCaipNetwork = mainnet
     vi.spyOn(CaipNetworksUtil, 'extendCaipNetworks').mockReturnValue([mainnet])
-    vi.spyOn(ChainController, 'initialize').mockImplementationOnce(() => Promise.resolve())
+    vi.spyOn(ChainController, 'initialize').mockImplementation(() => Promise.resolve())
     vi.spyOn(AccountController, 'setUser').mockImplementation(() => Promise.resolve())
 
     const appKit = new AppKit({
@@ -977,7 +977,7 @@ describe('Base Public methods', () => {
     )
     ChainController.state.activeCaipNetwork = mainnet
     vi.spyOn(CaipNetworksUtil, 'extendCaipNetworks').mockReturnValue([mainnet])
-    vi.spyOn(ChainController, 'initialize').mockImplementationOnce(() => Promise.resolve())
+    vi.spyOn(ChainController, 'initialize').mockImplementation(() => Promise.resolve())
     vi.spyOn(AccountController, 'setUser').mockImplementation(() => Promise.resolve())
 
     const appKit = new AppKit({
