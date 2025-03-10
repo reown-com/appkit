@@ -10,7 +10,7 @@ const MULTICHAIN_LIBRARIES = [
   'multichain-wagmi-solana'
 ] as const
 
-const CORE_LIRARIES = ['core/sign-client', 'core/universal-provider', 'core'] as const
+const CORE_LIRARIES = ['core-sign-client', 'core-universal-provider', 'core'] as const
 
 const LIBRARY_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
   LIBRARIES.map(library => ({ device, library }))
@@ -67,6 +67,8 @@ const SINGLE_ADAPTER_EVM_TESTS = [
   'email-after-farcaster.spec.ts'
 ]
 
+const CORE_TESTS = ['core-sign-client.spec.ts', 'core-universal-provider.spec.ts', 'core.spec.ts']
+
 const SINGLE_ADAPTER_EVM_MOBILE_TESTS = ['mobile-wallet-features.spec.ts']
 
 const SINGLE_ADAPTER_SOLANA_TESTS = [
@@ -91,6 +93,7 @@ function createRegex(tests: string[], isDesktop = true) {
 // Desktop
 const SINGLE_ADAPTER_EVM_TESTS_REGEX = createRegex(SINGLE_ADAPTER_EVM_TESTS)
 const SINGLE_ADAPTER_SOLANA_TESTS_REGEX = createRegex(SINGLE_ADAPTER_SOLANA_TESTS)
+const CORE_TESTS_REGEX = createRegex(CORE_TESTS)
 
 // Mobile
 const SINGLE_ADAPTER_EVM_MOBILE_REGEX = createRegex(SINGLE_ADAPTER_EVM_MOBILE_TESTS, false)
@@ -98,8 +101,18 @@ const SINGLE_ADAPTER_SOLANA_MOBILE_TESTS_REGEX = createRegex(
   SINGLE_ADAPTER_SOLANA_MOBILE_TESTS,
   false
 )
+const CORE_TESTS_MOBILE_REGEX = createRegex(CORE_TESTS, false)
 
 const customProjectProperties: CustomProjectProperties = {
+  'Desktop Chrome/core-sign-client': {
+    testMatch: CORE_TESTS_REGEX
+  },
+  'Desktop Chrome/core-universal-provider': {
+    testMatch: CORE_TESTS_REGEX
+  },
+  'Desktop Chrome/core': {
+    testMatch: CORE_TESTS_REGEX
+  },
   'Desktop Chrome/ethers': {
     testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
@@ -149,6 +162,15 @@ const customProjectProperties: CustomProjectProperties = {
   },
   'Desktop Chrome/multichain-no-adapters': {
     testMatch: /^.*\/multichain-no-adapters\.spec\.ts$/u
+  },
+  'iPhone 12/core-sign-client': {
+    testMatch: CORE_TESTS_MOBILE_REGEX
+  },
+  'iPhone 12/core-universal-provider': {
+    testMatch: CORE_TESTS_MOBILE_REGEX
+  },
+  'iPhone 12/core': {
+    testMatch: CORE_TESTS_MOBILE_REGEX
   },
   'iPhone 12/ethers': {
     testMatch: SINGLE_ADAPTER_EVM_MOBILE_REGEX
