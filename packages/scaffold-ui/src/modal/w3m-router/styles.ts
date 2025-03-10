@@ -10,10 +10,6 @@ export default css`
   div.w3m-router-container {
     transform: translateY(0);
     opacity: 1;
-    border-bottom-left-radius: var(--wui-border-radius-l);
-    border-bottom-right-radius: var(--wui-border-radius-l);
-    border-bottom: 1px solid var(--wui-color-bg-125);
-    box-shadow: 0 2px 0 0 var(--wui-color-gray-glass-005);
   }
 
   div.w3m-router-container[view-direction='prev'] {

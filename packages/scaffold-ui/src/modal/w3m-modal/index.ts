@@ -10,6 +10,7 @@ import {
   ModalController,
   OptionsController,
   RouterController,
+  type RouterControllerState,
   SIWXUtil,
   SnackController,
   ThemeController
@@ -127,10 +128,26 @@ export class W3mModal extends LitElement {
     >
       <w3m-header></w3m-header>
       <w3m-router></w3m-router>
-      <wui-ux-by-reown></wui-ux-by-reown>
+      ${this.footerTemplate()}
       <w3m-snackbar></w3m-snackbar>
       <w3m-alertbar></w3m-alertbar>
     </wui-card>`
+  }
+
+  private footerTemplate() {
+    const footerViews: RouterControllerState['view'][] = [
+      'ConnectingExternal',
+      'ConnectingWalletConnect',
+      'Connect',
+      'ConnectingWalletConnectBasic'
+    ]
+    if (footerViews.includes(RouterController.state.view)) {
+      return html`<wui-flex>
+        <wui-ux-by-reown></wui-ux-by-reown>
+      </wui-flex>`
+    }
+
+    return null
   }
 
   private async onOverlayClick(event: PointerEvent) {
