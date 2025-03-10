@@ -4,7 +4,6 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { type ChainNamespace, ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
 
 import { MobileWalletUtil } from '../utils/MobileWallet.js'
-import { StorageUtil } from '../utils/StorageUtil.js'
 import type { AuthConnector, Connector, WcWallet } from '../utils/TypeUtil.js'
 import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
