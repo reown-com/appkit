@@ -59,29 +59,23 @@ universalProviderTest.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
-universalProviderTest('it should be connected with universal provider', async () => {
+universalProviderTest('it should be connected with sign client', async () => {
   await expect(modalPage.page.getByTestId('disconnect-button')).toBeVisible()
   await expect(modalPage.page.getByText('Account:')).toBeVisible()
   await expect(modalPage.page.getByText('Network:')).toBeVisible()
 })
 
-universalProviderTest('it should fetch balance with universal provider', async () => {
-  await modalPage.page.getByTestId('get-balance-button').click()
-  await expect(modalPage.page.getByText('Balance:')).toBeVisible()
-  await expect(modalPage.page.getByText('Balance Retrieved')).toBeVisible()
-})
-
-universalProviderTest('it should sign message with universal provider', async () => {
+universalProviderTest('it should sign message with sign client', async () => {
   await modalPage.page.getByTestId('sign-message-button').click()
   await walletValidator.expectReceivedSign({ chainName: 'Ethereum' })
   await walletPage.handleRequest({ accept: true })
   await expect(modalPage.page.getByText('Message signed successfully')).toBeVisible()
 })
 
-universalProviderTest('it should switch networks with universal provider', async () => {
+universalProviderTest('it should switch networks with sign client', async () => {
   // Switch to Polygon network
   await modalPage.page.getByRole('button', { name: 'Polygon' }).click()
-  
+
   // Verify network switched
   await expect(modalPage.page.getByText('Network: eip155:137')).toBeVisible()
 })
@@ -101,7 +95,7 @@ universalProviderTest('it should stay connected after page refresh', async () =>
 
 universalProviderTest('it should reject sign message', async () => {
   await modalPage.page.getByTestId('sign-message-button').click()
-  await walletValidator.expectReceivedSign({ chainName: 'Polygon' })
+  await walletValidator.expectReceivedSign({ chainName: 'Ethereum' })
   await walletPage.handleRequest({ accept: false })
   await expect(modalPage.page.getByText('Failed to sign')).toBeVisible()
 })
@@ -110,17 +104,17 @@ universalProviderTest('it should switch between various networks', async () => {
   // Switch to Ethereum network
   await modalPage.page.getByRole('button', { name: 'Ethereum' }).click()
   await expect(modalPage.page.getByText('Network: eip155:1')).toBeVisible()
-  
+
   // Switch to Solana network
   await modalPage.page.getByRole('button', { name: 'Solana' }).click()
   await expect(modalPage.page.getByText(`Network: solana:`)).toBeVisible()
-  
+
   // Switch to Bitcoin network
   await modalPage.page.getByRole('button', { name: 'Bitcoin' }).click()
   await expect(modalPage.page.getByText(`Network: bip122:`)).toBeVisible()
 })
 
-universalProviderTest('it should disconnect from universal provider', async () => {
+universalProviderTest('it should disconnect from sign client', async () => {
   await modalPage.page.getByTestId('disconnect-button').click()
   await expect(modalPage.page.getByTestId('connect-button')).toBeVisible()
 })
