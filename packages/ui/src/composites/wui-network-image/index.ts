@@ -18,7 +18,7 @@ export class WuiNetworkImage extends LitElement {
   // -- State & Properties -------------------------------- //
   @property() public size: Exclude<SizeType, 'inherit' | 'xxl' | 'xl' | 'xs' | 'mdl' | 'xxs'> = 'md'
 
-  @property() public name = 'uknown'
+  @property() public name = 'unknown'
 
   @property({ type: Object }) public networkImagesBySize = {
     sm: networkSvgSm,
