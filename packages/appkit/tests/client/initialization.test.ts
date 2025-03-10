@@ -26,10 +26,6 @@ mockStorageUtil()
 mockBlockchainApiController()
 
 describe('Base', () => {
-  afterEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('Base Initialization', () => {
     it('should initialize controllers', async () => {
       const sendEvent = vi.spyOn(EventsController, 'sendEvent')

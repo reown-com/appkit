@@ -13,16 +13,12 @@ import {
   mockWindowAndDocument
 } from '../test-utils'
 
-mockWindowAndDocument()
-mockCoreHelperUtil()
 mockStorageUtil()
 mockBlockchainApiController()
+mockWindowAndDocument()
+mockCoreHelperUtil()
 
 describe('Listeners', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   it('should set caip address, profile name and profile image on accountChanged event', async () => {
     const identity = { name: 'vitalik.eth', avatar: null } as const
     const setCaipAddressSpy = vi.spyOn(AccountController, 'setCaipAddress')

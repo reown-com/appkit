@@ -11,11 +11,13 @@ import { mainnet, sepolia } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
 import {
   mockBlockchainApiController,
+  mockCoreHelperUtil,
   mockStorageUtil,
   mockWindowAndDocument
 } from '../test-utils.js'
 
 mockWindowAndDocument()
+mockCoreHelperUtil()
 mockStorageUtil()
 mockBlockchainApiController()
 
@@ -81,7 +83,6 @@ describe('syncConnectedWalletInfo', () => {
     vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('mock-connector-id')
     appKit = new AppKit(mockOptions)
     setConnectedWalletInfoSpy = vi.spyOn(appKit, 'setConnectedWalletInfo')
-    vi.clearAllMocks()
   })
 
   it.each([

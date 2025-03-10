@@ -36,12 +36,19 @@ import { mockEvmAdapter, mockSolanaAdapter, mockUniversalAdapter } from '../mock
 import { base, mainnet, polygon, sepolia, solana } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
 import { mockAuthProvider, mockProvider, mockUniversalProvider } from '../mocks/Providers.js'
+import {
+  mockBlockchainApiController,
+  mockCoreHelperUtil,
+  mockStorageUtil,
+  mockWindowAndDocument
+} from '../test-utils.js'
+
+mockStorageUtil()
+mockBlockchainApiController()
+mockWindowAndDocument()
+mockCoreHelperUtil()
 
 describe('Base Public methods', () => {
-  beforeAll(() => {
-    vi.clearAllMocks()
-  })
-
   it('should open modal', async () => {
     const prefetch = vi.spyOn(ApiController, 'prefetch').mockResolvedValueOnce(undefined)
     const open = vi.spyOn(ModalController, 'open')
