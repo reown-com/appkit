@@ -51,7 +51,7 @@ coreTest.beforeAll(async ({ browser }) => {
   })
 
   // Wait for connection
-  await expect(browserPage.getByTestId('disconnect-button')).toBeVisible()
+  await expect(browserPage.getByTestId('disconnect-hook-button')).toBeVisible()
 })
 
 coreTest.afterAll(async () => {
@@ -59,67 +59,64 @@ coreTest.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
-coreTest('it should be connected to core page', async () => {
-  await expect(modalPage.page.getByTestId('disconnect-button')).toBeVisible()
+coreTest('it should be connected with sign client', async () => {
+  await expect(modalPage.page.getByTestId('disconnect-hook-button')).toBeVisible()
 })
 
-coreTest('it should sign message on core page', async () => {
-  await modalPage.sign()
+coreTest('it should sign message with sign client', async () => {
+  await modalPage.page.getByTestId('sign-message-button').click()
   await walletValidator.expectReceivedSign({ chainName: 'Ethereum' })
   await walletPage.handleRequest({ accept: true })
-  await expect(modalPage.page.getByText('Message signed successfully')).toBeVisible()
+  await expect(modalPage.page.getByText('Signing Succeeded')).toBeVisible()
 })
 
-coreTest('it should switch networks on core page', async () => {
-  await modalPage.openModal()
-  await modalPage.openNetworks()
-  await modalPage.switchNetwork('Polygon')
-  await expect(modalPage.page.getByText('Polygon')).toBeVisible()
+coreTest('it should switch networks with sign client', async () => {
+  // Switch to Polygon network
+  const selector = modalPage.page.getByTestId('network-selector')
+  await selector.selectOption('137')
+  // Verify network switched
+  const chainIdInfo = modalPage.page.getByTestId('w3m-chain-id')
+  await expect(chainIdInfo).toHaveText('137')
 })
 
 coreTest('it should sign message after network switch', async () => {
-  await modalPage.sign()
+  await modalPage.page.getByTestId('sign-message-button').click()
   await walletValidator.expectReceivedSign({ chainName: 'Polygon' })
   await walletPage.handleRequest({ accept: true })
-  await expect(modalPage.page.getByText('Message signed successfully')).toBeVisible()
+  await expect(modalPage.page.getByText('Signing Succeeded')).toBeVisible()
 })
 
 coreTest('it should stay connected after page refresh', async () => {
   await modalPage.page.reload()
-  await expect(modalPage.page.getByTestId('account-button')).toBeVisible()
+  await expect(modalPage.page.getByTestId('disconnect-hook-button')).toBeVisible()
 })
 
 coreTest('it should reject sign message', async () => {
-  await modalPage.sign()
+  await modalPage.page.getByTestId('sign-message-button').click()
   await walletValidator.expectReceivedSign({ chainName: 'Polygon' })
   await walletPage.handleRequest({ accept: false })
-  await expect(modalPage.page.getByText('Failed to sign')).toBeVisible()
+  await expect(modalPage.page.getByText('Signing Failed')).toBeVisible()
 })
 
 coreTest('it should switch between various networks', async () => {
-  await modalPage.openModal()
-  await modalPage.openNetworks()
-
   // Switch to Ethereum network
-  await modalPage.switchNetwork('Ethereum')
-  await modalPage.closeModal()
-
-  await modalPage.openModal()
-  await modalPage.openNetworks()
+  const selector = modalPage.page.getByTestId('network-selector')
+  await selector.selectOption('1')
+  let chainIdInfo = modalPage.page.getByTestId('w3m-chain-id')
+  await expect(chainIdInfo).toHaveText('1')
 
   // Switch to Solana network
-  await modalPage.switchNetwork('Solana')
-  await modalPage.closeModal()
-
-  await modalPage.openModal()
-  await modalPage.openNetworks()
+  await selector.selectOption('5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp')
+  chainIdInfo = modalPage.page.getByTestId('w3m-chain-id')
+  await expect(chainIdInfo).toHaveText('5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp')
 
   // Switch to Bitcoin network
-  await modalPage.switchNetwork('Bitcoin')
-  await modalPage.closeModal()
+  await selector.selectOption('000000000019d6689c085ae165831e93')
+  chainIdInfo = modalPage.page.getByTestId('w3m-chain-id')
+  await expect(chainIdInfo).toHaveText('000000000019d6689c085ae165831e93')
 })
 
-coreTest('it should disconnect from core page', async () => {
-  await modalPage.disconnect()
-  await expect(modalPage.page.getByTestId('connect-button')).toBeVisible()
+coreTest('it should disconnect from sign client', async () => {
+  await modalPage.page.getByTestId('disconnect-hook-button').click()
+  await expect(modalPage.page.getByTestId('w3m-open-hook-button')).toBeVisible()
 })
