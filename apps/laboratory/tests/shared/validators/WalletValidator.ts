@@ -66,4 +66,15 @@ export class WalletValidator {
       'Request details should contain chain name'
     ).toContainText(chainName)
   }
+
+  async expectReceivedSignMessage({ message = 'Hello, World!' }) {
+    await expect(
+      this.page.getByTestId('session-approve-button'),
+      'Session approve button should be visible'
+    ).toBeVisible({ timeout: MAX_WAIT })
+    await expect(
+      this.page.getByText(message),
+      'Request details should contain sign message'
+    ).toBeVisible({ timeout: MAX_WAIT })
+  }
 }

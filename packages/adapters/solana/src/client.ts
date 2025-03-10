@@ -5,11 +5,7 @@ import UniversalProvider from '@walletconnect/universal-provider'
 import bs58 from 'bs58'
 
 import { type AppKit, type AppKitOptions } from '@reown/appkit'
-import {
-  type CaipNetwork,
-  ConstantsUtil as CommonConstantsUtil,
-  ConstantsUtil
-} from '@reown/appkit-common'
+import { type CaipNetwork, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AlertController,
   ChainController,

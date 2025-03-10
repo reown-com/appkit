@@ -17,13 +17,7 @@ export function BitcoinSignMessageTest() {
 
   async function onSignMessage() {
     if (!walletProvider || !address) {
-      toast({
-        title: 'Error',
-        description: 'No connection detected',
-        type: 'error'
-      })
-
-      return
+      throw Error('No connection detected')
     }
 
     setLoading(true)

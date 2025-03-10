@@ -748,13 +748,13 @@ describe('Base Public methods', () => {
     const setConnectedWalletInfo = vi.spyOn(AccountController, 'setConnectedWalletInfo')
     const getActiveNetworkProps = vi.spyOn(StorageUtil, 'getActiveNetworkProps')
     const fetchTokenBalance = vi.spyOn(AccountController, 'fetchTokenBalance')
-    const getConnectedConnectorId = vi.spyOn(StorageUtil, 'getConnectedConnectorId')
     const mockConnector = {
       id: 'test-wallet',
       name: 'Test Wallet',
       imageUrl: 'test-wallet-icon'
     } as Connector
-    vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValueOnce([mockConnector])
+    ConnectorController.state.connectors = [mockConnector]
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValueOnce(mockConnector.id)
     const mockAccountData = {
       address: '0x123',
       chainId: mainnet.id,
@@ -772,7 +772,6 @@ describe('Base Public methods', () => {
       chainId: mainnet.id,
       caipNetworkId: mainnet.caipNetworkId
     })
-    getConnectedConnectorId.mockReturnValueOnce(mockConnector.id)
 
     const appKit = new AppKit(mockOptions)
     await appKit['syncAccount'](mockAccountData)

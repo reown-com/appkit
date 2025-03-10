@@ -177,7 +177,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       return Promise.resolve({ balance: '0.00', symbol: 'BTC' })
     }
 
-    if (caipNetwork?.chainNamespace === this.namespace) {
+    if (caipNetwork && caipNetwork.chainNamespace === this.namespace) {
       const caipAddress = `${caipNetwork?.caipNetworkId}:${address}`
 
       const cachedPromise = this.balancePromises[caipAddress]
