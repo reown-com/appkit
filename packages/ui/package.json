@@ -417,6 +417,11 @@
       "import": "./dist/esm/exports/wui-separator.js",
       "default": "./dist/esm/exports/wui-separator.js"
     },
+    "./wui-ux-by-reown": {
+      "types": "./dist/types/exports/wui-ux-by-reown.d.ts",
+      "import": "./dist/esm/exports/wui-ux-by-reown.js",
+      "default": "./dist/esm/exports/wui-ux-by-reown.js"
+    },
     "./jsx": {
       "types": "./dist/types/exports/jsx.d.ts",
       "import": "./dist/esm/exports/jsx.js",

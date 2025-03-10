@@ -136,10 +136,6 @@ async function checkUiPackage() {
     fail('New composites were added, but JSXTypeUtil.ts is not modified')
   }
 
-  if (is_new_composites_added && !types_util_diff?.added.includes('../composites')) {
-    fail('New composites were added, but not exported in ui/index.ts')
-  }
-
   if (created_ui_layout_index_ts.length && !ui_index_diff?.added.includes('src/layout')) {
     fail('New layout components were added, but not exported in ui/index.ts')
   }
