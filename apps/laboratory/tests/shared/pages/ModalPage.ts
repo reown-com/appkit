@@ -34,6 +34,8 @@ export type ModalFlavor =
   | 'siwe'
   | 'siwx'
   | 'core-sign-client'
+  | 'core-universal-provider'
+  | 'core'
   | 'all'
 
 function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {

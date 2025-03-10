@@ -10,7 +10,7 @@ const MULTICHAIN_LIBRARIES = [
   'multichain-wagmi-solana'
 ] as const
 
-const CORE_LIRARIES = ['core-sign-client'] as const
+const CORE_LIRARIES = ['core-sign-client', 'core-universal-provider', 'core'] as const
 
 const LIBRARY_PERMUTATIONS = DESKTOP_DEVICES.flatMap(device =>
   LIBRARIES.map(library => ({ device, library }))
