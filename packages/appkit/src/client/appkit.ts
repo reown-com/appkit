@@ -233,7 +233,7 @@ export class AppKit extends AppKitCore {
         })
         this.setStatus('connected', chainNamespace)
       } else if (
-        ConnectorController.getConnectorId(namespace) === ConstantsUtil.CONNECTOR_ID.AUTH
+        ConnectorController.getConnectorId(chainNamespace) === ConstantsUtil.CONNECTOR_ID.AUTH
       ) {
         this.setStatus('disconnected', chainNamespace)
         StorageUtil.removeConnectedNamespace(chainNamespace)
