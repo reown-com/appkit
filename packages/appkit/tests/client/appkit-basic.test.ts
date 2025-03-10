@@ -10,15 +10,9 @@ import {
 
 import { AppKit } from '../../src/client/appkit-basic'
 import { mockOptions } from '../mocks/Options'
-import {
-  mockBlockchainApiController,
-  mockCoreHelperUtil,
-  mockStorageUtil,
-  mockWindowAndDocument
-} from '../test-utils.js'
+import { mockBlockchainApiController, mockStorageUtil, mockWindowAndDocument } from '../test-utils'
 
 mockWindowAndDocument()
-mockCoreHelperUtil()
 mockStorageUtil()
 mockBlockchainApiController()
 

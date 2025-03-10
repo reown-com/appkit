@@ -38,13 +38,11 @@ import { mockOptions } from '../mocks/Options.js'
 import { mockAuthProvider, mockProvider, mockUniversalProvider } from '../mocks/Providers.js'
 import {
   mockBlockchainApiController,
-  mockCoreHelperUtil,
   mockStorageUtil,
   mockWindowAndDocument
 } from '../test-utils.js'
 
 mockWindowAndDocument()
-mockCoreHelperUtil()
 mockStorageUtil()
 mockBlockchainApiController()
 

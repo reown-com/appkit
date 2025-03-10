@@ -15,13 +15,11 @@ import { mainnet, polygon, sepolia, solana } from '../mocks/Networks'
 import { mockOptions } from '../mocks/Options'
 import {
   mockBlockchainApiController,
-  mockCoreHelperUtil,
   mockStorageUtil,
   mockWindowAndDocument
 } from '../test-utils.js'
 
 mockWindowAndDocument()
-mockCoreHelperUtil()
 mockStorageUtil()
 mockBlockchainApiController()
 
