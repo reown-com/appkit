@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ChainController, ConnectionController } from '@reown/appkit-core'
 
@@ -19,6 +19,10 @@ mockStorageUtil()
 mockBlockchainApiController()
 
 describe('WalletConnect Events', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
   describe('chainChanged', () => {
     it('should call setUnsupportedNetwork', () => {
       const appkit = new AppKit({
@@ -87,7 +91,7 @@ describe('WalletConnect Events', () => {
   })
 
   describe('connect', () => {
-    it.skip('should call finalizeWcConnection once connected', async () => {
+    it('should call finalizeWcConnection once connected', async () => {
       const finalizeWcConnectionSpy = vi
         .spyOn(ConnectionController, 'finalizeWcConnection')
         .mockReturnValueOnce()
