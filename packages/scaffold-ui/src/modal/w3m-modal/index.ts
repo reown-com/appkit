@@ -65,7 +65,6 @@ export class W3mModal extends LitElement {
         ChainController.subscribeKey('activeCaipAddress', val => this.onNewAddress(val)),
         OptionsController.subscribeKey('enableEmbedded', val => (this.enableEmbedded = val)),
         ConnectorController.subscribeKey('filterByNamespace', val => {
-          console.log('filterByNamespace', this.filterByNamespace, val)
           if (this.filterByNamespace !== val) {
             ApiController.fetchRecommendedWallets(val)
             this.filterByNamespace = val
