@@ -180,7 +180,7 @@ export default function SignClientPage() {
       },
       eip155: {
         method: 'personal_sign',
-        params: [account, 'Hello AppKit!']
+        params: ['Hello AppKit!', account]
       },
       bip122: {
         method: 'signMessage',
@@ -253,7 +253,7 @@ export default function SignClientPage() {
     }
   }
 
-  async function handleSwitchNetwork(newNetwork: string, chainId: string) {
+  async function handleSwitchNetwork(newNetwork: string) {
     if (!signClient || !session) {
       return
     }
@@ -261,23 +261,9 @@ export default function SignClientPage() {
     try {
       setNetwork(newNetwork)
 
-      if (newNetwork.startsWith('eip155')) {
-        if (!session?.namespaces?.['eip155']?.methods?.includes('wallet_switchEthereumChain')) {
-          return
-        }
-        await signClient.request({
-          topic: session.topic,
-          chainId: newNetwork,
-          request: {
-            method: 'wallet_switchEthereumChain',
-            params: [{ chainId }]
-          }
-        })
-        setAccount(session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2])
-      } else if (newNetwork.startsWith('solana')) {
-        setAccount(session?.namespaces?.solana?.accounts?.[0].split(':')[2])
-      } else if (newNetwork.startsWith('bip122')) {
-        setAccount(session?.namespaces?.bip122?.accounts?.[0].split(':')[2])
+      const [namespace] = newNetwork.split(':')
+      if (namespace) {
+        setAccount(session?.namespaces?.[namespace]?.accounts?.[0]?.split(':')[2])
       }
     } catch (error) {
       console.error('Network switch error:', error)
@@ -324,16 +310,16 @@ export default function SignClientPage() {
                   Network
                 </Heading>
                 <Stack direction="row" spacing={4}>
-                  <Button onClick={() => handleSwitchNetwork('eip155:1', '0x1')} size="sm">
+                  <Button onClick={() => handleSwitchNetwork('eip155:1')} size="sm">
                     Ethereum
                   </Button>
-                  <Button onClick={() => handleSwitchNetwork('eip155:137', '0x89')} size="sm">
+                  <Button onClick={() => handleSwitchNetwork('eip155:137')} size="sm">
                     Polygon
                   </Button>
-                  <Button onClick={() => handleSwitchNetwork(solana.caipNetworkId, '')} size="sm">
+                  <Button onClick={() => handleSwitchNetwork(solana.caipNetworkId)} size="sm">
                     Solana
                   </Button>
-                  <Button onClick={() => handleSwitchNetwork(bitcoin.caipNetworkId, '')} size="sm">
+                  <Button onClick={() => handleSwitchNetwork(bitcoin.caipNetworkId)} size="sm">
                     Bitcoin
                   </Button>
                 </Stack>
