@@ -276,19 +276,15 @@ export default function SignClientPage() {
       return
     }
 
-    if (!isChainAllowed) {
-      toast({
-        title: 'Error',
-        description: 'Chain not supported by wallet',
-        type: 'error'
-      })
-
-      return
-    }
+    const isEip155 = newNetwork.startsWith('eip155')
 
     try {
-      if (newNetwork.startsWith('eip155')) {
-        if (session?.namespaces?.['eip155']?.methods?.includes('wallet_switchEthereumChain')) {
+      if (isEip155) {
+        const supportsSwitchNetwork = session?.namespaces?.['eip155']?.methods?.includes(
+          'wallet_switchEthereumChain'
+        )
+
+        if (supportsSwitchNetwork && !isChainAllowed) {
           await signClient.request({
             topic: session.topic,
             chainId: newNetwork,
@@ -298,14 +294,21 @@ export default function SignClientPage() {
             }
           })
         }
+      } else if (!isChainAllowed) {
+        toast({
+          title: 'Error',
+          description: 'Chain not supported by wallet',
+          type: 'error'
+        })
 
-        setAccount(session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2])
-      } else if (newNetwork.startsWith('solana')) {
-        setAccount(session?.namespaces?.solana?.accounts?.[0].split(':')[2])
-      } else if (newNetwork.startsWith('bip122')) {
-        setAccount(session?.namespaces?.bip122?.accounts?.[0].split(':')[2])
+        return
       }
 
+      setAccount(
+        session?.namespaces?.[namespace as keyof typeof session.namespaces]?.accounts?.[0]?.split(
+          ':'
+        )[2]
+      )
       setNetwork(newNetwork)
     } catch (error) {
       console.error('Network switch error:', error)
