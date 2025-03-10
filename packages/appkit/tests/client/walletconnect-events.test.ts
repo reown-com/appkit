@@ -86,9 +86,11 @@ describe('WalletConnect Events', () => {
     })
   })
 
-  describe.skip('connect', () => {
+  describe('connect', () => {
     beforeEach(() => {
       vi.clearAllMocks()
+      mockWindowAndDocument()
+      mockCoreHelperUtil()
     })
 
     it('should call finalizeWcConnection once connected', async () => {
