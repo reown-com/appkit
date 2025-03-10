@@ -1,6 +1,7 @@
+import type UniversalProvider from '@walletconnect/universal-provider'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 
-import type { Connector } from '@reown/appkit'
+import type { AuthConnector, Connector, SocialProvider } from '@reown/appkit'
 import {
   type Balance,
   type CaipNetwork,
@@ -27,13 +28,14 @@ import {
   StorageUtil,
   ThemeController
 } from '@reown/appkit-core'
+import { CaipNetworksUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { ProviderUtil } from '../../src/store'
 import { mockEvmAdapter, mockSolanaAdapter, mockUniversalAdapter } from '../mocks/Adapter.js'
 import { base, mainnet, polygon, sepolia, solana } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
-import { mockAuthProvider, mockProvider } from '../mocks/Providers.js'
+import { mockAuthProvider, mockProvider, mockUniversalProvider } from '../mocks/Providers.js'
 
 describe('Base Public methods', () => {
   beforeAll(() => {
@@ -935,5 +937,110 @@ describe('Base Public methods', () => {
 
     expect(mockSubscribeProviders).toHaveBeenCalled()
     expect(callback).toHaveBeenCalledWith(providers)
+  })
+
+  it('should set status to connected on syncWalletConnectAccount if CAIP address exists', () => {
+    vi.spyOn(ChainController, 'setApprovedCaipNetworksData').mockImplementation(() =>
+      Promise.resolve()
+    )
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeCaipNetwork: mainnet
+    })
+    vi.spyOn(CaipNetworksUtil, 'extendCaipNetworks').mockReturnValue([mainnet])
+    vi.spyOn(ChainController, 'initialize').mockImplementation(() => Promise.resolve())
+    vi.spyOn(AccountController, 'setUser').mockImplementation(() => Promise.resolve())
+
+    const appKit = new AppKit({
+      ...mockOptions,
+      adapters: [],
+      networks: [mainnet]
+    })
+    appKit['universalProvider'] = {
+      ...mockUniversalProvider,
+      session: {
+        namespaces: {
+          eip155: {
+            accounts: ['eip155:1:0x123']
+          }
+        }
+      }
+    } as unknown as InstanceType<typeof UniversalProvider>
+
+    const setStatusSpy = vi.spyOn(appKit, 'setStatus')
+
+    appKit['syncWalletConnectAccount']()
+
+    expect(setStatusSpy).toHaveBeenCalledWith('connected', 'eip155')
+  })
+
+  it('should set status to disconnected on syncWalletConnectAccount if CAIP address does not exist', () => {
+    vi.spyOn(ChainController, 'setApprovedCaipNetworksData').mockImplementation(() =>
+      Promise.resolve()
+    )
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ChainController.state,
+      activeCaipNetwork: mainnet
+    })
+    vi.spyOn(CaipNetworksUtil, 'extendCaipNetworks').mockReturnValue([mainnet])
+    vi.spyOn(ChainController, 'initialize').mockImplementation(() => Promise.resolve())
+    vi.spyOn(AccountController, 'setUser').mockImplementation(() => Promise.resolve())
+
+    const appKit = new AppKit({
+      ...mockOptions,
+      adapters: [],
+      networks: [mainnet]
+    })
+    appKit['universalProvider'] = {
+      ...mockUniversalProvider,
+      session: {
+        namespaces: {
+          eip155: {
+            accounts: []
+          }
+        }
+      }
+    } as unknown as InstanceType<typeof UniversalProvider>
+
+    const setStatusSpy = vi.spyOn(appKit, 'setStatus')
+
+    appKit['syncWalletConnectAccount']()
+
+    expect(setStatusSpy).toHaveBeenCalledWith('disconnected', 'eip155')
+  })
+
+  it('should get account information', () => {
+    vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
+      id: 'auth-connector'
+    } as unknown as AuthConnector)
+    vi.spyOn(ChainController, 'getAccountDataByChainNamespace').mockReturnValue({
+      allAccounts: [{ address: '0x123', type: 'eoa', namespace: 'eip155' }],
+      caipAddress: 'eip155:1:0x123',
+      status: 'connected',
+      user: { email: 'test@example.com' },
+      socialProvider: 'email' as SocialProvider,
+      preferredAccountType: 'eoa',
+      smartAccountDeployed: true,
+      currentTab: 0,
+      addressLabels: new Map([['eip155:1:0x123', 'test-label']])
+    })
+    vi.spyOn(CoreHelperUtil, 'getPlainAddress')
+
+    const appKit = new AppKit(mockOptions)
+    const account = appKit.getAccount('eip155')
+
+    expect(account).toEqual({
+      allAccounts: [{ address: '0x123', type: 'eoa', namespace: 'eip155' }],
+      caipAddress: 'eip155:1:0x123',
+      address: '0x123',
+      isConnected: true,
+      status: 'connected',
+      embeddedWalletInfo: {
+        user: { email: 'test@example.com' },
+        authProvider: 'email',
+        accountType: 'eoa',
+        isSmartAccountDeployed: true
+      }
+    })
   })
 })

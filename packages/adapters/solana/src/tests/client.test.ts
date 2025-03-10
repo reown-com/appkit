@@ -26,15 +26,6 @@ vi.mock('@solana/web3.js', () => ({
   PublicKey: vi.fn(key => ({ toBase58: () => key }))
 }))
 
-vi.mock('../utils/SolanaStoreUtil', () => ({
-  SolStoreUtil: {
-    state: {
-      connection: null
-    },
-    setConnection: vi.fn()
-  }
-}))
-
 vi.mock('../utils/watchStandard', () => ({
   watchStandard: vi.fn()
 }))
@@ -64,6 +55,7 @@ const mockWalletConnectConnector = vi.mocked(
 
 describe('SolanaAdapter', () => {
   let adapter: SolanaAdapter
+  vi.spyOn(SolStoreUtil, 'setConnection')
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -109,6 +101,11 @@ describe('SolanaAdapter', () => {
     it('should initialize with correct parameters', () => {
       expect(adapter.adapterType).toBe('solana')
       expect(adapter.namespace).toBe('solana')
+      expect(adapter.networks).toEqual(mockNetworks)
+      expect(adapter.projectId).toBe('test-project-id')
+      expect(SolStoreUtil.setConnection).toHaveBeenCalledWith(
+        expect.objectContaining({ rpcEndpoint: solana.rpcUrls.default.http[0] })
+      )
     })
   })
 

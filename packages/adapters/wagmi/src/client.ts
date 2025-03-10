@@ -22,7 +22,6 @@ import {
   writeContract as wagmiWriteContract,
   waitForTransactionReceipt,
   watchAccount,
-  watchConnections,
   watchConnectors,
   watchPendingTransactions
 } from '@wagmi/core'
@@ -237,13 +236,6 @@ export class WagmiAdapter extends AdapterBlueprint {
               chainId: accountData.chainId
             })
           }
-        }
-      }
-    })
-    watchConnections(this.wagmiConfig, {
-      onChange: connections => {
-        if (connections.length === 0) {
-          this.emit('disconnect')
         }
       }
     })
