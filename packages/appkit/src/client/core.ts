@@ -937,7 +937,7 @@ export abstract class AppKitCore {
   }) {
     ProviderUtil.setProviderId(chainNamespace, type)
     ProviderUtil.setProvider(chainNamespace, provider)
-    StorageUtil.setConnectedConnectorId(chainNamespace, id)
+    ConnectorController.setConnectorId(id, chainNamespace)
   }
 
   protected async syncAccount(
