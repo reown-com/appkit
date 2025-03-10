@@ -7,9 +7,15 @@ import { AppKit } from '../../src/client/appkit.js'
 import { mockBitcoinAdapter } from '../mocks/Adapter.js'
 import { bitcoin } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
-import { mockBlockchainApiController, mockStorageUtil, mockWindowAndDocument } from '../test-utils'
+import {
+  mockBlockchainApiController,
+  mockCoreHelperUtil,
+  mockStorageUtil,
+  mockWindowAndDocument
+} from '../test-utils.js'
 
 mockWindowAndDocument()
+mockCoreHelperUtil()
 mockStorageUtil()
 mockBlockchainApiController()
 
