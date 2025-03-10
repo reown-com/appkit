@@ -18,7 +18,7 @@ mockCoreHelperUtil()
 mockStorageUtil()
 mockBlockchainApiController()
 
-describe.skip('WalletConnect Events', () => {
+describe('WalletConnect Events', () => {
   describe('chainChanged', () => {
     it('should call setUnsupportedNetwork', () => {
       const appkit = new AppKit({
@@ -86,13 +86,13 @@ describe.skip('WalletConnect Events', () => {
     })
   })
 
-  describe('connect', () => {
+  describe.skip('connect', () => {
     beforeEach(() => {
       vi.clearAllMocks()
     })
 
     it('should call finalizeWcConnection once connected', async () => {
-      vi.spyOn(ConnectionController, 'finalizeWcConnection')
+      const finalizeWcConnectionSpy = vi.spyOn(ConnectionController, 'finalizeWcConnection')
 
       new AppKit({
         ...mockOptions,
@@ -110,7 +110,7 @@ describe.skip('WalletConnect Events', () => {
 
       connectCallback()
 
-      expect(ConnectionController.finalizeWcConnection).toHaveBeenCalledOnce()
+      expect(finalizeWcConnectionSpy).toHaveBeenCalledOnce()
     })
   })
 })
