@@ -17,6 +17,7 @@ import {
 import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-card'
 import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-ux-by-reown'
 
 import '../../partials/w3m-alertbar/index.js'
 import '../../partials/w3m-header/index.js'
@@ -126,6 +127,7 @@ export class W3mModal extends LitElement {
     >
       <w3m-header></w3m-header>
       <w3m-router></w3m-router>
+      <wui-ux-by-reown></wui-ux-by-reown>
       <w3m-snackbar></w3m-snackbar>
       <w3m-alertbar></w3m-alertbar>
     </wui-card>`

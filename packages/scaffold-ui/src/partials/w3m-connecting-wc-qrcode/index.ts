@@ -14,6 +14,7 @@ import '@reown/appkit-ui/wui-link'
 import '@reown/appkit-ui/wui-qr-code'
 import '@reown/appkit-ui/wui-shimmer'
 import '@reown/appkit-ui/wui-text'
+import '@reown/appkit-ui/wui-ux-by-reown'
 
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 import '../w3m-mobile-download-links/index.js'
@@ -50,7 +51,6 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
         alignItems="center"
         .padding=${['0', 'xl', 'xl', 'xl']}
         gap="xl"
-        class="w3m-connecting-wc-qrcode"
       >
         <wui-shimmer borderRadius="l" width="100%"> ${this.qrCodeTemplate()} </wui-shimmer>
 
@@ -60,15 +60,6 @@ export class W3mConnectingWcQrcode extends W3mConnectingWidget {
         ${this.copyTemplate()}
       </wui-flex>
       <w3m-mobile-download-links .wallet=${this.wallet}></w3m-mobile-download-links>
-      <wui-flex
-        justifyContent="center"
-        alignItems="center"
-        gap="xs"
-        .padding=${['s', '0', 's', '0']}
-      >
-        <wui-text variant="small-500" color="fg-100" class="ux-by-reown"> UX by </wui-text>
-        <wui-icon name="reown" aspectRatio="3 / 4" size="xxxl" class="reown-logo"></wui-icon>
-      </wui-flex>
     `
   }
 
