@@ -25,12 +25,14 @@ describe('ModalController', () => {
 
   it('should prefetch when open() is called', async () => {
     vi.spyOn(ApiController, 'fetchFeaturedWallets')
+    vi.spyOn(ApiController, 'fetchRecommendedWallets')
     vi.spyOn(ApiController, 'fetchConnectorImages')
     vi.spyOn(ApiController, 'fetchNetworkImages')
 
     await ModalController.open()
 
     expect(ApiController.fetchFeaturedWallets).toHaveBeenCalledOnce()
+    expect(ApiController.fetchRecommendedWallets).toHaveBeenCalledOnce()
     expect(ApiController.fetchConnectorImages).toHaveBeenCalledOnce()
     expect(ApiController.fetchNetworkImages).toHaveBeenCalledOnce()
   })

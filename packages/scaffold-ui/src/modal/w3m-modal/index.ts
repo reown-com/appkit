@@ -6,6 +6,7 @@ import { type CaipAddress, type CaipNetwork, ConstantsUtil } from '@reown/appkit
 import {
   ApiController,
   ChainController,
+  ConnectorController,
   CoreHelperUtil,
   ModalController,
   OptionsController,
@@ -50,6 +51,8 @@ export class W3mModal extends LitElement {
 
   @state() private shake = ModalController.state.shake
 
+  @state() private filterByNamespace = ConnectorController.state.filterByNamespace
+
   public constructor() {
     super()
     this.initializeTheming()
@@ -60,7 +63,14 @@ export class W3mModal extends LitElement {
         ModalController.subscribeKey('shake', val => (this.shake = val)),
         ChainController.subscribeKey('activeCaipNetwork', val => this.onNewNetwork(val)),
         ChainController.subscribeKey('activeCaipAddress', val => this.onNewAddress(val)),
-        OptionsController.subscribeKey('enableEmbedded', val => (this.enableEmbedded = val))
+        OptionsController.subscribeKey('enableEmbedded', val => (this.enableEmbedded = val)),
+        ConnectorController.subscribeKey('filterByNamespace', val => {
+          console.log('filterByNamespace', this.filterByNamespace, val)
+          if (this.filterByNamespace !== val) {
+            ApiController.fetchRecommendedWallets(val)
+            this.filterByNamespace = val
+          }
+        })
       ]
     )
   }

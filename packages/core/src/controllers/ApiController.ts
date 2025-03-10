@@ -288,6 +288,7 @@ export const ApiController = {
   prefetch({
     fetchConnectorImages = true,
     fetchFeaturedWallets = true,
+    fetchRecommendedWallets = true,
     fetchNetworkImages = true
   }: PrefetchParameters = {}) {
     // Avoid pre-fetch if user is already connected as there is no need to fetch wallets in that case
@@ -302,6 +303,7 @@ export const ApiController = {
     const promises = [
       fetchConnectorImages && ApiController.fetchConnectorImages(),
       fetchFeaturedWallets && ApiController.fetchFeaturedWallets(),
+      fetchRecommendedWallets && ApiController.fetchRecommendedWallets(),
       fetchNetworkImages && ApiController.fetchNetworkImages()
     ].filter(Boolean)
 
