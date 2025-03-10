@@ -3,7 +3,7 @@ import { proxy, ref, subscribe } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import type { ConnectorType } from '@reown/appkit-core'
+import type { ConnectorType } from '@reown/appkit-controllers'
 
 type StateKey = keyof ProviderStoreUtilState
 

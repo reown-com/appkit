@@ -17,7 +17,7 @@ import {
   RouterController,
   SnackController,
   StorageUtil
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-avatar'
 import '@reown/appkit-ui/wui-button'

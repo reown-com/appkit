@@ -1,7 +1,12 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
 
 import type { AppKitNetwork, ThemeVariables } from '@reown/appkit-common'
-import type { ChainAdapter, Metadata, OptionsControllerState, ThemeMode } from '@reown/appkit-core'
+import type {
+  ChainAdapter,
+  Metadata,
+  OptionsControllerState,
+  ThemeMode
+} from '@reown/appkit-controllers'
 import type { AppKitSIWEClient } from '@reown/appkit-siwe'
 
 export type AppKitOptions = {

@@ -10,7 +10,7 @@ import {
   type OnRampControllerState,
   type PaymentCurrency,
   type PurchaseCurrency
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import { W3mInputCurrency } from '../../src/partials/w3m-onramp-input'
 

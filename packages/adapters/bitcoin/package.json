@@ -28,7 +28,7 @@
     "@exodus/bitcoin-wallet-standard": "0.0.0",
     "@reown/appkit": "workspace:*",
     "@reown/appkit-common": "workspace:*",
-    "@reown/appkit-core": "workspace:*",
+    "@reown/appkit-controllers": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@wallet-standard/app": "1.1.0",
     "@wallet-standard/base": "1.1.0",

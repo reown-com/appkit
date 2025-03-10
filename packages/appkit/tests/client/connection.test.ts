@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { MockInstance } from 'vitest'
 
-import { AccountController, type ConnectorType, StorageUtil } from '@reown/appkit-core'
+import { AccountController, type ConnectorType, StorageUtil } from '@reown/appkit-controllers'
 import { ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'

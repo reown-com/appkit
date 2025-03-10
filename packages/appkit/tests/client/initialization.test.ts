@@ -7,7 +7,7 @@ import {
   EventsController,
   OptionsController,
   StorageUtil
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'

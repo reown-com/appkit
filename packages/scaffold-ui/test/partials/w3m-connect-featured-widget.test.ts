@@ -3,8 +3,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import type { ConnectorType, ConnectorWithProviders, WcWallet } from '@reown/appkit-core'
-import { ApiController, AssetUtil, ConnectorController, RouterController } from '@reown/appkit-core'
+import type { ConnectorType, ConnectorWithProviders, WcWallet } from '@reown/appkit-controllers'
+import {
+  ApiController,
+  AssetUtil,
+  ConnectorController,
+  RouterController
+} from '@reown/appkit-controllers'
 import { ConstantsUtil } from '@reown/appkit-utils'
 
 import { W3mConnectFeaturedWidget } from '../../src/partials/w3m-connect-featured-widget'

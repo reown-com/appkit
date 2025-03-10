@@ -9,7 +9,7 @@ import {
   OnRampController,
   OptionsController,
   type PurchaseCurrency
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import { W3mOnrampTokensView } from '../../src/views/w3m-onramp-tokens-select-view'
 

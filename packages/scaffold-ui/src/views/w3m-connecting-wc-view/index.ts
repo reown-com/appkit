@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import type { BaseError, Platform } from '@reown/appkit-core'
+import type { BaseError, Platform } from '@reown/appkit-controllers'
 import {
   ChainController,
   ConnectionController,
@@ -12,7 +12,7 @@ import {
   OptionsController,
   RouterController,
   SnackController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
 import '../../partials/w3m-connecting-header/index.js'

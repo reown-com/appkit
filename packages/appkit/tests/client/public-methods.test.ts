@@ -27,7 +27,7 @@ import {
   SnackController,
   StorageUtil,
   ThemeController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'

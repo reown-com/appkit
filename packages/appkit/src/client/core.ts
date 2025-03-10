@@ -35,7 +35,7 @@ import type {
   UseAppKitNetworkReturn,
   WalletFeature,
   WriteContractArgs
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import {
   AccountController,
   AlertController,
@@ -54,7 +54,7 @@ import {
   SnackController,
   StorageUtil,
   ThemeController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { WalletUtil } from '@reown/appkit-scaffold-ui/utils'
 import { setColorTheme, setThemeVariables } from '@reown/appkit-ui'
 import {

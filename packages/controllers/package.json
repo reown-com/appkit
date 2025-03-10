@@ -1,5 +1,5 @@
 {
-  "name": "@reown/appkit-core",
+  "name": "@reown/appkit-controllers",
   "version": "1.6.9",
   "sideEffects": false,
   "type": "module",

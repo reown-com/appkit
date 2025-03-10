@@ -3,7 +3,7 @@ import React from 'react'
 import { UniqueIdentifier } from '@dnd-kit/core'
 import { AnimateLayoutChanges, NewIndexGetter, useSortable } from '@dnd-kit/sortable'
 
-import { SocialProvider } from '@reown/appkit-core'
+import { SocialProvider } from '@reown/appkit-controllers'
 
 import { SocialOptionItem } from './social-option-item'
 

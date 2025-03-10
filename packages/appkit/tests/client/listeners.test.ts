@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { AccountController, BlockchainApiController, ChainController } from '@reown/appkit-core'
+import {
+  AccountController,
+  BlockchainApiController,
+  ChainController
+} from '@reown/appkit-controllers'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { emitter, mockEvmAdapter, solanaEmitter } from '../mocks/Adapter'

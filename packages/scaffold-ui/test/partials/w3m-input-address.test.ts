@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { ConnectionController, SendController } from '@reown/appkit-core'
+import { ConnectionController, SendController } from '@reown/appkit-controllers'
 
 import { W3mInputAddress } from '../../src/partials/w3m-input-address'
 

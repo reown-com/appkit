@@ -7,7 +7,7 @@ import {
   ChainController,
   type ChainControllerState,
   StorageUtil
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import { mainnet, unsupportedNetwork } from './mocks/Networks.js'
 

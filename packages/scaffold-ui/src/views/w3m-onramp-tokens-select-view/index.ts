@@ -7,8 +7,8 @@ import {
   ModalController,
   OnRampController,
   OptionsController
-} from '@reown/appkit-core'
-import type { PurchaseCurrency } from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
+import type { PurchaseCurrency } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-item'

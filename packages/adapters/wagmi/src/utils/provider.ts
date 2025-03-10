@@ -1,7 +1,7 @@
 import { http } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
 
-import { CoreHelperUtil } from '@reown/appkit-core'
+import { CoreHelperUtil } from '@reown/appkit-controllers'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 
 // -- Helpers ------------------------------------------------------------------

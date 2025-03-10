@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { ApiController } from '@reown/appkit-core'
+import { ApiController } from '@reown/appkit-controllers'
 
 import { W3mOnRampActivityItem } from '../../src/partials/w3m-onramp-activity-item'
 

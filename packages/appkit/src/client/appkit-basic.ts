@@ -1,11 +1,11 @@
 import { type ChainNamespace } from '@reown/appkit-common'
-import type { ChainAdapter } from '@reown/appkit-core'
+import type { ChainAdapter } from '@reown/appkit-controllers'
 import {
   AccountController,
   ConnectionController,
   CoreHelperUtil,
   OptionsController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import { AppKitCore } from './core.js'

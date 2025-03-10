@@ -13,7 +13,7 @@ import {
   type SIWXConfig,
   type SIWXMessage,
   type SIWXSession
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { ConstantsUtil as AppKitConstantUtil } from '@reown/appkit-utils'
 
 import type { SIWXMessenger } from '../core/SIWXMessenger.js'

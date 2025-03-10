@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit'
 
-import { EventsController, RouterController } from '@reown/appkit-core'
+import { EventsController, RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'

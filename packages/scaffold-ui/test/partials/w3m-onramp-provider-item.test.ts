@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { html } from 'lit'
 
 import { type CaipNetwork, type ChainNamespace } from '@reown/appkit-common'
-import { AssetUtil, ChainController } from '@reown/appkit-core'
+import { AssetUtil, ChainController } from '@reown/appkit-controllers'
 
 import { W3mOnRampProviderItem } from '../../src/partials/w3m-onramp-provider-item'
 
