@@ -19,10 +19,6 @@ mockStorageUtil()
 mockBlockchainApiController()
 
 describe('WalletConnect Events', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
   describe('chainChanged', () => {
     it('should call setUnsupportedNetwork', () => {
       const appkit = new AppKit({
