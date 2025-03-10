@@ -33,7 +33,7 @@ export function UpaSignMessageTest() {
       },
       eip155: {
         method: 'personal_sign',
-        params: [address, 'Hello AppKit!']
+        params: ['Hello AppKit!', address]
       },
       bip122: {
         method: 'signPsbt',
