@@ -16,7 +16,7 @@ import {
 import SignClient from '@walletconnect/sign-client'
 import base58 from 'bs58'
 
-import { AppKit, createAppKit } from '@reown/appkit/basic'
+import { createAppKit } from '@reown/appkit/basic'
 import { type AppKitNetwork, bitcoin, mainnet, polygon, solana } from '@reown/appkit/networks'
 
 import { useChakraToast } from '@/src/components/Toast'
@@ -54,10 +54,15 @@ const OPTIONAL_NAMESPACES = {
 
 const networks = [mainnet, polygon, solana, bitcoin] as [AppKitNetwork, ...AppKitNetwork[]]
 
+const appKit = createAppKit({
+  projectId: PROJECT_ID,
+  networks,
+  manualWCControl: true
+})
+
 export default function SignClientPage() {
   const toast = useChakraToast()
   const [signClient, setSignClient] = useState<SignClient | null>(null)
-  const [modal, setModal] = useState<AppKit | null>(null)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [session, setSession] = useState<any>(null)
   const [account, setAccount] = useState<string | undefined>(undefined)
@@ -69,14 +74,6 @@ export default function SignClientPage() {
       try {
         const client = await SignClient.init({ projectId: PROJECT_ID })
         setSignClient(client)
-
-        const appKit = createAppKit({
-          projectId: PROJECT_ID,
-          networks,
-          manualWCControl: true
-        })
-
-        setModal(appKit)
 
         // Get last session if exists
         const sessions = client.session.getAll()
@@ -114,12 +111,20 @@ export default function SignClientPage() {
       })
 
       if (uri) {
-        modal?.open({ uri })
+        appKit?.open({ uri })
+        setTimeout(() => {
+          if (appKit?.isOpen()) {
+            setIsLoading(false)
+          }
+        }, 10_000)
+        signClient.on('proposal_expire', () => {
+          setIsLoading(false)
+        })
         const newSession = await approval()
         setSession(newSession)
         setAccount(newSession?.namespaces['eip155']?.accounts?.[0]?.split(':')[2])
         setNetwork(newSession?.namespaces['eip155']?.chains?.[0])
-        modal?.close()
+        appKit?.close()
       }
     } catch (error) {
       console.error('Connection error:', error)
@@ -146,6 +151,7 @@ export default function SignClientPage() {
           message: 'user_disconnected'
         }
       })
+      await appKit?.disconnect()
       setSession(null)
       setAccount(undefined)
       setNetwork(undefined)
