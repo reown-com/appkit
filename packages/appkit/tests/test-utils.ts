@@ -8,6 +8,7 @@ import {
   StorageUtil
 } from '@reown/appkit-core'
 
+import { mockLocalStorage } from './mocks/LocalStorage.js'
 import { mainnet } from './mocks/Networks.js'
 
 // Common mock for window and document objects used across tests
@@ -34,6 +35,8 @@ export function mockWindowAndDocument() {
     getElementsByTagName: vi.fn().mockReturnValue([{ textContent: '' }]),
     querySelector: vi.fn()
   } as unknown as Document)
+
+  vi.stubGlobal('localStorage', mockLocalStorage() as unknown as Storage)
 }
 
 export function mockBlockchainApiController() {

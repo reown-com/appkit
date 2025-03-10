@@ -9,9 +9,9 @@ import {
   type AccountType,
   BlockchainApiController,
   ChainController,
+  ConnectorController,
   ModalController,
-  OptionsController,
-  StorageUtil
+  OptionsController
 } from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-avatar'
@@ -91,7 +91,7 @@ export class W3mSwitchAddressView extends LitElement {
   private getAddressTemplate(account: AccountType, index: number) {
     const label = this.labels?.get(account.address)
     const namespace = ChainController.state.activeChain as ChainNamespace
-    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(namespace)
     // Only show icon for AUTH accounts
     const shouldShowIcon = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
 

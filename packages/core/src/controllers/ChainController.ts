@@ -624,7 +624,7 @@ export const ChainController = {
       user: undefined,
       status: 'disconnected'
     })
-    StorageUtil.deleteConnectedConnectorId(chain)
+    StorageUtil.deleteConnectedConnectorId(chainToWrite)
   },
 
   async disconnect() {
@@ -657,6 +657,7 @@ export const ChainController = {
 
       StorageUtil.deleteConnectedSocialProvider()
       ConnectionController.resetWcConnection()
+      ConnectorController.resetConnectorIds()
       EventsController.sendEvent({
         type: 'track',
         event: 'DISCONNECT_SUCCESS'
