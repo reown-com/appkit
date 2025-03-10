@@ -4,8 +4,8 @@ import { createContext } from 'react'
 
 import type { SmartSessionGrantPermissionsResponse } from '@reown/appkit-experimental/smart-session'
 
-import { useLocalStorageState } from '../hooks/useLocalStorageState'
-import { SMART_SESSION_KEY, removeLocalStorageItem } from '../utils/LocalStorage'
+import { useLocalStorageState } from '@/src/hooks/useLocalStorageState'
+import { SMART_SESSION_KEY, removeLocalStorageItem } from '@/src/utils/LocalStorage'
 
 export type ERC7715PermissionsContextType = {
   projectId: string

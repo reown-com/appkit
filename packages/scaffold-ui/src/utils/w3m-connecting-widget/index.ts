@@ -11,7 +11,16 @@ import {
   ThemeController
 } from '@reown/appkit-core'
 import type { IconType } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-icon-box'
+import '@reown/appkit-ui/wui-link'
+import '@reown/appkit-ui/wui-loading-thumbnail'
+import '@reown/appkit-ui/wui-text'
+import '@reown/appkit-ui/wui-wallet-image'
 
+import '../../partials/w3m-mobile-download-links/index.js'
 import styles from './styles.js'
 
 export class W3mConnectingWidget extends LitElement {

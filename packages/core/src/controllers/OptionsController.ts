@@ -2,6 +2,7 @@ import { proxy, snapshot } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
+import { OptionsUtil } from '../utils/OptionsUtil.js'
 import type { SIWXConfig } from '../utils/SIWXUtil.js'
 import type {
   ConnectMethod,
@@ -147,6 +148,12 @@ export interface OptionsControllerStatePublic {
    * @default "{ bip122: 'payment', eip155: 'smartAccount', polkadot: 'eoa', solana: 'eoa' }"
    */
   defaultAccountTypes: DefaultAccountTypes
+  /**
+   * Allows users to indicate if they want to handle the WC connection themselves.
+   * @default false
+   * @see https://docs.reown.com/appkit/react/core/options#manualwccontrol
+   */
+  manualWCControl?: boolean
 }
 
 export interface OptionsControllerStateInternal {
@@ -155,7 +162,6 @@ export interface OptionsControllerStateInternal {
   isSiweEnabled?: boolean
   isUniversalProvider?: boolean
   hasMultipleAddresses?: boolean
-  useInjectedUniversalProvider?: boolean
 }
 
 type StateKey = keyof OptionsControllerStatePublic | keyof OptionsControllerStateInternal
@@ -189,12 +195,14 @@ export const OptionsController = {
 
     if (!state.features) {
       state.features = ConstantsUtil.DEFAULT_FEATURES
-
-      return
     }
 
     const newFeatures = { ...state.features, ...features }
     state.features = newFeatures
+
+    if (state.features.socials) {
+      state.features.socials = OptionsUtil.filterSocialsByPlatform(state.features.socials)
+    }
   },
 
   setProjectId(projectId: OptionsControllerState['projectId']) {
@@ -321,10 +329,8 @@ export const OptionsController = {
     state.allowUnsupportedChain = allowUnsupportedChain
   },
 
-  setUsingInjectedUniversalProvider(
-    useInjectedUniversalProvider: OptionsControllerState['useInjectedUniversalProvider']
-  ) {
-    state.useInjectedUniversalProvider = useInjectedUniversalProvider
+  setManualWCControl(manualWCControl: OptionsControllerState['manualWCControl']) {
+    state.manualWCControl = manualWCControl
   },
 
   setDefaultAccountTypes(

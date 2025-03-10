@@ -22,13 +22,17 @@ import { SolanaSignTransactionTest } from './SolanaSignTransactionTest'
 import { SolanaWriteContractTest } from './SolanaWriteContractTest'
 
 export function SolanaTests() {
-  const { isConnected } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'solana' })
   const { caipNetwork } = useAppKitNetwork()
 
-  return isConnected ? (
-    <Card marginTop={10} marginBottom={10}>
+  if (!address) {
+    return null
+  }
+
+  return (
+    <Card data-testid="solana-test-interactions" marginTop={10} marginBottom={10}>
       <CardHeader>
-        <Heading size="md">Test Interactions</Heading>
+        <Heading size="md">Solana Test Interactions</Heading>
       </CardHeader>
 
       <CardBody>
@@ -113,5 +117,5 @@ export function SolanaTests() {
         </Stack>
       </CardBody>
     </Card>
-  ) : null
+  )
 }

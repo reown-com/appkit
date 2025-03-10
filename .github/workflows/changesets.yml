@@ -48,3 +48,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish prerelease
+        if: steps.changesets.outputs.published != 'true'
+        continue-on-error: true
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm config set "//registry.npmjs.org/:_authToken" "$NPM_TOKEN"
+          git reset --hard origin/main
+          pnpm install
+          pnpm changeset:pre ${{ github.sha }}
+          pnpm changeset:version
+          pnpm publish:canary

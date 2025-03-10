@@ -74,7 +74,7 @@ const connect = async () => {
 
   if (uri) {
     const appKitModal = initializeModal()
-    appKitModal.open({ uri, view: 'ConnectingWalletConnectBasic' })
+    appKitModal.open({ uri })
     const session = await approval()
     props.onAccountChange(session?.namespaces['eip155']?.accounts?.[0]?.split(':')[2])
     props.onNetworkChange(session?.namespaces['eip155']?.chains?.[0])

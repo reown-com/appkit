@@ -2,7 +2,7 @@ import { proxy, ref } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
-import { type W3mFrameTypes } from '@reown/appkit-wallet'
+import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { SIWXUtil } from '../utils/SIWXUtil.js'
@@ -11,6 +11,8 @@ import type {
   Connector,
   EstimateGasTransactionArgs,
   SendTransactionArgs,
+  WalletGetAssetsParams,
+  WalletGetAssetsResponse,
   WcWallet,
   WriteContractArgs
 } from '../utils/TypeUtil.js'
@@ -18,6 +20,7 @@ import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { ModalController } from './ModalController.js'
+import { RouterController } from './RouterController.js'
 import { TransactionsController } from './TransactionsController.js'
 
 // -- Types --------------------------------------------- //
@@ -53,6 +56,7 @@ export interface ConnectionControllerClient {
     address: `0x${string}`
   }) => Promise<`0x${string}`>
   getCapabilities: (params: string) => Promise<unknown>
+  walletGetAssets: (params: WalletGetAssetsParams) => Promise<WalletGetAssetsResponse>
 }
 
 export interface ConnectionControllerState {
@@ -63,6 +67,7 @@ export interface ConnectionControllerState {
     href: string
     name: string
   }
+  wcBasic?: boolean
   wcError?: boolean
   recentWallet?: WcWallet
   buffering: boolean
@@ -192,6 +197,10 @@ export const ConnectionController = {
     return this._getClient()?.grantPermissions(params)
   },
 
+  async walletGetAssets(params: WalletGetAssetsParams): Promise<WalletGetAssetsResponse> {
+    return this._getClient()?.walletGetAssets(params) ?? {}
+  },
+
   async estimateGas(args: EstimateGasTransactionArgs) {
     return this._getClient()?.estimateGas(args)
   },
@@ -220,6 +229,36 @@ export const ConnectionController = {
     state.status = 'disconnected'
     TransactionsController.resetTransactions()
     StorageUtil.deleteWalletConnectDeepLink()
+  },
+
+  resetUri() {
+    state.wcUri = undefined
+    state.wcPairingExpiry = undefined
+  },
+
+  finalizeWcConnection() {
+    const { wcLinking, recentWallet } = ConnectionController.state
+
+    if (wcLinking) {
+      StorageUtil.setWalletConnectDeepLink(wcLinking)
+    }
+
+    if (recentWallet) {
+      StorageUtil.setAppKitRecent(recentWallet)
+    }
+
+    EventsController.sendEvent({
+      type: 'track',
+      event: 'CONNECT_SUCCESS',
+      properties: {
+        method: wcLinking ? 'mobile' : 'qrcode',
+        name: RouterController.state.data?.wallet?.name || 'Unknown'
+      }
+    })
+  },
+
+  setWcBasic(wcBasic: ConnectionControllerState['wcBasic']) {
+    state.wcBasic = wcBasic
   },
 
   setUri(uri: string) {

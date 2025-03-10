@@ -11,6 +11,7 @@ import type {
   ApiGetWalletsResponse,
   WcWallet
 } from '../utils/TypeUtil.js'
+import { AccountController } from './AccountController.js'
 import { AssetController } from './AssetController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
@@ -35,6 +36,13 @@ export interface ApiControllerState {
   search: WcWallet[]
   isAnalyticsEnabled: boolean
   excludedRDNS: string[]
+}
+
+interface PrefetchParameters {
+  fetchConnectorImages?: boolean
+  fetchFeaturedWallets?: boolean
+  fetchRecommendedWallets?: boolean
+  fetchNetworkImages?: boolean
 }
 
 type StateKey = keyof ApiControllerState
@@ -107,7 +115,7 @@ export const ApiController = {
     AssetController.setTokenImage(symbol, URL.createObjectURL(blob))
   },
 
-  async prefetchNetworkImages() {
+  async fetchNetworkImages() {
     const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
 
     const ids = requestedCaipNetworks
@@ -270,17 +278,27 @@ export const ApiController = {
     state.search = ApiController._filterOutExtensions(data)
   },
 
-  prefetch() {
+  prefetch({
+    fetchConnectorImages = true,
+    fetchFeaturedWallets = true,
+    fetchRecommendedWallets = true,
+    fetchNetworkImages = true
+  }: PrefetchParameters = {}) {
+    // Avoid pre-fetch if user is already connected as there is no need to fetch wallets in that case
+    if (AccountController.state.status === 'connected') {
+      return Promise.resolve()
+    }
+
     if (state.prefetchPromise) {
       return state.prefetchPromise
     }
 
     const promises = [
-      ApiController.fetchFeaturedWallets(),
-      ApiController.fetchRecommendedWallets(),
-      ApiController.fetchConnectorImages(),
-      ApiController.prefetchNetworkImages()
-    ]
+      fetchConnectorImages && ApiController.fetchConnectorImages(),
+      fetchFeaturedWallets && ApiController.fetchFeaturedWallets(),
+      fetchRecommendedWallets && ApiController.fetchRecommendedWallets(),
+      fetchNetworkImages && ApiController.fetchNetworkImages()
+    ].filter(Boolean)
 
     state.prefetchPromise = Promise.allSettled(promises)
 

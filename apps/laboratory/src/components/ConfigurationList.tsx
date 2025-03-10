@@ -1,3 +1,5 @@
+'use client'
+
 /* eslint-disable no-negated-condition */
 import type { ReactNode } from 'react'
 import { IoArrowForward } from 'react-icons/io5'
@@ -15,7 +17,8 @@ import {
   Text
 } from '@chakra-ui/react'
 
-import type { SdkOption } from '../utils/DataUtil'
+import type { SdkOption } from '@/src/utils/DataUtil'
+
 import { RandomLink } from './RandomLink'
 
 type Props = {
