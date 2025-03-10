@@ -2,6 +2,11 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-details-group'
+import '@reown/appkit-ui/wui-details-group-item'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'
 
