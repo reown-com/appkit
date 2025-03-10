@@ -16,7 +16,7 @@ export interface Asset {
 export interface WalletGetAssetsRPCResponse {
   jsonrpc: string
   id: number
-  result: Record<Hex, Asset[]>[]
+  result: Record<Hex, Asset[]>
 }
 
 export type WalletGetAssetsRPCRequest = {
