@@ -322,6 +322,14 @@ export const ConnectorController = {
     }
   },
 
+  removeConnectorId(namespace: ChainNamespace) {
+    state.activeConnectorIds = {
+      ...state.activeConnectorIds,
+      [namespace]: undefined
+    }
+    StorageUtil.deleteConnectedConnectorId(namespace)
+  },
+
   getConnectorId(namespace: ChainNamespace | undefined) {
     if (!namespace) {
       return undefined

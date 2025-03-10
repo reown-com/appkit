@@ -787,7 +787,6 @@ export abstract class AppKitCore {
       }
     } catch (err) {
       console.warn("AppKit couldn't sync existing connection", err)
-      StorageUtil.deleteConnectedConnectorId(namespace)
       this.setStatus('disconnected', namespace)
     }
   }
@@ -943,7 +942,7 @@ export abstract class AppKitCore {
     }
   ) {
     const isActiveNamespace = params.chainNamespace === ChainController.state.activeChain
-    const networkOfChain = ChainController.getNetworkByIdOfNamespace(
+    const networkOfChain = ChainController.getCaipNetworkByNamespace(
       params.chainNamespace,
       params.chainId
     )

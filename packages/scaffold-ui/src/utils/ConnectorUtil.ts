@@ -3,6 +3,7 @@ import {
   ApiController,
   ChainController,
   ConnectionController,
+  ConnectorController,
   type ConnectorWithProviders,
   CoreHelperUtil,
   OptionsController,
@@ -75,7 +76,7 @@ export const ConnectorUtil = {
   getIsConnectedWithWC() {
     const chains = Array.from(ChainController.state.chains.values())
     const isConnectedWithWC = chains.some(chain => {
-      const connectorId = StorageUtil.getConnectedConnectorId(chain.namespace)
+      const connectorId = ConnectorController.getConnectorId(chain.namespace)
 
       return connectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
     })

@@ -291,6 +291,9 @@ export const ChainController = {
     replaceState = true
   ) {
     this.setChainAccountData(chain, { [prop]: value }, replaceState)
+    if (prop === 'status' && value === 'disconnected' && chain) {
+      ConnectorController.removeConnectorId(chain)
+    }
   },
 
   setActiveNamespace(chain: ChainNamespace | undefined) {
@@ -721,9 +724,9 @@ export const ChainController = {
     return ChainController.state.chains.get(namespace)?.networkState
   },
 
-  getNetworkByIdOfNamespace(
+  getCaipNetworkByNamespace(
     chainNamespace: ChainNamespace | undefined,
-    chainId: string | number | undefined
+    chainId?: string | number | undefined
   ) {
     if (!chainNamespace) {
       return undefined

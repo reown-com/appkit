@@ -134,7 +134,7 @@ class W3mAccountButtonBase extends LitElement {
           ? CoreHelperUtil.formatBalance(this.balanceVal, this.balanceSymbol)
           : ''}
         @click=${this.onClick.bind(this)}
-        data-testid="account-button"
+        data-testid=${`account-button${this.namespace ? `-${this.namespace}` : ''}`}
         .charsStart=${this.charsStart}
         .charsEnd=${this.charsEnd}
         ?loading=${shouldShowLoading}
@@ -147,7 +147,7 @@ class W3mAccountButtonBase extends LitElement {
   private async onClick() {
     const isDifferentChain = this.namespace !== ChainController.state.activeChain
     const caipNetworkOfNamespace = ChainController.getNetworkData(this.namespace)?.caipNetwork
-    const firstNetworkWithChain = ChainController.getNetworkByIdOfNamespace(
+    const firstNetworkWithChain = ChainController.getCaipNetworkByNamespace(
       this.namespace,
       caipNetworkOfNamespace?.id
     )

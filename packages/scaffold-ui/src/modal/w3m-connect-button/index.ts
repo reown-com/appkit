@@ -49,7 +49,7 @@ class W3mConnectButtonBase extends LitElement {
         size=${ifDefined(this.size)}
         .loading=${this.loading}
         @click=${this.onClick.bind(this)}
-        data-testid="connect-button"
+        data-testid=${`connect-button${this.namespace ? `-${this.namespace}` : ''}`}
       >
         ${this.loading ? this.loadingLabel : this.label}
       </wui-connect-button>
