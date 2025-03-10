@@ -36,6 +36,7 @@ export interface ApiControllerState {
   search: WcWallet[]
   isAnalyticsEnabled: boolean
   excludedRDNS: string[]
+  isFetchingRecommendedWallets: boolean
 }
 
 interface PrefetchParameters {
@@ -56,7 +57,8 @@ const state = proxy<ApiControllerState>({
   wallets: [],
   search: [],
   isAnalyticsEnabled: false,
-  excludedRDNS: []
+  excludedRDNS: [],
+  isFetchingRecommendedWallets: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -165,16 +167,19 @@ export const ApiController = {
     }
   },
 
-  async fetchRecommendedWallets() {
+  async fetchRecommendedWallets(chains?: string) {
     try {
+      state.isFetchingRecommendedWallets = true
       const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
       const exclude = [...(excludeWalletIds ?? []), ...(featuredWalletIds ?? [])].filter(Boolean)
+      const caipNetworkIds = chains ?? ChainController.getRequestedCaipNetworkIds().join(',')
+
       const { data, count } = await api.get<ApiGetWalletsResponse>({
         path: '/getWallets',
         params: {
           ...ApiController._getSdkProperties(),
           page: '1',
-          chains: ChainController.state.activeCaipNetwork?.caipNetworkId,
+          chains: caipNetworkIds,
           entries: recommendedEntries,
           include: includeWalletIds?.join(','),
           exclude: exclude?.join(',')
@@ -192,6 +197,8 @@ export const ApiController = {
       state.count = count ?? 0
     } catch {
       // Catch silently
+    } finally {
+      state.isFetchingRecommendedWallets = false
     }
   },
 
@@ -281,7 +288,6 @@ export const ApiController = {
   prefetch({
     fetchConnectorImages = true,
     fetchFeaturedWallets = true,
-    fetchRecommendedWallets = true,
     fetchNetworkImages = true
   }: PrefetchParameters = {}) {
     // Avoid pre-fetch if user is already connected as there is no need to fetch wallets in that case
@@ -296,7 +302,6 @@ export const ApiController = {
     const promises = [
       fetchConnectorImages && ApiController.fetchConnectorImages(),
       fetchFeaturedWallets && ApiController.fetchFeaturedWallets(),
-      fetchRecommendedWallets && ApiController.fetchRecommendedWallets(),
       fetchNetworkImages && ApiController.fetchNetworkImages()
     ].filter(Boolean)
 

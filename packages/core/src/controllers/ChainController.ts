@@ -736,5 +736,13 @@ export const ChainController = {
     }
 
     return chain?.networkState?.caipNetwork || chain?.caipNetworks?.[0]
+  },
+
+  getRequestedCaipNetworkIds(namespace?: ChainNamespace) {
+    const chains = namespace ? [state.chains.get(namespace)] : Array.from(state.chains.values())
+
+    return chains
+      .flatMap(chain => chain?.caipNetworks || [])
+      .map(caipNetwork => caipNetwork.caipNetworkId)
   }
 }

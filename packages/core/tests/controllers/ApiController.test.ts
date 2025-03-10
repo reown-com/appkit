@@ -102,7 +102,8 @@ describe('ApiController', () => {
       wallets: [],
       search: [],
       isAnalyticsEnabled: false,
-      excludedRDNS: []
+      excludedRDNS: [],
+      isFetchingRecommendedWallets: false
     })
   })
 
@@ -402,6 +403,7 @@ describe('ApiController', () => {
       path: '/getWallets',
       params: {
         ...ApiController._getSdkProperties(),
+        chains: 'eip155:1,eip155:4,eip155:42',
         page: '1',
         // Fixed to recommendedEntries
         entries: '4',
@@ -430,6 +432,7 @@ describe('ApiController', () => {
       path: '/getWallets',
       params: {
         ...ApiController._getSdkProperties(),
+        chains: 'eip155:1,eip155:4,eip155:42',
         page: '1',
         entries: '4',
         include: '',

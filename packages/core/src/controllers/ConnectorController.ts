@@ -4,7 +4,9 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { type ChainNamespace, ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
 
 import { MobileWalletUtil } from '../utils/MobileWallet.js'
+import { StorageUtil } from '../utils/StorageUtil.js'
 import type { AuthConnector, Connector, WcWallet } from '../utils/TypeUtil.js'
+import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
 import { RouterController } from './RouterController.js'
@@ -278,10 +280,30 @@ export const ConnectorController = {
   setFilterByNamespace(namespace: ChainNamespace) {
     state.filterByNamespace = namespace
     state.connectors = this.getConnectors(namespace)
+    const namespaceChains = ChainController.getRequestedCaipNetworkIds(namespace).join(',')
+    ApiController.fetchRecommendedWallets(namespaceChains)
   },
 
+  /**
+   * Clears the filter by namespace and updates the connectors.
+   * If the current filterByNamespace has a value, it will fetch the recommended wallets with all requested chains.
+   */
   clearNamespaceFilter() {
+    if (state.filterByNamespace !== undefined) {
+      ApiController.fetchRecommendedWallets()
+    }
     state.filterByNamespace = undefined
     state.connectors = this.getConnectors()
+  },
+
+  getIsConnectedWithWC() {
+    const chains = Array.from(ChainController.state.chains.values())
+    const isConnectedWithWC = chains.some(chain => {
+      const connectorId = StorageUtil.getConnectedConnectorId(chain.namespace)
+
+      return connectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+    })
+
+    return isConnectedWithWC
   }
 }

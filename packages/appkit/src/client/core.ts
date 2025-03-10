@@ -346,14 +346,15 @@ export abstract class AppKitCore {
       connectWalletConnect: async () => {
         const activeChain = ChainController.state.activeChain
         const adapter = this.getAdapter(activeChain)
+        const chainId = this.getCaipNetwork(activeChain)?.id
 
         if (!adapter) {
           throw new Error('Adapter not found')
         }
 
-        const result = await adapter.connectWalletConnect(this.getCaipNetwork()?.id)
-        this.close()
+        const result = await adapter.connectWalletConnect(chainId)
 
+        this.close()
         this.setClientId(result?.clientId || null)
         StorageUtil.setConnectedNamespaces([...ChainController.state.chains.keys()])
         await this.syncWalletConnectAccount()
@@ -698,15 +699,14 @@ export abstract class AppKitCore {
       const caipNetwork = this.caipNetworks?.find(
         n => n.id === chainId || n.caipNetworkId === chainId
       )
+      const isSameNamespace = ChainController.state.activeChain === chainNamespace
+      const accountAddress = ChainController.getAccountProp('address', chainNamespace)
 
       if (caipNetwork) {
-        if (ChainController.state.activeChain === chainNamespace && address) {
+        if (isSameNamespace && address) {
           this.syncAccount({ address, chainId, chainNamespace })
-        } else if (
-          ChainController.state.activeChain === chainNamespace &&
-          AccountController.state.address
-        ) {
-          this.syncAccount({ address: AccountController.state.address, chainId, chainNamespace })
+        } else if (accountAddress) {
+          this.syncAccount({ address: accountAddress, chainId, chainNamespace })
         }
       } else {
         this.setUnsupportedNetwork(chainId)
