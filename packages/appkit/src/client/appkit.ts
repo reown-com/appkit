@@ -355,6 +355,7 @@ export class AppKit extends AppKitCore {
       return
     }
 
+    const currentNamespace = ChainController.state.activeChain
     const networkNamespace = caipNetwork.chainNamespace
     const namespaceAddress = this.getAddressByChainNamespace(caipNetwork.chainNamespace)
 
@@ -366,12 +367,19 @@ export class AppKit extends AppKitCore {
       await adapter?.switchNetwork({ caipNetwork, provider, providerType })
       this.setCaipNetwork(caipNetwork)
     } else {
+      const currentNamespaceProviderType = currentNamespace
+        ? ProviderUtil.state.providerIds[currentNamespace]
+        : undefined
+      const isCurrentNamespaceAuthConnector =
+        currentNamespaceProviderType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH
       const providerType = ProviderUtil.state.providerIds[networkNamespace]
+      const isNamespaceAuthConnector = providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH
       const isNamespaceSupportsAuthConnector =
         ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.includes(networkNamespace)
 
       if (
-        providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH &&
+        // If the current namespace is one of the auth connector supported chains, when switching to other supported namespace, we should use the auth connector
+        (isNamespaceAuthConnector || isCurrentNamespaceAuthConnector) &&
         isNamespaceSupportsAuthConnector
       ) {
         try {
