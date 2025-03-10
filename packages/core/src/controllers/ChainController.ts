@@ -599,6 +599,7 @@ export const ChainController = {
       user: undefined,
       status: 'disconnected'
     })
+    StorageUtil.deleteConnectedConnectorId(chainToWrite)
   },
 
   async disconnect() {
@@ -613,7 +614,6 @@ export const ChainController = {
             }
             this.resetAccount(namespace)
             this.resetNetwork(namespace)
-            StorageUtil.deleteConnectedConnectorId(namespace)
           } catch (error) {
             throw new Error(`Failed to disconnect chain ${namespace}: ${(error as Error).message}`)
           }
@@ -632,6 +632,7 @@ export const ChainController = {
 
       StorageUtil.deleteConnectedSocialProvider()
       ConnectionController.resetWcConnection()
+      ConnectorController.resetConnectorIds()
       EventsController.sendEvent({
         type: 'track',
         event: 'DISCONNECT_SUCCESS'

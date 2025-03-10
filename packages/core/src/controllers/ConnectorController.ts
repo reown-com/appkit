@@ -4,6 +4,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import { type ChainNamespace, ConstantsUtil, getW3mThemeVariables } from '@reown/appkit-common'
 
 import { MobileWalletUtil } from '../utils/MobileWallet.js'
+import { StorageUtil } from '../utils/StorageUtil.js'
 import type { AuthConnector, Connector, WcWallet } from '../utils/TypeUtil.js'
 import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
@@ -19,16 +20,25 @@ export interface ConnectorControllerState {
   connectors: ConnectorWithProviders[]
   activeConnector: Connector | undefined
   filterByNamespace: ChainNamespace | undefined
+  activeConnectorIds: Record<ChainNamespace, string | undefined>
 }
 
 type StateKey = keyof ConnectorControllerState
+
+const defaultActiveConnectors = {
+  eip155: undefined,
+  solana: undefined,
+  polkadot: undefined,
+  bip122: undefined
+}
 
 // -- State --------------------------------------------- //
 const state = proxy<ConnectorControllerState>({
   allConnectors: [],
   connectors: [],
   activeConnector: undefined,
-  filterByNamespace: undefined
+  filterByNamespace: undefined,
+  activeConnectorIds: { ...defaultActiveConnectors }
 })
 
 // -- Controller ---------------------------------------- //
@@ -43,6 +53,15 @@ export const ConnectorController = {
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: ConnectorControllerState[K]) => void) {
     return subKey(state, key, callback)
+  },
+
+  initialize(namespaces: ChainNamespace[]) {
+    namespaces.forEach(namespace => {
+      const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+      if (connectorId) {
+        this.setConnectorId(connectorId, namespace)
+      }
+    })
   },
 
   setActiveConnector(connector: ConnectorControllerState['activeConnector']) {
@@ -203,8 +222,12 @@ export const ConnectorController = {
     return state.connectors.filter(c => c.type === 'ANNOUNCED').map(c => c.info?.rdns)
   },
 
+  getConnectorById(id: string) {
+    return state.allConnectors.find(c => c.id === id)
+  },
+
   getConnector(id: string, rdns?: string | null) {
-    return state.connectors.find(c => c.explorerId === id || c.info?.rdns === rdns)
+    return state.allConnectors.find(c => c.explorerId === id || c.info?.rdns === rdns)
   },
 
   syncIfAuthConnector(connector: Connector | AuthConnector) {
@@ -283,5 +306,27 @@ export const ConnectorController = {
   clearNamespaceFilter() {
     state.filterByNamespace = undefined
     state.connectors = this.getConnectors()
+  },
+
+  setConnectorId(connectorId: string, namespace: ChainNamespace) {
+    if (connectorId) {
+      state.activeConnectorIds = {
+        ...state.activeConnectorIds,
+        [namespace]: connectorId
+      }
+      StorageUtil.setConnectedConnectorId(namespace, connectorId)
+    }
+  },
+
+  getConnectorId(namespace: ChainNamespace | undefined) {
+    if (!namespace) {
+      return undefined
+    }
+
+    return state.activeConnectorIds[namespace]
+  },
+
+  resetConnectorIds() {
+    state.activeConnectorIds = { ...defaultActiveConnectors }
   }
 }
