@@ -154,10 +154,10 @@ jobs:
 
       - name: Run canary with minimal environment config
         env:
-          # DO NOT MODIFY THIS. If you are required to add variables here without adding
-          # them to the rs-relay repo it will cause alarms.
+          # DO NOT MODIFY THESE VARIABLES. If you need to add a variable here you MUST add it to the canary deployment first before publishing the canary.
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
           NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
+          MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSAC_API_KEY }}
           CI: true
         working-directory: ./apps/laboratory/
         run: pnpm playwright:test:canary

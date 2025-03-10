@@ -1,8 +1,10 @@
-import { type BrowserContext, expect, test } from '@playwright/test'
+import { type BrowserContext, expect } from '@playwright/test'
 
 import { SECURE_WEBSITE_URL } from './shared/constants'
+import { timingFixture } from './shared/fixtures/timing-fixture'
 import { ModalWalletPage } from './shared/pages/ModalWalletPage'
 import { Email } from './shared/utils/email'
+import { afterEachCanary, getCanaryTagAndAnnotation } from './shared/utils/metrics'
 import { ModalWalletValidator } from './shared/validators/ModalWalletValidator'
 
 /* eslint-disable init-declarations */
@@ -12,7 +14,7 @@ let context: BrowserContext
 /* eslint-enable init-declarations */
 
 // -- Setup --------------------------------------------------------------------
-const emailSiweTest = test.extend<{ library: string }>({
+const emailSiweTest = timingFixture.extend<{ library: string }>({
   library: ['wagmi', { option: true }]
 })
 
@@ -49,13 +51,24 @@ emailSiweTest.afterAll(async () => {
   await page.page.close()
 })
 
-// -- Tests --------------------------------------------------------------------
-emailSiweTest('it should sign', async ({ library }) => {
-  const namespace = library === 'solana' ? 'solana' : 'eip155'
-  await page.sign(namespace)
-  await page.approveSign()
-  await validator.expectAcceptedSign()
+emailSiweTest.afterEach(async ({ browserName, timingRecords }, testInfo) => {
+  if (browserName === 'firefox') {
+    return
+  }
+  await afterEachCanary(testInfo, timingRecords)
 })
+
+// -- Tests --------------------------------------------------------------------
+emailSiweTest(
+  'it should sign',
+  getCanaryTagAndAnnotation('HappyPath.email-sign'),
+  async ({ library }) => {
+    const namespace = library === 'solana' ? 'solana' : 'eip155'
+    await page.sign(namespace)
+    await page.approveSign()
+    await validator.expectAcceptedSign()
+  }
+)
 
 emailSiweTest('it should upgrade wallet', async ({ library }) => {
   const walletUpgradePage = await page.clickWalletUpgradeCard(context, library)
