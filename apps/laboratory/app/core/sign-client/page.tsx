@@ -35,7 +35,8 @@ const OPTIONAL_NAMESPACES = {
       'eth_sign',
       'personal_sign',
       'eth_signTypedData',
-      'wallet_switchEthereumChain'
+      'wallet_switchEthereumChain',
+      'wallet_addEthereumChain'
     ],
     chains: ['eip155:1', 'eip155:137'],
     events: ['chainChanged', 'accountsChanged']
@@ -69,6 +70,7 @@ export default function SignClientPage() {
   const [network, setNetwork] = useState<string | undefined>(undefined)
   const [isLoading, setIsLoading] = useState(false)
 
+  console.log('>> Session', session)
   useEffect(() => {
     async function initialize() {
       try {
@@ -253,18 +255,54 @@ export default function SignClientPage() {
     }
   }
 
-  async function handleSwitchNetwork(newNetwork: string) {
+  async function handleSwitchNetwork(newNetwork: string, chainId: string) {
     if (!signClient || !session) {
       return
     }
 
-    try {
-      setNetwork(newNetwork)
+    const [namespace] = newNetwork.split(':')
 
-      const [namespace] = newNetwork.split(':')
-      if (namespace) {
-        setAccount(session?.namespaces?.[namespace]?.accounts?.[0]?.split(':')[2])
+    const isChainAllowed =
+      session?.namespaces?.[namespace as keyof typeof session.namespaces]?.chains?.includes(
+        newNetwork
+      )
+    const isSameNetwork = network === newNetwork
+
+    if (isSameNetwork) {
+      return
+    }
+
+    if (!isChainAllowed) {
+      toast({
+        title: 'Error',
+        description: 'Chain not supported by wallet',
+        type: 'error'
+      })
+
+      return
+    }
+
+    try {
+      if (newNetwork.startsWith('eip155')) {
+        if (session?.namespaces?.['eip155']?.methods?.includes('wallet_switchEthereumChain')) {
+          await signClient.request({
+            topic: session.topic,
+            chainId: newNetwork,
+            request: {
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId }]
+            }
+          })
+        }
+
+        setAccount(session?.namespaces?.eip155?.accounts?.[0]?.split(':')[2])
+      } else if (newNetwork.startsWith('solana')) {
+        setAccount(session?.namespaces?.solana?.accounts?.[0].split(':')[2])
+      } else if (newNetwork.startsWith('bip122')) {
+        setAccount(session?.namespaces?.bip122?.accounts?.[0].split(':')[2])
       }
+
+      setNetwork(newNetwork)
     } catch (error) {
       console.error('Network switch error:', error)
       toast({
@@ -310,16 +348,16 @@ export default function SignClientPage() {
                   Network
                 </Heading>
                 <Stack direction="row" spacing={4}>
-                  <Button onClick={() => handleSwitchNetwork('eip155:1')} size="sm">
+                  <Button onClick={() => handleSwitchNetwork('eip155:1', '0x1')} size="sm">
                     Ethereum
                   </Button>
-                  <Button onClick={() => handleSwitchNetwork('eip155:137')} size="sm">
+                  <Button onClick={() => handleSwitchNetwork('eip155:137', '0x89')} size="sm">
                     Polygon
                   </Button>
-                  <Button onClick={() => handleSwitchNetwork(solana.caipNetworkId)} size="sm">
+                  <Button onClick={() => handleSwitchNetwork(solana.caipNetworkId, '')} size="sm">
                     Solana
                   </Button>
-                  <Button onClick={() => handleSwitchNetwork(bitcoin.caipNetworkId)} size="sm">
+                  <Button onClick={() => handleSwitchNetwork(bitcoin.caipNetworkId, '')} size="sm">
                     Bitcoin
                   </Button>
                 </Stack>
