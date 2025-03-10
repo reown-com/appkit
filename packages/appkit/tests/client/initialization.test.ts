@@ -13,15 +13,9 @@ import { ErrorUtil } from '@reown/appkit-utils'
 import { AppKit } from '../../src/client/appkit.js'
 import { mainnet, polygon, sepolia, solana } from '../mocks/Networks'
 import { mockOptions } from '../mocks/Options'
-import {
-  mockBlockchainApiController,
-  mockCoreHelperUtil,
-  mockStorageUtil,
-  mockWindowAndDocument
-} from '../test-utils'
+import { mockBlockchainApiController, mockStorageUtil, mockWindowAndDocument } from '../test-utils'
 
 mockWindowAndDocument()
-mockCoreHelperUtil()
 mockStorageUtil()
 mockBlockchainApiController()
 

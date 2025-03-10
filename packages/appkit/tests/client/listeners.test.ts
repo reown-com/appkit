@@ -6,17 +6,11 @@ import { AppKit } from '../../src/client/appkit.js'
 import { emitter, mockEvmAdapter, solanaEmitter } from '../mocks/Adapter'
 import { mainnet, solana, unsupportedNetwork } from '../mocks/Networks'
 import { mockOptions } from '../mocks/Options'
-import {
-  mockBlockchainApiController,
-  mockCoreHelperUtil,
-  mockStorageUtil,
-  mockWindowAndDocument
-} from '../test-utils'
+import { mockBlockchainApiController, mockStorageUtil, mockWindowAndDocument } from '../test-utils'
 
 mockStorageUtil()
 mockBlockchainApiController()
 mockWindowAndDocument()
-mockCoreHelperUtil()
 
 describe('Listeners', () => {
   beforeEach(() => {

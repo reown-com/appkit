@@ -382,15 +382,17 @@ export abstract class AppKitCore {
           throw new Error('Adapter not found')
         }
 
+        const fallbackCaipNetwork = this.getCaipNetwork(chainToUse)
+
         const res = await adapter.connect({
           id,
           info,
           type,
           provider,
-          chainId: caipNetwork?.id || this.getCaipNetwork(chainToUse)?.id,
+          chainId: caipNetwork?.id || fallbackCaipNetwork?.id,
           rpcUrl:
             caipNetwork?.rpcUrls?.default?.http?.[0] ||
-            this.getCaipNetwork(chainToUse)?.rpcUrls?.default?.http?.[0]
+            fallbackCaipNetwork?.rpcUrls?.default?.http?.[0]
         })
 
         if (!res) {

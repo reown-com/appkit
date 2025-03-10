@@ -38,7 +38,6 @@ import { mockOptions } from '../mocks/Options.js'
 import { mockAuthProvider, mockProvider, mockUniversalProvider } from '../mocks/Providers.js'
 import {
   mockBlockchainApiController,
-  mockCoreHelperUtil,
   mockStorageUtil,
   mockWindowAndDocument
 } from '../test-utils.js'
@@ -46,7 +45,6 @@ import {
 mockStorageUtil()
 mockBlockchainApiController()
 mockWindowAndDocument()
-mockCoreHelperUtil()
 
 describe('Base Public methods', () => {
   it('should open modal', async () => {

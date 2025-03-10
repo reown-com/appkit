@@ -15,7 +15,7 @@ import * as networks from '@reown/appkit/networks'
 
 import { mockUniversalAdapter } from './mocks/Adapter'
 import mockProvider from './mocks/UniversalProvider'
-import { mockCoreHelperUtil, mockWindowAndDocument } from './test-utils'
+import { mockWindowAndDocument } from './test-utils'
 
 describe('SIWE mapped to SIWX', () => {
   let siweConfig: AppKitSIWEClient
@@ -23,7 +23,6 @@ describe('SIWE mapped to SIWX', () => {
 
   beforeEach(async () => {
     mockWindowAndDocument()
-    mockCoreHelperUtil()
 
     siweConfig = createSIWEConfig({
       createMessage: () => {

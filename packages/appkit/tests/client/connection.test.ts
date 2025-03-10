@@ -17,7 +17,6 @@ import { mainnet, sepolia } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
 import {
   mockBlockchainApiController,
-  mockCoreHelperUtil,
   mockStorageUtil,
   mockWindowAndDocument
 } from '../test-utils.js'
@@ -29,7 +28,6 @@ const MOCKED_CONNECTORS = [
 ]
 
 mockWindowAndDocument()
-mockCoreHelperUtil()
 mockStorageUtil()
 mockBlockchainApiController()
 
