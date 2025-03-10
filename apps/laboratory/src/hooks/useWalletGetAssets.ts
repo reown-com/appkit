@@ -128,7 +128,7 @@ async function getAssetsViaProvider(
 ): Promise<Record<Hex, Asset[]>> {
   const response: Record<Hex, Asset[]> = await provider.request({
     method: 'wallet_getAssets',
-    params: request
+    params: [request]
   })
 
   return response
