@@ -111,12 +111,12 @@ export default function SignClientPage() {
       })
 
       if (uri) {
-        appKit?.open({ uri })
-        setTimeout(() => {
-          if (appKit?.isOpen()) {
+        appKit.subscribeEvents(({ data }: { data: { event: string } }) => {
+          if (data.event === 'MODAL_CLOSE') {
             setIsLoading(false)
           }
-        }, 10_000)
+        })
+        appKit?.open({ uri })
         signClient.on('proposal_expire', () => {
           setIsLoading(false)
         })
