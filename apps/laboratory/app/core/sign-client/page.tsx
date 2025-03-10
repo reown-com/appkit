@@ -70,7 +70,6 @@ export default function SignClientPage() {
   const [network, setNetwork] = useState<string | undefined>(undefined)
   const [isLoading, setIsLoading] = useState(false)
 
-  console.log('>> Session', session)
   useEffect(() => {
     async function initialize() {
       try {
@@ -92,6 +91,11 @@ export default function SignClientPage() {
           const { namespaces } = params
           const _session = client.session.get(topic)
           setSession({ ..._session, namespaces })
+        })
+        client.on('session_delete', () => {
+          setSession(null)
+          setAccount(undefined)
+          setNetwork(undefined)
         })
       } catch (error) {
         console.error('Initialization error:', error)
