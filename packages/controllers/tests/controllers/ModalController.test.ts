@@ -1,7 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { CoreHelperUtil } from '@reown/appkit'
-
 import {
   ApiController,
   ChainController,
@@ -80,7 +78,6 @@ describe('ModalController', () => {
       caipAddress: 'eip155:1:0x123'
     })
 
-    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValueOnce(false)
     const resetSpy = vi.spyOn(RouterController, 'reset')
 
     await ModalController.open({ namespace: 'eip155' })
