@@ -303,6 +303,10 @@ export const ConnectorController = {
     state.connectors = this.getConnectors(namespace)
   },
 
+  /**
+   * Clears the filter by namespace and updates the connectors.
+   * If the current filterByNamespace has a value, it will fetch the recommended wallets with all requested chains.
+   */
   clearNamespaceFilter() {
     state.filterByNamespace = undefined
     state.connectors = this.getConnectors()
@@ -316,6 +320,14 @@ export const ConnectorController = {
       }
       StorageUtil.setConnectedConnectorId(namespace, connectorId)
     }
+  },
+
+  removeConnectorId(namespace: ChainNamespace) {
+    state.activeConnectorIds = {
+      ...state.activeConnectorIds,
+      [namespace]: undefined
+    }
+    StorageUtil.deleteConnectedConnectorId(namespace)
   },
 
   getConnectorId(namespace: ChainNamespace | undefined) {

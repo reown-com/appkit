@@ -89,7 +89,6 @@ describe('syncConnectedWalletInfo', () => {
     ])
     appKit = new AppKit(mockOptions)
     setConnectedWalletInfoSpy = vi.spyOn(appKit, 'setConnectedWalletInfo')
-    vi.clearAllMocks()
   })
 
   it.each([

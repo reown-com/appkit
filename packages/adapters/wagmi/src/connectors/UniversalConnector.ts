@@ -231,7 +231,8 @@ export function walletConnect(
       return provider_ as Provider
     },
     async getChainId() {
-      const chainId = appKit.getCaipNetwork()?.id
+      const chainId = appKit.getCaipNetwork(ConstantsUtil.CHAIN.EVM)?.id
+
       if (chainId) {
         return chainId as number
       }

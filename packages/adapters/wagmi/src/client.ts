@@ -556,7 +556,12 @@ export class WagmiAdapter extends AdapterBlueprint {
   public async getBalance(
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
+    const address = params.address
     const caipNetwork = this.caipNetworks?.find(network => network.id === params.chainId)
+
+    if (!address) {
+      return Promise.resolve({ balance: '0.00', symbol: 'ETH' })
+    }
 
     if (caipNetwork && this.wagmiConfig) {
       const caipAddress = `${caipNetwork.caipNetworkId}:${params.address}`
@@ -592,7 +597,7 @@ export class WagmiAdapter extends AdapterBlueprint {
         delete this.balancePromises[caipAddress]
       })
 
-      return this.balancePromises[caipAddress] || { balance: '', symbol: '' }
+      return this.balancePromises[caipAddress] || { balance: '0.00', symbol: 'ETH' }
     }
 
     return { balance: '', symbol: '' }
@@ -638,6 +643,7 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
     await switchChain(this.wagmiConfig, { chainId: params.caipNetwork.id as number })
+    await super.switchNetwork(params)
   }
 
   public async getCapabilities(params: string) {

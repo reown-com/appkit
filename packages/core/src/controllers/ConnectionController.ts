@@ -155,14 +155,14 @@ export const ConnectionController = {
   },
 
   async setPreferredAccountType(accountType: W3mFrameTypes.AccountType) {
-    ModalController.setLoading(true)
+    ModalController.setLoading(true, ChainController.state.activeChain)
     const authConnector = ConnectorController.getAuthConnector()
     if (!authConnector) {
       return
     }
     await authConnector?.provider.setPreferredAccount(accountType)
     await this.reconnectExternal(authConnector)
-    ModalController.setLoading(false)
+    ModalController.setLoading(false, ChainController.state.activeChain)
     EventsController.sendEvent({
       type: 'track',
       event: 'SET_PREFERRED_ACCOUNT_TYPE',

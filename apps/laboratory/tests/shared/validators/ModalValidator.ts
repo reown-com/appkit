@@ -13,7 +13,7 @@ export class ModalValidator {
   constructor(public readonly page: Page) {}
 
   async expectConnected() {
-    const accountButton = this.page.locator('appkit-account-button')
+    const accountButton = this.page.locator('appkit-account-button').first()
     await expect(accountButton, 'Account button should be present').toBeAttached({
       timeout: MAX_WAIT
     })
@@ -75,8 +75,8 @@ export class ModalValidator {
     ).toBeVisible()
   }
 
-  async expectDisconnected() {
-    const connectButton = this.page.getByTestId('connect-button')
+  async expectDisconnected(namespace?: string) {
+    const connectButton = this.page.getByTestId(`connect-button${namespace ? `-${namespace}` : ''}`)
     await expect(connectButton, 'Connect button should be present').toBeVisible({
       timeout: MAX_WAIT
     })
@@ -394,8 +394,8 @@ export class ModalValidator {
     await expect(connectButton).toContainText('Connecting...')
   }
 
-  async expectAccountButtonReady() {
-    const accountButton = this.page.getByTestId('account-button')
+  async expectAccountButtonReady(namespace?: string) {
+    const accountButton = this.page.getByTestId(`account-button${namespace ? `-${namespace}` : ''}`)
     await expect(accountButton).toBeVisible({ timeout: MAX_WAIT })
   }
 

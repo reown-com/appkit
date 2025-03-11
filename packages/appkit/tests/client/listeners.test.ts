@@ -8,10 +8,9 @@ import { mainnet, solana, unsupportedNetwork } from '../mocks/Networks'
 import { mockOptions } from '../mocks/Options'
 import {
   mockBlockchainApiController,
-  mockChainControllerStateWithUnsupportedChain,
   mockStorageUtil,
   mockWindowAndDocument
-} from '../test-utils'
+} from '../test-utils.js'
 
 mockWindowAndDocument()
 mockStorageUtil()
@@ -103,7 +102,8 @@ describe('Listeners', () => {
       features: { email: false, socials: [] }
     })
 
-    mockChainControllerStateWithUnsupportedChain()
+    ChainController.state.activeChain = mainnet.chainNamespace
+    ChainController.state.activeCaipNetwork = unsupportedNetwork
 
     await appKit['syncAccount']({
       address: '0x123',

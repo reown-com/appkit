@@ -1,6 +1,8 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
+import type { ChainNamespace } from '@reown/appkit-common'
+
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
@@ -15,13 +17,16 @@ import { RouterController } from './RouterController.js'
 // -- Types --------------------------------------------- //
 export interface ModalControllerState {
   loading: boolean
+  loadingNamespaceMap: Map<ChainNamespace, boolean>
   open: boolean
   shake: boolean
+  namespace: ChainNamespace | undefined
 }
 
 export interface ModalControllerArguments {
   open: {
     view?: RouterControllerState['view']
+    namespace?: ChainNamespace
   }
 }
 
@@ -30,8 +35,10 @@ type StateKey = keyof ModalControllerState
 // -- State --------------------------------------------- //
 const state = proxy<ModalControllerState>({
   loading: false,
+  loadingNamespaceMap: new Map<ChainNamespace, boolean>(),
   open: false,
-  shake: false
+  shake: false,
+  namespace: undefined
 })
 
 // -- Controller ---------------------------------------- //
@@ -45,6 +52,7 @@ export const ModalController = {
   subscribeKey<K extends StateKey>(key: K, callback: (value: ModalControllerState[K]) => void) {
     return subKey(state, key, callback)
   },
+
   async open(options?: ModalControllerArguments['open']) {
     if (ConnectionController.state.wcBasic) {
       // No need to add an await here if we are use basic
@@ -53,23 +61,30 @@ export const ModalController = {
       await ApiController.prefetch()
     }
 
-    const caipAddress = ChainController.state.activeCaipAddress
+    if (options?.namespace) {
+      ConnectorController.setFilterByNamespace(options.namespace)
+      ModalController.setLoading(true, options.namespace)
+    } else {
+      ModalController.setLoading(true)
+    }
 
+    const caipAddress = ChainController.state.activeCaipAddress
     const hasNoAdapters = ChainController.state.noAdapters
 
-    if (options?.view) {
-      RouterController.reset(options.view)
-    } else if (caipAddress) {
-      RouterController.reset('Account')
-    } else if (hasNoAdapters) {
+    if (hasNoAdapters && !caipAddress) {
       if (CoreHelperUtil.isMobile()) {
         RouterController.reset('AllWallets')
       } else {
         RouterController.reset('ConnectingWalletConnectBasic')
       }
+    } else if (options?.view) {
+      RouterController.reset(options.view)
+    } else if (caipAddress) {
+      RouterController.reset('Account')
     } else {
       RouterController.reset('Connect')
     }
+
     state.open = true
     PublicStateController.set({ open: true })
     EventsController.sendEvent({
@@ -93,6 +108,7 @@ export const ModalController = {
     }
 
     state.open = false
+    ModalController.clearLoading()
 
     if (isEmbeddedEnabled) {
       if (isConnected) {
@@ -108,9 +124,17 @@ export const ModalController = {
     ConnectionController.resetUri()
   },
 
-  setLoading(loading: ModalControllerState['loading']) {
+  setLoading(loading: ModalControllerState['loading'], namespace?: ChainNamespace) {
+    if (namespace) {
+      state.loadingNamespaceMap.set(namespace, loading)
+    }
     state.loading = loading
     PublicStateController.set({ loading })
+  },
+
+  clearLoading() {
+    state.loadingNamespaceMap.clear()
+    state.loading = false
   },
 
   shake() {
