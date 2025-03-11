@@ -85,7 +85,7 @@ describe('AccountController', () => {
     expect(AccountController.state.addressExplorerUrl).toEqual(explorerUrl)
   })
 
-  it('shuold update state correctly on setSmartAccountDeployed()', () => {
+  it('should update state correctly on setSmartAccountDeployed()', () => {
     AccountController.setSmartAccountDeployed(true, chain)
     expect(AccountController.state.smartAccountDeployed).toEqual(true)
   })
