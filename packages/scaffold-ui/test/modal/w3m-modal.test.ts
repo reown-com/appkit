@@ -319,7 +319,6 @@ describe('W3mModal', () => {
     let element: W3mModal
 
     beforeEach(async () => {
-      vi.resetAllMocks()
       vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve())
       vi.spyOn(ApiController, 'prefetchAnalyticsConfig').mockImplementation(() => Promise.resolve())
       vi.spyOn(AlertController, 'open')
