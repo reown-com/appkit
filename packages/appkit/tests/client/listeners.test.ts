@@ -16,15 +16,14 @@ import {
   mockWindowAndDocument
 } from '../test-utils.js'
 
-mockWindowAndDocument()
-mockStorageUtil()
-mockBlockchainApiController()
-
 describe('Listeners', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     emitter.clearAll()
     solanaEmitter.clearAll()
+    mockWindowAndDocument()
+    mockStorageUtil()
+    mockBlockchainApiController()
   })
 
   it('should set caip address, profile name and profile image on accountChanged event', async () => {
