@@ -360,7 +360,10 @@ export abstract class AppKitCore {
         this.setClientId(result?.clientId || null)
         StorageUtil.setConnectedNamespaces([...ChainController.state.chains.keys()])
         this.chainNamespaces.forEach(namespace => {
-          ConnectorController.setConnectorId('result?.id', namespace)
+          ConnectorController.setConnectorId(
+            UtilConstantsUtil.CONNECTOR_TYPE_WALLET_CONNECT,
+            namespace
+          )
         })
         await this.syncWalletConnectAccount()
       },
