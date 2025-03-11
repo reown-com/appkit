@@ -3,7 +3,7 @@ import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import { ModalController } from '@reown/appkit-core'
+import { ModalController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import type { WuiConnectButton } from '@reown/appkit-ui/wui-connect-button'
 import '@reown/appkit-ui/wui-connect-button'

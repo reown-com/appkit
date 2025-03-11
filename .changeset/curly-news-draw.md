@@ -9,7 +9,7 @@
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
 '@reown/appkit-common': patch
-'@reown/appkit-core': patch
+'@reown/appkit-controllers': patch
 '@reown/appkit-experimental': patch
 '@reown/appkit-polyfills': patch
 '@reown/appkit-scaffold-ui': patch

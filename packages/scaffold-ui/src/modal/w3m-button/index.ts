@@ -3,7 +3,7 @@ import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import { ChainController } from '@reown/appkit-core'
+import { ChainController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
 import type { W3mAccountButton } from '../w3m-account-button/index.js'

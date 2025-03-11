@@ -7,7 +7,7 @@
 '@reown/appkit-utils': patch
 '@reown/appkit-scaffold-ui': patch
 '@reown/appkit': patch
-'@reown/appkit-core': patch
+'@reown/appkit-controllers': patch
 '@reown/appkit-siwe': patch
 '@reown/appkit-siwx': patch
 '@reown/appkit-ui': patch

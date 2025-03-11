@@ -3,8 +3,8 @@ import {
   CoreHelperUtil,
   OptionsController,
   StorageUtil
-} from '@reown/appkit-core'
-import type { ConnectMethod, Connector, Features, WcWallet } from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
+import type { ConnectMethod, Connector, Features, WcWallet } from '@reown/appkit-controllers'
 
 import { ConnectorUtil } from './ConnectorUtil.js'
 import { ConstantsUtil } from './ConstantsUtil.js'
