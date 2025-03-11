@@ -19,8 +19,8 @@ export function BitcoinSendTransferTest() {
   async function onSendTransfer() {
     if (!walletProvider) {
       toast({
-        title: 'Error',
-        description: 'No wallet provider',
+        title: 'No wallet provider',
+        description: 'Please connect your wallet',
         type: 'error'
       })
     }
