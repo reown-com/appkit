@@ -49,9 +49,7 @@ export function AppKitInfo() {
               </Heading>
               <Text data-testid="w3m-caip-address">{caipAddress}</Text>
             </Box>
-          ) : (
-            ''
-          )}
+          ) : null}
 
           {erc3770Address && (
             <Box>
@@ -69,9 +67,7 @@ export function AppKitInfo() {
               </Heading>
               <Text data-testid="w3m-address">{address}</Text>
             </Box>
-          ) : (
-            ''
-          )}
+          ) : null}
 
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
