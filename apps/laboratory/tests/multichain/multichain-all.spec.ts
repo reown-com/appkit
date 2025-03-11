@@ -1,5 +1,4 @@
 import { type BrowserContext, test } from '@playwright/test'
-import { expect } from 'vitest'
 
 import { ModalPage } from '../shared/pages/ModalPage'
 import { WalletPage } from '../shared/pages/WalletPage'
