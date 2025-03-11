@@ -18,7 +18,7 @@ import base58 from 'bs58'
 import { toHex } from 'viem'
 
 import { createAppKit } from '@reown/appkit/basic'
-import { type AppKitNetwork, bitcoin, mainnet, polygon, solana } from '@reown/appkit/networks'
+import { bitcoin, solana } from '@reown/appkit/networks'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
@@ -26,35 +26,7 @@ import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 /* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 
-// Constants
-const PROJECT_ID = ConstantsUtil.ProjectId
-const OPTIONAL_NAMESPACES = {
-  eip155: {
-    methods: [
-      'eth_sendTransaction',
-      'eth_signTransaction',
-      'eth_sign',
-      'personal_sign',
-      'eth_signTypedData',
-      'wallet_switchEthereumChain',
-      'wallet_addEthereumChain'
-    ],
-    chains: ['eip155:1', 'eip155:137'],
-    events: ['chainChanged', 'accountsChanged']
-  },
-  solana: {
-    methods: ['solana_signMessage'],
-    chains: [solana.caipNetworkId],
-    events: ['chainChanged', 'accountsChanged']
-  },
-  bip122: {
-    methods: ['signMessage'],
-    chains: [bitcoin.caipNetworkId],
-    events: ['chainChanged', 'accountsChanged']
-  }
-}
-
-const networks = [mainnet, polygon, solana, bitcoin] as [AppKitNetwork, ...AppKitNetwork[]]
+import { OPTIONAL_NAMESPACES, PROJECT_ID, networks } from '../constants'
 
 const appKit = createAppKit({
   projectId: PROJECT_ID,
