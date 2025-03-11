@@ -1,5 +1,5 @@
 import type UniversalProvider from '@walletconnect/universal-provider'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { AuthConnector, Connector, SocialProvider } from '@reown/appkit'
 import {
@@ -42,11 +42,13 @@ import {
   mockWindowAndDocument
 } from '../test-utils.js'
 
-mockWindowAndDocument()
-mockStorageUtil()
-mockBlockchainApiController()
-
 describe('Base Public methods', () => {
+  beforeEach(() => {
+    mockWindowAndDocument()
+    mockStorageUtil()
+    mockBlockchainApiController()
+  })
+
   it('should open modal', async () => {
     const prefetch = vi.spyOn(ApiController, 'prefetch').mockResolvedValueOnce(undefined)
     const open = vi.spyOn(ModalController, 'open')

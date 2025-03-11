@@ -27,13 +27,12 @@ const MOCKED_CONNECTORS = [
   } as unknown as Connector
 ]
 
-mockWindowAndDocument()
-mockStorageUtil()
-mockBlockchainApiController()
-
 describe('syncExistingConnection', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockWindowAndDocument()
+    mockStorageUtil()
+    mockBlockchainApiController()
   })
 
   it('should set status to "connecting" and sync the connection when a connector and namespace are present', async () => {
