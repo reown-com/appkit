@@ -1,12 +1,7 @@
 import { vi } from 'vitest'
 
 import type { Balance } from '@reown/appkit-common'
-import {
-  AccountController,
-  BlockchainApiController,
-  CoreHelperUtil,
-  StorageUtil
-} from '@reown/appkit-controllers'
+import { AccountController, BlockchainApiController, StorageUtil } from '@reown/appkit-controllers'
 
 import { mockLocalStorage } from './mocks/LocalStorage.js'
 import { mainnet } from './mocks/Networks.js'
@@ -56,8 +51,4 @@ export function mockStorageUtil() {
 
 export function mockFetchTokenBalanceOnce(response: Balance[]) {
   vi.spyOn(AccountController, 'fetchTokenBalance').mockResolvedValueOnce(response)
-}
-
-export function mockCoreHelperUtil() {
-  vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
 }
