@@ -1,6 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 
-import { ChainController, ConnectionController } from '@reown/appkit-controllers'
+import { ChainController, ConnectionController, CoreHelperUtil } from '@reown/appkit-controllers'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mainnet, sepolia } from '../mocks/Networks.js'
@@ -8,15 +8,15 @@ import { mockOptions } from '../mocks/Options.js'
 import { mockUniversalProvider } from '../mocks/Providers.js'
 import {
   mockBlockchainApiController,
-  mockCoreHelperUtil,
   mockStorageUtil,
   mockWindowAndDocument
 } from '../test-utils.js'
 
 describe('WalletConnect Events', () => {
-  beforeEach(() => {
+  beforeAll(() => {
+    vi.clearAllMocks()
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
     mockWindowAndDocument()
-    mockCoreHelperUtil()
     mockStorageUtil()
     mockBlockchainApiController()
   })
