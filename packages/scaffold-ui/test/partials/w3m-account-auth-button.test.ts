@@ -72,6 +72,7 @@ describe('W3mAccountAuthButton', () => {
         getEmail: () => MOCK_EMAIL
       }
     } as AuthConnector)
+    vi.spyOn(StorageUtil, 'getConnectedSocialUsername').mockReturnValue('username')
     vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('ID_AUTH')
 
     const authButton: W3mAccountAuthButton = await fixture(
@@ -84,5 +85,28 @@ describe('W3mAccountAuthButton', () => {
     accountEmail?.click()
 
     expect(RouterController.push).toHaveBeenCalledWith('UpdateEmailWallet', { email: MOCK_EMAIL })
+  })
+
+  test('it should not display when email is null, undefined and no username is set', async () => {
+    const testCases = [null, undefined]
+
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('ID_AUTH')
+
+    for (const emailValue of testCases) {
+      vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
+        id: 'ID_AUTH',
+        provider: {
+          getEmail: () => emailValue
+        }
+      } as AuthConnector)
+
+      const authButton: W3mAccountAuthButton = await fixture(
+        html`<w3m-account-auth-button></w3m-account-auth-button>`
+      )
+
+      const accountEmail = HelpersUtil.getByTestId(authButton, ACCOUNT_EMAIL)
+      expect(accountEmail).toBeNull()
+      expect(authButton.style.display).toBe('none')
+    }
   })
 })
