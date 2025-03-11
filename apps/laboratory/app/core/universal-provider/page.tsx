@@ -246,8 +246,6 @@ export default function UniversalProviderPage() {
         description: signature || 'Message signed successfully',
         type: 'success'
       })
-
-      console.log('Signature:', signature)
     } catch (error) {
       console.error('Signing error:', error)
       toast({
