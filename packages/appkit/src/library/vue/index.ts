@@ -44,7 +44,10 @@ type ThemeVariablesOptions = AppKitOptions['themeVariables']
 
 declare module 'vue' {
   export interface ComponentCustomProperties {
-    AppKitButton: Pick<AppKitButton, 'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'>
+    AppKitButton: Pick<
+      AppKitButton,
+      'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance' | 'namespace'
+    >
     AppKitConnectButton: Pick<AppKitConnectButton, 'size' | 'label' | 'loadingLabel'>
     AppKitAccountButton: Pick<AppKitAccountButton, 'disabled' | 'balance'>
     AppKitNetworkButton: Pick<AppKitNetworkButton, 'disabled'>

@@ -45,12 +45,12 @@ export class W3mConnectorList extends LitElement {
   public override render() {
     const { custom, recent, announced, injected, multiChain, recommended, featured, external } =
       ConnectorUtil.getConnectorsByType(this.connectors)
-
+    const isConnectedWithWC = ConnectorUtil.getIsConnectedWithWC()
     const enableWalletConnect = OptionsController.state.enableWalletConnect
 
     return html`
       <wui-flex flexDirection="column" gap="xs">
-        ${enableWalletConnect
+        ${enableWalletConnect && !isConnectedWithWC
           ? html`<w3m-connect-walletconnect-widget
               tabIdx=${ifDefined(this.tabIdx)}
             ></w3m-connect-walletconnect-widget>`

@@ -60,7 +60,11 @@ export const ProviderUtil = {
     }
   },
 
-  getProviderId(chainNamespace: ChainNamespace): ConnectorType | undefined {
+  getProviderId(chainNamespace: ChainNamespace | undefined): ConnectorType | undefined {
+    if (!chainNamespace) {
+      return undefined
+    }
+
     return state.providerIds[chainNamespace]
   },
 

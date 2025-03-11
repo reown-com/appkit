@@ -7,7 +7,9 @@ import {
   AssetUtil,
   ChainController,
   ModalController,
-  OptionsController
+  OptionsController,
+  type OptionsControllerState,
+  type OptionsControllerStateInternal
 } from '@reown/appkit-controllers'
 import type { WuiNetworkButton } from '@reown/appkit-ui/wui-network-button'
 
@@ -41,7 +43,7 @@ describe('W3mNetworkButton', () => {
       vi.spyOn(ChainController, 'checkIfSupportedNetwork').mockReturnValue(false)
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         allowUnsupportedChain: true
-      } as unknown as any)
+      } as OptionsControllerState & OptionsControllerStateInternal)
 
       const element: W3mNetworkButton = await fixture(
         html`<w3m-network-button></w3m-network-button>`
@@ -57,7 +59,7 @@ describe('W3mNetworkButton', () => {
       vi.spyOn(ChainController, 'checkIfSupportedNetwork').mockReturnValue(false)
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         allowUnsupportedChain: false
-      } as unknown as any)
+      } as OptionsControllerState & OptionsControllerStateInternal)
 
       const element: W3mNetworkButton = await fixture(
         html`<w3m-network-button></w3m-network-button>`
@@ -75,7 +77,7 @@ describe('W3mNetworkButton', () => {
       vi.spyOn(ChainController, 'checkIfSupportedNetwork').mockReturnValue(false)
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         allowUnsupportedChain: true
-      } as unknown as any)
+      } as OptionsControllerState & OptionsControllerStateInternal)
 
       const element: W3mNetworkButton = await fixture(
         html`<w3m-network-button></w3m-network-button>`
@@ -92,7 +94,7 @@ describe('W3mNetworkButton', () => {
       vi.spyOn(ChainController, 'checkIfSupportedNetwork').mockReturnValue(false)
       vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
         allowUnsupportedChain: false
-      } as unknown as any)
+      } as OptionsControllerState & OptionsControllerStateInternal)
 
       const element: W3mNetworkButton = await fixture(
         html`<w3m-network-button></w3m-network-button>`

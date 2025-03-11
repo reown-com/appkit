@@ -34,6 +34,7 @@ describe('W3mAccountAuthButton', () => {
         getEmail: () => MOCK_EMAIL
       }
     } as AuthConnector)
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('ID_AUTH')
 
     const authButton: W3mAccountAuthButton = await fixture(
       html`<w3m-account-auth-button></w3m-account-auth-button>`
@@ -52,6 +53,7 @@ describe('W3mAccountAuthButton', () => {
         getEmail: () => null
       }
     } as AuthConnector)
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('ID_AUTH')
 
     const authButton: W3mAccountAuthButton = await fixture(
       html`<w3m-account-auth-button></w3m-account-auth-button>`
@@ -70,6 +72,7 @@ describe('W3mAccountAuthButton', () => {
         getEmail: () => MOCK_EMAIL
       }
     } as AuthConnector)
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('ID_AUTH')
 
     const authButton: W3mAccountAuthButton = await fixture(
       html`<w3m-account-auth-button></w3m-account-auth-button>`
