@@ -1,7 +1,7 @@
 import { proxy, ref } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
-import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { type CaipNetwork, type ChainNamespace } from '@reown/appkit-common'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
@@ -105,12 +105,6 @@ export const ConnectionController = {
   },
 
   async connectWalletConnect() {
-    // Connect all namespaces to WalletConnect
-    const namespaces = [...ChainController.state.chains.keys()]
-    namespaces.forEach(namespace => {
-      ConnectorController.setConnectorId(ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT, namespace)
-    })
-
     if (CoreHelperUtil.isTelegram() || (CoreHelperUtil.isSafari() && CoreHelperUtil.isIos())) {
       if (wcConnectionPromise) {
         await wcConnectionPromise
