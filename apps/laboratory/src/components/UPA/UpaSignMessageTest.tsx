@@ -114,6 +114,8 @@ export function UpaSignMessageTest() {
         type: 'success'
       })
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('>> error', error)
       toast({
         title: ConstantsUtil.SigningFailedToastTitle,
         description: 'Failed to sign message',

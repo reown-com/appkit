@@ -3,6 +3,7 @@ import type { ChainAdapter } from '@reown/appkit-controllers'
 import {
   AccountController,
   ConnectionController,
+  ConnectorController,
   CoreHelperUtil,
   OptionsController
 } from '@reown/appkit-controllers'
@@ -52,10 +53,7 @@ export class AppKit extends AppKitCore {
   // -- Overrides --------------------------------------------------------------
   public override async open(options?: OpenOptions) {
     // Only open modal when not connected
-    const accounts = Object.values(this.universalProvider?.session?.namespaces ?? {}).flatMap(
-      namespace => namespace.accounts
-    )
-    const isConnected = accounts.length > 0
+    const isConnected = ConnectorController.isConnected()
 
     if (!isConnected) {
       await super.open(options)
