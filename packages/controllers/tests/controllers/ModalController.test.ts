@@ -1,6 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ApiController, ModalController } from '../../exports/index.js'
+import { CoreHelperUtil } from '@reown/appkit'
+
+import {
+  ApiController,
+  ChainController,
+  ConnectorController,
+  ModalController,
+  RouterController
+} from '../../exports/index.js'
 
 // -- Tests --------------------------------------------------------------------
 describe('ModalController', () => {
@@ -35,5 +43,52 @@ describe('ModalController', () => {
     expect(ApiController.fetchRecommendedWallets).toHaveBeenCalledOnce()
     expect(ApiController.fetchConnectorImages).toHaveBeenCalledOnce()
     expect(ApiController.fetchNetworkImages).toHaveBeenCalledOnce()
+  })
+
+  it('should handle namespace parameter correctly in open()', async () => {
+    const namespace = 'bip122'
+    vi.spyOn(ConnectorController, 'setFilterByNamespace')
+    vi.spyOn(ChainController, 'switchActiveNamespace')
+    vi.spyOn(ModalController, 'setLoading')
+
+    await ModalController.open({ namespace })
+
+    expect(ConnectorController.setFilterByNamespace).toHaveBeenCalledWith(namespace)
+    expect(ChainController.switchActiveNamespace).toHaveBeenCalledWith(namespace)
+    expect(ModalController.setLoading).toHaveBeenCalledWith(true, namespace)
+  })
+
+  it('should not call switchActiveNamespace if namespace parameter is the same', async () => {
+    const namespace = 'bip122'
+    ChainController.switchActiveNamespace(namespace)
+    vi.spyOn(ChainController, 'switchActiveNetwork')
+
+    await ModalController.open({ namespace })
+
+    expect(ChainController.switchActiveNetwork).not.toHaveBeenCalled()
+  })
+
+  it('should check account depending on namespace when calling open()', async () => {
+    ChainController.state.noAdapters = false
+    vi.spyOn(ChainController, 'getAccountData').mockReturnValueOnce({
+      currentTab: 0,
+      tokenBalance: [],
+      smartAccountDeployed: false,
+      addressLabels: new Map(),
+      allAccounts: [],
+      user: undefined,
+      caipAddress: 'eip155:1:0x123'
+    })
+
+    vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValueOnce(false)
+    const resetSpy = vi.spyOn(RouterController, 'reset')
+
+    await ModalController.open({ namespace: 'eip155' })
+
+    expect(resetSpy).toHaveBeenCalledWith('Account')
+
+    await ModalController.open({ namespace: 'bip122' })
+
+    expect(resetSpy).toHaveBeenCalledWith('Connect')
   })
 })

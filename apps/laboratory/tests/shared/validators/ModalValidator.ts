@@ -39,8 +39,8 @@ export class ModalValidator {
     })
   }
 
-  async expectBalanceFetched(currency: 'SOL' | 'ETH') {
-    const accountButton = this.page.locator('appkit-account-button')
+  async expectBalanceFetched(currency: 'SOL' | 'ETH' | 'BTC' | 'POL') {
+    const accountButton = this.page.locator('appkit-account-button').first()
     await expect(accountButton, `Account button should show balance as ${currency}`).toContainText(
       `0.000 ${currency}`
     )
