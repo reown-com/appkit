@@ -14,7 +14,7 @@ import {
   OptionsController,
   type Tokens,
   type WriteContractArgs
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 

@@ -31,7 +31,7 @@
     "@reown/appkit-adapter-ethers": "workspace:*",
     "@reown/appkit-adapter-solana": "workspace:*",
     "@reown/appkit-common": "workspace:*",
-    "@reown/appkit-core": "workspace:*",
+    "@reown/appkit-controllers": "workspace:*",
     "@reown/appkit-scaffold-ui": "workspace:*",
     "@sentry/core": "8.49.0",
     "@sentry/nextjs": "8.49.0",

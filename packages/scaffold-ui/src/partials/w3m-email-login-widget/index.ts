@@ -10,8 +10,8 @@ import {
   ConnectionController,
   ConnectorController,
   CoreHelperUtil
-} from '@reown/appkit-core'
-import { EventsController, RouterController, SnackController } from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
+import { EventsController, RouterController, SnackController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-email-input'
 import '@reown/appkit-ui/wui-icon-link'
