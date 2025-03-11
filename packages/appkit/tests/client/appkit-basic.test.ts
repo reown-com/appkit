@@ -6,7 +6,7 @@ import {
   ApiController,
   ConnectionController,
   ModalController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import { AppKit } from '../../src/client/appkit-basic'
 import { mockOptions } from '../mocks/Options'

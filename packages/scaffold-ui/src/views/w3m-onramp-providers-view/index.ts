@@ -11,8 +11,8 @@ import {
   OnRampController,
   type OnRampProvider,
   RouterController
-} from '@reown/appkit-core'
-import type { CoinbasePaySDKChainNameValues } from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
+import type { CoinbasePaySDKChainNameValues } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'

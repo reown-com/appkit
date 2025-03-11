@@ -1,4 +1,4 @@
-import type { SdkVersion } from '@reown/appkit-core'
+import type { SdkVersion } from '@reown/appkit-controllers'
 
 import type { AppKitOptions } from '../../src/utils/index.js'
 import { mockEvmAdapter, mockSolanaAdapter } from './Adapter.js'

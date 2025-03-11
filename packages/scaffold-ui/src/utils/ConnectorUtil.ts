@@ -8,7 +8,7 @@ import {
   CoreHelperUtil,
   OptionsController,
   StorageUtil
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import { WalletUtil } from './WalletUtil.js'
 

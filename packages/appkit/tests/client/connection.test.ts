@@ -7,7 +7,7 @@ import {
   ConnectorController,
   type ConnectorType,
   StorageUtil
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'

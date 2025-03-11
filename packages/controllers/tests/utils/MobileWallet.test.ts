@@ -4,7 +4,7 @@ import {
   ChainController,
   type ChainControllerState
 } from '../../src/controllers/ChainController.js'
-import { MobileWalletUtil } from '../../src/utils/MobileWallet'
+import { MobileWalletUtil } from '../../src/utils/MobileWallet.js'
 
 const ORIGINAL_HREF = 'https://example.com/path'
 const mockWindow = {

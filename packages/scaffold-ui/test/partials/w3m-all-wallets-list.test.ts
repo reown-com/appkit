@@ -8,13 +8,13 @@ import {
   ChainController,
   ConnectorController,
   RouterController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import type {
   ApiControllerState,
   ChainControllerState,
   Connector,
   WcWallet
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import { W3mAllWalletsList } from '../../src/partials/w3m-all-wallets-list'
 import { HelpersUtil } from '../utils/HelpersUtil'
