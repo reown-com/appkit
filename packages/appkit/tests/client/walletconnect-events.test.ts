@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ChainController, ConnectionController, CoreHelperUtil } from '@reown/appkit-controllers'
+import { ChainController, ConnectionController } from '@reown/appkit-controllers'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mainnet, sepolia } from '../mocks/Networks.js'
