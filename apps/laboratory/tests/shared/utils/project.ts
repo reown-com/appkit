@@ -4,6 +4,7 @@ import { DESKTOP_DEVICES, MOBILE_DEVICES } from '../constants/devices'
 
 const LIBRARIES = ['ethers', 'ethers5', 'wagmi', 'solana'] as const
 const MULTICHAIN_LIBRARIES = [
+  'multichain-all',
   'multichain-basic',
   'multichain-ethers-solana',
   'multichain-ethers5-solana',
@@ -119,6 +120,12 @@ const customProjectProperties: CustomProjectProperties = {
   'Desktop Firefox/solana': {
     testMatch: SINGLE_ADAPTER_SOLANA_TESTS_REGEX,
     testIgnore: /siwe-email\.spec\.ts|siwe-extension\.spec\.ts|multichain-.*\.spec\.ts/u
+  },
+  'Desktop Firefox/multichain-all': {
+    testMatch: /^.*\/multichain-all\.spec\.ts$/u
+  },
+  'Desktop Chrome/multichain-all': {
+    testMatch: /^.*\/multichain-all\.spec\.ts$/u
   },
   'Desktop Firefox/multichain-ethers-solana': {
     testMatch: /^.*\/multichain-ethers-.*\.spec\.ts$/u

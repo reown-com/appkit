@@ -407,8 +407,8 @@ export namespace AdapterBlueprint {
   }
 
   export type GetBalanceParams = {
-    address: string
-    chainId: number | string
+    address: string | undefined
+    chainId: number | string | undefined
     caipNetwork?: CaipNetwork
     tokens?: Tokens
   }
