@@ -114,6 +114,15 @@ const customProjectProperties: CustomProjectProperties = {
   'Desktop Chrome/core': {
     testMatch: CORE_TESTS_REGEX
   },
+  'Desktop Firefox/core-sign-client': {
+    testMatch: CORE_TESTS_REGEX
+  },
+  'Desktop Firefox/core-universal-provider': {
+    testMatch: CORE_TESTS_REGEX
+  },
+  'Desktop Firefox/core': {
+    testMatch: CORE_TESTS_REGEX
+  },
   'Desktop Chrome/ethers': {
     testMatch: SINGLE_ADAPTER_EVM_TESTS_REGEX
   },
@@ -177,6 +186,15 @@ const customProjectProperties: CustomProjectProperties = {
     testMatch: CORE_TESTS_MOBILE_REGEX
   },
   'iPhone 12/core': {
+    testMatch: CORE_TESTS_MOBILE_REGEX
+  },
+  'Galaxy S5/core-sign-client': {
+    testMatch: CORE_TESTS_MOBILE_REGEX
+  },
+  'Galaxy S5/core-universal-provider': {
+    testMatch: CORE_TESTS_MOBILE_REGEX
+  },
+  'Galaxy S5/core': {
     testMatch: CORE_TESTS_MOBILE_REGEX
   },
   'iPhone 12/ethers': {
