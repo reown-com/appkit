@@ -14,7 +14,7 @@ import type {
   W3mNetworkButton
 } from '@reown/appkit-scaffold-ui'
 
-import type { AppKit } from '../../../src/client.js'
+import type { AppKit } from '../../../src/client/appkit.js'
 import { ProviderUtil } from '../../store/ProviderUtil.js'
 import type { AppKitOptions } from '../../utils/TypesUtil.js'
 
@@ -43,7 +43,7 @@ declare module 'react' {
     interface IntrinsicElements {
       'appkit-button': Pick<
         AppKitButton,
-        'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'
+        'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance' | 'namespace'
       >
       'appkit-connect-button': Pick<AppKitConnectButton, 'size' | 'label' | 'loadingLabel'>
       'appkit-account-button': Pick<AppKitAccountButton, 'disabled' | 'balance'>

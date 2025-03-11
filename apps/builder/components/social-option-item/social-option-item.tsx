@@ -5,6 +5,7 @@ import type { Transform } from '@dnd-kit/utilities'
 import classNames from 'classnames'
 
 import { SocialProvider } from '@reown/appkit-core'
+import '@reown/appkit-ui/jsx'
 
 import { useAppKitContext } from '@/hooks/use-appkit'
 

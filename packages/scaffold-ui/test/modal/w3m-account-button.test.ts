@@ -9,7 +9,7 @@ import {
   OptionsController,
   RouterController
 } from '@reown/appkit-core'
-import type { WuiAccountButton } from '@reown/appkit-ui'
+import type { WuiAccountButton } from '@reown/appkit-ui/wui-account-button'
 
 import { W3mAccountButton } from '../../src/modal/w3m-account-button'
 import { HelpersUtil } from '../utils/HelpersUtil'
@@ -146,7 +146,7 @@ describe('W3mAccountButton', () => {
 
     it('should not show loading state if balance value is a string', async () => {
       vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
         ...AccountController.state,
         balance: '0.00'
       })

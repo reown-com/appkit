@@ -9,6 +9,14 @@ import {
   SendController
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-icon-box'
+import '@reown/appkit-ui/wui-input-text'
+import '@reown/appkit-ui/wui-link'
+import '@reown/appkit-ui/wui-list-token'
+import '@reown/appkit-ui/wui-separator'
+import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'
 

@@ -288,6 +288,7 @@ describe('ChainController', () => {
     expect(ChainController.getAccountProp('preferredAccountType', chainNamespace)).toEqual(
       undefined
     )
+    expect(ChainController.getAccountProp('status', chainNamespace)).toEqual('disconnected')
     expect(ChainController.getAccountProp('socialProvider', chainNamespace)).toEqual(undefined)
     expect(ChainController.getAccountProp('socialWindow', chainNamespace)).toEqual(undefined)
   })
@@ -377,7 +378,6 @@ describe('ChainController', () => {
   it('should properly handle disconnect', async () => {
     const resetAccountSpy = vi.spyOn(ChainController, 'resetAccount')
     const resetNetworkSpy = vi.spyOn(ChainController, 'resetNetwork')
-    const deleteConnectorSpy = vi.spyOn(StorageUtil, 'deleteConnectedConnectorId')
     const deleteConnectedSocialProviderSpy = vi.spyOn(StorageUtil, 'deleteConnectedSocialProvider')
     const resetWcConnectionSpy = vi.spyOn(ConnectionController, 'resetWcConnection')
     const sendEventSpy = vi.spyOn(EventsController, 'sendEvent')
@@ -415,7 +415,6 @@ describe('ChainController', () => {
     expect(resetNetworkSpy).toHaveBeenCalledWith(ConstantsUtil.CHAIN.EVM)
     expect(resetNetworkSpy).toHaveBeenCalledWith(ConstantsUtil.CHAIN.SOLANA)
 
-    expect(deleteConnectorSpy).toHaveBeenCalled()
     expect(deleteConnectedSocialProviderSpy).toHaveBeenCalled()
     expect(resetWcConnectionSpy).toHaveBeenCalled()
 
@@ -426,7 +425,6 @@ describe('ChainController', () => {
 
     resetAccountSpy.mockRestore()
     resetNetworkSpy.mockRestore()
-    deleteConnectorSpy.mockRestore()
     resetWcConnectionSpy.mockRestore()
     sendEventSpy.mockRestore()
   })

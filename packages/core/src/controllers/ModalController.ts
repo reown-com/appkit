@@ -1,9 +1,12 @@
 import { proxy, subscribe as sub } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
+import type { ChainNamespace } from '@reown/appkit-common'
+
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
+import { ConnectionController } from './ConnectionController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
@@ -14,13 +17,16 @@ import { RouterController } from './RouterController.js'
 // -- Types --------------------------------------------- //
 export interface ModalControllerState {
   loading: boolean
+  loadingNamespaceMap: Map<ChainNamespace, boolean>
   open: boolean
   shake: boolean
+  namespace: ChainNamespace | undefined
 }
 
 export interface ModalControllerArguments {
   open: {
     view?: RouterControllerState['view']
+    namespace?: ChainNamespace
   }
 }
 
@@ -29,8 +35,10 @@ type StateKey = keyof ModalControllerState
 // -- State --------------------------------------------- //
 const state = proxy<ModalControllerState>({
   loading: false,
+  loadingNamespaceMap: new Map<ChainNamespace, boolean>(),
   open: false,
-  shake: false
+  shake: false,
+  namespace: undefined
 })
 
 // -- Controller ---------------------------------------- //
@@ -46,20 +54,37 @@ export const ModalController = {
   },
 
   async open(options?: ModalControllerArguments['open']) {
-    await ApiController.prefetch()
+    if (ConnectionController.state.wcBasic) {
+      // No need to add an await here if we are use basic
+      ApiController.prefetch({ fetchNetworkImages: false, fetchConnectorImages: false })
+    } else {
+      await ApiController.prefetch()
+    }
+
+    if (options?.namespace) {
+      ConnectorController.setFilterByNamespace(options.namespace)
+      ModalController.setLoading(true, options.namespace)
+    } else {
+      ModalController.setLoading(true)
+    }
+
     const caipAddress = ChainController.state.activeCaipAddress
+    const hasNoAdapters = ChainController.state.noAdapters
 
-    const noAdapters = ChainController.state.noAdapters
-
-    if (options?.view) {
+    if (hasNoAdapters && !caipAddress) {
+      if (CoreHelperUtil.isMobile()) {
+        RouterController.reset('AllWallets')
+      } else {
+        RouterController.reset('ConnectingWalletConnectBasic')
+      }
+    } else if (options?.view) {
       RouterController.reset(options.view)
     } else if (caipAddress) {
       RouterController.reset('Account')
-    } else if (noAdapters && !CoreHelperUtil.isMobile()) {
-      RouterController.reset('ConnectingWalletConnectBasic')
     } else {
       RouterController.reset('Connect')
     }
+
     state.open = true
     PublicStateController.set({ open: true })
     EventsController.sendEvent({
@@ -71,12 +96,22 @@ export const ModalController = {
 
   close() {
     const isEmbeddedEnabled = OptionsController.state.enableEmbedded
-    const connected = Boolean(ChainController.state.activeCaipAddress)
+    const isConnected = Boolean(ChainController.state.activeCaipAddress)
+
+    // Only send the event if the modal is open and is about to be closed
+    if (state.open) {
+      EventsController.sendEvent({
+        type: 'track',
+        event: 'MODAL_CLOSE',
+        properties: { connected: isConnected }
+      })
+    }
 
     state.open = false
+    ModalController.clearLoading()
 
     if (isEmbeddedEnabled) {
-      if (connected) {
+      if (isConnected) {
         RouterController.replace('Account')
       } else {
         RouterController.push('Connect')
@@ -85,18 +120,21 @@ export const ModalController = {
       PublicStateController.set({ open: false })
     }
 
-    EventsController.sendEvent({
-      type: 'track',
-      event: 'MODAL_CLOSE',
-      properties: { connected }
-    })
-
     ConnectorController.clearNamespaceFilter()
+    ConnectionController.resetUri()
   },
 
-  setLoading(loading: ModalControllerState['loading']) {
+  setLoading(loading: ModalControllerState['loading'], namespace?: ChainNamespace) {
+    if (namespace) {
+      state.loadingNamespaceMap.set(namespace, loading)
+    }
     state.loading = loading
     PublicStateController.set({ loading })
+  },
+
+  clearLoading() {
+    state.loadingNamespaceMap.clear()
+    state.loading = false
   },
 
   shake() {

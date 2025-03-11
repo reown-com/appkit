@@ -36,6 +36,14 @@ export interface ApiControllerState {
   search: WcWallet[]
   isAnalyticsEnabled: boolean
   excludedRDNS: string[]
+  isFetchingRecommendedWallets: boolean
+}
+
+interface PrefetchParameters {
+  fetchConnectorImages?: boolean
+  fetchFeaturedWallets?: boolean
+  fetchRecommendedWallets?: boolean
+  fetchNetworkImages?: boolean
 }
 
 type StateKey = keyof ApiControllerState
@@ -49,7 +57,8 @@ const state = proxy<ApiControllerState>({
   wallets: [],
   search: [],
   isAnalyticsEnabled: false,
-  excludedRDNS: []
+  excludedRDNS: [],
+  isFetchingRecommendedWallets: false
 })
 
 // -- Controller ---------------------------------------- //
@@ -108,7 +117,7 @@ export const ApiController = {
     AssetController.setTokenImage(symbol, URL.createObjectURL(blob))
   },
 
-  async prefetchNetworkImages() {
+  async fetchNetworkImages() {
     const requestedCaipNetworks = ChainController.getAllRequestedCaipNetworks()
 
     const ids = requestedCaipNetworks
@@ -160,14 +169,17 @@ export const ApiController = {
 
   async fetchRecommendedWallets() {
     try {
+      state.isFetchingRecommendedWallets = true
       const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
       const exclude = [...(excludeWalletIds ?? []), ...(featuredWalletIds ?? [])].filter(Boolean)
+      const caipNetworkIds = ChainController.getRequestedCaipNetworkIds().join(',')
+
       const { data, count } = await api.get<ApiGetWalletsResponse>({
         path: '/getWallets',
         params: {
           ...ApiController._getSdkProperties(),
           page: '1',
-          chains: ChainController.state.activeCaipNetwork?.caipNetworkId,
+          chains: caipNetworkIds,
           entries: recommendedEntries,
           include: includeWalletIds?.join(','),
           exclude: exclude?.join(',')
@@ -185,11 +197,14 @@ export const ApiController = {
       state.count = count ?? 0
     } catch {
       // Catch silently
+    } finally {
+      state.isFetchingRecommendedWallets = false
     }
   },
 
   async fetchWallets({ page }: Pick<ApiGetWalletsRequest, 'page'>) {
     const { includeWalletIds, excludeWalletIds, featuredWalletIds } = OptionsController.state
+    const caipNetworkIds = ChainController.getRequestedCaipNetworkIds().join(',')
 
     const exclude = [
       ...state.recommended.map(({ id }) => id),
@@ -202,7 +217,7 @@ export const ApiController = {
         ...ApiController._getSdkProperties(),
         page: String(page),
         entries,
-        chains: ChainController.state.activeCaipNetwork?.caipNetworkId,
+        chains: caipNetworkIds,
         include: includeWalletIds?.join(','),
         exclude: exclude.join(',')
       }
@@ -222,13 +237,15 @@ export const ApiController = {
   },
 
   async initializeExcludedWalletRdns({ ids }: { ids: string[] }) {
+    const caipNetworkIds = ChainController.getRequestedCaipNetworkIds().join(',')
+
     const { data } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       params: {
         ...ApiController._getSdkProperties(),
         page: '1',
         entries: String(ids.length),
-        chains: ChainController.state.activeCaipNetwork?.caipNetworkId,
+        chains: caipNetworkIds,
         include: ids?.join(',')
       }
     })
@@ -245,6 +262,8 @@ export const ApiController = {
   async searchWallet({ search, badge }: Pick<ApiGetWalletsRequest, 'search' | 'badge'>) {
     const { includeWalletIds, excludeWalletIds } = OptionsController.state
     state.search = []
+    const caipNetworkIds = ChainController.getRequestedCaipNetworkIds().join(',')
+
     const { data } = await api.get<ApiGetWalletsResponse>({
       path: '/getWallets',
       params: {
@@ -253,7 +272,7 @@ export const ApiController = {
         entries: '100',
         search: search?.trim(),
         badge_type: badge,
-        chains: ChainController.state.activeCaipNetwork?.caipNetworkId,
+        chains: caipNetworkIds,
         include: includeWalletIds?.join(','),
         exclude: excludeWalletIds?.join(',')
       }
@@ -271,7 +290,12 @@ export const ApiController = {
     state.search = ApiController._filterOutExtensions(data)
   },
 
-  prefetch() {
+  prefetch({
+    fetchConnectorImages = true,
+    fetchFeaturedWallets = true,
+    fetchRecommendedWallets = true,
+    fetchNetworkImages = true
+  }: PrefetchParameters = {}) {
     // Avoid pre-fetch if user is already connected as there is no need to fetch wallets in that case
     if (AccountController.state.status === 'connected') {
       return Promise.resolve()
@@ -282,11 +306,11 @@ export const ApiController = {
     }
 
     const promises = [
-      ApiController.fetchFeaturedWallets(),
-      ApiController.fetchRecommendedWallets(),
-      ApiController.fetchConnectorImages(),
-      ApiController.prefetchNetworkImages()
-    ]
+      fetchConnectorImages && ApiController.fetchConnectorImages(),
+      fetchFeaturedWallets && ApiController.fetchFeaturedWallets(),
+      fetchRecommendedWallets && ApiController.fetchRecommendedWallets(),
+      fetchNetworkImages && ApiController.fetchNetworkImages()
+    ].filter(Boolean)
 
     state.prefetchPromise = Promise.allSettled(promises)
 

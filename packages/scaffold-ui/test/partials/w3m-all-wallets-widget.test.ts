@@ -29,7 +29,13 @@ const mockConnectorState: ConnectorControllerState = {
   connectors: [],
   activeConnector: undefined,
   allConnectors: [],
-  filterByNamespace: undefined
+  filterByNamespace: undefined,
+  activeConnectorIds: {
+    eip155: undefined,
+    solana: undefined,
+    polkadot: undefined,
+    bip122: undefined
+  }
 }
 
 const mockOptionsState: OptionsControllerState & OptionsControllerStateInternal = {
@@ -63,7 +69,8 @@ const mockApiState: ApiControllerState = {
   wallets: [],
   search: [],
   isAnalyticsEnabled: false,
-  excludedRDNS: []
+  excludedRDNS: [],
+  isFetchingRecommendedWallets: false
 }
 
 describe('W3mAllWalletsWidget', () => {

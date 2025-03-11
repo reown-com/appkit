@@ -2,18 +2,18 @@ import UniversalProvider from '@walletconnect/universal-provider'
 
 import type { CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { AccountController } from '../controllers/AccountController.js'
 import { ChainController } from '../controllers/ChainController.js'
 import { ConnectionController } from '../controllers/ConnectionController.js'
+import { ConnectorController } from '../controllers/ConnectorController.js'
 import { EventsController } from '../controllers/EventsController.js'
 import { ModalController } from '../controllers/ModalController.js'
 import { OptionsController } from '../controllers/OptionsController.js'
 import { RouterController } from '../controllers/RouterController.js'
 import { SnackController } from '../controllers/SnackController.js'
 import { CoreHelperUtil } from './CoreHelperUtil.js'
-import { StorageUtil } from './StorageUtil.js'
 
 /**
  * SIWXUtil holds the methods to interact with the SIWX plugin and must be called internally on AppKit.
@@ -90,8 +90,7 @@ export const SIWXUtil = {
       })
 
       const message = siwxMessage.toString()
-
-      const connectorId = StorageUtil.getConnectedConnectorId(network.chainNamespace)
+      const connectorId = ConnectorController.getConnectorId(network.chainNamespace)
 
       if (connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
         RouterController.pushTransactionStack({
@@ -144,9 +143,9 @@ export const SIWXUtil = {
   async cancelSignMessage() {
     try {
       const siwx = this.getSIWX()
-      const required = siwx?.getRequired?.()
+      const isRequired = siwx?.getRequired?.()
 
-      if (required) {
+      if (isRequired) {
         await ConnectionController.disconnect()
       } else {
         ModalController.close()

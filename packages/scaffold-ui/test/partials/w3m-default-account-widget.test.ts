@@ -23,7 +23,7 @@ import type {
   ChainControllerState
 } from '@reown/appkit-core'
 
-import type { W3mAccountDefaultWidget } from '../../exports'
+import type { W3mAccountDefaultWidget } from '../../src/partials/w3m-account-default-widget/index.js'
 import { HelpersUtil } from '../utils/HelpersUtil'
 
 describe('W3mAccountDefaultWidget', () => {
@@ -220,6 +220,9 @@ describe('W3mAccountDefaultWidget', () => {
           getEmail: () => 'email@email.com'
         }
       } as AuthConnector)
+      vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue(
+        ConstantsUtil.CONNECTOR_ID.AUTH
+      )
 
       const element: W3mAccountDefaultWidget = await fixture(
         html`<w3m-account-default-widget></w3m-account-default-widget>`

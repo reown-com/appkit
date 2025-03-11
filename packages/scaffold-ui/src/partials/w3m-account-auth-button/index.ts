@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectorController,
@@ -10,6 +10,8 @@ import {
   StorageUtil
 } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-list-item'
+import '@reown/appkit-ui/wui-text'
 
 @customElement('w3m-account-auth-button')
 export class W3mAccountAuthButton extends LitElement {
@@ -38,7 +40,7 @@ export class W3mAccountAuthButton extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const connectorId = StorageUtil.getConnectedConnectorId(this.namespace as ChainNamespace)
+    const connectorId = ConnectorController.getConnectorId(this.namespace)
     const authConnector = ConnectorController.getAuthConnector()
 
     if (!authConnector || connectorId !== CommonConstantsUtil.CONNECTOR_ID.AUTH) {
