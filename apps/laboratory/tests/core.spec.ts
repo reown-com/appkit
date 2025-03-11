@@ -59,18 +59,18 @@ coreTest.afterAll(async () => {
 })
 
 // -- Tests --------------------------------------------------------------------
-coreTest('it should be connected with sign client', async () => {
+coreTest('it should be connected', async () => {
   await expect(modalPage.page.getByTestId('disconnect-hook-button')).toBeVisible()
 })
 
-coreTest('it should sign message with sign client', async () => {
+coreTest('it should sign message', async () => {
   await modalPage.page.getByTestId('sign-message-button').click()
   await walletValidator.expectReceivedSign({ chainName: 'Ethereum' })
   await walletPage.handleRequest({ accept: true })
   await expect(modalPage.page.getByText('Signing Succeeded')).toBeVisible()
 })
 
-coreTest('it should switch networks with sign client', async () => {
+coreTest('it should switch networks', async () => {
   // Switch to Polygon network
   const selector = modalPage.page.getByTestId('network-selector')
   await selector.selectOption('137')
@@ -116,7 +116,7 @@ coreTest('it should switch between various networks', async () => {
   await expect(chainIdInfo).toHaveText('000000000019d6689c085ae165831e93')
 })
 
-coreTest('it should disconnect from sign client', async () => {
+coreTest('it should disconnect', async () => {
   await modalPage.page.getByTestId('disconnect-hook-button').click()
   await expect(modalPage.page.getByTestId('w3m-open-hook-button')).toBeVisible()
 })

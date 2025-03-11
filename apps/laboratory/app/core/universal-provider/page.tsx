@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react'
 import UniversalProvider from '@walletconnect/universal-provider'
 import base58 from 'bs58'
+import { toHex } from 'viem'
 
 import { AppKit, createAppKit } from '@reown/appkit/basic'
 import { type AppKitNetwork, bitcoin, mainnet, polygon, solana } from '@reown/appkit/networks'
@@ -258,30 +259,59 @@ export default function UniversalProviderPage() {
   }
 
   async function handleSwitchNetwork(newNetwork: string) {
-    if (!appKit) {
+    if (!provider?.session) {
       return
     }
 
+    const [namespace] = newNetwork.split(':')
+
+    const isChainAllowed =
+      provider?.session?.namespaces?.[
+        namespace as keyof typeof provider.session.namespaces
+      ]?.chains?.includes(newNetwork)
+    const isSameNetwork = network === newNetwork
+
+    if (isSameNetwork) {
+      return
+    }
+
+    const isEip155 = newNetwork.startsWith('eip155')
+
     try {
-      if (newNetwork === 'eip155:1') {
-        await appKit.switchNetwork(mainnet)
-        setNetwork('eip155:1')
-        setAccount(provider?.session?.namespaces?.['eip155']?.accounts?.[0]?.split(':')[2])
-      } else if (newNetwork === 'eip155:137') {
-        await appKit.switchNetwork(polygon)
-        setNetwork('eip155:137')
-        setAccount(provider?.session?.namespaces?.['eip155']?.accounts?.[0]?.split(':')[2])
-      } else if (newNetwork === solana.caipNetworkId) {
-        await appKit.switchNetwork(solana)
-        setNetwork(solana.caipNetworkId)
-        setAccount(provider?.session?.namespaces?.['solana']?.accounts?.[0]?.split(':')[2])
-      } else if (newNetwork === bitcoin.caipNetworkId) {
-        await appKit.switchNetwork(bitcoin)
-        setNetwork(bitcoin.caipNetworkId)
-        setAccount(provider?.session?.namespaces?.['bip122']?.accounts?.[0]?.split(':')[2])
+      if (isEip155) {
+        const hasSupportForSwitchNetwork = provider?.session?.namespaces?.[
+          'eip155'
+        ]?.methods?.includes('wallet_switchEthereumChain')
+
+        if (hasSupportForSwitchNetwork && !isChainAllowed) {
+          const [, chainId] = newNetwork.split(':')
+          if (!chainId) {
+            throw new Error('Invalid network')
+          }
+          await provider.request(
+            {
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: toHex(chainId) }]
+            },
+            newNetwork
+          )
+        }
+      } else if (!isChainAllowed) {
+        toast({
+          title: 'Error',
+          description: 'Chain not supported by wallet',
+          type: 'error'
+        })
+
+        return
       }
 
-      localStorage.setItem('active_network', newNetwork)
+      setAccount(
+        provider.session?.namespaces?.[
+          namespace as keyof typeof provider.session.namespaces
+        ]?.accounts?.[0]?.split(':')[2]
+      )
+      setNetwork(newNetwork)
     } catch (error) {
       console.error('Network switch error:', error)
       toast({

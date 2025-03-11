@@ -80,27 +80,27 @@ signClientTest('it should switch networks with sign client', async () => {
   await expect(modalPage.page.getByText('Network: eip155:137')).toBeVisible()
 })
 
-signClientTest('it should sign message after network switch', async () => {
+signClientTest('it should sign message after network switch with sign client', async () => {
   await modalPage.page.getByTestId('sign-message-button').click()
   await walletValidator.expectReceivedSign({ chainName: 'Polygon' })
   await walletPage.handleRequest({ accept: true })
   await expect(modalPage.page.getByText('Message signed successfully')).toBeVisible()
 })
 
-signClientTest('it should stay connected after page refresh', async () => {
+signClientTest('it should stay connected after page refresh with sign client', async () => {
   await modalPage.page.reload()
   await expect(modalPage.page.getByTestId('disconnect-button')).toBeVisible()
   await expect(modalPage.page.getByText('Account:')).toBeVisible()
 })
 
-signClientTest('it should reject sign message', async () => {
+signClientTest('it should reject sign message with sign client', async () => {
   await modalPage.page.getByTestId('sign-message-button').click()
   await walletValidator.expectReceivedSign({ chainName: 'Ethereum' })
   await walletPage.handleRequest({ accept: false })
   await expect(modalPage.page.getByText('Failed to sign')).toBeVisible()
 })
 
-signClientTest('it should switch between various networks', async () => {
+signClientTest('it should switch between various networks with sign client', async () => {
   // Switch to Ethereum network
   await modalPage.page.getByRole('button', { name: 'Ethereum' }).click()
   await expect(modalPage.page.getByText('Network: eip155:1')).toBeVisible()

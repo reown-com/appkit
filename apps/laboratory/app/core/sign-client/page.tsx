@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react'
 import SignClient from '@walletconnect/sign-client'
 import base58 from 'bs58'
+import { toHex } from 'viem'
 
 import { createAppKit } from '@reown/appkit/basic'
 import { type AppKitNetwork, bitcoin, mainnet, polygon, solana } from '@reown/appkit/networks'
@@ -259,7 +260,7 @@ export default function SignClientPage() {
     }
   }
 
-  async function handleSwitchNetwork(newNetwork: string, chainId: string) {
+  async function handleSwitchNetwork(newNetwork: string) {
     if (!signClient || !session) {
       return
     }
@@ -285,12 +286,16 @@ export default function SignClientPage() {
         )
 
         if (supportsSwitchNetwork && !isChainAllowed) {
+          const [, chainId] = newNetwork.split(':')
+          if (!chainId) {
+            throw new Error('Invalid network')
+          }
           await signClient.request({
             topic: session.topic,
             chainId: newNetwork,
             request: {
               method: 'wallet_switchEthereumChain',
-              params: [{ chainId }]
+              params: [{ chainId: toHex(chainId) }]
             }
           })
         }
@@ -355,16 +360,16 @@ export default function SignClientPage() {
                   Network
                 </Heading>
                 <Stack direction="row" spacing={4}>
-                  <Button onClick={() => handleSwitchNetwork('eip155:1', '0x1')} size="sm">
+                  <Button onClick={() => handleSwitchNetwork('eip155:1')} size="sm">
                     Ethereum
                   </Button>
-                  <Button onClick={() => handleSwitchNetwork('eip155:137', '0x89')} size="sm">
+                  <Button onClick={() => handleSwitchNetwork('eip155:137')} size="sm">
                     Polygon
                   </Button>
-                  <Button onClick={() => handleSwitchNetwork(solana.caipNetworkId, '')} size="sm">
+                  <Button onClick={() => handleSwitchNetwork(solana.caipNetworkId)} size="sm">
                     Solana
                   </Button>
-                  <Button onClick={() => handleSwitchNetwork(bitcoin.caipNetworkId, '')} size="sm">
+                  <Button onClick={() => handleSwitchNetwork(bitcoin.caipNetworkId)} size="sm">
                     Bitcoin
                   </Button>
                 </Stack>
