@@ -49,7 +49,7 @@
     "@solana/wallet-standard-features": "1.2.0",
     "@solana/wallet-standard-util": "1.1.1",
     "@solana/web3.js": "1.98.0",
-    "@walletconnect/types": "2.18.0",
+    "@walletconnect/types": "2.19.0",
     "@walletconnect/universal-provider": "2.19.0",
     "@wallet-standard/app": "1.1.0",
     "@wallet-standard/base": "1.1.0",
