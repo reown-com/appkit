@@ -50,6 +50,12 @@ export class W3mAccountAuthButton extends LitElement {
     }
     const email = authConnector.provider.getEmail() ?? ''
 
+    if (!email && !this.socialUsername) {
+      this.style.cssText = `display: none`
+
+      return null
+    }
+
     return html`
       <wui-list-item
         variant="icon"
