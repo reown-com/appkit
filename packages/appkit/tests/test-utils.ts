@@ -57,7 +57,3 @@ export function mockStorageUtil() {
 export function mockFetchTokenBalanceOnce(response: Balance[]) {
   vi.spyOn(AccountController, 'fetchTokenBalance').mockResolvedValueOnce(response)
 }
-
-export function mockCoreHelperUtil() {
-  vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
-}
