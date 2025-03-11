@@ -1,3 +1,4 @@
+import { UniversalProvider } from '@walletconnect/universal-provider'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
@@ -51,6 +52,24 @@ describe('AppKitBasic', () => {
       vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
         caipAddress: 'eip155:1:0x123'
       } as unknown as AccountControllerState)
+
+      const universalProvider = await UniversalProvider.init({
+        projectId: mockOptions.projectId
+      })
+      appKit = new AppKit({
+        ...mockOptions,
+        universalProvider
+      })
+
+      vi.spyOn(universalProvider, 'session', 'get').mockReturnValue({
+        namespaces: {
+          eip155: {
+            accounts: ['eip155:1:0x123'],
+            methods: [],
+            events: []
+          }
+        }
+      } as any)
       const modalSpy = vi.spyOn(ModalController, 'open')
 
       await appKit.open({ view: 'Connect' })
