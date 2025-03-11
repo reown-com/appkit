@@ -1,48 +1,26 @@
-import { useState } from 'react'
+import { Box, Button, Heading } from '@chakra-ui/react'
 
-import { Box, Button, Heading, Select, Text } from '@chakra-ui/react'
-
-import {
-  type AppKitNetwork,
-  bitcoin,
-  bitcoinTestnet,
-  mainnet,
-  polygon,
-  solana,
-  solanaTestnet
-} from '@reown/appkit/networks'
+import { type AppKitNetwork, mainnet, polygon, solana, solanaTestnet } from '@reown/appkit/networks'
 import { useAppKit, useAppKitAccount, useAppKitNetwork, useDisconnect } from '@reown/appkit/react'
 
-export interface AppKitHooksProps {
-  networks?: AppKitNetwork[]
-}
-
-export function AppKitHooks({ networks }: AppKitHooksProps) {
+export function AppKitHooks() {
   const { open } = useAppKit()
   const { isConnected } = useAppKitAccount()
   const { caipNetwork, switchNetwork } = useAppKitNetwork()
   const { disconnect } = useDisconnect()
 
-  // Default networks if none provided
-  const availableNetworks = networks || [
-    mainnet,
-    polygon,
-    solana,
-    solanaTestnet,
-    bitcoin,
-    bitcoinTestnet
-  ]
+  function handleSwitchNetwork() {
+    const isEIPNamespace = caipNetwork?.chainNamespace === 'eip155'
+    // eslint-disable-next-line no-nested-ternary
+    const networkToSwitch: AppKitNetwork = isEIPNamespace
+      ? caipNetwork?.id === polygon.id
+        ? mainnet
+        : polygon
+      : caipNetwork?.id === solana.id
+        ? solanaTestnet
+        : solana
 
-  const [selectedNetwork, setSelectedNetwork] = useState<string>(String(caipNetwork?.id) || '')
-
-  function handleNetworkChange(event: React.ChangeEvent<HTMLSelectElement>) {
-    const networkId = event.target.value
-    setSelectedNetwork(networkId)
-
-    const networkToSwitch = availableNetworks.find(network => String(network.id) === networkId)
-    if (networkToSwitch) {
-      switchNetwork(networkToSwitch)
-    }
+    switchNetwork(networkToSwitch)
   }
 
   return (
@@ -50,13 +28,9 @@ export function AppKitHooks({ networks }: AppKitHooksProps) {
       <Heading size="xs" textTransform="uppercase" pb="2">
         Hooks Interactions
       </Heading>
-      <Box display="flex" alignItems="center" columnGap={3} flexWrap="wrap" mb={4}>
+      <Box display="flex" alignItems="center" columnGap={3} flexWrap="wrap">
         <Button data-testid="w3m-open-hook-button" onClick={() => open()}>
           Open
-        </Button>
-
-        <Button data-testid="w3m-connect-hook-button" onClick={() => open({ view: 'Connect' })}>
-          Connect
         </Button>
 
         {isConnected && (
@@ -64,36 +38,11 @@ export function AppKitHooks({ networks }: AppKitHooksProps) {
             Disconnect
           </Button>
         )}
-      </Box>
 
-      {isConnected && (
-        <Box mb={4}>
-          <Text fontSize="sm" mb={2}>
-            Current Network: {caipNetwork?.name || 'None'}
-          </Text>
-          <Box position="relative">
-            <Select
-              value={selectedNetwork}
-              onChange={handleNetworkChange}
-              placeholder="Select Network"
-              data-testid="network-selector"
-              borderRadius="full"
-              width="200px"
-              iconColor="gray.500"
-            >
-              {availableNetworks.map(network => (
-                <option
-                  key={network.id}
-                  value={network.id}
-                  disabled={network.id === caipNetwork?.id}
-                >
-                  {network.name}
-                </option>
-              ))}
-            </Select>
-          </Box>
-        </Box>
-      )}
+        <Button data-testid="switch-network-hook-button" onClick={handleSwitchNetwork}>
+          Switch Network
+        </Button>
+      </Box>
     </Box>
   )
 }
