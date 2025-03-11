@@ -156,7 +156,7 @@ export abstract class AppKitCore {
     this.initializeChainController(options)
     this.initializeThemeController(options)
     this.initializeConnectionController(options)
-    this.initializeConnectorController(options)
+    this.initializeConnectorController()
   }
 
   protected initializeThemeController(options: AppKitOptions) {
@@ -186,10 +186,8 @@ export abstract class AppKitCore {
     ConnectionController.setWcBasic(options.basic ?? false)
   }
 
-  protected initializeConnectorController(options: AppKitOptions) {
-    const namespaces = options.adapters?.map(adapter => adapter.namespace) || []
-    // @ts-expect-error - will update adapter types
-    ConnectorController.initialize(namespaces)
+  protected initializeConnectorController() {
+    ConnectorController.initialize(this.chainNamespaces)
   }
 
   protected initializeOptionsController(options: AppKitOptionsWithSdk) {
@@ -362,6 +360,9 @@ export abstract class AppKitCore {
         this.close()
         this.setClientId(result?.clientId || null)
         StorageUtil.setConnectedNamespaces([...ChainController.state.chains.keys()])
+        this.chainNamespaces.forEach(namespace => {
+          ConnectorController.setConnectorId('result?.id', namespace)
+        })
         await this.syncWalletConnectAccount()
       },
       connectExternal: async ({ id, info, type, provider, chain, caipNetwork }) => {
@@ -773,6 +774,7 @@ export abstract class AppKitCore {
   protected async syncNamespaceConnection(namespace: ChainNamespace) {
     try {
       const connectorId = ConnectorController.getConnectorId(namespace)
+      console.log('>> syncNamespaceConnection', namespace, connectorId)
 
       this.setStatus('connecting', namespace)
       switch (connectorId) {
@@ -840,6 +842,7 @@ export abstract class AppKitCore {
   }
 
   protected async syncWalletConnectAccount() {
+    console.log('>> syncWalletConnectAccount')
     const syncTasks = this.chainNamespaces.map(async chainNamespace => {
       const adapter = this.getAdapter(chainNamespace as ChainNamespace)
       const namespaceAccounts =
@@ -878,6 +881,11 @@ export abstract class AppKitCore {
           ProviderUtil.setProvider(chainNamespace, this.universalProvider)
         }
 
+        console.log(
+          '>> syncWalletConnectAccount setting connector id',
+          ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
+          chainNamespace
+        )
         ConnectorController.setConnectorId(
           ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
           chainNamespace
@@ -891,6 +899,7 @@ export abstract class AppKitCore {
           chainNamespace
         })
       } else {
+        console.log('>> Disconnected WC', chainNamespace)
         this.setStatus('disconnected', chainNamespace)
       }
 
