@@ -69,7 +69,7 @@ signClientTest('it should sign message with sign client', async () => {
   await modalPage.page.getByTestId('sign-message-button').click()
   await walletValidator.expectReceivedSign({ chainName: 'Ethereum' })
   await walletPage.handleRequest({ accept: true })
-  await expect(modalPage.page.getByText('Message signed successfully')).toBeVisible()
+  await expect(modalPage.page.getByText('Signing Succeeded')).toBeVisible()
 })
 
 signClientTest('it should switch networks with sign client', async () => {
@@ -84,7 +84,7 @@ signClientTest('it should sign message after network switch with sign client', a
   await modalPage.page.getByTestId('sign-message-button').click()
   await walletValidator.expectReceivedSign({ chainName: 'Polygon' })
   await walletPage.handleRequest({ accept: true })
-  await expect(modalPage.page.getByText('Message signed successfully')).toBeVisible()
+  await expect(modalPage.page.getByText('Signing Succeeded')).toBeVisible()
 })
 
 signClientTest('it should stay connected after page refresh with sign client', async () => {

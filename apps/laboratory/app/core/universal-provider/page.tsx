@@ -239,11 +239,11 @@ export default function UniversalProviderPage() {
         return
       }
 
-      const signature = await provider.request(payload, network)
+      const signature: string = await provider.request(payload, network)
 
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
-        description: 'Message signed successfully',
+        description: signature || 'Message signed successfully',
         type: 'success'
       })
 

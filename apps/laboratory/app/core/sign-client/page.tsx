@@ -237,7 +237,7 @@ export default function SignClientPage() {
         return
       }
 
-      const sig = await signClient.request({
+      const signature: string = await signClient.request({
         topic: session.topic,
         chainId: network,
         request: payload
@@ -245,11 +245,11 @@ export default function SignClientPage() {
 
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,
-        description: 'Message signed successfully',
+        description: signature || 'Message signed successfully',
         type: 'success'
       })
 
-      console.log('Signature:', sig)
+      console.log('Signature:', signature)
     } catch (error) {
       console.error('Signing error:', error)
       toast({
