@@ -5,7 +5,6 @@ import type { BaseError, Platform } from '@reown/appkit-controllers'
 import {
   ChainController,
   ConnectionController,
-  ConstantsUtil,
   CoreHelperUtil,
   EventsController,
   ModalController,
@@ -26,10 +25,6 @@ import '../../partials/w3m-connecting-wc-web/index.js'
 @customElement('w3m-connecting-wc-view')
 export class W3mConnectingWcView extends LitElement {
   // -- Members ------------------------------------------- //
-  private interval?: ReturnType<typeof setInterval> = undefined
-
-  private lastRetry = Date.now()
-
   private wallet = RouterController.state.data?.wallet
 
   // -- State & Properties -------------------------------- //
@@ -43,14 +38,6 @@ export class W3mConnectingWcView extends LitElement {
     super()
     this.determinePlatforms()
     this.initializeConnection()
-    this.interval = setInterval(
-      this.initializeConnection.bind(this),
-      ConstantsUtil.TEN_SEC_MS
-    ) as unknown as NodeJS.Timeout
-  }
-
-  public override disconnectedCallback() {
-    clearTimeout(this.interval)
   }
 
   // -- Render -------------------------------------------- //
@@ -90,13 +77,9 @@ export class W3mConnectingWcView extends LitElement {
         properties: { message: (error as BaseError)?.message ?? 'Unknown' }
       })
       ConnectionController.setWcError(true)
-      if (CoreHelperUtil.isAllowedRetry(this.lastRetry)) {
-        SnackController.showError((error as BaseError).message ?? 'Declined')
-        this.lastRetry = Date.now()
-        this.initializeConnection(true)
-      } else {
-        SnackController.showError((error as BaseError).message ?? 'Connection error')
-      }
+      SnackController.showError((error as BaseError).message ?? 'Connection error')
+      ConnectionController.resetWcConnection()
+      RouterController.goBack()
     }
   }
 
