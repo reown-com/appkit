@@ -1,12 +1,6 @@
 import { Box, Button, Heading, Select, Text } from '@chakra-ui/react'
 
 import {
-  useAppKit,
-  useAppKitAccount,
-  useAppKitNetwork,
-  useDisconnect
-} from '@reown/appkit/basic-react'
-import {
   type AppKitNetwork,
   bitcoin,
   bitcoinTestnet,
@@ -15,6 +9,12 @@ import {
   solana,
   solanaTestnet
 } from '@reown/appkit/networks'
+import {
+  useAppKit,
+  useAppKitAccount,
+  useAppKitNetwork,
+  useDisconnect
+} from '@reown/appkit/react-basic'
 
 export interface AppKitBasicHooksProps {
   networks?: AppKitNetwork[]
