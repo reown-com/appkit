@@ -434,7 +434,7 @@
   },
   "devDependencies": {
     "@reown/appkit-common": "workspace:*",
-    "@reown/appkit-core": "workspace:*",
+    "@reown/appkit-controllers": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@types/qrcode": "1.5.5",
     "@vitest/coverage-v8": "2.1.3",

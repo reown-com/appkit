@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type AppKitNetwork } from '@reown/appkit-common'
 import {
@@ -7,7 +7,7 @@ import {
   EventsController,
   OptionsController,
   StorageUtil
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
@@ -19,11 +19,13 @@ import {
   mockWindowAndDocument
 } from '../test-utils.js'
 
-mockWindowAndDocument()
-mockStorageUtil()
-mockBlockchainApiController()
-
 describe('Base', () => {
+  beforeEach(() => {
+    mockWindowAndDocument()
+    mockStorageUtil()
+    mockBlockchainApiController()
+  })
+
   describe('Base Initialization', () => {
     it('should initialize controllers', async () => {
       const sendEvent = vi.spyOn(EventsController, 'sendEvent')

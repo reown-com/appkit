@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "@reown/appkit-common": "workspace:*",
-    "@reown/appkit-core": "workspace:*",
+    "@reown/appkit-controllers": "workspace:*",
     "@reown/appkit-polyfills": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/logger": "2.1.2",

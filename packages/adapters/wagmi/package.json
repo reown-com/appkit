@@ -20,7 +20,7 @@
   "dependencies": {
     "@reown/appkit": "workspace:*",
     "@reown/appkit-common": "workspace:*",
-    "@reown/appkit-core": "workspace:*",
+    "@reown/appkit-controllers": "workspace:*",
     "@reown/appkit-polyfills": "workspace:*",
     "@reown/appkit-scaffold-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
@@ -40,7 +40,7 @@
     "@types/react": "19.0.0",
     "@types/react-dom": "19.0.0",
     "@vitest/coverage-v8": "2.1.3",
-    "@walletconnect/types": "2.18.0",
+    "@walletconnect/types": "2.19.0",
     "vitest": "2.1.9"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",

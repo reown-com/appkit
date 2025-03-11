@@ -112,7 +112,7 @@
     "@wagmi/connectors": "5.7.7",
     "@wagmi/core": "2.16.5",
     "@walletconnect/universal-provider": "2.19.0",
-    "@walletconnect/utils": "2.18.0",
+    "@walletconnect/utils": "2.19.0",
     "axios": "1.7.2",
     "bitcoinjs-lib": "7.0.0-rc.0",
     "bs58": "6.0.0",

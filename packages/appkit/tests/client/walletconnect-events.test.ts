@@ -1,6 +1,6 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ChainController, ConnectionController } from '@reown/appkit-core'
+import { ChainController, ConnectionController } from '@reown/appkit-controllers'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mainnet, sepolia } from '../mocks/Networks.js'
@@ -13,12 +13,14 @@ import {
   mockWindowAndDocument
 } from '../test-utils.js'
 
-mockWindowAndDocument()
-mockCoreHelperUtil()
-mockStorageUtil()
-mockBlockchainApiController()
-
 describe('WalletConnect Events', () => {
+  beforeEach(() => {
+    mockWindowAndDocument()
+    mockCoreHelperUtil()
+    mockStorageUtil()
+    mockBlockchainApiController()
+  })
+
   describe('chainChanged', () => {
     it('should call setUnsupportedNetwork', () => {
       const appkit = new AppKit({
