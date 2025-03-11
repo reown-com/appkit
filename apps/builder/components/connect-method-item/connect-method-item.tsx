@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 
 import classNames from 'classnames'
 
-import { ConnectMethod } from '@reown/appkit-core'
+import { ConnectMethod } from '@reown/appkit-controllers'
 
 import { SocialButtons } from '@/components/social-buttons'
 import { Checkbox } from '@/components/ui/checkbox'

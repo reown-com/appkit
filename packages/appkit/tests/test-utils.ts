@@ -6,7 +6,7 @@ import {
   BlockchainApiController,
   CoreHelperUtil,
   StorageUtil
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import { mockLocalStorage } from './mocks/LocalStorage.js'
 import { mainnet } from './mocks/Networks.js'
