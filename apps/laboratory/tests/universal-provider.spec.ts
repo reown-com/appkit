@@ -38,7 +38,7 @@ universalProviderTest.beforeAll(async ({ browser }) => {
   await connectButton.click()
 
   // Get QR code URI and connect from wallet
-  const qrCode = browserPage.locator('wui-qr-code').nth(1)
+  const qrCode = browserPage.getByTestId('wui-qr-code')
   await expect(qrCode).toBeVisible()
   const uri = await qrCode.getAttribute('uri')
   expect(uri).toBeTruthy()
