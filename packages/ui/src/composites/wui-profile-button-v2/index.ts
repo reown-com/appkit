@@ -1,9 +1,8 @@
-import { ChainController, ConnectorController } from '@@reown/appkit-controllers'
-
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
 import { type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
+import { ChainController, ConnectorController } from '@reown/appkit-controllers'
 
 import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
