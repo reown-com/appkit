@@ -75,12 +75,14 @@ export const ConnectorUtil = {
    */
   getIsConnectedWithWC() {
     const chains = Array.from(ChainController.state.chains.values())
+    const address = ChainController.getActiveCaipAddress()
     const isConnectedWithWC = chains.some(chain => {
       const connectorId = ConnectorController.getConnectorId(chain.namespace)
 
       return connectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
     })
 
-    return isConnectedWithWC
+    // If the address is not set, the user is not connected to a wallet
+    return isConnectedWithWC && Boolean(address)
   }
 }
