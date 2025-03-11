@@ -40,7 +40,9 @@ test('should connect to all chains', async () => {
   await modalValidator.expectAccountButtonReady('bip122')
 })
 
-test('should sign message for each chain', async () => {
+test('should sign message for each chain', async ({ browser }) => {
+  const isFirefox = browser.browserType().name() === 'firefox'
+
   await modalPage.sign('eip155')
   await walletValidator.expectReceivedSign({ chainName: 'Ethereum' })
   await walletPage.handleRequest({ accept: true })
@@ -51,10 +53,16 @@ test('should sign message for each chain', async () => {
   await walletPage.handleRequest({ accept: true })
   await modalValidator.expectAcceptedSign()
 
-  /**
-   * Bitcoin sign message has an issue on the sample wallet where sample wallet freezing after clicking approve button.
-   * This is not reproducible on the non-test environment. Only happening with PW tests. Will investigate
-   */
+  if (!isFirefox) {
+    /**
+     * Bitcoin sign message has an issue on the sample wallet where sample wallet freezing after clicking approve button.
+     * This is happening due to ecpair package that sample wallet is using while signing Bitcoin messages, and only happening with Firefox browser.
+     */
+    await modalPage.sign('bip122')
+    await walletValidator.expectReceivedSignMessage({ message: 'Hello, World!' })
+    await walletPage.handleRequest({ accept: true })
+    await modalValidator.expectAcceptedSign()
+  }
 })
 
 test('should switch network as expected', async () => {
