@@ -15,8 +15,7 @@ import {
   ConnectorController,
   ConstantsUtil,
   ModalController,
-  SIWXUtil,
-  StorageUtil
+  SIWXUtil
 } from '../../exports/index.js'
 
 // -- Setup --------------------------------------------------------------------
