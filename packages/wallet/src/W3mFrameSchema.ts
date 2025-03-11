@@ -83,7 +83,7 @@ export const FrameConnectFarcasterResponse = z.object({
 })
 
 export const FrameConnectSocialResponse = z.object({
-  email: z.string(),
+  email: z.string().optional().nullable(),
   address: z.string(),
   chainId: z.string().or(z.number()),
   accounts: z
