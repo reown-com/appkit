@@ -121,10 +121,13 @@ export class W3mSocialLoginList extends LitElement {
       )
 
       try {
+        console.log('🔥 authConnector ', authConnector, 'socialProvider ', socialProvider)
         if (authConnector && socialProvider) {
+          console.log('🔥 requesting uri')
           const { uri } = await authConnector.provider.getSocialRedirectUri({
             provider: socialProvider
           })
+          console.log('🔥 uri ', uri)
 
           if (this.popupWindow && uri) {
             AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)

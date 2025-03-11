@@ -534,7 +534,7 @@ export class W3mFrameProvider {
   ): Promise<W3mFrameTypes.Responses[`Frame${T}Response`]> {
     await this.w3mFrame.frameLoadPromise
     let timer: ReturnType<typeof setTimeout> | undefined = undefined
-
+    console.log('🔥 Sending appEvent ', event)
     function replaceEventType(type: AppEventType['type']) {
       return type.replace('@w3m-app/', '')
     }
