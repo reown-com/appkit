@@ -102,7 +102,8 @@ describe('ApiController', () => {
       wallets: [],
       search: [],
       isAnalyticsEnabled: false,
-      excludedRDNS: []
+      excludedRDNS: [],
+      isFetchingRecommendedWallets: false
     })
   })
 
@@ -402,6 +403,7 @@ describe('ApiController', () => {
       path: '/getWallets',
       params: {
         ...ApiController._getSdkProperties(),
+        chains: 'eip155:1,eip155:4,eip155:42',
         page: '1',
         // Fixed to recommendedEntries
         entries: '4',
@@ -430,6 +432,7 @@ describe('ApiController', () => {
       path: '/getWallets',
       params: {
         ...ApiController._getSdkProperties(),
+        chains: 'eip155:1,eip155:4,eip155:42',
         page: '1',
         entries: '4',
         include: '',
@@ -472,6 +475,7 @@ describe('ApiController', () => {
       params: {
         ...ApiController._getSdkProperties(),
         page: '1',
+        chains: 'eip155:1,eip155:4,eip155:42',
         entries: '40',
         include: '12341,12342',
         exclude: '12343,12344'
@@ -516,6 +520,8 @@ describe('ApiController', () => {
       params: {
         ...ApiController._getSdkProperties(),
         page: '1',
+        badge_type: undefined,
+        chains: 'eip155:1,eip155:4,eip155:42',
         entries: String(excludeWalletIds.length),
         include: excludeWalletIds.join(',')
       }
@@ -529,8 +535,7 @@ describe('ApiController', () => {
     expect(result).toEqual(filteredWallet)
   })
 
-  // Wallet search with exact wallet name
-  it('should search wallet with search term', async () => {
+  it('should search wallet with exact wallet name', async () => {
     const includeWalletIds = ['12341', '12342']
     const excludeWalletIds = ['12343']
     const data = [
@@ -554,6 +559,8 @@ describe('ApiController', () => {
       params: {
         ...ApiController._getSdkProperties(),
         page: '1',
+        badge_type: undefined,
+        chains: 'eip155:1,eip155:4,eip155:42',
         entries: '100',
         search: 'MetaMask',
         include: '12341,12342',
@@ -565,8 +572,7 @@ describe('ApiController', () => {
     expect(ApiController.state.search).toEqual(data)
   })
 
-  // Wallet search with whitespace and multiple words
-  it('should search wallet with search term', async () => {
+  it('should search wallet with whitespace and multiple words', async () => {
     const includeWalletIds = ['12341', '12342']
     const excludeWalletIds = ['12343']
     let data = [
@@ -591,6 +597,8 @@ describe('ApiController', () => {
       params: {
         ...ApiController._getSdkProperties(),
         page: '1',
+        badge_type: undefined,
+        chains: 'eip155:1,eip155:4,eip155:42',
         entries: '100',
         search: 'MetaMask',
         include: '12341,12342',
@@ -608,6 +616,8 @@ describe('ApiController', () => {
       params: {
         ...ApiController._getSdkProperties(),
         page: '1',
+        badge_type: undefined,
+        chains: 'eip155:1,eip155:4,eip155:42',
         entries: '100',
         search: 'MetaMask',
         include: '12341,12342',
@@ -624,6 +634,8 @@ describe('ApiController', () => {
       params: {
         ...ApiController._getSdkProperties(),
         page: '1',
+        badge_type: undefined,
+        chains: 'eip155:1,eip155:4,eip155:42',
         entries: '100',
         search: 'MetaMask',
         include: '12341,12342',
@@ -648,6 +660,8 @@ describe('ApiController', () => {
       params: {
         ...ApiController._getSdkProperties(),
         page: '1',
+        badge_type: undefined,
+        chains: 'eip155:1,eip155:4,eip155:42',
         entries: '100',
         search: 'Safe Wallet',
         include: '12341,12342',

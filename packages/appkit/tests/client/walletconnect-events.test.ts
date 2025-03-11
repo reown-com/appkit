@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import { ChainController, ConnectionController } from '@reown/appkit-core'
 
@@ -8,11 +8,13 @@ import { mockOptions } from '../mocks/Options.js'
 import { mockUniversalProvider } from '../mocks/Providers.js'
 import {
   mockBlockchainApiController,
+  mockCoreHelperUtil,
   mockStorageUtil,
   mockWindowAndDocument
 } from '../test-utils.js'
 
 mockWindowAndDocument()
+mockCoreHelperUtil()
 mockStorageUtil()
 mockBlockchainApiController()
 
@@ -85,12 +87,11 @@ describe('WalletConnect Events', () => {
   })
 
   describe('connect', () => {
-    beforeEach(() => {
-      vi.clearAllMocks()
-    })
-
     it('should call finalizeWcConnection once connected', async () => {
-      vi.spyOn(ConnectionController, 'finalizeWcConnection')
+      const finalizeWcConnectionSpy = vi
+        .spyOn(ConnectionController, 'finalizeWcConnection')
+        .mockReturnValueOnce()
+      mockUniversalProvider.on.mockClear()
 
       new AppKit({
         ...mockOptions,
@@ -108,7 +109,7 @@ describe('WalletConnect Events', () => {
 
       connectCallback()
 
-      expect(ConnectionController.finalizeWcConnection).toHaveBeenCalledOnce()
+      expect(finalizeWcConnectionSpy).toHaveBeenCalledOnce()
     })
   })
 })

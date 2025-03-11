@@ -41,12 +41,14 @@ export const AssetUtil = {
 
   async fetchNetworkImage(imageId?: string) {
     if (!imageId) {
-      return
+      return undefined
     }
 
+    const existingImage = this.getNetworkImageById(imageId)
+
     // Check if the image already exists
-    if (this.getNetworkImageById(imageId)) {
-      return
+    if (existingImage) {
+      return existingImage
     }
 
     // Check if the promise is already created
@@ -54,8 +56,9 @@ export const AssetUtil = {
       state.networkImagePromises[imageId] = ApiController._fetchNetworkImage(imageId)
     }
 
-    // Wait for the promise to resolve
     await state.networkImagePromises[imageId]
+
+    return this.getNetworkImageById(imageId)
   },
 
   getWalletImageById(imageId?: string) {

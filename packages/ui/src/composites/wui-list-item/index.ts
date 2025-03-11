@@ -87,7 +87,10 @@ export class WuiListItem extends LitElement {
 
   public loadingTemplate() {
     if (this.loading) {
-      return html`<wui-loading-spinner color="fg-300"></wui-loading-spinner>`
+      return html`<wui-loading-spinner
+        data-testid="wui-list-item-loading-spinner"
+        color="fg-300"
+      ></wui-loading-spinner>`
     }
 
     return html``
