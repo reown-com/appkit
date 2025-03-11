@@ -115,8 +115,8 @@ describe('W3mAccountButton', () => {
     })
 
     it('should open modal in UnsupportedChain view when chain is not supported and allowUnsupportedChain is false', async () => {
-      ChainController.state.activeChain = 'eip155'
-      OptionsController.state.allowUnsupportedChain = false
+      vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
+      vi.spyOn(OptionsController.state, 'allowUnsupportedChain', 'get').mockReturnValue(false)
       vi.spyOn(ChainController, 'getAccountData').mockReturnValueOnce({
         ...AccountController.state,
         caipAddress: mockCaipAddress
