@@ -164,6 +164,7 @@ describe('W3mOnRampProvidersView', () => {
             'ethereum',
             'arbitrum',
             'polygon',
+            'berachain',
             'avalanche-c-chain',
             'optimism',
             'celo',
