@@ -7,10 +7,15 @@ import {
   ModalController,
   OnRampController,
   OptionsController
-} from '@reown/appkit-core'
-import type { PurchaseCurrency } from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
+import type { PurchaseCurrency } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-list-item'
+import '@reown/appkit-ui/wui-text'
 
+import '../../partials/w3m-legal-checkbox/index.js'
+import '../../partials/w3m-legal-footer/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-onramp-token-select-view')

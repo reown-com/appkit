@@ -10,8 +10,8 @@ import { useChakraToast } from '@/src/components/Toast'
 export function BitcoinSendTransferTest() {
   const { walletProvider } = useAppKitProvider<BitcoinConnector>('bip122')
   const { address } = useAppKitAccount({ namespace: 'bip122' })
-
   const toast = useChakraToast()
+
   const [loading, setLoading] = useState(false)
   const [recipient, setRecipient] = useState<string>(address || '')
   const [amount, setAmount] = useState<string>('1500')
@@ -33,8 +33,8 @@ export function BitcoinSendTransferTest() {
       })
 
       toast({
-        title: `Transfer sent: ${signature}`,
-        description: 'Transfer sent successfully',
+        title: 'Success',
+        description: `Transfer sent: ${signature}`,
         type: 'success'
       })
     } catch (error) {

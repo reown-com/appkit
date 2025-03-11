@@ -8,7 +8,7 @@ import {
   ConnectorController,
   RouterController,
   StorageUtil
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import { W3mAccountAuthButton } from '../../src/partials/w3m-account-auth-button'
 import { HelpersUtil } from '../utils/HelpersUtil'
@@ -34,6 +34,7 @@ describe('W3mAccountAuthButton', () => {
         getEmail: () => MOCK_EMAIL
       }
     } as AuthConnector)
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('ID_AUTH')
 
     const authButton: W3mAccountAuthButton = await fixture(
       html`<w3m-account-auth-button></w3m-account-auth-button>`
@@ -52,6 +53,7 @@ describe('W3mAccountAuthButton', () => {
         getEmail: () => null
       }
     } as AuthConnector)
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('ID_AUTH')
 
     const authButton: W3mAccountAuthButton = await fixture(
       html`<w3m-account-auth-button></w3m-account-auth-button>`
@@ -70,6 +72,7 @@ describe('W3mAccountAuthButton', () => {
         getEmail: () => MOCK_EMAIL
       }
     } as AuthConnector)
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('ID_AUTH')
 
     const authButton: W3mAccountAuthButton = await fixture(
       html`<w3m-account-auth-button></w3m-account-auth-button>`

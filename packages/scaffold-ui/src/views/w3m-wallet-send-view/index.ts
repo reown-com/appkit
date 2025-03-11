@@ -2,15 +2,19 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import {
-  AccountController,
   ChainController,
   CoreHelperUtil,
   RouterController,
   SendController,
   SwapController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon-box'
 
+import '../../partials/w3m-input-address/index.js'
+import '../../partials/w3m-input-token/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-wallet-send-view')
@@ -108,13 +112,13 @@ export class W3mWalletSendView extends LitElement {
 
   // -- Private ------------------------------------------- //
   private async fetchBalances() {
-    await AccountController.fetchTokenBalance()
+    await SendController.fetchTokenBalance()
+    SendController.fetchNetworkBalance()
   }
 
   private async fetchNetworkPrice() {
     await SwapController.getNetworkTokenPrice()
     const gas = await SwapController.getInitialGasPrice()
-    await SendController.fetchNetworkBalance()
 
     if (gas?.gasPrice && gas?.gasPriceInUSD) {
       SendController.setGasPrice(gas.gasPrice)

@@ -2,9 +2,11 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { WcWallet } from '@reown/appkit-core'
-import { ApiController, AssetUtil, ConnectorController } from '@reown/appkit-core'
+import type { WcWallet } from '@reown/appkit-controllers'
+import { ApiController, AssetUtil, ConnectorController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-list-wallet'
 
 import { WalletUtil } from '../../utils/WalletUtil.js'
 

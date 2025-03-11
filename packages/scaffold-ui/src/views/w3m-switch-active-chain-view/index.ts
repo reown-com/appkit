@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import { ChainController, ConnectorController, RouterController } from '@reown/appkit-core'
+import { ChainController, ConnectorController, RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'

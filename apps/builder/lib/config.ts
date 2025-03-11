@@ -4,7 +4,7 @@ import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
 import { EthersAdapter } from '@reown/appkit-adapter-ethers'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { type ChainNamespace } from '@reown/appkit-common'
-import { ChainAdapter, ConstantsUtil } from '@reown/appkit-core'
+import { ChainAdapter, ConstantsUtil } from '@reown/appkit-controllers'
 import {
   type AppKitNetwork,
   arbitrum,
@@ -72,7 +72,7 @@ export const allAdapters = [evmAdapter, solanaAdapter, bitcoinAdapter]
 const metadata = {
   name: 'AppKit Builder',
   description: 'The full stack toolkit to build onchain app UX',
-  url: 'https://github.com/0xonerb/next-reown-appkit-ssr', // origin must match your domain & subdomain
+  url: 'https://demo.reown.com', // origin must match your domain & subdomain
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 

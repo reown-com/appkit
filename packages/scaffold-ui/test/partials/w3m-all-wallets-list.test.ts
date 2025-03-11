@@ -8,13 +8,13 @@ import {
   ChainController,
   ConnectorController,
   RouterController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import type {
   ApiControllerState,
   ChainControllerState,
   Connector,
   WcWallet
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import { W3mAllWalletsList } from '../../src/partials/w3m-all-wallets-list'
 import { HelpersUtil } from '../utils/HelpersUtil'
@@ -86,6 +86,34 @@ describe('W3mAllWalletsList', () => {
 
     expect(loaders).toBeTruthy()
     vi.useRealTimers()
+  })
+
+  it('does not render duplicate wallets when present in multiple arrays', async () => {
+    const duplicateWallet = { id: '1', name: 'Duplicate Wallet', rdns: 'rdns1' }
+    const uniqueWallet = { id: '2', name: 'Unique Wallet', rdns: 'rdns2' }
+
+    vi.spyOn(ApiController, 'state', 'get').mockReturnValue({
+      wallets: [duplicateWallet],
+      recommended: [duplicateWallet],
+      featured: [duplicateWallet, uniqueWallet],
+      count: 2,
+      page: 1
+    } as unknown as ApiControllerState)
+
+    const element: W3mAllWalletsList = await fixture(
+      html`<w3m-all-wallets-list></w3m-all-wallets-list>`
+    )
+
+    // Simulate loading complete
+    element.requestUpdate()
+    await elementUpdated(element)
+
+    const walletItems = element.shadowRoot?.querySelectorAll('w3m-all-wallets-list-item')
+    expect(walletItems?.length).toBe(2) // Should only show 2 wallets, not 4
+
+    // Verify the wallet items have unique IDs
+    const walletIds = new Set(Array.from(walletItems || []).map(item => (item as any).wallet?.id))
+    expect(walletIds.size).toBe(2)
   })
 
   it('renders wallet list after loading', async () => {

@@ -1,11 +1,14 @@
+import { ConstantsUtil } from '@reown/appkit-common'
 import {
   ApiController,
+  ChainController,
   ConnectionController,
+  ConnectorController,
   type ConnectorWithProviders,
   CoreHelperUtil,
   OptionsController,
   StorageUtil
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import { WalletUtil } from './WalletUtil.js'
 
@@ -35,6 +38,7 @@ export const ConnectorUtil = {
       featured: filteredFeatured
     }
   },
+
   showConnector(connector: ConnectorWithProviders) {
     if (connector.type === 'INJECTED') {
       if (!CoreHelperUtil.isMobile() && connector.name === 'Browser Wallet') {
@@ -63,5 +67,20 @@ export const ConnectorUtil = {
     }
 
     return true
+  },
+
+  /**
+   * Returns true if the user is connected to a WalletConnect connector in the any of the available namespaces.
+   * @returns boolean
+   */
+  getIsConnectedWithWC() {
+    const chains = Array.from(ChainController.state.chains.values())
+    const isConnectedWithWC = chains.some(chain => {
+      const connectorId = ConnectorController.getConnectorId(chain.namespace)
+
+      return connectorId === ConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+    })
+
+    return isConnectedWithWC
   }
 }

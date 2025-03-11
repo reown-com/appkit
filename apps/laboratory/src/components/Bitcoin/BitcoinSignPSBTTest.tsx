@@ -12,8 +12,8 @@ export function BitcoinSignPSBTTest() {
   const { walletProvider } = useAppKitProvider<BitcoinConnector>('bip122')
   const { address } = useAppKitAccount({ namespace: 'bip122' })
   const { caipNetwork } = useAppKitNetwork()
-
   const toast = useChakraToast()
+
   const [loading, setLoading] = useState(false)
   const [recipient, setRecipient] = useState<string>(address || '')
   const [amount, setAmount] = useState<string>('1500')
@@ -22,8 +22,8 @@ export function BitcoinSignPSBTTest() {
   async function onSignPSBT() {
     if (!walletProvider || !address || !caipNetwork) {
       toast({
-        title: 'No connection detected',
-        description: 'Please connect your wallet',
+        title: 'Error',
+        description: 'No connection detected',
         type: 'error'
       })
 
@@ -32,8 +32,8 @@ export function BitcoinSignPSBTTest() {
 
     if (caipNetwork.chainNamespace !== 'bip122') {
       toast({
-        title: 'The selected chain is not bip122',
-        description: 'Please switch to a bip122 network',
+        title: 'Error',
+        description: 'The selected chain is not bip122',
         type: 'error'
       })
 

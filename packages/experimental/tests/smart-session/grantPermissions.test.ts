@@ -5,7 +5,7 @@ import {
   ConnectionController,
   type ConnectionControllerClient,
   OptionsController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { ProviderUtil } from '@reown/appkit/store'
 
 import { SmartSessionsController } from '../../src/smart-session/controllers/SmartSessionsController'
@@ -19,7 +19,7 @@ import { CosignerService } from '../../src/smart-session/utils/CosignerService'
 import type { SmartSessionGrantPermissionsRequest } from '../../src/smart-session/utils/TypeUtils.js'
 import { donutContractAbi } from '../data/abi'
 
-vi.mock('@reown/appkit-core')
+vi.mock('@reown/appkit-controllers')
 vi.mock('@reown/appkit/store')
 vi.mock('../../src/smart-session/utils/CosignerService')
 

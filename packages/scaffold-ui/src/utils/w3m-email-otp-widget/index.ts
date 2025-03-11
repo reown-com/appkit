@@ -6,8 +6,13 @@ import {
   CoreHelperUtil,
   RouterController,
   SnackController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-link'
+import '@reown/appkit-ui/wui-loading-spinner'
+import '@reown/appkit-ui/wui-otp'
+import '@reown/appkit-ui/wui-text'
 import { W3mFrameHelpers } from '@reown/appkit-wallet'
 
 import styles from './styles.js'

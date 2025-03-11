@@ -6,7 +6,6 @@ import type { BitcoinConnector } from '@reown/appkit-adapter-bitcoin'
 import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
-import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 export function BitcoinSignMessageTest() {
   const toast = useChakraToast()
@@ -18,13 +17,7 @@ export function BitcoinSignMessageTest() {
 
   async function onSignMessage() {
     if (!walletProvider || !address) {
-      toast({
-        title: 'No connection detected',
-        description: 'Please connect your wallet',
-        type: 'error'
-      })
-
-      return
+      throw Error('No connection detected')
     }
 
     setLoading(true)
