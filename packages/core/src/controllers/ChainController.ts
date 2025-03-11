@@ -627,7 +627,7 @@ export const ChainController = {
       user: undefined,
       status: 'disconnected'
     })
-    StorageUtil.deleteConnectedConnectorId(chainToWrite)
+    ConnectorController.removeConnectorId(chainToWrite)
   },
 
   async disconnect() {
