@@ -12,6 +12,7 @@ import type {
 import {
   ChainController,
   ConnectionController,
+  ConnectorController,
   ConstantsUtil,
   ModalController,
   SIWXUtil,
@@ -23,7 +24,6 @@ const chain = CommonConstantsUtil.CHAIN.EVM
 const walletConnectUri = 'wc://uri?=123'
 const externalId = 'coinbaseWallet'
 const type = 'WALLET_CONNECT' as ConnectorType
-const storageSpy = vi.spyOn(StorageUtil, 'setConnectedConnectorId')
 const caipNetworks = [
   { ...polygon, chainNamespace: chain, caipNetworkId: 'eip155:137' } as CaipNetwork
 ]
@@ -115,11 +115,11 @@ describe('ConnectionController', () => {
   })
 
   it('should update state correctly and set wcPromisae on connectWalletConnect()', async () => {
+    const setConnectorIdSpy = vi.spyOn(ConnectorController, 'setConnectorId')
     // Await on set promise and check results
     await ConnectionController.connectWalletConnect()
-    expect(storageSpy).toHaveBeenCalledWith('eip155', 'walletConnect')
     expect(clientConnectWalletConnectSpy).toHaveBeenCalled()
-
+    expect(setConnectorIdSpy).not.toBeCalled()
     // Just in case
     vi.useRealTimers()
   })
