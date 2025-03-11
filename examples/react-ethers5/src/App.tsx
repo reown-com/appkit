@@ -22,7 +22,6 @@ export default function App() {
         <appkit-button />
         <appkit-network-button />
       </div>
-      ``
       <ActionButtonList />
       <InfoList />
       <Footer />
