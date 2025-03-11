@@ -54,17 +54,19 @@ export class WalletValidator {
     })
   }
 
-  async expectReceivedSign({ chainName = 'Ethereum' }) {
+  async expectReceivedSign({ chainName = 'Ethereum', expectNetworkName = true }) {
     await expect(
       this.page.getByTestId('session-approve-button'),
       'Session approve button should be visible'
     ).toBeVisible({
       timeout: MAX_WAIT
     })
-    await expect(
-      this.page.getByTestId('request-details-chain'),
-      'Request details should contain chain name'
-    ).toContainText(chainName)
+    if (expectNetworkName) {
+      await expect(
+        this.page.getByTestId('request-details-chain'),
+        'Request details should contain chain name'
+      ).toContainText(chainName)
+    }
   }
 
   async expectReceivedSignMessage({ message = 'Hello, World!' }) {

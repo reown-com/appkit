@@ -312,9 +312,13 @@ export class ModalValidator {
     await expect(switchNetworkButton).toBeVisible()
   }
 
-  async expectOnrampButton() {
+  async expectOnrampButton(visible: boolean) {
     const onrampButton = this.page.getByTestId('w3m-account-default-onramp-button')
-    await expect(onrampButton).toBeVisible()
+    if (visible) {
+      await expect(onrampButton).toBeVisible()
+    } else {
+      await expect(onrampButton).not.toBeVisible()
+    }
   }
 
   async expectWalletGuide(_library: string, guide: 'get-started' | 'explore') {

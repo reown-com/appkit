@@ -8,7 +8,6 @@ import { mockOptions } from '../mocks/Options.js'
 import { mockUniversalProvider } from '../mocks/Providers.js'
 import {
   mockBlockchainApiController,
-  mockCoreHelperUtil,
   mockStorageUtil,
   mockWindowAndDocument
 } from '../test-utils.js'
@@ -16,7 +15,6 @@ import {
 describe('WalletConnect Events', () => {
   beforeEach(() => {
     mockWindowAndDocument()
-    mockCoreHelperUtil()
     mockStorageUtil()
     mockBlockchainApiController()
   })
