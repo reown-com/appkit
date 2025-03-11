@@ -6,6 +6,7 @@ import type { BitcoinConnector } from '@reown/appkit-adapter-bitcoin'
 import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
+import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 export function BitcoinSignMessageTest() {
   const toast = useChakraToast()
@@ -35,7 +36,7 @@ export function BitcoinSignMessageTest() {
     } catch (error) {
       toast({
         title: ConstantsUtil.SigningFailedToastTitle,
-        description: 'Failed to sign message',
+        description: (error as Error).message,
         type: 'error'
       })
     } finally {
