@@ -340,10 +340,10 @@ export const ConnectorController = {
 
   isConnected(namespace?: ChainNamespace) {
     if (!namespace) {
-      return Object.values(state.activeConnectorIds).some(id => id !== undefined)
+      return Object.values(state.activeConnectorIds).some(id => Boolean(id))
     }
 
-    return state.activeConnectorIds[namespace] !== undefined
+    return Boolean(state.activeConnectorIds[namespace])
   },
 
   resetConnectorIds() {
