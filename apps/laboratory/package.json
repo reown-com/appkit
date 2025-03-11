@@ -24,7 +24,6 @@
     "playwright:test:wallet": "playwright test --grep 'wallet.spec.ts'",
     "playwright:test:no-email": "playwright test --grep 'no-email.spec.ts'",
     "playwright:test:no-socials": "playwright test --grep 'no-socials.spec.ts'",
-    "playwright:test:debug-mode": "playwright test --grep 'debug-mode.spec.ts'",
     "playwright:test:email": "playwright test --grep 'email.spec.ts'",
     "playwright:test:email-after-farcaster": "playwright test --grep 'email-after-farcaster.spec.ts'",
     "playwright:test:siwe": "playwright test --grep siwe.spec.ts",

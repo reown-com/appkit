@@ -192,18 +192,13 @@ export abstract class AppKitCore {
   protected initializeOptionsController(options: AppKitOptionsWithSdk) {
     OptionsController.setDebug(options.debug !== false)
 
-    if (!options.projectId) {
-      AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
-
-      return
-    }
-
     // On by default
     OptionsController.setEnableWalletConnect(options.enableWalletConnect !== false)
     OptionsController.setEnableWalletGuide(options.enableWalletGuide !== false)
     OptionsController.setEnableWallets(options.enableWallets !== false)
     OptionsController.setEIP6963Enabled(options.enableEIP6963 !== false)
     OptionsController.setEnableAuthLogger(options.enableAuthLogger !== false)
+
     OptionsController.setSdkVersion(options.sdkVersion)
     OptionsController.setProjectId(options.projectId)
     OptionsController.setEnableEmbedded(options.enableEmbedded)
@@ -227,6 +222,12 @@ export abstract class AppKitCore {
     OptionsController.setDisableAppend(options.disableAppend)
     OptionsController.setEnableEmbedded(options.enableEmbedded)
     OptionsController.setSIWX(options.siwx)
+
+    if (!options.projectId) {
+      AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+
+      return
+    }
 
     const evmAdapter = options.adapters?.find(
       adapter => adapter.namespace === ConstantsUtil.CHAIN.EVM

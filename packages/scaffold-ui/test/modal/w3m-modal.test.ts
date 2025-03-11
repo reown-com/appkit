@@ -5,6 +5,7 @@ import { html } from 'lit'
 
 import { type CaipNetwork } from '@reown/appkit-common'
 import {
+  AlertController,
   ApiController,
   ChainController,
   ModalController,
@@ -13,6 +14,7 @@ import {
   SIWXUtil
 } from '@reown/appkit-controllers'
 import type { RouterControllerState, SIWXConfig } from '@reown/appkit-controllers'
+import { ErrorUtil } from '@reown/appkit-utils'
 
 import { W3mModal } from '../../src/modal/w3m-modal'
 import { HelpersUtil } from '../utils/HelpersUtil'
@@ -310,6 +312,80 @@ describe('W3mModal', () => {
 
       expect(shakeSpy).not.toHaveBeenCalled()
       expect(closeSpy).toHaveBeenCalled()
+    })
+  })
+
+  describe('Debug Mode', () => {
+    let element: W3mModal
+    
+    beforeEach(async () => {
+      vi.resetAllMocks()
+      vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve())
+      vi.spyOn(ApiController, 'prefetchAnalyticsConfig').mockImplementation(() => Promise.resolve())
+      vi.spyOn(AlertController, 'open')
+      
+      // Reset alert state
+      AlertController.close()
+    })
+
+    afterEach(() => {
+      vi.clearAllMocks()
+    })
+
+    it('should display alert when debug mode is enabled and project ID is not configured', async () => {
+      // Set debug mode to true
+      OptionsController.setDebug(true)
+      
+      // Trigger an alert for missing project ID
+      AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+      
+      // Render the modal
+      element = await fixture(html`<w3m-modal></w3m-modal>`)
+      await elementUpdated(element)
+      
+      // Expect alertbar to be visible
+      const alertbar = HelpersUtil.querySelect(element, 'w3m-alertbar')
+      expect(alertbar).toBeTruthy()
+      expect(AlertController.state.open).toBe(true)
+      expect(AlertController.state.message).toBe('Project ID Not Configured')
+      expect(AlertController.state.variant).toBe('error')
+    })
+
+    it('should not display alert when debug mode is disabled', async () => {
+      // Set debug mode to false
+      OptionsController.setDebug(false)
+      
+      // Attempt to trigger an alert for missing project ID
+      AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+      
+      // Render the modal
+      element = await fixture(html`<w3m-modal></w3m-modal>`)
+      await elementUpdated(element)
+      
+      // Alert state should not be open since debug mode is disabled
+      expect(AlertController.state.open).toBe(false)
+    })
+    
+    it('should maintain alert state based on debug mode setting', async () => {
+      // Start with debug mode enabled
+      OptionsController.setDebug(true)
+      AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+      
+      // Render the modal
+      element = await fixture(html`<w3m-modal></w3m-modal>`)
+      await elementUpdated(element)
+      
+      // Alert should be visible with debug mode true
+      expect(AlertController.state.open).toBe(true)
+      
+      // Change debug mode to false
+      OptionsController.setDebug(false)
+      
+      // Try to open alert again, should not change alert state
+      AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
+      
+      // No alert should be shown when debug is false
+      expect(AlertController.state.open).toBe(true) // State remains unchanged from previous alert
     })
   })
 })

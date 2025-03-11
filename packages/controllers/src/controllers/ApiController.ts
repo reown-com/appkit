@@ -324,10 +324,14 @@ export const ApiController = {
   },
 
   async fetchAnalyticsConfig() {
-    const { isAnalyticsEnabled } = await api.get<ApiGetAnalyticsConfigResponse>({
-      path: '/getAnalyticsConfig',
-      params: ApiController._getSdkProperties()
-    })
-    OptionsController.setFeatures({ analytics: isAnalyticsEnabled })
+    try {
+      const { isAnalyticsEnabled } = await api.get<ApiGetAnalyticsConfigResponse>({
+        path: '/getAnalyticsConfig',
+        params: ApiController._getSdkProperties()
+      })
+      OptionsController.setFeatures({ analytics: isAnalyticsEnabled })
+    } catch (error) {
+      OptionsController.setFeatures({ analytics: false })
+    }
   }
 }
