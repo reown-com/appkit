@@ -57,6 +57,14 @@ jobs:
             .turbo/
           retention-days: 1
 
+      # Create a separate artifact for node_modules to preserve symlinks and permissions
+      - name: Upload node_modules
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-modules
+          path: node_modules
+          retention-days: 1
+
   code_style:
     needs: setup_and_build
     runs-on: ubuntu-latest
@@ -90,6 +98,16 @@ jobs:
         with:
           name: build-output
 
+      - name: Download node_modules
+        uses: actions/download-artifact@v4
+        with:
+          name: node-modules
+          path: node_modules
+
+      # Restore executable permissions for binaries
+      - name: Fix permissions
+        run: chmod +x node_modules/.bin/*
+          
       - name: install
         run: pnpm install
 
@@ -123,6 +141,16 @@ jobs:
         with:
           name: build-output
 
+      - name: Download node_modules
+        uses: actions/download-artifact@v4
+        with:
+          name: node-modules
+          path: node_modules
+
+      # Restore executable permissions for binaries
+      - name: Fix permissions
+        run: chmod +x node_modules/.bin/*
+          
       - name: install
         run: pnpm install
 
@@ -155,6 +183,16 @@ jobs:
         with:
           name: build-output
 
+      - name: Download node_modules
+        uses: actions/download-artifact@v4
+        with:
+          name: node-modules
+          path: node_modules
+
+      # Restore executable permissions for binaries
+      - name: Fix permissions
+        run: chmod +x node_modules/.bin/*
+          
       - name: install
         run: pnpm install
 
