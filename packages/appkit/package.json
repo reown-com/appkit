@@ -52,6 +52,11 @@
       "import": "./dist/esm/exports/utils.js",
       "default": "./dist/esm/exports/utils.js"
     },
+    "./constants": {
+      "types": "./dist/types/exports/constants.d.ts",
+      "import": "./dist/esm/exports/constants.js",
+      "default": "./dist/esm/exports/constants.js"
+    },
     "./networks": {
       "types": "./dist/types/exports/networks.d.ts",
       "import": "./dist/esm/exports/networks.js",

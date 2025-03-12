@@ -6,7 +6,7 @@ import { ConstantsUtil } from './ConstantsUtil.js'
 import { StorageUtil } from './StorageUtil.js'
 import type { AccountTypeMap, ChainAdapter, LinkingRecord, NamespaceTypeMap } from './TypeUtil.js'
 
-type SDKFramework = 'html' | 'react' | 'vue'
+type SDKFramework = 'html' | 'react' | 'vue' | 'cdn' | 'unity'
 type OpenTarget = '_blank' | '_self' | 'popupWindow' | '_top'
 
 export const CoreHelperUtil = {
