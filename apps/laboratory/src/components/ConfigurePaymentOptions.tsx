@@ -21,12 +21,10 @@ import {
   Tab,
   TabPanel
 } from '@chakra-ui/react'
-import { encodeFunctionData, erc20Abi } from 'viem'
 
 import { baseSepolia, sepolia } from '@reown/appkit/networks'
 
 import {
-  type EvmContractInteraction,
   type PaymentOption
 } from '@/src/types/wallet_checkout'
 
@@ -48,8 +46,8 @@ export function ConfigurePaymentOptions({
   paymentOptions, 
   onPaymentOptionsChange 
 }: ConfigurePaymentOptionsProps) {
-  // For editing payment options
-  const [editingPaymentOptions, setEditingPaymentOptions] = useState<PaymentOption[]>(paymentOptions)
+  // For managing draft payment options
+  const [draftPaymentOptions, setDraftPaymentOptions] = useState<PaymentOption[]>(paymentOptions)
   const [newRecipient, setNewRecipient] = useState('')
   const [newToken, setNewToken] = useState('')
   const [selectedChainId, setSelectedChainId] = useState<AllowedChainId>(84532)
@@ -99,9 +97,9 @@ export function ConfigurePaymentOptions({
 
   // Remove a payment option
   function handleRemovePaymentOption(index: number) {
-    const updated = [...editingPaymentOptions];
+    const updated = [...draftPaymentOptions];
     updated.splice(index, 1);
-    setEditingPaymentOptions(updated);
+    setDraftPaymentOptions(updated);
   }
 
   // Add a new payment option
@@ -117,45 +115,14 @@ export function ConfigurePaymentOptions({
       amount: '0x186A0' as `0x${string}`
     };
 
-    setEditingPaymentOptions([...editingPaymentOptions, newOption]);
+    setDraftPaymentOptions([...draftPaymentOptions, newOption]);
     setNewRecipient('');
     setNewToken('');
-  }
-
-  // Add a new contract interaction payment option
-  function handleAddContractOption() {
-    if (!newToken) {
-      return;
-    }
-
-    // Default amount (100000 = 0.1 USDC)
-    const newOption: PaymentOption = {
-      asset: `eip155:${selectedChainId}/erc20:${newToken}`,
-      amount: '0x186A0' as `0x${string}`,
-      contractInteraction: {
-        type: 'evm-calls',
-        data: [
-          {
-            to: newToken,
-            data: encodeFunctionData({
-              abi: erc20Abi,
-              functionName: 'transfer',
-              args: [newRecipient as `0x${string}` || '0xD39483aE92522cd804CEB9DEA399F62E268297AC' as `0x${string}`, BigInt(100000)]
-            }),
-            value: '0x0'
-          }
-        ]
-      } as EvmContractInteraction
-    };
-
-    setEditingPaymentOptions([...editingPaymentOptions, newOption]);
-    setNewToken('');
-    setNewRecipient('');
   }
 
   // Save configuration
   function handleSaveConfig() {
-    onPaymentOptionsChange(editingPaymentOptions);
+    onPaymentOptionsChange(draftPaymentOptions);
     onClose();
   }
 
@@ -167,7 +134,7 @@ export function ConfigurePaymentOptions({
         <ModalBody>
           <Tabs variant="enclosed" colorScheme="blue">
             <TabList>
-              <Tab>Current Options ({editingPaymentOptions.length})</Tab>
+              <Tab>Current Options ({draftPaymentOptions.length})</Tab>
               <Tab>Add New Option</Tab>
             </TabList>
             
@@ -175,12 +142,12 @@ export function ConfigurePaymentOptions({
               {/* Current Options Tab */}
               <TabPanel px={0}>
                 <VStack spacing={4} align="stretch">
-                  {editingPaymentOptions.length === 0 ? (
+                  {draftPaymentOptions.length === 0 ? (
                     <Box p={4} borderRadius="md" textAlign="center">
                       <Text color="gray.500">No payment options configured. Switch to the "Add New Option" tab to add one.</Text>
                     </Box>
                   ) : (
-                    editingPaymentOptions.map((option, index) => {
+                    draftPaymentOptions.map((option, index) => {
                       // Extract chain ID and recipient from CAIP format
                       const assetParts = option.asset?.split('/') || [];
                       const chainPart = assetParts[0]?.split(':') || [];
@@ -284,14 +251,6 @@ export function ConfigurePaymentOptions({
                       width="full"
                     >
                       Add Direct Payment
-                    </Button>
-                    <Button
-                      onClick={handleAddContractOption}
-                      isDisabled={!newToken}
-                      size="md"
-                      width="full"
-                    >
-                      Add Contract Payment
                     </Button>
                   </HStack>
                 </VStack>
