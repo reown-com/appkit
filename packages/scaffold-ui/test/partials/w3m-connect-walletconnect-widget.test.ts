@@ -4,13 +4,13 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vite
 import { html } from 'lit'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import type { ConnectorType, ConnectorWithProviders } from '@reown/appkit-controllers'
+import type { ConnectorType, ConnectorWithProviders } from '@reown/appkit-core'
 import {
   AssetController,
   ConnectorController,
   CoreHelperUtil,
   RouterController
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 import { ConstantsUtil } from '@reown/appkit-utils'
 
 import { W3mConnectWalletConnectWidget } from '../../src/partials/w3m-connect-walletconnect-widget'

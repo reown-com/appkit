@@ -1,7 +1,7 @@
 import { proxy } from 'valtio/vanilla'
 
 import { AppKit } from '@reown/appkit'
-import { ThemeVariables } from '@reown/appkit-controllers'
+import { ThemeVariables } from '@reown/appkit-core'
 
 import { inter } from '@/lib/fonts'
 import { urlStateUtils } from '@/lib/url-state'

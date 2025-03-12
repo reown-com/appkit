@@ -1,5 +1,5 @@
 import type { CaipNetworkId } from '@reown/appkit-common'
-import type { SIWXSession } from '@reown/appkit-controllers'
+import type { SIWXSession } from '@reown/appkit-core'
 
 type MockSessionReplaces = {
   [K in keyof SIWXSession]?: Partial<SIWXSession[K]>

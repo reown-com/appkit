@@ -13,7 +13,7 @@ import {
   EventsController,
   RouterController,
   SnackController
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 
 import { W3mEmailLoginWidget } from '../../src/partials/w3m-email-login-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'

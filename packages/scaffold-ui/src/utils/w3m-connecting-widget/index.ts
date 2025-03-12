@@ -9,7 +9,7 @@ import {
   RouterController,
   SnackController,
   ThemeController
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 import type { IconType } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'

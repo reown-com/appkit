@@ -9,7 +9,7 @@ import {
   type NetworkControllerClient,
   RouterController,
   SendController
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 
 import { W3mWalletSendPreviewView } from '../../src/views/w3m-wallet-send-preview-view'
 

@@ -1,9 +1,8 @@
 import { css } from 'lit'
 
 export default css`
-  :host > wui-flex {
+  wui-flex {
     background-color: var(--wui-color-gray-glass-005);
-    margin-top: var(--wui-spacing-s);
   }
 
   a {

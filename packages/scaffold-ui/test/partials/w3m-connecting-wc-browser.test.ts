@@ -11,7 +11,7 @@ import {
   EventsController,
   RouterController,
   type WcWallet
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 
 const WALLET = {
   name: 'MetaMask',

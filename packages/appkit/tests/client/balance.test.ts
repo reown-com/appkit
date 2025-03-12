@@ -1,7 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import { NetworkUtil } from '@reown/appkit-common'
-import { AccountController } from '@reown/appkit-controllers'
+import { AccountController } from '@reown/appkit-core'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mockEvmAdapter } from '../mocks/Adapter.js'
@@ -13,13 +13,11 @@ import {
   mockWindowAndDocument
 } from '../test-utils.js'
 
-describe('Balance sync', () => {
-  beforeEach(() => {
-    mockWindowAndDocument()
-    mockStorageUtil()
-    mockBlockchainApiController()
-  })
+mockWindowAndDocument()
+mockStorageUtil()
+mockBlockchainApiController()
 
+describe('Balance sync', () => {
   it.sequential('should not sync balance if theres no matching caipNetwork', async () => {
     const getNetworksByNamespaceSpy = vi.spyOn(NetworkUtil, 'getNetworksByNamespace')
     const setBalanceSpy = vi.spyOn(AccountController, 'setBalance')

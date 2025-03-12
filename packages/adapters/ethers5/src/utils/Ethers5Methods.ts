@@ -7,7 +7,7 @@ import type {
   EstimateGasTransactionArgs,
   SendTransactionArgs,
   WriteContractArgs
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 import { type Provider } from '@reown/appkit-utils/ethers'
 
 export const Ethers5Methods = {

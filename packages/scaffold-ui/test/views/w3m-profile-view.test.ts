@@ -14,7 +14,7 @@ import {
   CoreHelperUtil,
   ModalController,
   SnackController
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
 import type { W3mProfileView } from '../../src/views/w3m-profile-view'

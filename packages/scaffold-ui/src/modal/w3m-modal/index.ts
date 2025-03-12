@@ -2,15 +2,10 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import {
-  type CaipAddress,
-  type CaipNetwork,
-  ConstantsUtil as CommonConstantsUtil
-} from '@reown/appkit-common'
+import { type CaipAddress, type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 import {
   ApiController,
   ChainController,
-  ConnectorController,
   CoreHelperUtil,
   ModalController,
   OptionsController,
@@ -18,7 +13,7 @@ import {
   SIWXUtil,
   SnackController,
   ThemeController
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-card'
 import '@reown/appkit-ui/wui-flex'
@@ -55,8 +50,6 @@ export class W3mModal extends LitElement {
 
   @state() private shake = ModalController.state.shake
 
-  @state() private filterByNamespace = ConnectorController.state.filterByNamespace
-
   public constructor() {
     super()
     this.initializeTheming()
@@ -67,13 +60,7 @@ export class W3mModal extends LitElement {
         ModalController.subscribeKey('shake', val => (this.shake = val)),
         ChainController.subscribeKey('activeCaipNetwork', val => this.onNewNetwork(val)),
         ChainController.subscribeKey('activeCaipAddress', val => this.onNewAddress(val)),
-        OptionsController.subscribeKey('enableEmbedded', val => (this.enableEmbedded = val)),
-        ConnectorController.subscribeKey('filterByNamespace', val => {
-          if (this.filterByNamespace !== val) {
-            ApiController.fetchRecommendedWallets()
-            this.filterByNamespace = val
-          }
-        })
+        OptionsController.subscribeKey('enableEmbedded', val => (this.enableEmbedded = val))
       ]
     )
   }
@@ -143,6 +130,7 @@ export class W3mModal extends LitElement {
       <w3m-alertbar></w3m-alertbar>
     </wui-card>`
   }
+
   private async onOverlayClick(event: PointerEvent) {
     if (event.target === event.currentTarget) {
       await this.handleClose()
@@ -254,8 +242,7 @@ export class W3mModal extends LitElement {
     const nextNetworkId = nextCaipNetwork?.caipNetworkId?.toString()
     const networkChanged = prevCaipNetworkId && nextNetworkId && prevCaipNetworkId !== nextNetworkId
     const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
-    const isUnsupportedNetwork =
-      this.caipNetwork?.name === CommonConstantsUtil.UNSUPPORTED_NETWORK_NAME
+    const isUnsupportedNetwork = this.caipNetwork?.name === ConstantsUtil.UNSUPPORTED_NETWORK_NAME
 
     /**
      * If user is on connecting external, there is a case that they might select a connector which is in another adapter.

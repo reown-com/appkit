@@ -2,7 +2,7 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { ChainController, ConnectorController } from '@reown/appkit-controllers'
+import { ChainController, ConnectorController, StorageUtil } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
 import '../../partials/w3m-account-default-widget/index.js'
@@ -32,7 +32,7 @@ export class W3mAccountView extends LitElement {
       return null
     }
 
-    const connectorId = ConnectorController.getConnectorId(this.namespace)
+    const connectorId = StorageUtil.getConnectedConnectorId(this.namespace)
     const authConnector = ConnectorController.getAuthConnector()
 
     return html`

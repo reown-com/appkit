@@ -1,17 +1,15 @@
 import { useState } from 'react'
 
-import { Box, Button, Input, InputGroup, InputLeftAddon } from '@chakra-ui/react'
+import { Box, Button, Input, InputGroup, InputLeftAddon, useToast } from '@chakra-ui/react'
 
 import type { BitcoinConnector } from '@reown/appkit-adapter-bitcoin'
 import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 
-import { useChakraToast } from '@/src/components/Toast'
-
 export function BitcoinSendTransferTest() {
   const { walletProvider } = useAppKitProvider<BitcoinConnector>('bip122')
   const { address } = useAppKitAccount({ namespace: 'bip122' })
-  const toast = useChakraToast()
 
+  const toast = useToast()
   const [loading, setLoading] = useState(false)
   const [recipient, setRecipient] = useState<string>(address || '')
   const [amount, setAmount] = useState<string>('1500')
@@ -20,8 +18,8 @@ export function BitcoinSendTransferTest() {
     if (!walletProvider) {
       toast({
         title: 'No wallet provider',
-        description: 'Please connect your wallet',
-        type: 'error'
+        status: 'error',
+        isClosable: true
       })
     }
 
@@ -33,12 +31,12 @@ export function BitcoinSendTransferTest() {
       })
 
       toast({
-        title: 'Success',
-        description: `Transfer sent: ${signature}`,
-        type: 'success'
+        title: `Transfer sent: ${signature}`,
+        status: 'success',
+        isClosable: true
       })
     } catch (error) {
-      toast({ title: 'Error', description: (error as Error).message, type: 'error' })
+      toast({ title: 'Error', description: (error as Error).message, status: 'error' })
     } finally {
       setLoading(false)
     }

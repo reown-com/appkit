@@ -6,7 +6,7 @@ import {
   ChainController,
   OptionsController,
   type SIWXSession
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 
 import { createSIWEConfig, mapToSIWX } from '../exports'
 

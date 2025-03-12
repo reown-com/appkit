@@ -7,7 +7,7 @@ import {
   CoreHelperUtil,
   FetchUtil,
   type WcWallet
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 

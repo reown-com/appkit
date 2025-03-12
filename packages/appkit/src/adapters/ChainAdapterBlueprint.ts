@@ -14,7 +14,7 @@ import {
   OptionsController,
   type Tokens,
   type WriteContractArgs
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 import { PresetsUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
@@ -407,8 +407,8 @@ export namespace AdapterBlueprint {
   }
 
   export type GetBalanceParams = {
-    address: string | undefined
-    chainId: number | string | undefined
+    address: string
+    chainId: number | string
     caipNetwork?: CaipNetwork
     tokens?: Tokens
   }

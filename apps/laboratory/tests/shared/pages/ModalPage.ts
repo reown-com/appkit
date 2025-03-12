@@ -33,9 +33,6 @@ export type ModalFlavor =
   | 'wallet-button'
   | 'siwe'
   | 'siwx'
-  | 'core-sign-client'
-  | 'core-universal-provider'
-  | 'core'
   | 'all'
 
 function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
@@ -48,8 +45,7 @@ function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
     'wagmi-verify-evil': maliciousUrl,
     'ethers-verify-valid': `${baseUrl}library/ethers-verify-valid/`,
     'ethers-verify-domain-mismatch': `${baseUrl}library/ethers-verify-domain-mismatch/`,
-    'ethers-verify-evil': maliciousUrl,
-    'core-sign-client': `${baseUrl}core/sign-client/`
+    'ethers-verify-evil': maliciousUrl
   }
 
   return urlsByFlavor[flavor] || `${baseUrl}library/${library}-${flavor}/`
@@ -67,7 +63,7 @@ export class ModalPage {
     public readonly library: string,
     public readonly flavor: ModalFlavor
   ) {
-    this.connectButton = this.page.getByTestId('connect-button').first()
+    this.connectButton = this.page.getByTestId('connect-button')
     if (library === 'multichain-ethers-solana') {
       this.url = `${this.baseURL}library/multichain-ethers-solana/`
     } else {
@@ -443,11 +439,11 @@ export class ModalPage {
     await this.page.getByTestId('tab-desktop').click()
   }
 
-  async openAccount(namespace?: string) {
+  async openAccount() {
     expect(this.page.getByTestId('w3m-modal-card')).not.toBeVisible()
     expect(this.page.getByTestId('w3m-modal-overlay')).not.toBeVisible()
     this.page.waitForTimeout(300)
-    await this.page.getByTestId(`account-button${namespace ? `-${namespace}` : ''}`).click()
+    await this.page.getByTestId('account-button').click()
   }
 
   async openConnectModal() {

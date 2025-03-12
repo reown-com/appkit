@@ -6,9 +6,8 @@ import {
   AccountController,
   BlockchainApiController,
   ChainController,
-  ConnectorController,
   StorageUtil
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import '../../components/wui-image/index.js'
@@ -72,7 +71,7 @@ export class WuiListAccount extends LitElement {
   public override render() {
     const label = this.getLabel()
     const namespace = ChainController.state.activeChain as ChainNamespace
-    const connectorId = ConnectorController.getConnectorId(namespace)
+    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
 
     // Only show icon for AUTH accounts
     this.shouldShowIcon = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH
@@ -123,7 +122,7 @@ export class WuiListAccount extends LitElement {
   private getLabel() {
     let label = this.labels?.get(this.accountAddress)
     const namespace = ChainController.state.activeChain as ChainNamespace
-    const connectorId = ConnectorController.getConnectorId(namespace)
+    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
 
     if (!label && connectorId === ConstantsUtil.CONNECTOR_ID.AUTH) {
       label = `${this.accountType === 'eoa' ? (this.socialProvider ?? 'Email') : 'Smart'} Account`

@@ -6,7 +6,7 @@ import {
   ConnectionController,
   EventsController,
   ThemeController
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
@@ -14,7 +14,6 @@ import '@reown/appkit-ui/wui-link'
 import '@reown/appkit-ui/wui-qr-code'
 import '@reown/appkit-ui/wui-shimmer'
 import '@reown/appkit-ui/wui-text'
-import '@reown/appkit-ui/wui-ux-by-reown'
 
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 import '../w3m-mobile-download-links/index.js'

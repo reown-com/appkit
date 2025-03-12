@@ -69,7 +69,6 @@ import type { WuiTooltip } from '../composites/wui-tooltip/index.js'
 import type { WuiTransactionListItemLoader } from '../composites/wui-transaction-list-item-loader/index.js'
 import type { WuiTransactionListItem } from '../composites/wui-transaction-list-item/index.js'
 import type { WuiTransactionVisual } from '../composites/wui-transaction-visual/index.js'
-import type { WuiUxByReown } from '../composites/wui-ux-by-reown/index.js'
 import type { WuiVisualThumbnail } from '../composites/wui-visual-thumbnail/index.js'
 import type { WuiWalletButton } from '../composites/wui-wallet-button/index.js'
 import type { WuiWalletImage } from '../composites/wui-wallet-image/index.js'
@@ -163,7 +162,6 @@ declare module 'react' {
       'wui-flex': CustomElement<WuiFlex>
       'wui-grid': CustomElement<WuiGrid>
       'wui-separator': CustomElement<WuiSeparator>
-      'wui-ux-by-reown': CustomElement<WuiUxByReown>
     }
   }
 }

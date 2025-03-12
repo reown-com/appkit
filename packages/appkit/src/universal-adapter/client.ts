@@ -8,7 +8,7 @@ import {
   ChainController,
   ConstantsUtil as CoreConstantsUtil,
   CoreHelperUtil
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 
 import { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'

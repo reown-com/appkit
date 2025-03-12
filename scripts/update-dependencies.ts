@@ -3,7 +3,7 @@ import { execSync } from 'child_process'
 import path from 'path'
 import readline from 'readline'
 
-/* eslint-disable no-console */
+ç /* eslint-disable no-console */
 
 interface PackageInfo {
   package: string

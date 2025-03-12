@@ -1,7 +1,7 @@
 import UniversalProvider from '@walletconnect/universal-provider'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
-import { OptionsController } from '@reown/appkit-controllers'
+import { OptionsController } from '@reown/appkit-core'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mockEvmAdapter, mockSolanaAdapter } from '../mocks/Adapter.js'
@@ -13,13 +13,11 @@ import {
   mockWindowAndDocument
 } from '../test-utils.js'
 
-describe('Universal Adapter', () => {
-  beforeEach(() => {
-    mockWindowAndDocument()
-    mockStorageUtil()
-    mockBlockchainApiController()
-  })
+mockWindowAndDocument()
+mockStorageUtil()
+mockBlockchainApiController()
 
+describe('Universal Adapter', () => {
   it('should create UniversalAdapter when no blueprint is provided for namespace', async () => {
     const init = vi.spyOn(UniversalProvider, 'init').mockImplementationOnce(vi.fn())
 

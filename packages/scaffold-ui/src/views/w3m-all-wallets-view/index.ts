@@ -7,7 +7,7 @@ import {
   CoreHelperUtil,
   RouterController,
   SnackController
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-certified-switch'
 import '@reown/appkit-ui/wui-flex'

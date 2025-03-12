@@ -3,7 +3,7 @@ import {
   ConstantsUtil,
   CoreHelperUtil,
   EventsController
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'

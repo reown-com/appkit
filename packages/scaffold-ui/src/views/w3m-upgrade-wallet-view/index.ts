@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit'
 
-import { ConstantsUtil } from '@reown/appkit-controllers'
+import { ConstantsUtil } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-chip'
 import '@reown/appkit-ui/wui-flex'

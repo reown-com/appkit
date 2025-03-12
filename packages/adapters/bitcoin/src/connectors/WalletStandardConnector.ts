@@ -2,7 +2,7 @@ import { getWallets } from '@wallet-standard/app'
 import type { Wallet, WalletWithFeatures } from '@wallet-standard/base'
 
 import type { CaipNetwork } from '@reown/appkit-common'
-import type { Provider, RequestArguments } from '@reown/appkit-controllers'
+import type { Provider, RequestArguments } from '@reown/appkit-core'
 import { PresetsUtil } from '@reown/appkit-utils'
 import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 

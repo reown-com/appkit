@@ -7,7 +7,7 @@ import {
   SwapController,
   type SwapControllerState,
   type SwapTokenWithBalance
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 
 import { W3mSwapSelectTokenView } from '../../src/views/w3m-swap-select-token-view'
 

@@ -13,7 +13,7 @@ export class ModalValidator {
   constructor(public readonly page: Page) {}
 
   async expectConnected() {
-    const accountButton = this.page.locator('appkit-account-button').first()
+    const accountButton = this.page.locator('appkit-account-button')
     await expect(accountButton, 'Account button should be present').toBeAttached({
       timeout: MAX_WAIT
     })
@@ -39,8 +39,8 @@ export class ModalValidator {
     })
   }
 
-  async expectBalanceFetched(currency: 'SOL' | 'ETH' | 'BTC' | 'POL') {
-    const accountButton = this.page.locator('appkit-account-button').first()
+  async expectBalanceFetched(currency: 'SOL' | 'ETH') {
+    const accountButton = this.page.locator('appkit-account-button')
     await expect(accountButton, `Account button should show balance as ${currency}`).toContainText(
       `0.000 ${currency}`
     )
@@ -75,8 +75,8 @@ export class ModalValidator {
     ).toBeVisible()
   }
 
-  async expectDisconnected(namespace?: string) {
-    const connectButton = this.page.getByTestId(`connect-button${namespace ? `-${namespace}` : ''}`)
+  async expectDisconnected() {
+    const connectButton = this.page.getByTestId('connect-button')
     await expect(connectButton, 'Connect button should be present').toBeVisible({
       timeout: MAX_WAIT
     })
@@ -312,13 +312,9 @@ export class ModalValidator {
     await expect(switchNetworkButton).toBeVisible()
   }
 
-  async expectOnrampButton(visible: boolean) {
+  async expectOnrampButton() {
     const onrampButton = this.page.getByTestId('w3m-account-default-onramp-button')
-    if (visible) {
-      await expect(onrampButton).toBeVisible()
-    } else {
-      await expect(onrampButton).not.toBeVisible()
-    }
+    await expect(onrampButton).toBeVisible()
   }
 
   async expectWalletGuide(_library: string, guide: 'get-started' | 'explore') {
@@ -398,8 +394,8 @@ export class ModalValidator {
     await expect(connectButton).toContainText('Connecting...')
   }
 
-  async expectAccountButtonReady(namespace?: string) {
-    const accountButton = this.page.getByTestId(`account-button${namespace ? `-${namespace}` : ''}`)
+  async expectAccountButtonReady() {
+    const accountButton = this.page.getByTestId('account-button')
     await expect(accountButton).toBeVisible({ timeout: MAX_WAIT })
   }
 

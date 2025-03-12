@@ -12,7 +12,7 @@ import {
   ModalController,
   RouterController,
   SnackController
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-avatar'
 import '@reown/appkit-ui/wui-button'

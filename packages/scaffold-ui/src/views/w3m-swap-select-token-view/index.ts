@@ -1,11 +1,7 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import {
-  RouterController,
-  SwapController,
-  type SwapTokenWithBalance
-} from '@reown/appkit-controllers'
+import { RouterController, SwapController, type SwapTokenWithBalance } from '@reown/appkit-core'
 import { MathUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'

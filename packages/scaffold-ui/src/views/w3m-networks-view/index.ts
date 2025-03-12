@@ -11,8 +11,9 @@ import {
   ConnectorController,
   CoreHelperUtil,
   EventsController,
-  RouterController
-} from '@reown/appkit-controllers'
+  RouterController,
+  StorageUtil
+} from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-input-text'
@@ -148,7 +149,7 @@ export class W3mNetworksView extends LitElement {
     const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
     const supportsAllNetworks =
       ChainController.getNetworkProp('supportsAllNetworks', networkNamespace) !== false
-    const connectorId = ConnectorController.getConnectorId(networkNamespace)
+    const connectorId = StorageUtil.getConnectedConnectorId(networkNamespace)
     const authConnector = ConnectorController.getAuthConnector()
     const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH && authConnector
 
@@ -170,7 +171,7 @@ export class W3mNetworksView extends LitElement {
     const isDifferentNamespace = network.chainNamespace !== ChainController.state.activeChain
     const isCurrentNamespaceConnected = AccountController.state.caipAddress
     const isNextNamespaceConnected = AccountController.getCaipAddress(network.chainNamespace)
-    const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
+    const connectorId = StorageUtil.getConnectedConnectorId(ChainController.state.activeChain)
 
     /**
      * If the network is supported by the auth connector, we don't need to show switch active chain view.
