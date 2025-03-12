@@ -1,7 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import { ChainController, ConnectorController } from '@reown/appkit-controllers'
+import { ChainController, ConnectorController } from '@reown/appkit-core'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mockBitcoinAdapter } from '../mocks/Adapter.js'
@@ -9,13 +9,11 @@ import { bitcoin } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
 import { mockBlockchainApiController, mockStorageUtil, mockWindowAndDocument } from '../test-utils'
 
-describe('Adapter Management', () => {
-  beforeEach(() => {
-    mockWindowAndDocument()
-    mockStorageUtil()
-    mockBlockchainApiController()
-  })
+mockWindowAndDocument()
+mockStorageUtil()
+mockBlockchainApiController()
 
+describe('Adapter Management', () => {
   describe('addAdapter', () => {
     it('should add a new adapter successfully', () => {
       const addAdapter = vi.spyOn(ChainController, 'addAdapter')

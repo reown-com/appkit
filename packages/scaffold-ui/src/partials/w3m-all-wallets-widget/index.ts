@@ -9,7 +9,7 @@ import {
   EventsController,
   OptionsController,
   RouterController
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-list-wallet'
 
@@ -20,22 +20,14 @@ export class W3mAllWalletsWidget extends LitElement {
 
   // -- State & Properties -------------------------------- //
   @property() public tabIdx?: number = undefined
-
   @state() private connectors = ConnectorController.state.connectors
-
   @state() private count = ApiController.state.count
-
-  @state() private isFetchingRecommendedWallets = ApiController.state.isFetchingRecommendedWallets
 
   public constructor() {
     super()
     this.unsubscribe.push(
       ConnectorController.subscribeKey('connectors', val => (this.connectors = val)),
-      ApiController.subscribeKey('count', val => (this.count = val)),
-      ApiController.subscribeKey(
-        'isFetchingRecommendedWallets',
-        val => (this.isFetchingRecommendedWallets = val)
-      )
+      ApiController.subscribeKey('count', val => (this.count = val))
     )
   }
 
@@ -71,8 +63,6 @@ export class W3mAllWalletsWidget extends LitElement {
         tagVariant="shade"
         data-testid="all-wallets"
         tabIdx=${ifDefined(this.tabIdx)}
-        .loading=${this.isFetchingRecommendedWallets}
-        loadingSpinnerColor=${this.isFetchingRecommendedWallets ? 'fg-300' : 'accent-100'}
       ></wui-list-wallet>
     `
   }

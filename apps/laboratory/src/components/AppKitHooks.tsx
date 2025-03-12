@@ -1,35 +1,7 @@
 import { Box, Button, Heading } from '@chakra-ui/react'
 
-import {
-  bitcoin,
-  bitcoinTestnet,
-  mainnet,
-  polygon,
-  solana,
-  solanaTestnet
-} from '@reown/appkit/networks'
-import {
-  type CaipNetwork,
-  useAppKit,
-  useAppKitAccount,
-  useAppKitNetwork,
-  useDisconnect
-} from '@reown/appkit/react'
-
-function getNetworkToSwitch(activeNetwork: CaipNetwork | undefined) {
-  if (!activeNetwork) {
-    return mainnet
-  }
-
-  switch (activeNetwork.chainNamespace) {
-    case 'bip122':
-      return activeNetwork.id === bitcoin.id ? bitcoinTestnet : bitcoin
-    case 'solana':
-      return activeNetwork.id === solana.id ? solanaTestnet : solana
-    default:
-      return activeNetwork.id === polygon.id ? mainnet : polygon
-  }
-}
+import { type AppKitNetwork, mainnet, polygon, solana, solanaTestnet } from '@reown/appkit/networks'
+import { useAppKit, useAppKitAccount, useAppKitNetwork, useDisconnect } from '@reown/appkit/react'
 
 export function AppKitHooks() {
   const { open } = useAppKit()
@@ -38,11 +10,15 @@ export function AppKitHooks() {
   const { disconnect } = useDisconnect()
 
   function handleSwitchNetwork() {
-    const networkToSwitch = getNetworkToSwitch(caipNetwork)
-
-    if (!networkToSwitch) {
-      return
-    }
+    const isEIPNamespace = caipNetwork?.chainNamespace === 'eip155'
+    // eslint-disable-next-line no-nested-ternary
+    const networkToSwitch: AppKitNetwork = isEIPNamespace
+      ? caipNetwork?.id === polygon.id
+        ? mainnet
+        : polygon
+      : caipNetwork?.id === solana.id
+        ? solanaTestnet
+        : solana
 
     switchNetwork(networkToSwitch)
   }

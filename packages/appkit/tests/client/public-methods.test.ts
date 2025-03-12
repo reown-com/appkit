@@ -1,5 +1,4 @@
-import type UniversalProvider from '@walletconnect/universal-provider'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 
 import type { AuthConnector, Connector, SocialProvider } from '@reown/appkit'
 import {
@@ -27,26 +26,18 @@ import {
   SnackController,
   StorageUtil,
   ThemeController
-} from '@reown/appkit-controllers'
-import { CaipNetworksUtil } from '@reown/appkit-utils'
+} from '@reown/appkit-core'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { ProviderUtil } from '../../src/store'
 import { mockEvmAdapter, mockSolanaAdapter, mockUniversalAdapter } from '../mocks/Adapter.js'
 import { base, mainnet, polygon, sepolia, solana } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'
-import { mockAuthProvider, mockProvider, mockUniversalProvider } from '../mocks/Providers.js'
-import {
-  mockBlockchainApiController,
-  mockStorageUtil,
-  mockWindowAndDocument
-} from '../test-utils.js'
+import { mockAuthProvider, mockProvider } from '../mocks/Providers.js'
 
 describe('Base Public methods', () => {
-  beforeEach(() => {
-    mockWindowAndDocument()
-    mockStorageUtil()
-    mockBlockchainApiController()
+  beforeAll(() => {
+    vi.clearAllMocks()
   })
 
   it('should open modal', async () => {
@@ -112,7 +103,7 @@ describe('Base Public methods', () => {
     const appKit = new AppKit(mockOptions)
     appKit.setLoading(true)
 
-    expect(setLoading).toHaveBeenCalledWith(true, undefined)
+    expect(setLoading).toHaveBeenCalledWith(true)
   })
 
   it('should get theme mode', () => {
@@ -613,7 +604,7 @@ describe('Base Public methods', () => {
     const appKitWithAuth = new AppKit(mockOptions)
     ;(appKitWithAuth as any).authProvider = mockAuthProvider
 
-    await (appKitWithAuth as any).syncAuthConnector(mockAuthProvider, mainnet.chainNamespace)
+    await (appKitWithAuth as any).syncAuthConnector(mockAuthProvider)
 
     expect(createAccount).toHaveBeenCalledWith(mainnet.chainNamespace, '0x1', 'eoa')
     expect(createAccount).toHaveBeenCalledWith(mainnet.chainNamespace, '0x2', 'smartAccount')
@@ -750,13 +741,13 @@ describe('Base Public methods', () => {
     const setConnectedWalletInfo = vi.spyOn(AccountController, 'setConnectedWalletInfo')
     const getActiveNetworkProps = vi.spyOn(StorageUtil, 'getActiveNetworkProps')
     const fetchTokenBalance = vi.spyOn(AccountController, 'fetchTokenBalance')
+    const getConnectedConnectorId = vi.spyOn(StorageUtil, 'getConnectedConnectorId')
     const mockConnector = {
       id: 'test-wallet',
       name: 'Test Wallet',
       imageUrl: 'test-wallet-icon'
     } as Connector
-    ConnectorController.state.connectors = [mockConnector]
-    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValueOnce(mockConnector.id)
+    vi.spyOn(ConnectorController.state, 'connectors', 'get').mockReturnValueOnce([mockConnector])
     const mockAccountData = {
       address: '0x123',
       chainId: mainnet.id,
@@ -774,6 +765,7 @@ describe('Base Public methods', () => {
       chainId: mainnet.id,
       caipNetworkId: mainnet.caipNetworkId
     })
+    getConnectedConnectorId.mockReturnValueOnce(mockConnector.id)
 
     const appKit = new AppKit(mockOptions)
     await appKit['syncAccount'](mockAccountData)
@@ -945,75 +937,11 @@ describe('Base Public methods', () => {
     expect(callback).toHaveBeenCalledWith(providers)
   })
 
-  it('should set status to connected on syncWalletConnectAccount if CAIP address exists', () => {
-    vi.spyOn(ChainController, 'setApprovedCaipNetworksData').mockImplementation(() =>
-      Promise.resolve()
-    )
-    ChainController.state.activeCaipNetwork = mainnet
-    vi.spyOn(CaipNetworksUtil, 'extendCaipNetworks').mockReturnValue([mainnet])
-    vi.spyOn(ChainController, 'initialize').mockImplementation(() => Promise.resolve())
-    vi.spyOn(AccountController, 'setUser').mockImplementation(() => Promise.resolve())
-
-    const appKit = new AppKit({
-      ...mockOptions,
-      adapters: [],
-      networks: [mainnet]
-    })
-    appKit['universalProvider'] = {
-      ...mockUniversalProvider,
-      session: {
-        namespaces: {
-          eip155: {
-            accounts: ['eip155:1:0x123']
-          }
-        }
-      }
-    } as unknown as InstanceType<typeof UniversalProvider>
-
-    const setStatusSpy = vi.spyOn(appKit, 'setStatus')
-
-    appKit['syncWalletConnectAccount']()
-
-    expect(setStatusSpy).toHaveBeenCalledWith('connected', 'eip155')
-  })
-
-  it('should set status to disconnected on syncWalletConnectAccount if CAIP address does not exist', () => {
-    vi.spyOn(ChainController, 'setApprovedCaipNetworksData').mockImplementation(() =>
-      Promise.resolve()
-    )
-    ChainController.state.activeCaipNetwork = mainnet
-    vi.spyOn(CaipNetworksUtil, 'extendCaipNetworks').mockReturnValue([mainnet])
-    vi.spyOn(ChainController, 'initialize').mockImplementation(() => Promise.resolve())
-    vi.spyOn(AccountController, 'setUser').mockImplementation(() => Promise.resolve())
-
-    const appKit = new AppKit({
-      ...mockOptions,
-      adapters: [],
-      networks: [mainnet]
-    })
-    appKit['universalProvider'] = {
-      ...mockUniversalProvider,
-      session: {
-        namespaces: {
-          eip155: {
-            accounts: []
-          }
-        }
-      }
-    } as unknown as InstanceType<typeof UniversalProvider>
-
-    const setStatusSpy = vi.spyOn(appKit, 'setStatus')
-
-    appKit['syncWalletConnectAccount']()
-
-    expect(setStatusSpy).toHaveBeenCalledWith('disconnected', 'eip155')
-  })
-
   it('should get account information', () => {
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue({
       id: 'auth-connector'
     } as unknown as AuthConnector)
-    vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+    vi.spyOn(ChainController, 'getAccountDataByChainNamespace').mockReturnValue({
       allAccounts: [{ address: '0x123', type: 'eoa', namespace: 'eip155' }],
       caipAddress: 'eip155:1:0x123',
       status: 'connected',

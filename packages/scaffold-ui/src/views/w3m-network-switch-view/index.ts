@@ -7,8 +7,9 @@ import {
   AssetUtil,
   ChainController,
   ConnectorController,
-  RouterController
-} from '@reown/appkit-controllers'
+  RouterController,
+  StorageUtil
+} from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
@@ -105,7 +106,7 @@ export class W3mNetworkSwitchView extends LitElement {
   // -- Private ------------------------------------------- //
   private getSubLabel() {
     const namespace = ChainController.state.activeChain as ChainNamespace
-    const connectorId = ConnectorController.getConnectorId(namespace)
+    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
     if (authConnector && connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       return ''
@@ -118,7 +119,7 @@ export class W3mNetworkSwitchView extends LitElement {
 
   private getLabel() {
     const namespace = ChainController.state.activeChain as ChainNamespace
-    const connectorId = ConnectorController.getConnectorId(namespace)
+    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
     if (authConnector && connectorId === CommonConstantsUtil.CONNECTOR_ID.AUTH) {
       return `Switching to ${this.network?.name ?? 'Unknown'} network...`

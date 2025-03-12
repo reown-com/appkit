@@ -12,7 +12,7 @@ import {
   RouterController,
   StorageUtil,
   type WcWallet
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 import { SocialProviderEnum } from '@reown/appkit-utils'
 
 import { ConstantsUtil } from './ConstantsUtil.js'

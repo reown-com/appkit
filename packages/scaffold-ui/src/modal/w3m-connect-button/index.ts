@@ -2,8 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { ChainNamespace } from '@reown/appkit-common'
-import { ModalController } from '@reown/appkit-controllers'
+import { ModalController } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import type { WuiConnectButton } from '@reown/appkit-ui/wui-connect-button'
 import '@reown/appkit-ui/wui-connect-button'
@@ -19,13 +18,9 @@ class W3mConnectButtonBase extends LitElement {
 
   @property() public loadingLabel? = 'Connecting...'
 
-  @property() public namespace?: ChainNamespace
-
   @state() private open = ModalController.state.open
 
-  @state() private loading = this.namespace
-    ? ModalController.state.loadingNamespaceMap.get(this.namespace)
-    : ModalController.state.loading
+  @state() private loading = ModalController.state.loading
 
   // -- Lifecycle ----------------------------------------- //
   public constructor() {
@@ -33,7 +28,7 @@ class W3mConnectButtonBase extends LitElement {
     this.unsubscribe.push(
       ModalController.subscribe(val => {
         this.open = val.open
-        this.loading = this.namespace ? val.loadingNamespaceMap.get(this.namespace) : val.loading
+        this.loading = val.loading
       })
     )
   }
@@ -44,14 +39,16 @@ class W3mConnectButtonBase extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
+    const isLoading = this.loading || this.open
+
     return html`
       <wui-connect-button
         size=${ifDefined(this.size)}
-        .loading=${this.loading}
+        .loading=${isLoading}
         @click=${this.onClick.bind(this)}
-        data-testid=${`connect-button${this.namespace ? `-${this.namespace}` : ''}`}
+        data-testid="connect-button"
       >
-        ${this.loading ? this.loadingLabel : this.label}
+        ${isLoading ? this.loadingLabel : this.label}
       </wui-connect-button>
     `
   }
@@ -61,7 +58,7 @@ class W3mConnectButtonBase extends LitElement {
     if (this.open) {
       ModalController.close()
     } else if (!this.loading) {
-      ModalController.open({ view: 'Connect', namespace: this.namespace })
+      ModalController.open()
     }
   }
 }

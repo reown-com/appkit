@@ -10,7 +10,7 @@ import {
   ModalController,
   RouterController,
   type WcWallet
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 
 import { ApiController } from '../../controllers/ApiController.js'
 import '../../scaffold-ui/appkit-wallet-button/index.js'

@@ -4,14 +4,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { html } from 'lit'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import type { ConnectorWithProviders, WcWallet } from '@reown/appkit-controllers'
+import type { ConnectorWithProviders, WcWallet } from '@reown/appkit-core'
 import {
   ApiController,
   ConnectorController,
   OptionsController,
   RouterController,
   StorageUtil
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 
 import { W3mConnectRecommendedWidget } from '../../src/partials/w3m-connect-recommended-widget'
 

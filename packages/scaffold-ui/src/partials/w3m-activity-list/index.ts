@@ -11,7 +11,7 @@ import {
   OptionsController,
   RouterController,
   TransactionsController
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 import { TransactionUtil, customElement } from '@reown/appkit-ui'
 import type { TransactionType } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'

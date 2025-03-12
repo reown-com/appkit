@@ -13,7 +13,7 @@ import {
   OptionsController,
   RouterController,
   SIWXUtil
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 
 import { W3mHeader } from '../../src/partials/w3m-header'
 import { HelpersUtil } from '../utils/HelpersUtil'

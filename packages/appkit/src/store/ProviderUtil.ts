@@ -3,7 +3,7 @@ import { proxy, ref, subscribe } from 'valtio/vanilla'
 import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 
 import type { ChainNamespace } from '@reown/appkit-common'
-import type { ConnectorType } from '@reown/appkit-controllers'
+import type { ConnectorType } from '@reown/appkit-core'
 
 type StateKey = keyof ProviderStoreUtilState
 
@@ -60,11 +60,7 @@ export const ProviderUtil = {
     }
   },
 
-  getProviderId(chainNamespace: ChainNamespace | undefined): ConnectorType | undefined {
-    if (!chainNamespace) {
-      return undefined
-    }
-
+  getProviderId(chainNamespace: ChainNamespace): ConnectorType | undefined {
     return state.providerIds[chainNamespace]
   },
 

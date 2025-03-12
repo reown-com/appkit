@@ -1,5 +1,5 @@
 import type { CaipNetworkId } from '@reown/appkit-common'
-import type { Tokens } from '@reown/appkit-controllers'
+import type { Tokens } from '@reown/appkit-core'
 
 import { ConstantsUtil } from './ConstantsUtil.js'
 

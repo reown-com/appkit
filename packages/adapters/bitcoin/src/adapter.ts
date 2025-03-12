@@ -2,7 +2,7 @@ import type UniversalProvider from '@walletconnect/universal-provider'
 
 import { type AppKit, type AppKitOptions, CoreHelperUtil, type Provider } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
-import { ChainController, StorageUtil } from '@reown/appkit-controllers'
+import { ChainController, StorageUtil } from '@reown/appkit-core'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { bitcoin } from '@reown/appkit/networks'
 
@@ -152,7 +152,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
     const walletConnectProvider = new BitcoinWalletConnectConnector({
       provider: params.provider as UniversalProvider,
       chains: params.caipNetworks,
-      getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
+      getActiveChain: () => params.activeCaipNetwork
     })
 
     return walletConnectProvider as unknown as Provider
@@ -170,15 +170,10 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
   override async getBalance(
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
-    const caipNetwork = params.caipNetwork
-    const address = params.address
+    const network = params.caipNetwork
 
-    if (!address) {
-      return Promise.resolve({ balance: '0.00', symbol: 'BTC' })
-    }
-
-    if (caipNetwork && caipNetwork.chainNamespace === this.namespace) {
-      const caipAddress = `${caipNetwork?.caipNetworkId}:${address}`
+    if (network?.chainNamespace === 'bip122') {
+      const caipAddress = `${params?.caipNetwork?.caipNetworkId}:${params.address}`
 
       const cachedPromise = this.balancePromises[caipAddress]
       if (cachedPromise) {
@@ -192,23 +187,23 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       this.balancePromises[caipAddress] = new Promise<AdapterBlueprint.GetBalanceResult>(
         async resolve => {
           const utxos = await this.api.getUTXOs({
-            network: caipNetwork,
-            address
+            network,
+            address: params.address
           })
 
           const balance = utxos.reduce((acc, utxo) => acc + utxo.value, 0)
-          const formattedBalance = UnitsUtil.parseSatoshis(balance.toString(), caipNetwork)
+          const formattedBalance = UnitsUtil.parseSatoshis(balance.toString(), network)
 
           StorageUtil.updateNativeBalanceCache({
             caipAddress,
             balance: formattedBalance,
-            symbol: caipNetwork.nativeCurrency.symbol,
+            symbol: network.nativeCurrency.symbol,
             timestamp: Date.now()
           })
 
           resolve({
             balance: formattedBalance,
-            symbol: caipNetwork.nativeCurrency.symbol
+            symbol: network.nativeCurrency.symbol
           })
         }
       ).finally(() => {
@@ -216,9 +211,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
         delete this.balancePromises[caipAddress]
       })
 
-      return (
-        this.balancePromises[caipAddress] || Promise.resolve({ balance: '0.00', symbol: 'BTC' })
-      )
+      return this.balancePromises[caipAddress] || Promise.resolve({ balance: '0', symbol: '' })
     }
 
     // Get balance
@@ -335,7 +328,7 @@ export class BitcoinAdapter extends AdapterBlueprint<BitcoinConnector> {
       new BitcoinWalletConnectConnector({
         provider: universalProvider,
         chains: this.caipNetworks || [],
-        getActiveChain: () => ChainController.getCaipNetworkByNamespace(this.namespace)
+        getActiveChain: () => ChainController.state.activeCaipNetwork
       })
     )
   }

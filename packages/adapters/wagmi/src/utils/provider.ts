@@ -1,8 +1,7 @@
 import { http } from '@wagmi/core'
 import type { Chain } from '@wagmi/core/chains'
-import type { HttpTransport } from 'viem'
 
-import { CoreHelperUtil } from '@reown/appkit-controllers'
+import { CoreHelperUtil } from '@reown/appkit-core'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 
 // -- Helpers ------------------------------------------------------------------
@@ -14,10 +13,8 @@ interface Options {
 }
 
 // -- Provider -----------------------------------------------------------------
-export function walletConnectProvider({
-  projectId
-}: Options): (chain: Chain) => HttpTransport | null {
-  return function provider(chain: Chain): HttpTransport | null {
+export function walletConnectProvider({ projectId }: Options) {
+  return function provider(chain: Chain) {
     if (!PresetsUtil.WalletConnectRpcChainIds.includes(chain.id)) {
       return null
     }

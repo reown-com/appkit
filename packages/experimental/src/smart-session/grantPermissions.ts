@@ -4,7 +4,7 @@ import {
   ConnectionController,
   OptionsController,
   RouterController
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 import { ProviderUtil } from '@reown/appkit/store'
 
 import {

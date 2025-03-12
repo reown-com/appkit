@@ -1,14 +1,14 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { type ChainNamespace, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
   ConnectorController,
   RouterController,
   type SocialProvider,
   StorageUtil
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-list-item'
 import '@reown/appkit-ui/wui-text'
@@ -40,7 +40,7 @@ export class W3mAccountAuthButton extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    const connectorId = ConnectorController.getConnectorId(this.namespace)
+    const connectorId = StorageUtil.getConnectedConnectorId(this.namespace as ChainNamespace)
     const authConnector = ConnectorController.getAuthConnector()
 
     if (!authConnector || connectorId !== CommonConstantsUtil.CONNECTOR_ID.AUTH) {
@@ -49,12 +49,6 @@ export class W3mAccountAuthButton extends LitElement {
       return null
     }
     const email = authConnector.provider.getEmail() ?? ''
-
-    if (!email && !this.socialUsername) {
-      this.style.cssText = `display: none`
-
-      return null
-    }
 
     return html`
       <wui-list-item

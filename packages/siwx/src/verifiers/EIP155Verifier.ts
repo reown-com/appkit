@@ -1,7 +1,7 @@
 import { createPublicClient, http } from 'viem'
 
 import { type BaseNetwork, ConstantsUtil } from '@reown/appkit-common'
-import { ChainController, type SIWXSession } from '@reown/appkit-controllers'
+import { ChainController, type SIWXSession } from '@reown/appkit-core'
 
 import { SIWXVerifier } from '../core/SIWXVerifier.js'
 

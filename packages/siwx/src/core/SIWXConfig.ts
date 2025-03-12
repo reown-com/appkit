@@ -3,7 +3,7 @@ import type {
   SIWXConfig as SIWXConfigInterface,
   SIWXMessage,
   SIWXSession
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 
 import type { SIWXMessenger } from './SIWXMessenger.js'
 import type { SIWXStorage } from './SIWXStorage.js'

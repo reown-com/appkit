@@ -7,7 +7,7 @@ import {
   ModalController,
   RouterController,
   ThemeController
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 
 import styles from './styles.js'

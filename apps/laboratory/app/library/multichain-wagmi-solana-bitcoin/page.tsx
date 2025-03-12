@@ -13,7 +13,6 @@ import { mainnet } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtonsMultiChain } from '@/src/components/AppKitButtonsMultiChain'
-import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { AppKitInfoMultiChain } from '@/src/components/AppKitInfoMultiChain'
 import { BitcoinTests } from '@/src/components/Bitcoin/BitcoinTests'
 import { SolanaTests } from '@/src/components/Solana/SolanaTests'
@@ -50,13 +49,12 @@ const modal = createAppKit({
 
 ThemeStore.setModal(modal)
 
-export default function Page() {
+export default function MultiChainWagmiSolana() {
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <AppKitButtonsMultiChain />
         <AppKitInfoMultiChain />
-        <AppKitInfo />
         <WagmiTests />
         <SolanaTests />
         <BitcoinTests />

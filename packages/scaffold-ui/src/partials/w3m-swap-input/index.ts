@@ -7,7 +7,7 @@ import {
   RouterController,
   type SwapInputTarget,
   type SwapToken
-} from '@reown/appkit-controllers'
+} from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'

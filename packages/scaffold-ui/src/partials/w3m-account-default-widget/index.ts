@@ -15,8 +15,9 @@ import {
   ModalController,
   OptionsController,
   RouterController,
-  SnackController
-} from '@reown/appkit-controllers'
+  SnackController,
+  StorageUtil
+} from '@reown/appkit-core'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-avatar'
 import '@reown/appkit-ui/wui-button'
@@ -255,7 +256,7 @@ export class W3mAccountDefaultWidget extends LitElement {
 
   private authCardTemplate() {
     const namespace = ChainController.state.activeChain as ChainNamespace
-    const connectorId = ConnectorController.getConnectorId(namespace)
+    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
     if (

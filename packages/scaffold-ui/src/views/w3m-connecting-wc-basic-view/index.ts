@@ -1,12 +1,7 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import {
-  ApiController,
-  CoreHelperUtil,
-  OptionsController,
-  StorageUtil
-} from '@reown/appkit-controllers'
+import { ApiController, CoreHelperUtil, OptionsController, StorageUtil } from '@reown/appkit-core'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 

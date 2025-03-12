@@ -99,8 +99,7 @@ const ICONS = {
   x: async () => (await import('../../assets/svg/x.js')).xSvg,
   info: async () => (await import('../../assets/svg/info.js')).infoSvg,
   exclamationTriangle: async () =>
-    (await import('../../assets/svg/exclamation-triangle.js')).exclamationTriangleSvg,
-  reown: async () => (await import('../../assets/svg/reown-logo.js')).reownSvg
+    (await import('../../assets/svg/exclamation-triangle.js')).exclamationTriangleSvg
 } as const
 
 async function getSvg(name: IconType) {
@@ -127,14 +126,11 @@ export class WuiIcon extends LitElement {
 
   @property() public color: ColorType = 'fg-300'
 
-  @property() public aspectRatio = '1 / 1'
-
   // -- Render -------------------------------------------- //
   public override render() {
     this.style.cssText = `
       --local-color: ${`var(--wui-color-${this.color});`}
       --local-width: ${`var(--wui-icon-size-${this.size});`}
-      --local-aspect-ratio: ${this.aspectRatio}
     `
 
     return html`${until(getSvg(this.name), html`<div class="fallback"></div>`)}`

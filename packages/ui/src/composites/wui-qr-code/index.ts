@@ -46,7 +46,6 @@ export class WuiQrCode extends LitElement {
   }
 
   // -- Private ------------------------------------------- //
-
   private templateSvg() {
     const size = this.theme === 'light' ? this.size : this.size - 16 * 2
 

@@ -1,5 +1,5 @@
 import type { ChainNamespace } from '@reown/appkit-common'
-import type { SIWXSession } from '@reown/appkit-controllers'
+import type { SIWXSession } from '@reown/appkit-core'
 
 /**
  * This is the base class for a SIWX verifier.
