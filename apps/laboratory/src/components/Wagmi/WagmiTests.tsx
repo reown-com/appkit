@@ -11,7 +11,6 @@ import { WagmiSendUSDCTest } from './WagmiSendUSDCTest'
 import { WagmiSignMessageTest } from './WagmiSignMessageTest'
 import { WagmiSignTypedDataTest } from './WagmiSignTypedDataTest'
 import { WagmiTransactionTest } from './WagmiTransactionTest'
-import { WagmiWalletCheckoutTest } from './WagmiWalletCheckoutTest'
 import { WagmiWriteContractTest } from './WagmiWriteContractTest'
 
 interface IProps {
@@ -85,13 +84,6 @@ export function WagmiTests({ config }: IProps) {
               Send Calls (Paymaster Service)
             </Heading>
             <WagmiSendCallsWithPaymasterServiceTest />
-          </Box>
-
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Wallet Checkout
-            </Heading>
-            <WagmiWalletCheckoutTest config={config} />
           </Box>
 
           <Box>
