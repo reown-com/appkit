@@ -12,10 +12,6 @@ describe('FetchUtil', () => {
     vi.stubGlobal('fetch', vi.fn())
   })
 
-  afterEach(() => {
-    vi.unstubAllGlobals()
-  })
-
   describe('constructor', () => {
     it('should set baseUrl and clientId', () => {
       expect(fetchUtil.baseUrl).toBe(mockBaseUrl)

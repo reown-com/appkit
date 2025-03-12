@@ -38,10 +38,6 @@ describe('MobileWalletUtil', () => {
     } as unknown as ChainControllerState)
   })
 
-  afterAll(() => {
-    vi.unstubAllGlobals()
-  })
-
   it('should redirect to Phantom app when Phantom is not installed', () => {
     MobileWalletUtil.handleSolanaDeeplinkRedirect(WALLETS.phantom.name)
 
