@@ -26,10 +26,10 @@ import {
   VStack,
   useDisclosure
 } from '@chakra-ui/react'
-import { type Chain, encodeFunctionData, erc20Abi } from 'viem'
-import { type Config, useAccount } from 'wagmi'
+import {  encodeFunctionData, erc20Abi } from 'viem'
+import { type Config } from 'wagmi'
 
-import { arbitrum, base, optimism, sepolia } from '@reown/appkit/networks'
+import { baseSepolia, sepolia } from '@reown/appkit/networks'
 
 import { useWalletCheckout } from '@/src/hooks/useWalletCheckout'
 import {
@@ -39,8 +39,9 @@ import {
 } from '@/src/types/wallet_checkout'
 
 import { useChakraToast } from '../Toast'
+import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 
-const ALLOWED_CHAINS = [sepolia, optimism, base, arbitrum]
+const ALLOWED_CHAINS = [sepolia, baseSepolia]
 const ALLOWED_CHAINIDS = ALLOWED_CHAINS.map(chain => chain.id) as number[]
 
 const DONUT_PRICE = 0.1
@@ -48,7 +49,6 @@ const DONUT_PRICE = 0.1
 interface PurchaseDonutFormProps {
   isOpen: boolean
   onClose: () => void
-  chain: Chain
   config: Config
 }
 
@@ -60,33 +60,35 @@ const PRODUCT_METADATA = {
 }
 
 /**
- * First payment option is for direct payment - of 0.1 USDC to the recipient
- * Second payment option is for contract payment - of 0.1 USDC
+ * First payment option is for direct payment - of 0.1 USDC on baseSepolia to the recipient
+ * Second payment option is for direct payment - of 0.1 USDC on sepolia to the recipient
+ * Third payment option is for direct payment - of 0.1 USDC on optimism to the recipient
+ * Fourth payment option is for contract payment - of 0.1 USDC on baseSepolia to the recipient
  */
 const ACCEPTED_PAYMENTS: PaymentOption[] = [
   {
-    recipient: 'eip155:8453:0xD39483aE92522cd804CEB9DEA399F62E268297AC',
-    asset: 'eip155:8453/erc20:0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+    recipient: 'eip155:84532:0xD39483aE92522cd804CEB9DEA399F62E268297AC',
+    asset: 'eip155:84532/erc20:0x036CbD53842c5426634e7929541eC2318f3dCF7e',
     amount: '0x186A0'
   },
   {
-    recipient: 'eip155:10:0xD39483aE92522cd804CEB9DEA399F62E268297AC',
-    asset: 'eip155:10/erc20:0x0b2c639c533813f4aa9d7837caf62653d097ff85',
+    recipient: 'eip155:11155111:0xD39483aE92522cd804CEB9DEA399F62E268297AC',
+    asset: 'eip155:11155111/erc20:0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
     amount: '0x186A0'
   },
   {
-    recipient: 'eip155:10:0xD39483aE92522cd804CEB9DEA399F62E268297AC',
-    asset: 'eip155:10/slip44:60',
-    amount: '0x28ED6103D000'
+    recipient: 'eip155:11155420:0xD39483aE92522cd804CEB9DEA399F62E268297AC',
+    asset: 'eip155:11155420/erc20:0x5fd84259d66Cd46123540766Be93DFE6D43130D7',
+    amount: '0x186A0'
   },
   {
-    asset: 'eip155:8453/erc20:0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+    asset: 'eip155:84532/erc20:0x036CbD53842c5426634e7929541eC2318f3dCF7e',
     amount: '0x186A0',
     contractInteraction: {
       type: 'evm-calls',
       data: [
         {
-          to: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+          to: '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
           data: encodeFunctionData({
             abi: erc20Abi,
             functionName: 'transfer',
@@ -269,11 +271,13 @@ interface IBaseProps {
 }
 
 export function WagmiWalletCheckoutTest({ config }: IBaseProps) {
-  const { status, chain } = useAccount()
+  const { chainId } = useAppKitNetwork()
+  const { status } = useAppKitAccount({ namespace: 'eip155' })
+  console.log('chainId', chainId)
   // eslint-disable-next-line @typescript-eslint/naming-convention
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  if (!ALLOWED_CHAINIDS.includes(Number(chain?.id)) || status !== 'connected' || !chain) {
+  if (!ALLOWED_CHAINIDS.includes(Number(chainId)) || status !== 'connected' || !chainId) {
     return (
       <Text fontSize="md" color="yellow">
         Allowed chains are:{' '}
@@ -292,7 +296,7 @@ export function WagmiWalletCheckoutTest({ config }: IBaseProps) {
     <>
       <Button onClick={onOpen}>Purchase Donut</Button>
 
-      <PurchaseDonutForm isOpen={isOpen} onClose={onClose} chain={chain} config={config} />
+      <PurchaseDonutForm isOpen={isOpen} onClose={onClose} config={config} />
     </>
   )
 }
