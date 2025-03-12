@@ -16,12 +16,18 @@ export * as WagmiCore from '@wagmi/core'
 
 const networks = AppKitNetworks
 
-export type CreateAppKit = Omit<AppKitOptions, 'sdkType' | 'sdkVersion' | 'basic'>
+export type CreateAppKit = Omit<AppKitOptions, 'sdkType' | 'sdkVersion' | 'basic'> & {
+  isUnity?: boolean
+}
 
 function createAppKit(options: CreateAppKit) {
   return new AppKit({
     ...options,
-    sdkVersion: CoreHelperUtil.generateSdkVersion(options.adapters ?? [], 'cdn', PACKAGE_VERSION)
+    sdkVersion: CoreHelperUtil.generateSdkVersion(
+      options.adapters ?? [],
+      options.isUnity ? 'unity' : 'cdn',
+      PACKAGE_VERSION
+    )
   })
 }
 
