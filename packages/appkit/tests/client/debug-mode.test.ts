@@ -1,15 +1,24 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { SdkVersion } from '@reown/appkit-common'
+import type { ChainNamespace, SdkVersion } from '@reown/appkit-common'
 import { AlertController, OptionsController } from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
 
+import type { AdapterBlueprint } from '../../src/adapters'
 import { AppKitCore, type AppKitOptionsWithSdk } from '../../src/client/core'
 
 // Create a mock implementation of AppKitCore
 class TestAppKitCore extends AppKitCore {
   // Implement the abstract method
   protected async injectModalUi(): Promise<void> {
+    // No-op for testing
+  }
+
+  public override async syncIdentity(
+    _request: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
+      chainNamespace: ChainNamespace
+    }
+  ): Promise<void> {
     // No-op for testing
   }
 }

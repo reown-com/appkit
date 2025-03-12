@@ -766,6 +766,11 @@ export abstract class AppKitCore {
 
   // -- UI Initialization ---------------------------------------------------
   protected abstract injectModalUi(): Promise<void>
+  public abstract syncIdentity(
+    params: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
+      chainNamespace: ChainNamespace
+    }
+  ): Promise<void>
 
   // -- Connection Sync ---------------------------------------------------
   protected async syncExistingConnection() {
@@ -1043,60 +1048,6 @@ export abstract class AppKitCore {
       chainId: newChainId,
       chainNamespace
     })
-  }
-
-  public async syncIdentity({
-    address,
-    chainId,
-    chainNamespace
-  }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
-    chainNamespace: ChainNamespace
-  }) {
-    const caipNetworkId: CaipNetworkId = `${chainNamespace}:${chainId}`
-    const activeCaipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
-
-    if (chainNamespace !== ConstantsUtil.CHAIN.EVM || activeCaipNetwork?.testnet) {
-      this.setProfileName(null, chainNamespace)
-      this.setProfileImage(null, chainNamespace)
-
-      return
-    }
-
-    try {
-      const { name, avatar } = await this.fetchIdentity({
-        address,
-        caipNetworkId
-      })
-
-      this.setProfileName(name, chainNamespace)
-      this.setProfileImage(avatar, chainNamespace)
-
-      if (!name) {
-        await this.syncReownName(address, chainNamespace)
-        const adapter = this.getAdapter(chainNamespace)
-        const result = await adapter?.getProfile({
-          address,
-          chainId: Number(chainId)
-        })
-
-        if (result?.profileName) {
-          this.setProfileName(result.profileName, chainNamespace)
-          if (result.profileImage) {
-            this.setProfileImage(result.profileImage, chainNamespace)
-          }
-        } else {
-          await this.syncReownName(address, chainNamespace)
-          this.setProfileImage(null, chainNamespace)
-        }
-      }
-    } catch {
-      if (chainId === 1) {
-        await this.syncReownName(address, chainNamespace)
-      } else {
-        await this.syncReownName(address, chainNamespace)
-        this.setProfileImage(null, chainNamespace)
-      }
-    }
   }
 
   protected async syncReownName(address: string, chainNamespace: ChainNamespace) {
