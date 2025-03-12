@@ -45,6 +45,7 @@ export class W3mConnectingWcView extends LitElement {
     return html`
       ${this.headerTemplate()}
       <div>${this.platformTemplate()}</div>
+      <wui-ux-by-reown></wui-ux-by-reown>
     `
   }
 

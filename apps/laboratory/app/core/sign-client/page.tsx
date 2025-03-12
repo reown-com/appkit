@@ -209,11 +209,14 @@ export default function SignClientPage() {
         return
       }
 
-      const signature: string = await signClient.request({
+      const result = await signClient.request({
         topic: session.topic,
         chainId: network,
         request: payload
       })
+
+      const signature =
+        typeof result === 'string' ? result : (result as { signature: string })?.signature
 
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,

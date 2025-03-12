@@ -16,6 +16,5 @@ export const ConstantsUtil = {
     HeaderText: 120,
     ModalHeight: 150,
     ViewTransition: 150
-  },
-  FOOTER_VIEWS: ['Connect', 'ConnectingWalletConnect', 'ConnectingWalletConnectBasic']
+  }
 }
