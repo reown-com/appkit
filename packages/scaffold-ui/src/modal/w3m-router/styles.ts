@@ -5,7 +5,6 @@ export default css`
     --prev-height: 0px;
     --new-height: 0px;
     display: block;
-    padding-bottom: var(--wui-spacing-s);
   }
 
   div.w3m-router-container {
