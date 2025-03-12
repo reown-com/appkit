@@ -22,14 +22,15 @@ import {
   VStack
 } from '@chakra-ui/react'
 
-import { baseSepolia, sepolia } from '@reown/appkit/networks'
+import { baseSepolia, optimismSepolia, sepolia } from '@reown/appkit/networks'
 
 import { type PaymentOption } from '@/src/types/wallet_checkout'
+import { TOKEN_CONFIG } from '@/src/utils/CheckoutTokenConfig'
 
-// Chain IDs for Base Sepolia and Ethereum Sepolia testnets
-type AllowedChainId = 84532 | 11155111
+// Chain IDs for supported testnets
+type AllowedChainId = 84532 | 11155111 | 11155420
 
-const ALLOWED_CHAINS = [sepolia, baseSepolia]
+const ALLOWED_CHAINS = [sepolia, baseSepolia, optimismSepolia]
 
 interface ConfigurePaymentOptionsProps {
   isOpen: boolean
@@ -58,20 +59,18 @@ export function ConfigurePaymentOptions({
     return chain?.name || `Chain ${chainId}`
   }
 
-  // Token pairs for different chains
-  const tokenPairs: Record<number, { address: string; name: string }[]> = {
-    [sepolia.id]: [
-      {
-        address: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
-        name: 'USDC on Sepolia'
-      }
-    ],
-    [baseSepolia.id]: [
-      {
-        address: '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
-        name: 'USDC on Base Sepolia'
-      }
-    ]
+  // Get token options for the selected chain
+  function getTokenOptions(chainId: number): { address: string; name: string; symbol: string }[] {
+    const tokensByChain = TOKEN_CONFIG[chainId]
+    if (!tokensByChain) {
+      return []
+    }
+
+    return Object.entries(tokensByChain).map(([symbol, address]) => ({
+      symbol,
+      address,
+      name: `${symbol} on ${getChainName(chainId)}`
+    }))
   }
 
   // Validate Ethereum address format
@@ -91,6 +90,62 @@ export function ConfigurePaymentOptions({
     } else {
       setAddressError(null)
     }
+  }
+
+  // Get token symbol by address and chainId
+  function getTokenSymbolByAddress(assetString?: string): string | undefined {
+    if (!assetString) {
+      return undefined
+    }
+
+    // Parse CAIP-19 asset format: 'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f'
+    const assetParts = assetString.split('/')
+    if (assetParts.length !== 2) {
+      return undefined
+    }
+
+    const chainPart = assetParts[0]?.split(':') || []
+    const tokenPart = assetParts[1]?.split(':') || []
+
+    if (chainPart.length !== 2 || tokenPart.length !== 2) {
+      return undefined
+    }
+
+    const chainId = Number(chainPart[1])
+    const tokenAddress = tokenPart[1] ? tokenPart[1].toLowerCase() : ''
+
+    // Skip lookup if tokenAddress is empty
+    if (!tokenAddress) {
+      return undefined
+    }
+
+    // Look up the token symbol in our token configuration
+    const tokenConfig = TOKEN_CONFIG[chainId] || {}
+    const tokenEntry = Object.entries(tokenConfig).find(
+      ([_, addr]) => addr.toLowerCase() === tokenAddress
+    )
+
+    return tokenEntry ? tokenEntry[0] : undefined
+  }
+
+  // Function to shorten an address for display
+  function shortenAddress(addressInput?: string): string {
+    if (!addressInput) {
+      return ''
+    }
+
+    // If it's a CAIP format, extract the actual address part
+    let displayAddress = addressInput
+    if (displayAddress.includes(':')) {
+      const parts = displayAddress.split(':')
+      displayAddress = parts[parts.length - 1] || ''
+    }
+
+    if (displayAddress.length <= 10) {
+      return displayAddress
+    }
+
+    return `${displayAddress.substring(0, 6)}...${displayAddress.substring(displayAddress.length - 4)}`
   }
 
   // Remove a payment option
@@ -149,53 +204,46 @@ export function ConfigurePaymentOptions({
                     </Box>
                   ) : (
                     draftPaymentOptions.map((option, index) => {
-                      // Extract chain ID and recipient from CAIP format
-                      const assetParts = option.asset?.split('/') || []
-                      const chainPart = assetParts[0]?.split(':') || []
-                      const tokenPart = assetParts[1]?.split(':') || []
-                      const chainId = chainPart[1] || ''
-                      const tokenAddress = tokenPart[1] || ''
+                      const tokenSymbol = getTokenSymbolByAddress(option.asset)
 
-                      let recipientAddress = ''
-                      if (option.recipient) {
-                        const recipientParts = option.recipient.split(':')
-                        recipientAddress = recipientParts[2] || ''
-                      }
+                      const assetStr = option.asset ?? ''
+                      const chainId = assetStr.split('/')[0]?.split(':')[1] ?? ''
+                      const chainName = getChainName(chainId)
 
-                      const isContractInteraction = Boolean(option.contractInteraction)
+                      const tokenAddress = assetStr.split('/')[1]?.split(':')[1] ?? ''
+                      const tokenAddressDisplay = shortenAddress(tokenAddress)
 
                       return (
-                        <HStack
-                          key={index}
-                          p={3}
-                          borderRadius="md"
-                          justify="space-between"
-                          borderWidth="1px"
-                          borderColor="gray.200"
-                        >
-                          <VStack align="start" spacing={1}>
-                            <Text fontWeight="medium">
-                              {isContractInteraction ? 'Contract Interaction' : 'Direct Payment'}
-                            </Text>
-                            <Text fontSize="xs">Chain: {getChainName(chainId)}</Text>
-                            <Text fontSize="xs" noOfLines={1}>
-                              Token: {tokenAddress}
-                            </Text>
-                            {recipientAddress && (
-                              <Text fontSize="xs" noOfLines={1}>
-                                To: {recipientAddress}
+                        <Box key={index} p={4} borderWidth="1px" borderRadius="md" mb={2}>
+                          <HStack justify="space-between">
+                            <VStack align="start" spacing={1}>
+                              <Text fontSize="sm" fontWeight="bold">
+                                {option.contractInteraction
+                                  ? 'Contract Interaction'
+                                  : 'Direct Payment'}
                               </Text>
-                            )}
-                          </VStack>
-                          <Button
-                            size="sm"
-                            colorScheme="red"
-                            variant="ghost"
-                            onClick={() => handleRemovePaymentOption(index)}
-                          >
-                            Remove
-                          </Button>
-                        </HStack>
+                              <Text fontSize="sm">Chain: {chainName}</Text>
+                              <Text fontSize="sm">
+                                Token:{' '}
+                                {tokenSymbol
+                                  ? `${tokenSymbol} (${tokenAddressDisplay})`
+                                  : `Unknown Token (${tokenAddressDisplay})`}
+                              </Text>
+                              {option.recipient && (
+                                <Text fontSize="sm">
+                                  Recipient: {shortenAddress(option.recipient)}
+                                </Text>
+                              )}
+                            </VStack>
+                            <Button
+                              size="sm"
+                              colorScheme="red"
+                              onClick={() => handleRemovePaymentOption(index)}
+                            >
+                              Remove
+                            </Button>
+                          </HStack>
+                        </Box>
                       )
                     })
                   )}
@@ -249,9 +297,9 @@ export function ConfigurePaymentOptions({
                       mb={2}
                     >
                       <option value="">Select a token</option>
-                      {tokenPairs[selectedChainId]?.map((token, index) => (
-                        <option key={index} value={token.address}>
-                          {token.name} ({token.address.substring(0, 6)}...
+                      {getTokenOptions(selectedChainId).map(token => (
+                        <option key={token.address} value={token.address}>
+                          {token.symbol} ({token.address.substring(0, 6)}...
                           {token.address.substring(token.address.length - 4)})
                         </option>
                       ))}

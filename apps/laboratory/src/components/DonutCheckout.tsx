@@ -29,8 +29,13 @@ import {
 import type { Config } from 'wagmi'
 
 import { useWalletCheckout } from '@/src/hooks/useWalletCheckout'
-import { type CheckoutRequest, type PaymentOption } from '@/src/types/wallet_checkout'
+import {
+  type CheckoutRequest,
+  type CheckoutResult,
+  type PaymentOption
+} from '@/src/types/wallet_checkout'
 
+import { PaymentReceiptCard } from './PaymentReceiptCard'
 import { useChakraToast } from './Toast'
 
 const DONUT_PRICE = 0.1
@@ -52,12 +57,20 @@ interface DonutCheckoutProps {
 export default function DonutCheckout({ isOpen, onClose, paymentOptions }: DonutCheckoutProps) {
   const [donutCount, setDonutCount] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
+  const [canShowReceipt, setShowReceipt] = useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+  const [checkoutResult, setCheckoutResult] = useState<CheckoutResult | null>(null)
 
   const { sendWalletCheckout, isWalletCheckoutSupported } = useWalletCheckout()
   const toast = useChakraToast()
 
   // Calculate total price based on donut count
   const totalAmount = donutCount * DONUT_PRICE
+
+  function handleCloseReceipt() {
+    setShowReceipt(false)
+    onClose()
+  }
 
   async function onCheckout() {
     try {
@@ -89,28 +102,34 @@ export default function DonutCheckout({ isOpen, onClose, paymentOptions }: Donut
       }
 
       setIsLoading(true)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await sendWalletCheckout(walletCheckoutRequest)
 
       if (result) {
+        // Store the result and display receipt
+        setCheckoutResult(result as CheckoutResult)
+        setShowReceipt(true)
+
         toast({
           title: 'Checkout successful',
-          description: JSON.stringify(result || {}),
+          description: 'Your payment has been processed successfully!',
           type: 'success'
         })
-        onClose()
       } else {
         toast({
           title: 'Checkout failed',
           description: 'No result from wallet checkout call',
           type: 'error'
         })
+        onClose()
       }
     } catch (error) {
       console.error('Checkout failed:', error)
       if (error && typeof error === 'object' && 'message' in error) {
+        const errorMessage = (error as { message: string }).message
         toast({
           title: 'Checkout failed',
-          description: error.message as string,
+          description: errorMessage,
           type: 'error'
         })
       } else {
@@ -124,6 +143,17 @@ export default function DonutCheckout({ isOpen, onClose, paymentOptions }: Donut
     } finally {
       setIsLoading(false)
     }
+  }
+
+  // Return early if showing receipt
+  if (canShowReceipt && checkoutResult) {
+    return (
+      <PaymentReceiptCard
+        result={checkoutResult}
+        isOpen={canShowReceipt}
+        onClose={handleCloseReceipt}
+      />
+    )
   }
 
   return (

@@ -31,8 +31,8 @@ const DEFAULT_PAYMENT_OPTIONS: PaymentOption[] = [
     amount: '0x186A0' as `0x${string}`
   },
   {
-    recipient: `eip155:11155111:${vitalikEthAddress}`,
-    asset: 'eip155:11155111/erc20:0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
+    recipient: `eip155:11155420:${vitalikEthAddress}`,
+    asset: 'eip155:11155420/erc20:0x5fd84259d66Cd46123540766Be93DFE6D43130D7',
     amount: '0x186A0' as `0x${string}`
   },
   {

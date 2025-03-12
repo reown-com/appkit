@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { type AppKitNetwork, baseSepolia, sepolia } from '@reown/appkit/networks'
+import { type AppKitNetwork, baseSepolia, optimismSepolia } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
@@ -14,7 +14,7 @@ import { ThemeStore } from '@/src/utils/StoreUtil'
 
 const queryClient = new QueryClient()
 
-const networks = [baseSepolia, sepolia] as [AppKitNetwork, ...AppKitNetwork[]]
+const networks = [baseSepolia, optimismSepolia] as [AppKitNetwork, ...AppKitNetwork[]]
 
 const wagmiAdapter = new WagmiAdapter({
   ssr: true,
@@ -25,7 +25,7 @@ const wagmiAdapter = new WagmiAdapter({
 const modal = createAppKit({
   adapters: [wagmiAdapter],
   networks,
-  defaultNetwork: sepolia,
+  defaultNetwork: baseSepolia,
   projectId: ConstantsUtil.ProjectId,
   features: {
     analytics: true
