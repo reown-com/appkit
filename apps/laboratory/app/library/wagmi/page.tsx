@@ -27,7 +27,9 @@ const modal = createAppKit({
   features: {
     analytics: true
   },
-  customWallets: ConstantsUtil.CustomWallets
+  customWallets: ConstantsUtil.CustomWallets,
+  termsConditionsUrl: 'https://reown.com/terms',
+  privacyPolicyUrl: 'https://reown.com/privacy'
 })
 
 const config = wagmiAdapter.wagmiConfig

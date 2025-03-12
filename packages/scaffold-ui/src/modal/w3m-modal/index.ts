@@ -149,9 +149,7 @@ export class W3mModal extends LitElement {
 
   private footerTemplate() {
     if (ConstantsUtil.FOOTER_VIEWS.includes(RouterController.state.view)) {
-      return html`<wui-flex>
-        <wui-ux-by-reown></wui-ux-by-reown>
-      </wui-flex>`
+      return null
     }
 
     return null
