@@ -33,7 +33,7 @@ export function UpaSignMessageTest() {
       },
       eip155: {
         method: 'personal_sign',
-        params: [address, 'Hello AppKit!']
+        params: ['Hello AppKit!', address]
       },
       bip122: {
         method: 'signPsbt',
@@ -114,6 +114,8 @@ export function UpaSignMessageTest() {
         type: 'success'
       })
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('>> error', error)
       toast({
         title: ConstantsUtil.SigningFailedToastTitle,
         description: 'Failed to sign message',

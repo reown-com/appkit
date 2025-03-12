@@ -57,10 +57,6 @@ export function AppKitHooks() {
           Open
         </Button>
 
-        <Button data-testid="w3m-connect-hook-button" onClick={() => open({ view: 'Connect' })}>
-          Connect
-        </Button>
-
         {isConnected && (
           <Button data-testid="disconnect-hook-button" onClick={disconnect}>
             Disconnect

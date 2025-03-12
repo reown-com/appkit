@@ -5,6 +5,7 @@ import {
   type AccountControllerState,
   ApiController,
   ConnectionController,
+  ConnectorController,
   ModalController
 } from '@reown/appkit-controllers'
 
@@ -47,9 +48,11 @@ describe('AppKitBasic', () => {
     })
 
     it('should not open modal when connected', async () => {
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-        caipAddress: 'eip155:1:0x123'
-      } as unknown as AccountControllerState)
+      vi.spyOn(ConnectorController, 'isConnected').mockReturnValue(true)
+      appKit = new AppKit({
+        ...mockOptions
+      })
+
       const modalSpy = vi.spyOn(ModalController, 'open')
 
       await appKit.open({ view: 'Connect' })

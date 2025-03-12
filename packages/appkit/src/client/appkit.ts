@@ -483,9 +483,12 @@ export class AppKit extends AppKitCore {
         import('@reown/appkit-scaffold-ui'),
         import('@reown/appkit-scaffold-ui/w3m-modal')
       ])
-      const modal = document.createElement('w3m-modal')
-      if (!OptionsController.state.disableAppend && !OptionsController.state.enableEmbedded) {
-        document.body.insertAdjacentElement('beforeend', modal)
+      const isElementCreated = document.querySelector('w3m-modal')
+      if (!isElementCreated) {
+        const modal = document.createElement('w3m-modal')
+        if (!OptionsController.state.disableAppend && !OptionsController.state.enableEmbedded) {
+          document.body.insertAdjacentElement('beforeend', modal)
+        }
       }
       isInitialized = true
     }
