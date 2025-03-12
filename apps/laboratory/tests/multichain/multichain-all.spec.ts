@@ -93,6 +93,27 @@ test('should switch network when clicking on the account buttons', async () => {
   await modalPage.closeModal()
 })
 
+test('should switch network when clicking custom buttons per namespace', async () => {
+  const evmButton = modalPage.page.locator('[data-testid="evm-connect-button"]')
+  const solanaButton = modalPage.page.locator('[data-testid="solana-connect-button"]')
+  const bitcoinButton = modalPage.page.locator('[data-testid="bitcoin-connect-button"]')
+
+  await evmButton.click()
+  await modalValidator.expectAccountButtonReady('eip155')
+  await modalPage.closeModal()
+  await modalValidator.expectBalanceFetched('POL')
+
+  await solanaButton.click()
+  await modalValidator.expectAccountButtonReady('solana')
+  await modalPage.closeModal()
+  await modalValidator.expectBalanceFetched('SOL')
+
+  await bitcoinButton.click()
+  await modalValidator.expectAccountButtonReady('bip122')
+  await modalPage.closeModal()
+  await modalValidator.expectBalanceFetched('BTC')
+})
+
 test('should disconnect from all chains', async () => {
   await modalPage.disconnect()
   await modalValidator.expectDisconnected('eip155')

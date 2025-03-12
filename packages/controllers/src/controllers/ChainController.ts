@@ -372,6 +372,23 @@ export const ChainController = {
     }
   },
 
+  async switchActiveNamespace(namespace: ChainNamespace | undefined) {
+    if (!namespace) {
+      return
+    }
+
+    const isDifferentChain = namespace !== ChainController.state.activeChain
+    const caipNetworkOfNamespace = ChainController.getNetworkData(namespace)?.caipNetwork
+    const firstNetworkWithChain = ChainController.getCaipNetworkByNamespace(
+      namespace,
+      caipNetworkOfNamespace?.id
+    )
+
+    if (isDifferentChain && firstNetworkWithChain) {
+      await ChainController.switchActiveNetwork(firstNetworkWithChain)
+    }
+  },
+
   async switchActiveNetwork(network: CaipNetwork) {
     const activeAdapter = ChainController.state.chains.get(
       ChainController.state.activeChain as ChainNamespace

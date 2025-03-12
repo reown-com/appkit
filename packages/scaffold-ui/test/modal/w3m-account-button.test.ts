@@ -77,7 +77,10 @@ describe('W3mAccountButton', () => {
     it('should open modal normally when chain is supported', async () => {
       vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
       vi.spyOn(ChainController, 'checkIfSupportedNetwork').mockReturnValue(true)
-      vi.spyOn(ChainController.state, 'activeCaipAddress', 'get').mockReturnValue(mockCaipAddress)
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        ...AccountController.state,
+        caipAddress: mockCaipAddress
+      })
 
       vi.spyOn(ModalController, 'open')
 
@@ -96,7 +99,10 @@ describe('W3mAccountButton', () => {
         ...OptionsController.state,
         allowUnsupportedChain: true
       })
-      vi.spyOn(ChainController.state, 'activeCaipAddress', 'get').mockReturnValue(mockCaipAddress)
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValue({
+        ...AccountController.state,
+        caipAddress: mockCaipAddress
+      })
 
       vi.spyOn(ModalController, 'open')
 
@@ -110,12 +116,12 @@ describe('W3mAccountButton', () => {
 
     it('should open modal in UnsupportedChain view when chain is not supported and allowUnsupportedChain is false', async () => {
       vi.spyOn(ChainController.state, 'activeChain', 'get').mockReturnValue('eip155')
-      vi.spyOn(ChainController, 'checkIfSupportedNetwork').mockReturnValue(false)
-      vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-        ...OptionsController.state,
-        allowUnsupportedChain: false
+      vi.spyOn(OptionsController.state, 'allowUnsupportedChain', 'get').mockReturnValue(false)
+      vi.spyOn(ChainController, 'getAccountData').mockReturnValueOnce({
+        ...AccountController.state,
+        caipAddress: mockCaipAddress
       })
-      vi.spyOn(ChainController.state, 'activeCaipAddress', 'get').mockReturnValue(mockCaipAddress)
+      vi.spyOn(ChainController, 'checkIfSupportedNetwork').mockReturnValueOnce(false)
 
       vi.spyOn(ModalController, 'open')
 
@@ -124,7 +130,7 @@ describe('W3mAccountButton', () => {
 
       await accountButton?.click()
 
-      expect(RouterController.state.view).to.equal('UnsupportedChain')
+      await waitUntil(() => RouterController.state.view === 'UnsupportedChain')
     })
 
     it('should show loading state if balance value is not a string', async () => {
