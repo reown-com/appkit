@@ -1,5 +1,5 @@
 {
-  "name": "@reown/appkit",
+  "name": "@reown/appkit-monorepo",
   "version": "1.6.9",
   "private": true,
   "type": "module",
