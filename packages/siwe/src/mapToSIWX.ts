@@ -5,7 +5,7 @@ import {
   type SIWXConfig,
   type SIWXMessage,
   type SIWXSession
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { HelpersUtil } from '@reown/appkit-utils'
 
 import type { AppKitSIWEClient } from '../exports/index.js'

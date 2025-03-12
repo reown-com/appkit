@@ -14,7 +14,7 @@
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-ethers": "workspace:*",
     "@walletconnect/logger": "2.1.2",
-    "ethers": "6.13.2"
+    "ethers": "6.13.5"
   },
   "devDependencies": {
     "@eslint/compat": "1.2.3",

@@ -1,4 +1,4 @@
-import type { ConnectMethod } from '@reown/appkit-core'
+import type { ConnectMethod } from '@reown/appkit-controllers'
 
 export const ConstantsUtil = {
   ACCOUNT_TABS: [{ label: 'Tokens' }, { label: 'NFTs' }, { label: 'Activity' }],
@@ -16,5 +16,6 @@ export const ConstantsUtil = {
     HeaderText: 120,
     ModalHeight: 150,
     ViewTransition: 150
-  }
+  },
+  FOOTER_VIEWS: ['Connect', 'ConnectingWalletConnect', 'ConnectingWalletConnectBasic']
 }
