@@ -145,16 +145,7 @@ class W3mAccountButtonBase extends LitElement {
 
   // -- Private ------------------------------------------- //
   private async onClick() {
-    const isDifferentChain = this.namespace !== ChainController.state.activeChain
-    const caipNetworkOfNamespace = ChainController.getNetworkData(this.namespace)?.caipNetwork
-    const firstNetworkWithChain = ChainController.getCaipNetworkByNamespace(
-      this.namespace,
-      caipNetworkOfNamespace?.id
-    )
-
-    if (isDifferentChain && firstNetworkWithChain) {
-      await ChainController.switchActiveNetwork(firstNetworkWithChain)
-    }
+    await ChainController.switchActiveNamespace(this.namespace)
 
     if (this.isSupported || OptionsController.state.allowUnsupportedChain) {
       ModalController.open()

@@ -12,15 +12,14 @@ import { AppKit } from '../../src/client/appkit-basic'
 import { mockOptions } from '../mocks/Options'
 import { mockBlockchainApiController, mockStorageUtil, mockWindowAndDocument } from '../test-utils'
 
-mockWindowAndDocument()
-mockStorageUtil()
-mockBlockchainApiController()
-
 describe('AppKitBasic', () => {
   let appKit: AppKit
 
   beforeEach(() => {
     appKit = new AppKit(mockOptions)
+    mockWindowAndDocument()
+    mockStorageUtil()
+    mockBlockchainApiController()
   })
 
   afterEach(() => {

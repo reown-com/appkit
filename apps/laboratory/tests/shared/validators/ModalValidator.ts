@@ -39,8 +39,8 @@ export class ModalValidator {
     })
   }
 
-  async expectBalanceFetched(currency: 'SOL' | 'ETH') {
-    const accountButton = this.page.locator('appkit-account-button')
+  async expectBalanceFetched(currency: 'SOL' | 'ETH' | 'BTC' | 'POL') {
+    const accountButton = this.page.locator('appkit-account-button').first()
     await expect(accountButton, `Account button should show balance as ${currency}`).toContainText(
       `0.000 ${currency}`
     )
@@ -312,9 +312,13 @@ export class ModalValidator {
     await expect(switchNetworkButton).toBeVisible()
   }
 
-  async expectOnrampButton() {
+  async expectOnrampButton(visible: boolean) {
     const onrampButton = this.page.getByTestId('w3m-account-default-onramp-button')
-    await expect(onrampButton).toBeVisible()
+    if (visible) {
+      await expect(onrampButton).toBeVisible()
+    } else {
+      await expect(onrampButton).not.toBeVisible()
+    }
   }
 
   async expectWalletGuide(_library: string, guide: 'get-started' | 'explore') {

@@ -63,12 +63,13 @@ export const ModalController = {
 
     if (options?.namespace) {
       ConnectorController.setFilterByNamespace(options.namespace)
+      await ChainController.switchActiveNamespace(options.namespace)
       ModalController.setLoading(true, options.namespace)
     } else {
       ModalController.setLoading(true)
     }
 
-    const caipAddress = ChainController.state.activeCaipAddress
+    const caipAddress = ChainController.getAccountData(options?.namespace)?.caipAddress
     const hasNoAdapters = ChainController.state.noAdapters
 
     if (hasNoAdapters && !caipAddress) {

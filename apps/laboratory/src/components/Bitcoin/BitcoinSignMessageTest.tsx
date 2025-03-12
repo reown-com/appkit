@@ -6,11 +6,12 @@ import type { BitcoinConnector } from '@reown/appkit-adapter-bitcoin'
 import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
+import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 export function BitcoinSignMessageTest() {
+  const toast = useChakraToast()
   const { walletProvider } = useAppKitProvider<BitcoinConnector>('bip122')
   const { address } = useAppKitAccount({ namespace: 'bip122' })
-  const toast = useChakraToast()
 
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<string>('Hello, World!')
@@ -27,9 +28,17 @@ export function BitcoinSignMessageTest() {
         address,
         message
       })
-      toast({ title: 'Success', description: signature, type: 'success' })
+      toast({
+        title: ConstantsUtil.SigningSucceededToastTitle,
+        description: signature,
+        type: 'success'
+      })
     } catch (error) {
-      toast({ title: 'Error', description: (error as Error).message, type: 'error' })
+      toast({
+        title: ConstantsUtil.SigningFailedToastTitle,
+        description: (error as Error).message,
+        type: 'error'
+      })
     } finally {
       setLoading(false)
     }
