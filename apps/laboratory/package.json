@@ -86,19 +86,19 @@
     "playwright:debug:multichain-ethers5-siwe": "pnpm playwright:test:multichain-ethers5-siwe --debug"
   },
   "dependencies": {
-    "@bitcoinerlab/secp256k1": "1.1.1",
-    "@chakra-ui/icons": "2.1.1",
+    "@bitcoinerlab/secp256k1": "1.2.0",
+    "@chakra-ui/icons": "2.2.4",
     "@chakra-ui/react": "2.8.2",
     "@coinbase/wallet-sdk": "4.3.0",
-    "@emotion/react": "11.11.3",
-    "@emotion/styled": "11.11.0",
+    "@emotion/react": "11.14.0",
+    "@emotion/styled": "11.14.0",
     "@reown/appkit": "workspace:*",
-    "@reown/appkit-common": "workspace:*",
     "@reown/appkit-adapter-bitcoin": "workspace:*",
     "@reown/appkit-adapter-ethers": "workspace:*",
     "@reown/appkit-adapter-ethers5": "workspace:*",
     "@reown/appkit-adapter-solana": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
+    "@reown/appkit-common": "workspace:*",
     "@reown/appkit-experimental": "workspace:*",
     "@reown/appkit-siwe": "workspace:*",
     "@reown/appkit-siwx": "workspace:*",
@@ -113,7 +113,7 @@
     "@wagmi/core": "2.16.5",
     "@walletconnect/universal-provider": "2.19.0",
     "@walletconnect/utils": "2.19.0",
-    "axios": "1.7.2",
+    "axios": "1.8.1",
     "bitcoinjs-lib": "7.0.0-rc.0",
     "bs58": "6.0.0",
     "date-fns": "4.1.0",
@@ -121,7 +121,7 @@
     "ethers5": "npm:ethers@5.7.2",
     "framer-motion": "10.17.9",
     "next": "14.2.24",
-    "next-auth": "4.24.5",
+    "next-auth": "4.24.11",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-icons": "4.12.0",
@@ -132,13 +132,13 @@
     "webauthn-p256": "0.0.2"
   },
   "devDependencies": {
-    "@aws-sdk/client-cloudwatch": "3.509.0",
-    "@mailsac/api": "1.0.5",
+    "@aws-sdk/client-cloudwatch": "3.758.0",
+    "@mailsac/api": "1.0.8",
     "@playwright/test": "1.44.0",
     "@synthetixio/synpress": "4.0.0-alpha.7",
     "@types/node": "22.13.4",
     "@types/react": "19.0.0",
     "@types/react-dom": "19.0.0",
-    "dotenv": "16.3.1"
+    "dotenv": "16.4.7"
   }
 }

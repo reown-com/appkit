@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@walletconnect/ethereum-provider": "2.18.0-canary-ak-8",
+    "@walletconnect/ethereum-provider": "2.19.0",
     "vue": "3.4.3"
   },
   "devDependencies": {
