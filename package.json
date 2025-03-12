@@ -1,6 +1,6 @@
 {
-  "name": "shadow-test-apkt",
-  "version": "0.0.4",
+  "name": "@reown/appkit",
+  "version": "1.6.9",
   "private": true,
   "type": "module",
   "scripts": {
