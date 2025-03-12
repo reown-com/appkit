@@ -1,9 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import type { ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
   type AccountControllerState,
   ApiController,
+  BlockchainApiController,
   ConnectionController,
   ConnectorController,
   ModalController
@@ -87,6 +89,30 @@ describe('AppKitBasic', () => {
       })
 
       expect(ApiController.initializeExcludedWalletRdns).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('syncAccount', () => {
+    let appKit: AppKit
+    const mockParams = {
+      address: '0x123',
+      chainId: '1',
+      chainNamespace: 'eip155' as ChainNamespace
+    }
+
+    beforeEach(() => {
+      appKit = new AppKit({
+        ...mockOptions
+      })
+    })
+
+    it('should not make any blockchain API calls', async () => {
+      const blockchainApiSpy = vi.spyOn(BlockchainApiController, 'fetchIdentity')
+
+      await appKit.syncBalance(mockParams)
+      await appKit.syncIdentity(mockParams)
+
+      expect(blockchainApiSpy).not.toHaveBeenCalled()
     })
   })
 })
