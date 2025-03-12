@@ -90,6 +90,9 @@ jobs:
         with:
           name: build-output
 
+      - name: install
+        run: pnpm install
+
       - name: check
         run: pnpm ${{ matrix.style-command }}
         env:
@@ -120,6 +123,9 @@ jobs:
         with:
           name: build-output
 
+      - name: install
+        run: pnpm install
+
       - name: build sample apps
         run: pnpm build:sample-apps
         env:
@@ -148,6 +154,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-output
+
+      - name: install
+        run: pnpm install
 
       - name: Test
         run: pnpm test:ci
