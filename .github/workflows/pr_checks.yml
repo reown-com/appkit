@@ -18,7 +18,47 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  setup_and_build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+
+      - name: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'pnpm'
+
+      - name: install
+        run: pnpm install
+
+      - name: build
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+          
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: |
+            dist/
+            .next/
+            node_modules/
+            turbo/
+            packages/*/dist/
+            packages/*/.next/
+            apps/*/dist/
+            apps/*/.next/
+            .turbo/
+          retention-days: 1
+
   code_style:
+    needs: setup_and_build
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -30,6 +70,8 @@ jobs:
           - prettier
           - typecheck
           - danger
+      # Run these checks in parallel
+      fail-fast: false
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -42,14 +84,11 @@ jobs:
         with:
           node-version: 20.x
           cache: 'pnpm'
-
-      - name: install
-        run: pnpm install
-
-      - name: build
-        run: pnpm build
-        env:
-          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+          
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
 
       - name: check
         run: pnpm ${{ matrix.style-command }}
@@ -58,6 +97,7 @@ jobs:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
   build_sample_apps:
+    needs: setup_and_build
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -74,14 +114,11 @@ jobs:
         with:
           node-version: 20.x
           cache: 'pnpm'
-
-      - name: install
-        run: pnpm install
-
-      - name: build
-        run: pnpm build
-        env:
-          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+          
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
 
       - name: build sample apps
         run: pnpm build:sample-apps
@@ -89,6 +126,7 @@ jobs:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
   test:
+    needs: setup_and_build
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -105,14 +143,11 @@ jobs:
         with:
           node-version: 20.x
           cache: 'pnpm'
-
-      - name: install
-        run: pnpm install
-
-      - name: build
-        run: pnpm build
-        env:
-          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+          
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
 
       - name: Test
         run: pnpm test:ci
