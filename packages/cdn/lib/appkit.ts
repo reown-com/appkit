@@ -16,7 +16,7 @@ export * as WagmiCore from '@wagmi/core'
 
 const networks = AppKitNetworks
 
-export type CreateAppKit = Omit<AppKitOptions, 'sdkType' | 'sdkVersion' | 'basic'> & {
+type CreateAppKit = Omit<AppKitOptions, 'sdkType' | 'sdkVersion' | 'basic'> & {
   isUnity?: boolean
 }
 
