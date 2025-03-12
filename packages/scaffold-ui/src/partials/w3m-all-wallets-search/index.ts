@@ -1,8 +1,8 @@
 import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
-import type { BadgeType, WcWallet } from '@reown/appkit-core'
-import { ApiController, ConnectorController } from '@reown/appkit-core'
+import type { BadgeType, WcWallet } from '@reown/appkit-controllers'
+import { ApiController, ConnectorController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-grid'

@@ -10,8 +10,8 @@ import type {
 import UniversalProvider from '@walletconnect/universal-provider'
 
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
-import type { ConnectorType } from '@reown/appkit-core'
-import type { Provider as CoreProvider } from '@reown/appkit-core'
+import type { ConnectorType } from '@reown/appkit-controllers'
+import type { Provider as CoreProvider } from '@reown/appkit-controllers'
 import type { W3mFrameProvider, W3mFrameTypes } from '@reown/appkit-wallet'
 
 export type Connection = SolanaConnection

@@ -2,7 +2,8 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ChainController, ModalController } from '@reown/appkit-core'
+import type { ChainNamespace } from '@reown/appkit-common'
+import { ChainController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 
 import type { W3mAccountButton } from '../w3m-account-button/index.js'
@@ -30,16 +31,27 @@ class W3mButtonBase extends LitElement {
 
   @property() public charsEnd?: W3mAccountButton['charsEnd'] = 6
 
-  @state() private caipAddress = ChainController.state.activeCaipAddress
+  @property() public namespace?: ChainNamespace = undefined
 
-  @state() private isLoading = ModalController.state.loading
+  @state() private caipAddress = ChainController.state.activeCaipAddress
 
   // -- Lifecycle ----------------------------------------- //
   public override firstUpdated() {
-    this.unsubscribe.push(
-      ChainController.subscribeKey('activeCaipAddress', val => (this.caipAddress = val)),
-      ModalController.subscribeKey('loading', val => (this.isLoading = val))
-    )
+    if (this.namespace) {
+      this.unsubscribe.push(
+        ChainController.subscribeChainProp(
+          'accountState',
+          val => {
+            this.caipAddress = val?.caipAddress
+          },
+          this.namespace
+        )
+      )
+    } else {
+      this.unsubscribe.push(
+        ChainController.subscribeKey('activeCaipAddress', val => (this.caipAddress = val))
+      )
+    }
   }
 
   public override disconnectedCallback() {
@@ -48,13 +60,14 @@ class W3mButtonBase extends LitElement {
 
   // -- Render -------------------------------------------- //
   public override render() {
-    return this.caipAddress && !this.isLoading
+    return this.caipAddress
       ? html`
           <appkit-account-button
             .disabled=${Boolean(this.disabled)}
             balance=${ifDefined(this.balance)}
             .charsStart=${ifDefined(this.charsStart)}
             .charsEnd=${ifDefined(this.charsEnd)}
+            namespace=${ifDefined(this.namespace)}
           >
           </appkit-account-button>
         `
@@ -63,6 +76,7 @@ class W3mButtonBase extends LitElement {
             size=${ifDefined(this.size)}
             label=${ifDefined(this.label)}
             loadingLabel=${ifDefined(this.loadingLabel)}
+            namespace=${ifDefined(this.namespace)}
           ></appkit-connect-button>
         `
   }

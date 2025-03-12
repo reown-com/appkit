@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { WcConstantsUtil } from '@reown/appkit'
 import { Emitter } from '@reown/appkit-common'
-import type { Provider } from '@reown/appkit-core'
+import type { Provider } from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { mainnet, polygon } from '@reown/appkit/networks'

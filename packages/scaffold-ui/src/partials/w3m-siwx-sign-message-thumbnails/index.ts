@@ -1,6 +1,6 @@
 import { LitElement, html } from 'lit'
 
-import { AccountController, OptionsController } from '@reown/appkit-core'
+import { AccountController, OptionsController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-visual-thumbnail'
 

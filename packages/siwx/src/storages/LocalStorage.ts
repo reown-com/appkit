@@ -1,5 +1,5 @@
 import type { CaipNetworkId } from '@reown/appkit-common'
-import type { SIWXSession } from '@reown/appkit-core'
+import type { SIWXSession } from '@reown/appkit-controllers'
 
 import type { SIWXStorage } from '../core/SIWXStorage.js'
 

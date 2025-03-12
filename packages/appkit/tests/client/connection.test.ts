@@ -1,7 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { MockInstance } from 'vitest'
 
-import { AccountController, type ConnectorType, StorageUtil } from '@reown/appkit-core'
+import {
+  AccountController,
+  type Connector,
+  ConnectorController,
+  type ConnectorType,
+  StorageUtil
+} from '@reown/appkit-controllers'
 import { ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
@@ -15,15 +21,24 @@ import {
   mockWindowAndDocument
 } from '../test-utils.js'
 
-mockWindowAndDocument()
-mockStorageUtil()
-mockBlockchainApiController()
+const MOCKED_CONNECTORS = [
+  {
+    id: 'evm-connector'
+  } as unknown as Connector
+]
 
 describe('syncExistingConnection', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockWindowAndDocument()
+    mockStorageUtil()
+    mockBlockchainApiController()
+  })
+
   it('should set status to "connecting" and sync the connection when a connector and namespace are present', async () => {
     const setStatus = vi.spyOn(AccountController, 'setStatus')
-    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('evm-connector')
-    vi.spyOn(StorageUtil, 'getConnectionStatus').mockReturnValue('connected')
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('evm-connector')
+    vi.spyOn(ConnectorController, 'getConnectors').mockReturnValue(MOCKED_CONNECTORS)
 
     const appKit = new AppKit({
       ...mockOptions,
@@ -35,8 +50,8 @@ describe('syncExistingConnection', () => {
     expect(setStatus).toHaveBeenCalledWith('connecting', 'eip155')
     expect(setStatus).toHaveBeenCalledWith('connected', 'eip155')
 
-    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue(undefined)
-    vi.spyOn(StorageUtil, 'getConnectionStatus').mockReturnValue('connected')
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue(undefined)
+    vi.spyOn(ConnectorController, 'getConnectors').mockReturnValue([])
 
     await appKit['syncExistingConnection']()
 
@@ -48,10 +63,8 @@ describe('syncExistingConnection', () => {
   })
 
   it('should reconnect to multiple namespaces if previously connected', async () => {
-    const setConnectedConnectorId = vi.spyOn(StorageUtil, 'setConnectedConnectorId')
-    // const setProviderId = vi.spyOn(ProviderUtil, 'setProviderId').mockImplementation(() => {})
-    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('universal-connector')
-
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('evm-connector')
+    vi.spyOn(ConnectorController, 'getConnectors').mockReturnValue(MOCKED_CONNECTORS)
     const appKit = new AppKit(mockOptions)
     await appKit['syncExistingConnection']()
 
@@ -59,17 +72,6 @@ describe('syncExistingConnection', () => {
     expect(mockSolanaAdapter.syncConnection).toHaveBeenCalled()
     expect(mockEvmAdapter.getAccounts).toHaveBeenCalled()
     expect(mockSolanaAdapter.getAccounts).toHaveBeenCalled()
-
-    // NOTE: Even though setConnectedConnectorId is getting called in the same function (syncProvider),
-    // it's getting detected as not called by the test runner.
-    // expect(setProviderId).toHaveBeenCalledWith('eip155', 'EXTERNAL')
-    // expect(setProviderId).toHaveBeenCalledWith('solana', 'EXTERNAL')
-
-    expect(setConnectedConnectorId).toHaveBeenCalledWith('eip155', 'evm-connector')
-    expect(setConnectedConnectorId).toHaveBeenCalledWith('solana', 'solana-connector')
-
-    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockClear()
-    vi.spyOn(StorageUtil, 'getConnectionStatus').mockClear()
   })
 })
 
@@ -78,10 +80,14 @@ describe('syncConnectedWalletInfo', () => {
   let setConnectedWalletInfoSpy: MockInstance<AppKit['setConnectedWalletInfo']>
 
   beforeEach(() => {
-    vi.spyOn(StorageUtil, 'getConnectedConnectorId').mockReturnValue('mock-connector-id')
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('mock-connector-id')
+    vi.spyOn(ConnectorController, 'getConnectors').mockReturnValue([
+      {
+        id: 'mock-connector-id'
+      } as unknown as Connector
+    ])
     appKit = new AppKit(mockOptions)
     setConnectedWalletInfoSpy = vi.spyOn(appKit, 'setConnectedWalletInfo')
-    vi.clearAllMocks()
   })
 
   it.each([

@@ -46,6 +46,9 @@ export class ModalWalletPage extends ModalPage {
     await expect(toggleButton, 'Toggle button should be visible').toBeVisible()
     await expect(toggleButton, 'Toggle button should be enabled').toBeEnabled()
     await toggleButton.click()
+    const loadingSpinner = this.page.getByTestId('wui-list-item-loading-spinner')
+    await expect(loadingSpinner, 'Loading spinner should be visible').toBeVisible()
+    await expect(loadingSpinner, 'Loading spinner should not be visible').toBeHidden()
   }
 
   override async disconnect(): Promise<void> {

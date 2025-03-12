@@ -6,7 +6,7 @@ import {
   type ChainControllerState,
   ModalController,
   type ModalControllerState
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import type { W3mAccountButton } from '../../exports'
 import { W3mButton } from '../../src/modal/w3m-button'
@@ -100,12 +100,9 @@ describe('W3mButton', () => {
 
   it('unsubscribe from state changes on disconnect', async () => {
     const mockUnsubscribeChain = vi.fn()
-    const mockUnsubscribeModal = vi.fn()
     vi.spyOn(ChainController, 'subscribeKey').mockReturnValue(mockUnsubscribeChain)
-    vi.spyOn(ModalController, 'subscribeKey').mockReturnValue(mockUnsubscribeModal)
     const element: W3mButton = await fixture(html`<appkit-button></appkit-button>`)
     element.disconnectedCallback()
     expect(mockUnsubscribeChain).toHaveBeenCalled()
-    expect(mockUnsubscribeModal).toHaveBeenCalled()
   })
 })

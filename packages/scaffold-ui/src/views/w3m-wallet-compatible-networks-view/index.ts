@@ -2,7 +2,12 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { AccountController, AssetUtil, ChainController, CoreHelperUtil } from '@reown/appkit-core'
+import {
+  AccountController,
+  AssetUtil,
+  ChainController,
+  CoreHelperUtil
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-banner'
 import '@reown/appkit-ui/wui-flex'

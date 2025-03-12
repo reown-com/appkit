@@ -22,7 +22,6 @@ import {
   writeContract as wagmiWriteContract,
   waitForTransactionReceipt,
   watchAccount,
-  watchConnections,
   watchConnectors,
   watchPendingTransactions
 } from '@wagmi/core'
@@ -44,12 +43,12 @@ import {
   NetworkUtil,
   isReownName
 } from '@reown/appkit-common'
-import { CoreHelperUtil, StorageUtil } from '@reown/appkit-core'
+import { CoreHelperUtil, StorageUtil } from '@reown/appkit-controllers'
 import {
   type ConnectorType,
   ConstantsUtil as CoreConstantsUtil,
   type Provider
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
@@ -237,13 +236,6 @@ export class WagmiAdapter extends AdapterBlueprint {
               chainId: accountData.chainId
             })
           }
-        }
-      }
-    })
-    watchConnections(this.wagmiConfig, {
-      onChange: connections => {
-        if (connections.length === 0) {
-          this.emit('disconnect')
         }
       }
     })
@@ -564,7 +556,12 @@ export class WagmiAdapter extends AdapterBlueprint {
   public async getBalance(
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
+    const address = params.address
     const caipNetwork = this.caipNetworks?.find(network => network.id === params.chainId)
+
+    if (!address) {
+      return Promise.resolve({ balance: '0.00', symbol: 'ETH' })
+    }
 
     if (caipNetwork && this.wagmiConfig) {
       const caipAddress = `${caipNetwork.caipNetworkId}:${params.address}`
@@ -600,7 +597,7 @@ export class WagmiAdapter extends AdapterBlueprint {
         delete this.balancePromises[caipAddress]
       })
 
-      return this.balancePromises[caipAddress] || { balance: '', symbol: '' }
+      return this.balancePromises[caipAddress] || { balance: '0.00', symbol: 'ETH' }
     }
 
     return { balance: '', symbol: '' }
@@ -646,6 +643,7 @@ export class WagmiAdapter extends AdapterBlueprint {
 
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams) {
     await switchChain(this.wagmiConfig, { chainId: params.caipNetwork.id as number })
+    await super.switchNetwork(params)
   }
 
   public async getCapabilities(params: string) {

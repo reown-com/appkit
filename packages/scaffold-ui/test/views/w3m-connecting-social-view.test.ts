@@ -12,7 +12,7 @@ import {
   ModalController,
   OptionsController,
   RouterController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import { W3mConnectingSocialView } from '../../src/views/w3m-connecting-social-view'
 

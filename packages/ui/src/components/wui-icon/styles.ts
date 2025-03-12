@@ -3,7 +3,7 @@ import { css } from 'lit'
 export default css`
   :host {
     display: flex;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: var(--local-aspect-ratio);
     color: var(--local-color);
     width: var(--local-width);
   }

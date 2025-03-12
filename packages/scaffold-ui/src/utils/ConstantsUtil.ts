@@ -1,4 +1,4 @@
-import type { ConnectMethod } from '@reown/appkit-core'
+import type { ConnectMethod } from '@reown/appkit-controllers'
 
 export const ConstantsUtil = {
   ACCOUNT_TABS: [{ label: 'Tokens' }, { label: 'NFTs' }, { label: 'Activity' }],

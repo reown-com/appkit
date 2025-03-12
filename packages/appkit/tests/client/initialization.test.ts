@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { type AppKitNetwork } from '@reown/appkit-common'
 import {
@@ -7,21 +7,23 @@ import {
   EventsController,
   OptionsController,
   StorageUtil
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
 import { mainnet, polygon, sepolia, solana } from '../mocks/Networks'
 import { mockOptions } from '../mocks/Options'
-import { mockBlockchainApiController, mockStorageUtil, mockWindowAndDocument } from '../test-utils'
-
-mockWindowAndDocument()
-mockStorageUtil()
-mockBlockchainApiController()
+import {
+  mockBlockchainApiController,
+  mockStorageUtil,
+  mockWindowAndDocument
+} from '../test-utils.js'
 
 describe('Base', () => {
-  afterEach(() => {
-    vi.clearAllMocks()
+  beforeEach(() => {
+    mockWindowAndDocument()
+    mockStorageUtil()
+    mockBlockchainApiController()
   })
 
   describe('Base Initialization', () => {

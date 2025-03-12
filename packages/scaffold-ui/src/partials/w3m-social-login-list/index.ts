@@ -13,7 +13,7 @@ import {
   RouterController,
   SnackController,
   type SocialProvider
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-social'

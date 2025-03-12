@@ -123,7 +123,7 @@ export const UiHelperUtil = {
     if (theme) {
       return theme
     } else if (typeof window !== 'undefined' && window.matchMedia) {
-      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      if (window.matchMedia('(prefers-color-scheme: dark)')?.matches) {
         return 'dark'
       }
 

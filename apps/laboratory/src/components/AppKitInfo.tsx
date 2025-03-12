@@ -42,12 +42,14 @@ export function AppKitInfo() {
 
       <CardBody>
         <Stack divider={<StackDivider />} spacing="4">
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              CAIP Address
-            </Heading>
-            <Text data-testid="w3m-caip-address">{caipAddress}</Text>
-          </Box>
+          {caipAddress ? (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                CAIP Address
+              </Heading>
+              <Text data-testid="w3m-caip-address">{caipAddress}</Text>
+            </Box>
+          ) : null}
 
           {erc3770Address && (
             <Box>
@@ -58,12 +60,14 @@ export function AppKitInfo() {
             </Box>
           )}
 
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Address
-            </Heading>
-            <Text data-testid="w3m-address">{address}</Text>
-          </Box>
+          {address ? (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Address
+              </Heading>
+              <Text data-testid="w3m-address">{address}</Text>
+            </Box>
+          ) : null}
 
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">

@@ -1,4 +1,4 @@
-import { ConstantsUtil, ThemeMode } from '@reown/appkit-core'
+import { ConstantsUtil, ThemeMode } from '@reown/appkit-controllers'
 
 export const defaultCustomizationConfig = {
   features: ConstantsUtil.DEFAULT_FEATURES,

@@ -29,8 +29,8 @@ import {
 import base58 from 'bs58'
 
 import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
-import type { RequestArguments } from '@reown/appkit-core'
-import type { Provider as CoreProvider } from '@reown/appkit-core'
+import type { RequestArguments } from '@reown/appkit-controllers'
+import type { Provider as CoreProvider } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
 import type {
   AnyTransaction,

@@ -2,7 +2,7 @@ import type { SessionTypes } from '@walletconnect/types'
 import UniversalProvider from '@walletconnect/universal-provider'
 
 import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
-import { SIWXUtil } from '@reown/appkit-core'
+import { SIWXUtil } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
 
 import type { ChainAdapterConnector } from '../adapters/ChainAdapterConnector.js'

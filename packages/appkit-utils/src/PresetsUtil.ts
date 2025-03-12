@@ -1,5 +1,5 @@
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import type { ConnectorType } from '@reown/appkit-core'
+import type { ConnectorType } from '@reown/appkit-controllers'
 
 import { ConstantsUtil } from './ConstantsUtil.js'
 
@@ -97,6 +97,8 @@ export const PresetsUtil = {
     2020: 'b8101fc0-9c19-4b6f-ec65-f6dfff106e00',
     // Saigon Testnet (a.k.a. Ronin)
     2021: 'b8101fc0-9c19-4b6f-ec65-f6dfff106e00',
+    // Berachain Mainnet
+    80094: 'e329c2c9-59b0-4a02-83e4-212ff3779900',
     // Solana networks
     '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'a1b58899-f671-4276-6a5e-56ca5bd59700',
     '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z': 'a1b58899-f671-4276-6a5e-56ca5bd59700',
