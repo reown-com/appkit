@@ -2,6 +2,7 @@
 import {
   type CaipAddress,
   type CaipNetwork,
+  type CaipNetworkId,
   type ChainNamespace,
   ConstantsUtil,
   getW3mThemeVariables
@@ -29,6 +30,7 @@ import { W3mFrameHelpers, W3mFrameProvider } from '@reown/appkit-wallet'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
+import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import { W3mFrameProviderSingleton } from '../auth-provider/W3MFrameProviderSingleton.js'
 import { ProviderUtil } from '../store/ProviderUtil.js'
 import { AppKitCore, type AppKitOptionsWithSdk } from './core.js'
@@ -420,6 +422,57 @@ export class AppKit extends AppKitCore {
   protected override async initChainAdapter(namespace: ChainNamespace): Promise<void> {
     await super.initChainAdapter(namespace)
     this.createAuthProviderForAdapter(namespace)
+  }
+
+  public override async syncIdentity({
+    address,
+    chainId,
+    chainNamespace
+  }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
+    chainNamespace: ChainNamespace
+  }) {
+    const caipNetworkId: CaipNetworkId = `${chainNamespace}:${chainId}`
+    const activeCaipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
+
+    if (chainNamespace !== ConstantsUtil.CHAIN.EVM || activeCaipNetwork?.testnet) {
+      this.setProfileName(null, chainNamespace)
+      this.setProfileImage(null, chainNamespace)
+
+      return
+    }
+
+    try {
+      const { name, avatar } = await this.fetchIdentity({
+        address,
+        caipNetworkId
+      })
+
+      this.setProfileName(name, chainNamespace)
+      this.setProfileImage(avatar, chainNamespace)
+
+      if (!name) {
+        const adapter = this.getAdapter(chainNamespace)
+        const result = await adapter?.getProfile({
+          address,
+          chainId: Number(chainId)
+        })
+
+        if (result?.profileName) {
+          this.setProfileName(result.profileName, chainNamespace)
+          if (result.profileImage) {
+            this.setProfileImage(result.profileImage, chainNamespace)
+          }
+        } else {
+          await this.syncReownName(address, chainNamespace)
+          this.setProfileImage(null, chainNamespace)
+        }
+      }
+    } catch {
+      await this.syncReownName(address, chainNamespace)
+      if (chainId !== 1) {
+        this.setProfileImage(null, chainNamespace)
+      }
+    }
   }
 
   protected override syncConnectedWalletInfo(chainNamespace: ChainNamespace): void {
