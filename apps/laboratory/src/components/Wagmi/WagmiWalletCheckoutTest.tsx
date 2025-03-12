@@ -24,7 +24,9 @@ import {
   Stack,
   Text,
   VStack,
-  useDisclosure
+  useDisclosure,
+  Badge,
+  Tooltip
 } from '@chakra-ui/react'
 import {  encodeFunctionData, erc20Abi } from 'viem'
 import { type Config } from 'wagmi'
@@ -40,16 +42,18 @@ import {
 
 import { useChakraToast } from '../Toast'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+import { ConfigurePaymentOptions } from '../ConfigurePaymentOptions'
 
 const ALLOWED_CHAINS = [sepolia, baseSepolia]
 const ALLOWED_CHAINIDS = ALLOWED_CHAINS.map(chain => chain.id) as number[]
 
 const DONUT_PRICE = 0.1
 
-interface PurchaseDonutFormProps {
+interface DonutCheckoutProps {
   isOpen: boolean
   onClose: () => void
   config: Config
+  paymentOptions: PaymentOption[]
 }
 
 const PRODUCT_METADATA = {
@@ -60,30 +64,31 @@ const PRODUCT_METADATA = {
 }
 
 /**
+ * Default payment options:
  * First payment option is for direct payment - of 0.1 USDC on baseSepolia to the recipient
  * Second payment option is for direct payment - of 0.1 USDC on sepolia to the recipient
  * Third payment option is for direct payment - of 0.1 USDC on optimism to the recipient
  * Fourth payment option is for contract payment - of 0.1 USDC on baseSepolia to the recipient
  */
-const ACCEPTED_PAYMENTS: PaymentOption[] = [
+const DEFAULT_PAYMENT_OPTIONS: PaymentOption[] = [
   {
     recipient: 'eip155:84532:0xD39483aE92522cd804CEB9DEA399F62E268297AC',
     asset: 'eip155:84532/erc20:0x036CbD53842c5426634e7929541eC2318f3dCF7e',
-    amount: '0x186A0'
+    amount: '0x186A0' as `0x${string}`
   },
   {
     recipient: 'eip155:11155111:0xD39483aE92522cd804CEB9DEA399F62E268297AC',
     asset: 'eip155:11155111/erc20:0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
-    amount: '0x186A0'
+    amount: '0x186A0' as `0x${string}`
   },
   {
     recipient: 'eip155:11155420:0xD39483aE92522cd804CEB9DEA399F62E268297AC',
     asset: 'eip155:11155420/erc20:0x5fd84259d66Cd46123540766Be93DFE6D43130D7',
-    amount: '0x186A0'
+    amount: '0x186A0' as `0x${string}`
   },
   {
     asset: 'eip155:84532/erc20:0x036CbD53842c5426634e7929541eC2318f3dCF7e',
-    amount: '0x186A0',
+    amount: '0x186A0' as `0x${string}`,
     contractInteraction: {
       type: 'evm-calls',
       data: [
@@ -92,18 +97,19 @@ const ACCEPTED_PAYMENTS: PaymentOption[] = [
           data: encodeFunctionData({
             abi: erc20Abi,
             functionName: 'transfer',
-            args: ['0xD39483aE92522cd804CEB9DEA399F62E268297AC', BigInt(100000)]
+            args: ['0xD39483aE92522cd804CEB9DEA399F62E268297AC' as `0x${string}`, BigInt(100000)]
           }),
           value: '0x0'
         }
       ]
     } as EvmContractInteraction
   }
-]
+];
 
-function PurchaseDonutForm({ isOpen, onClose }: PurchaseDonutFormProps) {
+function DonutCheckout({ isOpen, onClose, paymentOptions }: DonutCheckoutProps) {
   const [donutCount, setDonutCount] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
+  
   const { sendWalletCheckout, isWalletCheckoutSupported } = useWalletCheckout()
   const toast = useChakraToast()
 
@@ -115,16 +121,22 @@ function PurchaseDonutForm({ isOpen, onClose }: PurchaseDonutFormProps) {
       const orderId = crypto.randomUUID()
       const expiry = Math.floor(Date.now() / 1000) + 60 * 60
 
-      // Adjust payments based on donut count
-      const adjustedPayments: PaymentOption[] = ACCEPTED_PAYMENTS.map(payment => {
-        const originalAmount = parseInt(payment.amount, 16)
-        const newAmount = (originalAmount * donutCount).toString(16)
-
+      // Adjust all payment options based on donut count
+      const adjustedPayments: PaymentOption[] = paymentOptions.map(payment => {
+        // Skip if amount is not present (should not happen)
+        if (!payment.amount) {
+          return payment;
+        }
+        
+        // Parse hex amount and multiply by donut count
+        const originalAmount = parseInt(payment.amount, 16);
+        const newAmount = (originalAmount * donutCount).toString(16);
+        
         return {
           ...payment,
           amount: `0x${newAmount}`
-        }
-      })
+        };
+      });
 
       const walletCheckoutRequest: CheckoutRequest = {
         orderId,
@@ -231,13 +243,20 @@ function PurchaseDonutForm({ isOpen, onClose }: PurchaseDonutFormProps) {
             </Stack>
           </Card>
 
-          <Spacer my={2} />
+          <Spacer my={4} />
 
           <VStack spacing={3} align="stretch">
             <Flex justify="space-between" align="center">
-              <Text>Accepted Payments</Text>
+              <Text fontWeight="medium">Payment Options</Text>
+              <Badge colorScheme={paymentOptions.length > 0 ? "green" : "red"} fontSize="0.9em" py={1} px={2} borderRadius="md">
+                {paymentOptions.length} {paymentOptions.length === 1 ? 'Option' : 'Options'} Configured
+              </Badge>
             </Flex>
+          </VStack>
+          
+          <Divider my={3} />
 
+          <VStack spacing={3} align="stretch">
             <Flex justify="space-between" align="center">
               <Text>Total</Text>
               <Text fontSize="lg" fontWeight="bold">
@@ -245,15 +264,13 @@ function PurchaseDonutForm({ isOpen, onClose }: PurchaseDonutFormProps) {
               </Text>
             </Flex>
           </VStack>
-
-          <Divider my={2} />
         </ModalBody>
 
         <ModalFooter py={2}>
           <Button
             data-testid="checkout-button"
             onClick={onCheckout}
-            disabled={isLoading || !isWalletCheckoutSupported}
+            disabled={isLoading || !isWalletCheckoutSupported || paymentOptions.length === 0}
             isLoading={isLoading}
             width="full"
             size="md"
@@ -273,9 +290,13 @@ interface IBaseProps {
 export function WagmiWalletCheckoutTest({ config }: IBaseProps) {
   const { chainId } = useAppKitNetwork()
   const { status } = useAppKitAccount({ namespace: 'eip155' })
-  console.log('chainId', chainId)
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  
+  // State for payment configuration that can be updated in the configure modal
+  const [paymentOptions, setPaymentOptions] = useState<PaymentOption[]>(DEFAULT_PAYMENT_OPTIONS);
+  
+  // Create separate disclosures for each mode
+  const { isOpen: isPurchaseOpen, onOpen: onPurchaseOpen, onClose: onPurchaseClose } = useDisclosure()
+  const { isOpen: isConfigOpen, onOpen: onConfigOpen, onClose: onConfigClose } = useDisclosure()
 
   if (!ALLOWED_CHAINIDS.includes(Number(chainId)) || status !== 'connected' || !chainId) {
     return (
@@ -294,9 +315,42 @@ export function WagmiWalletCheckoutTest({ config }: IBaseProps) {
 
   return (
     <>
-      <Button onClick={onOpen}>Purchase Donut</Button>
+      <HStack spacing={4}>
+        <Tooltip 
+          label={paymentOptions.length === 0 ? "Configure payment options first" : ""}
+          isDisabled={paymentOptions.length > 0}
+          hasArrow
+        >
+          <Button 
+            onClick={onPurchaseOpen} 
+            isDisabled={paymentOptions.length === 0}
+            data-testid="purchase-button"
+          >
+            Purchase Donut
+          </Button>
+        </Tooltip>
+        <Button onClick={onConfigOpen} variant="outline">
+          Configure Payment Options ({paymentOptions.length})
+        </Button>
+      </HStack>
 
-      <PurchaseDonutForm isOpen={isOpen} onClose={onClose} config={config} />
+      {isPurchaseOpen && (
+        <DonutCheckout 
+          isOpen={isPurchaseOpen} 
+          onClose={onPurchaseClose} 
+          config={config} 
+          paymentOptions={paymentOptions}
+        />
+      )}
+      
+      {isConfigOpen && (
+        <ConfigurePaymentOptions 
+          isOpen={isConfigOpen} 
+          onClose={onConfigClose} 
+          paymentOptions={paymentOptions}
+          onPaymentOptionsChange={setPaymentOptions}
+        />
+      )}
     </>
   )
 }
