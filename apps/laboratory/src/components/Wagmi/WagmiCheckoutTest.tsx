@@ -1,4 +1,13 @@
-import { Box, Card, CardBody, CardHeader, Heading, Stack, StackDivider, Text } from '@chakra-ui/react'
+import {
+  Box,
+  Card,
+  CardBody,
+  CardHeader,
+  Heading,
+  Stack,
+  StackDivider,
+  Text
+} from '@chakra-ui/react'
 import type { Config } from 'wagmi'
 
 import { useAppKitAccount } from '@reown/appkit/react'

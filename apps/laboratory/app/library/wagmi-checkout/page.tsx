@@ -8,9 +8,9 @@ import { type AppKitNetwork, baseSepolia, sepolia } from '@reown/appkit/networks
 import { createAppKit } from '@reown/appkit/react'
 
 import { AppKitButtons } from '@/src/components/AppKitButtons'
+import { WagmiCheckoutTests } from '@/src/components/Wagmi/WagmiCheckoutTest'
 import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 import { ThemeStore } from '@/src/utils/StoreUtil'
-import { WagmiCheckoutTests } from '@/src/components/Wagmi/WagmiCheckoutTest'
 
 const queryClient = new QueryClient()
 

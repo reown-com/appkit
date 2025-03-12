@@ -4,6 +4,7 @@ import React from 'react'
 
 import { AddIcon, MinusIcon } from '@chakra-ui/icons'
 import {
+  Badge,
   Box,
   Button,
   Card,
@@ -23,18 +24,14 @@ import {
   Spacer,
   Stack,
   Text,
-  VStack,
-  Badge,
+  VStack
 } from '@chakra-ui/react'
-
+import type { Config } from 'wagmi'
 
 import { useWalletCheckout } from '@/src/hooks/useWalletCheckout'
-import {
-  type CheckoutRequest,
-  type PaymentOption
-} from '@/src/types/wallet_checkout'
+import { type CheckoutRequest, type PaymentOption } from '@/src/types/wallet_checkout'
+
 import { useChakraToast } from './Toast'
-import type { Config } from 'wagmi'
 
 const DONUT_PRICE = 0.1
 
@@ -52,11 +49,10 @@ interface DonutCheckoutProps {
   paymentOptions: PaymentOption[]
 }
 
-
 export default function DonutCheckout({ isOpen, onClose, paymentOptions }: DonutCheckoutProps) {
   const [donutCount, setDonutCount] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
-  
+
   const { sendWalletCheckout, isWalletCheckoutSupported } = useWalletCheckout()
   const toast = useChakraToast()
 
@@ -72,18 +68,18 @@ export default function DonutCheckout({ isOpen, onClose, paymentOptions }: Donut
       const adjustedPayments: PaymentOption[] = paymentOptions.map(payment => {
         // Skip if amount is not present (should not happen)
         if (!payment.amount) {
-          return payment;
+          return payment
         }
-        
+
         // Parse hex amount and multiply by donut count
-        const originalAmount = parseInt(payment.amount, 16);
-        const newAmount = (originalAmount * donutCount).toString(16);
-        
+        const originalAmount = parseInt(payment.amount, 16)
+        const newAmount = (originalAmount * donutCount).toString(16)
+
         return {
           ...payment,
           amount: `0x${newAmount}`
-        };
-      });
+        }
+      })
 
       const walletCheckoutRequest: CheckoutRequest = {
         orderId,
@@ -195,12 +191,19 @@ export default function DonutCheckout({ isOpen, onClose, paymentOptions }: Donut
           <VStack spacing={3} align="stretch">
             <Flex justify="space-between" align="center">
               <Text fontWeight="medium">Payment Options</Text>
-              <Badge colorScheme={paymentOptions.length > 0 ? "green" : "red"} fontSize="0.9em" py={1} px={2} borderRadius="md">
-                {paymentOptions.length} {paymentOptions.length === 1 ? 'Option' : 'Options'} Configured
+              <Badge
+                colorScheme={paymentOptions.length > 0 ? 'green' : 'red'}
+                fontSize="0.9em"
+                py={1}
+                px={2}
+                borderRadius="md"
+              >
+                {paymentOptions.length} {paymentOptions.length === 1 ? 'Option' : 'Options'}{' '}
+                Configured
               </Badge>
             </Flex>
           </VStack>
-          
+
           <Divider my={3} />
 
           <VStack spacing={3} align="stretch">

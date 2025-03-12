@@ -13,23 +13,21 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
-  Text,
-  VStack,
-  Tabs,
-  TabList,
-  TabPanels,
   Tab,
-  TabPanel
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
+  VStack
 } from '@chakra-ui/react'
 
 import { baseSepolia, sepolia } from '@reown/appkit/networks'
 
-import {
-  type PaymentOption
-} from '@/src/types/wallet_checkout'
+import { type PaymentOption } from '@/src/types/wallet_checkout'
 
 // Chain IDs for Base Sepolia and Ethereum Sepolia testnets
-type AllowedChainId = 84532 | 11155111;
+type AllowedChainId = 84532 | 11155111
 
 const ALLOWED_CHAINS = [sepolia, baseSepolia]
 
@@ -37,14 +35,14 @@ interface ConfigurePaymentOptionsProps {
   isOpen: boolean
   onClose: () => void
   paymentOptions: PaymentOption[]
-  onPaymentOptionsChange: (options: PaymentOption[]) => void;
+  onPaymentOptionsChange: (options: PaymentOption[]) => void
 }
 
-export function ConfigurePaymentOptions({ 
-  isOpen, 
-  onClose, 
-  paymentOptions, 
-  onPaymentOptionsChange 
+export function ConfigurePaymentOptions({
+  isOpen,
+  onClose,
+  paymentOptions,
+  onPaymentOptionsChange
 }: ConfigurePaymentOptionsProps) {
   // For managing draft payment options
   const [draftPaymentOptions, setDraftPaymentOptions] = useState<PaymentOption[]>(paymentOptions)
@@ -55,13 +53,13 @@ export function ConfigurePaymentOptions({
 
   // Helper function to get chain name from chain ID
   function getChainName(chainId: string | number): string {
-    const chain = ALLOWED_CHAINS.find(c => c.id === Number(chainId));
+    const chain = ALLOWED_CHAINS.find(c => c.id === Number(chainId))
 
-    return chain?.name || `Chain ${chainId}`;
+    return chain?.name || `Chain ${chainId}`
   }
 
   // Token pairs for different chains
-  const tokenPairs: Record<number, {address: string, name: string}[]> = {
+  const tokenPairs: Record<number, { address: string; name: string }[]> = {
     [sepolia.id]: [
       {
         address: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
@@ -78,34 +76,34 @@ export function ConfigurePaymentOptions({
 
   // Validate Ethereum address format
   function validateAddress(address: string): boolean {
-    const ethAddressRegex = /^0x[a-fA-F0-9]{40}$/u;
-    
-    return ethAddressRegex.test(address);
+    const ethAddressRegex = /^0x[a-fA-F0-9]{40}$/u
+
+    return ethAddressRegex.test(address)
   }
 
   // Handle recipient address change with validation
   function handleRecipientChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const address = e.target.value;
-    setNewRecipient(address);
-    
+    const address = e.target.value
+    setNewRecipient(address)
+
     if (address && !validateAddress(address)) {
-      setAddressError('Invalid Ethereum address format');
+      setAddressError('Invalid Ethereum address format')
     } else {
-      setAddressError(null);
+      setAddressError(null)
     }
   }
 
   // Remove a payment option
   function handleRemovePaymentOption(index: number) {
-    const updated = [...draftPaymentOptions];
-    updated.splice(index, 1);
-    setDraftPaymentOptions(updated);
+    const updated = [...draftPaymentOptions]
+    updated.splice(index, 1)
+    setDraftPaymentOptions(updated)
   }
 
   // Add a new payment option
   function handleAddPaymentOption() {
     if (!newRecipient || !newToken || addressError) {
-      return;
+      return
     }
 
     // Default amount (100000 = 0.1 USDC)
@@ -113,17 +111,17 @@ export function ConfigurePaymentOptions({
       recipient: `eip155:${selectedChainId}:${newRecipient}`,
       asset: `eip155:${selectedChainId}/erc20:${newToken}`,
       amount: '0x186A0' as `0x${string}`
-    };
+    }
 
-    setDraftPaymentOptions([...draftPaymentOptions, newOption]);
-    setNewRecipient('');
-    setNewToken('');
+    setDraftPaymentOptions([...draftPaymentOptions, newOption])
+    setNewRecipient('')
+    setNewToken('')
   }
 
   // Save configuration
   function handleSaveConfig() {
-    onPaymentOptionsChange(draftPaymentOptions);
-    onClose();
+    onPaymentOptionsChange(draftPaymentOptions)
+    onClose()
   }
 
   return (
@@ -137,34 +135,44 @@ export function ConfigurePaymentOptions({
               <Tab>Current Options ({draftPaymentOptions.length})</Tab>
               <Tab>Add New Option</Tab>
             </TabList>
-            
+
             <TabPanels>
               {/* Current Options Tab */}
               <TabPanel px={0}>
                 <VStack spacing={4} align="stretch">
                   {draftPaymentOptions.length === 0 ? (
                     <Box p={4} borderRadius="md" textAlign="center">
-                      <Text color="gray.500">No payment options configured. Switch to the "Add New Option" tab to add one.</Text>
+                      <Text color="gray.500">
+                        No payment options configured. Switch to the "Add New Option" tab to add
+                        one.
+                      </Text>
                     </Box>
                   ) : (
                     draftPaymentOptions.map((option, index) => {
                       // Extract chain ID and recipient from CAIP format
-                      const assetParts = option.asset?.split('/') || [];
-                      const chainPart = assetParts[0]?.split(':') || [];
-                      const tokenPart = assetParts[1]?.split(':') || [];
-                      const chainId = chainPart[1] || '';
-                      const tokenAddress = tokenPart[1] || '';
-                      
-                      let recipientAddress = '';
+                      const assetParts = option.asset?.split('/') || []
+                      const chainPart = assetParts[0]?.split(':') || []
+                      const tokenPart = assetParts[1]?.split(':') || []
+                      const chainId = chainPart[1] || ''
+                      const tokenAddress = tokenPart[1] || ''
+
+                      let recipientAddress = ''
                       if (option.recipient) {
-                        const recipientParts = option.recipient.split(':');
-                        recipientAddress = recipientParts[2] || '';
+                        const recipientParts = option.recipient.split(':')
+                        recipientAddress = recipientParts[2] || ''
                       }
-                      
-                      const isContractInteraction = Boolean(option.contractInteraction);
-                      
+
+                      const isContractInteraction = Boolean(option.contractInteraction)
+
                       return (
-                        <HStack key={index} p={3} borderRadius="md" justify="space-between" borderWidth="1px" borderColor="gray.200">
+                        <HStack
+                          key={index}
+                          p={3}
+                          borderRadius="md"
+                          justify="space-between"
+                          borderWidth="1px"
+                          borderColor="gray.200"
+                        >
                           <VStack align="start" spacing={1}>
                             <Text fontWeight="medium">
                               {isContractInteraction ? 'Contract Interaction' : 'Direct Payment'}
@@ -188,20 +196,22 @@ export function ConfigurePaymentOptions({
                             Remove
                           </Button>
                         </HStack>
-                      );
+                      )
                     })
                   )}
                 </VStack>
               </TabPanel>
-              
+
               {/* Add New Option Tab */}
               <TabPanel px={0}>
                 <VStack spacing={4} align="stretch">
                   <Box>
-                    <Text fontSize="sm" mb={1}>Chain</Text>
+                    <Text fontSize="sm" mb={1}>
+                      Chain
+                    </Text>
                     <Select
                       value={selectedChainId.toString()}
-                      onChange={(e) => setSelectedChainId(Number(e.target.value) as AllowedChainId)}
+                      onChange={e => setSelectedChainId(Number(e.target.value) as AllowedChainId)}
                       size="md"
                       mb={2}
                     >
@@ -211,8 +221,10 @@ export function ConfigurePaymentOptions({
                         </option>
                       ))}
                     </Select>
-                    
-                    <Text fontSize="sm" mb={1}>Recipient Address</Text>
+
+                    <Text fontSize="sm" mb={1}>
+                      Recipient Address
+                    </Text>
                     <Input
                       value={newRecipient}
                       onChange={handleRecipientChange}
@@ -226,23 +238,26 @@ export function ConfigurePaymentOptions({
                         {addressError}
                       </Text>
                     )}
-                    
-                    <Text fontSize="sm" mb={1}>Token</Text>
+
+                    <Text fontSize="sm" mb={1}>
+                      Token
+                    </Text>
                     <Select
                       value={newToken}
-                      onChange={(e) => setNewToken(e.target.value)}
+                      onChange={e => setNewToken(e.target.value)}
                       size="md"
                       mb={2}
                     >
                       <option value="">Select a token</option>
                       {tokenPairs[selectedChainId]?.map((token, index) => (
                         <option key={index} value={token.address}>
-                          {token.name} ({token.address.substring(0, 6)}...{token.address.substring(token.address.length - 4)})
+                          {token.name} ({token.address.substring(0, 6)}...
+                          {token.address.substring(token.address.length - 4)})
                         </option>
                       ))}
                     </Select>
                   </Box>
-                  
+
                   <HStack>
                     <Button
                       onClick={handleAddPaymentOption}
@@ -260,15 +275,11 @@ export function ConfigurePaymentOptions({
         </ModalBody>
 
         <ModalFooter py={2}>
-          <Button
-            onClick={handleSaveConfig}
-            width="full"
-            size="md"
-          >
+          <Button onClick={handleSaveConfig} width="full" size="md">
             Save Configuration
           </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
-  );
-} 
+  )
+}

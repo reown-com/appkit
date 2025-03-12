@@ -2,27 +2,18 @@
 import { useState } from 'react'
 import React from 'react'
 
-import {
-  Button,
-  HStack,
-  Text,
-  useDisclosure,
-  Tooltip
-} from '@chakra-ui/react'
-import {  encodeFunctionData, erc20Abi } from 'viem'
+import { Button, HStack, Text, Tooltip, useDisclosure } from '@chakra-ui/react'
+import { encodeFunctionData, erc20Abi } from 'viem'
 import { type Config } from 'wagmi'
 
 import { baseSepolia, sepolia } from '@reown/appkit/networks'
-
-import {
-  type EvmContractInteraction,
-  type PaymentOption
-} from '@/src/types/wallet_checkout'
-
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+
+import { type EvmContractInteraction, type PaymentOption } from '@/src/types/wallet_checkout'
+import { vitalikEthAddress } from '@/src/utils/DataUtil'
+
 import { ConfigurePaymentOptions } from '../ConfigurePaymentOptions'
 import DonutCheckout from '../DonutCheckout'
-import { vitalikEthAddress } from '@/src/utils/DataUtil'
 
 const ALLOWED_CHAINS = [sepolia, baseSepolia]
 const ALLOWED_CHAINIDS = ALLOWED_CHAINS.map(chain => chain.id) as number[]
@@ -62,7 +53,7 @@ const DEFAULT_PAYMENT_OPTIONS: PaymentOption[] = [
       ]
     } as EvmContractInteraction
   }
-];
+]
 
 interface IBaseProps {
   config?: Config
@@ -71,12 +62,16 @@ interface IBaseProps {
 export function WagmiWalletCheckoutTest({ config }: IBaseProps) {
   const { chainId } = useAppKitNetwork()
   const { status } = useAppKitAccount({ namespace: 'eip155' })
-  
+
   // State for payment configuration that can be updated in the configure modal
-  const [paymentOptions, setPaymentOptions] = useState<PaymentOption[]>(DEFAULT_PAYMENT_OPTIONS);
-  
+  const [paymentOptions, setPaymentOptions] = useState<PaymentOption[]>(DEFAULT_PAYMENT_OPTIONS)
+
   // Create separate disclosures for each mode
-  const { isOpen: isPurchaseOpen, onOpen: onPurchaseOpen, onClose: onPurchaseClose } = useDisclosure()
+  const {
+    isOpen: isPurchaseOpen,
+    onOpen: onPurchaseOpen,
+    onClose: onPurchaseClose
+  } = useDisclosure()
   const { isOpen: isConfigOpen, onOpen: onConfigOpen, onClose: onConfigClose } = useDisclosure()
 
   if (!ALLOWED_CHAINIDS.includes(Number(chainId)) || status !== 'connected' || !chainId) {
@@ -97,13 +92,13 @@ export function WagmiWalletCheckoutTest({ config }: IBaseProps) {
   return (
     <>
       <HStack spacing={4}>
-        <Tooltip 
-          label={paymentOptions.length === 0 ? "Configure payment options first" : ""}
+        <Tooltip
+          label={paymentOptions.length === 0 ? 'Configure payment options first' : ''}
           isDisabled={paymentOptions.length > 0}
           hasArrow
         >
-          <Button 
-            onClick={onPurchaseOpen} 
+          <Button
+            onClick={onPurchaseOpen}
             isDisabled={paymentOptions.length === 0}
             data-testid="purchase-button"
           >
@@ -116,18 +111,18 @@ export function WagmiWalletCheckoutTest({ config }: IBaseProps) {
       </HStack>
 
       {isPurchaseOpen && (
-        <DonutCheckout 
-          isOpen={isPurchaseOpen} 
-          onClose={onPurchaseClose} 
-          config={config} 
+        <DonutCheckout
+          isOpen={isPurchaseOpen}
+          onClose={onPurchaseClose}
+          config={config}
           paymentOptions={paymentOptions}
         />
       )}
-      
+
       {isConfigOpen && (
-        <ConfigurePaymentOptions 
-          isOpen={isConfigOpen} 
-          onClose={onConfigClose} 
+        <ConfigurePaymentOptions
+          isOpen={isConfigOpen}
+          onClose={onConfigClose}
           paymentOptions={paymentOptions}
           onPaymentOptionsChange={setPaymentOptions}
         />
