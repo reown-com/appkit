@@ -13,7 +13,7 @@ export const CoreHelperUtil = {
   isMobile() {
     if (this.isClient()) {
       return Boolean(
-        window.matchMedia('(pointer:coarse)')?.matches ||
+        window?.matchMedia('(pointer:coarse)')?.matches ||
           /Android|webOS|iPhone|iPad|iPod|BlackBerry|Opera Mini/u.test(navigator.userAgent)
       )
     }
@@ -30,7 +30,7 @@ export const CoreHelperUtil = {
       return false
     }
 
-    const ua = window.navigator.userAgent.toLowerCase()
+    const ua = window?.navigator.userAgent.toLowerCase()
 
     return CoreHelperUtil.isMobile() && ua.includes('android')
   },
@@ -40,7 +40,7 @@ export const CoreHelperUtil = {
       return false
     }
 
-    const ua = window.navigator.userAgent.toLowerCase()
+    const ua = window?.navigator.userAgent.toLowerCase()
 
     return ua.includes('iphone') || ua.includes('ipad')
   },
@@ -50,7 +50,7 @@ export const CoreHelperUtil = {
       return false
     }
 
-    const ua = window.navigator.userAgent.toLowerCase()
+    const ua = window?.navigator.userAgent.toLowerCase()
 
     return ua.includes('safari')
   },
@@ -73,7 +73,7 @@ export const CoreHelperUtil = {
 
   isIframe() {
     try {
-      return window.self !== window.top
+      return window?.self !== window?.top
     } catch (e) {
       return false
     }
@@ -174,11 +174,11 @@ export const CoreHelperUtil = {
     return target
   },
   openHref(href: string, target: OpenTarget, features?: string) {
-    window.open(href, this.getOpenTargetForPlatform(target), features || 'noreferrer noopener')
+    window?.open(href, this.getOpenTargetForPlatform(target), features || 'noreferrer noopener')
   },
 
   returnOpenHref(href: string, target: OpenTarget, features?: string) {
-    return window.open(
+    return window?.open(
       href,
       this.getOpenTargetForPlatform(target),
       features || 'noreferrer noopener'
@@ -409,13 +409,13 @@ export const CoreHelperUtil = {
     )
   },
   isMac() {
-    const ua = window.navigator.userAgent.toLowerCase()
+    const ua = window?.navigator.userAgent.toLowerCase()
 
     return ua.includes('macintosh') && !ua.includes('safari')
   },
 
   formatTelegramSocialLoginUrl(url: string) {
-    const valueToInject = `--${encodeURIComponent(window.location.href)}`
+    const valueToInject = `--${encodeURIComponent(window?.location.href)}`
     const paramToInject = 'state='
     const parsedUrl = new URL(url)
     if (parsedUrl.host === 'auth.magic.link') {
