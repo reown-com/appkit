@@ -13,17 +13,17 @@
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@solana/wallet-adapter-backpack": "0.1.14",
     "@solana/wallet-adapter-wallets": "0.19.32",
-    "@tanstack/vue-query": "5.59.16",
+    "@tanstack/vue-query": "5.67.1",
     "@wagmi/connectors": "5.7.7",
     "@wagmi/core": "2.16.5",
-    "@wagmi/vue": "0.0.56",
+    "@wagmi/vue": "0.1.11",
     "viem": "2.23.5",
     "vue": "3.4.3"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "5.1.4",
-    "typescript": "5.7.3",
+    "@vitejs/plugin-vue": "5.2.1",
+    "typescript": "5.8.2",
     "vite": "5.4.10",
-    "vue-tsc": "2.1.8"
+    "vue-tsc": "2.2.8"
   }
 }

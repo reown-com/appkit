@@ -23,7 +23,7 @@ export interface AppKitEvent {
 }
 
 type OpenOptions = {
-  view:
+  view?:
     | 'Account'
     | 'Connect'
     | 'Networks'

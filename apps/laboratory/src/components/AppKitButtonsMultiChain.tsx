@@ -16,20 +16,17 @@ export function AppKitButtonsMultiChain() {
   const { open } = useAppKit()
   const { isConnected } = useAppKitAccount()
   const { disconnect } = useDisconnect()
-  const evmAccount = useAppKitAccount({ namespace: 'eip155' })
-  const solanaAccount = useAppKitAccount({ namespace: 'solana' })
-  const bitcoinAccount = useAppKitAccount({ namespace: 'bip122' })
 
   function handleConnectToEVM() {
-    open({ view: 'Connect', namespace: 'eip155' })
+    open({ namespace: 'eip155' })
   }
 
   function handleConnectToSolana() {
-    open({ view: 'Connect', namespace: 'solana' })
+    open({ namespace: 'solana' })
   }
 
   function handleConnectToBitcoin() {
-    open({ view: 'Connect', namespace: 'bip122' })
+    open({ namespace: 'bip122' })
   }
 
   return (
@@ -90,23 +87,17 @@ export function AppKitButtonsMultiChain() {
                 </Button>
               ) : null}
 
-              {!evmAccount.address && (
-                <Button data-testid="evm-connect-button" onClick={handleConnectToEVM}>
-                  Connect to EVM
-                </Button>
-              )}
+              <Button data-testid="evm-connect-button" onClick={handleConnectToEVM}>
+                Open EVM Modal
+              </Button>
 
-              {!solanaAccount.address && (
-                <Button data-testid="solana-connect-button" onClick={handleConnectToSolana}>
-                  Connect to Solana
-                </Button>
-              )}
+              <Button data-testid="solana-connect-button" onClick={handleConnectToSolana}>
+                Open Solana Modal
+              </Button>
 
-              {!bitcoinAccount.address && (
-                <Button data-testid="bitcoin-connect-button" onClick={handleConnectToBitcoin}>
-                  Connect to Bitcoin
-                </Button>
-              )}
+              <Button data-testid="bitcoin-connect-button" onClick={handleConnectToBitcoin}>
+                Open Bitcoin Modal
+              </Button>
             </Box>
           </Box>
         </Stack>

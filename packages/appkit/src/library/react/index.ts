@@ -19,7 +19,7 @@ import { ProviderUtil } from '../../store/ProviderUtil.js'
 import type { AppKitOptions } from '../../utils/TypesUtil.js'
 
 type OpenOptions = {
-  view:
+  view?:
     | 'Account'
     | 'Connect'
     | 'Networks'
