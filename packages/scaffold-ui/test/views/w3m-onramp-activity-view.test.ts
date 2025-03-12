@@ -10,7 +10,7 @@ import {
   OnRampController,
   OptionsController,
   TransactionsController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import { W3mOnRampActivityView } from '../../src/views/w3m-onramp-activity-view'
 

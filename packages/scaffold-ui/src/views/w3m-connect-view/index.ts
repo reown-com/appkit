@@ -15,7 +15,7 @@ import {
   OptionsController,
   RouterController,
   type WalletGuideType
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { MathUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-button'
@@ -99,7 +99,7 @@ export class W3mConnectView extends LitElement {
       this.resizeObserver = new ResizeObserver(() => {
         this.handleConnectListScroll()
       })
-      this.resizeObserver.observe(connectEl)
+      this.resizeObserver?.observe(connectEl)
       this.handleConnectListScroll()
     }
   }

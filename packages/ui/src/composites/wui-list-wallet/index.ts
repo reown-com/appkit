@@ -42,6 +42,8 @@ export class WuiListWallet extends LitElement {
 
   @property({ type: Boolean }) public loading = false
 
+  @property({ type: String }) public loadingSpinnerColor = 'accent-100'
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
@@ -81,7 +83,10 @@ export class WuiListWallet extends LitElement {
 
   private templateStatus() {
     if (this.loading) {
-      return html`<wui-loading-spinner size="lg" color="accent-100"></wui-loading-spinner>`
+      return html`<wui-loading-spinner
+        size="lg"
+        color=${this.loadingSpinnerColor}
+      ></wui-loading-spinner>`
     } else if (this.tagLabel && this.tagVariant) {
       return html`<wui-tag variant=${this.tagVariant}>${this.tagLabel}</wui-tag>`
     } else if (this.icon) {

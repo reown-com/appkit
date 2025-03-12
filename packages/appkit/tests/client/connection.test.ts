@@ -7,7 +7,7 @@ import {
   ConnectorController,
   type ConnectorType,
   StorageUtil
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
@@ -27,13 +27,12 @@ const MOCKED_CONNECTORS = [
   } as unknown as Connector
 ]
 
-mockWindowAndDocument()
-mockStorageUtil()
-mockBlockchainApiController()
-
 describe('syncExistingConnection', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockWindowAndDocument()
+    mockStorageUtil()
+    mockBlockchainApiController()
   })
 
   it('should set status to "connecting" and sync the connection when a connector and namespace are present', async () => {
@@ -89,7 +88,6 @@ describe('syncConnectedWalletInfo', () => {
     ])
     appKit = new AppKit(mockOptions)
     setConnectedWalletInfoSpy = vi.spyOn(appKit, 'setConnectedWalletInfo')
-    vi.clearAllMocks()
   })
 
   it.each([

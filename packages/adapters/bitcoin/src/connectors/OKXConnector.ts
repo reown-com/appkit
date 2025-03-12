@@ -1,5 +1,5 @@
 import { type CaipNetwork, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
-import { CoreHelperUtil, type RequestArguments } from '@reown/appkit-core'
+import { CoreHelperUtil, type RequestArguments } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
 import { bitcoin } from '@reown/appkit/networks'
 

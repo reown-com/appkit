@@ -70,8 +70,8 @@ async function checkUiPackage() {
       fail(`${f} is using @state decorator, which is not allowed in ui package`)
     }
 
-    if (diff?.added.includes('import @reown/appkit-core')) {
-      fail(`${f} is importing @reown/appkit-core, which is not allowed in ui package`)
+    if (diff?.added.includes('import @reown/appkit-controllers')) {
+      fail(`${f} is importing @reown/appkit-controllers, which is not allowed in ui package`)
     }
 
     if (!diff?.added.includes(RENDER_COMMENT) && diff?.added.includes('render()')) {
@@ -205,7 +205,7 @@ async function checkCorePackage() {
       fail(`${f} is using this.state, use just state`)
     }
 
-    if (diff?.added.includes('@reown/appkit-core/')) {
+    if (diff?.added.includes('@reown/appkit-controllers/')) {
       fail(`${f} should use relative imports instead of direct package access`)
     }
 
@@ -266,7 +266,7 @@ async function checkScaffoldHtmlPackage() {
     }
 
     if (
-      diff?.added.includes('@reown/appkit-core/') ||
+      diff?.added.includes('@reown/appkit-controllers/') ||
       diff?.added.includes('@reown/appkit-ui/') ||
       diff?.added.includes('@reown/scaffold/')
     ) {
@@ -300,8 +300,8 @@ async function checkClientPackages() {
   for (const f of client_files) {
     const diff = await diffForFile(f)
 
-    if (diff?.added.includes("from '@reown/appkit-core")) {
-      fail(`${f} is not allowed to import from @reown/appkit-core`)
+    if (diff?.added.includes("from '@reown/appkit-controllers")) {
+      fail(`${f} is not allowed to import from @reown/appkit-controllers`)
     }
 
     if (diff?.added.includes("from '@reown/appkit-ui")) {
