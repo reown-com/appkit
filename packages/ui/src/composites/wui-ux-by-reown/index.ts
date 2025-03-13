@@ -18,7 +18,7 @@ export class WuiUxByReown extends LitElement {
         justifyContent="center"
         alignItems="center"
         gap="xs"
-        .padding=${['l', '0', 'l', '0']}
+        .padding=${['0', '0', 'l', '0']}
       >
         <wui-text variant="small-500" color="fg-100"> UX by </wui-text>
         <wui-icon name="reown" size="xxxl" class="reown-logo"></wui-icon>
