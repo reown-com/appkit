@@ -19,8 +19,7 @@ concurrency:
 
 jobs:
   setup_and_build:
-    runs-on:
-      group: gh-ubuntu-runners
+    runs-on: ubuntu-latest
     steps:
       - name: checkout
         uses: actions/checkout@v4
