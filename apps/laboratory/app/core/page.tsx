@@ -1,7 +1,7 @@
 'use client'
 
 import { type AppKitNetwork, mainnet } from '@reown/appkit/networks'
-import { createAppKit } from '@reown/appkit/react-basic'
+import { createAppKit } from '@reown/appkit/react-core'
 
 import { AppKitBasicHooks } from '@/src/components/AppKitBasicHooks'
 import { AppKitInfo } from '@/src/components/AppKitInfo'

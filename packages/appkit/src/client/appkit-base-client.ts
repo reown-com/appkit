@@ -95,11 +95,11 @@ export interface OpenOptions {
   namespace?: ChainNamespace
 }
 
-export abstract class AppKitCore {
+export abstract class AppKitBaseClient {
   protected universalProvider?: UniversalProvider
   protected connectionControllerClient?: ConnectionControllerClient
   protected networkControllerClient?: NetworkControllerClient
-  protected static instance?: AppKitCore
+  protected static instance?: AppKitBaseClient
   protected universalProviderInitPromise?: Promise<void>
   protected caipNetworks?: [CaipNetwork, ...CaipNetwork[]]
   protected defaultCaipNetwork?: CaipNetwork

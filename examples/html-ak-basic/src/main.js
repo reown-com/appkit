@@ -1,6 +1,6 @@
 import base58 from 'bs58'
 
-import { createAppKit } from '@reown/appkit/basic'
+import { createAppKit } from '@reown/appkit/core'
 import { bitcoin, mainnet, polygon, solana } from '@reown/appkit/networks'
 
 // Get projectId

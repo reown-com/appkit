@@ -14,7 +14,7 @@ import {
   useAppKitAccount,
   useAppKitNetwork,
   useDisconnect
-} from '@reown/appkit/react-basic'
+} from '@reown/appkit/react-core'
 
 export interface AppKitBasicHooksProps {
   networks?: AppKitNetwork[]

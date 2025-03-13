@@ -3,7 +3,7 @@ import { type Ref, onUnmounted, ref } from 'vue'
 import { ChainController, type UseAppKitNetworkReturn } from '@reown/appkit-controllers'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 
-import { AppKit } from '../src/client/appkit-basic.js'
+import { AppKit } from '../src/client/appkit-core.js'
 import { getAppKit } from '../src/library/vue/index.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { PACKAGE_VERSION } from './constants.js'
@@ -26,7 +26,7 @@ export function createAppKit(options: CreateAppKit) {
     modal = new AppKit({
       ...options,
       basic: true,
-      sdkVersion: `vue-basic-${PACKAGE_VERSION}`
+      sdkVersion: `vue-core-${PACKAGE_VERSION}`
     })
     getAppKit(modal)
   }
