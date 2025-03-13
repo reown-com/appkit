@@ -18,7 +18,7 @@ import {
 import { PresetsUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
-import type { AppKitCore } from '../client/core.js'
+import type { AppKitBaseClient } from '../client/appkit-base-client.js'
 import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'
 import type { AppKitOptions } from '../utils/index.js'
 import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
@@ -277,7 +277,10 @@ export abstract class AdapterBlueprint<
    * @param {AppKitOptions} [options] - Optional AppKit options
    * @param {AppKit} [appKit] - Optional AppKit instance
    */
-  public abstract syncConnectors(options?: AppKitOptions, appKit?: AppKitCore): void | Promise<void>
+  public abstract syncConnectors(
+    options?: AppKitOptions,
+    appKit?: AppKitBaseClient
+  ): void | Promise<void>
 
   /**
    * Synchronizes the connection with the given parameters.

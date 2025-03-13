@@ -14,7 +14,7 @@ import type {
   W3mNetworkButton
 } from '@reown/appkit-scaffold-ui'
 
-import type { AppKitCore as AppKit } from '../../../src/client/core.js'
+import type { AppKitBaseClient as AppKit } from '../../client/appkit-base-client.js'
 import { ProviderUtil } from '../../store/ProviderUtil.js'
 import type { AppKitOptions } from '../../utils/TypesUtil.js'
 

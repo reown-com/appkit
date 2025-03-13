@@ -5,10 +5,10 @@ import { AlertController, OptionsController } from '@reown/appkit-controllers'
 import { ErrorUtil } from '@reown/appkit-utils'
 
 import type { AdapterBlueprint } from '../../src/adapters'
-import { AppKitCore, type AppKitOptionsWithSdk } from '../../src/client/core'
+import { AppKitBaseClient, type AppKitOptionsWithSdk } from '../../src/client/appkit-base-client'
 
-// Create a mock implementation of AppKitCore
-class TestAppKitCore extends AppKitCore {
+// Create a mock implementation of AppKitBaseClient
+class TestAppKitCore extends AppKitBaseClient {
   // Implement the abstract method
   protected async injectModalUi(): Promise<void> {
     // No-op for testing
