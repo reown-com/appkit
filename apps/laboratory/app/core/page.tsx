@@ -1,9 +1,9 @@
 'use client'
 
 import { type AppKitNetwork, mainnet } from '@reown/appkit/networks'
-import { createAppKit } from '@reown/appkit/react-basic'
+import { createAppKit } from '@reown/appkit/react-core'
 
-import { AppKitBasicHooks } from '@/src/components/AppKitBasicHooks'
+import { AppKitCoreHooks } from '@/src/components/AppKitCoreHooks'
 import { AppKitInfo } from '@/src/components/AppKitInfo'
 import { MultiChainInfo } from '@/src/components/MultiChainInfo'
 import { UpaTests } from '@/src/components/UPA/UpaTests'
@@ -24,7 +24,7 @@ ThemeStore.setModal(modal)
 export default function MultiChainWagmiAdapterOnly() {
   return (
     <>
-      <AppKitBasicHooks />
+      <AppKitCoreHooks />
       <AppKitInfo />
       <MultiChainInfo />
       <UpaTests />
