@@ -11,7 +11,7 @@ import {
   type ConnectorWithProviders,
   RouterController,
   type WcWallet
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import { W3mAllWalletsSearch } from '../../src/partials/w3m-all-wallets-search'
 
@@ -60,7 +60,8 @@ describe('W3mAllWalletsSearch', () => {
       recommended: [],
       wallets: [],
       isAnalyticsEnabled: false,
-      excludedRDNS: []
+      excludedRDNS: [],
+      isFetchingRecommendedWallets: false
     }
     vi.spyOn(ApiController, 'state', 'get').mockReturnValue(mockState)
     vi.spyOn(ApiController, 'searchWallet').mockResolvedValue()
@@ -85,7 +86,8 @@ describe('W3mAllWalletsSearch', () => {
       recommended: [],
       wallets: mockWallets,
       isAnalyticsEnabled: false,
-      excludedRDNS: []
+      excludedRDNS: [],
+      isFetchingRecommendedWallets: false
     }
     vi.spyOn(ApiController, 'state', 'get').mockReturnValue(mockState)
     vi.spyOn(ApiController, 'searchWallet').mockResolvedValue()

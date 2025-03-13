@@ -14,12 +14,12 @@ import type {
   W3mNetworkButton
 } from '@reown/appkit-scaffold-ui'
 
-import type { AppKit } from '../../../src/client/appkit.js'
+import type { AppKitBaseClient as AppKit } from '../../client/appkit-base-client.js'
 import { ProviderUtil } from '../../store/ProviderUtil.js'
 import type { AppKitOptions } from '../../utils/TypesUtil.js'
 
 type OpenOptions = {
-  view:
+  view?:
     | 'Account'
     | 'Connect'
     | 'Networks'
@@ -43,7 +43,7 @@ declare module 'react' {
     interface IntrinsicElements {
       'appkit-button': Pick<
         AppKitButton,
-        'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance'
+        'size' | 'label' | 'loadingLabel' | 'disabled' | 'balance' | 'namespace'
       >
       'appkit-connect-button': Pick<AppKitConnectButton, 'size' | 'label' | 'loadingLabel'>
       'appkit-account-button': Pick<AppKitAccountButton, 'disabled' | 'balance'>
@@ -65,7 +65,7 @@ export function getAppKit(appKit: AppKit) {
 }
 
 // -- Core Hooks ---------------------------------------------------------------
-export * from '@reown/appkit-core/react'
+export * from '@reown/appkit-controllers/react'
 
 export function useAppKitProvider<T>(chainNamespace: ChainNamespace) {
   const { providers, providerIds } = useSnapshot(ProviderUtil.state)

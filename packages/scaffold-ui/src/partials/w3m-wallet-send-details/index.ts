@@ -3,7 +3,7 @@ import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { type CaipNetwork } from '@reown/appkit-common'
-import { AssetUtil, RouterController } from '@reown/appkit-core'
+import { AssetUtil, RouterController } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-content'

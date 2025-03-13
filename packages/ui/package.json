@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-ui",
-  "version": "1.6.9",
+  "version": "1.7.0",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
@@ -417,6 +417,11 @@
       "import": "./dist/esm/exports/wui-separator.js",
       "default": "./dist/esm/exports/wui-separator.js"
     },
+    "./wui-ux-by-reown": {
+      "types": "./dist/types/exports/wui-ux-by-reown.d.ts",
+      "import": "./dist/esm/exports/wui-ux-by-reown.js",
+      "default": "./dist/esm/exports/wui-ux-by-reown.js"
+    },
     "./jsx": {
       "types": "./dist/types/exports/jsx.d.ts",
       "import": "./dist/esm/exports/jsx.js",
@@ -429,10 +434,10 @@
   },
   "devDependencies": {
     "@reown/appkit-common": "workspace:*",
-    "@reown/appkit-core": "workspace:*",
+    "@reown/appkit-controllers": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
     "@types/qrcode": "1.5.5",
-    "@vitest/coverage-v8": "2.1.3",
+    "@vitest/coverage-v8": "2.1.9",
     "eslint-plugin-lit": "1.11.0",
     "eslint-plugin-wc": "2.0.4",
     "vitest": "2.1.9",

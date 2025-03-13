@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit",
-  "version": "1.6.9",
+  "version": "1.7.0",
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -52,6 +52,11 @@
       "import": "./dist/esm/exports/utils.js",
       "default": "./dist/esm/exports/utils.js"
     },
+    "./constants": {
+      "types": "./dist/types/exports/constants.d.ts",
+      "import": "./dist/esm/exports/constants.js",
+      "default": "./dist/esm/exports/constants.js"
+    },
     "./networks": {
       "types": "./dist/types/exports/networks.d.ts",
       "import": "./dist/esm/exports/networks.js",
@@ -72,10 +77,20 @@
       "import": "./dist/esm/exports/connectors.js",
       "default": "./dist/esm/exports/connectors.js"
     },
-    "./basic": {
-      "types": "./dist/types/exports/basic.d.ts",
-      "import": "./dist/esm/exports/basic.js",
-      "default": "./dist/esm/exports/basic.js"
+    "./core": {
+      "types": "./dist/types/exports/core.d.ts",
+      "import": "./dist/esm/exports/core.js",
+      "default": "./dist/esm/exports/core.js"
+    },
+    "./vue-core": {
+      "types": "./dist/types/exports/vue-core.d.ts",
+      "import": "./dist/esm/exports/vue-core.js",
+      "default": "./dist/esm/exports/vue-core.js"
+    },
+    "./react-core": {
+      "types": "./dist/types/exports/react-core.d.ts",
+      "import": "./dist/esm/exports/react-core.js",
+      "default": "./dist/esm/exports/react-core.js"
     }
   },
   "typesVersions": {
@@ -108,14 +123,14 @@
   },
   "dependencies": {
     "@reown/appkit-common": "workspace:*",
-    "@reown/appkit-core": "workspace:*",
+    "@reown/appkit-controllers": "workspace:*",
     "@reown/appkit-polyfills": "workspace:*",
     "@reown/appkit-scaffold-ui": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@walletconnect/types": "2.18.0",
-    "@walletconnect/universal-provider": "2.19.0",
+    "@walletconnect/types": "2.19.1",
+    "@walletconnect/universal-provider": "2.19.1",
     "bs58": "6.0.0",
     "valtio": "1.13.2",
     "viem": ">=2.23.5"
@@ -124,10 +139,10 @@
     "@reown/appkit-siwe": "workspace:*",
     "@types/react": "19.0.0",
     "@types/react-dom": "19.0.0",
-    "@vitest/coverage-v8": "2.1.3",
+    "@vitest/coverage-v8": "2.1.9",
     "@vue/runtime-core": "3.4.3",
-    "@walletconnect/types": "2.18.0",
-    "@walletconnect/universal-provider": "2.19.0",
+    "@walletconnect/types": "2.19.1",
+    "@walletconnect/universal-provider": "2.19.1",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "vitest": "2.1.9",

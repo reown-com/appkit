@@ -1,7 +1,7 @@
 'use client'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import { useAppKitAccount } from '@reown/appkit-core/react'
+import { useAppKitAccount } from '@reown/appkit-controllers/react'
 
 import { ExclamationMarkIcon } from '@/components/icon/exclamation-mark'
 import { AlertDescription } from '@/components/ui/alert'

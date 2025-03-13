@@ -14,7 +14,7 @@ export const DEFAULT_LOG_LEVEL =
 export const SECURE_SITE_SDK_VERSION =
   (typeof process !== 'undefined' && typeof process.env !== 'undefined'
     ? process.env['NEXT_PUBLIC_SECURE_SITE_SDK_VERSION']
-    : undefined) || '3'
+    : undefined) || '4'
 
 export const W3mFrameConstants = {
   APP_EVENT_KEY: '@w3m-app/',
