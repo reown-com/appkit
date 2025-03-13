@@ -16,11 +16,11 @@ import {
   useDisconnect
 } from '@reown/appkit/react-core'
 
-export interface AppKitBasicHooksProps {
+export interface AppKitCoreHooksProps {
   networks?: AppKitNetwork[]
 }
 
-export function AppKitBasicHooks({ networks }: AppKitBasicHooksProps) {
+export function AppKitCoreHooks({ networks }: AppKitCoreHooksProps) {
   const { open } = useAppKit()
   const { caipNetwork, switchNetwork } = useAppKitNetwork()
   const { caipAddress } = useAppKitAccount()
