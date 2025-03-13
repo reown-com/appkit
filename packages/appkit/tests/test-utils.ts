@@ -32,6 +32,14 @@ export function mockWindowAndDocument() {
   } as unknown as Document)
 
   vi.stubGlobal('localStorage', mockLocalStorage() as unknown as Storage)
+
+  vi.stubGlobal('navigator', {
+    userAgent: '',
+    platform: '',
+    language: '',
+    languages: [],
+    onLine: true
+  } as unknown as Navigator)
 }
 
 export function mockBlockchainApiController() {

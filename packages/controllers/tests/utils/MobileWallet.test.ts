@@ -1,4 +1,4 @@
-import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
   ChainController,
@@ -36,10 +36,6 @@ describe('MobileWalletUtil', () => {
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       activeChain: 'solana'
     } as unknown as ChainControllerState)
-  })
-
-  afterAll(() => {
-    vi.unstubAllGlobals()
   })
 
   it('should redirect to Phantom app when Phantom is not installed', () => {
