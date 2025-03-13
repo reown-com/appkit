@@ -1,4 +1,4 @@
-import { AppKit } from '../src/client/appkit-basic.js'
+import { AppKit } from '../src/client/appkit-core.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { PACKAGE_VERSION } from './constants.js'
 
@@ -12,7 +12,7 @@ export function createAppKit(options: CreateAppKit) {
   return new AppKit({
     ...options,
     basic: true,
-    sdkVersion: `html-basic-${PACKAGE_VERSION}`
+    sdkVersion: `html-core-${PACKAGE_VERSION}`
   })
 }
 
