@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { ConnectorController, RouterController, StorageUtil } from '@reown/appkit-core'
+import { ConnectorController, RouterController, StorageUtil } from '@reown/appkit-controllers'
 
 import { W3mConnectRecentWidget } from '../../src/partials/w3m-connect-recent-widget'
 
