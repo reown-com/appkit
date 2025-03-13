@@ -19,7 +19,8 @@ concurrency:
 
 jobs:
   setup_and_build:
-    runs-on: ubuntu-latest
+    runs-on:
+      group: gh-ubuntu-runners
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -40,7 +41,7 @@ jobs:
         run: pnpm build
         env:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
-          
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -92,7 +93,7 @@ jobs:
         with:
           node-version: 20.x
           cache: 'pnpm'
-          
+
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
@@ -107,7 +108,7 @@ jobs:
       # Restore executable permissions for binaries
       - name: Fix permissions
         run: chmod +x node_modules/*/bin/*
-          
+
       - name: install
         run: pnpm install
 
@@ -135,7 +136,7 @@ jobs:
         with:
           node-version: 20.x
           cache: 'pnpm'
-          
+
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
@@ -150,7 +151,7 @@ jobs:
       # Restore executable permissions for binaries
       - name: Fix permissions
         run: chmod +x node_modules/*/bin/*
-          
+
       - name: install
         run: pnpm install
 
@@ -177,7 +178,7 @@ jobs:
         with:
           node-version: 20.x
           cache: 'pnpm'
-          
+
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
@@ -192,7 +193,7 @@ jobs:
       # Restore executable permissions for binaries
       - name: Fix permissions
         run: chmod +x node_modules/*/bin/*
-          
+
       - name: install
         run: pnpm install
 
