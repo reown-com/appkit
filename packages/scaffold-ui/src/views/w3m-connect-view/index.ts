@@ -99,7 +99,7 @@ export class W3mConnectView extends LitElement {
       this.resizeObserver = new ResizeObserver(() => {
         this.handleConnectListScroll()
       })
-      this.resizeObserver.observe(connectEl)
+      this.resizeObserver?.observe(connectEl)
       this.handleConnectListScroll()
     }
   }

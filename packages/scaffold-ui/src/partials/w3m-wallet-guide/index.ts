@@ -50,6 +50,7 @@ export class W3mWalletGuide extends LitElement {
           flexDirection="row"
           alignItems="center"
           justifyContent="center"
+          .padding=${['s', '0', 's', '0']}
         >
           <wui-text variant="small-400" class="title" color="fg-200"
             >Haven't got a wallet?</wui-text
