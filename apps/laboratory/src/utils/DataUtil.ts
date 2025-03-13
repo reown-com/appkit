@@ -60,6 +60,11 @@ export const wagmiSdkOptions: SdkOption[] = [
     title: 'Permissions(Async)',
     link: '/library/wagmi-permissions-async/',
     description: 'Configuration using wagmi and implementing ERC-7715 with ecdsa key'
+  },
+  {
+    title: 'Wallet Checkout',
+    link: '/library/wagmi-checkout/',
+    description: 'Configuration using wagmi and implementing Wallet Checkout'
   }
 ]
 

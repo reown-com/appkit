@@ -24,7 +24,7 @@ import {
 import { baseSepolia, sepolia } from '@reown/appkit/networks'
 
 import { type CheckoutResult, type PaymentOption } from '@/src/types/wallet_checkout'
-import { getTokenSymbolFromAsset } from '@/src/utils/CheckoutTokenConfig'
+import { getTokenSymbolFromAsset } from '@/src/utils/WalletCheckoutUtil'
 
 interface PaymentReceiptCardProps {
   result: CheckoutResult

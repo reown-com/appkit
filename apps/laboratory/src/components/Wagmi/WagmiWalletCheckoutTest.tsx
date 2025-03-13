@@ -3,57 +3,17 @@ import { useState } from 'react'
 import React from 'react'
 
 import { Button, HStack, Text, Tooltip, useDisclosure } from '@chakra-ui/react'
-import { encodeFunctionData, erc20Abi } from 'viem'
 import { type Config } from 'wagmi'
 
-import { baseSepolia, sepolia } from '@reown/appkit/networks'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 
-import { type EvmContractInteraction, type PaymentOption } from '@/src/types/wallet_checkout'
-import { vitalikEthAddress } from '@/src/utils/DataUtil'
+import { type PaymentOption } from '@/src/types/wallet_checkout'
+import { ALLOWED_CHAINS, DEFAULT_PAYMENT_OPTIONS } from '@/src/utils/WalletCheckoutUtil'
 
 import { ConfigurePaymentOptions } from '../ConfigurePaymentOptions'
 import DonutCheckout from '../DonutCheckout'
 
-const ALLOWED_CHAINS = [sepolia, baseSepolia]
 const ALLOWED_CHAINIDS = ALLOWED_CHAINS.map(chain => chain.id) as number[]
-
-/**
- * Default payment options:
- * First payment option is for direct payment - of 0.1 USDC on baseSepolia to the recipient
- * Second payment option is for direct payment - of 0.1 USDC on sepolia to the recipient
- * Third payment option is for contract payment - of 0.1 USDC on baseSepolia to the recipient
- */
-const DEFAULT_PAYMENT_OPTIONS: PaymentOption[] = [
-  {
-    recipient: `eip155:84532:${vitalikEthAddress}`,
-    asset: 'eip155:84532/erc20:0x036CbD53842c5426634e7929541eC2318f3dCF7e',
-    amount: '0x186A0' as `0x${string}`
-  },
-  {
-    recipient: `eip155:11155420:${vitalikEthAddress}`,
-    asset: 'eip155:11155420/erc20:0x5fd84259d66Cd46123540766Be93DFE6D43130D7',
-    amount: '0x186A0' as `0x${string}`
-  },
-  {
-    asset: 'eip155:84532/erc20:0x036CbD53842c5426634e7929541eC2318f3dCF7e',
-    amount: '0x186A0' as `0x${string}`,
-    contractInteraction: {
-      type: 'evm-calls',
-      data: [
-        {
-          to: '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
-          data: encodeFunctionData({
-            abi: erc20Abi,
-            functionName: 'transfer',
-            args: [vitalikEthAddress as `0x${string}`, BigInt(100000)]
-          }),
-          value: '0x0'
-        }
-      ]
-    } as EvmContractInteraction
-  }
-]
 
 interface IBaseProps {
   config?: Config

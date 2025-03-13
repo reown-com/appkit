@@ -21,16 +21,17 @@ import {
   Text,
   VStack
 } from '@chakra-ui/react'
-
-import { baseSepolia, optimismSepolia, sepolia } from '@reown/appkit/networks'
+import { isAddress } from 'viem'
 
 import { type PaymentOption } from '@/src/types/wallet_checkout'
-import { TOKEN_CONFIG } from '@/src/utils/CheckoutTokenConfig'
-
-// Chain IDs for supported testnets
-type AllowedChainId = 84532 | 11155111 | 11155420
-
-const ALLOWED_CHAINS = [sepolia, baseSepolia, optimismSepolia]
+import {
+  ALLOWED_CHAINS,
+  type AllowedChainId,
+  getChainName,
+  getTokenOptions,
+  getTokenSymbolByAddress,
+  shortenAddress
+} from '@/src/utils/WalletCheckoutUtil'
 
 interface ConfigurePaymentOptionsProps {
   isOpen: boolean
@@ -52,100 +53,16 @@ export function ConfigurePaymentOptions({
   const [selectedChainId, setSelectedChainId] = useState<AllowedChainId>(84532)
   const [addressError, setAddressError] = useState<string | null>(null)
 
-  // Helper function to get chain name from chain ID
-  function getChainName(chainId: string | number): string {
-    const chain = ALLOWED_CHAINS.find(c => c.id === Number(chainId))
-
-    return chain?.name || `Chain ${chainId}`
-  }
-
-  // Get token options for the selected chain
-  function getTokenOptions(chainId: number): { address: string; name: string; symbol: string }[] {
-    const tokensByChain = TOKEN_CONFIG[chainId]
-    if (!tokensByChain) {
-      return []
-    }
-
-    return Object.entries(tokensByChain).map(([symbol, address]) => ({
-      symbol,
-      address,
-      name: `${symbol} on ${getChainName(chainId)}`
-    }))
-  }
-
-  // Validate Ethereum address format
-  function validateAddress(address: string): boolean {
-    const ethAddressRegex = /^0x[a-fA-F0-9]{40}$/u
-
-    return ethAddressRegex.test(address)
-  }
-
   // Handle recipient address change with validation
   function handleRecipientChange(e: React.ChangeEvent<HTMLInputElement>) {
     const address = e.target.value
     setNewRecipient(address)
 
-    if (address && !validateAddress(address)) {
+    if (address && !isAddress(address)) {
       setAddressError('Invalid Ethereum address format')
     } else {
       setAddressError(null)
     }
-  }
-
-  // Get token symbol by address and chainId
-  function getTokenSymbolByAddress(assetString?: string): string | undefined {
-    if (!assetString) {
-      return undefined
-    }
-
-    // Parse CAIP-19 asset format: 'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f'
-    const assetParts = assetString.split('/')
-    if (assetParts.length !== 2) {
-      return undefined
-    }
-
-    const chainPart = assetParts[0]?.split(':') || []
-    const tokenPart = assetParts[1]?.split(':') || []
-
-    if (chainPart.length !== 2 || tokenPart.length !== 2) {
-      return undefined
-    }
-
-    const chainId = Number(chainPart[1])
-    const tokenAddress = tokenPart[1] ? tokenPart[1].toLowerCase() : ''
-
-    // Skip lookup if tokenAddress is empty
-    if (!tokenAddress) {
-      return undefined
-    }
-
-    // Look up the token symbol in our token configuration
-    const tokenConfig = TOKEN_CONFIG[chainId] || {}
-    const tokenEntry = Object.entries(tokenConfig).find(
-      ([_, addr]) => addr.toLowerCase() === tokenAddress
-    )
-
-    return tokenEntry ? tokenEntry[0] : undefined
-  }
-
-  // Function to shorten an address for display
-  function shortenAddress(addressInput?: string): string {
-    if (!addressInput) {
-      return ''
-    }
-
-    // If it's a CAIP format, extract the actual address part
-    let displayAddress = addressInput
-    if (displayAddress.includes(':')) {
-      const parts = displayAddress.split(':')
-      displayAddress = parts[parts.length - 1] || ''
-    }
-
-    if (displayAddress.length <= 10) {
-      return displayAddress
-    }
-
-    return `${displayAddress.substring(0, 6)}...${displayAddress.substring(displayAddress.length - 4)}`
   }
 
   // Remove a payment option
@@ -226,7 +143,7 @@ export function ConfigurePaymentOptions({
                               <Text fontSize="sm">
                                 Token:{' '}
                                 {tokenSymbol
-                                  ? `${tokenSymbol} (${tokenAddressDisplay})`
+                                  ? `${tokenSymbol}`
                                   : `Unknown Token (${tokenAddressDisplay})`}
                               </Text>
                               {option.recipient && (
