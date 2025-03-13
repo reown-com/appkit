@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 
 import { ChainController, ConnectionController } from '@reown/appkit-controllers'
 
@@ -13,7 +13,7 @@ import {
 } from '../test-utils.js'
 
 describe('WalletConnect Events', () => {
-  beforeEach(() => {
+  beforeAll(() => {
     mockWindowAndDocument()
     mockStorageUtil()
     mockBlockchainApiController()
