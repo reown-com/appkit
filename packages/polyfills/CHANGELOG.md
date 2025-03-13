@@ -1,5 +1,69 @@
 # @reown/appkit-polyfills
 
+## 1.7.0
+
+### Minor Changes
+
+- [#3976](https://github.com/reown-com/appkit/pull/3976) [`cbd929f`](https://github.com/reown-com/appkit/commit/cbd929f839ad7ee4c7838fa980bcfd63b40b1415) Thanks [@tomiir](https://github.com/tomiir)! - Adds @reown/appkit-controllers. Proxies @reown/appkit-core to the new controllers package to maintain backwards compatibility.
+
+### Patch Changes
+
+- [#4002](https://github.com/reown-com/appkit/pull/4002) [`4fb30b0`](https://github.com/reown-com/appkit/commit/4fb30b06af2fcca0cffdae80f7ece7a9b498df4e) Thanks [@magiziz](https://github.com/magiziz)! - Updated the CDN package to identify as "cdn" instead of "html" in event tracking
+
+- [#3952](https://github.com/reown-com/appkit/pull/3952) [`8b0f958`](https://github.com/reown-com/appkit/commit/8b0f958b8e4169564a1c77da33a1c9d15554094c) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes profile name syncing when switching to non EVM network or to a testnet
+
+- [#3998](https://github.com/reown-com/appkit/pull/3998) [`0559ce5`](https://github.com/reown-com/appkit/commit/0559ce5ba7472926c6a3ec5bb890cb00d212a63a) Thanks [@tomiir](https://github.com/tomiir)! - Removes balance fetch on account sync for core
+
+- [#3961](https://github.com/reown-com/appkit/pull/3961) [`7280345`](https://github.com/reown-com/appkit/commit/7280345ecb39359c9a5271f0ff9ebfb902379272) Thanks [@tomiir](https://github.com/tomiir)! - Adds UX by reown footer to connection screens
+
+- [#3985](https://github.com/reown-com/appkit/pull/3985) [`569aa92`](https://github.com/reown-com/appkit/commit/569aa92cddfe51aa93c2ca201eeb500da28e8a1a) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where users could not use the embedded wallet if they denied access to their email address and/or username
+
+- [#3860](https://github.com/reown-com/appkit/pull/3860) [`dc6c6ab`](https://github.com/reown-com/appkit/commit/dc6c6abb30fb4cbc9b7241cb8af6e6f970e71f62) Thanks [@tomiir](https://github.com/tomiir)! - Initializes Solana connection on adapter construction
+
+- [#3969](https://github.com/reown-com/appkit/pull/3969) [`42e0f0e`](https://github.com/reown-com/appkit/commit/42e0f0ed9e0ef87cd5eae641dfb8bc8d267e1b44) Thanks [@magiziz](https://github.com/magiziz)! - Added `appKit.getAccount` public method
+
+- [#3757](https://github.com/reown-com/appkit/pull/3757) [`95980b9`](https://github.com/reown-com/appkit/commit/95980b955955e9e50336e91789d9838a53534558) Thanks [@tomiir](https://github.com/tomiir)! - Splits code into basic and regular appkit. Re-exports ui and scaffold components so they can be tree-shaken. Dynamically import appropiate chunks according to feature flags'
+
+- [#3998](https://github.com/reown-com/appkit/pull/3998) [`0559ce5`](https://github.com/reown-com/appkit/commit/0559ce5ba7472926c6a3ec5bb890cb00d212a63a) Thanks [@tomiir](https://github.com/tomiir)! - Removes identity calls from core account sync
+
+- [#3916](https://github.com/reown-com/appkit/pull/3916) [`29779a4`](https://github.com/reown-com/appkit/commit/29779a491e2ef38e5e945afcf79601cede6d1219) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where connection status was incorrectly set on page refresh after attempting to connect with WalletConnect.
+
+- [#3987](https://github.com/reown-com/appkit/pull/3987) [`ce9e3c1`](https://github.com/reown-com/appkit/commit/ce9e3c1baa0189c843359ab46aa3fa0ed8f18d14) Thanks [@enesozturk](https://github.com/enesozturk)! - Handles namespace switching when calling `open()` function. Passing `namespace` to `open()` function, AppKit will switch to that namespace. If namespace is connected, it'll open Account button, if not it'll open Connect screen.
+
+  **Example:**
+
+  ```jsx
+  const { open } = useAppKit()
+
+  open({ namespace: 'eip155' })
+  ```
+
+  This could be combined with `view` parameter as well. It'll switch to that namespace and open relevant page.
+
+  **Example:**
+
+  ```jsx
+  const { open } = useAppKit()
+
+  open({ view: 'Connect', namespace: 'eip155' })
+  ```
+
+- [#3936](https://github.com/reown-com/appkit/pull/3936) [`df403d9`](https://github.com/reown-com/appkit/commit/df403d9cce342c7b75864ec5fa841324a647434c) Thanks [@enesozturk](https://github.com/enesozturk)! - Adds namespace parameter to AppKit buttons.
+
+  This allows users to render namespace specific connect & account buttons. When namespace has passed, connect button opens connect page with only that namespace's connectors and account button shows only that namespace's account info.
+
+  **Example:**
+
+  ```js
+  <appkit-button namespace="eip155" />
+  <appkit-button namespace="solana" />
+  <appkit-button namespace="bip122" />
+  ```
+
+- [#3999](https://github.com/reown-com/appkit/pull/3999) [`503b34f`](https://github.com/reown-com/appkit/commit/503b34f904b246c78319307d6892a694d5d40c0f) Thanks [@tomiir](https://github.com/tomiir)! - Updates @walletconnect packages to 1.19.1
+
+- [#3970](https://github.com/reown-com/appkit/pull/3970) [`b5273b6`](https://github.com/reown-com/appkit/commit/b5273b6ca5de673f74fff01f3a1c460a9869903d) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where wagmi triggered a disconnect on page refresh
+
 ## 1.6.9
 
 ### Patch Changes
