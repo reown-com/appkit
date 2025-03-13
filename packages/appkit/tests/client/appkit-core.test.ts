@@ -1,18 +1,21 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import type { ChainNamespace } from '@reown/appkit-common'
 import {
   AccountController,
   type AccountControllerState,
   ApiController,
+  BlockchainApiController,
   ConnectionController,
+  ConnectorController,
   ModalController
 } from '@reown/appkit-controllers'
 
-import { AppKit } from '../../src/client/appkit-basic'
+import { AppKit } from '../../src/client/appkit-core'
 import { mockOptions } from '../mocks/Options'
 import { mockBlockchainApiController, mockStorageUtil, mockWindowAndDocument } from '../test-utils'
 
-describe('AppKitBasic', () => {
+describe('AppKitCore', () => {
   let appKit: AppKit
 
   beforeEach(() => {
@@ -47,9 +50,11 @@ describe('AppKitBasic', () => {
     })
 
     it('should not open modal when connected', async () => {
-      vi.spyOn(AccountController, 'state', 'get').mockReturnValue({
-        caipAddress: 'eip155:1:0x123'
-      } as unknown as AccountControllerState)
+      vi.spyOn(ConnectorController, 'isConnected').mockReturnValue(true)
+      appKit = new AppKit({
+        ...mockOptions
+      })
+
       const modalSpy = vi.spyOn(ModalController, 'open')
 
       await appKit.open({ view: 'Connect' })
@@ -84,6 +89,30 @@ describe('AppKitBasic', () => {
       })
 
       expect(ApiController.initializeExcludedWalletRdns).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('syncAccount', () => {
+    let appKit: AppKit
+    const mockParams = {
+      address: '0x123',
+      chainId: '1',
+      chainNamespace: 'eip155' as ChainNamespace
+    }
+
+    beforeEach(() => {
+      appKit = new AppKit({
+        ...mockOptions
+      })
+    })
+
+    it('should not make any blockchain API calls', async () => {
+      const blockchainApiSpy = vi.spyOn(BlockchainApiController, 'fetchIdentity')
+
+      await appKit.syncBalance(mockParams)
+      await appKit.syncIdentity(mockParams)
+
+      expect(blockchainApiSpy).not.toHaveBeenCalled()
     })
   })
 })

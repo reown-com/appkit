@@ -338,6 +338,14 @@ export const ConnectorController = {
     return state.activeConnectorIds[namespace]
   },
 
+  isConnected(namespace?: ChainNamespace) {
+    if (!namespace) {
+      return Object.values(state.activeConnectorIds).some(id => Boolean(id))
+    }
+
+    return Boolean(state.activeConnectorIds[namespace])
+  },
+
   resetConnectorIds() {
     state.activeConnectorIds = { ...defaultActiveConnectors }
   }

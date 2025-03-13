@@ -2,6 +2,7 @@
 import {
   type CaipAddress,
   type CaipNetwork,
+  type CaipNetworkId,
   type ChainNamespace,
   ConstantsUtil,
   getW3mThemeVariables
@@ -29,9 +30,10 @@ import { W3mFrameHelpers, W3mFrameProvider } from '@reown/appkit-wallet'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
+import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
 import { W3mFrameProviderSingleton } from '../auth-provider/W3MFrameProviderSingleton.js'
 import { ProviderUtil } from '../store/ProviderUtil.js'
-import { AppKitCore, type AppKitOptionsWithSdk } from './core.js'
+import { AppKitBaseClient, type AppKitOptionsWithSdk } from './appkit-base-client.js'
 
 declare global {
   interface Window {
@@ -46,7 +48,7 @@ export { AccountController }
 let isInitialized = false
 
 // -- Client --------------------------------------------------------------------
-export class AppKit extends AppKitCore {
+export class AppKit extends AppKitBaseClient {
   static override instance?: AppKit
 
   private authProvider?: W3mFrameProvider
@@ -123,7 +125,6 @@ export class AppKit extends AppKitCore {
        *  network to a non-smart account supported network resulting in a different address
        */
 
-      this.setCaipAddress(caipAddress, namespace)
       if (!HelpersUtil.isLowerCaseMatch(user.address, AccountController.state.address)) {
         this.syncIdentity({
           address: user.address,
@@ -131,6 +132,7 @@ export class AppKit extends AppKitCore {
           chainNamespace: namespace
         })
       }
+      this.setCaipAddress(caipAddress, namespace)
 
       this.setUser({ ...(AccountController.state.user || {}), email: user.email }, namespace)
 
@@ -422,6 +424,57 @@ export class AppKit extends AppKitCore {
     this.createAuthProviderForAdapter(namespace)
   }
 
+  public override async syncIdentity({
+    address,
+    chainId,
+    chainNamespace
+  }: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
+    chainNamespace: ChainNamespace
+  }) {
+    const caipNetworkId: CaipNetworkId = `${chainNamespace}:${chainId}`
+    const activeCaipNetwork = this.caipNetworks?.find(n => n.caipNetworkId === caipNetworkId)
+
+    if (chainNamespace !== ConstantsUtil.CHAIN.EVM || activeCaipNetwork?.testnet) {
+      this.setProfileName(null, chainNamespace)
+      this.setProfileImage(null, chainNamespace)
+
+      return
+    }
+
+    try {
+      const { name, avatar } = await this.fetchIdentity({
+        address,
+        caipNetworkId
+      })
+
+      this.setProfileName(name, chainNamespace)
+      this.setProfileImage(avatar, chainNamespace)
+
+      if (!name) {
+        const adapter = this.getAdapter(chainNamespace)
+        const result = await adapter?.getProfile({
+          address,
+          chainId: Number(chainId)
+        })
+
+        if (result?.profileName) {
+          this.setProfileName(result.profileName, chainNamespace)
+          if (result.profileImage) {
+            this.setProfileImage(result.profileImage, chainNamespace)
+          }
+        } else {
+          await this.syncReownName(address, chainNamespace)
+          this.setProfileImage(null, chainNamespace)
+        }
+      }
+    } catch {
+      await this.syncReownName(address, chainNamespace)
+      if (chainId !== 1) {
+        this.setProfileImage(null, chainNamespace)
+      }
+    }
+  }
+
   protected override syncConnectedWalletInfo(chainNamespace: ChainNamespace): void {
     const providerType = ProviderUtil.getProviderId(chainNamespace)
     if (providerType === UtilConstantsUtil.CONNECTOR_TYPE_AUTH) {
@@ -445,6 +498,7 @@ export class AppKit extends AppKitCore {
       // Selectively import views based on feature flags
       const featureImportPromises = []
       if (features) {
+        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
         const usingEmbeddedWallet = features.email || (features.socials && features.socials.length)
         if (usingEmbeddedWallet) {
           featureImportPromises.push(import('@reown/appkit-scaffold-ui/embedded-wallet'))
@@ -483,9 +537,12 @@ export class AppKit extends AppKitCore {
         import('@reown/appkit-scaffold-ui'),
         import('@reown/appkit-scaffold-ui/w3m-modal')
       ])
-      const modal = document.createElement('w3m-modal')
-      if (!OptionsController.state.disableAppend && !OptionsController.state.enableEmbedded) {
-        document.body.insertAdjacentElement('beforeend', modal)
+      const isElementCreated = document.querySelector('w3m-modal')
+      if (!isElementCreated) {
+        const modal = document.createElement('w3m-modal')
+        if (!OptionsController.state.disableAppend && !OptionsController.state.enableEmbedded) {
+          document.body.insertAdjacentElement('beforeend', modal)
+        }
       }
       isInitialized = true
     }
