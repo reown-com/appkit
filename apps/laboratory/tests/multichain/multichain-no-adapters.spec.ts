@@ -21,7 +21,7 @@ test.beforeAll(async ({ browser }) => {
   context = await browser.newContext()
   const browserPage = await context.newPage()
 
-  modalPage = new ModalPage(browserPage, 'multichain-basic', 'default')
+  modalPage = new ModalPage(browserPage, 'multichain-no-adapters', 'default')
   walletPage = new WalletPage(await context.newPage())
   modalValidator = new ModalValidator(browserPage)
   walletValidator = new WalletValidator(walletPage.page)

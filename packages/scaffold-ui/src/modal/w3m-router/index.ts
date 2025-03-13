@@ -45,7 +45,7 @@ export class W3mRouter extends LitElement {
         this.style.animation = 'unset'
       }, ConstantsUtil.ANIMATION_DURATIONS.ModalHeight)
     })
-    this.resizeObserver.observe(this.getWrapper())
+    this.resizeObserver?.observe(this.getWrapper())
   }
 
   public override disconnectedCallback() {
