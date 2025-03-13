@@ -115,8 +115,6 @@ export const ConstantsUtil = {
       id: 'react-wallet-v2',
       name: 'React Sample Wallet',
       homepage: WALLET_URL,
-      mobile_link: WALLET_URL,
-      desktop_link: WALLET_URL,
       webapp_link: WALLET_URL,
       image_url: '/sample-wallets/react.svg'
     },
