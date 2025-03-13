@@ -77,20 +77,20 @@
       "import": "./dist/esm/exports/connectors.js",
       "default": "./dist/esm/exports/connectors.js"
     },
-    "./basic": {
-      "types": "./dist/types/exports/basic.d.ts",
-      "import": "./dist/esm/exports/basic.js",
-      "default": "./dist/esm/exports/basic.js"
+    "./core": {
+      "types": "./dist/types/exports/core.d.ts",
+      "import": "./dist/esm/exports/core.js",
+      "default": "./dist/esm/exports/core.js"
     },
-    "./vue-basic": {
-      "types": "./dist/types/exports/vue-basic.d.ts",
-      "import": "./dist/esm/exports/vue-basic.js",
-      "default": "./dist/esm/exports/vue-basic.js"
+    "./vue-core": {
+      "types": "./dist/types/exports/vue-core.d.ts",
+      "import": "./dist/esm/exports/vue-core.js",
+      "default": "./dist/esm/exports/vue-core.js"
     },
-    "./react-basic": {
-      "types": "./dist/types/exports/react-basic.d.ts",
-      "import": "./dist/esm/exports/react-basic.js",
-      "default": "./dist/esm/exports/react-basic.js"
+    "./react-core": {
+      "types": "./dist/types/exports/react-core.d.ts",
+      "import": "./dist/esm/exports/react-core.js",
+      "default": "./dist/esm/exports/react-core.js"
     }
   },
   "typesVersions": {

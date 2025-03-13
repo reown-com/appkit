@@ -9,7 +9,7 @@ import {
 } from '@reown/appkit-controllers'
 
 import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
-import { AppKitCore } from './core.js'
+import { AppKitBaseClient } from './appkit-base-client.js'
 
 declare global {
   interface Window {
@@ -41,7 +41,7 @@ export interface OpenOptions {
 let isInitialized = false
 
 // -- Client --------------------------------------------------------------------
-export class AppKit extends AppKitCore {
+export class AppKit extends AppKitBaseClient {
   public activeAdapter?: AdapterBlueprint
 
   public adapters?: ChainAdapter[]

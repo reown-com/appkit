@@ -11,11 +11,11 @@ import {
   ModalController
 } from '@reown/appkit-controllers'
 
-import { AppKit } from '../../src/client/appkit-basic'
+import { AppKit } from '../../src/client/appkit-core'
 import { mockOptions } from '../mocks/Options'
 import { mockBlockchainApiController, mockStorageUtil, mockWindowAndDocument } from '../test-utils'
 
-describe('AppKitBasic', () => {
+describe('AppKitCore', () => {
   let appKit: AppKit
 
   beforeEach(() => {
