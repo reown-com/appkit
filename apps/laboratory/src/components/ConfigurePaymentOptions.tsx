@@ -143,7 +143,7 @@ export function ConfigurePaymentOptions({
                               <Text fontSize="sm">
                                 Token:{' '}
                                 {tokenSymbol
-                                  ? `${tokenSymbol}`
+                                  ? tokenSymbol
                                   : `Unknown Token (${tokenAddressDisplay})`}
                               </Text>
                               {option.recipient && (
