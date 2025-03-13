@@ -250,7 +250,7 @@ export default function DonutCheckout({ isOpen, onClose, paymentOptions }: Donut
           <Button
             data-testid="checkout-button"
             onClick={onCheckout}
-            disabled={isLoading || !isWalletCheckoutSupported || paymentOptions.length === 0}
+            isDisabled={isLoading || !isWalletCheckoutSupported || paymentOptions.length === 0}
             isLoading={isLoading}
             width="full"
             size="md"
