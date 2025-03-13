@@ -106,7 +106,7 @@ jobs:
 
       # Restore executable permissions for binaries
       - name: Fix permissions
-        run: chmod +x node_modules/.bin/*
+        run: chmod +x node_modules/*/bin/*
           
       - name: install
         run: pnpm install
