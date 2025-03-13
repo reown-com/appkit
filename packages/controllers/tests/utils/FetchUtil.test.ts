@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { FetchUtil } from '../../src/utils/FetchUtil'
 
@@ -10,10 +10,6 @@ describe('FetchUtil', () => {
   beforeEach(() => {
     fetchUtil = new FetchUtil({ baseUrl: mockBaseUrl, clientId: mockClientId })
     vi.stubGlobal('fetch', vi.fn())
-  })
-
-  afterEach(() => {
-    vi.unstubAllGlobals()
   })
 
   describe('constructor', () => {
