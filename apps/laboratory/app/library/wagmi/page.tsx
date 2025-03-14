@@ -24,7 +24,6 @@ const modal = createAppKit({
   adapters: [wagmiAdapter],
   networks: ConstantsUtil.EvmNetworks,
   projectId: ConstantsUtil.ProjectId,
-  showNetworkSwitcher: false,
   features: {
     analytics: true
   },
