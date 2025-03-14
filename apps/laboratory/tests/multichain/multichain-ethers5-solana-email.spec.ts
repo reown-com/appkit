@@ -53,7 +53,7 @@ test('it should switch networks (including different namespaces) and sign', asyn
     await page.closeModal()
 
     // -- Sign ------------------------------------------------------------------
-    await page.sign()
+    await page.sign(chainName === 'Polygon' ? 'eip155' : 'solana')
     // For Solana, the chain name on the wallet page is Solana Mainnet
     const chainNameOnWalletPage = chainName === 'Solana' ? 'Solana Mainnet' : chainName
     await validator.expectReceivedSign({ chainName: chainNameOnWalletPage })

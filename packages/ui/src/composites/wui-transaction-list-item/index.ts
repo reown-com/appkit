@@ -8,7 +8,9 @@ import type {
   TransactionStatus
 } from '@reown/appkit-common'
 
+import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'
+import '../../layout/wui-flex/index.js'
 import { resetStyles } from '../../utils/ThemeUtil.js'
 import { type TransactionType, TransactionTypePastTense } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HTML AppKit Basic Sign Client Example</title>
+    <title>HTML AppKit Core Sign Client Example</title>
     <link rel="stylesheet" href="/src/main.css" />
     <link
       rel="icon"
@@ -21,12 +21,20 @@
         <img src="/appkit-logo.png" alt="AppKit" width="150" />
       </div>
 
-      <h1 class="page-title">HTML AppKit Basic Sign Client Example</h1>
+      <h1 class="page-title">HTML AppKit Core Sign Client Example</h1>
 
       <div class="appkit-buttons-container">
-        <button id="disconnect">Disconnect</button>
-        <button id="sign-message">Sign Message</button>
-        <button id="connect">Connect</button>
+        <div class="row">
+          <button id="disconnect">Disconnect</button>
+          <button id="sign-message">Sign Message</button>
+          <button id="connect">Connect</button>
+        </div>
+        <div class="row">
+          <button id="switch-network-eth">Switch to Ethereum</button>
+          <button id="switch-network-polygon">Switch to Polygon</button>
+          <button id="switch-network-solana">Switch to Solana</button>
+          <button id="switch-network-bitcoin">Switch to Bitcoin</button>
+        </div>
       </div>
 
       <div class="code-container-wrapper">

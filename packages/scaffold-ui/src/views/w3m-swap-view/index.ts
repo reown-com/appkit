@@ -12,10 +12,17 @@ import {
   SwapController,
   type SwapInputTarget,
   type SwapToken
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-text'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
+import '../../partials/w3m-swap-details/index.js'
+import '../../partials/w3m-swap-input-skeleton/index.js'
+import '../../partials/w3m-swap-input/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-swap-view')

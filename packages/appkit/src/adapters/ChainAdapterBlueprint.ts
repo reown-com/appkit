@@ -14,11 +14,11 @@ import {
   OptionsController,
   type Tokens,
   type WriteContractArgs
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
-import { W3mFrameProvider } from '@reown/appkit-wallet'
+import type { W3mFrameProvider } from '@reown/appkit-wallet'
 
-import type { AppKit } from '../client.js'
+import type { AppKitBaseClient } from '../client/appkit-base-client.js'
 import { WalletConnectConnector } from '../connectors/WalletConnectConnector.js'
 import type { AppKitOptions } from '../utils/index.js'
 import type { ChainAdapterConnector } from './ChainAdapterConnector.js'
@@ -277,7 +277,10 @@ export abstract class AdapterBlueprint<
    * @param {AppKitOptions} [options] - Optional AppKit options
    * @param {AppKit} [appKit] - Optional AppKit instance
    */
-  public abstract syncConnectors(options?: AppKitOptions, appKit?: AppKit): void | Promise<void>
+  public abstract syncConnectors(
+    options?: AppKitOptions,
+    appKit?: AppKitBaseClient
+  ): void | Promise<void>
 
   /**
    * Synchronizes the connection with the given parameters.
@@ -376,6 +379,10 @@ export abstract class AdapterBlueprint<
     params: AdapterBlueprint.RevokePermissionsParams
   ): Promise<`0x${string}`>
 
+  public abstract walletGetAssets(
+    params: AdapterBlueprint.WalletGetAssetsParams
+  ): Promise<AdapterBlueprint.WalletGetAssetsResponse>
+
   protected getWalletConnectConnector(): WalletConnectConnector {
     const connector = this.connectors.find(c => c instanceof WalletConnectConnector) as
       | WalletConnectConnector
@@ -403,8 +410,8 @@ export namespace AdapterBlueprint {
   }
 
   export type GetBalanceParams = {
-    address: string
-    chainId: number | string
+    address: string | undefined
+    chainId: number | string | undefined
     caipNetwork?: CaipNetwork
     tokens?: Tokens
   }
@@ -503,6 +510,23 @@ export namespace AdapterBlueprint {
     expiry: number
     address: `0x${string}`
   }
+
+  export type WalletGetAssetsParams = {
+    account: `0x${string}`
+    assetFilter?: Record<`0x${string}`, (`0x${string}` | 'native')[]>
+    assetTypeFilter?: ('NATIVE' | 'ERC20')[]
+    chainFilter?: `0x${string}`[]
+  }
+
+  export type WalletGetAssetsResponse = Record<
+    `0x${string}`,
+    {
+      address: `0x${string}` | 'native'
+      balance: `0x${string}`
+      type: 'NATIVE' | 'ERC20'
+      metadata: Record<string, unknown>
+    }[]
+  >
 
   export type SendTransactionParams = {
     address: `0x${string}`

@@ -5,5 +5,5 @@
     "declarationDir": "./dist/types"
   },
   "extends": "../../tsconfig.json",
-  "include": ["index.ts", "src"]
+  "include": ["exports", "src", "package.json"]
 }

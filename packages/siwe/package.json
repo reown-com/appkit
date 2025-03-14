@@ -1,6 +1,7 @@
 {
   "name": "@reown/appkit-siwe",
-  "version": "1.6.8",
+  "version": "1.7.0",
+  "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
   "types": "./dist/types/exports/index.d.ts",
@@ -18,25 +19,15 @@
   },
   "dependencies": {
     "@reown/appkit-common": "workspace:*",
-    "@reown/appkit-core": "workspace:*",
+    "@reown/appkit-controllers": "workspace:*",
     "@reown/appkit-ui": "workspace:*",
     "@reown/appkit-utils": "workspace:*",
     "@reown/appkit-wallet": "workspace:*",
-    "@walletconnect/utils": "2.18.0",
+    "@walletconnect/utils": "2.19.1",
     "lit": "3.1.0",
     "valtio": "1.13.2",
-    "viem": "2.23.0"
+    "viem": "2.23.5"
   },
-  "keywords": [
-    "web3",
-    "crypto",
-    "ethereum",
-    "appkit",
-    "reown",
-    "lit",
-    "webcomponents",
-    "siwe"
-  ],
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",
   "homepage": "https://github.com/reown-com/appkit",
@@ -46,5 +37,17 @@
   },
   "bugs": {
     "url": "https://github.com/reown-com/appkit/issues"
-  }
+  },
+  "keywords": [
+    "appkit",
+    "wallet",
+    "onboarding",
+    "reown",
+    "dapps",
+    "web3",
+    "wagmi",
+    "ethereum",
+    "solana",
+    "bitcoin"
+  ]
 }

@@ -83,7 +83,7 @@ export const FrameConnectFarcasterResponse = z.object({
 })
 
 export const FrameConnectSocialResponse = z.object({
-  email: z.string(),
+  email: z.string().optional().nullable(),
   address: z.string(),
   chainId: z.string().or(z.number()),
   accounts: z
@@ -97,7 +97,7 @@ export const FrameConnectSocialResponse = z.object({
       })
     )
     .optional(),
-  userName: z.string().optional()
+  userName: z.string().optional().nullable()
 })
 export const FrameUpdateEmailResponse = z.object({
   action: z.enum(['VERIFY_PRIMARY_OTP', 'VERIFY_SECONDARY_OTP'])
@@ -405,7 +405,7 @@ export const WalletRevokePermissionsRequest = z.object({
 })
 export const WalletGetAssetsRequest = z.object({
   method: z.literal('wallet_getAssets'),
-  params: z.array(z.any())
+  params: z.any()
 })
 export const FrameSession = z.object({
   token: z.string()

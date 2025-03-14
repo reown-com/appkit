@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import type { Provider as CoreProvider } from '@reown/appkit-core'
+import type { Provider as CoreProvider } from '@reown/appkit-controllers'
 import { CaipNetworksUtil, PresetsUtil } from '@reown/appkit-utils'
 import { solana } from '@reown/appkit/networks'
 
@@ -24,15 +24,6 @@ vi.mock('@solana/web3.js', () => ({
     rpcEndpoint: endpoint
   })),
   PublicKey: vi.fn(key => ({ toBase58: () => key }))
-}))
-
-vi.mock('../utils/SolanaStoreUtil', () => ({
-  SolStoreUtil: {
-    state: {
-      connection: null
-    },
-    setConnection: vi.fn()
-  }
 }))
 
 vi.mock('../utils/watchStandard', () => ({
@@ -64,6 +55,7 @@ const mockWalletConnectConnector = vi.mocked(
 
 describe('SolanaAdapter', () => {
   let adapter: SolanaAdapter
+  vi.spyOn(SolStoreUtil, 'setConnection')
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -109,6 +101,11 @@ describe('SolanaAdapter', () => {
     it('should initialize with correct parameters', () => {
       expect(adapter.adapterType).toBe('solana')
       expect(adapter.namespace).toBe('solana')
+      expect(adapter.networks).toEqual(mockNetworks)
+      expect(adapter.projectId).toBe('test-project-id')
+      expect(SolStoreUtil.setConnection).toHaveBeenCalledWith(
+        expect.objectContaining({ rpcEndpoint: solana.rpcUrls.default.http[0] })
+      )
     })
   })
 
@@ -192,6 +189,43 @@ describe('SolanaAdapter', () => {
         balance: '1.5',
         symbol: 'SOL'
       })
+    })
+    it('should get balance successfully mult', async () => {
+      const numSimultaneousRequests = 10
+      const expectedSentRequests = 1
+      vi.mock('@solana/web3.js', () => ({
+        Connection: vi.fn(endpoint => ({
+          getBalance: vi.fn().mockResolvedValue(
+            new Promise(resolve => {
+              setTimeout(() => resolve(1500000000), 1000)
+            })
+          ),
+          getSignatureStatus: vi.fn().mockResolvedValue({ value: true }),
+          rpcEndpoint: endpoint
+        })),
+        PublicKey: vi.fn(key => ({ toBase58: () => key }))
+      }))
+
+      const result = await Promise.all([
+        ...Array.from({ length: numSimultaneousRequests }).map(() =>
+          adapter.getBalance({
+            address: 'mock-address',
+            chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+            caipNetwork: mockCaipNetworks[0]
+          })
+        )
+      ])
+
+      expect(result.length).toBe(numSimultaneousRequests)
+      expect(expectedSentRequests).to.be.lt(numSimultaneousRequests)
+
+      // verify all calls got the same balance
+      for (const balance of result) {
+        expect(balance).toEqual({
+          balance: '1.5',
+          symbol: 'SOL'
+        })
+      }
     })
   })
 

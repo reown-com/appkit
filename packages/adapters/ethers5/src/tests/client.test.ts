@@ -3,7 +3,7 @@ import { providers } from 'ethers'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { Emitter } from '@reown/appkit-common'
-import type { Provider } from '@reown/appkit-core'
+import type { Provider } from '@reown/appkit-controllers'
 import { CaipNetworksUtil } from '@reown/appkit-utils'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { mainnet, polygon } from '@reown/appkit/networks'
@@ -304,6 +304,48 @@ describe('Ethers5Adapter', () => {
         symbol: 'ETH'
       })
     })
+  })
+
+  it('should call getBalance once even when multiple adapter requests are sent at the same time', async () => {
+    adapter.caipNetworks = mockCaipNetworks
+    const mockBalance = BigInt(1500000000000000000)
+    // delay the response to simulate http request latency
+    const latency = 1000
+    const numSimultaneousRequests = 10
+    const expectedSentRequests = 1
+    let mockedImplementationCalls = 0
+    vi.mocked(providers.JsonRpcProvider).mockImplementation(
+      () =>
+        ({
+          getBalance: vi.fn().mockResolvedValue(
+            new Promise(resolve => {
+              mockedImplementationCalls++
+              setTimeout(() => resolve(mockBalance), latency)
+            })
+          )
+        }) as any
+    )
+
+    const result = await Promise.all([
+      ...Array.from({ length: numSimultaneousRequests }).map(() =>
+        adapter.getBalance({
+          address: '0x123',
+          chainId: 1
+        })
+      )
+    ])
+
+    expect(mockedImplementationCalls).to.eql(expectedSentRequests)
+    expect(result.length).toBe(numSimultaneousRequests)
+    expect(expectedSentRequests).to.be.lt(numSimultaneousRequests)
+
+    // verify all calls got the same balance
+    for (const balance of result) {
+      expect(balance).toEqual({
+        balance: '1.5',
+        symbol: 'ETH'
+      })
+    }
   })
 
   describe('Ethers5Adapter -getProfile', () => {

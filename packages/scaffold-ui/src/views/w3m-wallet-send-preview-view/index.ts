@@ -1,9 +1,15 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { ChainController, RouterController, SendController } from '@reown/appkit-core'
+import { ChainController, RouterController, SendController } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-preview-item'
+import '@reown/appkit-ui/wui-text'
 
+import '../../partials/w3m-wallet-send-details/index.js'
 import styles from './styles.js'
 
 @customElement('w3m-wallet-send-preview-view')

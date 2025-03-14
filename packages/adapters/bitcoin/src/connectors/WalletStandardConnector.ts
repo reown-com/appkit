@@ -2,7 +2,7 @@ import { getWallets } from '@wallet-standard/app'
 import type { Wallet, WalletWithFeatures } from '@wallet-standard/base'
 
 import type { CaipNetwork } from '@reown/appkit-common'
-import type { Provider, RequestArguments } from '@reown/appkit-core'
+import type { Provider, RequestArguments } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
 import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
 
@@ -144,7 +144,7 @@ export class WalletStandardConnector extends ProviderEventEmitter implements Bit
 
     const response = (
       await feature.signTransaction({
-        psbt: Buffer.from(params.psbt, 'base64'),
+        psbt: new Uint8Array(Buffer.from(params.psbt, 'base64')),
         inputsToSign
       })
     )[0]

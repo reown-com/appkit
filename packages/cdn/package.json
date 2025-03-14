@@ -1,6 +1,7 @@
 {
   "name": "@reown/appkit-cdn",
-  "version": "1.6.8",
+  "version": "1.7.0",
+  "sideEffects": false,
   "main": "dist/wagmi.js",
   "type": "module",
   "files": [
@@ -34,10 +35,22 @@
     "@reown/appkit-adapter-solana": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@reown/appkit-polyfills": "workspace:*",
-    "@wagmi/connectors": "5.7.7",
-    "@wagmi/core": "2.16.4",
-    "viem": "2.23.0",
+    "@wagmi/connectors": "5.7.8",
+    "@wagmi/core": "2.16.5",
+    "viem": "2.23.5",
     "vite": "5.4.12",
-    "wagmi": "2.14.9"
-  }
+    "wagmi": "2.14.12"
+  },
+  "keywords": [
+    "appkit",
+    "wallet",
+    "onboarding",
+    "reown",
+    "dapps",
+    "web3",
+    "wagmi",
+    "ethereum",
+    "solana",
+    "bitcoin"
+  ]
 }

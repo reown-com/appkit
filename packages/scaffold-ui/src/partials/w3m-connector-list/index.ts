@@ -2,9 +2,19 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { ConnectorController, OptionsController } from '@reown/appkit-core'
+import { ConnectorController, OptionsController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
 
+import '../../partials/w3m-connect-announced-widget/index.js'
+import '../../partials/w3m-connect-custom-widget/index.js'
+import '../../partials/w3m-connect-external-widget/index.js'
+import '../../partials/w3m-connect-featured-widget/index.js'
+import '../../partials/w3m-connect-injected-widget/index.js'
+import '../../partials/w3m-connect-multi-chain-widget/index.js'
+import '../../partials/w3m-connect-recent-widget/index.js'
+import '../../partials/w3m-connect-recommended-widget/index.js'
+import '../../partials/w3m-connect-walletconnect-widget/index.js'
 import { ConnectorUtil } from '../../utils/ConnectorUtil.js'
 import styles from './styles.js'
 
@@ -35,12 +45,12 @@ export class W3mConnectorList extends LitElement {
   public override render() {
     const { custom, recent, announced, injected, multiChain, recommended, featured, external } =
       ConnectorUtil.getConnectorsByType(this.connectors)
-
-    const enableWalletConnect = OptionsController.state.enableWalletConnect
+    const isConnectedWithWC = ConnectorUtil.getIsConnectedWithWC()
+    const isWCEnabled = OptionsController.state.enableWalletConnect
 
     return html`
       <wui-flex flexDirection="column" gap="xs">
-        ${enableWalletConnect
+        ${isWCEnabled && !isConnectedWithWC
           ? html`<w3m-connect-walletconnect-widget
               tabIdx=${ifDefined(this.tabIdx)}
             ></w3m-connect-walletconnect-widget>`

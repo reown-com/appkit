@@ -1,167 +1,119 @@
 import type { TemplateResult } from 'lit'
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
+import { until } from 'lit/directives/until.js'
 
-// -- Svg's-------------------------------- //
-import { addSvg } from '../../assets/svg/add.js'
-import { allWalletsSvg } from '../../assets/svg/all-wallets.js'
-import { appStoreSvg } from '../../assets/svg/app-store.js'
-import { appleSvg } from '../../assets/svg/apple.js'
-import { arrowBottomCircleSvg } from '../../assets/svg/arrow-bottom-circle.js'
-import { arrowBottomSvg } from '../../assets/svg/arrow-bottom.js'
-import { arrowLeftSvg } from '../../assets/svg/arrow-left.js'
-import { arrowRightSvg } from '../../assets/svg/arrow-right.js'
-import { arrowTopSvg } from '../../assets/svg/arrow-top.js'
-import { bankSvg } from '../../assets/svg/bank.js'
-import { browserSvg } from '../../assets/svg/browser.js'
-import { cardSvg } from '../../assets/svg/card.js'
-import { checkmarkBoldSvg } from '../../assets/svg/checkmark-bold.js'
-import { checkmarkSvg } from '../../assets/svg/checkmark.js'
-import { chevronBottomSvg } from '../../assets/svg/chevron-bottom.js'
-import { chevronLeftSvg } from '../../assets/svg/chevron-left.js'
-import { chevronRightSvg } from '../../assets/svg/chevron-right.js'
-import { chevronTopSvg } from '../../assets/svg/chevron-top.js'
-import { chromeStoreSvg } from '../../assets/svg/chrome-store.js'
-import { clockSvg } from '../../assets/svg/clock.js'
-import { closeSvg } from '../../assets/svg/close.js'
-import { coinPlaceholderSvg } from '../../assets/svg/coinPlaceholder.js'
-import { compassSvg } from '../../assets/svg/compass.js'
-import { copySvg } from '../../assets/svg/copy.js'
-import { cursorTransparentSvg } from '../../assets/svg/cursor-transparent.js'
-import { cursorSvg } from '../../assets/svg/cursor.js'
-import { desktopSvg } from '../../assets/svg/desktop.js'
-import { disconnectSvg } from '../../assets/svg/disconnect.js'
-import { discordSvg } from '../../assets/svg/discord.js'
-import { etherscanSvg } from '../../assets/svg/etherscan.js'
-import { exclamationTriangleSvg } from '../../assets/svg/exclamation-triangle.js'
-import { extensionSvg } from '../../assets/svg/extension.js'
-import { externalLinkSvg } from '../../assets/svg/external-link.js'
-import { facebookSvg } from '../../assets/svg/facebook.js'
-import { farcasterSvg } from '../../assets/svg/farcaster.js'
-import { filtersSvg } from '../../assets/svg/filters.js'
-import { githubSvg } from '../../assets/svg/github.js'
-import { googleSvg } from '../../assets/svg/google.js'
-import { helpCircleSvg } from '../../assets/svg/help-circle.js'
-import { idSvg } from '../../assets/svg/id.js'
-import { imageSvg } from '../../assets/svg/image.js'
-import { infoCircleSvg } from '../../assets/svg/info-circle.js'
-import { infoSvg } from '../../assets/svg/info.js'
-import { lightbulbSvg } from '../../assets/svg/lightbulb.js'
-import { mailSvg } from '../../assets/svg/mail.js'
-import { mobileSvg } from '../../assets/svg/mobile.js'
-import { moreSvg } from '../../assets/svg/more.js'
-import { networkPlaceholderSvg } from '../../assets/svg/network-placeholder.js'
-import { nftPlaceholderSvg } from '../../assets/svg/nftPlaceholder.js'
-import { offSvg } from '../../assets/svg/off.js'
-import { playStoreSvg } from '../../assets/svg/play-store.js'
-import { plusSvg } from '../../assets/svg/plus.js'
-import { qrCodeIcon } from '../../assets/svg/qr-code.js'
-import { recycleHorizontalSvg } from '../../assets/svg/recycle-horizontal.js'
-import { refreshSvg } from '../../assets/svg/refresh.js'
-import { searchSvg } from '../../assets/svg/search.js'
-import { sendSvg } from '../../assets/svg/send.js'
-import { swapHorizontalSvg } from '../../assets/svg/swapHorizontal.js'
-import { swapHorizontalBoldSvg } from '../../assets/svg/swapHorizontalBold.js'
-import { swapHorizontalMediumSvg } from '../../assets/svg/swapHorizontalMedium.js'
-import { swapHorizontalRoundedBoldSvg } from '../../assets/svg/swapHorizontalRoundedBold.js'
-import { swapVerticalSvg } from '../../assets/svg/swapVertical.js'
-import { telegramSvg } from '../../assets/svg/telegram.js'
-import { threeDotsSvg } from '../../assets/svg/three-dots.js'
-import { twitchSvg } from '../../assets/svg/twitch.js'
-import { twitterIconSvg } from '../../assets/svg/twitterIcon.js'
-import { verifyFilledSvg } from '../../assets/svg/verify-filled.js'
-import { verifySvg } from '../../assets/svg/verify.js'
-import { walletPlaceholderSvg } from '../../assets/svg/wallet-placeholder.js'
-import { walletSvg } from '../../assets/svg/wallet.js'
-import {
-  walletConnectBrownSvg,
-  walletConnectLightBrownSvg,
-  walletConnectSvg
-} from '../../assets/svg/walletconnect.js'
-import { warningCircleSvg } from '../../assets/svg/warning-circle.js'
-import { xSvg } from '../../assets/svg/x.js'
+import { globalSvgCache } from '../../utils/CacheUtil.js'
 import { colorStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { ColorType, IconType, SizeType } from '../../utils/TypeUtil.js'
 import { customElement } from '../../utils/WebComponentsUtil.js'
 import styles from './styles.js'
 
-const svgOptions: Record<IconType, TemplateResult<2>> = {
-  add: addSvg,
-  allWallets: allWalletsSvg,
-  arrowBottomCircle: arrowBottomCircleSvg,
-  appStore: appStoreSvg,
-  apple: appleSvg,
-  arrowBottom: arrowBottomSvg,
-  arrowLeft: arrowLeftSvg,
-  arrowRight: arrowRightSvg,
-  arrowTop: arrowTopSvg,
-  bank: bankSvg,
-  browser: browserSvg,
-  card: cardSvg,
-  checkmark: checkmarkSvg,
-  checkmarkBold: checkmarkBoldSvg,
-  chevronBottom: chevronBottomSvg,
-  chevronLeft: chevronLeftSvg,
-  chevronRight: chevronRightSvg,
-  chevronTop: chevronTopSvg,
-  chromeStore: chromeStoreSvg,
-  clock: clockSvg,
-  close: closeSvg,
-  compass: compassSvg,
-  coinPlaceholder: coinPlaceholderSvg,
-  copy: copySvg,
-  cursor: cursorSvg,
-  cursorTransparent: cursorTransparentSvg,
-  desktop: desktopSvg,
-  disconnect: disconnectSvg,
-  discord: discordSvg,
-  etherscan: etherscanSvg,
-  extension: extensionSvg,
-  externalLink: externalLinkSvg,
-  facebook: facebookSvg,
-  farcaster: farcasterSvg,
-  filters: filtersSvg,
-  github: githubSvg,
-  google: googleSvg,
-  helpCircle: helpCircleSvg,
-  image: imageSvg,
-  id: idSvg,
-  infoCircle: infoCircleSvg,
-  lightbulb: lightbulbSvg,
-  mail: mailSvg,
-  mobile: mobileSvg,
-  more: moreSvg,
-  networkPlaceholder: networkPlaceholderSvg,
-  nftPlaceholder: nftPlaceholderSvg,
-  off: offSvg,
-  playStore: playStoreSvg,
-  plus: plusSvg,
-  qrCode: qrCodeIcon,
-  recycleHorizontal: recycleHorizontalSvg,
-  refresh: refreshSvg,
-  search: searchSvg,
-  send: sendSvg,
-  swapHorizontal: swapHorizontalSvg,
-  swapHorizontalMedium: swapHorizontalMediumSvg,
-  swapHorizontalBold: swapHorizontalBoldSvg,
-  swapHorizontalRoundedBold: swapHorizontalRoundedBoldSvg,
-  swapVertical: swapVerticalSvg,
-  telegram: telegramSvg,
-  threeDots: threeDotsSvg,
-  twitch: twitchSvg,
-  twitter: xSvg,
-  twitterIcon: twitterIconSvg,
-  verify: verifySvg,
-  verifyFilled: verifyFilledSvg,
-  wallet: walletSvg,
-  walletConnect: walletConnectSvg,
-  walletConnectLightBrown: walletConnectLightBrownSvg,
-  walletConnectBrown: walletConnectBrownSvg,
-  walletPlaceholder: walletPlaceholderSvg,
-  warningCircle: warningCircleSvg,
-  x: xSvg,
-  info: infoSvg,
-  exclamationTriangle: exclamationTriangleSvg
+const ICONS = {
+  add: async () => (await import('../../assets/svg/add.js')).addSvg,
+  allWallets: async () => (await import('../../assets/svg/all-wallets.js')).allWalletsSvg,
+  arrowBottomCircle: async () =>
+    (await import('../../assets/svg/arrow-bottom-circle.js')).arrowBottomCircleSvg,
+  appStore: async () => (await import('../../assets/svg/app-store.js')).appStoreSvg,
+  apple: async () => (await import('../../assets/svg/apple.js')).appleSvg,
+  arrowBottom: async () => (await import('../../assets/svg/arrow-bottom.js')).arrowBottomSvg,
+  arrowLeft: async () => (await import('../../assets/svg/arrow-left.js')).arrowLeftSvg,
+  arrowRight: async () => (await import('../../assets/svg/arrow-right.js')).arrowRightSvg,
+  arrowTop: async () => (await import('../../assets/svg/arrow-top.js')).arrowTopSvg,
+  bank: async () => (await import('../../assets/svg/bank.js')).bankSvg,
+  browser: async () => (await import('../../assets/svg/browser.js')).browserSvg,
+  card: async () => (await import('../../assets/svg/card.js')).cardSvg,
+  checkmark: async () => (await import('../../assets/svg/checkmark.js')).checkmarkSvg,
+  checkmarkBold: async () => (await import('../../assets/svg/checkmark-bold.js')).checkmarkBoldSvg,
+  chevronBottom: async () => (await import('../../assets/svg/chevron-bottom.js')).chevronBottomSvg,
+  chevronLeft: async () => (await import('../../assets/svg/chevron-left.js')).chevronLeftSvg,
+  chevronRight: async () => (await import('../../assets/svg/chevron-right.js')).chevronRightSvg,
+  chevronTop: async () => (await import('../../assets/svg/chevron-top.js')).chevronTopSvg,
+  chromeStore: async () => (await import('../../assets/svg/chrome-store.js')).chromeStoreSvg,
+  clock: async () => (await import('../../assets/svg/clock.js')).clockSvg,
+  close: async () => (await import('../../assets/svg/close.js')).closeSvg,
+  compass: async () => (await import('../../assets/svg/compass.js')).compassSvg,
+  coinPlaceholder: async () =>
+    (await import('../../assets/svg/coinPlaceholder.js')).coinPlaceholderSvg,
+  copy: async () => (await import('../../assets/svg/copy.js')).copySvg,
+  cursor: async () => (await import('../../assets/svg/cursor.js')).cursorSvg,
+  cursorTransparent: async () =>
+    (await import('../../assets/svg/cursor-transparent.js')).cursorTransparentSvg,
+  desktop: async () => (await import('../../assets/svg/desktop.js')).desktopSvg,
+  disconnect: async () => (await import('../../assets/svg/disconnect.js')).disconnectSvg,
+  discord: async () => (await import('../../assets/svg/discord.js')).discordSvg,
+  etherscan: async () => (await import('../../assets/svg/etherscan.js')).etherscanSvg,
+  extension: async () => (await import('../../assets/svg/extension.js')).extensionSvg,
+  externalLink: async () => (await import('../../assets/svg/external-link.js')).externalLinkSvg,
+  facebook: async () => (await import('../../assets/svg/facebook.js')).facebookSvg,
+  farcaster: async () => (await import('../../assets/svg/farcaster.js')).farcasterSvg,
+  filters: async () => (await import('../../assets/svg/filters.js')).filtersSvg,
+  github: async () => (await import('../../assets/svg/github.js')).githubSvg,
+  google: async () => (await import('../../assets/svg/google.js')).googleSvg,
+  helpCircle: async () => (await import('../../assets/svg/help-circle.js')).helpCircleSvg,
+  image: async () => (await import('../../assets/svg/image.js')).imageSvg,
+  id: async () => (await import('../../assets/svg/id.js')).idSvg,
+  infoCircle: async () => (await import('../../assets/svg/info-circle.js')).infoCircleSvg,
+  lightbulb: async () => (await import('../../assets/svg/lightbulb.js')).lightbulbSvg,
+  mail: async () => (await import('../../assets/svg/mail.js')).mailSvg,
+  mobile: async () => (await import('../../assets/svg/mobile.js')).mobileSvg,
+  more: async () => (await import('../../assets/svg/more.js')).moreSvg,
+  networkPlaceholder: async () =>
+    (await import('../../assets/svg/network-placeholder.js')).networkPlaceholderSvg,
+  nftPlaceholder: async () =>
+    (await import('../../assets/svg/nftPlaceholder.js')).nftPlaceholderSvg,
+  off: async () => (await import('../../assets/svg/off.js')).offSvg,
+  playStore: async () => (await import('../../assets/svg/play-store.js')).playStoreSvg,
+  plus: async () => (await import('../../assets/svg/plus.js')).plusSvg,
+  qrCode: async () => (await import('../../assets/svg/qr-code.js')).qrCodeIcon,
+  recycleHorizontal: async () =>
+    (await import('../../assets/svg/recycle-horizontal.js')).recycleHorizontalSvg,
+  refresh: async () => (await import('../../assets/svg/refresh.js')).refreshSvg,
+  search: async () => (await import('../../assets/svg/search.js')).searchSvg,
+  send: async () => (await import('../../assets/svg/send.js')).sendSvg,
+  swapHorizontal: async () =>
+    (await import('../../assets/svg/swapHorizontal.js')).swapHorizontalSvg,
+  swapHorizontalMedium: async () =>
+    (await import('../../assets/svg/swapHorizontalMedium.js')).swapHorizontalMediumSvg,
+  swapHorizontalBold: async () =>
+    (await import('../../assets/svg/swapHorizontalBold.js')).swapHorizontalBoldSvg,
+  swapHorizontalRoundedBold: async () =>
+    (await import('../../assets/svg/swapHorizontalRoundedBold.js')).swapHorizontalRoundedBoldSvg,
+  swapVertical: async () => (await import('../../assets/svg/swapVertical.js')).swapVerticalSvg,
+  telegram: async () => (await import('../../assets/svg/telegram.js')).telegramSvg,
+  threeDots: async () => (await import('../../assets/svg/three-dots.js')).threeDotsSvg,
+  twitch: async () => (await import('../../assets/svg/twitch.js')).twitchSvg,
+  twitter: async () => (await import('../../assets/svg/x.js')).xSvg,
+  twitterIcon: async () => (await import('../../assets/svg/twitterIcon.js')).twitterIconSvg,
+  verify: async () => (await import('../../assets/svg/verify.js')).verifySvg,
+  verifyFilled: async () => (await import('../../assets/svg/verify-filled.js')).verifyFilledSvg,
+  wallet: async () => (await import('../../assets/svg/wallet.js')).walletSvg,
+  walletConnect: async () => (await import('../../assets/svg/walletconnect.js')).walletConnectSvg,
+  walletConnectLightBrown: async () =>
+    (await import('../../assets/svg/walletconnect.js')).walletConnectLightBrownSvg,
+  walletConnectBrown: async () =>
+    (await import('../../assets/svg/walletconnect.js')).walletConnectBrownSvg,
+  walletPlaceholder: async () =>
+    (await import('../../assets/svg/wallet-placeholder.js')).walletPlaceholderSvg,
+  warningCircle: async () => (await import('../../assets/svg/warning-circle.js')).warningCircleSvg,
+  x: async () => (await import('../../assets/svg/x.js')).xSvg,
+  info: async () => (await import('../../assets/svg/info.js')).infoSvg,
+  exclamationTriangle: async () =>
+    (await import('../../assets/svg/exclamation-triangle.js')).exclamationTriangleSvg,
+  reown: async () => (await import('../../assets/svg/reown-logo.js')).reownSvg
+} as const
+
+async function getSvg(name: IconType) {
+  if (globalSvgCache.has(name)) {
+    return globalSvgCache.get(name) as Promise<TemplateResult<2>>
+  }
+
+  const importFn = ICONS[name as keyof typeof ICONS] ?? ICONS.copy
+  const svgPromise = importFn()
+
+  globalSvgCache.set(name, svgPromise)
+
+  return svgPromise
 }
 
 @customElement('wui-icon')
@@ -175,14 +127,17 @@ export class WuiIcon extends LitElement {
 
   @property() public color: ColorType = 'fg-300'
 
+  @property() public aspectRatio = '1 / 1'
+
   // -- Render -------------------------------------------- //
   public override render() {
     this.style.cssText = `
       --local-color: ${`var(--wui-color-${this.color});`}
       --local-width: ${`var(--wui-icon-size-${this.size});`}
+      --local-aspect-ratio: ${this.aspectRatio}
     `
 
-    return html`${svgOptions[this.name]}`
+    return html`${until(getSvg(this.name), html`<div class="fallback"></div>`)}`
   }
 }
 

@@ -6,9 +6,9 @@ import base58 from 'bs58'
 
 import { useAppKitAccount, useAppKitNetwork, useAppKitProvider } from '@reown/appkit/react'
 
-import { BitcoinUtil } from '../../utils/BitcoinUtil'
-import { ConstantsUtil } from '../../utils/ConstantsUtil'
-import { useChakraToast } from '../Toast'
+import { useChakraToast } from '@/src/components/Toast'
+import { BitcoinUtil } from '@/src/utils/BitcoinUtil'
+import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
 
 export function UpaSignMessageTest() {
   const toast = useChakraToast()
@@ -33,7 +33,7 @@ export function UpaSignMessageTest() {
       },
       eip155: {
         method: 'personal_sign',
-        params: [address, 'Hello AppKit!']
+        params: ['Hello AppKit!', address]
       },
       bip122: {
         method: 'signPsbt',
@@ -114,6 +114,8 @@ export function UpaSignMessageTest() {
         type: 'success'
       })
     } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('>> error', error)
       toast({
         title: ConstantsUtil.SigningFailedToastTitle,
         description: 'Failed to sign message',

@@ -4,6 +4,8 @@ import { expect } from '@playwright/test'
 
 import type { WalletFeature } from '@reown/appkit'
 
+import { getNamespaceByLibrary } from '@/tests/shared/utils/namespace'
+
 import { BASE_URL, DEFAULT_SESSION_PARAMS, EXTENSION_NAME, EXTENSION_RDNS } from '../constants'
 import type { TimingRecords } from '../fixtures/timing-fixture'
 import { doActionAndWaitForNewPage } from '../utils/actions'
@@ -31,6 +33,9 @@ export type ModalFlavor =
   | 'wallet-button'
   | 'siwe'
   | 'siwx'
+  | 'core-sign-client'
+  | 'core-universal-provider'
+  | 'core'
   | 'all'
 
 function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
@@ -43,7 +48,8 @@ function getUrlByFlavor(baseUrl: string, library: string, flavor: ModalFlavor) {
     'wagmi-verify-evil': maliciousUrl,
     'ethers-verify-valid': `${baseUrl}library/ethers-verify-valid/`,
     'ethers-verify-domain-mismatch': `${baseUrl}library/ethers-verify-domain-mismatch/`,
-    'ethers-verify-evil': maliciousUrl
+    'ethers-verify-evil': maliciousUrl,
+    'core-sign-client': `${baseUrl}core/sign-client/`
   }
 
   return urlsByFlavor[flavor] || `${baseUrl}library/${library}-${flavor}/`
@@ -61,7 +67,7 @@ export class ModalPage {
     public readonly library: string,
     public readonly flavor: ModalFlavor
   ) {
-    this.connectButton = this.page.getByTestId('connect-button')
+    this.connectButton = this.page.getByTestId('connect-button').first()
     if (library === 'multichain-ethers-solana') {
       this.url = `${this.baseURL}library/multichain-ethers-solana/`
     } else {
@@ -313,26 +319,38 @@ export class ModalPage {
     await disconnectBtn.click()
   }
 
-  async sign() {
-    const signButton = this.page.getByTestId('sign-message-button')
+  async sign(_namespace?: string) {
+    const namespace = _namespace || getNamespaceByLibrary(this.library)
+    const signButton = this.page
+      .getByTestId(`${namespace}-test-interactions`)
+      .getByTestId('sign-message-button')
+
     await signButton.scrollIntoViewIfNeeded()
     await signButton.click()
   }
 
-  async signTypedData() {
-    const signButton = this.page.getByTestId('sign-typed-data-button')
+  async signTypedData(_namespace?: string) {
+    const namespace = _namespace || getNamespaceByLibrary(this.library)
+    const signButton = this.page
+      .getByTestId(`${namespace}-test-interactions`)
+      .getByTestId('sign-typed-data-button')
+
     await signButton.scrollIntoViewIfNeeded()
     await signButton.click()
   }
 
-  async signMessageAndTypedData(modalValidator: ModalValidator, network?: string) {
-    await this.sign()
+  async signMessageAndTypedData(
+    modalValidator: ModalValidator,
+    network?: string,
+    namespace?: string
+  ) {
+    await this.sign(namespace)
     await modalValidator.expectAcceptedSign()
 
     if (network !== 'Solana') {
       // Wait for the toast animation to complete
       await modalValidator.page.waitForTimeout(500)
-      await this.signTypedData()
+      await this.signTypedData(namespace)
       await modalValidator.expectAcceptedSignTypedData()
     }
   }
@@ -369,7 +387,7 @@ export class ModalPage {
     await this.clickSignatureRequestButton('Approve')
   }
 
-  async clickWalletUpgradeCard(context: BrowserContext, library: string) {
+  async clickWalletUpgradeCard(context: BrowserContext, library?: string) {
     await this.page.getByTestId('account-button').click()
 
     await this.page.getByTestId('w3m-profile-button').click()
@@ -425,11 +443,11 @@ export class ModalPage {
     await this.page.getByTestId('tab-desktop').click()
   }
 
-  async openAccount() {
+  async openAccount(namespace?: string) {
     expect(this.page.getByTestId('w3m-modal-card')).not.toBeVisible()
     expect(this.page.getByTestId('w3m-modal-overlay')).not.toBeVisible()
     this.page.waitForTimeout(300)
-    await this.page.getByTestId('account-button').click()
+    await this.page.getByTestId(`account-button${namespace ? `-${namespace}` : ''}`).click()
   }
 
   async openConnectModal() {

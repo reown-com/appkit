@@ -14,13 +14,11 @@ import {
 import { convertCaip10ToErc3770 } from '@reown/appkit-experimental/erc3770'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 
+import { RelayClientInfo } from '@/src/components/RelayClientInfo'
+
 import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
 
-type AppKitInfoProps = {
-  clientId?: string
-}
-
-export function AppKitInfo({ clientId }: AppKitInfoProps) {
+export function AppKitInfo() {
   const { caipAddress, address } = useAppKitAccount()
   const { chainId } = useAppKitNetwork()
 
@@ -44,12 +42,14 @@ export function AppKitInfo({ clientId }: AppKitInfoProps) {
 
       <CardBody>
         <Stack divider={<StackDivider />} spacing="4">
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              CAIP Address
-            </Heading>
-            <Text data-testid="w3m-caip-address">{caipAddress}</Text>
-          </Box>
+          {caipAddress ? (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                CAIP Address
+              </Heading>
+              <Text data-testid="w3m-caip-address">{caipAddress}</Text>
+            </Box>
+          ) : null}
 
           {erc3770Address && (
             <Box>
@@ -60,12 +60,14 @@ export function AppKitInfo({ clientId }: AppKitInfoProps) {
             </Box>
           )}
 
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Address
-            </Heading>
-            <Text data-testid="w3m-address">{address}</Text>
-          </Box>
+          {address ? (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Address
+              </Heading>
+              <Text data-testid="w3m-address">{address}</Text>
+            </Box>
+          ) : null}
 
           <Box>
             <Heading size="xs" textTransform="uppercase" pb="2">
@@ -74,14 +76,7 @@ export function AppKitInfo({ clientId }: AppKitInfoProps) {
             <Text data-testid="w3m-chain-id">{chainId}</Text>
           </Box>
 
-          {clientId && (
-            <Box>
-              <Heading size="xs" textTransform="uppercase" pb="2">
-                Relay Client ID
-              </Heading>
-              <Text data-testid="w3m-chain-id">{clientId}</Text>
-            </Box>
-          )}
+          <RelayClientInfo />
 
           <EmbeddedWalletInfo />
         </Stack>

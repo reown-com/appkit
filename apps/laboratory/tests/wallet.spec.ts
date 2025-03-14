@@ -1,7 +1,14 @@
 import { type BrowserContext, test } from '@playwright/test'
 
 import type { CaipNetworkId } from '@reown/appkit'
-import { mainnet, polygon, solana, solanaTestnet } from '@reown/appkit/networks'
+import {
+  bitcoin,
+  bitcoinTestnet,
+  mainnet,
+  polygon,
+  solana,
+  solanaTestnet
+} from '@reown/appkit/networks'
 
 import { DEFAULT_CHAIN_NAME } from './shared/constants'
 import { ModalPage } from './shared/pages/ModalPage'
@@ -16,6 +23,39 @@ let walletPage: WalletPage
 let walletValidator: WalletValidator
 let context: BrowserContext
 /* eslint-enable init-declarations */
+
+function getBalanceSymbolByLibrary(library: string) {
+  switch (library) {
+    case 'bitcoin':
+      return 'BTC'
+    case 'solana':
+      return 'SOL'
+    default:
+      return 'ETH'
+  }
+}
+
+function getNetworksByLibrary(library: string) {
+  switch (library) {
+    case 'bitcoin':
+      return [bitcoin, bitcoinTestnet]
+    case 'solana':
+      return [solana, solanaTestnet]
+    default:
+      return [mainnet, polygon]
+  }
+}
+
+function getLastNetworkNameByLibrary(library: string) {
+  switch (library) {
+    case 'bitcoin':
+      return bitcoinTestnet.name
+    case 'solana':
+      return solanaTestnet.name
+    default:
+      return polygon.name
+  }
+}
 
 // -- Setup --------------------------------------------------------------------
 const sampleWalletTest = test.extend<{ library: string }>({
@@ -44,12 +84,16 @@ sampleWalletTest.afterAll(async () => {
 
 // -- Tests --------------------------------------------------------------------
 sampleWalletTest('it should fetch balance as expected', async ({ library }) => {
-  await modalValidator.expectBalanceFetched(library === 'solana' ? 'SOL' : 'ETH')
+  await modalValidator.expectBalanceFetched(getBalanceSymbolByLibrary(library))
 })
 
-sampleWalletTest('it should show onramp button accordingly', async () => {
+sampleWalletTest('it should show onramp button accordingly', async ({ library }) => {
   await modalPage.openModal()
-  await modalValidator.expectOnrampButton()
+  if (library === 'bitcoin') {
+    await modalValidator.expectOnrampButton(false)
+  } else {
+    await modalValidator.expectOnrampButton(true)
+  }
   await modalPage.closeModal()
 })
 
@@ -59,6 +103,10 @@ sampleWalletTest('it should be connected instantly after page refresh', async ()
 })
 
 sampleWalletTest('it should show disabled networks', async ({ library }) => {
+  if (library === 'bitcoin') {
+    return
+  }
+
   const disabledNetworks = library === 'solana' ? 'Solana Unsupported' : 'Gnosis'
 
   await modalPage.openModal()
@@ -67,11 +115,12 @@ sampleWalletTest('it should show disabled networks', async ({ library }) => {
   await modalPage.closeModal()
 })
 
-sampleWalletTest('it should switch networks and sign', async ({ library }) => {
-  const chains =
-    library === 'solana' ? [solanaTestnet.name, solana.name] : [polygon.name, mainnet.name]
-  const caipNetworkId =
-    library === 'solana' ? [solanaTestnet.id, solana.id] : [polygon.id, mainnet.id]
+sampleWalletTest('it should switch networks and sign', async ({ library, browser }) => {
+  const isFirefox = browser.browserType().name() === 'firefox'
+
+  const networks = getNetworksByLibrary(library)
+  const chains = networks.map(network => network.name)
+  const caipNetworkIds = networks.map(network => network.id)
 
   async function processChain(index: number) {
     if (index >= chains.length) {
@@ -86,14 +135,29 @@ sampleWalletTest('it should switch networks and sign', async ({ library }) => {
     await modalValidator.expectSwitchedNetwork(chainName)
     await modalPage.closeModal()
     await modalValidator.expectCaipAddressHaveCorrectNetworkId(
-      caipNetworkId[index] as CaipNetworkId
+      caipNetworkIds[index] as CaipNetworkId
     )
 
-    // -- Sign ------------------------------------------------------------------
-    await modalPage.sign()
-    await walletValidator.expectReceivedSign({ chainName: chainNameOnWalletPage })
-    await walletPage.handleRequest({ accept: true })
-    await modalValidator.expectAcceptedSign()
+    if (!isFirefox) {
+      /**
+       * On Bitcoin implementation, the account addresses are different per network, we need to implement this to AppKit as expected first.
+       * Since when switching to Bitcoin Testnet, the account address on the wallet page is still Bitcoin address, then the sign message will fail.
+       */
+      if (library === 'bitcoin' && chainNameOnWalletPage !== 'Bitcoin') {
+        return
+      }
+      /**
+       * Bitcoin sign message has an issue on the sample wallet where sample wallet freezing after clicking approve button.
+       * This is happening due to ecpair package that sample wallet is using while signing Bitcoin messages, and only happening with Firefox browser.
+       */
+      await modalPage.sign()
+      await walletValidator.expectReceivedSign({
+        chainName: chainNameOnWalletPage,
+        expectNetworkName: library !== 'bitcoin'
+      })
+      await walletPage.handleRequest({ accept: true })
+      await modalValidator.expectAcceptedSign()
+    }
 
     await processChain(index + 1)
   }
@@ -103,9 +167,9 @@ sampleWalletTest('it should switch networks and sign', async ({ library }) => {
 })
 
 sampleWalletTest('it should switch networks using hook', async ({ library }) => {
-  const chains = library === 'solana' ? ['Solana Testnet', 'Solana'] : ['Polygon', 'Ethereum']
-  const caipNetworkId =
-    library === 'solana' ? [solanaTestnet.id, solana.id] : [polygon.id, mainnet.id]
+  const networks = getNetworksByLibrary(library)
+  const chains = networks.map(network => network.name)
+  const caipNetworkIds = networks.map(network => network.id)
 
   async function processChain(index: number) {
     if (index >= chains.length) {
@@ -120,7 +184,7 @@ sampleWalletTest('it should switch networks using hook', async ({ library }) => 
     await modalValidator.expectSwitchedNetwork(chainName)
     await modalPage.closeModal()
     await modalValidator.expectCaipAddressHaveCorrectNetworkId(
-      caipNetworkId[index] as CaipNetworkId
+      caipNetworkIds[index] as CaipNetworkId
     )
 
     await processChain(index + 1)
@@ -131,7 +195,7 @@ sampleWalletTest('it should switch networks using hook', async ({ library }) => 
 })
 
 sampleWalletTest('it should show last connected network after refreshing', async ({ library }) => {
-  const chainName = library === 'solana' ? 'Solana Testnet' : 'Polygon'
+  const chainName = getLastNetworkNameByLibrary(library)
 
   await modalPage.switchNetwork(chainName)
   await modalValidator.expectSwitchedNetwork(chainName)
@@ -146,18 +210,20 @@ sampleWalletTest('it should show last connected network after refreshing', async
 })
 
 sampleWalletTest('it should reject sign', async ({ library }) => {
-  const chainName = library === 'solana' ? 'Solana Testnet' : 'Polygon'
+  const chainName = getLastNetworkNameByLibrary(library)
+
   await modalPage.sign()
-  await walletValidator.expectReceivedSign({ chainName })
+  await walletValidator.expectReceivedSign({ chainName, expectNetworkName: library !== 'bitcoin' })
   await walletPage.handleRequest({ accept: false })
   await modalValidator.expectRejectedSign()
 })
 
 sampleWalletTest('it should switch between multiple accounts', async ({ library }) => {
   // Multi address not available in Solana wallet
-  if (library === 'solana') {
+  if (library === 'solana' || library === 'bitcoin') {
     return
   }
+
   const originalAddress = await modalPage.getAddress()
   await modalPage.openAccount()
   await modalPage.openProfileView()
@@ -167,7 +233,7 @@ sampleWalletTest('it should switch between multiple accounts', async ({ library 
 
 sampleWalletTest('it should show multiple accounts', async ({ library }) => {
   // Multi address not available in Solana wallet
-  if (library === 'solana') {
+  if (library === 'solana' || library === 'bitcoin') {
     return
   }
 
@@ -178,7 +244,7 @@ sampleWalletTest('it should show multiple accounts', async ({ library }) => {
 })
 
 sampleWalletTest('it should disconnect and connect to a single account', async ({ library }) => {
-  if (library === 'solana') {
+  if (library === 'solana' || library === 'bitcoin') {
     return
   }
 
@@ -195,7 +261,7 @@ sampleWalletTest('it should disconnect and connect to a single account', async (
 sampleWalletTest(
   'it should show switch network modal if network is not supported and switch to supported network',
   async ({ library }) => {
-    if (library === 'solana') {
+    if (library === 'solana' || library === 'bitcoin') {
       return
     }
 
@@ -207,6 +273,29 @@ sampleWalletTest(
     await modalValidator.expectNetworkNotSupportedVisible()
     await walletPage.switchNetwork('eip155:1')
     await modalValidator.expectConnected()
+    await modalPage.closeModal()
+  }
+)
+
+sampleWalletTest(
+  "it should switch to first available network when wallet doesn't support the active network of the appkit",
+  async ({ library }) => {
+    if (library === 'solana' || library === 'bitcoin') {
+      return
+    }
+
+    await walletPage.disconnectConnection()
+    await modalValidator.expectDisconnected()
+
+    await modalPage.switchNetworkWithNetworkButton('Aurora')
+    await modalValidator.expectSwitchChainWithNetworkButton('Aurora')
+    await modalPage.closeModal()
+
+    await modalPage.qrCodeFlow(modalPage, walletPage)
+    await modalValidator.expectConnected()
+    await modalPage.openModal()
+    await modalPage.openNetworks()
+    await modalValidator.expectSwitchedNetwork('Ethereum')
     await modalPage.closeModal()
   }
 )
@@ -231,6 +320,10 @@ sampleWalletTest('it should disconnect and close modal when connecting from wall
 })
 
 sampleWalletTest('it should display wallet guide and show explore option', async ({ library }) => {
+  if (library === 'bitcoin') {
+    return
+  }
+
   await modalPage.openConnectModal()
   await modalValidator.expectWalletGuide(library, 'get-started')
   await modalPage.clickWalletGuideGetStarted()

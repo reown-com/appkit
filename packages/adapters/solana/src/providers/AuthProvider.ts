@@ -4,7 +4,7 @@ import base58 from 'bs58'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil } from '@reown/appkit-common'
-import type { RequestArguments } from '@reown/appkit-core'
+import type { RequestArguments } from '@reown/appkit-controllers'
 import type {
   AnyTransaction,
   Connection,
@@ -170,7 +170,7 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
 
   // -- Private ------------------------------------------- //
   private serializeTransaction(transaction: AnyTransaction) {
-    return base58.encode(transaction.serialize({ verifySignatures: false }))
+    return base58.encode(new Uint8Array(transaction.serialize({ verifySignatures: false })))
   }
 }
 

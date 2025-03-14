@@ -7,15 +7,15 @@ import { useSendCalls } from 'wagmi/experimental'
 
 import { useAppKitAccount } from '@reown/appkit/react'
 
-import { useWagmiAvailableCapabilities } from '../../hooks/useWagmiActiveCapabilities'
+import { useChakraToast } from '@/src/components/Toast'
+import { useWagmiAvailableCapabilities } from '@/src/hooks/useWagmiActiveCapabilities'
 import {
   abi as donutContractAbi,
   donutContractSupportedChains,
   donutContractSupportedChainsName,
   address as donutContractaddress
-} from '../../utils/DonutContract'
-import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '../../utils/EIP5792Utils'
-import { useChakraToast } from '../Toast'
+} from '@/src/utils/DonutContract'
+import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '@/src/utils/EIP5792Utils'
 
 const purchaseDonutCallData = encodeFunctionData({
   abi: donutContractAbi,
@@ -53,7 +53,7 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
     method: EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
   })
 
-  const { address } = useAppKitAccount()
+  const { address } = useAppKitAccount({ namespace: 'eip155' })
   const { status } = useAccount()
 
   const isConnected = status === 'connected'
