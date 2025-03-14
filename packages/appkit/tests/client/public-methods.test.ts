@@ -1061,13 +1061,14 @@ describe('Base Public methods', () => {
     })
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
+      allowUnsupportedChain: false,
       showNetworkSwitcher: true
     })
 
     const showUnsupportedChainUI = vi.spyOn(ChainController, 'showUnsupportedChainUI')
     const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
 
-    const appKit = new AppKit({ ...mockOptions, allowUnsupportedChain: false })
+    const appKit = new AppKit(mockOptions)
     await appKit['syncAccount']({
       address: '0x123',
       chainId: mainnet.id,
@@ -1075,7 +1076,7 @@ describe('Base Public methods', () => {
     })
 
     expect(showUnsupportedChainUI).toHaveBeenCalled()
-    expect(setActiveCaipNetwork).not.toHaveBeenCalled()
+    expect(setActiveCaipNetwork).toHaveBeenCalledWith(mainnet)
   })
 
   it('should handle network switcher UI when showNetworkSwitcher is false', async () => {
@@ -1084,22 +1085,21 @@ describe('Base Public methods', () => {
     )
     vi.spyOn(ChainController, 'getCaipNetworkByNamespace').mockReturnValue(mainnet)
     vi.spyOn(ChainController, 'getNetworkProp').mockReturnValue(true)
-
-    const showUnsupportedChainUI = vi.spyOn(ChainController, 'showUnsupportedChainUI')
-    const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
-
     vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
       ...ChainController.state,
       activeCaipNetwork: mainnet,
       activeChain: 'eip155'
     })
-
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
+      allowUnsupportedChain: false,
       showNetworkSwitcher: false
     })
 
-    const appKit = new AppKit({ ...mockOptions, allowUnsupportedChain: false })
+    const showUnsupportedChainUI = vi.spyOn(ChainController, 'showUnsupportedChainUI')
+    const setActiveCaipNetwork = vi.spyOn(ChainController, 'setActiveCaipNetwork')
+
+    const appKit = new AppKit(mockOptions)
     await appKit['syncAccount']({
       address: '0x123',
       chainId: mainnet.id,
