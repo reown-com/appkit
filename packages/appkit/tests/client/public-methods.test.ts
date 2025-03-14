@@ -893,9 +893,8 @@ describe('Base Public methods', () => {
     const showUnsupportedChainUI = vi.spyOn(ChainController, 'showUnsupportedChainUI')
     showUnsupportedChainUI.mockImplementationOnce(vi.fn())
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
-      ...OptionsController.state,
       allowUnsupportedChain: true
-    })
+    } as any)
 
     const overrideAdapter = {
       ...mockEvmAdapter,
