@@ -706,4 +706,25 @@ describe('ApiController', () => {
 
     expect(ApiController.state.isAnalyticsEnabled).toBe(true)
   })
+
+  it('should not include empty promises in prefetch by default', async () => {
+    const promiseAllSettledSpy = vi.spyOn(Promise, 'allSettled')
+
+    vi.spyOn(ApiController, 'fetchConnectorImages').mockResolvedValue()
+    vi.spyOn(ApiController, 'fetchFeaturedWallets').mockResolvedValue()
+    vi.spyOn(ApiController, 'fetchRecommendedWallets').mockResolvedValue()
+    vi.spyOn(ApiController, 'fetchNetworkImages').mockResolvedValue()
+
+    await ApiController.prefetch()
+
+    expect(promiseAllSettledSpy).toHaveBeenCalledWith(
+      expect.arrayContaining([
+        expect.any(Promise),
+        expect.any(Promise),
+        expect.any(Promise),
+        expect.any(Promise)
+      ])
+    )
+    expect(promiseAllSettledSpy.mock.calls[0]?.[0]).toHaveLength(4)
+  })
 })
