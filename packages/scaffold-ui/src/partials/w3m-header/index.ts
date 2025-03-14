@@ -231,7 +231,6 @@ export class W3mHeader extends LitElement {
     const isConnectingSIWEView = view === 'ConnectingSiwe'
     const isAccountView = view === 'Account'
     const showNetworkSwitcher = OptionsController.state.showNetworkSwitcher
-    console.log('>> Show network switcher', showNetworkSwitcher)
 
     const shouldHideBack =
       isApproveTransaction || isConnectingSIWEView || (isConnectHelp && isEmbeddedEnable)
