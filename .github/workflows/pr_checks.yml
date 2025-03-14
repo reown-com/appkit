@@ -78,7 +78,6 @@ jobs:
           - prettier
           - typecheck
           - danger
-      # Run these checks in parallel
       fail-fast: false
     steps:
       - name: checkout
