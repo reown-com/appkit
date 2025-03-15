@@ -50,21 +50,11 @@ on:
         required: false
 
 jobs:
-  ui_tests:
-    name: 'Playwright Tests'
+  build:
+    name: 'Build Packages and Lab'
     runs-on: [self-hosted, aws-ecs-16cpu-64mem-30m]
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2, 3, 4, 5]
-        shardTotal: [5]
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
-      # Possibly this helps with GitHub-hosted runner network issues, but it's not confirmed
-      # It's not supported in self-hosted runners, however, so commenting it out for now
-      # - name: Tune GitHub-hosted runner network
-      #   uses: smorimoto/tune-github-hosted-runner-network@v1
-
       - name: checkout
         uses: actions/checkout@v4
         with:
@@ -80,19 +70,6 @@ jobs:
           node-version: 20.x
           cache: 'pnpm'
 
-      # - name: Get installed Playwright version
-      #   id: playwright-version
-      #   run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package-lock.json').packages['apps/laboratory']['devDependencies']['@playwright/test'])")" >> $GITHUB_ENV
-
-      # This cache causes weird errors on retry runs when using the self-hosted runners, disabling for now
-      # - name: Cache playwright binaries
-      #   uses: actions/cache@v4
-      #   id: playwright-cache
-      #   with:
-      #     path: |
-      #       ~/.cache/ms-playwright
-      #     key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}-${{ hashFiles('apps/laboratory/tests/shared/constants/devices.ts') }}
-
       - name: Install dependencies
         run: pnpm install
 
@@ -106,6 +83,74 @@ jobs:
           SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
           SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
 
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: |
+            dist/
+            .next/
+            node_modules/
+            turbo/
+            packages/*/dist/
+            packages/*/.next/
+            apps/*/dist/
+            apps/*/.next/
+            .turbo/
+          retention-days: 1
+
+      # Create a separate artifact for node_modules to preserve symlinks and permissions
+      - name: Upload node_modules
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-modules
+          path: node_modules
+          retention-days: 1
+
+  ui_tests:
+    name: 'Playwright Tests'
+    needs: build
+    runs-on: [self-hosted, aws-ecs-16cpu-64mem-30m]
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5]
+        shardTotal: [5]
+    timeout-minutes: 20
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          repository: reown-com/appkit
+          ref: ${{ inputs.branch }}
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+
+      - name: setup-node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+          cache: 'pnpm'
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+
+      - name: Download node_modules
+        uses: actions/download-artifact@v4
+        with:
+          name: node-modules
+          path: node_modules
+
+      # Restore executable permissions for binaries
+      - name: Fix permissions
+        run: chmod +x node_modules/*/bin/*
+
+      - name: Install dependencies
+        run: pnpm install
+
       - name: build extension
         env:
           EIP155_PRIVATE_KEY: ${{ secrets.EIP155_PRIVATE_KEY }}
@@ -114,28 +159,8 @@ jobs:
         run: pnpm build
 
       - name: Install Playwright Browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
         working-directory: ./apps/laboratory/
         run: pnpm playwright:install
-
-      # - name: Build MetaMask wallet cache
-      #   working-directory: ./apps/laboratory/
-      #   run: xvfb-run pnpm synpress
-
-      # - name: Run MetaMask Playwright tests (headful)
-      #   working-directory: ./apps/laboratory/
-      #   env:
-      #     BASE_URL: ${{ inputs.base-url }}
-      #     WALLET_URL: ${{ inputs.wallet-url }}
-      #     NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
-      #     SKIP_PLAYWRIGHT_WEBSERVER: ${{ inputs.skip-playwright-webserver }}
-      #     NEXTAUTH_SECRET: ${{ secrets.TESTS_NEXTAUTH_SECRET }}
-      #     MAILSAC_API_KEY: ${{ secrets.TESTS_MAILSEC_API_KEY }}
-      #     NEXT_PUBLIC_SECURE_SITE_SDK_URL: ${{ inputs.secure-site-url }}
-      #     SOCIAL_TEST_EMAIL: ${{ secrets.TESTS_SOCIAL_EMAIL }}
-      #     SOCIAL_TEST_PASSWORD: ${{ secrets.TESTS_SOCIAL_PASSWORD }}
-      #     CI: true
-      #   run: xvfb-run pnpm playwright:test:metamask
 
       - name: Run Playwright tests
         env:
