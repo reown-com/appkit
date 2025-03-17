@@ -11,7 +11,7 @@
     "@reown/appkit": "workspace:*",
     "@reown/appkit-adapter-ethers5": "workspace:*",
     "ethers": "5.7.2",
-    "vue": "3.4.3"
+    "vue": "3.5.13"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "5.0.2",
