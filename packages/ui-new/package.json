@@ -18,7 +18,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "lit": "3.1.0",
+    "lit": "3.2.1",
     "qrcode": "1.5.4"
   },
   "devDependencies": {
