@@ -16,7 +16,7 @@
     "serve": "http-server dist -p 8080 --cors"
   },
   "devDependencies": {
-    "@wagmi/connectors": "5.7.7",
+    "@wagmi/connectors": "5.7.9",
     "http-server": "14.1.1",
     "vite-plugin-node-polyfills": "0.23.0"
   },
@@ -35,9 +35,9 @@
     "@reown/appkit-adapter-solana": "workspace:*",
     "@reown/appkit-adapter-wagmi": "workspace:*",
     "@reown/appkit-polyfills": "workspace:*",
-    "@wagmi/connectors": "5.7.8",
+    "@wagmi/connectors": "5.7.9",
     "@wagmi/core": "2.16.5",
-    "viem": "2.23.5",
+    "viem": "2.23.11",
     "vite": "5.4.12",
     "wagmi": "2.14.12"
   },

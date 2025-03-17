@@ -51,7 +51,7 @@
     "@reown/appkit-ui": "workspace:*",
     "lit": "3.1.0",
     "valtio": "1.13.2",
-    "viem": "2.23.5",
+    "viem": "2.23.11",
     "zod": "3.22.4"
   },
   "devDependencies": {
