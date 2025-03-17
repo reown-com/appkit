@@ -11,8 +11,7 @@ import {
   type ConnectionControllerClient,
   CoreHelperUtil,
   type NetworkControllerClient,
-  SnackController,
-  SwapController
+  SnackController
 } from '../../exports/index.js'
 
 // -- Setup --------------------------------------------------------------------
