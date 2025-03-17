@@ -21,6 +21,11 @@ import { EmbeddedWalletInfo } from './EmbeddedWalletInfo'
 export function AppKitInfo() {
   const { caipAddress, address } = useAppKitAccount()
   const { chainId } = useAppKitNetwork()
+  const [isMounted, setIsMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   const isEIP155 = caipAddress?.startsWith('eip155:')
   const erc3770Address = React.useMemo(() => {
@@ -69,12 +74,14 @@ export function AppKitInfo() {
             </Box>
           ) : null}
 
-          <Box>
-            <Heading size="xs" textTransform="uppercase" pb="2">
-              Chain Id
-            </Heading>
-            <Text data-testid="w3m-chain-id">{chainId}</Text>
-          </Box>
+          {isMounted && chainId !== undefined && (
+            <Box>
+              <Heading size="xs" textTransform="uppercase" pb="2">
+                Chain Id
+              </Heading>
+              <Text data-testid="w3m-chain-id">{chainId}</Text>
+            </Box>
+          )}
 
           <RelayClientInfo />
 

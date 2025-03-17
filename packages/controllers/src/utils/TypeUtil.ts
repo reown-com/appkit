@@ -1131,6 +1131,12 @@ export type Features = {
    * @default false
    */
   collapseWallets?: boolean
+
+  /**
+   * @description Enable or disable the pay feature. Disabled by default.
+   * @type {boolean}
+   */
+  pay?: boolean
 }
 
 export type FeaturesKeys = keyof Features
