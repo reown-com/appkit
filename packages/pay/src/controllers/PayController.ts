@@ -9,7 +9,7 @@ import {
   ModalController,
   RouterController
 } from '@reown/appkit-controllers'
-import { ProviderUtil } from '@reown/appkit/store'
+import { ProviderUtil } from '@reown/appkit-utils'
 
 import { AppKitPayErrorCodes } from '../types/errors.js'
 import { AppKitPayError } from '../types/errors.js'
