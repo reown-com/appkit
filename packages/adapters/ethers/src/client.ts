@@ -13,11 +13,11 @@ import {
   StorageUtil
 } from '@reown/appkit-controllers'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
+import { ProviderUtil } from '@reown/appkit-utils'
 import { EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
 import { AdapterBlueprint } from '@reown/appkit/adapters'
 import { WalletConnectConnector } from '@reown/appkit/connectors'
-import { ProviderUtil } from '@reown/appkit/store'
 
 import { EthersMethods } from './utils/EthersMethods.js'
 
