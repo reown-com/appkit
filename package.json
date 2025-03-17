@@ -75,9 +75,6 @@
   },
   "packageManager": "pnpm@9.5.0",
   "pnpm": {
-    "patchedDependencies": {
-      "@synthetixio/synpress-metamask@0.0.1-alpha.7": "patches/@synthetixio__synpress-metamask@0.0.1-alpha.7.patch"
-    },
     "overrides": {
       "@solana/web3.js": "1.95.8"
     }
