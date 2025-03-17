@@ -2,7 +2,7 @@ import { type UseAppKitNetworkReturn } from '@reown/appkit-controllers'
 import { useAppKitNetworkCore } from '@reown/appkit-controllers/react'
 import type { AppKitNetwork } from '@reown/appkit/networks'
 
-import { AppKit } from '../src/client/appkit-basic.js'
+import { AppKit } from '../src/client/appkit-core.js'
 import { getAppKit } from '../src/library/react/index.js'
 import type { AppKitOptions } from '../src/utils/TypesUtil.js'
 import { PACKAGE_VERSION } from './constants.js'
@@ -24,7 +24,7 @@ export function createAppKit(options: CreateAppKit) {
   if (!modal) {
     modal = new AppKit({
       ...options,
-      sdkVersion: `react-basic-${PACKAGE_VERSION}`,
+      sdkVersion: `react-core-${PACKAGE_VERSION}`,
       basic: true
     })
     getAppKit(modal)

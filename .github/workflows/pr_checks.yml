@@ -18,7 +18,55 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  setup_and_build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+
+      - name: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'pnpm'
+
+      - name: install
+        run: pnpm install
+
+      - name: build
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: |
+            dist/
+            .next/
+            node_modules/
+            turbo/
+            packages/*/dist/
+            packages/*/.next/
+            apps/*/dist/
+            apps/*/.next/
+            .turbo/
+          retention-days: 1
+
+      # Create a separate artifact for node_modules to preserve symlinks and permissions
+      - name: Upload node_modules
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-modules
+          path: node_modules
+          retention-days: 1
+
   code_style:
+    needs: setup_and_build
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -30,26 +78,37 @@ jobs:
           - prettier
           - typecheck
           - danger
+      fail-fast: false
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
 
       - name: setup-node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20.x
           cache: 'pnpm'
 
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+
+      - name: Download node_modules
+        uses: actions/download-artifact@v4
+        with:
+          name: node-modules
+          path: node_modules
+
+      # Restore executable permissions for binaries
+      - name: Fix permissions
+        run: chmod +x node_modules/*/bin/*
+
       - name: install
         run: pnpm install
-
-      - name: build
-        run: pnpm build
-        env:
-          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
       - name: check
         run: pnpm ${{ matrix.style-command }}
@@ -58,30 +117,41 @@ jobs:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
   build_sample_apps:
+    needs: setup_and_build
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
 
       - name: setup-node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20.x
           cache: 'pnpm'
 
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+
+      - name: Download node_modules
+        uses: actions/download-artifact@v4
+        with:
+          name: node-modules
+          path: node_modules
+
+      # Restore executable permissions for binaries
+      - name: Fix permissions
+        run: chmod +x node_modules/*/bin/*
+
       - name: install
         run: pnpm install
-
-      - name: build
-        run: pnpm build
-        env:
-          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
       - name: build sample apps
         run: pnpm build:sample-apps
@@ -89,30 +159,41 @@ jobs:
           NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
   test:
+    needs: setup_and_build
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v4
         name: Install pnpm
 
       - name: setup-node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20.x
           cache: 'pnpm'
 
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+
+      - name: Download node_modules
+        uses: actions/download-artifact@v4
+        with:
+          name: node-modules
+          path: node_modules
+
+      # Restore executable permissions for binaries
+      - name: Fix permissions
+        run: chmod +x node_modules/*/bin/*
+
       - name: install
         run: pnpm install
-
-      - name: build
-        run: pnpm build
-        env:
-          NEXT_PUBLIC_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_PROJECT_ID }}
 
       - name: Test
         run: pnpm test:ci

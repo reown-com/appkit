@@ -17,7 +17,7 @@ import SignClient from '@walletconnect/sign-client'
 import base58 from 'bs58'
 import { toHex } from 'viem'
 
-import { createAppKit } from '@reown/appkit/basic'
+import { createAppKit } from '@reown/appkit/core'
 import { bitcoin, solana } from '@reown/appkit/networks'
 
 import { useChakraToast } from '@/src/components/Toast'
@@ -209,11 +209,14 @@ export default function SignClientPage() {
         return
       }
 
-      const signature: string = await signClient.request({
+      const result = await signClient.request({
         topic: session.topic,
         chainId: network,
         request: payload
       })
+
+      const signature =
+        typeof result === 'string' ? result : (result as { signature: string })?.signature
 
       toast({
         title: ConstantsUtil.SigningSucceededToastTitle,

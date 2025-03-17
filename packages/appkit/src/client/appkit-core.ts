@@ -9,7 +9,7 @@ import {
 } from '@reown/appkit-controllers'
 
 import type { AdapterBlueprint } from '../adapters/ChainAdapterBlueprint.js'
-import { AppKitCore } from './core.js'
+import { AppKitBaseClient } from './appkit-base-client.js'
 
 declare global {
   interface Window {
@@ -41,7 +41,7 @@ export interface OpenOptions {
 let isInitialized = false
 
 // -- Client --------------------------------------------------------------------
-export class AppKit extends AppKitCore {
+export class AppKit extends AppKitBaseClient {
   public activeAdapter?: AdapterBlueprint
 
   public adapters?: ChainAdapter[]
@@ -66,6 +66,22 @@ export class AppKit extends AppKitCore {
     if (this.options.manualWCControl) {
       ConnectionController.finalizeWcConnection()
     }
+  }
+
+  public override async syncIdentity(
+    _request: Pick<AdapterBlueprint.ConnectResult, 'address' | 'chainId'> & {
+      chainNamespace: ChainNamespace
+    }
+  ) {
+    return Promise.resolve()
+  }
+
+  public override async syncBalance(_params: {
+    address: string
+    chainId: string | number | undefined
+    chainNamespace: ChainNamespace
+  }) {
+    return Promise.resolve()
   }
 
   protected override async injectModalUi() {
