@@ -9,7 +9,7 @@
     "build": "next build",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "playwright:start": "pnpm start",
-    "playwright:install": "playwright install --with-deps",
+    "playwright:install": "playwright install --with-deps --no-shell",
     "synpress": "synpress ./tests/wallet-setup",
     "playwright:test": "HEADLESS=true playwright test",
     "playwright:test:mobile-wallet-features": "playwright test --grep 'mobile-wallet-features.spec.ts'",
