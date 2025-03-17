@@ -1,13 +1,13 @@
 import { encodeFunctionData, parseEther, toHex } from 'viem'
 import { erc20Abi } from 'viem'
 
-import { baseSepolia, optimismSepolia, sepolia } from '@reown/appkit/networks'
+import { baseSepolia, optimismSepolia } from '@reown/appkit/networks'
 
 import type { EvmContractInteraction, PaymentOption } from '../types/wallet_checkout'
 import { vitalikEthAddress } from './DataUtil'
 
 // Chain IDs for supported testnets
-export type AllowedChainId = 84532 | 11155111 | 11155420
+export type AllowedChainId = 84532 | 11155420
 
 export const ALLOWED_CHAINS = [baseSepolia, optimismSepolia]
 
@@ -18,10 +18,6 @@ export const TOKEN_CONFIG: Record<number, Record<string, string>> = {
   // Base Sepolia tokens
   [baseSepolia.id]: {
     USDC: '0x036CbD53842c5426634e7929541eC2318f3dCF7e'
-  },
-  // Sepolia tokens
-  [sepolia.id]: {
-    USDC: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238'
   },
   // Optimism Sepolia tokens
   [optimismSepolia.id]: {
