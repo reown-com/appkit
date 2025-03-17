@@ -1,4 +1,4 @@
-import type { Provider } from '@reown/appkit-core'
+import type { Provider } from '@reown/appkit-controllers'
 
 import type { ChainAdapterConnector } from '../../../../appkit/dist/types/src/adapters/ChainAdapterConnector.js'
 

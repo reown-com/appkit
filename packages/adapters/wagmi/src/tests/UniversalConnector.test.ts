@@ -13,8 +13,8 @@ import {
   mockSession
 } from './mocks/AppKit'
 
-vi.mock('@reown/appkit-core', async importOriginal => {
-  const actual = await importOriginal<typeof import('@reown/appkit-core')>()
+vi.mock('@reown/appkit-controllers', async importOriginal => {
+  const actual = await importOriginal<typeof import('@reown/appkit-controllers')>()
   return {
     ...actual,
     StorageUtil: {
@@ -65,8 +65,6 @@ describe('UniversalConnector', () => {
     it('should connect successfully', async () => {
       const expectedChainId = mainnet.id
 
-      mockProvider.enable.mockResolvedValue([mockAddress])
-
       const result = await connectorInstance.connect()
 
       expect(result).toEqual({
@@ -77,17 +75,10 @@ describe('UniversalConnector', () => {
       expect(mockProvider.session.namespaces.eip155.accounts).toEqual([mockCaipAddress])
       expect(mockProvider.setDefaultChain).toHaveBeenCalledWith(`eip155:${expectedChainId}`)
     })
-
-    it('should handle user rejection', async () => {
-      mockProvider.enable.mockRejectedValue(new Error('user rejected'))
-
-      await expect(connectorInstance.connect()).rejects.toThrow('User rejected the request.')
-    })
   })
 
   describe('getAccounts', () => {
     it('should return accounts from provider session', async () => {
-      mockProvider.enable.mockResolvedValue([mockAddress])
       await connectorInstance.connect()
       const accounts = await connectorInstance.getAccounts()
 

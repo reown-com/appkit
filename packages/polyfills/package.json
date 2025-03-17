@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-polyfills",
-  "version": "1.6.9",
+  "version": "1.7.0",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/index.js",
@@ -20,7 +20,7 @@
     "buffer": "6.0.3"
   },
   "devDependencies": {
-    "@types/node": "22.13.4"
+    "@types/node": "22.13.9"
   },
   "author": "Reown <support@reown.com> (https://reown.com)",
   "license": "Apache-2.0",

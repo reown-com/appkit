@@ -8,7 +8,7 @@ import { Toaster } from 'sonner'
 import { useSnapshot } from 'valtio'
 
 import { AppKitNetwork, type ChainNamespace } from '@reown/appkit-common'
-import { ConnectMethod, ConstantsUtil } from '@reown/appkit-core'
+import { ConnectMethod, ConstantsUtil } from '@reown/appkit-controllers'
 import { Features, ThemeMode, ThemeVariables, useAppKitState } from '@reown/appkit/react'
 
 import { AppKitContext } from '@/contexts/appkit-context'
