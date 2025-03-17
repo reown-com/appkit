@@ -10,9 +10,14 @@ import {
   RouterController,
   SnackController,
   ThemeController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import '@reown/appkit-ui/wui-chip-button'
+import '@reown/appkit-ui/wui-compatible-network'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-qr-code'
+import '@reown/appkit-ui/wui-text'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import styles from './styles.js'
 

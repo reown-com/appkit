@@ -29,8 +29,8 @@ import {
 import base58 from 'bs58'
 
 import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
-import type { RequestArguments } from '@reown/appkit-core'
-import type { Provider as CoreProvider } from '@reown/appkit-core'
+import type { RequestArguments } from '@reown/appkit-controllers'
+import type { Provider as CoreProvider } from '@reown/appkit-controllers'
 import { PresetsUtil } from '@reown/appkit-utils'
 import type {
   AnyTransaction,
@@ -160,7 +160,7 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Sola
 
     const [result] = await feature.signTransaction({
       account,
-      transaction: serializedTransaction,
+      transaction: new Uint8Array(serializedTransaction),
       chain: this.getActiveChainName()
     })
 
@@ -186,7 +186,7 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Sola
 
     const [result] = await feature.signAndSendTransaction({
       account,
-      transaction: this.serializeTransaction(transaction),
+      transaction: new Uint8Array(this.serializeTransaction(transaction)),
       options: {
         ...sendOptions,
         preflightCommitment: getCommitment(sendOptions?.preflightCommitment)
@@ -222,7 +222,7 @@ export class WalletStandardProvider extends ProviderEventEmitter implements Sola
 
     const result = await feature.signTransaction(
       ...transactions.map(transaction => ({
-        transaction: this.serializeTransaction(transaction),
+        transaction: new Uint8Array(this.serializeTransaction(transaction)),
         account,
         chain
       }))

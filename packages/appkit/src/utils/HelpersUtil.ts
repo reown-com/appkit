@@ -2,7 +2,7 @@ import type { SessionTypes } from '@walletconnect/types'
 import type { Namespace, NamespaceConfig } from '@walletconnect/universal-provider'
 
 import type { CaipNetwork, CaipNetworkId, ChainNamespace } from '@reown/appkit-common'
-import { EnsController } from '@reown/appkit-core'
+import { EnsController } from '@reown/appkit-controllers'
 
 import { solana, solanaDevnet } from '../networks/index.js'
 
@@ -20,21 +20,33 @@ export const WcHelpersUtil = {
         ]
       case 'eip155':
         return [
-          'personal_sign',
+          'eth_accounts',
+          'eth_requestAccounts',
+          'eth_sendRawTransaction',
           'eth_sign',
           'eth_signTransaction',
           'eth_signTypedData',
           'eth_signTypedData_v3',
           'eth_signTypedData_v4',
-          'eth_sendRawTransaction',
           'eth_sendTransaction',
-          'wallet_getCapabilities',
-          'wallet_sendCalls',
-          'wallet_showCallsStatus',
+          'personal_sign',
+          'wallet_switchEthereumChain',
+          'wallet_addEthereumChain',
+          'wallet_getPermissions',
+          'wallet_requestPermissions',
+          'wallet_registerOnboarding',
+          'wallet_watchAsset',
+          'wallet_scanQRCode',
+          // EIP-5792
           'wallet_getCallsStatus',
+          'wallet_showCallsStatus',
+          'wallet_sendCalls',
+          'wallet_getCapabilities',
+          // EIP-7715
           'wallet_grantPermissions',
           'wallet_revokePermissions',
-          'wallet_switchEthereumChain'
+          //EIP-7811
+          'wallet_getAssets'
         ]
       case 'bip122':
         return ['sendTransfer', 'signMessage', 'signPsbt', 'getAccountAddresses']
@@ -62,7 +74,7 @@ export const WcHelpersUtil = {
       const caipNetworkId = `${chainNamespace}:${id}`
 
       // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
-      const namespace = acc[chainNamespace] as Namespace
+      const namespace = acc[chainNamespace]
 
       namespace.chains.push(caipNetworkId)
 

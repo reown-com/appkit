@@ -3,8 +3,12 @@ import { property, state } from 'lit/decorators.js'
 import { createRef, ref } from 'lit/directives/ref.js'
 import type { Ref } from 'lit/directives/ref.js'
 
-import { ConnectionController, CoreHelperUtil, SendController } from '@reown/appkit-core'
+import { ConnectionController, CoreHelperUtil, SendController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'
 

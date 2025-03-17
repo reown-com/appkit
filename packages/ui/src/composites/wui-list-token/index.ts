@@ -1,6 +1,7 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
+import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import '../../components/wui-text/index.js'
 import '../../layout/wui-flex/index.js'
@@ -29,7 +30,7 @@ export class WuiListToken extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button data-clickable=${String(this.clickable)} ontouchstart>
+      <button data-clickable=${String(this.clickable)}>
         <wui-flex gap="s" alignItems="center">
           ${this.visualTemplate()}
           <wui-flex flexDirection="column" justifyContent="spaceBetween">

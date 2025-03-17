@@ -5,6 +5,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import type { CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
+  AssetController,
   AssetUtil,
   ChainController,
   ConnectionController,
@@ -14,8 +15,14 @@ import {
   ModalController,
   RouterController,
   SnackController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-list-item'
+import '@reown/appkit-ui/wui-list-network'
+import '@reown/appkit-ui/wui-separator'
+import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'
 
@@ -26,8 +33,19 @@ export class W3mUnsupportedChainView extends LitElement {
   // -- Members ------------------------------------------- //
   protected readonly swapUnsupportedChain = RouterController.state.data?.swapUnsupportedChain
 
+  private unsubscribe: (() => void)[] = []
+
   // -- State & Properties --------------------------------- //
   @state() private disconecting = false
+
+  public constructor() {
+    super()
+    this.unsubscribe.push(AssetController.subscribeNetworkImages(() => this.requestUpdate()))
+  }
+
+  public override disconnectedCallback() {
+    this.unsubscribe.forEach(unsubscribe => unsubscribe())
+  }
 
   // -- Render -------------------------------------------- //
   public override render() {

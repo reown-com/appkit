@@ -1,8 +1,18 @@
 import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 
-import { ApiController, CoreHelperUtil, OptionsController, StorageUtil } from '@reown/appkit-core'
+import {
+  ApiController,
+  CoreHelperUtil,
+  OptionsController,
+  StorageUtil
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+
+import '../../partials/w3m-all-wallets-widget/index.js'
+import '../../partials/w3m-connector-list/index.js'
+import '../w3m-connecting-wc-view/index.js'
 
 @customElement('w3m-connecting-wc-basic-view')
 export class W3mConnectingWcBasicView extends LitElement {

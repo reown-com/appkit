@@ -1,18 +1,17 @@
-import { CoinbaseWalletSDK, type ProviderInterface } from '@coinbase/wallet-sdk'
 import UniversalProvider from '@walletconnect/universal-provider'
 import { InfuraProvider, JsonRpcProvider, formatEther } from 'ethers'
 
 import { type AppKitOptions, WcConstantsUtil } from '@reown/appkit'
-import type { CaipNetwork } from '@reown/appkit-common'
-import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil as CommonConstantsUtil, ParseUtil } from '@reown/appkit-common'
 import {
   type CombinedProvider,
   type Connector,
   type ConnectorType,
   CoreHelperUtil,
   OptionsController,
-  type Provider
-} from '@reown/appkit-core'
+  type Provider,
+  StorageUtil
+} from '@reown/appkit-controllers'
 import { ConstantsUtil, PresetsUtil } from '@reown/appkit-utils'
 import { EthersHelpersUtil, type ProviderType } from '@reown/appkit-utils/ethers'
 import type { W3mFrameProvider } from '@reown/appkit-wallet'
@@ -30,20 +29,18 @@ export interface EIP6963ProviderDetail {
 export class EthersAdapter extends AdapterBlueprint {
   private ethersConfig?: ProviderType
   public adapterType = 'ethers'
+  private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
 
   constructor() {
     super({})
     this.namespace = CommonConstantsUtil.CHAIN.EVM
   }
 
-  private createEthersConfig(options: AppKitOptions) {
+  private async createEthersConfig(options: AppKitOptions) {
     if (!options.metadata) {
       return undefined
     }
     let injectedProvider: Provider | undefined = undefined
-
-    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-    let coinbaseProvider: ProviderInterface | undefined = undefined
 
     function getInjectedProvider() {
       if (injectedProvider) {
@@ -64,26 +61,30 @@ export class EthersAdapter extends AdapterBlueprint {
       return injectedProvider
     }
 
-    function getCoinbaseProvider() {
-      if (coinbaseProvider) {
-        return coinbaseProvider
-      }
+    async function getCoinbaseProvider() {
+      try {
+        const { createCoinbaseWalletSDK } = await import('@coinbase/wallet-sdk')
 
-      if (typeof window === 'undefined') {
+        if (typeof window === 'undefined') {
+          return undefined
+        }
+
+        const coinbaseSdk = createCoinbaseWalletSDK({
+          appName: options?.metadata?.name,
+          appLogoUrl: options?.metadata?.icons[0],
+          appChainIds: options.networks?.map(caipNetwork => caipNetwork.id as number) || [1, 84532],
+          preference: {
+            options: options.coinbasePreference ?? 'all'
+          }
+        })
+
+        return coinbaseSdk.getProvider()
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to import Coinbase Wallet SDK:', error)
+
         return undefined
       }
-
-      const coinbaseWallet = new CoinbaseWalletSDK({
-        appName: options?.metadata?.name,
-        appLogoUrl: options?.metadata?.icons[0],
-        appChainIds: options.networks?.map(caipNetwork => caipNetwork.id as number) || [1, 84532]
-      })
-
-      coinbaseProvider = coinbaseWallet.makeWeb3Provider({
-        options: options.coinbasePreference ?? 'all'
-      })
-
-      return coinbaseProvider
     }
 
     const providers: ProviderType = { metadata: options.metadata }
@@ -93,7 +94,11 @@ export class EthersAdapter extends AdapterBlueprint {
     }
 
     if (options.enableCoinbase !== false) {
-      providers.coinbase = getCoinbaseProvider()
+      const coinbaseProvider = await getCoinbaseProvider()
+
+      if (coinbaseProvider) {
+        providers.coinbase = coinbaseProvider
+      }
     }
 
     providers.EIP6963 = options.enableEIP6963 !== false
@@ -149,10 +154,11 @@ export class EthersAdapter extends AdapterBlueprint {
       throw new Error('Provider is undefined')
     }
 
+    const { address } = ParseUtil.parseCaipAddress(params.caipAddress)
     const result = await EthersMethods.writeContract(
       params,
       params.provider as Provider,
-      params.caipAddress,
+      address,
       Number(params.caipNetwork?.id)
     )
 
@@ -248,8 +254,9 @@ export class EthersAdapter extends AdapterBlueprint {
     }
   }
 
-  public syncConnectors(options: AppKitOptions) {
-    this.ethersConfig = this.createEthersConfig(options)
+  override async syncConnectors(options: AppKitOptions): Promise<void> {
+    this.ethersConfig = await this.createEthersConfig(options)
+
     if (this.ethersConfig?.EIP6963) {
       this.listenInjectedConnector(true)
     }
@@ -454,9 +461,25 @@ export class EthersAdapter extends AdapterBlueprint {
   public async getBalance(
     params: AdapterBlueprint.GetBalanceParams
   ): Promise<AdapterBlueprint.GetBalanceResult> {
-    const caipNetwork = this.caipNetworks?.find((c: CaipNetwork) => c.id === params.chainId)
+    const address = params.address
+    const caipNetwork = this.caipNetworks?.find(network => network.id === params.chainId)
+
+    if (!address) {
+      return Promise.resolve({ balance: '0.00', symbol: 'ETH' })
+    }
 
     if (caipNetwork && caipNetwork.chainNamespace === 'eip155') {
+      const caipAddress = `${caipNetwork.caipNetworkId}:${address}`
+
+      const cachedPromise = this.balancePromises[caipAddress]
+      if (cachedPromise) {
+        return cachedPromise
+      }
+      const cachedBalance = StorageUtil.getNativeBalanceCacheForCaipAddress(caipAddress)
+      if (cachedBalance) {
+        return { balance: cachedBalance.balance, symbol: cachedBalance.symbol }
+      }
+
       const jsonRpcProvider = new JsonRpcProvider(caipNetwork.rpcUrls.default.http[0], {
         chainId: caipNetwork.id as number,
         name: caipNetwork.name
@@ -464,17 +487,34 @@ export class EthersAdapter extends AdapterBlueprint {
 
       if (jsonRpcProvider) {
         try {
-          const balance = await jsonRpcProvider.getBalance(params.address)
-          const formattedBalance = formatEther(balance)
+          this.balancePromises[caipAddress] = new Promise<AdapterBlueprint.GetBalanceResult>(
+            async resolve => {
+              const balance = await jsonRpcProvider.getBalance(address)
 
-          return { balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol }
+              const formattedBalance = formatEther(balance)
+
+              StorageUtil.updateNativeBalanceCache({
+                caipAddress,
+                balance: formattedBalance,
+                symbol: caipNetwork.nativeCurrency.symbol,
+                timestamp: Date.now()
+              })
+
+              resolve({ balance: formattedBalance, symbol: caipNetwork.nativeCurrency.symbol })
+            }
+          ).finally(() => {
+            // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+            delete this.balancePromises[caipAddress]
+          })
+
+          return this.balancePromises[caipAddress] || { balance: '0.00', symbol: 'ETH' }
         } catch (error) {
-          return { balance: '', symbol: '' }
+          return { balance: '0.00', symbol: 'ETH' }
         }
       }
     }
 
-    return { balance: '', symbol: '' }
+    return { balance: '0.00', symbol: 'ETH' }
   }
 
   public async getProfile(
@@ -543,7 +583,7 @@ export class EthersAdapter extends AdapterBlueprint {
   public override async switchNetwork(params: AdapterBlueprint.SwitchNetworkParams): Promise<void> {
     const { caipNetwork, provider, providerType } = params
 
-    if (providerType === 'AUTH' || providerType === 'WALLET_CONNECT') {
+    if (providerType === 'AUTH') {
       await super.switchNetwork(params)
 
       return
@@ -558,6 +598,7 @@ export class EthersAdapter extends AdapterBlueprint {
     } catch (switchError: any) {
       if (
         switchError.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID ||
+        switchError.code === WcConstantsUtil.ERROR_INVALID_CHAIN_ID ||
         switchError.code === WcConstantsUtil.ERROR_CODE_DEFAULT ||
         switchError?.data?.originalError?.code === WcConstantsUtil.ERROR_CODE_UNRECOGNIZED_CHAIN_ID
       ) {
@@ -636,5 +677,20 @@ export class EthersAdapter extends AdapterBlueprint {
     }
 
     return await provider.request({ method: 'wallet_revokePermissions', params: [params] })
+  }
+
+  public async walletGetAssets(
+    params: AdapterBlueprint.WalletGetAssetsParams
+  ): Promise<AdapterBlueprint.WalletGetAssetsResponse> {
+    const provider = ProviderUtil.getProvider(CommonConstantsUtil.CHAIN.EVM)
+
+    if (!provider) {
+      throw new Error('Provider is undefined')
+    }
+
+    return await provider.request({
+      method: 'wallet_getAssets',
+      params: [params]
+    })
   }
 }

@@ -40,10 +40,14 @@ export class WuiListWallet extends LitElement {
 
   @property({ type: Boolean }) public showAllWallets = false
 
+  @property({ type: Boolean }) public loading = false
+
+  @property({ type: String }) public loadingSpinnerColor = 'accent-100'
+
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.disabled} tabindex=${ifDefined(this.tabIdx)} ontouchstart>
+      <button ?disabled=${this.disabled} tabindex=${ifDefined(this.tabIdx)}>
         ${this.templateAllWallets()} ${this.templateWalletImage()}
         <wui-text variant="paragraph-500" color="inherit">${this.name}</wui-text>
         ${this.templateStatus()}
@@ -78,7 +82,12 @@ export class WuiListWallet extends LitElement {
   }
 
   private templateStatus() {
-    if (this.tagLabel && this.tagVariant) {
+    if (this.loading) {
+      return html`<wui-loading-spinner
+        size="lg"
+        color=${this.loadingSpinnerColor}
+      ></wui-loading-spinner>`
+    } else if (this.tagLabel && this.tagVariant) {
       return html`<wui-tag variant=${this.tagVariant}>${this.tagLabel}</wui-tag>`
     } else if (this.icon) {
       return html`<wui-icon color="inherit" size="sm" name=${this.icon}></wui-icon>`

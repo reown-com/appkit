@@ -5,6 +5,7 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
+  AssetController,
   AssetUtil,
   ChainController,
   ConstantsUtil as CoreConstantsUtil,
@@ -13,11 +14,22 @@ import {
   ModalController,
   OptionsController,
   RouterController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import '@reown/appkit-ui/wui-balance'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon-button'
+import '@reown/appkit-ui/wui-profile-button'
+import '@reown/appkit-ui/wui-tabs'
+import '@reown/appkit-ui/wui-tooltip'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import { ConstantsUtil } from '../../utils/ConstantsUtil.js'
+import '../w3m-account-activity-widget/index.js'
+import '../w3m-account-nfts-widget/index.js'
+import '../w3m-account-tokens-widget/index.js'
+import '../w3m-tooltip-trigger/index.js'
+import '../w3m-tooltip/index.js'
 import styles from './styles.js'
 
 const TABS = 3
@@ -48,10 +60,15 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
 
   @state() private features = OptionsController.state.features
 
+  @state() private networkImage = AssetUtil.getNetworkImage(this.network)
+
   public constructor() {
     super()
     this.unsubscribe.push(
       ...[
+        AssetController.subscribeNetworkImages(() => {
+          this.networkImage = AssetUtil.getNetworkImage(this.network)
+        }),
         AccountController.subscribe(val => {
           if (val.address) {
             this.address = val.address
@@ -85,8 +102,6 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       throw new Error('w3m-account-view: No account provided')
     }
 
-    const networkImage = AssetUtil.getNetworkImage(this.network)
-
     return html`<wui-flex
       flexDirection="column"
       .padding=${['0', 'xl', 'm', 'xl'] as const}
@@ -94,11 +109,10 @@ export class W3mAccountWalletFeaturesWidget extends LitElement {
       gap="m"
       data-testid="w3m-account-wallet-features-widget"
     >
-      ${this.network && html`<wui-network-icon .network=${this.network}></wui-network-icon>`}
       <wui-profile-button
         @click=${this.onProfileButtonClick.bind(this)}
         address=${ifDefined(this.address)}
-        networkSrc=${ifDefined(networkImage)}
+        networkSrc=${ifDefined(this.networkImage)}
         icon="chevronBottom"
         avatarSrc=${ifDefined(this.profileImage ? this.profileImage : undefined)}
         profileName=${ifDefined(this.profileName ?? undefined)}

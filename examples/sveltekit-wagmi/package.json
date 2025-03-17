@@ -1,0 +1,32 @@
+{
+  "name": "@examples/sveltekit-wagmi",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+  },
+  "dependencies": {
+    "@reown/appkit": "workspace:*",
+    "@reown/appkit-adapter-wagmi": "workspace:*",
+    "@walletconnect/logger": "2.1.2",
+    "viem": "2.23.5",
+    "wagmi": "2.14.12"
+  },
+  "devDependencies": {
+    "@eslint/compat": "1.2.7",
+    "@sveltejs/adapter-auto": "3.0.0",
+    "@sveltejs/kit": "2.19.0",
+    "@sveltejs/vite-plugin-svelte": "5.0.3",
+    "eslint-plugin-svelte": "2.36.0",
+    "globals": "15.0.0",
+    "svelte": "5.22.5",
+    "svelte-check": "4.1.5",
+    "typescript": "5.8.2",
+    "vite": "6.2.1"
+  }
+}

@@ -4,7 +4,8 @@ import type { DraggableSyntheticListeners } from '@dnd-kit/core'
 import type { Transform } from '@dnd-kit/utilities'
 import classNames from 'classnames'
 
-import { SocialProvider } from '@reown/appkit-core'
+import { SocialProvider } from '@reown/appkit-controllers'
+import '@reown/appkit-ui/jsx'
 
 import { useAppKitContext } from '@/hooks/use-appkit'
 
@@ -125,7 +126,7 @@ export const SocialOptionItem = React.memo(
             dragOverlay && styles.dragOverlay,
             socials.includes(value as SocialProvider)
               ? 'border border-border-accent bg-background-accent-primary/10'
-              : 'border border-neutral-700'
+              : 'border border-neutral-300 dark:border-neutral-700'
           )}
           style={
             {

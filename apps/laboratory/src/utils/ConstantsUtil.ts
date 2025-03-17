@@ -5,6 +5,7 @@ import {
   aurora,
   base,
   baseSepolia,
+  berachain,
   bitcoin,
   bitcoinTestnet,
   gnosis,
@@ -68,6 +69,7 @@ const EvmNetworks = [
   base,
   baseSepolia,
   unichainSepolia,
+  berachain,
   sepolia,
   gnosis,
   hedera,
@@ -113,8 +115,6 @@ export const ConstantsUtil = {
       id: 'react-wallet-v2',
       name: 'React Sample Wallet',
       homepage: WALLET_URL,
-      mobile_link: WALLET_URL,
-      desktop_link: WALLET_URL,
       webapp_link: WALLET_URL,
       image_url: '/sample-wallets/react.svg'
     },
@@ -151,7 +151,10 @@ export const ConstantsUtil = {
   EvmNetworks,
   SolanaNetworks,
   BitcoinNetworks,
-  AllNetworks: [...EvmNetworks, ...SolanaNetworks] as [AppKitNetwork, ...AppKitNetwork[]],
+  AllNetworks: [...EvmNetworks, ...SolanaNetworks, ...BitcoinNetworks] as [
+    AppKitNetwork,
+    ...AppKitNetwork[]
+  ],
   EvmWalletButtons: [
     'walletConnect',
     'metamask',
@@ -172,6 +175,7 @@ export const ConstantsUtil = {
     'backpack',
     'frontier'
   ] as Wallet[],
+  BitcoinWalletButtons: ['walletConnect', 'xverse', 'leather', 'okx', 'phantom'] as Wallet[],
   Socials: [
     'google',
     'github',

@@ -2,21 +2,32 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { type CaipAddress, type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
+import {
+  type CaipAddress,
+  type CaipNetwork,
+  ConstantsUtil as CommonConstantsUtil
+} from '@reown/appkit-common'
 import {
   ApiController,
   ChainController,
+  ConnectorController,
   CoreHelperUtil,
-  EventsController,
   ModalController,
   OptionsController,
   RouterController,
   SIWXUtil,
   SnackController,
   ThemeController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement, initializeTheming } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-card'
+import '@reown/appkit-ui/wui-flex'
 
+import '../../partials/w3m-alertbar/index.js'
+import '../../partials/w3m-header/index.js'
+import '../../partials/w3m-snackbar/index.js'
+import '../../partials/w3m-tooltip/index.js'
+import '../w3m-router/index.js'
 import styles from './styles.js'
 
 // -- Helpers --------------------------------------------- //
@@ -31,6 +42,8 @@ export class W3mModal extends LitElement {
 
   private abortController?: AbortController = undefined
 
+  private hasPrefetched = false
+
   // -- State & Properties -------------------------------- //
   @property({ type: Boolean }) private enableEmbedded = OptionsController.state.enableEmbedded
 
@@ -42,26 +55,34 @@ export class W3mModal extends LitElement {
 
   @state() private shake = ModalController.state.shake
 
+  @state() private filterByNamespace = ConnectorController.state.filterByNamespace
+
   public constructor() {
     super()
     this.initializeTheming()
-    ApiController.prefetch()
+    ApiController.prefetchAnalyticsConfig()
     this.unsubscribe.push(
       ...[
         ModalController.subscribeKey('open', val => (val ? this.onOpen() : this.onClose())),
         ModalController.subscribeKey('shake', val => (this.shake = val)),
         ChainController.subscribeKey('activeCaipNetwork', val => this.onNewNetwork(val)),
         ChainController.subscribeKey('activeCaipAddress', val => this.onNewAddress(val)),
-        OptionsController.subscribeKey('enableEmbedded', val => (this.enableEmbedded = val))
+        OptionsController.subscribeKey('enableEmbedded', val => (this.enableEmbedded = val)),
+        ConnectorController.subscribeKey('filterByNamespace', val => {
+          if (this.filterByNamespace !== val) {
+            ApiController.fetchRecommendedWallets()
+            this.filterByNamespace = val
+          }
+        })
       ]
     )
-    EventsController.sendEvent({ type: 'track', event: 'MODAL_LOADED' })
   }
 
   public override firstUpdated() {
     if (this.caipAddress) {
       if (this.enableEmbedded) {
         ModalController.close()
+        this.prefetch()
 
         return
       }
@@ -71,6 +92,10 @@ export class W3mModal extends LitElement {
 
     if (this.open) {
       this.onOpen()
+    }
+
+    if (this.enableEmbedded) {
+      this.prefetch()
     }
   }
 
@@ -118,7 +143,6 @@ export class W3mModal extends LitElement {
       <w3m-alertbar></w3m-alertbar>
     </wui-card>`
   }
-
   private async onOverlayClick(event: PointerEvent) {
     if (event.target === event.currentTarget) {
       await this.handleClose()
@@ -226,14 +250,19 @@ export class W3mModal extends LitElement {
   }
 
   private onNewNetwork(nextCaipNetwork: CaipNetwork | undefined) {
-    ApiController.prefetch()
-
     const prevCaipNetworkId = this.caipNetwork?.caipNetworkId?.toString()
     const nextNetworkId = nextCaipNetwork?.caipNetworkId?.toString()
     const networkChanged = prevCaipNetworkId && nextNetworkId && prevCaipNetworkId !== nextNetworkId
     const isSwitchingNamespace = ChainController.state.isSwitchingNamespace
-    const isUnsupportedNetwork = this.caipNetwork?.name === ConstantsUtil.UNSUPPORTED_NETWORK_NAME
+    const isUnsupportedNetwork =
+      this.caipNetwork?.name === CommonConstantsUtil.UNSUPPORTED_NETWORK_NAME
 
+    /**
+     * If user is on connecting external, there is a case that they might select a connector which is in another adapter.
+     * In this case, we are switching both network and namespace. And this logic will be triggered.
+     * But we don't want to go back because we are already on the connecting external view.
+     */
+    const isConnectingExternal = RouterController.state.view === 'ConnectingExternal'
     // If user is not connected, we should go back
     const isNotConnected = !this.caipAddress
     // If network has been changed in the same namespace and it's not an unsupported network, we should go back
@@ -242,11 +271,25 @@ export class W3mModal extends LitElement {
     // If user is on the unsupported network screen, we should go back when network has been changed
     const isUnsupportedNetworkScreen = RouterController.state.view === 'UnsupportedChain'
 
-    if (isNotConnected || isUnsupportedNetworkScreen || isNetworkChangedInSameNamespace) {
+    const shouldGoBack =
+      !isConnectingExternal &&
+      (isNotConnected || isUnsupportedNetworkScreen || isNetworkChangedInSameNamespace)
+    if (shouldGoBack) {
       RouterController.goBack()
     }
 
     this.caipNetwork = nextCaipNetwork
+  }
+
+  /*
+   * This will only be called if enableEmbedded is true. Since embedded
+   * mode doesn't set the modal open state to true to do prefetching
+   */
+  private prefetch() {
+    if (!this.hasPrefetched) {
+      this.hasPrefetched = true
+      ApiController.prefetch()
+    }
   }
 }
 

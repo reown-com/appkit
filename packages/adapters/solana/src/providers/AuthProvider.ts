@@ -4,7 +4,7 @@ import base58 from 'bs58'
 
 import type { CaipNetwork } from '@reown/appkit-common'
 import { ConstantsUtil } from '@reown/appkit-common'
-import type { RequestArguments } from '@reown/appkit-core'
+import type { RequestArguments } from '@reown/appkit-controllers'
 import type {
   AnyTransaction,
   Connection,
@@ -18,7 +18,7 @@ import { ProviderEventEmitter } from './shared/ProviderEventEmitter.js'
 
 export class AuthProvider extends ProviderEventEmitter implements SolanaProvider {
   public readonly id = ConstantsUtil.CONNECTOR_ID.AUTH
-  public readonly name = ConstantsUtil.CONNECTOR_ID.AUTH
+  public readonly name = ConstantsUtil.CONNECTOR_NAMES.AUTH
   public readonly type = 'AUTH'
   public readonly chain = ConstantsUtil.CHAIN.SOLANA
   public readonly provider: W3mFrameProvider
@@ -170,7 +170,7 @@ export class AuthProvider extends ProviderEventEmitter implements SolanaProvider
 
   // -- Private ------------------------------------------- //
   private serializeTransaction(transaction: AnyTransaction) {
-    return base58.encode(transaction.serialize({ verifySignatures: false }))
+    return base58.encode(new Uint8Array(transaction.serialize({ verifySignatures: false })))
   }
 }
 

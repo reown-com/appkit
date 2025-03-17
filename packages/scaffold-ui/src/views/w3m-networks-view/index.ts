@@ -5,15 +5,21 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
+  AssetController,
   AssetUtil,
   ChainController,
   ConnectorController,
   CoreHelperUtil,
   EventsController,
-  RouterController,
-  StorageUtil
-} from '@reown/appkit-core'
+  RouterController
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-input-text'
+import '@reown/appkit-ui/wui-link'
+import '@reown/appkit-ui/wui-list-network'
+import '@reown/appkit-ui/wui-separator'
+import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'
 
@@ -36,6 +42,7 @@ export class W3mNetworksView extends LitElement {
   public constructor() {
     super()
     this.unsubscribe.push(
+      AssetController.subscribeNetworkImages(() => this.requestUpdate()),
       ChainController.subscribeKey('activeCaipNetwork', val => (this.network = val)),
       ChainController.subscribeKey(
         'chains',
@@ -113,8 +120,8 @@ export class W3mNetworksView extends LitElement {
     )
 
     if (this.search) {
-      this.filteredNetworks = sortedNetworks?.filter(
-        network => network?.name?.toLowerCase().includes(this.search.toLowerCase())
+      this.filteredNetworks = sortedNetworks?.filter(network =>
+        network?.name?.toLowerCase().includes(this.search.toLowerCase())
       )
     } else {
       this.filteredNetworks = sortedNetworks
@@ -141,7 +148,7 @@ export class W3mNetworksView extends LitElement {
     const approvedCaipNetworkIds = ChainController.getAllApprovedCaipNetworkIds()
     const supportsAllNetworks =
       ChainController.getNetworkProp('supportsAllNetworks', networkNamespace) !== false
-    const connectorId = StorageUtil.getConnectedConnectorId(networkNamespace)
+    const connectorId = ConnectorController.getConnectorId(networkNamespace)
     const authConnector = ConnectorController.getAuthConnector()
     const isConnectedWithAuth = connectorId === ConstantsUtil.CONNECTOR_ID.AUTH && authConnector
 
@@ -163,7 +170,7 @@ export class W3mNetworksView extends LitElement {
     const isDifferentNamespace = network.chainNamespace !== ChainController.state.activeChain
     const isCurrentNamespaceConnected = AccountController.state.caipAddress
     const isNextNamespaceConnected = AccountController.getCaipAddress(network.chainNamespace)
-    const connectorId = StorageUtil.getConnectedConnectorId(ChainController.state.activeChain)
+    const connectorId = ConnectorController.getConnectorId(ChainController.state.activeChain)
 
     /**
      * If the network is supported by the auth connector, we don't need to show switch active chain view.

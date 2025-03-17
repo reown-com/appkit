@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
+import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
   AccountController,
   ChainController,
@@ -13,9 +14,13 @@ import {
   RouterController,
   SnackController,
   type SocialProvider,
+  StorageUtil,
   type WalletGuideType
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-list-social'
+import '@reown/appkit-ui/wui-logo-select'
 import { SocialProviderEnum } from '@reown/appkit-utils'
 
 import styles from './styles.js'
@@ -182,6 +187,24 @@ export class W3mSocialLoginWidget extends LitElement {
   }
 
   async onSocialClick(socialProvider?: SocialProvider) {
+    const isAvailableChain = CommonConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.find(
+      chain => chain === ChainController.state.activeChain
+    )
+
+    if (!isAvailableChain) {
+      /**
+       * If we are trying to call this function when active network is nut supported by auth connector, we should switch to the first available network
+       * This will redirect us to SwitchNetwork screen and back to the current screen again
+       */
+      const caipNetwork = ChainController.getFirstCaipNetworkSupportsAuthConnector()
+
+      if (caipNetwork) {
+        RouterController.push('SwitchNetwork', { network: caipNetwork })
+
+        return
+      }
+    }
+
     if (socialProvider) {
       AccountController.setSocialProvider(socialProvider, ChainController.state.activeChain)
 
@@ -211,24 +234,42 @@ export class W3mSocialLoginWidget extends LitElement {
       RouterController.push('ConnectingSocial')
 
       const authConnector = ConnectorController.getAuthConnector()
-      this.popupWindow = CoreHelperUtil.returnOpenHref(
-        '',
-        'popupWindow',
-        'width=600,height=800,scrollbars=yes'
-      )
 
       try {
         if (authConnector && socialProvider) {
+          if (!CoreHelperUtil.isTelegram()) {
+            this.popupWindow = CoreHelperUtil.returnOpenHref(
+              '',
+              'popupWindow',
+              'width=600,height=800,scrollbars=yes'
+            )
+          }
+
+          if (this.popupWindow) {
+            AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
+          } else if (!CoreHelperUtil.isTelegram()) {
+            throw new Error('Something went wrong')
+          }
+
           const { uri } = await authConnector.provider.getSocialRedirectUri({
             provider: socialProvider
           })
 
-          if (this.popupWindow && uri) {
-            AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
-            this.popupWindow.location.href = uri
-          } else {
+          if (!uri) {
             this.popupWindow?.close()
             throw new Error('Something went wrong')
+          }
+
+          if (this.popupWindow) {
+            this.popupWindow.location.href = uri
+          }
+
+          if (CoreHelperUtil.isTelegram()) {
+            StorageUtil.setTelegramSocialProvider(socialProvider)
+            const parsedUri = CoreHelperUtil.formatTelegramSocialLoginUrl(uri)
+
+            // eslint-disable-next-line consistent-return
+            return CoreHelperUtil.openHref(parsedUri, '_top')
           }
         }
       } catch (error) {

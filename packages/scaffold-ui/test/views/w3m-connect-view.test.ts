@@ -3,13 +3,15 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vite
 
 import { html } from 'lit'
 
+import { type CaipNetwork, ConstantsUtil } from '@reown/appkit-common'
 import {
   ChainController,
+  type ChainControllerState,
   ConnectorController,
   type ConnectorWithProviders,
   CoreHelperUtil,
   OptionsController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import { W3mConnectView } from '../../src/views/w3m-connect-view/index'
 import { HelpersUtil } from '../utils/HelpersUtil'
@@ -27,6 +29,18 @@ const INSTALLED_WALLET = {
   name: 'MetaMask',
   type: 'ANNOUNCED'
 } as ConnectorWithProviders
+const AUTH_CONNECTOR = {
+  id: 'ID_AUTH',
+  type: 'AUTH',
+  name: 'Auth',
+  chain: 'eip155'
+} as ConnectorWithProviders
+
+const mainnet = {
+  id: 1,
+  name: 'Ethereum',
+  namespace: ConstantsUtil.CHAIN.EVM
+} as unknown as CaipNetwork
 
 // Mock ResizeObserver
 beforeAll(() => {
@@ -40,7 +54,6 @@ beforeAll(() => {
 describe('W3mConnectView - Connection Methods', () => {
   beforeEach(() => {
     vi.spyOn(CoreHelperUtil, 'isMobile').mockReturnValue(false)
-
     vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
       ...OptionsController.state,
       enableWallets: true,
@@ -51,6 +64,16 @@ describe('W3mConnectView - Connection Methods', () => {
         collapseWallets: false
       }
     })
+    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      connectors: [INSTALLED_WALLET, AUTH_CONNECTOR]
+    })
+    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
+      ...ConnectorController.state,
+      chains: new Map([
+        [ConstantsUtil.CHAIN.EVM, { namespace: ConstantsUtil.CHAIN.EVM, caipNetworks: [mainnet] }]
+      ])
+    } as unknown as ChainControllerState)
   })
 
   afterEach(() => {
@@ -58,11 +81,6 @@ describe('W3mConnectView - Connection Methods', () => {
   })
 
   it('should render connection methods in specified order based on connectMethodsOrder option', async () => {
-    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
-      ...ConnectorController.state,
-      connectors: [INSTALLED_WALLET]
-    })
-
     const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
 
     const children = Array.from(
@@ -86,11 +104,6 @@ describe('W3mConnectView - Connection Methods', () => {
         email: true,
         socials: ['google', 'facebook']
       }
-    })
-
-    vi.spyOn(ConnectorController, 'state', 'get').mockReturnValue({
-      ...ConnectorController.state,
-      connectors: [INSTALLED_WALLET]
     })
 
     const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
@@ -247,10 +260,7 @@ describe('W3mConnectView - Connection Methods', () => {
   })
 
   it('should not render email nor social when there are no adapters', async () => {
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
-      noAdapters: true
-    })
+    vi.mocked(ChainController.state).noAdapters = true
 
     const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
     expect(HelpersUtil.querySelect(element, EMAIL_LOGIN_WIDGET)).toBeNull()
@@ -271,10 +281,7 @@ describe('W3mConnectView - Explore Mode', () => {
       enableWallets: false,
       enableWalletGuide: true
     })
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
-      noAdapters: false
-    })
+    vi.mocked(ChainController.state).noAdapters = false
   })
   it('should render a single separator in explore mode if wallet guide is enabled and there are adapters', async () => {
     const element: W3mConnectView = await fixture(
@@ -287,10 +294,7 @@ describe('W3mConnectView - Explore Mode', () => {
   })
 
   it('should render no separators in explore mode if wallet guide is enabled and there are no adapters', async () => {
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
-      noAdapters: true
-    })
+    vi.mocked(ChainController.state).noAdapters = true
 
     const element: W3mConnectView = await fixture(
       html`<w3m-connect-view .walletGuide=${'explore'}></w3m-connect-view>`
@@ -312,10 +316,7 @@ describe('W3mConnectView - Explore Mode', () => {
 
 describe('W3mConnectView - Wallet Guide Mode', () => {
   beforeEach(() => {
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      ...ChainController.state,
-      noAdapters: false
-    })
+    vi.mocked(ChainController.state).noAdapters = false
   })
 
   it('should render wallet guide if enableWalletGuide is true', async () => {
@@ -349,5 +350,89 @@ describe('W3mConnectView - Wallet Guide Mode', () => {
     )
 
     expect(HelpersUtil.querySelect(element, 'w3m-wallet-guide')).toBeNull()
+  })
+})
+
+describe('W3mConnectView - Email and Social Enable States', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    vi.spyOn(OptionsController, 'state', 'get').mockReturnValue({
+      ...OptionsController.state,
+      features: {
+        email: true,
+        socials: ['google'],
+        connectMethodsOrder: ['social', 'email', 'wallet']
+      }
+    })
+    vi.mocked(ChainController.state).noAdapters = false
+  })
+
+  it('should disable email and social when noAdapters is true', async () => {
+    const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
+    vi.mocked(ChainController.state).noAdapters = true
+
+    // Trigger state update
+    element['setEmailAndSocialEnableCheck'](element['features'], true)
+
+    expect(element['isEmailEnabled']).toBe(false)
+    expect(element['isSocialEnabled']).toBe(false)
+  })
+
+  it('should enable email and social when features are enabled and noAdapters is false', async () => {
+    const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
+
+    // Trigger state update with enabled features
+    element['setEmailAndSocialEnableCheck'](
+      {
+        email: true,
+        socials: ['google']
+      },
+      false
+    )
+
+    expect(element['isEmailEnabled']).toBe(true)
+    expect(element['isSocialEnabled']).toBe(true)
+  })
+
+  it('should disable email when email feature is disabled', async () => {
+    const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
+
+    // Trigger state update with email disabled
+    element['setEmailAndSocialEnableCheck'](
+      {
+        email: false,
+        socials: ['google']
+      },
+      false
+    )
+
+    expect(element['isEmailEnabled']).toBe(false)
+    expect(element['isSocialEnabled']).toBe(true)
+  })
+
+  it('should disable social when socials array is empty', async () => {
+    const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
+
+    // Trigger state update with empty socials array
+    element['setEmailAndSocialEnableCheck'](
+      {
+        email: true,
+        socials: []
+      },
+      false
+    )
+
+    expect(element['isEmailEnabled']).toBe(true)
+    expect(element['isSocialEnabled']).toBe(false)
+  })
+
+  it('should handle undefined features', async () => {
+    const element: W3mConnectView = await fixture(html`<w3m-connect-view></w3m-connect-view>`)
+
+    // Trigger state update with undefined features
+    element['setEmailAndSocialEnableCheck'](undefined, false)
+
+    expect(element['isEmailEnabled']).toBe(undefined)
+    expect(element['isSocialEnabled']).toBe(undefined)
   })
 })

@@ -2,9 +2,17 @@ import { LitElement, html } from 'lit'
 import { state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { AccountController, AssetUtil, ChainController, CoreHelperUtil } from '@reown/appkit-core'
+import {
+  AccountController,
+  AssetUtil,
+  ChainController,
+  CoreHelperUtil
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import '@reown/appkit-ui/wui-banner'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-list-network'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import styles from './styles.js'
 

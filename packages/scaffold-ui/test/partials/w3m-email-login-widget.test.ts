@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { ConstantsUtil } from '@reown/appkit-common'
+import { type CaipNetwork, type ChainNamespace, ConstantsUtil } from '@reown/appkit-common'
 import {
   type AuthConnector,
   ChainController,
@@ -13,10 +13,16 @@ import {
   EventsController,
   RouterController,
   SnackController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import { W3mEmailLoginWidget } from '../../src/partials/w3m-email-login-widget'
 import { HelpersUtil } from '../utils/HelpersUtil'
+
+const mainnet = {
+  id: 1,
+  name: 'Ethereum',
+  namespace: ConstantsUtil.CHAIN.EVM
+} as unknown as CaipNetwork
 
 describe('W3mEmailLoginWidget', () => {
   const mockEmail = 'test@example.com'
@@ -27,9 +33,10 @@ describe('W3mEmailLoginWidget', () => {
   }
 
   beforeEach(() => {
-    vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-      activeChain: ConstantsUtil.CHAIN.EVM
-    } as ChainControllerState)
+    vi.mocked(ChainController.state).activeChain = ConstantsUtil.CHAIN.EVM
+    vi.mocked(ChainController.state).chains = new Map([
+      [ConstantsUtil.CHAIN.EVM, { namespace: ConstantsUtil.CHAIN.EVM, caipNetworks: [mainnet] }]
+    ]) as unknown as ChainControllerState['chains']
     vi.spyOn(ConnectorController, 'getAuthConnector').mockReturnValue(
       mockAuthConnector as unknown as AuthConnector
     )
@@ -94,20 +101,16 @@ describe('W3mEmailLoginWidget', () => {
   })
 
   describe('Form Submission', () => {
-    it('redirects to chain switch when on unsupported chain', async () => {
-      vi.spyOn(ChainController, 'state', 'get').mockReturnValue({
-        activeChain: 'unsupported'
-      } as unknown as ChainControllerState)
+    it('redirects to network switch when on unsupported chain', async () => {
+      vi.mocked(ChainController.state).activeChain = 'unsupported' as ChainNamespace
 
       const element: W3mEmailLoginWidget = await fixture(
         html`<w3m-email-login-widget></w3m-email-login-widget>`
       )
       const form = HelpersUtil.querySelect(element, 'form')
-      await form?.dispatchEvent(new Event('submit'))
+      form?.dispatchEvent(new Event('submit'))
 
-      expect(RouterController.push).toHaveBeenCalledWith('SwitchActiveChain', {
-        switchToChain: ConstantsUtil.CHAIN.EVM
-      })
+      expect(RouterController.push).toHaveBeenCalledWith('SwitchNetwork', { network: mainnet })
     })
 
     it('handles VERIFY_OTP action', async () => {

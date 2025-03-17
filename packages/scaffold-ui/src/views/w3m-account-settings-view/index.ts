@@ -15,11 +15,18 @@ import {
   ModalController,
   RouterController,
   SendController,
-  SnackController,
-  StorageUtil
-} from '@reown/appkit-core'
+  SnackController
+} from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import '@reown/appkit-ui/wui-avatar'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon-link'
+import '@reown/appkit-ui/wui-list-item'
+import '@reown/appkit-ui/wui-notice-card'
+import '@reown/appkit-ui/wui-text'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+
+import '../../partials/w3m-account-auth-button/index.js'
 
 @customElement('w3m-account-settings-view')
 export class W3mAccountSettingsView extends LitElement {
@@ -155,7 +162,7 @@ export class W3mAccountSettingsView extends LitElement {
   // -- Private ------------------------------------------- //
   private chooseNameButtonTemplate() {
     const namespace = this.network?.chainNamespace as ChainNamespace
-    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
     const hasNetworkSupport = ChainController.checkIfNamesSupported()
     if (
@@ -184,7 +191,7 @@ export class W3mAccountSettingsView extends LitElement {
 
   private authCardTemplate() {
     const namespace = this.network?.chainNamespace as ChainNamespace
-    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
     const { origin } = location
     if (
@@ -229,7 +236,7 @@ export class W3mAccountSettingsView extends LitElement {
     const namespace = this.network?.chainNamespace as ChainNamespace
 
     const isNetworkEnabled = ChainController.checkIfSmartAccountEnabled()
-    const connectorId = StorageUtil.getConnectedConnectorId(namespace)
+    const connectorId = ConnectorController.getConnectorId(namespace)
     const authConnector = ConnectorController.getAuthConnector()
 
     if (

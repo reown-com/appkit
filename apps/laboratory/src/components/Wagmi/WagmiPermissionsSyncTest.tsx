@@ -1,10 +1,10 @@
 import { Box, Card, CardBody, CardHeader, Heading, Stack, StackDivider } from '@chakra-ui/react'
 
-import { useERC7715Permissions } from '../../hooks/useERC7715Permissions'
-import { SmartSessionGrantedPermissionsInfo } from '../SmartSessionGrantedPermissionsInfo'
-import { WagmiCreatePasskeySignerTest } from './WagmiCreatePasskeySignerTest'
-import { WagmiPurchaseDonutSyncPermissionsTest } from './WagmiPurchaseDonutSyncPermissionsTest'
-import { WagmiRequestPermissionsSyncTest } from './WagmiRequestPermissionsSyncTest'
+import { SmartSessionGrantedPermissionsInfo } from '@/src/components/SmartSessionGrantedPermissionsInfo'
+import { WagmiCreatePasskeySignerTest } from '@/src/components/Wagmi/WagmiCreatePasskeySignerTest'
+import { WagmiPurchaseDonutSyncPermissionsTest } from '@/src/components/Wagmi/WagmiPurchaseDonutSyncPermissionsTest'
+import { WagmiRequestPermissionsSyncTest } from '@/src/components/Wagmi/WagmiRequestPermissionsSyncTest'
+import { useERC7715Permissions } from '@/src/hooks/useERC7715Permissions'
 
 export function WagmiPermissionsSyncTest() {
   const { smartSession } = useERC7715Permissions()
@@ -12,9 +12,9 @@ export function WagmiPermissionsSyncTest() {
     smartSession?.type === 'sync' ? smartSession.grantedPermissions : undefined
 
   return (
-    <Card marginTop={10} marginBottom={10}>
+    <Card data-testid="eip155-test-interactions" marginTop={10} marginBottom={10}>
       <CardHeader>
-        <Heading size="md">Test Interactions</Heading>
+        <Heading size="md">Wagmi Test Interactions</Heading>
       </CardHeader>
       <CardBody>
         <Stack divider={<StackDivider />} spacing="4">

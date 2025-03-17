@@ -139,9 +139,19 @@ export const solanaSdkOptions: SdkOption[] = [
 
 export const multichainSdkOptions: SdkOption[] = [
   {
+    title: 'Wagmi + Solana + Bitcoin',
+    link: '/library/multichain-all',
+    description: 'Configuration with Wagmi, Solana and Bitcoin adapters enabled for AppKit'
+  },
+  {
     title: 'Wagmi + Solana',
     link: '/library/multichain-wagmi-solana',
     description: 'Configuration with Wagmi and Solana adapters enabled for AppKit'
+  },
+  {
+    title: 'Wagmi + Bitcoin',
+    link: '/library/multichain-wagmi-bitcoin',
+    description: 'Configuration with Wagmi and Bitcoin adapters enabled for AppKit'
   },
   {
     title: 'Ethers + Solana',
@@ -155,7 +165,7 @@ export const multichainSdkOptions: SdkOption[] = [
   },
   {
     title: 'Basic',
-    link: '/library/multichain-basic',
+    link: '/library/multichain-no-adapters',
     description: 'Configuration with no adapters enabled for AppKit'
   }
 ]
@@ -184,12 +194,12 @@ export const featuredSdkOptions: SdkOption[] = [
   },
   {
     title: 'Multichain',
-    link: '/library/multichain-wagmi-solana',
-    description: 'Configuration with Wagmi and Solana adapters enabled for AppKit'
+    link: '/library/multichain-all',
+    description: 'Configuration with Wagmi, Solana and Bitcoin adapters enabled for AppKit'
   },
   {
     title: 'Basic',
-    link: '/library/multichain-basic',
+    link: '/library/multichain-no-adapters',
     description: 'Configuration with no adapters enabled for AppKit'
   }
 ]
@@ -199,6 +209,11 @@ export const bitcoinSdkOptions: SdkOption[] = [
     title: 'Default',
     link: '/library/bitcoin',
     description: 'Basic configuration using bitcoin as a driving library'
+  },
+  {
+    title: 'Wallet Button',
+    link: '/library/bitcoin-wallet-button',
+    description: 'Configuration using bitcoin with wallet buttons'
   }
 ]
 

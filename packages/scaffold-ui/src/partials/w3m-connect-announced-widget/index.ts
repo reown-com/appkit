@@ -2,15 +2,17 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import type { Connector } from '@reown/appkit-core'
+import type { Connector } from '@reown/appkit-controllers'
 import {
   ApiController,
   AssetUtil,
   ConnectorController,
   CoreHelperUtil,
   RouterController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-list-wallet'
 
 @customElement('w3m-connect-announced-widget')
 export class W3mConnectAnnouncedWidget extends LitElement {

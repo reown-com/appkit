@@ -10,9 +10,13 @@ import {
   ConnectionController,
   ConnectorController,
   CoreHelperUtil
-} from '@reown/appkit-core'
-import { EventsController, RouterController, SnackController } from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
+import { EventsController, RouterController, SnackController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-email-input'
+import '@reown/appkit-ui/wui-icon-link'
+import '@reown/appkit-ui/wui-loading-spinner'
+import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'
 
@@ -102,17 +106,22 @@ export class W3mEmailLoginWidget extends LitElement {
   }
 
   private async onSubmitEmail(event: Event) {
-    const availableChains = [ConstantsUtil.CHAIN.EVM, ConstantsUtil.CHAIN.SOLANA]
-    const isAvailableChain = availableChains.find(
+    const isAvailableChain = ConstantsUtil.AUTH_CONNECTOR_SUPPORTED_CHAINS.find(
       chain => chain === ChainController.state.activeChain
     )
 
     if (!isAvailableChain) {
-      RouterController.push('SwitchActiveChain', {
-        switchToChain: ConstantsUtil.CHAIN.EVM
-      })
+      const caipNetwork = ChainController.getFirstCaipNetworkSupportsAuthConnector()
 
-      return
+      if (caipNetwork) {
+        /**
+         * If we are trying to call this function when active network is nut supported by auth connector, we should switch to the first available network
+         * This will redirect us to SwitchNetwork screen and back to the current screen again
+         */
+        RouterController.push('SwitchNetwork', { network: caipNetwork })
+
+        return
+      }
     }
 
     try {

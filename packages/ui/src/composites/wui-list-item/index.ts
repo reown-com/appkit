@@ -46,7 +46,6 @@ export class WuiListItem extends LitElement {
         data-loading=${this.loading}
         data-iconvariant=${ifDefined(this.iconVariant)}
         tabindex=${ifDefined(this.tabIdx)}
-        ontouchstart
       >
         ${this.loadingTemplate()} ${this.visualTemplate()}
         <wui-flex gap="3xs">
@@ -88,7 +87,10 @@ export class WuiListItem extends LitElement {
 
   public loadingTemplate() {
     if (this.loading) {
-      return html`<wui-loading-spinner color="fg-300"></wui-loading-spinner>`
+      return html`<wui-loading-spinner
+        data-testid="wui-list-item-loading-spinner"
+        color="fg-300"
+      ></wui-loading-spinner>`
     }
 
     return html``

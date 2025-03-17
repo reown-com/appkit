@@ -2,7 +2,6 @@ import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import '../../components/wui-icon/index.js'
 import '../../components/wui-text/index.js'
 import { elementStyles, resetStyles } from '../../utils/ThemeUtil.js'
 import type { ColorType } from '../../utils/TypeUtil.js'
@@ -23,7 +22,7 @@ export class WuiLink extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <button ?disabled=${this.disabled} tabindex=${ifDefined(this.tabIdx)} ontouchstart>
+      <button ?disabled=${this.disabled} tabindex=${ifDefined(this.tabIdx)}>
         <slot name="iconLeft"></slot>
         <wui-text variant="small-600" color=${this.color}>
           <slot></slot>

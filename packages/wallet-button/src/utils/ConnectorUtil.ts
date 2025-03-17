@@ -12,7 +12,7 @@ import {
   RouterController,
   StorageUtil,
   type WcWallet
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { SocialProviderEnum } from '@reown/appkit-utils'
 
 import { ConstantsUtil } from './ConstantsUtil.js'
@@ -30,12 +30,12 @@ export const ConnectorUtil = {
     wallet,
     connector
   }: ConnectWalletConnect): Promise<ParsedCaipAddress> {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       if (walletConnect) {
         ConnectorController.setActiveConnector(connector)
       }
 
-      ModalController.open({ view: 'ConnectingWalletConnect' })
+      await ModalController.open()
       RouterController.push('ConnectingWalletConnect', { wallet })
 
       const unsubscribeModalController = ModalController.subscribeKey('open', val => {

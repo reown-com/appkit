@@ -1,6 +1,7 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
+import '../../components/wui-icon/index.js'
 import '../../components/wui-image/index.js'
 import '../../components/wui-loading-spinner/index.js'
 import '../../components/wui-text/index.js'
@@ -36,7 +37,7 @@ export class WuiWalletButton extends LitElement {
     this.dataset['error'] = `${this.error}`
 
     return html`
-      <button ?disabled=${this.disabled} ontouchstart>
+      <button ?disabled=${this.disabled}>
         ${this.leftViewTemplate()} ${this.rightViewTemplate()}
       </button>
     `
