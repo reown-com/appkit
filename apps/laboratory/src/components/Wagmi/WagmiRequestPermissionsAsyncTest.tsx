@@ -18,10 +18,12 @@ import { bigIntReplacer } from '@/src/utils/CommonUtils'
 import { getPurchaseDonutPermissions } from '@/src/utils/ERC7715Utils'
 
 export function WagmiRequestPermissionsAsyncTest() {
-  const { address, isConnected } = useAppKitAccount({ namespace: 'eip155' })
-
+  const { address, isConnected, embeddedWalletInfo } = useAppKitAccount({ namespace: 'eip155' })
   const { chainId } = useAppKitNetwork()
-  const isSupported = isSmartSessionSupported()
+  const { accountType, user } = embeddedWalletInfo ?? {}
+  const isSmartAccount = accountType === 'smartAccount'
+  const isEmailAllowed = Boolean(user?.email?.includes('+smart-sessions@'))
+  const isSupported = isSmartSessionSupported() && isSmartAccount && isEmailAllowed
 
   if (!isConnected || !address || !chainId) {
     return (
@@ -34,7 +36,9 @@ export function WagmiRequestPermissionsAsyncTest() {
   if (!isSupported) {
     return (
       <Text fontSize="md" color="yellow">
-        Wallet does not support wallet_grantPermissions rpc method
+        Wallet does not support wallet_grantPermissions rpc method.
+        <br />
+        Please use smart account with email youremail+smart-sessions@domain.com
       </Text>
     )
   }
