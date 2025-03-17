@@ -18,6 +18,7 @@ export const extensionFixture = base.extend<ExtensionFixture>({
     const isHeadless = process.env['HEADLESS'] === 'true'
 
     const context = await chromium.launchPersistentContext('', {
+      channel: 'chromium',
       headless: isHeadless,
       args: [
         `--disable-extensions-except=${pathToExtension}`,
