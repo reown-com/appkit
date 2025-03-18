@@ -11,8 +11,10 @@ export class WalletPage {
   private vercelPreview: Locator
 
   public connectToSingleAccount = false
+  public page: Page
 
-  constructor(public page: Page) {
+  constructor(page: Page) {
+    this.page = page
     this.gotoHome = this.page.getByTestId('wc-connect')
     this.vercelPreview = this.page.locator('css=vercel-live-feedback')
   }
