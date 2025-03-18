@@ -4,6 +4,7 @@ import { subscribeKey as subKey } from 'valtio/vanilla/utils'
 import type { ChainNamespace } from '@reown/appkit-common'
 
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
+import { AccountController } from './AccountController.js'
 import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectionController } from './ConnectionController.js'
@@ -54,11 +55,17 @@ export const ModalController = {
   },
 
   async open(options?: ModalControllerArguments['open']) {
+    const isConnected = AccountController.state.status === 'connected'
+
     if (ConnectionController.state.wcBasic) {
       // No need to add an await here if we are use basic
       ApiController.prefetch({ fetchNetworkImages: false, fetchConnectorImages: false })
     } else {
-      await ApiController.prefetch()
+      await ApiController.prefetch({
+        fetchConnectorImages: !isConnected,
+        fetchFeaturedWallets: !isConnected,
+        fetchRecommendedWallets: !isConnected
+      })
     }
 
     if (options?.namespace) {
