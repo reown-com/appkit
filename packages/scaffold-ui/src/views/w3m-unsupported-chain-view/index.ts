@@ -132,10 +132,6 @@ export class W3mUnsupportedChainView extends LitElement {
     try {
       this.disconecting = true
       await ConnectionController.disconnect()
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'DISCONNECT_SUCCESS'
-      })
       ModalController.close()
     } catch {
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })

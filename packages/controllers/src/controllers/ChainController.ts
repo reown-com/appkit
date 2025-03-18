@@ -10,6 +10,7 @@ import {
   NetworkUtil
 } from '@reown/appkit-common'
 
+import { getChainsToDisconnect } from '../utils/ChainControllerUtil.js'
 import { ConstantsUtil } from '../utils/ConstantsUtil.js'
 import { CoreHelperUtil } from '../utils/CoreHelperUtil.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
@@ -647,20 +648,22 @@ export const ChainController = {
     ConnectorController.removeConnectorId(chainToWrite)
   },
 
-  async disconnect() {
+  async disconnect(namespace?: ChainNamespace) {
+    const chainsToDisconnect = getChainsToDisconnect(namespace)
+
     try {
       // Reset send state when disconnecting
       SendController.resetSend()
       const disconnectResults = await Promise.allSettled(
-        Array.from(state.chains.entries()).map(async ([namespace, adapter]) => {
+        chainsToDisconnect.map(async ([ns, adapter]) => {
           try {
             if (adapter.connectionControllerClient?.disconnect) {
-              await adapter.connectionControllerClient.disconnect()
+              await adapter.connectionControllerClient.disconnect(ns)
             }
-            this.resetAccount(namespace)
-            this.resetNetwork(namespace)
+            this.resetAccount(ns)
+            this.resetNetwork(ns)
           } catch (error) {
-            throw new Error(`Failed to disconnect chain ${namespace}: ${(error as Error).message}`)
+            throw new Error(`Failed to disconnect chain ${ns}: ${(error as Error).message}`)
           }
         })
       )
@@ -676,11 +679,17 @@ export const ChainController = {
       }
 
       StorageUtil.deleteConnectedSocialProvider()
-      ConnectionController.resetWcConnection()
-      ConnectorController.resetConnectorIds()
+      if (namespace) {
+        ConnectorController.removeConnectorId(namespace)
+      } else {
+        ConnectorController.resetConnectorIds()
+      }
       EventsController.sendEvent({
         type: 'track',
-        event: 'DISCONNECT_SUCCESS'
+        event: 'DISCONNECT_SUCCESS',
+        properties: {
+          namespace: namespace || 'all'
+        }
       })
     } catch (error) {
       // eslint-disable-next-line no-console
