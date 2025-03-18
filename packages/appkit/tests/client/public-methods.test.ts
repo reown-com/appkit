@@ -50,7 +50,7 @@ describe('Base Public methods', () => {
   })
 
   it('should open modal', async () => {
-    const prefetch = vi.spyOn(ApiController, 'prefetch').mockResolvedValueOnce(undefined)
+    const prefetch = vi.spyOn(ApiController, 'prefetch').mockResolvedValueOnce([])
     const open = vi.spyOn(ModalController, 'open')
 
     const appKit = new AppKit(mockOptions)
