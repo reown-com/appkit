@@ -9,9 +9,9 @@ import {
   StorageUtil
 } from '@reown/appkit-controllers'
 import { ConstantsUtil as UtilConstantsUtil } from '@reown/appkit-utils'
+import { ProviderUtil } from '@reown/appkit-utils'
 
 import { AppKit } from '../../src/client/appkit.js'
-import { ProviderUtil } from '../../src/store'
 import { mockEvmAdapter, mockSolanaAdapter } from '../mocks/Adapter.js'
 import { mainnet, sepolia } from '../mocks/Networks.js'
 import { mockOptions } from '../mocks/Options.js'

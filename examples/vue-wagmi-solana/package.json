@@ -14,16 +14,16 @@
     "@solana/wallet-adapter-backpack": "0.1.14",
     "@solana/wallet-adapter-wallets": "0.19.32",
     "@tanstack/vue-query": "5.67.1",
-    "@wagmi/connectors": "5.7.7",
+    "@wagmi/connectors": "5.7.9",
     "@wagmi/core": "2.16.5",
     "@wagmi/vue": "0.1.11",
-    "viem": "2.23.5",
+    "viem": "2.23.11",
     "vue": "3.4.3"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "5.2.1",
     "typescript": "5.8.2",
-    "vite": "5.4.10",
+    "vite": "5.4.12",
     "vue-tsc": "2.2.8"
   }
 }
