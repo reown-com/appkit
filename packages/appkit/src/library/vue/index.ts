@@ -12,9 +12,9 @@ import type {
   W3mConnectButton,
   W3mNetworkButton
 } from '@reown/appkit-scaffold-ui'
+import { ProviderUtil } from '@reown/appkit-utils'
 
 import type { AppKitBaseClient as AppKit } from '../../client/appkit-base-client.js'
-import { ProviderUtil } from '../../store/ProviderUtil.js'
 import type { AppKitOptions } from '../../utils/TypesUtil.js'
 
 export interface AppKitEvent {

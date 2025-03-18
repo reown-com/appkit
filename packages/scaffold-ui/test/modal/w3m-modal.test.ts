@@ -47,7 +47,7 @@ describe('W3mModal', () => {
 
     beforeEach(async () => {
       Element.prototype.animate = vi.fn().mockReturnValue({ finished: true })
-      vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve())
+      vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve([]))
       vi.spyOn(ApiController, 'prefetchAnalyticsConfig').mockImplementation(() => Promise.resolve())
       OptionsController.setEnableEmbedded(true)
       ModalController.close()
@@ -93,7 +93,7 @@ describe('W3mModal', () => {
     let element: W3mModal
 
     beforeEach(async () => {
-      vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve())
+      vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve([]))
       vi.spyOn(ApiController, 'prefetchAnalyticsConfig').mockImplementation(() => Promise.resolve())
       OptionsController.setEnableEmbedded(false)
       ModalController.close()
@@ -175,7 +175,7 @@ describe('W3mModal', () => {
     let element: W3mModal
 
     beforeEach(async () => {
-      vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve())
+      vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve([]))
       element = await fixture(html`<w3m-modal></w3m-modal>`)
     })
 
@@ -319,7 +319,7 @@ describe('W3mModal', () => {
     let element: W3mModal
 
     beforeEach(async () => {
-      vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve())
+      vi.spyOn(ApiController, 'prefetch').mockImplementation(() => Promise.resolve([]))
       vi.spyOn(ApiController, 'prefetchAnalyticsConfig').mockImplementation(() => Promise.resolve())
       vi.spyOn(AlertController, 'open')
 
