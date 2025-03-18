@@ -35,7 +35,11 @@ export default function Wagmi() {
         <AppKitButtons />
         <AppKitInfo />
         <AppKitWalletButtons
-          wallets={[...ConstantsUtil.EvmWalletButtons, ...ConstantsUtil.Socials, 'email']}
+          wallets={[
+            ...ConstantsUtil.EvmWalletButtons,
+            ...ConstantsUtil.Socials,
+            ConstantsUtil.Email
+          ]}
         />
       </QueryClientProvider>
     </WagmiProvider>

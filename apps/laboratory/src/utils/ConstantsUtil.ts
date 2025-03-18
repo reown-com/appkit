@@ -182,5 +182,6 @@ export const ConstantsUtil = {
     'x',
     'discord',
     'farcaster'
-  ] as SocialProvider[]
+  ] as SocialProvider[],
+  Email: 'email' as const
 }

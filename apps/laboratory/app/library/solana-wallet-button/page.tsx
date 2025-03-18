@@ -34,7 +34,11 @@ export default function Solana() {
       <AppKitButtons />
       <AppKitInfo />
       <AppKitWalletButtons
-        wallets={[...ConstantsUtil.SolanaWalletButtons, ...ConstantsUtil.Socials, 'email']}
+        wallets={[
+          ...ConstantsUtil.SolanaWalletButtons,
+          ...ConstantsUtil.Socials,
+          ConstantsUtil.Email
+        ]}
       />
       <SolanaTests />
     </>
