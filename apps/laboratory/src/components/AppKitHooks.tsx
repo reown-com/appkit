@@ -58,7 +58,7 @@ export function AppKitHooks() {
         </Button>
 
         {isConnected && (
-          <Button data-testid="disconnect-hook-button" onClick={disconnect}>
+          <Button data-testid="disconnect-hook-button" onClick={() => disconnect()}>
             Disconnect
           </Button>
         )}

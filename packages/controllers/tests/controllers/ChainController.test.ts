@@ -420,7 +420,10 @@ describe('ChainController', () => {
 
     expect(sendEventSpy).toHaveBeenCalledWith({
       type: 'track',
-      event: 'DISCONNECT_SUCCESS'
+      event: 'DISCONNECT_SUCCESS',
+      properties: {
+        namespace: 'all'
+      }
     })
 
     resetAccountSpy.mockRestore()

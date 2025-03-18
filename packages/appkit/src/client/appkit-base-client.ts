@@ -417,8 +417,8 @@ export abstract class AppKitBaseClient {
           StorageUtil.addConnectedNamespace(namespace)
         }
       },
-      disconnect: async () => {
-        const namespace = ChainController.state.activeChain as ChainNamespace
+      disconnect: async (chainNamespace?: ChainNamespace) => {
+        const namespace = chainNamespace || (ChainController.state.activeChain as ChainNamespace)
         const adapter = this.getAdapter(namespace)
         const provider = ProviderUtil.getProvider(namespace)
         const providerType = ProviderUtil.getProviderId(namespace)
@@ -722,7 +722,7 @@ export abstract class AppKitBaseClient {
       }
     })
 
-    adapter.on('disconnect', this.disconnect.bind(this))
+    adapter.on('disconnect', this.disconnect.bind(this, chainNamespace))
 
     adapter.on('pendingTransactions', () => {
       const address = AccountController.state.address
@@ -1460,8 +1460,8 @@ export abstract class AppKitBaseClient {
     ModalController.setLoading(loading, namespace)
   }
 
-  public async disconnect() {
-    await ConnectionController.disconnect()
+  public async disconnect(chainNamespace?: ChainNamespace) {
+    await ConnectionController.disconnect(chainNamespace)
   }
 
   // -- review these -------------------------------------------------------------------
