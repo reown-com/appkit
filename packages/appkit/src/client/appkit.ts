@@ -125,6 +125,7 @@ export class AppKit extends AppKitBaseClient {
        *  network to a non-smart account supported network resulting in a different address
        */
 
+      this.setCaipAddress(caipAddress, namespace)
       if (!HelpersUtil.isLowerCaseMatch(user.address, AccountController.state.address)) {
         this.syncIdentity({
           address: user.address,
@@ -132,7 +133,6 @@ export class AppKit extends AppKitBaseClient {
           chainNamespace: namespace
         })
       }
-      this.setCaipAddress(caipAddress, namespace)
 
       this.setUser({ ...(AccountController.state.user || {}), email: user.email }, namespace)
 
