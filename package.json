@@ -76,17 +76,11 @@
   "packageManager": "pnpm@9.5.0",
   "pnpm": {
     "overrides": {
+      "@solana/web3.js": "1.95.8",
       "elliptic": ">=6.6.1",
-      "axios": ">=1.8.2"
+      "axios": ">=1.8.2",
+      "ws": ">=7.5.10"
     }
-  },
-  "resolutions": {
-    "@solana/web3.js": "1.95.8",
-    "elliptic": ">=6.6.1"
-  },
-  "overrides": {
-    "@solana/web3.js": "1.95.8",
-    "elliptic": ">=6.6.1"
   },
   "@parcel/resolver-default": {
     "packageExports": true
