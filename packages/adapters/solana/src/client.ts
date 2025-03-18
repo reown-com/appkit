@@ -41,9 +41,11 @@ export class SolanaAdapter extends AdapterBlueprint<SolanaProvider> {
   private balancePromises: Record<string, Promise<AdapterBlueprint.GetBalanceResult>> = {}
 
   constructor(options: AdapterOptions = {}) {
+    console.log('>> Adapter construction', options)
     super({})
     this.namespace = CommonConstantsUtil.CHAIN.SOLANA
     this.connectionSettings = options.connectionSettings || 'confirmed'
+    console.log('>> This.connectionSettings:', options, this.connectionSettings)
     this.wallets = options.wallets
   }
 
