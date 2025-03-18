@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { useEffect, useState } from 'react'
 
 import { Button, Link, Spacer, Stack } from '@chakra-ui/react'
