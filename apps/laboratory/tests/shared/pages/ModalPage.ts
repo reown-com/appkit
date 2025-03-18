@@ -320,6 +320,15 @@ export class ModalPage {
     await disconnectBtn.click()
   }
 
+  async disconnectWithHook(namespace?: string) {
+    const disconnectBtn = this.page.getByTestId(
+      namespace ? `${namespace}-disconnect-button` : 'disconnect-hook-button'
+    )
+    await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
+    await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
+    await disconnectBtn.click()
+  }
+
   async sign(_namespace?: string) {
     const namespace = _namespace || getNamespaceByLibrary(this.library)
     const signButton = this.page

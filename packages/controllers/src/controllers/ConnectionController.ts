@@ -36,7 +36,7 @@ export interface ConnectExternalOptions {
 
 export interface ConnectionControllerClient {
   connectWalletConnect?: () => Promise<void>
-  disconnect: () => Promise<void>
+  disconnect: (chainNamespace?: ChainNamespace) => Promise<void>
   signMessage: (message: string) => Promise<string>
   sendTransaction: (args: SendTransactionArgs) => Promise<string | null>
   estimateGas: (args: EstimateGasTransactionArgs) => Promise<bigint>
@@ -281,12 +281,12 @@ export const ConnectionController = {
     state.status = status
   },
 
-  async disconnect() {
+  async disconnect(namespace?: ChainNamespace) {
     try {
-      ModalController.setLoading(true)
+      ModalController.setLoading(true, namespace)
       await SIWXUtil.clearSessions()
-      await ChainController.disconnect()
-      ModalController.setLoading(false)
+      await ChainController.disconnect(namespace)
+      ModalController.setLoading(false, namespace)
     } catch (error) {
       throw new Error('Failed to disconnect')
     }

@@ -69,9 +69,9 @@ export const ModalController = {
     }
 
     if (options?.namespace) {
-      ConnectorController.setFilterByNamespace(options.namespace)
       await ChainController.switchActiveNamespace(options.namespace)
       ModalController.setLoading(true, options.namespace)
+      ConnectorController.setFilterByNamespace(options.namespace)
     } else {
       ModalController.setLoading(true)
     }
