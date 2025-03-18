@@ -93,7 +93,7 @@ export function useAppKitWallet(parameters?: {
         WalletButtonController.setPending(true)
         WalletButtonController.setError(undefined)
 
-        if (wallet === 'email') {
+        if (wallet === ConstantsUtil.Email) {
           await ConnectorUtil.connectEmail().then(handleSuccess)
 
           return

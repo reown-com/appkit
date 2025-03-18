@@ -36,7 +36,7 @@ export class AppKitWalletButton {
   async connect(wallet: Wallet) {
     const connectors = ConnectorController.state.connectors
 
-    if (wallet === 'email') {
+    if (wallet === ConstantsUtil.Email) {
       return ConnectorUtil.connectEmail()
     }
 
