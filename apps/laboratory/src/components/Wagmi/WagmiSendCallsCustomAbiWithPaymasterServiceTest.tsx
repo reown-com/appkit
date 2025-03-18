@@ -256,7 +256,7 @@ function AvailableTestContent() {
 
       <Tooltip label="Paymaster Service URL should be of ERC-7677 paymaster service proxy">
         <Input
-          placeholder="http://api.pimlico.io/v2/sepolia/rpc?apikey=..."
+          placeholder="https://paymaster-api.reown.com/11155111/rpc?projectId=..."
           onChange={e => onPaymasterUrlChange(e.target.value)}
           value={paymasterServiceUrl}
           isDisabled={isLoading}
