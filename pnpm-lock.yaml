@@ -2641,13 +2641,6 @@ importers:
 
   packages/ui:
     dependencies:
-      lit:
-        specifier: 3.1.0
-        version: 3.1.0
-      qrcode:
-        specifier: 1.5.3
-        version: 1.5.3
-    devDependencies:
       '@reown/appkit-common':
         specifier: workspace:*
         version: link:../common
@@ -2657,6 +2650,13 @@ importers:
       '@reown/appkit-wallet':
         specifier: workspace:*
         version: link:../wallet
+      lit:
+        specifier: 3.1.0
+        version: 3.1.0
+      qrcode:
+        specifier: 1.5.3
+        version: 1.5.3
+    devDependencies:
       '@types/qrcode':
         specifier: 1.5.5
         version: 1.5.5
