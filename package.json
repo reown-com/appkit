@@ -71,21 +71,22 @@
     "typescript": "5.7.3",
     "vite": "5.4.12",
     "vite-plugin-node-polyfills": "0.23.0",
-    "vitest": "2.1.9",
-    "@synthetixio/synpress-metamask": "0.0.11"
+    "vitest": "2.1.9"
   },
   "packageManager": "pnpm@9.5.0",
   "pnpm": {
     "overrides": {
-      "@solana/web3.js": "1.95.8",
-      "elliptic": ">=6.6.1"
+      "elliptic": ">=6.6.1",
+      "axios": ">=1.8.2"
     }
   },
   "resolutions": {
-    "@solana/web3.js": "1.95.8"
+    "@solana/web3.js": "1.95.8",
+    "elliptic": ">=6.6.1"
   },
   "overrides": {
-    "@solana/web3.js": "1.95.8"
+    "@solana/web3.js": "1.95.8",
+    "elliptic": ">=6.6.1"
   },
   "@parcel/resolver-default": {
     "packageExports": true
