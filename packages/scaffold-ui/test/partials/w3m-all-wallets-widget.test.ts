@@ -66,6 +66,7 @@ const mockApiState: ApiControllerState = {
       image_url: 'https://test.com/image.png'
     }
   ],
+  promises: {},
   recommended: [],
   wallets: [],
   search: [],
