@@ -2511,6 +2511,9 @@ importers:
       '@reown/appkit-ui':
         specifier: workspace:*
         version: link:../ui
+      '@reown/appkit-utils':
+        specifier: workspace:*
+        version: link:../appkit-utils
       lit:
         specifier: 3.1.0
         version: 3.1.0

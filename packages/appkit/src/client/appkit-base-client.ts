@@ -63,11 +63,11 @@ import {
   LoggerUtil,
   ConstantsUtil as UtilConstantsUtil
 } from '@reown/appkit-utils'
+import { ProviderUtil } from '@reown/appkit-utils'
+import type { ProviderStoreUtilState } from '@reown/appkit-utils'
 import type { W3mFrameTypes } from '@reown/appkit-wallet'
 
 import type { AdapterBlueprint } from '../adapters/index.js'
-import { ProviderUtil } from '../store/ProviderUtil.js'
-import type { ProviderStoreUtilState } from '../store/ProviderUtil.js'
 import { UniversalAdapter } from '../universal-adapter/client.js'
 import { WcHelpersUtil } from '../utils/index.js'
 import type { AppKitOptions } from '../utils/index.js'
