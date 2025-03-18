@@ -1,6 +1,7 @@
 FROM node:23-bullseye
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+ENV NODE_OPTIONS="--no-experimental-type-stripping"
 RUN corepack enable
 
 RUN apt update && apt install -y awscli
