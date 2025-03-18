@@ -11,7 +11,6 @@ import type {
   ApiGetWalletsResponse,
   WcWallet
 } from '../utils/TypeUtil.js'
-import { AccountController } from './AccountController.js'
 import { AssetController } from './AssetController.js'
 import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
@@ -27,7 +26,7 @@ const imageCountToFetch = 20
 
 // -- Types --------------------------------------------- //
 export interface ApiControllerState {
-  prefetchPromise?: Promise<unknown>
+  promises: Record<string, Promise<unknown>>
   page: number
   count: number
   featured: WcWallet[]
@@ -50,6 +49,7 @@ type StateKey = keyof ApiControllerState
 
 // -- State --------------------------------------------- //
 const state = proxy<ApiControllerState>({
+  promises: {},
   page: 1,
   count: 0,
   featured: [],
@@ -290,31 +290,34 @@ export const ApiController = {
     state.search = ApiController._filterOutExtensions(data)
   },
 
+  initPromise(key: string, fetchFn: () => Promise<void>) {
+    const existingPromise = state.promises[key]
+
+    if (existingPromise) {
+      return existingPromise
+    }
+
+    return (state.promises[key] = fetchFn())
+  },
+
   prefetch({
     fetchConnectorImages = true,
     fetchFeaturedWallets = true,
     fetchRecommendedWallets = true,
     fetchNetworkImages = true
   }: PrefetchParameters = {}) {
-    // Avoid pre-fetch if user is already connected as there is no need to fetch wallets in that case
-    if (AccountController.state.status === 'connected') {
-      return Promise.resolve()
-    }
-
-    if (state.prefetchPromise) {
-      return state.prefetchPromise
-    }
-
     const promises = [
-      fetchConnectorImages && ApiController.fetchConnectorImages(),
-      fetchFeaturedWallets && ApiController.fetchFeaturedWallets(),
-      fetchRecommendedWallets && ApiController.fetchRecommendedWallets(),
-      fetchNetworkImages && ApiController.fetchNetworkImages()
+      fetchConnectorImages &&
+        ApiController.initPromise('connectorImages', ApiController.fetchConnectorImages),
+      fetchFeaturedWallets &&
+        ApiController.initPromise('featuredWallets', ApiController.fetchFeaturedWallets),
+      fetchRecommendedWallets &&
+        ApiController.initPromise('recommendedWallets', ApiController.fetchRecommendedWallets),
+      fetchNetworkImages &&
+        ApiController.initPromise('networkImages', ApiController.fetchNetworkImages)
     ].filter(Boolean)
 
-    state.prefetchPromise = Promise.allSettled(promises)
-
-    return state.prefetchPromise
+    return Promise.allSettled(promises)
   },
 
   prefetchAnalyticsConfig() {

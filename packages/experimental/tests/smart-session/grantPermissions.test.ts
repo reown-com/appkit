@@ -6,7 +6,7 @@ import {
   type ConnectionControllerClient,
   OptionsController
 } from '@reown/appkit-controllers'
-import { ProviderUtil } from '@reown/appkit/store'
+import { ProviderUtil } from '@reown/appkit-utils'
 
 import { SmartSessionsController } from '../../src/smart-session/controllers/SmartSessionsController'
 import {

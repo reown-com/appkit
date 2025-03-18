@@ -5,12 +5,15 @@ import type { Page } from '@playwright/test'
 import { ModalPage } from './ModalPage'
 
 export class ModalWalletPage extends ModalPage {
-  constructor(
-    public override readonly page: Page,
-    public override readonly library: string,
-    public override readonly flavor: 'default' | 'all' | 'siwe'
-  ) {
+  public override readonly page: Page
+  public override readonly library: string
+  public override readonly flavor: 'default' | 'all' | 'siwe'
+
+  constructor(page: Page, library: string, flavor: 'default' | 'all' | 'siwe') {
     super(page, library, flavor)
+    this.page = page
+    this.library = library
+    this.flavor = flavor
   }
 
   async goToSettings() {
