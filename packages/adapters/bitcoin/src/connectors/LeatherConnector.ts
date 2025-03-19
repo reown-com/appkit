@@ -20,8 +20,15 @@ export class LeatherConnector extends SatsConnectConnector {
       throw new Error('LeatherConnector: wallet must be a LeatherProvider')
     }
 
+    // Fix broken image in Leather wallet
+    const imageUrl = connector.wallet.icon?.includes('data:image/svg;')
+      ? connector.wallet.icon.replace('data:image/svg;', 'data:image/svg+xml;')
+      : connector.wallet.icon
+
+    const provider = { ...connector.wallet, imageUrl }
+
     super({
-      provider: connector.wallet,
+      provider,
       requestedChains: connector.requestedChains,
       getActiveNetwork: connector.getActiveNetwork
     })
