@@ -82,6 +82,18 @@
       "ws": ">=7.5.10"
     }
   },
+  "overrides": {
+    "@solana/web3.js": "1.95.8",
+    "elliptic": ">=6.6.1",
+    "axios": ">=1.8.2",
+    "ws": ">=7.5.10"
+  },
+  "resolutions": {
+    "@solana/web3.js": "1.95.8",
+    "elliptic": ">=6.6.1",
+    "axios": ">=1.8.2",
+    "ws": ">=7.5.10"
+  },
   "@parcel/resolver-default": {
     "packageExports": true
   }
