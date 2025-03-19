@@ -84,7 +84,7 @@ export class W3mConnectorList extends LitElement {
           : null}
         ${featured.length
           ? html`<w3m-connect-featured-widget
-              .connectors=${featured}
+              .wallets=${featured}
               tabIdx=${ifDefined(this.tabIdx)}
             ></w3m-connect-featured-widget>`
           : null}
