@@ -226,7 +226,8 @@ export class WagmiAdapter extends AdapterBlueprint {
           ) {
             this.setupWatchPendingTransactions()
             this.emit('accountChanged', {
-              address: accountData.address
+              address: accountData.address,
+              chainId: accountData.chainId
             })
           }
 
