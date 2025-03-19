@@ -326,7 +326,11 @@ describe('SatsConnectConnector', () => {
       const emitSpy = vi.spyOn(connector, 'emit')
       const callback = addListenerSpy.mock.calls.find(([event]) => event === 'networkChange')?.[1]
 
-      await callback?.({ type: 'networkChange' })
+      await callback?.({
+        type: 'networkChange',
+        stacks: { name: 'mock_network' },
+        bitcoin: { name: 'Mainnet' }
+      })
 
       expect(emitSpy).toHaveBeenCalledWith('chainChanged', [bitcoin, bitcoinTestnet])
     })
