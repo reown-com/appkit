@@ -19,9 +19,9 @@ export const networks = [mainnet, polygon, base, solana, solanaDevnet]
 
 export const solanaWeb3JsAdapter = new SolanaAdapter({
   wallets: [
-    new HuobiWalletAdapter(),
+    new HuobiWalletAdapter<'Huobi'>(),
     new PhantomWalletAdapter(),
-    new SolflareWalletAdapter(),
+    new SolflareWalletAdapter<'Solflare'>(),
     new TrustWalletAdapter()
   ]
 })
