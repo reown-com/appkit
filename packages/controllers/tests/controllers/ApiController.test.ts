@@ -103,7 +103,8 @@ describe('ApiController', () => {
       search: [],
       isAnalyticsEnabled: false,
       excludedRDNS: [],
-      isFetchingRecommendedWallets: false
+      isFetchingRecommendedWallets: false,
+      promises: {}
     })
   })
 
@@ -690,6 +691,77 @@ describe('ApiController', () => {
     ApiController.prefetchAnalyticsConfig()
 
     expect(fetchAnalyticsSpy).toHaveBeenCalledOnce()
+  })
+
+  it('should prefetch all resources when no flags are specified', async () => {
+    const fetchConnectorImages = vi.spyOn(ApiController, 'fetchConnectorImages').mockResolvedValue()
+    const fetchFeaturedWallets = vi.spyOn(ApiController, 'fetchFeaturedWallets').mockResolvedValue()
+    const fetchRecommendedWallets = vi
+      .spyOn(ApiController, 'fetchRecommendedWallets')
+      .mockResolvedValue()
+    const fetchNetworkImages = vi.spyOn(ApiController, 'fetchNetworkImages').mockResolvedValue()
+
+    await ApiController.prefetch()
+
+    expect(fetchConnectorImages).toHaveBeenCalled()
+    expect(fetchFeaturedWallets).toHaveBeenCalled()
+    expect(fetchRecommendedWallets).toHaveBeenCalled()
+    expect(fetchNetworkImages).toHaveBeenCalled()
+  })
+
+  it('should only prefetch resources specified by flags', async () => {
+    ApiController.state.promises = {}
+    const fetchConnectorImages = vi.spyOn(ApiController, 'fetchConnectorImages').mockResolvedValue()
+    const fetchFeaturedWallets = vi.spyOn(ApiController, 'fetchFeaturedWallets').mockResolvedValue()
+    const fetchRecommendedWallets = vi
+      .spyOn(ApiController, 'fetchRecommendedWallets')
+      .mockResolvedValue()
+    const fetchNetworkImages = vi.spyOn(ApiController, 'fetchNetworkImages').mockResolvedValue()
+
+    await ApiController.prefetch({
+      fetchConnectorImages: true,
+      fetchFeaturedWallets: false,
+      fetchRecommendedWallets: true,
+      fetchNetworkImages: false
+    })
+
+    expect(fetchConnectorImages).toHaveBeenCalled()
+    expect(fetchFeaturedWallets).not.toHaveBeenCalled()
+    expect(fetchRecommendedWallets).toHaveBeenCalled()
+    expect(fetchNetworkImages).not.toHaveBeenCalled()
+  })
+
+  it('should handle both successful and failed prefetch requests', async () => {
+    ApiController.state.promises = {}
+    vi.spyOn(ApiController, 'fetchConnectorImages').mockResolvedValue()
+    vi.spyOn(ApiController, 'fetchFeaturedWallets').mockRejectedValue(new Error('Test error'))
+
+    const result = await ApiController.prefetch({
+      fetchConnectorImages: true,
+      fetchFeaturedWallets: true,
+      fetchRecommendedWallets: false,
+      fetchNetworkImages: false
+    })
+
+    expect(result).toHaveLength(2)
+    expect(result[0]?.status).toBe('fulfilled')
+    expect(result[1]?.status).toBe('rejected')
+  })
+
+  it('should store fetched resources in state.promises', async () => {
+    ApiController.state.promises = {}
+    vi.spyOn(ApiController, 'fetchConnectorImages').mockResolvedValue()
+    vi.spyOn(ApiController, 'fetchFeaturedWallets').mockResolvedValue()
+
+    await ApiController.prefetch({
+      fetchConnectorImages: true,
+      fetchFeaturedWallets: true,
+      fetchRecommendedWallets: false,
+      fetchNetworkImages: false
+    })
+
+    expect(ApiController.state.promises['connectorImages']).not.toBeUndefined()
+    expect(ApiController.state.promises['featuredWallets']).not.toBeUndefined()
   })
 
   // Fetch analytics config - somehow this is failing

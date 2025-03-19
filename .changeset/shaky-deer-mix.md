@@ -1,4 +1,6 @@
 ---
+'@reown/appkit-controllers': patch
+'@reown/appkit-scaffold-ui': patch
 '@reown/appkit': patch
 '@reown/appkit-adapter-bitcoin': patch
 '@reown/appkit-adapter-ethers': patch
@@ -9,11 +11,9 @@
 '@reown/appkit-cdn': patch
 '@reown/appkit-cli': patch
 '@reown/appkit-common': patch
-'@reown/appkit-controllers': patch
 '@reown/appkit-core': patch
 '@reown/appkit-experimental': patch
 '@reown/appkit-polyfills': patch
-'@reown/appkit-scaffold-ui': patch
 '@reown/appkit-siwe': patch
 '@reown/appkit-siwx': patch
 '@reown/appkit-ui': patch
@@ -21,4 +21,16 @@
 '@reown/appkit-wallet-button': patch
 ---
 
-Removes balance fetch on account sync for core
+Allows disconnecting specific namespace. Users can pass `ChainNamespace` value to `disconnect()` function returned from `useDisconnect`, and disconnect only given namespace.
+
+If namespace is not passed, it'll disconnect all namespaces.
+
+**Example usage:**
+
+```tsx
+const { disconnect } = useDisconnect()
+
+<Button onClick={() => disconnect({ namespace: 'solana' })}>
+  Disconnect Solana
+</Button>
+```

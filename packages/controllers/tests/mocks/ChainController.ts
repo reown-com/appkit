@@ -1,4 +1,6 @@
-import { ChainController } from '../../exports/index.js'
+import { vi } from 'vitest'
+
+import { ChainController, type ConnectionControllerClient } from '../../exports/index.js'
 
 export function mockChainControllerState() {
   ChainController.state.chains = new Map([
@@ -12,7 +14,10 @@ export function mockChainControllerState() {
           addressLabels: new Map(),
           allAccounts: [],
           user: undefined
-        }
+        },
+        connectionControllerClient: {
+          disconnect: vi.fn()
+        } as unknown as ConnectionControllerClient
       }
     ]
   ])

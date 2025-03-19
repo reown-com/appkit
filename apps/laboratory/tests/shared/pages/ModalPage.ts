@@ -61,12 +61,13 @@ export class ModalPage {
   private readonly connectButton: Locator
   private readonly url: string
   private emailAddress = ''
-
-  constructor(
-    public readonly page: Page,
-    public readonly library: string,
-    public readonly flavor: ModalFlavor
-  ) {
+  public readonly page: Page
+  public readonly library: string
+  public readonly flavor: ModalFlavor
+  constructor(page: Page, library: string, flavor: ModalFlavor) {
+    this.page = page
+    this.library = library
+    this.flavor = flavor
     this.connectButton = this.page.getByTestId('connect-button').first()
     if (library === 'multichain-ethers-solana') {
       this.url = `${this.baseURL}library/multichain-ethers-solana/`
@@ -314,6 +315,15 @@ export class ModalPage {
     await expect(accountBtn, 'Account button should be enabled').toBeEnabled()
     await accountBtn.click()
     const disconnectBtn = this.page.getByTestId('disconnect-button')
+    await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
+    await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
+    await disconnectBtn.click()
+  }
+
+  async disconnectWithHook(namespace?: string) {
+    const disconnectBtn = this.page.getByTestId(
+      namespace ? `${namespace}-disconnect-button` : 'disconnect-hook-button'
+    )
     await expect(disconnectBtn, 'Disconnect button should be visible').toBeVisible()
     await expect(disconnectBtn, 'Disconnect button should be enabled').toBeEnabled()
     await disconnectBtn.click()

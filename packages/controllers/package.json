@@ -1,6 +1,6 @@
 {
   "name": "@reown/appkit-controllers",
-  "version": "1.6.9",
+  "version": "1.7.0",
   "sideEffects": false,
   "type": "module",
   "main": "./dist/esm/exports/index.js",
@@ -49,7 +49,7 @@
     "@reown/appkit-wallet": "workspace:*",
     "@walletconnect/universal-provider": "2.19.1",
     "valtio": "1.13.2",
-    "viem": ">=2.23.5"
+    "viem": ">=2.23.11"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "2.1.9",

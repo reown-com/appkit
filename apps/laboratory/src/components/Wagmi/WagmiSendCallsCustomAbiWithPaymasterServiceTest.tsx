@@ -1,7 +1,7 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { Button, Input, Stack, Text, Tooltip } from '@chakra-ui/react'
-import { encodeFunctionData, parseEther } from 'viem'
+import { Button, Input, Select, Stack, Text, Tooltip } from '@chakra-ui/react'
+import { type Abi, encodeFunctionData, parseEther } from 'viem'
 import { useAccount } from 'wagmi'
 import { useSendCalls } from 'wagmi/experimental'
 
@@ -9,45 +9,30 @@ import { useAppKitAccount } from '@reown/appkit/react'
 
 import { useChakraToast } from '@/src/components/Toast'
 import { useWagmiAvailableCapabilities } from '@/src/hooks/useWagmiActiveCapabilities'
-import {
-  abi as donutContractAbi,
-  donutContractSupportedChains,
-  donutContractSupportedChainsName,
-  address as donutContractaddress
-} from '@/src/utils/DonutContract'
 import { EIP_5792_RPC_METHODS, WALLET_CAPABILITIES } from '@/src/utils/EIP5792Utils'
 
-const purchaseDonutCallData = encodeFunctionData({
-  abi: donutContractAbi,
-  functionName: 'purchase',
-  args: [1]
-})
+function getWriteMethodsFromAbi(abi: string) {
+  try {
+    const abiJson: Abi = JSON.parse(abi)
 
-const TEST_TX = {
-  to: donutContractaddress as `0x${string}`,
-  value: parseEther('0.00001'),
-  data: purchaseDonutCallData
-}
+    const writeFunctions = abiJson.filter(
+      item =>
+        item.type === 'function' &&
+        (item.stateMutability === 'nonpayable' || item.stateMutability === 'payable')
+    )
 
-const BICONOMY_PAYMASTER_CONTEXT = {
-  mode: 'SPONSORED',
-  calculateGasLimits: false,
-  expiryDuration: 300,
-  sponsorshipInfo: {
-    webhookData: {},
-    smartAccountInfo: {
-      name: 'SAFE',
-      version: '1.4.1'
-    }
+    return writeFunctions.filter(func => 'name' in func).map(func => func.name)
+  } catch (error) {
+    return []
   }
 }
 
-export function WagmiSendCallsWithPaymasterServiceTest() {
+export function WagmiSendCallsCustomAbiWithPaymasterServiceTest() {
   const {
     provider,
+    supported,
     supportedChains: capabilitySupportedChains,
-    currentChainsInfo,
-    supported
+    currentChainsInfo
   } = useWagmiAvailableCapabilities({
     capability: WALLET_CAPABILITIES.PAYMASTER_SERVICE,
     method: EIP_5792_RPC_METHODS.WALLET_SEND_CALLS
@@ -57,12 +42,6 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
   const { status } = useAccount()
 
   const isConnected = status === 'connected'
-  const isFeatureSupported = useMemo(
-    () =>
-      currentChainsInfo &&
-      donutContractSupportedChains.some(chain => chain.id === currentChainsInfo.chainId),
-    [currentChainsInfo]
-  )
 
   const doWalletSupportCapability = useMemo(
     () =>
@@ -87,14 +66,6 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
     )
   }
 
-  if (!isFeatureSupported) {
-    return (
-      <Text fontSize="md" color="yellow">
-        Switch to {donutContractSupportedChainsName} to test this feature
-      </Text>
-    )
-  }
-
   if (!doWalletSupportCapability) {
     return (
       <Text fontSize="md" color="yellow">
@@ -109,13 +80,23 @@ export function WagmiSendCallsWithPaymasterServiceTest() {
 function AvailableTestContent() {
   const [paymasterProvider, setPaymasterProvider] = useState<string>()
   const [reownPolicyId, setReownPolicyId] = useState<string>('')
+  const [contractAbi, setContractAbi] = useState<string>('')
+  const [method, setMethod] = useState<string>('')
+  const [methodArgs, setMethodArgs] = useState<string>('')
+  const [valueToSend, setValueToSend] = useState<string>('')
+  const [contractAddress, setContractAddress] = useState<string>('')
   const [paymasterServiceUrl, setPaymasterServiceUrl] = useState<string>('')
   const [isLoading, setLoading] = useState(false)
   const toast = useChakraToast()
 
+  const [availableMethods, setAvailableMethods] = useState<Array<string>>([])
+
+  useEffect(() => {
+    setAvailableMethods(getWriteMethodsFromAbi(contractAbi))
+  }, [contractAbi])
+
   const context = useMemo(() => {
     const contexts: Record<string, unknown> = {
-      biconomy: BICONOMY_PAYMASTER_CONTEXT,
       reown: {
         policyId: reownPolicyId
       }
@@ -159,8 +140,59 @@ function AvailableTestContent() {
     if (!paymasterServiceUrl) {
       throw Error('paymasterServiceUrl not set')
     }
+
+    let abi: Abi = []
+    try {
+      abi = JSON.parse(contractAbi)
+      if (!Array.isArray(abi)) {
+        throw new Error()
+      }
+    } catch (e) {
+      setLoading(false)
+      toast({
+        title: 'SendCalls Error',
+        description: 'Provided ABI not a valid JSON array.',
+        type: 'error'
+      })
+
+      return
+    }
+
+    let args: Array<unknown> = []
+    try {
+      args = JSON.parse(methodArgs)
+      if (!Array.isArray(args)) {
+        throw new Error()
+      }
+    } catch (e) {
+      setLoading(false)
+      toast({
+        title: 'SendCalls Error',
+        description: 'Provided method args not a valid JSON array.',
+        type: 'error'
+      })
+
+      return
+    }
+
+    const value: bigint | undefined = Number.isNaN(parseFloat(valueToSend))
+      ? undefined
+      : parseEther(valueToSend)
+
+    const callData = encodeFunctionData({
+      abi,
+      functionName: method,
+      args
+    })
+
+    const testTransaction = {
+      to: contractAddress as `0x${string}`,
+      data: callData,
+      value
+    }
+
     sendCalls({
-      calls: [TEST_TX],
+      calls: [testTransaction],
       capabilities: {
         paymasterService: {
           url: paymasterServiceUrl,
@@ -172,6 +204,56 @@ function AvailableTestContent() {
 
   return (
     <Stack direction={['column', 'column', 'column']}>
+      <Input
+        placeholder="Contract Address (0x...)"
+        onChange={e => setContractAddress(e.target.value)}
+        value={contractAddress}
+        isDisabled={isLoading}
+        whiteSpace="nowrap"
+        textOverflow="ellipsis"
+      />
+
+      <Input
+        placeholder="Contract ABI [...]"
+        onChange={e => setContractAbi(e.target.value)}
+        value={contractAbi}
+        isDisabled={isLoading}
+        whiteSpace="nowrap"
+        textOverflow="ellipsis"
+      />
+
+      <Select
+        value={method}
+        onChange={e => {
+          setMethod(e.target.value)
+        }}
+        placeholder="Method name"
+      >
+        {availableMethods.map(name => (
+          <option value={name} key={name}>
+            {name}
+          </option>
+        ))}
+      </Select>
+
+      <Input
+        placeholder="Method args [...]"
+        onChange={e => setMethodArgs(e.target.value)}
+        value={methodArgs}
+        isDisabled={isLoading}
+        whiteSpace="nowrap"
+        textOverflow="ellipsis"
+      />
+
+      <Input
+        placeholder="Value (Eg 0.000001) (Optional)"
+        onChange={e => setValueToSend(e.target.value)}
+        value={valueToSend}
+        isDisabled={isLoading}
+        whiteSpace="nowrap"
+        textOverflow="ellipsis"
+      />
+
       <Tooltip label="Paymaster Service URL should be of ERC-7677 paymaster service proxy">
         <Input
           placeholder="https://paymaster-api.reown.com/11155111/rpc?projectId=..."
@@ -182,16 +264,16 @@ function AvailableTestContent() {
           textOverflow="ellipsis"
         />
       </Tooltip>
-      {
-        <Input
-          placeholder="Reown Policy ID (Optional)"
-          onChange={e => setReownPolicyId(e.target.value)}
-          value={reownPolicyId}
-          isDisabled={isLoading}
-          whiteSpace="nowrap"
-          textOverflow="ellipsis"
-        />
-      }
+
+      <Input
+        placeholder="Reown Policy ID (Optional)"
+        onChange={e => setReownPolicyId(e.target.value)}
+        value={reownPolicyId}
+        isDisabled={isLoading}
+        whiteSpace="nowrap"
+        textOverflow="ellipsis"
+      />
+
       <Button
         width={'fit-content'}
         data-testid="send-calls-paymaster-service-button"

@@ -120,7 +120,7 @@ export function walletConnect(
         }
 
         // If session exists and chains are authorized, enable provider for required chain
-        const accounts = (await provider.enable()).map(x => getAddress(x))
+        const accounts = await this.getAccounts()
         const currentChainId = await this.getChainId()
 
         if (displayUri) {

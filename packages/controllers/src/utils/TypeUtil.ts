@@ -457,6 +457,9 @@ export type Event =
       type: 'track'
       address?: string
       event: 'DISCONNECT_SUCCESS'
+      properties?: {
+        namespace: ChainNamespace | 'all'
+      }
     }
   | {
       type: 'track'
