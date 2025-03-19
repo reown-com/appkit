@@ -255,10 +255,6 @@ describe('W3mAccountDefaultWidget', () => {
       await disconnectButton?.click()
 
       expect(ConnectionController.disconnect).toHaveBeenCalled()
-      expect(EventsController.sendEvent).toHaveBeenCalledWith({
-        type: 'track',
-        event: 'DISCONNECT_SUCCESS'
-      })
       expect(ModalController.close).toHaveBeenCalled()
     })
 

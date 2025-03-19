@@ -432,7 +432,6 @@ export class W3mAccountDefaultWidget extends LitElement {
     try {
       this.disconnecting = true
       await ConnectionController.disconnect()
-      EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_SUCCESS' })
       ModalController.close()
     } catch {
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })

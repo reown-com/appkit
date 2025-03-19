@@ -1,7 +1,11 @@
 import { polygon } from 'viem/chains'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
 
-import { type CaipNetwork, ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
+import {
+  type CaipNetwork,
+  type ChainNamespace,
+  ConstantsUtil as CommonConstantsUtil
+} from '@reown/appkit-common'
 
 import type {
   ChainAdapter,
@@ -71,7 +75,18 @@ const evmAdapter = {
   namespace: CommonConstantsUtil.CHAIN.EVM,
   connectionControllerClient: client
 }
-const adapters = [evmAdapter] as ChainAdapter[]
+
+const solanaAdapter = {
+  namespace: CommonConstantsUtil.CHAIN.SOLANA,
+  connectionControllerClient: client
+}
+
+const bip122Adapter = {
+  namespace: CommonConstantsUtil.CHAIN.BITCOIN,
+  connectionControllerClient: client
+}
+
+const adapters = [evmAdapter, solanaAdapter, bip122Adapter] as ChainAdapter[]
 
 // -- Tests --------------------------------------------------------------------
 beforeAll(() => {
@@ -106,13 +121,6 @@ describe('ConnectionController', () => {
       _client: evmAdapter.connectionControllerClient
     })
   })
-
-  it('should update state correctly on disconnect()', async () => {
-    await ConnectionController.disconnect()
-    expect(ConnectionController.state.wcUri).toEqual(undefined)
-    expect(ConnectionController.state.wcPairingExpiry).toEqual(undefined)
-  })
-
   it('should update state correctly and set wcPromisae on connectWalletConnect()', async () => {
     const setConnectorIdSpy = vi.spyOn(ConnectorController, 'setConnectorId')
     // Await on set promise and check results
@@ -167,18 +175,6 @@ describe('ConnectionController', () => {
     expect(ConnectionController.state.wcPairingExpiry).toEqual(undefined)
   })
 
-  it('should disconnect correctly', async () => {
-    vi.spyOn(ModalController, 'setLoading')
-    vi.spyOn(ChainController, 'disconnect')
-    vi.spyOn(SIWXUtil, 'clearSessions')
-
-    await ConnectionController.disconnect()
-    expect(ModalController.setLoading).toHaveBeenCalledWith(true)
-    expect(SIWXUtil.clearSessions).toHaveBeenCalled()
-    expect(ChainController.disconnect).toHaveBeenCalled()
-    expect(ModalController.setLoading).toHaveBeenCalledWith(false)
-  })
-
   it('should set wcUri correctly', () => {
     // Setup timers for pairing expiry
     const fakeDate = new Date(0)
@@ -189,5 +185,112 @@ describe('ConnectionController', () => {
 
     expect(ConnectionController.state.wcUri).toEqual(walletConnectUri)
     expect(ConnectionController.state.wcPairingExpiry).toEqual(ConstantsUtil.FOUR_MINUTES_MS)
+  })
+
+  it('should disconnect correctly', async () => {
+    const setLoadingSpy = vi.spyOn(ModalController, 'setLoading')
+    const clearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions')
+    const disconnectSpy = vi.spyOn(ChainController, 'disconnect')
+
+    await ConnectionController.disconnect()
+
+    expect(setLoadingSpy).toHaveBeenCalledWith(true, undefined)
+    expect(clearSessionsSpy).toHaveBeenCalled()
+    expect(disconnectSpy).toHaveBeenCalled()
+    expect(setLoadingSpy).toHaveBeenCalledWith(false, undefined)
+    expect(ConnectionController.state.wcUri).toEqual(undefined)
+    expect(ConnectionController.state.wcPairingExpiry).toEqual(undefined)
+  })
+
+  it('should disconnect only for specific namespace', async () => {
+    const namespace: ChainNamespace = 'solana'
+    ChainController.state.chains = new Map<ChainNamespace, ChainAdapter>([
+      ['eip155', evmAdapter],
+      ['solana', solanaAdapter]
+    ])
+    ConnectorController.state.activeConnectorIds = {
+      eip155: 'eip155-connector',
+      solana: 'solana-connector',
+      polkadot: 'polkadot-connector',
+      bip122: 'bip122-connector'
+    }
+    const setLoadingSpy = vi.spyOn(ModalController, 'setLoading')
+    const clearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions')
+    const disconnectSpy = vi.spyOn(ChainController, 'disconnect')
+
+    await ConnectionController.disconnect(namespace)
+
+    expect(setLoadingSpy).toHaveBeenCalledWith(true, namespace)
+    expect(clearSessionsSpy).toHaveBeenCalled()
+    expect(disconnectSpy).toHaveBeenCalledWith(namespace)
+    expect(setLoadingSpy).toHaveBeenCalledWith(false, namespace)
+    expect(ConnectorController.state.activeConnectorIds).toEqual({
+      eip155: 'eip155-connector',
+      solana: undefined,
+      polkadot: 'polkadot-connector',
+      bip122: 'bip122-connector'
+    })
+  })
+
+  it('should disconnect multiple namespaces if they are connected with wc', async () => {
+    const namespace: ChainNamespace = 'bip122'
+    ChainController.state.chains = new Map<ChainNamespace, ChainAdapter>([
+      ['eip155', evmAdapter],
+      ['solana', solanaAdapter],
+      ['bip122', bip122Adapter]
+    ])
+    ConnectorController.state.activeConnectorIds = {
+      eip155: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT,
+      solana: 'solana-connector',
+      polkadot: 'polkadot-connector',
+      bip122: CommonConstantsUtil.CONNECTOR_ID.WALLET_CONNECT
+    }
+    const setLoadingSpy = vi.spyOn(ModalController, 'setLoading')
+    const clearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions')
+    const disconnectSpy = vi.spyOn(ChainController, 'disconnect')
+
+    await ConnectionController.disconnect(namespace)
+
+    expect(setLoadingSpy).toHaveBeenCalledWith(true, namespace)
+    expect(clearSessionsSpy).toHaveBeenCalled()
+    expect(disconnectSpy).toHaveBeenCalledWith(namespace)
+    expect(setLoadingSpy).toHaveBeenCalledWith(false, namespace)
+    expect(ConnectorController.state.activeConnectorIds).toEqual({
+      eip155: undefined,
+      solana: 'solana-connector',
+      polkadot: 'polkadot-connector',
+      bip122: undefined
+    })
+  })
+
+  it('should disconnect multiple namespaces if they are connected with auth', async () => {
+    const namespace: ChainNamespace = 'eip155'
+    ChainController.state.chains = new Map<ChainNamespace, ChainAdapter>([
+      ['eip155', evmAdapter],
+      ['solana', solanaAdapter],
+      ['bip122', bip122Adapter]
+    ])
+    ConnectorController.state.activeConnectorIds = {
+      eip155: CommonConstantsUtil.CONNECTOR_ID.AUTH,
+      solana: CommonConstantsUtil.CONNECTOR_ID.AUTH,
+      polkadot: 'polkadot-connector',
+      bip122: 'bip122-connector'
+    }
+    const setLoadingSpy = vi.spyOn(ModalController, 'setLoading')
+    const clearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions')
+    const disconnectSpy = vi.spyOn(ChainController, 'disconnect')
+
+    await ConnectionController.disconnect(namespace)
+
+    expect(setLoadingSpy).toHaveBeenCalledWith(true, namespace)
+    expect(clearSessionsSpy).toHaveBeenCalled()
+    expect(disconnectSpy).toHaveBeenCalledWith(namespace)
+    expect(setLoadingSpy).toHaveBeenCalledWith(false, namespace)
+    expect(ConnectorController.state.activeConnectorIds).toEqual({
+      eip155: undefined,
+      solana: undefined,
+      polkadot: 'polkadot-connector',
+      bip122: 'bip122-connector'
+    })
   })
 })
