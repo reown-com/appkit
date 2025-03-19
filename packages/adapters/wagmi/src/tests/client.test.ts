@@ -760,7 +760,8 @@ describe('WagmiAdapter', () => {
       adapter['setupWatchers']()
 
       expect(accountChangedSpy).toHaveBeenCalledWith({
-        address: currAccount.address
+        address: currAccount.address,
+        chainId: currAccount.chainId
       })
     })
 
@@ -798,7 +799,8 @@ describe('WagmiAdapter', () => {
       adapter['setupWatchers']()
 
       expect(accountChangedSpy).toHaveBeenCalledWith({
-        address: currAccount.address
+        address: currAccount.address,
+        chainId: currAccount.chainId
       })
     })
 
