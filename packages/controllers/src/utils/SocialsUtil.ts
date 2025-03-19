@@ -8,6 +8,14 @@ import { CoreHelperUtil } from './CoreHelperUtil.js'
 import { StorageUtil } from './StorageUtil.js'
 import type { SocialProvider } from './TypeUtil.js'
 
+function getPopupWindow() {
+  try {
+    return window.open('', 'popupWindow', 'width=600,height=800,scrollbars=yes')
+  } catch (error) {
+    throw new Error('Could not open social popup')
+  }
+}
+
 export async function connectFarcaster() {
   RouterController.push('ConnectingFarcaster')
   const authConnector = ConnectorController.getAuthConnector()
@@ -35,19 +43,19 @@ export async function connectSocial(
   let popupWindow: Window | null = null
 
   try {
+    const timeout = setTimeout(() => {
+      throw new Error('Social login timed out. Please try again.')
+    }, 45_000)
+
     if (authConnector && socialProvider) {
       if (!CoreHelperUtil.isTelegram()) {
-        popupWindow = CoreHelperUtil.returnOpenHref(
-          '',
-          'popupWindow',
-          'width=600,height=800,scrollbars=yes'
-        )
+        popupWindow = getPopupWindow()
       }
 
       if (popupWindow) {
         AccountController.setSocialWindow(popupWindow, ChainController.state.activeChain)
       } else if (!CoreHelperUtil.isTelegram()) {
-        throw new Error('Something went wrong')
+        throw new Error('Could not create social popup')
       }
 
       const { uri } = await authConnector.provider.getSocialRedirectUri({
@@ -56,7 +64,7 @@ export async function connectSocial(
 
       if (!uri) {
         popupWindow?.close()
-        throw new Error('Something went wrong')
+        throw new Error('Could not fetch the social redirect uri')
       }
 
       if (popupWindow) {
@@ -69,10 +77,12 @@ export async function connectSocial(
 
         CoreHelperUtil.openHref(parsedUri, '_top')
       }
+
+      clearTimeout(timeout)
     }
   } catch (error) {
     popupWindow?.close()
-    SnackController.showError('Something went wrong')
+    SnackController.showError((error as Error)?.message)
   }
 }
 
