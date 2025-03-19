@@ -24,7 +24,7 @@ const networks = [...ConstantsUtil.EvmNetworks, ...ConstantsUtil.SolanaNetworks]
 const etherAdapter = new EthersAdapter()
 
 const solanaWeb3JsAdapter = new SolanaAdapter({
-  wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
+  wallets: [new HuobiWalletAdapter<'Huobi'>(), new SolflareWalletAdapter<'Solflare'>()]
 })
 
 const modal = createAppKit({
