@@ -355,6 +355,7 @@ export const ChainController = {
 
     if (
       !isSupported &&
+      OptionsController.state.showNetworkSwitcher &&
       !OptionsController.state.allowUnsupportedChain &&
       !ConnectionController.state.wcBasic
     ) {

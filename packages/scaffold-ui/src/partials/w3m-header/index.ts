@@ -230,11 +230,12 @@ export class W3mHeader extends LitElement {
     const isApproveTransaction = view === 'ApproveTransaction'
     const isConnectingSIWEView = view === 'ConnectingSiwe'
     const isAccountView = view === 'Account'
+    const showNetworkSwitcher = OptionsController.state.showNetworkSwitcher
 
     const shouldHideBack =
       isApproveTransaction || isConnectingSIWEView || (isConnectHelp && isEmbeddedEnable)
 
-    if (isAccountView) {
+    if (isAccountView && showNetworkSwitcher) {
       return html`<wui-select
         id="dynamic"
         data-testid="w3m-account-select-network"
