@@ -803,7 +803,7 @@ export abstract class AppKitBaseClient {
   protected async syncAdapterConnection(namespace: ChainNamespace) {
     const adapter = this.getAdapter(namespace)
     const connectorId = ConnectorController.getConnectorId(namespace)
-    const caipNetwork = this.getCaipNetwork()
+    const caipNetwork = this.getCaipNetwork(namespace)
     const connector = ConnectorController.getConnectors(namespace).find(c => c.id === connectorId)
 
     try {
