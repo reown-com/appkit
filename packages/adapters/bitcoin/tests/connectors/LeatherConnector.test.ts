@@ -185,6 +185,6 @@ describe('LeatherConnector', () => {
       connector: satsConnectConnector
     })
 
-    expect(connector.imageUrl).toBe('data:image/svg+xml;base64,')
+    expect(connector.imageUrl).toBe('data:image/svg+xml;')
   })
 })
