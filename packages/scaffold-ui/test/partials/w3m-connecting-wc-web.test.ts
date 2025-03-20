@@ -92,4 +92,4 @@ describe('W3mConnectingWcWeb', () => {
     // Verify no actions are performed
     expect(CoreHelperUtil.openHref).not.toHaveBeenCalled()
   })
-}) 
+})
