@@ -104,12 +104,10 @@ export const ConnectorController = {
 
   mergeMultiChainConnectors(connectors: Connector[]) {
     const connectorsByNameMap = this.generateConnectorMapByName(connectors)
-
     const mergedConnectors: ConnectorWithProviders[] = []
 
     connectorsByNameMap.forEach(keyConnectors => {
       const firstItem = keyConnectors[0]
-
       const isAuthConnector = firstItem?.id === ConstantsUtil.CONNECTOR_ID.AUTH
 
       if (keyConnectors.length > 1 && firstItem) {
