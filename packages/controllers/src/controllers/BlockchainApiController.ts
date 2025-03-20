@@ -357,7 +357,8 @@ export const BlockchainApiController = {
     amount,
     from,
     to,
-    userAddress
+    userAddress,
+    disableEstimate
   }: BlockchainApiGenerateSwapCalldataRequest) {
     const isSupported = await BlockchainApiController.isNetworkSupported(
       ChainController.state.activeCaipNetwork?.caipNetworkId
@@ -379,7 +380,8 @@ export const BlockchainApiController = {
         projectId: OptionsController.state.projectId,
         from,
         to,
-        userAddress
+        userAddress,
+        disableEstimate
       }
     })
   },
