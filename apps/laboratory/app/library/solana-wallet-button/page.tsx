@@ -16,7 +16,7 @@ import { ThemeStore } from '@/src/utils/StoreUtil'
 const networks = ConstantsUtil.SolanaNetworks
 
 const solanaWeb3JsAdapter = new SolanaAdapter({
-  wallets: [new HuobiWalletAdapter<'Huobi'>(), new SolflareWalletAdapter<'Solflare'>()]
+  wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 
 const modal = createAppKit({

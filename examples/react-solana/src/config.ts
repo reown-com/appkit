@@ -31,9 +31,9 @@ const networks = [solana, solanaTestnet, solanaDevnet]
 // Setup solana adapter
 const solanaAdapter = new SolanaAdapter({
   wallets: [
-    new HuobiWalletAdapter<'Huobi'>(),
+    new HuobiWalletAdapter(),
     new PhantomWalletAdapter(),
-    new SolflareWalletAdapter<'Solflare'>(),
+    new SolflareWalletAdapter(),
     new TrustWalletAdapter()
   ]
 })

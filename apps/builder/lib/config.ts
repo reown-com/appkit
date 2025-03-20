@@ -63,7 +63,7 @@ export const networks = [
 // Adapters
 export const evmAdapter = new EthersAdapter()
 export const solanaAdapter = new SolanaAdapter({
-  wallets: [new HuobiWalletAdapter<'Huobi'>(), new SolflareWalletAdapter<'Solflare'>()]
+  wallets: [new HuobiWalletAdapter(), new SolflareWalletAdapter()]
 })
 export const bitcoinAdapter = new BitcoinAdapter({})
 export const allAdapters = [evmAdapter, solanaAdapter, bitcoinAdapter]
