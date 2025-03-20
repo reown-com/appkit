@@ -69,7 +69,7 @@ export class W3mModal extends LitElement {
         ChainController.subscribeKey('activeCaipAddress', val => this.onNewAddress(val)),
         OptionsController.subscribeKey('enableEmbedded', val => (this.enableEmbedded = val)),
         ConnectorController.subscribeKey('filterByNamespace', val => {
-          if (this.filterByNamespace !== val) {
+          if (this.filterByNamespace !== val && !ChainController.getAccountData(val)?.caipAddress) {
             ApiController.fetchRecommendedWallets()
             this.filterByNamespace = val
           }
@@ -290,8 +290,9 @@ export class W3mModal extends LitElement {
    */
   private prefetch() {
     if (!this.hasPrefetched) {
-      this.hasPrefetched = true
       ApiController.prefetch()
+      ApiController.fetchWallets({ page: 1 })
+      this.hasPrefetched = true
     }
   }
 }

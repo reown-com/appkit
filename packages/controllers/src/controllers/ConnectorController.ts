@@ -6,6 +6,7 @@ import { type ChainNamespace, ConstantsUtil, getW3mThemeVariables } from '@reown
 import { MobileWalletUtil } from '../utils/MobileWallet.js'
 import { StorageUtil } from '../utils/StorageUtil.js'
 import type { AuthConnector, Connector, WcWallet } from '../utils/TypeUtil.js'
+import { ApiController } from './ApiController.js'
 import { ChainController } from './ChainController.js'
 import { OptionsController } from './OptionsController.js'
 import { RouterController } from './RouterController.js'
@@ -103,12 +104,10 @@ export const ConnectorController = {
 
   mergeMultiChainConnectors(connectors: Connector[]) {
     const connectorsByNameMap = this.generateConnectorMapByName(connectors)
-
     const mergedConnectors: ConnectorWithProviders[] = []
 
     connectorsByNameMap.forEach(keyConnectors => {
       const firstItem = keyConnectors[0]
-
       const isAuthConnector = firstItem?.id === ConstantsUtil.CONNECTOR_ID.AUTH
 
       if (keyConnectors.length > 1 && firstItem) {
@@ -298,18 +297,10 @@ export const ConnectorController = {
    * Sets the filter by namespace and updates the connectors.
    * @param namespace - The namespace to filter the connectors by.
    */
-  setFilterByNamespace(namespace: ChainNamespace) {
+  setFilterByNamespace(namespace: ChainNamespace | undefined) {
     state.filterByNamespace = namespace
     state.connectors = this.getConnectors(namespace)
-  },
-
-  /**
-   * Clears the filter by namespace and updates the connectors.
-   * If the current filterByNamespace has a value, it will fetch the recommended wallets with all requested chains.
-   */
-  clearNamespaceFilter() {
-    state.filterByNamespace = undefined
-    state.connectors = this.getConnectors()
+    ApiController.setFilterByNamespace(namespace)
   },
 
   setConnectorId(connectorId: string, namespace: ChainNamespace) {
