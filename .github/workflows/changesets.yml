@@ -61,4 +61,5 @@ jobs:
           pnpm install
           pnpm changeset:pre ${{ github.sha }}
           pnpm changeset:version
+          pnpm changeset:pre:exit
           pnpm publish:canary

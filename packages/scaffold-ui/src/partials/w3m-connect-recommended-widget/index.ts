@@ -4,7 +4,6 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import type { WcWallet } from '@reown/appkit-controllers'
 import {
-  ApiController,
   AssetUtil,
   ConnectionController,
   ConnectorController,
@@ -22,19 +21,17 @@ import { WalletUtil } from '../../utils/WalletUtil.js'
 @customElement('w3m-connect-recommended-widget')
 export class W3mConnectRecommendedWidget extends LitElement {
   // -- Members ------------------------------------------- //
-
   private unsubscribe: (() => void)[] = []
 
   // -- State & Properties -------------------------------- //
   @property() public tabIdx?: number = undefined
 
-  @state() private connectors = ConnectorController.state.connectors
+  @property() public wallets: WcWallet[] = []
+
   @state() private loading = false
+
   public constructor() {
     super()
-    this.unsubscribe.push(
-      ConnectorController.subscribeKey('connectors', val => (this.connectors = val))
-    )
     if (CoreHelperUtil.isTelegram() && CoreHelperUtil.isIos()) {
       this.loading = !ConnectionController.state.wcUri
       this.unsubscribe.push(
@@ -43,37 +40,31 @@ export class W3mConnectRecommendedWidget extends LitElement {
     }
   }
 
-  public override disconnectedCallback() {
-    this.unsubscribe.forEach(unsubscribe => unsubscribe())
-  }
-
   // -- Render -------------------------------------------- //
   public override render() {
-    const connector = this.connectors.find(c => c.id === 'walletConnect')
-    if (!connector) {
-      return null
-    }
-    const { recommended } = ApiController.state
-    const { customWallets, featuredWalletIds } = OptionsController.state
     const { connectors } = ConnectorController.state
-    const recent = StorageUtil.getRecentWallets()
+    const { customWallets, featuredWalletIds } = OptionsController.state
+    const recentWallets = StorageUtil.getRecentWallets()
 
-    const injected = connectors.filter(
+    const wcConnector = connectors.find(c => c.id === 'walletConnect')
+    const injectedConnectors = connectors.filter(
       c => c.type === 'INJECTED' || c.type === 'ANNOUNCED' || c.type === 'MULTI_CHAIN'
     )
+    const injectedWallets = injectedConnectors.filter(i => i.name !== 'Browser Wallet')
 
-    const injectedWallets = injected.filter(i => i.name !== 'Browser Wallet')
+    if (!wcConnector) {
+      return null
+    }
 
-    if (featuredWalletIds || customWallets || !recommended.length) {
+    if (featuredWalletIds || customWallets || !this.wallets.length) {
       this.style.cssText = `display: none`
 
       return null
     }
 
-    const overrideLength = injectedWallets.length + recent.length
-
+    const overrideLength = injectedWallets.length + recentWallets.length
     const maxRecommended = Math.max(0, 2 - overrideLength)
-    const wallets = WalletUtil.filterOutDuplicateWallets(recommended).slice(0, maxRecommended)
+    const wallets = WalletUtil.filterOutDuplicateWallets(this.wallets).slice(0, maxRecommended)
 
     if (!wallets.length) {
       this.style.cssText = `display: none`
