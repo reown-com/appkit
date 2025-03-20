@@ -71,10 +71,10 @@ export const ModalController = {
     if (options?.namespace) {
       await ChainController.switchActiveNamespace(options.namespace)
       ModalController.setLoading(true, options.namespace)
-      ConnectorController.setFilterByNamespace(options.namespace)
     } else {
       ModalController.setLoading(true)
     }
+    ConnectorController.setFilterByNamespace(options?.namespace)
 
     const caipAddress = ChainController.getAccountData(options?.namespace)?.caipAddress
     const hasNoAdapters = ChainController.state.noAdapters
@@ -128,7 +128,6 @@ export const ModalController = {
       PublicStateController.set({ open: false })
     }
 
-    ConnectorController.clearNamespaceFilter()
     ConnectionController.resetUri()
   },
 

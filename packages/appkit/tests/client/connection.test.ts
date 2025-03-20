@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { MockInstance } from 'vitest'
 
+import type { CaipNetwork } from '@reown/appkit-common'
 import {
   AccountController,
   type Connector,
@@ -201,5 +202,64 @@ describe('syncConnectedWalletInfo', () => {
       },
       'eip155'
     )
+  })
+})
+
+describe('syncAdapterConnection', () => {
+  it('should successfully sync adapter connection and account', async () => {
+    const appKit = new AppKit(mockOptions)
+    vi.spyOn(appKit as any, 'getAdapter').mockReturnValue({
+      syncConnection: vi.fn().mockResolvedValue({
+        address: '0x123',
+        chainId: '1',
+        provider: {}
+      }),
+      getAccounts: vi.fn().mockResolvedValue({
+        accounts: [{ address: '0x123', type: 'eoa' }]
+      })
+    })
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('test-connector')
+    vi.spyOn(ConnectorController, 'getConnectors').mockReturnValue([
+      { id: 'test-connector' } as Connector
+    ])
+    const getCaipNetwork = vi.spyOn(appKit, 'getCaipNetwork').mockReturnValue({
+      id: '1',
+      rpcUrls: { default: { http: ['https://test.com'] } }
+    } as unknown as CaipNetwork)
+
+    const setStatus = vi.spyOn(appKit, 'setStatus')
+    const setAllAccounts = vi.spyOn(appKit, 'setAllAccounts')
+    const syncAccount = vi.spyOn(appKit as any, 'syncAccount')
+
+    await appKit['syncAdapterConnection']('eip155')
+
+    expect(setStatus).toHaveBeenCalledWith('connected', 'eip155')
+    expect(setAllAccounts).toHaveBeenCalledWith([{ address: '0x123', type: 'eoa' }], 'eip155')
+    expect(syncAccount).toHaveBeenCalledWith({
+      address: '0x123',
+      chainId: '1',
+      provider: {},
+      chainNamespace: 'eip155'
+    })
+    expect(getCaipNetwork).toHaveBeenCalledWith('eip155')
+  })
+
+  it('should handle missing caipNetwork', async () => {
+    const appKit = new AppKit(mockOptions)
+    vi.spyOn(appKit as any, 'getAdapter').mockReturnValue({
+      syncConnection: vi.fn()
+    })
+    vi.spyOn(ConnectorController, 'getConnectorId').mockReturnValue('test-connector')
+    vi.spyOn(ConnectorController, 'getConnectors').mockReturnValue([
+      { id: 'test-connector' } as Connector
+    ])
+    const getCaipNetwork = vi.spyOn(appKit, 'getCaipNetwork').mockReturnValue(undefined)
+
+    const setStatus = vi.spyOn(appKit, 'setStatus')
+
+    await appKit['syncAdapterConnection']('eip155')
+
+    expect(setStatus).toHaveBeenCalledWith('disconnected', 'eip155')
+    expect(getCaipNetwork).toHaveBeenCalledWith('eip155')
   })
 })

@@ -1,4 +1,5 @@
 import {
+  ApiController,
   ConnectorController,
   CoreHelperUtil,
   OptionsController,
@@ -93,7 +94,11 @@ export const WalletUtil = {
       return connectMethodOrder
     }
 
-    const { injected, announced } = ConnectorUtil.getConnectorsByType(connectors)
+    const { injected, announced } = ConnectorUtil.getConnectorsByType(
+      connectors,
+      ApiController.state.recommended,
+      ApiController.state.featured
+    )
 
     const shownInjected = injected.filter(ConnectorUtil.showConnector)
     const shownAnnounced = announced.filter(ConnectorUtil.showConnector)

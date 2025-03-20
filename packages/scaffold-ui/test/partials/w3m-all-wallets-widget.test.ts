@@ -54,18 +54,22 @@ const mockConnector: ConnectorWithProviders = {
   chain: 'eip155'
 }
 
+const featuredWallets = [
+  {
+    id: '1',
+    name: 'Test Wallet',
+    rdns: 'io.test',
+    homepage: 'https://test.com',
+    image_url: 'https://test.com/image.png'
+  }
+]
+
 const mockApiState: ApiControllerState = {
   page: 1,
   count: 8,
-  featured: [
-    {
-      id: '1',
-      name: 'Test Wallet',
-      rdns: 'io.test',
-      homepage: 'https://test.com',
-      image_url: 'https://test.com/image.png'
-    }
-  ],
+  featured: featuredWallets,
+  allFeatured: featuredWallets,
+  allRecommended: [],
   promises: {},
   recommended: [],
   wallets: [],

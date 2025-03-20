@@ -27,6 +27,10 @@ export class LeatherConnector extends SatsConnectConnector {
     })
   }
 
+  public override get imageUrl() {
+    return this.wallet?.icon?.replace('data:image/svg', 'data:image/svg+xml')
+  }
+
   override async getAccountAddresses(): Promise<BitcoinConnector.AccountAddress[]> {
     // Keep the connected accounts in memory to avoid repeated requests because Leather doesn't have a connect method
     if (this.connectedAccounts) {

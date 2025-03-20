@@ -110,7 +110,7 @@
     "@sentry/browser": "7.119.1",
     "@sentry/react": "7.92.0",
     "@solana/wallet-adapter-wallets": "0.19.32",
-    "@solana/web3.js": "1.95.8",
+    "@solana/web3.js": "1.98.0",
     "@tanstack/react-query": "5.24.8",
     "@wagmi/connectors": "5.7.9",
     "@wagmi/core": "2.16.5",
