@@ -1,6 +1,6 @@
-import { createPublicClient, http } from 'viem'
+import { type Chain, createPublicClient, http } from 'viem'
 
-import { type BaseNetwork, ConstantsUtil } from '@reown/appkit-common'
+import { ConstantsUtil } from '@reown/appkit-common'
 import { ChainController, type SIWXSession } from '@reown/appkit-controllers'
 
 import { SIWXVerifier } from '../core/SIWXVerifier.js'
@@ -22,7 +22,7 @@ export class EIP155Verifier extends SIWXVerifier {
 
     try {
       const client = createPublicClient({
-        chain: caipNetwork as BaseNetwork,
+        chain: caipNetwork as Chain,
         transport: http(caipNetwork?.rpcUrls.default.http[0])
       })
 
