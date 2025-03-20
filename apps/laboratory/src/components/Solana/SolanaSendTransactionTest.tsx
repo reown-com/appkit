@@ -1,4 +1,5 @@
-import { useState } from 'react'
+/* eslint-disable no-console */
+import { useEffect, useState } from 'react'
 
 import { Button, Link, Spacer, Stack } from '@chakra-ui/react'
 import {
@@ -24,6 +25,8 @@ export function SolanaSendTransactionTest() {
   const { address } = useAppKitAccount({ namespace: 'solana' })
   const { walletProvider } = useAppKitProvider<Provider>('solana')
   const { connection } = useAppKitConnection()
+  const [subscription, setSubscription] = useState<number>()
+
   const [loading, setLoading] = useState(false)
 
   async function onSendTransaction() {
@@ -128,6 +131,25 @@ export function SolanaSendTransactionTest() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (connection && walletProvider?.publicKey && !subscription) {
+      console.log('Subscribing to account changes', connection)
+      try {
+        const sub = connection.onAccountChange(
+          walletProvider.publicKey,
+          (updatedAccountInfo, context) => {
+            console.log('Updated account info: ', updatedAccountInfo, context)
+          },
+          {}
+        )
+        setSubscription(sub)
+      } catch (err) {
+        console.error('Error subscribing to account changes', err)
+        setSubscription(10)
+      }
+    }
+  }, [walletProvider?.publicKey])
 
   if (!address) {
     return null
