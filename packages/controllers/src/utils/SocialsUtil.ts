@@ -10,7 +10,7 @@ import type { SocialProvider } from './TypeUtil.js'
 
 function getPopupWindow() {
   try {
-    return window.open('', 'popupWindow', 'width=600,height=800,scrollbars=yes')
+    return CoreHelperUtil.returnOpenHref('', 'popupWindow', 'width=600,height=800,scrollbars=yes')
   } catch (error) {
     throw new Error('Could not open social popup')
   }
