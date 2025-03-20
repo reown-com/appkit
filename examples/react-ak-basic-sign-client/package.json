@@ -10,7 +10,7 @@
     "@reown/appkit": "workspace:*",
     "@walletconnect/sign-client": "2.19.1",
     "@walletconnect/types": "2.19.1",
-    "ethers": "6.13.2",
+    "ethers": "6.13.5",
     "react": "19.0.0",
     "react-dom": "19.0.0"
   },

@@ -58,7 +58,7 @@
     "@vitest/coverage-v8": "2.1.9",
     "@vitest/ui": "2.1.8",
     "buffer": "5.5.0||6.0.0",
-    "danger": "11.3.1",
+    "danger": "12.3.4",
     "eslint": "8.56.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-prettier": "5.2.3",
@@ -78,17 +78,25 @@
   "pnpm": {
     "overrides": {
       "@solana/web3.js": "1.98.0",
-      "elliptic": ">=6.6.1"
-    },
-    "patchedDependencies": {
-      "@changesets/assemble-release-plan@6.0.6": "patches/@changesets__assemble-release-plan@6.0.6.patch"
+      "elliptic": ">=6.6.1",
+      "axios": ">=1.8.2",
+      "ws": ">=7.5.10"
     }
   },
-  "resolutions": {
-    "@solana/web3.js": "1.98.0"
-  },
   "overrides": {
-    "@solana/web3.js": "1.98.0"
+    "@solana/web3.js": "1.98.0",
+    "elliptic": ">=6.6.1",
+    "axios": ">=1.8.2",
+    "ws": ">=7.5.10"
+  },
+  "resolutions": {
+    "@solana/web3.js": "1.98.0",
+    "elliptic": ">=6.6.1",
+    "axios": ">=1.8.2",
+    "ws": ">=7.5.10"
+  },
+  "patchedDependencies": {
+    "@changesets/assemble-release-plan@6.0.6": "patches/@changesets__assemble-release-plan@6.0.6.patch"
   },
   "@parcel/resolver-default": {
     "packageExports": true
