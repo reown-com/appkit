@@ -63,6 +63,7 @@ const SINGLE_ADAPTER_EVM_TESTS = [
   'wallet-features.spec.ts',
   'wallet.spec.ts',
   'wallet-button.spec',
+  'verify.spec.ts',
   'email-after-farcaster.spec.ts'
 ]
 
