@@ -1,6 +1,7 @@
+import { state } from 'lit/decorators.js'
+
 import { ConnectionController, CoreHelperUtil, EventsController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
-import { state } from 'lit/decorators.js'
 
 import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js'
 
@@ -18,7 +19,7 @@ export class W3mConnectingWcWeb extends W3mConnectingWidget {
     this.secondaryBtnLabel = 'Open'
     this.secondaryLabel = 'Open and continue in a new browser tab'
     this.secondaryBtnIcon = 'externalLink'
-    
+
     // Update isLoading state initially and whenever URI changes
     this.updateLoadingState()
     this.unsubscribe.push(
@@ -26,14 +27,14 @@ export class W3mConnectingWcWeb extends W3mConnectingWidget {
         this.updateLoadingState()
       })
     )
-    
+
     EventsController.sendEvent({
       type: 'track',
       event: 'SELECT_WALLET',
       properties: { name: this.wallet.name, platform: 'web' }
     })
   }
-  
+
   // Update the isLoading state based on required conditions
   private updateLoadingState() {
     this.isLoading = !this.uri
