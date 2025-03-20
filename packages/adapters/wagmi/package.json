@@ -29,12 +29,12 @@
     "valtio": "1.13.2"
   },
   "optionalDependencies": {
-    "@wagmi/connectors": ">=5.7.9"
+    "@wagmi/connectors": ">=5.7.11"
   },
   "peerDependencies": {
-    "@wagmi/core": ">=2.16.5",
+    "@wagmi/core": ">=2.16.7",
     "viem": ">=2.23.11",
-    "wagmi": ">=2.14.12"
+    "wagmi": ">=2.14.15"
   },
   "devDependencies": {
     "@types/react": "19.0.0",

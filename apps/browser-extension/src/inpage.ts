@@ -11,7 +11,7 @@ const solanaProvider = new SolanaProvider()
 
 announceProvider({
   info: {
-    icon: ConstantsUtil.IconRaw,
+    icon: ConstantsUtil.IconRaw as `data:image/${string}`,
     name: 'Reown',
     rdns: 'reown.com',
     uuid: uuidv4()

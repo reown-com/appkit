@@ -535,7 +535,11 @@ describe('BitcoinAdapter', () => {
         ([name]) => name === 'networkChange'
       )![1]
 
-      callback({ type: 'networkChange' })
+      callback({
+        type: 'networkChange',
+        stacks: { name: 'mock_network' },
+        bitcoin: { name: 'Mainnet' }
+      })
 
       expect(listeners.switchNetwork).toHaveBeenCalled()
     })

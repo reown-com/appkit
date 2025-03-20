@@ -287,6 +287,7 @@ export const ConnectionController = {
       await SIWXUtil.clearSessions()
       await ChainController.disconnect(namespace)
       ModalController.setLoading(false, namespace)
+      ConnectorController.setFilterByNamespace(undefined)
     } catch (error) {
       throw new Error('Failed to disconnect')
     }
