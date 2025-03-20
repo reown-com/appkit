@@ -39,7 +39,7 @@
     "@wagmi/core": "2.16.7",
     "viem": "2.23.11",
     "vite": "5.4.12",
-    "wagmi": "2.14.12"
+    "wagmi": "2.14.15"
   },
   "keywords": [
     "appkit",
