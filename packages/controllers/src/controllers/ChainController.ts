@@ -322,7 +322,6 @@ export const ChainController = {
 
     if (state.activeChain !== caipNetwork.chainNamespace) {
       this.setIsSwitchingNamespace(true)
-      ConnectorController.setFilterByNamespace(caipNetwork.chainNamespace)
     }
 
     const newAdapter = state.chains.get(caipNetwork.chainNamespace)
