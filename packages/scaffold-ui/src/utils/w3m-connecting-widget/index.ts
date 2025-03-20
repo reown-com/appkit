@@ -67,6 +67,8 @@ export class W3mConnectingWidget extends LitElement {
 
   @state() public buffering = false
 
+  @state() protected isLoading = false
+
   @property({ type: Boolean }) public isMobile = false
 
   @property() public onRetry?: (() => void) | (() => Promise<void>) = undefined
@@ -162,7 +164,7 @@ export class W3mConnectingWidget extends LitElement {
               <wui-button
                 variant="accent"
                 size="md"
-                ?disabled=${this.isRetrying || (!this.error && this.buffering)}
+                ?disabled=${this.isRetrying || (!this.error && this.buffering) || this.isLoading}
                 @click=${this.onTryAgain.bind(this)}
                 data-testid="w3m-connecting-widget-secondary-button"
               >
