@@ -191,6 +191,7 @@ describe('ConnectionController', () => {
     const setLoadingSpy = vi.spyOn(ModalController, 'setLoading')
     const clearSessionsSpy = vi.spyOn(SIWXUtil, 'clearSessions')
     const disconnectSpy = vi.spyOn(ChainController, 'disconnect')
+    const setFilterByNamespaceSpy = vi.spyOn(ConnectorController, 'setFilterByNamespace')
 
     await ConnectionController.disconnect()
 
@@ -200,6 +201,7 @@ describe('ConnectionController', () => {
     expect(setLoadingSpy).toHaveBeenCalledWith(false, undefined)
     expect(ConnectionController.state.wcUri).toEqual(undefined)
     expect(ConnectionController.state.wcPairingExpiry).toEqual(undefined)
+    expect(setFilterByNamespaceSpy).toHaveBeenCalledWith(undefined)
   })
 
   it('should disconnect only for specific namespace', async () => {
