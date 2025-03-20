@@ -4,24 +4,19 @@ import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { ConstantsUtil as CommonConstantsUtil } from '@reown/appkit-common'
 import {
-  AccountController,
   ChainController,
   ConnectorController,
   ConstantsUtil,
-  CoreHelperUtil,
-  EventsController,
   OptionsController,
   RouterController,
-  SnackController,
   type SocialProvider,
-  StorageUtil,
   type WalletGuideType
 } from '@reown/appkit-controllers'
+import { executeSocialLogin } from '@reown/appkit-controllers/utils'
 import { customElement } from '@reown/appkit-ui'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-list-social'
 import '@reown/appkit-ui/wui-logo-select'
-import { SocialProviderEnum } from '@reown/appkit-utils'
 
 import styles from './styles.js'
 
@@ -34,8 +29,6 @@ export class W3mSocialLoginWidget extends LitElement {
 
   // -- Members ------------------------------------------- //
   private unsubscribe: (() => void)[] = []
-
-  private popupWindow?: Window | null
 
   // -- State & Properties -------------------------------- //
   @property() public walletGuide: WalletGuideType = 'get-started'
@@ -206,76 +199,7 @@ export class W3mSocialLoginWidget extends LitElement {
     }
 
     if (socialProvider) {
-      AccountController.setSocialProvider(socialProvider, ChainController.state.activeChain)
-
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'SOCIAL_LOGIN_STARTED',
-        properties: { provider: socialProvider }
-      })
-    }
-    if (socialProvider === SocialProviderEnum.Farcaster) {
-      RouterController.push('ConnectingFarcaster')
-      const authConnector = ConnectorController.getAuthConnector()
-
-      if (authConnector) {
-        if (!AccountController.state.farcasterUrl) {
-          try {
-            const { url } = await authConnector.provider.getFarcasterUri()
-
-            AccountController.setFarcasterUrl(url, ChainController.state.activeChain)
-          } catch (error) {
-            RouterController.goBack()
-            SnackController.showError(error)
-          }
-        }
-      }
-    } else {
-      RouterController.push('ConnectingSocial')
-
-      const authConnector = ConnectorController.getAuthConnector()
-
-      try {
-        if (authConnector && socialProvider) {
-          if (!CoreHelperUtil.isTelegram()) {
-            this.popupWindow = CoreHelperUtil.returnOpenHref(
-              '',
-              'popupWindow',
-              'width=600,height=800,scrollbars=yes'
-            )
-          }
-
-          if (this.popupWindow) {
-            AccountController.setSocialWindow(this.popupWindow, ChainController.state.activeChain)
-          } else if (!CoreHelperUtil.isTelegram()) {
-            throw new Error('Something went wrong')
-          }
-
-          const { uri } = await authConnector.provider.getSocialRedirectUri({
-            provider: socialProvider
-          })
-
-          if (!uri) {
-            this.popupWindow?.close()
-            throw new Error('Something went wrong')
-          }
-
-          if (this.popupWindow) {
-            this.popupWindow.location.href = uri
-          }
-
-          if (CoreHelperUtil.isTelegram()) {
-            StorageUtil.setTelegramSocialProvider(socialProvider)
-            const parsedUri = CoreHelperUtil.formatTelegramSocialLoginUrl(uri)
-
-            // eslint-disable-next-line consistent-return
-            return CoreHelperUtil.openHref(parsedUri, '_top')
-          }
-        }
-      } catch (error) {
-        this.popupWindow?.close()
-        SnackController.showError('Something went wrong')
-      }
+      await executeSocialLogin(socialProvider)
     }
   }
 }
