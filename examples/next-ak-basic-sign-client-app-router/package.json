@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@reown/appkit": "workspace:*",
-    "@tanstack/react-query": "5.56.2",
+    "@tanstack/react-query": "5.66.9",
     "@walletconnect/sign-client": "2.19.1",
     "@walletconnect/types": "2.19.1",
     "next": "14.2.24",
