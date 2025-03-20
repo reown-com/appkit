@@ -5,7 +5,7 @@ import {
   ThemeMode,
   ThemeVariables,
   WalletFeature
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 
 import { defaultCustomizationConfig } from '@/lib/defaultConfig'
 

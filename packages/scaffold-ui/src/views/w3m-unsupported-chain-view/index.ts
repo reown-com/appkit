@@ -15,8 +15,14 @@ import {
   ModalController,
   RouterController,
   SnackController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-list-item'
+import '@reown/appkit-ui/wui-list-network'
+import '@reown/appkit-ui/wui-separator'
+import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'
 
@@ -126,10 +132,6 @@ export class W3mUnsupportedChainView extends LitElement {
     try {
       this.disconecting = true
       await ConnectionController.disconnect()
-      EventsController.sendEvent({
-        type: 'track',
-        event: 'DISCONNECT_SUCCESS'
-      })
       ModalController.close()
     } catch {
       EventsController.sendEvent({ type: 'track', event: 'DISCONNECT_ERROR' })

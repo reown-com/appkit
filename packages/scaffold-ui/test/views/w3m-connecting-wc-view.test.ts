@@ -3,9 +3,9 @@ import { describe, expect, test, vi } from 'vitest'
 
 import { html } from 'lit'
 
-import { ChainController, CoreHelperUtil, RouterController } from '@reown/appkit-core'
-import type { WcWallet } from '@reown/appkit-core'
-import type { WuiTabs } from '@reown/appkit-ui'
+import { ChainController, CoreHelperUtil, RouterController } from '@reown/appkit-controllers'
+import type { WcWallet } from '@reown/appkit-controllers'
+import type { WuiTabs } from '@reown/appkit-ui/wui-tabs'
 
 import type { W3mConnectingWcView } from '../../exports'
 import { HelpersUtil } from '../utils/HelpersUtil'

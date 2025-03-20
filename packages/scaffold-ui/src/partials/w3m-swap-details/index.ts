@@ -2,9 +2,14 @@ import { LitElement, html } from 'lit'
 import { property, state } from 'lit/decorators.js'
 
 import { NumberUtil } from '@reown/appkit-common'
-import { ChainController, ConstantsUtil, SwapController } from '@reown/appkit-core'
+import { ChainController, ConstantsUtil, SwapController } from '@reown/appkit-controllers'
 import { UiHelperUtil, customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-text'
 
+import '../w3m-tooltip-trigger/index.js'
+import '../w3m-tooltip/index.js'
 import styles from './styles.js'
 
 // -- Constants ----------------------------------------- //

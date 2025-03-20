@@ -11,10 +11,14 @@ import {
   OnRampController,
   type OnRampProvider,
   RouterController
-} from '@reown/appkit-core'
-import type { CoinbasePaySDKChainNameValues } from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
+import type { CoinbasePaySDKChainNameValues } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
-import { W3mFrameRpcConstants } from '@reown/appkit-wallet'
+import '@reown/appkit-ui/wui-flex'
+import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
+
+import '../../partials/w3m-onramp-provider-item/index.js'
+import '../../partials/w3m-onramp-providers-footer/index.js'
 
 @customElement('w3m-onramp-providers-view')
 export class W3mOnRampProvidersView extends LitElement {

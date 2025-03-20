@@ -1,27 +1,24 @@
 import { useState } from 'react'
 
-import { Box, Button, Input, InputGroup, InputLeftAddon, useToast } from '@chakra-ui/react'
+import { Box, Button, Input, InputGroup, InputLeftAddon } from '@chakra-ui/react'
 
 import type { BitcoinConnector } from '@reown/appkit-adapter-bitcoin'
 import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 
+import { useChakraToast } from '@/src/components/Toast'
+import { ConstantsUtil } from '@/src/utils/ConstantsUtil'
+
 export function BitcoinSignMessageTest() {
+  const toast = useChakraToast()
   const { walletProvider } = useAppKitProvider<BitcoinConnector>('bip122')
   const { address } = useAppKitAccount({ namespace: 'bip122' })
 
-  const toast = useToast()
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<string>('Hello, World!')
 
   async function onSignMessage() {
     if (!walletProvider || !address) {
-      toast({
-        title: 'No connection detected',
-        status: 'error',
-        isClosable: true
-      })
-
-      return
+      throw Error('No connection detected')
     }
 
     setLoading(true)
@@ -31,9 +28,17 @@ export function BitcoinSignMessageTest() {
         address,
         message
       })
-      toast({ title: 'Signature', description: signature, status: 'success' })
+      toast({
+        title: ConstantsUtil.SigningSucceededToastTitle,
+        description: signature,
+        type: 'success'
+      })
     } catch (error) {
-      toast({ title: 'Error', description: (error as Error).message, status: 'error' })
+      toast({
+        title: ConstantsUtil.SigningFailedToastTitle,
+        description: (error as Error).message,
+        type: 'error'
+      })
     } finally {
       setLoading(false)
     }

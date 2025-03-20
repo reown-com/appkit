@@ -1,18 +1,24 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 
-import { ChainController, ConnectionController } from '@reown/appkit-core'
+import { ChainController, ConnectionController } from '@reown/appkit-controllers'
 
-import { AppKit } from '../../src/client'
-import { mainnet, sepolia } from '../mocks/Networks'
-import { mockOptions } from '../mocks/Options'
-import { mockUniversalProvider } from '../mocks/Providers'
-import { mockBlockchainApiController, mockStorageUtil, mockWindowAndDocument } from '../test-utils'
-
-mockWindowAndDocument()
-mockStorageUtil()
-mockBlockchainApiController()
+import { AppKit } from '../../src/client/appkit.js'
+import { mainnet, sepolia } from '../mocks/Networks.js'
+import { mockOptions } from '../mocks/Options.js'
+import { mockUniversalProvider } from '../mocks/Providers.js'
+import {
+  mockBlockchainApiController,
+  mockStorageUtil,
+  mockWindowAndDocument
+} from '../test-utils.js'
 
 describe('WalletConnect Events', () => {
+  beforeAll(() => {
+    mockWindowAndDocument()
+    mockStorageUtil()
+    mockBlockchainApiController()
+  })
+
   describe('chainChanged', () => {
     it('should call setUnsupportedNetwork', () => {
       const appkit = new AppKit({
@@ -77,6 +83,33 @@ describe('WalletConnect Events', () => {
 
       displayUriCallback('mock_uri')
       expect(setUriSpy).toHaveBeenCalledWith('mock_uri')
+    })
+  })
+
+  describe('connect', () => {
+    it('should call finalizeWcConnection once connected', async () => {
+      const finalizeWcConnectionSpy = vi
+        .spyOn(ConnectionController, 'finalizeWcConnection')
+        .mockReturnValueOnce()
+      mockUniversalProvider.on.mockClear()
+
+      new AppKit({
+        ...mockOptions,
+        adapters: [],
+        universalProvider: mockUniversalProvider as any
+      })
+
+      const connectCallback = mockUniversalProvider.on.mock.calls.find(
+        ([event]) => event === 'connect'
+      )?.[1]
+
+      if (!connectCallback) {
+        throw new Error('connect callback not found')
+      }
+
+      connectCallback()
+
+      expect(finalizeWcConnectionSpy).toHaveBeenCalledOnce()
     })
   })
 })

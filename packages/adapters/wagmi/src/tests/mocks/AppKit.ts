@@ -21,7 +21,7 @@ export const mockSession = {
 export const mockProvider = {
   on: vi.fn(),
   removeListener: vi.fn(),
-  enable: vi.fn().mockResolvedValue([mockAddress]),
+  getAccounts: vi.fn().mockResolvedValue([mockAddress]),
   request: vi.fn(),
   disconnect: vi.fn(),
   events: {

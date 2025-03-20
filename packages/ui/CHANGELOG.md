@@ -1,5 +1,116 @@
 # @reown/appkit-ui
 
+## 1.7.0
+
+### Minor Changes
+
+- [#3976](https://github.com/reown-com/appkit/pull/3976) [`cbd929f`](https://github.com/reown-com/appkit/commit/cbd929f839ad7ee4c7838fa980bcfd63b40b1415) Thanks [@tomiir](https://github.com/tomiir)! - Adds @reown/appkit-controllers. Proxies @reown/appkit-core to the new controllers package to maintain backwards compatibility.
+
+### Patch Changes
+
+- [#4002](https://github.com/reown-com/appkit/pull/4002) [`4fb30b0`](https://github.com/reown-com/appkit/commit/4fb30b06af2fcca0cffdae80f7ece7a9b498df4e) Thanks [@magiziz](https://github.com/magiziz)! - Updated the CDN package to identify as "cdn" instead of "html" in event tracking
+
+- [#3952](https://github.com/reown-com/appkit/pull/3952) [`8b0f958`](https://github.com/reown-com/appkit/commit/8b0f958b8e4169564a1c77da33a1c9d15554094c) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes profile name syncing when switching to non EVM network or to a testnet
+
+- [#3998](https://github.com/reown-com/appkit/pull/3998) [`0559ce5`](https://github.com/reown-com/appkit/commit/0559ce5ba7472926c6a3ec5bb890cb00d212a63a) Thanks [@tomiir](https://github.com/tomiir)! - Removes balance fetch on account sync for core
+
+- [#3961](https://github.com/reown-com/appkit/pull/3961) [`7280345`](https://github.com/reown-com/appkit/commit/7280345ecb39359c9a5271f0ff9ebfb902379272) Thanks [@tomiir](https://github.com/tomiir)! - Adds UX by reown footer to connection screens
+
+- [#3985](https://github.com/reown-com/appkit/pull/3985) [`569aa92`](https://github.com/reown-com/appkit/commit/569aa92cddfe51aa93c2ca201eeb500da28e8a1a) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where users could not use the embedded wallet if they denied access to their email address and/or username
+
+- [#3860](https://github.com/reown-com/appkit/pull/3860) [`dc6c6ab`](https://github.com/reown-com/appkit/commit/dc6c6abb30fb4cbc9b7241cb8af6e6f970e71f62) Thanks [@tomiir](https://github.com/tomiir)! - Initializes Solana connection on adapter construction
+
+- [#3969](https://github.com/reown-com/appkit/pull/3969) [`42e0f0e`](https://github.com/reown-com/appkit/commit/42e0f0ed9e0ef87cd5eae641dfb8bc8d267e1b44) Thanks [@magiziz](https://github.com/magiziz)! - Added `appKit.getAccount` public method
+
+- [#3757](https://github.com/reown-com/appkit/pull/3757) [`95980b9`](https://github.com/reown-com/appkit/commit/95980b955955e9e50336e91789d9838a53534558) Thanks [@tomiir](https://github.com/tomiir)! - Splits code into basic and regular appkit. Re-exports ui and scaffold components so they can be tree-shaken. Dynamically import appropiate chunks according to feature flags'
+
+- [#3998](https://github.com/reown-com/appkit/pull/3998) [`0559ce5`](https://github.com/reown-com/appkit/commit/0559ce5ba7472926c6a3ec5bb890cb00d212a63a) Thanks [@tomiir](https://github.com/tomiir)! - Removes identity calls from core account sync
+
+- [#3916](https://github.com/reown-com/appkit/pull/3916) [`29779a4`](https://github.com/reown-com/appkit/commit/29779a491e2ef38e5e945afcf79601cede6d1219) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where connection status was incorrectly set on page refresh after attempting to connect with WalletConnect.
+
+- [#3987](https://github.com/reown-com/appkit/pull/3987) [`ce9e3c1`](https://github.com/reown-com/appkit/commit/ce9e3c1baa0189c843359ab46aa3fa0ed8f18d14) Thanks [@enesozturk](https://github.com/enesozturk)! - Handles namespace switching when calling `open()` function. Passing `namespace` to `open()` function, AppKit will switch to that namespace. If namespace is connected, it'll open Account button, if not it'll open Connect screen.
+
+  **Example:**
+
+  ```jsx
+  const { open } = useAppKit()
+
+  open({ namespace: 'eip155' })
+  ```
+
+  This could be combined with `view` parameter as well. It'll switch to that namespace and open relevant page.
+
+  **Example:**
+
+  ```jsx
+  const { open } = useAppKit()
+
+  open({ view: 'Connect', namespace: 'eip155' })
+  ```
+
+- [#3936](https://github.com/reown-com/appkit/pull/3936) [`df403d9`](https://github.com/reown-com/appkit/commit/df403d9cce342c7b75864ec5fa841324a647434c) Thanks [@enesozturk](https://github.com/enesozturk)! - Adds namespace parameter to AppKit buttons.
+
+  This allows users to render namespace specific connect & account buttons. When namespace has passed, connect button opens connect page with only that namespace's connectors and account button shows only that namespace's account info.
+
+  **Example:**
+
+  ```js
+  <appkit-button namespace="eip155" />
+  <appkit-button namespace="solana" />
+  <appkit-button namespace="bip122" />
+  ```
+
+- [#3999](https://github.com/reown-com/appkit/pull/3999) [`503b34f`](https://github.com/reown-com/appkit/commit/503b34f904b246c78319307d6892a694d5d40c0f) Thanks [@tomiir](https://github.com/tomiir)! - Updates @walletconnect packages to 1.19.1
+
+- [#3970](https://github.com/reown-com/appkit/pull/3970) [`b5273b6`](https://github.com/reown-com/appkit/commit/b5273b6ca5de673f74fff01f3a1c460a9869903d) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where wagmi triggered a disconnect on page refresh
+
+## 1.6.9
+
+### Patch Changes
+
+- [#3878](https://github.com/reown-com/appkit/pull/3878) [`f9e66b9`](https://github.com/reown-com/appkit/commit/f9e66b94982cae004b9f2058eff1e845543a48c6) Thanks [@magiziz](https://github.com/magiziz)! - Fixed an issue where social popup window was blocked by safari
+
+- [#3818](https://github.com/reown-com/appkit/pull/3818) [`bf90239`](https://github.com/reown-com/appkit/commit/bf90239f89090a63d7c7eefc762471978aeceaad) Thanks [@enesozturk](https://github.com/enesozturk)! - Allows getting chain specific account data with hooks and subscribe methods
+
+  ### Example Usage
+
+  ```tsx
+  import { useAppKitAccount } from '@reown/appkit/react'
+
+  const accountState = useAppKitAccount() // Returns active chain's account state
+  const evmAccountState = useAppKitAccount({ chainNamespace: 'eip155' }) // Returns EVM chain's account state
+  const solanaAccountState = useAppKitAccount({ chainNamespace: 'solana' }) // Returns Solana chain's account state
+  const bitcoinAccountState = useAppKitAccount({ chainNamespace: 'bip122' }) // Returns Bitcoin chain's account state
+  ```
+
+- [#3764](https://github.com/reown-com/appkit/pull/3764) [`73fbd0f`](https://github.com/reown-com/appkit/commit/73fbd0fc11aaba80f5a5054659fe6eb3b3211400) Thanks [@magiziz](https://github.com/magiziz)! - Deprecated api headers to use query parameters
+
+- [#3833](https://github.com/reown-com/appkit/pull/3833) [`ff75922`](https://github.com/reown-com/appkit/commit/ff75922b49169f24d58ed2e41238a8d1d6e9164e) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Set wallet to undefined after unmount of QR view
+
+- [#3832](https://github.com/reown-com/appkit/pull/3832) [`64a03e1`](https://github.com/reown-com/appkit/commit/64a03e147be917ffc630bdefb628ad303cce7b20) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Add error message to SEND_ERROR event
+
+- [#3864](https://github.com/reown-com/appkit/pull/3864) [`aeae09c`](https://github.com/reown-com/appkit/commit/aeae09cb4a01451cb59c639dbc50e9de13086e87) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Applied a fix where we correctly clear the wallet state
+
+- [#3895](https://github.com/reown-com/appkit/pull/3895) [`8d2a81f`](https://github.com/reown-com/appkit/commit/8d2a81f48875c2810c5e341ce4822635696c7b2b) Thanks [@magiziz](https://github.com/magiziz)! - Add await in switchNetwork
+
+- [#3869](https://github.com/reown-com/appkit/pull/3869) [`b264e3b`](https://github.com/reown-com/appkit/commit/b264e3b940d28f903d0f83292b00f4fb66423118) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes defaultNetwork prop that is not being used on initialization
+
+- [#3785](https://github.com/reown-com/appkit/pull/3785) [`faf3f25`](https://github.com/reown-com/appkit/commit/faf3f253541ba82da47da5b7f285da6400a0ab58) Thanks [@magiziz](https://github.com/magiziz)! - Added support for react version 19
+
+- [#3847](https://github.com/reown-com/appkit/pull/3847) [`675d863`](https://github.com/reown-com/appkit/commit/675d86364d38e88e069d1b739683d16e4ff2ee71) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where switching to an unrecognized chain in MM mobile resulted in INVALID_CHAIN error which was not parsed for wallet_addEthereumChain request
+
+- [#3870](https://github.com/reown-com/appkit/pull/3870) [`eb510b0`](https://github.com/reown-com/appkit/commit/eb510b0901f0a115b48a555d2839a14c92eaccf4) Thanks [@zoruka](https://github.com/zoruka)! - Add extra metadata about connected wallet sent to cloud auth siwx
+
+- [#3917](https://github.com/reown-com/appkit/pull/3917) [`bebdea0`](https://github.com/reown-com/appkit/commit/bebdea0fe73872ab8bfd9549bb1275b598c85821) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Fix a case where wagmi is not getting the correct session state
+
+- [#3910](https://github.com/reown-com/appkit/pull/3910) [`62bb4da`](https://github.com/reown-com/appkit/commit/62bb4da13eefc1059bfc5b060f0f51b2b8892cca) Thanks [@tomiir](https://github.com/tomiir)! - Adds st and sv params to identity call on Blockchain Api
+
+- [#3881](https://github.com/reown-com/appkit/pull/3881) [`1f319cd`](https://github.com/reown-com/appkit/commit/1f319cd5e5fb014d66725d2f9b975ec2ed08f21e) Thanks [@enesozturk](https://github.com/enesozturk)! - Fixes fetch identity call where if the network is not supported by wallet and if switched to another network
+
+- [#3876](https://github.com/reown-com/appkit/pull/3876) [`c2a833b`](https://github.com/reown-com/appkit/commit/c2a833b83e647bda357b6338913df42a3336fdf3) Thanks [@magiziz](https://github.com/magiziz)! - Added bitcoin support for wallet buttons
+
+- [#3868](https://github.com/reown-com/appkit/pull/3868) [`8e11300`](https://github.com/reown-com/appkit/commit/8e1130061ed5ad175093a8a1f4057646d30f049b) Thanks [@tomiir](https://github.com/tomiir)! - Sets default chain to current appkit chain on WC connections
+
 ## 1.6.8
 
 ### Patch Changes
@@ -24,7 +135,7 @@
 
 - [#3776](https://github.com/reown-com/appkit/pull/3776) [`78c0d56`](https://github.com/reown-com/appkit/commit/78c0d5640a8d3ecbdde5b5ca8db36c223614740e) Thanks [@enesozturk](https://github.com/enesozturk)! - Refactors get month by index method
 
-- [#3787](https://github.com/reown-com/appkit/pull/3787) [`1027b27`](https://github.com/reown-com/appkit/commit/1027b274eb75df6cf807e735fa9e7a23f1f53c17) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Don't render browser tabs on AppKit Basic
+- [#3787](https://github.com/reown-com/appkit/pull/3787) [`1027b27`](https://github.com/reown-com/appkit/commit/1027b274eb75df6cf807e735fa9e7a23f1f53c17) Thanks [@svenvoskamp](https://github.com/svenvoskamp)! - Don't render browser tabs on AppKit Core
 
 - [#3760](https://github.com/reown-com/appkit/pull/3760) [`a7590da`](https://github.com/reown-com/appkit/commit/a7590da456ee0f51b7e6b50e24d36eda88cd86eb) Thanks [@magiziz](https://github.com/magiziz)! - Improved wallet image loading by fetching them only when the modal is opened instead of on page load.
 
@@ -186,7 +297,7 @@
 
 - [#3619](https://github.com/reown-com/appkit/pull/3619) [`7296a32`](https://github.com/reown-com/appkit/commit/7296a32b99bac546ab84555ca6a71b8838b61842) Thanks [@zoruka](https://github.com/zoruka)! - Refactor to add WalletConnectConnector as extensible class and remove replicated code around adapters
 
-- [#3678](https://github.com/reown-com/appkit/pull/3678) [`1614ff6`](https://github.com/reown-com/appkit/commit/1614ff603d09fbfc9c2d70fc9a7c8cff33b98b46) Thanks [@tomiir](https://github.com/tomiir)! - Removes duplicated all wallets button on AppKit Basic
+- [#3678](https://github.com/reown-com/appkit/pull/3678) [`1614ff6`](https://github.com/reown-com/appkit/commit/1614ff603d09fbfc9c2d70fc9a7c8cff33b98b46) Thanks [@tomiir](https://github.com/tomiir)! - Removes duplicated all wallets button on AppKit Core
 
 - [#3680](https://github.com/reown-com/appkit/pull/3680) [`62b4369`](https://github.com/reown-com/appkit/commit/62b4369ade281bdd5bcb90791817283e20c678cc) Thanks [@tomiir](https://github.com/tomiir)! - Fixes issue where onramp and activity were enabled in non-supported networks'
 

@@ -8,12 +8,19 @@ import {
   ConnectionController,
   CoreHelperUtil,
   OnRampController,
-  OptionsController,
   RouterController,
   SnackController,
   ThemeController
-} from '@reown/appkit-core'
+} from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-button'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon'
+import '@reown/appkit-ui/wui-icon-box'
+import '@reown/appkit-ui/wui-link'
+import '@reown/appkit-ui/wui-loading-thumbnail'
+import '@reown/appkit-ui/wui-text'
+import '@reown/appkit-ui/wui-visual'
 
 import styles from './styles.js'
 
@@ -150,15 +157,14 @@ export class W3mBuyInProgressView extends LitElement {
   private async watchCoinbaseTransactions() {
     try {
       const address = AccountController.state.address
-      const projectId = OptionsController.state.projectId
+
       if (!address) {
         throw new Error('No address found')
       }
 
       const coinbaseResponse = await BlockchainApiController.fetchTransactions({
         account: address,
-        onramp: 'coinbase',
-        projectId
+        onramp: 'coinbase'
       })
 
       const newTransactions = coinbaseResponse.data.filter(

@@ -1,8 +1,13 @@
 import { LitElement, html } from 'lit'
 import { property } from 'lit/decorators.js'
 
-import { ApiController } from '@reown/appkit-core'
+import { ApiController } from '@reown/appkit-controllers'
 import { type ColorType, customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-icon-box'
+import '@reown/appkit-ui/wui-image'
+import '@reown/appkit-ui/wui-loading-spinner'
+import '@reown/appkit-ui/wui-text'
 
 import styles from './styles.js'
 

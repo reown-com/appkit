@@ -3,9 +3,11 @@ import { property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
 import { ConstantsUtil } from '@reown/appkit-common'
-import type { Connector } from '@reown/appkit-core'
-import { AssetUtil, ConnectorController, RouterController } from '@reown/appkit-core'
+import type { Connector } from '@reown/appkit-controllers'
+import { AssetUtil, ConnectorController, RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-list-wallet'
 
 @customElement('w3m-connect-external-widget')
 export class W3mConnectExternalWidget extends LitElement {

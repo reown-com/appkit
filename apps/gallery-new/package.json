@@ -13,7 +13,7 @@
     "@reown/appkit-ui-new": "workspace:*",
     "lit": "3.1.0",
     "react": "19.0.0",
-    "storybook": "7.6.7"
+    "storybook": "7.6.20"
   },
   "devDependencies": {
     "@storybook/manager-api": "7.6.7",

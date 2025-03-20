@@ -24,7 +24,7 @@ import type { AppKitOptions } from '@reown/appkit'
 import type { AppKit } from '@reown/appkit'
 import { ConstantsUtil } from '@reown/appkit-common'
 import type { CaipNetwork, ChainNamespace } from '@reown/appkit-common'
-import { StorageUtil } from '@reown/appkit-core'
+import { StorageUtil } from '@reown/appkit-controllers'
 
 type UniversalConnector = Connector & {
   onDisplayUri(uri: string): void
@@ -120,7 +120,7 @@ export function walletConnect(
         }
 
         // If session exists and chains are authorized, enable provider for required chain
-        const accounts = (await provider.enable()).map(x => getAddress(x))
+        const accounts = await this.getAccounts()
         const currentChainId = await this.getChainId()
 
         if (displayUri) {
@@ -231,7 +231,8 @@ export function walletConnect(
       return provider_ as Provider
     },
     async getChainId() {
-      const chainId = appKit.getCaipNetwork()?.id
+      const chainId = appKit.getCaipNetwork(ConstantsUtil.CHAIN.EVM)?.id
+
       if (chainId) {
         return chainId as number
       }

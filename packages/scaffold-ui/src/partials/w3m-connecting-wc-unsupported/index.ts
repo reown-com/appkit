@@ -1,8 +1,13 @@
 import { LitElement, html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 
-import { AssetUtil, EventsController, RouterController } from '@reown/appkit-core'
+import { AssetUtil, EventsController, RouterController } from '@reown/appkit-controllers'
 import { customElement } from '@reown/appkit-ui'
+import '@reown/appkit-ui/wui-flex'
+import '@reown/appkit-ui/wui-text'
+import '@reown/appkit-ui/wui-wallet-image'
+
+import '../w3m-mobile-download-links/index.js'
 
 @customElement('w3m-connecting-wc-unsupported')
 export class W3mConnectingWcUnsupported extends LitElement {
