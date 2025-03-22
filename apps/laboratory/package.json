@@ -123,7 +123,7 @@
     "ethers": "6.13.2",
     "ethers5": "npm:ethers@5.7.2",
     "framer-motion": "10.17.9",
-    "next": "14.2.24",
+    "next": "14.2.25",
     "next-auth": "4.24.11",
     "react": "19.0.0",
     "react-dom": "19.0.0",
