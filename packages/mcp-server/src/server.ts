@@ -15,7 +15,7 @@ import { getSwapTool } from './tools/swap.js'
 
 // Initialize BlockchainApiClient with project ID from environment variables
 export const blockchainApiClient = new BlockchainApiClient({
-  projectId: process.env.PROJECT_ID || 'e70dca6ace32dc542f1ddeab132dd020', // Fallback to default if not provided
+  projectId: process.env.PROJECT_ID,
   sdkType: 'appkit',
   sdkVersion: 'html-wagmi-1.7.0'
 })

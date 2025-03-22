@@ -5,6 +5,21 @@ import express from 'express'
 export function createSSEServer(mcpServer: McpServer) {
   const app = express()
 
+  // Add CORS middleware
+  // @ts-ignore
+  app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*') // Allow all origins
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end()
+    }
+
+    next()
+  })
+
   const transportMap = new Map<string, SSEServerTransport>()
 
   app.get('/sse', async (req, res) => {
@@ -13,7 +28,7 @@ export function createSSEServer(mcpServer: McpServer) {
     await mcpServer.connect(transport)
   })
 
-  app.get('/ping', (req, res) => {
+  app.get('/ping', (_, res) => {
     res.status(200).json({ message: 'pong' })
   })
 

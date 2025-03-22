@@ -1,6 +1,6 @@
 'use client'
 
-import React, { ChangeEvent } from 'react'
+import React, { ChangeEvent, useEffect, useRef } from 'react'
 
 import { useChat } from '@ai-sdk/react'
 import { ArrowRightIcon, SquareIcon } from '@radix-ui/react-icons'
@@ -33,7 +33,7 @@ function getTruncateString({
   )}`
 }
 
-export default function Chat() {
+export default function Page() {
   const { open } = useAppKit()
   const { handleAppKitAction } = useAppKitActions()
   const { address } = useAppKitAccount()
@@ -41,6 +41,14 @@ export default function Chat() {
     maxSteps: 10
   })
   const isStreaming = status === 'streaming' || status === 'submitted'
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
+    }
+  }, [messages, isStreaming])
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -85,20 +93,6 @@ export default function Chat() {
               <button
                 className="w-auto bg-blue-500 text-white px-4 py-2 rounded-lg"
                 onClick={() => {
-                  handleAppKitAction({
-                    action: 'send',
-                    sourceToken: 'OP',
-                    toToken: 'USDC',
-                    amount: '4.5',
-                    chainId: '10'
-                  })
-                }}
-              >
-                Swap
-              </button>
-              <button
-                className="w-auto bg-blue-500 text-white px-4 py-2 rounded-lg"
-                onClick={() => {
                   open()
                 }}
               >
@@ -135,20 +129,6 @@ export default function Chat() {
               <button
                 className="w-auto bg-blue-500 text-white px-4 py-2 rounded-lg"
                 onClick={() => {
-                  handleAppKitAction({
-                    action: 'swap',
-                    sourceToken: 'POL',
-                    toToken: 'UNI',
-                    amount: '1',
-                    chainId: '137'
-                  })
-                }}
-              >
-                Swap
-              </button>
-              <button
-                className="w-auto bg-blue-500 text-white px-4 py-2 rounded-lg"
-                onClick={() => {
                   open()
                 }}
               >
@@ -165,7 +145,10 @@ export default function Chat() {
         ) : null}
 
         {/* Messages */}
-        <div className="w-full max-w-2xl flex flex-col gap-4 h-full overflow-y-auto pt-16 pb-32 scroll-fade-out-yt-10 scrollbar-hide">
+        <div
+          ref={messagesContainerRef}
+          className="w-full max-w-2xl flex flex-col gap-4 h-full overflow-y-auto pt-16 pb-32 scroll-fade-out-yt-10 scrollbar-hide"
+        >
           {messages.map(message => (
             <div
               key={message.id}

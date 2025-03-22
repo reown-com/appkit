@@ -47,6 +47,9 @@ export class BlockchainApiClient {
   constructor(config: Partial<BlockchainApiClientConfig> = {}) {
     const baseUrl = config.baseUrl || BLOCKCHAIN_API_URL
     this.api = new FetchUtil({ baseUrl })
+    this.api.projectId = config.projectId
+    this.api.sdkType = config.sdkType
+    this.api.sdkVersion = config.sdkVersion
   }
 
   /**
