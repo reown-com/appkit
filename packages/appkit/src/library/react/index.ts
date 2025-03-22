@@ -3,6 +3,7 @@ import { useEffect, useState, useSyncExternalStore } from 'react'
 import { useSnapshot } from 'valtio'
 
 import type { ChainNamespace } from '@reown/appkit-common'
+import type { RouterControllerState } from '@reown/appkit-controllers'
 import type {
   AppKitAccountButton,
   AppKitButton,
@@ -32,6 +33,7 @@ type OpenOptions = {
     | 'WalletSend'
   uri?: string
   namespace?: ChainNamespace
+  data?: RouterControllerState['data']
 }
 
 type ThemeModeOptions = AppKitOptions['themeMode']

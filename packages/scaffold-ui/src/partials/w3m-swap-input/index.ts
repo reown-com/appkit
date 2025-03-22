@@ -48,6 +48,7 @@ export class W3mSwapInput extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     const marketValue = this.marketValue || '0'
+    console.log('>>> marketValue', marketValue)
     const isMarketValueGreaterThanZero = NumberUtil.bigNumber(marketValue).gt('0')
 
     return html`

@@ -1,6 +1,8 @@
 packages:
   - 'packages/adapters/*'
   - 'packages/appkit'
+  - 'packages/mcp-server'
+  - 'packages/blockchain-api'
   - 'packages/common'
   - 'packages/ui'
   - 'packages/controllers'

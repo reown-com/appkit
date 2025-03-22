@@ -93,6 +93,7 @@ export interface OpenOptions {
     | 'WalletSend'
   uri?: string
   namespace?: ChainNamespace
+  params?: Record<string, string | number | boolean>
 }
 
 export abstract class AppKitBaseClient {
@@ -222,6 +223,7 @@ export abstract class AppKitBaseClient {
     OptionsController.setDisableAppend(options.disableAppend)
     OptionsController.setEnableEmbedded(options.enableEmbedded)
     OptionsController.setSIWX(options.siwx)
+    BlockchainApiController.initializeClient()
 
     if (!options.projectId) {
       AlertController.open(ErrorUtil.ALERT_ERRORS.PROJECT_ID_NOT_CONFIGURED, 'error')
@@ -358,7 +360,7 @@ export abstract class AppKitBaseClient {
         const result = await adapter.connectWalletConnect(chainId)
 
         this.close()
-        this.setClientId(result?.clientId || null)
+        this.setClientId(result?.clientId || undefined)
         StorageUtil.setConnectedNamespaces([...ChainController.state.chains.keys()])
         this.chainNamespaces.forEach(namespace => {
           ConnectorController.setConnectorId(

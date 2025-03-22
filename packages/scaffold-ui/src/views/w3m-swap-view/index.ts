@@ -1,5 +1,5 @@
 import { LitElement, html } from 'lit'
-import { state } from 'lit/decorators.js'
+import { property, state } from 'lit/decorators.js'
 
 import { NumberUtil } from '@reown/appkit-common'
 import {
@@ -18,6 +18,7 @@ import '@reown/appkit-ui/wui-button'
 import '@reown/appkit-ui/wui-flex'
 import '@reown/appkit-ui/wui-icon'
 import '@reown/appkit-ui/wui-text'
+import { CaipNetworksUtil } from '@reown/appkit-utils'
 import { W3mFrameRpcConstants } from '@reown/appkit-wallet/utils'
 
 import '../../partials/w3m-swap-details/index.js'
@@ -32,6 +33,8 @@ export class W3mSwapView extends LitElement {
   private unsubscribe: ((() => void) | undefined)[] = []
 
   // -- State & Properties -------------------------------- //
+  @property({ type: Object }) initialParams = RouterController.state.data?.swapParams
+
   @state() private interval?: ReturnType<typeof setInterval>
 
   @state() private detailsOpen = false
@@ -108,6 +111,7 @@ export class W3mSwapView extends LitElement {
   public override firstUpdated() {
     SwapController.initializeState()
     this.watchTokensAndValues()
+    this.handleSwapParameters()
   }
 
   public override disconnectedCallback() {
@@ -118,7 +122,7 @@ export class W3mSwapView extends LitElement {
   // -- Render -------------------------------------------- //
   public override render() {
     return html`
-      <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l']} gap="s">
+      <wui-flex flexDirection="column" .padding=${['0', 'l', 'l', 'l'] as const} gap="s">
         ${this.initialized ? this.templateSwap() : this.templateLoading()}
       </wui-flex>
     `
@@ -198,13 +202,13 @@ export class W3mSwapView extends LitElement {
 
     return html`<w3m-swap-input
       .value=${target === 'toToken' ? this.toTokenAmount : this.sourceTokenAmount}
-      .disabled=${target === 'toToken'}
+      .disabled=${Boolean(target === 'toToken')}
       .onSetAmount=${this.handleChangeAmount.bind(this)}
       target=${target}
       .token=${token}
       .balance=${myToken?.quantity?.numeric}
-      .price=${myToken?.price}
-      .marketValue=${marketValue}
+      .price=${Number(myToken?.price || 0)}
+      .marketValue=${(marketValue || 0).toString()}
       .onSetMaxValue=${this.onSetMaxValue.bind(this)}
     ></w3m-swap-input>`
   }
@@ -259,8 +263,8 @@ export class W3mSwapView extends LitElement {
   private templateActionButton() {
     const haveNoTokenSelected = !this.toToken || !this.sourceToken
     const haveNoAmount = !this.sourceTokenAmount
-    const loading = this.loadingQuote || this.loadingPrices || this.loadingTransaction
-    const disabled = loading || haveNoTokenSelected || haveNoAmount || this.inputError
+    const loading = Boolean(this.loadingQuote || this.loadingPrices || this.loadingTransaction)
+    const disabled = Boolean(loading || haveNoTokenSelected || haveNoAmount || this.inputError)
 
     return html` <wui-flex gap="xs">
       <wui-button
@@ -308,6 +312,139 @@ export class W3mSwapView extends LitElement {
       }
     })
     RouterController.push('SwapPreview')
+  }
+
+  /**
+   * Processes token and amount parameters for swap
+   */
+  private async handleSwapParameters(): Promise<void> {
+    // Get URL search parameters
+    const toTokenSymbol = this.initialParams?.toToken
+    const sourceTokenSymbol = this.initialParams?.sourceToken
+    const amount = this.initialParams?.amount
+    const chainId = this.initialParams?.chainId
+
+    if (!toTokenSymbol || !sourceTokenSymbol || !amount || !chainId) {
+      return
+    }
+
+    await this.handleChainSwitch(chainId)
+
+    // Wait for initialization to complete
+    if (!SwapController.state.initialized) {
+      const waitForInitialization = new Promise<void>(resolve => {
+        const unsubscribe = SwapController.subscribeKey('initialized', initialized => {
+          if (initialized) {
+            unsubscribe?.()
+            resolve()
+          }
+        })
+      })
+      await waitForInitialization
+    }
+
+    // Set tokens and amount
+    await this.setSwapParameters(sourceTokenSymbol, toTokenSymbol, amount)
+  }
+
+  /**
+   * Sets the swap parameters based on URL parameters
+   * @param sourceTokenSymbol - The symbol of the source token
+   * @param toTokenSymbol - The symbol of the destination token
+   * @param amount - The amount to swap
+   */
+  private async setSwapParameters(
+    sourceTokenSymbol: string | null,
+    toTokenSymbol: string | null,
+    amount: string | null
+  ): Promise<void> {
+    // Wait for token list to be available
+    if (!SwapController.state.tokens || !SwapController.state.myTokensWithBalance) {
+      const waitForTokens = new Promise<void>(resolve => {
+        const unsubscribe = SwapController.subscribeKey('myTokensWithBalance', tokens => {
+          if (tokens && tokens.length > 0) {
+            unsubscribe?.()
+            resolve()
+          }
+        })
+
+        // Set a timeout to resolve anyway after 5 seconds
+        setTimeout(() => {
+          unsubscribe?.()
+          resolve()
+        }, 5000)
+      })
+
+      await waitForTokens
+    }
+
+    // Find source token by symbol
+    if (sourceTokenSymbol) {
+      const allTokens = [
+        ...(SwapController.state.tokens || []),
+        ...(SwapController.state.myTokensWithBalance || [])
+      ]
+
+      const sourceToken = allTokens.find(
+        token => token.symbol.toLowerCase() === sourceTokenSymbol.toLowerCase()
+      )
+
+      if (sourceToken) {
+        SwapController.setSourceToken(sourceToken)
+      }
+    }
+
+    // Find destination token by symbol
+    if (toTokenSymbol) {
+      const allTokens = [
+        ...(SwapController.state.tokens || []),
+        ...(SwapController.state.myTokensWithBalance || [])
+      ]
+
+      const toToken = allTokens.find(
+        token => token.symbol.toLowerCase() === toTokenSymbol.toLowerCase()
+      )
+
+      if (toToken) {
+        SwapController.setToToken(toToken)
+      }
+    }
+
+    // Set amount if provided
+    if (amount && sourceTokenSymbol) {
+      SwapController.setSourceTokenAmount(amount)
+    }
+
+    // Trigger swap calculation
+    if (sourceTokenSymbol && toTokenSymbol && amount) {
+      await SwapController.swapTokens()
+    }
+
+    // Clear the URL parameters
+    const urlParams = new URLSearchParams(window.location.search)
+    urlParams.delete('sourceToken')
+    urlParams.delete('toToken')
+    urlParams.delete('amount')
+    window.history.replaceState({}, '', window.location.pathname)
+  }
+
+  /**
+   * Handles switching to the appropriate chain based on chainId
+   * @param chainId - The chain ID to switch to
+   */
+  private async handleChainSwitch(chainId: string): Promise<void> {
+    // Get requested networks to find the one with matching chainId
+    const requestedNetworks = ChainController.getAllRequestedCaipNetworks()
+    const targetNetwork = requestedNetworks.find(network => {
+      return network.id.toString() === chainId
+    })
+
+    // If no matching network found, return
+    if (!targetNetwork) {
+      return
+    }
+
+    CaipNetworksUtil.onSwitchNetwork(targetNetwork)
   }
 }
 

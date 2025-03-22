@@ -101,6 +101,18 @@ export interface RouterControllerState {
     switchToChain?: ChainNamespace
     navigateTo?: RouterControllerState['view']
     navigateWithReplace?: boolean
+    swapParams?: {
+      sourceToken: string
+      toToken: string
+      amount: string
+      chainId: string
+    }
+    sendParams?: {
+      sourceToken: string
+      address: string
+      amount: string
+      chainId: string
+    }
   }
   transactionStack: TransactionAction[]
 }
