@@ -9,7 +9,7 @@ export async function POST(req: Request) {
   const mcpClient = await createMCPClient({
     transport: {
       type: 'sse',
-      url: 'http://localhost:3000/sse'
+      url: process.env.MCP_URL!
     }
   })
 
