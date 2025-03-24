@@ -278,7 +278,7 @@ export const ApiController = {
         ...ApiController._getSdkProperties(),
         page: '1',
         entries: '100',
-        search: search?.trim(),
+        search: search?.trim() || undefined,
         badge_type: badge,
         chains: caipNetworkIds,
         include: includeWalletIds?.join(','),
