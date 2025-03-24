@@ -27,6 +27,9 @@ const modal = createAppKit({
   features: {
     analytics: true
   },
+  customRpcUrls: {
+    'eip155:1': ['https://eth.merkle.io']
+  },
   customWallets: ConstantsUtil.CustomWallets
 })
 
