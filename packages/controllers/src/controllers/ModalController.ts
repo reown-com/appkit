@@ -14,6 +14,7 @@ import { OptionsController } from './OptionsController.js'
 import { PublicStateController } from './PublicStateController.js'
 import type { RouterControllerState } from './RouterController.js'
 import { RouterController } from './RouterController.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary'
 
 // -- Types --------------------------------------------- //
 export interface ModalControllerState {
@@ -43,7 +44,7 @@ const state = proxy<ModalControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const ModalController = {
+const controller = {
   state,
 
   subscribe(callback: (newState: ModalControllerState) => void) {
@@ -154,3 +155,6 @@ export const ModalController = {
     }, 500)
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const ModalController = withErrorBoundary(controller)

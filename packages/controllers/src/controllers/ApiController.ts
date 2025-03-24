@@ -18,6 +18,8 @@ import { ChainController } from './ChainController.js'
 import { ConnectorController } from './ConnectorController.js'
 import { EventsController } from './EventsController.js'
 import { OptionsController } from './OptionsController.js'
+import { withErrorBoundary } from '../utils/withErrorBoundary'
+import { TelemetryErrorCategory } from './TelemetryController'
 
 // -- Helpers ------------------------------------------- //
 const baseUrl = CoreHelperUtil.getApiUrl()
@@ -68,7 +70,7 @@ const state = proxy<ApiControllerState>({
 })
 
 // -- Controller ---------------------------------------- //
-export const ApiController = {
+const controller = {
   state,
 
   subscribeKey<K extends StateKey>(key: K, callback: (value: ApiControllerState[K]) => void) {
@@ -365,3 +367,6 @@ export const ApiController = {
     )
   }
 }
+
+// Export the controller wrapped with our error boundary
+export const ApiController = withErrorBoundary(controller, TelemetryErrorCategory.API_ERROR)

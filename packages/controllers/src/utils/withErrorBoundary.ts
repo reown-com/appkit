@@ -17,7 +17,10 @@ export class AppKitError extends Error {
   }
 }
 
-export function withErrorBoundary<T extends Record<string, any>>(controller: T): T {
+export function withErrorBoundary<T extends Record<string, any>>(
+  controller: T,
+  defaultCategory: TelemetryErrorCategory = TelemetryErrorCategory.INTERNAL_SDK_ERROR
+): T {
   const newController: Record<string, any> = {}
 
   Object.keys(controller).forEach((key) => {
@@ -33,7 +36,7 @@ export function withErrorBoundary<T extends Record<string, any>>(controller: T):
             ? err
             : new AppKitError(
                 err instanceof Error ? err.message : String(err),
-                TelemetryErrorCategory.INTERNAL_SDK_ERROR,
+                defaultCategory,
                 err
               )
 
